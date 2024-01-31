@@ -1,248 +1,384 @@
-Return-Path: <linux-kernel+bounces-46668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5038844297
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:06:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1CDA84429D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:07:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2484B3158A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:01:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A558B2FFCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:00:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5E9512C54E;
-	Wed, 31 Jan 2024 14:55:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 009D212AADF;
+	Wed, 31 Jan 2024 14:52:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iKt1nd1G"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aNcYy42X"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC7A912C54A
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:54:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706712901; cv=fail; b=Vx3P1oGNxEDbIX+VfOMS4Y6VTEuDbWv6CXJ4C5sRjKhFD5GmR9i2FpOGgmQrOG3St5mVNmMSK+GlvasIsHHQEH1FYxvl7XE3a/dRRW/ygsv+Z3hLgFbBzVSL9CdTpL79p/diZYXi4i4VXlDH2mEjQL/n3qXx2ULuxmtO6Ea88OQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706712901; c=relaxed/simple;
-	bh=ntGNIWZ90PYjlvRLk7ow1BrBe2aDSwFw0wYgb5n+0Ck=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=kO3+/IEsEMEDmi3Sl8UpSxtbfG0hRKn6aOP+Is+H2FHUT0aCCwBxOK0n2oIOlkPeB6gVqKwkh94TA6v7L6G5JGj0HjEQEXeRPSIOaDRMeu8iGoXShb128K6+3wO5navNAZrJXEzfcb8BjZqyNgdmqyzV2Q7t4rzNQIfL9q8ZjRc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iKt1nd1G; arc=fail smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706712900; x=1738248900;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=ntGNIWZ90PYjlvRLk7ow1BrBe2aDSwFw0wYgb5n+0Ck=;
-  b=iKt1nd1GK3OvzPhG6KWG7qRsc6nXd4yRZjeOoIqyhPDswJRkqFJlDSmm
-   0LaEDGEnryrvx3b/3Q8L+/6yHLE259mhsSuKCEzYMYc0PvDRo7KtCsSHW
-   ztwA8N7pm28hO4SP+Isw7CRxgWVUVVCsOtgFuXO0KTu8vLBlti/52IQaA
-   jfCzriaUigZ5Pi6Wj0oIP4t8FuOFk7UceVFJdSxib5onEvcLw17POONdK
-   H6Moue3FQPVLP2gnnMgDcqJAqj4GvP/WRaPshjh7AWoErYiaOuOdA7wLC
-   nlhtCLys87x4NJO8Zieuv0nsCHkwaJeXTc0eXdiml5LRzXcU8OtAR8hpC
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10255077"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="10255077"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 06:54:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="4114752"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 31 Jan 2024 06:54:58 -0800
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 31 Jan 2024 06:54:56 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 31 Jan 2024 06:54:56 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 31 Jan 2024 06:54:56 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BL1/PrLTM4xUFpn/s9Vb9FWlcz+LwjyPSSTtygDmt6o8ShVUWqbcSKWN8QFDE1+0z27HRO0ZviOywkW2UhCWKUIcUVPH7OTmxftX3458hKuqbZ+VDWBB+Zep+v9IBzC5eKvUG26FBVSBDmT/zrQudILFKKJT4BNGr5Fy8QPqBq/u05awwxgKGOCB6/xryi4dv0l9P8tO2kcTQliAo5gJSzXCQMVgUuwqf+M9HcfiE4Lgc5GFPzrcNyWcOSR36swMXgT1qNStz5Aj6EqTwYyeORMr6CLwWHQ9elkFJfnKEa5B2Yo6gqFcSY/zy8u3i3Cc1UqjLuXBWu64m73x8KZMDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xZ8PhVqHX5ulhMmF2IMJdxqFDcsc0fAk1bLeA29s45k=;
- b=VddQRVoZuO2YA+HIr++h7YmhIxeIuEbMGhFkwmB9IgW37Hd8lOHXb8Iwn4mxWZXJEqNBEkEQewWjoO2ay6wipgFwYO0vZFLZKZP5jU8ICItVrFXn9d6diqBPXEktPSreh/pXPDDu63BvBdykPh137i3Qa3566To9HQezO//TKVSaMbfpKAjit3jixYXVonoWDgLf7HmKGmBEozKv/evZsp1gxbF75pILFhgTelaFWL1qm2i8d14/40FAhTXqM6f7LGZqU4IkbhZuh16831JiMrvrgSbCT51+YVDzLS4uIoXKKejgO56LgpLJyg6uON+JB/T44bFxL2A5wNSiT2O6hg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
- by CY8PR11MB7171.namprd11.prod.outlook.com (2603:10b6:930:92::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Wed, 31 Jan
- 2024 14:54:49 +0000
-Received: from CY5PR11MB6139.namprd11.prod.outlook.com
- ([fe80::9f32:ce50:1914:e954]) by CY5PR11MB6139.namprd11.prod.outlook.com
- ([fe80::9f32:ce50:1914:e954%7]) with mapi id 15.20.7228.029; Wed, 31 Jan 2024
- 14:54:49 +0000
-Date: Wed, 31 Jan 2024 08:54:46 -0600
-From: Lucas De Marchi <lucas.demarchi@intel.com>
-To: wangxiaoming321 <xiaoming.wang@intel.com>
-CC: <ogabbay@kernel.org>, <thomas.hellstrom@linux.intel.com>,
-	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-	<tzimmermann@suse.de>, <airlied@gmail.com>, <daniel@ffwll.ch>,
-	<intel-xe@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-	<linux-kernel@vger.kernel.org>, Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH] drm/xe/display: Fix memleak in display initialization
-Message-ID: <abko5y3n5mju6srjly257bpqlvjf5ie6h6snboaekxnfv5mu76@jjumdgev76ag>
-References: <20240125063633.989944-1-xiaoming.wang@intel.com>
- <20240126153453.997855-1-xiaoming.wang@intel.com>
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240126153453.997855-1-xiaoming.wang@intel.com>
-X-ClientProxiedBy: BYAPR04CA0026.namprd04.prod.outlook.com
- (2603:10b6:a03:40::39) To CY5PR11MB6139.namprd11.prod.outlook.com
- (2603:10b6:930:29::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFC3C12AAC8
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:52:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706712755; cv=none; b=Wixkme7eyUUT7+2gFk6fXNGdCfCdoFAYDcCAQFY1Qm1n04QOMa6H3IzfOkKVw/gQWwZXrCLgYxPcfL5Lt3IkA9rdPaZMe2jN7hO3AnEv+/7CY98ge5414LenYW8xkORmTDSOnPyMstYWhw0+HyPGlAFx+XvosQDlJO4FMZijBro=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706712755; c=relaxed/simple;
+	bh=IaGme7cKVTXOztAUwJT8LItchoS9fjk0q1LpdIIAuqc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=bMfVY4fHIcMb8QvugH4qRfvOqqcguQG7qUFP5eYuN/riIHfR5VHdp9bnbgTU1IOhJlBh2T1Qz3LMaVUOfobA8OaCOiP9cObpEQE31NCjUERYR/ICE6a+WqqWAaMOY6vFWSS2nXvnUFumiceViadLKsy3DzRURlMPtfig8ad9THY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aNcYy42X; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33b0ecb1965so28522f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 06:52:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706712752; x=1707317552; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gfc1sVAcBi3W1QZAoaOQxx00lsYE9L947Born7xdO5w=;
+        b=aNcYy42XEs37bTJewWDnYS/nEXzdroDYdUtB5houGhE+4n/U9H0LQVmGrnotScwOoT
+         i/tmfQXpfeINRuFVXDX5l6WAkIAxyWOvdfGdKAEvKbEdO1zMhU7JQLjncCIbsWNOJSIv
+         Em4Op63HjwuzeDxkKA0zrYPh/RhspXd+7cJdNHiJunuT09oXRB813/yqse19QNm11ncY
+         yweVJSdkomXpOincoB/T53iFfnfiIXTnrFcsavOSkD1CdeCKrSw65U1K242JxZIDy4o2
+         l4Pi1TUffmKp2NV83t/Qr35Ud1qLj6vts+bPraOFI4AI/RtKKd9comyMkKRdmwQRHd5f
+         xdpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706712752; x=1707317552;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gfc1sVAcBi3W1QZAoaOQxx00lsYE9L947Born7xdO5w=;
+        b=K6RjKZ2JnzMUlkWFcIY6l0mBEZ8WgPiH+bAeJGYbvK6ZJpiqvE1bB/emhljEM6pRYZ
+         l1oqOal03sF7tpkQnkndN6gAQY4JWWSZGPKRuyy7kol8iaVdjd1yAdUFV9EX3Pz0T96w
+         KoYhd2a4nUgRRpAkTzAqIVJ3OOQN+Q6xInnP1kjV+0SFjtcvjXk4CriFva9iJ+k7cfPu
+         4RxA7/BFRoAibojMVJ61Dc/anPwdWheeFm4al+Dy4GSyoyH/Am8nJcRrcLYfKBnZyR3t
+         h3B8+9EQ116k102lLFRUCpkWJf1vVk/kYOXFIFVtxwMzD19ZY5HC/T12CQ3keYzUgY7S
+         9GAw==
+X-Gm-Message-State: AOJu0YwW+fNz/gDPbtfwfRYmlJJtFyzvTSPBu8e7aux38P7tn8so7c3o
+	gr4OiZ/LpbrgWRuvf8yPnFGGjcUbF+Uv9XKTLd/NOxooBp7qch6p
+X-Google-Smtp-Source: AGHT+IHjSow5xBmPNHOl6q170RsvCViWH9kq/k94KfwJXNWzk6e5BJh6ZxqDpSafBfNRWO/FXJF26A==
+X-Received: by 2002:adf:fcc9:0:b0:33a:edcd:6f38 with SMTP id f9-20020adffcc9000000b0033aedcd6f38mr1511983wrs.34.1706712751905;
+        Wed, 31 Jan 2024 06:52:31 -0800 (PST)
+Received: from ?IPv6:2003:f6:ef1b:2000:15d4:fc17:481e:8afe? (p200300f6ef1b200015d4fc17481e8afe.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:15d4:fc17:481e:8afe])
+        by smtp.gmail.com with ESMTPSA id w13-20020adfee4d000000b0033af9591653sm4842023wro.97.2024.01.31.06.52.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 06:52:31 -0800 (PST)
+Message-ID: <8682d7f7ee1a60902b1f3e5529a4adbaf4846aa0.camel@gmail.com>
+Subject: Re: [PATCH RESEND RFC] driver: core: don't queue device links
+ removal for dt overlays
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: nuno.sa@analog.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Frank Rowand <frowand.list@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ linux-kernel@vger.kernel.org,  Saravana Kannan <saravanak@google.com>
+Date: Wed, 31 Jan 2024 15:55:48 +0100
+In-Reply-To: <CAJZ5v0hX4Yv7UVng=O4tZyb_O7D2EcymdEDdSUrVDPk6h51VjA@mail.gmail.com>
+References: 
+	<20240123-fix-device-links-overlays-v1-1-9e4f6acaab6c@analog.com>
+	 <dcb1b6dbc2172dd66bfdcc0c8135e0d98f1c22dd.camel@gmail.com>
+	 <CAJZ5v0gAK9CChRPSx7Lu=BrGQo22q4swpvvN3__wFw68NfqKPA@mail.gmail.com>
+	 <25d3cfd74b26eb6a4aa07f1da93ccf4815b0b1c6.camel@gmail.com>
+	 <CAJZ5v0hX4Yv7UVng=O4tZyb_O7D2EcymdEDdSUrVDPk6h51VjA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|CY8PR11MB7171:EE_
-X-MS-Office365-Filtering-Correlation-Id: b0838c43-eb90-472d-6ae0-08dc226c92ae
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: j9LtjZ3dw9r/xU4UhIHfk9OrBEV15zNjYa94rnzQ2ueZ5S7edj/2Hy5WbG8qzOpEzqnSz6xiCWSxnVbM4K9tLcAJmjXix6gkZ9sJykk4TbS5o4gEUYd4JmbN8bQ1k8/cY/b9H+8+EjZ37oHwab+3RL+sLOwKmxwiIhs8riLLjqV0Z6drgZtYYLHeNL1hFz7SXVp9gucWiuQLzC0OpuU4q6CEBSA/YUTzBZbRN/kIidVl1s4+UUX4qq8FfXvpVLlPl9EoJ2/V2oP9HTGALJwRdOpMhWvPgm+80w268AEfNnt2scWLLDCo4DCNGmyysgnQHsjwBb3Ck7SL9RnADwX38gB+010/4ggoSbTMEExX73vpKaKjypyGmcyX56FQyf0esb+IuVSYFq6dpRV/68+pm608PJUXrKIT2PRh/zTDLlQPb27sVEUPGqEwtQ0y9C0ysVnh+lv6lCO7xgj3Vb+V16mkdmm0QDjCdYdqC20QN3J/euleFuZ+JId2r+a9k1WCvfRjPG2lokPvcrI//HV3jAsXlo97LSIRHUIwHXizwo+ji4T3LI6d0n4qmFdIywCm
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(376002)(136003)(396003)(366004)(346002)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(33716001)(41300700001)(66556008)(66946007)(6486002)(66476007)(83380400001)(2906002)(38100700002)(6506007)(9686003)(478600001)(6512007)(4326008)(6666004)(6862004)(8936002)(8676002)(316002)(7416002)(6636002)(26005)(5660300002)(86362001)(82960400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JA7pkiz4ccu/rVhz+7CsDtsPEl9GkN7HgSQ6xYG3lwJK3UCIISqWkAbqyb/G?=
- =?us-ascii?Q?+a+Kw0I4ZTcBAQYHoeBxKkIbdtUVunrXdhyS7V24JvRcUKR/o1OhKHe+RymG?=
- =?us-ascii?Q?8qbitOSXFyaYFxx71wLJ7WAnOsJpR6TxDzIYbSA8gWH2NtF7OGF9KazUaWIM?=
- =?us-ascii?Q?y6Ta9wEGgAoj39QdmXom25i45L7sq1zkU59fr7MvlCoFDc1Lm2B+OO5hFR5v?=
- =?us-ascii?Q?YnU8xz1txmbd/4CG24oaoyXE8FChLPWxo9QdPwkl+BzAovSc2vpBA2erM2NZ?=
- =?us-ascii?Q?NKRDhIAOVydh/Y+Nagq1vr+XianCKUY/+Dj1pvWpQc8Z1UtioTsThq2XDF3o?=
- =?us-ascii?Q?KSXYPPNnvuJ7efa6eBsO14nPG+JzWKcOgBEQOp4lHDVQjd67srpZIQR0LgxL?=
- =?us-ascii?Q?oF43D8iwcL9/jiKgaX+FZujz5rF3d65Y8STk+lI81Nn/t7S8+P8lctGUv75v?=
- =?us-ascii?Q?am9zIIJtxGuwRRBex4/IJR0PfLwhQ8HE7CMrOnN/5hdx0Je4sVqAONoZu1tV?=
- =?us-ascii?Q?4qWKwL/S66S1sfuuYbOGZxS5VgBQz+0FH+vO3hdARhv/S9yiyy7VH1ayJOrV?=
- =?us-ascii?Q?x73d0CEjbxs+0tp1xVvO3e5uv8pB23WGIpwAXJpU0pO+h6qpXEO2vJ9npkYV?=
- =?us-ascii?Q?oAPGa3o03TDBBSI8jxo7i8w/29Bip43uI91Q0K6Ar6Rrrmto9/P1zBTAb/b4?=
- =?us-ascii?Q?Cj/uPG0Jr6iwguDcZs4HEUkxgjzR4vdMriGDKsR30bmsQlVjwptHAHa9gKj1?=
- =?us-ascii?Q?atSydIaMuZ+6Bi7zws8YIxOK/MR4hf/9m4Vxbb6bW1Rod0ngdlWEAC+wbjRN?=
- =?us-ascii?Q?apvXMrWVZV5aG3nFyEDair2bc+TZXhnykczZ1GXfEclcfQrabEO648odKf7K?=
- =?us-ascii?Q?07+7o6h/XnGFlpbiy00cvN+MkaS5omnIxNLNngGhPmnpueSs68GGSGqTxmRx?=
- =?us-ascii?Q?yLecBAYJrjNN4hK0t9mchfXyDny6BScOchA0vdBJNX48JdpxmWoLAkncVkIb?=
- =?us-ascii?Q?U7Mndx8a0R2qBeAhLbatuHPGueNXaqC+/WBKmZrt3Syn5lH/oc65qIu7XwMG?=
- =?us-ascii?Q?lY/6si0FJZN461exmG8uGExvV0FiewayJ+YKlXaP5soVvrrKuizfnSesM++M?=
- =?us-ascii?Q?ZFJg32G5w8AoLafpOe+tQHqN5cnN7kwEJn4GrSnsP9JnFy29UujUflkb50xS?=
- =?us-ascii?Q?M7J3BC1FOSwANEsjZeimtMwAVByUmM7UOOUMaTGZ1B6OOmNiOGmWMsuokOBo?=
- =?us-ascii?Q?Hs7hi1DcuFs1soW5dH/TtCnpaLIte+UW6eJWOUlM3Rg0Gj96sAEpyWTKVY0L?=
- =?us-ascii?Q?4ASGdroDuqGjh6FsR3FeMQ30Lb6lD7zOn1yi1AmHlXZlsoLq7v3MYLU8vNPH?=
- =?us-ascii?Q?CUGBlky9YQYRty9YkZNr7oscZP7CTiyBb/zdU1qWHccwydbUmuCZ6Smrtt9e?=
- =?us-ascii?Q?13hksOyPdnTU81zis0CpzawGwmyBRKXHv6I6U0PblMwpXHHlqjE5m0aukfdS?=
- =?us-ascii?Q?YsfQf6d/bncQUnhth4/Pmb7g6iTTrBACR3z9rloXUAQTBIjsBXnuQSSPxUue?=
- =?us-ascii?Q?SLZhZuoyQjRkyQZDglyyp91hsbfkbd8zj3JLTnxzu/J2N0nyprfHb/PQ+dd/?=
- =?us-ascii?Q?/g=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b0838c43-eb90-472d-6ae0-08dc226c92ae
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 14:54:49.4210
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: N8FCNLwEyVsBOJtaasU8WUf9BDUzm3DGBcw9tmaYiW4cPHZRoiGgQ8Xpc2FupgJz5n+1BZbxfM1zGwwD2lzEW7MdtN4CQLBusTgkTjebpO8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7171
-X-OriginatorOrg: intel.com
 
-+Jani
+On Wed, 2024-01-31 at 15:28 +0100, Rafael J. Wysocki wrote:
+> On Wed, Jan 31, 2024 at 3:18=E2=80=AFPM Nuno S=C3=A1 <noname.nuno@gmail.c=
+om> wrote:
+> >=20
+> > On Wed, 2024-01-31 at 14:30 +0100, Rafael J. Wysocki wrote:
+> > > On Wed, Jan 31, 2024 at 1:20=E2=80=AFPM Nuno S=C3=A1 <noname.nuno@gma=
+il.com> wrote:
+> > > >=20
+> > > > On Tue, 2024-01-23 at 16:40 +0100, Nuno Sa via B4 Relay wrote:
+> > > > > From: Nuno Sa <nuno.sa@analog.com>
+> > > > >=20
+> > > > > For device links, releasing the supplier/consumer devices referen=
+ces
+> > > > > happens asynchronously in device_link_release_fn(). Hence, the
+> > > > > possible
+> > > > > release of an of_node is also asynchronous. If these nodes were a=
+dded
+> > > > > through overlays we have a problem because this does not respect =
+the
+> > > > > devicetree overlays assumptions that when a changeset is
+> > > > > being removed in __of_changeset_entry_destroy(), it must hold the=
+ last
+> > > > > reference to that node. Due to the async nature of device links t=
+hat
+> > > > > cannot be guaranteed.
+> > > > >=20
+> > > > > Given the above, in case one of the link consumer/supplier is par=
+t of
+> > > > > an overlay node we call directly device_link_release_fn() instead=
+ of
+> > > > > queueing it. Yes, it might take some significant time for
+> > > > > device_link_release_fn() to complete because of synchronize_srcu(=
+) but
+> > > > > we would need to, anyways, wait for all OF references to be relea=
+sed
+> > > > > if
+> > > > > we want to respect overlays assumptions.
+> > > > >=20
+> > > > > Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+> > > > > ---
+> > > > > This RFC is a follow up of a previous one that I sent to the
+> > > > > devicetree
+> > > > > folks [1]. It got rejected because it was not really fixing the r=
+oot
+> > > > > cause of the issue (which I do agree). Please see the link where =
+I
+> > > > > fully explain what the issue is.
+> > > > >=20
+> > > > > I did also some git blaming and did saw that commit
+> > > > > 80dd33cf72d1 ("drivers: base: Fix device link removal") introduce=
+d
+> > > > > queue_work() as we could be releasing the last device reference a=
+nd
+> > > > > hence
+> > > > > sleeping which is against SRCU callback requirements. However, th=
+at
+> > > > > same
+> > > > > commit is now making use of synchronize_srcu() which may take
+> > > > > significant time (and I think that's the reason for the work item=
+?).
+> > > > >=20
+> > > > > However, given the dt overlays requirements, I'm not seeing any
+> > > > > reason to not be able to run device_link_release_fn() synchronous=
+ly if
+> > > > > we
+> > > > > detect an OVERLAY node is being released. I mean, even if we come=
+ up
+> > > > > (and I did some experiments in this regard) with some async mecha=
+nism
+> > > > > to
+> > > > > release the OF nodes refcounts, we still need a synchronization p=
+oint
+> > > > > somewhere.
+> > > > >=20
+> > > > > Anyways, I would like to have some feedback on how acceptable wou=
+ld
+> > > > > this
+> > > > > be or what else could I do so we can have a "clean" dt overlay
+> > > > > removal.
+> > > > >=20
+> > > > > I'm also including dt folks so they can give some comments on the=
+ new
+> > > > > device_node_overlay_removal() function. My goal is to try to dete=
+ct
+> > > > > when
+> > > > > an
+> > > > > overlay is being removed (maybe we could even have an explicit fl=
+ag
+> > > > > for
+> > > > > it?) and only directly call device_link_release_fn() in that case=
+.
+> > > > >=20
+> > > > > [1]:
+> > > > > https://lore.kernel.org/linux-devicetree/20230511151047.1779841-1=
+-nuno.sa@analog.com/
+> > > > > ---
+> > > > > =C2=A0drivers/base/core.c | 25 ++++++++++++++++++++++++-
+> > > > > =C2=A01 file changed, 24 insertions(+), 1 deletion(-)
+> > > > >=20
+> > > > > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > > > > index 14d46af40f9a..31ea001f6142 100644
+> > > > > --- a/drivers/base/core.c
+> > > > > +++ b/drivers/base/core.c
+> > > > > @@ -497,6 +497,18 @@ static struct attribute *devlink_attrs[] =3D=
+ {
+> > > > > =C2=A0};
+> > > > > =C2=A0ATTRIBUTE_GROUPS(devlink);
+> > > > >=20
+> > > > > +static bool device_node_overlay_removal(struct device *dev)
+> > > > > +{
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (!dev_of_node(dev))
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 return false;
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (!of_node_check_flag(dev->of_node, O=
+F_DETACHED))
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 return false;
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (!of_node_check_flag(dev->of_node, O=
+F_OVERLAY))
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 return false;
+> > > > > +
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 return true;
+> > > > > +}
+> > > > > +
+> > > > > =C2=A0static void device_link_release_fn(struct work_struct *work=
+)
+> > > > > =C2=A0{
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct device_link *link =3D conta=
+iner_of(work, struct
+> > > > > device_link,
+> > > > > rm_work);
+> > > > > @@ -532,8 +544,19 @@ static void devlink_dev_release(struct devic=
+e
+> > > > > *dev)
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * synchronization in device_=
+link_release_fn() and if the
+> > > > > consumer
+> > > > > or
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * supplier devices get delet=
+ed when it runs, so put it into the
+> > > > > "long"
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * workqueue.
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * However, if any of the supplier=
+, consumer nodes is being
+> > > > > removed
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * through overlay removal, the ex=
+pectation in
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * __of_changeset_entry_destroy() =
+is for the node 'kref' to be 1
+> > > > > which
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * cannot be guaranteed with the a=
+sync nature of
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * device_link_release_fn(). Hence=
+, do it synchronously for the
+> > > > > overlay
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * case.
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> > > > > -=C2=A0=C2=A0=C2=A0=C2=A0 queue_work(system_long_wq, &link->rm_wo=
+rk);
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (device_node_overlay_removal(link->c=
+onsumer) ||
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 device_node_ove=
+rlay_removal(link->supplier))
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 device_link_release_fn(&link->rm_work);
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 else
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 queue_work(system_long_wq, &link->rm_work);
+> > > > > =C2=A0}
+> > > > >=20
+> > > > > =C2=A0static struct class devlink_class =3D {
+> > > > >=20
+> > > > > ---
+> > > > > base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+> > > > > change-id: 20240123-fix-device-links-overlays-5422e033a09b
+> > > > > --
+> > > > >=20
+> > > > > Thanks!
+> > > > > - Nuno S=C3=A1
+> > > > >=20
+> > > >=20
+> > > > Hi Rafael,
+> > > >=20
+> > > > Would be nice to have your feedback on this one or if this is a com=
+plete
+> > > > nack...
+> > > > I think calling device_link_release_fn() synchronously is ok but I =
+might
+> > > > be
+> > > > completely wrong.
+> > >=20
+> > > Well, it sounds like you are expecting me to confirm that what you ar=
+e
+> > > doing makes sense, but I cannot do that, because I am not sufficientl=
+y
+> > > familiar with DT overlays.
+> > >=20
+> >=20
+> > I'm trying to understand if there's no hidden issue by calling it
+> > synchronously.
+> > (don't think there is but this is rather core stuff :)).
+> >=20
+> > From the DT guys, it would be helpful to get feedback on the new
+> > device_node_overlay_removal() helper I'm introducing. The goal is to ju=
+st do
+> > the
+> > sync release in case we detect a node being removed as a result of an
+> > overlay
+> > removal.
+> >=20
+> > > You first need to convince yourself that you are not completely wrong=
+.
+> >=20
+> > I mean, the problem is definitely real and if you see the link I pasted=
+ in
+> > the
+> > cover, this will all lead to big splats.
+> >=20
+> > >=20
+> > > > +Cc Saravan as he should also be very familiar with device_links an=
+d see
+> > > > if
+> > > > the
+> > > > above fairly simple solution is sane.
+> > > >=20
+> > > > I also don't want to be pushy as I know you guys are all very busy =
+but
+> > > > it's
+> > > > (i
+> > > > think) the third time I resend the patch :)
+> > >=20
+> > > Sorry about that, I haven't realized that my input is requisite.
+> > >=20
+> >=20
+> > Yeah, get_mantainers gives me you and Greg but I think you're the main =
+dev
+> > on
+> > dev_links right?
+> >=20
+> > > So the patch not only calls device_link_release_fn() synchronously,
+> > > but it also calls this function directly and I, personally, wouldn't
+> > > do at least the latter.
+> > >=20
+> >=20
+> > So you mean adding something like adding a new
+> >=20
+> > device_link_release(struct device_link *link) helper
+> > and either call it synchronously from devlink_dev_release() or
+> > asynchronously
+> > from device_link_release_fn()?
+> >=20
+> > I can drop the RFC and send a patch with the above...
+>=20
+> No, IMV devlink_dev_release() needs to be called via
+> device_link_put_kref(), but it may run device_link_release_fn()
+> directly if the link is marked in a special way or something like
+> this.
 
-On Fri, Jan 26, 2024 at 11:34:53PM +0800, wangxiaoming321 wrote:
->intel_power_domains_init has been called twice in xe_device_probe:
->xe_device_probe -> xe_display_init_nommio -> intel_power_domains_init(xe)
->xe_device_probe -> xe_display_init_noirq -> intel_display_driver_probe_noirq
->-> intel_power_domains_init(i915)
+Sorry, I'm not totally getting this. I'm directly calling
+device_link_release_fn() from  devlink_dev_release(). We should only get in=
+to
+devlink_dev_release() after all the references are dropped right (being it =
+the
+release callback for the link class)?
 
-ok, once upon a time intel_power_domains_init() was called by the driver
-initialization code and not initialized inside the display. I think.
-Now it's part of the display probe and we never updated the xe side.
+device_node_overlay_removal() is my way to see if the link "is marked in a
+special way" as you put it. This checks if one of the supplier/consumer is
+marked as an OVERLAY and if it's being removed (I think that OF_DETACHED te=
+lls
+us that but some feedback from DT guys will be helpful).
 
->
->It needs remove one to avoid power_domains->power_wells double malloc.
->
->unreferenced object 0xffff88811150ee00 (size 512):
->  comm "systemd-udevd", pid 506, jiffies 4294674198 (age 3605.560s)
->  hex dump (first 32 bytes):
->    10 b4 9d a0 ff ff ff ff ff ff ff ff ff ff ff ff  ................
->    ff ff ff ff ff ff ff ff 00 00 00 00 00 00 00 00  ................
->  backtrace:
->    [<ffffffff8134b901>] __kmem_cache_alloc_node+0x1c1/0x2b0
->    [<ffffffff812c98b2>] __kmalloc+0x52/0x150
->    [<ffffffffa08b0033>] __set_power_wells+0xc3/0x360 [xe]
->    [<ffffffffa08562fc>] xe_display_init_nommio+0x4c/0x70 [xe]
->    [<ffffffffa07f0d1c>] xe_device_probe+0x3c/0x5a0 [xe]
->    [<ffffffffa082e48f>] xe_pci_probe+0x33f/0x5a0 [xe]
->    [<ffffffff817f2187>] local_pci_probe+0x47/0xa0
->    [<ffffffff817f3db3>] pci_device_probe+0xc3/0x1f0
->    [<ffffffff8192f2a2>] really_probe+0x1a2/0x410
->    [<ffffffff8192f598>] __driver_probe_device+0x78/0x160
->    [<ffffffff8192f6ae>] driver_probe_device+0x1e/0x90
->    [<ffffffff8192f92a>] __driver_attach+0xda/0x1d0
->    [<ffffffff8192c95c>] bus_for_each_dev+0x7c/0xd0
->    [<ffffffff8192e159>] bus_add_driver+0x119/0x220
->    [<ffffffff81930d00>] driver_register+0x60/0x120
->    [<ffffffffa05e50a0>] 0xffffffffa05e50a0
->
+Alternatively, I could just check the OF_OVERLAY flag when the link is bein=
+g
+created and have a new variable in struct device_link to flag the synchrono=
+us
+release. Disadvantage is that in this way even a sysfs unbind or module unl=
+oad
+(without necessarily removing the overly) would lead to a synchronous relea=
+se
+which can actually make sense (now that I think about it). Because if someo=
+ne
+does some crazy thing like "echo device > unbind" and then removes the over=
+lay
+we could still hit the overly removal path before device_link_release_fn()
+completed.
 
-This will need a Fixes trailer.  This seems to be a suitable one:
+- Nuno S=C3=A1
 
-Fixes: 44e694958b95 ("drm/xe/display: Implement display support")
-
->Signed-off-by: wangxiaoming321 <xiaoming.wang@intel.com>
->---
-> drivers/gpu/drm/xe/xe_display.c | 6 ------
-> 1 file changed, 6 deletions(-)
->
->diff --git a/drivers/gpu/drm/xe/xe_display.c b/drivers/gpu/drm/xe/xe_display.c
->index 74391d9b11ae..e4db069f0db3 100644
->--- a/drivers/gpu/drm/xe/xe_display.c
->+++ b/drivers/gpu/drm/xe/xe_display.c
->@@ -134,8 +134,6 @@ static void xe_display_fini_nommio(struct drm_device *dev, void *dummy)
->
-> int xe_display_init_nommio(struct xe_device *xe)
-> {
->-	int err;
->-
-> 	if (!xe->info.enable_display)
-> 		return 0;
->
->@@ -145,10 +143,6 @@ int xe_display_init_nommio(struct xe_device *xe)
-> 	/* This must be called before any calls to HAS_PCH_* */
-> 	intel_detect_pch(xe);
->
->-	err = intel_power_domains_init(xe);
->-	if (err)
->-		return err;
-
-xe_display_init_nommio() has xe_display_fini_nommio() as its destructor
-counter part. Unfortunately display side looks wrong as it does:
-
-init:
-	intel_display_driver_probe_noirq() -> intel_power_domains_init()
-
-destroy:
-	i915_driver_late_release() -> intel_power_domains_cleanup()
-
-I think leaving intel_power_domains_cleanup() as is for now so it's
-called by xe works, but this needs to go through CI, which apparently
-this series didn't go. I re-triggered it.
-
-+Jani if he thinks this can be changed in another way or already have
-the complete solution.
-
-Lucas De Marchi
 
