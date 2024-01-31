@@ -1,125 +1,96 @@
-Return-Path: <linux-kernel+bounces-46138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A43DF843B1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:29:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AB417843B1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:29:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F24128FE9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:29:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65C4828F2DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:29:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 595AC67745;
-	Wed, 31 Jan 2024 09:29:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D0FA67A18;
+	Wed, 31 Jan 2024 09:29:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="eNs39sle"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="EdllPm/8"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E74AB657DD
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:29:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8EAE67745
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:29:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706693369; cv=none; b=VmV4ndVIOpEZId8CYL1eszn61Iz8ztaburm7UvOMkNPjtpixWOIquoWNzV00e1d7V7m2X34DT95aT6Q2ox6aXjZXEpPExnJ5sNIAKQu4BkovEAtCTVICoFrOZ0qPmUMylpmFLYM66yRhBoIegGbsPsUsvA5AUkvVyu9wIHfL9B4=
+	t=1706693351; cv=none; b=Y6e1y9wU7fN7mSaHTIVPt1v6SV8S5yl6xtftnM8oZTUXPwQG64KUIWaqT8DEMpEaoDYQ8VaZ+vekNDznWSXDJxpfK4kb4+hNrxFMSYi8e3G/G5bbr78lAUb9KjnsQuj89F6+dyBiBVc7WP5LHzw5WK5BI9qHbQfHI285jhpPHtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706693369; c=relaxed/simple;
-	bh=BA6fJEjCZMcaHnNBU5jDXRdTkCxnI8f7pf6sC+LoD0M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DeRvomNMnvcxCGpIxBBwWpk0AUp4NaN14Mqr778P0pdRJFnriD2sSOEW1+q5yzu52qNwTwVrgtApY2fstFxFDne85ukgYdWpYZf1/ykqX+MVsCUtBpPQE5STT+c0c7FTvOo61mgOauV3wj1r2A9EBijhnl48eWsF5x2D9vYs5Gs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com; spf=pass smtp.mailfrom=amarulasolutions.com; dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b=eNs39sle; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55ee686b5d5so4459263a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:29:27 -0800 (PST)
+	s=arc-20240116; t=1706693351; c=relaxed/simple;
+	bh=f43fKUriad8uDoZeZk6V7VP3GUeZsSWr0g2dLquSmNU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y+/8gQ1oykOH+HmXnLJCgt/xoKLuZ4FOXKSS3AfsohgZPh/9ab16RwVN0OBMfGWQaFCY8SmYAO6952p1BgVmmBTTMueZ1sEh7r/TndFj9l/RYHmAvOJCNsH2SaDogcYokMfd3/oCjV43gXYMIlr3+kaZqtEcmNv3vMBGfLLl/p4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=EdllPm/8; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40eacb4bfa0so50812745e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:29:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1706693366; x=1707298166; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xk9fhyP0CkSTpvqSdLIvIAOMOdEQrJYka04kzpQbSCI=;
-        b=eNs39sleYkUhSKYpLISJR6koTI7sW0zVMpF1njA2cQe5A9wVb4CtMAKn5UPwt7Jgmm
-         tjtpzmG7mtCD/DET1mGSqKnlj1vbt6A6WH3UILngrfVFJCw93eWKsaw/XJaNrCM40GVf
-         QLm5SqjJmF37mV16UTngb5Y+zZqgSZU/lLIlM=
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1706693346; x=1707298146; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=f43fKUriad8uDoZeZk6V7VP3GUeZsSWr0g2dLquSmNU=;
+        b=EdllPm/8J17oq9R3/crIAnK+8S3WFFRMxVjFdt6D7M7RIg78TNb1PmAPN6x+IJCFGq
+         djaPW2JW/C1QV9N/po6BBwHr4AU+srLZJ1zVV5C6vpNgeL6xb/EZgQL7+UcmdnnDPL6S
+         mTv1FAOVzqlp9DDwHPQt2Tr0h0ZumW+OEQnqkdu0tjTuYKeWgD+VAzYazRI9pbqvb8iH
+         cT3fcbmZzlQLXsd9x7DsEBdi5OuoTMst703u9SY8QUhhUiYH+wyriG9C4HgW3zNxeUP/
+         t2IXaKvy/2pSGIaSAgPFHYZIZGID7chf/UzcWKHnAV1DMcSSxfaK7g0Uxc1oqXyOlVR3
+         0a4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706693366; x=1707298166;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Xk9fhyP0CkSTpvqSdLIvIAOMOdEQrJYka04kzpQbSCI=;
-        b=LxY+kVyaHyQUpMqlgwfARY70k9i/D+HOrfh3lC/G68HEdKbbuLiwdi7d1r27dpIQKb
-         1CQKESalQ2rYgtBr37qfUU1Zia/9mEOUwhocjcNKuqSl42nwAFKrgSvHuAudlkwEp3n4
-         GsIt/DOtW3y1aWB412ULu3I0/VTkPVY6LsrWL+PgrooTfJUEVHv1U2CRkjY9m5FJcHm7
-         v32nXZeL+b9BTt0l/RQjoVqvhRPkTNwzATLXttyl/bOX0mLYrNvSzDr/gp8OdDcupAKK
-         k8Ffqoe8aSkPLxr9cGj0hlsHaf4QVU2iAkJ/66ftEqJPpRrDfizR76ioAxkvzFyaxlvi
-         8Sig==
-X-Gm-Message-State: AOJu0Yw17cqI9J5XAgp7flbtHOzruiVelhGOFGxlcqBYQdeqTQ1zxlmY
-	mtwHvFyJeSKdAkpfHFKB16HoYmpoOizhMth6XyWC0SQtU6xD+rVeC0HX8xIW8g3rKg7Gj5yjgCJ
-	n
-X-Google-Smtp-Source: AGHT+IHXEGDr4fGmwlGPRIVoGEbaTU3wb+9v6LQhDK8+IaSm0AjVrt+5w0SlCJUkC1vHmi19sAEe4Q==
-X-Received: by 2002:a17:906:190a:b0:a35:7191:d952 with SMTP id a10-20020a170906190a00b00a357191d952mr670959eje.53.1706693365993;
-        Wed, 31 Jan 2024 01:29:25 -0800 (PST)
-Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-82-56-30-170.retail.telecomitalia.it. [82.56.30.170])
-        by smtp.gmail.com with ESMTPSA id g22-20020a170906349600b00a367bdce1fcsm321436ejb.64.2024.01.31.01.29.22
+        d=1e100.net; s=20230601; t=1706693346; x=1707298146;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f43fKUriad8uDoZeZk6V7VP3GUeZsSWr0g2dLquSmNU=;
+        b=uaLPBQVGMyH8cMPOqTqnFqYtngOYuX8vedaXKQ6DjzrDNCEjiNevzjqy61lMLKd8Jo
+         mrsDDaNPb1U5WyXL1qLv1tAn/2uEHOqPGdUfQ8OLf4zHmKn8cGMPmU8TdKVKJa3Ve8Un
+         BBfUxQ/sbSbA65u+bkD6ahRL7YHFmiZqM2dWQ7FL4Kv1qxO8s4Jh1FhssjT7ewPkcqQw
+         erUZb2qiQDOv/prYNf3Anek9vDJiqR+d4TUnWxx0qtb9yf7IBljxgPRpcrqLjhn/zvm0
+         pJ1D0If6RZFhSlZgoxcucIUlr7TQmaNQy0Sn+SvltVQFYvVtlxIe0enuvWgYm7YLfeUr
+         msgg==
+X-Gm-Message-State: AOJu0Yxe6u8T+tERnfPG/ckDZ0B7mxkpSv0J9DOkWfoFC3GrB4qXqssc
+	KOkZnYly64xNG/UoSe3rZ3Nrk2fY2CBCtitfqNBnMixi1mvtrACQJoFXwVaErBeCl3mbBcJkoG9
+	b9vUrPw==
+X-Google-Smtp-Source: AGHT+IEY2lXWkefvxzH893aZoC/yJtLJWaibwPImgr2nOy1n6RN5x75B2Avq9gwETOse4c3xNrxmhQ==
+X-Received: by 2002:a05:600c:450a:b0:40e:622e:7449 with SMTP id t10-20020a05600c450a00b0040e622e7449mr725550wmo.22.1706693346221;
+        Wed, 31 Jan 2024 01:29:06 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVyfO36vqppt50qgUDOESB2a3qrfawNZwydoEBbJCI2JFg2TkSMzceQG+yb8LZPQSoO4kGRBL1+yY176OY4Z/b+KmamlIS3odBxf6UcJ27Hq4EF6aJfpHGtOeLTCZhO9oN2umde/v3UImFWthmDH5Xoiv/XqcV9dmzMTMpWTbBCTMXyBcLltIfas4oEUjKtRDE2aw0UMgmrSbi6inIFA8grw6yf+HLvDwwjXVuWQoYBvVNVwk1TQTw5qq5yNBGoPB+FFX2/9g==
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id b3-20020a05600003c300b0033afe6968bfsm2433573wrg.64.2024.01.31.01.29.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 01:29:25 -0800 (PST)
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-To: linux-kernel@vger.kernel.org
-Cc: Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	David Airlie <airlied@gmail.com>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	devicetree@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Subject: [drm-drm-misc:drm-misc-next v2] dt-bindings: nt35510: document 'port' property
-Date: Wed, 31 Jan 2024 10:28:44 +0100
-Message-ID: <20240131092852.643844-1-dario.binacchi@amarulasolutions.com>
-X-Mailer: git-send-email 2.43.0
+        Wed, 31 Jan 2024 01:29:05 -0800 (PST)
+Date: Wed, 31 Jan 2024 10:29:03 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Kunwu Chan <chentao@kylinos.cn>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, dccp@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: dccp: Simplify the allocation of slab
+ caches in dccp_ackvec_init
+Message-ID: <ZboS3wXu7Pan4Szi@nanopsycho>
+References: <20240131090851.144229-1-chentao@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240131090851.144229-1-chentao@kylinos.cn>
 
-Allow 'port' property (coming from panel-common.yaml) to be used in DTS:
+Wed, Jan 31, 2024 at 10:08:51AM CET, chentao@kylinos.cn wrote:
+>Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+>to simplify the creation of SLAB caches.
+>
+>Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 
-  st/stm32f769-disco-mb1166-reva09.dtb: panel@0: 'port' does not match any of the regexes: 'pinctrl-[0-9]+'
-
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-
----
-
-Changes in v2:
-- Rework the patch to drop errors found by command
-  'make DT_CHECKER_FLAGS=-m dt_binding_check'.
-
- .../devicetree/bindings/display/panel/novatek,nt35510.yaml       | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml b/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
-index a4afaff483b7..91921f4b0e5f 100644
---- a/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
-@@ -31,6 +31,7 @@ properties:
-   vddi-supply:
-     description: regulator that supplies the vddi voltage
-   backlight: true
-+  port: true
- 
- required:
-   - compatible
--- 
-2.43.0
-
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 
