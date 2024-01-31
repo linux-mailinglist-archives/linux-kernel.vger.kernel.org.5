@@ -1,79 +1,77 @@
-Return-Path: <linux-kernel+bounces-47138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 042448449C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:20:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C8A68449C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:19:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE3BC289705
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:19:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6E571F221C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:19:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF39440BFA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0318B405D8;
 	Wed, 31 Jan 2024 21:14:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DeN/hxg2";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="f4QwySYW"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tEaoIFow";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="dzvV2JjC"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A13D3CF6D;
-	Wed, 31 Jan 2024 21:14:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA0363C697;
+	Wed, 31 Jan 2024 21:14:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706735696; cv=none; b=mFrz+TO1Zkowmsp8PYq2zcrIBF/vbxcuMWFD5vm1wiKja39olZ/0U8jHlzEH0ScDUFbhEFDZ5DKWxnFTttz8iPWNfv81f1sz9Bimyw8Az4S2kQJIKQtPfqbuwo7CFlwMZxniGMsdLCeG39pjZMjGKvam7Fnn7ff7U3pXIyjKG4M=
+	t=1706735695; cv=none; b=PMHDbRWzDnjZcbXtu7UAqB3ZDFZFWFusZqiSEzHk7BRpD7lt//E7V6+EsBtmxFa7u2yKRwz+zsYJoa7Kv+Bl9oHPBTd3+8GDO3jIieNfjWPmnJlhCGvjUqNhpT2n6MpbuPsALAYVMa1fcK3oy7iNZlEGtyeSx+NJzRPfsHftoOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706735696; c=relaxed/simple;
-	bh=EHFjjE6dQ+n8LuAiDPQ8mrSHGuh2B/d/Lak2e4Q8qqQ=;
+	s=arc-20240116; t=1706735695; c=relaxed/simple;
+	bh=8O9DRo6yNumFZDNuSPEsyNf+Zc0iYbQA4Gjvilwrqxw=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=oYGuCYJ6nsGOP8OkHLurDzpZlw1IsEklVWcoITMw62d8vSRjkeV+2X60I7I/mao6xiEyNAkEqm191tQdttE0gaznnQVFcH2eH/1YVTbSNdfrptPSqHbaZ7EJx9KDIM/4Vff4VTQoceOaSsNSdXxVoFcsI+aFycWnmTxZLDIICag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DeN/hxg2; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=f4QwySYW; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=Srd1eeCODYwm8ME07mF/GWWoL9NO8mA8jCjCHn0ZtlGkNvNwFYJcItuhjDux3zuKj5jWk6eDfx3nG6RwsBJhKlPHbJg3UGF/wh530UOHrnoWyYzydQ/6CqyImPU+y/nxhCFloeWEWj1xbz9Kc97q3Kcis3vnHmm0OLbftd+z7cM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tEaoIFow; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=dzvV2JjC; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Date: Wed, 31 Jan 2024 21:14:51 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706735692;
+	s=2020; t=1706735691;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rymz2c3DdrwsI0mDypE02JMx6MX3xJ3zAuZkZlaGZms=;
-	b=DeN/hxg2BLmhn3ZE61/BWLdCCsq5n/h7i8/jNlVVvm4gKpLVGWWpNOvRoT7Kt1Z5QUbTpF
-	s5tZSa7m9WQhWayjIvTSG9wF8E+A0CfYcXp34OjJ8rBCDMKLpltuotc+NgQD+92m2vNI23
-	wcP7829PebciA17ywVG0VK2LuSOdCgDwYjF5a2yY4RAE9AQH4NyFNPU3QNxibXqYFWnYSl
-	rLzwRiJQnrux5cGBA3t+vHtveea7XJ3tnHCqLXl2Y2A3V+b5B0w0E/RE2SSsB5lyiVaYJP
-	6RcFG4dZoYZ2rAxWlKgJmuu5H2+/sjlHYv8ucnPbPALbrJwQ1GscmZ0pKnk9Hw==
+	bh=sUzytkYDxm0KkYE8qGL7MI80IjdjFs7UE9gxGXTmv/M=;
+	b=tEaoIFowAIxwCeXqDBXG0xt+TLrdWXBEsPAkpbtizDH32JWqxce8Ncwnc4wvWD4PPKgM5w
+	33YS04AI6TlN5Is80txhxlMgbXIhif3lyzaEFgJJtIEzDQqeJ0ub/CGBM80JKKIDbXfEVL
+	EqnYmVPKy1L7S9lIEjtAA9WiSk2NIujItnCkIN0wrwfZErH9G3uZkxs2yz2/gqf2v6UPyL
+	92AT/akUo4Gt6waBi7rmA3G2ArNsyiMxefy6lcjaDLCSCdGuCbQIJB0Hooe2E/hyQEFfht
+	db7pi6+UQJ+FEVdupOvMQG9TgDorzOpfPnoDbvlX6y7sBYItMvUoHFproL4YvA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706735692;
+	s=2020e; t=1706735691;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rymz2c3DdrwsI0mDypE02JMx6MX3xJ3zAuZkZlaGZms=;
-	b=f4QwySYWd97rsXbKL/0k/rABmragU0mhUH3/GyTfM88X2mcn4WA/w/KDJjYbJ0v8AWE9Mj
-	kF406FnMOPUJkxBQ==
-From: "tip-bot2 for Xin Li" <tip-bot2@linutronix.de>
+	bh=sUzytkYDxm0KkYE8qGL7MI80IjdjFs7UE9gxGXTmv/M=;
+	b=dzvV2JjCllAmiSgaSTfKaVffvdjMEDtOSiZMFCZigUT7hWVbpdNR/x/SwcPefQm09TIR7G
+	NA3QRrnq6znIV3CA==
+From: "tip-bot2 for H. Peter Anvin (Intel)" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fred] x86/ptrace: Add FRED additional information to the
- pt_regs structure
-Cc: Thomas Gleixner <tglx@linutronix.de>,
- "H. Peter Anvin (Intel)" <hpa@zytor.com>, Xin Li <xin3.li@intel.com>,
- "Borislav Petkov (AMD)" <bp@alien8.de>, Shan Kang <shan.kang@intel.com>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231205105030.8698-15-xin3.li@intel.com>
-References: <20231205105030.8698-15-xin3.li@intel.com>
+Subject: [tip: x86/fred] x86/fred: Add a new header file for FRED definitions
+Cc: "H. Peter Anvin (Intel)" <hpa@zytor.com>, Xin Li <xin3.li@intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>,
+ Shan Kang <shan.kang@intel.com>, x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231205105030.8698-16-xin3.li@intel.com>
+References: <20231205105030.8698-16-xin3.li@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170673569171.398.13558919240133424421.tip-bot2@tip-bot2>
+Message-ID: <170673569110.398.3068899198407694474.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -83,136 +81,100 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the x86/fred branch of tip:
 
-Commit-ID:     3c77bf02d0c03beb3efdf7a5b427fb2e1a76c265
-Gitweb:        https://git.kernel.org/tip/3c77bf02d0c03beb3efdf7a5b427fb2e1a76c265
-Author:        Xin Li <xin3.li@intel.com>
-AuthorDate:    Tue, 05 Dec 2023 02:50:03 -08:00
+Commit-ID:     32b09c230392ca4c03fcbade9e28b2053f11396b
+Gitweb:        https://git.kernel.org/tip/32b09c230392ca4c03fcbade9e28b2053f11396b
+Author:        H. Peter Anvin (Intel) <hpa@zytor.com>
+AuthorDate:    Tue, 05 Dec 2023 02:50:04 -08:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Wed, 31 Jan 2024 22:01:20 +01:00
+CommitterDate: Wed, 31 Jan 2024 22:01:25 +01:00
 
-x86/ptrace: Add FRED additional information to the pt_regs structure
+x86/fred: Add a new header file for FRED definitions
 
-FRED defines additional information in the upper 48 bits of cs/ss
-fields. Therefore add the information definitions into the pt_regs
-structure.
+Add a header file for FRED prototypes and definitions.
 
-Specifically introduce a new structure fred_ss to denote the FRED flags
-above SS selector, which avoids FRED_SSX_ macros and makes the code
-simpler and easier to read.
-
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Originally-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
 Signed-off-by: Xin Li <xin3.li@intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
 Tested-by: Shan Kang <shan.kang@intel.com>
-Link: https://lore.kernel.org/r/20231205105030.8698-15-xin3.li@intel.com
+Link: https://lore.kernel.org/r/20231205105030.8698-16-xin3.li@intel.com
 ---
- arch/x86/include/asm/ptrace.h | 66 +++++++++++++++++++++++++++++++---
- 1 file changed, 61 insertions(+), 5 deletions(-)
+ arch/x86/include/asm/fred.h | 68 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 68 insertions(+)
+ create mode 100644 arch/x86/include/asm/fred.h
 
-diff --git a/arch/x86/include/asm/ptrace.h b/arch/x86/include/asm/ptrace.h
-index b268cd2..5a83fbd 100644
---- a/arch/x86/include/asm/ptrace.h
-+++ b/arch/x86/include/asm/ptrace.h
-@@ -56,6 +56,50 @@ struct pt_regs {
- 
- #else /* __i386__ */
- 
-+struct fred_cs {
-+		/* CS selector */
-+	u64	cs	: 16,
-+		/* Stack level at event time */
-+		sl	:  2,
-+		/* IBT in WAIT_FOR_ENDBRANCH state */
-+		wfe	:  1,
-+			: 45;
+diff --git a/arch/x86/include/asm/fred.h b/arch/x86/include/asm/fred.h
+new file mode 100644
+index 0000000..f514fdb
+--- /dev/null
++++ b/arch/x86/include/asm/fred.h
+@@ -0,0 +1,68 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Macros for Flexible Return and Event Delivery (FRED)
++ */
++
++#ifndef ASM_X86_FRED_H
++#define ASM_X86_FRED_H
++
++#include <linux/const.h>
++
++#include <asm/asm.h>
++
++/*
++ * FRED event return instruction opcodes for ERET{S,U}; supported in
++ * binutils >= 2.41.
++ */
++#define ERETS			_ASM_BYTES(0xf2,0x0f,0x01,0xca)
++#define ERETU			_ASM_BYTES(0xf3,0x0f,0x01,0xca)
++
++/*
++ * RSP is aligned to a 64-byte boundary before used to push a new stack frame
++ */
++#define FRED_STACK_FRAME_RSP_MASK	_AT(unsigned long, (~0x3f))
++
++/*
++ * Used for the return address for call emulation during code patching,
++ * and measured in 64-byte cache lines.
++ */
++#define FRED_CONFIG_REDZONE_AMOUNT	1
++#define FRED_CONFIG_REDZONE		(_AT(unsigned long, FRED_CONFIG_REDZONE_AMOUNT) << 6)
++#define FRED_CONFIG_INT_STKLVL(l)	(_AT(unsigned long, l) << 9)
++#define FRED_CONFIG_ENTRYPOINT(p)	_AT(unsigned long, (p))
++
++#ifndef __ASSEMBLY__
++
++#ifdef CONFIG_X86_FRED
++#include <linux/kernel.h>
++
++#include <asm/ptrace.h>
++
++struct fred_info {
++	/* Event data: CR2, DR6, ... */
++	unsigned long edata;
++	unsigned long resv;
 +};
 +
-+struct fred_ss {
-+		/* SS selector */
-+	u64	ss	: 16,
-+		/* STI state */
-+		sti	:  1,
-+		/* Set if syscall, sysenter or INT n */
-+		swevent	:  1,
-+		/* Event is NMI type */
-+		nmi	:  1,
-+			: 13,
-+		/* Event vector */
-+		vector	:  8,
-+			:  8,
-+		/* Event type */
-+		type	:  4,
-+			:  4,
-+		/* Event was incident to enclave execution */
-+		enclave	:  1,
-+		/* CPU was in long mode */
-+		lm	:  1,
-+		/*
-+		 * Nested exception during FRED delivery, not set
-+		 * for #DF.
-+		 */
-+		nested	:  1,
-+			:  1,
-+		/*
-+		 * The length of the instruction causing the event.
-+		 * Only set for INTO, INT1, INT3, INT n, SYSCALL
-+		 * and SYSENTER.  0 otherwise.
-+		 */
-+		insnlen	:  4;
++/* Full format of the FRED stack frame */
++struct fred_frame {
++	struct pt_regs   regs;
++	struct fred_info info;
 +};
 +
- struct pt_regs {
- 	/*
- 	 * C ABI says these regs are callee-preserved. They aren't saved on
-@@ -85,6 +129,12 @@ struct pt_regs {
- 	 * - the syscall number (syscall, sysenter, int80)
- 	 * - error_code stored by the CPU on traps and exceptions
- 	 * - the interrupt number for device interrupts
-+	 *
-+	 * A FRED stack frame starts here:
-+	 *   1) It _always_ includes an error code;
-+	 *
-+	 *   2) The return frame for ERET[US] starts here, but
-+	 *      the content of orig_ax is ignored.
- 	 */
- 	unsigned long orig_ax;
- 
-@@ -92,24 +142,30 @@ struct pt_regs {
- 	unsigned long ip;
- 
- 	union {
--		/* The full 64-bit data slot containing CS */
--		u64		csx;
- 		/* CS selector */
- 		u16		cs;
-+		/* The extended 64-bit data slot containing CS */
-+		u64		csx;
-+		/* The FRED CS extension */
-+		struct fred_cs	fred_cs;
- 	};
- 
- 	unsigned long flags;
- 	unsigned long sp;
- 
- 	union {
--		/* The full 64-bit data slot containing SS */
--		u64		ssx;
- 		/* SS selector */
- 		u16		ss;
-+		/* The extended 64-bit data slot containing SS */
-+		u64		ssx;
-+		/* The FRED SS extension */
-+		struct fred_ss	fred_ss;
- 	};
- 
- 	/*
--	 * Top of stack on IDT systems.
-+	 * Top of stack on IDT systems, while FRED systems have extra fields
-+	 * defined above for storing exception related information, e.g. CR2 or
-+	 * DR6.
- 	 */
- };
- 
++static __always_inline struct fred_info *fred_info(struct pt_regs *regs)
++{
++	return &container_of(regs, struct fred_frame, regs)->info;
++}
++
++static __always_inline unsigned long fred_event_data(struct pt_regs *regs)
++{
++	return fred_info(regs)->edata;
++}
++
++#else /* CONFIG_X86_FRED */
++static __always_inline unsigned long fred_event_data(struct pt_regs *regs) { return 0; }
++#endif /* CONFIG_X86_FRED */
++#endif /* !__ASSEMBLY__ */
++
++#endif /* ASM_X86_FRED_H */
 
