@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-46264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4F8B843D3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:52:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21AB5843D3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:52:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6853A1F2C9B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:52:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53C061C2110C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:52:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 234A86D1A4;
-	Wed, 31 Jan 2024 10:52:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 695CC745E7;
+	Wed, 31 Jan 2024 10:52:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bz1ek1/T"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c5ao1Qb6"
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBEE569D2E;
-	Wed, 31 Jan 2024 10:52:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0396969E03;
+	Wed, 31 Jan 2024 10:52:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706698334; cv=none; b=oeo/O5o5KyuNxoD5vw/7Er/p57fWg9I5ocBZtq0uyWjkG9EbgJ3GZ366lAlzfP2M9S3YCPhFQ11axE9ddfnL/7J+WJrY7ap4tzUw8OudXolz/2qFWRNiA4bM0KnbFCJ3agqb5CTPSYCDMRLf0RKnx+ycdeGn4vRd3Er634QnoNE=
+	t=1706698335; cv=none; b=iTQ3PW81BrcjY6s3xTOii9e1ftW7sSHrkP2DtFSzJJzdcyVH0yvgPI8/4KdzPEqjXHmk9KlmPxgAXeixyeejBe9Dul0+GVG2z/VyNNTFByrVuNExlKktcX138OOffOFSFUXh7IWReWK0WNz0x901eMcikwsvNXy/yxHLtT2GR4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706698334; c=relaxed/simple;
-	bh=DTr5Wk4PCj42NKTiJpVQSWqGcjbL2I2O7xvegUsab2A=;
+	s=arc-20240116; t=1706698335; c=relaxed/simple;
+	bh=SlNK0oOfr0weMAeD+jzFsEe2QFa0qB5VzVfQW3juYYA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=s450CEtt7O9DuDeRzOB6+AxfGjga00JabWnejQt1MAfzoWK3FVpCEv0CAttp1EbcTGDbRZUr68bmr2Td4dnd4L/1I5hiEJl1o32muLXif8lfDnQxqcvTFHr28gOuiM2ysetoPip6BcEg/gggaOpZwooeQCUe2Wn291vkS5DPADM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bz1ek1/T; arc=none smtp.client-ip=209.85.208.41
+	 MIME-Version; b=d4Ofq8buOjva4ufv10k/WVayEIPGZjaTwfAUDNyF4h1uwVcyq31d38EOkr8JVuZKLHsJATYqclPIH+zywlunL3Q78sclTatxvzMrM8sNWiypJpHZM7YGRUG55Ngl4FlmowBkUQEBqLBz3g/Dor3PpnjBmsn46sLc5VFUIPUCHJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c5ao1Qb6; arc=none smtp.client-ip=209.85.208.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55a9008c185so1408058a12.1;
-        Wed, 31 Jan 2024 02:52:12 -0800 (PST)
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d057003864so25189361fa.3;
+        Wed, 31 Jan 2024 02:52:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706698331; x=1707303131; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706698332; x=1707303132; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RdW4Gd3ArFQpDEqxCJbMxPMn8UQ7Pb2sdPxKXDUejLY=;
-        b=Bz1ek1/T5LbShZEpdw/0CbOxJYNmuIan3Hm4szPpYUcBFn6VKiHongjHCgZ/iA139x
-         gucFLzjVx1VDzZeS2MY2clfLH7HtSvDkW5/VkGMEJbcMnp1kzstGnuTYC3V7AeLHKzit
-         TC5HuBlEbsYYMuH7kctSDOKqIabZP5GjMOyIycWDl/liA+xa/kOIioOMa3rKu6VMG6z7
-         kkJKdqJSMuBHBM/HvhS6pJSxp1pTg1+1NGkx2jEb8KmTKtvG0lC38AQeT3lJ4TbhOgAr
-         FlA7NnxbgF4ImoMAGO7rNeAkG4HrjLkb3jo+pxuB8AytcLyzb1Oe8xuvm1SHZg47WSxb
-         g4Qg==
+        bh=W+A1jezCER+1byDBGN2CrUyy9/w5awZMP5yKpGAyNfg=;
+        b=c5ao1Qb6IfDtQ87oeBoPOlnyUSAPduZ2b45zxnIEf+IB00XMiBBKKLB1zfUBdsUTEa
+         HGnt9zRBuMAAuQvJVi86PDF1QUlhxidB/Ue6bz2Pk/AMN4mERVe14TTTBxd+vg62eYut
+         61wmKuBBBr+MxjfhJGRL279mSJ/IJTJ4LliZzN15aHeZCIwKyw4SvNUEf5XOI96zWoaD
+         7Em5GW8VKBO5DcXh6RrUM/BYJ6XSbohEBryYLu3mfJR8tGw+UbNp7ClIX0JSTdWlN7CQ
+         blUxRd7C66UvK/H/bmp3psRG4hUNoeoEp+wtGHcVWyfnA3cJP5RLCVQB7ULCuMZMtVuX
+         bTFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706698331; x=1707303131;
+        d=1e100.net; s=20230601; t=1706698332; x=1707303132;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RdW4Gd3ArFQpDEqxCJbMxPMn8UQ7Pb2sdPxKXDUejLY=;
-        b=Mzl4wHBH3VfhqVEEmAsFO1RKF0MLlg+KO+JoI6hgHpd3YQHZh/3/LLdxTh77nOGiSS
-         Vva5Rfm99d50Mb/cU+2NziS6aWfI0YLV8e6xTuEw8qaoSzDm8MJBa8h4R9XEkY8tWM0M
-         lKBTZM5yCCuq4p01GNP/It6JluEQ5Owgp63UinD5LGmCEjgRckQc6lY9jX95zIbzpCv3
-         8mc4h9OFN8AY89ExNJryBTgS7V8RrwQz0ncYmDskKqXRMback5xfm2ZBcR734+QwAL7L
-         mLoIOiZqNLpjHnSQ7/HebMiRtFfJEpYDBk6z/I5CxdYib61vNL25TtUh/+ylx1/7y+Wo
-         EluQ==
-X-Gm-Message-State: AOJu0Yz47fizqkqshIMVPmCe+6yQ7mhIyi7HsCgsP7cbvZwjSuinuH+A
-	Q4a1MZVAoxC+SkOJyYaVnLQTF9iPdnLhd3aB60G+AY+7XYRye4KkX4hHrGR/Y+mUbw==
-X-Google-Smtp-Source: AGHT+IEih9ZrkXKkqIF/sVq/rSL+nvqrfNkOX06nA8/cbt/AB8BNuUqbHdeD8RVWe4uLJG6CldtntA==
-X-Received: by 2002:a05:6402:1507:b0:55e:ea14:7912 with SMTP id f7-20020a056402150700b0055eea147912mr1277655edw.0.1706698330872;
-        Wed, 31 Jan 2024 02:52:10 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXV8YPRy06XCmvJjxL8LKeTlDnd90YLYKieep6bJHFsCoAbq1wXCxJUFQPXvhlNwkVI80ycc7CODeqXO2oSJY8N71qRT0OEqA+dG2bsHM7143Yau8HvJ3wKZJd96tk8dJ01GWM/kOL5CG7miY7y7fm72FNcg1CR1/AUWPkIyfoi7CS8TWhJSAGUFUC6/8GwYqJAbQPCYvufJnqN8cQCeT7TIduvtvkIw1LMD6iF/zbanE2gXG7WywFc2Di8NmBhHH5B+n7bgWbDEWuLeK45kDVEXM16Ms3fwe4MoF7lipFtJMvayFMKWJmlFdkBhyny3xB+TErrJKONDamRI4ItY5AJ4OlcbOOOZIHCVcCHrX3Ej3h4hSPjPvzQVe7a3DEMzb3BYQ==
+        bh=W+A1jezCER+1byDBGN2CrUyy9/w5awZMP5yKpGAyNfg=;
+        b=gp/0Q6zTYEjaznVo5rfe1Y4/j+bkc/48/VdneWxBa/qJo4tdgZPk3M0FR22jX05W1M
+         +ZSQd+eVrquXjJFZPKbiiDahuXbzBQr85zOOVQ7OpXLOxI9Jo9Vpndr07gPbQAi3+Npn
+         p91zYDY61AirnwuFFQeJ1NKNXSpQahRfTl9f+tDs1COX7ftjVHgILgooaWRwrB+k6DZV
+         oZ2j1b7bcNWQI1/zfkSYAalhHUoafVhwKd6R+qqBXhTVJamuzOkNMC7XAVDI6CapiJem
+         ZZG13+YpzhBGi78h3sBAKNnUWlLj6ZIgMOfTXji37pbVCB/Tv1lSzbgyvTmTYJboewtD
+         xJlQ==
+X-Gm-Message-State: AOJu0YzZk3NNENLdqUdnb7gnrCi48+ntj1ujXjyrwyZGgvFE7jDPARek
+	6yIqMfEFyK+fafMWC0U52nCbu1T0JCW0TLBe6rCrenL7rZTZOS85
+X-Google-Smtp-Source: AGHT+IHiMoHbrG2iF1DrQaSLHk3TTz7Cn8UwxrzxAGFfXsNYu8OyVyCBEitD3PDHqP75eizZyyosQw==
+X-Received: by 2002:a05:651c:105:b0:2cf:2c54:d8f7 with SMTP id a5-20020a05651c010500b002cf2c54d8f7mr833859ljb.8.1706698331852;
+        Wed, 31 Jan 2024 02:52:11 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXPrB3sm1rRvndMXKIO2k/etxXt8lFAdS4S6TpeDn5hDO3coF0f9uzK6lzVayPD35z1JUXsS5Cx4qacGCuzBjkCOE1sbCC+ly203NAwGsR64urLMO2G6NWxtb5W7WT7JDuBqoqmjuORv6EzGsbSEbXC7n7aBJuiNEY7rM+PlBCjj9NMvlcDJ++j+v7t6kS3nPpV6EbGAzLA+qA8RfeccHa+3z5P721y0Dj3LoQJpU74NskuQs5ccfQ2qJ7zyhz5m5KwdKD2un+kPr3hx0fABJyal/ttpfMP2GK/CEfu+KP6jAYVKOk2rDFl36O55E7NrAIVGMuvb5Ipc2tfGftkRSxJtjtTvmzfa4GsSYw2Z5nR2CU0City9u5sQpw9oivASRO1Mw==
 Received: from xeon.. ([188.163.112.49])
         by smtp.gmail.com with ESMTPSA id f19-20020a056402195300b0055e96290001sm4753966edz.27.2024.01.31.02.52.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 02:52:10 -0800 (PST)
+        Wed, 31 Jan 2024 02:52:11 -0800 (PST)
 From: Svyatoslav Ryhel <clamor95@gmail.com>
 To: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -78,9 +78,9 @@ Cc: devicetree@vger.kernel.org,
 	linux-tegra@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-hardening@vger.kernel.org
-Subject: [PATCH v1 1/4] dt-bindings: vendor-prefixes: add LG Electronics, Inc. prefix
-Date: Wed, 31 Jan 2024 12:51:50 +0200
-Message-Id: <20240131105153.8070-2-clamor95@gmail.com>
+Subject: [PATCH v1 2/4] dt-bindings: arm: tegra: Add LG Optimus Vu P895 and Optimus 4X P880
+Date: Wed, 31 Jan 2024 12:51:51 +0200
+Message-Id: <20240131105153.8070-3-clamor95@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240131105153.8070-1-clamor95@gmail.com>
 References: <20240131105153.8070-1-clamor95@gmail.com>
@@ -92,26 +92,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add missing LG Electronics, Inc. prefix used by some older devices.
+From: Maxim Schwalm <maxim.schwalm@gmail.com>
 
-Signed-off-by: Svyatoslav Ryhel <clamor95@gmail.com>
+Add a compatible for the LG Optimus Vu P895 and Optimus 4X P880.
+
+Signed-off-by: Maxim Schwalm <maxim.schwalm@gmail.com>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/arm/tegra.yaml | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 309b94c328c8..b94ac977acb5 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -767,6 +767,8 @@ patternProperties:
-     description: LG Corporation
-   "^lgphilips,.*":
-     description: LG Display
-+  "^lge,.*":
-+    description: LG Electronics, Inc.
-   "^libretech,.*":
-     description: Shenzhen Libre Technology Co., Ltd
-   "^licheepi,.*":
+diff --git a/Documentation/devicetree/bindings/arm/tegra.yaml b/Documentation/devicetree/bindings/arm/tegra.yaml
+index fcf956406168..9b3c565b21c4 100644
+--- a/Documentation/devicetree/bindings/arm/tegra.yaml
++++ b/Documentation/devicetree/bindings/arm/tegra.yaml
+@@ -64,6 +64,14 @@ properties:
+       - items:
+           - const: asus,tf700t
+           - const: nvidia,tegra30
++      - description: LG Optimus 4X P880
++        items:
++          - const: lge,p880
++          - const: nvidia,tegra30
++      - description: LG Optimus Vu P895
++        items:
++          - const: lge,p895
++          - const: nvidia,tegra30
+       - items:
+           - const: toradex,apalis_t30-eval
+           - const: toradex,apalis_t30
 -- 
 2.40.1
 
