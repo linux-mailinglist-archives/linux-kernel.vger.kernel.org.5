@@ -1,178 +1,156 @@
-Return-Path: <linux-kernel+bounces-46565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F48184415D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:08:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1E1E844160
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:09:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A49FE1C21F27
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:08:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9699928B8C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:09:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 458AE81ADE;
-	Wed, 31 Jan 2024 14:08:00 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC54A83CB5;
+	Wed, 31 Jan 2024 14:08:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iYQ1foks"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99DED82860
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:07:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29A6983CB7;
+	Wed, 31 Jan 2024 14:08:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706710079; cv=none; b=JqsOHieAZ6+ATE8GMVeUrMTA9LtbUDDXe456/de9HsWNaWs+TOmwnj8BZ6QWg4HowU1v2lVVApoV5S3usIZi/UnVfc1I5ZDrQpovQSZPOJNPLPFFb08cWkqJjAYIIlZQiUnJuyXeLpZfPtvYIFFgRJTet5Y2xjTV5jd8ZGzEH44=
+	t=1706710084; cv=none; b=CKKEvXcFQ1MyEcOdk5IEiC9ipnmqxA2e35iy2DwSnyVaxJKzMiX7Y7KxWLFTOGnlfa1u0mGkQR/zGp668kDnkUdy/PIZRPsu3+pbAOu2Zk1O2AnDjXYASUU/QavJAPg5KMVxSLT3jC2nU8PWyUGZiyID1nxg1JvU3K8IStUb8HA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706710079; c=relaxed/simple;
-	bh=HBnhiTX1ZAjmz11Az5cLtRA/VquaN6ubm7OV+ybWEQ0=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=TgNKyMfnAMRFIpgD+BSTmg/CAv23r67/eFZRC6a2mvPWSjr9q73WOJURGz6CJDr79qpR5eNH8+t7gLomIGH7whbS5LjtC1Qu3hXSTJXfwkNO1l0tCywYJhHpAz3YKQhz2SSYzRXABpsv+af1t7x9smsI/N1IrLyAB4vGvHLTwjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav315.sakura.ne.jp (fsav315.sakura.ne.jp [153.120.85.146])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 40VE6laE028134;
-	Wed, 31 Jan 2024 23:06:47 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav315.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav315.sakura.ne.jp);
- Wed, 31 Jan 2024 23:06:47 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav315.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 40VE6b1p028082
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Wed, 31 Jan 2024 23:06:47 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <85edf211-aa30-4671-93e0-5173b3f7adf2@I-love.SAKURA.ne.jp>
-Date: Wed, 31 Jan 2024 23:06:38 +0900
+	s=arc-20240116; t=1706710084; c=relaxed/simple;
+	bh=5nR7Ertacn9PuZp1Bn/nWb7jPB+VBrlLCjXLDoq7d5k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iL+/gKFNu/tf2/gzRRuF3oqe5nX9sldUGyvIv1r2zy1EBP0wjxfqDwDkgRncpZav8HqrQsvRACiCxkUQMVvHdgbUeCTkNaxU19hkWw4580/B1hMeEwvHvETKFxxv6c13TZ+5isaLf5rqj8Wj5/DAbCFfxGl6rXLWzHAOqH45Joc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iYQ1foks; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8BBCC43601;
+	Wed, 31 Jan 2024 14:08:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706710083;
+	bh=5nR7Ertacn9PuZp1Bn/nWb7jPB+VBrlLCjXLDoq7d5k=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=iYQ1foksziyUWYW8tRQV+ff4NIPx+pD2QLp+msKwoB4/FOncHJiUe52cbJxGW58pZ
+	 68GXvryC227ayGT6fc5gJ4pwcggz7j1B53SnHc6AQZsw9aDT87svSQDKuqN7GcIPhm
+	 LwFIsszth8jeuDwoCP0AelpQi4yrHXtQMLGpxdx9H38b9rya03pygUvtOM23wpCK7R
+	 lACMem1wB+vEOK2igAPErOGXMTlIhdSGettMAy/TI7DUn9VyKqwPegQ0n/kG6nEOGM
+	 XL+L4/SmUjBFxNeUMyjvhUCBo6kGUD6NuXgan/80gs6rRn1oK67xRQ328YnLIKfqcB
+	 z1BXYU07RZS8g==
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51124e31f72so916725e87.0;
+        Wed, 31 Jan 2024 06:08:03 -0800 (PST)
+X-Gm-Message-State: AOJu0Yw08C8o0f8Gx88lRA7ALlR7OjWEiNfp2rPi2YuZMzwxf/x2m8DK
+	ikemLoB6XJsZyInLEamhydVEiurIyoiefiWlqdZ3DJiInXvevEWBBNnjL1D3anTLpqphvILNYCk
+	rCTB0h2xjpBM20R2fI/eChrFUtF8=
+X-Google-Smtp-Source: AGHT+IEWOX5OhqEdfMQM4e2B9NE+FH+r8iCudVcs4e/r9DjBBtoSKBUY5Wgyaf1OXbZRbRm3omEFOmJJTybR5NzVdxo=
+X-Received: by 2002:a19:8c4e:0:b0:511:18e4:89bb with SMTP id
+ i14-20020a198c4e000000b0051118e489bbmr1384753lfj.39.1706710081908; Wed, 31
+ Jan 2024 06:08:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH] profiling: initialize prof_cpu_mask from profile_online_cpu()
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To: Hugh Dickins <hughd@google.com>, Ingo Molnar <mingo@redhat.com>,
-        akpm@linux-foundation.org
-Cc: tglx@linutronix.de, paskripkin@gmail.com, rostedt@goodmis.org,
-        glider@google.com, ebiederm@xmission.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        syzbot <syzbot+b1a83ab2a9eb9321fbdd@syzkaller.appspotmail.com>
-References: <000000000000d6b55e060d6bc390@google.com>
- <7227c8d1-08f6-4f95-ad0f-d5c3e47d874d@I-love.SAKURA.ne.jp>
-Content-Language: en-US
-In-Reply-To: <7227c8d1-08f6-4f95-ad0f-d5c3e47d874d@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240129180502.4069817-21-ardb+git@google.com>
+ <20240129180502.4069817-24-ardb+git@google.com> <20240131134431.GJZbpOvz3Ibhg4VhCl@fat_crate.local>
+ <CAMj1kXF7T4morB+Z3BDy-UaeHoeU6fHtnaa-7HJY_NR3RVC5sg@mail.gmail.com>
+In-Reply-To: <CAMj1kXF7T4morB+Z3BDy-UaeHoeU6fHtnaa-7HJY_NR3RVC5sg@mail.gmail.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Wed, 31 Jan 2024 15:07:50 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGk1QivyoK4H5CVp7p-tfYoQSTuethpkm8bWBcTO_UMGw@mail.gmail.com>
+Message-ID: <CAMj1kXGk1QivyoK4H5CVp7p-tfYoQSTuethpkm8bWBcTO_UMGw@mail.gmail.com>
+Subject: Re: [PATCH v3 03/19] x86/startup_64: Drop long return to initial_code pointer
+To: Borislav Petkov <bp@alien8.de>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
+	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
+	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-syzbot is reporting uninit-value at profile_hits(), for commit acd895795d35
-("profiling: fix broken profiling regression") by error initialized
-prof_cpu_mask too early.
+On Wed, 31 Jan 2024 at 14:57, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Wed, 31 Jan 2024 at 14:45, Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > On Mon, Jan 29, 2024 at 07:05:06PM +0100, Ard Biesheuvel wrote:
+> > > From: Ard Biesheuvel <ardb@kernel.org>
+> > >
+> > > Since commit 866b556efa12 ("x86/head/64: Install startup GDT"), the
+> > > primary startup sequence sets the code segment register (CS) to __KERNEL_CS
+> > > before calling into the startup code shared between primary and
+> > > secondary boot.
+> > >
+> > > This means a simple indirect call is sufficient here.
+> > >
+> > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > > ---
+> > >  arch/x86/kernel/head_64.S | 35 ++------------------
+> > >  1 file changed, 3 insertions(+), 32 deletions(-)
+> > >
+> > > diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+> > > index d4918d03efb4..4017a49d7b76 100644
+> > > --- a/arch/x86/kernel/head_64.S
+> > > +++ b/arch/x86/kernel/head_64.S
+> > > @@ -428,39 +428,10 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+> > >       movq    %r15, %rdi
+> > >
+> > >  .Ljump_to_C_code:
+> > > -     /*
+> > > -      * Jump to run C code and to be on a real kernel address.
+> > > -      * Since we are running on identity-mapped space we have to jump
+> > > -      * to the full 64bit address, this is only possible as indirect
+> > > -      * jump.  In addition we need to ensure %cs is set so we make this
+> > > -      * a far return.
+> > > -      *
+> > > -      * Note: do not change to far jump indirect with 64bit offset.
+> > > -      *
+> > > -      * AMD does not support far jump indirect with 64bit offset.
+> > > -      * AMD64 Architecture Programmer's Manual, Volume 3: states only
+> > > -      *      JMP FAR mem16:16 FF /5 Far jump indirect,
+> > > -      *              with the target specified by a far pointer in memory.
+> > > -      *      JMP FAR mem16:32 FF /5 Far jump indirect,
+> > > -      *              with the target specified by a far pointer in memory.
+> > > -      *
+> > > -      * Intel64 does support 64bit offset.
+> > > -      * Software Developer Manual Vol 2: states:
+> > > -      *      FF /5 JMP m16:16 Jump far, absolute indirect,
+> > > -      *              address given in m16:16
+> > > -      *      FF /5 JMP m16:32 Jump far, absolute indirect,
+> > > -      *              address given in m16:32.
+> > > -      *      REX.W + FF /5 JMP m16:64 Jump far, absolute indirect,
+> > > -      *              address given in m16:64.
+> > > -      */
+> > > -     pushq   $.Lafter_lret   # put return address on stack for unwinder
+> > >       xorl    %ebp, %ebp      # clear frame pointer
+> > > -     movq    initial_code(%rip), %rax
+> > > -     pushq   $__KERNEL_CS    # set correct cs
+> > > -     pushq   %rax            # target address in negative space
+> > > -     lretq
+> > > -.Lafter_lret:
+> > > -     ANNOTATE_NOENDBR
+> > > +     ANNOTATE_RETPOLINE_SAFE
+> > > +     callq   *initial_code(%rip)
+> > > +     int3
+> > >  SYM_CODE_END(secondary_startup_64)
+> > >
+> > >  #include "verify_cpu.S"
+> >
+> > objtool doesn't like it yet:
+> >
+> > vmlinux.o: warning: objtool: verify_cpu+0x0: stack state mismatch: cfa1=4+8 cfa2=-1+0
+> >
+> > Once we've solved this, I'll take this one even now - very nice cleanup!
+> >
+>
+> s/int3/RET seems to do the trick.
+>
 
-do_profile_hits() is called from profile_tick() from timer interrupt
-only if cpumask_test_cpu(smp_processor_id(), prof_cpu_mask) is true and
-prof_buffer is not NULL. But the syzbot's report says that profile_hits()
-was called while current thread is still doing vzalloc(buffer_bytes)
-where prof_buffer is NULL at this moment. This indicates two things.
-
-One is that cpumask_set_cpu(cpu, prof_cpu_mask) should have been called
- from profile_online_cpu() from cpuhp_setup_state() only after
-profile_init() completed. Fix this by explicitly calling cpumask_copy()
- from create_proc_profile() on only UP kernels.
-
-The other is that multiple threads concurrently tried to write to
-/sys/kernel/profiling interface, which caused that somebody else tried
-to re-initialize prof_buffer despite somebody has already initialized
-prof_buffer. Fix this by using serialization.
-
-Reported-by: syzbot+b1a83ab2a9eb9321fbdd@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=b1a83ab2a9eb9321fbdd
-Fixes: acd895795d35 ("profiling: fix broken profiling regression")
-Tested-by: syzbot+b1a83ab2a9eb9321fbdd@syzkaller.appspotmail.com
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
----
- kernel/ksysfs.c  | 27 ++++++++++++++++++++++-----
- kernel/profile.c |  6 +++---
- 2 files changed, 25 insertions(+), 8 deletions(-)
-
-diff --git a/kernel/ksysfs.c b/kernel/ksysfs.c
-index 1d4bc493b2f4..66bc712f590c 100644
---- a/kernel/ksysfs.c
-+++ b/kernel/ksysfs.c
-@@ -91,10 +91,23 @@ static ssize_t profiling_store(struct kobject *kobj,
- 				   struct kobj_attribute *attr,
- 				   const char *buf, size_t count)
- {
-+	static DEFINE_MUTEX(lock);
- 	int ret;
- 
--	if (prof_on)
--		return -EEXIST;
-+	/*
-+	 * We need serialization, for profile_setup() initializes prof_on
-+	 * value. Also, use killable wait in case memory allocation from
-+	 * profile_init() triggered the OOM killer and chose current thread
-+	 * blocked here.
-+	 */
-+	if (mutex_lock_killable(&lock))
-+		return -EINTR;
-+
-+	if (prof_on) {
-+		count = -EEXIST;
-+		goto out;
-+	}
-+
- 	/*
- 	 * This eventually calls into get_option() which
- 	 * has a ton of callers and is not const.  It is
-@@ -102,11 +115,15 @@ static ssize_t profiling_store(struct kobject *kobj,
- 	 */
- 	profile_setup((char *)buf);
- 	ret = profile_init();
--	if (ret)
--		return ret;
-+	if (ret) {
-+		count = ret;
-+		goto out;
-+	}
- 	ret = create_proc_profile();
- 	if (ret)
--		return ret;
-+		count = ret;
-+out:
-+	mutex_unlock(&lock);
- 	return count;
- }
- KERNEL_ATTR_RW(profiling);
-diff --git a/kernel/profile.c b/kernel/profile.c
-index 8a77769bc4b4..7575747e2ac6 100644
---- a/kernel/profile.c
-+++ b/kernel/profile.c
-@@ -114,11 +114,9 @@ int __ref profile_init(void)
- 
- 	buffer_bytes = prof_len*sizeof(atomic_t);
- 
--	if (!alloc_cpumask_var(&prof_cpu_mask, GFP_KERNEL))
-+	if (!zalloc_cpumask_var(&prof_cpu_mask, GFP_KERNEL))
- 		return -ENOMEM;
- 
--	cpumask_copy(prof_cpu_mask, cpu_possible_mask);
--
- 	prof_buffer = kzalloc(buffer_bytes, GFP_KERNEL|__GFP_NOWARN);
- 	if (prof_buffer)
- 		return 0;
-@@ -481,6 +479,8 @@ int __ref create_proc_profile(void)
- 		goto err_state_prep;
- 	online_state = err;
- 	err = 0;
-+#else
-+	cpumask_copy(prof_cpu_mask, cpu_possible_mask);
- #endif
- 	entry = proc_create("profile", S_IWUSR | S_IRUGO,
- 			    NULL, &profile_proc_ops);
--- 
-2.18.4
-
-
+or ud2, even better,
 
