@@ -1,96 +1,117 @@
-Return-Path: <linux-kernel+bounces-46137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB417843B1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:29:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44948843B21
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:30:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65C4828F2DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:29:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3FCB28EE51
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:30:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D0FA67A18;
-	Wed, 31 Jan 2024 09:29:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC400679ED;
+	Wed, 31 Jan 2024 09:30:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="EdllPm/8"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="BI+GR4Bj"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8EAE67745
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:29:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D69560DCC;
+	Wed, 31 Jan 2024 09:30:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706693351; cv=none; b=Y6e1y9wU7fN7mSaHTIVPt1v6SV8S5yl6xtftnM8oZTUXPwQG64KUIWaqT8DEMpEaoDYQ8VaZ+vekNDznWSXDJxpfK4kb4+hNrxFMSYi8e3G/G5bbr78lAUb9KjnsQuj89F6+dyBiBVc7WP5LHzw5WK5BI9qHbQfHI285jhpPHtE=
+	t=1706693423; cv=none; b=DUGZK0bGR9ACpZyjpFr5dI5kV4aFKoKyuP4EV6DuNBQDHHLQzKlaVOo9es3f0kEWaaZQKUIpANLSF7gUf/Yy9xp/0Rwjkpgb2i7EfEPuzgYAkY7gkIwq6ibCWYs1mp9sPSftBAcZsHP6Juav7z6ffV3Kb1nxXR/CXtQjtuxzvrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706693351; c=relaxed/simple;
-	bh=f43fKUriad8uDoZeZk6V7VP3GUeZsSWr0g2dLquSmNU=;
+	s=arc-20240116; t=1706693423; c=relaxed/simple;
+	bh=Gez7VbeF659gZEkC8FCMwPC1tU8GUsrN0yYCZ4bjcxA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y+/8gQ1oykOH+HmXnLJCgt/xoKLuZ4FOXKSS3AfsohgZPh/9ab16RwVN0OBMfGWQaFCY8SmYAO6952p1BgVmmBTTMueZ1sEh7r/TndFj9l/RYHmAvOJCNsH2SaDogcYokMfd3/oCjV43gXYMIlr3+kaZqtEcmNv3vMBGfLLl/p4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=EdllPm/8; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40eacb4bfa0so50812745e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:29:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1706693346; x=1707298146; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=f43fKUriad8uDoZeZk6V7VP3GUeZsSWr0g2dLquSmNU=;
-        b=EdllPm/8J17oq9R3/crIAnK+8S3WFFRMxVjFdt6D7M7RIg78TNb1PmAPN6x+IJCFGq
-         djaPW2JW/C1QV9N/po6BBwHr4AU+srLZJ1zVV5C6vpNgeL6xb/EZgQL7+UcmdnnDPL6S
-         mTv1FAOVzqlp9DDwHPQt2Tr0h0ZumW+OEQnqkdu0tjTuYKeWgD+VAzYazRI9pbqvb8iH
-         cT3fcbmZzlQLXsd9x7DsEBdi5OuoTMst703u9SY8QUhhUiYH+wyriG9C4HgW3zNxeUP/
-         t2IXaKvy/2pSGIaSAgPFHYZIZGID7chf/UzcWKHnAV1DMcSSxfaK7g0Uxc1oqXyOlVR3
-         0a4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706693346; x=1707298146;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f43fKUriad8uDoZeZk6V7VP3GUeZsSWr0g2dLquSmNU=;
-        b=uaLPBQVGMyH8cMPOqTqnFqYtngOYuX8vedaXKQ6DjzrDNCEjiNevzjqy61lMLKd8Jo
-         mrsDDaNPb1U5WyXL1qLv1tAn/2uEHOqPGdUfQ8OLf4zHmKn8cGMPmU8TdKVKJa3Ve8Un
-         BBfUxQ/sbSbA65u+bkD6ahRL7YHFmiZqM2dWQ7FL4Kv1qxO8s4Jh1FhssjT7ewPkcqQw
-         erUZb2qiQDOv/prYNf3Anek9vDJiqR+d4TUnWxx0qtb9yf7IBljxgPRpcrqLjhn/zvm0
-         pJ1D0If6RZFhSlZgoxcucIUlr7TQmaNQy0Sn+SvltVQFYvVtlxIe0enuvWgYm7YLfeUr
-         msgg==
-X-Gm-Message-State: AOJu0Yxe6u8T+tERnfPG/ckDZ0B7mxkpSv0J9DOkWfoFC3GrB4qXqssc
-	KOkZnYly64xNG/UoSe3rZ3Nrk2fY2CBCtitfqNBnMixi1mvtrACQJoFXwVaErBeCl3mbBcJkoG9
-	b9vUrPw==
-X-Google-Smtp-Source: AGHT+IEY2lXWkefvxzH893aZoC/yJtLJWaibwPImgr2nOy1n6RN5x75B2Avq9gwETOse4c3xNrxmhQ==
-X-Received: by 2002:a05:600c:450a:b0:40e:622e:7449 with SMTP id t10-20020a05600c450a00b0040e622e7449mr725550wmo.22.1706693346221;
-        Wed, 31 Jan 2024 01:29:06 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVyfO36vqppt50qgUDOESB2a3qrfawNZwydoEBbJCI2JFg2TkSMzceQG+yb8LZPQSoO4kGRBL1+yY176OY4Z/b+KmamlIS3odBxf6UcJ27Hq4EF6aJfpHGtOeLTCZhO9oN2umde/v3UImFWthmDH5Xoiv/XqcV9dmzMTMpWTbBCTMXyBcLltIfas4oEUjKtRDE2aw0UMgmrSbi6inIFA8grw6yf+HLvDwwjXVuWQoYBvVNVwk1TQTw5qq5yNBGoPB+FFX2/9g==
-Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id b3-20020a05600003c300b0033afe6968bfsm2433573wrg.64.2024.01.31.01.29.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 01:29:05 -0800 (PST)
-Date: Wed, 31 Jan 2024 10:29:03 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Kunwu Chan <chentao@kylinos.cn>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, dccp@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: dccp: Simplify the allocation of slab
- caches in dccp_ackvec_init
-Message-ID: <ZboS3wXu7Pan4Szi@nanopsycho>
-References: <20240131090851.144229-1-chentao@kylinos.cn>
+	 Content-Type:Content-Disposition:In-Reply-To; b=iMZBC/bjujBI8weztxN/LFT3NOqnOH6EO/8pmmfmfLnqYrEIgWGbOtrj7pWAvaZmbH1EUyL11zmluAn0q/yZdnd+56d4ju62KkzMkHvDoOCyUdERICz7sG425PofPHxiyviHyf750fj7CrWCn4WKEjPXIqW8MeRjEC5RBZMfyGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=BI+GR4Bj; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0327840E00C5;
+	Wed, 31 Jan 2024 09:30:18 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id s-UgUl8KYLm8; Wed, 31 Jan 2024 09:30:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706693415; bh=r2DcM4ro+qsysihnxyBJGhyOPymf2yk6oBbpEdllaa0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BI+GR4Bj7fdTu0/S9ol+YgYAt0RK7PFx2iM963t17eHrJTwzJQCfzG7UXy9CXuZf1
+	 PwldErDu3oKQaLUtO82oAVq6+jOBblBG7D5fjcDzInWveqnSzcIo1xAkANVGeGS1ki
+	 +JxvVZZuxZ4RF+ltMamgsePeF+bgrJmYCY4gUc2iCxSGiXLjLN7RaTmMEZSfuXijB9
+	 BV/6lHgclTJQ6cNbBD8uBOcp+bzY4QCnxvQGLOSntcb481/NKa4Mmh90zw7foaokgd
+	 lcdeOr/Beo8y77zxhNKhnwGsZFt/hVOZuiomjBnxWnBuwU2XfxC/Fa/dmFFTahXmGH
+	 M+0WvEQYfX8zlt+/XT298P3pulbY6es94YHCRqxUO+6qvYHVvn6pxJhfuBjhsnnVyS
+	 +VlY+fauYYaORevg6fv6VjF0zBaKEzToTiiSNQW13FBfKFrUXaxOmgOHLEiY/tPmMY
+	 /rAtd030CkTitXwLmqQ99EbVESF4JHRDlKbEaIkCy7msta5Kn9gwcoXrI7MFiX/tnz
+	 r0BCazYpItueZWMsw/KdjrpNgjl/4MSWq+aLktLSvbOV8S1jKEFyWXVnAC68fH6vnA
+	 fIdjt9v5ntQoWKUphjQ6qzOuSUgEtrX4d2iWt0NxiTZnzUmtMgFGdYnRf0x5NN1EjY
+	 M+MBm8Sb2v4q5KVIonf7FVO4=
+Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AA30140E0177;
+	Wed, 31 Jan 2024 09:29:57 +0000 (UTC)
+Date: Wed, 31 Jan 2024 10:29:52 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org,
+	Kevin Loughlin <kevinloughlin@google.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>,
+	linux-arch@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH v3 02/19] x86/boot: Move mem_encrypt= parsing to the
+ decompressor
+Message-ID: <20240131092952.GCZboTECip8DbWtYtz@fat_crate.local>
+References: <20240129180502.4069817-21-ardb+git@google.com>
+ <20240129180502.4069817-23-ardb+git@google.com>
+ <20240131083511.GIZboGP8jPIrUZA8DF@fat_crate.local>
+ <CAMj1kXG9W0XeEVR4tXDDg0Ai9XPsZGrTJaSRYUqgTV-xtFxjdQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240131090851.144229-1-chentao@kylinos.cn>
+In-Reply-To: <CAMj1kXG9W0XeEVR4tXDDg0Ai9XPsZGrTJaSRYUqgTV-xtFxjdQ@mail.gmail.com>
 
-Wed, Jan 31, 2024 at 10:08:51AM CET, chentao@kylinos.cn wrote:
->Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
->to simplify the creation of SLAB caches.
->
->Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+On Wed, Jan 31, 2024 at 10:12:13AM +0100, Ard Biesheuvel wrote:
+> The reason we need two flags is because there is no default value to
+> use when the command line param is absent.
 
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+I think absent means memory encryption disabled like with every other
+option which is not present...
+
+> There is CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT but that one is AMD
+
+.. yes, and I'm thinking that it is time we kill this. I don't think
+anything uses it. It was meant well at the time.
+
+Let's wait for Tom to wake up first, though, as he might have some
+objections...
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
