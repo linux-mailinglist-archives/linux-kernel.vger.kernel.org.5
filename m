@@ -1,87 +1,85 @@
-Return-Path: <linux-kernel+bounces-46162-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D707F843B6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:48:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D037D843B6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:49:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D395284E87
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:48:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85D82288EC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:49:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF63269D03;
-	Wed, 31 Jan 2024 09:47:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2093769958;
+	Wed, 31 Jan 2024 09:49:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KTxWRXkY"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HNcN/R2w"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC63F69944;
-	Wed, 31 Jan 2024 09:47:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5C4242049
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:49:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706694473; cv=none; b=PCR4HxrtZwrqqxv8fq405tAaSMoV/Y3CAinBx/xwAgcgDqoCRq8rjhMVAXHItdVrfhLJc/jF/q9Izum2Zz1pfebfFBbz6kJhssSE8ZocAVq20zcSsniROL9nCp3Jwe76eI5PCjZWUk4XmbPW38OMtQ334FI4y3356VeWdaUvH/Y=
+	t=1706694564; cv=none; b=fFykXUO2MN6V3KpE2JzcUQTw+9I51eOurLxQWLJ6DnU5jRsFf2eWFAzmvLSBbeH0qnecoDc7EkzFbnNqdY3iEWFssk4JfDW35MmQdmHj/MPIFwc872moI42r57f5C+tbavzRdHi74ftJmTqOGgKFnefwmFVP5lqSrWHunC0ENws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706694473; c=relaxed/simple;
-	bh=DyoRHksM8/+nEGDrgKtCPGHGEP6No6QiqsUcI6hix1g=;
+	s=arc-20240116; t=1706694564; c=relaxed/simple;
+	bh=3WZG+O6un1dKDP24kld+VKwUNPB9flc3TXLTvV3N9nw=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O7J1oMQ3Q5TrvOIcMZ0buEUuEmUvtLivKdEIxQC4L5GYklgRRAhMkND7nU8x3yuhxCH1B28Yk/1bVvYoJ84t0a5CThYYYhd/9ObAOO1H4sqZynWX632AZoRQ+Eau8gtNKh36HDfhD2ZdVcBoCevIkJMuYxZljvfiH+HfZRxpRlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KTxWRXkY; arc=none smtp.client-ip=209.85.208.41
+	 Content-Type:Content-Disposition:In-Reply-To; b=L0CVvNU3RG9vNFFBRJQQkGHDOwsxGwF2W6MU5hFbyFICbVglVmLBiKqymPS2dkHTC0oUdbNyj/F8SEoQwl3kd/bcp039gp5qCk8DdOG1Ed49ORg4Ph6Ohro67pq3y3mZ5QYI9gbTjlyLj2x+yVWRDPP+YEErUiJN4Dv4Ty2vYxc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HNcN/R2w; arc=none smtp.client-ip=209.85.167.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55f8abbeeddso416655a12.1;
-        Wed, 31 Jan 2024 01:47:50 -0800 (PST)
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51109060d6aso4934426e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:49:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706694469; x=1707299269; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706694560; x=1707299360; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/O9XgRbkcBJVk7UwNZF0sbS5DqjZwvxc08GdgHW/6js=;
-        b=KTxWRXkY5xav+wdirOfHUHK4fx4/L9GKSK8JO3zz9OAWQNWVQnBIfQ9gePFBidWy28
-         bOy4pNbV9DJsmDbLI2EOqJY5qF0kaOAtpSa409jcFXYFfsDPW8S1rd1ebJGglxSyMWY/
-         TDfeMmafYvjs9metYlhoRRdjmDx8vH4KrfTpVnDUWLepu4+AMIBlWaXfRQqd/6Bb+T5V
-         2hpL/Gb68YJmABi0biPuv4Y1oL2q1isc1HJXuYY6GUAHeySFWjupCW2+1CMXHLuKBPaB
-         ZaGfuqRdQ34QcrdEw+1w+Jmkf/2PySPjjlbDk/EK7GkJZja+O7n3JAjnFgzvdFP2bBX8
-         lbsw==
+        bh=QlHWxlUqyXnTVwbRvj+J/cXzpPAlxBWkdZIjC12r5XI=;
+        b=HNcN/R2wD/3Lr+GT7LiUGIpJrBXA46eNEkEWRU7XUp+UjExm5NyEXxORcurdAnLSIz
+         FwEqe4rvscZV87H7WGINzY5zJwOdYUnZUOjerbibbJ2T8F/6TsTttIl9kdL1npylq6iC
+         ohOzV3XolihyrQwrk6cwP6j3GsfqXiP/+Ej8efjLqrgZTpVBfla0KoT+3top1/ecHNwP
+         pYhQUmjcpffdo8Dqs32wE+TQYve8rzSbcyh0XDnfjex0d4AQoZceTa1HiqJ/JIs2WMy/
+         flFMNMv8labeDa2qr+yn+ZkP1eHFHMvd8/voaj+EUN7bmhyiBaE3Zh5AwLop1GdBXcqo
+         horw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706694469; x=1707299269;
+        d=1e100.net; s=20230601; t=1706694560; x=1707299360;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/O9XgRbkcBJVk7UwNZF0sbS5DqjZwvxc08GdgHW/6js=;
-        b=tfBa57plKot59ybWnu5lLxMsrGX6mWrzIAENVJBXT11OUmC7GfEnXZJqNmW4EymwhO
-         lP6EIyfCKSQ3SxJoY0VKVDFnXGpmmI0JnC/9fXbFEAZPB2hsNlPnfw12fYWq0sWlILsx
-         vMWnj9xhe74BLn4i50onu0T/N6C80v+c5VWkcrXefgQMRz0YSTKajFC4sqY/JD5e0hQc
-         gpeSDSaScFxJLXF71M4hj9fTVco/BMz6Y3ZG1X09dcknWcCfuHdyik8LzzbpY7zjcLqb
-         WY0RqVOdLfL8YdUX3e8ISezChC/WdUXkVH+onNa4ZruOLOh7UcT5Y6SPBlqHGP7TBGSS
-         9KBg==
-X-Gm-Message-State: AOJu0YxJTS6MZL+LFZeJ+eDjNSjg865daQvYmszezS5W6To1cTLwxGst
-	rwS18QzY5cGoCHl8KoUTIAUztwVx9Ji5CgX76/eofATCwYIa5TOk
-X-Google-Smtp-Source: AGHT+IG7soa47inYZ5qRD0y2IAxLTuYubf/We9SppnGjsvKB6J8PYmZ+J/JIhIYIFJ4eW+ahV6p0bw==
-X-Received: by 2002:aa7:d3da:0:b0:55f:4d7e:e4e9 with SMTP id o26-20020aa7d3da000000b0055f4d7ee4e9mr677420edr.21.1706694468728;
-        Wed, 31 Jan 2024 01:47:48 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWiQ74i0rflV78kHDD47By+VknL25M/waMOcUseNfD20dtrpXOOs6Ao+gTVaS8DbJxsRAeqz0D74nt/JzPKas4fElzSMHU34w5JZzRUGMeCAfihCbaCTiQtK30VNQHIpMClOh/RhgzoLzRD/c1G/GVg0n2Xq1yaP8QSGbquEojq3tT0Ngp9tgp1T6NjSPqpuhw4DhU9xq79sMBc5xVg7kfNgh4MfGP1W3tMOXWVvEe5W0CC5fKzqDdHHTTGS1QOI9O9mpkOaAG0lC3hMGyOu6hJjVOqkDF2AtMfPuS4xMj7fCJjzvqm+cUx7U68p5sHDS08r2ExD56T3alGKXX+JFF294bvkxPJwLkg3PUtv/w5GuijywP9P340TIWpJOibm28GzcD4n7N3R2cWhzhCC1ZRuTsBrBzZlEdQDW2w0kXXeNOVnMvePqRJBle9+Wy7OIKJquy1qbLmRF4/H25zBeTsCAH4Wy9nyUOXN8pxxvIVX7wTkzS+UhPMdncPI31/9xJnRQ52G7Mwr6HgtzhnzFvpG8wDV4yMM1b/N6zfStQBk29H6BbZcak5QEGndd41sRMDxxRDBmN3rlsn5DHQVqMqSulzElZgC/jBr455JmuklDm8/pD/zLy/KjDHB+xhJTLEPbpfOgfZCZyVWspgqXl5Dx0u3G27UtAUjenX6FjpCzau
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id h11-20020aa7c94b000000b00558a3268bbcsm5651569edt.53.2024.01.31.01.47.47
+        bh=QlHWxlUqyXnTVwbRvj+J/cXzpPAlxBWkdZIjC12r5XI=;
+        b=CsCvS9mzTLXXhenK4WNNuVoiqpvGBMS6s/Vw+PBZa7jtlE7/3bvJMjoTpJMRUoNZK8
+         T93vhI9cwIBb7frBPipDy22oOfvwKfGxhfQ224r819SGEXkIN1vEtcCqulffNmn5D/UG
+         VFlluRMuuuel3c3J97RX2PdD0hF7u1rQj9hlPocUUMX9zkIcd7KpwZp+BNokl12ZI0IX
+         D8qY7fnuzWSlNRY7fVrH3FLZ7YcYhQiqu06aHjLrTREMoXj0GPrFHDsZ8oVLptfBvW2l
+         kl4aJg7BXIfvKJ6sN39dspK/ZTyZPc3Zq1sr6gnMnRN4TwQ3gNxR5APIz3ID1qQDTRIA
+         60ew==
+X-Gm-Message-State: AOJu0Yx19dEjQi0+HirXhrGVmvhF5OJ3yZ0G22iKq6Rcjf7PvQmJnUeG
+	ZNPAP/dRmhVcSZUvkAI6YYekmuG9FbAUhZpCNxLt8k4LlDhROTbU
+X-Google-Smtp-Source: AGHT+IGe9pSSTvEwxUOmgQQdOJSgWSmwSkZ/D5P+RgNjbFhDreI/xzRdL/S4QjkYb1titXb+nSd7Mg==
+X-Received: by 2002:a05:6512:b90:b0:511:1b29:244a with SMTP id b16-20020a0565120b9000b005111b29244amr1003440lfv.6.1706694560560;
+        Wed, 31 Jan 2024 01:49:20 -0800 (PST)
+Received: from pc636 (host-90-233-198-33.mobileonline.telia.com. [90.233.198.33])
+        by smtp.gmail.com with ESMTPSA id er15-20020a05651248cf00b005110bbfcea0sm1151141lfb.169.2024.01.31.01.49.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 01:47:48 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 31 Jan 2024 10:47:46 +0100
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: linux-trace-kernel@vger.kernel.org, coreteam@netfilter.org,
-	bpf@vger.kernel.org, linux-input@vger.kernel.org,
-	cgroups@vger.kernel.org, netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
-	fsverity@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	netfilter-devel@vger.kernel.org, alexei.starovoitov@gmail.com,
-	olsajiri@gmail.com, quentin@isovalent.com, alan.maguire@oracle.com,
-	memxor@gmail.com
-Subject: Re: [PATCH bpf-next v4 0/3] Annotate kfuncs in .BTF_ids section
-Message-ID: <ZboXQmsg6fO-qaNu@krava>
-References: <cover.1706491398.git.dxu@dxuuu.xyz>
+        Wed, 31 Jan 2024 01:49:20 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Wed, 31 Jan 2024 10:49:17 +0100
+To: Lorenzo Stoakes <lstoakes@gmail.com>
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Dave Chinner <david@fromorbit.com>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH 2/2] mm: vmalloc: Refactor vmalloc_dump_obj() function
+Message-ID: <ZboXnWWxTAk2WKnb@pc636>
+References: <20240124180920.50725-1-urezki@gmail.com>
+ <20240124180920.50725-2-urezki@gmail.com>
+ <b49d2302-ace3-4306-b18f-70e8d7960111@lucifer.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,77 +88,91 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1706491398.git.dxu@dxuuu.xyz>
+In-Reply-To: <b49d2302-ace3-4306-b18f-70e8d7960111@lucifer.local>
 
-On Sun, Jan 28, 2024 at 06:24:05PM -0700, Daniel Xu wrote:
-> === Description ===
+On Tue, Jan 30, 2024 at 06:50:48PM +0000, Lorenzo Stoakes wrote:
+> On Wed, Jan 24, 2024 at 07:09:20PM +0100, Uladzislau Rezki (Sony) wrote:
+> > This patch tends to simplify the function in question,
+> > by removing an extra stack "objp" variable, returning
+> > back to an early exit approach if spin_trylock() fails
+> > or VA was not found.
+> >
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > ---
+> >  mm/vmalloc.c | 33 +++++++++++++++++----------------
+> >  1 file changed, 17 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > index b8be601b056d..449f45b0e474 100644
+> > --- a/mm/vmalloc.c
+> > +++ b/mm/vmalloc.c
+> > @@ -4696,34 +4696,35 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+> >  #ifdef CONFIG_PRINTK
+> >  bool vmalloc_dump_obj(void *object)
+> >  {
+> > -	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
+> >  	const void *caller;
+> > +	struct vm_struct *vm;
+> >  	struct vmap_area *va;
+> >  	struct vmap_node *vn;
+> >  	unsigned long addr;
+> >  	unsigned int nr_pages;
+> > -	bool success = false;
+> > -
+> > -	vn = addr_to_node((unsigned long)objp);
+> >
+> > -	if (spin_trylock(&vn->busy.lock)) {
+> > -		va = __find_vmap_area((unsigned long)objp, &vn->busy.root);
+> > +	addr = PAGE_ALIGN((unsigned long) object);
+> > +	vn = addr_to_node(addr);
+> >
+> > -		if (va && va->vm) {
+> > -			addr = (unsigned long)va->vm->addr;
+> > -			caller = va->vm->caller;
+> > -			nr_pages = va->vm->nr_pages;
+> > -			success = true;
+> > -		}
+> > +	if (!spin_trylock(&vn->busy.lock))
+> > +		return false;
+> >
+> > +	va = __find_vmap_area(addr, &vn->busy.root);
+> > +	if (!va || !va->vm) {
+> >  		spin_unlock(&vn->busy.lock);
+> > +		return false;
+> >  	}
+> >
+> > -	if (success)
+> > -		pr_cont(" %u-page vmalloc region starting at %#lx allocated at %pS\n",
+> > -			nr_pages, addr, caller);
+> > +	vm = va->vm;
+> > +	addr = (unsigned long) vm->addr;
 > 
-> This is a bpf-treewide change that annotates all kfuncs as such inside
-> .BTF_ids. This annotation eventually allows us to automatically generate
-> kfunc prototypes from bpftool.
+> Hmm not so nice to reuse addr here for something different, might be nice
+> to have separate obj_addr and vm_addr or something. But it's not critical!
 > 
-> We store this metadata inside a yet-unused flags field inside struct
-> btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
+> > +	caller = vm->caller;
+> > +	nr_pages = vm->nr_pages;
+> > +	spin_unlock(&vn->busy.lock);
+> >
+> > -	return success;
+> > +	pr_cont(" %u-page vmalloc region starting at %#lx allocated at %pS\n",
+> > +		nr_pages, addr, caller);
+> > +
+> > +	return true;
+> >  }
+> >  #endif
+> >
+> > --
+> > 2.39.2
+> >
 > 
-> More details about the full chain of events are available in commit 3's
-> description.
+> Other than the nit, which I don't insist on, this is a big improvement so,
 > 
-> The accompanying pahole and bpftool changes can be viewed
-> here on these "frozen" branches [0][1].
-> 
-> [0]: https://github.com/danobi/pahole/tree/kfunc_btf-v3-mailed
-> [1]: https://github.com/danobi/linux/tree/kfunc_bpftool-mailed
-> 
-> === Changelog ===
-> 
-> Changes from v3:
-> * Rebase to bpf-next and add missing annotation on new kfunc
+> Reviewed-by: Lorenzo Stoakes <lstoakes@gmail.com>
+>
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+Thanks!
 
-jirka
-
-> 
-> Changes from v2:
-> * Only WARN() for vmlinux kfuncs
-> 
-> Changes from v1:
-> * Move WARN_ON() up a call level
-> * Also return error when kfunc set is not properly tagged
-> * Use BTF_KFUNCS_START/END instead of flags
-> * Rename BTF_SET8_KFUNC to BTF_SET8_KFUNCS
-> 
-> Daniel Xu (3):
->   bpf: btf: Support flags for BTF_SET8 sets
->   bpf: btf: Add BTF_KFUNCS_START/END macro pair
->   bpf: treewide: Annotate BPF kfuncs in BTF
-> 
->  Documentation/bpf/kfuncs.rst                  |  8 +++----
->  drivers/hid/bpf/hid_bpf_dispatch.c            |  8 +++----
->  fs/verity/measure.c                           |  4 ++--
->  include/linux/btf_ids.h                       | 21 +++++++++++++++----
->  kernel/bpf/btf.c                              |  8 +++++++
->  kernel/bpf/cpumask.c                          |  4 ++--
->  kernel/bpf/helpers.c                          |  8 +++----
->  kernel/bpf/map_iter.c                         |  4 ++--
->  kernel/cgroup/rstat.c                         |  4 ++--
->  kernel/trace/bpf_trace.c                      |  8 +++----
->  net/bpf/test_run.c                            |  8 +++----
->  net/core/filter.c                             | 20 +++++++++---------
->  net/core/xdp.c                                |  4 ++--
->  net/ipv4/bpf_tcp_ca.c                         |  4 ++--
->  net/ipv4/fou_bpf.c                            |  4 ++--
->  net/ipv4/tcp_bbr.c                            |  4 ++--
->  net/ipv4/tcp_cubic.c                          |  4 ++--
->  net/ipv4/tcp_dctcp.c                          |  4 ++--
->  net/netfilter/nf_conntrack_bpf.c              |  4 ++--
->  net/netfilter/nf_nat_bpf.c                    |  4 ++--
->  net/xfrm/xfrm_interface_bpf.c                 |  4 ++--
->  net/xfrm/xfrm_state_bpf.c                     |  4 ++--
->  .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  8 +++----
->  23 files changed, 87 insertions(+), 66 deletions(-)
-> 
-> -- 
-> 2.42.1
-> 
+--
+Uladzislau Rezki
 
