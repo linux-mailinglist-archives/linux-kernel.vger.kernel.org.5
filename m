@@ -1,158 +1,182 @@
-Return-Path: <linux-kernel+bounces-46682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42BFF8442CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:15:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1B9B84429C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:07:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7502B32164
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:06:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3680F1F2B1CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:07:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB9501272A3;
-	Wed, 31 Jan 2024 15:05:19 +0000 (UTC)
-Received: from mail.enpas.org (zhong.enpas.org [46.38.239.100])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6B0B84A2E;
+	Wed, 31 Jan 2024 15:07:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gLCklx3r"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D75869D00;
-	Wed, 31 Jan 2024 15:05:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.38.239.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3202880C04
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:07:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706713519; cv=none; b=ih9Ubx+d8bzKlvOFzwughyVD1I7btuC/hNmUM597p4X9u7yUQRG8bK9ZaMj67sp0BphPm2B68jh2R8j4oHa5332FE0mlXzVbWTemkU5m+wK0NaZtcIq9BThx+3I0GLcc9akb0Iv+DYfzOEYw2mn/334/evQJBU51qQnivA8SH7c=
+	t=1706713648; cv=none; b=iVMon/q3iDp1n66f/59RhsDQ0WurKH5ukBMRt++k7i1AZm/TKttIL5Az55dO9VDcHA2hkm8/RrEp+q7a6JrG46Wf2iZlH9S7QP5lhQsfIAkFbIO1OUpw/Q65V5l5d7TcoZCclhCZOAsv+AXHCvSQ+mfuse2nDcWm2rkDb4QSISw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706713519; c=relaxed/simple;
-	bh=WU+VKG03eBUkvtkiguojXYPCCPA+rxN7uV/uylx6Uwo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VssN3P0kD3ug2ek3mQ0NLDYcuGvAYkBuTJWTQsX6Hv1AmxP5YJysW19oYlhQW1cofqSPdZP0cTeg4zMdFUpT1l+PkOSImrN3wrSfH19OanA/B4aK5cTW16OFW9iyM8mmZvZOSxn6WngHGJdsBqxmhG9637IRQGA5z61BRfTVq6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enpas.org; spf=pass smtp.mailfrom=enpas.org; arc=none smtp.client-ip=46.38.239.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enpas.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=enpas.org
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	by mail.enpas.org (Postfix) with ESMTPSA id C1234FFB3B;
-	Wed, 31 Jan 2024 15:05:12 +0000 (UTC)
-Message-ID: <a5113807-429e-449b-aec0-8882c7976eb5@enpas.org>
-Date: Thu, 1 Feb 2024 00:05:09 +0900
+	s=arc-20240116; t=1706713648; c=relaxed/simple;
+	bh=1gKRjbeF385lVjQe3INmGEbRSihpxA0qX1m3cojS4F4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=gThRJwSJ0cyJU1BxUQqyQy56dHU0osbN2AG7ttIv1dti+xNIDJ9S5q4auRLBqP6IW2w7zSR16PbkHhlToNQ6MMAp65Vb8bQqOgdBPAEKZdpf/QfCWDwNLkDgilSz3rewpMc1OVZ2lzuDCmrlW+mZthpDthXpCDCHilGEOPJTmOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gLCklx3r; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706713645; x=1738249645;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=1gKRjbeF385lVjQe3INmGEbRSihpxA0qX1m3cojS4F4=;
+  b=gLCklx3rPVlvg6CrQRKigd9lG/2Yxk+/rhJCucA0t/mEDOEZOxmaXvCx
+   O+1gZJiHHN0Xs8DZdMjYlCnieMMTnQyqCY6Hj/23ijZTrhokpdWmN3rZB
+   DtkWig8ujaDZ1daPBq53qyLt37LnziRjIbn6gUpq6ipmzzq7NxAOHvr6C
+   Z2d1dUMdjr0xzfF62rK5Wkzj9mgVR+yyG5UyCgwsHJX/nDi3uGHX3BRJ0
+   wroTa+bsSoIsvlY6pmWtPVE0gdtMMvMkuyvwZ4tDkRtCxCTYXTbk9cJhO
+   U6/rbrksR+zPeB+r88hicz0W6SYq8IULegMult8CPmL4Bmnu8fFETV3Mc
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3474310"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="3474310"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 07:07:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="788607938"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="788607938"
+Received: from abarrete-mobl.ger.corp.intel.com (HELO localhost) ([10.252.59.174])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 07:07:19 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Lucas De Marchi <lucas.demarchi@intel.com>, wangxiaoming321
+ <xiaoming.wang@intel.com>
+Cc: ogabbay@kernel.org, thomas.hellstrom@linux.intel.com,
+ maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+ tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+ intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/xe/display: Fix memleak in display initialization
+In-Reply-To: <abko5y3n5mju6srjly257bpqlvjf5ie6h6snboaekxnfv5mu76@jjumdgev76ag>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240125063633.989944-1-xiaoming.wang@intel.com>
+ <20240126153453.997855-1-xiaoming.wang@intel.com>
+ <abko5y3n5mju6srjly257bpqlvjf5ie6h6snboaekxnfv5mu76@jjumdgev76ag>
+Date: Wed, 31 Jan 2024 17:07:16 +0200
+Message-ID: <87zfwlh78b.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/7] HID: playstation: DS4: Don't fail on MAC address
- request
-Content-Language: en-US
-To: Roderick Colenbrander <thunderbird2k@gmail.com>
-Cc: Roderick Colenbrander <roderick.colenbrander@sony.com>,
- Jiri Kosina <jikos@kernel.org>,
- Benjamin Tissoires <benjamin.tissoires@redhat.com>,
- linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240115144538.12018-1-max@enpas.org>
- <20240115144538.12018-3-max@enpas.org>
- <CAEc3jaD9qXp=F6Xfg8bdeC1Hv5pHiKA16SBd=-ac74ibE1ELyw@mail.gmail.com>
- <cb8290a0-1937-4937-ace5-e2a22a1f6e41@enpas.org>
- <CAEc3jaDp-GRoZs9Pp0XxCeARfPx0xFq5SdNkignGeCu0P2+Fdw@mail.gmail.com>
-From: Max Staudt <max@enpas.org>
-Autocrypt: addr=max@enpas.org; keydata=
- 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
- PsRBqTJGs7jw5gOWMMchFaemEnEJtg==
-In-Reply-To: <CAEc3jaDp-GRoZs9Pp0XxCeARfPx0xFq5SdNkignGeCu0P2+Fdw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 1/31/24 05:59, Roderick Colenbrander wrote:
-> I remember on the console side that we support a number of controllers
-> including our official model and some licensed controllers. I recall
-> them taking some different codepaths and HID reports differently. It
-> has been a while, so I don't recall the details. If I remember it
-> could be that all of the licensed ones were USB-only (of course there
-> are some Bluetooth capable clones).
+On Wed, 31 Jan 2024, Lucas De Marchi <lucas.demarchi@intel.com> wrote:
+> +Jani
+>
+> On Fri, Jan 26, 2024 at 11:34:53PM +0800, wangxiaoming321 wrote:
+>>intel_power_domains_init has been called twice in xe_device_probe:
+>>xe_device_probe -> xe_display_init_nommio -> intel_power_domains_init(xe)
+>>xe_device_probe -> xe_display_init_noirq -> intel_display_driver_probe_noirq
+>>-> intel_power_domains_init(i915)
+>
+> ok, once upon a time intel_power_domains_init() was called by the driver
+> initialization code and not initialized inside the display. I think.
+> Now it's part of the display probe and we never updated the xe side.
+>
+>>
+>>It needs remove one to avoid power_domains->power_wells double malloc.
+>>
+>>unreferenced object 0xffff88811150ee00 (size 512):
+>>  comm "systemd-udevd", pid 506, jiffies 4294674198 (age 3605.560s)
+>>  hex dump (first 32 bytes):
+>>    10 b4 9d a0 ff ff ff ff ff ff ff ff ff ff ff ff  ................
+>>    ff ff ff ff ff ff ff ff 00 00 00 00 00 00 00 00  ................
+>>  backtrace:
+>>    [<ffffffff8134b901>] __kmem_cache_alloc_node+0x1c1/0x2b0
+>>    [<ffffffff812c98b2>] __kmalloc+0x52/0x150
+>>    [<ffffffffa08b0033>] __set_power_wells+0xc3/0x360 [xe]
+>>    [<ffffffffa08562fc>] xe_display_init_nommio+0x4c/0x70 [xe]
+>>    [<ffffffffa07f0d1c>] xe_device_probe+0x3c/0x5a0 [xe]
+>>    [<ffffffffa082e48f>] xe_pci_probe+0x33f/0x5a0 [xe]
+>>    [<ffffffff817f2187>] local_pci_probe+0x47/0xa0
+>>    [<ffffffff817f3db3>] pci_device_probe+0xc3/0x1f0
+>>    [<ffffffff8192f2a2>] really_probe+0x1a2/0x410
+>>    [<ffffffff8192f598>] __driver_probe_device+0x78/0x160
+>>    [<ffffffff8192f6ae>] driver_probe_device+0x1e/0x90
+>>    [<ffffffff8192f92a>] __driver_attach+0xda/0x1d0
+>>    [<ffffffff8192c95c>] bus_for_each_dev+0x7c/0xd0
+>>    [<ffffffff8192e159>] bus_add_driver+0x119/0x220
+>>    [<ffffffff81930d00>] driver_register+0x60/0x120
+>>    [<ffffffffa05e50a0>] 0xffffffffa05e50a0
+>>
+>
+> This will need a Fixes trailer.  This seems to be a suitable one:
+>
+> Fixes: 44e694958b95 ("drm/xe/display: Implement display support")
+>
+>>Signed-off-by: wangxiaoming321 <xiaoming.wang@intel.com>
+>>---
+>> drivers/gpu/drm/xe/xe_display.c | 6 ------
+>> 1 file changed, 6 deletions(-)
+>>
+>>diff --git a/drivers/gpu/drm/xe/xe_display.c b/drivers/gpu/drm/xe/xe_display.c
+>>index 74391d9b11ae..e4db069f0db3 100644
+>>--- a/drivers/gpu/drm/xe/xe_display.c
+>>+++ b/drivers/gpu/drm/xe/xe_display.c
+>>@@ -134,8 +134,6 @@ static void xe_display_fini_nommio(struct drm_device *dev, void *dummy)
+>>
+>> int xe_display_init_nommio(struct xe_device *xe)
+>> {
+>>-	int err;
+>>-
+>> 	if (!xe->info.enable_display)
+>> 		return 0;
+>>
+>>@@ -145,10 +143,6 @@ int xe_display_init_nommio(struct xe_device *xe)
+>> 	/* This must be called before any calls to HAS_PCH_* */
+>> 	intel_detect_pch(xe);
+>>
+>>-	err = intel_power_domains_init(xe);
+>>-	if (err)
+>>-		return err;
+>
+> xe_display_init_nommio() has xe_display_fini_nommio() as its destructor
+> counter part. Unfortunately display side looks wrong as it does:
+>
+> init:
+> 	intel_display_driver_probe_noirq() -> intel_power_domains_init()
+>
+> destroy:
+> 	i915_driver_late_release() -> intel_power_domains_cleanup()
+>
+> I think leaving intel_power_domains_cleanup() as is for now so it's
+> called by xe works, but this needs to go through CI, which apparently
+> this series didn't go. I re-triggered it.
+>
+> +Jani if he thinks this can be changed in another way or already have
+> the complete solution.
 
-Now that is an interesting tidbit... if you learn more, I'd be curious to hear about it if possible!
+I don't. But it is and will be a recurring problem. i915 and xe core
+drivers should handle display init and cleanup the same way. But
+currently i915 goes on to call e.g. intel_power_domains_cleanup()
+directly from top level driver code. There are other examples.
+
+And we seem to have recently added *more*. See e.g. bd738d859e71
+("drm/i915: Prevent modesets during driver init/shutdown").
 
 
-> I'm not sure about the best way to handle this. I have kind of been
-> leaning towards doing a vid/pid like check for this case even though I
-> really hate it. It could be within dualshock4_get_mac_address as we do
-> some other special handling there too (although having the caller of
-> dualshock4_get_mac_address do it is an option too, but I think within
-> get_mac_address is slightly nicer for now).
-
-As suggested in the 7545:0104 patch, how about dropping this patch as well, until we encounter a device we really want to add and that does not provide a MAC address?
+BR,
+Jani.
 
 
-If it's okay for you, I'd send a v2 of everything after hearing your comment on the patch to make controllers work that don't provide gyro calibration data.
-
-
-Max
-
+-- 
+Jani Nikula, Intel
 
