@@ -1,718 +1,219 @@
-Return-Path: <linux-kernel+bounces-46095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41EDA843A42
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:07:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62B1E843A56
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:09:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9D8D291EFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:07:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DFF73B28805
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:07:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 961A37869E;
-	Wed, 31 Jan 2024 09:00:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E54479DD4;
+	Wed, 31 Jan 2024 09:02:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aMbusUZf"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UiGBrf8b"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B778078685
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:00:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 259CC79DB4;
+	Wed, 31 Jan 2024 09:02:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706691658; cv=none; b=KFThlIryCowySLbUL3BYtECMd39vFSoArDrbaW40hMQwkruve5eIxtQqrF+BhgPhtnX0HQsr+LLsTEZH5PFvMnJKShmoHw2nO1ktGfRv2umPWRaYg0jdXyAV6RGOem2V+HmjjKvZWKpYNBOGrr2PJaMOX9uQn3hQYxPJQEp1Yeg=
+	t=1706691753; cv=none; b=F7qf68oC+UKcNs5BeOBmkUCz8RuGfMBMaSiYhZWDSh+7dQTz6reCAEnyjyYLHXLS8MD8dQZDAyCNPIChLQKcHLfCKserrz/CZM92iz8Y/ybNZvTKS04Rd86X81VxOqUwzhyO3i9/ni1tQUbQimKyem9ISoSPDIkiK9g/m1mUCjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706691658; c=relaxed/simple;
-	bh=JDQ73jWtCeJTkfIEdhQKb+Lq+FcboMZkVNYoOlUA+lg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cFLxlfY9tk7xl/6oRwgB29JIj80BVdm7Dk2G3BKT0/4UvIDs1bHKxIicUKAfraJLu5vaHuSb+OtrN9H963/eWPxph5qmpDJZw1d/vBtn/W3/7kU2IkHYP5sZF2nTYB+DZAcWk6LmwtaOPbr24A98MfbRL4pTjBR2JPNwwMM0JBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aMbusUZf; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706691654;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5eGIcHUEAf2NAHDRZzwxsmV03Hjf21pqGwYOdZ+86L4=;
-	b=aMbusUZfAYzOg6UWMV+9AsVkUXWuTAs2zfykSqYZThIGACCkzggmX/uiCqk/FGK3i7iRvZ
-	lCI2Cpx+pr+4C4htVQyZFZlBPdGmx/7g9ecHagni/MI5CnzPpar8AkCPcC36acY5Qbhn6E
-	GEA3w2AiRcX3GkNoJ31LfB5y3UoWhpY=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-29-3Qn8AkldPj6Ub6RpCooz5Q-1; Wed, 31 Jan 2024 04:00:53 -0500
-X-MC-Unique: 3Qn8AkldPj6Ub6RpCooz5Q-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33ae2dd7d4aso119492f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:00:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706691652; x=1707296452;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5eGIcHUEAf2NAHDRZzwxsmV03Hjf21pqGwYOdZ+86L4=;
-        b=oTd1ruJmHc6qanwCMRwSb+DTsubNbvITM/XlMZgbQxv6xYv/tjjI5VlMxGmwxbPg/2
-         wFpU+hVvAmrRts3InTrIChwdVzSd6sMqA9JLWmfBcMPqHp2T1x9dvXdQ0F2VSbHMMz2T
-         GaQR5edHewqRnxrvxWkofxEnUS4wD1hyfJzsK6MwbSFH4TJ3rM5pN6PRzaBu9tSbzaX2
-         kG/nsxj9lEQwg5mMPJUAGnif3gzh9verICkSYCHjp5VuLJLAoAM8HueG8EGSOFvqx95F
-         5c8S7rSR1wNA5FHxRgyj2gMirIqET6naE/OUJS0O+YXNmD8Xjjx2+eH/Bt6WcRVfijjQ
-         goCA==
-X-Gm-Message-State: AOJu0Yy/5lqzl0DM+B3mMGtVP4SQ6jAzqBjnQzGsnNBY7y1Rr85Ufzl7
-	LpY3Wq11hXQ6jEaKIaEIh42GeCiSJ5rd4A/JZzOxrFafq8um1ewE3M/ioTaRmo3iBRZGGYvoeIw
-	a1o9JMS99nNzscmanooCJCEaR3NXNpDVzGtPRZiE7VJD+SfiWKeZ8juEd4k3yxQ==
-X-Received: by 2002:a05:600c:1d8a:b0:40f:b404:23f5 with SMTP id p10-20020a05600c1d8a00b0040fb40423f5mr747065wms.4.1706691650802;
-        Wed, 31 Jan 2024 01:00:50 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHl7ns5XdPLQ4SPWTlQksx6ZhH8l0gmodHjbusn1o0Q1RcXEdAYoOiQtnpHS4pVQ3Tzd6yFKg==
-X-Received: by 2002:a05:600c:1d8a:b0:40f:b404:23f5 with SMTP id p10-20020a05600c1d8a00b0040fb40423f5mr747035wms.4.1706691650442;
-        Wed, 31 Jan 2024 01:00:50 -0800 (PST)
-Received: from pstanner-thinkpadt14sgen1.muc.redhat.com (nat-pool-muc-t.redhat.com. [149.14.88.26])
-        by smtp.gmail.com with ESMTPSA id t15-20020a05600c198f00b0040ee51f1025sm940261wmq.43.2024.01.31.01.00.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 01:00:49 -0800 (PST)
-From: Philipp Stanner <pstanner@redhat.com>
-To: Bjorn Helgaas <bhelgaas@google.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	NeilBrown <neilb@suse.de>,
-	John Sanpe <sanpeqf@gmail.com>,
-	Kent Overstreet <kent.overstreet@gmail.com>,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Philipp Stanner <pstanner@redhat.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Uladzislau Koshchanka <koshchanka@gmail.com>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-	David Gow <davidgow@google.com>,
-	Kees Cook <keescook@chromium.org>,
-	Rae Moar <rmoar@google.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	"wuqiang.matt" <wuqiang.matt@bytedance.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	Jason Baron <jbaron@akamai.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Marco Elver <elver@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Ben Dooks <ben.dooks@codethink.co.uk>,
-	dakr@redhat.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	linux-arch@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH v6 4/4] PCI: Move devres code from pci.c to devres.c
-Date: Wed, 31 Jan 2024 10:00:23 +0100
-Message-ID: <20240131090023.12331-5-pstanner@redhat.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240131090023.12331-1-pstanner@redhat.com>
-References: <20240131090023.12331-1-pstanner@redhat.com>
+	s=arc-20240116; t=1706691753; c=relaxed/simple;
+	bh=NJRd4XDA5lDVXNSXsbiVsUP4P+c7qrvLCJJwrQTLTL4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KuF/MKJAUOMpp5aXTfVNKBUvIJejfAADVmnDv80UGSBMzv2MNzzvZCQr9t3qRALaJsbtHtltRz3DjcbLbwlJLCV8+5n2jF3AoMEFI7VxlJoygRV1nTbNRNoHIZ+bWRV+OVJOTz4NvKroRNyn/Z6KgOP7hviLS+CLxW63W9xvydY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UiGBrf8b; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706691750; x=1738227750;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=NJRd4XDA5lDVXNSXsbiVsUP4P+c7qrvLCJJwrQTLTL4=;
+  b=UiGBrf8bLl75hXdEih2UAvdWv5Zf+72afShdZvTNCpqstmeq0+8kqE5l
+   VEv65371tYjoyudBc8oaKT4gkLU1WwP2F4bLa4Yc/bRPzmYQWj+gtfYSn
+   TVVAI3E48QaOdPG4uoecNuLWqrnipJR5NDUuiPSiJ22A2S5/NO/4y/XmZ
+   lpsivF7c5GzQR6QItGv+gurDQEoq4e/MSV3fzN4QRTjgR5xGlemKHKlYN
+   wxMFbJiG0O/+bEAMW35W3cTZogKGMkCmjKjfgh7MJDGk+tGKYUT7N8CwC
+   U18wbfM9qrTR9WW67kdXjfM7aIdEaHJAojOfpYy4wag7sbei/2U4bIwE4
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10177145"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="10177145"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 01:02:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="30169253"
+Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
+  by orviesa002.jf.intel.com with ESMTP; 31 Jan 2024 01:02:25 -0800
+Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rV6U5-0001MC-0U;
+	Wed, 31 Jan 2024 09:02:19 +0000
+Date: Wed, 31 Jan 2024 17:01:55 +0800
+From: kernel test robot <lkp@intel.com>
+To: Mario Limonciello <mario.limonciello@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Harry Wentland <harry.wentland@amd.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Hans de Goede <hdegoede@redhat.com>
+Cc: Paul Gazzillo <paul@pgazz.com>,
+	Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+	oe-kbuild-all@lists.linux.dev,
+	"open list:ACPI" <linux-acpi@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+	Melissa Wen <mwen@igalia.com>,
+	Mark Pearson <mpearson-lenovo@squebb.ca>,
+	Mario Limonciello <mario.limonciello@amd.com>
+Subject: Re: [PATCH v2 2/4] drm: Add drm_get_acpi_edid() helper
+Message-ID: <202401311634.FE5CBVwe-lkp@intel.com>
+References: <20240130192608.11666-3-mario.limonciello@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240130192608.11666-3-mario.limonciello@amd.com>
 
-The file pci.c is very large and contains a number of devres-functions.
-These functions should now reside in devres.c
+Hi Mario,
 
-There are a few callers left in pci.c that do devres operations. These
-should be ported in the future. Corresponding TODOs are added by this
-commit.
+kernel test robot noticed the following build warnings:
 
-The reason they are not moved right now in this commit is that pci's
-devres currently implements a sort of "hybrid-mode":
-pci_request_region(), for instance, does not have a corresponding pcim_
-equivalent, yet. Instead, the function can be made managed by previously
-calling pcim_enable_device() (instead of pci_enable_device()). This
-makes it unreasonable to move pci_request_region() to devres.c
-Moving the functions would require changes to pci's API and is,
-therefore, left for future work.
+[auto build test WARNING on rafael-pm/linux-next]
+[also build test WARNING on rafael-pm/acpi-bus linus/master v6.8-rc2 next-20240131]
+[cannot apply to drm-misc/drm-misc-next rafael-pm/devprop]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-In summary, this commit serves as a preparation step for a following
-patch-series that will cleanly separate the PCI's managed and unmanaged
-API.
+url:    https://github.com/intel-lab-lkp/linux/commits/Mario-Limonciello/ACPI-video-Handle-fetching-EDID-that-is-longer-than-256-bytes/20240131-032909
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
+patch link:    https://lore.kernel.org/r/20240130192608.11666-3-mario.limonciello%40amd.com
+patch subject: [PATCH v2 2/4] drm: Add drm_get_acpi_edid() helper
+config: x86_64-kismet-CONFIG_ACPI_PLATFORM_PROFILE-CONFIG_HP_WMI-0-0 (https://download.01.org/0day-ci/archive/20240131/202401311634.FE5CBVwe-lkp@intel.com/config)
+reproduce: (https://download.01.org/0day-ci/archive/20240131/202401311634.FE5CBVwe-lkp@intel.com/reproduce)
 
-Move as much devres-specific code from pci.c to devres.c as possible.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401311634.FE5CBVwe-lkp@intel.com/
 
-Suggested-by: Danilo Krummrich <dakr@redhat.com>
-Signed-off-by: Philipp Stanner <pstanner@redhat.com>
----
- drivers/pci/devres.c | 243 +++++++++++++++++++++++++++++++++++++++++
- drivers/pci/pci.c    | 249 -------------------------------------------
- drivers/pci/pci.h    |  24 +++++
- 3 files changed, 267 insertions(+), 249 deletions(-)
+kismet warnings: (new ones prefixed by >>)
+>> kismet: WARNING: unmet direct dependencies detected for ACPI_PLATFORM_PROFILE when selected by HP_WMI
+   .config:101:warning: symbol value 'n' invalid for RADIO_RTRACK2_PORT
+   .config:223:warning: symbol value 'n' invalid for AIC79XX_CMDS_PER_DEVICE
+   .config:240:warning: symbol value 'n' invalid for SATA_MOBILE_LPM_POLICY
+   .config:310:warning: symbol value 'n' invalid for DRM_I915_TIMESLICE_DURATION
+   .config:321:warning: symbol value 'n' invalid for PANEL_LCD_PIN_SDA
+   .config:345:warning: symbol value 'n' invalid for PSTORE_BLK_MAX_REASON
+   .config:457:warning: symbol value 'n' invalid for KFENCE_SAMPLE_INTERVAL
+   .config:633:warning: symbol value 'n' invalid for CRYPTO_DEV_QCE_SW_MAX_LEN
+   .config:651:warning: symbol value 'n' invalid for DRM_XE_JOB_TIMEOUT_MIN
+   .config:674:warning: symbol value 'n' invalid for FB_GBE_MEM
+   .config:739:warning: symbol value 'n' invalid for PANEL_LCD_CHARSET
+   .config:836:warning: symbol value 'n' invalid for SND_AC97_POWER_SAVE_DEFAULT
+   .config:851:warning: symbol value 'n' invalid for MAGIC_SYSRQ_DEFAULT_ENABLE
+   .config:871:warning: symbol value 'n' invalid for DRM_I915_MAX_REQUEST_BUSYWAIT
+   .config:900:warning: symbol value 'n' invalid for SND_AT73C213_TARGET_BITRATE
+   .config:951:warning: symbol value 'n' invalid for DRM_XE_PREEMPT_TIMEOUT_MIN
+   .config:961:warning: symbol value 'n' invalid for NET_EMATCH_STACK
+   .config:962:warning: symbol value 'n' invalid for VMCP_CMA_SIZE
+   .config:1002:warning: symbol value 'n' invalid for SQUASHFS_FRAGMENT_CACHE_SIZE
+   .config:1113:warning: symbol value 'n' invalid for FB_OMAP2_NUM_FBS
+   .config:1237:warning: symbol value 'n' invalid for MTDRAM_ERASE_SIZE
+   .config:1253:warning: symbol value 'n' invalid for CFAG12864B_RATE
+   .config:1290:warning: symbol value 'n' invalid for SERIAL_UARTLITE_NR_UARTS
+   .config:1468:warning: symbol value 'n' invalid for LEGACY_PTY_COUNT
+   .config:1528:warning: symbol value 'n' invalid for RAPIDIO_DISC_TIMEOUT
+   .config:1568:warning: symbol value 'n' invalid for FAT_DEFAULT_CODEPAGE
+   .config:1608:warning: symbol value 'n' invalid for WATCHDOG_OPEN_TIMEOUT
+   .config:1615:warning: symbol value 'n' invalid for AIC7XXX_RESET_DELAY_MS
+   .config:1638:warning: symbol value 'n' invalid for KCOV_IRQ_AREA_SIZE
+   .config:1850:warning: symbol value 'n' invalid for IBM_EMAC_POLL_WEIGHT
+   .config:1903:warning: symbol value 'n' invalid for DRM_I915_STOP_TIMEOUT
+   .config:2189:warning: symbol value 'n' invalid for SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST_NUM
+   .config:2246:warning: symbol value 'n' invalid for SND_HDA_PREALLOC_SIZE
+   .config:2358:warning: symbol value 'n' invalid for DRM_XE_TIMESLICE_MAX
+   .config:2452:warning: symbol value 'n' invalid for PANEL_LCD_BWIDTH
+   .config:2554:warning: symbol value 'n' invalid for PSTORE_BLK_CONSOLE_SIZE
+   .config:2701:warning: symbol value 'n' invalid for PANEL_PARPORT
+   .config:2763:warning: symbol value 'n' invalid for BOOKE_WDT_DEFAULT_TIMEOUT
+   .config:2798:warning: symbol value 'n' invalid for NOUVEAU_DEBUG_DEFAULT
+   .config:2996:warning: symbol value 'n' invalid for KCSAN_REPORT_ONCE_IN_MS
+   .config:3107:warning: symbol value 'n' invalid for KCSAN_UDELAY_INTERRUPT
+   .config:3132:warning: symbol value 'n' invalid for PANEL_LCD_PIN_BL
+   .config:3152:warning: symbol value 'n' invalid for DEBUG_OBJECTS_ENABLE_DEFAULT
+   .config:3159:warning: symbol value 'n' invalid for INITRAMFS_ROOT_GID
+   .config:3236:warning: symbol value 'n' invalid for PANEL_LCD_PIN_E
+   .config:3278:warning: symbol value 'n' invalid for ATM_FORE200E_TX_RETRY
+   .config:3321:warning: symbol value 'n' invalid for FB_OMAP2_DSS_MIN_FCK_PER_PCK
+   .config:3414:warning: symbol value 'n' invalid for STACK_MAX_DEFAULT_SIZE_MB
+   .config:3437:warning: symbol value 'n' invalid for KCSAN_UDELAY_TASK
+   .config:3468:warning: symbol value 'n' invalid for BLK_DEV_LOOP_MIN_COUNT
+   .config:3692:warning: symbol value 'n' invalid for MMC_BLOCK_MINORS
+   .config:3695:warning: symbol value 'n' invalid for INET_TABLE_PERTURB_ORDER
+   .config:3696:warning: symbol value 'n' invalid for CMA_SIZE_MBYTES
+   .config:3739:warning: symbol value 'n' invalid for SCSI_NCR53C8XX_SYNC
+   .config:3773:warning: symbol value 'n' invalid for SERIAL_MCF_BAUDRATE
+   .config:3870:warning: symbol value 'n' invalid for DE2104X_DSL
+   .config:3887:warning: symbol value 'n' invalid for BLK_DEV_RAM_COUNT
+   .config:3963:warning: symbol value 'n' invalid for AIC7XXX_DEBUG_MASK
+   .config:4102:warning: symbol value 'n' invalid for IP_VS_SH_TAB_BITS
+   .config:4257:warning: symbol value 'n' invalid for USBIP_VHCI_HC_PORTS
+   .config:4296:warning: symbol value 'n' invalid for AIC79XX_RESET_DELAY_MS
+   .config:4599:warning: symbol value 'n' invalid for RIONET_RX_SIZE
+   .config:4610:warning: symbol value 'n' invalid for RADIO_TYPHOON_PORT
+   .config:4730:warning: symbol value 'n' invalid for SERIAL_TXX9_NR_UARTS
+   .config:4819:warning: symbol value 'n' invalid for MTRR_SANITIZER_SPARE_REG_NR_DEFAULT
+   .config:4918:warning: symbol value 'n' invalid for IBM_EMAC_TXB
+   .config:5343:warning: symbol value 'n' invalid for CRYPTO_DEV_FSL_CAAM_INTC_TIME_THLD
+   .config:5415:warning: symbol value 'n' invalid for DRM_I915_FENCE_TIMEOUT
+   .config:5437:warning: symbol value 'n' invalid for TTY_PRINTK_LEVEL
+   .config:5601:warning: symbol value 'n' invalid for MIPS_EJTAG_FDC_KGDB_CHAN
+   .config:5609:warning: symbol value 'n' invalid for PPC_EARLY_DEBUG_EHV_BC_HANDLE
+   .config:5700:warning: symbol value 'n' invalid for KDB_DEFAULT_ENABLE
+   .config:5718:warning: symbol value 'n' invalid for SERIAL_ALTERA_UART_MAXPORTS
+   .config:5871:warning: symbol value 'n' invalid for FTRACE_RECORD_RECURSION_SIZE
+   .config:5992:warning: symbol value 'n' invalid for PANEL_LCD_HWIDTH
+   .config:6028:warning: symbol value 'n' invalid for LOCKDEP_CHAINS_BITS
+   .config:6121:warning: symbol value 'n' invalid for DRM_I915_HEARTBEAT_INTERVAL
+   .config:6130:warning: symbol value 'n' invalid for KCSAN_SKIP_WATCH
+   .config:6140:warning: symbol value 'n' invalid for EFI_MAX_FAKE_MEM
+   .config:6156:warning: symbol value 'n' invalid for PSTORE_BLK_KMSG_SIZE
+   .config:6336:warning: symbol value 'n' invalid for KVM_MAX_NR_VCPUS
+   .config:6443:warning: symbol value 'n' invalid for SERIAL_SH_SCI_NR_UARTS
+   .config:6483:warning: symbol value 'n' invalid for IP_VS_MH_TAB_INDEX
+   .config:6485:warning: symbol value 'n' invalid for ARCH_MMAP_RND_COMPAT_BITS
+   .config:6661:warning: symbol value 'n' invalid for RADIO_TRUST_PORT
+   .config:6684:warning: symbol value 'n' invalid for X86_AMD_PSTATE_DEFAULT_MODE
+   .config:6771:warning: symbol value 'n' invalid for ZSMALLOC_CHAIN_SIZE
+   .config:6867:warning: symbol value 'n' invalid for PANEL_LCD_PIN_RW
+   .config:6978:warning: symbol value 'n' invalid for SCSI_NCR53C8XX_MAX_TAGS
+   .config:7002:warning: symbol value 'n' invalid for SCSI_SYM53C8XX_DMA_ADDRESSING_MODE
+   .config:7041:warning: symbol value 'n' invalid for SERIAL_ALTERA_UART_BAUDRATE
+   .config:7080:warning: symbol value 'n' invalid for CMA_SIZE_PERCENTAGE
+   .config:7091:warning: symbol value 'n' invalid for LOCKDEP_BITS
+   .config:7236:warning: symbol value 'n' invalid for DRM_XE_TIMESLICE_MIN
+   .config:7398:warning: symbol value 'n' invalid for SND_MAX_CARDS
+   .config:7400:warning: symbol value 'n' invalid for IBM_EMAC_RXB
+   .config:7745:warning: symbol value 'n' invalid for SERIAL_ARC_NR_PORTS
+   .config:7808:warning: symbol value 'n' invalid for PANEL_LCD
+   .config:7916:warning: symbol value 'n' invalid for DRM_XE_PREEMPT_TIMEOUT_MAX
+   .config:7917:warning: symbol value 'n' invalid for SCSI_MPT3SAS_MAX_SGE
 
-diff --git a/drivers/pci/devres.c b/drivers/pci/devres.c
-index a3fd0d65cef1..4bd1e125bca1 100644
---- a/drivers/pci/devres.c
-+++ b/drivers/pci/devres.c
-@@ -1,4 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
-+#include <linux/device.h>
- #include <linux/pci.h>
- #include "pci.h"
- 
-@@ -11,6 +12,248 @@ struct pcim_iomap_devres {
- 	void __iomem *table[PCIM_IOMAP_MAX];
- };
- 
-+
-+static void devm_pci_unmap_iospace(struct device *dev, void *ptr)
-+{
-+	struct resource **res = ptr;
-+
-+	pci_unmap_iospace(*res);
-+}
-+
-+/**
-+ * devm_pci_remap_iospace - Managed pci_remap_iospace()
-+ * @dev: Generic device to remap IO address for
-+ * @res: Resource describing the I/O space
-+ * @phys_addr: physical address of range to be mapped
-+ *
-+ * Managed pci_remap_iospace().  Map is automatically unmapped on driver
-+ * detach.
-+ */
-+int devm_pci_remap_iospace(struct device *dev, const struct resource *res,
-+			   phys_addr_t phys_addr)
-+{
-+	const struct resource **ptr;
-+	int error;
-+
-+	ptr = devres_alloc(devm_pci_unmap_iospace, sizeof(*ptr), GFP_KERNEL);
-+	if (!ptr)
-+		return -ENOMEM;
-+
-+	error = pci_remap_iospace(res, phys_addr);
-+	if (error) {
-+		devres_free(ptr);
-+	} else	{
-+		*ptr = res;
-+		devres_add(dev, ptr);
-+	}
-+
-+	return error;
-+}
-+EXPORT_SYMBOL(devm_pci_remap_iospace);
-+
-+/**
-+ * devm_pci_remap_cfgspace - Managed pci_remap_cfgspace()
-+ * @dev: Generic device to remap IO address for
-+ * @offset: Resource address to map
-+ * @size: Size of map
-+ *
-+ * Managed pci_remap_cfgspace().  Map is automatically unmapped on driver
-+ * detach.
-+ */
-+void __iomem *devm_pci_remap_cfgspace(struct device *dev,
-+				      resource_size_t offset,
-+				      resource_size_t size)
-+{
-+	void __iomem **ptr, *addr;
-+
-+	ptr = devres_alloc(devm_ioremap_release, sizeof(*ptr), GFP_KERNEL);
-+	if (!ptr)
-+		return NULL;
-+
-+	addr = pci_remap_cfgspace(offset, size);
-+	if (addr) {
-+		*ptr = addr;
-+		devres_add(dev, ptr);
-+	} else
-+		devres_free(ptr);
-+
-+	return addr;
-+}
-+EXPORT_SYMBOL(devm_pci_remap_cfgspace);
-+
-+/**
-+ * devm_pci_remap_cfg_resource - check, request region and ioremap cfg resource
-+ * @dev: generic device to handle the resource for
-+ * @res: configuration space resource to be handled
-+ *
-+ * Checks that a resource is a valid memory region, requests the memory
-+ * region and ioremaps with pci_remap_cfgspace() API that ensures the
-+ * proper PCI configuration space memory attributes are guaranteed.
-+ *
-+ * All operations are managed and will be undone on driver detach.
-+ *
-+ * Returns a pointer to the remapped memory or an ERR_PTR() encoded error code
-+ * on failure. Usage example::
-+ *
-+ *	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+ *	base = devm_pci_remap_cfg_resource(&pdev->dev, res);
-+ *	if (IS_ERR(base))
-+ *		return PTR_ERR(base);
-+ */
-+void __iomem *devm_pci_remap_cfg_resource(struct device *dev,
-+					  struct resource *res)
-+{
-+	resource_size_t size;
-+	const char *name;
-+	void __iomem *dest_ptr;
-+
-+	BUG_ON(!dev);
-+
-+	if (!res || resource_type(res) != IORESOURCE_MEM) {
-+		dev_err(dev, "invalid resource\n");
-+		return IOMEM_ERR_PTR(-EINVAL);
-+	}
-+
-+	size = resource_size(res);
-+
-+	if (res->name)
-+		name = devm_kasprintf(dev, GFP_KERNEL, "%s %s", dev_name(dev),
-+				      res->name);
-+	else
-+		name = devm_kstrdup(dev, dev_name(dev), GFP_KERNEL);
-+	if (!name)
-+		return IOMEM_ERR_PTR(-ENOMEM);
-+
-+	if (!devm_request_mem_region(dev, res->start, size, name)) {
-+		dev_err(dev, "can't request region for resource %pR\n", res);
-+		return IOMEM_ERR_PTR(-EBUSY);
-+	}
-+
-+	dest_ptr = devm_pci_remap_cfgspace(dev, res->start, size);
-+	if (!dest_ptr) {
-+		dev_err(dev, "ioremap failed for resource %pR\n", res);
-+		devm_release_mem_region(dev, res->start, size);
-+		dest_ptr = IOMEM_ERR_PTR(-ENOMEM);
-+	}
-+
-+	return dest_ptr;
-+}
-+EXPORT_SYMBOL(devm_pci_remap_cfg_resource);
-+
-+/**
-+ * pcim_set_mwi - a device-managed pci_set_mwi()
-+ * @dev: the PCI device for which MWI is enabled
-+ *
-+ * Managed pci_set_mwi().
-+ *
-+ * RETURNS: An appropriate -ERRNO error value on error, or zero for success.
-+ */
-+int pcim_set_mwi(struct pci_dev *dev)
-+{
-+	struct pci_devres *dr;
-+
-+	dr = find_pci_dr(dev);
-+	if (!dr)
-+		return -ENOMEM;
-+
-+	dr->mwi = 1;
-+	return pci_set_mwi(dev);
-+}
-+EXPORT_SYMBOL(pcim_set_mwi);
-+
-+
-+static void pcim_release(struct device *gendev, void *res)
-+{
-+	struct pci_dev *dev = to_pci_dev(gendev);
-+	struct pci_devres *this = res;
-+	int i;
-+
-+	for (i = 0; i < DEVICE_COUNT_RESOURCE; i++)
-+		if (this->region_mask & (1 << i))
-+			pci_release_region(dev, i);
-+
-+	if (this->mwi)
-+		pci_clear_mwi(dev);
-+
-+	if (this->restore_intx)
-+		pci_intx(dev, this->orig_intx);
-+
-+	if (this->enabled && !this->pinned)
-+		pci_disable_device(dev);
-+}
-+
-+/*
-+ * TODO:
-+ * Once the last four callers in pci.c are ported, this function here needs to
-+ * be made static again.
-+ */
-+struct pci_devres *find_pci_dr(struct pci_dev *pdev)
-+{
-+	if (pci_is_managed(pdev))
-+		return devres_find(&pdev->dev, pcim_release, NULL, NULL);
-+	return NULL;
-+}
-+EXPORT_SYMBOL(find_pci_dr);
-+
-+static struct pci_devres *get_pci_dr(struct pci_dev *pdev)
-+{
-+	struct pci_devres *dr, *new_dr;
-+
-+	dr = devres_find(&pdev->dev, pcim_release, NULL, NULL);
-+	if (dr)
-+		return dr;
-+
-+	new_dr = devres_alloc(pcim_release, sizeof(*new_dr), GFP_KERNEL);
-+	if (!new_dr)
-+		return NULL;
-+	return devres_get(&pdev->dev, new_dr, NULL, NULL);
-+}
-+
-+/**
-+ * pcim_enable_device - Managed pci_enable_device()
-+ * @pdev: PCI device to be initialized
-+ *
-+ * Managed pci_enable_device().
-+ */
-+int pcim_enable_device(struct pci_dev *pdev)
-+{
-+	struct pci_devres *dr;
-+	int rc;
-+
-+	dr = get_pci_dr(pdev);
-+	if (unlikely(!dr))
-+		return -ENOMEM;
-+	if (dr->enabled)
-+		return 0;
-+
-+	rc = pci_enable_device(pdev);
-+	if (!rc) {
-+		pdev->is_managed = 1;
-+		dr->enabled = 1;
-+	}
-+	return rc;
-+}
-+EXPORT_SYMBOL(pcim_enable_device);
-+
-+/**
-+ * pcim_pin_device - Pin managed PCI device
-+ * @pdev: PCI device to pin
-+ *
-+ * Pin managed PCI device @pdev.  Pinned device won't be disabled on
-+ * driver detach.  @pdev must have been enabled with
-+ * pcim_enable_device().
-+ */
-+void pcim_pin_device(struct pci_dev *pdev)
-+{
-+	struct pci_devres *dr;
-+
-+	dr = find_pci_dr(pdev);
-+	WARN_ON(!dr || !dr->enabled);
-+	if (dr)
-+		dr->pinned = 1;
-+}
-+EXPORT_SYMBOL(pcim_pin_device);
-+
- static void pcim_iomap_release(struct device *gendev, void *res)
- {
- 	struct pci_dev *dev = to_pci_dev(gendev);
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index d8f11a078924..19f18c3856e8 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -2157,107 +2157,6 @@ int pci_enable_device(struct pci_dev *dev)
- }
- EXPORT_SYMBOL(pci_enable_device);
- 
--/*
-- * Managed PCI resources.  This manages device on/off, INTx/MSI/MSI-X
-- * on/off and BAR regions.  pci_dev itself records MSI/MSI-X status, so
-- * there's no need to track it separately.  pci_devres is initialized
-- * when a device is enabled using managed PCI device enable interface.
-- */
--struct pci_devres {
--	unsigned int enabled:1;
--	unsigned int pinned:1;
--	unsigned int orig_intx:1;
--	unsigned int restore_intx:1;
--	unsigned int mwi:1;
--	u32 region_mask;
--};
--
--static void pcim_release(struct device *gendev, void *res)
--{
--	struct pci_dev *dev = to_pci_dev(gendev);
--	struct pci_devres *this = res;
--	int i;
--
--	for (i = 0; i < DEVICE_COUNT_RESOURCE; i++)
--		if (this->region_mask & (1 << i))
--			pci_release_region(dev, i);
--
--	if (this->mwi)
--		pci_clear_mwi(dev);
--
--	if (this->restore_intx)
--		pci_intx(dev, this->orig_intx);
--
--	if (this->enabled && !this->pinned)
--		pci_disable_device(dev);
--}
--
--static struct pci_devres *get_pci_dr(struct pci_dev *pdev)
--{
--	struct pci_devres *dr, *new_dr;
--
--	dr = devres_find(&pdev->dev, pcim_release, NULL, NULL);
--	if (dr)
--		return dr;
--
--	new_dr = devres_alloc(pcim_release, sizeof(*new_dr), GFP_KERNEL);
--	if (!new_dr)
--		return NULL;
--	return devres_get(&pdev->dev, new_dr, NULL, NULL);
--}
--
--static struct pci_devres *find_pci_dr(struct pci_dev *pdev)
--{
--	if (pci_is_managed(pdev))
--		return devres_find(&pdev->dev, pcim_release, NULL, NULL);
--	return NULL;
--}
--
--/**
-- * pcim_enable_device - Managed pci_enable_device()
-- * @pdev: PCI device to be initialized
-- *
-- * Managed pci_enable_device().
-- */
--int pcim_enable_device(struct pci_dev *pdev)
--{
--	struct pci_devres *dr;
--	int rc;
--
--	dr = get_pci_dr(pdev);
--	if (unlikely(!dr))
--		return -ENOMEM;
--	if (dr->enabled)
--		return 0;
--
--	rc = pci_enable_device(pdev);
--	if (!rc) {
--		pdev->is_managed = 1;
--		dr->enabled = 1;
--	}
--	return rc;
--}
--EXPORT_SYMBOL(pcim_enable_device);
--
--/**
-- * pcim_pin_device - Pin managed PCI device
-- * @pdev: PCI device to pin
-- *
-- * Pin managed PCI device @pdev.  Pinned device won't be disabled on
-- * driver detach.  @pdev must have been enabled with
-- * pcim_enable_device().
-- */
--void pcim_pin_device(struct pci_dev *pdev)
--{
--	struct pci_devres *dr;
--
--	dr = find_pci_dr(pdev);
--	WARN_ON(!dr || !dr->enabled);
--	if (dr)
--		dr->pinned = 1;
--}
--EXPORT_SYMBOL(pcim_pin_device);
--
- /*
-  * pcibios_device_add - provide arch specific hooks when adding device dev
-  * @dev: the PCI device being added
-@@ -4352,133 +4251,6 @@ void pci_unmap_iospace(struct resource *res)
- }
- EXPORT_SYMBOL(pci_unmap_iospace);
- 
--static void devm_pci_unmap_iospace(struct device *dev, void *ptr)
--{
--	struct resource **res = ptr;
--
--	pci_unmap_iospace(*res);
--}
--
--/**
-- * devm_pci_remap_iospace - Managed pci_remap_iospace()
-- * @dev: Generic device to remap IO address for
-- * @res: Resource describing the I/O space
-- * @phys_addr: physical address of range to be mapped
-- *
-- * Managed pci_remap_iospace().  Map is automatically unmapped on driver
-- * detach.
-- */
--int devm_pci_remap_iospace(struct device *dev, const struct resource *res,
--			   phys_addr_t phys_addr)
--{
--	const struct resource **ptr;
--	int error;
--
--	ptr = devres_alloc(devm_pci_unmap_iospace, sizeof(*ptr), GFP_KERNEL);
--	if (!ptr)
--		return -ENOMEM;
--
--	error = pci_remap_iospace(res, phys_addr);
--	if (error) {
--		devres_free(ptr);
--	} else	{
--		*ptr = res;
--		devres_add(dev, ptr);
--	}
--
--	return error;
--}
--EXPORT_SYMBOL(devm_pci_remap_iospace);
--
--/**
-- * devm_pci_remap_cfgspace - Managed pci_remap_cfgspace()
-- * @dev: Generic device to remap IO address for
-- * @offset: Resource address to map
-- * @size: Size of map
-- *
-- * Managed pci_remap_cfgspace().  Map is automatically unmapped on driver
-- * detach.
-- */
--void __iomem *devm_pci_remap_cfgspace(struct device *dev,
--				      resource_size_t offset,
--				      resource_size_t size)
--{
--	void __iomem **ptr, *addr;
--
--	ptr = devres_alloc(devm_ioremap_release, sizeof(*ptr), GFP_KERNEL);
--	if (!ptr)
--		return NULL;
--
--	addr = pci_remap_cfgspace(offset, size);
--	if (addr) {
--		*ptr = addr;
--		devres_add(dev, ptr);
--	} else
--		devres_free(ptr);
--
--	return addr;
--}
--EXPORT_SYMBOL(devm_pci_remap_cfgspace);
--
--/**
-- * devm_pci_remap_cfg_resource - check, request region and ioremap cfg resource
-- * @dev: generic device to handle the resource for
-- * @res: configuration space resource to be handled
-- *
-- * Checks that a resource is a valid memory region, requests the memory
-- * region and ioremaps with pci_remap_cfgspace() API that ensures the
-- * proper PCI configuration space memory attributes are guaranteed.
-- *
-- * All operations are managed and will be undone on driver detach.
-- *
-- * Returns a pointer to the remapped memory or an ERR_PTR() encoded error code
-- * on failure. Usage example::
-- *
-- *	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-- *	base = devm_pci_remap_cfg_resource(&pdev->dev, res);
-- *	if (IS_ERR(base))
-- *		return PTR_ERR(base);
-- */
--void __iomem *devm_pci_remap_cfg_resource(struct device *dev,
--					  struct resource *res)
--{
--	resource_size_t size;
--	const char *name;
--	void __iomem *dest_ptr;
--
--	BUG_ON(!dev);
--
--	if (!res || resource_type(res) != IORESOURCE_MEM) {
--		dev_err(dev, "invalid resource\n");
--		return IOMEM_ERR_PTR(-EINVAL);
--	}
--
--	size = resource_size(res);
--
--	if (res->name)
--		name = devm_kasprintf(dev, GFP_KERNEL, "%s %s", dev_name(dev),
--				      res->name);
--	else
--		name = devm_kstrdup(dev, dev_name(dev), GFP_KERNEL);
--	if (!name)
--		return IOMEM_ERR_PTR(-ENOMEM);
--
--	if (!devm_request_mem_region(dev, res->start, size, name)) {
--		dev_err(dev, "can't request region for resource %pR\n", res);
--		return IOMEM_ERR_PTR(-EBUSY);
--	}
--
--	dest_ptr = devm_pci_remap_cfgspace(dev, res->start, size);
--	if (!dest_ptr) {
--		dev_err(dev, "ioremap failed for resource %pR\n", res);
--		devm_release_mem_region(dev, res->start, size);
--		dest_ptr = IOMEM_ERR_PTR(-ENOMEM);
--	}
--
--	return dest_ptr;
--}
--EXPORT_SYMBOL(devm_pci_remap_cfg_resource);
--
- static void __pci_set_master(struct pci_dev *dev, bool enable)
- {
- 	u16 old_cmd, cmd;
-@@ -4628,27 +4400,6 @@ int pci_set_mwi(struct pci_dev *dev)
- }
- EXPORT_SYMBOL(pci_set_mwi);
- 
--/**
-- * pcim_set_mwi - a device-managed pci_set_mwi()
-- * @dev: the PCI device for which MWI is enabled
-- *
-- * Managed pci_set_mwi().
-- *
-- * RETURNS: An appropriate -ERRNO error value on error, or zero for success.
-- */
--int pcim_set_mwi(struct pci_dev *dev)
--{
--	struct pci_devres *dr;
--
--	dr = find_pci_dr(dev);
--	if (!dr)
--		return -ENOMEM;
--
--	dr->mwi = 1;
--	return pci_set_mwi(dev);
--}
--EXPORT_SYMBOL(pcim_set_mwi);
--
- /**
-  * pci_try_set_mwi - enables memory-write-invalidate PCI transaction
-  * @dev: the PCI device for which MWI is enabled
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index 2336a8d1edab..2215858b2584 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -797,6 +797,30 @@ static inline pci_power_t mid_pci_get_power_state(struct pci_dev *pdev)
- }
- #endif
- 
-+/*
-+ * TODO:
-+ * The following two components wouldn't need to be here if they weren't used at
-+ * four last places in pci.c
-+ * Port or move these functions to devres.c and then remove the
-+ * pci_devres-components from this header file here.
-+ */
-+/*
-+ * Managed PCI resources.  This manages device on/off, INTx/MSI/MSI-X
-+ * on/off and BAR regions.  pci_dev itself records MSI/MSI-X status, so
-+ * there's no need to track it separately.  pci_devres is initialized
-+ * when a device is enabled using managed PCI device enable interface.
-+ */
-+struct pci_devres {
-+	unsigned int enabled:1;
-+	unsigned int pinned:1;
-+	unsigned int orig_intx:1;
-+	unsigned int restore_intx:1;
-+	unsigned int mwi:1;
-+	u32 region_mask;
-+};
-+
-+struct pci_devres *find_pci_dr(struct pci_dev *pdev);
-+
- /*
-  * Config Address for PCI Configuration Mechanism #1
-  *
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
