@@ -1,190 +1,167 @@
-Return-Path: <linux-kernel+bounces-46380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C86A1843EC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:49:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07E8C843EC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:49:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E6B0B2A03F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:49:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C3491F2E28B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:49:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68C78768F4;
-	Wed, 31 Jan 2024 11:49:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DEF778679;
+	Wed, 31 Jan 2024 11:49:40 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 624B8762DC;
-	Wed, 31 Jan 2024 11:49:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9175762CD;
+	Wed, 31 Jan 2024 11:49:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706701773; cv=none; b=ttrs5gUKe6cHaP5/P39pUdUgH2RA45IqX9dVyzDuyC13FqP13vjZrPO/az981TeD6ewe2GXEEq+DuDNMR97Q4aReO/Xr1Ma4qdQA1D602fs+1LTY2t824gr9fpsXTDF5kmwK0g9RVVK2Qari417OrLNOyY9XWBPZYbNIM+gXfi8=
+	t=1706701779; cv=none; b=jIDcmi/Ack/f10Cz2ro4aQVrW0FPwp0nl45ZIiQygS09F59ZHlOuI9iYohs1kr1rbudW5Po7Fa/or/MyX1aBUPYbzPk7J8drtOpAEvzuigxWDWnIl/3bk0NixezK7Z+0L4ige68TUXkJFVgZfJGfYx2ao3yaZtY9kq/ur2RjnBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706701773; c=relaxed/simple;
-	bh=kPGAT+VjhwpGiz/PhiDeYTLyEcw/DmxhiOP0SJU7hzc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NhPCcHrVrliqxSkYhE3LzS44JSIkxP6+G1Df8oL/2XyQ6N2mCioZOOXPNAi5NkZIzKlrUCJjnT3Fa09A1GZtWI1PrOPFM8EWIxGXDf90v2v6SBwJnqhNHSVmso8UmHBg+XKjE/YZrKF/T1JidCnmpf20ho45Z+G8nMobWtFsWcg=
+	s=arc-20240116; t=1706701779; c=relaxed/simple;
+	bh=nNBvwGN3Qzrse8P9zdKsKXcXa8SriG4C7OAqUvqwmBQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=U7MxAX8kvjoedUYOVmXOolnCqndrSCqj9OBgf7bnHhL59cNAmlJhznqlQFZevfrP9VA+3vLEPRklZc6ME8nsvo+eshqLpMnw/9NAYm67LMbQCVnlZ/R8T3AgN6ZDrkUbRxssq440+ec4YT7Sn5YrfaLY2WetwHZY1dfsGATbOHI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2681F11FB;
-	Wed, 31 Jan 2024 03:50:14 -0800 (PST)
-Received: from [10.57.79.60] (unknown [10.57.79.60])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E085D3F738;
-	Wed, 31 Jan 2024 03:49:26 -0800 (PST)
-Message-ID: <714d0930-2202-48b6-9728-d248f820325e@arm.com>
-Date: Wed, 31 Jan 2024 11:49:25 +0000
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D088CDA7;
+	Wed, 31 Jan 2024 03:50:20 -0800 (PST)
+Received: from [192.168.1.216] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7AC3A3F738;
+	Wed, 31 Jan 2024 03:49:34 -0800 (PST)
+Message-ID: <9dd303cb-0455-d8ac-ce0c-f4a8320b787b@arm.com>
+Date: Wed, 31 Jan 2024 11:49:28 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/15] mm/memory: optimize fork() with PTE-mapped THP
-To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
- <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
-References: <20240129124649.189745-1-david@redhat.com>
- <a335a9d2-9b8f-4eb8-ba22-23a223b59b06@arm.com>
- <a1a0e9b3-dae2-418f-bd63-50e65f471728@redhat.com>
- <57eb82c7-4816-42a2-b5ab-cc221e289b21@arm.com>
- <e6eaba5b-f290-4d1f-990b-a47d89f56ee4@redhat.com>
-Content-Language: en-GB
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <e6eaba5b-f290-4d1f-990b-a47d89f56ee4@redhat.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1 2/2] perf parse-events: Improve error location of terms
+ cloned from an event
+Content-Language: en-US
+To: Ian Rogers <irogers@google.com>
+References: <20240131063048.492010-1-irogers@google.com>
+ <20240131063048.492010-2-irogers@google.com>
+From: James Clark <james.clark@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
+ Kan Liang <kan.liang@linux.intel.com>, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tchen168@asu.edu,
+ Michael Petlan <mpetlan@redhat.com>
+In-Reply-To: <20240131063048.492010-2-irogers@google.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-On 31/01/2024 11:28, David Hildenbrand wrote:
-> On 31.01.24 12:16, Ryan Roberts wrote:
->> On 31/01/2024 11:06, David Hildenbrand wrote:
->>> On 31.01.24 11:43, Ryan Roberts wrote:
->>>> On 29/01/2024 12:46, David Hildenbrand wrote:
->>>>> Now that the rmap overhaul[1] is upstream that provides a clean interface
->>>>> for rmap batching, let's implement PTE batching during fork when processing
->>>>> PTE-mapped THPs.
->>>>>
->>>>> This series is partially based on Ryan's previous work[2] to implement
->>>>> cont-pte support on arm64, but its a complete rewrite based on [1] to
->>>>> optimize all architectures independent of any such PTE bits, and to
->>>>> use the new rmap batching functions that simplify the code and prepare
->>>>> for further rmap accounting changes.
->>>>>
->>>>> We collect consecutive PTEs that map consecutive pages of the same large
->>>>> folio, making sure that the other PTE bits are compatible, and (a) adjust
->>>>> the refcount only once per batch, (b) call rmap handling functions only
->>>>> once per batch and (c) perform batch PTE setting/updates.
->>>>>
->>>>> While this series should be beneficial for adding cont-pte support on
->>>>> ARM64[2], it's one of the requirements for maintaining a total mapcount[3]
->>>>> for large folios with minimal added overhead and further changes[4] that
->>>>> build up on top of the total mapcount.
->>>>>
->>>>> Independent of all that, this series results in a speedup during fork with
->>>>> PTE-mapped THP, which is the default with THPs that are smaller than a PMD
->>>>> (for example, 16KiB to 1024KiB mTHPs for anonymous memory[5]).
->>>>>
->>>>> On an Intel Xeon Silver 4210R CPU, fork'ing with 1GiB of PTE-mapped folios
->>>>> of the same size (stddev < 1%) results in the following runtimes
->>>>> for fork() (shorter is better):
->>>>>
->>>>> Folio Size | v6.8-rc1 |      New | Change
->>>>> ------------------------------------------
->>>>>         4KiB | 0.014328 | 0.014035 |   - 2%
->>>>>        16KiB | 0.014263 | 0.01196  |   -16%
->>>>>        32KiB | 0.014334 | 0.01094  |   -24%
->>>>>        64KiB | 0.014046 | 0.010444 |   -26%
->>>>>       128KiB | 0.014011 | 0.010063 |   -28%
->>>>>       256KiB | 0.013993 | 0.009938 |   -29%
->>>>>       512KiB | 0.013983 | 0.00985  |   -30%
->>>>>      1024KiB | 0.013986 | 0.00982  |   -30%
->>>>>      2048KiB | 0.014305 | 0.010076 |   -30%
->>>>
->>>> Just a heads up that I'm seeing some strange results on Apple M2. Fork for
->>>> order-0 is seemingly costing ~17% more. I'm using GCC 13.2 and was pretty
->>>> sure I
->>>> didn't see this problem with version 1; although that was on a different
->>>> baseline and I've thrown the numbers away so will rerun and try to debug this.
-
-Numbers for v1 of the series, both on top of 6.8-rc1 and rebased to the same
-mm-unstable base as v3 of the series (first 2 rows are from what I just posted
-for context):
-
-| kernel             |   mean_rel |   std_rel |
-|:-------------------|-----------:|----------:|
-| mm-unstabe (base)  |       0.0% |      1.1% |
-| mm-unstable + v3   |      16.7% |      0.8% |
-| mm-unstable + v1   |      -2.5% |      1.7% |
-| v6.8-rc1 + v1      |      -6.6% |      1.1% |
-
-So all looks good with v1. And seems to suggest mm-unstable has regressed by ~4%
-vs v6.8-rc1. Is this really a useful benchmark? Does the raw performance of
-fork() syscall really matter? Evidence suggests its moving all over the place -
-breath on the code and it changes - not a great place to be when using the test
-for gating purposes!
-
-Still with the old tests - I'll move to the new ones now.
+Content-Transfer-Encoding: 7bit
 
 
->>>>
->>>
->>> So far, on my x86 tests (Intel, AMD EPYC), I was not able to observe this.
->>> fork() for order-0 was consistently effectively unchanged. Do you observe that
->>> on other ARM systems as well?
->>
->> Nope; running the exact same kernel binary and user space on Altra, I see
->> sensible numbers;
->>
->> fork order-0: -1.3%
->> fork order-9: -7.6%
->> dontneed order-0: -0.5%
->> dontneed order-9: 0.1%
->> munmap order-0: 0.0%
->> munmap order-9: -67.9%
->>
->> So I guess some pipelining issue that causes the M2 to stall more?
+
+On 31/01/2024 06:30, Ian Rogers wrote:
+> A PMU event/alias will have a set of format terms that replace it when
+> an event is parsed. The location of the terms is their position when
+> parsed for the event/alias either from sysfs or json. This location is
+> of little use when an event fails to parse as the error will be given
+> in terms of the location in the string of events parsed not the json
+> or sysfs string. Fix this by making the cloned terms location that of
+> the event/alias.
 > 
-> With one effective added folio_test_large(), it could only be a code layout
-> problem? Or the compiler does something stupid, but you say that you run the
-> exact same kernel binary, so that doesn't make sense.
-
-Yup, same binary. We know this code is very sensitive - 1 cycle makes a big
-difference. So could easily be code layout, branch prediction, etc...
-
+> If a cloned term from an event/alias is invalid the bad format is hard
+> to determine from the error string. Add the name of the bad format
+> into the error string.
 > 
-> I'm also surprised about the dontneed vs. munmap numbers.
-
-You mean the ones for Altra that I posted? (I didn't post any for M2). The altra
-numbers look ok to me; dontneed has no change, and munmap has no change for
-order-0 and is massively improved for order-9.
-
- Doesn't make any sense
-> (again, there was this VMA merging problem but it would still allow for batching
-> within a single VMA that spans exactly one large folio).
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+> These fixes were inspired by the poor error output in:
+> https://lore.kernel.org/linux-perf-users/alpine.LRH.2.20.2401300733310.11354@Diego/
+> ---
+>  tools/perf/util/pmu.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
 > 
-> What are you using as baseline? Really just mm-unstable vs. mm-unstable+patches?
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index 355f813f960d..437386dedd5c 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -657,7 +657,7 @@ static int pmu_aliases_parse(struct perf_pmu *pmu)
+>  	return 0;
+>  }
+>  
+> -static int pmu_alias_terms(struct perf_pmu_alias *alias, struct list_head *terms)
+> +static int pmu_alias_terms(struct perf_pmu_alias *alias, int err_loc, struct list_head *terms)
+>  {
+>  	struct parse_events_term *term, *cloned;
+>  	struct parse_events_terms clone_terms;
+> @@ -675,6 +675,7 @@ static int pmu_alias_terms(struct perf_pmu_alias *alias, struct list_head *terms
+>  		 * which we don't want for implicit terms in aliases.
+>  		 */
+>  		cloned->weak = true;
+> +		cloned->err_term = cloned->err_val = err_loc;
+>  		list_add_tail(&cloned->list, &clone_terms.terms);
+>  	}
+>  	list_splice_init(&clone_terms.terms, terms);
+> @@ -1363,8 +1364,8 @@ static int pmu_config_term(const struct perf_pmu *pmu,
+>  
+>  			parse_events_error__handle(err, term->err_val,
+>  				asprintf(&err_str,
+> -				    "value too big for format, maximum is %llu",
+> -				    (unsigned long long)max_val) < 0
+> +				    "value too big for format (%s), maximum is %llu",
+> +				    format->name, (unsigned long long)max_val) < 0
+>  				    ? strdup("value too big for format")
+>  				    : err_str,
+>  				    NULL);
 
-yes. except for "v6.8-rc1 + v1" above.
+Hi Ian,
 
-> 
-> Let's see if the new test changes the numbers you measure.
-> 
+I went to test this, but since b30d4f0b6954 ("perf parse-events:
+Additional error reporting") I don't get this size error message
+anymore, just a "bad event/PMU not found" type error. I'm not sure if
+this is something Arm specific, or you're seeing the same thing?
+
+Before b30d4f0b6954:
+
+  $ perf record -e bus_access_rd/long=2
+  event syntax error: '..ss_rd/long=2/'
+                                  \___ value too big for format, maximum
+                                       is 1
+
+  Initial error:
+  event syntax error: 'bus_access_rd/long=2/'
+                     \___ Cannot find PMU `bus_access_rd'. Missing
+                          kernel support?
+  Run 'perf list' for a list of valid events
+
+   Usage: perf record [<options>] [<command>]
+    or: perf record [<options>] -- <command> [<options>]
+
+    -e, --event <event>   event selector. use 'perf list' to list
+      available events
+
+After b30d4f0b6954:
+
+  $ perf record -e bus_access_rd/long=2
+  event syntax error: '..ss_rd/long=2/'
+                                  \___ Bad event or PMU
+
+  Unabled to find PMU or event on a PMU of 'bus_access_rd'
+
+  Initial error:
+  event syntax error: 'bus_access_rd/long=2/'
+                     \___ Cannot find PMU `bus_access_rd'. Missing
+                          kernel support?
+
+  Run 'perf list' for a list of valid events
+
+   Usage: perf record [<options>] [<command>]
+    or: perf record [<options>] -- <command> [<options>]
+
+    -e, --event <event>   event selector. use 'perf list' to list
+      available events
 
 
