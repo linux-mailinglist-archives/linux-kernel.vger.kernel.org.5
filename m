@@ -1,381 +1,311 @@
-Return-Path: <linux-kernel+bounces-46733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95D13844351
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:46:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A969F844367
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:50:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67F39B21BE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:46:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 347941F25871
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:50:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B47C129A83;
-	Wed, 31 Jan 2024 15:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FFB612A146;
+	Wed, 31 Jan 2024 15:50:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JD7D9pFK"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="lPRzQDBq"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24111128388
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE95F80BEF;
+	Wed, 31 Jan 2024 15:50:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706715983; cv=none; b=OZjy9OHY3zukJL6/s9wFmofNcmY4nuvJIz4Fc3hP5NhHehKrSFTZmABKr4VrPMRCfTt0V0USNYNS6Kzqv9HJnTX5ueMFQv6Rbl4NUaDyzpGIOSGzE3eWN9cvHQtRx7PKeUQsGfI4FOmL62rq1q7CaclK8ayDdNZTobIZSf1bhak=
+	t=1706716247; cv=none; b=tsVdjDhtu36PPbtNimPPxSfQChNWCzM+m1vimOhBjSIUIVFRweCNdDzGFCpp+/L2bX/hWYjw0SoUBLH07ffRaTpeQG3c+4ERuveqURps7fKJQ24Op8ihGAjMyiZ4pPWhCT8QR8r5kJwO0E3o7DcH3pX3RsDZdplWR8y2B9hXkA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706715983; c=relaxed/simple;
-	bh=bl6GCEctucb3LpTEmA4gsfZksjVDsZCA1p+RTxHMwIE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=PHz+yYGLoqyQ7x5CAVbZk5dXSKzsviIX7GEu/29MiJIb4lDp+ad5rNfTlU8JHufzBKLI9WfZC7O08hpOmiWBIFRvu5pz1p5MxcIzEoFkKZjFvQb5VH7JfDD/4YMOUvUYAeUHfo8fD5SkmNTClU7FZPay1ZB2bcRrrVI3NybY3HI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JD7D9pFK; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40e72a567eeso69353325e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 07:46:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706715979; x=1707320779; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=bl6GCEctucb3LpTEmA4gsfZksjVDsZCA1p+RTxHMwIE=;
-        b=JD7D9pFKO0RVDyxwB4mNJyO4/NO0gDWkl1AqnJrF4QgURkiu6wJ0WIr5wQS8nLzVXc
-         VEB+TxD4eZCUcb9TzPJ3B9ZXK+imM/X5/zPW1QqcT/R8PLyenFnoW8I0GrVfHohbvooN
-         TnixHSzFQoRJ8mYNpFzftqVvNyy7Hu5NcpeRd3/Lo1xQ62aVQ/3REgzM+iZVTgc4KlH8
-         7obG66dWfr8uD+wX4rRHYg1HQ93FqecHNuO0eoft8Ipop06GBtTaxEa8e8+j9AYnBvVU
-         0I5k1dyOVlOlLQIGj6c7jre+9Y0t6qHQYbtAbV7m3iZ5BpFQG5FpVa3Hn6QUrR6Gv7yM
-         Zzzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706715979; x=1707320779;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bl6GCEctucb3LpTEmA4gsfZksjVDsZCA1p+RTxHMwIE=;
-        b=Tv0/1/2s5MZQdbUoX1+UD6C1dXIjQvA5IY9BRQiGgU2u5zkvE4COaESp+zhOaA1PPf
-         hwRH4Ho5C10WzqOW8X6pxTxMHBPIKXnoPZRJaDceZ5aNeGBaGWe4gIQ+E7sxcVXMHsK+
-         EKhIr/GlkMwbj3vREqTGJF8bZhzo1hV/x+t0imLKTsTSFjVuhihcRkmPJSg58L9RLPic
-         Xi8GY5apxjclowUQmH9ige9zWKDzmH4G52FAdAwRjuOelgQQAAQ09JIfDyw9NIrCTMP2
-         mh37TJAvEmjU/v34TLmOHemvvoPLATlk7ZAERQemTBTP2jptLAm9sWQu50LzREAWuHhc
-         1qqg==
-X-Gm-Message-State: AOJu0YyDuZRGhQgvvOmstnQysVsM8Ibf18mNxxRMG48E8id1mqbftHlR
-	NA6P09JHN2RirOC691wt5ukIrEMgs4FtnEiIOOxpE0Lm7yRlk2+nX9+zFB+45dxmj5Or
-X-Google-Smtp-Source: AGHT+IFyUnVV7jQxNNEqOIpLYcl6y/fU9KkG6FseN527Zh/6cClvUHwINvHEcCubczVu7lYRXdXK4g==
-X-Received: by 2002:a05:600c:35d3:b0:40e:fc29:f52f with SMTP id r19-20020a05600c35d300b0040efc29f52fmr1655969wmq.21.1706715979035;
-        Wed, 31 Jan 2024 07:46:19 -0800 (PST)
-Received: from ?IPv6:2003:f6:ef1b:2000:15d4:fc17:481e:8afe? (p200300f6ef1b200015d4fc17481e8afe.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:15d4:fc17:481e:8afe])
-        by smtp.gmail.com with ESMTPSA id e17-20020a05600c4b9100b0040e3bdff98asm1889149wmp.23.2024.01.31.07.46.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 07:46:18 -0800 (PST)
-Message-ID: <9a4b4dd60c35dd4e00b97e19fced0e79a86f6eef.camel@gmail.com>
-Subject: Re: [PATCH RESEND RFC] driver: core: don't queue device links
- removal for dt overlays
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: nuno.sa@analog.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Frank Rowand <frowand.list@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- linux-kernel@vger.kernel.org,  Saravana Kannan <saravanak@google.com>
-Date: Wed, 31 Jan 2024 16:49:35 +0100
-In-Reply-To: <CAJZ5v0hW60++hhKG=yBE7+rB9qt2m+tO_WAf=YFhNU2-y3VHFw@mail.gmail.com>
-References: 
-	<20240123-fix-device-links-overlays-v1-1-9e4f6acaab6c@analog.com>
-	 <dcb1b6dbc2172dd66bfdcc0c8135e0d98f1c22dd.camel@gmail.com>
-	 <CAJZ5v0gAK9CChRPSx7Lu=BrGQo22q4swpvvN3__wFw68NfqKPA@mail.gmail.com>
-	 <25d3cfd74b26eb6a4aa07f1da93ccf4815b0b1c6.camel@gmail.com>
-	 <CAJZ5v0hX4Yv7UVng=O4tZyb_O7D2EcymdEDdSUrVDPk6h51VjA@mail.gmail.com>
-	 <8682d7f7ee1a60902b1f3e5529a4adbaf4846aa0.camel@gmail.com>
-	 <CAJZ5v0hW60++hhKG=yBE7+rB9qt2m+tO_WAf=YFhNU2-y3VHFw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1706716247; c=relaxed/simple;
+	bh=E+hfaCnjYnWUeiF1GWw1Zb86fcz99OlNmZP41qV/H/w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ZRGik5lvW7WvHnY3tRxl4gDZ4fcWwLDkDE4Xj8zxmlbzWB6XXSMyJd8dWKieg4p43S7qM4DPXJVnzCAxZS25sVRTIzhlMNcreHPp2HMrOkhybICXqqy7ZJze5WkownvNkO0nJX3/lpeRKsShXG9948B8sbowGfCKpcKA3fhRS7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=lPRzQDBq; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40VFoYjP028165;
+	Wed, 31 Jan 2024 09:50:34 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706716234;
+	bh=eo2a9h9d106rwWnothXcXxppgha4+4M+dxNlXACyeM8=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=lPRzQDBqPO5QjYovrZSKbsimS7RJqlwTLTlsrDM/FwdVMMFIymxoBMmLHtsE01bZv
+	 3tJTy4J+NT8pjtYSNE5xolqo9Q5ssPHit1aMkaIwOEGAX4G6T5ZEtoyCRQ8gv8D5do
+	 LD4loilZTLzMMAH/szd9oSmaKZui6ppMvDHHVOeY=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40VFoYfA061222
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 31 Jan 2024 09:50:34 -0600
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
+ Jan 2024 09:50:34 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 31 Jan 2024 09:50:34 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40VFoXHv036696;
+	Wed, 31 Jan 2024 09:50:33 -0600
+Message-ID: <7960af47-5d6a-4e54-9d58-a145311321f6@ti.com>
+Date: Wed, 31 Jan 2024 09:50:33 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 5/6] arm64: dts: ti: k3-j784s4: Add overlay to enable
+ QSGMII mode with CPSW9G
+Content-Language: en-US
+To: Chintan Vankar <c-vankar@ti.com>, Peter Rosin <peda@axentia.se>,
+        Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, Tero
+ Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>, Nishanth
+ Menon <nm@ti.com>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
+        <s-vadapalli@ti.com>, <r-gunasekaran@ti.com>, <danishanwar@ti.com>
+References: <20240131101441.1362409-1-c-vankar@ti.com>
+ <20240131101441.1362409-6-c-vankar@ti.com>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <20240131101441.1362409-6-c-vankar@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Wed, 2024-01-31 at 16:10 +0100, Rafael J. Wysocki wrote:
-> On Wed, Jan 31, 2024 at 3:52=E2=80=AFPM Nuno S=C3=A1 <noname.nuno@gmail.c=
-om> wrote:
-> >=20
-> > On Wed, 2024-01-31 at 15:28 +0100, Rafael J. Wysocki wrote:
-> > > On Wed, Jan 31, 2024 at 3:18=E2=80=AFPM Nuno S=C3=A1 <noname.nuno@gma=
-il.com> wrote:
-> > > >=20
-> > > > On Wed, 2024-01-31 at 14:30 +0100, Rafael J. Wysocki wrote:
-> > > > > On Wed, Jan 31, 2024 at 1:20=E2=80=AFPM Nuno S=C3=A1 <noname.nuno=
-@gmail.com> wrote:
-> > > > > >=20
-> > > > > > On Tue, 2024-01-23 at 16:40 +0100, Nuno Sa via B4 Relay wrote:
-> > > > > > > From: Nuno Sa <nuno.sa@analog.com>
-> > > > > > >=20
-> > > > > > > For device links, releasing the supplier/consumer devices
-> > > > > > > references
-> > > > > > > happens asynchronously in device_link_release_fn(). Hence, th=
-e
-> > > > > > > possible
-> > > > > > > release of an of_node is also asynchronous. If these nodes we=
-re
-> > > > > > > added
-> > > > > > > through overlays we have a problem because this does not resp=
-ect
-> > > > > > > the
-> > > > > > > devicetree overlays assumptions that when a changeset is
-> > > > > > > being removed in __of_changeset_entry_destroy(), it must hold=
- the
-> > > > > > > last
-> > > > > > > reference to that node. Due to the async nature of device lin=
-ks
-> > > > > > > that
-> > > > > > > cannot be guaranteed.
-> > > > > > >=20
-> > > > > > > Given the above, in case one of the link consumer/supplier is=
- part
-> > > > > > > of
-> > > > > > > an overlay node we call directly device_link_release_fn() ins=
-tead
-> > > > > > > of
-> > > > > > > queueing it. Yes, it might take some significant time for
-> > > > > > > device_link_release_fn() to complete because of synchronize_s=
-rcu()
-> > > > > > > but
-> > > > > > > we would need to, anyways, wait for all OF references to be
-> > > > > > > released
-> > > > > > > if
-> > > > > > > we want to respect overlays assumptions.
-> > > > > > >=20
-> > > > > > > Signed-off-by: Nuno Sa <nuno.sa@analog.com>
-> > > > > > > ---
-> > > > > > > This RFC is a follow up of a previous one that I sent to the
-> > > > > > > devicetree
-> > > > > > > folks [1]. It got rejected because it was not really fixing t=
-he
-> > > > > > > root
-> > > > > > > cause of the issue (which I do agree). Please see the link wh=
-ere I
-> > > > > > > fully explain what the issue is.
-> > > > > > >=20
-> > > > > > > I did also some git blaming and did saw that commit
-> > > > > > > 80dd33cf72d1 ("drivers: base: Fix device link removal") intro=
-duced
-> > > > > > > queue_work() as we could be releasing the last device referen=
-ce
-> > > > > > > and
-> > > > > > > hence
-> > > > > > > sleeping which is against SRCU callback requirements. However=
-,
-> > > > > > > that
-> > > > > > > same
-> > > > > > > commit is now making use of synchronize_srcu() which may take
-> > > > > > > significant time (and I think that's the reason for the work
-> > > > > > > item?).
-> > > > > > >=20
-> > > > > > > However, given the dt overlays requirements, I'm not seeing a=
-ny
-> > > > > > > reason to not be able to run device_link_release_fn()
-> > > > > > > synchronously if
-> > > > > > > we
-> > > > > > > detect an OVERLAY node is being released. I mean, even if we =
-come
-> > > > > > > up
-> > > > > > > (and I did some experiments in this regard) with some async
-> > > > > > > mechanism
-> > > > > > > to
-> > > > > > > release the OF nodes refcounts, we still need a synchronizati=
-on
-> > > > > > > point
-> > > > > > > somewhere.
-> > > > > > >=20
-> > > > > > > Anyways, I would like to have some feedback on how acceptable
-> > > > > > > would
-> > > > > > > this
-> > > > > > > be or what else could I do so we can have a "clean" dt overla=
-y
-> > > > > > > removal.
-> > > > > > >=20
-> > > > > > > I'm also including dt folks so they can give some comments on=
- the
-> > > > > > > new
-> > > > > > > device_node_overlay_removal() function. My goal is to try to
-> > > > > > > detect
-> > > > > > > when
-> > > > > > > an
-> > > > > > > overlay is being removed (maybe we could even have an explici=
-t
-> > > > > > > flag
-> > > > > > > for
-> > > > > > > it?) and only directly call device_link_release_fn() in that =
-case.
-> > > > > > >=20
-> > > > > > > [1]:
-> > > > > > > https://lore.kernel.org/linux-devicetree/20230511151047.17798=
-41-1-nuno.sa@analog.com/
-> > > > > > > ---
-> > > > > > > =C2=A0drivers/base/core.c | 25 ++++++++++++++++++++++++-
-> > > > > > > =C2=A01 file changed, 24 insertions(+), 1 deletion(-)
-> > > > > > >=20
-> > > > > > > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > > > > > > index 14d46af40f9a..31ea001f6142 100644
-> > > > > > > --- a/drivers/base/core.c
-> > > > > > > +++ b/drivers/base/core.c
-> > > > > > > @@ -497,6 +497,18 @@ static struct attribute *devlink_attrs[]=
- =3D {
-> > > > > > > =C2=A0};
-> > > > > > > =C2=A0ATTRIBUTE_GROUPS(devlink);
-> > > > > > >=20
-> > > > > > > +static bool device_node_overlay_removal(struct device *dev)
-> > > > > > > +{
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (!dev_of_node(dev))
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 return false;
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (!of_node_check_flag(dev->of_nod=
-e, OF_DETACHED))
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 return false;
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (!of_node_check_flag(dev->of_nod=
-e, OF_OVERLAY))
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 return false;
-> > > > > > > +
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 return true;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > =C2=A0static void device_link_release_fn(struct work_struct *=
-work)
-> > > > > > > =C2=A0{
-> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct device_link *link =3D c=
-ontainer_of(work, struct
-> > > > > > > device_link,
-> > > > > > > rm_work);
-> > > > > > > @@ -532,8 +544,19 @@ static void devlink_dev_release(struct d=
-evice
-> > > > > > > *dev)
-> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * synchronization in dev=
-ice_link_release_fn() and if the
-> > > > > > > consumer
-> > > > > > > or
-> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * supplier devices get d=
-eleted when it runs, so put it into
-> > > > > > > the
-> > > > > > > "long"
-> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * workqueue.
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * However, if any of the supp=
-lier, consumer nodes is being
-> > > > > > > removed
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * through overlay removal, th=
-e expectation in
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * __of_changeset_entry_destro=
-y() is for the node 'kref' to
-> > > > > > > be 1
-> > > > > > > which
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * cannot be guaranteed with t=
-he async nature of
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * device_link_release_fn(). H=
-ence, do it synchronously for
-> > > > > > > the
-> > > > > > > overlay
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * case.
-> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0 queue_work(system_long_wq, &link->r=
-m_work);
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (device_node_overlay_removal(lin=
-k->consumer) ||
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 device_node=
-_overlay_removal(link->supplier))
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 device_link_release_fn(&link->rm_work);
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 else
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 queue_work(system_long_wq, &link->rm_work);
-> > > > > > > =C2=A0}
-> > > > > > >=20
-> > > > > > > =C2=A0static struct class devlink_class =3D {
-> > > > > > >=20
-> > > > > > > ---
->=20
-> [cut]
->=20
-> > > No, IMV devlink_dev_release() needs to be called via
-> > > device_link_put_kref(), but it may run device_link_release_fn()
-> > > directly if the link is marked in a special way or something like
-> > > this.
-> >=20
-> > Sorry, I'm not totally getting this. I'm directly calling
-> > device_link_release_fn() from=C2=A0 devlink_dev_release(). We should on=
-ly get
-> > into
-> > devlink_dev_release() after all the references are dropped right (being=
- it
-> > the
-> > release callback for the link class)?
->=20
-> OK, I got confused somehow, sorry.
->=20
-> It should work.
->=20
-> I kind of don't like adding OF-specific code to the driver core, but
-> if this is fine with Greg, it can be done.=C2=A0 It should depend on
+On 1/31/24 4:14 AM, Chintan Vankar wrote:
+> From: Siddharth Vadapalli <s-vadapalli@ti.com>
+> 
+> The J7 Quad Port Add-On Ethernet Card for J784S4 EVM supports
+> QSGMII mode. Use the overlay to configure CPSW9G ports in QSGMII
+> mode with the Add-On Ethernet Card connected to the ENET Expansion
+> 1 slot on the EVM.
+> 
+> Add support to reset the PHY from kernel by using gpio-hog and
+> gpio-reset.
+> 
+> Add aliases for CPSW9G ports to enable kernel to fetch MAC Addresses
+> directly from U-Boot.
+> 
+> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> Signed-off-by: Chintan Vankar <c-vankar@ti.com>
+> ---
+>   arch/arm64/boot/dts/ti/Makefile               |   7 +-
+>   .../ti/k3-j784s4-evm-quad-port-eth-exp1.dtso  | 147 ++++++++++++++++++
+>   2 files changed, 153 insertions(+), 1 deletion(-)
+>   create mode 100644 arch/arm64/boot/dts/ti/k3-j784s4-evm-quad-port-eth-exp1.dtso
+> 
+> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+> index 52c1dc910308..836bc197d932 100644
+> --- a/arch/arm64/boot/dts/ti/Makefile
+> +++ b/arch/arm64/boot/dts/ti/Makefile
+> @@ -81,6 +81,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm-pcie1-ep.dtbo
+>   # Boards with J784s4 SoC
+>   dtb-$(CONFIG_ARCH_K3) += k3-am69-sk.dtb
+>   dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm.dtb
+> +dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm-quad-port-eth-exp1.dtbo
+>   
+>   # Build time test only, enabled by CONFIG_OF_ALL_DTBS
+>   k3-am625-beagleplay-csi2-ov5640-dtbs := k3-am625-beagleplay.dtb \
+> @@ -109,6 +110,8 @@ k3-j721e-evm-pcie0-ep-dtbs := k3-j721e-common-proc-board.dtb \
+>   	k3-j721e-evm-pcie0-ep.dtbo
+>   k3-j721s2-evm-pcie1-ep-dtbs := k3-j721s2-common-proc-board.dtb \
+>   	k3-j721s2-evm-pcie1-ep.dtbo
+> +k3-j784s4-evm-quad-port-eth-exp1-dtbs := k3-j784s4-evm.dtb \
+> +	k3-j784s4-evm-quad-port-eth-exp1.dtbo
+>   dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
+>   	k3-am625-beagleplay-csi2-tevi-ov5640.dtb \
+>   	k3-am625-sk-csi2-imx219.dtb \
+> @@ -121,7 +124,8 @@ dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
+>   	k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb \
+>   	k3-am642-tqma64xxl-mbax4xxl-wlan.dtb \
+>   	k3-j721e-evm-pcie0-ep.dtb \
+> -	k3-j721s2-evm-pcie1-ep.dtb
+> +	k3-j721s2-evm-pcie1-ep.dtb \
+> +	k3-j784s4-evm-quad-port-eth-exp1.dtb
+>   
+>   # Enable support for device-tree overlays
+>   DTC_FLAGS_k3-am625-beagleplay += -@
+> @@ -132,3 +136,4 @@ DTC_FLAGS_k3-am642-tqma64xxl-mbax4xxl += -@
+>   DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
+>   DTC_FLAGS_k3-j721e-common-proc-board += -@
+>   DTC_FLAGS_k3-j721s2-common-proc-board += -@
+> +DTC_FLAGS_k3-j784s4-evm += -@
+> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm-quad-port-eth-exp1.dtso b/arch/arm64/boot/dts/ti/k3-j784s4-evm-quad-port-eth-exp1.dtso
+> new file mode 100644
+> index 000000000000..0667389b07be
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm-quad-port-eth-exp1.dtso
+> @@ -0,0 +1,147 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only OR MIT */
+> +/**
+> + * DT Overlay for CPSW9G in QSGMII mode using J7 Quad Port ETH EXP Add-On Ethernet Card with
+> + * J784S4 EVM. The Add-On Ethernet Card has to be connected to ENET Expansion 1 slot on the
+> + * board.
+> + *
+> + * Product Datasheet: https://www.ti.com/lit/ug/spruj74/spruj74.pdf
+> + *
+> + * Link to QSGMII Daughtercard: https://www.ti.com/tool/J721EXENETXPANEVM
+> + *
+> + * Copyright (C) 2024 Texas Instruments Incorporated - https://www.ti.com/
+> + */
+> +
+> +/dts-v1/;
+> +/plugin/;
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/phy/phy-cadence.h>
+> +#include <dt-bindings/phy/phy.h>
+> +
+> +#include "k3-pinctrl.h"
+> +#include "k3-serdes.h"
+> +
+> +&{/} {
+> +	aliases {
+> +		ethernet1 = "/bus@100000/ethernet@c000000/ethernet-ports/port@5";
 
-Not perfect but I'm not seeing any other way. We need to somehow see if the=
- node
-is part of an OVERLAY and AFAIK, the only way is looking at the node flags.=
- I'll
-wait on Greg's feedback.
+Didn't you already set ethernet1 to be main_cpsw1_port1 in the base, does this
+actually behave the way you want?
 
-> CONFIG_OF_OVERLAY, though.
+Otherwise looks okay,
 
-I guess that should be already indirectly implied. I mean if CONFIG_OF_OVER=
-LAY
-is not set, I guess there's not way for
-of_node_check_flag(dev->of_node, OF_OVERLAY)) return true. But yeah, I can =
-bail
-out right away if IS_ENABLED(CONFIG_OF_OVERLAY) is not set.
+Reviewed-by: Andrew Davis <afd@ti.com>
 
-> I would like a comment to be added to device_link_release_fn() to
-> explain why the overlay case needs synchronous execution in there.
-
-I do have the following comment before checking device_node_overlay_removal=
-():
-
-
-"* However, if any of the supplier, consumer nodes is being removed
- * through overlay removal, the expectation in
- * __of_changeset_entry_destroy() is for the node 'kref' to be 1 which
- * cannot be guaranteed with the async nature of
- * device_link_release_fn(). Hence, do it synchronously for the overlay
- * case."
-
-I can elaborate more if you prefer...
-
->=20
-> > device_node_overlay_removal() is my way to see if the link "is marked i=
-n a
-> > special way" as you put it. This checks if one of the supplier/consumer=
- is
-> > marked as an OVERLAY and if it's being removed (I think that OF_DETACHE=
-D
-> > tells
-> > us that but some feedback from DT guys will be helpful).
-> >=20
-> > Alternatively, I could just check the OF_OVERLAY flag when the link is =
-being
-> > created and have a new variable in struct device_link to flag the
-> > synchronous
-> > release. Disadvantage is that in this way even a sysfs unbind or module
-> > unload
-> > (without necessarily removing the overly) would lead to a synchronous
-> > release
-> > which can actually make sense (now that I think about it). Because if
-> > someone
-> > does some crazy thing like "echo device > unbind" and then removes the
-> > overlay
-> > we could still hit the overly removal path before device_link_release_f=
-n()
-> > completed.
->=20
-> This sounds more complicated than the current patch.
-
-Agreed...
-
-- Nuno S=C3=A1
+> +		ethernet2 = "/bus@100000/ethernet@c000000/ethernet-ports/port@6";
+> +		ethernet3 = "/bus@100000/ethernet@c000000/ethernet-ports/port@7";
+> +		ethernet4 = "/bus@100000/ethernet@c000000/ethernet-ports/port@8";
+> +		ethernet5 = "/bus@100000/ethernet@c200000/ethernet-ports/port@1";
+> +	};
+> +};
+> +
+> +&main_cpsw0 {
+> +	status = "okay";
+> +};
+> +
+> +&main_cpsw0_port5 {
+> +	status = "okay";
+> +	phy-handle = <&cpsw9g_phy1>;
+> +	phy-mode = "qsgmii";
+> +	mac-address = [00 00 00 00 00 00];
+> +	phys = <&cpsw0_phy_gmii_sel 5>, <&serdes2_qsgmii_link>;
+> +	phy-names = "mac", "serdes";
+> +};
+> +
+> +&main_cpsw0_port6 {
+> +	status = "okay";
+> +	phy-handle = <&cpsw9g_phy2>;
+> +	phy-mode = "qsgmii";
+> +	mac-address = [00 00 00 00 00 00];
+> +	phys = <&cpsw0_phy_gmii_sel 6>, <&serdes2_qsgmii_link>;
+> +	phy-names = "mac", "serdes";
+> +};
+> +
+> +&main_cpsw0_port7 {
+> +	status = "okay";
+> +	phy-handle = <&cpsw9g_phy0>;
+> +	phy-mode = "qsgmii";
+> +	mac-address = [00 00 00 00 00 00];
+> +	phys = <&cpsw0_phy_gmii_sel 7>, <&serdes2_qsgmii_link>;
+> +	phy-names = "mac", "serdes";
+> +};
+> +
+> +&main_cpsw0_port8 {
+> +	status = "okay";
+> +	phy-handle = <&cpsw9g_phy3>;
+> +	phy-mode = "qsgmii";
+> +	mac-address = [00 00 00 00 00 00];
+> +	phys = <&cpsw0_phy_gmii_sel 8>, <&serdes2_qsgmii_link>;
+> +	phy-names = "mac", "serdes";
+> +};
+> +
+> +&main_cpsw0_mdio {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&mdio0_default_pins>;
+> +	bus_freq = <1000000>;
+> +	reset-gpios = <&exp2 17 GPIO_ACTIVE_LOW>;
+> +	reset-post-delay-us = <120000>;
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +
+> +	cpsw9g_phy0: ethernet-phy@16 {
+> +		reg = <16>;
+> +	};
+> +	cpsw9g_phy1: ethernet-phy@17 {
+> +		reg = <17>;
+> +	};
+> +	cpsw9g_phy2: ethernet-phy@18 {
+> +		reg = <18>;
+> +	};
+> +	cpsw9g_phy3: ethernet-phy@19 {
+> +		reg = <19>;
+> +	};
+> +};
+> +
+> +&exp2 {
+> +	/* Power-up ENET1 EXPANDER PHY. */
+> +	qsgmii-line-hog {
+> +		gpio-hog;
+> +		gpios = <16 GPIO_ACTIVE_HIGH>;
+> +		output-low;
+> +	};
+> +
+> +	/* Toggle MUX2 for MDIO lines */
+> +	mux-sel-hog {
+> +		gpio-hog;
+> +		gpios = <13 GPIO_ACTIVE_HIGH>, <14 GPIO_ACTIVE_HIGH>, <15 GPIO_ACTIVE_HIGH>;
+> +		output-high;
+> +	};
+> +};
+> +
+> +&main_pmx0 {
+> +	mdio0_default_pins: mdio0-default-pins {
+> +		pinctrl-single,pins = <
+> +			J784S4_IOPAD(0x05c, PIN_INPUT, 4) /* (AC36) MCASP2_AXR0.MDIO1_MDIO */
+> +			J784S4_IOPAD(0x058, PIN_INPUT, 4) /* (AE37) MCASP2_AFSX.MDIO1_MDC */
+> +		>;
+> +	};
+> +};
+> +
+> +&serdes_ln_ctrl {
+> +	idle-states = <J784S4_SERDES0_LANE0_PCIE1_LANE0>, <J784S4_SERDES0_LANE1_PCIE1_LANE1>,
+> +		      <J784S4_SERDES0_LANE2_IP3_UNUSED>, <J784S4_SERDES0_LANE3_USB>,
+> +		      <J784S4_SERDES1_LANE0_PCIE0_LANE0>, <J784S4_SERDES1_LANE1_PCIE0_LANE1>,
+> +		      <J784S4_SERDES1_LANE2_PCIE0_LANE2>, <J784S4_SERDES1_LANE3_PCIE0_LANE3>,
+> +		      <J784S4_SERDES2_LANE0_QSGMII_LANE5>, <J784S4_SERDES2_LANE1_QSGMII_LANE6>,
+> +		      <J784S4_SERDES2_LANE2_QSGMII_LANE7>, <J784S4_SERDES2_LANE3_QSGMII_LANE8>;
+> +};
+> +
+> +&serdes_wiz2 {
+> +	status = "okay";
+> +};
+> +
+> +&serdes2 {
+> +	status = "okay";
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	serdes2_qsgmii_link: phy@0 {
+> +		reg = <2>;
+> +		cdns,num-lanes = <1>;
+> +		#phy-cells = <0>;
+> +		cdns,phy-type = <PHY_TYPE_QSGMII>;
+> +		resets = <&serdes_wiz2 3>;
+> +	};
+> +};
 
