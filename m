@@ -1,107 +1,119 @@
-Return-Path: <linux-kernel+bounces-45875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F93B84376A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:13:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F9B284376D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:13:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45C021F22D13
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:13:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C4F5B24FE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:13:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D31A55812E;
-	Wed, 31 Jan 2024 07:09:55 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55F455A796;
+	Wed, 31 Jan 2024 07:10:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="I4gH3AKn"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 840C479943;
-	Wed, 31 Jan 2024 07:09:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 203A754F90
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 07:10:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706684995; cv=none; b=NLdWNRs2NQS/z9MybNNcDow8Yfm3ItOkjBGGBhI+FcNgpi6jdCiFTJu7r5JpZjQWioooyyUNNiclQg4PtBxyTD2lc6g4OkePb47jqxltTO2xVcP4GjFCsks/VOYvoWvzjW/EIsojsaA7fdezrYzdaSG887LvzZuEE2EKqsSHiVE=
+	t=1706685013; cv=none; b=V3FVIrZaKvVh2dTEM2ZLO/8MpjTxU/NcJaMLDPGSx4hXfIY4tXeJY/nqE3D9nEPhM30VrTe4B3tA8JWhNjgADkmdYBTOp/xuPNqTzSIOBQs+LbtUGegl8PkL9iu/HujTt11FiJIj5ix542Ib4Pjp/rtd0ESiE5U/jd5fjwBhRTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706684995; c=relaxed/simple;
-	bh=jOy7A5WTQyGJIBvxH/FIa4h8gIfc5N0n93CcoCzbIgU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Cr3jRm81rFoYkh7EWRwdV/c2KnotxuKk28/Rd47s6///1r+yh49loO0hDwmA7NMVD2sCpu6t0v1sCL6WyJ0BtCatyAyWFzj6R+LwSvUSyd6qKbynAufDrCYI3+/WcYr5t2zxXNwTSdT9/6ezvG+zsDoXYdRkvA4hxRk72JGxVkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 21a7510e3d8b4b8c8ce2d2d78c1109ea-20240131
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:b74068e4-0538-4de1-9c09-8250025e36a8,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-8,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:2
-X-CID-INFO: VERSION:1.1.35,REQID:b74068e4-0538-4de1-9c09-8250025e36a8,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-8,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:2
-X-CID-META: VersionHash:5d391d7,CLOUDID:ebad7383-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:240131150947MB1NSQV2,BulkQuantity:0,Recheck:0,SF:100|17|19|44|101|66
-	|38|24|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BE
-	C:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 21a7510e3d8b4b8c8ce2d2d78c1109ea-20240131
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 572861371; Wed, 31 Jan 2024 15:09:46 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 60886E000EBB;
-	Wed, 31 Jan 2024 15:09:45 +0800 (CST)
-X-ns-mid: postfix-65B9F239-184845410
-Received: from kernel.. (unknown [172.20.15.254])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 3FCFAE000EB9;
-	Wed, 31 Jan 2024 15:09:43 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: miklos@szeredi.hu,
-	amir73il@gmail.com,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-unionfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] fs: Use KMEM_CACHE instead of kmem_cache_create
-Date: Wed, 31 Jan 2024 15:09:41 +0800
-Message-Id: <20240131070941.135178-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706685013; c=relaxed/simple;
+	bh=N7Rb76xtAihOSGgHLIxPhp8qnHuyGM9SCr1+zt+seug=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=O/KeCiaC48V5/Nq0qnr8U5cecnq6qazRuufV7MQlPrWQqSikHQcgjS0J+n3s8M1X4SN0b31y7qFq8Knbz5vuMQJ4EUQrDpKtH7j8EWcCU0Sh93fwUOqapPsRAIRG0uV1liRF8PbH+l38vzgTWxsdxWXRe9HkxUORJFXzB2sHSY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=I4gH3AKn; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40ed3101ce3so60328515e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 23:10:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706685010; x=1707289810; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KzUML6NehRjq09oGSxNuYEWmU/TVTg/6MOHGTd1ruRM=;
+        b=I4gH3AKnp82W+TeZRs7LUY7owupBFxsM5AZgX1eBBONeKyj0xCZ/B+jzIKEZvyMDbJ
+         P1h+7QvX6bQ2LJKpGJIltrdnvODq1Jq+ulP0lzfx6TIuPMbxzCMYtcg6hdYndwdYsmC2
+         o2BNeU2x55XI9Yhlmc2RHS/ZHIBAZMKhK+26esbTFA3y3qKnrOPRv8UYLUyhkySqW0oJ
+         /nrCeKbSEwlME6c5pQFnrHwAgW3Lj2fk/jvYM11YJZdOLHsjhp/1uDD/3k4DBBsspIYF
+         dC0IF2A24QNfGMs7FkXs4Ri+cGDWD0qC1ZRxWaak1X/3EEG53BKF2OOMNuMVH9VbElLy
+         AswQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706685010; x=1707289810;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KzUML6NehRjq09oGSxNuYEWmU/TVTg/6MOHGTd1ruRM=;
+        b=V+cGJXXuy7yhnP1XC3vUWuhVsBVdt6MS/93dRxu6eaKnA+YhJTSwSF1V0CrRL3P6Vj
+         3DVcF3CyqJPbdgVOoUIfyaXdBJgH7jzvsRuZCXiIz4sEnDl4ONp9Z8+6WuX7P3BKSeRK
+         eRTjAMejuAVV0azyUhEQBkmmv+MuPlIkOvSSaBCfafrjRAF1TmcMrWyvMLoe1YfVm5X2
+         vUx8zXG/yZReGRt3ALXS5m6W6Tta2+MHdShHLrbh7/lZ0PRqKRwQ7zpBeBPADDAFPr47
+         l7I5f//7lT0HITct0OvYEsspJsxYuOYaJHq+0iuYxiv4rWF2Bgv3FRBt8i0NLyWGc1ts
+         UvhA==
+X-Gm-Message-State: AOJu0YzRzMJIBwsQ6/Nh+ly4XjcuKoYlMAIImCPlZh2DN3AKVxgokrXJ
+	MHw4faOfiU4BH44eOA4KQvRiDNu+xY2OyDjzYXO0aXmhME15XZC+ANBfUWY/9o0w1VHxh1R62f6
+	F
+X-Google-Smtp-Source: AGHT+IGOAuMjabgFSTRl/iF1SMdls3jHR5/paMKe+B+jUUAkMSCYfYfWIthewE8vE+w6Sj6vwl1wcg==
+X-Received: by 2002:a05:600c:45c6:b0:40e:d332:bb8f with SMTP id s6-20020a05600c45c600b0040ed332bb8fmr668333wmo.5.1706685010527;
+        Tue, 30 Jan 2024 23:10:10 -0800 (PST)
+Received: from localhost ([102.140.226.10])
+        by smtp.gmail.com with ESMTPSA id u13-20020a05600c00cd00b0040f02114906sm650532wmm.16.2024.01.30.23.10.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jan 2024 23:10:10 -0800 (PST)
+Date: Wed, 31 Jan 2024 10:10:07 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Martin Kaistra <martin.kaistra@linutronix.de>
+Cc: Jes Sorensen <Jes.Sorensen@gmail.com>, Kalle Valo <kvalo@kernel.org>,
+	Ping-Ke Shih <pkshih@realtek.com>, linux-wireless@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] wifi: rtl8xxxu: fix error messages
+Message-ID: <7b144531-a8da-4725-8911-9b614a525a35@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
-commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
-introduces a new macro.
-Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-to simplify the creation of SLAB caches.
+The first parameter of WARN_ONCE() is a condition so this code will end
+up printing the function name instead of the proper message.
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+Fixes: 3ff7a05996f9 ("wifi: rtl8xxxu: support setting bssid register for multiple interfaces")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
- fs/backing-file.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/backing-file.c b/fs/backing-file.c
-index a681f38d84d8..740185198db3 100644
---- a/fs/backing-file.c
-+++ b/fs/backing-file.c
-@@ -325,9 +325,7 @@ EXPORT_SYMBOL_GPL(backing_file_mmap);
-=20
- static int __init backing_aio_init(void)
- {
--	backing_aio_cachep =3D kmem_cache_create("backing_aio",
--					       sizeof(struct backing_aio),
--					       0, SLAB_HWCACHE_ALIGN, NULL);
-+	backing_aio_cachep =3D KMEM_CACHE(backing_aio, SLAB_HWCACHE_ALIGN);
- 	if (!backing_aio_cachep)
- 		return -ENOMEM;
-=20
---=20
-2.39.2
+diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+index 3b954c2fe448..bd6fd3120562 100644
+--- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
++++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+@@ -3593,7 +3593,7 @@ static int rtl8xxxu_set_mac(struct rtl8xxxu_priv *priv, int port_num)
+ 		reg = REG_MACID1;
+ 		break;
+ 	default:
+-		WARN_ONCE("%s: invalid port_num\n", __func__);
++		WARN_ONCE(1, "%s: invalid port_num\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -3618,7 +3618,7 @@ static int rtl8xxxu_set_bssid(struct rtl8xxxu_priv *priv, const u8 *bssid, int p
+ 		reg = REG_BSSID1;
+ 		break;
+ 	default:
+-		WARN_ONCE("%s: invalid port_num\n", __func__);
++		WARN_ONCE(1, "%s: invalid port_num\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.43.0
 
 
