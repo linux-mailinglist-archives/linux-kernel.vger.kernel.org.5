@@ -1,223 +1,205 @@
-Return-Path: <linux-kernel+bounces-45736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFBBF8434C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:18:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ECEF8434CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:20:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1AF47B24775
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 04:18:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E6F5B255CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 04:20:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E099517729;
-	Wed, 31 Jan 2024 04:18:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 340AA17BD2;
+	Wed, 31 Jan 2024 04:20:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SEY+ScTb"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (1024-bit key) header.d=peacevolution.org header.i=@peacevolution.org header.b="gzpn3RQx"
+Received: from a.peacevolution.org (a.peacevolution.org [206.189.193.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88C5E16426;
-	Wed, 31 Jan 2024 04:18:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706674728; cv=fail; b=kePfADtjYMh8LeLqPcJvyqdFI9GgbptV8aDdtL+3nzk7754PVACH9nawgokE8t5S312DkgTgmscwjs7noY/IcnN7xna8RSchgS3mTHCRcxQq+LWb5uyh8ZRe9cxdHkrkkJJZWRE8cARzsOeupH1/WvM4SgxnLyiOHpFqNp6jC7I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706674728; c=relaxed/simple;
-	bh=dNzhi52MX54jcPY3EsaTKw5d6ArTSx91VD9suOgDtAs=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=abQN69ZFcuHkMckjkWBir9OBEHJQ6/YKXnceP6Ev8o28qPhnjKSn4dl5rnDihdv0FD6bbxH9K4rtNMltPPea0VxHjsL2sEhRLDW14EPQYFaEif96CD6qh2C9tL7f7qV9/AdOyue+DOGgVldEwVJQ7ZQZ7AbGjrNuBqFbInfGZzA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SEY+ScTb; arc=fail smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706674727; x=1738210727;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=dNzhi52MX54jcPY3EsaTKw5d6ArTSx91VD9suOgDtAs=;
-  b=SEY+ScTbCiD6R13va7ZIuxtDZ9gzXKKmyJGMj3OuiNFdZ1EYfFoHxF5W
-   PX+ZIQd/+mLU3wVHaHf6MQJcDSviy50wlM9sjuHV0EjLVhekHLShWDhHn
-   DsHfEnZdf+55WNr1EhVkEXD+hHoi8RQq9oVxCY4EFdvD3TRNEo7Hdu9y0
-   AVxniDIHbzrTS2ujlkF/e4uYZy8jB9Re99B+0zWkWP0hczvSJPcHhTeC0
-   gWQEbYcp3Jz4ccfevkNJLwYRLcC+uA4A5MryXM7Na1UmITGhSNY6YVRJU
-   KNYtMwF5w8U0Z0Od6sJILyPyjsX5Eexja/ca281xYLXAOVjjReDbyN+DH
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="21999344"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="21999344"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 20:18:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="30110120"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 30 Jan 2024 20:18:45 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 30 Jan 2024 20:18:44 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 30 Jan 2024 20:18:44 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 30 Jan 2024 20:18:44 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 30 Jan 2024 20:18:43 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VInrAMPrIlgG/vk9ZdWSblcI1CGha4BHfZPfUlPU4dw8SVy28d+ikZJmKPlj/+yblYBDtIFpC8QaEGgk+revmpK3b54hEZVCApPVAYaNN2tcOgXn2F20hzS0tJh5N40q84zNRq1gdX9XvCjkX3Bm4rZ9p10nESWIyUVeRHMnr5QqJtlqL4+2/7Ute24UssiIc6psh9eH/bKBfHyb+krUo+uzHxT25XPtcRj+iACtaK+m2YTzZ9F2kYKZp8f9IHUvUmaDEVLcbzS2hWtjePhi5IZ5G7pLrY4xghwCUEbPRl7wV52zKBSFo1fsQrCfj5jbWG0lgr33wDHf44/734/M5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dNzhi52MX54jcPY3EsaTKw5d6ArTSx91VD9suOgDtAs=;
- b=QioCZ7T9s7d2IwLtVutiHTCmLfod/qO40vb+FOt7x2Y7tp/N6TXRRZqlKz39R3h9de0wxv5k9HAHsq56ffN29AxwdYvGD4rNSEn+v7dnCMXFlJDkCW6GEXmvXa1m49HllgVJmk3CmvPza3ylAfp8gNfcbPfGEddiqpmAKKaywhOXty2NywE97SwEbqZ/gEoPTYG5EOsiUBHKShNeeQFyKj17+SKTY9W/KN+WK8fI9uRIFse9wchnNFURTJcVJAl6QEFaJ2NaXuWIp9d1eun4GRVZZ+PTscEmBNr1x6CYJ1Au/L+sMXUwtpEPKxWmeXvX+6aYErrWK10/Vyl8YcMqHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from CO6PR11MB5586.namprd11.prod.outlook.com (2603:10b6:5:35d::21)
- by SN7PR11MB7115.namprd11.prod.outlook.com (2603:10b6:806:29a::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.36; Wed, 31 Jan
- 2024 04:18:41 +0000
-Received: from CO6PR11MB5586.namprd11.prod.outlook.com
- ([fe80::f142:af66:7629:2613]) by CO6PR11MB5586.namprd11.prod.outlook.com
- ([fe80::f142:af66:7629:2613%6]) with mapi id 15.20.7249.017; Wed, 31 Jan 2024
- 04:18:41 +0000
-From: "Rao, Nikhil" <nikhil.rao@intel.com>
-To: "Yu, Fenghua" <fenghua.yu@intel.com>, "Hansen, Dave"
-	<dave.hansen@intel.com>, Boqun Feng <boqun.feng@gmail.com>, Mark Rutland
-	<mark.rutland@arm.com>
-CC: Vinod Koul <vkoul@kernel.org>, "Jiang, Dave" <dave.jiang@intel.com>,
-	"dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>, linux-kernel
-	<linux-kernel@vger.kernel.org>, "Zhu, Tony" <tony.zhu@intel.com>, "Mathieu
- Desnoyers" <mathieu.desnoyers@efficios.com>, Thomas Gleixner
-	<tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
-	<bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "x86@kernel.org"
-	<x86@kernel.org>
-Subject: RE: [PATCH] dmaengine: idxd: Change wmb() to smp_wmb() when copying
- completion record to user space
-Thread-Topic: [PATCH] dmaengine: idxd: Change wmb() to smp_wmb() when copying
- completion record to user space
-Thread-Index: AQHaUyhEoy7wDnGRtk6ZOK20qOkpKrDypYUAgAAgPACAAApiAIAAAvWAgAB8VsA=
-Date: Wed, 31 Jan 2024 04:18:41 +0000
-Message-ID: <CO6PR11MB55868C091A77D9D5451D959A9C7C2@CO6PR11MB5586.namprd11.prod.outlook.com>
-References: <20240130025806.2027284-1-fenghua.yu@intel.com>
- <Zbk4wGNcB-g91Vr0@FVFF77S0Q05N> <ZblTystHpVkvjbkv@boqun-archlinux>
- <388be136-f91c-403a-99e1-7a10c5bf9691@intel.com>
- <c6c45aca-e8b9-f10e-181a-f0ca8a79a64c@intel.com>
-In-Reply-To: <c6c45aca-e8b9-f10e-181a-f0ca8a79a64c@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CO6PR11MB5586:EE_|SN7PR11MB7115:EE_
-x-ms-office365-filtering-correlation-id: 4c83a619-4188-42d2-ab75-08dc2213b4b8
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: L7wC6m7Nv1EdgKIen/0If6HrmYj8u6vRkW/vzl6k4Zg7BdkvYFcVk/b4GI8GSG3JJDQomRjIBI1XNT6RoOLshCnLgMQAOTBGfORInn1rKRQuGpSK2ae3Wq3kKfqDrLryPiQFj+TKuNhzbvuqcZ2KfPABkH0Yi2qY23EmmeYC3oNMXHz0SjJ9MEoeXyYooo4uZV+xpwBFAro48RziErq8nPRDAbbQt2uoT9ezCqZtGHsCXm2NgGGCy7+8x1qglaFGv/aKhCPoqgSqaX16HGz/FevnhEhCNMZatdOKaDAituLctQqd/u2gKnjxNJVpClsmLXUAvtnqzp0ezkPEBzipe5d/GTvWTnQjCnk88COR/iJsOZICW1I5CkdpZt0HQX59qBZREopuIzOQfMjpJ9mJ7CypyiDnsYXWKn6j9yqUvM6C5nuJfsvkx0u/GRO0ABu6ptWEiBfkb/P6ARCbPM6gagYbkWnoxyN8UE6mn8mdpUM2Zz2+6JO47ip3KZoghxKXVEtdfmmsZTlHFPzTGmTSPZIk/RFH4cpTy0W/z4zPImqfG0dt+5XgJjlORHlFzIx04OnF204upzJ6Q4AIbEmvlTq00M/33zhWryS+PoaPvSTG24fYHsx8efA0dEaXfUlP
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR11MB5586.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(376002)(346002)(396003)(136003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(26005)(83380400001)(478600001)(53546011)(41300700001)(6506007)(7696005)(71200400001)(8676002)(9686003)(8936002)(4326008)(52536014)(122000001)(55016003)(82960400001)(316002)(64756008)(66946007)(66556008)(66476007)(66446008)(54906003)(2906002)(33656002)(5660300002)(7416002)(38100700002)(38070700009)(76116006)(110136005)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UVQwclBVdXFmYnBWQ3c2Y1RYbzJCZEk0S20xbzZDT01tbVZHUXZMM3d2Lzh3?=
- =?utf-8?B?NzlUMWY5Vmc5TnJHY3F6TlNKR3I4SXM2TkUzclVwejdSNDN2T09TanhsTGRJ?=
- =?utf-8?B?SHFyMnZMaVBmRHRyZ3NDeXB2M3BEVzQ2U0RneXVNcnBJNkt2L0pEdG8wdE1x?=
- =?utf-8?B?b2tBUDV2MTduOFBKSnFINnFrcldLWXVrRXlmV3lPc0FLWVBHT1h5UzFxa2Rq?=
- =?utf-8?B?OXlwVUN3QWxqVXIwbHFURmNIdjZxM3FvN2N1cHROcGFrYUNUM3JDcUM5NVVO?=
- =?utf-8?B?L09PbysxWTBSem5SL1V2Tk5INGJ4eUQ2QTdSTGk0TnZDVFpBUDFpWDNrS280?=
- =?utf-8?B?QkpLSGV4eFMrOXppSTY2anZyTWFwa0tWOWRMWlBDNkxUbWpidjFBZEdTcUZq?=
- =?utf-8?B?OFhCWlRVTUZBMFVoRGVMOFk1TU1hTkVOd1FUTXQ3d0hWUE03bFA5bGFIQmVy?=
- =?utf-8?B?cTVmdlhRWTRHOUxhYXNxT0liZklvSnZxV1dJQjBRWERHZ3Z6T2JGVHZzNDJp?=
- =?utf-8?B?U2pYZFFmVVJVeGZkWWRDMjhhMXk2UGpKYklmSmF5eHp3NG9CemN6Wjh4cE95?=
- =?utf-8?B?b1hEanA4RDJXVlZLT0x0dWNvU2E1UWdYK3NtZTYzb05YSjlCN25MQjVzdFFR?=
- =?utf-8?B?RHM1ODFhdDljVlBtUUEyd3laMkpPc2V6eTllTGw1Y0t4SGZtRHdSaTlscTZp?=
- =?utf-8?B?OFJsNS9vSitJM0F1ZHpVeDI2dGI1cDRRdVZKNUxJeEk4Y29zTmh4S29mUDZw?=
- =?utf-8?B?U2VqK2JEeFgwZVM3Unp5SHJOKy9vaVBaWU1hQm5RazVjdERMUXNuNHRNKytX?=
- =?utf-8?B?dWtUNG1JUlNWZ3ZzNkExOFFISGd0QWpVZjl5bTVZUjNJWnJJcmxQMkRFWkQv?=
- =?utf-8?B?UzhvbWVjTUI3b3drNlplb3A3T3g3QVVaOW9ZTTN1T2RjWE9qalg5WGdmbjRr?=
- =?utf-8?B?bHJ4M0E0Y2RoVmx2b3lvTHJzWWJhWUp5UUl0bnAyai9tY3hWVktJa2o4eG03?=
- =?utf-8?B?UmI4RTNxcE45VU5jZWZGVFIvbE9Rd041bE5kcmpDMzZxUjllRzdBQXdNZlAz?=
- =?utf-8?B?blg4MDZiaHFYaDRnT295WU9Oa09QYTRuNW14dTJ0bmFvTjZFR3RORnk5dzhk?=
- =?utf-8?B?R3R0dVFzMVZyVFh5QU02V1RjemJCYWJmb2lYRVIzQTRlOFFZZnhMejhyTGdo?=
- =?utf-8?B?eG1OMkNBdzR4UDNQdnY0NFdLOEl6Q0hTSlF4R2NNOVFCUTVzcUhTMzB5MlVD?=
- =?utf-8?B?QUxNenZtbnBLRmFHSmk5REtxRVZGc21ET3A0em1rZzlnZit0VDROYnR3SURs?=
- =?utf-8?B?RXgzbkJ1MW0zT25CUmI3MENXQ2NnUTRCOWJOZXc1S1pnVVI5Nm85bzlYUWZy?=
- =?utf-8?B?TkFoeUJpNUpYVDc4TitPYXNDRXM5SDJET1Zicnk4aTFoR0p3eW56Sjk1NlBJ?=
- =?utf-8?B?TVA2MWpHbUZZVTkzUHd1MFJWak5OT1VyeFZmUURaQzM1eGZoTkpxZmpWN3F5?=
- =?utf-8?B?UEFtay9KdEI0UHBKVnhsd1pyenNvSlJqR2xTRTZnek4xaFZmT0VhSXEwVTFC?=
- =?utf-8?B?Ly9KYnJqdEVCZGdUaS9TT1VYNEN3UVZXcWhadVJDN09CUmhtY2Q0TFpOQllM?=
- =?utf-8?B?U2dLVENlT1hPa1ZZQmRsN0VMbHBSRTRzYkVSMUE1S210d2tRSVJhK3BEQ09U?=
- =?utf-8?B?VFlZTFhYT09YVi9jQUxmTVdodldleDh3aTA1NXRzU09QbG9kbTBVaHo3UkxM?=
- =?utf-8?B?ZSswU3ZnaUFkUEJVaGVCR3NCME5wOUU2VnhuVEdLM2kxNlFmL0ZPS0gyVzBa?=
- =?utf-8?B?dmt2UHpiWlFSVGJtdnlFcEx5eEJjZEtDM0dtUGJURmQ2S1NGSHhneEFqc01W?=
- =?utf-8?B?MjROa1FCbjNMc0YzTFJsUnpqQllzUjJSRDIwaUthSURBWXQ1T2ZKT2xpVzVB?=
- =?utf-8?B?YnlUblZuazh1dHl4Mi93aERESWtCeEVneVNHUC9mK0pQdFF3RVpGSXE3eS9O?=
- =?utf-8?B?RjlMajU1cU9LLzJzNEJac1JNNTF1TVNCYWZYQkEzOVBJcDVzQURnRitSQ2NR?=
- =?utf-8?B?ZXg1RlBWWjJsYmdqRDZaVU1kcFZNNjZTN1NHbVQ1Qy94TGh3RVJUSERiMnQy?=
- =?utf-8?Q?Z6RujrQ4LOaWT4OgkTK8OdJqk?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08AAF20DE0;
+	Wed, 31 Jan 2024 04:20:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.189.193.133
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706674836; cv=none; b=o7Dmi8yCJ97IsZ3yrawElgt1EY49gxLWD0H2oRtbjwEIrM7vpp94AsqWxxbWXVaIymI1X1OncxK/wiFk/mSUY6QzwW5WlyIEmXJzgiKHnTTpyY4rlqqEC6PZS5B18/e+e6NQDNiE97VAfoYtbChnOx/fs9JrEYCKoL+n7oYB4g0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706674836; c=relaxed/simple;
+	bh=L6sD+oohOUyV59M7a4EMJuCqSkRVUhGojTTyyAFZlGM=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eH+xdtV5/FIwezzMl7uiOSu1HJemjvXMfRzgFHY4CLQG6bKGGoAGTtBSFtWLIxrX9sm07NGIp7tDuk9fuMG1mNC7FJ5XOHoNLDH38D5yvMGicxU0adZiSkIYn9fYpwG1rf58P4kggsYvgzqCD7OWbbcGc8Dn50LXrPoTZ6IYeB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=peacevolution.org; spf=pass smtp.mailfrom=peacevolution.org; dkim=pass (1024-bit key) header.d=peacevolution.org header.i=@peacevolution.org header.b=gzpn3RQx; arc=none smtp.client-ip=206.189.193.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=peacevolution.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=peacevolution.org
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+	by a.peacevolution.org (Postfix) with ESMTPA id B4FD743C8C;
+	Wed, 31 Jan 2024 04:20:31 +0000 (UTC)
+Date: Tue, 30 Jan 2024 23:20:29 -0500
+From: Aren <aren@peacevolution.org>
+To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, linux-pm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Hans de Goede <j.w.r.degoede@gmail.com>, 
+	Aidan MacDonald <aidanmacdonald.0x0@gmail.com>, Chen-Yu Tsai <wens@csie.org>, 
+	Quentin Schulz <quentin.schulz@bootlin.com>, Sebastian Reichel <sre@kernel.org>
+Subject: Re: [PATCH v2 5/5] power: supply: axp20x_usb_power: set input
+ current limit in probe
+Message-ID: <hlnzivsmt66icz4bsayv5wtlgbktq355m4qxj532lg4lgeimju@jammw2y6zpha>
+References: <20240130203714.3020464-1-aren@peacevolution.org>
+ <20240130203714.3020464-6-aren@peacevolution.org>
+ <6nf7h3nc4q7fwrnm4spmgv2sdkczowkfpietcv2tyv4mixkq3b@svxgzkdqnzlq>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR11MB5586.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4c83a619-4188-42d2-ab75-08dc2213b4b8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jan 2024 04:18:41.0935
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 86h5EoxmH3pvPimRAooBgeNBEyPypVOPgfVf7Rv5VNpLY39I08+6BWQGvtb5BHPFaufDJepRaXrP0xrnruXjJA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7115
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6nf7h3nc4q7fwrnm4spmgv2sdkczowkfpietcv2tyv4mixkq3b@svxgzkdqnzlq>
+X-Spamd-Bar: /
+Authentication-Results: auth=pass smtp.auth=aren@peacevolution.org smtp.mailfrom=aren@peacevolution.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=peacevolution.org;
+	s=dkim; t=1706674832;
+	h=from:subject:date:message-id:to:mime-version:content-type:content-transfer-encoding:in-reply-to:references;
+	bh=L7xmgYy2TShL8M4YtYlyfP8oQps04WEC+psVsxEOru8=;
+	b=gzpn3RQxkzha6+DZbcyd/goAVrz9mHRFlU8cJcWJjwIzORGW9jaEPS1Vsd15NBZ3T3MK/F
+	oShFLspGIdTpQUHHVx4QF7N4iGoX0v0Fuh72auaqsoa43ECI5yv1aYMUBFR6CII7P0cg2A
+	Dl6pYNr07hOM0bLke1Eqbhpt8xOZAGI=
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogWXUsIEZlbmdodWEgPGZl
-bmdodWEueXVAaW50ZWwuY29tPg0KPiBTZW50OiBXZWRuZXNkYXksIEphbnVhcnkgMzEsIDIwMjQg
-MjoxMiBBTQ0KPiBUbzogSGFuc2VuLCBEYXZlIDxkYXZlLmhhbnNlbkBpbnRlbC5jb20+OyBCb3F1
-biBGZW5nDQo+IDxib3F1bi5mZW5nQGdtYWlsLmNvbT47IE1hcmsgUnV0bGFuZCA8bWFyay5ydXRs
-YW5kQGFybS5jb20+DQo+IENjOiBWaW5vZCBLb3VsIDx2a291bEBrZXJuZWwub3JnPjsgSmlhbmcs
-IERhdmUgPGRhdmUuamlhbmdAaW50ZWwuY29tPjsNCj4gZG1hZW5naW5lQHZnZXIua2VybmVsLm9y
-ZzsgbGludXgta2VybmVsIDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPjsgUmFvLA0KPiBO
-aWtoaWwgPG5pa2hpbC5yYW9AaW50ZWwuY29tPjsgWmh1LCBUb255IDx0b255LnpodUBpbnRlbC5j
-b20+OyBNYXRoaWV1DQo+IERlc25veWVycyA8bWF0aGlldS5kZXNub3llcnNAZWZmaWNpb3MuY29t
-PjsgVGhvbWFzIEdsZWl4bmVyDQo+IDx0Z2x4QGxpbnV0cm9uaXguZGU+OyBJbmdvIE1vbG5hciA8
-bWluZ29AcmVkaGF0LmNvbT47IEJvcmlzbGF2IFBldGtvdg0KPiA8YnBAYWxpZW44LmRlPjsgRGF2
-ZSBIYW5zZW4gPGRhdmUuaGFuc2VuQGxpbnV4LmludGVsLmNvbT47DQo+IHg4NkBrZXJuZWwub3Jn
-DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIGRtYWVuZ2luZTogaWR4ZDogQ2hhbmdlIHdtYigpIHRv
-IHNtcF93bWIoKSB3aGVuDQo+IGNvcHlpbmcgY29tcGxldGlvbiByZWNvcmQgdG8gdXNlciBzcGFj
-ZQ0KPiANCj4gSGksIERhdmUsIEJvcXVuLCBhbmQgTWFyaywNCj4gDQo+IE9uIDEvMzAvMjQgMTI6
-MzAsIERhdmUgSGFuc2VuIHdyb3RlOg0KPiA+IE9uIDEvMzAvMjQgMTE6NTMsIEJvcXVuIEZlbmcg
-d3JvdGU6DQo+ID4+Pj4gRml4ZXM6IGIwMjJmNTk3MjVmMCAoImRtYWVuZ2luZTogaWR4ZDogYWRk
-IGlkeGRfY29weV9jcigpIHRvIGNvcHkNCj4gPj4+PiB1c2VyIGNvbXBsZXRpb24gcmVjb3JkIGR1
-cmluZyBwYWdlIGZhdWx0IGhhbmRsaW5nIikNCj4gPj4+PiBTdWdnZXN0ZWQtYnk6IE5pa2hpbCBS
-YW8gPG5pa2hpbC5yYW9AaW50ZWwuY29tPg0KPiA+Pj4+IFRlc3RlZC1ieTogVG9ueSBaaHUgPHRv
-bnkuemh1QGludGVsLmNvbT4NCj4gPj4gU2luY2UgaXQgaGFzIGEgIkZpeGVzIiB0YWcgYW5kIGEg
-IlRlc3RlZC1ieSIgdGFnLCBJJ2QgYXNzdW1lIHRoZXJlDQo+ID4+IGhhcyBiZWVuIGEgdGVzdCB3
-LyBhbmQgdy9vIHRoaXMgcGF0Y2ggc2hvd2luZyBpdCBjYW4gcmVzb2x2ZSBhIHJlYWwNCj4gPj4g
-aXNzdWUgKmNvbnN0YW50bHkqPyBJZiBzbywgSSB0aGluayB4ODYgbWlnaHQgYmUgYnJva2VuIHNv
-bWV3aGVyZS4NCj4gPj4NCj4gPj4gW0NjIHg4NiBtYWludGFpbmVyc10NCj4gPg0KPiA+IEZlbmdo
-dWEsIGNvdWxkIHlvdSBwZXJoYXBzIGV4cGxhaW4gaG93IHRoaXMgcHJvYmxlbSBhZmZlY3RzIGVu
-ZCB1c2Vycz8NCj4gPiBXaGF0IHN5bXB0b20gd2FzIG9ic2VydmVkIHRoYXQgbWFkZSBpdCBvYnZp
-b3VzIHNvbWV0aGluZyB3YXMgYnJva2VuDQo+ID4gYW5kIHdoYXQgY2hhbmdlcyB3aXRoIHRoaXMg
-cGF0Y2g/DQo+IA0KPiBUaGVyZSBpcyBubyBpc3N1ZSBmb3VuZCBieSBhbnkgdGVzdC4gVGhpcyB3
-bWIoKSBjb2RlIHdhcyByZXZpZXdlZCBhbmQgd2FzDQo+ICJ0aG91Z2h0IiB0aGF0IGl0IG1heSBo
-YXZlIGEgcG90ZW50aWFsIGlzc3VlLiANCg0KSSBoYWQgbWFkZSB0aGlzIHN1Z2dlc3Rpb24gc2lu
-Y2UgdGhlIGNvZGUgb25seSBuZWVkZWQgYSBzbXBfd21iKCksIElmIHRoZSByZXZpZXcgcmVmZXJz
-IHRvIG15IHN1Z2dlc3Rpb24sIHNvcnJ5IGlmIG15IG1lc3NhZ2UgaW5kaWNhdGVkIGEgcG90ZW50
-aWFsIGlzc3VlLCB0aGF0IGNlcnRhaW5seSB3YXNuJ3QgbXkgaW50ZW50aW9uLg0KbWVtb3J5LWJh
-cnJpZXJzLnR4dCBkb2VzIHNheSB0aGF0IG1hbmRhdG9yeSBiYXJyaWVycyAob2Ygd2hpY2ggd21i
-KCkgaXMgb25lKSBzaG91bGQgbm90IGJlIHVzZWQgdG8gY29udHJvbCBTTVAgZWZmZWN0cy4NCg0K
-TmlraGlsDQo=
+On Tue, Jan 30, 2024 at 10:13:06PM +0100, Ondřej Jirman wrote:
+> On Tue, Jan 30, 2024 at 03:28:01PM -0500, Aren Moynihan wrote:
+> > axp803 sets the current limit to 3A by default if it doesn't detect a
+> > battery. The datasheet says that register 0x2D bit 6 is used to indicate
+> > first power on status. According to it, if that bit is 0 and the battery
+> > is not detected, it will set the input current limit to 3A, however
+> > setting that bit to 1 doesn't to prevent the pmic from setting the
+> > current limit to 3A.
+> > 
+> > Waiting for USB BC detection doesn't work either, because (as far as I
+> > can tell) USB BC detection isn't performed when there isn't a battery
+> > detected.
+> > 
+> > Fixes: c279adafe6ab ("power: supply: axp20x_usb_power: add support for AXP813")
+> 
+> Breaks: ;)
+> 
+> Last time you wrote:
+> 
+> > Unfortunately BC 1.2 detection doesn't seem to be performed without a
+> > battery, at least I wasn't able to trigger it.
+> >
+> > This will be worth revising once we have a driver that can provide a
+> > signal that USB-PD is in progress and/or finished, but until then I'd
+> > prefer not take on that complexity.
+> 
+> This patch adds complexity and will lead to hard to debug issues for some
+> people. It certainly did cause issues for me, when I had similar patch in
+> my tree a while ago, forcing me to drop it.
+> 
+> There are other situations you're not considering. Like battery being
+> very discharged and unable to provide power, while still being detected
+> and BC1.2 running correctly and successfully when the device is powered
+> up by being plugged into DCP port (only option of powerup in such a 
+> scenario).
+
+Oh you're right, I overlooked the case where the battery is very low, in
+which case bc detection should still be performed (I think, I haven't
+tested it). This issue this patch is trying to fix doesn't apply in that
+case, so it should be simple enough to check if the pmic has detected a
+battery and skip setting the current limit if it has.
+
+> Battery is detected at 2.2V and certainly it will not provide any power
+> if OCV of the battery is anywhere below 3V. See "9.4.5 Battery detection"
+> in AXP803 datasheet. So you have about 1V range of possible battery voltage
+> where BC1.2 will work, but you'll force lower the correctly detected current
+> limit and break boot, because 2.5W is too low for the boot time power surge.
+> 
+> The phone will just randomly die halfthrough boot for apparently no reason,
+> despite being connected to DCP.
+> 
+> And also forget Pinephone, there may also be batteryless SBCs using this PMIC
+> with battery as an option (similar to Quartz64-A - Rockchip SBC, but exactly
+> this setup with battery capable PMIC in the power path on a normal SBC, with
+> battery being optional), where this patch will break boot on them, too. I'm
+> quite confident PMIC relaxing the limit without a battery is meant for such use
+> cases.
+
+Perhaps it would be better to read the limit from the device tree, that
+way it could be set higher for a specific board if it needs to draw that
+much current and be able to boot without a battery? It seems sketchy to
+default to a current limit significantly higher than what the usb power
+supply is required to support.
+
+> If you insist on adding this, at least add dev_warn() about forcing lower
+> limit than detected by the PMIC, so that people who'll do cursory debugging
+> via serial console will know why's their device failing to boot on a strong
+> enough power supply, or why their SBC is suddenly failing when used without
+> battery.
+
+Adding a dev_warn is a good idea, I'll do that.
+
+Thanks for the review
+ - Aren
+
+> As for me, this patch should not be applied at all.
+> 
+> Kind regards,
+>         o.
+> 
+> > Signed-off-by: Aren Moynihan <aren@peacevolution.org>
+> > ---
+> > I'm not sure if the pmic simply ignores the first power on field, or if
+> > it needs to be set in a specific way / at a specific time. I tried
+> > setting it in arm-trusted-firmware, and the pmic still set the input
+> > current limit to 3A.
+> > 
+> > The datasheet for axp813 says it has the same first power on bit, but I
+> > don't have hardware to test if it behaves the same way. This driver uses
+> > the same platform data for axp803 and axp813.
+> > 
+> > (no changes since v1)
+> > 
+> >  drivers/power/supply/axp20x_usb_power.c | 13 +++++++++++++
+> >  1 file changed, 13 insertions(+)
+> > 
+> > diff --git a/drivers/power/supply/axp20x_usb_power.c b/drivers/power/supply/axp20x_usb_power.c
+> > index dae7e5cfc54e..751b9f02d36f 100644
+> > --- a/drivers/power/supply/axp20x_usb_power.c
+> > +++ b/drivers/power/supply/axp20x_usb_power.c
+> > @@ -51,6 +51,7 @@ struct axp_data {
+> >  	unsigned int			num_irq_names;
+> >  	const int			*curr_lim_table;
+> >  	int				curr_lim_table_size;
+> > +	int				force_curr_lim;
+> >  	struct reg_field		curr_lim_fld;
+> >  	struct reg_field		vbus_valid_bit;
+> >  	struct reg_field		vbus_mon_bit;
+> > @@ -545,6 +546,7 @@ static const struct axp_data axp813_data = {
+> >  	.curr_lim_table = axp813_usb_curr_lim_table,
+> >  	.curr_lim_table_size = ARRAY_SIZE(axp813_usb_curr_lim_table),
+> >  	.curr_lim_fld	= REG_FIELD(AXP22X_CHRG_CTRL3, 4, 7),
+> > +	.force_curr_lim = 500000,
+> >  	.usb_bc_en_bit	= REG_FIELD(AXP288_BC_GLOBAL, 0, 0),
+> >  	.usb_bc_det_fld = REG_FIELD(AXP288_BC_DET_STAT, 5, 7),
+> >  	.vbus_disable_bit = REG_FIELD(AXP20X_VBUS_IPSOUT_MGMT, 7, 7),
+> > @@ -726,6 +728,17 @@ static int axp20x_usb_power_probe(struct platform_device *pdev)
+> >  			return ret;
+> >  	}
+> >  
+> > +	if (power->axp_data->force_curr_lim) {
+> > +		/*
+> > +		 * Some chips set the input current limit to 3A when there is no
+> > +		 * battery connected. Normally the default is 500mA.
+> > +		 */
+> > +		ret = axp20x_usb_power_set_input_current_limit(power,
+> > +				power->axp_data->force_curr_lim);
+> > +		if (ret)
+> > +			return ret;
+> > +	}
+> > +
+> >  	if (power->usb_bc_en_bit) {
+> >  		/* Enable USB Battery Charging specification detection */
+> >  		ret = regmap_field_write(power->usb_bc_en_bit, 1);
+> > -- 
+> > 2.43.0
+> > 
 
