@@ -1,124 +1,101 @@
-Return-Path: <linux-kernel+bounces-46611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45A018441F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:37:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55CAB8441FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:39:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A14FB25605
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:36:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 815CC1C21A3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:39:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9C5C83CBD;
-	Wed, 31 Jan 2024 14:36:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1106183CC0;
+	Wed, 31 Jan 2024 14:39:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p/qcrKiU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="km9NPWGD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C988287D;
-	Wed, 31 Jan 2024 14:36:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56C7383CA6
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:39:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706711794; cv=none; b=TjsCVe5JGgFn0v+aXJjEuGCu7oe2jm5jHU9st+GALrDTUd31KYDMBjxLNdn6HlX8yshg3mXq9soo1Prxg9UdQ2/tkO1yvZCkIExfyfAnC7Kdyb72aKvZwsCtbeCnQhQomsQXi0Lw8R8JmvuZ0Xt9FSSjHmd4DSxACoEYjRF1L5Q=
+	t=1706711945; cv=none; b=s+cKRKFQ+ybr6iqSMYGfgNqq+A2ZfA9I1OKl0N8R1ylnKra/InZF/S9/sBNV1mbHF2NPet0zuqVnx7JAohaodfNIhUX3XHhmZG84JLcB1j0U044y2onYcxslcx7FYxf2kgaIDeMcBa8cxCh5ue6NZ0hN0Vhh32bQKD/yREHTVT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706711794; c=relaxed/simple;
-	bh=hJ+XW2fv/7c4oP2Hm+5FY6Z2FZRxNXmDtEx1scYcuKM=;
+	s=arc-20240116; t=1706711945; c=relaxed/simple;
+	bh=IFUWShPBA+aoz+kyGKyOGFJSwIc+vqjvZgQ2cu7Ce6M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F50X25xg1DA/Hjv8XKaHFaOxN5dMTD+TudwevumvQMQw+vZFnGR7XKfWcRzerJyumPRzgEDiOsld+veYxW9gS8bU0xRWe9oQLEZNip47V1caME+XHdxefgGmPEIaINpOVlUg/80wPxFy6m613ZNLApQi1l66OF9Sv+6x0Ft/BHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p/qcrKiU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51C76C433F1;
-	Wed, 31 Jan 2024 14:36:31 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=S+4yvKECuoJDtNDF+d9kqDV63dOz5EAfYWB2HxdvhgH1uAeknCTlxbzcMt2PPWbyHuQHKH9qyWpiHl8h50Klw+baX8YuJTB9aZgtW5UfI+F9WRY/Q1HxvifC+kyZ/AFy3F0yfoi014SFbW1JsH2LdtNozUte1+/t4MlogxH3asU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=km9NPWGD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C223C433C7;
+	Wed, 31 Jan 2024 14:39:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706711793;
-	bh=hJ+XW2fv/7c4oP2Hm+5FY6Z2FZRxNXmDtEx1scYcuKM=;
+	s=k20201202; t=1706711944;
+	bh=IFUWShPBA+aoz+kyGKyOGFJSwIc+vqjvZgQ2cu7Ce6M=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=p/qcrKiUHr3R1zdZ6ueRxhVHbjIE36TksoTuqq3vRIuuZUagwUzQ1qMMdox/KrNeO
-	 wQR9R4DSLgs/QTZsLPR6dBZBiBmmvi0tvubLIQA+8jFH3YuC4U+WPyj2v88xmU/oVd
-	 lQJboA+5ntxwJWtMJYwFXNva6EPUfst7xqfhUI/at8UR5f8x+am3/j9vySclg8RzFn
-	 IMnaJwlS/BX/b6bUt/iQe5m3K5tb4QlTVwfE43RPWcRSKR0xd0jn6OBZKtXhx34Rep
-	 giJJQe1WJ4x09mMkji1B5Y32pOUNE9s+QGF6D02G6v+/AwrtEKuMAkjK3S0AO6wXcu
-	 3JGJc50OL1Lww==
-Date: Wed, 31 Jan 2024 14:36:28 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Changhuang Liang <changhuang.liang@starfivetech.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Emil Renner Berthing <kernel@esmil.dk>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Jack Zhu <jack.zhu@starfivetech.com>, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [v2] riscv: dts: starfive: jh7110: Add camera subsystem nodes
-Message-ID: <20240131-recycling-entering-b742e0e835eb@spud>
-References: <20240130082509.217683-1-changhuang.liang@starfivetech.com>
+	b=km9NPWGDUYDytisHiwr1MjgrvdxQ5nEpdBOqx5vHLx+ADgAz4SW3bBc/ZOh5P8TR2
+	 eyWqjXs2iyRCCuRmcvzAoqihqjk3M68mnmWZMyVuZjWuzh+Ab1WYXM8fRfn5ZuZKaA
+	 k5dwF91w062jQudABkFntFXwoVAebsxOM5oKgBLUIcpOoiuHgJxHzDhDCdGbDR9zA2
+	 rVDMDMMw43X5sHx64f/FHN6VGBqAie8LW+zACSrSQ+kWeeoij5tDhSgaLEMfyuKsiB
+	 +wMKU6CmPee8BtQqaHSC+yRP8ik/ixAST6VVJ7QH9oxEnR8ZIs5A1pzYZrc0xWdL4s
+	 v/NiHlRkT2paw==
+Date: Wed, 31 Jan 2024 15:39:00 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>, 
+	Tycho Andersen <tycho@tycho.pizza>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/1] pidfd: implement PIDFD_THREAD flag for
+ pidfd_open()
+Message-ID: <20240131-engel-entern-9b5c96659948@brauner>
+References: <20240131132541.GA23632@redhat.com>
+ <20240131141204.GA24130@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Q8uPg8RLNm85EpwJ"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240130082509.217683-1-changhuang.liang@starfivetech.com>
+In-Reply-To: <20240131141204.GA24130@redhat.com>
 
+On Wed, Jan 31, 2024 at 03:12:04PM +0100, Oleg Nesterov wrote:
+> Before I forget this...
+> 
+> After this patch we can easily add another feature, pidfd_poll()
+> can add, say, POLLHUP to poll_flags if the pid is "dead".
+> 
+> So the user can do
+> 
+> 	poll(pidfd, { .revents = POLLHUP });
+> 
+> and it will block until release_task() is called and this pid is
+> no longer in use (pid_task() == NULL).
+> 
+> Do you think this can be useful?
 
---Q8uPg8RLNm85EpwJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yeah, I think this is something that people would find useful. IIUC, it
+would essentially allow them to do things like wait until a task has
+been waited upon which for service managers is very useful information.
 
-On Tue, Jan 30, 2024 at 12:25:09AM -0800, Changhuang Liang wrote:
-> Add camera subsystem nodes for the StarFive JH7110 SoC. They contain the
-> imx219, dphy-rx, csi2rx, camss nodes.
->=20
-> Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
-> ---
->  .../jh7110-starfive-visionfive-2.dtsi         | 103 ++++++++++++++++++
->  arch/riscv/boot/dts/starfive/jh7110.dtsi      |  67 ++++++++++++
->  2 files changed, 170 insertions(+)
->=20
-> diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dt=
-si b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> index b89e9791efa7..e0027bb379ef 100644
-> --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> @@ -30,6 +30,37 @@ cpus {
->  		timebase-frequency =3D <4000000>;
->  	};
-> =20
-> +	imx219_clk: imx219-clock {
-> +		compatible =3D "fixed-clock";
-> +		clock-output-names =3D "imx219_clk";
-> +		clock-frequency =3D <24000000>;
-> +		#clock-cells =3D <0>;
-> +	};
+---
 
-Why do you need an output name here?
-Also, where does this clock come from? Is it an oscillator on the board?
+Btw, bigger picture for a second. You probably haven't kept track of
+this but the fact that we got pidfds - thanks a lot to your review and
+help - has made quite a huge difference in userspace. Since we last did
+any meaningful work we got:
 
-> +	imx219_vana_2v8: 2p8v {
+* systemd completely relying on pidfds to manage services to guard
+  against any pid races.
+* Extended dbus to allow authentication via pidfds.
+* Extended policy kit to enable secure authentication of processes via pidfds.
+* Language support for pidfds: Go, Rust etc.
+* An endless number of tools that added support for them.
+* glibc support for pidfd apis.
 
-For all of these regulators, please put "regular-" as a prefix for the
-node names.
+There's a bunch more. That literally obliterated whole bug classes.
 
-Cheers,
-Conor.
-
---Q8uPg8RLNm85EpwJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbpa1gAKCRB4tDGHoIJi
-0htJAP926uU2I31XT3Lgqjc+bRiJN/IujQZChYy/z+0X+iurnQD8Ca60fxV3t1q8
-5cLQMdnaSwEe56ewCzw3aTA82hkzQAU=
-=t0pB
------END PGP SIGNATURE-----
-
---Q8uPg8RLNm85EpwJ--
+I think with PIDFD_THREAD support it might make it interesting to use it
+for some pthread management as well.
 
