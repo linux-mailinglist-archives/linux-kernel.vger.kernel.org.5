@@ -1,119 +1,101 @@
-Return-Path: <linux-kernel+bounces-46726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FCBF84433A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EBE384433D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:41:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2FBF1F21C0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:41:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DFCE1F23BA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:41:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26835129A97;
-	Wed, 31 Jan 2024 15:41:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4638112A171;
+	Wed, 31 Jan 2024 15:41:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OosamAdv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bC8LMuwL"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B76984A45;
-	Wed, 31 Jan 2024 15:41:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF9112A14C;
+	Wed, 31 Jan 2024 15:41:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706715676; cv=none; b=eXwSmngMf2xxCtO0DML8LPHLi8MUiB9V9GawqILEXO6rRY9uulV0xanbcNB7i6ASOiMCcVEIQd5hHcMZxROvTkxe63PnN5RKeDigWX2g/TYlr7hXm9bMPOvQNuhJ7fNyQlDvMzPqI+OHg62XDYEYOunjo2k0rqe41ZaAffAxkYA=
+	t=1706715677; cv=none; b=Xjv3KDg12W7I4bE6n9075Ma92mjaf9jaR/yN66uKc3uofLCww/PIjUfIx+ECgQvTvDtHX8ZJWAukM7BxhCDrO3rvXiWdQXqF1TDc4pqe/SmuLxQKgIxr57IKIrLXUw9caG9x5KLbpBYVVi+/8eEbz7rXqo4dRdTn3Zmj4w9ZiI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706715676; c=relaxed/simple;
-	bh=YETHkpmr5YM40bpj6aoJ2u+DexwoDbq9X+cjJRuQMdc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tQ8Fi5oEasvUZdytn2DmNLkRQwK6VT6wLBBz0shaFj/BAdO/77zGbPR/vqYXcke3eKFJ9fK5Tde3m7HiEd/1OGlxTZ78mTZkAcWZeAKxe+ASVBfCfjkC+zHhW08+Z63hf/kfMd1Vf7qLpywiXuxq/WMQ8+xyEunWLcqlrRXudJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OosamAdv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D82A9C433C7;
-	Wed, 31 Jan 2024 15:41:13 +0000 (UTC)
+	s=arc-20240116; t=1706715677; c=relaxed/simple;
+	bh=xBevo8mgTcKneYq4Bd2WfRYMb/BeHd84UNbx55O+OPc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=oKtKxTBr/fpBaDt2ZOBHQFUjHNdrJHCo1Y3V7Sz1ja2CqXStQtYwCO1PNwehLEAO7OCNwAHG0ganXfxaIG/hdgVoakwPfwFae8SxKPQzKSZFMdERmdDX6domNmxP6bjgBiMctiU5LMzRANDQ7DcvZOsIa5v2Ou8F04Bic/m6MSI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bC8LMuwL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DC4DC43394;
+	Wed, 31 Jan 2024 15:41:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1706715676;
-	bh=YETHkpmr5YM40bpj6aoJ2u+DexwoDbq9X+cjJRuQMdc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OosamAdvjDTxxfLr6wIZ01YbEV+jA1E2PcoqdcJ4ptgvD35AG4c3tXfiTdbihjwgY
-	 qiDXj+Bo5tzRPy6MJJ97yoHez7kBtPbZI/G5SWiucbIsuzuKVKfY+M1B/i9H2Sw1jk
-	 gMQbNPVbMHuDICS0Tko9R6w8xRKC9bGTvbkS8cT93lAz27avD3V8De5/eNEgKZ2AGT
-	 1BRTboEqBM+/OMbQHFfskI4k6JdwBfBauzyORLMdsUGpqUUR4iHHAHsk6pFibfNL7l
-	 fpM8edPMEoUu1RPgeTgbM3ka6Rg6IGiU+2bogCiW+ftnG1AphvT28lMzg2hdP8Y6RO
-	 N8jvFGjcajueA==
-Date: Wed, 31 Jan 2024 15:41:11 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Charles Hsu <ythsu0511@gmail.com>
-Cc: jdelvare@suse.com, linux@roeck-us.net, corbet@lwn.net,
-	Delphine_CC_Chiu@wiwynn.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] dt-bindings: Add MPQ8785 voltage regulator device
-Message-ID: <20240131-eraser-given-8381a44f41a4@spud>
-References: <20240131055526.2700452-1-ythsu0511@gmail.com>
- <20240131055526.2700452-2-ythsu0511@gmail.com>
+	bh=xBevo8mgTcKneYq4Bd2WfRYMb/BeHd84UNbx55O+OPc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=bC8LMuwLQcG3kBf7jr+fzDJveqKSXqqszKUZXkDsPTDoeatLr8itGi7U6joJxN7W5
+	 aCE/V1bAQVb1PH+MJCe29yr2GiyEIehWERR9I6F62BNqSTKzbdrQK7nqcsS9kcqOAC
+	 J5oLHWSlr2QmEPnVJG4m9Vk+nNnHpi+laCcstq+oIHHYMOoEzCu74pQmBhIcaxaGSz
+	 06fxD2N3XX9A3ntG3gGqpMcoPjRIRBdvyiavNbUiIDP/7elaGmlDr9aaurTpYJx0Bf
+	 1msuPCPLcSMHXMo4UDjSxCQMjnCORw7OPO/xkxszV/m7x1fxuoEkZK7S/6HX80gTcQ
+	 wTXHNvjj7QQSw==
+Date: Wed, 31 Jan 2024 09:41:15 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, imx@lists.linux.dev,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Serge Semin <fancer.lancer@gmail.com>
+Subject: Re: [PATCH 2/6] PCI: dwc: Change arguments of
+ dw_pcie_prog_outbound_atu()
+Message-ID: <20240131154115.GA587326@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="m66BftHqStl+GNYh"
-Content-Disposition: inline
-In-Reply-To: <20240131055526.2700452-2-ythsu0511@gmail.com>
-
-
---m66BftHqStl+GNYh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240130-pme_msg-v1-2-d52b0add5c7c@nxp.com>
 
-On Wed, Jan 31, 2024 at 01:55:26PM +0800, Charles Hsu wrote:
-> Monolithic Power Systems, Inc. (MPS) synchronous step-down converter.
->=20
-> Signed-off-by: Charles Hsu <ythsu0511@gmail.com>
-> ---
->  Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Doc=
-umentation/devicetree/bindings/trivial-devices.yaml
-> index 79dcd92c4a43..088b23ed2ae6 100644
-> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
-> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-> @@ -129,6 +129,8 @@ properties:
->            - mps,mp2975
->              # Monolithic Power Systems Inc. multi-phase hot-swap control=
-ler mp5990
->            - mps,mp5990
-> +            # Monolithic Power Systems Inc. synchronous step-down conver=
-ter mpq8785
-> +          - mps,mpq8785
+Nit: could the subject line be more specific than "change arguments"?
+E.g., something about collecting dw_pcie_prog_outbound_atu() arguments
+in a struct?  If you know that's the fundamental change, it's a lot
+easier to read the commit log and the patch because you know the goal.
 
-q sorts before 2, otherwise
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
->              # Honeywell Humidicon HIH-6130 humidity/temperature sensor
->            - honeywell,hi6130
->              # IBM Common Form Factor Power Supply Versions (all versions)
-> --=20
-> 2.34.1
->=20
-
---m66BftHqStl+GNYh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbpqFwAKCRB4tDGHoIJi
-0qYaAP4xddNh9fWSycXAJDADTsANGspUUp18ZNjQ2r8vNSx3bgD/bEkz0EmGXqsd
-94PzQ5Cx0XmBb1XNSIsXNgNymrhg4wM=
-=/LVW
------END PGP SIGNATURE-----
-
---m66BftHqStl+GNYh--
+On Tue, Jan 30, 2024 at 07:45:27PM -0500, Frank Li wrote:
+> From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> 
+> This is a preparation before adding the Msg-type outbound iATU
+> mapping. The respective update will require two more arguments added
+> to __dw_pcie_prog_outbound_atu(). That will make the already
+> complicated function prototype even more hard to comprehend accepting
+> _eight_ arguments. In order to prevent that and keep the code
+> more-or-less readable all the outbound iATU-related arguments are
+> moved to the new config-structure: struct dw_pcie_ob_atu_cfg pointer
+> to which shall be passed to dw_pcie_prog_outbound_atu(). The structure
+> is supposed to be locally defined and populated with the outbound iATU
+> settings implied by the caller context.
+> 
+> As a result of the denoted change there is no longer need in having
+> the two distinctive methods for the Host and End-point outbound iATU
+> setups since the corresponding code can directly call the
+> dw_pcie_prog_outbound_atu() method with the config-structure
+> populated. Thus dw_pcie_prog_ep_outbound_atu() is dropped.
+> 
+> Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ...
 
