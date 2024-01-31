@@ -1,139 +1,141 @@
-Return-Path: <linux-kernel+bounces-46284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCE65843D77
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:59:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47CFB843D88
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:01:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97D38290DDD
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:59:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F04511F270F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:01:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8420D78683;
-	Wed, 31 Jan 2024 10:57:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66E027AE6D;
+	Wed, 31 Jan 2024 10:58:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a+o10Gyq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f1YWadyW"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B608B69D39;
-	Wed, 31 Jan 2024 10:57:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022AF7AE43;
+	Wed, 31 Jan 2024 10:58:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706698669; cv=none; b=cYZtg1HBJIUZMn8mTsfWx8n9t8JEmdrXgLlt6XegLxkRii9o61AqOwQp3T0rBjH16CP1AlGz9LVZ71xuwfQCaCMZxhieDt/KnJaaGBPMjYBdwjYl5O6HkuBA4Tkbvq4lJWUpTdkr0rdKV+nnPwIcvA3FMcp2G2Skb9O0A5BIhDk=
+	t=1706698730; cv=none; b=gr3W30VnrFUkzJkTJzmKD1k/ytUp6nUWHcEzG3oFb9SSR+M3jYNMPNk56wV12NizThXTkkzw0aBPIR1vQUN683UhfwDyT+auK7D/VnqrO9Wi7W8CQ6IO+yxqg0Z7AB/Qe10aPm9aIYnwM/LFWPA//DvrqGJCPgvbY4Wp55d+irQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706698669; c=relaxed/simple;
-	bh=lLdNASUUSAW/vwijOg8ZDB4AJvgTlx50ujLdt2AbEhk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qQ2mqqMYauAkq62N6iW5YEFQVGWrJwYUsnk+PiugDfZLIbpPKIoksHVomzXFb0f/WUav3Wp6XqsUGKUFj4l2KcK1L2gDw/KbUkqaF91FEHAwoTZ/36DRpbPRNCfIcPEOeR2e2VrtTP8gkRWIAxmoYjehMJqixF20AV7fqgdklMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a+o10Gyq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51711C433C7;
-	Wed, 31 Jan 2024 10:57:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706698669;
-	bh=lLdNASUUSAW/vwijOg8ZDB4AJvgTlx50ujLdt2AbEhk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=a+o10GyqrwYwZNT9xLVn33bySqifWeG82B4UwnkdI0pnDfIacopHS4hSqWHWmVZMa
-	 fgKl0FLfKmQXgm8xw4gwdksIHpopiRkdWgIR74e/eZNwA/va4WK2AIpZLm84IwHchc
-	 +vwAS2SDH0XKYDsNl8K8hymY85L0hua3PTayDkEoVLFSltzJrkHF3xpkK1TBrGfdyi
-	 lrL+6vCHtdSISI/0GuqAYQM51yivnV0rL3xPzUrYzRr28yICl2nZm0/Opt6QcHJdsJ
-	 XcF+rGBpzyvXBrdQzaZ+3DbWIEk9GLncBGEsWD6GYivhfh0FTzaWwPQy1Mo9uc8N/w
-	 1sPm4L+DGrwjg==
-Date: Wed, 31 Jan 2024 11:57:42 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Jian-Hong Pan <jhp@endlessos.org>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
-	David Box <david.e.box@linux.intel.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Nirmal Patel <nirmal.patel@linux.intel.com>,
-	Jonathan Derrick <jonathan.derrick@linux.dev>,
-	linux-ide@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux@endlessos.org
-Subject: Re: [PATCH 1/2] ata: ahci: Add force LPM policy quirk for ASUS
- B1400CEAE
-Message-ID: <Zbonprq/1SircQon@x1-carbon>
-References: <20240130095933.14158-1-jhp@endlessos.org>
- <20240130101335.GU2543524@black.fi.intel.com>
- <CAPpJ_ef4KuZzBaMupH-iW0ricyY_9toa7A4rB2vyeaFu7ROiDA@mail.gmail.com>
+	s=arc-20240116; t=1706698730; c=relaxed/simple;
+	bh=miXEls7aCVwLJDABniQxOKAOmoSskv8EQdi+pLuHLaQ=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=QwOWNTDb95YpARaEoxumWZtlXldGKKisUqeHUqJ9kodpaEU6bMNrFR9WYnRbueFgAy/McHkKuftSPlpzDF1/rvj8NbzY1obXxZYYTdsOsxAAT2Le4EColJVFteOMzUpGLH1eJwsInCsctVFD0NgUMohglsi1ASR63eLNVCnyaqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f1YWadyW; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706698729; x=1738234729;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=miXEls7aCVwLJDABniQxOKAOmoSskv8EQdi+pLuHLaQ=;
+  b=f1YWadyW5wLSEx/hBtT+dc0UJcLQKxv1VhNXglxWmTj1Xghm1e3msDFe
+   eCpuNZiYGc1apXqZjzBPzex1dEpFvb/al24zKwwj9H50bEzELgCuTKat2
+   mNkICMHhz8j+jnVxF+0tT6Qc0w/C7NDIOl6uZs8OgqEv3fPk9lxJDvHCL
+   lu7KLTy+pJtrNC+8HC9J/fMpzXH++DHSlcUdiQejmoz6Ixb5JtBX5QJXH
+   Mjmw7APDBNo9xx6LXFWDisiP2B4dQaFEgT7Wc6IkBbzDUlPHeKoun+mRE
+   5ckjWP/xwom/f/CJMJHDk1IRsRdm9jKEWVmO7Jr5V2GbFVX99/Ciauz1V
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3407460"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="3407460"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 02:58:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="1119583211"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="1119583211"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.35.167])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 02:58:37 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Wed, 31 Jan 2024 12:58:32 +0200 (EET)
+To: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>, 
+    David E Box <david.e.box@linux.intel.com>, 
+    Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, 
+    Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+    Jose Abreu <Jose.Abreu@synopsys.com>, 
+    "David S . Miller" <davem@davemloft.net>, 
+    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+    Paolo Abeni <pabeni@redhat.com>, 
+    Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+    Richard Cochran <richardcochran@gmail.com>, 
+    Russell King <linux@armlinux.org.uk>, Alexei Starovoitov <ast@kernel.org>, 
+    Daniel Borkmann <daniel@iogearbox.net>, 
+    Jesper Dangaard Brouer <hawk@kernel.org>, 
+    John Fastabend <john.fastabend@gmail.com>, Andrew Lunn <andrew@lunn.ch>, 
+    Heiner Kallweit <hkallweit1@gmail.com>, 
+    Philipp Zabel <p.zabel@pengutronix.de>, 
+    Andrew Halaney <ahalaney@redhat.com>, 
+    Simon Horman <simon.horman@corigine.com>, 
+    Serge Semin <fancer.lancer@gmail.com>, Netdev <netdev@vger.kernel.org>, 
+    LKML <linux-kernel@vger.kernel.org>, 
+    linux-stm32@st-md-mailman.stormreply.com, 
+    linux-arm-kernel@lists.infradead.org, platform-driver-x86@vger.kernel.org, 
+    linux-hwmon@vger.kernel.org, bpf@vger.kernel.org, 
+    Voon Wei Feng <weifeng.voon@intel.com>, 
+    Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>, 
+    Lai Peter Jun Ann <jun.ann.lai@intel.com>, 
+    Abdul Rahim Faizal <faizal.abdul.rahim@intel.com>
+Subject: Re: [PATCH net-next v4 08/11] stmmac: intel: configure SerDes
+ according to the interface mode
+In-Reply-To: <20240129130253.1400707-9-yong.liang.choong@linux.intel.com>
+Message-ID: <99d78f25-dd2a-4a52-4c2a-b0e29505a776@linux.intel.com>
+References: <20240129130253.1400707-1-yong.liang.choong@linux.intel.com> <20240129130253.1400707-9-yong.liang.choong@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPpJ_ef4KuZzBaMupH-iW0ricyY_9toa7A4rB2vyeaFu7ROiDA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 
-On Wed, Jan 31, 2024 at 04:56:27PM +0800, Jian-Hong Pan wrote:
-> Mika Westerberg <mika.westerberg@linux.intel.com> 於 2024年1月30日 週二 下午6:13寫道：
-> >
-> > Hi,
-> >
-> > On Tue, Jan 30, 2024 at 05:59:33PM +0800, Jian-Hong Pan wrote:
-> > > Some systems, like ASUS B1400CEAE equipped with the SATA controller
-> > > [8086:a0d3] can use LPM policy to save power, especially for s2idle.
-> > >
-> > > However, the same controller may be failed on other platforms. So,
-> > > commit (ata: ahci: Revert "ata: ahci: Add Tiger Lake UP{3,4} AHCI
-> > > controller") drops LPM policy for [8086:a0d3]. But, this blocks going
-> > > to deeper CPU Package C-state when s2idle with enabled Intel VMD.
-> >
-> > Tiger Lake really should support this with no issues (as are the
-> > generations after it). I suggest trying to figure out what was the root
-> > cause of the original problem that triggered the revert, if possible at
-> > all, perhaps it is is something not related to LPM and that would allow
-> > us to enable this unconditionally on all Tiger Lake.
-> >
-> > I'm pretty sure the platform where this was reported suffers the same
-> > s2idle issue you are seeing without this patch.
+On Mon, 29 Jan 2024, Choong Yong Liang wrote:
+
+> From: "Tan, Tee Min" <tee.min.tan@linux.intel.com>
 > 
-> Simply applying LPM policy to [8086:a0d3] sounds like a good idea!
+> Intel platform will configure the SerDes through PMC api based on the
+> provided interface mode.
 > 
-> I installed an SATA storage into ASUS B1400CEAE and tested with
-> enabled & disabled VMD again. Both the NVMe and SATA storage work with
-> applying LPM policy to [8086:a0d3], which means that it does not hit
-> the issue mentioned in the commit (ata: ahci: Revert "ata: ahci: Add
-> Tiger Lake UP{3,4} AHCI controller").
+> This patch adds several new functions below:-
+> - intel_tsn_interface_is_available(): This new function reads FIA lane
+>   ownership registers and common lane registers through IPC commands
+>   to know which lane the mGbE port is assigned to.
+> - intel_config_serdes(): To configure the SerDes based on the assigned
+>   lane and latest interface mode, it sends IPC command to the PMC through
+>   PMC driver/API. The PMC acts as a proxy for R/W on behalf of the driver.
+> - intel_set_reg_access(): Set the register access to the available TSN
+>   interface.
+> 
+> Signed-off-by: Tan, Tee Min <tee.min.tan@linux.intel.com>
+> Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/Kconfig   |   1 +
+>  .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 113 +++++++++++++++++-
+>  .../net/ethernet/stmicro/stmmac/dwmac-intel.h |  75 ++++++++++++
+>  3 files changed, 188 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+> index 85dcda51df05..be423fb2b46c 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
+> +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+> @@ -273,6 +273,7 @@ config DWMAC_INTEL
+>  	default X86
+>  	depends on X86 && STMMAC_ETH && PCI
+>  	depends on COMMON_CLK
+> +	select INTEL_PMC_IPC
 
-We would like to enable LPM for Tiger Lake again, but last time we tried
-to do so, we got a bunch of reports:
-https://bugzilla.kernel.org/show_bug.cgi?id=217114
-https://bbs.archlinux.org/viewtopic.php?id=283906
+INTEL_PMC_IPC has depends on ACPI but selecting INTEL_PMC_IPC won't 
+enforce it AFAIK.
 
-Where people complained that their SATA drive dissappeared as a result.
+-- 
+ i.
 
-
-The bug reports were reported on the following hardware:
-ASUS Vivobook 15 X513EAN
-Lenovo L3-15ITL6 IdeaPad
-Acer A515-56-32DK
-Acer A514
-HP Pavilion 14-dv0589na
-
-Usually, when a single vendor manages to mess something up in their
-platform firmware, and we deal with that by adding a quirk for that
-specific vendor.
-
-But here it is four different vendors... This kind of suggests that
-there could be a some more fundamental LPM related issue at play here.
-
-
-Yes, we are fully aware that on some other platforms, not having
-LPM enabled stops those platforms from entering the lowest CPU power
-states. So right now we are doomed if we do enable LPM, doomed if we
-don't.
-
-However, having some systems drawing more power than needed is better
-than some other systems not detecting their SATA drives at all.
-
-Unfortunately, we don't have any of these laptops that has a Tiger Lake
-AHCI controller (with a disappearing drive), so until someone who does
-debugs this, I think we are stuck at status quo.
-
-
-Kind regards,
-Niklas
 
