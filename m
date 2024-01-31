@@ -1,83 +1,102 @@
-Return-Path: <linux-kernel+bounces-46392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92B85843F02
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:00:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8ABF843F15
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:02:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 258CF1F30DDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:00:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6D23B21576
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:02:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D245A7690F;
-	Wed, 31 Jan 2024 12:00:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8DD0768FA;
+	Wed, 31 Jan 2024 12:02:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="uPz8u/DH"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Rpey7Rf1";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4y0RAUW0";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="s/bToHT9";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FPAKO1Qh"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F179768FA
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:00:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DA7D76040;
+	Wed, 31 Jan 2024 12:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706702412; cv=none; b=B/9hh37J8MxmP+UuqZcCRHFLVSW/6g/XwJqBJeb7p7cjqqNfS9VrhwzrbaCQa9Qb7fqz8qB9VsURYJgKq+Sg0P215zcxj8E71kPrdO1+mlgpFNDd1rW6hXmv1dbegBi1HFEekVfU4F2x0RNhfd6CZVgX+aX03cn8pqlq1yiTUOA=
+	t=1706702557; cv=none; b=TLZ28GU3nGruDemZJYE0w9Q0SXxuKNDuNms6y9DlRquaNxdo+0v64PaAHtoMV+SNfIXjJrKPDASKvqiEiVcgVJwN+Xa2m4dHrTfhYU2vxEcSKS69kaz33SE/9IUlLJQHjujm/hE2KkI4nwfAweLjAq8dPWOBjLXBgLyX18dP5Ic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706702412; c=relaxed/simple;
-	bh=mbaGmg6mYMDAv6U0bRENMo1BCyzpuN1OGZkDhvhXR0E=;
+	s=arc-20240116; t=1706702557; c=relaxed/simple;
+	bh=mNpShDixWPH2+65Z/sczb7dFR7wo+uzcpUkD0tcCHIk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CeNBgmvKSfAr4rzRoXbQYPiUxW8AjJhZsqYRMBsifsHiPvD0TrVmi80Lny+wo13fL2vxNwL9J61Nb8F982h1Q1VTs4qK8MGgkHa3uc75NRQy4UY9K5aJB13V/dz2qQgJITKxmQCwK4GjiqXuF9kv0NNw1KQYMgKwBg7Mdcl37Ck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=uPz8u/DH; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33ae3be1c37so494003f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 04:00:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1706702408; x=1707307208; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HRIlhUmLDjTPjpQJWhot1CNU7PKVSI6pop1UZB6zBPk=;
-        b=uPz8u/DHZEW7QjqmfmPZUKoTFrDZJRlQYAfRuxN4zsvBBZc5t3d+y8z9mYhMNE+TCA
-         28tP7hYJ4hBpANJsjAhVjSfC0ghdnC33MduTWnylpBJ0wgRA8lTFIttN8ABd+hUf+Eul
-         o1XUXwa9xxdJEsKfSwyoF1ICmPjw9Mf29y335BT3HlMp9K2KVnXRkgFThV0Q79Jeh73I
-         +N0WCzmGjgPWmbMQIqAsIwZtRUAXUUfSckx8wtyTmS7Ia2n5mKJSj72M9thSdEWdwBQ5
-         sUS4qsWraTr7Ep4ZwKg8q5fVFi1ztPG8iKtmlxFVIUxJMdt0vHkt4YTAciD9i5nbyRor
-         I2fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706702408; x=1707307208;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HRIlhUmLDjTPjpQJWhot1CNU7PKVSI6pop1UZB6zBPk=;
-        b=tHYmZRFW811hY+j3T/wr+0dNJmURTaG+l7JUHXDOz44+V/J8b2r9BMfWinIxlepINv
-         MVujkidgik/vmzZKf4MnGdBaR0NuWHhfrn7XIYvdw0XEPhwGzdL5lBvQk+78VVw4Sz7L
-         4k+h6Y6hhOEfNnvkEZmMzzrwGzhlu8q5m1bEMme4Qd+vpwHkKKCjYS6+vJ/1vRkOqwUM
-         GRKkswtnXQ68yVDVRHq65cS3jjtuJDIhs19J6S9zWMmCkoo84GcCcuxPk27XQM+YtFux
-         M8gBFqG+TXpRRdvqAY6cr6kIyjei22AJy9YkMV1+VDlYrzuWwag0encZIzwcIZplhf9c
-         Zeog==
-X-Gm-Message-State: AOJu0Yxicz1qGgbUfWDKUmPWfDq/l0yaL1XAputyWF/qP5sxFGiQVh/c
-	PrksGgmvzgJJlm6FGRf6BwkQh/vNoF2merb9NCOclDThCnUR8B2TbubragZhyDs=
-X-Google-Smtp-Source: AGHT+IE/gZETgx51O7pzrCc3cEr494HTU9XfJV8azb9nJPzczdS5zJhegdsdVTGJc1Cb3wC4htdFyQ==
-X-Received: by 2002:adf:dd8b:0:b0:33a:ded0:c309 with SMTP id x11-20020adfdd8b000000b0033aded0c309mr1288727wrl.13.1706702408470;
-        Wed, 31 Jan 2024 04:00:08 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU/uzCB3VwH+x4UZ0/JI+iYwp4TEf7h9P3oHFQu4kmLs2PpqfRUeMAuxSO2exbX8NFFnywp9GbXo9B0FY00u6gCHLamjEQFCckgF5FkQjjJtzeQxXC2AJxKfNm78BC6gqliQ9xHevRjGoOQ33Z5xahTB0cofWFeJ42FqQQFHCd2w8Kl2roAuskO5t/99Y49u1DiRdjrujfdB61Wo1J+QrPFK6s/SbDz86ixx+uyLMrCWo6z195T4OBXWsW5q2RYnQI5OODIvHQIn7Leh3JBndKSfm9r1xSISWUbihBsp3Pno0GQuIAxX8+9z1ip5PFJvmp9gGjnE0RUCIWuxPyCL9/CLzVg1Zqgjx92LA5FCZgDZFh2y1LYIV8ZVQStOu4/oEqFX8+K7Nrg9+fFdNiX7xmDig3ttLbaGZbIw74ofQJNPxU27aQhNdKNNY4N0QienQ9zXSHD6h3qhbZEY9IDheZpmCOjymOsAUtknS/q8nbmWA==
-Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id ch19-20020a5d5d13000000b00337b47ae539sm13337744wrb.42.2024.01.31.04.00.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 04:00:07 -0800 (PST)
-Date: Wed, 31 Jan 2024 13:00:04 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-Cc: karthiksundaravel <ksundara@redhat.com>, jesse.brandeburg@intel.com,
-	anthony.l.nguyen@intel.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rjarry@redhat.com,
-	aharivel@redhat.com, vchundur@redhat.com, cfontain@redhat.com
-Subject: Re: [PATCH] ice: Add get/set hw address for VF representor ports
-Message-ID: <Zbo2RJErBsD0Sc_z@nanopsycho>
-References: <20240131080847.30614-1-ksundara@redhat.com>
- <ZbokUx7myZ1bVWLL@mev-dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=mPLgPTh34oV3wiNGpUX1T+HTECzZZ+Rkcpo52PjTATwaQNjozEG3LtziXFQ50LX3mBVBnZoT/5j9rk003LD+QQCL7sVw5AV+V4+7qugtCcvx+dhfY7eEgf0ged0366DDr91aJwwuO5WPWZua/Kxq9Fu4/tI11aN6Ms+Pk7+ZHaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Rpey7Rf1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4y0RAUW0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=s/bToHT9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FPAKO1Qh; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 66DFA22152;
+	Wed, 31 Jan 2024 12:02:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706702553; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TFW/uyXSTx1zaklDUdqba1GObwi/+lntUdbkEgumfhs=;
+	b=Rpey7Rf1LZ5ZnGaWiEN9vE4sOhX10lrAY0Ag6Z2I7T0xgBXV55PGq5Mn/LRYfftJssp62g
+	EpwuYNgXGJYjCMZUinGRqMAIcElwxVTON4kJ1CKKNVKt2Rmzrb+s3LvTpYYkLlmwwI9L4M
+	jaApy9L09gO2IijxBLWfx2hqXL5sxgk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706702553;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TFW/uyXSTx1zaklDUdqba1GObwi/+lntUdbkEgumfhs=;
+	b=4y0RAUW05JehdlyAy2WXJFU36Z2KXZO4ojLZJkPicB8HnrgIPbdpe4i1IEfrL8/3Uqn91G
+	Q+q+l4Ztl0mH8bAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706702551; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TFW/uyXSTx1zaklDUdqba1GObwi/+lntUdbkEgumfhs=;
+	b=s/bToHT9gYtY8WaNz9I17AGxDAdjPKdtBHsUveca/u9xwSZYc/ujEqVWGmErykBQ0zUHsq
+	00jqheW7gGJqgQ/ztC6kugn3tF6hroto7SuBLKtu17tgR0TNkB4JhG96LSNd+mgxwws+nJ
+	130YkEBNi1IIJpP6LVQBo1wYbk/aueA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706702551;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TFW/uyXSTx1zaklDUdqba1GObwi/+lntUdbkEgumfhs=;
+	b=FPAKO1QhoQboW9CLlurttKTeuO2WQ5EFbKOchrZeLQ/rH2HYwxjMja0NYBB8FP2MXpeUm2
+	JHvnY51co/vx9NDw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5641C139D9;
+	Wed, 31 Jan 2024 12:02:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 2dnIFNc2umW3SgAAn2gu4w
+	(envelope-from <jack@suse.cz>); Wed, 31 Jan 2024 12:02:31 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id B13ABA0809; Wed, 31 Jan 2024 13:02:30 +0100 (CET)
+Date: Wed, 31 Jan 2024 13:02:30 +0100
+From: Jan Kara <jack@suse.cz>
+To: Dave Chinner <david@fromorbit.com>
+Cc: syzbot <syzbot+cdee56dbcdf0096ef605@syzkaller.appspotmail.com>,
+	adilger.kernel@dilger.ca, chandan.babu@oracle.com, jack@suse.com,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Subject: Re: current->journal_info got nested! (was Re: [syzbot] [xfs?]
+ [ext4?] general protection fault in jbd2__journal_start)
+Message-ID: <20240131120230.2lzbwxg7j5ou6lyc@quack3>
+References: <000000000000e98460060fd59831@google.com>
+ <000000000000d6e06d06102ae80b@google.com>
+ <ZbmILkfdGks57J4a@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,54 +105,113 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZbokUx7myZ1bVWLL@mev-dev>
+In-Reply-To: <ZbmILkfdGks57J4a@dread.disaster.area>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.30
+X-Spamd-Result: default: False [-1.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=b0b9993d7d6d1990];
+	 TAGGED_RCPT(0.00)[cdee56dbcdf0096ef605];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 SUBJECT_HAS_EXCLAIM(0.00)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,syzkaller.appspot.com:url,suse.com:email,storage.googleapis.com:url];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 SUBJECT_HAS_QUESTION(0.00)[]
+X-Spam-Flag: NO
 
-Wed, Jan 31, 2024 at 11:43:44AM CET, michal.swiatkowski@linux.intel.com wrote:
->On Wed, Jan 31, 2024 at 01:38:47PM +0530, karthiksundaravel wrote:
->> Changing the mac address of the VF representor ports are not
->> available via devlink. Add the function handlers to set and get
->> the HW address for the VF representor ports.
->> 
->> Signed-off-by: karthiksundaravel <ksundara@redhat.com>
->> ---
->>  drivers/net/ethernet/intel/ice/ice_devlink.c | 134 ++++++++++++++++++-
->>  1 file changed, 132 insertions(+), 2 deletions(-)
->> 
->> diff --git a/drivers/net/ethernet/intel/ice/ice_devlink.c b/drivers/net/ethernet/intel/ice/ice_devlink.c
->> index 80dc5445b50d..56d81836c469 100644
->> --- a/drivers/net/ethernet/intel/ice/ice_devlink.c
->> +++ b/drivers/net/ethernet/intel/ice/ice_devlink.c
->> @@ -9,6 +9,8 @@
->
->As Jiri already wrote, you are not changing MAC of VF in your code. Try
->to look at ice_set_vf_mac in ice_sriov.c. In current implementation you
->nedd to set new MAC value for VF and reset it. You shouldn't use PF VSI.
->
->Pointer to VF you can get from representor struct (through parent VSI).
+On Wed 31-01-24 10:37:18, Dave Chinner wrote:
+> On Tue, Jan 30, 2024 at 06:52:21AM -0800, syzbot wrote:
+> > syzbot has found a reproducer for the following issue on:
+> > 
+> > HEAD commit:    861c0981648f Merge tag 'jfs-6.8-rc3' of github.com:kleikam..
+> > git tree:       upstream
+> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=13ca8d97e80000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=b0b9993d7d6d1990
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=cdee56dbcdf0096ef605
+> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=104393efe80000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1393b90fe80000
+> > 
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/7c6cc521298d/disk-861c0981.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/6203c94955db/vmlinux-861c0981.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/17e76e12b58c/bzImage-861c0981.xz
+> > mounted in repro: https://storage.googleapis.com/syzbot-assets/d31d4eed2912/mount_3.gz
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+cdee56dbcdf0096ef605@syzkaller.appspotmail.com
+> > 
+> > general protection fault, probably for non-canonical address 0xdffffc000a8a4829: 0000 [#1] PREEMPT SMP KASAN
+> > KASAN: probably user-memory-access in range [0x0000000054524148-0x000000005452414f]
+> > CPU: 1 PID: 5065 Comm: syz-executor260 Not tainted 6.8.0-rc2-syzkaller-00031-g861c0981648f #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+> > RIP: 0010:jbd2__journal_start+0x87/0x5d0 fs/jbd2/transaction.c:496
+> > Code: 74 63 48 8b 1b 48 85 db 74 79 48 89 d8 48 c1 e8 03 42 80 3c 28 00 74 08 48 89 df e8 63 4d 8f ff 48 8b 2b 48 89 e8 48 c1 e8 03 <42> 80 3c 28 00 74 08 48 89 ef e8 4a 4d 8f ff 4c 39 65 00 0f 85 1a
+> > RSP: 0018:ffffc900043265c8 EFLAGS: 00010203
+> > RAX: 000000000a8a4829 RBX: ffff8880205fa3a8 RCX: ffff8880235dbb80
+> > RDX: 0000000000000000 RSI: 0000000000000002 RDI: ffff88801c1a6000
+> > RBP: 000000005452414e R08: 0000000000000c40 R09: 0000000000000001
+>                ^^^^^^^^
+> Hmmmm - TRAN. That's looks suspicious, I'll come back to that.
 
-What if it is in a different host? Would you still be able to change the
-mac?
+Indeed, thanks for the great analysis.
 
+<snip analysis>
 
->
->You shouldn't manage the rules during MAC changing, as in switchdev
->slow-path there shouldn't be VF MAC rules. It can be problematic as user
->already can have MAC + sth rule (which also needs to be change). I will
->leave it to user (most probably the MAC change happens before adding any
->rules).
+> The question here is what to do about this? The obvious solution is
+> to have save/restore semantics in the filesystem code that
+> sets/clears current->journal_info, and then filesystems can also do
+> the necessary "recursion into same filesystem" checks they need to
+> ensure that they aren't nesting transactions in a way that can
+> deadlock.
 
-Rules are on the representor, not the VF, correct? Seems unrelated to
-me.
+As others have mentioned, this seems potentially dangerous because that
+just hides potential deadlocks. E.g. for ext4 taking a page fault while
+having a transaction started violates lock ordering requirements
+(mapping->invalidate_lock > transaction start). OTOH we have lockdep
+tracking for this anyway so I guess we don't care too much for ext4.
 
+> Maybe there are other options - should filesystems even be allowed to
+> trigger page faults when they have set current->journal_info?
 
->
->In few days we will send patchset for subfunction support where the
->subfunction MAC chaning is implementing from devlink API. I will add you
->to the CC.
->
->Thanks for working on it, it is a gap in our solution.
->
->Thanks,
->Michal
->
+For ext4 it would definitely be a bug if this happens and it is not only
+about usage of current->journal_info as I wrote above.
+
+> What other potential avenues are there that could cause this sort of
+> transaction context nesting that we haven't realised exist? Does
+> ext4 data=jounral have problems like this in the data copy-in path?
+> What other filesystems allow page faults in transaction contexts?
+
+So I'm reasonably confident we aren't hitting any such path in ext4 as
+lockdep would tell us about it (we treat transaction start as lock
+acquisition in jbd2 and tell lockdep about it). For the write path, we are
+relying on VFS prefaulting pages before calling ->write_begin (where we
+start a transaction) and then doing atomic copy. For the read path we don't
+start any transaction (except for possible atime update but that's just a
+tiny transaction on the side after the read completes). So ext4 on its own
+should be fine. But we have also btrfs, ceph, gfs2, nilfs2, ocfs2, and
+reiserfs using current->journal_info so overall chances for interaction are
+.. non-trivial.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
