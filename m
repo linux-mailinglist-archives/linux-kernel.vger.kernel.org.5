@@ -1,76 +1,76 @@
-Return-Path: <linux-kernel+bounces-46094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46095-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8679E843A40
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41EDA843A42
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:07:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35CEB291CDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:07:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9D8D291EFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:07:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4629978693;
-	Wed, 31 Jan 2024 09:00:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 961A37869E;
+	Wed, 31 Jan 2024 09:00:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HVFgVx5R"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aMbusUZf"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0BD876916
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:00:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B778078685
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:00:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706691657; cv=none; b=IADx30FSIFfOcfqDUt/LiUAE5vbJc+nd9hCnWNSJut43D1YMACHrDwkxJ3fhA+rjTrCKSH3TlEQO9CiEtpM7pnjFEhJo7rltKstSUDiaxfcEJ5aHS4FgR6zqDhWP+kG7HmFBbbcxzenOBUXp8NLkftxzqXf/FiGyd7uai73NdJQ=
+	t=1706691658; cv=none; b=KFThlIryCowySLbUL3BYtECMd39vFSoArDrbaW40hMQwkruve5eIxtQqrF+BhgPhtnX0HQsr+LLsTEZH5PFvMnJKShmoHw2nO1ktGfRv2umPWRaYg0jdXyAV6RGOem2V+HmjjKvZWKpYNBOGrr2PJaMOX9uQn3hQYxPJQEp1Yeg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706691657; c=relaxed/simple;
-	bh=napUZlUpob+viRPbJpwd5ak2Yx3rjWNTl4igoalCzt8=;
+	s=arc-20240116; t=1706691658; c=relaxed/simple;
+	bh=JDQ73jWtCeJTkfIEdhQKb+Lq+FcboMZkVNYoOlUA+lg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=c3DZZ1olc2HJ2RKKjFuy8H29xTPTM1Orpl6blsfwJAO5wIuZN7VGd8zbFR6xWwODrnZVzWGgOSONp8gdN5MBG0HVEtzA+IaFTV2vOLooc716UimymXWJa1pvpOPbPytLyxUOtR9VsWQufb5tOHu4QKg/Bv0TNVY1QdaJcO7Ynl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HVFgVx5R; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=cFLxlfY9tk7xl/6oRwgB29JIj80BVdm7Dk2G3BKT0/4UvIDs1bHKxIicUKAfraJLu5vaHuSb+OtrN9H963/eWPxph5qmpDJZw1d/vBtn/W3/7kU2IkHYP5sZF2nTYB+DZAcWk6LmwtaOPbr24A98MfbRL4pTjBR2JPNwwMM0JBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aMbusUZf; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706691653;
+	s=mimecast20190719; t=1706691654;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UCaIjT9n/jT9jWXXB3bhE2fYRwtAU/53x+dDT51fiBg=;
-	b=HVFgVx5RciWSg3wMOAp9x/MPo6XaZchq4JXXnHSVbrK3V7HaObzXQis84Mojw85mDOJLKJ
-	w9rU8qbQKHX35CuDNrVt/57IJJUexoQL4UARFgyvik4Phbjth/1Hs5J8pquf+liZYz/qC+
-	4cOI5Usl7vW1NEvEaKI2yXGVA/3YyVg=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=5eGIcHUEAf2NAHDRZzwxsmV03Hjf21pqGwYOdZ+86L4=;
+	b=aMbusUZfAYzOg6UWMV+9AsVkUXWuTAs2zfykSqYZThIGACCkzggmX/uiCqk/FGK3i7iRvZ
+	lCI2Cpx+pr+4C4htVQyZFZlBPdGmx/7g9ecHagni/MI5CnzPpar8AkCPcC36acY5Qbhn6E
+	GEA3w2AiRcX3GkNoJ31LfB5y3UoWhpY=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-75-ozqr78HFNcqZqgq8XsGAdQ-1; Wed, 31 Jan 2024 04:00:51 -0500
-X-MC-Unique: ozqr78HFNcqZqgq8XsGAdQ-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33af8509325so236033f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:00:51 -0800 (PST)
+ us-mta-29-3Qn8AkldPj6Ub6RpCooz5Q-1; Wed, 31 Jan 2024 04:00:53 -0500
+X-MC-Unique: 3Qn8AkldPj6Ub6RpCooz5Q-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33ae2dd7d4aso119492f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:00:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706691651; x=1707296451;
+        d=1e100.net; s=20230601; t=1706691652; x=1707296452;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UCaIjT9n/jT9jWXXB3bhE2fYRwtAU/53x+dDT51fiBg=;
-        b=obTxfcKErHH8cv0ZiIjvyC4MqxLpBtDqwnbrq2xAkBThhCRuOz2wzNH48tYnPrU1BQ
-         CrET5pUQsjqRWL9fbnfdXC21RwrYLaayLRIH0I1oIhtQP1fF06I5TxiIjCGZOIocvTR2
-         HLaqynVfTIkLPfmZSzS5DRnGnNIijATnLfLIsxdtkLXzQz+lEarE/G2XfhYxmWHYchxf
-         tif6lZ364dumhXN7eXNUBtDlesMEbQOKo3qamU9M8C00gT0yJvph9jLEx06EVKySlIws
-         Xi96TFQ6o8OXmiDKBe9CEQO5GdyqC2LKFilLiRdYPQnQhALunUJ1jG9ohcrdwWRUKewX
-         Vgrg==
-X-Gm-Message-State: AOJu0YzGeKhy//uxTWHmOvJ+6jqg+7NQ7ysUjcJdaksWm6vU+uUCC5Uf
-	xqZA/eoa2z8dNSTDn6XYAObatU5pjhIMl64vfPCuhp87Y3IT2zB6Gi8ZFru49V6Y12dds2KIWOd
-	wchSslDeAtXa6s6MhIc252JZpDbaGOIIX8XuNW16SiSQYbfVnxKY04C96Pd0qSA==
-X-Received: by 2002:a05:600c:6003:b0:40e:f6f1:804 with SMTP id az3-20020a05600c600300b0040ef6f10804mr789857wmb.3.1706691649936;
-        Wed, 31 Jan 2024 01:00:49 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHzy+dJzlDcIY7zXJ0lWqG+d5XFkucyi8BgmpyLSLpmqxP9FSys/o/DfM2F8WDBwD+uvKc2Tw==
-X-Received: by 2002:a05:600c:6003:b0:40e:f6f1:804 with SMTP id az3-20020a05600c600300b0040ef6f10804mr789762wmb.3.1706691648655;
-        Wed, 31 Jan 2024 01:00:48 -0800 (PST)
+        bh=5eGIcHUEAf2NAHDRZzwxsmV03Hjf21pqGwYOdZ+86L4=;
+        b=oTd1ruJmHc6qanwCMRwSb+DTsubNbvITM/XlMZgbQxv6xYv/tjjI5VlMxGmwxbPg/2
+         wFpU+hVvAmrRts3InTrIChwdVzSd6sMqA9JLWmfBcMPqHp2T1x9dvXdQ0F2VSbHMMz2T
+         GaQR5edHewqRnxrvxWkofxEnUS4wD1hyfJzsK6MwbSFH4TJ3rM5pN6PRzaBu9tSbzaX2
+         kG/nsxj9lEQwg5mMPJUAGnif3gzh9verICkSYCHjp5VuLJLAoAM8HueG8EGSOFvqx95F
+         5c8S7rSR1wNA5FHxRgyj2gMirIqET6naE/OUJS0O+YXNmD8Xjjx2+eH/Bt6WcRVfijjQ
+         goCA==
+X-Gm-Message-State: AOJu0Yy/5lqzl0DM+B3mMGtVP4SQ6jAzqBjnQzGsnNBY7y1Rr85Ufzl7
+	LpY3Wq11hXQ6jEaKIaEIh42GeCiSJ5rd4A/JZzOxrFafq8um1ewE3M/ioTaRmo3iBRZGGYvoeIw
+	a1o9JMS99nNzscmanooCJCEaR3NXNpDVzGtPRZiE7VJD+SfiWKeZ8juEd4k3yxQ==
+X-Received: by 2002:a05:600c:1d8a:b0:40f:b404:23f5 with SMTP id p10-20020a05600c1d8a00b0040fb40423f5mr747065wms.4.1706691650802;
+        Wed, 31 Jan 2024 01:00:50 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHl7ns5XdPLQ4SPWTlQksx6ZhH8l0gmodHjbusn1o0Q1RcXEdAYoOiQtnpHS4pVQ3Tzd6yFKg==
+X-Received: by 2002:a05:600c:1d8a:b0:40f:b404:23f5 with SMTP id p10-20020a05600c1d8a00b0040fb40423f5mr747035wms.4.1706691650442;
+        Wed, 31 Jan 2024 01:00:50 -0800 (PST)
 Received: from pstanner-thinkpadt14sgen1.muc.redhat.com (nat-pool-muc-t.redhat.com. [149.14.88.26])
-        by smtp.gmail.com with ESMTPSA id t15-20020a05600c198f00b0040ee51f1025sm940261wmq.43.2024.01.31.01.00.47
+        by smtp.gmail.com with ESMTPSA id t15-20020a05600c198f00b0040ee51f1025sm940261wmq.43.2024.01.31.01.00.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 01:00:48 -0800 (PST)
+        Wed, 31 Jan 2024 01:00:49 -0800 (PST)
 From: Philipp Stanner <pstanner@redhat.com>
 To: Bjorn Helgaas <bhelgaas@google.com>,
 	Arnd Bergmann <arnd@arndb.de>,
@@ -100,9 +100,9 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-pci@vger.kernel.org,
 	linux-arch@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH v6 3/4] lib: move pci-specific devres code to drivers/pci/
-Date: Wed, 31 Jan 2024 10:00:22 +0100
-Message-ID: <20240131090023.12331-4-pstanner@redhat.com>
+Subject: [PATCH v6 4/4] PCI: Move devres code from pci.c to devres.c
+Date: Wed, 31 Jan 2024 10:00:23 +0100
+Message-ID: <20240131090023.12331-5-pstanner@redhat.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240131090023.12331-1-pstanner@redhat.com>
 References: <20240131090023.12331-1-pstanner@redhat.com>
@@ -114,490 +114,604 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The pcim_*() functions in lib/devres.c are guarded by an #ifdef
-CONFIG_PCI and, thus, don't belong to this file. They are only ever used
-for pci and are not generic infrastructure.
+The file pci.c is very large and contains a number of devres-functions.
+These functions should now reside in devres.c
 
-Move all pcim_*() functions in lib/devres.c to drivers/pci/devres.c.
-Adjust the Makefile.
+There are a few callers left in pci.c that do devres operations. These
+should be ported in the future. Corresponding TODOs are added by this
+commit.
 
-Add drivers/pci/devres.c to Documentation.
+The reason they are not moved right now in this commit is that pci's
+devres currently implements a sort of "hybrid-mode":
+pci_request_region(), for instance, does not have a corresponding pcim_
+equivalent, yet. Instead, the function can be made managed by previously
+calling pcim_enable_device() (instead of pci_enable_device()). This
+makes it unreasonable to move pci_request_region() to devres.c
+Moving the functions would require changes to pci's API and is,
+therefore, left for future work.
+
+In summary, this commit serves as a preparation step for a following
+patch-series that will cleanly separate the PCI's managed and unmanaged
+API.
+
+Move as much devres-specific code from pci.c to devres.c as possible.
 
 Suggested-by: Danilo Krummrich <dakr@redhat.com>
 Signed-off-by: Philipp Stanner <pstanner@redhat.com>
 ---
- Documentation/driver-api/pci/pci.rst |   3 +
- drivers/pci/Makefile                 |   2 +-
- drivers/pci/devres.c                 | 207 ++++++++++++++++++++++++++
- lib/devres.c                         | 208 +--------------------------
- 4 files changed, 212 insertions(+), 208 deletions(-)
- create mode 100644 drivers/pci/devres.c
+ drivers/pci/devres.c | 243 +++++++++++++++++++++++++++++++++++++++++
+ drivers/pci/pci.c    | 249 -------------------------------------------
+ drivers/pci/pci.h    |  24 +++++
+ 3 files changed, 267 insertions(+), 249 deletions(-)
 
-diff --git a/Documentation/driver-api/pci/pci.rst b/Documentation/driver-api/pci/pci.rst
-index bacf23bf1343..aa40b1cc243b 100644
---- a/Documentation/driver-api/pci/pci.rst
-+++ b/Documentation/driver-api/pci/pci.rst
-@@ -7,6 +7,9 @@ PCI Support Library
- .. kernel-doc:: drivers/pci/iomap.c
-    :export:
- 
-+.. kernel-doc:: drivers/pci/devres.c
-+   :export:
-+
- .. kernel-doc:: drivers/pci/pci-driver.c
-    :export:
- 
-diff --git a/drivers/pci/Makefile b/drivers/pci/Makefile
-index 64dcedccfc87..ed65299b42b5 100644
---- a/drivers/pci/Makefile
-+++ b/drivers/pci/Makefile
-@@ -5,7 +5,7 @@
- obj-$(CONFIG_PCI)		+= access.o bus.o probe.o host-bridge.o \
- 				   remove.o pci.o pci-driver.o search.o \
- 				   pci-sysfs.o rom.o setup-res.o irq.o vpd.o \
--				   setup-bus.o vc.o mmap.o setup-irq.o
-+				   setup-bus.o vc.o mmap.o setup-irq.o devres.o
- 
- obj-$(CONFIG_PCI)		+= msi/
- obj-$(CONFIG_PCI)		+= pcie/
 diff --git a/drivers/pci/devres.c b/drivers/pci/devres.c
-new file mode 100644
-index 000000000000..a3fd0d65cef1
---- /dev/null
+index a3fd0d65cef1..4bd1e125bca1 100644
+--- a/drivers/pci/devres.c
 +++ b/drivers/pci/devres.c
-@@ -0,0 +1,207 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/pci.h>
-+#include "pci.h"
-+
-+/*
-+ * PCI iomap devres
-+ */
-+#define PCIM_IOMAP_MAX	PCI_STD_NUM_BARS
-+
-+struct pcim_iomap_devres {
-+	void __iomem *table[PCIM_IOMAP_MAX];
-+};
-+
-+static void pcim_iomap_release(struct device *gendev, void *res)
-+{
-+	struct pci_dev *dev = to_pci_dev(gendev);
-+	struct pcim_iomap_devres *this = res;
-+	int i;
-+
-+	for (i = 0; i < PCIM_IOMAP_MAX; i++)
-+		if (this->table[i])
-+			pci_iounmap(dev, this->table[i]);
-+}
-+
-+/**
-+ * pcim_iomap_table - access iomap allocation table
-+ * @pdev: PCI device to access iomap table for
-+ *
-+ * Access iomap allocation table for @dev.  If iomap table doesn't
-+ * exist and @pdev is managed, it will be allocated.  All iomaps
-+ * recorded in the iomap table are automatically unmapped on driver
-+ * detach.
-+ *
-+ * This function might sleep when the table is first allocated but can
-+ * be safely called without context and guaranteed to succeed once
-+ * allocated.
-+ */
-+void __iomem * const *pcim_iomap_table(struct pci_dev *pdev)
-+{
-+	struct pcim_iomap_devres *dr, *new_dr;
-+
-+	dr = devres_find(&pdev->dev, pcim_iomap_release, NULL, NULL);
-+	if (dr)
-+		return dr->table;
-+
-+	new_dr = devres_alloc_node(pcim_iomap_release, sizeof(*new_dr), GFP_KERNEL,
-+				   dev_to_node(&pdev->dev));
-+	if (!new_dr)
-+		return NULL;
-+	dr = devres_get(&pdev->dev, new_dr, NULL, NULL);
-+	return dr->table;
-+}
-+EXPORT_SYMBOL(pcim_iomap_table);
-+
-+/**
-+ * pcim_iomap - Managed pcim_iomap()
-+ * @pdev: PCI device to iomap for
-+ * @bar: BAR to iomap
-+ * @maxlen: Maximum length of iomap
-+ *
-+ * Managed pci_iomap().  Map is automatically unmapped on driver
-+ * detach.
-+ */
-+void __iomem *pcim_iomap(struct pci_dev *pdev, int bar, unsigned long maxlen)
-+{
-+	void __iomem **tbl;
-+
-+	BUG_ON(bar >= PCIM_IOMAP_MAX);
-+
-+	tbl = (void __iomem **)pcim_iomap_table(pdev);
-+	if (!tbl || tbl[bar])	/* duplicate mappings not allowed */
-+		return NULL;
-+
-+	tbl[bar] = pci_iomap(pdev, bar, maxlen);
-+	return tbl[bar];
-+}
-+EXPORT_SYMBOL(pcim_iomap);
-+
-+/**
-+ * pcim_iounmap - Managed pci_iounmap()
-+ * @pdev: PCI device to iounmap for
-+ * @addr: Address to unmap
-+ *
-+ * Managed pci_iounmap().  @addr must have been mapped using pcim_iomap().
-+ */
-+void pcim_iounmap(struct pci_dev *pdev, void __iomem *addr)
-+{
-+	void __iomem **tbl;
-+	int i;
-+
-+	pci_iounmap(pdev, addr);
-+
-+	tbl = (void __iomem **)pcim_iomap_table(pdev);
-+	BUG_ON(!tbl);
-+
-+	for (i = 0; i < PCIM_IOMAP_MAX; i++)
-+		if (tbl[i] == addr) {
-+			tbl[i] = NULL;
-+			return;
-+		}
-+	WARN_ON(1);
-+}
-+EXPORT_SYMBOL(pcim_iounmap);
-+
-+/**
-+ * pcim_iomap_regions - Request and iomap PCI BARs
-+ * @pdev: PCI device to map IO resources for
-+ * @mask: Mask of BARs to request and iomap
-+ * @name: Name used when requesting regions
-+ *
-+ * Request and iomap regions specified by @mask.
-+ */
-+int pcim_iomap_regions(struct pci_dev *pdev, int mask, const char *name)
-+{
-+	void __iomem * const *iomap;
-+	int i, rc;
-+
-+	iomap = pcim_iomap_table(pdev);
-+	if (!iomap)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < DEVICE_COUNT_RESOURCE; i++) {
-+		unsigned long len;
-+
-+		if (!(mask & (1 << i)))
-+			continue;
-+
-+		rc = -EINVAL;
-+		len = pci_resource_len(pdev, i);
-+		if (!len)
-+			goto err_inval;
-+
-+		rc = pci_request_region(pdev, i, name);
-+		if (rc)
-+			goto err_inval;
-+
-+		rc = -ENOMEM;
-+		if (!pcim_iomap(pdev, i, 0))
-+			goto err_region;
-+	}
-+
-+	return 0;
-+
-+ err_region:
-+	pci_release_region(pdev, i);
-+ err_inval:
-+	while (--i >= 0) {
-+		if (!(mask & (1 << i)))
-+			continue;
-+		pcim_iounmap(pdev, iomap[i]);
-+		pci_release_region(pdev, i);
-+	}
-+
-+	return rc;
-+}
-+EXPORT_SYMBOL(pcim_iomap_regions);
-+
-+/**
-+ * pcim_iomap_regions_request_all - Request all BARs and iomap specified ones
-+ * @pdev: PCI device to map IO resources for
-+ * @mask: Mask of BARs to iomap
-+ * @name: Name used when requesting regions
-+ *
-+ * Request all PCI BARs and iomap regions specified by @mask.
-+ */
-+int pcim_iomap_regions_request_all(struct pci_dev *pdev, int mask,
-+				   const char *name)
-+{
-+	int request_mask = ((1 << 6) - 1) & ~mask;
-+	int rc;
-+
-+	rc = pci_request_selected_regions(pdev, request_mask, name);
-+	if (rc)
-+		return rc;
-+
-+	rc = pcim_iomap_regions(pdev, mask, name);
-+	if (rc)
-+		pci_release_selected_regions(pdev, request_mask);
-+	return rc;
-+}
-+EXPORT_SYMBOL(pcim_iomap_regions_request_all);
-+
-+/**
-+ * pcim_iounmap_regions - Unmap and release PCI BARs
-+ * @pdev: PCI device to map IO resources for
-+ * @mask: Mask of BARs to unmap and release
-+ *
-+ * Unmap and release regions specified by @mask.
-+ */
-+void pcim_iounmap_regions(struct pci_dev *pdev, int mask)
-+{
-+	void __iomem * const *iomap;
-+	int i;
-+
-+	iomap = pcim_iomap_table(pdev);
-+	if (!iomap)
-+		return;
-+
-+	for (i = 0; i < PCIM_IOMAP_MAX; i++) {
-+		if (!(mask & (1 << i)))
-+			continue;
-+
-+		pcim_iounmap(pdev, iomap[i]);
-+		pci_release_region(pdev, i);
-+	}
-+}
-+EXPORT_SYMBOL(pcim_iounmap_regions);
-diff --git a/lib/devres.c b/lib/devres.c
-index c44f104b58d5..fe0c63caeb68 100644
---- a/lib/devres.c
-+++ b/lib/devres.c
-@@ -1,6 +1,6 @@
+@@ -1,4 +1,5 @@
  // SPDX-License-Identifier: GPL-2.0
 +#include <linux/device.h>
- #include <linux/err.h>
--#include <linux/pci.h>
- #include <linux/io.h>
- #include <linux/gfp.h>
- #include <linux/export.h>
-@@ -311,212 +311,6 @@ void devm_ioport_unmap(struct device *dev, void __iomem *addr)
- EXPORT_SYMBOL(devm_ioport_unmap);
- #endif /* CONFIG_HAS_IOPORT_MAP */
+ #include <linux/pci.h>
+ #include "pci.h"
  
--#ifdef CONFIG_PCI
+@@ -11,6 +12,248 @@ struct pcim_iomap_devres {
+ 	void __iomem *table[PCIM_IOMAP_MAX];
+ };
+ 
++
++static void devm_pci_unmap_iospace(struct device *dev, void *ptr)
++{
++	struct resource **res = ptr;
++
++	pci_unmap_iospace(*res);
++}
++
++/**
++ * devm_pci_remap_iospace - Managed pci_remap_iospace()
++ * @dev: Generic device to remap IO address for
++ * @res: Resource describing the I/O space
++ * @phys_addr: physical address of range to be mapped
++ *
++ * Managed pci_remap_iospace().  Map is automatically unmapped on driver
++ * detach.
++ */
++int devm_pci_remap_iospace(struct device *dev, const struct resource *res,
++			   phys_addr_t phys_addr)
++{
++	const struct resource **ptr;
++	int error;
++
++	ptr = devres_alloc(devm_pci_unmap_iospace, sizeof(*ptr), GFP_KERNEL);
++	if (!ptr)
++		return -ENOMEM;
++
++	error = pci_remap_iospace(res, phys_addr);
++	if (error) {
++		devres_free(ptr);
++	} else	{
++		*ptr = res;
++		devres_add(dev, ptr);
++	}
++
++	return error;
++}
++EXPORT_SYMBOL(devm_pci_remap_iospace);
++
++/**
++ * devm_pci_remap_cfgspace - Managed pci_remap_cfgspace()
++ * @dev: Generic device to remap IO address for
++ * @offset: Resource address to map
++ * @size: Size of map
++ *
++ * Managed pci_remap_cfgspace().  Map is automatically unmapped on driver
++ * detach.
++ */
++void __iomem *devm_pci_remap_cfgspace(struct device *dev,
++				      resource_size_t offset,
++				      resource_size_t size)
++{
++	void __iomem **ptr, *addr;
++
++	ptr = devres_alloc(devm_ioremap_release, sizeof(*ptr), GFP_KERNEL);
++	if (!ptr)
++		return NULL;
++
++	addr = pci_remap_cfgspace(offset, size);
++	if (addr) {
++		*ptr = addr;
++		devres_add(dev, ptr);
++	} else
++		devres_free(ptr);
++
++	return addr;
++}
++EXPORT_SYMBOL(devm_pci_remap_cfgspace);
++
++/**
++ * devm_pci_remap_cfg_resource - check, request region and ioremap cfg resource
++ * @dev: generic device to handle the resource for
++ * @res: configuration space resource to be handled
++ *
++ * Checks that a resource is a valid memory region, requests the memory
++ * region and ioremaps with pci_remap_cfgspace() API that ensures the
++ * proper PCI configuration space memory attributes are guaranteed.
++ *
++ * All operations are managed and will be undone on driver detach.
++ *
++ * Returns a pointer to the remapped memory or an ERR_PTR() encoded error code
++ * on failure. Usage example::
++ *
++ *	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++ *	base = devm_pci_remap_cfg_resource(&pdev->dev, res);
++ *	if (IS_ERR(base))
++ *		return PTR_ERR(base);
++ */
++void __iomem *devm_pci_remap_cfg_resource(struct device *dev,
++					  struct resource *res)
++{
++	resource_size_t size;
++	const char *name;
++	void __iomem *dest_ptr;
++
++	BUG_ON(!dev);
++
++	if (!res || resource_type(res) != IORESOURCE_MEM) {
++		dev_err(dev, "invalid resource\n");
++		return IOMEM_ERR_PTR(-EINVAL);
++	}
++
++	size = resource_size(res);
++
++	if (res->name)
++		name = devm_kasprintf(dev, GFP_KERNEL, "%s %s", dev_name(dev),
++				      res->name);
++	else
++		name = devm_kstrdup(dev, dev_name(dev), GFP_KERNEL);
++	if (!name)
++		return IOMEM_ERR_PTR(-ENOMEM);
++
++	if (!devm_request_mem_region(dev, res->start, size, name)) {
++		dev_err(dev, "can't request region for resource %pR\n", res);
++		return IOMEM_ERR_PTR(-EBUSY);
++	}
++
++	dest_ptr = devm_pci_remap_cfgspace(dev, res->start, size);
++	if (!dest_ptr) {
++		dev_err(dev, "ioremap failed for resource %pR\n", res);
++		devm_release_mem_region(dev, res->start, size);
++		dest_ptr = IOMEM_ERR_PTR(-ENOMEM);
++	}
++
++	return dest_ptr;
++}
++EXPORT_SYMBOL(devm_pci_remap_cfg_resource);
++
++/**
++ * pcim_set_mwi - a device-managed pci_set_mwi()
++ * @dev: the PCI device for which MWI is enabled
++ *
++ * Managed pci_set_mwi().
++ *
++ * RETURNS: An appropriate -ERRNO error value on error, or zero for success.
++ */
++int pcim_set_mwi(struct pci_dev *dev)
++{
++	struct pci_devres *dr;
++
++	dr = find_pci_dr(dev);
++	if (!dr)
++		return -ENOMEM;
++
++	dr->mwi = 1;
++	return pci_set_mwi(dev);
++}
++EXPORT_SYMBOL(pcim_set_mwi);
++
++
++static void pcim_release(struct device *gendev, void *res)
++{
++	struct pci_dev *dev = to_pci_dev(gendev);
++	struct pci_devres *this = res;
++	int i;
++
++	for (i = 0; i < DEVICE_COUNT_RESOURCE; i++)
++		if (this->region_mask & (1 << i))
++			pci_release_region(dev, i);
++
++	if (this->mwi)
++		pci_clear_mwi(dev);
++
++	if (this->restore_intx)
++		pci_intx(dev, this->orig_intx);
++
++	if (this->enabled && !this->pinned)
++		pci_disable_device(dev);
++}
++
++/*
++ * TODO:
++ * Once the last four callers in pci.c are ported, this function here needs to
++ * be made static again.
++ */
++struct pci_devres *find_pci_dr(struct pci_dev *pdev)
++{
++	if (pci_is_managed(pdev))
++		return devres_find(&pdev->dev, pcim_release, NULL, NULL);
++	return NULL;
++}
++EXPORT_SYMBOL(find_pci_dr);
++
++static struct pci_devres *get_pci_dr(struct pci_dev *pdev)
++{
++	struct pci_devres *dr, *new_dr;
++
++	dr = devres_find(&pdev->dev, pcim_release, NULL, NULL);
++	if (dr)
++		return dr;
++
++	new_dr = devres_alloc(pcim_release, sizeof(*new_dr), GFP_KERNEL);
++	if (!new_dr)
++		return NULL;
++	return devres_get(&pdev->dev, new_dr, NULL, NULL);
++}
++
++/**
++ * pcim_enable_device - Managed pci_enable_device()
++ * @pdev: PCI device to be initialized
++ *
++ * Managed pci_enable_device().
++ */
++int pcim_enable_device(struct pci_dev *pdev)
++{
++	struct pci_devres *dr;
++	int rc;
++
++	dr = get_pci_dr(pdev);
++	if (unlikely(!dr))
++		return -ENOMEM;
++	if (dr->enabled)
++		return 0;
++
++	rc = pci_enable_device(pdev);
++	if (!rc) {
++		pdev->is_managed = 1;
++		dr->enabled = 1;
++	}
++	return rc;
++}
++EXPORT_SYMBOL(pcim_enable_device);
++
++/**
++ * pcim_pin_device - Pin managed PCI device
++ * @pdev: PCI device to pin
++ *
++ * Pin managed PCI device @pdev.  Pinned device won't be disabled on
++ * driver detach.  @pdev must have been enabled with
++ * pcim_enable_device().
++ */
++void pcim_pin_device(struct pci_dev *pdev)
++{
++	struct pci_devres *dr;
++
++	dr = find_pci_dr(pdev);
++	WARN_ON(!dr || !dr->enabled);
++	if (dr)
++		dr->pinned = 1;
++}
++EXPORT_SYMBOL(pcim_pin_device);
++
+ static void pcim_iomap_release(struct device *gendev, void *res)
+ {
+ 	struct pci_dev *dev = to_pci_dev(gendev);
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index d8f11a078924..19f18c3856e8 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -2157,107 +2157,6 @@ int pci_enable_device(struct pci_dev *dev)
+ }
+ EXPORT_SYMBOL(pci_enable_device);
+ 
 -/*
-- * PCI iomap devres
+- * Managed PCI resources.  This manages device on/off, INTx/MSI/MSI-X
+- * on/off and BAR regions.  pci_dev itself records MSI/MSI-X status, so
+- * there's no need to track it separately.  pci_devres is initialized
+- * when a device is enabled using managed PCI device enable interface.
 - */
--#define PCIM_IOMAP_MAX	PCI_STD_NUM_BARS
--
--struct pcim_iomap_devres {
--	void __iomem *table[PCIM_IOMAP_MAX];
+-struct pci_devres {
+-	unsigned int enabled:1;
+-	unsigned int pinned:1;
+-	unsigned int orig_intx:1;
+-	unsigned int restore_intx:1;
+-	unsigned int mwi:1;
+-	u32 region_mask;
 -};
 -
--static void pcim_iomap_release(struct device *gendev, void *res)
+-static void pcim_release(struct device *gendev, void *res)
 -{
 -	struct pci_dev *dev = to_pci_dev(gendev);
--	struct pcim_iomap_devres *this = res;
+-	struct pci_devres *this = res;
 -	int i;
 -
--	for (i = 0; i < PCIM_IOMAP_MAX; i++)
--		if (this->table[i])
--			pci_iounmap(dev, this->table[i]);
+-	for (i = 0; i < DEVICE_COUNT_RESOURCE; i++)
+-		if (this->region_mask & (1 << i))
+-			pci_release_region(dev, i);
+-
+-	if (this->mwi)
+-		pci_clear_mwi(dev);
+-
+-	if (this->restore_intx)
+-		pci_intx(dev, this->orig_intx);
+-
+-	if (this->enabled && !this->pinned)
+-		pci_disable_device(dev);
 -}
 -
--/**
-- * pcim_iomap_table - access iomap allocation table
-- * @pdev: PCI device to access iomap table for
-- *
-- * Access iomap allocation table for @dev.  If iomap table doesn't
-- * exist and @pdev is managed, it will be allocated.  All iomaps
-- * recorded in the iomap table are automatically unmapped on driver
-- * detach.
-- *
-- * This function might sleep when the table is first allocated but can
-- * be safely called without context and guaranteed to succeed once
-- * allocated.
-- */
--void __iomem * const *pcim_iomap_table(struct pci_dev *pdev)
+-static struct pci_devres *get_pci_dr(struct pci_dev *pdev)
 -{
--	struct pcim_iomap_devres *dr, *new_dr;
+-	struct pci_devres *dr, *new_dr;
 -
--	dr = devres_find(&pdev->dev, pcim_iomap_release, NULL, NULL);
+-	dr = devres_find(&pdev->dev, pcim_release, NULL, NULL);
 -	if (dr)
--		return dr->table;
+-		return dr;
 -
--	new_dr = devres_alloc_node(pcim_iomap_release, sizeof(*new_dr), GFP_KERNEL,
--				   dev_to_node(&pdev->dev));
+-	new_dr = devres_alloc(pcim_release, sizeof(*new_dr), GFP_KERNEL);
 -	if (!new_dr)
 -		return NULL;
--	dr = devres_get(&pdev->dev, new_dr, NULL, NULL);
--	return dr->table;
+-	return devres_get(&pdev->dev, new_dr, NULL, NULL);
 -}
--EXPORT_SYMBOL(pcim_iomap_table);
+-
+-static struct pci_devres *find_pci_dr(struct pci_dev *pdev)
+-{
+-	if (pci_is_managed(pdev))
+-		return devres_find(&pdev->dev, pcim_release, NULL, NULL);
+-	return NULL;
+-}
 -
 -/**
-- * pcim_iomap - Managed pcim_iomap()
-- * @pdev: PCI device to iomap for
-- * @bar: BAR to iomap
-- * @maxlen: Maximum length of iomap
+- * pcim_enable_device - Managed pci_enable_device()
+- * @pdev: PCI device to be initialized
 - *
-- * Managed pci_iomap().  Map is automatically unmapped on driver
-- * detach.
+- * Managed pci_enable_device().
 - */
--void __iomem *pcim_iomap(struct pci_dev *pdev, int bar, unsigned long maxlen)
+-int pcim_enable_device(struct pci_dev *pdev)
 -{
--	void __iomem **tbl;
--
--	BUG_ON(bar >= PCIM_IOMAP_MAX);
--
--	tbl = (void __iomem **)pcim_iomap_table(pdev);
--	if (!tbl || tbl[bar])	/* duplicate mappings not allowed */
--		return NULL;
--
--	tbl[bar] = pci_iomap(pdev, bar, maxlen);
--	return tbl[bar];
--}
--EXPORT_SYMBOL(pcim_iomap);
--
--/**
-- * pcim_iounmap - Managed pci_iounmap()
-- * @pdev: PCI device to iounmap for
-- * @addr: Address to unmap
-- *
-- * Managed pci_iounmap().  @addr must have been mapped using pcim_iomap().
-- */
--void pcim_iounmap(struct pci_dev *pdev, void __iomem *addr)
--{
--	void __iomem **tbl;
--	int i;
--
--	pci_iounmap(pdev, addr);
--
--	tbl = (void __iomem **)pcim_iomap_table(pdev);
--	BUG_ON(!tbl);
--
--	for (i = 0; i < PCIM_IOMAP_MAX; i++)
--		if (tbl[i] == addr) {
--			tbl[i] = NULL;
--			return;
--		}
--	WARN_ON(1);
--}
--EXPORT_SYMBOL(pcim_iounmap);
--
--/**
-- * pcim_iomap_regions - Request and iomap PCI BARs
-- * @pdev: PCI device to map IO resources for
-- * @mask: Mask of BARs to request and iomap
-- * @name: Name used when requesting regions
-- *
-- * Request and iomap regions specified by @mask.
-- */
--int pcim_iomap_regions(struct pci_dev *pdev, int mask, const char *name)
--{
--	void __iomem * const *iomap;
--	int i, rc;
--
--	iomap = pcim_iomap_table(pdev);
--	if (!iomap)
--		return -ENOMEM;
--
--	for (i = 0; i < DEVICE_COUNT_RESOURCE; i++) {
--		unsigned long len;
--
--		if (!(mask & (1 << i)))
--			continue;
--
--		rc = -EINVAL;
--		len = pci_resource_len(pdev, i);
--		if (!len)
--			goto err_inval;
--
--		rc = pci_request_region(pdev, i, name);
--		if (rc)
--			goto err_inval;
--
--		rc = -ENOMEM;
--		if (!pcim_iomap(pdev, i, 0))
--			goto err_region;
--	}
--
--	return 0;
--
-- err_region:
--	pci_release_region(pdev, i);
-- err_inval:
--	while (--i >= 0) {
--		if (!(mask & (1 << i)))
--			continue;
--		pcim_iounmap(pdev, iomap[i]);
--		pci_release_region(pdev, i);
--	}
--
--	return rc;
--}
--EXPORT_SYMBOL(pcim_iomap_regions);
--
--/**
-- * pcim_iomap_regions_request_all - Request all BARs and iomap specified ones
-- * @pdev: PCI device to map IO resources for
-- * @mask: Mask of BARs to iomap
-- * @name: Name used when requesting regions
-- *
-- * Request all PCI BARs and iomap regions specified by @mask.
-- */
--int pcim_iomap_regions_request_all(struct pci_dev *pdev, int mask,
--				   const char *name)
--{
--	int request_mask = ((1 << 6) - 1) & ~mask;
+-	struct pci_devres *dr;
 -	int rc;
 -
--	rc = pci_request_selected_regions(pdev, request_mask, name);
--	if (rc)
--		return rc;
+-	dr = get_pci_dr(pdev);
+-	if (unlikely(!dr))
+-		return -ENOMEM;
+-	if (dr->enabled)
+-		return 0;
 -
--	rc = pcim_iomap_regions(pdev, mask, name);
--	if (rc)
--		pci_release_selected_regions(pdev, request_mask);
+-	rc = pci_enable_device(pdev);
+-	if (!rc) {
+-		pdev->is_managed = 1;
+-		dr->enabled = 1;
+-	}
 -	return rc;
 -}
--EXPORT_SYMBOL(pcim_iomap_regions_request_all);
+-EXPORT_SYMBOL(pcim_enable_device);
 -
 -/**
-- * pcim_iounmap_regions - Unmap and release PCI BARs
-- * @pdev: PCI device to map IO resources for
-- * @mask: Mask of BARs to unmap and release
+- * pcim_pin_device - Pin managed PCI device
+- * @pdev: PCI device to pin
 - *
-- * Unmap and release regions specified by @mask.
+- * Pin managed PCI device @pdev.  Pinned device won't be disabled on
+- * driver detach.  @pdev must have been enabled with
+- * pcim_enable_device().
 - */
--void pcim_iounmap_regions(struct pci_dev *pdev, int mask)
+-void pcim_pin_device(struct pci_dev *pdev)
 -{
--	void __iomem * const *iomap;
--	int i;
+-	struct pci_devres *dr;
 -
--	iomap = pcim_iomap_table(pdev);
--	if (!iomap)
--		return;
--
--	for (i = 0; i < PCIM_IOMAP_MAX; i++) {
--		if (!(mask & (1 << i)))
--			continue;
--
--		pcim_iounmap(pdev, iomap[i]);
--		pci_release_region(pdev, i);
--	}
+-	dr = find_pci_dr(pdev);
+-	WARN_ON(!dr || !dr->enabled);
+-	if (dr)
+-		dr->pinned = 1;
 -}
--EXPORT_SYMBOL(pcim_iounmap_regions);
--#endif /* CONFIG_PCI */
+-EXPORT_SYMBOL(pcim_pin_device);
 -
- static void devm_arch_phys_ac_add_release(struct device *dev, void *res)
+ /*
+  * pcibios_device_add - provide arch specific hooks when adding device dev
+  * @dev: the PCI device being added
+@@ -4352,133 +4251,6 @@ void pci_unmap_iospace(struct resource *res)
+ }
+ EXPORT_SYMBOL(pci_unmap_iospace);
+ 
+-static void devm_pci_unmap_iospace(struct device *dev, void *ptr)
+-{
+-	struct resource **res = ptr;
+-
+-	pci_unmap_iospace(*res);
+-}
+-
+-/**
+- * devm_pci_remap_iospace - Managed pci_remap_iospace()
+- * @dev: Generic device to remap IO address for
+- * @res: Resource describing the I/O space
+- * @phys_addr: physical address of range to be mapped
+- *
+- * Managed pci_remap_iospace().  Map is automatically unmapped on driver
+- * detach.
+- */
+-int devm_pci_remap_iospace(struct device *dev, const struct resource *res,
+-			   phys_addr_t phys_addr)
+-{
+-	const struct resource **ptr;
+-	int error;
+-
+-	ptr = devres_alloc(devm_pci_unmap_iospace, sizeof(*ptr), GFP_KERNEL);
+-	if (!ptr)
+-		return -ENOMEM;
+-
+-	error = pci_remap_iospace(res, phys_addr);
+-	if (error) {
+-		devres_free(ptr);
+-	} else	{
+-		*ptr = res;
+-		devres_add(dev, ptr);
+-	}
+-
+-	return error;
+-}
+-EXPORT_SYMBOL(devm_pci_remap_iospace);
+-
+-/**
+- * devm_pci_remap_cfgspace - Managed pci_remap_cfgspace()
+- * @dev: Generic device to remap IO address for
+- * @offset: Resource address to map
+- * @size: Size of map
+- *
+- * Managed pci_remap_cfgspace().  Map is automatically unmapped on driver
+- * detach.
+- */
+-void __iomem *devm_pci_remap_cfgspace(struct device *dev,
+-				      resource_size_t offset,
+-				      resource_size_t size)
+-{
+-	void __iomem **ptr, *addr;
+-
+-	ptr = devres_alloc(devm_ioremap_release, sizeof(*ptr), GFP_KERNEL);
+-	if (!ptr)
+-		return NULL;
+-
+-	addr = pci_remap_cfgspace(offset, size);
+-	if (addr) {
+-		*ptr = addr;
+-		devres_add(dev, ptr);
+-	} else
+-		devres_free(ptr);
+-
+-	return addr;
+-}
+-EXPORT_SYMBOL(devm_pci_remap_cfgspace);
+-
+-/**
+- * devm_pci_remap_cfg_resource - check, request region and ioremap cfg resource
+- * @dev: generic device to handle the resource for
+- * @res: configuration space resource to be handled
+- *
+- * Checks that a resource is a valid memory region, requests the memory
+- * region and ioremaps with pci_remap_cfgspace() API that ensures the
+- * proper PCI configuration space memory attributes are guaranteed.
+- *
+- * All operations are managed and will be undone on driver detach.
+- *
+- * Returns a pointer to the remapped memory or an ERR_PTR() encoded error code
+- * on failure. Usage example::
+- *
+- *	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+- *	base = devm_pci_remap_cfg_resource(&pdev->dev, res);
+- *	if (IS_ERR(base))
+- *		return PTR_ERR(base);
+- */
+-void __iomem *devm_pci_remap_cfg_resource(struct device *dev,
+-					  struct resource *res)
+-{
+-	resource_size_t size;
+-	const char *name;
+-	void __iomem *dest_ptr;
+-
+-	BUG_ON(!dev);
+-
+-	if (!res || resource_type(res) != IORESOURCE_MEM) {
+-		dev_err(dev, "invalid resource\n");
+-		return IOMEM_ERR_PTR(-EINVAL);
+-	}
+-
+-	size = resource_size(res);
+-
+-	if (res->name)
+-		name = devm_kasprintf(dev, GFP_KERNEL, "%s %s", dev_name(dev),
+-				      res->name);
+-	else
+-		name = devm_kstrdup(dev, dev_name(dev), GFP_KERNEL);
+-	if (!name)
+-		return IOMEM_ERR_PTR(-ENOMEM);
+-
+-	if (!devm_request_mem_region(dev, res->start, size, name)) {
+-		dev_err(dev, "can't request region for resource %pR\n", res);
+-		return IOMEM_ERR_PTR(-EBUSY);
+-	}
+-
+-	dest_ptr = devm_pci_remap_cfgspace(dev, res->start, size);
+-	if (!dest_ptr) {
+-		dev_err(dev, "ioremap failed for resource %pR\n", res);
+-		devm_release_mem_region(dev, res->start, size);
+-		dest_ptr = IOMEM_ERR_PTR(-ENOMEM);
+-	}
+-
+-	return dest_ptr;
+-}
+-EXPORT_SYMBOL(devm_pci_remap_cfg_resource);
+-
+ static void __pci_set_master(struct pci_dev *dev, bool enable)
  {
- 	arch_phys_wc_del(*((int *)res));
+ 	u16 old_cmd, cmd;
+@@ -4628,27 +4400,6 @@ int pci_set_mwi(struct pci_dev *dev)
+ }
+ EXPORT_SYMBOL(pci_set_mwi);
+ 
+-/**
+- * pcim_set_mwi - a device-managed pci_set_mwi()
+- * @dev: the PCI device for which MWI is enabled
+- *
+- * Managed pci_set_mwi().
+- *
+- * RETURNS: An appropriate -ERRNO error value on error, or zero for success.
+- */
+-int pcim_set_mwi(struct pci_dev *dev)
+-{
+-	struct pci_devres *dr;
+-
+-	dr = find_pci_dr(dev);
+-	if (!dr)
+-		return -ENOMEM;
+-
+-	dr->mwi = 1;
+-	return pci_set_mwi(dev);
+-}
+-EXPORT_SYMBOL(pcim_set_mwi);
+-
+ /**
+  * pci_try_set_mwi - enables memory-write-invalidate PCI transaction
+  * @dev: the PCI device for which MWI is enabled
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index 2336a8d1edab..2215858b2584 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -797,6 +797,30 @@ static inline pci_power_t mid_pci_get_power_state(struct pci_dev *pdev)
+ }
+ #endif
+ 
++/*
++ * TODO:
++ * The following two components wouldn't need to be here if they weren't used at
++ * four last places in pci.c
++ * Port or move these functions to devres.c and then remove the
++ * pci_devres-components from this header file here.
++ */
++/*
++ * Managed PCI resources.  This manages device on/off, INTx/MSI/MSI-X
++ * on/off and BAR regions.  pci_dev itself records MSI/MSI-X status, so
++ * there's no need to track it separately.  pci_devres is initialized
++ * when a device is enabled using managed PCI device enable interface.
++ */
++struct pci_devres {
++	unsigned int enabled:1;
++	unsigned int pinned:1;
++	unsigned int orig_intx:1;
++	unsigned int restore_intx:1;
++	unsigned int mwi:1;
++	u32 region_mask;
++};
++
++struct pci_devres *find_pci_dr(struct pci_dev *pdev);
++
+ /*
+  * Config Address for PCI Configuration Mechanism #1
+  *
 -- 
 2.43.0
 
