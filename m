@@ -1,62 +1,73 @@
-Return-Path: <linux-kernel+bounces-46919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12E8184465B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:41:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62AE984465D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:43:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45FF21C24FB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:41:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08643B25B0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:43:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7617312DD98;
-	Wed, 31 Jan 2024 17:41:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E4A612DDB1;
+	Wed, 31 Jan 2024 17:42:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="FoZromDy"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QYhqb3iX"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB0BB12CDB3;
-	Wed, 31 Jan 2024 17:41:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C56F212CDBE;
+	Wed, 31 Jan 2024 17:42:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706722884; cv=none; b=l0Y7EeIgh/Q2wRgU69F1W5/UnsZyrG6xZ2nxvckdhBBHFz0hms18+KrEZRCTq34hK1gNP+rH3j5wjRDrt9c9pHsCanH1u2Q0VKvfLICErpK/QIWNgLZNsRXEuDLlWMvJCJXdQSvWzVI6GjlSN27o6G6PtYzEMb2RaDZlw9x7awk=
+	t=1706722977; cv=none; b=f9heSAt9P5ehRHBWFiMgo8bbhj9nk82FJ5DygNA2oK4yurhGdHFq8o5dtWKWsUaOTKF4uIMs6SdUtoFTjamtDrSDJhFv45rZQWD1CH8WBRmf1QGD2npCDCHhmUicfm/3YkLzHSQva6CsRe0p7do87uUV6GCuUDCOrFnE0m8C0pM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706722884; c=relaxed/simple;
-	bh=RFRKfn9SrFLVHftowQmvZPXkgOgXzmdqBehMMSwaTds=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=iTilydLug8U/ErKAWX1BOpfYkTtNEM1wzfZUhfnAFV9VXFFJCVeJBKuyck6lPpN5V+Bvs3tWDdxUkF3OX7ibxbFqOj1R+on8t3jOAMdazUC9dbrDEyuDmS/OU5/ZCkEc+Mhe/vInaeJ2tX3Qpy3LXosleVvTkh7QK9kFUnqD2+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=FoZromDy; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40VHfECj058563;
-	Wed, 31 Jan 2024 11:41:14 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706722875;
-	bh=0EDAIkVSNIwFY7uzM0VylFUgC93m7m8nBWih+B1wgLE=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=FoZromDy352Emq81yei/8RVjNeBnj21iMfRGzFCdSu/9X/WslRKqNPxkRMCvYsIU8
-	 K4IDtSCO5qj8H89trphqrf/LkoF1X2BN0cEcffzlVUxNARABS4aLBOJvEsE/CbP2Yg
-	 49JQ+nDs003OiYdAHTjObAO4kEk5fatW9c7MLHGc=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40VHfEAe045065
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 31 Jan 2024 11:41:14 -0600
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
- Jan 2024 11:41:14 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 31 Jan 2024 11:41:14 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40VHfDGO066196;
-	Wed, 31 Jan 2024 11:41:14 -0600
-Message-ID: <593547f9-f9c5-4efc-b163-d7f289ff7db8@ti.com>
-Date: Wed, 31 Jan 2024 11:41:13 -0600
+	s=arc-20240116; t=1706722977; c=relaxed/simple;
+	bh=5mBrqsdSSNX4K1OVtEiQXCeAYA1ovM5trdUHizHWMCw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=J35WGWzcknwCJ/NWIflFlazHpGengieU70FHO3XFMHtdMVVsame/Qa8JfJpVKFJgv19PrkqA+Nn0pAEBXZ8A+C2meVSRdYurnCp8+F6hCWJ+pSq38lIQNTwbJcTK96/+2fPvSGmlUOfIAunrNLvd7e6XgT5aVGOjK7upFr7LWwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QYhqb3iX; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33aeac77bc4so4006f8f.0;
+        Wed, 31 Jan 2024 09:42:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706722974; x=1707327774; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AgYafR8d8OW74/fEtUK5QU/2T1EGv4L7kpyAYQKPOoA=;
+        b=QYhqb3iXn+Y/gcqtUkW9CVw4Vqs7Ff4bplP5GrfYGeS0t4OuZqhdC0qaNsP90WC4sf
+         eVD2mO4WK9X3vgMOBrKTSeUXr4VD3EJK1MgQdTTjiSlSxfDAJ8jBl4cfnQwpTbM/XNaQ
+         FGyPxLkr9SqyuX6Ta0yH7Uo6ns0jRrCWNb8IgmFQU3aLHa4YGn8diKkPcIc4TQ/yHfOQ
+         0IA2QGyPW3ckSE6Xf29PpDSunSuxSoHXW/BGCAacGr94Tl8kmQeYWkrqwBmIRKoGh48o
+         KtRNxnT4nZf2XE4PvFaZuvtCAkm3YHBUN4Nku8i9q0A0rTx4nfP3/lxoZjNxRuco9Pb1
+         k/Xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706722974; x=1707327774;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AgYafR8d8OW74/fEtUK5QU/2T1EGv4L7kpyAYQKPOoA=;
+        b=dX9knFTWzbqDMpf/QRbUI5FVS7b8CnVfuJUBktaWECgnM4BKIQiWupA6Nwfni9ftTt
+         yTarN7Id+Nm8/FXRsyh4QG/tmS8pTwsIInOrAjlR89PUEpTKy03R5006seOZB75AVkmH
+         qCU05FOirERBjsUx+D2rrbyAFuZ3p4UoMxbVLdh6xxcjvVZ6CMqtKhjIL9NAu4V5NE0x
+         mUMd82P42skZyO2mZHBGi3e36JKUkICidsNZ7c7vIZ3qFGE3n/A1TMWolzSi/iDRGtpF
+         qmRPX3Raxyj3Uy/v6srRbPPPGAnv3JVqjVhDKtawxQZPsXB88JzkkZeF1wkK63x3fxpM
+         yXkw==
+X-Forwarded-Encrypted: i=0; AJvYcCWTdArYqC/KXEvf6pv+NLsgSr9hvmoPUJBE5MubMOuXGqecl4IFKdgGcC41MYAlxBe9vkX3kpHeT03Ocme17ZUd38k5IJahgu6tbPyFgK/Kv1jaWCL3KTN3RioYYgc0rQQILF0PESOOLZg=
+X-Gm-Message-State: AOJu0YxVphPxEwLkWLmx1djG17WtFdMgsnmWPWz8g/sFu6M8vV6eylop
+	Q2sG6jF+Pi4m2qpV5NrRJ9KPNYE/aCl7Qg4H+z4DY+pFDEmXUSuV
+X-Google-Smtp-Source: AGHT+IHvk5WBJhdQvfPQj27osRuS4nNxP4VNndtdOFRqHSGbSaGTg8fwBOQCt4G7SehYlD0Tnj0p+g==
+X-Received: by 2002:a5d:69c1:0:b0:33b:1126:7326 with SMTP id s1-20020a5d69c1000000b0033b11267326mr118212wrw.4.1706722973991;
+        Wed, 31 Jan 2024 09:42:53 -0800 (PST)
+Received: from [172.16.102.38] ([167.98.27.226])
+        by smtp.gmail.com with ESMTPSA id ay12-20020a5d6f0c000000b0033ad47d7b86sm14137987wrb.27.2024.01.31.09.42.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 09:42:53 -0800 (PST)
+Message-ID: <a01a5a20-1dcc-4f90-9a72-29dc83d0d5f0@gmail.com>
+Date: Wed, 31 Jan 2024 17:42:52 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,58 +75,45 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: ti: k3-j721s2: Fix power domain for VTM node
+Subject: Re: [PATCH 1/3] ALSA: pcm: Add missing formats to formats list
 Content-Language: en-US
-To: Manorit Chawdhry <m-chawdhry@ti.com>, Nishanth Menon <nm@ti.com>,
-        Vignesh
- Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>, Rob Herring
-	<robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Bryan Brattlof <bb@ti.com>,
-        Keerthy <j-keerthy@ti.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Udit Kumar <u-kumar1@ti.com>
-References: <20240131-b4-upstream-j721s2-fix-vtm-devid-v1-1-94c927bb9595@ti.com>
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <20240131-b4-upstream-j721s2-fix-vtm-devid-v1-1-94c927bb9595@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Takashi Iwai <tiwai@suse.de>
+Cc: perex@perex.cz, tiwai@suse.com, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240125223522.1122765-1-ivan.orlov0322@gmail.com>
+ <87wmrr2ca3.wl-tiwai@suse.de>
+From: Ivan Orlov <ivan.orlov0322@gmail.com>
+In-Reply-To: <87wmrr2ca3.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 1/31/24 2:18 AM, Manorit Chawdhry wrote:
-> Fix the power domain device ID for wkup_vtm0 node.
+On 1/30/24 13:15, Takashi Iwai wrote:
+> On Thu, 25 Jan 2024 23:35:19 +0100,
+> Ivan Orlov wrote:
+>>
+>> Add 4 missing formats to 'snd_pcm_format_names' array in order to be
+>> able to get their names with 'snd_pcm_format_name' function.
+>>
+>> Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
 > 
-> Link: https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/j721s2/devices.html
-> Fixes: d148e3fe52c8 ("arm64: dts: ti: j721s2: Add VTM node")
-> Signed-off-by: Manorit Chawdhry <m-chawdhry@ti.com>
+> Now applied all three patches.  This first one is to for-linus, while
+> the rest two are to for-next for 6.9 kernel.
+> 
+> For further improvements (e.g. Amadeusz suggested), let's apply on top
+> of that.
+> 
+> 
+> thanks,
+> 
+> Takashi
 
-Looks to be wrong in J784s4 DT also, could you fix that too?
+Hi Takashi,
 
-Reviewed-by: Andrew Davis <afd@ti.com>
+Thank you for applying this changes! I'll send the patch with the 
+improvements suggested by Amadeusz as soon as possible.
 
-> ---
->   arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi
-> index 80aa33c58a45..a47cb557dd95 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi
-> @@ -663,7 +663,7 @@ wkup_vtm0: temperature-sensor@42040000 {
->   		compatible = "ti,j7200-vtm";
->   		reg = <0x00 0x42040000 0x0 0x350>,
->   		      <0x00 0x42050000 0x0 0x350>;
-> -		power-domains = <&k3_pds 154 TI_SCI_PD_SHARED>;
-> +		power-domains = <&k3_pds 180 TI_SCI_PD_SHARED>;
->   		#thermal-sensor-cells = <1>;
->   	};
->   
-> 
-> ---
-> base-commit: 774551425799cb5bbac94e1768fd69eec4f78dd4
-> change-id: 20240123-b4-upstream-j721s2-fix-vtm-devid-86e55c8a59ca
-> 
-> Best regards,
+-- 
+Kind regards,
+Ivan Orlov
+
 
