@@ -1,54 +1,78 @@
-Return-Path: <linux-kernel+bounces-46395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 293B8843F18
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:04:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ED5E843F1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:04:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D19051F303C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:04:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E863D1F30EE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:04:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA0E37690F;
-	Wed, 31 Jan 2024 12:04:03 +0000 (UTC)
-Received: from out0-198.mail.aliyun.com (out0-198.mail.aliyun.com [140.205.0.198])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E86A078692;
+	Wed, 31 Jan 2024 12:04:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="gpwVmNbX"
+Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B105076905
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:03:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.205.0.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A2F67866C;
+	Wed, 31 Jan 2024 12:04:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706702643; cv=none; b=m8GKp9YW5NAS4Ax06V9CNZ6jR4Rkl+aXIXXDZOd04fesioZJhE9x9zM4NPSPfk8wBmAZ1vHGmpIYAUbZGPOb8VHDNKBv6EcUZyYMBiQdZDQWfMRfr+O9yBcwTYIqQ+7Sp0eF6RXnh4MFTVrKSIeRc8itlTNcZUOxxBpz48zMNVA=
+	t=1706702675; cv=none; b=JIzOX3o3nCHpjoLz3iKxi+JjQMiBT+nqBOUgFOk0HyP1GrDYtm8SsITkjClxIqp6uCQ1/6Lht2U0Kf7lBT42jIy+ubp9u/Sbw9w4lVMpLbD81dzGfN7djhsiztZ3znQw1si1bBQXEhiQtlAPfy48Ve8N0zdL1Kr24FpnlS5awEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706702643; c=relaxed/simple;
-	bh=IN90uWH2gKJ9vO4bKf8+8xSF4Zj8oAe2pWZ1Il9B05Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=A7h7PDk5pbla7zwsx9hsBJYtVYZMpYgWLyilKbw69QrQpBxTr+pjWda27Wqngj3Q+vrqbvfrrBJ9xhgac8De10KqNtaWit8lKLDSY7ZluiqfNZOEE5DxwpokBcNtEWd8XrDjcUCI+Ewac1XGR/g+S3G39u2h85qPylJB0oqXa/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com; spf=pass smtp.mailfrom=antgroup.com; arc=none smtp.client-ip=140.205.0.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=antgroup.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047208;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---.WKHfWWO_1706702630;
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.WKHfWWO_1706702630)
-          by smtp.aliyun-inc.com;
-          Wed, 31 Jan 2024 20:03:55 +0800
-From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-To: peterz@infradead.org,
-	mingo@redhat.com,
-	wuyun.abel@bytedance.com
-Cc: "Tiwei Bie" <tiwei.btw@antgroup.com>,
-  "Juri Lelli" <juri.lelli@redhat.com>,
-  "Vincent Guittot" <vincent.guittot@linaro.org>,
-  "Dietmar Eggemann" <dietmar.eggemann@arm.com>,
-  "Steven Rostedt" <rostedt@goodmis.org>,
-  "Ben Segall" <bsegall@google.com>,
-  "Mel Gorman" <mgorman@suse.de>,
-  "Daniel Bristot de Oliveira" <bristot@redhat.com>,
-  "Valentin Schneider" <vschneid@redhat.com>,
-   <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] sched/fair: Sanity check 'best' in pick_eevdf()
-Date: Wed, 31 Jan 2024 20:03:40 +0800
-Message-Id: <20240131120340.76461-1-tiwei.btw@antgroup.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706702675; c=relaxed/simple;
+	bh=F+KoyRFtfnsgTzITPD6Uvzz6cJDqE0m6fF2NfXjS3LQ=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=u39f1ODfm94IvorN4Uq4vQ9PUgW2fCDwIcHp9XrOkyVDqGTkBRsUTlaOqNsRc3SW/m3wZamR0yTz2wfOL3mlvTUIFRvCRifpAwnz4UZDF1wMIo9t++cb6J1zrwojoy+j/paBrQ5pmwHQ5NqpDRf8G5Ze4mqVL3iRbsKeqm/HjtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=gpwVmNbX; arc=none smtp.client-ip=203.205.221.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1706702669; bh=OcZp1rMol08Z2WnpIQmEJuPhzfQf6La7Ry56I2aCSsM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=gpwVmNbXAfM4HjLrVX8m0DwgrXVHwxM1nuqcFibTpkSFKbMMwGlHoYCrKkE/+jvSn
+	 ln7ROO//5hE+V/MnBzbemmx3MnkH4qqvNsXL5QAUeXtOCENFHRnJ11mrtQpGcaPf9T
+	 Cgacs6g7BLoSDldyPbpUeVICnlTULcYCDq+5hflQ=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
+	id 11AB34D7; Wed, 31 Jan 2024 20:04:26 +0800
+X-QQ-mid: xmsmtpt1706702666trpq83rx5
+Message-ID: <tencent_7F29369E974036964A3E742F778567CC3C09@qq.com>
+X-QQ-XMAILINFO: OLnGMPzD2sDV+bM4O4JxdQZTGtdlH6EIv/Y5bpK8lXUeNSaV2P4W7A21k+tGbI
+	 D0jyWTusET0jyeMDp7cTfzxJYtNw1itwcDjWUkA9cwwuVJV/bguC4oyCbPTOK+lYM8ye5Dj8vv29
+	 aOitfrB3wHibIKHCTOD/MMOHfNmJNq5nIXGi0/BMGKG/9itEWu61AFaRFm8b49Vnc7RCin7rPbE0
+	 UXyjVoHSLMGIfpaHcn4H76GYPxGvM0yDphIkhJK1j+iOytFU9L/RDZx35ZS3HE9DEoUonWUDlZHi
+	 AIt5TdCRdNft9MSJ3/1QV4dpTjs2hQxqBTYTb6keYJDMWnTsh94mPqLfkd/0XwLGL4k5eCxY+uXy
+	 S3urh/tbk6bg3kW5BPY30kVFLo+Arfn5ntNqyQMCJfP/V7coJkjPsbdV2ExrwApaXTgfVbmbzGTe
+	 xMb4ZIWH2lb14UO07bkI4LjDq31NeMfxAGFck/F9HCx4QguPY0lbWZ3iCIBHgq3LS+cnKbaJdmrH
+	 XyVIvas5fJEa937Kt/jexRVHb3+2fWkaA7jTODK40+BdCxwJZdfljDgzIpqtOhK95rIqMLkfLbsE
+	 vYH/vmb6RvP4UZ0zqXr4zZtzuD0+vM1kso+eW4MlZHgRc2Hm/BPli4+fnfCO+BId8uQyb5WnOPJG
+	 1XgHgqpjQWFRTlhHi1Pf/zBR9pRy+lXgE53/gdYD/BQxD8+QgAIRQG7cBih+8l0mSAd4YkJaR/O7
+	 NFNcdJlInV+vmI5Db7+dxJYjdeLpTBEmX1gNk25yFI58KE1Z3GYKlVOVu6GYFbfflpcTfDTl9pwr
+	 gwakJY7xSvCvivCWNiLwlUK0vrLQN3QQfJzr9fJKcYgdNtC6LBBdZ7icRbA3CKDQRA6znu9Dd82M
+	 3PVfUXwpNO+UeLvB1UpzMZAL0jZ3cjk43u6A+89xem9QkjrVTajx5XJEX3eIiHhn4xRu/xTLkK2D
+	 xD8CM7D3qMqAjsXIQqwQ==
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+cdee56dbcdf0096ef605@syzkaller.appspotmail.com
+Cc: adilger.kernel@dilger.ca,
+	chandan.babu@oracle.com,
+	jack@suse.com,
+	linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	tytso@mit.edu
+Subject: [PATCH] jbd2: user-memory-access in jbd2__journal_start
+Date: Wed, 31 Jan 2024 20:04:27 +0800
+X-OQ-MSGID: <20240131120426.1278044-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <000000000000d6e06d06102ae80b@google.com>
+References: <000000000000d6e06d06102ae80b@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,80 +81,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Before commit 2227a957e1d5 ("sched/eevdf: Sort the rbtree by virtual
-deadline"), there was a sanity check to catch unexpected failures in the
-EEVDF scheduling, which was helpful in identifying problems. It would
-be better to restore its previous capability.
+Before reusing the handle, it is necessary to confirm that the transaction is 
+ready.
 
-Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+Reported-and-tested-by: syzbot+cdee56dbcdf0096ef605@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
 ---
-Refer:
-https://lore.kernel.org/lkml/23cbb613-c8a2-4f07-b83b-fa3104bef642@bytedance.com/
+ fs/jbd2/transaction.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-v1 -> v2:
-- improve commit log and error message;
-
- kernel/sched/fair.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 533547e3c90a..aeb3b8fee641 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -878,7 +878,7 @@ struct sched_entity *__pick_first_entity(struct cfs_rq *cfs_rq)
- static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
- {
- 	struct rb_node *node = cfs_rq->tasks_timeline.rb_root.rb_node;
--	struct sched_entity *se = __pick_first_entity(cfs_rq);
-+	struct sched_entity *first = __pick_first_entity(cfs_rq);
- 	struct sched_entity *curr = cfs_rq->curr;
- 	struct sched_entity *best = NULL;
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index cb0b8d6fc0c6..702312cd5392 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -493,6 +493,9 @@ handle_t *jbd2__journal_start(journal_t *journal, int nblocks, int rsv_blocks,
+ 		return ERR_PTR(-EROFS);
  
-@@ -887,7 +887,7 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
- 	 * in this cfs_rq, saving some cycles.
- 	 */
- 	if (cfs_rq->nr_running == 1)
--		return curr && curr->on_rq ? curr : se;
-+		return curr && curr->on_rq ? curr : first;
- 
- 	if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
- 		curr = NULL;
-@@ -900,14 +900,15 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
- 		return curr;
- 
- 	/* Pick the leftmost entity if it's eligible */
--	if (se && entity_eligible(cfs_rq, se)) {
--		best = se;
-+	if (first && entity_eligible(cfs_rq, first)) {
-+		best = first;
- 		goto found;
- 	}
- 
- 	/* Heap search for the EEVD entity */
- 	while (node) {
- 		struct rb_node *left = node->rb_left;
-+		struct sched_entity *se;
- 
- 		/*
- 		 * Eligible entities in left subtree are always better
-@@ -937,6 +938,16 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
- 	if (!best || (curr && entity_before(curr, best)))
- 		best = curr;
- 
-+	/* This is not expected to happen. */
-+	if (unlikely(!best)) {
-+		if (printk_ratelimit()) {
-+			printk_deferred(KERN_ERR
-+				"EEVDF scheduling failed on CPU%d, picking leftmost\n",
-+				cpu_of(rq_of(cfs_rq)));
-+		}
-+		best = first;
-+	}
+ 	if (handle) {
++		if (handle->saved_alloc_context & ~PF_MEMALLOC_NOFS)
++			return ERR_PTR(-EBUSY);
 +
- 	return best;
- }
- 
+ 		J_ASSERT(handle->h_transaction->t_journal == journal);
+ 		handle->h_ref++;
+ 		return handle;
 -- 
-2.34.1
+2.43.0
 
 
