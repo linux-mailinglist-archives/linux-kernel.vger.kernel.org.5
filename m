@@ -1,150 +1,120 @@
-Return-Path: <linux-kernel+bounces-45506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E562884319D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:57:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47CF18431A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:02:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84E4FB20F6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jan 2024 23:57:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCD0A1F24488
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 00:02:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4963A7995A;
-	Tue, 30 Jan 2024 23:57:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B09BA36C;
+	Wed, 31 Jan 2024 00:02:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="y/GNGdcI"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="RiF9AoCO"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E86B79950
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 23:57:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7284815C8
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:02:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706659053; cv=none; b=vEq9JH2gb8XSvJpr+CSVmOSVFZVJr3Kh6IJxwWss6CUzzIMGhUYDphQVLqDBb32kF6jOE5N+MQFFrQ7onBvzNNaWnk5yE+R8+KynUmqH42cXR/tRsKHzM4rtYsQ7oM4r8fEF/l2UruCP7PGJkmAHkcGR7FjPy3xhuTuNiFDc2/w=
+	t=1706659336; cv=none; b=T9fZ0hJ7b0yhdgdD/fb+VSAnyylq882A4gcOFisell6nGLQ+M0N2p3veGkO8928Cg6iqBG+J9EArk/mQDxCmpiziseGJhUhg28sYkBRVZPb56WmXrdQsdUWHcBH5/RkCD911/EtKxDmf/1mC6ZOwUvV7K6PuLNkL9m4iwH4qaXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706659053; c=relaxed/simple;
-	bh=QRMRw8beXinBXv6ZIIFkAWY7fv9n7Lk3/CVX+r20rQI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lKFE1p6jaXlL1bVZl/7BacxXXGDiqfyC5xGzNPz9CcKcTpGyEj8h0z2jyCr84loNlKYWQKkOE9q89xkWoG6xDtWAya5ImP5g1+anY+yi1rmI5yj34njRLy1WFj2SMNJQ37cpHmbCJymqhjsVFEAHIusuzeOUErbOIzLPaAgvGXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=y/GNGdcI; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40e913e3f03so49453655e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 15:57:31 -0800 (PST)
+	s=arc-20240116; t=1706659336; c=relaxed/simple;
+	bh=ELB3rB3pTBAyVWgkgbBLwzuWJhChYKsQ8NutVLQX82k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lIDzbPMClBG0AlUZd6WU4Uv4OMthVcEntUY3hkD8r3D3BEUCjIwry/szDSa3Z8hNjUlMsNBGbsMb0THEbOOJYUG3q4PCUZ/9rspcIPlSi32zAqyPMWOPKRA4uyNdtYFLXsSMsYPMJQtGEU27oJlK4L99OCMTSv7UmkKhqPMjZtY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=RiF9AoCO; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d057003864so19494681fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 16:02:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1706659049; x=1707263849; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4mHHnGwlF/0RJCkGxu132AKvJGOVljIej2KVj0yw9Xc=;
-        b=y/GNGdcIF90Ycak99ZCLxgvkwjIbH+7K8RNHWJ68UboFcD1klbIL/1v5xYGCGbHnJK
-         raonjdmpyjD03H9ToHmwR8t/GI1zpmskhv4oIZOFGLTQXKUUTl/4vyMfMvygMWz301vP
-         Gnpd93HRXah2VymvvPyxp1aKI/vVrZg2ZmiW0gnDlmlJcs6KwfirJLe8KmQWWbe9O06g
-         IANrAhOWsJyCyra9Ng89o2aF406W9tEhx+ouSpDIZJVpM+FLLkrcGJeYQTOZxhXQOoVj
-         O2ozxGRKxP+ItAM1FtHUwW/KwIInVO5OrbIuHt1pCVOmYSH/NQPepFlSQXrpZAo9fO6c
-         aAxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706659049; x=1707263849;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1706659332; x=1707264132; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4mHHnGwlF/0RJCkGxu132AKvJGOVljIej2KVj0yw9Xc=;
-        b=gY/onNb90louTekya1ZPnZcwxaRE10Hab/KtpLdGR/tot9MugsgLRt/l8i0tZPVQhK
-         oD+NBNs8gKd+ft45D79gUfrqw7dLakY3HSmfBddAcU1a/1nIIql9OBu0a1v9idJgfgxa
-         oEnHEWEkGzz6JiJcFRFqUc0yBAt0/gOC1BwyFoG6UOxE+WMnPSVJcl8TaicBBtWhgrkn
-         xmFsVW45IljF1ejG8TRfQPKPqzbd/yCt6ILn3do8aTUpuDO45klZ7vfXHcNqEMdQFCgW
-         +PGunH6mBK2Y6KdLAjgG0wuvhVoOW48BmfyokZRuFaSwpMZBr3NeVhzyCJZKTbSRnKjx
-         OoiQ==
-X-Gm-Message-State: AOJu0YwWjctYpWdhrOb/lkvIgC8qEkYEeBy+qKoXxn9OGGY2CH1XtctK
-	mGkOg/bgefFukEyURIX20qbxLAoIMYNqcg0pwhTbKhzGv3SbBdyXiEiCOIcf6z4=
-X-Google-Smtp-Source: AGHT+IGSORmwfW3bEYlKEch+Wp5XN4H5+MjVQYp7YFGVVRyqcOHOyioHLVIgkgJ2odyR8T6M1yyjmw==
-X-Received: by 2002:a05:600c:1547:b0:40e:779f:416 with SMTP id f7-20020a05600c154700b0040e779f0416mr35598wmg.2.1706659049300;
-        Tue, 30 Jan 2024 15:57:29 -0800 (PST)
-Received: from airbuntu ([213.122.231.14])
-        by smtp.gmail.com with ESMTPSA id az11-20020a05600c600b00b0040fb30f17e8sm538412wmb.38.2024.01.30.15.57.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 15:57:28 -0800 (PST)
-Date: Tue, 30 Jan 2024 23:57:27 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	linux-kernel@vger.kernel.org,
-	Pierre Gondois <Pierre.Gondois@arm.com>
-Subject: Re: [PATCH v4 1/2] sched/fair: Check a task has a fitting cpu when
- updating misfit
-Message-ID: <20240130235727.wj3texzo4lpbba6b@airbuntu>
-References: <20240105222014.1025040-1-qyousef@layalina.io>
- <20240105222014.1025040-2-qyousef@layalina.io>
- <CAKfTPtBYcVWxYOhWZjzcQUB1ebUBA-B30hvToqGBq6JnfRUZNg@mail.gmail.com>
- <20240124222959.ikwnbxkcjaxuiqp2@airbuntu>
- <CAKfTPtDxqcrf0kaBQG_zpFx-DEZTMKfyxBu_bzCuZ_UZhJwOnA@mail.gmail.com>
- <20240126014602.wdcro3ajffpna4fp@airbuntu>
- <CAKfTPtDqABnPDmt0COqyRpYSuj_WWwLrqL+Tbfa8J8b5u5eQtQ@mail.gmail.com>
- <20240128235005.txztdbdq2obyi4n6@airbuntu>
- <CAKfTPtC0=MH7bCypeY1QFxt=pFbPxY9YLuuS8_dhkF31nR6ZWQ@mail.gmail.com>
+        bh=HZ6gV8n3Hy2+6G1uDais5tZDUXuFFy3xqXRf85finO4=;
+        b=RiF9AoCO9PbxvF7mIJO+OGM1hwIp4Aqn7tyovcmre0kdR9frryqz2gy1mfV9DF67t7
+         wGGlX4RrI0EBu+hg8h1mZ1Mc/+sBukKcGA93xU1oQskflpRxqCnlL7CAkONIbMjy2Jxc
+         qEcw1PJEO2PzhG0Hlo8gD+9daYtpbRhewwQbE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706659332; x=1707264132;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HZ6gV8n3Hy2+6G1uDais5tZDUXuFFy3xqXRf85finO4=;
+        b=UmdrxZLphz6Ksz8N6TMs2Ao37r67ofh1oNc7/krMeSor/UNFzwFGE7U6g5oiX46aIx
+         oFgEp8rKqL1gFcFGYJA/HAdlPsv6i3VdXAiTPDRULkHAOug4pCg0FTp7eLnc6S2TmtLW
+         u4hnYf1gV1NjTL8kJ2ZJ4IDv35vXG6EKJSszZBe0+SZyYGVxHx2SDERseOnA70vxT1rQ
+         sUOJTHlXLxwsxQRoY6oZYjmU9EbK4FcVZod3/DyCk3W1d5rsIvJEog/uhmHAyzjSq5CO
+         HQwZXRVQqx1TBl7Z1XcUs6Hwj3hlKyK3PYsfntArnX5EmIdOWf0yvn0754S9AisL6QYT
+         ruow==
+X-Gm-Message-State: AOJu0Yx6/GjP4fa3ODOJOgvKqwNy4hm10xf3gHh2kdHa2wIr2SCPl7eM
+	jzAOXQW25kdS4Olvfgn8WAEAQHtvOrOfQH5nLERQRXLMRG6n10nNxH7zxGm0UdlDCoeGJH0loRE
+	=
+X-Google-Smtp-Source: AGHT+IGaElmBRJl0UQ26lbB/R/sqE6O3Zf+xGSPmwYMUz6efRjxWkX1UM33uEeIec+t6YGiUxGnloQ==
+X-Received: by 2002:a05:651c:3dc:b0:2cf:334d:b327 with SMTP id f28-20020a05651c03dc00b002cf334db327mr27123ljp.1.1706659332447;
+        Tue, 30 Jan 2024 16:02:12 -0800 (PST)
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com. [209.85.221.48])
+        by smtp.gmail.com with ESMTPSA id bm10-20020a0564020b0a00b0055f411d6014sm1098673edb.42.2024.01.30.16.02.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 16:02:12 -0800 (PST)
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3392b12dd21so3134905f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 16:02:12 -0800 (PST)
+X-Received: by 2002:a5d:680e:0:b0:33a:e828:c3e6 with SMTP id
+ w14-20020a5d680e000000b0033ae828c3e6mr15698wru.30.1706659331581; Tue, 30 Jan
+ 2024 16:02:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtC0=MH7bCypeY1QFxt=pFbPxY9YLuuS8_dhkF31nR6ZWQ@mail.gmail.com>
+References: <20240112131857.900734-1-nfraprado@collabora.com>
+ <20240112131857.900734-3-nfraprado@collabora.com> <ZaQVScQ2AYquG-Zr@smile.fi.intel.com>
+ <ZbA4VthTMPT7BSRo@google.com> <2024013059-poison-equation-81d1@gregkh>
+In-Reply-To: <2024013059-poison-equation-81d1@gregkh>
+From: Brian Norris <briannorris@chromium.org>
+Date: Tue, 30 Jan 2024 16:01:57 -0800
+X-Gmail-Original-Message-ID: <CA+ASDXM-m6U+JFvBSSHMxAf8Ct-T-pL8tmcHxHQjepdRFR-s1w@mail.gmail.com>
+Message-ID: <CA+ASDXM-m6U+JFvBSSHMxAf8Ct-T-pL8tmcHxHQjepdRFR-s1w@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] firmware: coreboot: Generate aliases for coreboot modules
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	=?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>, 
+	Tzung-Bi Shih <tzungbi@kernel.org>, kernel@collabora.com, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, chrome-platform@lists.linux.dev, 
+	Abhijit Gangurde <abhijit.gangurde@amd.com>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, Nipun Gupta <nipun.gupta@amd.com>, 
+	Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>, Umang Jain <umang.jain@ideasonboard.com>, 
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 01/30/24 10:41, Vincent Guittot wrote:
-> On Mon, 29 Jan 2024 at 00:50, Qais Yousef <qyousef@layalina.io> wrote:
-> >
-> > On 01/26/24 15:08, Vincent Guittot wrote:
-> >
-> > > > TBH I had a bit of confirmation bias that this is a problem based on the fix
-> > > > (0ae78eec8aa6) that we had in the past. So on verification I looked at
-> > > > balance_interval and this reproducer which is a not the same as the original
-> > > > one and it might be exposing another problem and I didn't think twice about it.
-> > >
-> > > I checked the behavior more deeply and I confirm that I don't see
-> > > improvement for the use case described above. I would say that it's
-> > > even worse as I can see some runs where the task stays on little
-> > > whereas a big core has been added in the affinity. Having in mind that
-> > > my system is pretty idle which means that there is almost no other
-> > > reason to trigger an ilb than the misfit task, the change in
-> > > check_misfit_status() is probably the reason for never kicking an ilb
-> > > for such case
-> >
-> > It seems I reproduced another problem while trying to reproduce the original
-> > issue, eh.
-> >
-> > I did dig more and from what I see the issue is that the rd->overload is not
-> > being set correctly. Which I believe what causes the delays (see attached
-> > picture how rd.overloaded is 0 with some spikes). Only when CPU7
-> > newidle_balance() coincided with rd->overload being 1 that the migration
-> > happens. With the below hack I can see that rd->overload is 1 all the time
-> 
-> But here you rely on another activity happening in CPU7 whereas the
+On Tue, Jan 30, 2024 at 3:51=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Tue, Jan 23, 2024 at 02:06:14PM -0800, Brian Norris wrote:
+> > "Don't you want to have a driver data or so associated with this?"
+..
+> But why limit yourself to 32bits now?  Why not make it 64?  It is going
+> to be sent to userspace, so you have to be very careful about it.
 
-I don't want to rely on that. I think this is a problem too. And this is what
-ends up happening from what I see, sometimes at least.
+Is that question related to the question I pasted/replied to, about
+driver data? Or a new topic? Sorry if I'm misunderstanding.
 
-When is it expected for newidle_balance to pull anyway? I agree we shouldn't
-rely on it to randomly happen, but if it happens sooner, it should pull, no?
+Anyway, for the size of the tag field: I don't have a strong opinion.
+But FWIW, they're coming from this project:
 
-> misfit should trigger by itself the load balance and not expect
-> another task waking up then sleeping on cpu7 to trigger a newidle
-> balance. We want a normal idle load balance not a newidle_balance
+https://review.coreboot.org/plugins/gitiles/coreboot/+/269b23280f928510bcad=
+d23182294e5b9dad11ec/payloads/libpayload/include/coreboot_tables.h#36
 
-I think there's a terminology problems. I thought you mean newidle_balnce() by
-ilb. It seems you're referring to load_balance() called from
-rebalance_domains() when tick happens at idle?
+As you can see there, we're extremely far from exhausting 16 bits, let alon=
+e 32.
 
-I thought this is not kicking. But I just double checked in my traces and I was
-getting confused because I was looking at where run_rebalance_domains() would
-happen, for example, on CPU2 but the balance would actually be for CPU7.
-
-No clue why it fails to pull.. I can see actually we call load_balance() twice
-for some (not all) entries to rebalance_domains(). So we don't always operate
-on the two domains. But that's not necessarily a problem.
-
-I think it's a good opportunity to add some tracepoints to help break this path
-down. If you have suggestions of things to record that'd be helpful.
+Brian
 
