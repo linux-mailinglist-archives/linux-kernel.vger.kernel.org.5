@@ -1,348 +1,149 @@
-Return-Path: <linux-kernel+bounces-46933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25713844681
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:51:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7F66844683
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:51:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 482481C22D75
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:51:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD2141C22A5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:51:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF22612DDAD;
-	Wed, 31 Jan 2024 17:50:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B39012F5A5;
+	Wed, 31 Jan 2024 17:51:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FCa7+/v6"
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="imI1Q0fQ"
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A03612FF79
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:50:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCDDD12F592
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:51:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706723444; cv=none; b=nSY2CUtFX6CtIEIes87cvCx4vJseQtAC8YKLPuM542Z8IvY0sUOyNjrM2aGOa8FAJwVHzYy6r+DlLjbXEPIdac2ELhdzxJCCzRL3bPCEgqxqEQkjdtjGz8t8VU+ynVcpn4FNMB+xRplc2pNR7O01dR8EevJsMd+l/aWonelajHU=
+	t=1706723468; cv=none; b=cw0BdBa2qmqxV2H+ft65NdCmfZeqBoZK00nxnaLWEGotYArZiDIhithUdVLNg616D8sCXJdgkFfsIWQQIBvvUtfViUpcsZOP+uQyoCffluWvH0PIqygmSh6vsO6+08MDrtwb6oq2YxHvEG3+V+VPyiA4YNetpMKquZBPT/wD2j8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706723444; c=relaxed/simple;
-	bh=1l2eyJahT6/THhsGFQlwh1IGeaNT9b5VEW1CK/GnyDw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TfiG17SwCES6XJDIZzE4Fr/oUz5WwKW26Ub0lnuyS8BpMxlUy1ZshHJ/Ljy+UNJzRDjaZ46JGHdo/dAieaQ9Z189boEPfCRNxnbZwWRkZkVztYegxPSoCBnqz6Jl7zmULKKW1zBZY3pPthSNV499vnH/n9/AEmJYaTUC8rbzliU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FCa7+/v6; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5d3907ff128so46557a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:50:42 -0800 (PST)
+	s=arc-20240116; t=1706723468; c=relaxed/simple;
+	bh=qJY4oRkVrk63MTvWpmtZEcGr0Puj9gAd9LCVvTivDTY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q3eoiv4ETFYeXYNmAxhOJ3emg/wFhiPLf1Y4hBsxAl63Npt9xmJUZxIDLtQBnxwOD8EBn3+jj6LlpqbPgSw/cpDKafgo2hfBNrVvEPkupiBlaupiBHbMrA/lf1Q1oG1QIRrfe/UrI4qKEgxny3TuoG2QllCSFpza5nPzp/NB8hk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=imI1Q0fQ; arc=none smtp.client-ip=209.85.219.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-68009cb4669so300706d6.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:51:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706723442; x=1707328242; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GPGI4dhOjsvjKsvP8oCKck8QX/3kjezSrJszAxYQUFA=;
-        b=FCa7+/v6WDADNHMGmPQDKONNiTN1UnOp4lMzCcXIPiTfwnrYPRl6bXDo0/+L4G18hN
-         FDtZgMyUduxGx6MNy/BCBRDneUSgXBvbCzCCgw2F97ai1iXyTTE65e9UCV/UAcET6lhr
-         sdbPpvTdPAyRowF521Sli8jVjj4Lw7fSMyIik=
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706723464; x=1707328264; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4bSf7bOhErvUGe8OSqVrxrzA9YWlx2blDsXOWDY7bWc=;
+        b=imI1Q0fQ0TFCzbPLlXIOhyFsYz9Xz5OyOAWLhgwBTNLULEC9/2PjJjJKUlcsdYt/AW
+         v4E0DpnV14qFnqhnG846f6ymb9m2nWqBWEDsMKzBrTpy48CtcT2gcvtVducJJTY5SY9V
+         wyyPvbdXjzIzTYejZ9QPl3mRqtPLp7H5pSeK9JiOk5GQ85GVhjQ63sn47MCuUIfIwgC2
+         RgzTypAyOuUO3eIaZoGFMF6+/aYiLg8xUeFAkrwmjUDvqykVIs9/6Da3/LWyC8pUY3XB
+         8OAJKgRzYUkXCndzeNBXBidipshHrmEEWdgnER0hhRSvx+ctvU6ay/Qb4Kee2ccf0s7v
+         IeYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706723442; x=1707328242;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GPGI4dhOjsvjKsvP8oCKck8QX/3kjezSrJszAxYQUFA=;
-        b=u0MeYANrxTFWuX1TAp/qSFFXeezRxGBq6tNonZyV4/etYpJaMr5E0soSGYv+pXwAMh
-         2P6KFZG6CMCIFg4X0lOdPKxC//jcUiRvd75pITMkbB9BaCSCpfMKX8lQXmv3jkR1nMaN
-         af4dKJA/QX0eEmXv9LialrTPtvO2iZFhP5L5G7NkWzRmDPhR6g6kqexqHkIeL9BmI02Q
-         UIcPEdRnpkrBT320qczULD+R1SXJSJBTaLhqVh+2yHFx7t5zw+Et0QiNd9UcBf8ddSuw
-         7U+FXHut4Rx0OvUIEHeygHP7jlJuapPzhlf47jpSnqnJQvGZTwbVpppqkDoDzruWkfHJ
-         +wmA==
-X-Gm-Message-State: AOJu0YzQKk3n7uT7GH3rLJFd1buiGwUGUpQ1WK15tUCli8Ti6EHDKJjl
-	8pDEiVgGTYc4Q2wqyj+ASnkuLt64ku0hoTtkGNyOL/7665/HMpsHwt1pEwQtBg==
-X-Google-Smtp-Source: AGHT+IErS/Qe51+MwT203LmMmKX79RYaK08wm/6Fh0mULIDWu6/Ls4MRxnfdABmWbLbYiZSldSyxAg==
-X-Received: by 2002:a05:6a20:2a26:b0:19c:8ed9:7b94 with SMTP id e38-20020a056a202a2600b0019c8ed97b94mr2072030pzh.51.1706723441835;
-        Wed, 31 Jan 2024 09:50:41 -0800 (PST)
-Received: from localhost (56.72.82.34.bc.googleusercontent.com. [34.82.72.56])
-        by smtp.gmail.com with UTF8SMTPSA id fa20-20020a056a002d1400b006d70b0d4639sm10172924pfb.107.2024.01.31.09.50.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Jan 2024 09:50:41 -0800 (PST)
-From: jeffxu@chromium.org
-To: akpm@linux-foundation.org,
-	keescook@chromium.org,
-	jannh@google.com,
-	sroettger@google.com,
-	willy@infradead.org,
-	gregkh@linuxfoundation.org,
-	torvalds@linux-foundation.org,
-	usama.anjum@collabora.com,
-	rdunlap@infradead.org
-Cc: jeffxu@google.com,
-	jorgelo@chromium.org,
-	groeck@chromium.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-mm@kvack.org,
-	pedro.falcato@gmail.com,
-	dave.hansen@intel.com,
-	linux-hardening@vger.kernel.org,
-	deraadt@openbsd.org,
-	Jeff Xu <jeffxu@chromium.org>
-Subject: [PATCH v8 4/4] mseal:add documentation
-Date: Wed, 31 Jan 2024 17:50:26 +0000
-Message-ID: <20240131175027.3287009-5-jeffxu@chromium.org>
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-In-Reply-To: <20240131175027.3287009-1-jeffxu@chromium.org>
-References: <20240131175027.3287009-1-jeffxu@chromium.org>
+        d=1e100.net; s=20230601; t=1706723464; x=1707328264;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4bSf7bOhErvUGe8OSqVrxrzA9YWlx2blDsXOWDY7bWc=;
+        b=eT3bIpFojhh1HyNYgujZ0/Zgu+QtvttTWPotRKgXgM0eyCSTNQKUdCTtvtH0UiRSMp
+         Ux3mMDUVxFDv1dyYy6wGjz2tSX7X/0pTkkwzvj55gWB2I4jRKrZydKFuo24EVcbaszos
+         C8F/Wo7PwiOVxkRjVDDHcJziqiKKO6awdev+/V/9ulwm4FbjK2YWR31VnGIP1zu+l89U
+         9Z6qbs7p5oNBrwfShFtUTyAtKkMaA9lWMS8MtFNuBBYnvHHBV54lFwdbHXyRvMYmPY01
+         26XLC77MZnDuZyfACJk2hlxZnpGuNuchoXxC3CdNBMtb5OaSwOIPob37YbS8x1ERd+GR
+         Z3RA==
+X-Gm-Message-State: AOJu0Yxtv07bNrw+Xw6DUkWi0sbwbT1X/FHtuebBIw7A/Bh6KYNOxUEy
+	UcKHKtocGtxFb6kWS6u7XpbBOjsdpkOyi7/wWM0WY/1Y7e22FfDY8k78WI+eG3A=
+X-Google-Smtp-Source: AGHT+IERMm2HQiYN0C0bnn9l10JBozKMVH89zidARxsELO0u19TRMBEjLyabrSRSAjMEl9ErpOfjNg==
+X-Received: by 2002:a05:6214:d87:b0:681:77d9:c405 with SMTP id e7-20020a0562140d8700b0068177d9c405mr2344836qve.33.1706723464493;
+        Wed, 31 Jan 2024 09:51:04 -0800 (PST)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id s12-20020ad4500c000000b0068c510634d1sm2968358qvo.108.2024.01.31.09.51.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 09:51:04 -0800 (PST)
+Date: Wed, 31 Jan 2024 12:50:59 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Efly Young <yangyifei03@kuaishou.com>, android-mm@google.com,
+	yuzhao@google.com, cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcg: Use larger chunks for proactive reclaim
+Message-ID: <20240131175059.GC1227330@cmpxchg.org>
+References: <20240131162442.3487473-1-tjmercier@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240131162442.3487473-1-tjmercier@google.com>
 
-From: Jeff Xu <jeffxu@chromium.org>
+On Wed, Jan 31, 2024 at 04:24:41PM +0000, T.J. Mercier wrote:
+> Before 388536ac291 ("mm:vmscan: fix inaccurate reclaim during proactive
+> reclaim") we passed the number of pages for the reclaim request directly
+> to try_to_free_mem_cgroup_pages, which could lead to significant
+> overreclaim in order to achieve fairness. After 0388536ac291 the number
+> of pages was limited to a maxmimum of 32 (SWAP_CLUSTER_MAX) to reduce
+> the amount of overreclaim. However such a small chunk size caused a
+> regression in reclaim performance due to many more reclaim start/stop
+> cycles inside memory_reclaim.
+> 
+> Instead of limiting reclaim chunk size to the SWAP_CLUSTER_MAX constant,
+> adjust the chunk size proportionally with number of pages left to
+> reclaim. This allows for higher reclaim efficiency with large chunk
+> sizes during the beginning of memory_reclaim, and reduces the amount of
+> potential overreclaim by using small chunk sizes as the total reclaim
+> amount is approached. Using 1/4 of the amount left to reclaim as the
+> chunk size gives a good compromise between reclaim performance and
+> overreclaim:
+> 
+> root - full reclaim       pages/sec   time (sec)
+> pre-0388536ac291      :    68047        10.46
+> post-0388536ac291     :    13742        inf
+> (reclaim-reclaimed)/4 :    67352        10.51
+> 
+> /uid_0 - 1G reclaim       pages/sec   time (sec)  overreclaim (MiB)
+> pre-0388536ac291      :    258822       1.12            107.8
+> post-0388536ac291     :    105174       2.49            3.5
+> (reclaim-reclaimed)/4 :    233396       1.12            -7.4
+> 
+> /uid_0 - full reclaim     pages/sec   time (sec)
+> pre-0388536ac291      :    72334        7.09
+> post-0388536ac291     :    38105        14.45
+> (reclaim-reclaimed)/4 :    72914        6.96
+> 
+> Fixes: 0388536ac291 ("mm:vmscan: fix inaccurate reclaim during proactive reclaim")
+> Signed-off-by: T.J. Mercier <tjmercier@google.com>
+> ---
+>  mm/memcontrol.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 46d8d02114cf..d68fb89eadd2 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6977,7 +6977,8 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+>  			lru_add_drain_all();
+>  
+>  		reclaimed = try_to_free_mem_cgroup_pages(memcg,
+> -					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
+> +					max((nr_to_reclaim - nr_reclaimed) / 4,
+> +					    (nr_to_reclaim - nr_reclaimed) % 4),
 
-Add documentation for mseal().
+I don't see why the % 4 is needed. It only kicks in when the delta
+drops below 4, but try_to_free_mem_cgroup_pages() already has
 
-Signed-off-by: Jeff Xu <jeffxu@chromium.org>
----
- Documentation/userspace-api/index.rst |   1 +
- Documentation/userspace-api/mseal.rst | 215 ++++++++++++++++++++++++++
- 2 files changed, 216 insertions(+)
- create mode 100644 Documentation/userspace-api/mseal.rst
+		.nr_to_reclaim = max(nr_pages, SWAP_CLUSTER_MAX),
 
-diff --git a/Documentation/userspace-api/index.rst b/Documentation/userspace-api/index.rst
-index 09f61bd2ac2e..178f6a1d79cb 100644
---- a/Documentation/userspace-api/index.rst
-+++ b/Documentation/userspace-api/index.rst
-@@ -26,6 +26,7 @@ place where this information is gathered.
-    iommu
-    iommufd
-    media/index
-+   mseal
-    netlink/index
-    sysfs-platform_profile
-    vduse
-diff --git a/Documentation/userspace-api/mseal.rst b/Documentation/userspace-api/mseal.rst
-new file mode 100644
-index 000000000000..6bfac0622178
---- /dev/null
-+++ b/Documentation/userspace-api/mseal.rst
-@@ -0,0 +1,215 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=====================
-+Introduction of mseal
-+=====================
-+
-+:Author: Jeff Xu <jeffxu@chromium.org>
-+
-+Modern CPUs support memory permissions such as RW and NX bits. The memory
-+permission feature improves security stance on memory corruption bugs, i.e.
-+the attacker can’t just write to arbitrary memory and point the code to it,
-+the memory has to be marked with X bit, or else an exception will happen.
-+
-+Memory sealing additionally protects the mapping itself against
-+modifications. This is useful to mitigate memory corruption issues where a
-+corrupted pointer is passed to a memory management system. For example,
-+such an attacker primitive can break control-flow integrity guarantees
-+since read-only memory that is supposed to be trusted can become writable
-+or .text pages can get remapped. Memory sealing can automatically be
-+applied by the runtime loader to seal .text and .rodata pages and
-+applications can additionally seal security critical data at runtime.
-+
-+A similar feature already exists in the XNU kernel with the
-+VM_FLAGS_PERMANENT flag [1] and on OpenBSD with the mimmutable syscall [2].
-+
-+User API
-+========
-+Two system calls are involved in virtual memory sealing, mseal() and mmap().
-+
-+mseal()
-+-----------
-+The mseal() syscall has the following signature:
-+
-+``int mseal(void addr, size_t len, unsigned long flags)``
-+
-+**addr/len**: virtual memory address range.
-+
-+The address range set by ``addr``/``len`` must meet:
-+   - The start address must be in an allocated VMA.
-+   - The start address must be page aligned.
-+   - The end address (``addr`` + ``len``) must be in an allocated VMA.
-+   - no gap (unallocated memory) between start and end address.
-+
-+The ``len`` will be paged aligned implicitly by the kernel.
-+
-+**flags**: reserved for future use.
-+
-+**return values**:
-+
-+- ``0``: Success.
-+
-+- ``-EINVAL``:
-+    - Invalid input ``flags``.
-+    - The start address (``addr``) is not page aligned.
-+    - Address range (``addr`` + ``len``) overflow.
-+
-+- ``-ENOMEM``:
-+    - The start address (``addr``) is not allocated.
-+    - The end address (``addr`` + ``len``) is not allocated.
-+    - A gap (unallocated memory) between start and end address.
-+
-+- ``-EACCES``:
-+    - ``MAP_SEALABLE`` is not set during mmap().
-+
-+- ``-EPERM``:
-+    - sealing is supported only on 64-bit CPUs, 32-bit is not supported.
-+
-+- For above error cases, users can expect the given memory range is
-+  unmodified, i.e. no partial update.
-+
-+- There might be other internal errors/cases not listed here, e.g.
-+  error during merging/splitting VMAs, or the process reaching the max
-+  number of supported VMAs. In those cases, partial updates to the given
-+  memory range could happen. However, those cases should be rare.
-+
-+**Blocked operations after sealing**:
-+    Unmapping, moving to another location, and shrinking the size,
-+    via munmap() and mremap(), can leave an empty space, therefore
-+    can be replaced with a VMA with a new set of attributes.
-+
-+    Moving or expanding a different VMA into the current location,
-+    via mremap().
-+
-+    Modifying a VMA via mmap(MAP_FIXED).
-+
-+    Size expansion, via mremap(), does not appear to pose any
-+    specific risks to sealed VMAs. It is included anyway because
-+    the use case is unclear. In any case, users can rely on
-+    merging to expand a sealed VMA.
-+
-+    mprotect() and pkey_mprotect().
-+
-+    Some destructive madvice() behaviors (e.g. MADV_DONTNEED)
-+    for anonymous memory, when users don't have write permission to the
-+    memory. Those behaviors can alter region contents by discarding pages,
-+    effectively a memset(0) for anonymous memory.
-+
-+    Kernel will return -EPERM for blocked operations.
-+
-+**Note**:
-+
-+- mseal() only works on 64-bit CPUs, not 32-bit CPU.
-+
-+- users can call mseal() multiple times, mseal() on an already sealed memory
-+  is a no-action (not error).
-+
-+- munseal() is not supported.
-+
-+mmap()
-+----------
-+``void *mmap(void* addr, size_t length, int prot, int flags, int fd,
-+off_t offset);``
-+
-+We add two changes in ``prot`` and ``flags`` of  mmap() related to
-+memory sealing.
-+
-+**prot**
-+
-+The ``PROT_SEAL`` bit in ``prot`` field of mmap().
-+
-+When present, it marks the memory is sealed since creation.
-+
-+This is useful as optimization because it avoids having to make two
-+system calls: one for mmap() and one for mseal().
-+
-+It's worth noting that even though the sealing is set via the
-+``prot`` field in mmap(), it can't be set in the ``prot``
-+field in later mprotect(). This is unlike the ``PROT_READ``,
-+``PROT_WRITE``, ``PROT_EXEC`` bits, e.g. if ``PROT_WRITE`` is not set in
-+mprotect(), it means that the region is not writable.
-+
-+Setting ``PROT_SEAL`` implies setting ``MAP_SEALABLE`` below.
-+
-+**flags**
-+
-+The ``MAP_SEALABLE`` bit in the ``flags`` field of mmap().
-+
-+When present, it marks the map as sealable. A map created
-+without ``MAP_SEALABLE`` will not support sealing. In other words,
-+mseal() will fail for such a map.
-+
-+Applications that don't care about sealing will expect their
-+behavior unchanged. For those that need sealing support, opt in
-+by adding ``MAP_SEALABLE`` in mmap().
-+
-+Use Case:
-+=========
-+- glibc:
-+  The dynamic linker, during loading ELF executables, can apply sealing to
-+  non-writable memory segments.
-+
-+- Chrome browser: protect some security sensitive data-structures.
-+
-+Notes On MAP_SEALABLE
-+=====================
-+With the MAP_SEALABLE flag in mmap(), the memory must be mmap() with
-+MAP_SEALABLE, otherwise mseal() will fail. This raises the bar of
-+which memory can be sealed.
-+
-+Today, in linux, sealing have known side effects if applied in below
-+two cases:
-+
-+- aio/shm
-+
-+  aio/shm can mmap/munmap on behalf of userspace, e.g. ksys_shmdt() in shm.c. The lifetime of those mapping are not tied to the lifetime of the process. If those memories are sealed from userspace, then unmap will fail, causing leaks in VMA address space during the lifetime of the process.
-+
-+- Brk (heap/stack)
-+
-+  Currently, userspace applications can seal parts of the heap by calling malloc() and mseal().
-+  let's assume following calls from user space:
-+
-+  - ptr = malloc(size);
-+  - mprotect(ptr, size, RO);
-+  - mseal(ptr, size);
-+  - free(ptr);
-+
-+  Technically, before mseal() is added, the user can change the protection of the heap by calling mprotect(RO). As long as the user changes the protection back to RW before free(), the memory can be reused.
-+
-+  Adding mseal() into the picture, however, the heap is then sealed partially, the user can still free it, but the memory remains to be RO. In addition, the result of brk-shrink is nondeterministic, depending on if munmap() will try to free the sealed memory.(brk uses munmap to shrink the heap).
-+
-+  Given the heap is not marked with MAP_SEALABLE (at the time of this document's writing), this might discourage the inadvertent sealing on the heap.
-+
-+  It is noteworthy, nonetheless, for mappings that were created without the MAP_SEALABLE flag, a knowledgeable developer who wants to assume ownership of the memory range still has the option of mmap(MAP_FIXED|MAP_SEALABLE), which is equivalent to invoking munmap() and then mmap(MAP_FIXED). Indeed, a "not-allow-sealing" feature is not possible without some level of baseline sealing support and is out-of-scope currently.
-+
-+  In summary, the considerations for having MAP_SEALABLE are as follows:
-+
-+- Grants software owners the ability to incrementally incorporate sealing support for their designated memory ranges, such as brk.
-+- Raises the bar for which memory can be sealed, and discourages inadvertent sealing.
-+- Such a decision is reversible. In other words, a sysctl could be implemented to render all memory sealable in the future. However, if all memory were allowed to be sealable from the beginning, reversing that decision would be problematic.
-+
-+Additional notes:
-+=================
-+As Jann Horn pointed out in [3], there are still a few ways to write
-+to RO memory, which is, in a way, by design. Those cases are not covered
-+by mseal(). If applications want to block such cases, sandbox tools (such as
-+seccomp, LSM, etc) might be considered.
-+
-+Those cases are:
-+
-+- Write to read-only memory through /proc/self/mem interface.
-+- Write to read-only memory through ptrace (such as PTRACE_POKETEXT).
-+- userfaultfd.
-+
-+The idea that inspired this patch comes from Stephen Röttger’s work in V8
-+CFI [4]. Chrome browser in ChromeOS will be the first user of this API.
-+
-+Reference:
-+==========
-+[1] https://github.com/apple-oss-distributions/xnu/blob/1031c584a5e37aff177559b9f69dbd3c8c3fd30a/osfmk/mach/vm_statistics.h#L274
-+
-+[2] https://man.openbsd.org/mimmutable.2
-+
-+[3] https://lore.kernel.org/lkml/CAG48ez3ShUYey+ZAFsU2i1RpQn0a5eOs2hzQ426FkcgnfUGLvA@mail.gmail.com
-+
-+[4] https://docs.google.com/document/d/1O2jwK4dxI3nRcOJuPYkonhTkNQfbmwdvxQMyXgeaRHo/edit#heading=h.bvaojj9fu6hc
--- 
-2.43.0.429.g432eaa2c6b-goog
-
+so it looks like dead code.
 
