@@ -1,145 +1,119 @@
-Return-Path: <linux-kernel+bounces-46938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C71984469A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:58:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C69A84469D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:58:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5ECB61C22AE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:58:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0842528D32C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:58:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B844112FF6E;
-	Wed, 31 Jan 2024 17:58:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875A612F5B6;
+	Wed, 31 Jan 2024 17:58:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="DE9yTACk"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FtDoqSJ3"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9874184A3A
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:57:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32D0484A3A;
+	Wed, 31 Jan 2024 17:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706723882; cv=none; b=fzRVbdegPcWBJIshHcZ33yUxOoF7z4Iu2M4WmsPwiFMZ4rtaxUrCSlKgL+3+Ztn2dTRHXcjWcnO8XhMEQhkZ8iQ3IqNpf6bE8yMKnvZrF5cIzYpp+s4NVfgV8AFQSqzmOvtbBOG25lRXuUUoQ7S7NNSzJjqOVGZfzeaV7QyZ0do=
+	t=1706723921; cv=none; b=j77WkQ2b/qmV2f9FYFn2FeYZh68Q8UKzUgN4y+h+kDrG/aSJ1XD1+dJDsffkewT2pZ1DSQhntjoN7G9XCd1hVyAJuOInK+IECHPrdZKSRHgx+wQQKXxNYUDGD3tKwfD8tCeDo8jVZJCyp7kqTduaICNHWqGMOQgPEvCNgmt7rqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706723882; c=relaxed/simple;
-	bh=f8Twyr1rbist4v3G70PUahjy6OFpMvB53YtTVT8KDfA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OIGetBtAPBTcPFG7fChfsCuK8lf1Z4exoGFH0zlGuJqh355H+lWA8kyst+DfD0gk3omSp4JjRTP9HRsVRNdVf5Y3xmLm9lKdS6ssX5cVVito9HY8dW5WJeBhXezfx947qv4rvdWToM8lHFM8iD3MTE8O2fv1gl498f6JvILWOeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=DE9yTACk; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4416340E016C;
-	Wed, 31 Jan 2024 17:57:56 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id qD_F4Et-REoJ; Wed, 31 Jan 2024 17:57:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706723873; bh=EPJnPIMccZ2oA4HteLyIihqkM2FOWyuGl/1xfuontCE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DE9yTACkZG4+WRQV2OVzGa2G7gSIgRaNkgz93z/9gfAdg4ygqFrY+51og/FYWfUIf
-	 M56BFK/jhF71IHN62W8osFRF5ZsN10CXpD01b5tXndzUPw7OfuUKElOtto8avG1KTZ
-	 uWpjeTfHFBSqGoVzhf9AKd/6xPFEOpwTyHbAzOQCitwT7oU2jho52eJls8ZZe+H7nv
-	 4thVcbrehR32A8n5lMp1+Xm2f3rXX6YyVHr6bwE496yp7olFfyQ45kxJMnCUU1kcjp
-	 czovImNMYdHRYNT9KhgyV1Ln/Y0ngXAVq3+vD7TfVJ8jbyrWDRR4+RnE28rUp884vU
-	 IT9hYiFVq0KNaCNEwmnRFGJOlN20OcS1eJVKMzwkJcyK1sjEnshd0YJDJPVivWWhIk
-	 j2QxcuWTnuDca85Q6aF+OXjYJ4gnpU5EUnd73BNmGVPTaGJXTkORbwdsMpnKEpoUuj
-	 jlPYEpb1F3kU873wqG+C/Mds+3uZdAfwDIsNIeh0L907144pOgwKgA7pNKbAO1oivg
-	 Tom/RbDCr9DW+YsEeJ1QjkrhrgbNi0iRB51lpop7gS7hiMEBYwBcwshb/PI+XWxVgV
-	 yA1r3tqAobqhOu0TkHtWkEzSn+XZXmxgV+9mQ1Rju069hgCZzcMuSgxouyufSJaQlB
-	 hnt/VzLsji/iw5XHAdgpocCc=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E546F40E00C5;
-	Wed, 31 Jan 2024 17:57:44 +0000 (UTC)
-Date: Wed, 31 Jan 2024 18:57:38 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Isaku Yamahata <isaku.yamahata@intel.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org, Juergen Gross <jgross@suse.com>
-Subject: Re: [PATCH, RESEND] x86/pat: Simplifying the PAT programming protocol
-Message-ID: <20240131175738.GIZbqKEhlDKhaKfh_w@fat_crate.local>
-References: <20240124130650.496056-1-kirill.shutemov@linux.intel.com>
+	s=arc-20240116; t=1706723921; c=relaxed/simple;
+	bh=uFR6GVn2Sq6Y1ruCZ4JNcGInfnD7sqgpELocJVlBTV0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D5hJXvrSdFPBIeTEUBqa2BA3t+QJCFbpMnKDzaTZV1VAwSznJRsF832iN8EbLdSlI268hm9R4t5uZunBY6e7nMbSlcMWpCZVa88n8QPO/Uq8aC1RRBg0+0O6hCfMh8Tru1VlMONoelw5/FZzVODYhCbEq/XYDSQ0BmdjIfwu1lQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FtDoqSJ3; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40ef64d8955so766185e9.3;
+        Wed, 31 Jan 2024 09:58:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706723918; x=1707328718; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tHPba7GECW3MbfJEkXlgceb5irO1sp+Y7PoxlaVu36A=;
+        b=FtDoqSJ3pzWWzRlBSyOiXa+8/TK5zqCANp3vnYgD2fckplkmkMgg9jfgDhdNTD80gF
+         dNkfBESGrkrz5e6/FXxKZERSll81WyZYa9l27lYISwfDkzZxF3tdCKZbbM5y9HhMr9Tj
+         TggZ6D3D7YW74uAbJOhOjYk6jZNMJt6UEPSTjeRrLwYm2wVfmllqF7uKdZbWocQRPNpE
+         kUEp9SFPK2HPupXSzqAdWvO2xt7nbLh8EQ3MgG/rTcYIp/EM5MD3o0Jf/96HtJpXidGE
+         csnK2OIbY1zbtxy4gL1s5UQI+eE9QPXnCMY715nRCsSBuvOzD4bRtKAFQS1O11AjIazu
+         BtnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706723918; x=1707328718;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=tHPba7GECW3MbfJEkXlgceb5irO1sp+Y7PoxlaVu36A=;
+        b=CNxURTBE80b8j8+TkX9zPwDPc7m7B55Hj/ThM3yvkDrxXoY3df1d4m13a+ze+XqSXB
+         8yBtn7bJmREOriHiLFyWeg+fzab6B5ChxUHLV/h83cfuo24zIjLRH5xyB2+EH3fceeqj
+         0qHTukMS1al77NCKBX0rQ29DvtSulhEifeRh5KPXVD94CJRIFXNhULnZ7sZTIIcVB8NI
+         KV4NouO8F7IyHbIqjd972myiFaeWdpzAqwRo2oRdYxNAxUvam7lfI3BblikAg8HJEnzM
+         i7L0EwowX+WyHm3KOF748J/1spSghuPA2l3Zv3DIuQFj6Af/LtOQ4PrLLMKrVcHt/oyg
+         nFgA==
+X-Gm-Message-State: AOJu0YzFe3ecROuAFxe6faqJyUDevuOI7drL5pSckjtct4+Q3NsolzpK
+	+JKMqveDm5YLOHU+6yUjdnWlgrYKBkbfvPQlmnHybGYJq3uEAW4k
+X-Google-Smtp-Source: AGHT+IGF8Ai0KYZmY3xXvwexRApEnp4Y99Hm3QdZNj83IyO6Upc6OUgLGmsBlTZ+9DGp0MVISMQJOQ==
+X-Received: by 2002:a05:600c:4e92:b0:40f:44b5:1135 with SMTP id f18-20020a05600c4e9200b0040f44b51135mr2301796wmq.16.1706723918147;
+        Wed, 31 Jan 2024 09:58:38 -0800 (PST)
+Received: from ?IPV6:2001:7c0:2517:e:c08b:c62:9a65:ec91? ([2001:7c0:2517:e:c08b:c62:9a65:ec91])
+        by smtp.gmail.com with ESMTPSA id h18-20020a05600c351200b0040e39cbf2a4sm2232053wmq.42.2024.01.31.09.58.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 09:58:37 -0800 (PST)
+Message-ID: <8552a795-9ce4-417a-bc71-593571a6b363@gmail.com>
+Date: Wed, 31 Jan 2024 18:58:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240124130650.496056-1-kirill.shutemov@linux.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 2/2] platform/surface: aggregator_registry: add entry
+ for fan speed
+To: Guenter Roeck <linux@roeck-us.net>, Ivor Wanders <ivor@iwanders.net>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Hans de Goede <hdegoede@redhat.com>
+Cc: Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+ Mark Gross <markgross@kernel.org>, linux-hwmon@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org
+References: <20240131005856.10180-1-ivor@iwanders.net>
+ <20240131005856.10180-3-ivor@iwanders.net>
+ <7e392c1e-2cb2-43e4-804e-227551ed2dd7@roeck-us.net>
+From: Maximilian Luz <luzmaximilian@gmail.com>
+In-Reply-To: <7e392c1e-2cb2-43e4-804e-227551ed2dd7@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 24, 2024 at 03:06:50PM +0200, Kirill A. Shutemov wrote:
-> The programming protocol for the PAT MSR follows the MTRR programming
-> protocol. However, this protocol is cumbersome and requires disabling
-> caching (CR0.CD=1), which is not possible on some platforms.
+Am 1/31/2024 um 2:24 PM schrieb Guenter Roeck:
+> On Tue, Jan 30, 2024 at 07:58:56PM -0500, Ivor Wanders wrote:
+>> Add an entry for the fan speed function.
+>> Add this new entry to the Surface Pro 9 group.
+>>
+>> Signed-off-by: Ivor Wanders <ivor@iwanders.net>
+>> Link: https://github.com/linux-surface/kernel/pull/144
+>> Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
 > 
-> Specifically, a TDX guest is not allowed to set CR0.CD. It triggers
-> a #VE exception.
-> 
-> Turned out the requirement to follow the MTRR programming protocol for
-> PAT programming is unnecessarily strict. The new Intel Software
-> Developer Manual[1] (December 2023) relaxes this requirement. Please
-> refer to the section titled "Programming the PAT" for more information.
+> I wasn't sure if the Reviewed-by: tag means that I should apply the patch
+> through the hwmon subsystem. If so, please let me know. For now I'll
+> assume that it will be applied through a platform tree.
 
-How about you state that requirement here instead of referring to that
-doc which is hard to read and changes constantly?
+I think it would make more sense for it to go through pdx86 (as usual
+for platform/surface). That would avoid any potential merge conflicts
+if we get more changes to the surface_aggregator_registry later on.
 
-I'd prefer to have that programming requirement spelled out here to know
-in the future what that requirement was and what "variant" was added to
-the kernel in case someone decides to relax it even more.
+Hans, Ilpo, could you please take this?
 
-> 
-> The AMD documentation does not link PAT programming to MTRR.
-> 
-> The kernel only needs to flush the TLB after updating the PAT MSR. The
-> set_memory code already takes care of flushing the TLB and cache when
-> changing the memory type of a page.
+Also I just noticed that Ilpo wasn't CCd, I assume because of an older
+MAINTAINERS list. Ivor, please add him for any next submissions to
+platform/surface.
 
-So far so good. However, what guarantees that this relaxing of the
-protocol doesn't break any existing machines?
-
-If anything, this patch needs to be tested on everything possible. I can
-do that on AMD hw and some old Intels, just to be sure.
-
-> @@ -296,13 +298,8 @@ void __init pat_bp_init(void)
->  	/*
->  	 * Xen PV doesn't allow to set PAT MSR, but all cache modes are
->  	 * supported.
-> -	 * When running as TDX guest setting the PAT MSR won't work either
-> -	 * due to the requirement to set CR0.CD when doing so. Rely on
-> -	 * firmware to have set the PAT MSR correctly.
->  	 */
-> -	if (pat_disabled ||
-> -	    cpu_feature_enabled(X86_FEATURE_XENPV) ||
-> -	    cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
-> +	if (pat_disabled || cpu_feature_enabled(X86_FEATURE_XENPV)) {
->  		init_cache_modes(pat_msr_val);
->  		return;
-
-What does that mean, now, practically?
-
-That TDX guests virtualize the PAT MSR just like with any other guest or
-what is going on there?
-
-This should be explicitly stated in the commit message.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Best regards,
+Max
 
