@@ -1,257 +1,147 @@
-Return-Path: <linux-kernel+bounces-47159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AE3C8449FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:27:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49D74844A02
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:28:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3BF42855F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:27:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDE681F21CEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:28:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BC2F39AF4;
-	Wed, 31 Jan 2024 21:27:06 +0000 (UTC)
-Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65F173A1C4;
+	Wed, 31 Jan 2024 21:27:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="GZm9pt2z"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E68538FB5;
-	Wed, 31 Jan 2024 21:27:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E931139AD5;
+	Wed, 31 Jan 2024 21:27:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706736425; cv=none; b=K8k9Gog3oYhbq5XziZYWSceJoSaIL3s9eGzBoXp2DOOTEogVGCu7crWnapKecmhWDhxqvxu1Ws0A6Y7sMd8QX+mWS+fmzo3xlyftXMeC20w05/a8dP33ToqsvAsJgWh7M0LvA4DuRCy/mOtN4sAcUJuKD9Z98/ux1toxRquuYHU=
+	t=1706736431; cv=none; b=IyLvipW1a6wbmxfZaUWhTwXscEasTIb4AEl5f/oTILJEU4J5CSULGK4FFlQVI/63yQ0FEP7rAgjoSC8GlK0VWo8zjDhwjNIcpoBeOdOoZ26GeOa/ewExVpwKDeWGKSHo33X52ZFxZFV3p0SsLyf0sYoB+4vnUVtEN5McYH67QOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706736425; c=relaxed/simple;
-	bh=uVGvn5v3uULObvAaf3HZa/wtMRXqXaT8sHbkcl4AM74=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=tnJiZEbTwwrVZdeKmV04KRRHyE6GGcvPjqcF4FIsw9Aax7kaVFJE17XKwY7bxtkcrtfVoZh2caURHqRa2CcalkRwlIgTCZSilLtz0hDTN45oyRcNLwAdDONcgarTbSc+86lPtR6C9w6/N43+UjzmWJrPLLE21e23DzahZ81R79E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
-Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-	by mx.skole.hr (mx.skole.hr) with ESMTP id 2BD3E85458;
-	Wed, 31 Jan 2024 22:27:00 +0100 (CET)
-From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date: Wed, 31 Jan 2024 22:26:03 +0100
-Subject: [PATCH v2 2/2] dt-bindings: mmp-dma: convert to YAML
+	s=arc-20240116; t=1706736431; c=relaxed/simple;
+	bh=Zt1G8AZNItAAIfTTJxEAMYILTLrfahkLOO1UxAxM6hE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lIJaglX/xxV0stgAiPoxelodkyhHJJyF+55MKCIQex0WD6ZQ03sUJHrHX0IBnX/QgS7L9B+fJ4pUKu8hkaSkoAyI4O0oCALollmpoL7OKDQcR/0WWRuEb2kgyKvCSqM7QMQidcgPu38mpyePigWnXmWz//Iw9kLeSXfdDzRFxK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=GZm9pt2z; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40VLQfb2128548;
+	Wed, 31 Jan 2024 15:26:41 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706736401;
+	bh=emvhLlu/Lf9BG1U3YSbdeyD0o8sfDbBQciiGQFlSHoU=;
+	h=From:To:CC:Subject:Date;
+	b=GZm9pt2z+antuuEx734zaHeR7F7O+PBAaJg3+Qp1OC3VDBunxV6DMWcyWvsBffsz6
+	 MOIjziywPQHBdbJvKzBMFunahSepyXCZHjtJnDN0NTwzTU/SNr7jLRG56/VrsdcOBE
+	 8BLU7eC9Dq8Bg4CdF8WbihC8b3dmLlv46sRq2/gs=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40VLQfZ7020257
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 31 Jan 2024 15:26:41 -0600
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
+ Jan 2024 15:26:41 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 31 Jan 2024 15:26:41 -0600
+Received: from udba0500997.dhcp.ti.com (udba0500997.dhcp.ti.com [128.247.81.249])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40VLQfKP028966;
+	Wed, 31 Jan 2024 15:26:41 -0600
+From: Brandon Brnich <b-brnich@ti.com>
+To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero
+ Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon
+	<will@kernel.org>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Geert
+ Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Konrad
+ Dybcio <konrad.dybcio@linaro.org>,
+        Neil Armstrong
+	<neil.armstrong@linaro.org>,
+        =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?=
+	<nfraprado@collabora.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Darren Etheridge <detheridge@ti.com>
+CC: Brandon Brnich <b-brnich@ti.com>
+Subject: [PATCH v3 0/6] Add Support for Wave5 on TI Devices
+Date: Wed, 31 Jan 2024 15:26:19 -0600
+Message-ID: <20240131212625.1862775-1-b-brnich@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240131-pxa-dma-yaml-v2-2-9611d0af0edc@skole.hr>
-References: <20240131-pxa-dma-yaml-v2-0-9611d0af0edc@skole.hr>
-In-Reply-To: <20240131-pxa-dma-yaml-v2-0-9611d0af0edc@skole.hr>
-To: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Lubomir Rintel <lkundrak@v3.sk>
-Cc: dmaengine@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5281;
- i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=uVGvn5v3uULObvAaf3HZa/wtMRXqXaT8sHbkcl4AM74=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlurr28BlvrjNxs/aFdU/EAgxMD0nSWupIBhMn4
- 0Y8td+J3fKJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZbq69gAKCRCaEZ6wQi2W
- 4Z+FEACklOwkgEUQkLD0n5IeZH3nI12sq64yycJO8TELm84kZdc8b8IBO9M67LOwFQPjHg2CNKX
- nt+QbFSGCoaMQgC8yI6w7+nCUMzKtDL6NVLc2tBMfbZs7l2BfIEiAAL1twS+MAXz7xydwNDx/JD
- +I9OxH4SZCK4UCG0xPr3Tast9Zfzx9sCn9mLXBwN6Q5yqMeiKos3plSc/84HW/RInOvWboxmWYA
- yk4jJQ1GoT2mwKnJXlWKVP3ZZmxYKqmxf8bJkujDklYyIZwOzXO7aai3JKRQnPOmptg6A0K250x
- j+jus28Okw5K3JNFwo06jI1KAxYbP4Dp8YO/5TW5COdXzC49aP3ySK7ybTiPnL1K9x8dC36Zt50
- gyN/MxGWFWvlRJmMRs2rJyEhHwusmMCA3awYdsVLyC9ihVw9Uvxscw+z5m+abZV8CGWtivELH3X
- GxRELzKUE/J0rfRLMqVJp+FHTfd4h6dSq4GntPoeZfHcOItx9um6lgu6ObYwU+aJIfmU/yTTL7U
- pxKLbc3FBUXQAb4WwyUk+zCmlMKqkB8juHRxbwmfGrfoP5oWWgN+fnbTlyuu1r9T6KmBfrjdFPh
- 57XiR/dj8qT9z2Yc5wqMlFssfwOFXBkbYfV980lhXY4DlCS3k+6Gfwca9jxai/VUzPM6QbDB2Ia
- rZTNXBYucQc3jNw==
-X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
- fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Convert the Marvell MMP DMA binding to YAML.
+This series is responsible for adding support for Wave5 driver[0]
+across numerous TI K3 platforms.
 
-The TXT binding mentions that the controller may have one IRQ per DMA
-channel. Examples of this were dropped in the YAML binding because of
-dt_binding_check complaints (either too many interrupt cells or
-interrupts) and the fact that this is not used in any of the in-tree
-device trees.
+[0]: https://lore.kernel.org/all/ae6d2ad3-0b2a-462a-a9eb-9ce01e7a7f5e@xs4all.nl/
 
-Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
----
- .../devicetree/bindings/dma/marvell,mmp-dma.yaml   | 72 +++++++++++++++++++
- Documentation/devicetree/bindings/dma/mmp-dma.txt  | 81 ----------------------
- 2 files changed, 72 insertions(+), 81 deletions(-)
+Changes since v2:
+=================
 
-diff --git a/Documentation/devicetree/bindings/dma/marvell,mmp-dma.yaml b/Documentation/devicetree/bindings/dma/marvell,mmp-dma.yaml
-new file mode 100644
-index 000000000000..d447d5207be0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/dma/marvell,mmp-dma.yaml
-@@ -0,0 +1,72 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/dma/marvell,mmp-dma.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Marvell MMP DMA controller
-+
-+maintainers:
-+  - Duje Mihanović <duje.mihanovic@skole.hr>
-+
-+description:
-+  Marvell MMP SoCs may have two types of DMA controllers, peripheral and audio.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - marvell,pdma-1.0
-+      - marvell,adma-1.0
-+      - marvell,pxa910-squ
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    description:
-+      Interrupt lines for the controller, may be shared or one per DMA channel
-+    minItems: 1
-+
-+  asram:
-+    description:
-+      A phandle to the SRAM pool
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+
-+  '#dma-channels':
-+    deprecated: true
-+
-+  '#dma-requests':
-+    deprecated: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - '#dma-cells'
-+
-+allOf:
-+  - $ref: dma-controller.yaml#
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - marvell,pdma-1.0
-+    then:
-+      properties:
-+        asram: false
-+    else:
-+      required:
-+        - asram
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    dma-controller@d4000000 {
-+        compatible = "marvell,pdma-1.0";
-+        reg = <0xd4000000 0x10000>;
-+        interrupts = <47>;
-+        #dma-cells = <2>;
-+        dma-channels = <16>;
-+    };
-diff --git a/Documentation/devicetree/bindings/dma/mmp-dma.txt b/Documentation/devicetree/bindings/dma/mmp-dma.txt
-deleted file mode 100644
-index ec18bf0a802a..000000000000
---- a/Documentation/devicetree/bindings/dma/mmp-dma.txt
-+++ /dev/null
-@@ -1,81 +0,0 @@
--* MARVELL MMP DMA controller
--
--Marvell Peripheral DMA Controller
--Used platforms: pxa688, pxa910, pxa3xx, etc
--
--Required properties:
--- compatible: Should be "marvell,pdma-1.0"
--- reg: Should contain DMA registers location and length.
--- interrupts: Either contain all of the per-channel DMA interrupts
--		or one irq for pdma device
--
--Optional properties:
--- dma-channels: Number of DMA channels supported by the controller (defaults
--  to 32 when not specified)
--- #dma-channels: deprecated
--- dma-requests: Number of DMA requestor lines supported by the controller
--  (defaults to 32 when not specified)
--- #dma-requests: deprecated
--
--"marvell,pdma-1.0"
--Used platforms: pxa25x, pxa27x, pxa3xx, pxa93x, pxa168, pxa910, pxa688.
--
--Examples:
--
--/*
-- * Each channel has specific irq
-- * ICU parse out irq channel from ICU register,
-- * while DMA controller may not able to distinguish the irq channel
-- * Using this method, interrupt-parent is required as demuxer
-- * For example, pxa688 icu register 0x128, bit 0~15 is PDMA channel irq,
-- * 18~21 is ADMA irq
-- */
--pdma: dma-controller@d4000000 {
--	      compatible = "marvell,pdma-1.0";
--	      reg = <0xd4000000 0x10000>;
--	      interrupts = <0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15>;
--	      interrupt-parent = <&intcmux32>;
--	      dma-channels = <16>;
--      };
--
--/*
-- * One irq for all channels
-- * Dmaengine driver (DMA controller) distinguish irq channel via
-- * parsing internal register
-- */
--pdma: dma-controller@d4000000 {
--	      compatible = "marvell,pdma-1.0";
--	      reg = <0xd4000000 0x10000>;
--	      interrupts = <47>;
--	      dma-channels = <16>;
--      };
--
--
--Marvell Two Channel DMA Controller used specifically for audio
--Used platforms: pxa688, pxa910
--
--Required properties:
--- compatible: Should be "marvell,adma-1.0" or "marvell,pxa910-squ"
--- reg: Should contain DMA registers location and length.
--- interrupts: Either contain all of the per-channel DMA interrupts
--		or one irq for dma device
--
--"marvell,adma-1.0" used on pxa688
--"marvell,pxa910-squ" used on pxa910
--
--Examples:
--
--/* each channel has specific irq */
--adma0: dma-controller@d42a0800 {
--	      compatible = "marvell,adma-1.0";
--	      reg = <0xd42a0800 0x100>;
--	      interrupts = <18 19>;
--	      interrupt-parent = <&intcmux32>;
--      };
--
--/* One irq for all channels */
--squ: dma-controller@d42a0800 {
--	      compatible = "marvell,pxa910-squ";
--	      reg = <0xd42a0800 0x100>;
--	      interrupts = <46>;
--      };
+* Remove reference to k3 as requested
+* Rebase on v6.8-rc2 where new bindings are present
+* Remove am62a dts entry until hrtimer[1] patch gets merged
+
+[1]: https://patchwork.kernel.org/project/linux-media/patch/20240125130833.1953617-1-devarsht@ti.com/
+
+Changes since v1:
+=================
+
+* Remove sram parameters
+  - sram-size property not included in bindings. Without this, size
+  will default to 0 so no point in specifying until binding is added.
+* Remove global CMA pools for each platform
+  - This is something that has been added in TI backport of driver
+  and does not yet have reliable support in upstream version.
+  - Removing for now with intention to add back once 48-bit
+  addressing is supported in upstream Wave5 driver.
+
+Brandon Brnich (5):
+  arm64: dts: ti: k3-j784s4: Add Wave5 Video Encoder/Decoder Node
+  arm64: dts: ti: k3-am69-sk: Enable Wave5 Video Encoder/Decoder
+  arm64: dts: ti: k3-am68-sk: Enable Wave5 Video Encoder/Decoder
+  arm64: dts: ti: k3-am62p: Add Wave5 Video Encoder/Decoder Node
+  arm64: defconfig: Enable Wave5 Video Encoder/Decoder
+
+Darren Etheridge (1):
+  arm64: dts: ti: k3-j721s2-main: Add Wave5 Video Encoder/Decoder Node
+
+ arch/arm64/boot/dts/ti/k3-am62p-main.dtsi     | 10 ++++++++++
+ arch/arm64/boot/dts/ti/k3-am62p5-sk.dts       |  4 ++++
+ .../boot/dts/ti/k3-am68-sk-base-board.dts     |  4 ++++
+ arch/arm64/boot/dts/ti/k3-am69-sk.dts         |  8 ++++++++
+ .../dts/ti/k3-j721s2-common-proc-board.dts    |  4 ++++
+ arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi    | 10 ++++++++++
+ arch/arm64/boot/dts/ti/k3-j784s4-evm.dts      |  8 ++++++++
+ arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi    | 20 +++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j784s4.dtsi         |  2 ++
+ arch/arm64/configs/defconfig                  |  1 +
+ 10 files changed, 71 insertions(+)
 
 -- 
-2.43.0
-
+2.34.1
 
 
