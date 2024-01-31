@@ -1,95 +1,119 @@
-Return-Path: <linux-kernel+bounces-46517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A512A8440D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:41:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F2FE8440D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:41:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6033F286A1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:41:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12CB01F234B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:41:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 250ED84A33;
-	Wed, 31 Jan 2024 13:39:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0022780C09;
+	Wed, 31 Jan 2024 13:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W+9eE4kx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HXtYZ0tV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5793C84A29;
-	Wed, 31 Jan 2024 13:39:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3702D7F491;
+	Wed, 31 Jan 2024 13:40:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706708362; cv=none; b=gVYTD0/HErrVUK69MDyQ9fEcH+O810NmvdGwNmjLHUiJOcptOIiDx1O1ARBb/9Tmex8tWdOaO6QddwEh87E4phSRqde9H/pevZ+FUvkFWVIx7wTiEKq0JrL9ZVs8DgH6DtLxx72/X+2puvx/wB69BXuENk1VNhQinNiqDgGCHlw=
+	t=1706708427; cv=none; b=pOAPNdCkWItfEb7Fe3MfUMGsAfNl7Uc0Plpxbx+9+F83ijobYIbj8sE+CeWFjj/hUUiDNdRLtafEqsI1Ckk6nyLBnNv1idfh/UGykaJ3+KkdIbrqEj5yMChaj5mO/4WJP/s6fzgCBYdHhr6FfGtOTJeCjg5B+1AswF8i7kPAkok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706708362; c=relaxed/simple;
-	bh=9Gbc5Q80vFOUp2fVirkYxzBggbmlX9X02znwd+/ytdQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NHYHpi9vwgYLDUhgi7OVXQOfvhB//lFlkLgynibHoERbhOafohBm3h66tHcjC0dkTXowieKNSw6P5wk8iIrawUP1obvG2YW+GKNUnl1F+f/bkpSklMF9EuV8jzFMoAW14hQ07vn1uD3K9ASdV+o3gvYylABGuedzFgFJl3exJoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W+9eE4kx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5C47C433C7;
-	Wed, 31 Jan 2024 13:39:19 +0000 (UTC)
+	s=arc-20240116; t=1706708427; c=relaxed/simple;
+	bh=b21SHlwTN9iL2fIw5Q492N87cW6wLJUEi5V8W/Un3ow=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=BkN0nlo4fslMrIqZvp30hkgRQqS1T0VchhmQYA1OEE1psZFpWqSQX9ePzGerepnd3vQ9JKfktVghIaxvgVXy7Ee1MfyRsdVPq7c7XHuOueM34S4tjk67imPMePFuYt07sCtH+8R1AfT+D7ddJwmhnJOtzE7WFlTjqnPmi7EZTpM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HXtYZ0tV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 06CB3C43399;
+	Wed, 31 Jan 2024 13:40:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706708362;
-	bh=9Gbc5Q80vFOUp2fVirkYxzBggbmlX9X02znwd+/ytdQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=W+9eE4kxm0PLUpNEmvmMkgNyp2h3dBygJVIRmJfzyeBpZGfulaPERHUo9hokomPxB
-	 fhJwfKn+O6iN7XqJwvrYqIM2sQQjNOykieONHi9SNd953GCU7yN7e2xza4OQBTrWLa
-	 1eDGA3R1958kQfLD2zKdMj4cecWa344KIV5/Fs/4rgCCa6i35bAHJVAt1Itl7UW7ft
-	 i7jHWJrVjlJ80P1fVmfsH/KZy/X+t/Kdvh/7nanWY9g30ret+8zmhABK5CXWOe+zj8
-	 IxITF2yWlCqp03piiHjgh6mznjrLKEvmtNDxWn93Dv0IRliGxCeHzRgz/sPkAIAsyW
-	 VoXV5JVorqo8Q==
-From: Christian Brauner <brauner@kernel.org>
-To: Kunwu Chan <chentao@kylinos.cn>
-Cc: Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org,
-	linux-unionfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	miklos@szeredi.hu,
-	amir73il@gmail.com,
-	viro@zeniv.linux.org.uk,
-	jack@suse.cz
-Subject: Re: [PATCH] fs: Use KMEM_CACHE instead of kmem_cache_create
-Date: Wed, 31 Jan 2024 14:39:13 +0100
-Message-ID: <20240131-kanufahren-lernmittel-ef0624c0aa47@brauner>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240131070941.135178-1-chentao@kylinos.cn>
-References: <20240131070941.135178-1-chentao@kylinos.cn>
+	s=k20201202; t=1706708427;
+	bh=b21SHlwTN9iL2fIw5Q492N87cW6wLJUEi5V8W/Un3ow=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=HXtYZ0tV+ZV6O1/b7q52L43SCRRKJnjThVSWuoUHyTEjj2+8vfwgBe1BfcHRWGnSy
+	 i82HSKRdiNNsO1TtT5EE4+c3owyBhbq4pO9KRHlRkXJ0dZexV3de0xjopSAV9S7BLx
+	 9gWmINp4GexV+cgJNrfDWR7HMAmpVtRK48SIkS0L3Nj3zSWPQihP3MGMRZSIllDx3l
+	 klMVn3x9b2he0bs1OJgOqXn1vp6cRnSGvDX8XB3XBTiAhRyC2SM8e3nxGlR++YRKJd
+	 5KUN/lEs8XL87kdM/T/es19zQR1+3Bj6CAMB0FqcT6Q4EMor8biZhURxNQ0QIKq8R9
+	 eE9T0C5/HsDFw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E08EADC99E5;
+	Wed, 31 Jan 2024 13:40:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1033; i=brauner@kernel.org; h=from:subject:message-id; bh=9Gbc5Q80vFOUp2fVirkYxzBggbmlX9X02znwd+/ytdQ=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTu8m267XYrfcNPA+35X+fc0zgYdkFs9fzln3IeqnTdl T+XJ5OR1FHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjCRBYYMf3jDTJaf37TjPa/m 6cD/ISmuni0C72QKktcwbpm+fvm0dhlGhmf9jFvrwxsTVwm5Gr9vv//R2Gj6bs30z99/5x1UqLl bxw0A
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH V4 00/15 net-next] qca_spi: collection of improvements
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170670842691.31681.3525325990073140229.git-patchwork-notify@kernel.org>
+Date: Wed, 31 Jan 2024 13:40:26 +0000
+References: <20240128201059.6259-1-wahrenst@gmx.net>
+In-Reply-To: <20240128201059.6259-1-wahrenst@gmx.net>
+To: Stefan Wahren <wahrenst@gmx.net>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, LinoSanfilippo@gmx.de, f.fainelli@gmail.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Wed, 31 Jan 2024 15:09:41 +0800, Kunwu Chan wrote:
-> commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
-> introduces a new macro.
-> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-> to simplify the creation of SLAB caches.
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Sun, 28 Jan 2024 21:10:44 +0100 you wrote:
+> This series contains a wild collection of improvements for the
+> qca_spi driver. This is a follow-up series to the recent bugfixes [1].
 > 
+> Patch 1, 2 & 3 in this series is the initially intended rework of
+> netdev_open/close. Patch 4 & 10 are minor functional improvements and
+> the rest is clean-up.
 > 
+> [...]
 
-Applied to the vfs.misc branch of the vfs/vfs.git tree.
-Patches in the vfs.misc branch should appear in linux-next soon.
+Here is the summary with links:
+  - [V4,01/15,net-next] qca_spi: Add check for kthread_stop
+    (no matching commit)
+  - [V4,02/15,net-next] qca_spi: Improve SPI thread creation
+    (no matching commit)
+  - [V4,03/15,net-next] qca_spi: Improve SPI IRQ handling
+    (no matching commit)
+  - [V4,04/15,net-next] qca_spi: Avoid skb_copy_expand in TX path
+    (no matching commit)
+  - [V4,05/15,net-next] qca_7k_common: Drop unnecessary function description
+    (no matching commit)
+  - [V4,06/15,net-next] qca_7k_common: Drop unused len from qcafrm_handle
+    (no matching commit)
+  - [V4,07/15,net-next] qca_spi: Add QCASPI prefix to ring defines
+    (no matching commit)
+  - [V4,08/15,net-next] qca_spi: Introduce QCASPI_RX_MAX_FRAMES
+    (no matching commit)
+  - [V4,09/15,net-next] qca_spi: Improve calculation of RX buffer size
+    (no matching commit)
+  - [V4,10/15,net-next] qca_spi: Log expected signature in error case
+    (no matching commit)
+  - [V4,11/15,net-next] qca_spi: Adjust log of SPI_REG_RDBUF_BYTE_AVA
+    (no matching commit)
+  - [V4,12/15,net-next] qca_7k: Replace BSD boilerplate with SPDX
+    (no matching commit)
+  - [V4,13/15,net-next] qca_7k: Replace old mail address
+    (no matching commit)
+  - [V4,14/15,net-next] mailmap: add entry for Stefan Wahren
+    https://git.kernel.org/netdev/net-next/c/a47996ebbe40
+  - [V4,15/15,net-next] MAINTAINERS: add entry for qca7k driver(s)
+    (no matching commit)
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.misc
-
-[1/1] fs: Use KMEM_CACHE instead of kmem_cache_create
-      https://git.kernel.org/vfs/vfs/c/6f351af0c85f
 
