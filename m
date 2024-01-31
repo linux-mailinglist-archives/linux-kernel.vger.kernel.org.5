@@ -1,39 +1,50 @@
-Return-Path: <linux-kernel+bounces-46695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E34FA8442C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:14:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99A6A8442C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:14:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96403283E10
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:14:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F63F1F21C7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:14:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 045CA84A4E;
-	Wed, 31 Jan 2024 15:14:25 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C20C262A09
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:14:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93F8D1292E9;
+	Wed, 31 Jan 2024 15:14:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="mi4L/ndK"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 554D75A7A1;
+	Wed, 31 Jan 2024 15:14:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706714064; cv=none; b=QtWN36SLeqLEajPueG4b/Eqqm4QU1Ej8bKRRxcprIzjgU2zYkqwfFxUioHJ7ppVXv8Pb4yjLA6dP2lJ7bUdzyraBP44yPa5pdpC3Go6t/iDtwOgAxcsmt/KKS17WJ9yGHVugRpVrFYmTuJPxvVq+dgFcgmOfjHiGT70EO4Pd0QM=
+	t=1706714066; cv=none; b=VdcUegdY4RbRmQVzpUylEt1fjUoiqdJtfCrvOwjezDh0e5UKuD+9WyDrD10tJ3qL3xEGoE8foBPZEa0VLp2oeEGG7GrVOE34cY76Whzq3WGwjNh6CrYnJSVNpKdEWifhEILLXXzUnZdZL1fmP5ik9/eIZ2LiSSzDVM+gQOWVe3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706714064; c=relaxed/simple;
-	bh=/qhuO5HuYtAvq48p1CcziTjf7g4yt0baC+LPUKnS3Yw=;
+	s=arc-20240116; t=1706714066; c=relaxed/simple;
+	bh=LN6ptRJUKoEZK47ZsEQ7EYUHNkUE/4Zcp52rPav6Q98=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fWgWSsxaKR8uZE206x2YfCtqGHSoeMkv8F1dGe9bqI9lWtkonxm8p6wuI71y/pOylmZ/2MuewHBDN/c4IlNA9B6fWXpb2hwl3k0dc/JLH4zlW6xXT9o7Pg5ihE7V+UM0T0E8zKGkMXAjP9I9qaLeP4D/5Aw7XUzcgP0cnua9fZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8FD83DA7;
-	Wed, 31 Jan 2024 07:15:04 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4E5703F762;
-	Wed, 31 Jan 2024 07:14:20 -0800 (PST)
-Message-ID: <b4045104-7ea4-47b2-ad74-a44bab76c796@arm.com>
-Date: Wed, 31 Jan 2024 15:14:18 +0000
+	 In-Reply-To:Content-Type; b=WNWebp6RuunbDWaQAzJz+jpBDSCYJ4f8dFV8/F/h+rdoTmJBcHJ/wyq3AP/TM3kWCXu0vdNRGAHeUDVH8VONglHwKVyW/Hr2YTPxiynTYCYOY6fqNm0DkD1evUZcIQsDeGQC18nA+sxQfjlPP4CBdybbi/LaeTWgvMKClFgxeho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=mi4L/ndK; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1706714063;
+	bh=LN6ptRJUKoEZK47ZsEQ7EYUHNkUE/4Zcp52rPav6Q98=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=mi4L/ndKJYIE2tvied3UllOOolXpuP+5XJkhxDlpOjXFz9eVyM+OxizFpTHo7dlzc
+	 H92J3JjtdsfeHnmpa2eKx7E0S/kfA1pLWmUg8qwt2zujs81BZ5WdFEMDRsLuuT05C5
+	 Lz6Q/JxTiSnCL5+MxcTDJHK8LWWfz+qSgMcfBMHfvCXvTCzzNPycjZ690RDkMf9hml
+	 vWVYO3IT3UJHXyg/GBxWp4DfG7Rq/AxQl3X0cVo/fOTDc8xkQ5m7R015zRazXmurV/
+	 BqLAtP/1E63aNpekcxTtzLBTvH50ikczfmB43w1kTs//Lck6MZ4zUuK9jWW8iwjWUz
+	 IJT94AyP2XvQw==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TQ5DH1bjkzVrT;
+	Wed, 31 Jan 2024 10:14:23 -0500 (EST)
+Message-ID: <654c13fd-8c54-48e7-921b-1503e37f1455@efficios.com>
+Date: Wed, 31 Jan 2024 10:14:22 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,64 +52,145 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] swiotlb: Enforce page alignment in swiotlb_alloc()
-Content-Language: en-GB
-To: Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Cc: kernel-team@android.com, iommu@lists.linux.dev,
- Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
- Petr Tesarik <petr.tesarik1@huawei-partners.com>,
- Dexuan Cui <decui@microsoft.com>
-References: <20240131122543.14791-1-will@kernel.org>
- <20240131122543.14791-3-will@kernel.org>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20240131122543.14791-3-will@kernel.org>
+Subject: Re: [RFC PATCH v2 8/8] dax: Fix incorrect list of dcache aliasing
+ architectures
+Content-Language: en-US
+To: Dan Williams <dan.j.williams@intel.com>,
+ Dave Chinner <david@fromorbit.com>
+Cc: Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang
+ <dave.jiang@intel.com>, linux-kernel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
+ linux-arch@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+ Arnd Bergmann <arnd@arndb.de>, Russell King <linux@armlinux.org.uk>,
+ nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org
+References: <20240130165255.212591-1-mathieu.desnoyers@efficios.com>
+ <20240130165255.212591-9-mathieu.desnoyers@efficios.com>
+ <Zbm2eS/AMlmhm8EW@dread.disaster.area>
+ <65b9babf6b3de_5a9dd294de@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <65b9babf6b3de_5a9dd294de@dwillia2-mobl3.amr.corp.intel.com.notmuch>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 31/01/2024 12:25 pm, Will Deacon wrote:
-> When allocating pages from a restricted DMA pool in swiotlb_alloc(),
-> the buffer address is blindly converted to a 'struct page *' that is
-> returned to the caller. In the unlikely event of an allocation bug,
-> page-unaligned addresses are not detected and slots can silently be
-> double-allocated.
+On 2024-01-30 22:13, Dan Williams wrote:
+> Dave Chinner wrote:
+>> On Tue, Jan 30, 2024 at 11:52:55AM -0500, Mathieu Desnoyers wrote:
+>>> commit d92576f1167c ("dax: does not work correctly with virtual aliasing caches")
+>>> prevents DAX from building on architectures with virtually aliased
+>>> dcache with:
+>>>
+>>>    depends on !(ARM || MIPS || SPARC)
+>>>
+>>> This check is too broad (e.g. recent ARMv7 don't have virtually aliased
+>>> dcaches), and also misses many other architectures with virtually
+>>> aliased dcache.
+>>>
+>>> This is a regression introduced in the v5.13 Linux kernel where the
+>>> dax mount option is removed for 32-bit ARMv7 boards which have no dcache
+>>> aliasing, and therefore should work fine with FS_DAX.
+>>>
+>>> This was turned into the following implementation of dax_is_supported()
+>>> by a preparatory change:
+>>>
+>>>          return !IS_ENABLED(CONFIG_ARM) &&
+>>>                 !IS_ENABLED(CONFIG_MIPS) &&
+>>>                 !IS_ENABLED(CONFIG_SPARC);
+>>>
+>>> Use dcache_is_aliasing() instead to figure out whether the environment
+>>> has aliasing dcaches.
+>>>
+>>> Fixes: d92576f1167c ("dax: does not work correctly with virtual aliasing caches")
+>>> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>>> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+>>> Cc: linux-mm@kvack.org
+>>> Cc: linux-arch@vger.kernel.org
+>>> Cc: Dan Williams <dan.j.williams@intel.com>
+>>> Cc: Vishal Verma <vishal.l.verma@intel.com>
+>>> Cc: Dave Jiang <dave.jiang@intel.com>
+>>> Cc: Matthew Wilcox <willy@infradead.org>
+>>> Cc: Arnd Bergmann <arnd@arndb.de>
+>>> Cc: Russell King <linux@armlinux.org.uk>
+>>> Cc: nvdimm@lists.linux.dev
+>>> Cc: linux-cxl@vger.kernel.org
+>>> Cc: linux-fsdevel@vger.kernel.org
+>>> ---
+>>>   include/linux/dax.h | 5 ++---
+>>>   1 file changed, 2 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/include/linux/dax.h b/include/linux/dax.h
+>>> index cfc8cd4a3eae..f59e604662e4 100644
+>>> --- a/include/linux/dax.h
+>>> +++ b/include/linux/dax.h
+>>> @@ -5,6 +5,7 @@
+>>>   #include <linux/fs.h>
+>>>   #include <linux/mm.h>
+>>>   #include <linux/radix-tree.h>
+>>> +#include <linux/cacheinfo.h>
+>>>   
+>>>   typedef unsigned long dax_entry_t;
+>>>   
+>>> @@ -80,9 +81,7 @@ static inline bool daxdev_mapping_supported(struct vm_area_struct *vma,
+>>>   }
+>>>   static inline bool dax_is_supported(void)
+>>>   {
+>>> -	return !IS_ENABLED(CONFIG_ARM) &&
+>>> -	       !IS_ENABLED(CONFIG_MIPS) &&
+>>> -	       !IS_ENABLED(CONFIG_SPARC);
+>>> +	return !dcache_is_aliasing();
+>>
+>> Yeah, if this is just a one liner should go into
+>> fs_dax_get_by_bdev(), similar to the blk_queue_dax() check at the
+>> start of the function.
+>>
+>> I also noticed that device mapper uses fs_dax_get_by_bdev() to
+>> determine if it can support DAX, but this patch set does not address
+>> that case. Hence it really seems to me like fs_dax_get_by_bdev() is
+>> the right place to put this check.
 > 
-> Add a simple check of the buffer alignment in swiotlb_alloc() to make
-> debugging a little easier if something has gone wonky.
+> Oh, good catch. Yes, I agree this can definitely be pushed down, but
+> then I think it should be pushed down all the way to make alloc_dax()
+> fail. That will need some additional fixups like:
 > 
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-> Cc: Dexuan Cui <decui@microsoft.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->   kernel/dma/swiotlb.c | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index 56cc08b1fbd6..4485f216e620 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -1642,6 +1642,12 @@ struct page *swiotlb_alloc(struct device *dev, size_t size)
->   		return NULL;
+> diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+> index 8dcabf84d866..a35e60e62440 100644
+> --- a/drivers/md/dm.c
+> +++ b/drivers/md/dm.c
+> @@ -2126,12 +2126,12 @@ static struct mapped_device *alloc_dev(int minor)
+>                  md->dax_dev = alloc_dax(md, &dm_dax_ops);
+>                  if (IS_ERR(md->dax_dev)) {
+>                          md->dax_dev = NULL;
+> -                       goto bad;
+> +               } else {
+> +                       set_dax_nocache(md->dax_dev);
+> +                       set_dax_nomc(md->dax_dev);
+> +                       if (dax_add_host(md->dax_dev, md->disk))
+> +                               goto bad;
+>                  }
+> -               set_dax_nocache(md->dax_dev);
+> -               set_dax_nomc(md->dax_dev);
+> -               if (dax_add_host(md->dax_dev, md->disk))
+> -                       goto bad;
+>          }
 >   
->   	tlb_addr = slot_addr(pool->start, index);
-> +	if (unlikely(!PAGE_ALIGNED(tlb_addr))) {
-> +		dev_WARN_ONCE(dev, 1, "Cannot allocate pages from non page-aligned swiotlb addr 0x%pa.\n",
-> +			      &tlb_addr);
+>          format_dev_t(md->name, MKDEV(_major, minor));
+> 
+> ...to make it not fatal to fail to register the dax_dev.
 
-Nit: if there's cause for another respin, I'd be inclined to use a 
-straightforward "if (WARN_ON(...))" here - this condition should 
-represent SWIOTLB itself going badly wrong, which isn't really 
-attributable to whatever device happened to be involved in the call.
+I've had a quick look at other users of alloc_dax() and
+alloc_dax_region(), and so far I figure that all of those
+really want to bail out on alloc_dax failure. Is dm.c the
+only special-case we need to fix to make it non-fatal ?
 
-Cheers,
-Robin.
+Thanks,
 
-> +		swiotlb_release_slots(dev, tlb_addr);
-> +		return NULL;
-> +	}
->   
->   	return pfn_to_page(PFN_DOWN(tlb_addr));
->   }
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
 
