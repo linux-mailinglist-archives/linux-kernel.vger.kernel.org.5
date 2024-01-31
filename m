@@ -1,119 +1,113 @@
-Return-Path: <linux-kernel+bounces-46663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F266F844261
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:59:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E010B844264
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:00:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 919AB1F2E225
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:59:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E36E1C22133
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:00:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD86412A15E;
-	Wed, 31 Jan 2024 14:52:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A869C12AAC8;
+	Wed, 31 Jan 2024 14:52:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="ZM5My5wo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k+bddtkZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E674A84A52;
-	Wed, 31 Jan 2024 14:52:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8B8512BE84;
+	Wed, 31 Jan 2024 14:52:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706712751; cv=none; b=UegH0DUL+ftOE9N9aM6kl8XY3Ynubqe8gmqZJlEx9HBOo+R6FLS2O8aEe87pvjCtIDJA6jRTfS+2RjJLTQH8qNfWNg4aP4q5jVXb1OE1L9omYOZlkuagSSmAmy+z245oQVjELabKEHzvJCQ4dbT9LyifVdAcJXxOHGeXjU/y2WY=
+	t=1706712761; cv=none; b=A7KtJU5zexRucxCl0R1b/tdeLq1Oh1mE5ciWhkyIFTt4/s7EDOgVlmqmk3poE/XPcv60l1RpEBzSeqR/3NU9zZLsc2TAynYwBHDSBcc7Jrz1OpfTuHziDgwrcYy9nKZKxLOM7ZDLi4279GF03X89UPIVJcaO+yGqbpySMiAhBcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706712751; c=relaxed/simple;
-	bh=CAVuopFYw2Cq9k4IZHTbz/jUD6sj9hYEe12XppGE8tk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MnOxWf5bZGT8ADzbWJwTLQk/XqKDb12vzqSEM2Gohxkj7LR47Yo7MyFAsKWSqggoV987bQRLfd2Qz19zgPaYvweQ5ZiD0MtdjLzPSUjev2ja09ouByAXATP5oIQ2kCOMeULMmzYYDaVhDuxoVG4BRwOkX6PReWQREY1OwX04W4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=ZM5My5wo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9202C43601;
-	Wed, 31 Jan 2024 14:52:28 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="ZM5My5wo"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1706712747;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=08V5Tn/E3QHiknxLw9Mvmg79PQM1lmEyJEgFVM+dfA0=;
-	b=ZM5My5woF1RnrEBzh7NrcqN2HvNxx1AExBaNWhqTm2lUemCmQdNGipM8JH9pThNLq7da16
-	Ds4ggg+Q5amSpO0B9NQviIIWB9XJAC9hMytXOFyoNoLwP7JUVgqXDQudQK769svE+IqIhf
-	VSfCOqaSPVBWKuBUK49CbbmqzMtSCVI=
-Received: 
-	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 6f61bf04 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Wed, 31 Jan 2024 14:52:27 +0000 (UTC)
-Date: Wed, 31 Jan 2024 15:52:26 +0100
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: "Reshetova, Elena" <elena.reshetova@intel.com>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	"Nakajima, Jun" <jun.nakajima@intel.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	"Kalra, Ashish" <ashish.kalra@amd.com>,
-	Sean Christopherson <seanjc@google.com>,
-	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] x86/random: Retry on RDSEED failure
-Message-ID: <ZbpequdB0dQdH6aA@zx2c4.com>
-References: <CAHmME9pOt=uEmuBzBpgUHw9DqAD2FZTZ3v53AOZbQ3Cd2p97xQ@mail.gmail.com>
- <DM8PR11MB5750E38A8B2BCE66AF7F9812E77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
- <CAHmME9qMO7=RDR60bKJvpDTRokcKed_i0+7BbFD53_7o2OJ6-g@mail.gmail.com>
- <CAHmME9rum4uwSNFd_GkD9p_+vN4DBxA=feZX7k9RvugFZsZNJg@mail.gmail.com>
- <DM8PR11MB5750797D0B9B8EB32740F55DE77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
- <CAHmME9oC=GE-7QS2m9FA5cs_ss+tQgB9Pj3tKnTtMMFpQmUshg@mail.gmail.com>
- <DM8PR11MB5750B861F7A105886AA5FCE4E77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
- <CAHmME9oJvbZgT4yT9Vydc2ZQVSo3Ea65G5aVK7gFxphkV00BnQ@mail.gmail.com>
- <20240131140756.GB2356784@mit.edu>
- <Zbpc8tppxuKr-hnN@zx2c4.com>
+	s=arc-20240116; t=1706712761; c=relaxed/simple;
+	bh=v/kqAugxjJm8wVP0j2KwwdR3hgQFbspT2nVvTeAooBs=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=ozNAK9WvrGhNqKqcboKQldJFFYzSUCJkYxgTGVJE5uVB02RLn02R9yqfI4b/ZrhRuRfg2DyaTruM7MHt7KDhyrYFh+JUKUf52pApsNlS4quGSerCOr+abP1eQse2TrSDAtk3O9ORURvIKWGuKMeTK4adENBbMC2rTd4a8FGDbLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k+bddtkZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A98E8C41679;
+	Wed, 31 Jan 2024 14:52:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706712760;
+	bh=v/kqAugxjJm8wVP0j2KwwdR3hgQFbspT2nVvTeAooBs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=k+bddtkZR3gZkNGTilysjuYhAm1CdHbepWRIoPZrQxC0yPLTXUHXUjQ5YyGLOQUVv
+	 4lFjJjn0QxgAxRmw8rbfaVJQmBKJpLKMpA3g/1JR1ojWrY4fh2H6fkEAO5YpE9ze22
+	 5oL10bZej+jVwj/SObV1GdMC4uG3qvhFWfKMebCkfk3P0+oTostCWRKNQvrYlQIf5O
+	 V1oFeFQAmqKIwkTnWQAxzJHrqbAz3zc6a4g/YBnyhtLPtvABjyh8hO8OS3eCJ/v/AR
+	 lshFAUfWl0OXeKRjs/oGhO12atFII6VAwGQIDhs0m3wV/A1bag8orpN3J+VgYcdX4n
+	 8MIhSGD3bnC+g==
+Date: Wed, 31 Jan 2024 23:52:36 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Kousik Sanagavarapu <five231003@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH] selftest/ftrace: fix typo in ftracetest script
+Message-Id: <20240131235236.749931e31721c892b7591118@kernel.org>
+In-Reply-To: <20240129162841.57979-1-five231003@gmail.com>
+References: <20240129162841.57979-1-five231003@gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Zbpc8tppxuKr-hnN@zx2c4.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 31, 2024 at 03:45:06PM +0100, Jason A. Donenfeld wrote:
-> On Wed, Jan 31, 2024 at 09:07:56AM -0500, Theodore Ts'o wrote:
-> > What about simply treating boot-time initialization of the /dev/random
-> > state as special.  That is, on x86, if the hardware promises that
-> > RDSEED or RDRAND is available, we use them to initialization our RNG
-> > state at boot.  On bare metal, there can't be anyone else trying to
-> > exhaust the on-chip RNG's entropy supply, so if RDSEED or RDRAND
-> > aren't working available --- panic, since the hardware is clearly
-> > busted.
-> 
-> This is the first thing I suggested here: https://lore.kernel.org/all/CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com/
-> 
-> But Elena found this dissatisfying because we still can't guarantee new
-> material later.
-> 
-> > On a guest OS, if confidential compute is enabled, and if RDSEED and
-> > RDRAND don't work after N retries, and we know CC is enabled, panic,
-> > since the kernel can't provide the promised security gaurantees, and
-> > the CC developers and users are cordially invited to sharpen their
-> > pitchforks and to send their tender regards to the Intel RNG
-> > engineers.
-> 
-> Yea, maybe bubbling the RDRAND DoS up to another DoS in the CoCo case is
-> a good tradeoff that will produce the right pitchforkers without
-> breaking anything real.
+Hi,
 
-One problem, though, is userspace can DoS the kernel's use of RDRAND.
-So probably infinitely retrying in CoCo environments is better than
-panicing/warning, since ostensibly a kthread will eventually succeed.
+On Mon, 29 Jan 2024 21:58:07 +0530
+Kousik Sanagavarapu <five231003@gmail.com> wrote:
 
-Maybe, though, the Intel platform just simply isn't ready for CoCo, and
-marketing got a little bit ahead of the tech?
+> Fix a typo in ftracetest script which is run when running the kselftests
+> for ftrace.
+> 
+> s/faii/fail
+> 
 
-Jason
+Thanks, this looks obvious typo.
+
+> Signed-off-by: Kousik Sanagavarapu <five231003@gmail.com>
+
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Fixes: dbcf76390eb9 ("selftests/ftrace: Improve integration with kselftest runner")
+
+
+Shuah, can you pick this to your branch?
+
+Thank you,
+
+
+> ---
+>  tools/testing/selftests/ftrace/ftracetest | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/ftrace/ftracetest b/tools/testing/selftests/ftrace/ftracetest
+> index c778d4dcc17e..25d4e0fca385 100755
+> --- a/tools/testing/selftests/ftrace/ftracetest
+> +++ b/tools/testing/selftests/ftrace/ftracetest
+> @@ -504,7 +504,7 @@ prlog "# of undefined(test bug): " `echo $UNDEFINED_CASES | wc -w`
+>  if [ "$KTAP" = "1" ]; then
+>    echo -n "# Totals:"
+>    echo -n " pass:"`echo $PASSED_CASES | wc -w`
+> -  echo -n " faii:"`echo $FAILED_CASES | wc -w`
+> +  echo -n " fail:"`echo $FAILED_CASES | wc -w`
+>    echo -n " xfail:"`echo $XFAILED_CASES | wc -w`
+>    echo -n " xpass:0"
+>    echo -n " skip:"`echo $UNTESTED_CASES $UNSUPPORTED_CASES | wc -w`
+> -- 
+> 2.43.0.443.g6965527da0
+> 
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
