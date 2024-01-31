@@ -1,110 +1,123 @@
-Return-Path: <linux-kernel+bounces-45707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9BE6843472
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 04:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E0EE843475
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 04:20:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA8B2B23C21
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 03:20:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A15E0B23EFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 03:20:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5E0810A16;
-	Wed, 31 Jan 2024 03:19:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 643171096F;
+	Wed, 31 Jan 2024 03:20:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fiVEZcoi"
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="HRM9cMDa"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E551079B
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 03:19:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 730B4FBF5
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 03:20:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706671194; cv=none; b=Ob17OMRxbuI2Fga2QzVGYGT2IN9rycktM4/5MI0/oJYkziBSwgO+BueP//dQzi3M8alUJAHeNeQTCaYKrN/JGAzqwb0klc+wGryWH39GmB6V0esr6qHEvSEVhHnZox2UY1SuqBf0mMFrvur9JumfjEFMaDrLggEysk/WAKy5Jh8=
+	t=1706671235; cv=none; b=niD5TujuTA5Tfb4rv2kTBYdM7F4cXI3qbhvpUSVnng7iv0895qz5VWwkP0FUmjGuL2nyIKhE9G5AJm382lfDQjTNrG9vzds0mg1vmE6kuSHgl5u91kaIHKiTk/t3qEvV4GeqJ9j+mErirPQvsuh78ozl1G7WCpfUz4faPyD2jmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706671194; c=relaxed/simple;
-	bh=rTqgrUM/f3lW+qEBuBNBmq/CllB8SiNYN3i5kJu39P8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oEkci+CLdHLX131wNWPwitFVESKweUByQvqticw4lII0RkDgd8t+Nhft9wkoEA5ZU594LfXPaWJ10IRFFrLstM9gNVGrKo/c2oGFYPhX6/z4LHUknnpol5FIeX27obij3GafzuJGwTwinnXa2FnJSEcIRmwh1pVN8atvHi/zneg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fiVEZcoi; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706671189;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Zz364JoMX9h2N5yV5c7OrViie26VfXvY+e5Im09K4k4=;
-	b=fiVEZcoirkHU005RRkF9Yqx4zJ7jWfTNJ1Gvjw9OI5phD40jJwwGqgSEIIm5PjQ3m3I3fb
-	ML0iMug8p1/f4yXd4ctCoFgjPTnvKKnndHOY2XSVb08y826pzQDGm2UPflfgTdv+xJPet8
-	OCr0oQeszoukVsmtiJ3u7lE61EoFshI=
-From: Yajun Deng <yajun.deng@linux.dev>
-To: akpm@linux-foundation.org
-Cc: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH v2] mm/mmap: use SZ_{8K, 128K} helper macro
-Date: Wed, 31 Jan 2024 11:19:13 +0800
-Message-Id: <20240131031913.2058597-1-yajun.deng@linux.dev>
+	s=arc-20240116; t=1706671235; c=relaxed/simple;
+	bh=/Qqp2jJQoiQcy+9XQkKKYRoLjCuSThH/r6RUzSX1uqU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Riyjbg6HkhGk9z8SllnjK4imha8l//7ovRiZTJqsh+H3AO6SEkwm9D5u0AxlaGLEyUYspT/2h7nmUeNRZbJX2u30fYXnaqlhbfWBSngz252ff1T1Y/kJVsEX1aGJTHTl4abnHeq3eMrf/zitbgITOTeeR7At2BIjAsH3X7nwOtY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=HRM9cMDa; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=zzXR450Aj9tc/HlQzVUxw3+SErrBtlBnnD9/Q5pNze0=; b=HRM9cMDaKfn1MvaHYCkKefsPRy
+	9bSCCe85Zyn+jMFI+XsJaCcQH3IlaC/pfvhGRHXJCM/MJpWfJDIzPquAW4DbUfuXLWppwFfdzvCS+
+	HL0No4hrgxFGuFQNOXA66iO/s0cxdtvZDFYQo7ADGHXtTwds9+VZZMI1LhVZAUKCdaAnYW5kGqlH1
+	wbWgBNufajje0pmyda8zm69Zmy0uTr9qRD5Q8XcyaNWItVdIf4vVs23kmuAX2kndsF0MU+cKr4gWu
+	E6JPEUS7HO/8PYXDd/KtigZcHVL3mGLwsh6weT4HHXTVvFxkWecmpswK3BlskFtWYkOa6O7I+hbrd
+	OU0LIZbw==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rV19M-00000001Mfi-1xkP;
+	Wed, 31 Jan 2024 03:20:32 +0000
+Message-ID: <52988afe-00df-47e5-b577-4e2dc36cf3d4@infradead.org>
+Date: Tue, 30 Jan 2024 19:20:32 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: commit tag order vs. "b4 am"
+Content-Language: en-US
+To: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc: Tony Luck <tony.luck@intel.com>, x86@kernel.org,
+ Reinette Chatre <reinette.chatre@intel.com>, linux-kernel@vger.kernel.org
+References: <Zbl5XvzpqND9exmW@agluck-desk3>
+ <118a560d-9e5f-4bc4-b0d2-ee0b3d6a5120@infradead.org>
+ <20240130-solid-seahorse-from-camelot-e0ecdb@lemur>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240130-solid-seahorse-from-camelot-e0ecdb@lemur>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Use SZ_{8K, 128K} helper macro instead of the number in init_user_reserve
-and reserve_mem_notifier. This is more readable.
+Hi,
 
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
----
-v2: use the right helper macro.
-v1: https://lore.kernel.org/all/20240126085905.2835513-1-yajun.deng@linux.dev/
----
- mm/mmap.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+On 1/30/24 17:57, Konstantin Ryabitsev wrote:
+> On Tue, Jan 30, 2024 at 04:47:26PM -0800, Randy Dunlap wrote:
+>>> Reinette noticed that v14 of my resctrl/SNC patch series[1] did not adhere
+>>> to the tag order proscribed in Documentation/process/maintainer-tip.rst
+>>> Specifically my "Signed-off-by:" was now the last tag, instead of
+>>> appearing before the "Reviewed-by:" and "Tested-by" tags as it had in
+>>> v13.
+>>>
+>>> A little digging showed that my tag had been moved to the end by "b4 am"
+>>> when I used it to pick up some additonal tags.
+>>>
+>>> An e-mail discussion with Konstantin ensued to determine if this was
+>>> a bug. Konstantin said:
+>>>
+>>>    This is the intended behaviour, because b4 follows the chain-of-custody
+>>>    procedure. If we encounter a Signed-off-by trailer matching the identity of
+>>>    the user preparing the series, we move it to the bottom to indicate that the
+>>>    chain-of-custody boundary has moved to include the code review trailers
+>>>    received after the initial submission.
+>>>
+>>>    https://lore.kernel.org/tools/20221031165842.vxr4kp6h7qnkc53l@meerkat.local/
+>>>
+>>>    Basically, the "Signed-off-by" trailer is special because it indicates that
+>>>    everything above it is the responsibility of the person doing the sign-off. If
+>>>    we kept your Signed-off-by in the original spot, then it wouldn't be clear who
+>>>    collected and applied the trailers.
+>>
+>> I can't find "chain of custody" anywhere in Documentation/process/, nor a
+>> specification or example of this ordering.
+>>
+>> Where did this b4 requirement come from?
+> 
+> Many discussions at the Maintainer Summit and on the tools/users lists. E.g.:
+> https://lore.kernel.org/tools/20221031165842.vxr4kp6h7qnkc53l@meerkat.local/
+> 
 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 7000c14a039f..6722368a48dd 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -3847,7 +3847,7 @@ static int init_user_reserve(void)
- 
- 	free_kbytes = K(global_zone_page_state(NR_FREE_PAGES));
- 
--	sysctl_user_reserve_kbytes = min(free_kbytes / 32, 1UL << 17);
-+	sysctl_user_reserve_kbytes = min(free_kbytes / 32, SZ_128K);
- 	return 0;
- }
- subsys_initcall(init_user_reserve);
-@@ -3868,7 +3868,7 @@ static int init_admin_reserve(void)
- 
- 	free_kbytes = K(global_zone_page_state(NR_FREE_PAGES));
- 
--	sysctl_admin_reserve_kbytes = min(free_kbytes / 32, 1UL << 13);
-+	sysctl_admin_reserve_kbytes = min(free_kbytes / 32, SZ_8K);
- 	return 0;
- }
- subsys_initcall(init_admin_reserve);
-@@ -3900,12 +3900,12 @@ static int reserve_mem_notifier(struct notifier_block *nb,
- 	case MEM_ONLINE:
- 		/* Default max is 128MB. Leave alone if modified by operator. */
- 		tmp = sysctl_user_reserve_kbytes;
--		if (0 < tmp && tmp < (1UL << 17))
-+		if (tmp > 0 && tmp < SZ_128K)
- 			init_user_reserve();
- 
- 		/* Default max is 8MB.  Leave alone if modified by operator. */
- 		tmp = sysctl_admin_reserve_kbytes;
--		if (0 < tmp && tmp < (1UL << 13))
-+		if (tmp > 0 && tmp < SZ_8K)
- 			init_admin_reserve();
- 
- 		break;
+Not your problem, but decisions that are made at the Maintainer Summit are not
+well-documented IMO. They don't get passed down to the rest of us.
+Yes, I do look at Mr Corbet's summaries, but they lack sufficient detail for this.
+
+> The chain of custody approach is the only one that makes sense because it
+> allows keeping track of who applied which trailers. I know that most people
+> don't think about it twice, but it matters from the perspective of process.
+> If we need to put it into the official documentation, I'm happy to submit the
+> patch.
+
+I don't yet agree that the tag order change is needed, but yes, it should be
+documented, so please do that.
+
+thanks.
 -- 
-2.25.1
-
+#Randy
 
