@@ -1,95 +1,104 @@
-Return-Path: <linux-kernel+bounces-47156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE61A8449F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:26:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ED18E8449F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:27:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BC041F218AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:26:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 960251F22AED
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:27:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 481F43985A;
-	Wed, 31 Jan 2024 21:26:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="EsXeVT8y"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F058B39860;
+	Wed, 31 Jan 2024 21:27:04 +0000 (UTC)
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67D7D381D5;
-	Wed, 31 Jan 2024 21:26:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DE68381D5;
+	Wed, 31 Jan 2024 21:27:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706736362; cv=none; b=j4DqZzBBjpUxoNz4JH5YAGpFAMG6N+7TQ/9L7wst06hTpoxTV5Z+vVwuJ2UwGrGU4JVrevlvclXPKqkDSgS0baaPMwIQal9g5fHjl8mCVQOSXgxyP6rLek2Kx96c/dJ8OSK57SqAMZ2hlE758Th8PkE1xmrrFhUGFTehOF0DlyI=
+	t=1706736424; cv=none; b=ayUQ+WZZEYPmAyAgbsm7erFTTZspnf4gXoB1BioQ4mHXKrz2UC7aInhI39DUXMOL06g74IlSa2FG7VIfMcbk7lYGIN6tilYA3jZO7pcXPl9mooy+w0eRhKjuRwDjii67PGDgo7cYLReTvGjWsCJOu9d0ES0RRTO3FG9uzgvaKx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706736362; c=relaxed/simple;
-	bh=H0i78GfMShXCMIs6RwszSny3QbPZTTswjn+XCYbagPI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HtcURrTCvLun9okl9mqirbKY9iWXAK2bKcfPZFYXWEQWVFwUc95tS5oG53wKG4lJqBD+/JDn6VhtJzIktgAgvL9YYcOlaLgPDb4Q9ODh/tHXuF0merTVj6Vvx0qbFsWNabRs5g+avp20zz39dgG2JtEzTTnOF7I99nfn1Okzssk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=EsXeVT8y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB68FC433F1;
-	Wed, 31 Jan 2024 21:26:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706736361;
-	bh=H0i78GfMShXCMIs6RwszSny3QbPZTTswjn+XCYbagPI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EsXeVT8yeTocepwrSWHtTJRES3SzWxLo4i3xNAEpeweo6+TkMQGCdIn1oub2sup8X
-	 Pu6B6KleuOhxQLuRESJFRnuW+7apXEkQkNyRZnLl0WEPguu7Br9imMmSJD0na1EHEZ
-	 lkjOq8W+Gof5i+woecNw+tLhtdmpn7bJdvzCMJEI=
-Date: Wed, 31 Jan 2024 13:26:01 -0800
-From: Greg KH <gregkh@linuxfoundation.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: mcgrof@kernel.org, russ.weight@linux.dev, rafael@kernel.org,
-	rostedt@goodmis.org, mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	keescook@chromium.org, masahiroy@kernel.org, nathan@kernel.org,
-	nicolas@fjasle.eu, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH RFC 0/4] Introduce uts_release
-Message-ID: <2024013125-managing-most-2335@gregkh>
-References: <20240131104851.2311358-1-john.g.garry@oracle.com>
- <2024013158-dipper-mural-424b@gregkh>
- <e21c6dbb-7083-4425-bace-6194bfbf35b7@oracle.com>
+	s=arc-20240116; t=1706736424; c=relaxed/simple;
+	bh=C2xl6B8mdjbEM7LkG73vi5FpIpthCxvFmkdNbGVoIlc=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=SQyC9FTmryZI3GxnVA3/LU8H7yE0tKFIj5ESXF5QzDWOGfq8OD+/8jZ+h/maM/yAnzxF5bw6SLRm1C5E1Yn+C6nqIVKcEgIit8KMNKAMVDxyJXS05vYcaV3nb7a57oQN3UmJsRD1sj1MWH+nYPFeHz+6NumLToxQQD+4+OzyP7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id 3169685431;
+	Wed, 31 Jan 2024 22:26:59 +0100 (CET)
+From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Subject: [PATCH v2 0/2] dt-bindings: mmp-dma: YAML conversion
+Date: Wed, 31 Jan 2024 22:26:01 +0100
+Message-Id: <20240131-pxa-dma-yaml-v2-0-9611d0af0edc@skole.hr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e21c6dbb-7083-4425-bace-6194bfbf35b7@oracle.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAOm6umUC/1XMQQ6DIBCF4auYWXcaoKCmq96jcYF1KKQqBhqiM
+ dy91KSLLv+XvG+HSMFRhGu1Q6DkovNzCXGq4GH1/CR0Q2kQTEjGhcJl1ThMGjc9jcj6WhBnrZB
+ GQrksgYxbD+7elbYuvn3YDj3x7/qDmn8oceSomkuvDbW1VPIWX36ksw3Q5Zw/5+1LdacAAAA=
+To: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Lubomir Rintel <lkundrak@v3.sk>
+Cc: dmaengine@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=971;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=C2xl6B8mdjbEM7LkG73vi5FpIpthCxvFmkdNbGVoIlc=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlurr2MhlWDhD09oCX/PC6H1E+khnjqapXfFbDx
+ L4WqvslxCaJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZbq69gAKCRCaEZ6wQi2W
+ 4cU2D/4kM0DuhSjmc41eSbH1/jRvIChuFpt82fa1G71VMW03ZZPF99y3cyfANtRgo7ryLgirEGq
+ Av2PYWez0AWHWua8YaMGRnDnoEgAUSkBXFYl10ctoi7YOJedfFk4C6JlZwarrt2KGyil1YmeoI2
+ K7+dWPtlJkvKwM7FAm+RwYG3yR9sOtmCc8/qTu8OSvFCHZTiIDp/D+cptQvff+uDV8l+DRrF5EK
+ dEeZWu832TrgTLj/u7ZyS6e2mmYM4HKoAFc21ijwgXxIjU3CE5qqBi8cEgWOmL+B1UqrJxm+LNM
+ mlS8WemHNBcJsUNy6va4E1L22vW8+YuaG7l4ygPIWOZJQkz9TH26fNoQjAvu41NoeO7NFEur61Y
+ S+YYc0vylfMUYlfwqf1eMccUTVMxhBqct5QwmG7x7bK0tAJLKjM9o8jMG32J+J3Yi9+5YtTYyIp
+ xgBlPULgsljd4svrwhj5LrAT5qgPYhyAgfZ1HaxFhfrU8EIpTW980YIr+7EJa/Kdkx6Zhn87k14
+ CWJeZU1dV3naauLTqpzMaN0pTODZKl6VWcYI+cmG3jo0uT/Y++YmX/wEaz61sWoIzleCRk4+AWM
+ UsQL1i52Gh4QiZoKjAT8SU0Sm5FA8wB6t0CHvrGkp94sylTz9qmy9zzEX8ww7WiSt9U7vlL66Ig
+ +YzdgR1Li4MiBxQ==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 
-On Wed, Jan 31, 2024 at 05:16:09PM +0000, John Garry wrote:
-> On 31/01/2024 16:22, Greg KH wrote:
-> > > before:
-> > > real    0m53.591s
-> > > user    1m1.842s
-> > > sys     0m9.161s
-> > > 
-> > > after:
-> > > real    0m37.481s
-> > > user    0m46.461s
-> > > sys     0m7.199s
-> > > 
-> > > Sending as an RFC as I need to test more of the conversions and I would
-> > > like to also convert more UTS_RELEASE users to prove this is proper
-> > > approach.
-> > I like it, I also think that v4l2 includes this as well as all of those
-> > drivers seem to rebuild when this changes, does that not happen for you
-> > too?
-> 
-> I didn't see that. Were you were building for arm64? I can see some v4l2
-> configs enabled there for the vanilla defconfig (but none for x86-64).
+Convert the mmp-dma binding to YAML and drop a useless property in
+MMP2's ADMA node.
 
-Building for x86, maybe it's one of the other LINUX_VERSION type defines
-we have, sorry, can't remember, it's been a long time since I looked
-into it.
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+---
+Changes in v2:
+- Add patch dropping iram in MMP2 dtsi
+- Properly define asram property
+- Fix asram constraint
+- Drop pdma0 label
+- Drop redundant second example
+- Link to v1: https://lore.kernel.org/r/20240127-pxa-dma-yaml-v1-1-573bafe86454@skole.hr
 
-thanks,
+---
+Duje Mihanović (2):
+      ARM: dts: mmp2: drop iram property
+      dt-bindings: mmp-dma: convert to YAML
 
-greg k-h
+ .../devicetree/bindings/dma/marvell,mmp-dma.yaml   | 72 +++++++++++++++++++
+ Documentation/devicetree/bindings/dma/mmp-dma.txt  | 81 ----------------------
+ arch/arm/boot/dts/marvell/mmp2.dtsi                |  1 -
+ 3 files changed, 72 insertions(+), 82 deletions(-)
+---
+base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
+change-id: 20240125-pxa-dma-yaml-0b62e10824f4
+
+Best regards,
+-- 
+Duje Mihanović <duje.mihanovic@skole.hr>
+
+
 
