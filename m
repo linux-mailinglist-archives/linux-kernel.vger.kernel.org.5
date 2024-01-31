@@ -1,114 +1,117 @@
-Return-Path: <linux-kernel+bounces-46376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C497F843EA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:43:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E6B6843EB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:46:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F8C7285E4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:43:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E15BF1F229DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:46:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89E6A74E33;
-	Wed, 31 Jan 2024 11:42:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ABzV98aI"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A27A69D34
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 11:42:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A0E8768FA;
+	Wed, 31 Jan 2024 11:46:04 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ACB274E0D;
+	Wed, 31 Jan 2024 11:46:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706701376; cv=none; b=J2ef7Y1kzJugWDmkrJa15sEQ8jpqBu+tuUEVzY71mMKGehT2V4IzRtmJGXcHmuf1OMlN+gPPwO1BpaLsFODqptqaz0dBbvQquvrpCukn1iu9n/a4VU9MNVEoTq6jhyklEgBXkzEQY481j1LkGcG03x4HD2yhH5NRPrKRaeUtprE=
+	t=1706701564; cv=none; b=Vbvq78Dqx42QDSFL6rpn+9shglxCvyRA8+eXelvaHZ7qfVYWfw/vcb3IUqFkbK0xtwVC83lRt0GJV+ijWtyANWgGb5m2WB7uVxRL0EdN3pn07mA5WxxzhMq/9nVqcgbLZ5lgkqHX+DsPvPPooplMzuJytr4DfbOSqj9Q6nYfUIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706701376; c=relaxed/simple;
-	bh=1LrKOT6zOkvOtdG1q90dBaEd32pdBD9e7IHCq6opG3E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dUfDt1nL7jEG9ENJzy/i9jMHUAU9JlblWsBQ52W78myoXGKykrwdrq0PpNCUmKp37yQzxLAXpBdK95iPD8F4l2VhB8E6b2/5jjpknwzkS1XiYQo1WfOLxJyG1CXjhd+dOPGG+G+ynQW/yVihgozqARDYNOr68XF52JfC4N54eSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ABzV98aI; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706701373;
-	bh=1LrKOT6zOkvOtdG1q90dBaEd32pdBD9e7IHCq6opG3E=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ABzV98aIWDp/moh2/6kSB/75RQPaCX1CmoupAYsmYelEfLo0KtRw9iQs4R8ItoJ4R
-	 r1mCT5mRcu9gnjvrMDcPN44gMPE4P3xt98NCrMUKooo1NS+eDLDrptHunAYN+Vl4m2
-	 XJTlC4JKQakK4DZ0iOxlCy+AzQ+730fZWFI5MXlQojMjH2Ix9fps5FJIk0Lv7jD/6s
-	 NQXi7vZDeFeKQKaLNGl7TygDovkqpVTeAufE/87T5HPAbA/lvOi0zpHp5IredGZXB8
-	 R9BcWPxsOb5Sr7sJ7hV1ZrBXeRlpPNh/9iYFGj5xvIwGQnLzIO9ZHgtLCMINIcF/lA
-	 ZpIrfScC/5ikQ==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 58C1B3781FE1;
-	Wed, 31 Jan 2024 11:42:52 +0000 (UTC)
-Message-ID: <11f4cfd2-f6a2-45cb-923a-95760a1b9883@collabora.com>
-Date: Wed, 31 Jan 2024 12:42:51 +0100
+	s=arc-20240116; t=1706701564; c=relaxed/simple;
+	bh=YKwxxEVjTT8reMyzHc/tCez2ZRFnGM3A7kBKxL9R2ig=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KV0jB37YqGTwG07YsLxKICypEJ5Ry0I0z7dmfesBV7Ela7rVrcpWGgmNjjCgFzTAxq2UmG0toGIYl7xnICwjOBPDjklOodKxtDm0+iS6pTl900mfhWAj58wCbj0i2JDQJqHpHTm/d84clJfrwQvSpJxHYNEb3cGcSQE8Zb1EtjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF5BCDA7;
+	Wed, 31 Jan 2024 03:46:43 -0800 (PST)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4AD343F762;
+	Wed, 31 Jan 2024 03:45:58 -0800 (PST)
+Date: Wed, 31 Jan 2024 11:45:47 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: Sibi Sankar <quic_sibis@quicinc.com>
+Cc: sudeep.holla@arm.com, rafael@kernel.org, viresh.kumar@linaro.org,
+	morten.rasmussen@arm.com, dietmar.eggemann@arm.com,
+	lukasz.luba@arm.com, linux-arm-kernel@lists.infradead.org,
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	quic_mdtipton@quicinc.com, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH V2 2/4] firmware: arm_scmi: Add perf_freq_xlate interface
+Message-ID: <Zboy64oByO-BlG6z@pluto>
+References: <20240117104116.2055349-1-quic_sibis@quicinc.com>
+ <20240117104116.2055349-3-quic_sibis@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [v3 2/3] ASoC: mediatek: mt8186: correct the HDMI widgets
-Content-Language: en-US
-To: =?UTF-8?B?SmlheGluIFl1ICjkv57lrrbpkasp?= <Jiaxin.Yu@mediatek.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
- "ajye_huang@compal.corp-partner.google.com"
- <ajye_huang@compal.corp-partner.google.com>,
- =?UTF-8?B?Q2h1bnh1IExpICjmnY7mmKXml60p?= <Chunxu.Li@mediatek.com>,
- =?UTF-8?B?QWxsZW4tS0ggQ2hlbmcgKOeoi+WGoOWLsik=?=
- <Allen-KH.Cheng@mediatek.com>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>,
- "andrzej.hajda@intel.com" <andrzej.hajda@intel.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- Project_Global_Chrome_Upstream_Group
- <Project_Global_Chrome_Upstream_Group@mediatek.com>,
- "robert.foss@linaro.org" <robert.foss@linaro.org>,
- "Laurent.pinchart@ideasonboard.com" <Laurent.pinchart@ideasonboard.com>,
- "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
- "nfraprado@collabora.com" <nfraprado@collabora.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wenst@chromium.org>
-References: <20230730180803.22570-1-jiaxin.yu@mediatek.com>
- <20230730180803.22570-3-jiaxin.yu@mediatek.com>
- <25e6ab45-ecad-4bc3-bf4d-983243c939ad@sirena.org.uk>
- <c6ae8630d06138b6d0156c19323afebf0718f522.camel@mediatek.com>
- <089fe457-1c61-4b7b-ad37-a67e7f46cb56@sirena.org.uk>
- <6aa6947865795fc534b61f5b8a80b3c42fd5a0cd.camel@mediatek.com>
- <9c90185c-9cd4-4a08-9925-be5d460af54d@sirena.org.uk>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <9c90185c-9cd4-4a08-9925-be5d460af54d@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240117104116.2055349-3-quic_sibis@quicinc.com>
 
-Il 03/08/23 21:33, Mark Brown ha scritto:
-> On Thu, Aug 03, 2023 at 07:20:15AM +0000, Jiaxin Yu (俞家鑫) wrote:
+On Wed, Jan 17, 2024 at 04:11:14PM +0530, Sibi Sankar wrote:
+> Add a new perf_freq_xlate interface to the existing perf_ops to translate
+> a given perf index to frequency.
 > 
->> I agree with you, in fact the speaker is indeed doing this way. But
->> about the hdmi that on the board, I did not find a defination link
->> snd_soc_dapm_hdmi, so I use snd_soc_dapm_line to replace. The purpose
->> is to control it link speaker. Or what do you suggest I should do?
+> This can be used by the cpufreq driver and framework to determine the
+> throttled frequency from a given perf index and apply HW pressure
+> accordingly.
 > 
-> I think the sensible thing here is to define a DIGITAL_OUTPUT() which
-> can be used for HDMI, S/PDIF and anything else that comes up and isn't
-> clearly wrong like reusing one of the analog descriptions is.
+> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> ---
+> 
+> v2:
+> * Rename opp_xlate -> freq_xlate [Viresh]
+> 
+>  drivers/firmware/arm_scmi/perf.c | 21 +++++++++++++++++++++
+>  include/linux/scmi_protocol.h    |  3 +++
+>  2 files changed, 24 insertions(+)
+> 
+> diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
+> index ae7681eda276..e286f04ee6e3 100644
+> --- a/drivers/firmware/arm_scmi/perf.c
+> +++ b/drivers/firmware/arm_scmi/perf.c
+> @@ -977,6 +977,26 @@ static int scmi_notify_support(const struct scmi_protocol_handle *ph, u32 domain
+>  	return 0;
+>  }
+>  
+> +static int scmi_perf_freq_xlate(const struct scmi_protocol_handle *ph, u32 domain,
+> +				int idx, unsigned long *freq)
+> +{
+> +	struct perf_dom_info *dom;
+> +
+> +	dom = scmi_perf_domain_lookup(ph, domain);
+> +	if (IS_ERR(dom))
+> +		return PTR_ERR(dom);
+> +
+> +	if (idx >= dom->opp_count)
+> +		return -ERANGE;
+> +
+> +	if (!dom->level_indexing_mode)
+> +		*freq = dom->opp[idx].perf * dom->mult_factor;
+> +	else
+> +		*freq = dom->opp[idx].indicative_freq * dom->mult_factor;
+> +
 
-Hello Jiaxin,
+As said elsewhere the plan would be to change slightly the SCMI core to
+avoid the need for this patch and the previous one (while NOT exposing
+too much Perf info)...
 
-the MT8186 Corsola Chromebooks are broken upstream without this series.
-
-Are you still interested in upstreaming this one?
+.. anyway just looking at the above freq calc logic in this patch, be
+aware that as it stands it seems to me broken, since the idx you use to
+peek into the opp array comes (in the next patch) from the range_max
+carried by the notification and that can be, indeed, a perf_level OR a
+perf_index BUT it is absolutely NOT guaranteed to be an index into the
+opp[] array...so it may work in your case if you have a platform
+defining level or indexes matching the opp[] indexes BUT it is not true
+in general. (but as said, this will be handled by the core and possibly
+this patch dropped...)
 
 Thanks,
-Angelo
+Cristian
 
