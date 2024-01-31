@@ -1,67 +1,68 @@
-Return-Path: <linux-kernel+bounces-47366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB268844CE7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:34:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA985844D56
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:48:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 664001F23285
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:34:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DBD01B3873B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:34:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFE1613E20E;
-	Wed, 31 Jan 2024 23:21:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E318A13E236;
+	Wed, 31 Jan 2024 23:21:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="QVuTRRe4"
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="bDPvUAfb"
 Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2048.outbound.protection.outlook.com [40.107.8.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4EE613E205;
-	Wed, 31 Jan 2024 23:21:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A03913E216;
+	Wed, 31 Jan 2024 23:21:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.48
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706743303; cv=fail; b=CQd0I37n/1PDVJirjqKhcv+Uc1Jd4Az9Jq/nh/Xx3LVF9//xYK8dvrN/0W8xZ7maPE5nk2gGUilPcZr0sgzfMXLPs+WwJ6J8bAVOJ1UisHl3bjPjED3AHtxAz0LiYfmz1HUkoEsJWFY8xbCm9YwmjipNZpJ5H07RKJ/8dlXSPeA=
+	t=1706743305; cv=fail; b=eAckPrKZS2s8sEbduc1ndb9FUglMKdCRJNnLd9Bp7dwG5SuJvcPTeKwzrhiK0wPlt7PT6hbrOOihozQYQdIM3AcwV689bNVwmMCu9DopjOP20oZIkOl4Jg1hra4+ng+Ap6dtZosIivYsQ0nth0ukU6xVxWAacgGur8n/HF4zQyo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706743303; c=relaxed/simple;
-	bh=2zJxqBVqaNuhlGWo42e1QHXlvX1q4/WgIXGzbYmGZIA=;
+	s=arc-20240116; t=1706743305; c=relaxed/simple;
+	bh=K/S6pyJUIDT0tXIlmXhJJFSXcOymqJN+bu2cfQyjZYw=;
 	h=From:Date:Subject:Content-Type:Message-Id:References:In-Reply-To:
-	 To:Cc:MIME-Version; b=JjvT/pjtCkDsEJ6Jimyda3C//ZLv/N2oqhUnNbVbjKWmhIcqpY1DqjUrgjJm3KKlIwX1tKn7zVjVeL46D60Eif8Jbw4Y3txX0TYU1t63KnbUTOdv2BwQsEv1muEuq3F9hzCtHizKSBnNB6jOQzPSuQx3ZNrsvVUYkSDh/kv8Sbo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=QVuTRRe4; arc=fail smtp.client-ip=40.107.8.48
+	 To:Cc:MIME-Version; b=J26tFS5dms+jzoQpgke7Ij7g24GvXpS+N6QcClRjDEES2CbNWIOXl5Nnd2pofNvp4Umj5x4S6IUjUC4h9CWVzdsZd7nUMKGYSHW/UPkLnaM6PiwhbU5qODOfSrANkor4V30w+7hmTv/UQRCkhtJWVqeJ8jRVYz834wOpdQNm/VU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=bDPvUAfb; arc=fail smtp.client-ip=40.107.8.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ytr8ofe3ts12bQiU7ebSXtHASkH9NSNZzGEY5ilCgXsIzQ6Mnpu15xWpr2EgAbxCyaCOEtDwGb9IdLHgIOOSaNPvakG5fb7UVmoNt430J+N+J0HT35oNtVZ9qaSU/JFp4hAgJCFg2qmVmtq7vHrPYY1S++oebt4/CAj3LYeKBl9Dcs4nQqKTjHejIVFYO5foZ0ArBRrQWqzjpXI/pyrdteLn/mbpR2G5OmmCscdzuk44jBPHobRc6kgvkvOj3Wli7H3cGxAPuOISAUMF91t8sRBqsPTyNxUNohaLzsyY9/89XFMsYIEYhLNMjMzCRq5Zjerhy3xcx7s06z685qTLxA==
+ b=j3WwI53FJEmRfv4vREC2l7gEBaGFA6H7xrCffGpMlTjdKmVSJPyFpvOW/ufhFitnMLonR026JfrlOEk/m1KmF7HWe5xuwROVI9CnufeYI7fgzXlKRH9cVjU7SNqqrOT+RV0Epxkc3kdGr9mk6gYS5+uxQLAuc9y339q0otEs71X9qBj47aLg02+VTG63MsBa6ojKkoCkLCUx8EVGdzqqRiKPIgEpchmy/E/2bp3zcDBZ/Rbu+9AP60OYEUHNCSU/b9E9uVJkP3zpN0KuJhQXMzy1u7kKX/Hc1exnaqjLiNgbHee/1Q7nUXu7yb5O0llE/cZECm/dytnlVKc104JyxA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yroYNvtM+ftxkBYnpAH09lTiB04eMcTiVCGoXVH7uV4=;
- b=KnJzDgIsUkS1eqGzn7yXliDTKYM14Q/8lkTPstjCyYAejspJOKdzaW3CVpE2CYW+/OJ2GcneEhqT4iWt6In9fidpquQGfD71XzgEtxZNuTSfTnEHi9BT4w3zWU8iiz6r8V44VQaHlKZ7bkC1f8psamLWdJdGV/xkdioPN0I0+MwdLSmTUncHQ8sXHPfxDbCogku0xwsVW7rd6LcMVcvmtKu/UqL54IYBvaR9kA9DdVxVV4wWKbSNDfK2yVxz019/DFp3vX28c2CS9IXaB2DdZnzl300PL5ZIhbv/Uvlm3P3w/zB+qARnS679dg+Aa47SiYlFdsaIGISPkDUA0a5YbQ==
+ bh=XcXrRKBabQlOTHo50b7cbdxKf1Mnfm+dGC/o8m8tAJ8=;
+ b=Tvkqr7kbmYSv97sCnkZhstFYWRIAFsx6QFR4t5/tuyRgLsDXTNruQwWRg6n6mL1bA9m3+SE2LQL8DGce0CICiWsLFOhKF1XgROxiv/IYedLQNIQTEu4OSv68fLbVOen68SEfj4hI97OT8+ng38GAUfGvmzHGogDsaHeEGOJ8AXnXn4uV5bZewO+HfCGNdWdcrglG+iVUFSf5o/+xtB8QaZsNJRMeUfkUfx0u+Ig9/DkXDm1ihQonn9isoZ5NlD9zJmY3e6chleJwc1N9gcf+P0lTgTIqQ/KZdhUPZJ++gD9fZYnCCiaVl4NOVhWDpsPO3fbRedyVJ10vH5A/TAI9oA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yroYNvtM+ftxkBYnpAH09lTiB04eMcTiVCGoXVH7uV4=;
- b=QVuTRRe4NWgUwBdI7ZquVmzmA3GIiUoq0HPftqtp2lzC82/f5uJtwMU+VJmWoJjpU6u4z2/TOpe1iLglVKW77H30tUqeY1BWOafIX+pm5R3rn1LPGD/yYuJlCi5ItLLg2xXSZuGQC33XdniNnE/st0hruCmWYAMNPTtxAsfDlKY=
+ bh=XcXrRKBabQlOTHo50b7cbdxKf1Mnfm+dGC/o8m8tAJ8=;
+ b=bDPvUAfb/yjQthPhlFgEW30LpGf6IdaQZPsEwxGv/ZKyNEYN4NbFq4/7EdLaBzOBqC2fIK/nlWsQGSBXKNWvDxdVNNmTf2qogQNnWsYr2mbUY460uHHL48bb4tJlpV9gM4q7rT0VzJ25nawovjbb+F5AxhdFCfagnh2TwAD6DG4=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=oss.nxp.com;
 Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
  by AM8PR04MB7396.eurprd04.prod.outlook.com (2603:10a6:20b:1da::6) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.23; Wed, 31 Jan
- 2024 23:21:37 +0000
+ 2024 23:21:41 +0000
 Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
  ([fe80::c499:8cef:9bb1:ced6]) by DU0PR04MB9417.eurprd04.prod.outlook.com
  ([fe80::c499:8cef:9bb1:ced6%3]) with mapi id 15.20.7249.023; Wed, 31 Jan 2024
- 23:21:37 +0000
+ 23:21:41 +0000
 From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Date: Thu, 01 Feb 2024 07:25:38 +0800
-Subject: [PATCH v6 2/4] mailbox: imx: support return value of init
+Date: Thu, 01 Feb 2024 07:25:39 +0800
+Subject: [PATCH v6 3/4] mailbox: imx: get RR/TR registers num from
+ Parameter register
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240201-imx-mailbox-v6-2-76f4f35b403e@nxp.com>
+Message-Id: <20240201-imx-mailbox-v6-3-76f4f35b403e@nxp.com>
 References: <20240201-imx-mailbox-v6-0-76f4f35b403e@nxp.com>
 In-Reply-To: <20240201-imx-mailbox-v6-0-76f4f35b403e@nxp.com>
 To: Jassi Brar <jassisinghbrar@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
@@ -73,11 +74,11 @@ To: Jassi Brar <jassisinghbrar@gmail.com>, Rob Herring <robh+dt@kernel.org>,
 Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
  linux-arm-kernel@lists.infradead.org, Peng Fan <peng.fan@nxp.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706743555; l=3395;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706743555; l=4351;
  i=peng.fan@nxp.com; s=20230812; h=from:subject:message-id;
- bh=S0DKuiQSDcYtu53JqBC1+gV1zoHcWj4DjQyGEWhlcnk=;
- b=W5a6ZzLKxqmgK4UssaJWiqZtbRVbEUDCD8H7KWbWha1f+NbQ5XEjWrNPiUMtG+qlAKot4FgiU
- avdfd5odp4cDwUC8V7lCYB6bgabets7kNASm2B93Fs9hzB5Jd+BaD1e
+ bh=ZIPe1ShyvGcJ7GWp7Z6UAmZB3DJN28oXn0B1jjJz194=;
+ b=jYPxB8fmyqs28ZGG+s4UND+7th+LqGwtnEzqRiWlVn1rZZbMDl2OKagX0jYZA3PRhBunBX23z
+ fJIbkK5+esdARtoS+lXRhkZoPnTp06BKv4bFHcfTD2y1VkcxxKsyygY
 X-Developer-Key: i=peng.fan@nxp.com; a=ed25519;
  pk=I4sJg7atIT1g63H7bb5lDRGR2gJW14RKDD0wFL8TT1g=
 X-ClientProxiedBy: SI1PR02CA0049.apcprd02.prod.outlook.com
@@ -92,177 +93,209 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AM8PR04MB7396:EE_
-X-MS-Office365-Filtering-Correlation-Id: a483c66f-1bce-488d-3378-08dc22b35f39
+X-MS-Office365-Filtering-Correlation-Id: 309a02e0-e1f9-4947-d221-08dc22b361c9
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	7vDJrZ/G+7VsuhnyRbGzQpIFe9vxOWIzAb2wQksiltLvl6UEOAqbF9lYFGbGAmnlA0/e8hMK5E/FhWcF/UrkullK0leGDmOVnQI3/bFRTcoMOZf96c0UBjczjLCLz/lU3Ccl56gHVeTXknECKo4yndZdsG0i/LNe66PQYjwV4teCADRli7F2VMNVcOr91b+Hkl08/akymob9GmsG36nVy47+csGSHt5H3BxvcId367P2xt/gYHk/mlBiOuJcUvGLBbn1FFHjNSL+tIer/ld6ZN5HCEnzyrImDApViSDXXK4YQsUwNdKLFF2II6gMsoacXyWdK76UldmhATaQDP+IBvr45Ztr6rtNG47CM6cytsKLG89rqYsEyF2Z9OfclbumUfRN2j0JEdznTQDDksE+Vxv9jh7Kl45Avu/dqPk4g4Fl/ZE6AA42eF+uYoUdI6vQwoBz8C8NcGSEQzhQH+NbAUJPUt0GcBDPRnfmQ3mVN3iqLSJS+MpJ857GS1Rq9p2y24VATaJFi5Q9sNyvTanTAcMiX7yKb0rj3GtA6OQB+sAgWSt48I+cSzjYONquHNYYe0qW3mbpWr7CX5rau4q6JGMH03QMIvC7ygrfuz7PJCSnHqj2ExApL9xMdUQq3sCW
+	YMS6nve3wbwdB/bXwWQEpav8dHQBYX6NO4i+7hURFIaO2xkg6DEgajTDuUkoe1QZ5aAbdqiKpCprYkSz9rbRL0jGPmsko2C6aVfEUH7ro+NAV/lvtGMCLQDezWPpZBa3YjFdAsl8yhR2nvmPeVFHeQX/SqLNLzdymx/FZe/Yr1QDfg7WIVZvx70bHUt9ggxVNx4nMYl1oCymq10FwqNVtMZwG8Dj9TbXzYbPJgz1Nj9nXplrindz+RFLujLpq/YAM8e9MBjN6iO7lZaBoSRdFYZ67MDXX/RH1lVBNJz3BWe1NngdmWuaxIfb/fbn35OoWxR8wTdZKZqqu7N5gtBBk2R9BSoA0oFZ0yYTJz74twkmseGi/8RqcaOJYmccMxs5eCzIdciphFuT1XeNNSkFZYPWZSJF6QyCJTTn2iUwa6tW8/UHt7z1wWL85g9lodvqhVci7NE2AzzJ+WuBmdX4h5xs+IafvmdhSmJdpb+YZ4sBmBraLmwKlC9kNTn6Zgf1Jy0GjBDVeQLuWy7NGmhs8JS3pfZRmdiRKjoBsJ125HpoDYCNRstCZ8FLrAmdw+xColDqYBukTaMo9C/1Fn1wmtzw3nq4hoojVBo9WGn/nFpauzflitBbDgWzVjpj7pKnBo1iT1sWiAuGlxxSPJ9PAA==
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(376002)(39860400002)(136003)(396003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(921011)(26005)(41300700001)(316002)(38350700005)(66556008)(478600001)(36756003)(6512007)(9686003)(6506007)(83380400001)(52116002)(6486002)(66476007)(38100700002)(66946007)(5660300002)(2906002)(8936002)(15650500001)(86362001)(8676002)(110136005)(4326008)(7416002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?UzhwaHkzdUpSRE5GZnB1ekxmUTlYNCtjWXl2NStrVkJVYkgrUVB2K0Nhc0VH?=
- =?utf-8?B?V1h2UGxzMitEWEdzdHdDeElPTkt4c0t1eFFENXNzKzRMQjZTZjJKbWV6c2kr?=
- =?utf-8?B?Mzg2M0ptYmV2RTVWSkpwY1ByMDFmbkt2emJMU1FRKzM2Q2Z5QWZJZTFhZ3dy?=
- =?utf-8?B?NVR5NnpSVjA4Nmw3UFp2eGZ2aU9QS3VneHN0emRSQnlYNHIyQVZzNkFXbENF?=
- =?utf-8?B?dS92eVpwZjEyZTVmcFI1Q0I2MmRYWWdteDNBdUxCcC85QVNiQUpSL2Q5MVBE?=
- =?utf-8?B?a2IvaWtRWkJrQm1MTmltTUZFZnVVcE1HNVhwWEhlVlB1b2phS3p5R0RYb0la?=
- =?utf-8?B?Q04vS2NrNkJ6OTQyUlkyeTNIRDBHTkMrVUFzbytBRWdLa2xiWVdxUjE0TFZH?=
- =?utf-8?B?Uk9RY2tpU1F0R1NZK3dBSFdBdGM2MEFrRjZobmZJUU5XekxhZUt0V3hMR1Fy?=
- =?utf-8?B?V0pPZVNHQXd0NENybUpreXZzZmppbjhaZ01nek5OdnR4TG5TQTl0N09tNG4r?=
- =?utf-8?B?enF4ZWhKNlg4WWdYa05tdHNnZ05jazFremNUOVBydEpiZ1ViM3orTmZyM2xq?=
- =?utf-8?B?VzMwa2JTTFJKcmJ6UmhyWURrZWNkblcyejIyT0NRZTlXZjRFRk9LTUprZjlo?=
- =?utf-8?B?Ulo4aTZCVk42bUdFZTBxSnJ3d1RjajlyZDZETzZMRGpKajUwYkl1aEdDeENv?=
- =?utf-8?B?ZUZZVGJCNTVpTEZ3VDlXQy9HY0xCK09DZlFXVDVZazhGY3Z0Mm15VW5LZmNX?=
- =?utf-8?B?Q25mbTJIcmJOcVBGZGhUT2tWdTRVNmIrc1FFM2RiRDlOZWZpQjV2RjdqQ0p6?=
- =?utf-8?B?NG80ZEJLcEtEVXBwNndNSTZGQ0NrOXNmeFZjWms4RlFHcmIvd2dXOURQSnVa?=
- =?utf-8?B?WlZ4ZGlwY2pFaC9iOEdSRlZBMit5dC9DV2lDdytTVnhWbmc2M3dOVWYva3Jt?=
- =?utf-8?B?NVI4MWRiRURaRGxtb3JIdTNFL0o1QTNGMnpvKzFmRkZKU2NnM2lIRDFFRmkv?=
- =?utf-8?B?ODh4Qk5XSXFOampscStDdFE5ZW9jb1U2eDdHTmwrOGswRzZhdVhNeVlqN3Mr?=
- =?utf-8?B?RXpLNFI5bkVSb0JZQ3ZvWkpDdmNzWm13dGJKYzZ3ckR2NjF2bTliTVN1M1d6?=
- =?utf-8?B?cmtBeERGeGszNGRLZ2k0akZxeVBkZE1lVzFWSjlJMnk4Zzd4RXRCcXBNWFMr?=
- =?utf-8?B?NHg1RStXUU5lQ2NmWlpBS2xlcXAvOUxVMW5PMzFpcGRwNlRkTmlCN2VGVTMw?=
- =?utf-8?B?TmxtNFRXUHdmak1IdndTOC95S1dCdE5WZVB0alFJZTNYK2FXNmJvN2c5L2li?=
- =?utf-8?B?Q0ord2w5MjlJM1BKL1NTdVVyak5KQ1ArMkttbVlxQm5qd2JXcEFMUmMwNjYx?=
- =?utf-8?B?Skw1dkJJS2lvMDc0T2lGV2xsTlprS0hIMXBIWVIrQktBcnVmOHVaY0ZkOW1u?=
- =?utf-8?B?a1FwTk1mTksrTjMzcXF1bzhQV2QyMWVtL0hLS0NPN3VQOGc0Vy9BZXlJNFEw?=
- =?utf-8?B?aGUzbDROd3VNYXVmVXd6eUgwZnVaanMwV2xTY1RlUnd2WGVUWHJ0Q1VEUEdW?=
- =?utf-8?B?RlB5MDNrd2JSUXdoTTFWNDU3RXZTY1g1dWlxbHEvMWRZM3c5YkpvMDRPVHU0?=
- =?utf-8?B?SEhxQWVWZEprNGZuc25nYjc2RzB4aEY2OGxwZGpEZGtFcDBHZmg0WUFjZGxH?=
- =?utf-8?B?VmJIQWhKTXN6Rk16Y1lIb2JoOWdwSVJYN3p1RlpYcytzVWQvNXk0dTdGcVBW?=
- =?utf-8?B?RkZ4allFWlpXUnk2RUNMVUJ2dHlqWkRjTmcvbnIvQTJQTFVYQ01yYVd6TzBP?=
- =?utf-8?B?b05COVdSNm1OOTRjVy9CYnJWUnVIa2hId2xaNEZ4Q0hXUENveUdZbEVQb2FY?=
- =?utf-8?B?cnlsVEFNNDlCWTQ4cjBYcXVuSUtsbWFPbitJT3JoVTJXZXpsMjhYSWYyUFIx?=
- =?utf-8?B?Q0VpckhKREJRYlhqc0FNSkhjSHJQNEVFRWYvcnkvKy9lMUc4ZHY4R2VjT09u?=
- =?utf-8?B?ZEZWU2pVdEJ1VFB5ZGlqT2M1ZmtuczBiVGVaRXEyV1hMbFh0Z3cwZ1Rub1lX?=
- =?utf-8?B?OEh1NXBRbnVFTlM5NkNKQ2VYcVRYb2FaMzRQekVLdzNtS2lHaGcyVUhmcXlv?=
- =?utf-8?Q?roUYNZv9jlDkqEELjw3DgH4GC?=
+	=?utf-8?B?QXpJRlk3ZXFiMXNBcWNHdGNEQXJvejhiYWlQYXdPODFKTGZKNGUzV1RNZ3Bv?=
+ =?utf-8?B?d1VuQm5QSG1TV3lMdUk5cUgxZGlQK1FUTHZPWG1saTl4NkZ3dnAxMk9BS28w?=
+ =?utf-8?B?eTJmeEtCVkNiaTYyQUdhenJCVDgzU3JPdnlqYnlHMFNpV1Y3WXJtSTQycmNL?=
+ =?utf-8?B?RnFXQ2txNkFETVYvc29wc05RWEl1VGFzRHVTY0xScTV5UWhxRzdtV1FqWnRl?=
+ =?utf-8?B?cGMwMkFGWXdia1RzM01qQm95dTFNZU0xQVYxUldTamRwTEZRWU5QMXByVTI5?=
+ =?utf-8?B?bGZ0V2RVeHFla1RDYkU2ZE9kNURycUdPcitXN2RDZC9Ta1ZRNmpMMVliY2dQ?=
+ =?utf-8?B?cHNUMVZVbWtJMWNkb29JWDVXc285N09MTkpINloyQ1BWeEcyZjcwYTIyc0lK?=
+ =?utf-8?B?dk9ZUEdCQ01mYUlod1ZFYi9qLzJ1RDJ3V2JieWlER3FjTTZEc3JkK01maklQ?=
+ =?utf-8?B?bjNmWmRVNlZ3R0Mrdk5maENLU0ZiL3B6MkJwQjY2b082Zzg4ZUoxMFV2MEx3?=
+ =?utf-8?B?VjE0RG1hb1RiMENSU0RjTFpHQkF0S2FpMjUxTlhOa2w0QWM1WUNFZ1c0d3cv?=
+ =?utf-8?B?TFZ3MU1INDF1a3JQZGNQSGM1N3RiUGxYTThsb2Y0Rjh6cngvMEkvOUw2cVVl?=
+ =?utf-8?B?RndWUzVtNlh3OXdkWWFJUjdLZEdtbzBQZ3NWbXRseDBwSHFlSWdPRTNKblZR?=
+ =?utf-8?B?TWNJbWRBNTlhMjhxaE45cEZVZGtlQTArSXZYYldadzA3RXpJQWIwQW96R2Jx?=
+ =?utf-8?B?Z0E0elZZNmhWWWFBeEN4TVZJdVRSWVY2OEp1TWJqU0Zmb3JrbDV5bXM2b1Jj?=
+ =?utf-8?B?SkNvaGZJWE1GeHRXMDlhYXk1ZHNFZHlhYmtWZ3Bta2hXQXVuZks2UEhEd0Qz?=
+ =?utf-8?B?SzhmY0hOWUdNdVJVV2JKTUFSLzYxQlNxQzh0cVpQZi93Q01taVlBWHFySHgy?=
+ =?utf-8?B?bGlkNkY0ejJGN1hxZ1o0NVNucHlibE1ua0VnLzRWeFg0WURZZ3QxSzErYmln?=
+ =?utf-8?B?RzJ4ZyttQTN3cE8rQ2NFVzkzYnYvK0VVMlpaNVc3S1hiVFZEK1Q2ZzBYWmYy?=
+ =?utf-8?B?bWhqVGpLWXVlcnJUYXR4VWFWeTJQRzdMNUR5dTBQaXV2ZHJjNjRWWGlDTXhT?=
+ =?utf-8?B?WEIzNm96NjE1STVjaUkwTHRWOUdpMFFXa0tCUmw1ajBRaEpkanU0NUtaSHNl?=
+ =?utf-8?B?a0JlL1M0c0w3SE5ad3pGbzdTbDJ3bm9xSXBvYS9qZFdpOE1VekYwS2R3MHlV?=
+ =?utf-8?B?VVZwdWY5OGkxejJKSmZvRWdWa1RFMTZ0UGZZbTdCS0p4aTdOcHVvMEZ6WktC?=
+ =?utf-8?B?OFEvRC85TkVPZlBGQXhEbitOZWZZNFN5a1lBNTRqMW5YV2xxR2hyaWxxWGdj?=
+ =?utf-8?B?VnN6MDE2UlNZV1ZRU3dIcFJWWlNXQU5PSVMxMlE0dW1XVkZYOVFZYjhVU0Js?=
+ =?utf-8?B?TDdLR09jMGRhK3N5dUE4amMxazdQakplSGJMU2xQbUp5a1V6bzFtd3pUb3Ax?=
+ =?utf-8?B?YjNZUkNHcmNoSVM3RWY5bStRVjl0cDV2OENOYmtnRG5OS1A0SzZBZmQ4Z2V4?=
+ =?utf-8?B?WHJxOUovQUFkWHk4OFpYTDhGSVAzV3UwaFcxZ0U5Z3pPWEI1S002Q05xZWhw?=
+ =?utf-8?B?eDdUdXAvMGtYS3JvVm83TUJhYWNnVFRxd2o3dXNueVlLT0k0dUQ0bVVDMHZv?=
+ =?utf-8?B?QitOSG8rSTlTSG5xUTJ4Mi9sbWgxRjNCMWVtSXJ1bThidjVOa0JyUXNHYkR2?=
+ =?utf-8?B?YzI3bEhFNXlicGJXeE9rNHg4M0ZpQW9qR0Q3UCt3UG84TlBjeHVZcG9nZmVi?=
+ =?utf-8?B?b21wSE1rTnJqSVF3TzZjMUpkaUpaTkR1THVmVkY3ZGdqOUJRbmQ0eEl6TXh2?=
+ =?utf-8?B?amxvR2hIT1Y1VDVCSURaRDZRMFQzcmRVam1xQUhDZ25QUWV3WEVHaFJ5alBC?=
+ =?utf-8?B?Y1MrL3lBbXpBanFtd2Y5ZTJNV09oMnhKcnRJNVVrK2pobjlESjZ6UVNkUGhM?=
+ =?utf-8?B?SzZtUlFEU1VoVmdKYVBCbzh2MmYzdmd2VzRibWFkc3gvaTZKMjJIQVh5ZTFD?=
+ =?utf-8?B?aEVxYmJwcjZ0aGdEWk15UG51WWdVLzdlZHBydExpQW1EOVJ5ZDE3eERKTVhP?=
+ =?utf-8?Q?WSgngiSuL2vEVGyUcVfNMOEzd?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a483c66f-1bce-488d-3378-08dc22b35f39
+X-MS-Exchange-CrossTenant-Network-Message-Id: 309a02e0-e1f9-4947-d221-08dc22b361c9
 X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 23:21:37.3568
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 23:21:41.5668
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: F2fzl64/L6/nebCaXxcNwMfobmB9uQOh5FUxkToluiGlCJdsttgaeiU3D/cOZnnmXtVqqy6g0JE4MjHuQIQq4A==
+X-MS-Exchange-CrossTenant-UserPrincipalName: buwUqna9tut/qGFOhsAfAwauE6g97PGnirT8plf4nTfzhgZCuGzl+KnDvRAWaAsB99+AEZ1dL/O1i3ahbUk/Pg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7396
 
 From: Peng Fan <peng.fan@nxp.com>
 
-There will be changes that init may fail, so adding return value for
-init function.
+i.MX8ULP, i.MX93 MU has a Parameter register encoded as below:
+BIT: 15 --- 8 | 7 --- 0
+      RR_NUM    TR_NUM
+
+So to make driver easy to support more variants, get the RR/TR
+registers number from Parameter register.
+
+The patch only adds support the specific MU, such as ELE MU.
+For generic MU, not add support for number larger than 4.
 
 Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
 Signed-off-by: Peng Fan <peng.fan@nxp.com>
 ---
- drivers/mailbox/imx-mailbox.c | 35 ++++++++++++++++++++++++-----------
- 1 file changed, 24 insertions(+), 11 deletions(-)
+ drivers/mailbox/imx-mailbox.c | 46 ++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 35 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/mailbox/imx-mailbox.c b/drivers/mailbox/imx-mailbox.c
-index 656171362fe9..dced4614065f 100644
+index dced4614065f..9e89f773d2f9 100644
 --- a/drivers/mailbox/imx-mailbox.c
 +++ b/drivers/mailbox/imx-mailbox.c
-@@ -110,7 +110,7 @@ struct imx_mu_dcfg {
- 	int (*tx)(struct imx_mu_priv *priv, struct imx_mu_con_priv *cp, void *data);
- 	int (*rx)(struct imx_mu_priv *priv, struct imx_mu_con_priv *cp);
- 	int (*rxdb)(struct imx_mu_priv *priv, struct imx_mu_con_priv *cp);
--	void (*init)(struct imx_mu_priv *priv);
-+	int (*init)(struct imx_mu_priv *priv);
- 	enum imx_mu_type type;
- 	u32	xTR;		/* Transmit Register0 */
- 	u32	xRR;		/* Receive Register0 */
-@@ -737,7 +737,7 @@ static struct mbox_chan *imx_mu_seco_xlate(struct mbox_controller *mbox,
+@@ -29,7 +29,9 @@
+ #define IMX_MU_S4_CHANS		2
+ #define IMX_MU_CHAN_NAME_SIZE	20
+ 
+-#define IMX_MU_NUM_RR		4
++#define IMX_MU_V2_PAR_OFF	0x4
++#define IMX_MU_V2_TR_MASK	GENMASK(7, 0)
++#define IMX_MU_V2_RR_MASK	GENMASK(15, 8)
+ 
+ #define IMX_MU_SECO_TX_TOUT (msecs_to_jiffies(3000))
+ #define IMX_MU_SECO_RX_TOUT (msecs_to_jiffies(3000))
+@@ -93,10 +95,11 @@ struct imx_mu_priv {
+ 	struct clk		*clk;
+ 	int			irq[IMX_MU_CHANS];
+ 	bool			suspend;
+-
+-	u32 xcr[IMX_MU_xCR_MAX];
+-
+ 	bool			side_b;
++
++	u32			xcr[IMX_MU_xCR_MAX];
++	u32			num_tr;
++	u32			num_rr;
+ };
+ 
+ enum imx_mu_type {
+@@ -264,18 +267,17 @@ static int imx_mu_generic_rxdb(struct imx_mu_priv *priv,
+ static int imx_mu_specific_tx(struct imx_mu_priv *priv, struct imx_mu_con_priv *cp, void *data)
+ {
+ 	u32 *arg = data;
++	u32 num_tr = priv->num_tr;
+ 	int i, ret;
+ 	u32 xsr;
+-	u32 size, max_size, num_tr;
++	u32 size, max_size;
+ 
+ 	if (priv->dcfg->type & IMX_MU_V2_S4) {
+ 		size = ((struct imx_s4_rpc_msg_max *)data)->hdr.size;
+ 		max_size = sizeof(struct imx_s4_rpc_msg_max);
+-		num_tr = 8;
+ 	} else {
+ 		size = ((struct imx_sc_rpc_msg_max *)data)->hdr.size;
+ 		max_size = sizeof(struct imx_sc_rpc_msg_max);
+-		num_tr = 4;
+ 	}
+ 
+ 	switch (cp->type) {
+@@ -324,6 +326,7 @@ static int imx_mu_specific_rx(struct imx_mu_priv *priv, struct imx_mu_con_priv *
+ 	int i, ret;
+ 	u32 xsr;
+ 	u32 size, max_size;
++	u32 num_rr = priv->num_rr;
+ 
+ 	data = (u32 *)priv->msg;
+ 
+@@ -345,13 +348,13 @@ static int imx_mu_specific_rx(struct imx_mu_priv *priv, struct imx_mu_con_priv *
+ 
+ 	for (i = 1; i < size; i++) {
+ 		ret = readl_poll_timeout(priv->base + priv->dcfg->xSR[IMX_MU_RSR], xsr,
+-					 xsr & IMX_MU_xSR_RFn(priv->dcfg->type, i % 4), 0,
++					 xsr & IMX_MU_xSR_RFn(priv->dcfg->type, i % num_rr), 0,
+ 					 5 * USEC_PER_SEC);
+ 		if (ret) {
+ 			dev_err(priv->dev, "timeout read idx %d\n", i);
+ 			return ret;
+ 		}
+-		*data++ = imx_mu_read(priv, priv->dcfg->xRR + (i % 4) * 4);
++		*data++ = imx_mu_read(priv, priv->dcfg->xRR + (i % num_rr) * 4);
+ 	}
+ 
+ 	imx_mu_xcr_rmw(priv, IMX_MU_RCR, IMX_MU_xCR_RIEn(priv->dcfg->type, 0), 0);
+@@ -737,11 +740,30 @@ static struct mbox_chan *imx_mu_seco_xlate(struct mbox_controller *mbox,
  	return imx_mu_xlate(mbox, sp);
  }
  
--static void imx_mu_init_generic(struct imx_mu_priv *priv)
-+static int imx_mu_init_generic(struct imx_mu_priv *priv)
++static void imx_mu_get_tr_rr(struct imx_mu_priv *priv)
++{
++	u32 val;
++
++	if (priv->dcfg->type & IMX_MU_V2) {
++		val = imx_mu_read(priv, IMX_MU_V2_PAR_OFF);
++		priv->num_tr = FIELD_GET(IMX_MU_V2_TR_MASK, val);
++		priv->num_rr = FIELD_GET(IMX_MU_V2_RR_MASK, val);
++	} else {
++		priv->num_tr = 4;
++		priv->num_rr = 4;
++	}
++}
++
+ static int imx_mu_init_generic(struct imx_mu_priv *priv)
  {
  	unsigned int i;
  	unsigned int val;
-@@ -757,7 +757,7 @@ static void imx_mu_init_generic(struct imx_mu_priv *priv)
- 	priv->mbox.of_xlate = imx_mu_xlate;
  
- 	if (priv->side_b)
--		return;
-+		return 0;
++	if (priv->num_rr > 4 || priv->num_tr > 4) {
++		WARN_ONCE(true, "%s not support TR/RR larger than 4\n", __func__);
++		return -EOPNOTSUPP;
++	}
++
+ 	for (i = 0; i < IMX_MU_CHANS; i++) {
+ 		struct imx_mu_con_priv *cp = &priv->con_priv[i];
  
- 	/* Set default MU configuration */
- 	for (i = 0; i < IMX_MU_xCR_MAX; i++)
-@@ -770,9 +770,11 @@ static void imx_mu_init_generic(struct imx_mu_priv *priv)
+@@ -768,8 +790,8 @@ static int imx_mu_init_generic(struct imx_mu_priv *priv)
+ 	imx_mu_write(priv, val, priv->dcfg->xSR[IMX_MU_GSR]);
+ 
  	/* Clear any pending RSR */
- 	for (i = 0; i < IMX_MU_NUM_RR; i++)
- 		imx_mu_read(priv, priv->dcfg->xRR + (i % 4) * 4);
-+
-+	return 0;
+-	for (i = 0; i < IMX_MU_NUM_RR; i++)
+-		imx_mu_read(priv, priv->dcfg->xRR + (i % 4) * 4);
++	for (i = 0; i < priv->num_rr; i++)
++		imx_mu_read(priv, priv->dcfg->xRR + i * 4);
+ 
+ 	return 0;
  }
+@@ -874,6 +896,8 @@ static int imx_mu_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
  
--static void imx_mu_init_specific(struct imx_mu_priv *priv)
-+static int imx_mu_init_specific(struct imx_mu_priv *priv)
- {
- 	unsigned int i;
- 	int num_chans = priv->dcfg->type & IMX_MU_V2_S4 ? IMX_MU_S4_CHANS : IMX_MU_SCU_CHANS;
-@@ -794,12 +796,20 @@ static void imx_mu_init_specific(struct imx_mu_priv *priv)
- 	/* Set default MU configuration */
- 	for (i = 0; i < IMX_MU_xCR_MAX; i++)
- 		imx_mu_write(priv, 0, priv->dcfg->xCR[i]);
++	imx_mu_get_tr_rr(priv);
 +
-+	return 0;
- }
- 
--static void imx_mu_init_seco(struct imx_mu_priv *priv)
-+static int imx_mu_init_seco(struct imx_mu_priv *priv)
- {
--	imx_mu_init_generic(priv);
-+	int ret;
-+
-+	ret = imx_mu_init_generic(priv);
-+	if (ret)
-+		return ret;
- 	priv->mbox.of_xlate = imx_mu_seco_xlate;
-+
-+	return 0;
- }
- 
- static int imx_mu_probe(struct platform_device *pdev)
-@@ -866,7 +876,11 @@ static int imx_mu_probe(struct platform_device *pdev)
- 
  	priv->side_b = of_property_read_bool(np, "fsl,mu-side-b");
  
--	priv->dcfg->init(priv);
-+	ret = priv->dcfg->init(priv);
-+	if (ret) {
-+		dev_err(dev, "Failed to init MU\n");
-+		goto disable_clk;
-+	}
- 
- 	spin_lock_init(&priv->xcr_lock);
- 
-@@ -878,10 +892,8 @@ static int imx_mu_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, priv);
- 
- 	ret = devm_mbox_controller_register(dev, &priv->mbox);
--	if (ret) {
--		clk_disable_unprepare(priv->clk);
--		return ret;
--	}
-+	if (ret)
-+		goto disable_clk;
- 
- 	pm_runtime_enable(dev);
- 
-@@ -899,6 +911,7 @@ static int imx_mu_probe(struct platform_device *pdev)
- 
- disable_runtime_pm:
- 	pm_runtime_disable(dev);
-+disable_clk:
- 	clk_disable_unprepare(priv->clk);
- 	return ret;
- }
+ 	ret = priv->dcfg->init(priv);
 
 -- 
 2.37.1
