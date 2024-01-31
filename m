@@ -1,156 +1,157 @@
-Return-Path: <linux-kernel+bounces-45598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 766F88432D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:36:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E2718432D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:35:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A95011C259F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:36:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A32B11C24462
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C6C45673;
-	Wed, 31 Jan 2024 01:35:36 +0000 (UTC)
-Received: from smtpbgjp3.qq.com (smtpbgjp3.qq.com [54.92.39.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BDD81849;
+	Wed, 31 Jan 2024 01:35:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LjXRAQ4o"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0685224;
-	Wed, 31 Jan 2024 01:35:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.92.39.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12C281366;
+	Wed, 31 Jan 2024 01:35:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706664936; cv=none; b=G86lw/Wi2WMEXiw7VfeQOTupQmG+KIloUAkOJGMdJcJJORahpFyITcyBFxn7biLgRuU9GlrO16FUyGLKlks2Se0zaI4XwNSnbmKwMVqxNHzu4iK/0Wb7qr6YhoEl9EO8VEC97Cb+y2PEjjzq0yhN6VQ2IkEgHONDge2I5UBlg7g=
+	t=1706664926; cv=none; b=pvLOMNRnLqOmdd6ARrnWZkYOj5Ci8Bxbu4m1sSFAEelFOZI7ziIoj/iH/bgqN2TWzVseF47BYpK3jknOzL678tW38wb1JeMIA5xiX0TslQ/wfQwSSAh3CqVo93+bnh+rbvHfm8u1owDVEpTQ9eMP7R5et2EU3Sk5z7KHrp5/n60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706664936; c=relaxed/simple;
-	bh=JABR628JhKfDEauT8EwSw8z5YLEql3Ddf6/Lsazad+U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FiGpeLyUNnLYY7UE3LgU4mrBCGC8yfNdXEtlHY2srsjEc6MVCEqq3rBuBNvDuhAKiriHxBx+xrhlq7Kp+mIfCYt+kBN6+TIjERe5CpLAwHDcnCCgK/e7xgnE96ppSvtxFIbJW1FNt1LATLLN8HHQ2cIIN6gdWctGP0FG/HqmoDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.92.39.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp79t1706664893t5ec4qpb
-X-QQ-Originating-IP: KLWLno1z+YBwajOmzBSk8syMSjZewzrtPUskMRnxhGk=
-Received: from localhost ( [183.209.108.228])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Wed, 31 Jan 2024 09:34:52 +0800 (CST)
-X-QQ-SSF: 01400000000000504000000A0000000
-X-QQ-FEAT: xwvWJGGFd7Nhngy97HaDG0YFqzS8IYQiaIhfPpcCmo6nrTjJeTHE7WYcUmrxy
-	h7NIHa6HDO5KrWMR1TzSGuBh4eJC2AlxMDIvxcYwn+S1TNw/ecLu4p5KWiRfY75o0rosD8a
-	/Rf8ksG5TTxTKPVxVXBiCJPg5o8OR+OJYS2EnXuDy3KBL8cfc7RRF60HgyL3tDm4/h1GExo
-	TbLUvniXWAkItLmL1CSWRROttiS4Ay2WYiTrABCR9+77f7MSYLvCd0aUzg380F9QASDYLQ+
-	DbLnNE7T4VR66ALkmPL7MZ/AqMLpPKldSX9jBVdNHr8zT1amTqg9MlmnwTAQVoR+cnFXS2z
-	lkk4mgEP24PFmDwJ2ZbGTuV2kFNbDRRIjnGlM9fxw/Xllp/cZwe92zujTz52NwHsgh4n9BG
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 5899189523940205269
-Date: Wed, 31 Jan 2024 09:34:52 +0800
-From: Dawei Li <dawei.li@shingroup.cn>
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: arnd@arndb.de, fancer.lancer@gmail.com, lkp@intel.com,
-	linux-kernel@vger.kernel.org, set_pte_at@outlook.com,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] misc: eeprom/idt_89hpesx: Convert data structures to LE
- explicitly
-Message-ID: <03B279416A25E958+ZbmjvFafk44HBl4b@centos8>
-References: <20240130040632.3039911-1-dawei.li@shingroup.cn>
- <2024013039-asleep-rally-39c0@gregkh>
+	s=arc-20240116; t=1706664926; c=relaxed/simple;
+	bh=z6jD8l1Em8qa7RDF9PSVWG8Ir6YPDxlM6YsVako70uA=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=FMIkuFaHyhEoGKFARzMt6nQbKrLuUi06akjfPb04XZqs+DQK7lY4iuojZ8t6hjh8cgHpAto+x4i9UMElQON1vInEfQxIwO3HB2J3upq+SFwzX5/QurJSqjW2/zxIWxdfWfKm/brEcMMjuy3igdn4RSZbvrIkp0aC7BnPYij5xTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LjXRAQ4o; arc=none smtp.client-ip=134.134.136.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706664925; x=1738200925;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=z6jD8l1Em8qa7RDF9PSVWG8Ir6YPDxlM6YsVako70uA=;
+  b=LjXRAQ4oNfnvIjPlT5+suV5SUXzXxxQ18NL167Kc+RMadgMibhIe2I53
+   SCkfXDkVErFGGcnH+mRgydExi8EtAaIjFrdG5NQ89ujH4YYIOCz4yHGso
+   HQyElbA9T5lcJ8von+4RQKqru11wR23aERv46tqx0j27xQX7Mm6MSKf+V
+   UzRsAYoSHjlHlv8WLsDAjQg8YcgbrV7J8Vs/JGjivi7U5OUYqhske33hv
+   ZP11JUgboukNdRseW1hx3fWb0loYxZtaBzX6KJp5APzwRGCK1YYI1QBMR
+   4i9Crs4B0KPsj4LZNQES4xOOEv9FpuOOnnmK5QDea7ysxAw8o1h+qzspC
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="407171252"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="407171252"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 17:35:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="907699187"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="907699187"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 30 Jan 2024 17:35:21 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "jarkko@kernel.org" <jarkko@kernel.org>, "dave.hansen@linux.intel.com"
+ <dave.hansen@linux.intel.com>, "tj@kernel.org" <tj@kernel.org>,
+ "mkoutny@suse.com" <mkoutny@suse.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "tglx@linutronix.de"
+ <tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de"
+ <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>, "Huang, Kai" <kai.huang@intel.com>
+Cc: "Li, Zhiquan1" <zhiquan1.li@intel.com>, "kristen@linux.intel.com"
+ <kristen@linux.intel.com>, "seanjc@google.com" <seanjc@google.com>, "Zhang,
+ Bo" <zhanb@microsoft.com>, "anakrish@microsoft.com" <anakrish@microsoft.com>,
+ "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "yangjie@microsoft.com" <yangjie@microsoft.com>, "chrisyan@microsoft.com"
+ <chrisyan@microsoft.com>
+Subject: Re: [PATCH v8 07/15] x86/sgx: Expose sgx_reclaim_pages() for cgroup
+References: <20240130020938.10025-1-haitao.huang@linux.intel.com> <20240130020938.10025-8-haitao.huang@linux.intel.com> <BL1PR11MB5978A8E4B6E1DC4CC0159FD0F77D2@BL1PR11MB5978.namprd11.prod.outlook.com>
+Date: Tue, 30 Jan 2024 19:35:19 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024013039-asleep-rally-39c0@gregkh>
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2id1c5n3wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <BL1PR11MB5978A8E4B6E1DC4CC0159FD0F77D2@BL1PR11MB5978.namprd11.prod.outlook.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-Hi Greg,
+On Tue, 30 Jan 2024 09:39:44 -0600, Huang, Kai <kai.huang@intel.com> wrote:
 
-Thanks for reviewing.
+>> + * @lru:	The LRU from which pages are reclaimed.
+>> + * @nr_to_scan: Pointer to the target number of pages to scan, must be  
+>> less
+>> than
+>> + *		SGX_NR_TO_SCAN.
+>> + * Return:	Number of pages reclaimed.
+>>   */
+>> -static void sgx_reclaim_pages(void)
+>> +unsigned int sgx_reclaim_pages(struct sgx_epc_lru_list *lru, unsigned
+>> +int *nr_to_scan)
+>
+> Since the function is now returning the number of reclaimed pages, why  
+> do you need to make the @nr_to_scan as pointer?
+>
+> Cannot the caller just adjust @nr_to_scan when calling this function  
+> based on how many pages have reclaimed?
+>
+> I am not even sure whether you need @nr_to_scan at all because as we  
+> discussed I think it's just extremely rare you need to pass "<  
+> SGX_NR_TO_SCAN" to this function.
+>
+> Even if you need, you can always choose to try to reclaim SGX_NR_TO_SCAN  
+> pages.
+>
 
-On Tue, Jan 30, 2024 at 06:04:17AM -0800, Greg KH wrote:
-> On Tue, Jan 30, 2024 at 12:06:32PM +0800, Dawei Li wrote:
-> > For data structures needs cpu_to_le* conversion, its prototype needs to
-> > be declared with __le* explicitly.
-> > 
-> > Fixes: cfad6425382e ("eeprom: Add IDT 89HPESx EEPROM/CSR driver")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202401261250.b07Yt30Z-lkp@intel.com/
-> > Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
-> > Cc: <stable@vger.kernel.org>
-> > ---
-> >  drivers/misc/eeprom/idt_89hpesx.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/misc/eeprom/idt_89hpesx.c b/drivers/misc/eeprom/idt_89hpesx.c
-> > index d807d08e2614..327afb866b21 100644
-> > --- a/drivers/misc/eeprom/idt_89hpesx.c
-> > +++ b/drivers/misc/eeprom/idt_89hpesx.c
-> > @@ -129,7 +129,7 @@ struct idt_smb_seq {
-> >  struct idt_eeprom_seq {
-> >  	u8 cmd;
-> >  	u8 eeaddr;
-> > -	u16 memaddr;
-> > +	__le16 memaddr;
-> >  	u8 data;
-> >  } __packed;
-> >  
-> > @@ -141,8 +141,8 @@ struct idt_eeprom_seq {
-> >   */
-> >  struct idt_csr_seq {
-> >  	u8 cmd;
-> > -	u16 csraddr;
-> > -	u32 data;
-> > +	__le16 csraddr;
-> > +	__le32 data;
-> >  } __packed;
-> >  
-> >  /*
-> 
-> Declaring them this way is nice, but this doesn't actually "fix"
-> anything at all as no code is actually changed.
-> 
-> So how is ths a bugfix?  How does this patch do anything?
-> 
-> confused,
+I tested with that approach and found we can only target number of pages  
+attempted to reclaim not pages actually reclaimed due to the uncertainty  
+of how long it takes to reclaim pages. Besides targeting number of scanned  
+pages for each cycle is also what the ksgxd does.
 
-Sorry for the confuson.
+If we target actual number of pages, sometimes it just takes too long. I  
+saw more timeouts with the default time limit when running parallel  
+selftests.
 
-This commit is to address the issue reported by kernel test rebot[1].
+We also need return number of pages actually reclaimed as indication to  
+caller whether we actually reclaimed any pages at all. The caller, e.g.,  
+sgx_epc_cg_try_charge(), then can decide to schedule() or continue next  
+step which usually is allocation of the page.
 
-Partially quoted from it:
+> [...]
+>
+>>
+>> +static void sgx_reclaim_pages_global(void) {
+>> +	unsigned int nr_to_scan = SGX_NR_TO_SCAN;
+>> +
+>> +	sgx_reclaim_pages(&sgx_global_lru, &nr_to_scan); }
+>> +
+>
+> I think this function doesn't look sane at all when you have @nr_to_scan  
+> being a pointer?
+>
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/misc/eeprom/idt_89hpesx.c:599:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [addressable] [assigned] [usertype] memaddr @@     got restricted __le16 [usertype] @@
-   drivers/misc/eeprom/idt_89hpesx.c:599:31: sparse:     expected unsigned short [addressable] [assigned] [usertype] memaddr
-   drivers/misc/eeprom/idt_89hpesx.c:599:31: sparse:     got restricted __le16 [usertype]
-   drivers/misc/eeprom/idt_89hpesx.c:671:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [addressable] [assigned] [usertype] memaddr @@     got restricted __le16 [usertype] @@
-   drivers/misc/eeprom/idt_89hpesx.c:671:31: sparse:     expected unsigned short [addressable] [assigned] [usertype] memaddr
-   drivers/misc/eeprom/idt_89hpesx.c:671:31: sparse:     got restricted __le16 [usertype]
->> drivers/misc/eeprom/idt_89hpesx.c:769:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [addressable] [assigned] [usertype] csraddr @@     got restricted __le16 [usertype] @@
-   drivers/misc/eeprom/idt_89hpesx.c:769:24: sparse:     expected unsigned short [addressable] [assigned] [usertype] csraddr
-   drivers/misc/eeprom/idt_89hpesx.c:769:24: sparse:     got restricted __le16 [usertype]
->> drivers/misc/eeprom/idt_89hpesx.c:770:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [addressable] [assigned] [usertype] data @@     got restricted __le32 [usertype] @@
-   drivers/misc/eeprom/idt_89hpesx.c:770:21: sparse:     expected unsigned int [addressable] [assigned] [usertype] data
-   drivers/misc/eeprom/idt_89hpesx.c:770:21: sparse:     got restricted __le32 [usertype]
-   drivers/misc/eeprom/idt_89hpesx.c:834:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [addressable] [assigned] [usertype] csraddr @@     got restricted __le16 [usertype] @@
-   drivers/misc/eeprom/idt_89hpesx.c:834:24: sparse:     expected unsigned short [addressable] [assigned] [usertype] csraddr
-   drivers/misc/eeprom/idt_89hpesx.c:834:24: sparse:     got restricted __le16 [usertype]
->> drivers/misc/eeprom/idt_89hpesx.c:859:17: sparse: sparse: cast to restricted __le32
->> drivers/misc/eeprom/idt_89hpesx.c:859:17: sparse: sparse: cast to restricted __le32
->> drivers/misc/eeprom/idt_89hpesx.c:859:17: sparse: sparse: cast to restricted __le32
->> drivers/misc/eeprom/idt_89hpesx.c:859:17: sparse: sparse: cast to restricted __le32
->> drivers/misc/eeprom/idt_89hpesx.c:859:17: sparse: sparse: cast to restricted __le32
->> drivers/misc/eeprom/idt_89hpesx.c:859:17: sparse: sparse: cast to restricted __le32
+You will see the pointer being used later for cgroup worker.
 
-[1] https://lore.kernel.org/oe-kbuild-all/202401261250.b07Yt30Z-lkp@intel.com/
+> I am also not sure whether this function is needed -- if we don't add  
+> @nr_to_scan to sgx_reclaim_pages(), then this function is basically:
+>
+> 	sgx_reclaim_pages(&sgx_global_lru);
+>
 
-Thanks,
+As indicated in the commit message, this wrapper is getting ready for  
+doing global reclamation from root cgroup. You will see it changed later.
 
-    Dawei
 
-> 
-> greg k-h
-> 
+Thanks
+Haitao
 
