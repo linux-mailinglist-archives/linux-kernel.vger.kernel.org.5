@@ -1,220 +1,189 @@
-Return-Path: <linux-kernel+bounces-46389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E161843EF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:58:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B6D1843EF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:58:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C806A1F2E325
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:58:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F64D2925DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:58:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C7378691;
-	Wed, 31 Jan 2024 11:58:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CDB876C7B;
+	Wed, 31 Jan 2024 11:58:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RHOFVXOz"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="u7T6s1rK"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 866EC7319D
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 11:58:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B18C87691C
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 11:58:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706702300; cv=none; b=LL4ZXOPEmPqKRf4Xf/W1x0emDKjGdoVY9bw2uGhIRb+MPy5hmlHPtmLtXkuA+zdI/RDLAD8E8NCsKnK9bFDzqEtkFno3rtFZna7IF7PYH/0By+M0cpCbrKMmNTsm67t5QneJu29e+gEDcGNzQn+LzEfJ+7QaJsUprWWvzYnumXE=
+	t=1706702320; cv=none; b=pcWW7dYiI+uPBC9iG7GPGGTyxCQK6YWifaU0VEJCQQ7asnDG7f/QPSuoOL1PIDGy1zHewY+ec2pIFIDOoyfVuedKifD7vA0cSHoJJNpoY95cQON/LCDt5O2pQh9MMpsRONqo2KEID1oVWzXo6WqhLd6KVg4rz+qBGISEnqVXYN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706702300; c=relaxed/simple;
-	bh=hI6pIxWYZn6JeCEExsEXYy9voSGnFqpL/k6e0jjFvJ8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E/FywBjhL26yPrM7Igdv2znnnsFyNhFosavPkoPIeKbwg1FaIyepsAMwF0oXnhn92H50syBJci4vFHnnU6y10L5EPOwvoAtWBsLAisYaAbGDmQCgcxgtKtHdOrX6xEpaoq6BYThsFu8F4zDlQzQ19AoM7QSZTVMYczIv2omemV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RHOFVXOz; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706702297;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Um39ebN5ZMur/OwoYxUGFeLAS+a+2jb5T67VWPDiRzw=;
-	b=RHOFVXOzCT5/Zk9M2Uektkko+jUDBoLnz9tUSe81LhO2riiVuzyKxgCXrbmU2zC0xUMmOm
-	1uFiCoT262iXokHuf0WbQydviyE1sjECfYFOo0/D1G32V41pU2ruqIdiCF7QzwyzfI3Ohd
-	GcVualvompvAvbIFRC9l3N34LcJWJWw=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-520-AQekmjJUP06yj3mymPdEAg-1; Wed, 31 Jan 2024 06:58:16 -0500
-X-MC-Unique: AQekmjJUP06yj3mymPdEAg-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40e74860cb0so36066115e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 03:58:14 -0800 (PST)
+	s=arc-20240116; t=1706702320; c=relaxed/simple;
+	bh=Bsk6tAe8HP8m/VR5DeyZcP+7oFX7ES/B7TSkV1Xt6Q0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=X+hNZFZgkdtjcZaA5hSvRzznhbNYA8LYsHfvo8N7CEtWWsAoBqu6p3/FGqIsKG2D7EuTkBzLRj+g3v36aC4/bOfREK9xkaI6HN6jYRC25Ed7VIJIFU0ZSlAtABaHQLnsugaXtVkrTK2FyVLxYMNdRABzap3r7hCOpu0VDl01EaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=u7T6s1rK; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-511234430a4so1283558e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 03:58:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706702316; x=1707307116; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AoV2jurmNv6iwkxDFUQ5o01ah3c3XSHtCrzZXaQBuqA=;
+        b=u7T6s1rKdQZ/WUTswi9HPT8mPzn9h57OyH+aePIMuP+g6I1h8glau8lNsV1Hkp/7dU
+         nJcNnqwq/iy00HAyI1PPu/yB/w8fck2NtjRCXzpvXUSmua0UAt+8dc38llB1iPl9lB62
+         aZybjvZDsVRE64YxDQ5p+70eA6vxwJw8ViVc2wdffqPowE+thNLRyxRM4ZGkhpVWYl4e
+         0fg57CczKSt/SU6k3rIKLXUVoIt9AUHf8gZRpJxzGS1d0n35GbPKTxn/doNByMDC7qpF
+         O21UVXNDGMGiKpkadus/ndn0f6JYM/mq36W41JoOoqIWjfaqSSgUieQjAwRYGsr9tzOe
+         8Shg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706702294; x=1707307094;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Um39ebN5ZMur/OwoYxUGFeLAS+a+2jb5T67VWPDiRzw=;
-        b=R8909gE3okiGW7umG22QJJfDs0oaqMeUNLjuh5rz3vEzTTyI9cbCIzsc3mTX7hZOtI
-         4JihPM0EZSQ/HTmv4b7r3QW+7wXwZ2YnjfonvRzQ1w0FUuDQdl4XkTLBSYpeVpjTj8Hj
-         qkE+PJaptVZ7GnDS1JbBb/9QT7PqAQAv52ucV1EgvZskk65VUSbJcR0ubCyqos3aqkkB
-         nk4nXjIJoMvieyX6MQ4fxaGBwd+2qgWnZwnDOBqru5kF2xkjgbQ4zlGh4aUYrPIT4Yt0
-         VeyFwb0hRwO/IXzLdWBa16fS5nWr7YXoesIsLXTMpYNMngwA7fWdq2rFw4csxMNHWSvC
-         PvFQ==
-X-Gm-Message-State: AOJu0YyxDBESFSbsyyBBmGqPx1ysJRSdq/u1jGCuMDWCzokdLCLvGOpu
-	UfOTzwEdglw8HzGsWOrQeBa3ZQsp3QYVclkcdpT9lZOJZddMP16cN0jILqgKOu6qwfEinTFvyvd
-	pVLgh5WmcvYChOy8EswuEQ8ZV87rmUvPteg7tChPp5Hn/ESGh5CB2Er1BjKeZQA==
-X-Received: by 2002:a05:600c:4e14:b0:40e:d3db:ff71 with SMTP id b20-20020a05600c4e1400b0040ed3dbff71mr1080250wmq.2.1706702293914;
-        Wed, 31 Jan 2024 03:58:13 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFzOsNQ060KjCmFNJyVcxAX4cTTtvYMAQ7U1f5me3Rqe8XCqs5OGgYqtttJEGFB8uE1qXD1UA==
-X-Received: by 2002:a05:600c:4e14:b0:40e:d3db:ff71 with SMTP id b20-20020a05600c4e1400b0040ed3dbff71mr1080232wmq.2.1706702293586;
-        Wed, 31 Jan 2024 03:58:13 -0800 (PST)
-Received: from [10.254.108.137] ([151.14.9.35])
-        by smtp.googlemail.com with ESMTPSA id c20-20020a7bc014000000b0040e813f1f31sm1379119wmb.25.2024.01.31.03.58.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Jan 2024 03:58:13 -0800 (PST)
-Message-ID: <96dd3b45-90c1-4454-abe3-61987defd03b@redhat.com>
-Date: Wed, 31 Jan 2024 12:58:04 +0100
+        d=1e100.net; s=20230601; t=1706702316; x=1707307116;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AoV2jurmNv6iwkxDFUQ5o01ah3c3XSHtCrzZXaQBuqA=;
+        b=MQqIKyZG3eCYNL5YzYEobB4PKmt6O0wimDe4zEWp+Wo5P+RUtcy7jpFt7zJgEjx+cv
+         fE0Cw22VnHgTUmB28EyW9Fkn++0q1w3f3Whut3ZmpJvET/KsH8M1KEwAGcDeDcOkvrgl
+         XVhc/+pfIYCPWvjmBnXpT9fje0HiUVk48voGe3Fvy14+aHJvM6rcYPI3NFhD4CHUwcxW
+         lyfTwJ60Khdb6Y9/NuP01mBioDNurVOOpqbXKDQAYdSWMLut3TYcw6TwSBI0q7DuDnCr
+         4SakwZsW2cWqbrgN64YSFfocce5ytyp6LMCz9GEoHrFBbLvoDjzdMZq75Z/FD6OBdYy/
+         fKSA==
+X-Gm-Message-State: AOJu0YxHdak3RsKJvtLKTSuMvvJJxP1HjUt50GCZtU1moJP01ys1eV1i
+	54+AYi2ATScwB5L3OX61Gp3f1YSXs52ByGQ6+eytMNZ4/GqIrIDloY6kiZj1amY=
+X-Google-Smtp-Source: AGHT+IHKkzK2z6FUik9mZ7iVyw74T0XS48ch3DSuNy2MgJ/6xZiHyjGjtHghtsUZVoD0hrxrysmgUw==
+X-Received: by 2002:a05:6512:3d9f:b0:511:16df:b31 with SMTP id k31-20020a0565123d9f00b0051116df0b31mr1210546lfv.51.1706702316382;
+        Wed, 31 Jan 2024 03:58:36 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id u1-20020a05600c138100b0040f035bebfcsm1413114wmf.12.2024.01.31.03.58.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 03:58:35 -0800 (PST)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Date: Wed, 31 Jan 2024 12:58:34 +0100
+Subject: [PATCH] arm64: dts: qcom: sm8550-qrd: enable Touchscreen
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/cpu/intel: Detect TME keyid bits before setting MTRR
- mask registers
-Content-Language: en-US
-To: "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
- Zixi Chen <zixchen@redhat.com>, Xiaoyao Li <xiaoyao.li@intel.com>,
- Kai Huang <kai.huang@linux.intel.com>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>,
- x86@kernel.org, stable@vger.kernel.org
-References: <20240130180400.1698136-1-pbonzini@redhat.com>
- <bf3ptwhblztmal3c5b7jhjpohizw7q64th76pzit6rpgnewmo5@atq3oy6sp5vn>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Autocrypt: addr=pbonzini@redhat.com; keydata=
- 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
-In-Reply-To: <bf3ptwhblztmal3c5b7jhjpohizw7q64th76pzit6rpgnewmo5@atq3oy6sp5vn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20240131-topic-sm8550-upstream-qrd8550-touch-v1-1-007f61158aa8@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAOk1umUC/x2Nuw7CMAwAf6XyjKUkYPH4FcQQJS710CbYKUKq+
+ u9EHe+Guw2MVdjgMWyg/BWTsnTwpwHSFJc3o+TOEFy4OH/22EqVhDbfiByu1ZpynPGj+RCtrGn
+ CSPc8UiCX3BV6qSqP8jsuz9e+/wHsv/oMdQAAAA==
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1860;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=Bsk6tAe8HP8m/VR5DeyZcP+7oFX7ES/B7TSkV1Xt6Q0=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlujXrpKUzVB8vr6aWbW4RwTq+8/Y3AdwGKhxqT1X/
+ VZUXYROJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZbo16wAKCRB33NvayMhJ0WRLEA
+ DBhRvZmNqxs/wLW4dpx3fWWNXvKX1eRMNjOyTb2mCWwQDQ1mGwSA/hWp3gsfehs04XLQf/+SdwUv/Z
+ qHhf+P5TZ5j9KEaeQkWoziaRQOo+8EjHZzTE2GUJiJIMk95Hm7HSU38JTAf+TelBb/7VkmjSTl2zkZ
+ 7bOSsBs/DRMelsBmGEzQpvuE0cgz3Freh0UQfH/Y2zpxsSqbKedM8pChG9Gllw0PNbUG1E7Y2WrmFx
+ n0M/UHl+2uD4ZZH64BFRmz2lw6hveG5KrFV8KB823wbuXQWuatsy0/g8YYPgDASNVb9IybmCFyig3X
+ qTTEGOl6i92M8J0CBW7oan0/Io7gwLI6WCMlKRTsaKQtlzQAjT4dXwrTbrP/ll8mbrihysffB96XSP
+ BRH2ULw1+Vm4CWF9/4edZIkj6sxerUYbhNiJlwwMv0pfcA2hMibqLRhBGX4S530ixlbdWP8DIMAcHM
+ PeVtB5c3oYtK0UEYslhBLa30PBniS2bYgWTCNzesh8W6NCNhruoBTScKrMKm9xx3dAGQTq+2FOS05G
+ wrlSNETbILuroK6PvANXivJ0u9o5sdtW7leshEC9Av/MAJpCvumwqO2he9KesNYC7HQ1oNvLwllAnV
+ /2auxfWvxx/kA4cGuEbVhuKwsDkuXLJspZFcvIiNS16Crxfk+BjJ4QEa5ahw==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 
-On 1/31/24 09:39, Kirill A . Shutemov wrote:
-> On Tue, Jan 30, 2024 at 07:04:00PM +0100, Paolo Bonzini wrote:
->> MKTME repurposes the high bit of physical address to key id for encryption
->> key and, even though MAXPHYADDR in CPUID[0x80000008] remains the same,
->> the valid bits in the MTRR mask register are based on the reduced number
->> of physical address bits.
->>
->> detect_tme() in arch/x86/kernel/cpu/intel.c detects TME and subtracts
->> it from the total usable physical bits, but it is called too late.
->> Move the call to early_init_intel() so that it is called in setup_arch(),
->> before MTRRs are setup.
->>
->> This fixes boot on some TDX-enabled systems which until now only worked
->> with "disable_mtrr_cleanup".  Without the patch, the values written to
->> the MTRRs mask registers were 52-bit wide (e.g. 0x000fffff_80000800)
->> and the writes failed; with the patch, the values are 46-bit wide,
->> which matches the reduced MAXPHYADDR that is shown in /proc/cpuinfo.
->>
->> Fixes: cb06d8e3d020 ("x86/tme: Detect if TME and MKTME is activated by BIOS", 2018-03-12)
->> Reported-by: Zixi Chen <zixchen@redhat.com>
->> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
->> Cc: Xiaoyao Li <xiaoyao.li@intel.com>
->> Cc: Kai Huang <kai.huang@linux.intel.com>
->> Cc: Dave Hansen <dave.hansen@linux.intel.com>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Ingo Molnar <mingo@kernel.org>
->> Cc: x86@kernel.org
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> 
-> I've seen the patch before, although by different author and with
-> different commit message, not sure what is going on.
-> 
-> I had concern about that patch and I don't think it was addressed.
+Add Goodix Berlin touchscreen controller node for the SM8550 QRD
+connected to the SPI4 controller.
 
-Wow, slightly crazy that two people came up with exactly the same patch,
-including adding the comment before the moved call.  And yes, this patch
-only works until 6.6. :/
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/sm8550-qrd.dts | 42 +++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-The commit that moved get_cpu_address_size(), which has sha id
-fbf6449f84bf ("x86/sev-es: Set x86_virt_bits to the correct value
-straight away, instead of a two-phase approach"), was buggy for AMD
-processors; and it was noticed in the thread you linked, but never
-addressed.  It works more or less by chance because early_init_amd()
-calls init_amd(), but the x86_phys_bits value remains wrong for most of
-the boot process.  The MTRRs are also initialized wrongly, but that at
-least doesn't cause a #GP on AMD SME.
+diff --git a/arch/arm64/boot/dts/qcom/sm8550-qrd.dts b/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
+index d401d63e5c4d..4c0a863024da 100644
+--- a/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
++++ b/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
+@@ -724,6 +724,10 @@ &gcc {
+ 		 <&usb_dp_qmpphy QMP_USB43DP_USB3_PIPE_CLK>;
+ };
+ 
++&gpi_dma1 {
++	status = "okay";
++};
++
+ &gpu {
+ 	status = "okay";
+ 
+@@ -960,6 +964,30 @@ south_spkr: speaker@0,1 {
+ 	};
+ };
+ 
++&spi4 {
++	status = "okay";
++
++	touchscreen@0 {
++		compatible = "goodix,gt9916";
++		reg = <0>;
++
++		interrupt-parent = <&tlmm>;
++		interrupts = <25 IRQ_TYPE_LEVEL_LOW>;
++
++		reset-gpios = <&tlmm 24 GPIO_ACTIVE_LOW>;
++
++		avdd-supply = <&vreg_l14b_3p2>;
++
++		spi-max-frequency = <1000000>;
++
++		touchscreen-size-x = <1080>;
++		touchscreen-size-y = <2400>;
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&ts_irq>, <&ts_reset>;
++	};
++};
++
+ &swr1 {
+ 	status = "okay";
+ 
+@@ -1028,6 +1056,20 @@ sde_te_suspend: sde-te-suspend-state {
+ 		bias-pull-down;
+ 	};
+ 
++	ts_irq: ts-irq-state {
++		pins = "gpio25";
++		function = "gpio";
++		drive-strength = <8>;
++		bias-pull-up;
++	};
++
++	ts_reset: ts-reset-state {
++		pins = "gpio24";
++		function = "gpio";
++		drive-strength = <8>;
++		bias-pull-up;
++	};
++
+ 	wcd_default: wcd-reset-n-active-state {
+ 		pins = "gpio108";
+ 		function = "gpio";
 
-I think the correct fix is something like
+---
+base-commit: 06f658aadff0e483ee4f807b0b46c9e5cba62bfa
+change-id: 20240131-topic-sm8550-upstream-qrd8550-touch-a59df5250c07
 
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 0b97bcde70c6..fbc4e60d027c 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1589,6 +1589,7 @@ static void __init early_identify_cpu(
-  		get_cpu_vendor(c);
-  		get_cpu_cap(c);
-  		setup_force_cpu_cap(X86_FEATURE_CPUID);
-+		get_cpu_address_sizes(c);
-  		cpu_parse_early_param();
-  
-  		if (this_cpu->c_early_init)
-@@ -1601,10 +1602,9 @@ static void __init early_identify_cpu(
-  			this_cpu->c_bsp_init(c);
-  	} else {
-  		setup_clear_cpu_cap(X86_FEATURE_CPUID);
-+		get_cpu_address_sizes(c);
-  	}
-  
--	get_cpu_address_sizes(c);
--
-  	setup_force_cpu_cap(X86_FEATURE_ALWAYS);
-  
-  	cpu_set_bug_bits(c);
-
-on top of which my (or Jeremy's) patch can be applied.  I'll test it and
-send a v2 of this patch.
-
-Paolo
-
-> See the thread:
-> 
-> https://lore.kernel.org/all/20231002224752.33qa2lq7q2w4nqws@box
-> 
+Best regards,
+-- 
+Neil Armstrong <neil.armstrong@linaro.org>
 
 
