@@ -1,96 +1,188 @@
-Return-Path: <linux-kernel+bounces-46145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EF29843B37
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:37:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85CFE843B42
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:38:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D62E1C23581
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:37:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12A961F2C665
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:38:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59C3867A1F;
-	Wed, 31 Jan 2024 09:37:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5874369979;
+	Wed, 31 Jan 2024 09:37:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R/6n7WUg"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="xBkCE3xf"
+Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E80C633F5
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:37:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA91467E86
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:37:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706693843; cv=none; b=paa0FKO96Vwoykxm2zwHS0fksAb8fr79a9NA5KxiWygb+E5zaybSBHJKLmQBIySYm4m2pzzcLu3JROKilE0x3phdWSnCIqJHHhNf3yRoWMdFNw1jnq+kkKG1yjPTpbbQw9wYFxz2P6IRUitjgQ7aM7qn1FiQXCPVn6k8uOnjpTM=
+	t=1706693864; cv=none; b=So2graLUdxX6qI/7Nbwq6G+ZjPT8Q4vuoqfghbGHzAsuPIdihWHj3nm70V+xwycpwO/EtmrdTaQTsPkWG8052uagTsPLwOCMBzXywnILcyl921cDDDJgG8iFGOsIlWPp1bAd69XvR/dmOaKShsTgmk0c3ATyUA19GRFaEqSEdj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706693843; c=relaxed/simple;
-	bh=hWOX5/cVsVWdpt4YPLRhHull1xnJHywBmaWuuJ890DI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Mz05+tJdCL7I9V53TPPgNPPqzpwzou2OmGYqYtXKkyVsQJIFhWfBiS62ARX9gEAZgWD08mcKAQEe/pmKtVxvxEyCIHA9XbVwPdxyLgSi57uflp3EXV5Pki1SsmD+VxXohberrrpTHkVbIoEgG0cMlQehKA2fK4EGivKbwvmXcyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R/6n7WUg; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706693842; x=1738229842;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=hWOX5/cVsVWdpt4YPLRhHull1xnJHywBmaWuuJ890DI=;
-  b=R/6n7WUgXMbI4suPu84TrdGicpMA74dp8pwXaG7lL23SKr57cqiuIDju
-   LUvZ7UdBqCWCjFj7evVApbMzIwCxTpplYzbiTREPypRemJqFnZMraBxGb
-   snDLrQHmOYez/lSNmjY+mSDh+FvGUSur306UoT5Rp6ZryO0z7zQ/Esl2N
-   n0BlEWb7Ac0GlnaPQNNAi+xjeEnRgeLiFyinRlOpHdCg3YxUkh+PI/WVC
-   k6A3YncharY1MvjWrevFr/OxhDbCIKkhUm5FvMmElXbCc67McgFWHHkCz
-   JDZ5Y78mZfwURNlNKzWB6c74EsV4zPiaal1qkksNs/4mZ1KBeQjlduQcl
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="2488817"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="2488817"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 01:37:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="36805516"
-Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 31 Jan 2024 01:37:20 -0800
-Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rV71t-0001Or-36;
-	Wed, 31 Jan 2024 09:37:14 +0000
-Date: Wed, 31 Jan 2024 17:34:50 +0800
-From: kernel test robot <lkp@intel.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Oleg Nesterov <oleg@redhat.com>
-Subject: kernel/ptrace.o: warning: objtool: .text.unlikely: unexpected end of
- section
-Message-ID: <202401311748.wrSxIcOq-lkp@intel.com>
+	s=arc-20240116; t=1706693864; c=relaxed/simple;
+	bh=6g/9wBTl6BPCWec9Q4PfBb1jAfx/QsrhO21o+nVjTVw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XVnb0GTGJCrhD9SVCR7ps5njoEwhwgzZOviuNb0G+JccYLIqreVafip2VO1528miIoOFRzcVWgzGWg9cX3z4CboWjncdZvWDHhU14j1IXOVjKshbOuJDmP7Y9tRzUsmzmLpqE+9pbCzUdjTa85k76m1NCqGsxJFz1rMNwh99uMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=xBkCE3xf; arc=none smtp.client-ip=209.85.221.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-4bd91d89fbeso1391829e0c.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:37:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706693861; x=1707298661; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DmHeh0AnnU8R6/8VaEZIi+vqbQkcVNAn6pqy7RHvRQI=;
+        b=xBkCE3xfgEp8qPGMcW2d28LiFylg+yIZOldTOmpHe5lUFK6l5+DI497ZIMUvKHvR3j
+         5vOhoZK9QoLFDxfTn4kYxFh/FX3o8o25S/D6Sv8wZeP18QQPnyWKphT1Bh7/ezCzu4Wr
+         s95RpLWANK4vYXBZrbepdIn0wldP0HdC2BxO0HdJ+8ZawP2n58lqMjREM5faykWBjJ45
+         EtBMY2xpQgjmRDSFw9hHxeb8YH3+3DWp7ciglNRhkeikLvefwq2ngMcoIKg2ocnq/ql2
+         RL8HFjKkqdVJR+bPWl1Add/iTs6kyaHX4qQGGvRX+gUYzPDz0BBz9JoiBd75cdYvLfG+
+         ZdBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706693861; x=1707298661;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DmHeh0AnnU8R6/8VaEZIi+vqbQkcVNAn6pqy7RHvRQI=;
+        b=mwAuWKThEQfRwUWQQ53hGN3F8G6zQFlmmeBhgk8mss/msbZGdYzGP8mXCGUHQDKR9w
+         bNBYPMn7uNQtjR6uoPFJJI1iu77tjCB8ZROFtZylFtowBMRByNagi9WYp858NHAHPxEs
+         HHrgiZaAc9H5bqNy+xgM8u7Teql3KfJd+FRtEOuziUQ6cGyla8GPlENlScfw0T49htCq
+         xADldZD+QP+E1Ms58x/PKR4xXpEBnXHSlW2/KXZq/lRMgvLwSC2Xw3rKFkJP8MrVQBLR
+         JtgTvFyhuigym4USWGRLA0paTSEuBn4lfKnaDSkIlrbF6s18NlMldhKVQaQ1Vtqp9wAn
+         vVSw==
+X-Gm-Message-State: AOJu0YwX9o/yKVjr6HJxY3TkZK7P0LmVVjkUkxnwTZkv9wdU3+g/lHsi
+	nePSCYAMS1pnYu/V9MakbPmlnQ1LS9qnVOYNfOcSy15OwWNWHwX4vp84+otkTaqQQqha8LPT50a
+	GZsAca9tI3O+h6WCxBIm6N2uYp0mHQ4v0DRJpVw==
+X-Google-Smtp-Source: AGHT+IGYiHwBdTOPDnoFpMk4wG2qn9o70lLB7qc/tMqoiGXQQ1hR03EibuQ3mFexsetD4ArcCOazY4KDA9aeRUgU3NE=
+X-Received: by 2002:a05:6122:4693:b0:4bf:dbbd:37aa with SMTP id
+ di19-20020a056122469300b004bfdbbd37aamr937831vkb.15.1706693860441; Wed, 31
+ Jan 2024 01:37:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240129115216.96479-1-krzysztof.kozlowski@linaro.org>
+ <20240129115216.96479-5-krzysztof.kozlowski@linaro.org> <CACRpkdYf4HUaV-Pjr81WjLbzy9zdAnyFWs9gPayPC6-3OjHQwA@mail.gmail.com>
+In-Reply-To: <CACRpkdYf4HUaV-Pjr81WjLbzy9zdAnyFWs9gPayPC6-3OjHQwA@mail.gmail.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Wed, 31 Jan 2024 10:37:29 +0100
+Message-ID: <CAMRc=Mc1SGLeUOWmKg=fvCdM+RR6FSu2QkFuR17s7L99eRMGug@mail.gmail.com>
+Subject: Re: [PATCH v6 4/6] reset: Instantiate reset GPIO controller for
+ shared reset-gpios
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Banajit Goswami <bgoswami@quicinc.com>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Viresh Kumar <viresh.kumar@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, 
+	linux-arm-msm@vger.kernel.org, linux-sound@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, Chris Packham <chris.packham@alliedtelesis.co.nz>, 
+	Sean Anderson <sean.anderson@seco.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   1bbb19b6eb1b8685ab1c268a401ea64380b8bbcb
-commit: 5431fdd2c181dd2eac218e45b44deb2925fa48f0 ptrace: Convert ptrace_attach() to use lock guards
-date:   9 weeks ago
-config: x86_64-buildonly-randconfig-r002-20230716 (https://download.01.org/0day-ci/archive/20240131/202401311748.wrSxIcOq-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240131/202401311748.wrSxIcOq-lkp@intel.com/reproduce)
+On Wed, Jan 31, 2024 at 9:57=E2=80=AFAM Linus Walleij <linus.walleij@linaro=
+org> wrote:
+>
+> Hi Krzysztof,
+>
+> something is odd with the addresses on this patch, because neither GPIO
+> maintainer is on CC nor linux-gpio@vger, and it's such a GPIO-related
+> patch. We only saw it through side effects making <linux/gpio/driver.h>
+> optional, as required by this patch.
+>
+> Please also CC Geert Uytterhoeven, the author of the GPIO aggregator.
+>
+> i.e. this:
+> > 2. !GPIOLIB stub:
+> >    https://lore.kernel.org/all/20240125081601.118051-3-krzysztof.kozlow=
+ski@linaro.org/
+>
+> On Mon, Jan 29, 2024 at 12:53=E2=80=AFPM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>
+> > Devices sharing a reset GPIO could use the reset framework for
+> > coordinated handling of that shared GPIO line.  We have several cases o=
+f
+> > such needs, at least for Devicetree-based platforms.
+> >
+> > If Devicetree-based device requests a reset line, while "resets"
+> > Devicetree property is missing but there is a "reset-gpios" one,
+> > instantiate a new "reset-gpio" platform device which will handle such
+> > reset line.  This allows seamless handling of such shared reset-gpios
+> > without need of changing Devicetree binding [1].
+> >
+> > To avoid creating multiple "reset-gpio" platform devices, store the
+> > Devicetree "reset-gpios" GPIO specifiers used for new devices on a
+> > linked list.  Later such Devicetree GPIO specifier (phandle to GPIO
+> > controller, GPIO number and GPIO flags) is used to check if reset
+> > controller for given GPIO was already registered.
+> >
+> > If two devices have conflicting "reset-gpios" property, e.g. with
+> > different ACTIVE_xxx flags, this would allow to spawn two separate
+> > "reset-gpio" devices, where the second would fail probing on busy GPIO
+> > request.
+> >
+> > Link: https://lore.kernel.org/all/YXi5CUCEi7YmNxXM@robh.at.kernel.org/ =
+[1]
+> > Cc: Bartosz Golaszewski <brgl@bgdev.pl>
+> > Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> > Cc: Sean Anderson <sean.anderson@seco.com>
+> > Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> (...)
+>
+> In my naive view, this implements the following:
+>
+> reset -> virtual "gpio" -> many physical gpios[0..n]
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401311748.wrSxIcOq-lkp@intel.com/
+This is a different problem: it supports many users enabling the same
+GPIO (in Krzysztof's patch it's one but could be more if needed) but -
+unlike the broken NONEXCLUSIVE GPIOs in GPIOLIB - it counts the number
+of users and doesn't disable the GPIO for as long as there's at least
+one.
 
-All warnings (new ones prefixed by >>):
+Bart
 
->> kernel/ptrace.o: warning: objtool: .text.unlikely: unexpected end of section
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> So if there was already a way in the kernel to map one GPIO to
+> many GPIOs, the framework could just use that with a simple
+> single GPIO?
+>
+> See the bindings in:
+> Documentation/devicetree/bindings/gpio/gpio-delay.yaml
+>
+> This is handled by drivers/gpio/gpio-aggregator.c.
+>
+> This supports a 1-to-1 map: one GPIO in, one GPIO out, same offset.
+> So if that is extended to support 1-to-many, this problem is solved.
+>
+> Proposed solution: add a single boolean property such as
+> aggregate-all-gpios; to the gpio-delay node, making it provide
+> one single gpio at offset 0 on the consumer side, and refuse any
+> more consumers.
+>
+> This will also solve the problem with induced delays on
+> some GPIO lines as I can see was discussed in the bindings,
+> the gpio aggregator already supports that, but it would work
+> fine with a delay being zero as well.
+>
+> This avoids all the hackery with driver stubs etc as well.
+>
+> Yours,
+> Linus Walleij
 
