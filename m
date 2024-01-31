@@ -1,54 +1,47 @@
-Return-Path: <linux-kernel+bounces-46012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1CC8843936
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:39:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAABD843934
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:39:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74804B21CE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:39:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE90D1C21238
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:39:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A702460B9A;
-	Wed, 31 Jan 2024 08:38:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EF8C5DF24;
+	Wed, 31 Jan 2024 08:38:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="JIhxhFEv"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IqI3eTcS"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56646605AE;
-	Wed, 31 Jan 2024 08:38:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A3275DF14;
+	Wed, 31 Jan 2024 08:38:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706690339; cv=none; b=JhYK1jQXn+Vc/60kH+HcFcI11r9/fvYzKjFmBlhjBV7OTm6eAB0OfUsYd6Wp8NUtRjhn8TWJPsFcfR661CpebuQCQNm6nbv2tbIeTPGkJDivhVrsv77BcXD0bTSlDebwBJ/1JKL+45Uw4dWVHy1QPazpPKZ+AmVRwWv3ck/IrxE=
+	t=1706690334; cv=none; b=t+2NL0d70myBP009+/ZDseg6uVXpmJXa9nnT8A7sbrJX9EEvoUJlTphsn43lcGL8sa6Nz0pBr4pO/z4JYnJj/PWb0uv+Q2CcerzvY6BaPmC9oJT1LqkKG0z5X9YcnCClELhtmNwlqDWodr/G+OCEX946KS3Vcb4ldQCHR+dxXHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706690339; c=relaxed/simple;
-	bh=2ZBAflDXD3zJXqpjp+crMkG8/SPmbN2N4SU1DhttT0c=;
+	s=arc-20240116; t=1706690334; c=relaxed/simple;
+	bh=x0tRelhk7NT8O3HekjXxZew7WO8DsjClDug4eSypwg0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lyN1aGNWXnZRuVrKbN/oyoP0XxVAfpN5WIOx5VobbSkozIK8qT97xe07hWeGfqtY3m7raAA5s/4tVr2jbn1zL0ljcTGHlYj2B2vffKOr0Iepkct6FxQy7BvJtK9Qr0O4nS+sZiC4SUpKlRVXaw5yUPrd8vP84cQsdD9TP4cfMM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=JIhxhFEv; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706690329;
-	bh=2ZBAflDXD3zJXqpjp+crMkG8/SPmbN2N4SU1DhttT0c=;
+	 In-Reply-To:Content-Type; b=VPj1a+u/A/TPDi/IcwgoWhpkfHiyCVDzol0VlB0mgR5RvRgH9zL2AytX+HZg25hVcQRUom/E4wjR8BTGV8bi1iRCDcwd+mZk1KAL5S/kLvaSdTHpmgKGgOT9ea9WlP1iNZt3Akw25fnzyO6oJjte3pFLJffThb1plB6CVT9OT3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IqI3eTcS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7930C433F1;
+	Wed, 31 Jan 2024 08:38:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706690333;
+	bh=x0tRelhk7NT8O3HekjXxZew7WO8DsjClDug4eSypwg0=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=JIhxhFEve28QOybjkrgd6475Ry0AThAhxYNPmxNdIA0aF0YKe+vANGHhTCjnzj3Et
-	 o3SLESKxHEl40PGpvPZnjaMueno8mKiWOL4QDP7wBGhcGRsss407F80oWxm2P7EJn/
-	 AMs+A5c05xo/q12gwzIVDjsvU/08BwjyMOZjcVnvv7YmBbPW9kPcd82F5yDtC9PJyT
-	 5Qlc7hgpZYSi+hyR8VhTqQf1zLAnrb7vogRkZA3l/UKNCjYg0RZ9aK2UW/4QaDOSZz
-	 LfqmxbKFb0ylBAr1fZNv8gYalLBkvSnZ3SN1IzIG2D26R4wy+MJi8FLlK+E1pFgTU7
-	 KOFb5xI3tDBmg==
-Received: from [100.109.49.129] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: dmitry.osipenko)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E35B937803EE;
-	Wed, 31 Jan 2024 08:38:48 +0000 (UTC)
-Message-ID: <ee039551-ffb0-4ebe-88d1-5953f347cde0@collabora.com>
-Date: Wed, 31 Jan 2024 11:38:46 +0300
+	b=IqI3eTcSS3u8krmwIFMQifrLSop0nr3gnpfsa7xh9ibKgcbslk7GFvWvQuF9k7O1s
+	 MmzuH1IZ7sVwVcVS9UG/HAoL7w4UGou5jqhO2idvOK5BrjzK78kM/LKoodzn2NUhGw
+	 8EoNWhHbhbzhfPr1/nax0whRRJYlnk4PccUkHYk6IryIlmV/L7qth9r6qCiSlQ0z+T
+	 JXx/uABnox/9BeRC7RFxFRspvQD7eDFyuPUfK3Nxhc+sVJcbNC8tzMnj3KPZING1Xl
+	 sSx4whYGpALtb8FlfLHK9MuWaszoIxMSTKbuMOR19Z4OPczjzxUXvX7IAFxQ21mwko
+	 sXaJcpXRcylJw==
+Message-ID: <a331e135-857a-49d2-8644-e8dd0255f372@kernel.org>
+Date: Wed, 31 Jan 2024 09:38:49 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,69 +49,34 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drm/msm/gem: Fix double resv lock aquire
+Subject: Re: [PATCH] arm64: dts: mediatek: mt8195: Add MTU3 nodes and
+ correctly describe USB
 Content-Language: en-US
-To: Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc: linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
- Rob Clark <robdclark@chromium.org>, Abhinav Kumar
- <quic_abhinavk@quicinc.com>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- open list <linux-kernel@vger.kernel.org>
-References: <20240131011537.31049-1-robdclark@gmail.com>
-From: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <20240131011537.31049-1-robdclark@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To: matthias.bgg@gmail.com
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, wenst@chromium.org, kernel@collabora.com
+References: <20240115084336.938426-1-angelogioacchino.delregno@collabora.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@kernel.org>
+In-Reply-To: <20240115084336.938426-1-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 1/31/24 04:15, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
-> 
-> Since commit 56e5abba8c3e ("dma-buf: Add unlocked variant of vmapping
-> functions"), the resv lock is already held in the prime vmap path, so
-> don't try to grab it again.
-> 
-> v2: This applies to vunmap path as well
-> 
-> Fixes: 56e5abba8c3e ("dma-buf: Add unlocked variant of vmapping functions")
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+On Mon, 15 Jan 2024 09:43:36 +0100, AngeloGioacchino Del Regno wrote:
+ > The MT8195 SoC has four USB controllers: only one is a direct path to
+ > a XHCI controller, while the other three (0, 2 and 3) are behind the
+ > MTU3 DRD controller instead!
+ >
+ > Add the missing MTU3 nodes, default disabled, for controllers 0, 2 and
+ > 3 and move the related XHCI nodes to be children of their MTU3 DRD to
+ > correctly describe the SoC.
+ >
+ > [...]
 
-Nit: the offending commit should be 79e2cf2e7a19 ("drm/gem: Take
-reservation lock for vmap/vunmap operations")
+Applied, thanks!
 
-> ---
->  drivers/gpu/drm/msm/msm_gem_prime.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/msm_gem_prime.c b/drivers/gpu/drm/msm/msm_gem_prime.c
-> index 5f68e31a3e4e..0915f3b68752 100644
-> --- a/drivers/gpu/drm/msm/msm_gem_prime.c
-> +++ b/drivers/gpu/drm/msm/msm_gem_prime.c
-> @@ -26,7 +26,7 @@ int msm_gem_prime_vmap(struct drm_gem_object *obj, struct iosys_map *map)
->  {
->  	void *vaddr;
->  
-> -	vaddr = msm_gem_get_vaddr(obj);
-> +	vaddr = msm_gem_get_vaddr_locked(obj);
->  	if (IS_ERR(vaddr))
->  		return PTR_ERR(vaddr);
->  	iosys_map_set_vaddr(map, vaddr);
-> @@ -36,7 +36,7 @@ int msm_gem_prime_vmap(struct drm_gem_object *obj, struct iosys_map *map)
->  
->  void msm_gem_prime_vunmap(struct drm_gem_object *obj, struct iosys_map *map)
->  {
-> -	msm_gem_put_vaddr(obj);
-> +	msm_gem_put_vaddr_locked(obj);
->  }
->  
->  struct drm_gem_object *msm_gem_prime_import_sg_table(struct drm_device *dev,
-
-Looks good otherwise
-
--- 
-Best regards,
-Dmitry
+[1/1] arm64: dts: mediatek: mt8195: Add MTU3 nodes and correctly describe USB
+       commit: d464e09e60f024aea0de7adb680a8e8582ab8df8
 
 
