@@ -1,125 +1,109 @@
-Return-Path: <linux-kernel+bounces-46982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F00D84476C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:47:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F4C7844770
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:48:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3312B256FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:47:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8C9628B3A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:48:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B414BCA7F;
-	Wed, 31 Jan 2024 18:47:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DEAB1EB37;
+	Wed, 31 Jan 2024 18:48:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gGG2C0fY"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jKBlKuxr"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B86A7210FE
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 18:47:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 689B61805F;
+	Wed, 31 Jan 2024 18:48:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706726823; cv=none; b=sl23G7caDpAOJOmpH4VOUNj8GsSrbTK5+Jxrlitx379SVcnwXoNMxMjWnz9Xk1sAObEFyMW5mpUpxRh8L3YmpxHzQpLmmTu2nLxzTKiM/VB+xIxvFGjuk48G94VTV+G8XbpjaZDAnlY4+Bt7c2CkJb7qMOwXWopzK218iR3bEEM=
+	t=1706726913; cv=none; b=T+jPed8ooykmDfBtEfqTwVYW0gBnwkK8dedATG/OIcL22L8mpQffq8UqI8yJuUxQGdh/EA7RSYEnLS5ZGJ223oQO10dMTkq/DiD0aFb8OBRXm5w7Z/nLyaAHefjkPql8yn/wl8aFIA5DylUCUo+NdgX2Hq863JqcYL0z7bs9Z44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706726823; c=relaxed/simple;
-	bh=dVSKYLu85fk24kHXvSBQbP4SomzQfCwwVPmuegQ5S8s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iLGaQ0mu/wMUm2LD6mNEK7kYKROr+S23r9z2uTLCRwQpNeQKNlyDDK4za7+Mz7HSTHT9hyofDTCspSU/kWolbwOcol5Sd1aHujKtmSmzGVxLDVcTt/vGII/rNAh6AWQYipJ99jsaKk6GNAm6fl4YT6hwfTjwKIw9OP2Nq2Hbnh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gGG2C0fY; arc=none smtp.client-ip=209.85.210.176
+	s=arc-20240116; t=1706726913; c=relaxed/simple;
+	bh=RFMdXct/WeF2HdVsAl1NpYcuQkoBVNHNuM4QUPQVh54=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IBKxyu6QNZFj0oQM2FvS/eqQAb/9j7p21jg1a3qnxEP/3Owkp3m7AeJNo3iBfmNMxcdJmjhLpzacxbQQ1+PAelL9I1W32EHptzi/Z5K/ivIFDyQ1CtVT5fNtPALZh0UH5XDzFdwUeohsgFsYC2y7pnkW5p//wCJ7Gq1AUc/ftL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jKBlKuxr; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6df60be4a1dso24322b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 10:47:01 -0800 (PST)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6ddfb0dac4dso34182b3a.1;
+        Wed, 31 Jan 2024 10:48:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706726821; x=1707331621; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Up3uofbpHbcgfF19VzZ1HsIvzv/qL2Mf7ez3FTnsd3E=;
-        b=gGG2C0fYQ9VW6Njo7FKQLCFcv/+MNpUlZhpCaFeEEZsftbjpofGfjpRQ3VlHcPWArf
-         l5eLcUedPLnZ6fHZrPMEUxTr93eHuEX10zue1DCnPP2nDmkDw9KEvUGfzdkcqWGxR2jB
-         6aYfms2pjgoP4mqJaTOb+hD+Wa+uMYs9ymcR3e7/oQk3r8Vf/KE7e4QDYzvrQdJbUKwc
-         5OzlJUXTViKzvIruScZkOMrZOoK+k8P8A6RAvl/PeO0gEpTz0tPXCAFW7jP7RzV3c1eD
-         rPUq9NhIGUmqoAAY6sgSflQo2atfpAhNC4Yty710X2OTvldyNN4uV+iupxd4wMCJVjhJ
-         pwqw==
+        d=gmail.com; s=20230601; t=1706726911; x=1707331711; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/7EvC4Sv0z/qUL75PLLhhMsn+h7NJhI8P8qFIiHbguc=;
+        b=jKBlKuxr7bxwI+iAY1gVGCXg11/r26AUajESpw9fjXJ3UuBqhNWwW71ZHSuKFbN3iD
+         2i8Nc3DU2/xwU5iaHqyvEzbn47iAjfodXgdLSVUu+LTm9bLzUz0AH96dEoq3bpMAn9/t
+         UbcFK1ODS52eTV/3+fMGarF766HoVH6ii0wa6/wi32DFp2GB/OMdtZGkXKMVcKMYpjNd
+         2OL2yYXqcFqGAFEM2btw2aoQdOLNM10JOWhda2X/cwoJFRV2czI0C26YzN9gilpx7biF
+         xd+4cmUOnvXFY4FOYlktT3JHdAeL9IntUUabQ0Y7w1CtgzAiqTSht/AMhTvJd5S0crEB
+         /qRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706726821; x=1707331621;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Up3uofbpHbcgfF19VzZ1HsIvzv/qL2Mf7ez3FTnsd3E=;
-        b=Df1LVGqTU+lAoyx75cleYiV1Rr+NYdSiW6LwpA+jgeXKrDZhCZb6kX5eAKcW4EXVIQ
-         gAyBEmjeuWlOsX6Qq9RwWcUJdnpn6wHPVbumWEuhCbKRLQfAKWKS+5QgqeofLj45Df3M
-         NRBgV6oLMUEXj7dU+d6QH2DTR7wg9IGnfSYK6YTGOc0AefLA7hHtbEl/wfXAexkQ6Wk9
-         mjsUUErPyX+8/jj5P44XB6ptpY8CAMx0ljDnN8WPzeQmOKu5MnMyfpxNbgwH7PR+ZG//
-         eNcigKHuUYnkohpyQobBEj62POke9ZM+xgGlHZqtnCr0yVlLKpH948XcjNBjSQJyejyS
-         pifQ==
-X-Gm-Message-State: AOJu0YxCDcjJdCB3MNTP0a/siKOsyvDjKX6El9AkTU22P2YIVtngMich
-	nrLlJZZlVuo96MUxBGOvcXZ5XHSgb29Vfu6Vfx/iK2VZWdOsYIrEIzdBNj66VTY0rKzgu8Csyko
-	Dr/4G/9WS3VsRm72U/PjjZmGQ+WM=
-X-Google-Smtp-Source: AGHT+IFvdMrLLs2jfzcjF2taIMDHL9UNC5E6++Ziyq/77dlIzpAy7+xkg+/jO/FfZjN2sSsEbkktYP3+0JF85l4oQFA=
-X-Received: by 2002:a05:6a00:23d6:b0:6db:b355:892d with SMTP id
- g22-20020a056a0023d600b006dbb355892dmr3120222pfc.2.1706726820943; Wed, 31 Jan
- 2024 10:47:00 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706726911; x=1707331711;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/7EvC4Sv0z/qUL75PLLhhMsn+h7NJhI8P8qFIiHbguc=;
+        b=VpWFQ7/nQK76VwoG87eJm6cB7MgqdVzQutaISSB5gULPpBuu5lyAjkP9FLS9yLYdZh
+         fHOJOHErbGKjtXjKGgd9JLwfsNoVgY/U5F7w5Xnw1EocB44JNSC2dN4irGh4CNu1VIF7
+         escwdWd8iyEor2Td3Wp/DlpcN2PT0QRXl/Z7TToRH1pFxrAhWLwG9hcbLy92cRlO60AV
+         70U+rK+ET02uvwwGVWlQxg2IbbXWBo9DKfmm4YD8XzOXcK5bYxOq3gOGLnWWIiBlHwB2
+         gMFHxDi9FI6iF354kjWkKI0LDkFfx7M+eMGLigv0fEIgSewHu1JNbiceoazd3BaVuE4W
+         h1MQ==
+X-Gm-Message-State: AOJu0YwYht0zwWvt8fWiX5h+z2s61NofMPOVRo20pzVIL9q1jCqFivDG
+	zXDmCGKozGZSTXK9NClOLmdv+6OEty1lJ4dPqPWletJNietv+13H
+X-Google-Smtp-Source: AGHT+IEwat+pYEQ8x/QzV9uAlx8DvMe1jJNSEg1K+ttTZrWzYk4523pBbpf0F2UjZqjfKd5hi8aGdg==
+X-Received: by 2002:a62:ab12:0:b0:6dd:a11a:602b with SMTP id p18-20020a62ab12000000b006dda11a602bmr2358369pff.10.1706726911417;
+        Wed, 31 Jan 2024 10:48:31 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:955e:133f:54ba:f642])
+        by smtp.gmail.com with ESMTPSA id i1-20020a056a00004100b006d0a29ad0aasm10197409pfk.5.2024.01.31.10.48.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 10:48:31 -0800 (PST)
+Date: Wed, 31 Jan 2024 10:48:28 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Cc: linux-input@vger.kernel.org, Dan Carpenter <dan.carpenter@linaro.org>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] Input: matrix_keypad - avoid repeatedly converting
+ GPIO to IRQ
+Message-ID: <ZbqV_EqBqppL5pNF@google.com>
+References: <20240121053232.276968-1-dmitry.torokhov@gmail.com>
+ <CACMJSetrYPaXOr5abHtP1mjsyH3nB3=6CwxWfviN1BP0rhgEhg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231221065943.2803551-1-shy828301@gmail.com> <20231221065943.2803551-2-shy828301@gmail.com>
- <878r46ym4b.fsf@oldenburg.str.redhat.com>
-In-Reply-To: <878r46ym4b.fsf@oldenburg.str.redhat.com>
-From: Yang Shi <shy828301@gmail.com>
-Date: Wed, 31 Jan 2024 10:46:48 -0800
-Message-ID: <CAHbLzkq1ah6y-dCgA0rFePNn3FsE8ebuSNd+jaS8sO51a=X9Yw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm: mmap: map MAP_STACK to VM_NOHUGEPAGE
-To: Florian Weimer <fweimer@redhat.com>
-Cc: oliver.sang@intel.com, riel@surriel.com, fengwei.yin@intel.com, 
-	willy@infradead.org, cl@linux.com, ying.huang@intel.com, 
-	akpm@linux-foundation.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACMJSetrYPaXOr5abHtP1mjsyH3nB3=6CwxWfviN1BP0rhgEhg@mail.gmail.com>
 
-On Tue, Jan 30, 2024 at 11:53=E2=80=AFPM Florian Weimer <fweimer@redhat.com=
-> wrote:
->
-> * Yang Shi:
->
-> > From: Yang Shi <yang@os.amperecomputing.com>
+On Mon, Jan 22, 2024 at 09:19:56AM +0100, Bartosz Golaszewski wrote:
+> On Sun, 21 Jan 2024 at 06:32, Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
 > >
-> > The commit efa7df3e3bb5 ("mm: align larger anonymous mappings on THP
-> > boundaries") incured regression for stress-ng pthread benchmark [1].
-> > It is because THP get allocated to pthread's stack area much more possi=
-ble
-> > than before.  Pthread's stack area is allocated by mmap without VM_GROW=
-SDOWN
-> > or VM_GROWSUP flag, so kernel can't tell whether it is a stack area or =
-not.
-> >
-> > The MAP_STACK flag is used to mark the stack area, but it is a no-op on
-> > Linux.  Mapping MAP_STACK to VM_NOHUGEPAGE to prevent from allocating
-> > THP for such stack area.
->
-> Doesn't this introduce a regression in the other direction, where
-> workloads expect to use a hugepage TLB entry for the stack?
+> > gpio_to_irq() is getting more expensive and may require sleeping.
+> 
+> This is no longer true, the relevant commit was reverted and I have
+> now a working series where I'm using SRCU for lockless list traversal
+> so if anything it will actually become cheaper.
+> 
+> > Convert row GPIOs to interrupt numbers once in probe() and use
+> > this information when the driver needs to enable or disable given
+> > interrupt line.
+> 
+> That being said, I'm not against this change, though this may not be
+> very useful after all.
 
-Maybe, it is theoretically possible. But AFAICT, the real life
-workloads performance usually gets hurt if THP is used for stack.
-Willy has an example:
+OK, then I'll tone down the patch description and apply.
 
-https://lore.kernel.org/linux-mm/ZYPDwCcAjX+r+g6s@casper.infradead.org/#t
+Thanks.
 
-And avoiding THP on stack is not new, VM_GROWSDOWN | VM_GROWSUP areas
-have been applied before, this patch just extends this to MAP_STACK.
-
->
-> It's seems an odd approach to fixing the stress-ng regression.  Isn't it
-> very much coding to the benchmark?
->
-> Thanks,
-> Florian
->
+-- 
+Dmitry
 
