@@ -1,171 +1,227 @@
-Return-Path: <linux-kernel+bounces-46680-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46681-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06F54844294
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:05:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 91D22844296
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:06:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0033294E38
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:05:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47CA3295602
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:06:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A486C12837F;
-	Wed, 31 Jan 2024 15:04:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C122184A29;
+	Wed, 31 Jan 2024 15:05:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="CZBXejZh"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bPL2xUQs"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE0F284A25;
-	Wed, 31 Jan 2024 15:04:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 467BB41AAB
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:05:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706713443; cv=none; b=n26tEciDBtBzukBmDT+fbrLNIaAfaSR/pvPJONDoIml2mbVWFEIDwQF3Jr1kDAO2pUuur8Z6l0De0pcd5ZK++R9mgBXQEqag7aTy/lb3xxJUnZhVSKLfmvCGgdnpn89FoWigWqdHLQ6AGExsOmTFp/awpO+Wde9+o4fdQSLGiMc=
+	t=1706713509; cv=none; b=jSJ3mCAtd258YjwgIimIGAGhPnkEavfrYzywkU7lsAvEbnFKxg6VK9mCtByWehm99VnvZg0gad5L/hIh3R5wuX0Z3dQECFiPRiOYrZLRJ+h4fSkFljYhMd0dWl6fsJ/8MNDV5yhKpitc97izjEqws3Kjeyege6Lo2ZM6I/9WQMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706713443; c=relaxed/simple;
-	bh=HJdmb7h0QaZGP66qIXldp2YTcyPoeipLgIu7f7lQLcU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NBuwrAl6UTQKawDiEUd+tXJfUnCr4twEr26zBIZIwb9PozzK4mBqA0lspTLAfsOfLB5/So09Kj+9MnFh944cYWFlHutyGMiG2wd6CmmtmqY28Ht+hlx/VZmnd1FA+JYRYpvzsRpv2kroO5PK/qyFa5OMeTN0/kNxZpFzyJi1zK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=CZBXejZh; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40V8GcpL030372;
-	Wed, 31 Jan 2024 15:03:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=qcppdkim1; bh=YtxZvW3
-	hnfdJmx6lb0KykRZsA1aJx+W6kbJi++0M8JM=; b=CZBXejZhAuugqSVSipwawdf
-	UFp9GPbC849P/dOytU2wbEIAkmebaYWjKJwwBorp5nXTbmqrkcvp4/fJPx/KDuo5
-	dAtWBFCAgOyLtCJ7+L286WMD15mg0mkvb4ZfYaxP6U+bRuyejpgVPU4xcSTOlV5w
-	P7vG3/S/wL9dB7GmL2LPX3UD3f8MMauDPhJkRbXWuq0AumW1d3NqLJz/NzYhQnku
-	uFrTI3jRDHJDpjT+mbovHWrYeJfp0dU2ClCfPmYTR/PesIGbsnbcvei56E4pfmfv
-	QE6JlEKRd1fdEMH+Aec041XI7f5q8UFoAwcpIAbp39VuGibX/HdKT9srnR4ZQ8w=
-	=
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vygp7h9bx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 15:03:52 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40VF3ptV008739
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 15:03:51 GMT
-Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 31 Jan 2024 07:03:48 -0800
-From: Krishna Kurapati <quic_kriskura@quicinc.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
-        Hardik Gajjar
-	<hgajjar@de.adit-jv.com>
-CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_ppratap@quicinc.com>, <quic_wcheng@quicinc.com>,
-        <quic_jackp@quicinc.com>, Krishna Kurapati <quic_kriskura@quicinc.com>
-Subject: [PATCH v2] usb: gadget: ncm: Avoid dropping datagrams of properly parsed NTBs
-Date: Wed, 31 Jan 2024 20:33:32 +0530
-Message-ID: <20240131150332.1326523-1-quic_kriskura@quicinc.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706713509; c=relaxed/simple;
+	bh=PHSWXyT5AZnOn86iwVYEB18cGboBIV2Hy2uMQVzWwhA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EvRQzdlDqCc4ubLxN38SQ3kliN4cN7BcFxSF6OURRbISTmUe+zjRFRFPhtYsKDptaqoXP/s005HKRiH4ElfIz8EdyQHlZHwGUtqKQ8lu4UGbQnvTiXSRYpMvEcNrtRL/v4L4wzbevHFYZb7HGBiWIxhfw6VSGI3lGj4Hc6u7qVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bPL2xUQs; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706713507;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=8UiDtjYzAEsQUUsTUgaKm51MIMhmWClBl6VOmtQ8YF0=;
+	b=bPL2xUQs/UY1CQJpHHfAzpNbuxGNyChCVyhRC9pA60Bb2vO00IbNt8RtTKAVGFtP1ajhRj
+	wXc7LkZBbuI+nWQEx0rq4Mpc7xfsa28EB2589aECyks940kw7zoo2jwGyTR74IBJfxvaJG
+	ohDUCetTVeXoJ3e1drQ/CIiMmqk+lSo=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-681-wPAb9CbcNAOTnd1n2I4amA-1; Wed, 31 Jan 2024 10:05:04 -0500
+X-MC-Unique: wPAb9CbcNAOTnd1n2I4amA-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33ae5be0940so1769241f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 07:05:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706713503; x=1707318303;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8UiDtjYzAEsQUUsTUgaKm51MIMhmWClBl6VOmtQ8YF0=;
+        b=vWyHZxw1kxDEDX8tPFc3J59A2SEV+meEDvGrvM8qQuK7g4rwwqpLn5MSpLRewDznbL
+         KR8VZ5ORSYo8qNNpLBWWKLg45VbAAQQqhnZsXCUJPrS55UAeWBy1EB8bkZMwkxQBa7Aj
+         JfeDZJeiK2EmecxiIb79hvvoSgDgzUax4/fPQf7dER+9SreGBlxDPnR/BUnV8OFsj60O
+         nGxGtUBi/vSqojdMuiK5gGQSN/ly1cQiXwDs2V3H5nKesCxU19dMoWyEERSiiaBDXBaM
+         Nq+GhsdqVJeHkQyLKa2kmVmu5Lv86Te4AifkeGah8r1SSBkS+eYNZypttmv0L2ar7UzT
+         y/ag==
+X-Gm-Message-State: AOJu0Yzu7kUoI4xJfprXaZlaSJYR+Md9abwWkvRk/9Ob+kTFJIDvR2rF
+	4c/0PDaKL47+Hz8ri+1xpPvn1Vc6DOOsk40sLT4/h99AiHtj2KLb2MsmRggYvwcSHLBx3KKQAqk
+	1+qvw78oAQN2FbMfZi90A6fYw36Houf7LnWsnc06CPENYgH+a0Qy+lrOzK/z6gA==
+X-Received: by 2002:adf:f84f:0:b0:33b:3db:3294 with SMTP id d15-20020adff84f000000b0033b03db3294mr1476634wrq.50.1706713503589;
+        Wed, 31 Jan 2024 07:05:03 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGiEMQ2Zh8GFZ0BQbl0mBaaXavVXmKyCFeiV0pfbUDdisXRRMO8kGADX5c8KCHZQqWovdmg3A==
+X-Received: by 2002:adf:f84f:0:b0:33b:3db:3294 with SMTP id d15-20020adff84f000000b0033b03db3294mr1476599wrq.50.1706713503142;
+        Wed, 31 Jan 2024 07:05:03 -0800 (PST)
+Received: from [10.32.64.237] (nat-pool-muc-t.redhat.com. [149.14.88.26])
+        by smtp.gmail.com with ESMTPSA id en6-20020a056000420600b0033ae5b637d4sm11085195wrb.35.2024.01.31.07.05.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 07:05:02 -0800 (PST)
+Message-ID: <cee2c0ed-661d-4948-8bc9-77c87c486c86@redhat.com>
+Date: Wed, 31 Jan 2024 16:05:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: dMXBnbG4Yd2ijiJbA1SRxDJyYJ9Icngh
-X-Proofpoint-GUID: dMXBnbG4Yd2ijiJbA1SRxDJyYJ9Icngh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-31_08,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- spamscore=0 mlxlogscore=590 lowpriorityscore=0 clxscore=1011 adultscore=0
- mlxscore=0 suspectscore=0 impostorscore=0 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401190000
- definitions=main-2401310116
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 00/15] mm/memory: optimize fork() with PTE-mapped THP
+Content-Language: en-US
+To: Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
+ <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
+References: <20240129124649.189745-1-david@redhat.com>
+ <a335a9d2-9b8f-4eb8-ba22-23a223b59b06@arm.com>
+ <a1a0e9b3-dae2-418f-bd63-50e65f471728@redhat.com>
+ <57eb82c7-4816-42a2-b5ab-cc221e289b21@arm.com>
+ <e6eaba5b-f290-4d1f-990b-a47d89f56ee4@redhat.com>
+ <714d0930-2202-48b6-9728-d248f820325e@arm.com>
+ <dcaa20c4-bd1f-4f15-bb0a-3a790808937d@arm.com>
+ <30718fc8-15cf-41e4-922c-5cdbf00a0840@redhat.com>
+ <de975655-8f8f-40dc-b281-75c40dd1e2c1@arm.com>
+ <c63870b0-690a-4051-b4f5-296cf3b73be2@redhat.com>
+ <a0cdeb7c-dec8-4971-8b54-e6f65ea48ade@arm.com>
+ <74333154-a99b-4bad-81f4-bee02ba05e91@redhat.com>
+ <a34eee7e-3970-4cdd-8c09-bca51132db50@arm.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <a34eee7e-3970-4cdd-8c09-bca51132db50@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-It is observed sometimes when tethering is used over NCM with Windows 11
-as host, at some instances, the gadget_giveback has one byte appended at
-the end of a proper NTB. When the NTB is parsed, unwrap call looks for
-any leftover bytes in SKB provided by u_ether and if there are any pending
-bytes, it treats them as a separate NTB and parses it. But in case the
-second NTB (as per unwrap call) is faulty/corrupt, all the datagrams that
-were parsed properly in the first NTB and saved in rx_list are dropped.
+On 31.01.24 16:02, Ryan Roberts wrote:
+> On 31/01/2024 14:29, David Hildenbrand wrote:
+>>>> Note that regarding NUMA effects, I mean when some memory access within the same
+>>>> socket is faster/slower even with only a single node. On AMD EPYC that's
+>>>> possible, depending on which core you are running and on which memory controller
+>>>> the memory you want to access is located. If both are in different quadrants
+>>>> IIUC, the access latency will be different.
+>>>
+>>> I've configured the NUMA to only bring the RAM and CPUs for a single socket
+>>> online, so I shouldn't be seeing any of these effects. Anyway, I've been using
+>>> the Altra as a secondary because its so much slower than the M2. Let me move
+>>> over to it and see if everything looks more straightforward there.
+>>
+>> Better use a system where people will actually run Linux production workloads
+>> on, even if it is slower :)
+>>
+>> [...]
+>>
+>>>>>
+>>>>> I'll continue to mess around with it until the end of the day. But I'm not
+>>>>> making any headway, then I'll change tack; I'll just measure the performance of
+>>>>> my contpte changes using your fork/zap stuff as the baseline and post based on
+>>>>> that.
+>>>>
+>>>> You should likely not focus on M2 results. Just pick a representative bare metal
+>>>> machine where you get consistent, explainable results.
+>>>>
+>>>> Nothing in the code is fine-tuned for a particular architecture so far, only
+>>>> order-0 handling is kept separate.
+>>>>
+>>>> BTW: I see the exact same speedups for dontneed that I see for munmap. For
+>>>> example, for order-9, it goes from 0.023412s -> 0.009785, so -58%. So I'm
+>>>> curious why you see a speedup for munmap but not for dontneed.
+>>>
+>>> Ugh... ok, coming up.
+>>
+>> Hopefully you were just staring at the wrong numbers (e.g., only with fork
+>> patches). Because both (munmap/pte-dontneed) are using the exact same code path.
+>>
+> 
+> Ahh... I'm doing pte-dontneed, which is the only option in your original
+> benchmark - it does MADV_DONTNEED one page at a time. It looks like your new
+> benchmark has an additional "dontneed" option that does it in one shot. Which
+> option are you running? Assuming the latter, I think that explains it.
 
-Adding a few custom traces showed the following:
+I temporarily removed that option and then re-added it. Guess you got a 
+wrong snapshot of the benchmark :D
 
-[002] d..1  7828.532866: dwc3_gadget_giveback: ep1out:
-req 000000003868811a length 1025/16384 zsI ==> 0
-[002] d..1  7828.532867: ncm_unwrap_ntb: K: ncm_unwrap_ntb toprocess: 1025
-[002] d..1  7828.532867: ncm_unwrap_ntb: K: ncm_unwrap_ntb nth: 1751999342
-[002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb seq: 0xce67
-[002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb blk_len: 0x400
-[002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb ndp_len: 0x10
-[002] d..1  7828.532869: ncm_unwrap_ntb: K: Parsed NTB with 1 frames
+pte-dontneed not observing any change is great (no batching possible).
 
-In this case, the giveback is of 1025 bytes and block length is 1024.
-The rest 1 byte (which is 0x00) won't be parsed resulting in drop of
-all datagrams in rx_list.
+dontneed should hopefully/likely see a speedup.
 
-Same is case with packets of size 2048:
-[002] d..1  7828.557948: dwc3_gadget_giveback: ep1out:
-req 0000000011dfd96e length 2049/16384 zsI ==> 0
-[002] d..1  7828.557949: ncm_unwrap_ntb: K: ncm_unwrap_ntb nth: 1751999342
-[002] d..1  7828.557950: ncm_unwrap_ntb: K: ncm_unwrap_ntb blk_len: 0x800
+Great!
 
-Lecroy shows one byte coming in extra confirming that the byte is coming
-in from PC:
-
-Transfer 2959 - Bytes Transferred(1025)  Timestamp((18.524 843 590)
-- Transaction 8391 - Data(1025 bytes) Timestamp(18.524 843 590)
---- Packet 4063861
-      Data(1024 bytes)
-      Duration(2.117us) Idle(14.700ns) Timestamp(18.524 843 590)
---- Packet 4063863
-      Data(1 byte)
-      Duration(66.160ns) Time(282.000ns) Timestamp(18.524 845 722)
-
-According to Windows driver, no ZLP is needed if wBlockLength is non-zero,
-because the non-zero wBlockLength has already told the function side the
-size of transfer to be expected. However, there are in-market NCM devices
-that rely on ZLP as long as the wBlockLength is multiple of wMaxPacketSize.
-To deal with such devices, it pads an extra 0 at end so the transfer is no
-longer multiple of wMaxPacketSize.
-
-Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
----
- drivers/usb/gadget/function/f_ncm.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/function/f_ncm.c
-index ca5d5f564998..8c314dc98952 100644
---- a/drivers/usb/gadget/function/f_ncm.c
-+++ b/drivers/usb/gadget/function/f_ncm.c
-@@ -1338,11 +1338,17 @@ static int ncm_unwrap_ntb(struct gether *port,
- 	     "Parsed NTB with %d frames\n", dgram_counter);
- 
- 	to_process -= block_len;
--	if (to_process != 0) {
-+
-+	if (to_process == 1 &&
-+	    (block_len % 512 == 0) &&
-+	    (*(unsigned char *)(ntb_ptr + block_len) == 0x00)) {
-+		goto done;
-+	} else if (to_process > 0) {
- 		ntb_ptr = (unsigned char *)(ntb_ptr + block_len);
- 		goto parse_ntb;
- 	}
- 
-+done:
- 	dev_consume_skb_any(skb);
- 
- 	return 0;
 -- 
-2.34.1
+Cheers,
+
+David / dhildenb
 
 
