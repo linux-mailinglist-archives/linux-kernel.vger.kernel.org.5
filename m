@@ -1,95 +1,62 @@
-Return-Path: <linux-kernel+bounces-46589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 851C48441BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:22:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FBA88441BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:23:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9CF51C22777
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:22:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A98F31F22A3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:23:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63FB082867;
-	Wed, 31 Jan 2024 14:22:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A6E8287A;
+	Wed, 31 Jan 2024 14:23:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="IPuPXHmy"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VsV+tq69"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC323762DD;
-	Wed, 31 Jan 2024 14:22:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A6017F48F;
+	Wed, 31 Jan 2024 14:23:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706710968; cv=none; b=r0jSBpZpsiwfMfpff686S/MfHRJEjU3Vosmw4uD6Yk+ZmNbqIlzi2JFosNIUZcg6N/cdZ9B85OcWMSiw5gN0PIG9dxAPX5sK2QRp7tCBwJXWmA/Nxvf05ug3o3UzJZLJ32ODCf5y+T4jAB+EnrKrXtpGt4TadpbCF73TrIikuO8=
+	t=1706711001; cv=none; b=IRa6EEBr+Le0U4wtTHfyW/8UwwS7fwMaYiLUl6YQyl8pCUIyh19d5+T60IYlrXjQaROyQm+e+eoy2YX8bqGBacSnhYW8SGei8Uvp49lszgr/LoljSCY6aIVWoqdkHu60qAP03FCq8zjMNXymxh+t9M09laOWOQpwsDWAcervR3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706710968; c=relaxed/simple;
-	bh=6chJSECzyBok9hP+9kH8w9JfX3+F3jiudYuJ0Ny9Qek=;
+	s=arc-20240116; t=1706711001; c=relaxed/simple;
+	bh=r8Og+/DD3KNkZEqwH8xuXR2iH05bswrjdZXhOtKd4Gw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PU+0n2D94clgb9vkGbip7gavPOv7HuqDqeP7zi6pZmhpfZ1uwe0MfDwDWm4K2/SaC+grc0yu0lWflg7BO07mtUiFNwxtz+FWH8bz2zw0YYr+H5jtCsNCxpDN8oMfP9jHt1WDLQkQDESWqOP0cViJ46QOnxJE0JStUEuFW77Ry3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=IPuPXHmy; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40VDe2d5019083;
-	Wed, 31 Jan 2024 14:22:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=NURNavrQCbE1M4DE6lDNv9GMg0m1c/OPkCD3hDPJjKI=;
- b=IPuPXHmy2fWaXEk2FX2iBAM4ocaRnFE0bkd4Nal4ZznVgYNQQlcpj5Achynw9Qpg1eER
- 6ExuUFv35kRum16fH10BExWjOCDlhNLGLpON5IIdjlSEMbZk8rdf/0CFg4iO1rXp18xE
- 1p7jsIQRaZEseBh06G8zkWf+KD6s5X+Mp+lqc+g7tT3Ah1+7UDXZBD4+GprNt7OOmck5
- o74fxGgzUFII6ZyuBZMbvNsAzoOTTneO33Ov193AzO8afTPBewY+5HxuKYZPBb+NCckt
- GEvNYApg4JbX1aIGbb2HzWNmVi461ZFNK3uoDd5+ZGB+YGQ6JHJAeLeNa305rMZLuoN5 wA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vyq9jsa4r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 14:22:35 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40VDnxkn011863;
-	Wed, 31 Jan 2024 14:22:35 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vyq9js9rq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 14:22:34 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40VBAvxl002199;
-	Wed, 31 Jan 2024 14:22:06 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vwc5te4sx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 14:22:06 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40VEM38J66584886
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 31 Jan 2024 14:22:03 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 53C2F20043;
-	Wed, 31 Jan 2024 14:22:03 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 05D5E20040;
-	Wed, 31 Jan 2024 14:22:03 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 31 Jan 2024 14:22:02 +0000 (GMT)
-Date: Wed, 31 Jan 2024 15:22:01 +0100
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Kees Cook <keescook@chromium.org>, Sven Schnelle <svens@linux.ibm.com>
-Cc: linux-hardening@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Nico Boehr <nrb@linux.ibm.com>, Philipp Rudo <prudo@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Tao Liu <ltao@redhat.com>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        linux-s390@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Bill Wendling <morbo@google.com>,
-        Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 30/82] s390/kexec_file: Refactor intentional wrap-around
- calculation
-Message-ID: <ZbpXieRZz3BQ6jBH@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <20240122235208.work.748-kees@kernel.org>
- <20240123002814.1396804-30-keescook@chromium.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=OL5ytHjmdA0Fv/fMc1v7th6xaI37Ym8HTTV9LXUkcGDjC3cfWB0lAKnmB3R2/mnrLUuC7ma1BrMVlhicQeWOjkeOuZ4QlEUs/g6IVuJ0jDIqhWd2yNEtvoxOsIahQ5gyGzaCSqii0tS1McNgZ1FnVR/p3+aBL0iv+Ldc2el+/Zc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VsV+tq69; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46730C433C7;
+	Wed, 31 Jan 2024 14:23:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706711000;
+	bh=r8Og+/DD3KNkZEqwH8xuXR2iH05bswrjdZXhOtKd4Gw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VsV+tq69DUehuRNgv5A4JPVD5aK3gK62Cy48n6gfWqHd6EiAhN7pmjv+b2wow2hxb
+	 nZoYTTbe+cbBhz6NmKtSUqOwEqI897AJBSsoTAc5hssNSpCZZSbs8CSyrH7h+VyNz8
+	 TkHum2dmjY8Ln1ozPjk6nhqgYvHg2u7R+2tzCs7+LUmxjr3AaahOXogASNkK5gv1IF
+	 Kf0/CMO8m03BRdcl+d9IX7pU5CpdPzVlaVEiOdfnq2NtcEnh9ZbQ7t0HCAOEw3BxZZ
+	 2BuRQ/5if5zFT+ECx6jbvX+d1SMR7N7gIw521oprGvzDgw4DM9LRrIN2sqBx5ApNM9
+	 GdFu29aTu0fyA==
+Date: Wed, 31 Jan 2024 08:23:18 -0600
+From: Rob Herring <robh@kernel.org>
+To: Dragan Cvetic <dragan.cvetic@amd.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Derek Kiernan <derek.kiernan@amd.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Michal Simek <michal.simek@amd.com>,
+	"Erim, Salih" <salih.erim@amd.com>,
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+	"moderated list:ARM/ZYNQ ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v4] dt-bindings: misc: xlnx,sd-fec: convert bindings to
+ yaml
+Message-ID: <20240131142318.GA1091307-robh@kernel.org>
+References: <20240130161259.4118510-1-dragan.cvetic@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -98,85 +65,194 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240123002814.1396804-30-keescook@chromium.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: XKrjlcZMqfTd1Gq83J4rhjVO3nie3sDL
-X-Proofpoint-ORIG-GUID: bEVkfbCxjQ-zHyL5jTJ7NNsbOLh1Xldw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-31_08,2024-01-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1011 spamscore=0 malwarescore=0 bulkscore=0 mlxscore=0
- priorityscore=1501 phishscore=0 adultscore=0 impostorscore=0
- suspectscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2401310110
+In-Reply-To: <20240130161259.4118510-1-dragan.cvetic@amd.com>
 
-On Mon, Jan 22, 2024 at 04:27:05PM -0800, Kees Cook wrote:
-
-Hi Kees,
-
-..
->  arch/s390/include/asm/stacktrace.h    | 6 ++++--
->  arch/s390/kernel/machine_kexec_file.c | 5 +++--
-
-Subject does not match. These need to be two separate commits.
-
->  2 files changed, 7 insertions(+), 4 deletions(-)
+On Tue, Jan 30, 2024 at 04:12:58PM +0000, Dragan Cvetic wrote:
+> Convert AMD (Xilinx) sd-fec bindings to yaml format, so it can validate
+> dt-entries as well as any future additions to yaml.
+> Change in clocks is due to IP is itself configurable and
+> only the first two clocks are in all combinations. The last
+> 6 clocks can be present in some of them. It means order is
+> not really fixed and any combination is possible.
+> Interrupt may or may not be present.
+> The documentation for sd-fec bindings is now YAML, so update the
+> MAINTAINERS file.
+> Update the link to the new yaml file in xilinx_sdfec.rst.
 > 
-> diff --git a/arch/s390/include/asm/stacktrace.h b/arch/s390/include/asm/stacktrace.h
-> index 31ec4f545e03..3ce08d32a8ad 100644
-> --- a/arch/s390/include/asm/stacktrace.h
-> +++ b/arch/s390/include/asm/stacktrace.h
-> @@ -34,11 +34,13 @@ int get_stack_info(unsigned long sp, struct task_struct *task,
->  static inline bool on_stack(struct stack_info *info,
->  			    unsigned long addr, size_t len)
->  {
-> +	unsigned long sum;
+> Signed-off-by: Dragan Cvetic <dragan.cvetic@amd.com>
+> ---
+> Changes in v2:
+> ---
+> Drop clocks description.
+> Use "contains:" with enum for optional clock-names and update
+> comment explaining diference from the original DT binding file.
+> Remove trailing full stops.
+> Add more details in sdfec-code description.
+> Set sdfec-code to "string" not "string-array"
+> ---
+> Changes in v3:
+> Fix a mistake in example, set interrupt type to 0.
+> ---
+> Changes in v4:
+> Set interrupt type to high level sensitive.
+> Remove '|' from descriptions, no need to preserve format.
+> Remove not needed empty line.
+> ---
+>  .../devicetree/bindings/misc/xlnx,sd-fec.txt  |  58 --------
+>  .../devicetree/bindings/misc/xlnx,sd-fec.yaml | 137 ++++++++++++++++++
+>  Documentation/misc-devices/xilinx_sdfec.rst   |   2 +-
+>  MAINTAINERS                                   |   2 +-
+>  4 files changed, 139 insertions(+), 60 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/misc/xlnx,sd-fec.txt
+>  create mode 100644 Documentation/devicetree/bindings/misc/xlnx,sd-fec.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/misc/xlnx,sd-fec.txt b/Documentation/devicetree/bindings/misc/xlnx,sd-fec.txt
+> deleted file mode 100644
+> index e3289634fa30..000000000000
+> --- a/Documentation/devicetree/bindings/misc/xlnx,sd-fec.txt
+> +++ /dev/null
+> @@ -1,58 +0,0 @@
+> -* Xilinx SDFEC(16nm) IP *
+> -
+> -The Soft Decision Forward Error Correction (SDFEC) Engine is a Hard IP block
+> -which provides high-throughput LDPC and Turbo Code implementations.
+> -The LDPC decode & encode functionality is capable of covering a range of
+> -customer specified Quasi-cyclic (QC) codes. The Turbo decode functionality
+> -principally covers codes used by LTE. The FEC Engine offers significant
+> -power and area savings versus implementations done in the FPGA fabric.
+> -
+> -
+> -Required properties:
+> -- compatible: Must be "xlnx,sd-fec-1.1"
+> -- clock-names : List of input clock names from the following:
+> -    - "core_clk", Main processing clock for processing core (required)
+> -    - "s_axi_aclk", AXI4-Lite memory-mapped slave interface clock (required)
+> -    - "s_axis_din_aclk", DIN AXI4-Stream Slave interface clock (optional)
+> -    - "s_axis_din_words-aclk", DIN_WORDS AXI4-Stream Slave interface clock (optional)
+> -    - "s_axis_ctrl_aclk",  Control input AXI4-Stream Slave interface clock (optional)
+> -    - "m_axis_dout_aclk", DOUT AXI4-Stream Master interface clock (optional)
+> -    - "m_axis_dout_words_aclk", DOUT_WORDS AXI4-Stream Master interface clock (optional)
+> -    - "m_axis_status_aclk", Status output AXI4-Stream Master interface clock (optional)
+> -- clocks : Clock phandles (see clock_bindings.txt for details).
+> -- reg: Should contain Xilinx SDFEC 16nm Hardened IP block registers
+> -  location and length.
+> -- xlnx,sdfec-code : Should contain "ldpc" or "turbo" to describe the codes
+> -  being used.
+> -- xlnx,sdfec-din-words : A value 0 indicates that the DIN_WORDS interface is
+> -  driven with a fixed value and is not present on the device, a value of 1
+> -  configures the DIN_WORDS to be block based, while a value of 2 configures the
+> -  DIN_WORDS input to be supplied for each AXI transaction.
+> -- xlnx,sdfec-din-width : Configures the DIN AXI stream where a value of 1
+> -  configures a width of "1x128b", 2 a width of "2x128b" and 4 configures a width
+> -  of "4x128b".
+> -- xlnx,sdfec-dout-words : A value 0 indicates that the DOUT_WORDS interface is
+> -  driven with a fixed value and is not present on the device, a value of 1
+> -  configures the DOUT_WORDS to be block based, while a value of 2 configures the
+> -  DOUT_WORDS input to be supplied for each AXI transaction.
+> -- xlnx,sdfec-dout-width : Configures the DOUT AXI stream where a value of 1
+> -  configures a width of "1x128b", 2 a width of "2x128b" and 4 configures a width
+> -  of "4x128b".
+> -Optional properties:
+> -- interrupts: should contain SDFEC interrupt number
+> -
+> -Example
+> ----------------------------------------
+> -	sd_fec_0: sd-fec@a0040000 {
+> -		compatible = "xlnx,sd-fec-1.1";
+> -		clock-names = "core_clk","s_axi_aclk","s_axis_ctrl_aclk","s_axis_din_aclk","m_axis_status_aclk","m_axis_dout_aclk";
+> -		clocks = <&misc_clk_2>,<&misc_clk_0>,<&misc_clk_1>,<&misc_clk_1>,<&misc_clk_1>, <&misc_clk_1>;
+> -		reg = <0x0 0xa0040000 0x0 0x40000>;
+> -		interrupt-parent = <&axi_intc>;
+> -		interrupts = <1 0>;
+> -		xlnx,sdfec-code = "ldpc";
+> -		xlnx,sdfec-din-words = <0>;
+> -		xlnx,sdfec-din-width = <2>;
+> -		xlnx,sdfec-dout-words = <0>;
+> -		xlnx,sdfec-dout-width = <1>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/misc/xlnx,sd-fec.yaml b/Documentation/devicetree/bindings/misc/xlnx,sd-fec.yaml
+> new file mode 100644
+> index 000000000000..7be8439861a9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/misc/xlnx,sd-fec.yaml
+> @@ -0,0 +1,137 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/misc/xlnx,sd-fec.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
->  	if (info->type == STACK_TYPE_UNKNOWN)
->  		return false;
-> -	if (addr + len < addr)
-> +	if (check_add_overflow(addr, len, &sum))
+> +title: Xilinx SDFEC(16nm) IP
+> +
+> +maintainers:
+> +  - Cvetic, Dragan <dragan.cvetic@amd.com>
+> +  - Erim, Salih <salih.erim@amd.com>
+> +
+> +description:
+> +  The Soft Decision Forward Error Correction (SDFEC) Engine is a Hard IP block
+> +  which provides high-throughput LDPC and Turbo Code implementations.
+> +  The LDPC decode & encode functionality is capable of covering a range of
+> +  customer specified Quasi-cyclic (QC) codes. The Turbo decode functionality
+> +  principally covers codes used by LTE. The FEC Engine offers significant
+> +  power and area savings versus implementations done in the FPGA fabric.
+> +
+> +properties:
+> +  compatible:
+> +    const: xlnx,sd-fec-1.1
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 2
+> +    maxItems: 8
+> +    additionalItems: true
+> +    items:
+> +      - description: Main processing clock for processing core
+> +      - description: AXI4-Lite memory-mapped slave interface clock
+> +      - description: Control input AXI4-Stream Slave interface clock
+> +      - description: DIN AXI4-Stream Slave interface clock
+> +      - description: Status output AXI4-Stream Master interface clock
+> +      - description: DOUT AXI4-Stream Master interface clock
+> +      - description: DIN_WORDS AXI4-Stream Slave interface clock
+> +      - description: DOUT_WORDS AXI4-Stream Master interface clock
+> +
+> +  clock-names:
+> +    minItems: 2
+> +    maxItems: 8
+> +    additionalItems: true
+> +    items:
+> +      - const: core_clk
+> +      - const: s_axi_aclk
+> +    contains:
+> +      enum:
+> +        - s_axis_ctrl_aclk
+> +        - s_axis_din_aclk
+> +        - m_axis_status_aclk
+> +        - m_axis_dout_aclk
+> +        - s_axis_din_words_aclk
+> +        - m_axis_dout_words_aclk
 
-Why not add_would_overflow()?
+This doesn't do what you think. It requires at least one of these clocks 
+be present, so then at least 3 clocks. It also allows anything else to 
+be present. You need:
 
->  		return false;
-> -	return addr >= info->begin && addr + len <= info->end;
-> +	return addr >= info->begin && sum <= info->end;
->  }
->  
->  /*
-> diff --git a/arch/s390/kernel/machine_kexec_file.c b/arch/s390/kernel/machine_kexec_file.c
-> index 8d207b82d9fe..e5e925423061 100644
-> --- a/arch/s390/kernel/machine_kexec_file.c
-> +++ b/arch/s390/kernel/machine_kexec_file.c
-> @@ -238,6 +238,7 @@ void *kexec_file_add_components(struct kimage *image,
->  	unsigned long max_command_line_size = LEGACY_COMMAND_LINE_SIZE;
->  	struct s390_load_data data = {0};
->  	unsigned long minsize;
-> +	unsigned long sum;
+allOf:
+  - minItems: 2
+    maxItems: 8
+    additionalItems: true
+    items:
+      - const: core_clk
+      - const: s_axi_aclk
+  - items:
+      enum:
+        - core_clk
+        - s_axi_aclk
+        - s_axis_ctrl_aclk
+        - s_axis_din_aclk
+        - m_axis_status_aclk   
+        - m_axis_dout_aclk
+        - s_axis_din_words_aclk
+        - m_axis_dout_words_aclk
 
-Please, use min_kernel_buf_len instead of sum.
-
-@Sven, could you please correct me if (minsize + max_command_line_size)
-means something else.
-
->  	int ret;
->  
->  	data.report = ipl_report_init(&ipl_block);
-> @@ -256,10 +257,10 @@ void *kexec_file_add_components(struct kimage *image,
->  	if (data.parm->max_command_line_size)
->  		max_command_line_size = data.parm->max_command_line_size;
->  
-> -	if (minsize + max_command_line_size < minsize)
-> +	if (check_add_overflow(minsize, max_command_line_size, &sum))
->  		goto out;
->  
-> -	if (image->kernel_buf_len < minsize + max_command_line_size)
-> +	if (image->kernel_buf_len < sum)
->  		goto out;
->  
->  	if (image->cmdline_buf_len >= max_command_line_size)
-
-Thanks!
 
