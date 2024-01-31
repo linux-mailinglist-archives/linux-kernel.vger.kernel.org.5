@@ -1,112 +1,132 @@
-Return-Path: <linux-kernel+bounces-45709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BDCF843479
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 04:27:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49D4B84347C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 04:31:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C4291F26756
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 03:27:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BE1E1C256B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 03:31:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5311712E4B;
-	Wed, 31 Jan 2024 03:27:38 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15703107A8;
-	Wed, 31 Jan 2024 03:27:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 863B6125B9;
+	Wed, 31 Jan 2024 03:31:16 +0000 (UTC)
+Received: from smtpbguseast1.qq.com (smtpbguseast1.qq.com [54.204.34.129])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 730751079B
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 03:31:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.204.34.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706671657; cv=none; b=splrjT7XSDxUXRe1XkAUmSGnRXEUFPRCmPrvg7AAyJVrAVczIlSBEkOJ2qXPGupnJ6Gr4ETU1mgsjY7SuVLksZD8IhRM27tZxHc2S/ihEoXqhIaj+6opw4V+rQBNMAIgGmboldp/cQv6mbxDmJv8AkgmNhLfQE571D+bUK11Vjk=
+	t=1706671876; cv=none; b=m/w59eq0TKpTzw655GE4+DZ8AIyDrQLYxJfi+0cMW6JLTqdjXFn2/EyB2ZtffFAeIKqlyMCaOnGzbP0+rO4EFc6+SXkrUQdQHBLS0rqBWpy5iAucu9iHKFeRr+yPk0qKWMUA1ZFfgKrIXiFwKN2oHpqt5djrYNeawORgsh+gK7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706671657; c=relaxed/simple;
-	bh=fYqycNloGpwsMkxeexPEkQZeco4zUIcyy5vzedaRkTg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lVdvCLZ6af9MyoWc91Gy6DxPfE8ttE2IgWcBZEucSD24gxeZCxBzxLMPsCaU/0UYES7u0aBhmWjGgfWZL7E1O/qcW4MvZrJcSLboauh6vRlKf6hzFjr2/mOr3lPON5DEEmmLwCxT+KLUTkysVEof2ZW5gq2T3UKeyYPwN8xJsZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D55EDA7;
-	Tue, 30 Jan 2024 19:28:17 -0800 (PST)
-Received: from [10.163.41.195] (unknown [10.163.41.195])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9FBBE3F5A1;
-	Tue, 30 Jan 2024 19:27:21 -0800 (PST)
-Message-ID: <edab95e6-e09f-4aab-a506-4ea011b1372b@arm.com>
-Date: Wed, 31 Jan 2024 08:57:19 +0530
+	s=arc-20240116; t=1706671876; c=relaxed/simple;
+	bh=xtuRt7VbbEBx08muTVDKjJaxamV9CKSBx5yKzwLml9c=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HqxTkxHrph9Cd23KHqSlQXR1VV4cNDNfw9z4Q2q+LUPZ8Z8RDK3vadXSX/IbFN9vmDmbjxvPqiZmCSYjfoYLvc7JyID7nNZ66gYxeGro/iBBiW/j20YvXXpIEper2fo4Nnyvf64CnySAZ2FnNiZrpd5UNomGtxVg14bMMn/hzpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.204.34.129
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp90t1706671833tdbrcrgm
+X-QQ-Originating-IP: adfhviOjvReUnc+ouFGEi8UWUjNNEf9tMmgbZXlYPGw=
+Received: from localhost ( [183.209.108.228])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Wed, 31 Jan 2024 11:30:32 +0800 (CST)
+X-QQ-SSF: 01400000000000504000000A0000000
+X-QQ-FEAT: 3M0okmaRx3iHkgqcopFdq/NfEZ6wxbPxFxT1Zs//B2rY5agn0yROoythOmEhl
+	WOf0jGRhY+TZv5I8XJ75ArXo4z2FrgA8gU9B0QqVy5Dq0N5fWeBUnNzv6PTMvc4wZ9oaM9g
+	3fenvBXBSArIYergbp5Vgckw+vXWLS6Q8sH3AkzvjwJaDFWl9JfFeNs27qnoP/XKCRrQQ2Q
+	BD1pLtNFJi2E/XjbZg7oNXyMdDFuixc5/s8CP7GL0T4BviURJRWvag/GqqS+vCktgeUZG7F
+	YLsJDSHLSNNNdSLjr/S2/HPoU0amckINwMFLbh5Da3TRlG7DplPtV1xnIWkEZQWq5vsezHw
+	XdzvV7/LOIuZGkV1AOtfB+SwWv7jw6bMu3pISL/E7WK4NaLtxga8nV7PV04GSa9RxM/R5/q
+	fjy04w/VYKXcHkibc6XHGw==
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 13846247626016565732
+From: Dawei Li <dawei.li@shingroup.cn>
+To: arnd@arndb.de,
+	gregkh@linuxfoundation.org
+Cc: fancer.lancer@gmail.com,
+	lkp@intel.com,
+	linux-kernel@vger.kernel.org,
+	set_pte_at@outlook.com,
+	Dawei Li <dawei.li@shingroup.cn>
+Subject: [PATCH v2] misc: eeprom/idt_89hpesx: Convert data structures to LE explicitly
+Date: Wed, 31 Jan 2024 11:30:28 +0800
+Message-Id: <20240131033028.3099156-1-dawei.li@shingroup.cn>
+X-Mailer: git-send-email 2.27.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v3 04/35] mm: page_alloc: Partially revert "mm:
- page_alloc: remove stale CMA guard code"
-Content-Language: en-US
-To: Alexandru Elisei <alexandru.elisei@arm.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
- maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
- yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
- mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
- vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
- bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
- vschneid@redhat.com, mhiramat@kernel.org, rppt@kernel.org, hughd@google.com,
- pcc@google.com, steven.price@arm.com, vincenzo.frascino@arm.com,
- david@redhat.com, eugenis@google.com, kcc@google.com, hyesoo.yu@samsung.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-mm@kvack.org,
- linux-trace-kernel@vger.kernel.org
-References: <20240125164256.4147-1-alexandru.elisei@arm.com>
- <20240125164256.4147-5-alexandru.elisei@arm.com>
- <966a1a84-76dc-40da-bde2-251d2a81ee31@arm.com> <ZbeQBDwe8zc_pLDZ@raptor>
- <3983416f-b613-42c7-bb42-d3ab268ea1be@arm.com> <ZbjkFujWTs9zqkeD@raptor>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <ZbjkFujWTs9zqkeD@raptor>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
+Kernel test robot reports following sparse warnings:
+>> drivers/misc/eeprom/idt_89hpesx.c:599:31: sparse: sparse:
+   incorrect type in assignment (different base types) @@
+   expected unsigned short [addressable] [assigned] [usertype]
+   memaddr @@     got restricted __le16 [usertype] @@
 
+   drivers/misc/eeprom/idt_89hpesx.c:599:31: sparse:
+   expected unsigned short [addressable] [assigned] [usertype]
+   memaddr
 
-On 1/30/24 17:27, Alexandru Elisei wrote:
-> Hi,
-> 
-> On Tue, Jan 30, 2024 at 10:04:02AM +0530, Anshuman Khandual wrote:
->>
->>
->> On 1/29/24 17:16, Alexandru Elisei wrote:
->>> Hi,
->>>
->>> On Mon, Jan 29, 2024 at 02:31:23PM +0530, Anshuman Khandual wrote:
->>>>
->>>>
->>>> On 1/25/24 22:12, Alexandru Elisei wrote:
->>>>> The patch f945116e4e19 ("mm: page_alloc: remove stale CMA guard code")
->>>>> removed the CMA filter when allocating from the MIGRATE_MOVABLE pcp list
->>>>> because CMA is always allowed when __GFP_MOVABLE is set.
->>>>>
->>>>> With the introduction of the arch_alloc_cma() function, the above is not
->>>>> true anymore, so bring back the filter.
->>>>
->>>> This makes sense as arch_alloc_cma() now might prevent ALLOC_CMA being
->>>> assigned to alloc_flags in gfp_to_alloc_flags_cma().
->>>
->>> Can I add your Reviewed-by tag then?
->>
->> I think all these changes need to be reviewed in their entirety
->> even though some patches do look good on their own. For example
->> this patch depends on whether [PATCH 03/35] is acceptable or not.
->>
->> I would suggest separating out CMA patches which could be debated
->> and merged regardless of this series.
-> 
-> Ah, I see, makes sense. Since basically all the core mm changes are there
-> to enable dynamic tag storage for arm64, I'll hold on until the series
-> stabilises before separating the core mm from the arm64 patches.
+   drivers/misc/eeprom/idt_89hpesx.c:599:31: sparse:
+   restricted __le16 [usertype]
 
-Fair enough but at least could you please separate out this particular
-patch right away and send across. 
+   .....
 
-mm: cma: Don't append newline when generating CMA area name
+For data structures needs cpu_to_le* conversion, their prototype need
+to be declared with __le* explicitly.
+
+Declare data structures to __le* explicitly to address the issue:
+- struct idt_eeprom_seq::memaddr
+- struct idt_csr_seq::csraddr
+- struct idt_csr_seq::data
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202401261250.b07Yt30Z-lkp@intel.com/
+Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+---
+v1 -> v2:
+- Add sparse warning info from Kernel test robot.
+- Remove Fixes & cc stable tag.
+- Add Reviewed-by from Serge.
+
+v1: https://lore.kernel.org/all/20240130040632.3039911-1-dawei.li@shingroup.cn/
+
+ drivers/misc/eeprom/idt_89hpesx.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/misc/eeprom/idt_89hpesx.c b/drivers/misc/eeprom/idt_89hpesx.c
+index d807d08e2614..327afb866b21 100644
+--- a/drivers/misc/eeprom/idt_89hpesx.c
++++ b/drivers/misc/eeprom/idt_89hpesx.c
+@@ -129,7 +129,7 @@ struct idt_smb_seq {
+ struct idt_eeprom_seq {
+ 	u8 cmd;
+ 	u8 eeaddr;
+-	u16 memaddr;
++	__le16 memaddr;
+ 	u8 data;
+ } __packed;
+ 
+@@ -141,8 +141,8 @@ struct idt_eeprom_seq {
+  */
+ struct idt_csr_seq {
+ 	u8 cmd;
+-	u16 csraddr;
+-	u32 data;
++	__le16 csraddr;
++	__le32 data;
+ } __packed;
+ 
+ /*
+-- 
+2.27.0
+
 
