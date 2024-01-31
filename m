@@ -1,77 +1,99 @@
-Return-Path: <linux-kernel+bounces-46693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE9E48442BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:13:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E15E8442EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:22:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A38221F22526
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:13:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B663B33457
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:13:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B470484A51;
-	Wed, 31 Jan 2024 15:12:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 556D75A7A1;
+	Wed, 31 Jan 2024 15:13:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="siJRZxDZ"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y26/QDIo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6653E84A25;
-	Wed, 31 Jan 2024 15:12:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CD8B84A25;
+	Wed, 31 Jan 2024 15:13:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706713977; cv=none; b=h97MEoj6t6nRhBHZZRuCS+GEFvSPEq9VO4MiaZg4vus0ro/H7dGMhvpRn8FZlx6j4UWLcvAR7pnEgU0+6/2Bx/mBdvXYFgbcG8s86qBCez+xhRoYRZhGdOpoXOSeFC8VQdmormw58FGt/3dodrTezNIdc+jDU9AnQAfbN5SQ/LE=
+	t=1706713992; cv=none; b=EEroFml9eBwPy6574ApGwcZJMm3PLGZffUlPygmGHYI/ZfcFtvMM3Idbyhb/rTTxQBu9SmL58McPI1fZ+bfyPQeAa6FKmRBBWNmA11XL6Ak/FbHZC84AyhcROnBzcxCAngGuoeDjrRuCjDuohdpaQ4mA+yAABunqNHYt/1ZiyWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706713977; c=relaxed/simple;
-	bh=RuB3d2iK2n59++rlUBCD8y1Rnrd57ZLrZNNozh23/XA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OEpGJ+47LSBAlQb8S8c2KkqSkAyyy0pXxiLslDoGD5DT8HJ18pZFiMUNCtIgpbjaYsNIcr1EjZNc962/+2X4bvn3XhSpJ1pwRdheUf2Q15NOI0788toLQuYoWUdny3Dehfno+pcceddBaTvzh86gJ6ZJDtVlXuLIWJmcQlugbKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=siJRZxDZ; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=gEjtk7FmgCd+zH7N27wDyMUO04kBPrVBqkN0zpmbIcQ=; b=siJRZxDZwDrF8y8x6NRhDz58NQ
-	D8vNHQojfXv0kSmuUdC3FWLO6tIAQc4/ptyf1ZCznP+eaJNpzZFZbdHZo3ILBMPStS7YsVMJi++mi
-	sFlECh27NNeZf/DuinQHPssBep0AyUoBfRl53F7g3p39EH8H6DQNQiu4vIT67NGir7Qk=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rVCGe-006amp-Dq; Wed, 31 Jan 2024 16:12:48 +0100
-Date: Wed, 31 Jan 2024 16:12:48 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Dimitri Fedrau <dima.fedrau@gmail.com>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 net-next 07/13] net: phy: marvell-88q2xxx: add suspend
- / resume ops
-Message-ID: <7d286437-d8d4-446c-9efe-37c124737596@lunn.ch>
-References: <20240122212848.3645785-1-dima.fedrau@gmail.com>
- <20240122212848.3645785-8-dima.fedrau@gmail.com>
+	s=arc-20240116; t=1706713992; c=relaxed/simple;
+	bh=4QNpDnJj6sY1RMbSyQ3tc9VjMeu5QPeXohxGGaoShxk=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=hXWK8XNFRVBTr4XohnrwNUaFJiCIcRxzggrNrYIDv4sRObUUqun/xF3F0POL+FMhJmgOhVCpDAXxARJ709tEm0OyX0RSuDqhRSkRnPoB2/WhOZbLCaXsirZoOdc/JDvwo5Dk+Y4eXDTze9I/7JOp79tHem/kYYFSjvwjYCcStnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y26/QDIo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0712FC433C7;
+	Wed, 31 Jan 2024 15:13:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706713992;
+	bh=4QNpDnJj6sY1RMbSyQ3tc9VjMeu5QPeXohxGGaoShxk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Y26/QDIoJcqtEzpzPqBXCkzhWxN/hBzdZy6bCzYaRHcQvc/1kp5ziUdp/wepWnExm
+	 v41H88RiGcy9pZYtLsrNupjEU3hhHi+Y2H/JUF/eHT5krs41hs9eM7dA66UR221CNt
+	 xoMU0R7fxRmAg14NpPqD5wMRGuCVncsVQZnr6kyegyXYjjPnwlg6svRvipzION8uH5
+	 N6uAU83ApWPfuiF6Oc4Ul3cBTZ7oQRDobVnYkhu/ML11KJYjNMyUAN9qN9iaXWIaZb
+	 NS3JzDFxvVDG2of3WveGn2pYph/IS7dZKJgaMbIaFEjJryxfkCIQ99/Hq1fMywEze5
+	 wW4LlUBpj9MOg==
+Date: Thu, 1 Feb 2024 00:13:08 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Ali Zahraee <ahzahraee@gmail.com>
+Cc: rostedt@goodmis.org, mathieu.desnoyers@efficios.com, shuah@kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] selftests: ftrace: fix typo in test description
+Message-Id: <20240201001308.c206e16376a173d4129ba8ab@kernel.org>
+In-Reply-To: <20240131133306.7723-1-ahzahraee@gmail.com>
+References: <20240131133306.7723-1-ahzahraee@gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240122212848.3645785-8-dima.fedrau@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 22, 2024 at 10:28:40PM +0100, Dimitri Fedrau wrote:
-> Add suspend/resume ops for Marvell 88Q2xxx devices.
+On Wed, 31 Jan 2024 14:33:06 +0100
+Ali Zahraee <ahzahraee@gmail.com> wrote:
+
+> The typo in the description shows up in test logs and output.
+> This patch submission is part of my application to the Linux Foundation
+> mentorship program: Linux kernel Bug Fixing Spring Unpaid 2024.
 > 
-> Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Looks good to me.
 
-    Andrew
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+> Signed-off-by: Ali Zahraee <ahzahraee@gmail.com>
+> ---
+>  tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc b/tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc
+> index add7d5bf585d..c45094d1e1d2 100644
+> --- a/tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc
+> +++ b/tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc
+> @@ -1,6 +1,6 @@
+>  #!/bin/sh
+>  # SPDX-License-Identifier: GPL-2.0
+> -# description: Test file and directory owership changes for eventfs
+> +# description: Test file and directory ownership changes for eventfs
+>  
+>  original_group=`stat -c "%g" .`
+>  original_owner=`stat -c "%u" .`
+> -- 
+> 2.34.1
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
