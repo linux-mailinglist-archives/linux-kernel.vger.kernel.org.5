@@ -1,131 +1,149 @@
-Return-Path: <linux-kernel+bounces-47091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B93E8448FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:34:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73C60844901
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:35:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F6F51F23417
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:34:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BC541F23455
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:35:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 252DD1BC49;
-	Wed, 31 Jan 2024 20:34:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FE3720DE0;
+	Wed, 31 Jan 2024 20:35:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="l/few0PV"
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hMAsZ8uK"
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7267A31A61
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:34:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E4F1EEF7
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:35:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706733284; cv=none; b=pUpteJ04Z73RpNhQBWsqmMENL+AYnicHcRFhsQ8UO/ic1D86wM+YAbMEyxdFgV5WcM3Zh5e3CIrtpZ7gqLD32nQfrodYFhx+sKhILTVyOGvS4RRHyxwYUNZNWLB64Zd/u7hfK6bwRJrOB82QWOMb+xj9XBn0EKzre0cSaAI+Frg=
+	t=1706733335; cv=none; b=blQo6lrd/8YTS0tyEyYGMQF4+jao7gaKGn0HghQJW02M0HDTE47pp1NzL5pxMXsgD+1EsAT9gNq+aC2ad9/iLH4FUSso+nOfLhAZRTUG9k6w2gUm200MSjTsRERWwhkXuruJxkCT7ZY7rBAq31ZiSGXGKXKJf4KWaK9ZoVFtoqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706733284; c=relaxed/simple;
-	bh=exb8QliXElxoEXVK1gbR8+PpzfLOvEHWKXq3vd8Mf6Y=;
-	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
-	 Content-Type; b=WyyAX7ytvyuXFm+V10angPLDO5kf4OanyJThFlah8zLqzstPN/knNiGHURq2smsij5IBiU21XCtK2iHvN/SRqXgLyT2U8zdHCZyTzhiwSN0r/RNn7t4BV4GBrjEIwY0y5swsPaD49KS4n7aXfW8jgVDrhrYrbvxYYeYO1anLqag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=l/few0PV; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5ce6b5e3c4eso181097a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:34:42 -0800 (PST)
+	s=arc-20240116; t=1706733335; c=relaxed/simple;
+	bh=4gg8MbtxuOETWbvcXiewSjW4cU46Po/YgSI564WePkc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SQVDCfE9Z9hVGhY1IOkP6dFKG+xlRd4v9/bAxJOhMKI2tu0NU4FajVksSHUZrPXiqkrNU/gNjaDEZOnKJZpG99hYuiSSCotiZA8qvUjdm2aE32WbfXpN2STGYbR1GbNA6SzH0SkkjitGa0cnhi3/hd71obqQJu2/GoJaphE9ayw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hMAsZ8uK; arc=none smtp.client-ip=209.85.219.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc6c3902a98so132381276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:35:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1706733281; x=1707338081; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ToCSOyY9UgT3lZYwTMmNWF442wR42KPytzlol85Izbc=;
-        b=l/few0PVcKIfjEtJya2PV4y2hdCvVXMf3TPjQR9+qCP0MQnK27UrUamgpUAu9Al8CV
-         9x81c/WI0TO6HNcaM24E9vPOXbXf0cl1PJr7LSeb/lmIXzsEa39Jr2Qzr3sszkTajKV3
-         X/xIPs+ODVipdiF/5SxV5Vwd1Sz14SX3deE638ckWWYIamOLrHwiEL66dXKKkTt+Ec6O
-         OQkoO0ruc8xbc7PSqdqj025O6Rdfs6XDuGmvYG/PqoywhKVo6JPEvjRdfFxSrhu6DS8Q
-         9SO9S2okAjmvQORjeleXkpr1L4RhkUIseYrANigaw7UZpVCbZa+SiS53whyv8KVaFrXf
-         ZZww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706733281; x=1707338081;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1706733333; x=1707338133; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ToCSOyY9UgT3lZYwTMmNWF442wR42KPytzlol85Izbc=;
-        b=TVvBRmdK9tMq/Py50XH7kFscVcoYghamtmsGjl95KxUMArR8YMByt6A7kMRcjQasqL
-         sCJ/fUq99o3tDHAYazu+OCyp2n+fGkqgU1EfT63otHk7zbH0IHeEDu0Mv/J0MPr6QWiG
-         kOud+U2K0gQeY5DiKISJHp63FQrqUVD7vJlOF1Ey4JM0HLvPWDMSodTFjcr70qKjjact
-         Dl09OxImPsoIrvp5jgKNAT5EuFezzqJisA3/wkdYwUNSwt56fVTrGyGG7LFXNPdJTqYP
-         cQYaakBhLjN0cVoQBwXkUk5+/KQm09ryNkSSzGZgxSiJYm5RtTJKyFyNggtQIhxNAYOk
-         KSrQ==
-X-Gm-Message-State: AOJu0YwsboTpKAHkYbNTa4nhcP8fM4Pk2PhWScZnaHVRMdiu4lo+TRX4
-	0sCZ8pqA54so9S1oYO4/hEuxoOahRzPW8PaRhjP+sZqk0xKdd4Pn0eN8p+dwXWk=
-X-Google-Smtp-Source: AGHT+IEsFzJWhwkZHvWSeO6eMVC7rMYmcrfSRDwnS5J+jMrysPE3aQ1rfKm6FrvZ3viTgCzDnZxSkQ==
-X-Received: by 2002:a05:6a20:f3a6:b0:19c:ad6b:e1c2 with SMTP id qr38-20020a056a20f3a600b0019cad6be1c2mr2839985pzb.12.1706733281551;
-        Wed, 31 Jan 2024 12:34:41 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXqfWhjIx1TNL1IuyBOTEw7zpq0DQTBViDu+wnKkWGpI2jfceGOMShnRxYQcqH9PG5CsOjLDzniIjDpMJapuRkaaUmsJXgGuGs6v291UHPiNHY0seXAX/ag2QwQeq6+DLyZOm9bhoRF/Jvr9Bswuc3lIdtsoy6oOD7CsfFJdg9LUomiqByc0cDRvcwLeaYhkQDvCG/cro+tY2ymBZISpPksVyT45q7VNFXa4bupfBFtDn6mfcQ=
-Received: from localhost ([12.44.203.122])
-        by smtp.gmail.com with ESMTPSA id v27-20020aa799db000000b006dde1001a0bsm10275840pfi.190.2024.01.31.12.34.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 12:34:40 -0800 (PST)
-Date: Wed, 31 Jan 2024 12:34:40 -0800 (PST)
-X-Google-Original-Date: Wed, 31 Jan 2024 12:34:39 PST (-0800)
-Subject:     Re: [PATCH] riscv: Fix wrong size passed to local_flush_tlb_range_asid()
-In-Reply-To: <ZbdpTPMOw4lsPxBi@snowbird>
-CC: alexghiti@rivosinc.com, Paul Walmsley <paul.walmsley@sifive.com>,
-  aou@eecs.berkeley.edu, geert@linux-m68k.org, linux-riscv@lists.infradead.org,
-  linux-kernel@vger.kernel.org
-From: Palmer Dabbelt <palmer@dabbelt.com>
-To: dennis@kernel.org
-Message-ID: <mhng-d603d0d3-2f72-4dfc-b635-c270ae79fd85@palmer-ri-x1c9a>
+        bh=hMfiUtPGMigs+21v9CDoWEN6MSzp/nh2CeG2gULaMUI=;
+        b=hMAsZ8uKkL8vao/AhE9ePytRcSf6il4JautAGzPkr7Szti/By/qaK+VHWsvdLRkO8+
+         MABkeru4f2M2KyDnjr+46lXhGENLdHPN8k6yZBcvF9gweBCcv9u2veaj7lpi9+vWpAvg
+         dUZnlWod9ZsjIyZehRAUYmCjzLBdXTnFk3Vh1Abml5fToMv4HRQIp5WdJnfM8vEhVDJK
+         //A5I7XdcX/F7Xet6Wv79T3868HUySBczb5kIt106NqQUkU6KsSBLJBtYhxaXAX1646c
+         A2cJdpdR0/H57GZKM3/aTsfbuAbY6k8T+imp4CHDb6KOj16dXlBp1M5nygOIpOXnEmOV
+         OjSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706733333; x=1707338133;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hMfiUtPGMigs+21v9CDoWEN6MSzp/nh2CeG2gULaMUI=;
+        b=VQGb72Tb5E8mphNpzX/Bk1c3y6TUP7GHWcY6oYL9A/MDnqggI/NyG6vkd3kWgf/3F9
+         EkDVtsk4XMoe/6aEVyGDXNqKOernx/Uju0V/Mo+zopdOjvMoHVEMvFyQECU5C8l2Miw4
+         3Sxty3qq6giebrv4gUMYfEHDIKxZ+5lQGsmLqoYTHkSPQL2CJPxs334KUtJ5LfcW7PRG
+         APmVPDicHdmIP6zAKpSZ5PbEnl7Cdsb4nzVxRIW4NuMGwaAmF06G8H+g9m/CHjvyIkO/
+         RflJYt6Uc/dWRgGreTYM1S6MNP5MhIisGI2zD0Gr6xbY/bTgyRICKZBEKFtjQFBKESN3
+         hSMQ==
+X-Gm-Message-State: AOJu0Yxd1eAPovPKHHJveK/ZHiA8306oa3KZvgdby8OWPYfblO1hqB0Q
+	993pQhb7DW3UASlYmW8ht2m2s40fw/0GXRL48ZB5wkGfBqcPwY08dx8wDDwI6FApNoBkHjqmo8I
+	A6UPVyMl8ukNhTDsp6HufeGos4Fs/agC0JWfT5XVxRTjts4CvYlo=
+X-Google-Smtp-Source: AGHT+IEqJ9sBaBkXpIaCG+AofpCmulz/CZSXwInm0MfNy+ZLOymRBzmQmyfpCyJag/wOVEVDYnjEaZEc+ygMXSysPNA=
+X-Received: by 2002:a25:bdcb:0:b0:dc6:4b0a:7b35 with SMTP id
+ g11-20020a25bdcb000000b00dc64b0a7b35mr266792ybk.12.1706733332939; Wed, 31 Jan
+ 2024 12:35:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+References: <20240130124828.14678-1-brgl@bgdev.pl> <20240130124828.14678-11-brgl@bgdev.pl>
+ <CACRpkdZyaqwbxvsLtXPHSX=6jyFPYSxA9n+qWakdhGKmo+L9fw@mail.gmail.com>
+In-Reply-To: <CACRpkdZyaqwbxvsLtXPHSX=6jyFPYSxA9n+qWakdhGKmo+L9fw@mail.gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 31 Jan 2024 21:35:21 +0100
+Message-ID: <CACRpkdZ9M=SapefrMX24=H5xGG91FNMN5TS63n3GdpegS_JAZQ@mail.gmail.com>
+Subject: Re: [PATCH 10/22] gpio: reinforce desc->flags handling
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 29 Jan 2024 01:01:00 PST (-0800), dennis@kernel.org wrote:
-> Hi Alexandre,
+On Wed, Jan 31, 2024 at 9:01=E2=80=AFPM Linus Walleij <linus.walleij@linaro=
+org> wrote:
+> On Tue, Jan 30, 2024 at 1:48=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.p=
+l> wrote:
 >
-> On Tue, Jan 23, 2024 at 02:27:30PM +0100, Alexandre Ghiti wrote:
->> local_flush_tlb_range_asid() takes the size as argument, not the end of
->> the range to flush, so fix this by computing the size from the end and
->> the start of the range.
->>
->> Fixes: 7a92fc8b4d20 ("mm: Introduce flush_cache_vmap_early()")
->> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
->> ---
->>  arch/riscv/mm/tlbflush.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
->> index 8d12b26f5ac3..9619965f6501 100644
->> --- a/arch/riscv/mm/tlbflush.c
->> +++ b/arch/riscv/mm/tlbflush.c
->> @@ -68,7 +68,7 @@ static inline void local_flush_tlb_range_asid(unsigned long start,
->>
->>  void local_flush_tlb_kernel_range(unsigned long start, unsigned long end)
->>  {
->> -	local_flush_tlb_range_asid(start, end, PAGE_SIZE, FLUSH_TLB_NO_ASID);
->> +	local_flush_tlb_range_asid(start, end - start, PAGE_SIZE, FLUSH_TLB_NO_ASID);
->>  }
->>
->>  static void __ipi_flush_tlb_all(void *info)
->> --
->> 2.39.2
->>
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > We now removed the gpio_lock spinlock and modified the places
+> > previously protected by it to handle desc->flags access in a consistent
+> > way. Let's improve other places that were previously unprotected by
+> > reading the flags field of gpio_desc once and using the stored value fo=
+r
+> > logic consistency. If we need to modify the field, let's also write it
+> > back once with a consistent value resulting from the function's logic.
+> >
+> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> (...)
 >
-> Sorry for the delay, I just pulled this into percpu#for-6.8-fixes. I'll
-> send it to Linus this week.
+> I have a trouble with this one:
+>
+> gpiochip_find_base_unlocked()
+> > +       unsigned long flags;
+> (...)
+> > +       flags =3D READ_ONCE(desc->flags);
+> (...)
+> > +       if (test_bit(FLAG_OPEN_DRAIN, &flags) &&
+> > +           test_bit(FLAG_IS_OUT, &flags))
+> >                 return 0;
+> (...)
+> > +       assign_bit(FLAG_IS_OUT, &flags, !ret);
+> > +       WRITE_ONCE(desc->flags, flags);
+>
+> I unerstand the atomicity of each operation here, but ... if what you wan=
+t
+> to protect is modifications from other CPUs, how do we know that another
+> CPU isn't coming in and reading and modifying and assigning
+> another flag inbetween these operations while the value is only
+> stored in the CPU-local flags variable?
+>
+> Same with gpiod_direction_output().
+>
+> To me it seems like maybe you need to actually protect the desc->flags
+> with the SRCU struct in these cases? (and not only use it for the
+> label protection then).
+>
+> An alternative is maybe to rewrite the code with test_and_set().
+>
+> But as you say it is currently unprotected, I just wonder if this really
+> adds any protection.
 
-Do you mind if we do a shared tag or something?  It's going to conflict 
-with 
-https://lore.kernel.org/all/20240117140333.2479667-1-vincent.chen@sifive.com/ 
-  No big deal as it's a pretty trivial conflict, but they'll both need 
-stable backports.
+After re-reading the cover letter I'm fine with this, but I still wonder
+if it buys us anything.
 
->
-> Thanks,
-> Dennis
+Maybe some words looped back from the
+commit message that we are not really protecting the callbacks
+because access is [predominantly] exclusive?
+
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
 
