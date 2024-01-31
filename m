@@ -1,170 +1,251 @@
-Return-Path: <linux-kernel+bounces-47052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D31B1844882
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:13:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8CA6844887
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:14:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 064C5B22F0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:13:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 900AD284C01
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:14:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC0C93FB27;
-	Wed, 31 Jan 2024 20:13:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 049523FB28;
+	Wed, 31 Jan 2024 20:14:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="C1Obk+7q"
-Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uynVu288"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 058023EA93
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:13:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78F163EA94
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:14:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706731985; cv=none; b=BkGfYk0yCXon3BXpuExRRPTVx617xO754dZI8+2vpLsoC/BlgUK7mx13PyH3wSy26s40zAVf9qdyuYpjNyDYRqyvPohmZTpkGPZiV9Vxus5SP1Ldg3ThbIRE4tp159yIANj+jfVFPYSAuQopNRVNssq7l7CyiVjrei/7Hh1crEo=
+	t=1706732082; cv=none; b=ou2/gCPrwegnGiqF15tMhaUbBZ5YtiXfo6UO4JJk/1j9dyi2vSAaMACViaFf7bXzaA7p0Y22jnLgcrE7TQjQVUa/1m/O33jLYzm2Fx1eKIMNLMHuT+den/b40jujYeDFwQxRKh4E7DaHtIsDzBMCaTS6SDf9vbL6nUub5ncttPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706731985; c=relaxed/simple;
-	bh=lGi5QcvUcQnWGCazs79pnrj0VMWYM0mPtvKyIRAR1ww=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bnDf6BPuyyaF9G+t8H+88iWvazZDLhjSeRlBVjgZMp/TcH+FCffRG4JBwD6T3A3OfroX3Z04WRUFPzVl9e2rxbv/D68gk++E8AlWnjjXcqQ1zFLxC1tjdkH4sQsWOHKQvQo5KHHNjl5fpnecVkSlPsscXL1Da4mfYWy9rDTdbzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=C1Obk+7q; arc=none smtp.client-ip=209.85.160.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-218e3197784so15599fac.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:13:01 -0800 (PST)
+	s=arc-20240116; t=1706732082; c=relaxed/simple;
+	bh=Ax5JEIPjw4jWPtHEm7pQrjMLSrDe/wM672XsGNmMJ/0=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=jDJcWexvJiQaJj8QCigbUmnnEpX8xD1WXa4o3QN48scdx+NUW9CBLU0VYbknVGzXaSRvXCWI73AnHTCPnoWTzXTR6KDcvNhL1pfQATk0JA1peIYVFl+81r7QsjIrco6Czjm58xNkjs6Byf0d0HXFV965M5VuvcOXj/fq59dLUsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uynVu288; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-604000fefccso2791547b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:14:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706731981; x=1707336781; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=DpN7tAlSPEJaxHsz1Fwia1gS3Vdtxd9q2yNC5JJCopI=;
-        b=C1Obk+7q3hc/cOSsP4FSUewClzA9gotobEEGqR7qg74R/cdfBFO0gqvQtnUGFoblUT
-         b/+qVdmh2GuNjmcf7b6dEyfKFsAMybrvo16rONcsi7MaPTKbIdp4k9VWjsNoOjIK7ncK
-         0NgOzX9/bQyv0L7jeEdUsg5jirKw+WLvLzILBgqzw2/B9KaheNdXEuTIB+aSgvJMHaYx
-         1ODPcArAi+XaxaiLECAlS3qar8sEuN8W+cWQU8pO+/3Lt4Zy1h3BdWy5jLasHvebZ4OA
-         erAENOTFc88ngeoyU0diBl02veYuOxZXzG1vulr54hWktf60vFlRFfl3QYoVD9vvNBaK
-         FuWA==
+        d=google.com; s=20230601; t=1706732078; x=1707336878; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=e2rDkqb+E2xnp8mp8D2lOafAWaTbfc+6G88WUXMkCnU=;
+        b=uynVu288tuT6FM9IUjM89aS+6yNJbrhQ9ePKfKm2pzhiNhuMjVZU3Dj0CSSCcIiyaO
+         HsEDTIc9Q/z9RJgWfz46lEkCcmSx2VmiKNKS+EWZ+9Ttz6NuYBEIAV/30l+89NqQDsHg
+         gtI3BBgCMjmfQrKSKYj6OBXlDA+bO1F6xtG9O4pON+68N/326cXIqLfcujK6J/EIF3Wb
+         Bn5K0HpOXoYjeua2ET+Us13Yg1c01qFuJDpICEWOXHXJxVuZZ9ruFt9aS68j8FVnbGG1
+         jYG4UEepdhyIH8CkOKCdm2Cvxgpyr2ctJgrDBkH3QFI4Oc2s2pDcIl2XJHIKn9Xl/QnL
+         68Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706731981; x=1707336781;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DpN7tAlSPEJaxHsz1Fwia1gS3Vdtxd9q2yNC5JJCopI=;
-        b=XF8Kk2OKI0BspG+PYR+iKLVDSh8bVbAtuo8nW+Hoik2VzyWxKO8Vp3N1n0ogHhNAzh
-         5ymVRtrYJeK/tjDZuPDFUtTwVvZsqVOFNDtJJ0sPgynxasqEuU1pB3X0Z2g/l5s2VUgw
-         5S2b7LeDePCi6d2QZZxux2iFALBZBh/RydYia8r+MjC4vc2qQ+C5VaOTy2ZECEePHKbl
-         U4+f+RCJk0eLpWrRLRzdjLLadrc9kmvOajgzZJOeRaPbk1a9k1l+++c9u/UFAQv2opBz
-         IuUlM5/m2YZoT1XIT2gDljgjI1AOTMJuMgIbXa0W0rd4vmaMmtYL5JBdG10GIj8yu/AH
-         HShA==
-X-Gm-Message-State: AOJu0YypaJ82p7LEpA5oBKWyx/GV3pGEmpiSTcogUlCsIYXP/eJvj6Ny
-	QRz+gjsaBwUSZQLYGvr+Np9nhl33+8mwxxbQ6QZMWAW4A8ZnrIl4FSVuXXeZko0=
-X-Google-Smtp-Source: AGHT+IG597JmUsw0p9ugvB+ssXuN78/0ZfDYT2KT1oI/JaIHUBM0vXaUMn1SZIeIHb3DYXS6CLUxtw==
-X-Received: by 2002:a05:6870:15c7:b0:218:889f:46fc with SMTP id k7-20020a05687015c700b00218889f46fcmr2667215oad.30.1706731980877;
-        Wed, 31 Jan 2024 12:13:00 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id nf6-20020a0562143b8600b006869485d9eesm5789124qvb.82.2024.01.31.12.13.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 12:13:00 -0800 (PST)
-Date: Wed, 31 Jan 2024 15:12:56 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Efly Young <yangyifei03@kuaishou.com>, android-mm@google.com,
-	yuzhao@google.com, cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: memcg: Use larger chunks for proactive reclaim
-Message-ID: <20240131201256.GD1227330@cmpxchg.org>
-References: <20240131162442.3487473-1-tjmercier@google.com>
- <20240131175059.GC1227330@cmpxchg.org>
- <CABdmKX2WRQyBpDaV0CuL4E0OdR9FEff5NAZ0hFv8W8U7e82=UA@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1706732078; x=1707336878;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=e2rDkqb+E2xnp8mp8D2lOafAWaTbfc+6G88WUXMkCnU=;
+        b=n7iprYKl0l7fbTDx5z0OKFvJxLWILLmQtO/+QjFZ1cgsA6uxZR7EZgiqTfu88TAgj3
+         yrZlhrNkozhqFh5K3UqG/1CMs8rqxshSPZtl1msESyW90JK8WLYlAbKIh4tY6MQb0moU
+         RH7UgnO09NI1aZk8GgPArC2UzJLFP3TY3+6O36hNOf88IWT9LnvQLDkrtp7/i7YQa5P5
+         L+Hfm0B0qrtaTJXrMFQT8HXBZJUQ3Sw26X2cQl5zO5DAFG6O7yg86yX9L8TyhIx58HZd
+         I2D32LK4S0ltD7waaY8lFZolH3Yys0a2SMfw24eXWeJxcQ71i6liE7BdoRTUAxluzWcS
+         krsw==
+X-Gm-Message-State: AOJu0YySsPcuDhiSoOEU6QchmfWwyCnnoEQo/4Azogab1RiapdXaQBOC
+	rNJHV1eXygTsAb6d+GNXteRSfxYMX5b05wT5VIHvhbcIHkTNm8lrsvKeCZ5QQ9zu7polrMPHT3S
+	yLGS0sQ==
+X-Google-Smtp-Source: AGHT+IFkL/HMYecG4pjlmM4yPPuHGrpUEc/72BDkAeeoCz3jqncXNV5/D+bTqDzVyiVwPgHnDVcvwQwGIfR7
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:16c5:1feb:bf99:a5d1])
+ (user=irogers job=sendgmr) by 2002:a05:690c:f85:b0:5f9:abfe:243c with SMTP id
+ df5-20020a05690c0f8500b005f9abfe243cmr424360ywb.3.1706732078491; Wed, 31 Jan
+ 2024 12:14:38 -0800 (PST)
+Date: Wed, 31 Jan 2024 12:14:29 -0800
+Message-Id: <20240131201429.792138-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABdmKX2WRQyBpDaV0CuL4E0OdR9FEff5NAZ0hFv8W8U7e82=UA@mail.gmail.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Subject: [PATCH v1] perf jevents: Drop or simplify small integer values
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kajol Jain <kjain@linux.ibm.com>, John Garry <john.g.garry@oracle.com>, 
+	Jing Zhang <renyu.zj@linux.alibaba.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Weilin Wang <weilin.wang@intel.com>, Veronika Molnarova <vmolnaro@redhat.com>, 
+	Michael Petlan <mpetlan@redhat.com>, Edward Baker <edward.baker@intel.com>, 
+	Perry Taylor <perry.taylor@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Jan 31, 2024 at 10:01:27AM -0800, T.J. Mercier wrote:
-> On Wed, Jan 31, 2024 at 9:51 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Wed, Jan 31, 2024 at 04:24:41PM +0000, T.J. Mercier wrote:
-> > > Before 388536ac291 ("mm:vmscan: fix inaccurate reclaim during proactive
-> > > reclaim") we passed the number of pages for the reclaim request directly
-> > > to try_to_free_mem_cgroup_pages, which could lead to significant
-> > > overreclaim in order to achieve fairness. After 0388536ac291 the number
-> > > of pages was limited to a maxmimum of 32 (SWAP_CLUSTER_MAX) to reduce
-> > > the amount of overreclaim. However such a small chunk size caused a
-> > > regression in reclaim performance due to many more reclaim start/stop
-> > > cycles inside memory_reclaim.
-> > >
-> > > Instead of limiting reclaim chunk size to the SWAP_CLUSTER_MAX constant,
-> > > adjust the chunk size proportionally with number of pages left to
-> > > reclaim. This allows for higher reclaim efficiency with large chunk
-> > > sizes during the beginning of memory_reclaim, and reduces the amount of
-> > > potential overreclaim by using small chunk sizes as the total reclaim
-> > > amount is approached. Using 1/4 of the amount left to reclaim as the
-> > > chunk size gives a good compromise between reclaim performance and
-> > > overreclaim:
-> > >
-> > > root - full reclaim       pages/sec   time (sec)
-> > > pre-0388536ac291      :    68047        10.46
-> > > post-0388536ac291     :    13742        inf
-> > > (reclaim-reclaimed)/4 :    67352        10.51
-> > >
-> > > /uid_0 - 1G reclaim       pages/sec   time (sec)  overreclaim (MiB)
-> > > pre-0388536ac291      :    258822       1.12            107.8
-> > > post-0388536ac291     :    105174       2.49            3.5
-> > > (reclaim-reclaimed)/4 :    233396       1.12            -7.4
-> > >
-> > > /uid_0 - full reclaim     pages/sec   time (sec)
-> > > pre-0388536ac291      :    72334        7.09
-> > > post-0388536ac291     :    38105        14.45
-> > > (reclaim-reclaimed)/4 :    72914        6.96
-> > >
-> > > Fixes: 0388536ac291 ("mm:vmscan: fix inaccurate reclaim during proactive reclaim")
-> > > Signed-off-by: T.J. Mercier <tjmercier@google.com>
-> > > ---
-> > >  mm/memcontrol.c | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > index 46d8d02114cf..d68fb89eadd2 100644
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -6977,7 +6977,8 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
-> > >                       lru_add_drain_all();
-> > >
-> > >               reclaimed = try_to_free_mem_cgroup_pages(memcg,
-> > > -                                     min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
-> > > +                                     max((nr_to_reclaim - nr_reclaimed) / 4,
-> > > +                                         (nr_to_reclaim - nr_reclaimed) % 4),
-> >
-> > I don't see why the % 4 is needed. It only kicks in when the delta
-> > drops below 4, but try_to_free_mem_cgroup_pages() already has
-> >
-> >                 .nr_to_reclaim = max(nr_pages, SWAP_CLUSTER_MAX),
-> >
-> > so it looks like dead code.
-> 
-> That right, it's only there for when the integer division reaches
-> zero. I didn't want to assume anything about the implementation of
-> try_to_free_mem_cgroup_pages, but I can just remove it entirely if
-> you'd like.
+Prior to this patch '0' would be dropped as the config values default
+to 0. Some json values are hex and the string '0' wouldn't match '0x0'
+as zero. Add a more robust is_zero test to drop these event terms.
 
-What do others think?
+When encoding numbers as hex, if the number is between 0 and 9
+inclusive then don't add a 0x prefix.
 
-We rely on the rounding up in a few other places and it's been doing
-that for a decade. Maybe lampshade it for the benefit of the reader:
+Update test expectations for these changes.
 
-	/* Will converge on zero, but reclaim enforces a minimum */
+On x86 this reduces the event/metric C string by 58,411 bytes.
 
-but otherwise there is IMO no need to have defensive extra code.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/pmu-events/jevents.py | 23 ++++++++++++++++++++---
+ tools/perf/tests/pmu-events.c    | 22 +++++++++++-----------
+ 2 files changed, 31 insertions(+), 14 deletions(-)
+
+diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+index 53ab050c8fa4..2c7e5d61ce92 100755
+--- a/tools/perf/pmu-events/jevents.py
++++ b/tools/perf/pmu-events/jevents.py
+@@ -203,7 +203,7 @@ class JsonEvent:
+ 
+     def llx(x: int) -> str:
+       """Convert an int to a string similar to a printf modifier of %#llx."""
+-      return '0' if x == 0 else hex(x)
++      return str(x) if x >= 0 and x < 10 else hex(x)
+ 
+     def fixdesc(s: str) -> str:
+       """Fix formatting issue for the desc string."""
+@@ -294,6 +294,23 @@ class JsonEvent:
+       }
+       return table[unit] if unit in table else f'uncore_{unit.lower()}'
+ 
++    def is_zero(val: str) -> bool:
++        try:
++            if val.startswith('0x'):
++                return int(val, 16) == 0
++            else:
++                return int(val) == 0
++        except e:
++            return False
++
++    def canonicalize_value(val: str) -> str:
++        try:
++            if val.startswith('0x'):
++                return llx(int(val, 16))
++            return str(int(val))
++        except e:
++            return val
++
+     eventcode = 0
+     if 'EventCode' in jd:
+       eventcode = int(jd['EventCode'].split(',', 1)[0], 0)
+@@ -358,8 +375,8 @@ class JsonEvent:
+         ('RdWrMask', 'rdwrmask='),
+     ]
+     for key, value in event_fields:
+-      if key in jd and jd[key] != '0':
+-        event += ',' + value + jd[key]
++      if key in jd and not is_zero(jd[key]):
++        event += f',{value}{canonicalize_value(jd[key])}'
+     if filter:
+       event += f',{filter}'
+     if msr:
+diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+index a56d32905743..47a7c3277540 100644
+--- a/tools/perf/tests/pmu-events.c
++++ b/tools/perf/tests/pmu-events.c
+@@ -70,7 +70,7 @@ static const struct perf_pmu_test_event segment_reg_loads_any = {
+ 	.event = {
+ 		.pmu = "default_core",
+ 		.name = "segment_reg_loads.any",
+-		.event = "event=0x6,period=200000,umask=0x80",
++		.event = "event=6,period=200000,umask=0x80",
+ 		.desc = "Number of segment register loads",
+ 		.topic = "other",
+ 	},
+@@ -82,7 +82,7 @@ static const struct perf_pmu_test_event dispatch_blocked_any = {
+ 	.event = {
+ 		.pmu = "default_core",
+ 		.name = "dispatch_blocked.any",
+-		.event = "event=0x9,period=200000,umask=0x20",
++		.event = "event=9,period=200000,umask=0x20",
+ 		.desc = "Memory cluster signals to block micro-op dispatch for any reason",
+ 		.topic = "other",
+ 	},
+@@ -94,11 +94,11 @@ static const struct perf_pmu_test_event eist_trans = {
+ 	.event = {
+ 		.pmu = "default_core",
+ 		.name = "eist_trans",
+-		.event = "event=0x3a,period=200000,umask=0x0",
++		.event = "event=0x3a,period=200000",
+ 		.desc = "Number of Enhanced Intel SpeedStep(R) Technology (EIST) transitions",
+ 		.topic = "other",
+ 	},
+-	.alias_str = "event=0x3a,period=0x30d40,umask=0",
++	.alias_str = "event=0x3a,period=0x30d40",
+ 	.alias_long_desc = "Number of Enhanced Intel SpeedStep(R) Technology (EIST) transitions",
+ };
+ 
+@@ -128,7 +128,7 @@ static const struct perf_pmu_test_event *core_events[] = {
+ static const struct perf_pmu_test_event uncore_hisi_ddrc_flux_wcmd = {
+ 	.event = {
+ 		.name = "uncore_hisi_ddrc.flux_wcmd",
+-		.event = "event=0x2",
++		.event = "event=2",
+ 		.desc = "DDRC write commands",
+ 		.topic = "uncore",
+ 		.long_desc = "DDRC write commands",
+@@ -156,13 +156,13 @@ static const struct perf_pmu_test_event unc_cbo_xsnp_response_miss_eviction = {
+ static const struct perf_pmu_test_event uncore_hyphen = {
+ 	.event = {
+ 		.name = "event-hyphen",
+-		.event = "event=0xe0,umask=0x00",
++		.event = "event=0xe0",
+ 		.desc = "UNC_CBO_HYPHEN",
+ 		.topic = "uncore",
+ 		.long_desc = "UNC_CBO_HYPHEN",
+ 		.pmu = "uncore_cbox",
+ 	},
+-	.alias_str = "event=0xe0,umask=0",
++	.alias_str = "event=0xe0",
+ 	.alias_long_desc = "UNC_CBO_HYPHEN",
+ 	.matching_pmu = "uncore_cbox_0",
+ };
+@@ -170,13 +170,13 @@ static const struct perf_pmu_test_event uncore_hyphen = {
+ static const struct perf_pmu_test_event uncore_two_hyph = {
+ 	.event = {
+ 		.name = "event-two-hyph",
+-		.event = "event=0xc0,umask=0x00",
++		.event = "event=0xc0",
+ 		.desc = "UNC_CBO_TWO_HYPH",
+ 		.topic = "uncore",
+ 		.long_desc = "UNC_CBO_TWO_HYPH",
+ 		.pmu = "uncore_cbox",
+ 	},
+-	.alias_str = "event=0xc0,umask=0",
++	.alias_str = "event=0xc0",
+ 	.alias_long_desc = "UNC_CBO_TWO_HYPH",
+ 	.matching_pmu = "uncore_cbox_0",
+ };
+@@ -184,7 +184,7 @@ static const struct perf_pmu_test_event uncore_two_hyph = {
+ static const struct perf_pmu_test_event uncore_hisi_l3c_rd_hit_cpipe = {
+ 	.event = {
+ 		.name = "uncore_hisi_l3c.rd_hit_cpipe",
+-		.event = "event=0x7",
++		.event = "event=7",
+ 		.desc = "Total read hits",
+ 		.topic = "uncore",
+ 		.long_desc = "Total read hits",
+@@ -265,7 +265,7 @@ static const struct perf_pmu_test_event sys_ccn_pmu_read_cycles = {
+ static const struct perf_pmu_test_event sys_cmn_pmu_hnf_cache_miss = {
+ 	.event = {
+ 		.name = "sys_cmn_pmu.hnf_cache_miss",
+-		.event = "eventid=0x1,type=0x5",
++		.event = "eventid=1,type=5",
+ 		.desc = "Counts total cache misses in first lookup result (high priority)",
+ 		.topic = "uncore",
+ 		.pmu = "uncore_sys_cmn_pmu",
+-- 
+2.43.0.429.g432eaa2c6b-goog
+
 
