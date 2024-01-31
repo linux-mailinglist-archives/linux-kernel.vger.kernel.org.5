@@ -1,197 +1,152 @@
-Return-Path: <linux-kernel+bounces-45988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 229EF8438D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CD86A8438CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:23:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0E401F26D07
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:23:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 520181F24260
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:23:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DEF55BAFF;
-	Wed, 31 Jan 2024 08:23:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07C645A0E3;
+	Wed, 31 Jan 2024 08:23:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="omV54Azr"
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XE/sxfpW"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D428C5820A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CC2E58135
 	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:23:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.25
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706689405; cv=none; b=dELP2owMIry03+bj6niuOp+eh0hzPuq4X0Lk+ssHHz8qUqAuKW3PFRpAD+/tVHycXNfPbm6n8lDUYnjwNXE0wcX9iAz85M/99i1og9WyZLENX3H5uRqqSQc6tq10gq0+byBU7DY2dGsE3r5frfDm8P/4uPyNQcxYS0azVARTwvg=
+	t=1706689404; cv=none; b=jjxo1Fu7I9lFlgnzDXk//1WpbSpeWxPlMSEmcGNN+XRNP+RnwYvDjcNtObWZA0cmzMNY4XV4RXEgVTPGTi5gNI4sD7amskrXC8o541Uzq6/olzaINQbRJGsD3F19bBsIBcGZhfCT/T9r73Uiop7hfBvl4or39sTjOt6J6eHUtQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706689405; c=relaxed/simple;
-	bh=nBU5GIbHBpl22p3MAZ75n0AGDakCxqSHTQMAC98VDOQ=;
-	h=From:To:In-Reply-To:Subject:Date:Message-ID:MIME-Version:
-	 Content-Type:References; b=s+nVNo35De4mAxsCuC5WNq6pNzz9Wk5T6q+/qRm3ZVlxygzehGSwme54/KyGtvWxGI3iNCqMsouubO9/7b48Hgqwot9zrXxa4Rm28+sA9g0RFnSdnXO5hCunJ9qvhF41T8CBtN5zJA8Worxl123NB/3SV3j07rsS1LVT5frqkmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=omV54Azr; arc=none smtp.client-ip=203.254.224.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20240131082314epoutp02d97d516c5b8ae450b3a6e975cac90e03~vYPZVtV6b2907429074epoutp02z
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:23:14 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20240131082314epoutp02d97d516c5b8ae450b3a6e975cac90e03~vYPZVtV6b2907429074epoutp02z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1706689394;
-	bh=nBU5GIbHBpl22p3MAZ75n0AGDakCxqSHTQMAC98VDOQ=;
-	h=From:To:In-Reply-To:Subject:Date:References:From;
-	b=omV54Azrk6eywNcCUkJgEDELJQfPTJgwGG63FitI+N14hmQT0oo+ZpQbj6gkOoIJA
-	 rtSN2yUCxK7LbhxJb7tavGEH433z+gmnY9mvaoTWMxyfE/0XXuJpmdhLAiXGwGkO+W
-	 yNNASBYI/qokH7jiWlH118rnbClKd9bDCCVCwUIY=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-	epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-	20240131082314epcas2p2442dfd97e8db4c01b6d4d9fb5dd63958~vYPY7prZ32644126441epcas2p2S;
-	Wed, 31 Jan 2024 08:23:14 +0000 (GMT)
-Received: from epsmgec2p1-new.samsung.com (unknown [182.195.36.100]) by
-	epsnrtp4.localdomain (Postfix) with ESMTP id 4TPw5s5Dq7z4x9Q7; Wed, 31 Jan
-	2024 08:23:13 +0000 (GMT)
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-	epsmgec2p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	6F.2B.18994.1730AB56; Wed, 31 Jan 2024 17:23:13 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-	epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
-	20240131082313epcas2p3f802bae1d9682b8df442891fcb27d073~vYPXr6Xw51750117501epcas2p3D;
-	Wed, 31 Jan 2024 08:23:13 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240131082313epsmtrp23cb8f2e48d962f52edc681e6e6ae9765~vYPXq6Ykm2025320253epsmtrp2e;
-	Wed, 31 Jan 2024 08:23:13 +0000 (GMT)
-X-AuditID: b6c32a4d-743ff70000004a32-63-65ba0371b252
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	D6.E4.07368.0730AB56; Wed, 31 Jan 2024 17:23:13 +0900 (KST)
-Received: from KORCO118546 (unknown [10.229.38.108]) by epsmtip2.samsung.com
-	(KnoxPortal) with ESMTPA id
-	20240131082312epsmtip233b17a2b4a83802cf2587f391f35b4d6~vYPXdS__p0197401974epsmtip2r;
-	Wed, 31 Jan 2024 08:23:12 +0000 (GMT)
-From: "hoyoung seo" <hy50.seo@samsung.com>
-To: "'Bart Van Assche'" <bvanassche@acm.org>, <linux-scsi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <alim.akhtar@samsung.com>,
-	<avri.altman@wdc.com>, <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-	<beanhuo@micron.com>, <kwangwon.min@samsung.com>, <kwmad.kim@samsung.com>,
-	<sh425.lee@samsung.com>, <sc.suh@samsung.com>, <quic_nguyenb@quicinc.com>,
-	<cpgs@samsung.com>, <grant.jung@samsung.com>, <junwoo80.lee@samsung.com>
-In-Reply-To: <92463403-ea32-4545-a466-21243cd454e2@acm.org>
-Subject: RE: [PATCH v1] scsi: ufs: core: Remove the ufshcd_release in
- ufshcd_err_handling_prepare
-Date: Wed, 31 Jan 2024 17:23:12 +0900
-Message-ID: <000001da541e$bb358590$31a090b0$@samsung.com>
+	s=arc-20240116; t=1706689404; c=relaxed/simple;
+	bh=QgpDZve7ss1zcRxUslxn5XlDMDLXMO00RYq1sF7s++o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bi+/+s1wn+5KiNKfyT+ZTe9nulM2P82DJCZzJCGujVAo5Msmde15fb+FOODSONov8ID95xdmFlQRaZNWOnZMKmV3EGgBKn1PhDuUOfGYi4ABn/4aRoC6X2SO9VUHqUsiiSZq/cQAk+Pg6eBXzikSnPdsAzLmeMPAnEbx7PI6eTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XE/sxfpW; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55eed368b0bso1283059a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:23:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706689400; x=1707294200; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6oWkXNQFc42njWrBrqxTcJGmHbVFrq7Z5uukN1LsJvo=;
+        b=XE/sxfpWsQ12AT0mH8w2C2XdswqbmzJjdfIMsPqStUoTnFkcBsYqFuKJM729AY8KdI
+         6REnoEqJha8LockcC0VQ9hIVL/Rz990rue1BrSGdnQM647txQxtbl+VSERoSZHQGRxyY
+         DNSOS9Bm9Q48lkYcLBu6YSINF9D06D7hfEfN8IylFUeVJeq3yLaZ26NlQzGrcNMWjaUd
+         RMXl8JCjqA5agFFtro1BMXTvtB0Aq743P2y5XWbkenpKRsZqzU+Z0VYeDlOmsREQGiGG
+         06QqT8BZveUih3BDhCLdS+L8REz4wbXLu2qsg90xkxOeD5UcXlZ6JjLdpTtPcSIjGAEL
+         2RcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706689400; x=1707294200;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6oWkXNQFc42njWrBrqxTcJGmHbVFrq7Z5uukN1LsJvo=;
+        b=f8qYgzRm2uI7eYQw8LQ6NF5WucmPz+BbJvXqhgYm8kWmrNh4sRBK0B5Nf6y5szmYqD
+         02XCN/LTbIp1xyFxvOmpJGCTDeUPq0/NKsabZQ1iw7nKQcR0UF2cOtziVSb1Hvt9YVtZ
+         3G8c+l9psFY8vAVswAnHp50T1m+FPSbjT3WSSpTioil8MEQEDktldsr2U2LxzXLO4oAV
+         +b592v5WG3UPngMG1llWo44dFbDp8XRfAsSo9bHNnECar4BiluHobfTOjonrDwcOe8L0
+         Ezwd9pL0t+peqKI4EEj/+WcvuRm+2/PK8GA2666BvJJFlYQKuoG5HIOlGl1wKN35KOUu
+         7g0A==
+X-Gm-Message-State: AOJu0Yw3IGUOmtkVSEwho/CyyqeANkyIXgbDEAPgTk9wQzxhNQkYgprW
+	JDXHygjWIvLgea5oyj8XRNb5CAbDe7jJ4OxVwDMCH1qPO1C175ZncpwPZFiXlpo=
+X-Google-Smtp-Source: AGHT+IFxEn8Dm6TyE4moFxcJmW05ztFJmbBnpV/niDQ4vi/BEjobr+abb1wIm8azHmC0V+A9QHVTpA==
+X-Received: by 2002:a05:6402:28a7:b0:55f:16d2:46a8 with SMTP id eg39-20020a05640228a700b0055f16d246a8mr908029edb.3.1706689400632;
+        Wed, 31 Jan 2024 00:23:20 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVu2nf+laZjhpaHa+O8ru184W3wpyDEnU4Va2z/o1HE1L/WXlRM0zYUtFl7SyaRpyWcZNo4tT4Jf0gHtol4LBWQYND23+fD02nVFk+PV3rgCl7B8uupIOfwWIpn2cyOYSANaqBjWenBTY5yLAoWEf72TGunJx4klneb5BioPDl4OoD9Ox9i6MeH6/vOquQ/wvSbIUkb3GWJs56Y8k20S0A3asM1PNUdGmd9vLo6aII+SoXQEKvLOG28R3olr6ujST3ttXwTjAc4quOfrWwJ0D/in42SzdwpvvyOFICfZnLC2diQIw==
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id en26-20020a056402529a00b0055823c2ae17sm5530662edb.64.2024.01.31.00.23.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 00:23:20 -0800 (PST)
+Message-ID: <faba2666-88f3-491c-8edb-c844fcec1f48@linaro.org>
+Date: Wed, 31 Jan 2024 09:23:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQH1h0Q8JIMtOyfGxnoTUCtVKJ9etQJjCVVCAjugl6QCof4DrwJoFjdRsG/Y62A=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA02TcUwTVxzH8+7OayGpuR21exKn9TZF2MC2A3ps1CzBzToUUZfNuCXdUW7A
-	WtrSKwxBF2ABoQQEo3O0YsQ50BphVCBQadQi4haY2wDpWADNBq4wlQmysQW2lmMb/33f9z7f
-	d7/ve3dClLyDhwozDBbWbGD0FB6MtXWFKyOzUBcrK/5sC33vTBtO++YHcfrG/TKM/nR6HqV9
-	nnD6z4UmAX3O24bQroVPELrV24HRP7R0Y3S/6zROlw+143RDzyJCn/ylR0BbR7yA/mLxIfYa
-	oe4fSFRXnbsO1L83leLq38aHMXV158fqyhYHUM8416uPXi9HkoUHdfHpLJPKmqWsQWtMzTCk
-	qajE/ZoETUysTB4pj6OVlNTAZLIqavuu5Mg3MvT++SlpDqPP9lvJDMdRW7fFm43ZFlaabuQs
-	Koo1pepNSlMUx2Ry2Ya0KANreUUukyli/OD7uvTjx942VRG5Q/1ToADcFllBkBAS0dBTeAGx
-	gmAhSXQCWFW4iPKLJwC2zlzD+MUcgM6uC7gVCJcilz5/h/fdAD69P40EtiIJH4CXKz8IaJyI
-	gMcetuABSEy4UNg82oAFHgQRr8Ly5jtoQIcQWjg4d1IQ2BQjNsHei2TAFhFxcLayHef1M/Cr
-	mp+XoijxIqyvm0L5saVwfrx+VSAqJpLg5ZLneEQM7WUlSwUgcU8I3ZM1gOe3w5HRWwivQ+Bk
-	T4uA16Fw5pF7uRcHbXX5fLYAQI/dtsy8DG0TR0GAQYlw2OTayuPPw5vDy5OthqVdC8u0CBY0
-	/yXgEREsLSF5m4K9tT8u2xDesOurAGVbUdG2oqJtRRfb/689CzAHCGVNXGYaq1WY5JEG9qP/
-	7lprzHSCpS87Ync7mGpaiPIARAg8AApRSiy6uL6DJUWpzKE81mzUmLP1LOcBMf5zr0ZD12iN
-	/l/DYNHIo+Nk0bGxcqUiRqaknhWNFtemkkQaY2F1LGtizf/mEGFQaAGi3ng196cJeeOjuLUq
-	pqyrQpwnSXEU7itb1TDdc1znWGebT5nFTmm2Dc/NH5Z4rOMTfXs3jQTX3ZVUdHiDHwzsKr6J
-	oo6JrksbclKUT5NI8u+3Buo7i47cyj9gROx7vn+MTw6Hfbu3tn9s7AVONrZT8no303Zi3eYI
-	GbaTyNvRyJzHfbcV0jfFchCiXcxSfdc4dC23UHM4/pv9fxzpO3iGWC0p1bnBWUVYwkuD+5Si
-	XEW+0QIde34Nu1tzpSpv9nF1hXXI5y063+v+emSzb+OaQ8U+85dX7XTOg+5TjXpxyIE+GxmS
-	+GES3XriypOoog3l71UnvFtrd7owZ1bjloy1FMalM/II1Mwx/wCl+whXYgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHIsWRmVeSWpSXmKPExsWy7bCSvG4h865Ug1PfGS0ezNvGZvHy51U2
-	i4MPO1kspn34yWzx8pCmxa+/69ktFt3YxmSx628zk8XWGztZLG5uOcpicXnXHDaL7us72CyW
-	H//HZDH1xXF2i667Nxgtlv57y+Ig4HH5irfHhEUHGD2+r+9g8/j49BaLx8Q9dR59W1Yxenze
-	JOfRfqCbKYAjissmJTUnsyy1SN8ugStj/jP3guf8FQc7p7I0MC7k7WLk4JAQMJFYvTi8i5GL
-	Q0hgN6NE1/QjjF2MnEBxCYn/i5uYIGxhifstR1ghip4zSlxZs40FJMEmoCXR/3YLG0hCROAc
-	s8TJjS9YIKqmM0lsuNPAClLFKWAt0b3xPDOILSyQKHH//UlWkNUsAqoSZ1YKgYR5BSwlvvTt
-	YIOwBSVOznwCtoBZQFvi6c2ncPayha+ZIS5SkPj5dBnYGBEBP4m1bbIQJSISszvbmCcwCs1C
-	MmkWkkmzkEyahaRlASPLKkbJ1ILi3PTcZMMCw7zUcr3ixNzi0rx0veT83E2M4CjV0tjBeG/+
-	P71DjEwcjIcYJTiYlUR4V8rtTBXiTUmsrEotyo8vKs1JLT7EKM3BoiTOazhjdoqQQHpiSWp2
-	ampBahFMlomDU6qBiSfZ/O+y+cxr8g+0VP98/2SJ75Zb352ET65QaV1ZmpbFttd/i95SUYer
-	bxeez52/2NHLqT/1wz+9lFVvKhVK9k0Mz1Pv/f75Q/HEs7eN1+2/ekf33+a1Z1Ytdor3bWE4
-	FLX6AGvY7J+F6TsXm6fMMtmrtkdFZOKnd6ZcXI7fb/umVU3qqlZ6sCs674P7SufTi+WOrOC+
-	3MQrWHP5npqMSIpc9rd5rpIJKfFKlwR7+kKeTJ9x5Kb85otuDY7bm+5FT7tzf/67T2HWKdUC
-	XMYXOlvKJ7wWOxW/O2sh81XraaIf2H+WNCY9U9I4Fyh77bTXvZnpazwtZvK37M7fFydVe2f5
-	TtcgnpXdmxSO+hX+u6/EUpyRaKjFXFScCACgLk/ZQQMAAA==
-X-CMS-MailID: 20240131082313epcas2p3f802bae1d9682b8df442891fcb27d073
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-X-CPGSPASS: Y
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240122083204epcas2p26a1bca522e201972ca072e0b24d23a52
-References: <CGME20240122083204epcas2p26a1bca522e201972ca072e0b24d23a52@epcas2p2.samsung.com>
-	<20240122083324.11797-1-hy50.seo@samsung.com>
-	<06e0ae57-f567-4b90-ad68-4ae73909c29e@acm.org>
-	<017501da4da5$405e5ec0$c11b1c40$@samsung.com>
-	<92463403-ea32-4545-a466-21243cd454e2@acm.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: mfd: syscon: Add ti,am654-serdes-ctrl
+ compatible
+Content-Language: en-US
+To: Andrew Davis <afd@ti.com>, Nishanth Menon <nm@ti.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240130195128.58748-1-afd@ti.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240130195128.58748-1-afd@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> -----Original Message-----
-> From: Bart Van Assche <bvanassche=40acm.org>
-> Sent: Thursday, January 25, 2024 1:17 AM
-> To: hoyoung seo <hy50.seo=40samsung.com>; linux-scsi=40vger.kernel.org; l=
-inux-
-> kernel=40vger.kernel.org; alim.akhtar=40samsung.com; avri.altman=40wdc.co=
-m;
-> jejb=40linux.ibm.com; martin.petersen=40oracle.com; beanhuo=40micron.com;
-> kwangwon.min=40samsung.com; kwmad.kim=40samsung.com; sh425.lee=40samsung.=
-com;
-> sc.suh=40samsung.com; quic_nguyenb=40quicinc.com; cpgs=40samsung.com;
-> grant.jung=40samsung.com; junwoo80.lee=40samsung.com
-> Subject: Re: =5BPATCH v1=5D scsi: ufs: core: Remove the ufshcd_release in
-> ufshcd_err_handling_prepare
->=20
-> On 1/22/24 18:38, hoyoung seo wrote:
-> > When err_handler is completed, active_reqs becomes negative because
-> > ufshcd_release() is called again in ufshcd_err_handling_unprepare().
-> > I tested it while printing the log, and if I misanalyzed it, let me kno=
-w.
->=20
-> Please repeat your analysis. I think this patch is wrong.
->=20
-> Thanks,
->=20
-> Bart.
+On 30/01/2024 20:51, Andrew Davis wrote:
+> Add TI SERDES control registers compatible. This is a region found in the
+> TI AM65 CTRL_MMR0 register space[0]. Each instance is used to control a
+> SERDES clock and lane select mux.
+> 
+> [0] https://www.ti.com/lit/pdf/spruid7
+> 
+> Signed-off-by: Andrew Davis <afd@ti.com>
 
-Hi,
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-I do not understand. why you said my patch is wrong.
-If ufs entered suspend with hibern8 state then the hba->clk_gating.active_r=
-eqs is 1.
-After that run wl_resume(), ufs drvier send hibern8 exit command.
-At that time, if the command timeout or error occurs, the err_handler is ac=
-tivated.=20
-Then the active_reqs pair may not fit.
-
-So to sum up, ufs_release() is performed 3 time.
-(wl_resume(), ufshcd_err_handling_prepare(), ufshcd_err_handling_unprepare(=
-))
-And the ufshcd_hold() is performed 2 time(__ufshcd_wl_suspend(), ufshcd_err=
-_handling_prepare())
-So the paire of active_reqs is not correct.
-So I deleted the ufshcd_release() in ufshcd_err_handling_prepare().
-
-The ufshcd_release() was not called again even in the pm_op_in_progress sta=
-te in 4.xx version of the kernel.
-But now if is_sys_suspended is 1, then ufshcd_release() is called once more=
-.
-I don't understand why this is added and the pair doesn't fit.
-
-Please check it again.
-Thanks.
-
-Seo.
+Best regards,
+Krzysztof
 
 
