@@ -1,102 +1,154 @@
-Return-Path: <linux-kernel+bounces-46542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5932C84411F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:57:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDB9E844124
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:57:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E840D1F2B387
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:57:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87C5228837D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:57:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3333C80C06;
-	Wed, 31 Jan 2024 13:56:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF4D80C07;
+	Wed, 31 Jan 2024 13:57:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nb3Ivi5f"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JMJM9ktc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4D6A82864
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:56:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7349B7866F;
+	Wed, 31 Jan 2024 13:57:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706709411; cv=none; b=LEZSCKHaeKXiRv3QIul2/2ItnZyPHWxUBotFfJhPktr2pr9jusZ8SOfQqbVIq0IyGQ0ro9xXwgyWnFVTo47qsq2EvPJm22ATVo/DL/PbY8vCB3YwGc2cfJJ49Zm/KavkTuo2Tbyi9hK7Rml1Gwo9eWLMPaW7BnS4YY1DS5PDd9A=
+	t=1706709451; cv=none; b=AmsAIh3a1JX/HTHPzpuphY/YzYacyl0VHxLH/9sD18YAo0VAD4BcqSKfmatzYfPbvYvL0Jq02N9zyRQ5p0MY67h9aV7CczKhThkV6znDdeIQTciAL4b1brXEFsSgm9N+bVFvcZALqPO19k9BzHFmi6XH/a9i/e/MPpb23G4CJ+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706709411; c=relaxed/simple;
-	bh=rGSvB5/8qxA64jtWN9ZfyRNxz1iktfkomOYpwJsrEU8=;
+	s=arc-20240116; t=1706709451; c=relaxed/simple;
+	bh=nLvzwb6WYwRoyrFoBK7xr3Ig0dOYx8JY28+OYqJ4wAE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=li/v+FTVZgjjM/r198lwGhL45UJHmyU6Jl2vsm74R86lTFlrrLvIJMXB0+EXm1K2g9yj6LdX3PGx2T97xnRL0clqrYsqGTXZRVmdXeIkXnQBroe8H6Om1IRsgGuC+GN/1Zi9laL1DVT6aZr4hR8vyvoBCcpuPc8AQHZlNmG1Nwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nb3Ivi5f; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d057b6ddfdso24613751fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 05:56:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706709408; x=1707314208; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rGSvB5/8qxA64jtWN9ZfyRNxz1iktfkomOYpwJsrEU8=;
-        b=Nb3Ivi5fzBXJa7q9Kl7AOMGtiRU6JhK+evIEifxG2Pdz43ii8k5w8kBob2JHs1EnRZ
-         A86V8O3OX1E8ILZ+1A9Xrnvi8hxjSmSwakhfLyWZKZOovAjoaW+S/ibKsUn/Mzoxm9Qo
-         hTehEJqs2Mp3fNY+Kx46u+AZObw62Sm/vRiErbi6It13XZfQEq9yg8ZhuXdNIfdHCqIA
-         5xYBlUub4uxFQboZuecWBtoXNY5gp8OnvNW3orKfpbYMumCPEPsTyKCckKrjxjspvanL
-         15rMfoDwYkghO7sBWJSZYTJXfK8qlqKwkAS5d/sU4lux64vDThwa+59oRwVM7MW2jSX7
-         UW7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706709408; x=1707314208;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rGSvB5/8qxA64jtWN9ZfyRNxz1iktfkomOYpwJsrEU8=;
-        b=S3sxJ2ngkc/dJUbluqhLhdAU3gnhs322FURDmdGFUjiaTXJM/sqQxjstKI3jX606Xa
-         ProlT/cFgPIUjYecGq+gcAQeAG+h6xfr2fXPRs9Y5zZHz6n5sM7X6vF8r0h5Vbd4g7E9
-         So/eO6kss6Aa6mspSbTCTzY2+anXADgxW9OKzxM0WxVe5Qdse+ySBxnCs9GQkdpcoHAw
-         oeJ6hXSoCgXEG+oiP6suFr4GmTgSIyKuhZJMxk8UqMN3Anlbc3ccDyOGa6YTJgbzLTNa
-         9V0ak+srIUA36WZg7qYbQ9A/q+x9VXIzwH/UhehmJOKSg5aHP5XWpJphUGNhVpxM5gB6
-         6kDw==
-X-Gm-Message-State: AOJu0YwJ02f+pgtyMSs8KQsbmXSH3awz/uZMQctvE6k/h6j/TI5TumX/
-	DHJQJ+RVgnNfjFRCGPi4LP0NOSCNpthEvyws9eCy9H6RzsOHr8DLvLXujzKBoT/ACXBU5L0JS6x
-	H5dHX3aoHWuleINC8rmRx8z3P8dg=
-X-Google-Smtp-Source: AGHT+IHlkF3I7FEjP8gwzU2CmWK1s44YfAt24aenmwRx9jOqw+OUQ0fdI/ODDaa5RcZa8ZtqtM/krkro9JbWDWuAwqk=
-X-Received: by 2002:a2e:8906:0:b0:2d0:6396:ba91 with SMTP id
- d6-20020a2e8906000000b002d06396ba91mr1189479lji.44.1706709407473; Wed, 31 Jan
- 2024 05:56:47 -0800 (PST)
+	 To:Cc:Content-Type; b=aJv8ZnVc4xjA1ydXvNJtIygLXyT6pgHC7IobtQ35weA7bl8tUSSXjZrMJisvYGTmNFygTObgF11zOc6F/heZs0tRx8Z9NWA6xc86pSo4zzlGeP16orqJi0YXRppQNs+ReVDD7s+PXPwBO80AeyGxw6QrHl58fvwTCsgmT8Pr/f8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JMJM9ktc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 482A5C433C7;
+	Wed, 31 Jan 2024 13:57:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706709451;
+	bh=nLvzwb6WYwRoyrFoBK7xr3Ig0dOYx8JY28+OYqJ4wAE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=JMJM9ktcnrmUtDHOzMgMydX0TzI+TQgzOdnVQZlAwuF7himMX6COXvBqgs785UpQ6
+	 O0jSx/fOukXyp+nn4TIEkZAhXE/96/L3bRebV/UC+givnL9IvqbHa9H5Ma/9ZzpqcK
+	 /15dYAELntgCU2xsAEY2xaTFs1jedkULLNmdi7f40VdAP+iS/WXdRoalRK4z3VID3t
+	 UCYeJtmrER5z/4xL1bz/BTphqkQLQvbFlQsx08bkI7oMBSnnRCTvD52ujkJIByE35N
+	 OMGqTxI01L+tvZoc41J3ghLjPobM61vnrgrXXrXw2S7fVMMNVv0t6IwFgk/ghbk8vk
+	 UpZyn7atMR6RQ==
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cf588c4dbcso50606941fa.1;
+        Wed, 31 Jan 2024 05:57:31 -0800 (PST)
+X-Gm-Message-State: AOJu0Ywiu5QCo/4CW8TcDLKr0GwNTdAZMW08w/ZN8RAtjtGCcObzXcyE
+	+uTzk6okXyFNrvAVMDWCYBuBz2kKGrSwcyUaIerRmRWqxuC3/ugr0mP18Rqn3a91mIylHLtLqyE
+	Db0MHpxUi0KrPNBSrL0VF8eFMD4A=
+X-Google-Smtp-Source: AGHT+IE5KOp/oqYq4S5cBEtKvQDaGkC8zXIG3DeDsiZ++cOC6WwUL+DXRU3gVuk676tBxlVNSAp8wTW59zMONGU7b3I=
+X-Received: by 2002:a05:651c:19a8:b0:2ce:fa00:9b0a with SMTP id
+ bx40-20020a05651c19a800b002cefa009b0amr1505548ljb.16.1706709449515; Wed, 31
+ Jan 2024 05:57:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117190545.596057-1-vincent.guittot@linaro.org>
-In-Reply-To: <20240117190545.596057-1-vincent.guittot@linaro.org>
-From: Erico Nunes <nunes.erico@gmail.com>
-Date: Wed, 31 Jan 2024 14:56:35 +0100
-Message-ID: <CAK4VdL3Bg70ycz5vd4RfwNYa3KcYU8rdPX==i7znzQFw_EgTjA@mail.gmail.com>
-Subject: Re: [Resend PATCH] topology: Set capacity_freq_ref in all cases
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
-	sudeep.holla@arm.com, gregkh@linuxfoundation.org, rafael@kernel.org, 
-	linux-kernel@vger.kernel.org, lukasz.luba@arm.com, ionela.voinescu@arm.com
+References: <20240129180502.4069817-21-ardb+git@google.com>
+ <20240129180502.4069817-24-ardb+git@google.com> <20240131134431.GJZbpOvz3Ibhg4VhCl@fat_crate.local>
+In-Reply-To: <20240131134431.GJZbpOvz3Ibhg4VhCl@fat_crate.local>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Wed, 31 Jan 2024 14:57:18 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXF7T4morB+Z3BDy-UaeHoeU6fHtnaa-7HJY_NR3RVC5sg@mail.gmail.com>
+Message-ID: <CAMj1kXF7T4morB+Z3BDy-UaeHoeU6fHtnaa-7HJY_NR3RVC5sg@mail.gmail.com>
+Subject: Re: [PATCH v3 03/19] x86/startup_64: Drop long return to initial_code pointer
+To: Borislav Petkov <bp@alien8.de>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
+	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
+	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 17, 2024 at 8:06=E2=80=AFPM Vincent Guittot
-<vincent.guittot@linaro.org> wrote:
+On Wed, 31 Jan 2024 at 14:45, Borislav Petkov <bp@alien8.de> wrote:
 >
-> If "capacity-dmips-mhz" is not set, raw_capacity is null and we skip the
-> normalization step which includes setting per_cpu capacity_freq_ref.
-> Always register the notifier but skip the capacity normalization if
-> raw_capacity is null.
+> On Mon, Jan 29, 2024 at 07:05:06PM +0100, Ard Biesheuvel wrote:
+> > From: Ard Biesheuvel <ardb@kernel.org>
+> >
+> > Since commit 866b556efa12 ("x86/head/64: Install startup GDT"), the
+> > primary startup sequence sets the code segment register (CS) to __KERNEL_CS
+> > before calling into the startup code shared between primary and
+> > secondary boot.
+> >
+> > This means a simple indirect call is sufficient here.
+> >
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > ---
+> >  arch/x86/kernel/head_64.S | 35 ++------------------
+> >  1 file changed, 3 insertions(+), 32 deletions(-)
+> >
+> > diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+> > index d4918d03efb4..4017a49d7b76 100644
+> > --- a/arch/x86/kernel/head_64.S
+> > +++ b/arch/x86/kernel/head_64.S
+> > @@ -428,39 +428,10 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+> >       movq    %r15, %rdi
+> >
+> >  .Ljump_to_C_code:
+> > -     /*
+> > -      * Jump to run C code and to be on a real kernel address.
+> > -      * Since we are running on identity-mapped space we have to jump
+> > -      * to the full 64bit address, this is only possible as indirect
+> > -      * jump.  In addition we need to ensure %cs is set so we make this
+> > -      * a far return.
+> > -      *
+> > -      * Note: do not change to far jump indirect with 64bit offset.
+> > -      *
+> > -      * AMD does not support far jump indirect with 64bit offset.
+> > -      * AMD64 Architecture Programmer's Manual, Volume 3: states only
+> > -      *      JMP FAR mem16:16 FF /5 Far jump indirect,
+> > -      *              with the target specified by a far pointer in memory.
+> > -      *      JMP FAR mem16:32 FF /5 Far jump indirect,
+> > -      *              with the target specified by a far pointer in memory.
+> > -      *
+> > -      * Intel64 does support 64bit offset.
+> > -      * Software Developer Manual Vol 2: states:
+> > -      *      FF /5 JMP m16:16 Jump far, absolute indirect,
+> > -      *              address given in m16:16
+> > -      *      FF /5 JMP m16:32 Jump far, absolute indirect,
+> > -      *              address given in m16:32.
+> > -      *      REX.W + FF /5 JMP m16:64 Jump far, absolute indirect,
+> > -      *              address given in m16:64.
+> > -      */
+> > -     pushq   $.Lafter_lret   # put return address on stack for unwinder
+> >       xorl    %ebp, %ebp      # clear frame pointer
+> > -     movq    initial_code(%rip), %rax
+> > -     pushq   $__KERNEL_CS    # set correct cs
+> > -     pushq   %rax            # target address in negative space
+> > -     lretq
+> > -.Lafter_lret:
+> > -     ANNOTATE_NOENDBR
+> > +     ANNOTATE_RETPOLINE_SAFE
+> > +     callq   *initial_code(%rip)
+> > +     int3
+> >  SYM_CODE_END(secondary_startup_64)
+> >
+> >  #include "verify_cpu.S"
+>
+> objtool doesn't like it yet:
+>
+> vmlinux.o: warning: objtool: verify_cpu+0x0: stack state mismatch: cfa1=4+8 cfa2=-1+0
+>
+> Once we've solved this, I'll take this one even now - very nice cleanup!
+>
 
-I bisected an issue of cpufreq no longer working on v6.8-rc on a TI
-SK-AM62 board and it pointed me to b3edde44e5d4 ("cpufreq/schedutil:
-Use a fixed reference frequency").
-This commit does fix the issue but doesn't appear to be merged
-anywhere yet. It would be good to have this fixed before 6.8 release.
+s/int3/RET seems to do the trick.
 
-Tested-by: Erico Nunes <nunes.erico@gmail.com>
+As long as there is an instruction that follows the callq, the
+unwinder will see secondary_startup_64 at the base of the call stack.
+We never return here anyway.
 
