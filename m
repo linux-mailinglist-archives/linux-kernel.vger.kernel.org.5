@@ -1,54 +1,50 @@
-Return-Path: <linux-kernel+bounces-46176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF044843BD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:06:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2DC3843BE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:09:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3C761C268CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:06:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3ACE7B26A7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:09:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E9AB69979;
-	Wed, 31 Jan 2024 10:06:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="oBwNzubw"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A22C769D0C;
+	Wed, 31 Jan 2024 10:09:20 +0000 (UTC)
+Received: from smtpbg156.qq.com (smtpbg156.qq.com [15.184.82.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1345069965;
-	Wed, 31 Jan 2024 10:06:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A30169D00
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 10:09:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=15.184.82.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706695569; cv=none; b=ljw2aQygXmmm2DBmwYBEb4E17HsDavGF51ZYaZcMfoVoQu892Uf4Js6iYzpVyPtR7JpQEKcO2IYYuUpT2WRRBDuIqOvYdHXLL+l7jGRv9LmRfaUx2U7Xu2p2+aJq5dM6XyuiU7d/UzCip9te8O6cF4FKmCyI+CK9QXoYl9XCSLA=
+	t=1706695760; cv=none; b=pYp0H3M7g0IIhQIprbBDGonbXHdMaclBvCb7oJBLI71AbTz2DNmmbTmOOdADl9fuZL4Dqgu8jH5MKnp9p+hBPnNRYzeq1Tb24XVCEVJHIyAMIPA8Of4fa6dA1iQgQUa44uPlQ5Dgy/QTKlnQL8XAADFdgY6ea+MIihd6Yg3QG3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706695569; c=relaxed/simple;
-	bh=MpuQqnLF66XI0eqOhn7879yMmtGSB4qkaz4eLFpnWNI=;
+	s=arc-20240116; t=1706695760; c=relaxed/simple;
+	bh=RP/I+8uuK/VRuOMcdIvi50FS3t9KpH1OFAKeipus0Zk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ofElpx38vXAQeIMd009cW+/IT849TMioRcarGi+Htd5lR5arE3TONWZkNPvhiaffXtrdGdAkjjABSikaHYtsi3p0TI2QanVNaQAsnYDUaicJBBSozhVyP58H/dhVFp1tdM5h1gcbiljK5iRzij7ej30X455gE8ifmOTeGWEmZMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=oBwNzubw; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706695564;
-	bh=MpuQqnLF66XI0eqOhn7879yMmtGSB4qkaz4eLFpnWNI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=oBwNzubwdByfMM9ploFOJwWUN1AX2JRpDfKwiJbAekj0zUFGyyImFp9BGFYRBNGOV
-	 rUUhHLuYi6XAijR9gUSEDw8hq9dC4ekpDmef3HUYuYSLu9EF2G4oSw/HhPvgPyBpgJ
-	 bwoOAYsO/zEJiBcUwgU+mipPHkNSKU96rL1pQH01xhzdspIUF26CAGScoGXnMGUQVk
-	 GE38JnW8kxLlqB/cfq9PmrkONyIburVaF5xkq2Tq3ywUVEBN9xj51quLuLLjqX2ZXe
-	 hb++P2PIDL8FOP8FUUzh/1SJBBhT9hAL8+jEmIJlTZ9ye+PeY52AvSHVE2Ecgrum+x
-	 tjsgc8P1mstUw==
-Received: from [100.93.89.217] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: benjamin.gaignard)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B5BCA37811CF;
-	Wed, 31 Jan 2024 10:06:03 +0000 (UTC)
-Message-ID: <6a31726b-1e91-46b1-889c-4f643c759afb@collabora.com>
-Date: Wed, 31 Jan 2024 11:06:03 +0100
+	 In-Reply-To:Content-Type; b=AJtHyc67IqqCXcbqXkuYT6paysjnNlwwgJ8UdqMpcuQRalqJliOb3g6ajCVK96EqwMWxBJ6xT9EocQV5wPKTdCcp1UsX75MncpfMwpcV0bFVmttZ3Iu/NZCpGum/9pSO5/88si5PdybctlkTOWCeEZCAPFqGTrcjW19kEni3D9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=15.184.82.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp75t1706695625tivm4zm9
+X-QQ-Originating-IP: nhTylzDyDo0X69SSTDFByXkurmTeC9BIYrrq9o5w/Rc=
+Received: from [127.0.0.1] ( [223.112.234.130])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Wed, 31 Jan 2024 18:07:04 +0800 (CST)
+X-QQ-SSF: 00400000000000B0B000000A0000000
+X-QQ-FEAT: FwowAM4HOqA1ZfczPNwk89L/EDYhnrdgPQcm5K2csmbV6IglsxTql112S2ip+
+	o3diWF5wkq++k7OF3ypRhArsEXktzpH6EEfoeVu0rzEc4uMPCe9yOeowypok6Rg8U5086jc
+	xpSGlnh5TI51dMlXbfw1cTlAxvj03VfLJ9Qm0gx+8UXx/FhqWJqO8te94/WdMy8bKTD9HXv
+	71IMoyO6lu6CGUdzaMNg1vLJEh2K4IhyvOQ+G0/4CabIC05UDW7fiKLmmj7gzyyvtYKxScX
+	czfXZs0Kf91pfIaD+KKHiWQclvEo2wzDuW35n3VkZnQ9dUKAZgDXwLeWG3fWUhuY0KQRep6
+	G4rwpI607SxyyKMIsClefN8evPqSIr/1glujPTKSEg+R/4t2ev/ajMtMect7sZiACMJCv35
+	+sfDfFrwFzBsJAdcHQM0jU3dA7kBYDed
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 10940394262338438076
+Message-ID: <0C0EA95E5AC6D147+ff1001b7-d61b-4365-9a22-b3c4dfacbc53@shingroup.cn>
+Date: Wed, 31 Jan 2024 18:07:03 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,214 +52,223 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RCF 1/2] media: videodev2: Add V4L2_FMT_FLAG_ALL_FORMATS flag
-To: Nicolas Dufresne <nicolas.dufresne@collabora.com>, mchehab@kernel.org,
- p.zabel@pengutronix.de, hverkuil-cisco@xs4all.nl
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-rockchip@lists.infradead.org, kernel@collabora.com
-References: <20240111160721.50020-1-benjamin.gaignard@collabora.com>
- <20240111160721.50020-2-benjamin.gaignard@collabora.com>
- <cc3944167e6b98470befd575520adb50cb8a45fa.camel@collabora.com>
+Subject: Re: [PATCH v2] perf/hx_arm_ni: Support uncore ARM NI-700 PMU
 Content-Language: en-US
-From: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-In-Reply-To: <cc3944167e6b98470befd575520adb50cb8a45fa.camel@collabora.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>, Will Deacon <will@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>
+Cc: shenghui.qu@shingroup.cn, ke.zhao@shingroup.cn, zhijie.ren@shingroup.cn,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240131070821.11477-1-jialong.yang@shingroup.cn>
+ <deb708e5-bbaf-4510-826b-17e14e69b475@kernel.org>
+ <6D9001324476F76F+ee5f853d-7c69-4a99-857c-cc2b03e9eea1@shingroup.cn>
+ <fef66164-1238-45e4-b70c-c565caa2cf75@kernel.org>
+From: =?UTF-8?B?WWFuZyBKaWFsb25nIOadqOS9s+m+mQ==?= <jialong.yang@shingroup.cn>
+In-Reply-To: <fef66164-1238-45e4-b70c-c565caa2cf75@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz6a-1
 
 
-Le 17/01/2024 à 20:41, Nicolas Dufresne a écrit :
-> Le jeudi 11 janvier 2024 à 17:07 +0100, Benjamin Gaignard a écrit :
->> Add new flag to allow enumerate all pixels formats when
->> calling VIDIOC_ENUM_FMT ioctl.
->> When this flag is set drivers must ignore the configuration
->> and return the hardware supported pixel formats for the specified queue.
->> This will permit to discover which pixels formats are supported
->> without setting codec-specific information so userland can more easily
->> knows if the driver suit well to what it needs.
->> The main target are stateless decoders so update the documentation
->> about how use this flag.
+
+在 2024/1/31 17:38, Krzysztof Kozlowski 写道:
+> On 31/01/2024 10:07, Yang Jialong 杨佳龙 wrote:
 >>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> ---
->>   .../userspace-api/media/v4l/dev-stateless-decoder.rst         | 3 +++
->>   Documentation/userspace-api/media/v4l/vidioc-enum-fmt.rst     | 4 ++++
->>   Documentation/userspace-api/media/videodev2.h.rst.exceptions  | 1 +
->>   drivers/media/v4l2-core/v4l2-ioctl.c                          | 2 +-
->>   include/uapi/linux/videodev2.h                                | 1 +
->>   5 files changed, 10 insertions(+), 1 deletion(-)
 >>
->> diff --git a/Documentation/userspace-api/media/v4l/dev-stateless-decoder.rst b/Documentation/userspace-api/media/v4l/dev-stateless-decoder.rst
->> index 35ed05f2695e..b7b650f1a18f 100644
->> --- a/Documentation/userspace-api/media/v4l/dev-stateless-decoder.rst
->> +++ b/Documentation/userspace-api/media/v4l/dev-stateless-decoder.rst
->> @@ -58,6 +58,9 @@ Querying capabilities
->>        default values for these controls being used, and a returned set of formats
->>        that may not be usable for the media the client is trying to decode.
->>   
->> +   * If ``V4L2_FMT_FLAG_ALL_FORMATS`` flag is set the driver must enumerate
->> +     all the supported formats without taking care of codec-dependent controls.
->> +
->>   3. The client may use :c:func:`VIDIOC_ENUM_FRAMESIZES` to detect supported
->>      resolutions for a given format, passing desired pixel format in
->>      :c:type:`v4l2_frmsizeenum`'s ``pixel_format``.
->> diff --git a/Documentation/userspace-api/media/v4l/vidioc-enum-fmt.rst b/Documentation/userspace-api/media/v4l/vidioc-enum-fmt.rst
->> index 000c154b0f98..db8bc8e29a91 100644
->> --- a/Documentation/userspace-api/media/v4l/vidioc-enum-fmt.rst
->> +++ b/Documentation/userspace-api/media/v4l/vidioc-enum-fmt.rst
->> @@ -227,6 +227,10 @@ the ``mbus_code`` field is handled differently:
->>   	The application can ask to configure the quantization of the capture
->>   	device when calling the :ref:`VIDIOC_S_FMT <VIDIOC_G_FMT>` ioctl with
->>   	:ref:`V4L2_PIX_FMT_FLAG_SET_CSC <v4l2-pix-fmt-flag-set-csc>` set.
->> +    * - ``V4L2_FMT_FLAG_ALL_FORMATS``
->> +      - 0x0200
->> +      - Set by userland application to enumerate all possible pixels formats
->> +        without taking care of the current configuration.
-> This is a bit ambiguous regarding if OUTPUT queue FMT is ignored or not. From
-> our chat, it is ignored in this implementation. Such if I use MTK VCODEC as an
-> example, using that feature would return:
+>> 在 2024/1/31 15:59, Krzysztof Kozlowski 写道:
+>>> On 31/01/2024 08:08, JiaLong.Yang wrote:
+>>>> This code is based on uncore PMUs arm_smmuv3_pmu and arm-cmn.
+>>>> One ni-700 can have many clock domains. Each of them has only one PMU.
+>>>> Here one PMU corresponds to one 'struct ni_pmu' instance.
+>>>> PMU name will be ni_pmu_N_M, which N means different NI-700s and M means
+>>>> different PMU in one NI-700. If only one NI-700 found in NI-700, name will
+>>>> be ni_pmu_N.
+>>>> Node interface event name will be xxni_N_eventname, such as
+>>>> asni_0_rdreq_any. There are many kinds of type of nodes in one clock
+>>>> domain. Also means that there are many kinds of that in one PMU. So we
+>>>> distinguish them by xxni string. Besides, maybe there are many nodes
+>>>> have same type. So we have number N in event name.
+>>>> By ni_pmu_0_0/asni_0_rdreq_any/, we can pinpoint accurate bus traffic.
+>>>> Example1: perf stat -a -e ni_pmu_0_0/asni_0_rdreq_any/,ni_pmu_0_0/cycles/
+>>>> EXample2: perf stat -a -e ni_pmu_0_0/asni,id=0,event=0x0/
+>>>>
+>>>> Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
+>>>> ---
+>>>> v1 --> v2:
+>>>> 1. Submit MAINTANER Documentation/ files seperately.
+>>>
+>>> SEPARATE PATCHES, not patchsets. You have now checkpatch warnings
+>>> because of this...
+>>
+>> ...OK. But the MAINTANER file changing should be given in which one
+>> patches.
+>> I will submit patch v3 after talking and your permission.
+>>
+>>>
+>>>> 2. Delete some useless info printing.
+>>>> 3. Change print from pr_xxx to dev_xxx.
+>>>> 4. Fix more than 75 length log info.
+>>>> 5. Fix dts attribute pccs-id.
+>>>> 6. Fix generic name according to DT specification.
+>>>> 7. Some indentation.
+>>>> 8. Del of_match_ptr macro.
+>>>>
+>>>>    drivers/perf/Kconfig     |   11 +
+>>>>    drivers/perf/Makefile    |    1 +
+>>>>    drivers/perf/hx_arm_ni.c | 1284 ++++++++++++++++++++++++++++++++++++++
+>>>>    3 files changed, 1296 insertions(+)
+>>>>    create mode 100644 drivers/perf/hx_arm_ni.c
+>>>>
+>>>> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
+>>>> index ec6e0d9194a1..95ef8b13730f 100644
+>>>> --- a/drivers/perf/Kconfig
+>>>> +++ b/drivers/perf/Kconfig
+>>>> @@ -241,4 +241,15 @@ config CXL_PMU
+>>>>    
+>>>>    	  If unsure say 'm'.
+>>>>    
+>>>> +config HX_ARM_NI_PMU
+>>>> +       tristate "HX ARM NI-700 PMU"
+>>>> +       depends on PPC_HX_C2000 && 64BIT
+>>>
+>>> 1. There is no PPC_HX_C2000.
+>>
+>> I have been used to using this macro. However this macro is not existed
+>> in mainline.
+>> I will replace it with ARM64. And del involved C code if OK.
+>>
+>> 64bit:
+>> __ffs(unsigned long) and __fls(unsigned long) will be wrong in 32bit. I
+>> pass a u64 argument.
+> 
+> One thing is where the code is supposed to run, second thing is compile
+> testing.
+> 
 
-I will reword it for next version, but yes the goal of this flag is to enumerate
-all pixels formats without taking care of any queue configuration.
+Now run on my company product, a 64bit PowerPC...
+But I think it's general for 64bit systems.
 
->
-> - MM21
-> - MT2T
-> - MT2R
->
-> At high level, the use case is to find an easy way to combine the per codec
-> profile information and the pixel format, since userspace can only use e.g.
-> 10bit capability if it knows the associated pixel formats. This implementation
-> is already useful in my opinion, I'll try and draft a GStreamer change to use
-> it, as I think it will better support the idea. But it has come ceavats.
->
-> Notably, if you had a userland that implement MT2T (VP9/AV1/HEVC) but not MT2R
-> (H264), it would not have an easy API to figure-out. It would still have to
-> resort into enumerating formats for each possible codec and codec specific
-> compound control configuration.
->
-> An alternative is to make this enumerate "all" for the configure OUTPUT format.
-> This increase the precision, while still allowing generic code to be used. In
-> pseudo code that would be like:
->
-> for output formats
->    S_FMT(OUTPUT)
->
->    for ALL capture formats
->      store(format)
->
-> Where right now we have do do:
->
->
-> for output formats
->    S_FMT(OUTPUT)
->
->    S_CTRL(codec_specific_ctl_config_1)
->    for capture formats
->      store(format)
->
->
->    S_CTRL(codec_specific_ctl_config_n)
->    for capture format
->      store(format)
->    
->    ...
->
->    S_CTRL(codec_specific_ctl_config_n)
->    for capture formats
->      store(format)
->
-> Where each config would demote a specific feature, like 10bit, 422, 444, film-
-> grain (posprocessing affect output formats). The posprocessing remains a bit
-> hard to figure-out in both cases though. But in practice, if I use Hantro AV1
-> decoder as an example, I'd get something like:
->
->    NV15_4L4
->    P010
->
-> Where NV15_4L4 is not available with filmgrain filter, but P010 is always
-> available. For my GStreamer use case (template caps) this wouldn't be a problem,
-> P010 is a well supported format and I strictly need a superset of the supported
-> formats.
->
-> What I'd really gain is that I don't have to do complicated enumeration logic
-> per codec features.
->
-> Nicolas
->
-> p.s. It would be logical to update dev-stateless-decoder doc, to mention this
-> enumeration option. Currently it says:
->
->
->     To enumerate the set of supported raw formats, the client calls
->     VIDIOC_ENUM_FMT() on the CAPTURE queue.
->     
->        *    The driver must return only the formats supported for the format
->        currently active on the OUTPUT queue.
->     
->        *    Depending on the currently set OUTPUT format, the set of supported
->        raw formats may depend on the value of some codec-dependent controls. The
->        client is responsible for making sure that these controls are set before
->        querying the CAPTURE queue. Failure to do so will result in the default
->        values for these controls being used, and a returned set of formats that
->        may not be usable for the media the client is trying to decode.
+> Why do you use __ffs, not __ffs64 which takes u64 if you really want
+> only 64bit argument? unsigned long != u64, so your code is not
+> architecture independent. You claim you wrote it on purpose as
+> non-architecture-independent, but then I claim it's a bug. We are
+> supposed to write code which is portable, as much as possible, assuming
+> it does not affect readability.
+> 
 
-I have done it, look at the top of this patch.
+I write code in v5.18, there are __ffs64() and fls64(). Asymmetric.
+There are some difference in return val between __ffs() and ffs64().
+__ffs(0) and ffs64(0) will give different value.
 
->
->
->>   
->>   Return Value
->>   ============
->> diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
->> index 3e58aac4ef0b..42d9075b7fc2 100644
->> --- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
->> +++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
->> @@ -215,6 +215,7 @@ replace define V4L2_FMT_FLAG_CSC_XFER_FUNC fmtdesc-flags
->>   replace define V4L2_FMT_FLAG_CSC_YCBCR_ENC fmtdesc-flags
->>   replace define V4L2_FMT_FLAG_CSC_HSV_ENC fmtdesc-flags
->>   replace define V4L2_FMT_FLAG_CSC_QUANTIZATION fmtdesc-flags
->> +replace define V4L2_FMT_FLAG_ALL_FORMATS fmtdesc-flags
->>   
->>   # V4L2 timecode types
->>   replace define V4L2_TC_TYPE_24FPS timecode-type
->> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
->> index 33076af4dfdb..22a93d074a5b 100644
->> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
->> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
->> @@ -1544,7 +1544,7 @@ static int v4l_enum_fmt(const struct v4l2_ioctl_ops *ops,
->>   		p->mbus_code = 0;
->>   
->>   	mbus_code = p->mbus_code;
->> -	memset_after(p, 0, type);
->> +	memset_after(p, 0, flags);
-> In other similar places, we still clear the flags, and only keep the allowed
-> bits. Maybe we should do this here too to avoid accidental flags going through ?
->
-> That should maybe be under some capability flag, so that userland knows if the
-> driver did implement that feature or not. If the driver didn't set that flag, we
-> can then clear it so that userlands not checking that flag would at least get an
-> enumeration response without it.
+And I'm sure code run in 64bit. So I choose to use __ffs and __fls.
 
-I will do that in next version.
+Maybe it could be compatbile with 32bit. But I don't have a environment 
+to test this.
+> 
+>> struct ni_hw_perf_event will be big than limit.
+>> BUILD_BUG_ON(sizeof(struct ni_hw_perf_event) > offsetof(struct
+>> hw_perf_event, target));
+> 
+> And why do you need to use any of such code? Please open one of hundreds
+> of other drivers which work correctly on 32 and 64-bit platforms.
+> 
 
-Regards,
-Benjamin
+Code for 64bit.
+This code is to avoid struct ni_hw_perf_event is too big than struct 
+hw_perf_event::target.
+I learn it from arm-cmn.c.
+ni_hw_perf_event will replace hw_perf_event.
+I will put some useful information in it with less space and good field 
+names.
+But I can't exceed a limit.
 
->
->>   	p->mbus_code = mbus_code;
->>   
->>   	switch (p->type) {
->> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
->> index 68e7ac178cc2..82d8c8a7fb7f 100644
->> --- a/include/uapi/linux/videodev2.h
->> +++ b/include/uapi/linux/videodev2.h
->> @@ -869,6 +869,7 @@ struct v4l2_fmtdesc {
->>   #define V4L2_FMT_FLAG_CSC_YCBCR_ENC		0x0080
->>   #define V4L2_FMT_FLAG_CSC_HSV_ENC		V4L2_FMT_FLAG_CSC_YCBCR_ENC
->>   #define V4L2_FMT_FLAG_CSC_QUANTIZATION		0x0100
->> +#define V4L2_FMT_FLAG_ALL_FORMATS		0x0200
->>   
->>   	/* Frame Size and frame rate enumeration */
->>   /*
->
+>>
+>>> 2. Nothing justified dependency on 64bit. Drop or explain. Your previous
+>>> message did not provide real rationale.
+>>
+>> If ARM64, then drop.
+> 
+> ...
+> 
+> ...
+> 
+>>>> +	/* Step2: Traverse all clock domains. */
+>>>> +	for (cd_idx = 0; cd_idx < ni->cd_num; cd_idx++) {
+>>>> +		cd = cd_arrays[cd_idx];
+>>>> +
+>>>> +		num = ni_child_number(cd);
+>>>> +		dev_dbg(dev, "The %dth clock domain has %d child nodes:", cd_idx, num);
+>>>> +
+>>>> +		/* Omit pmu node */
+>>>> +		ni_pmu = devm_kzalloc(dev, struct_size(ni_pmu, ev_src_nodes, num - 1),
+>>>> +				      GFP_KERNEL);
+>>>> +		ni_pmu->ev_src_num = num - 1;
+>>>> +
+>>>> +		if (!ni_pmu)
+>>>> +			return -ENOMEM;
+>>>> +
+>>>> +		num_idx = 0;
+>>>> +		for (nd_idx = 0; nd_idx < num; nd_idx++) {
+>>>> +			nd = ni_child_pointer(pbase, cd, nd_idx);
+>>>> +
+>>>> +			node.base = nd;
+>>>> +			node.node_type = ni_node_node_type(nd);
+>>>> +
+>>>> +			if (unlikely(ni_node_type(nd) == NI_PMU))
+>>>> +				ni_pmu->pmu_node = node;
+>>>> +			else
+>>>> +				ni_pmu->ev_src_nodes[num_idx++] = node;
+>>>> +			dev_dbg(dev, "  name: %s   id: %d", ni_node_name[node.type], node.id);
+>>>> +		}
+>>>> +
+>>>> +		ni_pmu->dev = dev;
+>>>> +		ni_pmu->ni = ni;
+>>>> +		ni->ni_pmus[cd_idx] = ni_pmu;
+>>>> +	}
+>>>> +
+>>>> +	devm_kfree(dev, cd_arrays);
+>>>
+>>> Why? If it is not device-lifetime then allocate with usual way.
+>>>
+>>
+>> No device-lifetime.
+>> Will allocate in stack.
+> 
+> I was thinking about kzalloc. But if array is small, stack could be as well.
+> 
+
+If I have to return before devm_kfree because of wrong, I will have to use:
+
+goto out;
+
+out:
+kfree();
+
+But if I use devm_kzalloc, I will not be worried about that. Even if no 
+device-lifetime.
+Isn't this a good way?
+
+> ...
+> 
+>>>
+>>>> +
+>>>> +static const struct of_device_id ni_pmu_of_match[] = {
+>>>> +	{ .compatible = "hx,c2000-arm-ni" },
+>>>
+>>> Don't send undocumented compatibles.
+>>
+>> OK. Means I should send doc and code in one patch thread with more than
+>> one patch?
+> 
+> Yes. Please open lore.kernel.org and look at any other submissions
+> involving bindings or other type of ABI documentation (like sysfs).
+
+Get.
+
+> 
+> Best regards,
+> Krzysztof
+> 
+> 
+
 
