@@ -1,105 +1,145 @@
-Return-Path: <linux-kernel+bounces-47224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD4B4844AAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:04:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8611C844AB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:04:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1AFC61C21603
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:04:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8F9F1F29918
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:04:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CD2539FC7;
-	Wed, 31 Jan 2024 22:04:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6357039AFE;
+	Wed, 31 Jan 2024 22:04:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DD3qzf4i"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aR4LrGii"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45777374F1
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 22:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20A3D39AE3
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 22:04:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706738646; cv=none; b=EfmK4yG7OOD9B5NkaxZGiX09TEv7cu682dp0fP+eWWkDXgBzWX9dnb5CPCkc/i3t62rH+ZmeVBSjc1rNjYXcnK2fTJPjdAoJTpIxkLpRxDQh5rRWCqxt7k3R5x0kOw5N7FOqyo8wedgqVlynJvZ2eW8hPkYjR17AKWKcjRnHysA=
+	t=1706738674; cv=none; b=kjYhE9C86yDQxFmY6y4t83eGlshKZi2zLW7DuE1/LLAm4HlCjBuXuzFWEzeTwUmUuru/KhDj2o/vD65iM49vK5JlJAppmMi7rCTcoeGGj2sjxJcdzlM89OpqShxpxxTnR9bBFrhhGQSlV9OnG4I8zpjYW7Hal79K0N0tokt0AAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706738646; c=relaxed/simple;
-	bh=QsbMchd88EV33UXYPAzC4sXUtwgesAtaPWm/veSFP/8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SvN/NnUi5Xcwh3cYKqA5jITGlD+4APqDI5T0REjkN6Etp15knpswQhZr6pwtB42+njx9q/h5z3DllieU/lMTbhCYqTFIIeB3u51GyoMAnCb+wKD4n/iT4eV11mysMBY9JaUbQFXXKfAd/bfI0c4Ma5VWWT01tebi8Il4uN1vTWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DD3qzf4i; arc=none smtp.client-ip=134.134.136.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706738645; x=1738274645;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=QsbMchd88EV33UXYPAzC4sXUtwgesAtaPWm/veSFP/8=;
-  b=DD3qzf4iDE7R33VCeXAHGfMiNpzSDHinRJrwqrLXGd7R4pmCJo969Ebq
-   JDuo7TuY6mWnVD61UFZRrouuXDWo2WmYD6GhXhCnxugYop6Uu7eKry/DV
-   TAqt+DEs5lM3Io7DucPLDLmsGjjhhmw5YAQfFSZU3mg6bPMntAWIiR77u
-   xIPybTUpCf7JmX2RZ3ofamj9r1bknR7yvnsEWa84E4B6Cx72EzlslrpSq
-   8HLk231dWjRGN5jzgzHtBAt8Y3wTWu9h8dIsmK3BQKbWHDzttlC9fqJ5q
-   QDKTQRmjHLOAVGgAWrIsLvp3bSPEVpiEqP9Pq+/4B8wmt4cVEziSC/xVQ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="467973417"
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="467973417"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 14:04:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="908034612"
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="908034612"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga002.fm.intel.com with ESMTP; 31 Jan 2024 14:04:00 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 3445739B; Thu,  1 Feb 2024 00:03:59 +0200 (EET)
-Date: Thu, 1 Feb 2024 00:03:59 +0200
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: "Huang, Kai" <kai.huang@intel.com>, linux-kernel@vger.kernel.org, 
-	x86@kernel.org, tglx@linutronix.de, bp@alien8.de, mingo@redhat.com, 
-	hpa@zytor.com, luto@kernel.org, peterz@infradead.org, thomas.lendacky@amd.com, 
-	chao.gao@intel.com, bhe@redhat.com, nik.borisov@suse.com, pbonzini@redhat.com
-Subject: Re: [PATCH 3/4] x86/kexec(): Reset TDX private memory on platforms
- with TDX erratum
-Message-ID: <l3uo3n3li27czehll2wz34xxkcv5j2vcshgp5a6w7u4h4aidpu@4oe2cwye2e6z>
-References: <cover.1706698706.git.kai.huang@intel.com>
- <b52ed259e0d487b3a968b98da91cb4f55a28ae82.1706698706.git.kai.huang@intel.com>
- <12a927df-e437-40ff-ba4d-ceca5446c5b1@intel.com>
+	s=arc-20240116; t=1706738674; c=relaxed/simple;
+	bh=xlAN2QLDnWTPrzGA96Nc3PWumrZqgEr6+/uaJjDOMBE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ufXbTFrQNeM+vBS2lmmP/+rwXElSeQHmrfX9lBBYn4tzceP0/d780M9iuHBI66tFyMEMqcbb8quvlRmuZ4QNhbbJhF4GYbcmRjFve71jyVUzab1AF6k0hNWKWKXKen4GzflKfugDjmUrw9eJBExWnt0Xrlk9E2NR7yNqVT4qb7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aR4LrGii; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706738671;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c2B+y4zcCSl6e8cZoEf8NGUQNYqPAkNPFv+7JRkypuQ=;
+	b=aR4LrGiiVXxAWsaoN52kyaJ3z8sIkEcvhETIv7Jvtv+SKRMoVRYFRrLeXf8ze5nk7VUKF3
+	DyzzpbVbOfPIsDrbgn2qKHTpxiARna900X/BU/0tgiGY+Gagzzc6gVsb972hGZdZFtGuPY
+	pE3h3v04jqv1e/biCOqu4mwTAtYocMk=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-241-RVFZnAT3NGWRLmEri1ej-w-1; Wed, 31 Jan 2024 17:04:29 -0500
+X-MC-Unique: RVFZnAT3NGWRLmEri1ej-w-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40fa6610ddfso1809845e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:04:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706738668; x=1707343468;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c2B+y4zcCSl6e8cZoEf8NGUQNYqPAkNPFv+7JRkypuQ=;
+        b=rOFqabnDi1MDWEyAwFjTTYIPnhSlrtkeSg7ozzQJxwMyVxPyVjneBYQWF2KyduReCj
+         /qws3cDPYljoG5807BodIAl28ahlcHId/NF1j6TiI2E7lMPQEWDqeiPR+Xz5MuZPF4Fv
+         EHgwpnuPr5fjvvZxLA8NLnYGuyZI484udMiunkbtBuVcYvLdp1RnHvwhA/zIg47hnn7n
+         xqiLdy3AKz4ixEUSs1EPefDNlnS+LZRjL8CPGp6NwZ+kKDTAeoweon8M6MiV5EU+4krG
+         byyc2SyUWaNG5wz6CsFxlNYVqCLZfTuqFQBpS2wWKFEPgEWX22eAA/XriSZ1vsGVk1Vz
+         4Upw==
+X-Gm-Message-State: AOJu0YwtlH7QDIzmurACSA5Wp18lqOhVTEEXIi+Ll1xVxpcy8C/ve+l3
+	jlDO3yGXSSvCOMZ6rJufV5h7orjcQHIA4LTOL+uRmenXnfm12zwxNCcs2FaPvYmFCw5aEQakFMT
+	st0Vwu47NpsR8SWyxO8TdHq7b2cl10q1KqH+AC6j6EwFRM0i4a+YDTNQ0zhWwDy0WUrLUT8eDML
+	Qh8KxrrMCcU0n9POBLTicXAhPMiKHS5Mbp2k6p
+X-Received: by 2002:a5d:4e83:0:b0:33a:e52b:b70a with SMTP id e3-20020a5d4e83000000b0033ae52bb70amr1797952wru.52.1706738668722;
+        Wed, 31 Jan 2024 14:04:28 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFUSR+gKqKBrSwFxjGQplhODAFtwIlGGnvArNv3hse5pGus1FlrI6TWmmcrVEpdOnaHl9kI7lavlY04wu9cQHU=
+X-Received: by 2002:a5d:4e83:0:b0:33a:e52b:b70a with SMTP id
+ e3-20020a5d4e83000000b0033ae52bb70amr1797935wru.52.1706738668099; Wed, 31 Jan
+ 2024 14:04:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <12a927df-e437-40ff-ba4d-ceca5446c5b1@intel.com>
+References: <170561158585.591793.15929255265114320850@demetrius> <20240124094843.K-b1_mn7@linutronix.de>
+In-Reply-To: <20240124094843.K-b1_mn7@linutronix.de>
+From: Clark Williams <williams@redhat.com>
+Date: Wed, 31 Jan 2024 22:04:17 +0000
+Message-ID: <CAMLffL8qyNCocBGtxfDO49dORs_QFdv-6ZrvBEbhxjoBBk4rrw@mail.gmail.com>
+Subject: Re: [ANNOUNCE] 6.6.12-rt20
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, 
+	linux-rt-users <linux-rt-users@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Carsten Emde <C.Emde@osadl.org>, John Kacur <jkacur@redhat.com>, 
+	Daniel Wagner <daniel.wagner@suse.com>, Tom Zanussi <tom.zanussi@linux.intel.com>, 
+	Pavel Machek <pavel@denx.de>, Joseph Salisbury <joseph.salisbury@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 01:21:39PM -0800, Dave Hansen wrote:
-> >  #ifdef CONFIG_KEXEC_JUMP
-> >  	if (image->preserve_context)
-> >  		save_processor_state();
-> > +	else
-> > +		tdx_reset_memory();
-> > +#else
-> > +	tdx_reset_memory();
-> >  #endif
-> 
-> Wow, that's awfully hard to read.  I really wish folks' gag reflex would
-> kick in when they see stuff like this to get them to spend an additional
-> 15 seconds to turn this into:
-> 
-> 	if (IS_ENABLED(CONFIG_KEXEC_JUMP) && image->preserve_context)
-> 		save_processor_state();
-> 	else
-> 		tdx_reset_memory();
+I'll revert that commit and re-release the 6.6.14 I just pushed
 
-save_processor_state() is declared under CONFIG_PM_SLEEP, so I guess your
-variant might break build in some cases without updated suspend.h.
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+On Wed, Jan 24, 2024 at 9:48=E2=80=AFAM Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
+>
+> On 2024-01-18 20:59:45 [-0000], Clark Williams wrote:
+> > Hello RT-list!
+> Hi Clark,
+>
+> > I'm pleased to announce the 6.6.12-rt20 stable release.
+>
+> I've been looking over it and it looks okay. Then I compared how it
+> would do it vs your outcome and noticed this:
+>
+> --- a/arch/riscv/kernel/cpufeature.c
+> +++ b/arch/riscv/kernel/cpufeature.c
+> @@ -575,12 +575,6 @@ static int check_unaligned_access(void *param)
+>         if (per_cpu(misaligned_access_speed, cpu) !=3D RISCV_HWPROBE_MISA=
+LIGNED_UNKNOWN)
+>                 return;
+>
+> -       page =3D alloc_pages(GFP_NOWAIT, get_order(MISALIGNED_BUFFER_SIZE=
+));
+> -       if (!page) {
+> -               pr_warn("Can't alloc pages to measure memcpy performance"=
+);
+> -               return;
+> -       }
+> -
+>         /* Make an unaligned destination buffer. */
+>         dst =3D (void *)((unsigned long)page_address(page) | 0x1);
+>         /* Unalign src as well, but differently (off by 1 + 2 =3D 3). */
+>
+> You shouldn't allocate that page. Nobody will free it, that page is
+> passed via an argument now. Please drop hunk.
+>
+> While at it, do you think you can drop patch
+>    preempt-Put-preempt_enable-within-an-instrumentation.patch
+>
+> or revert commit
+>    c15abad8f7159 ("preempt: Put preempt_enable() within an instrumentatio=
+n*() section.")
+>
+> I've been looking over it and it is fixed as of v6.6 so this patch is no
+> longer needed.
+>
+> > Enjoy!
+> > Clark
+>
+> Sebastian
+>
+
 
