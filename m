@@ -1,88 +1,92 @@
-Return-Path: <linux-kernel+bounces-46042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 458FC8439A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:50:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C28F184396D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:43:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3A5DB283E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:50:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3820F1F23229
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:43:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981698288B;
-	Wed, 31 Jan 2024 08:42:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9766869D21;
+	Wed, 31 Jan 2024 08:41:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b="jD1KWjh3"
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2045.outbound.protection.outlook.com [40.107.255.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="m0W6mpSA"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1047082875;
-	Wed, 31 Jan 2024 08:42:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.45
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706690544; cv=fail; b=eqksDr1177qni+I6dppRcpjG/60MwUDqWpGkpCdBVPPIe9e3Negh506QGx3Kyfjo/Jg5Z34/npXWv79+9qhGC+XU3hdue0EtZ25yjDCP0AvIYaZ7V15jpmewmHo+XhGk/lM6AoMHoPuvxkBpdYm/obNM9YsnmXnHX5S7KDSlqv8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706690544; c=relaxed/simple;
-	bh=AEp8CYHJMbeBTPwsJ1U65YhzMyQOty5RxBynGL33Uf8=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34EF066B5F
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:41:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706690515; cv=none; b=PJxX6koJ8bTSBbZg1mv68pMyO7MMn1dXql2pGSpJLVqbBY2HclZQJtifk6Q/egeNqGGsbtfKwgGcu0FlX1z4vrXMTJMe38bCQDMqoW3zIm4B8BdqhIWBKZaXSaXSmiPi2U2zlFqelqwnprArOEJ1yEzGmN7CiRS8tSSO8YRI3Qs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706690515; c=relaxed/simple;
+	bh=dklOpKsyY20gACcIKy4CcTI5WliooZ2yY0L9WV+xUdM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BqSxZ29mR098S2fvcCQ+fLk3XSRfAvgSXuS1UYktWirW9CFxWi/xCP3mj6al41JyA6iz2+Kohh/L/+jftlG1Omb0rcpWVGHhLW3E+/6i1nA3q3kjwgFL++BZTZfcFM8gRuILbhf/RMwfOhyeIUE6Ex1zdjSgSsdLaD7FwqZrBxU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com; spf=pass smtp.mailfrom=wiwynn.com; dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b=jD1KWjh3; arc=fail smtp.client-ip=40.107.255.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiwynn.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EaACDLtsIvFsgZrnrzgS0uW92uMGq+dPmMR78t3eCEvatZ/cCZEMfmUpCF8jCF9thU63PR3wDwQAmZ419HOrBPrEt9Wfz1JnkyjqrCBnFTOH0+59Id1hSKAsQCFJPpe3kscqvKN16Z/JfOPLo4vmdYcBc+rRVrZp4A+ZQaDVoRi/OrUKZzccNXVqrx9NZTZ0CYC9NYEmQhB9PENzXaaN3feMzWsbwRBPMkwH7gTpK+IeUPj9Ckgrn5jfZASMBKuMuCZ9n4TumyPnHn5aqyc+cWXigNqpXpFsFktuY1Ku/oCeaEjuJGhQqJ9CCBChbyHUgKYH97w/+EszV34StRVGSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DosD6Mfg6HM5skGoPJsT5gKYffO1qIysmMfEeqUA3og=;
- b=nKKNDYhqdMwQcMI1tVgjqb2MAhqtOymQJUb0umSLJP0wdWpMAUC+jS9oxLaTEacffy0VjgTacVqdQleXFauKifSGJiF9nuiiWlUBLyyIOVLH92F+E/uK8DaGkJFajf1FfTghKyzs+HbllgTncdh+nuvMHhJoA+hJjIcTJsib9bwaJVn+cfdmobN1AKnyntlL3atg3YipVgA//uUqbUMJnltPSkdhTU7l/1iglvE9QFaeXzslLO3yPGuqlCy5FDcXVZHwnlcmrazuKs7btPfVzRIxb9HgrWNGr7CfvceQUx+ygOLn80G7ElKUUTE0hNSpkUv74m25uzU1ls2/OhTypg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
- (p=quarantine sp=quarantine pct=100) action=quarantine
- header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DosD6Mfg6HM5skGoPJsT5gKYffO1qIysmMfEeqUA3og=;
- b=jD1KWjh3iCjrFQ5qq8s3nNAwlR0JqlHN4YVGUt/wSRi/RFKcYTVCr5J1EHtfpAw/EuX7tokSKAg6k20f9zhH0v5QEXTUWtFQlRUxTPEul6SNIbKv9rRyJ0lL4Z34UpBbYDX41bfgPs1wxy4tOBIGf67G/F54isEflNLjte/YZdFNXyVTBIS+l1w+qwPckAbl4eIz/kRDV0A8i5XQRGSjHIxabSo4nMQjY1/Th/PSqEZnWpdv8ID+fG+t/PG5ybm/RdXxPGPt1x6i1vbd6EAb+XScvmeiD1uv5Q323GisVbqc1sIGZXSIAIal/WHlsmSvFWp9sirL3urC0s6Top4y/g==
-Received: from SG2P153CA0019.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::6) by
- TYZPR04MB7857.apcprd04.prod.outlook.com (2603:1096:405:ac::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7249.23; Wed, 31 Jan 2024 08:42:20 +0000
-Received: from HK2PEPF00006FB2.apcprd02.prod.outlook.com
- (2603:1096:4:c7:cafe::f4) by SG2P153CA0019.outlook.office365.com
- (2603:1096:4:c7::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.8 via Frontend
- Transport; Wed, 31 Jan 2024 08:42:19 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
- smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
-Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
- designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
- client-ip=211.20.1.79; helo=localhost.localdomain;
-Received: from localhost.localdomain (211.20.1.79) by
- HK2PEPF00006FB2.mail.protection.outlook.com (10.167.8.8) with Microsoft SMTP
- Server id 15.20.7228.16 via Frontend Transport; Wed, 31 Jan 2024 08:42:18
- +0000
-From: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-To: patrick@stwcx.xyz,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>
-Cc: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 10/21] ARM: dts: aspeed: yosemite4: Add power sensor for power module reading
-Date: Wed, 31 Jan 2024 16:41:21 +0800
-Message-Id: <20240131084134.328307-11-Delphine_CC_Chiu@wiwynn.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240131084134.328307-1-Delphine_CC_Chiu@wiwynn.com>
-References: <20240131084134.328307-1-Delphine_CC_Chiu@wiwynn.com>
+	 MIME-Version; b=qqD4DeZmE0u6iECo8Kn0Q3cnLsjMABqXUd6PpfwoGjujZTqSKB+fQJZ6UMTYolZiH07vy50nWi0qltZXE3a35VQDjPu9oPa/TnEI+TzbEwcpSQ7DGnpFuljr2awg8T/vo1YSGaK2SpRPHAZoWdHTQU8yeInV7TpviBOE3YIOyQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=m0W6mpSA; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55eee4a042eso4196446a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:41:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1706690511; x=1707295311; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NJFy8U7M4bryV96Zq0jRThjn9Ebbq49lbecxpcNk9ss=;
+        b=m0W6mpSAbEY1ButKbtsIumfUuDxjn0xYXCZNY6+zbpuDLKLoEM/OSCCpYJSey0e4+t
+         SYSRYlKK15UcKLOM6/YBEsrj2rTSEiIOmHJcXJdAphJMNK0NFsD4YzTmZf5JJ9U/hU97
+         KiK0Ts6GHBnvQDDGdyExxVJ043zMcuT954tn6e7LT02Ik+b34wYKmix/rTV1E/0IQBsJ
+         i0lf8jX2JTfwHrBDFiWZ3VhST6j3nGGD4fonaUybymQKS/q7XDjCPLqL2LpXhyXo3f0A
+         PmOSy/v9ceQZ8JyfjSTZG5dqxKpuL2I4oyjxKXPFN/Ns0PzAh2PGFTzq+koyHUB/LTPj
+         eUCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706690511; x=1707295311;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NJFy8U7M4bryV96Zq0jRThjn9Ebbq49lbecxpcNk9ss=;
+        b=bbUMxrIx1V+mh7+XidTvtUOeRSaIUlvOd/+/iscfHS64MT/R2pdgjuYOFCbgJBeECs
+         9KMj++/qNt0ZHXPOxYRjrNM2Wgrh967Yy4iz88nsxSPVzVyE80ljLQ+RSWeAcMWRKLAJ
+         QwGliblQMhakDdxwRK3QovwYlAMSHy+hvrM2LeE7B14dF3ucR34N6asxKCbd27qJ1meK
+         YTTG+y64cdt2+74NZVEpKLojpuL3jjfKsHtsBBC6YDmWqSUuUyX0LyxVCynk8sRnGvtz
+         KZrp9ucOs4NEL4trQcXfbhln3NuIzonrjQ3qfvMlh3iWzTVnWd8XqL4pf/RPALrm4dNb
+         XtyA==
+X-Gm-Message-State: AOJu0YzB0+SHshtem3r6kFqZ+W7Y5BNms/fmSdK7M8EgC8eZluxZveIv
+	Z+UkJWsMULqx1kr/jNyR6v2ZaDZa903mgxrllHLhtTVzijU4fTQqWg4MYAw7Wmw=
+X-Google-Smtp-Source: AGHT+IHul4OILIaDxbopgzMq6EJx+ujTxObFmE8uaf6iDVoivEW5FCjWHMGKN9JeHQe0LoLwdJOkRg==
+X-Received: by 2002:aa7:d897:0:b0:55f:28cd:bb42 with SMTP id u23-20020aa7d897000000b0055f28cdbb42mr592294edq.10.1706690511422;
+        Wed, 31 Jan 2024 00:41:51 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCV8slgI9Hwzsyh94xWW4P4Yqr9iv4C0VIpCYRduKf57Dtl4RRbiTtpnkv2ZwxvT68F6trj1TctScQGC1SDmZO6no2g/DwBJ2h16HKx9o5OceLICxeOWdL98irFE+qSvM9yn49kozVT0Vcu/aYBtFjGuF1RE6TH1OUrsgh+RJ+6HRBlCzeQTvx0AOv8U62lFdyz6cxiFddW3NIZonD2nPUddsaTMbfvHIJgH4fEnLkv0v+UxJSc72bK7SfdvaR9ciMdq5K+ZNu4fiXZLQV1J1ikakBeTy3sC9c8M7UD4qskc0n3ixJRdXWLNbtwgVRH6lvUJESHfyulsO1X3KnAgOKsY2rYIk1GitSOLyyI2hInYPK4T4oMggNp/6uaMn/OaAcFbTvtS1eFQp62WRD979AjzRPzPudN3VhT1ndqz+dHuNuW3mD0=
+Received: from claudiu-X670E-Pro-RS.. ([82.78.167.87])
+        by smtp.gmail.com with ESMTPSA id cq16-20020a056402221000b0055f02661ae2sm2863630edb.78.2024.01.31.00.41.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 00:41:51 -0800 (PST)
+From: Claudiu <claudiu.beznea@tuxon.dev>
+X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
+To: s.shtylyov@omp.ru,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	richardcochran@gmail.com,
+	p.zabel@pengutronix.de,
+	geert+renesas@glider.be
+Cc: netdev@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	claudiu.beznea@tuxon.dev,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH net-next v5 04/15] net: ravb: Switch to SYSTEM_SLEEP_PM_OPS()/RUNTIME_PM_OPS() and pm_ptr()
+Date: Wed, 31 Jan 2024 10:41:22 +0200
+Message-Id: <20240131084133.1671440-5-claudiu.beznea.uj@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240131084133.1671440-1-claudiu.beznea.uj@bp.renesas.com>
+References: <20240131084133.1671440-1-claudiu.beznea.uj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,81 +94,87 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HK2PEPF00006FB2:EE_|TYZPR04MB7857:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 1ff75680-2891-446e-511c-08dc22388939
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	PV+zfdUEVr46EdaLt6/x/kKP4Pdwe4/amMPAKj22ndmEGTfFIv7jNvYsfkoQqZ1WemBv9megPY+uprcOBJqHrmcsgdHBoiUMBXTkpemW8xcn3GhCHxB8xXxPPkAiJYDW/FvRij8UV1761W4Wy+S5Dau9BIHOTz0Tf1OopfvFSyJXnFJg34O5IS1VkFMG2g810ruubNwACP1/kRbRYTwH+TYgu5pIa9N2c+NifbiVzneN7TDxRsf56J66NRqmip8lNPWXwaLtZdvHn05A2ih+jewKcs7DIHGK7CnZqV5o4MtpQI9vK+QEvMbqbhQcTYdIFGdjteQJojxBJ57yVbrtzs4Vmmf+gQVSRgHeRPyhxIsJatWF/CudXVaa4MJXVCdYTaq6taUzOL40XSDHp6MuThF2tXcDw4AXM2H0JyXMPg6apJbeU+Bo/9sJsCgvl4F1W2Gn+SJGV45oxrIn5uVxdQtuCHHySXVwHqp6Wup4GgMmNbNrMsucefkBsInrr0truIKtPa5mwmPHzg37TNxMa1VkqSLyrLg/OshIo1uz7VaZ5cw2QI1zhhkyO9ndFCB5LmvT6da0skE0JFqX4btVrze2TQqjJouT8Jt+poUJSBr+VS5HHqsNE3rcksMGTlBYMGkz6vnyyi+J8G1YRHTYcKhI7ArB8yqiOlqKkm2p9V/9/zL1Yyr5gCoyURnwvJslvMnY7P9bsC46QhOV+CgDDQ==
-X-Forefront-Antispam-Report:
-	CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(396003)(376002)(39850400004)(136003)(346002)(230922051799003)(186009)(82310400011)(64100799003)(1800799012)(451199024)(36840700001)(46966006)(70586007)(110136005)(40480700001)(2906002)(7416002)(5660300002)(9316004)(82740400003)(316002)(36736006)(47076005)(8936002)(70206006)(4326008)(8676002)(81166007)(356005)(478600001)(86362001)(36756003)(6486002)(6666004)(336012)(36860700001)(6512007)(26005)(41300700001)(2616005)(6506007)(956004)(1076003)(83380400001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: wiwynn.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 08:42:18.4578
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ff75680-2891-446e-511c-08dc22388939
-X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
-X-MS-Exchange-CrossTenant-AuthSource:
-	HK2PEPF00006FB2.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR04MB7857
 
-Add power sensor for power module reading
+From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+SET_SYSTEM_SLEEP_PM_OPS() and SET_RUNTIME_PM_OPS() are deprecated now
+and require __maybe_unused protection against unused function warnings.
+The usage of pm_ptr() and SYSTEM_SLEEP_PM_OPS()/RUNTIME_PM_OPS() allows
+the compiler to see the functions, thus suppressing the warning. Thus
+drop the __maybe_unused markings.
+
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 ---
- .../aspeed/aspeed-bmc-facebook-yosemite4.dts  | 25 +++++++++++++++++++
- 1 file changed, 25 insertions(+)
 
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-index 4b23e467690f..e8d7eb7ff568 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-@@ -906,6 +906,11 @@ gpio@23 {
- 		"HSC7-ALERT2-R-N","HSC8-ALERT2-R-N";
- 	};
+Changes in v5:
+- none
+
+Changes in v4:
+- none
+
+Changes in v3:
+- none
+
+Changes in v2:
+- collected tags
+
+ drivers/net/ethernet/renesas/ravb_main.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+index fd431f1a0b98..7ced5db04f75 100644
+--- a/drivers/net/ethernet/renesas/ravb_main.c
++++ b/drivers/net/ethernet/renesas/ravb_main.c
+@@ -2971,7 +2971,7 @@ static int ravb_wol_restore(struct net_device *ndev)
+ 	return disable_irq_wake(priv->emac_irq);
+ }
  
-+	power-sensor@40 {
-+		compatible = "mps,mp5023";
-+		reg = <0x40>;
-+	};
-+
- 	temperature-sensor@48 {
- 		compatible = "ti,tmp75";
- 		reg = <0x48>;
-@@ -930,6 +935,26 @@ eeprom@54 {
- 		compatible = "atmel,24c256";
- 		reg = <0x54>;
- 	};
-+
-+	power-sensor@62 {
-+		compatible = "pmbus";
-+		reg = <0x62>;
-+	};
-+
-+	power-sensor@64 {
-+		compatible = "pmbus";
-+		reg = <0x64>;
-+	};
-+
-+	power-sensor@65 {
-+		compatible = "pmbus";
-+		reg = <0x65>;
-+	};
-+
-+	power-sensor@68 {
-+		compatible = "pmbus";
-+		reg = <0x68>;
-+	};
+-static int __maybe_unused ravb_suspend(struct device *dev)
++static int ravb_suspend(struct device *dev)
+ {
+ 	struct net_device *ndev = dev_get_drvdata(dev);
+ 	struct ravb_private *priv = netdev_priv(ndev);
+@@ -2993,7 +2993,7 @@ static int __maybe_unused ravb_suspend(struct device *dev)
+ 	return ret;
+ }
+ 
+-static int __maybe_unused ravb_resume(struct device *dev)
++static int ravb_resume(struct device *dev)
+ {
+ 	struct net_device *ndev = dev_get_drvdata(dev);
+ 	struct ravb_private *priv = netdev_priv(ndev);
+@@ -3052,7 +3052,7 @@ static int __maybe_unused ravb_resume(struct device *dev)
+ 	return ret;
+ }
+ 
+-static int __maybe_unused ravb_runtime_nop(struct device *dev)
++static int ravb_runtime_nop(struct device *dev)
+ {
+ 	/* Runtime PM callback shared between ->runtime_suspend()
+ 	 * and ->runtime_resume(). Simply returns success.
+@@ -3065,8 +3065,8 @@ static int __maybe_unused ravb_runtime_nop(struct device *dev)
+ }
+ 
+ static const struct dev_pm_ops ravb_dev_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(ravb_suspend, ravb_resume)
+-	SET_RUNTIME_PM_OPS(ravb_runtime_nop, ravb_runtime_nop, NULL)
++	SYSTEM_SLEEP_PM_OPS(ravb_suspend, ravb_resume)
++	RUNTIME_PM_OPS(ravb_runtime_nop, ravb_runtime_nop, NULL)
  };
  
- &i2c12 {
+ static struct platform_driver ravb_driver = {
+@@ -3074,7 +3074,7 @@ static struct platform_driver ravb_driver = {
+ 	.remove_new	= ravb_remove,
+ 	.driver = {
+ 		.name	= "ravb",
+-		.pm	= &ravb_dev_pm_ops,
++		.pm	= pm_ptr(&ravb_dev_pm_ops),
+ 		.of_match_table = ravb_match_table,
+ 	},
+ };
 -- 
-2.25.1
+2.39.2
 
 
