@@ -1,77 +1,98 @@
-Return-Path: <linux-kernel+bounces-46230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3524843C9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:28:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77552843CA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:29:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89BE11F30DD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:28:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA9D31C29CB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:28:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87B3169DFB;
-	Wed, 31 Jan 2024 10:27:51 +0000 (UTC)
-Received: from mail115-63.sinamail.sina.com.cn (mail115-63.sinamail.sina.com.cn [218.30.115.63])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2C0269D0B;
+	Wed, 31 Jan 2024 10:28:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PaENHsNO"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E673569DFA
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 10:27:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.63
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7DEB6996C;
+	Wed, 31 Jan 2024 10:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706696871; cv=none; b=LdPS0UjaV07eHSpiXjQFzsLwwvNBLWKP7FENfKLDuKrJuPtqVn5t1EwlTNgIkKbUMwoIs0wwsHT+agO5lW3+gM7M1zR+OZ5tG+FBSdtlXW6GKF4wc692tQktPmZtftUaH8cBZqscqllNOGSKmGEzrUGPaSL8+ml7QadlGxGxlss=
+	t=1706696932; cv=none; b=sYzhhPlHjkuYvlcWu4gwMG4yOT9L1cV3bzCQnBcwEfOZrHMq9TmYeDt8jsb5pl8ECk5ChoeR1VRFF3mLatBYhvegQU54muClvRMFcq3Pl3Ij9IDap3nWuQ+yGTLMWMThTQdT/Te/NZkvTF+suAFntkMf0Lv123fE0IhtoKCluJo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706696871; c=relaxed/simple;
-	bh=n8JYSWgReCD6C48YOR5TW/4+19o2TTZ0oplZ6RW/7Uc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=tl1SMQb1VKH/PH4Z0NIBdM2UwOE2zbV0q08lltHhQQ6VscRu77WBsXgQic5rGuyLB3TuOAc1slL6NmjFuE1bifspZN7C3YEDp45glB92sQ7Sfkt1YYDT9SN5+0Ss4hSpTCfVd2lPkP+IUf9n7GwIamQ7kBTJF4XxPb1BTNwbyVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.118.64.172])
-	by sina.com (10.75.12.45) with ESMTP
-	id 65BA209C00009EC3; Wed, 31 Jan 2024 18:27:42 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 90201231457888
-X-SMAIL-UIID: EA203CFCF5FA4AC89772E469D20C8742-20240131-182742-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+a984066a63e9c1e62662@syzkaller.appspotmail.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>,
-	eadavis@qq.com,
-	linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bluetooth?] INFO: task hung in hci_conn_failed
-Date: Wed, 31 Jan 2024 18:27:31 +0800
-Message-Id: <20240131102731.1550-1-hdanton@sina.com>
-In-Reply-To: <Zbnq5o_HJOMIIK-c@Boquns-Mac-mini.home>
-References: <20240130113037.1390-1-hdanton@sina.com> <00000000000082e8ba06102ba5f1@google.com>
+	s=arc-20240116; t=1706696932; c=relaxed/simple;
+	bh=oiTZCszNyvv56h86jVlqMPQSrAP5+7D+gYSOYBwymIk=;
+	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=Xft9mtM3H6gCkaOxMzRIBuejzgfZtMCcxYBhAJRo2E47vCsfNCZoWcTKAZb8uLLNlfz2jjtDdMBeYMth08TIFCftzco8eGUpiKCIMBbkpzajbAvuu37iPT7ctykAm4tBuv6UC7lDEOgDU82Hd8p3MoVtXxCWpzz45wqZCUNAgEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PaENHsNO; arc=none smtp.client-ip=192.55.52.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706696929; x=1738232929;
+  h=from:to:in-reply-to:references:subject:message-id:date:
+   mime-version:content-transfer-encoding;
+  bh=oiTZCszNyvv56h86jVlqMPQSrAP5+7D+gYSOYBwymIk=;
+  b=PaENHsNOL7ULwZbS/JBFnKrYBT0MlGDZleAuPC6guk6XBM6p3JlubJvB
+   4ulBNLFlEb5qaKttgxwR3FE1yaSJrYRj/gB+OSYgRQU9vViRON/yn+a3Z
+   dTo6eburlkd+HfTlLaot6qq1jLS7HBUUByfTl2PfWUW1xdaCuRDraR6wo
+   c05ZYDBZfQCwnhBC/DnzE6sMA4ah7hZwXuSRFCpfwln8dOPdhCE0PByzu
+   RrGYA0i9NVV95/dYS2FGZ5i00wNDCpJTnNsopHJ/kcYbkMBMjsdtxdzjI
+   DGiKK225H7T95BOcTqKvmQhsryFdF6NkIjGZKMPGGKbn4eMB35Aj//Tse
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="402412109"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="402412109"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 02:28:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="858771597"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="858771597"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.35.167])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 02:28:44 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: Jithu Joseph <jithu.joseph@intel.com>, Ashok Raj <ashok.raj@intel.com>, 
+ Tony Luck <tony.luck@intel.com>, Hans de Goede <hdegoede@redhat.com>, 
+ platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+In-Reply-To: <20240125130328.11253-1-ilpo.jarvinen@linux.intel.com>
+References: <20240125130328.11253-1-ilpo.jarvinen@linux.intel.com>
+Subject: Re: [PATCH 1/1] platform/x86/intel/ifs: Remove unnecessary ret
+ init
+Message-Id: <170669691631.3904.4606713749233897647.b4-ty@linux.intel.com>
+Date: Wed, 31 Jan 2024 12:28:36 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.3
 
-[cut cc list short to walk around spam detector]
+On Thu, 25 Jan 2024 15:03:28 +0200, Ilpo Järvinen wrote:
 
-On Tue, 30 Jan 2024 22:38:30 -0800 Boqun Feng <boqun.feng@gmail.com>
+> ret variable is assigned unconditionally in ifs_load_firmware(), thus
+> remove the unnecessary initialization of it.
 > 
-> This looks like the case which Frederic recently fixed:
 > 
-> 	https://lore.kernel.org/lkml/20240129232349.3170819-9-boqun.feng@gmail.com/
-> 
-> , which is currently queued in my tree for v6.9 PR:
-> 
-> 	https://github.com/fbq/linux.git rcu-exp.2024.01.29b
-> 
-> can we give it a spin?
 
-#syz test https://github.com/fbq/linux.git  rcu-exp.2024.01.29b
+
+Thank you for your contribution, it has been applied to my local
+review-ilpo branch. Note it will show up in the public
+platform-drivers-x86/review-ilpo branch only once I've pushed my
+local branch there, which might take a while.
+
+The list of commits applied:
+[1/1] platform/x86/intel/ifs: Remove unnecessary ret init
+      commit: 682c259a849610c7864cc75d52415c782c78653a
+
+--
+ i.
+
 
