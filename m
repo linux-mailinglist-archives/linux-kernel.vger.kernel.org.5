@@ -1,146 +1,195 @@
-Return-Path: <linux-kernel+bounces-45566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5646B843278
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:06:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46A6B843276
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:05:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B435B282945
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:06:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B9851C21C14
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 01:05:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCD101C2D;
-	Wed, 31 Jan 2024 01:05:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C3A1139B;
+	Wed, 31 Jan 2024 01:05:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="t4Ty4Pxl"
-Received: from out203-205-221-173.mail.qq.com (out203-205-221-173.mail.qq.com [203.205.221.173])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JMnrTdnX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6147363
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:05:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A60736E;
+	Wed, 31 Jan 2024 01:05:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706663139; cv=none; b=cqBoHfl/qNkZrq2W4axITwnbPTBzwuKEjlp85aRiZBKhbi+h3ka3KEwG1xOazmtz7GFRnmKu1rRdUdu6cOG3y4fFScrVZQXODVg++WDyLfp5Lj0B07D4pTE+0O3FGM2Xznn6XAl/mSATnekawk3w3zUyVJkq2WoCs5k1yrZFSfA=
+	t=1706663137; cv=none; b=SbhgM2tUXVSTFRX7HguNy8Z6Kbi2rEzJHYCNsRfvtoR13mPI9H8o46/pqBcHoau/tUrizVa+ERkPNmxiZePfYamMaBq+hU02rWPd2TOAM7aLkaeIwpJ/ck9WiNhk4cK1f+9GqhFkiwdM6zzn36+4AVcnl97gHPpfnsfQEw0GwHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706663139; c=relaxed/simple;
-	bh=/reyIWrnc/s8U/muKotzHJXIvzUNgSoN9UxgvBBFV4g=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=PIl86btaxlomtje0YdUyzSFL8pvCauVhYkQtWlOt6us/J/iWu9h/GYaDyaj4/j5KwNPkYMGPVvgui0ufJ0KWXAS+omIZ4XQoswK++BwiadSDQAj1yd4xYvdeXCN2G3fvDlcbn7TjhGOwZV1pZO0pZSZT0LPXHmwQIMy/b7VxEBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=t4Ty4Pxl; arc=none smtp.client-ip=203.205.221.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1706663128; bh=h/FOpSUNaj0QAhpqX2cYRguVmxQYM03WkzpdCI4Fd8E=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=t4Ty4Pxl1ogme6lQASXp+Y/JBCacz1nVoVZtPTSZkXogbs2MKX3I7Y1rgFzxyPJLY
-	 UJW6+eU9D8e1rMmR0ETiYVEtxXr9kox1Pm3ZIVLNnXRFBokJOlqGDbB2zT5J4GIh/o
-	 A7hyTXMwq9HgqOFferV2BIctf6i2lNPfMPQET7VA=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
-	id 10D96450; Wed, 31 Jan 2024 09:04:13 +0800
-X-QQ-mid: xmsmtpt1706663053tie8efjic
-Message-ID: <tencent_BCCCBAE7D686E812D8067B09826EF6EEC506@qq.com>
-X-QQ-XMAILINFO: OQhZ3T0tjf0aO645nJ9CGVH2jDx57WBcUcFsCu47V3F3i6dv7dUoNtZvnI9ELU
-	 Fy9X9kO+qNmse4wEX5M7lMjrbyzmwZQoTqcwTc3GhCQRbi5ZwB+RxuXLhMCHTWFA8hDV0fJzzzZO
-	 l18U+2WuPKCugqZai0IzaafVZM8/MhDTtcAaudMTmgorlnjGjD0OLjmO6YQTsENnSlUPzJ2OIqjk
-	 qFJ/IDZLoGvYMlsvYBx+Mm1LcAaaWY29G+pf5NA7xgR3Bi/FeWjfCe+tPpk+ueem4xMAtOaS+sNI
-	 grC5iNFZwx+yCOYAMgE0nGLNvxx9x5dtDmiEBoz0mwo6UkR3R/WU5VSYVr8ZGeC0bAjKGvOYZ4TT
-	 FA4nN11RtXfjqzpdHvb7onfNEbPJLPQ0YlYT0ODIBnYw9NZydupUOYj2snfE+W7FwMy5Wf4lgaDM
-	 d+t+68PpkuJ9PJK4i+OIqpO8X5RXh1w/JdvXkaDlQF+6S4bWWSKnYfxRjz8mV8HX7B7bWaMt0tzj
-	 BXG9vQOAeaJmYjlvRCR7iKVVnp+xg/lle2c5drAwudSqlkcfJ9FZFBe46ROnfIGUf1BUVEmjP/2j
-	 EAdYtrkCTRbypeIbEmqYgeT0RpsaZ4kG2HPRLOBvQq7wwx9VVO/GfN+YNG2BCS4j65jiOcgWDam3
-	 ZDQu/dV6uSYH1iWKqrKwgTuJhkhl/LzjEWxJYoksUnuocgCEhJuJIRTBE+c+xXaxzd0DkbPaEypy
-	 bjzHw9bJ9bhnjqZ+PCcLPM9UNSsUEnAmy0KU+2mjaOUeRCIJwPvYUqwCzb6ONcS5yjtFkd0z6L6+
-	 AYnkz373OGG+jF/TQY9guhyponjeKu3NLHDyd3hZic4PcnRAC7VXmxEOvK98JRwHbAZPkuMDrh4j
-	 2u3GQL38t8lKrYhLSWgRa3wYsrmmJS5X57Vgi9/5Emcli/RgdGOJ3LhvoTzw7bpg==
-X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+2373f6be3e6de4f92562@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [block?] [trace?] INFO: task hung in blk_trace_remove (2)
-Date: Wed, 31 Jan 2024 09:04:14 +0800
-X-OQ-MSGID: <20240131010413.264977-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0000000000002b1fc7060fca3adf@google.com>
-References: <0000000000002b1fc7060fca3adf@google.com>
+	s=arc-20240116; t=1706663137; c=relaxed/simple;
+	bh=4Ubd1O/w+RmP1qtyme4A3XL1bfIqNhlnN/YJjjPEy8g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bD46+2GLajBminv4Lf8MTHjNcoYo1xUWHHtypKxQW54+45tDnln/EpB1S+szzwL9XRIaWKuoL70POC0tKJ0i8w6LGr0DlFBZAtL7ubL6dutQyBWRJzQrSQqyl6iTtA1c2v3QmXb0hzBS10lfPHGc0RQQLsJV8jaC1Z3aepUaaxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JMnrTdnX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4168C433F1;
+	Wed, 31 Jan 2024 01:05:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706663136;
+	bh=4Ubd1O/w+RmP1qtyme4A3XL1bfIqNhlnN/YJjjPEy8g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JMnrTdnXwTG4IoY/ZXU5OGbA63i4rYhfw9iOH3JwzvOQA/CICiUNKP4xt//+86hFb
+	 q9slBvatW/hNlaMEz8Xjj7PT3labBYATZtnoDv67TNBwihg3xTrJ47d6W4fE9+mFzw
+	 6xbR/qV3Lb1T+v4c1zSb9LMAI4q0V9bRIejYSVH+vh2b9F776pLa/MZNdN+GctBB2a
+	 TQ5bio2DcHz8LZGANKX+bvfM68W8mZ2hYMMj1Y3yADkYfvWYQs63h5HJqBVifdcABS
+	 tjoViNnRNjiHdEudupGrVTxcuVSqVIyS0oKQgdHyvuWNI0dWTOdpVxkjbG6hCDha95
+	 HtpsxXUn2O6KA==
+Date: Tue, 30 Jan 2024 19:05:33 -0600
+From: Bjorn Andersson <andersson@kernel.org>
+To: Abel Vesa <abel.vesa@linaro.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Kevin Hilman <khilman@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, 
+	Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Andy Gross <agross@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Michael Turquette <mturquette@baylibre.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Stanimir Varbanov <stanimir.k.varbanov@gmail.com>, 
+	Vikash Garodia <quic_vgarodia@quicinc.com>, Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, Taniya Das <quic_tdas@quicinc.com>, 
+	Jagadeesh Kona <quic_jkona@quicinc.com>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-clk@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v4 5/5] venus: pm_helpers: Use dev_pm_genpd_set_hwmode to
+ switch GDSC mode
+Message-ID: <kxovcqes5pfo2lsdmdi4msaqjjavvnwxbjp3haymeqpsbhnm3i@43nwohjzocj3>
+References: <20240122-gdsc-hwctrl-v4-0-9061e8a7aa07@linaro.org>
+ <20240122-gdsc-hwctrl-v4-5-9061e8a7aa07@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240122-gdsc-hwctrl-v4-5-9061e8a7aa07@linaro.org>
 
-please test task hung in blk_trace_remove
+On Mon, Jan 22, 2024 at 10:47:05AM +0200, Abel Vesa wrote:
+> From: Jagadeesh Kona <quic_jkona@quicinc.com>
+> 
+> Use dev_pm_genpd_set_hwmode API to switch the vcodec gdsc to SW/HW
+> modes at runtime based on requirement for venus V6 variants.
+> 
+> Before the GDSC HWCTL was available to the consumer, the venus driver
+> needed to somehow keep the power from collapsing while under the driver
+> control. The only way to do that was to clear the CORE_PWR_DISABLE bit
+> (in wrapper POWER_CONTROL register) and, respectively, set it back after
+> the driver control was completed. Now, that there is a way to switch the
+> GDSC HW/SW control back and forth, the CORE_PWR_DISABLE toggling in
+> vcodec_control_v4() can be dropped for V6 variants.
+> 
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+The purpose of this commit is to warrant the need of this new mechanism,
+but I don't find that it actually describes a problem to be solved.
 
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index d5d94510afd3..5eecdf9b8570 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -330,6 +330,13 @@ static void blk_trace_free(struct request_queue *q, struct blk_trace *bt)
- 	kfree(bt);
- }
- 
-+static void blk_trace_free_rcu(struct blk_trace *bt)
-+{
-+	free_percpu(bt->sequence);
-+	free_percpu(bt->msg_data);
-+	kfree(bt);
-+}
-+
- static void get_probe_ref(void)
- {
- 	mutex_lock(&blk_probe_mutex);
-@@ -377,12 +384,32 @@ static int blk_trace_stop(struct blk_trace *bt)
- 	return 0;
- }
- 
-+static void blk_trace_rcu_free(struct rcu_head *rcu)
-+{
-+	struct blk_trace *bt;
-+
-+	bt = container_of(rcu, struct blk_trace, rcu);
-+	if (bt) {
-+		blk_trace_free_rcu(bt);
-+	}
-+}
-+
- static void blk_trace_cleanup(struct request_queue *q, struct blk_trace *bt)
- {
- 	blk_trace_stop(bt);
--	synchronize_rcu();
--	blk_trace_free(q, bt);
-+	relay_close(bt->rchan);
-+	/*
-+	 * If 'bt->dir' is not set, then both 'dropped' and 'msg' are created
-+	 * under 'q->debugfs_dir', thus lookup and remove them.
-+	 */
-+	if (!bt->dir) {
-+		debugfs_lookup_and_remove("dropped", q->debugfs_dir);
-+		debugfs_lookup_and_remove("msg", q->debugfs_dir);
-+	} else {
-+		debugfs_remove(bt->dir);
-+	}
- 	put_probe_ref();
-+	call_rcu(&bt->rcu, blk_trace_rcu_free);
- }
- 
- static int __blk_trace_remove(struct request_queue *q)
-diff --git a/include/linux/blktrace_api.h b/include/linux/blktrace_api.h
-index 122c62e561fc..5f927328b7e6 100644
---- a/include/linux/blktrace_api.h
-+++ b/include/linux/blktrace_api.h
-@@ -26,6 +26,7 @@ struct blk_trace {
- 	struct dentry *dir;
- 	struct list_head running_list;
- 	atomic_t dropped;
-+	struct rcu_head rcu;
- };
- 
- extern int blk_trace_ioctl(struct block_device *, unsigned, char __user *);
+> With newer implementation, the mode of vcodec gdsc gets switched only in
 
+Does "With newer implementation" mean "after these patches are applied"?
+
+> set_hwmode API and the GDSC should not be switched to HW control mode
+> before turning off the GDSC, else subsequent GDSC enable may fail, hence
+> add check to avoid switching the GDSC to HW mode before powering off the
+> GDSC on V6 variants.
+> 
+
+Is this saying that "if we return the GDSC to HW control after turning
+off the clocks, it might not be possible to turn it on again"?
+
+How come? Today this GDSC is operating in HW control mode, before,
+during and after the clock operation.
+
+> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
+>  drivers/media/platform/qcom/venus/pm_helpers.c | 23 +++++++++++++----------
+>  1 file changed, 13 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
+> index a1b127caa90a..55e8ec3f4ee9 100644
+> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
+> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
+> @@ -412,10 +412,9 @@ static int vcodec_control_v4(struct venus_core *core, u32 coreid, bool enable)
+>  	u32 val;
+>  	int ret;
+>  
+> -	if (IS_V6(core)) {
+> -		ctrl = core->wrapper_base + WRAPPER_CORE_POWER_CONTROL_V6;
+> -		stat = core->wrapper_base + WRAPPER_CORE_POWER_STATUS_V6;
+> -	} else if (coreid == VIDC_CORE_ID_1) {
+> +	if (IS_V6(core))
+> +		return dev_pm_genpd_set_hwmode(core->pmdomains[coreid], !enable);
+> +	else if (coreid == VIDC_CORE_ID_1) {
+>  		ctrl = core->wrapper_base + WRAPPER_VCODEC0_MMCC_POWER_CONTROL;
+>  		stat = core->wrapper_base + WRAPPER_VCODEC0_MMCC_POWER_STATUS;
+>  	} else {
+> @@ -451,9 +450,11 @@ static int poweroff_coreid(struct venus_core *core, unsigned int coreid_mask)
+>  
+>  		vcodec_clks_disable(core, core->vcodec0_clks);
+>  
+> -		ret = vcodec_control_v4(core, VIDC_CORE_ID_1, false);
+> -		if (ret)
+> -			return ret;
+> +		if (!IS_V6(core)) {
+> +			ret = vcodec_control_v4(core, VIDC_CORE_ID_1, false);
+
+First I had this expectation that the GDSC will always be in SW control
+when the GDSC turns on - like the downstream implementation.
+
+In this case I felt we should have a similar condition in
+poweron_coreid() - as there's no point in switching to SW mode when we
+know we're in SW mode already.
+
+
+But as I finally realized that this is not the case, I now see that by
+skipping the transition to HW mode here, dev_pm_genpd_set_hwmode() will
+find the domain in SW mode, and through
+
+  if (dev_gpd_data(dev)->hw_mode == enable)
+
+Will turn the vcodec_control_v4(, true) into a nop.
+
+So, my first first instinct of feeling that this should be symmetric
+between poweron/poweroff was reasonable...I think...
+
+
+I find that this interface does not match the expectations that people
+will bring from downstream and this example isn't helpful in explaining
+how to use the new interface.
+
+PS. I trust there's no case whre legacy_binding = true, or that that
+code path does not need similar workaround?
+
+Regards,
+Bjorn
+
+> +			if (ret)
+> +				return ret;
+> +		}
+>  
+>  		ret = pm_runtime_put_sync(core->pmdomains[1]);
+>  		if (ret < 0)
+> @@ -467,9 +468,11 @@ static int poweroff_coreid(struct venus_core *core, unsigned int coreid_mask)
+>  
+>  		vcodec_clks_disable(core, core->vcodec1_clks);
+>  
+> -		ret = vcodec_control_v4(core, VIDC_CORE_ID_2, false);
+> -		if (ret)
+> -			return ret;
+> +		if (!IS_V6(core)) {
+> +			ret = vcodec_control_v4(core, VIDC_CORE_ID_2, false);
+> +			if (ret)
+> +				return ret;
+> +		}
+>  
+>  		ret = pm_runtime_put_sync(core->pmdomains[2]);
+>  		if (ret < 0)
+> 
+> -- 
+> 2.34.1
+> 
 
