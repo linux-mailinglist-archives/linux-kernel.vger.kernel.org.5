@@ -1,138 +1,116 @@
-Return-Path: <linux-kernel+bounces-45816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD87D84369A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:24:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9650E84369E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:25:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C2941F2889C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:24:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B60E2814F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:25:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA383EA6B;
-	Wed, 31 Jan 2024 06:24:34 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BA093F8C7;
-	Wed, 31 Jan 2024 06:24:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC24F3EA74;
+	Wed, 31 Jan 2024 06:25:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="TPI6HSO2"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE0213F8C0;
+	Wed, 31 Jan 2024 06:25:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706682273; cv=none; b=Ba5O+mAcerI/js1cdBQBIc27u3S9eRKCu+xfQKvLDI2/Xsdkh52zoSVrZxeVUKSps1q6kNzEMD1sYpzQi1w9Ipjc7Ym1WwvYswFK4eZZT+924uithDYjhm3LTFPe6wdRJ0ELjL2FPI9RwQDJB8LBv6TqCLIM8X34eDTqueEzCko=
+	t=1706682306; cv=none; b=oXqOqlNcw+DvZIb9pIUzUEhoSmff5zagElnO9g8oBOXZU0tuPL7EttgECvD5VeqGwp70iGjZZRoXIjR4ZLW+Sy8Lx0yfmQgEtDLskaU3Qb2b8fIjtEDmMxMeafkKeiNE0PZoD4RFJM8cNV9YDWlEnClAjgsq47/k3Vh/Z4AEjcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706682273; c=relaxed/simple;
-	bh=Uiy2jl+TmsXsize8jHqdUqySPdi0wRe5XPyM63wYQ+A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MiJDIuHjX5w41KA+00TboYRpUhV8PKoetK0ZPIcf3iD0w24S+AR29uSE1pe66v4ae2lFddhNuHLwtIP/fO+xChI3UFY5jzAP4IW2L6Oijxq56gZW70WFZd5d4ZZ+cWmJlc8RE9uRqW32kB4XA+i/CWjNookkV6HcTBrDnKLv/KU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C95BCDA7;
-	Tue, 30 Jan 2024 22:25:13 -0800 (PST)
-Received: from [10.163.41.195] (unknown [10.163.41.195])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 307963F738;
-	Tue, 30 Jan 2024 22:24:18 -0800 (PST)
-Message-ID: <d22f63a0-f6de-44e1-874b-24d707907858@arm.com>
-Date: Wed, 31 Jan 2024 11:54:17 +0530
+	s=arc-20240116; t=1706682306; c=relaxed/simple;
+	bh=2OixQkP1XzLT6upfkeYL3L91QeFp8NUr/iLMR5vPQMY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QP7TXhG+nZYEkgpnU9SFzuYmHmHJWngiri5rcJXcspF3hu/yEUGfUPY88CZmMgHdTZDnu5EleUcTCuyQAI5KY6/O4gbL80QvCgG8xaecFr+IoP3e6kzu8Kx2LL3+MFkBHrEDSMgZR2DTn4QuQMqjbKmQlvIQsPDpzhT8zZ4ZBQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=TPI6HSO2; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40UKwxjD003144;
+	Wed, 31 Jan 2024 06:24:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=A9/Y6j4xelEy7IoU7lyY7odQxgra+0pw5+1WBLZmJ7k=;
+ b=TPI6HSO2w83Qx1uoOHnVArIxRnARz65gejBZ4keH4l89p9Y8If16XQeo6/2q7d3NBTh7
+ qBIFeSeQeKCDvZH8D6DScanCHXQYI7gOpwPFYN7KL2jOObRdzuJcYMrv4H6EycrCsrdm
+ zuYHM2YezVEXJwvxIO6S0zRQH4rmvrQgNa9y2TnN0ozmFgaF709XmbTFXFvCx2nD3T1l
+ i7tJOPZUhmUO7hLJRfAo1xlkoBRPTvE/kvr6QAoGocB9bILCs9qe6YdcECOVZqHvkDT9
+ 2yAx99StaGOZcMlLVkaLVVc1EItnh2Wx1XZd2H7EbUkdOjPf2sTBZYeo6zmiHBEr2s+i aw== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vvr8egtm5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 31 Jan 2024 06:24:57 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40V61JUE035424;
+	Wed, 31 Jan 2024 06:24:57 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vvr9ebs2x-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 31 Jan 2024 06:24:57 +0000
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40V6MZN0010633;
+	Wed, 31 Jan 2024 06:24:56 GMT
+Received: from brm-x62-14.us.oracle.com (brm-x62-14.us.oracle.com [10.80.150.231])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3vvr9ebs27-1;
+	Wed, 31 Jan 2024 06:24:56 +0000
+From: William Kucharski <william.kucharski@oracle.com>
+To: Bart Van Assche <bvanassche@acm.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: William Kucharski <william.kucharski@oracle.com>
+Subject: [PATCH 0/1] RDMA/srpt: Do not register event handler until srpt device is fully setup
+Date: Tue, 30 Jan 2024 23:24:37 -0700
+Message-Id: <20240131062438.869370-1-william.kucharski@oracle.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v3 08/35] mm: cma: Introduce cma_alloc_range()
-Content-Language: en-US
-To: Alexandru Elisei <alexandru.elisei@arm.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
- maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
- yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
- mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
- vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
- bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
- vschneid@redhat.com, mhiramat@kernel.org, rppt@kernel.org, hughd@google.com,
- pcc@google.com, steven.price@arm.com, vincenzo.frascino@arm.com,
- david@redhat.com, eugenis@google.com, kcc@google.com, hyesoo.yu@samsung.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-mm@kvack.org,
- linux-trace-kernel@vger.kernel.org
-References: <20240125164256.4147-1-alexandru.elisei@arm.com>
- <20240125164256.4147-9-alexandru.elisei@arm.com>
- <61a3dbb7-25b6-4f49-aa70-9a8aaeb53365@arm.com> <ZbjfEzlNgprdxfxX@raptor>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <ZbjfEzlNgprdxfxX@raptor>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-31_02,2024-01-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=5 spamscore=0
+ phishscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401310047
+X-Proofpoint-ORIG-GUID: OEhXAkNA8GtjUwouApNKrZKbVXLcMT5v
+X-Proofpoint-GUID: OEhXAkNA8GtjUwouApNKrZKbVXLcMT5v
 
+Upon occasion, KASAN testing would report a use-after-free Write in
+srpt_refresh_port().
 
+In the course of trying to diagnose this, I noticed that the code in
+srpt_add_one() registers an event handler for the srpt device and then
+initializes the ports on the device. If any portion of the
+device port initialization fails, it removes the registration for the
+event handler in the error leg.
 
-On 1/30/24 17:05, Alexandru Elisei wrote:
-> Hi,
-> 
-> On Tue, Jan 30, 2024 at 10:50:00AM +0530, Anshuman Khandual wrote:
->>
->> On 1/25/24 22:12, Alexandru Elisei wrote:
->>> Today, cma_alloc() is used to allocate a contiguous memory region. The
->>> function allows the caller to specify the number of pages to allocate, but
->>> not the starting address. cma_alloc() will walk over the entire CMA region
->>> trying to allocate the first available range of the specified size.
->>>
->>> Introduce cma_alloc_range(), which makes CMA more versatile by allowing the
->>> caller to specify a particular range in the CMA region, defined by the
->>> start pfn and the size.
->>>
->>> arm64 will make use of this function when tag storage management will be
->>> implemented: cma_alloc_range() will be used to reserve the tag storage
->>> associated with a tagged page.
->> Basically, you would like to pass on a preferred start address and the
->> allocation could just fail if a contig range is not available from such
->> a starting address ?
->>
->> Then why not just change cma_alloc() to take a new argument 'start_pfn'.
->> Why create a new but almost similar allocator ?
-> I tried doing that, and I gave up because:
-> 
-> - It made cma_alloc() even more complex and hard to follow.
-> 
-> - What value should 'start_pfn' be to tell cma_alloc() that it should be
->   ignored? Or, to put it another way, what pfn number is invalid on **all**
->   platforms that Linux supports?
-> 
-> I can give it another go if we can come up with an invalid value for
-> 'start_pfn'.
+This felt like a race condition, where an event handler was registered
+before the device ports were fully initialized.
 
-Something negative might work. How about -1/-1UL ? A quick search gives
-some instances such as ...
+While I can't definitively say this was the issue - this change may just
+modify timing to mask the real issue - when modified to not register
+the event handler until all of the device ports are intialized,
+the issue no longer reproduces in KASAN.
 
-git grep "pfn == -1"
+I'm submitting  this patch if only so those better acquainted with
+the details of this procedure can analyze whether this was an actual
+issue or just intellectual uncomfortableness with the code.
 
-mm/mm_init.c:   if (*start_pfn == -1UL)
-mm/vmscan.c:            if (pfn == -1)
-mm/vmscan.c:            if (pfn == -1)
-mm/vmscan.c:            if (pfn == -1)
-tools/testing/selftests/mm/hugepage-vmemmap.c:  if (pfn == -1UL) {
+William Kucharski (1):
+  Upon rare occasions, KASAN reports a use-after-free Write in srpt_refresh_port().
 
-Could not -1UL be abstracted as common macro MM_INVALID_PFN to be used in
-such scenarios including here ?
+ drivers/infiniband/ulp/srpt/ib_srpt.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> 
->> But then I am wondering why this could not be done in the arm64 platform
->> code itself operating on a CMA area reserved just for tag storage. Unless
->> this new allocator has other usage beyond MTE, this could be implemented
->> in the platform itself.
-> I had the same idea in the previous iteration, David Hildenbrand suggested
-> this approach [1].
-> 
-> [1] https://lore.kernel.org/linux-fsdevel/2aafd53f-af1f-45f3-a08c-d11962254315@redhat.com/
+-- 
+2.43.0
 
-There are two different cma_alloc() proposals here - including the next
-patch i.e mm: cma: Fast track allocating memory when the pages are free
-
-1) Augment cma_alloc() or add cma_alloc_range() with start_pfn parameter
-2) Speed up cma_alloc() for small allocation requests when pages are free
-
-The second one if separated out from this series could be considered on
-its own as it will help all existing cma_alloc() callers. The first one
-definitely needs an use case as provided in this series.
 
