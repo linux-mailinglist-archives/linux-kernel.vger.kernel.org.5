@@ -1,87 +1,104 @@
-Return-Path: <linux-kernel+bounces-45783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45821-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 727CA843634
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:48:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39F198436A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:26:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12D521F27E54
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:48:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0C54B265A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:26:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B6C53DBA1;
-	Wed, 31 Jan 2024 05:47:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C64B3EA9D;
+	Wed, 31 Jan 2024 06:25:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="cE/36VbY"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eAHplHh2"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A5143E468;
-	Wed, 31 Jan 2024 05:47:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B390C3EA7A;
+	Wed, 31 Jan 2024 06:25:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706680065; cv=none; b=mVL0719VYK4CUpCv4iG2KHTBxCdK2Z6FrhhDbfQIqFIKO9H6PCaFcb/TrlRHhqVT4XDP0fqZrUiSjeMnJ+H1f0QcU31gPRbQlKdi6q+FacXu2XiS41ap0IrPvINcCSjobI3KYkKijtBCCWTBteYbCxLo2aYm4S0O5pf0XgAarb4=
+	t=1706682355; cv=none; b=fg+R+MdYbyl/E6UpHrGvPrH92kBU3oXuxWns8pV5kjr9xOkSND+T7B4Nt0JoRfwYA5mKAnf5uBVBHZp+IU7uZBOjq8FWvld8HVHF3WSwZIaAuz0o0h3r8W1SLm7HbHMB534vaaEnim58T82zLk8CQ5LeLGsMGSPtwW+pWjOE1Ro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706680065; c=relaxed/simple;
-	bh=F6moQ6b9hiDMnR0QCy3aTXiISPhYTzA0ruzY3ud/4Do=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jCu8Y5b/ZrvI++veomxsG7f1RvYUdEnb8EnaVJyrdI5QeqiCv53peqAKCDShZbZzjplInKlq+dxxbXJ7tZNeiPvrNVbBICyGCXNCyM+O3T2uUYLrnnrCuxvNfU6xCFVWrxjlc+bgmjhq/4uYVO+lwzZzBDI+OU8Dj4FmFhz/3Tk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=cE/36VbY; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=jk7WOZDUvIYW2PjF8VD17+BgmLnTpAIrlDYLakGFvFE=; b=cE/36VbYtZ0pze2of8EvkDAQ/8
-	D10bqRlYDzXeaaWU+/7Bb5Q0KTCPtFrrsWW94+I3M38KcBfenFc19xlfbFOQantxHu643P/RNXMDH
-	dCX+o6WmoNA2BCwEWS8Zk3cF53kvYnM5decKvTNWzbu68DI7PF/vbY0v3QvOHA7kSoM0tTr11GXUc
-	iiQsM4UTN/su7ZB9pMGLknezdjuNDBqXN9IUHHIiE5LVTFGsOGKuHn8nR4EWCogq4iRiucu/CPjsm
-	fwXc7hDl30TPNyUdweYsrsryGrwaJkLVF/Zy+VNsHxp2sIm5bi0o90Gjw4hkHL0S8DsSS7SR4A+XQ
-	JaUdThsw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rV3Rl-00000001ZKH-26eL;
-	Wed, 31 Jan 2024 05:47:41 +0000
-Date: Tue, 30 Jan 2024 21:47:41 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Theodore Ts'o <tytso@mit.edu>, Dave Chinner <david@fromorbit.com>,
-	syzbot <syzbot+cdee56dbcdf0096ef605@syzkaller.appspotmail.com>,
-	adilger.kernel@dilger.ca, chandan.babu@oracle.com, jack@suse.com,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: current->journal_info got nested! (was Re: [syzbot] [xfs?]
- [ext4?] general protection fault in jbd2__journal_start)
-Message-ID: <Zbne_dN3i85JjPxw@infradead.org>
-References: <000000000000e98460060fd59831@google.com>
- <000000000000d6e06d06102ae80b@google.com>
- <ZbmILkfdGks57J4a@dread.disaster.area>
- <20240131045822.GA2356784@mit.edu>
- <ZbnYitvLz7sWi727@casper.infradead.org>
+	s=arc-20240116; t=1706682355; c=relaxed/simple;
+	bh=Dz+rEBJ1wZtGL4hQOfZUqa80XN/mQMePbBMimQSo/DE=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=I0cFyrxwB6CUjqhI5SpUDhovsFHQIqC5p+/pJU4IEqrPpVxsEzqW8DZe7ful/FQgKuPfcqY0guf8oFyyIOLM/i+dWAfcZQftqtWwmwQgDhs4WSvgXMxkfM3Ub88IyoFs6JNjvTG/OoZdaQ9yOBX9pHllMc/b6gEqgpKNbVlTRRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eAHplHh2; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706682353; x=1738218353;
+  h=from:to:cc:subject:date:message-id;
+  bh=Dz+rEBJ1wZtGL4hQOfZUqa80XN/mQMePbBMimQSo/DE=;
+  b=eAHplHh2S9pdRDzjgvzFHshNkiSArFrKroXo7QoWq/B812hZ6r8Z/UwD
+   sabFCxTq56v5R+WcUv2ELz6qFPZf7sxg0eB+f066YRfU0IdP7mHIu57yy
+   Mc1U3emt7Mo/Rk/kbsq9hBaM7ZcMRVcr6JVLNL8zaKW3+6KI6sCF6JimX
+   7fy5sWQwrIHjcSvWf3gIsHEi1pT9Mc7Izmj3Usuoh33qoWYC2+zxNHoG+
+   vLu8yFUWT8a05EKxed4Aq4Zislw0nUV2WtNDJkc5+W11qifFIaCHgrkVu
+   xk6sCzv6YdEKUzaPWVId1Vxj70GBMsQcPrznm3JoRUiacWEHobr+jEQM0
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="16888137"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="16888137"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 22:25:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="3939842"
+Received: from yzhao56-desk.sh.intel.com ([10.239.159.62])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 22:25:50 -0800
+From: Yan Zhao <yan.y.zhao@intel.com>
+To: arnd@arndb.de,
+	linus.walleij@linaro.org,
+	guoren@kernel.org,
+	bcain@quicinc.com,
+	jonas@southpole.se,
+	stefan.kristiansson@saunalahti.fi,
+	shorne@gmail.com
+Cc: linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	Yan Zhao <yan.y.zhao@intel.com>
+Subject: [PATCH 0/4] apply page shift to PFN instead of VA in pfn_to_virt
+Date: Wed, 31 Jan 2024 13:51:59 +0800
+Message-Id: <20240131055159.2506-1-yan.y.zhao@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbnYitvLz7sWi727@casper.infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Wed, Jan 31, 2024 at 05:20:10AM +0000, Matthew Wilcox wrote:
-> I'd suggest that saving off current->journal_info is risky because
-> it might cover a real problem where you've taken a pagefault inside
-> a transaction (eg ext4 faulting while in the middle of a transaction on
-> the same filesystem that contains the faulting file).
+This is a tiny fix to pfn_to_virt() for some platforms.
 
-Agreed.
+The original implementaion of pfn_to_virt() takes PFN instead of PA as the
+input to macro __va, with PAGE_SHIFT applying to the converted VA, which
+is not right under most conditions, especially when there's an offset in
+__va.
 
-> Seems to me that we shouldn't be writing to userspace while in the
-> middle of a transaction.  We could even assert that in copy_to_user()?
 
-That sounds useful, but also rather expensive.
+Yan Zhao (4):
+  asm-generic/page.h: apply page shift to PFN instead of VA in
+    pfn_to_virt
+  csky: apply page shift to PFN instead of VA in pfn_to_virt
+  Hexagon: apply page shift to PFN instead of VA in pfn_to_virt
+  openrisc: apply page shift to PFN instead of VA in pfn_to_virt
+
+ arch/csky/include/asm/page.h     | 2 +-
+ arch/hexagon/include/asm/page.h  | 2 +-
+ arch/openrisc/include/asm/page.h | 2 +-
+ include/asm-generic/page.h       | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+
+base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
+-- 
+2.17.1
 
 
