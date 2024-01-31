@@ -1,235 +1,96 @@
-Return-Path: <linux-kernel+bounces-46279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67E73843D67
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 83496843D6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:58:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E73B61F2B2E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:57:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 380951F23CC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:58:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9215979DAB;
-	Wed, 31 Jan 2024 10:56:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFC096D1BE;
+	Wed, 31 Jan 2024 10:56:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="L7xBFSUO"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AADA26EB6E;
-	Wed, 31 Jan 2024 10:55:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cU0fj9ro"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDD6669DED;
+	Wed, 31 Jan 2024 10:56:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706698562; cv=none; b=rqiMAmIWyl1rbYzFsiC5qw69D0kNVdLFegsSsr6hKblcGL3Ome+Slfoe25qR9QKQpkedXFsjUto45t195K8C/A3uXqJPxB5MKP7Of3lMbKd2LfeTGojgP9HKijSPh1cmUTodm9zDP/b+8HSI7XObST4HdiwEi9vs9r8b3OExf3g=
+	t=1706698589; cv=none; b=syeUfrTlwM6ETTBvWmtD/Tsbds1OGMfU7F1evRp/dNjyan7L+VOwtwk0Lqx72dpFX32UmgfPffx0OZifqdomkN/SNnbD3QoyWIFrbxnJS07U8brpwMM5cuH/UIPpSryzbmYQPsQyvfyQuZblXdR6BZWRsOCqxiXX3KbghzBx0fE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706698562; c=relaxed/simple;
-	bh=LHBIj/8uoDBRrS1dlZPeCz2qf0GZ0mc5vqMb8Dcyy6U=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=sSfJqTRaFhIlREW0cMpPSoS3WWTve1HRpfs/X/LuJhQgILvlJcGvq5E+W20HYvaLNJ4+iO2SktQrlmAnxWQozpv+tEGgHCqG9pmncRgiYPB9j12SsC+fa6uDcN8jAnrqt1fmXUQcVFFQbkAwHplkZwhvQtoW6wsNLOlVgRhKM9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=L7xBFSUO; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 1859020B2005;
-	Wed, 31 Jan 2024 02:55:58 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1859020B2005
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1706698558;
-	bh=MsUo2v+//cFlf6nJMuZ1DMVlU3JLOjmKGXGXkSEimVc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=L7xBFSUON0y+jHp0RHicnx4GOcP3xCMFb6wyib2qcVkrCV4YXENV/EBgdnPq/AW1T
-	 t6fjax+zreYGHyrT/FTObwgcTI2XXzPsHWPiSMa5jFGT72oV3Ng9dnZiazoqVyWkX1
-	 Rd8KPyE++IipAvl46yMwOVL88ODVAnYR0pVsveXY=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	sharmaajay@microsoft.com,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next v1 5/5] RDMA/mana_ib: Adding and deleting GIDs
-Date: Wed, 31 Jan 2024 02:55:52 -0800
-Message-Id: <1706698552-25383-6-git-send-email-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1706698552-25383-1-git-send-email-kotaranov@linux.microsoft.com>
-References: <1706698552-25383-1-git-send-email-kotaranov@linux.microsoft.com>
+	s=arc-20240116; t=1706698589; c=relaxed/simple;
+	bh=l1bRwvZKkzw+xTOOFxCoo6CCeXmAURsYin/7dxuYdsQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BVs5yj6kFja9TtJ0GOgn7H6RgoXOqP1HThPUHcz+K/bKPnmCCzZwTqKtUuV0cFx47ilIvf7lBsKDr4gclGSS+SN+GHuWVR4ZOelwp+OTRbVKBRnUYa6dkck/ZeqingqzD1w8xvS76jwGYXKguhRfadTnOiRqumOKxaOPZVznWOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cU0fj9ro; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 345BAC433C7;
+	Wed, 31 Jan 2024 10:56:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706698588;
+	bh=l1bRwvZKkzw+xTOOFxCoo6CCeXmAURsYin/7dxuYdsQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cU0fj9roClyOAPO4Nq+Z19JBzcgwbGCLw8+BewHcnHx76SSHZH1ui7a06+g9lHLgC
+	 XATy6OwbbJyiSQ4ETWKMFmHNGAVh6n4u3XXfvgKrl0ubZJn05ch8yD6cg3e+8OcuJ5
+	 nSyMUF+r5yLm8RDrUs6jhoOc+r2R2v0r3YBsv6FzUcet0RWR3Xz6rqmpm1xPqCAwyk
+	 fGjWsmAM9YqqFukxtNuP9T+LII80S8BIokv8nwdMnd6zYA/yzratH+5Y6BRnenTkg/
+	 lKtXSUwTKQpn0uVrPmxW3lmnsfw+M3WiiZqbPzBiqtcBESGLgmz0rZbwD23S08ruPA
+	 4eG6f6QtuTppA==
+Date: Wed, 31 Jan 2024 11:56:22 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Jan Kara <jack@suse.cz>
+Cc: syzbot <syzbot+69b40dc5fd40f32c199f@syzkaller.appspotmail.com>, 
+	akpm@linux-foundation.org, axboe@kernel.dk, chenzhongjin@huawei.com, dchinner@redhat.com, 
+	hch@infradead.org, hch@lst.de, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, penguin-kernel@i-love.sakura.ne.jp, 
+	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk, willy@infradead.org
+Subject: Re: [syzbot] [fs?] BUG: sleeping function called from invalid
+ context in __getblk_gfp
+Message-ID: <20240131-tapeziert-lustvoll-780b450e52c4@brauner>
+References: <0000000000000ccf9a05ee84f5b0@google.com>
+ <0000000000000d130006101f7e0e@google.com>
+ <20240130115430.rljjwjcji3vlrgyz@quack3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240130115430.rljjwjcji3vlrgyz@quack3>
 
-Implement add_gid and del_gid for RNIC.
-We support ipv4 and ipv6 addresses.
+On Tue, Jan 30, 2024 at 12:54:30PM +0100, Jan Kara wrote:
+> On Mon 29-01-24 17:15:05, syzbot wrote:
+> > syzbot suspects this issue was fixed by commit:
+> > 
+> > commit 6f861765464f43a71462d52026fbddfc858239a5
+> > Author: Jan Kara <jack@suse.cz>
+> > Date:   Wed Nov 1 17:43:10 2023 +0000
+> > 
+> >     fs: Block writes to mounted block devices
+> > 
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=116642dfe80000
+> > start commit:   d88520ad73b7 Merge tag 'pull-nfsd-fix' of git://git.kernel..
+> > git tree:       upstream
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=174a257c5ae6b4fd
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=69b40dc5fd40f32c199f
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16a77593680000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1104a593680000
+> > 
+> > If the result looks correct, please mark the issue as fixed by replying with:
+> > 
+> > #syz fix: fs: Block writes to mounted block devices
+> 
+> This doesn't look correct. The problem here really is that sysv is calling
+> sb_bread() under a RWLOCK - pointers_lock - in get_block(). Which more or
+> less shows nobody has run sysv in ages because otherwise the chances of
+> sleeping in atomic context are really high? Perhaps another candidate for
+> removal?
 
-Signed-off-by: Konstantin Taranov <kotaranov@linux.microsoft.com>
----
- drivers/infiniband/hw/mana/device.c  |  2 ++
- drivers/infiniband/hw/mana/main.c    | 66 ++++++++++++++++++++++++++++++++++++
- drivers/infiniband/hw/mana/mana_ib.h | 37 ++++++++++++++++++++
- 3 files changed, 105 insertions(+)
-
-diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-index b9ff3fd..9655307 100644
---- a/drivers/infiniband/hw/mana/device.c
-+++ b/drivers/infiniband/hw/mana/device.c
-@@ -15,6 +15,7 @@
- 	.driver_id = RDMA_DRIVER_MANA,
- 	.uverbs_abi_ver = MANA_IB_UVERBS_ABI_VERSION,
- 
-+	.add_gid = mana_ib_gd_add_gid,
- 	.alloc_pd = mana_ib_alloc_pd,
- 	.alloc_ucontext = mana_ib_alloc_ucontext,
- 	.create_cq = mana_ib_create_cq,
-@@ -23,6 +24,7 @@
- 	.create_wq = mana_ib_create_wq,
- 	.dealloc_pd = mana_ib_dealloc_pd,
- 	.dealloc_ucontext = mana_ib_dealloc_ucontext,
-+	.del_gid = mana_ib_gd_del_gid,
- 	.dereg_mr = mana_ib_dereg_mr,
- 	.destroy_cq = mana_ib_destroy_cq,
- 	.destroy_qp = mana_ib_destroy_qp,
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index 645abf3..282c024 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -675,3 +675,69 @@ void mana_ib_gd_destroy_rnic_adapter(struct mana_ib_dev *mdev)
- 	mdev->adapter_handle = INVALID_MANA_HANDLE;
- 	mana_ib_destroy_eqs(mdev);
- }
-+
-+int mana_ib_gd_add_gid(const struct ib_gid_attr *attr, void **context)
-+{
-+	struct mana_ib_dev *mdev = container_of(attr->device, struct mana_ib_dev, ib_dev);
-+	enum rdma_network_type ntype = rdma_gid_attr_network_type(attr);
-+	struct mana_rnic_config_addr_resp resp = {};
-+	struct gdma_context *gc = mdev_to_gc(mdev);
-+	struct mana_rnic_config_addr_req req = {};
-+	int err;
-+
-+	if (!rnic_is_enabled(mdev))
-+		return -EINVAL;
-+
-+	if (ntype != RDMA_NETWORK_IPV4 && ntype != RDMA_NETWORK_IPV6) {
-+		ibdev_dbg(&mdev->ib_dev, "Unsupported rdma network type %d", ntype);
-+		return -EINVAL;
-+	}
-+
-+	mana_gd_init_req_hdr(&req.hdr, MANA_IB_CONFIG_IP_ADDR, sizeof(req), sizeof(resp));
-+	req.hdr.dev_id = gc->mana_ib.dev_id;
-+	req.adapter = mdev->adapter_handle;
-+	req.op = ADDR_OP_ADD;
-+	req.sgid_type = (ntype == RDMA_NETWORK_IPV6) ? SGID_TYPE_IPV6 : SGID_TYPE_IPV4;
-+	copy_in_reverse(req.ip_addr, attr->gid.raw, sizeof(union ib_gid));
-+
-+	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-+	if (err) {
-+		ibdev_err(&mdev->ib_dev, "Failed to config IP addr err %d\n", err);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+int mana_ib_gd_del_gid(const struct ib_gid_attr *attr, void **context)
-+{
-+	struct mana_ib_dev *mdev = container_of(attr->device, struct mana_ib_dev, ib_dev);
-+	enum rdma_network_type ntype = rdma_gid_attr_network_type(attr);
-+	struct mana_rnic_config_addr_resp resp = {};
-+	struct gdma_context *gc = mdev_to_gc(mdev);
-+	struct mana_rnic_config_addr_req req = {};
-+	int err;
-+
-+	if (!rnic_is_enabled(mdev))
-+		return -EINVAL;
-+
-+	if (ntype != RDMA_NETWORK_IPV4 && ntype != RDMA_NETWORK_IPV6) {
-+		ibdev_dbg(&mdev->ib_dev, "Unsupported rdma network type %d", ntype);
-+		return -EINVAL;
-+	}
-+
-+	mana_gd_init_req_hdr(&req.hdr, MANA_IB_CONFIG_IP_ADDR, sizeof(req), sizeof(resp));
-+	req.hdr.dev_id = gc->mana_ib.dev_id;
-+	req.adapter = mdev->adapter_handle;
-+	req.op = ADDR_OP_REMOVE;
-+	req.sgid_type = (ntype == RDMA_NETWORK_IPV6) ? SGID_TYPE_IPV6 : SGID_TYPE_IPV4;
-+	copy_in_reverse(req.ip_addr, attr->gid.raw, sizeof(union ib_gid));
-+
-+	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-+	if (err) {
-+		ibdev_err(&mdev->ib_dev, "Failed to config IP addr err %d\n", err);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index 196f3c8..2a3e3b0 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -118,6 +118,7 @@ enum mana_ib_command_code {
- 	MANA_IB_GET_ADAPTER_CAP = 0x30001,
- 	MANA_IB_CREATE_ADAPTER  = 0x30002,
- 	MANA_IB_DESTROY_ADAPTER = 0x30003,
-+	MANA_IB_CONFIG_IP_ADDR	= 0x30004,
- };
- 
- struct mana_ib_query_adapter_caps_req {
-@@ -167,6 +168,30 @@ struct mana_rnic_destroy_adapter_resp {
- 	struct gdma_resp_hdr hdr;
- }; /* HW Data */
- 
-+enum mana_ib_addr_op {
-+	ADDR_OP_ADD = 1,
-+	ADDR_OP_REMOVE,
-+};
-+
-+enum sgid_entry_type {
-+	SGID_TYPE_INVALID = 0,
-+	SGID_TYPE_IPV4 = 1,
-+	SGID_TYPE_IPV6 = 2,
-+	SGID_TYPE_HYBRID = 3
-+};
-+
-+struct mana_rnic_config_addr_req {
-+	struct gdma_req_hdr hdr;
-+	mana_handle_t adapter;
-+	enum mana_ib_addr_op op;
-+	enum sgid_entry_type sgid_type;
-+	u8 ip_addr[16];
-+}; /* HW Data */
-+
-+struct mana_rnic_config_addr_resp {
-+	struct gdma_resp_hdr hdr;
-+}; /* HW Data */
-+
- static inline bool rnic_is_enabled(struct mana_ib_dev *mdev)
- {
- 	return mdev->adapter_handle != INVALID_MANA_HANDLE;
-@@ -188,6 +213,14 @@ static inline struct net_device *mana_ib_get_netdev(struct ib_device *ibdev, u32
- 	return mc->ports[port - 1];
- }
- 
-+static inline void copy_in_reverse(u8 *dst, const u8 *src, u32 size)
-+{
-+	u32 i;
-+
-+	for (i = 0; i < size; i++)
-+		dst[size - 1 - i] = src[i];
-+}
-+
- int mana_ib_install_cq_cb(struct mana_ib_dev *mdev, struct mana_ib_cq *cq);
- 
- int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
-@@ -266,4 +299,8 @@ int mana_ib_query_gid(struct ib_device *ibdev, u32 port, int index,
- int mana_ib_query_pkey(struct ib_device *ibdev, u32 port, u16 index, u16 *pkey);
- 
- enum rdma_link_layer mana_ib_get_link_layer(struct ib_device *device, u32 port_num);
-+
-+int mana_ib_gd_add_gid(const struct ib_gid_attr *attr, void **context);
-+
-+int mana_ib_gd_del_gid(const struct ib_gid_attr *attr, void **context);
- #endif
--- 
-1.8.3.1
-
+Fwiw, yes, please!
 
