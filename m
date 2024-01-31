@@ -1,97 +1,125 @@
-Return-Path: <linux-kernel+bounces-46135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 616C3843B17
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:28:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A43DF843B1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 10:29:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CF7828DD1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:28:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F24128FE9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:29:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B6F96775E;
-	Wed, 31 Jan 2024 09:28:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 595AC67745;
+	Wed, 31 Jan 2024 09:29:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="MdxY/Ueh"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="eNs39sle"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAF8A651B6
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:28:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E74AB657DD
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:29:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706693311; cv=none; b=ind1VQDSiyABqTtf5NisZEsSTeUxBU5Rr6cMaVSWrkkhR3fiGb4rduHS68DE1FKEqqc0fWMW53KiSE14dKXVXVtbA/RZtpkOh2NDnB50DFAEdFPbjZ6hXR3s6xAoYPTUC9XzGnWU/4cPeLGKwHITydWd0Dg2LYlm7l5/sixL5sw=
+	t=1706693369; cv=none; b=VmV4ndVIOpEZId8CYL1eszn61Iz8ztaburm7UvOMkNPjtpixWOIquoWNzV00e1d7V7m2X34DT95aT6Q2ox6aXjZXEpPExnJ5sNIAKQu4BkovEAtCTVICoFrOZ0qPmUMylpmFLYM66yRhBoIegGbsPsUsvA5AUkvVyu9wIHfL9B4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706693311; c=relaxed/simple;
-	bh=G+3RzESNcmAoi+uLGWx/knR8mgmMQGkRK1gayncsGk4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zm3gnRiXpRLET8fb8I8/AZKPGr4B8Ws5xhTRIA4l50l/Fef50oALAFI+AfL+PsTqq8HGGbojvUIgSl1NOljZlVQ4USVpeQ/KtLnr1cZMTtV+AhkyHtXoWEpfBAM9ubISI1/pxdnTs+wg9sudLfQnzqZpkWn00kcuC/vQtdlBkDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=MdxY/Ueh; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33ae42033e2so2989373f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:28:28 -0800 (PST)
+	s=arc-20240116; t=1706693369; c=relaxed/simple;
+	bh=BA6fJEjCZMcaHnNBU5jDXRdTkCxnI8f7pf6sC+LoD0M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DeRvomNMnvcxCGpIxBBwWpk0AUp4NaN14Mqr778P0pdRJFnriD2sSOEW1+q5yzu52qNwTwVrgtApY2fstFxFDne85ukgYdWpYZf1/ykqX+MVsCUtBpPQE5STT+c0c7FTvOo61mgOauV3wj1r2A9EBijhnl48eWsF5x2D9vYs5Gs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com; spf=pass smtp.mailfrom=amarulasolutions.com; dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b=eNs39sle; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55ee686b5d5so4459263a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 01:29:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1706693307; x=1707298107; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=G+3RzESNcmAoi+uLGWx/knR8mgmMQGkRK1gayncsGk4=;
-        b=MdxY/UehoFDwJ9VpZVKRFuHHPSl2r9+g4G0tEnKUSjZUKxEe2iie+ZzgPeQGd0urfp
-         vwzseFTjYsGG1W32f1vPVYe5nL4jnRnxGz872/NClFn5eQV4MOnGsFPzJ1qU+744Yw+P
-         NGNZ1VLANLlPar9pQiYlIA5lkHkZ41jBKawCx+NX3d7ceb1OJw0VlS15nmcAabh9YbJQ
-         VXUSSNH8q0v+1BJXWavpT9/mzu70HTfsPMtAracSywNtd46m8y+iIW4lAPHLBIGZwGc9
-         9OGwdnrjQ3bYIgQ0+wnlOOV82D5Sgvn6y+M5Nt1lPBm9qOHZyjbpKH9y0IEpR9QWnBty
-         To2A==
+        d=amarulasolutions.com; s=google; t=1706693366; x=1707298166; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xk9fhyP0CkSTpvqSdLIvIAOMOdEQrJYka04kzpQbSCI=;
+        b=eNs39sleYkUhSKYpLISJR6koTI7sW0zVMpF1njA2cQe5A9wVb4CtMAKn5UPwt7Jgmm
+         tjtpzmG7mtCD/DET1mGSqKnlj1vbt6A6WH3UILngrfVFJCw93eWKsaw/XJaNrCM40GVf
+         QLm5SqjJmF37mV16UTngb5Y+zZqgSZU/lLIlM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706693307; x=1707298107;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G+3RzESNcmAoi+uLGWx/knR8mgmMQGkRK1gayncsGk4=;
-        b=kZ/yBhrl4cJVligSJmXvt1BZwkt5BjZRAcy2zt60hN3/VT1K4tDor6H7YkLhGdkWGp
-         B6GltrcSu4jksU2NeyQF/3kxXfFFGl/HpCaDpUie8Yu5dlQOl3EAFmDQk0BvCI9ZL/Kn
-         +5Jdeov1qZuJxoUYjusQ8+xy3ZlCeOmHgN9JQFh6dloOFRoufaT5kPit3XglAByuy/92
-         qMRwT0nq7t+xE7XzM+wHaXECSi4tLm3yjxVzp0apx11GgCsXH+RDh7JtVXuWTPu0HELU
-         QER+QbVJ28Ngtf+ptZDfKAaAUQQZz5qqHpqpYHeUQ1C9tfNFh7fEGbpH+aztAi6yy7Dq
-         BG0g==
-X-Gm-Message-State: AOJu0YyKRkFqIYNW553MD1O9GxMTfTBEwLZw86jtZrCqdEL+yRmkBTN6
-	p0ahadFMXTQMvWnVhJluAF/xTQOWwUV375ZoBnGLCUU4Y+Z3f02BjbVKYMbRYGw=
-X-Google-Smtp-Source: AGHT+IHJREvWSkK7ke44DI8zd9EkEPvAaSd5pDM7GQajqb40UB1rxg4O0ZA1wUumnKQwlKhYmNzXzw==
-X-Received: by 2002:adf:a408:0:b0:33a:fcfc:d5d1 with SMTP id d8-20020adfa408000000b0033afcfcd5d1mr919635wra.69.1706693307033;
-        Wed, 31 Jan 2024 01:28:27 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCV02MuHgO1tzsSApXnXIHx6F8wDdgiFvo7azMzwLbnHcjKAWeZUbOsULEK6YjF/4XAgbe+2B7XtFPIGtgan6Nl/WYsxq9KXvET/uTmouwnYokJXpbm1Vy5WPdXQwekg1OdLUYHpSDJcMPz+2ncMNiJm4Mq10obYKbW8ox7av5alLGUsHFwdMqfk92h+qsXEFWCkYUyjnptqMKF4QtLBsBvL11ek/ET7e+8hIVKQEVolw1Q+DkAJ8PnLl5wJboSchoSOxw3/y/VdU2sHkR/4+t5N6tK5XiiN5I4Hj4OTD8ycRimOzoTZNUgYrWVCJ351km7o3MPZ/gM=
-Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id bj26-20020a0560001e1a00b0033ae6530969sm10191409wrb.85.2024.01.31.01.28.25
+        d=1e100.net; s=20230601; t=1706693366; x=1707298166;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Xk9fhyP0CkSTpvqSdLIvIAOMOdEQrJYka04kzpQbSCI=;
+        b=LxY+kVyaHyQUpMqlgwfARY70k9i/D+HOrfh3lC/G68HEdKbbuLiwdi7d1r27dpIQKb
+         1CQKESalQ2rYgtBr37qfUU1Zia/9mEOUwhocjcNKuqSl42nwAFKrgSvHuAudlkwEp3n4
+         GsIt/DOtW3y1aWB412ULu3I0/VTkPVY6LsrWL+PgrooTfJUEVHv1U2CRkjY9m5FJcHm7
+         v32nXZeL+b9BTt0l/RQjoVqvhRPkTNwzATLXttyl/bOX0mLYrNvSzDr/gp8OdDcupAKK
+         k8Ffqoe8aSkPLxr9cGj0hlsHaf4QVU2iAkJ/66ftEqJPpRrDfizR76ioAxkvzFyaxlvi
+         8Sig==
+X-Gm-Message-State: AOJu0Yw17cqI9J5XAgp7flbtHOzruiVelhGOFGxlcqBYQdeqTQ1zxlmY
+	mtwHvFyJeSKdAkpfHFKB16HoYmpoOizhMth6XyWC0SQtU6xD+rVeC0HX8xIW8g3rKg7Gj5yjgCJ
+	n
+X-Google-Smtp-Source: AGHT+IHXEGDr4fGmwlGPRIVoGEbaTU3wb+9v6LQhDK8+IaSm0AjVrt+5w0SlCJUkC1vHmi19sAEe4Q==
+X-Received: by 2002:a17:906:190a:b0:a35:7191:d952 with SMTP id a10-20020a170906190a00b00a357191d952mr670959eje.53.1706693365993;
+        Wed, 31 Jan 2024 01:29:25 -0800 (PST)
+Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-82-56-30-170.retail.telecomitalia.it. [82.56.30.170])
+        by smtp.gmail.com with ESMTPSA id g22-20020a170906349600b00a367bdce1fcsm321436ejb.64.2024.01.31.01.29.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 01:28:26 -0800 (PST)
-Date: Wed, 31 Jan 2024 10:28:23 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Kunwu Chan <chentao@kylinos.cn>
-Cc: marcelo.leitner@gmail.com, lucien.xin@gmail.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] sctp: Simplify the allocation of slab caches
-Message-ID: <ZboStzDWAhuB-xTZ@nanopsycho>
-References: <20240131084549.142595-1-chentao@kylinos.cn>
+        Wed, 31 Jan 2024 01:29:25 -0800 (PST)
+From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+To: linux-kernel@vger.kernel.org
+Cc: Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	David Airlie <airlied@gmail.com>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	devicetree@vger.kernel.org,
+	dri-devel@lists.freedesktop.org
+Subject: [drm-drm-misc:drm-misc-next v2] dt-bindings: nt35510: document 'port' property
+Date: Wed, 31 Jan 2024 10:28:44 +0100
+Message-ID: <20240131092852.643844-1-dario.binacchi@amarulasolutions.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131084549.142595-1-chentao@kylinos.cn>
+Content-Transfer-Encoding: 8bit
 
-Wed, Jan 31, 2024 at 09:45:49AM CET, chentao@kylinos.cn wrote:
->commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
->introduces a new macro.
->Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
->to simplify the creation of SLAB caches.
->
->Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+Allow 'port' property (coming from panel-common.yaml) to be used in DTS:
 
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+  st/stm32f769-disco-mb1166-reva09.dtb: panel@0: 'port' does not match any of the regexes: 'pinctrl-[0-9]+'
+
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+
+---
+
+Changes in v2:
+- Rework the patch to drop errors found by command
+  'make DT_CHECKER_FLAGS=-m dt_binding_check'.
+
+ .../devicetree/bindings/display/panel/novatek,nt35510.yaml       | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml b/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
+index a4afaff483b7..91921f4b0e5f 100644
+--- a/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
++++ b/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
+@@ -31,6 +31,7 @@ properties:
+   vddi-supply:
+     description: regulator that supplies the vddi voltage
+   backlight: true
++  port: true
+ 
+ required:
+   - compatible
+-- 
+2.43.0
+
 
