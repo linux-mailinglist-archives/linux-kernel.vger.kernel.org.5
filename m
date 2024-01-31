@@ -1,83 +1,81 @@
-Return-Path: <linux-kernel+bounces-46935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7F66844683
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:51:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2D47844692
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:53:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD2141C22A5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:51:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAB422843AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:53:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B39012F5A5;
-	Wed, 31 Jan 2024 17:51:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D38A312F585;
+	Wed, 31 Jan 2024 17:53:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="imI1Q0fQ"
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KF0tfM7U"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCDDD12F592
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:51:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49C0912DD93;
+	Wed, 31 Jan 2024 17:53:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706723468; cv=none; b=cw0BdBa2qmqxV2H+ft65NdCmfZeqBoZK00nxnaLWEGotYArZiDIhithUdVLNg616D8sCXJdgkFfsIWQQIBvvUtfViUpcsZOP+uQyoCffluWvH0PIqygmSh6vsO6+08MDrtwb6oq2YxHvEG3+V+VPyiA4YNetpMKquZBPT/wD2j8=
+	t=1706723625; cv=none; b=nBYWfrs8SM+COIFF6o4UpuNNBbD867ewkiD1ojnzVpSF8B6gaJCc/zorQOeSgvBsxktE6wVYl0t5QOp8j9SB6NtPB/+DyuOkIYYlUaSgOX8lZURjdF2BSoDOrOkXn94L71L7f/ayhgBJI3grGbkBB8Jbi8GjorWpzCn2F3DadgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706723468; c=relaxed/simple;
-	bh=qJY4oRkVrk63MTvWpmtZEcGr0Puj9gAd9LCVvTivDTY=;
+	s=arc-20240116; t=1706723625; c=relaxed/simple;
+	bh=WwfiEaFylW6P3AB2GpoAp+jdKzKCLM6zIZV7F/QLI9c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q3eoiv4ETFYeXYNmAxhOJ3emg/wFhiPLf1Y4hBsxAl63Npt9xmJUZxIDLtQBnxwOD8EBn3+jj6LlpqbPgSw/cpDKafgo2hfBNrVvEPkupiBlaupiBHbMrA/lf1Q1oG1QIRrfe/UrI4qKEgxny3TuoG2QllCSFpza5nPzp/NB8hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=imI1Q0fQ; arc=none smtp.client-ip=209.85.219.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-68009cb4669so300706d6.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:51:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706723464; x=1707328264; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4bSf7bOhErvUGe8OSqVrxrzA9YWlx2blDsXOWDY7bWc=;
-        b=imI1Q0fQ0TFCzbPLlXIOhyFsYz9Xz5OyOAWLhgwBTNLULEC9/2PjJjJKUlcsdYt/AW
-         v4E0DpnV14qFnqhnG846f6ymb9m2nWqBWEDsMKzBrTpy48CtcT2gcvtVducJJTY5SY9V
-         wyyPvbdXjzIzTYejZ9QPl3mRqtPLp7H5pSeK9JiOk5GQ85GVhjQ63sn47MCuUIfIwgC2
-         RgzTypAyOuUO3eIaZoGFMF6+/aYiLg8xUeFAkrwmjUDvqykVIs9/6Da3/LWyC8pUY3XB
-         8OAJKgRzYUkXCndzeNBXBidipshHrmEEWdgnER0hhRSvx+ctvU6ay/Qb4Kee2ccf0s7v
-         IeYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706723464; x=1707328264;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4bSf7bOhErvUGe8OSqVrxrzA9YWlx2blDsXOWDY7bWc=;
-        b=eT3bIpFojhh1HyNYgujZ0/Zgu+QtvttTWPotRKgXgM0eyCSTNQKUdCTtvtH0UiRSMp
-         Ux3mMDUVxFDv1dyYy6wGjz2tSX7X/0pTkkwzvj55gWB2I4jRKrZydKFuo24EVcbaszos
-         C8F/Wo7PwiOVxkRjVDDHcJziqiKKO6awdev+/V/9ulwm4FbjK2YWR31VnGIP1zu+l89U
-         9Z6qbs7p5oNBrwfShFtUTyAtKkMaA9lWMS8MtFNuBBYnvHHBV54lFwdbHXyRvMYmPY01
-         26XLC77MZnDuZyfACJk2hlxZnpGuNuchoXxC3CdNBMtb5OaSwOIPob37YbS8x1ERd+GR
-         Z3RA==
-X-Gm-Message-State: AOJu0Yxtv07bNrw+Xw6DUkWi0sbwbT1X/FHtuebBIw7A/Bh6KYNOxUEy
-	UcKHKtocGtxFb6kWS6u7XpbBOjsdpkOyi7/wWM0WY/1Y7e22FfDY8k78WI+eG3A=
-X-Google-Smtp-Source: AGHT+IERMm2HQiYN0C0bnn9l10JBozKMVH89zidARxsELO0u19TRMBEjLyabrSRSAjMEl9ErpOfjNg==
-X-Received: by 2002:a05:6214:d87:b0:681:77d9:c405 with SMTP id e7-20020a0562140d8700b0068177d9c405mr2344836qve.33.1706723464493;
-        Wed, 31 Jan 2024 09:51:04 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id s12-20020ad4500c000000b0068c510634d1sm2968358qvo.108.2024.01.31.09.51.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 09:51:04 -0800 (PST)
-Date: Wed, 31 Jan 2024 12:50:59 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Efly Young <yangyifei03@kuaishou.com>, android-mm@google.com,
-	yuzhao@google.com, cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: memcg: Use larger chunks for proactive reclaim
-Message-ID: <20240131175059.GC1227330@cmpxchg.org>
-References: <20240131162442.3487473-1-tjmercier@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=BvSKDa/Snj+MCWZ1ewTqqv8475H6ZnFVhD3wL+I+DgDbZAtB/Al0AyCUWwIznGmN9YjCf5B8lICdvk8QgsP2TrJXYW96d2B1LCUG8l2PVbjRwuE12BzN6LZthxvu7aYQ+4A6qukg/M96Kh3wD9y4M9rC2kYYcXciF9URDqC17gY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KF0tfM7U; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706723623; x=1738259623;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=WwfiEaFylW6P3AB2GpoAp+jdKzKCLM6zIZV7F/QLI9c=;
+  b=KF0tfM7Uo+CkQyJun4ftLmO7qrdy2qHBcbfWM9GnyxjWFKDZt51IgpTG
+   VvNm2/11JiZ92WEtR4IBoNbobRecXRLfIVFIGj+xJEB1fXej4OY7jline
+   icHiUoB1VRRJz6k4k77C5OOJ890ALoYJMefk5Lob6DvPQtrt/B/UIo6oc
+   z+wY6F7J4VuwT9Qn/WPCcQ2Ir1ew5RvgRMowZ7eHnWFngSz/L2PGHOclc
+   +nfhebaGbMsDcUdD32tMGdjEui84tFAtdgl6fk1vWTkaKdcKuc9PEpz8W
+   dJQRkEWuEfd8T+qDVlCCdw72LKeHqGH3VOdVAuV8Vd7ih1hr+2CpmFJdG
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10313276"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="10313276"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 09:53:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="4167760"
+Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
+  by fmviesa003.fm.intel.com with ESMTP; 31 Jan 2024 09:53:35 -0800
+Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rVEmC-0001ra-2t;
+	Wed, 31 Jan 2024 17:53:32 +0000
+Date: Thu, 1 Feb 2024 01:53:31 +0800
+From: kernel test robot <lkp@intel.com>
+To: Oreoluwa Babatunde <quic_obabatun@quicinc.com>, catalin.marinas@arm.com,
+	will@kernel.org, robh+dt@kernel.org, frowand.list@gmail.com,
+	vgupta@kernel.org, arnd@arndb.de, olof@lixom.net, soc@kernel.org,
+	guoren@kernel.org, monstr@monstr.eu, palmer@dabbelt.com,
+	aou@eecs.berkeley.edu, dinguyen@kernel.org, chenhuacai@kernel.org,
+	tsbogend@alpha.franken.de, jonas@southpole.se,
+	stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
+	mpe@ellerman.id.au, ysato@users.sourceforge.jp, dalias@libc.org,
+	glaubitz@physik.fu-berlin.de, richard@nod.at,
+	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+	chris@zankel.net, jcmvbkbc@gmail.com
+Cc: oe-kbuild-all@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 30/46] of: reserved_mem: Add code to use unflattened DT
+ for reserved_mem nodes
+Message-ID: <202402010140.VrsPYn0W-lkp@intel.com>
+References: <20240126235425.12233-31-quic_obabatun@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,64 +84,86 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240131162442.3487473-1-tjmercier@google.com>
+In-Reply-To: <20240126235425.12233-31-quic_obabatun@quicinc.com>
 
-On Wed, Jan 31, 2024 at 04:24:41PM +0000, T.J. Mercier wrote:
-> Before 388536ac291 ("mm:vmscan: fix inaccurate reclaim during proactive
-> reclaim") we passed the number of pages for the reclaim request directly
-> to try_to_free_mem_cgroup_pages, which could lead to significant
-> overreclaim in order to achieve fairness. After 0388536ac291 the number
-> of pages was limited to a maxmimum of 32 (SWAP_CLUSTER_MAX) to reduce
-> the amount of overreclaim. However such a small chunk size caused a
-> regression in reclaim performance due to many more reclaim start/stop
-> cycles inside memory_reclaim.
-> 
-> Instead of limiting reclaim chunk size to the SWAP_CLUSTER_MAX constant,
-> adjust the chunk size proportionally with number of pages left to
-> reclaim. This allows for higher reclaim efficiency with large chunk
-> sizes during the beginning of memory_reclaim, and reduces the amount of
-> potential overreclaim by using small chunk sizes as the total reclaim
-> amount is approached. Using 1/4 of the amount left to reclaim as the
-> chunk size gives a good compromise between reclaim performance and
-> overreclaim:
-> 
-> root - full reclaim       pages/sec   time (sec)
-> pre-0388536ac291      :    68047        10.46
-> post-0388536ac291     :    13742        inf
-> (reclaim-reclaimed)/4 :    67352        10.51
-> 
-> /uid_0 - 1G reclaim       pages/sec   time (sec)  overreclaim (MiB)
-> pre-0388536ac291      :    258822       1.12            107.8
-> post-0388536ac291     :    105174       2.49            3.5
-> (reclaim-reclaimed)/4 :    233396       1.12            -7.4
-> 
-> /uid_0 - full reclaim     pages/sec   time (sec)
-> pre-0388536ac291      :    72334        7.09
-> post-0388536ac291     :    38105        14.45
-> (reclaim-reclaimed)/4 :    72914        6.96
-> 
-> Fixes: 0388536ac291 ("mm:vmscan: fix inaccurate reclaim during proactive reclaim")
-> Signed-off-by: T.J. Mercier <tjmercier@google.com>
-> ---
->  mm/memcontrol.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 46d8d02114cf..d68fb89eadd2 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6977,7 +6977,8 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
->  			lru_add_drain_all();
->  
->  		reclaimed = try_to_free_mem_cgroup_pages(memcg,
-> -					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
-> +					max((nr_to_reclaim - nr_reclaimed) / 4,
-> +					    (nr_to_reclaim - nr_reclaimed) % 4),
+Hi Oreoluwa,
 
-I don't see why the % 4 is needed. It only kicks in when the delta
-drops below 4, but try_to_free_mem_cgroup_pages() already has
+kernel test robot noticed the following build warnings:
 
-		.nr_to_reclaim = max(nr_pages, SWAP_CLUSTER_MAX),
+[auto build test WARNING on robh/for-next]
+[also build test WARNING on arm64/for-next/core vgupta-arc/for-curr powerpc/next powerpc/fixes jcmvbkbc-xtensa/xtensa-for-next linus/master v6.8-rc2 next-20240131]
+[cannot apply to vgupta-arc/for-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-so it looks like dead code.
+url:    https://github.com/intel-lab-lkp/linux/commits/Oreoluwa-Babatunde/of-reserved_mem-Change-the-order-that-reserved_mem-regions-are-stored/20240127-081735
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/20240126235425.12233-31-quic_obabatun%40quicinc.com
+patch subject: [PATCH 30/46] of: reserved_mem: Add code to use unflattened DT for reserved_mem nodes
+config: i386-randconfig-141-20240128 (https://download.01.org/0day-ci/archive/20240201/202402010140.VrsPYn0W-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402010140.VrsPYn0W-lkp@intel.com/
+
+smatch warnings:
+drivers/of/of_reserved_mem.c:111 dt_scan_reserved_mem_reg_nodes() warn: unsigned 'node' is never less than zero.
+
+vim +/node +111 drivers/of/of_reserved_mem.c
+
+    98	
+    99	/*
+   100	 * Save the reserved_mem reg nodes in the reserved_mem array
+   101	 */
+   102	static void __init dt_scan_reserved_mem_reg_nodes(void)
+   103	{
+   104		int t_len = (dt_root_addr_cells + dt_root_size_cells) * sizeof(__be32);
+   105		struct device_node *node, *child;
+   106		phys_addr_t base, size;
+   107		const __be32 *prop;
+   108		int len;
+   109	
+   110		node = of_find_node_by_path("/reserved-memory");
+ > 111		if (node < 0) {
+   112			pr_err("Reserved memory: Did not find reserved-memory node\n");
+   113			return;
+   114		}
+   115	
+   116		for_each_child_of_node(node, child) {
+   117			const char *uname;
+   118			struct reserved_mem *rmem;
+   119	
+   120			if (!of_device_is_available(child))
+   121				continue;
+   122	
+   123			prop = of_get_property(child, "reg", &len);
+   124			if (!prop) {
+   125				rmem = of_reserved_mem_lookup(child);
+   126				if (rmem)
+   127					rmem->dev_node = child;
+   128				continue;
+   129			}
+   130	
+   131			uname = of_node_full_name(child);
+   132			if (len && len % t_len != 0) {
+   133				pr_err("Reserved memory: invalid reg property in '%s', skipping node.\n",
+   134				       uname);
+   135				continue;
+   136			}
+   137	
+   138			base = dt_mem_next_cell(dt_root_addr_cells, &prop);
+   139			size = dt_mem_next_cell(dt_root_size_cells, &prop);
+   140	
+   141			if (size)
+   142				fdt_reserved_mem_save_node(child, uname, base, size);
+   143		}
+   144	}
+   145	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
