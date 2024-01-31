@@ -1,168 +1,180 @@
-Return-Path: <linux-kernel+bounces-47359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B5AB844CCB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD190844CD1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:32:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E93501F26E4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:31:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 433B11F224A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 23:32:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7472413AA4D;
-	Wed, 31 Jan 2024 23:12:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46A783C48D;
+	Wed, 31 Jan 2024 23:14:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fBTfiSUM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SVJAINkM"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C7813A25F
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 23:12:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FA483A8D2
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 23:14:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706742720; cv=none; b=dOyAFKmDHTTQP4d7idGOZHesCfPbC6WHWS9Whle1KOJki9Y7DNCz8DAFuNl+TuosqdXn+aqiA+IjOnVXPvL7/FVTR9NpGCh8WvkcU+af4hvVxARzeKQo8Qf9bEktJFSctlC1Gt6GuQErzJxj6ud45BfNRwCBCG+cfula19cDe/g=
+	t=1706742887; cv=none; b=FCYP7+ntJTjRSaeL/o0k+MLuMf+TrsLl3f1ShBD4rN981GplkkK8XlPzfo5iafuxv9OQAgefeHEq73Z7UhrI06c8wrKcSqcJ19KRugQ8ayKtbbvzoubXwAxls6raCZzTtKzWmqxbjfMv18sJ2x3pVU8ypAyTeMI+bZRK0L65yDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706742720; c=relaxed/simple;
-	bh=u2P1r5FEYqsMg24uO7pS2JZU0ctu1FvUTqkt+nPckno=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=h10O9MJ5Wzr7T+yIIapIIviC5zJRxo32EZ1hx5y1Ih1Zmm1sGWAzuJY2UMeHFRWpR4FAnN7lLgW9EbQiqbez6jVVZ8CG0mzaBFx+FK+JsWN7ASfuXhpeU2F4e+PLG3yTez/qT+zUtdKbRiEdtrl/V8uPrkLW40iDcO+rF7Tqii4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fBTfiSUM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C88DAC433A6;
-	Wed, 31 Jan 2024 23:11:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706742720;
-	bh=u2P1r5FEYqsMg24uO7pS2JZU0ctu1FvUTqkt+nPckno=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fBTfiSUMVYOYZ/98kxN4SU48/pwvj2neLluIuuDRY7aLiJ2KIiovzLWi6+aJ5bhJc
-	 95KL2r+0LZw8e914CEY7qxy9oXioveIxzbRlVGMX5Npq0yaQJ3DjKUJrnAxaIGq2M1
-	 bmUkzXdxcRG1aFHUWvTwl1BJlBN160jRIJfqyPCyVVMAsOLmJsYKqbIAW98K7vLxnO
-	 zoj8micYhI9ER/BeI4IqxO3mPADK0yP8XYXsoCp7ncMmtvXLMfisdi23KLewQpi85g
-	 Lzs/+JkfrJBoKqhr6yg5GniHWyupM5aI0Fb5zdzGoNBV7+eztPu8GVuY8WfGd9CLR6
-	 MSbEsjA1ahb0w==
-From: Frederic Weisbecker <frederic@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>,
+	s=arc-20240116; t=1706742887; c=relaxed/simple;
+	bh=YDcV1Cmi5bJEdHBzWK8e0YEggkl/TRz+YUAYBOkFfsw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WgcnlrTwu4paxv0mUJ+3xQVYpV/sDrvbUcLzJIj3fQT6ydwYmBf8AM2SJSgs5yFOFJF4HbZv1uOkz/Uqu2L8Jmz/RzT6schecM7rGVMmTDA6SpNdr/87DFoy38M+gLtd8kXW8BdLxbUJHXDSj67MOUy9wbmDECsHwPAoacuc9YU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SVJAINkM; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706742883; x=1738278883;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=YDcV1Cmi5bJEdHBzWK8e0YEggkl/TRz+YUAYBOkFfsw=;
+  b=SVJAINkM5r/Bo7vUy20bNl4vKX5YMQbd9G0moVQ/3T6Fd3g9FAMv1Ucz
+   GZrigkpa7Lc6IUtZHruPkTnzdt1ddtHfTeIzztEnL0gScYy8v0D+Qnkvo
+   ew3oribtw3BzH0MRCnIcGaoGB0aC5WV4WQQzSkyzKyNUEEcCsTL2R2IoD
+   GK7x6pKjcYfSP4C0WRjr2IUe3kPNuL9XsLUnOltZB06iipfFQ+mVWsOSX
+   E8ii+BIFuiZxGtSWd9hvV9FgspyKjGd7b+0pWAd3B6InzPxsUVAcYmboV
+   dpCkDB6MP6h63zO7IvzEvUzR9zwzZ375JWSZVs+TBa05uJU/x6xCLj6EI
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3590384"
+X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
+   d="scan'208";a="3590384"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 15:14:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
+   d="scan'208";a="4236973"
+Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
+  by fmviesa003.fm.intel.com with ESMTP; 31 Jan 2024 15:14:33 -0800
+Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rVJmp-00029D-1S;
+	Wed, 31 Jan 2024 23:14:31 +0000
+Date: Thu, 1 Feb 2024 07:11:21 +0800
+From: kernel test robot <lkp@intel.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kees Cook <keescook@chromium.org>
+Cc: oe-kbuild-all@lists.linux.dev,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@kernel.org>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Peng Liu <liupeng17@lenovo.com>,
-	Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH 15/15] tick: Assume timekeeping is correctly handed over upon last offline idle call
-Date: Thu,  1 Feb 2024 00:11:20 +0100
-Message-ID: <20240131231120.12006-16-frederic@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240131231120.12006-1-frederic@kernel.org>
-References: <20240131231120.12006-1-frederic@kernel.org>
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] mm: ptdump: Have ptdump_check_wx() return bool
+Message-ID: <202402010649.MtBnf3u8-lkp@intel.com>
+References: <7943149fe955458cb7b57cd483bf41a3aad94684.1706610398.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7943149fe955458cb7b57cd483bf41a3aad94684.1706610398.git.christophe.leroy@csgroup.eu>
 
-The timekeeping duty is handed over from the outgoing CPU on stop
-machine, then the oneshot tick is stopped right after.  Therefore it's
-guaranteed that the current CPU isn't the timekeeper upon its last call
-to idle.
+Hi Christophe,
 
-Besides, calling tick_nohz_idle_stop_tick() while the dying CPU goes
-into idle suggests that the tick is going to be stopped while it is
-actually stopped already from the appropriate CPU hotplug state.
+kernel test robot noticed the following build warnings:
 
-Remove the confusing call and the obsolete case handling and convert it
-to a sanity check that verifies the above assumption.
+[auto build test WARNING on akpm-mm/mm-everything]
 
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- include/linux/tick.h      |  2 ++
- kernel/cpu.c              |  1 +
- kernel/sched/idle.c       |  1 -
- kernel/time/tick-common.c |  4 ++++
- kernel/time/tick-sched.c  | 13 +------------
- 5 files changed, 8 insertions(+), 13 deletions(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Christophe-Leroy/arm-ptdump-Rename-CONFIG_DEBUG_WX-to-CONFIG_ARM_DEBUG_WX/20240130-183913
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/7943149fe955458cb7b57cd483bf41a3aad94684.1706610398.git.christophe.leroy%40csgroup.eu
+patch subject: [PATCH v2 4/5] mm: ptdump: Have ptdump_check_wx() return bool
+config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20240201/202402010649.MtBnf3u8-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240201/202402010649.MtBnf3u8-lkp@intel.com/reproduce)
 
-diff --git a/include/linux/tick.h b/include/linux/tick.h
-index c7840ae8ebaf..44fddfa93e18 100644
---- a/include/linux/tick.h
-+++ b/include/linux/tick.h
-@@ -29,8 +29,10 @@ static inline void tick_cleanup_dead_cpu(int cpu) { }
- 
- #if defined(CONFIG_GENERIC_CLOCKEVENTS) && defined(CONFIG_HOTPLUG_CPU)
- extern int tick_cpu_dying(unsigned int cpu);
-+extern void tick_assert_timekeeping_handover(void);
- #else
- #define tick_cpu_dying	NULL
-+static inline void tick_assert_timekeeping_handover(void) { }
- #endif
- 
- #if defined(CONFIG_GENERIC_CLOCKEVENTS) && defined(CONFIG_SUSPEND)
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 5a8ad4f5ccf3..7e84a7b0675e 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -1399,6 +1399,7 @@ void cpuhp_report_idle_dead(void)
- 	struct cpuhp_cpu_state *st = this_cpu_ptr(&cpuhp_state);
- 
- 	BUG_ON(st->state != CPUHP_AP_OFFLINE);
-+	tick_assert_timekeeping_handover();
- 	rcutree_report_cpu_dead();
- 	st->state = CPUHP_AP_IDLE_DEAD;
- 	/*
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 31231925f1ec..b15d40cad7ea 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -291,7 +291,6 @@ static void do_idle(void)
- 		local_irq_disable();
- 
- 		if (cpu_is_offline(cpu)) {
--			tick_nohz_idle_stop_tick();
- 			cpuhp_report_idle_dead();
- 			arch_cpu_idle_dead();
- 		}
-diff --git a/kernel/time/tick-common.c b/kernel/time/tick-common.c
-index 9cd09eea06d6..fb0fdec8719a 100644
---- a/kernel/time/tick-common.c
-+++ b/kernel/time/tick-common.c
-@@ -396,6 +396,10 @@ int tick_broadcast_oneshot_control(enum tick_broadcast_state state)
- EXPORT_SYMBOL_GPL(tick_broadcast_oneshot_control);
- 
- #ifdef CONFIG_HOTPLUG_CPU
-+void tick_assert_timekeeping_handover(void)
-+{
-+	WARN_ON_ONCE(tick_do_timer_cpu == smp_processor_id());
-+}
- /*
-  * Stop the tick and transfer the timekeeping job away from a dying cpu.
-  */
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index cb8e4a171288..0dcd1c0e0a4e 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -1117,18 +1117,7 @@ static bool report_idle_softirq(void)
- 
- static bool can_stop_idle_tick(int cpu, struct tick_sched *ts)
- {
--	/*
--	 * If this CPU is offline and it is the one which updates
--	 * jiffies, then give up the assignment and let it be taken by
--	 * the CPU which runs the tick timer next. If we don't drop
--	 * this here, the jiffies might be stale and do_timer() never
--	 * gets invoked.
--	 */
--	if (unlikely(!cpu_online(cpu))) {
--		if (cpu == tick_do_timer_cpu)
--			tick_do_timer_cpu = TICK_DO_TIMER_NONE;
--		return false;
--	}
-+	WARN_ON_ONCE(cpu_is_offline(cpu));
- 
- 	if (unlikely(!tick_sched_flag_test(ts, TS_FLAG_NOHZ)))
- 		return false;
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402010649.MtBnf3u8-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   arch/x86/mm/dump_pagetables.c:365:6: error: two or more data types in declaration specifiers
+     365 | bool void ptdump_walk_pgd_level_core(struct seq_file *m,
+         |      ^~~~
+>> arch/x86/mm/dump_pagetables.c:365:11: warning: no previous prototype for 'ptdump_walk_pgd_level_core' [-Wmissing-prototypes]
+     365 | bool void ptdump_walk_pgd_level_core(struct seq_file *m,
+         |           ^~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/ptdump_walk_pgd_level_core +365 arch/x86/mm/dump_pagetables.c
+
+   364	
+ > 365	bool void ptdump_walk_pgd_level_core(struct seq_file *m,
+   366					       struct mm_struct *mm, pgd_t *pgd,
+   367					       bool checkwx, bool dmesg)
+   368	{
+   369		const struct ptdump_range ptdump_ranges[] = {
+   370	#ifdef CONFIG_X86_64
+   371		{0, PTRS_PER_PGD * PGD_LEVEL_MULT / 2},
+   372		{GUARD_HOLE_END_ADDR, ~0UL},
+   373	#else
+   374		{0, ~0UL},
+   375	#endif
+   376		{0, 0}
+   377	};
+   378	
+   379		struct pg_state st = {
+   380			.ptdump = {
+   381				.note_page	= note_page,
+   382				.effective_prot = effective_prot,
+   383				.range		= ptdump_ranges
+   384			},
+   385			.level = -1,
+   386			.to_dmesg	= dmesg,
+   387			.check_wx	= checkwx,
+   388			.seq		= m
+   389		};
+   390	
+   391		ptdump_walk_pgd(&st.ptdump, mm, pgd);
+   392	
+   393		if (!checkwx)
+   394			return true;
+   395		if (st.wx_pages) {
+   396			pr_info("x86/mm: Checked W+X mappings: FAILED, %lu W+X pages found.\n",
+   397				st.wx_pages);
+   398	
+   399			return false;
+   400		} else {
+   401			pr_info("x86/mm: Checked W+X mappings: passed, no W+X pages found.\n");
+   402	
+   403			return true;
+   404		}
+   405	}
+   406	
+
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
