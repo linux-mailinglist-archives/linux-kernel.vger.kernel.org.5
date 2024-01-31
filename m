@@ -1,82 +1,99 @@
-Return-Path: <linux-kernel+bounces-46960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 410458446EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:15:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 786478446F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 19:16:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9237290317
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:15:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D2911F21FA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:16:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76FE212FF8D;
-	Wed, 31 Jan 2024 18:15:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71311131726;
+	Wed, 31 Jan 2024 18:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DU9tleDu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="T1YFQZmN"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A5BD12FF77
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 18:15:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E429C12FF78
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 18:16:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706724915; cv=none; b=qZh9miVHlypD8K0zR8Ppi/LRaaQc8UAIdbcLF4zLXzyd1fczkmKuH5YXt+lM0eM/ceg6EWOeYUtYcfkpj1ERxnoYIsUfazdmOL+4zRmye5LESfq2SI5sYhbSCQa3JH9SbHVpHpVSwxMFF7KHsKTnkcsMiCC/tD3FAUoOpEzBdco=
+	t=1706724974; cv=none; b=SlazuhIRr9uoyiFa9uZWSWNYf9T3vqQJwGjN+W2Qiuu2oVPqF1hA6lcQHzHEB6UG1d/J+DPBpuuUeU0XpREW8PJf7veVS/cL84l9gKlX4khCXj0Tz9lFO5WsQaHznMyCRfuKFa/I+tDexk16W9G46zp+HjkQZP0qHbCkcC5CrQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706724915; c=relaxed/simple;
-	bh=QJm8orclJe/ubAtpVMyo6AepkOchd3CEPwVIS+4jnLc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tzw6PLjkchpxxjfjz268oyCS1Rdz+yvmN+FrcnxeFanA4JT03wIjOCCb+tZOen5SkuOs8AMrsx1YqODiI2iD4Ar/AE36CQtjtJ7/R1euBSv3M/KPLJjseqOQPGIGXEdoP/dMPNGaqZDef3KotStEMq1VHWAX1Z+kFeaqgOK7OXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DU9tleDu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6E14C433F1;
-	Wed, 31 Jan 2024 18:15:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706724915;
-	bh=QJm8orclJe/ubAtpVMyo6AepkOchd3CEPwVIS+4jnLc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DU9tleDuhbfiqaH5mvdiclk1wppXbyWP5LythUQXLCoKmeULFIfl6UuHz/kxoiIDJ
-	 M2xPIOfI/JFOMhtxyeuvfB3pc7Yd6tOsItt77RuWnub1ayPHYlXQatLNu3uEMSveaW
-	 ZsEBT0FudlBw/C77Cf9vlP8fG70NtyXxEVweBH/2WVX0a9TkL9jIz6VxXZMmAPVnIL
-	 pNt6B0aBVJcANUX6r9Pn0L9uCQJxlm7JMKaHZiWBR8hsHEPb3UPOrjZRXXG6Zcl3W8
-	 yi+2NRYGR4DfKosSHv2vKf/oihWkKBypOss159pruaTpU3VK0qLwHJWnS6jdPqC3oC
-	 MgPWkYpwEI+ZQ==
-Date: Wed, 31 Jan 2024 19:15:11 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Tycho Andersen <tycho@tycho.pizza>, 
-	"Eric W. Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] pidfd: implement PIDFD_THREAD flag for
- pidfd_open()
-Message-ID: <20240131-hinzu-passen-7fb33796244f@brauner>
-References: <20240131132541.GA23632@redhat.com>
- <20240131132602.GA23641@redhat.com>
- <ZbqCKgTuP/IaEbMM@tycho.pizza>
- <20240131180146.GD2609@redhat.com>
+	s=arc-20240116; t=1706724974; c=relaxed/simple;
+	bh=/mfGS9X1Fycipj1MsHNOiH5qZ7z+osYJL/vQLEyENj8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iuuL1ZtJwX39oEmIfdeZLLYrVfDP3iMVO/ERy0hObATMZR2rkhQdsUOMTLLhCd6ewNM6zW3X9PyAkeOqBV0O0xK0eUpzCTqnfZ5lBTi5kHFww4WNTl1dVstA+EHfQyLd6kRT2B2V8xlaS1COz3m398tF4DKAkDHsdjbo1BQulTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=T1YFQZmN; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5112a4fa97eso27975e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 10:16:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1706724970; x=1707329770; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FDo8R5256piwYk4oa+Bo0H2/lJ0uAashjVqOCdQYzwE=;
+        b=T1YFQZmNc7c1Uj9uGkj7qeDWkTqAmqBzhu1SdGIXFK70VijUSsEQ+23d77uYMZ78B8
+         pvxP0sYJuJnZOTuvbGiv6e2gaHZ9e4/theC+K/AtQQDcx7HkCq4lNrAz72Iwl69gy8Bh
+         IO4Nc+VN9G1xHc5ALe2RcuqWuhneSRtv6w9lI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706724970; x=1707329770;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FDo8R5256piwYk4oa+Bo0H2/lJ0uAashjVqOCdQYzwE=;
+        b=n+vCFojf5YzZoyI0vqgkIhBwb6Frgk4xefaq40OrcVG/9Tynl3rGcz/kbtee48+wcx
+         U7G9OGw8gTE0lTBD8CaF8WX0ldpL2+9bcHiBnMTAQuSNTMs76kzPmk3i78ddymamL2rB
+         UtRukhvXduV6z8uYk25IVmBfJJIzjs/SmsDfX/joA0YYd8PobR/3upTPMr4E2qggk+QB
+         wOw2b/WUrrrk/Bm3ugI9JaqBjrlGGplhtAHTRPJZVA2CWch5kyMk5X/XO8F0c1e2A9Pb
+         QFsjMq6JaTuENpmbrQpNdrtBF1rXT93QFw3wEs7kq5VyX85tnphhxZJizy+QijEU0Ebl
+         D4cQ==
+X-Gm-Message-State: AOJu0YzyJb8CLowNaW61SAn9C94s/kUVWJ55MdknRy0Gh8khWhRlekVD
+	JKAjgdQW6tD994YvTS/Sb9ljcFEhTRHi00aoXaM5wonn2XZXOYkO0AAIkgL1g73Bul/tBqN7Hte
+	FCxw=
+X-Google-Smtp-Source: AGHT+IHniKSbx9QPd/sUXp2sqHLFOusdRXlDoWpWPj3gPctEDmykgMu2iivYdDv6Q6DTnN6bu+LRUA==
+X-Received: by 2002:a05:6512:70:b0:511:b86:35b5 with SMTP id i16-20020a056512007000b005110b8635b5mr173970lfo.9.1706724970489;
+        Wed, 31 Jan 2024 10:16:10 -0800 (PST)
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
+        by smtp.gmail.com with ESMTPSA id t1-20020ac24c01000000b0050e94329e7csm1909660lfq.269.2024.01.31.10.16.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 10:16:10 -0800 (PST)
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cf4d2175b2so1670851fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 10:16:09 -0800 (PST)
+X-Received: by 2002:a2e:b165:0:b0:2d0:5dc4:4e30 with SMTP id
+ a5-20020a2eb165000000b002d05dc44e30mr1825739ljm.21.1706724969503; Wed, 31 Jan
+ 2024 10:16:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240131180146.GD2609@redhat.com>
+References: <c350958c01b9985e1f9bf9c041d1203eb8d82b19.camel@HansenPartnership.com>
+In-Reply-To: <c350958c01b9985e1f9bf9c041d1203eb8d82b19.camel@HansenPartnership.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 31 Jan 2024 10:15:53 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wi0GUPoBWr2HsKy2WhoJykadjCu1acH=qxQt23KYLJ_Ww@mail.gmail.com>
+Message-ID: <CAHk-=wi0GUPoBWr2HsKy2WhoJykadjCu1acH=qxQt23KYLJ_Ww@mail.gmail.com>
+Subject: Re: [GIT PULL] SCSI fixes for 6.8-rc2
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-scsi <linux-scsi@vger.kernel.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Jan 31, 2024 at 07:01:47PM +0100, Oleg Nesterov wrote:
-> On 01/31, Tycho Andersen wrote:
-> >
-> > >  int pidfd_prepare(struct pid *pid, unsigned int flags, struct file **ret)
-> > >  {
-> > > -	if (!pid || !pid_has_task(pid, PIDTYPE_TGID))
-> > > +	bool thread = flags & PIDFD_THREAD;
-> > > +
-> > > +	if (!pid || !pid_has_task(pid, thread ? PIDTYPE_PID : PIDTYPE_TGID));
-> >
-> > Small typo here, trailing ;. When I fix that, tests pass for me.
-> 
-> OOPS.
-> 
-> Christian, should I spam lkml with v4, or will you add this fix yourself?
+On Wed, 31 Jan 2024 at 06:12, James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+>
+> 6 small fixes.  5 are obvious and in drivers the fifth is a core fix [..]
 
-I fixed that up. No need to resend!
+"Math is hard, let's go shopping"
+
+Although I think even teen talk barbie could count past five.
+
+               Linus
 
