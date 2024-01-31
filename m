@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-46332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC4B8843E1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:17:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0FA1843E58
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 12:29:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0C221C2ABD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:17:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DEC0B34258
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 11:18:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 759B978670;
-	Wed, 31 Jan 2024 11:17:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE82878B6B;
+	Wed, 31 Jan 2024 11:17:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="ooMNmd23"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="djT64s+n"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAD1E76058;
-	Wed, 31 Jan 2024 11:17:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99A616DD19;
+	Wed, 31 Jan 2024 11:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706699832; cv=none; b=tbifSHV0+sT/Z/XEpsD+ACPDZPTELSCBuN2h7W8TmjVccqfsNNL8ZWxxSjjq8qe+33eD+fLLA/1YRcl1nbzjeVO1VQrODG9NjthZMcsvOBmfC/jmIq01k64dajAEABEfotvkaQ8yfDKcVIp663DQIEygFdDDTYeNovZw6b/F7k8=
+	t=1706699836; cv=none; b=JWqyWpWtwZ/VUV+WYWUKtPXkKjw9RZZjWr92wK42/GeQmfBsJktmBlFtk88wT4UQrumyrt4oV8W2egf66Hwhk2XxJ5pua/ZnauoUzfRKFPlGvEWm9dijd4hJdyQisMQsA/v4Ti0oMMx+jsuDVgMWY48AQe6Z5511+rMvAFeaEio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706699832; c=relaxed/simple;
-	bh=TrsKOF55qp1ILWmy4Bo/xU5i29aKGzHbP46d5jF2Hok=;
+	s=arc-20240116; t=1706699836; c=relaxed/simple;
+	bh=+eZF0r081+xn/evibHPbfm7R+U27ETVCw7Buxo/7YCA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ke/wKjbIBfbohRkXKfQwqHxHC5cByFZwa8bWHNAVvaG6lvN/ae2okBpHjB2b97TNE9xE4KE1YxAedxx8x8sNLT079jdiP2FCDlUmR4Hhs+aLtdMMfyQ8wOqctGGkQRBoG0EXbMWbtVbTjJ0BVRSdui4Dbe8neI8EEpE07UDHB4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=ooMNmd23; arc=none smtp.client-ip=212.227.15.19
+	 MIME-Version:Content-Type; b=DQ/Cvsqj4l2YakAyLSdclVGgsimda7Vl9jAQLKeMbddAuWeMa+SzR0NHnc70fnKWoPyNb7PqTTBO/sEEBXGpjZzfinth517TJ9rOntFsHh9HNFkZT3AeEFivZsY9PjiO1b2kYZLPQ38gyu1rHbPGBtC6MoRvX20UxOkdrUFzzX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=djT64s+n; arc=none smtp.client-ip=212.227.15.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1706699819; x=1707304619; i=w_armin@gmx.de;
-	bh=TrsKOF55qp1ILWmy4Bo/xU5i29aKGzHbP46d5jF2Hok=;
+	t=1706699824; x=1707304624; i=w_armin@gmx.de;
+	bh=+eZF0r081+xn/evibHPbfm7R+U27ETVCw7Buxo/7YCA=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=ooMNmd23ht5HJN48DLiXxq5Sq6Rgu3ffwgof68L3zJscpm4O3hmo/NJHmQlVEAXf
-	 zqtM8WKhlhSyFnkvpbC98JI0mKpVeKXfHyA4KDynn32N6NU/EpalOvBWQ1i7l3vmO
-	 mQEuqKgGCzQ3iRCG5UiUrEvo+GeNSSnv2LL3rD4RBVYsakpqtD9seviIHbdYoT6d/
-	 Cr0wGv6Khq5AImR/i8nOeDFM346LhQBLMMnyux5FJ3Rr0QK1s4RepGHvI2ktRoodf
-	 iE2kHKylpNcV/I6Qi3nEXAqLdgTz/Ze39nwnTfIiHk1iY3v6OTK/s8RFNwM7WFINg
-	 rRvPwdPyWWq77oYtZQ==
+	b=djT64s+nCYNMz/JIHAnyyajM68i+yJez5JgQS32x1quOmseqsylG1Ep+AbQGqBa3
+	 0AIcMAOlqya/nwhc55hcvVaMiaQrJVOMctoISImK2XiEU9yJBsBgW/XI5ZwZLLUQ4
+	 Uk8B4U6EfpWfj9z5uBRJ1UOxIXmQVfl/kbP5XhaGBrTHT0LYm0pAK5LVk4Mw3W/Hp
+	 8LUf6puPZLvJQK9WcEuAJADsDv2SkmAPcj2SavPNmlVvtihhJfa5Cj50We72ph9PW
+	 Jc/4s0dfKyLJL6kBgFluu3pN5RqM1nOu7eHWGLqUxqqQAJk7BtMGKJULXPGOkzBDG
+	 yfRF0PVXxKKKrX0xaA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from mx-inspiron.fritz.box ([91.137.126.34]) by mail.gmx.net
- (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1MMGRA-1rnLxd0eNK-00JKnZ; Wed, 31 Jan 2024 12:16:59 +0100
+ (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MbzyP-1quh2t1AEB-00dauX; Wed, 31 Jan 2024 12:17:04 +0100
 From: Armin Wolf <W_Armin@gmx.de>
 To: dennisn@dennisn.mooo.com,
 	lkml@vorpal.se,
@@ -53,9 +53,9 @@ To: dennisn@dennisn.mooo.com,
 Cc: coproscefalo@gmail.com,
 	platform-driver-x86@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] platform/x86: Add ACPI quickstart button (PNP0C32) driver
-Date: Wed, 31 Jan 2024 12:16:40 +0100
-Message-Id: <20240131111641.4418-2-W_Armin@gmx.de>
+Subject: [PATCH 2/2] platform/x86: toshiba_acpi: Add quirk for buttons on Z830
+Date: Wed, 31 Jan 2024 12:16:41 +0100
+Message-Id: <20240131111641.4418-3-W_Armin@gmx.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240131111641.4418-1-W_Armin@gmx.de>
 References: <20240131111641.4418-1-W_Armin@gmx.de>
@@ -65,348 +65,164 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:AQu5VSnpGmVQT3zPMXhlCFUdcoyBR1IqdAB3qHwBnK3lcHRY3qZ
- k1/bMkLpHS8uEiFwxUyJEmW1H+6xkGtn5IIR91Vmuxr/bI90gV8d5ZGQf3rN9kF0rzcsXGA
- CpUTxjQOEhpV9irr/bFV6kfkJ7YTDdur9LOMYONfXzmRenHZBLbzSe1/DRV1bfqKSDtpBOz
- VykpM5uYku6gwsxa16ywg==
+X-Provags-ID: V03:K1:gzUwrmSZvTtEfG9zz0+z4kEHKGKIyCQF+ZfQR9NZszSj4+HlunY
+ vjtHM/RaGYNkhn0cSxxzDpaxc3TjszACNZD6cSBRHCELcRM8qUKBDtDUqjzp+oeYg92UgBj
+ KOuvYHks5EGX75L7qB0CF+mrQjf9D8C5M3cNs0IR6OVAlH7OuKQJsCQaOC8Dz/TIMsPDrag
+ ahoOXqXrWNtUwva0rINwA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:qk9fWM+aFiE=;AXc0UpokgFZpe3NnzhbWkLD1php
- pEhPJrPVg5sDI0cec4MDUVOV2Nk950ZoLGAqJiFvWVxr/J817koKb/sUDxvanU+xjSG39PvBi
- 8n4h8NyZ6cgUfcfv0BML4SO1Fbz3uYfyE0NTP8eGwzk0CyvtkETXY6YaD7XR+pXw7r71FSgJ7
- kbHeySZQB8kKUwJ4TjLS38BUsSun/+wWmjZgZX3PBgCENDavk+FxXvhBN+eoNUe762YbU1iNf
- 2eHQ81QabduIO+u/X679dqo66cUZbJc/jnq7QRGORJXNZaj4K7AH10KDGXkiYBBaiGyGSspIz
- bGCZojPi6Gn/QButwtlAh5CnXkGAevqj9ACAq9ZgwQlS43LWKqytb2TAk3f97bgrbpVrcL5Sk
- GL30eFtS9G4bOJNFedvm8MuRybTxtzpDV96aYyA41MtOoOZ6nkWH67PQXYlxDaUhYUgGPIjN5
- 20T10JxfarfvYdJTr45QFqjj+2jhd/taH9vrdgulmuW6mShjym2D4CtTIqzy8zylg6X/AnU/5
- GsQ+mE49yNAT7KuCFPZysEMhJzhmCXVL4DmL+WRwUT3eImSorhhB9wB7SceMNDE2RQVb9+9iH
- bzwmFlrOp/ADKwN44I4TbZ23k0JyES21hk/8cewS63Pi3F2FZdhQdkizK2p3TeALohEn16syp
- uRCNRSSPCDtPLkDkKwrKucykMrCXXe/yJpSAIXird/eUo390hvxPsBfGDtzKQg/aM4kWjgypX
- B1+t0PABMnuGoBKb04vvGF86vvuFWEAJvcNanv4ZvAdvfky1Jdf3y9/mN6ezQnTpnqcgguX0z
- Dhd4SiHScOHhulHhWDtDZXRL9A+fBLnUznTxWO+sYQzB9mn6EbOu8gMTzaMsDiqouMmGBNLdM
- VMxPTZlbqA3jkvU+b2bHlwLAsDX6w0sxMYk9Qi5IpHQAfEyMoE34ViZ6NqLYtAoJu9MyUHTGM
- mSU2kcNau6cntTq3mdeSTc2sFT0=
+UI-OutboundReport: notjunk:1;M01:P0:ZXL9fYsXktY=;7GMb/vSrp/+mWn3J8QrIV+z2Sug
+ mOBYcvxBMH7Lqhx8AVnvGRhi/A77FKa/wiELHR6Xx6exd1viov0Vdgp9SLK8RIlJfOX6sx4kd
+ DZECY+YShUqamUrQPzkdBNKNvSGOvGmhxnSm/U/95RTuyKB+coKG71zi+OBNiQVt3p/yCkx66
+ PN5QFfxY4yYfnuyFYjhR7IcHWCXwp7h5sZFmefHFR7vQM7BTk1shTsdzWzIxaml9qErx6zE9y
+ PE3X2DwDm/t5/pYV6I5hjeapffBulIsbGmkF9yk6BbhV8SWWSQbRWopMON8sBHVnlUoAUJVE/
+ z8Nwxw1vob1Kv4binIdOIJMtSQKUbfwjwl9uh+Dufn0D0Rt2d1rwyT++IFYXb3c5dmK7cXTcT
+ 9/8/k4sZzhfVl1Enq9EhSpNdPEB0pYWhn5FlO/dM2YoNxZ3V5hAn8LIr6IHjM+R4DMVjAEYOZ
+ 1NWhFENQJOmP3Ds5N+BForYnr1OdwZGHW6vy1CCwQvw9gEbZegG4UJ1BjbdIp1lwanBZUNAVg
+ 83wIcSMqT9TQfqOX3dmaSmRkiBypn4LinJUwv599mZ7qb/oVtnfjXCsb8XbTEZg1ejsPQlK6X
+ Og69/uYaYa+GhtCH8xGnwSFT3dP/TT+gfolqJeZnw987/iT/WDRjUYUFeoJyDsVik6EkIUegG
+ n2kgEyTmSgzteCKN6LesQ1jrtuTfZEgxHq/o/ciCW8NkRXSMgTQh0vaYjub5mqGfA5U9FZU1w
+ HUGwpKyqOR0oFUnmEKquL3z4A8Yz9nGyp2/AbyYZlvQHrfHY1f+jE7L+w0WSh0TaMFM7neE+g
+ I6gPY/8adn1ZZtqnv3xNnA8cugyN29X4dfRtXUp94JWAyOvDTfU4T1dgu7IVBP0hv75JMQxTc
+ nJTXwcRRVNKljbF0gppZ09v1Un8VWHx+iVu6A2gKitVwQUVDDWALVHVL5SneyLgGO7EesFyrn
+ eKI16HFBi3sdW9FlqtDaJEIrJ9c=
 
-This drivers supports the ACPI quickstart button device, which
-is used to send manufacturer-specific events to userspace.
-Since the meaning of those events is not standardized, userspace
-has to use for example hwdb to decode them.
+From: Arvid Norlander <lkml@vorpal.se>
 
-The driver itself is based on an earlier proposal, but contains
-some improvements and uses the device wakeup API instead of a
-custom sysfs file.
+The Z830 has some buttons that will only work properly as "quickstart"
+buttons. To enable them in that mode, a value between 1 and 7 must be
+used for HCI_HOTKEY_EVENT. Windows uses 0x5 on this laptop so use that for
+maximum predictability and compatibility.
 
-Compile-tested only.
+As there is not yet a known way of auto detection, this patch uses a DMI
+quirk table. A module parameter is exposed to allow setting this on other
+models for testing.
 
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+Signed-off-by: Arvid Norlander <lkml@vorpal.se>
 =2D--
- MAINTAINERS                       |   6 +
- drivers/platform/x86/Kconfig      |  13 ++
- drivers/platform/x86/Makefile     |   3 +
- drivers/platform/x86/quickstart.c | 225 ++++++++++++++++++++++++++++++
- 4 files changed, 247 insertions(+)
- create mode 100644 drivers/platform/x86/quickstart.c
+ drivers/platform/x86/toshiba_acpi.c | 36 ++++++++++++++++++++++++++---
+ 1 file changed, 33 insertions(+), 3 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8d1052fa6a69..b71692c55f7b 100644
-=2D-- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -354,6 +354,12 @@ B:	https://bugzilla.kernel.org
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
- F:	drivers/acpi/pmic/
+diff --git a/drivers/platform/x86/toshiba_acpi.c b/drivers/platform/x86/to=
+shiba_acpi.c
+index 291f14ef6702..2a5a651235fe 100644
+=2D-- a/drivers/platform/x86/toshiba_acpi.c
++++ b/drivers/platform/x86/toshiba_acpi.c
+@@ -57,6 +57,11 @@ module_param(turn_on_panel_on_resume, int, 0644);
+ MODULE_PARM_DESC(turn_on_panel_on_resume,
+ 	"Call HCI_PANEL_POWER_ON on resume (-1 =3D auto, 0 =3D no, 1 =3D yes");
 
-+ACPI QUICKSTART DRIVER
-+M:	Armin Wolf <W_Armin@gmx.de>
-+L:	platform-driver-x86@vger.kernel.org
-+S:	Maintained
-+F:	drivers/platform/x86/quickstart.c
++static int hci_hotkey_quickstart =3D -1;
++module_param(hci_hotkey_quickstart, int, 0644);
++MODULE_PARM_DESC(hci_hotkey_quickstart,
++		 "Call HCI_HOTKEY_EVENT with value 0x5 for quickstart button support (-=
+1 =3D auto, 0 =3D no, 1 =3D yes");
 +
- ACPI SERIAL MULTI INSTANTIATE DRIVER
- M:	Hans de Goede <hdegoede@redhat.com>
- L:	platform-driver-x86@vger.kernel.org
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 6dbd40e2aeda..9cba9a410e28 100644
-=2D-- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -641,6 +641,19 @@ config THINKPAD_LMI
+ #define TOSHIBA_WMI_EVENT_GUID "59142400-C6A3-40FA-BADB-8A2652834100"
 
- source "drivers/platform/x86/intel/Kconfig"
+ /* Scan code for Fn key on TOS1900 models */
+@@ -136,6 +141,7 @@ MODULE_PARM_DESC(turn_on_panel_on_resume,
+ #define HCI_ACCEL_MASK			0x7fff
+ #define HCI_ACCEL_DIRECTION_MASK	0x8000
+ #define HCI_HOTKEY_DISABLE		0x0b
++#define HCI_HOTKEY_ENABLE_QUICKSTART	0x05
+ #define HCI_HOTKEY_ENABLE		0x09
+ #define HCI_HOTKEY_SPECIAL_FUNCTIONS	0x10
+ #define HCI_LCD_BRIGHTNESS_BITS		3
+@@ -2730,10 +2736,15 @@ static int toshiba_acpi_enable_hotkeys(struct tosh=
+iba_acpi_dev *dev)
+ 		return -ENODEV;
 
-+config ACPI_QUICKSTART
-+	tristate "ACPI Quickstart button driver"
-+	depends on ACPI
-+	depends on INPUT
-+	select INPUT_SPARSE_KEYMAP
-+	help
-+	  This driver adds support for ACPI quickstart button (PNP0C32) devices.
-+	  The button emits a manufacturer-specific key value when pressed, so
-+	  userspace has to map this value to a standard key code.
-+
-+	  To compile this driver as a module, choose M here: the module will be
-+	  called quickstart.
-+
- config MSI_EC
- 	tristate "MSI EC Extras"
- 	depends on ACPI
-diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index 1de432e8861e..0801ccc37e9b 100644
-=2D-- a/drivers/platform/x86/Makefile
-+++ b/drivers/platform/x86/Makefile
-@@ -70,6 +70,9 @@ obj-$(CONFIG_YOGABOOK)		+=3D lenovo-yogabook.o
- # Intel
- obj-y				+=3D intel/
-
-+# Microsoft
-+obj-$(CONFIG_ACPI_QUICKSTART)  +=3D quickstart.o
-+
- # MSI
- obj-$(CONFIG_MSI_EC)		+=3D msi-ec.o
- obj-$(CONFIG_MSI_LAPTOP)	+=3D msi-laptop.o
-diff --git a/drivers/platform/x86/quickstart.c b/drivers/platform/x86/quic=
-kstart.c
-new file mode 100644
-index 000000000000..ba3a7a25dda7
-=2D-- /dev/null
-+++ b/drivers/platform/x86/quickstart.c
-@@ -0,0 +1,225 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
+ 	/*
++	 * Enable quickstart buttons if supported.
++	 *
+ 	 * Enable the "Special Functions" mode only if they are
+ 	 * supported and if they are activated.
+ 	 */
+-	if (dev->kbd_function_keys_supported && dev->special_functions)
++	if (hci_hotkey_quickstart)
++		result =3D hci_write(dev, HCI_HOTKEY_EVENT,
++				   HCI_HOTKEY_ENABLE_QUICKSTART);
++	else if (dev->kbd_function_keys_supported && dev->special_functions)
+ 		result =3D hci_write(dev, HCI_HOTKEY_EVENT,
+ 				   HCI_HOTKEY_SPECIAL_FUNCTIONS);
+ 	else
+@@ -3257,7 +3268,14 @@ static const char *find_hci_method(acpi_handle hand=
+le)
+  * works. toshiba_acpi_resume() uses HCI_PANEL_POWER_ON to avoid changing
+  * the configured brightness level.
+  */
+-static const struct dmi_system_id turn_on_panel_on_resume_dmi_ids[] =3D {
++#define QUIRK_TURN_ON_PANEL_ON_RESUME		BIT(0)
 +/*
-+ * quickstart.c - ACPI Direct App Launch driver
-+ *
-+ * Copyright (C) 2024 Armin Wolf <W_Armin@gmx.de>
-+ * Copyright (C) 2022 Arvid Norlander <lkml@vorapal.se>
-+ * Copyright (C) 2007-2010 Angelo Arrifano <miknix@gmail.com>
-+ *
-+ * Information gathered from disassembled dsdt and from here:
-+ * <https://archive.org/details/microsoft-acpi-dirapplaunch>
++ * Some Toshibas use "quickstart" keys. On these, HCI_HOTKEY_EVENT must u=
+se
++ * the value HCI_HOTKEY_ENABLE_QUICKSTART.
 + */
++#define QUIRK_HCI_HOTKEY_QUICKSTART		BIT(1)
 +
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++static const struct dmi_system_id toshiba_dmi_quirks[] =3D {
+ 	{
+ 	 /* Toshiba Port=C3=A9g=C3=A9 R700 */
+ 	 /* https://bugzilla.kernel.org/show_bug.cgi?id=3D21012 */
+@@ -3265,6 +3283,7 @@ static const struct dmi_system_id turn_on_panel_on_r=
+esume_dmi_ids[] =3D {
+ 		DMI_MATCH(DMI_SYS_VENDOR, "TOSHIBA"),
+ 		DMI_MATCH(DMI_PRODUCT_NAME, "PORTEGE R700"),
+ 		},
++	 .driver_data =3D (void *)QUIRK_TURN_ON_PANEL_ON_RESUME,
+ 	},
+ 	{
+ 	 /* Toshiba Satellite/Port=C3=A9g=C3=A9 R830 */
+@@ -3274,6 +3293,7 @@ static const struct dmi_system_id turn_on_panel_on_r=
+esume_dmi_ids[] =3D {
+ 		DMI_MATCH(DMI_SYS_VENDOR, "TOSHIBA"),
+ 		DMI_MATCH(DMI_PRODUCT_NAME, "R830"),
+ 		},
++	 .driver_data =3D (void *)QUIRK_TURN_ON_PANEL_ON_RESUME,
+ 	},
+ 	{
+ 	 /* Toshiba Satellite/Port=C3=A9g=C3=A9 Z830 */
+@@ -3281,6 +3301,7 @@ static const struct dmi_system_id turn_on_panel_on_r=
+esume_dmi_ids[] =3D {
+ 		DMI_MATCH(DMI_SYS_VENDOR, "TOSHIBA"),
+ 		DMI_MATCH(DMI_PRODUCT_NAME, "Z830"),
+ 		},
++	 .driver_data =3D (void *)(QUIRK_TURN_ON_PANEL_ON_RESUME | QUIRK_HCI_HOT=
+KEY_QUICKSTART),
+ 	},
+ };
+
+@@ -3289,6 +3310,8 @@ static int toshiba_acpi_add(struct acpi_device *acpi=
+_dev)
+ 	struct toshiba_acpi_dev *dev;
+ 	const char *hci_method;
+ 	u32 dummy;
++	const struct dmi_system_id *dmi_id;
++	long quirks =3D 0;
+ 	int ret =3D 0;
+
+ 	if (toshiba_acpi)
+@@ -3441,8 +3464,15 @@ static int toshiba_acpi_add(struct acpi_device *acp=
+i_dev)
+ 	}
+ #endif
+
++	dmi_id =3D dmi_first_match(toshiba_dmi_quirks);
++	if (dmi_id)
++		quirks =3D (long)dmi_id->driver_data;
 +
-+#include <linux/acpi.h>
-+#include <linux/init.h>
-+#include <linux/input.h>
-+#include <linux/input/sparse-keymap.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/sysfs.h>
-+#include <linux/types.h>
+ 	if (turn_on_panel_on_resume =3D=3D -1)
+-		turn_on_panel_on_resume =3D dmi_check_system(turn_on_panel_on_resume_dm=
+i_ids);
++		turn_on_panel_on_resume =3D !!(quirks & QUIRK_TURN_ON_PANEL_ON_RESUME);
 +
-+#include <asm/unaligned.h>
-+
-+#define DRIVER_NAME	"quickstart"
-+
-+/*
-+ * There will be two events:
-+ * 0x02 - Button was pressed while device was off/sleeping.
-+ * 0x80 - Button was pressed while device was up.
-+ */
-+#define QUICKSTART_EVENT_RUNTIME	0x80
-+
-+struct quickstart_data {
-+	struct device *dev;
-+	struct input_dev *input_device;
-+	char input_name[32];
-+	char phys[32];
-+	u32 id;
-+};
-+
-+/*
-+ * Knowing what these buttons do require system specific knowledge.
-+ * This could be done by matching on DMI data in a long quirk table.
-+ * However, it is easier to leave it up to user space to figure this out.
-+ *
-+ * Using for example udev hwdb the scancode 0x1 can be remapped suitably.
-+ */
-+static const struct key_entry quickstart_keymap[] =3D {
-+	{ KE_KEY, 0x1, { KEY_UNKNOWN } },
-+	{ KE_END, 0 },
-+};
-+
-+static ssize_t button_id_show(struct device *dev, struct device_attribute=
- *attr, char *buf)
-+{
-+	struct quickstart_data *data =3D dev_get_drvdata(dev);
-+
-+	return sysfs_emit(buf, "%u\n", data->id);
-+}
-+static DEVICE_ATTR_RO(button_id);
-+
-+static struct attribute *quickstart_attrs[] =3D {
-+	&dev_attr_button_id.attr,
-+	NULL
-+};
-+ATTRIBUTE_GROUPS(quickstart);
-+
-+static void quickstart_notify(acpi_handle handle, u32 event, void *contex=
-t)
-+{
-+	struct quickstart_data *data =3D context;
-+
-+	switch (event) {
-+	case QUICKSTART_EVENT_RUNTIME:
-+		sparse_keymap_report_event(data->input_device, 0x1, 1, true);
-+		acpi_bus_generate_netlink_event(DRIVER_NAME, dev_name(data->dev), event=
-, 0);
-+		break;
-+	default:
-+		dev_err(data->dev, FW_INFO "Unexpected ACPI notify event (%u)\n", event=
-);
-+		break;
-+	}
-+}
-+
-+/*
-+ * The GHID ACPI method is used to indicate the "role" of the button.
-+ * However, all the meanings of these values are vendor defined.
-+ *
-+ * We do however expose this value to user space.
-+ */
-+static int quickstart_get_ghid(struct quickstart_data *data)
-+{
-+	struct acpi_buffer buffer =3D { ACPI_ALLOCATE_BUFFER, NULL };
-+	acpi_handle handle =3D ACPI_HANDLE(data->dev);
-+	union acpi_object *obj;
-+	acpi_status status;
-+	int ret =3D 0;
-+
-+	/*
-+	 * This returns a buffer telling the button usage ID,
-+	 * and triggers pending notify events (The ones before booting).
-+	 */
-+	status =3D acpi_evaluate_object_typed(handle, "GHID", NULL, &buffer, ACP=
-I_TYPE_BUFFER);
-+	if (ACPI_FAILURE(status))
-+		return -EIO;
-+
-+	obj =3D buffer.pointer;
-+	if (!obj)
-+		return -ENODATA;
-+
-+	/*
-+	 * Quoting the specification:
-+	 * "The GHID method can return a BYTE, WORD, or DWORD.
-+	 *  The value must be encoded in little-endian byte
-+	 *  order (least significant byte first)."
-+	 */
-+	switch (obj->buffer.length) {
-+	case 1:
-+		data->id =3D obj->buffer.pointer[0];
-+		break;
-+	case 2:
-+		data->id =3D get_unaligned_le16(obj->buffer.pointer);
-+		break;
-+	case 4:
-+		data->id =3D get_unaligned_le32(obj->buffer.pointer);
-+		break;
-+	default:
-+		dev_err(data->dev,
-+			FW_BUG "GHID method returned buffer of unexpected length %u\n",
-+			obj->buffer.length);
-+		ret =3D -EIO;
-+		break;
-+	}
-+
-+	kfree(obj);
-+
-+	return ret;
-+}
-+
-+static void quickstart_notify_remove(void *context)
-+{
-+	struct quickstart_data *data =3D context;
-+	acpi_handle handle;
-+
-+	handle =3D ACPI_HANDLE(data->dev);
-+
-+	acpi_remove_notify_handler(handle, ACPI_DEVICE_NOTIFY, quickstart_notify=
-);
-+}
-+
-+static int quickstart_probe(struct platform_device *pdev)
-+{
-+	struct quickstart_data *data;
-+	acpi_handle handle;
-+	acpi_status status;
-+	int ret;
-+
-+	handle =3D ACPI_HANDLE(&pdev->dev);
-+	if (!handle)
-+		return -ENODEV;
-+
-+	data =3D devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	data->dev =3D &pdev->dev;
-+	dev_set_drvdata(&pdev->dev, data);
-+
-+	/* We have to initialize the device wakeup before evaluating GHID becaus=
-e
-+	 * doing so will notify the device if the button was used to wake the ma=
-chine
-+	 * from S5.
-+	 */
-+	device_init_wakeup(&pdev->dev, true);
-+
-+	ret =3D quickstart_get_ghid(data);
-+	if (ret < 0)
-+		return ret;
-+
-+	data->input_device =3D devm_input_allocate_device(&pdev->dev);
-+	if (!data->input_device)
-+		return -ENOMEM;
-+
-+	ret =3D sparse_keymap_setup(data->input_device, quickstart_keymap, NULL)=
-;
-+	if (ret < 0)
-+		return ret;
-+
-+	snprintf(data->input_name, sizeof(data->input_name), "Quickstart Button =
-%u", data->id);
-+	snprintf(data->phys, sizeof(data->phys), DRIVER_NAME "/input%u", data->i=
-d);
-+
-+	data->input_device->name =3D data->input_name;
-+	data->input_device->phys =3D data->phys;
-+	data->input_device->id.bustype =3D BUS_HOST;
-+
-+	ret =3D input_register_device(data->input_device);
-+	if (ret < 0)
-+		return ret;
-+
-+	status =3D acpi_install_notify_handler(handle, ACPI_DEVICE_NOTIFY, quick=
-start_notify, data);
-+	if (ACPI_FAILURE(status))
-+		return -EIO;
-+
-+	return devm_add_action_or_reset(&pdev->dev, quickstart_notify_remove, da=
-ta);
-+}
-+
-+static const struct acpi_device_id quickstart_device_ids[] =3D {
-+	{ "PNP0C32", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(acpi, quickstart_device_ids);
-+
-+static struct platform_driver quickstart_platform_driver =3D {
-+	.driver	=3D {
-+		.name =3D DRIVER_NAME,
-+		.dev_groups =3D quickstart_groups,
-+		.probe_type =3D PROBE_PREFER_ASYNCHRONOUS,
-+		.acpi_match_table =3D quickstart_device_ids,
-+	},
-+	.probe =3D quickstart_probe,
-+};
-+module_platform_driver(quickstart_platform_driver);
-+
-+MODULE_AUTHOR("Armin Wolf <W_Armin@gmx.de>");
-+MODULE_AUTHOR("Arvid Norlander <lkml@vorpal.se>");
-+MODULE_AUTHOR("Angelo Arrifano");
-+MODULE_DESCRIPTION("ACPI Direct App Launch driver");
-+MODULE_LICENSE("GPL");
++	if (hci_hotkey_quickstart =3D=3D -1)
++		hci_hotkey_quickstart =3D !!(quirks & QUIRK_HCI_HOTKEY_QUICKSTART);
+
+ 	toshiba_wwan_available(dev);
+ 	if (dev->wwan_supported)
 =2D-
 2.39.2
 
