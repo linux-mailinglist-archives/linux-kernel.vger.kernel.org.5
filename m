@@ -1,180 +1,238 @@
-Return-Path: <linux-kernel+bounces-46470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09219844039
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:13:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD05784403F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:15:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1828A1C27AE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:13:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A494B268BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:14:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9218E7BAF0;
-	Wed, 31 Jan 2024 13:12:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BB037B3D1;
+	Wed, 31 Jan 2024 13:14:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="MCoWEpDH"
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2054.outbound.protection.outlook.com [40.107.255.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SYLeWyYc"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 858D57B3D2
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:12:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706706777; cv=fail; b=tUvqfjwEtj2YxwQdeQWL0QN5AwYAn6BmNFYbhDPfTsuf+wvH5vAjrkXeydYf2dg0/ROCpAKcn7gP5vfp6aSmDyBhWGiNwQN0kyqq4lUQ1kgZN2qdCLDhuJoaw4LtcSiGYKq5NUZitkFibvU9YwowO2mB4d0IPEAw5Rx7OZu7czQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706706777; c=relaxed/simple;
-	bh=YCiV9JpeETPwZ5WfCMx0MlMax8GxGJIP2Iv5wZllhqg=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=TM2lVqhzQbe8XMNGeH9vk8MJ4xY/uWAbKQetNXuC72UnXIdR6c5ftIomVE5HXfaKZdKbsIxxlBpMzWdXt8dlY9FW34sNwNntEeGRULH8sPtVMXD5TuisZxV23SivWBSB6TmY3e9Rw+U4E/7cM2c4rSp9Dhlg87f1QdJrUnF8poQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=MCoWEpDH; arc=fail smtp.client-ip=40.107.255.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n/ripkVqyZjNp9wJQmWBbKcEidWzpzyL3EN+1BkJXw+GoXN2evrmlagRSCujicEha8hE/QfNaB4PoLPk4GR4EhpkJDI0sCKXUvOFdbpym30iQ7ouyNAG1oUyTIkyKkSq7IB5y/1Cq8eBjY8EcLWaJu8KaR1bIUnOT0F+RPR+QY/ByTCKUajPbPuyCdNwexsyYIRqfL1J6qx/8tMdq+TLUdnjmhXl5Av+3QEPMo2QMK4BNcPW/aqwaREncIrEM/7Ipv1q4vRyfgJ8Vu+cUK3CsFji4Qxv9eDCPEIvm1E7eov7WgpGjJfDeTS7YM2f3KhOd8fHl/b/+3PMawqPwCYRUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YcOgv1/ZGnuxkd7W01ErLZH2VhE07WcMiDEbIrr2cr0=;
- b=Bi60tm+qmoPfXvmIW1rSeYXzYY6IN2EvvrN1edWZYRY/E7ctF7L9LK5rtXE4SVThTjvmbZJoaTbF9eWHazSMuYIsp1TMylPBk6YzY6pAAOs1F7/L8HH9oOuG0VuIOEzcc0ivpP/7oTs7nExCzjYI6CxoTCi6yCPb1baTLhByybO0T5hNYjNtchRc6dl1KoinER3Q4Hf8QlB+XBY9cUP1yYiUSRyGMqvmu9BuOLBPjec83vh117RDZxNNH+yfAXSmSQFR5yWzkkd3OUiWpiPv4Rt6HVZa0b9BXMgGJI5fVwGFMTpYS++a9jd28LT0A/kYWV1+MUpmeRi6jrfCFmiJXg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YcOgv1/ZGnuxkd7W01ErLZH2VhE07WcMiDEbIrr2cr0=;
- b=MCoWEpDHqOx/IdfUGz5pkuo5vgYmtbALy7lCUXvqvJQLS28/jkx+iBgxT+XoCP8PgtmdMTqUiVcFiW+5/RUaQO7L6eQhzfIb0hKii5pUOU2RfmCanz4NssyrMWpIkRlbUl2w80HWfAk8lQFowro3bzbcGumvAUM56wOpRfchuz1vS83kP5MEO0sg5/M6lSMy6+gBv7FbkItzHrDkNqUvlPRA7RwLVe7wD/MVQLbCFPa19hUkhaC2v1sSvEmkKjBc0eXEHJNunbCcSWhMQ9AZcYO9YjbOpdDi+6OyKj7iWZRiY/S8SM96KxFhjJK14hn7dSF59q1JS3FnZxntKlaPFA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from JH0PR06MB6849.apcprd06.prod.outlook.com (2603:1096:990:47::12)
- by JH0PR06MB7354.apcprd06.prod.outlook.com (2603:1096:990:a6::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Wed, 31 Jan
- 2024 13:12:52 +0000
-Received: from JH0PR06MB6849.apcprd06.prod.outlook.com
- ([fe80::84c3:362b:bebe:87e2]) by JH0PR06MB6849.apcprd06.prod.outlook.com
- ([fe80::84c3:362b:bebe:87e2%5]) with mapi id 15.20.7249.023; Wed, 31 Jan 2024
- 13:12:52 +0000
-From: Zhiguo Jiang <justinjiang@vivo.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Cc: opensource.kernel@vivo.com,
-	Zhiguo Jiang <justinjiang@vivo.com>
-Subject: [PATCH v2] mm:vmscan: shrink skip folio mapped by an exiting task
-Date: Wed, 31 Jan 2024 21:12:44 +0800
-Message-ID: <20240131131244.1144-1-justinjiang@vivo.com>
-X-Mailer: git-send-email 2.41.0.windows.3
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR03CA0110.apcprd03.prod.outlook.com
- (2603:1096:4:91::14) To JH0PR06MB6849.apcprd06.prod.outlook.com
- (2603:1096:990:47::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAC4E79DD0;
+	Wed, 31 Jan 2024 13:14:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706706854; cv=none; b=ai22HjM+qDqQ9qh75ANYzWkQXeTY/FxvJR+cYppT0wBApmKGSmZzIxOHirgQmbFAc4bsK6SuTdQdGMt9rqd+FHxNU8cchmBJj0GPCRTSNbMh7wIMM8Ik9F+lAumD58agMo5d1zJ8pywhZ7kJbMLw781HC0Lj322DaS+dOdh9yWE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706706854; c=relaxed/simple;
+	bh=CIoNWqd6M+hQVXYvItsgUvIEkP6QIav4idAL5Wa4dWg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mdynwTYiQPYiMKbI1uq4L+75R+zC0F9vpvdatC6UWM8HsMv9GnirlGhLPgRbZGcAb1M1zF73shXPjQSaPG1jK5S6qHekvO4KL93d+FLKZ8Swn/Sbq6c4QV2sQ7jAj7wqTrcWVRyTrU0UbhMM0l5wEmtZ06x5+K11DU+hcoeWNgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SYLeWyYc; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6de0f53f8e8so708126b3a.0;
+        Wed, 31 Jan 2024 05:14:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706706852; x=1707311652; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=cyQTQCAwcgO1XS+KBRjMHmKhoGL5WnQbolSZvV0q3F4=;
+        b=SYLeWyYcboG37pSKUZWQobh/G/FLk609EPKgk1fCamjE9Pr3f+yLfE1xmk6i0hAhvj
+         H0jAaXNW4p2OvzqfaWa++tVfSqNfIk/ZUpeTQqtr1LY7E3p2dvFfGF4tcw+2g9B/lhFq
+         C4xt4MQ+XSuKap8bd3AwRxRkbgw1DiRXeuo+I9rzSZ6KZFgmaIqwOK43fTyEeGLnPSBm
+         uK7b1i513G0ey/DCrWKpi57rBVrBo9VMyYSQb3knVm21eZAa2hBby3mgxpPby2/27Yqr
+         7Vv5AvQ2wcW6CofYA+3q1NKfrokEHbpvYAT10H8MrmI0Ix1sSLRyxJJg7DR0MZf8+TAL
+         sTrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706706852; x=1707311652;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cyQTQCAwcgO1XS+KBRjMHmKhoGL5WnQbolSZvV0q3F4=;
+        b=I1eK5HCzatCNXa7JNYPY/XBblZCh/o/pvsapyns9TgELc5KTUPwAlxu42NeG0HQtAv
+         kHAtwtf3zZo9UF6YvUO6TM3Bk6Uu2dUhxNttLupqTJfacD+vtvj8TMtFi+JL9/e9xGa/
+         RuIug37oeAb+Lm2PyVfU54AwjL5SAiRUkIvZUk1EDz02D+QrE5wFQJT2DmkbDKmTYamH
+         x6i36e21v6ItVod4aHBLWWz0VC6rMKeHjXxC8jfnYOKhznwNibvXJLEJVv0i0raUw1nb
+         uIlPuARc/+ilHfbJfezAW0xpkh4WUBGiah11lNQNYU4ma38x2bsNZ3kmch8DdZI7HgTy
+         +blg==
+X-Gm-Message-State: AOJu0Yye6HNSx/bZw4syfOstPutQBI54xOFVr2Na8r0jw1lvFSsiXJwl
+	I5HjadCcUd+KvXY9PPruNB/jmv+rBFOIgbzC0OoRNIzKVulcJTqd
+X-Google-Smtp-Source: AGHT+IGrZ43dFsSf1oXRfFhDyUEbMelY1yUpJ6vWQT2e5OX9RXYowqCdG3NCRWl/26k52BknG9OXZg==
+X-Received: by 2002:a05:6a20:4997:b0:19b:6424:cd7d with SMTP id fs23-20020a056a20499700b0019b6424cd7dmr1291291pzb.27.1706706851699;
+        Wed, 31 Jan 2024 05:14:11 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o15-20020a63e34f000000b005c2420fb198sm10464784pgj.37.2024.01.31.05.14.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 05:14:10 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <247dcdfa-3761-4745-bdc8-88edf8cd06ea@roeck-us.net>
+Date: Wed, 31 Jan 2024 05:14:08 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: JH0PR06MB6849:EE_|JH0PR06MB7354:EE_
-X-MS-Office365-Filtering-Correlation-Id: ebf97237-3913-4c5f-4c85-08dc225e54df
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	8Rygwt7sQk/1N/+B+fE8mQ3J0XbRVWLAs6JWa8hqnFo2mZ12b9ObRHiVCqjmpp4ngbqNpCAtAwKQd3FWbDSGqWcJjvrtFJt5cZZfLQM8NP5IIK8v6vB1NZT/OVkc/5xC8eQ825WJHUSrbmDBzNARGuNDoFgEO0ArzscjokJpWPvr5icbh3LqoKRAzC659cBrnSgqFfuEumUQw9t6am9tWNI3i2iU1YOgXhe3ycr7vuNC6Zu8HMM770td9ic7ttNtjmeYsYtF4MZB6gVF+1BiuGK+4HYI4GLrfXO8WFde/Q/6eEF+GRw06PKk1Ei0dBLE7e6DmKVXk70FYaV+sEMGSI1YGo3wbU+PBZTGxBVsbNIyRkOloRoopTXR3t0BroqDvbApQDXxvE0GtiNd8kINmSgPcnBi6aYvxHx8JH0WeJ10DHeZ/Fscgybhus5JthjYdwKcZ8IYazBpuYgMd0x0TBzWPlkOIqEBiQi43jGQtg8vb9Zlap2MSOnLYuA4o+xI+SCYGkgHc4rUnwVs3YJFuwmMpL8FricOtchSA+ZhEh6EWYKOKHPCbEh4afqHs7V66LLvVCgms7l6aTrPM5Mu/ei84JHyn1FWmtSIWx1ZjfxPZVDttzcs0MzZu2JGV1J5
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:JH0PR06MB6849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(136003)(396003)(376002)(366004)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(36756003)(86362001)(8936002)(4326008)(5660300002)(2906002)(66946007)(316002)(66556008)(66476007)(38350700005)(6486002)(478600001)(52116002)(6506007)(6666004)(6512007)(38100700002)(8676002)(26005)(107886003)(2616005)(41300700001)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?tppp+YJyDlcGyLm97UXcXcfPvLRDjepHKe03EOIaMIveIaQKufQSPQ80PbnQ?=
- =?us-ascii?Q?O2vMfrU73pK8dPb/6Wh/rb2bdmelWFxyhpY11IrMV36ut4Qxquj5c8FjVX2I?=
- =?us-ascii?Q?RkWCcGYw3YbL/XIEDGb/yYEZyEAcZnNOJi2ruOaDBET4cmTNnW6br+i60W7s?=
- =?us-ascii?Q?maWoPJpew6T1wQsoXa9Qlrd5xGawf3PoqGAvYEJp4u1v6bjteII7pTUOMqnk?=
- =?us-ascii?Q?jsthtUOwd7aklsUvAE5HXQP3PYBgpuJU2HEjjqXl58yNRMNvurd807n8/vdE?=
- =?us-ascii?Q?iBhDnuvAnDImJxHq88ubWot7eXq+LYwNC/vbeP+Q4ZdRnpMC1sPuZOyCVjxj?=
- =?us-ascii?Q?tTY4RMy83JTfx00srTKFTVwAu51BrRe9rHU+J+QMRA8TrPsi1RReOYuTXWaK?=
- =?us-ascii?Q?JbWJSpxn0jBS6IAKP4OJ4TZMsfwc0akE0Xq316lIK5Cu7EYKqIiBg1zveiiW?=
- =?us-ascii?Q?/XWq5z+0oMTLYc0VNddX2MUbiVtsrTqYhCGFuXECteY+YFMKhYKEKKhuVW5Z?=
- =?us-ascii?Q?DFaWaoHvPbPcEceVvpa+0yh49kPHrnONwbRujbjiRXvB1MTnje8jU8yySFWY?=
- =?us-ascii?Q?T3pJUIS3akgFs+UStyp3vwZlslHIVlO3tCtF5B6s1C1qF9BZwnsfabZywWKS?=
- =?us-ascii?Q?ZDlohuSvvrC5E1Qy+vAQJFkFfVcBJfFeCfz8cueHRjoi1noCw1VtKvzPJi+U?=
- =?us-ascii?Q?eG6/Y04nBT6pwTAmMU4GbeH2E0VpaQUtl2xJrjehyAN92sPSqg5JY7AV6jIN?=
- =?us-ascii?Q?fCYjDrxWqSWDlANLfJ0YuXmO5x6zTl6EzBxOGm5HIFHdu6ALo6U5mJUkJ5I2?=
- =?us-ascii?Q?ddy858ZIh+sO7HExyfNiEU9tFqAphv/Tp35S8oaBgYza7SYyfZLnOgwIxXyL?=
- =?us-ascii?Q?JKNt2btoHI5LKf0kz8TxCXOya497ju87uFVY3YUznGw1WgxEuEn7CWM2GMV3?=
- =?us-ascii?Q?OIOiExn1Dr35uqPxbjZnINsASgH4eGFKQVuLiq5MRyunryLePgY6T5mh8kxx?=
- =?us-ascii?Q?rX8UK5kgF1AS3BNhELQxpnXKnJr5gvsdM33mRGsYFwPul4o5ctTgUJzsWncE?=
- =?us-ascii?Q?+jqhmP6A03ECcpy/r2lf6mVUuXz0u9rlEauRM959My4qqzWFg/Q3qhQJgX/2?=
- =?us-ascii?Q?FL+gzsOsHWykGl707kaIe4t4IgxFEgMKZ10nNl4dqV/yOhvZ4+FNmaH/r7Hr?=
- =?us-ascii?Q?ih/Y4GcAUXFbDaaSuT5MoA9kOML+lhMyMNlbqFx2J0EmiBKO2iFNcNicTSOL?=
- =?us-ascii?Q?+Zue2WN3n84NWnBZ4ElndtMDXEBk/544f53wW4JJKUs1o2z2KJhYXQ4TAvGk?=
- =?us-ascii?Q?Y885Z8C6JndxdAbK5BmbljESciG5vE/v+WSlwik+tcIQiTfmZoz2Nii0L0Vj?=
- =?us-ascii?Q?4949HGG/UtoiEH8AHdqkPvMgSAMjkOFaktLHQMgcvdaBF5lMZj1vTKZnnera?=
- =?us-ascii?Q?wgAxsTXQu1fdfmaZdJT36k/EtZH1BG8K7LjnyquWXDka41kMjg2mH9Yg0GvM?=
- =?us-ascii?Q?UeJXr9GUbMpEjPLDllptEMpcQQFWfJUCtf6fnHE+hQhL1SGaQfvidhcurvW2?=
- =?us-ascii?Q?6iMPiu4ate0r/OJVOH8mhCWSJiH39uoIpiaoTHww?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ebf97237-3913-4c5f-4c85-08dc225e54df
-X-MS-Exchange-CrossTenant-AuthSource: JH0PR06MB6849.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 13:12:52.6685
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jpiFNTHZ2XMFJFX04bgu0M9EGtpK0sh7NxMvuQPC048JB6+S+i6paegBtAwDGjAJMIzQkWwaqr2Wqu24yO0X3A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR06MB7354
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 04/11] watchdog: rzg2l_wdt: Check return status of
+ pm_runtime_put()
+Content-Language: en-US
+To: Biju Das <biju.das.jz@bp.renesas.com>,
+ "Claudiu.Beznea" <claudiu.beznea@tuxon.dev>,
+ "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
+ "mturquette@baylibre.com" <mturquette@baylibre.com>,
+ "sboyd@kernel.org" <sboyd@kernel.org>,
+ "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
+Cc: "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
+ "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240131102017.1841495-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240131102017.1841495-5-claudiu.beznea.uj@bp.renesas.com>
+ <TYCPR01MB11269AD7463C9C7C0A09A43A9867C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+ <ddc0b42c-bf88-4c0d-b938-8bd7ff7b329a@tuxon.dev>
+ <TYCPR01MB11269BFC2DB457049A2B8C0C8867C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <TYCPR01MB11269BFC2DB457049A2B8C0C8867C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-If the folio shrinked by shrink_inactive_list is mapped by an exiting
-task, this folio should be freed in the task exit flow rather than be
-reclaimed in the shrink flow, because the former takes less time.
+On 1/31/24 02:41, Biju Das wrote:
+> Hi Claudiu,
+> 
+>> -----Original Message-----
+>> From: claudiu beznea <claudiu.beznea@tuxon.dev>
+>> Sent: Wednesday, January 31, 2024 10:36 AM
+>> Subject: Re: [PATCH v2 04/11] watchdog: rzg2l_wdt: Check return status of
+>> pm_runtime_put()
+>>
+>> Hi, Biju,
+>>
+>> On 31.01.2024 12:32, Biju Das wrote:
+>>> Hi Claudiu,
+>>>
+>>> Thanks for the feedback.
+>>>
+>>>> -----Original Message-----
+>>>> From: Claudiu <claudiu.beznea@tuxon.dev>
+>>>> Sent: Wednesday, January 31, 2024 10:20 AM
+>>>> Subject: [PATCH v2 04/11] watchdog: rzg2l_wdt: Check return status of
+>>>> pm_runtime_put()
+>>>>
+>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>>
+>>>> pm_runtime_put() may return an error code. Check its return status.
+>>>>
+>>>> Along with it the rzg2l_wdt_set_timeout() function was updated to
+>>>> propagate the result of rzg2l_wdt_stop() to its caller.
+>>>>
+>>>> Fixes: 2cbc5cd0b55f ("watchdog: Add Watchdog Timer driver for
+>>>> RZ/G2L")
+>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>> ---
+>>>>
+>>>> Changes in v2:
+>>>> - propagate the return code of rzg2l_wdt_stop() to it's callers
+>>>>
+>>>>   drivers/watchdog/rzg2l_wdt.c | 11 +++++++++--
+>>>>   1 file changed, 9 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/drivers/watchdog/rzg2l_wdt.c
+>>>> b/drivers/watchdog/rzg2l_wdt.c index d87d4f50180c..7bce093316c4
+>>>> 100644
+>>>> --- a/drivers/watchdog/rzg2l_wdt.c
+>>>> +++ b/drivers/watchdog/rzg2l_wdt.c
+>>>> @@ -144,9 +144,13 @@ static int rzg2l_wdt_start(struct
+>>>> watchdog_device
+>>>> *wdev)  static int rzg2l_wdt_stop(struct watchdog_device *wdev)  {
+>>>>   	struct rzg2l_wdt_priv *priv = watchdog_get_drvdata(wdev);
+>>>> +	int ret;
+>>>>
+>>>>   	rzg2l_wdt_reset(priv);
+>>>> -	pm_runtime_put(wdev->parent);
+>>>> +
+>>>> +	ret = pm_runtime_put(wdev->parent);
+>>>> +	if (ret < 0)
+>>>> +		return ret;
+>>>
+>>> Do we need to check the return code? So far we didn't hit this
+>> condition.
+>>> If you are planning to do it, then just
+>>>
+>>> return pm_runtime_put(wdev->parent);
+>>
+>> pm_runtime_put() may return 1 if the device is suspended (which is not
+>> considered error) as explained here:
+> 
+> Oops, I missed that discussion. Out of curiosity,
+> What watchdog framework/consumer is going to do with a
+> Non-error return value of 1?
+> 
 
-When the exiting tasks and shrink_inactive_list occur at the same time,
-the lruvecs's folios which shrink_inactive_list reclaims may be mapped
-by the exiting tasks. And when system is low memory, it more likely to
-occur, because more backend applidatuions will be killed.
+You mean what the watchdog subsystem does if a driver violates its API ?
+That is undefined. The API says:
 
-The shrink_inactive_list reclaims the exiting tasks's folios in lruvecs
-and transforms the exiting tasks's anon folios into swap memory, which
-will lead to the increasing load of the current exiting tasks.
+* start: this is a pointer to the routine that starts the watchdog timer
+   device.
+   The routine needs a pointer to the watchdog timer device structure as a
+   parameter. It returns zero on success or a negative errno code for failure.
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This patch can alleviate the load of the tasks exiting process. Because
-it can make that the exiting tasks release its anon folios faster
-instead of releasing its swap memory from its anon folios swap-in in
-shrink_inactive_list.
+We are not going to change the API, if that is what you are suggesting.
 
-Signed-off-by: Zhiguo Jiang <justinjiang@vivo.com>
----
-
-Change log:
-v1->v2:
-1.The VM_EXITING added in v1 patch is removed, because it will fail
-to compile in 32-bit system.
-
- mm/rmap.c | 7 +++++++
- 1 file changed, 7 insertions(+)
- mode change 100644 => 100755 mm/rmap.c
-
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 1cf2bffa48ed..e6702bfafdde
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -840,6 +840,13 @@ static bool folio_referenced_one(struct folio *folio,
- 	int referenced = 0;
- 	unsigned long start = address, ptes = 0;
- 
-+	/* Skip this folio if it's mapped by an exiting task */
-+	if (unlikely(!atomic_read(&vma->vm_mm->mm_users)) ||
-+		unlikely(test_bit(MMF_OOM_SKIP, &vma->vm_mm->flags))) {
-+		pra->referenced = -1;
-+		return false;
-+	}
-+
- 	while (page_vma_mapped_walk(&pvmw)) {
- 		address = pvmw.address;
- 
--- 
-2.39.0
+Thanks,
+Guenter
 
 
