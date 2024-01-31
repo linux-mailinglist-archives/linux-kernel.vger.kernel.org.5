@@ -1,166 +1,303 @@
-Return-Path: <linux-kernel+bounces-45940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74D99843819
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:43:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 226E284381D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:43:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E06A286A24
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:43:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC390287CC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 07:43:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BE8954FB1;
-	Wed, 31 Jan 2024 07:43:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A17355C18;
+	Wed, 31 Jan 2024 07:43:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UKvc3wjV"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b="N7Owz6Yu"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3090605DC
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 07:42:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706686980; cv=none; b=HiXGZYp6wZbTyGWOyjEQS0RuwRdeuq7vuhVV5bXh9OZOXsHn4G1mEemJy6Rh8NYbIyltS1FTdMJJP5dytx7vVPi2y8VG2DIhW/bzf4pnwu9z2gNeyfbH/+kw3llOV1moCcf9BSlIgZxQ//IPDlx8mGNpveu6Z9dbajdHgYoAVDw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706686980; c=relaxed/simple;
-	bh=pKugPOpY04/DiyHgIqo5Kmzs80fKoyhDuxl3Cm5ZjaY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OppiVp0dKGeaUwxOaJhZAlWK8qCznNhYY1C3KAFr1M0U+OhcfAB6rT59IgFLQ6CTvF7mRnsqWMyDLclvbID/0GOqZA6yyNpuXYb+Ow0vlmH2xstTYFWj7c8IUYz2mITJrbLzwJusqYsZsc6IPes2PCg6ZpHUSsH2z3lM4KgpaCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UKvc3wjV; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a354fc17f24so443781466b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jan 2024 23:42:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706686976; x=1707291776; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3MsvoJLPDJmzJceztupHh5xHVFDdzmY/ZbgHQRKQzrQ=;
-        b=UKvc3wjVod1tLgjHYc2IsqbJEH57XrDxbYasP0h037Ue9SlskYO7GX+MDP65AqEi9B
-         +CUzUcimFmyPR01u5ZZDrgCzn8KuJwH/d6H0TLZkYcjK5Io5Aeukt+dLXS1eT1ll1/cC
-         U+eruIVzAVlD2EYTodhOxaa9C1oG4w7KsFXM2m6JfDg/5VbzlUgZ4Dt7Qf8cvjVqaHzF
-         n5HY7ocW59ZpcWrpv8/x4g2h9Ghq96YIZ69n0W7HcWK4BH1plAq5avQczMKKhciJrYw1
-         ZS1FWKXwwVWhnRMYSX2RP6wu3wIFnTey0ekeOYm2w1824SkV1lkCotuGkfvj7J5b11aF
-         ZTUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706686976; x=1707291776;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3MsvoJLPDJmzJceztupHh5xHVFDdzmY/ZbgHQRKQzrQ=;
-        b=Ge8RA+jg/+8AWsS1FijODAi5jixHcCClbqXpeF1hw3XUpZJW98KtfVlmAkowmXtRZn
-         EIENPZXsF30c6m9R1cYPrcq9lsbvOorYC0m9gqtqPBlEVHA88Pn/VPOfCvEILUfR7o2F
-         DHz6/36pzY6qABwcaq0Xzxzv1aRVdIE78PdvF0MeIZxyUldVcIQpMlE3ieyWkq/pe0gn
-         w+VKiErw5X/Io/rTygh+nmVZ7b73VSmEYyfCUlkEQz6VO0Xrw+24VWuAYd04yBhhB52g
-         YqA0/fsP1NYSRgurTmNDWzwMZdgeFaSSzj5pVQFOm4nBwMgR15d5shCz6keRetpk+E5t
-         RWfA==
-X-Gm-Message-State: AOJu0YzFu09EnQDn8P0Ou24jDgcK3kuhccJ8wtHzkM+rePP+pWv1tiWB
-	JIppsbHXf19yonVqP4DnGL8FnCL6lpmUMnYzjYQxG9ffSzvGR4MqhpG3OtZOBCs=
-X-Google-Smtp-Source: AGHT+IG+PTdvYYjkkfX3QZLzmIWsLbrwU26k1BtEo61WenPzwml+9eF+0GBr0mrNJCQC6C6bivUJuw==
-X-Received: by 2002:a17:906:4c48:b0:a35:d6c0:d2f9 with SMTP id d8-20020a1709064c4800b00a35d6c0d2f9mr518121ejw.14.1706686976278;
-        Tue, 30 Jan 2024 23:42:56 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVjDTGxXnd0wgU3BL1W7lHthECvV7Z/of3IfhI3q8n2r1YoUt82BJKp30aMSSYtFfYY6rqka8orTqY4w3Zoqmqi47cvDW30+s6l9xn+rkdpPpbEm4FwhQN7brN/Y/hAQqgUX6jn83Ieu6zEiafyK5BMW3eHeeiGF8qKIwFTzoZeCjgonp9SstXohf3p4AbVHAWv7DbcPDV0+xHggwNyapeO+65vrB2+GtzCL0oDDgmdhDeAucj3KU0X+bfW+Y0PIdCtQQL9GMcund3pG917uxrnwEgoXMVaXajtgW4lKfN6ZWQgLaAatAnNMe3fATVQKdLjal1mqdIQy9JeuHzsgzzPRM3L/OeVpWUnmbNb3rUyoGsu/Qzmmv+nkZSlV3m9TzoF8yxGtwzugZeUi1bzvxHHLYp+fO8mfWr655Ni/wnjvFxSzQJmVAxxMpLXQDpedQOtW0+KW0n9wpRbw9h2OGfnRwPGuDnQoFg8yRhLn4Shc+kYzivHGWkDXiXbwvbQlPOyxQE/MWrbH7OzuhKNW4rmdPsEVBy3Xs9lVpioE1MC9jduASfrS1Ufy1IUSGPiPGZOcsCakLsn2GGBpL5df/6PEdSG8L770jW4d9oH3XMZnGdDDJCnMY9Pq46CicoN9lBGFalXAe4Lxz27MJ26D0tIhCdbi2mL1mtGxPbIgUfNiFfQ8NpSMqhA7W0v1xshXHApQCqDc5hgikVixuf+eQDt1wMReQlb18u3FpF4jGLJ9rTnS9y9
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id sf5-20020a1709078a8500b00a353bfdd411sm4774695ejc.59.2024.01.30.23.42.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jan 2024 23:42:55 -0800 (PST)
-Message-ID: <c1e9964b-5edc-46a6-bbd5-fd88aba66605@linaro.org>
-Date: Wed, 31 Jan 2024 08:42:53 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8562A5810C;
+	Wed, 31 Jan 2024 07:43:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706687017; cv=fail; b=FGkLUyX4infSKMtwBFPNG8VG9q0Ru8iCzPTwaU60M/5int16Dycl5CVjChPq9YiF/ArpKvywAXxlcAhJBEQ0eJ/GLTLaxzr2uH0uKD4iE7dyZkw4khpczsUlu0sf/bd9Tz4oXh+NvsliR8j9/G80vmUUHdKpnpvQoQJtuohZ+BY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706687017; c=relaxed/simple;
+	bh=dkSD3RxH5v0LL00xz1qdA4trSL+3OIJAshNX3ZBGXCM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=QPxiMYlNAQBfOdCnqh4SQCY7HYWKOsjs5JiJQ59HAaHXEj18ESGsIjlOA+zaXdOnZv5B+fJU6Whyn9u1bCdupWyqxpycfeq8jVggitqbPqP0rhgTQQLCHUAVaGc29Dlv3Y07Q5bA8s8+54XIiRGELtjV1GJo1bUAkhEa3SVlylw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com; spf=pass smtp.mailfrom=memverge.com; dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b=N7Owz6Yu; arc=fail smtp.client-ip=40.107.236.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=memverge.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B6cZUS4R8LHJm+Ue1U5kdzfXicjQ86drm3AOJhoWFs8mFWIisC56RAzQglydRLDLyxhU3HAZ/Ass6FlezSj/zF1Q/vxWcFFnx7xVxojwcVg8HL3kp2WPdImv37ZDM2We7JrSvptKQfugw3UciLo94SFz5RH5/xYVXpOHC6CfJPdXnAGcKrzYu7SqydTSKNtsfi8Wjzl8Ox11EUvQ7+8W+qnIoW0avL/JOvfKb4e5REx26nEiZarrbRozh8jIHcQTd7aItfLUT42rMjUznZRBVTpgQ2GWK8aA2P3yVN6MJAF7XWuL46S/yo5TMGP5F4JUGuJ8AFaRslicl0oddoFPkg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mq1KnTeKU9wJk/xMTzH/bqeM/vJDiFlbZhoFqSsaKRA=;
+ b=ii/Mgv8xXeSOSmU5fCKsUtTnHfapenidfH1s1UABYLjGcrJnqiKpA4aXSy/KWpDYzLvYV5fnxNvPLOL1hTsHeMgVZa9ryd/KSZOaNYPEEAiZ5aDIIPpt57I4jzEgb6L6Bcb9CtVd9zuAedCzMrcDavSBQu9X85XosvDyOWEqhvy3z9rnK2AVAFhq7vnAVNnCqTWpKx8MQ/pJ7RARKff+8xc3GrwCyiJ360Rd2yyCMWgzILsEiHZrdmxWRrj7pVIvYG6rETYK9cpCOXlNdF2ZvEKhoYhthvJbydOLakgXdQHg4devzuVY4MtdR9k2LB8K0qL3M95yQbjr8srGDlI2ew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mq1KnTeKU9wJk/xMTzH/bqeM/vJDiFlbZhoFqSsaKRA=;
+ b=N7Owz6YuhRZjD/kL8Wa55+22QU/sQwNWq2ePQzg/NZ2iXyCP/m8BJS8sbw+kS9d5TrBGb9XCRXpvRTTr4lo2aNLrLy4p+8mUvdddj75tUIbUBYQ+5CGNNxVCwWqbcqq/xBCsPc2ozzYplG5/4CPNxBFkMhUGzVlNGX8WBpYnxJ4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by IA1PR17MB6997.namprd17.prod.outlook.com (2603:10b6:208:44e::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.24; Wed, 31 Jan
+ 2024 07:43:31 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::7a04:dc86:2799:2f15]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::7a04:dc86:2799:2f15%5]) with mapi id 15.20.7228.029; Wed, 31 Jan 2024
+ 07:43:31 +0000
+Date: Wed, 31 Jan 2024 02:43:16 -0500
+From: Gregory Price <gregory.price@memverge.com>
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+	corbet@lwn.net, akpm@linux-foundation.org, honggyu.kim@sk.com,
+	rakie.kim@sk.com, hyeongtak.ji@sk.com, mhocko@kernel.org,
+	vtavarespetr@micron.com, jgroves@micron.com,
+	ravis.opensrc@micron.com, sthanneeru@micron.com,
+	emirakhur@micron.com, Hasan.Maruf@amd.com, seungjun.ha@samsung.com,
+	hannes@cmpxchg.org, dan.j.williams@intel.com,
+	Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
+Subject: Re: [PATCH v4 3/3] mm/mempolicy: introduce MPOL_WEIGHTED_INTERLEAVE
+ for weighted interleaving
+Message-ID: <Zbn6FG3346jhrQga@memverge.com>
+References: <20240130182046.74278-1-gregory.price@memverge.com>
+ <20240130182046.74278-4-gregory.price@memverge.com>
+ <877cjqgfzz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877cjqgfzz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-ClientProxiedBy: SJ0PR03CA0134.namprd03.prod.outlook.com
+ (2603:10b6:a03:33c::19) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 03/10] dt-bindings: arm: qcom,coresight-tpdm: Add
- support for CMB element size
-Content-Language: en-US
-To: Tao Zhang <quic_taozha@quicinc.com>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Suzuki K Poulose <suzuki.poulose@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Konrad Dybcio <konradybcio@gmail.com>, Mike Leach <mike.leach@linaro.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: Jinlong Mao <quic_jinlmao@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, coresight@lists.linaro.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Tingwei Zhang <quic_tingweiz@quicinc.com>,
- Yuanfang Zhang <quic_yuanfang@quicinc.com>,
- Trilok Soni <quic_tsoni@quicinc.com>, Song Chai <quic_songchai@quicinc.com>,
- linux-arm-msm@vger.kernel.org, andersson@kernel.org
-References: <1706605366-31705-1-git-send-email-quic_taozha@quicinc.com>
- <1706605366-31705-4-git-send-email-quic_taozha@quicinc.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <1706605366-31705-4-git-send-email-quic_taozha@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|IA1PR17MB6997:EE_
+X-MS-Office365-Filtering-Correlation-Id: f7c86463-78e9-40dc-be00-08dc22305251
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	udtQ39RA9WEM2Z/cXlh2JJ0fnD7AvVUqCS2/xbZc7wPK0ccZBzfYyfZlloukAwLvIrWZ5Oi5XDCC7Qn1C0OEswYee3dp16WIGRQEOF8arXu8cildQ5w8FgxCpXxe6ddFc57a2unFRVxCx1qJOA/iRvoxzQ+oZ35h/4le+sFC3Y+hjRDi/R2hhmV5pzm0B1wH/GQTuLM0EBbPzTanT7+O+iRR/gZPrCll2aeuqeya8DIUel1z/RlFdBoJHquIIo/JW9Ibg7S8Zu/n+AHWmEhfD2jHmXjSsVDkEZfnmSUBq5hiMOCSmEcyXx3+ZqWmYEmGech5AfiDAS09kIRxgluV8LpIqOZ8kDtBXhIAwm78AtCDoLFIzvLB3MZHFEy4PgHF+Jrx1YaRHqLI8f7NMb5DcaUHErXysqrm7SrJvu8b6wIBPTfBU+dhRP00xF3vvqIPVklaXqzsAQFYBm4wEVWv+2hH0VlxIPEOsUbfu4Qroh0W5sYbaaP7I6vG9Z3Ik5bwlk2Kim38/OOFc8NmsXmO7IJziw+9qV7AXck6Xnkoze5IHOTLPAm25b8UOUBczT1+kZTg7dH0fPCCMUXVok0TtbIVk+amxTL/HzV+bu19fmMmbLrEsq8Ue+NFnmVTBohF
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(346002)(39850400004)(136003)(366004)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(41300700001)(83380400001)(26005)(6512007)(2616005)(38100700002)(8936002)(8676002)(4326008)(5660300002)(7416002)(2906002)(478600001)(6486002)(6506007)(6666004)(44832011)(54906003)(66476007)(66556008)(66946007)(6916009)(316002)(86362001)(36756003)(16393002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?tXXdquaLa2BcLmiqXrRKq5WEZ0I9Cy4BMfSnlt5u+QhM+ZuJj66jMj1ZVBZm?=
+ =?us-ascii?Q?V9EnKzIQw3hlBt81+H/uzBjiDjp0fVXMHNx9NTR30o00QXbeyUDmLZKpCLnv?=
+ =?us-ascii?Q?eNsTz9Vqhnz/dB8K0RDU9xe2wbMr4g4xz6uwjB3+VdVcJotOyPMbP9Kx7sq6?=
+ =?us-ascii?Q?gNbUsl9SiU+uhwdPkBzifDtsnE0LwloiZANoQfC/BrIqUohayT0hzwMI2R9w?=
+ =?us-ascii?Q?0YR76q70bfSeg41OnmKeG3BOHTfOOkASAPYw+1580E7GnpHiz8NCxKKmttAy?=
+ =?us-ascii?Q?NfFVS0bCQPMZJuQqXbLyLUgnDoVx6vGUnJcEQ86f+/cw0QZLiQfG+4QAOFL1?=
+ =?us-ascii?Q?UrNpgEZDcsts787wzIVDtfD7H8DsegZK+AGpDirhy2Yh+hEIAJwpaEJHaVki?=
+ =?us-ascii?Q?8hkJMqodo1BtonwnNpNAlmOXobZaGVCiVAcUu6HzWO74DbXlIb76XLfOsKLJ?=
+ =?us-ascii?Q?i1JScKCQYIHer6oiHPUkYyE8rQgf/U/ItYUM36El2aEdrAned+pS8fU+DhW8?=
+ =?us-ascii?Q?kuOpEpndoeKQQCMgDa6NoO4EC52a82fSrHgeV0F5jbZI95ZJyR6lHXXTznNg?=
+ =?us-ascii?Q?Z41xwHbUNgGUXaYmz7/QUPDkkyF/NOOAtXl++juZukhlpV0QQqUYErh1Sjco?=
+ =?us-ascii?Q?hjFuO/HlZG107yOOPJYSIV95R+MaEkoCq02t3W5pGCq6dPh5ux+wL4ss4hF/?=
+ =?us-ascii?Q?fn7+TXF9SxkiO+5sXU9HK1PvNdj5FOhpH3OWXZIXGgXKluXlwkpJNWDiVOiV?=
+ =?us-ascii?Q?Ll9cis2Dth5UhSOLyW8B4iF815X+Egtx3TLCv1D0Eie8zV5lrvB4P8r7FCwr?=
+ =?us-ascii?Q?iyz9RV163gFwjjcvdqg54WWbR27t5K7j42U9wM8aFwjSqHs2VkHMnqvLk4QV?=
+ =?us-ascii?Q?WZ4Og6Z6PNVwa94YjOt/AzWV3PlD+3vazKbLZr8rENvSpBXbk1oeFllxuJap?=
+ =?us-ascii?Q?YYT7QB6E3/ewQZbwnOsugFka8U35t105IhXd9oabrIWxslR6MqznFkDL+7Pf?=
+ =?us-ascii?Q?6jhkWStE5FiDDz/hZfDRmVzeQ+goOgafpTuc+jMIIWaHJxqIiqglbCE6mdPz?=
+ =?us-ascii?Q?Z7MVfhiav6DCQFtt3fjXBoelSSGFV5eM7WAfpoldF80rn0eIJ5sgL+2gKtH9?=
+ =?us-ascii?Q?p8RmXjoCC7yRWBrccKN3FJngExgsi/MsMvC+Dqpt7HcWhW5g18g4uC7PR5pk?=
+ =?us-ascii?Q?r+1NpBOw4gxqulqpb83eWeGVdXv5ibwWf77gn29QgxsyC6Ssso8eERVVpf7u?=
+ =?us-ascii?Q?UO6pfDIev73RyHKQEe69/kYLMdNRa1k9nbqyR+2HeY55HRX+mkbGNEq4mPFw?=
+ =?us-ascii?Q?RWfmAkgG+7Hzozq1VYN6MaavJSQJ8mhn/gvGOQ5cssUKMFlQi8idvYEdM58T?=
+ =?us-ascii?Q?9gpkhcv0QunOdMUUaJVSilO/NWGcmSrr45D/ktXVYL9SU2tjsoXJOhrWE8Kt?=
+ =?us-ascii?Q?EG1hrxd+1gSu5zR08usI8JYVbOeop340/Tz7NDTJPB9s1Qzmt40C6M1U/o1/?=
+ =?us-ascii?Q?+HetoH+SoBSQuICIqhS7X0KCxmnzMUHIuiee1NBKFcGv2tnNU0QuxKAGhicr?=
+ =?us-ascii?Q?GejUwGxYSL9pCRWH+o/oBB49qEHPpRtBloKJXgVC7Z0ebJ85Jrpqp/7VEEcs?=
+ =?us-ascii?Q?Uw=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f7c86463-78e9-40dc-be00-08dc22305251
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 07:43:31.6931
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: D3ug6fIYZ8FirlPIXVNVZpRuZc/9q/NVSRhPjR9IKWvvwUgmaQAmstJO//Bdh0ROhL6El6FcuH+3NS8mGN3+Ry/IVhUC6Jo5ZSW9tnVpoCs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR17MB6997
 
-On 30/01/2024 10:02, Tao Zhang wrote:
-> Add property "qcom,cmb-elem-bits" to support CMB(Continuous
-> Multi-Bit) element for TPDM. The associated aggregator will read
-> this size before it is enabled. CMB element size currently only
-> supports 8-bit, 32-bit and 64-bit. Because the existing example
-> tpdm "tpdm@684c000" which only supports dsb sub-unit, I introduce
-> a new example "tpdm@6c29000" to describe the usage of this new
-> property.
+
+On Wed, Jan 31, 2024 at 02:43:12PM +0800, Huang, Ying wrote:
+> Gregory Price <gourry.memverge@gmail.com> writes:
+> >  
+> > +static unsigned int weighted_interleave_nodes(struct mempolicy *policy)
+> > +{
+> > +	unsigned int node = current->il_prev;
+> > +
+> > +	if (!current->il_weight || !node_isset(node, policy->nodes)) {
+> > +		node = next_node_in(node, policy->nodes);
+> > +		/* can only happen if nodemask is being rebound */
+> > +		if (node == MAX_NUMNODES)
+> > +			return node;
 > 
-> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
-> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
-> ---
->  .../bindings/arm/qcom,coresight-tpdm.yaml     | 25 +++++++++++++++++++
->  1 file changed, 25 insertions(+)
+> I feel a little unsafe to read policy->nodes at same time of writing in
+> rebound.  Is it better to use a seqlock to guarantee its consistency?
+> It's unnecessary to be a part of this series though.
+> 
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+I think this is handled already? It is definitely an explicit race
+condition that is documented elsewhere:
 
-Best regards,
-Krzysztof
+/*
+ * mpol_rebind_policy - Migrate a policy to a different set of nodes
+ *
+ * Per-vma policies are protected by mmap_lock. Allocations using per-task
+ * policies are protected by task->mems_allowed_seq to prevent a premature
+ * OOM/allocation failure due to parallel nodemask modification.
+ */
 
+example from slub:
+
+do {
+	cpuset_mems_cookie = read_mems_allowed_begin();
+	zonelist = node_zonelist(mempolicy_slab_node(), pc->flags);
+	...
+} while (read_mems_allowed_retry(cpuset_mems_cookie));
+
+quick perusal through other allocators, show similar checks.
+
+page_alloc.c  -  check_retry_cpusetset()
+filemap.c     -  filemap_alloc_folio()
+
+If we ever want mempolicy to be swappable from outside the current task
+context, this will have to change most likely - but that's another
+feature for another day.
+
+> > +	while (target) {
+> > +		/* detect system default usage */
+> > +		weight = table ? table[nid] : 1;
+> > +		weight = weight ? weight : 1;
+> 
+> I found duplicated pattern as above in this patch.  Can we define a
+> function like below to remove the duplication?
+> 
+> u8 __get_il_weight(u8 *table, int nid)
+> {
+>         u8 weight;
+> 
+>         weight = table ? table[nid] : 1;
+>         return weight ? : 1;
+> }
+> 
+
+When we implement the system-default array, this will change to:
+
+weight = sysfs_table ? sysfs_table[nid] : default_table[nid];
+
+This cleanup will get picked up in that patch set since this code is
+going to change anyway.
+
+> > +			if (delta == weight) {
+> > +				/* boundary: resume from next node/weight */
+> > +				resume_node = next_node_in(node, nodes);
+> > +				resume_weight = weights[resume_node];
+> > +			} else {
+> > +				/* remainder: resume this node w/ remainder */
+> > +				resume_node = node;
+> > +				resume_weight = weight - delta;
+> > +			}
+> 
+> If we are comfortable to leave resume_weight == 0, then the above
+> branch can be simplified to.
+> 
+>         resume_node = node;
+>         resume_weight = weight - delta;
+> 
+> But, this is a style issue again.  I will leave it to you to decide.
+
+Good point, and in fact there's a similar branch in the first half of
+the function that can be simplified.  Will follow up with a style patch.
+
+ mm/mempolicy.c | 21 ++++-----------------
+ 1 file changed, 4 insertions(+), 17 deletions(-)
+
+My favorite style of patch :D
+
+
+Andrew if you happen to be monitoring, this is the patch (not tested
+yet, but it's pretty obvious, otherwise i'll submit individually
+tomorrow).
+
+
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index 2c1aef8eab70..b0ca9bcdd64c 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -2405,15 +2405,9 @@ static unsigned long alloc_pages_bulk_array_weighted_interleave(gfp_t gfp,
+                page_array += nr_allocated;
+                total_allocated += nr_allocated;
+                /* if that's all the pages, no need to interleave */
+-               if (rem_pages < weight) {
+-                       /* stay on current node, adjust il_weight */
++               if (rem_pages <= weight) {
+                        me->il_weight -= rem_pages;
+                        return total_allocated;
+-               } else if (rem_pages == weight) {
+-                       /* move to next node / weight */
+-                       me->il_prev = next_node_in(node, nodes);
+-                       me->il_weight = get_il_weight(me->il_prev);
+-                       return total_allocated;
+                }
+                /* Otherwise we adjust remaining pages, continue from there */
+                rem_pages -= weight;
+@@ -2460,17 +2454,10 @@ static unsigned long alloc_pages_bulk_array_weighted_interleave(gfp_t gfp,
+                        node_pages += weight;
+                        delta -= weight;
+                } else if (delta) {
++                       /* when delta is deleted, resume from that node */
+                        node_pages += delta;
+-                       /* delta may deplete on a boundary or w/ a remainder */
+-                       if (delta == weight) {
+-                               /* boundary: resume from next node/weight */
+-                               resume_node = next_node_in(node, nodes);
+-                               resume_weight = weights[resume_node];
+-                       } else {
+-                               /* remainder: resume this node w/ remainder */
+-                               resume_node = node;
+-                               resume_weight = weight - delta;
+-                       }
++                       resume_node = node;
++                       resume_weight = weight - delta;
+                        delta = 0;
+                }
+                /* node_pages can be 0 if an allocation fails and rounds == 0 */
+
+
+> 
+> So, except the issue you pointed out already.  All series looks good to
+> me!  Thanks!  Feel free to add
+> 
+> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+> 
+> to the whole series.
+> 
+
+Thank you so much for your patience with me! I appreciate all the help.
+
+I am looking forward to this feature very much!
+
+~Gregory
 
