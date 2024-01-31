@@ -1,111 +1,117 @@
-Return-Path: <linux-kernel+bounces-47060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF32E8448BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:22:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 630098448C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:23:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E1A71C2315A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:22:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 951EE1C23246
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7D673FE47;
-	Wed, 31 Jan 2024 20:22:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABFEA3FB2C;
+	Wed, 31 Jan 2024 20:23:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="haYT871A"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="utAqutq1"
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05A733FB39;
-	Wed, 31 Jan 2024 20:22:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 619043FB06
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:23:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706732562; cv=none; b=WFDnkWc6ttFN3ZH78qQZ2uPdbB0xSCQpA6w6m6NPJc4X7D/43uV84W1T93G1hHBOfO2rnXQJx6lYCZ9zgrAgpn9YDUkGsZLT6OJymdd3qqbCBUwW+lGPU5M3tUHlYsUUqj9RfWrOpiep47uDjhnXengD9pC58C4/z1yYhnZweeM=
+	t=1706732611; cv=none; b=HS0v2/+/Ktc/iwrStDQur39qvHSkiVFhl+Ox6oUeHiXXW90opYn40ttlJu0gtkg7c5KupUv9sVbOZ0spQYySTpvaFizS8+ZZql90voRQ7RrOyuFg6BA8IjF288+UAkJaXMp+9+yCughSmNjQssnt4XB4qVz0ogpdaKsbHC0lVTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706732562; c=relaxed/simple;
-	bh=qd/w5Bcuf2svgiEaBng8uEFP+/hQ9TBMaFzh70vee4c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bE8yRuXDbY9LH46wHXExqWSItrARwazGCgo8N6UwOemZaFaSzvpGjPI/wSuy3vulUL5IMVHPuoqOPbWzEhNrXb8BcjxZaPGLjMPyNTS+29dopY32Y7S/jKInlMs0MIiReM60N0K1F0zP7hD7oxM05DE2ENXFrFdVP7N5krkDykA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=haYT871A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50FABC433F1;
-	Wed, 31 Jan 2024 20:22:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706732561;
-	bh=qd/w5Bcuf2svgiEaBng8uEFP+/hQ9TBMaFzh70vee4c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=haYT871AjlVRcMjGMJ5jr8i6K3lktJn5RibSXPsjUf+1fm+UTvAmvdLV7GIPk+i7z
-	 p1UXFNdz/xYWIwO5FaL60DFz56gNy0yYD2jHq6aDAiuh1RJPILXSHEwz0AjbpgURxK
-	 nbzeLCsifWDlIJ2UM6G0LSSQvI3wLMU6L3dp69Y0ZyXM9HAXAHWeM2+wJKOUs1fkor
-	 TbN0keNBgCc2jRipyt0wwM+5H4og0RqwNIGz10eH+i55CaWgFv5tO0JH6CW08iBZeA
-	 U74JjuOwK6M3YwdKrOT5hscZuOWwrfKYWPPIDVs0FmMlbcW4KKLXcDyKMd0O+QmnSy
-	 RjtfPZ3G+GfhA==
-Date: Wed, 31 Jan 2024 14:22:39 -0600
-From: Rob Herring <robh@kernel.org>
-To: Johan Hovold <johan@kernel.org>
-Cc: Bjorn Andersson <quic_bjorande@quicinc.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-	Jiri Kosina <jikos@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Konrad Dybcio <konrad.dybcio@somainline.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v3 1/2] dt-bindings: HID: i2c-hid: Document reset-related
- properties
-Message-ID: <20240131202239.GA2222869-robh@kernel.org>
-References: <20240129-x13s-touchscreen-v3-0-c4a933034145@quicinc.com>
- <20240129-x13s-touchscreen-v3-1-c4a933034145@quicinc.com>
- <ZbfYzyHaNmjJyNpY@hovoldconsulting.com>
+	s=arc-20240116; t=1706732611; c=relaxed/simple;
+	bh=SEc9m+e3CNgOiYfioXrsW3eDnkw9q57N3o4XcChDGG4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lAaHTC9oTZduGog0O1xPmm2/IPMF4TFYO/MEhuEhj277E23XxMbJ8TN8eDRvMl6IVSathJIYyWFo+4DZlVj2Uk8gv6WFaTx2PZ0dlDROXz3aaMpjKf2ora5rGmOxHCgTvqDAmCTeUXZVyaey5cXGSMWo/RVxmxgeCxatsf7tUP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=utAqutq1; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6029b5946f5so10215847b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:23:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706732608; x=1707337408; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SEc9m+e3CNgOiYfioXrsW3eDnkw9q57N3o4XcChDGG4=;
+        b=utAqutq16Jx/5Dseg1BALD+KUC4JyfW3xDL2gOahiEIJdxUArBEwjsdJBO2L+d7/yJ
+         7J0S0NC/LlgnQgkkiHTPv3Q/WZxdtKKAqLXj2lWUi4vpjCcMGzvoviecHLXpix7K1N0d
+         1rUhcgN7crkq8qtBneZG55b1qpsrVSqHdfsbBnKrKJvFsuLR6EEQgL7nBQU6yDR+mY/n
+         UBd05ygOrkYXumiDXka7CopUzjlmVnMnE+LSHbh9V1yDmGD4sjZMXf29ISpIbqGRdhtB
+         GlFQbCQ+W9iV5O9qjQDbQ+rm0YoUBM03IPQp8uvQnigRsdvbbLhgwVGvQE91b8/zdxrf
+         BpTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706732608; x=1707337408;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SEc9m+e3CNgOiYfioXrsW3eDnkw9q57N3o4XcChDGG4=;
+        b=X+dNW6m9BiK6JxgiPnl8LorxgGMnNav5z2OoTbM+pa0ZnMlNri0IBka1KvtGipRwTa
+         Ff1X9PoLmG4TnzKubY7/qrrTVVi10DlaIndwbEO3qjB/4WQnPgKsRLor68TwQbIISA+G
+         EFxFUz9PU/egwNeS0tsdfN+GMJhUzPIRA84G0M79xkTuKeP3dIjRHw4jaHnlM1UJpJID
+         AJ+6RPyHGPwnzwPGQpbAlShNs2iq2+EhzIZ19yUKnb+wnE9SwycfU04Y8Kz1g7mwA/ya
+         /xXMOR41XUJ023Ewq1WuAkfJHdJyxWlPN8P6dy9uqvri3nTSntCXVhQJu1g0sTLX+e6V
+         wk9g==
+X-Gm-Message-State: AOJu0YyAZGom2gilYzSB7UsHnxLbcx6r40V5pgPiu87vDSUffVbCrNKL
+	2s89Tfa4VP/I0mRdkTygr7KHK179ZXaPu7KJq5mHoS+9bb76CEpq0iYNPR5+kZyox9K1+XFnlz2
+	cWBmCLtvMjq7pk99Ab4JRS55QXtZsb8tUwImPWQ==
+X-Google-Smtp-Source: AGHT+IGpcvN5GMQZlhwTk//mv9UmQh0VRdjb90ri3lGR+8BZIzuGOGjXfggbx2Wm6eOgueit2MKW/muw6bwnOhAZNOs=
+X-Received: by 2002:a81:a010:0:b0:602:9fc4:bc82 with SMTP id
+ x16-20020a81a010000000b006029fc4bc82mr1561453ywg.23.1706732608362; Wed, 31
+ Jan 2024 12:23:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbfYzyHaNmjJyNpY@hovoldconsulting.com>
+References: <20240130124828.14678-1-brgl@bgdev.pl> <20240130124828.14678-21-brgl@bgdev.pl>
+In-Reply-To: <20240130124828.14678-21-brgl@bgdev.pl>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 31 Jan 2024 21:23:17 +0100
+Message-ID: <CACRpkdaBPWOd-MwQvkWCJaua6sbPTBxeK7TV+79SvvGkzCW_4Q@mail.gmail.com>
+Subject: Re: [PATCH 20/22] gpio: protect the pointer to gpio_chip in
+ gpio_device with SRCU
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 29, 2024 at 05:56:47PM +0100, Johan Hovold wrote:
-> On Mon, Jan 29, 2024 at 08:47:47AM -0800, Bjorn Andersson wrote:
-> > Some I2C HID devices has a reset pin and requires that some specified
-> > time elapses after this reset pin is deasserted, before communication
-> > with the device is attempted.
-> > 
-> > The Linux implementation is looking for these in the "reset-gpios" and
-> > "post-reset-deassert-delay-ms" properties already, so use these property
-> > names.
-> 
-> > +  post-reset-deassert-delay-ms:
-> > +    description: Time required by the device after reset has been deasserted,
-> > +      before it is ready for communication.
-> > +
-> > +  reset-gpios: true
-> 
-> Hmm, for the third time, it seems you ignored my comment that you need
-> to remove the comment about these properties from the driver as part of
-> this series.
-> 
-> 	/*
-> 	 * Note this is a kernel internal device-property set by x86 platform code,
-> 	 * this MUST not be used in devicetree files without first adding it to
-> 	 * the DT bindings.
-> 	 */
-> 	if (!device_property_read_u32(dev, "post-reset-deassert-delay-ms", &val))
-> 		ihid_of->post_reset_delay_ms = val;
+On Tue, Jan 30, 2024 at 1:48=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
 
-DT devices should have a specific compatible that gives enough detail to 
-handle this delay or *any* other power sequencing requirement.
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> Ensure we cannot crash if the GPIO device gets unregistered (and the
+> chip pointer set to NULL) during any of the API calls.
+>
+> To that end: wait for all users of gdev->chip to exit their read-only
+> SRCU critical sections in gpiochip_remove().
+>
+> For brevity: add a guard class which can be instantiated at the top of
+> every function requiring read-only access to the chip pointer and use it
+> in all API calls taking a GPIO descriptor as argument. In places where
+> we only deal with the GPIO device - use regular guard() helpers and
+> rcu_dereference() for chip access. Do the same in API calls taking a
+> const pointer to gpio_desc.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-OTOH, we've already got one other delay property, what's one more. Sigh.
+The way I read it after this the gpio character device is well protected
+against the struct gpio_chip going away, good work!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Acked-by: Rob Herring <robh@kernel.org>
+I would perhaps slot in some documentation around
+struct gpio_chip_guard explaining how this works and why it is needed.
 
-Rob
+Yours,
+Linus Walleij
 
