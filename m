@@ -1,128 +1,280 @@
-Return-Path: <linux-kernel+bounces-46770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6C1F8443E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:16:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46AC78443E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:16:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B7D4282D37
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:16:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADB8D1F2B45C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:16:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F4F412AAEF;
-	Wed, 31 Jan 2024 16:16:12 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0481C7BAEC;
-	Wed, 31 Jan 2024 16:16:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 660D412BEAC;
+	Wed, 31 Jan 2024 16:16:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="PqakqdRv"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82E9012A15C
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 16:16:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706717772; cv=none; b=BKwLspnCs7Y2T13A8a66KGZvFQkSdeCfqSXMpuCyVFWsdL1KpYZDykxZvL4ReYZl6UWJ5M1JBrsPoAJlfTzYRdNGHhXruLTghAAcZGVtmBodvWHQXAmJdeGvD0oPfS4k9DMHdGlCO8hWgBt0fhe6jTJK4NXHVuA0hDBxx0Y9gG4=
+	t=1706717773; cv=none; b=NprGkMEnFyFuqN9HqjQwRXGIRkj2gdSzOMxuqzC7crXHjaS7znwuZ0wK3Fu159Ubc1OfkQNM6clR6vjLEb7+OJ8IJAYdFtbPbv+fEQTUzJyTA+TniZpy9cravr8pzVJP9YHHdtzn6WiF8uaRahtH0D39p+1zvAeVcUFIgVteDu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706717772; c=relaxed/simple;
-	bh=HUSvGZVQi6a4ljvbbNgFGjSaDTBTmFmFEowJkd0BKJc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tz2iCxxCsWYfg4iRpAb+2/VrWeVCKUT4nG5fbNegV/GJP6eicqpI5h27hjrt4d2yfEF8o5i9vrPT/25p37r/yPqQEbe088vtxseDg82Gdd5ehCEaSKr77zYOqqxrwAgyo7+UBW6WbSwr7tdeNsdGQyHPnVcsONmdoJVaR69Lw68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A7DCEDA7;
-	Wed, 31 Jan 2024 08:16:52 -0800 (PST)
-Received: from bogus (unknown [10.57.78.35])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E22E3F762;
-	Wed, 31 Jan 2024 08:16:07 -0800 (PST)
-Date: Wed, 31 Jan 2024 16:16:04 +0000
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Cristian Marussi <cristian.marussi@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-	Sudeep Holla <sudeep.holla@arm.com>, linux-kernel@vger.kernel.org,
-	Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH] pmdomain: arm: Fix NULL dereference on scmi_perf_domain
- removal
-Message-ID: <20240131161604.dxr4vxf3gx3aeuan@bogus>
-References: <20240125191756.868860-1-cristian.marussi@arm.com>
+	s=arc-20240116; t=1706717773; c=relaxed/simple;
+	bh=+wYHOH0sY+bbKWDIz+zxEqp0+Fflu1jjg0LhFxkOhBM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kY9b/KE1LFZ4HLLXjMR5B3v47eygDQweH/FAWJAAKMhNcBpcpJWswykgWGOd47QYaKg9wbsxpZ7trCt9NCUPm9LQww9vwLbbqAEpQoxUtUtfTEW7PhgImvthkmNEvKRrTQZhNlKiNbzKZenzCYTEsU8qg+xTJhGLjsogt4V2gbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=PqakqdRv; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d8f3966982so20199895ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:16:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1706717771; x=1707322571; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uU0ajicxi4sJuGXVspRxCJUdD2UpJBefkUcjwQaeEz4=;
+        b=PqakqdRvbaJbYIIok37Ulowfu+Mfp3r0XlkbqkxzaV6qaDa8FG74JZnXesIMXr0tqA
+         aQBSYi/r1TubIvUosrIVZ5O/7aMitlUlDE4ZwEWphlBD617zJI8FpoCky+MvBqVXZOHW
+         Ybe+AbCyh94qEfyXN/6NGCCX7KcXLroQ4rbrg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706717771; x=1707322571;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=uU0ajicxi4sJuGXVspRxCJUdD2UpJBefkUcjwQaeEz4=;
+        b=kR9qr2E+ZXJojsYsnvtiSY7aFRxF0pBiUslMp5eI+qqEYts7px+uQhym2IC/Rj7gf8
+         5Na8bLt7L7dd6O65veiq55NpqmCDtPozrNBqaOiicP506z+9dWH90+Dlf0kBm2jpCcyg
+         AjaTu7Phop7bA2nSUzSBdYR1SIAkSxwyVyDtDeDGeQ/HXMtthVqiqArKb5BftJN5Sler
+         yPCJeyYGb8aTF5YWffbaKIONM7XjtfEnZbhNporPlcPRnSoYHMXqjGRfzeEn4tdo3Cna
+         gyW0DaYB19dGyIiQDByOQZh4O2o/4RYPyUTrQkQufQ7MbcOacFg4GQscr+V7gFSXtPFo
+         7kFg==
+X-Gm-Message-State: AOJu0YzV6p2gl+QP2bImSH3EjD6dY+dDEuwqY5F2V9dxj3cxuAN/JdNz
+	Mzq1wrLD+FsGKunDM5PtNiuroytSWaDhJwI46yJ2tBq8/qIsrWY4gtn3D4t1xg==
+X-Google-Smtp-Source: AGHT+IGbFr+HZwjDoQapkL+FLbfqQONw9jTN2X5BiXd3q6pUh2kUOPjJLGGqClIk9riPLRLqKvb0hg==
+X-Received: by 2002:a17:90a:f309:b0:295:f83d:590 with SMTP id ca9-20020a17090af30900b00295f83d0590mr1056461pjb.27.1706717770734;
+        Wed, 31 Jan 2024 08:16:10 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVdkRxGbq+gEYnc14HAzV9/To+A86PBS8zS5gXdqdZrhsWbXCSKZakH+kHU8IiAe6RgHX9QeTDDmbvXhc6pAqVzxmZ9xyclXGe4OLP0SF2Z6gbqgKPne4tq8ih+3N6ViRoZsChvfrHm+dgcQsBGFlnIXXvpagEsq5O3I+jJ+1wYCwa4ssGv0Lo809noc+dV77ahJ2ZvGK2WmGtgaUmCJKEi83nCo8s7dXmrHZbBpIK9A4BPbWHdYXUlKCfsz45+yLcyl+U9STm+PlPANwHPZ3vjXRNTIhTLO4Bqu8NG+w/MgQPrDlrV0A1DjhrpVReW0iWUPIoLsqsnFzSDsKVFw0at3Q0gKfsX5WJ7nK3MdgpTcpvetVdBKQ52Mh9RM6nCAKfsoTGPuvJYMgV+YqK/nAuyhOeNHGqVabbEJlR5HcA=
+Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
+        by smtp.gmail.com with ESMTPSA id so10-20020a17090b1f8a00b00290701c8623sm1636032pjb.28.2024.01.31.08.16.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 08:16:09 -0800 (PST)
+Message-ID: <28b48c2a-37ab-4d20-a6f1-d12141c192ba@broadcom.com>
+Date: Wed, 31 Jan 2024 08:16:06 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240125191756.868860-1-cristian.marussi@arm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm: flush: don't abuse pfn_valid() to check if pfn is in
+ RAM
+To: Yongqiang Liu <liuyongqiang13@huawei.com>,
+ linux-arm-kernel@lists.infradead.org
+Cc: yanaijie@huawei.com, zhangxiaoxu5@huawei.com, wangkefeng.wang@huawei.com,
+ sunnanyong@huawei.com, linux@armlinux.org.uk, rppt@linux.ibm.com,
+ linux-kernel@vger.kernel.org, keescook@chromium.org, arnd@arndb.de,
+ m.szyprowski@samsung.com, willy@infradead.org
+References: <20240131125907.1006760-1-liuyongqiang13@huawei.com>
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
+ 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
+In-Reply-To: <20240131125907.1006760-1-liuyongqiang13@huawei.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="0000000000007b11af0610403249"
 
-On Thu, Jan 25, 2024 at 07:17:56PM +0000, Cristian Marussi wrote:
-> On unloading of the scmi_perf_domain module got the below splat, when in
-> the DT provided to the system under test the '#power-domain-cells' property
-> was missing.
-> Indeed, this particular setup causes the probe to bail out early without
-> giving any error, so that, then, the removal code is run on unload, but
-> without all the expected initialized structures in place.
+--0000000000007b11af0610403249
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+
+
+On 1/31/2024 4:59 AM, Yongqiang Liu wrote:
+> Since commit a4d5613c4dc6 ("arm: extend pfn_valid to take into account
+> freed memory map alignment") changes the semantics of pfn_valid() to check
+> presence of the memory map for a PFN. __sync_icache_dcache() should use
+> memblock_is_map_memory() instead of pfn_valid() to check if a PFN is in
+> RAM or not.In Some uio case we will get a crash on a system with the
+> following memory layout:
 > 
-> Add a check and bail out early on remove too.
+>   node   0: [mem 0x00000000c0a00000-0x00000000cc8fffff]
+>   node   0: [mem 0x00000000d0000000-0x00000000da1fffff]
+>   the uio layout is：0xc0900000, 0x100000
 > 
-> Unable to handle kernel NULL pointer dereference at virtual address 0000000000000008
-> Mem abort info:
->    ESR = 0x0000000096000004
->    EC = 0x25: DABT (current EL), IL = 32 bits
->    SET = 0, FnV = 0
->    EA = 0, S1PTW = 0
->    FSC = 0x04: level 0 translation fault
->  Data abort info:
->    ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
->    CM = 0, WnR = 0, TnD = 0, TagAccess = 0
->    GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
->  user pgtable: 4k pages, 48-bit VAs, pgdp=00000001076e5000
->  [0000000000000008] pgd=0000000000000000, p4d=0000000000000000
->  Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
->  Modules linked in: scmi_perf_domain(-) scmi_module scmi_core
->  CPU: 0 PID: 231 Comm: rmmod Not tainted 6.7.0-00084-gb4b1f27d3b83-dirty #15
->  Hardware name: linux,dummy-virt (DT)
->  pstate: 61400005 (nZCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
->  pc : scmi_perf_domain_remove+0x28/0x70 [scmi_perf_domain]
->  lr : scmi_perf_domain_remove+0x28/0x70 [scmi_perf_domain]
-
-
->  sp : ffff80008393bc10
->  x29: ffff80008393bc10 x28: ffff0000875a8000 x27: 0000000000000000
->  x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
->  x23: ffff00008030c090 x22: ffff00008032d490 x21: ffff80007b287050
->  x20: 0000000000000000 x19: ffff00008032d410 x18: 0000000000000000
->  x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
->  x14: 8ba0696d05013a2f x13: 0000000000000000 x12: 0000000000000002
->  x11: 0101010101010101 x10: ffff00008510cff8 x9 : ffff800080a6797c
->  x8 : 0101010101010101 x7 : 7f7f7f7f7f7f7f7f x6 : fefefeff6364626d
->  x5 : 8080808000000000 x4 : 0000000000000020 x3 : 00000000553a3dc1
->  x2 : ffff0000875a8000 x1 : ffff0000875a8000 x0 : ffff800082ffa048
-
-These can be dropped as they are not useful.
-
->  Call trace:
->   scmi_perf_domain_remove+0x28/0x70 [scmi_perf_domain]
->   scmi_dev_remove+0x28/0x40 [scmi_core]
->   device_remove+0x54/0x90
->   device_release_driver_internal+0x1dc/0x240
->   driver_detach+0x58/0xa8
->   bus_remove_driver+0x78/0x108
->   driver_unregister+0x38/0x70
->   scmi_driver_unregister+0x28/0x180 [scmi_core]
->   scmi_perf_domain_driver_exit+0x18/0xb78 [scmi_perf_domain]
->   __arm64_sys_delete_module+0x1a8/0x2c0
->   invoke_syscall+0x50/0x128
->   el0_svc_common.constprop.0+0x48/0xf0
->   do_el0_svc+0x24/0x38
->   el0_svc+0x34/0xb8
->   el0t_64_sync_handler+0x100/0x130
->   el0t_64_sync+0x190/0x198
->  Code: a90153f3 f9403c14 f9414800 955f8a05 (b9400a80)
->  ---[ end trace 0000000000000000 ]---
+> the crash backtrace like:
 > 
-> Cc: Sudeep Holla <sudeep.holla@arm.com>
+>    Unable to handle kernel paging request at virtual address bff00000
+>    [...]
+>    CPU: 1 PID: 465 Comm: startapp.bin Tainted: G           O      5.10.0 #1
+>    Hardware name: Generic DT based system
+>    PC is at b15_flush_kern_dcache_area+0x24/0x3c
 
-Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+Humm, what Broadcom platform using a Brahma-B15 CPU are you using out of 
+curiosity?
+
+>    LR is at __sync_icache_dcache+0x6c/0x98
+>    [...]
+>     (b15_flush_kern_dcache_area) from (__sync_icache_dcache+0x6c/0x98)
+>     (__sync_icache_dcache) from (set_pte_at+0x28/0x54)
+>     (set_pte_at) from (remap_pfn_range+0x1a0/0x274)
+>     (remap_pfn_range) from (uio_mmap+0x184/0x1b8 [uio])
+>     (uio_mmap [uio]) from (__mmap_region+0x264/0x5f4)
+>     (__mmap_region) from (__do_mmap_mm+0x3ec/0x440)
+>     (__do_mmap_mm) from (do_mmap+0x50/0x58)
+>     (do_mmap) from (vm_mmap_pgoff+0xfc/0x188)
+>     (vm_mmap_pgoff) from (ksys_mmap_pgoff+0xac/0xc4)
+>     (ksys_mmap_pgoff) from (ret_fast_syscall+0x0/0x5c)
+>    Code: e0801001 e2423001 e1c00003 f57ff04f (ee070f3e)
+>    ---[ end trace 09cf0734c3805d52 ]---
+>    Kernel panic - not syncing: Fatal exception
+> 
+> Fixes: a4d5613c4dc6 ("arm: extend pfn_valid to take into account freed memory map alignment")
+> Signed-off-by: Yongqiang Liu <liuyongqiang13@huawei.com>
+> ---
+>   arch/arm/mm/flush.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/mm/flush.c b/arch/arm/mm/flush.c
+> index d19d140a10c7..11ec6c5ff5fc 100644
+> --- a/arch/arm/mm/flush.c
+> +++ b/arch/arm/mm/flush.c
+> @@ -15,6 +15,7 @@
+>   #include <asm/smp_plat.h>
+>   #include <asm/tlbflush.h>
+>   #include <linux/hugetlb.h>
+> +#include <linux/memblock.h>
+>   
+>   #include "mm.h"
+>   
+> @@ -292,7 +293,7 @@ void __sync_icache_dcache(pte_t pteval)
+>   		/* only flush non-aliasing VIPT caches for exec mappings */
+>   		return;
+>   	pfn = pte_pfn(pteval);
+> -	if (!pfn_valid(pfn))
+> +	if (!memblock_is_map_memory(PFN_PHYS(pfn)))
+>   		return;
+>   
+>   	folio = page_folio(pfn_to_page(pfn));
 
 -- 
-Regards,
-Sudeep
+Florian
+
+--0000000000007b11af0610403249
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILTlRvNM9lXPZVsQ
+c5Pv+gy9C7/cAZ6Hq/fCc8xJiIaJMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTI0MDEzMTE2MTYxMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBbLoWQwMzTy+whEFovOC7PRmJy3P0GOGJ/
+1hiw4jisxJ0GAx0zA9rVzfn2OKTCIlu7uF4p5hSPluQk9fNAlc6FFmIwCOXgbmZ6kVqCq9rxUS1E
+mGIv+OB2+p/dyJWtZGfAeUnGEB7jjcwqJeEygg0dz5KghDxXMUTFA5sJpHbdAP26GShfU7xOjUT3
+avQYq4cblD1luf8oW47lZCCa3NO5ofFkSZXR5kLayKdtfNxgw7uZ2w9dVl7TIuCv4JG+l0nzQHMe
+6DPJ4mM+AbJXvvEboYC7x7EfAeZTJqe5Im1jpHTJTDGihGHpeDTl4g7/dFBVozMAOPjcz+lM4eIu
+j3gy
+--0000000000007b11af0610403249--
 
