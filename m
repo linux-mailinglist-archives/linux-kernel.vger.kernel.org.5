@@ -1,121 +1,102 @@
-Return-Path: <linux-kernel+bounces-47063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DFC68448C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:24:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62CFF8448D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:29:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48FC1287BD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:24:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2A3DB23D81
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 20:29:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23E143FE42;
-	Wed, 31 Jan 2024 20:24:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 440C63FE24;
+	Wed, 31 Jan 2024 20:24:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="bC7gUmsB"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cSb/6rbQ"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAB3B3FE24
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:23:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 043A913E22E
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:24:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706732642; cv=none; b=Xzu3x/RWvbW3+MKM/GRJAt+2reatvbav7UQvRdCJeGyu3c6EctNZCqHoxarlE0XnhMm3qWrMiKlhmkYol6Dcy89r8CwTvqBx9LcxC0Sc7l3uSyvyvUASX2Yqp8a3C2EXNtznXhYJo7JCVcKLhK/0aBWJZlTMBeHACdSksqzL5fc=
+	t=1706732657; cv=none; b=HFQQpS/FeccoFetbbsFICgAeSjRor38pydtYNeIZ/PN6lUaZxrasGJX9GbItt6sb47pOndrJOomPVEye+aPUX2rHdmBHXr47mMn9m4tztbz4mrSI806zA6EIhdnJlLHACLkUKKgh8/o6xN6TNhOjTE77UGTzWnI4dLie/9Mco+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706732642; c=relaxed/simple;
-	bh=c8BgyeaOxRJoVpmpdlvaVs8pxX9gKWMdLr4cmkJxJVQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ENd2jk3iiwnyjSGiv6t7PZUEjVRPbEs+l+5LPuyzVsKaVtVTvT29dY6d2YMVayJo6rzbph2UlIEB9KgLsn3DltOVR3no5bxhN5UMaU4LhfDjkOc8P3rMb/mEKVMBBSoDO+L4D99nHl0kuC6zRl1PC+4WM1/2ch3sve1uFCl3JMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=bC7gUmsB; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0354A40E00C5;
-	Wed, 31 Jan 2024 20:23:57 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id OjcC5NNgSzNe; Wed, 31 Jan 2024 20:23:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706732634; bh=7fi3dyXMMd6/0aeF3EFLTQzMzTDCXg1mf7AUEGHYLUE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bC7gUmsBOplYUTS3insO6U3/vcK1ccGuZATodDgxyMyA6ZU4zmV4UqmrDyuRTUm7k
-	 kWhG/F7i+f54+y8ZHQhqwEGK7SG6oxftSS9UYztvq8bpOQ4xH1NlCdPDTzojzSIJ7M
-	 jyfbHf8Xza0UfKqwfj2ptoNy/ooIrlvrnl+EgvQvCyozspj1IqvB1DnaX2T+H7KhAe
-	 2464GX5F8g9nyEOnPqKAMqAwNNQIhKjQdAPc8N9NaY++vE8reJlZutAuQHINimzgBv
-	 fLChyZE4giHr8szkhwTpY+PbrDUaEioL++DDgZPFXX4OL/vbvAkVBSM5ARUZ8aV+MS
-	 fJ61a45RitAtYWzi8rePeam7QuO/qjB4R73VLrEmEbL1b528uWdO06WsG8r5NWSsHi
-	 cLBwlC1RrtICYwrwSsHaXtPPqDrcajE1IStK/bzL7amXUAzNgOlCHJFb2sw4eGOA6k
-	 x1Vebmlb3V0FyXtu/yWxQEizB5yxO5BwKhjte8xgk+tELgFntkuPwn6fwy489Rmpgy
-	 B6/n3iHfa7pSq7AYfaZQaZlB0xNmf5tGR+om1kFVfcPGXD+2Yd4/RzmRsPkWl9NXBO
-	 YAWidFn+youjqKmhuUm1YZQ2YdbuxOtplpmEhnn+b6dT/9czpt/F3OQo/cbw0M+6K4
-	 0l8hQRsaQZPls2EtUkQNkQ1c=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CF3EC40E01A2;
-	Wed, 31 Jan 2024 20:23:45 +0000 (UTC)
-Date: Wed, 31 Jan 2024 21:23:40 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Isaku Yamahata <isaku.yamahata@intel.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org, Juergen Gross <jgross@suse.com>
-Subject: Re: [PATCH, RESEND] x86/pat: Simplifying the PAT programming protocol
-Message-ID: <20240131202340.GLZbqsTJkeFQycXT0B@fat_crate.local>
-References: <20240124130650.496056-1-kirill.shutemov@linux.intel.com>
- <20240131175738.GIZbqKEhlDKhaKfh_w@fat_crate.local>
- <67hqgqargmt6nln5mds672g263lka7glyzbvcdgt4owdg7xc2e@v6wvuizw5ond>
+	s=arc-20240116; t=1706732657; c=relaxed/simple;
+	bh=64KMf/+FyjVtpRUZmQKXmip+XQCMRyyekmcIwCIvfR0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bzFbgeDocbfw4kfFV+pqZzp+nHOihP0v7+MRyd6s7n7FRiUicz8YjFhhNsmmmSPpiZjaFmoRFl11PcDOq5xK7SHugNUuR2Cue934IvcNZ8QeekiFHcy7gx4OrIUeeBluyadFMUCZmSayibkItSQfte+YuX7PF4R9FO3mi0qdHPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cSb/6rbQ; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-604059403e9so1766357b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 12:24:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706732655; x=1707337455; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=64KMf/+FyjVtpRUZmQKXmip+XQCMRyyekmcIwCIvfR0=;
+        b=cSb/6rbQ0yNBl6lfzR1AN2pOZbUm/8OFo6BkvatnzdMhVIQqGBHobob5lzPVhbgHqO
+         GQzHprgxVI1xz8i4wOU5OCwYtYbJu/ANVm6a4WrylgeiR5KoX1F2RwedWkK3KvB84lc9
+         LC3nbcdwqSVwiD6EalSx1AhX7Kl1FXXZa+T8/p51Nph7ryrVtfw3uvxo8ncOzK8fcYJy
+         ZHnDbqckPmAMFyw7owDg5rCGtE7a5nKsiTrDaOPTx6NPqRvSnDs9wlDb3u00Yhp6qQLG
+         7aFzv70gJYpQ0bvD2pPAtjYdGbSk5seqDNBgPRzgUPD6Q/mnPnbo6GMAvZR2o5JW0Z+P
+         6J3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706732655; x=1707337455;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=64KMf/+FyjVtpRUZmQKXmip+XQCMRyyekmcIwCIvfR0=;
+        b=dQ9utrXg0QPG/oXiW0OENPRtBxAV/rnT2tWo8xXqeDGvHX8iRPJkdC1L9tpuVsH4nD
+         ndKjYpQc3tK/EOpmqT2EJxXhnvybVssBW4OMXsHH9/XMgBVIxUwHJNcvqEKLp2JSk5L1
+         mD2OScYLE5N9od7JPTxnkgbGLvreL26ebvi0mVxyA4kV1gnIkth5j5LEbmMzl+KEP5Bh
+         QuaT0546Zk9gV5lN4cnFv+OODVEWxh9azPUkFLX+NBXoJwFuOLQZQySENTv5/wzBZVzM
+         0pV52KkQtmm/YxNDxi8J4WqOZifhxeFqJwYCh0KuCUpI03hXVClMQ3zdO36pUkcwOYXx
+         NsLQ==
+X-Gm-Message-State: AOJu0Yy2nrqeZ0XqTbbyARzpQEwxUR+yMkRfTuqcnga6lb5mzn59d7mO
+	TtTBDRTwotbW6pbbP/efnujxyFu+NrupxW61/2hJz1nHzGnn6V8BsJ7t1tiKqriIPtUjzrj8ozt
+	fQMvPa2ghsIVp3xqPfmSRJPhOlVeCMYLa4i+PGQ==
+X-Google-Smtp-Source: AGHT+IF1QF/qVP8hWirLpqPTh4WqY/koXmDouYX7xW9tJ0uXH/T8LEu41dns0v8qPg9Pknhpq6nH2WDb4tKsn16RMsU=
+X-Received: by 2002:a81:9a09:0:b0:604:18dd:881c with SMTP id
+ r9-20020a819a09000000b0060418dd881cmr159836ywg.49.1706732655001; Wed, 31 Jan
+ 2024 12:24:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <67hqgqargmt6nln5mds672g263lka7glyzbvcdgt4owdg7xc2e@v6wvuizw5ond>
+References: <20240130124828.14678-1-brgl@bgdev.pl> <20240130124828.14678-22-brgl@bgdev.pl>
+In-Reply-To: <20240130124828.14678-22-brgl@bgdev.pl>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 31 Jan 2024 21:24:04 +0100
+Message-ID: <CACRpkdZfKRCNO2nVXzBGEuY2-sV=D1utfOaPD_OsjfnUhDSqnw@mail.gmail.com>
+Subject: Re: [PATCH 21/22] gpio: remove the RW semaphore from the GPIO device
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 08:52:46PM +0200, Kirill A. Shutemov wrote:
-> The second step is relevant for set_memory code that already does the
-> flushing on changing memory type.
+On Tue, Jan 30, 2024 at 1:48=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
 
-So the "relaxation" is the removal of that CR0.CD requirement?
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> With all accesses to gdev->chip being protected with SRCU, we can now
+> remove the RW-semaphore specific to the character device which
+> fullfilled the same role up to this point.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-> Our HW folks confirmed that the new optimized sequence works on all past
-> processors that support PAT.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Your folks confirmed that for all released hw and for x86 hardware from
-other vendors?
-
-> Testing wouldn't hurt, but it cannot possibly prove that the new flow is
-> safe by testing.
-
-This basically says that I should not take this patch at all as there's
-no way of even testing it?!
-
-I hope I'm misunderstanding you.
-
-> PAT MST was always virtualized, but we was not able to program it as we
-> followed MTRR protocol that sets CR0.CD. And I covered it in the commit
-> message:
-> 
->     Specifically, a TDX guest is not allowed to set CR0.CD. It triggers
->     a #VE exception.
-
-Ok, I'll extend that part once the rest has been sorted out.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Yours,
+Linus Walleij
 
