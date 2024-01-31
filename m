@@ -1,133 +1,96 @@
-Return-Path: <linux-kernel+bounces-46473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B2AB844041
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:16:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA9C5844040
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:15:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33B7FB2D652
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:14:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E4B928CADC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 13:15:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970DE7CF37;
-	Wed, 31 Jan 2024 13:14:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="LeTBhhlf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B30E7BB19;
+	Wed, 31 Jan 2024 13:14:59 +0000 (UTC)
+Received: from out0-197.mail.aliyun.com (out0-197.mail.aliyun.com [140.205.0.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE1D97BB01
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:14:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3F327D400
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:14:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.205.0.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706706871; cv=none; b=XpadCfIkfXMZD+34psFsnmybLw0Y7EaMpECbxHHeHobjU7ITiQLIm3/u9hqzY4IFnRglJy/W3NiXbJHKKIIzB7/KLWEoc9B+Xm18iExWqaKQLErfph+1GaSMyKFKO8mVfQC1s/g33+C6JMl9x0GyrxXI/GqNmb5XvaXWCT2tEks=
+	t=1706706898; cv=none; b=Md15itwAShxhTHBr76wFJjfoWihO2YRe5RNJTplDqDt6PnGVk2CiZrfRfCdyjOnPwrQhnjOdTVCD9FVZPdc/i+/QLuKih4fvs2J1PzWlrZw7A8gRsriB067m5l0yU7TzrjyRz+RmsdP0lyathln5QF/iX8ZrpkW4BDb3B8rp2EU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706706871; c=relaxed/simple;
-	bh=Nf7Dsr8EZJZ/9+wMClmS4IGj8jjb2jaLazmD3JQsIjs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WkFkAlAGho3bOiS4ZXdRsGaze5GE/e7sEnXG9rA089lvOxZN26+rnbX0P6ZCYl3dPXKfFjoJfkAv+wFEZH10PqJQNq63nEtSdF8X2syGBxvhE++tL6MJdHhVUSMVLzuBuYsHtag0VNGu4XC1r+BnEQl1sj7Jmkt2jCNxkEcze/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=LeTBhhlf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26F24C43390
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:14:31 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="LeTBhhlf"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1706706867;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Nf7Dsr8EZJZ/9+wMClmS4IGj8jjb2jaLazmD3JQsIjs=;
-	b=LeTBhhlfRubCzCvTnrCld87vvpqNbt0RklPmCJWEZGjaRrXz3r3h/ZsTQ823q96rlw4Lak
-	YwG3eja7w39qIDT0M3L1cBrWfKmi4Hvg+Fvf8L/n5+rfVrGYxjhBdpg+LGKjmHOBoQcQv5
-	htXDG9QrhnEk5qrdqNK3APKqasptwYQ=
-Received: 
-	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 8e0e383d (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO)
-	for <linux-kernel@vger.kernel.org>;
-	Wed, 31 Jan 2024 13:14:27 +0000 (UTC)
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc256e97e0aso3484505276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 05:14:27 -0800 (PST)
-X-Gm-Message-State: AOJu0Yxr1/QD2H0SsfMfeo7/oKBeF6wcosM6sBloJFot+/YZ0B/rx72p
-	cGVtY7C4CTuMrmzjj5x3TC9Jf044xLVQl9jIBLIN2Y2sA0JEYF/botdUbFYTPrOcomIPLu54sMa
-	kYhP+xXx54hJEkZd1c75W2CYLcBc=
-X-Google-Smtp-Source: AGHT+IG7ugdd5Qlh5wvfmqUhORJS8tPHXMuq81Um+RJsm3yiTXYZzY1qllJi7ExDQtROoYla5w2i8zC2NtYaYUGP8VI=
-X-Received: by 2002:a25:1846:0:b0:dc2:547f:27a2 with SMTP id
- 67-20020a251846000000b00dc2547f27a2mr1406802yby.50.1706706865823; Wed, 31 Jan
- 2024 05:14:25 -0800 (PST)
+	s=arc-20240116; t=1706706898; c=relaxed/simple;
+	bh=Wstx/8DrhppTB6uXTFZMfydw0I3FsGTGVc7YH8GLoDc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fpsfL958MD2tezS+cpsX9M3Lm+PI9JRRJw3kzQI7KcRKxbN+dofFaIF9YitwH2CVv7ciopAt+vOsea9aY72vrKaHDO27rgmcUetO1Wo+f4H/gEQCEk4nLZ57uWSOV2n+Dz91m4QbAz2etraLC+CTGs5LrWSx3VBrN7cHVVFyizg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com; spf=pass smtp.mailfrom=antgroup.com; arc=none smtp.client-ip=140.205.0.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=antgroup.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047193;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---.WKLJDvV_1706706888;
+Received: from 30.120.166.155(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.WKLJDvV_1706706888)
+          by smtp.aliyun-inc.com;
+          Wed, 31 Jan 2024 21:14:49 +0800
+Message-ID: <ae7ce03d-0938-44b9-a2b5-74842016f32b@antgroup.com>
+Date: Wed, 31 Jan 2024 21:14:45 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130083007.1876787-1-kirill.shutemov@linux.intel.com>
- <CAHmME9pOt=uEmuBzBpgUHw9DqAD2FZTZ3v53AOZbQ3Cd2p97xQ@mail.gmail.com>
- <DM8PR11MB5750E38A8B2BCE66AF7F9812E77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
- <CAHmME9qMO7=RDR60bKJvpDTRokcKed_i0+7BbFD53_7o2OJ6-g@mail.gmail.com>
- <CAHmME9rum4uwSNFd_GkD9p_+vN4DBxA=feZX7k9RvugFZsZNJg@mail.gmail.com>
- <DM8PR11MB5750797D0B9B8EB32740F55DE77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
- <CAHmME9oC=GE-7QS2m9FA5cs_ss+tQgB9Pj3tKnTtMMFpQmUshg@mail.gmail.com> <DM8PR11MB5750B861F7A105886AA5FCE4E77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
-In-Reply-To: <DM8PR11MB5750B861F7A105886AA5FCE4E77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date: Wed, 31 Jan 2024 14:14:14 +0100
-X-Gmail-Original-Message-ID: <CAHmME9oJvbZgT4yT9Vydc2ZQVSo3Ea65G5aVK7gFxphkV00BnQ@mail.gmail.com>
-Message-ID: <CAHmME9oJvbZgT4yT9Vydc2ZQVSo3Ea65G5aVK7gFxphkV00BnQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] x86/random: Retry on RDSEED failure
-To: "Reshetova, Elena" <elena.reshetova@intel.com>
-Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	"x86@kernel.org" <x86@kernel.org>, "Theodore Ts'o" <tytso@mit.edu>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, 
-	"Nakajima, Jun" <jun.nakajima@intel.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
-	"Kalra, Ashish" <ashish.kalra@amd.com>, Sean Christopherson <seanjc@google.com>, 
-	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [linus:master] [sched/eevdf] 2227a957e1:
+ BUG:kernel_NULL_pointer_dereference,address
+Content-Language: en-US
+To: Abel Wu <wuyun.abel@bytedance.com>,
+ kernel test robot <oliver.sang@intel.com>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
+ Peter Zijlstra <peterz@infradead.org>, aubrey.li@linux.intel.com,
+ yu.c.chen@intel.com
+References: <202401301012.2ed95df0-oliver.sang@intel.com>
+ <23cbb613-c8a2-4f07-b83b-fa3104bef642@bytedance.com>
+ <8b21e697-c9b9-49aa-a7ad-e88a5d7f9c92@antgroup.com>
+ <5f8f4222-a706-45b1-8eb2-fd4553cc57d8@bytedance.com>
+From: "Tiwei Bie" <tiwei.btw@antgroup.com>
+In-Reply-To: <5f8f4222-a706-45b1-8eb2-fd4553cc57d8@bytedance.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 31, 2024 at 8:56=E2=80=AFAM Reshetova, Elena
-<elena.reshetova@intel.com> wrote:
-> So given this, I would personally consider the virtual guest TSC value
-> observable by host/VMM.
-> [2] TDX module source code:
-> https://www.intel.com/content/www/us/en/download/738875/782152/intel-trus=
-t-domain-extension-intel-tdx-module.html
+On 1/31/24 8:28 PM, Abel Wu wrote:
+> On 1/31/24 8:10 PM, Tiwei Bie Wrote:
+>> On 1/30/24 6:13 PM, Abel Wu wrote:
+>>> On 1/30/24 3:24 PM, kernel test robot Wrote:
+>>>>
+>>>> [  512.079810][ T8305] BUG: kernel NULL pointer dereference, address: 0000002c
+>>>> [  512.080897][ T8305] #PF: supervisor read access in kernel mode
+>>>> [  512.081636][ T8305] #PF: error_code(0x0000) - not-present page
+>>>> [  512.082337][ T8305] *pde = 00000000
+>>>> [  512.082829][ T8305] Oops: 0000 [#1] PREEMPT SMP
+>>>> [  512.083407][ T8305] CPU: 1 PID: 8305 Comm: watchdog Tainted: G        W        N 6.7.0-rc1-00006-g2227a957e1d5 #1 819e6d1a8b887f5f97adb4aed77d98b15504c836
+>>>> [  512.084986][ T8305] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+>>>> [ 512.086203][ T8305] EIP: set_next_entity (fair.c:?)
+>>>
+>>> There was actually a NULL-test in pick_eevdf() before this commit,
+>>> but I removed it by intent as I found it impossible to be NULL after
+>>> examining 'all' the cases.
+>>>
+>>> Also cc Tiwei who once proposed to add this check back.
+>>> https://lore.kernel.org/all/20231208112100.18141-1-tiwei.btw@antgroup.com/
+>>
+>> Thanks for cc'ing me. That's the case I worried about and why I thought
+>> it might be worthwhile to add the sanity check back. I just sent out a
+>> new version of the above patch with updated commit log and error message.
+> 
+> I assuming the real problem is why it *can* be NULL at first place.
+> IMHO the NULL check with a fallback selection doesn't solve this, but
+> it indeed avoids kernel panic which is absolutely important.
 
-Thanks for the explanation and link. Indeed if this is all mediated by
-the host, we're in bad shape.
+I totally agree. The scheduling failure is unexpected and should be
+addressed. And the sanity check is just to log the failures and avoid
+unnecessary crashes in such situations. 
 
-> For the high resolution timers, host controls guest apic timers and inter=
-rupts fully.
-> So, it has the power to see and even affect when a certain interrupt happ=
-ens
-> or doesnt happen in the guest. It can delay guest timers at its will on p=
-retty
-> extensive time periods. This seems powerful enough for me.
-> Things like HPET are also fully under host control.
-
-And I suppose RDPMC is similar?
-
-And it's not like the guest can just take an excessive amount of TSC
-samples and randomly select which ones it uses because chickens and
-eggs...
-
-The situation you paint is that all of our entropy inputs -- timers,
-rdrand, etc -- are either host controllable, host observable, or host
-(and guest sibling) DoS'able, so if you don't trust the host, there
-are no good inputs. That's not a great position to be in, and I wonder
-if something can be done on the hardware side to remedy it, as this
-seems like a major shortcoming in TDX. So far, all of the proposed
-mitigations introduce some other DoS.
-
-> Yes, in practice there will be physical hw underneath, but the problem im=
-o is
-> that the host is in between and still very powerful when it comes to inte=
-rrupts and
-> timers at the moment.
-
-Sure sounds like it.
-
-Jason
+Regards,
+Tiwei
 
