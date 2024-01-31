@@ -1,88 +1,92 @@
-Return-Path: <linux-kernel+bounces-46051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 284B78439C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:53:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37046843997
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:48:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D268D28D561
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:53:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CA771C2738F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:48:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A709767E86;
-	Wed, 31 Jan 2024 08:43:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A71E27E56C;
+	Wed, 31 Jan 2024 08:42:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b="epqwqo5O"
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2087.outbound.protection.outlook.com [40.107.255.87])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="bm4NH0oE"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A77A67E65;
-	Wed, 31 Jan 2024 08:42:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.87
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706690580; cv=fail; b=tKn9LWCkXMwPBfC+LqNL+s4GJecQOMXkV4JPx+QFWng03ST3DZsHprjbam6NKVDlh72vJEfyBFuw1Vuxe0PN9o/UCcmia+eCf3W0U+iwgifUjQfaRQeArAjA7MiN9g1uFw3I4Z+WAHKohdEV4Eop8iV/UpzL6Q/MmKjWJyfi4z0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706690580; c=relaxed/simple;
-	bh=Vj+iw6CGOWdU4jAxB/ccE7PsoMNyWo2p5kipTLnc23I=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E8779DB5
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:42:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706690529; cv=none; b=ictFAi5eFM29qBlFZ67vFnQ2WUqWOJWHecS/Kmttkxvkq0ViHse6GQsHgmDUZGSrli3RsqbsVyS0uFUOfFAOU453s7H918CmpTtkqodhKUBVwRhzGjVdXlA0fFb0Vdcb36Ceo+bvv3GC+ORXQMrHZDMCShrT9gUIsjFEQG8Rz9E=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706690529; c=relaxed/simple;
+	bh=SMFD2wooseUV4EjGWpE317D8OQSKSM0pSKR/g7N9T7Y=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XBJZ3DGbTsKouvFu+6PtdoK8VgGi5MHKScn/q4KWo4nSZi6xQGWw6+4CM41fH/m4GgCxqZa1hhv0bevJq9F92us6BbYptw8nZE828InYjcdzABwyffWwLCoWrswEPw2wSkEeI5oKhelTIgfUrNHexE+7mrWmhjjPRNj5npYSGnA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com; spf=pass smtp.mailfrom=wiwynn.com; dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b=epqwqo5O; arc=fail smtp.client-ip=40.107.255.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiwynn.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lqegRKKcN7Vq1wEgtsMBiioyC8PG8QZvle8ghQouR+0SyG9Y36K12XSf2fuY5Y3h483PkB1DCQxy4tFHjif18wO4I2uSlvLEjkq1z+J8kDjlHTvvcPjmHOeMFv4/vl5KNXRBrD5IDPzN5fs2oA1wfyJTpG6MsKf5PBqogihqIZLzDaofVldgfLzJFLFxROl7oogGjZsRsmc48dzUFpqf/q31ltWDcoRQhNn1EX8Dh8yZJGhDs5IedKSIPLsUus3zSzznRf1Ov2PJ5KSNTfqJ6gic+k3ZJLdnb9a1qUu7/vuTDCpQaV5XHNnWdi0eI9Rl6HncuH6hqErQ+GqNGQbi9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GIl5U0jZGhlgCCnivIqepmf0FLF2MPJnH3YgbaINBDY=;
- b=ioivtbZuD0ow2TBPp7Zbp7itu+cMl4KK3dzqQLqcx/ETTmNcLiSepxODJ29KGkQtEqNZXKm2XCqIGpBYJKwAmKakfRxICStQdISNIVzQNOA0awCZQ+HkhwaZxbR3696Sj4Mio3h0rhyZa0jUEFFCn/3y+kvFFtMHT29l1BiClr10qovwxDKl+FnbdHS9rhl7XYNP/O6vRIjOCwytJKIiWGg+hfWJZDiuMcouDHbhJKIz78yYiEX0xp99z5wHKVK7BfiJO+8l/9wuRd3hOkbAIroyTKxjO80I5TYk2gl2qqFKUrtLjFOYr4AnvpDwiA6DAoOD1zJ4oliVzxXc/H/+bg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
- (p=quarantine sp=quarantine pct=100) action=quarantine
- header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GIl5U0jZGhlgCCnivIqepmf0FLF2MPJnH3YgbaINBDY=;
- b=epqwqo5OMh7+U8WQ9ew5Z7oY3v2WC7VqZqx806vh69zxd81E9diohaQHYxxnquP6c+kL2YkocU9YIm6KwrRsDvaOAjhUW+OzqxWeTxJ94JF/1OiyarvA43yv0Sb4B23b2SqGpP/42pEM5T56W1yjoxaUnyh/eE4vPXASHzj0S1s4h5yQGk9CIvlClruJDwCK6oECwGlfigk7Hidn3zOF+h4YJTSv0sse82Z20uov2HHAm/Q9m3ZDoXj4liE2Sg3So6E7Y0zBKjWUgkqs/viF/rECVesAsiDWCcMngYKASnzPWumZiNHrJW4CKablmbB0Kv0Oky40fzckWZO5hfoOuQ==
-Received: from SG2P153CA0022.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::9) by
- KL1PR04MB6925.apcprd04.prod.outlook.com (2603:1096:820:ca::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7249.23; Wed, 31 Jan 2024 08:42:56 +0000
-Received: from HK2PEPF00006FB2.apcprd02.prod.outlook.com
- (2603:1096:4:c7:cafe::b5) by SG2P153CA0022.outlook.office365.com
- (2603:1096:4:c7::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.8 via Frontend
- Transport; Wed, 31 Jan 2024 08:42:55 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
- smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
-Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
- designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
- client-ip=211.20.1.79; helo=localhost.localdomain;
-Received: from localhost.localdomain (211.20.1.79) by
- HK2PEPF00006FB2.mail.protection.outlook.com (10.167.8.8) with Microsoft SMTP
- Server id 15.20.7228.16 via Frontend Transport; Wed, 31 Jan 2024 08:42:54
- +0000
-From: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-To: patrick@stwcx.xyz,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>
-Cc: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 19/21] ARM: dts: aspeed: yosemite4: support mux to cpld
-Date: Wed, 31 Jan 2024 16:41:30 +0800
-Message-Id: <20240131084134.328307-20-Delphine_CC_Chiu@wiwynn.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240131084134.328307-1-Delphine_CC_Chiu@wiwynn.com>
-References: <20240131084134.328307-1-Delphine_CC_Chiu@wiwynn.com>
+	 MIME-Version; b=iPc4aagCLyrPGBHDet7nkfLTiNTfXjHMqmVTPhni442KyGBHBhfZKf3BMzttRT6MKEiHpvm63EntYLo/XN/+7be+1vlBkA9zEtdMVz3lM2myfMJJQ9imxWmIWXtViFyiajhPO9QAnm94ZZte6mCptWWQQes5xC6lmilUmwZH7I0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=bm4NH0oE; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2cf3ed3b917so58437281fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:42:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1706690524; x=1707295324; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j4P3NNUndOj/U3jAxOrkBuhZxASPQ1uf/KZV1iCgPUY=;
+        b=bm4NH0oE3y+H9/a12wqU+uye9zHea82rWi2hXLGjmXTE90aKKQGz5iBzMb7Bml1pl7
+         8TCnUoR0OZFKI7kOH1sVXf2016yzi9OZQVYG2ZduWATZDLKuGvYgobtzttSDxnGEeUhX
+         DWqL1IQLgqyjbZLY4HDr/kZw82rDBJ0GxPCWPCtBaKAGHqwhRRTzCx1j6eZuNFEDyUmG
+         6n3XwhNjWUaNHF12LwQucO+ne/gcpTtbOXBpFLehSvbTNNEVYn5nu8QQVZXhENYVjUEL
+         ACmNMVKQrVOGcyMX00ZXCTHkNgKqEwvasQK8+BZ6ZNTq9kkBxMQXiV0FiDyoRNeHxs21
+         6gIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706690524; x=1707295324;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j4P3NNUndOj/U3jAxOrkBuhZxASPQ1uf/KZV1iCgPUY=;
+        b=dHn4q16qRUgG7oLLAkqwmH3hULJnoXlR2u/jilGh+JhbfYQQJIjhVJOT8M+3LCzTx3
+         MmaHPEgw3/JCuMRXBq3GaCqagjgb41BuPAzP23pe9zrfX8y7vqt/W/3MsF9fjXKU/6qt
+         uVrY7EaziDjSz09+2lAqwzIdCl6ZDrZSG0g1Yt4UFGrT8pcUyavq+ECQO/+eoJosQ0QX
+         bhk+9hgq46D6gKI4/y4iaS/uim7sl2zBfNeG0L0LGJ9TxfAdP5OHoPd6klxeN7EpDPaN
+         MTSlkH0BkyrUmP3FnKWsMeu++l6qJ0MnxubKClDtFF3KTTRrL2nc1TK2A6Qnj3+RQGhx
+         5PCg==
+X-Gm-Message-State: AOJu0YwyQdqCYc8lb34eVpYsrDGQcY/JiCiA8CJDwYx2b6f8C9ByHAxY
+	Utr4ckDDn3Y14yUCYQYqeeLxcXzZQarqXTZtxKZ/1nIn1NwOCf+/4qaEVdcSUoU=
+X-Google-Smtp-Source: AGHT+IEiL482XuRa8KwAmlwH28GEu/fJYWXxZ+wtgFd+vKtDuH84PyPSa2bjesp31jrgpOFmZFaEcQ==
+X-Received: by 2002:a05:651c:221c:b0:2d0:604d:fda6 with SMTP id y28-20020a05651c221c00b002d0604dfda6mr814787ljq.44.1706690523545;
+        Wed, 31 Jan 2024 00:42:03 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXrqLJw9JLWNup24eFLJBtSBvdaq8f/dNVorTAyKDfd5NoIXrdnwnkl6AVlqcBGvNUakV7rbez6nz+Prdy4WZr+QWhdnok1VXiZcPDWFsT1c0QE06g++9XfhA7XqGDqPiGw7SfgxTS6NIP5tjnraa8j3W8I0xeeU2w9K/uYk687RzKWp2OYlhHjBJqCzQ7fE92V4BJJDbTgUYv3YfsvtyXCn3TTElv00VCSgEsDNJDn1fVg2aYLxSDaNWaaeKH8j5Dht2RXCZxYCApPb9LJPU6Utqg9QNwozTFSEJB1kQBdztPmccL4l4x602pGASxZYku8GMg8K6Xuw07THbDX0GK4wb6yqY3/RcxaqxlbsUH+Py4PNDWL5eA18CXk4xZPmylN5quXnNu6tHbrIckKvI7c4tFkvbgGDVVJkEe0XVA80yW4DIw=
+Received: from claudiu-X670E-Pro-RS.. ([82.78.167.87])
+        by smtp.gmail.com with ESMTPSA id cq16-20020a056402221000b0055f02661ae2sm2863630edb.78.2024.01.31.00.42.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 00:42:03 -0800 (PST)
+From: Claudiu <claudiu.beznea@tuxon.dev>
+X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
+To: s.shtylyov@omp.ru,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	richardcochran@gmail.com,
+	p.zabel@pengutronix.de,
+	geert+renesas@glider.be
+Cc: netdev@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	claudiu.beznea@tuxon.dev,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH net-next v5 13/15] net: ravb: Set config mode in ndo_open and reset mode in ndo_close
+Date: Wed, 31 Jan 2024 10:41:31 +0200
+Message-Id: <20240131084133.1671440-14-claudiu.beznea.uj@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240131084133.1671440-1-claudiu.beznea.uj@bp.renesas.com>
+References: <20240131084133.1671440-1-claudiu.beznea.uj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,124 +94,201 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HK2PEPF00006FB2:EE_|KL1PR04MB6925:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: b3b22b0e-28e6-449c-b292-08dc22389ed4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	zMozAHFnLG7eIf3snQXq4tcdfgxrJOUcf+BlHagsN0O9CS3VVIk2648ZY8ByMq9j9zYX2DxSmr+kM07xc6VMtVm5Ybi8rEk2My+1RRhhoqYqa4F0w9V0YJ57kZ+kk44T730tqxTc5rdenRnyvPfzt1eIycmKhg38WxIm0X6993QkX5SSlj/xxusmACpfyzntgpJMPREwpyjm8zuayFGlw1ibywwbdbKuCtLzith1+Iaj3ovH0XTQkPqpVjaXbe5gO7r9CFyeBHVDEkeAkyil2WDeV5oGYvtU3ZavDxk8mkdaHT7zpyYiBmrGpUaLjwE0X3r7/axdQCkFrsJjm48NUG/98VcEH49Abi7AEQhBp2Ll1hEoNNRG6awxdun3I0C4Tp/07sR4Uo383cKfzBflcCQ3nvZqZQJ/PWz9Ox3oHfnM3AGsjtc2vTSyKzZdoa7QlhnHePuElncJguTDw+Vky0IWjXo+W29MeaPAkPoiMAmt6U8Gsg4p7sf1MiznVFkNF7qe1BFl9VNYM63v3rh87ZN8TfIiux21xbmHnAfu8IQuAIMKi/mfMevsYocNZCmu1uQAoJAxSEEpzKnIo3hb44Q/eCnqJy3Y18nF7jsd4EuG3y13fe1bhrr4ujahrwRAMf7VBwfDpSUgXrE3tr4OpeGRkUIEbu6O52zSFslZfAQyLJT/q4GiYlUcREXapFkhiaEL2QfovvMJaSd1KEAcaQ==
-X-Forefront-Antispam-Report:
-	CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(39860400002)(376002)(136003)(396003)(346002)(230922051799003)(64100799003)(186009)(82310400011)(451199024)(1800799012)(46966006)(36840700001)(41300700001)(6512007)(2906002)(7416002)(5660300002)(47076005)(40480700001)(356005)(82740400003)(9316004)(36860700001)(336012)(316002)(36736006)(1076003)(6666004)(83380400001)(36756003)(86362001)(110136005)(8676002)(6486002)(70206006)(8936002)(478600001)(4326008)(70586007)(6506007)(81166007)(26005)(2616005)(956004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: wiwynn.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 08:42:54.7395
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b3b22b0e-28e6-449c-b292-08dc22389ed4
-X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
-X-MS-Exchange-CrossTenant-AuthSource:
-	HK2PEPF00006FB2.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR04MB6925
 
-Mux pca9544 to cpld was added on EVT HW schematic design,
-so add dts setting for devices behind mux pca9544 to cpld
+From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+As some IP variants switch to reset mode (and thus the register contents is
+lost) when setting clocks (due to module standby functionality) to be able
+to implement runtime PM and save more power, set the IP's operating mode to
+reset at the end of the probe. Along with it, in the ndo_open API the IP
+will be switched to configuration, then operation mode. In the ndo_close
+API, the IP will be switched back to reset mode. This allows implementing
+runtime PM and, along with it, save more power when the IP is not used.
+
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 ---
- .../aspeed/aspeed-bmc-facebook-yosemite4.dts  | 64 ++++++++++++++-----
- 1 file changed, 49 insertions(+), 15 deletions(-)
 
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-index b9b6fe729cd6..d97520860f4a 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-@@ -36,6 +36,10 @@ aliases {
- 		i2c31 = &imux31;
- 		i2c32 = &imux32;
- 		i2c33 = &imux33;
-+		i2c34 = &imux34;
-+		i2c35 = &imux35;
-+		i2c36 = &imux36;
-+		i2c37 = &imux37;
- 	};
- 
- 	chosen {
-@@ -951,24 +955,54 @@ &i2c12 {
- 	status = "okay";
- 	bus-frequency = <400000>;
- 
--	temperature-sensor@48 {
--		compatible = "ti,tmp75";
--		reg = <0x48>;
--	};
-+	i2c-mux@70 {
-+		compatible = "nxp,pca9544";
-+		i2c-mux-idle-disconnect;
-+		reg = <0x70>;
- 
--	eeprom@50 {
--		compatible = "atmel,24c128";
--		reg = <0x50>;
--	};
-+		imux34: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
- 
--	eeprom@54 {
--		compatible = "atmel,24c64";
--		reg = <0x54>;
--	};
-+			temperature-sensor@48 {
-+				compatible = "ti,tmp75";
-+				reg = <0x48>;
-+			};
-+
-+			eeprom@50 {
-+				compatible = "atmel,24c128";
-+				reg = <0x50>;
-+			};
- 
--	rtc@6f {
--		compatible = "nuvoton,nct3018y";
--		reg = <0x6f>;
-+			eeprom@54 {
-+				compatible = "atmel,24c64";
-+				reg = <0x54>;
-+			};
-+
-+			rtc@6f {
-+				compatible = "nuvoton,nct3018y";
-+				reg = <0x6f>;
-+			};
-+		};
-+
-+		imux35: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+		};
-+
-+		imux36: i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+		};
-+
-+		imux37: i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+		};
- 	};
+Changes in v5:
+- fixed typos in patch description
+- collected tags
+
+Changes in v4:
+- set config mode before reading mac address
+
+Changes in v3:
+- fixed typos in patch description
+- in ravb_probe() switch the hardware to reset mode just after phy
+  initialization
+
+Changes in v2:
+- none; this patch is new
+
+ drivers/net/ethernet/renesas/ravb_main.c | 78 ++++++++++++++----------
+ 1 file changed, 46 insertions(+), 32 deletions(-)
+
+diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+index 54099fef946e..0dab98ea615a 100644
+--- a/drivers/net/ethernet/renesas/ravb_main.c
++++ b/drivers/net/ethernet/renesas/ravb_main.c
+@@ -1756,6 +1756,27 @@ static const struct ethtool_ops ravb_ethtool_ops = {
+ 	.set_wol		= ravb_set_wol,
  };
  
++static int ravb_set_config_mode(struct net_device *ndev)
++{
++	struct ravb_private *priv = netdev_priv(ndev);
++	const struct ravb_hw_info *info = priv->info;
++	int error;
++
++	if (info->gptp) {
++		error = ravb_set_opmode(ndev, CCC_OPC_CONFIG);
++		if (error)
++			return error;
++		/* Set CSEL value */
++		ravb_modify(ndev, CCC, CCC_CSEL, CCC_CSEL_HPB);
++	} else if (info->ccc_gac) {
++		error = ravb_set_opmode(ndev, CCC_OPC_CONFIG | CCC_GAC | CCC_CSEL_HPB);
++	} else {
++		error = ravb_set_opmode(ndev, CCC_OPC_CONFIG);
++	}
++
++	return error;
++}
++
+ static void ravb_set_gti(struct net_device *ndev)
+ {
+ 	struct ravb_private *priv = netdev_priv(ndev);
+@@ -1864,13 +1885,19 @@ static int ravb_open(struct net_device *ndev)
+ 	if (info->nc_queues)
+ 		napi_enable(&priv->napi[RAVB_NC]);
+ 
++	/* Set AVB config mode */
++	error = ravb_set_config_mode(ndev);
++	if (error)
++		goto out_napi_off;
++
+ 	ravb_set_delay_mode(ndev);
+ 	ravb_write(ndev, priv->desc_bat_dma, DBAT);
+ 
+ 	/* Device init */
+ 	error = ravb_dmac_init(ndev);
+ 	if (error)
+-		goto out_napi_off;
++		goto out_set_reset;
++
+ 	ravb_emac_init(ndev);
+ 
+ 	ravb_set_gti(ndev);
+@@ -1893,6 +1920,8 @@ static int ravb_open(struct net_device *ndev)
+ 	if (info->gptp || info->ccc_gac)
+ 		ravb_ptp_stop(ndev);
+ 	ravb_stop_dma(ndev);
++out_set_reset:
++	ravb_set_opmode(ndev, CCC_OPC_RESET);
+ out_napi_off:
+ 	if (info->nc_queues)
+ 		napi_disable(&priv->napi[RAVB_NC]);
+@@ -2236,7 +2265,8 @@ static int ravb_close(struct net_device *ndev)
+ 	if (info->nc_queues)
+ 		ravb_ring_free(ndev, RAVB_NC);
+ 
+-	return 0;
++	/* Set reset mode. */
++	return ravb_set_opmode(ndev, CCC_OPC_RESET);
+ }
+ 
+ static int ravb_hwtstamp_get(struct net_device *ndev, struct ifreq *req)
+@@ -2566,27 +2596,6 @@ static const struct of_device_id ravb_match_table[] = {
+ };
+ MODULE_DEVICE_TABLE(of, ravb_match_table);
+ 
+-static int ravb_set_config_mode(struct net_device *ndev)
+-{
+-	struct ravb_private *priv = netdev_priv(ndev);
+-	const struct ravb_hw_info *info = priv->info;
+-	int error;
+-
+-	if (info->gptp) {
+-		error = ravb_set_opmode(ndev, CCC_OPC_CONFIG);
+-		if (error)
+-			return error;
+-		/* Set CSEL value */
+-		ravb_modify(ndev, CCC, CCC_CSEL, CCC_CSEL_HPB);
+-	} else if (info->ccc_gac) {
+-		error = ravb_set_opmode(ndev, CCC_OPC_CONFIG | CCC_GAC | CCC_CSEL_HPB);
+-	} else {
+-		error = ravb_set_opmode(ndev, CCC_OPC_CONFIG);
+-	}
+-
+-	return error;
+-}
+-
+ static int ravb_setup_irq(struct ravb_private *priv, const char *irq_name,
+ 			  const char *ch, int *irq, irq_handler_t handler)
+ {
+@@ -2785,11 +2794,6 @@ static int ravb_probe(struct platform_device *pdev)
+ 	ndev->netdev_ops = &ravb_netdev_ops;
+ 	ndev->ethtool_ops = &ravb_ethtool_ops;
+ 
+-	/* Set AVB config mode */
+-	error = ravb_set_config_mode(ndev);
+-	if (error)
+-		goto out_rpm_put;
+-
+ 	error = ravb_compute_gti(ndev);
+ 	if (error)
+ 		goto out_rpm_put;
+@@ -2816,6 +2820,11 @@ static int ravb_probe(struct platform_device *pdev)
+ 	/* Debug message level */
+ 	priv->msg_enable = RAVB_DEF_MSG_ENABLE;
+ 
++	/* Set config mode as this is needed for PHY initialization. */
++	error = ravb_set_opmode(ndev, CCC_OPC_CONFIG);
++	if (error)
++		goto out_rpm_put;
++
+ 	/* Read and set MAC address */
+ 	ravb_read_mac_address(np, ndev);
+ 	if (!is_valid_ether_addr(ndev->dev_addr)) {
+@@ -2828,9 +2837,14 @@ static int ravb_probe(struct platform_device *pdev)
+ 	error = ravb_mdio_init(priv);
+ 	if (error) {
+ 		dev_err(&pdev->dev, "failed to initialize MDIO\n");
+-		goto out_dma_free;
++		goto out_reset_mode;
+ 	}
+ 
++	/* Undo previous switch to config opmode. */
++	error = ravb_set_opmode(ndev, CCC_OPC_RESET);
++	if (error)
++		goto out_mdio_release;
++
+ 	netif_napi_add(ndev, &priv->napi[RAVB_BE], ravb_poll);
+ 	if (info->nc_queues)
+ 		netif_napi_add(ndev, &priv->napi[RAVB_NC], ravb_poll);
+@@ -2853,8 +2867,10 @@ static int ravb_probe(struct platform_device *pdev)
+ 		netif_napi_del(&priv->napi[RAVB_NC]);
+ 
+ 	netif_napi_del(&priv->napi[RAVB_BE]);
++out_mdio_release:
+ 	ravb_mdio_release(priv);
+-out_dma_free:
++out_reset_mode:
++	ravb_set_opmode(ndev, CCC_OPC_RESET);
+ 	dma_free_coherent(ndev->dev.parent, priv->desc_bat_size, priv->desc_bat,
+ 			  priv->desc_bat_dma);
+ out_rpm_put:
+@@ -2885,8 +2901,6 @@ static void ravb_remove(struct platform_device *pdev)
+ 	dma_free_coherent(ndev->dev.parent, priv->desc_bat_size, priv->desc_bat,
+ 			  priv->desc_bat_dma);
+ 
+-	ravb_set_opmode(ndev, CCC_OPC_RESET);
+-
+ 	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 	clk_unprepare(priv->refclk);
 -- 
-2.25.1
+2.39.2
 
 
