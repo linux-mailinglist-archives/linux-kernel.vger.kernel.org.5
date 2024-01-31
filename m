@@ -1,132 +1,167 @@
-Return-Path: <linux-kernel+bounces-46741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46742-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71756844371
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:54:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D09F844372
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:54:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B4B4B24C46
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:54:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9085E1C231EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:54:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 077FA12A14C;
-	Wed, 31 Jan 2024 15:54:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="leXEIIdz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4778B80BEF;
-	Wed, 31 Jan 2024 15:53:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C963412A14C;
+	Wed, 31 Jan 2024 15:54:09 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B90C280BEF
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 15:54:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706716440; cv=none; b=IlqnAioajTm6ApbZzTFIdEJCNja7uYU8swa1P4zJDwiBEMzLxCBDCTqsOfw5Q26vKA0/mMDdx4vfoJQNW3cU4l9j4aNeu5D+KKHhMlfRjAknps6mkJp/JLu5Op2LRqQ7wwN+5GLcFC99BfoDK5H8aBp5Nhq0G+MN1W+VPbeAp+I=
+	t=1706716449; cv=none; b=myF0FjcC89X5cK5E1AQlYd9v/kVDTB26undNUiR3X6M/ViwUuuUzUiHcIWdzhew+YuDbJyLudlrCVTs0cSLb3ntTI/jhxjr0zp2++di+2hAntg66iTrWhlW8lu8yQ8Ss3XDZPs3IWCUTe9zIyZfjlI0obYNeqmz+0hIkm/Ks76Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706716440; c=relaxed/simple;
-	bh=UniOl+JmqBJs3N7JkzLKxtaT2fSCqC1agl/ADUxyc38=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gTWl4HDD5In7Tl5nQbd/JQkUFNKFp+DgZGedKcjo+WIHknJYPJ2ir1vBzr10VzUe4mVQFJW60nI5G3aII3ev26GFQ6Zovjjn1bFiK7Tu24t0wYN9/IeGK1OIXIfP6IfztRp7qUZ4V4EyXYvfLYNSgiYusRUnDDpOGxqa//JOCS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=leXEIIdz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A4B8C433C7;
-	Wed, 31 Jan 2024 15:53:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706716439;
-	bh=UniOl+JmqBJs3N7JkzLKxtaT2fSCqC1agl/ADUxyc38=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=leXEIIdz8FN/YNq5ERSujskQfEb1FbMhoc3mIHN2GCQa5DU+j4TPkmPaauRiCon9T
-	 kcBVY9gUICedtjhHgaVU4/cpDjnxrSjNqrRN3RE5thMYSGK+kju05eB+up4SM5QeME
-	 3NdIRI6il2sj2k3u1oUfSxji/1aHYP7x7SrjrQe3a35GgqxJnDkcFIwAz/ITR4/vsc
-	 C5w1vbV5ekNaxe5e8pRuUaGsao4WuFzgOuLgyNFy2q1fEPJ3EvRb6UiTsE5NS0Onre
-	 Qihp0+W8hXfaf/O3LlrEUtKoi2LIzDBBwDLNjS4nlwkn7+xW16gWWyPlc/Oe3niXHa
-	 +7+wUX3g2aKZg==
-Date: Wed, 31 Jan 2024 15:53:54 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Cc: linux-kernel@vger.kernel.org,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Conor Dooley <conor+dt@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
-	David Airlie <airlied@gmail.com>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>, devicetree@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Subject: Re: [drm-drm-misc:drm-misc-next v2] dt-bindings: nt35510: document
- 'port' property
-Message-ID: <20240131-gap-making-59055befaf04@spud>
-References: <20240131092852.643844-1-dario.binacchi@amarulasolutions.com>
+	s=arc-20240116; t=1706716449; c=relaxed/simple;
+	bh=mldqjE1Pc7pvM56+X+UXfoNDx5BOel/dXPvqQok+9yg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oQMdbxJMNY8ruv2GNWgAIJU4r7FRruzGxeFkTcw6VfD7E9pbUfQP/uBSPcCXHmXTAFsSN+5GEpk0OeHC23dFkoMh5ND9gR76RPm8n3eKyQL1AS6ey4Tgs1IjapWc5633Gbk4WrrBS80iNMcdilKgxXxozeYqT3JYXHD/+Wa5IjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71801DA7;
+	Wed, 31 Jan 2024 07:54:49 -0800 (PST)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2DEAA3F762;
+	Wed, 31 Jan 2024 07:54:05 -0800 (PST)
+Message-ID: <4c9f50d2-05f9-4a37-ac50-dcd98e40e87f@arm.com>
+Date: Wed, 31 Jan 2024 15:54:03 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="OTnjAHXq7E9wBgWK"
-Content-Disposition: inline
-In-Reply-To: <20240131092852.643844-1-dario.binacchi@amarulasolutions.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] swiotlb: Fix allocation alignment requirement when
+ searching slots
+Content-Language: en-GB
+To: Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+Cc: kernel-team@android.com, iommu@lists.linux.dev,
+ Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
+ Petr Tesarik <petr.tesarik1@huawei-partners.com>,
+ Dexuan Cui <decui@microsoft.com>
+References: <20240131122543.14791-1-will@kernel.org>
+ <20240131122543.14791-2-will@kernel.org>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20240131122543.14791-2-will@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 31/01/2024 12:25 pm, Will Deacon wrote:
+> Commit bbb73a103fbb ("swiotlb: fix a braino in the alignment check fix"),
+> which was a fix for commit 0eee5ae10256 ("swiotlb: fix slot alignment
+> checks"), causes a functional regression with vsock in a virtual machine
+> using bouncing via a restricted DMA SWIOTLB pool.
+> 
+> When virtio allocates the virtqueues for the vsock device using
+> dma_alloc_coherent(), the SWIOTLB search fails to take into account the
+> 8KiB buffer size and returns page-unaligned allocations if 'area->index'
+> was left unaligned by a previous allocation from the buffer:
 
---OTnjAHXq7E9wBgWK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hmm, but isn't this fundamentally swiotlb_alloc()'s fault for assuming 
+it's going to get a page-aligned address back despite asking for 0 
+alignment in the first place? I'm not sure SWIOTLB has ever promised 
+implicit size-alignment, so it feels somewhat misplaced to be messing 
+with the algorithm before fixing the obvious issue in the caller :/
 
-On Wed, Jan 31, 2024 at 10:28:44AM +0100, Dario Binacchi wrote:
-> Allow 'port' property (coming from panel-common.yaml) to be used in DTS:
->=20
->   st/stm32f769-disco-mb1166-reva09.dtb: panel@0: 'port' does not match an=
-y of the regexes: 'pinctrl-[0-9]+'
->=20
-> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cheers,
+Robin.
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-
->=20
+>   # Final address in brackets is the SWIOTLB address returned to the caller
+>   | virtio-pci 0000:00:07.0: orig_addr 0x0 alloc_size 0x2000, iotlb_align_mask 0x800 stride 0x2: got slot 1645-1649/7168 (0x98326800)
+>   | virtio-pci 0000:00:07.0: orig_addr 0x0 alloc_size 0x2000, iotlb_align_mask 0x800 stride 0x2: got slot 1649-1653/7168 (0x98328800)
+>   | virtio-pci 0000:00:07.0: orig_addr 0x0 alloc_size 0x2000, iotlb_align_mask 0x800 stride 0x2: got slot 1653-1657/7168 (0x9832a800)
+> 
+> This ends in tears (typically buffer corruption and/or a hang) because
+> swiotlb_alloc() blindly returns a pointer to the 'struct page'
+> corresponding to the allocation and therefore the first half of the page
+> ends up being allocated twice.
+> 
+> Fix the problem by treating the allocation alignment separately to any
+> additional alignment requirements from the device, using the maximum
+> of the two as the stride to search the buffer slots.
+> 
+> Fixes: bbb73a103fbb ("swiotlb: fix a braino in the alignment check fix")
+> Fixes: 0eee5ae10256 ("swiotlb: fix slot alignment checks")
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+> Cc: Dexuan Cui <decui@microsoft.com>
+> Signed-off-by: Will Deacon <will@kernel.org>
 > ---
->=20
-> Changes in v2:
-> - Rework the patch to drop errors found by command
->   'make DT_CHECKER_FLAGS=3D-m dt_binding_check'.
->=20
->  .../devicetree/bindings/display/panel/novatek,nt35510.yaml       | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/display/panel/novatek,nt35=
-510.yaml b/Documentation/devicetree/bindings/display/panel/novatek,nt35510.=
-yaml
-> index a4afaff483b7..91921f4b0e5f 100644
-> --- a/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
-> +++ b/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
-> @@ -31,6 +31,7 @@ properties:
->    vddi-supply:
->      description: regulator that supplies the vddi voltage
->    backlight: true
-> +  port: true
-> =20
->  required:
->    - compatible
-> --=20
-> 2.43.0
->=20
-
---OTnjAHXq7E9wBgWK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbptEQAKCRB4tDGHoIJi
-0lmqAP9d7CWkSjo5G5rBveppth6+9eZOCItnUiJ1RmQBGMywiwD/WqGtiZfAmocN
-H09ibibMntUfs22aOpJVsigqLYtfAA0=
-=dN+W
------END PGP SIGNATURE-----
-
---OTnjAHXq7E9wBgWK--
+>   kernel/dma/swiotlb.c | 29 +++++++++++++++--------------
+>   1 file changed, 15 insertions(+), 14 deletions(-)
+> 
+> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> index b079a9a8e087..56cc08b1fbd6 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -982,7 +982,7 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
+>   		phys_to_dma_unencrypted(dev, pool->start) & boundary_mask;
+>   	unsigned long max_slots = get_max_slots(boundary_mask);
+>   	unsigned int iotlb_align_mask =
+> -		dma_get_min_align_mask(dev) | alloc_align_mask;
+> +		dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
+>   	unsigned int nslots = nr_slots(alloc_size), stride;
+>   	unsigned int offset = swiotlb_align_offset(dev, orig_addr);
+>   	unsigned int index, slots_checked, count = 0, i;
+> @@ -993,19 +993,18 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
+>   	BUG_ON(!nslots);
+>   	BUG_ON(area_index >= pool->nareas);
+>   
+> +	/*
+> +	 * For mappings with an alignment requirement don't bother looping to
+> +	 * unaligned slots once we found an aligned one.
+> +	 */
+> +	stride = get_max_slots(max(alloc_align_mask, iotlb_align_mask));
+> +
+>   	/*
+>   	 * For allocations of PAGE_SIZE or larger only look for page aligned
+>   	 * allocations.
+>   	 */
+>   	if (alloc_size >= PAGE_SIZE)
+> -		iotlb_align_mask |= ~PAGE_MASK;
+> -	iotlb_align_mask &= ~(IO_TLB_SIZE - 1);
+> -
+> -	/*
+> -	 * For mappings with an alignment requirement don't bother looping to
+> -	 * unaligned slots once we found an aligned one.
+> -	 */
+> -	stride = (iotlb_align_mask >> IO_TLB_SHIFT) + 1;
+> +		stride = max(stride, PAGE_SHIFT - IO_TLB_SHIFT + 1);
+>   
+>   	spin_lock_irqsave(&area->lock, flags);
+>   	if (unlikely(nslots > pool->area_nslabs - area->used))
+> @@ -1015,14 +1014,16 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
+>   	index = area->index;
+>   
+>   	for (slots_checked = 0; slots_checked < pool->area_nslabs; ) {
+> -		slot_index = slot_base + index;
+> +		phys_addr_t tlb_addr;
+>   
+> -		if (orig_addr &&
+> -		    (slot_addr(tbl_dma_addr, slot_index) &
+> -		     iotlb_align_mask) != (orig_addr & iotlb_align_mask)) {
+> +		slot_index = slot_base + index;
+> +		tlb_addr = slot_addr(tbl_dma_addr, slot_index);
+> +
+> +		if ((tlb_addr & alloc_align_mask) ||
+> +		    (orig_addr && (tlb_addr & iotlb_align_mask) !=
+> +				  (orig_addr & iotlb_align_mask))) {
+>   			index = wrap_area_index(pool, index + 1);
+>   			slots_checked++;
+> -			continue;
+>   		}
+>   
+>   		if (!iommu_is_span_boundary(slot_index, nslots,
 
