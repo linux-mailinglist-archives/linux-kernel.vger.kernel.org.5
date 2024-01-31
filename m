@@ -1,112 +1,98 @@
-Return-Path: <linux-kernel+bounces-45963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D096984386B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:02:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45C8C84386C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:02:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87F5B2832D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:02:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7780E1C2220F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:02:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FDE25677B;
-	Wed, 31 Jan 2024 08:01:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F565645E;
+	Wed, 31 Jan 2024 08:02:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="E04Loq62"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="TFkNHvBM"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29720657B8
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:01:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BED6D5D72A
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:02:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706688100; cv=none; b=QK5Dab9zA1bbDkPMBW0knAUEyx/s0+5YkcYXAZxfKAYK8itPIr25LNIvKBTUFlVYldWtCJ91vGVnNtrfaQoXIzde7ZLHRr6JLcVue1Sl/a73buSIISc0MXg5UtkMsXOzevgMpcksddjFGWOJ14ZH1V0cqM+u/j9qErmoE3W4vQA=
+	t=1706688165; cv=none; b=BxEHTr6Geke557FJ0HUL/LAn8r+x8Rk4sdDCMp4eZPPnLf95fXvZzI4obJvu9xjNTWxUv9/fFLeTjLwUIGFt1+2NJalTob3b6BRn8T6sVDrYDjlmDvTbMVym+PIZcA1lJYnbu8pxT7rdgSSWXDD5LrGbSEeB207jtC9bajBYQng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706688100; c=relaxed/simple;
-	bh=bcdYESMliQGwmnXxlM5uRrAlJUkgH4mbAcDcbEkBiy8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BGAqAiMJ6TqYI7DntBqndkUhuGR/gclUihZJU71we3wI5S/Ee6kmAqoohs/sGFyFCK+Yvf18CazwUKzAIBd8UHnQyMXD73mQfCKMMqO57xF4iEUb8FSUA35yYjk6Ls7sukgNs9opfb6XOJ4S6Kx3MbQL0q7CW49GWlv4fS3lg88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=E04Loq62; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a35e65df2d8so347578366b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:01:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706688096; x=1707292896; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=31HHx0QgCVuAgnQ4tzCd7Ii1IZudPB4QFu8JKjXKEyk=;
-        b=E04Loq62M4WoB+GJcgafbT5/MW9CT0PUXpqioR/Xwji08OIv9mmvdloYDsi2O73bCk
-         azVRYzbAd/na8iwdsH0od8hZAj2KLCH0BqT+eEZdLTj74+2rmJiIkul9Uoz24YbVABTe
-         NwuILiEupnlx0SayCNSlU8wcB0UW1skM+olUnD8LKGHhzfDgqnN1zWV7vVFiLH4GkKD3
-         HsqXl1vZz0R5qJ1HRCy2u8CMS/fIy5kbpBiU4fP3YfiA4PVB/XZN3tcqHrR7ymaFLssA
-         3xegW9x56gl+osABZ0njZ6zdYmF8G0RPKugfbRHRFdUAvArC/j27AC5zXr6oXkf7XARE
-         5tGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706688096; x=1707292896;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=31HHx0QgCVuAgnQ4tzCd7Ii1IZudPB4QFu8JKjXKEyk=;
-        b=BUkb93YWwF75xxoOlnIpHWcjLtTX2zsk0WtqkZn9uZBZdIsN84OBn3PvTLmZVnnYwE
-         0xGNWqzHRKzL3OfIQVwjzFRyo8HXzbXt5n5WtuTOwnY7ES8S9MKNqSMbQwDJK8sfjOVt
-         qARz/mr1Lk374ny1GyaDLM5/KIIsJn5J1BqXyAFmmlL+jhEw0XW/bdR89Gt/0QBFeTml
-         7TKRcfuDArhMFfmZvoqEewn3FjBnlIdmicUi0CL2DiAFgqLCqbfudCjkE1AuvHGmWv5t
-         zc0iI3Pe+5X3UY2mBCkK4w1bMJYuyzZg8/UsJNEQJq29mGilJz3twgpCXuWgQuXPQ+8r
-         Gegg==
-X-Gm-Message-State: AOJu0Yxp2/1ZSq/kgXb58MeTd1rljACHHO1AqNaSXFK8z1hl1mwNR84w
-	IUh8XR1MPuvAcdy/0nWkgSDKyLDcBxtQ3sB4eSnNkM0nLqNRAeMv6M3qmym+PA8=
-X-Google-Smtp-Source: AGHT+IEdAof27yhgTklY1BaSC03UZGW8w2/UZ7s+/KaHZPtPCy2fxL7XqnrhdsryXCuvprnRGu/V9A==
-X-Received: by 2002:a17:906:f6cc:b0:a36:7bb0:e2 with SMTP id jo12-20020a170906f6cc00b00a367bb000e2mr438749ejb.34.1706688096295;
-        Wed, 31 Jan 2024 00:01:36 -0800 (PST)
-Received: from linaro.org ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id tz9-20020a170907c78900b00a35920de35dsm3678369ejc.188.2024.01.31.00.01.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 00:01:35 -0800 (PST)
-Date: Wed, 31 Jan 2024 10:01:34 +0200
-From: Abel Vesa <abel.vesa@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH RESEND v2 1/2] dt-bindings: PCI: qcom: Document the
- X1E80100 PCIe Controller
-Message-ID: <Zbn+XmyG5+X5fm8z@linaro.org>
-References: <20240129-x1e80100-pci-v2-0-5751ab805483@linaro.org>
- <20240129-x1e80100-pci-v2-1-5751ab805483@linaro.org>
- <120f24cd-dad0-4553-8f94-c8ebc9413338@linaro.org>
+	s=arc-20240116; t=1706688165; c=relaxed/simple;
+	bh=/aIiTcq6IFYg8C2DKhl+ENCN8VlB6eVN+tUgimzqR3w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ccwc5qAP5YyU+ke+8MBrpvvU+WbBX4FAc2+n/hWLtBXlMftDMr7cyEOiJlUmODpU9RogztWzNE3ooF+uHIylcmri8FjoJY09kRZXRzmFHqX4a+4n3LhA9RMtHJkSHzjKZEYelAbvsy+1OlOBrFYDaWZGOJOQQ7F39WfuQeejrIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=TFkNHvBM; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from terminus.zytor.com (terminus.zytor.com [IPv6:2607:7c80:54:3:0:0:0:136])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 40V81ikA3259659
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+	Wed, 31 Jan 2024 00:01:49 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 40V81ikA3259659
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024011201; t=1706688109;
+	bh=PJQ2SCf6uARuhXxFd/abFulMkJbH8deOmdTwbDbxnjA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=TFkNHvBMcMVE4KY+EchrdnI6SPNUcsXT+CdraqHR9ABvUXHZoSIBmYrJs5/68FF3z
+	 /7pYxRlDJlBjFljTq0M2G5qi54Y3ntrRVLyrdLFw0a5+CnUgiHZEF52LNv9ODKUfC1
+	 AYMqi1GjGhOnrwQFUQ0oD9O6zZS8p1dqw6pViS4ZkXeahoA+ksiKkv1wNErb4dab2D
+	 yiRMMJSA0LKNHP6FLpIFcy8ZgPRjI2dAbJ8hpsuvjJxMFTytZtCRQ54l5xvyN70mZA
+	 /ht3lQOjEN4rfGBqTViW3MhfVO7Vd7afZwRlCiXdyC3PgYhVjqt3Ygk9bIb1cONQpB
+	 nMilQVh3qTDDw==
+From: "Xin Li (Intel)" <xin@zytor.com>
+To: linux-kernel@vger.kernel.org
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com
+Subject: [PATCH] MAINTAINERS: Add a maintainer entry for FRED
+Date: Wed, 31 Jan 2024 00:01:43 -0800
+Message-ID: <20240131080143.3259642-1-xin@zytor.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <120f24cd-dad0-4553-8f94-c8ebc9413338@linaro.org>
+Content-Transfer-Encoding: 8bit
 
-On 24-01-30 08:44:56, Krzysztof Kozlowski wrote:
-> On 29/01/2024 15:41, Abel Vesa wrote:
-> > Document the PCIe Controllers on the X1E80100 platform. They are similar
-> > to the ones found on SM8550, but they don't have SF QTB clock.
-> > 
-> > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> > ---
-> 
-> This will conflict with my series, so whoever comes last need to rebase :)
+Add H. Peter Anvin and myself as maintainers for FRED.
 
-Sure, no problem.
+Signed-off-by: Xin Li (Intel) <xin@zytor.com>
+Acked-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+---
+ MAINTAINERS | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-> 
-> Best regards,
-> Krzysztof
-> 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 8d1052fa6a69..29574c65b26e 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11151,6 +11151,16 @@ L:	netdev@vger.kernel.org
+ S:	Maintained
+ F:	drivers/net/wwan/iosm/
+ 
++INTEL(R) FLEXIBLE RETURN AND EVENT DELIVERY
++M:	Xin Li <xin@zytor.com>
++M:	"H. Peter Anvin" <hpa@zytor.com>
++S:	Supported
++F:	Documentation/arch/x86/x86_64/fred.rst
++F:	arch/x86/entry/entry_64_fred.S
++F:	arch/x86/entry/entry_fred.c
++F:	arch/x86/include/asm/fred.h
++F:	arch/x86/kernel/fred.c
++
+ INTEL(R) TRACE HUB
+ M:	Alexander Shishkin <alexander.shishkin@linux.intel.com>
+ S:	Supported
+
+base-commit: b564b0111a3f03d1a92ba87c4b0f054ad1845963
+-- 
+2.43.0
+
 
