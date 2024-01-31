@@ -1,252 +1,298 @@
-Return-Path: <linux-kernel+bounces-46598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0F798441CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:25:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4F718441DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 15:29:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1292F1C2192F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:25:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 472261F21402
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 14:29:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04A4B8287C;
-	Wed, 31 Jan 2024 14:24:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EVldbBTZ"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5BB98286B;
+	Wed, 31 Jan 2024 14:28:59 +0000 (UTC)
+Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 388FF80C0F;
-	Wed, 31 Jan 2024 14:24:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9146380C0C
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 14:28:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706711086; cv=none; b=j0DPZaZlUHoGKgXx6ClB32/FlA3+FMubp8WG5J23PPGrPtqbN01SFq3aofi+/ATJRhwQmGwwVCbuc7VlmFAXSTSrwvS/ijKoNe39OpgL9goVRbFznyMcnEnaPmjygPI10jj9xgl71HwGB6+hG5XUJwHhl0kYMMjhDyNbY4hywec=
+	t=1706711339; cv=none; b=Zrjrw6umMDZyXD8guHe1uOZtkmQhehBkJYl7aL7En+PEggPEw7o9ssF6nb4tuEg8/dfKr8YAseDpT2/lZIT4v8Rvz6xB4kGoAm9+1ce54kXuM27wnpbg58UPtesvjx2dZzAOrPghYXcsexU922kR1/bjs4lwxKDVRnGfVaeWWdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706711086; c=relaxed/simple;
-	bh=ImjcccdS9tzQDlBcPPZYNIqrAUIp41sDSNbxA2bXGAY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Ia0J7owBWfqxnnZz1AbXuqGgoMPvjuzNeLQIRqe81dy7WxbaVTCsqrerfVEwY2tkSpgUfI19o6qCu6wGLbhyxQOzx5m1jm/CrZf/1YfcXZ5WNYsZH8cYS3NkiClxakANT5dSWap9Xmjm1XKPTSNErNJG7QNDsWr+bWIfxqge+yQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EVldbBTZ; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1706711339; c=relaxed/simple;
+	bh=GIY3puUwmm8gipSYVvNmXkzP4r+lY0H0/6s2wL+i7Qs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Kgw2zoeSSTmGwlqbJ4lrMPb0degye5p+XSk1Wx4JGSIhiplMy5Me6Srz3Q94ww+NaMX/g9MC/f+kTtaEVjAdYZl1QRSi0e2v/sV87u6BrQ5+zJWPyfBTSPrdOW13gSJ4uVx5yktIY1aK6RH69s62VcSzgYEo47tBD/2xtTRyIOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40e8d3b29f2so56992645e9.1;
-        Wed, 31 Jan 2024 06:24:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706711082; x=1707315882; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rxo8fTvdcFHWgQYYiIZBuW8ecUZKT73op0PCx+g/6Cg=;
-        b=EVldbBTZqZ470R6W3bOQl7544kHAZ9j+qfII2R+f2SprFbtjP2vXkNA1s9D9PT9YK4
-         nsejry0+IMeVpeIBDIOk6upBtJcTBVnpM9n2Gc/nf73MG0kQWt7+5iHYnaCu0wipQhCk
-         LPLLSlbP56KfPFJIeZm4QHxZKBnR2aI9FvHhv4h6E6d2EL2vZ3M7FQcxZhkYlkf36FH/
-         V/jw47ieSf5aVX05JUxCjpnZXvhSLlDj54mAcpr4qyiPFFfBmfNlMloi2+JaeLLLwA3T
-         QAZPSu+cDuPNFQl4o9/lGK6pngoWyXeWLuARgK/wPxe0kQ40lka/7xTtzHfX64Er8Iwr
-         aBEw==
+Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-59a134e29d2so593940eaf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 06:28:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706711082; x=1707315882;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rxo8fTvdcFHWgQYYiIZBuW8ecUZKT73op0PCx+g/6Cg=;
-        b=wpH6nTIMJWx9pthx1EgjPGAaoUQDhaG2GWp5lqrjnbNkWtZgFzhtNbR0kilqaRX69d
-         7TSJ47sLX6SfOufyX65iwD3jvqeOPRf8Xfkc9ESE29s78yGTh1NAdSX7cpl9z9EFuovH
-         Bg2jXgdazO49zuw137cnOClpShXEUN0FXhoVaORboBwUjm6SbZw/HsLTTEvEv3kNxnVi
-         hvidypPUlz7Nn/9nkPhdaRAVxct8XyZZ6SUXoXH7LLsrvHtgECGNOr0KXlfi8VJkV+1C
-         e5EBMg6l0MQ0mtxYX4p+BJiQnCTIzxJp7STkQnh+1HBS1M9pIoueK71zdNT6Xcb68whu
-         ZoCw==
-X-Gm-Message-State: AOJu0Yzs7KkTbMW9FFLoga/ofVctsrVQXob+MyddfY+ODiYmb6MbD4mx
-	SrsAgv/llV0GA1S7GtALXUfDDMJaXCctesPdKcnzhACR2pCCoN1N
-X-Google-Smtp-Source: AGHT+IGwVQ7WMT1lCeXjNiGwbNOVelk5xg/9wEgEX4sHUKF1qzwKKqtGAoedIhMpvddzEHfM0W2++w==
-X-Received: by 2002:a05:600c:1986:b0:40e:e25c:41cf with SMTP id t6-20020a05600c198600b0040ee25c41cfmr1328417wmq.12.1706711082135;
-        Wed, 31 Jan 2024 06:24:42 -0800 (PST)
-Received: from ?IPv6:2003:f6:ef1b:2000:15d4:fc17:481e:8afe? (p200300f6ef1b200015d4fc17481e8afe.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:15d4:fc17:481e:8afe])
-        by smtp.gmail.com with ESMTPSA id n13-20020a05600c3b8d00b0040eee852a3dsm1793922wms.10.2024.01.31.06.24.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 06:24:41 -0800 (PST)
-Message-ID: <e3b22194bbe8ab5827066bf473631ce85c5c65e3.camel@gmail.com>
-Subject: Re: [PATCH 2/2 v2] pwm: Add driver for AXI PWM generator
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Trevor Gamblin <tgamblin@baylibre.com>, linux-pwm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, u.kleine-koenig@pengutronix.de, 
- michael.hennerich@analog.com, nuno.sa@analog.com,
- devicetree@vger.kernel.org,  robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,  Drew Fustini
- <dfustini@baylibre.com>, Sergiu Cuciurean <sergiu.cuciurean@analog.com>,
- David Lechner <dlechner@baylibre.com>
-Date: Wed, 31 Jan 2024 15:27:58 +0100
-In-Reply-To: <20240123220515.279439-3-tgamblin@baylibre.com>
-References: <20240123220515.279439-1-tgamblin@baylibre.com>
-	 <20240123220515.279439-3-tgamblin@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+        d=1e100.net; s=20230601; t=1706711336; x=1707316136;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rbuYbhYTg4M3+vx3CF+IFiq2udSQyY8c3ipCcauV4D4=;
+        b=uxNt2fOH3wsDgbvxwBKicVb0U2TGW51a9hMg2In18F3vuTT0Y73S+XF5dDNlHLQzjU
+         Gyuux0Sdwr3h9It+WelkZpuUJUzTFoPIIaXpzhVT9fOv7k5FPaVaGBMbPgyplrjRTXcY
+         e5bplAdIop+BmOuv+TkyLA2O3WNdRzCdg31DV+DnMailn7/b18WOgemCaWOqpIzsexEs
+         Ule14c5wWcSdB+9sU68mNCjc+XJWP2W2KpzgkPJt5knXp5HoAKyFA9+NY65JmCk3dxK+
+         I53SaQeq8H5Ig14f7K/6oaERs5qxD4P60qGMYPQfdB12bBZfkN7ENgoRovr85T7sJbbM
+         Beaw==
+X-Gm-Message-State: AOJu0Yy3i3XOjyBypW+/5zKN12nLcj0X/UEeXbu62Ftdy6goF1Jl6Nsd
+	KL7xxLrqckLMu/oJPIfVgJkQOcI4hMCJUKeQSl8uzu6Ha8XjkGlI9FNjgpU0eESN0SYUyttCuBU
+	KWgpT3TvWP65i+1tnLUdpnbfH/70=
+X-Google-Smtp-Source: AGHT+IHdFq8z8b2V9wc0FWARlsindN6BD/8xxmNLb0+6cLn0Bo+xpEUoc89OA/yF4rB1ox11kwv7yPzriQug84hwrOQ=
+X-Received: by 2002:a05:6870:55ce:b0:218:d68f:fe29 with SMTP id
+ qk14-20020a05687055ce00b00218d68ffe29mr626994oac.3.1706711336553; Wed, 31 Jan
+ 2024 06:28:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240123-fix-device-links-overlays-v1-1-9e4f6acaab6c@analog.com>
+ <dcb1b6dbc2172dd66bfdcc0c8135e0d98f1c22dd.camel@gmail.com>
+ <CAJZ5v0gAK9CChRPSx7Lu=BrGQo22q4swpvvN3__wFw68NfqKPA@mail.gmail.com> <25d3cfd74b26eb6a4aa07f1da93ccf4815b0b1c6.camel@gmail.com>
+In-Reply-To: <25d3cfd74b26eb6a4aa07f1da93ccf4815b0b1c6.camel@gmail.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 31 Jan 2024 15:28:45 +0100
+Message-ID: <CAJZ5v0hX4Yv7UVng=O4tZyb_O7D2EcymdEDdSUrVDPk6h51VjA@mail.gmail.com>
+Subject: Re: [PATCH RESEND RFC] driver: core: don't queue device links removal
+ for dt overlays
+To: =?UTF-8?B?TnVubyBTw6E=?= <noname.nuno@gmail.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, nuno.sa@analog.com, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, 
+	Saravana Kannan <saravanak@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2024-01-23 at 17:05 -0500, Trevor Gamblin wrote:
-> From: Drew Fustini <dfustini@baylibre.com>
->=20
-> Add support for the Analog Devices AXI PWM Generator. This device is an
-> FPGA-implemented peripheral used as PWM signal generator and can be
-> interfaced with AXI4. The register map of this peripheral makes it
-> possible to configure the period and duty cycle of the output signal.
->=20
-> Link: https://wiki.analog.com/resources/fpga/docs/axi_pwm_gen
-> Co-developed-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-> Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-> Co-developed-by: David Lechner <dlechner@baylibre.com>
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
-> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
-> Co-developed-by: Trevor Gamblin <tgamblin@baylibre.com>
-> Signed-off-by: Trevor Gamblin <tgamblin@baylibre.com>
->=20
-> ---
-> v2 changes:
-> * Address feedback for driver and device tree in v1:
-> =C2=A0 * Use more reasonable Kconfig approach
-> =C2=A0 * Use common prefixes for all functions
-> =C2=A0 * Rename axi_pwmgen struct to axi_pwmgen_ddata
-> =C2=A0 * Change use of "pwm" to "ddata"
-> =C2=A0 * Set and check state->polarity
-> =C2=A0 * Multiply safely with mul_u64_u64_div_u64()
-> =C2=A0 * Improve handling of max and zero periods
-> =C2=A0 * Error if clk_rate_hz > NSEC_PER_SEC
-> =C2=A0 * Add "Limitations" section at top of pwm-axi-pwmgen.c
-> =C2=A0 * Don't disable outputs by default
-> =C2=A0 * Remove unnecessary macros for period, duty, offset
-> =C2=A0 * Fix axi_pwmgen_ddata alignment
-> =C2=A0 * Don't artificially limit npwm to four
-> =C2=A0 * Use clk_rate_exclusive_get(), balance with clk_rate_exclusive_pu=
-t()
-> =C2=A0 * Cache clk rate in axi_pwmgen_ddata
-> =C2=A0 * Don't assign pwm->chip.base, do assign pwm->chip.atomic
-> * Remove redundant calls to clk_get_rate
-> * Test contents of AXI_PWMGEN_REG_CORE_MAGIC instead of
-> =C2=A0 arbitrary AXI_PWMGEN_TEST_DATA in AXI_PWMGEN_REG_SCRATCHPAD
-> * Remove redundant clk struct from axi_pwmgen_ddata
-> * Add self as module author
-> * Add major version check for IP core
->=20
-> ---
-> =C2=A0MAINTAINERS=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 1 +
-> =C2=A0drivers/pwm/Kconfig=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 |=C2=A0 13 ++
-> =C2=A0drivers/pwm/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 |=C2=A0=C2=A0 1 +
-> =C2=A0drivers/pwm/pwm-axi-pwmgen.c | 246 ++++++++++++++++++++++++++++++++=
-+++
-> =C2=A04 files changed, 261 insertions(+)
-> =C2=A0create mode 100644 drivers/pwm/pwm-axi-pwmgen.c
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 8a4ed5545680..2baa7a0a1c8c 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3438,6 +3438,7 @@ L:	linux-pwm@vger.kernel.org
-> =C2=A0S:	Supported
-> =C2=A0W:	https://ez.analog.com/linux-software-drivers
-> =C2=A0F:	Documentation/devicetree/bindings/pwm/adi,axi-pwmgen.yaml
-> +F:	drivers/pwm/pwm-axi-pwmgen.c
-> =C2=A0
-> =C2=A0AXXIA I2C CONTROLLER
-> =C2=A0M:	Krzysztof Adamski <krzysztof.adamski@nokia.com>
-> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-> index 4b956d661755..d44b0e86adee 100644
-> --- a/drivers/pwm/Kconfig
-> +++ b/drivers/pwm/Kconfig
-> @@ -98,6 +98,19 @@ config PWM_ATMEL_TCB
-> =C2=A0	=C2=A0 To compile this driver as a module, choose M here: the modu=
-le
-> =C2=A0	=C2=A0 will be called pwm-atmel-tcb.
-> =C2=A0
-> +config PWM_AXI_PWMGEN
-> +	tristate "Analog Devices AXI PWM generator"
-> +	depends on MICROBLAZE || NIOS2 || ARCH_ZYNQ || ARCH_ZYNQMP ||
-> ARCH_INTEL_SOCFPGA || COMPILE_TEST
-> +	select REGMAP_MMIO
-> +	help
-> +	=C2=A0 This enables support for the Analog Devices AXI PWM generator.
-> +
-> +	=C2=A0 This is a configurable PWM generator with variable pulse width a=
-nd
-> +	=C2=A0 period.
-> +
-> +	=C2=A0 To compile this driver as a module, choose M here: the module wi=
-ll
-> be
-> +	=C2=A0 called pwm-axi-pwmgen.
-> +
-> =C2=A0config PWM_BCM_IPROC
-> =C2=A0	tristate "iProc PWM support"
-> =C2=A0	depends on ARCH_BCM_IPROC || COMPILE_TEST
-> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-> index c5ec9e168ee7..8322089954e9 100644
-> --- a/drivers/pwm/Makefile
-> +++ b/drivers/pwm/Makefile
-> @@ -6,6 +6,7 @@ obj-$(CONFIG_PWM_APPLE)		+=3D pwm-apple.o
-> =C2=A0obj-$(CONFIG_PWM_ATMEL)		+=3D pwm-atmel.o
-> =C2=A0obj-$(CONFIG_PWM_ATMEL_HLCDC_PWM)	+=3D pwm-atmel-hlcdc.o
-> =C2=A0obj-$(CONFIG_PWM_ATMEL_TCB)	+=3D pwm-atmel-tcb.o
-> +obj-$(CONFIG_PWM_AXI_PWMGEN)	+=3D pwm-axi-pwmgen.o
-> =C2=A0obj-$(CONFIG_PWM_BCM_IPROC)	+=3D pwm-bcm-iproc.o
-> =C2=A0obj-$(CONFIG_PWM_BCM_KONA)	+=3D pwm-bcm-kona.o
-> =C2=A0obj-$(CONFIG_PWM_BCM2835)	+=3D pwm-bcm2835.o
-> diff --git a/drivers/pwm/pwm-axi-pwmgen.c b/drivers/pwm/pwm-axi-pwmgen.c
-> new file mode 100644
-> index 000000000000..39d2c7be0cb4
-> --- /dev/null
-> +++ b/drivers/pwm/pwm-axi-pwmgen.c
-> @@ -0,0 +1,246 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Analog Devices AXI PWM generator
-> + *
-> + * Copyright 2024 Analog Devices Inc.
-> + * Copyright 2024 Baylibre SAS
-> + *
-> + * Limitations:
-> + * - The writes to registers for period and duty are shadowed until
-> + *=C2=A0=C2=A0 LOAD_CONFIG is written to AXI_PWMGEN_REG_CONFIG at the en=
-d of the
-> + *=C2=A0=C2=A0 current period.
-> + * - Writing LOAD_CONFIG also has the effect of re-synchronizing all
-> + *=C2=A0=C2=A0 enabled channels, which could cause glitching on other ch=
-annels. It
-> + *=C2=A0=C2=A0 is therefore expected that channels are assigned harmonic=
- periods
-> + *=C2=A0=C2=A0 and all have a single user coordinating this.
-> + * - Supports normal polarity. Does not support changing polarity.
-> + */
-> +#include <linux/bits.h>
-> +#include <linux/clk.h>
-> +#include <linux/err.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pwm.h>
-> +#include <linux/regmap.h>
-> +#include <linux/slab.h>
-> +
-> +#define AXI_PWMGEN_VERSION_MAJOR(x)	(((x) >> 16) & 0xff)
-> +#define AXI_PWMGEN_VERSION_MINOR(x)	(((x) >> 8) & 0xff)
-> +#define AXI_PWMGEN_VERSION_PATCH(x)	((x) & 0xff)
-> +
-> +#define AXI_PWMGEN_REG_CORE_VERSION	0x00
+On Wed, Jan 31, 2024 at 3:18=E2=80=AFPM Nuno S=C3=A1 <noname.nuno@gmail.com=
+> wrote:
+>
+> On Wed, 2024-01-31 at 14:30 +0100, Rafael J. Wysocki wrote:
+> > On Wed, Jan 31, 2024 at 1:20=E2=80=AFPM Nuno S=C3=A1 <noname.nuno@gmail=
+com> wrote:
+> > >
+> > > On Tue, 2024-01-23 at 16:40 +0100, Nuno Sa via B4 Relay wrote:
+> > > > From: Nuno Sa <nuno.sa@analog.com>
+> > > >
+> > > > For device links, releasing the supplier/consumer devices reference=
+s
+> > > > happens asynchronously in device_link_release_fn(). Hence, the poss=
+ible
+> > > > release of an of_node is also asynchronous. If these nodes were add=
+ed
+> > > > through overlays we have a problem because this does not respect th=
+e
+> > > > devicetree overlays assumptions that when a changeset is
+> > > > being removed in __of_changeset_entry_destroy(), it must hold the l=
+ast
+> > > > reference to that node. Due to the async nature of device links tha=
+t
+> > > > cannot be guaranteed.
+> > > >
+> > > > Given the above, in case one of the link consumer/supplier is part =
+of
+> > > > an overlay node we call directly device_link_release_fn() instead o=
+f
+> > > > queueing it. Yes, it might take some significant time for
+> > > > device_link_release_fn() to complete because of synchronize_srcu() =
+but
+> > > > we would need to, anyways, wait for all OF references to be release=
+d if
+> > > > we want to respect overlays assumptions.
+> > > >
+> > > > Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+> > > > ---
+> > > > This RFC is a follow up of a previous one that I sent to the device=
+tree
+> > > > folks [1]. It got rejected because it was not really fixing the roo=
+t
+> > > > cause of the issue (which I do agree). Please see the link where I
+> > > > fully explain what the issue is.
+> > > >
+> > > > I did also some git blaming and did saw that commit
+> > > > 80dd33cf72d1 ("drivers: base: Fix device link removal") introduced
+> > > > queue_work() as we could be releasing the last device reference and=
+ hence
+> > > > sleeping which is against SRCU callback requirements. However, that=
+ same
+> > > > commit is now making use of synchronize_srcu() which may take
+> > > > significant time (and I think that's the reason for the work item?)=
+.
+> > > >
+> > > > However, given the dt overlays requirements, I'm not seeing any
+> > > > reason to not be able to run device_link_release_fn() synchronously=
+ if we
+> > > > detect an OVERLAY node is being released. I mean, even if we come u=
+p
+> > > > (and I did some experiments in this regard) with some async mechani=
+sm to
+> > > > release the OF nodes refcounts, we still need a synchronization poi=
+nt
+> > > > somewhere.
+> > > >
+> > > > Anyways, I would like to have some feedback on how acceptable would=
+ this
+> > > > be or what else could I do so we can have a "clean" dt overlay remo=
+val.
+> > > >
+> > > > I'm also including dt folks so they can give some comments on the n=
+ew
+> > > > device_node_overlay_removal() function. My goal is to try to detect=
+ when
+> > > > an
+> > > > overlay is being removed (maybe we could even have an explicit flag=
+ for
+> > > > it?) and only directly call device_link_release_fn() in that case.
+> > > >
+> > > > [1]:
+> > > > https://lore.kernel.org/linux-devicetree/20230511151047.1779841-1-n=
+uno.sa@analog.com/
+> > > > ---
+> > > >  drivers/base/core.c | 25 ++++++++++++++++++++++++-
+> > > >  1 file changed, 24 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > > > index 14d46af40f9a..31ea001f6142 100644
+> > > > --- a/drivers/base/core.c
+> > > > +++ b/drivers/base/core.c
+> > > > @@ -497,6 +497,18 @@ static struct attribute *devlink_attrs[] =3D {
+> > > >  };
+> > > >  ATTRIBUTE_GROUPS(devlink);
+> > > >
+> > > > +static bool device_node_overlay_removal(struct device *dev)
+> > > > +{
+> > > > +     if (!dev_of_node(dev))
+> > > > +             return false;
+> > > > +     if (!of_node_check_flag(dev->of_node, OF_DETACHED))
+> > > > +             return false;
+> > > > +     if (!of_node_check_flag(dev->of_node, OF_OVERLAY))
+> > > > +             return false;
+> > > > +
+> > > > +     return true;
+> > > > +}
+> > > > +
+> > > >  static void device_link_release_fn(struct work_struct *work)
+> > > >  {
+> > > >       struct device_link *link =3D container_of(work, struct device=
+_link,
+> > > > rm_work);
+> > > > @@ -532,8 +544,19 @@ static void devlink_dev_release(struct device =
+*dev)
+> > > >        * synchronization in device_link_release_fn() and if the con=
+sumer
+> > > > or
+> > > >        * supplier devices get deleted when it runs, so put it into =
+the
+> > > > "long"
+> > > >        * workqueue.
+> > > > +      *
+> > > > +      * However, if any of the supplier, consumer nodes is being r=
+emoved
+> > > > +      * through overlay removal, the expectation in
+> > > > +      * __of_changeset_entry_destroy() is for the node 'kref' to b=
+e 1
+> > > > which
+> > > > +      * cannot be guaranteed with the async nature of
+> > > > +      * device_link_release_fn(). Hence, do it synchronously for t=
+he
+> > > > overlay
+> > > > +      * case.
+> > > >        */
+> > > > -     queue_work(system_long_wq, &link->rm_work);
+> > > > +     if (device_node_overlay_removal(link->consumer) ||
+> > > > +         device_node_overlay_removal(link->supplier))
+> > > > +             device_link_release_fn(&link->rm_work);
+> > > > +     else
+> > > > +             queue_work(system_long_wq, &link->rm_work);
+> > > >  }
+> > > >
+> > > >  static struct class devlink_class =3D {
+> > > >
+> > > > ---
+> > > > base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+> > > > change-id: 20240123-fix-device-links-overlays-5422e033a09b
+> > > > --
+> > > >
+> > > > Thanks!
+> > > > - Nuno S=C3=A1
+> > > >
+> > >
+> > > Hi Rafael,
+> > >
+> > > Would be nice to have your feedback on this one or if this is a compl=
+ete
+> > > nack...
+> > > I think calling device_link_release_fn() synchronously is ok but I mi=
+ght be
+> > > completely wrong.
+> >
+> > Well, it sounds like you are expecting me to confirm that what you are
+> > doing makes sense, but I cannot do that, because I am not sufficiently
+> > familiar with DT overlays.
+> >
+>
+> I'm trying to understand if there's no hidden issue by calling it synchro=
+nously.
+> (don't think there is but this is rather core stuff :)).
+>
+> From the DT guys, it would be helpful to get feedback on the new
+> device_node_overlay_removal() helper I'm introducing. The goal is to just=
+ do the
+> sync release in case we detect a node being removed as a result of an ove=
+rlay
+> removal.
+>
+> > You first need to convince yourself that you are not completely wrong.
+>
+> I mean, the problem is definitely real and if you see the link I pasted i=
+n the
+> cover, this will all lead to big splats.
+>
+> >
+> > > +Cc Saravan as he should also be very familiar with device_links and =
+see if
+> > > the
+> > > above fairly simple solution is sane.
+> > >
+> > > I also don't want to be pushy as I know you guys are all very busy bu=
+t it's
+> > > (i
+> > > think) the third time I resend the patch :)
+> >
+> > Sorry about that, I haven't realized that my input is requisite.
+> >
+>
+> Yeah, get_mantainers gives me you and Greg but I think you're the main de=
+v on
+> dev_links right?
+>
+> > So the patch not only calls device_link_release_fn() synchronously,
+> > but it also calls this function directly and I, personally, wouldn't
+> > do at least the latter.
+> >
+>
+> So you mean adding something like adding a new
+>
+> device_link_release(struct device_link *link) helper
+> and either call it synchronously from devlink_dev_release() or asynchrono=
+usly
+> from device_link_release_fn()?
+>
+> I can drop the RFC and send a patch with the above...
 
-Hi Trevor,
+No, IMV devlink_dev_release() needs to be called via
+device_link_put_kref(), but it may run device_link_release_fn()
+directly if the link is marked in a special way or something like
+this.
 
-Just realized now that you should be using the macros already defined in
-
-<linux/fpga/adi-axi-common.h>
-
-- Nuno S=C3=A1
-
-
+AFAICS, this is the only way to do it and be sure that all of the
+references to the link have been dropped when it is freed.
 
