@@ -1,130 +1,137 @@
-Return-Path: <linux-kernel+bounces-45757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 703C88435E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:10:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 486458435E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 06:10:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BECF282BBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:10:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC3A728544C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 05:10:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 575D13E499;
-	Wed, 31 Jan 2024 05:08:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="r1P7AIJI"
-Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59B6B3E494;
+	Wed, 31 Jan 2024 05:09:45 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 307073E496
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 05:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC8D93FB0D;
+	Wed, 31 Jan 2024 05:09:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706677728; cv=none; b=aayqy6As6GA4GCwwbOx16tOBap8YTojMMZmX2f3PNic93AyzN22RYvvkXSmQAwMJtunc96H55JZFfWkpU5VgDI17rEo8hnAMzbHMSAhv5KOKlrlcg6bVHblTkIRdU9Uu7Z5VRB2KhItbxDE+MWPzUv7zQkClb3gqkwJlw15OCzs=
+	t=1706677784; cv=none; b=fCmRDgSwdmXoRVT4/CT54SJwwo21kbZXVT8s7twqsXMyscnAui0cWE3tENgGICdmsShBQ5ww4d1KDT0JBX9eLCaMuBlzov9sGjUPMVCRG+kasazKq9fc/vjUDyOY2LwVZPOB/UqxghevQeNon1jXobunGGX22oy3QRBfzjtlMUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706677728; c=relaxed/simple;
-	bh=xlVDI89mtI52l3zzcIoMCJsnh1RwAgEG5xXnohHifd8=;
-	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
-	 MIME-Version:Content-Type; b=OGLhezeal4Zt5XdOCuxGTV08uCTkhG7JgAPYx1x4zELeFYek6UmhPtcsJ6FKTQRHQ3VS4yDKEA6WbY3q4dzP7eAwA1iBEGS+Y0O7jAgudfbKOjra4QpILeR3UBCe5U6AP3MSXJtgPWwc5FU3CyBzshhc9QWaZBL0d4XGbc9nr5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=r1P7AIJI; arc=none smtp.client-ip=44.202.169.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
-Received: from eig-obgw-6010a.ext.cloudfilter.net ([10.0.30.248])
-	by cmsmtp with ESMTPS
-	id UtLCrKwQR8uLRV2pzrkyV7; Wed, 31 Jan 2024 05:08:39 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-	by cmsmtp with ESMTPS
-	id V2pyrhyk7fPByV2pyrKfET; Wed, 31 Jan 2024 05:08:38 +0000
-X-Authority-Analysis: v=2.4 cv=T+af8tGQ c=1 sm=1 tr=0 ts=65b9d5d6
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=fgkVngnsqUz9it14FVEA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=RuA7V1Oi0UgNsRmBDWdWdoNNiAoNLAqu1nIXFx2hl+4=; b=r1P7AIJIA97RqC7as2xjyf+CRr
-	1O+2exuiBaYT3dn5WZHIkQeWzJ4lZ56c2AXIv2Z6xUvopL1ATjCbZaAqJDgsqR/33v55/1a/btiNA
-	Hy+VwiAbPzd4ipt0WWhLDU+ixSeehuyRfMo+MMzroOi5U931mysHZef5/1eUeqTJiRYYIpBpgS29U
-	PmknaE/EnV+F05NBfKoH5KVdwj8jDT+mYiM9PXYKaQ0aV2NSdVus+YC2v54T1AfSVeLNrTuWPU1bB
-	ZNJwenkyDhEZLBmVIwOJnjm6CV5eBGzErjdlXb+jyeiCVZSvOKrwaP1GdSnlBsKOc/kXujgrO9RWn
-	Z0efiDbA==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:37676 helo=[10.0.1.47])
-	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <re@w6rz.net>)
-	id 1rV2pv-003Tdm-0U;
-	Tue, 30 Jan 2024 22:08:35 -0700
-Subject: Re: [PATCH 6.1 000/186] 6.1.76-rc2 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-References: <20240130183318.454044155@linuxfoundation.org>
-In-Reply-To: <20240130183318.454044155@linuxfoundation.org>
-From: Ron Economos <re@w6rz.net>
-Message-ID: <57f991b5-df2f-8aa3-99df-de84eafd3153@w6rz.net>
-Date: Tue, 30 Jan 2024 21:08:32 -0800
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+	s=arc-20240116; t=1706677784; c=relaxed/simple;
+	bh=QvjKDYSLV2yuH9+Dn5eSLY9XpB6/Ol/LAIJt1dzRKXc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=AXaSx72DMXBB63wZFBEFvqaSyDUhjWr/7Rl/m1q5R58eVxnwPhOrFmV1j7vOZhzFNYmxWHIkJLc8TryNxGzJ6hNBEpPu6Y8kaEa8THXQZaKYENq+CFSMQbGOMC3ekDgt5bLawCBrGBUTJ6gFwRVdrUktUlpV9v9UrrYwWneJMoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD2F9C433C7;
+	Wed, 31 Jan 2024 05:09:43 +0000 (UTC)
+Date: Wed, 31 Jan 2024 00:09:56 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/6] eventfs: get rid of dentry pointers without
+ refcounts
+Message-ID: <20240131000956.3dbc0fc0@gandalf.local.home>
+In-Reply-To: <20240130190355.11486-5-torvalds@linux-foundation.org>
+References: <20240130190355.11486-1-torvalds@linux-foundation.org>
+	<20240130190355.11486-5-torvalds@linux-foundation.org>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1rV2pv-003Tdm-0U
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:37676
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Org: HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfJ+DH/aVQwaEyL1jUArZCUTE08Ql0S5aqYwowbKJ7OUFlo71KhsxxCaKb24DpkSpk68gGubpnvc1R84Oy8mCOZwH1OPLH065pcUuNh8fdSGRHC1XfGo8
- Ackqsq1fmAvK0z6TY0mcDHawaZqcDqOIhxzdXQAVGeAZLRWnvQo0CGNjqUB5UTC+ym1mWp4f9KYyBvB1DnuP4DnyRsZiRYlzuVQ=
 
-On 1/30/24 10:47 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.76 release.
-> There are 186 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 01 Feb 2024 18:32:32 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.76-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Tue, 30 Jan 2024 11:03:54 -0800
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+> +/*
+> + * eventfs_inode reference count management.
+> + *
+> + * NOTE! We count only references from dentries, in the
+> + * form 'dentry->d_fsdata'. There are also references from
+> + * directory inodes ('ti->private'), but the dentry reference
+> + * count is always a superset of the inode reference count.
+> + */
+> +static void release_ei(struct kref *ref)
+> +{
+> +	struct eventfs_inode *ei = container_of(ref, struct eventfs_inode, kref);
+> +	kfree(ei->entry_attrs);
 
-Tested-by: Ron Economos <re@w6rz.net>
+I did modify this to add back the kfree_const(ei->name);
 
+I would also like to add a:
+
+	WARN_ON_ONCE(!ei->is_freed);
+
+The kref_put() logic should add the protection that this is guaranteed to
+be true as the logic in the removal does:
+
+	ei->is_freed = 1;
+  [..]
+	kref_put(ei);
+
+I would think that the last "put" would always have the "is_freed" set. The
+WARN_ON is to catch things doing too many put_ei().
+
+
+> +	kfree(ei);
+> +}
+> +
+
+
+> @@ -951,5 +857,6 @@ void eventfs_remove_events_dir(struct eventfs_inode *ei)
+>  	 * sticks around while the other ei->dentry are created
+>  	 * and destroyed dynamically.
+>  	 */
+> +	simple_recursive_removal(dentry, NULL);
+
+Actually, this doesn't work. It expects all the dentries in the list to
+have positive ref counts, as it does dput() on them. If there's any cached,
+it will bug with a dput() on a dentry of zero.
+
+The only dentries that should have non zero ref counts are ones that are
+currently being accessed and wont go away until finished. I think all we
+need to do is invalidate the top dentry. Is that true?
+
+Does this work:
+
+	d_invalidate(dentry);
+
+to make the directory no longer accessible. And all dentries within it
+should be zero, and hopefully go away on memory reclaim. The last patch
+removes it, but if you want to test the deletion, you can do this:
+
+ # cd /sys/kernel/tracing
+ # mkdir instances/foo
+ # ls instances/foo/events
+ # rmdir instances/foo
+
+
+But also note that this patch fails with the "ghost" files with the kprobe
+test again. When I apply patch 6, that goes away. I'm guessing that's
+because this needs the d_revalidate() call. To not break bisection, I think
+we need to merge this and patch 6 together.
+
+Also patch 6 removes the simple_recursive_removal() which without at least
+the d_invalidate() causes a dput splat. That's because the rmdir calls
+tracefs_remove() which calls simple_recursive_removal() that will walk to
+the events directory and I'm assuming if it hasn't been invalidated, it
+walks into it causing the same issue as a simple_recursive_removal() would
+have here.
+
+Try the above mkdir and rmdir to see.
+
+-- Steve
+
+
+>  	dput(dentry);
+>  }
 
