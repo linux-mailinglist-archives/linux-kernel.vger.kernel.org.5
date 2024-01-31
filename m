@@ -1,167 +1,226 @@
-Return-Path: <linux-kernel+bounces-45965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9D68843870
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:03:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B2BA843876
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 09:04:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 303021F24072
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:03:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C5A31F230EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 08:04:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32BCC55E72;
-	Wed, 31 Jan 2024 08:03:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D17656B9D;
+	Wed, 31 Jan 2024 08:04:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FZEMofF/"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RnTZpY74"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB6ED5DF0D
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 08:03:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF8875810E;
+	Wed, 31 Jan 2024 08:04:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706688221; cv=none; b=Hl6za0/8mi/jd3qwQMYI8kUv1UpqNRwx6IEFoq752ly/2NodgWwIFSCGHstq2Yn+1UNUoXMFMuZQ/QkiFAth2HdkKzUI1N2kBNWsMDfAoC6F4KNqTyF0wHjeVA2KSVUpDluSDq7vU1L72inA+faxpE8HEn4n6OIHD7SFWOLenTo=
+	t=1706688284; cv=none; b=NTWx9wVAPKem5mjsjttr/f1sX4lcYtgY9Hz35lyVOKSNQ6PLs1tQc38wML/qEogTthiO0s86BDDACsGu/Rm/F0/WbS2we/iJLz5hHxnMRmhDofUR7GNejSkwZYN53lbIMQVV6oXGSE1zYy4Ximh6z13R3c7bwwqui9B+lL0nj38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706688221; c=relaxed/simple;
-	bh=opu0J9XakpfZKh/4oMykdhYwG5diaCrPXUI9ILQknxw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Wifrb8rQoHDXXiXXS5OgLATDv4su1oZdmyRVF/U2jnNiZ9nZmWBvhfPaixKNvWWDvCci6THSe3IJNvHhSYauMapAfVngBzTyugp9P+Vd/qKuTlI+nAZjAkjRs7CbRt1oPA6jXyf45xLQZk7lP84MwLG0NXELLb0lUn5FB3FCTu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FZEMofF/; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3122b70439so658486766b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 00:03:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706688218; x=1707293018; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PbDmv4EAt/aQUJgtXZLESeGUGFU23aQb6H26VIwICh4=;
-        b=FZEMofF/hlGiIAMyhFki6U/yLLAIuemylujKw9ftjNBVn8IFgq5Clzzyc0LdBZFr7m
-         H9OUp7JHT4wdhr/GvSNNGYzsfH83cHLOrFgTcaqLQDT86GQpcVA51FZdpAqNFi7ul5UM
-         k8t7RstPSEIoK1w4GmNF8DW6enkWFAz7UG6xCcQH8KJNoxJ7KAjJBckifwJareXgiC2S
-         iKcn1G03rMjLMxiNOf5T04iZ+ugg3tMxmutUNrwD127ZRKDWfIiM9EprdaXVDTEcHExh
-         AwZn7ycPJ41A8CDQADX67t24+UsmoykTXkGehbn58q+5jz3jy+kHF1McsVk7ca/9WWZB
-         ITFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706688218; x=1707293018;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PbDmv4EAt/aQUJgtXZLESeGUGFU23aQb6H26VIwICh4=;
-        b=uzUYmUi8Z9QQWykjCWX4qb0ccAVw+WAy2vss+o7bi67YzX2qVr+e68IyL4XjuzB9wk
-         BFNOQZgrYiuVOJfVUU83WCohkahIonQcVOmuqu3tXQISmeL0hXgLk5FTG3ZI8oBJzb6o
-         UwZhvJPnHujRIsqat8RpRESKANW9ooGjulDhGVh45FnHo5lEd+qUGb02aASIC51ZYwbp
-         yEEHtHNCuYrz+UnDY2LAW8Tf5YOVGrDRl22hcBfKU+FUs4yBpc2JJVsG126dWFnISQ20
-         N1/ZtLOx0++NQNPJBBP0afUKXDFhtiozVsD29RAoh0v4xojm32N2d0NM86CCg0L0h5JI
-         IEHg==
-X-Gm-Message-State: AOJu0Yx381tBgYFkzq/f+Ym/qEYrae5zEF7Whz0J/NDsQJEUdOFr0xUB
-	Gx/qQ5OZH0UQ/05zOWmOPtxsuKdQSiKcXxZxq6Q45E5zEhz4osrI7xRenqLI3PR1mQKaTbdCbEQ
-	N
-X-Google-Smtp-Source: AGHT+IFm3iANxrEWin4mPuUXIiBJqx3tbNALXzivFrpJ5tW3fLwqKdVmSV4+6GNHJElC0pQWyzyRXg==
-X-Received: by 2002:a17:906:3e57:b0:a35:f446:d9bf with SMTP id t23-20020a1709063e5700b00a35f446d9bfmr559289eji.35.1706688217933;
-        Wed, 31 Jan 2024 00:03:37 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCX1KffLD0NOYwbU+/4ZLtoBW121vlQpfklNtK2hxHQBTt2U4xi3bhgqqCJ/BORCxTjSL6ATvTBhi/4K1FEy+BFdaot6bs/2DUhMGFHqIxYBiZoEy08J8Kc87BU19f1RT46PsU6LjbN+Db+zTN9/i8MwwNnv5jWdA8ql5m/230gFsgAC9IzflBrvZ3MhNpskjVwoFH24LoDwH1/DgZOZZ9zek9MGYAea2GmrU8ZpIr6jyg1X6dBhranC8jYplV/+7D15npQyYsBF03O6Ke9N4SqkhxWSxnpQ4dhXuvaLzAfTPoFKBEKXv9zE/f8vV1QJX7SR9TdHvb3lZgFBUI5FH651OdmmKDb+HpIxbO5mX7U957rYKEJxC/UQQwx5CIBTky4OV8ruXA==
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id rs28-20020a170907037c00b00a2ceaf80bcbsm5904452ejb.204.2024.01.31.00.03.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Jan 2024 00:03:37 -0800 (PST)
-Message-ID: <6508a0fb-6b5c-44e8-bd98-2cd70ab8f6b7@linaro.org>
-Date: Wed, 31 Jan 2024 09:03:35 +0100
+	s=arc-20240116; t=1706688284; c=relaxed/simple;
+	bh=2wy6IAqZWDlhSg8xSyQOwMuys/jiy/qt5c8fR9V26Dk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L284JjzBbHxyhZq69nKJiZdO6e48f6qiPPYQj3K/pWqQWxLR17Euqi3vaJkK22dZVpoVWZCoM09uIN00CERQ2md+y0IL9cgzkc7cuhKMWuJgbdbw4mdQOUlJ+p5RVFPEudBih56zRc9hLTTJBpf/nZV/NTcB1JDpMohpWstvBUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RnTZpY74; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706688283; x=1738224283;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2wy6IAqZWDlhSg8xSyQOwMuys/jiy/qt5c8fR9V26Dk=;
+  b=RnTZpY7441tr9SUQhtUa7Lb/Y82sOq51hxnSFNIIUU1Qxw/tkujLmFlI
+   0/0fox3fx85baQM+EZkPLLVsAP0LbNy5juv4GXwI28VJnMcgO2wiuaaeq
+   9Pjqwn4f/WIgjzUURa+O04Ryo2y/NzBnAP0pyo9mPQ9hMe72bxd2peZXv
+   T3IMLANiC6GpXuq5W1o13T+en8ze1olub9kXzETdkYpIQXSoG2jj1vSPq
+   jGqfhFV7rFlXAzMQNla4KqACBIN0+iks3TblBFqRnrgvho9kSikcskWHS
+   TA8rpNw8phoXA9Eyd7YGO1yznAAljWV3S0ZUaDYU5Zxw+2f+lHhhxJhgT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="17059012"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="17059012"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 00:04:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="3992171"
+Received: from nixos.sh.intel.com (HELO localhost) ([10.238.2.93])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 00:04:33 -0800
+Date: Wed, 31 Jan 2024 16:04:21 +0800
+From: "Wang, Qingshun" <qingshun.wang@linux.intel.com>
+To: 
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc: linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-acpi@vger.kernel.org, chao.p.peng@linux.intel.com, erwin.tsaur@intel.com, 
+	feiting.wanyan@intel.com, qingshun.wang@intel.com, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>, 
+	Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>, 
+	Davidlohr Bueso <dave@stgolabs.net>, Jonathan Cameron <jonathan.cameron@huawei.com>, 
+	Dave Jiang <dave.jiang@intel.com>, Alison Schofield <alison.schofield@intel.com>, 
+	Vishal Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>, 
+	Dan Williams <dan.j.williams@intel.com>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Bjorn Helgaas <helgaas@kernel.org>, Mahesh J Salgaonkar <mahesh@linux.ibm.com>, 
+	Oliver O'Halloran <oohall@gmail.com>, Miaohe Lin <linmiaohe@huawei.com>, 
+	Shiju Jose <shiju.jose@huawei.com>, Adam Preble <adam.c.preble@intel.com>, 
+	Li Yang <leoyang.li@nxp.com>, Lukas Wunner <lukas@wunner.de>, 
+	Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>, Robert Richter <rrichter@amd.com>, linux-kernel@vger.kernel.org, 
+	linux-cxl@vger.kernel.org, linux-edac@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] PCI/AER: Store more information in aer_err_info
+Message-ID: <ojv6nqi55o4q3aazf34w7yjriagup3h5dmim7k67xuv6t7xdjr@m3bjyroi4jfq>
+References: <20240125062802.50819-1-qingshun.wang@linux.intel.com>
+ <20240125062802.50819-2-qingshun.wang@linux.intel.com>
+ <6ecb7bbf-0eba-4cea-b9b8-05fd092b7d01@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/2] dt-bindings: Add MPQ8785 voltage regulator device
-Content-Language: en-US
-To: Charles Hsu <ythsu0511@gmail.com>, jdelvare@suse.com, linux@roeck-us.net,
- corbet@lwn.net, Delphine_CC_Chiu@Wiwynn.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240131074822.2962078-1-ythsu0511@gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240131074822.2962078-1-ythsu0511@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6ecb7bbf-0eba-4cea-b9b8-05fd092b7d01@linux.intel.com>
 
-On 31/01/2024 08:48, Charles Hsu wrote:
-> Monolithic Power Systems, Inc. (MPS) synchronous step-down converter.
+On Tue, Jan 30, 2024 at 06:26:39PM -0800, Kuppuswamy Sathyanarayanan wrote:
 > 
-> Signed-off-by: Charles Hsu <ythsu0511@gmail.com>
-> ---
->  Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
->  1 file changed, 2 insertions(+)
+> On 1/24/24 10:27 PM, Wang, Qingshun wrote:
+> > When Advisory Non-Fatal errors are raised, both correctable and
+> 
+> Maybe you can start with same info about what Advisory Non-FataL
+> errors are and the specification reference. I know that you included
+> it in cover letter. But it is good to include it in commit log.
 
+Good idea, thanks!
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> > uncorrectable error statuses will be set. The current kernel code cannot
+> > store both statuses at the same time, thus failing to handle ANFE properly.
+> > In addition, to avoid clearing UEs that are not ANFE by accident, UE
+> 
+> Please add some details about the impact of not clearing them.
 
+Makes sense, will do.
 
----
+> > severity and Device Status also need to be recorded: any fatal UE cannot
+> > be ANFE, and if Fatal/Non-Fatal Error Detected is set in Device Status, do
+> > not take any assumption and let UE handler to clear UE status.
+> >
+> > Store status and mask of both correctable and uncorrectable errors in
+> > aer_err_info. The severity of UEs and the values of the Device Status
+> > register are also recorded, which will be used to determine UEs that should
+> > be handled by the ANFE handler. Refactor the rest of the code to use
+> > cor/uncor_status and cor/uncor_mask fields instead of status and mask
+> > fields.
+> >
+> > Signed-off-by: "Wang, Qingshun" <qingshun.wang@linux.intel.com>
+> > ---
+> >  drivers/acpi/apei/ghes.c | 10 ++++-
+> >  drivers/cxl/core/pci.c   |  6 ++-
+> >  drivers/pci/pci.h        |  8 +++-
+> >  drivers/pci/pcie/aer.c   | 93 ++++++++++++++++++++++++++--------------
+> >  include/linux/aer.h      |  4 +-
+> >  include/linux/pci.h      | 27 ++++++++++++
+> >  6 files changed, 111 insertions(+), 37 deletions(-)
+> >
+> > ......
+> >
+> > @@ -1213,38 +1233,49 @@ int aer_get_device_error_info(struct pci_dev *dev, struct aer_err_info *info)
+> >  	int temp;
+> >  
+> >  	/* Must reset in this function */
+> > -	info->status = 0;
+> > +	info->cor_status = 0;
+> > +	info->uncor_status = 0;
+> > +	info->uncor_severity = 0;
+> >  	info->tlp_header_valid = 0;
+> >  
+> >  	/* The device might not support AER */
+> >  	if (!aer)
+> >  		return 0;
+> >  
+> > -	if (info->severity == AER_CORRECTABLE) {
+> > +	if (info->severity == AER_CORRECTABLE ||
+> > +	    info->severity == AER_NONFATAL ||
+> > +	    type == PCI_EXP_TYPE_ROOT_PORT ||
+> > +	    type == PCI_EXP_TYPE_RC_EC ||
+> > +	    type == PCI_EXP_TYPE_DOWNSTREAM) {
+> 
+> 
+> It looks like you are reading both uncorrectable and correctable status
+> by default for both NONFATAL and CORRECTABLE errors. Why not do
+> it conditionally only for ANFE errors?
+> 
+> 
 
-This is an automated instruction, just in case, because many review tags
-are being ignored. If you know the process, you can skip it (please do
-not feel offended by me posting it here - no bad intentions intended).
-If you do not know the process, here is a short explanation:
+My initial purpose was the value will be used in aer_event trace in
+PATCH 4 under both conditions, but I can also add checks here to reduce
+unnecessary IO and remove the checks in PATCH 4.
 
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
+> > +		/* Link is healthy for IO reads */
+> >  		pci_read_config_dword(dev, aer + PCI_ERR_COR_STATUS,
+> > -			&info->status);
+> > +				      &info->cor_status);
+> >  		pci_read_config_dword(dev, aer + PCI_ERR_COR_MASK,
+> > -			&info->mask);
+> >  
+> > ......
+> >
+> > diff --git a/include/linux/pci.h b/include/linux/pci.h
+> > index add9368e6314..259812620d4d 100644
+> > --- a/include/linux/pci.h
+> > +++ b/include/linux/pci.h
+> > @@ -318,6 +318,33 @@ struct pci_sriov;
+> >  struct pci_p2pdma;
+> >  struct rcec_ea;
+> >  
+> > +struct pcie_capability_regs {
+> > +	u8 pcie_cap_id;
+> > +	u8 next_cap_ptr;
+> > +	u16 pcie_caps;
+> > +	u32 device_caps;
+> > +	u16 device_control;
+> > +	u16 device_status;
+> > +	u32 link_caps;
+> > +	u16 link_control;
+> > +	u16 link_status;
+> > +	u32 slot_caps;
+> > +	u16 slot_control;
+> > +	u16 slot_status;
+> > +	u16 root_control;
+> > +	u16 root_caps;
+> > +	u32 root_status;
+> > +	u32 device_caps_2;
+> > +	u16 device_control_2;
+> > +	u16 device_status_2;
+> > +	u32 link_caps_2;
+> > +	u16 link_control_2;
+> > +	u16 link_status_2;
+> > +	u32 slot_caps_2;
+> > +	u16 slot_control_2;
+> > +	u16 slot_status_2;
+> > +};
+> > +
+> IIUC, this struct is only used drivers/acpi/apei/ghes.c . Why not define it in that file?
 
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+You are right. Whenever we need it elsewhere, we can move it to the
+header file anyway.
 
+> >  /* The pci_dev structure describes PCI devices */
+> >  struct pci_dev {
+> >  	struct list_head bus_list;	/* Node in per-bus list */
+> 
+> -- 
+> Sathyanarayanan Kuppuswamy
+> Linux Kernel Developer
+> 
+
+--
 Best regards,
-Krzysztof
-
+Wang, Qingshun
 
