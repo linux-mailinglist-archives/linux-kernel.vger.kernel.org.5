@@ -1,138 +1,174 @@
-Return-Path: <linux-kernel+bounces-46851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46852-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A7AD84456B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:59:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B674B844571
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 18:00:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DBD01C20983
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:59:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E41B295C90
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:00:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA05F12BF1C;
-	Wed, 31 Jan 2024 16:59:11 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9449512AAD1
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 16:59:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6060212BF22;
+	Wed, 31 Jan 2024 17:00:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dy0if5zj"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E87118E03
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:00:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706720351; cv=none; b=rLIzunYYnhh/QgvHmSSkK2yC3BR/nlBdhqVgA2OyHDknH0/WAAcy8IsGHOboCML7qD+/JTQE+klEz4V3wyPlZh0RrEv/zUO0MYmLTg4xbzngCXu51wXjattSzxzwqLlCZep2gv3L6YChrz0la/pwA2DjRzK0nDfCkHTkSkTsMCE=
+	t=1706720423; cv=none; b=U9Mtmv+XlPuZG6wwY4hKO/CV8yPUOjniwqdz1yQI/jL/MQMg7Wrq+svkhyDZgteX7AQXCZqztx7nnoDLYUc6pbQ2IS8vJR65Ojyi07xfag2P6caU6bngHKXoEAqRHkhu5R5BOIjt8rEhRKlpIYOCpg4XNKr7ZvMi8mGYXf4aHo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706720351; c=relaxed/simple;
-	bh=GjVWMfDZ6tvNQI5J0g8k01qf+gu5mZITKfSXLDmab8I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ndr4Mj5DsFaGTLJunxJbNjaCa/dEDehtu4paa64hf+YQyNI10dgkLTiHRF1zdrC30fUBuaXa0ZNfItDzN6wJua5vbh7q//cWkKr7mVZ92JNmjaVrVx5J+E5jFzw21SVQ6OSIY79x4G2HK3gFMiZz/U3JtN9BS0TxIfUC6v8of94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 098CFDA7;
-	Wed, 31 Jan 2024 08:59:52 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 886B13F762;
-	Wed, 31 Jan 2024 08:59:07 -0800 (PST)
-Message-ID: <c68f8b00-c5df-45e1-b75a-f86ce128ddf0@arm.com>
-Date: Wed, 31 Jan 2024 16:59:05 +0000
+	s=arc-20240116; t=1706720423; c=relaxed/simple;
+	bh=2RyS7nzzw3f0XKhSp4p2AfaSztdcwlpSoIFtns/Ns9U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kvIL59K6iuq+3ZjTxW/mh6dxK+K1zjMArlucBhBkIUOKx7gyNd7rURa4rGt5p//YEWfqx3TwYugQW1Ob6JPk3xn2sAlqtx6vIl8NM/giONIh44qceFgcQ4inztvOCovgkI2qjBiET0pT5OzhpVrH9j7bK/E+UpA/Bhv6Y/bEoEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dy0if5zj; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d746856d85so30270345ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 09:00:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706720421; x=1707325221; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+pv98UMrrD1uW+PtrLRbSYOmRry5NiuDSVY0gdAUrGQ=;
+        b=dy0if5zjYGE7Gu3riC3YtuW0Mepf0/drGJwQTYT8PBRVYm3tdEJ4BQQwFnABpBC3Hn
+         sgm/KkVDtogAYvaIeU2X2IU1tlI/N7CIXplKyawyUoTvR5d2tCw2qivPP/AlfJpmKHlk
+         CXBf8e5XSVcspGWbZuTMDgitHWR2rx5E5bkvbht7abDsw/gEdyLVLu8+jDcImDhKSeoa
+         PyTKml9YvF+16Z62UOKnqms4KADJk5brct16cPWyEeZkQX+9ZP5acVMJKeuJ6idR4lIp
+         Z5GXpta2ceqxzif1TGdhWb3myYZ/kLQJ+bQ5USHPfgk5zMpIS2iZ1XSJo+cx+UKrF3QX
+         Gcqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706720421; x=1707325221;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+pv98UMrrD1uW+PtrLRbSYOmRry5NiuDSVY0gdAUrGQ=;
+        b=eMICaaqLA/FIS5UPnwwPI3anuOTmR42sDr6UgNrKA6gIJUI8Ql3gkt9xXlu/n/uzMI
+         5xIpYqyPBknbykxFcHtHbCUK8BPHB1HpZHIn4OyHTD6kXJRCBWVYClpxMwXBEpgt6O6b
+         cFQ3gmhuhn+A86SDp2wKNFcFxi0m2KmFcsZHLCAPyjXbywB993ADpOv/NJq0jJ9XoiF+
+         2Vxwrq3b8jDLk8OwnnZvGPj3B8nV8Qb+jpMkCDvXKcwdTuuBKrUeLd7rtE5xS/KQbB1V
+         +JnQu4LjZRUTCogkYaA8t9S5asZyjyeL4SCnD1s+tqQ6pLSmBqMfERNIut7Tkfp7SoPU
+         BDyQ==
+X-Gm-Message-State: AOJu0YxAPQvi6f01zJ8K/zBJpcEp18axJGZWZ35kiAGfX1ueO7r8c4IW
+	kbU4SjMMn/G39P+DKFF+91c4frE01+3D+DQ8tZeZHMzxzytex1QzIKDSJl4hfLs=
+X-Google-Smtp-Source: AGHT+IE4ynvsW1KIbCJQWwkDLRCwbqOv4YaHNy6bffIhajIxJBhYJ8dQzmJ1qoX+MBmdIf0Vsm3Aqg==
+X-Received: by 2002:a17:903:25ca:b0:1d8:f39b:8a5f with SMTP id jc10-20020a17090325ca00b001d8f39b8a5fmr2038900plb.62.1706720421141;
+        Wed, 31 Jan 2024 09:00:21 -0800 (PST)
+Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
+        by smtp.gmail.com with ESMTPSA id v19-20020a170902d09300b001d8d0487edbsm6512234plv.223.2024.01.31.09.00.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 09:00:20 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 31 Jan 2024 07:00:03 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Cestmir Kalina <ckalina@redhat.com>,
+	Alex Gladkov <agladkov@redhat.com>
+Subject: Re: [RFC PATCH 3/3] workqueue: Enable unbound cpumask update on
+ ordered workqueues
+Message-ID: <Zbp8k1mbKuujC94q@slm.duckdns.org>
+References: <20240130183336.511948-1-longman@redhat.com>
+ <20240130183336.511948-4-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] dt-bingdings: perf: Support uncore ARM NI-700 PMU
-Content-Language: en-GB
-To: =?UTF-8?B?WWFuZyBKaWFsb25nIOadqOS9s+m+mQ==?= <jialong.yang@shingroup.cn>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, will
- <will@kernel.org>, "mark.rutland" <mark.rutland@arm.com>
-Cc: shenghui.qu@shingroup.cn, =?UTF-8?B?6LW15Y+v?= <ke.zhao@shingroup.cn>,
- zhijie.ren@shingroup.cn, linux-kernel@vger.kernel.org,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
- Jonathan Cameron <jonathan.cameron@huawei.com>
-References: <20240131065953.9634-1-jialong.yang@shingroup.cn>
- <e7bf16fc-b12d-47eb-9197-0694e6829ac8@linaro.org>
- <02B995F774AB7A9D+adfd0934-00cb-4dc3-8bf8-058b83dc2fbb@shingroup.cn>
- <ebbc9d73-9be2-49ae-98f3-0d71ce624ee4@linaro.org>
- <873A6CC450C1D0E6+75a39d6c-4fbf-4e30-8630-3226bd725901@shingroup.cn>
- <b99efbd4-7c12-485d-8688-a4ec606f0cf5@linaro.org>
- <EC1445AF2C5DB6F4+64772ecd-5e7a-42bb-aaa8-bc2857b2ab8b@shingroup.cn>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <EC1445AF2C5DB6F4+64772ecd-5e7a-42bb-aaa8-bc2857b2ab8b@shingroup.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240130183336.511948-4-longman@redhat.com>
 
-On 31/01/2024 10:18 am, Yang Jialong 杨佳龙 wrote:
-> 
-> 
-> 在 2024/1/31 18:16, Krzysztof Kozlowski 写道:
->> On 31/01/2024 11:13, Yang Jialong 杨佳龙 wrote:
->>>
->>>
->>> 在 2024/1/31 17:30, Krzysztof Kozlowski 写道:
->>>> On 31/01/2024 10:26, Yang Jialong 杨佳龙 wrote:
->>>>>
->>>>>
->>>>> 在 2024/1/31 15:49, Krzysztof Kozlowski 写道:
->>>>>> On 31/01/2024 07:59, JiaLong.Yang wrote:
->>>>>>> Add file corresponding to hx_arm_ni.c introducing ARM NI-700 PMU 
->>>>>>> driver
->>>>>>> for HX.
->>>>>>>
->>>>>>> Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
->>>>>>> ---
->>>>>>> v1 --> v2:
->>>>>>> 1. Submit dt-bindings file Seperately.
->>>>>>
->>>>>> Where is the driver?
->>>>>>
->>>>>> Please read:
->>>>>> https://elixir.bootlin.com/linux/v6.8-rc2/source/Documentation/process/submitting-patches.rst
->>>>>> before posting.
->>>>>>
->>>>
->>>> Keep all discussions public.
->>>
->>> Get.
->>>
->>>>
->>>>
->>>>>>> +  pccs-id:
->>>>>>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>>>>>> +    description: Used to identify NIs in system which has more than
->>>>>>> +      one NI.
->>>>>>
->>>>>> No, reg does it. Drop the property. Anyway you miss here vendor 
->>>>>> prefix
->>>>>> and proper explanation.
->>>>>>
->>>>>
->>>>> reg will tell phy address. Phy address is too long. I just want a id.
->>>>> example: perf stat -a -e ni_pmu_${pccs-id}/cycles/
->>>>> I will use it in user space. Not only in driver.
->>>>
->>>> Custom vendor property is not for that purpose. Use for example IDR, DT
->>>> aliases or something else.
->>>>
->>>>
->>>
->>> I have considered TD aliases. It's not very easy. Two places...
->>> IDR.. I have tested. But it chouldn't correspond to the HWs.
->>> I need it to identify NIs.
->>> DT aliases is reachable. But no very easy.
->>
->> Except that "you want" I did not see any rationale, any argument
->> explaining why this is needed and why this has to be present.
-> 
-> OK. DT aliases it good.
+Hello,
 
-The real way to address that particular issue is to fix perf to properly 
-associate the PMU device with the underlying hardware device. Jonathan 
-had a series doing that[1], but I'm not sure what its status is now.
+On Tue, Jan 30, 2024 at 01:33:36PM -0500, Waiman Long wrote:
+> +/* requeue the work items stored in wq->o_list */
+> +static void requeue_ordered_works(struct workqueue_struct *wq)
+> +{
+> +	LIST_HEAD(head);
+> +	struct work_struct *work, *next;
+> +
+> +	raw_spin_lock_irq(&wq->o_lock);
+> +	if (list_empty(&wq->o_list))
+> +		goto unlock_out;	/* No requeuing is needed */
+> +
+> +	list_splice_init(&wq->o_list, &head);
+> +	raw_spin_unlock_irq(&wq->o_lock);
+> +
+> +	/*
+> +	 * Requeue the first batch of work items. Since it may take a while
+> +	 * to drain the old pwq and update the workqueue attributes, there
+> +	 * may be a rather long list of work items to process. So we allow
+> +	 * queue_work() callers to continue putting their work items in o_list.
+> +	 */
+> +	list_for_each_entry_safe(work, next, &head, entry) {
+> +		list_del_init(&work->entry);
+> +		local_irq_disable();
+> +		__queue_work_rcu_locked(WORK_CPU_UNBOUND, wq, work);
+> +		local_irq_enable();
+> +	}
+> +
+> +	/*
+> +	 * Now check if there are more work items queued, if so set ORD_WAIT
+> +	 * and force incoming queue_work() callers to busy wait until the 2nd
+> +	 * batch of work items have been properly requeued. It is assumed
+> +	 * that the 2nd batch should be much smaller.
+> +	 */
+> +	raw_spin_lock_irq(&wq->o_lock);
+> +	if (list_empty(&wq->o_list))
+> +		goto unlock_out;
+> +	WRITE_ONCE(wq->o_state, ORD_WAIT);
+> +	list_splice_init(&wq->o_list, &head);
+> +	raw_spin_unlock(&wq->o_lock);	/* Leave interrupt disabled */
+> +	list_for_each_entry_safe(work, next, &head, entry) {
+> +		list_del_init(&work->entry);
+> +		__queue_work_rcu_locked(WORK_CPU_UNBOUND, wq, work);
+> +	}
+> +	WRITE_ONCE(wq->o_state, ORD_NORMAL);
+> +	local_irq_enable();
+> +	return;
+> +
+> +unlock_out:
+> +	WRITE_ONCE(wq->o_state, ORD_NORMAL);
+> +	raw_spin_unlock_irq(&wq->o_lock);
+> +}
 
-Thanks,
-Robin.
+I'm not a big fan of this approach. It's a rather big departure from how
+things are usually done in workqueue. I'd much prefer sth like the
+following:
 
-[1] 
-https://lore.kernel.org/linux-arm-kernel/20230404134225.13408-1-Jonathan.Cameron@huawei.com/
+- Add the ability to mark an unbound pwq plugged. If plugged,
+   pwq_tryinc_nr_active() always fails.
+
+- When cpumasks need updating, set max_active of all ordered workqueues to
+  zero and flush them. Note that if you set all max_actives to zero (note
+  that this can be another "plug" flag on the workqueue) first, all the
+  ordered workqueues would already be draining, so calling flush_workqueue()
+  on them sequentially shouldn't take too long.
+
+- Do the normal pwq allocation and linking but make sure that all new
+  ordered pwqs start plugged.
+
+- When update is done, restore the max_actives on all ordered workqueues.
+
+- New work items will now get queued to the newest dfl_pwq which is plugged
+  and we know that wq->pwqs list contain pwqs in reverse creation order. So,
+  from pwq_release_workfn(), if the pwq being released is for an ordered
+  workqueue and not plugged, unplug the pwq right in front.
+
+This hopefully should be less invasive.
+
+Thanks.
+
+-- 
+tejun
 
