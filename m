@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-45671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-45672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 223028433D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 03:27:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 033368433D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 03:27:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2EAF28D906
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:27:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 283CF1C2490B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 02:27:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9464F4FC;
-	Wed, 31 Jan 2024 02:26:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41A0E16439;
+	Wed, 31 Jan 2024 02:26:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SqXjpqcx"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KCTTNSX5"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 318CEFBED;
-	Wed, 31 Jan 2024 02:26:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A98163B3;
+	Wed, 31 Jan 2024 02:26:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706667998; cv=none; b=IwW2/OD7eSBoZe7X2Q1ahlI2CDsJitCPcsWXN6tbwpKsuIsF5cmAh/GEmclwpawwxsXr+NrbJSKtSh43UKVQ1lj3nrTsa2zrcuxJH5VzZP5FP7Rv8it35asDX2nT290RiAzxsg8HLhF1w3kWjLQ9yKhG3m2+0WZHe/Kxud/AFPE=
+	t=1706668000; cv=none; b=F4fVx8mqbmqKyjvdK+s/bUuHf8wYwgzr5xqp50gdw4+ypL/1wanSZC1CmulOOhrMsdMiuJTJy7kpSL2deUERWuJyiSO1rfrpTdwhELDcNCcZtTmFTQVFB0T1r5xvvhfuMiixzuciB+TI3yOVVFph8CE/lX0+kCDOrV0KQBnkY+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706667998; c=relaxed/simple;
-	bh=EWl5WJhyGhHQRYYPH3ZG3ozKOxHrsOuIxslPmZVW9No=;
+	s=arc-20240116; t=1706668000; c=relaxed/simple;
+	bh=OeobFr780bBe5eA+J54EIVdkiUd9gmXuzcsAf0kfdhs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZCRSEh4zOmss4HVkSmXu3uW/oZoyqcZZ7xCsroh1pg4Ptinp4tWVHinYhF3a/FzWrhvdAuhWyCzIRwjVtt20hN2QQDqDrTig5a5HJva/dlD8b1+hPsjry/Fwig7rtyhkjRC0OTp1RKdJKA3qUTpibQ3M/CRqs0Uf4Ew9NfBUpPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SqXjpqcx; arc=none smtp.client-ip=209.85.128.41
+	 MIME-Version; b=GhR8mVdgilVhVewP9GTiG/MikqKM71iKq4MNsBnrLREhrvcZWCZMh9ouC0/TLLBU0S9ux2IKYDC5mBL12OzRrRJOMpDe5eCwqM2rEEOAp75nhohIrYRHZ7K8LGjZNNcdCgOuM90efN5EIz87nWDgjfsqO9ZrmEK2Hvdl55LeVoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KCTTNSX5; arc=none smtp.client-ip=209.85.221.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40f02b8d176so10862115e9.1;
-        Tue, 30 Jan 2024 18:26:36 -0800 (PST)
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3394b892691so198110f8f.1;
+        Tue, 30 Jan 2024 18:26:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706667995; x=1707272795; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706667996; x=1707272796; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iD4Rxo3u2FKJPesJyRDxNog+LphdfZ0gkglhIxv3bHg=;
-        b=SqXjpqcxrks0531w27MSGU5zgEQoCo4vWpY1VZUtv4xZhZcez2swNFRhK3ZkRF+Bfp
-         uLHt6VeXMZ0pAFkr2TK8cGE9Qb1RRayZTOy2w8z9GYQLcFSdD3wP3/154EsvAWdKgEhF
-         gODxJWY3del5AXGwi65ZSP87N/20sm9l+D9cPzg4SRkpN5qbSEBo82B3iiIllPEz1Zq0
-         LE7gXLm1vB/xqrxbudzZ3EzLeq1FrMh04e7Tz2mBxi5+HYQ9H3Yy7m7y0nDrrP+zaeNL
-         GW2T0yvGUZKJi8+mGRloeu/OwHayt9eGTQdk0ser9GgKstIUeOUm8wI/S+5X934dZZpB
-         n6rA==
+        bh=coKSywo/h86OGWMRoq0sS8061xQ1pSjnMogvgE5DzXo=;
+        b=KCTTNSX5lnJ2OIptN7diNcmcowj+uBQ22CpAjnnIAC79YN6gxLGg9PFb0v+Z4JFXgP
+         q1ecfMUGDB4xaWiFMBybqVl/iKonu0+DKqL0SE2AsefhU7XZoeqgp8ZvYOgc4VU2hiRV
+         AYKPIZJmi11VnX36TeKwLbG+hMKzEJ+rXQQ++8rkM1nbDLOX60v79jOJhcrF+qI67CW5
+         oXHwTvT3H7YxmejTuaDB6vTc/GHIiA3XO/+z6OgHTJirMMNQcrK13I/J4fkof+DCSfET
+         SOaZknVuZEYiuvWQzXpmrgliYKjS/rMNl3j6FP76CcHv6Ux9TsSzko+NHWcmXnmbsINb
+         1oaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706667995; x=1707272795;
+        d=1e100.net; s=20230601; t=1706667996; x=1707272796;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iD4Rxo3u2FKJPesJyRDxNog+LphdfZ0gkglhIxv3bHg=;
-        b=ohGtt71Z9IU0LVtist/XteyCYcJ5Pyr8511R2N0ecrmZjAJm99jdhMWZ/naJ7rdaQ8
-         Wr7mmYbH4O1zLsO8C5cxxlQbm74m1g5oSBGS+2L3Wr7qV5mk73qPgSO9HLUbjDJelA74
-         pux9tsEFDGgUPRowwkJi0ojJO6OrHoijtcgGXtobqnCcqwvX6MmsDePE3f1Nod5icrt8
-         BUx55HiH/TcMMAOdTcn31gmbBwi/efYnt8KxeVWu56bXYw8UOLAmApk8M/5B+4tEDRdo
-         zZ1n6GZWgn/+C2OGVTjZENcY6LWaNvIcMTVeI69uwIjm7dDkLogZFWvvkJ5D5IJQ2wDW
-         fFxg==
-X-Gm-Message-State: AOJu0YwRbIiBfRqr0Pcxl1ZPyeNcx1qwNPPNw3zHptDXmcKHjQAJtyy0
-	auzjgnpCpKR9pkdAcjQcWRSqWKkKS1oLnph1q8z8Ws1/NCuQ6mF7
-X-Google-Smtp-Source: AGHT+IGSgXgTXkG3lfD32ROW9sJ2J8yuS6WwuxAlSGlz5k+csgshwEQfQI5rgMyCVbU/gf7s257jsg==
-X-Received: by 2002:a05:600c:4fc6:b0:40e:c2b8:ad3c with SMTP id o6-20020a05600c4fc600b0040ec2b8ad3cmr183006wmq.32.1706667995065;
-        Tue, 30 Jan 2024 18:26:35 -0800 (PST)
+        bh=coKSywo/h86OGWMRoq0sS8061xQ1pSjnMogvgE5DzXo=;
+        b=YxRExzDZy8aItGapt0CDq4CQ8jsBrtu2RJdeSpX+o6a8TqaX2oHu4y+kJbds9MsWUz
+         qOwAJCFadLavR4n3akpE9809PGYS9soKDsqOPLClndoGrOXR6uYssHqizkBBXfF4yphO
+         PrsYkQSE30dkNUURwo30BRQ2YqNkVP2mJ9l6XnRa3u24Kr6kZ9kcB55HGNDzKvgMz7Nw
+         Ayw43I9mciPdNPOofMqi/4/i29HRuYMH598VThxmuBG7Oqo3m2TqY1IzXm+m74xyQJSa
+         CGsqDT6KXJ1HoXNEPxBnLDUY8YvPfgiSA9ZhqMjB+DeHnCzGWFk5e/610zt4KdKHydR0
+         40vg==
+X-Gm-Message-State: AOJu0YyF0LWWfZbFusnNubFlmARbH/WjTL2AQAV0m8gjBXk891fjOUFn
+	OPzVnyWmvTGVL0Xp/wpln40gEhV7KbYjmqSuALQZ7p/S01rzPo+n
+X-Google-Smtp-Source: AGHT+IGdOPShEK1YaSwCU+UtgRE/nMJ1dy1F0FjkwcATAO87tMzzOk6LKLLQ/4qRDab1nJ8KA6XsEQ==
+X-Received: by 2002:a5d:4c49:0:b0:33a:e7d4:7fb9 with SMTP id n9-20020a5d4c49000000b0033ae7d47fb9mr2895091wrt.23.1706667996404;
+        Tue, 30 Jan 2024 18:26:36 -0800 (PST)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id f22-20020a7bc8d6000000b0040eea5dc778sm757722wml.1.2024.01.30.18.26.33
+        by smtp.googlemail.com with ESMTPSA id f22-20020a7bc8d6000000b0040eea5dc778sm757722wml.1.2024.01.30.18.26.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 18:26:34 -0800 (PST)
+        Tue, 30 Jan 2024 18:26:35 -0800 (PST)
 From: Christian Marangi <ansuelsmth@gmail.com>
 To: Andy Gross <agross@kernel.org>,
 	Bjorn Andersson <andersson@kernel.org>,
@@ -85,9 +85,9 @@ To: Andy Gross <agross@kernel.org>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Christian Marangi <ansuelsmth@gmail.com>
-Subject: [net-next PATCH v3 1/2] dt-bindings: net: ipq4019-mdio: document now supported clock-frequency
-Date: Wed, 31 Jan 2024 03:26:03 +0100
-Message-ID: <20240131022606.1532-2-ansuelsmth@gmail.com>
+Subject: [net-next PATCH v3 2/2] net: mdio: ipq4019: add support for clock-frequency property
+Date: Wed, 31 Jan 2024 03:26:04 +0100
+Message-ID: <20240131022606.1532-3-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240131022606.1532-1-ansuelsmth@gmail.com>
 References: <20240131022606.1532-1-ansuelsmth@gmail.com>
@@ -99,45 +99,207 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Document support for clock-frequency and add details on why this
-property is needed and what values are supported.
+The IPQ4019 MDIO internally divide the clock feed by AHB based on the
+MDIO_MODE reg. On reset or power up, the default value for the
+divider is 0xff that reflect the divider set to /256.
 
-From internal documentation, while other values are supported, the
-correct function of the MDIO bus is not assured hence add only the
-suggested supported values to the property enum.
+This makes the MDC run at a very low rate, that is, considering AHB is
+always fixed to 100Mhz, a value of 390KHz.
+
+This hasn't have been a problem as MDIO wasn't used for time sensitive
+operation, it is now that on IPQ807x is usually mounted with PHY that
+requires MDIO to load their firmware (example Aquantia PHY).
+
+To handle this problem and permit to set the correct designed MDC
+frequency for the SoC add support for the standard "clock-frequency"
+property for the MDIO node.
+
+The divider supports value from /1 to /256 and the common value are to
+set it to /16 to reflect 6.25Mhz or to /8 on newer platform to reflect
+12.5Mhz.
+
+To scan if the requested rate is supported by the divider, loop with
+each supported divider and stop when the requested rate match the final
+rate with the current divider. An error is returned if the rate doesn't
+match any value.
+
+On MDIO reset, the divider is restored to the requested value to prevent
+any kind of downclocking caused by the divider reverting to a default
+value.
+
+To follow 802.3 spec of 2.5MHz of default value, if divider is set at
+/256 and "clock-frequency" is not set in DT, assume nobody set the
+divider and try to find the closest MDC rate to 2.5MHz. (in the case of
+AHB set to 100MHz, it's 1.5625MHz)
+
+While at is also document other bits of the MDIO_MODE reg to have a
+clear idea of what is actually applied there.
+
+Documentation of some BITs is skipped as they are marked as reserved and
+their usage is not clear (RES 11:9 GENPHY 16:13 RES1 19:17)
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 ---
- .../bindings/net/qcom,ipq4019-mdio.yaml           | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ drivers/net/mdio/mdio-ipq4019.c | 109 ++++++++++++++++++++++++++++++--
+ 1 file changed, 103 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
-index 3407e909e8a7..0029e197a825 100644
---- a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
-+++ b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
-@@ -44,6 +44,21 @@ properties:
-     items:
-       - const: gcc_mdio_ahb_clk
+diff --git a/drivers/net/mdio/mdio-ipq4019.c b/drivers/net/mdio/mdio-ipq4019.c
+index abd8b508ec16..9d8f43b28aac 100644
+--- a/drivers/net/mdio/mdio-ipq4019.c
++++ b/drivers/net/mdio/mdio-ipq4019.c
+@@ -14,6 +14,20 @@
+ #include <linux/clk.h>
  
-+  clock-frequency:
-+    description:
-+      The MDIO bus clock that must be output by the MDIO bus hardware, if
-+      absent, the default hardware values are used.
+ #define MDIO_MODE_REG				0x40
++#define   MDIO_MODE_MDC_MODE			BIT(12)
++/* 0 = Clause 22, 1 = Clause 45 */
++#define   MDIO_MODE_C45				BIT(8)
++#define   MDIO_MODE_DIV_MASK			GENMASK(7, 0)
++#define     MDIO_MODE_DIV(x)			FIELD_PREP(MDIO_MODE_DIV_MASK, (x) - 1)
++#define     MDIO_MODE_DIV_1			0x0
++#define     MDIO_MODE_DIV_2			0x1
++#define     MDIO_MODE_DIV_4			0x3
++#define     MDIO_MODE_DIV_8			0x7
++#define     MDIO_MODE_DIV_16			0xf
++#define     MDIO_MODE_DIV_32			0x1f
++#define     MDIO_MODE_DIV_64			0x3f
++#define     MDIO_MODE_DIV_128			0x7f
++#define     MDIO_MODE_DIV_256			0xff
+ #define MDIO_ADDR_REG				0x44
+ #define MDIO_DATA_WRITE_REG			0x48
+ #define MDIO_DATA_READ_REG			0x4c
+@@ -26,9 +40,6 @@
+ #define MDIO_CMD_ACCESS_CODE_C45_WRITE	1
+ #define MDIO_CMD_ACCESS_CODE_C45_READ	2
+ 
+-/* 0 = Clause 22, 1 = Clause 45 */
+-#define MDIO_MODE_C45				BIT(8)
+-
+ #define IPQ4019_MDIO_TIMEOUT	10000
+ #define IPQ4019_MDIO_SLEEP		10
+ 
+@@ -41,6 +52,7 @@ struct ipq4019_mdio_data {
+ 	void __iomem	*membase;
+ 	void __iomem *eth_ldo_rdy;
+ 	struct clk *mdio_clk;
++	unsigned int mdc_rate;
+ };
+ 
+ static int ipq4019_mdio_wait_busy(struct mii_bus *bus)
+@@ -203,6 +215,38 @@ static int ipq4019_mdio_write_c22(struct mii_bus *bus, int mii_id, int regnum,
+ 	return 0;
+ }
+ 
++static int ipq4019_mdio_set_div(struct ipq4019_mdio_data *priv)
++{
++	unsigned long ahb_rate;
++	int div;
++	u32 val;
 +
-+      MDC rate is feed by an external clock (fixed 100MHz) and is divider
-+      internally. The default divider is /256 resulting in the default rate
-+      applied of 390KHz.
++	/* If we don't have a clock for AHB use the fixed value */
++	ahb_rate = IPQ_MDIO_CLK_RATE;
++	if (priv->mdio_clk)
++		ahb_rate = clk_get_rate(priv->mdio_clk);
 +
-+      To follow 802.3 standard that instruct up to 2.5MHz by default, if
-+      this property is not declared and the divider is set to /256, by
-+      default 1.5625Mhz is select.
-+    enum: [ 390625, 781250, 1562500, 3125000, 6250000, 12500000 ]
-+    default: 1562500
++	/* MDC rate is ahb_rate/(MDIO_MODE_DIV + 1)
++	 * While supported, internal documentation doesn't
++	 * assure correct functionality of the MDIO bus
++	 * with divider of 1, 2 or 4.
++	 */
++	for (div = 8; div <= 256; div *= 2) {
++		/* The requested rate is supported by the div */
++		if (priv->mdc_rate == DIV_ROUND_UP(ahb_rate, div)) {
++			val = readl(priv->membase + MDIO_MODE_REG);
++			val &= ~MDIO_MODE_DIV_MASK;
++			val |= MDIO_MODE_DIV(div);
++			writel(val, priv->membase + MDIO_MODE_REG);
 +
- required:
-   - compatible
-   - reg
++			return 0;
++		}
++	}
++
++	/* The requested rate is not supported */
++	return -EINVAL;
++}
++
+ static int ipq_mdio_reset(struct mii_bus *bus)
+ {
+ 	struct ipq4019_mdio_data *priv = bus->priv;
+@@ -225,10 +269,58 @@ static int ipq_mdio_reset(struct mii_bus *bus)
+ 		return ret;
+ 
+ 	ret = clk_prepare_enable(priv->mdio_clk);
+-	if (ret == 0)
+-		mdelay(10);
++	if (ret)
++		return ret;
+ 
+-	return ret;
++	mdelay(10);
++
++	/* Restore MDC rate */
++	return ipq4019_mdio_set_div(priv);
++}
++
++static void ipq4019_mdio_select_mdc_rate(struct platform_device *pdev,
++					 struct ipq4019_mdio_data *priv)
++{
++	unsigned long ahb_rate;
++	int div;
++	u32 val;
++
++	/* MDC rate defined in DT, we don't have to decide a default value */
++	if (!of_property_read_u32(pdev->dev.of_node, "clock-frequency",
++				  &priv->mdc_rate))
++		return;
++
++	/* If we don't have a clock for AHB use the fixed value */
++	ahb_rate = IPQ_MDIO_CLK_RATE;
++	if (priv->mdio_clk)
++		ahb_rate = clk_get_rate(priv->mdio_clk);
++
++	/* Check what is the current div set */
++	val = readl(priv->membase + MDIO_MODE_REG);
++	div = FIELD_GET(MDIO_MODE_DIV_MASK, val);
++
++	/* div is not set to the default value of /256
++	 * Probably someone changed that (bootloader, other drivers)
++	 * Keep this and don't overwrite it.
++	 */
++	if (div != MDIO_MODE_DIV_256) {
++		priv->mdc_rate = DIV_ROUND_UP(ahb_rate, div + 1);
++		return;
++	}
++
++	/* If div is /256 assume nobody have set this value and
++	 * try to find one MDC rate that is close the 802.3 spec of
++	 * 2.5MHz
++	 */
++	for (div = 256; div >= 8; div /= 2) {
++		/* Stop as soon as we found a divider that
++		 * reached the closest value to 2.5MHz
++		 */
++		if (DIV_ROUND_UP(ahb_rate, div) > 2500000)
++			break;
++
++		priv->mdc_rate = DIV_ROUND_UP(ahb_rate, div);
++	}
+ }
+ 
+ static int ipq4019_mdio_probe(struct platform_device *pdev)
+@@ -252,6 +344,11 @@ static int ipq4019_mdio_probe(struct platform_device *pdev)
+ 	if (IS_ERR(priv->mdio_clk))
+ 		return PTR_ERR(priv->mdio_clk);
+ 
++	ipq4019_mdio_select_mdc_rate(pdev, priv);
++	ret = ipq4019_mdio_set_div(priv);
++	if (ret)
++		return ret;
++
+ 	/* The platform resource is provided on the chipset IPQ5018 */
+ 	/* This resource is optional */
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
 -- 
 2.43.0
 
