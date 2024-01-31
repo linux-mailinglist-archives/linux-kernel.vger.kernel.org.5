@@ -1,178 +1,154 @@
-Return-Path: <linux-kernel+bounces-47181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47183-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23585844A35
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:40:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D754844A39
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 22:41:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D26132888BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:40:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A8CA1C23EF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 21:41:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 912E439FEB;
-	Wed, 31 Jan 2024 21:40:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E76539AF1;
+	Wed, 31 Jan 2024 21:40:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="fOC//W4u"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="vhywtnwT"
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07FC139AD5;
-	Wed, 31 Jan 2024 21:39:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94AD739ACA
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 21:40:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706737205; cv=none; b=SrNvB8ldP369edt93qyE3oAT/GUg/WDVpX3EwcPmeOxadjHTJ44dAbeCiJ6zrI9Q55WzljE6Nimr2ZDbjVtjV19avWg2ut+oxErPoNdamm8H14ZlqWGY1OX/jrbYnpAnBa8vXtSafZTrMXi5V2bLDFN52SIG7sHrjSI1jxPH8JY=
+	t=1706737249; cv=none; b=YgtU/uXA8XKfHUZb5q59GQB9KltGJId0+P5inh9d5sLOk+BmOZS39sAKXjM4VS0OjvgOBWFTiBqdknigjl+1NwPJM2fe0AEf5TG9/43Pm2UZhxjrz7ClThJHm2ZHJDxtfXpYVnuvkE8c4HwsOgvIAq1g3v0kvKR4zAFsB0dkwUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706737205; c=relaxed/simple;
-	bh=mE6IlMP08TpBgXOVDJUm71vva4w7+fEDZV65jtPKtXc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YwibD+Z+/v1bs6uMmkTlD4gvfntMN3EWbrldjhl2MraId/jE7SbsyOepiqb0C1WOSgVg3m0zjpmya7SahKwVedFlMY0N/Vv1yHKnxrx00XqHQKrTRD2IUAp/kKTgGgmRXLy1h4dhvQXz2/qKUfpGh5T+8trIkRDdwL1Fqo52bX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=fOC//W4u; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1706737197;
-	bh=mE6IlMP08TpBgXOVDJUm71vva4w7+fEDZV65jtPKtXc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=fOC//W4u0F5vbdt+tU+rP15v/l0o/+CnIg+Ydp5bcNwGYw9ud2JP/HNwuD+X2eYWY
-	 AXE0QkkFuowfQF/N5KDNWKA1OtehwKwu++g42TntpSKmR0HWSQ8OE00hj0DK1lZL18
-	 0noEqFv4pzYCqQ+J9lGKMSW8o44r71joP5nDgCjEpRokBxY0mzIcRAvO9I+M5X6Nje
-	 0/WsjNt0cTRRaf74shtLNuDJXD/6td2e/pOr42o6HxQ8MWLaI1gQRslqQNLtk7faOo
-	 2+zPZgyGqKquMsySa1E3H6j3vwxgx0Tn5FOmPizhrqqkpYnf8Hg+OKkQ2KbcVBQ7P1
-	 HUgiw7TX/NJTg==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TQFn93W8xzX1V;
-	Wed, 31 Jan 2024 16:39:57 -0500 (EST)
-Message-ID: <0a38176b-c453-4be0-be83-f3e1bb897973@efficios.com>
-Date: Wed, 31 Jan 2024 16:39:57 -0500
+	s=arc-20240116; t=1706737249; c=relaxed/simple;
+	bh=T402gfDyzXVtmo/oZ0m9qcfgfnOlOaxqSbRV+G64Ecg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=l5ETwLL7OtyUqFYjyp2o7rXLMmLA9HIv5vmtRvmoBQfhQOW5SvXdpgjyvoX4CRm2bUUcoxLBA36hkcJQQdiW/jI1q1YopKSiZ4hsJQ3QkM+u4M3BmNwl6MgzxKFCV0xGWE/4XQmEozHV4689FwS9u8j9pgagrjrJnrDoASMGvfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=vhywtnwT; arc=none smtp.client-ip=209.85.222.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-781753f52afso16783685a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 13:40:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1706737245; x=1707342045; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Knxj9uv4iZ1dgBHeg4EtTaZgAoXlIxg9l8W0a+giSJM=;
+        b=vhywtnwTuc9RakhLiZheE9wwv3V24jhKA2luXPUmble72pN0MPDNVJNdW4e9VZVBQ8
+         2g5YtgMCj1KpS7GXFVdN4QSM8xxE+7q6FX7lp4Dqv4BoeZk9B6mu3pC56rWcU7IzSu1Q
+         aJ3sR/0aq0Pw//XUZNsPdrJaDlPoCT61z20orp6U36OiUsCJQEcKCcRk35C4eCF+aQQk
+         e6zwopHAVIjEjbXG8Nl2bJjabaF6CJDG/8z6PjGtUDdTnV6YbdJpvDnElFtrI+K19yoM
+         zstaJSB9h1CtdMXWJn4Poen6vdXm0UW4PRVOq70RxHkdAESAVP7ybISLBnEWm3USqTb7
+         wLmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706737245; x=1707342045;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Knxj9uv4iZ1dgBHeg4EtTaZgAoXlIxg9l8W0a+giSJM=;
+        b=FWsV2Uv57G35GyqSH9lDiYS4hcr3fYiewsSZnStfSIFYwBDGdPJ4l4OgaTGFS39ruo
+         2wcYvnfSZTheI6mkhwRLytm01gM+0rQPwNs36n/Z8lOodA9qQPg7lKcHiePxjvJRo9MP
+         0DbqeYwdG5+2L7TQ3QO/CAcSebjV/Hgyp56kGEhWrGdYU4sx62Pa0jwrkQxxjzvKFhlS
+         VUvptySyp2W1A757GgkjnV+MWNxwowKS8hIUP9zQaog2FcdAg1Vg5ahEQ7kWcYdqwMF3
+         FmkYdL9Q9BcaeIT1rq1O+vVuuQJv7bHzuOQpMeNnwC6k8u9/sLmgJoi5RcxdJOTv48lW
+         tssg==
+X-Gm-Message-State: AOJu0YwkdPjaoVrNLp7FEocbbP82kJhGJlzPrbZ/5cxxOdntgeGa+UiD
+	2JcZFqD/61Nkj0ZXwPiE4vUU2Tw6gPhfDSvLKcVNxQCgIXf6YsgAQsU+TwZpkx8=
+X-Google-Smtp-Source: AGHT+IH//FtR5pU/FvoNykuJnaaFodVtnbBuyvND4LKvSIV3uPOqqJuM+XClfFfjusxFg5hSItim4A==
+X-Received: by 2002:a05:620a:13cd:b0:783:81c7:fb75 with SMTP id g13-20020a05620a13cd00b0078381c7fb75mr666629qkl.67.1706737245495;
+        Wed, 31 Jan 2024 13:40:45 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUa/5saWV0RbshTbvr43QC/fkrGL4QuqVlfgMyHHE81mXU7LaMchz8kJvhTcfQkpxd/3he9NsDfHpfQVKeSxKmH9L/LQf5tJVk46peChycwPPzVZI6ioBpZHKYp3oCIIdvi4mvjPnZNd5uc5q3WY09EYQooEcBO6Q7brVTolECZSaL4hagp5AkIChW4UQkx8lgtdzbX5cAb1h7smPKCrR1G1CzMRASGg2sDZ8QR7WUbCQTuMo6XwaTFcA3CCQ9Nlgb8jehZczvTRQIxGno10G8a7wBMisX2YKmcsr/Yrw09SKH++O8JD5bJOhIFS8gBbKZq7sRT5eDuHq8/8c+0VgY=
+Received: from workbox.taildc8f3.ts.net (d24-150-219-207.home.cgocable.net. [24.150.219.207])
+        by smtp.gmail.com with ESMTPSA id br44-20020a05620a462c00b007853f040aedsm537160qkb.8.2024.01.31.13.40.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 13:40:45 -0800 (PST)
+From: Trevor Gamblin <tgamblin@baylibre.com>
+To: linux-pwm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	u.kleine-koenig@pengutronix.de,
+	michael.hennerich@analog.com,
+	nuno.sa@analog.com,
+	devicetree@vger.kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	Trevor Gamblin <tgamblin@baylibre.com>
+Subject: [PATCH 0/2 v3] pwm: add axi-pwm-gen driver
+Date: Wed, 31 Jan 2024 16:40:39 -0500
+Message-ID: <20240131214042.1335251-1-tgamblin@baylibre.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 2/4] dax: Check for data cache aliasing at runtime
-To: Dan Williams <dan.j.williams@intel.com>, Arnd Bergmann <arnd@arndb.de>,
- Dave Chinner <david@fromorbit.com>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
- linux-arch@vger.kernel.org, Vishal Verma <vishal.l.verma@intel.com>,
- Dave Jiang <dave.jiang@intel.com>, Matthew Wilcox <willy@infradead.org>,
- Russell King <linux@armlinux.org.uk>, nvdimm@lists.linux.dev,
- linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- dm-devel@lists.linux.dev
-References: <20240131162533.247710-1-mathieu.desnoyers@efficios.com>
- <20240131162533.247710-3-mathieu.desnoyers@efficios.com>
- <65bab567665f3_37ad2943c@dwillia2-xfh.jf.intel.com.notmuch>
-Content-Language: en-US
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <65bab567665f3_37ad2943c@dwillia2-xfh.jf.intel.com.notmuch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 2024-01-31 16:02, Dan Williams wrote:
-> Mathieu Desnoyers wrote:
->> Replace the following fs/Kconfig:FS_DAX dependency:
->>
->>    depends on !(ARM || MIPS || SPARC)
->>
->> By a runtime check within alloc_dax().
->>
->> This is done in preparation for its use by each filesystem supporting
->> the "dax" mount option to validate whether DAX is indeed supported.
->>
->> This is done in preparation for using cpu_dcache_is_aliasing() in a
->> following change which will properly support architectures which detect
->> data cache aliasing at runtime.
->>
->> Fixes: d92576f1167c ("dax: does not work correctly with virtual aliasing caches")
->> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: Linus Torvalds <torvalds@linux-foundation.org>
->> Cc: linux-mm@kvack.org
->> Cc: linux-arch@vger.kernel.org
->> Cc: Dan Williams <dan.j.williams@intel.com>
->> Cc: Vishal Verma <vishal.l.verma@intel.com>
->> Cc: Dave Jiang <dave.jiang@intel.com>
->> Cc: Matthew Wilcox <willy@infradead.org>
->> Cc: Arnd Bergmann <arnd@arndb.de>
->> Cc: Russell King <linux@armlinux.org.uk>
->> Cc: nvdimm@lists.linux.dev
->> Cc: linux-cxl@vger.kernel.org
->> Cc: linux-fsdevel@vger.kernel.org
->> Cc: dm-devel@lists.linux.dev
->> ---
->>   drivers/dax/super.c | 6 ++++++
->>   fs/Kconfig          | 1 -
->>   2 files changed, 6 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/dax/super.c b/drivers/dax/super.c
->> index 0da9232ea175..e9f397b8a5a3 100644
->> --- a/drivers/dax/super.c
->> +++ b/drivers/dax/super.c
->> @@ -445,6 +445,12 @@ struct dax_device *alloc_dax(void *private, const struct dax_operations *ops)
->>   	dev_t devt;
->>   	int minor;
->>   
->> +	/* Unavailable on architectures with virtually aliased data caches. */
->> +	if (IS_ENABLED(CONFIG_ARM) ||
->> +	    IS_ENABLED(CONFIG_MIPS) ||
->> +	    IS_ENABLED(CONFIG_SPARC))
->> +		return NULL;
-> 
-> This function returns ERR_PTR(), not NULL on failure.
+This series adds support for the AXI PWM GEN subsystem found on FPGA IP
+cores. It can be used to generate configurable PWM outputs, and includes
+options for external synchronization and clock signals.  The work is
+being done on behalf of, and therefore lists maintainers from Analog
+Devices, Inc.
 
-Except that it returns NULL in the CONFIG_DAX=n case as you
-noticed below.
+The series has been tested on actual hardware using an EVAL-AD7985FMCZ
+evaluation board. An oscilloscope was used to validate that the
+generated PWM signal matched the requested one.
 
-> 
-> ...and I notice this mistake is also made in include/linux/dax.h in the
-> CONFIG_DAX=n case. That function also mentions:
-> 
->      static inline struct dax_device *alloc_dax(void *private,
->                      const struct dax_operations *ops)
->      {
->              /*
->               * Callers should check IS_ENABLED(CONFIG_DAX) to know if this
->               * NULL is an error or expected.
->               */
->              return NULL;
->      }
-> 
-> ...and none of the callers validate the result, but now runtime
-> validation is necessary. I.e. it is not enough to check
-> IS_ENABLED(CONFIG_DAX) it also needs to check cpu_dcache_is_aliasing().
+---
 
-If the callers select DAX in their Kconfig, then they don't have to
-explicitly check for IS_ENABLED(CONFIG_DAX). Things change for the
-introduced runtime check though.
+v3 changes:
+* Address feedback for driver in v2:
+  * Remove unnecessary blank line in axi_pwmgen_apply
+  * Use macros already defined in <linux/fpga/adi-axi-common.h> for
+    version checking
 
-> 
-> With that, there are a few more fixup places needed, pmem_attach_disk(),
-> dcssblk_add_store(), and virtio_fs_setup_dax().
+Link to v2: https://lore.kernel.org/linux-pwm/20240123220515.279439-1-tgamblin@baylibre.com/
 
-Which approach should we take then ? Should we:
+v2 changes:
+* Address feedback for driver and device tree in v1:
+  * Use more reasonable Kconfig approach
+  * Use common prefixes for all functions
+  * Rename axi_pwmgen struct to axi_pwmgen_ddata
+  * Change use of "pwm" to "ddata"
+  * Set and check state->polarity
+  * Multiply safely with mul_u64_u64_div_u64()
+  * Improve handling of max and zero periods
+  * Error if clk_rate_hz > NSEC_PER_SEC
+  * Add "Limitations" section at top of pwm-axi-pwmgen.c
+  * Don't disable outputs by default
+  * Remove unnecessary macros for period, duty, offset
+  * Fix axi_pwmgen_ddata alignment
+  * Don't artificially limit npwm to four
+  * Use clk_rate_exclusive_get(), balance with clk_rate_exclusive_put()
+  * Cache clk rate in axi_pwmgen_ddata
+  * Don't assign pwm->chip.base, do assign pwm->chip.atomic
+  * Relocate "unevaluatedProperties" in device tree binding
+* Remove redundant calls to clk_get_rate
+* Test contents of AXI_PWMGEN_REG_CORE_MAGIC instead of
+  arbitrary AXI_PWMGEN_TEST_DATA in AXI_PWMGEN_REG_SCRATCHPAD
+* Remove redundant clk struct from axi_pwmgen_ddata
+* Add self as module author
+* Add major version check for IP core
 
-A) Keep returning NULL from alloc_dax() for both
-    cpu_dcache_is_aliasing() and CONFIG_DAX=n, and use IS_ERR_OR_NULL()
-    in the caller. If we do this, then the callers need to somehow
-    translate this NULL into a negative error value, or
+Link to v1: https://lore.kernel.org/linux-pwm/20240115201222.1423626-1-tgamblin@baylibre.com/
 
-B) Replace this NULL return value in both cases by a ERR_PTR() (which
-    error value should we return ?).
+Drew Fustini (2):
+  dt-bindings: pwm: Add AXI PWM generator
+  pwm: Add driver for AXI PWM generator
 
-I would favor approach B) which appears more robust and introduces
-fewer changes. If we go for that approach do we still need to change
-the callers ?
-
-Thanks,
-
-Mathieu
+ .../bindings/pwm/adi,axi-pwmgen.yaml          |  48 ++++
+ MAINTAINERS                                   |   9 +
+ drivers/pwm/Kconfig                           |  13 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-axi-pwmgen.c                  | 242 ++++++++++++++++++
+ 5 files changed, 313 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/adi,axi-pwmgen.yaml
+ create mode 100644 drivers/pwm/pwm-axi-pwmgen.c
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+2.43.0
 
 
