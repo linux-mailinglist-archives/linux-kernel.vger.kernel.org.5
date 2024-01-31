@@ -1,124 +1,131 @@
-Return-Path: <linux-kernel+bounces-46765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-46764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A9348443D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:12:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28E218443D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 17:12:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B22EA285E3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:12:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8891291369
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Jan 2024 16:12:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB6412AAE1;
-	Wed, 31 Jan 2024 16:12:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bkdUg28i"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6700912AAEB;
+	Wed, 31 Jan 2024 16:11:59 +0000 (UTC)
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [195.130.132.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B33D12AAC0
-	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 16:12:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7448212AAC0
+	for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 16:11:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706717537; cv=none; b=MYOJ04cqSNx+qnkzGVxgYZpV5253Qpg8pvDK+/1c3qzicS9zvK0h9EY0kYuHAZRM0Zd6THCWQJnAw8fl4/pMr52lQpeBG9SNW+T2Y2IlHYIYnyDV1mTNSV0fh2DVzBc2O11991k/UFzFYXbDO5b24TRUUGFP9Ts9gyA8Y8yx9EQ=
+	t=1706717519; cv=none; b=Q32jXt0wRWn7yhD3Hb0RVDAv/CGCtiD7nOgXKpAyFNQzL+iwBgoFN3v5/zqCBEHMEp6H1vYM2kIi8ZRVI01N8U8LgjirX2vrtg7vQ0jmvQdfm5CPi7ZwXKOTLbPkok4lzqlqb2EBMibqKmqZd1pqd+02p8CJk9Mwu4lC/zFI8gw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706717537; c=relaxed/simple;
-	bh=S1qTKH+/x2gUmwDwbwoq2bbAx6ywfZvkV7z45JdkYAI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LhauwpTPPCVe3ft+49iH/s/HgNMNw7N8YMSgXPreb7ajIEFZJrNsoocQK1akr8zbOb+DdseRJ16FqjHS1AghQatrXI/3naT5az1j21wB4+9T3jQYf3yymFrFi+Y6fhNCHvVq/Eoc04WDIbynYl7uCoRO4UuNbtKI8wA0PHon0Ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bkdUg28i; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706717535;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/GWpU8/PPvh6a0jaZSWCVPOPeuCzSthvQH0dRHb6u3M=;
-	b=bkdUg28iIqSjIzn3711LHI3k1tt9EH3NLtYj65Ccj+caydXDOlRgvVhWL2fKDtxiQFOfPB
-	p0BsdcY9uWbyT4wF+36kX3J7l8QNmFydsPDTpr9WI+jSrNVXIjlKhIT79TNCQuCn6b22Z0
-	Xd3QHheg5Ya0lXou0fsbI2bFl89o3dA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-1-sl97ymzFM4S9JRgbCSB_qA-1; Wed, 31 Jan 2024 11:12:10 -0500
-X-MC-Unique: sl97ymzFM4S9JRgbCSB_qA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E1EE7185A783;
-	Wed, 31 Jan 2024 16:12:09 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.249])
-	by smtp.corp.redhat.com (Postfix) with SMTP id A4CC73C2E;
-	Wed, 31 Jan 2024 16:12:08 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed, 31 Jan 2024 17:10:55 +0100 (CET)
-Date: Wed, 31 Jan 2024 17:10:53 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
-	Tycho Andersen <tycho@tycho.pizza>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/1] pidfd: implement PIDFD_THREAD flag for
- pidfd_open()
-Message-ID: <20240131161053.GC2609@redhat.com>
-References: <20240131132541.GA23632@redhat.com>
- <20240131141204.GA24130@redhat.com>
- <20240131-engel-entern-9b5c96659948@brauner>
+	s=arc-20240116; t=1706717519; c=relaxed/simple;
+	bh=etiQOCiZU9tDAlchggQr10q8COercMMXKaVDFoX+q74=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mKVTzUozpRh/ioDVcRhWRMjQxS41kDZp/WHmGUAJBoGJNDPcsskvY8paQLl28l/W+d08P6qz/2zTonsapUsCWjnqLXYQgMeTLrw+ICufRpTEBFcFJlp1O88/Pke+PW+iX0H5d7Jga9q/b25TZPRyB7FkfnikrSW57Q9luFcXVVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:88f0:c83b:bafa:cdc3])
+	by andre.telenet-ops.be with bizsmtp
+	id hUBq2B00N4efzLr01UBqR2; Wed, 31 Jan 2024 17:11:55 +0100
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rVDAw-00GrV5-9U;
+	Wed, 31 Jan 2024 17:11:50 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rVDBm-008lXe-Ht;
+	Wed, 31 Jan 2024 17:11:50 +0100
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: devicetree@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2] dt-bindings: timer: renesas,tmu: Document input capture interrupt
+Date: Wed, 31 Jan 2024 17:11:45 +0100
+Message-Id: <8cb38b5236213a467c6c0073f97ccc4bfd5a39ff.1706717378.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131-engel-entern-9b5c96659948@brauner>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+Content-Transfer-Encoding: 8bit
 
-On 01/31, Christian Brauner wrote:
->
-> On Wed, Jan 31, 2024 at 03:12:04PM +0100, Oleg Nesterov wrote:
-> >
-> > After this patch we can easily add another feature, pidfd_poll()
-> > can add, say, POLLHUP to poll_flags if the pid is "dead".
-> >
-> > So the user can do
-> >
-> > 	poll(pidfd, { .revents = POLLHUP });
-> >
-> > and it will block until release_task() is called and this pid is
-> > no longer in use (pid_task() == NULL).
-> >
-> > Do you think this can be useful?
->
-> Yeah, I think this is something that people would find useful. IIUC, it
-> would essentially allow them to do things like wait until a task has
-> been waited upon
+Some Timer Unit (TMU) instances with 3 channels support a fourth
+interrupt: an input capture interrupt for the third channel.
 
-Exactly.
+While at it, document the meaning of the four interrupts, and add
+"interrupt-names" for clarity.
 
-OK. I'll try to make the (hopefully simple) patch on top of this one
-on Friday, if Tycho agrees with V3. Will be busy tomorrow.
+Update the example to match reality.
 
-> * systemd completely relying on pidfds to manage services to guard
->   against any pid races.
-> * Extended dbus to allow authentication via pidfds.
-> * Extended policy kit to enable secure authentication of processes via pidfds.
-> * Language support for pidfds: Go, Rust etc.
-> * An endless number of tools that added support for them.
-> * glibc support for pidfd apis.
->
-> There's a bunch more. That literally obliterated whole bug classes.
+Inspired by a patch by Yoshinori Sato for SH.
 
-Thanks for this info!
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+v2:
+  - Reword interrupt descriptions.
 
-Not that I ever thouhgt that pidfd is "useless", not at all, but as I said
-(and as a Perl progammer ;) I simply do not know what people actually do with
-pidfds ;)
+The corresponding DTS updates can be found in series "[PATCH 0/2]
+ARM/arm64: dts: renesas: Improve TMU interrupt descriptions".
+https://lore.kernel.org/r/cover.1705325654.git.geert+renesas@glider.be
+Once the DTS updates are upstream, "interrupt-names" can be made
+required.
+---
+ .../devicetree/bindings/timer/renesas,tmu.yaml | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-Oleg.
+diff --git a/Documentation/devicetree/bindings/timer/renesas,tmu.yaml b/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
+index a67e427a9e7e22aa..84bbe15028a1de94 100644
+--- a/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
++++ b/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
+@@ -46,7 +46,19 @@ properties:
+ 
+   interrupts:
+     minItems: 2
+-    maxItems: 3
++    items:
++      - description: Underflow interrupt, channel 0
++      - description: Underflow interrupt, channel 1
++      - description: Underflow interrupt, channel 2
++      - description: Input capture interrupt, channel 2
++
++  interrupt-names:
++    minItems: 2
++    items:
++      - const: tuni0
++      - const: tuni1
++      - const: tuni2
++      - const: ticpi2
+ 
+   clocks:
+     maxItems: 1
+@@ -100,7 +112,9 @@ examples:
+             reg = <0xffd80000 0x30>;
+             interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
+                          <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>,
+-                         <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
++                         <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>,
++                         <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
++            interrupt-names = "tuni0", "tuni1", "tuni2", "ticpi2";
+             clocks = <&mstp0_clks R8A7779_CLK_TMU0>;
+             clock-names = "fck";
+             power-domains = <&sysc R8A7779_PD_ALWAYS_ON>;
+-- 
+2.34.1
 
 
