@@ -1,191 +1,206 @@
-Return-Path: <linux-kernel+bounces-47757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0280845269
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:09:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 621DD84526C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:09:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BB0F2931D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:08:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E116D1F22E93
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:09:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2012415B0E9;
-	Thu,  1 Feb 2024 08:07:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1583415A48F;
+	Thu,  1 Feb 2024 08:08:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="st/PS34M"
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2058.outbound.protection.outlook.com [40.107.13.58])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KUf9fVqL"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A3A915AADF;
-	Thu,  1 Feb 2024 08:07:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.13.58
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706774877; cv=fail; b=YJPQaJxUGgcI2X3rSHanX46+GDZmPtjBtDzLQqoEqcJZBJ1jJJEei/3fOGwFk9uYaGFNTUW2vRXnLdgJVvMvVP7eLodILVMY9kphuuZF1oVng/h3O3xt+oaxbbiCoafT00JjBLC8VcLnZUyYI72gefRYBbPl+tbcSHVie5dM8VE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706774877; c=relaxed/simple;
-	bh=ZRyTPWlVwo7mPBSPWx/RNJX4YLAeho0YclTfa8v5EOY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Nkmp/thYTsm3vxjJqf39J2k3OZMP7GUEfHH1jx4vhtjINy2/Gc6/lxkvk0JaoIKsxsJmPBXx2k1Bd54X4LCGdYkXOq8nT6lOKo47u/tu3Y2Ub/r+px/wa2h8hcI0jjgJcUfN93+IiZc7ONT+uH0PpEydDoJLI7xWSot/Je9zpY0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=st/PS34M; arc=fail smtp.client-ip=40.107.13.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VJdS30rc6Ngodb56e04NgYTlE71+sNf2GR07hNy2etNUQ7lWUdOcQfqnMRrSKoUq+TXqtCuTnrTfnPwSOaHe7T+a1RSOLedXwmYrKvI+UHsMHzdggoa7lTbruvv6kajP9JaeHueIm70sUW2EzbB0NXIXoAmU/NlLlwiWvyBsX+ugqoT7PJZPfv3uJ6xWnaiLOs0B4RPiKeVRMbxX6LHL/lkv6dlHd/UknG56LP6f1SyNh+9M0cA08v6CMeb+7HSNrf6AFFAGD5M5Ueq/BCjMDH4C4ot9XPhVAgfVOHJ3EZ/6SqOcketun5XNTqJsidju3U3eQOAZXYlzkXrmdF6Fmw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZRyTPWlVwo7mPBSPWx/RNJX4YLAeho0YclTfa8v5EOY=;
- b=BBAYlQvXclwN7wbiWGoT8bLt1lDj3aKkX1C4a919WZYtougqe0qIWItKULJHg/EZKyF0dUyH+l4Lvs5LUwnGB8tOidiv0nQ6qLFNVkVkqj4kD1dUzEgwwNwlRm7I020nqIuTqFNQUQErQnROcHpK13cUdfvUkqzRCdPAJfLpp5jIvevMrlUF9ENLikl40P256Ev8AWj0Y7IiOuQ+3qngwjN3XdeRd/kRuzI2zy5yyh/xLMKt3YlmVBIVgr2NR/qcn2hchM8jSKzf5e33G4Wt2oxcLmYgQ/iunCAEzFlZeOPzunR4Da7Sitr92dU3khGMR0lTUVo88nGMtZuqRvfWDA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZRyTPWlVwo7mPBSPWx/RNJX4YLAeho0YclTfa8v5EOY=;
- b=st/PS34Ml19aoBL47ANiHcPYOc4sh5ko1WsGWD3rU9UYz5FG9Xfwjsa+tyHqQOF8rL57NnyL7/VNX21ja/fdxm6Kik2Ftyids9XQO4z5HwjNhq0w8UQ0I5sRcMfg0z4T1mEx4OigkSnzYGMHujRwMemW6kzgB9xld4YiRPuOKxw=
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by DB9PR04MB8461.eurprd04.prod.outlook.com (2603:10a6:10:2cf::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.27; Thu, 1 Feb
- 2024 08:07:51 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::c499:8cef:9bb1:ced6]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::c499:8cef:9bb1:ced6%3]) with mapi id 15.20.7249.023; Thu, 1 Feb 2024
- 08:07:51 +0000
-From: Peng Fan <peng.fan@nxp.com>
-To: Sudeep Holla <sudeep.holla@arm.com>, "Peng Fan (OSS)"
-	<peng.fan@oss.nxp.com>, "cristian.marussi@arm.com" <cristian.marussi@arm.com>
-CC: Cristian Marussi <cristian.marussi@arm.com>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>, Linus Walleij
-	<linus.walleij@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
-	<s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-gpio@vger.kernel.org"
-	<linux-gpio@vger.kernel.org>, AKASHI Takahiro <takahiro.akashi@linaro.org>,
-	Rob Herring <robh@kernel.org>
-Subject: RE: [PATCH v3 0/6] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-Thread-Topic: [PATCH v3 0/6] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-Thread-Index: AQHaTFMXfSW/KLMkFECgD1P261LWWrDwxwIAgABBWYCABBu3YA==
-Date: Thu, 1 Feb 2024 08:07:51 +0000
-Message-ID:
- <DU0PR04MB94178FAC347A4500E9449ECB88432@DU0PR04MB9417.eurprd04.prod.outlook.com>
-References: <20240121-pinctrl-scmi-v3-0-8d94ba79dca8@nxp.com>
- <f88d07ef-83b2-4d14-976a-6dbbd71e036f@oss.nxp.com>
- <20240129163043.if5jj4kyacqfe2n5@bogus>
-In-Reply-To: <20240129163043.if5jj4kyacqfe2n5@bogus>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|DB9PR04MB8461:EE_
-x-ms-office365-filtering-correlation-id: 26cf52ae-a158-4536-f17e-08dc22fce2cf
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- OChOf3wnOAhEHYaYvaEgUoT0tTnMz39vbZSoBL8LPAbGube4pT8NC2bH5+bEhhTAjtZySgkFpyKdY/MaV14YFhVydnjTYzNEh2hUxWZyAOjmn8uOTJEbbGB9vRyB9z0e45O6xEgKEl70YvJ4td0N+bXnsryy3tmOKL5BJzuupxKA0DI45LoxpYj/FbDab/pNOSB1719q3aQ6TWiM2BgisTL1sXMju1ksAgzkKNdGwaK6cL2zE9JTmbzm7tqHIX3nPeGUH5CohZv2YP1fiHM93jjUHvuSz4DcavoH1RAvG4RBHXJdVSxZ99ULaTdzpKucncyu8GNECsStUxoeny87zhFGzeetVFi9DYi3ij6LRk1zSxwpL9vIicx+nyPNH7X6NosfUvP2tjdeVoNf4AAV86eLbhXnAHg+yH2ASfAm5LG02Cxy6C40XM5GBNr09MZAcE3cwIUTsr+RsVOTFiSWLHLGeM65h+SynYyrvLqYVY0b/SiBvxhfF+aSeKy0PLypvYq5ulXsFtM/lifF9EIQhfynobTgGKzDHUFxkt8o3SA+yBzaYpVLRpi9GGJYlFrBaCjZyubbwtKuiDfJPP3/3VPPDNJJgfoCVKOb+hNgAA2VhQ3oyP1BdnTlhJJfrPJW
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(366004)(396003)(136003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(64756008)(110136005)(76116006)(66946007)(55016003)(2906002)(54906003)(7416002)(5660300002)(44832011)(316002)(52536014)(66556008)(66446008)(66476007)(4326008)(8676002)(8936002)(478600001)(41300700001)(38100700002)(33656002)(86362001)(26005)(71200400001)(9686003)(122000001)(38070700009)(6506007)(7696005)(83380400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?MKknItNHlYCSCydzCjFJJfezivWHPzLmHN3ElrL+l9LGa23jrmRBMYCSgDw3?=
- =?us-ascii?Q?OqjZIlILToYTS0vLLyxP+N7NSrtq6WApGYi7Nq/Zek4JXH8ynpDuuT3OO3bt?=
- =?us-ascii?Q?ufRbZfJJ0VT6A5h+p6eF/32ttKPtRpxVDRIaCEKC6PjmAJLteloxPOIZ/goH?=
- =?us-ascii?Q?JIWoRIVOjD71VRykHwWHeieO+HVLGtApH+OT5cHIofSoNLuSO/iFyRx3MSsR?=
- =?us-ascii?Q?d7fcDtAcR4TC38JcJ7eFJD8IkzcHdvLqw8Xz3jHJjNkW3/IhevrGCHJK5ZM4?=
- =?us-ascii?Q?kfXvh7/+srs/P9tOiF8trOoQLU/nAEK11SWOSpSSnwNocx6tZQDHsZqdWNxR?=
- =?us-ascii?Q?DY5jPkKExWi915kMB9KF7nPXQhVcPhzBG7SDgwPWX2o98Yv9YnApRutmIIaL?=
- =?us-ascii?Q?MBVO6Vc51J/d5QArtBFQSilWvsCZ8jRcpLWMHrt2bWgyE9fJvWC6KI/2bQXX?=
- =?us-ascii?Q?AEAdTGS06zWPki4R0bwYYiAXTGZBFwPkDz+Fgdw70HT3svvPx36Qdg+f9DgQ?=
- =?us-ascii?Q?r45o5Lgevb2IGWKxVRqbyfIQ4GNuBw7XuKHysY0C5rqtcQNZA93tKJc0DvMz?=
- =?us-ascii?Q?JYtiLdOtNlFs94mQbIQdf122Cnv91oSDj4mLWDmsbOIy4An9HuHaNLyIOSZO?=
- =?us-ascii?Q?QxlqUiDOq1CvKn+kg1/YpbHlLhctJM3CBMmHnFw1DttX8RU0SEp+Pl98Dp+O?=
- =?us-ascii?Q?LFayiJG2lrbmFbqoLg7O361jv7VjEHu7jpcSBENie3s6dS0K/EkrbVPb1uYv?=
- =?us-ascii?Q?sDRrYiV3ag1MCuLKRubpwdsiskcla33ZEg9UPloVsygzVppogNTZ2VBxnjN1?=
- =?us-ascii?Q?CRskFl7LIfzTNEYS2PUu/SmJbArCdkBneldfl8T78zYQcC/xGVyLY9u8xC2r?=
- =?us-ascii?Q?+lpwAKWg1dCAYYuNQircd9yihz2kQJNCqQN3z909gQ4auDv6scPMwxtlmWEN?=
- =?us-ascii?Q?YUJkayiT5FAI4UVvxzg4uOOlK/MQQRLWYTso0H0UE3bu1UPkJB0hJN5LfF0X?=
- =?us-ascii?Q?LXU8rqSBiMyeDb/9j7+OGk+7Vs9sMKhvrMXYIzBmX11+spocQWK1TEtAhMsj?=
- =?us-ascii?Q?lElkNihz9OMuLytRBREZM8p8/AesOHAIcbIavDQAkTx54M+LmRCrArFH+Y7t?=
- =?us-ascii?Q?4ii+5if/AeGYqrOpNk1ryzdUcOLPcD6xu5iHQG0+H1XmZMgTDljipE+CrGkT?=
- =?us-ascii?Q?PSBDilL+YY7X7xMfrkZNIeCdQ87fWm3qafGVkY8kaZMZy8G8g3AwR+f9HLNY?=
- =?us-ascii?Q?a4QYA9xg/YAqHxc1mBTJBUAdxHFJ5r39o2wNF+8ZZUQNSjrhJ52yHlGpRa2e?=
- =?us-ascii?Q?3wDUfljj+8jnPgAC+ue8oSqwRPF7/P/RH54jWRzm9smCCQWUPjqD8G9qTRuQ?=
- =?us-ascii?Q?f/m9wBv0HtW+IzdL7dAxmYdEasgyCVS0r7iqp1N2Eg0njIQdZ4AOrKpeWvN9?=
- =?us-ascii?Q?PbPt4+ibblPl2oukx8Om2GAILBt9K5D8tTz8ehyIfwXd1u8WI7Z8AINedb4B?=
- =?us-ascii?Q?ewdBEZLq4kt0fpj+dFpU+fOKV8gz8kH/fV5uOOB1nOfcRaKyP7GYgkWW2ZJC?=
- =?us-ascii?Q?7huvKqrCrhnEUswXGUQ=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C9B61586EF
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 08:08:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706774907; cv=none; b=d+Y0OPFDnXdYtD6NM4/6tN/2rWXpBbgPOzqWH1NVWtrD8ZM34LPITrYJT11LnVSxI9UQY6mTm1W0V0kYmgxteabyl3W6B7gBmvj+HL8gb7s+N41lXIQCFL2xuOHkALrGiDyYob2Rj/1kw6IGxu7L6ksDI8PXwg9hDpbnLtxTD6o=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706774907; c=relaxed/simple;
+	bh=yRW+zk6ipQx+/UeKBycRl86N7OpB8VApca3JZVyt31I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=phR+6fmlyjKOjSQ6u3eGLznEpmaY6nZSNh78hNUCFAiKUug94AwFztkCfKVVCUytmmUFA79qsoL8d2EgSZ4cJvX8Bl9Bia1IPK3Q4UC6WvtIUw0a4++KWIlqHLUJQd0+PohD6GoF03FcrUdBX6ka10p+LXgwZb1Go5EyS7OEduc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KUf9fVqL; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706774896;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iy0to9gJNsnChVp/GnNaL86E7YakxrA6m3SgledDRmM=;
+	b=KUf9fVqL2VNKyOK/W4u2vJjGcoR0ZzK0JfOARQOruN+EmAIoApqVfkDNm5N83wlLezXF8z
+	hgy9yuQeD7uiATwZR6OojRBpzEExLxt2NxnP/Hjq5LVtdSxNveoDBgC4d7FB3DdrFTiUB9
+	v5cQ0Y3GDeZx20dShwcSQBJ6rjWjrcY=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-631-NlTrKZTYO-OFoidYh4TIuw-1; Thu, 01 Feb 2024 03:08:15 -0500
+X-MC-Unique: NlTrKZTYO-OFoidYh4TIuw-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a2b6c2a5fddso38075666b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 00:08:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706774894; x=1707379694;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iy0to9gJNsnChVp/GnNaL86E7YakxrA6m3SgledDRmM=;
+        b=rk+AMrkKwszY65oPUVTvxbplgN+qgqzsU9I86j2eLU4mBrPGYr6C09/qJuNBFCXKKb
+         zot/UbkSDH69kGOBlJsK4RTaOYO4pgcNOeTziGL1GTTMEondSjCIf/T2O6wLoKO2aIix
+         mCfrjbQmRQP5189kSEyVrqnP3LnqcoOaHCe5lOFjC9GcezUcMM/OpsWrTkmq++QDI13M
+         PQ+dL+kJR/CjGXB+CiOEIdo06T34Osq22VjjIFXc+buLr6HimcQKRrqgnTO2ayt4bpyo
+         MIjyZ5hOtvwXr1oqcysk1i/JTMYDTarCZuf6GtOic/iyewCoQBumpnndQpMztHJ1FDNn
+         qNCw==
+X-Gm-Message-State: AOJu0YwBLlI76JuZLKxuCYfXS5XBt7djaDUf0VDG22ntIAWnYaVrPP3e
+	HJVUXQqDrGK+NfMUuDw82mKEVcu2c6T0nznJlyTTkBJd3bT3O86rV7arAiDH0ZUlGLBVGa1SG/E
+	6i25NwWYouuktnAHIpVL7Lng9Y/bKnCj0tBDbb1+VPNd1QUlnJ+pz09SQDYYG3I5JKXORwQ==
+X-Received: by 2002:a17:907:994a:b0:a36:6198:3505 with SMTP id kl10-20020a170907994a00b00a3661983505mr2891732ejc.25.1706774893759;
+        Thu, 01 Feb 2024 00:08:13 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGR6sQz2gxBGtwqzlmOhuYoQMalz//Dwvh7p+uyOALTuWEkXwrce4iZxrh7C6Z3DpndGvJclg==
+X-Received: by 2002:a17:907:994a:b0:a36:6198:3505 with SMTP id kl10-20020a170907994a00b00a3661983505mr2891712ejc.25.1706774893374;
+        Thu, 01 Feb 2024 00:08:13 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUPikGwlmK61HBD824LPki9FCPfzBqA8DOG1qFKTu86qM6TT3O5V9/CvItrJ98+QzfcVoEyp+96Zr1Nn2L+BvS4DqHAaoL3vKwZ6lp6Isco+Twi35RKwnoZUuMkraXf3k7IhNqwNPtWxXU0q5hpZ3dtYMws/l0G/WLT2JxU+Az61Ph3wfFwo0rWQrE9KpQ7vopZeP4GRY7hV6XC5TPZ8jR/tHxE8mlGsfTD2vqlwVDFVHk3t88eeqmNpQtAeXcq4Z1TDE9naso78eI=
+Received: from redhat.com ([2a02:14f:179:3a6d:f252:c632:3893:a2ef])
+        by smtp.gmail.com with ESMTPSA id m1-20020a1709062b8100b00a363e8be473sm2143643ejg.143.2024.02.01.00.08.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 00:08:12 -0800 (PST)
+Date: Thu, 1 Feb 2024 03:08:07 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Tobias Huschle <huschle@linux.ibm.com>
+Cc: Jason Wang <jasowang@redhat.com>, Abel Wu <wuyun.abel@bytedance.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Linux Kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+	virtualization@lists.linux.dev, netdev@vger.kernel.org
+Subject: Re: Re: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6
+ sched/fair: Add lag based placement)
+Message-ID: <20240201030341-mutt-send-email-mst@kernel.org>
+References: <CACGkMEudZnF7hUajgt0wtNPCxH8j6A3L1DgJj2ayJWhv9Bh1WA@mail.gmail.com>
+ <20231212111433-mutt-send-email-mst@kernel.org>
+ <42870.123121305373200110@us-mta-641.us.mimecast.lan>
+ <20231213061719-mutt-send-email-mst@kernel.org>
+ <25485.123121307454100283@us-mta-18.us.mimecast.lan>
+ <20231213094854-mutt-send-email-mst@kernel.org>
+ <20231214021328-mutt-send-email-mst@kernel.org>
+ <92916.124010808133201076@us-mta-622.us.mimecast.lan>
+ <20240121134311-mutt-send-email-mst@kernel.org>
+ <07974.124020102385100135@us-mta-501.us.mimecast.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 26cf52ae-a158-4536-f17e-08dc22fce2cf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Feb 2024 08:07:51.2057
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: IGbpZZGl2qZtLHpi8yAWo6TMZZThKI0oBuXL3ctu2mvhM7sAmAIeaUgsILAeMmZj/ea/qip60hXTXconoYWWAQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8461
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <07974.124020102385100135@us-mta-501.us.mimecast.lan>
 
-> Subject: Re: [PATCH v3 0/6] firmware: arm_scmi: Add SCMI v3.2 pincontrol
-> protocol basic support
->=20
-> On Mon, Jan 29, 2024 at 08:36:50PM +0800, Peng Fan wrote:
-> > Hi Sudeep, Cristian
-> >
-> > Would you pick up patch 1-4?
->=20
-> I will for v6.9 sometime.
->=20
-> > And for i.MX95 OEM extenstion, do you have any suggestions?
-> > I have two points:
-> > 1. use vendor compatible. This would also benefit when supporting
-> > vendor protocol.
->=20
-> May be, but that was never on plate for standard protocols. So I don't li=
-ke
-> that approach either.
->=20
-> > 2. Introduce a property saying supporting-generic-pinconf
-> >
->=20
-> I am not sure what you mean by that. But that doesn't sound right especia=
-l in
-> context of SCMI. So I would say no.
->=20
-> > How do you think?
-> >
->=20
-> I don't have any other suggestions than fix your driver to use the pinmux
-> properly with features in the upstream pinmux subsystem.
+On Thu, Feb 01, 2024 at 08:38:43AM +0100, Tobias Huschle wrote:
+> On Sun, Jan 21, 2024 at 01:44:32PM -0500, Michael S. Tsirkin wrote:
+> > On Mon, Jan 08, 2024 at 02:13:25PM +0100, Tobias Huschle wrote:
+> > > On Thu, Dec 14, 2023 at 02:14:59AM -0500, Michael S. Tsirkin wrote:
+> > > - Along with the wakeup of the kworker, need_resched needs to
+> > >   be set, such that cond_resched() triggers a reschedule.
+> > 
+> > Let's try this? Does not look like discussing vhost itself will
+> > draw attention from scheduler guys but posting a scheduling
+> > patch probably will? Can you post a patch?
+> 
+> As a baseline, I verified that the following two options fix
+> the regression:
+> 
+> - replacing the cond_resched in the vhost_worker function with a hard
+>   schedule 
+> - setting the need_resched flag using set_tsk_need_resched(current)
+>   right before calling cond_resched
+> 
+> I then tried to find a better spot to put the set_tsk_need_resched
+> call. 
+> 
+> One approach I found to be working is setting the need_resched flag 
+> at the end of handle_tx and hande_rx.
+> This would be after data has been actually passed to the socket, so 
+> the originally blocked kworker has something to do and will profit
+> from the reschedule. 
+> It might be possible to go deeper and place the set_tsk_need_resched
+> call to the location right after actually passing the data, but this
+> might leave us with sprinkling that call in multiple places and
+> might be too intrusive.
+> Furthermore, it might be possible to check if an error occured when
+> preparing the transmission and then skip the setting of the flag.
+> 
+> This would require a conceptual decision on the vhost side.
+> This solution would not touch the scheduler, only incentivise it to
+> do the right thing for this particular regression.
+> 
+> Another idea could be to find the counterpart that initiates the
+> actual data transfer, which I assume wakes up the kworker. From
+> what I gather it seems to be an eventfd notification that ends up
+> somewhere in the qemu code. Not sure if that context would allow
+> to set the need_resched flag, nor whether this would be a good idea.
+> 
+> > 
+> > > - On cond_resched(), verify if the consumed runtime of the caller
+> > >   is outweighing the negative lag of another process (e.g. the 
+> > >   kworker) and schedule the other process. Introduces overhead
+> > >   to cond_resched.
+> > 
+> > Or this last one.
+> 
+> On cond_resched itself, this will probably only be possible in a very 
+> very hacky way. That is because currently, there is no immidiate access
+> to the necessary data available, which would make it necessary to 
+> bloat up the cond_resched function quite a bit, with a probably 
+> non-negligible amount of overhead.
+> 
+> Changing other aspects in the scheduler might get us in trouble as
+> they all would probably resolve back to the question "What is the magic
+> value that determines whether a small task not being scheduled justifies
+> setting the need_resched flag for a currently running task or adjusting 
+> its lag?". As this would then also have to work for all non-vhost related
+> cases, this looks like a dangerous path to me on second thought.
+> 
+> 
+> -------- Summary --------
+> 
+> In my (non-vhost experience) opinion the way to go would be either
+> replacing the cond_resched with a hard schedule or setting the
+> need_resched flag within vhost if the a data transfer was successfully
+> initiated. It will be necessary to check if this causes problems with
+> other workloads/benchmarks.
 
-So for OEM specific units in Pin Configuration Type and Enumerations,
-Any ideas how to support them if not talking about i.MX?
+Yes but conceptually I am still in the dark on whether the fact that
+periodically invoking cond_resched is no longer sufficient to be nice to
+others is a bug, or intentional.  So you feel it is intentional?
+I propose a two patch series then:
 
-Thanks,
-Peng.
+patch 1: in this text in Documentation/kernel-hacking/hacking.rst
 
->=20
-> --
-> Regards,
-> Sudeep
+If you're doing longer computations: first think userspace. If you
+**really** want to do it in kernel you should regularly check if you need
+to give up the CPU (remember there is cooperative multitasking per CPU).
+Idiom::
+
+    cond_resched(); /* Will sleep */
+
+
+replace cond_resched -> schedule
+
+
+Since apparently cond_resched is no longer sufficient to
+make the scheduler check whether you need to give up the CPU.
+
+patch 2: make this change for vhost.
+
+WDYT?
+
+-- 
+MST
+
 
