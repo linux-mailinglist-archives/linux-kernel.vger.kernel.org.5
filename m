@@ -1,277 +1,258 @@
-Return-Path: <linux-kernel+bounces-47828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B2B784536B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:08:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20E8984536C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:09:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18500B264B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:08:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EE021F24076
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:09:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3231115AAC4;
-	Thu,  1 Feb 2024 09:08:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A209415AAD6;
+	Thu,  1 Feb 2024 09:09:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Yi0HgEBy"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lzcMhQ0t"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B21E2159571
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 09:08:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE88315AAB5
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 09:09:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706778519; cv=none; b=rrZ9uKxLBtP0LHrMV0YJmZcoGq4bosc1F6/lejfkAN+qWDSpVn6SZ1LFJOIj0GUwZfF+PN+H6xgCNLFQj0+TNkrx1TBpEcqbdJmyIkjWDJl7mJfTO8Cvd7plnI6b6asEr5bNf/QqgTlU5wKpiJwH92iWnjBs/7y8PjIiLJjIQjI=
+	t=1706778574; cv=none; b=RO9GaGlZNrwqzvvKFOMHm2wd8W2LGn2uDE/hVGy/XLD7eNatQ7KM5PK4zZ+/8G42M+OZkFS1/JHXa18nkyuaRx8qIvpNsPC11D92r5Pf2OLPZbqcCq6PkSh3f0hO3kKnHtQtsiSu8vSPFw5lDa61c07J9eRnxT95cDSsCst+xpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706778519; c=relaxed/simple;
-	bh=ruPq2pvkVk8s24AfuKHQzLcgDuuIniLumwcZJ8iyy3A=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=n3nHtErEaEByfLQuaHI0pqsqXqtTaZTDxOVNx27fouwYxZi1HceQ3zls2FRmbJcY4j19YqhREJrpuIE641kstsFWRQwduPFyaFaqAkXRcqPTzjBOpT2ftLEFMTmW0pmNot0xZxguvQ4Dpxbik6CUYlD04yVF4X2jQxlWO7gaOJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Yi0HgEBy; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5ffa2bb4810so8649897b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 01:08:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706778516; x=1707383316; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PyPRSJB8R7sstDIzxYvvLOQP9nz0Xs4tmV9kMbdp44Y=;
-        b=Yi0HgEBypSrfhcSIHIr19OeVet4Sd/Q20A6xGxzPj6qgBCLXCGe0iisIBZh0Gg/Z/V
-         BqDBQ3VAxjO+9DGqoUmldOXdzfpYy2HR6lA/LHTqRAyIxcF1oiPnLXt2yesTEbWjgZYK
-         nx+ORVSL+JJcbcwl216iT6AtKzulXobY85PHVHyNXuLS9uEQkeuCNYDjvP2Q1DP3cUlU
-         jWQplqsag0enGZ0S9Nsu+YdymLDR5DwZl66/hCUScKYd2gQ2JatZB8xPcAfAifpw6nVk
-         4MLqagyaLQEGzTeCFOLcnU2SfH8GOtnHZvCFOIrQzK3+ZcqnaK0n3xT/eGPQTkB7t9uR
-         BfsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706778516; x=1707383316;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PyPRSJB8R7sstDIzxYvvLOQP9nz0Xs4tmV9kMbdp44Y=;
-        b=vPC6lu1t1H21ykMujSQpqRolx42vv+/x4zAmva34QlSm8/vDr8lOnIOrqctRaGdLuY
-         JZIOxfO9ulRuSwyWm+frr3zXZd5ILA9PKhHGzSetWs2g/AUCqs99mTLa1iFe82aXecX5
-         muH97iR8DDtcV1A2V99FcByczs/Qk0xs9Nx0HXIWuD2GnKHGZknpEHpYdaT2iVLTeRXh
-         psbbhJDNTJ3gtfem6i51Mg9IMgUqD6e0YKjI4AGD/kUTSCIppc1YuxvRW3qzdkkWU7wB
-         DIOyV2tR4KklWiIpvlp6BdFBWwY+zD0bmxdfGZalRjUqXpepXmr9jLY6jvwVI6sxKf+/
-         PxDA==
-X-Gm-Message-State: AOJu0Ywnaq9jt6ShHavXDc49gvka2M3oCRGk2CjO4T6lAWXTovDL5AY/
-	mA1QS0NSj6QpHnyOImDeT8kjnQlj/9NEahRqNYlzKBf+gbat1HtMdt0tKouIFfC/fFe0ofQFrts
-	CEF8JS8tG2sq1LluoaA==
-X-Google-Smtp-Source: AGHT+IEal3S+0/LT8L/+ihFESpfF3v8jase7MpGggk1/LchQ6suhlyF5F50sZ3ZPPJU5OFZDNh2MSLQST8IUcSCG
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:690c:ec5:b0:5ee:2b5:7d75 with SMTP
- id cs5-20020a05690c0ec500b005ee02b57d75mr276209ywb.8.1706778516753; Thu, 01
- Feb 2024 01:08:36 -0800 (PST)
-Date: Thu, 1 Feb 2024 09:08:34 +0000
-In-Reply-To: <20240201032718.1968208-4-nphamcs@gmail.com>
+	s=arc-20240116; t=1706778574; c=relaxed/simple;
+	bh=g7sty8MDxXC/+aXV+ShpCrtLVQ6MvAXOvzQVOlAmddU=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=Z5cNZNZrsO781TCJmd5GAa7aMZDX3ffp2qzUbPJoJMM9/irk8LQXLqmyP06b2DM++lBkwm5ICu475a/qW2oStbfJ89RVpQMT44lBRItCa0/sSJhA6mlKAluYy8uM9H281x2LicSN6eiENcvbIjIHFA7R6Nij9Eo71dR5NZQAX+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lzcMhQ0t; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706778573; x=1738314573;
+  h=date:from:to:cc:subject:message-id;
+  bh=g7sty8MDxXC/+aXV+ShpCrtLVQ6MvAXOvzQVOlAmddU=;
+  b=lzcMhQ0tbUO1GWRxE0wDUm2L8rwOhPI+3LuTgSxv+kxIa/b+K4+XyH4/
+   DYhInt9MJFBpgsPT0rPACkI7v1bm+81uHyit2GZDpszmUEXG0QNKb5NdK
+   jNaDSU3y6nACEqKg0RiNU2nOB2qeq3lmrr+aC2p1rasdiBpAiQSfcdhDC
+   HDsU/x4uHd8nQJ6DZIz2lFUR0yGAciJlmUMA3iZTbfHNviMy0ZVRsGGhj
+   LUAhZesnaqXA477isWhzV2z8Sb0CtZVnEVvScHDNagXE8T6fNl1hqJYDI
+   i0FdoZJ4jDBy8ul2Yg3WU72Rvv2T6E+1BSGFWxco+GmWXM0PFtXzOVCwE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="61777"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="61777"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 01:09:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="4367320"
+Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
+  by fmviesa003.fm.intel.com with ESMTP; 01 Feb 2024 01:09:30 -0800
+Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rVT4a-0002cM-2C;
+	Thu, 01 Feb 2024 09:09:28 +0000
+Date: Thu, 01 Feb 2024 17:08:45 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 078b7b997b47c7166c1240cf1d39db9f646a56be
+Message-ID: <202402011743.pGcbAKq2-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240201032718.1968208-1-nphamcs@gmail.com> <20240201032718.1968208-4-nphamcs@gmail.com>
-Message-ID: <Zbtfku0wVGXBHDTD@google.com>
-Subject: Re: [PATCH v2 3/3] selftests: add zswapin and no zswap tests
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: akpm@linux-foundation.org, riel@surriel.com, shuah@kernel.org, 
-	hannes@cmpxchg.org, tj@kernel.org, lizefan.x@bytedance.com, 
-	roman.gushchin@linux.dev, linux-mm@kvack.org, kernel-team@meta.com, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
 
-Hey Nhat,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 078b7b997b47c7166c1240cf1d39db9f646a56be  Merge x86/boot into tip/master
 
-I have a few more comments, sorry for not catching everything the first
-time around.
+elapsed time: 878m
 
-Adding Roman to CC.
+configs tested: 170
+configs skipped: 3
 
-On Wed, Jan 31, 2024 at 07:27:18PM -0800, Nhat Pham wrote:
-> Add a selftest to cover the zswapin code path, allocating more memory
-> than the cgroup limit to trigger swapout/zswapout, then reading the
-> pages back in memory several times. This is inspired by a recently
-> encountered kernel crash on the zswapin path in our internal kernel,
-> which went undetected because of a lack of test coverage for this path.
-> 
-> Add a selftest to verify that when memory.zswap.max = 0, no pages can go
-> to the zswap pool for the cgroup.
-> 
-> Suggested-by: Rik van Riel <riel@surriel.com>
-> Suggested-by: Yosry Ahmed <yosryahmed@google.com>
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> ---
->  tools/testing/selftests/cgroup/test_zswap.c | 97 +++++++++++++++++++++
->  1 file changed, 97 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
-> index 32ce975b21d1..14d1f18f1098 100644
-> --- a/tools/testing/selftests/cgroup/test_zswap.c
-> +++ b/tools/testing/selftests/cgroup/test_zswap.c
-> @@ -60,6 +60,27 @@ static long get_zswpout(const char *cgroup)
->  	return cg_read_key_long(cgroup, "memory.stat", "zswpout ");
->  }
->  
-> +static int allocate_bytes_and_read(const char *cgroup, void *arg)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-I think allocate_and_read_bytes() is easier to read, but I don't feel
-strongly about it.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                            hsdk_defconfig   gcc  
+arc                   randconfig-001-20240201   gcc  
+arc                   randconfig-002-20240201   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                         orion5x_defconfig   clang
+arm                          pxa168_defconfig   clang
+arm                   randconfig-001-20240201   gcc  
+arm                   randconfig-002-20240201   gcc  
+arm                   randconfig-003-20240201   gcc  
+arm                   randconfig-004-20240201   gcc  
+arm                        spear3xx_defconfig   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240201   gcc  
+arm64                 randconfig-002-20240201   gcc  
+arm64                 randconfig-003-20240201   gcc  
+arm64                 randconfig-004-20240201   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240201   gcc  
+csky                  randconfig-002-20240201   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240201   clang
+hexagon               randconfig-002-20240201   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386         buildonly-randconfig-001-20240201   gcc  
+i386         buildonly-randconfig-002-20240201   gcc  
+i386         buildonly-randconfig-003-20240201   gcc  
+i386         buildonly-randconfig-004-20240201   gcc  
+i386         buildonly-randconfig-005-20240201   gcc  
+i386         buildonly-randconfig-006-20240201   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20240201   gcc  
+i386                  randconfig-002-20240201   gcc  
+i386                  randconfig-003-20240201   gcc  
+i386                  randconfig-004-20240201   gcc  
+i386                  randconfig-005-20240201   gcc  
+i386                  randconfig-006-20240201   gcc  
+i386                  randconfig-011-20240201   clang
+i386                  randconfig-012-20240201   clang
+i386                  randconfig-013-20240201   clang
+i386                  randconfig-014-20240201   clang
+i386                  randconfig-015-20240201   clang
+i386                  randconfig-016-20240201   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240201   gcc  
+loongarch             randconfig-002-20240201   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+microblaze                      mmu_defconfig   gcc  
+mips                              allnoconfig   clang
+mips                             allyesconfig   gcc  
+nios2                         10m50_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240201   gcc  
+nios2                 randconfig-002-20240201   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240201   gcc  
+parisc                randconfig-002-20240201   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                      arches_defconfig   gcc  
+powerpc                   currituck_defconfig   gcc  
+powerpc                    ge_imp3a_defconfig   gcc  
+powerpc                     ksi8560_defconfig   gcc  
+powerpc                 mpc8313_rdb_defconfig   clang
+powerpc                      ppc40x_defconfig   gcc  
+powerpc               randconfig-001-20240201   gcc  
+powerpc               randconfig-002-20240201   gcc  
+powerpc               randconfig-003-20240201   gcc  
+powerpc                  storcenter_defconfig   gcc  
+powerpc                        warp_defconfig   gcc  
+powerpc64             randconfig-001-20240201   gcc  
+powerpc64             randconfig-002-20240201   gcc  
+powerpc64             randconfig-003-20240201   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20240201   gcc  
+riscv                 randconfig-002-20240201   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20240201   clang
+s390                  randconfig-002-20240201   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                          polaris_defconfig   gcc  
+sh                          r7785rp_defconfig   gcc  
+sh                    randconfig-001-20240201   gcc  
+sh                    randconfig-002-20240201   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240201   gcc  
+sparc64               randconfig-002-20240201   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240201   gcc  
+um                    randconfig-002-20240201   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240201   gcc  
+x86_64       buildonly-randconfig-002-20240201   gcc  
+x86_64       buildonly-randconfig-003-20240201   gcc  
+x86_64       buildonly-randconfig-004-20240201   gcc  
+x86_64       buildonly-randconfig-005-20240201   gcc  
+x86_64       buildonly-randconfig-006-20240201   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240201   clang
+x86_64                randconfig-002-20240201   clang
+x86_64                randconfig-003-20240201   clang
+x86_64                randconfig-004-20240201   clang
+x86_64                randconfig-005-20240201   clang
+x86_64                randconfig-006-20240201   clang
+x86_64                randconfig-011-20240201   gcc  
+x86_64                randconfig-012-20240201   gcc  
+x86_64                randconfig-013-20240201   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240201   gcc  
+xtensa                randconfig-002-20240201   gcc  
 
-> +{
-> +	size_t size = (size_t)arg;
-> +	char *mem = (char *)malloc(size);
-> +	int ret = 0;
-> +
-> +	if (!mem)
-> +		return -1;
-> +	for (int i = 0; i < size; i += 4095)
-> +		mem[i] = 'a';
-
-cgroup_util.h defines PAGE_SIZE, see alloc_anon() for example.
-
-On that note, alloc_anon() is awfully close to allocate_bytes() below,
-perhaps we should consolidate them. The only difference I see is that
-alloc_anon() does not check for the allocation failure, but a lot of
-functions in cgroup_helpers.c don't, so it seems intentional for
-simplification.
-
-> +
-> +	/* go through the allocated memory to (z)swap in and out pages */
-> +	for (int i = 0; i < size; i += 4095) {
-> +		if (mem[i] != 'a')
-> +			ret = -1;
-> +	}
-> +
-> +	free(mem);
-> +	return ret;
-> +}
-> +
->  static int allocate_bytes(const char *cgroup, void *arg)
->  {
->  	size_t size = (size_t)arg;
-> @@ -133,6 +154,80 @@ static int test_zswap_usage(const char *root)
->  	return ret;
->  }
->  
-> +/*
-> + * Check that when memory.zswap.max = 0, no pages can go to the zswap pool for
-> + * the cgroup.
-> + */
-> +static int test_swapin_nozswap(const char *root)
-> +{
-> +	int ret = KSFT_FAIL;
-> +	char *test_group;
-> +	long zswpout;
-> +
-> +	/* Set up */
-
-I think this comment is unnecessary.
-
-> +	test_group = cg_name(root, "no_zswap_test");
-> +
-> +	if (!test_group)
-> +		goto out;
-> +	if (cg_create(test_group))
-> +		goto out;
-> +	if (cg_write(test_group, "memory.max", "8M"))
-> +		goto out;
-> +	/* Disable zswap */
-
-I think this comment is unnecessary.
-
-> +	if (cg_write(test_group, "memory.zswap.max", "0"))
-> +		goto out;
-> +
-> +	/* Allocate and read more than memory.max to trigger swapin */
-> +	if (cg_run(test_group, allocate_bytes_and_read, (void *)MB(32)))
-> +		goto out;
-> +
-> +	/* Verify that no zswap happened */
-
-If we want to be really meticulous, we can verify that we did swap out,
-but not to zswap. IOW, we can check memory.swap.current or something.
-
-> +	zswpout = get_zswpout(test_group);
-> +	if (zswpout < 0) {
-> +		ksft_print_msg("Failed to get zswpout\n");
-> +		goto out;
-> +	} else if (zswpout > 0) {
-
-nit: This can be a separate if condition, I think it would be more
-inline with the style of separate consecutive if blocks we are
-following.
-
-> +		ksft_print_msg(
-> +			"Pages should not go to zswap when memory.zswap.max = 0\n");
-
-We can probably avoid the line break with something more concise, for
-example:
-"zswapout > 0 when zswap is disabled"
-or "zswapout > 0 when memory.zswap.max = 0"
-
-> +		goto out;
-> +	}
-> +	ret = KSFT_PASS;
-> +
-> +out:
-> +	cg_destroy(test_group);
-> +	free(test_group);
-> +	return ret;
-> +}
-> +
-> +/* Simple test to verify the (z)swapin code paths */
-> +static int test_zswapin_no_limit(const char *root)
-
-I think test_zswapin() is enough to be distinct from
-test_swapin_nozswap(). The limit is not a factor here AFAICT.
-
-> +{
-> +	int ret = KSFT_FAIL;
-> +	char *test_group;
-> +
-> +	/* Set up */
-
-I think this comment is unnecessary.
-
-> +	test_group = cg_name(root, "zswapin_test");
-> +	if (!test_group)
-> +		goto out;
-> +	if (cg_create(test_group))
-> +		goto out;
-> +	if (cg_write(test_group, "memory.max", "8M"))
-> +		goto out;
-> +	if (cg_write(test_group, "memory.zswap.max", "max"))
-> +		goto out;
-> +
-> +	/* Allocate and read more than memory.max to trigger (z)swap in */
-> +	if (cg_run(test_group, allocate_bytes_and_read, (void *)MB(32)))
-> +		goto out;
-
-We should probably check for a positive zswapin here, no?
-
-> +
-> +	ret = KSFT_PASS;
-> +
-> +out:
-> +	cg_destroy(test_group);
-> +	free(test_group);
-> +	return ret;
-> +}
-> +
->  /*
->   * When trying to store a memcg page in zswap, if the memcg hits its memory
->   * limit in zswap, writeback should affect only the zswapped pages of that
-> @@ -309,6 +404,8 @@ struct zswap_test {
->  	const char *name;
->  } tests[] = {
->  	T(test_zswap_usage),
-> +	T(test_swapin_nozswap),
-> +	T(test_zswapin_no_limit),
->  	T(test_no_kmem_bypass),
->  	T(test_no_invasive_cgroup_shrink),
->  };
-> -- 
-> 2.39.3
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
