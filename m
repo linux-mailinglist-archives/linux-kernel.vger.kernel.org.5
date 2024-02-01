@@ -1,155 +1,137 @@
-Return-Path: <linux-kernel+bounces-48210-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69C6984589C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:14:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C8D884589A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:13:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9150B1C26D53
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:14:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48E1028ABBD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:13:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96E135F471;
-	Thu,  1 Feb 2024 13:12:37 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E04285D48A
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 13:12:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 000445D48D;
+	Thu,  1 Feb 2024 13:12:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="BOlPkzmo"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF0875D46A;
+	Thu,  1 Feb 2024 13:12:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706793157; cv=none; b=nbDCH1/u8l4RFM9ZyTF0zXfps7VXitYP5aypWjF/Gm3iSxNiiWCHqI2/SEY38x/Sa+lBEe4Oab0lr4SViwC9VdwpcMTb2lLHeWO1ZD7FMKh+aqqz7C6XqZSC1ZuRI2oqnj0aUW0QF2Z9VxtOeJkIENcHTHuwPE7MoZvHqfMJczE=
+	t=1706793152; cv=none; b=uIH1Bx5DjrZ6pNitypEge1phvBiDfIwcDZmvZAaxJDx9KGJUgV1YdzEQAN8JmiLCOS2Ngp+eJ87A2ldwhy5c/NoZyD9z/tOjUJ1jxZ9ZM9XiyJIm3rElrW87zaePIDKQZkhF68V62qztENQmQPJnUk7wnnmUiwMd3buHal30GEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706793157; c=relaxed/simple;
-	bh=qyzq9pirjl2WQPG64jgIbtQm4pn18T/tfWhWUBDLcXY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UNgaMlQB3LAVvuHRY+D5fJV18eCSinpFyUM6FOkBFSxTSKlFva4ZZF8ouk+ndZj/CyxZevoJG+GwckJIV8QJG5QI6yLtlHxLhbhWsWv+y7534HvJyj3OmzTXMr3VEqOPb8PUc1kkWBdqmr3YuTAOFL4RTGNnzX43T7U4ZCc60Ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 108E2176B;
-	Thu,  1 Feb 2024 05:13:17 -0800 (PST)
-Received: from e130256.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 442993F762;
-	Thu,  1 Feb 2024 05:12:32 -0800 (PST)
-From: Hongyan Xia <hongyan.xia2@arm.com>
-To: Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>
-Cc: Qais Yousef <qyousef@layalina.io>,
-	Morten Rasmussen <morten.rasmussen@arm.com>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	Christian Loehle <christian.loehle@arm.com>,
-	linux-kernel@vger.kernel.org,
-	David Dai <davidai@google.com>,
-	Saravana Kannan <saravanak@google.com>
-Subject: [RFC PATCH v2 7/7] sched/uclamp: Simplify uclamp_eff_value()
-Date: Thu,  1 Feb 2024 13:12:03 +0000
-Message-Id: <215a6377e1aef10460d1aa870fb06774680925c5.1706792708.git.hongyan.xia2@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1706792708.git.hongyan.xia2@arm.com>
-References: <cover.1706792708.git.hongyan.xia2@arm.com>
+	s=arc-20240116; t=1706793152; c=relaxed/simple;
+	bh=/I3LOE7Iy4GWVmhyKaKeXXQqboCCKJZr0DzFVtVFQ18=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GkobEfbp95DZECJy0cfUhsDFML3bAQ696BQ8znyF4iQ1JBJnYyuD3NvMYD2iui9gFWPYsTV/AMNy6Pbh9zX0MF7oOQ5y3MhV0WF/iZrthQw4Os8ZaH6dnEutRSt647SFCdUaBUrMmoUU6ve2xo3IiyAJ4xl4rBRZL21tewyPCro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=BOlPkzmo; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+	In-Reply-To:References; bh=ourWqt0U9KzwsZ13Pf+R3eqNLW9t0wZoaANlJWDjL/4=; b=BO
+	lPkzmoaz/mHfd0lTIMD5LjQQgNNUR2u1V5xfpsGvCHutTAqG1dc5H98ZLd8WIOQaMznZP2bcASWuq
+	r2Kp34QdGhzoMvAxrbMYGPaQ21eCZbJfzD6XsJl4pYZSK3rKRpLAz5gNUSRDmpsT1a3/VKLUNueSc
+	1EDowPp1gKvBpTg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rVWrO-006fvY-KU; Thu, 01 Feb 2024 14:12:06 +0100
+Date: Thu, 1 Feb 2024 14:12:06 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Vineeth Karumanchi <vineeth.karumanchi@amd.com>
+Cc: krzysztof.kozlowski+dt@linaro.org, nicolas.ferre@microchip.com,
+	claudiu.beznea@tuxon.dev, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+	conor+dt@kernel.org, linux@armlinux.org.uk, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	git@amd.com
+Subject: Re: [PATCH net-next 2/3] dt-bindings: net: cdns,macb: Add
+ wol-arp-packet property
+Message-ID: <fb8f56b1-c961-478d-ac3a-8136408771d3@lunn.ch>
+References: <20240130104845.3995341-1-vineeth.karumanchi@amd.com>
+ <20240130104845.3995341-3-vineeth.karumanchi@amd.com>
+ <824aad4d-6b05-4641-b75d-ceaa08b0a4e8@lunn.ch>
+ <09ce2e81-01cc-431f-8acb-076a54e5a7e6@amd.com>
+ <9b4a2c23-5a96-45eb-9bdf-cefc99f25fec@lunn.ch>
+ <7a063832-e1b5-42df-92cf-66486d4feecb@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <7a063832-e1b5-42df-92cf-66486d4feecb@amd.com>
 
-The commit
+On Thu, Feb 01, 2024 at 12:11:15PM +0530, Vineeth Karumanchi wrote:
+> Hi Andrew, Krzysztof,
+> 
+> 
+> 
+> On 31/01/24 6:48 pm, Andrew Lunn wrote:
+> > On Wed, Jan 31, 2024 at 01:09:19PM +0530, Vineeth Karumanchi wrote:
+> > > Hi Andrew,
+> > > 
+> > > 
+> > > On 31/01/24 6:56 am, Andrew Lunn wrote:
+> > > > On Tue, Jan 30, 2024 at 04:18:44PM +0530, Vineeth Karumanchi wrote:
+> > > > > "wol-arp-packet" property enables WOL with ARP packet.
+> > > > > It is an extension to "magic-packet for WOL.
+> > > > 
+> > > > It not clear why this is needed. Is this not a standard feature of the
+> > > > IP? Is there no hardware bit indicating the capability?
+> > > > 
+> > > 
+> > > WOL via both ARP and Magic packet is supported by the IP version on ZU+ and
+> > > Versal. However, user can choose which type of packet to recognize as a WOL
+> > > event - magic packet or ARP.
+> > 
+> > ethtool says:
+> > 
+> >             wol p|u|m|b|a|g|s|f|d...
+> >                    Sets Wake-on-LAN options.  Not all devices support this.  The argument to this  option  is  a
+> >                    string of characters specifying which options to enable.
+> >                    p   Wake on PHY activity
+> >                    u   Wake on unicast messages
+> >                    m   Wake on multicast messages
+> >                    b   Wake on broadcast messages
+> >                    a   Wake on ARP
+> >                    g   Wake on MagicPacket™
+> >                    s   Enable SecureOn™ password for MagicPacket™
+> >                    f   Wake on filter(s)
+> >                    d   Disable  (wake  on  nothing).  This option
+> >                        clears all previous options.
+> > 
+> > So why do we need a DT property?
+> > 
+> 
+> The earlier implementation of WOL (magic-packet) was using DT property.
+> We added one more packet type using DT property to be in-line with the
+> earlier implementation.
 
-sched: Remove all uclamp bucket logic
+I can understand that. It also suggests we did a bad job reviewing
+that patch, and should of rejected it. But it was added a long time
+ago, and we were less strict back then.
 
-removes uclamp_rq_{inc/dec}() functions, so now p->uclamp contains the
-correct values all the time after a uclamp_update_active() call, and
-there's no need to toggle the boolean `active` after an update. As a
-result, this function is fairly simple now and can live as a static
-inline function.
+> 
+> However, I echo with you that this feature should be in driver (CAPS).
+> We will re-work the implementation with the below flow:
+> 
+> - Add MACB_CAPS_WOL capability to the supported platforms
+> - Advertise supported WOL packet types based on the CAPS in ethtool.
+> - Users can set packet type using ethtool.
 
-Signed-off-by: Hongyan Xia <hongyan.xia2@arm.com>
----
- kernel/sched/core.c  | 13 ++++---------
- kernel/sched/sched.h | 14 ++++++++++++--
- 2 files changed, 16 insertions(+), 11 deletions(-)
+Yes, this sounds good. Maybe add to that, mark magic-packet
+deprecated, and a comment that ethtool should be used instead.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a3b36adc4dcc..f5f5f056525c 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1499,21 +1499,15 @@ uclamp_eff_get(struct task_struct *p, enum uclamp_id clamp_id)
- 	return uc_req;
- }
- 
--unsigned long uclamp_eff_value(struct task_struct *p, enum uclamp_id clamp_id)
--{
--	if (!uclamp_is_used() || !p->uclamp[clamp_id].active)
--		return uclamp_none(clamp_id);
--
--	return p->uclamp[clamp_id].value;
--}
--
- static inline void
- uclamp_update_active_nolock(struct task_struct *p)
- {
- 	enum uclamp_id clamp_id;
- 
--	for_each_clamp_id(clamp_id)
-+	for_each_clamp_id(clamp_id) {
- 		p->uclamp[clamp_id] = uclamp_eff_get(p, clamp_id);
-+		p->uclamp[clamp_id].active = 1;
-+	}
- }
- 
- static inline void
-@@ -1773,6 +1767,7 @@ static void uclamp_fork(struct task_struct *p)
- 		for_each_clamp_id(clamp_id) {
- 			uclamp_se_set(&p->uclamp_req[clamp_id],
- 				      uclamp_none(clamp_id), false);
-+			p->uclamp[clamp_id].active = 0;
- 		}
- 	}
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 81578410984c..2caefc3344bb 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2991,8 +2991,6 @@ static inline unsigned long cpu_util_rt(struct rq *rq)
- #endif
- 
- #ifdef CONFIG_UCLAMP_TASK
--unsigned long uclamp_eff_value(struct task_struct *p, enum uclamp_id clamp_id);
--
- /* Is the rq being capped/throttled by uclamp_max? */
- static inline bool uclamp_rq_is_capped(struct rq *rq)
- {
-@@ -3022,6 +3020,18 @@ static inline bool uclamp_is_used(void)
- 	return static_branch_likely(&sched_uclamp_used);
- }
- 
-+static inline unsigned long uclamp_eff_value(struct task_struct *p,
-+					     enum uclamp_id clamp_id)
-+{
-+	if (uclamp_is_used() && p->uclamp[clamp_id].active)
-+		return p->uclamp[clamp_id].value;
-+
-+	if (clamp_id == UCLAMP_MIN)
-+		return 0;
-+
-+	return SCHED_CAPACITY_SCALE;
-+}
-+
- static inline unsigned long root_cfs_util(struct rq *rq)
- {
- 	return READ_ONCE(rq->root_cfs_util_uclamp);
--- 
-2.34.1
-
+Thanks
+	Andrew
 
