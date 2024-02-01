@@ -1,161 +1,251 @@
-Return-Path: <linux-kernel+bounces-48589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C856845E7F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:28:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 045B5845E81
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:29:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE4D9298E35
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:28:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F3A21F270B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:29:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 498061649CE;
-	Thu,  1 Feb 2024 17:28:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="QnYKD5Rt"
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E87C1649BF
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 17:28:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9B4E63CA6;
+	Thu,  1 Feb 2024 17:29:46 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2821263C85
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 17:29:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706808525; cv=none; b=PaJ1tzAiCv/quABMH5NLi/y+67aGuylGw4Y+jfk25a8BvDfYaevG4XBdoigWAx1aBQsKc6h0v/4GAWAhl5vydwFOEN8CzdJf4IKhCtZUIxDANlBHQ4qC33d62CEf0smA4EuEvY4Qw0iLLujCZUFfPQCo08MdZBfKX3ZZ8cmSP+Q=
+	t=1706808586; cv=none; b=rGCvdu5lCEufLtTtKOn8pPYMPsGBcGSxZtQXp00R8cwzxhVo3u1SEcLl+OXV1PEy5ClvXu5H+wwUzoCzw165OpzM5nWRRcU655mhQTDKycfG8ArqVVTMPretUqdJSOw53Q/VP31lfF5+HLTkaWRc0Y45obqcb3NigmDFDEg9iO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706808525; c=relaxed/simple;
-	bh=LDz4cSPclHrGcUNF60Wj+2awLj0W9TGGEoMVoXcsebQ=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=S35qAt0iGPH6bOjk5PR+Asb+nGAnm5QD9twE0M/NnVJ4ITKWJZelZ2dU9wfJfoV98CTOQPKczcuMg//cE+p0tEwkXrVj1pRKU3KmAMut/jQ0V40wSwicc5gRuKfqlT60jT3jLk6Jqd/OJsEElR0+jfqkd4b4jSIrGBaPC0YzzMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QnYKD5Rt; arc=none smtp.client-ip=209.85.215.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5dbddee3694so932339a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 09:28:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706808523; x=1707413323; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FqcNQbYXwUHok/DzOu9wC5HLHmgl3kq0tC4Cv9tO/lY=;
-        b=QnYKD5RtNcDtzMJkK4lbYkkMeDPOkFf10wmghzkzm1kHZXi+UE1y5bw6EDthtYhL8d
-         D++h9PtH5/HIHaSur99jbbeTJNsVdjv8UQJi0VO94ByWJn1KHL6YQSgzpJYPQy+nMm7K
-         vrjudzDu2LVBS2Ejv+2uHTTahrz/NlJuBVKp6Wd8ACjDiXBmCgL2nBwV/8msLVsGEFDz
-         hJ0ppbnNWWz7F/8/iF2TUQk7kE91oCU0c90NNhyc3RGaSShBOLYuTh8/vc7mahZIZdeX
-         JN4OgdBu2x6ecLkEfnIpG0kDfGxF8Wjrep94uGZdDrUQMg0vg375HOR4H2+s1gM08on6
-         5LTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706808523; x=1707413323;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=FqcNQbYXwUHok/DzOu9wC5HLHmgl3kq0tC4Cv9tO/lY=;
-        b=wxlwvhLTV3dvQLRrNhdTnJIz+R3vc5hVMJJLuO2fIWPgz98mYS2DDXEzR+kZYhsmpS
-         XifToUaSXHvLVdzb8gd0s9Nx+jtlBNj9GvLL8QWCg5j0bVKg0qVLQDWR3DtPyJKmCN5q
-         eetZByCuxYCLz7hFj/CnK8oVyMFCVSMcQthLcGsVk2kEC0HPK4wAGkJFT3buhmPChjPi
-         cLuYPaXoYShA3G3p6h9fiKobyDoenFHgY33IKgJQREa0Ew6+762m6r0ADfqp0OXXoCKi
-         x7q0TFtUZG1YC+RGvBfJU1anekCrNjBEoc8TveujOASZNXmDrJ7LHwyZ/0swftDZhD5Q
-         A9Mw==
-X-Gm-Message-State: AOJu0Yzk6ReXbnFhOtrXXBju9vftrsnzSI/mpOqRpr/ureWEd7nIfKYV
-	vD8jdpRmtEx6GDcA34jgDBdPRFy+p+7wHQ3lK3kLG/GJax7ZGgGS9dcsDtNcGpM1eRNZzECFvtq
-	w3w==
-X-Google-Smtp-Source: AGHT+IGYLucmIpRdmDluEURIVy4glnQOvmk9DqRdJS6rorxHVDPbTuaQNO1rQaQRMADTqIDJuDdtwb7Cs1U=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:2485:0:b0:5ce:2aa:8988 with SMTP id
- k127-20020a632485000000b005ce02aa8988mr221950pgk.4.1706808523492; Thu, 01 Feb
- 2024 09:28:43 -0800 (PST)
-Date: Thu, 1 Feb 2024 09:28:41 -0800
-In-Reply-To: <CAL715WJDesggP0S0M0SWX2QaFfjBNdqD1j1tDU10Qxk6h7O0pA@mail.gmail.com>
+	s=arc-20240116; t=1706808586; c=relaxed/simple;
+	bh=jiqimdF8tfIp0DYa4JWLmSbNouWv248ghCExbt4VYTw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AkS/Khzd7bcJmbgHw8XEPPaMQgVwdIaBMLEsCK6Ue/ar1hadz8I1zBhTiiVLtMjNV17rBXCTrN+lscH4GM8vDGsiIu8ogscyeYDfI2CHLB8HcWNbWNeBuxPXCSc+5NQmvX4Hz869Pk4bEVoDo8jUjesWdl6KsNPVC350chzgcsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2EEF9DA7;
+	Thu,  1 Feb 2024 09:30:25 -0800 (PST)
+Received: from e133380.arm.com (e133380.arm.com [10.1.197.58])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 59CB73F738;
+	Thu,  1 Feb 2024 09:29:41 -0800 (PST)
+Date: Thu, 1 Feb 2024 17:29:38 +0000
+From: Dave Martin <Dave.Martin@arm.com>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Fangrui Song <maskray@google.com>, Peter Smith <peter.smith@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
+	Jisheng Zhang <jszhang@kernel.org>, llvm@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: jump_label: use constraint "S" instead of "i"
+Message-ID: <ZbvVApJ2/+yca0u6@e133380.arm.com>
+References: <20240131065322.1126831-1-maskray@google.com>
+ <CAMj1kXGzADFWa7RmXyjWpCnQ=9hhz6i-XkN4PS1CboZ-kFL8dQ@mail.gmail.com>
+ <ZbpEnDK3U/O24ng0@e133380.arm.com>
+ <20240201045551.ajg4iqcajyowl2rh@google.com>
+ <CAMj1kXEBjumu3VUySg1cQ+SYm4MugJ5f6pd1f7C0XrLyOWAoOw@mail.gmail.com>
+ <20240201091120.pbgr7ng6t2c36fut@google.com>
+ <ZbuFWSRBntgm2ukJ@e133380.arm.com>
+ <CAMj1kXGu76WHY8=Y-KhCxBq3xeHeCYQ9syqViSr9VRkjgWQ3BQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240123221220.3911317-1-mizhang@google.com> <ZbpqoU49k44xR4zB@google.com>
- <368248d0-d379-23c8-dedf-af7e1e8d23c7@oracle.com> <CAL715WJDesggP0S0M0SWX2QaFfjBNdqD1j1tDU10Qxk6h7O0pA@mail.gmail.com>
-Message-ID: <ZbvUyaEypRmb2s73@google.com>
-Subject: Re: [PATCH] KVM: x86/pmu: Fix type length error when reading pmu->fixed_ctr_ctrl
-From: Sean Christopherson <seanjc@google.com>
-To: Mingwei Zhang <mizhang@google.com>
-Cc: Dongli Zhang <dongli.zhang@oracle.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	"H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXGu76WHY8=Y-KhCxBq3xeHeCYQ9syqViSr9VRkjgWQ3BQ@mail.gmail.com>
 
-On Wed, Jan 31, 2024, Mingwei Zhang wrote:
-> On Wed, Jan 31, 2024 at 9:02=E2=80=AFAM Dongli Zhang <dongli.zhang@oracle=
-com> wrote:
-> > On 1/31/24 07:43, Sean Christopherson wrote:
-> > > On Tue, Jan 23, 2024, Mingwei Zhang wrote:
-> > >> Fix type length error since pmu->fixed_ctr_ctrl is u64 but the local
-> > >> variable old_fixed_ctr_ctrl is u8. Truncating the value leads to
-> > >> information loss at runtime. This leads to incorrect value in old_ct=
-rl
-> > >> retrieved from each field of old_fixed_ctr_ctrl and causes incorrect=
- code
-> > >> execution within the for loop of reprogram_fixed_counters(). So fix =
-this
-> > >> type to u64.
-> > >
-> > > But what is the actual fallout from this?  Stating that the bug cause=
-s incorrect
-> > > code execution isn't helpful, that's akin to saying water is wet.
-> > >
-> > > If I'm following the code correctly, the only fallout is that KVM may=
- unnecessarily
-> > > mark a fixed PMC as in use and reprogram it.  I.e. the bug can result=
- in (minor?)
-> > > performance issues, but it won't cause functional problems.
+On Thu, Feb 01, 2024 at 05:07:59PM +0100, Ard Biesheuvel wrote:
+> On Thu, 1 Feb 2024 at 12:50, Dave Martin <Dave.Martin@arm.com> wrote:
 > >
-> > My this issue cause "Uhhuh. NMI received for unknown reason XX on CPU X=
-X." at VM side?
+> > On Thu, Feb 01, 2024 at 01:11:20AM -0800, Fangrui Song wrote:
+> ...
+> > >
+> > > Hmm. Clang's constraint "S" implementation doesn't support a constant
+> > > offset, so
+> > > `static_key_false(&nf_hooks_needed[pf][hook])` in include/linux/netfilter.h:nf_hook
+> > > would not compile with Clang <= 18.
+> > >
+> > > I have a patch https://github.com/llvm/llvm-project/pull/80255 , but
+> > > even if it is accepted and cherry-picked into the 18.x release branch,
+> > > if we still support older Clang, we cannot use "S" unconditionally.
+> > >
+> > >
+> > > So we probably need the following to prepare for -fPIE support in the
+> > > future:
+> > >
+> > > diff --git a/arch/arm64/include/asm/jump_label.h b/arch/arm64/include/asm/jump_label.h
+> > > index 48ddc0f45d22..b8af2f8b0c99 100644
+> > > --- a/arch/arm64/include/asm/jump_label.h
+> > > +++ b/arch/arm64/include/asm/jump_label.h
+> > > @@ -15,6 +15,16 @@
+> > >  #define JUMP_LABEL_NOP_SIZE          AARCH64_INSN_SIZE
+> > > +/*
+> > > + * Prefer "S" to support PIC. However, use "i" for Clang 18 and earlier as "S"
+> > > + * on a symbol with a constant offset is not supported.
+> > > + */
+> > > +#if defined(CONFIG_CC_IS_CLANG) && __clang_major__ <= 18
 > >
-> > The PMC is still active while the VM side handle_pmi_common() is not go=
-ing to handle it?
->=20
-> hmm, so the new value is '0', but the old value is non-zero, KVM is
-> supposed to zero out (stop) the fix counter), but it skips it. This
-> leads to the counter continuously increasing until it overflows, but
-> guest PMU thought it had disabled it. That's why you got this warning?
+> > Is a GCC version check needed?  Or is the minimum GCC version specified
+> > for building the kernel new enough?
+> >
+> > > +#define JUMP_LABEL_STATIC_KEY_CONSTRAINT "i"
+> > > +#else
+> > > +#define JUMP_LABEL_STATIC_KEY_CONSTRAINT "S"
+> > > +#endif
+> > > +
+> 
+> Can we use "Si" instead?
 
-No, that can't happen, and KVM would have a massive bug if that were the ca=
-se.
-The truncation can _only_ cause bits to disappear, it can't magically make =
-bits
-appear, i.e. the _only_ way this can cause a problem is for KVM to incorrec=
-tly
-think a PMC is being disabled.
+I thought the point was to avoid "S" on compilers that would choke on
+it?  If so, those compilers would surely choke on "Si" too, no?
 
-And FWIW, KVM does do the right thing (well, "right" might be too strong) w=
-hen a
-fixed PMC is disabled. KVM will pause the counter in reprogram_counter(), a=
-nd
-then leave the perf event paused counter as pmc_event_is_allowed() will ret=
-urn
-%false due to the PMC being locally disabled.
 
-But in this case, _if_ the counter is actually enabled, KVM will simply rep=
-rogram
-the PMC.  Reprogramming is unnecessary and wasteful, but it's not broken.
+> > >  static __always_inline bool arch_static_branch(struct static_key * const key,
+> > >                                              const bool branch)
+> > >  {
+> > > @@ -23,9 +33,9 @@ static __always_inline bool arch_static_branch(struct static_key * const key,
+> > >                "      .pushsection    __jump_table, \"aw\"    \n\t"
+> > >                "      .align          3                       \n\t"
+> > >                "      .long           1b - ., %l[l_yes] - .   \n\t"
+> > > -              "      .quad           %c0 - .                 \n\t"
+> > > +              "      .quad           %0 + %1 - .             \n\t"
+> > >                "      .popsection                             \n\t"
+> > > -              :  :  "i"(&((char *)key)[branch]) :  : l_yes);
+> > > +              :  :  JUMP_LABEL_STATIC_KEY_CONSTRAINT(key), "i"(branch) :  : l_yes);
+> >
+> > While this looks reasonable, I'm still not clear now why the asm must do
+> > the addition.
+> >
+> > Can we roll the branch argument into the macro?
+> >
+> > "S"(symbol + constant) seems to do the right thing for AArch64, at least
+> > in GCC.
+> >
+> 
+> 'symbol' is a struct static_key pointer, so adding '1' to it will not
+> produce the needed result.
 
-Side topic, looking at this code made me realize just how terrible the name=
-s
-pmc_in_use and pmc_speculative_in_use() are.  "pmc_in_use" sounds like it t=
-racks
-which PMCs have perf_events, and at first glance at kvm_pmu_cleanup(), it e=
-ven
-_looks_ like that's the case.  But kvm_pmu_cleanup() is _skipping_ PMCs tha=
-t are
-not "in use".  And conversely, there is nothing speculative about checking =
-the
-local enable bit for a PMC.
+I mean loosely things that resolve to something of the form
+"symbol + constant" in the compiler output.
 
-I'll send patches to rename pmc_in_use to pmc_accessed, and pmc_speculative=
-_in_use()
-to pmc_is_locally_enabled().
+"S"(&((char *)key)[branch]) does indeed seem to do the right thing,
+at least with GCC.
 
-As for this one, unless someone spends the time to prove me wrong, it's des=
-tined
-for 6.9 with a changelog that says the bug is likely benign.
+I probably didn't help by bikeshedding the way that expression was
+written, apologies for that.  It's orthogonal to what this patch is
+doing.
+
+> 
+> ...
+> > > > > >If there's another reason why "S" is advantageous though, I'm happy to
+> > > > > >be corrected.
+> > > > >
+> > > > > I remember that Ard has an RFC
+> > > > > https://lore.kernel.org/linux-arm-kernel/20220427171241.2426592-1-ardb@kernel.org/
+> > > > > "[RFC PATCH 0/2] arm64: use PIE code generation for KASLR kernel"
+> > > > > and see some recent PIE codegen patches.
+> > > > >
+> > > > > > Building the KASLR kernel without -fpie but linking it with -pie works
+> > > > > > in practice, but it is not something that is explicitly supported by the
+> > > > > > toolchains - it happens to work because the default 'small' code model
+> > > > > > used by both GCC and Clang relies mostly on ADRP+ADD/LDR to generate
+> > > > > > symbol references.
+> >
+> > Does this mean that doing boot-time relocation on a fully statically
+> > linked kernel doesn't bring much benefit?
+> 
+> Not sure I follow you here. The boot-time relocation is necessary in
+> any case, to fix up statically initialized pointer variables all over
+> the kernel.
+> 
+> > It would tend to be more
+> > painful to do the relocation work, and mean that the kernel text has to
+> > be temporarily writeable, but static linking should have the best
+> > runtime performance.
+> >
+> 
+> Not sure what you mean by 'static linking' here.
+> 
+> The only thing PIE linking does in the case of the kernel is
+> a) complain if static relocations are used that cannot be fixed up at
+> runtime (e.g., movk/movz sequences)
+> b) emit dynamic relocations that the early startup code can use to fix
+> up all statically initialized pointers
+> 
+> From a codegen point-of-view, there is no difference because we don't
+> use -fpic code. The problem with -fpic codegen is that it makes some
+> assumptions that only hold for shared ELF objects, e.g., avoiding
+> dynamic relocations in .text, using GOT entries even for variables
+> defined in the same compilation so that they can be preempted, keeping
+> all runtime relocatable quantities together so the CoW footprint of
+> the shared library is minimized.
+> 
+> None of this matters for the kernel, and as it turns out, the non-PIC
+> small C model produces code that the PIE linker is happy with.
+> 
+> TL;DR our code (including inline and out-of-line asm) is already PIC,
+> and this property is relied upon by KASLR.
+> 
+> > Maybe it doesn't make as much difference as I thought (certainly ADRP
+> > based addressing should make a fair amount of the PIC/PIE overhead go
+> > away).
+> >
+> 
+> The PIC/PIE overhead is in the indirections via the GOT. However,
+> recent linkers will actually perform some relaxations too: if a symbol
+> is defined in the same executable and is not preemptible, a GOT load
+> 
+> ADRP
+> LDR
+> 
+> can be transparently converted to
+> 
+> ADRP
+> ADD
+> 
+> referring to the symbol directly. This is also where hidden.h comes
+> in: making all symbol declarations and definitions 'hidden' will allow
+> the compiler to assume that a GOT entry is never needed.
+
+Is there a reason why we don't just build the whole kernel with
+-fvisibility=hidden today?
+
+> So building with -fPIC is currently not need in practice, and creates
+> some complications, which is why we have been avoiding it. But PIE
+> linking non-PIC objects is not guaranteed to remain supported going
+> forward, so it would be better to have a plan B, i.e., being able to
+> turn on -fpic without massive regressions due to GOT overhead, or
+> codegen problems with our asm hacks.
+
+Summarising all of this is it right that:
+
+1) ld -pie is how we get the reloc info into the kernel for KASLR
+today.
+
+2) We use gcc -fno-pic today, but this might break with ld -pie in the
+future, although it works for now.
+
+3) gcc -fno-pic and gcc -fPIC (or -fPIE) generate almost the same code,
+assuming we tweak symbol visibility and use a memory model that
+ADR+ADD/LDR can span.  So, moving to -fPIE is likely to be do-able.
+
+
+My point is that an alternative option would be to move to ld -no-pie.
+We would need another way to get relocs into the kernel, such as an
+intermediate step with ld --emit-relocs.  I have definitely seen this
+done before somewhere, but it would be extra work and not necessarily
+worth it, based on what you say about code gen.
+
+This may all have been discussed to death already -- I didn't mean to
+hijack this patch, so I'll stop digging here, but if I've misunderstood,
+please shout!
+
+Cheers
+---Dave
 
