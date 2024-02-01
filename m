@@ -1,112 +1,107 @@
-Return-Path: <linux-kernel+bounces-48660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9C84845F77
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:10:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59936845F7D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:11:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED2D71C2A2F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:10:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C97A1F2BF8B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:11:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C839612B17D;
-	Thu,  1 Feb 2024 18:06:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="doP0lCgp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CDC38526D;
+	Thu,  1 Feb 2024 18:07:16 +0000 (UTC)
+Received: from mail.someserver.de (mail.someserver.de [116.202.193.223])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 126C082C97;
-	Thu,  1 Feb 2024 18:06:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D46912FB00;
+	Thu,  1 Feb 2024 18:07:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.202.193.223
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706810803; cv=none; b=JsChUnkvV6fl2O49CzaiQAkjpBmClVdM+wy1EihLQkiDIucNFJT6p9sYqOw7aLo8ljt4EAJe2SMLAQaSCtyn2YvZEOd3/yFfgfc/NpopCGKlzMtO5Ip3gRsBSasOWg5n0PR2g8pNG7IDU2sv8HJWUFl3XvScUQd0SrVyMfbzVc8=
+	t=1706810836; cv=none; b=GfGJR0SVnMIRHOBHljEuY/0e/FH3cfcqsqHDgho4yK8ufc3vP/2gWEdsMz+Zg6OHpggLlfNCaEv4cTRzvnAOeix7E9Sb6OO/5s/BoMeI3i6ZD7/6XdFblSnbISD6u8xZvoyRqFfuVceg97nIQd0rnYhFmw6kKXL0FyyDcXGDfFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706810803; c=relaxed/simple;
-	bh=grYi/p4N1X4DD1hgZKLp/XELHnCmaiCXcvEboAb1fCk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mFBGT6iZjb1ewC8+y5khv9MZYOEk8smQ6f5MKZurB6cp4TKWxbPY4TyAQwKOaLR0Gy304cdZEMgxu+DFY09n6hY41+UrTke9A2ieC6Pku8Uq+BoWebrxNSBqrGVMvDINPOEATVL0s4UQhw0zdRslSiV3BQwce6KNIC3+RYUlXBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=doP0lCgp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B00EC43399;
-	Thu,  1 Feb 2024 18:06:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706810802;
-	bh=grYi/p4N1X4DD1hgZKLp/XELHnCmaiCXcvEboAb1fCk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=doP0lCgpQC4BNrBUGYN1yeLXtgIwDBUwd1kcBCbgzRp5JnGz17JJ3amOGtIGMIIOF
-	 HqQXdW0AzGbHWUDY6m6kvnjpHiUMcTtmKieSbRxK6tOTE2u+fxncc/sD9wWSAX57NX
-	 33zG1hwzT6vPEA+hU5kGQUMMkDNB3uCuSKFryNTI=
-Date: Thu, 1 Feb 2024 10:06:41 -0800
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Guan-Yu Lin <guanyulin@google.com>
-Cc: Oliver Neukum <oneukum@suse.com>,
-	Alan Stern <stern@rowland.harvard.edu>, mathias.nyman@intel.com,
-	royluo@google.com, hadess@hadess.net, benjamin.tissoires@redhat.com,
-	heikki.krogerus@linux.intel.com, grundler@chromium.org,
-	yajun.deng@linux.dev, dianders@chromium.org,
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-	badhri@google.com, albertccwang@google.com, pumahsu@google.com
-Subject: Re: [PATCH] [RFC] usb: host: Allow userspace to control usb suspend
- flows
-Message-ID: <2024020106-gore-cohesive-4bb3@gregkh>
-References: <20240130064819.1362642-1-guanyulin@google.com>
- <0e4221b5-bafe-4bea-b533-0ed8add81ef1@rowland.harvard.edu>
- <CAOuDEK2VSBcQdLKt27VrLUxH2S22275ffbe5mdVM=vBZDhceQA@mail.gmail.com>
- <09fce208-72b1-49e8-988e-ea149fbaf0b5@suse.com>
- <CAOuDEK3YcHxm4H2+n1r5KZoFK9PG9+XeJD49FCKaeX+KFhkrzQ@mail.gmail.com>
+	s=arc-20240116; t=1706810836; c=relaxed/simple;
+	bh=jWA5iTRD69ucDNwkpZwR5jCH+P2otKImG+J2kWpMQs8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ckf0wEhSkc25Chs4CfzO8gMYwLo3J0H0Rtc59yMtST9u95saXZdYCCSzEFMirLk/m9dWD2ekBvNspWAg+WT+ZrnGmtuqbA+DV6WvC4+HGT2xlO+/DJm0cy6vXvrexD8jYvmmaCTgqkSqS0fPmJLuQAggdwhRxulk+AlenrDd50A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christina-quast.de; spf=pass smtp.mailfrom=christina-quast.de; arc=none smtp.client-ip=116.202.193.223
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christina-quast.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=christina-quast.de
+Received: from localhost (unknown [195.162.191.218])
+	by mail.someserver.de (Postfix) with ESMTPSA id 80FA2A211E;
+	Thu,  1 Feb 2024 19:07:10 +0100 (CET)
+From: Christina Quast <contact@christina-quast.de>
+Subject: [PATCH v2 0/3] Add Rust Rockchip PHY driver
+Date: Thu, 01 Feb 2024 19:06:57 +0100
+Message-Id: <20240201-rockchip-rust-phy_depend-v2-0-c5fa4faab924@christina-quast.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOuDEK3YcHxm4H2+n1r5KZoFK9PG9+XeJD49FCKaeX+KFhkrzQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAMHdu2UC/0XMQQ7CIBCF4asY1o4BWtvqynsYYyhMZWKkONBG0
+ /TuEl34dt/i/YtIyIRJHDeLYJwp0RgK9HYjrDfhhkCuWGipa6mlAh7t3XqKwFPKEP376jBicNB
+ 0yvV1K9syUe6RcaDXN32+FA88PiB7RvMPqkr+Oj1lmBUoQKfRNVV3MPvuZD1TyhQMPCeT8s6hW
+ NcPdt7myrMAAAA=
+To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+ Wedson Almeida Filho <wedsonaf@gmail.com>, 
+ Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+ =?utf-8?q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+ Benno Lossin <benno.lossin@proton.me>, 
+ Andreas Hindborg <a.hindborg@samsung.com>, 
+ Alice Ryhl <aliceryhl@google.com>, 
+ FUJITA Tomonori <fujita.tomonori@gmail.com>, 
+ Trevor Gross <tmgross@umich.edu>, Andrew Lunn <andrew@lunn.ch>, 
+ Heiner Kallweit <hkallweit1@gmail.com>, 
+ Russell King <linux@armlinux.org.uk>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Heiko Stuebner <heiko@sntech.de>
+Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-rockchip@lists.infradead.org, 
+ Christina Quast <contact@christina-quast.de>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706810819; l=1206;
+ i=contact@christina-quast.de; s=20240130; h=from:subject:message-id;
+ bh=jWA5iTRD69ucDNwkpZwR5jCH+P2otKImG+J2kWpMQs8=;
+ b=x2+WW6v6zLMM6XjRuSZYbZ89dx3Cl5LmXdahaHthccc/4Gh8+ZzNrEDkpGaplAm9LUlUMptAJ
+ DRo0OfTS6bQB4JaHE1iLovyZ7EjwiZi42bBiADhExh0vY5oYleM7WbV
+X-Developer-Key: i=contact@christina-quast.de; a=ed25519;
+ pk=aoQfinjbnr265vCkIZdYteLDcmIqLBhY1m74WfFUU9E=
 
-On Fri, Feb 02, 2024 at 12:00:00AM +0800, Guan-Yu Lin wrote:
-> On Thu, Feb 1, 2024 at 5:38 PM Oliver Neukum <oneukum@suse.com> wrote:
-> >
-> >
-> >
-> > On 01.02.24 10:02, Guan-Yu Lin wrote:
-> > > On Wed, Jan 31, 2024 at 1:12 AM Alan Stern <stern@rowland.harvard.edu> wrote:
-> > >>
-> > >> On Tue, Jan 30, 2024 at 06:47:13AM +0000, Guan-Yu Lin wrote:
-> >
-> > >> Why does this affect only the USB subsystem?  Can't the co-processor
-> > >> use other, non-USB, devices on the system?
-> > >>
-> > > In our use case, the co-processor only supports USB subsystem. There might be
-> > > other co-processors support more subsystems, but we're not sure about how they
-> > > will interact with the system.
-> >
-> > Hi,
-> >
-> > it would be very good if you decided this now, before we add attributes.
-> >
-> > The reason is that if this feature is needed for multiple subsystems,
-> > the attribute should be added to the generic device structure, so that
-> > the naming and semantics are consistent.
-> > You really don't want to repeat this discussion for every subsystem.
-> >
-> >         Regards
-> >                 Oliver
-> >
-> 
-> Hi,
-> 
-> Given that in our use case the co-processor only supports USB subsystem, I'd
-> like to proceed with adding the attribute exclusively within the USB subsystem.
-> Please let me know if there is any further consideration, thanks.
+Based on the example shown in drivers/net/phy/ax88796b_rust.rs, I ported
+the rockchip phy driver to Rust. The code in drivers/net/phy/rockchip.c
+was basically rewritten in Rust.  The patchset includes changes to
+phy.rs, adding more struct driver functions for the abstraction with
+Rust.
 
-Please do it properly as Oliver states here.  Otherwise it will require
-more work in the future for you to modify this again for all other
-subsystems.
+The driver was not tested on real hardware, because I do not have a
+board with this phy, and I would appreciate it if somebody could try
+out the driver on their board.
 
-thanks,
+Signed-off-by: Christina Quast <contact@christina-quast.de>
+---
+Christina Quast (3):
+      DONOTMERGE: rust: prelude: add bit function
+      rust: phy: add some phy_driver and genphy_ functions
+      net: phy: add Rust Rockchip PHY driver
 
-greg k-h
+ drivers/net/phy/Kconfig          |   8 +++
+ drivers/net/phy/Makefile         |   4 ++
+ drivers/net/phy/rockchip_rust.rs | 131 +++++++++++++++++++++++++++++++++++++++
+ rust/kernel/net/phy.rs           |  31 +++++++++
+ rust/kernel/prelude.rs           |  16 +++++
+ 5 files changed, 190 insertions(+)
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240201-rockchip-rust-phy_depend-681db4707777
+
+Best regards,
+-- 
+Christina Quast <contact@christina-quast.de>
+
 
