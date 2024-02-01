@@ -1,156 +1,105 @@
-Return-Path: <linux-kernel+bounces-48978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1A4384644F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:09:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA74E846451
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:12:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D5C1B244CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:09:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E580B2215A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:12:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A9A847F48;
-	Thu,  1 Feb 2024 23:08:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA1A447F45;
+	Thu,  1 Feb 2024 23:11:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EF5SNwHX"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AaZk5H0/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D384847A70
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 23:08:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0CCD45BE0;
+	Thu,  1 Feb 2024 23:11:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706828935; cv=none; b=pAX0IdVo0qXWPv8XFHYQRio6lndknCy1YfExRCMtBFW4R/nOp/nFE6BXD/ZXuT5TfE6GrBHv5ZVbm3kj6/kPX2/c7gsSFdIfKfBjfmIutBQW66U9AsO67BNDIi5thTAmE53k4bklxM2B77ls6TBV9JxBy8qCDrCpBBTKQ/10THE=
+	t=1706829114; cv=none; b=S/MjfnltNM2BydHeNjL8LaXLQrmVQIPWw2Ccdr8P4nNH+FxyR+RLaOzXwvKLbfZwrHCePlkRiVaMNgD6+VtsELMfdYy1Oqpnkzz+waHZQoRBkIaguQLwEkG9Xi3WRa0Fe+rJOLczKDtDQRzFlzgP2xTc2qLTcKcSGMoiFTQFs5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706828935; c=relaxed/simple;
-	bh=M9Rbd1TTFJHpw9s+5sNyKj1m810A0YRxxUYpqz9R2Yc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rY9M/AOMCuwakceisFuNUYdxl/JWnbmfRATUecWWkhDGyMHo/ayAJ4vW1OXwhdnyvTmLtpVqKPn4TOHOmxBTMd9WKrHfKC97ARGWlQvvNKSxDZDuSJveEBew77xyyYy4sBLG9zAM07aEI7DJfN6LDhJ33jrJsIGB0fKYm4mqt/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EF5SNwHX; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706828932;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lIys8ywl8dUROimT8NQnX8daI13tCkTHScBncJRrjoE=;
-	b=EF5SNwHXsHyj8w1cUWJQfvQTEp+TAlszAGiastjRKxzAl/dozX6Tueab6QmH3w6f28kHLF
-	ldnXXshx83lKZsAvuvkba2D6QgfZKR6sxZnYm5KCYIYMvR6aOAZ7z0MPtitQMOXjbmMeWt
-	ZlhemX5A1/qP23gcYwLgi+cAQi4eTkQ=
-Received: from mail-ua1-f69.google.com (mail-ua1-f69.google.com
- [209.85.222.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-642-PwPtt3Y3Mk6CdUwNrprPGA-1; Thu, 01 Feb 2024 18:08:49 -0500
-X-MC-Unique: PwPtt3Y3Mk6CdUwNrprPGA-1
-Received: by mail-ua1-f69.google.com with SMTP id a1e0cc1a2514c-7cef6c44e40so852687241.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 15:08:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706828929; x=1707433729;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lIys8ywl8dUROimT8NQnX8daI13tCkTHScBncJRrjoE=;
-        b=aBOC2jLlyPeMxe5lSf3TVMGLyAGQn+Bty9nVVWOhTcyH4Jk3wWUEOuh++3//PftTQ3
-         JgjF3PHZo00jTV6SKgt/0aOhV8NfIULNLaxGIC1HIz6EYK8F44qkyEetofi/TgK5FPrF
-         /0bhX20d3HNbiQ5b92anRrx6+iVOfXymlqU02zJmS5mqdEgCEMccUfvdALK0ZM/cuSo8
-         /6pO2OR/IlKtZuBJUriYoETbug5BG7RV8U/0PNTHhSY4tyst/130UHUGnUHYqICO4j2r
-         X10gS34ryBvGyS3VPk+xuD9N+10ZLZvOpAOVXaZn332mURlT8r7jI5Gz4FrAEHvlpxtj
-         TKgA==
-X-Gm-Message-State: AOJu0Yx3hkx/RtjrCwcj9QBUQLdwt1ghfuhVkzBFq7y25qEsCHPO4hRb
-	fALbFPkU1L1lJzYq4dBOg8VX5jM18ZrssD4q71eFxvWIUT6PpZBoSwzsbDZYyMGUPDrMYqiQiaH
-	EI3qh2uXNdnBFkYzBjvutypiE1CGGTmUKGAf1qf/4TVKYf4bZI7GrqN3AEpJl5qVF7l5s1ijZet
-	yPjCf5I4jHUfeObEgPxx7V+ytvuhPU2QmRxf29
-X-Received: by 2002:a05:6102:3bc7:b0:46b:2aa2:a979 with SMTP id a7-20020a0561023bc700b0046b2aa2a979mr5287965vsv.20.1706828929145;
-        Thu, 01 Feb 2024 15:08:49 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH5PMIvH8mlOxCH1g5Ms06GYARDVSWb3KEdt+hQjQ4g1UroC8JkAVJu8a/+TAM7qVlOYKk+QUPlKtsT5+8lyxw=
-X-Received: by 2002:a05:6102:3bc7:b0:46b:2aa2:a979 with SMTP id
- a7-20020a0561023bc700b0046b2aa2a979mr5287948vsv.20.1706828928875; Thu, 01 Feb
- 2024 15:08:48 -0800 (PST)
+	s=arc-20240116; t=1706829114; c=relaxed/simple;
+	bh=bBckTHlnwRsnRIxBqMozm+cZDPwPFIOZVqpGpVOkEzM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RcBrmwg69kZqw/LqFzd058CIySY5MLZpc+cSi8AnW06gD+dwnlrF93taTwzQMZXkvtXHyx9QuLVMpnALITbYdBXHLDzndFFMg9H7O0wM0K/Ok9DhAip3La41JhNOODm+Op/ijcxT6FF5aZwhVLfucvc2kP6S/0GqGZMWBxWDf08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AaZk5H0/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7286C433F1;
+	Thu,  1 Feb 2024 23:11:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706829113;
+	bh=bBckTHlnwRsnRIxBqMozm+cZDPwPFIOZVqpGpVOkEzM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AaZk5H0/y6XdJGc4OBWVBMIwflsWjW30D87R9aF2R5qDGHmZ/z2we5N4MzBIrJFgF
+	 R5GBGDR7lW9s/UVvZTQHUc9QyeySw8JS0MWMOrhJ+bDJqL0JmCbZTjrvJtYd5aCjcd
+	 LUgGf5meauGwQZQApm1WH74dN3nvnP6W7aRWRpiJhDPnDtiz2hSWL5OpiznHQ37nbD
+	 wYSckxDrnb7zqrVkPiu0NQDmKVE4SX9JiW622OqGZo950/xIyea3UlNhRV3yV+IVys
+	 dUsQEy9ROIZvqV2QYJDHIHr68kP9FTz4s5ngo9FPRnrWcTwu/zV4MPxWJuAMEqWaPK
+	 DULEFWyzhXJgQ==
+Date: Thu, 1 Feb 2024 15:11:51 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: jeffxu@chromium.org
+Cc: akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com,
+	sroettger@google.com, willy@infradead.org,
+	gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
+	usama.anjum@collabora.com, rdunlap@infradead.org, jeffxu@google.com,
+	jorgelo@chromium.org, groeck@chromium.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
+	linux-hardening@vger.kernel.org, deraadt@openbsd.org
+Subject: Re: [PATCH v8 2/4] mseal: add mseal syscall
+Message-ID: <20240201231151.GA41472@sol.localdomain>
+References: <20240131175027.3287009-1-jeffxu@chromium.org>
+ <20240131175027.3287009-3-jeffxu@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131230902.1867092-1-pbonzini@redhat.com> <2b5e6d68-007e-48bd-be61-9a354be2ccbf@intel.com>
-In-Reply-To: <2b5e6d68-007e-48bd-be61-9a354be2ccbf@intel.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Fri, 2 Feb 2024 00:08:36 +0100
-Message-ID: <CABgObfa_7ZAq1Kb9G=ehkzHfc5if3wnFi-kj3MZLE3oYLrArdQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] x86/cpu: fix invalid MTRR mask values for SEV or TME
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
-	Zixi Chen <zixchen@redhat.com>, Adam Dunlap <acdunlap@google.com>, 
-	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>, Xiaoyao Li <xiaoyao.li@intel.com>, 
-	Kai Huang <kai.huang@intel.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>, x86@kernel.org, 
-	stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240131175027.3287009-3-jeffxu@chromium.org>
 
-On Thu, Feb 1, 2024 at 7:29=E2=80=AFPM Dave Hansen <dave.hansen@intel.com> =
-wrote:
-> I really wanted get_cpu_address_sizes() to be the one and only spot
-> where c->x86_phys_bits is established.  That way, we don't get a bunch
-> of code all of the place tweaking it and fighting for who "wins".
-> We're not there yet, but the approach in this patch moves it back in the
-> wrong direction because it permits the random tweaking of c->x86_phys_bit=
-s.
+On Wed, Jan 31, 2024 at 05:50:24PM +0000, jeffxu@chromium.org wrote:
+> [PATCH v8 2/4] mseal: add mseal syscall
+[...]
+> +/*
+> + * The PROT_SEAL defines memory sealing in the prot argument of mmap().
+> + */
+> +#define PROT_SEAL	0x04000000	/* _BITUL(26) */
+> +
+>  /* 0x01 - 0x03 are defined in linux/mman.h */
+>  #define MAP_TYPE	0x0f		/* Mask for type of mapping */
+>  #define MAP_FIXED	0x10		/* Interpret addr exactly */
+> @@ -33,6 +38,9 @@
+>  #define MAP_UNINITIALIZED 0x4000000	/* For anonymous mmap, memory could be
+>  					 * uninitialized */
+>  
+> +/* map is sealable */
+> +#define MAP_SEALABLE	0x8000000	/* _BITUL(27) */
 
-I see your point; one of my earlier attempts added a
-->c_detect_mem_encrypt() callback that basically amounted to either
-amd_detect_mem_encrypt() or detect_tme(). I bailed out of it mostly
-because these functions do more than adjusting phys_bits, and it
-seemed arbitrary to call them from get_cpu_address_sizes(). The two
-approaches share the idea of centralizing the computation of
-x86_phys_bits in get_cpu_address_sizes().
+IMO this patch is misleading, as it claims to just be adding a new syscall, but
+it actually adds three new UAPIs, only one of which is the new syscall.  The
+other two new UAPIs are new flags to the mmap syscall.
 
-There is unfortunately an important hurdle for your patch, in that
-currently the BSP and AP flows are completely different. For the BSP
-the flow is ->c_early_init(), then get_cpu_address_sizes(), then again
-->c_early_init() called by ->c_init(), then ->c_init(). For APs it is
-get_cpu_address_sizes(), then ->c_early_init() called by ->c_init(),
-then the rest of ->c_init(). And let's not even look at
-->c_identify().
+Based on recent discussions, it seems the usefulness of the new mmap flags has
+not yet been established.  Note also that there are only a limited number of
+mmap flags remaining, so we should be careful about allocating them.
 
-This difference is bad for your patch, because get_cpu_address_sizes()
-is called too early to see enc_phys_bits on APs. But it was also
-something that fbf6449f84bf didn't take into account, because it left
-behind the tentative initialization of x86_*_bits in identify_cpu(),
-while removing it from early_identify_cpu().  And
+Therefore, why not start by just adding the mseal syscall, without the new mmap
+flags alongside it?
 
-TBH my first reaction after Kirill pointed me to fbf6449f84bf was to
-revert it. It's not like the code before was much less of a dumpster
-fire, but that commit made the BSP vs. AP mess even worse. But it
-fixed a real-world bug and it did remove most of the "first set then
-adjust" logic, at least for the BSP, so a revert wasn't on the table
-and patch 1 was what came out of it.
+I'll also note that the existing PROT_* flags seem to be conventionally used for
+the CPU page protections, as opposed to kernel-specific properties of the VMA
+object.  As such, PROT_SEAL feels a bit out of place anyway.  If it's added at
+all it perhaps should be a MAP_* flag, not PROT_*.  I'm not sure this aspect has
+been properly discussed yet, seeing as the patchset is presented as just adding
+sys_mseal().  Some reviewers may not have noticed or considered the new flags.
 
-I know that in general in Linux we prefer to fix things for good.
-Dancing one step behind and two ahead comes with the the risk that you
-only do the step behind. But in the end something like this patch 1
-would have to be posted for stable branches (and Greg doesn't like
-one-off patches), and I am not even sure it's a step behind because it
-removes _some_ of the BSP vs. AP differences introduced by
-fbf6449f84bf.
-
-In a nutshell: I don't dislike the idea behind your patch, but the
-code is just not ready for it.
-
-I can look into cleaning up cpu/common.c though. I'm a natural
-procrastinator, it's my kind of thing to embark on a series of 30
-patches to clean up 20 years old code...
-
-Paolo
-
-> Could we instead do something more like the (completely untested)
-> attached patch?
->
-> BTW, I'm pretty sure the WARN_ON() in the patch won't actually work, but
-> it'd be nice to work toward a point when it does.
->
-
+- Eric
 
