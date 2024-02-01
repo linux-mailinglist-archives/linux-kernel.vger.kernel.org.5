@@ -1,60 +1,84 @@
-Return-Path: <linux-kernel+bounces-48605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9600845EB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:39:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22580845EBA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:39:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7545C28F374
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:39:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B50411F20F4A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:39:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C05586FBBE;
-	Thu,  1 Feb 2024 17:38:56 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B4626FB88;
-	Thu,  1 Feb 2024 17:38:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A79C36FBB6;
+	Thu,  1 Feb 2024 17:39:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="YzY1cTmS"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E30366FB80;
+	Thu,  1 Feb 2024 17:39:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706809136; cv=none; b=hPr1b6Nbmg16yTLAvC4i4/CnnPPS1Cx4DhhtpcTMbAsVlz6aFQBhmLzUsx2Amv2/vGz47kzSiICPWP9YdGKUVvO/ZcXzgD45F2fzgQRu0HujJVtq8b1zuQbBza5JodlA3E52nC1M/Z/yfHHtS2AkFHUcL60CbLUldwo/zTXVq8Y=
+	t=1706809183; cv=none; b=EzEIcqwxCH53OPzyE+kNCO6a6X8QW5Ceu+Mri1iTlKJ08YJDITRwLCegaYSIlhgN8PdlrounEDhStTbc+yhTZRQv3yogUmnxhesWKgRZDQgBgdigzuEygT5/DSpJoRBm5yjSRDNqWBODiTq+26ZlOogn0X6wQrNQLFwiMd7oZmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706809136; c=relaxed/simple;
-	bh=+jscayz1j5iTQ/gLXe+z+HvDEvJcz5+9nneP6cJ+HKk=;
+	s=arc-20240116; t=1706809183; c=relaxed/simple;
+	bh=RWGyUTm81HR0yufwItYXvd5eIRRmFJnLjC1+iy6AijI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E1Oy54BLboD4+svxMA0HRo41tJ+2bcrddkoFADgqFDbHUU9IMwqoOxBzB8XccNQrhMK2fPukgZFprHGGr8nucHvaMzSTZqE3vJcZZ909Zyt9TD/4PZP6bdtBI/70ea3rkwmTNB3YCDoFwrTJm1ZJiJ9Zw5XjffuJO6ItZC22Hps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 32134DA7;
-	Thu,  1 Feb 2024 09:39:36 -0800 (PST)
-Received: from raptor (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 95BF13F738;
-	Thu,  1 Feb 2024 09:38:48 -0800 (PST)
-Date: Thu, 1 Feb 2024 17:38:42 +0000
-From: Alexandru Elisei <alexandru.elisei@arm.com>
-To: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-	maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-	yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-	rppt@kernel.org, hughd@google.com, pcc@google.com,
-	steven.price@arm.com, vincenzo.frascino@arm.com, david@redhat.com,
-	eugenis@google.com, kcc@google.com, hyesoo.yu@samsung.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v3 31/35] khugepaged: arm64: Don't collapse MTE
- enabled VMAs
-Message-ID: <ZbvXImzAJNKQvamJ@raptor>
-References: <20240125164256.4147-1-alexandru.elisei@arm.com>
- <20240125164256.4147-32-alexandru.elisei@arm.com>
- <599769c3-0aef-4c5b-ac98-f109649862f7@arm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=l3uKrOSrVnCyUl31mIfOyaFXj3EG8z3jIyX4JXuOuOO5jc+WifXt9Fxu4Fl/t/VPC4lP+fvO4TKZD+Wt8eJATj9gdP/TYBimtk46aiAvnE8oGLjgMAV3T4oVgAEcgn8/5Dl8lrkX9f/+ROyJGIr4SVodcphC3VwCS5KMbonZR60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=YzY1cTmS; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4896A40006;
+	Thu,  1 Feb 2024 17:39:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706809178;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V2KBXwj4NCjvyE4+0IyeJO23YI/n7DqRxLkdLjw4M2I=;
+	b=YzY1cTmSdDy0ffIMayCgOBcypcfMFD/Hvvfmyst5xxSR1Vg5PS4+95h2BDc+oz66xWiUgp
+	ax/GemPF+x9OGVoXKrtTZkr6Ry4ajL99c58ko7eTVTAsc6dAD2QyZz/IgA6TphbY3iG8rz
+	uV5w1IrlTydt64Wo3l3qVM+b8Vu77J7npywQtfl7Vp1WE6RDw9cEpve9UT1dse5ZJWGnN/
+	pIXAywFNqRQP6FTcBekTJ0LmmpNrPNSe2y/iWxAIU+myq04SxINmA0ZGEEtzfdSDpkVVl4
+	puibyhHuFDpBo756cSN2+AUrNMhhHHuqlfVgW3qKhqqHnFvvkeZl0iqQvnrZLw==
+Date: Thu, 1 Feb 2024 18:39:35 +0100
+From: Louis Chauvet <louis.chauvet@bootlin.com>
+To: Arthur Grillo <arthurgrillo@riseup.net>
+Cc: Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+	Haneen Mohammed <hamohammed.sa@gmail.com>,
+	Harry Wentland <harry.wentland@amd.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
+	Melissa Wen <melissa.srw@gmail.com>,
+	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-doc@vger.kernel.org, nicolejadeyee@google.com,
+	seanpaul@google.com, thomas.petazzoni@bootlin.com,
+	miquel.raynal@bootlin.com
+Subject: Re: [PATCH v2 4/7] drm/vkms: Add chroma subsampling
+Message-ID: <ZbvXV-1hrfXLcvC3@localhost.localdomain>
+Mail-Followup-To: Arthur Grillo <arthurgrillo@riseup.net>,
+	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+	Haneen Mohammed <hamohammed.sa@gmail.com>,
+	Harry Wentland <harry.wentland@amd.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
+	Melissa Wen <melissa.srw@gmail.com>,
+	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-doc@vger.kernel.org, nicolejadeyee@google.com,
+	seanpaul@google.com, thomas.petazzoni@bootlin.com,
+	miquel.raynal@bootlin.com
+References: <20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net>
+ <20240110-vkms-yuv-v2-4-952fcaa5a193@riseup.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,122 +87,38 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <599769c3-0aef-4c5b-ac98-f109649862f7@arm.com>
+In-Reply-To: <20240110-vkms-yuv-v2-4-952fcaa5a193@riseup.net>
+X-GND-Sasl: louis.chauvet@bootlin.com
 
-On Thu, Feb 01, 2024 at 01:42:08PM +0530, Anshuman Khandual wrote:
-> 
-> 
-> On 1/25/24 22:12, Alexandru Elisei wrote:
-> > copy_user_highpage() will do memory allocation if there are saved tags for
-> > the destination page, and the page is missing tag storage.
-> > 
-> > After commit a349d72fd9ef ("mm/pgtable: add rcu_read_lock() and
-> > rcu_read_unlock()s"), collapse_huge_page() calls
-> > __collapse_huge_page_copy() -> .. -> copy_user_highpage() with the RCU lock
-> > held, which means that copy_user_highpage() can only allocate memory using
-> > GFP_ATOMIC or equivalent.
-> > 
-> > Get around this by refusing to collapse pages into a transparent huge page
-> > if the VMA is MTE-enabled.
-> 
-> Makes sense when copy_user_highpage() will allocate memory for tag storage.
-> 
-> > 
-> > Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> > ---
-> > 
-> > Changes since rfc v2:
-> > 
-> > * New patch. I think an agreement on whether copy*_user_highpage() should be
-> > always allowed to sleep, or should not be allowed, would be useful.
-> 
-> This is a good question ! Even after preventing the collapse of MTE VMA here,
-> there still might be more paths where a sleeping (i.e memory allocating)
-> copy*_user_highpage() becomes problematic ?
+[...]
 
-Exactly!
+> @@ -146,18 +149,23 @@ void vkms_compose_row(struct line_buffer *stage_buffer, struct vkms_plane_state
+>  	for (size_t x = 0; x < limit; x++) {
+>  		int x_pos = get_x_position(frame_info, limit, x);
+>  
+> +		bool shoud_inc = !((x + 1) % frame_format->num_planes);
 
-> 
-> > 
-> >  arch/arm64/include/asm/pgtable.h    | 3 +++
-> >  arch/arm64/kernel/mte_tag_storage.c | 5 +++++
-> >  include/linux/khugepaged.h          | 5 +++++
-> >  mm/khugepaged.c                     | 4 ++++
-> >  4 files changed, 17 insertions(+)
-> > 
-> > diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> > index 87ae59436162..d0473538c926 100644
-> > --- a/arch/arm64/include/asm/pgtable.h
-> > +++ b/arch/arm64/include/asm/pgtable.h
-> > @@ -1120,6 +1120,9 @@ static inline bool arch_alloc_cma(gfp_t gfp_mask)
-> >  	return true;
-> >  }
-> >  
-> > +bool arch_hugepage_vma_revalidate(struct vm_area_struct *vma, unsigned long address);
-> > +#define arch_hugepage_vma_revalidate arch_hugepage_vma_revalidate
-> > +
-> >  #endif /* CONFIG_ARM64_MTE_TAG_STORAGE */
-> >  #endif /* CONFIG_ARM64_MTE */
-> >  
-> > diff --git a/arch/arm64/kernel/mte_tag_storage.c b/arch/arm64/kernel/mte_tag_storage.c
-> > index ac7b9c9c585c..a99959b70573 100644
-> > --- a/arch/arm64/kernel/mte_tag_storage.c
-> > +++ b/arch/arm64/kernel/mte_tag_storage.c
-> > @@ -636,3 +636,8 @@ void arch_alloc_page(struct page *page, int order, gfp_t gfp)
-> >  	if (tag_storage_enabled() && alloc_requires_tag_storage(gfp))
-> >  		reserve_tag_storage(page, order, gfp);
-> >  }
-> > +
-> > +bool arch_hugepage_vma_revalidate(struct vm_area_struct *vma, unsigned long address)
-> > +{
-> > +	return !(vma->vm_flags & VM_MTE);
-> > +}
-> > diff --git a/include/linux/khugepaged.h b/include/linux/khugepaged.h
-> > index f68865e19b0b..461e4322dff2 100644
-> > --- a/include/linux/khugepaged.h
-> > +++ b/include/linux/khugepaged.h
-> > @@ -38,6 +38,11 @@ static inline void khugepaged_exit(struct mm_struct *mm)
-> >  	if (test_bit(MMF_VM_HUGEPAGE, &mm->flags))
-> >  		__khugepaged_exit(mm);
-> >  }
-> > +
-> > +#ifndef arch_hugepage_vma_revalidate
-> > +#define arch_hugepage_vma_revalidate(vma, address) 1
-> 
-> Please replace s/1/true as arch_hugepage_vma_revalidate() returns bool ?
+I think this line will break if the subsampling is not the same as the 
+plane count. For NV12 it works only because there are two planes and 
+hsub=2/vsub=2, but I believe NV24 will not work because of plane 2, as 
+we need to increment x at the same speed on all planes.
 
-Yeah, that's strange, I don't know why I used 1 there. Will change it to true,
-thanks for spotting it.
+I have a proposal to solve this issue (see my patchset applying on top of 
+yours). You probably at least need to use .hsub/vsub to 
+increment/decrement properly src_pixels pointer.
 
-> 
-> > +#endif
-> 
-> Right, above construct is much better than __HAVE_ARCH_XXXX based one.
+Currently the tests pass for it because it only use "horizontal 
+lines" and "full color" pictures. 
 
-Thanks!
+In the series [1] I proposed to change the pattern to detect this kind of 
+issue.
 
-Alex
+[...]
 
-> 
-> > +
-> >  #else /* CONFIG_TRANSPARENT_HUGEPAGE */
-> >  static inline void khugepaged_fork(struct mm_struct *mm, struct mm_struct *oldmm)
-> >  {
-> > diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> > index 2b219acb528e..cb9a9ddb4d86 100644
-> > --- a/mm/khugepaged.c
-> > +++ b/mm/khugepaged.c
-> > @@ -935,6 +935,10 @@ static int hugepage_vma_revalidate(struct mm_struct *mm, unsigned long address,
-> >  	 */
-> >  	if (expect_anon && (!(*vmap)->anon_vma || !vma_is_anonymous(*vmap)))
-> >  		return SCAN_PAGE_ANON;
-> > +
-> > +	if (!arch_hugepage_vma_revalidate(vma, address))
-> > +		return SCAN_VMA_CHECK;
-> > +
-> >  	return SCAN_SUCCEED;
-> >  }
-> >  
-> 
-> Otherwise this LGTM.
+[1]: https://lore.kernel.org/dri-devel/20240201-yuv-v1-0-3ca376f27632@bootlin.com/T/#t
+
+-- 
+Louis Chauvet, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
