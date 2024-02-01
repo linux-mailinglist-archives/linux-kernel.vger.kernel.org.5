@@ -1,181 +1,305 @@
-Return-Path: <linux-kernel+bounces-47514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E780D844ECF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:46:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C1DC844ED2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:47:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DD9C2851EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:46:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11A1C1F28442
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:47:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24C804C67;
-	Thu,  1 Feb 2024 01:46:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FE424A26;
+	Thu,  1 Feb 2024 01:47:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b="f/tYr+y7"
-Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="akcgXfhf"
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09DD24C60;
-	Thu,  1 Feb 2024 01:46:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.185.137.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7605DF6D
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 01:46:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706752007; cv=none; b=hjKn6DIRHbWPDRj6azfsi2dqS+316TYMVIFDyxnVeuP/lHz1brACZHFL8X2XOfHdj0kOw9sD2vq3CKLNjhMDGtAocw64vWMydtnrLAQyNVKmFeskE3/xABtY1Kt7T24Il4LSOF/jO63nMJDLidU1zwSLTxZzQqP5of7c8/34wJM=
+	t=1706752021; cv=none; b=ixmc1CSJnFA5aMUDUl1Aa4y5fWJ8RnC2GZvoKVwbzBTmheeo/x8IclHO9qDqs26nifwqoAp/LzDUh/NSrkkmBFiDAoZFdpZXRS1SAbVs0daRwmjMg/pgnoS7jpPeLDrxvJ+zACbCHenakj3HY6xgddmwiUjZd63B6Tx3K5TxfXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706752007; c=relaxed/simple;
-	bh=wFBz+k5fFVkfyImExH0Xqsk93XAwSQpXZbD4zCIYg2s=;
-	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
-	 Content-Type:Date:Message-ID; b=J19DZeywM1U+YJRNdNPJCarMR6bxeDfK/3efwe49ElzHZeEt94/0r5wnaFxF1knd9stvDiZ7ODjNA/DgYm4qLH8eXaTDhKCfdRNTXa//JHZLUpdSYLFmvBSVtlCvuBDPVsu8eLlM/ljDoul89x1nBo0FAukRHppQK/rxlT87WVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org; spf=pass smtp.mailfrom=openbsd.org; dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b=f/tYr+y7; arc=none smtp.client-ip=199.185.137.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openbsd.org
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=wFBz+k5fFV
-	kfyImExH0Xqsk93XAwSQpXZbD4zCIYg2s=; h=date:references:in-reply-to:
-	subject:cc:to:from; d=openbsd.org; b=f/tYr+y7eDPbWZOF+9LXCLUy2873vJZin
-	cxDmTaOx+Po8NNOY2V+CYGljx5zXiq22sjo1o9/xcaBYwbtKGwpn8twXv67R3Ai4vnQ4ix
-	0XyP3Rd3wNm9nkGhtobf6PAbq581Np8LbmBq9TDiiUW6dQZd89eLUf25744aecF0ESRJMO
-	CnzeKegKYHs/E+2tPoxHgc19gDJU27v11+fto+1w+T73Oli1/BMB3y2otDUFFgUM8gZfek
-	tMvc1lr97CZMwNiIpuBPL3DiINXijpMN7TBpYukDQAOTDIm5PFlfIzVZ713HXnus/8+uUR
-	5MSMI/DLDp2p51hL4cf+U0zZyxCtA==
-Received: from cvs.openbsd.org (localhost [127.0.0.1])
-	by cvs.openbsd.org (OpenSMTPD) with ESMTP id a86ce6c1;
-	Wed, 31 Jan 2024 18:46:38 -0700 (MST)
-From: "Theo de Raadt" <deraadt@openbsd.org>
-To: Jeff Xu <jeffxu@chromium.org>
-cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-    Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org,
-    keescook@chromium.org, jannh@google.com, sroettger@google.com,
-    willy@infradead.org, gregkh@linuxfoundation.org,
-    torvalds@linux-foundation.org, usama.anjum@collabora.com,
-    rdunlap@infradead.org, jeffxu@google.com, jorgelo@chromium.org,
-    groeck@chromium.org, linux-kernel@vger.kernel.org,
-    linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-    pedro.falcato@gmail.com, dave.hansen@intel.com,
-    linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v8 0/4] Introduce mseal
-In-reply-to: <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
-References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver> <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
-Comments: In-reply-to Jeff Xu <jeffxu@chromium.org>
-   message dated "Wed, 31 Jan 2024 17:27:11 -0800."
+	s=arc-20240116; t=1706752021; c=relaxed/simple;
+	bh=+ZB/sCqmZN0kWzarGoPV30Krbm14OyK2DH1fvES/8Vs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QlBY7p2+UiWQE9KjDFdz3UwAksmawgSL7aFAxfnW7wbF93ufxehnavjf+gkmYiIYFzlVZKg/L+THlXFyT0QT0dTiYKF9hIX0Pl+zC3gK7+hxT0Ck5NbM4izTWadthaPnGl0O7AGGlloKYI2Zrc8dqhq0Bn2d26zaUT8xKpBLRgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=akcgXfhf; arc=none smtp.client-ip=115.124.30.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706752012; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=76NmS0lav5K47mcz2ahT8fgHcu3YkJ5Ca1MexnM20ao=;
+	b=akcgXfhf/m+FsPSoS8fKbV9i4aJpS2GzBgf4iajclUfzDNgZk7mgLfoNgH0CEmxMZIKWkwdrej4fpeKuwC7AXILzuC7ep0bIFQKnpiEq653zDssYhPoVzeBV8ZOay6+1tnup6h9i/093n7DeP57mRuvEVoRTFOVkwk3DyLuV3sk=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=liusong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W.l4ltl_1706752010;
+Received: from 30.178.80.82(mailfrom:liusong@linux.alibaba.com fp:SMTPD_---0W.l4ltl_1706752010)
+          by smtp.aliyun-inc.com;
+          Thu, 01 Feb 2024 09:46:51 +0800
+Message-ID: <189135f7-3bac-4a43-9daf-5798a01f79d5@linux.alibaba.com>
+Date: Thu, 1 Feb 2024 09:46:48 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <37065.1706751997.1@cvs.openbsd.org>
-Date: Wed, 31 Jan 2024 18:46:37 -0700
-Message-ID: <92663.1706751997@cvs.openbsd.org>
-
-Jeff Xu <jeffxu@chromium.org> wrote:
-
-> I considered Theo's inputs from OpenBSD's perspective regarding the
-> difference, and I wasn't convinced that Linux should remove these. In
-> my view, those are two different kernels code, and the difference in
-> Linux is not added without reasons (for MAP_SEALABLE, there is a note
-> in the documentation section with details).
-
-That note is describing a fiction.
-
-> I would love to hear more from Linux developers on this.
-
-I'm not sure you are capable of listening.
-
-But I'll repeat for others to stop this train wreck:
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv3 2/2] watchdog/softlockup: report the most frequent
+ interrupts
+To: Bitao Hu <yaoma@linux.alibaba.com>, dianders@chromium.org,
+ akpm@linux-foundation.org, pmladek@suse.com, kernelfans@gmail.com
+Cc: linux-kernel@vger.kernel.org
+References: <20240131171738.35496-1-yaoma@linux.alibaba.com>
+ <20240131171738.35496-3-yaoma@linux.alibaba.com>
+From: Liu Song <liusong@linux.alibaba.com>
+In-Reply-To: <20240131171738.35496-3-yaoma@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-1. When execve() maps a programs's .data section, does the kernel set
-   MAP_SEALABLE on that region?  Or does it not set MAP_SEALABLE?
-
-   Does the kernel seal the .data section?  It cannot, because of RELRO
-   and IFUNCS.  Do you know what those are?  (like in OpenBSD) the kernel
-   cannot and will *not* seal the .data section, it lets later code do that.
-
-2. When execve() maps a programs's .bss section, does the kernel set
-   MAP_SEALABLE on that region?  Or does it not set MAP_SEALABLE?
-
-   Does the kernel seal the .bss section?  It cannot, because of RELRO
-   and IFUNCS.  Do you know what those are?  (like in OpenBSD) the kernel
-   cannot and will *not* seal the .bss section, it lets later code do that.
-
-In the proposed diff, the kernel does not set MAP_SEALABLE on those
-regions.
-
-How does a userland program seal the .data and .bss regions?
-
-It cannot.  It is too late to set the MAP_SEALABLE, because the kernel
-already decided not do to it.
-
-So those regions cannot be sealed.
-
-3. When execve() maps a programs's stack, does the kernel set
-   MAP_SEALABLE on that region?  Or does it not set MAP_SEALABLE?
-
-In the proposed diff, the kernel does not set MAP_SEALABLE.
-
-You think you can seal the stack in the kernel??  Sorry to be the bearer
-of bad news, but glibc has code which on occasion will mprotects the
-stack executable.
-
-But if userland decides that mprotect case won't occur -- how does a
-userland program seal its stack?  It is now too late to set MAP_SEALABLE.
-
-So the stack must remain unsealed.
-
-4. What about the text segment?
-
-5. Do you know what a text-relocation is?  They are now rare, but there
-   are still compile/linker stages which will produce them, and there is
-   software which requires that to work.  It means userland fixes it's
-   own .text, then calls mprotect.  The kernel does not know if this will
-   happen.
-
-6. When execve() maps the .text segment, will it set MAP_SEALABLE?
-
-If it doesn't set it, userland cannot seal it's text after it makes the
-decision to do.
-
-
-You can continue to extrapolate those same points for all other segments
-of a static binary, all segments of a dynamic binary, all segments of the
-shared library linker.
-
-And then you can go further, and recognize the logic that will be needed
-in the shared library linker to *make the same decisions*.
-
-In each case, the *decision* to make a mapping happens in one piece of
-code, and the decision to use and NOW SEAL THAT MAPPING, happens in a
-different piece of code.
-
-
-The only answer to these problems will be to always set MAP_SEALABLE.
-To go through the entire Linux ecosystem, and change every call to mmap()
-to use this new MAP_SEALABLE flag, and it will look something like this:
-
-+#ifndef MAP_SEALABLE
-+#define MAP_SEALABLE 0
-+#endif
--	ptr = mmap(...., MAP...
--	ptr = mmap(...., MAP_SEALABLE | MAP...
-
-Every single one of them, and you'll need to do it in the kernel.
-
-
-
-
-If you had spent a second trying to make this work in a second piece of
-software, you would have realized that the ONLY way this could work
-is by adding a flag with the opposite meaning:
-
-   MAP_NOTSEALABLE
-
-But nothing will use that.  I promise you
-
-
-> I would love to hear more from Linux developers on this.
-
-I'm not sure you are capable of listening.
-
+在 2024/2/1 01:17, Bitao Hu 写道:
+> When the watchdog determines that the current soft lockup is due
+> to an interrupt storm based on CPU utilization, reporting the
+> most frequent interrupts could be good enough for further
+> troubleshooting.
+>
+> Below is an example of interrupt storm. The call tree does not
+> provide useful information, but we can analyze which interrupt
+> caused the soft lockup by comparing the counts of interrupts.
+>
+> [ 2987.488075] watchdog: BUG: soft lockup - CPU#9 stuck for 23s! [kworker/9:1:214]
+> [ 2987.488607] CPU#9 Utilization every 4s during lockup:
+> [ 2987.488941]  #1:   0% system,          0% softirq,   100% hardirq,     0% idle
+> [ 2987.489357]  #2:   0% system,          0% softirq,   100% hardirq,     0% idle
+> [ 2987.489771]  #3:   0% system,          0% softirq,   100% hardirq,     0% idle
+> [ 2987.490186]  #4:   0% system,          0% softirq,   100% hardirq,     0% idle
+> [ 2987.490601]  #5:   0% system,          0% softirq,   100% hardirq,     0% idle
+> [ 2987.491034] CPU#9 Detect HardIRQ Time exceeds 50%. Most frequent HardIRQs:
+> [ 2987.491493]  #1: 330985      irq#7(IPI)
+> [ 2987.491743]  #2: 5000        irq#10(arch_timer)
+> [ 2987.492039]  #3: 9           irq#91(nvme0q2)
+> [ 2987.492318]  #4: 3           irq#118(virtio1-output.12)
+> ...
+> [ 2987.492728] Call trace:
+> [ 2987.492729]  __do_softirq+0xa8/0x364
+>
+> Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
+> ---
+>   kernel/watchdog.c | 156 ++++++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 156 insertions(+)
+>
+> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+> index 046507be4eb5..c4c25f25eae7 100644
+> --- a/kernel/watchdog.c
+> +++ b/kernel/watchdog.c
+> @@ -25,6 +25,9 @@
+>   #include <linux/stop_machine.h>
+>   #include <linux/kernel_stat.h>
+>   #include <linux/math64.h>
+> +#include <linux/irq.h>
+> +#include <linux/bitops.h>
+> +#include <linux/irqdesc.h>
+>   
+>   #include <asm/irq_regs.h>
+>   #include <linux/kvm_para.h>
+> @@ -431,11 +434,15 @@ void touch_softlockup_watchdog_sync(void)
+>   	__this_cpu_write(watchdog_report_ts, SOFTLOCKUP_DELAY_REPORT);
+>   }
+>   
+> +static void set_potential_softlockup(unsigned long now, unsigned long touch_ts);
+> +
+>   static int is_softlockup(unsigned long touch_ts,
+>   			 unsigned long period_ts,
+>   			 unsigned long now)
+>   {
+>   	if ((watchdog_enabled & WATCHDOG_SOFTOCKUP_ENABLED) && watchdog_thresh) {
+> +		/* Softlockup may occur in the current period */
+> +		set_potential_softlockup(now, period_ts);
+>   		/* Warn about unreasonable delays. */
+>   		if (time_after(now, period_ts + get_softlockup_thresh()))
+>   			return now - touch_ts;
+> @@ -462,6 +469,8 @@ static DEFINE_PER_CPU(u16, cpustat_old[NUM_STATS_PER_GROUP]);
+>   static DEFINE_PER_CPU(u8, cpustat_utilization[NUM_STATS_GROUPS][NUM_STATS_PER_GROUP]);
+>   static DEFINE_PER_CPU(u8, cpustat_tail);
+>   
+> +static void print_hardirq_counts(void);
+> +
+>   /*
+>    * We don't need nanosecond resolution. A granularity of 16ms is
+>    * sufficient for our precision, allowing us to use u16 to store
+> @@ -516,10 +525,156 @@ static void print_cpustat(void)
+>   			__this_cpu_read(cpustat_utilization[i][STATS_HARDIRQ]),
+>   			__this_cpu_read(cpustat_utilization[i][STATS_IDLE]));
+>   	}
+> +	print_hardirq_counts();
+> +}
+> +
+> +#define HARDIRQ_PERCENT_THRESH		50
+> +#define NUM_HARDIRQ_REPORT		5
+> +static DECLARE_BITMAP(softlockup_hardirq_cpus, CONFIG_NR_CPUS);
+> +static DEFINE_PER_CPU(u32 *, hardirq_counts);
+> +
+> +struct irq_counts {
+> +	int irq;
+> +	u32 counts;
+> +};
+> +
+> +static void find_counts_top(struct irq_counts *irq_counts, int irq, u32 counts, int range)
+> +{
+> +	unsigned int i, j;
+> +
+> +	for (i = 0; i < range; i++) {
+> +		if (counts > irq_counts[i].counts) {
+> +			for (j = range - 1; j > i; j--) {
+> +				irq_counts[j].counts = irq_counts[j - 1].counts;
+> +				irq_counts[j].irq = irq_counts[j - 1].irq;
+> +			}
+> +			irq_counts[j].counts = counts;
+> +			irq_counts[j].irq = irq;
+> +			break;
+> +		}
+The current implementation can lead to a reordering with each iteration.
+It is recommended to update in place if the value is larger and perform
+the reordering just before printing at the end.
+> +	}
+> +}
+> +
+> +/*
+> + * If the proportion of time spent handling irq exceeds HARDIRQ_PERCENT_THRESH%
+> + * during sample_period, then it is necessary to record the counts of each irq.
+> + */
+> +static inline bool need_record_irq_counts(int type)
+> +{
+> +	int tail = __this_cpu_read(cpustat_tail);
+> +	u8 utilization;
+> +
+> +	if (--tail == -1)
+> +		tail = 4;
+> +	utilization = __this_cpu_read(cpustat_utilization[tail][type]);
+> +	return utilization > HARDIRQ_PERCENT_THRESH;
+> +}
+> +
+> +/*
+> + * Mark softlockup as potentially caused by hardirq
+> + */
+> +static void set_potential_softlockup_hardirq(void)
+> +{
+> +	u32 i;
+> +	u32 *counts = __this_cpu_read(hardirq_counts);
+> +	int cpu = smp_processor_id();
+> +	struct irq_desc *desc;
+> +
+> +	if (!need_record_irq_counts(STATS_HARDIRQ))
+> +		return;
+> +
+> +	if (!test_bit(cpu, softlockup_hardirq_cpus)) {
+> +		counts = kmalloc_array(nr_irqs, sizeof(u32), GFP_ATOMIC);
+> +		if (!counts)
+> +			return;
+> +		for_each_irq_desc(i, desc) {
+> +			if (!desc)
+> +				continue;
+> +			counts[i] = desc->kstat_irqs ?
+> +				*this_cpu_ptr(desc->kstat_irqs) : 0;
+> +		}
+> +		__this_cpu_write(hardirq_counts, counts);
+> +		set_bit(cpu, softlockup_hardirq_cpus);
+> +	}
+> +}
+> +
+> +static void clear_potential_softlockup_hardirq(void)
+> +{
+> +	u32 *counts = __this_cpu_read(hardirq_counts);
+> +	int cpu = smp_processor_id();
+> +
+> +	if (test_bit(cpu, softlockup_hardirq_cpus)) {
+> +		kfree(counts);
+> +		counts = NULL;
+> +		__this_cpu_write(hardirq_counts, counts);
+> +		clear_bit(cpu, softlockup_hardirq_cpus);
+> +	}
+>   }
+> +
+> +/*
+> + * Mark that softlockup may occur
+> + */
+> +static void set_potential_softlockup(unsigned long now, unsigned long period_ts)
+> +{
+> +	if (time_after_eq(now, period_ts + get_softlockup_thresh() / 5))
+> +		set_potential_softlockup_hardirq();
+> +}
+> +
+> +static void clear_potential_softlockup(void)
+> +{
+> +	clear_potential_softlockup_hardirq();
+> +}
+Given that clear_potential_softlockup will only call
+clear_potential_softlockup_hardirq, then why is there a need to declare
+clear_potential_softlockup separately?
+> +
+> +static void print_hardirq_counts(void)
+> +{
+> +	u32 i;
+> +	struct irq_desc *desc;
+> +	u32 counts_diff;
+> +	u32 *counts = __this_cpu_read(hardirq_counts);
+> +	int cpu = smp_processor_id();
+> +	struct irq_counts hardirq_counts_top[NUM_HARDIRQ_REPORT] = {
+> +		{-1, 0}, {-1, 0}, {-1, 0}, {-1, 0},
+> +	};
+> +
+> +	if (test_bit(cpu, softlockup_hardirq_cpus)) {
+> +		/* Find the top NUM_HARDIRQ_REPORT most frequent interrupts */
+> +		for_each_irq_desc(i, desc) {
+> +			if (!desc)
+> +				continue;
+> +			counts_diff = desc->kstat_irqs ?
+> +				*this_cpu_ptr(desc->kstat_irqs) - counts[i] : 0;
+> +			find_counts_top(hardirq_counts_top, i, counts_diff,
+> +					NUM_HARDIRQ_REPORT);
+> +		}
+> +		/*
+> +		 * We do not want the "watchdog: " prefix on every line,
+> +		 * hence we use "printk" instead of "pr_crit".
+> +		 */
+> +		printk(KERN_CRIT "CPU#%d Detect HardIRQ Time exceeds %d%%. Most frequent HardIRQs:\n",
+> +			smp_processor_id(), HARDIRQ_PERCENT_THRESH);
+> +		for (i = 0; i < NUM_HARDIRQ_REPORT; i++) {
+> +			if (hardirq_counts_top[i].irq == -1)
+> +				break;
+> +			desc = irq_to_desc(hardirq_counts_top[i].irq);
+> +			if (desc && desc->action)
+> +				printk(KERN_CRIT "\t#%u: %-10u\tirq#%d(%s)\n",
+> +					i+1, hardirq_counts_top[i].counts,
+> +					hardirq_counts_top[i].irq, desc->action->name);
+> +			else
+> +				printk(KERN_CRIT "\t#%u: %-10u\tirq#%d\n",
+> +					i+1, hardirq_counts_top[i].counts,
+> +					hardirq_counts_top[i].irq);
+> +		}
+> +		if (!need_record_irq_counts(STATS_HARDIRQ))
+> +			clear_potential_softlockup_hardirq();
+> +	}
+> +}
+> +
+>   #else
+>   static inline void update_cpustat(void) { }
+>   static inline void print_cpustat(void) { }
+> +static inline void set_potential_softlockup(unsigned long now, unsigned long period_ts) { }
+> +static inline void clear_potential_softlockup(void) { }
+>   #endif
+>   
+>   /* watchdog detector functions */
+> @@ -537,6 +692,7 @@ static DEFINE_PER_CPU(struct cpu_stop_work, softlockup_stop_work);
+>   static int softlockup_fn(void *data)
+>   {
+>   	update_touch_ts();
+> +	clear_potential_softlockup();
+>   	complete(this_cpu_ptr(&softlockup_completion));
+>   
+>   	return 0;
 
