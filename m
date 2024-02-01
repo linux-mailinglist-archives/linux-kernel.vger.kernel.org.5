@@ -1,150 +1,95 @@
-Return-Path: <linux-kernel+bounces-48808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC5148461D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:21:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1A718461D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:17:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F2621C23060
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:21:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B5191C21F7F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BDAF8563C;
-	Thu,  1 Feb 2024 20:21:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0023085642;
+	Thu,  1 Feb 2024 20:17:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bigler.one header.i=@bigler.one header.b="UppCvTfc"
-Received: from relay.yourmailgateway.de (relay.yourmailgateway.de [188.68.63.162])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="uEX/QmMf"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF71B84FDC;
-	Thu,  1 Feb 2024 20:21:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.68.63.162
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5869D8528E;
+	Thu,  1 Feb 2024 20:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706818899; cv=none; b=gFHXTin7XEHm3tms7lPyv6aYWbuauW9D9/O7Wurnc/E5ql2G062rT29CxQq/KeWdLMpYXZpl0cSklidkIUgWRHZ5LYob/xFCbeZytMLYMtNUdgEMF/a93r1EQFx6hDrnYZBAPkJb2DtUKfu+7SOaJlRpzsduV2UL9l0vG9V/0ME=
+	t=1706818635; cv=none; b=OnYRM92WKuPiKKrimngS1q9eBQmTH1x/X6yy6Hik6JtICsi5GMPyoaZcyYycq8rclDQUwl72ASTYQNf6kRgx0bb4WbSP0bB86gj94k8aC0Z7qVqfudlEk87/hehEgnlyh8xasekeX3RxmImV/2SWSLvHLKYzh65DQRpw8rbM9lw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706818899; c=relaxed/simple;
-	bh=uWRxYj8XRltiAC9tPZ020F7sdwr+RbT8boPBU4qJhlc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XI84YpqgGjOCRLam7NGE3Mq0Ie7/ZSygVka7LVgDYxDbSEF2sEuyawfrPJXH0gMgSzI1xzIMHYhmqas98mv4pysM25Ef4vjmXN4mwb92u/6Y0+duBBE4wUpS12MBOP5gCTpPnzKn0KRgHLMWAHhuq8k8K0u/SvMh0SFYw2DSK84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bigler.one; spf=pass smtp.mailfrom=bigler.one; dkim=pass (2048-bit key) header.d=bigler.one header.i=@bigler.one header.b=UppCvTfc; arc=none smtp.client-ip=188.68.63.162
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bigler.one
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bigler.one
-Received: from mors-relay-8201.netcup.net (localhost [127.0.0.1])
-	by mors-relay-8201.netcup.net (Postfix) with ESMTPS id 4TQqrP5j1Rz3tJR;
-	Thu,  1 Feb 2024 21:14:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bigler.one; s=key2;
-	t=1706818485; bh=uWRxYj8XRltiAC9tPZ020F7sdwr+RbT8boPBU4qJhlc=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=UppCvTfcA2RgJNoXTU8qeaJLLREcPUA5V4YDOcX9qhBOpLF+nEvRMg6QQ0OrBlIRR
-	 FrozWJ4XYhHiWdLL3w194THXHU4KTgeoGr5yuZcFXrDaerMMFASp1yBcIQkwnsRLFq
-	 qydIcRb+1quMzVjs6Y3h49dpjtyV8+X0ogoplcW6uHOZOuHC6MWWMeU1A/IHON6vja
-	 XcZiqix0WMDcWBH9HrWqH6RGG0tHqGCz9Vu4ukNc0nKkKdTtny1rvC4H13THZiARh+
-	 lJ3mO3/X0S2Vcxh/ptbw+p47R7Or1ljYOeszbFrUZLw0upohr5y3uwzx+43mVH4LIV
-	 LMWuxBGyBwz8g==
-Received: from policy02-mors.netcup.net (unknown [46.38.225.35])
-	by mors-relay-8201.netcup.net (Postfix) with ESMTPS id 4TQqrP4xJdz3t7W;
-	Thu,  1 Feb 2024 21:14:45 +0100 (CET)
-Received: from mx2fc6.netcup.net (unknown [10.243.12.53])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by policy02-mors.netcup.net (Postfix) with ESMTPS id 4TQqrN3DZNz8svC;
-	Thu,  1 Feb 2024 21:14:44 +0100 (CET)
-Received: from [192.168.1.24] (adsl-84-227-96-175.adslplus.ch [84.227.96.175])
-	by mx2fc6.netcup.net (Postfix) with ESMTPSA id A6C7048EEA;
-	Thu,  1 Feb 2024 21:14:39 +0100 (CET)
-Authentication-Results: mx2fc6;
-        spf=pass (sender IP is 84.227.96.175) smtp.mailfrom=benjamin@bigler.one smtp.helo=[192.168.1.24]
-Received-SPF: pass (mx2fc6: connection is authenticated)
-Message-ID: <c7326b50ce3fe2a660638e1eb2c11519ad82feee.camel@bigler.one>
-Subject: Re: [PATCH v4] spi: imx: fix the burst length at DMA mode and CPU
- mode
-From: Benjamin Bigler <benjamin@bigler.one>
-To: carlos.song@nxp.com, broonie@kernel.org, shawnguo@kernel.org,
-	s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com,
-	stefanmoring@gmail.com
-Cc: linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Date: Thu, 01 Feb 2024 21:14:39 +0100
-In-Reply-To: <20240201105451.507005-1-carlos.song@nxp.com>
-References: <20240201105451.507005-1-carlos.song@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3
+	s=arc-20240116; t=1706818635; c=relaxed/simple;
+	bh=kUJ0d3O/c0wajgWfESE7EH663Rzvk91KqBPyZn/q+LA=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=WQizPctuMtrkeEyeWgc2+AfpzpK8rra7J8ky3GsG6iWMY0Arly1UYGypwtJV+kr3FHMeRFzLUSSYQmSl/l+tTvI/5WF7OrZeFU2EDgli+3keisqXPMOFEnNOWnvmHqsLMgm2erSb2nE0EXYNOFj4Lu6j2QPjrWlm+1wZ6K6Mm3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=uEX/QmMf; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-PPP-Message-ID: <170681848016.16773.8628634408198911382@mx2fc6.netcup.net>
-X-Rspamd-Queue-Id: A6C7048EEA
-X-Rspamd-Server: rspamd-worker-8404
-X-NC-CID: eOEbwlsnu2A8UH1oqf6GVIXsysxMrcadamR+vO9LU4MI+So=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1706818630;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mQ4LObGFJg/ha8hZmJ9oAUbu9DDaZFLu+D2ZoTVr7XY=;
+	b=uEX/QmMf0zExWZ912UGlq+tML5qMj/92LtN25+1uudl4cc01SleXspXqRqXKJ9nRv0a0fw
+	x/N8E64ubnnVJXrJGSBPjwTq4cqHHWivYYPi3YJ46kdkqf4tts136hK74q6NFcqYqaRRt0
+	0TjwNrvwt03lKnfYr8u4qpPG3RjdV52YPdcsImOLpCoehjSC94Y/dvvd0bpJUGSrr5Ut3A
+	As2O6AzDzQH9Ph60tLDy4f2BURXvfKS0ajp4++ghPJyo3Gv/R9WIb3TVoOkM1cysWAL/+O
+	kVd4uhg44YlhOx/8v3j8Z8lodhWBNK/WvNJImFdynAZSkAPcfjEOlTSYPhZnnw==
+Date: Thu, 01 Feb 2024 21:17:08 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: Greg KH <gregkh@linuxfoundation.org>, Christina Quast
+ <contact@christina-quast.de>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
+ Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng
+ <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?UTF-8?Q?Bj?=
+ =?UTF-8?Q?=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Benno Lossin
+ <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, Alice
+ Ryhl <aliceryhl@google.com>, FUJITA Tomonori <fujita.tomonori@gmail.com>,
+ Trevor Gross <tmgross@umich.edu>, Andrew Lunn <andrew@lunn.ch>, Heiner
+ Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Heiko
+ Stuebner <heiko@sntech.de>, rust-for-linux@vger.kernel.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v2 3/3] net: phy: add Rust Rockchip PHY driver
+In-Reply-To: <2024020105-bankroll-opium-a6e5@gregkh>
+References: <20240201-rockchip-rust-phy_depend-v2-0-c5fa4faab924@christina-quast.de>
+ <20240201-rockchip-rust-phy_depend-v2-3-c5fa4faab924@christina-quast.de>
+ <2024020105-bankroll-opium-a6e5@gregkh>
+Message-ID: <cabb91e97a5e563cccbffd56f331a477@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-On Thu, 2024-02-01 at 18:54 +0800, carlos.song@nxp.com wrote:
-> From: Carlos Song <carlos.song@nxp.com>
->=20
-> For DMA mode, the bus width of the DMA is equal to the size of data
-> word, so burst length should be configured as bits per word.
->=20
-> For CPU mode, because of the spi transfer len is in byte, so burst
-> length should be configured as bits per byte * spi_imx->count.
->=20
-> Signed-off-by: Carlos Song <carlos.song@nxp.com>
-> Reviewed-by: Clark Wang <xiaoning.wang@nxp.com>
-> Fixes: e9b220aeacf1 ("spi: spi-imx: correctly configure burst length when=
- using dma")
-> Fixes: 5f66db08cbd3 ("spi: imx: Take in account bits per word instead of =
-assuming 8-bits")
-> ---
-> Changes for V3:
-> - include <linux/bits.h>
-> Changes for V4:
-> - keep the includes sorted alphabetically.
-> ---
->  drivers/spi/spi-imx.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
-> index 546cdce525fc..f7990ac2c654 100644
-> --- a/drivers/spi/spi-imx.c
-> +++ b/drivers/spi/spi-imx.c
-> @@ -2,6 +2,7 @@
->  // Copyright 2004-2007 Freescale Semiconductor, Inc. All Rights Reserved=
-.
->  // Copyright (C) 2008 Juergen Beisert
-> =20
-> +#include <linux/bits.h>
->  #include <linux/clk.h>
->  #include <linux/completion.h>
->  #include <linux/delay.h>
-> @@ -660,15 +661,14 @@ static int mx51_ecspi_prepare_transfer(struct spi_i=
-mx_data *spi_imx,
->  			<< MX51_ECSPI_CTRL_BL_OFFSET;
->  	else {
->  		if (spi_imx->usedma) {
-> -			ctrl |=3D (spi_imx->bits_per_word *
-> -				spi_imx_bytes_per_word(spi_imx->bits_per_word) - 1)
-> +			ctrl |=3D (spi_imx->bits_per_word - 1)
->  				<< MX51_ECSPI_CTRL_BL_OFFSET;
->  		} else {
->  			if (spi_imx->count >=3D MX51_ECSPI_CTRL_MAX_BURST)
-> -				ctrl |=3D (MX51_ECSPI_CTRL_MAX_BURST - 1)
-> +				ctrl |=3D (MX51_ECSPI_CTRL_MAX_BURST * BITS_PER_BYTE - 1)
->  						<< MX51_ECSPI_CTRL_BL_OFFSET;
->  			else
-> -				ctrl |=3D (spi_imx->count * spi_imx->bits_per_word - 1)
-> +				ctrl |=3D (spi_imx->count * BITS_PER_BYTE - 1)
-I think that will not work for drivers which dont use bits_per_word=3D8.=C2=
-=A0
-https://lore.kernel.org/all/20230917164037.29284-1-stefanmoring@gmail.com/
->  						<< MX51_ECSPI_CTRL_BL_OFFSET;
->  		}
->  	}
+On 2024-02-01 19:23, Greg KH wrote:
+> On Thu, Feb 01, 2024 at 07:07:00PM +0100, Christina Quast wrote:
+>> This is the Rust implementation of drivers/net/phy/rockchip.c. The
+>> features are equivalent. You can choose C or Rust version kernel
+>> configuration.
+>> 
+>> Signed-off-by: Christina Quast <contact@christina-quast.de>
+> 
+> Cool, but why?  Is this going to happen for all phy drivers going
+> forward?  What's the end-game here, dropping all .c phy drivers that
+> are in rust?  Or having duplicates for all of them?
 
-Best regards,
-Benjamin Bigler
-
+I'd also like to know what's the intended purpose of rewriting a mature
+existing PHY driver in Rust?
 
