@@ -1,221 +1,143 @@
-Return-Path: <linux-kernel+bounces-48809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62CE28461DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:23:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B41EE8461F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:28:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66712B22385
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:23:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE4B21C2374F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:28:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8D985627;
-	Thu,  1 Feb 2024 20:23:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68A4D85643;
+	Thu,  1 Feb 2024 20:28:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WBUtnAKk"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IIJMkO1J"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C35E98527E;
-	Thu,  1 Feb 2024 20:23:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A184741757;
+	Thu,  1 Feb 2024 20:28:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706818987; cv=none; b=czjTgXT9JxRhJoM85oqMVDnU4cJk/00heApmhHVtFW2x57wgt51eVgEMC9JTxHsZrHxtw3Z4cmNjEqE7eMqG6FD0yEV+qma0UIdEovp4DC0kGRWCilCZXu3xp4NXLbkspxlXnssaV+SbKMbCle1pq/0r/bEdzQk/x97z9nv2JnI=
+	t=1706819286; cv=none; b=VyNoBmITVGcKfu7sO8ZNGr/Hv9uzPWZll6LT5YEbQmxq6CIKH8cmYuS715XJTEPk+eNgE/uCuNIpn//CWfLUcMcaRflyqmaneyJiC7hyTzT2UIVPMlvhz6vFYZAuw8YrLbpjHphw/ecUFNpbRZaKA/5jscCzWSwUyuVQJz1GNp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706818987; c=relaxed/simple;
-	bh=R238ACRc7Yd3i4LA4FkGtAqjAgNIiVAR0SlpktbetVc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=GKA2ifKMhr5+461gfsu+4ReCZWTzYRkQLI2WxMeil1WYnC07YreyzKAYN3O+fRPkydsCRp8jlG5a1XiJPuJbpFJYwiaTfnhHynn4/IBBGCnqmxg+QB6W3IX/0UyOBcG4FR1f7tVj4NSQ3bXmgHOd+6AgYdKdhDedBLV7pTh5wNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WBUtnAKk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC5D4C433C7;
-	Thu,  1 Feb 2024 20:23:02 +0000 (UTC)
+	s=arc-20240116; t=1706819286; c=relaxed/simple;
+	bh=6tQl1zhGsp0AgvX70rMJRGvBvIqwnJBiyuHx0oqxYaE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=igXqn8WA/Pwg/NN3vFYIUuNKRV+jz+yz4I/DD6l4eaDyok6oTSDOFbIpPm6f4xPI0ZacQmHYMIKJJmYdxjOOGkcnQujG1s9WbTRdW7FF8cHEom1xrn+9w8UO/4ypEaQkjZzOUfi6WZfj3gCBzgmh0DvNRIIflYcCYG89RvW42Qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IIJMkO1J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F2DAC43390;
+	Thu,  1 Feb 2024 20:28:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706818987;
-	bh=R238ACRc7Yd3i4LA4FkGtAqjAgNIiVAR0SlpktbetVc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=WBUtnAKkcH6iuep6aNV4f9hAgM6tzS6Ld+j5cblWk1kIiAyEjT9Taksch2kto0iHQ
-	 z9tD/bDhBQVtBngZfPoEOXTJ1oyzBplattFQABcQjYymT9zJD6/tqNUECvka+rOClq
-	 mxslsZtCIOppAPn5uqxgxPM5guNxQnaCSCrdKYFWnsAxfICQAVOk9K61F0BrsXX+k3
-	 vGyVzEKIhQUsf7QNwOaFpCfEm3uB6Y5tyEYYepbkPwerwRyGe73Gj1vyej804sCWTi
-	 jO27an+OozYhCaNusMCZiufEais88jB+oc6NoqfT10ePapHn+AMqQL9tNr2+BFQvJ1
-	 1GEkfbSmKY4DQ==
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Ingo Molnar <mingo@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Clark Williams <williams@redhat.com>,
-	Kate Carcia <kcarcia@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	James Clark <james.clark@arm.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Sun Haiyong <sunhaiyong@loongson.cn>,
-	Thomas Richter <tmricht@linux.ibm.com>,
-	Yanteng Si <siyanteng@loongson.cn>,
-	Yicong Yang <yangyicong@hisilicon.com>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [GIT PULL] perf tools fixes for v6.8
-Date: Thu,  1 Feb 2024 17:22:54 -0300
-Message-ID: <20240201202254.15588-1-acme@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=k20201202; t=1706819286;
+	bh=6tQl1zhGsp0AgvX70rMJRGvBvIqwnJBiyuHx0oqxYaE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=IIJMkO1J3qdAPjFhp9NFki9KSlBkApSyUSBg45R/fcuaWq73OzP1TH9B8K5FUawqf
+	 Rkzv2wgOCzW3QvLifgZbRXygzzKOpSksvllb1VuIiRz7/QFL+R2yjPcrKsWJaENzaT
+	 nHRtCzBCuEUwPKjaNzN1clTWw1SQE5Ae7GwK0YGjwaw+ehqdacgDw2Vmz6xWvKxdC6
+	 lygVypeBrNqxw2bvfJdNcjQjW6lgS2d9TRP5x8sXrW4tK5pQ16wM+a55D9uBJE9f2d
+	 mRztGU5U4Y5ccLcYw0NKuaNtRaMTkDe2aokda0J7tBPo8UaSzXm8scxRpsJgv2CiIT
+	 T4KPV34zXQKYw==
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-51032e62171so1833015e87.3;
+        Thu, 01 Feb 2024 12:28:05 -0800 (PST)
+X-Gm-Message-State: AOJu0YxsYbzpqZVxV5wIw+jLSXewPe0jJe3PwYEgNKA1pcB9BTrg/g2r
+	t4hoZlvgbwp/IzN7YWy+d0N4JTFYL+dr82Kbiy8x845LzjSvSzxqjlexMmycxUjZPE83bSpaB5B
+	4CTa10vEUmTFNGD2AYSpenm2BJw==
+X-Google-Smtp-Source: AGHT+IGubbR1peMhLtT66Pzyv9QrdRtRk+md5AJfiADamBjLRFZ5ehOkkmE54chgLrptc6wpZNg4V4OLUaNoG8q4XTE=
+X-Received: by 2002:a19:f81a:0:b0:511:2eba:fc5d with SMTP id
+ a26-20020a19f81a000000b005112ebafc5dmr41863lff.34.1706819284230; Thu, 01 Feb
+ 2024 12:28:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <cover.1706802756.git.geert+renesas@glider.be> <b20aab137058c02ab5af9aaa1280729a02c6ea49.1706802756.git.geert+renesas@glider.be>
+ <170680870030.996964.6959185693674664805.robh@kernel.org> <CAMuHMdWfovGkvrk4coitFgDTuHS_fQcvFb8kJj-1AWtUgkAYgg@mail.gmail.com>
+In-Reply-To: <CAMuHMdWfovGkvrk4coitFgDTuHS_fQcvFb8kJj-1AWtUgkAYgg@mail.gmail.com>
+From: Rob Herring <robh@kernel.org>
+Date: Thu, 1 Feb 2024 14:27:51 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKhoBE2fMcB37wsxtXa+BdbeTRDfD=jpRTgAJ8nBR1foQ@mail.gmail.com>
+Message-ID: <CAL_JsqKhoBE2fMcB37wsxtXa+BdbeTRDfD=jpRTgAJ8nBR1foQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] regulator: dt-bindings: gpio-regulator: Fix
+ {gpios-,}states limits
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, 
+	Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, 
+	Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+On Thu, Feb 1, 2024 at 2:06=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68k=
+org> wrote:
+>
+> Hi Rob The Robot ;-)
 
-	Please consider pulling, mostly 'perf test' issues, which in its
-turn are mostly related to myself having Intel hybrid systems at home.
+:)
 
-	All in all its about making the build and 'perf test' output
-clean in more systems.
+> On Thu, Feb 1, 2024 at 6:31=E2=80=AFPM Rob Herring <robh@kernel.org> wrot=
+e:
+> > On Thu, 01 Feb 2024 16:58:41 +0100, Geert Uytterhoeven wrote:
+> > > make dtbs_check:
+> > >
+> > >     arch/arm64/boot/dts/renesas/r8a77951-salvator-xs.dtb: regulator-v=
+ccq-sdhi0: Unevaluated properties are not allowed ('gpios-states', 'states'=
+ were unexpected)
+> > >           from schema $id: http://devicetree.org/schemas/regulator/gp=
+io-regulator.yaml#
+> > >
+> > > The number of items in "gpios-states" must match the number of items =
+in
+> > > "gpios", so their limits should be identical.
+> > >
+> > > The number of items in "states" must lie within the range from zero u=
+p
+> > > to 2^{number of gpios}.
+> > >
+> > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > ---
+> > > The second issue did not cause any dtbs_check errors?
+> > > ---
+> > >  .../devicetree/bindings/regulator/gpio-regulator.yaml         | 4 ++=
++-
+> > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > >
+> >
+> > My bot found errors running 'make DT_CHECKER_FLAGS=3D-m dt_binding_chec=
+k'
+> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> >
+> > yamllint warnings/errors:
+> >
+> > dtschema/dtc warnings/errors:
+> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings=
+/regulator/gpio-regulator.yaml: properties:states:minItems: 0 is less than =
+the minimum of 1
+> >         hint: An array property has at least 1 item or is not present
+> >         from schema $id: http://devicetree.org/meta-schemas/keywords.ya=
+ml#
+>
+> Oops, I changed this from 1 to 0 _after_ running dt_binding_check, so
+> I'm totally to blame for this.
+>
+> The description says:
+>
+>     If there are no states in the "states" array, use a fixed regulator i=
+nstead.
+>
+> which I misinterpreted as "states can be empty", especially as the
+> driver does seem to support that?
+>
+> I guess 1 is the proper minimum?
 
-	This is being done after a laptop refresh, so maybe something is
-out of place, lemme know if you find something broken, last refresh was
-before the pandemic, so...
+Yes. While JSON can for example have "foo: []", that's not really
+defined for DT given we store no type info. An empty property is a
+boolean.
 
-Best regards,
-
-- Arnaldo
-
-The following changes since commit ecb1b8288dc7ccbdcb3b9df005fa1c0e0c0388a7:
-
-  Merge tag 'net-6.8-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2024-01-25 10:58:35 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git perf-tools-fixes-for-v6.8-1-2024-02-01
-
-for you to fetch changes up to fdd0ae72b34e56eb5e896d067c49a78ecb451032:
-
-  perf tools headers: update the asm-generic/unaligned.h copy with the kernel sources (2024-01-31 14:02:41 -0300)
-
-----------------------------------------------------------------
-perf tools fixes for v6.8:
-
-Vendor events:
-
-- Intel Alderlake/Sapphire Rapids metric fixes, the CPU type ("cpu_atom", "cpu_core")
-  needs to be used as a prefix to be considered on a metric formula, detected via one
-  of the 'perf test' entries.
-
-'perf test' fixes:
-
-- Fix the creation of event selector lists on 'perf test' entries, by initializing
-  the sample ID flag, which is done by 'perf record', so this fix only the tests,
-  the common case isn't affected.
-
-- Make 'perf list' respect debug settings (-v) to fix its 'perf test' entry.
-
-- Fix 'perf script' test when python support isn't enabled.
-
-- Special case 'perf script' tests on s390, where only DWARF call graphs are
-  supported and only on software events.
-
-- Make 'perf daemon' signal test less racy.
-
-Compiler warnings/errors:
-
-- Remove needless malloc(0) call in 'perf top' that triggers -Walloc-size.
-
-- Fix calloc() argument order to address error introduced in gcc-14.
-
-Build:
-
-- Make minimal shellcheck version to v0.6.0, avoiding the build to fail with older versions.
-
-Sync kernel header copies:
-
-  - stat.h to pick STATX_MNT_ID_UNIQUE.
-
-  - msr-index.h to pick IA32_MKTME_KEYID_PARTITIONING.
-
-  - drm.h to pick DRM_IOCTL_MODE_CLOSEFB.
-
-  - unistd.h to pick {list,stat}mount, lsm_{[gs]et_self_attr,list_modules} syscall numbers.
-
-  - x86 cpufeatures to pick TDX, Zen, APIC MSR fence changes.
-
-  - x86's mem{cpy,set}_64.S used in 'perf bench'.
-
-  - Also, without tooling effects: asm-generic/unaligned.h, mount.h, fcntl.h, kvm headers.
-
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-----------------------------------------------------------------
-Arnaldo Carvalho de Melo (10):
-      tools headers uapi: Sync linux/stat.h with the kernel sources to pick STATX_MNT_ID_UNIQUE
-      tools arch x86: Sync the msr-index.h copy with the kernel sources to pick IA32_MKTME_KEYID_PARTITIONING
-      tools headers UAPI: Sync linux/fcntl.h with the kernel sources
-      tools headers UAPI: Update tools's copy of drm.h headers to pick DRM_IOCTL_MODE_CLOSEFB
-      tools headers UAPI: Sync kvm headers with the kernel sources
-      tools headers UAPI: Sync unistd.h to pick {list,stat}mount, lsm_{[gs]et_self_attr,list_modules} syscall numbers
-      tools headers x86 cpufeatures: Sync with the kernel sources to pick TDX, Zen, APIC MSR fence changes
-      tools headers: Update the copy of x86's mem{cpy,set}_64.S used in 'perf bench'
-      tools include UAPI: Sync linux/mount.h copy with the kernel sources
-      perf tools headers: update the asm-generic/unaligned.h copy with the kernel sources
-
-Ian Rogers (6):
-      perf list: Switch error message to pr_err() to respect debug settings (-v)
-      perf list: Add output file option
-      perf test: Workaround debug output in list test
-      perf test shell script: Fix test for python being disabled
-      perf test shell daemon: Make signal test less racy
-      perf vendor events intel: Alderlake/sapphirerapids metric fixes
-
-James Clark (1):
-      perf evlist: Fix evlist__new_default() for > 1 core PMU
-
-Sun Haiyong (2):
-      perf top: Remove needless malloc(0) call that triggers -Walloc-size
-      perf tools: Fix calloc() arguments to address error introduced in gcc-14
-
-Thomas Richter (1):
-      perf test: Fix 'perf script' tests on s390
-
-Yicong Yang (1):
-      perf build: Make minimal shellcheck version to v0.6.0
-
- tools/arch/x86/include/asm/cpufeatures.h           |   8 +-
- tools/arch/x86/include/asm/msr-index.h             |   8 +
- tools/arch/x86/include/uapi/asm/kvm.h              |   3 +
- tools/arch/x86/lib/memcpy_64.S                     |   4 +-
- tools/arch/x86/lib/memset_64.S                     |   4 +-
- tools/include/asm-generic/unaligned.h              |  24 +-
- tools/include/uapi/asm-generic/unistd.h            |  15 +-
- tools/include/uapi/drm/drm.h                       |  72 +++++-
- tools/include/uapi/drm/i915_drm.h                  |  12 +-
- tools/include/uapi/linux/fcntl.h                   |   3 +
- tools/include/uapi/linux/kvm.h                     | 140 ++++--------
- tools/include/uapi/linux/mount.h                   |  70 ++++++
- tools/include/uapi/linux/stat.h                    |   1 +
- tools/perf/Documentation/perf-list.txt             |   4 +
- tools/perf/Makefile.perf                           |  10 +
- tools/perf/builtin-list.c                          | 211 ++++++++++-------
- tools/perf/builtin-record.c                        |   4 +-
- tools/perf/builtin-top.c                           |   2 +-
- .../pmu-events/arch/x86/alderlake/adl-metrics.json | 254 ++++++++++-----------
- .../arch/x86/alderlaken/adln-metrics.json          |   4 -
- .../arch/x86/sapphirerapids/spr-metrics.json       |  25 +-
- tools/perf/tests/shell/daemon.sh                   |  34 ++-
- tools/perf/tests/shell/list.sh                     |  21 +-
- tools/perf/tests/shell/script.sh                   |  12 +-
- tools/perf/trace/beauty/statx.c                    |   1 +
- tools/perf/util/evlist.c                           |   9 +-
- tools/perf/util/hist.c                             |   4 +-
- tools/perf/util/include/linux/linkage.h            |   4 +
- tools/perf/util/metricgroup.c                      |   2 +-
- tools/perf/util/print-events.c                     |   2 +-
- tools/perf/util/synthetic-events.c                 |   4 +-
- 31 files changed, 588 insertions(+), 383 deletions(-)
+Rob
 
