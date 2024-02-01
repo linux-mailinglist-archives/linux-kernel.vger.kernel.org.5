@@ -1,149 +1,182 @@
-Return-Path: <linux-kernel+bounces-48330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61E9A845A75
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:43:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D347845A7F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:45:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69E981C26ACB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:43:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC70C1F29F30
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:45:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A30E5F484;
-	Thu,  1 Feb 2024 14:43:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C417E5F469;
+	Thu,  1 Feb 2024 14:45:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="DhQIcBl0"
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UEH1QWEi"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F9E85F46A
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 14:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B7485CDEC
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 14:45:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706798617; cv=none; b=igzXsQbnrWIAbePitvWACakati0KpXRm80toLT8JNxsuOhChaV/JMnb73aE8IKURT5LywWYJEvuNJtlnSuZ9Oxso2Pj1269EVWHRGJAQH+2+j6BJIKhTHUVyXmkxIttlfMeLcJ8ueRK1mprJc7txaeurqjJpcy0qVYvWQja9Ls8=
+	t=1706798724; cv=none; b=KNGc9T/njMFKhh2d6xgTIyunEYcrRc7OJAE/8pmV7GG7ne3mkovXr/FUlnvU70HP8mZbrlPIU466UXJ9KC6O7QrcFrE5MiCgyMRIyN4uaRex3OJjmaNb9Xi+HIFRwbSCbtXr1U6EMNoqY3pjvHusBMYFXu8biTEUe2z7hImEB0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706798617; c=relaxed/simple;
-	bh=LMmXEXjre2/iGvw1iKk547lgHHliHlwLOLSwpsYtPLg=;
-	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
-	 Content-Type:Date:Message-ID; b=GV/JWRbfpwFRkPd/aGcyd1/hyoWy2VPBDrQwjqdeBze7T8BgfVS2v64NQJalTVKlevTQ/jCLsvTEF7d+C5sKnzmx922ajV2P3YZ5g5i87yhNTbK7httDBg2cqbijS1TRYZQbttvOvKnhcS66YRwtiEtEq/ylQOQHPUsKdzmleiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=DhQIcBl0; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 2C21F40F6D
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 14:43:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1706798608;
-	bh=1OypoDLTCeqhHTjTBtuB8gkBgBKZCfgLJtgtDYgi63s=;
-	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
-	 Content-Type:Date:Message-ID;
-	b=DhQIcBl0C6I9/Kgisoegrcciauv5cEiDkxk6Rpxsf11p1iRchA5yqlnHQ81fMM1ko
-	 /+NBbyDsElL+GQT4+C/miItSc37ZK1v5t8pqK0hwddByAItmj6KT3eyyw61JgN7Dc9
-	 Yf1/G31KieEFHQfu0v8Y9xz7TZe92WLZRCRIZ7AcXwUGHBQe4rEX3zW5QAdSolD5jj
-	 gvQ62GSltK8OIoolxSmH7wr1N03xtfQWKMI9Dq3aqzkdDl2LXuP+We+W0C11M9v3kG
-	 rXR3SZRDGXNgdFlRIG+CJNfpbYuVjPuuKT1ghyhckXgjsauoTsGnX4NsbFuJlZ4TCf
-	 GbhFCoDAUWP6g==
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5cf35636346so1023915a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 06:43:28 -0800 (PST)
+	s=arc-20240116; t=1706798724; c=relaxed/simple;
+	bh=g28Uh0jEGcZw1jbRzd3E+2nC216DW2FMQTibILMYzNI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZfdQTIijIrhYHsIY2Onf6+Yuc4tk+t9Ji3rTuVX0F0VkQbZjLhQoTcm61ATH8kA4qrUhVNdRZ4oPKrLlutC7abBwnTxN9M5t0usofvo8VMI/apcxTPUCeuAr7wb8dlxZs40Js1KMi63i9vu7CR8D1lD+UbyrV5DuaiYTqoIFL4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UEH1QWEi; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55fc7f63639so719395a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 06:45:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706798721; x=1707403521; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=emBBEOIhMF1O2hGGxGh+HkrTeoWxjLOYDw2I2/VoJkU=;
+        b=UEH1QWEiOaTyvl9ngqYMoCBIYNijdWlGw7STHgUI6kVOHP7BKiGPcBUVkoinhRoKeZ
+         lZKVzysnFje27nCQ46l7Tn6/mxzqub3pRYXtjFVPnjo759OgoMC6LY/tm2A3bYhjXRCB
+         /mUrq0eKS534zZBM80RmojkuLgZBRQ4AR7m7dNbO79u0NFWR+dmouYABxvuRy1Y2gdR+
+         ZEG3OlzJ6HyMzC4flVIPmQ933kxvtyCDoh8D/IpYFOrmCUamEBQniW9V9ML0VCJcqRpQ
+         li0qOG9DI4ZgluVXI9UyKZbAyjlcf84xxA7hQ9DqoETDu2zDbfhbuJr2VJJA75464HB2
+         mVaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706798606; x=1707403406;
-        h=message-id:date:content-id:mime-version:comments:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1OypoDLTCeqhHTjTBtuB8gkBgBKZCfgLJtgtDYgi63s=;
-        b=PnEGYP3Vy3oQBolwOMe8Uv/wwysKPF6OseNSySXaCmY8qEtaBjIhvfip92QwCPmlgc
-         at5vvk7OJrjzXuA6vqetgrWHewHFhT/KxUIfkeAbcDWvr23KwFsTbVM5/9wStS4Kn8JJ
-         aEwZrqxorSeCRVPJDn3FwzFzHoj4KnTtUkIa5wSWrwRsz1qRGi2gCbRCcOuuTJC/GRY6
-         epBd40xMkv7hqQjHIwN73HEQz0C6eVtT5N6cldVj4CEIGVFs1MlR/j00UXN2KK0I+Nvk
-         icKkx4Iksgk2x61mMGPDQxokH3QdbVwtLb5SpX8TpZknJUwiF6A3puclQJVXRhanVvY/
-         gQJw==
-X-Gm-Message-State: AOJu0YzQGOHWuIe8eLBp19sSCUgnv6rIKJvkLvxTH0252gki/swAjhaM
-	Yfk6W78F/5kO1YGb6VKAznYTdZUJRE6blMbfwS35+B+ce/FdmQxTv0WUbHgaSnTWA9SsKG7x8w5
-	vDCewyvg8wHWqdg5/WQfvTbtOLPz/qqjrDxGc8aZ8izLt1NLq45UyM2oZRYcCKZ9PS2J9CGEQmt
-	Ymog==
-X-Received: by 2002:a17:902:ce92:b0:1d9:4544:ed37 with SMTP id f18-20020a170902ce9200b001d94544ed37mr4105695plg.17.1706798606632;
-        Thu, 01 Feb 2024 06:43:26 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHpy4TEPVPmqROCvKm63XB0+LwNUI/U6Orro7bqbYxr13caUcPj1evnQ0OegqRfN3azkrleaA==
-X-Received: by 2002:a17:902:ce92:b0:1d9:4544:ed37 with SMTP id f18-20020a170902ce9200b001d94544ed37mr4105672plg.17.1706798606343;
-        Thu, 01 Feb 2024 06:43:26 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVw+pYoH0wmJ8MC4sML/8pFkGHrVLIq3wgZbBaZsrMU7XGYQQ17YCtLEMUROO+qBdcVRE0QKYvzpw3D0cCSwxTkPwprC74nCCtOU1RKNHhNFNMQTQMwIA/BdUpiH3o6y9KA+Mbkv7PROxVGpPDOwAPTw+BEgURhkBBmlawNkb3wBj4h87puae5tU8jEaXnN9actXFBTA8F5Fm3aHcR5kFeUXJw1gm2GPvAj0zgzqHMzQ7rJMncC6r8TjoRvEEnJaneY9A4GscsCxCcOk3JPjLMDOMAw3QEgGJHPd8WM6WvMlWfJpW9EVcZJpe/etms2BL3EJKrIY1fT8RzfeoEEx8uijr2hqtvfr4xlvDXaepXY9dXvYFH8qflpcgTCXVZ8s5hxQdktOICy61rqQb1Te/E02uUpVkK2dgv1htvp
-Received: from famine.localdomain ([50.125.80.253])
-        by smtp.gmail.com with ESMTPSA id mm12-20020a1709030a0c00b001d948adc19fsm1579796plb.46.2024.02.01.06.43.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 01 Feb 2024 06:43:26 -0800 (PST)
-Received: by famine.localdomain (Postfix, from userid 1000)
-	id 885825FF14; Thu,  1 Feb 2024 06:43:25 -0800 (PST)
-Received: from famine (localhost [127.0.0.1])
-	by famine.localdomain (Postfix) with ESMTP id 822509FB50;
-	Thu,  1 Feb 2024 06:43:25 -0800 (PST)
-From: Jay Vosburgh <jay.vosburgh@canonical.com>
-To: Paolo Abeni <pabeni@redhat.com>
-cc: Aahil Awatramani <aahila@google.com>,
-    David Dillow <dave@thedillows.org>,
-    Mahesh Bandewar <maheshb@google.com>,
-    Hangbin Liu <liuhangbin@gmail.com>,
-    Andy Gospodarek <andy@greyhouse.net>,
-    "David S . Miller" <davem@davemloft.net>,
-    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-    Martin KaFai Lau <martin.lau@kernel.org>,
-    Herbert Xu <herbert@gondor.apana.org.au>,
-    Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v6] bonding: Add independent control state machine
-In-reply-to: <15d7f2941394e04d45f98aa6d095b1e07262655c.camel@redhat.com>
-References: <20240129202741.3424902-1-aahila@google.com> <15d7f2941394e04d45f98aa6d095b1e07262655c.camel@redhat.com>
-Comments: In-reply-to Paolo Abeni <pabeni@redhat.com>
-   message dated "Thu, 01 Feb 2024 11:15:40 +0100."
-X-Mailer: MH-E 8.6+git; nmh 1.6; Emacs 29.0.50
+        d=1e100.net; s=20230601; t=1706798721; x=1707403521;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=emBBEOIhMF1O2hGGxGh+HkrTeoWxjLOYDw2I2/VoJkU=;
+        b=JB5J4rtlvFETKD/ceTWpeVZE67YNZZfaWHuvGnFR0MUy0NZvuS6Q0diNITjQvjIVzu
+         t13T5I85C1pezgHR+tOIjY/cHZxcQyVQfy418eKe7QDzX5PiwFr3cmgro7F4k1Tq0u3X
+         5AN++YCpNTsFqNtsp4mDViP6VkiOzfi58wW2c431FBLDsXkaGbnhz0iBRys6tZGp5gwH
+         McqPRZaNDZynIHyzt0dRkIdihy4IKoYeGO7KCA3p8rogMcCOFHfQYzZOtf/lcTPejOuX
+         vCyj+n8v14goKKHY8m7nZG5gHOqbzpP+3PvX5iGmwU4tDFWwDyHGEv+Jx3KWuPIX1akB
+         9gdA==
+X-Gm-Message-State: AOJu0YzqsweSejl3UPbIaXYTEQjzhQLVY0G26vBfemtbukzecFLfOZCw
+	DGn4TpM8HMO/ZPzNFpZtlkb1caKuN6U2YyaMJ+hSlYxfxuc4NBR7UK3m5o40Oh4=
+X-Google-Smtp-Source: AGHT+IFeiHTp3Fuz7wGLQZ4zS4Zvyu5bQGeQK1nbyADucc/rYuDqxeNfv/vTAVPG4XaqEunLGNirUA==
+X-Received: by 2002:a17:906:8315:b0:a2e:93d6:3680 with SMTP id j21-20020a170906831500b00a2e93d63680mr1934018ejx.43.1706798721404;
+        Thu, 01 Feb 2024 06:45:21 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXeJzG0tsIH89YgeMZULH19Hzp5v5mM27kxBeCtFb4kukzeRP13p874DcpHhU+xT9boslD2j1H/T05C0OTf2OTHaMTqVAoEZHoY3wL583AQrXHPAVYXec/JSo5TPDfEmKpYz3T1p8uTNlXGiwV96g33tMDvyARHkjZL6x5PCkuhEOBL2v0suO5I9P8cvdjzaYGSeNK50eE1Z1HujCbGChDbjSzQm8/kT7KWi5SPzuKRLUeti4F5PzUtGZ4O2yLnhPCLqD4MMHQ1GQk+IPjJuuAkEMXoUcXoVYkbdx7ZUt1gNKOfZw4oichrbTsmcJIa+6sPHRvwsh/DVLH9IrhrnwRPzv7oQWoricpCli5lb3Fx73vdteC+kxTEYGr/rZ8mtQJgAzGv7gIAllu39yGoHGng20i1YL67mcRxn4KtogMb3MDk1Cq/xvLJbqvpRMUBxZvBWSzMn9AU9KUTWLjvgM2TuL8KXIvgzwkIzCl2zEsGSMELLRESpDm2LMgNmg88QaKtonMc5B1sfNztf3LK8WBxJWYMt7LEzejBlhApQtkW2aeORkOZM/FhAM6DFe3fng13c3L94HjZhXjr8O5pvC1OVUL/WKZrNGM8KmvlAtPWXLih4IPY2PZpq0XKZeG/ZzwPc238nPyv/abTQNGoHHvFrmj+lob2A7gm7gfqxmAhk9WJIr1+
+Received: from [192.168.159.104] (178235179129.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.129])
+        by smtp.gmail.com with ESMTPSA id ci11-20020a170906c34b00b00a2f181266f6sm7372628ejb.148.2024.02.01.06.45.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Feb 2024 06:45:20 -0800 (PST)
+Message-ID: <610d5d7c-ec8d-42f1-81a2-1376b8a1a43f@linaro.org>
+Date: Thu, 1 Feb 2024 15:45:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <32423.1706798605.1@famine>
-Date: Thu, 01 Feb 2024 06:43:25 -0800
-Message-ID: <32424.1706798605@famine>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 5/6] arm64: dts: qcom: sm8450: Add opp table support to
+ PCIe
+To: Viresh Kumar <viresh.kumar@linaro.org>,
+ Manivannan Sadhasivam <mani@kernel.org>
+Cc: Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Johan Hovold <johan+linaro@kernel.org>, Brian Masney <bmasney@redhat.com>,
+ Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
+ vireshk@kernel.org, quic_vbadigan@quicinc.com, quic_skananth@quicinc.com,
+ quic_nitegupt@quicinc.com, linux-pci@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240112-opp_support-v6-0-77bbf7d0cc37@quicinc.com>
+ <20240112-opp_support-v6-5-77bbf7d0cc37@quicinc.com>
+ <20240129160420.GA27739@thinkpad>
+ <20240130061111.eeo2fzaltpbh35sj@vireshk-i7>
+ <20240130071449.GG32821@thinkpad>
+ <20240130083619.lqbj47fl7aa5j3k5@vireshk-i7>
+ <20240130094804.GD83288@thinkpad>
+ <20240130095508.zgufudflizrpxqhy@vireshk-i7> <20240130131625.GA2554@thinkpad>
+ <20240131052335.6nqpmccgr64voque@vireshk-i7>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240131052335.6nqpmccgr64voque@vireshk-i7>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Paolo Abeni <pabeni@redhat.com> wrote:
+On 31.01.2024 06:23, Viresh Kumar wrote:
+> On 30-01-24, 18:46, Manivannan Sadhasivam wrote:
+>> Agree. But what I'm saying is, right now there is no DT property in the
+>> interconnect consumer nodes to specificy the bw requirements. This is all
+>> hardcoded in the respective ICC consumer drivers.
+> 
+> I thought there are a lot of users already in there..
+> 
+> $ git grep -i opp.*bps arch/arm64/boot/dts/ | wc -l
+> 864
+> 
+>> But when we use OPP to control bw, the bw requirements come from DT. This is
+>> what I see as a difference. Because, only nodes making use of OPP will specify
+>> bw in DT and other nodes making use of just ICC will not.
+>>
+>> Maybe I'm worrying too much about these details... But it looks like
+>> inconsistency to me.
+> 
+> Right. So is there inconsistency right now ? Yes, there is.
+> 
+> The important question we need to answer is where do we want to see
+> all these drivers (specially new ones) in the future. What's the right
+> thing to do eventually ? Hardcode stuff ? Or Move it to DT ?
+> 
+> The answer is DT for me, so the code can be generic enough to be
+> reused. This is just one step in the right direction I guess.
+> Eventually the drivers must get simplified, which they are I guess.
 
->On Mon, 2024-01-29 at 20:27 +0000, Aahil Awatramani wrote:
->> Add support for the independent control state machine per IEEE
->> 802.1AX-2008 5.4.15 in addition to the existing implementation of the
->> coupled control state machine.
->> 
->> Introduces two new states, AD_MUX_COLLECTING and AD_MUX_DISTRIBUTING in
->> the LACP MUX state machine for separated handling of an initial
->> Collecting state before the Collecting and Distributing state. This
->> enables a port to be in a state where it can receive incoming packets
->> while not still distributing. This is useful for reducing packet loss when
->> a port begins distributing before its partner is able to collect.
->
->If I read the code correctly, the transition
->AD_MUX_COLLECTING_DISTRIBUTING -> AD_MUX_DISTRIBUTING is not possible,
->am I correct?
+I'm lukewarm on this.
 
-	That's correct.  There are two completely separate state
-machines in the 2008 standard, one for coupled control and one for
-independent control.  The state machines utilize the same states other
-than COLLECTING_DISTRIBUTING in the coupled control mode, and COLLECTING
-and DISTRIBUTING in the independent control mode.
+A *lot* of hardware has more complex requirements than "x MBps at y MHz",
+especially when performance counters come into the picture for dynamic
+bw management.
 
-	Essentially, the two machines differ in the transition out from
-ATTACHED state; coupled control moves to COLLECTING_DISTRIBUTING,
-whereas independent control moves to COLLECTING then DISTRIBUTING.  
+OPP tables can't really handle this properly.
 
-	The 2020 edition of the standard combines the two state machines
-into one, and changes the set of states.  Bonding does not implement
-this version of the standard.
-
-	-J
-
----
-	-Jay Vosburgh, jay.vosburgh@canonical.com
+Konrad
 
