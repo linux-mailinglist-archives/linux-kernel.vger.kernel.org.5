@@ -1,189 +1,137 @@
-Return-Path: <linux-kernel+bounces-47968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEAA284556E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:33:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ACB3845553
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:30:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E47E11C24235
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:33:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A0F1284B08
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:30:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B12433A1DC;
-	Thu,  1 Feb 2024 10:33:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84C4515B993;
+	Thu,  1 Feb 2024 10:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=Sony.onmicrosoft.com header.i=@Sony.onmicrosoft.com header.b="FVoRHlHb"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2068.outbound.protection.outlook.com [40.107.223.68])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="e3027xbY"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2846B3A1BB;
-	Thu,  1 Feb 2024 10:33:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.68
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706783596; cv=fail; b=d3OvepfqCwEi4cQsLXBG9z1ACY+9hawZrW9kZegIr5vqfMaojeiIYf2JLyuWcNOWbgR9+gweF2CsOcSCGBeoIP4fkVS5FqJBrqGATOSwhQsrfk2poVememcK3ani6kiaf8OIeofG/6/axNX1p+QrXwNderlwn/ETN7oxqqYjLhc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706783596; c=relaxed/simple;
-	bh=G7cRbRPxs8CUJ1VViTGx72ig0XolbIz4vieMwZ6ZtUc=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE9DF15B96E;
+	Thu,  1 Feb 2024 10:30:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706783412; cv=none; b=R96Te8PnpHKOqAFyRAEVRSRJZf1WcHLLWSZD1RiTTi3QgASlBSSLo3d36J01zvClp+7l31GkjhidOaQ963SWV3uobsLegqP0Ofy5ecxEGU0YGOGJ6aybB92pJJIpLmsATqJvl//TIL9L/ny/iIdfJRPixoY8fQze+onzf/cL3u4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706783412; c=relaxed/simple;
+	bh=hkxe3RRd1kMjzW+0Bw8TfFoFkJcpMZftimo9SVEgji0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HQZJHWb0lpLDaw8u+7S4yuk3f73FKEpolvG70/R9TnxV8735aR2ZxXTGSuk+kvNLvT+jLZRqIgn84z2eYbygyTnm0BeNLpSJSUmU3ynOvdwsXf5u2EAPna0nKtroQr20YPnJz/lITv725pg080YdtGeswCzcb1na6PNFLoh5lXg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com; spf=pass smtp.mailfrom=sony.com; dkim=pass (1024-bit key) header.d=Sony.onmicrosoft.com header.i=@Sony.onmicrosoft.com header.b=FVoRHlHb; arc=fail smtp.client-ip=40.107.223.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sony.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F/mdVVJu2qP5yNPefKI0U+ZCBdC/urlu7vNMnylv4JXDD9EbkTVfH/C584qymmzw1xwFeMglpx2Fioqy010oYOKYYPyK0bQ0H8Y4fNsXMXYSypBsQKDw0RMPBimm2tnxKOAMcndRmSCPWqD+14i7QPqmWG+xOceX0J62eni8pBLZ72awOA6rtkJszhB+sQuakh5UiFHRU2lNQvEy+2TKYwAaDYYv5lgUK4K7oMbHhkm5JebcTCRbT8khB9q+TwL1Uo5TIUnRxcrLT1BeAZN1ZX9K2Slh2zqQxWqa4FvrhuTHrUBp7V21AWGRv+WVPD3AYnBq+7HAzv6IiPtghTFtoA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yLs2P3s49bjsbevW4T9Hhuh5aR5rSGmElejR7NCZc/g=;
- b=RGO9ahAv+oQwhbA5i71wNTyWEdYW9LpRPTs7b68lTbRjqevknhnVS+M+mK/fdQHHIOPHeh2ThgZnvu+murkDGXF3kk18kb+8RhOTRm1r8NFCq/8n2+KmBB+noIySzZCcpMHPkMYqOlZ0PbcEHcqy0Pk6v0rPtyGT02eg085432hSlaCQMgEebox6UDg6ljTN2GQ3NeHTlxMEPZ59dYt7SDnywSiROk/6VzhUIkfVA/uXav8L2WwsLj2aoilQSY8Q/awiYn7drW8su6YkE/+lCxQHHaZxnNpK7Bx6J2kpyfOExM8335P/OevmZKEm5H13JsXFPiBtB0HZ02tZkITtgw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 121.100.38.196) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=sony.com;
- dmarc=fail (p=none sp=none pct=100) action=none header.from=sony.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Sony.onmicrosoft.com;
- s=selector2-Sony-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yLs2P3s49bjsbevW4T9Hhuh5aR5rSGmElejR7NCZc/g=;
- b=FVoRHlHbTDGN/IVgACwfgNTvddVkZshiaU/hWpY1FB30ZskaSyEZRkWVPy/WXbaEmFAO8PmPeBj1iS5OrOQTONfSRnVmfZ7319LqCV6LghNkI+LJ6i/sQ/91n0JejXC2r8wVDQ55k7qJMHPI3rNJ4yVrFneq/l0AnJSVwTrAOWE=
-Received: from CH0PR03CA0243.namprd03.prod.outlook.com (2603:10b6:610:e5::8)
- by SJ0PR13MB5983.namprd13.prod.outlook.com (2603:10b6:a03:43f::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Thu, 1 Feb
- 2024 10:33:12 +0000
-Received: from DS2PEPF00003443.namprd04.prod.outlook.com
- (2603:10b6:610:e5:cafe::56) by CH0PR03CA0243.outlook.office365.com
- (2603:10b6:610:e5::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.24 via Frontend
- Transport; Thu, 1 Feb 2024 10:33:12 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 121.100.38.196)
- smtp.mailfrom=sony.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=none header.from=sony.com;
-Received-SPF: Fail (protection.outlook.com: domain of sony.com does not
- designate 121.100.38.196 as permitted sender)
- receiver=protection.outlook.com; client-ip=121.100.38.196;
- helo=gepdcl07.sg.gdce.sony.com.sg;
-Received: from gepdcl07.sg.gdce.sony.com.sg (121.100.38.196) by
- DS2PEPF00003443.mail.protection.outlook.com (10.167.17.70) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7249.19 via Frontend Transport; Thu, 1 Feb 2024 10:33:11 +0000
-Received: from gepdcl04.s.gdce.sony.com.sg (SGGDCSE1NS08.sony.com.sg [146.215.123.198])
-	by gepdcl07.sg.gdce.sony.com.sg (8.14.7/8.14.4) with ESMTP id 411AVlS0022120
-	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-	Thu, 1 Feb 2024 18:32:52 +0800
-Received: from mail.sony.com ([43.88.80.246])
-	by gepdcl04.s.gdce.sony.com.sg (8.14.7/8.14.4) with ESMTP id 411AVFXd012375;
-	Thu, 1 Feb 2024 18:31:15 +0800
-Received: by mail.sony.com (Postfix, from userid 1000)
-	id 70FBB20C1C4D; Thu,  1 Feb 2024 15:59:42 +0530 (IST)
-Date: Thu, 1 Feb 2024 15:59:42 +0530
-From: Sreenath Vijayan <sreenath.vijayan@sony.com>
-To: john.ogness@linutronix.de, corbet@lwn.net, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, pmladek@suse.com
-Cc: rdunlap@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, taichi.shimoyashiki@sony.com,
-        daniel.palmer@sony.com, anandakumar.balasubramaniam@sony.com,
-        sreenath.vijayan@sony.com
-Subject: [PATCH v4 2/2] tty/sysrq: Dump printk ring buffer messages via sysrq
-Message-ID: <ca8dd18e434f309612c907d90e9f77c09e045b37.1706772349.git.sreenath.vijayan@sony.com>
-References: <cover.1706772349.git.sreenath.vijayan@sony.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=CoRTrZHxEL9Q/bV5pOl0xa3hiuUgyrGUpNy+1CZQw9z65xSANxnXXUhrfx8ZXFMiedRpt9pgSuk30ZfXTUSXKIHyP9GUyEp5PQnTeea+kALRkUZIJc9KtdFtLdqnhmEtZdOdolwCxXjrzblM7IzujRmMO/pzWV+VKQlLfktsozI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=e3027xbY; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5956740E01A2;
+	Thu,  1 Feb 2024 10:30:07 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id EkmV47niBGgf; Thu,  1 Feb 2024 10:30:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706783404; bh=6nY6T5PvIjKKLumCcm7k0MIRlTMiw061kXfO9W2fLyE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=e3027xbYpcXstWm2F9mg90OqQrj5jyBvIjW9RaBbGaqLTDQ6yKvgSQkEqD9A84kXm
+	 +pcr7c4AA0eShN5S3WraUbtdDMyW6F7t5IJR80FPe2Qm3g90/DS7mackk79q+picGm
+	 0I+hTYBqVmmPTRqok6W7aTQ0smfO4ob5Y68uRKY2VanRoAD4Wkze/kdH+mQDAN90nO
+	 ChmiCRlOx+Sxb1x/mecnpuVgy5GZehezm8hkz0jrN6tsk1233tq2I0zJEHOuhLnWZt
+	 NWm9+qwZe0nVAtKiM1D7OwE2rnbQRXH9/7iAbYMyM1ZxOdQkU4yjo2cX/R98DwsF6L
+	 ejyQee8Qc7Mhh9IUZ2XXn5QKlhi8S8CX5m10oGP3w5D0qduB2GxP1vZ55VZ7Bqubnk
+	 0wnFL8StTOt0tVkzOWYilR3fvcrkVPjlyZdDjeKthvJlgSV+ywnMAyOfJ5xPADBIaY
+	 EH1gq5S31uBvF2La/RnoT+WXhOD49GSXMIFkIM5sSL0/LmIq7LL7x0J178EozIeuB0
+	 HL011PaqCDQLMxgKWv9gbqWikqBaEpLoAh34E4D2eB+nVGABLu+xDRPTHDxi95PKin
+	 eC2vftIHkwjsAYscb8/lbh6+NJ0nRNk19zfjvIiYTgUQQVjG+r+l2CIAzVnojY0V3u
+	 RJY/rHFVoJqhFphXl7P5Py64=
+Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 08AE740E00B2;
+	Thu,  1 Feb 2024 10:29:52 +0000 (UTC)
+Date: Thu, 1 Feb 2024 11:29:46 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Nikunj A. Dadhania" <nikunj@amd.com>
+Cc: linux-kernel@vger.kernel.org, thomas.lendacky@amd.com, x86@kernel.org,
+	kvm@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
+	dave.hansen@linux.intel.com, dionnaglaze@google.com,
+	pgonda@google.com, seanjc@google.com, pbonzini@redhat.com
+Subject: Re: [PATCH v7 03/16] virt: sev-guest: Add SNP guest request structure
+Message-ID: <20240201102946.GCZbtymsufm3j2KI85@fat_crate.local>
+References: <20231220151358.2147066-1-nikunj@amd.com>
+ <20231220151358.2147066-4-nikunj@amd.com>
+ <20240125115952.GXZbJNOGfxfuiC5WRT@fat_crate.local>
+ <03719b26-9b59-4e88-9e7e-60c6f2617565@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <cover.1706772349.git.sreenath.vijayan@sony.com>
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003443:EE_|SJ0PR13MB5983:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2a94104c-5cf2-4bcd-ecba-08dc231130c4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	uACyjzY3GNax10HkdmQRnYfTQMiu+BiSfHteks0zFgU0pDWjcT/zLTJrRvk+MmlvetHYZVnoq9A0lTTFtqefXVvw8CtyC7OX4xevd9dWeGwFbCDkQpIsWqQE7PgctELvgpD4YA4wuB8io6kSdz84tNNIHO8wpyfwXBG6CjTbl5hGBbIKT8at/LKx/e9rPMF55NzywEvKwIWd51sjkjU+roph11lPIGq9SHYMLF9k/CdeE3EyhnEfvNVIf3OFP+fGoeq6TM8naH6+um66Ox6coNfzfeOwv3cL/Hp4/+MjIvowL/kIeUQKImMKgHIM6ngRFCWukXfhrXB7ilu8tR8y2MeYSeKa0FeLjeorUhrK8TmhDN54t9dUakt4HdMEmug2BsGkp6vEv0kH3Tmjwe4BeZ7+hGb1epSKE54xw7zv9X2k3Sz9OQRW63ZR6lc4GV022xLbBHRgJfHM7P01JqYemE+d+MwIDLZgWVoKEEtcEATF1qtoxUMnnsyTDLxuc75xFj/UGKdfz+7LaaMVxuMjTUUz7jxhXikStljpuUawN5cbSUUy82uKRkDRmyoIlRTtRd7p1VBrz5bFVBAKzyFrdBOz901baLdWdwUp0WLGotoeEo44U5OGW5s5nOL8tnYWSE4jMycP0Snj0++2Oi9LJQ4hWl2eX9h7pZB/6e5anf2+wneBj77S1J1o9Xfn6u3Sn8DT9y0XSu9ntJ3hTf3oOXWnK3Z5VnFWWBqiYW8ssUp3e/aP/SZoIILIGQIqvaD8TgY3wQppOf8zPEoyUcx0zg==
-X-Forefront-Antispam-Report:
-	CIP:121.100.38.196;CTRY:SG;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:gepdcl07.sg.gdce.sony.com.sg;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(396003)(39860400002)(136003)(230922051799003)(451199024)(1800799012)(64100799003)(82310400011)(186009)(40470700004)(36840700001)(46966006)(41300700001)(47076005)(83380400001)(107886003)(6266002)(426003)(336012)(26005)(8676002)(356005)(36860700001)(4326008)(44832011)(450100002)(15650500001)(5660300002)(82740400003)(8936002)(2906002)(478600001)(81166007)(42186006)(316002)(2616005)(70206006)(36756003)(82960400001)(86362001)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: sony.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2024 10:33:11.2208
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a94104c-5cf2-4bcd-ecba-08dc231130c4
-X-MS-Exchange-CrossTenant-Id: 66c65d8a-9158-4521-a2d8-664963db48e4
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=66c65d8a-9158-4521-a2d8-664963db48e4;Ip=[121.100.38.196];Helo=[gepdcl07.sg.gdce.sony.com.sg]
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TreatMessagesAsInternal-DS2PEPF00003443.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR13MB5983
+In-Reply-To: <03719b26-9b59-4e88-9e7e-60c6f2617565@amd.com>
 
-When terminal is unresponsive, one cannot use dmesg to view printk
-ring buffer messages. Also, syslog services may be disabled,
-to check the messages after a reboot, especially on embedded systems.
-In this scenario, dump the printk ring buffer messages via sysrq
-by pressing sysrq+D.
+On Wed, Jan 31, 2024 at 07:28:05PM +0530, Nikunj A. Dadhania wrote:
+> Changed to "req" for all the guest request throughout the file. Other "req" 
+> usage are renamed appropriately.
 
-Signed-off-by: Sreenath Vijayan <sreenath.vijayan@sony.com>
-Signed-off-by: Shimoyashiki Taichi <taichi.shimoyashiki@sony.com>
----
- Documentation/admin-guide/sysrq.rst |  2 ++
- drivers/tty/sysrq.c                 | 20 +++++++++++++++++++-
- 2 files changed, 21 insertions(+), 1 deletion(-)
+Yes, better from what I can tell.
 
-diff --git a/Documentation/admin-guide/sysrq.rst b/Documentation/admin-guide/sysrq.rst
-index 2f2e5bd440f9..c634e8b4cea2 100644
---- a/Documentation/admin-guide/sysrq.rst
-+++ b/Documentation/admin-guide/sysrq.rst
-@@ -161,6 +161,8 @@ Command	    Function
-             will be printed to your console. (``0``, for example would make
-             it so that only emergency messages like PANICs or OOPSes would
-             make it to your console.)
-+
-+``D``	    Dump the printk ring buffer
- =========== ===================================================================
- 
- Okay, so what can I use them for?
-diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index 02217e3c916b..365f7fa145f0 100644
---- a/drivers/tty/sysrq.c
-+++ b/drivers/tty/sysrq.c
-@@ -450,6 +450,24 @@ static const struct sysrq_key_op sysrq_unrt_op = {
- 	.enable_mask	= SYSRQ_ENABLE_RTNICE,
- };
- 
-+static void dmesg_dump_callback(struct work_struct *work)
-+{
-+	dump_printk_buffer();
-+}
-+
-+static DECLARE_WORK(sysrq_dmesg_work, dmesg_dump_callback);
-+
-+static void sysrq_handle_dmesg_dump(u8 key)
-+{
-+	queue_work(system_unbound_wq, &sysrq_dmesg_work);
-+}
-+static struct sysrq_key_op sysrq_dmesg_dump_op = {
-+	.handler        = sysrq_handle_dmesg_dump,
-+	.help_msg       = "dump-dmesg(D)",
-+	.action_msg     = "Dump dmesg",
-+	.enable_mask    = SYSRQ_ENABLE_DUMP,
-+};
-+
- /* Key Operations table and lock */
- static DEFINE_SPINLOCK(sysrq_key_table_lock);
- 
-@@ -505,7 +523,7 @@ static const struct sysrq_key_op *sysrq_key_table[62] = {
- 	NULL,				/* A */
- 	NULL,				/* B */
- 	NULL,				/* C */
--	NULL,				/* D */
-+	&sysrq_dmesg_dump_op,		/* D */
- 	NULL,				/* E */
- 	NULL,				/* F */
- 	NULL,				/* G */
+However, I can't apply this patch in order to have a better look, it is
+mangled. Next time, before you send a patch this way, send it yourself
+first and try applying it.
+
+If it doesn't work, throw away your mailer and use a proper one:
+
+Documentation/process/email-clients.rst
+
+> Subject: [PATCH] virt: sev-guest: Add SNP guest request structure
+> 
+> Add a snp_guest_req structure to simplify the function arguments. The
+> structure will be used to call the SNP Guest message request API
+> instead of passing a long list of parameters. Use "req" as variable name
+> for guest req throughout the file and rename other variables appropriately.
+> 
+> Update snp_issue_guest_request() prototype to include the new guest request
+> structure and move the prototype to sev_guest.h.
+> 
+> Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
+> Tested-by: Peter Gonda <pgonda@google.com>
+
+Tested-by: tags must be dropped if you change a patch in a non-trivial
+way. And this change is not that trivial I'd say.
+
+> ---
+>  .../x86/include/asm}/sev-guest.h              |  18 ++
+>  arch/x86/include/asm/sev.h                    |   8 -
+>  arch/x86/kernel/sev.c                         |  16 +-
+>  drivers/virt/coco/sev-guest/sev-guest.c       | 195 ++++++++++--------
+>  4 files changed, 135 insertions(+), 102 deletions(-)
+>  rename {drivers/virt/coco/sev-guest => arch/x86/include/asm}/sev-guest.h (78%)
+
+I didn't notice this before: why am I getting a sev-guest.h header in
+arch/x86/?
+
+Lemme quote again the file paths we agreed upon:
+
+https://lore.kernel.org/all/Yg5nh1RknPRwIrb8@zn.tnic/
+
+Thx.
+
 -- 
-2.43.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
