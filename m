@@ -1,146 +1,162 @@
-Return-Path: <linux-kernel+bounces-48411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FE09845B9B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:31:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3144C845B9D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:32:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79EC8B2D822
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:31:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC4A6283C6D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:32:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5469626AD;
-	Thu,  1 Feb 2024 15:30:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9880162167;
+	Thu,  1 Feb 2024 15:32:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="SvAuDzH3"
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TSBZs0tS"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6008062159;
-	Thu,  1 Feb 2024 15:30:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 838215F46B;
+	Thu,  1 Feb 2024 15:32:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706801447; cv=none; b=bwCVclce53dC6C2RmzUdZGjGCInUZ4iNAX1JprRmjoY1jx8BKj9SVNPxOcMIjv4oTEZ0oNbwAB3+ITmmTQA2u4zf5GpMiIbUomPgnsUZtgM0LBPYiGQ86yiHB1UUnzdcJxGbAoSFY0ngsPjHvs+YDB+rymOFxg1ZJBJBzuYYmaE=
+	t=1706801553; cv=none; b=DUAebJcLCXerW9QHlt2IJFqRqDv6ZXRzemIX9JpTvmJCCaTUWGZJpV0j53qtBwDIWJy6hhsCwimu7qRSg8RpeHZ42HFujmmisXxZW1qgLiN6sTPNeka08OkDd8nKOOjwe4n7ObNUl64D6+E4iWIMCnnjykRcwCVlEjuqb3IVNF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706801447; c=relaxed/simple;
-	bh=UBsgRb65IbCHVuFHwEksGNoBBhdRATWCBmHVs9FqonE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=inkJt2CRi/YE4eVkijb3UvB+WyrgBiRlPpUf0p/US0QGVbImsfWzytCroYbAnQmxGcc84r1C2b6ew6bzCqwUE3HZnG/yoWc+OSwJZvJH/EfW9l87Ob1YTEZkR9M6Uv4026rCcmihbAd8DYVLsmyadd44MdkWTIYIeIxn1t0hUHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=SvAuDzH3; arc=none smtp.client-ip=37.18.73.165
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id D7F37100005;
-	Thu,  1 Feb 2024 18:30:33 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru D7F37100005
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1706801433;
-	bh=p1bQsKSegFtZAaGaurs4tDBuXh5/mEUC+VLJOhGs7yQ=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version:From;
-	b=SvAuDzH3d3UK4ys99dyebtKrSe4P8lTraNmRQGxf0HpTzFzIUGH1tFbnLJyjIurCo
-	 3DHo0ZQbdAU6z64ulwNVTCpl/gBOaLD8U26/VsEPKTn9qfFAkGyK91uJo+PidxV4Qk
-	 /LjmXXdJIXU77o37fbVTljXAj7ET2z0CRrYqGJ2uY2SbOvyUhrDI4+uLdV9cTFJ3HA
-	 TFCKIFdyl6fA4HLzhuEKK77N6Q7CmCvS+AkU5HpXMLLreBDs7sf1s1TY+1c3exYo+N
-	 vAgApQQmItUB3L81QNQe9mNU3itwgCqpuESMOvF/uOycuwSnV615u0K0zwiLaTTYOt
-	 +CGxrz0xkCXhA==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Thu,  1 Feb 2024 18:30:33 +0300 (MSK)
-Received: from p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 1 Feb 2024 18:30:33 +0300
-Received: from p-i-exch-sc-m01.sberdevices.ru ([fe80::25de:2e74:8821:eb9a]) by
- p-i-exch-sc-m01.sberdevices.ru ([fe80::25de:2e74:8821:eb9a%7]) with mapi id
- 15.02.1118.040; Thu, 1 Feb 2024 18:30:33 +0300
-From: Alexey Romanov <avromanov@salutedevices.com>
-To: "robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>, "neil.armstrong@linaro.org"
-	<neil.armstrong@linaro.org>, "khilman@baylibre.com" <khilman@baylibre.com>,
-	"jbrunet@baylibre.com" <jbrunet@baylibre.com>,
-	"martin.blumenstingl@googlemail.com" <martin.blumenstingl@googlemail.com>
-CC: "linux-amlogic@lists.infradead.org" <linux-amlogic@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, kernel <kernel@sberdevices.ru>,
-	Dmitry Rokosov <ddrokosov@salutedevices.com>
-Subject: Re: [PATCH v1] arch: arm64: dts: meson: a1: add assigned-clocks for
- usb node
-Thread-Topic: [PATCH v1] arch: arm64: dts: meson: a1: add assigned-clocks for
- usb node
-Thread-Index: AQHaTsYqvR6S+noZREWdvbdJ/XH6MbD1d1KA
-Date: Thu, 1 Feb 2024 15:30:33 +0000
-Message-ID: <20240201153027.ecxqx3ehh6tbkgrc@cab-wsm-0029881>
-References: <20240124130623.3471236-1-avromanov@salutedevices.com>
-In-Reply-To: <20240124130623.3471236-1-avromanov@salutedevices.com>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <D0EC4508C98A5C4E8C8FFBA89D684531@sberdevices.ru>
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1706801553; c=relaxed/simple;
+	bh=LpGYzjNOlORgZQDwJ7JZKno6SgSsqawBk9ndW4fxKr4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cdk0PtcA0epHbFkRkJzybgkwWpsHKi3Xt/mA2ebkgjUhbg9fe0RmNZ43ClgJ9f4t/QVVzo3FPDD2gvsjWOugMVJ2oQ67cXtcjRko1ogEJUKa+d4dBnFdOf0ntOytdv8D7+MM0UCyge112DzAnZ6+HgshNrWeNmjcbekfOkJeGVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TSBZs0tS; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706801552; x=1738337552;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=LpGYzjNOlORgZQDwJ7JZKno6SgSsqawBk9ndW4fxKr4=;
+  b=TSBZs0tSQc0h7M9ghSaR9hVUJrHfslxYPB17eaUqVAAYTDixbL5vt5Sm
+   oWqknrgUMRwvycasRY3Vxu2uKQrcK1UqY4CxyU0dnqGXHoANOp6L1LT69
+   w1Bc+dw0gcvKCagQqCWuGsN+dfN5LoSMq1dLA9e6xqcViRwnxNCZJRNJj
+   66Iyaxefzavj4YyKqQQ0lGevOaa7alDXYlIxt2TphGWT93Ig47OuwCGYJ
+   Vf+gpbxdLvYbqq2Xt71o6e7iJCh56LjvLcc18HikZ8dPltzVrDISS/3dI
+   Ftxjz8pujPPlM54hm5TdbC2knKLxS2Z9GmUFNItWttZLxdl8bxFsVENqE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="22418289"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="22418289"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 07:32:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="30624124"
+Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.localnet) ([10.213.2.91])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 07:32:29 -0800
+From: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, dan.j.williams@intel.com,
+ linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+ linux-cxl@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [RFC PATCH v3] cleanup: Add cond_guard() to conditional guards
+Date: Thu, 01 Feb 2024 16:32:25 +0100
+Message-ID: <3280120.44csPzL39Z@fdefranc-mobl3>
+Organization: intel
+In-Reply-To: <2172852.irdbgypaU6@fdefranc-mobl3>
+References:
+ <20240131134108.423258-1-fabio.maria.de.francesco@linux.intel.com>
+ <20240201113612.00001d90@Huawei.com> <2172852.irdbgypaU6@fdefranc-mobl3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 183128 [Feb 01 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: avromanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/01 13:26:00 #23335101
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Hello! Ping.
+On Thursday, 1 February 2024 16:13:34 CET Fabio M. De Francesco wrote:
+> On Thursday, 1 February 2024 12:36:12 CET Jonathan Cameron wrote:
+> > On Thu, 01 Feb 2024 09:16:59 +0100
+> > 
+> > "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com> wrote:
+> > > [snip]
+> > > 
+> > > Actually, I'm doing this:
+> > > 	cond_guard(..., rc, 0, -EINTR, ...);
+> > 
+> > Can we not works some magic to do.
+> > 
+> > 	cond_guard(..., return -EINTR, ...)
+> > 
+> > and not have an rc at all if we don't want to.
+> > 
+> > Something like
+> > 
+> > #define cond_guard(_name, _fail, args...) \
+> > 
+> > 	CLASS(_name, scope)(args); \
+> > 	if (!__guard_ptr(_name)(&scope)) _fail
+> > 
+> > Completely untested so I'm probably missing some subtleties.
+> > 
+> > Jonathan
+> 
+> Jonathan,
+> 
+> Can you please comment on the v5 of this RFC?
+> It is at
+> https://lore.kernel.org/all/20240201131033.9850-1-fabio.maria.de.francesco@
+> linux.intel.com/
+> 
+> The macro introduced in v5 has the following, more general, use case:
+> 
+> * * 	int ret;
+> + * 	// down_read_trylock() returns 1 on success, 0 on contention
+> + * 	cond_guard(rwsem_read_try, ret, 1, 0, &sem);
+> + * 	if (!ret) {
+> + * 		dev_dbg("down_read_trylock() failed to down 'sem')\n");
+> + * 		return ret;
+> + * 	}
+> 
+> The text above has been copy-pasted from the RFC Patch v5.
+> 
+> Please notice that we need to provide both the success and the failure code
+> to make it work also with the _trylock() variants (more details in the
+> patch).
 
-On Wed, Jan 24, 2024 at 04:06:23PM +0300, Alexey Romanov wrote:
-> To ensure proper functionality of USB, it is necessary to use
-> the rate of 64000000 for CLKID_USB_BUS. For instance, adb may
-> not function correctly without this setting. This information
-> has been derived from the vendor SDK.
->=20
-> Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
-> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> ---
->  arch/arm64/boot/dts/amlogic/meson-a1.dtsi | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-a1.dtsi b/arch/arm64/boot/=
-dts/amlogic/meson-a1.dtsi
-> index cf150f568335..b9fd69112535 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
-> @@ -668,6 +668,8 @@ usb: usb@fe004400 {
->  				 <&clkc_periphs CLKID_USB_BUS>,
->  				 <&clkc_periphs CLKID_USB_CTRL_IN>;
->  			clock-names =3D "usb_ctrl", "usb_bus", "xtal_usb_ctrl";
-> +			assigned-clocks =3D <&clkc_periphs CLKID_USB_BUS>;
-> +			assigned-clock-rates =3D <64000000>;
->  			resets =3D <&reset RESET_USBCTRL>;
->  			reset-name =3D "usb_ctrl";
-> =20
-> --=20
-> 2.34.1
->=20
+The next three lines have been messed up by a copy-paste.
+They are:
 
---=20
-Thank you,
-Alexey=
+If we simply do something like:
+
+	cond_guard(..., ret = 0, ...)
+
+We won't store the success (that is 1) in ret and it would still contain 0, 
+that is the code of the contended case.
+
+> If we simply do something like:
+> 
+> 	cond_guard(..., ret = 0, ...)
+> 
+> to be able store in 'ret' the code of the contended case, that is 0.
+> 
+> Since down_read_trylock() returns 1 on down semaphore, when we later check
+> 'ret' with "if (!ret) <failure path>;" we always enter in that failure path
+> even if the semaphore is down because we didn't store the success code in
+> ret (and ret is still probably 0).
+> 
+> This is why, I think, we need a five arguments cond_guard(). This can manage
+> also the _interruptible() and _killable() cases as:
+> 
+> 	cond_guard(..., ret, 0, -EINTR, ...)
+> 
+> In this case we don't need 5 arguments, but we have a general use case, one
+> only macro, that can work with all the three variants of locks.
+> 
+> Fabio
+
+
+
+
 
