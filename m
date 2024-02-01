@@ -1,103 +1,160 @@
-Return-Path: <linux-kernel+bounces-48278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 081BE845980
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:02:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 025F78459A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:06:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A8931C29952
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:02:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16717B2341B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:06:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF2A15D47D;
-	Thu,  1 Feb 2024 14:01:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E546D5D498;
+	Thu,  1 Feb 2024 14:05:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="d1sKTZQc"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="rSHHkAJi"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDB335D479
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 14:01:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFFF3626AD
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 14:05:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706796115; cv=none; b=Q4Gu8a1Wu622l12w1dhYZyr1Mxccf21V/jgI69akpDfGTOQlghxgyV4JhGt5ov33ty5sg0FNOLYxrcFt965rlrjf8y6Q8hKqkUY6rZJ/b61pP39DLrTQKxob4cf55tQX57tiArzDOrjN4wvPuAwQB6VQgXblNUXvo/1WV5zS9v0=
+	t=1706796344; cv=none; b=YzHWuc3u0sez7x9JJg4Q7/VeXXu8rROJlCsvOCwHO24lDtJUNbtDnesqAAdc0laEwFmqb0ClvxcAI1oa15ky1i4v7LtgZPF2/5wZO++qL4kx2zKxAmeMrubkQcZJ3M+tpXypCqH9lAHHjn/C62TXC7RrY0ykN2zh4RmP3p23mbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706796115; c=relaxed/simple;
-	bh=frJYg2PC2XdkrXkJAOqtJTdtAXRNCmZKF9NX2CrmgFk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LbCfaFEAh4i/YjUtW8OhFWKPRhWLPcc1Szt630DAVdcG5OYwr1i1SK/M+COv4dMRmex4C6xU5bwogUQOdMsGSCtwS9eOzvd3zNksaRGuGRpdG1l0r2UsL2xxhXYil82SiTGjKAWl34S6aHs45FYx9VosEfBnQzBvQYm+dU1rwWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=d1sKTZQc; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-510e0d700c6so1074223e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 06:01:52 -0800 (PST)
+	s=arc-20240116; t=1706796344; c=relaxed/simple;
+	bh=7BvcHpGNojuMkGldGxA7daDj6oUHy4iiyQOkU+6RsWY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ILOom7w/KPO42HuKbA8Vh9ysQPLeDDvFEhQjJ6RPzM7QOojkN2RCwzOF26M/aI1/71gvoUtWo5Sw/dyXG5iskIAhL5eoibt4H1OVEGy8yFoy8+qYY28Il8hA6JOpK+fKV/T2eKgtcJtiVwvGkKOeLA7y/ZFqm9QTqwk1KxR5obU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=rSHHkAJi; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d7517fe9d4so712295ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 06:05:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1706796111; x=1707400911; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=frJYg2PC2XdkrXkJAOqtJTdtAXRNCmZKF9NX2CrmgFk=;
-        b=d1sKTZQc2gejwXWVy98BoRcKXeL41FYhyEuTg52qCm7aFDIHlzsDw30Mpq9T0gwmIM
-         E4OxVEbzIX+orj2FOEsPranw0Q32c4BOfJ1J7nvsCq7Hbn5usxPMJszWsI0Rn4Yju9FR
-         0e1XOcXm0pwG/CafdofiJmTuqI93jVZkq+owJlJKPUWlRKxpDoavhGbI3xNU164RVfZb
-         b93fbzumUmKjBFcj2mIMM2xKL8TdwSObEBsZarMuudEEi75smvB1Hwg9sm/Vegb7DDh9
-         4TWqiWLLUPU6bHQ4dxEnKptvPqPk/f6a54ZoPITGz2TWDEx9HcZX6oB0zEJ50lX275vz
-         4FiA==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706796336; x=1707401136; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JiEpcBE0z8Q5t3JWdIgJHWEI2G0S1HPZ9ikeHZvifi4=;
+        b=rSHHkAJitqpY8jYzEFpBLQbaIfCepERGoPtXmgjMFW5vaALlYQd2crm10cF+Wm+0tb
+         mCjPuxfGOIEyUKZ7e7aEslz2IjEA2IqGMi1ZI4ph6EZdUc0XcgnMmjyFLOeBILj8gb3a
+         st12gmXbw+EBz3Wl4/S6D7DL0FbjSFhbCmJYx3211dqsXCsOiLn0lb5QBNYP8j77VN2U
+         CobBhVBpl8C8mbHloriG7lGkquvJoqJHcYpVl/IOkxz9FOwQT2U4arBW1vdUvASL1hp+
+         CFdFR7rh6l3iiuS6iml4/dT2g20p5ihaErwr8W3yLgrL1biOFXPGH6WL5c+Gg+VxqN9S
+         5VjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706796111; x=1707400911;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=frJYg2PC2XdkrXkJAOqtJTdtAXRNCmZKF9NX2CrmgFk=;
-        b=IoP4ApNWOEulwIPvN1SWw2tKLG+DyFtGHRtGgL3YcvkYywTo2M1mXnQgRwa/pOnEUl
-         I2juVAk0PBwYincLJJElFk2lH66e+mtiCiYUOhluBJeRUxU+iiM2GwwSrOgY1FvLLUwW
-         Rfsy5iyo6w88OveI3lYQkcKXIKWCkzNNT7rZvzgBx63Co4tF8hnecdJgUIJ+lf+gw+7O
-         VPmX9Vr8ZZ82Za/a429QbTrIYdMdtFc/OlCyzLXuXsnPjL4QZlfFQmMKuTfA7qnkoECr
-         uZMuZtAWpFx9LXU+nrgljcjC2LNUP47SOOT3jWxoCK2D6ThKcnvgnEuvSWf+9jpUFwOA
-         Q0Mw==
-X-Gm-Message-State: AOJu0Yw+QnU5RyMGV0I/aQKi3DA4VbZoyjF2EIFtb09fW4B8OXMjJmZs
-	TvhKMfzBjGuwv6C9VRF+XkabnlIzQ2ct5kP9xMz6yI39lbzm67vnFRc729wF1F8zA6HLHL8sA9e
-	mtKs=
-X-Google-Smtp-Source: AGHT+IG9TMHzKkmn1MLR1nInbrtFVlsDxHGMGq2QfUrOTwbaE4ygUkEUKBLaWl1pYF85hpICE28dmQ==
-X-Received: by 2002:a19:644b:0:b0:510:1bbc:96bb with SMTP id b11-20020a19644b000000b005101bbc96bbmr1735662lfj.24.1706796110872;
-        Thu, 01 Feb 2024 06:01:50 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUMUxcq+7ehGQMeOzDkjytYLdEGh+MFJsN5LN+Wo6HUMb8mpckZqVVBQZcZjn46Siy4LaYqrUr5sKwXzK41prZddw6UddEgcDb/pO6bgMZyHzUtuU/vh7XDX03QV+/ltap6yQ8jkrY9cBahHEyZyjuggDddkRxBi3hGPk2Qor9c//vjtd7MQHxijx5QmjX/iHl2Lxli8tfKKF3h56esd8ouQa7/6LZYJPqI113ZZLQPgXCO8wMA9lSsweVD2u3fuE7aKBrYV5ViKmdUbd/EC4tp2jc8HiIOm7CgBeRV5uDtLuJs1ftucK8EZvb9XhGEvSIuGdKLAEGqT0zW3sIVVARhARQ9+rAhzn+Y4zghcp0FjWcckXdOAXR7BPRUlFKCVoHT04W4CEYL4QN4SVKVw+CWXPUIyTj4cA==
-Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id s6-20020a05600c044600b0040faf410320sm4406076wmb.20.2024.02.01.06.01.49
+        d=1e100.net; s=20230601; t=1706796336; x=1707401136;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JiEpcBE0z8Q5t3JWdIgJHWEI2G0S1HPZ9ikeHZvifi4=;
+        b=axl4vlDyodx1GmM9zpPtVBLpQ12fomJV8VAKDfCN3qsXaTLIDQt/VZD7twjZxBJtM1
+         C8DoFhGotIQYiNWP+EEwCli6wqVg9BGag7yhzetO3EFORXD+Y/oXVwZc2TrqUfY+9gee
+         UKoIBwG5Q0U8N3IxXaVySGRTddbvu/eoD1bT6ZUJ9gTpyHFveX/VqfQcAiAjcbLpwHKQ
+         A2jifROyp5jfwGIHeNmAfeRoOQQvjktW0UQF7wBwQAJSleWwxIYnIqQk7Xq+os/FXq0v
+         fm94ydtTSqUiewqwVzv3KpERaFuSXpPndRDZ0RR1OohTUGrYZBIUjHZw+XSVoBNQMRRU
+         y8ZA==
+X-Forwarded-Encrypted: i=0; AJvYcCX9bZfrMwrKw+zG9/BH7TZ5hSiSABh0rgHGw63nxQC88I4LyaFuCWbRHAc6JLqcFODU5dqJQi0f/l2ptLvvZOU04BLkJgrYioxLQExS
+X-Gm-Message-State: AOJu0YxjbneET8MeVhf+X59zp9pfMPLP56TC+5w8JHWYnoWbwWnX3u4b
+	WTu526uQ4fPJ9LoSiW2ywsWCptAW1yg0CkhzOOBEEf9Q7Z6LIENwvyJh89ZTTjM=
+X-Google-Smtp-Source: AGHT+IH8tWdldiYSjIIvCar+NyjyZ+8lWYi2wVCMLRjX2BxVq2M9ONUwvbyZ78JOaLsGgI8+DCI/jQ==
+X-Received: by 2002:a17:902:ea08:b0:1d8:d1f5:e5d with SMTP id s8-20020a170902ea0800b001d8d1f50e5dmr2801264plg.0.1706796335668;
+        Thu, 01 Feb 2024 06:05:35 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU25vJ3ilONQ5+/2C4Wo2EpHNVQs3nHC9z6Guhj5ymJAU6kxBvc3F//8Q+scr/hLvk8cIRUNkuurwXW45PCazS3ATmw/SnLm77EZOQ5TLzQaZxwVz9beY1BoTbofuwYSOjNSrYouvlGBRh5WS9oj0ANDmSCutNP3ZHt5m2gCwJHrnuFGlHgQ6bdn6QSPWEnbdFWb8Z4mFT50NQABIOvwob+iHVHb8iq7tM4FZPxfNIUz1GmPKdRDJ5JiWaqnVA+S6yu+q2wH3eQ2GPTLoh4+tFD4tCseVmgacj20XaeMvCa9g==
+Received: from carbon-x1.. ([2a01:e0a:999:a3a0:189:f9cd:e10f:7a3f])
+        by smtp.gmail.com with ESMTPSA id kb16-20020a170903339000b001d8ec844fe7sm6914308plb.283.2024.02.01.06.05.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 06:01:50 -0800 (PST)
-Date: Thu, 1 Feb 2024 15:01:47 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Zhipeng Lu <alexious@zju.edu.cn>
-Cc: Sunil Goutham <sgoutham@marvell.com>,
-	Geetha sowjanya <gakula@marvell.com>,
-	Subbaraya Sundeep <sbhatta@marvell.com>,
-	hariprasad <hkelam@marvell.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Richard Cochran <richardcochran@gmail.com>, netdev@vger.kernel.org,
+        Thu, 01 Feb 2024 06:05:35 -0800 (PST)
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+To: Jonathan Corbet <corbet@lwn.net>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	linux-doc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] octeontx2-pf: Fix a memleak otx2_sq_init
-Message-ID: <ZbukS3j_cS57FmZ9@nanopsycho>
-References: <20240201124714.3053525-1-alexious@zju.edu.cn>
+Cc: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+	Robin Ehn <rehn@rivosinc.com>
+Subject: [PATCH] riscv: hwprobe: export VA_BITS
+Date: Thu,  1 Feb 2024 15:02:45 +0100
+Message-ID: <20240201140319.360088-1-cleger@rivosinc.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240201124714.3053525-1-alexious@zju.edu.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Thu, Feb 01, 2024 at 01:47:13PM CET, alexious@zju.edu.cn wrote:
->When qmem_alloc and pfvf->hw_ops->sq_aq_init fails, sq->sg should be
->freed to prevent memleak.
->
->Fixes: c9c12d339d93 ("octeontx2-pf: Add support for PTP clock")
->Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+Some userspace applications (OpenJDK for instance) uses the free bits
+in pointers to insert additional information for their own logic.
+Currently they rely on parsing /proc/cpuinfo to obtain the current value
+of virtual address used bits [1]. Exporting VA_BITS through hwprobe will
+allow for a more stable interface to be used.
 
-Acked-by: Jiri Pirko <jiri@nvidia.com>
+Link: https://github.com/openjdk/jdk/blob/master/src/hotspot/os_cpu/linux_riscv/vm_version_linux_riscv.cpp#L171 [1]
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+
+---
+ Documentation/arch/riscv/hwprobe.rst  | 3 +++
+ arch/riscv/include/asm/hwprobe.h      | 2 +-
+ arch/riscv/include/uapi/asm/hwprobe.h | 1 +
+ arch/riscv/kernel/sys_hwprobe.c       | 3 +++
+ 4 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/arch/riscv/hwprobe.rst b/Documentation/arch/riscv/hwprobe.rst
+index b2bcc9eed9aa..6f198c6ed4f0 100644
+--- a/Documentation/arch/riscv/hwprobe.rst
++++ b/Documentation/arch/riscv/hwprobe.rst
+@@ -210,3 +210,6 @@ The following keys are defined:
+ 
+ * :c:macro:`RISCV_HWPROBE_KEY_ZICBOZ_BLOCK_SIZE`: An unsigned int which
+   represents the size of the Zicboz block in bytes.
++
++* :c:macro:`RISCV_HWPROBE_KEY_VA_BITS`: An unsigned long which
++  represent the number of bits used to store virtual addresses.
+diff --git a/arch/riscv/include/asm/hwprobe.h b/arch/riscv/include/asm/hwprobe.h
+index 630507dff5ea..150a9877b0af 100644
+--- a/arch/riscv/include/asm/hwprobe.h
++++ b/arch/riscv/include/asm/hwprobe.h
+@@ -8,7 +8,7 @@
+ 
+ #include <uapi/asm/hwprobe.h>
+ 
+-#define RISCV_HWPROBE_MAX_KEY 6
++#define RISCV_HWPROBE_MAX_KEY 7
+ 
+ static inline bool riscv_hwprobe_key_is_valid(__s64 key)
+ {
+diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include/uapi/asm/hwprobe.h
+index 9f2a8e3ff204..2a5006cddb7b 100644
+--- a/arch/riscv/include/uapi/asm/hwprobe.h
++++ b/arch/riscv/include/uapi/asm/hwprobe.h
+@@ -67,6 +67,7 @@ struct riscv_hwprobe {
+ #define		RISCV_HWPROBE_MISALIGNED_UNSUPPORTED	(4 << 0)
+ #define		RISCV_HWPROBE_MISALIGNED_MASK		(7 << 0)
+ #define RISCV_HWPROBE_KEY_ZICBOZ_BLOCK_SIZE	6
++#define RISCV_HWPROBE_KEY_VA_BITS		7
+ /* Increase RISCV_HWPROBE_MAX_KEY when adding items. */
+ 
+ /* Flags */
+diff --git a/arch/riscv/kernel/sys_hwprobe.c b/arch/riscv/kernel/sys_hwprobe.c
+index a7c56b41efd2..328435836e36 100644
+--- a/arch/riscv/kernel/sys_hwprobe.c
++++ b/arch/riscv/kernel/sys_hwprobe.c
+@@ -202,6 +202,9 @@ static void hwprobe_one_pair(struct riscv_hwprobe *pair,
+ 		if (hwprobe_ext0_has(cpus, RISCV_HWPROBE_EXT_ZICBOZ))
+ 			pair->value = riscv_cboz_block_size;
+ 		break;
++	case RISCV_HWPROBE_KEY_VA_BITS:
++		pair->value = VA_BITS;
++		break;
+ 
+ 	/*
+ 	 * For forward compatibility, unknown keys don't fail the whole
+-- 
+2.43.0
+
 
