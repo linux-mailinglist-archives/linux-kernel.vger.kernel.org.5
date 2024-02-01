@@ -1,78 +1,90 @@
-Return-Path: <linux-kernel+bounces-48100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4800784573C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:19:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4778384573E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:19:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2872284F41
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:19:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A4FD1C25F65
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:19:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E891015DBBB;
-	Thu,  1 Feb 2024 12:18:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24EA715DBB4;
+	Thu,  1 Feb 2024 12:19:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wcuTGGCd"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="RC/Qzu3e";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="iXRbkXU6"
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9023715DBB8
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 12:18:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51B544D9E9
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 12:19:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.27
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706789939; cv=none; b=GPDRCx5eirst9szUeiQFpRv/mGD4mNZ9qSml3nGqan+MzGtwGt27RMM82wCXNQyBjFjldyIFquvzwhrhzfLLlCSANUICKjDhiPmbUJGwzPVFsdv+nsinfVHSm+OE11eqUtdBWGJhiVe4hd0aOgiaE//UuweerFQKBYlC0ZD11GI=
+	t=1706789974; cv=none; b=eby1FtG1httBZer6OMM1xGGH45IjwwPRgF9dXTvVugmbZs5v6KzBEs5T3HVcN4MoQT62tvOK33U46BrBMvP4ei8VJ8ixFCDY2uxzMe+/OWEYt0cFhb5Dulh84bSscGF5qA+w3o7jhpGJ6BbRrLBhTTx32w4hEwBaEJuO7P/LC2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706789939; c=relaxed/simple;
-	bh=0u6CPpAAjikGWkMcjodbvpI7eJQQxDmT7SnkrkSi7S4=;
+	s=arc-20240116; t=1706789974; c=relaxed/simple;
+	bh=VEup7kQ5lx85Rrf62gFLlylZZgc+GALWkDRL7k5jXWk=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=elpTFhlNQFtzml0q1BxXzFtOfxqtWZ1C9l28x/Rggc+OqxZLeHf+4Nl5PSXFru3ntRbY6jlw9DJkUWcyKg5ry7Za3PXF6T3+F2qAWDAR9TgI3iS/4MimsrVDohC8P8mXFIfuKtXxwCPF9y5FO7rA+RJQe2lEK2WFPgPXj0o8pzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wcuTGGCd; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a363961b96aso105783066b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 04:18:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706789936; x=1707394736; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yxKM8B/+4uxDJuVV6uI4MZb9Fe6fGclb+oWzaAjZwbg=;
-        b=wcuTGGCd7KHQFMh15xHt52CWUf8IG/oO/bFEKZjHnFRrfnA/1KG2r6BoJHNLRa0WKb
-         dbSur/MUTkW4zyJ9wkOcPd1DyrZHEdunYokX4/Z+w0uBk/SwrVjaA6a8mAKQKSLEtDUm
-         8M0hM7DcuYQ9dBY7hsm8Z09PBcDbm79zUoX84mG7QRzvq0HcXsl0oveNlH8wj7fZvWS3
-         bhydJ1TjykGGGB+YcSA3yXLf4c/WHKq27teuZPH50Vipv/f5+2pRUANZQUoJHu6DgQNT
-         +GpWcjouTYRpLveiSitHNjIu1jPbbetsWAIc3C5wOaSsrEQyiGQuVmGlFeiTx/RlKpuZ
-         yX6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706789936; x=1707394736;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yxKM8B/+4uxDJuVV6uI4MZb9Fe6fGclb+oWzaAjZwbg=;
-        b=KkDSXk3FulOp2IdH9XWnLW1t7/Lmil97nul00o3HUuisx61PfNQellnTkChnN+7VLn
-         l+zEDDbiAwNMBUJQj8OmlGzhcAY0mAsXwj6L40Tb9N6rQmY0x5Z05qHGtQ9dngukforq
-         H+P6lBvDe6T4OKAdw3EKxnx+UQ3cVQgd+95Yha34jd9gnvS553VYAgtAFRVPJ7yc6peb
-         2UKCxv+0iH2TQ3rDjEasVw9ZaSYzBN96k1wdikXO6P2Wj1Cv3WW0mY2h0NAfyuxN7K5i
-         UmNjj9IARjqw99kiuAPMWMSWpfxzPfd4qJ7OuKSrTYny22sNkH9J3I+fAStkArXeSSS0
-         Wocw==
-X-Gm-Message-State: AOJu0YxQyWC8Ru8o/Uk6g9uyJaWZfYNUCPSQFNPDrXsPQTSnfHcV72/0
-	3XMMWOVCRe4sdzKisOmyMIzJDbtOt65lCKMFjPmjrQSCzIJrAyaGlR+zSlNrZcQ=
-X-Google-Smtp-Source: AGHT+IHqio1K2v4vG6WifOFqQbnp6NNXN3nUmPKstb3Bh6hAXEkf1XIqP2kKhvVoaKMBDGuWSm9xFQ==
-X-Received: by 2002:a17:906:4ec1:b0:a30:b47:b626 with SMTP id i1-20020a1709064ec100b00a300b47b626mr3459192ejv.35.1706789935736;
-        Thu, 01 Feb 2024 04:18:55 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWhiYEyqdGIGJMv+e9C8Q6+387DAMQBjdrXrjTP7/sLkqF260wnCrmJ8XbnG53BpkG2kJSird5Evpn0AkAEcKChG9uk/BJWV0zDR2XU+RPKBew/s4iFw88ddPX2Xax3fLbBffXOyaiGaAP8COSWaQSNfOo5GpW5dYEBcLde/9Gq8vzJDIfrAz9tvQrDPgKcMLaqaG2YVIuoScE6Yi0mEcND6u+wwYd93sqB6xK7vzdq0393OHif5uTeqZDqFBpr6fR8tRLdn0fklSjFQHK8cCMF+rwdIlCdoOjIc6o6uwE8
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id wb12-20020a170907d50c00b00a369b47996esm1013203ejc.80.2024.02.01.04.18.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 04:18:55 -0800 (PST)
-Date: Thu, 1 Feb 2024 15:18:52 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Shyam Prasad N <sprasad@microsoft.com>
-Cc: Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>,
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-	Tom Talpey <tom@talpey.com>, linux-cifs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] smb: client: Fix a double lock bug in smb2_reconnect()
-Message-ID: <bf90de00-4d6a-4440-b6a1-42ac9e358158@moroto.mountain>
+	 Content-Disposition; b=pkzrXdm1RUk3ZJAuSYRZxgt9yYMIz03Mhz7Pwhr2c8Y233ct8Cmym3PtsZGmvQbFQaBUFPsTF7w0MDxbJUVTcx17+JRpiDoyQfQE2w6p/R4WKq3S6s2EDvCw32MJj8SfmYwVGfg2q7w4o4YmNCxZ9LhOgGvfK6U/V+VyrFAukOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=RC/Qzu3e; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=iXRbkXU6; arc=none smtp.client-ip=66.111.4.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.nyi.internal (Postfix) with ESMTP id 3467F5C0085;
+	Thu,  1 Feb 2024 07:19:31 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 01 Feb 2024 07:19:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm3; t=1706789971; x=1706876371; bh=jAOlD2wRP+TkqANNdA/oO
+	ptwRFEKnMR/PUTgpA6xP+s=; b=RC/Qzu3euPahqodoXR5ZVDunM0xNvuueZ/72j
+	3RbHvdTSIgOUA3jx/jMTqIGK/JYBxp8SFxZl8xwG4cwR7npuiIEvjNO5m6Q3Ohdm
+	EnGdeZHLoKW31GJeGTftbZVnmOBgQYBzmEAu64oKv2VhlbS+/UmVxTgLYHPWiydu
+	Zaq1Sh3BGarm9ow7A0iRCUdNg61Dots9ee6nStMzm7gOrOhBjdR+0eK4aMvR8ZHb
+	XYsr1EtIUT4+Bzoxit0EA5gjj/JyC2gx0hF/aWkJ2b8S+YtAzOASPSUHUK2njKaa
+	zjzTbuUTAX4EFEjNrFmZgaq8n7DLRgEnOjSFRVd8fHKa5tdRg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:message-id
+	:mime-version:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1706789971; x=1706876371; bh=jAOlD2wRP+TkqANNdA/oOptwRFEKnMR/PUT
+	gpA6xP+s=; b=iXRbkXU6FGFzt2VLxA6yMCBsrOEyS0/72reuGXNlxAO7XWt+zZL
+	CtFJoTKL98ggnwYjlG+BzZSnuGMtaivcJOphh+PSg3idIkE3fL2jwDigVIZGE28k
+	847dzkQhhvCdsmJiENiG5YDJiYBvrziK5ReG9kctWQrAvFkS10PQ9wnlEVHt9wWy
+	37OKJnQsWsxF4CnfYtOM/auy0M/LlLDEjLLewKqax7OGN172nY+fGKbwiVnjJWqA
+	K1A36ENUF/PkFI2M4HEyxDscYnB8VxY/Qd2dASoeNhRDbuhUEzBmxp3Sp/1CMS31
+	4ksd/t7M+wiR6yiVnJUc1nsc0+eY72VtdDQ==
+X-ME-Sender: <xms:Uoy7ZYQd3BfcG1GQL-wfE9Xxh5clOwoF-T3J5R9R3X9x1N00vM2gYw>
+    <xme:Uoy7ZVxF4-A-4Jv4NgO67GsUbtMyYW4awFU8Y1Sd31Lzd5Xegi4xQN5GRpB60oODq
+    NnyGi1WQHn0K1V9YjE>
+X-ME-Received: <xmr:Uoy7ZV2IRaHsXxBbihwLQu3apHpSjbRlKoG2xG-giI8N9DxYArNVZPFMifTjoJ-uVpVUsJvpi-KJ3gBBt-mUk1n-uF5dlwa-HHaU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeduuddgfeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfggtggusehttdertd
+    dttddvnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
+    hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeetfeeiteefve
+    egvdfggeffheetleejkeekleeugeffffdtgfdtteetkeevvddvgfenucffohhmrghinhep
+    khgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:U4y7ZcAJvsOHneN4HhK6tP6uLM2S3nLPJPrWFHnhD-W5ljsjNZJC6w>
+    <xmx:U4y7ZRhr8M0D_zcKTkLFqHBg46bbP_lAta2Qy2b9LKE1paUU9a8xPQ>
+    <xmx:U4y7ZYrFm7rOYAUSMht-84VJa0iHw8-Eb0dyPC-YhkrJQnr34qqcAw>
+    <xmx:U4y7ZRJ0ZprPGTo9UsIQ5tBwQ8L6Dlo_iFGqNVAtXwGg54kfEj_pIQ>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 1 Feb 2024 07:19:29 -0500 (EST)
+Date: Thu, 1 Feb 2024 21:19:26 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: torvalds@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org
+Subject: [GIT PULL] firewire fixes for v6.8-rc3
+Message-ID: <20240201121926.GA87292@workstation.local>
+Mail-Followup-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+	torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,37 +94,43 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-This goto will try to lock spin_lock(&ses->ses_lock) twice which will
-lead to a deadlock.
+Hi Linus,
 
-Fixes: 17525952fa83 ("cifs: make sure that channel scaling is done only once")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- fs/smb/client/smb2pdu.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+The support for legacy layout of configuratom ROM was merged to
+v6.8-rc1, while it appears that it is not enough for some devices,
+since they have a specific quirk. This pull request includes some
+changes to handle the quirk.
 
-diff --git a/fs/smb/client/smb2pdu.c b/fs/smb/client/smb2pdu.c
-index 2837fc4465a7..dcd3f6f08c7f 100644
---- a/fs/smb/client/smb2pdu.c
-+++ b/fs/smb/client/smb2pdu.c
-@@ -401,7 +401,7 @@ smb2_reconnect(__le16 smb2_command, struct cifs_tcon *tcon,
- 
- 	spin_lock(&ses->ses_lock);
- 	if (ses->flags & CIFS_SES_FLAG_SCALE_CHANNELS)
--		goto skip_add_channels;
-+		goto skip_add_channels_locked;
- 	ses->flags |= CIFS_SES_FLAG_SCALE_CHANNELS;
- 	spin_unlock(&ses->ses_lock);
- 
-@@ -448,6 +448,7 @@ smb2_reconnect(__le16 smb2_command, struct cifs_tcon *tcon,
- 
- skip_add_channels:
- 	spin_lock(&ses->ses_lock);
-+skip_add_channels_locked:
- 	ses->flags &= ~CIFS_SES_FLAG_SCALE_CHANNELS;
- 	spin_unlock(&ses->ses_lock);
- 
--- 
-2.43.0
+The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
 
+  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git tags/firewire-fixes-6.8-rc3
+
+for you to fetch changes up to 47dc55181dcbee69fc84c902e7fb060213b9b8a5:
+
+  firewire: core: search descriptor leaf just after vendor directory entry in root directory (2024-02-01 20:53:18 +0900)
+
+----------------------------------------------------------------
+firewire fixes for 6.8-rc3
+
+FireWire subsystem now supports the legacy layout of configuration ROM,
+while it appears that some of DV devices in the early 2000's have the
+legacy layout with a quirk. This pull request includes some changes to
+handle the quirk.
+
+----------------------------------------------------------------
+Takashi Sakamoto (2):
+      firewire: core: correct documentation of fw_csr_string() kernel API
+      firewire: core: search descriptor leaf just after vendor directory entry in root directory
+
+ drivers/firewire/core-device.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
+
+
+Thanks
+
+Takashi Sakamoto
 
