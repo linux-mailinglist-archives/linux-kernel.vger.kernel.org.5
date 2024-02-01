@@ -1,178 +1,216 @@
-Return-Path: <linux-kernel+bounces-48015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A377E845643
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:31:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5EF3845645
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:31:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5944628C479
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:31:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FF961F22D25
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:31:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 430C915B970;
-	Thu,  1 Feb 2024 11:30:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B373D15D5AE;
+	Thu,  1 Feb 2024 11:31:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Iho0mFhR"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="WqJBI7BU"
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2059F51A;
-	Thu,  1 Feb 2024 11:30:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 640A74DA1E
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 11:31:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706787054; cv=none; b=Jo+1rJfaBVTuWzgIBneI+n4zmJuGyPVs7Jtxo84Q5/pNQpmO0R/0kYbLIU94iuALY4psFi7PWRDgu/g9EE1jUtCosTrJqmcNKVhLyunH2Unyzp0z8Qd4mGFUoanKjAWG0/WaQ40kAAxLMw+fS/G+c9sSC7nWclIzP8f5nBqUnNY=
+	t=1706787084; cv=none; b=cqZh5G9J99heepEdx/iEz0SVH5mo4WJoXplyIFqC8hgW/hsij9tXkEWShzmeDIdYA8VNEgumVeX2duEc2D3fNXXth73lC6GHck/Hau9G3JRTt59m++SmAxk9WQu+Obwq8+O66Ck3bcabIppbAJUIIxgqssuKB6arcHra0gI+/bs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706787054; c=relaxed/simple;
-	bh=ymwI0jN49xybT/Ng8gZ2rmIN5iSeKZU+oWXLZSdT+EE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q36izT2DVsnVyqb7AU4YEy10AWG0Jazs7v9Fbchu0KDeN1eGkJnW6MdccDK3qNKDWNGax/HiM8k1G68d1MPrfnun7MFHwFxSz56Wec114UpsHZi/jfdrtaGNVPAzzB3wrYlUhqzQq/gFhf77QW7iHcGuO9bdFXI1Q7Cfq+0Q0HM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Iho0mFhR; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-558f523c072so1132344a12.2;
-        Thu, 01 Feb 2024 03:30:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706787051; x=1707391851; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OeJ8Vo9euL1nRT/+mK/nP/qb3zO+GpIrLJzkyd6z9vk=;
-        b=Iho0mFhRYpHfJ+NErtefTdd4XFfOaoJk4aJMVaekgK5o+EDC7CI2xZ0daoSECqHPwB
-         4j+RJb+s2EtSaRz3rLo+rLN88aUrEy0TXr2TytvELvHMoGc81vOWwgYINlZDTxcynbUS
-         idpcnxNLLX5D+mGt3heMdRdF+I5kMvCrGSkmo2co1uraN3f3PQEXsI9oeJdGD4eCy0/B
-         aEzLI1FZaF0dZdEX8Li5nQPELNY8NEMN02D9hqjghipd5DnnxB+GDACml7+cmLbwJT3r
-         WZPX5LJXcFul7LDdabe0aZGI1B113Y/D8vayhrH0/3v32dI7DY9edfhld6lNxJS9JOHH
-         GXMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706787051; x=1707391851;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OeJ8Vo9euL1nRT/+mK/nP/qb3zO+GpIrLJzkyd6z9vk=;
-        b=R6+JNShfh+Ur+YicTP/lHHcTDxUOBq4ilI0OAgpDxgdUEny0wvL0CVwEiCCWdg/jQE
-         Dx/tIZtnoQPOuAJchsJdcfwYG9eev1XB0DYZll4CVk+MEHSzOVrBZXLgi7qC8ZG0sEq5
-         K3DcfAqWipSKaqLZLVcaN6rA204lm838gwMT0elSnvpsVNEk/IPlIB9JpjEITFnb/5eN
-         y8xi8LfX3Pag9az6aO2pBJChZFbtEet7ZHQEsVjAxNLWBnDjD4UzjD7JjEYdXYklW5zY
-         D9q5Xi6DPyV0BIG0qJRtcq5hNuXg+83TBN8Rkmnqv/zt4v6wIeAu7aeGw9nBLSsLI2v7
-         Ke+Q==
-X-Gm-Message-State: AOJu0YwFgPfmzcQygNaNMSQDW8ARWEw1eX7AIDqU3rN2NqxWda/Kb9FD
-	zzir1DzhglhfrVoTUIspkp8aFIkl18Ok9LVtt0dPz3FfIV8UxgIg
-X-Google-Smtp-Source: AGHT+IG+OZWcNv5QlGSK/292NmwxUhG7WXWmnQr1AOXMHR6GCOvKOh/sC3nQLY1afE7JnUaT5apRDQ==
-X-Received: by 2002:aa7:ccce:0:b0:55f:c7ad:b92f with SMTP id y14-20020aa7ccce000000b0055fc7adb92fmr547508edt.24.1706787050510;
-        Thu, 01 Feb 2024 03:30:50 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXuPe791exN4U8Ea3ojgnWCzKEeIkBgRXEdyACk43lEzdN1Hdr1vjOjAXKP8RzQnPV85tMBuxpqj1pUmG3Q6fvW2c+b++rjlKF0iNG9zEK68k6ea2Vv5zkJTzBvr6ivlCBK+KZpNDPHlctPTMx9XdpgGc7PKS/bgbKfoMw8fTtKo7nxLwPB6yaaPIvSKHTwwJEu2uWaPWtISFutCuBvbEKTF7Wp8IgCb8AGSBuxOMlZOeHFYnGI0IzEot2mJ9cX+mWSqOnLs7gGAm7v0L1WnN15G9Xwb6jmjfSjsbMEs8wavEeSg6CEVvhXb5u1flMoG9W53M8xHNUdt/kWxVwWD4Pjofvdl+4=
-Received: from skbuf ([188.25.173.195])
-        by smtp.gmail.com with ESMTPSA id h1-20020a0564020e0100b0055d312732dbsm6717894edh.5.2024.02.01.03.30.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 03:30:50 -0800 (PST)
-Date: Thu, 1 Feb 2024 13:30:48 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v5 03/11] net: dsa: realtek: convert variants
- into real drivers
-Message-ID: <20240201113048.67td36b6bfufb2gk@skbuf>
-References: <20240130-realtek_reverse-v5-0-ecafd9283a07@gmail.com>
- <20240130-realtek_reverse-v5-3-ecafd9283a07@gmail.com>
+	s=arc-20240116; t=1706787084; c=relaxed/simple;
+	bh=Y43K/9Pr3/J8pQcr6auVY9urd1fE9ip+x6T1JXZeiuk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
+	 Content-Type:References; b=hjpGBmMWrucMm1p4v6lvesX62w1eomOPMiwW17tIFaI7fd/BGjLDMbg0fjwEHj7jZmIK53yridnyVjPIm+SugSQl/n4qLUdypq/gt6GHjoYbzaIP0pkFxQ93Ep5RLF/ZUzcQhqArjk8A7Ewaf8IAqPL4wSJDmo5xRQ1zwJ85MqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=WqJBI7BU; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240201113120euoutp02f680de284b781ca6509b956d7ca2d5f4~vuc6DqpIy3263232632euoutp02I
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 11:31:20 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240201113120euoutp02f680de284b781ca6509b956d7ca2d5f4~vuc6DqpIy3263232632euoutp02I
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1706787080;
+	bh=wQ0RO1zhNPtAJDp+vpA11gjRu7eZ5H9BUbR2r8jxAJg=;
+	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+	b=WqJBI7BUqlsQWq4Nl5Vbm8WSh+YyvYXFd/Y7Nm4F4SOyS+1tb2pcYKwEYN7pl6ww7
+	 Ex49vc1woFrv7ESyyhIz6Q4yanew77f3qZfqBQH2dtftAlbMLskeGxFDnGpxu0uvib
+	 otK/+gjlfOR7CE9Hrz1qTlKoKajO3dzxiezlLi28=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20240201113120eucas1p10dcc6b1b835492224c4a86b115a06ffa~vuc50RlLF2368023680eucas1p1L;
+	Thu,  1 Feb 2024 11:31:20 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+	eusmges2new.samsung.com (EUCPMTA) with SMTP id 03.3B.09814.7018BB56; Thu,  1
+	Feb 2024 11:31:20 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240201113119eucas1p2da4ad2b5b7549c5fb99e540531411c2a~vuc5cxAS32810128101eucas1p2T;
+	Thu,  1 Feb 2024 11:31:19 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240201113119eusmtrp11e8a64689c0d3b7776afca799a2da318~vuc5cI-wg2587625876eusmtrp1N;
+	Thu,  1 Feb 2024 11:31:19 +0000 (GMT)
+X-AuditID: cbfec7f4-727ff70000002656-88-65bb81078e1c
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+	eusmgms1.samsung.com (EUCPMTA) with SMTP id BD.13.09146.7018BB56; Thu,  1
+	Feb 2024 11:31:19 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20240201113119eusmtip28cd4f02af464816248dc207c234d9b95~vuc45F0fP0033700337eusmtip2Y;
+	Thu,  1 Feb 2024 11:31:19 +0000 (GMT)
+Message-ID: <a5fafb40-0782-4b85-a9fd-7fda886dd70a@samsung.com>
+Date: Thu, 1 Feb 2024 12:31:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240130-realtek_reverse-v5-3-ecafd9283a07@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: runtime warnings after merge of the bpf-next tree
+Content-Language: en-US
+To: Daniel Xu <dxu@dxuuu.xyz>, Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
+	<ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, bpf
+	<bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>, Linux Kernel
+	Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+	<linux-next@vger.kernel.org>
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <yeujnwul3nd6vhk2pidnh72l5lx4zp4sgup4qzgbe2fpex42yf@2wtt67dvl7s3>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SaUwTYRD1292WLaa6lGI/C4HQKAYPQKNmEwiI8WhMRBOMRDSRxn4BIhRs
+	QYT4A0woUDzw1goKIlCwCCWcLWioR0W0avGoaMQYVERRjiKnIO2i8u+9mXnzZiZD4jwNS0jG
+	ypKQXCaJE7GdifoHY09XkRkGFFAxCOiRiSs4bRt760QP3TOx6eKiXzg9WHIM0B36fDbdWqQE
+	9IPCRXRdy0unDRxxhtXKFve8eoOLVVYLLq6pyGGLh2o8d7IinYOkKC72MJL7B0c5x+S2WFmJ
+	rzyPaL61EemgebEKkCSk1sIXhiQVcCZ5lAZA2/gJgiG2GWK8gjNkCEBz7j0nFeA4FINaPcYk
+	ygAsnz4PGDIA4DHdZ7a9iksFw5eTWsyOCWoJrOp5y2LiLrDtcjdhx26UF+zqvOTo6kptg3pd
+	DrBjnBLAzu5rDi2f2gJLH+sdY+CUFoOtp62ORmxqNVT1qRxmHCoMtulGWIzYCzb05TsEkOon
+	4Z13zTgz9yao7GuYxa6w11Q7u48HbD97nGAEWQAWTnRhDMkDMP1LJ2CqAuE78zjbfjOc8oVV
+	en8mHAqL82sJ5pQLoLXPhRliATxTfxFnwlyYreQx1T5Qbbr1z7b1mQXPAyL1nLuo5+yvnrOO
+	+r9vISAqgAAlK+KjkWKNDKX4KSTximRZtN+BhPgaMPNM7VMmWyMo6x3wMwKMBEYASVzE55Z7
+	NiEeVypJTUPyhP3y5DikMAJ3khAJuEulXohHRUuS0EGEEpH8bxYjOcJ0rKF6bLT/0u22Ol2Q
+	948X9Zll06bQj5Wnks5+n5fYW8F6zu/I8Aa1aTeb9BkTI4cKOO4/WfcHKk0dAst3dOd6pIdm
+	cnIqxdjYnhUd8fioz8rmkJSSEXNXeHZLeMzyT++7Y6Ie+X4ILBHzKkPzz2mfiPbs59EpIRe2
+	RhwOkz7xtihPZu711y3zkF8dXTuw/lpWwEbXUm5BA0Fj6/lf1+3YIdx6yBymL+Z2D5cK7xua
+	tD2vA+8Kg2QGHMu08Q3zd2keLrak3tjWb963Pe1DgXuUyms4NdZnbAXIlhZJqqvcXTb+vjA/
+	URhUrpyK+2SaF/UsddqyGxFugma3hQfPba5tPCMiFDGS1ctxuULyByYM7ya7AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFIsWRmVeSWpSXmKPExsVy+t/xe7rsjbtTDe6eUbP4/ns2s8WXn7fZ
+	LT4fOc5msXjhN2aLT0ubGC0u75rDZnFwYRujxbEFYhZb915ld+D0aLxxg83jxbWbzB5dNy4x
+	e2xa1cnm8XmTXABrlJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamSvp1NSmpO
+	Zllqkb5dgl5G994brAXX5CpWvD7J0sC4R7KLkZNDQsBE4tOaXUxdjFwcQgJLGSVONjxhhkjI
+	SJyc1sAKYQtL/LnWxQZR9J5R4sbjU0wgCV4BO4mrf9aA2SwCKhLrX9xmhYgLSpyc+YQFxBYV
+	kJe4f2sGO4gtLOAlsWtjJyOIzSwgLnHryXywXhEBN4llZ3YxgyxgFljDJLHxzC2wQUICVRJ3
+	Dl0Ds9kEDCW63oJcwcnBKeAncXLjd1aIQWYSXVu7oIbKS2x/O4d5AqPQLCR3zEKybxaSlllI
+	WhYwsqxiFEktLc5Nzy021CtOzC0uzUvXS87P3cQIjMRtx35u3sE479VHvUOMTByMhxglOJiV
+	RHhXyu1MFeJNSaysSi3Kjy8qzUktPsRoCgyMicxSosn5wFSQVxJvaGZgamhiZmlgamlmrCTO
+	61nQkSgkkJ5YkpqdmlqQWgTTx8TBKdXAJHmueN6L8mmHJmw9nGYi5bZg64NUGS2pXcuXTN3+
+	8EmxZWruoZcatUEWDx08k65t2PQpt8RRm/f8tKCm2iD9Nh3FLy5fgraKxYl4Lee9yxqiszzW
+	ZdGsd0WM97SYL6eoXz3xTGylYcnfE4tuzeQ1/uA+4bTF9zPZjN/PSHK+X3Cr33zpUov/DNKv
+	bxyR/HHb+ovkR9YZN4125t579W71yvmXtpxa0nDoQ/4edn2P1VeWbpZZvcaSc7+l4QpZv9ab
+	MjypXPUP/zZE9rLOOGJhsEMkt/HBo+6MZexZXEL/j5roccfe1xFpU+88XzbrkJsws8SbrvIj
+	U6Qu7W7/v1HsSEFJ6knNAOYHi9alK38V3afEUpyRaKjFXFScCAB14NLfTQMAAA==
+X-CMS-MailID: 20240201113119eucas1p2da4ad2b5b7549c5fb99e540531411c2a
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20240201113119eucas1p2da4ad2b5b7549c5fb99e540531411c2a
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240201113119eucas1p2da4ad2b5b7549c5fb99e540531411c2a
+References: <20240201142348.38ac52d5@canb.auug.org.au>
+	<yeujnwul3nd6vhk2pidnh72l5lx4zp4sgup4qzgbe2fpex42yf@2wtt67dvl7s3>
+	<CGME20240201113119eucas1p2da4ad2b5b7549c5fb99e540531411c2a@eucas1p2.samsung.com>
 
-On Tue, Jan 30, 2024 at 08:13:22PM -0300, Luiz Angelo Daros de Luca wrote:
-> Previously, the interface modules realtek-smi and realtek-mdio served as
-> a platform and an MDIO driver, respectively. Each interface module
-> redundantly specified the same compatible strings for both variants and
-> referenced symbols from the variants.
-> 
-> Now, each variant module has been transformed into a unified driver
-> serving both as a platform and an MDIO driver. This modification
-> reverses the relationship between the interface and variant modules,
-> with the variant module now utilizing symbols from the interface
-> modules.
-> 
-> Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-> ---
+Dear All,
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+On 01.02.2024 04:55, Daniel Xu wrote:
+> Hi Stephen,
+>
+> Thanks for the report.
+>
+> On Thu, Feb 01, 2024 at 02:23:48PM +1100, Stephen Rothwell wrote:
+>> Hi all,
+>>
+>> After merging the bpf-next tree, today's linux-next build (powerpc
+>> pseries_le_defconfig) produced these runtime warnings in my qemu boot
+> I can't quite find that config in-tree. Mind giving me a pointer?
+>
+>> tests:
+>>
+>>    ipip: IPv4 and MPLS over IPv4 tunneling driver
+>>    ------------[ cut here ]------------
+>>    WARNING: CPU: 0 PID: 1 at kernel/bpf/btf.c:8131 register_btf_kfunc_id_set+0x68/0x74
+>>    Modules linked in:
+>>    CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.8.0-rc2-03380-gd0c0d80c1162 #2
+>>    Hardware name: IBM pSeries (emulated by qemu) POWER8 (raw) 0x4d0200 0xf000004 of:SLOF,HEAD pSeries
+>>    NIP:  c0000000003bfbfc LR: c00000000209ba3c CTR: c00000000209b9a4
+>>    REGS: c0000000049bf960 TRAP: 0700   Not tainted  (6.8.0-rc2-03380-gd0c0d80c1162)
+>>    MSR:  8000000002029033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 24000482  XER: 00000000
+>>    CFAR: c0000000003bfbb0 IRQMASK: 0
+>>    GPR00: c00000000209ba3c c0000000049bfc00 c0000000015c9900 000000000000001b
+>>    GPR04: c0000000012bc980 000000000000019a 000000000000019a 0000000000000133
+>>    GPR08: c000000002969900 0000000000000001 c000000002969900 c000000002969900
+>>    GPR12: c00000000209b9a4 c000000002b60000 c0000000000110cc 0000000000000000
+>>    GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+>>    GPR20: 0000000000000000 0000000000000000 0000000000000000 c0000000014cd250
+>>    GPR24: c000000002003e6c c000000001582c78 000000000000018b c0000000020c1060
+>>    GPR28: 0000000000000000 0000000000000007 c0000000020c10a8 c000000002968f80
+>>    NIP [c0000000003bfbfc] register_btf_kfunc_id_set+0x68/0x74
+>>    LR [c00000000209ba3c] cubictcp_register+0x98/0xc8
+>>    Call Trace:
+>>    [c0000000049bfc30] [c000000000010d58] do_one_initcall+0x80/0x2f8
+>>    [c0000000049bfd00] [c000000002005aec] kernel_init_freeable+0x32c/0x520
+>>    [c0000000049bfde0] [c0000000000110f8] kernel_init+0x34/0x25c
+>>    [c0000000049bfe50] [c00000000000debc] ret_from_kernel_user_thread+0x14/0x1c
+>>    --- interrupt: 0 at 0x0
+>>    Code: 60420000 3d22ffc6 39290708 7d291a14 89290270 7d290774 79230020 4bfff8c0 60420000 e9240000 7d290074 7929d182 <0b090000> 3860ffea 4e800020 3c4c0121
+>>    ---[ end trace 0000000000000000 ]---
+>>    NET: Registered PF_INET6 protocol family
+> [...]
+>
+>> Exposed (and maybe caused) by commit
+>>
+>>    6e7769e6419f ("bpf: treewide: Annotate BPF kfuncs in BTF")
+>>
+> My guess is the config does not enable CONFIG_DEBUG_INFO_BTF which
+> causes compilation to use the dummy definitions for BTF_KFUNCS_START().
+>
+> I think there's probably a few ways to fix it. This untested diff should
+> work if I am guessing correctly. There's probably a cleaner way to do
+> this.  I'll take a closer look in the morning.
 
-Some minor non-functional comments below which you might decide not to
-address now, depending on what else is pointed out during review.
+I've observed this issue while testing today's linux-next on ARM64 bit 
+boards. The below patch fixes (or hides?) this warning. Feel free to add:
 
-> diff --git a/drivers/net/dsa/realtek/realtek-mdio.c b/drivers/net/dsa/realtek/realtek-mdio.c
-> index c2572463679f..3433f64fb0d7 100644
-> --- a/drivers/net/dsa/realtek/realtek-mdio.c
-> +++ b/drivers/net/dsa/realtek/realtek-mdio.c
-> @@ -140,7 +141,19 @@ static const struct regmap_config realtek_mdio_nolock_regmap_config = {
->  	.disable_locking = true,
->  };
->  
-> -static int realtek_mdio_probe(struct mdio_device *mdiodev)
-> +/**
-> + * realtek_mdio_probe() - Probe a platform device for an MDIO-connected switch
-> + * @mdiodev: mdio_device to probe on.
-> + *
-> + * This function should be used as the .probe in an mdio_driver. It
-> + * initializes realtek_priv and read data from the device-tree node. The switch
-> + * is hard resetted if a method is provided. It checks the switch chip ID and,
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
-nitpick: participle of 'reset' is 'reset'. Same comment for realtek_smi_probe().
 
-> + * finally, a DSA switch is registered.
-> + *
-> + * Context: Can sleep. Takes and releases priv->map_lock.
-> + * Return: Returns 0 on success, a negative error on failure.
-> + */
-> +int realtek_mdio_probe(struct mdio_device *mdiodev)
->  {
->  	struct realtek_priv *priv;
->  	struct device *dev = &mdiodev->dev;
-> diff --git a/drivers/net/dsa/realtek/realtek-smi.c b/drivers/net/dsa/realtek/realtek-smi.c
-> index 668336515119..d8a9a6a6b5bc 100644
-> --- a/drivers/net/dsa/realtek/realtek-smi.c
-> +++ b/drivers/net/dsa/realtek/realtek-smi.c
-> @@ -505,8 +518,20 @@ static int realtek_smi_probe(struct platform_device *pdev)
->  	}
->  	return 0;
->  }
-> +EXPORT_SYMBOL_NS_GPL(realtek_smi_probe, REALTEK_DSA);
->  
-> -static void realtek_smi_remove(struct platform_device *pdev)
-> +/**
-> + * realtek_smi_remove() - Remove the driver of a SMI-connected switch
-> + * @pdev: platform_device to be removed.
-> + *
-> + * This function should be used as the .remove_new in a platform_driver. First
-> + * it unregisters the DSA switch and cleans internal data. If a method is
-> + * provided, the hard reset is asserted to avoid traffic leakage.
+> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+> index 0fe4f1cd1918..e24aabfe8ecc 100644
+> --- a/include/linux/btf_ids.h
+> +++ b/include/linux/btf_ids.h
+> @@ -227,7 +227,7 @@ BTF_SET8_END(name)
+>   #define BTF_SET_END(name)
+>   #define BTF_SET8_START(name) static struct btf_id_set8 __maybe_unused name = { 0 };
+>   #define BTF_SET8_END(name)
+> -#define BTF_KFUNCS_START(name) static struct btf_id_set8 __maybe_unused name = { 0 };
+> +#define BTF_KFUNCS_START(name) static struct btf_id_set8 __maybe_unused name = { .flags = BTF_SET8_KFUNCS };
+>   #define BTF_KFUNCS_END(name)
+>
+>   #endif /* CONFIG_DEBUG_INFO_BTF */
+>
+>
+> Thanks,
+> Daniel
 
-FWIW, removing the driver unregisters the net devices, which disables
-the ports and performs an orderly shutdown of any upper virtual net
-devices as well, like bridges. So ports automatically roll back to
-standalone operation before this callback is even issued.
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
-Traffic leakage is prevented, and the switch is hard reset, but I don't
-think there is any causal relationship between the two.
-
-> + *
-> + * Context: Can sleep.
-> + * Return: Nothing.
-> + */
-> +void realtek_smi_remove(struct platform_device *pdev)
->  {
->  	struct realtek_priv *priv = platform_get_drvdata(pdev);
->  
 
