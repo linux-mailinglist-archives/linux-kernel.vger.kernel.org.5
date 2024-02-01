@@ -1,133 +1,129 @@
-Return-Path: <linux-kernel+bounces-48717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCF4384602E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:43:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C778784603A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:45:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 986C8286C89
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:43:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 035791C24E3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:45:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 254B882C9B;
-	Thu,  1 Feb 2024 18:43:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 458445A4E0;
+	Thu,  1 Feb 2024 18:45:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eY+ElGIm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Yq0/h8Rf"
+Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com [209.85.222.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E317E113;
-	Thu,  1 Feb 2024 18:43:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6674E7C6C9
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 18:45:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706812985; cv=none; b=r5Uh4xEu3ZYWTRszDUqKrFCo5KEaU6wgap0F8TqAXyu6lpboj8P9A8ALoCuuKx4f01DVnnaoUhpkorgHUAmqeIQ3QB6MTxoUHurbzAAo/ddz2izzVIzV5fHoETux4Mj5C21zcr+JpeBzkjvMd8wXvG0u1ou7pxJa9tHdjp+gNzo=
+	t=1706813138; cv=none; b=INZoN+We4fdPAAxjwng5aKRXMcWsJDD3JOehByCgB7RAccOJ/Fa0enpBeWrrpP+2osnF3UF2P+WIUgl/SPaPRM5ExO8BFmcu91n4jBSS79tsV4qjkI0DmSy+Md17P2lXtX41cQKvmvM0+KElW27lIje0pw1aed7Z2f1yjkDK4RI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706812985; c=relaxed/simple;
-	bh=08WTJYiiiVSXfDqZA54KHPdrHQAZkWse/35hApk4m4E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oTE9MnHfEhtJ1n3Q0xTxqHqLeZNPxncOjvqQtHwsyj4hfZtq8TA5HSN6Bwdfa5eLMqjG08qvYOcDyfqzpPQML/YbrDr5kdTr3MjLEPvT1nSOlhVucF+bnZSm/W914wS2q4ppwuI2GfM1UfnOOBmhMnsHsmOMOS0wHckhiyO2keI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eY+ElGIm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41B8AC433F1;
-	Thu,  1 Feb 2024 18:43:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706812984;
-	bh=08WTJYiiiVSXfDqZA54KHPdrHQAZkWse/35hApk4m4E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eY+ElGImWlNLu57i4LaQK0R+OxW4C/stUbAV9y9nwzPjQYbVIcDqFKs92YNXyF+qD
-	 g+4r2+gyDSgxqJy0rwBLKA7GbIn34H0SExYaOKv2unXJIXQGIOhswlZp+tkE5QcWV/
-	 XKrN3PilkyDzGoi5JPc1Gaw53RPhFq2MIAgwD1owOTnR21pyltGjoZcyHqqxXljVne
-	 CkYBnGHtWNkF6PfTVegva3fxkqlXfKvjg8MXdGA7jf9M1widO+1SE7M+FiY/uV3kV/
-	 2uo/W9+mTgxkRUjqtX8bVl7k6rPHE6otrnC3zJSDAu6QM6KbF4DFlY0MXW8KdgV3Kq
-	 hs9fHDDswpw9g==
-Date: Thu, 1 Feb 2024 18:42:59 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Andrew Davis <afd@ti.com>
-Cc: Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-	Santosh Shilimkar <ssantosh@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Sebastian Reichel <sre@kernel.org>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH 02/12] dt-bindings: arm: keystone: ti-sci: Add
- reboot-controller child node
-Message-ID: <20240201-jester-gleeful-3ac8f035e0a4@spud>
-References: <20240131221957.213717-1-afd@ti.com>
- <20240131221957.213717-3-afd@ti.com>
+	s=arc-20240116; t=1706813138; c=relaxed/simple;
+	bh=WLN/I8zDIYv90emnu+BrvNcZrC5OZrKJETTsJYXnWTQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OMHFLmkDHI+koQl+RexiFtWtc67r52b+IBAdnEPdwkFghaxgjJPMIyRt086xuOQ44tnzfp8vx3mYzf2knQrduHKorx5CREdPlLEiK0Io4ArXPYxOBIDzJv/Jc8gJ3XTkIuHXoVy0QcENnI4RZg8FLpEvW9ybKX0n13mZvvTrZTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Yq0/h8Rf; arc=none smtp.client-ip=209.85.222.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f42.google.com with SMTP id a1e0cc1a2514c-7d2e007751eso706745241.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 10:45:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706813135; x=1707417935; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KX+XzKo3hA/FKch3SlJ9SoxyEE2YWPNWjBbiP8ff5mw=;
+        b=Yq0/h8Rf6nn6jo/4ybGWe1xHTJ1V5gpN9w9PX/Lz9TsjE2/EleA74R2zrXGdq/494V
+         psqKdEcVY7P1O78zXptHzfIPfdpKmU0eC9bsohiOmGcwr5Gy2riFENzZx/3iHEO4qMbk
+         EsFq4Fn7KrjNtCZXRQehuu9fK8WLB1Jd+reV2GuYfybOT23JzgK2uHUZ8/YxdH42IAks
+         PHJ8T+Pl1fH7LSY8dVb91uApi/IyfzNAVSXkwSvEVS/rtpUvyJgaU72VANN51jjcBxaX
+         HSCPbfdHxgT+9gWYkMoA+08IYETFwaNjgmKp0u6YVX6TNJ1B2nUBqVhfNmtN0CjPLvko
+         Sujg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706813135; x=1707417935;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KX+XzKo3hA/FKch3SlJ9SoxyEE2YWPNWjBbiP8ff5mw=;
+        b=cOuqG+qyfXq3a2DJDLu18fwVOUYRLPAB5EqmcLRE8m7Qc5JjO8nYm91G/mDFuI9jKH
+         +/sgYyaSyqg0XwWpVo19EVAoLaMYIZORWorwZ/vOjdKJqJ6DzfbRrgBMBME/vq+pMX86
+         EmNFCENYnHsRemjS005hb2WQnP6jWUaca2ljiOAdWEEpk5oQif7hZsQ76nYq/PJ7eEuw
+         izdvkPbmGBS2BUP/69rzM+vi+HYOGRzpD8uZB2Aw7umGBFkYmYwaZDZPxZh3DSC0i8v4
+         j8eSpDwfaQSyVhWc/oGTepmJ+BFWmEtk/+7j/YGUuJX6iy8I3BZjEMSWXLXehhEFRlY7
+         UWlA==
+X-Gm-Message-State: AOJu0YxVnACGkOrIeXlIl5KfIWp4OvC+p2JCUDpp1e0jNBx2HiAUF1zY
+	uubHXm6SlTpBfzplmD0808wxJLwBmw4l47K3eFeCUH0jDtho922N+ohR8CfyTJkwOjkMFnfZ3qf
+	hgcRWQm7r3G5t8HMaYOV7n7k/DkDKQA/hCU56
+X-Google-Smtp-Source: AGHT+IH1Wl5ytQxmsJFPNY4DrHKVCmHhPAyclcfbt6/cJFgaOTuEXKaeL7MSzTipVlTACWjESrw5MiwBVrVpy5tQ1Wk=
+X-Received: by 2002:a67:ad12:0:b0:46b:3a27:9895 with SMTP id
+ t18-20020a67ad12000000b0046b3a279895mr6007237vsl.14.1706813135051; Thu, 01
+ Feb 2024 10:45:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="wEmJWZe8MbdHoMiC"
-Content-Disposition: inline
-In-Reply-To: <20240131221957.213717-3-afd@ti.com>
-
-
---wEmJWZe8MbdHoMiC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240129202741.3424902-1-aahila@google.com> <ZbvFEtQskK3xzi6y@nanopsycho>
+In-Reply-To: <ZbvFEtQskK3xzi6y@nanopsycho>
+From: Aahil Awatramani <aahila@google.com>
+Date: Thu, 1 Feb 2024 10:45:23 -0800
+Message-ID: <CAGfWUPzeWeF-XPGem=VqxG=DaOEMRWnjCcueD+ODsEKLczDEMA@mail.gmail.com>
+Subject: Re: [PATCH net-next v6] bonding: Add independent control state machine
+To: Jiri Pirko <jiri@resnulli.us>
+Cc: David Dillow <dave@thedillows.org>, Mahesh Bandewar <maheshb@google.com>, 
+	Jay Vosburgh <j.vosburgh@gmail.com>, Hangbin Liu <liuhangbin@gmail.com>, 
+	Andy Gospodarek <andy@greyhouse.net>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 04:19:47PM -0600, Andrew Davis wrote:
-> The TI-SCI firmware supports rebooting the system in addition to the
-> functions already listed here, document child node for the same.
->=20
-> Signed-off-by: Andrew Davis <afd@ti.com>
+> Any chance we can have some coverage via self-tests?
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+I plan to work on these self-tests decoupled from the current patch.
 
-Cheers,
-Conor.
+> Hmm, I wonder how it makes sense to add new features here. This should
+> rot.
 
-> ---
->  .../devicetree/bindings/arm/keystone/ti,sci.yaml          | 8 ++++++++
->  1 file changed, 8 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml b=
-/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
-> index c24ad0968f3ef..e392175b33c74 100644
-> --- a/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
-> +++ b/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
-> @@ -83,6 +83,10 @@ properties:
->      type: object
->      $ref: /schemas/reset/ti,sci-reset.yaml#
-> =20
-> +  reboot-controller:
-> +    type: object
-> +    $ref: /schemas/power/reset/ti,sci-reboot.yaml#
-> +
->  required:
->    - compatible
->    - mbox-names
-> @@ -126,4 +130,8 @@ examples:
->          compatible =3D "ti,sci-reset";
->          #reset-cells =3D <2>;
->        };
-> +
-> +      k3_reboot: reboot-controller {
-> +        compatible =3D "ti,sci-reboot";
-> +      };
->      };
-> --=20
-> 2.39.2
->=20
+Could you clarify what you are suggesting here?
 
---wEmJWZe8MbdHoMiC
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbvmMwAKCRB4tDGHoIJi
-0s2aAP9oJwCoaFBP/LiIOI1L9NQnqVEqe8nwLeFFqoCC5wnytQEA0xHtdx7CCHLx
-xpLtzML7N+aekuG2qmu4q1raHVY7UgU=
-=+A1E
------END PGP SIGNATURE-----
-
---wEmJWZe8MbdHoMiC--
+On Thu, Feb 1, 2024 at 8:28=E2=80=AFAM Jiri Pirko <jiri@resnulli.us> wrote:
+>
+> Mon, Jan 29, 2024 at 09:27:41PM CET, aahila@google.com wrote:
+>
+> [...]
+>
+>
+> >diff --git a/drivers/net/bonding/bond_procfs.c b/drivers/net/bonding/bon=
+d_procfs.c
+> >index 43be458422b3..95d88df94756 100644
+> >--- a/drivers/net/bonding/bond_procfs.c
+> >+++ b/drivers/net/bonding/bond_procfs.c
+> >@@ -154,6 +154,8 @@ static void bond_info_show_master(struct seq_file *s=
+eq)
+> >                          (bond->params.lacp_active) ? "on" : "off");
+> >               seq_printf(seq, "LACP rate: %s\n",
+> >                          (bond->params.lacp_fast) ? "fast" : "slow");
+> >+              seq_printf(seq, "LACP coupled_control: %s\n",
+> >+                         (bond->params.coupled_control) ? "on" : "off")=
+;
+>
+> Hmm, I wonder how it makes sense to add new features here. This should
+> rot.
+>
+>
+> >               seq_printf(seq, "Min links: %d\n", bond->params.min_links=
+);
+> >               optval =3D bond_opt_get_val(BOND_OPT_AD_SELECT,
+> >                                         bond->params.ad_select);
+>
+> [...]
 
