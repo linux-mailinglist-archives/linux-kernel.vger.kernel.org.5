@@ -1,103 +1,138 @@
-Return-Path: <linux-kernel+bounces-47926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2EED8454BB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:03:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 895DE8454BE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:03:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8612B28D4E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:03:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39A5F1F27EFA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:03:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E7A15A4A1;
-	Thu,  1 Feb 2024 10:03:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fIKpjUVT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49B015B10F;
+	Thu,  1 Feb 2024 10:03:26 +0000 (UTC)
+Received: from smtpbg150.qq.com (smtpbg150.qq.com [18.132.163.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D094D9FE;
-	Thu,  1 Feb 2024 10:03:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E4C74D9FE;
+	Thu,  1 Feb 2024 10:03:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.132.163.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706781782; cv=none; b=DB9BsDGy7PW8QDRn3+3jrS8Ydc0o+90iSbnDxir2I2tNvCGm5ZeUQ8dges+k4hKloAgNbtUd/HQXw5gTUYHhsUP3R0zljVcqqyN+xqe4QVmWn86UnjZ6KGc49c8fhuLahKND4lLLSmUFhc+PBpHS5EmxeEO0Tjdn+P1Hgw8HCPQ=
+	t=1706781806; cv=none; b=HSuGtbHsdjbS5duw3bBfnjcLHqWEV5ZVhJL4qsnertoVPVpQbj2TgbDVKlUPGiL1bH/qIezJ2qYf65eG6qcGiYxEij413JmquQDoGoeZYELzMW7n/zS4zhe0OJrMdKNfuBs1e2J38oBYqxe5EZ+TfHR6qNjy/iJfNbZLrWbGFT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706781782; c=relaxed/simple;
-	bh=NkpX4SR0tWKjeMojKZD/2vUJKUhdE2cs8VKLouOlFuQ=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=O4gCrSxJop7JXrqCSo2jISJXLxK2Oc+sOfitAG4goCK3prZAXYY4UoWAHXxDcWFIhhmb1xxWyB4W6n7bgxXajsUMX1EUj/XvfE3oOFWOZAVciYBEngj4WzKwPbTX63LBIjSA/6Ld6fDF5Sfp85PnjX1oqAaGD3q4DMb6kt6NXvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fIKpjUVT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFD50C433F1;
-	Thu,  1 Feb 2024 10:02:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706781781;
-	bh=NkpX4SR0tWKjeMojKZD/2vUJKUhdE2cs8VKLouOlFuQ=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=fIKpjUVTCmz01limyDF4sdEe7dgd8lLjkZXFDQh+rgYg/Xr0d682yVRR9Pdb4PLSG
-	 VMAldDJz0aCxuh61jRfA1yy8htZF47ri6tZ56wJM8kUKTnewAZjK9C5J7JhoRQLKeD
-	 qbwR8YWpLdNkPxJiXqfZLy8GmQstBVdL6uQCceuUWKB6UOgmL9BKhasvogHfUY7bNe
-	 8DCtfL5akj/tZY/TOytQIsi15Ub6luYpcXAYwC9oMRGO58t2A7e3hxlovArya3gTKB
-	 vLzgzezM8Ss3WRsEQzOG27ruxiQZf0PCJNk550FVBG0/VOjsSGQAfwFc4l1BoywDu1
-	 lc25VVav3OBEw==
-From: Kalle Valo <kvalo@kernel.org>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,  Arend van
- Spriel
- <aspriel@gmail.com>,  Franky Lin <franky.lin@broadcom.com>,  Hante
- Meuleman <hante.meuleman@broadcom.com>,  Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>,  Arnd Bergmann <arnd@arndb.de>,  Lee
- Jones <lee@kernel.org>,  Brian Norris <briannorris@chromium.org>,
-  Srinivasan Raju <srini.raju@purelifi.com>,
-  linux-wireless@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  brcm80211-dev-list.pdl@broadcom.com
-Subject: Re: [PATCH 6/6] wifi: cw1200: Convert to GPIO descriptors
-References: <20240131-descriptors-wireless-v1-0-e1c7c5d68746@linaro.org>
-	<20240131-descriptors-wireless-v1-6-e1c7c5d68746@linaro.org>
-Date: Thu, 01 Feb 2024 12:02:56 +0200
-In-Reply-To: <20240131-descriptors-wireless-v1-6-e1c7c5d68746@linaro.org>
-	(Linus Walleij's message of "Wed, 31 Jan 2024 23:37:25 +0100")
-Message-ID: <87h6isv6wf.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1706781806; c=relaxed/simple;
+	bh=DKso4YS41skSyS1xsizUAxJeS/P+dmXu009Uxk+kUnQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZAMgqs8cddI+Om2O2uZgrdjkV7Es3KB2RxYPbq1G4CMy6E2qunV9imOHRT3hihsuGp1+BxUZs6Qz9rOPuKythpSiZ+2FH7jdDy8YtD24SnyJXsfcahrkEC0bnZ0n9z+16zLB4DYIQqSXAkFxgIM0QHQWbuExYri7MkpC+bKZa8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=18.132.163.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp78t1706781784tkkpgdyz
+X-QQ-Originating-IP: +JWxgiMlSMFigd7fs7xBIqWiE9nm36/UMQXx/r1lq/Q=
+Received: from localhost ( [183.209.108.228])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Thu, 01 Feb 2024 18:03:03 +0800 (CST)
+X-QQ-SSF: 01400000000000504000000A0000000
+X-QQ-FEAT: oGOjGSUjcuDKQ+aqRluaCH/DpwlgcE5FBILQGBVUf39RpxHBY3eVtKuY1HUzg
+	BEDAaBW7ez6PNw9VtMD5dohFgqgrc58OAVA/1f0I8vVeghPYStuLH85zlcgb+pOhUh5CSC3
+	hGhOp683YifZnCsIaOdFFgUWSDd+jMNf8VTI+qjDCzcxuEQupC3SvZbX8m53vJHQMUvbfhu
+	rcZEw4lgpcKg0SBKFSuXd0Epxk5Ol+EhteJF8QOzyutO9O24kT1jj1/WBotnH8eUBsWC73p
+	C/fHUS5aC4L0/gb2vOfCHur7v9XNDd/BL6jU2Fz4EgNYPq639V2ufWkROvL8b8SRqdhDdvo
+	u2mtg+kwYGPBTClU3h8qNFX+SpRE9+oul7qSGhpBT7raQP4dGGLb8KQerYAGA9th730lszA
+	HwABS8bA45A=
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 110192563837687786
+Date: Thu, 1 Feb 2024 18:03:03 +0800
+From: Dawei Li <dawei.li@shingroup.cn>
+To: Rob Herring <robh@kernel.org>
+Cc: frowand.list@gmail.com, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, set_pte_at@outlook.com
+Subject: Re: [PATCH 2/2] of: Implment cache update operation on device node
+ attach
+Message-ID: <A5E6C26210115B9B+ZbtsVxPxJ4WCFtdp@centos8>
+References: <20240130105236.3097126-1-dawei.li@shingroup.cn>
+ <20240130105236.3097126-3-dawei.li@shingroup.cn>
+ <20240131211227.GA2303754-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240131211227.GA2303754-robh@kernel.org>
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-Linus Walleij <linus.walleij@linaro.org> writes:
+Hi Rob,
 
-> The CW1200 uses two GPIOs to control the powerup and reset
-> pins, get these from GPIO descriptors instead of being passed
-> as platform data from boardfiles.
->
-> The RESET line will need to be marked as active low as we will
-> let gpiolib handle the polarity inversion.
->
-> The SDIO case is a bit special since the "card" need to be
-> powered up before it gets detected on the SDIO bus and
-> properly probed. Fix this by using board-specific GPIOs
-> assigned to device "NULL".
->
-> There are currently no in-tree users.
->
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Thanks for review.
 
-[...]
+On Wed, Jan 31, 2024 at 03:12:27PM -0600, Rob Herring wrote:
+> On Tue, Jan 30, 2024 at 06:52:36PM +0800, Dawei Li wrote:
+> > Use implemented __of_phandle_update_cache to update phandle cache on
+> > device node attachment.
+> > 
+> > While at it, make explicit assertion on locking dependency for
+> > __of_phandle_cache_inv_entry.
+> 
+> 'While at it' is a red flag for should be a separate commit.
 
-> +/* Like the rest of the driver, this only supports one device per system */
-> +static struct gpio_desc *cw1200_reset;
-> +static struct gpio_desc *cw1200_powerup;
+Agreed. It should be in a separate commit.
 
-Side comment about cw1200 driver: it's pretty bad that the driver
-supports only one device per system. As I haven't seen any real activity
-for this driver a long time I thinking of just removing it in the near
-future.
+Thanks,
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+    Dawei
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> 
+> > 
+> > Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+> > ---
+> >  drivers/of/base.c    | 6 ++++--
+> >  drivers/of/dynamic.c | 2 ++
+> >  2 files changed, 6 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/of/base.c b/drivers/of/base.c
+> > index 8b7da27835eb..44e542b566e1 100644
+> > --- a/drivers/of/base.c
+> > +++ b/drivers/of/base.c
+> > @@ -153,6 +153,8 @@ void __of_phandle_cache_inv_entry(phandle handle)
+> >  	u32 handle_hash;
+> >  	struct device_node *np;
+> >  
+> > +	lockdep_assert_held(&devtree_lock);
+> > +
+> >  	if (!handle)
+> >  		return;
+> >  
+> > @@ -195,8 +197,8 @@ void __init of_core_init(void)
+> >  	}
+> >  	for_each_of_allnodes(np) {
+> >  		__of_attach_node_sysfs(np);
+> > -		if (np->phandle && !phandle_cache[of_phandle_cache_hash(np->phandle)])
+> > -			phandle_cache[of_phandle_cache_hash(np->phandle)] = np;
+> > +
+> > +		__of_phandle_update_cache(np, false);
+> >  	}
+> >  	mutex_unlock(&of_mutex);
+> >  
+> > diff --git a/drivers/of/dynamic.c b/drivers/of/dynamic.c
+> > index 3bf27052832f..a68bf58f2c24 100644
+> > --- a/drivers/of/dynamic.c
+> > +++ b/drivers/of/dynamic.c
+> > @@ -219,6 +219,8 @@ static void __of_attach_node(struct device_node *np)
+> >  			np->phandle = 0;
+> >  	}
+> >  
+> > +	__of_phandle_update_cache(np, true);
+> > +
+> >  	np->child = NULL;
+> >  	np->sibling = np->parent->child;
+> >  	np->parent->child = np;
+> > -- 
+> > 2.27.0
+> > 
+> 
 
