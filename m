@@ -1,133 +1,277 @@
-Return-Path: <linux-kernel+bounces-47826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2824845362
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:04:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B2B784536B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:08:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CBBE28516B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:04:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18500B264B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:08:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8135815AAD8;
-	Thu,  1 Feb 2024 09:04:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3231115AAC4;
+	Thu,  1 Feb 2024 09:08:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="O+bQMgY5"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Yi0HgEBy"
 Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FA6715AAAA
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 09:04:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B21E2159571
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 09:08:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706778284; cv=none; b=t9/XH/NGVhqFWvb4b6W7QJZE4vV+WNgP6Jv8BZ3pHjOD2cKnOcZe1GY/mb0XbmW0bvRKEvLA0/K4Sx0L/ubcxXINIdKB3Z56tmKjW4Wg7IEd63Upp4KQMUj9Effm9BXEY92StzeuB3sFJQBt5gr900Cj95qOenjqRtsIZjac+Lo=
+	t=1706778519; cv=none; b=rrZ9uKxLBtP0LHrMV0YJmZcoGq4bosc1F6/lejfkAN+qWDSpVn6SZ1LFJOIj0GUwZfF+PN+H6xgCNLFQj0+TNkrx1TBpEcqbdJmyIkjWDJl7mJfTO8Cvd7plnI6b6asEr5bNf/QqgTlU5wKpiJwH92iWnjBs/7y8PjIiLJjIQjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706778284; c=relaxed/simple;
-	bh=jZZnMprqf9KfgmZGIK91OrO1vJ+skCvhyHO1pCh6mYw=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=K48CjNi8u8oiyhVvtW1yqpMSNFz7lvteRKD4mZi+iceg8UtkjMgzM15+ilU2EgfvFGOpVxRwkoEUEJ53Ak9+QHLzyLepp8zG48sxZpwyrodFHdo0CaOC/Z4TzlVAvPhu69VVokukJE1Md9lVpDM6lLckxgTCsl010tbrAdz876I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=O+bQMgY5; arc=none smtp.client-ip=209.85.128.202
+	s=arc-20240116; t=1706778519; c=relaxed/simple;
+	bh=ruPq2pvkVk8s24AfuKHQzLcgDuuIniLumwcZJ8iyy3A=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=n3nHtErEaEByfLQuaHI0pqsqXqtTaZTDxOVNx27fouwYxZi1HceQ3zls2FRmbJcY4j19YqhREJrpuIE641kstsFWRQwduPFyaFaqAkXRcqPTzjBOpT2ftLEFMTmW0pmNot0xZxguvQ4Dpxbik6CUYlD04yVF4X2jQxlWO7gaOJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Yi0HgEBy; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5f874219ff9so8625347b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 01:04:42 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5ffa2bb4810so8649897b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 01:08:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706778282; x=1707383082; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qvWvk4QvsQxB0P/BHzB26BqaiUYgtrBgA7rGlBoMg2M=;
-        b=O+bQMgY59uTkj5sEjiGJx4xMMnfnBVYS5BNoaLie5vcvFU8xWXAqUsHHIUE32TnE4a
-         u2AM0Uo7smbysuKGHq76aaRf5KsraxD/0mT4xsUJM6ChQu/2Z2z/r/dHqDAnGqUWr/D5
-         JO+ozRmXm7r5FRP6iNzSbN1cspLdzLLRO9Iku5V74LSYwFUAm6G/sw680xD5OzTQBiCV
-         FotJilEx7+4fUMmTJ3dZD62lmYtUOxaXqMEa1k82pSQlr+S0FTNUfCLaee3SBCkuZImV
-         UcSuJvAKT4etir3xS9/YW8Hxhn7NmETfYhrNJ6BQ/FwA+Rqdgnk+Cpg+gX2Poyt0YT+F
-         ozpA==
+        d=google.com; s=20230601; t=1706778516; x=1707383316; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PyPRSJB8R7sstDIzxYvvLOQP9nz0Xs4tmV9kMbdp44Y=;
+        b=Yi0HgEBypSrfhcSIHIr19OeVet4Sd/Q20A6xGxzPj6qgBCLXCGe0iisIBZh0Gg/Z/V
+         BqDBQ3VAxjO+9DGqoUmldOXdzfpYy2HR6lA/LHTqRAyIxcF1oiPnLXt2yesTEbWjgZYK
+         nx+ORVSL+JJcbcwl216iT6AtKzulXobY85PHVHyNXuLS9uEQkeuCNYDjvP2Q1DP3cUlU
+         jWQplqsag0enGZ0S9Nsu+YdymLDR5DwZl66/hCUScKYd2gQ2JatZB8xPcAfAifpw6nVk
+         4MLqagyaLQEGzTeCFOLcnU2SfH8GOtnHZvCFOIrQzK3+ZcqnaK0n3xT/eGPQTkB7t9uR
+         BfsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706778282; x=1707383082;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qvWvk4QvsQxB0P/BHzB26BqaiUYgtrBgA7rGlBoMg2M=;
-        b=A8TurE3MT7xqzmUzQUGBM460GROaXD0B7je3EG2RoaGj8XzlPJB1nHdrreCvKMvy0p
-         1evZPa66bv+ZZmlFplnQriepRDdflEfwgaPAbnyZhe6xixJa7LpswrajOZgibb12yRrF
-         lxkUhHjeaZ9l8KJxnDvYvl7i9u4vNjM003/yihw76efXG3glScc8ufsBkt4a7ix/2tbn
-         LbNgONc8QdR3CfUGVlW+bHnpWuE/TcAist0yxZaLGZ9n4WjgsmtwIgWSlUBn9aUyEjXx
-         1NFwEliw8XjFTqskvjoHSgUDdYQ59EQKKkn3nXi9tKCr+G00bWFPC2MIhgB+j5FuzzTV
-         HzMw==
-X-Gm-Message-State: AOJu0YwtiScswu+n6z/no6wW/ZUNAd+wA3yGdxHQ7Qu+ChR7A1SjvGi4
-	xv1JsS8bB1fKTOalhQiidYSVkVIB+xhL39iqTHyj3uwskcbr45QJYNIc1ujsNQGQgNYzSPWU0w=
-	=
-X-Google-Smtp-Source: AGHT+IGMuY8j6HgmaOYL/yVI7EA1U7Y++bJ3lMlFLigy9FB5qwdbehhOpMkJ9usslQabmxdsVv6Y8adU6A==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:9c:201:c945:1806:ff53:36fa])
- (user=elver job=sendgmr) by 2002:a81:99d8:0:b0:5ff:6e82:ea31 with SMTP id
- q207-20020a8199d8000000b005ff6e82ea31mr849671ywg.3.1706778282041; Thu, 01 Feb
- 2024 01:04:42 -0800 (PST)
-Date: Thu,  1 Feb 2024 10:04:30 +0100
+        d=1e100.net; s=20230601; t=1706778516; x=1707383316;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PyPRSJB8R7sstDIzxYvvLOQP9nz0Xs4tmV9kMbdp44Y=;
+        b=vPC6lu1t1H21ykMujSQpqRolx42vv+/x4zAmva34QlSm8/vDr8lOnIOrqctRaGdLuY
+         JZIOxfO9ulRuSwyWm+frr3zXZd5ILA9PKhHGzSetWs2g/AUCqs99mTLa1iFe82aXecX5
+         muH97iR8DDtcV1A2V99FcByczs/Qk0xs9Nx0HXIWuD2GnKHGZknpEHpYdaT2iVLTeRXh
+         psbbhJDNTJ3gtfem6i51Mg9IMgUqD6e0YKjI4AGD/kUTSCIppc1YuxvRW3qzdkkWU7wB
+         DIOyV2tR4KklWiIpvlp6BdFBWwY+zD0bmxdfGZalRjUqXpepXmr9jLY6jvwVI6sxKf+/
+         PxDA==
+X-Gm-Message-State: AOJu0Ywnaq9jt6ShHavXDc49gvka2M3oCRGk2CjO4T6lAWXTovDL5AY/
+	mA1QS0NSj6QpHnyOImDeT8kjnQlj/9NEahRqNYlzKBf+gbat1HtMdt0tKouIFfC/fFe0ofQFrts
+	CEF8JS8tG2sq1LluoaA==
+X-Google-Smtp-Source: AGHT+IEal3S+0/LT8L/+ihFESpfF3v8jase7MpGggk1/LchQ6suhlyF5F50sZ3ZPPJU5OFZDNh2MSLQST8IUcSCG
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:690c:ec5:b0:5ee:2b5:7d75 with SMTP
+ id cs5-20020a05690c0ec500b005ee02b57d75mr276209ywb.8.1706778516753; Thu, 01
+ Feb 2024 01:08:36 -0800 (PST)
+Date: Thu, 1 Feb 2024 09:08:34 +0000
+In-Reply-To: <20240201032718.1968208-4-nphamcs@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240201090434.1762340-1-elver@google.com>
-Subject: [PATCH -mm v2] stackdepot: fix -Wstringop-overflow warning
-From: Marco Elver <elver@google.com>
-To: elver@google.com, Andrew Morton <akpm@linux-foundation.org>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>, Alexander Potapenko <glider@google.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, kasan-dev@googlegroups.com, 
-	Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+References: <20240201032718.1968208-1-nphamcs@gmail.com> <20240201032718.1968208-4-nphamcs@gmail.com>
+Message-ID: <Zbtfku0wVGXBHDTD@google.com>
+Subject: Re: [PATCH v2 3/3] selftests: add zswapin and no zswap tests
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: akpm@linux-foundation.org, riel@surriel.com, shuah@kernel.org, 
+	hannes@cmpxchg.org, tj@kernel.org, lizefan.x@bytedance.com, 
+	roman.gushchin@linux.dev, linux-mm@kvack.org, kernel-team@meta.com, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-Since 113a61863ecb ("Makefile: Enable -Wstringop-overflow globally")
-string overflow checking is enabled by default. Within stackdepot, the
-compiler (GCC 13.2.0) assumes that a multiplication overflow may be
-possible and flex_array_size() can return SIZE_MAX (4294967295 on
-32-bit), resulting in this warning:
+Hey Nhat,
 
- In function 'depot_alloc_stack',
-     inlined from 'stack_depot_save_flags' at lib/stackdepot.c:688:4:
- arch/x86/include/asm/string_32.h:150:25: error: '__builtin_memcpy' specified bound 4294967295 exceeds maximum object size 2147483647 [-Werror=stringop-overflow=]
-   150 | #define memcpy(t, f, n) __builtin_memcpy(t, f, n)
-       |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
- lib/stackdepot.c:459:9: note: in expansion of macro 'memcpy'
-   459 |         memcpy(stack->entries, entries, flex_array_size(stack, entries, nr_entries));
-       |         ^~~~~~
- cc1: all warnings being treated as errors
+I have a few more comments, sorry for not catching everything the first
+time around.
 
-This is due to depot_alloc_stack() accepting an 'int nr_entries' which
-could be negative without deeper analysis of callers.
+Adding Roman to CC.
 
-The call to depot_alloc_stack() from stack_depot_save_flags(), however,
-only passes in its nr_entries which is unsigned int. Fix the warning by
-switching depot_alloc_stack()'s nr_entries to also be unsigned.
+On Wed, Jan 31, 2024 at 07:27:18PM -0800, Nhat Pham wrote:
+> Add a selftest to cover the zswapin code path, allocating more memory
+> than the cgroup limit to trigger swapout/zswapout, then reading the
+> pages back in memory several times. This is inspired by a recently
+> encountered kernel crash on the zswapin path in our internal kernel,
+> which went undetected because of a lack of test coverage for this path.
+> 
+> Add a selftest to verify that when memory.zswap.max = 0, no pages can go
+> to the zswap pool for the cgroup.
+> 
+> Suggested-by: Rik van Riel <riel@surriel.com>
+> Suggested-by: Yosry Ahmed <yosryahmed@google.com>
+> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+> ---
+>  tools/testing/selftests/cgroup/test_zswap.c | 97 +++++++++++++++++++++
+>  1 file changed, 97 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
+> index 32ce975b21d1..14d1f18f1098 100644
+> --- a/tools/testing/selftests/cgroup/test_zswap.c
+> +++ b/tools/testing/selftests/cgroup/test_zswap.c
+> @@ -60,6 +60,27 @@ static long get_zswpout(const char *cgroup)
+>  	return cg_read_key_long(cgroup, "memory.stat", "zswpout ");
+>  }
+>  
+> +static int allocate_bytes_and_read(const char *cgroup, void *arg)
 
-Link: https://lore.kernel.org/all/20240201135747.18eca98e@canb.auug.org.au/
-Fixes: d869d3fb362c ("stackdepot: use variable size records for non-evictable entries")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Marco Elver <elver@google.com>
----
-v2:
-* Just switch 'nr_entries' to unsigned int which is already the case
-  elsewhere.
----
- lib/stackdepot.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think allocate_and_read_bytes() is easier to read, but I don't feel
+strongly about it.
 
-diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index 8f3b2c84ec2d..4a7055a63d9f 100644
---- a/lib/stackdepot.c
-+++ b/lib/stackdepot.c
-@@ -420,7 +420,7 @@ static inline size_t depot_stack_record_size(struct stack_record *s, unsigned in
- 
- /* Allocates a new stack in a stack depot pool. */
- static struct stack_record *
--depot_alloc_stack(unsigned long *entries, int nr_entries, u32 hash, depot_flags_t flags, void **prealloc)
-+depot_alloc_stack(unsigned long *entries, unsigned int nr_entries, u32 hash, depot_flags_t flags, void **prealloc)
- {
- 	struct stack_record *stack = NULL;
- 	size_t record_size;
--- 
-2.43.0.429.g432eaa2c6b-goog
+> +{
+> +	size_t size = (size_t)arg;
+> +	char *mem = (char *)malloc(size);
+> +	int ret = 0;
+> +
+> +	if (!mem)
+> +		return -1;
+> +	for (int i = 0; i < size; i += 4095)
+> +		mem[i] = 'a';
 
+cgroup_util.h defines PAGE_SIZE, see alloc_anon() for example.
+
+On that note, alloc_anon() is awfully close to allocate_bytes() below,
+perhaps we should consolidate them. The only difference I see is that
+alloc_anon() does not check for the allocation failure, but a lot of
+functions in cgroup_helpers.c don't, so it seems intentional for
+simplification.
+
+> +
+> +	/* go through the allocated memory to (z)swap in and out pages */
+> +	for (int i = 0; i < size; i += 4095) {
+> +		if (mem[i] != 'a')
+> +			ret = -1;
+> +	}
+> +
+> +	free(mem);
+> +	return ret;
+> +}
+> +
+>  static int allocate_bytes(const char *cgroup, void *arg)
+>  {
+>  	size_t size = (size_t)arg;
+> @@ -133,6 +154,80 @@ static int test_zswap_usage(const char *root)
+>  	return ret;
+>  }
+>  
+> +/*
+> + * Check that when memory.zswap.max = 0, no pages can go to the zswap pool for
+> + * the cgroup.
+> + */
+> +static int test_swapin_nozswap(const char *root)
+> +{
+> +	int ret = KSFT_FAIL;
+> +	char *test_group;
+> +	long zswpout;
+> +
+> +	/* Set up */
+
+I think this comment is unnecessary.
+
+> +	test_group = cg_name(root, "no_zswap_test");
+> +
+> +	if (!test_group)
+> +		goto out;
+> +	if (cg_create(test_group))
+> +		goto out;
+> +	if (cg_write(test_group, "memory.max", "8M"))
+> +		goto out;
+> +	/* Disable zswap */
+
+I think this comment is unnecessary.
+
+> +	if (cg_write(test_group, "memory.zswap.max", "0"))
+> +		goto out;
+> +
+> +	/* Allocate and read more than memory.max to trigger swapin */
+> +	if (cg_run(test_group, allocate_bytes_and_read, (void *)MB(32)))
+> +		goto out;
+> +
+> +	/* Verify that no zswap happened */
+
+If we want to be really meticulous, we can verify that we did swap out,
+but not to zswap. IOW, we can check memory.swap.current or something.
+
+> +	zswpout = get_zswpout(test_group);
+> +	if (zswpout < 0) {
+> +		ksft_print_msg("Failed to get zswpout\n");
+> +		goto out;
+> +	} else if (zswpout > 0) {
+
+nit: This can be a separate if condition, I think it would be more
+inline with the style of separate consecutive if blocks we are
+following.
+
+> +		ksft_print_msg(
+> +			"Pages should not go to zswap when memory.zswap.max = 0\n");
+
+We can probably avoid the line break with something more concise, for
+example:
+"zswapout > 0 when zswap is disabled"
+or "zswapout > 0 when memory.zswap.max = 0"
+
+> +		goto out;
+> +	}
+> +	ret = KSFT_PASS;
+> +
+> +out:
+> +	cg_destroy(test_group);
+> +	free(test_group);
+> +	return ret;
+> +}
+> +
+> +/* Simple test to verify the (z)swapin code paths */
+> +static int test_zswapin_no_limit(const char *root)
+
+I think test_zswapin() is enough to be distinct from
+test_swapin_nozswap(). The limit is not a factor here AFAICT.
+
+> +{
+> +	int ret = KSFT_FAIL;
+> +	char *test_group;
+> +
+> +	/* Set up */
+
+I think this comment is unnecessary.
+
+> +	test_group = cg_name(root, "zswapin_test");
+> +	if (!test_group)
+> +		goto out;
+> +	if (cg_create(test_group))
+> +		goto out;
+> +	if (cg_write(test_group, "memory.max", "8M"))
+> +		goto out;
+> +	if (cg_write(test_group, "memory.zswap.max", "max"))
+> +		goto out;
+> +
+> +	/* Allocate and read more than memory.max to trigger (z)swap in */
+> +	if (cg_run(test_group, allocate_bytes_and_read, (void *)MB(32)))
+> +		goto out;
+
+We should probably check for a positive zswapin here, no?
+
+> +
+> +	ret = KSFT_PASS;
+> +
+> +out:
+> +	cg_destroy(test_group);
+> +	free(test_group);
+> +	return ret;
+> +}
+> +
+>  /*
+>   * When trying to store a memcg page in zswap, if the memcg hits its memory
+>   * limit in zswap, writeback should affect only the zswapped pages of that
+> @@ -309,6 +404,8 @@ struct zswap_test {
+>  	const char *name;
+>  } tests[] = {
+>  	T(test_zswap_usage),
+> +	T(test_swapin_nozswap),
+> +	T(test_zswapin_no_limit),
+>  	T(test_no_kmem_bypass),
+>  	T(test_no_invasive_cgroup_shrink),
+>  };
+> -- 
+> 2.39.3
 
