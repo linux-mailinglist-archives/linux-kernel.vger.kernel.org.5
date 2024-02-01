@@ -1,457 +1,246 @@
-Return-Path: <linux-kernel+bounces-47600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3373884500A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:06:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C97B584500C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:11:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81C61B25F3E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:06:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BCC51F22CF7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:11:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26CBB2B9D0;
-	Thu,  1 Feb 2024 04:06:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD9713B794;
+	Thu,  1 Feb 2024 04:11:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="JVyrAN6x"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="uQw9vnWc";
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="eiNhUj8f"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2633A1A0
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 04:06:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706760392; cv=none; b=GrRRFYp1ahCWPwAJ/uSQvhm8fOsph0mcBV9Mmx3KYd+QzRhxFlCP0qLzyA3ftCFQ+/UdN3dG9QMxxi3WNXwN8scXL458HnOq/51voMR4GzW51Tn+zYtx+XRpplOnI0C/d4JF/yzmyG3Z4SEnu3SvoY4+a8lb6l/oiyUolsDbZE4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706760392; c=relaxed/simple;
-	bh=vr56BrQwSU9M8EOMqSgj8EfajQmDPTfuOvLP/+m3Wdc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZXX5LcumFyoFHDQ98d7WeX/d6fJYqTjCBHCt0vCyhwHE5Ejyw8Rdg/bcSNzZCEVa1++kAc+a4kHNGd9BidV2lPrkIer/AKKavJU0L9RpWh5oTg9HyddmqqXmYP7CwtgYLD51V4tIlvqd+s94Fdwb2OhB5j1zF0BrJ0piA6CiVmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=JVyrAN6x; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-60412a23225so5054907b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:06:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03; t=1706760388; x=1707365188; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=A9cS7nVgUKdaXy/fPao/HO1z3bVHBL7mwNKzJyJGoTI=;
-        b=JVyrAN6xaOW5NQ9dIIolt82fikJ8R1IYC/ytMzbU41kcqbJHTlSlgN2Hc/y8hauzTA
-         iDu+CmWRUBNeLt1eHUBL4G8ShoEt3f5E2U2/+YSqp1rFi5AZpMs7EgHpM9Cer+hNGJZy
-         jH84S7d9PrQ7cp6iLp7N6vZ8Fn0Aotsw8+9i94y32i79n0hLblPYzUiEqwio78niwuhC
-         EHV4dZTpwJ/IC5wbhCHOuiPYwuXKLyHLqU33UhF4qHvLMNnAcOks+0uzndI+xULoclfX
-         INthSIaKx17uy62JzypzleTT2+05xpQEO7lFTbTgvNGmk8eMYRSWQqBx/D1PE3wnh1ye
-         pYwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706760388; x=1707365188;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A9cS7nVgUKdaXy/fPao/HO1z3bVHBL7mwNKzJyJGoTI=;
-        b=PGChUgphlhNogD6Ot072WLkk+ro+vNukgDDXoxE829ANIvBILxqfaaQFEb4y2jq01W
-         Rvk6376QsPIP/e8N2eytnyN7VgwfoR+MaU0x0w4ykcXZOG6MJSMr4RywSKcsBojzCMdH
-         USU5sFhdHqxn+wY+dVJWHpU5/YUOhqAgrRxjlsKw6jk+4b7qXrlp/r3SC2QGtmW6+wCl
-         gCL9o03L12Jv9LJ022PREgncnhsUapo768mwRl8MlUi3qu/aWpZcjfohYfFfWHxmUsRW
-         psf18SkX3dPQeCATRvrOKhChiVXYPu2mq/PNsAQB09S2qd+hRJmBwwrh5yD1JB3CPhM2
-         E2Cg==
-X-Gm-Message-State: AOJu0YwDDWrW+9LwpPC3YEn+rnDIF+c91Q687KKrm9RNIIJ8tUE6oXS8
-	oYmtde8J2CXtJjk9/43yST19NoZDtPrT21Dl+odIyFeY8qYTD05TRU3bh624jVDvkHTHi/VzcrH
-	Ke4EsTue8fmK8BX3MXt4jnCjRXmHSSoFAnLus7g==
-X-Google-Smtp-Source: AGHT+IGfqAEiO8Q4ie3oM3T9CvkiCmr5jcU9wT9zIy6Qq8snln0yc7tE2UthbmMTAGRW+fDaKPTDB7UfSJLu8wFfjCA=
-X-Received: by 2002:a81:ae64:0:b0:603:cb7e:8df with SMTP id
- g36-20020a81ae64000000b00603cb7e08dfmr3812460ywk.0.1706760388236; Wed, 31 Jan
- 2024 20:06:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6BD23B293;
+	Thu,  1 Feb 2024 04:11:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.153.233
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706760668; cv=fail; b=GE8RrRpcw+MruuqhvRu8mZITrrNjaRmhgrT3l1ANeUlhoOlrAS2BKPm08oJzWJ2gER1NGNHlRvAyNYoem0/r3DLr0K4/7s5l1SZLNlyjrBbgylfz4fM5rfNbHW9HCVKNww1aOtL3KzwFWVL3U3Q6h+YjjsXiuJIMsFjwLWXKFjI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706760668; c=relaxed/simple;
+	bh=l+AysfRcOvqD7ESAwqdnDH0ZtZ+CGIP/v0OP1tu2D3c=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=FgL9gSGGWl6gu8RrYaX09gJZBiPOz6QC8anVTNOPbbZTjoK1r0VkIsub7wvv8kmmFsZIdX5SXrnANe6Abbum025Cag4yCAfnlm+kc100qd+BfJn1LJFFCPA4zaWAiO6QtWJ24Q+kB6thMVBGeN/uDY4aYBya/TOV9r+4P8HokEU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=uQw9vnWc; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=eiNhUj8f; arc=fail smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1706760665; x=1738296665;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=l+AysfRcOvqD7ESAwqdnDH0ZtZ+CGIP/v0OP1tu2D3c=;
+  b=uQw9vnWcndj53mjPSZi3tPHnPTCho1UZBGSWhbxNEOWoJRA+UgH2M+xC
+   tfv+DlMoFAjYupth3ElQbedoAPa7T/g/CGyaB5fP1S9w5DMKzAFTJz/DN
+   K8oWfZ0aJve3FeCmsi/P6K+c/uwX7eTJN7UdNt1dVKPA9fO3/85fVedsv
+   /n9Ek3tZW6tLNgGmkZkdPuFiexTnv/STK4yd9LyHwA7SYtxrPUzoRdGwe
+   lCtCpZ3G1+lqHuAFb4FHRlbyjESVu6/8mMTmzlxVQaf22lcv9r9xw9BwZ
+   PKMRnea6VS3P0Kz/DpDI7PbQNEswfUNaZ+8fwApbi0eGhMqsqOPIvqxfA
+   g==;
+X-CSE-ConnectionGUID: 0BjHau/9RE+Vi8gjX3cVVQ==
+X-CSE-MsgGUID: r9mhbEMyTry78j+a21cIjQ==
+X-IronPort-AV: E=Sophos;i="6.05,234,1701154800"; 
+   d="scan'208";a="246330482"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 31 Jan 2024 21:11:04 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 31 Jan 2024 21:10:43 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (10.10.215.250)
+ by email.microchip.com (10.10.87.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 31 Jan 2024 21:10:43 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BnWFGCKasd2kKX6lzYm6dXEgRmG4igrzHlmrdxBwM0J+8UQLV3pdSgF/J6of4PdG+Y8SzjiG2I9JItnnFcFws3yxn8wd0TWXDMkP2P1C62/TBNn5IEKf+uMmAPrYxcZlx1HSi7sbGmaToz547quLkL5MzFukeWt1F+5zgeoha3jbfvoYRW5tyNcQbwV15eJxjmP/4QaIMcPaksLJ39HqQ2C6MtEgnJ0AMfX1wiLOt4A+/+oJO42FbMqqapqtAdqCLBNHUdfBiGL9FonKC3O+YCKOKxPo7VJ+s6BggQY0qC0XLuhJiBf5u0WogX7LjgU83pO9gYDGe8WIWOFoJVfeLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=l+AysfRcOvqD7ESAwqdnDH0ZtZ+CGIP/v0OP1tu2D3c=;
+ b=BpXcqzu3gD4zGFTexYE8gueKui5VsLoZaWo4+tdme9C6Xg8oSBD9BSfQ8NCSVyPYfXeVKmwOLwQAuoEwGsd5Oy9lL+KEinH3b7nbHTLSveNYooJqE9DVBVBKDcJRVV+VB8JYGCWAAOOXUHWBwlyHId6gXWN1KnIr77bUhbMl35Gi7pvcI9q0uYo5jvEu9ldS2J10vODQ283M1IBChGI+sPF5pg8Btqb2FHBXb8VxS9P400cKCsJMlewAkkedDIFrjYLrfOFydqf2UCC5jI545DmuFOZ9CYCSjyDVdzIEsrn5o0jdha/J1lXTs2/kFaGFkT8+eGyW/mpxPNB76y0OXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=l+AysfRcOvqD7ESAwqdnDH0ZtZ+CGIP/v0OP1tu2D3c=;
+ b=eiNhUj8fLhrs8qHaVcUIgCrSeKam3u0yJnYS2ZGBNkyQ/m6fWmVIdVSOIrTnWejm33RSO3J3OOM4nkCHhbdRCVEQVn/NZNRNKinUlfhnbB+wxSwk12s4g4UZQ8x9pdaPrrDgyjTWKUcsMc2dA82X4U6xs5gIZmS4WDaCdAFeXe3iM6u5vadCedbbFt/6AfRZqbafZRbXy7H7ZHCVI/KMFiZReCL4FIob6bBNgBTMapdJZkasxYUFpxyfbB+6N4TRqRLuHN/kJRlmAXyIkis8qsiy6ENtfBeUd/FjcmD8i6cZMpZ0UyfwosQaf5M4bLuWq3vWwnpGCfnYyKXSTAmQCA==
+Received: from PH7PR11MB6451.namprd11.prod.outlook.com (2603:10b6:510:1f4::16)
+ by SA3PR11MB7415.namprd11.prod.outlook.com (2603:10b6:806:318::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.22; Thu, 1 Feb
+ 2024 04:10:40 +0000
+Received: from PH7PR11MB6451.namprd11.prod.outlook.com
+ ([fe80::80b9:80a3:e88a:57ee]) by PH7PR11MB6451.namprd11.prod.outlook.com
+ ([fe80::80b9:80a3:e88a:57ee%3]) with mapi id 15.20.7249.024; Thu, 1 Feb 2024
+ 04:10:39 +0000
+From: <Dharma.B@microchip.com>
+To: <robh@kernel.org>
+CC: <conor@kernel.org>, <krzk@kernel.org>, <Manikandan.M@microchip.com>,
+	<andrzej.hajda@intel.com>, <neil.armstrong@linaro.org>, <rfoss@kernel.org>,
+	<Laurent.pinchart@ideasonboard.com>, <jonas@kwiboo.se>,
+	<jernej.skrabec@gmail.com>, <airlied@gmail.com>, <daniel@ffwll.ch>,
+	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+	<tzimmermann@suse.de>, <krzysztof.kozlowski+dt@linaro.org>,
+	<conor+dt@kernel.org>, <dri-devel@lists.freedesktop.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<Linux4Microchip@microchip.com>
+Subject: Re: [PATCH 1/3] dt-bindings: display: bridge: add sam9x7-lvds
+ compatible
+Thread-Topic: [PATCH 1/3] dt-bindings: display: bridge: add sam9x7-lvds
+ compatible
+Thread-Index: AQHaTQ1DHzJ2CWHeI0qiVB4kob88PbDl+48AgAAM8gCAALjbgIAMBTGAgAIok4A=
+Date: Thu, 1 Feb 2024 04:10:39 +0000
+Message-ID: <f980706a-2bc7-46f2-8c3e-1cc62a1e2cb7@microchip.com>
+References: <20240122082947.21645-1-dharma.b@microchip.com>
+ <20240122082947.21645-2-dharma.b@microchip.com>
+ <10a88fc6-2c4c-4f77-850f-f15b21a8ed49@kernel.org>
+ <20240122-privacy-preschool-27dc7dcc5529@spud>
+ <01c4fc05-9b3f-4007-9216-444a4306efd7@microchip.com>
+ <20240130191255.GA2164257-robh@kernel.org>
+In-Reply-To: <20240130191255.GA2164257-robh@kernel.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR11MB6451:EE_|SA3PR11MB7415:EE_
+x-ms-office365-filtering-correlation-id: 73f0f881-bb35-4b6d-56a3-08dc22dbc021
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: fSsCjyVZMrWGTnASxZcQEklvOHQi40i/HbwSl1SLubWe7RfZC5n/P4tHwu8gGJ1fgmwKgzQP8/zo03AOg7AZDJAlitrZ5dOHiaouV7Qp6L+3QhQoWGC7Rnk8d8e0PJJYEoR5PVuzYi0hz+U/EivxUZ5Lw5TvzHfFxf8ZZSPON1piQaO/bcb6+Zs4bYo1nPIQ40UfZ2NPl7IhJglq3VTikM2mTWxCkByr+RglSweO/yrEvP9w2OYTAU47QbWZiVo3kSzm984C67gHejv8wpYlY6QNgXIgDgHcxsPHiRtyNUtRxajaouY79q6zstHtQo6lm4M12GG4rF9oD7cyivjCHgkCRUkPd+feZqqlejvHgvhJcQZtoSqWybxIdrtyZyfTWQFuFOJEJ+Z6NHzT880SBPO0s8weqA3VkpvFHQmwSXNM0yPOf1uC8FdDEGbMRM0Ef9lnu/SoIe0GRGYxn2F11GA+gOO1TULDM2g+f1fBlAW7bqTcnCL1TOjnp6ahFR4oBWnie6FtKbxY6rTpFIAuMHlOBNuCCDB0gHOr0xu/D64gU5FoqAFsFT7jaT8vF945eEczF90wljnwy4FyMtmk0SR+Y6qIst5R+IPnj3sPAjxEoHQb6RBO7rLs6YPyrOY2PmxEG4/Pz/ThS9igFaC9BHzGIKyP8Gsr4xJWCaR7Y35X/4c807r5heajMFSNt+oNx9BBQM90MmONJ+cnOP0hYDxmFJXNG3bol46U4P5NsaE=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB6451.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(366004)(396003)(136003)(230273577357003)(230173577357003)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(31686004)(2616005)(107886003)(41300700001)(26005)(66476007)(38070700009)(316002)(54906003)(66446008)(36756003)(6916009)(478600001)(6506007)(6512007)(6486002)(53546011)(71200400001)(38100700002)(66556008)(122000001)(64756008)(2906002)(8936002)(31696002)(86362001)(5660300002)(66946007)(76116006)(7416002)(8676002)(4326008)(91956017)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Ym4rK1htQnRaUE5QVVJZNXdXWjJHWi96dmZra2xwTXFCRzZxOEVNYkxWNnYy?=
+ =?utf-8?B?VHV4WGlEZHhvVjlWNEhOM21KT3hZVmNHNjJzYVh4NlJZZHRIc1k5TjRoV215?=
+ =?utf-8?B?Q2RiMU1yT2ZsRCtSQUlFNjJzdktSL2tzVzlDbE0raHNIamhIMUZzOFA0UnFH?=
+ =?utf-8?B?S2YxUXpQVU03bVpVWTFTcW1ESlRKQXlwbUNHSE5QUTBJdFk3SG1yRmpLTSto?=
+ =?utf-8?B?RDVXdU1Fd2xkeTdRc3BZR01kb1BvME5SYnlweGtWT3pBTGJNNGRyamZmbFVy?=
+ =?utf-8?B?UElGVCtKWnFRczA1WFFrdWFpZmszMnVpWmxDRFVNejFaNVlWdzU2Vm9PUS9Y?=
+ =?utf-8?B?Y3N1S01TUEJnTkZTaFFCcFF4bjVwU01SRWZzZkNQYk9qam15ckQ2TFJ1OEJr?=
+ =?utf-8?B?NElFeXFVRW5YakhLRUtsc1huQ2JrWkVrZFkwRm50RURoMStYNzQvZmsySUVI?=
+ =?utf-8?B?Mnp3ZG1rZHV0VW5BQzJkbjc5QXl3ajB0VjhQYXYvMys3VjB1dDl6ZzRkNUNI?=
+ =?utf-8?B?TkhEUHRnOWhMNU05VEJvUDU5NmlEdWlXTFNxbWM4dWZXRFdhY1ExQnpyUXAy?=
+ =?utf-8?B?SXJzS1NmTk5mbVFyY0QwK3FGSWl0LzJzVVdFSXowMjRnTzRCWlBpL0Via2lB?=
+ =?utf-8?B?VFczTFVzZXpXVVVXSVZ4c1ZWN21yTkFyY2NDaDF3TTJoNWRxRW4zNVFodHBp?=
+ =?utf-8?B?dzF6T3laNnV4bG1JUU1lZnprTWxXMUUwYXI1NFFJVGc3V1JLdWJPemUyU0hj?=
+ =?utf-8?B?dTd2K0NlT2tZK2hoZUxzcnRyTnR2V0tjNHBrWWZER0M3dmhYeGNjWFlQV2lO?=
+ =?utf-8?B?RFpWN1JEUFY3d09TR1NIdmQ0ZEtQVTdObStZeGRTWGN6aldiRkNRYldOVGdE?=
+ =?utf-8?B?WmxFRFZaMlZuNjRQYTNnWkN0THYzSThLMnJiWURrQkpiQ3ZJVEFEUTAzOFFI?=
+ =?utf-8?B?R0p4MEMvWDRnL09XRlovN1Z4QTF2UE1LZ01UMG4xd1A0T2JPbGRzcFVZR3kr?=
+ =?utf-8?B?cmRUaDRFTTFmRWhlbTR4M2xWRTVMWXRQMHVxbWV0Q0xyZEh6T29OdGJzOXJS?=
+ =?utf-8?B?NlVESFl6RnpIajR6N2I2dDVkZit2SDNERjNobXlHS25MTHcvZHRMR3ZaY0cz?=
+ =?utf-8?B?TTc1VFFabkV5VHd0aFcrWkFvQk9oeTducDFtVVE3NnNEYUJvY0R1NHU2YTg2?=
+ =?utf-8?B?aFo1dGdORllKN1o1L1M2RkY0Y3N3dHZiVjRqVi9GbityNGs4SVBIOS9vakJR?=
+ =?utf-8?B?M2dmMjFWdTNkNUZXTEJ4UlU4Z3dINDhnbUI3amlrcFArcDduV0VVbHpsSkxy?=
+ =?utf-8?B?alUweG1NUDkwM2lqK1Q1M2dEakhWZHZFVVJwL0cya1pBNGE5Rzdrc3E0bkJ3?=
+ =?utf-8?B?cEt4SVk4MGpFZ2ozK0o3NkEwdFh4L0Jja21MM2dqR1VnUGVJejgzemttTDlj?=
+ =?utf-8?B?U3NtQjFHVzJUQ2xaOUtMVjl2QlIyZUVrb3pjdC9uQTRIajNxY05BYWQ1N1NH?=
+ =?utf-8?B?ckc5ak5NRmI5b1ZoWWFVNDhVS3pNUVNRQmVocmtTdXlnK1dxSHhBSENrcFNn?=
+ =?utf-8?B?UDV5cWV5Q3VhLzU1aFN1bzNNekpNSlhxWDEvMHRqVElYd21qODRBMDZvMEpC?=
+ =?utf-8?B?dXhXT0liOFdqMzdIMFVpQjRhaWZkNGY3by9RMXFqRElQYXI0bXFtRkd3NmNR?=
+ =?utf-8?B?akFvVTBQUEVSdWlxNWdldjRGbDJaTnVSRmcvdTZRS2Vkbi85TGtSaXNIaFBw?=
+ =?utf-8?B?ZHlQWkZrQzV2MXU1Zk1LWjFTcTFNamZGN3I3V0I5aTRsdjZWNDViYk5maWdl?=
+ =?utf-8?B?T3EzOW9EYjVoY0tNUFZzNXhOSDVUUHB4NW4zTmQ2L1Z5T1kvNmZhVjBteVla?=
+ =?utf-8?B?WXFRMlA5SjUxR1lnVUUybjQxdm5sVWNIdnQ4dExoSjRQMXd2b2ZlWndacjFp?=
+ =?utf-8?B?emgrYVg2U051YkZ5bFJPZXR1WUVKZ0RTUUhXVTlBVmRJQUYxaTJ1ejl6T3BB?=
+ =?utf-8?B?R1IvRmFiWDRya1RaN1hrTW5TakVoWUQrT1E1VklQcVNMWTRiRnZsMkF2VWo0?=
+ =?utf-8?B?NUh5ZjA2ZTU1Nkt1N1E3aUtxK1ErK3lzUFg4bkhiRm4waWd2Vk5PV01FKzJr?=
+ =?utf-8?Q?Xr0LwW9+OONZoVB1Ap3Qxj4Sg?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <06A09265F4CD544DAD466F450E28DE3D@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124-alice-mm-v1-0-d1abcec83c44@google.com> <20240124-alice-mm-v1-1-d1abcec83c44@google.com>
-In-Reply-To: <20240124-alice-mm-v1-1-d1abcec83c44@google.com>
-From: Trevor Gross <tmgross@umich.edu>
-Date: Wed, 31 Jan 2024 23:06:17 -0500
-Message-ID: <CALNs47uDaD05oD8TtZoSqUBc4SaRig80u2_1P0qMCXtE3H9_Vw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] rust: add userspace pointers
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Kees Cook <keescook@chromium.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Andrew Morton <akpm@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
-	Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB6451.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 73f0f881-bb35-4b6d-56a3-08dc22dbc021
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Feb 2024 04:10:39.6212
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9rTBs8R+yUD8V2aEPTMp+IfgpvMQwAkFWy04zlEOGBUbIwrI5NALJwiGut4Ct1VKt5FKA9LC+ZqJ6Px7HMZZDw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB7415
 
-On Wed, Jan 24, 2024 at 6:21=E2=80=AFAM Alice Ryhl <aliceryhl@google.com> w=
-rote:
-> --- /dev/null
-> +++ b/rust/kernel/user_ptr.rs
-> @@ -0,0 +1,222 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +//! User pointers.
-> +//!
-> +//! C header: [`include/linux/uaccess.h`](../../../../include/linux/uacc=
-ess.h)
-> +
-> +// Comparison with MAX_USER_OP_LEN triggers this lint on platforms
-> +// where `c_ulong =3D=3D usize`.
-> +#![allow(clippy::absurd_extreme_comparisons)]
-> +
-> +use crate::{bindings, error::code::*, error::Result};
-> +use alloc::vec::Vec;
-> +use core::ffi::{c_ulong, c_void};
-> +
-> +/// The maximum length of a operation using `copy_[from|to]_user`.
-> +///
-> +/// If a usize is not greater than this constant, then casting it to `c_=
-ulong`
-> +/// is guaranteed to be lossless.
-> +const MAX_USER_OP_LEN: usize =3D c_ulong::MAX as usize;
-> +
-> +/// A pointer to an area in userspace memory, which can be either read-o=
-nly or
-> +/// read-write.
-> +///
-> +/// All methods on this struct are safe: invalid pointers return `EFAULT=
-`.
-
-Maybe
-
-    ... attempting to read or write invalid pointers will return `EFAULT`.
-
-> +/// Concurrent access, *including data races to/from userspace memory*, =
-is
-> +/// permitted, because fundamentally another userspace thread/process co=
-uld
-> +/// always be modifying memory at the same time (in the same way that us=
-erspace
-> +/// Rust's [`std::io`] permits data races with the contents of files on =
-disk).
-> +/// In the presence of a race, the exact byte values read/written are
-> +/// unspecified but the operation is well-defined. Kernelspace code shou=
-ld
-> +/// validate its copy of data after completing a read, and not expect th=
-at
-> +/// multiple reads of the same address will return the same value.
-> +///
-> +/// These APIs are designed to make it difficult to accidentally write T=
-OCTOU
-> +/// bugs. Every time you read from a memory location, the pointer is adv=
-anced by
-> +/// the length so that you cannot use that reader to read the same memor=
-y
-> +/// location twice. Preventing double-fetches avoids TOCTOU bugs. This i=
-s
-> +/// accomplished by taking `self` by value to prevent obtaining multiple=
- readers
-> +/// on a given [`UserSlicePtr`], and the readers only permitting forward=
- reads.
-> +/// If double-fetching a memory location is necessary for some reason, t=
-hen that
-> +/// is done by creating multiple readers to the same memory location, e.=
-g. using
-> +/// [`clone_reader`].
-
-Maybe something like
-
-    Every time a memory location is read, the reader's position is advanced=
- by
-    the read length and the next read will start from there. This helps pre=
-vent
-    accidentally reading the same location twice and causing a TOCTOU bug.
-
-    Creating a [`UserSlicePtrReader`] and/or [`UserSlicePtrWriter`]
-    consumes the `UserSlicePtr`, helping ensure that there aren't multiple
-    readers or writers to the same location.
-
-    If double fetching a memory location...
-
-> +///
-> +/// Constructing a [`UserSlicePtr`] performs no checks on the provided a=
-ddress
-> +/// and length, it can safely be constructed inside a kernel thread with=
- no
-> +/// current userspace process. Reads and writes wrap the kernel APIs
-
-Maybe some of this is better documented on `new` rather than the type?
-
-> +/// `copy_from_user` and `copy_to_user`, which check the memory map of t=
-he
-> +/// current process and enforce that the address range is within the use=
-r range
-> +/// (no additional calls to `access_ok` are needed).
-> +///
-> +/// [`std::io`]: https://doc.rust-lang.org/std/io/index.html
-> +/// [`clone_reader`]: UserSlicePtrReader::clone_reader
-> +pub struct UserSlicePtr(*mut c_void, usize);
-
-I think just `UserSlice` could work for the name here, since
-`SlicePtr` is a bit redundant (slices automatically containing a
-pointer). Also makes the Reader/Writer types a bit less wordy. Though
-I understand wanting to make it discoverable for C users.
-
-Is some sort of `Debug` implementation useful?
-
-> +impl UserSlicePtr {
-> +    /// Constructs a user slice from a raw pointer and a length in bytes=
-.
-> +    ///
-> +    /// Callers must be careful to avoid time-of-check-time-of-use
-> +    /// (TOCTOU) issues. The simplest way is to create a single instance=
- of
-> +    /// [`UserSlicePtr`] per user memory block as it reads each byte at
-> +    /// most once.
-> +    pub fn new(ptr: *mut c_void, length: usize) -> Self {
-> +        UserSlicePtr(ptr, length)
-> +    }
-> +
-> +    /// Reads the entirety of the user slice.
-> +    ///
-> +    /// Returns `EFAULT` if the address does not currently point to
-> +    /// mapped, readable memory.
-> +    pub fn read_all(self) -> Result<Vec<u8>> {
-> +        self.reader().read_all()
-> +    }
-
-std::io uses the signature
-
-    fn read_to_end(&mut self, buf: &mut Vec<u8>) -> Result<usize> { ... }
-
-Maybe this could be better here too, since it allows reusing the
-vector without going through `read_raw`.
-
-https://doc.rust-lang.org/std/io/trait.Read.html#method.read_to_end
-
-> +    /// Constructs a [`UserSlicePtrReader`].
-> +    pub fn reader(self) -> UserSlicePtrReader {
-> +        UserSlicePtrReader(self.0, self.1)
-> +    }
-
-I wonder if this should be called `into_reader` to note that it is a
-consuming method. Indifferent here, since there aren't any non-`self`
-variants.
-
-> +
-> +    /// Constructs a [`UserSlicePtrWriter`].
-> +    pub fn writer(self) -> UserSlicePtrWriter {
-> +        UserSlicePtrWriter(self.0, self.1)
-> +    }
-> +
-> +    /// Constructs both a [`UserSlicePtrReader`] and a [`UserSlicePtrWri=
-ter`].
-
-Could you add a brief about what is or isn't allowed when you have a
-reader and a writer to the same location?
-
-> +    pub fn reader_writer(self) -> (UserSlicePtrReader, UserSlicePtrWrite=
-r) {
-> +        (
-> +            UserSlicePtrReader(self.0, self.1),
-> +            UserSlicePtrWriter(self.0, self.1),
-> +        )
-> +    }
-> +}
-> +
-> +/// A reader for [`UserSlicePtr`].
-> +///
-> +/// Used to incrementally read from the user slice.
-> +pub struct UserSlicePtrReader(*mut c_void, usize);
-> +
-> +impl UserSlicePtrReader {
-> +    /// Skip the provided number of bytes.
-> +    ///
-> +    /// Returns an error if skipping more than the length of the buffer.
-> +    pub fn skip(&mut self, num_skip: usize) -> Result {
-> +        // Update `self.1` first since that's the fallible one.
-> +        self.1 =3D self.1.checked_sub(num_skip).ok_or(EFAULT)?;
-> +        self.0 =3D self.0.wrapping_add(num_skip);
-
-I think it would be better to change to named structs to make this more cle=
-ar.
-
-> +        Ok(())
-> +    }
-> +
-> +    /// Create a reader that can access the same range of data.
-> +    ///
-> +    /// Reading from the clone does not advance the current reader.
-> +    ///
-> +    /// The caller should take care to not introduce TOCTOU issues.
-
-Could you add an example of what should be avoided?
-
-> +    pub fn clone_reader(&self) -> UserSlicePtrReader {
-> +        UserSlicePtrReader(self.0, self.1)
-> +    }
-> +
-> +    /// Returns the number of bytes left to be read from this.
-
-Remove "from this" or change to "from this reader".
-
-> +    ///
-> +    /// Note that even reading less than this number of bytes may fail.>=
- +    pub fn len(&self) -> usize {
-> +        self.1
-> +    }
-> +
-> +    /// Returns `true` if no data is available in the io buffer.
-> +    pub fn is_empty(&self) -> bool {
-> +        self.1 =3D=3D 0
-> +    }
-> +
-> +    /// Reads raw data from the user slice into a raw kernel buffer.
-> +    ///
-> +    /// Fails with `EFAULT` if the read encounters a page fault.
-
-This is raised if the address is invalid right, not just page faults?
-Or, are page faults just the only mode of indication that a pointer
-isn't valid.
-
-I know this is the same as copy_from_user, but I don't understand that
-too well myself. I'm also a bit curious what happens if you pass a
-kernel pointer to these methods.
-
-> +    /// # Safety
-> +    ///
-> +    /// The `out` pointer must be valid for writing `len` bytes.
-> +    pub unsafe fn read_raw(&mut self, out: *mut u8, len: usize) -> Resul=
-t {
-
-What is the motivation for taking raw pointers rather than a slice
-here? In which case it could just be called `read`.
-
-> +        if len > self.1 || len > MAX_USER_OP_LEN {
-> +            return Err(EFAULT);
-> +        }
-> +        // SAFETY: The caller promises that `out` is valid for writing `=
-len` bytes.
-> +        let res =3D unsafe { bindings::copy_from_user(out.cast::<c_void>=
-(), self.0, len as c_ulong) };
-
-To me, it would be more clear to `c_ulong::try_from(len).map_err(|_|
-EFAULT)?` rather than using MAX_USER_OP_LEN with an `as` cast, since
-it makes it immediately clear that the conversion is ok (and is doing
-that same comparison)
-
-> +        if res !=3D 0 {
-> +            return Err(EFAULT);
-> +        }
-> +        // Since this is not a pointer to a valid object in our program,
-> +        // we cannot use `add`, which has C-style rules for defined
-> +        // behavior.
-> +        self.0 =3D self.0.wrapping_add(len);
-> +        self.1 -=3D len;
-> +        Ok(())
-> +    }
-> +
-> +    /// Reads all remaining data in the buffer into a vector.
-> +    ///
-> +    /// Fails with `EFAULT` if the read encounters a page fault.
-> +    pub fn read_all(&mut self) -> Result<Vec<u8>> {
-
-Same as the above note about read_to_end
-
-> +        let len =3D self.len();
-> +        let mut data =3D Vec::<u8>::try_with_capacity(len)?;
-> +
-> +        // SAFETY: The output buffer is valid for `len` bytes as we just=
- allocated that much space.
-> +        unsafe { self.read_raw(data.as_mut_ptr(), len)? };
-
-If making the change above (possibly even if not), going through
-https://doc.rust-lang.org/std/vec/struct.Vec.html#method.spare_capacity_mut
-can be more clear about uninitialized data.
-
-> +
-> +        // SAFETY: Since the call to `read_raw` was successful, the firs=
-t `len` bytes of the vector
-> +        // have been initialized.
-> +        unsafe { data.set_len(len) };
-> +        Ok(data)
-> +    }
-> +}
-> +
-> +/// A writer for [`UserSlicePtr`].
-> +///
-> +/// Used to incrementally write into the user slice.
-> +pub struct UserSlicePtrWriter(*mut c_void, usize);
-> +
-> +impl UserSlicePtrWriter {
-> +    /// Returns the amount of space remaining in this buffer.
-> +    ///
-> +    /// Note that even writing less than this number of bytes may fail.
-> +    pub fn len(&self) -> usize {
-> +        self.1
-> +    }
-> +
-> +    /// Returns `true` if no more data can be written to this buffer.
-> +    pub fn is_empty(&self) -> bool {
-> +        self.1 =3D=3D 0
-> +    }
-> +
-> +    /// Writes raw data to this user pointer from a raw kernel buffer.
-> +    ///
-> +    /// Fails with `EFAULT` if the write encounters a page fault.
-> +    ///
-> +    /// # Safety
-> +    ///
-> +    /// The `data` pointer must be valid for reading `len` bytes.
-> +    pub unsafe fn write_raw(&mut self, data: *const u8, len: usize) -> R=
-esult {
-
-Same as for Reader regarding signature
-
-> +        if len > self.1 || len > MAX_USER_OP_LEN {
-> +            return Err(EFAULT);
-> +        }
-> +        let res =3D unsafe { bindings::copy_to_user(self.0, data.cast::<=
-c_void>(), len as c_ulong) };
-
-Same as for Reader regarding `as` casts.
-
-> +        if res !=3D 0 {
-> +            return Err(EFAULT);
-> +        }
-> +        // Since this is not a pointer to a valid object in our program,
-> +        // we cannot use `add`, which has C-style rules for defined
-> +        // behavior.
-> +        self.0 =3D self.0.wrapping_add(len);
-> +        self.1 -=3D len;
-> +        Ok(())
-> +    }
-> +
-> +    /// Writes the provided slice to this user pointer.
-> +    ///
-> +    /// Fails with `EFAULT` if the write encounters a page fault.
-> +    pub fn write_slice(&mut self, data: &[u8]) -> Result {
-
-This could probably just be called `write`, which would be consistent
-with std::io::Write.
-
-> +        let len =3D data.len();
-> +        let ptr =3D data.as_ptr();
-> +        // SAFETY: The pointer originates from a reference to a slice of=
- length
-> +        // `len`, so the pointer is valid for reading `len` bytes.
-> +        unsafe { self.write_raw(ptr, len) }
-> +    }
-> +}
->
-> --
-> 2.43.0.429.g432eaa2c6b-goog
-
-The docs could use usage examples, but I am sure you are planning on
-that already :)
-
-- Trevor
+T24gMzEvMDEvMjQgMTI6NDIgYW0sIFJvYiBIZXJyaW5nIHdyb3RlOg0KPiBFWFRFUk5BTCBFTUFJ
+TDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlvdSBrbm93
+IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gDQo+IE9uIFR1ZSwgSmFuIDIzLCAyMDI0IGF0IDAzOjM5
+OjEzQU0gKzAwMDAsIERoYXJtYS5CQG1pY3JvY2hpcC5jb20gd3JvdGU6DQo+PiBIaSBDb25vciwN
+Cj4+DQo+PiBPbiAyMi8wMS8yNCAxMDowNyBwbSwgQ29ub3IgRG9vbGV5IHdyb3RlOg0KPj4+IE9u
+IE1vbiwgSmFuIDIyLCAyMDI0IGF0IDA0OjUxOjE2UE0gKzAxMDAsIEtyenlzenRvZiBLb3psb3dz
+a2kgd3JvdGU6DQo+Pj4+IE9uIDIyLzAxLzIwMjQgMDk6MjksIERoYXJtYSBCYWxhc3ViaXJhbWFu
+aSB3cm90ZToNCj4+Pj4+IEFkZCB0aGUgJ3NhbTl4Ny1sdmRzJyBjb21wYXRpYmxlIGJpbmRpbmcs
+IHdoaWNoIGRlc2NyaWJlcyB0aGUNCj4+Pj4+IExvdyBWb2x0YWdlIERpZmZlcmVudGlhbCBTaWdu
+YWxpbmcgKExWRFMpIENvbnRyb2xsZXIgZm91bmQgb24gTWljcm9jaGlwJ3MNCj4+Pj4+IHNhbTl4
+NyBzZXJpZXMgU3lzdGVtLW9uLUNoaXAgKFNvQykgZGV2aWNlcy4gVGhpcyBiaW5kaW5nIHdpbGwg
+YmUgdXNlZCB0bw0KPj4+Pj4gZGVmaW5lIHRoZSBwcm9wZXJ0aWVzIGFuZCBjb25maWd1cmF0aW9u
+IGZvciB0aGUgTFZEUyBDb250cm9sbGVyIGluIERULg0KPj4+Pj4NCj4+Pj4+IFNpZ25lZC1vZmYt
+Ynk6IERoYXJtYSBCYWxhc3ViaXJhbWFuaTxkaGFybWEuYkBtaWNyb2NoaXAuY29tPg0KPj4+Pj4g
+LS0tDQo+Pj4+PiAgICAuLi4vZGlzcGxheS9icmlkZ2UvbWljcm9jaGlwLHNhbTl4Ny1sdmRzLnlh
+bWwgfCA1OSArKysrKysrKysrKysrKysrKysrDQo+Pj4+PiAgICAxIGZpbGUgY2hhbmdlZCwgNTkg
+aW5zZXJ0aW9ucygrKQ0KPj4+Pj4gICAgY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24v
+ZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L2JyaWRnZS9taWNyb2NoaXAsc2FtOXg3LWx2ZHMu
+eWFtbA0KPj4+Pj4NCj4+Pj4+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
+YmluZGluZ3MvZGlzcGxheS9icmlkZ2UvbWljcm9jaGlwLHNhbTl4Ny1sdmRzLnlhbWwgYi9Eb2N1
+bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9icmlkZ2UvbWljcm9jaGlwLHNh
+bTl4Ny1sdmRzLnlhbWwNCj4+Pj4+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+Pj4+PiBpbmRleCAw
+MDAwMDAwMDAwMDAuLjhjMmM1Yjg1OGM4NQ0KPj4+Pj4gLS0tIC9kZXYvbnVsbA0KPj4+Pj4gKysr
+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvYnJpZGdlL21pY3Jv
+Y2hpcCxzYW05eDctbHZkcy55YW1sDQo+Pj4+PiBAQCAtMCwwICsxLDU5IEBADQo+Pj4+PiArIyBT
+UERYLUxpY2Vuc2UtSWRlbnRpZmllcjogKEdQTC0yLjAtb25seSBPUiBCU0QtMi1DbGF1c2UpDQo+
+Pj4+PiArJVlBTUwgMS4yDQo+Pj4+PiArLS0tDQo+Pj4+PiArJGlkOmh0dHA6Ly9kZXZpY2V0cmVl
+Lm9yZy9zY2hlbWFzL2Rpc3BsYXkvYnJpZGdlL21pY3JvY2hpcCxzYW05eDctbHZkcy55YW1sIw0K
+Pj4+Pj4gKyRzY2hlbWE6aHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlh
+bWwjDQo+Pj4+PiArDQo+Pj4+PiArdGl0bGU6IE1pY3JvY2hpcCBTQU05WDcgTFZEUyBDb250cm9s
+bGVyDQo+Pj4+IFdoYXQgaXMgdGhlICJYIj8NCj4+Pj4NCj4+Pj4+ICsNCj4+Pj4+ICttYWludGFp
+bmVyczoNCj4+Pj4+ICsgIC0gRGhhcm1hIEJhbGFzdWJpcmFtYW5pPGRoYXJtYS5iQG1pY3JvY2hp
+cC5jb20+DQo+Pj4+PiArDQo+Pj4+PiArZGVzY3JpcHRpb246IHwNCj4+Pj4gRG8gbm90IG5lZWQg
+J3wnIHVubGVzcyB5b3UgbmVlZCB0byBwcmVzZXJ2ZSBmb3JtYXR0aW5nLg0KPj4+Pg0KPj4+Pj4g
+KyAgVGhlIExvdyBWb2x0YWdlIERpZmZlcmVudGlhbCBTaWduYWxpbmcgQ29udHJvbGxlciAoTFZE
+U0MpIG1hbmFnZXMgZGF0YQ0KPj4+Pj4gKyAgZm9ybWF0IGNvbnZlcnNpb24gZnJvbSB0aGUgTENE
+IENvbnRyb2xsZXIgaW50ZXJuYWwgRFBJIGJ1cyB0byBPcGVuTERJDQo+Pj4+PiArICBMVkRTIG91
+dHB1dCBzaWduYWxzLiBMVkRTQyBmdW5jdGlvbnMgaW5jbHVkZSBiaXQgbWFwcGluZywgYmFsYW5j
+ZWQgbW9kZQ0KPj4+Pj4gKyAgbWFuYWdlbWVudCwgYW5kIHNlcmlhbGl6ZXIuDQo+Pj4+PiArDQo+
+Pj4+PiArcHJvcGVydGllczoNCj4+Pj4+ICsgIGNvbXBhdGlibGU6DQo+Pj4+PiArICAgIGNvbnN0
+OiBtaWNyb2NoaXAsc2FtOXg3LWx2ZHMNCj4+Pj4gV2hhdCBpcyAieCI/IFdpbGRjYXJkPyBUaGVu
+IG5vLCBkb24ndCB1c2UgaXQgYW5kIGluc3RlYWQgdXNlIHByb3BlciBTb0MNCj4+Pj4gdmVyc2lv
+biBudW1iZXIuDQo+Pj4gVGhlc2UgU29DcyBhY3R1YWxseSBkbyBoYXZlIGFuIHggaW4gdGhlaXIg
+bmFtZS4gSG93ZXZlciwgYW5kIEkgZG8gYWx3YXlzDQo+Pj4gZ2V0IGNvbmZ1c2VkIGhlcmUsIHRo
+ZSBzYW05eDcgaXMgYSBzZXJpZXMgb2YgU29DcyAodGhlIGNvdmVyIGxldHRlciBkb2VzDQo+Pj4g
+c2F5IHRoaXMpIHJhdGhlciB0aGFuIGEgc3BlY2lmaWMgZGV2aWNlLg0KPj4+IEkgdGhpbmsgdGhl
+IHNlcmllcyBjdXJyZW50IGNvbnNpc3RzIG9mIGEgc2FtOXg3MCBzYW05eDcyIGFuZCBhIHNhbTl4
+NzUuDQo+Pj4gVGhlIGRldmljZXMgYXJlIGxhcmdlbHkgc2ltaWxhciwgYnV0IEkgYW0gbm90IHN1
+cmUgaWYgdGhlIHNhbTl4NzANCj4+PiBzdXBwb3J0cyBMVkRTIGF0IGFsbC4gSGF2aW5nIGEgY29t
+cGF0aWJsZSBmb3IgdGhlIHNlcmllcyBkb2VzIG5vdCBzZWVtDQo+Pj4gY29ycmVjdCB0byBtZS4N
+Cj4+IFllcywgeW91IGFyZSBjb3JyZWN0LiBPbmx5IHNhbTl4NzIgYW5kIHNhbTl4NzUgaGF2ZSBM
+VkRTIHN1cHBvcnQsIHdoaWxlDQo+PiBzYW05eDcwIGRvZXMgbm90LiBJIHdpbGwgcmV2aXNlIHRo
+ZSBjb21wYXRpYmlsaXR5IHRvIGluY2x1ZGUgYm90aA0KPj4gc2FtOXg3MiBhbmQgc2FtOXg3NSwg
+YXMgb3V0bGluZWQgYmVsb3c6DQo+Pg0KPj4gcHJvcGVydGllczoNCj4+ICAgICBjb21wYXRpYmxl
+Og0KPj4gICAgICAgZW51bToNCj4+ICAgICAgICAgLSBtaWNyb2NoaXAsc2FtOXg3Mi1sdmRzDQo+
+PiAgICAgICAgIC0gbWljcm9jaGlwLHNhbTl4NzUtbHZkcw0KPiANCj4gSSB3b3VsZCBwcmVzdW1l
+IHRoZXNlIDIgYXJlIHRoZSBzYW1lLCBidXQgdGhlIGFib3ZlIGltcGxpZXMgdGhleQ0KPiBhcmVu
+J3QuIEkgdGhpbmsgd2hhdCB5b3UgaGFkIGlzIGZpbmUgYXNzdW1pbmcgdGhlc2UgYXJlIGFsbA0K
+PiBmdW5kYW1lbnRhbGx5IHRoZSBzYW1lIHBhcnQgd2l0aCBqdXN0IHBhY2thZ2luZyBvciBmdXNl
+ZCBvZmYgaC93DQo+IGRpZmZlcmVuY2VzLg0KDQpZZXMsIHNvIGlzIGl0IG9rYXkgdG8gaGF2ZSBj
+b21wYXRpYmxlIGZvciBhIHNlcmllcz8gU2hhbGwgSSBnbyBhaGVhZCB3aXRoDQoiDQogICBjb21w
+YXRpYmxlOg0KICAgICBjb25zdDogbWljcm9jaGlwLHNhbTl4Ny1sdmRzDQoiDQppdHNlbGY/DQoN
+Ci0tIA0KVGhhbmtzLA0KRGhhcm1hIEIuDQo+IA0KPiBSb2INCg0KDQoNCg==
 
