@@ -1,111 +1,143 @@
-Return-Path: <linux-kernel+bounces-48349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7B27845AC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:00:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A05EE845AC4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:00:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A8FE1C20B22
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:00:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22667292C76
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:00:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16EB15F496;
-	Thu,  1 Feb 2024 14:59:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB19C5F49A;
+	Thu,  1 Feb 2024 15:00:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="K+PRPxaI"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="H2ajoABc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9E785D473
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 14:59:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 272D05CDF8;
+	Thu,  1 Feb 2024 15:00:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706799598; cv=none; b=cd3JeGkm8Aka3XNz/H0GZ6dkhU3VVFlhrigqDAXpK4bc0Avwetrt1euK3UpmK2KqaVIdRkqPJYC3GDMQcF8IBl3FNX6N3XUi14vUd/uJbwk8yxx0xAEnAQEiGJ/rXUabsG0lKGf1cElVTRCoHoQKB1+HvyS6QXnRZz/ysFIu1bQ=
+	t=1706799647; cv=none; b=ICxsMxP40S97C7Dmf6VD3RJYq9xZ8vwnIyBAawfg6ZKxv6xxhP3w1p7j6kbvo1Rxz0EF/Ok2UN2RescOoNBNVHeBJp9qvyQI/6jFBv+654QSwMR2mI3bUhXztLAbRXQIjSdI3YBZjOlhzxNHnTIRyRE3IVwnasNuX5+6egpgZ48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706799598; c=relaxed/simple;
-	bh=94I4Hngt7inm0HyyqmR8znoRw2619UwGASlJ5ipJCpI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K/RvynMJBk9TNE6bUAMdNrnK0TRiErKAs4hyVcB3om3gyQDG3xt3Cr8tVN9DkFb5PzjEMP19UJtq1H0MCNB+nE3JQnGQ0XG2VxHO+ptnYwE/D2jy61BHpl477MDGIBSPGpetwLGDt3CUHLSPs9M4CQXuTy8kbqpxPtVnCco8W/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=K+PRPxaI; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706799595;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=94I4Hngt7inm0HyyqmR8znoRw2619UwGASlJ5ipJCpI=;
-	b=K+PRPxaIRvzsCTsZgjPtVnFlILUP+mwkdJczWGc3Q/5bpgdnLlqxV1QiiLqn/duKXBFNHA
-	M2rfaKn/eMXgt43Xt/G+eepAquzjE2ftafInBorvn3hjc211ZyAk8iESpNa9nKa9zTye7w
-	YWOB493KbynOSa/w2IkDGiKXm7TxKyM=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-216-j-kUNqvdPPGTCpQ5563IAQ-1; Thu, 01 Feb 2024 09:59:54 -0500
-X-MC-Unique: j-kUNqvdPPGTCpQ5563IAQ-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a30f9374db7so234397866b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 06:59:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706799593; x=1707404393;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=94I4Hngt7inm0HyyqmR8znoRw2619UwGASlJ5ipJCpI=;
-        b=lVeY0lQ/P+51fcdT2naJMOdg/VhWBzRkdSLv5eM00NdA9FKUC6D8++twGGE9WKbfUf
-         ztMVc1+ZyhjXWfja9OllTWdp+u3QYob4ZYr7GsU3im0eXk1nyAJnkVmJeybQlTmYU/Aa
-         MPtFnazgx9dE5slGty3rQLIulZ0POvfD45G3dHfi+v7owvPFnFJ3wNpsQwN/9Ko1Qr1Y
-         U1HRheKOsfMIWHVD65dnyKewS3TU7H6ANv2Avc6TBRc5LE4P7Yuq++qwXooC4fk4331C
-         hB9fRQjwNuxQZXJUHPGMNIDo0e7j30A/YeokblmSCrn7XhY1sdF74DSBkDJoUi3d/DIL
-         MH1g==
-X-Gm-Message-State: AOJu0Yx2YVMJXHKU2ELeVeWYew8MkL1M2B4gsf9mdVF/B0jpE361dyRD
-	iyNc4RXU+fHlLjiNBhROGGl69k81EtJZftUvZbi3Et6m3SGbfFFBMgGRj0Fudnge020bnhWnK0O
-	ImTS1/N5vmjnRb9gOGD83Nhb/NF0dME1aEO3NAuf5fZsCqnG7MsCLbcia7ppn/ciW/JgQ4DNEro
-	Y59od1Rgw5g0UZ5QJNPAicIx+zRj7Y9w8UVpFy
-X-Received: by 2002:a17:906:e0a:b0:a36:86be:aa76 with SMTP id l10-20020a1709060e0a00b00a3686beaa76mr4193439eji.15.1706799593201;
-        Thu, 01 Feb 2024 06:59:53 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF6Y5YQ9ZRCSFznfVuD8jaL3DWybT5I6SS9dOL/ws+LXeyzrCIM/drqeWDfWguj4Svx99xGj/ZIFZu2ZX9UUnI=
-X-Received: by 2002:a17:906:e0a:b0:a36:86be:aa76 with SMTP id
- l10-20020a1709060e0a00b00a3686beaa76mr4193429eji.15.1706799592901; Thu, 01
- Feb 2024 06:59:52 -0800 (PST)
+	s=arc-20240116; t=1706799647; c=relaxed/simple;
+	bh=XHfskHspmfYJuhvD8hh+5pmEbJ+2xIhYyQSuomUDNtU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eO/ZIfxYu+RzXNVoXzJJnJllX7mekqtG00D2omKXQCW8PWx1i8hCzPiM/BaBknaw+yFEO/ZoXpbFq/KiimxB65YmoKC9wFsOix+IV/O31T4t5U2aJAduQEDkngsca+Zyl3PtZseyNaE/CRA6PO1yBaDbVqHBmShLPl1iWcIIDgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=H2ajoABc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 946D0C433C7;
+	Thu,  1 Feb 2024 15:00:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1706799646;
+	bh=XHfskHspmfYJuhvD8hh+5pmEbJ+2xIhYyQSuomUDNtU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=H2ajoABcYubKrIdEleS5/7jOZk4Loau492H6Swd6yTqTTQsKC7RzraOlr1H3+fqMw
+	 kW/Z56aCWlTxkQj/rH3tErFw833VrC+RnDLKIMGZsMpCt7iYQuz7GaiOdDfhyP+t4T
+	 1t3/was8W0cBOJiUrZRv4dq/z/Va9Bf+1ebYbRUc=
+Date: Thu, 1 Feb 2024 07:00:45 -0800
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Pavel Machek <pavel@ucw.cz>
+Cc: phone-devel@vger.kernel.org, kernel list <linux-kernel@vger.kernel.org>,
+	fiona.klute@gmx.de, martijn@brixit.nl, megi@xff.cz,
+	samuel@sholland.org, heikki.krogerus@linux.intel.com,
+	linux-usb@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: anx7688: Add driver for ANX7688 USB-C HDMI
+ bridge
+Message-ID: <2024020118-zesty-enticing-b7b3@gregkh>
+References: <Zbt1dIByBZ2stzjm@mobian>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231113204809.4052009-1-aahringo@redhat.com>
-In-Reply-To: <20231113204809.4052009-1-aahringo@redhat.com>
-From: Alexander Aring <aahringo@redhat.com>
-Date: Thu, 1 Feb 2024 09:59:41 -0500
-Message-ID: <CAK-6q+hh_A0Ldwsmmy0BdagDotNBV=Xgk35ZZQ3DAzB9OXwLgw@mail.gmail.com>
-Subject: Re: [PATCHv2 1/2] refcount: introduce __refcount_dec_and_lock macro
-To: peterz@infradead.org
-Cc: will@kernel.org, gfs2@lists.linux.dev, boqun.feng@gmail.com, 
-	mark.rutland@arm.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zbt1dIByBZ2stzjm@mobian>
 
-Hi,
+On Thu, Feb 01, 2024 at 11:41:56AM +0100, Pavel Machek wrote:
+> +#define DEBUG
 
-On Mon, Nov 13, 2023 at 3:48=E2=80=AFPM Alexander Aring <aahringo@redhat.co=
-m> wrote:
->
-> This patch adds the __refcount_dec_and_lock macro to generate code for a
-> lock specific refcount_dec_and_lock implementation. Existing
-> refcount_dec_and_lock implementation are updated to use the new
-> __refcount_dec_and_lock macro. In future other lock implementation can
-> added to use the refcount_dec_and_lock trick to only hold the lock when
-> the refcount is going to be zero. Per subsystem own lock implementation
-> can use the macro as well to provide such implementation for their own
-> locking type.
->
+Please don't.  This is dynamic, use the dynamic debugging and set it
+from userspace if you want to debug the driver.
 
-ping? :)
+> +
+> +#include <linux/debugfs.h>
+> +#include <linux/delay.h>
+> +#include <linux/extcon-provider.h>
+> +#include <linux/firmware.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/i2c.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/irqreturn.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of_irq.h>
+> +#include <linux/power_supply.h>
+> +#include <linux/regulator/consumer.h>
+> +#include <linux/usb/pd.h>
+> +#include <linux/usb/role.h>
+> +#include <linux/usb/typec.h>
+> +
+> +/* firmware regs */
+> +
+> +#define ANX7688_REG_VBUS_OFF_DELAY_TIME 0x22
+> +#define ANX7688_REG_FEATURE_CTRL        0x27
+> +#define ANX7688_REG_EEPROM_LOAD_STATUS1 0x11
+> +#define ANX7688_REG_EEPROM_LOAD_STATUS0 0x12
+> +#define ANX7688_REG_FW_VERSION1         0x15
+> +#define ANX7688_REG_FW_VERSION0         0x16
+> +
+> +#define ANX7688_EEPROM_FW_LOADED	0x01
 
-Any chance to bring this upstream?
+Mix of tabs and spaces, please just use tabs.
 
-- Alex
+> +static const char * const anx7688_supply_names[] = {
+> +        "avdd33",
+> +        "avdd18",
+> +        "dvdd18",
+> +        "avdd10",
+> +        "dvdd10",
+> +	"i2c",
+> +        "hdmi_vt",
+> +
+> +        "vconn", // power for VCONN1/VCONN2 switches
+> +        "vbus", // vbus power
+> +};
 
+Again, tabs vs. spaces, please use checkpatch.
+
+> +#define ANX7688_NUM_SUPPLIES ARRAY_SIZE(anx7688_supply_names)
+> +#define ANX7688_NUM_ALWAYS_ON_SUPPLIES (ANX7688_NUM_SUPPLIES - 1)
+> +
+> +#define ANX7688_I2C_INDEX (ANX7688_NUM_SUPPLIES - 4)
+> +#define ANX7688_VCONN_INDEX (ANX7688_NUM_SUPPLIES - 2)
+> +#define ANX7688_VBUS_INDEX (ANX7688_NUM_SUPPLIES - 1)
+> +
+> +enum {
+> +	ANX7688_F_POWERED,
+> +	ANX7688_F_CONNECTED,
+> +	ANX7688_F_FW_FAILED,
+> +	ANX7688_F_PWRSUPPLY_CHANGE,
+> +	ANX7688_F_CURRENT_UPDATE,
+> +};
+> +
+> +struct anx7688 {
+> +        struct device *dev;
+> +        struct i2c_client *client;
+> +        struct i2c_client *client_tcpc;
+> +        struct regulator_bulk_data supplies[ANX7688_NUM_SUPPLIES];
+> +	struct power_supply *vbus_in_supply;
+> +	struct notifier_block vbus_in_nb;
+> +	int input_current_limit; // mA
+> +        struct gpio_desc *gpio_enable;
+> +        struct gpio_desc *gpio_reset;
+> +        struct gpio_desc *gpio_cabledet;
+
+I'm stopping here, again, tabs, you know this :(
+
+greg k-h
 
