@@ -1,180 +1,171 @@
-Return-Path: <linux-kernel+bounces-47761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C2FC845274
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:11:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AE07845278
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:12:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B945C1F24435
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:11:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5582C1C26054
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:12:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E07A158D8A;
-	Thu,  1 Feb 2024 08:11:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HXMHlcnM"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA5C3158D65
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 08:11:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D92159572;
+	Thu,  1 Feb 2024 08:12:32 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A11031586D3;
+	Thu,  1 Feb 2024 08:12:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706775082; cv=none; b=LK2hdK4d8Y7H5buCRMhzCS8+GQk3SR/wYfHWvHPABiTOhzEAWR0OPDwsVOQ3uHSv4Fcay8frj6Vl3MlGOM9aeVtH0/UVIJsY42inlqJqP4BLyCOPVoHsqy0DIHjawFso9U1lr8y4S1wGbzVnSzUAAVh/ZVBLP+LBFmO6+5VM5O8=
+	t=1706775151; cv=none; b=e+tEzq9r2Q9+kbbb16auwBc1G1Dqi2dN4UteYbKU3Lzpz96Q+m6n8uf4ZLYYx5F2ALu+pJy3xPgBvh9cyuqbGeeutUh2jdi7LeX7Tk/UHmSKqJLemsynX4PnMjpLw4kpy6w1ElHOEyc7dF91/A65FYp/w1WIfOlgBQRuZiW+vo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706775082; c=relaxed/simple;
-	bh=y1w5sJ8ktbHEe0F3UYcqGu1KS6iUPE0CBc0UPiD+WCw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=J/NH9M4c2T8vUQKzYlDyrLr4Xi5eGQLTtpdfjI8/s9SarXPbTFatZK5LKtKs/BZBVaNZD05RzTVnhqEHaKaPyelGdmI1KOSCpXhsz/blXim1/pR6tt098rBVvHaGDn6ntqIzE/LkOPluhhlb/3JYUNteZRQpg/UD3uIqRUZUG14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HXMHlcnM; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706775079;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TQDdRV2tMPG+6nfJCtzHbTe1EEi3qaM2yI8qVm5kEZY=;
-	b=HXMHlcnMSwyP8Rco1RThmL9FOcPHMvGizTzcZzwXRzshuUcOuYjv+Ys0bbC7fz3Am/+YAr
-	y0Sy8IXDJDKNgnkVDK58w4hnqktToBT3anjWibY9F44kXeFemBdRh8bYFgt6QHbM7CXQnD
-	PbMP74Hn9h0raDAsFOwSEBHGdX/+D9c=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-582-XHBq3RvKOoKY9F01Y5fe4w-1; Thu,
- 01 Feb 2024 03:11:14 -0500
-X-MC-Unique: XHBq3RvKOoKY9F01Y5fe4w-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 09E542932486;
-	Thu,  1 Feb 2024 08:11:14 +0000 (UTC)
-Received: from metal.redhat.com (unknown [10.45.224.66])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 22FDE492BE2;
-	Thu,  1 Feb 2024 08:11:11 +0000 (UTC)
-From: Daniel Vacek <neelx@redhat.com>
-To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Patrick Kelsey <pat.kelsey@cornelisnetworks.com>,
-	Brendan Cunningham <bcunningham@cornelisnetworks.com>
-Cc: Daniel Vacek <neelx@redhat.com>,
-	stable@vger.kernel.org,
-	Mats Kronberg <kronberg@nsc.liu.se>,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] IB/hfi1: Fix sdma.h tx->num_descs off-by-one error (take two)
-Date: Thu,  1 Feb 2024 09:10:08 +0100
-Message-ID: <20240201081009.1109442-1-neelx@redhat.com>
-In-Reply-To: <20240126152125.869509-1-neelx@redhat.com>
-References: <20240126152125.869509-1-neelx@redhat.com>
+	s=arc-20240116; t=1706775151; c=relaxed/simple;
+	bh=XWgkDI5LEjWrVN67JCy6YWdGvZ06tRRPL0Okk7aKAww=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gcLyjfYzqndazkpj8lafKfk/Dn9ulQQR3dSFd5n1Aev8tbRQ11nstL/5rQGHTW79DbUFW/7G/kAnGsPpZTrCH5LjyfPl0a5lU3KocrkU4XmmCrjCO4O4GBCX3S3zNhSKKU9LVz5jTDTbvoA66x7yQhH4j6g7TB4OWnP3JoSjfew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2F301DA7;
+	Thu,  1 Feb 2024 00:13:05 -0800 (PST)
+Received: from [10.162.42.11] (a077893.blr.arm.com [10.162.42.11])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8267D3F738;
+	Thu,  1 Feb 2024 00:12:11 -0800 (PST)
+Message-ID: <599769c3-0aef-4c5b-ac98-f109649862f7@arm.com>
+Date: Thu, 1 Feb 2024 13:42:08 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v3 31/35] khugepaged: arm64: Don't collapse MTE
+ enabled VMAs
+Content-Language: en-US
+To: Alexandru Elisei <alexandru.elisei@arm.com>, catalin.marinas@arm.com,
+ will@kernel.org, oliver.upton@linux.dev, maz@kernel.org,
+ james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com,
+ arnd@arndb.de, akpm@linux-foundation.org, mingo@redhat.com,
+ peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+ mhiramat@kernel.org, rppt@kernel.org, hughd@google.com
+Cc: pcc@google.com, steven.price@arm.com, vincenzo.frascino@arm.com,
+ david@redhat.com, eugenis@google.com, kcc@google.com, hyesoo.yu@samsung.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-mm@kvack.org,
+ linux-trace-kernel@vger.kernel.org
+References: <20240125164256.4147-1-alexandru.elisei@arm.com>
+ <20240125164256.4147-32-alexandru.elisei@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <20240125164256.4147-32-alexandru.elisei@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Unfortunately the commit `fd8958efe877` introduced another error
-causing the `descs` array to overflow. This reults in further crashes
-easily reproducible by `sendmsg` system call.
 
-[ 1080.836473] general protection fault, probably for non-canonical address 0x400300015528b00a: 0000 [#1] PREEMPT SMP PTI
-[ 1080.869326] RIP: 0010:hfi1_ipoib_build_ib_tx_headers.constprop.0+0xe1/0x2b0 [hfi1]
---
-[ 1080.974535] Call Trace:
-[ 1080.976990]  <TASK>
-[ 1081.021929]  hfi1_ipoib_send_dma_common+0x7a/0x2e0 [hfi1]
-[ 1081.027364]  hfi1_ipoib_send_dma_list+0x62/0x270 [hfi1]
-[ 1081.032633]  hfi1_ipoib_send+0x112/0x300 [hfi1]
-[ 1081.042001]  ipoib_start_xmit+0x2a9/0x2d0 [ib_ipoib]
-[ 1081.046978]  dev_hard_start_xmit+0xc4/0x210
---
-[ 1081.148347]  __sys_sendmsg+0x59/0xa0
 
-crash> ipoib_txreq 0xffff9cfeba229f00
-struct ipoib_txreq {
-  txreq = {
-    list = {
-      next = 0xffff9cfeba229f00,
-      prev = 0xffff9cfeba229f00
-    },
-    descp = 0xffff9cfeba229f40,
-    coalesce_buf = 0x0,
-    wait = 0xffff9cfea4e69a48,
-    complete = 0xffffffffc0fe0760 <hfi1_ipoib_sdma_complete>,
-    packet_len = 0x46d,
-    tlen = 0x0,
-    num_desc = 0x0,
-    desc_limit = 0x6,
-    next_descq_idx = 0x45c,
-    coalesce_idx = 0x0,
-    flags = 0x0,
-    descs = {{
-        qw = {0x8024000120dffb00, 0x4}  # SDMA_DESC0_FIRST_DESC_FLAG (bit 63)
-      }, {
-        qw = {  0x3800014231b108, 0x4}
-      }, {
-        qw = { 0x310000e4ee0fcf0, 0x8}
-      }, {
-        qw = {  0x3000012e9f8000, 0x8}
-      }, {
-        qw = {  0x59000dfb9d0000, 0x8}
-      }, {
-        qw = {  0x78000e02e40000, 0x8}
-      }}
-  },
-  sdma_hdr =  0x400300015528b000,  <<< invalid pointer in the tx request structure
-  sdma_status = 0x0,                   SDMA_DESC0_LAST_DESC_FLAG (bit 62)
-  complete = 0x0,
-  priv = 0x0,
-  txq = 0xffff9cfea4e69880,
-  skb = 0xffff9d099809f400
-}
+On 1/25/24 22:12, Alexandru Elisei wrote:
+> copy_user_highpage() will do memory allocation if there are saved tags for
+> the destination page, and the page is missing tag storage.
+> 
+> After commit a349d72fd9ef ("mm/pgtable: add rcu_read_lock() and
+> rcu_read_unlock()s"), collapse_huge_page() calls
+> __collapse_huge_page_copy() -> .. -> copy_user_highpage() with the RCU lock
+> held, which means that copy_user_highpage() can only allocate memory using
+> GFP_ATOMIC or equivalent.
+> 
+> Get around this by refusing to collapse pages into a transparent huge page
+> if the VMA is MTE-enabled.
 
-If an SDMA send consists of exactly 6 descriptors and requires dword
-padding (in the 7th descriptor), the sdma_txreq descriptor array
-is not properly expanded and the packet will overflow into the
-container structure. This results in a panic when the send completion
-runs. The exact panic varies depending on what elements of the
-container structure get corrupted. The fix is to use the correct
-expression in _pad_sdma_tx_descs() to test the need to expand the
-descriptor array.
+Makes sense when copy_user_highpage() will allocate memory for tag storage.
 
-With this patch the crashes are no longer reproducible and the machine is stable.
+> 
+> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> ---
+> 
+> Changes since rfc v2:
+> 
+> * New patch. I think an agreement on whether copy*_user_highpage() should be
+> always allowed to sleep, or should not be allowed, would be useful.
 
-Fixes: fd8958efe877 ("IB/hfi1: Fix sdma.h tx->num_descs off-by-one errors")
-Cc: stable@vger.kernel.org
-Reported-by: Mats Kronberg <kronberg@nsc.liu.se>
-Tested-by: Mats Kronberg <kronberg@nsc.liu.se>
-Signed-off-by: Daniel Vacek <neelx@redhat.com>
----
+This is a good question ! Even after preventing the collapse of MTE VMA here,
+there still might be more paths where a sleeping (i.e memory allocating)
+copy*_user_highpage() becomes problematic ?
 
-Changes in v2:
- - Dropped the unrelated cleanups.
- - Improved commit message as suggested by Dennis Dalessandro
+> 
+>  arch/arm64/include/asm/pgtable.h    | 3 +++
+>  arch/arm64/kernel/mte_tag_storage.c | 5 +++++
+>  include/linux/khugepaged.h          | 5 +++++
+>  mm/khugepaged.c                     | 4 ++++
+>  4 files changed, 17 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index 87ae59436162..d0473538c926 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -1120,6 +1120,9 @@ static inline bool arch_alloc_cma(gfp_t gfp_mask)
+>  	return true;
+>  }
+>  
+> +bool arch_hugepage_vma_revalidate(struct vm_area_struct *vma, unsigned long address);
+> +#define arch_hugepage_vma_revalidate arch_hugepage_vma_revalidate
+> +
+>  #endif /* CONFIG_ARM64_MTE_TAG_STORAGE */
+>  #endif /* CONFIG_ARM64_MTE */
+>  
+> diff --git a/arch/arm64/kernel/mte_tag_storage.c b/arch/arm64/kernel/mte_tag_storage.c
+> index ac7b9c9c585c..a99959b70573 100644
+> --- a/arch/arm64/kernel/mte_tag_storage.c
+> +++ b/arch/arm64/kernel/mte_tag_storage.c
+> @@ -636,3 +636,8 @@ void arch_alloc_page(struct page *page, int order, gfp_t gfp)
+>  	if (tag_storage_enabled() && alloc_requires_tag_storage(gfp))
+>  		reserve_tag_storage(page, order, gfp);
+>  }
+> +
+> +bool arch_hugepage_vma_revalidate(struct vm_area_struct *vma, unsigned long address)
+> +{
+> +	return !(vma->vm_flags & VM_MTE);
+> +}
+> diff --git a/include/linux/khugepaged.h b/include/linux/khugepaged.h
+> index f68865e19b0b..461e4322dff2 100644
+> --- a/include/linux/khugepaged.h
+> +++ b/include/linux/khugepaged.h
+> @@ -38,6 +38,11 @@ static inline void khugepaged_exit(struct mm_struct *mm)
+>  	if (test_bit(MMF_VM_HUGEPAGE, &mm->flags))
+>  		__khugepaged_exit(mm);
+>  }
+> +
+> +#ifndef arch_hugepage_vma_revalidate
+> +#define arch_hugepage_vma_revalidate(vma, address) 1
 
- drivers/infiniband/hw/hfi1/sdma.c |  2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Please replace s/1/true as arch_hugepage_vma_revalidate() returns bool ?
 
-diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
-index 6e5ac2023328a..b67d23b1f2862 100644
---- a/drivers/infiniband/hw/hfi1/sdma.c
-+++ b/drivers/infiniband/hw/hfi1/sdma.c
-@@ -3158,7 +3158,7 @@ int _pad_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
- {
- 	int rval = 0;
- 
--	if ((unlikely(tx->num_desc + 1 == tx->desc_limit))) {
-+	if ((unlikely(tx->num_desc == tx->desc_limit))) {
- 		rval = _extend_sdma_tx_descs(dd, tx);
- 		if (rval) {
- 			__sdma_txclean(dd, tx);
--- 
-2.43.0
+> +#endif
 
+Right, above construct is much better than __HAVE_ARCH_XXXX based one.
+
+> +
+>  #else /* CONFIG_TRANSPARENT_HUGEPAGE */
+>  static inline void khugepaged_fork(struct mm_struct *mm, struct mm_struct *oldmm)
+>  {
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index 2b219acb528e..cb9a9ddb4d86 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -935,6 +935,10 @@ static int hugepage_vma_revalidate(struct mm_struct *mm, unsigned long address,
+>  	 */
+>  	if (expect_anon && (!(*vmap)->anon_vma || !vma_is_anonymous(*vmap)))
+>  		return SCAN_PAGE_ANON;
+> +
+> +	if (!arch_hugepage_vma_revalidate(vma, address))
+> +		return SCAN_VMA_CHECK;
+> +
+>  	return SCAN_SUCCEED;
+>  }
+>  
+
+Otherwise this LGTM.
 
