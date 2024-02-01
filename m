@@ -1,192 +1,152 @@
-Return-Path: <linux-kernel+bounces-48631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F779845F0C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:00:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA134845F1B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:01:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4481C1C282C0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:00:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D87D71C2A35C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:01:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29AF78405C;
-	Thu,  1 Feb 2024 18:00:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B974779F8;
+	Thu,  1 Feb 2024 18:01:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="PRn7bVNv"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="swQ2TjJ1"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B07F084047
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 18:00:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3022084FB3;
+	Thu,  1 Feb 2024 18:01:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706810416; cv=none; b=I9b/vRcXM//j3XOn7heAMEkQSshP00U0jvfcB+gN00UYmnC+XxaU37fNvAtHXy21bONdUUFnxcXqbI+UamZAVcpae4z1O0mk9Hao82jAfzbSREqv443LF2SMFV1s9WW1XbHuqOPXVLga3GAdbfEHdbAXlnoZnR6BpWrPyVM0HTM=
+	t=1706810486; cv=none; b=anF8+RmgvSJEXBZAQ7HKTxHEaCd3/EThK6hA1FTwDyX4nfUjqp2CN+B+pWeahUeFPPRnUQQRLLDZlLwJEpVkNPO+xPh7QMTtsgE7N6pMe9NaJr2HOcCLHGXVo7178t9X6+fYodIpP8U0uNXCu2eXb7BW3OPVIz0XDiirmnh5lmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706810416; c=relaxed/simple;
-	bh=vXFNPWEAkSb5HjgTql71jCtRWR9LKB/oulu5KnNnp8g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k0JTFjtI+mfuN4JMWZcppLqdSdx4G7AsMyglsnL7MmhvhhzhV2efFDQ1fqKyiUAPIC7CjXF+KPHfyvP27qULhtOXbUjwZL9aa5r4Hfa0TSE/gEf9Khj8cTj3axLhA8fY0DB7DmNt2ubWTzzoYHKLRIUSCFLlRn4zvek0QIovydM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=PRn7bVNv; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55f2b0c5ae9so1628376a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 10:00:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1706810410; x=1707415210; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iUvUiFImH5+fS4vEk7uHsM8b6W2+ekXfbZRgQ7WC0cg=;
-        b=PRn7bVNvkMP9f7ocGhi+4oTOUr+uWx87ZsZefpRYveUSXnS6nsIveOFxXfLeP87ZAx
-         Z42g3hB9pxd1i8K3jHdOejDcG0el1rx6Ki+B2f3OjpjYXlSS/O9FkEeXF06iImVSArrO
-         ooRovwT4htjZ3pxViyESdZpxyLXqGGnaRngLRwdOjf/LDuRzIhTSJ9IrFHEd00YTF8tj
-         2IJgxZ0tU5y+OjLBRxwWxXjfAnvN4RcWlpkbMKFkHmtzMXO0Lsj4H6m16iuwG8CjxwOh
-         jyRtLMOyvU7mxR7Eu5GWKfw1VGPjNQXTuDOggVoB3fT8qF9B+1qtJEkL9KyWT37yY6cZ
-         z0zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706810410; x=1707415210;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iUvUiFImH5+fS4vEk7uHsM8b6W2+ekXfbZRgQ7WC0cg=;
-        b=OPOYhO3dl3oE57mp5n8AnSWZybQ0oaA71gQaTCpnsYktEBPf2FbijAEYcLMLp57NvC
-         KkXY7i8ac0hp+3aSMOC8FVG0rqgcrX02Gd6yyZ5EWD9Jiz7uAfvZpyCFK/R5kNBDGLGl
-         8vARG7fvrFrR+FaxR0UyAJyyeW19v4f7HEX8Lq7wUmt7fjPqROp5NgUVP2oR55yEVDlz
-         Fx4jRuGR9InT96bN8PSqkxatxKlGgDCdQiVu8zvmzCAOw20iceEuxB8H2Ex6vtgaTAK3
-         kI9AdJY92hN4a7/T2hsKwzKfIpZIJIUBjpYuY/IVr9qfQ4iI0spf7YsB/LoTR1hMpS1D
-         SKqA==
-X-Gm-Message-State: AOJu0Yz8gEASBkP56r1n7yGOvqVsZbzBGYbu0A2XdNbyDKBxIXd4ie7R
-	g4K8AMTDMw7bEaqZB0uk5o2pLmbiavAKEh5g8P/yfI9KSCZbLs40bohdxYwv4Bg=
-X-Google-Smtp-Source: AGHT+IGxgCi8AK8Mk83sfbv5yJ+8f80zMi57dZde/tdcI4BmnOhiykhKYR7wzjacWWgf6CjNULVr2A==
-X-Received: by 2002:a05:6402:1490:b0:55f:dbb8:9163 with SMTP id e16-20020a056402149000b0055fdbb89163mr374198edv.37.1706810409714;
-        Thu, 01 Feb 2024 10:00:09 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVTgWt4F9kWpJV9Ukqc/m1wnKXg+Y1pytykTfX0QSWAHGEGHPg0ff9wMexj1kwY23h65P8+J7ep1m5oXPoZ8Jex/7cJPF+ZS+tw51dM/HLY0pC62Awg1vLmX6cwB5qt56GTbcSdebIBfCYBElvPfX9G9OwmwBA=
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id c16-20020aa7c990000000b0055ef1d4fcb5sm41232edt.9.2024.02.01.10.00.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 10:00:09 -0800 (PST)
-Date: Thu, 1 Feb 2024 19:00:07 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v3 11/14] printk: ringbuffer: Consider committed
- as finalized in panic
-Message-ID: <ZbvcJwsIEsii3oi2@alley>
-References: <20231214214201.499426-1-john.ogness@linutronix.de>
- <20231214214201.499426-12-john.ogness@linutronix.de>
+	s=arc-20240116; t=1706810486; c=relaxed/simple;
+	bh=fOkFOHa374/LO9IaXA3l/fKl43nv9S1ZgQc0wBQpkcg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ajlnWZ+lXNE8sjUOCV/gAZU43iwixtj9ORZhTmfkWBk9VIMGG99uVgkOev61wg9ETI+K4ksutg6LXSOnnNWnUNP88iSHDAb20W4F6mrXQ25rHJodBuuVsLO3ogOcKOYPG/G3LAfRUkKfQ/IJEJabTgWs7VoxlZpLcJ+m7eVxhNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=swQ2TjJ1; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 411I13Ro049520;
+	Thu, 1 Feb 2024 12:01:03 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706810463;
+	bh=F62P9tp+eb7Ee4fh8Chen/6wW2u3qcpN9ys5GlRy8Xs=;
+	h=From:To:CC:Subject:Date;
+	b=swQ2TjJ1hhA0pJzR/Zxn6yfEVD3zp5aUl9+2D/q0jUTdZV4J5b51Oe9k2xJewBsCS
+	 /4+4C9dkWyG+z/pztyx1wGd6cQfiyS8M3y20k+jNfY2A68FoAZ3twB2BSOsUct9zJK
+	 OksPIH7oj2E0FSeNH11tCorzpB/PdHnI5CZPpjRY=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 411I13d7120298
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 1 Feb 2024 12:01:03 -0600
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 1
+ Feb 2024 12:01:03 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 1 Feb 2024 12:01:03 -0600
+Received: from lelvsmtp6.itg.ti.com ([10.249.42.149])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 411I12Ge117221;
+	Thu, 1 Feb 2024 12:01:02 -0600
+From: Andrew Davis <afd@ti.com>
+To: Sebastian Reichel <sre@kernel.org>,
+        Manivannan Sadhasivam
+	<manivannan.sadhasivam@linaro.org>,
+        Cristian Ciocaltea
+	<cristian.ciocaltea@gmail.com>,
+        Florian Fainelli
+	<florian.fainelli@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>, Scott Branden
+	<sbranden@broadcom.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad
+ Dybcio <konrad.dybcio@linaro.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>
+CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-actions@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, Andrew Davis <afd@ti.com>
+Subject: [PATCH 00/18] Remove pm_power_off use in drivers/power/reset
+Date: Thu, 1 Feb 2024 12:00:44 -0600
+Message-ID: <20240201180102.70395-1-afd@ti.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214214201.499426-12-john.ogness@linutronix.de>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Thu 2023-12-14 22:47:58, John Ogness wrote:
-> A descriptor in the committed state means the record does not yet
-> exist for the reader. However, for the panic CPU, committed
-> records should be handled as finalized records since they contain
-> message data in a consistent state and may contain additional
-> hints as to the cause of the panic.
-> 
-> Add an exception for records in the commit state to not be
-> considered non-existing when reading from the panic CPU.
+Hello all,
 
-IMHO, it is important to describe effects of this change in more
-details. And I think that it actually does not work as expected,
-see below.
+Use of pm_power_off is considered legacy and should be replaced with
+register_sys_off*(). Same for register_restart_handler(). Do this
+for the drivers/power/reset subsystem for all trivial cases.
 
-> --- a/kernel/printk/printk_ringbuffer.c
-> +++ b/kernel/printk/printk_ringbuffer.c
-> @@ -1875,16 +1877,25 @@ static int desc_read_finalized_seq(struct prb_desc_ring *desc_ring,
->  
->  	/*
->  	 * An unexpected @id (desc_miss) or @seq mismatch means the record
-> -	 * does not exist. A descriptor in the reserved or committed state
-> -	 * means the record does not yet exist for the reader.
-> +	 * does not exist. A descriptor in the reserved state means the
-> +	 * record does not yet exist for the reader.
->  	 */
->  	if (d_state == desc_miss ||
->  	    d_state == desc_reserved ||
-> -	    d_state == desc_committed ||
->  	    s != seq) {
->  		return -EINVAL;
->  	}
->  
-> +	/*
-> +	 * A descriptor in the committed state means the record does not yet
-> +	 * exist for the reader. However, for the panic CPU, committed
-> +	 * records are also handled as finalized records since they contain
-> +	 * message data in a consistent state and may contain additional
-> +	 * hints as to the cause of the panic.
-> +	 */
-> +	if (d_state == desc_committed && !this_cpu_in_panic())
-> +		return -EINVAL;
+Thanks,
+Andrew
 
-If I get it correctly, this causes that panic CPU would see a
-non-finalized continuous line as finalized. And it would flush
-the existing piece to consoles.
+Andrew Davis (18):
+  power: reset: atc260x-poweroff: Use
+    devm_register_sys_off_handler(RESTART)
+  power: reset: atc260x-poweroff: Use
+    devm_register_sys_off_handler(POWER_OFF)
+  power: reset: xgene-reboot: Use devm_register_sys_off_handler(RESTART)
+  power: reset: tps65086-restart: Use
+    devm_register_sys_off_handler(RESTART)
+  power: reset: tps65086-restart: Remove unneeded device data struct
+  power: reset: brcm-kona-reset: Use
+    devm_register_sys_off_handler(RESTART)
+  power: reset: axxia-reset: Use devm_register_sys_off_handler(RESTART)
+  power: reset: rmobile-reset: Use devm_platform_ioremap_resource()
+    helper
+  power: reset: rmobile-reset: Use
+    devm_register_sys_off_handler(RESTART)
+  power: reset: mt6323-poweroff: Use
+    devm_register_sys_off_handler(POWER_OFF)
+  power: reset: msm-poweroff: Use
+    devm_register_sys_off_handler(POWER_OFF)
+  power: reset: msm-poweroff: Use devm_register_sys_off_handler(RESTART)
+  power: reset: regulator-poweroff: Use
+    devm_register_sys_off_handler(POWER_OFF)
+  power: reset: as3722-poweroff: Use
+    devm_register_sys_off_handler(POWER_OFF)
+  power: reset: gemini-poweroff: Use
+    devm_register_sys_off_handler(POWER_OFF)
+  power: reset: restart-poweroff: Use
+    devm_register_sys_off_handler(POWER_OFF)
+  power: reset: syscon-poweroff: Move device data into a struct
+  power: reset: syscon-poweroff: Use
+    devm_register_sys_off_handler(POWER_OFF)
 
-The problem is that pr_cont() would append the message into
-the same record. But the consoles would already wait
-for the next record. They would miss the appended pieces.
+ drivers/power/reset/as3722-poweroff.c    | 30 ++++-------
+ drivers/power/reset/atc260x-poweroff.c   | 55 ++++++++------------
+ drivers/power/reset/axxia-reset.c        | 16 +++---
+ drivers/power/reset/brcm-kona-reset.c    | 18 +++----
+ drivers/power/reset/gemini-poweroff.c    | 16 +++---
+ drivers/power/reset/msm-poweroff.c       | 25 ++++-----
+ drivers/power/reset/mt6323-poweroff.c    | 28 +++++-----
+ drivers/power/reset/regulator-poweroff.c | 36 +++++--------
+ drivers/power/reset/restart-poweroff.c   | 25 +++------
+ drivers/power/reset/rmobile-reset.c      | 38 +++++---------
+ drivers/power/reset/syscon-poweroff.c    | 66 ++++++++++++------------
+ drivers/power/reset/tps65086-restart.c   | 58 ++++-----------------
+ drivers/power/reset/xgene-reboot.c       | 13 ++---
+ 13 files changed, 158 insertions(+), 266 deletions(-)
 
-It might be fixed by finalizing the record before we read
-the non-finalized piece. It is doable but it would add
-another lock-less scenario. I am not sure if it would work with
-the existing barriers or how complicated it would be to
-prove the correctness.
+-- 
+2.39.2
 
-Now, in practice, it would allow to flush pieces of continuous lines
-printed on panic CPU immediately. It would not affect messages printed
-by other CPUs because of a mix of reasons:
-
-   1. The current code tries hard to move the console owner to panic
-      CPU. It allows the panic CPU to flush the messages a safe way
-      even when other CPUs are stopped or somehow locked.
-
-      It means that the consoles are ideally flushed when the panic CPU
-      adds a message.
-
-   2. Only the last record might be in a committed state. Any older
-      record is automatically finalized when it reaches the committed
-      state.
-
-   3. The previous patch causes that messages from non-panic CPUs
-      are skipped when they are not committed or finalized, see
-      https://lore.kernel.org/all/20231214214201.499426-11-john.ogness@linutronix.de
-
-
-Now, this patch would really help only when the panic CPU dies in
-the middle of a continuous message or when the final message does
-not have a newline character.
-
-Honestly, I think that it is not worth the effort. It would add another
-complexity to the memory barriers. The real effect is not easy
-to understand. And the benefit is minimal from my POV.
-
-
-Alternative solutions:
-
-1. Flush the non-finalized continuous line only before reaching
-   the infinite loop in panic(). printk() gets disabled
-   at this point anyway.
-
-   It would solve only this one scenario, though.
-
-
-2. Always finalize messages in vprintk_store() when in_panic().
-
-   It would have the desired effect in all panic() situations.
-   And it would not add another complexity to the lock-less
-   ringbuffer code.
-
-
-Best Regards,
-Petr
 
