@@ -1,174 +1,158 @@
-Return-Path: <linux-kernel+bounces-48199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A77F845888
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:10:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEEEB84588D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:11:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BFDC1C20A08
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:10:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 695DF283C17
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:11:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D86075D460;
-	Thu,  1 Feb 2024 13:09:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABEFF53373;
+	Thu,  1 Feb 2024 13:10:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UijMuGJp";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UijMuGJp"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O716Seli"
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F7F553366;
-	Thu,  1 Feb 2024 13:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EAA853366;
+	Thu,  1 Feb 2024 13:10:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706792991; cv=none; b=QtLvZBOtXMaOA2Nni5YvJTDL3NVWgWVijj6FlTNHvo0qDB9FpXl/0jiBiF+tfGjjRyqoBgTHQ5BCYHL5By8nnKZgfOT1rcHIFcC/QrTwSNOgvRYj/cAZ8D4dVB0d4GTuR9yREyx8707Qv+nE+bSO0CQcLC9//9u1G+SUPBRVkwE=
+	t=1706793036; cv=none; b=A0fSEbKF/185VaxGR50odD4Xrt2zDgqCDuuXRh5Oe1aCHNnsgvAt3eSX/FOOMwkIbF/I7ybXTfCSOjHvqQRylwtyKdspW62kuLip0KI+HiqLjn7LFnQ+rZoLH02NwLFaq2xutt9ftk6Z4nHp1WocGm6sRymPkoFV+/nRf1ZDvNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706792991; c=relaxed/simple;
-	bh=pISfP3Hzv5P7bazKFw8x24gFRtSxfRqfs11zSQ5Dbys=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QwtqHdyl0rftnpE3LY+M/lzS5p/vzu86qzmxXW+pynJRFi/TwNSNrRjClIQ36Xc8VuOYtTckF3M3uBsNhgz5FTO/Jd58L0/zSSQkMDCE78SyUZVGEoSscQUKl84Y38TWUK84cC7T3AV+GoEpNEKytgfsgRHHquPG2++CRISMa50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UijMuGJp; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UijMuGJp; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1711722147;
-	Thu,  1 Feb 2024 13:09:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706792986; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IUKCAfTVoUrxB4zijGrDV9tJzwRsfCTR6KHiqfmXiK8=;
-	b=UijMuGJpe3SfxW+1Pa+kKELvVKpcKljLUpGWkDPuIdt2hhb8Afa0MOKc6+aRoPYgiXmE+w
-	QZ19FIitBTazsJrm0EudoeUJnyouGtG98vHV8Vb9Xdh8tWq4zURVKEM3a4RQeM0nsSGXzi
-	OqCTVdI248guWFEpigsz/SDL0N3sJC0=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706792986; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IUKCAfTVoUrxB4zijGrDV9tJzwRsfCTR6KHiqfmXiK8=;
-	b=UijMuGJpe3SfxW+1Pa+kKELvVKpcKljLUpGWkDPuIdt2hhb8Afa0MOKc6+aRoPYgiXmE+w
-	QZ19FIitBTazsJrm0EudoeUJnyouGtG98vHV8Vb9Xdh8tWq4zURVKEM3a4RQeM0nsSGXzi
-	OqCTVdI248guWFEpigsz/SDL0N3sJC0=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E4EBF13A04;
-	Thu,  1 Feb 2024 13:09:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id GOnBNxmYu2VafgAAn2gu4w
-	(envelope-from <mkoutny@suse.com>); Thu, 01 Feb 2024 13:09:45 +0000
-From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	cake@lists.bufferbloat.net
-Cc: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Jamal Hadi Salim <jhs@mojatatu.com>,
-	Cong Wang <xiyou.wangcong@gmail.com>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
-	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-	Stephen Hemminger <stephen@networkplumber.org>,
-	Simon Horman <horms@kernel.org>,
-	Pedro Tammela <pctammela@mojatatu.com>
-Subject: [PATCH v5 4/4] net/sched: Remove alias of sch_clsact
-Date: Thu,  1 Feb 2024 14:09:43 +0100
-Message-ID: <20240201130943.19536-5-mkoutny@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240201130943.19536-1-mkoutny@suse.com>
-References: <20240201130943.19536-1-mkoutny@suse.com>
+	s=arc-20240116; t=1706793036; c=relaxed/simple;
+	bh=ZJhq/a0ru1u/PCGz29gdCFIS3GlsWoUhfYVg1I8Q/fw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KO31aksEIljf/SKSeFs3InZpaqpgY6SEj48pOzcJ2xgrlaLqBGY/8ZhjDmQR9q6mT3cWWZbHeAqWLbLbd+of2NGvmOZRIrnXJYSKUIA/XXJmEq/jjZ2c1TSnyr7Xy1vefS0SdwxzSRwdjUxvbg0F3/70m0NNqvdxTaJGscHUi34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O716Seli; arc=none smtp.client-ip=209.85.222.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-7d625a3ace6so316955241.0;
+        Thu, 01 Feb 2024 05:10:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706793033; x=1707397833; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CwqkQIF71vpcy9N9j4GerjRpbbfKrzc/uUzrxwJJGYo=;
+        b=O716Selih6X3rxS1os1aR88sizk+dZOd1kb3dWFnGusbk4gXW65m1MFB7nd0UVhUBq
+         9Phlz5GEgD54uxyqfdRBij2uj9dAa3dwpK/mNGfZOoEUDJYNNN7hOC4xc0gphMfdCjbQ
+         ZrwB7Pzfbaj3oHm7NsnIiG3qVbl7XofPTvaiJ3NCAZ2YDrZ+FpU4i/UptYUWe9OXxwYH
+         czzTjtbTf40pGTajS/6rfHCnXCnSO3FcEyjG4J3fT8l/LYiuKGTSVR4IJhE8pXa8rPXd
+         K3jaAEdVy7l4NdVkPakBjs1k3hDrZHblOT8yb+Qa8925R/En3PFz+ga3B5oMPXW7MJvt
+         Bq4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706793033; x=1707397833;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CwqkQIF71vpcy9N9j4GerjRpbbfKrzc/uUzrxwJJGYo=;
+        b=vGDLpJTGagHst76adUXFULEmgFeR8lv4kRi0pzOMhSQ26DqQP4QuGPwmmQGHiLHwHG
+         BDFTPklv6UXlsXvUS+1NdLHJFjXvCMvCSgFdZICTBr5q2WGqgJtySsID2MPCpBoiLRW6
+         JwXBHjxEBuRYZ2LxF/DdEcXGVUDJ0wfKdEg5XWi9+Q+Ao2y96lBZWn4SfULUNOSrt+qm
+         QmL4V0LKJBX1YYuyC6mrs7PaIMdJ5BCjMKd1zjq3h4Zi5Pzel6wagacGPNQg9RqyvFNO
+         f4641KIwX4Wi9x+8ErHyqeO9phwI/0zZIjhfafwGM5GAupgiiyH6tBcyzgoSJgPvcSPq
+         M3tg==
+X-Gm-Message-State: AOJu0YymiH/ZbAqJiK5RSU4HhOKyrvG14NUft0q7+lbQVpIceX3BZYM2
+	O2dWqpu5XhRnG4bjQx+Y+/OClvfz0el+YANqVem0A/Tz/LpiEKn1ldsf23MrliqoYpjYsy8gXwp
+	RtMzgKrXQt5jB0xnB6mGMOR0MrSg=
+X-Google-Smtp-Source: AGHT+IGsf+rRSEKnjNQAqd67Fb46xfvPvSc/YPD5cESPQuN63qNLUZEqMRkqhla21Oa+2++defXTos7E//YR0ZZoJDQ=
+X-Received: by 2002:a05:6122:cb:b0:4b6:e3b6:41ea with SMTP id
+ h11-20020a05612200cb00b004b6e3b641eamr2291081vkc.4.1706793033217; Thu, 01 Feb
+ 2024 05:10:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Bar: /
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=UijMuGJp
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-0.58 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 BAYES_HAM(-1.57)[92.20%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 R_RATELIMIT(0.00)[to_ip_from(RLogq4uai3psdy7gygdsfysmzr)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[28];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_CC(0.00)[davemloft.net,google.com,kernel.org,redhat.com,mojatatu.com,gmail.com,resnulli.us,iogearbox.net,linux.dev,toke.dk,intel.com,networkplumber.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -0.58
-X-Rspamd-Queue-Id: 1711722147
-X-Spam-Flag: NO
+References: <20240129151618.90922-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240129151618.90922-4-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdV=E5VDZn0QjiGQL73j135LiA1QNrYH-hCve1Yk0PqJ=A@mail.gmail.com>
+In-Reply-To: <CAMuHMdV=E5VDZn0QjiGQL73j135LiA1QNrYH-hCve1Yk0PqJ=A@mail.gmail.com>
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date: Thu, 1 Feb 2024 13:09:58 +0000
+Message-ID: <CA+V-a8tJfJTEOkSP-F1B3Q7EO6Cu9ij88ceGJcXCQjTFneWxUA@mail.gmail.com>
+Subject: Re: [PATCH 3/5] riscv: dts: renesas: r9a07g043f: Add IRQC node to
+ RZ/Five SoC DTSI
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, linux-renesas-soc@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The module sch_ingress stands out among net/sched modules
-because it provides multiple act/sch functionalities in a single .ko.
-They have aliases to make autoloading work for any of the provided
-functionalities.
+Hi Geert,
 
-Since the autoloading was changed to uniformly request any functionality
-under its alias, the non-systemic aliases can be removed now (i.e.
-assuming the alias were only used to ensure autoloading).
+Thank you for the review.
 
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- net/sched/sch_ingress.c | 1 -
- 1 file changed, 1 deletion(-)
+On Tue, Jan 30, 2024 at 11:25=E2=80=AFAM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Mon, Jan 29, 2024 at 4:16=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail=
+com> wrote:
+> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> >
+> > Add the IRQC node to RZ/Five (R9A07G043F) SoC DTSI.
+>
+> Thanks for your patch!
+>
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> > --- a/arch/riscv/boot/dts/renesas/r9a07g043f.dtsi
+> > +++ b/arch/riscv/boot/dts/renesas/r9a07g043f.dtsi
+> > @@ -50,6 +50,82 @@ &soc {
+> >         dma-noncoherent;
+> >         interrupt-parent =3D <&plic>;
+> >
+> > +       irqc: interrupt-controller@110a0000 {
+> > +               compatible =3D "renesas,r9a07g043f-irqc",
+> > +                            "renesas,rzg2l-irqc";
+> > +               reg =3D <0 0x110a0000 0 0x20000>;
+> > +               #interrupt-cells =3D <2>;
+> > +               #address-cells =3D <0>;
+> > +               interrupt-controller;
+> > +               interrupts =3D <SOC_PERIPHERAL_IRQ(0) IRQ_TYPE_LEVEL_HI=
+GH>,
+>
+> As this is the RZ/Five-specific .dtsi file, and not the common base
+> .dtsi, you could avoid using SOC_PERIPHERAL_IRQ() here.
+> I am not sure what is most readable...
+>
+Ok, ill switch to the usual way here..
 
-diff --git a/net/sched/sch_ingress.c b/net/sched/sch_ingress.c
-index 48a800131e99..c2ef9dcf91d2 100644
---- a/net/sched/sch_ingress.c
-+++ b/net/sched/sch_ingress.c
-@@ -370,6 +370,5 @@ static void __exit ingress_module_exit(void)
- module_init(ingress_module_init);
- module_exit(ingress_module_exit);
- 
--MODULE_ALIAS("sch_clsact");
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Ingress and clsact based ingress and egress qdiscs");
--- 
-2.43.0
+>+                            <SOC_PERIPHERAL_IRQ(25) IRQ_TYPE_EDGE_RISING>=
+,
+In RZ/Five HW manual this is documented as LEVEL_HIGH and RZ/G2UL this
+is documented as EDGE. I ve internally asked for clarification with
+the HW team. If it's the same for both the SoCs I'll move this node to
+common SoC dtsi and just update the compat string in rz/five specific
+dtsi.
 
+Cheers,
+Prabhakar
+
+> The rest LGTM (pending interrupt names review comments).
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
+8k.org
+>
+> In personal conversations with technical people, I call myself a hacker. =
+But
+> when I'm talking to journalists I just say "programmer" or something like=
+ that.
+>                                 -- Linus Torvalds
 
