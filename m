@@ -1,396 +1,112 @@
-Return-Path: <linux-kernel+bounces-47578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D8BE844FC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:29:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41903844FC2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:30:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42A2E1C2544D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:29:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7E14B296FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:30:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89BA3C088;
-	Thu,  1 Feb 2024 03:28:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f2qnltL+"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5AE93BB2A;
-	Thu,  1 Feb 2024 03:28:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C6D3AC08;
+	Thu,  1 Feb 2024 03:30:16 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD7EA3A8C5;
+	Thu,  1 Feb 2024 03:30:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706758122; cv=none; b=ibdVYZqA6k0ihzU9cMSimpbsjddHlAlJKqdVZYj7XbVJ8EWXGuhNS+c7e09U0pIDk2R8M/4lnIdUKzfojmpaViw7QT/ajOjmTjqJHuXbNTJGXWebeLFWjooH9kfxRQzOOmViMz4KzoyxNycb2ce8CayOfDfU3njegW6fwEhAnd0=
+	t=1706758216; cv=none; b=YdgKtrcLVvI7UKC2t4a5HYuS3rvk73jHiUgpUnTbVXL84hAnHGcvRE3u/THtj+1InA/iorg56hz2hJkJ0EdK+vwccw4TC8XF1HW3xnnACpBECFHweYusSVrpWg7/bwbpR27vmxf21rOEZkISMVMr0CZAzSWjKeEmSHsOVImXTnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706758122; c=relaxed/simple;
-	bh=FcN9Oz8uRf7SVlupVgLPbuVjVr6ymhkfTfSTUN2UYTs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=awuxt9CeL0z4iKlaRwDqMvWxy/YpvL+UVsVfQYB/UDoy9wpXIxZItolGq0H7YaocLPHk5XtIRMgJhqpERFnEldDweywLECwrgwTgg9TQDKpAJOatspGM+5sQAbRbvMR04WrZ92QHHls/vptVxRhAOsz6Z1aU4TU4D2IPMS0Jitw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f2qnltL+; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d74045c463so3844895ad.3;
-        Wed, 31 Jan 2024 19:28:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706758120; x=1707362920; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HUVdlwWAjj8cbBkvTW+76Z/trcG39A3eTZ0exUJTSf4=;
-        b=f2qnltL+f5eBov1K46SLpTbtOisGUwqrPqBdlmkmAYhzKJzJjuUpS7vD8Y5pAxrXNr
-         MndfGKuYXHjzrICxteByANcIPhfZCTuqANFfK8Mv/ld8IQkHav8N4q/nhZjpRMGJ1f07
-         n23g+nia8bNce5yFBgCZwoWTT5BijKyUJF2uwK65LfSi1kqyBtlELDWGk1WD99vjo/HQ
-         4GIKISJUe1ilaBYDs/mwyjKB/eyyPCOU7U2LSrG1tJ2fyqhFoqk9BX0VYUtAJr7S3NMB
-         HQoxnYvTLY8WmgFTzPahZJ5bnfqHbQPeGIvfjiBOHNlTkBctqyM9GcKMKs3U+2VlCmw4
-         mxMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706758120; x=1707362920;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HUVdlwWAjj8cbBkvTW+76Z/trcG39A3eTZ0exUJTSf4=;
-        b=DoRmJ/lMMWYnFBuXlRfqM8TuGgTatlBp71adl6cfLHRTjhCqMrN3sz8s2xrsrcBJaM
-         7I77FPyfMdbohRLKSaHhmtJU38DtIn1bY4YIgqKS2XfibRTrK6OHCX4tuNEJlVOAKDa+
-         nZXDX4xYTJc9wm/9yVRFlHLmdprkRZ0fkT8iOqdxsv4B8/EvELxQfa9LJII5c6cytmbg
-         RMSEhViiufKs3rX4g/PomIzsErxLgwsuHSIMICUJRpridqw6YQCvqYzHdP/pX6QIHyMb
-         ev4fwY0fK5yGW7H5aB4bhWGYzWowrYaHWhDgfwSGg2PLjoOHuaunl+SztzJjpYMQMQAf
-         phKA==
-X-Gm-Message-State: AOJu0YwdtUfkzI9LZdCHilu6lcz4Y31PPvgZgdZ8QOg7dPRVPfLaVYiC
-	EtKEZcZ3zyxJiZCqMyMChyMAhuAiBEoNGYHVJRz/RF9cJ7WZ0dly
-X-Google-Smtp-Source: AGHT+IENeTPn4CY7P8Z4GNVey20rB374YNBqiOzPH1Wo7h6vbnTx2fK0vOIu6LtQ2lqlONZrwZk/tg==
-X-Received: by 2002:a17:902:c60a:b0:1d9:464b:68a5 with SMTP id r10-20020a170902c60a00b001d9464b68a5mr1548349plr.56.1706758119982;
-        Wed, 31 Jan 2024 19:28:39 -0800 (PST)
-Received: from ocxma-dut.. ([153.126.233.62])
-        by smtp.gmail.com with ESMTPSA id im23-20020a170902bb1700b001d8c8c903c0sm347852plb.149.2024.01.31.19.28.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 19:28:39 -0800 (PST)
-From: Takeru Hayasaka <hayatake396@gmail.com>
-To: Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>
-Cc: intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	mailhol.vincent@wanadoo.fr,
-	vladimir.oltean@nxp.com,
-	laforge@gnumonks.org,
-	Takeru Hayasaka <hayatake396@gmail.com>
-Subject: [PATCH net-next v6 2/2] ice: Implement RSS settings for GTP using ethtool
-Date: Thu,  1 Feb 2024 03:27:50 +0000
-Message-Id: <20240201032748.1027121-2-hayatake396@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240201032748.1027121-1-hayatake396@gmail.com>
-References: <20240201032748.1027121-1-hayatake396@gmail.com>
+	s=arc-20240116; t=1706758216; c=relaxed/simple;
+	bh=9uBM/8fJawcJ3y/dAPR6vQeEhlmYRiH/RTb/Lg63Fxg=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=O21879v0IbjcNC9sOElcexJ8SqBpJkUcFt7eWo9UE1F+X6uv9mTmaO2B68TvfNrvqD2UU2UDoXDBlKiRXfXmAxMCU1akvfSU18mipAj+YCqOrG4l4k0rHctAE4CM81Xa4gYQItixF52vYM4foICdgVXpWAN7QELa5/+vqcZnGwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.183])
+	by gateway (Coremail) with SMTP id _____8BxefBEELtlFlYJAA--.28279S3;
+	Thu, 01 Feb 2024 11:30:12 +0800 (CST)
+Received: from [10.20.42.183] (unknown [10.20.42.183])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Dxfs1DELtlZEYrAA--.33789S3;
+	Thu, 01 Feb 2024 11:30:11 +0800 (CST)
+Subject: Re: [PATCH] LoongArch: KVM: Remove unnecessary CSR register saving
+ during enter guest
+To: maobibo <maobibo@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>
+Cc: kvm@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20240112035039.833974-1-maobibo@loongson.cn>
+ <b7c08e0d-bd7d-aea9-250e-1649e95599b7@loongson.cn>
+From: zhaotianrui <zhaotianrui@loongson.cn>
+Message-ID: <fbd8b226-1972-322b-d884-bb41d262dd16@loongson.cn>
+Date: Thu, 1 Feb 2024 11:29:12 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <b7c08e0d-bd7d-aea9-250e-1649e95599b7@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8Dxfs1DELtlZEYrAA--.33789S3
+X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7Cw1xtr4rtF1DGr1xury8WFX_yoW8JFyUpF
+	97AF1vyFW5urn7ArWDKas8WryUJ347K3Z5WFyUJFy5Gr45Zry0gr1UXFn2gF1UZw48Jr18
+	uF1UJrnavFWUA3XCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
+	wI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI
+	0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280
+	aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2
+	xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
+	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r
+	1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF
+	7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxV
+	WUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UR
+	a0PUUUUU=
 
-Following the addition of new GTP RSS hash options to ethtool.h, this patch
-implements the corresponding RSS settings for GTP packets in the Intel ice
-driver. It enables users to configure RSS for GTP-U and GTP-C traffic over IPv4
-and IPv6, utilizing the newly defined hash options.
+Reviewed-by: Tianrui Zhao <zhaotianrui@loongson.cn>
 
-The implementation covers the handling of gtpu(4|6), gtpc(4|6), gtpc(4|6)t,
-gtpu(4|6)e, gtpu(4|6)u, and gtpu(4|6)d traffic, providing enhanced load
-distribution for GTP traffic across multiple processing units.
-
-Signed-off-by: Takeru Hayasaka <hayatake396@gmail.com>
----
- .../device_drivers/ethernet/intel/ice.rst     | 21 ++++-
- drivers/net/ethernet/intel/ice/ice_ethtool.c  | 82 +++++++++++++++++++
- drivers/net/ethernet/intel/ice/ice_flow.h     | 31 +++++--
- drivers/net/ethernet/intel/ice/ice_lib.c      | 37 +++++++++
- 4 files changed, 162 insertions(+), 9 deletions(-)
-
-diff --git a/Documentation/networking/device_drivers/ethernet/intel/ice.rst b/Documentation/networking/device_drivers/ethernet/intel/ice.rst
-index 5038e54586af..934752f675ba 100644
---- a/Documentation/networking/device_drivers/ethernet/intel/ice.rst
-+++ b/Documentation/networking/device_drivers/ethernet/intel/ice.rst
-@@ -368,15 +368,28 @@ more options for Receive Side Scaling (RSS) hash byte configuration.
-   # ethtool -N <ethX> rx-flow-hash <type> <option>
- 
-   Where <type> is:
--    tcp4  signifying TCP over IPv4
--    udp4  signifying UDP over IPv4
--    tcp6  signifying TCP over IPv6
--    udp6  signifying UDP over IPv6
-+    tcp4    signifying TCP over IPv4
-+    udp4    signifying UDP over IPv4
-+    gtpc4   signifying GTP-C over IPv4
-+    gtpc4t  signifying GTP-C (include TEID) over IPv4
-+    gtpu4   signifying GTP-U over IPV4
-+    gtpu4e  signifying GTP-U and Extension Header over IPV4
-+    gtpu4u  signifying GTP-U PSC Uplink over IPV4
-+    gtpu4d  signifying GTP-U PSC Downlink over IPV4
-+    tcp6    signifying TCP over IPv6
-+    udp6    signifying UDP over IPv6
-+    gtpc6   signifying GTP-C over IPv6
-+    gtpc6t  signifying GTP-C (include TEID) over IPv6
-+    gtpu6   signifying GTP-U over IPV6
-+    gtpu6e  signifying GTP-U and Extension Header over IPV6
-+    gtpu6u  signifying GTP-U PSC Uplink over IPV6
-+    gtpu6d  signifying GTP-U PSC Downlink over IPV6
-   And <option> is one or more of:
-     s     Hash on the IP source address of the Rx packet.
-     d     Hash on the IP destination address of the Rx packet.
-     f     Hash on bytes 0 and 1 of the Layer 4 header of the Rx packet.
-     n     Hash on bytes 2 and 3 of the Layer 4 header of the Rx packet.
-+    e     Hash on GTP Packet on TEID (4bytes) of the Rx packet.
- 
- 
- Accelerated Receive Flow Steering (aRFS)
-diff --git a/drivers/net/ethernet/intel/ice/ice_ethtool.c b/drivers/net/ethernet/intel/ice/ice_ethtool.c
-index a19b06f18e40..d0e05032f464 100644
---- a/drivers/net/ethernet/intel/ice/ice_ethtool.c
-+++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
-@@ -2486,6 +2486,24 @@ static u32 ice_parse_hdrs(struct ethtool_rxnfc *nfc)
- 	case SCTP_V4_FLOW:
- 		hdrs |= ICE_FLOW_SEG_HDR_SCTP | ICE_FLOW_SEG_HDR_IPV4;
- 		break;
-+	case GTPU_V4_FLOW:
-+		hdrs |= ICE_FLOW_SEG_HDR_GTPU_IP | ICE_FLOW_SEG_HDR_IPV4;
-+		break;
-+	case GTPC_V4_FLOW:
-+		hdrs |= ICE_FLOW_SEG_HDR_GTPC | ICE_FLOW_SEG_HDR_IPV4;
-+		break;
-+	case GTPC_TEID_V4_FLOW:
-+		hdrs |= ICE_FLOW_SEG_HDR_GTPC_TEID | ICE_FLOW_SEG_HDR_IPV4;
-+		break;
-+	case GTPU_EH_V4_FLOW:
-+		hdrs |= ICE_FLOW_SEG_HDR_GTPU_EH | ICE_FLOW_SEG_HDR_IPV4;
-+		break;
-+	case GTPU_UL_V4_FLOW:
-+		hdrs |= ICE_FLOW_SEG_HDR_GTPU_UP | ICE_FLOW_SEG_HDR_IPV4;
-+		break;
-+	case GTPU_DL_V4_FLOW:
-+		hdrs |= ICE_FLOW_SEG_HDR_GTPU_DWN | ICE_FLOW_SEG_HDR_IPV4;
-+		break;
- 	case TCP_V6_FLOW:
- 		hdrs |= ICE_FLOW_SEG_HDR_TCP | ICE_FLOW_SEG_HDR_IPV6;
- 		break;
-@@ -2495,6 +2513,24 @@ static u32 ice_parse_hdrs(struct ethtool_rxnfc *nfc)
- 	case SCTP_V6_FLOW:
- 		hdrs |= ICE_FLOW_SEG_HDR_SCTP | ICE_FLOW_SEG_HDR_IPV6;
- 		break;
-+	case GTPU_V6_FLOW:
-+		hdrs |= ICE_FLOW_SEG_HDR_GTPU_IP | ICE_FLOW_SEG_HDR_IPV6;
-+		break;
-+	case GTPC_V6_FLOW:
-+		hdrs |= ICE_FLOW_SEG_HDR_GTPC | ICE_FLOW_SEG_HDR_IPV6;
-+		break;
-+	case GTPC_TEID_V6_FLOW:
-+		hdrs |= ICE_FLOW_SEG_HDR_GTPC_TEID | ICE_FLOW_SEG_HDR_IPV6;
-+		break;
-+	case GTPU_EH_V6_FLOW:
-+		hdrs |= ICE_FLOW_SEG_HDR_GTPU_EH | ICE_FLOW_SEG_HDR_IPV6;
-+		break;
-+	case GTPU_UL_V6_FLOW:
-+		hdrs |= ICE_FLOW_SEG_HDR_GTPU_UP | ICE_FLOW_SEG_HDR_IPV6;
-+		break;
-+	case GTPU_DL_V6_FLOW:
-+		hdrs |= ICE_FLOW_SEG_HDR_GTPU_DWN | ICE_FLOW_SEG_HDR_IPV6;
-+		break;
- 	default:
- 		break;
- 	}
-@@ -2518,6 +2554,12 @@ static u64 ice_parse_hash_flds(struct ethtool_rxnfc *nfc, bool symm)
- 		case TCP_V4_FLOW:
- 		case UDP_V4_FLOW:
- 		case SCTP_V4_FLOW:
-+		case GTPU_V4_FLOW:
-+		case GTPC_V4_FLOW:
-+		case GTPC_TEID_V4_FLOW:
-+		case GTPU_EH_V4_FLOW:
-+		case GTPU_UL_V4_FLOW:
-+		case GTPU_DL_V4_FLOW:
- 			if (nfc->data & RXH_IP_SRC)
- 				hfld |= ICE_FLOW_HASH_FLD_IPV4_SA;
- 			if (nfc->data & RXH_IP_DST)
-@@ -2526,6 +2568,12 @@ static u64 ice_parse_hash_flds(struct ethtool_rxnfc *nfc, bool symm)
- 		case TCP_V6_FLOW:
- 		case UDP_V6_FLOW:
- 		case SCTP_V6_FLOW:
-+		case GTPU_V6_FLOW:
-+		case GTPC_V6_FLOW:
-+		case GTPC_TEID_V6_FLOW:
-+		case GTPU_EH_V6_FLOW:
-+		case GTPU_UL_V6_FLOW:
-+		case GTPU_DL_V6_FLOW:
- 			if (nfc->data & RXH_IP_SRC)
- 				hfld |= ICE_FLOW_HASH_FLD_IPV6_SA;
- 			if (nfc->data & RXH_IP_DST)
-@@ -2564,6 +2612,33 @@ static u64 ice_parse_hash_flds(struct ethtool_rxnfc *nfc, bool symm)
- 		}
- 	}
- 
-+	if (nfc->data & RXH_GTP_TEID) {
-+		switch (nfc->flow_type) {
-+		case GTPC_TEID_V4_FLOW:
-+		case GTPC_TEID_V6_FLOW:
-+			hfld |= ICE_FLOW_HASH_FLD_GTPC_TEID;
-+			break;
-+		case GTPU_V4_FLOW:
-+		case GTPU_V6_FLOW:
-+			hfld |= ICE_FLOW_HASH_FLD_GTPU_IP_TEID;
-+			break;
-+		case GTPU_EH_V4_FLOW:
-+		case GTPU_EH_V6_FLOW:
-+			hfld |= ICE_FLOW_HASH_FLD_GTPU_EH_TEID;
-+			break;
-+		case GTPU_UL_V4_FLOW:
-+		case GTPU_UL_V6_FLOW:
-+			hfld |= ICE_FLOW_HASH_FLD_GTPU_UP_TEID;
-+			break;
-+		case GTPU_DL_V4_FLOW:
-+		case GTPU_DL_V6_FLOW:
-+			hfld |= ICE_FLOW_HASH_FLD_GTPU_DWN_TEID;
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+
- 	return hfld;
- }
- 
-@@ -2676,6 +2751,13 @@ ice_get_rss_hash_opt(struct ice_vsi *vsi, struct ethtool_rxnfc *nfc)
- 	    hash_flds & ICE_FLOW_HASH_FLD_UDP_DST_PORT ||
- 	    hash_flds & ICE_FLOW_HASH_FLD_SCTP_DST_PORT)
- 		nfc->data |= (u64)RXH_L4_B_2_3;
-+
-+	if (hash_flds & ICE_FLOW_HASH_FLD_GTPC_TEID ||
-+	    hash_flds & ICE_FLOW_HASH_FLD_GTPU_IP_TEID ||
-+	    hash_flds & ICE_FLOW_HASH_FLD_GTPU_EH_TEID ||
-+	    hash_flds & ICE_FLOW_HASH_FLD_GTPU_UP_TEID ||
-+	    hash_flds & ICE_FLOW_HASH_FLD_GTPU_DWN_TEID)
-+		nfc->data |= (u64)RXH_GTP_TEID;
- }
- 
- /**
-diff --git a/drivers/net/ethernet/intel/ice/ice_flow.h b/drivers/net/ethernet/intel/ice/ice_flow.h
-index ff82915ab497..2fd2e0cb483d 100644
---- a/drivers/net/ethernet/intel/ice/ice_flow.h
-+++ b/drivers/net/ethernet/intel/ice/ice_flow.h
-@@ -37,13 +37,13 @@
- #define ICE_HASH_SCTP_IPV4	(ICE_FLOW_HASH_IPV4 | ICE_FLOW_HASH_SCTP_PORT)
- #define ICE_HASH_SCTP_IPV6	(ICE_FLOW_HASH_IPV6 | ICE_FLOW_HASH_SCTP_PORT)
- 
--#define ICE_FLOW_HASH_GTP_TEID \
-+#define ICE_FLOW_HASH_GTP_C_TEID \
- 	(BIT_ULL(ICE_FLOW_FIELD_IDX_GTPC_TEID))
- 
--#define ICE_FLOW_HASH_GTP_IPV4_TEID \
--	(ICE_FLOW_HASH_IPV4 | ICE_FLOW_HASH_GTP_TEID)
--#define ICE_FLOW_HASH_GTP_IPV6_TEID \
--	(ICE_FLOW_HASH_IPV6 | ICE_FLOW_HASH_GTP_TEID)
-+#define ICE_FLOW_HASH_GTP_C_IPV4_TEID \
-+	(ICE_FLOW_HASH_IPV4 | ICE_FLOW_HASH_GTP_C_TEID)
-+#define ICE_FLOW_HASH_GTP_C_IPV6_TEID \
-+	(ICE_FLOW_HASH_IPV6 | ICE_FLOW_HASH_GTP_C_TEID)
- 
- #define ICE_FLOW_HASH_GTP_U_TEID \
- 	(BIT_ULL(ICE_FLOW_FIELD_IDX_GTPU_IP_TEID))
-@@ -66,6 +66,20 @@
- 	(ICE_FLOW_HASH_IPV6 | ICE_FLOW_HASH_GTP_U_EH_TEID | \
- 	 ICE_FLOW_HASH_GTP_U_EH_QFI)
- 
-+#define ICE_FLOW_HASH_GTP_U_UP \
-+	(BIT_ULL(ICE_FLOW_FIELD_IDX_GTPU_UP_TEID))
-+#define ICE_FLOW_HASH_GTP_U_DWN \
-+	(BIT_ULL(ICE_FLOW_FIELD_IDX_GTPU_DWN_TEID))
-+
-+#define ICE_FLOW_HASH_GTP_U_IPV4_UP \
-+	(ICE_FLOW_HASH_IPV4 | ICE_FLOW_HASH_GTP_U_UP)
-+#define ICE_FLOW_HASH_GTP_U_IPV6_UP \
-+	(ICE_FLOW_HASH_IPV6 | ICE_FLOW_HASH_GTP_U_UP)
-+#define ICE_FLOW_HASH_GTP_U_IPV4_DWN \
-+	(ICE_FLOW_HASH_IPV4 | ICE_FLOW_HASH_GTP_U_DWN)
-+#define ICE_FLOW_HASH_GTP_U_IPV6_DWN \
-+	(ICE_FLOW_HASH_IPV6 | ICE_FLOW_HASH_GTP_U_DWN)
-+
- #define ICE_FLOW_HASH_PPPOE_SESS_ID \
- 	(BIT_ULL(ICE_FLOW_FIELD_IDX_PPPOE_SESS_ID))
- 
-@@ -242,6 +256,13 @@ enum ice_flow_field {
- #define ICE_FLOW_HASH_FLD_SCTP_DST_PORT	\
- 	BIT_ULL(ICE_FLOW_FIELD_IDX_SCTP_DST_PORT)
- 
-+#define ICE_FLOW_HASH_FLD_GTPC_TEID	BIT_ULL(ICE_FLOW_FIELD_IDX_GTPC_TEID)
-+#define ICE_FLOW_HASH_FLD_GTPU_IP_TEID BIT_ULL(ICE_FLOW_FIELD_IDX_GTPU_IP_TEID)
-+#define ICE_FLOW_HASH_FLD_GTPU_EH_TEID BIT_ULL(ICE_FLOW_FIELD_IDX_GTPU_EH_TEID)
-+#define ICE_FLOW_HASH_FLD_GTPU_UP_TEID BIT_ULL(ICE_FLOW_FIELD_IDX_GTPU_UP_TEID)
-+#define ICE_FLOW_HASH_FLD_GTPU_DWN_TEID \
-+	BIT_ULL(ICE_FLOW_FIELD_IDX_GTPU_DWN_TEID)
-+
- /* Flow headers and fields for AVF support */
- enum ice_flow_avf_hdr_field {
- 	/* Values 0 - 28 are reserved for future use */
-diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
-index 9be724291ef8..3c4282019570 100644
---- a/drivers/net/ethernet/intel/ice/ice_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_lib.c
-@@ -1618,6 +1618,25 @@ static const struct ice_rss_hash_cfg default_rss_cfgs[] = {
- 	 */
- 	{ICE_FLOW_SEG_HDR_SCTP | ICE_FLOW_SEG_HDR_IPV4,
- 		ICE_HASH_SCTP_IPV4, ICE_RSS_OUTER_HEADERS, false},
-+	/* configure RSS for gtpc4 with input set IPv4 src/dst */
-+	{ICE_FLOW_SEG_HDR_GTPC | ICE_FLOW_SEG_HDR_IPV4,
-+		ICE_FLOW_HASH_IPV4, ICE_RSS_OUTER_HEADERS, false},
-+	/* configure RSS for gtpc4t with input set IPv4 src/dst */
-+	{ICE_FLOW_SEG_HDR_GTPC_TEID | ICE_FLOW_SEG_HDR_IPV4,
-+		ICE_FLOW_HASH_GTP_C_IPV4_TEID, ICE_RSS_OUTER_HEADERS, false},
-+	/* configure RSS for gtpu4 with input set IPv4 src/dst */
-+	{ICE_FLOW_SEG_HDR_GTPU_IP | ICE_FLOW_SEG_HDR_IPV4,
-+		ICE_FLOW_HASH_GTP_U_IPV4_TEID, ICE_RSS_OUTER_HEADERS, false},
-+	/* configure RSS for gtpu4e with input set IPv4 src/dst */
-+	{ICE_FLOW_SEG_HDR_GTPU_EH | ICE_FLOW_SEG_HDR_IPV4,
-+		ICE_FLOW_HASH_GTP_U_IPV4_EH, ICE_RSS_OUTER_HEADERS, false},
-+	/* configure RSS for gtpu4u with input set IPv4 src/dst */
-+	{ ICE_FLOW_SEG_HDR_GTPU_UP | ICE_FLOW_SEG_HDR_IPV4,
-+		ICE_FLOW_HASH_GTP_U_IPV4_UP, ICE_RSS_OUTER_HEADERS, false},
-+	/* configure RSS for gtpu4d with input set IPv4 src/dst */
-+	{ICE_FLOW_SEG_HDR_GTPU_DWN | ICE_FLOW_SEG_HDR_IPV4,
-+		ICE_FLOW_HASH_GTP_U_IPV4_DWN, ICE_RSS_OUTER_HEADERS, false},
-+
- 	/* configure RSS for tcp6 with input set IPv6 src/dst, TCP src/dst */
- 	{ICE_FLOW_SEG_HDR_TCP | ICE_FLOW_SEG_HDR_IPV6,
- 				ICE_HASH_TCP_IPV6,  ICE_RSS_ANY_HEADERS, false},
-@@ -1632,6 +1651,24 @@ static const struct ice_rss_hash_cfg default_rss_cfgs[] = {
- 	/* configure RSS for IPSEC ESP SPI with input set MAC_IPV4_SPI */
- 	{ICE_FLOW_SEG_HDR_ESP,
- 		ICE_FLOW_HASH_ESP_SPI, ICE_RSS_OUTER_HEADERS, false},
-+	/* configure RSS for gtpc6 with input set IPv6 src/dst */
-+	{ICE_FLOW_SEG_HDR_GTPC | ICE_FLOW_SEG_HDR_IPV6,
-+		ICE_FLOW_HASH_IPV6, ICE_RSS_OUTER_HEADERS, false},
-+	/* configure RSS for gtpc6t with input set IPv6 src/dst */
-+	{ICE_FLOW_SEG_HDR_GTPC_TEID | ICE_FLOW_SEG_HDR_IPV6,
-+		ICE_FLOW_HASH_GTP_C_IPV6_TEID, ICE_RSS_OUTER_HEADERS, false},
-+	/* configure RSS for gtpu6 with input set IPv6 src/dst */
-+	{ICE_FLOW_SEG_HDR_GTPU_IP | ICE_FLOW_SEG_HDR_IPV6,
-+		ICE_FLOW_HASH_GTP_U_IPV6_TEID, ICE_RSS_OUTER_HEADERS, false},
-+	/* configure RSS for gtpu6e with input set IPv6 src/dst */
-+	{ICE_FLOW_SEG_HDR_GTPU_EH | ICE_FLOW_SEG_HDR_IPV6,
-+		ICE_FLOW_HASH_GTP_U_IPV6_EH, ICE_RSS_OUTER_HEADERS, false},
-+	/* configure RSS for gtpu6u with input set IPv6 src/dst */
-+	{ ICE_FLOW_SEG_HDR_GTPU_UP | ICE_FLOW_SEG_HDR_IPV6,
-+		ICE_FLOW_HASH_GTP_U_IPV6_UP, ICE_RSS_OUTER_HEADERS, false},
-+	/* configure RSS for gtpu6d with input set IPv6 src/dst */
-+	{ICE_FLOW_SEG_HDR_GTPU_DWN | ICE_FLOW_SEG_HDR_IPV6,
-+		ICE_FLOW_HASH_GTP_U_IPV6_DWN, ICE_RSS_OUTER_HEADERS, false},
- };
- 
- /**
--- 
-2.34.1
+在 2024/1/31 上午11:48, maobibo 写道:
+> slightly ping :)
+> 
+> On 2024/1/12 上午11:50, Bibo Mao wrote:
+>> Some CSR registers like CRMD/PRMD are saved during enter VM mode. However
+>> they are not restored for actual use, saving for these CSR registers
+>> can be removed.
+>>
+>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+>> ---
+>>   arch/loongarch/kvm/switch.S | 6 ------
+>>   1 file changed, 6 deletions(-)
+>>
+>> diff --git a/arch/loongarch/kvm/switch.S b/arch/loongarch/kvm/switch.S
+>> index 0ed9040307b7..905b90de50e8 100644
+>> --- a/arch/loongarch/kvm/switch.S
+>> +++ b/arch/loongarch/kvm/switch.S
+>> @@ -213,12 +213,6 @@ SYM_FUNC_START(kvm_enter_guest)
+>>       /* Save host GPRs */
+>>       kvm_save_host_gpr a2
+>> -    /* Save host CRMD, PRMD to stack */
+>> -    csrrd    a3, LOONGARCH_CSR_CRMD
+>> -    st.d    a3, a2, PT_CRMD
+>> -    csrrd    a3, LOONGARCH_CSR_PRMD
+>> -    st.d    a3, a2, PT_PRMD
+>> -
+>>       addi.d    a2, a1, KVM_VCPU_ARCH
+>>       st.d    sp, a2, KVM_ARCH_HSP
+>>       st.d    tp, a2, KVM_ARCH_HTP
+>>
+>> base-commit: de927f6c0b07d9e698416c5b287c521b07694cac
+>>
 
 
