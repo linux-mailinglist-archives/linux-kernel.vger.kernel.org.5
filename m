@@ -1,257 +1,224 @@
-Return-Path: <linux-kernel+bounces-47892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E67BA84543C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:39:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A96984543F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:40:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F86DB21766
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:39:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB878B2702D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:40:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61EB615CD78;
-	Thu,  1 Feb 2024 09:37:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 702C74DA0E;
+	Thu,  1 Feb 2024 09:38:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DgbICBFw";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LQoeTL6v";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DgbICBFw";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LQoeTL6v"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CQt3V5mK"
+Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E07D15B0FA;
-	Thu,  1 Feb 2024 09:37:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC73915D5B1
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 09:38:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706780273; cv=none; b=NJsOzf0aq2yz+f7vr1PNTXBTCMOno4LRYKg43nhCcxF6qn28DV0+t6uD7Gfr8GO4QAaqgX0QhdTn885d8qVBD74KifpMhWAn+s0A2UsqOShxKV/nWMp1r2IOveWwLNMF9VdVxCrbTQLDt62H3kMwP8B7+DS/mNgt123ERCYraFI=
+	t=1706780329; cv=none; b=dcQwGFDKaRN8/WgwFY2TSUjQvsggER0Xgl1jTTp92UCFVnySB618Cpz0GYxvjxC+No7RBBchn+Mx4mdEGCUjiQ3RrBqNBCyP41/cZIzz41VjoWWxhIZ2sOWecLk7eScNk/xXw/14WDk0S47ShJtkT4FwTngSpEWoCLRW4rSaGWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706780273; c=relaxed/simple;
-	bh=oi5QejTDiTPdw5JK4FsH5vF44q8eRzpf9aXlYTZ0eec=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W1piXPa2IJDt2aFeVptCt9nk42iemsJbOIu/ph0vQ8riqFHAU589Y2IMHqD1Pw6hiNlggb2tspY9fqSU9HLM1M2Rn28+lAQgI0pY5jbsvAGgtPJu0rJNcD5TO5ttrRiQYK7PwvyleuuTAkJE/pWC0R2BxApQfof5ZefVRH2gQD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DgbICBFw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LQoeTL6v; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DgbICBFw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LQoeTL6v; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C1EC122168;
-	Thu,  1 Feb 2024 09:37:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706780269; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mw5Km38+9mHgHXuGiLgV165ByO4XGRf+Ps4iZpq/mhw=;
-	b=DgbICBFwQUioRqWHnu/WREm50kyZ9FBXR7GJM7GRGBSlhVnnckOkWAnXNpEppLsHNUKJKB
-	9c6yI/w6oivyqUea/bdrplZ2IGL0Nun4Lis/jADxpi8dujdpSnN5Br4uY13egIuBIDtXs1
-	V4g1HwPYMNwQCv1cYEMSRBBUL2Rl118=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706780269;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mw5Km38+9mHgHXuGiLgV165ByO4XGRf+Ps4iZpq/mhw=;
-	b=LQoeTL6vqQbbhc31167aNVBkOPwDjV1PNhX9ShezoGmZ0jnq8E3YC93JBL0dc42Tl1KLg1
-	hJV5h+RXV3u09ZBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706780269; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mw5Km38+9mHgHXuGiLgV165ByO4XGRf+Ps4iZpq/mhw=;
-	b=DgbICBFwQUioRqWHnu/WREm50kyZ9FBXR7GJM7GRGBSlhVnnckOkWAnXNpEppLsHNUKJKB
-	9c6yI/w6oivyqUea/bdrplZ2IGL0Nun4Lis/jADxpi8dujdpSnN5Br4uY13egIuBIDtXs1
-	V4g1HwPYMNwQCv1cYEMSRBBUL2Rl118=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706780269;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mw5Km38+9mHgHXuGiLgV165ByO4XGRf+Ps4iZpq/mhw=;
-	b=LQoeTL6vqQbbhc31167aNVBkOPwDjV1PNhX9ShezoGmZ0jnq8E3YC93JBL0dc42Tl1KLg1
-	hJV5h+RXV3u09ZBQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B612A13594;
-	Thu,  1 Feb 2024 09:37:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id w1BrLG1mu2VrVAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Thu, 01 Feb 2024 09:37:49 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 64447A0809; Thu,  1 Feb 2024 10:37:49 +0100 (CET)
-Date: Thu, 1 Feb 2024 10:37:49 +0100
-From: Jan Kara <jack@suse.cz>
-To: Liu Shixin <liushixin2@huawei.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Matthew Wilcox <willy@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH 2/2] mm/readahead: limit sync readahead while too many
- active refault
-Message-ID: <20240201093749.ll7uzgt7ixy7kkhw@quack3>
-References: <20240201100835.1626685-1-liushixin2@huawei.com>
- <20240201100835.1626685-3-liushixin2@huawei.com>
+	s=arc-20240116; t=1706780329; c=relaxed/simple;
+	bh=a/aTDNN6EMDkD+niHUP8ICMvAXcz4gxgK/NiZj68fgA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ifWmaj3GVkSeEX1ThGbTkXySQQ1CPAQWem51NPBwZIchgl+YxT0LBGY4B3vXKl/T8KDn/2j6orQd/9kdJ+zF6mwqdGllr8wPY7ShYr2BoXxBx+/bKLlSOi9DxBxOKBpfFD5Diny0blsnBFXuqj6H0T45M8TaX0P7pXYfWiVgyuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CQt3V5mK; arc=none smtp.client-ip=209.85.221.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-4bffff28c08so141583e0c.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 01:38:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706780326; x=1707385126; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XD0yQ/tI+tg2dm8uEuvvq9XaoXhsRoncokKKzr2jeMM=;
+        b=CQt3V5mKUZJtQ1Uc8NnqYw51bPgPqJyKqw3J+2N7R+9c9SBZzi+UxRbOQLbmei3KH3
+         QlTbiuP1hflU64f8mbOo5j7TgWUqH/O48q7wAvBHhUZ/sW1C4LE6Ucs5sDW62sqgCI8l
+         d2SpKqkLGIgQZZ4v0ZwX/J7CBCrNI7TGleUuBAECg7x7Ty3/f4CKvRyQVM+Cekv1VnMp
+         4z6Bsm0sWyJZIwmbivPzWVUHChqNMzbGekWOzjqCy3OYHB+xfSixyIbwZkx1iiJeGQnO
+         YwdH6C9S3GXG0TTzkeyINNgFk1ojCVBeNhvfxf4s+Eq5RcU+jAR1PCOXU2vthM9xAAUK
+         d6ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706780326; x=1707385126;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XD0yQ/tI+tg2dm8uEuvvq9XaoXhsRoncokKKzr2jeMM=;
+        b=RhNcgab1i25lgDWjveFu89XRti3BMLbcAxUy+o2cODDxcvx6lBgBT8cjZzcnF69t3c
+         hJIvv5fbM5ybNKpDzDKwA6wMFGIc8qOwkLZuYbVZdq67ygLJwIp1St/4Whs4zcX0mfYN
+         xOLEcDakCqsFnhY1x9JDKYRbzEoN129WWDCa5sMH0Wm/MN5Mj9ClD+vJB4I5wRsjhnc/
+         +g/IIPSv5JcnBRL+6R+P5+65x4L1Ok3R8fOb3lxdgK/VG6RgifbXYm0/DYrqgJ42LSBz
+         60ezfnMvQ7JKwjk1rGHN42N3EFnWHFkbKaNttGvXWRCsLPgVFUKDcO1UZoYQX3zZyf0I
+         0hLQ==
+X-Gm-Message-State: AOJu0YzvgZedIlke79lV7jdML7GZaK6yKBnlwr2D578IvtXsjA62M7T5
+	znnu7B7MLzGtGJVyA8sHySonDYaBDCGaq5XaK/N+Kz5wwZd7rqOp1QQJ/Q6s9f+5Q9+fw9bBEW6
+	f0JxCFCok8oZmmBGPqlqXGcCTskdAFUaNqDVw
+X-Google-Smtp-Source: AGHT+IH+sgJyGjTNJ8nrAZACpyhjF1aGCbvp4J/0sKBmH4acCQHArxhx13e7Uh8RuNCOYXyQzWjA12EqMJKHy6Nh8Ic=
+X-Received: by 2002:a05:6122:1d87:b0:4bd:7da1:a2ea with SMTP id
+ gg7-20020a0561221d8700b004bd7da1a2eamr1519212vkb.14.1706780326396; Thu, 01
+ Feb 2024 01:38:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240201100835.1626685-3-liushixin2@huawei.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+References: <20240131210041.686657-1-paul.heidekrueger@tum.de>
+In-Reply-To: <20240131210041.686657-1-paul.heidekrueger@tum.de>
+From: Marco Elver <elver@google.com>
+Date: Thu, 1 Feb 2024 10:38:07 +0100
+Message-ID: <CANpmjNPvQ16mrQOTzecN6ZpYe+N8dBw8V+Mci53CBgC2sx84Ew@mail.gmail.com>
+Subject: Re: [PATCH RFC v2] kasan: add atomic tests
+To: =?UTF-8?Q?Paul_Heidekr=C3=BCger?= <paul.heidekrueger@tum.de>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>, Alexander Potapenko <glider@google.com>, 
+	Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>, 
+	Vincenzo Frascino <vincenzo.frascino@arm.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	kasan-dev@googlegroups.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu 01-02-24 18:08:35, Liu Shixin wrote:
-> When the pagefault is not for write and the refault distance is close,
-> the page will be activated directly. If there are too many such pages in
-> a file, that means the pages may be reclaimed immediately.
-> In such situation, there is no positive effect to read-ahead since it will
-> only waste IO. So collect the number of such pages and when the number is
-> too large, stop bothering with read-ahead for a while until it decreased
-> automatically.
-> 
-> Define 'too large' as 10000 experientially, which can solves the problem
-> and does not affect by the occasional active refault.
-> 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+On Wed, 31 Jan 2024 at 22:01, Paul Heidekr=C3=BCger <paul.heidekrueger@tum.=
+de> wrote:
+>
+> Hi!
+>
+> This RFC patch adds tests that detect whether KASan is able to catch
+> unsafe atomic accesses.
+>
+> Since v1, which can be found on Bugzilla (see "Closes:" tag), I've made
+> the following suggested changes:
+>
+> * Adjust size of allocations to make kasan_atomics() work with all KASan =
+modes
+> * Remove comments and move tests closer to the bitops tests
+> * For functions taking two addresses as an input, test each address in a =
+separate function call.
+> * Rename variables for clarity
+> * Add tests for READ_ONCE(), WRITE_ONCE(), smp_load_acquire() and smp_sto=
+re_release()
+>
+> I'm still uncelar on which kinds of atomic accesses we should be testing
+> though. The patch below only covers a subset, and I don't know if it
+> would be feasible to just manually add all atomics of interest. Which
+> ones would those be exactly?
 
-So I'm not convinced this new logic is needed. We already have
-ra->mmap_miss which gets incremented when a page fault has to read the page
-(and decremented when a page fault found the page already in cache). This
-should already work to detect trashing as well, shouldn't it? If it does
-not, why?
+The atomics wrappers are generated by a script. An exhaustive test
+case would, if generated by hand, be difficult to keep in sync if some
+variants are removed or renamed (although that's probably a relatively
+rare occurrence).
 
-								Honza
+I would probably just cover some of the most common ones that all
+architectures (that support KASAN) provide. I think you are already
+covering some of the most important ones, and I'd just say it's good
+enough for the test.
 
+> As Andrey pointed out on Bugzilla, if we
+> were to include all of the atomic64_* ones, that would make a lot of
+> function calls.
+
+Just include a few atomic64_ cases, similar to the ones you already
+include for atomic_. Although beware that the atomic64_t helpers are
+likely not available on 32-bit architectures, so you need an #ifdef
+CONFIG_64BIT.
+
+Alternatively, there is also atomic_long_t, which (on 64-bit
+architectures) just wraps atomic64_t helpers, and on 32-bit the
+atomic_t ones. I'd probably opt for the atomic_long_t variants, just
+to keep it simpler and get some additional coverage on 32-bit
+architectures.
+
+> Also, the availability of atomics varies between architectures; I did my
+> testing on arm64. Is something like gen-atomic-instrumented.sh required?
+
+I would not touch gen-atomic-instrumented.sh for the test.
+
+> Many thanks,
+> Paul
+>
+> CC: Marco Elver <elver@google.com>
+> CC: Andrey Konovalov <andreyknvl@gmail.com>
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D214055
+> Signed-off-by: Paul Heidekr=C3=BCger <paul.heidekrueger@tum.de>
 > ---
->  include/linux/fs.h      |  2 ++
->  include/linux/pagemap.h |  1 +
->  mm/filemap.c            | 16 ++++++++++++++++
->  mm/readahead.c          |  4 ++++
->  4 files changed, 23 insertions(+)
-> 
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index ed5966a704951..f2a1825442f5a 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -960,6 +960,7 @@ struct fown_struct {
->   *      the first of these pages is accessed.
->   * @ra_pages: Maximum size of a readahead request, copied from the bdi.
->   * @mmap_miss: How many mmap accesses missed in the page cache.
-> + * @active_refault: Number of active page refault.
->   * @prev_pos: The last byte in the most recent read request.
->   *
->   * When this structure is passed to ->readahead(), the "most recent"
-> @@ -971,6 +972,7 @@ struct file_ra_state {
->  	unsigned int async_size;
->  	unsigned int ra_pages;
->  	unsigned int mmap_miss;
-> +	unsigned int active_refault;
->  	loff_t prev_pos;
->  };
->  
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index 2df35e65557d2..da9eaf985dec4 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -1256,6 +1256,7 @@ struct readahead_control {
->  	pgoff_t _index;
->  	unsigned int _nr_pages;
->  	unsigned int _batch_count;
-> +	unsigned int _active_refault;
->  	bool _workingset;
->  	unsigned long _pflags;
->  };
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 750e779c23db7..4de80592ab270 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -3037,6 +3037,7 @@ loff_t mapping_seek_hole_data(struct address_space *mapping, loff_t start,
->  
->  #ifdef CONFIG_MMU
->  #define MMAP_LOTSAMISS  (100)
-> +#define ACTIVE_REFAULT_LIMIT	(10000)
->  /*
->   * lock_folio_maybe_drop_mmap - lock the page, possibly dropping the mmap_lock
->   * @vmf - the vm_fault for this fault.
-> @@ -3142,6 +3143,18 @@ static struct file *do_sync_mmap_readahead(struct vm_fault *vmf)
->  	if (mmap_miss > MMAP_LOTSAMISS)
->  		return fpin;
->  
-> +	ractl._active_refault = READ_ONCE(ra->active_refault);
-> +	if (ractl._active_refault)
-> +		WRITE_ONCE(ra->active_refault, --ractl._active_refault);
-> +
-> +	/*
-> +	 * If there are a lot of refault of active pages in this file,
-> +	 * that means the memory reclaim is ongoing. Stop bothering with
-> +	 * read-ahead since it will only waste IO.
-> +	 */
-> +	if (ractl._active_refault >= ACTIVE_REFAULT_LIMIT)
-> +		return fpin;
-> +
->  	/*
->  	 * mmap read-around
->  	 */
-> @@ -3151,6 +3164,9 @@ static struct file *do_sync_mmap_readahead(struct vm_fault *vmf)
->  	ra->async_size = ra->ra_pages / 4;
->  	ractl._index = ra->start;
->  	page_cache_ra_order(&ractl, ra, 0);
-> +
-> +	WRITE_ONCE(ra->active_refault, ractl._active_refault);
-> +
->  	return fpin;
+>  mm/kasan/kasan_test.c | 50 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 50 insertions(+)
+>
+> diff --git a/mm/kasan/kasan_test.c b/mm/kasan/kasan_test.c
+> index 8281eb42464b..1ab4444fe4a0 100644
+> --- a/mm/kasan/kasan_test.c
+> +++ b/mm/kasan/kasan_test.c
+> @@ -1150,6 +1150,55 @@ static void kasan_bitops_tags(struct kunit *test)
+>         kfree(bits);
 >  }
->  
-> diff --git a/mm/readahead.c b/mm/readahead.c
-> index cc4abb67eb223..d79bb70a232c4 100644
-> --- a/mm/readahead.c
-> +++ b/mm/readahead.c
-> @@ -263,6 +263,10 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
->  			folio_set_readahead(folio);
->  		ractl->_workingset |= folio_test_workingset(folio);
->  		ractl->_nr_pages++;
-> +		if (unlikely(folio_test_workingset(folio)))
-> +			ractl->_active_refault++;
-> +		else if (unlikely(ractl->_active_refault))
-> +			ractl->_active_refault--;
->  	}
->  
->  	/*
-> -- 
-> 2.25.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>
+> +static void kasan_atomics_helper(struct kunit *test, void *unsafe, void =
+*safe)
+> +{
+> +       int *i_safe =3D (int *)safe;
+> +       int *i_unsafe =3D (int *)unsafe;
+> +
+> +       KUNIT_EXPECT_KASAN_FAIL(test, READ_ONCE(*i_unsafe));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, WRITE_ONCE(*i_unsafe, 42));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, smp_load_acquire(i_unsafe));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, smp_store_release(i_unsafe, 42));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_read(unsafe));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_set(unsafe, 42));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_add(42, unsafe));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_sub(42, unsafe));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_inc(unsafe));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_dec(unsafe));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_and(42, unsafe));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_andnot(42, unsafe));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_or(42, unsafe));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_xor(42, unsafe));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_xchg(unsafe, 42));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_cmpxchg(unsafe, 21, 42));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_try_cmpxchg(unsafe, safe, 42=
+));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_try_cmpxchg(safe, unsafe, 42=
+));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_sub_and_test(42, unsafe));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_dec_and_test(unsafe));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_inc_and_test(unsafe));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_add_negative(42, unsafe));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_add_unless(unsafe, 21, 42));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_inc_not_zero(unsafe));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_inc_unless_negative(unsafe))=
+;
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_dec_unless_positive(unsafe))=
+;
+> +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_dec_if_positive(unsafe));
+> +}
+> +
+> +static void kasan_atomics(struct kunit *test)
+> +{
+> +       int *a1, *a2;
+
+If you're casting it to void* below and never using as an int* in this
+function, just make these void* (the sizeof can just be sizeof(int)).
+
+> +       a1 =3D kzalloc(48, GFP_KERNEL);
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, a1);
+> +       a2 =3D kzalloc(sizeof(*a1), GFP_KERNEL);
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, a1);
+> +
+> +       kasan_atomics_helper(test, (void *)a1 + 48, (void *)a2);
+
+We try to ensure (where possible) that the KASAN tests are not
+destructive to the rest of the kernel. I think the size of "48" was
+chosen to fall into the 64-byte size class, similar to the bitops. I
+would just copy that comment, so nobody attempts to change it in
+future. :-)
+
+> +       kfree(a1);
+> +       kfree(a2);
+
+Thanks,
+-- Marco
 
