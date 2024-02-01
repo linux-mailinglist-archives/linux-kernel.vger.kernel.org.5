@@ -1,127 +1,102 @@
-Return-Path: <linux-kernel+bounces-48186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8EAC845869
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:06:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED12084586C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:06:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31933B27420
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:06:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EAD6285B14
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:06:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E538453383;
-	Thu,  1 Feb 2024 13:05:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A97F13A8D2;
+	Thu,  1 Feb 2024 13:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Jt/4NHVe"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JcAM+fIN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B261253365;
-	Thu,  1 Feb 2024 13:05:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB312135B;
+	Thu,  1 Feb 2024 13:06:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706792742; cv=none; b=ls9JP16NYbQe/86uv/y27TINz6a3AN75rmQQmyHcKGcxokk4CwZNogo7lXQp4P07D+2osok9wGcJ8MuisHseuzA3Mj7f/EiQ1nNBCG1f3Vi5C1B3JMpXc1f5MG0dJjs0w4QlEsFWGFqlaDUqiifqCTMYcVdRadEVQ2HxYuetX4M=
+	t=1706792771; cv=none; b=tjB8Y0WClgMn6cdoRcQou2friUKroymMArOAtA1gE0ov8GnWfihZ+wAzlsYUu4yHHPPW/z6aeTFaA9AgD9in+/TdE3VumNVXsm3r+y9E/O4x6PTHj+CrxMpivyFYGVWq+IcxTFRIXXBF8oIfNde/QPAAkUldA9NQwox/PO1u1ZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706792742; c=relaxed/simple;
-	bh=/MVnfk7AH4h6a4QWSYQJHX+ejX6+Vh4/dMORXjSgQU0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=baGE7f0V1c52WKzUMnwEuV1wMARkQOq0SDXRfro/oMrfSUYuR5iWdQrD1JqVU3zwzmiii/92X2XTriSxz8+/C+XjPs0+X9tF3JhUCek2i2etaT4FIzzapOkxbrfrsUWU1liv9DnLOJBLHtPuss8isMwsiF4AbduiDOAaYRVj6u0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Jt/4NHVe; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706792739;
-	bh=/MVnfk7AH4h6a4QWSYQJHX+ejX6+Vh4/dMORXjSgQU0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Jt/4NHVe/eHjQOovfkzSj8baPCTpY78dmgFcjqjUcSXuiP6HHE06v7rm8fAbqxHKg
-	 5k41CAryBdxKya+QjkFmLw7IWZoD70GoqbS7b9dV11H0yUoVTiKENm+Dyu1AV/z1jt
-	 wzKOcJmb0RF94Sr1VANtHgYPr62sdIlk2OVYjC+6NQYoz3kW2oafxwXMd4Oxpj5xIT
-	 A4Xe8Nf9KpJCe/HVG8td8Y6EReEUgF1gBXcSn+j1gJB7oeZJrU0VGXela+rwJIB3+0
-	 T1NkLdmn7k0ljjHI0ezSUpbtn+Z4j0J3KsT1XBVwAzu758rLHJ0Jmnu1wodLbYgG31
-	 AyLGaaIqrgiWg==
-Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 577DF378208C;
-	Thu,  1 Feb 2024 13:05:36 +0000 (UTC)
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: kernel@collabora.com,
-	ryan.roberts@arm.com,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] selftests/mm: run_vmtests: Use correct flag in the code
-Date: Thu,  1 Feb 2024 18:05:37 +0500
-Message-ID: <20240201130538.1404897-2-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240201130538.1404897-1-usama.anjum@collabora.com>
-References: <20240201130538.1404897-1-usama.anjum@collabora.com>
+	s=arc-20240116; t=1706792771; c=relaxed/simple;
+	bh=6pvTxGKjDkNH/OXfRp2ulBOrP5l6tDhn0YEhIfEMK2Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ifRMWOCYFU/5WBqjENl7VUD+UMnzM14L/87nQrn6uJlXC1xd5wmCZWL6Gas5W9HMEuf/gt6FSPNwhJVfrLNf0oYB6wnUqujiwKDwbAEeoe5eedpVyV65LD3rBYvipyZECQljQB7lMc9NlxNMeYyM7RUtArEtl61leyUhkRGy2KY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JcAM+fIN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30E36C433F1;
+	Thu,  1 Feb 2024 13:06:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706792770;
+	bh=6pvTxGKjDkNH/OXfRp2ulBOrP5l6tDhn0YEhIfEMK2Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JcAM+fINDSL+E3SsXqnTf84QclcABIPA5RyvWas0WFWSc6W/WjhTR9WxWPaKRMa6f
+	 23FyO0qpuvQpo0ZkyQ58J3XyAnt2y0Ktq6mzaas7/qUwo7y3bgZ1aupwioZuMhFxNN
+	 r9pc5zcnGlDBoA1HXtdi/fTR26i9sqCUtAb9Z7cGCwgqnZdlgujKYnJP9KPTKLel9E
+	 80koMdTMPNV3DhHW0SnkC/7UljvvWckToEjNcba6nIRkWW0bEo9gkj8ePgoRM9XBX9
+	 1MDC5AKOqpkwrRoUPMD1qFUEZKXTpViTgWRoQAS2dddrB6/7GbFHmsalGefnnCRWQW
+	 F6KsgXefyYiGA==
+Date: Thu, 1 Feb 2024 13:06:05 +0000
+From: Lee Jones <lee@kernel.org>
+To: Lukasz Majczak <lma@chromium.org>
+Cc: Gwendal Grignou <gwendal@chromium.org>,
+	Tzung-Bi Shih <tzungbi@kernel.org>,
+	Radoslaw Biernacki <biernacki@google.com>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Benson Leung <bleung@chromium.org>,
+	Guenter Roeck <groeck@chromium.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+	chrome-platform@lists.linux.dev
+Subject: [GIT PULL] Immutable branch between MFD, CROS and Watchdog due for
+ the v6.9 merge window
+Message-ID: <20240201130605.GA1379817@google.com>
+References: <20240126095721.782782-1-lma@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240126095721.782782-1-lma@chromium.org>
 
-Use correct -d flag as mentioned in comments for destructive tests.
-Rename variable and update comment for some clarification.
+Good afternoon,
 
-Fixes: cc7b9955344c ("selftests/mm: run_vmtests.sh: add missing tests")
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
-Please fold this patch in the Fixes patch if needed.
----
- tools/testing/selftests/mm/run_vmtests.sh | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
 
-diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
-index edd73f871c79a..99734a2a091b3 100755
---- a/tools/testing/selftests/mm/run_vmtests.sh
-+++ b/tools/testing/selftests/mm/run_vmtests.sh
-@@ -15,7 +15,7 @@ usage() {
- 	cat <<EOF
- usage: ${BASH_SOURCE[0]:-$0} [ options ]
- 
--  -a: run all tests, including extra ones
-+  -a: run all tests, including extra ones (other than destructive ones)
-   -t: specify specific categories to tests to run
-   -h: display this message
-   -n: disable TAP output
-@@ -80,7 +80,7 @@ EOF
- }
- 
- RUN_ALL=false
--RUN_DESTRUCTIVE_TEST=false
-+RUN_DESTRUCTIVE=false
- TAP_PREFIX="# "
- 
- while getopts "aht:n" OPT; do
-@@ -89,7 +89,7 @@ while getopts "aht:n" OPT; do
- 		"h") usage ;;
- 		"t") VM_SELFTEST_ITEMS=${OPTARG} ;;
- 		"n") TAP_PREFIX= ;;
--		"a") RUN_DESTRUCTIVE_TEST=true ;;
-+		"d") RUN_DESTRUCTIVE=true ;;
- 	esac
- done
- shift $((OPTIND -1))
-@@ -323,7 +323,7 @@ CATEGORY="mremap" run_test ./mremap_test
- CATEGORY="hugetlb" run_test ./thuge-gen
- CATEGORY="hugetlb" run_test ./charge_reserved_hugetlb.sh -cgroup-v2
- CATEGORY="hugetlb" run_test ./hugetlb_reparenting_test.sh -cgroup-v2
--if $RUN_DESTRUCTIVE_TEST; then
-+if $RUN_DESTRUCTIVE; then
- CATEGORY="hugetlb" run_test ./hugetlb-read-hwpoison
- fi
- 
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-cros-watchdog-v6.9
+
+for you to fetch changes up to 843dac4d3687f7628ba4f76e1481ee3838b27a35:
+
+  watchdog: Add ChromeOS EC-based watchdog driver (2024-02-01 11:49:30 +0000)
+
+----------------------------------------------------------------
+Immutable branch between MFD, CROS and Watchdog due for the v6.9 merge window
+
+----------------------------------------------------------------
+Lukasz Majczak (2):
+      platform/chrome: Update binary interface for EC-based watchdog
+      watchdog: Add ChromeOS EC-based watchdog driver
+
+ MAINTAINERS                                    |   6 +
+ drivers/watchdog/Kconfig                       |  11 ++
+ drivers/watchdog/Makefile                      |   1 +
+ drivers/watchdog/cros_ec_wdt.c                 | 204 +++++++++++++++++++++++++
+ include/linux/platform_data/cros_ec_commands.h |  78 +++++-----
+ 5 files changed, 257 insertions(+), 43 deletions(-)
+ create mode 100644 drivers/watchdog/cros_ec_wdt.c
+
 -- 
-2.42.0
-
+Lee Jones [李琼斯]
 
