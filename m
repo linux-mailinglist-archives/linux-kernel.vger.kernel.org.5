@@ -1,124 +1,112 @@
-Return-Path: <linux-kernel+bounces-48072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 288828456E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:06:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 759F284562F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:25:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC6BE1F27744
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:06:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 036B2286B27
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:25:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12AC1163AAA;
-	Thu,  1 Feb 2024 12:04:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B48115CD6F;
+	Thu,  1 Feb 2024 11:25:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TdEl2bus"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OZz4QSq+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09338163AAB;
-	Thu,  1 Feb 2024 12:03:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C25C64DA0C;
+	Thu,  1 Feb 2024 11:25:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706789040; cv=none; b=GtsGIh/sVtNYU/FdPjGsHXqPayHw2tpzEf+dXJR6tsmk43LxnpWq8lfYkZHsMT8GwU/wd5S+ue2WhJymuOUFx6HkUjFF2AEGcDAo9okHntGyJy5PCDZPiwFAD93LIzAvmFux9/tOdK8q3SrTS0TPFMUsnBscdHRPbTL8u0CknBU=
+	t=1706786737; cv=none; b=FOqUBTssYlh3fJlh6TX3Gn65rBqyWm9vhAtJEDB5eU+ta2Aj/VaHHNnNkBTf48dbTytqiOU/uEy4yHrdVDdHawUdJxGo1SwUXZlLD9mBzN6/nck0B/piremyPQqD9hLKrCuVEBqCS0mOAVkkf9pgfYA4ilIvg8AL6OdG+q0VQ4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706789040; c=relaxed/simple;
-	bh=cMkEfo42ar08rIRgf549MDh3sGVcDxZ39tgkRF74Xzc=;
+	s=arc-20240116; t=1706786737; c=relaxed/simple;
+	bh=8FsMzGJfsM0aOcmxMpvBjhVsj+8VYxKWtsJcxs8GM5A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e659jcu5GSIrKX4gEL47FsxdqBRj3L1/2jRbZNpL2hPkaySjFX03Z8Eg/w0y/v3QbMyNwoC6TcwgNNOK2wVGFMc8rgr5K8HUMcHkRQ6iPRH5TC3ezKhSXdUahCiC8x8kMWMIPqTxNz+0Zfwr9qT8MEX1dK1CIiTl0k4BE2yc8hc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TdEl2bus; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706789039; x=1738325039;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=cMkEfo42ar08rIRgf549MDh3sGVcDxZ39tgkRF74Xzc=;
-  b=TdEl2busVR6dyxzEFg2Ew15YKLvh9RpaHVuQ+p/jZA1Snk34EEsP7Lc6
-   ma0ibEpZFbjfXLPLazD363DJJZOl8cyBAu/svHO0w5BERLA7m/JcMtbwi
-   fWQcz2SiaWnl/juzYzfD38E247mn++tp8/s1ZUw/3rT9Uoqyb6jhgA8k7
-   EH/4IeUsocZIBXzAyTn2vYD8yH7yDG9odByk4+6nzp4PreYrvoNhSwFC4
-   fdNhYak4aOMbrwR+bkeU/kwMz34/iYuHTrNnCdNcvu5J8LP4tito2npgy
-   ry75sP4K84jfY/6+FXVrDRrPrHmmXb2GNmqkKBDZKwNyEfS+j7KVUqTui
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="11255990"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="11255990"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 04:03:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="822905406"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="822905406"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 04:03:55 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rVVB1-00000000oik-1Ux1;
-	Thu, 01 Feb 2024 13:24:15 +0200
-Date: Thu, 1 Feb 2024 13:24:15 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Raag Jadav <raag.jadav@intel.com>
-Cc: u.kleine-koenig@pengutronix.de, jarkko.nikula@linux.intel.com,
-	mika.westerberg@linux.intel.com, lakshmi.sowjanya.d@intel.com,
-	linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/3] pwm: dwc: simplify error handling
-Message-ID: <Zbt_XxqYc3qKA6tr@smile.fi.intel.com>
-References: <20240122030238.29437-1-raag.jadav@intel.com>
- <20240122030238.29437-3-raag.jadav@intel.com>
- <ZbZpMO9b7L-DNIcb@smile.fi.intel.com>
- <ZbizxhQ5cxcDk2eK@black.fi.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fkbLdDHco06nXWVHQdkn1wyoqUQcz1Y4slm4xo1ber1ckGSwxpnB7VAFHCQmbVLTNyIC0Qn5uLb44wfC1SPABvqJPC0/cBEQCIVrJUPj0iRHR4titi3swu2VeTxQqrED34LQ6Kguz1b6z9B+r8sUKUz1Pk1FLW5aV46SmJ6MWvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OZz4QSq+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7EC9C433F1;
+	Thu,  1 Feb 2024 11:25:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706786737;
+	bh=8FsMzGJfsM0aOcmxMpvBjhVsj+8VYxKWtsJcxs8GM5A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OZz4QSq+RagaDlfjVVz5KtwyqN+z6+sFOtdgVwirtr8OUVEyjsqZmctO07hi8NI32
+	 7CXregjsqNFCRgNzAQC6LkIWzv5+FlZ5wptO3v4wdXf9QnO1eGpacIgLM+ofZOdYxj
+	 hAVJ2KjiNLCky+UQLUuEHvtkt1AjCPRNtR+Gf4R7opVdUrpjheRe1N1Z6Ile36juWk
+	 LyEHXJ1jGYRdeA/3Qd/ypbl0w5N5Zld3EkS/FrAXVZWt29xWDcW/7+Tb1+hdFwMFor
+	 epg+86jqzzvkzy+KV9xJKQ8Wb03jVceOWng1nGR8KT30YOw61WiY7hww8gsNtTPFGI
+	 B1ljn8Z04DlNA==
+Date: Thu, 1 Feb 2024 11:25:27 +0000
+From: Mark Brown <broonie@kernel.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com,
+	ribalda@chromium.org, nicolas.ferre@microchip.com,
+	u.kleine-koenig@pengutronix.de, kuninori.morimoto.gx@renesas.com,
+	nfraprado@collabora.com, alsa-devel@alsa-project.org,
+	trevor.wu@mediatek.com, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, lgirdwood@gmail.com
+Subject: Re: [PATCH 0/7] ASoC: mediatek: AFE drivers cleanups
+Message-ID: <6f7a34b6-6f65-42c3-a92d-6b064bf9dee1@sirena.org.uk>
+References: <20240111105247.117766-1-angelogioacchino.delregno@collabora.com>
+ <cace3472-7ee3-459b-ab2c-51764db99bd7@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="PVPGHszu86wFrqHg"
+Content-Disposition: inline
+In-Reply-To: <cace3472-7ee3-459b-ab2c-51764db99bd7@collabora.com>
+X-Cookie: You can't cheat the phone company.
+
+
+--PVPGHszu86wFrqHg
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZbizxhQ5cxcDk2eK@black.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 30, 2024 at 10:31:02AM +0200, Raag Jadav wrote:
-> On Sun, Jan 28, 2024 at 04:48:16PM +0200, Andy Shevchenko wrote:
-> > On Mon, Jan 22, 2024 at 08:32:37AM +0530, Raag Jadav wrote:
-> > > Simplify error handling in ->probe() function using dev_err_probe() helper.
+On Thu, Feb 01, 2024 at 11:08:41AM +0100, AngeloGioacchino Del Regno wrote:
+> Il 11/01/24 11:52, AngeloGioacchino Del Regno ha scritto:
+> > This series converts MediaTek AFE drivers' probe functions to use
+> > dev_err_probe() and devm functions where possible and, in some
+> > cases, dropping the .remove_new() callback, reducing the size.
 
-..
+> Gentle ping for this series, afraid that went out of the radar :-)
 
-> > >  	ret = pcim_iomap_regions(pci, BIT(0), pci_name(pci));
-> > > -	if (ret) {
-> > > -		dev_err(dev, "Failed to iomap PCI BAR (%pe)\n", ERR_PTR(ret));
-> > > -		return ret;
-> > > -	}
-> > > +	if (ret)
-> > > +		return dev_err_probe(dev, ret, "Failed to iomap PCI BAR (%pe)\n", ERR_PTR(ret));
-> > >  
-> > >  	base = pcim_iomap_table(pci)[0];
-> > 
-> > > -	if (!base) {
-> > > -		dev_err(dev, "Base address missing\n");
-> > > -		return -ENOMEM;
-> > > -	}
-> > > +	if (!base)
-> > > +		return dev_err_probe(dev, -ENOMEM, "Base address missing\n");
-> > 
-> > This check is bogus. Just remove it completely.
-> > 
-> > The pcim_iomap_table() fails IFF pcim_iomap_regions() fails.
-> > You have checked the latter already.
-> 
-> I'm no expert on devres but I found a few NULL returns in alloc_dr()
-> call path. In the interest of learning more about iomap, wouldn't we
-> need to handle them (just in some odd case)?
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  If there have been
+review comments then people may be waiting for those to be addressed.
 
-It has nothing to do with devres. The logic is implemented in PCI core.
+Sending content free pings adds to the mail volume (if they are seen at
+all) which is often the problem and since they can't be reviewed
+directly if something has gone wrong you'll have to resend the patches
+anyway, so sending again is generally a better approach though there are
+some other maintainers who like them - if in doubt look at how patches
+for the subsystem are normally handled.
 
--- 
-With Best Regards,
-Andy Shevchenko
+--PVPGHszu86wFrqHg
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmW7f6cACgkQJNaLcl1U
+h9CaHgf8CtVCkC6J116wxuSCyfeBTiCzoyj46PgrA3xwNRTTduzax3JoO/1grpq3
+5NlOg1xyh3YtqEDvxa2wBDCc6fM3zw9mAQPKiXCqHHI2A8WH8xMPSJzvlhfrC14S
+SDY7qm/mG8CiXyEI84YBRHdgoxBnBqECwRehV975FL3ZvrDYSQTFO4EbYI0I1oNI
+arokA5pQoEzgBMazkodUtmgDueOoBVtbT7HQMsMTjtn+iQ7dMAhf2wGc8uhMC3K1
+8jB9piZTC2sZHVRli3Rbzrs4TMYz8Ji5ey/zUMcsfKBO1/awWWGrYqm8eEZJiME4
+TtANCMujJdC2XSTWBBod6hXZGV07oQ==
+=z6oI
+-----END PGP SIGNATURE-----
+
+--PVPGHszu86wFrqHg--
 
