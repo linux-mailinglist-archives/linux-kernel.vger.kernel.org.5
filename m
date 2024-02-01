@@ -1,130 +1,278 @@
-Return-Path: <linux-kernel+bounces-48465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF537845C6C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:02:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30C35845CA9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:13:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E51C1C2C67B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:02:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 192CEB32D5C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:03:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C85E5626CE;
-	Thu,  1 Feb 2024 16:00:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F569779FE;
+	Thu,  1 Feb 2024 16:02:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="d7TOtrL7"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="HxBSqBJf"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C9225D46E
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 16:00:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D672262159;
+	Thu,  1 Feb 2024 16:02:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706803249; cv=none; b=T8zyOH6ee1cyXzDN+FAVpAu7kpO3/MMGCyyrZEsDUWnwbrc7tYhHKq72kNe4/SQUCuj9PwsjfYmiHJHtZlGyS8TA4xwFKxAI16xdZAt1NqWotoDyURz8653oIMpZCOmNAp9Ms8LMAzH1UvdlO9aUWSP4tv/oRaHQ8+IBqClFQqU=
+	t=1706803339; cv=none; b=NFJNQmXJrs32bMiq8xO960LCxGVWTMCpEY/qU/0oFNVKEOCPcq/k+vWb1EDX9Jf6Ip4Q6NIeB5kSYjK72a89KZdaW3EQvXMWeaqPJyD6ErBeX/S8rnZWnxbtMC/xy0cjFHyaqO6DfYlnp0IRj9nEK5JZqLJvlONpJwreTWmJicI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706803249; c=relaxed/simple;
-	bh=LfH8VcU2Lhb55/DWAFRHRgTWaYRH6XpZml+946QsT8g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KjaM3qB+06s7MTyd2G0BSW4vpXzeIwPo+mE5NXtc9IjjAZABBo7AAR3bj6PlqAb7/tDmY/CZFW9ODljsJWXjnHfaAWt9vrNOrBRprf+EJx7G5BcKTVjAEJt6p9m4awp56XWqBOSo5TB9DbvMqG0bOeI3XrXP79V3x6kSSkGwabU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=d7TOtrL7; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-55f63fd3dd8so14286a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 08:00:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706803245; x=1707408045; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b1DMfysap4JrKaVpmot/Ile+whuj0cOJvZWdDpBWCyU=;
-        b=d7TOtrL78rNkvnkc7FWdKyZ+Hc5xhLoH5jtiU9FFaTygKqsoHor/4LSsVk99fxKkmr
-         tmBEWwIc4sRBiPlVfvUPK5dsPE2Mpl16mYc97RGRqEM0W8PMJ7Iw8kGmG3TVVMbQeZCs
-         Bh5UqbeNy98rYGiy8nlyLUVHri3LOVljCRD2w4H1R+cxHL2Kr01/R3oNiuFRQ5lQVHzE
-         J6Wa43X4M5XhveYIOG2AptagT/9k9mpeBRZQmHvsDV2Q7QDqb3peil0ho79SiSERuDD3
-         e5cKqSr6Qr0ySCvfcdd/yncEkFJUIL6uWgAeEETM4KSGJOh9TtKHwNiLIsv30f5oejLE
-         TzzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706803245; x=1707408045;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b1DMfysap4JrKaVpmot/Ile+whuj0cOJvZWdDpBWCyU=;
-        b=N0hbGFMvW5bKcxv0Gq2+QYMAjHLvPb3swmhgPwS0lFjlGccln2wARY2k0eRDDMLwY0
-         W/iilq4iHmbnO4HUwZZvpyc4GvlX/NQc8EWaM4/IWeCL4f/07AIQJz6AQK+iBvwgCNtS
-         vUWrOIdrFDKfPuEoCZ0oyUjPCXD7l5El1NNKTDbFB9btMDT1jqbxgun1Kuaj/zQO9lS3
-         Oo9vkziqfBLIrSHBzf2mAr+w7k6zl40XRvRsRpC5LezWj9Cjl0NwTa5XB6+6xYPCp/7/
-         /QmFbp1TvHIkucAaynRQbMuU4F7UJ0c5YpKTevLEloN/3qsOR6GONkt8yfO/D3i/jUkv
-         O5hA==
-X-Gm-Message-State: AOJu0YwnTFTgcNt/BsdXMq+kfoiXvqCF9zgVK+uixGgceNDZCKWETmuC
-	IfEMmXpehm4OCRxxcbnHMFDOA0h3tYnT8fWk3TEuFtPM9rI9ahAlidqk9D9lXU1EN6qQab4hejj
-	jdiAFEZJykzrHFlCOYPnD22h5jOhWeP0LuONq
-X-Google-Smtp-Source: AGHT+IGPA4t3VShyiapoEsQ+eMSFj6xYW1M1WSp7kdkTKJlhK10lCpopzwUNGlhUan+VUHAy+5jp5I/OpgBbqT5Yoas=
-X-Received: by 2002:a50:9fcb:0:b0:55f:98d7:877c with SMTP id
- c69-20020a509fcb000000b0055f98d7877cmr192536edf.5.1706803245323; Thu, 01 Feb
- 2024 08:00:45 -0800 (PST)
+	s=arc-20240116; t=1706803339; c=relaxed/simple;
+	bh=JjCBJs2+blIlirPozwQ0nRAAbqv5U+lX8HbTP1k5z24=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=pjWq1P2QFygn7Uv89WSBuJ9tOQoIuJicITAME3YJErPuKbiI4RTjdRRFM7BT+T1LlCPdEBm+6jfUy+NLV8OkYYBHdH0rW8n/9zKHtiC/ifg57WcQyNUDEDRWpCZJpmtO+Jr3JTuyVCxXwozem57zcjl57EZphetifAmR1klkFJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=HxBSqBJf; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=JjCBJs2+blIlirPozwQ0nRAAbqv5U+lX8HbTP1k5z24=; b=HxBSqBJfnZ56oknWlxO+4ngILF
+	j3wBPqiuZTQXfmCuY5dN1O70pr4Ojlj8bjgRDF1mGM84cx09awHUz7NdR2MsCl01X+6Ktc+j/Vz+H
+	1M2qd0+/0M02GZH02UdMn+KbQ4K6St/tLUQndz0Me8Y/IE0jATboze/a2S8bYw7gJW1WJ2yfaXglr
+	V9IQueR9sNTNRk4o/5pGxvvk3GdC/t7GSA22Hj+NUpp42K64950yLu0lSFLlrGxOUkUVsHTtKnc3C
+	ei1p4zNanUiObBALK5c5MeE4kuYH1uH+DXw1d3T0fM84WANvraeudgh0CZwmOqFfT29cwY9bge/Zv
+	5e8+05/g==;
+Received: from [205.251.233.234] (helo=iad12-dhcp-142-231-114.iad12.amazon.com)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rVZVq-0000000GDXj-2aLr;
+	Thu, 01 Feb 2024 16:02:04 +0000
+Message-ID: <edbd29815cfed8e5b94e6af6395b6a25abb681c8.camel@infradead.org>
+Subject: Re: [PATCH] KVM: selftests: Compare wall time from xen shinfo
+ against KVM_GET_CLOCK
+From: David Woodhouse <dwmw2@infradead.org>
+To: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: Jan Richter <jarichte@redhat.com>, linux-kernel@vger.kernel.org, 
+ kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, Sean
+ Christopherson <seanjc@google.com>
+Date: Thu, 01 Feb 2024 08:02:00 -0800
+In-Reply-To: <87h6is7agi.fsf@redhat.com>
+References: <20240111135901.1785096-1-vkuznets@redhat.com>
+	 <596b2d7ce6941e5dd6bd7b2da6d3ea7d74f6c95a.camel@infradead.org>
+	 <87h6is7agi.fsf@redhat.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+	boundary="=-XMPlC68ccDGI6Hw9e/oR"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130064819.1362642-1-guanyulin@google.com>
- <0e4221b5-bafe-4bea-b533-0ed8add81ef1@rowland.harvard.edu>
- <CAOuDEK2VSBcQdLKt27VrLUxH2S22275ffbe5mdVM=vBZDhceQA@mail.gmail.com> <09fce208-72b1-49e8-988e-ea149fbaf0b5@suse.com>
-In-Reply-To: <09fce208-72b1-49e8-988e-ea149fbaf0b5@suse.com>
-From: Guan-Yu Lin <guanyulin@google.com>
-Date: Fri, 2 Feb 2024 00:00:00 +0800
-Message-ID: <CAOuDEK3YcHxm4H2+n1r5KZoFK9PG9+XeJD49FCKaeX+KFhkrzQ@mail.gmail.com>
-Subject: Re: [PATCH] [RFC] usb: host: Allow userspace to control usb suspend flows
-To: Oliver Neukum <oneukum@suse.com>
-Cc: Alan Stern <stern@rowland.harvard.edu>, gregkh@linuxfoundation.org, 
-	mathias.nyman@intel.com, royluo@google.com, hadess@hadess.net, 
-	benjamin.tissoires@redhat.com, heikki.krogerus@linux.intel.com, 
-	grundler@chromium.org, yajun.deng@linux.dev, dianders@chromium.org, 
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, badhri@google.com, 
-	albertccwang@google.com, pumahsu@google.com
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+
+
+--=-XMPlC68ccDGI6Hw9e/oR
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 1, 2024 at 5:38=E2=80=AFPM Oliver Neukum <oneukum@suse.com> wro=
-te:
->
->
->
-> On 01.02.24 10:02, Guan-Yu Lin wrote:
-> > On Wed, Jan 31, 2024 at 1:12=E2=80=AFAM Alan Stern <stern@rowland.harva=
-rd.edu> wrote:
-> >>
-> >> On Tue, Jan 30, 2024 at 06:47:13AM +0000, Guan-Yu Lin wrote:
->
-> >> Why does this affect only the USB subsystem?  Can't the co-processor
-> >> use other, non-USB, devices on the system?
-> >>
-> > In our use case, the co-processor only supports USB subsystem. There mi=
-ght be
-> > other co-processors support more subsystems, but we're not sure about h=
-ow they
-> > will interact with the system.
->
-> Hi,
->
-> it would be very good if you decided this now, before we add attributes.
->
-> The reason is that if this feature is needed for multiple subsystems,
-> the attribute should be added to the generic device structure, so that
-> the naming and semantics are consistent.
-> You really don't want to repeat this discussion for every subsystem.
->
->         Regards
->                 Oliver
->
+On Thu, 2024-02-01 at 11:19 +0100, Vitaly Kuznetsov wrote:
+> David Woodhouse <dwmw2@infradead.org> writes:
+>=20
+> > Sorry for delayed response.
+> >=20
+> > On Thu, 2024-01-11 at 14:59 +0100, Vitaly Kuznetsov wrote:
+> > >=20
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vm_ioctl(vm, KVM_GET_CLOCK, &kc=
+data);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 delta =3D (wc->sec * NSEC_PER_S=
+EC + wc->nsec) - (kcdata.realtime - kcdata.clock);
+> >=20
+> > I think you need to check for KVM_CLOCK_REALTIME in the flags here,
+> > don't you? It might not always be set.
+>=20
+> Good suggestion; while this shouldn't be a common use-case on x86_64, it
+> is possible when TSC is *not* the clocksource used on the host. I guess
+> we can just skip the sub-test with a message in this case.
+>=20
+> >=20
+> > And also, nobody should ever be using KVM_CLOCK_REALTIME as it stands
+> > at the moment. It's fundamentally broken because it should always have
+> > used CLOCK_TAI not CLOCK_REALTIME.
+> >=20
+> > I'm in the process of fixing that up as an incremental ABI change,
+> > putting the TAI offset into one of the spare pad fields in the
+> > kvm_clock_data and adding a new KVM_CLOCK_TAI_OFFSET flag.
+> >=20
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 TEST_ASSERT(llabs(delta) < 100,
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "Guest's epoch from shinfo %d.%0=
+9d differs from KVM_GET_CLOCK %lld.%lld",
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 wc->sec, wc->nsec, (kcdata.realt=
+ime - kcdata.clock) / NSEC_PER_SEC,
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (kcdata.realtime - kcdata.clock)=
+ % NSEC_PER_SEC);
+> > >=20
+> >=20
+> > > Replace the check with comparing wall clock data from shinfo to
+> > > KVM_GET_CLOCK. The later gives both realtime and kvmclock so guest's =
+epoch
+> > > can be calculated by subtraction. Note, the computed epoch may still =
+differ
+> > > a few nanoseconds from shinfo as different TSC is used and there are
+> > > rounding errors but 100 nanoseconds margin should be enough to cover
+> > > it (famous last words).
+> >=20
+> > Aren't those just bugs? Surely this *should* be cycle-perfect, if the
+> > host has a stable TSC?
+> >=20
+> > But I suppose this isn't the test case for that. This is just testing
+> > that the Xen shinfo is doing basically the right thing.
+> >=20
+> > And we're going to need a few more fixes like this WIP before we get
+> > get to cycle perfection from the horrid mess that is our kvmclock code:
+> > https://git.infradead.org/?p=3Dusers/dwmw2/linux.git;a=3Dcommitdiff;h=
+=3Dbc557e5ee4
+>=20
+> (Some time ago I was considering suggesting we switch to Hypet-V TSC page
+> clocksource for Linux guests to avoid fixing the mess :-) It's becoming
+> less and less relevant as with modern hardware which supports TSC
+> scaling (and which doesn't support famous TSC bugs like TSC divergence
+> across sockets :-) passing through raw TSC to guests is becoming more
+> and more popular.)
 
-Hi,
+Except for migration, which is kind of hosed. And live update too.
+Where you are only doing a kexec on the *same* host and your time
+source is the *same* TSC, there's no excuse for anything less than
+cycle perfection. But KVM is a long way from that :)
 
-Given that in our use case the co-processor only supports USB subsystem, I'=
-d
-like to proceed with adding the attribute exclusively within the USB subsys=
-tem.
-Please let me know if there is any further consideration, thanks.
+> Regarding this fix, what's your decree? My intention here is to
+> basically get rid on xen_shinfo flakyness without reducing test
+> coverage. I.e. we still want to test that shinfo data is somewhat
+> sane. Later, when you get your 'cycle perfection' and 'TAI' patches in,
+> we can always adjust the test accordingly. In case you agree, I can
+> re-send this with KVM_CLOCK_REALTIME check added.
+
+I think just the KVM_CLOCK_REALTIME check is all we need. No need for
+*this* test to be pedantic about the clock precision; mostly it's just
+checking that something that looks a *bit* like a time value is written
+to the right place in guest memory.
+
+So forget TAI, accept a slop of over 1s, with a snarky comment that the
+API using CLOCK_REALTIME should never have been accepted into the
+kernel in the first place. (I mean that; we don't want people cutting
+and pasting it as an example).
+
+--=-XMPlC68ccDGI6Hw9e/oR
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwMjAxMTYwMjAwWjAvBgkqhkiG9w0BCQQxIgQgiLH2vq0n
+DNmG454UooU7Hc9Era8NXb80WGRGntHr6PYwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBRFx4L7sqrkSDvn9e9CW+dbu1hJPplbWCa
+8O8JoDNR8Qsu1WbcArJ8oH6+g5IK+LZWNkS6/tDyOYsi3WN/056FxqNG3b6VkKDfa2kJiAjIjJWr
+3SYIQU6gYHHegWMBCUbyanlPVSPltAzugLOusHgRS93jU4o9VCVTJMvmQvz3uFCSkzRZLkPQ+Ey7
+dXOuNwwb8Rf/u+Wipndzktl8F6nmFHoCakTgjPrGtjFqZv7Vropmt1UJw+jYEGTpc53aybMwcq9a
+IlUTITnQVXkS/BRurSKFrsUCEN/l8Me5m6vQMgbLMw4u1mCR4VKtRGeiiH4aUTNeVkKOSbgyj+Kj
+pbjYUa0j5yfFKWn93wkZdyzFRcXGaZAR0ofjAb6Qw+ZfSfaYU8B6exbn0lD2uhifZmS6pNafLAM0
+4Xy4x1oXDzW9aL7n0fGmUxuivkkX04SRyQzDSwpBHe9aa35EA4XgxgUEjEiSpcUgunDTuMxRGL9s
+PpTHGc40K/y1ZIo6GyAzKRpmFkbH/l7QDmWw7SUhFLFE8W7HJjakjW4+nmOhWqOwJymSLavdfIY5
+/yo9BvEsfD76OpwOmex4TtirWyreWPT/b8CI2bAdYzKa8qyPxZbiloSxwk2ria3tEyxkoYnVtSOY
+nGllnKSSkdWkEyyKsE4Nri7d4kFTAGS9RDU58mDNugAAAAAAAA==
+
+
+--=-XMPlC68ccDGI6Hw9e/oR--
 
