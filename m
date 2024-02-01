@@ -1,137 +1,163 @@
-Return-Path: <linux-kernel+bounces-48887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C63C8462D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:48:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 217768462D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:48:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC1B928E015
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:48:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 458721C22D13
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:48:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6ABC3FE3D;
-	Thu,  1 Feb 2024 21:47:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D3D340BF4;
+	Thu,  1 Feb 2024 21:47:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KYhAJw//"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iBFiEO6J"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4B0F39AE1;
-	Thu,  1 Feb 2024 21:47:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0EE3EA67;
+	Thu,  1 Feb 2024 21:47:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706824053; cv=none; b=Uak3q6fovuTrGQ6irIPfGICYVR6/6afdPLjz5lGScydMdAvIKR/Ha7ZIPGsrj8heY0Ul5oFuu9USIkaIAmsbS2Wh/ipeb4gjhrXDLzP7rEYiWVRvrELSdlwX1XSIfR1w2P79RKfrvzAbn89EXGPA6OMhjEYh+YXMgar4h6gDgzs=
+	t=1706824064; cv=none; b=NuKKlcpkoqbadF0AeC3gPbuSHAcL7PT/barLHHtV1Hbca5Fkl7B9MJQpuZ0ka+8cLHh4IBsyzbo3i59DGytNmvM8LNsMxlI/NXxS2CT6skbmix2DH5wjkdfl3cw8IEgKr3rPrQDDedrugaMbQFXu3ZK965ya5anTKXnZxsPhWB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706824053; c=relaxed/simple;
-	bh=ONdXqAS27cKeOgWX4XGTKCxg4rE0mzWElHVnnYMMb0Y=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=khxhwSxLDnLzjIdYRf0JZGlz3N+SgDTU1UeUf+6SBoSQeUBK47wAcA3uuk18bvU3k9yTfrG83HMqz2/VEq/jaA28iuim+dgoqHSgNBcucMECnn/FwC7u904JZr5lKQUlIl0uxu6CALvToLATsy7OmaqQxjriTPztTHU9S2cVVvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KYhAJw//; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEEB5C433C7;
-	Thu,  1 Feb 2024 21:47:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706824052;
-	bh=ONdXqAS27cKeOgWX4XGTKCxg4rE0mzWElHVnnYMMb0Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KYhAJw//yARcM3TA6pVCkI4LUiBLE5XWbQdyIJ2IOE9XeeW9PXuRT0u1fpPxxrkwp
-	 Hurjt/dBf8xwi23T1FksMdv9e36XHyjvhrDNFhBSr1xRnTYLMYbJE3ILCL/Xokm/MD
-	 5zQO0eFXQidwjXeacacwmmo5pMdGivYcXVl5OsSlyzb4uDD6zF3QHkW/ipNCSyCrkX
-	 ruFySuh4tDJV4Rf4YFiYpBgTsdWdhvZKAcl5M+3wneiWVFJ2zo1QtBfWDecyRoxa73
-	 fETXEmGDyXWVSu/j1Xloaznpi7OcrAoyx70CgInqn+hTw2H52XDK3rA5SorsXzUwVT
-	 KByKrTZWMbAOA==
+	s=arc-20240116; t=1706824064; c=relaxed/simple;
+	bh=i8ei3/3iBku7zImBxqYUtsEsmTLhfHzH/Wx7NbUnqrA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kqcIN4hQmiMyp71pZqxmm5jIKRYLbEI+HgYwiO8XdmeP36OiSeUH7B4AiLQOKPlB86M7+ZixOuRO7Joq/3CJmq/laCF8nDANEeJs/atnT4NSJ1rs6ZcVz3WNnOPsluksGiJvQbsFpqmRaPGzWkXtkaaAxFI9WLaQ1N88D3dXOW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iBFiEO6J; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d731314e67so10774005ad.1;
+        Thu, 01 Feb 2024 13:47:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706824062; x=1707428862; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vPELX+OiDIyvT/Bzm5WtNE+XaH+punLg9rt/elSB1q8=;
+        b=iBFiEO6J/Mrel9qbWzWAMtJwQ1ib6Ol0u9uKMAjb1gd9sVeQ8MY34yDzYCyvF/s0hG
+         N8QAcrtPuTiE6SPdjNyV+mjhwy2aOkVcwLNv/BYQ/tzrJ9TMz+RFMhPArrup2J6laBNg
+         24Cq6tKC6GcH8b5Qdw6nYpi9gjFtA/bQZ0uDcVnpKgLUYG3kcKrVcUOdI3Yc0PKsX+re
+         jseGCB7Yze5RGt/po7kEDgfYUXnBs1xrapkmRQwu5wx32pzo2NbQ6RkIkvhJ7oA9qXaj
+         9l03TFiCeDsCwVqmLyDcPJUKAKjbrFssD1zc8wTZgQ9elTaMLgmeuqKC8wXh9r9Spn5K
+         R0Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706824062; x=1707428862;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vPELX+OiDIyvT/Bzm5WtNE+XaH+punLg9rt/elSB1q8=;
+        b=OuNTa8yCIHEqrf60/bRzpuPAlPc7ex25GMJZKzPsD/BJMEl74rIGxKZ/MNxMHjZBmz
+         udswSWXbooNdPu/grMONOxfXoaxyRow9SdVoArBRCvAT5rpnQQqcufaKUM3Zz4U20BKG
+         5PrO8ESWnTb+hZPXOzPoZdDeH32mkQeW71T77PBh8yLCCKI12k2zqERng7taSQ9UOVif
+         bDi6x5UFIP6dY1r1glQd/bexuRsdHyE75/Y/JOgocnQZ0T5iQLyHzgY0C+YdpBPRlSSC
+         0IBpM3h40rdsFFapUvJ5jY99vaRVCO9KKqJflWqG5B9z+rfTnZ98JnnFE2uF2uTAvu1z
+         5+fA==
+X-Gm-Message-State: AOJu0YwRgqwuod04NUMxkc4OydSUQHRX+Yg+4JLhNmcdut5bu+UFesLl
+	j6roPj00r8KNnZnzclcJm1Kjw5TmBV7nXRcHYMjfvNiBW8qWKtVW
+X-Google-Smtp-Source: AGHT+IFmOk7TPgqBwYIoA82SSiSOedzORPryco3JEl3jmuOGX1BvCgU9mm1bLtu2enwAk2GrAVN3tw==
+X-Received: by 2002:a17:902:8602:b0:1d3:45c8:bc0f with SMTP id f2-20020a170902860200b001d345c8bc0fmr3418205plo.46.1706824061997;
+        Thu, 01 Feb 2024 13:47:41 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXhQWjH/0bDIcgXc1KerryMZkSeZmS/dDISMhFwIRX2ML9fFJ2t6J3eiLURpm60C9TmPMfkaej25NFDYbHlhR4AuoXleb07R/6w8q9CFq4o5zZfu3we+5Jv6Gf0ul9Uqokb97GgA3tt7KWEGNm1209Gj0mMulTpjMwyGqR5t6lnHyAxRyVwDx4oFW2wn0gdjKVgNi1qpJ6IXUo8ApCiKn/t4iHKzEf1PUnAY8BHc0iaHiXcVgFZUGAxY8tLO1UH5fw4yjXV0QTmNeLm+vOLyPCs/kNFARJF+GuJbfz6Z1ZeyLDeIn76BJLPyXZopRo5aTdWhkU7ntqRVh2yAJaxuAkG7po9lNW3BA2mXYsHWAXh7hR2PP2+m0gkktHI1PeBT4U1VjYuABhqoKjPmP8M2hsmVTHSFfjGPnWQa5iXNvZ01cO0CigbAWZ2/BDLR4XfgsfvhIB219UIIlGik4jSLtFgzXIk
+Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
+        by smtp.gmail.com with ESMTPSA id ji7-20020a170903324700b001d944bf2d83sm301249plb.7.2024.02.01.13.47.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 13:47:41 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 1 Feb 2024 11:47:40 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: torvalds@linux-foundation.org, mpatocka@redhat.com,
+	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev,
+	msnitzer@redhat.com, ignat@cloudflare.com, damien.lemoal@wdc.com,
+	bob.liu@oracle.com, houtao1@huawei.com, peterz@infradead.org,
+	mingo@kernel.org, netdev@vger.kernel.org, allen.lkml@gmail.com,
+	kernel-team@meta.com
+Subject: Re: [PATCH 3/8] workqueue: Implement BH workqueues to eventually
+ replace tasklets
+Message-ID: <ZbwRfHCfss2THOeX@slm.duckdns.org>
+References: <20240130091300.2968534-1-tj@kernel.org>
+ <20240130091300.2968534-4-tj@kernel.org>
+ <CAJhGHyCk_cjD-Ex_OAd=DrBkTEe0Xvs81=On65Sp7sS8zNBfGQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 01 Feb 2024 23:47:13 +0200
-Message-Id: <CYU2MG4IOJ0Q.2UJOTK999FCCC@suppilovahvero>
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Mark Brown" <broonie@kernel.org>, "Greg Kroah-Hartman"
- <gregkh@linuxfoundation.org>
-Cc: =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- <kernel@pengutronix.de>, "Moritz Fischer" <mdf@kernel.org>, "Wu Hao"
- <hao.wu@intel.com>, "Xu Yilun" <yilun.xu@intel.com>, "Tom Rix"
- <trix@redhat.com>, <linux-fpga@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, "Alexander Aring" <alex.aring@gmail.com>,
- "Stefan Schmidt" <stefan@datenfreihafen.org>, "Miquel Raynal"
- <miquel.raynal@bootlin.com>, "David S. Miller" <davem@davemloft.net>, "Eric
- Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>, "Paolo
- Abeni" <pabeni@redhat.com>, <linux-wpan@vger.kernel.org>,
- <netdev@vger.kernel.org>, "Lars-Peter Clausen" <lars@metafoo.de>, "Michael
- Hennerich" <Michael.Hennerich@analog.com>, "Jonathan Cameron"
- <jic23@kernel.org>, <linux-iio@vger.kernel.org>, "Dmitry Torokhov"
- <dmitry.torokhov@gmail.com>, <linux-input@vger.kernel.org>, "Ulf Hansson"
- <ulf.hansson@linaro.org>, "Rayyan Ansari" <rayyan@ansari.sh>, "Andy
- Shevchenko" <andriy.shevchenko@linux.intel.com>, "Jonathan Cameron"
- <Jonathan.Cameron@huawei.com>, "Martin Tuma"
- <martin.tuma@digiteqautomotive.com>, "Mauro Carvalho Chehab"
- <mchehab@kernel.org>, <linux-media@vger.kernel.org>, "Sergey Kozlov"
- <serjk@netup.ru>, "Arnd Bergmann" <arnd@arndb.de>, "Yang Yingliang"
- <yangyingliang@huawei.com>, <linux-mmc@vger.kernel.org>, "Richard
- Weinberger" <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>, "Rob
- Herring" <robh@kernel.org>, "Heiko Stuebner" <heiko@sntech.de>, "Michal
- Simek" <michal.simek@amd.com>, "Amit Kumar Mahapatra via Alsa-devel"
- <alsa-devel@alsa-project.org>, <linux-mtd@lists.infradead.org>, "Martin
- Blumenstingl" <martin.blumenstingl@googlemail.com>, "Geert Uytterhoeven"
- <geert+renesas@glider.be>, =?utf-8?q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
- "Simon Horman" <horms@kernel.org>, "Ronald Wahl" <ronald.wahl@raritan.com>,
- "Benson Leung" <bleung@chromium.org>, "Tzung-Bi Shih" <tzungbi@kernel.org>,
- "Guenter Roeck" <groeck@chromium.org>, <chrome-platform@lists.linux.dev>,
- "Max Filippov" <jcmvbkbc@gmail.com>, <linux-spi@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, "Bjorn Andersson"
- <andersson@kernel.org>, "Konrad Dybcio" <konrad.dybcio@linaro.org>,
- <linux-arm-msm@vger.kernel.org>, "Matthias Brugger"
- <matthias.bgg@gmail.com>, "AngeloGioacchino Del Regno"
- <angelogioacchino.delregno@collabora.com>,
- <linux-mediatek@lists.infradead.org>, "Thomas Zimmermann"
- <tzimmermann@suse.de>, "Javier Martinez Canillas" <javierm@redhat.com>,
- "Amit Kumar Mahapatra" <amit.kumar-mahapatra@amd.com>,
- <dri-devel@lists.freedesktop.org>, <linux-fbdev@vger.kernel.org>,
- <linux-staging@lists.linux.dev>, "Viresh Kumar" <vireshk@kernel.org>, "Rui
- Miguel Silva" <rmfrfs@gmail.com>, "Johan Hovold" <johan@kernel.org>, "Alex
- Elder" <elder@kernel.org>, <greybus-dev@lists.linaro.org>, "Peter Huewe"
- <peterhuewe@gmx.de>, "Jason Gunthorpe" <jgg@ziepe.ca>,
- <linux-integrity@vger.kernel.org>, "Herve Codina"
- <herve.codina@bootlin.com>, "Alan Stern" <stern@rowland.harvard.edu>, "Aaro
- Koskinen" <aaro.koskinen@iki.fi>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski@linaro.org>, <linux-usb@vger.kernel.org>, "Helge
- Deller" <deller@gmx.de>, "Dario Binacchi"
- <dario.binacchi@amarulasolutions.com>, "Kalle Valo" <kvalo@kernel.org>,
- "Dmitry Antipov" <dmantipov@yandex.ru>, <libertas-dev@lists.infradead.org>,
- <linux-wireless@vger.kernel.org>, "Jonathan Corbet" <corbet@lwn.net>,
- "James Clark" <james.clark@arm.com>, "Bjorn Helgaas" <bhelgaas@google.com>,
- <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v2 00/33] spi: get rid of some legacy macros
-X-Mailer: aerc 0.15.2
-References: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
- <2024012417-prissy-sworn-bc55@gregkh>
- <c1e38a30-5075-4d01-af24-ac684e77cf29@sirena.org.uk>
-In-Reply-To: <c1e38a30-5075-4d01-af24-ac684e77cf29@sirena.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJhGHyCk_cjD-Ex_OAd=DrBkTEe0Xvs81=On65Sp7sS8zNBfGQ@mail.gmail.com>
 
-On Wed Jan 24, 2024 at 7:22 PM EET, Mark Brown wrote:
-> On Wed, Jan 24, 2024 at 09:13:49AM -0800, Greg Kroah-Hartman wrote:
-> > On Mon, Jan 22, 2024 at 07:06:55PM +0100, Uwe Kleine-K=C3=B6nig wrote:
->
-> > > Note that Jonathan Cameron has already applied patch 3 to his tree, i=
-t
-> > > didn't appear in a public tree though yet. I still included it here t=
-o
-> > > make the kernel build bots happy.
->
-> > Are we supposed to take the individual changes in our different
-> > subsystem trees, or do you want them all to go through the spi tree?
->
-> Given that the final patch removes the legacy interfaces I'm expecting
-> to take them via SPI.
+Hello, Lai.
 
-+1
+On Thu, Feb 01, 2024 at 07:02:27PM +0800, Lai Jiangshan wrote:
+> On Tue, Jan 30, 2024 at 5:16 PM Tejun Heo <tj@kernel.org> wrote:
+> > @@ -1184,6 +1211,14 @@ static bool kick_pool(struct worker_pool *pool)
+> >         if (!need_more_worker(pool) || !worker)
+> >                 return false;
+> >
+> > +       if (pool->flags & POOL_BH) {
+> > +               if (pool->attrs->nice == HIGHPRI_NICE_LEVEL)
+> > +                       tasklet_hi_schedule(&worker->bh_tasklet);
+> > +               else
+> > +                       tasklet_schedule(&worker->bh_tasklet);
+> > +               return true;
+> > +       }
+> 
+> I think it is more straightforward to call bh_worker_taskletfn[_hi]()
+> in tasklet_action() and tasklet_hi_action() rather than add a
+> worker->bh_tasklet.
+> 
+> raise_softirq_irqoff() can be used here (kick_pool()) instead.
+> 
+> As the changelog said, once the conversion is complete, tasklet can be
+> removed and BH workqueues can directly take over the tasklet softirqs,
+> in which case, then, bh_worker_taskletfn[_hi]() can directly take over
+> the tasklet_action() and tasklet_hi_action().
 
-least fuss approach
+Hmmm.... maybe. Yeah, that'd also make it a tiny bit cheaper for hot paths.
+Lemme see how that looks.
 
-BR, Jarkko
+> I think wq->max_active can be forced to be UINT_MAX or ULONG_MAX
+> in the max_active management code to avoid a branch here.
+
+Good point. Will update.
+
+> worker_attach_to_pool() and worker_detach_from_pool also access to
+> worker->task with kthread_set_per_cpu() and luckily to_kthread()
+> checks the NULL pointer for it.
+> 
+> IMO, it is better to avoid calling kthread_set_per_cpu() for bh workers.
+
+Note that BH worker pools are always DISASSOCIATED, so
+worker_attach_to_pool() shouldn't call kthread_set_per_cpu(). Also, BH
+workers and worker pools are never destroyed, so worker_detach_from_pool()
+shouldn't be called either. I'll add WARN_ONs to clarify.
+
+> > @@ -5605,7 +5731,12 @@ static void pr_cont_pool_info(struct worker_pool *pool)
+> >         pr_cont(" cpus=%*pbl", nr_cpumask_bits, pool->attrs->cpumask);
+> >         if (pool->node != NUMA_NO_NODE)
+> >                 pr_cont(" node=%d", pool->node);
+> > -       pr_cont(" flags=0x%x nice=%d", pool->flags, pool->attrs->nice);
+> > +       pr_cont(" flags=0x%x", pool->flags);
+> > +       if (pool->flags & POOL_BH)
+> > +               pr_cont(" bh%s",
+> > +                       pool->attrs->nice == HIGHPRI_NICE_LEVEL ? "-hi" : "");
+> > +       else
+> > +               pr_cont(" nice=%d", pool->attrs->nice);
+> 
+> There are also some "worker->task" in show_pwq(), show_one_worker_pool(),
+> and show_cpu_pool_hog() needing taking care of.
+
+Ah, right, I'll hunt them down. 
+
+Thanks.
+
+-- 
+tejun
 
