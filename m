@@ -1,164 +1,166 @@
-Return-Path: <linux-kernel+bounces-49000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 532CE846486
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:35:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F2B184648B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:37:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6E711F25829
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:35:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F1A8B20BF1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:37:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62D92487A5;
-	Thu,  1 Feb 2024 23:34:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D4DA47F5B;
+	Thu,  1 Feb 2024 23:37:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dojqep+/"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="jKsS7RJf"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61EBA482E3
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 23:34:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA9B1405FC
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 23:37:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706830469; cv=none; b=qPAD5VJnOkysQct3aDjhgcQ/0F7+m7s/A7PEDdjYgTRvVo9Q+szjsu/tRYPQvRtaLYiLU6/Pjj4bMpm4fyhwLP0CqOixfHkIpNrpUckY1KCdaaMEASqUgCl0PirxXucTK3Y/wnlky4rhDP2Eb/iZ8bb1ndnQ8lIm5v+mGi1x/TU=
+	t=1706830637; cv=none; b=cw9I/0XkCMJbNM9C3oAr2NnRXD2PTwcqiWvGo+VeB8NKzGByi5jO4qYRfGIyPTkU3LUMWu2RCnsvEqwFIvKyYxIWmfk44XTSmV33bf6NC2XC4OD5kNaXAeZ+bQix2VP3K2+qQnhS6+uHeQpuehWoTSSN9Jmr8OyG73yVTeoGSp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706830469; c=relaxed/simple;
-	bh=J66uGdblJybSdIyISNAiXxVD4U/ZxuF3S6nfLo54RFU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GzDehh13/JlgovuI5r1vYP4K6j2BLzlxxoPNt/boAuJJDeguDEPY0kPIZ8y/fQP1Mbx95AreMKZGAEELET3EsZtmPg30pHjZu+T8sxsScRzlK5QSAtXO5lsimSkk75+SFU8VafYy/ShHe/uqlj89oNeuFX87dOSMEJybx/SF6WE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dojqep+/; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706830466;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kviV4OEyGv0IXC67TnkXo6XXxah3+E8Y2hWZv9VjMFo=;
-	b=dojqep+/fbFDnxWRQVYaQDWK9R2eet3vXO0kyG3W+4ia2yoLdXskiXAlT4xqPe0cYYTROO
-	fFVpEXFHb+d+72FgowKrrqKQdZK72JNMGEq/z1/rzCllQzxqqhSp040wu54jzce4e2Xw3w
-	vsBHom8Imp6VkClF9NvRmJsJHoLvx9s=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-152-9it-QiwGMCWzk2Dtrm9xXw-1; Thu, 01 Feb 2024 18:34:23 -0500
-X-MC-Unique: 9it-QiwGMCWzk2Dtrm9xXw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8569E810BB0;
-	Thu,  1 Feb 2024 23:34:22 +0000 (UTC)
-Received: from rhel-developer-toolbox-latest.rmtusor.csb (unknown [10.2.16.182])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 552AE111F9;
-	Thu,  1 Feb 2024 23:34:21 +0000 (UTC)
-From: Chris Leech <cleech@redhat.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Nilesh Javali <njavali@marvell.com>
-Cc: Christoph Hellwig <hch@lst.de>,
-	John Meneghini <jmeneghi@redhat.com>,
-	Lee Duncan <lduncan@suse.com>,
-	Mike Christie <michael.christie@oracle.com>,
-	Hannes Reinecke <hare@kernel.org>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-scsi@vger.kernel.org,
-	GR-QLogic-Storage-Upstream@marvell.com
-Subject: [PATCH v5 4/4] uio_dmem_genirq: UIO_MEM_DMA_COHERENT conversion
-Date: Thu,  1 Feb 2024 15:34:00 -0800
-Message-ID: <20240201233400.3394996-5-cleech@redhat.com>
-In-Reply-To: <20240201233400.3394996-1-cleech@redhat.com>
-References: <20240201233400.3394996-1-cleech@redhat.com>
+	s=arc-20240116; t=1706830637; c=relaxed/simple;
+	bh=72DVGZsPCwexZxLU2zcYfw3TYZY+hy7mlHmIPt0qEn4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PDpKQd/8xTgNSFAQO65EeBP4eAo8iBdNSWnFI4cYAZmr7wMF60B+9ycz+Vowwn3GT1bmmCJISBkcNNgDDFNm1R8yXbW/CLiZk81QiWT2bDLzVwrvzalPHco3HEczr7huW0+8IweQHdUq6GboD45YD8GgSerKlgWAVBH5c7tnhaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com; spf=pass smtp.mailfrom=arista.com; dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b=jKsS7RJf; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40ef6bbb61fso12961785e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 15:37:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1706830634; x=1707435434; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OzbcPdwB7/6WmKWK5IMLm0VrY4vYJq2nVK95Czw1I8U=;
+        b=jKsS7RJf92MdORx6jkINA0pOuDH96sV9qqJ7+Nl8R0IPCVr1x3wkKq96MEdikuVFZD
+         GWyMYn6mOiv10RGVQKZAzxhz+NuvS6B5AL3orNd+0EcCymq8mI2XXQHjfiYBTe8aLvrt
+         9yOVm3Zubm3VrX1byZ6ACJ9DuOruCWIXAU+MpzabYRasExMAx3OI6Hp3QWmMI5Fexw4P
+         uYKvaR0qG6lN3yBOSmJmlZs/DgCLMB0j2EVvuD32S3FNQkJMMEzTiAYm9Zd2a8eIDcV5
+         tl8s5OxTfXlA5vof/DWoKhdQZ39ncEBVVOqY1lOkBvnogO0eJ+XlrrDoQBEp7vQlorNd
+         y4Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706830634; x=1707435434;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OzbcPdwB7/6WmKWK5IMLm0VrY4vYJq2nVK95Czw1I8U=;
+        b=vfeuxpxa/07nr+RUpbnR6mQT63ub7r+9t5Yj0cfgyZLFUoriLhrt04klJE1GOH5dUc
+         K3bukFQhnb4ZpLepcfum4m71gyLPZy7V9+HcZp0gOQetFx9Jj5uOSIoA9N4b4tqrcPAl
+         k28vIqqEMKGN/UnPMNR55Y+pATjym8+cCF7Q9i/K6oRbuukI2NSs3h1tKcK/qwQEiLpm
+         CxUboxjhz32otblbu/JWpXSaOMuG2/lby+YVvaHJYofUpjw4+qVXmY4xD6tvTRmUQxgu
+         QycNvDxbJ7Gbmh3KO6eRj+QkrAf/HkxLTIkRRhBa19JMFZIopCHHlDdfpUqn9aVfy6DI
+         EUiw==
+X-Gm-Message-State: AOJu0YxfQOetxPDwBBzOCbYJ6ab73zXObCpZvt6G6yoywyxYjef3J5xZ
+	GkYXKh6a2UL4slhBCvoaJKf2JQAbZVy9gZqzNx3s8SlisldVM1HxdyWVVdq0+g==
+X-Google-Smtp-Source: AGHT+IEBgyqNdcx7X4WjzGqORG4raBezxBSjVm4nh7egvHo46furQbZLnJchD5Nv8rGb+PkiF1vPTw==
+X-Received: by 2002:a05:600c:4fd2:b0:40e:f693:94dc with SMTP id o18-20020a05600c4fd200b0040ef69394dcmr303299wmq.11.1706830634198;
+        Thu, 01 Feb 2024 15:37:14 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCX/4prkdBFWttbX70piivEYb9na7iVpUkyQ7exA66ZROlVNizRygGmPAtt9loGk78LM7B+Lc3o1RT3X2apq8dM7qXD5jeF+uT3P26Fyoh3R1ZGktqNeg6Pjq9XUb8lNftXiHxKypR70EspiKY1GIefZqFeCNYmLBsl+hxUUuqWOKmrpJPcK7LA256N8xgYaIEZqhzgVzEv0sUrDWPnI9JS54xtakziQM98TzdQmTT0+G0fzQ9BCsf4hxQAOXxA9O9G+y3RFBbxFtUkVYiA+m6MhAIUSLWFHUEPNfG33kV5dczA4sfx1t3qY4WxOVhYISufKmo1UgvP6jnubOwGsKuCEPzZO5ZY/ybO3qgIv
+Received: from [10.83.37.178] ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id u16-20020a05600c19d000b0040fc4fa15f4sm631571wmq.36.2024.02.01.15.37.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Feb 2024 15:37:13 -0800 (PST)
+Message-ID: <a1ac7a6e-4447-4476-8fb7-fb5f0d7ec979@arista.com>
+Date: Thu, 1 Feb 2024 23:37:06 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/3] selftests/net: A couple of typos fixes in
+ key-management/rst tests
+Content-Language: en-US
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Shuah Khan <shuah@kernel.org>, Dmitry Safonov <0x7f454c46@gmail.com>,
+ Mohammad Nassiri <mnassiri@ciena.com>, Simon Horman <horms@kernel.org>,
+ netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240130-tcp-ao-test-key-mgmt-v2-0-d190430a6c60@arista.com>
+ <20240131163630.31309ee0@kernel.org>
+ <e88d5133-94a9-42e7-af7f-3086a6a3da7c@arista.com>
+ <20240201132153.4d68f45e@kernel.org>
+ <44d893b4-10b0-4876-bbf7-f6a81940b300@arista.com>
+From: Dmitry Safonov <dima@arista.com>
+In-Reply-To: <44d893b4-10b0-4876-bbf7-f6a81940b300@arista.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Conversion of this driver to use UIO_MEM_DMA_COHERENT for
-dma_alloc_coherent memory instead of UIO_MEM_PHYS.
+On 2/1/24 22:25, Dmitry Safonov wrote:
+> Hi Jakub,
+> 
+> On 2/1/24 21:21, Jakub Kicinski wrote:
+>> On Thu, 1 Feb 2024 00:50:46 +0000 Dmitry Safonov wrote:
+>>> Please, let me know if there will be other issues with tcp-ao tests :)
+>>>
+>>> Going to work on tracepoints and some other TCP-AO stuff for net-next.
+>>
+>> Since you're being nice and helpful I figured I'll try testing TCP-AO
+>> with debug options enabled :) (kernel/configs/debug.config and
+>> kernel/configs/x86_debug.config included),
+> 
+> Haha :)
+> 
+>> that slows things down 
+>> and causes a bit of flakiness in unsigned-md5-* tests:
+>>
+>> https://netdev.bots.linux.dev/flakes.html?br-cnt=75&tn-needle=tcp-ao
+>>
+>> This has links to outputs:
+>> https://netdev.bots.linux.dev/contest.html?executor=vmksft-tcp-ao-dbg&pass=0
+>>
+>> If it's a timing thing - FWIW we started exporting
+>> KSFT_MACHINE_SLOW=yes on the slow runners.
+> 
+> I think, I know what happens here:
+> 
+> # ok 8 AO server (AO_REQUIRED): AO client: counter TCPAOGood increased 4
+> => 6
+> # ok 9 AO server (AO_REQUIRED): unsigned client
+> # ok 10 AO server (AO_REQUIRED): unsigned client: counter TCPAORequired
+> increased 1 => 2
+> # not ok 11 AO server (AO_REQUIRED): unsigned client: Counter
+> netns_ao_good was not expected to increase 7 => 8
+> 
+> for each of tests the server listens at a new port, but re-uses the same
+> namespaces+veth. If the node/machine is quite slow, I guess a segment
+> might have been retransmitted and the test that initiated it had already
+> finished.
+> And as result, the per-namespace counters are incremented, which makes
+> the test fail (IOW, the test expects all segments in ns being dropped).
+> 
+> So, I should do one of the options:
+> 
+> 1. relax per-namespace checks (the per-socket and per-key counters are
+>    checked)
+> 2. unshare(net) + veth setup for each test
+> 3. split the selftest on smaller ones (as they create new net-ns in
+>    initialization)
 
-Signed-off-by: Chris Leech <cleech@redhat.com>
----
- drivers/uio/uio_dmem_genirq.c | 22 ++++++++--------------
- 1 file changed, 8 insertions(+), 14 deletions(-)
+Actually, I think there may be an easier fix:
 
-diff --git a/drivers/uio/uio_dmem_genirq.c b/drivers/uio/uio_dmem_genirq.c
-index 5313307c2754a..8634eba0ef2ab 100644
---- a/drivers/uio/uio_dmem_genirq.c
-+++ b/drivers/uio/uio_dmem_genirq.c
-@@ -36,7 +36,6 @@ struct uio_dmem_genirq_platdata {
- 	struct platform_device *pdev;
- 	unsigned int dmem_region_start;
- 	unsigned int num_dmem_regions;
--	void *dmem_region_vaddr[MAX_UIO_MAPS];
- 	struct mutex alloc_lock;
- 	unsigned int refcnt;
- };
-@@ -50,7 +49,6 @@ static int uio_dmem_genirq_open(struct uio_info *info, struct inode *inode)
- {
- 	struct uio_dmem_genirq_platdata *priv = info->priv;
- 	struct uio_mem *uiomem;
--	int dmem_region = priv->dmem_region_start;
- 
- 	uiomem = &priv->uioinfo->mem[priv->dmem_region_start];
- 
-@@ -61,11 +59,8 @@ static int uio_dmem_genirq_open(struct uio_info *info, struct inode *inode)
- 			break;
- 
- 		addr = dma_alloc_coherent(&priv->pdev->dev, uiomem->size,
--				(dma_addr_t *)&uiomem->addr, GFP_KERNEL);
--		if (!addr) {
--			uiomem->addr = DMEM_MAP_ERROR;
--		}
--		priv->dmem_region_vaddr[dmem_region++] = addr;
-+					  &uiomem->dma_addr, GFP_KERNEL);
-+		uiomem->addr = addr ? (phys_addr_t) addr : DMEM_MAP_ERROR;
- 		++uiomem;
- 	}
- 	priv->refcnt++;
-@@ -80,7 +75,6 @@ static int uio_dmem_genirq_release(struct uio_info *info, struct inode *inode)
- {
- 	struct uio_dmem_genirq_platdata *priv = info->priv;
- 	struct uio_mem *uiomem;
--	int dmem_region = priv->dmem_region_start;
- 
- 	/* Tell the Runtime PM code that the device has become idle */
- 	pm_runtime_put_sync(&priv->pdev->dev);
-@@ -93,13 +87,12 @@ static int uio_dmem_genirq_release(struct uio_info *info, struct inode *inode)
- 	while (!priv->refcnt && uiomem < &priv->uioinfo->mem[MAX_UIO_MAPS]) {
- 		if (!uiomem->size)
- 			break;
--		if (priv->dmem_region_vaddr[dmem_region]) {
--			dma_free_coherent(&priv->pdev->dev, uiomem->size,
--					priv->dmem_region_vaddr[dmem_region],
--					uiomem->addr);
-+		if (uiomem->addr) {
-+			dma_free_coherent(uiomem->dma_device, uiomem->size,
-+					  (void *) uiomem->addr,
-+					  uiomem->dma_addr);
- 		}
- 		uiomem->addr = DMEM_MAP_ERROR;
--		++dmem_region;
- 		++uiomem;
- 	}
- 
-@@ -264,7 +257,8 @@ static int uio_dmem_genirq_probe(struct platform_device *pdev)
- 					" dynamic and fixed memory regions.\n");
- 			break;
- 		}
--		uiomem->memtype = UIO_MEM_PHYS;
-+		uiomem->memtype = UIO_MEM_DMA_COHERENT;
-+		uiomem->dma_device = &pdev->dev,
- 		uiomem->addr = DMEM_MAP_ERROR;
- 		uiomem->size = pdata->dynamic_region_sizes[i];
- 		++uiomem;
--- 
-2.43.0
+4. Make sure that client close()s TCP-AO first, making it twsk.
+   And also make sure that net-ns counters read post server's close().
+
+Will do this, let's see if this fixes the flakiness on the netdev bot :)
+
+> I'd probably prefer (2), albeit it slows down that slow machine even
+> more, but I don't think creating 2 net-ns + veth pair per each test
+> would add a lot more overhead even on some rpi board. But let's see,
+> maybe I'll just go with (1) as that's really easy.
+> 
+> I'll cook a patch this week.
+
+Thanks,
+            Dmitry
 
 
