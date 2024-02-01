@@ -1,180 +1,275 @@
-Return-Path: <linux-kernel+bounces-48793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD2C3846184
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:55:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60C3B8461B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:01:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D15F41C24D1D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:54:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C121B2DBF1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:57:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37BF285645;
-	Thu,  1 Feb 2024 19:54:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20682127B49;
+	Thu,  1 Feb 2024 19:57:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TdS04626"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J2C7GRIf"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 785B185639;
-	Thu,  1 Feb 2024 19:54:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A8D43AC7
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 19:57:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706817259; cv=none; b=kdfOPrxivdJoLlF5wStSFJ/eGLHSPIRTogynUCwmveLP9IFa+bEZc/ZcEUsS8/3DXIfdd04Q0+4PY2zhy+oGG3XzWTqRp0kL0zZnfe2rSw4CHeahcbWvrVHBb7n0BoMq9rVOqE174K7Ab4kqZHOt805HFT09ZHg/EL8seSVZQeg=
+	t=1706817440; cv=none; b=tP65Thg3doTxH28uVepnLh5vwHH4LqMR9CYBYD2ktbDgbZZB/TrrSXEcESFuRQP1kFMhhTZnBlZ4VUzpFDC3CyhryDTEmNVoqQeBwh4eGEso/jhRxyfrZp6VPBCw7gOAgvb97PD/Vu1vCF1UNjV6IYd+9sYGYmriC70xcw9VhDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706817259; c=relaxed/simple;
-	bh=igWepZJuJ7/NxlfTBcvat+93tyRHyJ7CtS8SToYFt88=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SuT0G204YM4NdlbyLqHY5FpSibrhaPskX0/wW3nih7h60+Qp8ca1iCQH80cEHHz+ACLn47RvbYf/MULKhnNTbRXOgsPZGsub5k7OsJSSLMWSBNee9L5EXZNJT3t86fC0S3gbGYkf+07qEwoZxtKHkLI68tjhrrvxwnsuEtpMHyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TdS04626; arc=none smtp.client-ip=209.85.128.42
+	s=arc-20240116; t=1706817440; c=relaxed/simple;
+	bh=MhU1cxNfDL9h10UBjWoX52LNOX/xG+PilXCypbWUPyU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bOWWvCrbVsdYCFj+PtHoeesmNtPxVQLMk/E17Gwzna893+WIPVNTbWIC8u0k8rAboKFgVO5F8qlGPmddVx2YrkbI0chSmWwXaPVujAWbH7K8KAKTZ7yuerbLcRABw+BeReEDRQLIAz9A+T9eWwSJHz4m7/zV6Au362qav6sMl8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J2C7GRIf; arc=none smtp.client-ip=209.85.167.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40fb3b5893eso11361575e9.0;
-        Thu, 01 Feb 2024 11:54:16 -0800 (PST)
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-511234430a4so2185302e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 11:57:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706817255; x=1707422055; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1706817436; x=1707422236; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Fw0ii54g50YM0TTuIh98HIpGP8lHOO7kLQ/jqdmdMzg=;
-        b=TdS04626BAnPz7e+SzFyfM0zwf4n+7EOtW9jQoMtN+hXw+GMYH6yEVmVq1s3zJmFni
-         +PdA1Is6XgSL2FW8hvvMmcETWF+q70OmCmSjaxvwWKLmNkpx0g3keFh+64BFQAaIW+Qv
-         Q1nY7L+bIxZyVXcTCOvYsiUfC90I4lwDn+w/d8QmSBJpalBGOXtlD3WuNplg/+I5mVcB
-         gWT6VINX/TW+YAXauYjMg/vMtNF7jZ22UdzKNeBi8wh0x1RQxS2rgcc7levF24Zlt//X
-         s65l82XLTmkE9bZgzFXHHdI+jcXv/SWJFwPNACi0dD+NYPFCJmeBK3rNFMutIKclqSfd
-         a6iw==
+        bh=Z3021VM+AzQ6ZeLoFr/6H0XVQqS/2Wt7K7IALF5phVY=;
+        b=J2C7GRIfWwxNqOBavLNZ5nI3SjJfZR1W76GroxFIUf6j5Jl14GELmaMov96RbYrmER
+         P4MKyS7JGNTs3CmZ1SzMBKVedp8MxWNbRzDxa6iFRznv2ITxVFaH8zAjcl4PUrvS73Yo
+         1qRMRGKM3kindbte7jakgQi1YYg/handA9AD2Ls7cwrhdvm3/h+vj+forvyk8oIC5QWs
+         J5PTzCbKhm0EmdFrgNJJl0Ot0Jlgsi03/AakjKG3dRD0afcO8PxOYROtsiILPVI379mT
+         EDNRVZ2pDI3+2APBwPvy8KBaBzrF/C5GCIKssF+CQMY8yp3CguvvueZotZT5r5B0furZ
+         meuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706817255; x=1707422055;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1706817436; x=1707422236;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Fw0ii54g50YM0TTuIh98HIpGP8lHOO7kLQ/jqdmdMzg=;
-        b=shfY+4VOnuCZJGkcAegkLC6CtYeO/cGGd5MWA58tFKu8KxBbNJYbftcGOypeBWtq29
-         +quTcQy1Z1bstManfu/5FBaiB1lfxYpj0XeH8OyIAyhji9j0yfkG4jA/78zqB8KQeG7z
-         VFPfK4Nh5/39Cpvjergw6sCEwdIBFO2TPz9SZCCG7WZ+bp1fGlonwdMJy2nN5a/dMzFT
-         uSlX8dmKy+yAKg0XLtDjnYhR5U/08QDfbQn62NCO3vrMomB0oB4W6lkTlAmMcYisCRSX
-         h6sa5WN+UvL1Qu1hBgfxioOTXzqgP+JQAIM2Pp+48mV03Wqlf6yb/ySRMpPT3OLW5mUa
-         YJJw==
-X-Gm-Message-State: AOJu0Yxbc1bI041AhZP0oDt1b31dsWtvpEaofVSFeKEvI4lb5KsgHrlm
-	h7c4NFj6b7rluX39gU+GE4PhzW651n5pj23NWvlb+yivjffPj5kC
-X-Google-Smtp-Source: AGHT+IEnh5hwCXXTj+jcR1g0I5bM3FN4GQ3RUZkTBdSNXXRnJnKzpnLqx2ztJH2PVqejHm+eHD5rlg==
-X-Received: by 2002:adf:f64d:0:b0:33a:ed59:c13f with SMTP id x13-20020adff64d000000b0033aed59c13fmr2215794wrp.53.1706817254477;
-        Thu, 01 Feb 2024 11:54:14 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUkIqDqfPVesemdoaqG1j9jyMLDsyXZci7qdN4rwuZyTnBZy4P9GdwzPQDb4Y97RzDb7Nt0/KTkiYHc51OSLbBILSGHypTjb1PDb72ZoN4kaiS2TT38IIny9hPv2qk7pbyB11bBj5eswJ+oqt6ESrIo8PmhujbvmHrZ92DidVXSYCIjxN1acjdlenKmkXnSfu++c+dj/Av8asn0HmbyqnJOHJwIvOONyMQz7F09oEWk0jsg4Qs3a3TqQFxA5SUAaxlPo2IJXN4OUMn6+DxZIgdQzBM6KWGu35l4Soq52r7+Zd0QERbzokhqf2Tb42N3SFmMLFs+a7yMc+7eTw7Al8QKIOgIa0u0jl1oDEI1AB6rPSle+MxY1/QtbLL8
-Received: from jernej-laptop.localnet (82-149-13-182.dynamic.telemach.net. [82.149.13.182])
-        by smtp.gmail.com with ESMTPSA id v12-20020a5d4b0c000000b0033afce63fd0sm211781wrq.53.2024.02.01.11.54.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 11:54:14 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Aren <aren@peacevolution.org>
-Cc: linux-kernel@vger.kernel.org, Miles Alan <m@milesalan.com>,
- Ondrej Jirman <megi@xff.cz>, Chen-Yu Tsai <wens@csie.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Samuel Holland <samuel@sholland.org>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev
-Subject:
- Re: [PATCH 2/4] arm64: dts: sun50i-a64-pinephone: Retain leds state in
- suspend
-Date: Thu, 01 Feb 2024 20:54:12 +0100
-Message-ID: <10409647.nUPlyArG6x@jernej-laptop>
-In-Reply-To: <sbcg74hktwv5x7hookeb4su27xut7swarl3d5mbs3i5cqxtq4g@4evugu43ctiv>
-References:
- <20240128204740.2355092-1-aren@peacevolution.org>
- <4892315.31r3eYUQgx@jernej-laptop>
- <sbcg74hktwv5x7hookeb4su27xut7swarl3d5mbs3i5cqxtq4g@4evugu43ctiv>
+        bh=Z3021VM+AzQ6ZeLoFr/6H0XVQqS/2Wt7K7IALF5phVY=;
+        b=X6TyejWTpk3FmRFfll7juaAdmNRXkzz2+U37M/acv/oC+k7HgHh7H3sepL52duMi+f
+         jPwWzkrFQDczip18PzOldV7Wq2HpGSsb2cnrE4JNHCnhS0funIguxO36o3eMLSo4lqgf
+         4xJxqGOj9MHQZxn0sHSTYvgAzm1+1XNvG31SVoC/zRFDPgHHkWvvWGX9r5pWSWbh66XR
+         3GTo09ZR0noDrnYlSHcW+KO96OH95j6/YsrIP52sOpCMU2BaRwv1tBTK75LvoyHzUoI/
+         5sFIVf01h7o2yTAjKgOxWxDtQ3zV85gTEHqpFNjgVbSCWq4NlOwCFu5lUgr217SRw8T+
+         6p5Q==
+X-Gm-Message-State: AOJu0YxWPPKrQiaWuGhEf77MMbhfkQ9AYdmqJYRwiZaB4f49D2VKlH/n
+	hqkU62CPBDuWAhISw1vUQEefof+CvzC9+m16Um8cO2y2dMT676U1/sz+LS7YAcCqJAaEDYslZQi
+	ZwOLYHRfOsjYJimb/NzMzJTf3cQE=
+X-Google-Smtp-Source: AGHT+IEL+1Id5JbB0KpcKfsYDu9j5VFxy4YYttvnukZ2wtdTLmliIK9RUEhbRanRVr91KaMO/3VLj6DKge1amnqIVZo=
+X-Received: by 2002:a2e:8791:0:b0:2d0:8088:c069 with SMTP id
+ n17-20020a2e8791000000b002d08088c069mr595286lji.30.1706817435960; Thu, 01 Feb
+ 2024 11:57:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+References: <20240131-disable_misaligned_probe_config-v1-0-98d155e9cda8@rivosinc.com>
+ <20240131-disable_misaligned_probe_config-v1-2-98d155e9cda8@rivosinc.com>
+ <48e6b009-c79c-4a2e-a532-e46c7b8b6fc8@rivosinc.com> <Zbvslcl7YTy38HNF@ghost>
+In-Reply-To: <Zbvslcl7YTy38HNF@ghost>
+From: Charles Lohr <lohr85@gmail.com>
+Date: Thu, 1 Feb 2024 11:57:04 -0800
+Message-ID: <CAGu26P85ZO1dY+qftMndKzwBpsA72x=KNWVyry=38uPhfuFweQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] riscv: Disable misaligned access probe when CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Jisheng Zhang <jszhang@kernel.org>, 
+	Evan Green <evan@rivosinc.com>, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Dne =C4=8Detrtek, 01. februar 2024 ob 02:36:46 CET je Aren napisal(a):
-> On Tue, Jan 30, 2024 at 08:06:24PM +0100, Jernej =C5=A0krabec wrote:
-> > Dne nedelja, 28. januar 2024 ob 21:45:08 CET je Aren Moynihan napisal(a=
-):
-> > > From: Miles Alan <m@milesalan.com>
-> > >=20
-> > > Allows user to set a led before entering suspend to know that
-> > > the phone is still on (or could be used for notifications etc.)
-> > >=20
-> > > Signed-off-by: Miles Alan <m@milesalan.com>
-> > > Signed-off-by: Ondrej Jirman <megi@xff.cz>
-> > > Signed-off-by: Aren Moynihan <aren@peacevolution.org>
-> >=20
-> > Where is patch 1 and possibly cover letter? Please resend with all patc=
-hes.
->=20
-> Oops, sorry about that, I'm still getting used to get_maintainer.pl.
-> I'll resend this properly when I have time this weekend, until then the
-> patch you missed is available at
-> https://lore.kernel.org/lkml/20240128204740.2355092-1-aren@peacevolution.=
-org/
+I am a little confused here - I was testing with 6.8-rc1 and it didn't
+seem to have the behavior of performing the probe (The probe kills
+boot performance in my application and I've had to patch out the probe
+in mid-6.x kernels).
 
-When sending patch series it's customary to send all patches to all
-maintainers and mailing lists (to have a context). In case of large patch
-series, you can send only selected patches to each maintainer and mailing
-lists, but then send cover letter to all involved and explain general idea
-behind the series.
+Did something get reverted to bring back the probe even when
+CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS=3DY between rc1 and trunk?  Or am
+I misremembering/accidentally patched?
 
-Best regards,
-Jernej
-
->=20
-> > However, this particular patch is:
-> > Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
->=20
-> Thanks
->  - Aren
->=20
-> > Best regards,
-> > Jernej
-> >=20
+On Thu, Feb 1, 2024 at 11:10=E2=80=AFAM Charlie Jenkins <charlie@rivosinc.c=
+om> wrote:
+>
+> On Thu, Feb 01, 2024 at 02:43:43PM +0100, Cl=C3=A9ment L=C3=A9ger wrote:
+> >
+> >
+> > On 01/02/2024 07:40, Charlie Jenkins wrote:
+> > > When CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS is selected, the cpus can=
+ be
+> > > set to have fast misaligned access without needing to probe.
+> > >
+> > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 > > > ---
-> > >=20
-> > >  arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > >=20
-> > > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi =
-b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-> > > index 87847116ab6d..ad2476ee01e4 100644
-> > > --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-> > > +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-> > > @@ -43,18 +43,21 @@ led-0 {
-> > >  			function =3D LED_FUNCTION_INDICATOR;
-> > >  			color =3D <LED_COLOR_ID_BLUE>;
-> > >  			gpios =3D <&pio 3 20 GPIO_ACTIVE_HIGH>; /* PD20 */
-> > > +			retain-state-suspended;
-> > >  		};
-> > > =20
-> > >  		led-1 {
-> > >  			function =3D LED_FUNCTION_INDICATOR;
-> > >  			color =3D <LED_COLOR_ID_GREEN>;
-> > >  			gpios =3D <&pio 3 18 GPIO_ACTIVE_HIGH>; /* PD18 */
-> > > +			retain-state-suspended;
-> > >  		};
-> > > =20
-> > >  		led-2 {
-> > >  			function =3D LED_FUNCTION_INDICATOR;
-> > >  			color =3D <LED_COLOR_ID_RED>;
-> > >  			gpios =3D <&pio 3 19 GPIO_ACTIVE_HIGH>; /* PD19 */
-> > > +			retain-state-suspended;
-> > >  		};
-> > >  	};
-> > > =20
-> > >=20
-> >=20
-> >=20
-> >=20
-> >=20
->=20
-
-
-
-
+> > >  arch/riscv/include/asm/cpufeature.h  | 7 +++++++
+> > >  arch/riscv/kernel/cpufeature.c       | 4 ++++
+> > >  arch/riscv/kernel/sys_hwprobe.c      | 4 ++++
+> > >  arch/riscv/kernel/traps_misaligned.c | 4 ++++
+> > >  4 files changed, 19 insertions(+)
+> > >
+> > > diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include=
+/asm/cpufeature.h
+> > > index dfdcca229174..7d8d64783e38 100644
+> > > --- a/arch/riscv/include/asm/cpufeature.h
+> > > +++ b/arch/riscv/include/asm/cpufeature.h
+> > > @@ -137,10 +137,17 @@ static __always_inline bool riscv_cpu_has_exten=
+sion_unlikely(int cpu, const unsi
+> > >     return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
+> > >  }
+> > >
+> > > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+> > >  DECLARE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
+> > >
+> > >  static __always_inline bool has_fast_misaligned_accesses(void)
+> > >  {
+> > >     return static_branch_likely(&fast_misaligned_access_speed_key);
+> > >  }
+> > > +#else
+> > > +static __always_inline bool has_fast_misaligned_accesses(void)
+> > > +{
+> > > +   return true;
+> > > +}
+> > > +#endif
+> > >  #endif
+> > > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufe=
+ature.c
+> > > index 89920f84d0a3..d787846c0b68 100644
+> > > --- a/arch/riscv/kernel/cpufeature.c
+> > > +++ b/arch/riscv/kernel/cpufeature.c
+> > > @@ -43,10 +43,12 @@ static DECLARE_BITMAP(riscv_isa, RISCV_ISA_EXT_MA=
+X) __read_mostly;
+> > >  /* Per-cpu ISA extensions. */
+> > >  struct riscv_isainfo hart_isa[NR_CPUS];
+> > >
+> > > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+> > >  /* Performance information */
+> > >  DEFINE_PER_CPU(long, misaligned_access_speed);
+> > >
+> > >  static cpumask_t fast_misaligned_access;
+> > > +#endif
+> > >
+> > >  /**
+> > >   * riscv_isa_extension_base() - Get base extension word
+> > > @@ -706,6 +708,7 @@ unsigned long riscv_get_elf_hwcap(void)
+> > >     return hwcap;
+> > >  }
+> > >
+> > > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+> > >  static int check_unaligned_access(void *param)
+> > >  {
+> > >     int cpu =3D smp_processor_id();
+> > > @@ -946,6 +949,7 @@ static int check_unaligned_access_all_cpus(void)
+> > >  }
+> > >
+> > >  arch_initcall(check_unaligned_access_all_cpus);
+> > > +#endif /* CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS */
+> > >
+> > >  void riscv_user_isa_enable(void)
+> > >  {
+> >
+> > Hi Charlie,
+> >
+> > Generally, having so much ifdef in various pieces of code is probably
+> > not a good idea.
+> >
+> > AFAICT, if CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS is enabled, the whole
+> > misaligned access speed checking could be opt-out. which means that
+> > probably everything related to misaligned accesses should be moved in
+> > it's own file build it only for CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS=
+=3Dn
+> > only.
+>
+> I will look into doing something more clever here! I agree it is not
+> very nice to have so many ifdefs scattered.
+>
+> >
+> > > diff --git a/arch/riscv/kernel/sys_hwprobe.c b/arch/riscv/kernel/sys_=
+hwprobe.c
+> > > index a7c56b41efd2..3f1a6edfdb08 100644
+> > > --- a/arch/riscv/kernel/sys_hwprobe.c
+> > > +++ b/arch/riscv/kernel/sys_hwprobe.c
+> > > @@ -149,6 +149,7 @@ static bool hwprobe_ext0_has(const struct cpumask=
+ *cpus, unsigned long ext)
+> > >
+> > >  static u64 hwprobe_misaligned(const struct cpumask *cpus)
+> > >  {
+> > > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+> > >     int cpu;
+> > >     u64 perf =3D -1ULL;
+> > >
+> > > @@ -168,6 +169,9 @@ static u64 hwprobe_misaligned(const struct cpumas=
+k *cpus)
+> > >             return RISCV_HWPROBE_MISALIGNED_UNKNOWN;
+> > >
+> > >     return perf;
+> > > +#else
+> > > +   return RISCV_HWPROBE_MISALIGNED_FAST;
+> > > +#endif
+> > >  }
+> > >
+> > >  static void hwprobe_one_pair(struct riscv_hwprobe *pair,
+> > > diff --git a/arch/riscv/kernel/traps_misaligned.c b/arch/riscv/kernel=
+/traps_misaligned> index 8ded225e8c5b..c24f79d769f6 100644
+> > > --- a/arch/riscv/kernel/traps_misaligned.c
+> > > +++ b/arch/riscv/kernel/traps_misaligned.c
+> > > @@ -413,7 +413,9 @@ int handle_misaligned_load(struct pt_regs *regs)
+> > >
+> > >     perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, regs, addr);
+> > >
+> > > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+> > >     *this_cpu_ptr(&misaligned_access_speed) =3D RISCV_HWPROBE_MISALIG=
+NED_EMULATED;
+> > > +#endif
+> >
+> > I think that rather using ifdefery inside this file (traps_misaligned.c=
+)
+> >  it can be totally opt-out in case we have
+> > CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS since it implies that misaligned
+> > accesses are not emulated (at least that is my understanding).
+> >
+>
+> That's a great idea, I believe that is correct.
+>
+> - Charlie
+>
+> > Thanks,
+> >
+> > Cl=C3=A9ment
+> >
+> >
+> > >
+> > >     if (!unaligned_enabled)
+> > >             return -1;
+> > > @@ -596,6 +598,7 @@ int handle_misaligned_store(struct pt_regs *regs)
+> > >     return 0;
+> > >  }
+> > >
+> > > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+> > >  bool check_unaligned_access_emulated(int cpu)
+> > >  {
+> > >     long *mas_ptr =3D per_cpu_ptr(&misaligned_access_speed, cpu);
+> > > @@ -640,6 +643,7 @@ void unaligned_emulation_finish(void)
+> > >     }
+> > >     unaligned_ctl =3D true;
+> > >  }
+> > > +#endif
+> > >
+> > >  bool unaligned_ctl_available(void)
+> > >  {
+> > >
+> >
+> >
+> >
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
