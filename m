@@ -1,145 +1,135 @@
-Return-Path: <linux-kernel+bounces-48674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39BC7845FA1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:14:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12B65845FA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:15:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E989228AC55
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:14:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A65FC1F2C6C0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:15:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37825127B59;
-	Thu,  1 Feb 2024 18:11:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0106C12FB25;
+	Thu,  1 Feb 2024 18:12:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TLSlsr4o"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="rdVGw7i+"
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCA60127B48;
-	Thu,  1 Feb 2024 18:11:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 860B812FB0D
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 18:12:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706811117; cv=none; b=kIfaNAiiuqSrcmKCoTXD+pwJfvLR95AspR8PdVpXxGPSsSgJOibjERrahaM7dVgjTtTtgTdrF8MhMBmdVTjaOdFQtORGpgW1MAQs0jy4FoWc4mC+vWe0HNh22+13Bz8e+6l+I0aqLRqsN6WD9eI9juxl2ssG1ptWeyd7el4LqHc=
+	t=1706811170; cv=none; b=md3hNwAbVVIH1NjjhpLb9oyZcz0uyfiTUAjpoWd3f0bTQwsvzP19P438YzMIpyCZfv4KzZkqfIf7BdsgJ5UcSU5VrPLyb0TfmaIpkX4URqWS+CPAv4t0f4ARVgSvNk8EzNDf5yc7f0TF43H275fuIvEHz3NTQYoLsxHDCveenPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706811117; c=relaxed/simple;
-	bh=86vTRfPucmb5AYxZwhb9dFpu1vfbO62Ulmjm8wLUwNc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=gsSvT4OzpiPI0QHg9n4Lc1dUZ0Gcec3lhPm72fAVePAPoZfZhH37Y7H1/ITXyKSTCxdv/K3tiPAreYFZMFgeWsoFrT50+kkr0IG4qlGGyZzgIJ/kTkJIfzWf6dq0uX0xL7+QQ5UJV5gsJ5z6XSZ/fHnSEWqV4+pXYQ7+7KT78ec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TLSlsr4o; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706811116; x=1738347116;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=86vTRfPucmb5AYxZwhb9dFpu1vfbO62Ulmjm8wLUwNc=;
-  b=TLSlsr4omsO4YapeGczyqpdnDwqMIJA6KVfbcobXYnMgmZjUOcbL8HGX
-   Y0yvwv75hnza4eDs6OKIDeP16+slHUO0tjafaTZ9zZjyWs4MMv0b9m5OK
-   LWomMK38vRXb9vJUkldD5T1rr1YJhSmYqjG9W26Her9nzaRCizLmrKw1T
-   BTxSrXahTj9OjW+tysDD0MGk78fK1roaFJvl9uCy7h7fqZMLPbmrfoxMS
-   xnZx3mIi15EfqhFO37vA4ea1t/726TxZeRcr2tpBHxcEudNVXi5sBI04y
-   6EIAdTqFJzb4JL++pT0GPRQbZcs7ejqjRLuZMZOmLo3dnjZWB7+TSQSDf
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="2894281"
-X-IronPort-AV: E=Sophos;i="6.05,235,1701158400"; 
-   d="scan'208";a="2894281"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 10:11:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,235,1701158400"; 
-   d="scan'208";a="4482906"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmviesa003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 10:11:54 -0800
-Received: from ssigler-mobl.amr.corp.intel.com (unknown [10.209.41.165])
-	by linux.intel.com (Postfix) with ESMTP id 5C0BA580DD4;
-	Thu,  1 Feb 2024 10:11:54 -0800 (PST)
-Message-ID: <47df451d2494243d73e9065202e50e022ae2792b.camel@linux.intel.com>
-Subject: Re: [PATCH 2/8] platform/x86/intel/sdsi: Combine read and write
- mailbox flows
-From: "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-  netdev@vger.kernel.org, ilpo.jarvinen@linux.intel.com
-Cc: linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Date: Thu, 01 Feb 2024 10:11:54 -0800
-In-Reply-To: <6ee06c50-3782-4d50-9a01-f332d181d3fc@linux.intel.com>
-References: <20240201010747.471141-1-david.e.box@linux.intel.com>
-	 <20240201010747.471141-3-david.e.box@linux.intel.com>
-	 <6ee06c50-3782-4d50-9a01-f332d181d3fc@linux.intel.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1706811170; c=relaxed/simple;
+	bh=UuPIhFNDBOLIYfF7vX2ZEWimc9XTtKyUfVwEEO/21NM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=efWMTHeN59/yL7CSgH+4xTb5aUCGP2aqWr8wqxL4Wh5o4MhB+LFXx6j06QLS8gUyaGaB3+ldUo48NRsO67tcoN28+ls4Fr97w7r2QYqTxdWrEnS1x5b5X2p0Fn/HTud3ABYXxLKb7kqItouVg9aik1fZxaGdRjjhtfIt8TkZX2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=rdVGw7i+; arc=none smtp.client-ip=209.85.222.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-783e22a16d4so174593385a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 10:12:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706811166; x=1707415966; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=X7pFNo9wllIUlLWgzZSFIzQX8/BIsC9AxRoRCkFQD3o=;
+        b=rdVGw7i+SbmkBpHtLRJ+JjDN0WGgV/B+1YgbqeaEiCway2EjAVa0hEXlSlWwAzFrkl
+         ZUhZ6asYd6B9QlKC+MAJ/mdIGbM279B4FZy4JB+mozRUPMsKDeJfOAAeWXk3phYphOdM
+         o3Z51MWInL3ux3V+3dlqO4GpENhf9TLgOo4d8I0BgXT6qCvD8CVljBJKpFyKQw7ln9HI
+         cue6shJPb4AB7LicJ5G35lYN+UWh3UwqQbOehs0UYkS9glZNLwP5a9eBRM8Uh3Ji8wby
+         ziuQwhh/Bdbbpwz129Xpcx7Gw+OBh20iE2J7wR03uuC0b8fJc8tjT6XwQzUEicjeO5DC
+         dEIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706811166; x=1707415966;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X7pFNo9wllIUlLWgzZSFIzQX8/BIsC9AxRoRCkFQD3o=;
+        b=EMcUe5ZRiBSu+PsRe3NvZzRqMrCGl/3QVHrdaryVJl09t6hv+bHFe63nOeH3Ec6EJL
+         jM5rfHv4u37yeFsFV/ce5A/zZdNN2itfEyi7bg9OV41vpdC/jclnjGDAS0U81FP2bw7h
+         /CjQ2NbiauMt1il+cwFSZ6K9CWufCWjAk5O5wLg/6/aghH/4V0IzWM0ABIxzLelHFqVw
+         bhIrAnU15I8sQacieko+xjQ4Gf3J+TGx9maenUtH0T4ZVg4yCtyiDUg6L8jtNK4ANTzs
+         NH0o33Wk2fjamyPVhkGXRANrgWgwH9SqC1+OJ+sTDmZJ7rmOGN1mNrpT28essWJwqnX7
+         P/Zw==
+X-Gm-Message-State: AOJu0YzUPjrdp2z2FFSjgs8bsG+MMlibboFjk8/X19g3dNGmO146e4xW
+	zrRTdWrYUkyOb83E6PIGX/4jebgaFwbwX2Q9lQNcIFwNnSYBm79hcHtsP8fyDXc=
+X-Google-Smtp-Source: AGHT+IH+kpI7VVtmvFtvKwua4b/SnW+Caog8FEaXBrC3QNWDmleH6fXAbOl8JftGfv8N2puw18DjZQ==
+X-Received: by 2002:a05:620a:46a9:b0:785:3c7f:304b with SMTP id bq41-20020a05620a46a900b007853c7f304bmr4534794qkb.39.1706811166216;
+        Thu, 01 Feb 2024 10:12:46 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXcpzEYHSB9QtnuNeBy/nj/gZmwU9fKY7dvMJLTUzSlVxOjfHZ7NT+Or1jhBuwspiHPIUSYp5tD2BnTrQqTgB0gonYjW1Zw2HLckwPO5F6+oOJiSh/G+WuseOsPzvZSVsk1CFeWm+ct5lRrinSxTQ8d98vc44APWKEdjaiOoGrrInVJ/fjORxr9ymMExz5QtBGRUw==
+Received: from localhost (2603-7000-0c01-2716-97cf-7b55-44af-acd6.res6.spectrum.com. [2603:7000:c01:2716:97cf:7b55:44af:acd6])
+        by smtp.gmail.com with ESMTPSA id d27-20020a05620a159b00b00783dd0f9383sm28770qkk.7.2024.02.01.10.12.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 10:12:45 -0800 (PST)
+Date: Thu, 1 Feb 2024 13:12:40 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Chengming Zhou <zhouchengming@bytedance.com>
+Cc: Nhat Pham <nphamcs@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Yosry Ahmed <yosryahmed@google.com>, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [PATCH 5/6] mm/zswap: only support zswap_exclusive_loads_enabled
+Message-ID: <20240201181240.GE321148@cmpxchg.org>
+References: <20240201-b4-zswap-invalidate-entry-v1-0-56ed496b6e55@bytedance.com>
+ <20240201-b4-zswap-invalidate-entry-v1-5-56ed496b6e55@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201-b4-zswap-invalidate-entry-v1-5-56ed496b6e55@bytedance.com>
 
-SGkgU2F0aHlhLAoKT24gVGh1LCAyMDI0LTAyLTAxIGF0IDA5OjMxIC0wODAwLCBLdXBwdXN3YW15
-IFNhdGh5YW5hcmF5YW5hbiB3cm90ZToKPiAKPiBPbiAxLzMxLzI0IDU6MDcgUE0sIERhdmlkIEUu
-IEJveCB3cm90ZToKPiA+IFRoZSBjdXJyZW50IG1haWxib3ggY29tbWFuZHMgYXJlIGVpdGhlciBy
-ZWFkLW9ubHkgb3Igd3JpdGUtb25seSBhbmQgdGhlCj4gPiBmbG93IGlzIGRpZmZlcmVudCBmb3Ig
-ZWFjaC4gTmV3IGNvbW1hbmRzIHdpbGwgbmVlZCB0byBzZW5kIGFuZCByZWNlaXZlCj4gPiBkYXRh
-LiBJbiBwcmVwYXJhdGlvbiBmb3IgdGhlc2UgY29tbWFuZHMsIGNyZWF0ZSBhIGNvbW1vbiBwb2xs
-aW5nIGZ1bmN0aW9uCj4gPiB0byBoYW5kbGUgc2VuZGluZyBkYXRhIGFuZCByZWNlaXZpbmcgaW4g
-dGhlIHNhbWUgdHJhbnNhY3Rpb24uCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IERhdmlkIEUuIEJv
-eCA8ZGF2aWQuZS5ib3hAbGludXguaW50ZWwuY29tPgo+ID4gLS0tCj4gPiDCoGRyaXZlcnMvcGxh
-dGZvcm0veDg2L2ludGVsL3Nkc2kuYyB8IDc5ICsrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0t
-LS0KPiA+IMKgMSBmaWxlIGNoYW5nZWQsIDQ0IGluc2VydGlvbnMoKyksIDM1IGRlbGV0aW9ucygt
-KQo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wbGF0Zm9ybS94ODYvaW50ZWwvc2RzaS5j
-Cj4gPiBiL2RyaXZlcnMvcGxhdGZvcm0veDg2L2ludGVsL3Nkc2kuYwo+ID4gaW5kZXggYTcwYzA3
-MWRlNmUyLi4wNWEzNWYyZjg1YjYgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL3BsYXRmb3JtL3g4
-Ni9pbnRlbC9zZHNpLmMKPiA+ICsrKyBiL2RyaXZlcnMvcGxhdGZvcm0veDg2L2ludGVsL3Nkc2ku
-Ywo+ID4gQEAgLTE1LDYgKzE1LDcgQEAKPiA+IMKgI2luY2x1ZGUgPGxpbnV4L2lvcG9sbC5oPgo+
-ID4gwqAjaW5jbHVkZSA8bGludXgva2VybmVsLmg+Cj4gPiDCoCNpbmNsdWRlIDxsaW51eC9tb2R1
-bGUuaD4KPiA+ICsjaW5jbHVkZSA8bGludXgvb3ZlcmZsb3cuaD4KPiA+IMKgI2luY2x1ZGUgPGxp
-bnV4L3BjaS5oPgo+ID4gwqAjaW5jbHVkZSA8bGludXgvc2xhYi5oPgo+ID4gwqAjaW5jbHVkZSA8
-bGludXgvc3lzZnMuaD4KPiA+IEBAIC0xNTYsOCArMTU3LDggQEAgc3RhdGljIGludCBzZHNpX3N0
-YXR1c190b19lcnJubyh1MzIgc3RhdHVzKQo+ID4gwqDCoMKgwqDCoMKgwqDCoH0KPiA+IMKgfQo+
-ID4gwqAKPiA+IC1zdGF0aWMgaW50IHNkc2lfbWJveF9jbWRfcmVhZChzdHJ1Y3Qgc2RzaV9wcml2
-ICpwcml2LCBzdHJ1Y3Qgc2RzaV9tYm94X2luZm8KPiA+ICppbmZvLAo+ID4gLcKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNpemVfdCAqZGF0
-YV9zaXplKQo+ID4gK3N0YXRpYyBpbnQgc2RzaV9tYm94X3BvbGwoc3RydWN0IHNkc2lfcHJpdiAq
-cHJpdiwgc3RydWN0IHNkc2lfbWJveF9pbmZvCj4gPiAqaW5mbywKPiA+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc2l6ZV90ICpkYXRhX3NpemUpCj4g
-PiDCoHsKPiA+IMKgwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgZGV2aWNlICpkZXYgPSBwcml2LT5kZXY7
-Cj4gPiDCoMKgwqDCoMKgwqDCoMKgdTMyIHRvdGFsLCBsb29wLCBlb20sIHN0YXR1cywgbWVzc2Fn
-ZV9zaXplOwo+ID4gQEAgLTE2NiwxOCArMTY3LDEwIEBAIHN0YXRpYyBpbnQgc2RzaV9tYm94X2Nt
-ZF9yZWFkKHN0cnVjdCBzZHNpX3ByaXYgKnByaXYsCj4gPiBzdHJ1Y3Qgc2RzaV9tYm94X2luZm8g
-KmluZgo+ID4gwqAKPiA+IMKgwqDCoMKgwqDCoMKgwqBsb2NrZGVwX2Fzc2VydF9oZWxkKCZwcml2
-LT5tYl9sb2NrKTsKPiA+IMKgCj4gPiAtwqDCoMKgwqDCoMKgwqAvKiBGb3JtYXQgYW5kIHNlbmQg
-dGhlIHJlYWQgY29tbWFuZCAqLwo+ID4gLcKgwqDCoMKgwqDCoMKgY29udHJvbCA9IEZJRUxEX1BS
-RVAoQ1RSTF9FT00sIDEpIHwKPiA+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBG
-SUVMRF9QUkVQKENUUkxfU09NLCAxKSB8Cj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgRklFTERfUFJFUChDVFJMX1JVTl9CVVNZLCAxKSB8Cj4gPiAtwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgRklFTERfUFJFUChDVFJMX1BBQ0tFVF9TSVpFLCBpbmZvLT5zaXpl
-KTsKPiA+IC3CoMKgwqDCoMKgwqDCoHdyaXRlcShjb250cm9sLCBwcml2LT5jb250cm9sX2FkZHIp
-Owo+ID4gLQo+ID4gwqDCoMKgwqDCoMKgwqDCoC8qIEZvciByZWFkcywgZGF0YSBzaXplcyB0aGF0
-IGFyZSBsYXJnZXIgdGhhbiB0aGUgbWFpbGJveCBzaXplIGFyZQo+ID4gcmVhZCBpbiBwYWNrZXRz
-LiAqLwo+ID4gwqDCoMKgwqDCoMKgwqDCoHRvdGFsID0gMDsKPiA+IMKgwqDCoMKgwqDCoMKgwqBs
-b29wID0gMDsKPiA+IMKgwqDCoMKgwqDCoMKgwqBkbyB7Cj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgdm9pZCAqYnVmID0gaW5mby0+YnVmZmVyICsgKFNEU0lfU0laRV9NQUlMQk9Y
-ICogbG9vcCk7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHUzMiBwYWNrZXRf
-c2l6ZTsKPiA+IMKgCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC8qIFBvbGwg
-b24gcmVhZHkgYml0ICovCj4gPiBAQCAtMTk1LDYgKzE4OCwxMSBAQCBzdGF0aWMgaW50IHNkc2lf
-bWJveF9jbWRfcmVhZChzdHJ1Y3Qgc2RzaV9wcml2ICpwcml2LAo+ID4gc3RydWN0IHNkc2lfbWJv
-eF9pbmZvICppbmYKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKHJldCkK
-PiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGJyZWFr
-Owo+ID4gwqAKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoIXBhY2tldF9z
-aXplKSB7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oHNkc2lfY29tcGxldGVfdHJhbnNhY3Rpb24ocHJpdik7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGJyZWFrOwo+ID4gK8KgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoH0KPiA+ICsKPiAKPiBJdCBzZWVtcyB0byBiZSBhIGdlbmVyaWMgY2hlY2su
-IElzIHRoaXMgcmVsYXRlZCB0byBjb252ZXJ0aW5nIHRvIGEgcmVhZC93cml0ZQo+IGZ1bmN0aW9u
-IG9yCj4gYSBjb21tb24gZml4IHlvdSBhZGRlZCB0b2dldGhlciBpbiB0aGlzIHBhdGNoLgoKWWVz
-LCBpdCdzIHJlbGF0ZWQuIFRoZSBjb2RlIHRoYXQgZm9sbG93cyB0aGlzIG9ubHkgYXBwbGllcyB0
-byByZWFkcy4gVGhpcyBjaGVjawp3b3VsZCBiZSB0cnVlIG9ubHkgZm9yIHdyaXRlcyB3aGljaCBv
-bmx5IG5lZWQgdG8gcG9sbCBvbmNlIHRvIGNvbmZpcm0gdGhlIHdyaXRlCndhcyBzdWNjZXNzZnVs
-LiBJJ2xsIGFkZCBhIGNvbW1lbnQgdG8gbWFrZSBpdCBjbGVhci4K
+On Thu, Feb 01, 2024 at 03:49:05PM +0000, Chengming Zhou wrote:
+> The !zswap_exclusive_loads_enabled mode will leave compressed copy in
+> the zswap tree and lru list after the folio swapin.
+> 
+> There are some disadvantages in this mode:
+> 1. It's a waste of memory since there are two copies of data, one is
+>    folio, the other one is compressed data in zswap. And it's unlikely
+>    the compressed data is useful in the near future.
+> 
+> 2. If that folio is dirtied, the compressed data must be not useful,
+>    but we don't know and don't invalidate the trashy memory in zswap.
+> 
+> 3. It's not reclaimable from zswap shrinker since zswap_writeback_entry()
+>    will always return -EEXIST and terminate the shrinking process.
+> 
+> On the other hand, the only downside of zswap_exclusive_loads_enabled
+> is a little more cpu usage/latency when compression, and the same if
+> the folio is removed from swapcache or dirtied.
+> 
+> Not sure if we should accept the above disadvantages in the case of
+> !zswap_exclusive_loads_enabled, so send this out for disscusion.
+> 
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 
+This is interesting.
+
+First, I will say that I never liked this config option, because it's
+nearly impossible for a user to answer this question. Much better to
+just pick a reasonable default.
+
+What should the default be?
+
+Caching "swapout work" is helpful when the system is thrashing. Then
+recently swapped in pages might get swapped out again very soon. It
+certainly makes sense with conventional swap, because keeping a clean
+copy on the disk saves IO work and doesn't cost any additional memory.
+
+But with zswap, it's different. It saves some compression work on a
+thrashing page. But the act of keeping compressed memory contributes
+to a higher rate of thrashing. And that can cause IO in other places
+like zswap writeback and file memory.
+
+It would be useful to have an A/B test to confirm that not caching is
+better. Can you run your test with and without keeping the cache, and
+in addition to the timings also compare the deltas for pgscan_anon,
+pgscan_file, workingset_refault_anon, workingset_refault_file?
 
