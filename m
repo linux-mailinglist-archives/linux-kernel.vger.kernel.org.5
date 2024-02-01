@@ -1,305 +1,172 @@
-Return-Path: <linux-kernel+bounces-47515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C1DC844ED2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C5AE844ED3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:47:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11A1C1F28442
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:47:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1AEB1F2CFE5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:47:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FE424A26;
-	Thu,  1 Feb 2024 01:47:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FEF7539C;
+	Thu,  1 Feb 2024 01:47:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="akcgXfhf"
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eYkLfk0d"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7605DF6D
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 01:46:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C312566F;
+	Thu,  1 Feb 2024 01:47:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706752021; cv=none; b=ixmc1CSJnFA5aMUDUl1Aa4y5fWJ8RnC2GZvoKVwbzBTmheeo/x8IclHO9qDqs26nifwqoAp/LzDUh/NSrkkmBFiDAoZFdpZXRS1SAbVs0daRwmjMg/pgnoS7jpPeLDrxvJ+zACbCHenakj3HY6xgddmwiUjZd63B6Tx3K5TxfXc=
+	t=1706752037; cv=none; b=ZKcWLvAJ0vptlJHqzkBngeQHhIIHHULAbFD1/NnCvBTfAr9GF4QpKkNiPGST85pCs8LYGsXf1+3R13YpTOhb6RBKksdhS0AiT1tWx4TdayVrRusNbxDxqhyrv/pN+x7PjUU03J2YTcouEYB+gRwctdiZIyDrF7cO8UqR/FPkA2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706752021; c=relaxed/simple;
-	bh=+ZB/sCqmZN0kWzarGoPV30Krbm14OyK2DH1fvES/8Vs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QlBY7p2+UiWQE9KjDFdz3UwAksmawgSL7aFAxfnW7wbF93ufxehnavjf+gkmYiIYFzlVZKg/L+THlXFyT0QT0dTiYKF9hIX0Pl+zC3gK7+hxT0Ck5NbM4izTWadthaPnGl0O7AGGlloKYI2Zrc8dqhq0Bn2d26zaUT8xKpBLRgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=akcgXfhf; arc=none smtp.client-ip=115.124.30.113
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1706752012; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=76NmS0lav5K47mcz2ahT8fgHcu3YkJ5Ca1MexnM20ao=;
-	b=akcgXfhf/m+FsPSoS8fKbV9i4aJpS2GzBgf4iajclUfzDNgZk7mgLfoNgH0CEmxMZIKWkwdrej4fpeKuwC7AXILzuC7ep0bIFQKnpiEq653zDssYhPoVzeBV8ZOay6+1tnup6h9i/093n7DeP57mRuvEVoRTFOVkwk3DyLuV3sk=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=liusong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W.l4ltl_1706752010;
-Received: from 30.178.80.82(mailfrom:liusong@linux.alibaba.com fp:SMTPD_---0W.l4ltl_1706752010)
-          by smtp.aliyun-inc.com;
-          Thu, 01 Feb 2024 09:46:51 +0800
-Message-ID: <189135f7-3bac-4a43-9daf-5798a01f79d5@linux.alibaba.com>
-Date: Thu, 1 Feb 2024 09:46:48 +0800
+	s=arc-20240116; t=1706752037; c=relaxed/simple;
+	bh=t1rkSBJW7ooxEkZOpku+320sY/tVftuAP+A+QZK0C90=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SmAC0Qn8LDYR+UBxmLhjpYNMeEQykyGfNHF2q41ebDiCDiHlZuUE0DnPKyLO+VgBYgdpIM/C/Zk/sFJIU3ouWwoFGDu45uaU5p17stLyK8lDneLiK/mca725A0+m8+L4plHY17wO6puhtDtJYwrtZgFbrn1xWq4fgtRzVxIHpDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eYkLfk0d; arc=none smtp.client-ip=134.134.136.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706752035; x=1738288035;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=t1rkSBJW7ooxEkZOpku+320sY/tVftuAP+A+QZK0C90=;
+  b=eYkLfk0d+97ebkqjaok79lmln7O92qD7lU41+FF3r8OgGhjiwhgqzTTw
+   /vyP8nHxEvCK07ETa3JwcL708pDw1/vK0Wjx0soTy+i4busf+eE8hocQe
+   lRfYDuasrLyGdWRSfa8VVZ+oLgOh45S1yBKDvL7nqSaJv/1ZTz1BuJlYN
+   jztvcL6RYmWDPOxwOBSOMptHrKfmpmPjjvqmTFjxOOpWi7T47BKAauQ/S
+   xYGaLXVNIM7Q9V9F1RyeHDFYpCw4G3/vxYVhiVRLdXJhX1UGo7pUxWbOf
+   R/Ip8Kbo4Xeof+BiRtL4OiCgnQpuk2lfpZRCa4OtQ0WVOeP2ExcZsuqPd
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="468014432"
+X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
+   d="scan'208";a="468014432"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 17:47:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="738280345"
+X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
+   d="scan'208";a="738280345"
+Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
+  by orsmga003.jf.intel.com with ESMTP; 31 Jan 2024 17:47:10 -0800
+Date: Thu, 1 Feb 2024 09:47:09 +0800
+From: Yuan Yao <yuan.yao@linux.intel.com>
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+	erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	Binbin Wu <binbin.wu@linux.intel.com>
+Subject: Re: [PATCH v18 016/121] KVM: TDX: Add helper functions to print TDX
+ SEAMCALL error
+Message-ID: <20240201014709.5gstyulmsjn7cnff@yy-desk-7060>
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <0375033d320c599deee675c4232543c73233ce8b.1705965634.git.isaku.yamahata@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv3 2/2] watchdog/softlockup: report the most frequent
- interrupts
-To: Bitao Hu <yaoma@linux.alibaba.com>, dianders@chromium.org,
- akpm@linux-foundation.org, pmladek@suse.com, kernelfans@gmail.com
-Cc: linux-kernel@vger.kernel.org
-References: <20240131171738.35496-1-yaoma@linux.alibaba.com>
- <20240131171738.35496-3-yaoma@linux.alibaba.com>
-From: Liu Song <liusong@linux.alibaba.com>
-In-Reply-To: <20240131171738.35496-3-yaoma@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0375033d320c599deee675c4232543c73233ce8b.1705965634.git.isaku.yamahata@intel.com>
+User-Agent: NeoMutt/20171215
 
-
-在 2024/2/1 01:17, Bitao Hu 写道:
-> When the watchdog determines that the current soft lockup is due
-> to an interrupt storm based on CPU utilization, reporting the
-> most frequent interrupts could be good enough for further
-> troubleshooting.
+On Mon, Jan 22, 2024 at 03:52:52PM -0800, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
 >
-> Below is an example of interrupt storm. The call tree does not
-> provide useful information, but we can analyze which interrupt
-> caused the soft lockup by comparing the counts of interrupts.
+> Add helper functions to print out errors from the TDX module in a uniform
+> manner.
 >
-> [ 2987.488075] watchdog: BUG: soft lockup - CPU#9 stuck for 23s! [kworker/9:1:214]
-> [ 2987.488607] CPU#9 Utilization every 4s during lockup:
-> [ 2987.488941]  #1:   0% system,          0% softirq,   100% hardirq,     0% idle
-> [ 2987.489357]  #2:   0% system,          0% softirq,   100% hardirq,     0% idle
-> [ 2987.489771]  #3:   0% system,          0% softirq,   100% hardirq,     0% idle
-> [ 2987.490186]  #4:   0% system,          0% softirq,   100% hardirq,     0% idle
-> [ 2987.490601]  #5:   0% system,          0% softirq,   100% hardirq,     0% idle
-> [ 2987.491034] CPU#9 Detect HardIRQ Time exceeds 50%. Most frequent HardIRQs:
-> [ 2987.491493]  #1: 330985      irq#7(IPI)
-> [ 2987.491743]  #2: 5000        irq#10(arch_timer)
-> [ 2987.492039]  #3: 9           irq#91(nvme0q2)
-> [ 2987.492318]  #4: 3           irq#118(virtio1-output.12)
-> ...
-> [ 2987.492728] Call trace:
-> [ 2987.492729]  __do_softirq+0xa8/0x364
->
-> Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
 > ---
->   kernel/watchdog.c | 156 ++++++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 156 insertions(+)
+> v18:
+> - Added Reviewed-by Binbin.
+> ---
+>  arch/x86/kvm/Makefile        |  2 +-
+>  arch/x86/kvm/vmx/tdx_error.c | 21 +++++++++++++++++++++
+>  arch/x86/kvm/vmx/tdx_ops.h   |  5 +++++
+>  3 files changed, 27 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/x86/kvm/vmx/tdx_error.c
 >
-> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-> index 046507be4eb5..c4c25f25eae7 100644
-> --- a/kernel/watchdog.c
-> +++ b/kernel/watchdog.c
-> @@ -25,6 +25,9 @@
->   #include <linux/stop_machine.h>
->   #include <linux/kernel_stat.h>
->   #include <linux/math64.h>
-> +#include <linux/irq.h>
-> +#include <linux/bitops.h>
-> +#include <linux/irqdesc.h>
->   
->   #include <asm/irq_regs.h>
->   #include <linux/kvm_para.h>
-> @@ -431,11 +434,15 @@ void touch_softlockup_watchdog_sync(void)
->   	__this_cpu_write(watchdog_report_ts, SOFTLOCKUP_DELAY_REPORT);
->   }
->   
-> +static void set_potential_softlockup(unsigned long now, unsigned long touch_ts);
+> diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
+> index 5b85ef84b2e9..44b0594da877 100644
+> --- a/arch/x86/kvm/Makefile
+> +++ b/arch/x86/kvm/Makefile
+> @@ -24,7 +24,7 @@ kvm-intel-y		+= vmx/vmx.o vmx/vmenter.o vmx/pmu_intel.o vmx/vmcs12.o \
+>
+>  kvm-intel-$(CONFIG_X86_SGX_KVM)	+= vmx/sgx.o
+>  kvm-intel-$(CONFIG_KVM_HYPERV)	+= vmx/hyperv.o vmx/hyperv_evmcs.o
+> -kvm-intel-$(CONFIG_INTEL_TDX_HOST)	+= vmx/tdx.o
+> +kvm-intel-$(CONFIG_INTEL_TDX_HOST)	+= vmx/tdx.o vmx/tdx_error.o
+>
+>  kvm-amd-y		+= svm/svm.o svm/vmenter.o svm/pmu.o svm/nested.o svm/avic.o \
+>  			   svm/sev.o
+> diff --git a/arch/x86/kvm/vmx/tdx_error.c b/arch/x86/kvm/vmx/tdx_error.c
+> new file mode 100644
+> index 000000000000..42fcabe1f6c7
+> --- /dev/null
+> +++ b/arch/x86/kvm/vmx/tdx_error.c
+> @@ -0,0 +1,21 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* functions to record TDX SEAMCALL error */
 > +
->   static int is_softlockup(unsigned long touch_ts,
->   			 unsigned long period_ts,
->   			 unsigned long now)
->   {
->   	if ((watchdog_enabled & WATCHDOG_SOFTOCKUP_ENABLED) && watchdog_thresh) {
-> +		/* Softlockup may occur in the current period */
-> +		set_potential_softlockup(now, period_ts);
->   		/* Warn about unreasonable delays. */
->   		if (time_after(now, period_ts + get_softlockup_thresh()))
->   			return now - touch_ts;
-> @@ -462,6 +469,8 @@ static DEFINE_PER_CPU(u16, cpustat_old[NUM_STATS_PER_GROUP]);
->   static DEFINE_PER_CPU(u8, cpustat_utilization[NUM_STATS_GROUPS][NUM_STATS_PER_GROUP]);
->   static DEFINE_PER_CPU(u8, cpustat_tail);
->   
-> +static void print_hardirq_counts(void);
+> +#include <linux/kernel.h>
+> +#include <linux/bug.h>
 > +
->   /*
->    * We don't need nanosecond resolution. A granularity of 16ms is
->    * sufficient for our precision, allowing us to use u16 to store
-> @@ -516,10 +525,156 @@ static void print_cpustat(void)
->   			__this_cpu_read(cpustat_utilization[i][STATS_HARDIRQ]),
->   			__this_cpu_read(cpustat_utilization[i][STATS_IDLE]));
->   	}
-> +	print_hardirq_counts();
-> +}
+> +#include "tdx_ops.h"
 > +
-> +#define HARDIRQ_PERCENT_THRESH		50
-> +#define NUM_HARDIRQ_REPORT		5
-> +static DECLARE_BITMAP(softlockup_hardirq_cpus, CONFIG_NR_CPUS);
-> +static DEFINE_PER_CPU(u32 *, hardirq_counts);
-> +
-> +struct irq_counts {
-> +	int irq;
-> +	u32 counts;
-> +};
-> +
-> +static void find_counts_top(struct irq_counts *irq_counts, int irq, u32 counts, int range)
+> +void pr_tdx_error(u64 op, u64 error_code, const struct tdx_module_args *out)
 > +{
-> +	unsigned int i, j;
-> +
-> +	for (i = 0; i < range; i++) {
-> +		if (counts > irq_counts[i].counts) {
-> +			for (j = range - 1; j > i; j--) {
-> +				irq_counts[j].counts = irq_counts[j - 1].counts;
-> +				irq_counts[j].irq = irq_counts[j - 1].irq;
-> +			}
-> +			irq_counts[j].counts = counts;
-> +			irq_counts[j].irq = irq;
-> +			break;
-> +		}
-The current implementation can lead to a reordering with each iteration.
-It is recommended to update in place if the value is larger and perform
-the reordering just before printing at the end.
-> +	}
-> +}
-> +
-> +/*
-> + * If the proportion of time spent handling irq exceeds HARDIRQ_PERCENT_THRESH%
-> + * during sample_period, then it is necessary to record the counts of each irq.
-> + */
-> +static inline bool need_record_irq_counts(int type)
-> +{
-> +	int tail = __this_cpu_read(cpustat_tail);
-> +	u8 utilization;
-> +
-> +	if (--tail == -1)
-> +		tail = 4;
-> +	utilization = __this_cpu_read(cpustat_utilization[tail][type]);
-> +	return utilization > HARDIRQ_PERCENT_THRESH;
-> +}
-> +
-> +/*
-> + * Mark softlockup as potentially caused by hardirq
-> + */
-> +static void set_potential_softlockup_hardirq(void)
-> +{
-> +	u32 i;
-> +	u32 *counts = __this_cpu_read(hardirq_counts);
-> +	int cpu = smp_processor_id();
-> +	struct irq_desc *desc;
-> +
-> +	if (!need_record_irq_counts(STATS_HARDIRQ))
+> +	if (!out) {
+> +		pr_err_ratelimited("SEAMCALL (0x%016llx) failed: 0x%016llx\n",
+> +				   op, error_code);
 > +		return;
-> +
-> +	if (!test_bit(cpu, softlockup_hardirq_cpus)) {
-> +		counts = kmalloc_array(nr_irqs, sizeof(u32), GFP_ATOMIC);
-> +		if (!counts)
-> +			return;
-> +		for_each_irq_desc(i, desc) {
-> +			if (!desc)
-> +				continue;
-> +			counts[i] = desc->kstat_irqs ?
-> +				*this_cpu_ptr(desc->kstat_irqs) : 0;
-> +		}
-> +		__this_cpu_write(hardirq_counts, counts);
-> +		set_bit(cpu, softlockup_hardirq_cpus);
 > +	}
+> +
+> +#define MSG	\
+> +	"SEAMCALL (0x%016llx) failed: 0x%016llx RCX 0x%016llx RDX 0x%016llx R8 0x%016llx R9 0x%016llx R10 0x%016llx R11 0x%016llx\n"
+> +	pr_err_ratelimited(MSG, op, error_code, out->rcx, out->rdx, out->r8,
+> +			   out->r9, out->r10, out->r11);
 > +}
+> diff --git a/arch/x86/kvm/vmx/tdx_ops.h b/arch/x86/kvm/vmx/tdx_ops.h
+> index f4c16e5265f0..cd12e9c2a421 100644
+> --- a/arch/x86/kvm/vmx/tdx_ops.h
+> +++ b/arch/x86/kvm/vmx/tdx_ops.h
+> @@ -10,6 +10,7 @@
+>  #include <asm/cacheflush.h>
+>  #include <asm/asm.h>
+>  #include <asm/kvm_host.h>
+> +#include <asm/tdx.h>
+
+Just not sure the reason of this #include here, compile fine w/o it.
+
+Reviewed-by: Yuan Yao <yuan.yao@intel.com>
+
+>
+>  #include "tdx_errno.h"
+>  #include "tdx_arch.h"
+> @@ -47,6 +48,10 @@ static inline u64 tdx_seamcall(u64 op, struct tdx_module_args *in,
+>  	return ret;
+>  }
+>
+> +#ifdef CONFIG_INTEL_TDX_HOST
+> +void pr_tdx_error(u64 op, u64 error_code, const struct tdx_module_args *out);
+> +#endif
 > +
-> +static void clear_potential_softlockup_hardirq(void)
-> +{
-> +	u32 *counts = __this_cpu_read(hardirq_counts);
-> +	int cpu = smp_processor_id();
-> +
-> +	if (test_bit(cpu, softlockup_hardirq_cpus)) {
-> +		kfree(counts);
-> +		counts = NULL;
-> +		__this_cpu_write(hardirq_counts, counts);
-> +		clear_bit(cpu, softlockup_hardirq_cpus);
-> +	}
->   }
-> +
-> +/*
-> + * Mark that softlockup may occur
-> + */
-> +static void set_potential_softlockup(unsigned long now, unsigned long period_ts)
-> +{
-> +	if (time_after_eq(now, period_ts + get_softlockup_thresh() / 5))
-> +		set_potential_softlockup_hardirq();
-> +}
-> +
-> +static void clear_potential_softlockup(void)
-> +{
-> +	clear_potential_softlockup_hardirq();
-> +}
-Given that clear_potential_softlockup will only call
-clear_potential_softlockup_hardirq, then why is there a need to declare
-clear_potential_softlockup separately?
-> +
-> +static void print_hardirq_counts(void)
-> +{
-> +	u32 i;
-> +	struct irq_desc *desc;
-> +	u32 counts_diff;
-> +	u32 *counts = __this_cpu_read(hardirq_counts);
-> +	int cpu = smp_processor_id();
-> +	struct irq_counts hardirq_counts_top[NUM_HARDIRQ_REPORT] = {
-> +		{-1, 0}, {-1, 0}, {-1, 0}, {-1, 0},
-> +	};
-> +
-> +	if (test_bit(cpu, softlockup_hardirq_cpus)) {
-> +		/* Find the top NUM_HARDIRQ_REPORT most frequent interrupts */
-> +		for_each_irq_desc(i, desc) {
-> +			if (!desc)
-> +				continue;
-> +			counts_diff = desc->kstat_irqs ?
-> +				*this_cpu_ptr(desc->kstat_irqs) - counts[i] : 0;
-> +			find_counts_top(hardirq_counts_top, i, counts_diff,
-> +					NUM_HARDIRQ_REPORT);
-> +		}
-> +		/*
-> +		 * We do not want the "watchdog: " prefix on every line,
-> +		 * hence we use "printk" instead of "pr_crit".
-> +		 */
-> +		printk(KERN_CRIT "CPU#%d Detect HardIRQ Time exceeds %d%%. Most frequent HardIRQs:\n",
-> +			smp_processor_id(), HARDIRQ_PERCENT_THRESH);
-> +		for (i = 0; i < NUM_HARDIRQ_REPORT; i++) {
-> +			if (hardirq_counts_top[i].irq == -1)
-> +				break;
-> +			desc = irq_to_desc(hardirq_counts_top[i].irq);
-> +			if (desc && desc->action)
-> +				printk(KERN_CRIT "\t#%u: %-10u\tirq#%d(%s)\n",
-> +					i+1, hardirq_counts_top[i].counts,
-> +					hardirq_counts_top[i].irq, desc->action->name);
-> +			else
-> +				printk(KERN_CRIT "\t#%u: %-10u\tirq#%d\n",
-> +					i+1, hardirq_counts_top[i].counts,
-> +					hardirq_counts_top[i].irq);
-> +		}
-> +		if (!need_record_irq_counts(STATS_HARDIRQ))
-> +			clear_potential_softlockup_hardirq();
-> +	}
-> +}
-> +
->   #else
->   static inline void update_cpustat(void) { }
->   static inline void print_cpustat(void) { }
-> +static inline void set_potential_softlockup(unsigned long now, unsigned long period_ts) { }
-> +static inline void clear_potential_softlockup(void) { }
->   #endif
->   
->   /* watchdog detector functions */
-> @@ -537,6 +692,7 @@ static DEFINE_PER_CPU(struct cpu_stop_work, softlockup_stop_work);
->   static int softlockup_fn(void *data)
->   {
->   	update_touch_ts();
-> +	clear_potential_softlockup();
->   	complete(this_cpu_ptr(&softlockup_completion));
->   
->   	return 0;
+>  static inline u64 tdh_mng_addcx(hpa_t tdr, hpa_t addr)
+>  {
+>  	struct tdx_module_args in = {
+> --
+> 2.25.1
+>
+>
 
