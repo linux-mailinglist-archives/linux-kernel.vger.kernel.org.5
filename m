@@ -1,283 +1,184 @@
-Return-Path: <linux-kernel+bounces-47688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5C5D845149
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 07:16:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C919845150
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 07:17:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 887CF2918B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 06:16:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29B171C28136
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 06:17:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0644C651B2;
-	Thu,  1 Feb 2024 06:16:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AF2078B5C;
+	Thu,  1 Feb 2024 06:17:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HHVbXHYz"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="RCt+umGI"
+Received: from SINPR02CU002.outbound.protection.outlook.com (mail-southeastasiaazon11021006.outbound.protection.outlook.com [52.101.133.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 614D65FB9C;
-	Thu,  1 Feb 2024 06:16:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706768189; cv=none; b=uHjaCKHjfy6ZxbNOBVD6SbRUxEsOLxMzeko4+DKLMOGXFX5pJZCuV7PHNcWDZY/5qKv2fHHUf1ro+h/OVLldV4/rCAQNJlC+j+Aymy9W4MYzNP/Jng7VGgaFl1yAp1ZsPKaHLttG4WH4Z4zSjKxFuvjfmmAZnnR9PiiNFJmfJQo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706768189; c=relaxed/simple;
-	bh=/CJW5+f/hsgH8Yfkf9jmrhy26uWv39fxhjkF6NFeymk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i0S613SGzvvpyp1yIxRYRiWROg+cZ9OPH9dVNcWWAiKpUn/fzPETXfi1leMeEufjYgw9ibqhUwYTEOETH7qWVfPaCJKP9wnvONXGrKAG9KNquXaJ5rpL9z4PTU4bXrLdgegQM08BOBxiiVB7Ixc2BBkvC/fLujaQ95M71lKjygc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HHVbXHYz; arc=none smtp.client-ip=134.134.136.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706768187; x=1738304187;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/CJW5+f/hsgH8Yfkf9jmrhy26uWv39fxhjkF6NFeymk=;
-  b=HHVbXHYzJv7Wu64wkK6JvuK3cmrvmrBIwV3HpdHYGCKEvIZCXCLAYmlD
-   pJeESNn+oqfgywjIUzkIUq9JCAtWPzj6ePrXAuYZ5ahEFUvIckG5jsaLf
-   6buXAsvTfBEpmEZXDAThK2ud4XUiIYjJ5tEhwviOAy498F2oW2gMYyVMK
-   0oTRzIb3bYbDJq3LWLTMwEZvSmC4N5BTyBLdk+sQrOQaKCnVuhKlisizw
-   aa0cJw29btrntW7RUxymByKSJjERTsNp29qHR+aa/Jz4JLwrEP3E/79BF
-   skqTQF1ZgMHKWMo8EJiKP9+y76uE2kF2+JF/ia+GUxTJwyAawf9Kg9MfJ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="394266941"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="394266941"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 22:16:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="4324644"
-Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
-  by fmviesa003.fm.intel.com with ESMTP; 31 Jan 2024 22:16:22 -0800
-Date: Thu, 1 Feb 2024 14:16:22 +0800
-From: Yuan Yao <yuan.yao@linux.intel.com>
-To: Binbin Wu <binbin.wu@linux.intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
-Subject: Re: [PATCH v18 023/121] KVM: TDX: Make KVM_CAP_MAX_VCPUS backend
- specific
-Message-ID: <20240201061622.hvun7amakvbplmsb@yy-desk-7060>
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <ed33ebe29b231e8e657cd610a983fa603b10f530.1705965634.git.isaku.yamahata@intel.com>
- <7cc28677-f7d1-4aba-8557-66c685115074@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01ED35FB9C;
+	Thu,  1 Feb 2024 06:17:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.133.6
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706768264; cv=fail; b=ZCPY9DPONDIa/BSdSks5Kz+zyfA8V0JaOgEoBQaqHl8ch8GFVQHyuqt2SaxR3PE+hq7ua/7KZBVey7tG5PECogynZ9629LPSy6te4/aVpxtlIlzBeOjHTNfHwdYVU32iMQufdFDhwuCRd/lg+4ov32NCJTNfHvuUfSTHPY21nIc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706768264; c=relaxed/simple;
+	bh=+VHP6lqWU0kAm4W+2l+fwCD039kTHr9WCOlyqL0lqq8=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Qia9ed861LTxVU+MMiPK+jwyxb24mYGn1iAVaXRfJ4b6Wl/SqDs2R9KL8weSTpzUXPNdvDPdlvawths8T2s0wlwXXMDed5lSTkOxaEfVMjAX7fQl4I3cWyWBro64Z2mKpWki+fv4h3crpES9ANXA5LVS4+wKGb03QfvhkstaK5Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=RCt+umGI; arc=fail smtp.client-ip=52.101.133.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j/emlYBiCQ0y/JVSad4Yon0fB+kZcMkPLAoYOEuU+0j3uG4SQLjKoX+3tQjIlqkGL1RcJJoV2SgAziV1sjwRTHm2nrSqTsu1jfR8K7dF56b9TuqtBceEGNuxjlM4zyzBQ9E46zB/JHmThd47fh/VD1BnqFMyPgBZtnz+1iW/lYyRL9sztXj0dSzPbucKXXtLhpnZtyHYWuxDXPGkqDq1lT2yECSmAiy9wqJGGdKES8XhnHa9f7CdxOZohi98uSpdy1YQ1ucaaDRtY3pBRIq6bObZSlk9OLO0f6XRYZk+o6RYDfv4s1uClw/Euq0bMHkk8o/7PGtMg5YtuquVA10+Sw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+VHP6lqWU0kAm4W+2l+fwCD039kTHr9WCOlyqL0lqq8=;
+ b=RDFxlQhDXmafW6MiMwj7XVEIFnYCHGg926lzR2nB5DkVAK+pYwZBTguImEbpMEtMkK51JqG3kjzIAk6F211WbmJtDupUwMVT9EWJhz0x55824DnmV6/Y7Epi3bFz2LYxeIwVzN490PY/5/xJhv/2/w71GCx1a1Jq54UgtRx5prcrCmbRKYIx0B+1fRLoK9BULBWWgnC3a5ujcsBilS4PcEpoB7LyIyPZP9Myvyguf5+yomKgc6QVfTdxOHAYcDMBbufa8WZqo62Te/u3+WO6PFb99+GL6pOjbNkCFT+MpAwzxhaMC1LhGlQuTT5FxsMgmPzZxD5MQ0Z7Ngd1OAcsJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+VHP6lqWU0kAm4W+2l+fwCD039kTHr9WCOlyqL0lqq8=;
+ b=RCt+umGIu1Cg0gSIq2nFi3o5s+n6tcTPn5V61cP52KC3FnMqdsuKpiD7g/kIQ0yFiBo7rACj860R8ZCBWUrDWsoZVPf4Hua2kB8dJ/XdnT3NyNnL8mXG2DDUvDa6DL2/P8u/2YenXSLOHQH4VwQtGJq1NqR2scWNnm85cJEOkHc=
+Received: from KL1P15301MB0799.APCP153.PROD.OUTLOOK.COM (2603:1096:820:b1::7)
+ by PUZP153MB0634.APCP153.PROD.OUTLOOK.COM (2603:1096:301:e7::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.11; Thu, 1 Feb
+ 2024 06:17:37 +0000
+Received: from KL1P15301MB0799.APCP153.PROD.OUTLOOK.COM
+ ([fe80::3afb:679f:e653:5c2b]) by KL1P15301MB0799.APCP153.PROD.OUTLOOK.COM
+ ([fe80::3afb:679f:e653:5c2b%5]) with mapi id 15.20.7249.016; Thu, 1 Feb 2024
+ 06:17:37 +0000
+From: Shradha Gupta <shradhagupta@microsoft.com>
+To: Jakub Kicinski <kuba@kernel.org>, Shradha Gupta
+	<shradhagupta@linux.microsoft.com>
+CC: KY Srinivasan <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
+ Abeni <pabeni@redhat.com>, Wojciech Drewek <wojciech.drewek@intel.com>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [EXTERNAL] Re: [PATCH] hv_netvsc:Register VF in netvsc_probe if
+ NET_DEVICE_REGISTER missed
+Thread-Topic: [EXTERNAL] Re: [PATCH] hv_netvsc:Register VF in netvsc_probe if
+ NET_DEVICE_REGISTER missed
+Thread-Index: AQHaVAwjmntiXunnhEuM1B/1uGjqrrD0o7UAgABgxOA=
+Date: Thu, 1 Feb 2024 06:17:36 +0000
+Message-ID:
+ <KL1P15301MB079998B4D03095FB6DCCBC59D3432@KL1P15301MB0799.APCP153.PROD.OUTLOOK.COM>
+References:
+ <1706599135-12651-1-git-send-email-shradhagupta@linux.microsoft.com>
+	<20240130182914.25df5128@kernel.org>
+	<20240131060957.GA15733@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20240131163048.574707f2@kernel.org>
+In-Reply-To: <20240131163048.574707f2@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=7eab432d-8886-41f0-8b44-2e0393cb46ec;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-02-01T06:17:08Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: KL1P15301MB0799:EE_|PUZP153MB0634:EE_
+x-ms-office365-filtering-correlation-id: f6dc6aae-00e3-4e34-1a99-08dc22ed7c09
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ U7L5JeVgk1ts7jC9sZyamKgCCK08l+KXNM0tspMZznbT0JEEEygX4Ep7hHAUvbBsOQ+iMCn4PAHWwEuPPFDjm/D1KDeXBXbJmJpW7Enor1cUC8NbBWVQovEd9JDE7W1I6lcfRZNIMXKTqUVB7gA0Pxl82bbRzkUy8mp4yQgTRvXYBLIPCsztzihMkf5l6bQTpVEgzftd4XQsb1Fyrj0KIgm6VBs67+lJqCw6BZGsRXSg4B3KjWwn8BZXxwZa0PL9GD7xGMDhBKuOJqHOCoCig3Cv76Y3ZxPoOFIsNCIWJ/gLmpbtq4BX3yKxzsRKMG7xiBsUroEQtZkSKj3AkBKbupMlN5ZAYsff71vQu+kBeZTQ8bPTGdrvJtGq9lRSjSQ/1f+DL4PSb88WZ1R2XbgEWQzpu5ZuWxsflWFtBKf6DW7VBFbjj19EYfema42HxSw2e1+DqJacr2GOrYssJqqYKkr+n9PO0b+75Zk1rWD3RqXaMi3K4+H2usIHxr0NjXkiblCHdS3hbdy1XdVnVLIP6AmS1vmPAxMlDsuwkqqghCUgcIC2o2pGVYbtRpuyCBid3rj/8wn9oLGcOeXxzhid5dD0v0NCfCCANGySAs04E6eNWDkVnqveU5bdrbX6Rwpl39LXXrVQ3k+PxoDXSVSwvKbXWr/MWCPwc3/LpaZHh0Q=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1P15301MB0799.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(376002)(39860400002)(396003)(230273577357003)(230922051799003)(230173577357003)(64100799003)(451199024)(186009)(1800799012)(83380400001)(41300700001)(9686003)(38100700002)(122000001)(8676002)(52536014)(8936002)(5660300002)(4326008)(8990500004)(7416002)(53546011)(2906002)(10290500003)(478600001)(6506007)(7696005)(54906003)(64756008)(66446008)(66476007)(66556008)(71200400001)(66946007)(76116006)(316002)(110136005)(38070700009)(82960400001)(86362001)(33656002)(82950400001)(55016003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?yYZtXsHu8q+QXvea+8u4IaUDS/yWena2W0zqeFy/O3QyFVq0xp5u4vqUEVOr?=
+ =?us-ascii?Q?rgcaY4trYvI7k9HXioyrPc1s5pW3Q/EvMosRj8LCyuwkV8M+InYjjj0s87Go?=
+ =?us-ascii?Q?lzVQ43SdhCssOQkTMqMz0gdPkkDzt0JsA7JhNZnZeSAXO8Dvbg89BrV6zXYq?=
+ =?us-ascii?Q?DJ74UE/cNVdJX1Y5aww0wuhWGsfvve+edtI3JufDCuAVpf51Wx+SdE2EAlQ6?=
+ =?us-ascii?Q?DEiEc8A+l67CTy70RIHGSRQG3uWYl4EhQ00xCpJExfqNxF99E0r2NEHaC+pM?=
+ =?us-ascii?Q?S/act4mk5pK0BqLv+jj7W5M4EOe3SCk9w1EPL2WK+NKRkXQuTVIGHo0seMcv?=
+ =?us-ascii?Q?czmVC0bVqLYePpoQW56MchI19XAl544FCg3gChGCMvdtEPYVILaGn9gdpb76?=
+ =?us-ascii?Q?QwgLFFVYU2rX7OLV+IgW8xtK/WAsS/uaLpNVdU9JauNlniZBeLS7Vm+2GxpW?=
+ =?us-ascii?Q?YZNLMdUrBFkQvQfb0PS1Sx3zAZeFrXe/OeA1efYcncJmDxhkt515kJHutcoR?=
+ =?us-ascii?Q?bBATyH8NBzfBGm1pg0oN0iJ3l12ddod/g1MbLhYMhTgJy4vNmjgp7RqoqTxD?=
+ =?us-ascii?Q?UTV8J/UUdICKjxTCjhftWBbkGX0sy3RCHtjqc4g5RMF4z70FhJ+Mtfi3hfrH?=
+ =?us-ascii?Q?Q8oQj12eGBhVilvI+o7yWcCPMaYwWE1/vpkmzqCfDSRskz0n8PNxzafZHw+a?=
+ =?us-ascii?Q?b0arGRB3SwCUBJhm3qS8+RSeCC3sFYbF/beMZwFPJJrcc9ZcPvbc/IDdJWJL?=
+ =?us-ascii?Q?o/mm/jimvQ9FrP9hXkYbKXng1GutLmGhtm4t7g//717XDepk36y516bUvMPK?=
+ =?us-ascii?Q?peMP45BbbVJCl0YQylvS2cSgEkT5Mfhe3oSy2CUctScq3yPvO1A50rsYplmE?=
+ =?us-ascii?Q?T1s724/UzCr/63ZTt7Q2dlqzAf7f/yZNVkUQZvEgNVbLjcgw1gF/+8qrCIz/?=
+ =?us-ascii?Q?tZlE9zrvsLni72VWYdYp0bd1X+qpStjsHwGiXXBpvxQAiv3fgeb6JaMH1EqF?=
+ =?us-ascii?Q?CgTUN3sdFpnLRE8rU4SLD4TR26OUt0s837pFy5EDQd9VuD2yokzR3GL8y6tN?=
+ =?us-ascii?Q?6Hppgq8FwVl+WfFov66tQdiKNmR+khtvEcJ53JXBQz8ItQiSKssWyt+IWEBl?=
+ =?us-ascii?Q?KmwnR/KsortWF9WgaFbyTcc2d6aYbqU5JNaPSLaInuUYvx2eTrk5FibXKGgB?=
+ =?us-ascii?Q?Fkbe3HMREj4cn+KNEb/RGSI9ABzSxO6qYXiAqSZDNMD5YED150NOca8TulwQ?=
+ =?us-ascii?Q?1mivwaUEzTXtwJ6cW/GxIjI0HHZo2EnwZmVpc8ulFeGQy4RsPSIBTOCxAO/q?=
+ =?us-ascii?Q?IaIFzhvtZEttUED5wLI3HLBhJ8vf7mpMzimUtDAqNpoysOVxo9I1ad7u+zBG?=
+ =?us-ascii?Q?PxDgOetMztVJcNTmK3yhpxN6biOBnGd51Sf/lGAFp/5FIqf/O7MKbjVfW3yB?=
+ =?us-ascii?Q?fWDFmKhOIP3COwdYu/C9dIXY2mhbYxQO4PIis1hTvG1L8TXij+l8EcoihVR4?=
+ =?us-ascii?Q?YGHmXiBWk8xBPnMsHwkbCeadGprnZTWhzncLQGBcJffjfMupMlGqad9NtGEE?=
+ =?us-ascii?Q?dMFVQWkqVmXHeuk4DUJblvclcZXKvPMUXjKBgH5h?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7cc28677-f7d1-4aba-8557-66c685115074@linux.intel.com>
-User-Agent: NeoMutt/20171215
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: KL1P15301MB0799.APCP153.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: f6dc6aae-00e3-4e34-1a99-08dc22ed7c09
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Feb 2024 06:17:36.3052
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kFGMtiLOhC+lTVOhMZNP7Uej/veUxI9s+mO49Bt/77SgZN9422RjlzY8QH4u7B0lC80vPLC2MpcBBd4rG1gjBHRKlzFgqyceqVbuTyGP/NU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PUZP153MB0634
 
-On Wed, Jan 24, 2024 at 09:17:15AM +0800, Binbin Wu wrote:
->
->
-> On 1/23/2024 7:52 AM, isaku.yamahata@intel.com wrote:
-> > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> >
-> > TDX has its own limitation on the maximum number of vcpus that the guest
-> > can accommodate.  Allow x86 kvm backend to implement its own KVM_ENABLE_CAP
-> > handler and implement TDX backend for KVM_CAP_MAX_VCPUS.  user space VMM,
-> > e.g. qemu, can specify its value instead of KVM_MAX_VCPUS.
-> For legacy VM, KVM just provides the interface to query the max_vcpus.
-> Why TD needs to provide a interface for userspace to set the limitation?
-> What's the scenario?
+I'll fix this and resend. Thanks
 
-I think the reason is TDH.MNG.INIT needs it:
+Regards,
+Shradha
 
-TD_PARAMS:
-    MAX_VCPUS:
-        offset: 16 bytes.
-        type: Unsigned 16b Integer.
-        size: 2.
-        Description: Maximum number of VCPUs.
+-----Original Message-----
+From: Jakub Kicinski <kuba@kernel.org>=20
+Sent: Thursday, February 1, 2024 6:01 AM
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.co=
+m>; Wei Liu <wei.liu@kernel.org>; Dexuan Cui <decui@microsoft.com>; David S=
+ Miller <davem@davemloft.net>; Eric Dumazet <edumazet@google.com>; Paolo A=
+beni <pabeni@redhat.com>; Wojciech Drewek <wojciech.drewek@intel.com>; linu=
+x-hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.=
+org; Shradha Gupta <shradhagupta@microsoft.com>; stable@vger.kernel.org
+Subject: [EXTERNAL] Re: [PATCH] hv_netvsc:Register VF in netvsc_probe if NE=
+T_DEVICE_REGISTER missed
 
-May better to clarify this in the commit yet.
+On Tue, 30 Jan 2024 22:09:57 -0800 Shradha Gupta wrote:
+> This patch applies to net, which is missed in the subject. I will fix=20
+> this in the new version of the patch. Thanks
 
->
->
-> >
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > ---
-> > v18:
-> > - use TDX instead of "x86, tdx" in subject
-> > - use min(max_vcpu, TDX_MAX_VCPU) instead of
-> >    min3(max_vcpu, KVM_MAX_VCPU, TDX_MAX_VCPU)
-> > - make "if (KVM_MAX_VCPU) and if (TDX_MAX_VCPU)" into one if statement
-> > ---
-> >   arch/x86/include/asm/kvm-x86-ops.h |  2 ++
-> >   arch/x86/include/asm/kvm_host.h    |  2 ++
-> >   arch/x86/kvm/vmx/main.c            | 22 ++++++++++++++++++++++
-> >   arch/x86/kvm/vmx/tdx.c             | 29 +++++++++++++++++++++++++++++
-> >   arch/x86/kvm/vmx/x86_ops.h         |  5 +++++
-> >   arch/x86/kvm/x86.c                 |  4 ++++
-> >   6 files changed, 64 insertions(+)
-> >
-> > diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
-> > index 943b21b8b106..2f976c0f3116 100644
-> > --- a/arch/x86/include/asm/kvm-x86-ops.h
-> > +++ b/arch/x86/include/asm/kvm-x86-ops.h
-> > @@ -21,6 +21,8 @@ KVM_X86_OP(hardware_unsetup)
-> >   KVM_X86_OP(has_emulated_msr)
-> >   KVM_X86_OP(vcpu_after_set_cpuid)
-> >   KVM_X86_OP(is_vm_type_supported)
-> > +KVM_X86_OP_OPTIONAL(max_vcpus);
-> > +KVM_X86_OP_OPTIONAL(vm_enable_cap)
-> >   KVM_X86_OP(vm_init)
-> >   KVM_X86_OP_OPTIONAL(vm_destroy)
-> >   KVM_X86_OP_OPTIONAL_RET0(vcpu_precreate)
-> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> > index 26f4668b0273..db44a92e5659 100644
-> > --- a/arch/x86/include/asm/kvm_host.h
-> > +++ b/arch/x86/include/asm/kvm_host.h
-> > @@ -1602,7 +1602,9 @@ struct kvm_x86_ops {
-> >   	void (*vcpu_after_set_cpuid)(struct kvm_vcpu *vcpu);
-> >   	bool (*is_vm_type_supported)(unsigned long vm_type);
-> > +	int (*max_vcpus)(struct kvm *kvm);
-> >   	unsigned int vm_size;
-> > +	int (*vm_enable_cap)(struct kvm *kvm, struct kvm_enable_cap *cap);
-> >   	int (*vm_init)(struct kvm *kvm);
-> >   	void (*vm_destroy)(struct kvm *kvm);
-> > diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
-> > index 50da807d7aea..4611f305a450 100644
-> > --- a/arch/x86/kvm/vmx/main.c
-> > +++ b/arch/x86/kvm/vmx/main.c
-> > @@ -6,6 +6,7 @@
-> >   #include "nested.h"
-> >   #include "pmu.h"
-> >   #include "tdx.h"
-> > +#include "tdx_arch.h"
-> >   static bool enable_tdx __ro_after_init;
-> >   module_param_named(tdx, enable_tdx, bool, 0444);
-> > @@ -16,6 +17,17 @@ static bool vt_is_vm_type_supported(unsigned long type)
-> >   		(enable_tdx && tdx_is_vm_type_supported(type));
-> >   }
-> > +static int vt_max_vcpus(struct kvm *kvm)
-> > +{
-> > +	if (!kvm)
-> > +		return KVM_MAX_VCPUS;
-> > +
-> > +	if (is_td(kvm))
-> > +		return min(kvm->max_vcpus, TDX_MAX_VCPUS);
-> > +
-> > +	return kvm->max_vcpus;
-> > +}
-> > +
-> >   static int vt_hardware_enable(void)
-> >   {
-> >   	int ret;
-> > @@ -54,6 +66,14 @@ static void vt_hardware_unsetup(void)
-> >   	vmx_hardware_unsetup();
-> >   }
-> > +static int vt_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
-> > +{
-> > +	if (is_td(kvm))
-> > +		return tdx_vm_enable_cap(kvm, cap);
-> > +
-> > +	return -EINVAL;
-> > +}
-> > +
-> >   static int vt_vm_init(struct kvm *kvm)
-> >   {
-> >   	if (is_td(kvm))
-> > @@ -91,7 +111,9 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
-> >   	.has_emulated_msr = vmx_has_emulated_msr,
-> >   	.is_vm_type_supported = vt_is_vm_type_supported,
-> > +	.max_vcpus = vt_max_vcpus,
-> >   	.vm_size = sizeof(struct kvm_vmx),
-> > +	.vm_enable_cap = vt_vm_enable_cap,
-> >   	.vm_init = vt_vm_init,
-> >   	.vm_destroy = vmx_vm_destroy,
-> > diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> > index 8c463407f8a8..876ad7895b88 100644
-> > --- a/arch/x86/kvm/vmx/tdx.c
-> > +++ b/arch/x86/kvm/vmx/tdx.c
-> > @@ -100,6 +100,35 @@ struct tdx_info {
-> >   /* Info about the TDX module. */
-> >   static struct tdx_info *tdx_info;
-> > +int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
-> > +{
-> > +	int r;
-> > +
-> > +	switch (cap->cap) {
-> > +	case KVM_CAP_MAX_VCPUS: {
-> > +		if (cap->flags || cap->args[0] == 0)
-> > +			return -EINVAL;
-> > +		if (cap->args[0] > KVM_MAX_VCPUS ||
-> > +		    cap->args[0] > TDX_MAX_VCPUS)
-> > +			return -E2BIG;
-> > +
-> > +		mutex_lock(&kvm->lock);
-> > +		if (kvm->created_vcpus)
-> > +			r = -EBUSY;
-> > +		else {
-> > +			kvm->max_vcpus = cap->args[0];
-> > +			r = 0;
-> > +		}
-> > +		mutex_unlock(&kvm->lock);
-> > +		break;
-> > +	}
-> > +	default:
-> > +		r = -EINVAL;
-> > +		break;
-> > +	}
-> > +	return r;
-> > +}
-> > +
-> >   static int tdx_get_capabilities(struct kvm_tdx_cmd *cmd)
-> >   {
-> >   	struct kvm_tdx_capabilities __user *user_caps;
-> > diff --git a/arch/x86/kvm/vmx/x86_ops.h b/arch/x86/kvm/vmx/x86_ops.h
-> > index 6e238142b1e8..3a3be66888da 100644
-> > --- a/arch/x86/kvm/vmx/x86_ops.h
-> > +++ b/arch/x86/kvm/vmx/x86_ops.h
-> > @@ -139,12 +139,17 @@ int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops);
-> >   void tdx_hardware_unsetup(void);
-> >   bool tdx_is_vm_type_supported(unsigned long type);
-> > +int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap);
-> >   int tdx_vm_ioctl(struct kvm *kvm, void __user *argp);
-> >   #else
-> >   static inline int tdx_hardware_setup(struct kvm_x86_ops *x86_ops) { return -EOPNOTSUPP; }
-> >   static inline void tdx_hardware_unsetup(void) {}
-> >   static inline bool tdx_is_vm_type_supported(unsigned long type) { return false; }
-> > +static inline int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
-> > +{
-> > +	return -EINVAL;
-> > +};
-> >   static inline int tdx_vm_ioctl(struct kvm *kvm, void __user *argp) { return -EOPNOTSUPP; }
-> >   #endif
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index dd3a23d56621..a1389ddb1b33 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -4726,6 +4726,8 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
-> >   		break;
-> >   	case KVM_CAP_MAX_VCPUS:
-> >   		r = KVM_MAX_VCPUS;
-> > +		if (kvm_x86_ops.max_vcpus)
-> > +			r = static_call(kvm_x86_max_vcpus)(kvm);
-> >   		break;
-> >   	case KVM_CAP_MAX_VCPU_ID:
-> >   		r = KVM_MAX_VCPU_IDS;
-> > @@ -6683,6 +6685,8 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
-> >   		break;
-> >   	default:
-> >   		r = -EINVAL;
-> > +		if (kvm_x86_ops.vm_enable_cap)
-> > +			r = static_call(kvm_x86_vm_enable_cap)(kvm, cap);
-> >   		break;
-> >   	}
-> >   	return r;
->
->
+
+$ git checkout net/main
+[...]
+$ git am raw
+Applying: hv_netvsc:Register VF in netvsc_probe if NET_DEVICE_REGISTER miss=
+ed
+error: patch failed: drivers/net/hyperv/netvsc_drv.c:42
+error: drivers/net/hyperv/netvsc_drv.c: patch does not apply Patch failed a=
+t 0001 hv_netvsc:Register VF in netvsc_probe if NET_DEVICE_REGISTER missed
+hint: Use 'git am --show-current-patch=3Ddiff' to see the failed patch When=
+ you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
 
