@@ -1,130 +1,143 @@
-Return-Path: <linux-kernel+bounces-48415-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0825845BA7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:34:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 015DC845BAB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:34:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 833531F2C270
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:34:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB17628B563
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:34:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9660D62159;
-	Thu,  1 Feb 2024 15:34:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C9AD6216E;
+	Thu,  1 Feb 2024 15:34:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XbxzJq7g"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="lDXRXzRD"
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D9671E894
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 15:34:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 352DB626B0
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 15:34:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706801655; cv=none; b=GZMgwE2oga95MdzeIXGkrhRR/mlyT9WdH8imcx9x5cqXQT4w3Qe+AWEjXRx8+I+YeUfVsrwwO/VQQfb6s6kBhLR5rCiDd71EWDbFg27aGHMQ4C4tr6cUVwb98POG8C/9GtE8hwDBrUkoIBTCV/uRHqiFyjOccxq5wPC3nwackew=
+	t=1706801678; cv=none; b=o+a5zv7WZbIVPrSTas99b08ShojMBEY2BuxIzsDeHA5/7o4UCt1zjQUCNkwt1nDLSR/hdHr2Hq5w6SejmJiVkMjC+DQ/hD5eIpY1/crl/Q7U/87B/P72QuUrtUh15eAMRBdVYa2dmIlzSQTa7JZC9ggX0MoRaulkXnSkM/JclTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706801655; c=relaxed/simple;
-	bh=V5+D8HewZFxaQtgiLDM3YvRfVj6YfWYNUH5qXt8yw0I=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=VFDRAcQXjys+L28fPgXRKxs0y5mSBAJVcoXBYUmqk+hwYNYpL7ZDOrzOhwrfo5niAZg41x67xY4gEJBDlaX8p0tcsaF4WpJM71Ssbbljspq3DZ71RiVZK0rcF4AEDfJoZ9zaoi/9mCvX80yfOwl9wutBlojE52iLjuiDDLqUAw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XbxzJq7g; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706801653;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PLmnE/gYkTuSx/M0LwIfDVXAISrRFGPert75rch5DJk=;
-	b=XbxzJq7grCYt6QOeWS8huumBf65KXkPKhzJxSGVfPbrDgyP0vgQA8+9vWfCoLGANncke9i
-	sqZnvUkp2mqJciEPpacxooTMOrle/CYOEPJfY3XzqbGYJ3Ij/Sy0D0taEl5123uc8ar2xH
-	Tc3nZxVCNNSMBjHj4wIJlNDDeNfn7Rk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-28-JXOlJ8RbOkG3YtoFU44Oiw-1; Thu, 01 Feb 2024 10:34:09 -0500
-X-MC-Unique: JXOlJ8RbOkG3YtoFU44Oiw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CA6E6848C0A;
-	Thu,  1 Feb 2024 15:34:08 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.192.51])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id B13A81C060AF;
-	Thu,  1 Feb 2024 15:34:06 +0000 (UTC)
-From: Florian Weimer <fweimer@redhat.com>
-To: Yang Shi <shy828301@gmail.com>
-Cc: oliver.sang@intel.com,  riel@surriel.com,  fengwei.yin@intel.com,
-  willy@infradead.org,  cl@linux.com,  ying.huang@intel.com,
-  akpm@linux-foundation.org,  linux-kernel@vger.kernel.org,
-  linux-mm@kvack.org
-Subject: Re: [PATCH 2/2] mm: mmap: map MAP_STACK to VM_NOHUGEPAGE
-References: <20231221065943.2803551-1-shy828301@gmail.com>
-	<20231221065943.2803551-2-shy828301@gmail.com>
-	<878r46ym4b.fsf@oldenburg.str.redhat.com>
-	<CAHbLzkq1ah6y-dCgA0rFePNn3FsE8ebuSNd+jaS8sO51a=X9Yw@mail.gmail.com>
-Date: Thu, 01 Feb 2024 16:34:01 +0100
-In-Reply-To: <CAHbLzkq1ah6y-dCgA0rFePNn3FsE8ebuSNd+jaS8sO51a=X9Yw@mail.gmail.com>
-	(Yang Shi's message of "Wed, 31 Jan 2024 10:46:48 -0800")
-Message-ID: <87frycryfq.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.3 (gnu/linux)
+	s=arc-20240116; t=1706801678; c=relaxed/simple;
+	bh=13PcTdhaGFdTv+3l6uEyVq/w0uQbXHOvcDFwClNLKZg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GfLreZuFaze8GIu8gU/ODgAf0zwgf3ZjK5x1ql5ZWg8yWdmRAS30G1TYKXXr4a55fyPtvrmKeZkghoBGMG2XC/PuOa5JiTsPmhwjK67KV3kUr/fuTJIOkYf/mBwLCTJhmqwlRCV0ENF7LyC04cHLsyLB3VS8MbXoxN6cuWk0NDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=lDXRXzRD; arc=none smtp.client-ip=209.85.222.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-783d4b3a00bso73967985a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 07:34:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706801675; x=1707406475; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=zPvZs4K/sfx3gwEPHE0K6OK7OOwWGbcE7kwIuj736Gk=;
+        b=lDXRXzRDu4Hdu7j+0XXXm/fY+D/Q9NDZOGdiUVNlhMTZDii16yItoEX7zpLas6unVT
+         QQFU6zy8RDuqiiF/xpO72sqIgyA0abeaIW9Ysx/f8DXpuX8jcVFv7JpVk6AucMzeNYjh
+         Km2jpznZC+SGUA+NJexeHi1hq4p7RTJlLmQ2ZFxIUAItnI7SXtiZ5xwDflsPfW+RHnb7
+         IoNw0yhMaiCMF44q0TZGYe1kFi8hYY8V5AdCITOCGDJGLEALb3PXU7miyoPf+zF7ZriM
+         E8NC+yx42Ru6alCZC6fpZZGOElwyRucX0ovliA4nmaU6iM6gfKniz9CwJwu+T5zx7o5R
+         DHFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706801675; x=1707406475;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zPvZs4K/sfx3gwEPHE0K6OK7OOwWGbcE7kwIuj736Gk=;
+        b=bMKxU6Q4ftll9z/lAMW7+dC/26RM+PH14HOT+ulgRpmB118ULNkDMqnJR8crZmNlep
+         BS9epvO1rH0kbjpGc9sCQXWiPqOCayfRP2xKEL+xAr3UERON52BBqoUAOYZ1NjhJWcp8
+         PGysrSicIjUp+qo6P8gfRFn6H57e7+S/VwtlCsuKJms9Z5ONlwD+9iLeB2AWZsgU9AxV
+         Nx2M47ahz2WPm5m1zMBPPmxxJncLKqgM5HK4hJT+BZQnq3tOXjyzWWO1HYliucoiYvOB
+         Wbl5fQIf/6lJ2FTsxZ0j9gjH0PnM82ZpdBk4Nn6ZkzVQHagpvL/0lkx16v9eqyY/7s4U
+         fD4A==
+X-Gm-Message-State: AOJu0Yybyn8xe+H0bkpXhEZzl791Ik1+UEgxJCxWffDC+cgHHg5UDKHk
+	DbJgGkcXhTJIY5jwKTvsXd380kEZO+iOdS1CU0TC+9sf57JaykGvo/oEHa32x1w=
+X-Google-Smtp-Source: AGHT+IGi/XmGKqr5Cs1gVK8YipQ2XHKTRdRpKkoeUGmO9YOgPFP2kvzWajFfZcZoTktkg1gfV2ePmA==
+X-Received: by 2002:a05:620a:26a2:b0:783:5b21:5746 with SMTP id c34-20020a05620a26a200b007835b215746mr3935847qkp.43.1706801674936;
+        Thu, 01 Feb 2024 07:34:34 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWJY1BAiTTEZMvicUpiSL9Kon6fKRwF3bWl6PwAZJC7iyhfRfrydfsJ5C+fXJA32s9ApqaBsBBEUHSHo+Kkzhp5r3fZeOOpdfU4yoeNqMjLSkqBvLpTGA+NCh7wpjyeS0dIhEriuuIqIg0XlRtefRk/FxGDcMT+LJ3nk9UrZ8+YDxTCeYS4HCV65LhB3VeDXyQLjxCuN43UvgZ4s3C07VVvH27WkDy02wbD4TIB90t8t01GhyO8NFCmWhrz8g1bfvvRi2zXbx0l7ONCw4n9pMZkgp2Su7ETPyA8mZxI6hVrywGoAd7GwZD5BdclWZjquE3kE1d8XMDVDzKuORnJ7nLiTwE3KbgWgr0+5ojToooEIB5Xb08GaDDWTwmCQqXczCpIp3eKjOUeaIOtORQcfOu8Fg==
+Received: from localhost (2603-7000-0c01-2716-97cf-7b55-44af-acd6.res6.spectrum.com. [2603:7000:c01:2716:97cf:7b55:44af:acd6])
+        by smtp.gmail.com with ESMTPSA id vy15-20020a05620a490f00b00784048d795asm2918077qkn.108.2024.02.01.07.34.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 07:34:34 -0800 (PST)
+Date: Thu, 1 Feb 2024 10:34:28 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: "T.J. Mercier" <tjmercier@google.com>, Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Efly Young <yangyifei03@kuaishou.com>, android-mm@google.com,
+	yuzhao@google.com, cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcg: Use larger chunks for proactive reclaim
+Message-ID: <20240201153428.GA307226@cmpxchg.org>
+References: <20240131162442.3487473-1-tjmercier@google.com>
+ <q3m42iuxahsjrskuio3ajz2edrisiw56cwy2etx2jyht5l7jzq@ttbsrvgu4mvl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <q3m42iuxahsjrskuio3ajz2edrisiw56cwy2etx2jyht5l7jzq@ttbsrvgu4mvl>
 
-* Yang Shi:
+On Thu, Feb 01, 2024 at 02:57:22PM +0100, Michal Koutný wrote:
+> Hello.
+> 
+> On Wed, Jan 31, 2024 at 04:24:41PM +0000, "T.J. Mercier" <tjmercier@google.com> wrote:
+> >  		reclaimed = try_to_free_mem_cgroup_pages(memcg,
+> > -					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
+> > +					max((nr_to_reclaim - nr_reclaimed) / 4,
+> > +					    (nr_to_reclaim - nr_reclaimed) % 4),
+> 
+> The 1/4 factor looks like magic.
 
-> On Tue, Jan 30, 2024 at 11:53=E2=80=AFPM Florian Weimer <fweimer@redhat.c=
-om> wrote:
->>
->> * Yang Shi:
->>
->> > From: Yang Shi <yang@os.amperecomputing.com>
->> >
->> > The commit efa7df3e3bb5 ("mm: align larger anonymous mappings on THP
->> > boundaries") incured regression for stress-ng pthread benchmark [1].
->> > It is because THP get allocated to pthread's stack area much more poss=
-ible
->> > than before.  Pthread's stack area is allocated by mmap without VM_GRO=
-WSDOWN
->> > or VM_GROWSUP flag, so kernel can't tell whether it is a stack area or=
- not.
->> >
->> > The MAP_STACK flag is used to mark the stack area, but it is a no-op on
->> > Linux.  Mapping MAP_STACK to VM_NOHUGEPAGE to prevent from allocating
->> > THP for such stack area.
->>
->> Doesn't this introduce a regression in the other direction, where
->> workloads expect to use a hugepage TLB entry for the stack?
->
-> Maybe, it is theoretically possible. But AFAICT, the real life
-> workloads performance usually gets hurt if THP is used for stack.
-> Willy has an example:
->
-> https://lore.kernel.org/linux-mm/ZYPDwCcAjX+r+g6s@casper.infradead.org/#t
->
-> And avoiding THP on stack is not new, VM_GROWSDOWN | VM_GROWSUP areas
-> have been applied before, this patch just extends this to MAP_STACK.
+It's just cutting the work into quarters to balance throughput with
+goal accuracy. It's no more or less magic than DEF_PRIORITY being 12,
+or SWAP_CLUSTER_MAX being 32.
 
-If it's *always* beneficial then we should help it along in glibc as
-well.  We've started to offer a tunable in response to this observation
-(also paper over in OpenJDK):
+> Commit 0388536ac291 says:
+> | In theory, the amount of reclaimed would be in [request, 2 * request).
 
-  Make thread stacks not use huge pages
-  <https://bugs.openjdk.org/browse/JDK-8303215>
+Looking at the code, I'm not quite sure if this can be read this
+literally. Efly might be able to elaborate, but we do a full loop of
+all nodes and cgroups in the tree before checking nr_to_reclaimed, and
+rely on priority level for granularity. So request size and complexity
+of the cgroup tree play a role. I don't know where the exact factor
+two would come from.
 
-But this is specifically about RSS usage, and not directly about
-reducing TLB misses etc.
+IMO it's more accurate to phrase it like this:
 
-Thanks,
-Florian
+Reclaim tries to balance nr_to_reclaim fidelity with fairness across
+nodes and cgroups over which the pages are spread. As such, the bigger
+the request, the bigger the absolute overreclaim error. Historic
+in-kernel users of reclaim have used fixed, small request batches to
+approach an appropriate reclaim rate over time. When we reclaim a user
+request of arbitrary size, use decaying batches to manage error while
+maintaining reasonable throughput.
 
+> Doesn't this suggest 1/2 as a better option? (I didn't pursue the
+> theory.)
+
+That was TJ's first suggestion as well, but as per above I suggested
+quartering as a safer option.
+
+> Also IMO importantly, when nr_to_reclaim - nr_reclaimed is less than 8,
+> the formula gives arbitrary (unrelated to delta's magnitude) values.
+
+try_to_free_mem_cgroup_pages() rounds up to SWAP_CLUSTER_MAX. So the
+error margin is much higher at the smaller end of requests anyway.
+But practically speaking, users care much less if you reclaim 32 pages
+when 16 were requested than if you reclaim 2G when 1G was requested.
 
