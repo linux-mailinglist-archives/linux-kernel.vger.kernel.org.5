@@ -1,130 +1,110 @@
-Return-Path: <linux-kernel+bounces-48912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DBF6846322
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:08:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5EC5846324
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:08:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FAD31C24ED4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:08:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56431B23429
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:08:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C5303FE23;
-	Thu,  1 Feb 2024 22:08:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8449F405FB;
+	Thu,  1 Feb 2024 22:08:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="arNLs2Vi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ei+PtNxO"
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF833F8D9;
-	Thu,  1 Feb 2024 22:08:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F6E1405DB
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 22:08:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706825288; cv=none; b=a3t3yCynnPFyFu1Hej/zbfs/UFWc/jeApu6QIUPke3Wu8OZRQuJ4F9tzXW9l0yqZuLWLiTJraDqnqg6t8LaDoTDZ8fd+5/j0VXMQV34vsSQfTEPkNuMGs8Lb9ftJfb0rb0Il1217tOzL+vu+iv20ymbrjml0QOUuTwPsGF9G7sM=
+	t=1706825319; cv=none; b=esK6l7ddgY0vVVdzUh8tb+BY+jmc3OxHT3jdixQNjSDMY4Q2uRuIVIC+iRTJlmfcu8qaimdjzi0A2TfJIifUgB5b1uv0bJUyqgQbS282BvyoH5oGS+N0s/Vr0Ct+LUucFEpcyVhmJQPhBOHTpwQedqiVMnCZ4DG6FTXSuq/2Oq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706825288; c=relaxed/simple;
-	bh=hQhyDtZvF8uLG9TardzvTE09AI07Z4RnP2sRVzETQc4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fLpzj2XAh2XAFUogOi4oo8/ZU5CHG4g7rqnaZB350w1cv4KG1o9V0QI2oFx8AotulElo7IXKJKKtvqDXGKgVrvXjs6E7gj/bS65d7v1SwG5Ke/JCH7TlyBzs397kxWLvHSyaxCXLAW7MkKtddlLaqejiB/AaG1cVl0EUUSWxZt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=arNLs2Vi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8901C433C7;
-	Thu,  1 Feb 2024 22:08:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706825288;
-	bh=hQhyDtZvF8uLG9TardzvTE09AI07Z4RnP2sRVzETQc4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=arNLs2Vi/LqVcmpe22RClErs4NOHdZtfpgtEu6tqLDJ6aBWXExjw+w5PSctCil97W
-	 XalDQETiQW2gYN8Gk1iWByfzaaOblw7ZjJOUumjFX9qdx2fvzX4gytiqteGz2yd6nL
-	 RTig1cXNadD8a4yrv24NqBy+X6vX0FFL1jJzcMYHq+k/hOHvbq6DMWTHFJ5rHhib/f
-	 4Cr+AXp3iRpV5Ue8Z4jdsBcg5a7NPvRPDA1D7km08Kmh4rRzMIeOpNDmfE5Ww5Y3mg
-	 40PVZjC1YGXrB2iipwfJil94w6KexlOZjChUFjgEvK37Rkjd8AEOQvMZ3Md0VdfXtm
-	 nuFMZ1lBWrbYg==
-Date: Thu, 1 Feb 2024 16:08:05 -0600
-From: Bjorn Andersson <andersson@kernel.org>
-To: Johan Hovold <johan@kernel.org>
-Cc: Bjorn Andersson <quic_bjorande@quicinc.com>, 
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>, Jiri Kosina <jikos@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Johan Hovold <johan+linaro@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Konrad Dybcio <konrad.dybcio@somainline.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Rob Herring <robh@kernel.org>
-Subject: Re: Re: [PATCH v4 1/3] dt-bindings: HID: i2c-hid: Document
- reset-related properties
-Message-ID: <luzkdel2hshufku2gjgbsvfhxkmpg5eo6ekythuawaiz6kibvs@lsajkktmetkv>
-References: <20240131-x13s-touchscreen-v4-0-39c0f9925d3c@quicinc.com>
- <20240131-x13s-touchscreen-v4-1-39c0f9925d3c@quicinc.com>
- <Zbts-9tRDPcXbhYi@hovoldconsulting.com>
+	s=arc-20240116; t=1706825319; c=relaxed/simple;
+	bh=57YEKljpvIdaEyztgPvcMzGTUopVvcjnp5jXaXIZjT0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Zne/p2XcY44YXwQS2fVuB41Xvow4xVKmlVbsRxQMSwwZ8R8aqUPWHfbDMuXuBnCVde4TrBQcMyZO5CKpArdOTI4PJ9GmkrtZKZR5qgfuNSSoCdvfIR5O84dFksfovtLj0uK+M24Fr7V4+dufaBjS2zk9ELfHBCl9EeBJimULYZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ei+PtNxO; arc=none smtp.client-ip=209.85.161.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-59a1e21b0ebso325667eaf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 14:08:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706825317; x=1707430117; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=57YEKljpvIdaEyztgPvcMzGTUopVvcjnp5jXaXIZjT0=;
+        b=Ei+PtNxOhv+OcFMejcBT6zkhpmUdqGiw1uAdpR4I/fWdC61wsS+YVMvaVob/mVCUe5
+         uauuCS4ZhP/I0TCWkdzuWkxdbYm8Lc5W04/jbwiyR4RQ5EV4lc4EWImPr0z2MR+HgPMv
+         tRHwnbjilTdLCsEUuCNIr3yYbASRQCgZRz3+8Q9Kxo1f1Cz/X9rtOfMQvs+0oPHDaKEJ
+         nNLWxQufb4xT5MboGvxNaLtrCnEia/N7WqQw4PiFr7NItckGm/857CvZVJ5XLgmT3Ag6
+         3cCZ9utRoWPwQYg4H3BNOMq+o1ozAtmBH/L5hjR+DJQDCq9ZSOrZNHhuHkpe4HLq3ny7
+         7B+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706825317; x=1707430117;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=57YEKljpvIdaEyztgPvcMzGTUopVvcjnp5jXaXIZjT0=;
+        b=M+gZdC0rN7hYpryFTo2skZn4cqp6sKNtOwy+jA6BzkiyAOprFslAAI9vorfHT608CD
+         2jeCHJf6ROLgAHx/s9+7OCjdk/Rb0KB8xXv59IFTt4knVJnhlUU+NzB8hS/jOKBdq0wc
+         +mgDtLG4rrN+OpnJbeBk356XvJI3JG0BhEzoY5l2klDh0QnEyxeOjNA0N3G01NbqLEya
+         Ftk1Ad48+Dkb0ongWwpHncBiCTAB/N0pJQTJdlA6pu0MSDrk2PGLtWjutxceSw9AFiem
+         9mlDL68q43pZnNSECWnq76Wv+p/hja1wVAm/TqlS9Bu9TLhidCo77kdzp6w4uYhg7wrh
+         T7nQ==
+X-Gm-Message-State: AOJu0Yxh2kKl6wB4V/wRt4OrUvaFQtxe+VG8nNPxWUKWAif/llln2icE
+	K6kjcHIcpOfPNxq++vIVjVAu4vYi4sSEw0iTbpCZq+sok/wfpEcj6sFzDxT7VO8n3kE+R9tYcYE
+	9G46T0bmSqXEFw8U9us+V9ucK+6I=
+X-Google-Smtp-Source: AGHT+IEOIBfQ2UplIvzsTdOJTI/sbMj24ykj5Vc7LdTbiXyLr+a0IQ33PIxDi2arww27gLLm92dW1FnmKPmL05KG2tM=
+X-Received: by 2002:a05:6820:2c8a:b0:59a:bfb:f556 with SMTP id
+ dx10-20020a0568202c8a00b0059a0bfbf556mr4076610oob.0.1706825317161; Thu, 01
+ Feb 2024 14:08:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zbts-9tRDPcXbhYi@hovoldconsulting.com>
+References: <CABXGCsOzpRPZGg23QqJAzKnqkZPKzvieeg=W7sgjgi3q0pBo0g@mail.gmail.com>
+ <CANpmjNN-5PpSQ1A_9aM3u4ei74HuvCoThiLAHi=reXXQwer67A@mail.gmail.com>
+ <CANpmjNM=92PcmODNPB4DrAhfLY=0mePCbyG9=8BGrQ4MC0xZ6w@mail.gmail.com>
+ <CABXGCsM+9TxxY-bOUw6MyRV7CSZsyQpfDgvwgaBBKk9UONJkBw@mail.gmail.com>
+ <CABXGCsOp3Djn5uQYb3f=4k1m9rY9y3Ext9SMavWAFRTcKwtNMA@mail.gmail.com> <CA+fCnZeNsUV4_92A9DMg=yqyS_y_JTABguyQyNMpm6JPKVxruw@mail.gmail.com>
+In-Reply-To: <CA+fCnZeNsUV4_92A9DMg=yqyS_y_JTABguyQyNMpm6JPKVxruw@mail.gmail.com>
+From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date: Fri, 2 Feb 2024 03:08:26 +0500
+Message-ID: <CABXGCsPerqj=zXJ0pUCnZ29JGmZFSvH6DB22r2uKio61c1bVkw@mail.gmail.com>
+Subject: Re: regression/bisected commit 773688a6cb24b0b3c2ba40354d883348a2befa38
+ make my system completely unusable under high load
+To: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Marco Elver <elver@google.com>, glider@google.com, dvyukov@google.com, 
+	eugenis@google.com, Oscar Salvador <osalvador@suse.de>, Vlastimil Babka <vbabka@suse.cz>, 
+	Andrew Morton <akpm@linux-foundation.org>, 
+	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
+	Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 01, 2024 at 11:05:47AM +0100, Johan Hovold wrote:
-> On Wed, Jan 31, 2024 at 07:07:26PM -0800, Bjorn Andersson wrote:
-> > Some I2C HID devices has a reset pin and requires that some specified
-> > time elapses after this reset pin is deasserted, before communication
-> > with the device is attempted.
-> > 
-> > The Linux implementation is looking for these in the "reset-gpios" and
-> > "post-reset-deassert-delay-ms" properties already, so use these property
-> > names.
-> > 
-> > Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
-> > Acked-by: Rob Herring <robh@kernel.org>
-> > Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> > ---
-> >  Documentation/devicetree/bindings/input/hid-over-i2c.yaml | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/input/hid-over-i2c.yaml b/Documentation/devicetree/bindings/input/hid-over-i2c.yaml
-> > index 138caad96a29..f07ff4cb3d26 100644
-> > --- a/Documentation/devicetree/bindings/input/hid-over-i2c.yaml
-> > +++ b/Documentation/devicetree/bindings/input/hid-over-i2c.yaml
-> > @@ -50,6 +50,12 @@ properties:
-> >      description: Time required by the device after enabling its regulators
-> >        or powering it on, before it is ready for communication.
-> >  
-> > +  post-reset-deassert-delay-ms:
-> > +    description: Time required by the device after reset has been deasserted,
-> > +      before it is ready for communication.
-> 
-> I know that Rob reluctantly acked this, but re-reading the commit
-> message for the commit that added support for the reset gpio to the
-> driver, and added a comment about this not having been added to the
-> devicetree binding, it becomes obvious that the latter was done on
-> purpose and that we probably should not be adding the
-> 'post-reset-deassert-delay-ms' property after all:
-> 
-> 	For now the new "post-reset-deassert-delay-ms" property is only
-> 	used on x86/ACPI (non devicetree) devs. IOW it is not used in
-> 	actual devicetree files and the same goes for the reset GPIO.
-> 	The devicetree-bindings maintainers have requested properties
-> 	like these to not be added to the devicetree-bindings, so the
-> 	new property + GPIO are deliberately not added to the existing
-> 	devicetree-bindings.
-> 
-> 	2be404486c05 ("HID: i2c-hid-of: Add reset GPIO support to i2c-hid-of")
-> 
-> So perhaps we should just do this properly and add a new compatible
-> property for X13s touchscreen which can be used to determine these
-> delays (e.g. for cases where some default values are insufficient).
-> 
+On Tue, Jan 30, 2024 at 4:14=E2=80=AFAM Andrey Konovalov <andreyknvl@gmail.=
+com> wrote:
+> Hi Mikhail,
+>
+> Please try to apply these two patches on top:
+> https://lore.kernel.org/linux-mm/20240129100708.39460-1-elver@google.com/
+>
+> They effectively revert the change you mentioned.
+>
 
-So we should add a new binding, with a device-specific compatible and
-add a reset-gpios only for that (and not the generic hid-over-i2c
-binding), and then in the i2c-hid driver encode the two delays?
+I tried applying these patches on top of 6.8-rc2 and
+6.8-git6764c317b6bb but performance unfortunately has not changed and
+is still on regression level.
+Maybe we can try something else?
 
-I can try to rewrite these patches, if you can provide me with a
-compatible.
-
-Regards,
-Bjorn
+--=20
+Best Regards,
+Mike Gavrilov.
 
