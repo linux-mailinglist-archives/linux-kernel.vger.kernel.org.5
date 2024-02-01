@@ -1,136 +1,449 @@
-Return-Path: <linux-kernel+bounces-48497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A981845CEB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:18:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A85AE845D18
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:22:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25D1E29153E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:18:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15CC8B23A81
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:19:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A7B65A4FB;
-	Thu,  1 Feb 2024 16:14:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05D9D626B3;
+	Thu,  1 Feb 2024 16:15:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZWa3Mi8Q"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Y5mFFj3t"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED23A5A4EC;
-	Thu,  1 Feb 2024 16:14:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 653A477A1A;
+	Thu,  1 Feb 2024 16:15:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706804081; cv=none; b=cY/u2YZCyy8aAlax+lQP+4oTKSTjvdthPNgmFVj4EebRmUQqU5Y9hof0HDrsoFmUMf7jO34UViIpH+HFZ1P0ONNABOFltHFrvyOjMqJme1aXVMnEJdqaK13m8gEwZkqvOgav9vR00E2RaQm/NKhq8K2FYA9PmvYm2Nxif8Z3+QY=
+	t=1706804148; cv=none; b=hkDCI4S/LDqzGVWJYPHjBGEJIUdD+LR+oYek2t/wB2/Hx1tJZO1SIptQMjzMp2Ecg4X8g00nhkoBLz6qLC8qpKHSgtpGSHBPbWapZgKYhYmvbLzU+c7/d6DUFOZ6xXEJza5xYdletj5cFLfrwrWbZLV8KMWOhLgwP/UguSj9CFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706804081; c=relaxed/simple;
-	bh=ncco8NqeugB/kq7KQpde9jMxzGMA8TKJcj0Em+XhoTM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P8tdqMPyBK9B16nIS1qaXARckuhYgro4dINcfejF82yxIX7sWaBqkIKOzzarJAj6apawKTopN1/oEiiWXEnq+YFAzkJUEIY8pdYoKg829ehECwIc2hDSJXzn185vRheXoYOpI/yEJz8OQsicNiV87IG3GJryS8VvS8mPM86zP+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZWa3Mi8Q; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-51120e285f6so1349422e87.2;
-        Thu, 01 Feb 2024 08:14:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706804078; x=1707408878; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Gfd/Jch068W4pwXVQxoLeTPeF9ebDcb3jfL8IeozdY=;
-        b=ZWa3Mi8QYJH0QGw8Mhl3QdWT/lTq2QGD9oh+WAKnJE2fwB+g7u1miXxjkxofRFO9Pm
-         rbDLTqhwY7kAVX7PbANW80/p2BAeVRc4yr0bMUrSyB1xdSeKkEsMfHaSAum7NcsSqJB4
-         F8U9IHXZ8PK16Q7rMQlWXKelL5L/TwQ+zkbiq2rq8EOavfe1CGW85M95Y2ZbEgG/Btx3
-         AFomehTYQYeG3W02Ho7BUrMuhRjRb5fpp1qR3zesM14tWtEOdqIxGgJyvMCLA37G+Ac4
-         x4XU/Rbs56oiwRkO9ppKXDS6zQuLo5gfvlo8m/PfdXvnYzMhiUfvdTGPMyCxUGnCfqu/
-         pTNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706804078; x=1707408878;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1Gfd/Jch068W4pwXVQxoLeTPeF9ebDcb3jfL8IeozdY=;
-        b=AOOEqw8ar9PcfB/3xj+kah0Xamt2JazAYzl9crSwIQiFU0+K2EM3y0OBwq/NQpxKyk
-         IgljJ3xmQY4KtvBFFGjKfd4BpnZ2AEQzMClBp1Nis6chgMt4v8pQa2gy6m/8Vnd6vCed
-         YTMx+Jp4NP+kI0rcjXxwT9Z8zqjefijWd+KmwwBcO6PzhqlSiOhKu/dV4eq01BnRN+Qh
-         gQFSK8LyGrqcBfmfwr6CKMl8M31zwpBCmEbZapU7LCQNGicL4Cy2St1PtL6S3e/EqKEd
-         Tadncvao8fMFOaNWmnUhwHzqrxxOHZa8ierhOq+vLajEcAfAUZp7g6Qw2L0hbH4LAnWl
-         uG2g==
-X-Gm-Message-State: AOJu0YzUTAelS148x4M6V1sdRAB0uD76e2KNQrmoYt6GWng2t7kSX3MP
-	sebdovukFs+AV/fsnYlgOySLsjH6YDsKaawy/G/L9cvpHhN3yUovX5829A/b
-X-Google-Smtp-Source: AGHT+IEs8nHnPdzf++bEISoMlJe1Auuulz6+xr1f07w18f6bKYuIICjifQZOkAoheTAaGcK40vtpxg==
-X-Received: by 2002:a05:6512:376d:b0:510:c75:8e9d with SMTP id z13-20020a056512376d00b005100c758e9dmr2310236lft.26.1706804077668;
-        Thu, 01 Feb 2024 08:14:37 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXagI9c2qRtWoUZ0sftsZbMiG4Khamf5UkQrxuhad4LfR7AsVYz69wHS/0ptr5enXbZ+ZVj58q+1xQjpdSIfmjRrkGQ29PpI08Z0UGQEM+sowEasm5VCm+DNBVcuIONR/SxiwSBlxBhz8o7fJpNS3purxtuHr5mJApsRNjA9HMPzE1UGWAYAAMkFFgDlkE6MuJWnpCQNyD8TLe4GMtO8olbrVJ6wcIFYi5b8g91GFBhEiBRFEk8z4WfZxhAIUPsjT4kvsMDh8igWThJrQUvnxXV1RZnlu3c4nN6HRA2juo/O1lK0KKGZiO+MWXjJbMFeFJnFgp1AYWlI/acnMhox+gdX+gCIDMJQeCSgLbOWGUrG+GqBpriq1yolvqIS5PEOM2GUg==
-Received: from debian ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id 18-20020a05600c025200b0040d4e1393dcsm4876130wmj.20.2024.02.01.08.14.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 08:14:37 -0800 (PST)
-Date: Thu, 1 Feb 2024 17:14:35 +0100
-From: Dimitri Fedrau <dima.fedrau@gmail.com>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jean Delvare <jdelvare@suse.com>,
-	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH v5 net-next 08/13] net: phy: marvell-88q2xxx: add support
- for temperature sensor
-Message-ID: <20240201161435.GA48964@debian>
-References: <20240122212848.3645785-1-dima.fedrau@gmail.com>
- <20240122212848.3645785-9-dima.fedrau@gmail.com>
- <65071184-428b-4850-9e0c-baaa73513c6d@lunn.ch>
- <20240201071137.GA41347@debian>
- <5dc7d495-dd41-4b1f-b0e0-1fe512f1687c@roeck-us.net>
+	s=arc-20240116; t=1706804148; c=relaxed/simple;
+	bh=hVjpHu3koi7L18tSbg4AlwiC4Eb+ehCY0Dv0iXrqIZM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KaDPwuSOa+9Rx8Xj/d+iORmrJy41PsUtTjVHRmbrHVBuSMOxOv+ZB4rOCPoGGrahSvBMe8qa8MCNJbju7GOaNRmsCNjcNjvNvSmSNgYNKs/QHaf9pMK5LN7OOudTXk3nsQ/K+IDMrTGZzhrM4aW9tyKL0K4cm0wcd6mKFnN6Neg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=Y5mFFj3t; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1706804146; x=1738340146;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=hVjpHu3koi7L18tSbg4AlwiC4Eb+ehCY0Dv0iXrqIZM=;
+  b=Y5mFFj3toIo2/HEW3zARcsneJNgjEBsCQ107ET81FPSljYZ//2WynPgo
+   tevSycd7Z9UrRQFwvDpZzFAd3qSLckKCzy5xT+MsjRoVCY+41u4YWjgkL
+   r49BpqQdznkC4ipkT6XnmIuHZm2IuQByTSXZR7JgKxt8NnPl7+O7TERy4
+   jBZJG67VWE8hkb+qL0MFNq73q6/Uku9xaF8cSpfIxo1nkc+8Oj/lxe0Xt
+   x6OYxvlR6Ae5QyQymi0mrAKhTe/5sphJO53wk6/s57HKtXVWRBsS7hj9b
+   Ji+fTQir23yRcTEk3rkaMJBFxb6AwwTs9pCUa3LtoZHJoRVinJSUv/tUK
+   Q==;
+X-CSE-ConnectionGUID: 26EjCA2CRoKBu/UhJ2xKOQ==
+X-CSE-MsgGUID: OCIm0yzETY2xVuzY8QOhyw==
+X-IronPort-AV: E=Sophos;i="6.05,234,1701154800"; 
+   d="scan'208";a="16960332"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 01 Feb 2024 09:15:44 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 1 Feb 2024 09:15:27 -0700
+Received: from ROB-ULT-M76677.microchip.com (10.10.85.11) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Thu, 1 Feb 2024 09:15:24 -0700
+From: Andrei Simion <andrei.simion@microchip.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+	<claudiu.beznea@tuxon.dev>
+CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Andrei Simion <andrei.simion@microchip.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v4] regulator: dt-bindings: microchip,mcp16502: convert to YAML
+Date: Thu, 1 Feb 2024 18:15:17 +0200
+Message-ID: <20240201161517.492162-1-andrei.simion@microchip.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5dc7d495-dd41-4b1f-b0e0-1fe512f1687c@roeck-us.net>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Am Thu, Feb 01, 2024 at 05:34:05AM -0800 schrieb Guenter Roeck:
-> On 1/31/24 23:11, Dimitri Fedrau wrote:
-> > Am Wed, Jan 31, 2024 at 04:17:06PM +0100 schrieb Andrew Lunn:
-> > > > +static int mv88q2xxx_hwmon_probe(struct phy_device *phydev)
-> > > > +{
-> > > > +	struct device *dev = &phydev->mdio.dev;
-> > > > +	struct device *hwmon;
-> > > > +	char *hwmon_name;
-> > > > +	int ret;
-> > > > +
-> > > > +	/* Enable temperature sensor interrupt */
-> > > > +	ret = phy_set_bits_mmd(phydev, MDIO_MMD_PCS,
-> > > > +			       MDIO_MMD_PCS_MV_TEMP_SENSOR1,
-> > > > +			       MDIO_MMD_PCS_MV_TEMP_SENSOR1_INT_EN);
-> > > 
-> > > You enable an interrupt, but i don't see any changes to the interrupt
-> > > handler to handle any interrupts which are generated?
-> > > 
-> > Hi Andrew,
-> > 
-> > you are right. Have to remove these lines. Besides enabling the interrupt
-> > in MDIO_MMD_PCS_MV_TEMP_SENSOR1, there are two further register writes
-> > necessary to make the interrupt propagate. I didn't want it to propagate.
-> > Anyway it's wrong. I couldn't find a good solution to use the temperature
-> > interrupt. Will have a look into this, and probably figuring out how to
-> > do so. But it won't be part of this patch series.
-> > 
-> 
-> From hwmon perspective, the expected use of such an interrupt would be
-> to call hwmon_notify_event() with the affected limit attribute as argument.
-> This would notify the thermal subsystem if the sensor is registered with it
-> (your patch doesn't set the necessary flag when registering the driver,
-> so this would not happen), it will send a notification to the sysfs
-> attribute, and generate a udev event.
->
-Thanks, noted it down. Didn't know about the notification to the thermal
-subsystem and the generated udev event. :)
+Convert devicetree binding mcp16502-regulator.txt to YAML format.
 
-Dimitri
+Signed-off-by: Andrei Simion <andrei.simion@microchip.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+Changes v3 -> v4:
+- "additionalProperties: false" placed just after the required list
+
+Changes v2 -> v3:
+- keep one line of regulators description
+- add additionalProperties: false for regulators
+- "description:" at the end for each properties
+
+Changes v1 -> v2:
+- reverse subject prefixes
+- line break after file "description:"
+- drop description for reg
+- drop regulator-name
+- add regulator-initial-mode
+- unevaluatedProperties just after $ref: regulator.yaml#
+- additionalProperties  just before "required"
+- node names generic in example
+- drop reg property from i2c
+- use 4 spaces for example indentation
+---
+ .../bindings/regulator/mcp16502-regulator.txt | 144 --------------
+ .../regulator/microchip,mcp16502.yaml         | 180 ++++++++++++++++++
+ 2 files changed, 180 insertions(+), 144 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/regulator/mcp16502-regulator.txt
+ create mode 100644 Documentation/devicetree/bindings/regulator/microchip,mcp16502.yaml
+
+diff --git a/Documentation/devicetree/bindings/regulator/mcp16502-regulator.txt b/Documentation/devicetree/bindings/regulator/mcp16502-regulator.txt
+deleted file mode 100644
+index 451cc4e86b01..000000000000
+--- a/Documentation/devicetree/bindings/regulator/mcp16502-regulator.txt
++++ /dev/null
+@@ -1,144 +0,0 @@
+-MCP16502 PMIC
+-
+-Required properties:
+-- compatible: "microchip,mcp16502"
+-- reg: I2C slave address
+-- lpm-gpios: GPIO for LPM pin. Note that this GPIO *must* remain high during
+-	     suspend-to-ram, keeping the PMIC into HIBERNATE mode; this
+-	     property is optional;
+-- regulators: A node that houses a sub-node for each regulator within
+-              the device. Each sub-node is identified using the node's
+-              name. The content of each sub-node is defined by the
+-              standard binding for regulators; see regulator.txt.
+-
+-Regulators of MCP16502 PMIC:
+-1) VDD_IO	- Buck (1.2 - 3.7 V)
+-2) VDD_DDR	- Buck (0.6 - 1.85 V)
+-3) VDD_CORE	- Buck (0.6 - 1.85 V)
+-4) VDD_OTHER	- BUCK (0.6 - 1.85 V)
+-5) LDO1		- LDO  (1.2 - 3.7 V)
+-6) LDO2		- LDO  (1.2 - 3.7 V)
+-
+-Regulator modes:
+-2 - FPWM: higher precision, higher consumption
+-4 - AutoPFM: lower precision, lower consumption
+-
+-Each regulator is defined using the standard binding for regulators.
+-
+-Example:
+-
+-mcp16502@5b {
+-	compatible = "microchip,mcp16502";
+-	reg = <0x5b>;
+-	status = "okay";
+-	lpm-gpios = <&pioBU 7 GPIO_ACTIVE_HIGH>;
+-
+-	regulators {
+-		VDD_IO {
+-			regulator-name = "VDD_IO";
+-			regulator-min-microvolt = <1200000>;
+-			regulator-max-microvolt = <3700000>;
+-			regulator-initial-mode = <2>;
+-			regulator-allowed-modes = <2>, <4>;
+-			regulator-always-on;
+-
+-			regulator-state-standby {
+-				regulator-on-in-suspend;
+-				regulator-mode = <4>;
+-			};
+-
+-			regulator-state-mem {
+-				regulator-off-in-suspend;
+-				regulator-mode = <4>;
+-			};
+-		};
+-
+-		VDD_DDR {
+-			regulator-name = "VDD_DDR";
+-			regulator-min-microvolt = <600000>;
+-			regulator-max-microvolt = <1850000>;
+-			regulator-initial-mode = <2>;
+-			regulator-allowed-modes = <2>, <4>;
+-			regulator-always-on;
+-
+-			regulator-state-standby {
+-				regulator-on-in-suspend;
+-				regulator-mode = <4>;
+-			};
+-
+-			regulator-state-mem {
+-				regulator-on-in-suspend;
+-				regulator-mode = <4>;
+-			};
+-		};
+-
+-		VDD_CORE {
+-			regulator-name = "VDD_CORE";
+-			regulator-min-microvolt = <600000>;
+-			regulator-max-microvolt = <1850000>;
+-			regulator-initial-mode = <2>;
+-			regulator-allowed-modes = <2>, <4>;
+-			regulator-always-on;
+-
+-			regulator-state-standby {
+-				regulator-on-in-suspend;
+-				regulator-mode = <4>;
+-			};
+-
+-			regulator-state-mem {
+-				regulator-off-in-suspend;
+-				regulator-mode = <4>;
+-			};
+-		};
+-
+-		VDD_OTHER {
+-			regulator-name = "VDD_OTHER";
+-			regulator-min-microvolt = <600000>;
+-			regulator-max-microvolt = <1850000>;
+-			regulator-initial-mode = <2>;
+-			regulator-allowed-modes = <2>, <4>;
+-			regulator-always-on;
+-
+-			regulator-state-standby {
+-				regulator-on-in-suspend;
+-				regulator-mode = <4>;
+-			};
+-
+-			regulator-state-mem {
+-				regulator-off-in-suspend;
+-				regulator-mode = <4>;
+-			};
+-		};
+-
+-		LDO1 {
+-			regulator-name = "LDO1";
+-			regulator-min-microvolt = <1200000>;
+-			regulator-max-microvolt = <3700000>;
+-			regulator-always-on;
+-
+-			regulator-state-standby {
+-				regulator-on-in-suspend;
+-			};
+-
+-			regulator-state-mem {
+-				regulator-off-in-suspend;
+-			};
+-		};
+-
+-		LDO2 {
+-			regulator-name = "LDO2";
+-			regulator-min-microvolt = <1200000>;
+-			regulator-max-microvolt = <3700000>;
+-			regulator-always-on;
+-
+-			regulator-state-standby {
+-				regulator-on-in-suspend;
+-			};
+-
+-			regulator-state-mem {
+-				regulator-off-in-suspend;
+-			};
+-		};
+-
+-	};
+-};
+diff --git a/Documentation/devicetree/bindings/regulator/microchip,mcp16502.yaml b/Documentation/devicetree/bindings/regulator/microchip,mcp16502.yaml
+new file mode 100644
+index 000000000000..1aca3646789e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/regulator/microchip,mcp16502.yaml
+@@ -0,0 +1,180 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/regulator/microchip,mcp16502.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MCP16502 - High-Performance PMIC
++
++maintainers:
++  - Andrei Simion <andrei.simion@microchip.com>
++
++description:
++  The MCP16502 is an optimally integrated PMIC compatible
++  with Microchip's eMPUs(Embedded Microprocessor Units),
++  requiring Dynamic Voltage Scaling (DVS) with the use
++  of High-Performance mode (HPM).
++
++properties:
++  compatible:
++    const: microchip,mcp16502
++
++  lpm-gpios:
++    maxItems: 1
++    description: GPIO for LPM pin.
++      Note that this GPIO must remain high during
++      suspend-to-ram, keeping the PMIC into HIBERNATE mode.
++
++  reg:
++    maxItems: 1
++
++  regulators:
++    type: object
++    additionalProperties: false
++    description: List of regulators and its properties.
++
++    patternProperties:
++      "^(VDD_(IO|CORE|DDR|OTHER)|LDO[1-2])$":
++        type: object
++        $ref: regulator.yaml#
++        unevaluatedProperties: false
++
++        properties:
++          regulator-initial-mode:
++            enum: [2, 4]
++            default: 2
++            description: Initial operating mode
++
++          regulator-allowed-modes:
++            items:
++              enum: [2, 4]
++            description: Supported modes
++              2 - FPWM higher precision, higher consumption
++              4 - AutoPFM lower precision, lower consumption
++
++required:
++  - compatible
++  - reg
++  - regulators
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        pmic@5b {
++            compatible = "microchip,mcp16502";
++            reg = <0x5b>;
++
++            regulators {
++                VDD_IO {
++                    regulator-name = "VDD_IO";
++                    regulator-min-microvolt = <3300000>;
++                    regulator-max-microvolt = <3300000>;
++                    regulator-initial-mode = <2>;
++                    regulator-allowed-modes = <2>, <4>;
++                    regulator-always-on;
++
++                    regulator-state-standby {
++                        regulator-on-in-suspend;
++                        regulator-mode = <4>;
++                    };
++
++                    regulator-state-mem {
++                        regulator-off-in-suspend;
++                        regulator-mode = <4>;
++                    };
++                };
++
++                VDD_DDR {
++                    regulator-name = "VDD_DDR";
++                    regulator-min-microvolt = <1350000>;
++                    regulator-max-microvolt = <1350000>;
++                    regulator-initial-mode = <2>;
++                    regulator-allowed-modes = <2>, <4>;
++                    regulator-always-on;
++
++                    regulator-state-standby {
++                        regulator-on-in-suspend;
++                        regulator-mode = <4>;
++                    };
++
++                    regulator-state-mem {
++                        regulator-on-in-suspend;
++                        regulator-mode = <4>;
++                    };
++                };
++
++                VDD_CORE {
++                    regulator-name = "VDD_CORE";
++                    regulator-min-microvolt = <1150000>;
++                    regulator-max-microvolt = <1150000>;
++                    regulator-initial-mode = <2>;
++                    regulator-allowed-modes = <2>, <4>;
++                    regulator-always-on;
++
++                    regulator-state-standby {
++                        regulator-on-in-suspend;
++                        regulator-mode = <4>;
++                    };
++
++                    regulator-state-mem {
++                        regulator-off-in-suspend;
++                        regulator-mode = <4>;
++                    };
++                };
++
++                VDD_OTHER {
++                    regulator-name = "VDD_OTHER";
++                    regulator-min-microvolt = <1050000>;
++                    regulator-max-microvolt = <1250000>;
++                    regulator-initial-mode = <2>;
++                    regulator-allowed-modes = <2>, <4>;
++                    regulator-always-on;
++
++                    regulator-state-standby {
++                        regulator-on-in-suspend;
++                        regulator-mode = <4>;
++                    };
++
++                    regulator-state-mem {
++                        regulator-off-in-suspend;
++                        regulator-mode = <4>;
++                    };
++                };
++
++                LDO1 {
++                    regulator-name = "LDO1";
++                    regulator-min-microvolt = <1800000>;
++                    regulator-max-microvolt = <1800000>;
++                    regulator-always-on;
++
++                    regulator-state-standby {
++                        regulator-on-in-suspend;
++                    };
++
++                    regulator-state-mem {
++                        regulator-off-in-suspend;
++                    };
++                };
++
++                LDO2 {
++                    regulator-name = "LDO2";
++                    regulator-min-microvolt = <1200000>;
++                    regulator-max-microvolt = <3700000>;
++                    regulator-always-on;
++
++                    regulator-state-standby {
++                        regulator-on-in-suspend;
++                    };
++
++                    regulator-state-mem {
++                        regulator-off-in-suspend;
++                    };
++                };
++            };
++        };
++    };
+-- 
+2.34.1
+
 
