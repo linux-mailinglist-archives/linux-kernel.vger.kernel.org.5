@@ -1,229 +1,187 @@
-Return-Path: <linux-kernel+bounces-48586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6617845E77
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:24:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B3D8C845E78
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:25:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1381B1F2496E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:24:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53C3D1F278A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:25:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 327806308B;
-	Thu,  1 Feb 2024 17:24:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CBDC6308D;
+	Thu,  1 Feb 2024 17:25:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MiBsgeou";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LfSjgBsR";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MiBsgeou";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LfSjgBsR"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N9YFSYwk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E96E63063;
-	Thu,  1 Feb 2024 17:24:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C50363070
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 17:25:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706808250; cv=none; b=EO/+4lyScEspGYzvjSodJ/FlPxbVBj4TaBZi5+LvSPyUGkiwGAU+l1Q3YZq7jj/lbxv4VGuJGuqMPCuSBCl2UeUd8Bh0PacTo417nGL3Q4fwKxxqeKFmY678QnJv6ytMZ44TfTIzcdEma+rEIdpplkeRWPLcdgRDfjNwp+wDViY=
+	t=1706808316; cv=none; b=pFZDoWxlGwgFWggyBc1aEae+39v04Hfwefiib2+/iNi5Xt/5oyrjp1SDt0M5R8+xkQcr4TnF4n1sgIAJ7m4gzmOWGc8+g3iepcAQWdlmpKXofHOqD2a6he918uQB9ediwd8jSP/poQqN/m9/bW1lD195obh70bHIda0v6gZ0D78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706808250; c=relaxed/simple;
-	bh=2iME+aeC5MdTCFFpdOg4XL92EP7bljHw3uIS43ZYUJ4=;
+	s=arc-20240116; t=1706808316; c=relaxed/simple;
+	bh=tBYk8YykMIVRr0v+B9NPNqXN+hKhdmu2UDa/5IsXif4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=djyW9aXbUD5mvTX0bjfEXsse4Xz+nL/IQ1zqGVvdZkr0YQh4n89vZOK84zhl4AXIGL24+JYYVUHsL3Mik3mG2QkFMgbzF/23I9GiHFNe6iUOiAuBO2yKUQnfWQnfCjnCjwEMexl/ADGTQZ85+Ry0WGxKjMLnTMcasK0qEtlB8as=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MiBsgeou; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LfSjgBsR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MiBsgeou; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LfSjgBsR; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 66F3B1FBF0;
-	Thu,  1 Feb 2024 17:24:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706808246; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SNNWYy+vwoGWe8udWHwmyDFPJb8JWpw+d2X0FjdZxZ0=;
-	b=MiBsgeouIlhF540FepmlMK7BvKgfWzW9RowJ4xb87x002Vt7SZN79o5TkSbEI0Ia/9daw/
-	TLenpWSd5KjB5wr6gJWmnLNemam1T77tUrm75z4xsCyEpOXcgYQRHMRaRS49Q/I2w/SF9R
-	ICAbskQRX9QQcATRVaMG8WxDWksCxxE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706808246;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SNNWYy+vwoGWe8udWHwmyDFPJb8JWpw+d2X0FjdZxZ0=;
-	b=LfSjgBsR2jPBOgs82lbddB+eOtcEKNfhxdyJUKJC1jjcbllke2oZcBSizBreCFPxJ6ULvK
-	iSQCU0H2xCB6NeBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706808246; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SNNWYy+vwoGWe8udWHwmyDFPJb8JWpw+d2X0FjdZxZ0=;
-	b=MiBsgeouIlhF540FepmlMK7BvKgfWzW9RowJ4xb87x002Vt7SZN79o5TkSbEI0Ia/9daw/
-	TLenpWSd5KjB5wr6gJWmnLNemam1T77tUrm75z4xsCyEpOXcgYQRHMRaRS49Q/I2w/SF9R
-	ICAbskQRX9QQcATRVaMG8WxDWksCxxE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706808246;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SNNWYy+vwoGWe8udWHwmyDFPJb8JWpw+d2X0FjdZxZ0=;
-	b=LfSjgBsR2jPBOgs82lbddB+eOtcEKNfhxdyJUKJC1jjcbllke2oZcBSizBreCFPxJ6ULvK
-	iSQCU0H2xCB6NeBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 58300139AB;
-	Thu,  1 Feb 2024 17:24:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Br6CFbbTu2XEJAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 01 Feb 2024 17:24:06 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id F3BF0A0809; Thu,  1 Feb 2024 18:24:05 +0100 (CET)
-Date: Thu, 1 Feb 2024 18:24:05 +0100
-From: Jan Kara <jack@suse.cz>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-	jack@suse.cz, ritesh.list@gmail.com, ojaswin@linux.ibm.com,
-	linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-	yangerkun@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com,
-	stable@kernel.org
-Subject: Re: [PATCH v2] ext4: correct best extent lstart adjustment logic
-Message-ID: <20240201172405.zqeql5y2lzsi3o3y@quack3>
-References: <20240201141845.1879253-1-libaokun1@huawei.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=QQMn1C5IA3t/sHXgxTtUtOyzsLD7dQqJ4Kq1gLkZ/naKkdhGTQPg3B5g4lM7sY78otTtXufbRAyU65I3jsgnn8DG9vlZc0BqVjPKYSa4hTk6goBQPwLNIT69qkFDsjz/q2KAhb6nfPTcNbnNt9M5uCSLP/dJufSEUgvnhYXuJ6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N9YFSYwk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB186C43390;
+	Thu,  1 Feb 2024 17:25:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706808316;
+	bh=tBYk8YykMIVRr0v+B9NPNqXN+hKhdmu2UDa/5IsXif4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=N9YFSYwkgW019Zluy29Rk4B3/9gTuq98RqDTpxJc1HTY+UVyJ4ieKq8oMZBy4utBP
+	 VmiFfxEjMQnSQwq9NhJNK1HKTBuKtdhMejJqYnlgSezsPHYzO7Asb09N2v+fRnvP4q
+	 EzO7p9tffzg1td+0X/7R6DRZgR1An+EfK1N7lFKHuSEE75vl9edkeYe0sL8j0LgHLp
+	 Nnd8vJsG5OF+HQuo1ruzVXpVhKfpWRkZYywFBtSxIYzW6+oVGmy+MrEn091iBvqnBG
+	 zEyGX4RQl2b74VLu1nXcYYNnAt5nVCqFI/5IurK1sk1CmmLgZm1MXG0fN0WpBivndE
+	 M0Y1z1m5wK5sA==
+Date: Thu, 1 Feb 2024 18:25:12 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>, 
+	Tycho Andersen <tycho@tycho.pizza>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] pidfd: implement PIDFD_THREAD flag for
+ pidfd_open()
+Message-ID: <20240201-dokumentieren-holen-bc44288345b5@brauner>
+References: <20240131132541.GA23632@redhat.com>
+ <20240131132602.GA23641@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240201141845.1879253-1-libaokun1@huawei.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [7.00 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_SPAM(5.10)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 R_RATELIMIT(0.00)[to_ip_from(RLy4jt9zmnbk4oncb1qwahh5jo)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,linux.ibm.com,huawei.com,kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: *******
-X-Spam-Score: 7.00
-X-Spam-Flag: NO
+In-Reply-To: <20240131132602.GA23641@redhat.com>
 
-On Thu 01-02-24 22:18:45, Baokun Li wrote:
-> When yangerkun review commit 93cdf49f6eca ("ext4: Fix best extent lstart
-> adjustment logic in ext4_mb_new_inode_pa()"), it was found that the best
-> extent did not completely cover the original request after adjusting the
-> best extent lstart in ext4_mb_new_inode_pa() as follows:
+On Wed, Jan 31, 2024 at 02:26:02PM +0100, Oleg Nesterov wrote:
+> With this flag:
 > 
->   original request: 2/10(8)
->   normalized request: 0/64(64)
->   best extent: 0/9(9)
+> 	- pidfd_open() doesn't require that the target task must be
+> 	  a thread-group leader
 > 
-> When we check if best ex can be kept at start of goal, ac_o_ex.fe_logical
-> is 2 less than the adjusted best extent logical end 9, so we think the
-> adjustment is done. But obviously 0/9(9) doesn't cover 2/10(8), so we
-> should determine here if the original request logical end is less than or
-> equal to the adjusted best extent logical end.
+> 	- pidfd_poll() succeeds when the task exits and becomes a
+> 	  zombie (iow, passes exit_notify()), even if it is a leader
+> 	  and thread-group is not empty.
 > 
-> In addition, add a comment stating when adjusted best_ex will not cover
-> the original request, and remove the duplicate assertion because adjusting
-> lstart makes no change to b_ex.fe_len.
+> 	  This means that the behaviour of pidfd_poll(PIDFD_THREAD,
+> 	  pid-of-group-leader) is not well defined if it races with
+> 	  exec() from its sub-thread; pidfd_poll() can succeed or not
+> 	  depending on whether pidfd_task_exited() is called before
+> 	  or after exchange_tids().
 > 
-> Link: https://lore.kernel.org/r/3630fa7f-b432-7afd-5f79-781bc3b2c5ea@huawei.com
-> Fixes: 93cdf49f6eca ("ext4: Fix best extent lstart adjustment logic in ext4_mb_new_inode_pa()")
-> Cc: stable@kernel.org
-> Signed-off-by: yangerkun <yangerkun@huawei.com>
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-
-Looks good. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
+> 	  Perhaps we can improve this behaviour later, pidfd_poll()
+> 	  can probably take sig->group_exec_task into account. But
+> 	  this doesn't really differ from the case when the leader
+> 	  exits before other threads (so pidfd_poll() succeeds) and
+> 	  then another thread execs and pidfd_poll() will block again.
+> 
+> thread_group_exited() is no longer used, perhaps it can die.
+> 
+> Co-developed-by: Tycho Andersen <tycho@tycho.pizza>
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 > ---
-> V1->V2:
-> 	Remove the problematic BUG_ON and add some comments.
+>  fs/exec.c                  |  6 +++++-
+>  include/linux/pid.h        |  3 ++-
+>  include/uapi/linux/pidfd.h |  3 ++-
+>  kernel/exit.c              |  7 +++++++
+>  kernel/fork.c              | 38 +++++++++++++++++++++++++++++++-------
+>  kernel/pid.c               | 14 +++-----------
+>  kernel/signal.c            |  6 ++++--
+>  7 files changed, 54 insertions(+), 23 deletions(-)
 > 
->  fs/ext4/mballoc.c | 17 +++++++++++------
->  1 file changed, 11 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 1ea6491b6b00..20cad0676aab 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -5148,10 +5148,16 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
->  			.fe_len = ac->ac_orig_goal_len,
->  		};
->  		loff_t orig_goal_end = extent_logical_end(sbi, &ex);
-> +		loff_t o_ex_end = extent_logical_end(sbi, &ac->ac_o_ex);
+> diff --git a/fs/exec.c b/fs/exec.c
+> index 73e4045df271..0fd7e668c477 100644
+> --- a/fs/exec.c
+> +++ b/fs/exec.c
+> @@ -1143,7 +1143,11 @@ static int de_thread(struct task_struct *tsk)
 >  
-> -		/* we can't allocate as much as normalizer wants.
-> -		 * so, found space must get proper lstart
-> -		 * to cover original request */
+>  		BUG_ON(leader->exit_state != EXIT_ZOMBIE);
+>  		leader->exit_state = EXIT_DEAD;
+> -
 > +		/*
-> +		 * We can't allocate as much as normalizer wants, so we try
-> +		 * to get proper lstart to cover the original request, except
-> +		 * when the goal doesn't cover the original request as below:
-> +		 *
-> +		 * orig_ex:2045/2055(10), isize:8417280 -> normalized:0/2048
-> +		 * best_ex:0/200(200) -> adjusted: 1848/2048(200)
+> +		 * leader and tsk exhanged their pids, the old pid dies,
+> +		 * wake up the PIDFD_THREAD waiters.
 > +		 */
->  		BUG_ON(ac->ac_g_ex.fe_logical > ac->ac_o_ex.fe_logical);
->  		BUG_ON(ac->ac_g_ex.fe_len < ac->ac_o_ex.fe_len);
+> +		do_notify_pidfd(leader);
+>  		/*
+>  		 * We are going to release_task()->ptrace_unlink() silently,
+>  		 * the tracer can sleep in do_wait(). EXIT_DEAD guarantees
+> diff --git a/include/linux/pid.h b/include/linux/pid.h
+> index e6a041cb8bac..8124d57752b9 100644
+> --- a/include/linux/pid.h
+> +++ b/include/linux/pid.h
+> @@ -70,10 +70,11 @@ extern const struct file_operations pidfd_fops;
 >  
-> @@ -5163,7 +5169,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
->  		 * 1. Check if best ex can be kept at end of goal (before
->  		 *    cr_best_avail trimmed it) and still cover original start
->  		 * 2. Else, check if best ex can be kept at start of goal and
-> -		 *    still cover original start
-> +		 *    still cover original end
->  		 * 3. Else, keep the best ex at start of original request.
->  		 */
->  		ex.fe_len = ac->ac_b_ex.fe_len;
-> @@ -5173,7 +5179,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
->  			goto adjust_bex;
+>  struct file;
 >  
->  		ex.fe_logical = ac->ac_g_ex.fe_logical;
-> -		if (ac->ac_o_ex.fe_logical < extent_logical_end(sbi, &ex))
-> +		if (o_ex_end <= extent_logical_end(sbi, &ex))
->  			goto adjust_bex;
+> -extern struct pid *pidfd_pid(const struct file *file);
+> +struct pid *pidfd_pid(const struct file *file);
+>  struct pid *pidfd_get_pid(unsigned int fd, unsigned int *flags);
+>  struct task_struct *pidfd_get_task(int pidfd, unsigned int *flags);
+>  int pidfd_prepare(struct pid *pid, unsigned int flags, struct file **ret);
+> +void do_notify_pidfd(struct task_struct *task);
 >  
->  		ex.fe_logical = ac->ac_o_ex.fe_logical;
-> @@ -5181,7 +5187,6 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
->  		ac->ac_b_ex.fe_logical = ex.fe_logical;
+>  static inline struct pid *get_pid(struct pid *pid)
+>  {
+> diff --git a/include/uapi/linux/pidfd.h b/include/uapi/linux/pidfd.h
+> index 5406fbc13074..2e6461459877 100644
+> --- a/include/uapi/linux/pidfd.h
+> +++ b/include/uapi/linux/pidfd.h
+> @@ -7,6 +7,7 @@
+>  #include <linux/fcntl.h>
 >  
->  		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
-> -		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
->  		BUG_ON(extent_logical_end(sbi, &ex) > orig_goal_end);
->  	}
+>  /* Flags for pidfd_open().  */
+> -#define PIDFD_NONBLOCK O_NONBLOCK
+> +#define PIDFD_NONBLOCK	O_NONBLOCK
+> +#define PIDFD_THREAD	O_EXCL
 >  
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>  #endif /* _UAPI_LINUX_PIDFD_H */
+> diff --git a/kernel/exit.c b/kernel/exit.c
+> index dfb963d2f862..493647fd7c07 100644
+> --- a/kernel/exit.c
+> +++ b/kernel/exit.c
+> @@ -739,6 +739,13 @@ static void exit_notify(struct task_struct *tsk, int group_dead)
+>  		kill_orphaned_pgrp(tsk->group_leader, NULL);
+>  
+>  	tsk->exit_state = EXIT_ZOMBIE;
+> +	/*
+> +	 * sub-thread or delay_group_leader(), wake up the
+> +	 * PIDFD_THREAD waiters.
+> +	 */
+> +	if (!thread_group_empty(tsk))
+> +		do_notify_pidfd(tsk);
+> +
+>  	if (unlikely(tsk->ptrace)) {
+>  		int sig = thread_group_leader(tsk) &&
+>  				thread_group_empty(tsk) &&
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 347641398f9d..bea32071fff2 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -101,6 +101,7 @@
+>  #include <linux/user_events.h>
+>  #include <linux/iommu.h>
+>  #include <linux/rseq.h>
+> +#include <uapi/linux/pidfd.h>
+>  
+>  #include <asm/pgalloc.h>
+>  #include <linux/uaccess.h>
+> @@ -2050,6 +2051,8 @@ static void pidfd_show_fdinfo(struct seq_file *m, struct file *f)
+>  
+>  	seq_put_decimal_ll(m, "Pid:\t", nr);
+>  
+> +	/* TODO: report PIDFD_THREAD */
+
+One more thing that came to my mind. We also support waitid(P_PIDFD,
+pidfd). And I just looked through the code and I think it does the right
+thing when we pass it a PIDFD_THREAD pidfd because wait_consider_task()
+rejects task->exit_signal != SIGCHLD in eligible_child() and
+CLONE_THREAD implies task->exit_signal == -1.
 
