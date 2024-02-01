@@ -1,105 +1,129 @@
-Return-Path: <linux-kernel+bounces-48979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA74E846451
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:12:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E50D8846454
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:12:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E580B2215A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:12:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 040B31C2348C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:12:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA1A447F45;
-	Thu,  1 Feb 2024 23:11:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09EDC47F57;
+	Thu,  1 Feb 2024 23:12:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AaZk5H0/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BCdyF+GC"
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0CCD45BE0;
-	Thu,  1 Feb 2024 23:11:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFA933FB37;
+	Thu,  1 Feb 2024 23:12:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706829114; cv=none; b=S/MjfnltNM2BydHeNjL8LaXLQrmVQIPWw2Ccdr8P4nNH+FxyR+RLaOzXwvKLbfZwrHCePlkRiVaMNgD6+VtsELMfdYy1Oqpnkzz+waHZQoRBkIaguQLwEkG9Xi3WRa0Fe+rJOLczKDtDQRzFlzgP2xTc2qLTcKcSGMoiFTQFs5g=
+	t=1706829139; cv=none; b=V85TlwWY20g6OjCWN0nNIeLpd6St9lzYPKHtkEIIhn3PjfN2fyQqdmiQeRNghGQdisRei0JkoiSxfTmnlAiYDTO3gtiyu90pxRCXyzx2TEQBMXABiArobW3OJPqCDnDNfWCYUoO8klkPbW0QoTdI4TXZ4KanitQ7D156wESLvXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706829114; c=relaxed/simple;
-	bh=bBckTHlnwRsnRIxBqMozm+cZDPwPFIOZVqpGpVOkEzM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RcBrmwg69kZqw/LqFzd058CIySY5MLZpc+cSi8AnW06gD+dwnlrF93taTwzQMZXkvtXHyx9QuLVMpnALITbYdBXHLDzndFFMg9H7O0wM0K/Ok9DhAip3La41JhNOODm+Op/ijcxT6FF5aZwhVLfucvc2kP6S/0GqGZMWBxWDf08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AaZk5H0/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7286C433F1;
-	Thu,  1 Feb 2024 23:11:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706829113;
-	bh=bBckTHlnwRsnRIxBqMozm+cZDPwPFIOZVqpGpVOkEzM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AaZk5H0/y6XdJGc4OBWVBMIwflsWjW30D87R9aF2R5qDGHmZ/z2we5N4MzBIrJFgF
-	 R5GBGDR7lW9s/UVvZTQHUc9QyeySw8JS0MWMOrhJ+bDJqL0JmCbZTjrvJtYd5aCjcd
-	 LUgGf5meauGwQZQApm1WH74dN3nvnP6W7aRWRpiJhDPnDtiz2hSWL5OpiznHQ37nbD
-	 wYSckxDrnb7zqrVkPiu0NQDmKVE4SX9JiW622OqGZo950/xIyea3UlNhRV3yV+IVys
-	 dUsQEy9ROIZvqV2QYJDHIHr68kP9FTz4s5ngo9FPRnrWcTwu/zV4MPxWJuAMEqWaPK
-	 DULEFWyzhXJgQ==
-Date: Thu, 1 Feb 2024 15:11:51 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: jeffxu@chromium.org
-Cc: akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com,
-	sroettger@google.com, willy@infradead.org,
-	gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
-	usama.anjum@collabora.com, rdunlap@infradead.org, jeffxu@google.com,
-	jorgelo@chromium.org, groeck@chromium.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
-	linux-hardening@vger.kernel.org, deraadt@openbsd.org
-Subject: Re: [PATCH v8 2/4] mseal: add mseal syscall
-Message-ID: <20240201231151.GA41472@sol.localdomain>
-References: <20240131175027.3287009-1-jeffxu@chromium.org>
- <20240131175027.3287009-3-jeffxu@chromium.org>
+	s=arc-20240116; t=1706829139; c=relaxed/simple;
+	bh=+PN1aVVdJv7dQ6u3SE9gXNMJ5i8PkALkHFjLI1LOmKY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b2XNJAK5f1fjpgdVy3IvlapXL1+t1zM/wluKYdc121a79qd31T9Y4EiJniH5+5fKMjaxkJeuYheg+vCgdmA41B86XsN9fmjqgdSmC9CpRm/MZANJCTer2m8ziwLNo7jUhpY6oXpdaukI/wnmQXAjjr3AAOL05Xp8X1PUerHGX/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BCdyF+GC; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-60412f65124so15178117b3.3;
+        Thu, 01 Feb 2024 15:12:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706829137; x=1707433937; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+PN1aVVdJv7dQ6u3SE9gXNMJ5i8PkALkHFjLI1LOmKY=;
+        b=BCdyF+GCqK8XLGf5CxqL+kvzbQlcwsWAODILEHQfRrU6Z3qVUwS4xL2aVaRkZ/vY37
+         L/zv+0QDa7jPjNo2M8qtqk37aOQtr6xPrALOW6SrEpmEwjSi977uzkJM4gYR6rTtiHg5
+         QVYbMY1XxByuZhab7VZLtcDtYq5NzGQJBmYyU/CJRG55D1lie8Jn9ZlJG/lER44If11K
+         uzjvWloMvfyVHv4n2AQMSx71ce0PENYnK3z00G/3VdcZtnlQbiFB+FegDcQMRidpgUYI
+         W2BIGwVLXuCiFc3REWU8aAoNSDqZrdEBK7VTo14zXY8tBqm9r/gmg/COrStx8wF70NdR
+         Ow/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706829137; x=1707433937;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+PN1aVVdJv7dQ6u3SE9gXNMJ5i8PkALkHFjLI1LOmKY=;
+        b=RwO8r/GHMjufytvtJJ+6rX7m6ZOYatl9d2CWJxJ9IkL5HG/x5RPcp9t7R4ex8qn7L1
+         5snrf3WDVpNItr1qRoMYDjkuJWnBgsGZdCyxMuEEoqFWRNaONFYevHQzXPTw4vrr9y0q
+         WcDgU2U0adw1al4JDvjyY64lgVEvsERIQMGGN+0YBfl5FIMsRP0O6gBuN+vasUqnpbCi
+         ZBVc7fMIh0b1NrEPANyUzqDY3XwMXC/Cna8FHHVGJvzoJ6jjSLAx6ZagqxWlTOpD/V55
+         zoqg6N9O7oroa2cEa3ipwEYT3D2eRysYZ4sDAieLWXkTul+rhuuQLNLWH0YWNLg3Gk6T
+         Fkaw==
+X-Gm-Message-State: AOJu0YyDIps9Rwlis6xqKGAeHLBB7xPpIp9mXN5j8+MGFovqm+H1TAYO
+	kLnaYCalIsq8jUhUIRIXLE9DbloZWlCU1gPaX11zG1Tm2Ne1GJCFIXFcUVkZ2LPxkedtEZhbR5K
+	Ed4Laa8ITp+tqdEYvmu2QHlmvNxg=
+X-Google-Smtp-Source: AGHT+IFznqZD386j38NqZlpMPZjSrbX0IVvxdtH06xaGlCHWUb0CmZLJnLZmRce7XPhhGHqaSHLrFy/x9r3vOSy+mk0=
+X-Received: by 2002:a0d:cbc9:0:b0:5ff:81fa:16e6 with SMTP id
+ n192-20020a0dcbc9000000b005ff81fa16e6mr622138ywd.38.1706829136716; Thu, 01
+ Feb 2024 15:12:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131175027.3287009-3-jeffxu@chromium.org>
+References: <20240201-rockchip-rust-phy_depend-v2-0-c5fa4faab924@christina-quast.de>
+ <20240201-rockchip-rust-phy_depend-v2-3-c5fa4faab924@christina-quast.de>
+ <2024020105-bankroll-opium-a6e5@gregkh> <6725eeac-45ee-4f3f-a612-0ef5725b9fd9@lunn.ch>
+In-Reply-To: <6725eeac-45ee-4f3f-a612-0ef5725b9fd9@lunn.ch>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Fri, 2 Feb 2024 00:12:05 +0100
+Message-ID: <CANiq72nnHj2PnsM-=RREOcq1wsyydFZQ67-DewDa18=tAHe4NA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] net: phy: add Rust Rockchip PHY driver
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Greg KH <gregkh@linuxfoundation.org>, 
+	Christina Quast <contact@christina-quast.de>, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, FUJITA Tomonori <fujita.tomonori@gmail.com>, 
+	Trevor Gross <tmgross@umich.edu>, Heiner Kallweit <hkallweit1@gmail.com>, 
+	Russell King <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Heiko Stuebner <heiko@sntech.de>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 05:50:24PM +0000, jeffxu@chromium.org wrote:
-> [PATCH v8 2/4] mseal: add mseal syscall
-[...]
-> +/*
-> + * The PROT_SEAL defines memory sealing in the prot argument of mmap().
-> + */
-> +#define PROT_SEAL	0x04000000	/* _BITUL(26) */
-> +
->  /* 0x01 - 0x03 are defined in linux/mman.h */
->  #define MAP_TYPE	0x0f		/* Mask for type of mapping */
->  #define MAP_FIXED	0x10		/* Interpret addr exactly */
-> @@ -33,6 +38,9 @@
->  #define MAP_UNINITIALIZED 0x4000000	/* For anonymous mmap, memory could be
->  					 * uninitialized */
->  
-> +/* map is sealable */
-> +#define MAP_SEALABLE	0x8000000	/* _BITUL(27) */
+On Thu, Feb 1, 2024 at 10:30=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> As one of the PHY Maintainers, i would say no.
+>
+> Now we have an example, i think we should be a lot more strict about
+> what we actually merge. It should be a driver for hardware which does
+> not have a C driver.
 
-IMO this patch is misleading, as it claims to just be adding a new syscall, but
-it actually adds three new UAPIs, only one of which is the new syscall.  The
-other two new UAPIs are new flags to the mmap syscall.
+Yeah, a single "Rust reference driver" is likely enough to give a good
+example of how things would look.
 
-Based on recent discussions, it seems the usefulness of the new mmap flags has
-not yet been established.  Note also that there are only a limited number of
-mmap flags remaining, so we should be careful about allocating them.
+I guess more than one could be justified if there are significant
+differences, e.g. if the maintainers want to cover more of the
+abstractions API for some reason.
 
-Therefore, why not start by just adding the mseal syscall, without the new mmap
-flags alongside it?
+> We cannot drop C drivers since Rust at the moment does not support all
+> architectures GCC/Clang does. PHY drivers are architecture
+> independent, and in real life used on multiple architectures. When
+> Rust eventually catches up, we could consider dropping C drivers when
+> there is an equivalent Rust driver, but from what i hear, that is a
+> few years away. I don't want to be supporting a C and Rust driver for
+> the same hardware.
 
-I'll also note that the existing PROT_* flags seem to be conventionally used for
-the CPU page protections, as opposed to kernel-specific properties of the VMA
-object.  As such, PROT_SEAL feels a bit out of place anyway.  If it's added at
-all it perhaps should be a MAP_* flag, not PROT_*.  I'm not sure this aspect has
-been properly discussed yet, seeing as the patchset is presented as just adding
-sys_mseal().  Some reviewers may not have noticed or considered the new flags.
+The `rustc_codegen_gcc` backend can already build the kernel without
+changes, so hopefully we will see some results sooner than that. If we
+are talking multiple years, GCC Rust likely enters the equation too.
 
-- Eric
+But, indeed, there is a lot of work to do until we can drop C code in gener=
+al.
+
+Cheers,
+Miguel
 
