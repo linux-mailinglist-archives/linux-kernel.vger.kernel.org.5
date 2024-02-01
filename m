@@ -1,136 +1,127 @@
-Return-Path: <linux-kernel+bounces-49005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63FC7846493
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:43:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB300846496
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:50:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10C1C1F23BE6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:43:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7B1C28C0B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:50:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7CD847F58;
-	Thu,  1 Feb 2024 23:43:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A6DF47F68;
+	Thu,  1 Feb 2024 23:50:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b="UuduZe5F"
-Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="mCmxhQkt"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F4740BE9;
-	Thu,  1 Feb 2024 23:43:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.185.137.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E0147F52;
+	Thu,  1 Feb 2024 23:50:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706831004; cv=none; b=XSGiGb+8ySPhRp3R3YGLE/N0OmRk31VT6Y9TD+tiG06vOakvrlT0VAp1xJ9a64Jzaf3HLM3oSWQBn0QXFNLginDjQdGyogTyIIr86ncjdEXVtP500lJmMmzJiw4oKu5TSCxaymGa0ZeD/iAbE54GCsrHnIM0vUaNyqdqwfyLln4=
+	t=1706831413; cv=none; b=csMdWnLCD1R3e7EtDmcy7S7J1PnCbrGJuV07FVljeMv2UxO5aDAhYgxRZSuwueHgjJF5dqDNZZ6jX9H/S9/mJhyDWhBiPWgv//ZHUM43C+gjc6Ug8fsk3dKDOXba6xP4kmRAAp64KqLF9gno03qacIVH7b2KvX8Zj3InK2Xjb+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706831004; c=relaxed/simple;
-	bh=E/EuFP/XXcsHH/ajGIWHXjQc4oFNk7hnv3UOw4l6RiM=;
-	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
-	 Content-Type:Date:Message-ID; b=TTz3KhCj1endBdzpmkH0IzbSBADmqpFZAMXTflZtvEmLKsI9/DQLDAChBmuSxajIGjI18T+T2KTpduI98RZlTFNSeXN9ScrCG95GAx731/tg1xfG0a0xyUdKO0J6KysGRZejpL44EPQOT9GP3se3hlnKCjoWWoqevllXytWxHhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org; spf=pass smtp.mailfrom=openbsd.org; dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b=UuduZe5F; arc=none smtp.client-ip=199.185.137.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openbsd.org
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=E/EuFP/XXc
-	sHH/ajGIWHXjQc4oFNk7hnv3UOw4l6RiM=; h=date:references:in-reply-to:
-	subject:cc:to:from; d=openbsd.org; b=UuduZe5F+g7Sb4UNMNnMGju7lX3vLVV9T
-	SdhKcs9Z/5wsx6/8QjyATQ+zVRTEVWJdStFfTfsrBtP22IuF2hsOYAkbttWo1zYJaeNa1H
-	D6naShPls+8kar87xWt9d2fOkPnqBF9AQAfKZKSKOhcIkilznr1jlnH+w7fzS+LIl8dttt
-	ICJwHJZKyMe1dWiKrFy9s+/IUyd3XP9rmMF8omt2kROOv8mAhY0AF0p+Qk7RPRU0g5NO2n
-	ts2xcmrrw7aFcNqsRZqx/onC9hdZPIjly+rXOfiy2Tih5vNNAS5kJzBJMGFXUNwcM51f4O
-	rg13pwCVW7Q5S/Y4H7M5PTgjN7Cxw==
-Received: from cvs.openbsd.org (localhost [127.0.0.1])
-	by cvs.openbsd.org (OpenSMTPD) with ESMTP id fb45d291;
-	Thu, 1 Feb 2024 16:43:17 -0700 (MST)
-From: "Theo de Raadt" <deraadt@openbsd.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-cc: Jeff Xu <jeffxu@chromium.org>,
-    "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-    Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org,
-    keescook@chromium.org, jannh@google.com, sroettger@google.com,
-    willy@infradead.org, gregkh@linuxfoundation.org,
-    usama.anjum@collabora.com, rdunlap@infradead.org, jeffxu@google.com,
-    jorgelo@chromium.org, groeck@chromium.org,
-    linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-    linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
-    linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v8 0/4] Introduce mseal
-In-reply-to: <CAHk-=wjqozic6JuRimXD=RamnJmD6FoaQki7RtNYrezzx_OfOg@mail.gmail.com>
-References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver> <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com> <20240201204512.ht3e33yj77kkxi4q@revolver> <CABi2SkWB2eV24LBJtgJ73zEwaAWuFhAwrfqx3Rs=tqnpcJ0qRw@mail.gmail.com> <58408.1706828083@cvs.openbsd.org> <CAHk-=wjqozic6JuRimXD=RamnJmD6FoaQki7RtNYrezzx_OfOg@mail.gmail.com>
-Comments: In-reply-to Linus Torvalds <torvalds@linux-foundation.org>
-   message dated "Thu, 01 Feb 2024 15:15:27 -0800."
+	s=arc-20240116; t=1706831413; c=relaxed/simple;
+	bh=uxc7sN1qyLKA8RXd9+usKdpcepmKr7acUGjP2DjQCwk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=t6b7m3zvgkohn37q+7YQVDqc/3AEBqZYLbywlFfqPGZuKBx2XI/Ou0yFbee+aNIF4/hw2Os8xb0CXvRxNNZMoqbHv6aIHOTKTVFKRM1DfCMhUHbYbrglNg+d0lJB4/VVKodzd5B/rxJgUQZjZ4zeJIa0tz72/U03i6sFS7XMkd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=mCmxhQkt; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 411No1hc022509;
+	Thu, 1 Feb 2024 17:50:01 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706831401;
+	bh=pA3/cTZ7i/yJAMqa6Cw/IrsmxoD/vopbCB/efVaHv1A=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=mCmxhQktzfBdzUR++y9QJ2gjcZ79F6I+u+Pf0YitUGlLEHDivkEWT4ni+98VkTROB
+	 CbhrQQ3E97J8mAEx5RwCn6zqB6/ZXfOy/02cj74UtdL9/zks8lbpw1N7CX+JSH05A9
+	 wVnRJ67k/awJrKvCbZBV5/1UIsup2/FztgswVVvM=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 411No1h7022823
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 1 Feb 2024 17:50:01 -0600
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 1
+ Feb 2024 17:50:01 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 1 Feb 2024 17:50:01 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 411No0Ns130682;
+	Thu, 1 Feb 2024 17:50:01 -0600
+Message-ID: <6ba87a3f-e2f4-4caf-8d23-aa78caaba45a@ti.com>
+Date: Thu, 1 Feb 2024 17:50:00 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <25907.1706830997.1@cvs.openbsd.org>
-Date: Thu, 01 Feb 2024 16:43:17 -0700
-Message-ID: <99920.1706830997@cvs.openbsd.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/12] dt-bindings: arm: keystone: ti-sci: Add
+ reboot-controller child node
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>
+CC: Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Santosh
+ Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Sebastian Reichel <sre@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
+References: <20240131221957.213717-1-afd@ti.com>
+ <20240131221957.213717-3-afd@ti.com>
+ <20240201230351.GA1900918-robh@kernel.org>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <20240201230351.GA1900918-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
-
-> So yes, to my mind
+On 2/1/24 5:03 PM, Rob Herring wrote:
+> On Wed, Jan 31, 2024 at 04:19:47PM -0600, Andrew Davis wrote:
+>> The TI-SCI firmware supports rebooting the system in addition to the
+>> functions already listed here, document child node for the same.
+>>
+>> Signed-off-by: Andrew Davis <afd@ti.com>
+>> ---
+>>   .../devicetree/bindings/arm/keystone/ti,sci.yaml          | 8 ++++++++
+>>   1 file changed, 8 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml b/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
+>> index c24ad0968f3ef..e392175b33c74 100644
+>> --- a/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
+>> +++ b/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
+>> @@ -83,6 +83,10 @@ properties:
+>>       type: object
+>>       $ref: /schemas/reset/ti,sci-reset.yaml#
+>>   
+>> +  reboot-controller:
+>> +    type: object
+>> +    $ref: /schemas/power/reset/ti,sci-reboot.yaml#
 > 
->     mprotect(addr, len, PROT_READ);
->     mseal(addr, len, 0);
+> Don't need a ref just for a single property.
 > 
-> should basically give identical results to
+> But then why do we need a node here at all? Can't you assume reboot
+> support for TI-SCI firmware (i.e. based on the parent node). Then you
+> don't need a DT update to add the feature.
 > 
->     mprotect(addr, len, PROT_READ | PROT_SEAL);
-> 
-> and using PROT_SEAL at mmap() time is similarly the same obvious
-> notion of "map this, and then seal that mapping".
 
-I think that isn't easy to do.  Let's expand it to show error checking.
+We could yes, but then again we could do the same for all the
+child nodes of this system-controller parent node. Might even
+have been better that way, for now I'm trying to be consistent
+with what is already here (child node per service provided,
+even though the services are always the same).
 
-    if (mprotect(addr, len, PROT_READ) == -1)
-       react to the errno value
-    if (mseal(addr, len, 0) == -1)
-       react to the errno value
+Andrew
 
-and
-
-    if (mprotect(addr, len, PROT_READ | PROT_SEAL) == -1)
-       react to the errno value
-
-For current mprotect(), the errno values are mostly related to range
-issues with the parameters.
-
-After sealing a region, mprotect() also has the new errno EPERM.
-
-But what is the return value supposed to be from "PROT_READ | PROT_SEAL"
-over various sub-region types?
-
-Say I have a region 3 pages long.  One page is unmapped, one page is
-regular, and one page is sealed.  Re-arrange those 3 pages in all 6
-permutations.  Try them all.
-
-Does the returned errno change, based upon the order?
-Does it do part of the operation, or all of the operation?
-
-If the sealed page is first, the regular page is second, and the unmapped
-page is 3rd, does it return an error or return 0?  Does it change the
-permission on the 3rd page?  If it returns an error, has it changed any
-permissions?
-
-I don't think the diff follows the principle of
-
-if an error is returned --> we know nothing was changed.
-if success is returned --> we know all the requests were satisfied
-
-> The reason for having "mseal()" as a separate call at all from the
-> PROT_SEAL bit is that it does allow possible future expansion (while
-> PROT_SEAL is just a single bit, and it won't change semantics) but
-> also so that you can do whatever prep-work in stages if you want to,
-> and then just go "now we seal it all".
-
-
-
-
-How about you add basic mseal() that is maximum compatible with mimmutable(),
-and then we can all talk about whether PROT_SEAL makes sense once there
-are applications that demand it, and can prove they need it?
-
+> Rob
 
