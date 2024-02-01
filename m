@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-48886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8940E8462C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C63C8462D5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:48:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1754E28DD4A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:44:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC1B928E015
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:48:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CAFF3F8C7;
-	Thu,  1 Feb 2024 21:43:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6ABC3FE3D;
+	Thu,  1 Feb 2024 21:47:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XhtMoYbN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KYhAJw//"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ECEC39AE1;
-	Thu,  1 Feb 2024 21:43:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4B0F39AE1;
+	Thu,  1 Feb 2024 21:47:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706823836; cv=none; b=WCYJJGOB6I6BOkmoszg43TNb0w20gYig+NAQxI+dtWSwPqQ9j9yuwS9Xo1dDLWO/MJhQWEaPpGAhL12aayflAS9iZ+TbjrkZQ9EXkXjCMFZk+lYJLulRQSn2AkJEHYrBOkMeFzeTxOYvZO/iEyM7bvmT2f2ywyp63cfJqbdYgvA=
+	t=1706824053; cv=none; b=Uak3q6fovuTrGQ6irIPfGICYVR6/6afdPLjz5lGScydMdAvIKR/Ha7ZIPGsrj8heY0Ul5oFuu9USIkaIAmsbS2Wh/ipeb4gjhrXDLzP7rEYiWVRvrELSdlwX1XSIfR1w2P79RKfrvzAbn89EXGPA6OMhjEYh+YXMgar4h6gDgzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706823836; c=relaxed/simple;
-	bh=GT8n6a2f4TX/O/sQ4NGGpwa4SOMqPEMREuy8nUejw3c=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=F/yXFhFNF75YnK4+4FmnyCEYYJKSkWiWPvXam4yh0c/1DEYOZiI/K4rGYSASZeDnU6ltiJ3KZdmx8p33pW8Bcplkhn5fDmv2buyYkVf7FnJFSvKJAR8KVHBO1u4hTLJcBL0Ywi9skJ9BV7GT2rKD3ER42Y8QucJ0iw+di1H2KUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XhtMoYbN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86B2AC433C7;
-	Thu,  1 Feb 2024 21:43:52 +0000 (UTC)
+	s=arc-20240116; t=1706824053; c=relaxed/simple;
+	bh=ONdXqAS27cKeOgWX4XGTKCxg4rE0mzWElHVnnYMMb0Y=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
+	 References:In-Reply-To; b=khxhwSxLDnLzjIdYRf0JZGlz3N+SgDTU1UeUf+6SBoSQeUBK47wAcA3uuk18bvU3k9yTfrG83HMqz2/VEq/jaA28iuim+dgoqHSgNBcucMECnn/FwC7u904JZr5lKQUlIl0uxu6CALvToLATsy7OmaqQxjriTPztTHU9S2cVVvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KYhAJw//; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEEB5C433C7;
+	Thu,  1 Feb 2024 21:47:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706823835;
-	bh=GT8n6a2f4TX/O/sQ4NGGpwa4SOMqPEMREuy8nUejw3c=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=XhtMoYbNwDCzRUCqrtK+w7v8BEbqeYGjmEXsEbnqvihKmxLVgklML6CPzmqrRwXUy
-	 3L1RfVauMzWWwh2GGz/TSUmH1n3UfiUTCQ2qIWQorkYyh08iCSKdKWOB0vOF2IyMos
-	 o3fA3gU5yoQrJ8pbqk3wsaOum4okHy/Ia8SvdDhFCV1EBXy5sUGUMx4reQp6L9oHES
-	 iLDBLEfwAKFOvrPxfrLkhyaICfRArVmvKwfxaFVRF/sLjRUB6XMrIxlMm5nZ+tZk64
-	 4A/MWNkX2Hf9aWob7U1JXz4IvR56NM4w3r30F78OOMWH6XKn22DOZ4MFJ5aldKw8Me
-	 OQtiBwvO35Rxg==
+	s=k20201202; t=1706824052;
+	bh=ONdXqAS27cKeOgWX4XGTKCxg4rE0mzWElHVnnYMMb0Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KYhAJw//yARcM3TA6pVCkI4LUiBLE5XWbQdyIJ2IOE9XeeW9PXuRT0u1fpPxxrkwp
+	 Hurjt/dBf8xwi23T1FksMdv9e36XHyjvhrDNFhBSr1xRnTYLMYbJE3ILCL/Xokm/MD
+	 5zQO0eFXQidwjXeacacwmmo5pMdGivYcXVl5OsSlyzb4uDD6zF3QHkW/ipNCSyCrkX
+	 ruFySuh4tDJV4Rf4YFiYpBgTsdWdhvZKAcl5M+3wneiWVFJ2zo1QtBfWDecyRoxa73
+	 fETXEmGDyXWVSu/j1Xloaznpi7OcrAoyx70CgInqn+hTw2H52XDK3rA5SorsXzUwVT
+	 KByKrTZWMbAOA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,88 +48,90 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Date: Thu, 01 Feb 2024 23:43:50 +0200
-Message-Id: <CYU2JV57VXA9.3C5QTG4LX50TD@suppilovahvero>
-Cc: "Jiang, Dave" <dave.jiang@intel.com>, "linux-integrity@vger.kernel.org"
- <linux-integrity@vger.kernel.org>, "linux-cxl@vger.kernel.org"
- <linux-cxl@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "keyrings@vger.kernel.org"
- <keyrings@vger.kernel.org>, "linux-security-module@vger.kernel.org"
- <linux-security-module@vger.kernel.org>, "nvdimm@lists.linux.dev"
- <nvdimm@lists.linux.dev>
-Subject: Re: [PATCH] KEYS: encrypted: Add check for strsep
+Date: Thu, 01 Feb 2024 23:47:13 +0200
+Message-Id: <CYU2MG4IOJ0Q.2UJOTK999FCCC@suppilovahvero>
 From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Dan Williams" <dan.j.williams@intel.com>, "Verma, Vishal L"
- <vishal.l.verma@intel.com>, "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
- "paul@paul-moore.com" <paul@paul-moore.com>, "dhowells@redhat.com"
- <dhowells@redhat.com>, "yaelt@google.com" <yaelt@google.com>,
- "serge@hallyn.com" <serge@hallyn.com>, "nichen@iscas.ac.cn"
- <nichen@iscas.ac.cn>, "sumit.garg@linaro.org" <sumit.garg@linaro.org>,
- "jmorris@namei.org" <jmorris@namei.org>
+To: "Mark Brown" <broonie@kernel.org>, "Greg Kroah-Hartman"
+ <gregkh@linuxfoundation.org>
+Cc: =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ <kernel@pengutronix.de>, "Moritz Fischer" <mdf@kernel.org>, "Wu Hao"
+ <hao.wu@intel.com>, "Xu Yilun" <yilun.xu@intel.com>, "Tom Rix"
+ <trix@redhat.com>, <linux-fpga@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, "Alexander Aring" <alex.aring@gmail.com>,
+ "Stefan Schmidt" <stefan@datenfreihafen.org>, "Miquel Raynal"
+ <miquel.raynal@bootlin.com>, "David S. Miller" <davem@davemloft.net>, "Eric
+ Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>, "Paolo
+ Abeni" <pabeni@redhat.com>, <linux-wpan@vger.kernel.org>,
+ <netdev@vger.kernel.org>, "Lars-Peter Clausen" <lars@metafoo.de>, "Michael
+ Hennerich" <Michael.Hennerich@analog.com>, "Jonathan Cameron"
+ <jic23@kernel.org>, <linux-iio@vger.kernel.org>, "Dmitry Torokhov"
+ <dmitry.torokhov@gmail.com>, <linux-input@vger.kernel.org>, "Ulf Hansson"
+ <ulf.hansson@linaro.org>, "Rayyan Ansari" <rayyan@ansari.sh>, "Andy
+ Shevchenko" <andriy.shevchenko@linux.intel.com>, "Jonathan Cameron"
+ <Jonathan.Cameron@huawei.com>, "Martin Tuma"
+ <martin.tuma@digiteqautomotive.com>, "Mauro Carvalho Chehab"
+ <mchehab@kernel.org>, <linux-media@vger.kernel.org>, "Sergey Kozlov"
+ <serjk@netup.ru>, "Arnd Bergmann" <arnd@arndb.de>, "Yang Yingliang"
+ <yangyingliang@huawei.com>, <linux-mmc@vger.kernel.org>, "Richard
+ Weinberger" <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>, "Rob
+ Herring" <robh@kernel.org>, "Heiko Stuebner" <heiko@sntech.de>, "Michal
+ Simek" <michal.simek@amd.com>, "Amit Kumar Mahapatra via Alsa-devel"
+ <alsa-devel@alsa-project.org>, <linux-mtd@lists.infradead.org>, "Martin
+ Blumenstingl" <martin.blumenstingl@googlemail.com>, "Geert Uytterhoeven"
+ <geert+renesas@glider.be>, =?utf-8?q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+ "Simon Horman" <horms@kernel.org>, "Ronald Wahl" <ronald.wahl@raritan.com>,
+ "Benson Leung" <bleung@chromium.org>, "Tzung-Bi Shih" <tzungbi@kernel.org>,
+ "Guenter Roeck" <groeck@chromium.org>, <chrome-platform@lists.linux.dev>,
+ "Max Filippov" <jcmvbkbc@gmail.com>, <linux-spi@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, "Bjorn Andersson"
+ <andersson@kernel.org>, "Konrad Dybcio" <konrad.dybcio@linaro.org>,
+ <linux-arm-msm@vger.kernel.org>, "Matthias Brugger"
+ <matthias.bgg@gmail.com>, "AngeloGioacchino Del Regno"
+ <angelogioacchino.delregno@collabora.com>,
+ <linux-mediatek@lists.infradead.org>, "Thomas Zimmermann"
+ <tzimmermann@suse.de>, "Javier Martinez Canillas" <javierm@redhat.com>,
+ "Amit Kumar Mahapatra" <amit.kumar-mahapatra@amd.com>,
+ <dri-devel@lists.freedesktop.org>, <linux-fbdev@vger.kernel.org>,
+ <linux-staging@lists.linux.dev>, "Viresh Kumar" <vireshk@kernel.org>, "Rui
+ Miguel Silva" <rmfrfs@gmail.com>, "Johan Hovold" <johan@kernel.org>, "Alex
+ Elder" <elder@kernel.org>, <greybus-dev@lists.linaro.org>, "Peter Huewe"
+ <peterhuewe@gmx.de>, "Jason Gunthorpe" <jgg@ziepe.ca>,
+ <linux-integrity@vger.kernel.org>, "Herve Codina"
+ <herve.codina@bootlin.com>, "Alan Stern" <stern@rowland.harvard.edu>, "Aaro
+ Koskinen" <aaro.koskinen@iki.fi>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski@linaro.org>, <linux-usb@vger.kernel.org>, "Helge
+ Deller" <deller@gmx.de>, "Dario Binacchi"
+ <dario.binacchi@amarulasolutions.com>, "Kalle Valo" <kvalo@kernel.org>,
+ "Dmitry Antipov" <dmantipov@yandex.ru>, <libertas-dev@lists.infradead.org>,
+ <linux-wireless@vger.kernel.org>, "Jonathan Corbet" <corbet@lwn.net>,
+ "James Clark" <james.clark@arm.com>, "Bjorn Helgaas" <bhelgaas@google.com>,
+ <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v2 00/33] spi: get rid of some legacy macros
 X-Mailer: aerc 0.15.2
-References: <20231108073627.1063464-1-nichen@iscas.ac.cn>
- <4d3465b48b9c5a87deb385b15bf5125fc1704019.camel@intel.com>
- <e3275c0cfe21d75e0d71ea3fc24a31252efc9ad6.camel@linux.ibm.com>
- <e3b1a5e532ed86e674385abc4812c5a774f851d4.camel@intel.com>
- <49c48e3e96bf0f5ebef14e7328cc8a6ca6380e08.camel@linux.ibm.com>
- <50c2fa781e3266ee8151afdef5a8659d63ca952e.camel@intel.com>
- <CYS7QMYS8XAJ.2QPI3MS5KXK8E@suppilovahvero>
- <CYS7WMFLXNE1.35OBTKTONKNX3@suppilovahvero>
- <65b93f2b3099b_5cc6f29453@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-In-Reply-To: <65b93f2b3099b_5cc6f29453@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
+ <2024012417-prissy-sworn-bc55@gregkh>
+ <c1e38a30-5075-4d01-af24-ac684e77cf29@sirena.org.uk>
+In-Reply-To: <c1e38a30-5075-4d01-af24-ac684e77cf29@sirena.org.uk>
 
-On Tue Jan 30, 2024 at 8:25 PM EET, Dan Williams wrote:
-> Jarkko Sakkinen wrote:
-> > On Tue Jan 30, 2024 at 7:22 PM EET, Jarkko Sakkinen wrote:
-> > > On Wed Jan 24, 2024 at 11:10 PM EET, Verma, Vishal L wrote:
-> > > > On Wed, 2024-01-24 at 15:40 -0500, Mimi Zohar wrote:
-> > > > > On Wed, 2024-01-24 at 20:10 +0000, Verma, Vishal L wrote:
-> > > > > > >=20
-> > > > > > Ah, thanks for confirming! Would you like me to send a revert p=
-atch or
-> > > > > > will you do it?
-> > > > >=20
-> > > > > Revert "KEYS: encrypted: Add check for strsep"
-> > > > > =C2=A0=C2=A0=C2=A0=20
-> > > > > This reverts commit b4af096b5df5dd131ab796c79cedc7069d8f4882.
-> > > > > =C2=A0=C2=A0=C2=A0=20
-> > > > > New encrypted keys are created either from kernel-generated rando=
-m
-> > > > > numbers or user-provided decrypted data.=C2=A0 Revert the change =
-requiring
-> > > > > user-provided decrypted data.
-> > > > >=20
-> > > > >=20
-> > > > > Can I add your Reported-by?
-> > > >
-> > > > Yes that works, Thank you.
-> > >
-> > > This went totally wrong IMHO.
-> > >
-> > > Priority should be to locate and fix the bug not revert useful stuff
-> > > when a bug is found that has limited scope.
-> >=20
-> > By guidelines here the commit is also a bug fix and reverting
-> > such commit means seeding a bug to the mainline. Also the klog
-> > message alone is a bug fix here. So also by book it really has
-> > to come back as it was already commit because we cannot
-> > knowingly mount bugs to the mainline, right?
+On Wed Jan 24, 2024 at 7:22 PM EET, Mark Brown wrote:
+> On Wed, Jan 24, 2024 at 09:13:49AM -0800, Greg Kroah-Hartman wrote:
+> > On Mon, Jan 22, 2024 at 07:06:55PM +0100, Uwe Kleine-K=C3=B6nig wrote:
 >
-> No, the commit broke userspace. The rule is do not cause regressions
-> even if userspace is abusing the ABI in an undesirable way. Even the
-> new pr_info() is a log spamming behavior change, a pr_debug() might be
-> suitable, but otherwise a logic change here needs a clear description
-> about what is broken about the old userspace behavior and why the kernel
-> can not possibly safely handle it.
+> > > Note that Jonathan Cameron has already applied patch 3 to his tree, i=
+t
+> > > didn't appear in a public tree though yet. I still included it here t=
+o
+> > > make the kernel build bots happy.
+>
+> > Are we supposed to take the individual changes in our different
+> > subsystem trees, or do you want them all to go through the spi tree?
+>
+> Given that the final patch removes the legacy interfaces I'm expecting
+> to take them via SPI.
 
-The rationale literally gives empirical proof that the log message
-is useful by measure. It would be useless if log level is decreased
-to debug, as then sysadmin's won't take notice. I don't really know
-what is the definition of "spam" here but at least for me actually
-useful log message are not in that category.
++1
 
-Issue was legit but git revert is objectively an incorrect way to
-address the bug.
+least fuss approach
 
 BR, Jarkko
 
