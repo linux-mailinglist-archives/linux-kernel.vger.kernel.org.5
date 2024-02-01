@@ -1,61 +1,51 @@
-Return-Path: <linux-kernel+bounces-47643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8816184509E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 06:10:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 105018450A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 06:16:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F947B23DBE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:10:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C207E28E704
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:16:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FBD02A1D3;
-	Thu,  1 Feb 2024 05:10:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E0A83C48E;
+	Thu,  1 Feb 2024 05:16:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Hfo0TwT4"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="0uKcdaHm"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2EA8366;
-	Thu,  1 Feb 2024 05:10:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F3C2C1BF;
+	Thu,  1 Feb 2024 05:16:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706764228; cv=none; b=bZ4UJngXxpOhvRMhE5iWWv8G5sqr6q9PdSkpAXz1huhJ97/0pOaDfrm2MKaykOGXQQPuY5Hr1wSgI5XdoFzqBms8Dzq1HTLuMlT4g2J8EO8xZge4aOOWtwKuF6rtDBDYi797IbD4pluxb2E2KkW/nT3+pMn5A0m5UlhdaDSsT3M=
+	t=1706764591; cv=none; b=Oisk/gjDy67M7z3ZzAFGYl3Ir7enat/BFadCRO7msA0sElegqWP7vgCoGIFUSRatlp8FIufenrGSx0107wQ4b5at5fULJOiJMdJyGUAZH7ur+E42hNc7I5wkQP7+Dy4frwD0uu57x73wXuU42UP3llbh83ZGeAu/Hg5tqk1aNo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706764228; c=relaxed/simple;
-	bh=TZ4WdxaS6sBzLI6TTeW0UbEUGPpFWeuJx+KfLwa7rnQ=;
+	s=arc-20240116; t=1706764591; c=relaxed/simple;
+	bh=CvSb+Gil1ji46VexZFFVDkpAh7xY7sGUymNfmluuP8g=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MI9bBqsKEvkLDG+GW3ovpSt8G/XeQgoRPFsogwqojEb8QnhVLNwmqvfc6xYd2iesnF++yM6JjRH3/r4TKNizLwGDzQTTMly4TVfXCL5J/NdzS/pMRLRF82aU18EG97Agq3s43aYBq32LKlcTNbznB5RdJKI/VqjQzOODR2Iopmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Hfo0TwT4; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706764227; x=1738300227;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=TZ4WdxaS6sBzLI6TTeW0UbEUGPpFWeuJx+KfLwa7rnQ=;
-  b=Hfo0TwT4iF7pfEchdTAN09ZkgQgq0lmNmD9iBurnBCxQJ/WmXe6Oa8nB
-   b6mSUwR7Xc536bN8XV2dv2X9pUKiB6VCREYzQyD4QKHnJOtowTrx999CS
-   +Gj5K7wDVYIHSTwq74lacgxH/ZN25tjr4IVPyE3FlBCgo0QfE/E1uoxHv
-   +mKaUwrWCcIVXnQrPuOxCplwVUaZCpzgF/vnAmzNp0Z2grKFoTXzwU81W
-   Vhq9H+F+hS7a+87OUUnNqUu2tRawMh6/Bsk9USdsCdaGv4soBarPIR0fr
-   DaIDfY3wjxNouCqyFe4OKICNYGaz+/SL9sECV65IfCwINYT+dI10nK6iY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="17196091"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="17196091"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 21:10:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="908132348"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="908132348"
-Received: from choongyo-mobl.gar.corp.intel.com (HELO [10.247.5.230]) ([10.247.5.230])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 21:10:17 -0800
-Message-ID: <9e23671e-788c-4191-bdb4-94915ff7da5a@linux.intel.com>
-Date: Thu, 1 Feb 2024 13:10:05 +0800
+	 In-Reply-To:Content-Type; b=jBYAJJ8Hx+kmnO9c1Vxpm+oke7FixgyT1Bk4//ztPfp+trTRsFxgM4r9Penq9aul43pl/uaa41LAstXiSW5AECcNNXQi/85wW65k5+F/M+iaejmJC5mOgn6lw1uFPhuiqNws/sDLIKIdRfgAST9phj1hymEfB3mPJOxTbzC5SpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=0uKcdaHm; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=Mjh8PuY8+e5eF0GSyu0fRtJSsUkC5zDTJI32X7tIhQs=; b=0uKcdaHmeoMpzFrSRx/owahvGb
+	L9Tq+yFiz2oFwHM9zVDVBxg3kJutVEBrB3ACrZP2987brgR4wRDowlJyx1cg32xIgCcne/mxAgmnW
+	CJ12Pt8wNFdo15nNqkQ+3Q+qDtC5IZL3GNH6Mt2sM/N9L8gvdn4HIE0czHhS1Ja3jp0dn3TSDLrCy
+	e7Z62A/hGyP2+3XoE03fsfTGlAcTe4RIz7UUpZSN2UtJoy/K6kbsTalt3ftgX2jjOjlHgb+6uJIju
+	kW1RHN24jhqcZ7yL3tnzgS55Qq409eoGBCAlXePMUDGdgLmxdjWSBc38jZY0QbuZO6iQ1m8i1uaiK
+	rPlNGvqg==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rVPR6-00000006bxu-2Q3C;
+	Thu, 01 Feb 2024 05:16:28 +0000
+Message-ID: <ac67aa4a-cba9-4daa-93f6-0bbdc0d4ec86@infradead.org>
+Date: Wed, 31 Jan 2024 21:16:27 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,68 +53,77 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4 06/11] net: stmmac: resetup XPCS according to
- the new interface mode
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
- David E Box <david.e.box@linux.intel.com>,
- Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <Jose.Abreu@synopsys.com>, "David S . Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Richard Cochran <richardcochran@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
- Heiner Kallweit <hkallweit1@gmail.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, Andrew Halaney
- <ahalaney@redhat.com>, Simon Horman <simon.horman@corigine.com>,
- Serge Semin <fancer.lancer@gmail.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, platform-driver-x86@vger.kernel.org,
- linux-hwmon@vger.kernel.org, bpf@vger.kernel.org,
- Voon Wei Feng <weifeng.voon@intel.com>,
- Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
- Lai Peter Jun Ann <jun.ann.lai@intel.com>,
- Abdul Rahim Faizal <faizal.abdul.rahim@intel.com>
-References: <20240129130253.1400707-1-yong.liang.choong@linux.intel.com>
- <20240129130253.1400707-7-yong.liang.choong@linux.intel.com>
- <ZbjNn+C/VHegH2t7@shell.armlinux.org.uk>
+Subject: Re: [PATCH] lib/test_kmod: fix kernel-doc warnings
 Content-Language: en-US
-From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
-In-Reply-To: <ZbjNn+C/VHegH2t7@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: linux-kernel@vger.kernel.org
+Cc: Luis Chamberlain <mcgrof@kernel.org>, linux-modules@vger.kernel.org
+References: <20231104042044.17807-1-rdunlap@infradead.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231104042044.17807-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
+Hi,
+
+Any comments on this patch?
+Thanks.
 
 
-On 30/1/2024 6:21 pm, Russell King (Oracle) wrote:
-> NAK. Absolutely not. You haven't read the phylink documentation, nor
-> understood how phylink works.
+On 11/3/23 21:20, Randy Dunlap wrote:
+> Fix all kernel-doc warnings in test_kmod.c:
+> - Mark some enum values as private so that kernel-doc is not needed
+>   for them
+> - s/thread_mutex/thread_lock/ in a struct's kernel-doc comments
+> - add kernel-doc info for @task_sync
 > 
-> Since you haven't read the phylink documentation, I'm not going to
-> waste any more time reviewing this series since you haven't done your
-> side of the bargin here.
+> test_kmod.c:67: warning: Enum value '__TEST_KMOD_INVALID' not described in enum 'kmod_test_case'
+> test_kmod.c:67: warning: Enum value '__TEST_KMOD_MAX' not described in enum 'kmod_test_case'
+> test_kmod.c:100: warning: Function parameter or member 'task_sync' not described in 'kmod_test_device_info'
+> test_kmod.c:134: warning: Function parameter or member 'thread_mutex' not described in 'kmod_test_device'
 > 
-Hi Russell,
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Luis Chamberlain <mcgrof@kernel.org>
+> Cc: linux-modules@vger.kernel.org
+> ---
+>  lib/test_kmod.c |    6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff -- a/lib/test_kmod.c b/lib/test_kmod.c
+> --- a/lib/test_kmod.c
+> +++ b/lib/test_kmod.c
+> @@ -58,11 +58,14 @@ static int num_test_devs;
+>   * @need_mod_put for your tests case.
+>   */
+>  enum kmod_test_case {
+> +	/* private: */
+>  	__TEST_KMOD_INVALID = 0,
+> +	/* public: */
+>  
+>  	TEST_KMOD_DRIVER,
+>  	TEST_KMOD_FS_TYPE,
+>  
+> +	/* private: */
+>  	__TEST_KMOD_MAX,
+>  };
+>  
+> @@ -82,6 +85,7 @@ struct kmod_test_device;
+>   * @ret_sync: return value if request_module() is used, sync request for
+>   * 	@TEST_KMOD_DRIVER
+>   * @fs_sync: return value of get_fs_type() for @TEST_KMOD_FS_TYPE
+> + * @task_sync: kthread's task_struct or %NULL if not running
+>   * @thread_idx: thread ID
+>   * @test_dev: test device test is being performed under
+>   * @need_mod_put: Some tests (get_fs_type() is one) requires putting the module
+> @@ -108,7 +112,7 @@ struct kmod_test_device_info {
+>   * @dev: pointer to misc_dev's own struct device
+>   * @config_mutex: protects configuration of test
+>   * @trigger_mutex: the test trigger can only be fired once at a time
+> - * @thread_lock: protects @done count, and the @info per each thread
+> + * @thread_mutex: protects @done count, and the @info per each thread
+>   * @done: number of threads which have completed or failed
+>   * @test_is_oom: when we run out of memory, use this to halt moving forward
+>   * @kthreads_done: completion used to signal when all work is done
 
-Sorry that previously I only studied the phylink based on the `phylink.h` 
-itself. I think it might not be sufficient. I did search through the 
-internet and found the phylink document from kernel.org 
-(https://docs.kernel.org/networking/sfp-phylink.html). Kindly let me know 
-if there are any other phylink documents I might have overlooked.
-
-According to the phylink document from kernel.org, it does mention that 
-"phylink is a mechanism to support hot-pluggable networking modules 
-directly connected to a MAC without needing to re-initialise the adapter on 
-hot-plug events." I realize I should not destroy and reinitialize the PCS.
-Instead, I plan to follow the implementation in "net: macb: use 
-mac_select_pcs() interface" 
-(https://lore.kernel.org/netdev/E1n568J-002SZX-Gr@rmk-PC.armlinux.org.uk/T/). 
-This involves initializing the required PCS during the MAC probe and 
-querying the PCS based on the interface.
-
-Kindly let me know if I've overlooked anything in this proposed solution.
+-- 
+#Randy
 
