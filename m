@@ -1,171 +1,124 @@
-Return-Path: <linux-kernel+bounces-47762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AE07845278
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:12:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 218B084527C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:15:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5582C1C26054
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:12:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB5681F23A97
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:15:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D92159572;
-	Thu,  1 Feb 2024 08:12:32 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A11031586D3;
-	Thu,  1 Feb 2024 08:12:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8392D159574;
+	Thu,  1 Feb 2024 08:15:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JJazJQD5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5E751586D3;
+	Thu,  1 Feb 2024 08:15:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706775151; cv=none; b=e+tEzq9r2Q9+kbbb16auwBc1G1Dqi2dN4UteYbKU3Lzpz96Q+m6n8uf4ZLYYx5F2ALu+pJy3xPgBvh9cyuqbGeeutUh2jdi7LeX7Tk/UHmSKqJLemsynX4PnMjpLw4kpy6w1ElHOEyc7dF91/A65FYp/w1WIfOlgBQRuZiW+vo4=
+	t=1706775328; cv=none; b=XsoWrh/1oocE3sGsZTlMEIE94sCeIWoBVkhDc4RIZM0i4LZZBLo6pbxoxE1QuQfB83RXgXWzka3B1PzOVefarngqSqtTPt7iG+NyY0OU0sDZEpFuMlQ78D5A8FabP+wHaU0GZd6L/90AIrU0my1DJAsCdc4OWbeP36yij6MWkq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706775151; c=relaxed/simple;
-	bh=XWgkDI5LEjWrVN67JCy6YWdGvZ06tRRPL0Okk7aKAww=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gcLyjfYzqndazkpj8lafKfk/Dn9ulQQR3dSFd5n1Aev8tbRQ11nstL/5rQGHTW79DbUFW/7G/kAnGsPpZTrCH5LjyfPl0a5lU3KocrkU4XmmCrjCO4O4GBCX3S3zNhSKKU9LVz5jTDTbvoA66x7yQhH4j6g7TB4OWnP3JoSjfew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2F301DA7;
-	Thu,  1 Feb 2024 00:13:05 -0800 (PST)
-Received: from [10.162.42.11] (a077893.blr.arm.com [10.162.42.11])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8267D3F738;
-	Thu,  1 Feb 2024 00:12:11 -0800 (PST)
-Message-ID: <599769c3-0aef-4c5b-ac98-f109649862f7@arm.com>
-Date: Thu, 1 Feb 2024 13:42:08 +0530
+	s=arc-20240116; t=1706775328; c=relaxed/simple;
+	bh=kkm9m85BchBsg8gyaeBqfM19x9yX2lcmT5vikkpEihs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YKgA3hCTsJs9R/OOyJ8MwBC8G9110B6QaOaSb5VBVrtT/PvG/dUR1W1qlbMqRCTgEyzZ/6y5yXJXkYgbU+AhYNaEWyIMDeEqR3WIphj72wOE9CMsksy69uYiFvk8gOh8hTJZnmhphZjMKDCjJaxZYJBEc1DG8sFimRrbOPgfkvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JJazJQD5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 383F0C433F1;
+	Thu,  1 Feb 2024 08:15:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706775328;
+	bh=kkm9m85BchBsg8gyaeBqfM19x9yX2lcmT5vikkpEihs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JJazJQD5szwbMpJjuDL/t7jXeKWf6+Ijqym93J1qnpgke0tVyOxVGhkhGQFkiGNMs
+	 ttaJMhC3XyipqNfXK08pO9FnS61CrIyGPPBH4wVfW/bJuM7EsOaH045gKDD/TMzJvQ
+	 R11u5YQ6YkJeqv5I1kqMnS9GOBmnbyLp1wdhVro6D1B10HLyGxrpILn3YsmL3Y9Wel
+	 wGBTYcn+Qh5DdzVM5V76DhXN3LnA5AhGZqMFPY6AJvQw7R8pDsNA8jsXTF48Ue0DNO
+	 kyhpohL1nC3ewZJARLrTUVm5OZJnTB3RbyhMnxekBaRtcSEITFl9uy0Qv2u2qtE5sq
+	 U/+pdea5NfSnQ==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rVSEL-000000005lV-1gxB;
+	Thu, 01 Feb 2024 09:15:29 +0100
+Date: Thu, 1 Feb 2024 09:15:29 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Bjorn Andersson <quic_bjorande@quicinc.com>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Jiri Kosina <jikos@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Konrad Dybcio <konrad.dybcio@somainline.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: HID: i2c-hid: Document reset-related
+ properties
+Message-ID: <ZbtTIYFzMVLMxb10@hovoldconsulting.com>
+References: <20240129-x13s-touchscreen-v3-0-c4a933034145@quicinc.com>
+ <20240129-x13s-touchscreen-v3-1-c4a933034145@quicinc.com>
+ <ZbfYzyHaNmjJyNpY@hovoldconsulting.com>
+ <20240131202239.GA2222869-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v3 31/35] khugepaged: arm64: Don't collapse MTE
- enabled VMAs
-Content-Language: en-US
-To: Alexandru Elisei <alexandru.elisei@arm.com>, catalin.marinas@arm.com,
- will@kernel.org, oliver.upton@linux.dev, maz@kernel.org,
- james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com,
- arnd@arndb.de, akpm@linux-foundation.org, mingo@redhat.com,
- peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
- mhiramat@kernel.org, rppt@kernel.org, hughd@google.com
-Cc: pcc@google.com, steven.price@arm.com, vincenzo.frascino@arm.com,
- david@redhat.com, eugenis@google.com, kcc@google.com, hyesoo.yu@samsung.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-mm@kvack.org,
- linux-trace-kernel@vger.kernel.org
-References: <20240125164256.4147-1-alexandru.elisei@arm.com>
- <20240125164256.4147-32-alexandru.elisei@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20240125164256.4147-32-alexandru.elisei@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240131202239.GA2222869-robh@kernel.org>
 
-
-
-On 1/25/24 22:12, Alexandru Elisei wrote:
-> copy_user_highpage() will do memory allocation if there are saved tags for
-> the destination page, and the page is missing tag storage.
+On Wed, Jan 31, 2024 at 02:22:39PM -0600, Rob Herring wrote:
+> On Mon, Jan 29, 2024 at 05:56:47PM +0100, Johan Hovold wrote:
+> > On Mon, Jan 29, 2024 at 08:47:47AM -0800, Bjorn Andersson wrote:
+> > > Some I2C HID devices has a reset pin and requires that some specified
+> > > time elapses after this reset pin is deasserted, before communication
+> > > with the device is attempted.
+> > > 
+> > > The Linux implementation is looking for these in the "reset-gpios" and
+> > > "post-reset-deassert-delay-ms" properties already, so use these property
+> > > names.
+> > 
+> > > +  post-reset-deassert-delay-ms:
+> > > +    description: Time required by the device after reset has been deasserted,
+> > > +      before it is ready for communication.
+> > > +
+> > > +  reset-gpios: true
+> > 
+> > Hmm, for the third time, it seems you ignored my comment that you need
+> > to remove the comment about these properties from the driver as part of
+> > this series.
+> > 
+> > 	/*
+> > 	 * Note this is a kernel internal device-property set by x86 platform code,
+> > 	 * this MUST not be used in devicetree files without first adding it to
+> > 	 * the DT bindings.
+> > 	 */
+> > 	if (!device_property_read_u32(dev, "post-reset-deassert-delay-ms", &val))
+> > 		ihid_of->post_reset_delay_ms = val;
 > 
-> After commit a349d72fd9ef ("mm/pgtable: add rcu_read_lock() and
-> rcu_read_unlock()s"), collapse_huge_page() calls
-> __collapse_huge_page_copy() -> .. -> copy_user_highpage() with the RCU lock
-> held, which means that copy_user_highpage() can only allocate memory using
-> GFP_ATOMIC or equivalent.
+> DT devices should have a specific compatible that gives enough detail to 
+> handle this delay or *any* other power sequencing requirement.
 > 
-> Get around this by refusing to collapse pages into a transparent huge page
-> if the VMA is MTE-enabled.
-
-Makes sense when copy_user_highpage() will allocate memory for tag storage.
-
+> OTOH, we've already got one other delay property, what's one more. Sigh.
 > 
-> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> ---
-> 
-> Changes since rfc v2:
-> 
-> * New patch. I think an agreement on whether copy*_user_highpage() should be
-> always allowed to sleep, or should not be allowed, would be useful.
+> Acked-by: Rob Herring <robh@kernel.org>
 
-This is a good question ! Even after preventing the collapse of MTE VMA here,
-there still might be more paths where a sleeping (i.e memory allocating)
-copy*_user_highpage() becomes problematic ?
+Right, and I guess we could do this now before this new property gets
+more use. Who knows if those delays are actually correct or may need to
+be tweaked down the line.
 
-> 
->  arch/arm64/include/asm/pgtable.h    | 3 +++
->  arch/arm64/kernel/mte_tag_storage.c | 5 +++++
->  include/linux/khugepaged.h          | 5 +++++
->  mm/khugepaged.c                     | 4 ++++
->  4 files changed, 17 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index 87ae59436162..d0473538c926 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -1120,6 +1120,9 @@ static inline bool arch_alloc_cma(gfp_t gfp_mask)
->  	return true;
->  }
->  
-> +bool arch_hugepage_vma_revalidate(struct vm_area_struct *vma, unsigned long address);
-> +#define arch_hugepage_vma_revalidate arch_hugepage_vma_revalidate
-> +
->  #endif /* CONFIG_ARM64_MTE_TAG_STORAGE */
->  #endif /* CONFIG_ARM64_MTE */
->  
-> diff --git a/arch/arm64/kernel/mte_tag_storage.c b/arch/arm64/kernel/mte_tag_storage.c
-> index ac7b9c9c585c..a99959b70573 100644
-> --- a/arch/arm64/kernel/mte_tag_storage.c
-> +++ b/arch/arm64/kernel/mte_tag_storage.c
-> @@ -636,3 +636,8 @@ void arch_alloc_page(struct page *page, int order, gfp_t gfp)
->  	if (tag_storage_enabled() && alloc_requires_tag_storage(gfp))
->  		reserve_tag_storage(page, order, gfp);
->  }
-> +
-> +bool arch_hugepage_vma_revalidate(struct vm_area_struct *vma, unsigned long address)
-> +{
-> +	return !(vma->vm_flags & VM_MTE);
-> +}
-> diff --git a/include/linux/khugepaged.h b/include/linux/khugepaged.h
-> index f68865e19b0b..461e4322dff2 100644
-> --- a/include/linux/khugepaged.h
-> +++ b/include/linux/khugepaged.h
-> @@ -38,6 +38,11 @@ static inline void khugepaged_exit(struct mm_struct *mm)
->  	if (test_bit(MMF_VM_HUGEPAGE, &mm->flags))
->  		__khugepaged_exit(mm);
->  }
-> +
-> +#ifndef arch_hugepage_vma_revalidate
-> +#define arch_hugepage_vma_revalidate(vma, address) 1
+Apparently we only have one specific i2c-hid compatible in the kernel
+(and it's not yet used by the driver).
 
-Please replace s/1/true as arch_hugepage_vma_revalidate() returns bool ?
-
-> +#endif
-
-Right, above construct is much better than __HAVE_ARCH_XXXX based one.
-
-> +
->  #else /* CONFIG_TRANSPARENT_HUGEPAGE */
->  static inline void khugepaged_fork(struct mm_struct *mm, struct mm_struct *oldmm)
->  {
-> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> index 2b219acb528e..cb9a9ddb4d86 100644
-> --- a/mm/khugepaged.c
-> +++ b/mm/khugepaged.c
-> @@ -935,6 +935,10 @@ static int hugepage_vma_revalidate(struct mm_struct *mm, unsigned long address,
->  	 */
->  	if (expect_anon && (!(*vmap)->anon_vma || !vma_is_anonymous(*vmap)))
->  		return SCAN_PAGE_ANON;
-> +
-> +	if (!arch_hugepage_vma_revalidate(vma, address))
-> +		return SCAN_VMA_CHECK;
-> +
->  	return SCAN_SUCCEED;
->  }
->  
-
-Otherwise this LGTM.
+Johan
 
