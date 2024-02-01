@@ -1,302 +1,191 @@
-Return-Path: <linux-kernel+bounces-48570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCC26845E22
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:09:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A464845E23
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:09:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4859F1F246EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:09:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D223B260CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:08:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79D8012BEB3;
-	Thu,  1 Feb 2024 17:09:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 775F277A1C;
+	Thu,  1 Feb 2024 17:08:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mhGmApDj"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="J4a65d5D"
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2056.outbound.protection.outlook.com [40.107.21.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0010779FB;
-	Thu,  1 Feb 2024 17:09:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706807375; cv=none; b=B2oziUmmn7cfWMtwc63HTDaUxSyCSR0m7PKEBudVls7DpXuw7ZDO1MVxwi9zsfqmXzxcnH0WfvQsOu/h0pd1ODr+ss/lNP9aYYtK+V7lWVilY9EdH7VVQt44ttfv35Y4TMy6EJM9KseBqaTU+EXtv4VtDTgH5QV5qcBuVllQw7w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706807375; c=relaxed/simple;
-	bh=83XK30FQAqdWMyXglieZ0fMtTZaBrSzc5Jn77WaHEow=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=YBA6rZnEnI/IXEk7noOzGXS+3GJ2MmEZut7T8MKDY8mEz1PugX5eeHiBYTmCvH/O/NjEZ2eUgS007chhqFcFNNZfwyNjgDiS1Hh1WfEMniA7hXResUa8VCqGADMbuwfHmwFUZBAQGcALI1Gs4pdWoSaB49I/nEW9a+BTzMPNKnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=mhGmApDj; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 411FFF9A029659;
-	Thu, 1 Feb 2024 17:08:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=xxtyEGXNKxGjJjisA1RYcutusayLpyCAh8Nc3UiogKw=; b=mh
-	GmApDjhTyhbuSnMkT8fU/j+Pq2NfU7TbmKETpdPBXWQ8QLR05jdAX37VYh7aX6gU
-	rbojG2Jv3FQEs01to0rxWUKnfAAXzX0tlMee00Qix9SQ1mBDoO5ftsWiioiE9HL9
-	5Q2EbNQFrlZ4NM4VsmZQa22poljIYBRJKWwaNfD78EgPNk41pLxsTl+k6jr7AdxL
-	sAyV7kl/OicMPwVdWAn179AOJ8x79GV1ZA8oFiLv1tXHg6nJRG4QAh/B/Z2C1v+3
-	ys3Ihe4zJ6XKre1+p0lmYyysXTCc4/5CPW5BCsVOb7B5YeGwOEUM0vChphOThABS
-	ajcHN4LnQ+mRA9iL44Zg==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0aws8qbk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 17:08:19 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 411H8I2R023482
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 1 Feb 2024 17:08:18 GMT
-Received: from [10.71.110.192] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 1 Feb
- 2024 09:08:14 -0800
-Message-ID: <51dc64bb-3101-4b4a-a54f-c0df6c0b264c@quicinc.com>
-Date: Thu, 1 Feb 2024 09:08:06 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CC3A779EA;
+	Thu,  1 Feb 2024 17:08:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.56
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706807318; cv=fail; b=JknU4u+C5jxTxqrus9vS/ULuYpAfmkT1zPkN+eynIeugcQV+tFGnBTJL0uFEoxF0kuqSvppkatxRmfbCflOwenmELa27woZJ4Xpx04xIYEdZ9TIRtLCqCCP3dX1tAkbn5SoqYoP+f4qNFCl2uZpsB7oIYNRRWj3RdmOTWvOTrcE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706807318; c=relaxed/simple;
+	bh=b1WRXy2hwGFnnQ5APTHJuijCQSKl/LT+AP/x8/2f8m8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=cEBi1qnkSuSxk5umsJaEJEhXbxrGZqyALkiAqVEbZ5SmxGnH+TeB8tM/PnZwZPdN+H6zF4sMWRyyG91AMKnhoZ/XixAfF1K2zPyBkQOcln3P0YCtFdlV1wrc80H40VzeyZAIQzuuZrPTtvN8JL7GzU2QCAzmppm9DIcdV4MCO1M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=J4a65d5D; arc=fail smtp.client-ip=40.107.21.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fqPhCBLYgMbAEEgxJK/7iwkhP3kBeqf3iWk8pAbNOtBvDEU9B8JoXR5TLLP8BM50yGH/r12tG1i2dkfuP8SXJhCkz9RW+3p9sJXgZRtHdLWOMT9w2B8olCWlSMRhjCzOaO+/u/OxdSD3XU57M0YL8XHuQQmQUvxbs6I4tMoYC9CzepbqUJ+8pAj3erj25xakOn8Rkv+WOHiCGHHRAq4ocaiqv7DW0tQCiVEsWkHTubgOZmWPmWiOR3bD97zhMrXaLHS7djXcVGatOvLgvJ6auB01fqq2CggrP0koBd3+S+PkPuPq0FJSunqg5YCLFYwA/GG7PVPoLxkiZ2ObHx0F/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JkUTov6dXSymkaK45c4LgQD+rDZuJ5FLSdbi6L8EjfI=;
+ b=FyggJTss0FFJPxfI8IdGnHFaOWyEK4FH0Wa34EbrZ7k7kqBAqzth+ragg5q8cBiu3hbrcdZrCy4B3dd+f3Y1gO4fE97OVeOGMQ0xCuKW2557VYQKCfVz0rk0Ox66+gG/K1nJJ8qpMyWt1ixqPL56+Oi7pJIk9TRAKJZLZrdqjq0iU74GdfRct4p3NTjokMNbHC7hs+VimBeO+ArX+HTi5Nwfh5NzebdiGrXOrEmG8dWvxtXeTl2GVz2HuDVPk70nE9qRk0B45ucD/Qo0E+BBJhC0ksLblf2QWyYZ5DcEdgJUEmot5IEQR2L/4qvQsf48R9+g5Hij262Wj/8wX8wREw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JkUTov6dXSymkaK45c4LgQD+rDZuJ5FLSdbi6L8EjfI=;
+ b=J4a65d5D2M8QA9T5xVVV0ktxBKNmpko3D1FyvunL6bstfghOeElBTXNEPMlwjbIC8syVMwOAV53iEY9y6MsQmc2ewCPge8yxuvCtiTaEO7wBxo5g2XkVXWF1O+Pa3rjcvSniL7dOlkN2PZ2aB/S33/yU41gX5GxHcOtezP5Obws=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by DBBPR04MB7627.eurprd04.prod.outlook.com (2603:10a6:10:208::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.24; Thu, 1 Feb
+ 2024 17:08:33 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7228.029; Thu, 1 Feb 2024
+ 17:08:33 +0000
+Date: Thu, 1 Feb 2024 12:08:23 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: bhelgaas@google.com, devicetree@vger.kernel.org,
+	gustavo.pimentel@synopsys.com, imx@lists.linux.dev, kw@linux.com,
+	leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org,
+	linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
+	lpieralisi@kernel.org, mani@kernel.org,
+	manivannan.sadhasivam@linaro.org, minghuan.lian@nxp.com,
+	mingkai.hu@nxp.com, robh+dt@kernel.org, roy.zang@nxp.com,
+	shawnguo@kernel.org, zhiqiang.hou@nxp.com
+Subject: Re: [PATCH v12 2/3] PCI: dwc: Implement general suspend/resume
+ functionality for L2/L3 transitions
+Message-ID: <ZbvQB/X0kwFs7nAb@lizhi-Precision-Tower-5810>
+References: <20230821184815.2167131-3-Frank.Li@nxp.com>
+ <20240201165025.GA637154@bhelgaas>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201165025.GA637154@bhelgaas>
+X-ClientProxiedBy: SJ0P220CA0028.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:a03:41b::11) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/46] Dynamic allocation of reserved_mem array.
-To: Rob Herring <robh@kernel.org>
-CC: <catalin.marinas@arm.com>, <will@kernel.org>, <frowand.list@gmail.com>,
-        <vgupta@kernel.org>, <arnd@arndb.de>, <olof@lixom.net>,
-        <soc@kernel.org>, <guoren@kernel.org>, <monstr@monstr.eu>,
-        <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>, <dinguyen@kernel.org>,
-        <chenhuacai@kernel.org>, <tsbogend@alpha.franken.de>,
-        <jonas@southpole.se>, <stefan.kristiansson@saunalahti.fi>,
-        <shorne@gmail.com>, <mpe@ellerman.id.au>, <ysato@users.sourceforge.jp>,
-        <dalias@libc.org>, <glaubitz@physik.fu-berlin.de>, <richard@nod.at>,
-        <anton.ivanov@cambridgegreys.com>, <johannes@sipsolutions.net>,
-        <chris@zankel.net>, <jcmvbkbc@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <kernel@quicinc.com>
-References: <20240126235425.12233-1-quic_obabatun@quicinc.com>
- <20240131000710.GA2581425-robh@kernel.org>
-Content-Language: en-US
-From: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
-In-Reply-To: <20240131000710.GA2581425-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: LPcbI1CgCltXWnox5HjpuMkRQVGpH92Z
-X-Proofpoint-ORIG-GUID: LPcbI1CgCltXWnox5HjpuMkRQVGpH92Z
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-01_04,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
- spamscore=0 clxscore=1011 suspectscore=0 bulkscore=0 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 phishscore=0
- mlxlogscore=976 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2402010134
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DBBPR04MB7627:EE_
+X-MS-Office365-Filtering-Correlation-Id: 150c65e8-bfef-46b1-65d8-08dc23486b99
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	LhrjMkpbf5OWcKeM6CjN2SOc4V0aPbJcwyKqealkaqq/PIvm898E/7OnCDFjnKsCJralSQvN6An4VzBVK70HF8Qa5evVCTIKaoMlWHKDCL3CBR2bPzUQeKRgf/J7aa3DVeKOPOhmfD8wJHNF1/ltG/MaI9IRRZ0tB+mC8SQ68hBALSo8hw1QVxKkEHzPAZD/X3Z79QdPHf6TdAXKq29cmblHNC8WazMTRSEP0m3qCw/qa1wKjNfeWV/NVrgWS0mw3gcOoht6VFBn5SuhD8CyAms+5eLNY5k4+IEBSa7SJz6xNxxH4n8L6jVNewh8k19fZjmjJ/fEfQV/k9BnvOxdC1yFszNrsvKfWnhHFGbLoM38EuF2+MthaZNzTY20NfyBfscUj2P41ubFBi8MIDuIxh5qypxqj6rn6e3RAf33FgQAC9PxCtSagd3UANZMubYqKAAmtefpfz0KWINfzH+phRvcoZMexoleN/jeW2rK3PwO9VYVfq+G9b1S7624i1K8oWbaxorLL3dm9+UkmJxyV1FLO0kYzGdw3pwdIKJsT9T75KdkdIU+LUI6sow6Ndk3oGiHhHn+nX630Y6MZjWDwK+4qw4q18pcQvMMr2R3Jys=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(376002)(136003)(346002)(396003)(366004)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(41300700001)(83380400001)(6512007)(26005)(38100700002)(9686003)(33716001)(8936002)(8676002)(5660300002)(7416002)(4326008)(66556008)(2906002)(15650500001)(6486002)(478600001)(6916009)(52116002)(6666004)(6506007)(66476007)(966005)(66946007)(316002)(38350700005)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?7Cd8KUUzGhnLZC3pG2FZ4JwEqZT89AmZZ7IqIWI4YGX5/OVTgWP4B29FKcHR?=
+ =?us-ascii?Q?cWLpw5ko53rwgylmRbGh6FEAAq36fAho5Kd5sgRH6o0R5crmPojC2lWogWXT?=
+ =?us-ascii?Q?+Rmh8sciLpw6CUOABn/kYB39Pk/77CP+OADoifN5ZRxig8X9EaVsCv7fY6T1?=
+ =?us-ascii?Q?yUOei8+U4JXyD4kPhgmWMmFVFkAWgy/TN+VQmp9TqGY1W8lzc+8MpfeRmRgH?=
+ =?us-ascii?Q?AN1A5O4nGCjYrofk/Wjq+QVsAD9VDMqa6GYjFN680UctzzEjK7CqVzz1eKev?=
+ =?us-ascii?Q?VWri+NeZz+1xJhB4Ncifb0GPhyetSVcNe8fLH7Wa+lYTl2/2a6xnsLvCt1bz?=
+ =?us-ascii?Q?Fm0J4d6dX3fwSarWheh4XJA4/aWroyhK0ve9J6Axk7/zvrzhFf1rgiG0W7UB?=
+ =?us-ascii?Q?mEzfiJZGnyOMMTuS2/6AD8M1wxqqryBAgjrD5e4KalpGbJQ16KJrpTksKIL4?=
+ =?us-ascii?Q?HhwM9dg5C0hCDjoRLOs94gl2TxlnWKJtfnAI92pMxb6Y6j0TDkXiMLl9qGJL?=
+ =?us-ascii?Q?uUWSHR9VsCVjVg9fyLkGT36Fp3UIV8bIlzP2AqlsbbY8pviTgI/E3g+aC3uk?=
+ =?us-ascii?Q?ptecuMA7NlZo7d1ySBL5JuXtD22wwjJo6ixvDJShvRmaUXUOpybB8A+F0U6g?=
+ =?us-ascii?Q?Ewc3UOqdhPtoD63J2++i/eX/LPl7w8a4pMaRw37PI11F9YbK9nxBw8patZ9E?=
+ =?us-ascii?Q?xjtgVyH128+Iw2nLNO9EIxBEuoDmkg8GY/uXp8/x81tbkshaR3PsnD94pAnF?=
+ =?us-ascii?Q?RJyQ4Fll/i0SJr9dBm1okhRXca4o+oRBmqLanLwUJLvAH5G7CE+LzKTEBXDE?=
+ =?us-ascii?Q?XyZZ/xq5SKO2SSOSrJzEJsYHMXCpUIrM5c7nL+kKg+BM1DcdzlQHVZQghOhw?=
+ =?us-ascii?Q?pUXJt2OA3T0N9vfAMPSG23hKvGNcnWn4+uSK+VTahH1UmMRsx/HbCG/h6fuQ?=
+ =?us-ascii?Q?qvMrJq9hn3Do68UYKdw+vwWnWlHPKA7AZodn5fS91FGPgS5gksj0um8Bqdbe?=
+ =?us-ascii?Q?Y8XXRYB7I6Yp7sjruWWBLQ+Tf9u8iniBjn+UdsJxdZ29vtSenakUZjIjuNFh?=
+ =?us-ascii?Q?aNztOQgyu8SCSQmuA6CGb4YAfbWSj/dCHp0awjyy4CsyWBi0SWUy+bg2EgZL?=
+ =?us-ascii?Q?ik+c37wjk+0pGK5k30XGP65zhiAP8NOCQ4DKx1NKUlwDQ3vthUPK+t1Fz73Y?=
+ =?us-ascii?Q?+U/g8KCuX6tGkU7yjOrfgnkr3I1UDy3Wtx4L3pPM3O8oi5FVKRjtsfS9eU7i?=
+ =?us-ascii?Q?HQv/ySJwuh04etB/g119epf8ealCw9epNU8eiL24VEecFvpCbAF7iaD3CwxN?=
+ =?us-ascii?Q?vV19v/0ZXe9GZMxNcBfqL1j1UTvGghhh9E0BRqY2OJgp6EDkJ9KTrZ/5QwnV?=
+ =?us-ascii?Q?KzcvcZuMHUWDH7BzKVaEZzplflEMzOKq5lkozQF1VrUGEIYfs0onjUh924wb?=
+ =?us-ascii?Q?zAPwOXcHyBTN2e7UbfCVXVWEWlzVBbJAsFLsLMYDBuJRczNMLVR5sLOvrdT+?=
+ =?us-ascii?Q?GG4WZVIRv8YbWlCRMj1AEx4oSZN8eQX6UlsNT+jmvldvrNBEp1kDXoKn6HNd?=
+ =?us-ascii?Q?YJxpYO2WSb9JfR3LT6NmSHiATPgHSLvJPGRGCZyn?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 150c65e8-bfef-46b1-65d8-08dc23486b99
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2024 17:08:33.1098
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9gDgkk9zCI81KTM0SBY+cQ1amirO3uSGEJuzE8jpIjocP5IK045BbXR0aA1CEwA6VcJQCef4rXFDkVWp3xURTw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7627
 
+On Thu, Feb 01, 2024 at 10:50:25AM -0600, Bjorn Helgaas wrote:
+> On Mon, Aug 21, 2023 at 02:48:14PM -0400, Frank Li wrote:
+> > Introduce helper function dw_pcie_get_ltssm() to retrieve SMLH_LTSS_STATE.
+> > ...
+> 
+> > diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+> > index 615660640801..91d13f9b21b1 100644
+> > --- a/drivers/pci/controller/dwc/pcie-designware.h
+> > +++ b/drivers/pci/controller/dwc/pcie-designware.h
+> 
+> > @@ -364,6 +375,7 @@ struct dw_pcie_ops {
+> >  	void    (*write_dbi2)(struct dw_pcie *pcie, void __iomem *base, u32 reg,
+> >  			      size_t size, u32 val);
+> >  	int	(*link_up)(struct dw_pcie *pcie);
+> > +	enum dw_pcie_ltssm (*get_ltssm)(struct dw_pcie *pcie);
+> 
+> This has already been applied as
+> https://git.kernel.org/linus/4774faf854f5 ("PCI: dwc: Implement
+> generic suspend/resume functionality"), but this .get_ltssm() pointer
+> doesn't seem to be used anywhere.  Should we remove it until we need
+> it?
 
-On 1/30/2024 4:07 PM, Rob Herring wrote:
-> On Fri, Jan 26, 2024 at 03:53:39PM -0800, Oreoluwa Babatunde wrote:
->> The reserved_mem array is used to store data for the different
->> reserved memory regions defined in the DT of a device.  The array
->> stores information such as region name, node, start-address, and size
->> of the reserved memory regions.
->>
->> The array is currently statically allocated with a size of
->> MAX_RESERVED_REGIONS(64). This means that any system that specifies a
->> number of reserved memory regions greater than MAX_RESERVED_REGIONS(64)
->> will not have enough space to store the information for all the regions.
->>
->> Therefore, this series extends the use of the static array for
->> reserved_mem, and introduces a dynamically allocated array using
->> memblock_alloc() based on the number of reserved memory regions
->> specified in the DT.
->>
->> Some architectures such as arm64 require the page tables to be setup
->> before memblock allocated memory is writable.  Therefore, the dynamic
->> allocation of the reserved_mem array will need to be done after the
->> page tables have been setup on these architectures. In most cases that
->> will be after paging_init().
->>
->> Reserved memory regions can be divided into 2 groups.
->> i) Statically-placed reserved memory regions
->> i.e. regions defined in the DT using the @reg property.
->> ii) Dynamically-placed reserved memory regions.
->> i.e. regions specified in the DT using the @alloc_ranges
->>     and @size properties.
->>
->> It is possible to call memblock_reserve() and memblock_mark_nomap() on
->> the statically-placed reserved memory regions and not need to save them
->> to the reserved_mem array until memory is allocated for it using
->> memblock, which will be after the page tables have been setup.
->> For the dynamically-placed reserved memory regions, it is not possible
->> to wait to store its information because the starting address is
->> allocated only at run time, and hence they need to be stored somewhere
->> after they are allocated.
->> Waiting until after the page tables have been setup to allocate memory
->> for the dynamically-placed regions is also not an option because the
->> allocations will come from memory that have already been added to the
->> page tables, which is not good for memory that is supposed to be
->> reserved and/or marked as nomap.
->>
->> Therefore, this series splits up the processing of the reserved memory
->> regions into two stages, of which the first stage is carried out by
->> early_init_fdt_scan_reserved_mem() and the second is carried out by
->> fdt_init_reserved_mem().
->>
->> The early_init_fdt_scan_reserved_mem(), which is called before the page
->> tables are setup is used to:
->> 1. Call memblock_reserve() and memblock_mark_nomap() on all the
->>    statically-placed reserved memory regions as needed.
->> 2. Allocate memory from memblock for the dynamically-placed reserved
->>    memory regions and store them in the static array for reserved_mem.
->>    memblock_reserve() and memblock_mark_nomap() are also called as
->>    needed on all the memory allocated for the dynamically-placed
->>    regions.
->> 3. Count the total number of reserved memory regions found in the DT.
->>
->> fdt_init_reserved_mem(), which should be called after the page tables
->> have been setup, is used to carry out the following:
->> 1. Allocate memory for the reserved_mem array based on the number of
->>    reserved memory regions counted as mentioned above.
->> 2. Copy all the information for the dynamically-placed reserved memory
->>    regions from the static array into the new allocated memory for the
->>    reserved_mem array.
->> 3. Add the information for the statically-placed reserved memory into
->>    reserved_mem array.
->> 4. Run the region specific init functions for each of the reserve memory
->>    regions saved in the reserved_mem array.
-> I don't see the need for fdt_init_reserved_mem() to be explicitly called 
-> by arch code. I said this already, but that can be done at the same time 
-> as unflattening the DT. The same conditions are needed for both: we need 
-> to be able to allocate memory from memblock.
->
-> To put it another way, if fdt_init_reserved_mem() can be called "early", 
-> then unflattening could be moved earlier as well. Though I don't think 
-> we should optimize that. I'd rather see all arches call the DT functions 
-> at the same stages.
-Hi Rob,
+Could you place hold on for a while? I am working on imx PCIe. One old
+imx6 may need it!
 
-The reason we moved fdt_init_reserved_mem() back into the arch specific code
-was because we realized that there was no apparently obvious way to call
-early_init_fdt_scan_reserved_mem() and fdt_init_reserved_mem() in the correct
-order that will work for all archs if we placed fdt_init_reserved_mem() inside the
-unflatten_devicetree() function.
+If not, I will submit patch to clean it. My new patches depend on
 
-early_init_fdt_scan_reserved_mem() needs to be
-called first before fdt_init_reserved_mem(). But on some archs,
-unflatten_devicetree() is called before early_init_fdt_scan_reserved_mem(), which
-means that if we have fdt_init_reserved_mem() inside the unflatten_devicetree()
-function, it will be called before early_init_fdt_scan_reserved_mem().
+https://lore.kernel.org/imx/ZbJ+tFPn3aOYHCwf@lizhi-Precision-Tower-5810/T/#t
 
-This is connected to your other comments on Patch 7 & Patch 14.
-I agree, unflatten_devicetree() should NOT be getting called before we reserve
-memory for the reserved memory regions because that could cause memory to be
-allocated from regions that should be reserved.
+All already reviewed, could you please pick up these, so I can continue
+my futher work.
 
-Hence, resolving this issue should allow us to call fdt_init_reserved_mem() from
-the  unflatten_devicetree() function without it changing the order that we are
-trying to have.
+Another
+https://lore.kernel.org/imx/20240201-pme_msg-v2-0-6767052fe6a4@nxp.com/T/#t
+was under review.
 
-I will work on implementing this and send another revision.
->
->> Once the above steps have been completed and the init process is done
->> running, the original statically allocated reserved_mem array of size
->> MAX_RESERVED_REGIONS(64) will be automatically freed back to buddy
->> because it is no longer needed. This is done by marking the array as an
->> "__initdata" object in Patch 0018.
->>
->> Note:
->>
->> - Per Architecture, this series is effectively only 10 patches. The
->>   code for each architecture is split up into separate patches to
->>   allow each architecture to be tested independently of changes from
->>   other architectures. Should this series be accepted, this should
->>   allow for each arcitecture change to be picked up independently as
->>   well.
-> Only if patches 1 and 2 are accepted in one cycle and the arch ones in 
-> the next cycle. No need for that though, I can take the whole thing 
-> (when it's ready).
-ack.
->
->>   Patch 0001: Splits up the processing of the reserved memory regions
->>   between early_init_fdt_scan_reserved_mem and fdt_init_reserved_mem.
->>
->>   Patch 0002: Introduces a copy of early_init_fdt_scan_reserved_mem()
->>   which is used to separate it from fdt_init_reserved_mem() so that the
->>   two functions can be called independently of each other.
->>
->>   Patch 0003 - Patch 0016: Duplicated change for each architecture to
->>   call early_init_fdt_scan_reserved_mem() and fdt_init_reserved_mem()
->>   at their appropriate locations. Here fdt_init_reserved_mem() is called
->>   either before of after the page tables have been setup depending on
->>   the architecture requirements.
->>
->>   Patch 0017: Deletes the early_init_fdt_scan_reserved_mem() function
->>   since all architectures are now using the copy introduced in
->>   Patch 0002.
->>
->>   Patch 0018: Dynamically allocate memory for the reserved_mem array
->>   based on the total number of reserved memory regions specified in the
->>   DT.
->>
->>   Patch 0019 - Patch 0029: Duplicated change for each architecture to
->>   move the fdt_init_reserved_mem() function call to below the
->>   unflatten_devicetree() function call. This is so that the unflatten
->>   devicetree APIs can be used to process the reserved memory regions.
->>
->>   Patch 0030: Make code changes to start using the unflatten devicetree
->>   APIs to access the reserved memory regions defined in the DT.
->>
->>   Patch 0031: Rename fdt_* functions as dt_* to refelct that the
->>   flattened devicetree (fdt) APIs have been replaced with the unflatten
->>   devicetree APIs.
->>
->>   Patch 0032 - Patch 0045: Duplicated change for each architecture to
->>   switch from the use of fdt_init_reserved_mem() to
->>   dt_init_reserved_mem(), which is the same function but the later uses
->>   the unflatten devicetree APIs.
->>
->>   Patch 0046: Delete the fdt_init_reserved_mem() function as all
->>   architectures have switched to using dt_init_reserved_mem() which was
->>   introduced in Patch 0031.
->>
->> - The limitation to this approach is that there is still a limit of
->>   64 for dynamically-placed reserved memory regions. But from my current
->>   analysis, these types of reserved memory regions are generally less
->>   in number when compared to the statically-placed reserved memory
->>   regions.
->>
->> - I have looked through all architectures and placed the call to
->>   memblock_alloc() for the reserved_mem array at points where I
->>   believe memblock allocated memory are available to be written to.
->>   I currently only have access to an arm64 device and this is where I am
->>   testing the functionality of this series. Hence, I will need help from
->>   architecture maintainers to test this series on other architectures to
->>   ensure that the code is functioning properly on there.
->>
->> Previous patch revisions:
->> 1. [RFC V1 Patchset]:
->> https://lore.kernel.org/all/20231019184825.9712-1-quic_obabatun@quicinc.com/
->>
->> 2. [RFC V2 Patchset]:
->> https://lore.kernel.org/all/20231204041339.9902-1-quic_obabatun@quicinc.com/
->> - Extend changes to all other relevant architectures.
->> - Add code to use unflatten devicetree APIs to process the reserved
->>   memory regions.
-> Dropping RFC does not make this v1. RFC is a state of the patches not a 
-> version.
-ack.
+After these, suspend/resume will become simple and common for all dwc
+platform.
 
+Frank.
 
-Thank you for your comments!
-
-Oreoluwa
+> 
+> > +static inline enum dw_pcie_ltssm dw_pcie_get_ltssm(struct dw_pcie *pci)
+> > +{
+> > +	u32 val;
+> > +
+> > +	if (pci->ops && pci->ops->get_ltssm)
+> > +		return pci->ops->get_ltssm(pci);
+> > +
+> > +	val = dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG0);
+> > +
+> > +	return (enum dw_pcie_ltssm)FIELD_GET(PORT_LOGIC_LTSSM_STATE_MASK, val);
+> > +}
 
