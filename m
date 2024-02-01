@@ -1,165 +1,97 @@
-Return-Path: <linux-kernel+bounces-48073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 876E78456E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:06:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EE678456EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:07:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1873A290927
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:06:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FADF1C21A2D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:07:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A40915DBCF;
-	Thu,  1 Feb 2024 12:04:29 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9790F15D5DB;
-	Thu,  1 Feb 2024 12:04:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1954E16086E;
+	Thu,  1 Feb 2024 12:05:41 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8356F15DBA2;
+	Thu,  1 Feb 2024 12:05:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706789069; cv=none; b=hwK51EDv1p/LElblwUKA2Hi6vo9TsNLMWSjEYR8U81rkLM9zSDC1WPlKgOE9rrqEmKLIPLTotWKTZGLVQiH6C1dck3xLF30YRQImsWB+uvr9unxaGLq9ga8FEYNul4bwmboJXHelOsRDXpVXOGogpTd/ABGqwYm/vj0wMfPBLNY=
+	t=1706789135; cv=none; b=nydZYFVhKTpqoc/T0JhgtZtWzoKK6GfZRM0MM1l5VCGugfx08JRBSQn/r6g5jLEj0WmxcQvwKoZLbpSrrdtynP7k1GICNARJoE9j2TMvVekv9P52mtkJnmKNnPCBaXFobaN1XdWdjMeijhdYZCTLN2+bUk9lmtOfu7De0+txx4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706789069; c=relaxed/simple;
-	bh=qo7pwrQdY7fIkZ8m5MR220PWKc/kV4xPGU2nyh1wI3Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=j7cgFyVPJ+R344NPiqgBQEDIrkatbbL1sTTj87+oZV8AXNgTSEtj0I5zAn2lmpdYHZDwWaAyUH5H/qoxRFqLDhkwJoi3OobAMjqWpVsv9ydKaD85cqO4Kx+PRqDdEIz+Y9+En0NeCEjII+oZd4XbtBozwNSt2nqliEhndr3ocqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AFBC6DA7;
-	Thu,  1 Feb 2024 04:05:08 -0800 (PST)
-Received: from [10.57.79.60] (unknown [10.57.79.60])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EE8DB3F762;
-	Thu,  1 Feb 2024 04:04:24 -0800 (PST)
-Message-ID: <f833c7f9-f59a-49d5-9fce-dc531c11509e@arm.com>
-Date: Thu, 1 Feb 2024 12:04:23 +0000
+	s=arc-20240116; t=1706789135; c=relaxed/simple;
+	bh=4b6J3WQy1ZuklldGS5umROhnm/eI6zxFrBGfBb5XyAs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=p/Za/jpuuKj6IlMBct/n+a4+W0K1CV+KS7B1WAZ+JpWhw9NHaV7WXEGzcwF2fkc8GUG5bQD/zkV0uF0YMuLq3y5Z8LgbNZo1b16/eSEOjUQbaR0rWVZiE2fMzGaNPKJbbWI+Gs5ymfkhdWF4KNy/u0UTLDFipz54GXpdzaiYKHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TQctg25F5z1FK5w;
+	Thu,  1 Feb 2024 20:00:59 +0800 (CST)
+Received: from dggpemm500008.china.huawei.com (unknown [7.185.36.136])
+	by mail.maildlp.com (Postfix) with ESMTPS id BAE4C1A016B;
+	Thu,  1 Feb 2024 20:05:25 +0800 (CST)
+Received: from localhost (10.174.242.157) by dggpemm500008.china.huawei.com
+ (7.185.36.136) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 1 Feb
+ 2024 20:05:25 +0800
+From: Yunjian Wang <wangyunjian@huawei.com>
+To: <willemdebruijn.kernel@gmail.com>, <jasowang@redhat.com>,
+	<kuba@kernel.org>, <davem@davemloft.net>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<xudingke@huawei.com>, Yunjian Wang <wangyunjian@huawei.com>
+Subject: [PATCH net-next] tun: Implement ethtool's get_channels() callback
+Date: Thu, 1 Feb 2024 20:05:09 +0800
+Message-ID: <1706789109-36556-1-git-send-email-wangyunjian@huawei.com>
+X-Mailer: git-send-email 1.9.5.msysgit.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/5] selftests/mm: run_vmtests: remove sudo and conform
- to tap
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>
-Cc: kernel@collabora.com, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240125154608.720072-1-usama.anjum@collabora.com>
- <20240125154608.720072-3-usama.anjum@collabora.com>
-Content-Language: en-GB
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240125154608.720072-3-usama.anjum@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500008.china.huawei.com (7.185.36.136)
 
-On 25/01/2024 15:46, Muhammad Usama Anjum wrote:
-> Remove sudo as some test running environments may not have sudo
-> available. Instead skip the test if root privileges aren't available in
-> the test.
-> 
-> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> ---
-> Changes since v1:
-> - Added this patch in v2
-> 
-> We are allocating 2*RLIMIT_MEMLOCK.rlim_max memory and mmap() isn't
-> failing. This seems like true bug in the kernel. Even the root user
-> shouldn't be able to allocate more memory than allowed MEMLOCKed memory.
-> Any ideas?
-> ---
->  tools/testing/selftests/mm/on-fault-limit.c | 36 ++++++++++-----------
->  tools/testing/selftests/mm/run_vmtests.sh   |  2 +-
->  2 files changed, 18 insertions(+), 20 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/mm/on-fault-limit.c b/tools/testing/selftests/mm/on-fault-limit.c
-> index b5888d613f34e..0ea98ffab3589 100644
-> --- a/tools/testing/selftests/mm/on-fault-limit.c
-> +++ b/tools/testing/selftests/mm/on-fault-limit.c
-> @@ -5,40 +5,38 @@
->  #include <string.h>
->  #include <sys/time.h>
->  #include <sys/resource.h>
-> +#include "../kselftest.h"
->  
-> -static int test_limit(void)
-> +static void test_limit(void)
->  {
-> -	int ret = 1;
->  	struct rlimit lims;
->  	void *map;
->  
-> -	if (getrlimit(RLIMIT_MEMLOCK, &lims)) {
-> -		perror("getrlimit");
-> -		return ret;
-> -	}
-> +	if (getrlimit(RLIMIT_MEMLOCK, &lims))
-> +		ksft_exit_fail_msg("getrlimit: %s\n", strerror(errno));
->  
-> -	if (mlockall(MCL_ONFAULT | MCL_FUTURE)) {
-> -		perror("mlockall");
-> -		return ret;
-> -	}
-> +	if (mlockall(MCL_ONFAULT | MCL_FUTURE))
-> +		ksft_exit_fail_msg("mlockall: %s\n", strerror(errno));
->  
->  	map = mmap(NULL, 2 * lims.rlim_max, PROT_READ | PROT_WRITE,
->  		   MAP_PRIVATE | MAP_ANONYMOUS | MAP_POPULATE, -1, 0);
-> +
-> +	ksft_test_result(map == MAP_FAILED, "Failed mmap\n");
-> +
->  	if (map != MAP_FAILED)
-> -		printf("mmap should have failed, but didn't\n");
-> -	else {
-> -		ret = 0;
->  		munmap(map, 2 * lims.rlim_max);
-> -	}
-> -
->  	munlockall();
-> -	return ret;
->  }
->  
->  int main(int argc, char **argv)
->  {
-> -	int ret = 0;
-> +	ksft_print_header();
-> +	ksft_set_plan(1);
-> +
-> +	if (getuid())
-> +		ksft_test_result_skip("Require root privileges to run\n");
-> +	else
-> +		test_limit();
->  
-> -	ret += test_limit();
-> -	return ret;
-> +	ksft_finished();
->  }
-> diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
-> index 246d53a5d7f28..e373d592dbf5c 100755
-> --- a/tools/testing/selftests/mm/run_vmtests.sh
-> +++ b/tools/testing/selftests/mm/run_vmtests.sh
-> @@ -291,7 +291,7 @@ echo "$nr_hugepgs" > /proc/sys/vm/nr_hugepages
->  
->  CATEGORY="compaction" run_test ./compaction_test
->  
-> -CATEGORY="mlock" run_test sudo -u nobody ./on-fault-limit
-> +CATEGORY="mlock" run_test ./on-fault-limit
+Implement the tun .get_channels functionality. This feature is necessary
+for some tools, such as libxdp, which need to retrieve the queue count.
 
-I think changing this is going to give unintended results. run_vmtests.sh must
-already be running as root. "sudo -u nobody" is deprivieging the test to run as
-nobody. The rlimit is not enforced for root so this test must run unprivileged
-to work. See man page for getrlimit():
+Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
+---
+ drivers/net/tun.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-  Since Linux 2.6.9, no limits are placed on the amount of memory that a
-  privileged process may lock, and this limit instead governs the amount of
-  memory that an unprivileged process may lock
-
-So I think the correct fix is actually to install sudo on your CI.
-
->  
->  CATEGORY="mmap" run_test ./map_populate
->  
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index afa5497f7c35..7cf448ff93ee 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -3638,12 +3638,22 @@ static int tun_set_coalesce(struct net_device *dev,
+ 	return 0;
+ }
+ 
++static void tun_get_channels(struct net_device *dev,
++			     struct ethtool_channels *channels)
++{
++	struct tun_struct *tun = netdev_priv(dev);
++
++	channels->combined_count = tun->numqueues;
++	channels->max_combined = MAX_TAP_QUEUES;
++}
++
+ static const struct ethtool_ops tun_ethtool_ops = {
+ 	.supported_coalesce_params = ETHTOOL_COALESCE_RX_MAX_FRAMES,
+ 	.get_drvinfo	= tun_get_drvinfo,
+ 	.get_msglevel	= tun_get_msglevel,
+ 	.set_msglevel	= tun_set_msglevel,
+ 	.get_link	= ethtool_op_get_link,
++	.get_channels   = tun_get_channels,
+ 	.get_ts_info	= ethtool_op_get_ts_info,
+ 	.get_coalesce   = tun_get_coalesce,
+ 	.set_coalesce   = tun_set_coalesce,
+-- 
+2.33.0
 
 
