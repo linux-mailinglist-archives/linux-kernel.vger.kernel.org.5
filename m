@@ -1,165 +1,188 @@
-Return-Path: <linux-kernel+bounces-47923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C87918454B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:01:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 031C88454A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:59:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06CB51C2200D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:01:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A6B2B2577D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:59:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7862515A4A1;
-	Thu,  1 Feb 2024 10:01:34 +0000 (UTC)
-Received: from smtpbgjp3.qq.com (smtpbgjp3.qq.com [54.92.39.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C59B815A4A1;
+	Thu,  1 Feb 2024 09:59:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="nC1GRuY5"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2053.outbound.protection.outlook.com [40.107.20.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3CC14DA09;
-	Thu,  1 Feb 2024 10:01:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.92.39.34
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706781694; cv=none; b=VQJR+IizAv8s+rBLLowk9RokLUaqk/wRBmp0o6HUD2lKdloZWRzINChK0i4TRpS/ezB2ko7gtK/OaMGSZHUfpw/GEwnJzZifCYj6C3XBxfIzZ0B1jvsNy6rXnfyN0Z1z9UorQGrjJfG33cyA0llv3QwsZg53w/aeoFIX8qiNBI8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706781694; c=relaxed/simple;
-	bh=u1Uvg9oUUncx35nT7fRJBSIHT13HAua1hb3+DJIIYys=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A5xq5twBEDCNoVtkEczNeDUzZnz1Qf8I1XqqYBSELonn+stfe290EhbVfoRCgiGmNvEXHx9Oubn+B6Q0jeNISBC29u4/4i4SDlg5lcTjZ/vfZ/TrIx9DKm0MqpboU1SXaIFIVS1XrQF1TSvdKxOVAjy9HcbrAmM3EJiEXpvZeNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.92.39.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp80t1706781656tgo37e7k
-X-QQ-Originating-IP: PK/NarRl/MeqzaPkEJw+1wfoLdsvqflCxliwHeKqvCs=
-Received: from localhost ( [183.209.108.228])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Thu, 01 Feb 2024 18:00:55 +0800 (CST)
-X-QQ-SSF: 01400000000000504000000A0000000
-X-QQ-FEAT: iDzLjIm7mlalU/PY8yIblSw4l+whSSFexs4iFFo9II1visfiO9WBNLWdxejp5
-	yxvhuC2nsK3JGYv9uUPyIXCsp/H5WbbnR9mCCT7sQ5OmCkaQvtpdywowkdbghLHmaBFgQDI
-	/MaBJXR3X9qzCbVnwucu8j1ctbEe5Cck3k6SC37O8Xb6ti7l/YTSdQxAiEJmks5R3InCS4P
-	UOsGKLi5gcZ9HmehdmYd2U09SaAueBFQD2q0tiiXvrEduac8wwlH/RkcPfrFcVcYO97iPk8
-	hOZxnZN/o0lWky4K1OXev4xc5/zyHT/J/oKP4+oIs+i5G5+gk8jVVLzT+t2mttP+udb7V7K
-	4ahNi93Sp9sQKVQGWI1W4IJmM4qZDrvXAHYCOfeZkKWsfaruuqLZx/X0VIpJQ==
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 2883616253048242610
-Date: Thu, 1 Feb 2024 18:00:54 +0800
-From: Dawei Li <dawei.li@shingroup.cn>
-To: Rob Herring <robh@kernel.org>
-Cc: frowand.list@gmail.com, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, set_pte_at@outlook.com
-Subject: Re: [PATCH 1/2] of: Introduce __of_phandle_update_cache
-Message-ID: <F096F87333105368+Zbtr1h1ryCvzA3fB@centos8>
-References: <20240130105236.3097126-1-dawei.li@shingroup.cn>
- <20240130105236.3097126-2-dawei.li@shingroup.cn>
- <20240131212938.GB2303754-robh@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165074DA1D;
+	Thu,  1 Feb 2024 09:59:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.53
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706781543; cv=fail; b=EpEqRM5cPAYLS0mR9zj7laKAq7Mon1pvVIu2By1dUxBGBq6Ck9JPNjzKWAlmpKKcEBLFf0OLasI3FqbWm/lohejcwAkDqDuajToLie7Mo3mEmdS0F3ls0hX9ZfwgKzPryfkJvaZxW7eqGrIJiyx0oy7MNJcZTxWJrkR6rF2z3DY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706781543; c=relaxed/simple;
+	bh=wrZ7M7oH+CP2btmXx6OY4MU2eDkZxP9GSDXaMnT2MH0=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=C/mzH6OAV487//vAyfZErde2+fjTF8iYN8fxR/q9XRo7JuJX+XxbrAd55Sl1XVdHxDzuV39ZRWrhvGU3UfVDQ4EPjhK9DxvWDylh7qNoeWcOKThPt1r2zWIpMbzy7WzEF7EZaXFOyCQ9E6ZXhN5I7nPpEYPzfeFHb0BsqkPBD9o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=nC1GRuY5; arc=fail smtp.client-ip=40.107.20.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YQ5PrEw+IyS/Q5lzNyPEHED/xIxq89JvqkBFSNtHGLMS7+R8+/fwEb2gpoY1nIVE1f8MMPrGuaH8ri4kGXoHJf3cG40OAeyCPnK6OUqSDLguTlQiWIigA1art7upTv/J4NZI2NaQnAxsyskKEMkXbcJitdZ9+kYUELU3aAzAxW78raIuV4/f73W+gwEhSO1kIloqX2jeYTJokgSIOgyrJ9Ti4m/Jst7gBce43QGxLH8uksmWKVOc0CnvV52wY1UZMhA0D6C9NxxxlC0ZfP/QWgOKoaFnWH1zLbnikdWqIx5pMnBSK0nrzFbPPXX4sOPAseXq8LK8Pl3fZImtdcXG4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sPAuamCtRGYmEZ2/ApaqNW3BZNP83NLc1CjOwQbcFhA=;
+ b=mvVNLdL5j3tf3GOdkDQ99A4nH6bKhQmeSlmCCfTAU1F59NB2qSNbK6likQNLBu+DEYrF7SdSGm8bSm7KqUZudIOpOSPW35cyg7PPaDaDecB1sgqfqDETclp5PqpgSO3HJnbph3VzcEE4wCi+eutz4y/GVjjsnhuCrk7P1zUTdMyaPG206OzvodThwGIZZWESo88uVNzJpe6TB8c5Yq3ozqz4/f/PNCu0+rgA8nVtbyIbU7D4IN5gijgHOl6MuSVdyU1sImFHYatx2CfWcMqULQd+lh5LN/tPUpT0RuO2Y07v0y79fmchG+QQBRbbjJcesEdsIR0M2X5tlSXUZXH0PA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sPAuamCtRGYmEZ2/ApaqNW3BZNP83NLc1CjOwQbcFhA=;
+ b=nC1GRuY51qtZTTDKFGK7FyLdZdF9BrnPdHdCknsKaZiLHWef5SWjGdowKQmA7P1hP3W9YQ7M6bokftUxskWJ8/zcbtmAhXNwRJIcV5IcD8u1HkmxEnvjmn6QzvB13v6Un41WWqydFfyZa+IiX0b93mDiYD5yvmzzyX4qE0GG4nI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB5005.eurprd04.prod.outlook.com (2603:10a6:803:57::30)
+ by AM9PR04MB8178.eurprd04.prod.outlook.com (2603:10a6:20b:3e3::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.24; Thu, 1 Feb
+ 2024 09:58:59 +0000
+Received: from VI1PR04MB5005.eurprd04.prod.outlook.com
+ ([fe80::f363:2b4f:4f8b:8af5]) by VI1PR04MB5005.eurprd04.prod.outlook.com
+ ([fe80::f363:2b4f:4f8b:8af5%6]) with mapi id 15.20.7249.024; Thu, 1 Feb 2024
+ 09:58:59 +0000
+From: carlos.song@nxp.com
+To: broonie@kernel.org,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	kernel@pengutronix.de,
+	linux-imx@nxp.com,
+	benjamin@bigler.one,
+	stefanmoring@gmail.com
+Cc: linux-spi@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3] spi: imx: fix the burst length at DMA mode and CPU mode
+Date: Thu,  1 Feb 2024 18:01:15 +0800
+Message-Id: <20240201100115.503296-1-carlos.song@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AS4P250CA0015.EURP250.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5df::14) To VI1PR04MB5005.eurprd04.prod.outlook.com
+ (2603:10a6:803:57::30)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131212938.GB2303754-robh@kernel.org>
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1PR04MB5005:EE_|AM9PR04MB8178:EE_
+X-MS-Office365-Filtering-Correlation-Id: c71026de-7e0d-4fa2-6f1a-08dc230c68fe
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	BpfpLvedg827/FHjQUl+hZKbvxSdMpXHimGF5yeRQJ//M/KPzKDyjQnUazCuRtKs/cI50ggo7Dhz3bcdyNb/L7YK9+wbVEDzwNMCk140h1awDl8SGVFTyHVQksYBi9bhQ+ytxKCoR4J/EueuBfjoDiCABVOUU9hycgNRGnivG+YjhTzHTP0y/cuzSYW5LT5AQnSuSl6wfGx7a7oy6mKnNKz9TKWK3FXktmxNCmQzWyegDJKzg8u660wCxZyF4o2tdL6JDVtprczdiSn3nVdi4QP86vp1/RLvN0DlGqtjUGbClfdqQqjh6t01vXLEU5S7D19fv0RLKmzKC6sffpbCef5o0h/a8yCrhI8slnp10K/FpcPK0/WxcXiNsX9VOrIBaGdwtHGNye4Fp2xDzEnuFdMjnScurHRGw0Y90CdLbROMWCMYU2JdYcU/7ckR+vUPC605qGBffgAThXqUhFEIKAsQgoBrEukoe4s0ZpgiAiYm4xdtpHRVkFdYNd5dEgY24vp+cxncuymmFl5GjsaaE8N0YLLvvtdckMe0u5bVvH2V6B8HACrWLHYaSNBIP6LydHDo4vy7jocnoaLwycoP6sBlfPvSK/wve91vOVHELH753dNw8hX1ap+jLTQiGS8p
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5005.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(136003)(366004)(39860400002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(41300700001)(83380400001)(1076003)(26005)(9686003)(38100700002)(2616005)(6512007)(8676002)(8936002)(4326008)(478600001)(5660300002)(66556008)(6506007)(6486002)(66946007)(2906002)(6666004)(66476007)(316002)(52116002)(38350700005)(86362001)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?Qg+Da+ny1DHpN2STDpLFq4Sh/GvOqobMuMZOC14TMPH8ffnv5j9VfCD8n6D4?=
+ =?us-ascii?Q?M3NCD4kRe2kx4KPNx+w0UZGR0Gl2c4BPCFREVl7sRwjZ/NqkkrUIKDpDL92E?=
+ =?us-ascii?Q?muB08AJjCwft4el2i7xwoeBIkgj5OQls/4w1azmlEoMIMLl61Xfenlv0KBQm?=
+ =?us-ascii?Q?HpIXASg0melcaB1CYW9w9j8Gacm+Sw85FVaqcJ/Oc+vkgJLTjyi2HgBDZASt?=
+ =?us-ascii?Q?4CN69LU7QkGdkULjaSVGLWKW4wpp0VqePfWlWc3IqiXkzNOo/H6fe8/pNRiB?=
+ =?us-ascii?Q?vEVu5QhHIVR3w8eJT3MYidu7Zb2YUCPq4WRktZi9K2EZq5yAV8ZU8u4yXfho?=
+ =?us-ascii?Q?HvHl+304cZ0Vzl7d9ZTAmbz0I+9nti1iUY/DWV4cUX5BIvpj5Y7e90bzyN32?=
+ =?us-ascii?Q?JkK80uEVW6hcuWJcpMHRxI+mfAfVDrRfPFpq0xukAnVO9Zf14AQVlCv9yRoP?=
+ =?us-ascii?Q?uvgzWudjBnxf1uunYXl6m8dSyp4gnBs0Wyeem6Y6+U1LF6o0bRLJlrtfuZnG?=
+ =?us-ascii?Q?HH8uu5kpTSvgUt1dm0gqRWAEzVgO0E4rhAeW+VQ1NAQ8gKHfiBUpSslHl3LM?=
+ =?us-ascii?Q?lhaMOnz2M0qcM4/kcUyZ1BKHlEplheAydmL6ZOk7RJx204S0HaSlntaRZ8If?=
+ =?us-ascii?Q?L92/zcCVNuHHfGfcCyuxsvyVe60Y35so7zZiFLYRd4VC+E+ckjV29VBkvLNG?=
+ =?us-ascii?Q?FvG8qU02hR49on2iqQAihV6jowOymPAhCVb0WUagpmWrR0YfMgsz39Kx2Fz7?=
+ =?us-ascii?Q?WA3IDLGyH9zeOjOSpnAh0pltn1CX95gSBplUzpmxePwvhFbyhMJU1tjSSrhT?=
+ =?us-ascii?Q?IJHQBWR6cDorUxo/Rzil+PvoIAi7OdmiUyq6PyfY8vZ2gq4nBY/13vfel4Nt?=
+ =?us-ascii?Q?j2DgniplOztReLPLWDgHo336rwYbGed/HlvjgEYN3Bn/mbkT+boD4FtWt4vS?=
+ =?us-ascii?Q?1n0Gsp0/Ryp1W4e36aYNW+PsriGscBU+y0uLo5mB6gL+pSbX73ovoEvsb9zf?=
+ =?us-ascii?Q?orppZYXqFPAgZvrJmWyJ0GvSJHr/tj8DWB7h21KLyJ76aNV06lbuHzGYaNXE?=
+ =?us-ascii?Q?vbKxgAwRQrxqEwFGRICnlr9kTx3VklUFJ8a3BIiGNtFHk5OPdEwOkIsAa8D4?=
+ =?us-ascii?Q?lBHjukkMB+3uo1FxZ6GVh4MaQpR6G4bp5FPcuShYfXbUd8kltW359XNF8/Oc?=
+ =?us-ascii?Q?4AJCvKiSYGION3hcLOEQzVVpqFgSKixG1oSnKgvL7oDI9rFg/uZXZJ5i2WGZ?=
+ =?us-ascii?Q?/zLZZ0iyCu1Z0HWXaFhN8mgve4uapO6hlyQjNxFguQa35SBLmpoA1OtK2Lsc?=
+ =?us-ascii?Q?sjmuvKABZ8y/feE2R3yfNjKKswovr0LrgOhcr9QX77B19GCvrYJuNVChS+cm?=
+ =?us-ascii?Q?696fdHApuT3bLelG05zMpeTK+mBUBAb33PzmbhnDDCe2af98VMJtoozPYsqp?=
+ =?us-ascii?Q?LnfGhGV/Q1S29uIrlGmKG19BkvBAc5svtaiDihaOpQS2SesT9o151PtR6DGY?=
+ =?us-ascii?Q?1lHhfS2a96de/wc3851D+r9c9h82aMT6dMrBvrHYieH+Cf43xIZLdJYhnSLQ?=
+ =?us-ascii?Q?3mD6BUwm3TFkVrECmyQoAbBIXaHz3ZgbgWep4S/1?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c71026de-7e0d-4fa2-6f1a-08dc230c68fe
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5005.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2024 09:58:59.2469
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bhfWWLIRJf8FLIbfESiv7TT/6ICO+aLhXKCiuaZmc6KY8mveGa8kORdbpmEAFgxUzD4U+sIa8+DXRkvKaMG+Tg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8178
 
-Hi Rob,
+From: Carlos Song <carlos.song@nxp.com>
 
-Thanks for reviewing,
+For DMA mode, the bus width of the DMA is equal to the size of data
+word, so burst length should be configured as bits per word.
 
-On Wed, Jan 31, 2024 at 03:29:38PM -0600, Rob Herring wrote:
-> On Tue, Jan 30, 2024 at 06:52:35PM +0800, Dawei Li wrote:
-> > For system with CONFIG_OF_DYNAMIC=y, device nodes can be inserted/removed
-> > dynamically from device tree. Meanwhile phandle_cache is created for fast
-> > lookup from phandle to device node.
-> 
-> Why do we need it to be fast? What's the usecase (upstream dynamic DT 
-> usecases are limited) and what's the performance difference? We'll 
-> already cache the new phandle on the first lookup. Plus with only 128 
-> entries you are likely evicting an entry. 
+For CPU mode, because of the spi transfer len is in byte, so burst
+length should be configured as bits per byte * spi_imx->count.
 
-I read the history changelog and get that a _lot_ of lookup has been
-taken before of_core_init(), so the update of cache in lookup operation
-mean a lot to performance improvement.
+Signed-off-by: Carlos Song <carlos.song@nxp.com>
+Reviewed-by: Clark Wang <xiaoning.wang@nxp.com>
+Fixes: e9b220aeacf1 ("spi: spi-imx: correctly configure burst length when using dma")
+Fixes: 5f66db08cbd3 ("spi: imx: Take in account bits per word instead of assuming 8-bits")
+---
+Changes for V3:
+- include <linux/bits.h> 
+---
+ drivers/spi/spi-imx.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-> 
-> > For node detach, phandle cache of removed node is invalidated to maintain
-> > the mapping up to date, but the counterpart operation on node attach is
-> > not implemented yet.
-> > 
-> > Thus, implement the cache updating operation on node attach.
-> 
-> Except this patch does not do that. The next patch does.
+diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
+index 546cdce525fc..2a1ae7b00760 100644
+--- a/drivers/spi/spi-imx.c
++++ b/drivers/spi/spi-imx.c
+@@ -21,7 +21,7 @@
+ #include <linux/types.h>
+ #include <linux/of.h>
+ #include <linux/property.h>
+-
++#include <linux/bits.h>
+ #include <linux/dma/imx-dma.h>
+ 
+ #define DRIVER_NAME "spi_imx"
+@@ -660,15 +660,14 @@ static int mx51_ecspi_prepare_transfer(struct spi_imx_data *spi_imx,
+ 			<< MX51_ECSPI_CTRL_BL_OFFSET;
+ 	else {
+ 		if (spi_imx->usedma) {
+-			ctrl |= (spi_imx->bits_per_word *
+-				spi_imx_bytes_per_word(spi_imx->bits_per_word) - 1)
++			ctrl |= (spi_imx->bits_per_word - 1)
+ 				<< MX51_ECSPI_CTRL_BL_OFFSET;
+ 		} else {
+ 			if (spi_imx->count >= MX51_ECSPI_CTRL_MAX_BURST)
+-				ctrl |= (MX51_ECSPI_CTRL_MAX_BURST - 1)
++				ctrl |= (MX51_ECSPI_CTRL_MAX_BURST * BITS_PER_BYTE - 1)
+ 						<< MX51_ECSPI_CTRL_BL_OFFSET;
+ 			else
+-				ctrl |= (spi_imx->count * spi_imx->bits_per_word - 1)
++				ctrl |= (spi_imx->count * BITS_PER_BYTE - 1)
+ 						<< MX51_ECSPI_CTRL_BL_OFFSET;
+ 		}
+ 	}
+-- 
+2.34.1
 
-Agreed.
-
-> 
-> > 
-> > Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
-> > ---
-> >  drivers/of/base.c       | 16 ++++++++++++++++
-> >  drivers/of/of_private.h |  1 +
-> >  2 files changed, 17 insertions(+)
-> > 
-> > diff --git a/drivers/of/base.c b/drivers/of/base.c
-> > index b0ad8fc06e80..8b7da27835eb 100644
-> > --- a/drivers/of/base.c
-> > +++ b/drivers/of/base.c
-> > @@ -163,6 +163,22 @@ void __of_phandle_cache_inv_entry(phandle handle)
-> >  		phandle_cache[handle_hash] = NULL;
-> >  }
-> >  
-> > +void __of_phandle_update_cache(struct device_node *np, bool lock)
-> > +{
-> > +	u32 hash;
-> > +
-> > +	if (lock)
-> > +		lockdep_assert_held(&devtree_lock);
-> 
-> I don't think this is a good use of a function parameter.
-
-Yep, assertion under condition is odd.
-
-> 
-> > +
-> > +	if (unlikely(!np || !np->phandle))
-> > +		return;
-> > +
-> > +	hash = of_phandle_cache_hash(np->phandle);
-> > +
-> > +	if (!phandle_cache[hash])
-> > +		phandle_cache[hash] = np;
-> 
-> Okay, so you don't evict existing entries. I'm not sure what makes more 
-
-Yes, the updating policy of dynamic nodes is exactly same with static nodes
-(the ones in of_core_init()), no eviction/invalidation on _existing_ cache
-involved.
-
-> sense. I would imagine old entries are less likely to be accessed than 
-
-Well, I don't think we are gonna implement a full-fledged cache replacing
-algorithm such as LRU.
-
-> new phandles for just added nodes given DT is kind of parse it all once 
-> (e.g. at boot time). Again, need to understand your usecase and 
-> performance differences.
-
-It's kinda awkward that no such usecases/stats are available for now.
-
-My motivation is simple as that:
-As long as detached nodes are supposed to be removed from cache entries,
-the newly inserted nodes should be added to cache entries, it is more
-balanced and symmetric.
-
-And I am sorry if it breaks/undermines current design.
-
-Thanks,
-
-    Dawei
-
-> 
-> Rob
-> 
 
