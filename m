@@ -1,197 +1,118 @@
-Return-Path: <linux-kernel+bounces-48152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F0AC845804
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:45:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 640F8845805
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:46:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35A6F1C2800A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:45:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16EE61F279CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C4058664A;
-	Thu,  1 Feb 2024 12:45:35 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98A5053370;
-	Thu,  1 Feb 2024 12:45:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8291286644;
+	Thu,  1 Feb 2024 12:46:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gV3GV92r"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFB3286625;
+	Thu,  1 Feb 2024 12:46:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706791535; cv=none; b=G/34bJurrcJeN8t+0fK5ZsgYgA2KPsQhuiIz2cNa050D6xRgGvmeDtuPnJhAF9qXA8Zx7WiZD8wrd3QsIn4WWKVdR8ypHcJu3lTajlNIp0aAwCFR+op6Bpbq3x0MKLsOXsegYaXfm0K+/6D1HdNeb6FeOMYTVYmli9cNQtxDhsk=
+	t=1706791600; cv=none; b=pGAIdHjw7bGxMMqm0+iipA1fIIWcFboHoL1wn8u2560aM3SqauGUOFRUv8TjhTCxxZ2JRL0gFKqLcurrh3YTsyIhV9GxJwlYHQIFs8/uBaZfkk8oNdElXwUFOmD3qz87cABIg2R2tj7p31VHzBbVYDx67Hhmb5i6T1uGeH9NaDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706791535; c=relaxed/simple;
-	bh=GY6uX8nz1dsOQhEZNQD7MwuTXlaNAUtRZtXWxuAegYI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UljkuGWt0ncIXsfOpPEgF4CWeIoYlsW8InVH+Q/FW8w2ZwX+M0snxkR91/72BTU6t3v9Qc/Ex+o7t1LF1A3d5qJ2oYgkEohDfqLHL1P0kOzUBZF3thjQMbAV0bSvYzvsMTCOASBQIyV9D9JlaJu9SuPw0n3H98G7FQ2ZL3l8ZT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8AE57DA7;
-	Thu,  1 Feb 2024 04:46:13 -0800 (PST)
-Received: from [10.57.79.60] (unknown [10.57.79.60])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D66863F762;
-	Thu,  1 Feb 2024 04:45:29 -0800 (PST)
-Message-ID: <c85c0aa1-4f84-4e3e-8a92-a74e3439c76d@arm.com>
-Date: Thu, 1 Feb 2024 12:45:29 +0000
+	s=arc-20240116; t=1706791600; c=relaxed/simple;
+	bh=Ozs8J41000u00dB2ZIw83RqiiLRy3YYbyXOG40NYRg4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kPrt9CRVsahKGthiPmGpULgSi5YiN1SgyCInAizN4d3tQvX53FztfVH8WqmjRmz9k22ZHMX8smjG2hnPnApLOItxR490aXpzXMUsaAfhcWRDKUaoF07FAaUV6s2HXASmtlWQxqH2OX6aq4NG8zRYjByrWD9fjQN7VoQ66myqWKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gV3GV92r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D524C433C7;
+	Thu,  1 Feb 2024 12:46:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706791600;
+	bh=Ozs8J41000u00dB2ZIw83RqiiLRy3YYbyXOG40NYRg4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gV3GV92rSzety+2LaA+j5pbLeIEYqtkmO44ZOu0MTkg0cPMuXy3hjhnzAzwjvq29p
+	 4X0bOmPvXzEmQE1svyww0as4u0/Laz6fcso/6LKZP+Y5geI9NnWrw1NTuI8fkY/Smc
+	 XFsocQFRcqGXoKTP2kK6pVSnS9ANsA4wmbm0n+m1xBF41xMj6c0VZBp7YTuRLNmM3C
+	 oMQqtUNq+6PXFVTjAhrP+EPKD1Jw4V3FS4lWWbpgfZD25hwFYPGUMsSmp+id9FgMjL
+	 m51uTRmObMJGlBaC2ZfDd43Os6eBTMGnEliRPo+FFvJFqNxQgapyGPHC+QbdcffhVW
+	 J7JTpEWbx4mRg==
+Date: Thu, 1 Feb 2024 12:46:34 +0000
+From: Will Deacon <will@kernel.org>
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
+	iommu@lists.linux.dev, Christoph Hellwig <hch@lst.de>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Petr Tesarik <petr.tesarik1@huawei-partners.com>,
+	Dexuan Cui <decui@microsoft.com>
+Subject: Re: [PATCH v2 1/3] swiotlb: Fix allocation alignment requirement
+ when searching slots
+Message-ID: <20240201124634.GA15707@willie-the-truck>
+References: <20240131122543.14791-1-will@kernel.org>
+ <20240131122543.14791-2-will@kernel.org>
+ <4c9f50d2-05f9-4a37-ac50-dcd98e40e87f@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/5] selftests/mm: run_vmtests: remove sudo and conform
- to tap
-Content-Language: en-GB
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>
-Cc: kernel@collabora.com, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240125154608.720072-1-usama.anjum@collabora.com>
- <20240125154608.720072-3-usama.anjum@collabora.com>
- <f833c7f9-f59a-49d5-9fce-dc531c11509e@arm.com>
- <8a340f1a-20b5-4792-9bca-b9ed2d95d384@collabora.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <8a340f1a-20b5-4792-9bca-b9ed2d95d384@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4c9f50d2-05f9-4a37-ac50-dcd98e40e87f@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On 01/02/2024 12:24, Muhammad Usama Anjum wrote:
-> On 2/1/24 5:04 PM, Ryan Roberts wrote:
->> On 25/01/2024 15:46, Muhammad Usama Anjum wrote:
->>> Remove sudo as some test running environments may not have sudo
->>> available. Instead skip the test if root privileges aren't available in
->>> the test.
->>>
->>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->>> ---
->>> Changes since v1:
->>> - Added this patch in v2
->>>
->>> We are allocating 2*RLIMIT_MEMLOCK.rlim_max memory and mmap() isn't
->>> failing. This seems like true bug in the kernel. Even the root user
->>> shouldn't be able to allocate more memory than allowed MEMLOCKed memory.
->>> Any ideas?
->>> ---
->>>  tools/testing/selftests/mm/on-fault-limit.c | 36 ++++++++++-----------
->>>  tools/testing/selftests/mm/run_vmtests.sh   |  2 +-
->>>  2 files changed, 18 insertions(+), 20 deletions(-)
->>>
->>> diff --git a/tools/testing/selftests/mm/on-fault-limit.c b/tools/testing/selftests/mm/on-fault-limit.c
->>> index b5888d613f34e..0ea98ffab3589 100644
->>> --- a/tools/testing/selftests/mm/on-fault-limit.c
->>> +++ b/tools/testing/selftests/mm/on-fault-limit.c
->>> @@ -5,40 +5,38 @@
->>>  #include <string.h>
->>>  #include <sys/time.h>
->>>  #include <sys/resource.h>
->>> +#include "../kselftest.h"
->>>  
->>> -static int test_limit(void)
->>> +static void test_limit(void)
->>>  {
->>> -	int ret = 1;
->>>  	struct rlimit lims;
->>>  	void *map;
->>>  
->>> -	if (getrlimit(RLIMIT_MEMLOCK, &lims)) {
->>> -		perror("getrlimit");
->>> -		return ret;
->>> -	}
->>> +	if (getrlimit(RLIMIT_MEMLOCK, &lims))
->>> +		ksft_exit_fail_msg("getrlimit: %s\n", strerror(errno));
->>>  
->>> -	if (mlockall(MCL_ONFAULT | MCL_FUTURE)) {
->>> -		perror("mlockall");
->>> -		return ret;
->>> -	}
->>> +	if (mlockall(MCL_ONFAULT | MCL_FUTURE))
->>> +		ksft_exit_fail_msg("mlockall: %s\n", strerror(errno));
->>>  
->>>  	map = mmap(NULL, 2 * lims.rlim_max, PROT_READ | PROT_WRITE,
->>>  		   MAP_PRIVATE | MAP_ANONYMOUS | MAP_POPULATE, -1, 0);
->>> +
->>> +	ksft_test_result(map == MAP_FAILED, "Failed mmap\n");
->>> +
->>>  	if (map != MAP_FAILED)
->>> -		printf("mmap should have failed, but didn't\n");
->>> -	else {
->>> -		ret = 0;
->>>  		munmap(map, 2 * lims.rlim_max);
->>> -	}
->>> -
->>>  	munlockall();
->>> -	return ret;
->>>  }
->>>  
->>>  int main(int argc, char **argv)
->>>  {
->>> -	int ret = 0;
->>> +	ksft_print_header();
->>> +	ksft_set_plan(1);
->>> +
->>> +	if (getuid())
->>> +		ksft_test_result_skip("Require root privileges to run\n");
-> I'd sent a patch to fix this behavior today. This test should run without
-> root privileges.
-> https://lore.kernel.org/all/20240201071307.592317-1-usama.anjum@collabora.com
+Hey Robin,
+
+Cheers for having a look.
+
+On Wed, Jan 31, 2024 at 03:54:03PM +0000, Robin Murphy wrote:
+> On 31/01/2024 12:25 pm, Will Deacon wrote:
+> > Commit bbb73a103fbb ("swiotlb: fix a braino in the alignment check fix"),
+> > which was a fix for commit 0eee5ae10256 ("swiotlb: fix slot alignment
+> > checks"), causes a functional regression with vsock in a virtual machine
+> > using bouncing via a restricted DMA SWIOTLB pool.
+> > 
+> > When virtio allocates the virtqueues for the vsock device using
+> > dma_alloc_coherent(), the SWIOTLB search fails to take into account the
+> > 8KiB buffer size and returns page-unaligned allocations if 'area->index'
+> > was left unaligned by a previous allocation from the buffer:
 > 
->>> +	else
->>> +		test_limit();
->>>  
->>> -	ret += test_limit();
->>> -	return ret;
->>> +	ksft_finished();
->>>  }
->>> diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
->>> index 246d53a5d7f28..e373d592dbf5c 100755
->>> --- a/tools/testing/selftests/mm/run_vmtests.sh
->>> +++ b/tools/testing/selftests/mm/run_vmtests.sh
->>> @@ -291,7 +291,7 @@ echo "$nr_hugepgs" > /proc/sys/vm/nr_hugepages
->>>  
->>>  CATEGORY="compaction" run_test ./compaction_test
->>>  
->>> -CATEGORY="mlock" run_test sudo -u nobody ./on-fault-limit
->>> +CATEGORY="mlock" run_test ./on-fault-limit
->>
->> I think changing this is going to give unintended results. run_vmtests.sh must
->> already be running as root. "sudo -u nobody" is deprivieging the test to run as
->> nobody. The rlimit is not enforced for root so this test must run unprivileged
->> to work. See man page for getrlimit():
->>
->>   Since Linux 2.6.9, no limits are placed on the amount of memory that a
->>   privileged process may lock, and this limit instead governs the amount of
->>   memory that an unprivileged process may lock
->>
->> So I think the correct fix is actually to install sudo on your CI.
-> run_vmtests.sh is invoked without sudo with following:
-> make -C tools/testing/selftests/mm run_tests
+> Hmm, but isn't this fundamentally swiotlb_alloc()'s fault for assuming it's
+> going to get a page-aligned address back despite asking for 0 alignment in
+> the first place? I'm not sure SWIOTLB has ever promised implicit
+> size-alignment, so it feels somewhat misplaced to be messing with the
+> algorithm before fixing the obvious issue in the caller :/
 
-Unfortunately, I live in a world where my build machine isn't always the same as
-the target machine, so I'm not too familiar with this method of invocation.
+It's hard to tell which guarantees are intentional here given that this
+interface is all internal to swiotlb.c, but the 'alloc_align_mask'
+parameter didn't even exist prior to e81e99bacc9f ("swiotlb: Support
+aligned swiotlb buffers") and practically the implementation has ensured
+page-aligned allocations for buffers >= PAGE_SIZE prior to 0eee5ae10256
+("swiotlb: fix slot alignment checks") by virtue of aligning the search
+index to the stride.
 
-Regardless, the vast majority of the tests in run_vmtests.sh (as well as the
-configuration code in the script itself) require root. So invoking
-run_vmtests.sh as anything other than root is a BadIdea (TM). And when
-run_vmtests.sh is running as root, then you need the "sudo -u nobody" to
-deprivilege this particular test.
+In any case, this patch is required because the current state of
+swiotlb_search_pool_area() conflates the DMA alignment mask, the
+allocation alignment mask and the stride so that even if a non-zero
+'alloc_align_mask' is passed in, it won't necessarily be honoured.
 
-> 
-> Installing sudo in rootfs wouldn't be trivial enough on the CI side.
-> Alternatively, we can check if sudo is present before executing this test
-> to avoid error that sudo isn't found.
+For example, I just gave it a spin with only patch #3 and then this log:
 
-Yeah, that's probably the easiest solution; just skip it if the requirements are
-not met.
+> >   # Final address in brackets is the SWIOTLB address returned to the caller
+> >   | virtio-pci 0000:00:07.0: orig_addr 0x0 alloc_size 0x2000, iotlb_align_mask 0x800 stride 0x2: got slot 1645-1649/7168 (0x98326800)
 
-> 
->>
->>>  
->>>  CATEGORY="mmap" run_test ./map_populate
->>>  
->>
->>
-> 
+Becomes:
 
+  | virtio-pci 0000:00:07.0: alloc_size 0x2000, iotlb_align_mask 0x1800 stride 0x4: got slot 1645-1649/7168 (0x98326800)
+
+So even though the stride is correct, we still end up with a 2KiB aligned
+allocation.
+
+Cheers,
+
+Will
 
