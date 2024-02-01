@@ -1,126 +1,232 @@
-Return-Path: <linux-kernel+bounces-47591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0B5E844FE4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:46:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 351C3844FE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:46:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5C981F232CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:46:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 592C41C22E37
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:46:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D72E13AC08;
-	Thu,  1 Feb 2024 03:46:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E94A13B194;
+	Thu,  1 Feb 2024 03:46:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UMZWz6nC"
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="GPVoJeUL"
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B0503B182
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 03:46:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E0123A8FE;
+	Thu,  1 Feb 2024 03:46:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706759179; cv=none; b=ixvw3A5gdVNoPBfXdcA4K1VontvQTcObVfiHXYHm8jpl9OHpHhFvZuO04hTlUwOjbT2lJKQHwWmujz2cuvZXe1x/KIbIGx7FHaY7rlgkkDS59Lqy33fAcFq1MGdBBTuoixVlG3nNOFiSvtcKMVbzUcBu7JPMgA2XYg3aswhSlWQ=
+	t=1706759200; cv=none; b=VlXRSeZGn17jaHpTM9MxX7C4r6uMNwduMISAEiBYCcDb0ZM3W4iT1mB5XjNR7KKCTXmXHcwZnAy4vpcCixihuwAAZ9slQTaymhAi64Kqea73XvKQ5IQxBnJV01RUeb5D/lUqgnHn7RaOFT52gUzQlFPpY/wRxoVC+3lM0XdXTMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706759179; c=relaxed/simple;
-	bh=jLZl2svZauxC4ea4Z0jDZi5dNNmdxwWEhOWyRJ7STJk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cD2BYCdRPDLj9yO5tLtcUE0X3PSLLJYECf0ptvuGySIROrbVdnR7wlg6kKmi3HK1DeIi3IYIVMF69GaMISe/hz1PXlbEX85FuLONOTIvC0AOhw1HxAsCFKeVRVAiH0UrvJvfY796sFFCa//zjegZILLFgRHfsnW3rpFFDCBLR8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UMZWz6nC; arc=none smtp.client-ip=209.85.219.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6861538916cso2756866d6.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 19:46:16 -0800 (PST)
+	s=arc-20240116; t=1706759200; c=relaxed/simple;
+	bh=Z5KGSsJTG8Me3n3I9GJaS2SJpQ0zSGDT/19vVzh0uyY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=rKCZ2h8zz0qMIknxqT5zeNsWdUgSYiP+ZqzXUiEokavnpvF4C/DbgPJlQN9Y8KF0g6rp3A3y5P5M7XWVlPhWWePEMEWJ9xOLNG3YfHihtsVOiXdIJ5ZwHqLkE3j2QFW2E7OW7ndVbXObQJ/WUsIuPi8ehVIylDrlNK/fMdZ73sw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=GPVoJeUL; arc=none smtp.client-ip=203.29.241.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
+Received: from [192.168.68.112] (ppp14-2-76-194.adl-apt-pir-bras31.tpg.internode.on.net [14.2.76.194])
+	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 5952A2017A;
+	Thu,  1 Feb 2024 11:46:26 +0800 (AWST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706759175; x=1707363975; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mFF8rhKxfnZfXzZDWT495muOJWGnqIPs5LoDZ1rl5gE=;
-        b=UMZWz6nCc5ZxcDG7yvHZnGQIfOxDmTnCMSEQWod0Pq7Ts8cp9a861RkVYMoMLZuyA8
-         lgd8XtoRUbVTs03N22RZMnQax65KkaL3ysW9JK3dlYAvYs9O+/JIlVNN0cD4+7oE3u2F
-         ZD21wEEgF58Q01b0HluOA0rHTGTpJjpiniDpmRwYUSFPwjmco2vO+TGVTx0wwa2P+ZMJ
-         OVN7aaztnEdBJIr6lYrTIMyHlVPREESkbpPZuPFECmbOJ/8zBiv/Ks+63ShdjBlGr0g8
-         IvjcFRIFPsB569GziR5Ga8Bf9XXWWHkBos9RgxEWG674U0de9QqhaN9GbwvmEbpvttKs
-         XOng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706759175; x=1707363975;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mFF8rhKxfnZfXzZDWT495muOJWGnqIPs5LoDZ1rl5gE=;
-        b=IlSwgv2ZUyzSj/bFSevFEfm+iN8vJPEIelCqfeHU3X1bjZmSxKQ6O3lUBa5tuAGxMt
-         9HYvvUvPOdt3e1QuQ27j1elq1WNS3zG8NfVeWSYF3+neuP4m1WRPqUp8hv60mY/LXwiC
-         DwwYC7Zn1/jkZPJsJCme9zVzl9YN4Hp2UrQhlvhdROcdqEEJKoSGSQT9PDrNrALhNMPr
-         7rJOdMQFUn4A5ZdxAtWey6k0RJleev0xkVy+tWKAEysSOfcoy2TXGKPvZY8xMip+Fb1R
-         y+2jSCue+gZCerphvf4q78ZgW9G697+PIbXl0oWFmlNrOuwVyhqMuDSMUGy5ZaAiSaJY
-         iD5w==
-X-Gm-Message-State: AOJu0YzmWl5chMFGk+1/p9DeklSqIqrAv4lY9jPYRNILCimlzifi6WDV
-	Eo2JNiRfYjzlo5aPFaCfLyKyLy3tHXKPmwMLKAnUMETf5CR8VTjKifjQRnBSTj0PJgbjK+kSNwL
-	NMslGtmWy7iLExAqSCzZ7zzz06hmOL4ZDRkSO
-X-Google-Smtp-Source: AGHT+IGl3N0KrMo4pI0gs+wWPmLLPDTG5QuX4lcGW2kiKQyFlHOmi4pC0Z0bfHJbRXQX44gvJC50zjr6/z8SDinOs0E=
-X-Received: by 2002:a05:6214:21eb:b0:686:aaad:e36d with SMTP id
- p11-20020a05621421eb00b00686aaade36dmr3110186qvj.2.1706759174991; Wed, 31 Jan
- 2024 19:46:14 -0800 (PST)
+	d=codeconstruct.com.au; s=2022a; t=1706759189;
+	bh=oRKHvzM8KbCi8vf71Z3F6Qqi7mjIhPHJpavjxrfKHeA=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=GPVoJeULG4YDFqW01YBscBR06UWwJZxUYnELBL3ZrWmoDI4oPmFM7QZEy/5AMpeu6
+	 ZU4x/8ukcRJsj6uQd0xJYw7REuHUEkoqyggvwWx6PAO6oE/S9KWd8+gmdqtRtdnd0W
+	 fszXI7V3Yaz4A70HA2gqHoe3HAeP6eU+RHdA/iOKMT8mSQg3rYDsUmBf6YKIpTFldi
+	 kP7P89Jlbt2I3qDXi3xNv4jeRz78XJBvfE8Zn78OKlFpHDIW1HolO/qxVcz8Ye5WPG
+	 80CdtUgKW2rKzDeZU7JCJHg5mrx9y1Hs1jDI4e84T8X/+qw3bKcEHnVdqfjZOrShbd
+	 BOdwQNFb7zV3w==
+Message-ID: <ff1df8af596c907e969d9011ce2f42ef96974d37.camel@codeconstruct.com.au>
+Subject: Re: [PATCH v5 01/21] ARM: dts: aspeed: yosemite4: Revise i2c-mux
+ devices
+From: Andrew Jeffery <andrew@codeconstruct.com.au>
+To: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>, patrick@stwcx.xyz, Rob
+ Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Joel Stanley <joel@jms.id.au>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date: Thu, 01 Feb 2024 14:16:24 +1030
+In-Reply-To: <20240131084134.328307-2-Delphine_CC_Chiu@wiwynn.com>
+References: <20240131084134.328307-1-Delphine_CC_Chiu@wiwynn.com>
+	 <20240131084134.328307-2-Delphine_CC_Chiu@wiwynn.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240112055251.36101-1-vannapurve@google.com> <20240112055251.36101-6-vannapurve@google.com>
- <6709a57c-48a0-4ddd-b64e-a1e34ae2b763@intel.com>
-In-Reply-To: <6709a57c-48a0-4ddd-b64e-a1e34ae2b763@intel.com>
-From: Vishal Annapurve <vannapurve@google.com>
-Date: Thu, 1 Feb 2024 09:16:03 +0530
-Message-ID: <CAGtprH_ANUVU+Dh1KOq0vpT7BGbCEvD2ab9B=sxjzHYsKxFGeA@mail.gmail.com>
-Subject: Re: [RFC V1 5/5] x86: CVMs: Ensure that memory conversions happen at
- 2M alignment
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org, pbonzini@redhat.com, 
-	rientjes@google.com, seanjc@google.com, erdemaktas@google.com, 
-	ackerleytng@google.com, jxgao@google.com, sagis@google.com, oupton@google.com, 
-	peterx@redhat.com, vkuznets@redhat.com, dmatlack@google.com, 
-	pgonda@google.com, michael.roth@amd.com, kirill@shutemov.name, 
-	thomas.lendacky@amd.com, dave.hansen@linux.intel.com, 
-	linux-coco@lists.linux.dev, chao.p.peng@linux.intel.com, 
-	isaku.yamahata@gmail.com, andrew.jones@linux.dev, corbet@lwn.net, hch@lst.de, 
-	m.szyprowski@samsung.com, rostedt@goodmis.org, iommu@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 10:03=E2=80=AFPM Dave Hansen <dave.hansen@intel.com=
-> wrote:
->
-> On 1/11/24 21:52, Vishal Annapurve wrote:
-> > @@ -2133,8 +2133,10 @@ static int __set_memory_enc_pgtable(unsigned lon=
-g addr, int numpages, bool enc)
-> >       int ret;
-> >
-> >       /* Should not be working on unaligned addresses */
-> > -     if (WARN_ONCE(addr & ~PAGE_MASK, "misaligned address: %#lx\n", ad=
-dr))
-> > -             addr &=3D PAGE_MASK;
-> > +     if (WARN_ONCE(addr & ~HPAGE_MASK, "misaligned address: %#lx\n", a=
-ddr)
-> > +             || WARN_ONCE((numpages << PAGE_SHIFT) & ~HPAGE_MASK,
-> > +                     "misaligned numpages: %#lx\n", numpages))
-> > +             return -EINVAL;
->
-> This series is talking about swiotlb and DMA, then this applies a
-> restriction to what I *thought* was a much more generic function:
-> __set_memory_enc_pgtable().  What prevents this function from getting
-> used on 4k mappings?
->
->
+Hi Delphine,
 
-The end goal here is to limit the conversion granularity to hugepage
-sizes. SWIOTLB allocations are the major source of unaligned
-allocations(and so the conversions) that need to be fixed before
-achieving this goal.
+On Wed, 2024-01-31 at 16:41 +0800, Delphine CC Chiu wrote:
+> Revise Yosemite 4 devicetree for devices behind i2c-mux
+> - Add gpio and eeprom behind i2c-mux
+> - Remove redundant idle-state setting for i2c-mux
 
-This change will ensure that conversion fails for unaligned ranges, as
-I don't foresee the need for 4K aligned conversions apart from DMA
-allocations.
+Generally if you find yourself listing things the patch does in the
+commit message it's an indicator you should split the patch up.
+
+It looks like there's a lot of stuff to be fixed, but it doesn't need
+to all be fixed in the one commit (as 01/21 suggests I guess). The
+devicetree is already inaccurate, it's okay if a subset of the
+inaccuracies survive for another patch or so.
+
+Otherwise, if they must be changed together, it would be good to have a
+description of *why*. Broadly, the commit message should explain *why*
+the change is need regardless, not discuss *what* the patch changes
+(that's evident from the patch itself).
+
+>=20
+> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+> ---
+>  .../aspeed/aspeed-bmc-facebook-yosemite4.dts  | 381 ++++++++++++++++--
+>  1 file changed, 347 insertions(+), 34 deletions(-)
+>=20
+> =20
+> -	i2c-mux@71 {
+> -		compatible =3D "nxp,pca9846";
+> +	i2c-mux@74 {
+> +		compatible =3D "nxp,pca9546";
+
+Aside from splitting the patch on adding more devices and removing the
+redundant idle-state settings, things like this should probably be
+separate too.
+
+Why was the address changed? Was it always wrong? Or has there been a
+new revision of the board? A separate commit with some explanation here
+would be useful.
+
+>  		#address-cells =3D <1>;
+>  		#size-cells =3D <0>;
+> -
+> -		idle-state =3D <0>;
+>  		i2c-mux-idle-disconnect;
+> -		reg =3D <0x71>;
+> +		reg =3D <0x74>;
+> =20
+> -		i2c@0 {
+> +		imux30: i2c@0 {
+>  			#address-cells =3D <1>;
+>  			#size-cells =3D <0>;
+>  			reg =3D <0>;
+> @@ -450,26 +726,26 @@ i2c@0 {
+>  			adc@1f {
+>  				compatible =3D "ti,adc128d818";
+>  				reg =3D <0x1f>;
+> -				ti,mode =3D /bits/ 8 <2>;
+> +				ti,mode =3D /bits/ 8 <1>;
+
+This isn't discussed anywhere. There should probably be a separate
+change for anything adc128d818-related that explains what's going on
+here.
+
+>  			};
+> =20
+>  			pwm@20{
+> -				compatible =3D "max31790";
+> +				compatible =3D "maxim,max31790";
+> +				pwm-as-tach =3D <4 5>;
+>  				reg =3D <0x20>;
+> -				#address-cells =3D <1>;
+> -				#size-cells =3D <0>;
+
+This also isn't discussed anywhere. There should probably be a separate
+change for anything max31790-related that explains what's going on
+here.
+
+>  			};
+> =20
+>  			gpio@22{
+>  				compatible =3D "ti,tca6424";
+>  				reg =3D <0x22>;
+> +				gpio-controller;
+> +				#gpio-cells =3D <2>;
+
+Also not discussed. Separate change for anything tca6424-related that
+explains what's going on here.
+
+>  			};
+> =20
+> -			pwm@23{
+> -				compatible =3D "max31790";
+> -				reg =3D <0x23>;
+> -				#address-cells =3D <1>;
+> -				#size-cells =3D <0>;
+> +			pwm@2f{
+> +				compatible =3D "maxim,max31790";
+> +				pwm-as-tach =3D <4 5>;
+> +				reg =3D <0x2f>;
+>  			};
+
+Should go in the max31790-related patch.
+
+> =20
+>  			adc@33 {
+> @@ -492,34 +768,34 @@ gpio@61 {
+>  			};
+>  		};
+> =20
+> -		i2c@1 {
+> +		imux31: i2c@1 {
+>  			#address-cells =3D <1>;
+>  			#size-cells =3D <0>;
+> -			reg =3D <0>;
+> +			reg =3D <1>;
+> =20
+>  			adc@1f {
+>  				compatible =3D "ti,adc128d818";
+>  				reg =3D <0x1f>;
+> -				ti,mode =3D /bits/ 8 <2>;
+> +				ti,mode =3D /bits/ 8 <1>;
+
+Should go in the adc128d818 patch
+
+>  			};
+> =20
+>  			pwm@20{
+> -				compatible =3D "max31790";
+> +				compatible =3D "maxim,max31790";
+> +				pwm-as-tach =3D <4 5>;
+>  				reg =3D <0x20>;
+> -				#address-cells =3D <1>;
+> -				#size-cells =3D <0>;
+>  			};
+
+Should go in the max31790 patch
+
+> =20
+>  			gpio@22{
+>  				compatible =3D "ti,tca6424";
+>  				reg =3D <0x22>;
+> +				gpio-controller;
+> +				#gpio-cells =3D <2>;
+
+Should go in the tca6424 patch
+
+>  			};
+> =20
+> -			pwm@23{
+> -				compatible =3D "max31790";
+> -				reg =3D <0x23>;
+> -				#address-cells =3D <1>;
+> -				#size-cells =3D <0>;
+> +			pwm@2f{
+> +				compatible =3D "maxim,max31790";
+> +				pwm-as-tach =3D <4 5>;
+> +				reg =3D <0x2f>;
+
+Should go in the max31790 patch
+
+Andrew
 
