@@ -1,132 +1,101 @@
-Return-Path: <linux-kernel+bounces-47659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FCDB8450DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 06:45:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77C0E8450E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 06:45:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B72251C23CB6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:45:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 323472900F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:45:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D088B762D6;
-	Thu,  1 Feb 2024 05:45:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEFE071B32;
+	Thu,  1 Feb 2024 05:45:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pVj0alU+"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="K9mqaiBt"
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35E34612F0;
-	Thu,  1 Feb 2024 05:45:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6991612E5;
+	Thu,  1 Feb 2024 05:45:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706766305; cv=none; b=WZ9ZBdrhGJINAXJtZOMhFJSr30RHSRTBDXDCSZ/poskSoZd2kyf5RHojBbB2qxGDKO9dIC5XewarcYl2Q4SkeEYXsobfckzwFvCYkATyIW1HAotyCOLqgVVdyGPVd9kJVe7fsbkmB9miBg0nCVhxUCnhIhR9amT93nFnCcRLGZ4=
+	t=1706766344; cv=none; b=MJS1sp6vE6HlsP74QoWaXQIiYAwZ+VSdJ/BpQSgPWNgop0FAWDgNaKLVPuhQLqU+SEVFeyQHVz8opB58JSAkAcDB9D/lCIktqRbF+3ozFnZeeGi9A0PsmQFh3u+ZGG/vF7wh9kNdV/+smYs7rIiA1g6uDy7wIyJOlV+zNVgbQew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706766305; c=relaxed/simple;
-	bh=AWWRbwMJsJOhUP71zZ4HmkdRC56JvXUNkwK4Ol4y5eE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=LtjZcKbw/ufwPskbm1XlDKmKIlVXGSQfObRQCZ+R/UlNQBhsU1vfRY7A8pCrW7rW56rRoCXNFywUNfNSDZH4GXeiwyl+AKCdUJPi4G7CuDtaAABUs9JLkPg4+m1B+QI8klNQoBJG/plbHqepkKRwOfOBTp1uZqtxUz5erOGf9HU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=pVj0alU+; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4114EfYE014251;
-	Thu, 1 Feb 2024 05:44:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=tMSddtjC0Q3n3JIZVZR+PNnRJQw2W6AVaffevhy+KHc=; b=pV
-	j0alU+gqGiBWSW/R/J/CGPb6MXpuAfpWKiFzKc6h7I4js+QLeJbTGkXFzwpydY2S
-	yGaELXxrdEAOkPi6PPk0pN7d5Qs5y3DTYTrIGyUmLJO580qBrMRao5678kGH0G9q
-	jFQAgRETDSXl6aos/6iaOZ7U9FJGD5aPYVQqb5L3onZJ7F0m4Kwp/DitqoS6W29l
-	oK5unXwxleBWCi9FItiVSpmsUBYIK61iRBL5v1lR+B4wEgQxfQFnRBnSsrGiQFI7
-	wJu2OduOYxpvhBPH/CK3iBhSJWdKzaY/YGVIiAK+gvIKsKe7lZJMVHhFoRFIG+Bh
-	a8ynbaVB0dxWyhskI9qQ==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w03hh862k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 05:44:54 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4115ismN012685
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 1 Feb 2024 05:44:54 GMT
-Received: from [10.216.36.102] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 31 Jan
- 2024 21:44:51 -0800
-Message-ID: <06ac82ec-3a13-47cc-bd94-b664430b7a2c@quicinc.com>
-Date: Thu, 1 Feb 2024 11:14:47 +0530
+	s=arc-20240116; t=1706766344; c=relaxed/simple;
+	bh=jEXaJxk3bfW1i9fWeuWYYX1uSmdxuhTcmO6xBhD+QkU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=prRbk5fVvVRJcBuXvH0NG4B0OLvsWFL3h5yO5kqUYHnlWTmK0EoPJQXtrJPEc/zZ/8k/2rVM8tAZFaFSx2EOAJg7uA5bCnwLlnPONH+P5132Ce/aSPaVvQ6KmOvmOGd70IQhfK/sRHbkl/ZT1o+YnXkkS2yJdP+ktNQMMRbP4nI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=K9mqaiBt; arc=none smtp.client-ip=203.29.241.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
+Received: from [192.168.68.112] (ppp14-2-76-194.adl-apt-pir-bras31.tpg.internode.on.net [14.2.76.194])
+	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 01E622017A;
+	Thu,  1 Feb 2024 13:45:39 +0800 (AWST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=codeconstruct.com.au; s=2022a; t=1706766340;
+	bh=nKCRisLpHjguaVO1EIS9AvNZ77fEHliVyA2UU02dTc8=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=K9mqaiBtHwYehzQbf5LaySLWiMCocrRBFE0VQPz2DmpZPkhuPeOFm6ToPACVmmhNd
+	 gT07+TMmNj9qpG8aCnyBBbV8CaBuulaA5srG3xBcXDkX9C0i4WhB/umOKB1qdImekR
+	 Q1r5eP5JX86BpKSstQ4UD7qHS7Kjj+durIOQ7II1spM81ecVoyV/mE3bLCFcE8EL7e
+	 0yV4ayPVVbVpUspAvNhyypdmuq9ughVDFn+F6GH9NJ6tK3IoFBIxLgEtApXyCGpU3E
+	 vt5MiOFY657MRQuIP/nuHajEcqO6edsky6r18lwHEn839OxnhzXngpISCpgZ4O5yQ4
+	 itYW4YT67vOKA==
+Message-ID: <1823c7e3fd460b64c5bab3c1c6623a0a63e073d6.camel@codeconstruct.com.au>
+Subject: Re: [PATCH v5 11/21] ARM: dts: aspeed: yosemite4: Add eeprom for
+ yosemite4 use
+From: Andrew Jeffery <andrew@codeconstruct.com.au>
+To: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>, patrick@stwcx.xyz, Rob
+ Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Joel Stanley <joel@jms.id.au>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date: Thu, 01 Feb 2024 16:15:39 +1030
+In-Reply-To: <20240131084134.328307-12-Delphine_CC_Chiu@wiwynn.com>
+References: <20240131084134.328307-1-Delphine_CC_Chiu@wiwynn.com>
+	 <20240131084134.328307-12-Delphine_CC_Chiu@wiwynn.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] usb: gadget: ncm: Avoid dropping datagrams of properly
- parsed NTBs
-To: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hardik Gajjar
-	<hgajjar@de.adit-jv.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_ppratap@quicinc.com>,
-        <quic_wcheng@quicinc.com>, <quic_jackp@quicinc.com>
-References: <20240131150332.1326523-1-quic_kriskura@quicinc.com>
- <CANP3RGeHXmEcDN=-h1uGBzu_Ur2UcmiEuFDXAEr0Z2ptXnHq=Q@mail.gmail.com>
- <47bf719c-a5c1-473b-9fa0-8cad84f0721c@quicinc.com>
- <CANP3RGf8=3OwCDnE8UT8PQNRwQrtLO97_yR+Vm0h12Q3anbtVA@mail.gmail.com>
-Content-Language: en-US
-From: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <CANP3RGf8=3OwCDnE8UT8PQNRwQrtLO97_yR+Vm0h12Q3anbtVA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 0D0f3J-K6FjmIh3FxKj3Bd4i8zoZOHpm
-X-Proofpoint-ORIG-GUID: 0D0f3J-K6FjmIh3FxKj3Bd4i8zoZOHpm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-31_10,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- clxscore=1015 mlxscore=0 priorityscore=1501 phishscore=0
- lowpriorityscore=0 malwarescore=0 mlxlogscore=302 bulkscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2402010044
 
+On Wed, 2024-01-31 at 16:41 +0800, Delphine CC Chiu wrote:
+> Add eeprom for yosemite4 use
+>=20
+> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+> ---
+>  arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b=
+/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+> index e8d7eb7ff568..f00df378a371 100644
+> --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+> @@ -932,7 +932,7 @@ temperature-sensor@4b {
+>  	};
+> =20
+>  	eeprom@54 {
+> -		compatible =3D "atmel,24c256";
+> +		compatible =3D "atmel,24c128";
 
+This is changing an existing eeprom, not adding a new one - contrary to
+the commit message. It probably should be in a separate patch?
+Presumably this is also motivated by the change in the schematics? Some
+explanation would be helpful.
 
-On 2/1/2024 12:24 AM, Maciej Żenczykowski wrote:
+I'm half wondering whether it would have been easier to add a separate
+DTS for the new version of the schematic rather than make all these
+piecemeal changes.
 
-> 
-> I believe so, yes.
-> 
-> I believe they are trying to avoid having to send ZLPs.
-> That's determined *purely* by the size of things as they show up on
-> the usb cable (ie. the size of the usb xfer).
-> ie. that's where things that are a multiple of 512 (USB2) or 1024
-> (USB3) need an extra 0 byte sized packet to prevent ZLP.
-> 
-> The actual size of the NTB doesn't matter.
-> 
-> That said... maybe we're overcomplicating this...
-> Maybe it's enough to just remove this modulo check entirely (I know I
-> asked for it before).
-> 
-> Ultimately if we just do:
-> 
-> // Windows NCM driver avoids USB ZLPs by adding a 1-byte zero pad as needed
-> if (to_process == 1 && !*(u8*)(ntb_ptr + block_len)) --to_process;
-> 
-> it'll fix the problem too, and perhaps be easier to understand?
-> 
-I agree. This will simplify the check and also cover all cases.
-To keep diff minimal from tested version (because issue comes up easily 
-with a particular test here), I can remove the second check in the if 
-block in the v2 and push it as v3.
+Andrew
 
-Regards,
-Krishna,
 
