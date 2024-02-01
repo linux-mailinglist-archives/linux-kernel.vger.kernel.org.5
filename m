@@ -1,141 +1,64 @@
-Return-Path: <linux-kernel+bounces-47630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE097845079
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:47:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C19CE845073
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:46:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70BAAB29D5B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:47:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F07601C265E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:46:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5863A3BB3A;
-	Thu,  1 Feb 2024 04:46:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="N8kvZ/ir"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5ECE3BB4F;
+	Thu,  1 Feb 2024 04:46:42 +0000 (UTC)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1141F3CF6C
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 04:46:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3B6E3A8C5;
+	Thu,  1 Feb 2024 04:46:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706762811; cv=none; b=ilgRxnoyisxr/sMhgbWf7ElB3jSqytCpTsGaQSTnaueWHActVhGjKpPVsrgdEFaNETb/6gLzRkoKKAXGefhM41ZUV3msSPA9vOQMeKziuOUaNIU80kcaTOuNwp8sad5BcRDRlGPbEZYt2VD20NnBsaPOXQLE+Y9BJX7aG7jn6BY=
+	t=1706762802; cv=none; b=oMjyqXg58n13+DOPMIe0GepLKR1a2zvFWUanva+EpB7cj+YcXjSEO5M/2sPBnYJFMv3nfPhH5OJyz1OgE+B0UhGYE7tgauFlr580+AFoMkKzJhJxNU4psxnZNDnsfb6WLUmpzKO4pu3xvRMXxf/FzanZaKG3VPwBb0ERdc/I7Pk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706762811; c=relaxed/simple;
-	bh=Twt8VpGAnLnDknK+2mkdxRc9XEHSq6p2WMav1kEzpAw=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Content-Type; b=tkQbSBPv4JgLO/NnhIWq5bwR0Uau3IZb9l5QGQuy+qZkbeOHYyZ8UZMCr4wh1WHJ1u+Sx7fq10iAZSTL792Fo7DEH6XGz5N3zXR87I6T4Lr33MEa44/xdRNFz261l//MEqM8yVeQJEigGzEX/c64AUqwPHT3Axtr0+33TadcwW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aahila.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=N8kvZ/ir; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aahila.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-604127be0a0so10952937b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:46:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706762809; x=1707367609; darn=vger.kernel.org;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8c691bs4raW5tl1fD8/M9N6DqO7UPyEHeitm4Vwh450=;
-        b=N8kvZ/irzYvcuRYBw0Ut78xk7XwlNAtgF9N5BGOaTXIjxMZre/TZb/nyjnvb504t0P
-         aeBELdHdqmSd10ai3mPQ2E/YoACMofobbkxoQQCHFUuV15LHlzqHhjh/ihB0HQwCS/fG
-         D5aMjpE8EA7c5zpsepMW/nT+KS54+YoaVRXDNHNYi2FWBHCFyf0Swu01tYZmXdZBp87y
-         D09pf+yqRVhcyO2jX6YvRC+nPLaV2mCBxvt00qs+n1DhwI2uW+HqSksFHL8dDEHHo3tD
-         iiO/nRI4VkplJJ69tUGaeoC/Y9aXf9+ksQR4DakdR0IF7sYxE4Pg8/76SrMedq1zROyJ
-         zdSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706762809; x=1707367609;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8c691bs4raW5tl1fD8/M9N6DqO7UPyEHeitm4Vwh450=;
-        b=CcV+DSkTvvfvRVeDac/fI4TB8pTbFIRKdY4QMt02MGg0UPI2JHVQfQLKJBtuDrEvc0
-         2FJdqHPbC40uS4uHl5R64I0NBXu+RmYKfnpAe9cQoplkIcNPCLqhqG75pUUJ9vV7OX6P
-         DVvcJpC2h7YWAQ8gTSiRLoY+QOcEgQJJ1ireKL6D9mhNrRbwrdvi37wElOUFeYM0sX3s
-         tNxTihlWQRqQqf+XSG3JrtAvCg0Bn4eseaWPTb0b4wJvrNVpQJe9hHwzk4zU2EHThfp2
-         o/0f5OTHtFYdP9L/DPutKkonXYotlv84WnPDplAPnjD8V91ufr9fJaR2b1HeqVAU1Fmi
-         pvrA==
-X-Gm-Message-State: AOJu0Yz8r13Gu2LKs9fR0jtm6d73pOdFQFFxfFkdGJklPhCLIuVA7gPb
-	wcBYxhWoRHrPq8O7FO8plewf+kOFndU1zkzz2qegKlLeD8dWM7zpiDaykkhZ9/IgZjWksH3JkSJ
-	rlg==
-X-Google-Smtp-Source: AGHT+IGCqkf4S6bQM1K/unGBkakUD903fQKJFzDx/PsI7m/ghEanV+fd8QwhKiXNvUcW/cWgJucE/HbyIpE=
-X-Received: from aahila.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2f3])
- (user=aahila job=sendgmr) by 2002:a05:690c:f85:b0:5ff:9eb1:29a6 with SMTP id
- df5-20020a05690c0f8500b005ff9eb129a6mr796091ywb.2.1706762809133; Wed, 31 Jan
- 2024 20:46:49 -0800 (PST)
-Date: Thu,  1 Feb 2024 04:46:23 +0000
-In-Reply-To: <20240201044623.374389-1-aahila@google.com>
+	s=arc-20240116; t=1706762802; c=relaxed/simple;
+	bh=0OnbX1yCvm3sQP0M00aaws33W9O3jQOQMuSIPOlVDSE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kYMw+F3DY7QvIEgDY8nO/fsjE9kp+6ImVcucCuxFXDzvrdhhECP3sWpRUrofo7qLzVMy9KVfBhdNRmnhkXFMM5R6PKyUq6sTjueP55dDIyj/M3iDtn41ctCRvcOj3O3Bm48/g01XLyHWs5id+81FGG7aERGP3p48PgVQf4cbctA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id A8562227A88; Thu,  1 Feb 2024 05:46:37 +0100 (CET)
+Date: Thu, 1 Feb 2024 05:46:37 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Chris Leech <cleech@redhat.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Nilesh Javali <njavali@marvell.com>, Christoph Hellwig <hch@lst.de>,
+	John Meneghini <jmeneghi@redhat.com>, Lee Duncan <lduncan@suse.com>,
+	Mike Christie <michael.christie@oracle.com>,
+	Hannes Reinecke <hare@kernel.org>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+	GR-QLogic-Storage-Upstream@marvell.com
+Subject: Re: [PATCH 1/2] uio: introduce UIO_MEM_DMA_COHERENT type
+Message-ID: <20240201044637.GC14176@lst.de>
+References: <20240131191732.3247996-1-cleech@redhat.com> <20240131191732.3247996-2-cleech@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240201044623.374389-1-aahila@google.com>
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240201044623.374389-2-aahila@google.com>
-Subject: [PATCH 2/2] i2c: designware: allow fine tuning tuning waveform from
- device tree
-From: Aahil Awatramani <aahila@google.com>
-To: Aahil Awatramani <aahila@google.com>, David Dillow <dillow@google.com>, 
-	Wolfram Sang <wsa+renesas@sang-engineering.com>, Andi Shyti <andi.shyti@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Jarkko Nikula <jarkko.nikula@linux.intel.com>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Mika Westerberg <mika.westerberg@linux.intel.com>, Jan Dabros <jsd@semihalf.com>, 
-	linux-i2c@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240131191732.3247996-2-cleech@redhat.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-The Synopsys i2c driver allows a user to override the parameters
-controlling the waveform using ACPI; this is useful for fine tuning when
-needed to make spec compliance. Extend this support to the device tree to
-allow non-ACPI platforms the same capabilities.
+As the least horrible way out this looks ok:
 
-Signed-off-by: Aahil Awatramani <aahila@google.com>
----
- drivers/i2c/busses/i2c-designware-platdrv.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
-index 855b698e99c0..09c464874fdb 100644
---- a/drivers/i2c/busses/i2c-designware-platdrv.c
-+++ b/drivers/i2c/busses/i2c-designware-platdrv.c
-@@ -132,6 +132,17 @@ static int mscc_twi_set_sda_hold_time(struct dw_i2c_dev *dev)
- 	return 0;
- }
- 
-+static void i2c_parse_cnt(struct device *dev, char *prop_name, u16 *cnt)
-+{
-+	u32 tmp_cnt;
-+	int ret;
-+
-+	ret = device_property_read_u32(dev, prop_name, &tmp_cnt);
-+	if (ret)
-+		return;
-+	*cnt = tmp_cnt;
-+}
-+
- static int dw_i2c_of_configure(struct platform_device *pdev)
- {
- 	struct dw_i2c_dev *dev = platform_get_drvdata(pdev);
-@@ -146,6 +157,15 @@ static int dw_i2c_of_configure(struct platform_device *pdev)
- 		break;
- 	}
- 
-+	i2c_parse_cnt(&pdev->dev, "i2c-scl-ss-hcnt", &dev->ss_hcnt);
-+	i2c_parse_cnt(&pdev->dev, "i2c-scl-ss-lcnt", &dev->ss_lcnt);
-+	i2c_parse_cnt(&pdev->dev, "i2c-scl-fs-hcnt", &dev->fs_hcnt);
-+	i2c_parse_cnt(&pdev->dev, "i2c-scl-fs-lcnt", &dev->fs_lcnt);
-+	i2c_parse_cnt(&pdev->dev, "i2c-scl-fp-hcnt", &dev->fp_hcnt);
-+	i2c_parse_cnt(&pdev->dev, "i2c-scl-fp-lcnt", &dev->fp_lcnt);
-+	i2c_parse_cnt(&pdev->dev, "i2c-scl-hs-hcnt", &dev->hs_hcnt);
-+	i2c_parse_cnt(&pdev->dev, "i2c-scl-hs-lcnt", &dev->hs_lcnt);
-+
- 	return 0;
- }
- 
--- 
-2.43.0.429.g432eaa2c6b-goog
+Bt maybe you can add some commentary why this mem mode exists and
+why no one should be using it in new code?
 
 
