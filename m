@@ -1,79 +1,50 @@
-Return-Path: <linux-kernel+bounces-47552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 301CA844F45
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:59:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2A4B844F49
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:01:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C39AD1F2BFCE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:59:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42802291228
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:01:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6194539FF7;
-	Thu,  1 Feb 2024 02:59:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JDkzbTij"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E594139FFE;
+	Thu,  1 Feb 2024 03:01:50 +0000 (UTC)
+Received: from smtpbg153.qq.com (smtpbg153.qq.com [13.245.218.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1247A3A1B2
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 02:59:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB1601E89B
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 03:01:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.245.218.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706756386; cv=none; b=mhEp3YsrsrTdAf70RqBcdv8vuAdNhnGZ/B895RN96qFqkjpufBLZjoyJjLwA1J1PTDMzrItVT/ZiwIv9yChztnU5Or233dEbe1ER8ku8V5Fej7WJoq8Ho0iHlr0tIHv/+lev5fx14qLyI+DHooW2pafUrvaFwf/tH1WUu/zVe0M=
+	t=1706756510; cv=none; b=e69Jex1MPaq/8vmqH2yDv2KgDLplkyljpair/jNvXAresikQORkp6sQqBdxlcPR4C5miDBBZOdqGCrZg+iZBtjVL2lBprkN2AO8SVQF+AXjWH0cmQL0SIZtvnu819bGe1tygzNmRGhQzgOOv8jIirh79H6ycOthf2jwKQOU48Ek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706756386; c=relaxed/simple;
-	bh=5gKmwqTiX//bw8dcuurwVdti6uUWSqDtZl+dcrFZ1I4=;
+	s=arc-20240116; t=1706756510; c=relaxed/simple;
+	bh=NZXnPzx0uv2dVH0icWLUCz5EkgnaQA4cLXxzdqGSh4s=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W9wW1RJAOy8HKz0HLpOpZOnIEJrBo0CQLjCHSTnHXQBnaD4C2OHKk9D7Nvi+qx/oGjaBZZhn+BIL2ADaw91ydr5uN+wRPhQUd1oeO2qKQ6HimYHIHYyqhLbl0W721EjBq9HjMj0cIIN3n46XY2xyZZDh4wLO5WYY0G0uJFbC5YY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JDkzbTij; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706756384;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0K09n4KM4GfA4ieYr3u7htlPmiCBvQiYCmB4ilutQSI=;
-	b=JDkzbTijMGR1Tpwh4grFA5TIzH2nQuYbHUQjCXd4+muHBp2OdTsACmo1VJCfKwFS4hCH+j
-	tjhJFBIbzPRUVBOEgOMqiKO5xccSacbCthR1ogVtBpZxj4LECQUKR2aNIs1PYQYyOpxw9u
-	M0dAEgk0b6DF55dKxJkm8Tu6ehRjW8g=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-185-kcaFYLpwNayPW_BKEVXs_Q-1; Wed, 31 Jan 2024 21:59:42 -0500
-X-MC-Unique: kcaFYLpwNayPW_BKEVXs_Q-1
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-292bc8b6b7cso391637a91.2
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 18:59:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706756381; x=1707361181;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0K09n4KM4GfA4ieYr3u7htlPmiCBvQiYCmB4ilutQSI=;
-        b=PSJiriWSUtDFlfC3x+C1QeXdhff47CFDGR+y1oLglbRFuKOfFst3r5++4UTTqz6bGO
-         0QFA/kUbQftMLAMTDMdLYP3tZtYTUeT3334hsIX2tvqPzTIlNFlJlaXSf4aqQwsIh3n3
-         cVD61kkNSJp4FcdGO00vu3yfpGrCpxRQTzpOobIG433f9lw+ESZXBCzb2GNhqPuXfdV9
-         jCO/00+gJ+n345HAI3J05eImcStdUkRkOVxUKZZh1RQ9yOtUGkInh/2RHBe84au+TqDy
-         83KzQ1J/Vk85xBfCeVEoqQ1InqzT3O8xT1OTFXnoP9AVIDcN36pq5ADhXta+WxPo74Qg
-         Wimw==
-X-Gm-Message-State: AOJu0Yz9VchRz0o6X919Y2d2oLScA03vfzKyjkdxDSCuhDurEvKzpdxH
-	C9o098mkJmQCVzuc9/u9a7DCPWwsoPJlHeEUnuV5r9gKBuy+6GXvw0zx2l6WD7M8vLMHW5Z5xP5
-	0dkMvzfzivivoIjEDHWc9H+7oP8qud+daEiUfuJwKUrXp1qXaMymNEu/cSgxD7g==
-X-Received: by 2002:a17:90a:ce18:b0:294:7038:777d with SMTP id f24-20020a17090ace1800b002947038777dmr3901981pju.13.1706756381074;
-        Wed, 31 Jan 2024 18:59:41 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF0ZQ2E5GxhjYagXcM2WpAQ5CV3eNZ5+T0wmWcpW9bT04Oir0NC6ttw5pobxxz+SLpJhTJo0Q==
-X-Received: by 2002:a17:90a:ce18:b0:294:7038:777d with SMTP id f24-20020a17090ace1800b002947038777dmr3901969pju.13.1706756380799;
-        Wed, 31 Jan 2024 18:59:40 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVsjvS8L1o8MG8eurFUAa7zDMjUJgz7DPAVdr13C1+E7gDNRiJUiMRYodfSCKOiaKxZOxE2VZtzSnPzmXvRWCQ2VUGoeu++Ovg8wbdO/9vvgRQDc1tkd1CYI6sYttHd/336382BGsRYwjCIaCII8i/GcCsvSKaYKPXw+HLH869NJx6RTmpLkDQt3Ktfjim/OnmkAOQsbDk8KFRYy43G5MrZgajVitt3fqRzTC5hn2s21grwSOR/vz9yaZzHilnZPEn3XTIDswmDHsA4MVUpdQG81c8CH3jOjJ5KzL7RBg==
-Received: from [10.72.113.26] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id v6-20020a17090a088600b00295be790dfesm2225567pjc.17.2024.01.31.18.59.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Jan 2024 18:59:40 -0800 (PST)
-Message-ID: <2fccdb02-3b66-40b9-a0d7-a79fe7c5580a@redhat.com>
-Date: Thu, 1 Feb 2024 10:59:35 +0800
+	 In-Reply-To:Content-Type; b=XIbvKsN7oXrtBb3GIlYpBzPzYuBoFx+NIkD8HTWgerT0cERQjZsKVv9hTMpYVDFrqtSv1lhPdX4DEGsMjH0hTjZ+3yf31yWfGeYf1pF9fIMwuzbppvrgeHE5SSLlPwb2qcmG16A+vR3Oy161s/rK0Ry7j4p/iSPQ3/KSbKb89kE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=13.245.218.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp71t1706756461thol39yd
+X-QQ-Originating-IP: yL3Hml39+du3uouUPk0pksUChyugmCUQ8OuEjYTnTUo=
+Received: from [127.0.0.1] ( [223.112.234.130])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Thu, 01 Feb 2024 11:00:59 +0800 (CST)
+X-QQ-SSF: 00400000000000B0B000000A0000000
+X-QQ-FEAT: 1poecK7e7zWUwD4i4Q4mzvXvkhHKbvpVO6jpiptxpbE+GkPhfKzD0KJDnJdI4
+	nQMAKkW4QrGYt7yOM9BY1wBzmewcXG4kK1ACfNUNYavsHdUwrU44SARIAfldIMjev9S0O0G
+	uTs0U/A3iEbCBOhIG2sk+amLrCPPG1916Sn25gOQjQnXOtULEJJkbBqT3yBCHML4F6UH22l
+	uAAPEPxaqCpFy84RHHOAMe933A7XbOp+iG6domER7WSbH4V79IRQ57vziyP/otKOrNClIb8
+	3SwRcxlLFArALsjQQF0ntZ0jnO4r/AenSsfoRFR3EnO/jWF6mPt6orEKI0nqRKT86BdC2Lb
+	e7Rg2AhyUWx0/W8fzDyQiUFsvZj4Yy6oej2KJsr1T/SyMsBwkYjVwF00Ot4eiCEfifMTPW0
+	AFpK6uRbH5jesCvrkJK5HCQPG6qUrFBL
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 4095884899159481766
+Message-ID: <55DFC0D2858AF90E+cefbbefe-9b10-4ae4-9bb8-af6eb6916f6a@shingroup.cn>
+Date: Thu, 1 Feb 2024 11:00:59 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,52 +52,260 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] fscrypt: to make sure the inode->i_blkbits is
- correctly set
+Subject: Re: [PATCH v2] perf/hx_arm_ni: Support uncore ARM NI-700 PMU
 Content-Language: en-US
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-fscrypt@vger.kernel.org, tytso@mit.edu, jaegeuk@kernel.org,
- linux-kernel@vger.kernel.org, idryomov@gmail.com,
- ceph-devel@vger.kernel.org, jlayton@kernel.org, vshankar@redhat.com,
- mchangir@redhat.com
-References: <20240201003525.1788594-1-xiubli@redhat.com>
- <20240201024828.GA1526@sol.localdomain>
-From: Xiubo Li <xiubli@redhat.com>
-In-Reply-To: <20240201024828.GA1526@sol.localdomain>
+To: Krzysztof Kozlowski <krzk@kernel.org>, Will Deacon <will@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>
+Cc: shenghui.qu@shingroup.cn, ke.zhao@shingroup.cn, zhijie.ren@shingroup.cn,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240131070821.11477-1-jialong.yang@shingroup.cn>
+ <deb708e5-bbaf-4510-826b-17e14e69b475@kernel.org>
+ <6D9001324476F76F+ee5f853d-7c69-4a99-857c-cc2b03e9eea1@shingroup.cn>
+ <fef66164-1238-45e4-b70c-c565caa2cf75@kernel.org>
+ <0C0EA95E5AC6D147+ff1001b7-d61b-4365-9a22-b3c4dfacbc53@shingroup.cn>
+ <a399c8a5-5972-4e21-b3c0-9201f0f6b146@kernel.org>
+From: =?UTF-8?B?WWFuZyBKaWFsb25nIOadqOS9s+m+mQ==?= <jialong.yang@shingroup.cn>
+In-Reply-To: <a399c8a5-5972-4e21-b3c0-9201f0f6b146@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz6a-1
 
 
-On 2/1/24 10:48, Eric Biggers wrote:
-> On Thu, Feb 01, 2024 at 08:35:25AM +0800, xiubli@redhat.com wrote:
->> From: Xiubo Li <xiubli@redhat.com>
+
+在 2024/1/31 18:36, Krzysztof Kozlowski 写道:
+> On 31/01/2024 11:07, Yang Jialong 杨佳龙 wrote:
 >>
->> The inode->i_blkbits should be already set before calling
->> fscrypt_get_encryption_info() and it will use this to setup the
->> ci_data_unit_bits later.
 >>
->> URL: https://tracker.ceph.com/issues/64035
->> Signed-off-by: Xiubo Li <xiubli@redhat.com>
-> Thanks, applied.  I adjusted the commit message to make it clear what the patch
-> actually does:
->
-> commit 5befc19caec93f0088595b4d28baf10658c27a0f
-> Author: Xiubo Li <xiubli@redhat.com>
-> Date:   Thu Feb 1 08:35:25 2024 +0800
->
->      fscrypt: explicitly require that inode->i_blkbits be set
->
->      Document that fscrypt_prepare_new_inode() requires inode->i_blkbits to
->      be set, and make it WARN if it's not.  This would have made the CephFS
->      bug https://tracker.ceph.com/issues/64035 a bit easier to debug.
->
->      Signed-off-by: Xiubo Li <xiubli@redhat.com>
->      Link: https://lore.kernel.org/r/20240201003525.1788594-1-xiubli@redhat.com
->      Signed-off-by: Eric Biggers <ebiggers@google.com>
->
-Ack, thanks Eric.
+>> 在 2024/1/31 17:38, Krzysztof Kozlowski 写道:
+>>> On 31/01/2024 10:07, Yang Jialong 杨佳龙 wrote:
+>>>>
+>>>>
+>>>> 在 2024/1/31 15:59, Krzysztof Kozlowski 写道:
+>>>>> On 31/01/2024 08:08, JiaLong.Yang wrote:
+>>>>>> This code is based on uncore PMUs arm_smmuv3_pmu and arm-cmn.
+>>>>>> One ni-700 can have many clock domains. Each of them has only one PMU.
+>>>>>> Here one PMU corresponds to one 'struct ni_pmu' instance.
+>>>>>> PMU name will be ni_pmu_N_M, which N means different NI-700s and M means
+>>>>>> different PMU in one NI-700. If only one NI-700 found in NI-700, name will
+>>>>>> be ni_pmu_N.
+>>>>>> Node interface event name will be xxni_N_eventname, such as
+>>>>>> asni_0_rdreq_any. There are many kinds of type of nodes in one clock
+>>>>>> domain. Also means that there are many kinds of that in one PMU. So we
+>>>>>> distinguish them by xxni string. Besides, maybe there are many nodes
+>>>>>> have same type. So we have number N in event name.
+>>>>>> By ni_pmu_0_0/asni_0_rdreq_any/, we can pinpoint accurate bus traffic.
+>>>>>> Example1: perf stat -a -e ni_pmu_0_0/asni_0_rdreq_any/,ni_pmu_0_0/cycles/
+>>>>>> EXample2: perf stat -a -e ni_pmu_0_0/asni,id=0,event=0x0/
+>>>>>>
+>>>>>> Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
+>>>>>> ---
+>>>>>> v1 --> v2:
+>>>>>> 1. Submit MAINTANER Documentation/ files seperately.
+>>>>>
+>>>>> SEPARATE PATCHES, not patchsets. You have now checkpatch warnings
+>>>>> because of this...
+>>>>
+>>>> ...OK. But the MAINTANER file changing should be given in which one
+>>>> patches.
+>>>> I will submit patch v3 after talking and your permission.
+>>>>
+>>>>>
+>>>>>> 2. Delete some useless info printing.
+>>>>>> 3. Change print from pr_xxx to dev_xxx.
+>>>>>> 4. Fix more than 75 length log info.
+>>>>>> 5. Fix dts attribute pccs-id.
+>>>>>> 6. Fix generic name according to DT specification.
+>>>>>> 7. Some indentation.
+>>>>>> 8. Del of_match_ptr macro.
+>>>>>>
+>>>>>>     drivers/perf/Kconfig     |   11 +
+>>>>>>     drivers/perf/Makefile    |    1 +
+>>>>>>     drivers/perf/hx_arm_ni.c | 1284 ++++++++++++++++++++++++++++++++++++++
+>>>>>>     3 files changed, 1296 insertions(+)
+>>>>>>     create mode 100644 drivers/perf/hx_arm_ni.c
+>>>>>>
+>>>>>> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
+>>>>>> index ec6e0d9194a1..95ef8b13730f 100644
+>>>>>> --- a/drivers/perf/Kconfig
+>>>>>> +++ b/drivers/perf/Kconfig
+>>>>>> @@ -241,4 +241,15 @@ config CXL_PMU
+>>>>>>     
+>>>>>>     	  If unsure say 'm'.
+>>>>>>     
+>>>>>> +config HX_ARM_NI_PMU
+>>>>>> +       tristate "HX ARM NI-700 PMU"
+>>>>>> +       depends on PPC_HX_C2000 && 64BIT
+>>>>>
+>>>>> 1. There is no PPC_HX_C2000.
+>>>>
+>>>> I have been used to using this macro. However this macro is not existed
+>>>> in mainline.
+>>>> I will replace it with ARM64. And del involved C code if OK.
+>>>>
+>>>> 64bit:
+>>>> __ffs(unsigned long) and __fls(unsigned long) will be wrong in 32bit. I
+>>>> pass a u64 argument.
+>>>
+>>> One thing is where the code is supposed to run, second thing is compile
+>>> testing.
+>>>
+>>
+>> Now run on my company product, a 64bit PowerPC...
+>> But I think it's general for 64bit systems.
+>>
+>>> Why do you use __ffs, not __ffs64 which takes u64 if you really want
+>>> only 64bit argument? unsigned long != u64, so your code is not
+>>> architecture independent. You claim you wrote it on purpose as
+>>> non-architecture-independent, but then I claim it's a bug. We are
+>>> supposed to write code which is portable, as much as possible, assuming
+>>> it does not affect readability.
+>>>
+>>
+>> I write code in v5.18, there are __ffs64() and fls64(). Asymmetric.
+> 
+> Sorry, that's a no go.
+> 
+> That's some very, very old kernel. Do not develop on old kernels, but on
+> mainline. I also suspect that by basing your work on old kernel, you
+> duplicate a lot of issues already fixed.
+> 
+>> There are some difference in return val between __ffs() and ffs64().
+>> __ffs(0) and ffs64(0) will give different value.
+> 
+> __ffs64 calls __ffs, so why would results be different?
+> 
+> Anyway, that's not really excuse.
+> 
 
-- Xiubo
+OK. Follow mainline.
 
+> 
+>>
+>> And I'm sure code run in 64bit. So I choose to use __ffs and __fls.
+>>
+>> Maybe it could be compatbile with 32bit. But I don't have a environment
+>> to test this.
+>>>
+>>>> struct ni_hw_perf_event will be big than limit.
+>>>> BUILD_BUG_ON(sizeof(struct ni_hw_perf_event) > offsetof(struct
+>>>> hw_perf_event, target));
+>>>
+>>> And why do you need to use any of such code? Please open one of hundreds
+>>> of other drivers which work correctly on 32 and 64-bit platforms.
+>>>
+>>
+>> Code for 64bit.
+>> This code is to avoid struct ni_hw_perf_event is too big than struct
+>> hw_perf_event::target.
+> 
+> 1. Why would that matter? target is task_struct. It's size does not
+> matter. Maybe its offset matters, but not size.
+> 
+
+Offset.
+
+> 2. So you claim that on 32-bit system the structure will be bigger than
+> on 64-bit system?
+
+The structure will exceed the offset in 32bit. Maybe because the latter 
+changed more.
+OK. Dont care please.
+
+> 
+>> I learn it from arm-cmn.c.
+> 
+> Are you copying patterns because they are good patterns or just because
+> you decided to copy?
+
+Maybe this way is not very good for event framework.
+OK. Not an official way.
+
+> 
+>> ni_hw_perf_event will replace hw_perf_event.
+>> I will put some useful information in it with less space and good field
+>> names.
+>> But I can't exceed a limit.
+>>
+>>>>
+>>>>> 2. Nothing justified dependency on 64bit. Drop or explain. Your previous
+>>>>> message did not provide real rationale.
+>>>>
+>>>> If ARM64, then drop.
+>>>
+>>> ...
+>>>
+>>> ...
+>>>
+>>>>>> +	/* Step2: Traverse all clock domains. */
+>>>>>> +	for (cd_idx = 0; cd_idx < ni->cd_num; cd_idx++) {
+>>>>>> +		cd = cd_arrays[cd_idx];
+>>>>>> +
+>>>>>> +		num = ni_child_number(cd);
+>>>>>> +		dev_dbg(dev, "The %dth clock domain has %d child nodes:", cd_idx, num);
+>>>>>> +
+>>>>>> +		/* Omit pmu node */
+>>>>>> +		ni_pmu = devm_kzalloc(dev, struct_size(ni_pmu, ev_src_nodes, num - 1),
+>>>>>> +				      GFP_KERNEL);
+>>>>>> +		ni_pmu->ev_src_num = num - 1;
+>>>>>> +
+>>>>>> +		if (!ni_pmu)
+>>>>>> +			return -ENOMEM;
+>>>>>> +
+>>>>>> +		num_idx = 0;
+>>>>>> +		for (nd_idx = 0; nd_idx < num; nd_idx++) {
+>>>>>> +			nd = ni_child_pointer(pbase, cd, nd_idx);
+>>>>>> +
+>>>>>> +			node.base = nd;
+>>>>>> +			node.node_type = ni_node_node_type(nd);
+>>>>>> +
+>>>>>> +			if (unlikely(ni_node_type(nd) == NI_PMU))
+>>>>>> +				ni_pmu->pmu_node = node;
+>>>>>> +			else
+>>>>>> +				ni_pmu->ev_src_nodes[num_idx++] = node;
+>>>>>> +			dev_dbg(dev, "  name: %s   id: %d", ni_node_name[node.type], node.id);
+>>>>>> +		}
+>>>>>> +
+>>>>>> +		ni_pmu->dev = dev;
+>>>>>> +		ni_pmu->ni = ni;
+>>>>>> +		ni->ni_pmus[cd_idx] = ni_pmu;
+>>>>>> +	}
+>>>>>> +
+>>>>>> +	devm_kfree(dev, cd_arrays);
+>>>>>
+>>>>> Why? If it is not device-lifetime then allocate with usual way.
+>>>>>
+>>>>
+>>>> No device-lifetime.
+>>>> Will allocate in stack.
+>>>
+>>> I was thinking about kzalloc. But if array is small, stack could be as well.
+>>>
+>>
+>> If I have to return before devm_kfree because of wrong, I will have to use:
+>>
+>> goto out;
+>>
+>> out:
+>> kfree();
+>>
+>> But if I use devm_kzalloc, I will not be worried about that. Even if no
+> 
+> devm* is not for that purpose. devm is for device-managed allocations.
+> Device does not manage your allocation.
+> 
+>> device-lifetime.
+>> Isn't this a good way?
+> 
+> Then you want cleanup.h and use proper __free().
+
+Good NEW API. It does what I want.
+Learned more. Thanks.
+
+> 
+> Best regards,
+> Krzysztof
+> 
+> 
 
 
