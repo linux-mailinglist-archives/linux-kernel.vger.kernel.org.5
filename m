@@ -1,180 +1,125 @@
-Return-Path: <linux-kernel+bounces-48471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48472-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA47B845C77
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:05:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 617D4845C79
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:07:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A226429A99F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:05:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DED631F2C8F6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:07:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7424F626B5;
-	Thu,  1 Feb 2024 16:05:12 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0C3A626A9;
+	Thu,  1 Feb 2024 16:07:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lgUDac1H"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 573DE626B2;
-	Thu,  1 Feb 2024 16:05:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2C6262174;
+	Thu,  1 Feb 2024 16:07:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706803512; cv=none; b=PG8LH+NlJvwweyJlar5US8WOYLNxS+Yknz7O3lxh6AffDitJgvxPwd1oAMJUc6oWr2Gzt6neRw0rILbOlJkElxQ3Ad+8+Ky4Wd5G+QV0jN7oK3wJxBgJQTgdWSsBcTlAyrbGx2iUn8KJ/97b5Xj+ecuyrPCScLdUQjf3MEsZxBk=
+	t=1706803666; cv=none; b=n60zGgLrGPpQ0ayhfgo0GqD6aJbBzc47qkF16e7mQZIvg4wmOO7exPCyJrALtpIGDlwCQcVAZE7n+lUDDyRYu2PxM8/IrnGOAxokfQoG4IDoeScDFptnlRm7FyAwDgNG2/YsipjO2j+xme5YlDppB29RKy4fyGgGV8pROZ1yD4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706803512; c=relaxed/simple;
-	bh=Z4KWkopw0P8NWY+NdbIbasEYRbUcxFGfdL8V5cww8KI=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IxiUyR/GtE6DB6SLPxHIkKWx0lVxygvmS70IzInz5cady7Zuog0kmvv0cstkcx11z+DR57aV0kBqXFLa8A6HhX89sjRR10KqYz9q9wBmsS1WoS0whjShkW6ihZiUzs0t3qcVZaBUrdde2NTD16I28qjWGOYJ8A7mh0puFY5EHTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TQkDt68ZCz6FGZ8;
-	Fri,  2 Feb 2024 00:02:06 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9586A1404F5;
-	Fri,  2 Feb 2024 00:05:06 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 1 Feb
- 2024 16:05:06 +0000
-Date: Thu, 1 Feb 2024 16:05:05 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
-CC: Peter Zijlstra <peterz@infradead.org>, <dan.j.williams@intel.com>,
-	<linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>,
-	<linux-cxl@vger.kernel.org>, Ira Weiny <ira.weiny@intel.com>
-Subject: Re: [RFC PATCH v3] cleanup: Add cond_guard() to conditional guards
-Message-ID: <20240201160505.00007151@Huawei.com>
-In-Reply-To: <3280120.44csPzL39Z@fdefranc-mobl3>
-References: <20240131134108.423258-1-fabio.maria.de.francesco@linux.intel.com>
-	<20240201113612.00001d90@Huawei.com>
-	<2172852.irdbgypaU6@fdefranc-mobl3>
-	<3280120.44csPzL39Z@fdefranc-mobl3>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1706803666; c=relaxed/simple;
+	bh=r1jaUwoxglsNWHO60/roArWTIt/rqzl1LuZUFI7RDn8=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=RGMzWyk8KZoS2J5NM/Pm6TQ5HxjfGkP7sYbN8eGhclsDwZOi74F2VNfKWIjZuo8/R0c2P69ywui8Yhm/sMbHnOituc6WSLQthoc+/6/5yyowLwfLxcgo5RU9G5ZqVyKTyX01ZCuhLyLoy/br+mfH4ohfQcxhfdSzoso2OEqQ0BQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lgUDac1H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20D4CC433C7;
+	Thu,  1 Feb 2024 16:07:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706803665;
+	bh=r1jaUwoxglsNWHO60/roArWTIt/rqzl1LuZUFI7RDn8=;
+	h=Date:From:To:Subject:From;
+	b=lgUDac1HbGZn4Hy7F5lK+7fOirRp07h3tY7J9GX0gUjg8IxoPrbH4n7QTJ1dnS8Sx
+	 SHq1lgiOoyBLz1b1kOLE8iObWPcBNs0MeaXFYJB8S5qiQia52nkJ2hpjBoOvy5SY4s
+	 hNTbMc/Up8hR3I8lxL7TJxUK5e7vUZ0M8kFnAucC3dzNXioqe/JKvNIythlekAnSCT
+	 30qYrYguBwsW5mAXNxBbjpS/kkzVZIVcvE98AiO6zz2CqDVdb3d6Y5EY2P7fh0e9p3
+	 UtlaDimoKposF0iCxuYwso2b7SVUKK8BJREoS062GTMfzh+EU2Av48uP83xYtxZV2+
+	 0WSxF8Cze3HTA==
+Date: Thu, 1 Feb 2024 17:07:41 +0100
+From: Helge Deller <deller@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
+Subject: [GIT PULL] parisc architecture fixes for v6.8-rc3
+Message-ID: <ZbvBzWJ5k5TnpRSW@p100>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Thu, 01 Feb 2024 16:32:25 +0100
-"Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com> wrote:
+Hi Linus,
 
-> On Thursday, 1 February 2024 16:13:34 CET Fabio M. De Francesco wrote:
-> > On Thursday, 1 February 2024 12:36:12 CET Jonathan Cameron wrote:  
-> > > On Thu, 01 Feb 2024 09:16:59 +0100
-> > > 
-> > > "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com> wrote:  
-> > > > [snip]
-> > > > 
-> > > > Actually, I'm doing this:
-> > > > 	cond_guard(..., rc, 0, -EINTR, ...);  
-> > > 
-> > > Can we not works some magic to do.
-> > > 
-> > > 	cond_guard(..., return -EINTR, ...)
-> > > 
-> > > and not have an rc at all if we don't want to.
-> > > 
-> > > Something like
-> > > 
-> > > #define cond_guard(_name, _fail, args...) \
-> > > 
-> > > 	CLASS(_name, scope)(args); \
-> > > 	if (!__guard_ptr(_name)(&scope)) _fail
-> > > 
-> > > Completely untested so I'm probably missing some subtleties.
-> > > 
-> > > Jonathan  
-> > 
-> > Jonathan,
-> > 
-> > Can you please comment on the v5 of this RFC?
+Please pull a few important fixes for the parisc architecture for 6.8-rc3:
 
-Would lose context of this discussion.
+The current exception handler, which helps on kernel accesses to userspace,
+may exhibit data corruption. The problem is that it is not guaranteed that the
+compiler will use the processor register we specified in the source code, but
+may choose another register which then will lead to silent register- and data
+corruption.  To fix this issue we now use another strategy to help the
+exception handler to always find and set the error code into the correct CPU
+register.
 
-> > It is at
-> > https://lore.kernel.org/all/20240201131033.9850-1-fabio.maria.de.francesco@
-> > linux.intel.com/
-> > 
-> > The macro introduced in v5 has the following, more general, use case:
-> > 
-> > * * 	int ret;
-> > + * 	// down_read_trylock() returns 1 on success, 0 on contention
-> > + * 	cond_guard(rwsem_read_try, ret, 1, 0, &sem);
-> > + * 	if (!ret) {
-> > + * 		dev_dbg("down_read_trylock() failed to down 'sem')\n");
-> > + * 		return ret;
-> > + * 	}
-> > 
-> > The text above has been copy-pasted from the RFC Patch v5.
-> > 
-> > Please notice that we need to provide both the success and the failure code
-> > to make it work also with the _trylock() variants (more details in the
-> > patch).  
-> 
-> The next three lines have been messed up by a copy-paste.
-> They are:
-> 
-> If we simply do something like:
-> 
-> 	cond_guard(..., ret = 0, ...)
-> 
-> We won't store the success (that is 1) in ret and it would still contain 0, 
-> that is the code of the contended case.
+The other fixes are small: fixing CPU hotplug bringup, fix the page alignment
+of the RO_DATA section, added a check for the calculated cache stride and fix
+possible hangups when printing longer output at bootup when running on serial
+console.
 
- 
-If there are cases that need to do different things in the two paths the
-define full conditions for success and failure.
+Most of the patches are tagged for stable series.
 
-#define cond_guard(_name, _fail, _success, args...) \
- 	CLASS(_name, scope)(args); \
- 	if (!__guard_ptr(_name)(&scope)) _fail; \
-	else _success
+Thanks!
+Helge
 
-However I'm not sure that additional complexity is worth while.
-Maybe just handling failure is all we need.
+----------------------------------------------------------------
+The following changes since commit 8a696a29c6905594e4abf78eaafcb62165ac61f1:
 
-This should allow
+  Merge tag 'platform-drivers-x86-v6.8-2' of git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86 (2024-01-27 09:48:55 -0800)
 
-cond_guard(rwsem_read_try, return -EINVAL, , lock); or
-cond_guard(rwsem_read_try, rc = 1, rc = 0, lock);
+are available in the Git repository at:
 
-So similar to scoped_cond_guard() there is no need to
-have a local variable if all you want to do is return on
-failure.
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-6.8-rc3
 
-> 
-> > If we simply do something like:
-> > 
-> > 	cond_guard(..., ret = 0, ...)
-> > 
-> > to be able store in 'ret' the code of the contended case, that is 0.
-> > 
-> > Since down_read_trylock() returns 1 on down semaphore, when we later check
-> > 'ret' with "if (!ret) <failure path>;" we always enter in that failure path
-> > even if the semaphore is down because we didn't store the success code in
-> > ret (and ret is still probably 0).
-> > 
-> > This is why, I think, we need a five arguments cond_guard(). This can manage
-> > also the _interruptible() and _killable() cases as:
-> > 
-> > 	cond_guard(..., ret, 0, -EINTR, ...)
-> > 
-> > In this case we don't need 5 arguments, but we have a general use case, one
-> > only macro, that can work with all the three variants of locks.
-> > 
-> > Fabio  
-> 
-> 
-> 
-> 
+for you to fetch changes up to 913b9d443a0180cf0de3548f1ab3149378998486:
 
+  parisc: BTLB: Fix crash when setting up BTLB at CPU bringup (2024-01-31 13:51:26 +0100)
+
+----------------------------------------------------------------
+parisc architecture fixes for kernel v6.8-rc3:
+
+- Fix random data corruption triggered by exception handler
+- Fix crash when setting up BTLB at CPU bringup
+- Prevent hung tasks when printing inventory on serial console
+- Make RO_DATA page aligned in vmlinux.lds.S
+- Add check for valid cache stride size
+
+----------------------------------------------------------------
+Helge Deller (6):
+      parisc: Make RO_DATA page aligned in vmlinux.lds.S
+      parisc: Check for valid stride size for cache flushes
+      parisc: Prevent hung tasks when printing inventory on serial console
+      parisc: Drop unneeded semicolon in parse_tree_node()
+      parisc: Fix random data corruption from exception handler
+      parisc: BTLB: Fix crash when setting up BTLB at CPU bringup
+
+ arch/parisc/Kconfig                     |  1 -
+ arch/parisc/include/asm/assembly.h      |  1 +
+ arch/parisc/include/asm/extable.h       | 64 +++++++++++++++++++++++++++++++++
+ arch/parisc/include/asm/special_insns.h |  6 ++--
+ arch/parisc/include/asm/uaccess.h       | 48 ++++---------------------
+ arch/parisc/kernel/cache.c              | 10 ++++--
+ arch/parisc/kernel/drivers.c            |  5 ++-
+ arch/parisc/kernel/unaligned.c          | 44 +++++++++++------------
+ arch/parisc/kernel/vmlinux.lds.S        |  2 +-
+ arch/parisc/mm/fault.c                  | 11 ++++--
+ 10 files changed, 118 insertions(+), 74 deletions(-)
+ create mode 100644 arch/parisc/include/asm/extable.h
 
