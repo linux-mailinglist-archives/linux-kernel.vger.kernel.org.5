@@ -1,182 +1,108 @@
-Return-Path: <linux-kernel+bounces-48952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3503C846386
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:38:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C866B846388
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:40:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C78211F261ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:37:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81E0529139F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:40:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78FAE41236;
-	Thu,  1 Feb 2024 22:37:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23E8640BF0;
+	Thu,  1 Feb 2024 22:40:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="hCaxP0ny"
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="cZtwKE0v"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FDD03FB1D
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 22:37:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D80B1D681
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 22:40:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706827072; cv=none; b=PcdrZqnj7L7Te6Tk3NPqTEHsasWEvEnVTaq+28usy6FOtOX7f4tOGrQK2u9wu9Kbyvz0dJzZqrQjMz6f5pwX6zkC7m8DTYsagozKOH9AvfIVbpIcgyfeif4fJW/Sr/JpsOQfHesMmR2eZZvyAhtmFMG/rRKfq7IH4aTdqKcEEIs=
+	t=1706827248; cv=none; b=EkIqcGuy3Qv/DBJGtjXFOiZsAaHGVQs+A3y6rNA82DYyWTYx1zb7FaD2wVtcn1OIun6OybwdaPNzCdLl/UpAhD3CF/UlO+inBGfM9E/fxJ4FXf8FG8M50UcYVDLdvaoNSJn53vCsHp2go+XwGAMoLKpCOVc91B5L9Qq9fQSYofc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706827072; c=relaxed/simple;
-	bh=9yIwFf6/pa2yEKL8hInept++VhBkk1WGuFw22mE/WcY=;
+	s=arc-20240116; t=1706827248; c=relaxed/simple;
+	bh=iejQ2s1sPMan1oL9pie6sIQtQRBGvoNAYklAHKOFG4A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=TLNAybuWi++i8U1JjF/ewGAl/IZXbZzP06kV8nAjVqiiaT9iAAB6fCmgHVgi6j066kh0hjeZjCQCvWdiQw+1+VcXebPmIWlLxokJRBmg8Z3Dg0E3oyvkPP6kS77b+VUeEYM+zmKDXcCccn9F/4pizX6zPAmXi2lH7zYrpMPnTKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=hCaxP0ny; arc=none smtp.client-ip=209.85.160.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-218dcbd1584so951011fac.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 14:37:48 -0800 (PST)
+	 To:Cc:Content-Type; b=sNQPXyWipbsdAg6XdY0qTCysJ33x2owVAYgw/jMky1nH9E1gGmQWRF3n3cNcUD8Nn3mzqaOcsXaLXJaIVnnxZkNGTgfIiZd3EHwHMqitHpmi3Vvq1FIKXrL7nJoOC5nRVkE5WluDIYs5ErJx4W8Nwp9T5EnMRObV6vFZSUsJOSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=cZtwKE0v; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-290c5c705d5so302843a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 14:40:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706827067; x=1707431867; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PmoKB9U9mw3t4FpnGtJps1mksky8tREvppcYUjjJHJs=;
-        b=hCaxP0nyY9pgaZWKYE3aTnwHUpi0axiowGdpUByErW3qe1PkYpZAw4tYBA7yecZklw
-         6JDM5OnklC6i+4MIj/heypc8b9uSaiO3oAVwao+O4Kl+055HzYBsqvtgO7kif21DOqTU
-         G7mYtBMx+SVUtpDO4p9eIkHEkvNi9zk4k8GhQ=
+        d=broadcom.com; s=google; t=1706827246; x=1707432046; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=iejQ2s1sPMan1oL9pie6sIQtQRBGvoNAYklAHKOFG4A=;
+        b=cZtwKE0v94Jq8mjINJKH86vnrKSXl8whAl83NZNDlVtbS3H7qeSph8zq8uCrb6Y53/
+         LXCj5bPTXZXrDYTnygk7uWiqZ1jYxGgPvi4qdDc6leIigHWs6iANKpLvd85WlBiAiI3/
+         AHZiuI7MGLb/65dhCD6D4CzQccXGtz4+JTPgs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706827067; x=1707431867;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PmoKB9U9mw3t4FpnGtJps1mksky8tREvppcYUjjJHJs=;
-        b=BqiPdIPAFjkPB2a9K9rI5UyxjXxIGfMZf7IFSDYTJcRq4nAeCfb/EaZHEvGVSpMryj
-         tSkBG9UigdLhZIVxcQ3CHTfpP/DqOPC4QK/up06iB8JdwYQPMv+Gt6ULYGZmTvgXfBOt
-         z9lCi/ez1EoxiI6rV0jCzEeJV+IiI3nwGmeVgYlrRlzqzzI0DNZZw78ltA96STxFu2p1
-         L8gtMxEdOrGolZ/eWBQxyJUqKBk4R+J0gtfnB387M3+vrpQd1nvLnQNQk22BeyszWgDb
-         TTUfHUq6SwkH3CuA4869MDZUaBIbf3wFLnRRMwyk3lWKbwvKO7HPp8TvrsCntDNrajQt
-         L5HQ==
-X-Gm-Message-State: AOJu0Ywb/zQx0Rjsfjr9LolX1HkY7J+vwgkCOEiWRxg/Q+rpqhxUp6PF
-	56KSrB9T4XX/tHONbFCyTdgy3bv9BmLZtijd6uM4zihsGWCvn2o1O10zm/dqGK/xxS4cVGndQMd
-	YYNyGVsrUGletBN8ZJlpyjCQJFCswnAzSk/EF
-X-Google-Smtp-Source: AGHT+IFXjJjh4U73XklHRwMqQKC6IUK8yT1QB2L/QSJgxVT2r+D8jpRmpXkJyI8e7UxCR3vkuM3rQ/1eDkoKFGaW8GA=
-X-Received: by 2002:a05:6870:f228:b0:210:7f85:c208 with SMTP id
- t40-20020a056870f22800b002107f85c208mr7371815oao.46.1706827067224; Thu, 01
- Feb 2024 14:37:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706827246; x=1707432046;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iejQ2s1sPMan1oL9pie6sIQtQRBGvoNAYklAHKOFG4A=;
+        b=Ll21WShkiQtfWr23uFm4Sel9AESS5hUaNHk95atCOaB2j1fHJYgwQ0bA00oZEiJWjd
+         nbVrITMEeYcT8R2g8LHxdpheSXkyQ2apthTSKqG1y1sjoKrn+rA3U8Q1qa/EkLfpM8La
+         RWHYJewMtHYUUwC6YaIDp/6HiLHKxcOLN6Ax/ikaY8HbFAZPxcK1WjDygVPPnwsMLywv
+         E99A1bi4TMGqrXMYYTNMa2LiTrDj8AEnv2EvRPZZc/NA6q4gYBT44zIRzO4/HaTLSRGH
+         qJ+hygEQ0ym5pWPbYRRD8dqgoDRHX+V9hUyUg8D8Aj1pbFuUA41pYm5dCgKavYfbN2FT
+         CiBA==
+X-Gm-Message-State: AOJu0YyxJWOj0gd8327djy9k7Ysuthv4RCYY/Q1KuDPbs0LkoQJ1/TAE
+	X6Ly2LuMl+8SHtqLV7vpw09fo/GRonLneMf8vwvuZAiVKAOOPyECeq+Ec7PYcYoO55CysbEtNyG
+	XrmqdBrPtHSQQImFZlx05deZczpqhdwaset/Y
+X-Google-Smtp-Source: AGHT+IFNMKKix5nQc1KUt9iO4iwkKRVCR+uQ5KLJ+45eMRcwooPPC5JkcbcdpR9kh9V6hv4cQBNGjL09OHMNvIAJhoA=
+X-Received: by 2002:a17:90b:4c84:b0:296:37f1:4e26 with SMTP id
+ my4-20020a17090b4c8400b0029637f14e26mr668388pjb.0.1706827246359; Thu, 01 Feb
+ 2024 14:40:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver>
- <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com> <20240201204512.ht3e33yj77kkxi4q@revolver>
-In-Reply-To: <20240201204512.ht3e33yj77kkxi4q@revolver>
-From: Jeff Xu <jeffxu@chromium.org>
-Date: Thu, 1 Feb 2024 14:37:35 -0800
-Message-ID: <CABi2SkWB2eV24LBJtgJ73zEwaAWuFhAwrfqx3Rs=tqnpcJ0qRw@mail.gmail.com>
-Subject: Re: [PATCH v8 0/4] Introduce mseal
-To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Jeff Xu <jeffxu@chromium.org>, 
-	Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org, keescook@chromium.org, 
-	jannh@google.com, sroettger@google.com, willy@infradead.org, 
-	gregkh@linuxfoundation.org, torvalds@linux-foundation.org, 
-	usama.anjum@collabora.com, rdunlap@infradead.org, jeffxu@google.com, 
-	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
-	dave.hansen@intel.com, linux-hardening@vger.kernel.org, deraadt@openbsd.org
+References: <20240119215231.758844-1-mmayer@broadcom.com> <20240119215231.758844-5-mmayer@broadcom.com>
+ <bc20da6e-bf97-415b-ba78-ae29311ae38f@linaro.org>
+In-Reply-To: <bc20da6e-bf97-415b-ba78-ae29311ae38f@linaro.org>
+From: Markus Mayer <mmayer@broadcom.com>
+Date: Thu, 1 Feb 2024 14:40:35 -0800
+Message-ID: <CAGt4E5uE1Ms8vJbw2tE7fgcxeE9=vPYsa8y2FsJtQt-7jrjE_Q@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] memory: brcmstb_dpfe: introduce version-specific
+ compatible strings
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>, Rob Herring <robh+dt@kernel.org>, 
+	Conor Dooley <conor+dt@kernel.org>, 
+	Linux ARM Kernel List <linux-arm-kernel@lists.infradead.org>, 
+	Device Tree Mailing List <devicetree@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 1, 2024 at 12:45=E2=80=AFPM Liam R. Howlett <Liam.Howlett@oracl=
-e.com> wrote:
-> >
-> > I would love to hear more from Linux developers on this.
+On Tue, 23 Jan 2024 at 13:28, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
 >
-> Linus said it was really important to get the semantics correct, but you
-> took his (unfinished) list and kept going.  I think there are some
-> unanswered questions and that's frustrating some people as you may not
-> be valuing the experience they have in this area.
+> On 19/01/2024 22:52, Markus Mayer wrote:
+> > Introduce compatible strings brcm,dpfe-cpu-v1 through brcm,dpfe-cpu-v3
+> > to the Broadcom DPFE driver.
 >
-Perhaps you didn't follow the discussions closely during the RFCs, so
-I like to clarify the timeline:
+> Nothing improved here. I think my last comment was pretty clear what I
+> expect.
 
-- Dec.12:
-RFC V3 was  out for comments: [1]
-This version added MAP_SEALABLE and sealing type in mmap()
-The sealing type in mmap() was suggested by  Pedro Falcato during V1. [2]
-And MAP_SEALABLE is new to V3 and I added an open discussion in the
-cover letter.
+You are correct. Nothing changed here. I did not get the impression
+that you were asking for changes to the actual driver code.
 
-- Dec.14
-Linus made a set of recommendations based on V3 [3], this is where
-Linus mentioned the semantics.
+As I said in my response to the previous patch, I am trying my best to
+work with maintainers and other community members providing feedback.
 
-Quoted below:
-"Particularly for new system calls with fairly specialized use, I think
-it's very important that the semantics are sensible on a conceptual
-level, and that we do not add system calls that are based on "random
-implementation issue of the day".
+Please explain in further detail what you are looking for. Maybe this
+will already happen in conjunction with patch 3/5. Your responses
+there may already answer my question here. I guess we'll find out.
 
-- Jan.4:
-I sent out V4 of that patch for comments [5]
-This version implements all of Linus's recommendations made in V3.
+Regards,
+-Markus
 
-In V3, I didn't receive comments about MAP_SEALABLE, so I kept that as
-an open discussion item in V4 and specifically mentioned it in the
-first sentence of the V4 cover letter.
-
-"This is V4 of the patch, the patch has improved significantly since V1,
-thanks to diverse inputs, a few discussions remain, please read those
-in the open discussion section of v4 of change history."
-
-- Jan.4:
-Linus  gave a comment on V4: [6]
-
-Quoted below:
-"Other than that, this seems all reasonable to me now."
-
-To me, this means Linus is OK with the general signatures of the APIs.
-
--Jan.9
-During comments for V5.
-[7]  Kees suggested dropping RFC from subsequent versions, given
-Linus's general approval
-on the v4.
-
-[1] https://lore.kernel.org/all/80897.1705769947@cvs.openbsd.org/T/#mbf4749=
-d465b80a575e1eda3c6f0c66d995abfc39
-
-[2]
-https://lore.kernel.org/lkml/CAKbZUD2A+=3Dbp_sd+Q0Yif7NJqMu8p__eb4yguq0agEc=
-mLH8SDQ@mail.gmail.com/
-
-[3]
-https://lore.kernel.org/all/CAHk-=3DwiVhHmnXviy1xqStLRozC4ziSugTk=3D1JOc8OR=
-Wd2_0h7g@mail.gmail.com/
-
-[4]
-https://lore.kernel.org/all/CABi2SkUTdF6PHrudHTZZ0oWK-oU+T-5+7Eqnei4yCj2fsW=
-2jHg@mail.gmail.com/#t
-
-[5]
-https://lore.kernel.org/lkml/796b6877-0548-4d2a-a484-ba4156104a20@infradead=
-org/T/#mb5c8bfe234759589cadf0bcee10eaa7e07b2301a
-
-[6]
-https://lore.kernel.org/lkml/CAHk-=3Dwiy0nHG9+3rXzQa=3DW8gM8F6-MhsHrs_ZqWaH=
-tjmPK4=3DFA@mail.gmail.com/
-
-[7]
-https://lore.kernel.org/lkml/20240109154547.1839886-1-jeffxu@chromium.org/T=
-/#m657fffd96ffff91902da53dc9dbc1bb093fe367c
-
-> You dropped the RFC from the topic and increment the version numbering
-> on the patch set. I thought it was customary to restart counting after
-> the RFC was complete?  Maybe I'm wrong, but it seemed a bit odd to see
-> that happen.  The documentation also implies there are still questions
-> to be answered, so it seems this is still an RFC in some ways?
->
-The RFC has been dropped since V6.
-That said, I'm open to feedback from Linux developers.
-I will respond to the rest of your email in seperate emails.
-
-Best Regards.
--Jeff
+> Best regards,
+> Krzysztof
 
