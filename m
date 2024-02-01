@@ -1,79 +1,88 @@
-Return-Path: <linux-kernel+bounces-47452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FBB4844E23
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:48:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D110C844E28
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:49:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B4CAE1C25A97
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:48:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97F79B2235E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:48:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91C46210D;
-	Thu,  1 Feb 2024 00:48:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25A7D210D;
+	Thu,  1 Feb 2024 00:48:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KRelzAet"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="z5l/6KCY"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2086.outbound.protection.outlook.com [40.107.244.86])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1F621FC8;
-	Thu,  1 Feb 2024 00:48:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706748490; cv=none; b=ZRg/Hu7cR3Q1MPPp9o/5LMjemqFquSbD4zanQBRKn5w7XFNf7RSxWqk8RTGLKhXxZAZUWcTT37/NSVgxLidvM4a5hsqF6TyclXefqHFnQTZCIZT1v/to2dMeO9qOZZ93Zjwt3hY1fQxsF7J65nvHMIZRE9WvsIORHb1jsf9f2wk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706748490; c=relaxed/simple;
-	bh=ZMYXqfFvDta/ItLAjZaVINVEnkjHndsS8Rkjv9I2BIs=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Z5GWF3TRRLXU9eA+oeyipfiuL1xkkc8Udr9Bg4phVdx42X5TpkwKGOYM9lBMCz4GB053Xs77dF3VdfTAFPZFy4ov5Idz1QVqAxKnUtrqYqLmb61XSMbHirlz4KShldEVxdRdanPiCVQ7HKadFY3rwl+KpY2GexhZ5jE+q6LQVzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KRelzAet; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40VNgZ5t018185;
-	Thu, 1 Feb 2024 00:47:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=qcppdkim1; bh=f4wB/zP
-	Z0RVJ8FW1yM3ScdvW2VMg6+4NuyBlqUf5leY=; b=KRelzAet8e5xcvvAJ08elKv
-	fSrFf/e4QIaHi0dcaQvpIDUG3XYkfGDcjTVlm7fPTj9OKuIZ1bM7Q+Zo7bgKM/dm
-	q1tWVtXPllGAGOQeymz8xySWJqX7FQweOuOtB/GE0p/ou6Rw5XzJzMccMKhCiFH9
-	sgqzyKj1mTGdK59IvDOD6lThTr81QodM4rkL0TEw7KXl9oJHxPdMmJ8TnFsCJi3b
-	UB284u18rLEdbFycro6JKtjbsL3sLHFagKM4PZ9DBrlfq9tMcywVncCblII44K1F
-	IXCDgrD50s9LvtIqqVTYaIYittGitI+aLsi0qidPrMhxzpdCApCfP3vO2HR2gzQ=
-	=
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vyuatguvx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 00:47:59 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4110lw7w008757
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 1 Feb 2024 00:47:58 GMT
-Received: from abhinavk-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 31 Jan 2024 16:47:57 -0800
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-To: <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov
-	<dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten
-	<marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>, "Daniel
- Vetter" <daniel@ffwll.ch>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kuogee Hsieh
-	<quic_khsieh@quicinc.com>
-CC: <dri-devel@lists.freedesktop.org>, <seanpaul@chromium.org>,
-        <quic_jesszhan@quicinc.com>, <quic_parellan@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/msm/dpu: fix the programming of INTF_CFG2_DATA_HCTL_EN
-Date: Wed, 31 Jan 2024 16:47:36 -0800
-Message-ID: <20240201004737.2478-1-quic_abhinavk@quicinc.com>
-X-Mailer: git-send-email 2.40.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1088B20F1;
+	Thu,  1 Feb 2024 00:48:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.86
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706748517; cv=fail; b=eH5lJJwVCqK08sC1uQYf2q42TLQPIl1sinXQYcBa2gUKOeqJK5y1BczvR7IWD04vtmOfCZol9IC+0X4b9HdLdu4nsK+NfGbgEKChs5idPDyud+tfe90M4new/I/ujyFd4MKuKqj/DXXbzHrHojQctsIBFvTjO5QWb+EnuWQw7+U=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706748517; c=relaxed/simple;
+	bh=N1tvb4KErtYz4HxDm8my6zlEZwCR98ykKUygL87kqAM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=m/Y8uhC95I9SnR4P0MXPpcyGUQT3Htg2v+suh0NVYU5eBoIQGSt5SO5/wcG2PhklyAlLAFEDcIwGDqJK7VVtEN+cJ9ee88AJO1LHygiYsSM4muRFe+TTSYqGbl0mi+18bAGzq8d910H5uovkmnB6QpTmQiB7Dzowe6VemQc3CAY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=z5l/6KCY; arc=fail smtp.client-ip=40.107.244.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lvITHOOnRXIIVlKUCYDZ3DPRqk807m/wVeFotsgMoVAcAf8Z0oOb7FFRCrcJIW55Tn7FOBuAXGFikWRKaOME07aKCsSWPwZayiPsYpj5gWaBOvsI115lYL5OOTA1X4Mh8h/7MWpA/4jArNE35p0vjrfdQ4PdGk+W2VHEXlhlGJ5leu/FPYaxkC6OKP/Pw83G44rjVBXnCWlBYOkzUfv0rktv+bFc3D4603sG/+L+Y8Lyii8tJTf4GTg+k1w7cPU25XM9QNSVgNnby1+k67Lv8XN09VPVuWdvkYOJh71CRjxeAapuNaj0LQkV1IEecv6mGHWjstSy2Dgx+eqwkMgRVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XMj6XdtbWWJzvSUNeX5KwoSyEIUdhVPCQdUTesGhcRc=;
+ b=WbGGc2Ieqq3BjSnX/wQuFKJQrP0M8sBUokS9tfXKS3iTgZgqQKTh/jU2r6/+uvnYO5Ym7KIVz9NxCVqQvax1jywsEwAr3P6laOW3nB9bhPeFr+wgDNYSOPd2yA6ITy/sTuLaIM0l5Mf9uIm9kQJ0zSKORnUd/A5Y4OdUAxYHudAblmBXzF8g7vg8Kcg60OdJDcTmDJlhttNoj1vgkosZdDlD0El+STZKQyAUOLVrLtk0WlHOTsltgCLJAzeP5n7n1QRXJqa9Lgvo8NFwKUPxeHo/wEYOfMXIJrcZBbSu73OkmSNBWuODiZ1d9/TAcwWxEt9mJgcNoPoLTrQ/YJKwVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XMj6XdtbWWJzvSUNeX5KwoSyEIUdhVPCQdUTesGhcRc=;
+ b=z5l/6KCYTnoqqMOv/DZl2yoq9RvxeYudoW7KgeA1lGLtrFenLHC1jJI5AyOS9IbsO7dQmGaw5gx8+7kRH5TvBEdBABd5w5FW3JvErwIRsaxMZ/Xdm0GhoJZRDHaYUMSmM3YMywh/JP2v2PYdWkSeedTTrhWx0uQCKfKgIEAqKYM=
+Received: from CY8PR19CA0044.namprd19.prod.outlook.com (2603:10b6:930:6::13)
+ by PH7PR12MB5687.namprd12.prod.outlook.com (2603:10b6:510:13e::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.35; Thu, 1 Feb
+ 2024 00:48:32 +0000
+Received: from CY4PEPF0000EE38.namprd03.prod.outlook.com
+ (2603:10b6:930:6:cafe::e8) by CY8PR19CA0044.outlook.office365.com
+ (2603:10b6:930:6::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.24 via Frontend
+ Transport; Thu, 1 Feb 2024 00:48:32 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EE38.mail.protection.outlook.com (10.167.242.12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7228.16 via Frontend Transport; Thu, 1 Feb 2024 00:48:32 +0000
+Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 31 Jan
+ 2024 18:48:31 -0600
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
+ (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 31 Jan
+ 2024 18:48:31 -0600
+Received: from xsjtanmays50.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
+ Transport; Wed, 31 Jan 2024 18:48:31 -0600
+From: Tanmay Shah <tanmay.shah@amd.com>
+To: <andersson@kernel.org>, <mathieu.poirier@linaro.org>,
+	<tanmay.shah@amd.com>
+CC: <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] remoteproc: zynqmp: fix lockstep mode memory region
+Date: Wed, 31 Jan 2024 16:48:12 -0800
+Message-ID: <20240201004812.1471407-1-tanmay.shah@amd.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,135 +91,258 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 9urCH-BBPDWuw4QHBmTJ2vE-CbHkaqGz
-X-Proofpoint-GUID: 9urCH-BBPDWuw4QHBmTJ2vE-CbHkaqGz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-31_10,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 phishscore=0 suspectscore=0 mlxscore=0 bulkscore=0
- adultscore=0 impostorscore=0 malwarescore=0 priorityscore=1501
- mlxlogscore=949 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2402010004
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE38:EE_|PH7PR12MB5687:EE_
+X-MS-Office365-Filtering-Correlation-Id: 89737e39-13e7-4486-2715-08dc22bf83d6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	zfV67D8OlgjihpdK6OESDj2D0opHkNjtF5WQFju/F0LMOxHr9mXqwkiiwMu+QXauzbEA2eR4mIjiiayOdOpKNty9wp0kG3UUF6o431+JUZuXLeg+DfFHnJ8dJbdOxTEYnUTh2re/ZRVnU5Jdtr7ru7JrAJFXUc+evkxL+FmAOBbQwqUxJ+7g4fWbmStTsshuD7+5HL5CSR5T2yUIeNTR5PIplO975SdBRCRq7WdHzi584W6YYvapVT0eN3OyRgSbtk6KYgi6OVAWCnimSMmsSApUfVek/rLxtE9UyUJMwuruAS1cN8rIw/4SQv/TMpkCAz5BqjVmV5z2bqhs7aKwiQ7HOnRlfzNr5jhKXhEeVXNVactub1+uL1nTixjWWMHGITcInwPaFWqhgagVUDnbM6d/Vo3z3xuRMGR/AXj9rVWEyiNSTIFqIvU28wCQLsCeAzlIMbbyIMdrYgkW7c32rVYTHbQklSQi4Bg9BsQVR5yV0kPxarWQD7BOn6sYztjmP6wbmu1Z7hl0GIrOS9FnKpDSTYvouObrZ0W/RLU5OKwvsli5iftKr6ub2pAesPQ4SgmMlZT945F9jgEXuERDsdc1j0J4HBzTlqO3dVGfSbUeTlvCQb0v719l9On2Hl74gfqM8DrMCJQNuiH1aTK3FhUUUiZmaHC6kD43htOLMeXgJXd4UnVQkRVTpDPLWuoyWnx/rgykj02k2pu6crZDdGrn6ai1JQQTteXM4d2o+N7vGz+vNB7n8+9ZlPb1kZhI1DY+FndL+EsAw+/qJxk3SQ==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(396003)(136003)(39860400002)(230922051799003)(451199024)(64100799003)(82310400011)(186009)(1800799012)(36840700001)(40470700004)(46966006)(2906002)(54906003)(4326008)(8676002)(8936002)(5660300002)(44832011)(316002)(70586007)(86362001)(70206006)(36756003)(36860700001)(47076005)(478600001)(81166007)(356005)(82740400003)(6666004)(2616005)(26005)(83380400001)(110136005)(336012)(426003)(1076003)(41300700001)(7049001)(40460700003)(40480700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2024 00:48:32.4465
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 89737e39-13e7-4486-2715-08dc22bf83d6
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000EE38.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5687
 
-Currently INTF_CFG2_DATA_HCTL_EN is coupled with the enablement
-of widebus but this is incorrect because we should be enabling
-this bit independent of widebus except for cases where compression
-is enabled in one pixel per clock mode.
+In lockstep mode, r5 core0 uses TCM of R5 core1. Following is lockstep
+mode memory region as per hardware reference manual.
 
-Fix this by making the condition checks more explicit and enabling
-INTF_CFG2_DATA_HCTL_EN for all other cases when supported by DPU.
+    |      *TCM*         |   *R5 View* | *Linux view* |
+    | R5_0 ATCM (128 KB) | 0x0000_0000 | 0xFFE0_0000  |
+    | R5_0 BTCM (128 KB) | 0x0002_0000 | 0xFFE2_0000  |
 
-Fixes: 3309a7563971 ("drm/msm/dpu: revise timing engine programming to support widebus feature")
-Suggested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+However, driver shouldn't model it as above because R5 core0 TCM and core1
+TCM has different power-domains mapped to it.
+Hence, TCM address space in lockstep mode should be modeled as 64KB
+regions only where each region has its own power-domain as following:
+
+    |      *TCM*         |   *R5 View* | *Linux view* |
+    | R5_0 ATCM0 (64 KB) | 0x0000_0000 | 0xFFE0_0000  |
+    | R5_0 BTCM0 (64 KB) | 0x0002_0000 | 0xFFE2_0000  |
+    | R5_0 ATCM1 (64 KB) | 0x0001_0000 | 0xFFE1_0000  |
+    | R5_0 BTCM1 (64 KB) | 0x0003_0000 | 0xFFE3_0000  |
+
+This fix makes driver maintanance easy and makes design robust for future
+platorms as well.
+
+Fixes: 9af45bbdcbbb ("remoteproc: zynqmp: fix TCM carveouts in lockstep mode")
+Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
 ---
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c       |  7 +++++++
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h       |  7 +++++++
- .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c  |  1 +
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c       | 15 +++++++++------
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h       |  1 +
- 5 files changed, 25 insertions(+), 6 deletions(-)
+ drivers/remoteproc/xlnx_r5_remoteproc.c | 145 ++----------------------
+ 1 file changed, 12 insertions(+), 133 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-index 83380bc92a00..467f874979d5 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-@@ -230,6 +230,13 @@ bool dpu_encoder_is_widebus_enabled(const struct drm_encoder *drm_enc)
- 	return dpu_enc->wide_bus_en;
- }
- 
-+bool dpu_encoder_is_dsc_enabled(const struct drm_encoder *drm_enc)
-+{
-+	const struct dpu_encoder_virt *dpu_enc = to_dpu_encoder_virt(drm_enc);
-+
-+	return dpu_enc->dsc ? true : false;
-+}
-+
- int dpu_encoder_get_crc_values_cnt(const struct drm_encoder *drm_enc)
- {
- 	struct dpu_encoder_virt *dpu_enc;
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
-index 4c05fd5e9ed1..fe6b1d312a74 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
-@@ -158,6 +158,13 @@ int dpu_encoder_get_vsync_count(struct drm_encoder *drm_enc);
- 
- bool dpu_encoder_is_widebus_enabled(const struct drm_encoder *drm_enc);
- 
-+/**
-+ * dpu_encoder_is_dsc_enabled - indicate whether dsc is enabled
-+ *				for the encoder.
-+ * @drm_enc:    Pointer to previously created drm encoder structure
-+ */
-+bool dpu_encoder_is_dsc_enabled(const struct drm_encoder *drm_enc);
-+
- /**
-  * dpu_encoder_get_crc_values_cnt - get number of physical encoders contained
-  *	in virtual encoder that can collect CRC values
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
-index d0f56c5c4cce..f562beb6f797 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
-@@ -102,6 +102,7 @@ static void drm_mode_to_intf_timing_params(
- 	}
- 
- 	timing->wide_bus_en = dpu_encoder_is_widebus_enabled(phys_enc->parent);
-+	timing->compression_en = dpu_encoder_is_dsc_enabled(phys_enc->parent);
- 
- 	/*
- 	 * for DP, divide the horizonal parameters by 2 when
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-index 6bba531d6dc4..965692ef7892 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-@@ -163,13 +163,8 @@ static void dpu_hw_intf_setup_timing_engine(struct dpu_hw_intf *ctx,
- 	hsync_ctl = (hsync_period << 16) | p->hsync_pulse_width;
- 	display_hctl = (hsync_end_x << 16) | hsync_start_x;
- 
--	/*
--	 * DATA_HCTL_EN controls data timing which can be different from
--	 * video timing. It is recommended to enable it for all cases, except
--	 * if compression is enabled in 1 pixel per clock mode
--	 */
- 	if (p->wide_bus_en)
--		intf_cfg2 |= INTF_CFG2_DATABUS_WIDEN | INTF_CFG2_DATA_HCTL_EN;
-+		intf_cfg2 |= INTF_CFG2_DATABUS_WIDEN;
- 
- 	data_width = p->width;
- 
-@@ -229,6 +224,14 @@ static void dpu_hw_intf_setup_timing_engine(struct dpu_hw_intf *ctx,
- 	DPU_REG_WRITE(c, INTF_CONFIG, intf_cfg);
- 	DPU_REG_WRITE(c, INTF_PANEL_FORMAT, panel_format);
- 	if (ctx->cap->features & BIT(DPU_DATA_HCTL_EN)) {
-+		/*
-+		 * DATA_HCTL_EN controls data timing which can be different from
-+		 * video timing. It is recommended to enable it for all cases, except
-+		 * if compression is enabled in 1 pixel per clock mode
-+		 */
-+		if (!(p->compression_en && !p->wide_bus_en))
-+			intf_cfg2 |= INTF_CFG2_DATA_HCTL_EN;
-+
- 		DPU_REG_WRITE(c, INTF_CONFIG2, intf_cfg2);
- 		DPU_REG_WRITE(c, INTF_DISPLAY_DATA_HCTL, display_data_hctl);
- 		DPU_REG_WRITE(c, INTF_ACTIVE_DATA_HCTL, active_data_hctl);
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
-index 0bd57a32144a..6f4c87244f94 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
-@@ -33,6 +33,7 @@ struct dpu_hw_intf_timing_params {
- 	u32 hsync_skew;
- 
- 	bool wide_bus_en;
-+	bool compression_en;
+diff --git a/drivers/remoteproc/xlnx_r5_remoteproc.c b/drivers/remoteproc/xlnx_r5_remoteproc.c
+index 4395edea9a64..42b0384d34f2 100644
+--- a/drivers/remoteproc/xlnx_r5_remoteproc.c
++++ b/drivers/remoteproc/xlnx_r5_remoteproc.c
+@@ -84,12 +84,12 @@ static const struct mem_bank_data zynqmp_tcm_banks_split[] = {
+ 	{0xffeb0000UL, 0x20000, 0x10000UL, PD_R5_1_BTCM, "btcm1"},
  };
  
- struct dpu_hw_intf_prog_fetch {
+-/* In lockstep mode cluster combines each 64KB TCM and makes 128KB TCM */
++/* In lockstep mode cluster uses each 64KB TCM from second core as well */
+ static const struct mem_bank_data zynqmp_tcm_banks_lockstep[] = {
+-	{0xffe00000UL, 0x0, 0x20000UL, PD_R5_0_ATCM, "atcm0"}, /* TCM 128KB each */
+-	{0xffe20000UL, 0x20000, 0x20000UL, PD_R5_0_BTCM, "btcm0"},
+-	{0, 0, 0, PD_R5_1_ATCM, ""},
+-	{0, 0, 0, PD_R5_1_BTCM, ""},
++	{0xffe00000UL, 0x0, 0x10000UL, PD_R5_0_ATCM, "atcm0"}, /* TCM 64KB each */
++	{0xffe20000UL, 0x20000, 0x10000UL, PD_R5_0_BTCM, "btcm0"},
++	{0xffe10000UL, 0x10000, 0x10000UL, PD_R5_1_ATCM, "atcm1"},
++	{0xffe30000UL, 0x30000, 0x10000UL, PD_R5_1_BTCM, "btcm1"},
+ };
+ 
+ /**
+@@ -540,14 +540,14 @@ static int tcm_mem_map(struct rproc *rproc,
+ }
+ 
+ /*
+- * add_tcm_carveout_split_mode()
++ * add_tcm_banks()
+  * @rproc: single R5 core's corresponding rproc instance
+  *
+- * allocate and add remoteproc carveout for TCM memory in split mode
++ * allocate and add remoteproc carveout for TCM memory
+  *
+  * return 0 on success, otherwise non-zero value on failure
+  */
+-static int add_tcm_carveout_split_mode(struct rproc *rproc)
++static int add_tcm_banks(struct rproc *rproc)
+ {
+ 	struct rproc_mem_entry *rproc_mem;
+ 	struct zynqmp_r5_core *r5_core;
+@@ -580,10 +580,10 @@ static int add_tcm_carveout_split_mode(struct rproc *rproc)
+ 					     ZYNQMP_PM_REQUEST_ACK_BLOCKING);
+ 		if (ret < 0) {
+ 			dev_err(dev, "failed to turn on TCM 0x%x", pm_domain_id);
+-			goto release_tcm_split;
++			goto release_tcm;
+ 		}
+ 
+-		dev_dbg(dev, "TCM carveout split mode %s addr=%llx, da=0x%x, size=0x%lx",
++		dev_dbg(dev, "TCM carveout %s addr=%llx, da=0x%x, size=0x%lx",
+ 			bank_name, bank_addr, da, bank_size);
+ 
+ 		rproc_mem = rproc_mem_entry_init(dev, NULL, bank_addr,
+@@ -593,7 +593,7 @@ static int add_tcm_carveout_split_mode(struct rproc *rproc)
+ 		if (!rproc_mem) {
+ 			ret = -ENOMEM;
+ 			zynqmp_pm_release_node(pm_domain_id);
+-			goto release_tcm_split;
++			goto release_tcm;
+ 		}
+ 
+ 		rproc_add_carveout(rproc, rproc_mem);
+@@ -601,7 +601,7 @@ static int add_tcm_carveout_split_mode(struct rproc *rproc)
+ 
+ 	return 0;
+ 
+-release_tcm_split:
++release_tcm:
+ 	/* If failed, Turn off all TCM banks turned on before */
+ 	for (i--; i >= 0; i--) {
+ 		pm_domain_id = r5_core->tcm_banks[i]->pm_domain_id;
+@@ -610,127 +610,6 @@ static int add_tcm_carveout_split_mode(struct rproc *rproc)
+ 	return ret;
+ }
+ 
+-/*
+- * add_tcm_carveout_lockstep_mode()
+- * @rproc: single R5 core's corresponding rproc instance
+- *
+- * allocate and add remoteproc carveout for TCM memory in lockstep mode
+- *
+- * return 0 on success, otherwise non-zero value on failure
+- */
+-static int add_tcm_carveout_lockstep_mode(struct rproc *rproc)
+-{
+-	struct rproc_mem_entry *rproc_mem;
+-	struct zynqmp_r5_core *r5_core;
+-	int i, num_banks, ret;
+-	phys_addr_t bank_addr;
+-	size_t bank_size = 0;
+-	struct device *dev;
+-	u32 pm_domain_id;
+-	char *bank_name;
+-	u32 da;
+-
+-	r5_core = rproc->priv;
+-	dev = r5_core->dev;
+-
+-	/* Go through zynqmp banks for r5 node */
+-	num_banks = r5_core->tcm_bank_count;
+-
+-	/*
+-	 * In lockstep mode, TCM is contiguous memory block
+-	 * However, each TCM block still needs to be enabled individually.
+-	 * So, Enable each TCM block individually.
+-	 * Although ATCM and BTCM is contiguous memory block, add two separate
+-	 * carveouts for both.
+-	 */
+-	for (i = 0; i < num_banks; i++) {
+-		pm_domain_id = r5_core->tcm_banks[i]->pm_domain_id;
+-
+-		/* Turn on each TCM bank individually */
+-		ret = zynqmp_pm_request_node(pm_domain_id,
+-					     ZYNQMP_PM_CAPABILITY_ACCESS, 0,
+-					     ZYNQMP_PM_REQUEST_ACK_BLOCKING);
+-		if (ret < 0) {
+-			dev_err(dev, "failed to turn on TCM 0x%x", pm_domain_id);
+-			goto release_tcm_lockstep;
+-		}
+-
+-		bank_size = r5_core->tcm_banks[i]->size;
+-		if (bank_size == 0)
+-			continue;
+-
+-		bank_addr = r5_core->tcm_banks[i]->addr;
+-		da = r5_core->tcm_banks[i]->da;
+-		bank_name = r5_core->tcm_banks[i]->bank_name;
+-
+-		/* Register TCM address range, TCM map and unmap functions */
+-		rproc_mem = rproc_mem_entry_init(dev, NULL, bank_addr,
+-						 bank_size, da,
+-						 tcm_mem_map, tcm_mem_unmap,
+-						 bank_name);
+-		if (!rproc_mem) {
+-			ret = -ENOMEM;
+-			zynqmp_pm_release_node(pm_domain_id);
+-			goto release_tcm_lockstep;
+-		}
+-
+-		/* If registration is success, add carveouts */
+-		rproc_add_carveout(rproc, rproc_mem);
+-
+-		dev_dbg(dev, "TCM carveout lockstep mode %s addr=0x%llx, da=0x%x, size=0x%lx",
+-			bank_name, bank_addr, da, bank_size);
+-	}
+-
+-	return 0;
+-
+-release_tcm_lockstep:
+-	/* If failed, Turn off all TCM banks turned on before */
+-	for (i--; i >= 0; i--) {
+-		pm_domain_id = r5_core->tcm_banks[i]->pm_domain_id;
+-		zynqmp_pm_release_node(pm_domain_id);
+-	}
+-	return ret;
+-}
+-
+-/*
+- * add_tcm_banks()
+- * @rproc: single R5 core's corresponding rproc instance
+- *
+- * allocate and add remoteproc carveouts for TCM memory based on cluster mode
+- *
+- * return 0 on success, otherwise non-zero value on failure
+- */
+-static int add_tcm_banks(struct rproc *rproc)
+-{
+-	struct zynqmp_r5_cluster *cluster;
+-	struct zynqmp_r5_core *r5_core;
+-	struct device *dev;
+-
+-	r5_core = rproc->priv;
+-	if (!r5_core)
+-		return -EINVAL;
+-
+-	dev = r5_core->dev;
+-
+-	cluster = dev_get_drvdata(dev->parent);
+-	if (!cluster) {
+-		dev_err(dev->parent, "Invalid driver data\n");
+-		return -EINVAL;
+-	}
+-
+-	/*
+-	 * In lockstep mode TCM banks are one contiguous memory region of 256Kb
+-	 * In split mode, each TCM bank is 64Kb and not contiguous.
+-	 * We add memory carveouts accordingly.
+-	 */
+-	if (cluster->mode == SPLIT_MODE)
+-		return add_tcm_carveout_split_mode(rproc);
+-	else if (cluster->mode == LOCKSTEP_MODE)
+-		return add_tcm_carveout_lockstep_mode(rproc);
+-
+-	return -EINVAL;
+-}
+-
+ /*
+  * zynqmp_r5_parse_fw()
+  * @rproc: single R5 core's corresponding rproc instance
+
+base-commit: 99f59b148871dadb9104366e3d25b120a97f897b
 -- 
-2.40.1
+2.25.1
 
 
