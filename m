@@ -1,125 +1,103 @@
-Return-Path: <linux-kernel+bounces-47881-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D6A3845418
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:36:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7341B84541B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:36:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1318228184F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:36:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 295F02856D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:36:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 277AE15B10E;
-	Thu,  1 Feb 2024 09:32:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F73715CD6A;
+	Thu,  1 Feb 2024 09:32:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="hRRznMot"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="kBuCE4Uf"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C92494D9F6
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 09:32:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E537B4DA17;
+	Thu,  1 Feb 2024 09:32:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706779950; cv=none; b=RI7UTQ8CPfq+uqQFSHXVPEnNm/hSex2ZcZkBoI++Xaess0mJGQMsE2YyOTV24Sv93Uj9nqLAEvwKiVhjWftc+LcBeEgj798RB2RCeViu3zqebYcKVLkB3DGxDM4s6MHtgNKIlws8Jls4m1QBqL17KWfzqT1F1bjBYDwDbWXjRpA=
+	t=1706779971; cv=none; b=LZfmaT1g5dA4uMnwO7uN87QL9i+WXhhcU2oEhSHEw81h46OdxnR6FRHtXBkxSWE1zU0r/PL8GTzpp7XjwNdRXq32VQ7FdfF2KE5hiaEJ5I9PALDjhEudXTErreIAw43x3FeNGTz47+4JrAVMJFEDQxozex5JogMsQ2VYpLDsusI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706779950; c=relaxed/simple;
-	bh=mGbEKbRg3HRX1JJEx5Fmweb6LPOvKH+q8e4+jYDWBnw=;
+	s=arc-20240116; t=1706779971; c=relaxed/simple;
+	bh=thTHMvayYaLq2yO8XMZ4jUxByNXI43HWzHIRtPqbbUQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SLOUNScjs20xeSUBwfhKa86ZEMpHjgoR/Yl1vzYYWT6rTpbkmWwegfg+Cs9eQ4oNaeBCTJa6dhlUW9NRVCMJgzD6pegXXFkdjQwQnLIDenD2Jap0nJMnpRqgCcCybNOyQicE/y8yg63QWmibI9KSVAfbKgXn/MfH0oSQP/L9JqA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=hRRznMot; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=Cb3/
-	O3cYgfvjgEQfrw9YH6eePZxbN6AMDZbUnR3SgPM=; b=hRRznMotmrGIfiAq9V2b
-	rhASVA4bmrXckRh4j5NJDBNMAxkYTV+fx4gcKRBO1O5RbUnqU9z29MXuUzmyH5jH
-	HTx3P+3ES0eET4cQErzYSysju8djxaFSMZ2k+VN0KEXdnZF0zMy4kiu01cLIuQai
-	SAa/TR2bTyzG6LwrcPzb56faGl2cmRnq2TctvhfT/Gu59f5IXTvQZLGVFMY84HW3
-	PHkhP5DAAIrNewtdRlwWr93hNGmjHAEa1YFGxWl5O/AVQZ0XXYvl3qVCZJlIgLVb
-	MqhJA+5/zSB7ZkbRWAPxdVwcoDmBy06FcmXqnVaHu+9ST4Zv7FW/Jw3+IxpKYrAe
-	kw==
-Received: (qmail 3478403 invoked from network); 1 Feb 2024 10:32:24 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 1 Feb 2024 10:32:24 +0100
-X-UD-Smtp-Session: l3s3148p1@+plErE4QJtVehhtJ
-Date: Thu, 1 Feb 2024 10:32:23 +0100
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-renesas-soc@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: renesas: ulcb-kf: document a problemw with
- old firmware
-Message-ID: <ZbtlJ-7UCPxgUXeS@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-renesas-soc@vger.kernel.org,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-References: <20240130095222.11177-1-wsa+renesas@sang-engineering.com>
- <CAMuHMdUB_9TNzo+GFbDZO-gjBUGfk7O7aEyJYG5pCw-Z1nK-pw@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WV7K/4EO/hnFS3eU4S+6uZrn/H+iZZHG5Zoz9WTONvWvu1XjelXESJLjOReHo9q18EovSTOACNzsliPaO8/H0NfCJTtOLlY6vML9rzAFsQFKk0yrV9Lf9Phocd7D1Vo/aWfxUq4f4sm/SV+5RbuYTmbbI/teMIowYKivFSnt5qA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=kBuCE4Uf; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=GuAZN/0TLHop95zPSJq/liRwkKba22ntuB+Io7930rw=; b=kBuCE4Ufm6S/ImUw17iI8hZnXf
+	rlJF+fpgS8tAJjS3LRyQrB5Z5OwAa96l6uI7CNX2Ha2Xzs9m4CQazj4EgVAbQy453207RB53/oSnC
+	heyPck68MKup3/8FJ41Po0+9xp10A/CYe4eu5wYhQpkjM62gNkPHQzNDjKYXvWA5exhxqrAVee+27
+	R7KKhsFMf/PYjBo+IhLHRYPnSUBX2xRK2Dn67rTirGUOlLF73FN2mVa06lL6MbJYtcClayhPWusnb
+	h72jJC4ftuqQAoBdde0ucPjri7kYbrpukKBV7nd19Isn83Lt2rFLPph31x8HXoOuHZ+YeVPYc35Aj
+	cogDNiOQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47286)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rVTR6-0004Lm-2o;
+	Thu, 01 Feb 2024 09:32:44 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rVTR3-0007HN-QF; Thu, 01 Feb 2024 09:32:41 +0000
+Date: Thu, 1 Feb 2024 09:32:41 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
+	linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	patches@armlinux.org.uk, Paul Walmsley <paul@pwsan.com>,
+	=?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
+	Kevin Hilman <khilman@kernel.org>
+Subject: Re: [PATCH 00/13] ARM: OMAP2+: fix a bunch of kernel-doc warnings
+Message-ID: <ZbtlOWcGglCeYj6X@shell.armlinux.org.uk>
+References: <20240117011004.22669-1-rdunlap@infradead.org>
+ <20240117131305.GP5185@atomide.com>
+ <e6692a04-142c-4df4-83dc-534ab27a55f6@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="m5ayo9h/R03Rj0Ow"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUB_9TNzo+GFbDZO-gjBUGfk7O7aEyJYG5pCw-Z1nK-pw@mail.gmail.com>
-
-
---m5ayo9h/R03Rj0Ow
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <e6692a04-142c-4df4-83dc-534ab27a55f6@infradead.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Hi Geert,
+On Wed, Jan 17, 2024 at 08:52:16AM -0800, Randy Dunlap wrote:
+> 
+> 
+> On 1/17/24 05:13, Tony Lindgren wrote:
+> > * Randy Dunlap <rdunlap@infradead.org> [240117 01:10]:
+> >> Fix many kernel-doc warnings in arch/arm/mach-omap2/:
+> > 
+> > Thanks for fixing these. These are unlikely to conflict with anything so
+> > please queue them along with other clean-up:
+> > 
+> > Acked-by: Tony Lindgren <tony@atomide.com>
+> > 
+> > Or alternatively let me know if you want me to apply them.
+> 
+> Yes, please go ahead and apply them.
 
-> I'd rather not add such comments (especially +6y after the fact), as
-> this is the standard operating procedure in case something doesn't work.
+If you intend people other than me to apply patches, then please do not
+copy the patches to the patch system. I now have to go through all 16
+patches and search the mailing list to find out what happened... and so
+far for the few I've checked, other people have applied them. So I'm
+coming to the conclusion I should just discard the entire lot.
 
-Okay, can be argued.
-
-> /* If secondary CPUs don't work, please update your firmware */
-> /* If cpuidle crashes, please update your firmware */
-> /* If watchdog restart doesn't work, please update your firmware */
-> /* If PSCI reboot doesn't work, please update your firmware */
-
-Actually, I wouldn't mind. It documents that we *know* updating firmware
-helps in this particular case. But as said, I can see your point as
-well. Let's drop this patch.
-
-Happy hacking,
-
-   Wolfram
-
-
---m5ayo9h/R03Rj0Ow
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmW7ZSQACgkQFA3kzBSg
-KbawvxAAkU+UH6er8246WWvbhlx5F2otGXdN41eOjvKL8rr7GCEZE5zaIubaW8gK
-QRweI+MMksGvVeI0dHmo/wx8g6nRrMLGn9qY8aUSLspD++3nZqUwn5Y3tx930/uW
-XsmJrn1qO02Jda9mCIyZudeabQlOlt+qyVdjKAdVEIEbBdgkIcVg0hOGvVMesYrH
-qRi/3ZWnm7ywc3J1E03a0kgylnYMmm3WpljPKGKnRNHHlkxKUBY8G21gCkvy4VnZ
-aXAfyZrLCj9YVtODgjx6JWZz34pbut+p0LclgjTy6hj9tC+xdooKzpeTEhKwUFtQ
-//fLFan8w4uz/LM70VElp5k62nYYbXHV0w3jfCivPAYucrTk16c+vzcW/hW9DGKV
-9yXGZN8yWKqV3PwymFpm1iE9SrQJQZQe7joAgnsZ63tSo0eUTdxGgmx/BdbLI41y
-UwnXIi7tDlk1YAjsYF1wU644tWdlaxQENLTPh++twauNM7SjuaB+dRySa5et8C2i
-1ifogpTEpyCnmP5azFXUdpxEhPtTgDiEAFNn04gOZ9uB/ANQNamX41mdzywj5J6c
-kg5tPiP+nx4lAZMgz1QxlLHM/ZCmJ49Zcd/9v4Oc7omec+GGVzEsHc8Ympdh8j5J
-3U+WdlatFEfCyG8WasVizOYFC49ZczjEMtlX+0a7gym8ruBKbxA=
-=Ccfm
------END PGP SIGNATURE-----
-
---m5ayo9h/R03Rj0Ow--
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
