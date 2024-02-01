@@ -1,230 +1,179 @@
-Return-Path: <linux-kernel+bounces-47840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCAE184538D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:15:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEC20845391
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:15:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 732B328FD10
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:15:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33132B240C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:15:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFAE315B98E;
-	Thu,  1 Feb 2024 09:14:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ykq2K1Ix"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C12715B103;
+	Thu,  1 Feb 2024 09:14:30 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C45F15B977
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 09:14:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D56515B99B
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 09:14:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706778865; cv=none; b=kN+QnPf2R31Q0iBJ+lb4FTDTxJPmfmP27Zc2JYxHYlp8XGaaQlMNz9L89xjrMcpChqp3vZLQuhONncG/+/FKfEUE/49cs0IU/z5cDxPm0D/YX0Kl9zQ1Bm4nsRzfmLsvyl/eWjfETAttnRepON154/sNDS2KqJBmxFJgS41j0Ik=
+	t=1706778869; cv=none; b=CRBmmTI49lHg02Ti2Fs14lQxwZJsB5c5IuQSXOS23PK8zHfglad1PBdlUujmp4D76HrxeGb5t06y9a15z0Jp+4cW3N4m255PgFR1wiN6PVEP2nZcZwgST7CIbTGYVamHhffYvLOsnthFO7ION4Xux3q6lt74nCE4ncDU1G1OLx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706778865; c=relaxed/simple;
-	bh=ZzZFC8pCFWDVU7JyslqsXXC7ChqqenGWk7j8CMB9YZM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=j34J2X2CXpMtgL7Aky3a9IZMXjkq2lDVI5RVgh9ysAKvfFnJPeTpPsoyAk0z1FyMmuJRpqJ946U0Cl70h7QUMOlGTtZCSgR9XypSMn9eECduDn5E03tY0irrudce7bTewrnQ3w/4PJ8i8Ju3IX9c9maXjySxUnOwNxxTgstckCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ykq2K1Ix; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a30e445602cso397094966b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 01:14:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706778862; x=1707383662; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=M/8tPV5f9TkHhEsp1Q8SF5XrFa/+sW2kJLUAlbmmFaM=;
-        b=ykq2K1Ix+7w7JHy1Wwqt+aO3b0NHMpZrA7mSQvvRM2QXFuGZt5G1xhE9Grqe0Hynso
-         BNv8x6kbkExbpsAme8o1T00naIVim927dthHAfLvdCs0uLMeigNtmTQm8uP7KCR4+9ru
-         h2gKfBAd83mpeeLKAeCNbZ/LHQbU1E1IoBiGx020pwl0EOXa5pveks0UqKUYsmide3pV
-         sIiX+dTTzma9YL4+EuWvG/t9i+EKOsOmHz3TD+tJeC3NsyDgOdmGCsoNQ2sKJAcwZzDe
-         HdRphsmZxtx2m3Wq90cu28ZoIi8BYc8/VrZ+ZpASDhX0ANkH0/NafzB7DDOJdepEd5yw
-         0xOQ==
+	s=arc-20240116; t=1706778869; c=relaxed/simple;
+	bh=bed9xyodDyMyEJ4BC6RZnB9FKOYwGHhD9QSHoHjvZFw=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=PKZ5Jy7fR5nt7tyR/AfvTMDWvKKCMNy65TSY3GS3dyBAYcKRotlDTGCynt2lc3t9bFgvTji0hVAgVMFGMxHIynj/FXJ4lqPdbTGI/kRldWFtqJEAs1hpVLnceVJbtcecuD2ndcLJBCF9/T5vbq71X9TMCuWccNGaW+AN3aCrstI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36384f513c3so4847435ab.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 01:14:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706778862; x=1707383662;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M/8tPV5f9TkHhEsp1Q8SF5XrFa/+sW2kJLUAlbmmFaM=;
-        b=fnAdGkhTZL29GT6gdUE4o24w6HgAN/r+VJlxfikwpPsUDI6PwDrK3yddA3HtpLqe5U
-         p2No8nOmEIwdN12NJhXmo+RPEQYEPVot9uIu8dAjTkSwvKa8ClmqMHWEThEVPAsd+gum
-         BlEU6TFgaYQzIX6TNzWWQHqmOafT7obErblJcA1egw90ebHBh3G7WRdt4WS75+iio0EF
-         sNVJXRRiQVq7ypxsWGm646hcoNt6e1lOpyMS05oZzDCjzxLCy4z9dGsRXI7qEvIt6aKG
-         cSRdHiout7Zw6VmD/zshYjYn9YI11a01TeTgWtl27bTQtBNW84Tlj/sw+r1gU/J4uYTI
-         R3AA==
-X-Gm-Message-State: AOJu0YzdC6qNNsw8kgyPC5e2v1BGUScz4pkNmM4AwegKnNP6GPNgPQo2
-	xF0qC89YkfGIf7HIWhQ//7mkTBF9KWrNWKwk4NcK++AIQAnw/ghCmu3GMghcIwU=
-X-Google-Smtp-Source: AGHT+IH58gkd1fs10vyT7eEcqXGDJwqAYIKiVC+I+A8OP3YgTKftOtUxlewXAhONh6DTSb80sUji2w==
-X-Received: by 2002:a17:906:cb2:b0:a27:5fd1:791f with SMTP id k18-20020a1709060cb200b00a275fd1791fmr4794552ejh.0.1706778862246;
-        Thu, 01 Feb 2024 01:14:22 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWvUprgPBYD2U5tuVsSbAuU20y3L1EkaOCfB/E7XauuVlm207EHxazpSCwE0AJntKuON6cu9pJDhPyOaELebk2/+1Ct0BVPnM3Alw2QMYyumYfV3i9o0uuu9/MULr0wLtkuYEjpzLoKDAEdfPjmb6PElg+ccXl8s6S4cT+Uj094vd0ArqSxLiLobBOjub+irO7E+OFarD/3RvhCdmc5WgDIMlrSrrBPQuqKKNf4EoPHup/HeGbV/CH0+z5RzTJyTPvzJBKy6b2FR+fjE6V7KIGKe1HHNwqhBQ74jOHQ2bRweqcNMWlknT321vBnF6rgjzGCtcjCsmWSdwcKskInUtiWkSE7VJsapNHo5c5TPxLPGZjiFBn6lPCG10K4gk5OIgShD8eksHIGpXT+Phb/xCHTjiyIqTD1zT812omj+vQ2xD3Aw7WhGqU/sANK8U7d/7FAvV2WfvFgC1fCy58+Lw5gIHYWxUtxq57wnUzy684TqbSMoVV0RAPR
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id cu3-20020a170906ba8300b00a368903fc98sm1165092ejd.136.2024.02.01.01.14.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 01:14:21 -0800 (PST)
-Message-ID: <32ac8056-1820-4871-8526-8b467162d78e@linaro.org>
-Date: Thu, 1 Feb 2024 10:14:19 +0100
+        d=1e100.net; s=20230601; t=1706778867; x=1707383667;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=o4noN0O6yFVomwvxVTGTAf5XWk3ASZshtfIGcmu1hIE=;
+        b=fZ8f7ECWKmoBStfTKrAYh4+/pB6vmihBDSf5clh5Qicvzx/VbdU4DB/iUbugeVqpRm
+         CYvw8a+RAIQDPOIMIOspL2xnzygWd3fYwwJv1njncHEawZw5pbsO3uDSnz0rMVrIyCvo
+         cCCtYBF+eDHBLm+EsiMX6eKCGkCvYfJhqC2T3aT+62BojaOtrtjZPcGK9fDF+tIfNGVH
+         bX85uRqPfuWHn1vXurMPgu34L/Ze9s48FGZI0l9vayVZkvKV+NElrH9A/7EYPT0gejMd
+         3JVU4VMqEpXMdcb/hyMUbLszFavXfdgZK0gKvISEa5Uy/9lJxpyGoKcGd2283/iFvhWl
+         svvA==
+X-Gm-Message-State: AOJu0YyLy6fU7gaipFNGxlVvJLhQBB5cKW9cIF9sH3keCoItn4P5S/6D
+	9YHOnssT//COHxtZ79O5m2TsswOcnnp8JCKcfdLDAxx/k7Vqrxsugp/cPZ7Tsz32ExE3YHHzvEy
+	ywlKQfxqtWQTxcYvMwiV99JQYuxH13hYgki9Iu2FZUz0bErOpx7K2mS4=
+X-Google-Smtp-Source: AGHT+IEmlqgMs9OByRJIoH1H4W4mLctLxU69IfDmVx7zMJPWDvxPzy37ceYeg+qS9sOsWOSpvS1YB3a/D2bqlGXriBsFnibuSAsU
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 11/15] MIPS: mobileye: Add EyeQ5 dtsi
-Content-Language: en-US
-To: Gregory CLEMENT <gregory.clement@bootlin.com>,
- Paul Burton <paulburton@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org,
- Jiaxun Yang <jiaxun.yang@flygoat.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-References: <20240118155252.397947-1-gregory.clement@bootlin.com>
- <20240118155252.397947-12-gregory.clement@bootlin.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240118155252.397947-12-gregory.clement@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1aad:b0:363:8be6:2b22 with SMTP id
+ l13-20020a056e021aad00b003638be62b22mr346870ilv.1.1706778867236; Thu, 01 Feb
+ 2024 01:14:27 -0800 (PST)
+Date: Thu, 01 Feb 2024 01:14:27 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000017878306104e6c59@google.com>
+Subject: [syzbot] [ext4?] [block?] kernel BUG in set_blocksize
+From: syzbot <syzbot+4bfc572b93963675a662@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, axboe@kernel.dk, linux-block@vger.kernel.org, 
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On 18/01/2024 16:52, Gregory CLEMENT wrote:
-> Add a device tree include file for the Mobileye EyeQ5 SoC.
-> 
-> Based on the work of Slava Samsonov <stanislav.samsonov@intel.com>
-> 
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> ---
+Hello,
 
-..
+syzbot found the following issue on:
 
-> +
-> +	soc: soc {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +		compatible = "simple-bus";
-> +
-> +		uart0: serial@800000 {
-> +			compatible = "arm,pl011", "arm,primecell";
-> +			reg = <0 0x800000 0x0 0x1000>;
-> +			reg-io-width = <4>;
-> +			interrupt-parent = <&gic>;
-> +			interrupts = <GIC_SHARED 6 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks  = <&uart_clk>, <&occ_periph>;
-> +			clock-names = "uartclk", "apb_pclk";
-> +		};
-> +
-> +		uart1: serial@900000 {
-> +			compatible = "arm,pl011", "arm,primecell";
-> +			reg = <0 0x900000 0x0 0x1000>;
-> +			reg-io-width = <4>;
-> +			interrupt-parent = <&gic>;
-> +			interrupts = <GIC_SHARED 6 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks  = <&uart_clk>, <&occ_periph>;
-> +			clock-names = "uartclk", "apb_pclk";
-> +		};
-> +
-> +		uart2: serial@a00000 {
-> +			compatible = "arm,pl011", "arm,primecell";
-> +			reg = <0 0xa00000 0x0 0x1000>;
-> +			reg-io-width = <4>;
-> +			interrupt-parent = <&gic>;
-> +			interrupts = <GIC_SHARED 6 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks  = <&uart_clk>, <&occ_periph>;
-> +			clock-names = "uartclk", "apb_pclk";
-> +		};
-> +
-> +		olb: olb@e00000 {
+HEAD commit:    1bbb19b6eb1b Merge tag 'erofs-for-6.8-rc3-fixes' of git://..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=146e3d40180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=13fb219792fd389b
+dashboard link: https://syzkaller.appspot.com/bug?extid=4bfc572b93963675a662
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=175dc87be80000
 
-That's not a correct name. Please do not send knowingly incorrect DTS.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/798e03d5a1df/disk-1bbb19b6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/54077750a6bf/vmlinux-1bbb19b6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/840fdc1b94f1/bzImage-1bbb19b6.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/63a064a072f7/mount_0.gz
 
-> +			compatible = "mobileye,eyeq5-olb", "syscon", "simple-mfd";
-> +			reg = <0 0xe00000 0x0 0x400>;
-> +			reg-io-width = <4>;
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4bfc572b93963675a662@syzkaller.appspotmail.com
 
-That's not needed property here.
+ __fput+0x429/0x8a0 fs/file_table.c:376
+ __do_sys_close fs/open.c:1554 [inline]
+ __se_sys_close fs/open.c:1539 [inline]
+ __x64_sys_close+0x7e/0x110 fs/open.c:1539
+ do_syscall_64+0xf9/0x240
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+------------[ cut here ]------------
+kernel BUG at mm/truncate.c:413!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 0 PID: 8131 Comm: syz-executor.1 Not tainted 6.8.0-rc2-syzkaller-00047-g1bbb19b6eb1b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+RIP: 0010:truncate_inode_pages_range+0xe33/0xf70 mm/truncate.c:413
+Code: 38 c1 0f 8c d5 f8 ff ff 4c 89 f7 e8 27 7f 24 00 e9 c8 f8 ff ff e8 ed b1 c5 ff 4c 89 e7 48 c7 c6 a0 8a b3 8b e8 2e 73 0a 00 90 <0f> 0b e8 96 b8 8f 09 e8 d1 b1 c5 ff 48 8b 7c 24 18 48 c7 c6 e0 8b
+RSP: 0018:ffffc9000afc76c0 EFLAGS: 00010246
+RAX: f4eb776fbe124800 RBX: 0000000000000001 RCX: ffffc9000afc7503
+RDX: 0000000000000001 RSI: ffffffff8baac6e0 RDI: ffffffff8bfd9420
+RBP: ffffc9000afc7920 R08: ffffffff8f84262f R09: 1ffffffff1f084c5
+R10: dffffc0000000000 R11: fffffbfff1f084c6 R12: ffffea0001a41e40
+R13: 0000000000000002 R14: ffffc9000afc7808 R15: ffffc9000afc7770
+FS:  00007f35ceaab6c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f29e7309d58 CR3: 0000000025a64000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ kill_bdev block/bdev.c:79 [inline]
+ set_blocksize+0x315/0x390 block/bdev.c:155
+ sb_set_blocksize block/bdev.c:164 [inline]
+ sb_min_blocksize+0xb3/0x190 block/bdev.c:180
+ ext4_load_super fs/ext4/super.c:5030 [inline]
+ __ext4_fill_super fs/ext4/super.c:5227 [inline]
+ ext4_fill_super+0x6ec/0x6da0 fs/ext4/super.c:5703
+ get_tree_bdev+0x3f7/0x570 fs/super.c:1619
+ vfs_get_tree+0x90/0x2a0 fs/super.c:1784
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3352
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
+ do_syscall_64+0xf9/0x240
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+RIP: 0033:0x7f35cdc7f4aa
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 09 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f35ceaaaef8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f35ceaaaf80 RCX: 00007f35cdc7f4aa
+RDX: 0000000020000100 RSI: 00000000200002c0 RDI: 00007f35ceaaaf40
+RBP: 0000000020000100 R08: 00007f35ceaaaf80 R09: 0000000003000480
+R10: 0000000003000480 R11: 0000000000000246 R12: 00000000200002c0
+R13: 00007f35ceaaaf40 R14: 0000000000000786 R15: 00000000200000c0
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:truncate_inode_pages_range+0xe33/0xf70 mm/truncate.c:413
+Code: 38 c1 0f 8c d5 f8 ff ff 4c 89 f7 e8 27 7f 24 00 e9 c8 f8 ff ff e8 ed b1 c5 ff 4c 89 e7 48 c7 c6 a0 8a b3 8b e8 2e 73 0a 00 90 <0f> 0b e8 96 b8 8f 09 e8 d1 b1 c5 ff 48 8b 7c 24 18 48 c7 c6 e0 8b
+RSP: 0018:ffffc9000afc76c0 EFLAGS: 00010246
+RAX: f4eb776fbe124800 RBX: 0000000000000001 RCX: ffffc9000afc7503
+RDX: 0000000000000001 RSI: ffffffff8baac6e0 RDI: ffffffff8bfd9420
+RBP: ffffc9000afc7920 R08: ffffffff8f84262f R09: 1ffffffff1f084c5
+R10: dffffc0000000000 R11: fffffbfff1f084c6 R12: ffffea0001a41e40
+R13: 0000000000000002 R14: ffffc9000afc7808 R15: ffffc9000afc7770
+FS:  00007f35ceaab6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f29dd4ff000 CR3: 0000000025a64000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-> +		};
-> +
-> +		gic: interrupt-controller@140000 {
-> +			compatible = "mti,gic";
-> +			reg = <0x0 0x140000 0x0 0x20000>;
-> +			interrupt-controller;
-> +			#interrupt-cells = <3>;
-> +
-> +			/*
-> +			* Declare the interrupt-parent even though the mti,gic
-> +			* binding doesn't require it, such that the kernel can
-> +			* figure out that cpu_intc is the root interrupt
-> +			* controller & should be probed first.
-> +			*/
-> +			interrupt-parent = <&cpu_intc>;
-> +
-> +			timer {
-> +				compatible = "mti,gic-timer";
-> +				interrupts = <GIC_LOCAL 1 IRQ_TYPE_NONE>;
-> +				clocks = <&core0_clk>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
 
-Stray blank line.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Best regards,
-Krzysztof
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
