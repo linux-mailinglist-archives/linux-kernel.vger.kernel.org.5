@@ -1,97 +1,85 @@
-Return-Path: <linux-kernel+bounces-48168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E86B845834
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:53:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1885845839
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:54:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2F8E1C26F7B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:53:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2ADA01F23A8B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:54:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AAC35339B;
-	Thu,  1 Feb 2024 12:52:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C6555CDE7;
+	Thu,  1 Feb 2024 12:53:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G6xkZxgU"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SgsernW5"
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A2125336D;
-	Thu,  1 Feb 2024 12:52:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC91B5336A
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 12:53:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706791974; cv=none; b=RdtKd2t8nljArBPJjUzxUi9oWCckiDDLNQen0txWdLfq8J5f6wY7+MPGmtQjghYfkK50wktzC35LCLFge7tZ0X8UiIPdA/hKj7cpafEWZxlG7xU2u0wdjCipmV70XPnPaOxm17OUXfi5mhmqX8xJwUFE5av/0072h14eGYb6WHY=
+	t=1706791998; cv=none; b=a6T4exDnm7HwbocBUE/UKsaSfWABVobZQI52/ipzsVrFIEmJV+vOIBuUpRH2J/jikvojCH96thJ2lEoOjDYifJjbFbQFjyi+ZyrGZMjIymGsRrcD/wIcX9sin5Sknu6v0cA1AyxJAb+s5+epKZGde+BAFUTNc+MBx+ggAIHgM1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706791974; c=relaxed/simple;
-	bh=msWUzFbKQmtmN43G+1njdNg1iOyozh3YckpeFjSq7QM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=aMpSD0UoVS65U8B1IiY/wg1TChoHK41C5ombdoPmSuxOjn7INFHY19xi3RTzN2M4CDMNMXlRKVp9sMz0FhAvCc4ft9f7kl0e/I/B/pYf/P9mG52P3XKS3O2r9tGLWcCpFS1Pj7HmK/k+gnkhOIBaXpUDm5B/w+h5ubl7XLwb/7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G6xkZxgU; arc=none smtp.client-ip=209.85.128.45
+	s=arc-20240116; t=1706791998; c=relaxed/simple;
+	bh=7PXAUnHUmoEF3UTxLOPfT0TJCC9/HwX2n79M8mfQ9Hc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RAhfwFdS1cSOsSWBWOHa9hH9MvfGeEI9wQBjWh9s7pQDscq5rDS4t1sg+WuEYN8ux+8pSg1gPgF1eOjphJZj4BvZYLw7pzY8bBIzcyKfX6/4G4XMU7FXivMsoHkqx38PlqEn32YPBfZSFOAH5jgKDiItlapKWcwwsTOfhR0Z9GU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SgsernW5; arc=none smtp.client-ip=209.85.166.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40e80046246so4765955e9.1;
-        Thu, 01 Feb 2024 04:52:52 -0800 (PST)
+Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-363844ae819so3334235ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 04:53:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706791970; x=1707396770; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TLwU1mAjRk6tVu2Bx5aUYeeeXQpRVOBvWkTmhqcFn0M=;
-        b=G6xkZxgU0yoMBSx03DL9LwHSXpAoM1bjWRjTXNm3IA0p+tHWiWhvLvegVIJZfsW2OL
-         Cd/23rm7oz5xIXwwxHtnkLLnNXr4tPqspxm+121jIlzczz4NZ+sOhNByt+XfUuxHzU8A
-         sEJfSfNL0/nw1MyVA/GLl0i4kJY85pyeEqLgvtYF0bzHVRnQqBBGJbvVJqqJ1ZnEI1zB
-         x6Ubd1oRqyhtuMsQwRbTYp0WGyI5qdg8B/FePfql66oTV9xs8DbL9hL1H72gFXupcvnn
-         AsHLELl0WSsyXmy9ngQq4DUYQK6ziChqcYxLdit8YmB3asCaqo+TTEk0gvm7h+JJpm4H
-         Uavw==
+        d=gmail.com; s=20230601; t=1706791996; x=1707396796; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+dIpEuHcsVA+p6HpZJFPK5u2p7oWDuiKjAseXCAiZTo=;
+        b=SgsernW59t1ppqSoFFq1hQRjxtFsBWBplyJ0cd/gcqiqpn4VDYAV/iEAoZxJsldLuX
+         YQGkYCFDU6FNnTM6jsSaKxTpjyAcF4J5z7opw/Sk+reTQy982TalAe7c2NCJc7LeFoz1
+         skdZoAxT6xcxaRkFEAYbGmJh85JQ2O14kWXkcjRToGKuaaFavuJe3ZdYQlUYPs9bhV/T
+         AWrvzApU5dKHK1bnPV8lNWpDpdS3Pdjeie4MHG2De7r6+bdB+A5MAsSowEkQM+opSUOD
+         qWaMHA+P4cU3tY1SEpT89GsMQmp3gycQF487BvkOEZXpW79VQ4Tv3yG3hMMKV9GT+hZF
+         Juug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706791970; x=1707396770;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TLwU1mAjRk6tVu2Bx5aUYeeeXQpRVOBvWkTmhqcFn0M=;
-        b=Ox3TGnn59r78BxNgonR3poW9yXsL+8TIr1Ygs6qGH6HxO3mb6VtzHD98Iog30N8W+N
-         10N0NlA83r5LtNsDM40XnvVXEOUsRIES24GFKPY/qw77RbNBYNrV/itrVpIA2tNAVU5V
-         vtY3sTFnHQ8ATvgVNhp5VhtqfyYjGfmtE4DAQyq/x6pbRNMNvziS7rt3KY1WFpap/Qok
-         KR9JY9TN4KdTj/c6Aq6sB0xlRBgclVvitA92ePyxrk8RPh1QYVTb0BUesXPo9d6DBc36
-         tgocSMsLcXxibIIT0AF+RhsYlhMrCvBq5ebWWWL/5TYFOu3LTQzn2Ec5c6R4fuMnYR/i
-         Sswg==
-X-Gm-Message-State: AOJu0YyeMK1pngvh5mBmuU4M/TJl5cTtiQMToJHX03cqRqbLhaL46oKo
-	qJ0FlrLX6NTpH5roZLtGC91PlZECIbPOWoG7GkWW9Pe8Wn+IufC2
-X-Google-Smtp-Source: AGHT+IFGz6afCU/24Gt4i46Ecnb88g6ZlJ+iaxfz/q3qWmZcs6vTMg4kJ8EW+MqV8A34TQ9ij7WoSg==
-X-Received: by 2002:a05:600c:3b28:b0:40f:b76e:e261 with SMTP id m40-20020a05600c3b2800b0040fb76ee261mr2619886wms.9.1706791970527;
-        Thu, 01 Feb 2024 04:52:50 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXC1Lt6JUZ+hdm9QD3AOAZ1hsC5ynhzSr/lhQzOhIQijFN6d734bRAmjeMLNUrAVXYs1z5PP8kzglCZRLX3mKwuFhQ9qsVE6M7p1F28XM8kDJYlmk8+tsAoJkCh22zzSanTqWFSLlAl2lfGbUd2oQg9EOVeYHDNxQR8xpj6T3sMaShhmd9G03GV9eNPjhNUzEYWkf3ppm+ExzdWxGkfrynxNSP6gyOkzY4z1YUNa+JVwYGNIDpV6KwBEbRKDd23Y77ICCRk2DcYYbw75RUr7e35DeuO9HbZATYZ6QfshRClTPwY9+hwQbc0J2b3DQEvS64oDWDfwzmvWKinmHYQ0v+tWjvQisZU1hKHZ+Hvs5zSAfKCFtveFCOWe0QAs0uNlYpxek7qtYnLnDRlL5afyvz7VmycJwu/CF7xTdntTdUe4J5kphK0F45fq1+HEiJSj8E9hhOv6XV91GgpGwrtRXJD0oo2kDUwm8SeZiIWlrwNOeJRjPcFvX2PDP43h/eFzjoX0X4RNl70wWyqwnp/RRpp95w2dGNr9RBQph2ndBqEcKVvAA==
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id e1-20020a05600c4e4100b0040ee4f38968sm4425715wmq.2.2024.02.01.04.52.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 01 Feb 2024 04:52:50 -0800 (PST)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Zi Shen Lim <zlim.lnx@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
+        d=1e100.net; s=20230601; t=1706791996; x=1707396796;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+dIpEuHcsVA+p6HpZJFPK5u2p7oWDuiKjAseXCAiZTo=;
+        b=QEHgQGZx1vYFFNsiv1bjN07lPsp0fx/sErNdtSilJrSdL+WyrnueTq1zXFTPHf3xDy
+         9AZMUSALaAYFLSUJcotgmPSKssIkT49/zngbPMeMcsCP+n/DbZuXiA6kUOffFQZCLko7
+         bt/e9Y9cRBOi6gwYtZWMP7bWBBJgooM5R610czp0z0ASJWvKy9iiIlB98kLeRslJn1Gh
+         O2BMT2M1miMUqJjZYphyQ/oWqhYWEZJiCc/HN1Nk8FPQYSg2N0fj4SidGqYItjmhKe8i
+         Z9cfeb5k4TnxdGZ8+qEQ8SPmmzgZhjGJlVVU2QErqnTGlu3FWRxtf2QDKAMJSBP+VyZf
+         e3ow==
+X-Gm-Message-State: AOJu0YystGCgjw3gVh51TroqlvU5c09O/LzwS4qQZsavnVL+tPih8z4z
+	6U8aO4cQJrnlG6KqWg0zZmPmGA80fJ5ydMByzcXLxxsJPf2LJiq/
+X-Google-Smtp-Source: AGHT+IG9rtFkIqzbFdbCc8UCLsLfITRXKzQzKEPG60fxsRW3huj2RDpqksiISbxY3tV787PqINAdnA==
+X-Received: by 2002:a92:d44c:0:b0:363:7a04:548e with SMTP id r12-20020a92d44c000000b003637a04548emr4612091ilm.9.1706791995971;
+        Thu, 01 Feb 2024 04:53:15 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUQmbzvwjjuar5/jjMYvrUfyQqXab4b3OcMUL5T6Ss1INNhxyM/EtSEtESt8NBceTbbqBw+exoQkoGSxIXlWYk9A6fm4vSBbVM4TGBGBYv1jEUsE2LIYM4raJEJQbIg91R+vXrspkuys7H+WdjiG5pCXXdycCqMtjyUGqg9OBJoQ2ZLPTAaXVlkVf60qmWPCqeN/0Z47xRoIJyNXO7MdPN5l35ojzS3wrt339yLwDcWBflMmKnZ5bWc/Y+lOPfbZs7chGjFduDN6/XTx01BxIg6o+bpGfBlXkYU9gNxb+k3a649thcqK5Vmvdw+BNkFqm8n
+Received: from LancedeMBP.lan ([112.10.240.49])
+        by smtp.gmail.com with ESMTPSA id k30-20020a63ba1e000000b005c661a432d7sm10863637pgf.75.2024.02.01.04.53.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 04:53:15 -0800 (PST)
+From: Lance Yang <ioworker0@gmail.com>
+To: akpm@linux-foundation.org
+Cc: mhocko@suse.com,
+	zokeefe@google.com,
+	david@redhat.com,
+	songmuchun@bytedance.com,
+	shy828301@gmail.com,
+	peterx@redhat.com,
+	minchan@kernel.org,
+	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: puranjay12@gmail.com
-Subject: [PATCH bpf-next v3 2/2] bpf, arm64: support exceptions
-Date: Thu,  1 Feb 2024 12:52:25 +0000
-Message-Id: <20240201125225.72796-3-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240201125225.72796-1-puranjay12@gmail.com>
-References: <20240201125225.72796-1-puranjay12@gmail.com>
+	Lance Yang <ioworker0@gmail.com>
+Subject: [PATCH 1/1] mm/khugepaged: skip copying lazyfree pages on collapse
+Date: Thu,  1 Feb 2024 20:52:26 +0800
+Message-Id: <20240201125226.28372-1-ioworker0@gmail.com>
+X-Mailer: git-send-email 2.33.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -100,202 +88,70 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The prologue generation code has been modified to make the callback
-program use the stack of the program marked as exception boundary where
-callee-saved registers are already pushed.
+The collapsing behavior of khugepaged with pages
+marked using MADV_FREE might cause confusion
+among users.
 
-As the bpf_throw function never returns, if it clobbers any callee-saved
-registers, they would remain clobbered. So, the prologue of the
-exception-boundary program is modified to push R23 and R24 as well,
-which the callback will then recover in its epilogue.
+For instance, allocate a 2MB chunk using mmap and
+later release it by MADV_FREE. Khugepaged will not
+collapse this chunk. From the user's perspective,
+it treats lazyfree pages as pte_none. However,
+for some pages marked as lazyfree with MADV_FREE,
+khugepaged might collapse this chunk and copy
+these pages to a new huge page. This inconsistency
+in behavior could be confusing for users.
 
-The Procedure Call Standard for the Arm 64-bit Architecture[1] states
-that registers r19 to r28 should be saved by the callee. BPF programs on
-ARM64 already save all callee-saved registers except r23 and r24. This
-patch adds an instruction in prologue of the  program to save these
-two registers and another instruction in the epilogue to recover them.
+After a successful MADV_FREE operation, if there is
+no subsequent write, the kernel can free the pages
+at any time. Therefore, in my opinion, counting
+lazyfree pages in max_pte_none seems reasonable.
 
-These extra instructions are only added if bpf_throw() is used. Otherwise
-the emitted prologue/epilogue remains unchanged.
+Perhaps treating MADV_FREE like MADV_DONTNEED, not
+copying lazyfree pages when khugepaged collapses
+huge pages in the background better aligns with
+user expectations.
 
-[1] https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst
-
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+Signed-off-by: Lance Yang <ioworker0@gmail.com>
 ---
- arch/arm64/net/bpf_jit_comp.c                | 87 +++++++++++++++-----
- tools/testing/selftests/bpf/DENYLIST.aarch64 |  1 -
- 2 files changed, 68 insertions(+), 20 deletions(-)
+ mm/khugepaged.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index cfd5434de483..20720ec346b8 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -285,7 +285,8 @@ static bool is_lsi_offset(int offset, int scale)
- /* Tail call offset to jump into */
- #define PROLOGUE_OFFSET (BTI_INSNS + 2 + PAC_INSNS + 8)
- 
--static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
-+static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf,
-+			  bool is_exception_cb)
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 2b219acb528e..6cbf46d42c6a 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -777,6 +777,7 @@ static int __collapse_huge_page_copy(pte_t *pte,
+ 				     pmd_t orig_pmd,
+ 				     struct vm_area_struct *vma,
+ 				     unsigned long address,
++				     struct collapse_control *cc,
+ 				     spinlock_t *ptl,
+ 				     struct list_head *compound_pagelist)
  {
- 	const struct bpf_prog *prog = ctx->prog;
- 	const bool is_main_prog = !bpf_is_subprog(prog);
-@@ -333,19 +334,34 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- 	emit(A64_MOV(1, A64_R(9), A64_LR), ctx);
- 	emit(A64_NOP, ctx);
- 
--	/* Sign lr */
--	if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL))
--		emit(A64_PACIASP, ctx);
--
--	/* Save FP and LR registers to stay align with ARM64 AAPCS */
--	emit(A64_PUSH(A64_FP, A64_LR, A64_SP), ctx);
--	emit(A64_MOV(1, A64_FP, A64_SP), ctx);
--
--	/* Save callee-saved registers */
--	emit(A64_PUSH(r6, r7, A64_SP), ctx);
--	emit(A64_PUSH(r8, r9, A64_SP), ctx);
--	emit(A64_PUSH(fp, tcc, A64_SP), ctx);
--	emit(A64_PUSH(fpb, A64_R(28), A64_SP), ctx);
-+	if (!is_exception_cb) {
-+		/* Sign lr */
-+		if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL))
-+			emit(A64_PACIASP, ctx);
-+		/* Save FP and LR registers to stay align with ARM64 AAPCS */
-+		emit(A64_PUSH(A64_FP, A64_LR, A64_SP), ctx);
-+		emit(A64_MOV(1, A64_FP, A64_SP), ctx);
+@@ -797,6 +798,13 @@ static int __collapse_huge_page_copy(pte_t *pte,
+ 			continue;
+ 		}
+ 		src_page = pte_page(pteval);
 +
-+		/* Save callee-saved registers */
-+		emit(A64_PUSH(r6, r7, A64_SP), ctx);
-+		emit(A64_PUSH(r8, r9, A64_SP), ctx);
-+		emit(A64_PUSH(fp, tcc, A64_SP), ctx);
-+		emit(A64_PUSH(fpb, A64_R(28), A64_SP), ctx);
-+	} else {
-+		/*
-+		 * Exception callback receives FP of Main Program as third
-+		 * parameter
-+		 */
-+		emit(A64_MOV(1, A64_FP, A64_R(2)), ctx);
-+		/*
-+		 * Main Program already pushed the frame record and the
-+		 * callee-saved registers. The exception callback will not push
-+		 * anything and re-use the main program's stack.
-+		 *
-+		 * 10 registers are on the stack
-+		 */
-+		emit(A64_SUB_I(1, A64_SP, A64_FP, 80), ctx);
-+	}
- 
- 	/* Set up BPF prog stack base register */
- 	emit(A64_MOV(1, fp, A64_SP), ctx);
-@@ -365,6 +381,20 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- 		emit_bti(A64_BTI_J, ctx);
- 	}
- 
-+	/*
-+	 * Program acting as exception boundary should save all ARM64
-+	 * Callee-saved registers as the exception callback needs to recover
-+	 * all ARM64 Callee-saved registers in its epilogue.
-+	 */
-+	if (prog->aux->exception_boundary) {
-+		/*
-+		 * As we are pushing two more registers, BPF_FP should be moved
-+		 * 16 bytes
-+		 */
-+		emit(A64_SUB_I(1, fp, fp, 16), ctx);
-+		emit(A64_PUSH(A64_R(23), A64_R(24), A64_SP), ctx);
-+	}
++		if (cc->is_khugepaged
++				&& !folio_test_swapbacked(page_folio(src_page))) {
++			clear_user_highpage(page, _address);
++			continue;
++		}
 +
- 	emit(A64_SUB_I(1, fpb, fp, ctx->fpb_offset), ctx);
+ 		if (copy_mc_user_highpage(page, src_page, _address, vma) > 0) {
+ 			result = SCAN_COPY_MC;
+ 			break;
+@@ -1205,7 +1213,7 @@ static int collapse_huge_page(struct mm_struct *mm, unsigned long address,
+ 	anon_vma_unlock_write(vma->anon_vma);
  
- 	/* Stack must be multiples of 16B */
-@@ -653,7 +683,7 @@ static void build_plt(struct jit_ctx *ctx)
- 		plt->target = (u64)&dummy_tramp;
- }
- 
--static void build_epilogue(struct jit_ctx *ctx)
-+static void build_epilogue(struct jit_ctx *ctx, bool is_exception_cb)
- {
- 	const u8 r0 = bpf2a64[BPF_REG_0];
- 	const u8 r6 = bpf2a64[BPF_REG_6];
-@@ -666,6 +696,15 @@ static void build_epilogue(struct jit_ctx *ctx)
- 	/* We're done with BPF stack */
- 	emit(A64_ADD_I(1, A64_SP, A64_SP, ctx->stack_size), ctx);
- 
-+	/*
-+	 * Program acting as exception boundary pushes R23 and R24 in addition
-+	 * to BPF callee-saved registers. Exception callback uses the boundary
-+	 * program's stack frame, so recover these extra registers in the above
-+	 * two cases.
-+	 */
-+	if (ctx->prog->aux->exception_boundary || is_exception_cb)
-+		emit(A64_POP(A64_R(23), A64_R(24), A64_SP), ctx);
-+
- 	/* Restore x27 and x28 */
- 	emit(A64_POP(fpb, A64_R(28), A64_SP), ctx);
- 	/* Restore fs (x25) and x26 */
-@@ -1575,7 +1614,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	 * BPF line info needs ctx->offset[i] to be the offset of
- 	 * instruction[i] in jited image, so build prologue first.
- 	 */
--	if (build_prologue(&ctx, was_classic)) {
-+	if (build_prologue(&ctx, was_classic, prog->aux->exception_cb)) {
- 		prog = orig_prog;
- 		goto out_off;
- 	}
-@@ -1586,7 +1625,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	}
- 
- 	ctx.epilogue_offset = ctx.idx;
--	build_epilogue(&ctx);
-+	build_epilogue(&ctx, prog->aux->exception_cb);
- 	build_plt(&ctx);
- 
- 	extable_align = __alignof__(struct exception_table_entry);
-@@ -1614,7 +1653,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	ctx.idx = 0;
- 	ctx.exentry_idx = 0;
- 
--	build_prologue(&ctx, was_classic);
-+	build_prologue(&ctx, was_classic, prog->aux->exception_cb);
- 
- 	if (build_body(&ctx, extra_pass)) {
- 		bpf_jit_binary_free(header);
-@@ -1622,7 +1661,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		goto out_off;
- 	}
- 
--	build_epilogue(&ctx);
-+	build_epilogue(&ctx, prog->aux->exception_cb);
- 	build_plt(&ctx);
- 
- 	/* 3. Extra pass to validate JITed code. */
-@@ -2310,3 +2349,13 @@ bool bpf_jit_supports_ptr_xchg(void)
- {
- 	return true;
- }
-+
-+bool bpf_jit_supports_exceptions(void)
-+{
-+	/* We unwind through both kernel frames starting from within bpf_throw
-+	 * call and BPF frames. Therefore we require FP unwinder to be enabled
-+	 * to walk kernel frames and reach BPF frames in the stack trace.
-+	 * ARM64 kernel is aways compiled with CONFIG_FRAME_POINTER=y
-+	 */
-+	return true;
-+}
-diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
-index 5c2cc7e8c5d0..0445ac38bc07 100644
---- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-+++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-@@ -1,6 +1,5 @@
- bpf_cookie/multi_kprobe_attach_api               # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
- bpf_cookie/multi_kprobe_link_api                 # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
--exceptions					 # JIT does not support calling kfunc bpf_throw: -524
- fexit_sleep                                      # The test never returns. The remaining tests cannot start.
- kprobe_multi_bench_attach                        # needs CONFIG_FPROBE
- kprobe_multi_test                                # needs CONFIG_FPROBE
+ 	result = __collapse_huge_page_copy(pte, hpage, pmd, _pmd,
+-					   vma, address, pte_ptl,
++					   vma, address, cc, pte_ptl,
+ 					   &compound_pagelist);
+ 	pte_unmap(pte);
+ 	if (unlikely(result != SCAN_SUCCEED))
 -- 
-2.40.1
+2.33.1
 
 
