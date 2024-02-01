@@ -1,150 +1,406 @@
-Return-Path: <linux-kernel+bounces-47786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A1A68452E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:38:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C18C08452E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:39:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCAD71C2156F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:38:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25382294F1F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:39:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 649D315AAA4;
-	Thu,  1 Feb 2024 08:38:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 501CA1586E6;
+	Thu,  1 Feb 2024 08:39:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="vUOaJTXw"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gRcwzlAL"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E05B7158D8B;
-	Thu,  1 Feb 2024 08:38:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64344158D8B
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 08:39:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706776719; cv=none; b=jtzKHNT5wO4yn/JZMOLmm55CHhqq3VcS4ljdlKtrWLDrzuryPnzVkEDnPTZ1WyOCX6hZhOvdbHqe8VdxZNOU8pHUvlVseg8S7dcjiysTy7vPbapXKyUnEC2uuXk2arMw3lBQTZ4lyWw8L+Ah8gNYM2VdGtRi//dcatd/CPVjHsM=
+	t=1706776785; cv=none; b=TrTeg06bpv+fB54libhIweHGsWjSNkpa+JR2G3qceqJwRWOZZk3X0ZprqTRwJ8UQJQbrVRey24DayOTGH83f9lKjHJmLlRERgV9bcG0FUSM86jUMCvru4xXGCnCMNV5P5HeuBSFEvCWUEPRnyjN4GAytYOBe9g8Bg4LNlyI5vs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706776719; c=relaxed/simple;
-	bh=vKbbomgjgBcY5l3J5iDAD1fwuBRayq3H73ZqACqcsOA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JHj1RG1clOWttvAAglkQk8jOB+DJjM3G2LEXJKVrcR6ry8L8eGmL9Q5bLzmIVnCewbjmz0rKt4pUBbSLvsc9Bk+zPnBtHCXEEN9lNppLse9fil4tcmEAKqQnPY3+osfWGOd0PXLZpD21KdP78RCIrY1NAXtSF9XFnjAIwiCdBS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=vUOaJTXw; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=rrEM/L5CNb2Siaw0EtzA1uq6MEwvjM+ooAg4sDv+6Ys=; b=vUOaJTXwWrDwPbjOYcQMYs5ISg
-	vTGHLnDbiExdxCQU4+KTNPIU0vo8RUyQ92hzTz7icFpYBaS+dkVlGJPjkk0EWKQ3HSrTFCJB++nR2
-	7Aqg2M5Ejz5EUOn9yVorOeWvzHkLg8tTSHtgvny4nV3L4Zu1aEsQsALg3kraGBvpB07iF0i2h9Ho2
-	BjBcJ9Nr6VKJvSqEu4SvgsXcX67dpfHtE1vY56zz+LBPek48+qvQ38c/NqAo26nxZczitbF9m84Tv
-	I9o63J9fpzCon81R3y7mgJvCKpSoiJ9Pqv+yR74mPmdZjG2ujzxls78qpTyAvI1sYV7rCA2INc7Tk
-	9YtOja1g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35708)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rVSaG-0004IS-19;
-	Thu, 01 Feb 2024 08:38:08 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rVSa9-0007FA-KA; Thu, 01 Feb 2024 08:38:01 +0000
-Date: Thu, 1 Feb 2024 08:38:01 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Choong Yong Liang <yong.liang.choong@linux.intel.com>
-Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-	David E Box <david.e.box@linux.intel.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Mark Gross <markgross@kernel.org>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <Jose.Abreu@synopsys.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Andrew Halaney <ahalaney@redhat.com>,
-	Simon Horman <simon.horman@corigine.com>,
-	Serge Semin <fancer.lancer@gmail.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
-	bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
-	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-	Lai Peter Jun Ann <jun.ann.lai@intel.com>,
-	Abdul Rahim Faizal <faizal.abdul.rahim@intel.com>
-Subject: Re: [PATCH net-next v4 06/11] net: stmmac: resetup XPCS according to
- the new interface mode
-Message-ID: <ZbtYaXkNf2ZF1prE@shell.armlinux.org.uk>
-References: <20240129130253.1400707-1-yong.liang.choong@linux.intel.com>
- <20240129130253.1400707-7-yong.liang.choong@linux.intel.com>
- <ZbjNn+C/VHegH2t7@shell.armlinux.org.uk>
- <9e23671e-788c-4191-bdb4-94915ff7da5a@linux.intel.com>
+	s=arc-20240116; t=1706776785; c=relaxed/simple;
+	bh=xintUEzQ8uM7chXI5krxWTSVIW10j1fGNmwxGlIfins=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=to/D95nyWUIzn4u+vqyPKz3olPG73tf6wu7T3zW9nZVHZurkemH9qlvGbTN+xagB+whyD+438qor3XINw1TV6aqd2EaDR7oRy8X3uepQNr7ePlKZFR3LeKvjXTINDtnKXiYCoKpRKmovn/DSdzag9RLTJbtIkRGg1khetxzVWSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gRcwzlAL; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a30f7c9574eso79832566b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 00:39:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706776780; x=1707381580; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/LUOnsZoWQv3AKUXusOG3iHBw6xyGVqBDQ81NDvZ0PQ=;
+        b=gRcwzlALQTDKWGRxX7lcMCgtRjl5Gt3jtWpC3McX77NNkcb31cqy4PZql4+kOAcwNX
+         B1fpAMZVrw2Q1+TNZXF4dSngW4CS6br7APJXhOISxz8MKbnWo7w2vi23vMswNX0EZeAP
+         Ann+LLFN15BTJ3WQ1KvZ19LlM3XQm26iBJ7MHfsUlIOY6usLQeqp3en6ddjNQeJ/i7u1
+         f6qsAn424H+GbfnJsz7rzruBcIFCU0+JRvkl8Oh49MUvGXNemd9PDu94rLJ5vSG8ppmj
+         zLtCCbCyyOckLIHSmPZVU6v5t3c0FioExiCGthoeECpYtAoY8CuaFNrWcL1rCNTOGfkY
+         SP2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706776780; x=1707381580;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/LUOnsZoWQv3AKUXusOG3iHBw6xyGVqBDQ81NDvZ0PQ=;
+        b=RHuJ4y7G0DvMKfWy1kchAuRMGyVRiLcXm6q3b2lU27Q0QmQNXpi+7eIef69mNejJn4
+         /B1AQeJ3RW3slFLseHK4ED20lA6L2f48tZtBqk37wcR/wvF5p8dx2z5PvZgUTJuQ9H+p
+         +YF9mQ+CBLXIQzBZsT+DnDA0yQf0aVAtkFUzjqTUehCRYnyE7BsRhHEPEeREqZ6iJBGP
+         m+hRT/TPRbe15qyGdXaZML2KB9REKEn+ixBCy0cQyPUpjfJShk4aCzphk/ZHMBGQGZjk
+         W3vJPCCUL08KnFcNo8syR6VdyicrSLJAldEaPyXutTlfxRuK9tPDlUjNF22JdHD4CglL
+         b7mw==
+X-Gm-Message-State: AOJu0YwKSFmmeTDi6NfjsHURIWMy5S/G6GNmJ76Fy61kbb5UKBkutvc/
+	zhoHqjUcF3xZRg+Gl5LLL4FwjHm/wPN1OMvrtsitkm4NQXonxFSSD9oq+NnDjMg=
+X-Google-Smtp-Source: AGHT+IHumu1PNcZ4qBTo97y4VlBNSZUTcGGVqMQ2/51E+ymKFjhoQwTPdGjfzhiOmljtMExeRWOrLA==
+X-Received: by 2002:a17:906:cecc:b0:a36:5b1c:fb4b with SMTP id si12-20020a170906cecc00b00a365b1cfb4bmr1133063ejb.13.1706776780568;
+        Thu, 01 Feb 2024 00:39:40 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUpbreCLyRwzBpbin+TdP1i+rgU+9hVeCHVIQRogtpJALHH6GZadYRsacPcihVu6He4BxHV6Pw4GYH/B0luu88AfQRS/vH0MdgvyCDbSKms0GR1Ep9J1jCk5RunHcAS1eJtHncGRwbfFftIlYlhthH8ZQ+UT49nDf9cjWYuKavShk/+TLbMKt2F2JHbTRpHYXCfRU4wMJdbiIANqZHrXe4f5j1uve7QxCXWiW5HCnVtzdGwXBZH/ElNkpQn9aRJOKFBOfdid/CVAEjvwqwbKRJQzo2XcDdMK/ZAZcgr7u66tsCLVuOSqNF0yDr+g5IILCeUCv4R4wzb1L29rPs=
+Received: from [127.0.1.1] ([79.115.23.25])
+        by smtp.gmail.com with ESMTPSA id s7-20020a17090699c700b00a36c60180aesm253691ejn.60.2024.02.01.00.39.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 00:39:40 -0800 (PST)
+From: Abel Vesa <abel.vesa@linaro.org>
+Date: Thu, 01 Feb 2024 10:39:33 +0200
+Subject: [PATCH v4] phy: qualcomm: eusb2-repeater: Rework init to drop
+ redundant zero-out loop
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9e23671e-788c-4191-bdb4-94915ff7da5a@linux.intel.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240201-phy-qcom-eusb2-repeater-fixes-v4-1-cf18c8cef6d7@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAMRYu2UC/43Nyw6CMBCF4VcxXTtmesFaV76HccFlkCZKscVGQ
+ nh3CyuMC13+Z5JvRhbIWwrsuBmZp2iDdW0Ktd2wssnbK4GtUjOBQiFHBV0zwKN0d6BnKAR46ij
+ vyUNtXxSgNAI55xKlKFkyOk/LIRHnS+rGht75YXkX+bz+K0cOCKh0oYt9cZBSnm62zb3bOX9lM
+ x3Fmst+cSJxWmeVOZCuasy+OLnihPnFSeBg8j2nWiqDFX1w0zS9AYI9yoFpAQAA
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>
+Cc: Elliot Berman <quic_eberman@quicinc.com>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=10624; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=xintUEzQ8uM7chXI5krxWTSVIW10j1fGNmwxGlIfins=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlu1jGQEjJF6LQvhZJxo9atbLwNVYbuxO1/OEn+
+ itaQqh0CZ6JAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZbtYxgAKCRAbX0TJAJUV
+ VuyFEACHhi61T52YNsLXfVwydXS8A42aXEGj4POrs3OMgRFB1+noMlBMGLZhX+zH7pTub6Y/p2w
+ IO+Ok7UAy/bpaW84pRijwq4wWIyEBNf2aFjglqqpnuGeo3LBPzVdks7VH23PiId3yY4eG3NqNKd
+ Y/UBO6qdQU0NL/GXB2QG5kGQowztHcYL+j70ciVgXV1Gp+SSc/24PTK88WlJAkFDvcTB5F3IPd9
+ FWj5h5cgHjdAXyNLHCdjrIzSS1aBsYdKfHdR5UKVLYjZEDZbR3H5ypUZbkPpADaaDG3omuBWeRv
+ HAjNpXynQpNHE23li8Pco4kVDINaPkdnpNI2HShAmtoPUbjnFZMtSSwXdu0oTa8zqPI30tjagAy
+ orCj66fKIsV5geWKfWdgp5+YUDKHAOb9k8gTwxtgJgajR5d70UOa79jgdAUrzLs4jovV5tSERx1
+ w+k8wQDwf9YW/lxyzDa82Nn8Qj4zUkgi55UHWVJVWX7LrII4U1PMegNLi0dpKRrFz1zODkL18jK
+ Y2EoV75bvxbYV6I7Q+c8EoNO1GII4DWf4Y32129XqoQLlc/Abm1KKrMqWs2qUKnLTu8HUFtnayg
+ SKuwsMayu4a3x01gBFJ1QQUuM5eeWIDYp8KZ/KlKM3OjlaBQcR4J73Aqpz1xGH3jBQ45zvUP7R4
+ QS8rVSwil9r/dDA==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
-On Thu, Feb 01, 2024 at 01:10:05PM +0800, Choong Yong Liang wrote:
-> 
-> 
-> On 30/1/2024 6:21 pm, Russell King (Oracle) wrote:
-> > NAK. Absolutely not. You haven't read the phylink documentation, nor
-> > understood how phylink works.
-> > 
-> > Since you haven't read the phylink documentation, I'm not going to
-> > waste any more time reviewing this series since you haven't done your
-> > side of the bargin here.
-> > 
-> Hi Russell,
-> 
-> Sorry that previously I only studied the phylink based on the `phylink.h`
-> itself.
+Instead of incrementing the base of the global reg fields, which renders
+the second instance of the repeater broken due to wrong offsets, use
+regmap with base and offset. As for zeroing out the rest of the tuning
+regs, avoid looping though the table and just use the table as is,
+as it is already zero initialized.
 
-From phylink.h:
+Fixes: 99a517a582fc ("phy: qualcomm: phy-qcom-eusb2-repeater: Zero out untouched tuning regs")
+Tested-by: Elliot Berman <quic_eberman@quicinc.com> # sm8650-qrd
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+Changes in v4:
+- Added Elliot's T-b tag
+- Re-worded commit message
+- Link to v3: https://lore.kernel.org/r/20240129-phy-qcom-eusb2-repeater-fixes-v3-1-9a61ef3490de@linaro.org
 
-/**
- * mac_select_pcs: Select a PCS for the interface mode.
- * @config: a pointer to a &struct phylink_config.
- * @interface: PHY interface mode for PCS
- *
- * Return the &struct phylink_pcs for the specified interface mode, or
- * NULL if none is required, or an error pointer on error.
- *
- * This must not modify any state. It is used to query which PCS should
- * be used. Phylink will use this during validation to ensure that the
- * configuration is valid, and when setting a configuration to internally
- * set the PCS that will be used.
- */
+Changes in v3:
+- Reworked so that it uses base + reg-index.
+- Link to v2: https://lore.kernel.org/r/20240105-phy-qcom-eusb2-repeater-fixes-v2-0-775d98e7df05@linaro.org
 
-Note the "This must not modify any state." statement. By reinitialising
-the PCS in this method, you are violating that statement.
+Changes in v2:
+- The regfields is being dropped from the repeater init, but it's done
+  in the second patch in order to not break bisectability, as it is
+  still needed by the zero-out loop.
+- Added Konrad's R-b tag to the first patch. Did not add Elliot's T-b
+  tag as the second patch has been reworked massively.
+- The zero-out loop is dropped now by holding a copy of the init_tlb in
+  the container struct. This led to dropping the cfg from the container
+  struct (see second patch commit message for more details).
+- Link to v1: https://lore.kernel.org/r/20240104-phy-qcom-eusb2-repeater-fixes-v1-0-047b7b6b8333@linaro.org
+---
+ drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c | 166 +++++++++----------------
+ 1 file changed, 62 insertions(+), 104 deletions(-)
 
-This requirement is because this method will be called by
-phylink_validate_mac_and_pcs() at various times, potentially for each
-and every interface that stmmac supports, which will lead to you
-reinitialising the PCS, killing the link, each time we ask the MAC for
-a PCS, whether we are going to make use of it in that mode or not.
+diff --git a/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c b/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
+index a623f092b11f..a43e20abb10d 100644
+--- a/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
++++ b/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
+@@ -37,56 +37,28 @@
+ #define EUSB2_TUNE_EUSB_EQU		0x5A
+ #define EUSB2_TUNE_EUSB_HS_COMP_CUR	0x5B
+ 
+-#define QCOM_EUSB2_REPEATER_INIT_CFG(r, v)	\
+-	{					\
+-		.reg = r,			\
+-		.val = v,			\
+-	}
+-
+-enum reg_fields {
+-	F_TUNE_EUSB_HS_COMP_CUR,
+-	F_TUNE_EUSB_EQU,
+-	F_TUNE_EUSB_SLEW,
+-	F_TUNE_USB2_HS_COMP_CUR,
+-	F_TUNE_USB2_PREEM,
+-	F_TUNE_USB2_EQU,
+-	F_TUNE_USB2_SLEW,
+-	F_TUNE_SQUELCH_U,
+-	F_TUNE_HSDISC,
+-	F_TUNE_RES_FSDIF,
+-	F_TUNE_IUSB2,
+-	F_TUNE_USB2_CROSSOVER,
+-	F_NUM_TUNE_FIELDS,
+-
+-	F_FORCE_VAL_5 = F_NUM_TUNE_FIELDS,
+-	F_FORCE_EN_5,
+-
+-	F_EN_CTL1,
+-
+-	F_RPTR_STATUS,
+-	F_NUM_FIELDS,
+-};
+-
+-static struct reg_field eusb2_repeater_tune_reg_fields[F_NUM_FIELDS] = {
+-	[F_TUNE_EUSB_HS_COMP_CUR] = REG_FIELD(EUSB2_TUNE_EUSB_HS_COMP_CUR, 0, 1),
+-	[F_TUNE_EUSB_EQU] = REG_FIELD(EUSB2_TUNE_EUSB_EQU, 0, 1),
+-	[F_TUNE_EUSB_SLEW] = REG_FIELD(EUSB2_TUNE_EUSB_SLEW, 0, 1),
+-	[F_TUNE_USB2_HS_COMP_CUR] = REG_FIELD(EUSB2_TUNE_USB2_HS_COMP_CUR, 0, 1),
+-	[F_TUNE_USB2_PREEM] = REG_FIELD(EUSB2_TUNE_USB2_PREEM, 0, 2),
+-	[F_TUNE_USB2_EQU] = REG_FIELD(EUSB2_TUNE_USB2_EQU, 0, 1),
+-	[F_TUNE_USB2_SLEW] = REG_FIELD(EUSB2_TUNE_USB2_SLEW, 0, 1),
+-	[F_TUNE_SQUELCH_U] = REG_FIELD(EUSB2_TUNE_SQUELCH_U, 0, 2),
+-	[F_TUNE_HSDISC] = REG_FIELD(EUSB2_TUNE_HSDISC, 0, 2),
+-	[F_TUNE_RES_FSDIF] = REG_FIELD(EUSB2_TUNE_RES_FSDIF, 0, 2),
+-	[F_TUNE_IUSB2] = REG_FIELD(EUSB2_TUNE_IUSB2, 0, 3),
+-	[F_TUNE_USB2_CROSSOVER] = REG_FIELD(EUSB2_TUNE_USB2_CROSSOVER, 0, 2),
+-
+-	[F_FORCE_VAL_5] = REG_FIELD(EUSB2_FORCE_VAL_5, 0, 7),
+-	[F_FORCE_EN_5] = REG_FIELD(EUSB2_FORCE_EN_5, 0, 7),
+-
+-	[F_EN_CTL1] = REG_FIELD(EUSB2_EN_CTL1, 0, 7),
+-
+-	[F_RPTR_STATUS] = REG_FIELD(EUSB2_RPTR_STATUS, 0, 7),
++enum eusb2_reg_layout {
++	TUNE_EUSB_HS_COMP_CUR,
++	TUNE_EUSB_EQU,
++	TUNE_EUSB_SLEW,
++	TUNE_USB2_HS_COMP_CUR,
++	TUNE_USB2_PREEM,
++	TUNE_USB2_EQU,
++	TUNE_USB2_SLEW,
++	TUNE_SQUELCH_U,
++	TUNE_HSDISC,
++	TUNE_RES_FSDIF,
++	TUNE_IUSB2,
++	TUNE_USB2_CROSSOVER,
++	NUM_TUNE_FIELDS,
++
++	FORCE_VAL_5 = NUM_TUNE_FIELDS,
++	FORCE_EN_5,
++
++	EN_CTL1,
++
++	RPTR_STATUS,
++	LAYOUT_SIZE,
+ };
+ 
+ struct eusb2_repeater_cfg {
+@@ -98,10 +70,11 @@ struct eusb2_repeater_cfg {
+ 
+ struct eusb2_repeater {
+ 	struct device *dev;
+-	struct regmap_field *regs[F_NUM_FIELDS];
++	struct regmap *regmap;
+ 	struct phy *phy;
+ 	struct regulator_bulk_data *vregs;
+ 	const struct eusb2_repeater_cfg *cfg;
++	u32 base;
+ 	enum phy_mode mode;
+ };
+ 
+@@ -109,10 +82,10 @@ static const char * const pm8550b_vreg_l[] = {
+ 	"vdd18", "vdd3",
+ };
+ 
+-static const u32 pm8550b_init_tbl[F_NUM_TUNE_FIELDS] = {
+-	[F_TUNE_IUSB2] = 0x8,
+-	[F_TUNE_SQUELCH_U] = 0x3,
+-	[F_TUNE_USB2_PREEM] = 0x5,
++static const u32 pm8550b_init_tbl[NUM_TUNE_FIELDS] = {
++	[TUNE_IUSB2] = 0x8,
++	[TUNE_SQUELCH_U] = 0x3,
++	[TUNE_USB2_PREEM] = 0x5,
+ };
+ 
+ static const struct eusb2_repeater_cfg pm8550b_eusb2_cfg = {
+@@ -140,47 +113,42 @@ static int eusb2_repeater_init_vregs(struct eusb2_repeater *rptr)
+ 
+ static int eusb2_repeater_init(struct phy *phy)
+ {
+-	struct reg_field *regfields = eusb2_repeater_tune_reg_fields;
+ 	struct eusb2_repeater *rptr = phy_get_drvdata(phy);
+ 	struct device_node *np = rptr->dev->of_node;
+-	u32 init_tbl[F_NUM_TUNE_FIELDS] = { 0 };
+-	u8 override;
++	struct regmap *regmap = rptr->regmap;
++	const u32 *init_tbl = rptr->cfg->init_tbl;
++	u8 tune_usb2_preem = init_tbl[TUNE_USB2_PREEM];
++	u8 tune_hsdisc = init_tbl[TUNE_HSDISC];
++	u8 tune_iusb2 = init_tbl[TUNE_IUSB2];
++	u32 base = rptr->base;
+ 	u32 val;
+ 	int ret;
+-	int i;
++
++	of_property_read_u8(np, "qcom,tune-usb2-amplitude", &tune_iusb2);
++	of_property_read_u8(np, "qcom,tune-usb2-disc-thres", &tune_hsdisc);
++	of_property_read_u8(np, "qcom,tune-usb2-preem", &tune_usb2_preem);
+ 
+ 	ret = regulator_bulk_enable(rptr->cfg->num_vregs, rptr->vregs);
+ 	if (ret)
+ 		return ret;
+ 
+-	regmap_field_update_bits(rptr->regs[F_EN_CTL1], EUSB2_RPTR_EN, EUSB2_RPTR_EN);
++	regmap_write(regmap, base + EUSB2_EN_CTL1, EUSB2_RPTR_EN);
+ 
+-	for (i = 0; i < F_NUM_TUNE_FIELDS; i++) {
+-		if (init_tbl[i]) {
+-			regmap_field_update_bits(rptr->regs[i], init_tbl[i], init_tbl[i]);
+-		} else {
+-			/* Write 0 if there's no value set */
+-			u32 mask = GENMASK(regfields[i].msb, regfields[i].lsb);
+-
+-			regmap_field_update_bits(rptr->regs[i], mask, 0);
+-		}
+-	}
+-	memcpy(init_tbl, rptr->cfg->init_tbl, sizeof(init_tbl));
++	regmap_write(regmap, base + EUSB2_TUNE_EUSB_HS_COMP_CUR, init_tbl[TUNE_EUSB_HS_COMP_CUR]);
++	regmap_write(regmap, base + EUSB2_TUNE_EUSB_EQU, init_tbl[TUNE_EUSB_EQU]);
++	regmap_write(regmap, base + EUSB2_TUNE_EUSB_SLEW, init_tbl[TUNE_EUSB_SLEW]);
++	regmap_write(regmap, base + EUSB2_TUNE_USB2_HS_COMP_CUR, init_tbl[TUNE_USB2_HS_COMP_CUR]);
++	regmap_write(regmap, base + EUSB2_TUNE_USB2_EQU, init_tbl[TUNE_USB2_EQU]);
++	regmap_write(regmap, base + EUSB2_TUNE_USB2_SLEW, init_tbl[TUNE_USB2_SLEW]);
++	regmap_write(regmap, base + EUSB2_TUNE_SQUELCH_U, init_tbl[TUNE_SQUELCH_U]);
++	regmap_write(regmap, base + EUSB2_TUNE_RES_FSDIF, init_tbl[TUNE_RES_FSDIF]);
++	regmap_write(regmap, base + EUSB2_TUNE_USB2_CROSSOVER, init_tbl[TUNE_USB2_CROSSOVER]);
+ 
+-	if (!of_property_read_u8(np, "qcom,tune-usb2-amplitude", &override))
+-		init_tbl[F_TUNE_IUSB2] = override;
++	regmap_write(regmap, base + EUSB2_TUNE_USB2_PREEM, tune_usb2_preem);
++	regmap_write(regmap, base + EUSB2_TUNE_HSDISC, tune_hsdisc);
++	regmap_write(regmap, base + EUSB2_TUNE_IUSB2, tune_iusb2);
+ 
+-	if (!of_property_read_u8(np, "qcom,tune-usb2-disc-thres", &override))
+-		init_tbl[F_TUNE_HSDISC] = override;
+-
+-	if (!of_property_read_u8(np, "qcom,tune-usb2-preem", &override))
+-		init_tbl[F_TUNE_USB2_PREEM] = override;
+-
+-	for (i = 0; i < F_NUM_TUNE_FIELDS; i++)
+-		regmap_field_update_bits(rptr->regs[i], init_tbl[i], init_tbl[i]);
+-
+-	ret = regmap_field_read_poll_timeout(rptr->regs[F_RPTR_STATUS],
+-					     val, val & RPTR_OK, 10, 5);
++	ret = regmap_read_poll_timeout(regmap, base + EUSB2_RPTR_STATUS, val, val & RPTR_OK, 10, 5);
+ 	if (ret)
+ 		dev_err(rptr->dev, "initialization timed-out\n");
+ 
+@@ -191,6 +159,8 @@ static int eusb2_repeater_set_mode(struct phy *phy,
+ 				   enum phy_mode mode, int submode)
+ {
+ 	struct eusb2_repeater *rptr = phy_get_drvdata(phy);
++	struct regmap *regmap = rptr->regmap;
++	u32 base = rptr->base;
+ 
+ 	switch (mode) {
+ 	case PHY_MODE_USB_HOST:
+@@ -199,10 +169,8 @@ static int eusb2_repeater_set_mode(struct phy *phy,
+ 		 * per eUSB 1.2 Spec. Below implement software workaround until
+ 		 * PHY and controller is fixing seen observation.
+ 		 */
+-		regmap_field_update_bits(rptr->regs[F_FORCE_EN_5],
+-					 F_CLK_19P2M_EN, F_CLK_19P2M_EN);
+-		regmap_field_update_bits(rptr->regs[F_FORCE_VAL_5],
+-					 V_CLK_19P2M_EN, V_CLK_19P2M_EN);
++		regmap_write(regmap, base + EUSB2_FORCE_EN_5, F_CLK_19P2M_EN);
++		regmap_write(regmap, base + EUSB2_FORCE_VAL_5, V_CLK_19P2M_EN);
+ 		break;
+ 	case PHY_MODE_USB_DEVICE:
+ 		/*
+@@ -211,10 +179,8 @@ static int eusb2_repeater_set_mode(struct phy *phy,
+ 		 * repeater doesn't clear previous value due to shared
+ 		 * regulators (say host <-> device mode switch).
+ 		 */
+-		regmap_field_update_bits(rptr->regs[F_FORCE_EN_5],
+-					 F_CLK_19P2M_EN, 0);
+-		regmap_field_update_bits(rptr->regs[F_FORCE_VAL_5],
+-					 V_CLK_19P2M_EN, 0);
++		regmap_write(regmap, base + EUSB2_FORCE_EN_5, 0);
++		regmap_write(regmap, base + EUSB2_FORCE_VAL_5, 0);
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -243,9 +209,8 @@ static int eusb2_repeater_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct phy_provider *phy_provider;
+ 	struct device_node *np = dev->of_node;
+-	struct regmap *regmap;
+-	int i, ret;
+ 	u32 res;
++	int ret;
+ 
+ 	rptr = devm_kzalloc(dev, sizeof(*rptr), GFP_KERNEL);
+ 	if (!rptr)
+@@ -258,22 +223,15 @@ static int eusb2_repeater_probe(struct platform_device *pdev)
+ 	if (!rptr->cfg)
+ 		return -EINVAL;
+ 
+-	regmap = dev_get_regmap(dev->parent, NULL);
+-	if (!regmap)
++	rptr->regmap = dev_get_regmap(dev->parent, NULL);
++	if (!rptr->regmap)
+ 		return -ENODEV;
+ 
+ 	ret = of_property_read_u32(np, "reg", &res);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	for (i = 0; i < F_NUM_FIELDS; i++)
+-		eusb2_repeater_tune_reg_fields[i].reg += res;
+-
+-	ret = devm_regmap_field_bulk_alloc(dev, regmap, rptr->regs,
+-					   eusb2_repeater_tune_reg_fields,
+-					   F_NUM_FIELDS);
+-	if (ret)
+-		return ret;
++	rptr->base = res;
+ 
+ 	ret = eusb2_repeater_init_vregs(rptr);
+ 	if (ret < 0) {
 
-You can not do this. Sorry. Hard NAK for this approach.
+---
+base-commit: 596764183be8ebb13352b281a442a1f1151c9b06
+change-id: 20240104-phy-qcom-eusb2-repeater-fixes-c9201113032c
 
+Best regards,
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Abel Vesa <abel.vesa@linaro.org>
+
 
