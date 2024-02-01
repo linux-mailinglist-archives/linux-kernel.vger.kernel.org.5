@@ -1,247 +1,149 @@
-Return-Path: <linux-kernel+bounces-48740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A486A846082
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:59:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 260B8846087
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:00:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59ABA288F18
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:59:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6482289947
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:00:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4575785288;
-	Thu,  1 Feb 2024 18:59:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA06A8526D;
+	Thu,  1 Feb 2024 19:00:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rpD4ef5O"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GRsY/jEk"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 545C585276;
-	Thu,  1 Feb 2024 18:59:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB0585261
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 19:00:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706813978; cv=none; b=k9lesqRsMmURAEK/qUHyNqNmFOmQPTppFqBy7IKHABiWlFHuzZTAWTKdqfmhI8xw4KBg1qQq2uJowO9jJD2r/YptzsdcbBqR+NSgFQCFHn8JVU7pvSotAQICuN0fo+9s582Hkwx9vnQGGoBkB0Yp+WwtV+clNjDTglzUq+s7gAw=
+	t=1706814037; cv=none; b=YRZ7022aVCab+aT4LAeHuSSs6oOBxwVpvo/Kl4q+A27okHShv85Lg0xgVXs9qS1mVK9Nk2+Nkbvy2Xcub2a7w239otlFIjRy/Kqtru0St+se3prtivYMFLcNSZZIEzxfJRKoqwCv5MOW7snh8vV+58z4A+/FrwQyQjo0vRuediQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706813978; c=relaxed/simple;
-	bh=I1NNXAkgesc7dKK6HS2ID8NMVYdnGuoGc/8FPQaG/B8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mhVQFK9oI8lsbCo+K99dgh0Ye9lvfAz8tZGL6CG8Z8tuivocyUC3LUMruS+7Sq3fAq5k+V9nIvrJUphjoDjZi+Jiop0szFZmFnFdS+NBiGAeDw5lmNyS7rNuI6Eyskuc98wB1MmrzPOJw51g3FR1NkWiBtQc5UsyfFXchJ7y+Mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rpD4ef5O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A9CEC43394;
-	Thu,  1 Feb 2024 18:59:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706813977;
-	bh=I1NNXAkgesc7dKK6HS2ID8NMVYdnGuoGc/8FPQaG/B8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rpD4ef5OrMVjIPscn4IEXS/9g9WKcBMmDKBFa3kyUooemnxgqmRn8spZZiz30At7n
-	 3aJw/14Ac/p94rgwHvpllfDNQ1nhNMqA4a3+roejfSbXeUNyWW95jwwM/v+yPm24YN
-	 A/GOS7G8pDrAb2fA1ruCCN4/wKa6ODQpYhm3b0Xh4Q1O9y48Xei1adx8QNl4GOwoUm
-	 +w+vHuUOX+c9gDOlS6K2gLxXa6p0cg+TcciextdkDVNcZPL2qq6tQrKtQls0Ku+pm1
-	 HS3kswBOIw2kP9KScsbUvLlQOzZWsf5znJVqftfRt1PthT+m9usgrDE+1Zc3hRUxr9
-	 ttjEHh290bmKg==
-Date: Thu, 1 Feb 2024 18:59:30 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Andre Przywara <andre.przywara@arm.com>
-Cc: Aleksandr Shubin <privatesub2@gmail.com>, linux-kernel@vger.kernel.org,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Maksim Kiselev <bigunclemax@gmail.com>,
-	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
-	John Watts <contact@jookia.org>,
-	Cheo Fusi <fusibrandon13@gmail.com>, linux-pwm@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v8 1/3] dt-bindings: pwm: Add binding for Allwinner
- D1/T113-S3/R329 PWM controller
-Message-ID: <20240201-numbing-reconcile-64d05bb88e9c@spud>
-References: <20240131125920.2879433-1-privatesub2@gmail.com>
- <20240131125920.2879433-2-privatesub2@gmail.com>
- <20240131145244.4f534bac@donnerap.manchester.arm.com>
- <20240131-renewably-glimpse-a80339e8ff81@spud>
- <20240201174851.62e74089@donnerap.manchester.arm.com>
+	s=arc-20240116; t=1706814037; c=relaxed/simple;
+	bh=yyMgNu6jZcLxIKxkJraUC5nFtbsHkXOOtwpOQ0PUt3Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q11h149ztzt5nLNHeK0sNHyBRHA1qd2RzX0m8KjZoz3zkbf465Kqvl7vPZ/cXgt+fqiM3x8xClM2NbXCHoiPROP+Xia500aqUZskTSIYPVUvPPNLFbFn7dc4EXYr+WWMDfenN4uloa7S6UuDOHoNGloD7uY1lCK4aHxNfcPyA2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GRsY/jEk; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6da202aa138so819033b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 11:00:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706814032; x=1707418832; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ldL7NnvRL1dUELtbjGeSbUg5ttfmGMhXHk7grOQiZw4=;
+        b=GRsY/jEkqZPsJXJTWh34obw1ntS0UxEfSXkGfv02B3H5oeBQe3fkfNjgNZCPG3TdA8
+         0Vwc9VdYZIGg3tL+Uj0DFgbxhsTdU/R9/wvHqJ1brlTrKjxV2s0N2mxk8MQ5ZMNDnZak
+         NY54a/oWri9keuvbdR70+x+uTvLOznP1Elg2KAJGF2K5F+N7n4SnlU2xB72KnybYS4/X
+         9hIrZ5nkH8LeYKUe1cjj20LV6e9Gwwz8F9e1fjUDA552oxhobD9NmJr1qdnzL9Y6p/6U
+         uvTUiAdU9tuYPYplUuhB3yGCdBQQKhkFFluBrxng/s2hTtk4P3e5dCV/0KJ2pCzmPL/X
+         gReg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706814032; x=1707418832;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ldL7NnvRL1dUELtbjGeSbUg5ttfmGMhXHk7grOQiZw4=;
+        b=bDPkZm52EQYRcpu79HLM2RucjtrzVhSK+COpMsHevIVw5JF17ylVZC5Sddeaw5MzFP
+         djudky5GjX+o34CPDaAjK+3MtFgNHKTd2r8ShhoIi2UeLABSm0po1CPLZl5hpVW8BZR/
+         FYAR8ZNpzHMmDwvwsVFXOEuP4Vs7IJ32IFpw7lcrdVSLWCaAhNqQ/USJr+1Q0EyduLMq
+         sWcghddW1KrSR1OKYh91diU5MkmOjNkZy5VgSoSEB381E32k7EvcwqaekP7YAR97DfT1
+         42g6f++OjNW2hzKy1IGhdb5vo1E7aLM8bqtde9YuYuMRU6KZGQSe+UHL5I0/YgVj837L
+         0kMw==
+X-Gm-Message-State: AOJu0YzZ9GDgTOmxJ8ADEZeBEYqrQM0UQTDNjS/v8yUKABgLWajcOclA
+	BVeqCmlDksT3jFe5jxPByxI8oYNLPHXuJIVqiaZgai6MK4Ipp5hfnMRvBA7hUmFVzQpXiVttfi/
+	9FmVP0wq5v0Tr490exz6ed+Bcsc8=
+X-Google-Smtp-Source: AGHT+IGD0X6vKZw3kNaW5Y93wmq0JswuLZXxv/uYUgu2Iax/mInH2CrsbszM6h4nlV7LBT29P89W1jBZe80fy/YX5fY=
+X-Received: by 2002:aa7:8485:0:b0:6dd:808e:7a74 with SMTP id
+ u5-20020aa78485000000b006dd808e7a74mr19527pfn.25.1706814032407; Thu, 01 Feb
+ 2024 11:00:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="wPn/chEO+X1eK+Gn"
-Content-Disposition: inline
-In-Reply-To: <20240201174851.62e74089@donnerap.manchester.arm.com>
-
-
---wPn/chEO+X1eK+Gn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20231221065943.2803551-1-shy828301@gmail.com> <20231221065943.2803551-2-shy828301@gmail.com>
+ <878r46ym4b.fsf@oldenburg.str.redhat.com> <CAHbLzkq1ah6y-dCgA0rFePNn3FsE8ebuSNd+jaS8sO51a=X9Yw@mail.gmail.com>
+ <87frycryfq.fsf@oldenburg.str.redhat.com>
+In-Reply-To: <87frycryfq.fsf@oldenburg.str.redhat.com>
+From: Yang Shi <shy828301@gmail.com>
+Date: Thu, 1 Feb 2024 11:00:19 -0800
+Message-ID: <CAHbLzkqY1=nh0NqpLV+Az+rvT5oE=NhYZT=hOevZhs12T1V=dA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm: mmap: map MAP_STACK to VM_NOHUGEPAGE
+To: Florian Weimer <fweimer@redhat.com>
+Cc: oliver.sang@intel.com, riel@surriel.com, fengwei.yin@intel.com, 
+	willy@infradead.org, cl@linux.com, ying.huang@intel.com, 
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 01, 2024 at 05:48:51PM +0000, Andre Przywara wrote:
-> On Wed, 31 Jan 2024 21:22:06 +0000
-> Conor Dooley <conor@kernel.org> wrote:
->=20
-> Hi,
->=20
-> > On Wed, Jan 31, 2024 at 02:52:44PM +0000, Andre Przywara wrote:
-> > > On Wed, 31 Jan 2024 15:59:14 +0300
-> > > Aleksandr Shubin <privatesub2@gmail.com> wrote:
-> > >=20
-> > > Hi,
-> > >  =20
-> > > > Allwinner's D1, T113-S3 and R329 SoCs have a new pwm
-> > > > controller witch is different from the previous pwm-sun4i.
-> > > >=20
-> > > > The D1 and T113 are identical in terms of peripherals,
-> > > > they differ only in the architecture of the CPU core, and
-> > > > even share the majority of their DT. Because of that,
-> > > > using the same compatible makes sense.
-> > > > The R329 is a different SoC though, and should have
-> > > > a different compatible string added, especially as there
-> > > > is a difference in the number of channels.
-> > > >=20
-> > > > D1 and T113s SoCs have one PWM controller with 8 channels.
-> > > > R329 SoC has two PWM controllers in both power domains, one of
-> > > > them has 9 channels (CPUX one) and the other has 6 (CPUS one).
-> > > >=20
-> > > > Add a device tree binding for them.
-> > > >=20
-> > > > Signed-off-by: Aleksandr Shubin <privatesub2@gmail.com>
-> > > > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> > > > ---
-> > > >  .../bindings/pwm/allwinner,sun20i-pwm.yaml    | 88 +++++++++++++++=
-++++
-> > > >  1 file changed, 88 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/pwm/allwinner=
-,sun20i-pwm.yaml
-> > > >=20
-> > > > diff --git a/Documentation/devicetree/bindings/pwm/allwinner,sun20i=
--pwm.yaml b/Documentation/devicetree/bindings/pwm/allwinner,sun20i-pwm.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..716f75776006
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/pwm/allwinner,sun20i-pwm.ya=
-ml
-> > > > @@ -0,0 +1,88 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/pwm/allwinner,sun20i-pwm.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Allwinner D1, T113-S3 and R329 PWM
-> > > > +
-> > > > +maintainers:
-> > > > +  - Aleksandr Shubin <privatesub2@gmail.com>
-> > > > +  - Brandon Cheo Fusi <fusibrandon13@gmail.com>
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    oneOf:
-> > > > +      - const: allwinner,sun20i-d1-pwm
-> > > > +      - items:
-> > > > +          - const: allwinner,sun20i-r329-pwm
-> > > > +          - const: allwinner,sun20i-d1-pwm
-> > > > +
-> > > > +  reg:
-> > > > +    maxItems: 1
-> > > > +
-> > > > +  "#pwm-cells":
-> > > > +    const: 3
-> > > > +
-> > > > +  clocks:
-> > > > +    items:
-> > > > +      - description: Bus clock
-> > > > +      - description: 24 MHz oscillator
-> > > > +      - description: APB0 clock
-> > > > +
-> > > > +  clock-names:
-> > > > +    items:
-> > > > +      - const: bus
-> > > > +      - const: hosc
-> > > > +      - const: apb0
-> > > > +
-> > > > +  resets:
-> > > > +    maxItems: 1
-> > > > +
-> > > > +  allwinner,pwm-channels:
-> > > > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > > > +    description: The number of PWM channels configured for this in=
-stance
-> > > > +    enum: [6, 9]
-> > > > +
-> > > > +allOf:
-> > > > +  - $ref: pwm.yaml#
-> > > > +
-> > > > +  - if:
-> > > > +      properties:
-> > > > +        compatible:
-> > > > +          contains:
-> > > > +            const: allwinner,sun20i-r329-pwm
-> > > > +
-> > > > +    then:
-> > > > +      required:
-> > > > +        - allwinner,pwm-channels
-> > > > +
-> > > > +    else:
-> > > > +      properties:
-> > > > +        allwinner,pwm-channels: false =20
-> > >=20
-> > > Do we really need to be that strict?
-> > > If something compatible to D1 pops up in the future, just with a diff=
-erent
-> > > number of channels, we would need a new compatible string. =20
-> >=20
-> > Well, you would want to have a soc specific compatible anyway then,
-> > right?
->=20
-> So the idea would be to add any new (specific) compatible string to that
-> list then, when we add them?
-> I guess this would work, but strictly speaking any current driver would
-> then only need to check this property for the R329 type? The Linux
-> driver proposed in the next patch *always* honours the
-> allwinner,pwm-channels property, which is IMHO the right way to implement
-> this. And that's why I think the binding should reflect that, and not
-> explicitly *forbid* the property for every one other than R329 (atm).
->=20
-> With the current Linux driver, a potential new SoC using:
-> 	"allwinner,sun20i-d2-pwm", "allwinner,sun20i-d1-pwm";
-> 	allwinner,pwm-channels =3D <6>;
-> would work without driver changes. A driver strictly written to this
-> binding here might not, though, as it would be free to ignore the
-> pwm-channels property.
->=20
-> Does that make sense? So to encourage future compatibility, can we drop
-> the "else" branch?
+On Thu, Feb 1, 2024 at 7:34=E2=80=AFAM Florian Weimer <fweimer@redhat.com> =
+wrote:
+>
+> * Yang Shi:
+>
+> > On Tue, Jan 30, 2024 at 11:53=E2=80=AFPM Florian Weimer <fweimer@redhat=
+com> wrote:
+> >>
+> >> * Yang Shi:
+> >>
+> >> > From: Yang Shi <yang@os.amperecomputing.com>
+> >> >
+> >> > The commit efa7df3e3bb5 ("mm: align larger anonymous mappings on THP
+> >> > boundaries") incured regression for stress-ng pthread benchmark [1].
+> >> > It is because THP get allocated to pthread's stack area much more po=
+ssible
+> >> > than before.  Pthread's stack area is allocated by mmap without VM_G=
+ROWSDOWN
+> >> > or VM_GROWSUP flag, so kernel can't tell whether it is a stack area =
+or not.
+> >> >
+> >> > The MAP_STACK flag is used to mark the stack area, but it is a no-op=
+ on
+> >> > Linux.  Mapping MAP_STACK to VM_NOHUGEPAGE to prevent from allocatin=
+g
+> >> > THP for such stack area.
+> >>
+> >> Doesn't this introduce a regression in the other direction, where
+> >> workloads expect to use a hugepage TLB entry for the stack?
+> >
+> > Maybe, it is theoretically possible. But AFAICT, the real life
+> > workloads performance usually gets hurt if THP is used for stack.
+> > Willy has an example:
+> >
+> > https://lore.kernel.org/linux-mm/ZYPDwCcAjX+r+g6s@casper.infradead.org/=
+#t
+> >
+> > And avoiding THP on stack is not new, VM_GROWSDOWN | VM_GROWSUP areas
+> > have been applied before, this patch just extends this to MAP_STACK.
+>
+> If it's *always* beneficial then we should help it along in glibc as
+> well.  We've started to offer a tunable in response to this observation
+> (also paper over in OpenJDK):
+>
+>   Make thread stacks not use huge pages
+>   <https://bugs.openjdk.org/browse/JDK-8303215>
+>
+> But this is specifically about RSS usage, and not directly about
+> reducing TLB misses etc.
 
-Oh true, I see what you mean now with the example you gave. I wouldn't
-respin for this alone, since the else branch could be dropped when
-another user showed up given the driver doesn't restrict things.
-I'm okay with your suggestion though.
+Thanks for the data point. Out of curiosity, what mmap flags are used
+by JVM to indicate a stack? MAP_STACK? If so it should get
+VM_NOHUGEPAGE due to this patch (of course, on older kernel
+MADV_NOHUGEPAGE must be called by JVM).
 
-Cheer,
-Conor.
+Letting others, for example, glibc, call MADV_NOHUGEPAGE explicitly on
+stack area is fine too, but it may take some time to get there...
 
---wPn/chEO+X1eK+Gn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbvqEgAKCRB4tDGHoIJi
-0isTAQDdFIn8101DHoxqtxIzz2mXhQfAvSLN9IhSEoRLYtQYEQEA1ZfnLAFf02Qr
-FQmM5dsp/NBIxR7GwMaSW1en5yD5pgw=
-=tg0K
------END PGP SIGNATURE-----
-
---wPn/chEO+X1eK+Gn--
+>
+> Thanks,
+> Florian
+>
 
