@@ -1,255 +1,214 @@
-Return-Path: <linux-kernel+bounces-47582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAB36844FC9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:31:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33E77844FC7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:31:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C9911F2C678
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:31:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0431B2C363
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:31:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0573B78E;
-	Thu,  1 Feb 2024 03:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QnUrcKvy"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60C9C3AC08;
+	Thu,  1 Feb 2024 03:31:13 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C8373A8E3;
-	Thu,  1 Feb 2024 03:31:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7F413A8E3;
+	Thu,  1 Feb 2024 03:31:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706758285; cv=none; b=Cx1ZpRF3h3lmKdD8IZCSWGXFFohKgFy5N7ASkZ25+FSEeh0Hg1kr0Cx3/2EzUZQD1820C+ehP1u6oPMaPz3plOYb/7aDU/zjsde+dv86KPWJTbSAByi9hdfadaWr5szaSp0vtxToM0WMwU0lHVkGEeDDFIkBcC6yJ1Igffpi+y4=
+	t=1706758272; cv=none; b=HOhazYntXPpp2RpwvaPhc/PGHOghEu0Ilf2McP4ZTrCi8aoSLndU2D/0QcgVnaa92I666Fzj/DRHtPes+LY2XKDg0yGP5zenCEa3AdyBOgqNcf6FSZ+9LYgOvEvm2kKkDA0TP8Hfnc3ysiGkkdei54Cx1sWeIdcwQUWxT1tdCsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706758285; c=relaxed/simple;
-	bh=F+jUlRtNHrP0LewC79ckokmwI/v54HAeYJWfQyggfA8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IpRE7ak7mCt7qifRPTMV5e9jAL++vBZi+97Jddr2xhSBYnvXLHhHK6IGjjZlj8mjfdr8u5nnDZObuJV+DlBfAxLOXAonHB7fhRR5sm4sjqghHU2R9Qq4XALWNHMKBQeXBuqFt5vE8ZYE71ap4wq2tRv6ueVnsrDjpBpLRqfVTv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QnUrcKvy; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706758283; x=1738294283;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=F+jUlRtNHrP0LewC79ckokmwI/v54HAeYJWfQyggfA8=;
-  b=QnUrcKvyLC+MjC01CDYA5TvDbl/YyqpprbsfNKiywVKU9WNt/63oq074
-   Ji3gnoqUuh5VTjQxza1kroUPT3lsXGyqhYmJeIeDyfYAgbA5D+32ALYQb
-   6Hp9Xdfy+Xw9f8MU1lxZl8oP9spbvjn9gVW6/SyRb7KfhePWd9FddTh+w
-   SmOag7B6Vhy2cLi195LMmI9OREg/KrRgb0GKci68kYXqGVLyw5BOzszz0
-   cFRkavgj+/qtxVenGIVSnruQOmr5RyOYEE2U/ff8IHRa0EPErd2755lW8
-   tnvGV6kfFXUM7uBY/UWepLdZxd3BGIbmQpZi+Ofjo6rfqY5ar2nFShrA2
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10897727"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="10897727"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 19:31:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="788824084"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="788824084"
-Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 31 Jan 2024 19:31:19 -0800
-Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rVNnI-0002KK-2D;
-	Thu, 01 Feb 2024 03:31:16 +0000
-Date: Thu, 1 Feb 2024 11:30:53 +0800
-From: kernel test robot <lkp@intel.com>
-To: Christian Brauner <brauner@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: oe-kbuild-all@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>,
-	lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Matthew Wilcox <willy@infradead.org>,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH DRAFT 3/4] : hwlat: port struct file_operations
- thread_mode_fops to struct kernfs_ops
-Message-ID: <202402011108.V2Y9QaTk-lkp@intel.com>
-References: <20240131-tracefs-kernfs-v1-3-f20e2e9a8d61@kernel.org>
+	s=arc-20240116; t=1706758272; c=relaxed/simple;
+	bh=++2CHZr65fhuecAEhLAFwLhOjI+zPUQIy5KfDz66NW8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=est1+RitBUMH9aymUyViICA1YBPKX/AnfmY8bgHuN2H/wqaD0Dh/LzWM2VVyNBOnMaWm+JNdiIdGTJ2qizu/0lwdBjSigFOX0aMLZ3terD9e9jk8+PTke4PV6649s0N1Csjst/CdbzLVY+t43fbF4eTkBrvJpVlAuQ5dwgKwtSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TQPT81glzz1FK4W;
+	Thu,  1 Feb 2024 11:26:36 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id 126E41400D4;
+	Thu,  1 Feb 2024 11:31:06 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 1 Feb 2024 11:31:05 +0800
+Message-ID: <3630fa7f-b432-7afd-5f79-781bc3b2c5ea@huawei.com>
+Date: Thu, 1 Feb 2024 11:31:04 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131-tracefs-kernfs-v1-3-f20e2e9a8d61@kernel.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH] ext4: correct best extent lstart adjustment logic
+Content-Language: en-US
+To: Jan Kara <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
+	<stable@kernel.org>, Ojaswin Mujoo <ojaswin@linux.ibm.com>, Baokun Li
+	<libaokun1@huawei.com>
+References: <20240122123332.555370-1-libaokun1@huawei.com>
+ <20240131124636.gmxaiex6yqrhvxcj@quack3>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20240131124636.gmxaiex6yqrhvxcj@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-Hi Christian,
+On 2024/1/31 20:46, Jan Kara wrote:
+> [Added Ojaswin to CC as an author of the discussed patch]
+>
+> On Mon 22-01-24 20:33:32, Baokun Li wrote:
+>> When yangerkun review commit 93cdf49f6eca ("ext4: Fix best extent lstart
+>> adjustment logic in ext4_mb_new_inode_pa()"), it was found that the best
+>> extent did not completely cover the original request after adjusting the
+>> best extent lstart in ext4_mb_new_inode_pa() as follows:
+>>
+>>    original request: 2/10(8)
+>>    normalized request: 0/64(64)
+>>    best extent: 0/9(9)
+>>
+>> When we check if best ex can be kept at start of goal, ac_o_ex.fe_logical
+>> is 2 less than the adjusted best extent logical end 9, so we think the
+>> adjustment is done. But obviously 0/9(9) doesn't cover 2/10(8), so we
+>> should determine here if the original request logical end is less than or
+>> equal to the adjusted best extent logical end.
 
-kernel test robot noticed the following build errors:
+Hello Jan，
 
-[auto build test ERROR on 41bccc98fb7931d63d03f326a746ac4d429c1dd3]
+Thanks for the detailed explanation! 😉
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Christian-Brauner/tracefs-port-to-kernfs/20240131-214120
-base:   41bccc98fb7931d63d03f326a746ac4d429c1dd3
-patch link:    https://lore.kernel.org/r/20240131-tracefs-kernfs-v1-3-f20e2e9a8d61%40kernel.org
-patch subject: [PATCH DRAFT 3/4] : hwlat: port struct file_operations thread_mode_fops to struct kernfs_ops
-config: x86_64-rhel-8.3 (https://download.01.org/0day-ci/archive/20240201/202402011108.V2Y9QaTk-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240201/202402011108.V2Y9QaTk-lkp@intel.com/reproduce)
+> I'm sorry for a bit delayed reply. Why do you think it is a problem if the
+> resulting extent doesn't cover the full original range?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402011108.V2Y9QaTk-lkp@intel.com/
+We adjust lstart when ac_o_ex.fe_len < ac_b_ex.fe_len and
+ac_b_ex.fe_len < ac->ac_orig_goal_len, in which case the length of
+the allocation is greater than the length of the original request,
+and we would normally assume that this allocation would satisfy
+the request for the block allocation without the need for an
+additional allocation.
 
-All errors (new ones prefixed by >>):
+      /* we can't allocate as much as normalizer wants.
+       * so, found space must get proper lstart
+       * to cover original request */
 
-   kernel/trace/trace_hwlat.c: In function 'hwlat_mode_write':
-   kernel/trace/trace_hwlat.c:672:14: error: 'buf' redeclared as different kind of symbol
-     672 |         char buf[64];
-         |              ^~~
-   kernel/trace/trace_hwlat.c:667:68: note: previous definition of 'buf' with type 'char *'
-     667 | static ssize_t hwlat_mode_write(struct kernfs_open_file *of, char *buf,
-         |                                                              ~~~~~~^~~
-   kernel/trace/trace_hwlat.c:672:14: warning: unused variable 'buf' [-Wunused-variable]
-     672 |         char buf[64];
-         |              ^~~
-   kernel/trace/trace_hwlat.c: At top level:
-   kernel/trace/trace_hwlat.c:736:10: error: 'const struct kernfs_ops' has no member named 'start'
-     736 |         .start                  = s_mode_start,
-         |          ^~~~~
-   kernel/trace/trace_hwlat.c:736:9: warning: the address of 's_mode_start' will always evaluate as 'true' [-Waddress]
-     736 |         .start                  = s_mode_start,
-         |         ^
-   kernel/trace/trace_hwlat.c:737:10: error: 'const struct kernfs_ops' has no member named 'next'
-     737 |         .next                   = s_mode_next,
-         |          ^~~~
->> kernel/trace/trace_hwlat.c:737:35: error: initialization of 'ssize_t (*)(struct kernfs_open_file *, char *, size_t,  loff_t)' {aka 'long int (*)(struct kernfs_open_file *, char *, long unsigned int,  long long int)'} from incompatible pointer type 'void * (*)(struct seq_file *, void *, loff_t *)' {aka 'void * (*)(struct seq_file *, void *, long long int *)'} [-Werror=incompatible-pointer-types]
-     737 |         .next                   = s_mode_next,
-         |                                   ^~~~~~~~~~~
-   kernel/trace/trace_hwlat.c:737:35: note: (near initialization for 'thread_mode_fops.write')
-   kernel/trace/trace_hwlat.c:738:10: error: 'const struct kernfs_ops' has no member named 'show'
-     738 |         .show                   = s_mode_show,
-         |          ^~~~
-   kernel/trace/trace_hwlat.c:738:35: error: initialization of '__poll_t (*)(struct kernfs_open_file *, struct poll_table_struct *)' {aka 'unsigned int (*)(struct kernfs_open_file *, struct poll_table_struct *)'} from incompatible pointer type 'int (*)(struct seq_file *, void *)' [-Werror=incompatible-pointer-types]
-     738 |         .show                   = s_mode_show,
-         |                                   ^~~~~~~~~~~
-   kernel/trace/trace_hwlat.c:738:35: note: (near initialization for 'thread_mode_fops.poll')
-   kernel/trace/trace_hwlat.c:739:10: error: 'const struct kernfs_ops' has no member named 'stop'
-     739 |         .stop                   = s_mode_stop,
-         |          ^~~~
-   kernel/trace/trace_hwlat.c:739:35: error: initialization of 'int (*)(struct kernfs_open_file *, struct vm_area_struct *)' from incompatible pointer type 'void (*)(struct seq_file *, void *)' [-Werror=incompatible-pointer-types]
-     739 |         .stop                   = s_mode_stop,
-         |                                   ^~~~~~~~~~~
-   kernel/trace/trace_hwlat.c:739:35: note: (near initialization for 'thread_mode_fops.mmap')
-   kernel/trace/trace_hwlat.c:740:35: warning: initialized field overwritten [-Woverride-init]
-     740 |         .write                  = hwlat_mode_write,
-         |                                   ^~~~~~~~~~~~~~~~
-   kernel/trace/trace_hwlat.c:740:35: note: (near initialization for 'thread_mode_fops.write')
-   kernel/trace/trace_hwlat.c: In function 'init_tracefs':
-   kernel/trace/trace_hwlat.c:766:51: error: passing argument 5 of 'tracefs_create_file' from incompatible pointer type [-Werror=incompatible-pointer-types]
-     766 |                                                   &trace_min_max_fops);
-         |                                                   ^~~~~~~~~~~~~~~~~~~
-         |                                                   |
-         |                                                   const struct file_operations *
-   In file included from kernel/trace/trace_hwlat.c:41:
-   include/linux/tracefs.h:94:66: note: expected 'const struct kernfs_ops *' but argument is of type 'const struct file_operations *'
-      94 |                                         const struct kernfs_ops *ops);
-         |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~^~~
-   kernel/trace/trace_hwlat.c:773:50: error: passing argument 5 of 'tracefs_create_file' from incompatible pointer type [-Werror=incompatible-pointer-types]
-     773 |                                                  &trace_min_max_fops);
-         |                                                  ^~~~~~~~~~~~~~~~~~~
-         |                                                  |
-         |                                                  const struct file_operations *
-   include/linux/tracefs.h:94:66: note: expected 'const struct kernfs_ops *' but argument is of type 'const struct file_operations *'
-      94 |                                         const struct kernfs_ops *ops);
-         |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~^~~
-   kernel/trace/trace_hwlat.c:778:47: error: passing argument 3 of 'trace_create_file' from incompatible pointer type [-Werror=incompatible-pointer-types]
-     778 |                                               top_dir,
-         |                                               ^~~~~~~
-         |                                               |
-         |                                               struct kernfs_node *
-   In file included from kernel/trace/trace_hwlat.c:46:
-   kernel/trace/trace.h:629:49: note: expected 'struct dentry *' but argument is of type 'struct kernfs_node *'
-     629 |                                  struct dentry *parent,
-         |                                  ~~~~~~~~~~~~~~~^~~~~~
-   kernel/trace/trace_hwlat.c:780:47: error: passing argument 5 of 'trace_create_file' from incompatible pointer type [-Werror=incompatible-pointer-types]
-     780 |                                               &thread_mode_fops);
-         |                                               ^~~~~~~~~~~~~~~~~
-         |                                               |
-         |                                               const struct kernfs_ops *
-   kernel/trace/trace.h:631:64: note: expected 'const struct file_operations *' but argument is of type 'const struct kernfs_ops *'
-     631 |                                  const struct file_operations *fops);
-         |                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
-   kernel/trace/trace_hwlat.c:777:27: error: assignment to 'struct kernfs_node *' from incompatible pointer type 'struct dentry *' [-Werror=incompatible-pointer-types]
-     777 |         hwlat_thread_mode = trace_create_file("mode", TRACE_MODE_WRITE,
-         |                           ^
-   cc1: some warnings being treated as errors
+And the comment in the code states that we need to "cover original
+request", but this logic is not fulfilled in the code below, so yangerkun
+is very puzzled and presents the above counterexample, so we think
+it's a problem.
 
+> We must always
+> cover the first block of the original extent so that the allocation makes
+> forward progress. But otherwise we choose to align to the start / end of
+> the goal range to reduce fragmentation even if we don't cover the whole
+> requested range - the rest of the range will be covered by the next
+> allocation.
+Totally agree, for the example above, if we end up with a total of 64
+blocks, then the final extent distribution might look like this:
 
-vim +737 kernel/trace/trace_hwlat.c
+Before:  [0/9(9)], [9/64(55)]
+Patched: [0/2(2)], [2/11(9)], [11/64(53)]
 
-   733	
-   734	static const struct kernfs_ops thread_mode_fops = {
-   735		.atomic_write_len	= PAGE_SIZE,
-   736		.start			= s_mode_start,
- > 737		.next			= s_mode_next,
-   738		.show			= s_mode_show,
-   739		.stop			= s_mode_stop,
-   740		.write			= hwlat_mode_write,
-   741	};
-   742	/**
-   743	 * init_tracefs - A function to initialize the tracefs interface files
-   744	 *
-   745	 * This function creates entries in tracefs for "hwlat_detector".
-   746	 * It creates the hwlat_detector directory in the tracing directory,
-   747	 * and within that directory is the count, width and window files to
-   748	 * change and view those values.
-   749	 */
-   750	static int init_tracefs(void)
-   751	{
-   752		int ret;
-   753		struct kernfs_node *top_dir;
-   754	
-   755		ret = tracing_init_dentry();
-   756		if (ret)
-   757			return -ENOMEM;
-   758	
-   759		top_dir = tracefs_create_dir("hwlat_detector", NULL);
-   760		if (!top_dir)
-   761			return -ENOMEM;
-   762	
-   763		hwlat_sample_window = tracefs_create_file("window", TRACE_MODE_WRITE,
-   764							  top_dir,
-   765							  &hwlat_window,
-   766							  &trace_min_max_fops);
-   767		if (!hwlat_sample_window)
-   768			goto err;
-   769	
-   770		hwlat_sample_width = tracefs_create_file("width", TRACE_MODE_WRITE,
-   771							 top_dir,
-   772							 &hwlat_width,
-   773							 &trace_min_max_fops);
-   774		if (!hwlat_sample_width)
-   775			goto err;
-   776	
-   777		hwlat_thread_mode = trace_create_file("mode", TRACE_MODE_WRITE,
-   778						      top_dir,
-   779						      NULL,
-   780						      &thread_mode_fops);
-   781		if (!hwlat_thread_mode)
-   782			goto err;
-   783	
-   784		return 0;
-   785	
-   786	 err:
-   787		tracefs_remove(top_dir);
-   788		return -ENOMEM;
-   789	}
-   790	
+So the question is really whether we expect fewer allocations currently
+or fewer fragments later.
+> Also there is a problem with trying to cover the whole original
+> range described in [1]. Essentially the goal range does not need to cover
+> the whole original range and if we try to align the allocated range to
+> cover the whole original range, it may result in exceeding the goal range
+> and thus overlapping preallocations and triggering asserts in the prealloc
+> code.
+>
+> So if we decided we want to handle the case you describe in a better way,
+> we'd need something making sure we don't exceed the goal range.
+>
+> 								Honza
+>
+> [1] https://lore.kernel.org/all/Y+UzQJRIJEiAr4Z4@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com/
+goal_start          B    original_start   A              goal_end
+   |-----------------|----------*----------|-----------------|
+      best_ex_len                              best_ex_len
 
+The current logic guarantees that the goal range will not be exceeded.
+If original_start + best_ex_len > goal_end, then in case1 the ex_end
+will be adjusted to align with the goal_end, and if the
+goal_end < original_end, then another block allocation will be triggered,
+which is fine. But in other cases, we can guarantee that the original
+request will be covered by the adjusted best ex.
+
+The problem is that in case2, when we aligned ex_fe_start with
+goal_start, we exited the alignment as soon as we contained the
+original_start, which may not have contained the original_end and
+triggered an additional block allocation, but if we jumped to case3
+we could cover the entire original request.
+
+In general, this patch will not cause the goal range to be exceeded.
+>> Moreover, the best extent len is not modified during the adjustment
+>> process, and it is already checked by the previous assertion, so replace
+>> the check for fe_len with a check for the best extent logical end.
+>>
+>> Cc: stable@kernel.org
+>> Fixes: 93cdf49f6eca ("ext4: Fix best extent lstart adjustment logic in ext4_mb_new_inode_pa()")
+>> Signed-off-by: yangerkun <yangerkun@huawei.com>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> ---
+>>   fs/ext4/mballoc.c | 7 ++++---
+>>   1 file changed, 4 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index f44f668e407f..fa5977fe8d72 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -5146,6 +5146,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+>>   			.fe_len = ac->ac_orig_goal_len,
+>>   		};
+>>   		loff_t orig_goal_end = extent_logical_end(sbi, &ex);
+>> +		loff_t o_ex_end = extent_logical_end(sbi, &ac->ac_o_ex);
+>>   
+>>   		/* we can't allocate as much as normalizer wants.
+>>   		 * so, found space must get proper lstart
+>> @@ -5161,7 +5162,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+>>   		 * 1. Check if best ex can be kept at end of goal (before
+>>   		 *    cr_best_avail trimmed it) and still cover original start
+>>   		 * 2. Else, check if best ex can be kept at start of goal and
+>> -		 *    still cover original start
+>> +		 *    still cover original end
+>>   		 * 3. Else, keep the best ex at start of original request.
+>>   		 */
+>>   		ex.fe_len = ac->ac_b_ex.fe_len;
+>> @@ -5171,7 +5172,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+>>   			goto adjust_bex;
+>>   
+>>   		ex.fe_logical = ac->ac_g_ex.fe_logical;
+>> -		if (ac->ac_o_ex.fe_logical < extent_logical_end(sbi, &ex))
+>> +		if (o_ex_end <= extent_logical_end(sbi, &ex))
+>>   			goto adjust_bex;
+>>   
+>>   		ex.fe_logical = ac->ac_o_ex.fe_logical;
+>> @@ -5179,7 +5180,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+>>   		ac->ac_b_ex.fe_logical = ex.fe_logical;
+>>   
+>>   		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
+>> -		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
+>> +		BUG_ON(o_ex_end > extent_logical_end(sbi, &ex));
+>>   		BUG_ON(extent_logical_end(sbi, &ex) > orig_goal_end);
+>>   	}
+>>   
+>> -- 
+>> 2.31.1
+>>
+Cheers!
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+With Best Regards,
+Baokun Li
+.
 
