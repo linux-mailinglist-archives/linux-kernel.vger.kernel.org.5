@@ -1,169 +1,188 @@
-Return-Path: <linux-kernel+bounces-47735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4861845219
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:35:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9129684521D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:39:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1DD41C23DC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 07:35:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3C4B28D959
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 07:39:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48FE1158D81;
-	Thu,  1 Feb 2024 07:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D14158D72;
+	Thu,  1 Feb 2024 07:39:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pCja0pvr"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="cIkXFR+n"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A65931586E4
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 07:34:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 993A6208DD;
+	Thu,  1 Feb 2024 07:39:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706772895; cv=none; b=KPQiYrw3Tr1BI2GNLy9f3sb1LdnLQaX12llaeHgc6iFC7c3CEeZMA2NRuS/kAjk3Was8SPV+gvW6T9TaPBOP/RcXhyaYCwyaNbLjyAxnkoiLkYHHVdFT/ycRaKpkz5dojNPCb9ymIeNpd5qAPGpQ3K+0RRoywCi8I88SwxXk5vQ=
+	t=1706773146; cv=none; b=esFXr8JAJVCC6bJ3KxT/aXO2ksb34kAu0sBgJSaTk/eXd/ykx5qqNCfE2o1B8QkJvbsYgPa3QM2tHmKG+GVOPn/cympoV+4c1ZGHE75dUTrc7tssU41cV8kYym5TCsLLVBMuZoa5r3j0UWS7yAgzRzeAr+13egfl7t0uabme9j0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706772895; c=relaxed/simple;
-	bh=omvxYYUVzlZlGzNuwC3pg5IItgbXs8aIOXIcPUGiF7g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ZrfDsH2KQvjd7C/H9ayHbncbw7i/XstTkBEaT7ha+1Ypn3QthN+WVR+4QT0FFawDf7jfBmpl0TVFPuOLA1kGBRyF4foke0DI+Gc0U9EKLV0ZU+f1n56NwA3WX+T+klrTaucHo4odKPPYJDT9ApzHYBR2QwTFVBcU/AWFGw/uiBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pCja0pvr; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3566c0309fso67851966b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 23:34:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706772891; x=1707377691; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UtV5UaZkBV/O98jA24IeLSwwKAMs6w3Dse18asYSD/s=;
-        b=pCja0pvrLA9Bk+URJDOJ/apBVKszBhxV10uzzBM7viUTVPXuZIs5Lgsb19fEUhqoTp
-         SZv13SuKWfD1M2wQWb4J5UUL1+h+JiR7+noLB8Cp36fjkM5K07arwu4g9P7gXOKRvCy3
-         pYcaVngCrPVNBcAuTIpcc40QyNvTqh0L1cV8A6mbtLDaaX0abOa/2vZ64QNsktJc720D
-         NVcFN1xUXECF1x3CT20pcI8PW8yBbJqrEgQiQz/C8W52qJb6Zvs12qN+eQEcmsTuLimv
-         //MQzc8MQ8BThyovLSnTFZhKuINt3CtyQ+ohesXxX1K6u4OZvXULNoOd3hYY+JfOwsPW
-         i4mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706772891; x=1707377691;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UtV5UaZkBV/O98jA24IeLSwwKAMs6w3Dse18asYSD/s=;
-        b=I7QwQEPOv7j13auhu3P8uSoBg1uZhS4pBmRP91u5d0y+Ps1W+2FXIvdBDK5GAhygpu
-         PbCJtdfq+ABxdxZO3eQxGOosDoGavWaKaqe7+XPYW6qPoajSANIhVAZRzz3zzrnWHPPS
-         ZLZHGHFgL38v2nZzIt4ksXKbmbzQh1f3tSNP/Ks9MOsAVsJeUTEj4OjYoZT1h+f3mrrk
-         1SE1R83xeuOhbfF9vJWC0CZdBtpIUNvVHjfjs1UlXIQxSSU7EhfrqQRuzeOz8oSGk4HW
-         0XIg6436kyfBt+MfVPNHFRrKKe65c1GBflIZ3Tjbi0jVeJLuVVIRAE4miV+X0It45FzE
-         J5Qg==
-X-Gm-Message-State: AOJu0YzbyIlpvaXrynFwDGDZICcvtb2fQk+hgViCToDUkPrmwGHmvImF
-	gsWEP37woR4mBshSM2pW3BZOIfmjHA8th9l6phJfI4VfWYAZx4xZFtcCd8hhck4=
-X-Google-Smtp-Source: AGHT+IEI865AQKJCC9ukvAzwdj1LCnq7rbIiaYBs0SWcbAE8pnG/riFO2ce3yzMWUPNI9ffNlnjWjg==
-X-Received: by 2002:a17:906:35d8:b0:a28:ec67:185f with SMTP id p24-20020a17090635d800b00a28ec67185fmr2809335ejb.60.1706772890806;
-        Wed, 31 Jan 2024 23:34:50 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWBYAzr1O6DzSnGY9lCpfJUuluBb6TpJN42UMf0hjku2Q/zrCF3RB2qCNxSqRERsxUwXP68SBGb0C6g+mA/Tj2YdrRX1evv8DVeXKHEJlWGbRgVLmWx09GIWVlFssKBc/WB0TG5CV++wNXfBjzTS3nT/NFNp4HTEp/gx7G89qFdVvbI0qvJwbPjYyeBVq8+SWWkXqHQ5CW90LPUXpJgXsuiV25ouRw9CWOL/xByTyjLbApqy3/8sadmmOxMIJ+swsBueewIUba6XtJ3BtbkmW6aDSYEEgYERatBFP53WTcxduTH/W3jxljtfq/rCs6H0BdjEcJNEWSQarTSTRbsld4Vo8DKekUv43N0WmzOuniIDreAvwqTiDLBxQoMEfgEpMf7Ut9c1jGmAAxmJysvFiyFo3nfh2p4mgU9p4LAf3L7wA/9Gnm/fAppYurgdtNHhQtAfcCwHLDBdROE/JgFeC33Jhf30I+I1t05i7jDnyeEFwvad09wnQKdq/G1AyWLXC+TnXhI70xy0pujG0haSpow
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id tk3-20020a170907c28300b00a35464aab3asm5732191ejc.97.2024.01.31.23.34.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Jan 2024 23:34:50 -0800 (PST)
-Message-ID: <b4b2ec92-b0ad-4702-94a6-ac128181d801@linaro.org>
-Date: Thu, 1 Feb 2024 08:34:49 +0100
+	s=arc-20240116; t=1706773146; c=relaxed/simple;
+	bh=Vy3QAsyp6Zh8+Hcn9aLRVk8VwYfa3R24xQXNfWAKT4M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JAKSUxILUQY7Ruo7iOx6NcfGS3CtyyTTNtbH8ryxpg/3gKLeNnyg/jaQCHYA/Pk6TLe9MEaNyMchyWSjGTdNXeV39in9uYYuGSJxs99bo9khpNoZ8okk+z9btIkL4BACZXlBktK8SFBkXGnzyN3PfPS7wJX1kjQVZWJEmi/E0mo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=cIkXFR+n; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41167OjR023207;
+	Thu, 1 Feb 2024 07:38:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=O5xbgGIVQTFeQwn1snTqVjPyk1UJqDq7NObWf8KUYvU=;
+ b=cIkXFR+n/pu1/YCFuL3LWp5TOK+UO2VLs5whWub60JTQvqf7suBBLJs13FHLYc9zWQ1W
+ d7JcT8/RNZwbGn/W9zSt3rfaBTNLYdDeyuE6YMcoH5fmZYF7NFUYjlyREmOtGMtMfskT
+ HRY/TVn8v2Tf/srs8UsUY3sS7ni6PvYdHi7HiI6iDLVTD1FyPMl8WE5q4/nXQOoznlw7
+ aAKl/QCb1GgQdQQdknUYQD49mCWo5/n6UIFW66TcWc0JZVK6DW0fKJF9D86ubAiq+4tT
+ amyz0z2suBSkX+5Rf/t3P598z4ONL5iKeResvWudmHo76N13suWP/lxmy8dM7gGYnTIm gA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w05re1wty-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 01 Feb 2024 07:38:49 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4117TlOG016946;
+	Thu, 1 Feb 2024 07:38:48 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w05re1wtf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 01 Feb 2024 07:38:48 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4116sqx1008242;
+	Thu, 1 Feb 2024 07:38:47 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vwdnmajk0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 01 Feb 2024 07:38:47 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4117cj8X39518878
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 1 Feb 2024 07:38:45 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1431920043;
+	Thu,  1 Feb 2024 07:38:45 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DA4DE20040;
+	Thu,  1 Feb 2024 07:38:44 +0000 (GMT)
+Received: from DESKTOP-2CCOB1S. (unknown [9.171.218.73])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu,  1 Feb 2024 07:38:44 +0000 (GMT)
+Date: Thu, 1 Feb 2024 08:38:43 +0100
+From: Tobias Huschle <huschle@linux.ibm.com>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>, Abel Wu <wuyun.abel@bytedance.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        virtualization@lists.linux.dev, netdev@vger.kernel.org
+Subject: Re: Re: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6
+ sched/fair: Add lag based placement)
+Message-ID: <ZbtKg6815Uwg3HPw@DESKTOP-2CCOB1S.>
+References: <20231211115329-mutt-send-email-mst@kernel.org>
+ <CACGkMEudZnF7hUajgt0wtNPCxH8j6A3L1DgJj2ayJWhv9Bh1WA@mail.gmail.com>
+ <20231212111433-mutt-send-email-mst@kernel.org>
+ <42870.123121305373200110@us-mta-641.us.mimecast.lan>
+ <20231213061719-mutt-send-email-mst@kernel.org>
+ <25485.123121307454100283@us-mta-18.us.mimecast.lan>
+ <20231213094854-mutt-send-email-mst@kernel.org>
+ <20231214021328-mutt-send-email-mst@kernel.org>
+ <92916.124010808133201076@us-mta-622.us.mimecast.lan>
+ <20240121134311-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] i2c: designware: allow fine tuning tuning waveform
- from device tree
-Content-Language: en-US
-To: Aahil Awatramani <aahila@google.com>, David Dillow <dillow@google.com>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Andi Shyti <andi.shyti@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Jarkko Nikula <jarkko.nikula@linux.intel.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Jan Dabros <jsd@semihalf.com>, linux-i2c@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240201044623.374389-1-aahila@google.com>
- <20240201044623.374389-2-aahila@google.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240201044623.374389-2-aahila@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240121134311-mutt-send-email-mst@kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: dszN-J_Pt26RmI-Q8iq1vbjEbXr0EEWP
+X-Proofpoint-ORIG-GUID: TIVluWx1UphXsst12-HPeQ90EczE4qo0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-31_10,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ spamscore=0 lowpriorityscore=0 suspectscore=0 adultscore=0 malwarescore=0
+ mlxlogscore=686 bulkscore=0 phishscore=0 priorityscore=1501 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402010060
 
-On 01/02/2024 05:46, Aahil Awatramani wrote:
->  
-> +static void i2c_parse_cnt(struct device *dev, char *prop_name, u16 *cnt)
-> +{
-> +	u32 tmp_cnt;
-> +	int ret;
-> +
-> +	ret = device_property_read_u32(dev, prop_name, &tmp_cnt);
-> +	if (ret)
-> +		return;
-> +	*cnt = tmp_cnt;
-> +}
-> +
->  static int dw_i2c_of_configure(struct platform_device *pdev)
->  {
->  	struct dw_i2c_dev *dev = platform_get_drvdata(pdev);
-> @@ -146,6 +157,15 @@ static int dw_i2c_of_configure(struct platform_device *pdev)
->  		break;
->  	}
->  
-> +	i2c_parse_cnt(&pdev->dev, "i2c-scl-ss-hcnt", &dev->ss_hcnt);
+On Sun, Jan 21, 2024 at 01:44:32PM -0500, Michael S. Tsirkin wrote:
+> On Mon, Jan 08, 2024 at 02:13:25PM +0100, Tobias Huschle wrote:
+> > On Thu, Dec 14, 2023 at 02:14:59AM -0500, Michael S. Tsirkin wrote:
+> > - Along with the wakeup of the kworker, need_resched needs to
+> >   be set, such that cond_resched() triggers a reschedule.
+> 
+> Let's try this? Does not look like discussing vhost itself will
+> draw attention from scheduler guys but posting a scheduling
+> patch probably will? Can you post a patch?
 
-Please post your DTS and post results of testing it against bindings.
+As a baseline, I verified that the following two options fix
+the regression:
 
-Best regards,
-Krzysztof
+- replacing the cond_resched in the vhost_worker function with a hard
+  schedule 
+- setting the need_resched flag using set_tsk_need_resched(current)
+  right before calling cond_resched
 
+I then tried to find a better spot to put the set_tsk_need_resched
+call. 
+
+One approach I found to be working is setting the need_resched flag 
+at the end of handle_tx and hande_rx.
+This would be after data has been actually passed to the socket, so 
+the originally blocked kworker has something to do and will profit
+from the reschedule. 
+It might be possible to go deeper and place the set_tsk_need_resched
+call to the location right after actually passing the data, but this
+might leave us with sprinkling that call in multiple places and
+might be too intrusive.
+Furthermore, it might be possible to check if an error occured when
+preparing the transmission and then skip the setting of the flag.
+
+This would require a conceptual decision on the vhost side.
+This solution would not touch the scheduler, only incentivise it to
+do the right thing for this particular regression.
+
+Another idea could be to find the counterpart that initiates the
+actual data transfer, which I assume wakes up the kworker. From
+what I gather it seems to be an eventfd notification that ends up
+somewhere in the qemu code. Not sure if that context would allow
+to set the need_resched flag, nor whether this would be a good idea.
+
+> 
+> > - On cond_resched(), verify if the consumed runtime of the caller
+> >   is outweighing the negative lag of another process (e.g. the 
+> >   kworker) and schedule the other process. Introduces overhead
+> >   to cond_resched.
+> 
+> Or this last one.
+
+On cond_resched itself, this will probably only be possible in a very 
+very hacky way. That is because currently, there is no immidiate access
+to the necessary data available, which would make it necessary to 
+bloat up the cond_resched function quite a bit, with a probably 
+non-negligible amount of overhead.
+
+Changing other aspects in the scheduler might get us in trouble as
+they all would probably resolve back to the question "What is the magic
+value that determines whether a small task not being scheduled justifies
+setting the need_resched flag for a currently running task or adjusting 
+its lag?". As this would then also have to work for all non-vhost related
+cases, this looks like a dangerous path to me on second thought.
+
+
+-------- Summary --------
+
+In my (non-vhost experience) opinion the way to go would be either
+replacing the cond_resched with a hard schedule or setting the
+need_resched flag within vhost if the a data transfer was successfully
+initiated. It will be necessary to check if this causes problems with
+other workloads/benchmarks.
 
