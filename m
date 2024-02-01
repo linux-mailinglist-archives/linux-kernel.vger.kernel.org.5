@@ -1,141 +1,146 @@
-Return-Path: <linux-kernel+bounces-47598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C85D845005
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:04:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73740845009
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:05:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51A621F2AF0E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:04:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0F77B21DE4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:05:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B863B2A6;
-	Thu,  1 Feb 2024 04:04:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90CAF3B7AA;
+	Thu,  1 Feb 2024 04:05:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kali.org header.i=@kali.org header.b="pMYWn59+"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="inOwgJO1"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87833B282
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 04:04:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D5033B197;
+	Thu,  1 Feb 2024 04:05:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706760271; cv=none; b=b8p0vb5Fk1S3YV82x5pVYQlFq7kc4AtasqYAmPhIPmjxZd8jy4ua/sMW2RwroAk8sFboKUThoDirnnFHx0TRNO736GEiNaRW42EVGEdWqudtagwSbP+t1a+XsBhS6yZdnEKEyTsHukxM5cUTEhN8x5tFeEk+57Ti/5d47b4mteI=
+	t=1706760338; cv=none; b=e06EUisOP7FSUe2EC83LRebdEXXkFeWt+cGu3xqquKI1vsjzbo4L5JhZAGON4BozyLP02YHt53PBxUzEcta1cgiqVr5U4osKXWXAf8KF4MAVvTBZHiXiXzkW388kzgH5hAV1CaXcYArAS0MzI+seULLnP5jAiXPk4hm/9FjMRuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706760271; c=relaxed/simple;
-	bh=U+z/Gzi2e8oSaSkN5Mf9nf9eVZKujMwhE9OLgovc7bM=;
+	s=arc-20240116; t=1706760338; c=relaxed/simple;
+	bh=JEgdm4dXi+L1DQzTB3h/avDvAmCbRi6xV/Fe7blQnM0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Z0zYx3JJFLJUz6+C/axKeAB10PySG2zJQbzRFPvWekt49yAC1xoMwHas0sZPsxQsB2lRD+qp+wSJzXqfhQrXLxf8VaafWAf3Ot3r22Yng1SxG4T+2iqeU9cBfX08ptw387LeEU4vzzfae8OqddXJzjnAIHimiZQ0nw7AQF7wKCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kali.org; spf=pass smtp.mailfrom=kali.org; dkim=pass (2048-bit key) header.d=kali.org header.i=@kali.org header.b=pMYWn59+; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kali.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kali.org
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5111ef545bfso742450e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:04:29 -0800 (PST)
+	 To:Cc:Content-Type; b=r0DvMm4PrvLlYQd6PIe99gL030idgASLz1ioljN4kyxsvvrolbG0PB4FDu8ChzCRwkGnzSREL2VZwaMJ4pza+cRpSAdHn7ebkJN6VSnuHUD9+Qqr8P+1ssRcvvGBea/0FrHF4t5CduDmyD1OPC8i8G1c1cQDOyd48mYhs07l5w4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=inOwgJO1; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5113000a426so123360e87.2;
+        Wed, 31 Jan 2024 20:05:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kali.org; s=google; t=1706760268; x=1707365068; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706760335; x=1707365135; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=g1pCpqVMhWzU3nLiNxALZDbTH3+vNR66xyNLLKO0v8w=;
-        b=pMYWn59+cHhsWgr23hYLZ+Mp1Er1uJdeAOsf2u6UaBEWvrra4HjgjJMG/0DuZTnFCq
-         jdizSoHWrB4oHAK0jBV/Ci1fD1d6xnD8jZLAVPkxukQA3l0omqddNVBPxKIcjowloqgP
-         0QO4vhtJ1305mJ+lcm5Ptuv94fgplSu3nhAKsXV2iJnhYE/PfiPy9hilN3vuAzXrFgqr
-         Cl4nuzNDS1CBhR7n5ZVFeu6PywrAWdPczJ165tTU3uF1RWtNOn8HVzjyM12uQIHce3Nk
-         5hBTDCkBMRO2Vc/nWMYqbNOgs07ZFvxRsN+P0oazYfmj6MISAMkYJCSzd+N56cZXfGE1
-         1EWg==
+        bh=rVtZzGrAZ7Rvq/x504vQLLiqx/E0QPJtNjyDBer37qU=;
+        b=inOwgJO1klhdL9TwB5BnVudeeJjDIIzKOdrSnBjwTANvTzLvHWNsIrMnkGJZAWdQf4
+         O7gnXG6qxAzD6iZcITQNn06BLPSjsXnWvbI74OiZNM2XjZG2IBSH6nKmXimGn9Xue4/O
+         TpWsbFujOC57j71E26ccBR2+Y6UyKVj9n616zPfxeW2LKVieYUgJ7TRzDRE3byrJHHpb
+         /w2DlHWs3jfZcTEHGtCwo7cyb30Q0A8w5UeX2+4OTFfkm2IPC2aOJYY207PTO7+9tDq+
+         HSgCQo0o6xgNUcCf+5g6SNi7K2mpCcAx9aal+GQ7ev8GPQVcodwxgI7jQ6oLmT84PhGE
+         9goQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706760268; x=1707365068;
+        d=1e100.net; s=20230601; t=1706760335; x=1707365135;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=g1pCpqVMhWzU3nLiNxALZDbTH3+vNR66xyNLLKO0v8w=;
-        b=OujrSDqn3TBSJjCVwSYxXgs1DelEnwZx/UFnIJ5y3TrpEo+qcVgB9zqMi+oArZMze0
-         uWzRGSnYjypvVSTQTrks4rhXSwkDLMGNuGHsma5qhN+CclWCO5Id5tgTKEXcltXOh3Kw
-         09JenG1klxDt4Y+zeykX4zUD80TmJB4JbiVGxn/5dO502+H32SdWg0kUDXG8vHaLEuTM
-         kMp4OIhuQP0cP3iM7afM/utK2wW54EUt4Trr+2LlWXBT7Wv/Jdsy7rIX5z6GSJZXeOIx
-         kzFI7joong2byH1SyW6FcC4bRw1UDEfbOd4zLnWV2YLiLBrpd13efHV6PqidWVHakKoK
-         VKRg==
-X-Gm-Message-State: AOJu0Yzz4eVoZVIrqanJYqdlX4gA66NOR/0a8rwZt0McS129BSzwMPaC
-	X37VeYSF5RyilJ5+PN4FlcIW9Zg8V3So7r6iw/pzJng52oS7ovGMNOjbYCnnRZMh/a3kckYIIrZ
-	h3xHbD7UzXLTdGE5CJHhsjyA6wKBcx+266y8wlg==
-X-Google-Smtp-Source: AGHT+IFe5H/phU7lMtzKlpQzEnleJByHGXLacQC79IKXkfpOvLnNeg3HBnc/RI/6OD+znY9scOVD1GK6dfOsLTNVxEI=
-X-Received: by 2002:a05:651c:1cf:b0:2d0:6fe8:bb2a with SMTP id
- d15-20020a05651c01cf00b002d06fe8bb2amr2054277ljn.32.1706760267723; Wed, 31
- Jan 2024 20:04:27 -0800 (PST)
+        bh=rVtZzGrAZ7Rvq/x504vQLLiqx/E0QPJtNjyDBer37qU=;
+        b=d10cw77yq9F+JzI5MDBdmR8H4+YfVgYUNl6E9bu65ze+iaPUnSWBYZEOi/3eJN7IEM
+         ZzFKmmCAaK9P8SSIgyQkzVxiG/9y1XavPq/TqE5h9Aku7FHhAhBSAK5BZtaEMTtccuAg
+         vbuvaLAfx3MQEfiUfEeeOrjs4oejf4S7B4wylPBXxhv1OGRsVCOIhFGa8KgYxTQyA5Rr
+         VmGMF44I2ru+LWNbmJUP1PsGWia2R3jI/8WjGzPc4eP5QvNyss/HQ1xE+Ws9669+UCXI
+         yiZyPsUtrRRHKpDV0yGbxa5DErNvCk2iNzp5TQaE1rAbdacbIE15B9T2CGUgUjbWrVlZ
+         fO5Q==
+X-Gm-Message-State: AOJu0YyGPC1gX4rbwssuj7Us7yyy0HGuTLeu4f7eyhIkFzboKJCV20Ax
+	I/4mB9qpxGm4Qle6m4PF9ohaaN1wf9CVaQuSIjOo3DAwIHbK75aqusYOmblhGsQwD6VoqytpdWb
+	xVWrdKZ65adK7FtuqldpiVbjaPRc=
+X-Google-Smtp-Source: AGHT+IHpnc3L5drGX+KAL4BK4m0LBZFIPEWSaWzqj8aEDtJJKuyCfdXo2Mh+7dQM3JkU4FRcmq161BRCmppHxt3f2KY=
+X-Received: by 2002:ac2:4550:0:b0:50e:d1f9:ebe0 with SMTP id
+ j16-20020ac24550000000b0050ed1f9ebe0mr1110331lfm.2.1706760334966; Wed, 31 Jan
+ 2024 20:05:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131-x13s-touchscreen-v4-0-39c0f9925d3c@quicinc.com>
-In-Reply-To: <20240131-x13s-touchscreen-v4-0-39c0f9925d3c@quicinc.com>
-From: Steev Klimaszewski <steev@kali.org>
-Date: Wed, 31 Jan 2024 22:04:16 -0600
-Message-ID: <CAKXuJqh0Js8t6YHLOOj8p6YQgKAAfchVLXfFWotVVR_H8bFsbA@mail.gmail.com>
-Subject: Re: [PATCH v4 0/3] arm64: dts: qcom: sc8280xp-x13s: Enable touchscreen
-To: Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>, Jiri Kosina <jikos@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Johan Hovold <johan+linaro@kernel.org>, linux-arm-msm@vger.kernel.org, 
-	linux-input@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Konrad Dybcio <konrad.dybcio@somainline.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Rob Herring <robh@kernel.org>, 
-	Daniel Thompson <daniel.thompson@linaro.org>
+References: <20240131105912.3849767-1-zhaoyang.huang@unisoc.com>
+ <ZbpJqYvkoGM7fvbC@casper.infradead.org> <CAGWkznGLt-T1S7_BM8-2eLhxVYktYYLmdfMbRKRK88Ami-mEdg@mail.gmail.com>
+In-Reply-To: <CAGWkznGLt-T1S7_BM8-2eLhxVYktYYLmdfMbRKRK88Ami-mEdg@mail.gmail.com>
+From: Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date: Thu, 1 Feb 2024 12:05:23 +0800
+Message-ID: <CAGWkznEv=A1AOe=xGWvNnaUq2eAfrHy2TQFyScNyu9rqQ+Q6xA@mail.gmail.com>
+Subject: Re: [PATCHv6 1/1] block: introduce content activity based ioprio
+To: Matthew Wilcox <willy@infradead.org>
+Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Jens Axboe <axboe@kernel.dk>, Yu Zhao <yuzhao@google.com>, Damien Le Moal <dlemoal@kernel.org>, 
+	Niklas Cassel <niklas.cassel@wdc.com>, "Martin K . Petersen" <martin.petersen@oracle.com>, 
+	Hannes Reinecke <hare@suse.de>, Linus Walleij <linus.walleij@linaro.org>, linux-mm@kvack.org, 
+	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, steve.kang@unisoc.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 9:07=E2=80=AFPM Bjorn Andersson
-<quic_bjorande@quicinc.com> wrote:
+On Thu, Feb 1, 2024 at 10:39=E2=80=AFAM Zhaoyang Huang <huangzhaoyang@gmail=
+com> wrote:
 >
-> This documents and defines the necessary properties for the I2C
-> HID-based touchscreen found in some SKUs of the Lenovo Thinkpad X13s to
-> work.
+> On Wed, Jan 31, 2024 at 9:23=E2=80=AFPM Matthew Wilcox <willy@infradead.o=
+rg> wrote:
+> >
+> > On Wed, Jan 31, 2024 at 06:59:12PM +0800, zhaoyang.huang wrote:
+> > > change of v6: replace the macro of bio_add_xxx by submit_bio which
+> > >               iterating the bio_vec before launching bio to block lay=
+er
+> >
+> > Still wrong.
+> I did some research on bio operations in the system and state my
+> understanding here. I would like to have you review it and give me
+> more details of the fault. thanks
 >
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
-> Changes in v4:
-> - Introduced the patch in the HID driver removing the comment about the
-> need to update the binding.
-> - Link to v3: https://lore.kernel.org/r/20240129-x13s-touchscreen-v3-0-c4=
-a933034145@quicinc.com
+> 1. REQ_OP_ZONE_xxx
+> a. These operations are from driver/block layer/fs where we can keep
+> driver/block layer using the legacy submit_bio by not including
+> act_prio.h.
+> b. most of fs's REQ_OP_ZONE_xxx will be handled by blkdev_zone_mgmt
+> which is the same as 'a'
+> c. __submit_zone_reset_cmd within f2fs use no page for REQ_OP_ZONE_RESET
 >
-> Changes in v3:
-> - Rewrote the commit message, to properly describe the problem being
->   resolved.
-> - Link to v2: https://lore.kernel.org/r/20240126-x13s-touchscreen-v2-0-53=
-74ccc9e10d@quicinc.com
+> 2. other REQ_OP_<none>_READ/WRITE except REQ_OP_ZONE_xxx
+> These operations all comes from driver and block layer as same as 1.a
 >
-> Changes in v2:
-> - Dropped output-high from &ts0_default, to avoid bouncing the reset
->   line unnecessarily
-> - Link to v1: https://lore.kernel.org/r/20240125-x13s-touchscreen-v1-0-ab=
-8c882def9c@quicinc.com
+> 3. direct_io
+> keep fs/direct-io.c and fs/iomap/direct-io.c using legacy submit_bio
 >
-> ---
-> Bjorn Andersson (3):
->       dt-bindings: HID: i2c-hid: Document reset-related properties
->       HID: i2c-hid-of: Remove comment about post-reset in DT binding
->       arm64: dts: qcom: sc8280xp-x13s: Fix/enable touchscreen
+> 4. metadata, dentry
+> Are these data also file pages?
 >
->  Documentation/devicetree/bindings/input/hid-over-i2c.yaml  | 6 ++++++
->  arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts | 7 +++++--
->  drivers/hid/i2c-hid/i2c-hid-of.c                           | 5 -----
->  3 files changed, 11 insertions(+), 7 deletions(-)
-> ---
-> base-commit: 8bf1262c53f50fa91fe15d01e5ef5629db55313c
-> change-id: 20240125-x13s-touchscreen-48012ff3c24e
->
-> Best regards,
-> --
-> Bjorn Andersson <quic_bjorande@quicinc.com>
->
->
-Thank you for this work!
+> 5. normal REQ_OP_READ/WRITE/SYNC
+> fs choose to use act based submit_bio by including act_ioprio.h in
+> corresponding c file
 
-Works great on my Thinkpad X13s
-Tested-by: Steev Klimaszewski <steev@kali.org>
+OR could I restrict the change by judging bio_op as below
+
++ if (bio_op(bio) =3D=3D REQ_OP_READ || bio_op(bio) =3D=3D REQ_OP_WRITE)
++ {
+       class =3D IOPRIO_PRIO_CLASS(bio->bi_ioprio);
+       level =3D IOPRIO_PRIO_LEVEL(bio->bi_ioprio);
+       hint =3D IOPRIO_PRIO_HINT(bio->bi_ioprio);
+       bio_for_each_bvec(bv, bio, iter) {
+               page =3D bv.bv_page;
+               activity +=3D PageWorkingset(page) ? 1 : 0;
+               cnt++;
+       }
+       if (activity >=3D cnt / 2)
+               class =3D IOPRIO_CLASS_RT;
+       else if (activity >=3D cnt / 4)
+               class =3D max(IOPRIO_PRIO_CLASS(get_current_ioprio()),
+IOPRIO_CLASS_BE);
+       bio->bi_ioprio =3D IOPRIO_PRIO_VALUE_HINT(class, level, hint);
++ }
+       submit_bio(bio);
 
