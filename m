@@ -1,129 +1,140 @@
-Return-Path: <linux-kernel+bounces-48980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E50D8846454
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:12:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B5EF846456
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:15:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 040B31C2348C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:12:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A08C28658D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:15:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09EDC47F57;
-	Thu,  1 Feb 2024 23:12:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60CA147A7F;
+	Thu,  1 Feb 2024 23:15:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BCdyF+GC"
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="O0ZwYtOZ"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFA933FB37;
-	Thu,  1 Feb 2024 23:12:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AABE47A76
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 23:15:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706829139; cv=none; b=V85TlwWY20g6OjCWN0nNIeLpd6St9lzYPKHtkEIIhn3PjfN2fyQqdmiQeRNghGQdisRei0JkoiSxfTmnlAiYDTO3gtiyu90pxRCXyzx2TEQBMXABiArobW3OJPqCDnDNfWCYUoO8klkPbW0QoTdI4TXZ4KanitQ7D156wESLvXM=
+	t=1706829350; cv=none; b=ULyD9fAfx8ghspQs8DMK05h8EBAB/nc86F7tYdHsVLlfFXNclQS6AtDSQiPt6NFcpBZodm3KuiVyt4Gn3Y4QZBZMvht7oMC1bpZlfBFNjOGbv7rEgV0AnV6HUrYzM1CmWE9srsZNHh0rmiZqHpaIEu4K0gDC52DevUH0MI/5eSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706829139; c=relaxed/simple;
-	bh=+PN1aVVdJv7dQ6u3SE9gXNMJ5i8PkALkHFjLI1LOmKY=;
+	s=arc-20240116; t=1706829350; c=relaxed/simple;
+	bh=fY0i4/MKLDNI6g9oyGYppVz4kakO1fL7ygQCWGCJrpo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=b2XNJAK5f1fjpgdVy3IvlapXL1+t1zM/wluKYdc121a79qd31T9Y4EiJniH5+5fKMjaxkJeuYheg+vCgdmA41B86XsN9fmjqgdSmC9CpRm/MZANJCTer2m8ziwLNo7jUhpY6oXpdaukI/wnmQXAjjr3AAOL05Xp8X1PUerHGX/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BCdyF+GC; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-60412f65124so15178117b3.3;
-        Thu, 01 Feb 2024 15:12:17 -0800 (PST)
+	 To:Cc:Content-Type; b=NianPFE7AqLr6M3JkKkn85Oug8dTao0/WlLQOx2mq2g+QDpgArc0EFNzSXV35hhSSd72T/q6eDRNFNcA5vqQJ0ZQJEzhKpXmvdNwpNSXh0bbleWIjxXnyczStywJY3zjViSSPyMwjHbfETXKQBkOk7copyyHds89fJ3EEBr6Pvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=O0ZwYtOZ; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d086e1c3c8so310631fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 15:15:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706829137; x=1707433937; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+PN1aVVdJv7dQ6u3SE9gXNMJ5i8PkALkHFjLI1LOmKY=;
-        b=BCdyF+GCqK8XLGf5CxqL+kvzbQlcwsWAODILEHQfRrU6Z3qVUwS4xL2aVaRkZ/vY37
-         L/zv+0QDa7jPjNo2M8qtqk37aOQtr6xPrALOW6SrEpmEwjSi977uzkJM4gYR6rTtiHg5
-         QVYbMY1XxByuZhab7VZLtcDtYq5NzGQJBmYyU/CJRG55D1lie8Jn9ZlJG/lER44If11K
-         uzjvWloMvfyVHv4n2AQMSx71ce0PENYnK3z00G/3VdcZtnlQbiFB+FegDcQMRidpgUYI
-         W2BIGwVLXuCiFc3REWU8aAoNSDqZrdEBK7VTo14zXY8tBqm9r/gmg/COrStx8wF70NdR
-         Ow/Q==
+        d=linux-foundation.org; s=google; t=1706829346; x=1707434146; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=9K//vSZ1lGeh0sw5K4/Yw1CUaoAoUAFBdXCL4ofyJ/A=;
+        b=O0ZwYtOZM8PYjiRKaxKh5UBCIOLmvBQoLDk4g1AZAfh2QW592R5CxoCd5mnoeWUnZP
+         iNKWHEi7OuyS797GmP7nZ8SkVrC+Vwm0rcC9D4SSLKDT31SotyvTn5cZu6kyprqbl3Mj
+         s9L7N5+xn1HNObdyt+T2FjOi28pk0wj3XOnoY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706829137; x=1707433937;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+PN1aVVdJv7dQ6u3SE9gXNMJ5i8PkALkHFjLI1LOmKY=;
-        b=RwO8r/GHMjufytvtJJ+6rX7m6ZOYatl9d2CWJxJ9IkL5HG/x5RPcp9t7R4ex8qn7L1
-         5snrf3WDVpNItr1qRoMYDjkuJWnBgsGZdCyxMuEEoqFWRNaONFYevHQzXPTw4vrr9y0q
-         WcDgU2U0adw1al4JDvjyY64lgVEvsERIQMGGN+0YBfl5FIMsRP0O6gBuN+vasUqnpbCi
-         ZBVc7fMIh0b1NrEPANyUzqDY3XwMXC/Cna8FHHVGJvzoJ6jjSLAx6ZagqxWlTOpD/V55
-         zoqg6N9O7oroa2cEa3ipwEYT3D2eRysYZ4sDAieLWXkTul+rhuuQLNLWH0YWNLg3Gk6T
-         Fkaw==
-X-Gm-Message-State: AOJu0YyDIps9Rwlis6xqKGAeHLBB7xPpIp9mXN5j8+MGFovqm+H1TAYO
-	kLnaYCalIsq8jUhUIRIXLE9DbloZWlCU1gPaX11zG1Tm2Ne1GJCFIXFcUVkZ2LPxkedtEZhbR5K
-	Ed4Laa8ITp+tqdEYvmu2QHlmvNxg=
-X-Google-Smtp-Source: AGHT+IFznqZD386j38NqZlpMPZjSrbX0IVvxdtH06xaGlCHWUb0CmZLJnLZmRce7XPhhGHqaSHLrFy/x9r3vOSy+mk0=
-X-Received: by 2002:a0d:cbc9:0:b0:5ff:81fa:16e6 with SMTP id
- n192-20020a0dcbc9000000b005ff81fa16e6mr622138ywd.38.1706829136716; Thu, 01
- Feb 2024 15:12:16 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706829346; x=1707434146;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9K//vSZ1lGeh0sw5K4/Yw1CUaoAoUAFBdXCL4ofyJ/A=;
+        b=sdMdNPfikHyMElq+Eq0ZngcF9ySOwOr6Q/TmNEK+84lcgiD+8rp8a/6mS3ib4vuEtX
+         45gjPry5mBd9HHvelL0yOjirAT8Sd0HEQV5QCwgyA6GB4tM3t5XTcrKF4zmOP7sSvHHW
+         3hKE9Fooa+o2vM7H5FyT4rYX/Qo4UvlA2fYpVoXd8oKOKX3zLVGurXa1ZJHLOUa59DeW
+         XkhoaV2VMOpDPGI9vP56myzJXkjElLXf+HNfS5W/wvxJzYjB9OKASpozuomI7sXNlxN5
+         fLv8Y7UN+3I6qBpT7EjzZbvA4aTScT6jXaC2V84tN/UvueojowThJSp8Gki//0CwCFSc
+         NDIw==
+X-Gm-Message-State: AOJu0YyvfwPkuDHgzKYz6801FXrbyQXVMxe1BUSgZKVeSPPmDlnRnqIq
+	nHVGBdUz1KzE7/N9JmpAZwHc5mmNIRsUyv4C0xeBDvjOjgBZyhHdSWOPM3WAvpYlCyghS0+bUMQ
+	MxeAYig==
+X-Google-Smtp-Source: AGHT+IFvWaL3kvpe72ju+BApwgF68OmYUx+U0p5fUr7k/a8eQlsOIK1mRxUDa3XcqOtvknfbQMn1Jw==
+X-Received: by 2002:a2e:9d41:0:b0:2cd:5cfd:b19 with SMTP id y1-20020a2e9d41000000b002cd5cfd0b19mr4264441ljj.19.1706829346266;
+        Thu, 01 Feb 2024 15:15:46 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXHxVBEztzQkGe6hkQG0ZQVCpZJdAXVWQPAeL4BZlAYXphpKhmv7w0illut+di8hxY76jRiJMAKmS86K82g/ukos0YbKIaVvnSw3aPW
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com. [209.85.208.45])
+        by smtp.gmail.com with ESMTPSA id bc5-20020a056402204500b0055ef8318e97sm262527edb.46.2024.02.01.15.15.44
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Feb 2024 15:15:44 -0800 (PST)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55783b7b47aso2127606a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 15:15:44 -0800 (PST)
+X-Received: by 2002:a05:6402:60a:b0:55f:4602:bf7d with SMTP id
+ n10-20020a056402060a00b0055f4602bf7dmr4355014edv.26.1706829344286; Thu, 01
+ Feb 2024 15:15:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201-rockchip-rust-phy_depend-v2-0-c5fa4faab924@christina-quast.de>
- <20240201-rockchip-rust-phy_depend-v2-3-c5fa4faab924@christina-quast.de>
- <2024020105-bankroll-opium-a6e5@gregkh> <6725eeac-45ee-4f3f-a612-0ef5725b9fd9@lunn.ch>
-In-Reply-To: <6725eeac-45ee-4f3f-a612-0ef5725b9fd9@lunn.ch>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Fri, 2 Feb 2024 00:12:05 +0100
-Message-ID: <CANiq72nnHj2PnsM-=RREOcq1wsyydFZQ67-DewDa18=tAHe4NA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] net: phy: add Rust Rockchip PHY driver
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Greg KH <gregkh@linuxfoundation.org>, 
-	Christina Quast <contact@christina-quast.de>, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, FUJITA Tomonori <fujita.tomonori@gmail.com>, 
-	Trevor Gross <tmgross@umich.edu>, Heiner Kallweit <hkallweit1@gmail.com>, 
-	Russell King <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Heiko Stuebner <heiko@sntech.de>, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
+References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver>
+ <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
+ <20240201204512.ht3e33yj77kkxi4q@revolver> <CABi2SkWB2eV24LBJtgJ73zEwaAWuFhAwrfqx3Rs=tqnpcJ0qRw@mail.gmail.com>
+ <58408.1706828083@cvs.openbsd.org>
+In-Reply-To: <58408.1706828083@cvs.openbsd.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 1 Feb 2024 15:15:27 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjqozic6JuRimXD=RamnJmD6FoaQki7RtNYrezzx_OfOg@mail.gmail.com>
+Message-ID: <CAHk-=wjqozic6JuRimXD=RamnJmD6FoaQki7RtNYrezzx_OfOg@mail.gmail.com>
+Subject: Re: [PATCH v8 0/4] Introduce mseal
+To: Theo de Raadt <deraadt@openbsd.org>
+Cc: Jeff Xu <jeffxu@chromium.org>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+	Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org, keescook@chromium.org, 
+	jannh@google.com, sroettger@google.com, willy@infradead.org, 
+	gregkh@linuxfoundation.org, usama.anjum@collabora.com, rdunlap@infradead.org, 
+	jeffxu@google.com, jorgelo@chromium.org, groeck@chromium.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com, 
+	linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 1, 2024 at 10:30=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote:
+On Thu, 1 Feb 2024 at 14:54, Theo de Raadt <deraadt@openbsd.org> wrote:
 >
-> As one of the PHY Maintainers, i would say no.
->
-> Now we have an example, i think we should be a lot more strict about
-> what we actually merge. It should be a driver for hardware which does
-> not have a C driver.
+> Linus, you are in for a shock when the proposal doesn't work for glibc
+> and all the applications!
 
-Yeah, a single "Rust reference driver" is likely enough to give a good
-example of how things would look.
+Heh. I've enjoyed seeing your argumentative style that made you so
+famous back in the days. Maybe it's always been there, but I haven't
+seen the BSD people in so long that I'd forgotten all about it.
 
-I guess more than one could be justified if there are significant
-differences, e.g. if the maintainers want to cover more of the
-abstractions API for some reason.
+That said, famously argumentative or not, I think Theo is right, and I
+do think the MAP_SEALABLE bit is nonsensical.
 
-> We cannot drop C drivers since Rust at the moment does not support all
-> architectures GCC/Clang does. PHY drivers are architecture
-> independent, and in real life used on multiple architectures. When
-> Rust eventually catches up, we could consider dropping C drivers when
-> there is an equivalent Rust driver, but from what i hear, that is a
-> few years away. I don't want to be supporting a C and Rust driver for
-> the same hardware.
+If somebody wants to mseal() a memory region, why would they need to
+express that ahead of time?
 
-The `rustc_codegen_gcc` backend can already build the kernel without
-changes, so hopefully we will see some results sooner than that. If we
-are talking multiple years, GCC Rust likely enters the equation too.
+So the part I think is sane is the mseal() system call itself, in that
+it allows *potential* future expansion of the semantics.
 
-But, indeed, there is a lot of work to do until we can drop C code in gener=
-al.
+But hopefully said future expansion isn't even needed, and all users
+want the base experience, which is why I think PROT_SEAL (both to mmap
+and to mprotect) makes sense as an alternative form.
 
-Cheers,
-Miguel
+So yes, to my mind
+
+    mprotect(addr, len, PROT_READ);
+    mseal(addr, len, 0);
+
+should basically give identical results to
+
+    mprotect(addr, len, PROT_READ | PROT_SEAL);
+
+and using PROT_SEAL at mmap() time is similarly the same obvious
+notion of "map this, and then seal that mapping".
+
+The reason for having "mseal()" as a separate call at all from the
+PROT_SEAL bit is that it does allow possible future expansion (while
+PROT_SEAL is just a single bit, and it won't change semantics) but
+also so that you can do whatever prep-work in stages if you want to,
+and then just go "now we seal it all".
+
+          Linus
 
