@@ -1,101 +1,173 @@
-Return-Path: <linux-kernel+bounces-48145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F1518457F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:42:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 611238457F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:41:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F059BB231CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:42:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 151BE28CF1B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:41:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3CDF8665B;
-	Thu,  1 Feb 2024 12:41:47 +0000 (UTC)
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [207.46.229.174])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A0D553363;
-	Thu,  1 Feb 2024 12:41:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.46.229.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEB0886638;
+	Thu,  1 Feb 2024 12:41:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="TBsQMI8V";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="SCM3kbqr";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Oj6fHY44";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Kt+M9LIW"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 801DD53362
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 12:41:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706791307; cv=none; b=OimGppKyitb+8jREfuab8FoUg05km8xOYiqb74oj3D+vU5SABfWFuKSK53dqEkv+EjQIQJqrmWPXFc900JbHnSck7iBUGBcGtDbL7KPr3Juuf5AUm++vtuRtfhvksdZ/jRIjMcyVKCgewn3VTxVZtvRkr0KWyPV8Xoh/PsA8qGg=
+	t=1706791304; cv=none; b=ZpzVjSL5eZBUNUHPhaaQF1qttVzjDzM1WjwzhbXi6CFi4P6EMAqNo6ybhZR6PaPma7JnjOblaLJPO+4UMvh1FEGNPkwUVxI5x1Q71qcKpdrJ/plQG6EpUgda4VqgnZZfEEcyCuME3Lq7ssOYcieBGCfu5wCtjd7iK2ja/WZFf7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706791307; c=relaxed/simple;
-	bh=mTEwM8qtZQmg8mw1XWHtWN1F324EEuX/vctn70rwP6M=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pLG6g+3sLp7GHt3WaQTbyOVtY2ZUl/BEi3boLlFgYedB+xhoy3xcbjlz8ChyfG6j9U49TOIN4vJ9YyHj0BoNywh4vu+uy59SmH5ttmwX24XRwdKCi1URHSiSDVQk8ApJxOg+T8/2ye1+YKiv4kI2ESiy/M9lpKq3A0RE8ARQ3Rw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=207.46.229.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from luzhipeng.223.5.5.5 (unknown [220.184.253.207])
-	by mail-app3 (Coremail) with SMTP id cC_KCgAnDDZxkbtl8ZnjAA--.10172S2;
-	Thu, 01 Feb 2024 20:41:21 +0800 (CST)
-From: Zhipeng Lu <alexious@zju.edu.cn>
-To: alexious@zju.edu.cn
-Cc: Chas Williams <3chas3@gmail.com>,
-	linux-atm-general@lists.sourceforge.net,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] atm: idt77252: fix a memleak in open_card_ubr0
-Date: Thu,  1 Feb 2024 20:41:05 +0800
-Message-Id: <20240201124108.3052635-1-alexious@zju.edu.cn>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706791304; c=relaxed/simple;
+	bh=vzOwURaJGFGngjzlTNi14jTCw9s2QcCg9bsA4XtIG2Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OL/x1a/MCOYOohlVUJwoPN9M4IRNs7EBUmJIhULtAr/B3ErBgbYi4poQvw7E2Gbtyccz2y2gqgm/KItcxTXbjNb57GsPbVgiNql/er7zFGRguMqkuo7HapzMwE7C3WlQAicpKTQYlOJ9fHSOEv3pT5dcJWEfYL04Jnbb9RQlA3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=TBsQMI8V; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=SCM3kbqr; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Oj6fHY44; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Kt+M9LIW; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9E4582213F;
+	Thu,  1 Feb 2024 12:41:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706791300; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mZAhmoimqX/LFqyFMVuwwM2dsHNWcXM1TVKD5f+E3iQ=;
+	b=TBsQMI8V4yJ3FugvLlIWA4PWW77HxgUrYNypS1PgR+7ESl2drUJHP/vZlgopDhVdIEkXBb
+	CkXHZZFbwTEMOB6cZfQpkDSMuHaq6H9NukwC6+x9BiL+Y6kNhBkbYjsHB1Jqgk07NLTSu8
+	h+PMo7XQZ4FYNhZ4w2mcpwvn99BHI6E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706791300;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mZAhmoimqX/LFqyFMVuwwM2dsHNWcXM1TVKD5f+E3iQ=;
+	b=SCM3kbqr+J/ToX9ZTq6Hz/1GABTHlV3HR+EGhCvbq/EddrRYpPEZrqWIyAbJo6XD6izwOS
+	ACrlnIj0zrml2EDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706791299; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mZAhmoimqX/LFqyFMVuwwM2dsHNWcXM1TVKD5f+E3iQ=;
+	b=Oj6fHY44xm8f+RcRl402bUNPfwSKVGPi0J9AvH+6ey7OMm9eSgnpdyrerV4v2GYdgtHHZg
+	2quewS7HBGMq4vXtzGOws/UMBkREf+pdHNLDiZN+lStJZpJfPI+EEi2Shm6FPqYp45nafW
+	GEHPeGGONUPLV7t5MdLLChuAHjqI9+I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706791299;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mZAhmoimqX/LFqyFMVuwwM2dsHNWcXM1TVKD5f+E3iQ=;
+	b=Kt+M9LIW0v54SADgTAPOmLy0uhSjVCTxGaCWPNZAW8lGzdlY8/+sPAjF3L5VVGRJABPhuh
+	ByKsBt6UBs5MRGAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E94B5139B1;
+	Thu,  1 Feb 2024 12:41:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id lqUqLIGRu2XNOAAAD6G6ig
+	(envelope-from <hare@suse.de>); Thu, 01 Feb 2024 12:41:37 +0000
+Message-ID: <3da93cc3-80a9-4dbf-b6af-aa5fc6b35b33@suse.de>
+Date: Thu, 1 Feb 2024 13:41:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 01/12] nvme-fc: do not wait in vain when unloading
+ module
+Content-Language: en-US
+To: Daniel Wagner <dwagner@suse.de>, James Smart <james.smart@broadcom.com>
+Cc: Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>,
+ linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240131085112.21668-1-dwagner@suse.de>
+ <20240131085112.21668-2-dwagner@suse.de>
+From: Hannes Reinecke <hare@suse.de>
+In-Reply-To: <20240131085112.21668-2-dwagner@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cC_KCgAnDDZxkbtl8ZnjAA--.10172S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GrykKr4rAw4xJr17GrW7Arb_yoWfXFXE9a
-	4Fqw12q3yYqwn2ya15GFyfuayj9a10yw1ku342qanxGrZFkFW3XrWkW3WaqF13WayxZFZ8
-	Kryjg34DZr18GjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbsxFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
-	AVWUtwCY02Avz4vE14v_Xr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-	1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-	14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-	IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
-	87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0x
-	ZFpf9x0JUc189UUUUU=
-X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -4.29
+X-Spamd-Result: default: False [-4.29 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Flag: NO
 
-When alloc_scq fails, card->vcs[0] (i.e. vc) should be freed. Otherwise,
-in the following call chain:
+On 1/31/24 09:51, Daniel Wagner wrote:
+> The module exit path has race between deleting all controllers and
+> freeing 'left over IDs'. To prevent double free a synchronization
+> between nvme_delete_ctrl and ida_destroy has been added by the initial
+> commit.
+> 
+> There is some logic around trying to prevent from hanging forever in
+> wait_for_completion, though it does not handling all cases. E.g.
+> blktests is able to reproduce the situation where the module unload
+> hangs forever.
+> 
+> If we completely rely on the cleanup code executed from the
+> nvme_delete_ctrl path, all IDs will be freed eventually. This makes
+> calling ida_destroy unnecessary. We only have to ensure that all
+> nvme_delete_ctrl code has been executed before we leave
+> nvme_fc_exit_module. This is done by flushing the nvme_delete_wq
+> workqueue.
+> 
+> While at it, remove the unused nvme_fc_wq workqueue too.
+> 
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> ---
+>   drivers/nvme/host/fc.c | 47 ++++++------------------------------------
+>   1 file changed, 6 insertions(+), 41 deletions(-)
+> 
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-idt77252_init_one
-  |-> idt77252_dev_open
-        |-> open_card_ubr0
-              |-> alloc_scq [failed]
-  |-> deinit_card
-        |-> vfree(card->vcs);
+Cheers,
 
-card->vcs is freed and card->vcs[0] is leaked.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
----
- drivers/atm/idt77252.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/atm/idt77252.c b/drivers/atm/idt77252.c
-index e327a0229dc1..e7f713cd70d3 100644
---- a/drivers/atm/idt77252.c
-+++ b/drivers/atm/idt77252.c
-@@ -2930,6 +2930,8 @@ open_card_ubr0(struct idt77252_dev *card)
- 	vc->scq = alloc_scq(card, vc->class);
- 	if (!vc->scq) {
- 		printk("%s: can't get SCQ.\n", card->name);
-+		kfree(card->vcs[0]);
-+		card->vcs[0] = NULL;
- 		return -ENOMEM;
- 	}
- 
+Hannes
 -- 
-2.34.1
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), GF: Ivo Totev, Andrew McDonald,
+Werner Knoblich
 
 
