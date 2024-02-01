@@ -1,211 +1,192 @@
-Return-Path: <linux-kernel+bounces-48333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FF15845A89
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:47:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C5B9845A8B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:47:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 070AA2868D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:47:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E9D128D09B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:47:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CAD45F492;
-	Thu,  1 Feb 2024 14:47:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A7A25F486;
+	Thu,  1 Feb 2024 14:47:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IU/9G31n"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p94StRRd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C07945F491;
-	Thu,  1 Feb 2024 14:47:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E05B53385
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 14:47:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706798844; cv=none; b=Zv3l7lny6zbwgabwR6eOq3v5Qmoh25faaiBGp6dXFOzoEm8i7b/PQIuxf0UOwBwtElZ/0mCBffpmy/ezdGGe+HJLBbCoKPUk8h5/B4pBlrDZDgwogMCbLYZBmeWFWwQHGR0JrKxlS8hcgsjHz3kNapKSIzTT9bj/SkfX4lMy5vg=
+	t=1706798857; cv=none; b=ZjSCzc/1j/HsgJ5WV9KVCxIUuL3QhxQPhhVUbJEWLg1c8YQlyS5ft13fMt10xdoCpAwRR3GRRQLi3BXPEjRAP7PcKhAhE+13Rh33r+fXWH7RlJvc268NtG46HC3aKp+HpZ0x1DP79+pMIoXbv9XukOwIGLRDmfKwoKLg9PewoGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706798844; c=relaxed/simple;
-	bh=qgms/9isPo0TXHC6cRuho639q8nVW5hPrmWxyYGXX6Q=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=lJR6qlSh2EfxQDqI7GLALhd/ilVPEfd25j2X00Vb2vwuGZPoT9mtO/7n58jilzimbcJ4kfUflKNReGdKOkLH8BQUlpCnRf7dpSUY5TTYQdipBL5nsp7B3QAyQDmrcRm3+XJliIiMQHpD3xzEO9YHtQaTLQn6E09wrl0E6bhQp5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IU/9G31n; arc=none smtp.client-ip=134.134.136.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706798842; x=1738334842;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=qgms/9isPo0TXHC6cRuho639q8nVW5hPrmWxyYGXX6Q=;
-  b=IU/9G31nm9/5rgh15vuSaxp08Ulo93ev+f7aOUnfDp2/sacjBfcBXD8r
-   0BOhUce4aNlHNzoJmk36LWsYWo1IiHwNI5eAq0ZKFLqRLRbp3qFd69RnZ
-   pM0ZtkNqCJdGQFOBZj3ANmHTG9IsqV2aV7wjww6dpcB3OjBjplut22VZ8
-   B2v4B8aV5J1jXsdHWOcaC4mdXM/bvayvNHQOb+p4nDJHoM/HlZr641Pu0
-   2rtEsBnip8I/KFKs7YuJ8A01yFOzYidLMlvD5n5PjFcuu5NbBV54M/8E6
-   zKM73RLf/tcOP9nrMKPZbECIm475wPuv3n8A/1fZogccAAnbAeTt1f9D1
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="407626471"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="407626471"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 06:47:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="4394902"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.33.1])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 06:47:19 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Thu, 1 Feb 2024 16:47:14 +0200 (EET)
-To: Jonathan Woithe <jwoithe@just42.net>
-cc: Igor Mammedov <imammedo@redhat.com>, 
-    Andy Shevchenko <andriy.shevchenko@intel.com>, linux-pci@vger.kernel.org, 
-    Bjorn Helgaas <bhelgaas@google.com>, 
-    Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, 
-    Rob Herring <robh@kernel.org>, 
-    =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>, 
-    Lukas Wunner <lukas@wunner.de>, 
-    Mika Westerberg <mika.westerberg@linux.intel.com>, 
-    "Rafael J . Wysocki" <rafael@kernel.org>, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/7] PCI: Solve two bridge window sizing issues
-In-Reply-To: <ZbrOW/eTC0FFPjec@marvin.atrad.com.au>
-Message-ID: <1ee94000-14af-3edf-10b6-acd821075d3e@linux.intel.com>
-References: <20231228165707.3447-1-ilpo.jarvinen@linux.intel.com> <20240104131210.71f44d4b@imammedo.users.ipa.redhat.com> <ZZaiLOR4aO84CG2S@marvin.atrad.com.au> <ZZ+gEmxI/TxdbmyQ@marvin.atrad.com.au> <ZajJzcquyvRebAFN@marvin.atrad.com.au>
- <Za0T_siv79qz1jkk@smile.fi.intel.com> <Za2YtnwLKKeMquv6@marvin.atrad.com.au> <62b66d58-7824-3650-6a73-12068a22563e@linux.intel.com> <20240122144520.7761c5a6@imammedo.users.ipa.redhat.com> <ZbrOW/eTC0FFPjec@marvin.atrad.com.au>
+	s=arc-20240116; t=1706798857; c=relaxed/simple;
+	bh=KOwktgRBOL5LPRTXgqMo5naSY2ysGXJWFoq824L8CNY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=l+XQZMBPlxvGmeIa889Jtaa5Wh+z4VLKXsphqbJh3x6VysSMI58yt1YGPJk91vKmUVRra1DXwrBl+WoI0Xgcvoftfluox8T+C41IEswKdn9LdZi6ohTR8XQLs1CwjefdCQ6qCcqh+tU53EOoZSawctQK1L9RCVUQi7CQcdwGjck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p94StRRd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B9B2C433F1;
+	Thu,  1 Feb 2024 14:47:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706798856;
+	bh=KOwktgRBOL5LPRTXgqMo5naSY2ysGXJWFoq824L8CNY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=p94StRRdD6j0IzK2hZZA6DKmFtQQsi49xwPc2oQHwqX9Bzy8e6m99rkXo6QfIC2la
+	 uOrSGPA/l9APxjUKjRWMVz26fIvoar6bxeg26ZaUFGcQCsxhKw8LqVoyVub6wbuwye
+	 ASWEPgva0F3e8rrQJSBe6cHZM3NxFGP+0Hz9jDp2m3UgMjF4RpGPNMrylj2fBGkogR
+	 TISJEKMNMAyFvuAVWYpf0df6HLyMTtLVzqRv+E5tPn/upUGU9VXqiSVpdiDX6vNCGs
+	 VXDPvvtXdsZiJtO+0U/EcYg/quZbFuKyk6kOjIlY0JQZIIepO6zDY4GVe4V1PScOCD
+	 wJ828R0pQCIvQ==
+Message-ID: <6e91f64a-638c-465d-8fb2-ed70231db23a@kernel.org>
+Date: Thu, 1 Feb 2024 22:47:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-945909834-1706798834=:1028"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [f2fs-dev] [PATCH v3] f2fs: fix zoned block device information
+ initialization
+To: Yongpeng Yang <yangyongpeng1@oppo.com>, Wenjie Qi <qwjhust@gmail.com>,
+ hustqwj@hust.edu.cn
+Cc: jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-kernel@vger.kernel.org
+References: <20240123081258.700-1-qwjhust@gmail.com>
+ <cedb4875-5795-4789-a010-a9c66fa61707@oppo.com>
+Content-Language: en-US
+From: Chao Yu <chao@kernel.org>
+Autocrypt: addr=chao@kernel.org; keydata=
+ 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
+In-Reply-To: <cedb4875-5795-4789-a010-a9c66fa61707@oppo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 2024/1/23 17:18, Yongpeng Yang wrote:
+> Hi Wenjie,
+> It seems more reasonable to use bdev_max_open_zones instead of
+> bdev_max_active_zones.
 
---8323328-945909834-1706798834=:1028
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Hi all,
 
-On Thu, 1 Feb 2024, Jonathan Woithe wrote:
+I guess it needs to be initialized w/ bdev_max_open_zones(), due
+to the max of open zones of zoned device limits the number of
+zones that a host software can simultaneously write [1], right?
 
-> On Mon, Jan 22, 2024 at 02:45:20PM +0100, Igor Mammedov wrote:
-> > On Mon, 22 Jan 2024 14:37:32 +0200 (EET)
-> > Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com> wrote:
-> >=20
-> > > On Mon, 22 Jan 2024, Jonathan Woithe wrote:
-> > >=20
-> > > > On Sun, Jan 21, 2024 at 02:54:22PM +0200, Andy Shevchenko wrote: =
-=20
-> > > > > On Thu, Jan 18, 2024 at 05:18:45PM +1030, Jonathan Woithe wrote: =
-=20
-> > > > > > On Thu, Jan 11, 2024 at 06:30:22PM +1030, Jonathan Woithe wrote=
-: =20
-> > > > > > > On Thu, Jan 04, 2024 at 10:48:53PM +1030, Jonathan Woithe wro=
-te: =20
-> > > > > > > > On Thu, Jan 04, 2024 at 01:12:10PM +0100, Igor Mammedov wro=
-te: =20
-> > > > > > > > > On Thu, 28 Dec 2023 18:57:00 +0200
-> > > > > > > > > Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com> wrote:
-> > > > > > > > >  =20
-> > > > > > > > > > Hi all,
-> > > > > > > > > >=20
-> > > > > > > > > > Here's a series that contains two fixes to PCI bridge w=
-indow sizing
-> > > > > > > > > > algorithm. Together, they should enable remove & rescan=
- cycle to work
-> > > > > > > > > > for a PCI bus that has PCI devices with optional resour=
-ces and/or
-> > > > > > > > > > disparity in BAR sizes.
-> > > > > > > > > >=20
-> > > > > > > > > > For the second fix, I chose to expose find_empty_resour=
-ce_slot() from
-> > > > > > > > > > kernel/resource.c because it should increase accuracy o=
-f the cannot-fit
-> > > > > > > > > > decision (currently that function is called find_resour=
-ce()). In order
-> > > > > > > > > > to do that sensibly, a few improvements seemed in order=
- to make its
-> > > > > > > > > > interface and name of the function sane before exposing=
- it. Thus, the
-> > > > > > > > > > few extra patches on resource side.
-> > > > > > > > > >=20
-> > > > > > > > > > Unfortunately I don't have a reason to suspect these wo=
-uld help with
-> > > > > > > > > > the issues related to the currently ongoing resource re=
-gression
-> > > > > > > > > > thread [1]. =20
+[1] https://zonedstorage.io/docs/introduction/zoned-storage#active-zones-limit
 
-> > > > Thanks, and understood.  In this case the request from Igor was=20
-> > > >=20
-> > > >     can you test this series on affected machine with broken kernel=
- to see if
-> > > >     it's of any help in your case?
-> > > >=20
-> > > > The latest vanilla kernel (6.7) has (AFAIK) had the offending commi=
-t
-> > > > reverted, so it's not a "broken" kernel in this respect.  Therefore=
-, if I've
-> > > > understood the request correctly, working with that kernel won't pr=
-oduce the
-> > > > desired test. =20
-> > >=20
-> > > Well, you can revert the revert again to get back to the broken state=
-=2E
-> >=20
-> > either this or just a hand patching as Ilpo has suggested earlier
-> > would do.
->=20
-> No problem.  This was the easiest approach for me and I have now done thi=
-s.=20
-> Apologies for the delay in getting to this: I ran out of time last Thursd=
-ay.
->=20
-> > There is non zero chance that this series might fix issues
-> > Jonathan is facing. i.e. failed resource reallocation which
-> > offending patches trigger.
->=20
-> I can confirm that as expected, this patch series has had no effect on th=
-e
-> system which experiences the failed resource reallocation.  From syslog,
-> running a 5.15.141+ kernel[1]:
->=20
->     kernel: radeon 0000:4b:00.0: Fatal error during GPU init
->     kernel: radeon: probe of 0000:4b:00.0 failed with error -12
->=20
-> This is unchanged from what is seen with the unaltered 5.15.141 kernel.
->=20
-> In case it's important, can also confirm that the errors related to the
-> thunderbolt device are are also still present in the patched 5.15.141+
-> kernel:
->=20
->     thunderbolt 0000:04:00.0: interrupt for TX ring 0 is already enabled
->     :
->     thunderbolt 0000:04:00.0: interrupt for RX ring 0 is already enabled
->     :
->=20
-> Like the GPU failure, they do not appear in the working kernels on this
-> system.
->=20
-> Let me know if you would like to me to run further tests.
->=20
-> Regards
->   jonathan
->=20
-> [1] This is 5.15.141, patched with the series of interest here and the ha=
-nd
->     patch from Ilpo.
+Thanks,
 
-Hi Jonathan,
-
-Thanks a lot for testing it regardless. The end result was not a big=20
-surprise given how it looked like based on the logs but was certainly=20
-worth a test like Igor mentioned. The resource allocation code isn't among=
-=20
-the easiest to track.
-
-
---=20
- i.
-
---8323328-945909834-1706798834=:1028--
+> 
+> If an NVMe device has multiple namespaces, and the device contains a
+> total of 11 open zones, two of the namespaces, nvme0n1 and nvme0n2, each
+> correspond to an instance of the F2FS filesystem, and both filesystem
+> instances can be initialized successfully. Since multiple namespaces
+> share all open zones, the number of open zones is not equal to the
+> number of open zones available to F2FS in a multi-namespace scenario.
+> This patch does not yet cover this scenario.
+> 
+> On 1/23/2024 4:12 PM, Wenjie Qi wrote:
+>> If the max active zones of zoned devices are less than
+>> the active logs of F2FS, the device may error due to
+>> insufficient zone resources when multiple active logs are
+>> being written at the same time. If this value is 0, there is no limit.
+>>
+>> Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
+>> ---
+>>    fs/f2fs/f2fs.h  |  1 +
+>>    fs/f2fs/super.c | 18 ++++++++++++++++++
+>>    2 files changed, 19 insertions(+)
+>>
+>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>> index 65294e3b0bef..669f84f6b0e5 100644
+>> --- a/fs/f2fs/f2fs.h
+>> +++ b/fs/f2fs/f2fs.h
+>> @@ -1551,6 +1551,7 @@ struct f2fs_sb_info {
+>>    
+>>    #ifdef CONFIG_BLK_DEV_ZONED
+>>    	unsigned int blocks_per_blkz;		/* F2FS blocks per zone */
+>> +	unsigned int max_active_zones;		/* max zone resources of the zoned device */
+>>    #endif
+>>    
+>>    	/* for node-related operations */
+>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+>> index 206d03c82d96..aef41b54098c 100644
+>> --- a/fs/f2fs/super.c
+>> +++ b/fs/f2fs/super.c
+>> @@ -2385,6 +2385,16 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>>    	if (err)
+>>    		goto restore_opts;
+>>    
+>> +#ifdef CONFIG_BLK_DEV_ZONED
+>> +	if (sbi->max_active_zones && sbi->max_active_zones < F2FS_OPTION(sbi).active_logs) {
+>> +		f2fs_err(sbi,
+>> +			"zoned: max active zones %u is too small, need at least %u active zones",
+>> +				 sbi->max_active_zones, F2FS_OPTION(sbi).active_logs);
+>> +		err = -EINVAL;
+>> +		goto restore_opts;
+>> +	}
+>> +#endif
+>> +
+>>    	/* flush outstanding errors before changing fs state */
+>>    	flush_work(&sbi->s_error_work);
+>>    
+>> @@ -3932,6 +3942,14 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
+>>    	if (!f2fs_sb_has_blkzoned(sbi))
+>>    		return 0;
+>>    
+>> +	sbi->max_active_zones = bdev_max_active_zones(bdev);
+>> +	if (sbi->max_active_zones && sbi->max_active_zones < F2FS_OPTION(sbi).active_logs) {
+>> +		f2fs_err(sbi,
+>> +			"zoned: max active zones %u is too small, need at least %u active zones",
+>> +				 sbi->max_active_zones, F2FS_OPTION(sbi).active_logs);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>>    	zone_sectors = bdev_zone_sectors(bdev);
+>>    	if (!is_power_of_2(zone_sectors)) {
+>>    		f2fs_err(sbi, "F2FS does not support non power of 2 zone sizes\n");
 
