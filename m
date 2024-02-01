@@ -1,141 +1,113 @@
-Return-Path: <linux-kernel+bounces-48794-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3763084618B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:56:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F041846098
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:06:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64D741C25E63
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:56:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0EB3EB2663B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:06:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18BD685278;
-	Thu,  1 Feb 2024 19:56:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E10585274;
+	Thu,  1 Feb 2024 19:06:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DTRQ4Hna"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z4riNidI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE14285286
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 19:56:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E4084FD3;
+	Thu,  1 Feb 2024 19:06:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706817377; cv=none; b=W2YRzMs9m251kVrdWuu/qHgW1pV2ABYwbD/DzeqZzbEsaBwJqx66kSee9zwt1scBNwdb4li/sWujcpLpLDb+vyGDn+6dUh+g/Zr3ebVavPalxYcgkr1w4BbVZ9zS45Y2RX1hh2JANlzW0fOjIB479D/eEsvlxlGS5V6JQSfWA98=
+	t=1706814391; cv=none; b=togpDCXSPCHhSRfIXoXEIDE1GoX0T0xr564zfsSqfCfEoC1mIvqjgxgq//trzy+v9yimSNgwnF5u+z0vX289aU+iFWrKrwfus1+F5YKlwBmKzNmU4+rstHhloolQVChGYAG3V+i6x6Te/Zg7JGh8aQ0McgkQ6bV/uQefq209tfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706817377; c=relaxed/simple;
-	bh=TyvARfG5cdiLS3Lx957Ua1EFLe1TpBHS0WmMWNXQHGg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=InTWaVbt+IAU+dWdH8qX+H8Ug1nMQx1oK8UBjp31EyFXsnkZmATUuNAwC0ooC/V4fRHlFbBIWxWrU0jjmrF5x2eI3aD4pYWDAa5fHPmDaKmjo2MpvP7MHkM/TOQcdpVd/2HNG7Q8hCRaRgZWGtYsbILtcKmLvnD1OT0traoCVSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DTRQ4Hna; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706817374;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iN9wTYAiEZqmVZSRGp3IE12Ur++dFYxvXqv8nbWcyFg=;
-	b=DTRQ4Hnaubahspwx54qtR7ubNcdJwXU4sKmDD/SKuTVJ92bACyRN2QF/mLHMqCxK+X8sFm
-	+5hoDjhjXOUgzDAirYLhJoUp9DydRg7ncYio7FxVq8nrBmZJen7XkEh21adiZ6WKM+k+t6
-	elDp2D1qSB9OdS3AJgQCoDQauTbkWiw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-518-2hoVCHGRMSqXp1LTv0T2SA-1; Thu, 01 Feb 2024 14:56:11 -0500
-X-MC-Unique: 2hoVCHGRMSqXp1LTv0T2SA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E92FF8489F7;
-	Thu,  1 Feb 2024 19:56:10 +0000 (UTC)
-Received: from tpad.localdomain (unknown [10.96.133.5])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id B007A2026D66;
-	Thu,  1 Feb 2024 19:56:10 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-	id CA31C402492AA; Thu,  1 Feb 2024 15:45:01 -0300 (-03)
-Date: Thu, 1 Feb 2024 15:45:01 -0300
-From: Marcelo Tosatti <mtosatti@redhat.com>
-To: Parshuram Sangle <parshuram.sangle@intel.com>
-Cc: rafael@kernel.org, daniel.lezcano@linaro.org, linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jaishankar.rajendran@intel.com
-Subject: Re: [PATCH] cpuidle: do not shrink guest poll_limit_ns below
- grow_start
-Message-ID: <ZbvmrdBkeOK71KGg@tpad>
-References: <20240111135950.17016-1-parshuram.sangle@intel.com>
+	s=arc-20240116; t=1706814391; c=relaxed/simple;
+	bh=UFdbdYDvAPWYwEH4H+sTZoi40RASTnVr7NExWeWKa1U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=F35IsFe0FsfrYDMQZwrVaXMp1q/CG6+bc6lFDvrSQOusP/tQHomxIFCaWZAUganb8+WOE1b/GWjgB2poGhgy4VHBtZ6FDvxUsE9B3UrQYi6QTXDZI3SFBD8EoY2IFBc92CCxIkS/4cVqnySagta6SaBwif8TDOwIdkaR1lplLbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z4riNidI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23094C433C7;
+	Thu,  1 Feb 2024 19:06:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706814391;
+	bh=UFdbdYDvAPWYwEH4H+sTZoi40RASTnVr7NExWeWKa1U=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Z4riNidIswR8n6TXHT54Ikr2ScCpXEqZyrIJ8CiRqcwUQ/a+p+xXndyM8Tj2X3W4+
+	 vIxSGDhVdiLH7BHuNzT6dcvSpy/SnwWTV2mG7+SueQYA8Kb8fwAxvkU0WW6yR3M79l
+	 r2xVdM9/C+bnLoneQj8eFEqhRdaAl+/pONbzRdAKFVDAliTSfmB8iQN2nS9k3lBtVH
+	 7TDEpMbrOEza9WYDsqh+Vy5p9LYz1tbOlD5gEKOV+TECRGAbUsBzCByWK60LB3sizx
+	 8Vwa2R+j+NbQzt5Jx0yASbufk5vMEKNnNje8hCqGIclhXrjAm/emqmszdHk+XwIHMu
+	 VE4nxwhJ5H9Fw==
+From: Miguel Ojeda <ojeda@kernel.org>
+To: Tejun Heo <tj@kernel.org>
+Cc: Miguel Ojeda <ojeda@kernel.org>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Gary Guo <gary@garyguo.net>,
+	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Alice Ryhl <aliceryhl@google.com>,
+	rust-for-linux@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	patches@lists.linux.dev
+Subject: [PATCH] workqueue: rust: sync with `WORK_CPU_UNBOUND` change
+Date: Thu,  1 Feb 2024 20:06:20 +0100
+Message-ID: <20240201190620.18064-1-ojeda@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240111135950.17016-1-parshuram.sangle@intel.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 11, 2024 at 07:29:50PM +0530, Parshuram Sangle wrote:
-> While adjusting guest halt poll limit, grow block starts at
-> guest_halt_poll_grow_start without taking intermediate values.
-> Similar behavior is expected while shrinking the value. This
-> avoids short interval values which are really not required.
-> 
-> VCPU1 trace (guest_halt_poll_shrink equals 2):
-> 
-> VCPU1 grow 10000
-> VCPU1 shrink 5000
-> VCPU1 shrink 2500
-> VCPU1 shrink 1250
-> VCPU1 shrink 625
-> VCPU1 shrink 312
-> VCPU1 shrink 156
-> VCPU1 shrink 78
-> VCPU1 shrink 39
-> VCPU1 shrink 19
-> VCPU1 shrink 9
-> VCPU1 shrink 4
-> 
-> Similar change is done in KVM halt poll flow with below patch:
-> Link: https://lore.kernel.org/kvm/20211006133021.271905-3-sashal@kernel.org/
-> 
-> Co-developed-by: Rajendran Jaishankar <jaishankar.rajendran@intel.com>
-> Signed-off-by: Rajendran Jaishankar <jaishankar.rajendran@intel.com>
-> Signed-off-by: Parshuram Sangle <parshuram.sangle@intel.com>
-> ---
->  drivers/cpuidle/governors/haltpoll.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/cpuidle/governors/haltpoll.c b/drivers/cpuidle/governors/haltpoll.c
-> index 1dff3a52917d..663b7f164d20 100644
-> --- a/drivers/cpuidle/governors/haltpoll.c
-> +++ b/drivers/cpuidle/governors/haltpoll.c
-> @@ -98,10 +98,15 @@ static void adjust_poll_limit(struct cpuidle_device *dev, u64 block_ns)
->  		unsigned int shrink = guest_halt_poll_shrink;
->  
->  		val = dev->poll_limit_ns;
-> -		if (shrink == 0)
-> +		if (shrink == 0) {
->  			val = 0;
-> -		else
-> +		} else {
->  			val /= shrink;
-> +			/* Reset value to 0 if shrunk below grow_start */
-> +			if (val < guest_halt_poll_grow_start)
-> +				val = 0;
-> +		}
-> +
->  		trace_guest_halt_poll_ns_shrink(val, dev->poll_limit_ns);
->  		dev->poll_limit_ns = val;
->  	}
-> -- 
-> 2.17.1
-> 
-> 
-> 
+Commit e563d0a7cdc1 ("workqueue: Break up enum definitions and give
+names to the types") gives a name to the `enum` where `WORK_CPU_UNBOUND`
+was defined, so `bindgen` changes its output from e.g.:
 
-Looks good.
+    pub type _bindgen_ty_10 = core::ffi::c_uint;
+    pub const WORK_CPU_UNBOUND: _bindgen_ty_10 = 64;
 
-Reviewed-by: Marcelo Tosatti <mtosatti@redhat.com>
+to e.g.:
 
+    pub type wq_misc_consts = core::ffi::c_uint;
+    pub const wq_misc_consts_WORK_CPU_UNBOUND: wq_misc_consts = 64;
+
+Thus update Rust's side to match the change (which requires a slight
+reformat of the code), fixing the build error.
+
+Closes: https://lore.kernel.org/rust-for-linux/CANiq72=9PZ89bCAVX0ZV4cqrYSLoZWyn-d_K4KpBMHjwUMdC3A@mail.gmail.com/
+Fixes: e563d0a7cdc1 ("workqueue: Break up enum definitions and give names to the types")
+Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+---
+Tejun: here is the formal patch as you requested. Please feel free to
+either take it or to rebase to fix the old commit. Thanks!
+
+ rust/kernel/workqueue.rs | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/rust/kernel/workqueue.rs b/rust/kernel/workqueue.rs
+index 498397877376..d00231e18007 100644
+--- a/rust/kernel/workqueue.rs
++++ b/rust/kernel/workqueue.rs
+@@ -199,7 +199,11 @@ pub fn enqueue<W, const ID: u64>(&self, w: W) -> W::EnqueueOutput
+         // stay valid until we call the function pointer in the `work_struct`, so the access is ok.
+         unsafe {
+             w.__enqueue(move |work_ptr| {
+-                bindings::queue_work_on(bindings::WORK_CPU_UNBOUND as _, queue_ptr, work_ptr)
++                bindings::queue_work_on(
++                    bindings::wq_misc_consts_WORK_CPU_UNBOUND as _,
++                    queue_ptr,
++                    work_ptr,
++                )
+             })
+         }
+     }
+
+base-commit: 15930da42f8981dc42c19038042947b475b19f47
+--
+2.43.0
 
