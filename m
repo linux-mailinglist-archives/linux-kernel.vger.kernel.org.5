@@ -1,130 +1,143 @@
-Return-Path: <linux-kernel+bounces-47636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F2D1845087
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:53:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EAE384508B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:54:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 919641C2564F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:53:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10124B28D34
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:53:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F29B83BB4D;
-	Thu,  1 Feb 2024 04:53:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4693A3C485;
+	Thu,  1 Feb 2024 04:53:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="iiOYb/2Z"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="b2QCujBS"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97F763BB2D
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 04:53:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62FCF3BB3A;
+	Thu,  1 Feb 2024 04:53:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706763184; cv=none; b=ME+Pw+utnEgSbuBkdycnz+IMrx7JoDiEWMeBWj6kxRiFcDsUE+PZOaY/Rf7lDBgkkHleY84ramiS4dXVOmWhwR8fDi7ZWmdv/lY7mSp3oY01Y5tmH2QXXLmLKAtsRH27j8xs7RL6oh/OprM74wrSo6aWEU4G9LPXlWIhgIae/IM=
+	t=1706763224; cv=none; b=VHmcED+NQROjzI8YCGro4LgptJrvfksfdhoDCiXA6lHC2LRT4qIl2ojZFpMJgF/7PjMvoJ8qV7+1LdG9M6hConc1TaKkPUOoLEZD2Q7CQogv/peSrK7wA7epRsqG6EwdTsPTW+rbh6yTDa2eb7t3SsOh+4r3HofwMtVs5hqEHBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706763184; c=relaxed/simple;
-	bh=6Q4hZB342kOUQre0oOMFijkniStNxdrC30MbCD0CfqA=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=g9IE4TLuMakt5wPwsLvwtu0az9oJSgaZ7kxWgWmZigwrDECjB97qReH7fGHk38dy0eg3r2uNpy7uISIajTA1R6AxnpqG2mo8PSJBk2GFb/tVftLlWBLzzC1bqfwMFQzkHUCTLZPAmAC605MlksXQ86vOSeDDpulsM2sMFdEc49Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=iiOYb/2Z; arc=none smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: c4175196c0bd11ee9e680517dc993faa-20240201
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=bLgCShFq1WIC3Xl1kd4l8YHBBYLHXkqdRbA4uvGyyuA=;
-	b=iiOYb/2ZPevhED8wObTiUgUTIi7YTMZcy0iMRL+9cmWRVOnUoT+GeLzDiPmmaGTf264Gbc2EQ6fuXqDQqq0CZlGfxmYgfIvB7HAN8B0Prktb8NX8HlTTN4AzpQMBUwjXdNMjMHJzhH5GatM2xniyuEWC6tKyg0r4kYbtjh0uZ6M=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.36,REQID:e54dd109-452c-46b4-9121-1d364d53bb3c,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:6e16cf4,CLOUDID:2f027e83-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: c4175196c0bd11ee9e680517dc993faa-20240201
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
-	(envelope-from <flash.liu@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 805437301; Thu, 01 Feb 2024 12:52:56 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 1 Feb 2024 12:52:54 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 1 Feb 2024 12:52:54 +0800
-From: Pin-Chuan Liu <flash.liu@mediatek.com>
-To: Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi
-	<cristian.marussi@arm.com>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-CC: <wsd_upstream@mediatek.com>, <cylen.yao@mediatek.com>, Pin-Chuan Liu
-	<flash.liu@mediatek.com>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
-Subject: [PATCH] firmware: arm_scmi: Avoid to call mbox_client_txdone on txdone_irq mode
-Date: Thu, 1 Feb 2024 12:52:50 +0800
-Message-ID: <20240201045253.14390-1-flash.liu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+	s=arc-20240116; t=1706763224; c=relaxed/simple;
+	bh=tNDZ84JWSrZ5U3526IgJ8WphlC3VHFF+HXv6u+aq0JI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bv8+kOZOsrXptfemNkJbSe6zUcyufS6GFhqfWawe/IM7wOwHC7KSNsTBWJiyCo4mhw5Dxffn3H/K5BuvQjkRRugODtgTyZy2CWjzWOXm6CJy1CEIhS9pAAmdsyRl+Og4ciXk8DC+4GqaUo81CW0Wp611oE6K31HrTZ9fiBVt3D4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=b2QCujBS; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1706763220;
+	bh=tNDZ84JWSrZ5U3526IgJ8WphlC3VHFF+HXv6u+aq0JI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=b2QCujBS9k9CiDJzG+IJu6aiNQoTj298ErkfRz1vvaeDL1GDmeuBZietTyMfAIKGR
+	 B2hotHO3ISh1CGoszjMAJL7MZ5au6Ctx+X6goXcpfvGbDFuyMrC/cNHlZVyfeu9Xja
+	 SkscrHZ3YRYCt5+i95fNoPHsiRkyJFQaGjy8MTxWo6e2Vg/NI9XzjqKtMqTuS+GqT4
+	 iYk2sCgTLmuC1n7VIO/9US64AgHTf0g9on6mbbCX740rtWjNvwykxAET04fASiX894
+	 39uvixIaEhpFI/G1P8vgGs9vOsqMcjVX/i+qGYoP9I1fZttSCWdyuwinakXtBWJWlO
+	 /LtsHEZ/p1kVw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TQRPc3TwXz4wp0;
+	Thu,  1 Feb 2024 15:53:40 +1100 (AEDT)
+Date: Thu, 1 Feb 2024 15:53:39 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
+ <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, bpf
+ <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>, Linux Kernel
+ Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: runtime warnings after merge of the bpf-next tree
+Message-ID: <20240201155339.2b5936be@canb.auug.org.au>
+In-Reply-To: <yeujnwul3nd6vhk2pidnh72l5lx4zp4sgup4qzgbe2fpex42yf@2wtt67dvl7s3>
+References: <20240201142348.38ac52d5@canb.auug.org.au>
+	<yeujnwul3nd6vhk2pidnh72l5lx4zp4sgup4qzgbe2fpex42yf@2wtt67dvl7s3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--2.938200-8.000000
-X-TMASE-MatchedRID: V0b+0D6KeHB3VjVXh/TSj0+4wmL9kCTxsEf8CpnIYtnz+Z+5iD+iRb87
-	jWxVKGOh6lVWmieuZwniU0wvQv0w64JrRWPc34Z+A9lly13c/gGy4iyjvVWTon5h6y4KCSJc3oz
-	JRX7b4NnHBJlWHsfjZDhRWiGxovmInVURoFo9SBy5kfgtJfb41X0tCKdnhB589yM15V5aWpj6C0
-	ePs7A07fhmFHnZFzVqsuEZvQp0J9pIfsylPBBktLaUERHa8u2NERrrPWZ/TB+IKiZao8KaJQeWS
-	4msO1E5EoIaZ0cyok3N8/wCCOEm3aRHRNjz1UNJSZrfNhP3sgUBh9AgBSEFrJm+YJspVvj2xkvr
-	HlT8euJ0YHKn7N1oOA==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--2.938200-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 6840BBDB642849DB19F6FAED2D4AB1AD13039BD7662C89BC26B20A7DB8D9EFCA2000:8
+Content-Type: multipart/signed; boundary="Sig_/VRbZIguX2oIMQiDNt5d/haW";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On txdone_irq mode, tx_tick is done from mbox_chan_txdone.
-Calling to mbox_client_txdone could get error message
-and return directly, add a check to avoid this.
+--Sig_/VRbZIguX2oIMQiDNt5d/haW
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Pin-Chuan Liu <flash.liu@mediatek.com>
-Change-Id: Iacbe0d36ef9cc16974c013c3e94c47dc79eae52b
----
- drivers/firmware/arm_scmi/mailbox.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+Hi Daniel,
 
-diff --git a/drivers/firmware/arm_scmi/mailbox.c b/drivers/firmware/arm_scmi/mailbox.c
-index b8d470417e8f..f6fe801c2e34 100644
---- a/drivers/firmware/arm_scmi/mailbox.c
-+++ b/drivers/firmware/arm_scmi/mailbox.c
-@@ -8,6 +8,7 @@
- 
- #include <linux/err.h>
- #include <linux/device.h>
-+#include <linux/mailbox_controller.h>
- #include <linux/mailbox_client.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
-@@ -275,7 +276,12 @@ static void mailbox_mark_txdone(struct scmi_chan_info *cinfo, int ret,
- 	 * Unfortunately, we have to kick the mailbox framework after we have
- 	 * received our message.
- 	 */
--	mbox_client_txdone(smbox->chan, ret);
-+
-+	/*
-+	 * With txdone_irq mode, kick can be done by mbox_chan_txdone.
-+	 */
-+	if (!(smbox->chan->mbox->txdone_irq))
-+		mbox_client_txdone(smbox->chan, ret);
- }
- 
- static void mailbox_fetch_response(struct scmi_chan_info *cinfo,
--- 
-2.18.0
+On Wed, 31 Jan 2024 20:55:43 -0700 Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> Hi Stephen,
+>=20
+> Thanks for the report.
+>=20
+> On Thu, Feb 01, 2024 at 02:23:48PM +1100, Stephen Rothwell wrote:
+> > Hi all,
+> >=20
+> > After merging the bpf-next tree, today's linux-next build (powerpc
+> > pseries_le_defconfig) produced these runtime warnings in my qemu boot =
+=20
+>=20
+> I can't quite find that config in-tree. Mind giving me a pointer?
 
+Its a constructed config ("make pseries_le_config")
+
+$ grep BPF .config
+CONFIG_BPF=3Dy
+CONFIG_HAVE_EBPF_JIT=3Dy
+CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=3Dy
+# BPF subsystem
+CONFIG_BPF_SYSCALL=3Dy
+CONFIG_BPF_JIT=3Dy
+# CONFIG_BPF_JIT_ALWAYS_ON is not set
+CONFIG_BPF_JIT_DEFAULT_ON=3Dy
+CONFIG_BPF_UNPRIV_DEFAULT_OFF=3Dy
+# CONFIG_BPF_PRELOAD is not set
+CONFIG_BPF_LSM=3Dy
+# end of BPF subsystem
+CONFIG_CGROUP_BPF=3Dy
+CONFIG_NETFILTER_BPF_LINK=3Dy
+CONFIG_NET_CLS_BPF=3Dm
+CONFIG_NET_ACT_BPF=3Dm
+# CONFIG_BPF_STREAM_PARSER is not set
+# HID-BPF support
+# end of HID-BPF support
+CONFIG_BPF_EVENTS=3Dy
+CONFIG_TEST_BPF=3Dm
+
+> My guess is the config does not enable CONFIG_DEBUG_INFO_BTF which
+> causes compilation to use the dummy definitions for BTF_KFUNCS_START().
+
+Correct, see above.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/VRbZIguX2oIMQiDNt5d/haW
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmW7I9MACgkQAVBC80lX
+0GxwMQf8CdFGOSXVr8l/32od6WIg+985DCrs7EvRaaov37ErHYRs7O5skHP0/AZr
+LcW6LHlx4Btp8mGyEVOWp4+i9v5yvp6ZOcT6AzfcCNGE5pfUv/J5Uh4N+Kr3uo8g
+KsBZJpxVjv3tsbiJsN6tXuNluxlrTd0cCnKQDkFDhSG4mRAsff03Yia3R1ck67hH
+viuMG8p0DHgck5LeXizcY4bv93Rc0B2kmFjFYMAy1V1HWe/sx+ZRBFkacSdXCR9U
+303U3mNS5yzNcDP+OWm8cE3VZMxAKZSszYtQ2lg0kVbQ0gSsb9ef/a+ktxRomv81
+znBX60FsCLAcHekdxdXQoGE3KiThzA==
+=cA6c
+-----END PGP SIGNATURE-----
+
+--Sig_/VRbZIguX2oIMQiDNt5d/haW--
 
