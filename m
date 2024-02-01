@@ -1,116 +1,120 @@
-Return-Path: <linux-kernel+bounces-48579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70C32845E66
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:22:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3632845E69
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:22:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 244DA1F233CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:22:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40ABF1F223D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:22:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1553A5B058;
-	Thu,  1 Feb 2024 17:22:27 +0000 (UTC)
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA5231649CD;
+	Thu,  1 Feb 2024 17:22:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WMndUhjz"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F92C5B046
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 17:22:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F97C5B05A
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 17:22:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706808146; cv=none; b=jz7OJwtNHALFVBzG/QHHz9LPXocKL/RAs4Z6OgTJCQtkL2/72vKCX1D6/eybZ47TRn67pBXtQ3oVgUU9ia1ZCoFtZpbCbpV8eMD9bb9JPzCew4PjrT10f1YnJmh9QtZVDnw7Mf5EyX/Ah3Eawygwhym2iGy3FrWSA1J43HluZ+Q=
+	t=1706808149; cv=none; b=qDNLKpyxc/+lAlUYkc6zUA2EKul8MBmXgY3KiR+y/aCgORpT8bjI/T/jt/jk3jZXQVIS627mX6SyWNpqY/HPA3aoZhbqK245HK37STT8ah2kYVrwWHtNcg8ICfr3U2OZ8VMrQtO/wEgigiA38vWvzf/8JGydqdRXgiKujW/hHNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706808146; c=relaxed/simple;
-	bh=rHZbjNL8tRxKipsBLSqjYxs8COfcgDSsNiRrJZJBiFw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Icnpjmw+GaY1fVnD7D9tW8iS1H6foC/HatnSNgsfDpedl2EM2teYRHs0s4jSX8lmTuYQFFNgjJBpHM3LOeiceDHWrSHHHdKIYuWiTuUGW35f1y67A2N/I5ICv4bpj6QUgNXw9NQZOVtgyWV1/2TX5eA5uQMZCJsKn5fFeUphZKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso1017715a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 09:22:23 -0800 (PST)
+	s=arc-20240116; t=1706808149; c=relaxed/simple;
+	bh=52w61SL9U4SK4WqY0kMb5Iy12v+xHbJ4FGKmp75wAto=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=vFst0A/3vCp39RJekbiaRQNKBprMcyz7OsSam5G/woV4S2LHEIjLLiobczLs7srpgVm0zMEO7T/pt0mrYca93UnjE0JEgtnNqC44BljtcJRAeC/DJY/+4nGmbwgf17tFRvpuW/oEBj2qgwloUQ8FwmHq/47M9ZwacskkNce7bPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WMndUhjz; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33b11ea47d9so750122f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 09:22:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706808145; x=1707412945; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Olzs5jHBV5th4bf/0xR3cFxQ7USKSVC7J+wiOfI31K0=;
+        b=WMndUhjzW9TQPcwgkLtSGOWirOgslP/EJhR0OoeAAP1FsB244HQjLdRuM2GwSh0klD
+         LBETlFV1GPHarU9wLt5xQPWt3QIhhoQ/3+oFjJByZymuhKl9/nryjxTXnL8oMhQPitj6
+         BZ6gEumtyAUjj2pB2ZvG21dlyC70X1jYWUp6vrtmKadgY/kqnZ0M2ulsyQqBuOHXMYV0
+         dKXbgfE7cb3WAAuQu/PVIEupH237b0zwQ9vA+LQ3wmQZjoYC0qfDesbarI2u5I9aSz8N
+         G5UFQdRGen4X+c5zEDAGp1V2TXsq8lopatBC0XfHPn8LWX4Ia+dhuljTpg2WTybBtUUP
+         sUJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706808143; x=1707412943;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aZtAaumIvU3IAWyjvvbYXJr6tn3IceIszOO9KSScbmk=;
-        b=AEvRRM+xTYySNG1QROtEZTpu57tZcZ7NapUXrRBrEjrUBVhtOCasWL2m5n0Ife4M1z
-         oAyWf7cPvPs2eBsqmUxP1UqYqRbXkvPqiyiM3zkBpUjji4dpTJnGv9JHj6xNM1H1QKun
-         LVfMr3tuVNLgni83NUuJ9CI6ZeGPJ3dvZcY22tQSl13KagVuCaxM90JUsqAF5prnwEJZ
-         HQyBUHbdd65oaw9JcvAlIAGxVXBllt2DqzUcKiUV0wUHUqkmf1VRvvwWBI3DgLBArHuk
-         sJ1JGea3sjCMrbU5wQZDFdmVDrNK94Drq9IAUX6v0ZO/eckKM6/7AmHD/jfM83PRwqdC
-         +Tnw==
-X-Gm-Message-State: AOJu0YxfJswUSmLl0lYmkM1iFLMHtMr/S4nfzHcD/b8R8avvI7822Q5l
-	LCBL6A3LBlCj9GVVmnT9Ywy6Pfb+CG+tDqcIfBMYaECdmBFQike2Ohl0y0Xu
-X-Google-Smtp-Source: AGHT+IGxifk4iveoBRmwTjYQ06upWNmNzxZw/szV4Bov7vw6rxSIlqMjtU+h01kkSVVWtsgm4hROEg==
-X-Received: by 2002:a05:6a20:b3a9:b0:19c:a7e2:c1d6 with SMTP id eg41-20020a056a20b3a900b0019ca7e2c1d6mr4971130pzb.25.1706808143369;
-        Thu, 01 Feb 2024 09:22:23 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVFQrXyxOIpQOPuCQCiME6pADWOWifdCiqBlBAdNJ+VYjaEnr2CaZ5MnUI6rKgYI54KL0kQMGXubBd5+o9y7H+bDbGsPHisFtM/sYfNi5nSgsTzC96ckjVREz/cDWd8fj7g55H5twtVAkOuRVThcXJCc+O8TVFAfy3pbUc4imCfRMcTikQ76pMi3SL6NklLUINxoZG1BSGTOIBCe8tUbVPKaa36mjTy4H1mo99vGVGRw2yaBSqYwT+VbCvnnTpVPZP0bnQLxrki0HhwwNix69Pj41fdKA43hXZzbPJJiGk3ACp3LMNJtoH5
-Received: from ?IPV6:2620:0:1000:8411:170e:a1a5:1887:adb2? ([2620:0:1000:8411:170e:a1a5:1887:adb2])
-        by smtp.gmail.com with ESMTPSA id n13-20020a056a000d4d00b006dddd5cc47csm12098253pfv.157.2024.02.01.09.22.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 09:22:22 -0800 (PST)
-Message-ID: <2d1f4f16-6d66-4449-a7b7-5e2b2a4eaeb3@acm.org>
-Date: Thu, 1 Feb 2024 09:22:20 -0800
+        d=1e100.net; s=20230601; t=1706808145; x=1707412945;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Olzs5jHBV5th4bf/0xR3cFxQ7USKSVC7J+wiOfI31K0=;
+        b=CQSe8zcGwFjMPwlkIdwCNaHc4VAF1ruzpGRj3r28CCYJu4m9z1+YMqHPBs1VWQfUpR
+         BqOv7z3I2iscePouHqSiRyvyMWwpVdLvCs7qlNsJ3cDRLft9w6ukz5p+4c+YIbGcYEpZ
+         xJolrv4gkSjKI/ufQFOqA69F36FIZY/eftrMYFVu0jU0F9Pi0PuEHppurdxb3l5xVFQT
+         Zt9IVDEXJjaJdjAbzE8/cH973dcIuqE243NzBR6BMYoPyBHq8kThUBpjWGBdfNAJuYBY
+         0hrPntxSTRucVWIHYZ/2iVQ8AoRRz4pACxc8rOY6g8XYWEwdZavbpuCJO7YghGUC7MhK
+         HNPA==
+X-Gm-Message-State: AOJu0YywOEO0dRXUQ2v+Rg/cWzDCNnhDW9Vv14WKdvclwIB33jBqnSks
+	0crAmxM7U1ZLfB+QRM1fMkB6HGfRDqcY6qevGlmAKJ9nXEYaxrFlt4sS6q7Fdx4=
+X-Google-Smtp-Source: AGHT+IFpmBY54yA+GRbMJhIIQPcZ3OaDrFdyCo+12N3dtJyiP8+y6KOZsPaHG6a6biOb79hAePH7Dg==
+X-Received: by 2002:a5d:610b:0:b0:337:9d3b:c180 with SMTP id v11-20020a5d610b000000b003379d3bc180mr4025840wrt.4.1706808145483;
+        Thu, 01 Feb 2024 09:22:25 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXAyBCUGeofnISmWVvuayh3uWyPjp7ReG6k3Z7Cg4Ixith4cEy/8G9skYPPoXvjaLvnvvELl90LT/8UIpCz+FIb2gNldRtIzSIMfa3zk7ldRWyj2S/GtzBd0x+YuoVwvsOVeL2PGmo0wEhKpRxxmj/ldV0D4/uICodrORh3mxhdKB7LhY9oZtv4MDLlmsfkWgnIvH3MWc7BIF1NWvp4PR8cNidJKPAfyY30tqwaMQdEMX3vopapymYiwLjgaF0+XwjKsKzGej1zgHEy3qOZJMot+uKeLK8Fk5xv+Ky6qoeoG3vdIyBY7s3v/TpMUCL9k/Y+Q2a/Zktg5Ubhfb1cz2arRAc06pjbJ2+UBOprShdj3dGyr5U9/EdtAmwNri8XqoOBAxt0PgH6XrYoVvRuvvWomLMPJkVwkb1ahmIujePs+3YQtV72NoeQHmvbuUQBOR4EhVAv4d+iD44CS3frSGvzy2SuoeT0IoKkEdmoosiBqeAEumgoRDYMGlktdk+hDmpW+FT/YtCfdh7hTG/FyXjq1jqQOdKhH29mOhxRvqd1m0BzPDYACSx/if5FW+tylTs=
+Received: from tux.Home ([2a02:c7c:7213:c700:e992:6869:474c:a63f])
+        by smtp.gmail.com with ESMTPSA id f15-20020a056000036f00b00337d84efaf7sm16733582wrf.74.2024.02.01.09.22.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 09:22:25 -0800 (PST)
+From: Alexey Klimov <alexey.klimov@linaro.org>
+To: krzysztof.kozlowski@linaro.org,
+	alim.akhtar@samsung.com,
+	linux-samsung-soc@vger.kernel.org,
+	semen.protsenko@linaro.org,
+	peter.griffin@linaro.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org
+Cc: devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	klimov.linux@gmail.com,
+	kernel-team@android.com,
+	tudor.ambarus@linaro.org,
+	andre.draszik@linaro.org,
+	saravanak@google.com,
+	willmcvicker@google.com,
+	arnd@arndb.de
+Subject: [PATCH 1/4] dt-bindings: hwinfo: samsung,exynos-chipid: add gs101-chipid compatible
+Date: Thu,  1 Feb 2024 17:22:21 +0000
+Message-ID: <20240201172224.574238-1-alexey.klimov@linaro.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2] lockdep: fix deadlock issue between lockdep and rcu
-Content-Language: en-US
-To: Zhiguo Niu <zhiguo.niu@unisoc.com>, peterz@infradead.org,
- mingo@redhat.com, will@kernel.org, longman@redhat.com, boqun.feng@gmail.com
-Cc: linux-kernel@vger.kernel.org, niuzhiguo84@gmail.com, ke.wang@unisoc.com,
- xuewen.yan@unisoc.com, Carlos Llamas <cmllamas@google.com>
-References: <1705477714-10467-1-git-send-email-zhiguo.niu@unisoc.com>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <1705477714-10467-1-git-send-email-zhiguo.niu@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 1/16/24 23:48, Zhiguo Niu wrote:
-> There is a deadlock scenario between lockdep and rcu when
-> rcu nocb feature is enabled, just as following call stack:
+Add "google,gs101-chipid" compatible string to binding document.
 
-Is it necessary to support lockdep for this kernel configuration or should we
-rather forbid this combination by changing lib/Kconfig.debug?
+Signed-off-by: Alexey Klimov <alexey.klimov@linaro.org>
+---
+ .../devicetree/bindings/hwinfo/samsung,exynos-chipid.yaml        | 1 +
+ 1 file changed, 1 insertion(+)
 
->   /*
-> - * Schedule an RCU callback if no RCU callback is pending. Must be called with
-> - * the graph lock held.
-> - */
-> -static void call_rcu_zapped(struct pending_free *pf)
-> +* See if we need to queue an RCU callback, must called with
-> +* the lockdep lock held, returns false if either we don't have
-> +* any pending free or the callback is already scheduled.
-> +* Otherwise, a call_rcu() must follow this function call.
-> +*/
+diff --git a/Documentation/devicetree/bindings/hwinfo/samsung,exynos-chipid.yaml b/Documentation/devicetree/bindings/hwinfo/samsung,exynos-chipid.yaml
+index 780ccb5ee9b4..b1d933808b6c 100644
+--- a/Documentation/devicetree/bindings/hwinfo/samsung,exynos-chipid.yaml
++++ b/Documentation/devicetree/bindings/hwinfo/samsung,exynos-chipid.yaml
+@@ -13,6 +13,7 @@ properties:
+   compatible:
+     oneOf:
+       - enum:
++          - google,gs101-chipid
+           - samsung,exynos4210-chipid
+           - samsung,exynos850-chipid
+       - items:
+-- 
+2.43.0
 
-Why has the name been changed from "graph lock" into "lockdep lock"? I think
-elsewhere in this source file it is called the "graph lock".
-
->   	/*
-> -	 * If there's anything on the open list, close and start a new callback.
-> -	 */
-> -	call_rcu_zapped(delayed_free.pf + delayed_free.index);
-> +	* If there's anything on the open list, close and start a new callback.
-> +	*/
-> +	if (need_callback)
-> +		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
-
-The comment above the if-statement refers to the call_rcu_zapped() function
-while call_rcu_zapped() has been changed into call_rcu(). So the comment is
-now incorrect.
-
-Additionally, what guarantees that the above code won't be triggered
-concurrently from two different threads? As you may know calling call_rcu()
-twice before the callback has been started is not allowed. I think that can
-happen with the above code.
-
-Bart.
 
