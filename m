@@ -1,309 +1,120 @@
-Return-Path: <linux-kernel+bounces-48761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B22F18460E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:24:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DBD98460E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:27:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 399BE1F2C35A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:24:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B3001C238F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5685185623;
-	Thu,  1 Feb 2024 19:24:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CFA685286;
+	Thu,  1 Feb 2024 19:27:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Q0omFkn4"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m7TnBfjM"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6659084FCC;
-	Thu,  1 Feb 2024 19:24:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FCD884FD3;
+	Thu,  1 Feb 2024 19:27:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706815480; cv=none; b=bcCTvGO/iRhl9vf5OvtDRL0JbCF6ewn9kKV5XwGebV/LBX4lfszK738CWak2xf3PQbHDlUuGZ0iCG8jdIXQiIQXGLrYl7K3eUJ9xVnm3Fa+J8imGQKIV/7iwaSBrWqeEmuI3BU6bA+qWDyc+XZ3he9/q/KivzZYklPaJscvrVwM=
+	t=1706815638; cv=none; b=ABEEz09AfuDBDEZerlhc6EMmsNtShSi05RZpAh6yFlYZ4hQtV38UgxzriH5neM5pvXhTyKLmXhhnaAvKgmsc4tVnsU3ysH4qyMGsRVsA9dIT3gXTd6kOD4pu/1tnFE/iCqIbHuFHWiv3r7AhUbY4lbarnuElTFUmunU3W6HutXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706815480; c=relaxed/simple;
-	bh=iUc2vkXqxWp29arSGr0Gv0qjGnyeHtj+r72KPm4qIoA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=sPSpfaaaiCvHILKdtlSzremN7VfKbyCtRj57CjSi+CHdufaNMBvfMzogXOl6HCoIaRa3HyzXqWz/FlaPA5rjBpY7I3Z8W6MC/KafDoPW9cys2BIMuqUqBTeeBaC7AHSmsFpjsr9skkctLs8RkyKgtaEAbOdQsRkGVDRdnur+YOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Q0omFkn4; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 411JOZ0P077704;
-	Thu, 1 Feb 2024 13:24:35 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706815475;
-	bh=/VVmEmDR3nHp1FdRkgsPainh9V2zVUnFoExf5ZzRD7U=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=Q0omFkn4aN1mdfRx4JuVKCEuQJxhX4a09dd4UNGOw9U7Fj8lXTDy3BhF0YdGhXOiQ
-	 IOTTzGuKKGD7RGeXCAtII2G1OiGwq2VGxE2LRmkD0hvejHnz5YRWtzv8hnDQN5EnFH
-	 8rHN4SxIfPtviEsGTxtXWGuBB0IFcKHsWY3tQg9c=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 411JOZHb121891
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 1 Feb 2024 13:24:35 -0600
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 1
- Feb 2024 13:24:35 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 1 Feb 2024 13:24:35 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 411JOYXI096854;
-	Thu, 1 Feb 2024 13:24:34 -0600
-Message-ID: <33851b29-bdc5-4fd1-9667-571486591591@ti.com>
-Date: Thu, 1 Feb 2024 13:24:34 -0600
+	s=arc-20240116; t=1706815638; c=relaxed/simple;
+	bh=6CwiqDr7FDp2bs1J3xgVDCcKosNF86VPvbUnyP6zuLg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=amxxewIxfKjhJLgDKC53z+9A0eRRO7F+lvY1OEFqD5T9kUMAOzsd7ZsGIchrht4dyAjRm9rKpB47uqKj3u7d4s1qu+crBC86Ie7xWseM8XZmSMFUpHVHvhrP6XdA/sygpMw+7kpXX/iYTKJcUPQS3t76CZ3ghQIXG/L7qHAaG/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m7TnBfjM; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6d9f94b9186so1114807b3a.0;
+        Thu, 01 Feb 2024 11:27:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706815636; x=1707420436; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oj3e2y9EpmbMl194n6alw6UOB7/daIK+PfuTYNJ05D0=;
+        b=m7TnBfjMUqwjsmb2gOmTHtVYO5A5sLs5xXa3Xn8sxBsUV0JfRb8kkAfyKsFcRSY0QC
+         Wk08NBRJt3MOZ3ZY9jjIhaKdsf7xIUBpKcam0TTDYP0emYqvhcYyGswyE/z6//WMVMMr
+         CFiXrQzAo/c8gsmk76F2cGPuW4mOmpMqzVYHDOtuEd91FQ/L1IZs3zVINM7oSwL73VeK
+         q4g+KMtTbnbCBzorwThI14ZnfFSL8LOnTfMZuOn0qnwh4T/DEm5ffBimREWY57oYOzeI
+         b3bT1WFgf34EG7z/C2i/bsAJXbEDdPFk0MBjRFZl1SKnAEyUgLTPWKV+MaO//qhxXh2J
+         k8lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706815636; x=1707420436;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oj3e2y9EpmbMl194n6alw6UOB7/daIK+PfuTYNJ05D0=;
+        b=DW9jSENpxDyGxIyuU+lYkdDOtqYtFb//HgWaHrQM6Kp34gdFyKlWe7Dm5HtYPYFPIt
+         W5JjzP7zaI2n7oJIfNMNV7Xv+PJ/OL2HE8SolOHpPG/kTcLmE7SGeZujQjYu6GiK1scu
+         rzI31sX9Wc2FD3ZtXacH7tMOejsvwD7A7BjpfxdoTVT5lJ84fZYIdA8A3gP7psvsCkJP
+         Xt8VMKcdHZnGxFnrtdjyadWUCsNVAHGMrlE630syA1G5/30PSNMEhdil7DQsT4EADEuM
+         De+AghAf43S0iu//+j0+8vlHnB4EwXBeGZ738o+ZMvS1vPW2BE1IHz+30qrPVmnL7R6R
+         khug==
+X-Gm-Message-State: AOJu0YyrpO+puue+UJIVRm4Tor6EsFls4Rz/3JJ5cgdRdKdIfr3HvmDp
+	G/ZT+UPWGuC819LWCqMdBYcLKbptOtFmpi1xA61wNCc7r8bjNKvq
+X-Google-Smtp-Source: AGHT+IGadKuNyR9mfVb/6i7kkvOa9s7W0wyqI/AZWjNOXwkr4c/OC6MUS7Oq82TQwF8vs3X27a+gFw==
+X-Received: by 2002:aa7:8d4b:0:b0:6de:3833:425a with SMTP id s11-20020aa78d4b000000b006de3833425amr150947pfe.5.1706815636342;
+        Thu, 01 Feb 2024 11:27:16 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU+RFWTDRMpESHATIM9+GebvVOYsYlINEeehtreTsfBsKgv2fzlThEityuR8FWsuCj6KWlJnb0OEOJzmQVsHmQTbMW0QZtkQzGRsdFnCSg50vr8fhumXNptlRpgWNWuClsD+5Lmf7dvnjRXMMmiIIczYCqnUApYvh5NMl4eAdR7aEvacn/mslYM0nluHKyE4C27b8gyPtsBC+iwqukWtMyatSfb1pg5afcTKXQnGJvWF+eYMpc+LHEZlqG3fNozxmrTOOZpNHQNRug3Ba+igXVtuiZs+ZTLYV+HTNisBEUbqJivqzp42KhLiEmDIuFMpHfNleVNegXBMyyhEy7yK9DX5UZgYh5+XEhYQI4ZumfXIC97E/c8CRBcYF3GDgcMNVdmTo+weqaXQDKpxW/DjJjYE0R1wDNk
+Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
+        by smtp.gmail.com with ESMTPSA id x188-20020a6263c5000000b006dbe1d91426sm109957pfb.84.2024.02.01.11.27.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 11:27:15 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 1 Feb 2024 09:27:14 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Miguel Ojeda <ojeda@kernel.org>
+Cc: Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
+	linux-kernel@vger.kernel.org, patches@lists.linux.dev
+Subject: Re: [PATCH] workqueue: rust: sync with `WORK_CPU_UNBOUND` change
+Message-ID: <Zbvwkvn1lZDCoNby@slm.duckdns.org>
+References: <20240201190620.18064-1-ojeda@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/5] mmc: sdhci_am654: Add tuning algorithm for delay
- chain
-Content-Language: en-US
-To: Judith Mendez <jm@ti.com>, Ulf Hansson <ulf.hansson@linaro.org>
-CC: Adrian Hunter <adrian.hunter@intel.com>, <linux-mmc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Randolph Sapp <rs@ti.com>,
-        Vignesh
- Raghavendra <vigneshr@ti.com>
-References: <20240131215044.3163469-1-jm@ti.com>
- <20240131215044.3163469-2-jm@ti.com>
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <20240131215044.3163469-2-jm@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201190620.18064-1-ojeda@kernel.org>
 
-On 1/31/24 3:50 PM, Judith Mendez wrote:
-> Currently the sdhci_am654 driver only supports one tuning
-> algorithm which should be used only when DLL is enabled. The
-> ITAPDLY is selected from the largest passing window and the
-> buffer is viewed as a circular buffer.
+On Thu, Feb 01, 2024 at 08:06:20PM +0100, Miguel Ojeda wrote:
+> Commit e563d0a7cdc1 ("workqueue: Break up enum definitions and give
+> names to the types") gives a name to the `enum` where `WORK_CPU_UNBOUND`
+> was defined, so `bindgen` changes its output from e.g.:
 > 
-> The new algorithm should be used when the delay chain
-> is enabled. The ITAPDLY is selected from the largest passing
-> window and the buffer is not viewed as a circular buffer.
+>     pub type _bindgen_ty_10 = core::ffi::c_uint;
+>     pub const WORK_CPU_UNBOUND: _bindgen_ty_10 = 64;
 > 
-> This implementation is based off of the following paper: [1].
+> to e.g.:
 > 
-> Also add support for multiple failing windows.
+>     pub type wq_misc_consts = core::ffi::c_uint;
+>     pub const wq_misc_consts_WORK_CPU_UNBOUND: wq_misc_consts = 64;
 > 
-> [1] https://www.ti.com/lit/an/spract9/spract9.pdf
+> Thus update Rust's side to match the change (which requires a slight
+> reformat of the code), fixing the build error.
 > 
-> Fixes: 13ebeae68ac9 ("mmc: sdhci_am654: Add support for software tuning")
-> Signed-off-by: Judith Mendez <jm@ti.com>
-> ---
->   drivers/mmc/host/sdhci_am654.c | 128 +++++++++++++++++++++++++++------
->   1 file changed, 108 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
-> index d659c59422e1..a3798c9912f6 100644
-> --- a/drivers/mmc/host/sdhci_am654.c
-> +++ b/drivers/mmc/host/sdhci_am654.c
-> @@ -149,10 +149,17 @@ struct sdhci_am654_data {
->   	int strb_sel;
->   	u32 flags;
->   	u32 quirks;
-> +	bool dll_enable;
->   
->   #define SDHCI_AM654_QUIRK_FORCE_CDTEST BIT(0)
->   };
->   
-> +struct window {
-> +	u8 start;
-> +	u8 end;
-> +	u8 length;
-> +};
-> +
->   struct sdhci_am654_driver_data {
->   	const struct sdhci_pltfm_data *pdata;
->   	u32 flags;
-> @@ -290,10 +297,13 @@ static void sdhci_am654_set_clock(struct sdhci_host *host, unsigned int clock)
->   
->   	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, mask, val);
->   
-> -	if (timing > MMC_TIMING_UHS_SDR25 && clock >= CLOCK_TOO_SLOW_HZ)
-> +	if (timing > MMC_TIMING_UHS_SDR25 && clock >= CLOCK_TOO_SLOW_HZ) {
->   		sdhci_am654_setup_dll(host, clock);
-> -	else
-> +		sdhci_am654->dll_enable = true;
-> +	} else {
->   		sdhci_am654_setup_delay_chain(sdhci_am654, timing);
-> +		sdhci_am654->dll_enable = false;
-> +	}
->   
->   	regmap_update_bits(sdhci_am654->base, PHY_CTRL5, CLKBUFSEL_MASK,
->   			   sdhci_am654->clkbuf_sel);
-> @@ -408,39 +418,117 @@ static u32 sdhci_am654_cqhci_irq(struct sdhci_host *host, u32 intmask)
->   	return 0;
->   }
->   
-> -#define ITAP_MAX	32
-> +#define ITAPDLY_LENGTH 32
-> +#define ITAPDLY_LAST_INDEX 31
-> +static u32 sdhci_am654_calculate_itap(struct sdhci_host *host, struct window
-> +			  *fail_window, u8 num_fails, bool circular_buffer)
-> +{
-> +	struct device *dev = mmc_dev(host->mmc);
-> +	struct window pass_window, first_fail, last_fail;
+> Closes: https://lore.kernel.org/rust-for-linux/CANiq72=9PZ89bCAVX0ZV4cqrYSLoZWyn-d_K4KpBMHjwUMdC3A@mail.gmail.com/
+> Fixes: e563d0a7cdc1 ("workqueue: Break up enum definitions and give names to the types")
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 
-struct window pass_window = {}, ..
+Applied to wq/for-6.9.
 
-Then you can drop the memset()s below.
+Thanks.
 
-> +	u8 itap = 0, start_fail = 0, end_fail = 0, pass_length = 0;
-> +	int prev_end_fail = -1;
-> +	u8 i;
-> +
-> +	memset(&pass_window, 0, sizeof(pass_window));
-> +	memset(&first_fail, 0, sizeof(first_fail));
-> +	memset(&last_fail, 0, sizeof(last_fail));
-> +
-> +	if (!num_fails) {
-> +		itap = ITAPDLY_LAST_INDEX >> 1;
-
-return ITAPDLY_LAST_INDEX >> 1;
-
-> +	} else if (fail_window->length == ITAPDLY_LENGTH) {
-> +		dev_err(dev, "No passing ITAPDLY, return 0\n");
-> +		itap = 0;
-
-return 0;
-
-> +	} else {
-
-If you shortcut return directly in the above to branches, then
-this all below doesn't need to be in the else {} and you won't
-have to indent it all out so far.
-
-> +		for (i = 0; i < num_fails; i++) {
-> +			start_fail = fail_window[i].start;
-> +			end_fail = fail_window[i].end;
-> +
-> +			if (i == 0) {
-
-Move this first case to before the loop, we already know what
-first_fail will be filled with. No need to check i == 0 every iteration
-of the loop. Same for last_fail, just move to after the loop.
-
-> +				first_fail.start = start_fail;
-> +				first_fail.end = end_fail;
-> +				first_fail.length = fail_window[0].length;
-> +			}
-> +
-> +			if (i == num_fails - 1) {
-> +				last_fail.start = start_fail;
-> +				last_fail.end = end_fail;
-> +				last_fail.length = fail_window[i].length;
-> +			}
-> +
-> +			pass_length = start_fail - (prev_end_fail + 1);
-> +			if (pass_length > pass_window.length) {
-> +				pass_window.start = prev_end_fail + 1;
-> +				pass_window.length = pass_length;
-> +			}
-> +			prev_end_fail = end_fail;
-> +		}
-> +
-> +		if (!circular_buffer) {
-> +			if (ITAPDLY_LAST_INDEX - end_fail > pass_window.length) {
-> +				pass_window.start = end_fail + 1;
-> +				pass_window.length = ITAPDLY_LAST_INDEX - end_fail;
-> +			}
-> +		} else {
-> +			pass_length = ITAPDLY_LAST_INDEX - end_fail + first_fail.start;
-> +			if (pass_length > pass_window.length) {
-> +				pass_window.start = last_fail.end + 1;
-> +				pass_window.length = pass_length;
-> +			}
-> +		}
-> +
-> +		if (!circular_buffer)
-> +			itap = pass_window.start + (pass_window.length >> 1);
-> +		else
-> +			itap = (pass_window.start + (pass_window.length >> 1)) % ITAPDLY_LENGTH;
-> +
-> +		if (itap < 0 || itap > ITAPDLY_LAST_INDEX)
-> +			itap = 0;
-> +	}
-> +
-> +	return itap;
-> +}
-> +
->   static int sdhci_am654_platform_execute_tuning(struct sdhci_host *host,
->   					       u32 opcode)
->   {
->   	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
->   	struct sdhci_am654_data *sdhci_am654 = sdhci_pltfm_priv(pltfm_host);
-> -	int cur_val, prev_val = 1, fail_len = 0, pass_window = 0, pass_len;
-> -	u32 itap;
-> +	struct window fail_window[ITAPDLY_LENGTH];
-> +	u8 prev_pass = 1;
-> +	u8 fail_index = 0;
-> +	u8 curr_pass, itap;
-> +
-> +	memset(fail_window, 0, sizeof(fail_window[0]) * ITAPDLY_LENGTH);
->   
->   	/* Enable ITAPDLY */
->   	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPDLYENA_MASK,
->   			   1 << ITAPDLYENA_SHIFT);
->   
-> -	for (itap = 0; itap < ITAP_MAX; itap++) {
-> +	for (itap = 0; itap < ITAPDLY_LENGTH; itap++) {
->   		sdhci_am654_write_itapdly(sdhci_am654, itap);
->   
-> -		cur_val = !mmc_send_tuning(host->mmc, opcode, NULL);
-> -		if (cur_val && !prev_val)
-> -			pass_window = itap;
-> +		curr_pass = !mmc_send_tuning(host->mmc, opcode, NULL);
->   
-> -		if (!cur_val)
-> -			fail_len++;
-> +		if (!curr_pass && prev_pass)
-> +			fail_window[fail_index].start = itap;
->   
-> -		prev_val = cur_val;
-> +		if (!curr_pass) {
-> +			fail_window[fail_index].end = itap;
-> +			fail_window[fail_index].length++;
-> +		}
-> +
-> +		if (curr_pass && !prev_pass)
-> +			fail_index++;
-> +
-> +		prev_pass = curr_pass;
->   	}
-> -	/*
-> -	 * Having determined the length of the failing window and start of
-> -	 * the passing window calculate the length of the passing window and
-> -	 * set the final value halfway through it considering the range as a
-> -	 * circular buffer
-> -	 */
-> -	pass_len = ITAP_MAX - fail_len;
-> -	itap = (pass_window + (pass_len >> 1)) % ITAP_MAX;
-> +
-> +	if (fail_window[fail_index].length != 0)
-> +		fail_index++;
-> +
-> +	itap = sdhci_am654_calculate_itap(host, fail_window, fail_index,
-> +					  (sdhci_am654->dll_enable ? true : false));
-
-dll_enable is already a bool, the line:
-
-(sdhci_am654->dll_enable ? true : false)
-
-has no effect, just use sdhci_am654->dll_enable directly.
-
-Andrew
-
-> +
->   	sdhci_am654_write_itapdly(sdhci_am654, itap);
->   
->   	return 0;
+-- 
+tejun
 
