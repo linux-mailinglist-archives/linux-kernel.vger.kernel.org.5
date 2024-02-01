@@ -1,193 +1,276 @@
-Return-Path: <linux-kernel+bounces-48244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9FDD845909
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 81C9884590D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:37:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3F3BB25C76
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:37:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A96F9B267C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:37:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F29135B686;
-	Thu,  1 Feb 2024 13:36:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FF6B86647;
+	Thu,  1 Feb 2024 13:37:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YWkQ0fk7"
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="TGkEIGI8"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CF2B86647;
-	Thu,  1 Feb 2024 13:36:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABC6A8664C;
+	Thu,  1 Feb 2024 13:37:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706794619; cv=none; b=lmONTI7lUV8VqHNknA3egSHQ0qBUwQeXp+Tia7JtP7VJTLXFutz01MJH2XVmiLBzIrleG3BiorU2ehuQXL+BHfYsuTs9UejKS0Tf57jDF0SRjGWygYk+BB1iXva4EgdukWIEL1NFtzVIAkS0uZFJyfy0qLCYPNJ9RssOvdpodbY=
+	t=1706794642; cv=none; b=D4SsQPxL0hOuBPljThIAQX1ipb9UvU1xW+i9Ddf3l3dZnSNUmSEsQmuEUohHWMA/FWp/6xyU0L7VKN1PNhJqKafDbBKX5aznWRJ71grKoZ+fEkmIBfX9E+0rvFM890HwRFnA8fdz1uBBdItZQQPGNUwDLQr2wfgnzXOpNbJq51M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706794619; c=relaxed/simple;
-	bh=Y6xuwZ/UytPs1s0uPT289WKmjRvZNzYA5jAUKSKRGow=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=crxZR0BtL5BdzPySo+PihSRYzSfUPBGNNjuGbjM2LentuqJgEjGzlpkxPxRKRaI74W3rrBaBvN0XXopt+ZZg0/ZSCMaS0zlCjM+Au6o09uoYLLvPlKZcy5N/c908Qi4z0JDMkDOm8UlW+sEUJJXJR5UTKhaPClk0NTX7AVrykVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YWkQ0fk7; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-296043e44caso707951a91.0;
-        Thu, 01 Feb 2024 05:36:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706794617; x=1707399417; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=NIOY7HRa3XDmbQkCgZJQXD0Vyc4i5CecSgVuCotRWD0=;
-        b=YWkQ0fk7yeKg4suSY7ZrfpfDCHwGnZ//QcV0eoWH1h+jWbRlf1Vbjps+Eun9/NcX6V
-         Px7kQLFFYzQqxV/6BkS+r2sgmUl8tO7SrXS4vgTLS5uxfMkmAlVe7IFDBtr1iAm29Xrf
-         a6yCMVsQC8yXSpuTHv61Ec4QJL5szekeGYji6ZWSC5KqpRMjddY7J8Q4EfxQGgkavKFV
-         IN7TwJX1XUGtzLPFFmXOCWGw2zVo56liYSm2WbUFsVh88mdI5dGV1FZBV62t5nHOrjDW
-         X/vLwpvM7G5PFBlMBqkN5W8cNVwhWSB6YMDtW+gFdQDC/vlfEDeksAyR59pSbT/lpSk9
-         IbSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706794617; x=1707399417;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NIOY7HRa3XDmbQkCgZJQXD0Vyc4i5CecSgVuCotRWD0=;
-        b=UdFXZ/p/JoI3gc3OaZ8jGfaimIqXpovt7KoN/o533hTAppT0+QYSSnG5wI+WCZKVz/
-         yS1sMUYCNpfIqkNBJT8VdcO5Ex3oGgF6sbehmaRXBrtrzQNkhlDgRAYrp6Af/mZLPnVh
-         L29Nt0dzlgfvr+lv6oZjrKwkUNIG6+yTCJeXs4fSdPs1Xla5BS3o2CUArfJD0pr5Zpis
-         FaB0cN2YPayUdXWkcNd3V0uoKZyechGgHu7ThKzwlOpNcBPix5zIb9oS3MCsEOCX6iqF
-         Z6lxnpZI2W2qeuiWaJ8IEk+jVirDYtiY+Y+vV8z+D+QEY4ucqsVMeT0mlr4By6HsSUFX
-         e/eQ==
-X-Gm-Message-State: AOJu0Yz3Y2BxCcIiLLHCmRNLIADzSXnlSVSrGQ44cnsDLuJ4BpW4Tr0B
-	/ewVIRV2red1WKjENY4ZpRj4yPK/S36ju/eOcp6RhUToqauV/wgLzwzYwy/4
-X-Google-Smtp-Source: AGHT+IE87mn1kUx7KsvJ1kw4VnW2wGVQtKQwjkTKGie4+oCKmaWmUVUSmze+c//NEmTWv422isLx6g==
-X-Received: by 2002:a17:90b:30c5:b0:295:1a47:d70f with SMTP id hi5-20020a17090b30c500b002951a47d70fmr4515280pjb.3.1706794616765;
-        Thu, 01 Feb 2024 05:36:56 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVQvkuKLc+GA8XZDsVfJEW8YCYHHXaoiokTfChGeswxJcXBRwpxku4nd4z4lzDUtkS2Mf9VEPr2adPz1vyS+YYQ4PskLASl1MhD70R+mF3X82bhDAmegRqmRMSOlq6yz4Gcas++UsC6+zL7NEeqQiNfl8FStcbow3WzAe1bEVjtsnRq2L4WU2q0zsRjpd6bow//EH/XDkbU6uXzz+5URKUL862vxnk0EcbHBObTM0SaCB2agpVvZik9ZoJ543PfKe2xTcjfn5gWQ2lyM/bZ6K/lym/kWVtvnuUH6oq6Db2c5KX8HggmtctiDgsgBvzaLNwFRK1iOfAw67dsHCZtzNhW7kaiZnEoooyVmukRV15QH4CYfnyPQiO65OG/2X8De8jC9OhgmXhkjycfQDgVobcBGiUThKKCQbp4NHXgqn8bJ5P3tk5pQLhfSPURNlo73wa4Y0vxrPqMTXD6Bsq7aXg4H09ld7Z1MqgbN3i0pFUpTAd0caZ12WZKoBKsxSRtOXkXO3J+yzrKA1N8GEkcl0pE0i4I7DHBUDWzGCMqxAavVa/WWH0KqNT4yoo3kBB20gCDEHT4ufnFZ84/c5188juWpDgrSqoXblJC4BpmN1tYwyVPaUDzlBkkhTCVwVY=
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id pb8-20020a17090b3c0800b00295fdf538e1sm2443191pjb.12.2024.02.01.05.36.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 05:36:56 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <313ec14d-c991-4bd0-a964-5759db108855@roeck-us.net>
-Date: Thu, 1 Feb 2024 05:36:53 -0800
+	s=arc-20240116; t=1706794642; c=relaxed/simple;
+	bh=Ix7MIlAsrH7JbyCaMlzu8qpq/0F872XfmzSBNagMUc0=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Y9jQgCPen4EnWpQPdPzO2ICZRCcHTICnFSuC6GsKpj8e3R4wixUlJI0RN2IwPfrRw+Oiznrbfyzlt4WGSD8skX7Mi1hSxJByep90Yn5CETMYZKs9pgW/+vYqm+T7gcMWbCi+zUhElLdPobRVs9JnaiON+dSKxsKCpmkKwG8ifcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=TGkEIGI8; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 411D0eEu021368;
+	Thu, 1 Feb 2024 13:37:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=F3/7Qjd5j/6JbWDUlMwPslcICFpPgokJx0itcSwp4zg=;
+ b=TGkEIGI8MGpatHTZi9BsYrlo7WAK75BDIS5wvAoEcypkcblTAs9++qmdBB61TNFy9smK
+ 5GFrbGARAunrbls9acvPfBbfFlmDDEApAIR+pORsEcuZemf1t1pSnima5DoCLinFeESj
+ x0vMjipf8XViXwKlYH5vSkN4g8VOYW80PyG9OIgBCCNKwhWBYIVznW4jcNm13LsBH5Sw
+ dYT6Q30IYDTrsSTVZ+v3DuPXy2J1O4clNmTE2Est/ljcQCDTwMGEUM6GIpTsPGXP6dyv
+ OjLlY0LaMfFY/FRGW+cawdY7li4YL5KL9beCxY/ris4O94beHokpZHyNqbCGHBc6slft pQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w0bm2h683-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 01 Feb 2024 13:36:59 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 411DU7Fo031598;
+	Thu, 1 Feb 2024 13:36:59 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w0bm2h678-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 01 Feb 2024 13:36:59 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 411CK9Et017746;
+	Thu, 1 Feb 2024 13:36:57 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vwcj04hf3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 01 Feb 2024 13:36:57 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 411DavNC21693140
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 1 Feb 2024 13:36:57 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2A2805805C;
+	Thu,  1 Feb 2024 13:36:57 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7D7095805A;
+	Thu,  1 Feb 2024 13:36:56 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Thu,  1 Feb 2024 13:36:56 +0000 (GMT)
+Message-ID: <4c584bfb-d282-4584-bb20-18c26b1033c0@linux.ibm.com>
+Date: Thu, 1 Feb 2024 08:36:56 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/5] evm: Use the real inode's metadata to calculate
+ metadata hash
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, roberto.sassu@huawei.com, miklos@szeredi.hu
+References: <20240130214620.3155380-1-stefanb@linux.ibm.com>
+ <20240130214620.3155380-5-stefanb@linux.ibm.com>
+ <38230b4c-54ae-45ed-a6fb-34e63501e5b1@linux.ibm.com>
+ <CAOQ4uxiYARZBSgzb4_W-RKvB1XLSF3GUBqeLw2kH+eVeZ_8ARQ@mail.gmail.com>
+ <c018b014-9ba8-4395-86dc-b61346ab20a8@linux.ibm.com>
+ <CAOQ4uxi6Te8izWpXROthknRaXrVA9jho5nbc+mkuQDrcTLY44Q@mail.gmail.com>
+ <CAOQ4uxigdNeE+2nfr4VxS9piQf5hez=ryT0a-jzW+tW0BT-zuw@mail.gmail.com>
+ <492ea12a-d79d-47da-9bbe-a7f33051bd3f@linux.ibm.com>
+ <CAOQ4uxgiO1RbsmqOu4F4Foy-MBPecnEXO7BvgDGz-Lzb1Eysog@mail.gmail.com>
+Content-Language: en-US
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <CAOQ4uxgiO1RbsmqOu4F4Foy-MBPecnEXO7BvgDGz-Lzb1Eysog@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: sLVrcOEE4JJjZFSbUAhouT28PlawVW4F
+X-Proofpoint-ORIG-GUID: 4tadydrZd114MLGIvwksKpw6mQ6VHtqe
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 02/11] watchdog: rzg2l_wdt: Select PM
-Content-Language: en-US
-To: Geert Uytterhoeven <geert@linux-m68k.org>,
- Claudiu <claudiu.beznea@tuxon.dev>
-Cc: wim@linux-watchdog.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- geert+renesas@glider.be, magnus.damm@gmail.com, mturquette@baylibre.com,
- sboyd@kernel.org, p.zabel@pengutronix.de, biju.das.jz@bp.renesas.com,
- linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-clk@vger.kernel.org, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240131102017.1841495-1-claudiu.beznea.uj@bp.renesas.com>
- <20240131102017.1841495-3-claudiu.beznea.uj@bp.renesas.com>
- <CAMuHMdUT3XFz2a+iWxrT2p_fbe+QCoXuhYprcWY9v4e5KA5q2w@mail.gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <CAMuHMdUT3XFz2a+iWxrT2p_fbe+QCoXuhYprcWY9v4e5KA5q2w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-01_02,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 bulkscore=0 malwarescore=0 suspectscore=0 mlxscore=0
+ phishscore=0 mlxlogscore=999 clxscore=1015 impostorscore=0
+ priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2402010108
 
-On 2/1/24 00:52, Geert Uytterhoeven wrote:
-> Hi Claudiu,
-> 
-> On Thu, Feb 1, 2024 at 2:30 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+
+
+On 2/1/24 07:10, Amir Goldstein wrote:
+> On Wed, Jan 31, 2024 at 7:46 PM Stefan Berger <stefanb@linux.ibm.com> wrote:
 >>
->> The rzg2l_wdt watchdog driver cannot work w/o CONFIG_PM=y (e.g. the
->> clocks are enabled though pm_runtime_* specific APIs). To avoid building
->> a driver that don't work select CONFIG_PM.
 >>
->> Suggested-by: Guenter Roeck <linux@roeck-us.net>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> On 1/31/24 12:23, Amir Goldstein wrote:
+>>> On Wed, Jan 31, 2024 at 5:54 PM Amir Goldstein <amir73il@gmail.com> wrote:
+>>>>
+>>>> On Wed, Jan 31, 2024 at 4:40 PM Stefan Berger <stefanb@linux.ibm.com> wrote:
+>>>>>
+>>>>>
+>>>>>
+>>>>> On 1/31/24 08:16, Amir Goldstein wrote:
+>>>>>> On Wed, Jan 31, 2024 at 4:11 AM Stefan Berger <stefanb@linux.ibm.com> wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>> On 1/30/24 16:46, Stefan Berger wrote:
+>>>>>>>> Changes to the file attribute (mode bits, uid, gid) on the lower layer
+>>>>>>>> are not take into account when d_backing_inode() is used when a file is
+>>>>>>>> accessed on the overlay layer and this file has not yet been copied up.
+>>>>>>>> This is because d_backing_inode() does not return the real inode of the
+>>>>>>>> lower layer but instead returns the backing inode which holds old file
+>>>>>>>> attributes. When the old file attributes are used for calculating the
+>>>>>>>> metadata hash then the expected hash is calculated and the file then
+>>>>>>>> mistakenly passes signature verification. Therefore, use d_real_inode()
+>>>>>>>> which returns the inode of the lower layer for as long as the file has
+>>>>>>>> not been copied up and returns the upper layer's inode otherwise.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>>>>>>>> ---
+>>>>>>>>      security/integrity/evm/evm_crypto.c | 2 +-
+>>>>>>>>      1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>>>
+>>>>>>>> diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
+>>>>>>>> index b1ffd4cc0b44..2e48fe54e899 100644
+>>>>>>>> --- a/security/integrity/evm/evm_crypto.c
+>>>>>>>> +++ b/security/integrity/evm/evm_crypto.c
+>>>>>>>> @@ -223,7 +223,7 @@ static int evm_calc_hmac_or_hash(struct dentry *dentry,
+>>>>>>>>                                   size_t req_xattr_value_len,
+>>>>>>>>                                   uint8_t type, struct evm_digest *data)
+>>>>>>>>      {
+>>>>>>>> -     struct inode *inode = d_backing_inode(dentry);
+>>>>>>>> +     struct inode *inode = d_real_inode(dentry);
+>>>>>>>>          struct xattr_list *xattr;
+>>>>>>>>          struct shash_desc *desc;
+>>>>>>>>          size_t xattr_size = 0;
+>>>>>>>
+>>>>>>> We need this patch when NOT activating CONFIG_OVERLAY_FS_METACOPY but
+>>>>>>> when setting CONFIG_OVERLAY_FS_METACOPY=y it has to be reverted...  I am
+>>>>>>> not sure what the solution is.
+>>>>>>
+>>>>>> I think d_real_inode() does not work correctly for all its current users for
+>>>>>> a metacopy file.
+>>>>>>
+>>>>>> I think the solution is to change d_real_inode() to return the data inode
+>>>>>> and add another helper to get the metadata inode if needed.
+>>>>>> I will post some patches for it.
+>>>>>
+>>>>> I thought that we may have to go through vfs_getattr() but even better
+>>>>> if we don't because we don't have the file *file anywhere 'near'.
+>>>>>
+>>>>>>
+>>>>>> However, I must say that I do not know if evm_calc_hmac_or_hash()
+>>>>>> needs the lower data inode, the upper metadata inode or both.
+>>>>>
+>>>>> What it needs are data structures with mode bits, uid, and gid that stat
+>>>>> in userspace would show.
+>>>>>
+>>>>>
+>>>>
+>>>> With or without metacopy enabled, an overlay inode st_uid st_gid st_mode
+>>>> are always taken from the upper most inode which is what d_real_inode()
+>>>> currently returns, so I do not understand what the problem is.
+>>>>
+>>>
+>>> No, I was wrong. It is the other way around.
+>>> d_real_inode() always returns the real data inode and you need the
+>>> upper most real inode.
+>>>
+>>> You can try this:
+>>>
+>>>    -     struct inode *inode = d_backing_inode(dentry);
+>>> +     struct inode *inode = d_inode(d_real(dentry, false));
+>>>
+>>> With the changes in:
+>>>
+>>> https://github.com/amir73il/linux/commits/overlayfs-devel/
+>>>
+>>> Not thoroughly tested...
+>>
+>> The change + 3 topmost patches cherry-picked is unfortunately are
+>> crashing for me.
+>>
 > 
-> Thanks for your patch!
+> I will look into it.
+> But anyway, the patch I suggested above is not enough exactly because
+> of the reason I told you earlier.
 > 
->> --- a/drivers/watchdog/Kconfig
->> +++ b/drivers/watchdog/Kconfig
->> @@ -912,6 +912,7 @@ config RENESAS_RZG2LWDT
->>          tristate "Renesas RZ/G2L WDT Watchdog"
->>          depends on ARCH_RENESAS || COMPILE_TEST
->>          select WATCHDOG_CORE
->> +       select PM
+> Mimi's fix ("ima: detect changes to the backing overlay file") detects
+> a change in d_real_inode(file_dentry(file)) in order to invalidate the
+> IMA cache.
 > 
-> depends on PM
+> Your change also invalidates EVM cache on a change in
+> d_real_inode(file_dentry(file)) and that makes sense.
 > 
+> But on "meta copy up" for example on chmod(), an upper inode with no data
+> is created (a metacopy) and all the attributes and xattr are copied
+> from lower inode.
+> The data remains in the lower inode.
+> 
+> At this point , the IMA cache and the EVM cache refer to two different inodes
 
-Yes, I did not want to suggest that the driver should _select_ PM.
-Sorry that I wasn't more specific.
+You mean they refer to different inodes because IMA cares about file 
+content ("data remains in the lower inode:) and EVM cares about the 
+metadata ("an upper inode with no data is created")? If so, I agree 
+since the following line after copy-up with meatacopy enabled shows the 
+proper GID is in the backing inode not the one return from 
+d_real_inode(). If we knew that a meta copy has been done we could call 
+d_backing_inode() in this case for access to mode bits, uid, and gid.
 
-Guenter
++       printk(KERN_INFO "real: GID: %d  backing: GID: %d\n",
++              from_kgid(&init_user_ns, d_real_inode(dentry)->i_gid),
++              from_kgid(&init_user_ns, d_backing_inode(dentry)->i_gid));
++
 
-> The availability of PM is architecture/platform-specific, hence it
-> must not be selected by individual drivers.
-> 
->>          help
->>            This driver adds watchdog support for the integrated watchdogs in the
->>            Renesas RZ/G2L SoCs. These watchdogs can be used to reset a system.
-> 
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                  -- Linus Torvalds
-> 
+ > so you cannot share the same logic with IMA cache invalidation.
 
+I thought we we would have to share the same logic since IMA and EVM 
+would have to refer to the same inode also since IMA and EVM are 
+strongly connected. So the file_inode(file), which is typically used for 
+finding the iint, should be the same 'high level' inode for both EVM and 
+IMA I thought. A different inode could then be used for file data and 
+metadata.
+
+> 
+> My patches are meant to provide you with a helper e.g. d_real_meta_inode()
+
+The patch providing this isn't there yet in overlayfs-devel, right?
+
+> that you could use to get the upper inode in the case of a metacopy, but
+> IMA would still need to use the d_real_data_inode().
+
+That would be fine since we are only changing EVM code in this case.
+> 
+> Is that explanation clear? Is it clear why I said that the problem is more
+> complicated?
+
+I think I understand it.
+
+    Stefan
+
+> 
+> Thanks,
+> Amir.
 
