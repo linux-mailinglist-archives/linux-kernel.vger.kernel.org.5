@@ -1,209 +1,111 @@
-Return-Path: <linux-kernel+bounces-48348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D4EB845ABE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:59:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7B27845AC1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:00:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C80B81F2AEAC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:59:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A8FE1C20B22
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:00:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B62EE5F48E;
-	Thu,  1 Feb 2024 14:59:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16EB15F496;
+	Thu,  1 Feb 2024 14:59:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="EIiIQwMH";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1XiRrtL0"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="K+PRPxaI"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A556216D
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 14:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9E785D473
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 14:59:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706799548; cv=none; b=b6RargtB85M1vEPHIcWaC7s4ro9qZ7CpJTkmDEFHnUGNXca3xLsuzq7RQPDvNLtQI778YsrYgNVw4W0XTFgons5dSfBXirdw0V2qcRmFBh1b6mhWHm++B9RbFeTfq4MZ9w5WHoKvs1NU2USyCO7dUXvgZSKkbk5hKMnrUpz1J+U=
+	t=1706799598; cv=none; b=cd3JeGkm8Aka3XNz/H0GZ6dkhU3VVFlhrigqDAXpK4bc0Avwetrt1euK3UpmK2KqaVIdRkqPJYC3GDMQcF8IBl3FNX6N3XUi14vUd/uJbwk8yxx0xAEnAQEiGJ/rXUabsG0lKGf1cElVTRCoHoQKB1+HvyS6QXnRZz/ysFIu1bQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706799548; c=relaxed/simple;
-	bh=qYBzVxN/toizf+c74JhJSSZBszcVHARS+S1gzemK420=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=sWCS4mCDH4MoWhks5ohb/Jp2IGqIY4bexLQ/5gdsdXrkh0l7f4NLwu30FDkc6p1IIWiDmFxEA6q2PJbUxQgHZJeHejR1uJRAq9E2UEupsXT4IWAD6+5Tmw14cPgFT1XPKbqoUzKjr7XakM3vtT0HKv5qdcFFLcL4tjy0ioiTFe0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=EIiIQwMH; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1XiRrtL0; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706799544;
+	s=arc-20240116; t=1706799598; c=relaxed/simple;
+	bh=94I4Hngt7inm0HyyqmR8znoRw2619UwGASlJ5ipJCpI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=K/RvynMJBk9TNE6bUAMdNrnK0TRiErKAs4hyVcB3om3gyQDG3xt3Cr8tVN9DkFb5PzjEMP19UJtq1H0MCNB+nE3JQnGQ0XG2VxHO+ptnYwE/D2jy61BHpl477MDGIBSPGpetwLGDt3CUHLSPs9M4CQXuTy8kbqpxPtVnCco8W/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=K+PRPxaI; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706799595;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gV0yMeUYhE+MqNs3Pqvta+vb1Igb0yaxfvONXao6KZk=;
-	b=EIiIQwMHyfJtQT4CTtUL1Rp7SxQfp46AjpQs9I+qROqiywNZOci+siXkAcc4o8JCFM9dUi
-	AJbWEsjRih5HVaeB9V2mrxN0rGG4Et2E76YIFU6CaNFGKs6B18lPqVckspiDdeCjsEm4+s
-	EiI+H3CgnVQuoXYvatSQgs6RzusIUEwcDLuUcr6lE4FAmeMD4dl8VA51XAF1ye/FJaER0v
-	/OatdUsczmOZ0jNNDq6EREBB6hx/V//0jikyFu5xwt9vfu1HlJyjvZqS+EuUhZNoN7NOkd
-	TfvLjvwlpuNf44FnbpHDVRqBlRWwsezxGkKFRTst2nJzAKgLI4H0Q8DEn02aOQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706799544;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gV0yMeUYhE+MqNs3Pqvta+vb1Igb0yaxfvONXao6KZk=;
-	b=1XiRrtL0X0jJrdFoBVohwAy0hl76aYHo5uYPmoAZlOetd9kZDtkeLfofy/cVH6gzNwZe6M
-	jKD114+XLJbZ2vAA==
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
- John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
- Eric Dumazet <edumazet@google.com>, "Rafael J . Wysocki"
- <rafael.j.wysocki@intel.com>, Arjan van de Ven <arjan@infradead.org>,
- "Paul E . McKenney" <paulmck@kernel.org>, Rik van Riel <riel@surriel.com>,
- Steven Rostedt <rostedt@goodmis.org>, Sebastian Siewior
- <bigeasy@linutronix.de>, Giovanni Gherdovich <ggherdovich@suse.cz>, Lukasz
- Luba <lukasz.luba@arm.com>, "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
- Srinivas Pandruvada <srinivas.pandruvada@intel.com>, K Prateek Nayak
- <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v10 18/20] timers: Implement the hierarchical pull model
-In-Reply-To: <ZbkXzsUWZUurSiSk@localhost.localdomain>
-References: <20240115143743.27827-1-anna-maria@linutronix.de>
- <20240115143743.27827-19-anna-maria@linutronix.de>
- <ZbkXzsUWZUurSiSk@localhost.localdomain>
-Date: Thu, 01 Feb 2024 15:59:03 +0100
-Message-ID: <87sf2c6xjc.fsf@somnus>
+	bh=94I4Hngt7inm0HyyqmR8znoRw2619UwGASlJ5ipJCpI=;
+	b=K+PRPxaIRvzsCTsZgjPtVnFlILUP+mwkdJczWGc3Q/5bpgdnLlqxV1QiiLqn/duKXBFNHA
+	M2rfaKn/eMXgt43Xt/G+eepAquzjE2ftafInBorvn3hjc211ZyAk8iESpNa9nKa9zTye7w
+	YWOB493KbynOSa/w2IkDGiKXm7TxKyM=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-216-j-kUNqvdPPGTCpQ5563IAQ-1; Thu, 01 Feb 2024 09:59:54 -0500
+X-MC-Unique: j-kUNqvdPPGTCpQ5563IAQ-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a30f9374db7so234397866b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 06:59:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706799593; x=1707404393;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=94I4Hngt7inm0HyyqmR8znoRw2619UwGASlJ5ipJCpI=;
+        b=lVeY0lQ/P+51fcdT2naJMOdg/VhWBzRkdSLv5eM00NdA9FKUC6D8++twGGE9WKbfUf
+         ztMVc1+ZyhjXWfja9OllTWdp+u3QYob4ZYr7GsU3im0eXk1nyAJnkVmJeybQlTmYU/Aa
+         MPtFnazgx9dE5slGty3rQLIulZ0POvfD45G3dHfi+v7owvPFnFJ3wNpsQwN/9Ko1Qr1Y
+         U1HRheKOsfMIWHVD65dnyKewS3TU7H6ANv2Avc6TBRc5LE4P7Yuq++qwXooC4fk4331C
+         hB9fRQjwNuxQZXJUHPGMNIDo0e7j30A/YeokblmSCrn7XhY1sdF74DSBkDJoUi3d/DIL
+         MH1g==
+X-Gm-Message-State: AOJu0Yx2YVMJXHKU2ELeVeWYew8MkL1M2B4gsf9mdVF/B0jpE361dyRD
+	iyNc4RXU+fHlLjiNBhROGGl69k81EtJZftUvZbi3Et6m3SGbfFFBMgGRj0Fudnge020bnhWnK0O
+	ImTS1/N5vmjnRb9gOGD83Nhb/NF0dME1aEO3NAuf5fZsCqnG7MsCLbcia7ppn/ciW/JgQ4DNEro
+	Y59od1Rgw5g0UZ5QJNPAicIx+zRj7Y9w8UVpFy
+X-Received: by 2002:a17:906:e0a:b0:a36:86be:aa76 with SMTP id l10-20020a1709060e0a00b00a3686beaa76mr4193439eji.15.1706799593201;
+        Thu, 01 Feb 2024 06:59:53 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF6Y5YQ9ZRCSFznfVuD8jaL3DWybT5I6SS9dOL/ws+LXeyzrCIM/drqeWDfWguj4Svx99xGj/ZIFZu2ZX9UUnI=
+X-Received: by 2002:a17:906:e0a:b0:a36:86be:aa76 with SMTP id
+ l10-20020a1709060e0a00b00a3686beaa76mr4193429eji.15.1706799592901; Thu, 01
+ Feb 2024 06:59:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20231113204809.4052009-1-aahringo@redhat.com>
+In-Reply-To: <20231113204809.4052009-1-aahringo@redhat.com>
+From: Alexander Aring <aahringo@redhat.com>
+Date: Thu, 1 Feb 2024 09:59:41 -0500
+Message-ID: <CAK-6q+hh_A0Ldwsmmy0BdagDotNBV=Xgk35ZZQ3DAzB9OXwLgw@mail.gmail.com>
+Subject: Re: [PATCHv2 1/2] refcount: introduce __refcount_dec_and_lock macro
+To: peterz@infradead.org
+Cc: will@kernel.org, gfs2@lists.linux.dev, boqun.feng@gmail.com, 
+	mark.rutland@arm.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Frederic Weisbecker <frederic@kernel.org> writes:
+Hi,
 
-> Le Mon, Jan 15, 2024 at 03:37:41PM +0100, Anna-Maria Behnsen a =C3=A9crit=
- :
->> +/*
->> + * Returns true, if there is nothing to be propagated to the next level
->> + *
->> + * @data->firstexp is set to expiry of first gobal event of the (top le=
-vel of
->> + * the) hierarchy, but only when hierarchy is completely idle.
->> + *
->> + * This is the only place where the group event expiry value is set.
->> + */
->> +static
->> +bool tmigr_update_events(struct tmigr_group *group, struct tmigr_group =
-*child,
->> +			 struct tmigr_walk *data, union tmigr_state childstate,
->> +			 union tmigr_state groupstate)
->> +{
->> +	struct tmigr_event *evt, *first_childevt;
->> +	bool walk_done, remote =3D data->remote;
->> +	bool leftmost_change =3D false;
->> +	u64 nextexp;
->> +
->> +	if (child) {
->> +		raw_spin_lock(&child->lock);
->> +		raw_spin_lock_nested(&group->lock, SINGLE_DEPTH_NESTING);
->> +
->> +		if (childstate.active) {
+On Mon, Nov 13, 2023 at 3:48=E2=80=AFPM Alexander Aring <aahringo@redhat.co=
+m> wrote:
 >
-> Since you're going to do the atomic_read(&group->migr_state)
-> within the group->lock, you may as well do the atomic_read(&child->migr_s=
-tate)
-> within the child->lock. It won't hurt and simplifies the picture
-> in the mind.
-
-Already changed it this way.
-
-> Then you can add the following comment to outline the ordering
-> expectations:
+> This patch adds the __refcount_dec_and_lock macro to generate code for a
+> lock specific refcount_dec_and_lock implementation. Existing
+> refcount_dec_and_lock implementation are updated to use the new
+> __refcount_dec_and_lock macro. In future other lock implementation can
+> added to use the refcount_dec_and_lock trick to only hold the lock when
+> the refcount is going to be zero. Per subsystem own lock implementation
+> can use the macro as well to provide such implementation for their own
+> locking type.
 >
-> /*
->  * Observing child->migr_state.active means that:
->  *
->  * 1) Either the child is effectively active, then it's fine to stop here
->  *
->  * 2) Or we are racing with a CPU going inactive and this childstate is a=
-ctually
->  *    not active anymore but tmigr_inactive_up() hasn't yet called tmigr_=
-update_event()
->  *    on it. It's fine to stop here because that pending call will take c=
-are
->  *    of the rest of the propagation.
->  *
->  * 3) In any case it's impossible to observe childstate.active when a rac=
-ing
->  *    CPU made it inactive and also called tmigr_update_event() on it. The
->  *    group->lock enforces ordering such that ->migr_state changes
->  *    in tmigr_inactive_up() are released by group->lock UNLOCK on the
->  *    subsequent call to tmigr_update_event() and then acquired by
->  *    child->lock LOCK in tmigr_new_timer() -> tmigr_update_event().
->  */
 
-I'll add the comment! Thanks
+ping? :)
 
->> +			walk_done =3D true;
->> +			goto unlock;
->> +		}
->> +
->> +		first_childevt =3D tmigr_next_groupevt(child);
->> +		nextexp =3D child->next_expiry;
->> +		evt =3D &child->groupevt;
->> +	} else {
->> +		nextexp =3D data->nextexp;
->> +
->> +		first_childevt =3D evt =3D data->evt;
->> +
->> +		/*
->> +		 * Walking the hierarchy is required in any case when a
->> +		 * remote expiry was done before. This ensures to not lose
->> +		 * already queued events in non active groups (see section
->> +		 * "Required event and timerqueue update after a remote
->> +		 * expiry" in the documentation at the top).
->> +		 *
->> +		 * The two call sites which are executed without a remote expiry
->> +		 * before, are not prevented from propagating changes through
->> +		 * the hierarchy by the return:
->> +		 *  - When entering this path by tmigr_new_timer(), @evt->ignore
->> +		 *    is never set.
->> +		 *  - tmigr_inactive_up() takes care of the propagation by
->> +		 *    itself and ignores the return value. But an immediate
->> +		 *    return is required because nothing has to be done in this
->> +		 *    level as the event could be ignored.
->> +		 */
->> +		if (evt->ignore && !remote)
->> +			return true;
->> +
->> +		raw_spin_lock(&group->lock);
->> +	}
->> +
->> +	if (nextexp =3D=3D KTIME_MAX) {
->> +		evt->ignore =3D true;
->> +
->> +		/*
->> +		 * When the next child event could be ignored (nextexp is
->> +		 * KTIME_MAX) and there was no remote timer handling before or
->> +		 * the group is already active, there is no need to walk the
->> +		 * hierarchy even if there is a parent group.
->> +		 *
->> +		 * The other way round: even if the event could be ignored, but
->> +		 * if a remote timer handling was executed before and the group
->> +		 * is not active, walking the hierarchy is required to not miss
->> +		 * an enqueued timer in the non active group. The enqueued timer
->> +		 * of the group needs to be propagated to a higher level to
->> +		 * ensure it is handled.
->> +		 */
->> +		if (!remote || groupstate.active) {
->
-> Same here, fetching group->migr_state.active from within the lock simplif=
-ies
-> the mind mapping.
+Any chance to bring this upstream?
 
-Sure. Already changed it.
+- Alex
 
-Thanks,
-	Anna-Maria
 
