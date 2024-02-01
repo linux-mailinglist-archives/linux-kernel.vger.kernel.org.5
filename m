@@ -1,120 +1,127 @@
-Return-Path: <linux-kernel+bounces-47603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E87F6845014
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:15:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 955EA845019
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:17:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DA6128FC15
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:15:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38B05B228AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:17:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 761593B79F;
-	Thu,  1 Feb 2024 04:15:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="ZbosZG1w"
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A3F23BB24;
+	Thu,  1 Feb 2024 04:17:47 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79551EF15;
-	Thu,  1 Feb 2024 04:15:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D27713A8EC;
+	Thu,  1 Feb 2024 04:17:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706760934; cv=none; b=HI8X0VeTHl2x1AIOL0V8ppkxvDaxpaLK0SZT3jszJrb63Otye/kN5QaiTQW2WG1/WJPlOY2KPvGEkCOmIFhh8Z9+2DtcwUKLld0gToWbpqm7tfzEZLY3qHHXIkmPRYyHQNoTa4NN6jGRl6p2kxYv4QQ/9JALrlAW6C7qllLGxec=
+	t=1706761066; cv=none; b=HhJd38RwV9F7XqICyqm5Zya6AW2XKDWDcxK+hYlqL+1bSHCGAuCtXz8NYsGxKakfmDFiV6sS3PLLH4FdYNxijVxiJ4Ezsr+F62pZDDITJd6I0aRIFWXGlLP9EMQF2zIkfG3uZxE0dY+Q/YqF4UrShNUoAXjzDt3kiwzfw6+cs7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706760934; c=relaxed/simple;
-	bh=BduLXF3Tw/4+qmuhxAZqtPGOi2SgjomkGk3FgJWoAto=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=L3Syxb9r5Ek+KH6ihBZly/u72vfyG6yQCtEk39gnlTM41MZOz7ThgRwir7Go6xZPSrXEkwPFIy27zBsacmOjZYXzbZNfeCZrLNgMVRONlX24l8b8lp9GRYcRaFnZZ1MbFdoQSqW6jEcqm2Nm3d7rvSfrsot4ZZ1bZb7lvG7oB1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=ZbosZG1w; arc=none smtp.client-ip=203.29.241.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
-Received: from [192.168.68.112] (ppp14-2-76-194.adl-apt-pir-bras31.tpg.internode.on.net [14.2.76.194])
-	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 38B62200EF;
-	Thu,  1 Feb 2024 12:15:30 +0800 (AWST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=codeconstruct.com.au; s=2022a; t=1706760930;
-	bh=OTirJc9l2KMu8EA5iqUQzEQ2+1Vua4syLCQpQMEkeGE=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=ZbosZG1w01MmsetEdaMpaVdrkdc/ENwjMLOk1B9D1mm5xGHdlfbiKkZhjgRdYtfD7
-	 OPUxb4F6L8/j1PIIvxauc+h2CyTUAXkQwe62cSzhYLDyvDxmbbBPmlEXcc7kt7e/Pk
-	 7W2N3KKlafx4X+uvXy9RMud6YA8zbwxRy8g6mzB+RllV7YEgysLIlQp/IKWWCnRwSv
-	 tvb35dWOn1xa30IxaZubMZcNWEJvCAb+R4zAAM5hjYOBceNhmKTEXlMesypSpjptBE
-	 9l5W4O69MePg8PVNyFWA78qqJ8f11cZDBu9nRS3wDVlKJd4ZCUjWY6Tomdhm0jzwWB
-	 2c5szvSF7kKWg==
-Message-ID: <c14428e5b6fc863cf29606842f49895a82fa3539.camel@codeconstruct.com.au>
-Subject: Re: [PATCH v5 03/21] ARM: dts: aspeed: yosemite4: Enable spi-gpio
- setting
-From: Andrew Jeffery <andrew@codeconstruct.com.au>
-To: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>, patrick@stwcx.xyz, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Joel Stanley <joel@jms.id.au>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date: Thu, 01 Feb 2024 14:45:29 +1030
-In-Reply-To: <20240131084134.328307-4-Delphine_CC_Chiu@wiwynn.com>
-References: <20240131084134.328307-1-Delphine_CC_Chiu@wiwynn.com>
-	 <20240131084134.328307-4-Delphine_CC_Chiu@wiwynn.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1706761066; c=relaxed/simple;
+	bh=1jz/F0H9uzx4iimjF6QGPOPc8awhpHtiBXKNQWRuH20=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aw8naRszGXs1c3G6fXo06zUkWhFtqA28V9nl7Fofnjpb6s7MVKxNXX0kHUZx2ZREAGzpn7gX5knnI5HR6yf6/5OMMF4DRpNhJ+K7U4Whi8As/6GHB4aQoLA68uDvIZ+fwDoE93ltTUr98sTqZFGntiNd3Bh7/MigqWekf/eBQUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0FAAC433F1;
+	Thu,  1 Feb 2024 04:17:44 +0000 (UTC)
+Date: Wed, 31 Jan 2024 23:18:00 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, Linus Torvalds
+ <torvalds@linux-foundation.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Christian Brauner <brauner@kernel.org>,
+ Ajay Kaher <ajay.kaher@broadcom.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Subject: Re: [PATCH v2 4/7] tracefs: dentry lookup crapectomy
+Message-ID: <20240131231800.35e3e715@gandalf.local.home>
+In-Reply-To: <20240131222127.15b2731b@gandalf.local.home>
+References: <20240131184918.945345370@goodmis.org>
+	<20240131185512.799813912@goodmis.org>
+	<20240201002719.GS2087318@ZenIV>
+	<20240131212642.2e384250@gandalf.local.home>
+	<20240201030205.GT2087318@ZenIV>
+	<20240131222127.15b2731b@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, 2024-01-31 at 16:41 +0800, Delphine CC Chiu wrote:
-> enable spi-gpio setting for spi flash
+On Wed, 31 Jan 2024 22:21:27 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-I suspect I know what's motivating this as a design, but can you add an
-explanation to the commit message?
+> We (Linus and I) got it wrong. It originally had:
+> 
+> 	d_add(dentry, NULL);
+> 	[..]
+> 	return NULL;
 
-Again, expectations on commit messages are outlined here:
+OK, so I changed that function to this:
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Doc=
-umentation/process/submitting-patches.rst?h=3Dv6.7#n45
+static struct dentry *eventfs_root_lookup(struct inode *dir,
+					  struct dentry *dentry,
+					  unsigned int flags)
+{
+	struct eventfs_inode *ei_child;
+	struct tracefs_inode *ti;
+	struct eventfs_inode *ei;
+	const char *name = dentry->d_name.name;
 
-Andrew
+	ti = get_tracefs(dir);
+	if (!(ti->flags & TRACEFS_EVENT_INODE))
+		return ERR_PTR(-EIO);
 
->=20
-> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-> ---
->  .../aspeed/aspeed-bmc-facebook-yosemite4.dts   | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
->=20
-> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b=
-/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-> index 6846aab893ad..ea8fd3ec0982 100644
-> --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-> @@ -53,6 +53,24 @@ iio-hwmon {
->  				<&adc0 4>, <&adc0 5>, <&adc0 6>, <&adc0 7>,
->  				<&adc1 0>, <&adc1 1>, <&adc1 7>;
->  	};
-> +
-> +	spi_gpio: spi-gpio {
-> +		compatible =3D "spi-gpio";
-> +		#address-cells =3D <1>;
-> +		#size-cells =3D <0>;
-> +
-> +		gpio-sck =3D <&gpio0 ASPEED_GPIO(X, 3) GPIO_ACTIVE_HIGH>;
-> +		gpio-mosi =3D <&gpio0 ASPEED_GPIO(X, 4) GPIO_ACTIVE_HIGH>;
-> +		gpio-miso =3D <&gpio0 ASPEED_GPIO(X, 5) GPIO_ACTIVE_HIGH>;
-> +		num-chipselects =3D <1>;
-> +		cs-gpios =3D <&gpio0 ASPEED_GPIO(X, 0) GPIO_ACTIVE_LOW>;
-> +
-> +		tpmdev@0 {
-> +			compatible =3D "tcg,tpm_tis-spi";
-> +			spi-max-frequency =3D <33000000>;
-> +			reg =3D <0>;
-> +		};
-> +	};
->  };
-> =20
->  &uart1 {
+	mutex_lock(&eventfs_mutex);
 
+	ei = ti->private;
+	if (!ei || ei->is_freed)
+		goto out;
+
+	list_for_each_entry(ei_child, &ei->children, list) {
+		if (strcmp(ei_child->name, name) != 0)
+			continue;
+		if (ei_child->is_freed)
+			goto out;
+		lookup_dir_entry(dentry, ei, ei_child);
+		goto out;
+	}
+
+	for (int i = 0; i < ei->nr_entries; i++) {
+		void *data;
+		umode_t mode;
+		const struct file_operations *fops;
+		const struct eventfs_entry *entry = &ei->entries[i];
+
+		if (strcmp(name, entry->name) != 0)
+			continue;
+
+		data = ei->data;
+		if (entry->callback(name, &mode, &data, &fops) <= 0)
+			goto out;
+
+		lookup_file_dentry(dentry, ei, i, mode, data, fops);
+		goto out;
+	}
+ out:
+	mutex_unlock(&eventfs_mutex);
+	return NULL;
+}
+
+And it passes the make kprobe test. I'll send out a v3 of this patch, and
+remove the inc_nlink(dentry->d_parent->d_inode) and the fsnotify as
+separate patches as that code was there before Linus touched it.
+
+Thanks,
+
+-- Steve
 
