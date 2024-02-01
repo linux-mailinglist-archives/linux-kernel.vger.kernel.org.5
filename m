@@ -1,225 +1,118 @@
-Return-Path: <linux-kernel+bounces-47435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF9CA844DE2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:31:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 207F7844D91
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:04:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E495B1C28567
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:31:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B44E31F24362
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:04:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 255CC1FDB;
-	Thu,  1 Feb 2024 00:31:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28079810;
+	Thu,  1 Feb 2024 00:04:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dzxxVaro"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="iuvSVo4N"
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B55EC1852;
-	Thu,  1 Feb 2024 00:31:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=134.134.136.65
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706747491; cv=fail; b=hB0wwa8uoxowxx9WDSdgjj7oXiN5ttj2xOE2+13Mg+VhQrCMT8opnysYyZxD8/v1hA9dcCLDZxtGmjd4cDbnM20ODI+oqbtnp+TxF4+sMAuvlAe0IqRz6TfrT3msLRSvpN4seqaj9DklFKfY1+PZASMxAjlmy5McGt0pQaJyhCA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706747491; c=relaxed/simple;
-	bh=saozTpVE+rp5W9+tUJDyrfSXYw6Xn9O0j9MC8MTO5gI=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=B1MPLIJQpeuJzEMEMxavExYDx+SPmnikH7kUaOOEBM4s70mfEpFtNCnp8vSIMF+msgpCzY0thK+zOoMUKQ0dQemqfLYsFucsCbGQTyyE+SPM1qV/c+EOIM7Y6V8ydni9aS5SJ8rtibAbIEhgGXUfzHSQg4ECpNhYtgMVxGQaYDA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dzxxVaro; arc=fail smtp.client-ip=134.134.136.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706747489; x=1738283489;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   in-reply-to:mime-version;
-  bh=saozTpVE+rp5W9+tUJDyrfSXYw6Xn9O0j9MC8MTO5gI=;
-  b=dzxxVaror+XjBud6tZqkltWs86yby5NJZWnq/u7ZVcmHJ1sbWBnTmExZ
-   SlgZUScBf/dWGEcvVXrawHUlbWHWSzoV5Uspxd6xtu65BAqPXU+JAL52d
-   qfiCXLdiiWN85qm3ehwM7WNuvmSbodVB4HGAM166w85+kDC7nftb3hLn3
-   605Ba8gEwTvM6r/sLSd/MLa67GBr3F1QGXxxIAkr5nzH9py4R0jFSiw6o
-   sLKLv1wo2I5uX7CxXwTE7jrZbYzldFbhwNit/5zUv/3KzuBPBlSbodMQV
-   581UL6S5DhmJ1EKBylp6t3WtKa3Wf9htDIgtm7t2Qs6Yx9nNbHl2Q7SB6
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="407485927"
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="407485927"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 16:31:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="4224241"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orviesa003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 31 Jan 2024 16:31:28 -0800
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 31 Jan 2024 16:31:27 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 31 Jan 2024 16:31:27 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 31 Jan 2024 16:31:27 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DSZVozZeFrZReAXodNIwQKCifybA3GjJT/g8uYwlIS9hwfbz9JQBCNJhm2K+5aMu78Y++cgYUsh0sm6pO01O0RvDuUxR1taHJ5fx1B5YAHRVEOVs1nySt2N1Zy2Xs6MKbqKZ3LkMEvXBfOnFfelZH1Ye5+bMwy1adXdLfmprDgS1Ga+Lfta0JPX7vBVs6CPDdWm+/p/9tMrnKe5vT46lVtR4Ii88TV9clVeShHyNA2RPuMXEl+mVq1a8/WTnG/QKosYtX66xPluvVqvFIE6ED7htOV1hFNHwXbZ7krB69JgiaTuJLOspsWp4jApdIgwg/9mpQRASa1FFILlH84Kx9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JlaRhriupkSmhQmNx+YknlH3+uF3PRIvjwkT5XTBzD4=;
- b=U/dUmVI0RE04VjtLguDqxzfH4wt+j2Lj9CwVqXYvo3wlVqocUOWfRzudfi7DR9QeuIx6l4RQRq0eYWoNhq8aeuMLkPnTB+JpvqGyjijeOo04qbzNxmG9qV3VnKKLgotaZes7hJBghF+/paNDJ3Z1wgn4vkFN92yRWGtNljWfVHxyPzntrd6bxbB9G0KNRSQMCYbT8wHcy3WosTUmPpF3OWPvdeVYpcJUlZ3lO9/HVzYavQdsSpSlYQZ07RMab2CxEJym+gv0gTkxiIJLm8qb4k9hGGfgHlomyMagpzmdXdpHxCZubhCIk6Xd96U5AcAsFLYIaNDKH+L7VjKT4Rgm3w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
- MN2PR11MB4645.namprd11.prod.outlook.com (2603:10b6:208:269::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.24; Thu, 1 Feb
- 2024 00:31:25 +0000
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::81e3:37ec:f363:689e]) by DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::81e3:37ec:f363:689e%6]) with mapi id 15.20.7249.017; Thu, 1 Feb 2024
- 00:31:25 +0000
-Date: Thu, 1 Feb 2024 08:01:53 +0800
-From: Yan Zhao <yan.y.zhao@intel.com>
-To: Arnd Bergmann <arnd@arndb.de>
-CC: Linus Walleij <linus.walleij@linaro.org>, guoren <guoren@kernel.org>,
-	Brian Cain <bcain@quicinc.com>, Jonas Bonn <jonas@southpole.se>, "Stefan
- Kristiansson" <stefan.kristiansson@saunalahti.fi>, Stafford Horne
-	<shorne@gmail.com>, Linux-Arch <linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, "linux-csky@vger.kernel.org"
-	<linux-csky@vger.kernel.org>, <linux-hexagon@vger.kernel.org>,
-	"linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>
-Subject: Re: [PATCH 0/4] apply page shift to PFN instead of VA in pfn_to_virt
-Message-ID: <ZbrfcTaiuu2gaa2A@yzhao56-desk.sh.intel.com>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20240131055159.2506-1-yan.y.zhao@intel.com>
- <5e55b5c0-6c8d-45b4-ac04-cf694bcb08d3@app.fastmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <5e55b5c0-6c8d-45b4-ac04-cf694bcb08d3@app.fastmail.com>
-X-ClientProxiedBy: SI2PR02CA0034.apcprd02.prod.outlook.com
- (2603:1096:4:195::9) To DS7PR11MB5966.namprd11.prod.outlook.com
- (2603:10b6:8:71::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4F9837A
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 00:04:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706745852; cv=none; b=S7YUNtWAe1moo1l6OuNEy34IpHAtU6AME0faDuui1hgvSyADDNrSPkeKuPkq1dY927tk4r7tumNOOCmicw51SfkzN8rtrb41J954DnzyaiyVm4MG7nFwbqchzOFuX0iOjt/8bqrgAElr9wZO4OE2Zy3bFIuEDP5PXMMeMTKEsHY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706745852; c=relaxed/simple;
+	bh=ZTQfjlfKZWpsko9yin8I+YupCTzyBniQOMshlfPT7kY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RsV6DKEeSZYcGhJD2VioSZkrMS3exGhTCTHP3jE9JAsFdwDmnfnHVBhxmjnlAmNATjdn/joI/vF6gBepakUgsrc1qOnup7bsdR+fNciCqC6UmixN8F7/YFMTKhGozSCdQ2b3QNNWagfMdr0BHEs0vdAfjRDN9DR5YiJvPZapF+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=iuvSVo4N; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-42adb5f806fso3604081cf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 16:04:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1706745849; x=1707350649; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4l6ETKY5nfjEgAc/txbnxgEJpKhrIm08EBvT3tli3Fs=;
+        b=iuvSVo4NkfbiUsfvlovftPoS/Sd2p0VROXV/Lg3NidmqDjYdjC4nK/br0NIVN55Yf5
+         8gbk++XxPJWVwDN1gIuue5uup/+h1DrmTQFlsQwPnA22NADSQSvhN06qbgWCXlmFIkF6
+         ZBwq0ErRKzful/0mfTogaMfv9S8j4IuZLscKVt7x6zyOEkVEJThunexVoZ0JthAJb3cV
+         j2zCqub/OGSXHyAjH1LdAXduTeIVH3KirSG/51fc5sDd62+SqGqmQHQcfi8bOUlc2Mhu
+         zxmeeE9O79wBO90qKIS34kNlcKMxSaEUu5CUaxs/kzVmrpMJESTk5eEKvXu0vyCF9hZA
+         +Aww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706745849; x=1707350649;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4l6ETKY5nfjEgAc/txbnxgEJpKhrIm08EBvT3tli3Fs=;
+        b=FFk67nCcStxfz14rAGQtLBJcoqzFRij3uWmXEEgIMpdGQWtm9/gEVQsqLYVepkzrMH
+         xqhmdRMi9tfNoubrc+gDv6MdHBf1ankg3asHG2xSqkPkwJ6g8S95uDRHr/JbTHfbEdBF
+         ggZRTEt0rhoz0HuFtv1wPr2cpU0ASc/hwpyCC9myszD7un/mx0lTYR5iLGb/rbzrAV7Y
+         sJTAZjJSUcEAqZ2AwoCYNE6t2Vd8mTmyAbQ8rVkhkb8gU8HDRF33jwdtiH3151tDq46T
+         Syhh7rHrTwXrYPc+pAQZpUiHq9m+BpbNSJlxtkGfIUfzhNPDN+dc5nEuCvym5p1a4Av1
+         28sA==
+X-Gm-Message-State: AOJu0YxI0UwnLOYuVOkeZObg7McApjbOMoVcRmrZ7XM8EQtLe0HShFaZ
+	3mdo3Ges1lWOXwyO/umkoDRA4hbXTpEJJw3qGg4GtNA++xUv0+yj4HrSFijJbmU=
+X-Google-Smtp-Source: AGHT+IFQKX7i+4ESMDPH847KNu8h9oQxu5LUlBSeL3wj46zQiyv7K5BPuhC83CxhMMrx5CEoWutdYg==
+X-Received: by 2002:a05:6214:1314:b0:68c:4f54:5bd8 with SMTP id pn20-20020a056214131400b0068c4f545bd8mr3525534qvb.32.1706745849534;
+        Wed, 31 Jan 2024 16:04:09 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id ly4-20020a0562145c0400b0068c4d69936bsm475181qvb.119.2024.01.31.16.04.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 16:04:08 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rVKYq-00AhVc-1D;
+	Wed, 31 Jan 2024 20:04:08 -0400
+Date: Wed, 31 Jan 2024 20:04:08 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Shifeng Li <lishifeng@sangfor.com.cn>
+Cc: Ding Hui <dinghui@sangfor.com.cn>, leon@kernel.org,
+	wenglianfa@huawei.com, gustavoars@kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Shifeng Li <lishifeng1992@126.com>
+Subject: Re: [PATCH] RDMA/device: Fix a race between mad_client and cm_client
+ init
+Message-ID: <20240201000408.GG50608@ziepe.ca>
+References: <20240102034335.34842-1-lishifeng@sangfor.com.cn>
+ <20240103184804.GB50608@ziepe.ca>
+ <80cac9fd-7fed-403e-8889-78e2fc7a49b0@sangfor.com.cn>
+ <20240104123728.GC50608@ziepe.ca>
+ <e029db0a-c515-e61c-d34e-f7f054d51e88@sangfor.com.cn>
+ <20240115134707.GZ50608@ziepe.ca>
+ <354e2bf7-a8b4-629d-3d2d-35951a52e8bd@sangfor.com.cn>
+ <5bc6ed6d-31e9-4b44-aa91-5f9d0f3d92c8@sangfor.com.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|MN2PR11MB4645:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3ec47e45-646f-45d8-516c-08dc22bd1f60
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ApzJWmRwCOxkbGliGTJsVd0ZX4OY/LVTcd+kcsqvutAeIYt/cbQpTx7jsTn9uMqCK++ravPSM/1ooX7lg+BoWFB9IMW9bwUQTkbS4u+8GmHPS2rP7aYz8+cDgjRruMlSgEmsp/wXiMb5o5W84PaiObB3goF4ETQpOjBub7BQg5Zzd7nHofV5MiERM81ZG/GBpViEk60ifk53C1JDMv48/cG/ODOXhds8mV3Rxwj2bxJEPm6ChiMbPh3nGiluHjpxG318fs05TFwSANtph7MUMIFjcx6S4p92tQ/BDyArH6PoygPm6rnoXebq3dmJ1vGAFLQMIcxxJAtJLu3OOFu4LwI49qnmZ5LLN3cipwL32H1YbXPgndOKX4zgpBP2Wawfnwv8Q4Om1NOOp6xizDE+60hM5hs+n/GzCHBFrxKehFYkOI93Id1ww20ZVWih3dA6V+AdWpZyjv+SrF3aA1DaFCu2Wy6nUG50luJmnzJ2hILMqxa2NJsAEw9NvSfQRYD2n0YGqeAbgxyjFUzkjMxbljcvyaCTGEd4e17rJaiHsmji7xzfDnc7rTA7BZ7EiWcN
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(136003)(396003)(346002)(376002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(26005)(41300700001)(66946007)(83380400001)(6512007)(54906003)(66476007)(66556008)(478600001)(82960400001)(6506007)(6666004)(6486002)(38100700002)(6916009)(316002)(86362001)(7416002)(5660300002)(8936002)(4326008)(2906002)(8676002)(3450700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?u2hySYtTMDKlnZSDlUimw7tvm3zF4xJfOMGAaCCj9rr2IquDiZGACLhwJ1Sa?=
- =?us-ascii?Q?TaOJvq4NWFb2x5Px2/gmAYqrShR1/hv1MBCpNHlblhmfmnhvt4hB4qLKUWGL?=
- =?us-ascii?Q?qM0BQ3M0DWcz+0PNSnPcZFgfd+BZyDS9m/NLWVntJdEUXa3LDosRT3hADLgK?=
- =?us-ascii?Q?4DL8VP5mWjnJVTM7WFRtsKg/YJf4ppNBtv5inAHP2Hs5iC7RsmOcUd+SPkfM?=
- =?us-ascii?Q?eK/k6pC5Jxvd32MofULhTS4Y5t+Wme63n40sMbgfddBqNapz6zAfkxIRExjo?=
- =?us-ascii?Q?Pk/04y2vaZqTDTSvbq2MSdlj8JdHv7+XAl/lXVTbumJBt/znK3jL/sdTiocn?=
- =?us-ascii?Q?EJFVnr5uPHhDvAAv9iLAncyiGBs+2Q5txt0ksmx2+J5IIYDz5PC/c4bCVRAS?=
- =?us-ascii?Q?1u+T6RsdG7trr9xglcxbkjnmE5D8PpD8lO7zZhPvW9rqmpZC3ee4i1+cr93H?=
- =?us-ascii?Q?rCbj+uSvfnaJGirBnsgXK9wEklWQqE/qnHWAZalrb7blrQsIwzQWWolrPpk/?=
- =?us-ascii?Q?3dRzMXJsd+dacSSxwUcZ8bU/Cse0CPJyHXycThM3d2trb+BB1cZcK9ROpbd7?=
- =?us-ascii?Q?RGM2StqLv+Vdtvddb5WK10dbToGdQEeeutaGlQQrHlhpp4cAIiG+gbgEr+9d?=
- =?us-ascii?Q?SCRipo7Jb2WJnN9aV+4h15z1LDRW0lB4/ofz9SaffNXzZmcFjdRcWmA37pjX?=
- =?us-ascii?Q?9TzuZrXHzNas7CEVhGZmSKb+zcbf7zsJZfgfIIb3rS7pJBsFZk4/3ZXx3olV?=
- =?us-ascii?Q?nsVncow2iZWspHZMtXqr7AQKKsYQtoZHGPo+n+iilObYu+KL02g3Mm1neDwF?=
- =?us-ascii?Q?U59hdZIs8HgVknS6RWExvJAUkVu8UG1Lho7MsZarIN+RtSrIR4IMQp9xIoG5?=
- =?us-ascii?Q?B2JPgE3/4ykmt0ByxctmHJCGIjTGTqOqGpcybFx/Lw0BtvxIO1cKAJE0X1Of?=
- =?us-ascii?Q?25NlsTSVc5ZXkppgeW8IXSjYWSDbRT/pHb//6by+rJj/xQdre1b6o2m+qHZH?=
- =?us-ascii?Q?FEwe5OK7A22pQHmICfL3cHiBIZPs7zT6DfAvkNTwFv9WDwCuYTxzj+6iPLSt?=
- =?us-ascii?Q?oMWpBrQapGpCrCG1wHQOMMwqBIrcVv3SuYVcEfKT4B9+MSp+YXEoS7hcd5uu?=
- =?us-ascii?Q?Z+sg6kPaD0TCmuj5s8tpc9Kugs0Zo96otBK7uTbrcz+2Gd/SzV2yAFj76Hx/?=
- =?us-ascii?Q?ZH9lHuhLyLzwOhd7LXklFb4AVsjI6q8331C8QeXoX5e9sq0t0gw+OaSXjJ5v?=
- =?us-ascii?Q?R74DpWEGPphauENAjxNbi9QfubtKDlDXvYRpT3LxKkkVbW42iLdyhzUnch8K?=
- =?us-ascii?Q?RXVv8bHzkctSvsqomxVRdVVOzh4oGKybLarsQq+NbiULO9vsZ+zfc2NmXh+f?=
- =?us-ascii?Q?oZ0hT8WIDUuwAYJU4HJ8o1Yd7uHshQCBZgCljwQUDHy91cVLhZ2KAIeaQ2r3?=
- =?us-ascii?Q?6BGVMG3ScSqZnZN84yGREn/PbW1c9CDyrQn5cfMNdjv/2aze3BYkV9EYM81D?=
- =?us-ascii?Q?4gXQ+uYaaGeCm0iIRp7w0kNEmitNgD7A8puHa9nYcI3k2Ws9VDhGwvB+8imO?=
- =?us-ascii?Q?l5bFX2KywyNatS7coP6ckr2YTXf5Cb0bTwMoRXsw?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ec47e45-646f-45d8-516c-08dc22bd1f60
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2024 00:31:25.2214
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EkDRDpDbcXSuFoy16QBXQBM+2XF/Pot6/0//oG+tUTAth7eNqMO32mG+s+W8/HEtXyeEIbI/HUfE0n3+H/orHA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4645
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5bc6ed6d-31e9-4b44-aa91-5f9d0f3d92c8@sangfor.com.cn>
 
-On Wed, Jan 31, 2024 at 12:48:38PM +0100, Arnd Bergmann wrote:
-> On Wed, Jan 31, 2024, at 06:51, Yan Zhao wrote:
-> > This is a tiny fix to pfn_to_virt() for some platforms.
-> >
-> > The original implementaion of pfn_to_virt() takes PFN instead of PA as the
-> > input to macro __va, with PAGE_SHIFT applying to the converted VA, which
-> > is not right under most conditions, especially when there's an offset in
-> > __va.
-> >
-> >
-> > Yan Zhao (4):
-> >   asm-generic/page.h: apply page shift to PFN instead of VA in
-> >     pfn_to_virt
-> >   csky: apply page shift to PFN instead of VA in pfn_to_virt
-> >   Hexagon: apply page shift to PFN instead of VA in pfn_to_virt
-> >   openrisc: apply page shift to PFN instead of VA in pfn_to_virt
-> 
-> Nice catch, this is clearly a correct fix, and I can take
-> the series through the asm-generic tree if we want to take
-> this approach.
-> 
-> I made a couple of interesting observations looking at this patch
-> though:
-> 
-> - this function is only used in architecture specific code on
->   m68k, riscv and s390, though a couple of other architectures
->   have the same definition.
-> 
-> - There is another function that does the same thing called
->   pfn_to_kaddr(), which is defined on arm, arm64, csky,
->   loongarch, mips, nios2, powerpc, s390, sh, sparc and x86,
->   as well as yet another pfn_va() on parisc.
-> 
-> - the asm-generic/page.h file used to be included by h8300, c6x
->   and blackfin, all of which are now gone. It has no users left
->   and can just as well get removed, unless we find a new use
->   for it.
-> 
-> Since it looks like the four broken functions you fix
-> don't have a single caller, maybe it would be better to
-> just remove them all?
-> 
-> How exactly did you notice the function being wrong,
-> did you try to add a user somewhere, or just read through
-> the code?
-I came across them when I was debugging an unexpected kernel page fault
-on x86, and I was not sure whether page_to_virt() was compiled in
-asm-generic/page.h or linux/mm.h.
-Though finally, it turned out that the one in linux/mm.h was used, which
-yielded the right result and the unexpected kernel page fault in my case
-was not related to page_to_virt(), it did lead me to noticing that the
-pfn_to_virt() in asm-generic/page.h and other 3 archs did not look right.
+On Fri, Jan 26, 2024 at 10:25:01AM +0800, Shifeng Li wrote:
+> > I believe this modification is effective, rather than expanding the clients_rwsem range,
+> > the key point is down_write(&devices_rwsem), which prevents ib_register_client() from
+> > being executed in the gap of ib_register_device().
+> > 
+> > However, this may cause a little confusion, as ib_register_client() does not modify
+> > anything related to devices, but it is protected by a write lock.
+> > 
+> Do you have any differing opinions about above?
 
-Yes, unlike virt_to_pfn() which still has a caller in openrisc (among
-csky, Hexagon, openrisc), pfn_to_virt() now does not have a caller in
-the 3 archs. Though both virt_to_pfn() and pfn_to_virt() are referenced
-in asm-generic/page.h, I also not sure if we need to remove the
-asm-generic/page.h which may serve as a template to future archs ?
+I'd rather see the client side have a comment explaining the confusing
+lock then disturb the locking on the devices side..
 
-So, either way looks good to me :)
+I think the write/read lock scheme there was done for a reason I just
+haven't had time to recall exactly why..
 
+Please send a patch with this arrangement
+
+Jason
 
