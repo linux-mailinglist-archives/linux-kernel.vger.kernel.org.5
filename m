@@ -1,67 +1,86 @@
-Return-Path: <linux-kernel+bounces-47554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17A2A844F4C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:02:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEAE8844EDC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:49:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0554B27A2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:02:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A31711F24222
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:49:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2457F3A1B7;
-	Thu,  1 Feb 2024 03:02:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3341EACC;
+	Thu,  1 Feb 2024 01:49:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="amh3vtnC"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CWJmy8wI"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E3FF3A8C5;
-	Thu,  1 Feb 2024 03:02:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEBC8EAEF;
+	Thu,  1 Feb 2024 01:48:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706756535; cv=none; b=UEeuW7nhYi0QJbAsNWTDVEPPiSK6+6jb+Wyjc8aoXLIYFXMFL0wbiafyiMJYxW5gQsTHLTJBdr3aqOd+KW/obTawTTjsivzB8jBsbPb4r6SFo4+ZSelRhcFmJMMRJcQlQDWoAe6N2tZbEWGs/++j5U8NBMbDJuEImB78RWiRlns=
+	t=1706752140; cv=none; b=dtQQduC8yQGTjmL9plvLN+LTDqo2S17jo6DEymZ2hKg+SZRlfU8OGjPRxVqIVtb/OpZBbBBp0idj+Pp8LZrC/hEZdgAYB8qNi23aOSTrrK79vxvMStKr7hVajROGau93QBNdNP9nFd/ysnEB57izW8HhYcxR60by710M65OKLyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706756535; c=relaxed/simple;
-	bh=R+QsqpdTX1sY9S+UwIGf0BPhr4noXICmiQinzkSiegE=;
+	s=arc-20240116; t=1706752140; c=relaxed/simple;
+	bh=N6QKfiFvZzxxTVFRsxwYsWWNcRXAOchRha0k2f+iqCg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L8RTTVRTR4sYEY98s8vFRlx0l8s14fCNiAiJ6BummRLMOxmRwWhOgZ354XzwsmRkVh+bSyaN1TXrK4WtpuHi3xFqrKwRectBo/PDsSmUlHwgsjmUCxeBoRx6hTpJtUTCHZUUY9D49n3mD8tFxliuB7yCFAyRL44OEhSnYZ61hao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=amh3vtnC; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=nMcVHbq/MOi0e8w8BPhjM3V1acBbj0Azdv/NIoV0FxY=; b=amh3vtnCwTf6LtO9i4uFr/ipV7
-	kGvaers485QV7vDl4MLKa+a/t0Juu4UDIAhkYMIXxw0slTsDAYHkuyNivNrSY+1/Y+wGHZYwSHS+3
-	CXTADfo6pTqNe9/Fe4N0TqFWunq9sSlcIUcfJiLn4XGK9daDqlz8oD1Yybwi8U4HuzraGCV3fxsTB
-	QI1ZBB9P65NiIBMUBifUmV3HT6kat644IaZUNguJSk22mpISizaCXt/bThRXZmiI6qymsbLBCq3b+
-	ZM9sKzOsAhYMpWQBqxf61p7SzZh5rVSarfn6fIB+xqecuSCGluGaptXaxC4KSJKVRxeGZzypRULKF
-	6wwGJSVw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rVNL3-002jgw-1z;
-	Thu, 01 Feb 2024 03:02:05 +0000
-Date: Thu, 1 Feb 2024 03:02:05 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Ajay Kaher <ajay.kaher@broadcom.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v2 4/7] tracefs: dentry lookup crapectomy
-Message-ID: <20240201030205.GT2087318@ZenIV>
-References: <20240131184918.945345370@goodmis.org>
- <20240131185512.799813912@goodmis.org>
- <20240201002719.GS2087318@ZenIV>
- <20240131212642.2e384250@gandalf.local.home>
+	 Content-Type:Content-Disposition:In-Reply-To; b=g0jXwMApCs2sm8txI+NNwSle8E1kcvJ1MFljmIQGv22gWsugvTokMCIPPOGFRls/GtvnoyJ7gu4dXShllrUz+RS2S962y6nnK9H4jFvgHNe/XXiuCzjVtcMyogfoaGUjztWIxWDEcZVU+7H3NVSDJV2MwB3Oh0UcVicCxu+FkUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CWJmy8wI; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6dfc321c677so282571b3a.3;
+        Wed, 31 Jan 2024 17:48:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706752138; x=1707356938; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5yoyeQ03SLQ2/KhLtmuYs2D9JtsD1upyRCzOcNiDbmA=;
+        b=CWJmy8wIgaTohXSffw3wwa1nkAMbvBkI4Xw+Ok3rpV3EfbKDgxCT1O3SfaycZY25Jt
+         uGQFUF1QrwEnbLNW2V+Ug1wli+a+gmPPOeFm0aqa1ICoiQYXfVECHGpMN89k2vDkgR3/
+         uVbAYgvsJmNgxqKPAyQl+9oEETmTnMAG4Km+M0rqU5/CyEKt2xKa4vSwntboYUx9WEZk
+         RApG9TCyKfexdnWw36nnED+Gb1dFVrbZY33VX+2la/3Zvt0f1v0t7ZoFcDzEcn4gi1BR
+         290exQVQMN8p7W5a8KG0XBM37d3z3p1HucU8CV1C3PPfZFxKvY7Ysa9Z099/5PlASguF
+         /xQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706752138; x=1707356938;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5yoyeQ03SLQ2/KhLtmuYs2D9JtsD1upyRCzOcNiDbmA=;
+        b=P8SD1TKZMfwTHzYEjGLv1CSffTmkaI2hbc9tHpZb40xDjTs05mTmplW79e7n98bcl/
+         6gnlLnpDpHeq4G9wF2BxmHK54NFXo6WwgX7Cca7Wrv9EGVPlF0MeqNGcZjV2FbNVpiP3
+         2gusRg9/YEvSiUhgk0B3KOAGMvRvOtFIcGHrJpYa3+sJUxcy5SoX6L11DvePnVFh5fkv
+         4Lm9GNGzu3hlCTR9lq08IS72B22uJ7s1BnJGH+mQslF1knMGP/tosafQp2V7WS1GL8fM
+         n1ysasae7SXQhiCS/Pv0maaDHGK1I8LaIUxGeN63k63DY5BWp8ZeajJeFCI5chNcZtHD
+         ESpw==
+X-Gm-Message-State: AOJu0Yyyt08t5GJo9Jv8nrRWL/ALCmyNQFzTwICPryN0EvE77HKsoKZg
+	P0gV5Rxr+uzumFuuvMvyeQEay4Z4fYJxLLxnJHlvlob5e9FaGG0Nm6qFkFBPnhIC6Q==
+X-Google-Smtp-Source: AGHT+IFxYwb1zXm5LsSCQsfI8y7IMZ5+/9g8tqNylKmrp/LkcNjBnoFR24f3iCwh74oislzN6KhgYw==
+X-Received: by 2002:a62:e705:0:b0:6de:352c:c2c2 with SMTP id s5-20020a62e705000000b006de352cc2c2mr3217324pfh.30.1706752138075;
+        Wed, 31 Jan 2024 17:48:58 -0800 (PST)
+Received: from dragon (173.242.119.193.16clouds.com. [173.242.119.193])
+        by smtp.gmail.com with ESMTPSA id t5-20020a62d145000000b006dde36aaae7sm11033921pfl.64.2024.01.31.17.48.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 17:48:57 -0800 (PST)
+Date: Thu, 1 Feb 2024 17:47:48 +0800
+From: Shawn Guo <shawn.gsc@gmail.com>
+To: Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Marek Vasut <marex@denx.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	NXP Linux Team <linux-imx@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/4] TQMa8Xx (i.MX8QXP/i.MX8DXP) support
+Message-ID: <20240201094748.GC463595@dragon>
+References: <20231214142327.1962914-1-alexander.stein@ew.tq-group.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,40 +89,14 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240131212642.2e384250@gandalf.local.home>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20231214142327.1962914-1-alexander.stein@ew.tq-group.com>
 
-On Wed, Jan 31, 2024 at 09:26:42PM -0500, Steven Rostedt wrote:
+On Thu, Dec 14, 2023 at 03:23:23PM +0100, Alexander Stein wrote:
+> Alexander Stein (4):
+>   arm64: dts: imx: add imx8dxp support
+>   dt-bindings: arm: add TQMa8Xx boards
+>   arm64: dts: freescale: add initial device tree for TQMa8Xx
+>   arm64: defconfig: Enable i.MX8QXP device drivers
 
-> > Huh?  Just return NULL and be done with that - you'll get an
-> > unhashed negative dentry and let the caller turn that into
-> > -ENOENT...
-> 
-> We had a problem here with just returning NULL. It leaves the negative
-> dentry around and doesn't get refreshed.
-
-Why would that dentry stick around?  And how would anyone find
-it, anyway, when it's not hashed?
-
-> I did this:
-> 
->  # cd /sys/kernel/tracing
->  # ls events/kprobes/sched/
-> ls: cannot access 'events/kprobes/sched/': No such file or directory
->  # echo 'p:sched schedule' >> kprobe_events
->  # ls events/kprobes/sched/
-> ls: cannot access 'events/kprobes/sched/': No such file or directory
-> 
-> When it should have been:
-> 
->  # ls events/kprobes/sched/
-> enable  filter  format  hist  hist_debug  id  inject  trigger
-> 
-> Leaving the negative dentry there will have it fail when the directory
-> exists the next time.
-
-Then you have something very deeply fucked up.  NULL or ERR_PTR(-ENOENT)
-from ->lookup() in the last component of open() would do exactly the
-same thing: dput() whatever had been passed to ->lookup() and fail
-open(2) with -ENOENT.
+Applied all, thanks!
 
