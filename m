@@ -1,62 +1,73 @@
-Return-Path: <linux-kernel+bounces-47954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E90184552A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:22:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C65384552D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:22:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45E68283D44
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:22:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97F55B25921
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:22:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BF0E15B975;
-	Thu,  1 Feb 2024 10:22:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76B584DA1D;
+	Thu,  1 Feb 2024 10:22:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KLwlOq/g"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VkaeJJeM"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 385A71F941;
-	Thu,  1 Feb 2024 10:22:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C12E15B99C
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 10:22:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706782928; cv=none; b=ZYCt68rdv5zGlbOhpm1Q7qrXRRgb78vPSXuaibc28ZvaHEaZzwFkdEQeYYCbh4kXdTNSus7D1P99eOiETghKdXN31QW13UVGeORsEUs+NnEgpLYiADAZN0AP/blfhpZf8uOsO3KIYFn0FLDGaVDNpfsKVDRxiyWyp2dctZhDteQ=
+	t=1706782935; cv=none; b=WASxDh7XskgvEH/hu02cjDsNQ+EwFq4UVghaNeUKdzhYpHGhgzqR002kEjaC7MpMSUof/cLNYh1GOVwrWN4VvVRIaWSAchwz2aEQEf+F5hWa0x6+6fQahDxNlWvZWBUr1iSIZwrkKRtlo/EZo9YbdcsDQ3XlGV7BquncC4ZA3Z8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706782928; c=relaxed/simple;
-	bh=Ma2m3h0dyRMeRB8FQVuwC9Ujq2irukJ+Xh+XndSbWE0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=EWCn79qGw8HKvvXFP1ACbLSnzF8JBaMomE/QxWm1irCyzdEmNZjnXmA0/xREjNOGRO/E9q1+KS6EDrpW5V68Eew3DlG0GPOqY0+rMIZUMwV3UnMSXd3jqOdASdwlKnr4XxBuF+RwWoUk4bR6+0KU9da49coIsO5QzpC0Vn9WSTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KLwlOq/g; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4119vb2u013926;
-	Thu, 1 Feb 2024 10:22:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=tSMRL+Wo88yleBuFktPj4UsGKmCGz8Z2pFHi1k2PXLE=; b=KL
-	wlOq/gcvXH/W6a3tPRnq9XEHEQ7mwU2e5Y7s8XrLOTDAPAcWQogU44N09Wsfed2r
-	lg9TKuxmUtqW8czXtaBqy54g+hcywRIwq5auDjHMYrJ8C0JKqB3lNMnyi2KhAsRQ
-	IRc+LY8HRNT8zfYTmzfQ8tn1EZDaPG0P3SF3OvXYegXyx3T2I8uxfeC6ofZbVBtl
-	jpC7LFuVeMMn/iFnymakCDvOm4jN3Knk8ENsKyr8k+BgjT6KkPJrSplXDtdcfLVa
-	YN/NC87mhdayYVOrwycLX/yPBRkdmtkRauyUaY4OvZ5IZxyG2v/AkkyxGSIqS4Bk
-	Yzj001XnRBBIWTeXPMvA==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w094881sk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 10:22:04 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 411AM3iv009393
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 1 Feb 2024 10:22:03 GMT
-Received: from [10.218.25.146] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 1 Feb
- 2024 02:21:59 -0800
-Message-ID: <7679809d-d080-4192-84db-df06a481a456@quicinc.com>
-Date: Thu, 1 Feb 2024 15:51:56 +0530
+	s=arc-20240116; t=1706782935; c=relaxed/simple;
+	bh=U2M/5VjfZroqlBAA+pCyLM/Bh/kzwKLYBNVqZQrwV6A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=m4PnHs6ci5omY3fQ0Op5XWe94cDL7PP5/xsV3JbfqsKWjdC4ISHJFoaFoS5zCAMt7MWkbprhrhKi9KFlVzsJydv8ahrI7x/fCSwfKe03BhHGBWXajx9FmYmxOySzSIb1hW0DQCjBlbVBl7mfOz7sU8QBsFH9eHbbF4v+VD+8DwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VkaeJJeM; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a26f73732c5so103240766b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 02:22:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706782932; x=1707387732; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N1dWG3aU2KUqi5LvwiCZ7SXAnfblbf10qXS/8UmvwJY=;
+        b=VkaeJJeMQgibKRhlBBewNQOkVs96ZV9hIx9S4IKCLd6QhEiX2wlXpvXyhGhA59wyv0
+         ukgu63z6RRJtWAFkCJxq93nmEwXnozkKLEW5Uiq+OTaqAjTAtVni5tNnQ9pSHKM1qurc
+         MJk2sU9JTampJqDG0MjGHCY2nqCobyDzncCT+jv3BDXb0rnAf2Z0LrDO3WZMNJQmMg2G
+         1GaYY86UU0ZD3zP9dECv/RcfVqESE2qZDWnnMwfd/HfkwljTrLBjyLfQoM5RogyTiHtq
+         ydjmm8wIRLeIc/xDbBIYdaG4Zzx+Gp0N1EO1VY8isMOCxLziA/3c1v4Opb+6cdtly6gR
+         KuRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706782932; x=1707387732;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N1dWG3aU2KUqi5LvwiCZ7SXAnfblbf10qXS/8UmvwJY=;
+        b=v3O+E+TXpQ7HNxVJPbGc6VR6mnqQ4g5+I5IKyQ+IziuXCASRKxZZ+jypbBtSHZIrvz
+         W+foSRGHdoXF8t/LOKQdVlcpIyc+iFOY0iYJ5WktffNJ9JmnmXTM0y3s6d2xIztpkAGm
+         pduMGJi/q3WeFM3Rvikkqj/4mpFJySYZOTc3M7F7W7q1+lc++5HCuLIJoJqyqmqnpz5t
+         iwegZtISulFuE0PY7Sh8MQxQmyuuVFV8FFKXI3C/EFJ7LDuf8l+nVXX/UPADj1HSpa/u
+         gADBb4eGupD54Ct/CRhu1QyLLGOByD6uejNdf4rEJAe49LCtd/qfu5E5RkqVVznFS0H+
+         1e7A==
+X-Gm-Message-State: AOJu0Yx2x/ggNoUSI5bxLT1OureIxu1Z+b5oXaiZiBpeKP0/CN+VnwkN
+	pBOoKxs/rurSuXRYNO96ey0U5BA2uhAJgTZ95ZyiUit4ZvFr6YpcPHKvT02DDdI=
+X-Google-Smtp-Source: AGHT+IG+1ffvQtGV4A8q1007OBt+gGwIH+8e2bbFpd49ECS73rLqb7hhfM72nz5L3mDSytR57dn2jQ==
+X-Received: by 2002:a17:906:7d0:b0:a34:b006:72ce with SMTP id m16-20020a17090607d000b00a34b00672cemr1249488ejc.44.1706782932190;
+        Thu, 01 Feb 2024 02:22:12 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWmPhpTsoAra4GT6fX3p54Ns8C7lT6HXZMvYxOaMUYoQxQyxtXkaSv/bdEb/2nu3YnL280elaCLsNdunAmBEbJYdcqIxXPgkZQDqxIv32N4XXtUf/Z5e8cmvclDTUy6FgzfPpBeQa4aIxgypBBKizLaXPYtsLp8S/DzNNGSPQDNbKCtfGj/awoAO9zG4e/s/vX83TzGqAIZFR5GnwWNQbHN3jACrvuf4ZlJvYwBYL3qcbri1wpJSlWbWRvSFObqgsd0f8rF70FPW5BWvqEF/mnJytLtfegKhykwBUsZ8MQiWpNsd9xE/fFBT+wOGhaLuklsxW5nJqPQHN1V3eWgAU1SdH9jR5kNOLBczoHePQu1LGRv7TaJEIAFi8WZHtEtGiLPGp+KgFv0EWLt71dLba6OjIedNN/4PxgJTJkQjNk=
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id vo5-20020a170907a80500b00a3689bde88esm1213314ejc.153.2024.02.01.02.22.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Feb 2024 02:22:11 -0800 (PST)
+Message-ID: <1bcba074-0fd4-4f0d-997b-a0c8e5d881cb@linaro.org>
+Date: Thu, 1 Feb 2024 11:22:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,161 +75,93 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [V2] i2c: i2c-qcom-geni: Correct I2C TRE sequence
+Subject: Re: [PATCH v2 3/3] ARM: tegra: Add device-tree for LG Optimus 4X HD
+ (P880)
 Content-Language: en-US
-To: Andi Shyti <andi.shyti@kernel.org>,
-        Dmitry Baryshkov
-	<dmitry.baryshkov@linaro.org>
-CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <vkoul@kernel.org>,
-        <quic_bjorande@quicinc.com>, <manivannan.sadhasivam@linaro.org>,
-        <quic_msavaliy@quicinc.com>, <quic_vtanuku@quicinc.com>
-References: <20240129061003.4085-1-quic_vdadhani@quicinc.com>
- <CAA8EJpr_KXsjTUYha7OVg4HLLJLqMRvJun9DnMkBFvq3R2nk=Q@mail.gmail.com>
- <txbi7hpta26tdncbjyyyxmayos7kw7qbo6y5lcxp2nfk3hogxv@pddv45eqyc2b>
-From: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-In-Reply-To: <txbi7hpta26tdncbjyyyxmayos7kw7qbo6y5lcxp2nfk3hogxv@pddv45eqyc2b>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 05ElQmRNTV-5vO7hmDj23HYBazxEsOs4
-X-Proofpoint-ORIG-GUID: 05ElQmRNTV-5vO7hmDj23HYBazxEsOs4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-31_10,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 bulkscore=0 impostorscore=0 clxscore=1015 suspectscore=0
- adultscore=0 spamscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2402010083
+To: Svyatoslav Ryhel <clamor95@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Thierry Reding
+ <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>,
+ Kees Cook <keescook@chromium.org>, Maxim Schwalm <maxim.schwalm@gmail.com>,
+ devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20240201092033.10690-1-clamor95@gmail.com>
+ <20240201092033.10690-4-clamor95@gmail.com>
+ <523895fd-5a7d-4467-9a51-b5f85668f0af@linaro.org>
+ <CAPVz0n3VnEAxHviOF1RVzMybVEe=BdMcpPFpZXvpoU7HizTNog@mail.gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAPVz0n3VnEAxHviOF1RVzMybVEe=BdMcpPFpZXvpoU7HizTNog@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-
-
-On 1/30/2024 3:12 PM, Andi Shyti wrote:
-> Hi Dmitry,
-> 
-> thanks a lot for your review!
-> 
-> On Tue, Jan 30, 2024 at 01:49:57AM +0200, Dmitry Baryshkov wrote:
->> On Mon, 29 Jan 2024 at 08:10, Viken Dadhaniya <quic_vdadhani@quicinc.com> wrote:
->>>
->>> For i2c read operation, we are getting gsi mode timeout due
->>> to malformed TRE(Transfer Ring Element). Currently we are
->>> configuring incorrect TRE sequence in gpi driver
->>> (drivers/dma/qcom/gpi.c) as below
->>>
->>> - Sets up CONFIG
->>> - Sets up DMA tre
->>> - Sets up GO tre
->>>
->>> As per HPG(Hardware programming guide), We should configure TREs in below
->>> sequence for any i2c transfer
->>>
->>> - Sets up CONFIG tre
->>> - Sets up GO tre
->>> - Sets up DMA tre
+On 01/02/2024 10:51, Svyatoslav Ryhel wrote:
+> чт, 1 лют. 2024 р. о 11:22 Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> пише:
 >>
->> It is not clear how this is relevant and/or affected by swapping
->> I2C_WRITE and I2C_READ gpi calls.
->>
->>>
->>> For only write operation or write followed by read operation,
->>> existing software sequence is correct.
->>>
->>> for only read operation, TRE sequence need to be corrected.
->>> Hence, we have changed the sequence to submit GO tre before DMA tre.
->>>
->>> Tested covering i2c read/write transfer on QCM6490 RB3 board.
->>
->> Please read Documentation/process/submitting-patches.rst, understand
->> it and write a proper commit message.
->>
->>>
->>> Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
->>> Fixes: commit d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
->>
->> As it was pointed out, this line shows ignorance of the mentioned file
->> and of the existing community practices.
-> 
-> If the issue is only in the commit message Viken can propose a
-> proper commit message as reply to this e-mail and I can fix it
-> before merging the change.
-> 
-> Important is that no issue is seen in the code.
-> 
-> Please, Viken, can you either send a v3 with a proper commit
-> message or write it in the reply to this e-mail with the changes
-> that Dmitry suggested.
-> 
-
-Submitted V3 with proper commit log
-
->>> ---
->>> v1 -> v2:
->>> - Remove redundant check.
->>> - update commit log.
->>> - add fix tag.
->>> ---
->>> ---
->>>   drivers/i2c/busses/i2c-qcom-geni.c | 14 +++++++-------
->>>   1 file changed, 7 insertions(+), 7 deletions(-)
->>>
->>> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
->>> index 0d2e7171e3a6..da94df466e83 100644
->>> --- a/drivers/i2c/busses/i2c-qcom-geni.c
->>> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
->>> @@ -613,20 +613,20 @@ static int geni_i2c_gpi_xfer(struct geni_i2c_dev *gi2c, struct i2c_msg msgs[], i
->>>
->>>                  peripheral.addr = msgs[i].addr;
->>>
->>> +               ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
->>> +                                   &tx_addr, &tx_buf, I2C_WRITE, gi2c->tx_c);
->>> +               if (ret)
->>> +                       goto err;
+>> On 01/02/2024 10:20, Svyatoslav Ryhel wrote:
+>>> +     pinmux@70000868 {
+>>> +             pinctrl-names = "default";
+>>> +             pinctrl-0 = <&state_default>;
 >>> +
->>>                  if (msgs[i].flags & I2C_M_RD) {
->>>                          ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
->>>                                              &rx_addr, &rx_buf, I2C_READ, gi2c->rx_c);
->>>                          if (ret)
->>>                                  goto err;
->>> -               }
->>> -
->>> -               ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
->>> -                                   &tx_addr, &tx_buf, I2C_WRITE, gi2c->tx_c);
->>> -               if (ret)
->>> -                       goto err;
->>>
->>> -               if (msgs[i].flags & I2C_M_RD)
->>>                          dma_async_issue_pending(gi2c->rx_c);
->>> +               }
->>> +
->>>                  dma_async_issue_pending(gi2c->tx_c);
->>>
->>>                  timeout = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
->>> --
->>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
->>> of Code Aurora Forum, hosted by The Linux Foundation
-> 
-> If you are going to submit again, please make also sure that the
-> e-mail is formatted properly.
-> 
-> I'm not sure that this footer will be accepted by git.
-> 
-> Thanks,
-> Andi
-> 
-
-Submitted V3 with proper email format.
-
->>>
->>>
+>>> +             state_default: pinmux {
+>>> +                     /* WLAN SDIO pinmux */
+>>> +                     host_wlan_wake {
 >>
+>> Not much improved around this.
 >>
->> -- 
->> With best wishes
->> Dmitry
+> 
+> All existing tegra pinmux nodes are bind this way. Ask Thierry Reding
+> about this pls.
+
+What does it mean? Are you override node or not? If not, why it cannot
+have proper name?
+
+Best regards,
+Krzysztof
+
 
