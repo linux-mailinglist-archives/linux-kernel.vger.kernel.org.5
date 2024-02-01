@@ -1,110 +1,124 @@
-Return-Path: <linux-kernel+bounces-47798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E661845303
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:44:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CD60845305
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:45:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AF6C28F999
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:44:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0D14B29477
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:45:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5887315AAA0;
-	Thu,  1 Feb 2024 08:44:19 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ADEA158D9B;
+	Thu,  1 Feb 2024 08:45:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="WjjoW9JB"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DA521EEFB;
-	Thu,  1 Feb 2024 08:44:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F133015A4B1
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 08:44:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706777058; cv=none; b=oZKt9+PjSBqwAfWzrCjU8sjibeaiEL7knUZiHHRK1Z3G0iDWaZlmyIJYYED9PWlw9+E03MAbwPchhMxpO/CC41t/W5r2bOQlpRxx9MVD47gjsufhu6/bc0ZaEagMKgxwPmgPHnDOljw9wDmyG5XPXNSj0T/xRpyRj9VbjvxFEHQ=
+	t=1706777099; cv=none; b=pDFFNPuC/z9saE2ARU0LD/3qzOw+162npoAz3+EEt6thBUW7TWLse2hBgJq9mgEhoZYyCOaNG/jZv3K7d7xf7dG1RsSGh1TfDG7lwnCBotjYTGRPRns+ajNblH0iN5/uVS44RDxR3fs2O9n/L18DQrUSZznxZ6a61z2YgvtUQ9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706777058; c=relaxed/simple;
-	bh=LlIlYqRlTw0tojpLRBc/lbB7iBHlg68dwJ1/Jk5CGFA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ifZZEmMoKIcjjf/zQakDAnL++nGrZKGxjfHLOphLM0YCwLDgrGybxbAtOC9Sg3BVXS6i3/XQVflHXYgp0nzkvwzJKREbDoxua66KYpanRVmPK0iUZaD7zpIJmS2uvKKSxBZefVW4oFj2QDN7+5YtGghQEyOdd/WcuQKpC1yS6KQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 0090f8dc9eec483697318b7e37d3278b-20240201
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:ce19592d-71d8-4082-8c7b-fbb57d2fc382,IP:10,
-	URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:26
-X-CID-INFO: VERSION:1.1.35,REQID:ce19592d-71d8-4082-8c7b-fbb57d2fc382,IP:10,UR
-	L:0,TC:0,Content:0,EDM:25,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:26
-X-CID-META: VersionHash:5d391d7,CLOUDID:02d80080-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:240201164412W36I5V77,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|42|7
-	4|102,TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,
-	COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 0090f8dc9eec483697318b7e37d3278b-20240201
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 475640272; Thu, 01 Feb 2024 16:44:09 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 3A621E000EB9;
-	Thu,  1 Feb 2024 16:44:09 +0800 (CST)
-X-ns-mid: postfix-65BB59D8-917845955
-Received: from kernel.. (unknown [172.20.15.254])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 66695E000EB9;
-	Thu,  1 Feb 2024 16:44:08 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: clm@fb.com,
-	josef@toxicpanda.com,
-	dsterba@suse.com,
-	Johannes.Thumshirn@wdc.com,
-	dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH v2] btrfs: Simplify the allocation of slab caches in btrfs_delayed_inode_init
-Date: Thu,  1 Feb 2024 16:44:06 +0800
-Message-Id: <20240201084406.202446-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706777099; c=relaxed/simple;
+	bh=SSQaV5ATZoNLfZMtApEWvimSypLVgmPZGof4nD6i2Ug=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FeQhZXZo4lPxrCpiSaSA09+5BQXIwxufFCfY0DSqR6h3IgsNLGgIU1CnIx6/JOZrIUrVZ/i60bNK8Xy6kPKxtJ6NEIhHWI4d4p+zBmvW9R65vuWwrcHV3tjlUFvnACCP02Es93R8EmTWmgDeYdVIaJdhsp9AB3bP/oCdFZH+qK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=WjjoW9JB; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706777090;
+	bh=SSQaV5ATZoNLfZMtApEWvimSypLVgmPZGof4nD6i2Ug=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=WjjoW9JBQ/fZUHJOjUjU61p5G9EkjthjuRCB5LQMUULNJh8H64A90Bl7mp74QIvfz
+	 S+T0fFQGSiFLomQVbcFQoEx/+VvZFHsBPuFJ4QLy0apX0JwoIci2A22pzZurwrLXia
+	 n0xqROZmqgeUnrw1+2fGmxYBVUpUy1w23LVYZHN2pSrFe5HRAYQgBYExBrQ5m5f9Yj
+	 pACvv9BeXYrz6Fl8JGpIwqHGythw+CnDtOJGHScYooQ6RREdE2teY5v47fyytMjr0x
+	 hiWKGtMV5AkoJLxzv0lYO7ewGils76Iw3Jn+RQ80p3CmUzACL6QwtWDhJDBrIgdaO3
+	 LAwYe/oaMNOeg==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8A91F3780022;
+	Thu,  1 Feb 2024 08:44:49 +0000 (UTC)
+Message-ID: <7cf660b8-240f-442e-be55-2e6e6521338b@collabora.com>
+Date: Thu, 1 Feb 2024 09:44:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] firmware: arm_scmi: Avoid to call mbox_client_txdone on
+ txdone_irq mode
+To: Pin-Chuan Liu <flash.liu@mediatek.com>,
+ Sudeep Holla <sudeep.holla@arm.com>,
+ Cristian Marussi <cristian.marussi@arm.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>
+Cc: wsd_upstream@mediatek.com, cylen.yao@mediatek.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mediatek@lists.infradead.org
+References: <20240201045253.14390-1-flash.liu@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <20240201045253.14390-1-flash.liu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-to simplify the creation of SLAB caches.
-Make the code cleaner and more readable.
+Il 01/02/24 05:52, Pin-Chuan Liu ha scritto:
+> On txdone_irq mode, tx_tick is done from mbox_chan_txdone.
+> Calling to mbox_client_txdone could get error message
+> and return directly, add a check to avoid this.
+> 
+> Signed-off-by: Pin-Chuan Liu <flash.liu@mediatek.com>
+> Change-Id: Iacbe0d36ef9cc16974c013c3e94c47dc79eae52b
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
-Changes in v2:
-    - Update commit msg only, no functional changes
----
- fs/btrfs/delayed-inode.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+Change-Id is something internal to you and has no meaning upstream.
+Please remove it.
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 08102883f560..8c748c6cdf6d 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -28,11 +28,7 @@ static struct kmem_cache *delayed_node_cache;
-=20
- int __init btrfs_delayed_inode_init(void)
- {
--	delayed_node_cache =3D kmem_cache_create("btrfs_delayed_node",
--					sizeof(struct btrfs_delayed_node),
--					0,
--					SLAB_MEM_SPREAD,
--					NULL);
-+	delayed_node_cache =3D KMEM_CACHE(btrfs_delayed_node, SLAB_MEM_SPREAD);
- 	if (!delayed_node_cache)
- 		return -ENOMEM;
- 	return 0;
---=20
-2.39.2
+> ---
+>   drivers/firmware/arm_scmi/mailbox.c | 8 +++++++-
+>   1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/firmware/arm_scmi/mailbox.c b/drivers/firmware/arm_scmi/mailbox.c
+> index b8d470417e8f..f6fe801c2e34 100644
+> --- a/drivers/firmware/arm_scmi/mailbox.c
+> +++ b/drivers/firmware/arm_scmi/mailbox.c
+> @@ -8,6 +8,7 @@
+>   
+>   #include <linux/err.h>
+>   #include <linux/device.h>
+> +#include <linux/mailbox_controller.h>
+>   #include <linux/mailbox_client.h>
+>   #include <linux/of.h>
+>   #include <linux/of_address.h>
+> @@ -275,7 +276,12 @@ static void mailbox_mark_txdone(struct scmi_chan_info *cinfo, int ret,
+>   	 * Unfortunately, we have to kick the mailbox framework after we have
+>   	 * received our message.
+>   	 */
+> -	mbox_client_txdone(smbox->chan, ret);
+> +
+> +	/*
+> +	 * With txdone_irq mode, kick can be done by mbox_chan_txdone.
+> +	 */
+
+Besides, you need one single line for this comment
+
+Regards,
+Angelo
+
+> +	if (!(smbox->chan->mbox->txdone_irq))
+> +		mbox_client_txdone(smbox->chan, ret);
+>   }
+>   
+>   static void mailbox_fetch_response(struct scmi_chan_info *cinfo,
+
 
 
