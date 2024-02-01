@@ -1,203 +1,231 @@
-Return-Path: <linux-kernel+bounces-48773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF1D2846103
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:33:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBBCA846105
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:34:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 672A11F26A3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:33:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 920DA28FBC7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:34:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B66FC8527B;
-	Thu,  1 Feb 2024 19:33:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1F5A85288;
+	Thu,  1 Feb 2024 19:34:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b="cBkL6P8H"
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="R0SsYqXy"
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5218684FD0
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 19:33:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 070B284FCF
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 19:34:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706816026; cv=none; b=juA5NfMPX8WQZ/TvYeXFUiwSqaGDykCplHd2x7Ozch/dtj/+v5Re62HAy1REpD7BvIqIDfJJ+TBmbw5A0U0cH1GOPb0MbP2henwSZpOCXWMWvvcvHF9TLgxXJpJlIZOIZEvRD78m9mqyyf1SuuKDYrKfxM7oUWRu/YoV+OHvrmg=
+	t=1706816073; cv=none; b=JD+alTRzUVuHiAuFedlxDegtCqPOojWcnwi9bOhRBG7Nkwc4M9rBeHzMmq0kUdOQSmmLSN2dXjX4HDMj0pEFh0/kboDeKnoTcMrGJ+HVd2WYpWTwIu5XGDnww4UqNhG6PSUM9UKbpmJrPHZtqXj0VoKO++F3JGAUKQiXceNsn9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706816026; c=relaxed/simple;
-	bh=znNSk/omDjXJFiH6ViXr1vF8LWsH/+XjvQJqVZRMuKA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kXlUKJMzmmjgP4nTuxM5vMfn+ZVjFt7Ug7Xrmf8sRoLC/Wo3POACC8+HAJHWuwxHcnC4NrWm8Of/7O4wHxJgDB6yvBLFrA1B+A/9zngNnI4VMF3nNFlMVqjQm+M57HqeO1tI1bzQzDB0sGCPqKq9AWGxPSxM8fDKcKiTfuwsNow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net; spf=pass smtp.mailfrom=amacapital.net; dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b=cBkL6P8H; arc=none smtp.client-ip=209.85.222.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amacapital.net
-Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-7d2dee968a5so422196241.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 11:33:45 -0800 (PST)
+	s=arc-20240116; t=1706816073; c=relaxed/simple;
+	bh=azrHQn5NRzloniAve6lH8WYk89pATs5I0qI/dcR5hT0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ArjZeVtZReDqRMfIis5HRWJBikxIjTyn0tlneitHhG4n11wKN7GzhRG9VK+hE+oBf8btmVAxpCjNuxF9Ij77XtheB/FHs9/OBwS9pbmaWdg9/9l+2rZpMK26dfZnE8LBIpIUZJLuFuwQeQJ71NGxdBHLvAefWjy6HJLXPiO50TI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=R0SsYqXy; arc=none smtp.client-ip=209.85.160.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-42aabb1cdaaso9984711cf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 11:34:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20230601.gappssmtp.com; s=20230601; t=1706816024; x=1707420824; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H8TDXyB/dLQfx4pJhHT/t6+HjwGIKR+BaTPtjymAN14=;
-        b=cBkL6P8H+ZTAAoopEZ+YtL8AYKsKkMq9L3AWFaRxVEBxy9oeqLCBA04Av8Cby5w4uw
-         aR5hm9gNOJNtCE4Y5OWgJqG5kMnGPcZUre92J/gdSQHSSA6+KfyjP/0DlnGg8+1+cOA3
-         FEo589imYpIBC73M/u+MZXgUs3prXlloByf2t+apQgfEWcKRJBauOknh+iD+DgXpLUyu
-         ugFtL/vCZ/pCQjn6MdbRQwCJ1RifFIiJD0MXg51qQH5o4cIuseYoHiheDEKQpIVhDaUe
-         dmWUBaadKxhn+E/yd7k1Q2Jga8MU9kOleQMpHRbU6ZMk1ASY3P1IEWuaZft7hM0dDgKF
-         +adA==
+        d=ziepe.ca; s=google; t=1706816069; x=1707420869; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=27QC2KxXWf1pwp+Uy5SzOL0al7IZt0TnuDDgoIUMSOo=;
+        b=R0SsYqXydKzxQgNWd1bG3V9t/6K0eBG0tDK13+3R5xYapUx16sFftURbblkXx3LOY0
+         P4pgGtU0s/2093N2q1hj98H24BSq1QhXcXfTEuTwTsWExsuf6fnFERzan8YhCe7eWfS2
+         CvpiEIjG8lXmSVnIBk57wFqDNDemuAeBbxY+WPfGif1gLzDer5/JIvZPkzX2yg54sJG+
+         uNU3ivcGsKpmx+AlHt20Tw3KRcWlvgizBifEEutKli+3bgKWM8hHTU1as1HC1ZIbqNdj
+         dEo/vPqq0LF0xYTayEPvH61BbNeSSqSVAmkRsnh2sjt8ZS434sVjANiPIYa4vcNVZY37
+         d4Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706816024; x=1707420824;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H8TDXyB/dLQfx4pJhHT/t6+HjwGIKR+BaTPtjymAN14=;
-        b=TLTHQoXW5r/T1B0SCmjfnsP0F1shcEWr+C1hVd/Z/PZfiQduEa+laOM63oJUkMQNlT
-         qg+ZM9EuS5zWV0mwNc4ZXwQeKnCff9K58tnKqN1bVBrXOZVuO54V+18R9g2rJeQcovvs
-         TxSC27SMIr+0PCVRR6xWT0xa/ijUPce9jNlkajratJH+f6W1NJCFnrQ/ceG4+5ChYuZZ
-         rhcmC3u+6FlJiVhdlbdbDB/NpueJIyeCwpT2WmLhVb9sOQsnGnT7rLAKS3u/Y/7A6YEn
-         CNZYqAQkSZPj/k8KLZdhEsbEvdie6JyUFp3JAXkrjeS3Ghqak49mQWmgqdCPIjOKYIH5
-         2exw==
-X-Gm-Message-State: AOJu0Yw1uio9gMfGqdDD/gMOOHjuW6njjVk7JvG+60yI84gPdhrS+DaK
-	Cx4E0YbZsfYtDFyDNikdmCOPWcaYI3ei79Ne+48knxxgRSs7K5rDyDghiLWS3jCbuWWnFuuptpz
-	qYOtJHg/HYtZbHsXJxRH8HS3Zuwx+AGIvvzweUG7RvczemPHfLw==
-X-Google-Smtp-Source: AGHT+IEGC9yHQvpZUgXv3pIXD2ajqe6DPydtm9MYIyvWPRi9Kvd72k3uKMGdDWPKgY8wALIDzg+hfttxJjz4eUly9q4=
-X-Received: by 2002:a05:6122:4683:b0:4b7:4932:203d with SMTP id
- di3-20020a056122468300b004b74932203dmr6579952vkb.14.1706816024094; Thu, 01
- Feb 2024 11:33:44 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706816069; x=1707420869;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=27QC2KxXWf1pwp+Uy5SzOL0al7IZt0TnuDDgoIUMSOo=;
+        b=vFfBT7B1gauU8BmkLpW/sWBP7WdfVsyK/N8N1hA9QBRgI/bkwGSXJfe57o6RJZTm/v
+         TD8upVnNYPev55oYPLny2NJsu0B6tyyNrcinTsGeeCfEjaPkWkMzAKx2tH7T+kbGW7UM
+         AOUf9J5wpLKIjF6kY/YeUWeqYL4U+YqulsScUM2l+bly+D/d40cnKrQcaywQ5bV+6z0q
+         8gXxfi/1MYDVCTavkm4YXdDmhLgHzq73NmfaRUBQ6SXihBl4MB78W8+8bF/9B88enOXI
+         lVcebCWDEdz0K99swZTYclkn0oHYh9a4ezIuspLW2TivhkukPk2nL9f8GuIjFdZSKm86
+         dzvQ==
+X-Gm-Message-State: AOJu0YxL5OFoEjnwzfbly107oIzsy+ALSw53Q6qn25ab15clbkR8qyt8
+	Vv8msWZ/oJ+t9iBxYP9xzFyOSlh6Zfo8NOzFjxHi8dlcbMyXcYIHayhsWXgxHwQ=
+X-Google-Smtp-Source: AGHT+IFJvj4DtYD8GbuWKqJRSEbmY0qhb1v/YCGOdt98bAnNJl49tIasu3xQLSRVIi4ugxyxoKbq3g==
+X-Received: by 2002:a05:6214:f63:b0:68c:7f6f:2d9 with SMTP id iy3-20020a0562140f6300b0068c7f6f02d9mr3180586qvb.6.1706816068946;
+        Thu, 01 Feb 2024 11:34:28 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUOTKhvn23O8MoIzJe4VL2yxzCphW1meyPvWhVVaDhxZ2f4PKX7FWacO5zfm7VIbsjDCCGckv6IRbNc85dURbbjvUMZCiAlif3X3IvQ9vZLauO8zZknxh1HewOfUL9yKrmMN4kdwNdaChP5xKKLvwt/yC2Qm+p48Youy3MWY1xmbdsKaGYAml+JtvAq86ICgr80GNL//qKUtXI+NTuw+9FSAz7M+C+FeyMy3Xz7iHO4Qnv4XBSXn1btWfHcS4i3WBsiuwhBZAYRWMouS38wLuhPoD7R5rYvqPNEDqn0N7oUau0HK4UlfiIW+GEeIIiBhuwqbcehauiTZ/QctutL871fY5D4dGZ6AxI/kw==
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id mz9-20020a0562142d0900b0068c4b6000ccsm61796qvb.121.2024.02.01.11.34.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 11:34:28 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rVcpP-00AoUU-Ju;
+	Thu, 01 Feb 2024 15:34:27 -0400
+Date: Thu, 1 Feb 2024 15:34:27 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Baolu Lu <baolu.lu@linux.intel.com>
+Cc: Ethan Zhao <haifeng.zhao@linux.intel.com>,
+	"Tian, Kevin" <kevin.tian@intel.com>,
+	"Liu, Yi L" <yi.l.liu@intel.com>,
+	"bhelgaas@google.com" <bhelgaas@google.com>,
+	"robin.murphy@arm.com" <robin.murphy@arm.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"will@kernel.org" <will@kernel.org>,
+	"lukas@wunner.de" <lukas@wunner.de>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH v12 5/5] iommu/vt-d: improve ITE fault handling if target
+ device isn't present
+Message-ID: <20240201193427.GQ50608@ziepe.ca>
+References: <20240129034924.817005-1-haifeng.zhao@linux.intel.com>
+ <20240129034924.817005-6-haifeng.zhao@linux.intel.com>
+ <BN9PR11MB52761CC3E5F08D4B7BAD7F918C7E2@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <7adec292-9d38-41ab-a982-bd840b24f3ab@intel.com>
+ <0aee453c-e98f-4b72-8107-31d4731abcdb@linux.intel.com>
+ <BN9PR11MB5276D3372267CE9246170FA78C7D2@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <500c4582-ec05-4a9e-9b68-d2ae19aed49b@linux.intel.com>
+ <20240130162958.GF50608@ziepe.ca>
+ <6a48f023-2701-4f2f-8077-14fe348794dd@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZbVrRgIvudX242ZU@tycho.pizza> <20240127210634.GE13787@redhat.com>
- <20240129112313.GA11635@redhat.com> <CALCETrUFDkt+K9zG8mczxzAFy9t-6Mx5Cz-Sx+it6a4nt+O0pg@mail.gmail.com>
- <20240131184829.GE2609@redhat.com> <20240131191405.GF2609@redhat.com>
- <CALCETrXTHsyiR6Bav7bXCCHny0Z2Bn90fTUL9__KTftESQ9=7w@mail.gmail.com>
- <20240131-kerngesund-baumhaus-17a428b4aacb@brauner> <CALCETrUh-DJ28W-LYZd3mACb4z-rmi4kmeUCitHjyufiN7U0sQ@mail.gmail.com>
- <20240201-laufleistung-gesessen-068ff127834d@brauner> <20240201-flugzeit-modeschau-dab703fc8b6d@brauner>
-In-Reply-To: <20240201-flugzeit-modeschau-dab703fc8b6d@brauner>
-From: Andy Lutomirski <luto@amacapital.net>
-Date: Thu, 1 Feb 2024 11:33:32 -0800
-Message-ID: <CALCETrUm3YWJCXeDufHKHj9-QU9A1sxZW2HW5a7OHEdTtB1UqQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] pidfd: implement PIDFD_THREAD flag for pidfd_open()
-To: Christian Brauner <brauner@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Tycho Andersen <tycho@tycho.pizza>, linux-kernel@vger.kernel.org, 
-	linux-api@vger.kernel.org, Tycho Andersen <tandersen@netflix.com>, 
-	"Eric W. Biederman" <ebiederm@xmission.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6a48f023-2701-4f2f-8077-14fe348794dd@linux.intel.com>
 
-On Thu, Feb 1, 2024 at 5:39=E2=80=AFAM Christian Brauner <brauner@kernel.or=
-g> wrote:
->
-> On Thu, Feb 01, 2024 at 02:30:46PM +0100, Christian Brauner wrote:
-> > On Wed, Jan 31, 2024 at 11:50:23AM -0800, Andy Lutomirski wrote:
-> > > On Wed, Jan 31, 2024 at 11:46=E2=80=AFAM Christian Brauner <brauner@k=
-ernel.org> wrote:
-> > > >
-> > > > On Wed, Jan 31, 2024 at 11:24:48AM -0800, Andy Lutomirski wrote:
-> > > > > > On 01/31, Oleg Nesterov wrote:
-> > > > > > >
-> > > > > > > On 01/31, Andy Lutomirski wrote:
-> > > > > > > Please note
-> > > > > > >
-> > > > > > >       /* TODO: respect PIDFD_THREAD */
-> > > > > > >
-> > > > > > > this patch adds into pidfd_send_signal().
-> > > > > > >
-> > > > > > > See also this part of discussion
-> > > > > > >
-> > > > > > >       > > +   /* TODO: respect PIDFD_THREAD */
-> > > > > > >       >
-> > > > > > >       > So I've been thinking about this at the end of last w=
-eek. Do we need to
-> > > > > > >       > give userspace a way to send a thread-group wide sign=
-al even when a
-> > > > > > >       > PIDFD_THREAD pidfd is passed? Or should we just not w=
-orry about this
-> > > > > > >       > right now and wait until someone needs this?
-> > > > > > >
-> > > > > > >       I don't know. I am fine either way, but I think this ne=
-eds a separate
-> > > > > > >       patch and another discussion in any case. Anyway should=
- be trivial,
-> > > > > > >       pidfd_send_signal() has the "flags" argument.
-> > > > > > >
-> > > > > > > with Christian in https://lore.kernel.org/all/20240130112126.=
-GA26108@redhat.com/
-> > > > >
-> > > > > I missed that.  Whoops.
-> > > > >
-> > > > > On Wed, Jan 31, 2024 at 11:15=E2=80=AFAM Oleg Nesterov <oleg@redh=
-at.com> wrote:
-> > > > > >
-> > > > > > Forgot to mention...
-> > > > > >
-> > > > > > And I agree that pidfd_send_signal(flags =3D> PGID/SID) can mak=
-e
-> > > > > > some sense too.
-> > > > > >
-> > > > > > But this a) doesn't depend on PIDFD_THREAD, and b) needs anothe=
-r
-> > > > > > patch/discussion.
-> > > > > >
-> > > > > > But again, I am not sure I understood you correctly.
-> > > > > >
-> > > > >
-> > > > > Hmm.
-> > > > >
-> > > > > When one works with regular (non-fd) pids / pgids etc, one specif=
-ies
-> > > > > the signal domain at the time that one sends the signal.  I don't=
- know
-> > > > > what pidfds should do.  It seems a bit inefficient for anything t=
-hat
-> > > > > wants a pidfd and might send a signal in a different mode in the
-> > > > > future to have to hold on to multiple pidfds, so it probably shou=
-ld be
-> > > > > a pidfd_send_signal flag.
-> > > > >
-> > > > > Which leaves the question of what the default should be.  Should
-> > > > > pidfd_send_signal with flags =3D 0 on a PIDFD_THREAD signal the p=
-rocess
-> > > > > or the thread?  I guess there are two reasonable solutions:
-> > > > >
-> > > > > 1. flags =3D 0 always means process.  And maybe there's a special=
- flag
-> > > > > to send a signal that matches the pidfd type, or maybe not.
-> > > > >
-> > > > > 2. flags =3D 0 does what the pidfd seems to imply, and a new
-> > > > > PIDFD_SIGNAL_PID flag overrides it to signal the whole PID even i=
-f the
-> > > > > pidfd is PIDFD_THREAD.
-> > > > >
-> > > > > Do any of you have actual use cases in mind where one choice is
-> > > > > clearly better than the other choice?
-> > > >
-> > > > So conceptually I think having the type of pidfd dictate the defaul=
-t
-> > > > scope of the signal is the most elegant approach. And then very lik=
-ely
-> > > > we should just have:
-> > > >
-> > > > PIDFD_SIGNAL_THREAD
-> > > > PIDFD_SIGNAL_THREAD_GROUP
-> > > > PIDFD_SIGNAL_PROCESS_GROUP
-> > > >
-> > > > I think for userspace it doesn't really matter as long as we clearl=
-y
-> > > > document what's going on.
-> > > >
-> > >
-> > > This seems reasonable unless we're likely to end up with a pidfd mode
-> > > that doesn't actually make sense in a send_signal context.  But I'm
-> > > not immediately seeing any reason that that would happen.
-> >
-> > Yeah, I think that's very unlikely and we could reject it obased on api
-> > design considerations.
->
-> Ah, forgot to ask. Did you intend to send a patch for this?
+On Wed, Jan 31, 2024 at 02:21:20PM +0800, Baolu Lu wrote:
+> An rbtree for IOMMU device data for the VT-d driver would be beneficial.
+> It also benefits other paths of fault handling, such as the I/O page
+> fault handling path, where it currently still relies on the PCI
+> subsystem to convert a RID value into a pci_device structure.
+> 
+> Given that such an rbtree would be helpful for multiple individual
+> drivers that handle PCI devices, it seems valuable to implement it in
+> the core?
 
-I can try to get to it tomorrow.  Currently trying to madly line up a
-whole bunch of stuff in time for a maintenance window.
+rbtree is already supposed to be a re-usable library.
+
+There is already good helper support in rbtree to make things easy to
+implement. I see arm hasn't used them yet, it should look something
+like this:
+
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index f58e77b99d476b..ebf86c6a8787c4 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -1673,26 +1673,37 @@ static int arm_smmu_init_l2_strtab(struct arm_smmu_device *smmu, u32 sid)
+ 	return 0;
+ }
+ 
++static int arm_smmu_streams_cmp_key(const void *lhs, const struct rb_node *rhs)
++{
++	struct arm_smmu_stream *stream_rhs =
++		rb_entry(rhs, struct arm_smmu_stream, node);
++	const u32 *sid_lhs = lhs;
++
++	if (*sid_lhs < stream_rhs->id)
++		return -1;
++	if (*sid_lhs > stream_rhs->id)
++		return 1;
++	return 0;
++}
++
++static int arm_smmu_streams_cmp_node(struct rb_node *lhs,
++				     const struct rb_node *rhs)
++{
++	return arm_smmu_streams_cmp_key(
++		&rb_entry(lhs, struct arm_smmu_stream, node)->id, rhs);
++}
++
+ static struct arm_smmu_master *
+ arm_smmu_find_master(struct arm_smmu_device *smmu, u32 sid)
+ {
+ 	struct rb_node *node;
+-	struct arm_smmu_stream *stream;
+ 
+ 	lockdep_assert_held(&smmu->streams_mutex);
+ 
+-	node = smmu->streams.rb_node;
+-	while (node) {
+-		stream = rb_entry(node, struct arm_smmu_stream, node);
+-		if (stream->id < sid)
+-			node = node->rb_right;
+-		else if (stream->id > sid)
+-			node = node->rb_left;
+-		else
+-			return stream->master;
+-	}
+-
+-	return NULL;
++	node = rb_find(&sid, &smmu->streams, arm_smmu_streams_cmp_key);
++	if (!node)
++		return NULL;
++	return rb_entry(node, struct arm_smmu_stream, node)->master;
+ }
+ 
+ /* IRQ and event handlers */
+@@ -3324,8 +3335,6 @@ static int arm_smmu_insert_master(struct arm_smmu_device *smmu,
+ {
+ 	int i;
+ 	int ret = 0;
+-	struct arm_smmu_stream *new_stream, *cur_stream;
+-	struct rb_node **new_node, *parent_node = NULL;
+ 	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(master->dev);
+ 
+ 	master->streams = kcalloc(fwspec->num_ids, sizeof(*master->streams),
+@@ -3336,6 +3345,7 @@ static int arm_smmu_insert_master(struct arm_smmu_device *smmu,
+ 
+ 	mutex_lock(&smmu->streams_mutex);
+ 	for (i = 0; i < fwspec->num_ids; i++) {
++		struct arm_smmu_stream *new_stream;
+ 		u32 sid = fwspec->ids[i];
+ 
+ 		new_stream = &master->streams[i];
+@@ -3347,28 +3357,13 @@ static int arm_smmu_insert_master(struct arm_smmu_device *smmu,
+ 			break;
+ 
+ 		/* Insert into SID tree */
+-		new_node = &(smmu->streams.rb_node);
+-		while (*new_node) {
+-			cur_stream = rb_entry(*new_node, struct arm_smmu_stream,
+-					      node);
+-			parent_node = *new_node;
+-			if (cur_stream->id > new_stream->id) {
+-				new_node = &((*new_node)->rb_left);
+-			} else if (cur_stream->id < new_stream->id) {
+-				new_node = &((*new_node)->rb_right);
+-			} else {
+-				dev_warn(master->dev,
+-					 "stream %u already in tree\n",
+-					 cur_stream->id);
+-				ret = -EINVAL;
+-				break;
+-			}
+-		}
+-		if (ret)
++		if (rb_find_add(&new_stream->node, &smmu->streams,
++				arm_smmu_streams_cmp_node)) {
++			dev_warn(master->dev, "stream %u already in tree\n",
++				 sid);
++			ret = -EINVAL;
+ 			break;
+-
+-		rb_link_node(&new_stream->node, parent_node, new_node);
+-		rb_insert_color(&new_stream->node, &smmu->streams);
++		}
+ 	}
+ 
+ 	if (ret) {
 
