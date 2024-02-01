@@ -1,127 +1,66 @@
-Return-Path: <linux-kernel+bounces-48693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3834845FD7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:25:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39695845FCF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:25:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61C401F2BE58
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:25:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCC2329A70B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:25:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 983177C6E6;
-	Thu,  1 Feb 2024 18:24:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S0MAZp+7"
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9729612FB39;
+	Thu,  1 Feb 2024 18:24:20 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E0D97E118
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 18:24:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26F077428C;
+	Thu,  1 Feb 2024 18:24:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706811879; cv=none; b=CyXZpRBrpSIF9ljCRb3+uYZv67ODAefPHD0elid0LWoRAHOgfnWOVdANbNV8tgp1IzarYHv/Q3EliNbR8TN2PxKCXsBbo5c0gKaanq34YtDBdi7HYWY9JV8dcYOe0x1l/3DczLYOtVfj0uxkBYYapLWvhgjse8ksCsmhO5EPZtg=
+	t=1706811860; cv=none; b=NdXf5DsrSY4nltDMoNrNxkcaIwbSUpQMvIObtoE/52wmmdiiZ5gG4oInTdALLsnO+D4yQeMFBoLHBTit0Am9JbHibSrth6OcG70CvvF+/9FgXRBEX1cFq0wLE+o7BdcOV5CEy6Rsp7mjjFYmuUCoR866upycYyBDp9bFfin4jpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706811879; c=relaxed/simple;
-	bh=WhQ0DzBaMOf2p0BQ0/iyFODtrdWQQm9VRmT+icXLJ58=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hzL6HM6eAJ8RDTakZWHNHuRJlPehWFrNq1EN7lddnpQq4+ZZs4Iegt2hyQa1NzVRLY6ZK7IobhbNWgBTtrUi4K7PSKbEm/L1x8qr3ChqpFgt9c+/gdhDx0fVVBu/5wsvABbtuKJzC7q3Sgdv4kgPzWrdnBgOZ7jsTYSuGnUPUO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=S0MAZp+7; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5cf765355ecso1021424a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 10:24:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706811877; x=1707416677; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dUFcyRGjgFCHcU7TELJdpFaJ75t2Lcru3pbZ6VhQGp4=;
-        b=S0MAZp+7aOh8rmNVAxqoRVgiAKNW/vVMV+tbEt2Yy2c8VMttn//g8P3YdS5o6LvPOy
-         S2rkDPirq5BzfIfEdO+NWrXYCACa1RqscRTCB3e9fTlbOM/L0RUXxZL9xsfIOyvbAnN/
-         sEjfVMUwzMTVgFag+ZGWN151m8sXac5+xIMGnWeRqBgkDoXXnL4Dhp3e1CamAdKkYj5/
-         EIh2gs0uJJAg9RT8HbAJSKf7gRg2JvNujcbm/g3SRBgTl04g3R3r0VgSNamxSL49P9pR
-         26RVrW4FZZ5Q60CxiRTnkFKC6gALILZtt44M5g9s2Elnw5PzwgWhfk0aJBxyCDZfo6Pc
-         yh/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706811877; x=1707416677;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dUFcyRGjgFCHcU7TELJdpFaJ75t2Lcru3pbZ6VhQGp4=;
-        b=pe1m1gsznvjRLJvLRQhBZSTnpDcgWpCc0ubnbvLPgsO9kxHb55vlsl9N2lotNjzgPG
-         XHRi/Q6iPa4WQ5Z6Iv2I+a58NyYkhQeU6QnkLbjRnsrWxpafcQuyWLRyZ7fXhQVI6z7f
-         1xbxEWwh8ntLhmTQ6X5x89BOM/RfQvbaRI2M3muzBap4FpSkR2aWMoLP5leh0vuq53wu
-         NX4A+HTadCecHmiGKUXJkqVVDEK4nCFoSCyqbssCpkk7sQULn8w2AYxMwS+Ldra3gXYZ
-         JtgdphjGQ8VqOd9bifZKZvHzpZZcex6uYP8zTGNZ+kmsc91AsQaWuF6rrfdCCTDxHKl2
-         QXUQ==
-X-Gm-Message-State: AOJu0YzHZ5b691tyakzMisx7IDsImLGez4S8c6jX9E0FzVbZRrlhWdoy
-	SvWYfs06A6zrhDftnzIg3yD9FrOMcKg6NXT1FnAcvBex8o0EdbZRL0ENhbkRj8tfQcE4A3y1yGs
-	2XlRNRSSLlvnXngP/xTSp0lKmUYSF8eE0nYnQOQ==
-X-Google-Smtp-Source: AGHT+IEB90qcFx4TY3tpzYId3RpaXO+09NutWYPVOmVFBsoOrpib63SakvoAaXQt2ipdj1IdFncbrNePKi1xEbmWqqY=
-X-Received: by 2002:a05:6a20:46a2:b0:199:cecf:9f5d with SMTP id
- el34-20020a056a2046a200b00199cecf9f5dmr5277395pzb.29.1706811877389; Thu, 01
- Feb 2024 10:24:37 -0800 (PST)
+	s=arc-20240116; t=1706811860; c=relaxed/simple;
+	bh=BOS8IckEOJiSKhIt0o7FujGsBPZmSunw2pR4SkP6f2g=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cT/cnr38ONZRWI7mC4UnMvsVg4OKqkobwjDqkDeSMzQwyywJyfAONwbajCRd50Pbk8ZdMHkI2/eNuUm4otEzDid3bv4fp97U6JPOcHPjbXtXml9zd150KGSihTo9wyVzLGoCLgqBt/+gbcqVbFBnUWgpAX/35nPXwMjjKxtULSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B650BC433C7;
+	Thu,  1 Feb 2024 18:24:18 +0000 (UTC)
+Date: Thu, 1 Feb 2024 13:24:35 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Daniel Bristot de Oliveira <bristot@kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Subject: Re: [PATCH] tracing/timerlat: Move hrtimer_init to timerlat_fd
+ open()
+Message-ID: <20240201132435.5bb019cf@gandalf.local.home>
+In-Reply-To: <2024020140-santa-bagful-51d8@gregkh>
+References: <7324dd3fc0035658c99b825204a66049389c56e3.1706798888.git.bristot@kernel.org>
+	<2024020109-duffel-finally-4f0b@gregkh>
+	<05c12163-d348-4615-a9e3-f36787629e0e@kernel.org>
+	<2024020122-uncombed-moody-a96d@gregkh>
+	<20240201130823.36f1da8d@gandalf.local.home>
+	<2024020140-santa-bagful-51d8@gregkh>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125013858.3986-1-semen.protsenko@linaro.org>
- <20240125013858.3986-4-semen.protsenko@linaro.org> <170678377409.179918.13077326172475089482.b4-ty@linaro.org>
- <4c2c425b-3ddd-4484-98cf-3f7768c94e82@linaro.org>
-In-Reply-To: <4c2c425b-3ddd-4484-98cf-3f7768c94e82@linaro.org>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Thu, 1 Feb 2024 12:24:25 -0600
-Message-ID: <CAPLW+4=wsR=V+6vctf0gMzFVg6havL-M0kTDLLwhr-XdfuCD5Q@mail.gmail.com>
-Subject: Re: (subset) [PATCH v2 3/3] arm64: dts: exynos: Add SPI nodes for Exynos850
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Tudor Ambarus <tudor.ambarus@linaro.org>, 
-	Alim Akhtar <alim.akhtar@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, 
-	Tomasz Figa <tomasz.figa@gmail.com>, Chanwoo Choi <cw00.choi@samsung.com>, 
-	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 1, 2024 at 5:56=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 01/02/2024 11:36, Krzysztof Kozlowski wrote:
-> >
-> > On Wed, 24 Jan 2024 19:38:58 -0600, Sam Protsenko wrote:
-> >> Some USI blocks can be configured as SPI controllers. Add correspondin=
-g
-> >> SPI nodes to Exynos850 SoC device tree.
-> >>
-> >>
-> >
-> > Applied, thanks!
-> >
-> > [3/3] arm64: dts: exynos: Add SPI nodes for Exynos850
-> >       https://git.kernel.org/krzk/linux/c/98473b0d78caa5502b7eee05553ee=
-168f0b0b424
->
-> And dropped. You did not test it.
->
+On Thu, 1 Feb 2024 10:12:50 -0800
+Greg KH <gregkh@linuxfoundation.org> wrote:
 
-Right. Forgot to re-test it after re-shuffling the clocks. Sorry for
-the hustle, I'll send v3 shortly.
+> And cc: stable properly?  thanks!
 
-> For some time, all Samsung SoCs and its variants are expected not to
-> introduce any new `dtbs_check W=3D1` warnings. Several platforms, like al=
-l
-> ARM64 Samsung SoCs, have already zero warnings, thus for such platforms
-> it is extra easy for the submitter to validate DTS before posting a
-> patch. The patch briefly looks like it is not conforming to this rule.
-> Please confirm that you tested your patch and it does not introduce any
-> new warnings (linux-next is decisive here).
->
-> Best regards,
-> Krzysztof
->
+The script I use automatically did that ;-)
+
+-- Steve
 
