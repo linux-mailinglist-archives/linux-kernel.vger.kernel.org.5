@@ -1,262 +1,288 @@
-Return-Path: <linux-kernel+bounces-48736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36E64846073
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:55:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 207BC846075
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:56:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9853AB28270
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:55:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE13528B516
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:56:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42A0B84FB0;
-	Thu,  1 Feb 2024 18:55:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 386B184051;
+	Thu,  1 Feb 2024 18:56:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZffZxQSr"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g1MoWS29"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A722C84FAC
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 18:55:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4D0212FB26
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 18:56:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706813715; cv=none; b=XTRftIBib9nhJZJAYyFcjHxrMi4cUXn1sbqJwUo7Dba6Zvfmi16uD5mdCME0tRvOTY42NQDT99Wq/JKsECnM4vdtVIFjr1/R+03qW87dXZd1MXDWID/gmlq0taHRscpYATQy2HLoVeBTSE/u3+Te7edd/Lab87xzPhr1usmFPLY=
+	t=1706813794; cv=none; b=CyDgi5GhGdemY2rOCyyLqT68dgEWqps4CzCzKz66JCSnclyZmT8OWMmi9skgQkD34VnrJMHqsoYQnzoMDWo1U/CKs5f0I67GoSJikwe2cjxnol1SB4F4Fdw28PSkpL8D/h7EnoROZXP9PeOkv20QZltikka08PCf+Fm88vK/vho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706813715; c=relaxed/simple;
-	bh=vd5V7jREra4SOCm+7g/vZFE+V7Vhl8MTNilHGLxx0Z8=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=etHobyNh6Z0LqX/s5LMBzlCfQvbbIj+LGuID7CUiBf8bMJrF1jqnCeuh1xGwLJGfWz6fkymTLjIvLMHV54IdUjDupUUvvQmnY8Gk/t/yuteayp0tmWmTQoFnaOis03fZo/P5CL3CXjC7fxlLEFMjAZccWqMPZIbmUjZ1WXX5zfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZffZxQSr; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26845cdso2195355276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 10:55:12 -0800 (PST)
+	s=arc-20240116; t=1706813794; c=relaxed/simple;
+	bh=2M8bXvGE0f7yNYLL09EYhq5u8vrGTVTnUYXt9Of/x2Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=u8w1ZWWSI1hInfxxg221Iim5YrqB3VX2sbxPtp09vJuwOJV+QYIqdMOzvA9KhuIqn4RJ/4PXd+xegmwcc4io6/kEPlldj2352UwCMvYXe0+vNw0BpvZ3prS369xWnJrrNzs1I00LhuSBwmpy8j7Co9ffEJsTuFEdgi4a2qJNXFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g1MoWS29; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6da9c834646so906306b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 10:56:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706813711; x=1707418511; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=4e9cZabz99wJ+RSzesn2rTrqziGwjfSXdxTMcPtcTlY=;
-        b=ZffZxQSrSDowGw8ExcUbNaudz8Qokm61Rv5d+sxxGipM6HODVw4bVFG9qijT/bCmkJ
-         qoppQdUyJJGE8ywe0pYFQSYGvrnIriZ966bpzLa+NJ33YiO705hnb7zCOHkDGVf+PbUJ
-         tpAfKiFxE7RM4KZrmbBA3VNBtqsNtyT28N6hWpeFlZNwBP7oCgmcT8zOXbmKh2sVaQS9
-         PPdBzg5jUXqhX0pAdBUo1GCwDGRYIBF3JQkJd6jMT0/YVg9S6bFhzy1VPyH5CQIpr7ZY
-         nxPFPIuOpWnycXh/TAHHSKcMItZTPaf/NEXNJKl2skSbJ8MadNkECH2NTgtH6br/VqvA
-         fqag==
+        d=gmail.com; s=20230601; t=1706813792; x=1707418592; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E+C9bCNlGtGcWf/MBgmL+MXY4hhS7q4FxdKWmwkKSHo=;
+        b=g1MoWS29BFn/nZfZBHCvmf+wW67vf7y2lIGXozet/4YgtfNakEti/Dix00hWv16b+e
+         5Yd6noDugf5VudM5zMmzwGHIxxnqn4NlDT5jY7VBNgann8RxH8lkU3SdcEoNQfZ0Wpn4
+         Ty5ugLpOWN93TiqdBzmOV53c0Ihz2zMwEUh7a0NEpgxdmVmTEW4gkPgdEq80NQC2W8My
+         sUoMPLXNJCJ0nDQREv/2xqv2fa5vSJtG/ET677Kreo6crcNuqXvCOl7iIb2DAT1C8RcF
+         MDboN2pBLtTwcwTnEwpSncZyaUW7LTVphlXK/wYgkNgC9lLCfwT6AkfhIHZ5iGmTBkna
+         RGug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706813711; x=1707418511;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4e9cZabz99wJ+RSzesn2rTrqziGwjfSXdxTMcPtcTlY=;
-        b=m5JBCQ6RwLXCRkCWdPKmDuJubIgiMbs9BZCw4HPp4qwbhFYkG2cW70bR+2wc2z4H7P
-         9t7/FU1zgsbupzir6aOK582+e7HpW6b20ku7bZg6DUM7FM9jSeNGF3U51MRqyckCYd8w
-         YTlGC3PuRjifQ87TAHnyhylhFSjNocTcszM3x+eTrEL6wB34rlWsqX6AvjTZcfvmc2FS
-         MT41PGei+iinqY4o/A2lVZSYq4rnUVpLHRBVRqx6NtZuu0B+V9HHWg8oWzCz2pPqPtY+
-         QGuODWLno/pENCfHOuX5riOoTOrCRcZED6xx3pdanTGtjBOOM2iTSXy1RuyrP1rEekk3
-         oHRQ==
-X-Gm-Message-State: AOJu0YyM6iH+NxDZ6TSzsP0aDLdPkkNxqQKvricDe+usdp+oH8TRGOZ5
-	JxfNP2FenpVidcOWqTu+MrQIf9fKTlvvqOn/03SYr0VhJgf3lGJGRnQuON8FfkecOY32lcSJpmV
-	G3Q3MvCXS6A0aUkaOscgRDQ==
-X-Google-Smtp-Source: AGHT+IF6dLPkfqPNbaKdOQOpiTCJ/9+4StMQRjO3mQNBKSdgyye1a9bXJXyhudDqBDQD+tZu0FacHcbQf29s13yV8Q==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:1b08:b0:dc6:e823:9edc with
- SMTP id eh8-20020a0569021b0800b00dc6e8239edcmr123960ybb.8.1706813711710; Thu,
- 01 Feb 2024 10:55:11 -0800 (PST)
-Date: Thu, 01 Feb 2024 18:55:03 +0000
+        d=1e100.net; s=20230601; t=1706813792; x=1707418592;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E+C9bCNlGtGcWf/MBgmL+MXY4hhS7q4FxdKWmwkKSHo=;
+        b=aS5+fyhgw6G71nisA7qq6TS41Q/s8GTD428M4xUSuY+rFApSNa+GwC+BIncSxgRh0+
+         pVor+guxp5WRftr+Xfj3c5SComSNMjjLyPy6MnFF4BobS0OeGmI0OHb042XIjKhga9+O
+         RlRp/0JmVO+U2sV3sa8yjGWefImXTkKlZLKYb7twLKq7yYs4128XRKG+OBIW1uGZ/Atl
+         apUCCwgJ94sdekAONnyjA8jUT5mxOqhO5GmBYopsG8YBvcvGqCNqB4eNBgJ62XFCBxKI
+         9WNVK9GuMA3y4OcBB4NNSl/bJOmTo0VtIBRtt1nQPhJavJsSOC8Id8qUah7YLfzeWVtE
+         B6Mw==
+X-Gm-Message-State: AOJu0YxJGLvX4OTUuFq1VBZpBSksk7W/j+nrxNaOX3smns39EHNmQNYO
+	KTgTPkMCL7zp3EfPj/pDB+Kl0SbB/tc33+T0CkYkRvkKkhxOuI9AS2Sp6tj9M+pBtlFqKDYzqUq
+	lwi/WQ2ovqeLd5aGHafdClkHSqhA=
+X-Google-Smtp-Source: AGHT+IF8QlL0ZYgKkKtjE5g3LDBNUoNP+rn1QWPaBnUbbOz4Lxn9ioCZrmm7vqxlQDE66E4wFpPlBjq8yzekMgr4B/c=
+X-Received: by 2002:a05:6a00:2da0:b0:6dd:c269:35a with SMTP id
+ fb32-20020a056a002da000b006ddc269035amr7464pfb.27.1706813791816; Thu, 01 Feb
+ 2024 10:56:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAAbpu2UC/5XNu47DIBCF4VeJqHdWMOALqfY9VikcGDsjbYwFF
- rIV+d1DUuxFabzlOcX330SiyJTE8XATkTInDmMZ1dtBuEs3DgTsyxYoUUuLCtIcRzet4CNnigm
- YA0wxLHzleYW0WI0GHLROG93UTS21FQWbIvW8PEOfp7IvnOYQ12c3q8f770RWoMBQ67HtvaLGf
- QwhDF/07sJVPBoZv10lsd7tYnEdUU2VPzdSvrr6x0WFu11d3HPbkcLetV3lX1zz27W7XVNcbyx 5tES2wj/utm138OJbJuUBAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706813710; l=6279;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=vd5V7jREra4SOCm+7g/vZFE+V7Vhl8MTNilHGLxx0Z8=; b=GTQykfLkcwpAFZktN4au/68GoG9R8G6Jt7olj8ZmrcJ2QQwpfVqpnlH2r11WP2We2NOcGgUOC
- jDWzPHoQYCuCfbcA6YiKSiOZFJaEqFSK396H5YDpygrp5Z6Taw73VTV
-X-Mailer: b4 0.12.3
-Message-ID: <20240201-strncpy-drivers-iio-proximity-sx9324-c-v5-1-78dde23553bc@google.com>
-Subject: [PATCH v5] iio: sx9324: avoid copying property strings
-From: Justin Stitt <justinstitt@google.com>
-To: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
-Cc: Stephen Boyd <swboyd@chromium.org>, linux-iio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+References: <20240129054551.57728-1-ioworker0@gmail.com> <CAK1f24keWtJNVv37r2vNsqnmMLRMvF-F76WR5RD_Y-BbAgEaYQ@mail.gmail.com>
+ <CAHbLzkodfgkf4vYXFL0R89+tDawAfH9_XPbv3z4-w+hAysZkGQ@mail.gmail.com> <CAK1f24=O34609mYcfyOhRAtei0Rag5EqJ1jX1kbqFhMTJxU61g@mail.gmail.com>
+In-Reply-To: <CAK1f24=O34609mYcfyOhRAtei0Rag5EqJ1jX1kbqFhMTJxU61g@mail.gmail.com>
+From: Yang Shi <shy828301@gmail.com>
+Date: Thu, 1 Feb 2024 10:56:19 -0800
+Message-ID: <CAHbLzkpsdHDK3KPS4M-TCMWt7svL40nkrgE3G43FO+b=s+tD_Q@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm/khugepaged: bypassing unnecessary scans with
+ MMF_DISABLE_THP check
+To: Lance Yang <ioworker0@gmail.com>
+Cc: akpm@linux-foundation.org, mhocko@suse.com, zokeefe@google.com, 
+	david@redhat.com, songmuchun@bytedance.com, peterx@redhat.com, 
+	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-We're doing some needless string copies when trying to assign the proper
-`prop` string. We can make `prop` a const char* and simply assign to
-string literals.
+On Wed, Jan 31, 2024 at 5:13=E2=80=AFPM Lance Yang <ioworker0@gmail.com> wr=
+ote:
+>
+> Hey Yang,
+>
+> Thank you for the clarification.
+>
+> You're correct. If the daemon calls prctl with
+> MMF_DISABLE_THP before fork, the child
+> mm won't be on the hash list.
+>
+> What I meant is that the daemon mm might
+> already be on the hash list before fork.
+> Therefore, khugepaged might still scan the
+> address space for the daemon.
 
-For the case where a format string is used, let's extract the parsing
-logic out into sx9324_parse_phase_prop(). We no longer need to create
-copies or allocate new memory.
+OK, I thought you don't care about the daemon since you mentioned the
+daemon would call prctl to disable THP or enable THP for different
+children, so the daemon's THP preference may be constantly changed or
+doesn't matter at all.
 
-sx9324_parse_phase_prop() will simply return the default def value if it
-fails.
+So the actual cost is actually traversing the maple tree for the
+daemon. Does the daemon have excessive vmas? I'm not sure whether the
+improvement is noticeable or not.
 
-This also cleans up some deprecated strncpy() uses [1].
-
-Furthermore, let's clean up this code further by removing some unused
-defines:
-|  #define SX9324_PIN_DEF "semtech,ph0-pin"
-|  #define SX9324_RESOLUTION_DEF "semtech,ph01-resolution"
-|  #define SX9324_PROXRAW_DEF "semtech,ph01-proxraw-strength"
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v5:
-- rebase onto rc2
-- resolve merge with Commit 7cd11203d900("iio: proximity: sx9324: Switch to device_property_match_property_string()")
-- Link to v4: https://lore.kernel.org/r/20231219-strncpy-drivers-iio-proximity-sx9324-c-v4-1-d49ed29ee952@google.com
-
-Changes in v4:
-- use u8 return type (thanks Stephen)
-- remove unused defines (thanks Stephen et al.)
-- tweaks to sx9324_parse_phase_prop related to defaults (thanks Stephen)
-- Link to v3: https://lore.kernel.org/r/20231212-strncpy-drivers-iio-proximity-sx9324-c-v3-1-b8ae12fc8a5d@google.com
-
-Changes in v3:
-- extract logic into sx9324_parse_phase_prop() and use string literals
-  (thanks Stephen)
-- rebase onto mainline bee0e7762ad2c602
-- Link to v2: https://lore.kernel.org/r/20231026-strncpy-drivers-iio-proximity-sx9324-c-v2-1-cee6e5db700c@google.com
-
-Changes in v2:
-- make prop a const char* and do simple assignments (thanks Jonathan)
-- rebase onto 3a568e3a961ba330
-- Link to v1: https://lore.kernel.org/r/20230921-strncpy-drivers-iio-proximity-sx9324-c-v1-1-4e8d28fd1e7c@google.com
----
----
- drivers/iio/proximity/sx9324.c | 69 ++++++++++++++++++++++++------------------
- 1 file changed, 40 insertions(+), 29 deletions(-)
-
-diff --git a/drivers/iio/proximity/sx9324.c b/drivers/iio/proximity/sx9324.c
-index ac2ed2da21cc..b0403fc7906b 100644
---- a/drivers/iio/proximity/sx9324.c
-+++ b/drivers/iio/proximity/sx9324.c
-@@ -873,6 +873,29 @@ static int sx9324_init_compensation(struct iio_dev *indio_dev)
- 					20000, 2000000);
- }
- 
-+static u8 sx9324_parse_phase_prop(struct device *dev,
-+				  struct sx_common_reg_default *reg_def,
-+				  const char *prop)
-+{
-+	unsigned int pin_defs[SX9324_NUM_PINS];
-+	int count, ret, pin;
-+	u32 raw = 0;
-+
-+	count = device_property_count_u32(dev, prop);
-+	if (count != ARRAY_SIZE(pin_defs))
-+		return reg_def->def;
-+	ret = device_property_read_u32_array(dev, prop, pin_defs,
-+					     ARRAY_SIZE(pin_defs));
-+	if (ret)
-+		return reg_def->def;
-+
-+	for (pin = 0; pin < SX9324_NUM_PINS; pin++)
-+		raw |= (pin_defs[pin] << (2 * pin)) &
-+		       SX9324_REG_AFE_PH0_PIN_MASK(pin);
-+
-+	return raw;
-+}
-+
- static const struct sx_common_reg_default *
- sx9324_get_default_reg(struct device *dev, int idx,
- 		       struct sx_common_reg_default *reg_def)
-@@ -881,37 +904,29 @@ sx9324_get_default_reg(struct device *dev, int idx,
- 		"highest" };
- 	static const char * const sx9324_csidle[] = { "hi-z", "hi-z", "gnd",
- 		"vdd" };
--#define SX9324_PIN_DEF "semtech,ph0-pin"
--#define SX9324_RESOLUTION_DEF "semtech,ph01-resolution"
--#define SX9324_PROXRAW_DEF "semtech,ph01-proxraw-strength"
--	unsigned int pin_defs[SX9324_NUM_PINS];
--	char prop[] = SX9324_PROXRAW_DEF;
- 	u32 start = 0, raw = 0, pos = 0;
--	int ret, count, ph, pin;
-+	const char *prop;
-+	int ret;
- 
- 	memcpy(reg_def, &sx9324_default_regs[idx], sizeof(*reg_def));
- 
- 	sx_common_get_raw_register_config(dev, reg_def);
- 	switch (reg_def->reg) {
- 	case SX9324_REG_AFE_PH0:
-+		reg_def->def = sx9324_parse_phase_prop(dev, reg_def,
-+						       "semtech,ph0-pin");
-+		break;
- 	case SX9324_REG_AFE_PH1:
-+		reg_def->def = sx9324_parse_phase_prop(dev, reg_def,
-+						       "semtech,ph1-pin");
-+		break;
- 	case SX9324_REG_AFE_PH2:
-+		reg_def->def = sx9324_parse_phase_prop(dev, reg_def,
-+						       "semtech,ph2-pin");
-+		break;
- 	case SX9324_REG_AFE_PH3:
--		ph = reg_def->reg - SX9324_REG_AFE_PH0;
--		snprintf(prop, ARRAY_SIZE(prop), "semtech,ph%d-pin", ph);
--
--		count = device_property_count_u32(dev, prop);
--		if (count != ARRAY_SIZE(pin_defs))
--			break;
--		ret = device_property_read_u32_array(dev, prop, pin_defs,
--						     ARRAY_SIZE(pin_defs));
--		if (ret)
--			break;
--
--		for (pin = 0; pin < SX9324_NUM_PINS; pin++)
--			raw |= (pin_defs[pin] << (2 * pin)) &
--			       SX9324_REG_AFE_PH0_PIN_MASK(pin);
--		reg_def->def = raw;
-+		reg_def->def = sx9324_parse_phase_prop(dev, reg_def,
-+						       "semtech,ph3-pin");
- 		break;
- 	case SX9324_REG_AFE_CTRL0:
- 		ret = device_property_match_property_string(dev, "semtech,cs-idle-sleep",
-@@ -933,11 +948,9 @@ sx9324_get_default_reg(struct device *dev, int idx,
- 	case SX9324_REG_AFE_CTRL4:
- 	case SX9324_REG_AFE_CTRL7:
- 		if (reg_def->reg == SX9324_REG_AFE_CTRL4)
--			strncpy(prop, "semtech,ph01-resolution",
--				ARRAY_SIZE(prop));
-+			prop = "semtech,ph01-resolution";
- 		else
--			strncpy(prop, "semtech,ph23-resolution",
--				ARRAY_SIZE(prop));
-+			prop = "semtech,ph23-resolution";
- 
- 		ret = device_property_read_u32(dev, prop, &raw);
- 		if (ret)
-@@ -1008,11 +1021,9 @@ sx9324_get_default_reg(struct device *dev, int idx,
- 	case SX9324_REG_PROX_CTRL0:
- 	case SX9324_REG_PROX_CTRL1:
- 		if (reg_def->reg == SX9324_REG_PROX_CTRL0)
--			strncpy(prop, "semtech,ph01-proxraw-strength",
--				ARRAY_SIZE(prop));
-+			prop = "semtech,ph01-proxraw-strength";
- 		else
--			strncpy(prop, "semtech,ph23-proxraw-strength",
--				ARRAY_SIZE(prop));
-+			prop = "semtech,ph23-proxraw-strength";
- 		ret = device_property_read_u32(dev, prop, &raw);
- 		if (ret)
- 			break;
-
----
-base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
-change-id: 20230921-strncpy-drivers-iio-proximity-sx9324-c-8c3437676039
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+>
+> Thanks,
+> Lance
+>
+> On Thu, Feb 1, 2024 at 4:06=E2=80=AFAM Yang Shi <shy828301@gmail.com> wro=
+te:
+> >
+> > On Wed, Jan 31, 2024 at 1:30=E2=80=AFAM Lance Yang <ioworker0@gmail.com=
+> wrote:
+> > >
+> > > Updating the change log.
+> > >
+> > > khugepaged scans the entire address space in the
+> > > background for each given mm, looking for
+> > > opportunities to merge sequences of basic pages
+> > > into huge pages. However, when an mm is inserted
+> > > to the mm_slots list, and the MMF_DISABLE_THP
+> > > flag is set later, this scanning process becomes
+> > > unnecessary for that mm and can be skipped to
+> > > avoid redundant operations, especially in scenarios
+> > > with a large address space.
+> > >
+> > > This commit introduces a check before each scanning
+> > > process to test the MMF_DISABLE_THP flag for the
+> > > given mm; if the flag is set, the scanning process is
+> > > bypassed, thereby improving the efficiency of khugepaged.
+> > >
+> > > This optimization is not a correctness issue but rather an
+> > > enhancement to save expensive checks on each VMA
+> > > when userspace cannot prctl itself before spawning
+> > > into the new process.
+> >
+> > If this is an optimization, you'd better show some real numbers to help=
+ justify.
+> >
+> > >
+> > > On some servers within our company, we deploy a
+> > > daemon responsible for monitoring and updating local
+> > > applications. Some applications prefer not to use THP,
+> > > so the daemon calls prctl to disable THP before fork/exec.
+> > > Conversely, for other applications, the daemon calls prctl
+> > > to enable THP before fork/exec.
+> >
+> > If your daemon calls prctl with MMF_DISABLE_THP before fork, then you
+> > end up having the child mm on the hash list in the first place, I
+> > think it should be a bug in khugepaged_fork() IIUC. khugepaged_fork()
+> > should check this flag and bail out if it is set. Did I miss
+> > something?
+> >
+> > >
+> > > Ideally, the daemon should invoke prctl after the fork,
+> > > but its current implementation follows the described
+> > > approach. In the Go standard library, there is no direct
+> > > encapsulation of the fork system call; instead, fork and
+> > > execve are combined into one through syscall.ForkExec.
+> > >
+> > > Thanks,
+> > > Lance
+> > >
+> > > On Mon, Jan 29, 2024 at 1:46=E2=80=AFPM Lance Yang <ioworker0@gmail.c=
+om> wrote:
+> > > >
+> > > > khugepaged scans the entire address space in the
+> > > > background for each given mm, looking for
+> > > > opportunities to merge sequences of basic pages
+> > > > into huge pages. However, when an mm is inserted
+> > > > to the mm_slots list, and the MMF_DISABLE_THP flag
+> > > > is set later, this scanning process becomes
+> > > > unnecessary for that mm and can be skipped to avoid
+> > > > redundant operations, especially in scenarios with
+> > > > a large address space.
+> > > >
+> > > > This commit introduces a check before each scanning
+> > > > process to test the MMF_DISABLE_THP flag for the
+> > > > given mm; if the flag is set, the scanning process
+> > > > is bypassed, thereby improving the efficiency of
+> > > > khugepaged.
+> > > >
+> > > > Signed-off-by: Lance Yang <ioworker0@gmail.com>
+> > > > ---
+> > > >  mm/khugepaged.c | 18 ++++++++++++------
+> > > >  1 file changed, 12 insertions(+), 6 deletions(-)
+> > > >
+> > > > diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> > > > index 2b219acb528e..d6a700834edc 100644
+> > > > --- a/mm/khugepaged.c
+> > > > +++ b/mm/khugepaged.c
+> > > > @@ -410,6 +410,12 @@ static inline int hpage_collapse_test_exit(str=
+uct mm_struct *mm)
+> > > >         return atomic_read(&mm->mm_users) =3D=3D 0;
+> > > >  }
+> > > >
+> > > > +static inline int hpage_collapse_test_exit_or_disable(struct mm_st=
+ruct *mm)
+> > > > +{
+> > > > +       return hpage_collapse_test_exit(mm) ||
+> > > > +              test_bit(MMF_DISABLE_THP, &mm->flags);
+> > > > +}
+> > > > +
+> > > >  void __khugepaged_enter(struct mm_struct *mm)
+> > > >  {
+> > > >         struct khugepaged_mm_slot *mm_slot;
+> > > > @@ -1422,7 +1428,7 @@ static void collect_mm_slot(struct khugepaged=
+_mm_slot *mm_slot)
+> > > >
+> > > >         lockdep_assert_held(&khugepaged_mm_lock);
+> > > >
+> > > > -       if (hpage_collapse_test_exit(mm)) {
+> > > > +       if (hpage_collapse_test_exit_or_disable(mm)) {
+> > > >                 /* free mm_slot */
+> > > >                 hash_del(&slot->hash);
+> > > >                 list_del(&slot->mm_node);
+> > > > @@ -2360,7 +2366,7 @@ static unsigned int khugepaged_scan_mm_slot(u=
+nsigned int pages, int *result,
+> > > >                 goto breakouterloop_mmap_lock;
+> > > >
+> > > >         progress++;
+> > > > -       if (unlikely(hpage_collapse_test_exit(mm)))
+> > > > +       if (unlikely(hpage_collapse_test_exit_or_disable(mm)))
+> > > >                 goto breakouterloop;
+> > > >
+> > > >         vma_iter_init(&vmi, mm, khugepaged_scan.address);
+> > > > @@ -2368,7 +2374,7 @@ static unsigned int khugepaged_scan_mm_slot(u=
+nsigned int pages, int *result,
+> > > >                 unsigned long hstart, hend;
+> > > >
+> > > >                 cond_resched();
+> > > > -               if (unlikely(hpage_collapse_test_exit(mm))) {
+> > > > +               if (unlikely(hpage_collapse_test_exit_or_disable(mm=
+))) {
+> > > >                         progress++;
+> > > >                         break;
+> > > >                 }
+> > > > @@ -2390,7 +2396,7 @@ static unsigned int khugepaged_scan_mm_slot(u=
+nsigned int pages, int *result,
+> > > >                         bool mmap_locked =3D true;
+> > > >
+> > > >                         cond_resched();
+> > > > -                       if (unlikely(hpage_collapse_test_exit(mm)))
+> > > > +                       if (unlikely(hpage_collapse_test_exit_or_di=
+sable(mm)))
+> > > >                                 goto breakouterloop;
+> > > >
+> > > >                         VM_BUG_ON(khugepaged_scan.address < hstart =
+||
+> > > > @@ -2408,7 +2414,7 @@ static unsigned int khugepaged_scan_mm_slot(u=
+nsigned int pages, int *result,
+> > > >                                 fput(file);
+> > > >                                 if (*result =3D=3D SCAN_PTE_MAPPED_=
+HUGEPAGE) {
+> > > >                                         mmap_read_lock(mm);
+> > > > -                                       if (hpage_collapse_test_exi=
+t(mm))
+> > > > +                                       if (hpage_collapse_test_exi=
+t_or_disable(mm))
+> > > >                                                 goto breakouterloop=
+;
+> > > >                                         *result =3D collapse_pte_ma=
+pped_thp(mm,
+> > > >                                                 khugepaged_scan.add=
+ress, false);
+> > > > @@ -2450,7 +2456,7 @@ static unsigned int khugepaged_scan_mm_slot(u=
+nsigned int pages, int *result,
+> > > >          * Release the current mm_slot if this mm is about to die, =
+or
+> > > >          * if we scanned all vmas of this mm.
+> > > >          */
+> > > > -       if (hpage_collapse_test_exit(mm) || !vma) {
+> > > > +       if (hpage_collapse_test_exit_or_disable(mm) || !vma) {
+> > > >                 /*
+> > > >                  * Make sure that if mm_users is reaching zero whil=
+e
+> > > >                  * khugepaged runs here, khugepaged_exit will find
+> > > > --
+> > > > 2.33.1
+> > > >
 
