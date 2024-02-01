@@ -1,530 +1,176 @@
-Return-Path: <linux-kernel+bounces-48133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B6968457D2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:32:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A441B845758
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:23:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 738B21C246BB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:32:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA2961C228C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:23:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B57F86658;
-	Thu,  1 Feb 2024 12:25:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1990D15F309;
+	Thu,  1 Feb 2024 12:23:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k2tweb5/"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="R26txHms"
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2084.outbound.protection.outlook.com [40.107.8.84])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E77F5161B5F;
-	Thu,  1 Feb 2024 12:25:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706790330; cv=none; b=AaAqCdsBIAlNeXdoUj5MNy+XT8Es+6YN9FHv9b7C/HIqVOHGKEueOMT6CQUh5o56eVig6BiY9mpJiP8Xov+Ac1RvBcXVG53UwZ/7LYNOCq2Ywdvi/04GhW0SHfEeRMrjUWnyJQRHLnznppdHntZLsIeGeT4j5wnLAvcle7NBuho=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706790330; c=relaxed/simple;
-	bh=NkDaTyoibx2WHJr7Ns5qbacNhccmHuOYBaS1TYdKgSU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OmjIzMm3Za1jzN/uudLPJL+0nNwVKy/HvXhEXBqCKujzVrLyTwtb6uki0zuJX8NUCG0DxVBUFWo+i5KHVgwtUzTiAqkv2SWzY8zbUAsByPU7ydLqIfHH1Qkej9fP0sHI1dhF1EbyIrb8ufrG+pCgrQm4AZxde5Za/Ji3/MeTkbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=k2tweb5/; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706790329; x=1738326329;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=NkDaTyoibx2WHJr7Ns5qbacNhccmHuOYBaS1TYdKgSU=;
-  b=k2tweb5/mcO3KRvEb7Ee4iGsjyV7sRAVWv5cBlNCMcFkUG+A029Z7yfz
-   68YzuzIz3NLQB77PgQACTJ8e/aDSq7FOxm3JXAq6RVUJSuGR2Eo5LnUCc
-   n/lR+8qg56f2lBmckzz53UlhGGuuP0YD5/pKHOn3rfcpYXQFWtRH+oBLQ
-   J/x50wYp23Ndn7BY7W4bNVVV4xe02JIMU9zuJNjCDvKlK8+kLoRfEayHX
-   b+V2HqaJD5UGi3o8TbcMdDWsz4IjByCUVMXjC95+T5ZvNwfUe+/iISmKY
-   mPoKOqxFFVfmwEnGCW5s6po1ogcmoccMTBdBY5xpxgQxbeh9/lmRjirHG
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3747333"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="3747333"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 04:25:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="4499238"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa004.jf.intel.com with ESMTP; 01 Feb 2024 04:25:18 -0800
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-	Marcin Szycik <marcin.szycik@linux.intel.com>,
-	Wojciech Drewek <wojciech.drewek@intel.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	Andy Shevchenko <andy@kernel.org>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Alexander Potapenko <glider@google.com>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Ido Schimmel <idosch@nvidia.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Simon Horman <horms@kernel.org>,
-	linux-btrfs@vger.kernel.org,
-	dm-devel@redhat.com,
-	ntfs3@lists.linux.dev,
-	linux-s390@vger.kernel.org,
-	intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Simon Horman <simon.horman@corigine.com>
-Subject: [PATCH net-next v5 21/21] ice: Add support for PFCP hardware offload in switchdev
-Date: Thu,  1 Feb 2024 13:22:16 +0100
-Message-ID: <20240201122216.2634007-22-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
-References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 066F115B961;
+	Thu,  1 Feb 2024 12:23:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.84
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706790186; cv=fail; b=rzz3CdmMEe3X6BB8DGn6Ru925vjfVptHNT1pUiGhz2qkcKH2tL/1G2A1gPCZwwUgM2wSnv4JuvLFkO0UeZ1Nr/Hx6r2hqrCeFXK5+HfkKrtCqtiK9/499PB2cfwW/fWPNycUZdqbVVuhthCkDE5rDdSFTnaDGrBhqQuXmrxKkUI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706790186; c=relaxed/simple;
+	bh=JudX3nYemENdJMcQ4UDGstbpZSe++RKpsBccVSmnXpc=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=GvSpN4Y2YuQ1xVAdJyk8YnZOWZbBddqayTKQyBr05uqyNIKxiRkX85N5kwdIR4nBur1eVvuzwBYiAHhAXQItKOVojUoblheOoW0ZpCN1Q2vxqSELliFmBN+R5uGXXacmvG2IKS5SpkYAuA0oh7e/RHT31o8cQUmdDZ2JsNmen08=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=R26txHms; arc=fail smtp.client-ip=40.107.8.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WXVarSiI+pJNmyEKxhB6AmX9XzQX0a0MXXV2aZLhFrPck7nedhJSLOd3tdZoPaevdRHyAgdCTlZga40BQpbkJSwU6ZMR01jXIWJYe6tBvxHN4a1vHMcwnIr39sCAmDQdgDOFMQGFofrbdpGiwJWcqZgCH1XK++OAE4Wqb2NcgO3cr3VbJgG43YKbMFKfdNkbm6QXwHjnTXBLhopSlZ3du0MrSeTM8XgtxQ/EGcXjzL1mt508N26wrfZJJr2PipOb79QK4pmiIIK1nQK0X7x4NcFqNd+5EDBX619xr2ZNVeJz0byj7LL6ektu1Huf+dFKNLLXCvsV5VEccSlRpfDsaQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8o3kKXjRRu/dtoZ++YLi4GGetqkDbMsSH5TWFO2wc+0=;
+ b=g3E1M6iow46H3/Nc3H4JKDHLyInDfrnMVpLQgypUybKNdwwBMNjgRnz9AZXqwUOpLcjjMD1Z2wGrUSbV1iqWIPP0cAIi+gKvZPGNaVQulkX4Mjmu+SxtfEbn2Zpqigk13WKAEQCaqFK36jDvQStVMGQGRcic45uA2s1OBJvMZ68tqrmaOC4q1JG0IPhWnjIiGyAGM53U1BcGgkMEqPfapOTn9MkcwElLTG1+pB55vZI97Re2sd6YfcyF8/NTUpMgOuh8q4ggIFwPn3KGe1xS0Tb2n5UoCfv/GlOWIRqOBr9o6R/+VhyIuoEr/76mdpcpMWB7nsmtwPGWQxh4vmYk7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8o3kKXjRRu/dtoZ++YLi4GGetqkDbMsSH5TWFO2wc+0=;
+ b=R26txHmsifpg2R7Dy08D1uZ3cJsRLRXQXxj1sn+B7jTwP+3/EIAeBuwraDr+UYUl0ghGdUoBoSBM3AZkn+a5JHrqA/1LSWwI9XeTE5R/z9zbDQl9Iirec4kgLny3YDCfVBOWQvih4iTbJmdETkfTgGeMnV/5RXh1U+1Vv+tarDo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM6PR0402MB3910.eurprd04.prod.outlook.com
+ (2603:10a6:209:1b::33) by AM8PR04MB7793.eurprd04.prod.outlook.com
+ (2603:10a6:20b:240::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.24; Thu, 1 Feb
+ 2024 12:22:58 +0000
+Received: from AM6PR0402MB3910.eurprd04.prod.outlook.com
+ ([fe80::1f2a:6f1c:51ea:e7d9]) by AM6PR0402MB3910.eurprd04.prod.outlook.com
+ ([fe80::1f2a:6f1c:51ea:e7d9%7]) with mapi id 15.20.7228.029; Thu, 1 Feb 2024
+ 12:22:58 +0000
+From: "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>
+To: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	linux-pwm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Viorel Suman <viorel.suman@oss.nxp.com>,
+	Viorel Suman <viorel.suman@nxp.com>
+Subject: [PATCH] pwm: imx-tpm: reset module on probe
+Date: Thu,  1 Feb 2024 14:22:42 +0200
+Message-Id: <20240201122242.1597601-1-viorel.suman@oss.nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: AS4P251CA0009.EURP251.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5d2::20) To AM6PR0402MB3910.eurprd04.prod.outlook.com
+ (2603:10a6:209:1b::33)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR0402MB3910:EE_|AM8PR04MB7793:EE_
+X-MS-Office365-Filtering-Correlation-Id: 237ed8c5-2f91-49a7-d866-08dc23208620
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	L00I19vp7z/Hekpn6/Du4pCwlRCUhIscYBUua9+yjMt98InVrzXZw7kpbX8t9hfPfNtA2qTdtP7NaVOV2Ey3aMSMS8SA2nUe3g0UsVRIuM5PMh/VmAXHypF/iXS06ROb+rRhblo3iURLH3yHZo7+46eDYOLJcCZSBXYA3lknj8Js8x7VJ/iuc4AEeikSqmIaSgm/7RIWf2d6ecpIJk9KIp/P/iUEHYt8F0ZzR2tS3eGnFQVCPs4pzjl6YWu/TGqqF6QNzfeDLZszBYBR1aA/QPmPQQlJOlOONFDSqr2rikSDnqZD7jIlXc1EU4DDcSG5he44wyIhc2yaZQa/dMeoZcmHMxYrXeWfFs7mIZvjlmckQbCxvltOoyTObYHQAIjF8cQW3gRC/aZw4b+//2HInngObHVsDR5EoNN/i3obRa2G+nvJbv9nCt1XQD5x00MKANXtvI782AEmwIG+zUL2fQkV2qsX1Lo2YeKEst7MDk8T7pkKn8O0xVl7+CPhVfGA9yDl+iIgBQetvhAQqPa96/twIQiXsLU8mP0pv7T2flpj+5cvgmTQi+ev5IHUfW/FbTTkKr83OheoJmRN3KSqg5AuxmnJ3iCklBVQ1xedfGH3PRWtKabnYYH0e4+yhix4
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR0402MB3910.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(136003)(396003)(366004)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(83380400001)(41300700001)(1076003)(86362001)(38350700005)(6512007)(26005)(38100700002)(2616005)(52116002)(2906002)(6486002)(6506007)(316002)(478600001)(110136005)(4326008)(66476007)(54906003)(5660300002)(8676002)(66556008)(8936002)(6666004)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?iso-8859-1?Q?CXCPV94Dw8sETuDlBSr0VOTpbKZDPmlIJ7dF2iAkWoaBW0NVWbsr0L2f46?=
+ =?iso-8859-1?Q?Sf10yKamZuxv3Q+GlE8lOHB31lh7o+TEx43nn4imv8GrnxtE7dLb7Wv2Nw?=
+ =?iso-8859-1?Q?98jDF5xL5MXPYqdUryXnq3KzmXLpkTuppur2IHKNl5gQAYsftNHK1m10uR?=
+ =?iso-8859-1?Q?y2pJyYpG/IBSffJw5CSC8ghdT7e0N8khhBYiyGQC5FkqLWYpw23QQgXjSx?=
+ =?iso-8859-1?Q?s60a98Y2sQB1j2r82NyILTbav9l4nvj7lEw7TEqSBf2Gxg8gbeP+w9vUCx?=
+ =?iso-8859-1?Q?CkGEtunrjjpAof4BI1jgZEeEqYFYW2ysQ82b1gT/iVxRav/OmR65756Sll?=
+ =?iso-8859-1?Q?F53hfEDza9QjUmbXvmbnsJ5ax1zUPH4Gck+XTl5rEoLguak/roLuLm4mXF?=
+ =?iso-8859-1?Q?QgcT7/BjBsPCZ7pIG5fmF0uhO6C6c5/+shro/6cXefxKKXuiglUJdoDiJc?=
+ =?iso-8859-1?Q?l7nKCehOr2jdmbnPixqck/iO+TvQFiHfnLdPHxIHNsHxgHyKzxCeYnGzhX?=
+ =?iso-8859-1?Q?9RbyCS64NIDlY3loM+0tQ9upvJVtZqmALTstCE/ES/Gpwphm02DyllRZPU?=
+ =?iso-8859-1?Q?lZMI+xxXWsJ6Isjg093xVTle/1Qnb0rKbRJUerlE9HzAnk/ODMIr3LTW1F?=
+ =?iso-8859-1?Q?E69H9JST964jQv1wJ+44sHTYu29FN/PHJhhPJFKQWZmN0PNiynMwJOZm6U?=
+ =?iso-8859-1?Q?++q5xZRrrPzmJLUKw2yo0MsV/72XsdEGvlnZnVTIOoz7gcp697ebL+7YeI?=
+ =?iso-8859-1?Q?HTsz7MIjovDVfO7XWGLi+IroMl5yIZpjy+ELOlmR0z26d507Ux27rxdMNw?=
+ =?iso-8859-1?Q?mM7msdgCpI0ChKgYEKkiwn9zdqHgjrIkPHYtNxc8bw+byGjX0E5IR6LrGJ?=
+ =?iso-8859-1?Q?SQayOWfioSgo1riR+Qr3ylkGTlimRhwU8Bxq+466JkXFnFQw8cSm3d1O1+?=
+ =?iso-8859-1?Q?KFziXF3JkHfWeJmBAKWsiES9rhaAU289QxXIvpAIhnNCxqFEdeus0NFfyN?=
+ =?iso-8859-1?Q?p+hFPZDXV24aCvqnBD4qC1kzKn3dJCPbx0KvmO+JtxXYS9ijBztDGvZuon?=
+ =?iso-8859-1?Q?L50x8GY+LD9nGvLr+bfSUjinW8w8tbQKRFHeO20jNEMWaZfjqF03knoFTP?=
+ =?iso-8859-1?Q?qKkq7ciRkGSE+rxo8nXayE0t89OzqL5ItAGzLxM0wvlESsUx/WFvOc5GPj?=
+ =?iso-8859-1?Q?QcbC3SpTCDc6teATdRCggaRSuNDoPLDNPosRIv7j/8/fFvXnka9xkFfVFL?=
+ =?iso-8859-1?Q?6tZB8GRzqbJ3MXa3sRZVVTIEf1hfJ9y35rF3bjAEHrOPtEA/5W/DEzr/P5?=
+ =?iso-8859-1?Q?ELnkTTiWV7IE+3t8YkcltcIrMdYCKTBmqVwcKwxbpAfXmVjpZOR8GYOCLu?=
+ =?iso-8859-1?Q?bWOeqaktGs7c+31XvrfpyCi57lZ3TOodfn82ZYTW6XllC5Y1f1f6GAMjnG?=
+ =?iso-8859-1?Q?BIGjJHjDcsqq7W4xbiGyM8ZM+yvfjEvQtVlDrknmHA2KImsFmg1DKDiBgq?=
+ =?iso-8859-1?Q?D33Xum/iDVEdCVmuUchJuIMNjA+8KIT9++AF3wGNQte7wtco/eB66M9Oln?=
+ =?iso-8859-1?Q?bPy18qooc+Ex5mY554M4A75hIxQ/P6lnBhtN6aCAe/w71WtRQCoB0WuB6m?=
+ =?iso-8859-1?Q?kaPM3UZxfcCrzcl9psGGxzYwxm/HLQO8i3?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 237ed8c5-2f91-49a7-d866-08dc23208620
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR0402MB3910.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2024 12:22:58.0065
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8ZvGXqR9B7kuCJgqYslNvOwAscel7WW4iMMFkUnlFScdsBm1uURjiDRvJ/HUrdJRF2+0mHhOl3bbQ/yZswLcHw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7793
 
-From: Marcin Szycik <marcin.szycik@linux.intel.com>
+From: Viorel Suman <viorel.suman@nxp.com>
 
-Add support for creating PFCP filters in switchdev mode. Add support
-for parsing PFCP-specific tc options: S flag and SEID.
+Reset Timer PWM module on probe so that the module
+takes the default state after probe is finished.
 
-To create a PFCP filter, a special netdev must be created and passed
-to tc command:
-
-  ip link add pfcp0 type pfcp
-  tc filter add dev eth0 ingress prio 1 flower pfcp_opts \
-    1:123/ff:fffffffffffffff0 skip_hw action mirred egress redirect \
-    dev pfcp0
-
-Changes in iproute2 [1] are required to be able to use pfcp_opts in tc.
-
-ICE COMMS package is required to create a filter as it contains PFCP
-profiles.
-
-Link: https://lore.kernel.org/netdev/20230614091758.11180-1-marcin.szycik@linux.intel.com [1]
-Signed-off-by: Marcin Szycik <marcin.szycik@linux.intel.com>
-Reviewed-by: Simon Horman <simon.horman@corigine.com>
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Signed-off-by: Florin Leotescu <florin.leotescu@nxp.com>
 ---
- .../net/ethernet/intel/ice/ice_flex_type.h    |  4 +-
- .../ethernet/intel/ice/ice_protocol_type.h    | 12 +++
- drivers/net/ethernet/intel/ice/ice_switch.h   |  2 +
- drivers/net/ethernet/intel/ice/ice_tc_lib.h   |  6 ++
- drivers/net/ethernet/intel/ice/ice_ddp.c      |  9 ++
- drivers/net/ethernet/intel/ice/ice_switch.c   | 85 +++++++++++++++++++
- drivers/net/ethernet/intel/ice/ice_tc_lib.c   | 58 +++++++++++--
- 7 files changed, 169 insertions(+), 7 deletions(-)
+ drivers/pwm/pwm-imx-tpm.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_flex_type.h b/drivers/net/ethernet/intel/ice/ice_flex_type.h
-index d427a79d001a..817beca591e0 100644
---- a/drivers/net/ethernet/intel/ice/ice_flex_type.h
-+++ b/drivers/net/ethernet/intel/ice/ice_flex_type.h
-@@ -93,6 +93,7 @@ enum ice_tunnel_type {
- 	TNL_GRETAP,
- 	TNL_GTPC,
- 	TNL_GTPU,
-+	TNL_PFCP,
- 	__TNL_TYPE_CNT,
- 	TNL_LAST = 0xFF,
- 	TNL_ALL = 0xFF,
-@@ -358,7 +359,8 @@ enum ice_prof_type {
- 	ICE_PROF_TUN_GRE = 0x4,
- 	ICE_PROF_TUN_GTPU = 0x8,
- 	ICE_PROF_TUN_GTPC = 0x10,
--	ICE_PROF_TUN_ALL = 0x1E,
-+	ICE_PROF_TUN_PFCP = 0x20,
-+	ICE_PROF_TUN_ALL = 0x3E,
- 	ICE_PROF_ALL = 0xFF,
- };
+diff --git a/drivers/pwm/pwm-imx-tpm.c b/drivers/pwm/pwm-imx-tpm.c
+index 9fc290e647e1..27e6a5342693 100644
+--- a/drivers/pwm/pwm-imx-tpm.c
++++ b/drivers/pwm/pwm-imx-tpm.c
+@@ -33,6 +33,7 @@
+ #define PWM_IMX_TPM_CnV(n)	(0x24 + (n) * 0x8)
  
-diff --git a/drivers/net/ethernet/intel/ice/ice_protocol_type.h b/drivers/net/ethernet/intel/ice/ice_protocol_type.h
-index f6f27361c3cf..755a9c55267c 100644
---- a/drivers/net/ethernet/intel/ice/ice_protocol_type.h
-+++ b/drivers/net/ethernet/intel/ice/ice_protocol_type.h
-@@ -43,6 +43,7 @@ enum ice_protocol_type {
- 	ICE_NVGRE,
- 	ICE_GTP,
- 	ICE_GTP_NO_PAY,
-+	ICE_PFCP,
- 	ICE_PPPOE,
- 	ICE_L2TPV3,
- 	ICE_VLAN_EX,
-@@ -61,6 +62,7 @@ enum ice_sw_tunnel_type {
- 	ICE_SW_TUN_NVGRE,
- 	ICE_SW_TUN_GTPU,
- 	ICE_SW_TUN_GTPC,
-+	ICE_SW_TUN_PFCP,
- 	ICE_ALL_TUNNELS /* All tunnel types including NVGRE */
- };
+ #define PWM_IMX_TPM_PARAM_CHAN			GENMASK(7, 0)
++#define PWM_IMX_TPM_GLOBAL_RST			BIT(1)
  
-@@ -202,6 +204,15 @@ struct ice_udp_gtp_hdr {
- 	u8 rsvrd;
- };
+ #define PWM_IMX_TPM_SC_PS			GENMASK(2, 0)
+ #define PWM_IMX_TPM_SC_CMOD			GENMASK(4, 3)
+@@ -362,6 +363,10 @@ static int pwm_imx_tpm_probe(struct platform_device *pdev)
+ 	val = readl(tpm->base + PWM_IMX_TPM_PARAM);
+ 	tpm->chip.npwm = FIELD_GET(PWM_IMX_TPM_PARAM_CHAN, val);
  
-+struct ice_pfcp_hdr {
-+	u8 flags;
-+	u8 msg_type;
-+	__be16 length;
-+	__be64 seid;
-+	__be32 seq;
-+	u8 spare;
-+} __packed __aligned(__alignof__(u16));
++	/* Resets all internal logic and registers */
++	writel(PWM_IMX_TPM_GLOBAL_RST, tpm->base + PWM_IMX_TPM_GLOBAL);
++	writel(0, tpm->base + PWM_IMX_TPM_GLOBAL);
 +
- struct ice_pppoe_hdr {
- 	u8 rsrvd_ver_type;
- 	u8 rsrvd_code;
-@@ -418,6 +429,7 @@ union ice_prot_hdr {
- 	struct ice_udp_tnl_hdr tnl_hdr;
- 	struct ice_nvgre_hdr nvgre_hdr;
- 	struct ice_udp_gtp_hdr gtp_hdr;
-+	struct ice_pfcp_hdr pfcp_hdr;
- 	struct ice_pppoe_hdr pppoe_hdr;
- 	struct ice_l2tpv3_sess_hdr l2tpv3_sess_hdr;
- 	struct ice_hw_metadata metadata;
-diff --git a/drivers/net/ethernet/intel/ice/ice_switch.h b/drivers/net/ethernet/intel/ice/ice_switch.h
-index db7e501b7e0a..30091a80e7fa 100644
---- a/drivers/net/ethernet/intel/ice/ice_switch.h
-+++ b/drivers/net/ethernet/intel/ice/ice_switch.h
-@@ -21,6 +21,8 @@
- #define ICE_PROFID_IPV6_GTPC_NO_TEID			45
- #define ICE_PROFID_IPV6_GTPU_TEID			46
- #define ICE_PROFID_IPV6_GTPU_IPV6_TCP_INNER		70
-+#define ICE_PROFID_IPV4_PFCP_NODE			79
-+#define ICE_PROFID_IPV6_PFCP_SESSION			82
+ 	mutex_init(&tpm->lock);
  
- #define ICE_SW_RULE_VSI_LIST_SIZE(s, n)		struct_size((s), vsi, (n))
- #define ICE_SW_RULE_RX_TX_HDR_SIZE(s, l)	struct_size((s), hdr_data, (l))
-diff --git a/drivers/net/ethernet/intel/ice/ice_tc_lib.h b/drivers/net/ethernet/intel/ice/ice_tc_lib.h
-index 5d188ad7517a..d84f153517ec 100644
---- a/drivers/net/ethernet/intel/ice/ice_tc_lib.h
-+++ b/drivers/net/ethernet/intel/ice/ice_tc_lib.h
-@@ -4,6 +4,9 @@
- #ifndef _ICE_TC_LIB_H_
- #define _ICE_TC_LIB_H_
- 
-+#include <linux/bits.h>
-+#include <net/pfcp.h>
-+
- #define ICE_TC_FLWR_FIELD_DST_MAC		BIT(0)
- #define ICE_TC_FLWR_FIELD_SRC_MAC		BIT(1)
- #define ICE_TC_FLWR_FIELD_VLAN			BIT(2)
-@@ -34,6 +37,7 @@
- #define ICE_TC_FLWR_FIELD_VLAN_PRIO		BIT(27)
- #define ICE_TC_FLWR_FIELD_CVLAN_PRIO		BIT(28)
- #define ICE_TC_FLWR_FIELD_VLAN_TPID		BIT(29)
-+#define ICE_TC_FLWR_FIELD_PFCP_OPTS		BIT(30)
- 
- #define ICE_TC_FLOWER_MASK_32   0xFFFFFFFF
- 
-@@ -161,6 +165,8 @@ struct ice_tc_flower_fltr {
- 	__be32 tenant_id;
- 	struct gtp_pdu_session_info gtp_pdu_info_keys;
- 	struct gtp_pdu_session_info gtp_pdu_info_masks;
-+	struct pfcp_metadata pfcp_meta_keys;
-+	struct pfcp_metadata pfcp_meta_masks;
- 	u32 flags;
- 	u8 tunnel_type;
- 	struct ice_tc_flower_action	action;
-diff --git a/drivers/net/ethernet/intel/ice/ice_ddp.c b/drivers/net/ethernet/intel/ice/ice_ddp.c
-index 8b7504a9df31..57278ec71aac 100644
---- a/drivers/net/ethernet/intel/ice/ice_ddp.c
-+++ b/drivers/net/ethernet/intel/ice/ice_ddp.c
-@@ -721,6 +721,12 @@ static bool ice_is_gtp_c_profile(u16 prof_idx)
- 	}
- }
- 
-+static bool ice_is_pfcp_profile(u16 prof_idx)
-+{
-+	return prof_idx >= ICE_PROFID_IPV4_PFCP_NODE &&
-+	       prof_idx <= ICE_PROFID_IPV6_PFCP_SESSION;
-+}
-+
- /**
-  * ice_get_sw_prof_type - determine switch profile type
-  * @hw: pointer to the HW structure
-@@ -738,6 +744,9 @@ static enum ice_prof_type ice_get_sw_prof_type(struct ice_hw *hw,
- 	if (ice_is_gtp_u_profile(prof_idx))
- 		return ICE_PROF_TUN_GTPU;
- 
-+	if (ice_is_pfcp_profile(prof_idx))
-+		return ICE_PROF_TUN_PFCP;
-+
- 	for (i = 0; i < hw->blk[ICE_BLK_SW].es.fvw; i++) {
- 		/* UDP tunnel will have UDP_OF protocol ID and VNI offset */
- 		if (fv->ew[i].prot_id == (u8)ICE_PROT_UDP_OF &&
-diff --git a/drivers/net/ethernet/intel/ice/ice_switch.c b/drivers/net/ethernet/intel/ice/ice_switch.c
-index f84bab80ca42..0138fc832a23 100644
---- a/drivers/net/ethernet/intel/ice/ice_switch.c
-+++ b/drivers/net/ethernet/intel/ice/ice_switch.c
-@@ -42,6 +42,7 @@ enum {
- 	ICE_PKT_KMALLOC		= BIT(9),
- 	ICE_PKT_PPPOE		= BIT(10),
- 	ICE_PKT_L2TPV3		= BIT(11),
-+	ICE_PKT_PFCP		= BIT(12),
- };
- 
- struct ice_dummy_pkt_offsets {
-@@ -1110,6 +1111,77 @@ ICE_DECLARE_PKT_TEMPLATE(ipv6_gtp) = {
- 	0x00, 0x00,
- };
- 
-+ICE_DECLARE_PKT_OFFSETS(pfcp_session_ipv4) = {
-+	{ ICE_MAC_OFOS,		0 },
-+	{ ICE_ETYPE_OL,		12 },
-+	{ ICE_IPV4_OFOS,	14 },
-+	{ ICE_UDP_ILOS,		34 },
-+	{ ICE_PFCP,		42 },
-+	{ ICE_PROTOCOL_LAST,	0 },
-+};
-+
-+ICE_DECLARE_PKT_TEMPLATE(pfcp_session_ipv4) = {
-+	0x00, 0x00, 0x00, 0x00, /* ICE_MAC_OFOS 0 */
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+
-+	0x08, 0x00,		/* ICE_ETYPE_OL 12 */
-+
-+	0x45, 0x00, 0x00, 0x2c, /* ICE_IPV4_OFOS 14 */
-+	0x00, 0x01, 0x00, 0x00,
-+	0x00, 0x11, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+
-+	0x00, 0x00, 0x22, 0x65, /* ICE_UDP_ILOS 34 */
-+	0x00, 0x18, 0x00, 0x00,
-+
-+	0x21, 0x01, 0x00, 0x0c, /* ICE_PFCP 42 */
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+
-+	0x00, 0x00,		/* 2 bytes for 4 byte alignment */
-+};
-+
-+ICE_DECLARE_PKT_OFFSETS(pfcp_session_ipv6) = {
-+	{ ICE_MAC_OFOS,		0 },
-+	{ ICE_ETYPE_OL,		12 },
-+	{ ICE_IPV6_OFOS,	14 },
-+	{ ICE_UDP_ILOS,		54 },
-+	{ ICE_PFCP,		62 },
-+	{ ICE_PROTOCOL_LAST,	0 },
-+};
-+
-+ICE_DECLARE_PKT_TEMPLATE(pfcp_session_ipv6) = {
-+	0x00, 0x00, 0x00, 0x00, /* ICE_MAC_OFOS 0 */
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+
-+	0x86, 0xdd,		/* ICE_ETYPE_OL 12 */
-+
-+	0x60, 0x00, 0x00, 0x00, /* ICE_IPV6_OFOS 14 */
-+	0x00, 0x10, 0x11, 0x00, /* Next header UDP */
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+
-+	0x00, 0x00, 0x22, 0x65, /* ICE_UDP_ILOS 54 */
-+	0x00, 0x18, 0x00, 0x00,
-+
-+	0x21, 0x01, 0x00, 0x0c, /* ICE_PFCP 62 */
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+
-+	0x00, 0x00,		/* 2 bytes for 4 byte alignment */
-+};
-+
- ICE_DECLARE_PKT_OFFSETS(pppoe_ipv4_tcp) = {
- 	{ ICE_MAC_OFOS,		0 },
- 	{ ICE_ETYPE_OL,		12 },
-@@ -1343,6 +1415,8 @@ static const struct ice_dummy_pkt_profile ice_dummy_pkt_profiles[] = {
- 	ICE_PKT_PROFILE(ipv4_gtpu_ipv4_tcp, ICE_PKT_TUN_GTPU),
- 	ICE_PKT_PROFILE(ipv6_gtp, ICE_PKT_TUN_GTPC | ICE_PKT_OUTER_IPV6),
- 	ICE_PKT_PROFILE(ipv4_gtpu_ipv4, ICE_PKT_TUN_GTPC),
-+	ICE_PKT_PROFILE(pfcp_session_ipv6, ICE_PKT_PFCP | ICE_PKT_OUTER_IPV6),
-+	ICE_PKT_PROFILE(pfcp_session_ipv4, ICE_PKT_PFCP),
- 	ICE_PKT_PROFILE(pppoe_ipv6_udp, ICE_PKT_PPPOE | ICE_PKT_OUTER_IPV6 |
- 					ICE_PKT_INNER_UDP),
- 	ICE_PKT_PROFILE(pppoe_ipv6_tcp, ICE_PKT_PPPOE | ICE_PKT_OUTER_IPV6),
-@@ -4526,6 +4600,7 @@ static const struct ice_prot_ext_tbl_entry ice_prot_ext[ICE_PROTOCOL_LAST] = {
- 	ICE_PROTOCOL_ENTRY(ICE_NVGRE, 0, 2, 4, 6),
- 	ICE_PROTOCOL_ENTRY(ICE_GTP, 8, 10, 12, 14, 16, 18, 20, 22),
- 	ICE_PROTOCOL_ENTRY(ICE_GTP_NO_PAY, 8, 10, 12, 14),
-+	ICE_PROTOCOL_ENTRY(ICE_PFCP, 8, 10, 12, 14, 16, 18, 20, 22),
- 	ICE_PROTOCOL_ENTRY(ICE_PPPOE, 0, 2, 4, 6),
- 	ICE_PROTOCOL_ENTRY(ICE_L2TPV3, 0, 2, 4, 6, 8, 10),
- 	ICE_PROTOCOL_ENTRY(ICE_VLAN_EX, 2, 0),
-@@ -4559,6 +4634,7 @@ static struct ice_protocol_entry ice_prot_id_tbl[ICE_PROTOCOL_LAST] = {
- 	{ ICE_NVGRE,		ICE_GRE_OF_HW },
- 	{ ICE_GTP,		ICE_UDP_OF_HW },
- 	{ ICE_GTP_NO_PAY,	ICE_UDP_ILOS_HW },
-+	{ ICE_PFCP,		ICE_UDP_ILOS_HW },
- 	{ ICE_PPPOE,		ICE_PPPOE_HW },
- 	{ ICE_L2TPV3,		ICE_L2TPV3_HW },
- 	{ ICE_VLAN_EX,          ICE_VLAN_OF_HW },
-@@ -5266,6 +5342,9 @@ ice_get_compat_fv_bitmap(struct ice_hw *hw, struct ice_adv_rule_info *rinfo,
- 	case ICE_SW_TUN_GTPC:
- 		prof_type = ICE_PROF_TUN_GTPC;
- 		break;
-+	case ICE_SW_TUN_PFCP:
-+		prof_type = ICE_PROF_TUN_PFCP;
-+		break;
- 	case ICE_SW_TUN_AND_NON_TUN:
- 	default:
- 		prof_type = ICE_PROF_ALL;
-@@ -5548,6 +5627,9 @@ ice_find_dummy_packet(struct ice_adv_lkup_elem *lkups, u16 lkups_cnt,
- 	case ICE_SW_TUN_VXLAN:
- 		match |= ICE_PKT_TUN_UDP;
- 		break;
-+	case ICE_SW_TUN_PFCP:
-+		match |= ICE_PKT_PFCP;
-+		break;
- 	default:
- 		break;
- 	}
-@@ -5688,6 +5770,9 @@ ice_fill_adv_dummy_packet(struct ice_adv_lkup_elem *lkups, u16 lkups_cnt,
- 		case ICE_GTP:
- 			len = sizeof(struct ice_udp_gtp_hdr);
- 			break;
-+		case ICE_PFCP:
-+			len = sizeof(struct ice_pfcp_hdr);
-+			break;
- 		case ICE_PPPOE:
- 			len = sizeof(struct ice_pppoe_hdr);
- 			break;
-diff --git a/drivers/net/ethernet/intel/ice/ice_tc_lib.c b/drivers/net/ethernet/intel/ice/ice_tc_lib.c
-index 80797db9f2b9..2f2fce285ecd 100644
---- a/drivers/net/ethernet/intel/ice/ice_tc_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_tc_lib.c
-@@ -38,6 +38,9 @@ ice_tc_count_lkups(u32 flags, struct ice_tc_flower_lyr_2_4_hdrs *headers,
- 	if (flags & ICE_TC_FLWR_FIELD_GTP_OPTS)
- 		lkups_cnt++;
- 
-+	if (flags & ICE_TC_FLWR_FIELD_PFCP_OPTS)
-+		lkups_cnt++;
-+
- 	if (flags & (ICE_TC_FLWR_FIELD_ENC_SRC_IPV4 |
- 		     ICE_TC_FLWR_FIELD_ENC_DEST_IPV4 |
- 		     ICE_TC_FLWR_FIELD_ENC_SRC_IPV6 |
-@@ -138,6 +141,8 @@ ice_proto_type_from_tunnel(enum ice_tunnel_type type)
- 		return ICE_GTP;
- 	case TNL_GTPC:
- 		return ICE_GTP_NO_PAY;
-+	case TNL_PFCP:
-+		return ICE_PFCP;
- 	default:
- 		return 0;
- 	}
-@@ -157,6 +162,8 @@ ice_sw_type_from_tunnel(enum ice_tunnel_type type)
- 		return ICE_SW_TUN_GTPU;
- 	case TNL_GTPC:
- 		return ICE_SW_TUN_GTPC;
-+	case TNL_PFCP:
-+		return ICE_SW_TUN_PFCP;
- 	default:
- 		return ICE_NON_TUN;
- 	}
-@@ -236,6 +243,22 @@ ice_tc_fill_tunnel_outer(u32 flags, struct ice_tc_flower_fltr *fltr,
- 		i++;
- 	}
- 
-+	if (flags & ICE_TC_FLWR_FIELD_PFCP_OPTS) {
-+		struct ice_pfcp_hdr *hdr_h, *hdr_m;
-+
-+		hdr_h = &list[i].h_u.pfcp_hdr;
-+		hdr_m = &list[i].m_u.pfcp_hdr;
-+		list[i].type = ICE_PFCP;
-+
-+		hdr_h->flags = fltr->pfcp_meta_keys.type;
-+		hdr_m->flags = fltr->pfcp_meta_masks.type & 0x01;
-+
-+		hdr_h->seid = fltr->pfcp_meta_keys.seid;
-+		hdr_m->seid = fltr->pfcp_meta_masks.seid;
-+
-+		i++;
-+	}
-+
- 	if (flags & (ICE_TC_FLWR_FIELD_ENC_SRC_IPV4 |
- 		     ICE_TC_FLWR_FIELD_ENC_DEST_IPV4)) {
- 		list[i].type = ice_proto_type_from_ipv4(false);
-@@ -366,8 +389,11 @@ ice_tc_fill_rules(struct ice_hw *hw, u32 flags,
- 	if (tc_fltr->tunnel_type != TNL_LAST) {
- 		i = ice_tc_fill_tunnel_outer(flags, tc_fltr, list, i);
- 
--		headers = &tc_fltr->inner_headers;
--		inner = true;
-+		/* PFCP is considered non-tunneled - don't swap headers. */
-+		if (tc_fltr->tunnel_type != TNL_PFCP) {
-+			headers = &tc_fltr->inner_headers;
-+			inner = true;
-+		}
- 	}
- 
- 	if (flags & ICE_TC_FLWR_FIELD_ETH_TYPE_ID) {
-@@ -621,6 +647,8 @@ static int ice_tc_tun_get_type(struct net_device *tunnel_dev)
- 	 */
- 	if (netif_is_gtp(tunnel_dev))
- 		return TNL_GTPU;
-+	if (netif_is_pfcp(tunnel_dev))
-+		return TNL_PFCP;
- 	return TNL_LAST;
- }
- 
-@@ -1415,6 +1443,20 @@ ice_parse_tunnel_attr(struct net_device *dev, struct flow_rule *rule,
- 		fltr->flags |= ICE_TC_FLWR_FIELD_GTP_OPTS;
- 	}
- 
-+	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_ENC_OPTS) &&
-+	    fltr->tunnel_type == TNL_PFCP) {
-+		struct flow_match_enc_opts match;
-+
-+		flow_rule_match_enc_opts(rule, &match);
-+
-+		memcpy(&fltr->pfcp_meta_keys, match.key->data,
-+		       sizeof(struct pfcp_metadata));
-+		memcpy(&fltr->pfcp_meta_masks, match.mask->data,
-+		       sizeof(struct pfcp_metadata));
-+
-+		fltr->flags |= ICE_TC_FLWR_FIELD_PFCP_OPTS;
-+	}
-+
- 	return 0;
- }
- 
-@@ -1473,10 +1515,14 @@ ice_parse_cls_flower(struct net_device *filter_dev, struct ice_vsi *vsi,
- 			return err;
- 		}
- 
--		/* header pointers should point to the inner headers, outer
--		 * header were already set by ice_parse_tunnel_attr
--		 */
--		headers = &fltr->inner_headers;
-+		/* PFCP is considered non-tunneled - don't swap headers. */
-+		if (fltr->tunnel_type != TNL_PFCP) {
-+			/* Header pointers should point to the inner headers,
-+			 * outer header were already set by
-+			 * ice_parse_tunnel_attr().
-+			 */
-+			headers = &fltr->inner_headers;
-+		}
- 	} else if (dissector->used_keys &
- 		  (BIT_ULL(FLOW_DISSECTOR_KEY_ENC_IPV4_ADDRS) |
- 		   BIT_ULL(FLOW_DISSECTOR_KEY_ENC_IPV6_ADDRS) |
+ 	ret = devm_pwmchip_add(&pdev->dev, &tpm->chip);
 -- 
-2.43.0
+2.34.1
 
 
