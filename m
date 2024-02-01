@@ -1,54 +1,62 @@
-Return-Path: <linux-kernel+bounces-48134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C26788457D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:32:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B0AE8457DA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:33:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63DEEB2B353
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:32:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE0FB1F21257
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:33:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60ECD15F30E;
-	Thu,  1 Feb 2024 12:26:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6D8853375;
+	Thu,  1 Feb 2024 12:27:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="YBchkCDA"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="czaYRD7d"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D904D779F0;
-	Thu,  1 Feb 2024 12:26:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7568E53363;
+	Thu,  1 Feb 2024 12:27:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706790380; cv=none; b=l0G8yWSqMYmxYAtP/ijVWu47y6cfudRKWfql3jJRRD1/yBUgqMMMOZrQyvJxF/SQLKvcG2D5urfu31qR3pW9ROU8UZz8d2+x49PIEqrVex4LsAh/fUBJfGQX7LW5gjLDU7U5Q8/8JKdCY1UkQ0qXjMbdozNWV9VYedKu5IlRtlM=
+	t=1706790452; cv=none; b=bBF8dDCqxqbJALAR6ayyZFiQL1+YGOJaOH6YHuOyCloYfRopaWLLVNiOluDbE8msQVWmc3xMdI0ra7JYWXjppETEBpVV1wb3MxybxzKZlTiYPCk2FxWdFpmaOIbjIbYul02XKYY51cfjTC87e6T3wP3wVsT8BASu6eRjud0/S2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706790380; c=relaxed/simple;
-	bh=xg5m8felV7XMNg/ecDkG5YxQXJFG4fqtcpiToAp0aE4=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=f72vUHO00Z9kfS3e3t/dtedosDRbPBdgCjTWvDJg+N2/6CoDEg3wHqcdbwZxujs2R1Jw4CFplA9Y6nmreiYcHMZ792ZdFafRMKkPjA0Gw/u+XHz6zaTktroyhf/xG8+mZAVg7XHITR/WUqAiJK4lSd5vLBf/p/NpHey8juCNIyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=YBchkCDA; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706790376;
-	bh=xg5m8felV7XMNg/ecDkG5YxQXJFG4fqtcpiToAp0aE4=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=YBchkCDA2ADPFyOfIaAPy6VfbCxUA4woSvmMFqErTo/eGM/o30X1zghyQjFY0MyhC
-	 +N/s5HqRyxsxFa9WaUiFkMM0Cpq+4q/cJ42osL+jI3wYtAbDqZP3O4f8iaETpuvJcF
-	 7FgHlcoLM9zjnDrHj9HvP5WGkstsqsaRiTSCltqLKdMNuKXcfFseCdNd4w++c+YoHD
-	 cKPj6DLJSkAajiW7Q91EGgq5GX2xNLgjTkQvn46sdcYgHnk6MbSX9RV/Wq9tyczwK8
-	 o++yH6dXavwI/AGaM+llvlTbNveYyvTaCdvZIHaXY51EfrF3Scr1vzj0mJ55RSbUzz
-	 iiEPRBWeMU0jw==
-Received: from [100.66.47.90] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 159F5378047F;
-	Thu,  1 Feb 2024 12:26:13 +0000 (UTC)
-Message-ID: <cbf00ee3-bb41-47b3-af03-8f26e313d0d5@collabora.com>
-Date: Thu, 1 Feb 2024 17:26:29 +0500
+	s=arc-20240116; t=1706790452; c=relaxed/simple;
+	bh=GvJ6UC3m5Gt80ckKHHc5Z0iPYxmYUNv9YAO1yLrwBxw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=To2AzdAIkR90yORc58rrcxKc20dNzmOHDrEUZylhv7a2RBG0QI/bdrfEQIm25FBtRAPWzvOmxAO1qmTTz7Wd4ApbUbEWpDASAefEkJ3ydwORShC6bJRmRVbPuE5IYs+CVFCByIIGeEjhgr4SIPQAlTXpk2GkIx+WROkPDI36GjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=czaYRD7d; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 411CFMkc018597;
+	Thu, 1 Feb 2024 12:27:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=nphFBV7jRUlL4pJWoJtaUA6/hmMdEE8mLfbOdZWsKFc=; b=cz
+	aYRD7deBYz2VhGa2ex43+TdjHvXEoiRJC2xMMukDGN+QPbiG+YUk9EzKY2oBIy41
+	5CeOEkb/euIqWP/6K0T+M19M8YRp5a1y0creMmKtPMyj1B49jd7u8FfxUDyYB2kn
+	ix4Oa2eSR564weWbWGUD9FzagEMpa01tXKPQgTGoWPN0k4GepNVQIRx30aQJ+FRU
+	/l3SP5TdPM+2xd5QO9nmOpYr9DNjMS5hbhpGlzA4DpVbxCvZPMvBgIKy96CyO9dU
+	+rvsL9xTUlbyLj4gLVr1l9PbilSX5meVy+IQzZLx6GGfxWcPMCq4LMYNO8q3rHPz
+	du12aBWHjrshB5G/nj0Q==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0b4y00tf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 01 Feb 2024 12:27:26 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 411CRQm1006554
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 1 Feb 2024 12:27:26 GMT
+Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 1 Feb
+ 2024 04:27:20 -0800
+Message-ID: <a163702b-40f9-4082-a4d1-d89de645a651@quicinc.com>
+Date: Thu, 1 Feb 2024 20:27:17 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,117 +64,95 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
- linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/5] selftests/mm: run_vmtests.sh: add missing tests
-Content-Language: en-US
-To: Ryan Roberts <ryan.roberts@arm.com>,
- Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>
-References: <20240125154608.720072-1-usama.anjum@collabora.com>
- <20240125154608.720072-6-usama.anjum@collabora.com>
- <ab7523db-f032-4f99-8090-785f126a3ae2@arm.com>
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <ab7523db-f032-4f99-8090-785f126a3ae2@arm.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v4 6/6] arm64: dts: qcom: aim300: add AIM300 AIoT
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <dmitry.baryshkov@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+        Qiang Yu
+	<quic_qianyu@quicinc.com>,
+        Ziyue Zhang <quic_ziyuzhan@quicinc.com>
+References: <20240119100621.11788-1-quic_tengfan@quicinc.com>
+ <20240119100621.11788-7-quic_tengfan@quicinc.com>
+ <d3ef45cf-2de8-4f5b-8857-62d1996f3f58@linaro.org>
+ <842bf6ad-46e1-43d8-86be-79ab0f49710b@quicinc.com>
+ <c17dafd2-db89-4fe2-8e98-2a031f7237c2@quicinc.com>
+ <b28904a6-c1ef-44b5-96ca-313a9a2a3f8b@quicinc.com>
+ <3e3cbc36-2f3f-4295-9325-90757f0d77ce@linaro.org>
+ <012bb387-2472-4bcb-ba87-3bf75dd88d64@quicinc.com>
+ <5c6fec5f-79ed-4c93-b337-68a2c25d8a44@linaro.org>
+From: Tengfei Fan <quic_tengfan@quicinc.com>
+In-Reply-To: <5c6fec5f-79ed-4c93-b337-68a2c25d8a44@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: UnX-wVQ6ezZSGJuR7TVmZyFlQ2-Ay2sB
+X-Proofpoint-GUID: UnX-wVQ6ezZSGJuR7TVmZyFlQ2-Ay2sB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-01_01,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
+ bulkscore=0 priorityscore=1501 impostorscore=0 suspectscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 phishscore=0 mlxscore=0
+ mlxlogscore=547 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2402010099
 
-On 2/1/24 5:11 PM, Ryan Roberts wrote:
-> On 25/01/2024 15:46, Muhammad Usama Anjum wrote:
->> Add missing tests to run_vmtests.sh. The mm kselftests are run through
->> run_vmtests.sh. If a test isn't present in this script, it'll not run
->> with run_tests or `make -C tools/testing/selftests/mm run_tests`.
->>
->> Cc: Ryan Roberts <ryan.roberts@arm.com>
->> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->> ---
->> Changes since v1:
->> - Copy the original scripts and their dependence script to install directory as well
->>
->> Changes since v2:
->> - Add a comment
->> - Move tests down in the file
->> - Add "-d" option which poisons the pages and aren't being useable after
->>   the test
->> ---
->>  tools/testing/selftests/mm/Makefile       | 5 +++++
->>  tools/testing/selftests/mm/run_vmtests.sh | 8 ++++++++
->>  2 files changed, 13 insertions(+)
->>
->> diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selftests/mm/Makefile
->> index 2453add65d12f..f3aec7be80730 100644
->> --- a/tools/testing/selftests/mm/Makefile
->> +++ b/tools/testing/selftests/mm/Makefile
->> @@ -114,6 +114,11 @@ TEST_PROGS := run_vmtests.sh
->>  TEST_FILES := test_vmalloc.sh
->>  TEST_FILES += test_hmm.sh
->>  TEST_FILES += va_high_addr_switch.sh
->> +TEST_FILES += charge_reserved_hugetlb.sh
->> +TEST_FILES += hugetlb_reparenting_test.sh
->> +
->> +# required by charge_reserved_hugetlb.sh
->> +TEST_FILES += write_hugetlb_memory.sh
->>  
->>  include ../lib.mk
->>  
->> diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
->> index e373d592dbf5c..a0f37e4438937 100755
->> --- a/tools/testing/selftests/mm/run_vmtests.sh
->> +++ b/tools/testing/selftests/mm/run_vmtests.sh
->> @@ -19,6 +19,7 @@ usage: ${BASH_SOURCE[0]:-$0} [ options ]
->>    -t: specify specific categories to tests to run
->>    -h: display this message
->>    -n: disable TAP output
->> +  -d: run destructive tests
-> 
-> You probably want to clarify the behaviour for -a (all). I guess providing -a
-> should NOT run destructive tests unless -d is also explicitly provided.
-> 
->>  
->>  The default behavior is to run required tests only.  If -a is specified,
->>  will run all tests.
->> @@ -79,6 +80,7 @@ EOF
->>  }
->>  
->>  RUN_ALL=false
->> +RUN_DESTRUCTIVE_TEST=false
-> 
-> Either call this RUN_DESTRUCTIVE (my preference) or at least make it plural
-> (RUN_DESTRUCTIVE_TESTS).
-> 
->>  TAP_PREFIX="# "
->>  
->>  while getopts "aht:n" OPT; do
->> @@ -87,6 +89,7 @@ while getopts "aht:n" OPT; do
->>  		"h") usage ;;
->>  		"t") VM_SELFTEST_ITEMS=${OPTARG} ;;
->>  		"n") TAP_PREFIX= ;;
->> +		"a") RUN_DESTRUCTIVE_TEST=true ;;
-> 
-> The help you added says the option is -d, but this is looking for -a, and
-> conflicting with the existing -a=all option.
-Sorry, that's a typo. I'll resolve your above comments with fix patch as well.
 
+
+On 2/1/2024 8:20 PM, Krzysztof Kozlowski wrote:
+> On 01/02/2024 13:16, Tengfei Fan wrote:
+>>
+>>
+>> On 2/1/2024 8:03 PM, Krzysztof Kozlowski wrote:
+>>> On 01/02/2024 12:49, Tengfei Fan wrote:
+>>>>>>> This should be probably TX SWR_INPUT1.
+>>>>>>>
+>>>>>>> Best regards,
+>>>>>>> Krzysztof
+>>>>>>>
+>>>>>>
+>>>>>> I will double check this with related team and I will update this.
+>>>>>>
+>>>>>
+>>>>> I will apply "TX SWR_INPUT1" on audio-routing node in the next patch
+>>>>> series.
+>>>>>
+>>>>
+>>>> This patch series has been sent for nearly two weeks. do you think it is
+>>>> better to modify the patch series acording to the current comments and
+>>>> submit a new patch series, or continue to wait for your review comments
+>>>> on the current path series?
+>>>
+>>> Hi,
+>>>
+>>> Whom do you ask?
+>>>
+>>> Best regards,
+>>> Krzysztof
+>>>
+>>
+>> Sorry Krzysztof, can you give sone guidance on whether I should update
+>> patch and submit a new patch series, or do you need time to review
+>> current patch series?
 > 
->>  	esac
->>  done
->>  shift $((OPTIND -1))
->> @@ -304,6 +307,11 @@ CATEGORY="process_mrelease" run_test ./mrelease_test
->>  CATEGORY="mremap" run_test ./mremap_test
->>  
->>  CATEGORY="hugetlb" run_test ./thuge-gen
->> +CATEGORY="hugetlb" run_test ./charge_reserved_hugetlb.sh -cgroup-v2
->> +CATEGORY="hugetlb" run_test ./hugetlb_reparenting_test.sh -cgroup-v2
->> +if $RUN_DESTRUCTIVE_TEST; then
->> +CATEGORY="hugetlb" run_test ./hugetlb-read-hwpoison
->> +fi
->>  
->>  if [ $VADDR64 -ne 0 ]; then
->>  
+> Up to you, I do not plan to provide more reviews on this. I just
+> commented about this thing here, because I was doing similar work for QRD.
 > 
+> Best regards,
+> Krzysztof
 > 
+
+Thank youfor clarification.
+
+Next I will update patches according to the current comments and submit 
+a new path series.
 
 -- 
-BR,
-Muhammad Usama Anjum
+Thx and BRs,
+Tengfei Fan
 
