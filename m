@@ -1,158 +1,196 @@
-Return-Path: <linux-kernel+bounces-47982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B30418455A5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:40:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A423E8455A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:41:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4B3B1C23242
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:40:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A0142823EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:41:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4156D15A490;
-	Thu,  1 Feb 2024 10:40:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="NI74xNAI"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 798D815B973;
+	Thu,  1 Feb 2024 10:41:38 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C27112747F;
-	Thu,  1 Feb 2024 10:40:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52C7841C87;
+	Thu,  1 Feb 2024 10:41:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706784042; cv=none; b=eChphJFFIn/ysVT/TzdZ4ow6SAUolxvj4z82rf1TB4zkZ+eApJsozbsXsA/3s9lj+g+BLs48QAO6PwY/mVI+D3Vh9ANUCTuSQrxjlFYdUIjVNqbB5f2rLi+vYCexIkqMEHX13TsuWKuGVGVvbUlbwOfTgraQe7hM+zJ4WjTc9CA=
+	t=1706784098; cv=none; b=VzSpZiOV2zYb1JfNt2GCK6wx3SPhkP6PtqO/bjV1C5gamHPDmXWej/D0Oyuz1WCT3yJjq9hTYG1jogf/yUG4M6BcWlofH7Rmd4OMiBIKn95j4WWq02Yhwz5dRdg0BCzcEfEjBRiNDRyFPC1peOTUm0RJKnDQPBqz6R3pwfndCKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706784042; c=relaxed/simple;
-	bh=IAxQ247gpt/xDUWQXHExdT3CIugrLkHsYYszRWh8NGA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=IAxtFjuICeJ0aFR7VBhYs63U8nOZtjEubM3up+A+LTJhc1wFhS3DO6U5SC4YkgTTD6WcSWIbRqDDMe7+nNlHDlqw9uC5ddPvyeK2wq1WSrN72pkPlVWHeR5U4Am1SCKwwHpJ+hN7rpQHO+Nzeg5bW31KMRovtAMyzGM5lb/PKk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=NI74xNAI; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 411AeTGJ076393;
-	Thu, 1 Feb 2024 04:40:29 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706784029;
-	bh=9OeQC3NYKDo60H/HChds5+O9TwH7tRqkh+NBR9Fhh1A=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=NI74xNAIvYz//AoFYZqtYee4pHtB79pTeGnorL3u9ZH0YcNLRUC7fi+78V+y8qVgO
-	 PSC9EnEkRJw0AJILQPDZUhH9ZwWb0FghgCN9csOGVefOEEs9XRc28zuEarK1INKkEX
-	 AXQIWuM7g9gWRYxgtoDnNwM3nBhkreqC1CBhnV38=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 411AeTNu102304
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 1 Feb 2024 04:40:29 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 1
- Feb 2024 04:40:28 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 1 Feb 2024 04:40:28 -0600
-Received: from [172.24.227.177] (jayesh-hp-probook-440-g8-notebook-pc.dhcp.ti.com [172.24.227.177])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 411AeOEQ022888;
-	Thu, 1 Feb 2024 04:40:25 -0600
-Message-ID: <30ac8486-325d-44cb-9855-84a0b41f6857@ti.com>
-Date: Thu, 1 Feb 2024 16:10:23 +0530
+	s=arc-20240116; t=1706784098; c=relaxed/simple;
+	bh=IGu7IIdO7j3kdwSZGT3hgRZopkNjAO+e1SjmpUG56ak=;
+	h=Subject:To:References:CC:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=elxEx4Ue6LqN9yWPEAof9Lnj7tef/oe30brbLsFBi1iEv4ry0jMCMKq4mmivi7/b3L64xGsZKOkPPmkEAHHat79xNTWypb1CwQn20vgMnuezhqJLQI/i+57lyXJSa8wi/U7lCYmryiGeO6c8X6DilWOaMdR8lX13omnT9tfA1Us=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TQb4q61Pqz29kyQ;
+	Thu,  1 Feb 2024 18:39:39 +0800 (CST)
+Received: from dggpemd200004.china.huawei.com (unknown [7.185.36.141])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2D38C1400D4;
+	Thu,  1 Feb 2024 18:41:31 +0800 (CST)
+Received: from [10.174.179.24] (10.174.179.24) by
+ dggpemd200004.china.huawei.com (7.185.36.141) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.28; Thu, 1 Feb 2024 18:41:30 +0800
+Subject: Re: [PATCH 2/2] mm/readahead: limit sync readahead while too many
+ active refault
+To: Jan Kara <jack@suse.cz>
+References: <20240201100835.1626685-1-liushixin2@huawei.com>
+ <20240201100835.1626685-3-liushixin2@huawei.com>
+ <20240201093749.ll7uzgt7ixy7kkhw@quack3>
+CC: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner
+	<brauner@kernel.org>, Matthew Wilcox <willy@infradead.org>, Andrew Morton
+	<akpm@linux-foundation.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+From: Liu Shixin <liushixin2@huawei.com>
+Message-ID: <c768cab9-4ccb-9618-24a8-b51d3f141340@huawei.com>
+Date: Thu, 1 Feb 2024 18:41:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: ti: k3-am69-sk: remove assigned-clock-parents
- for unused VP
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, <nm@ti.com>,
-        <vigneshr@ti.com>
-CC: <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <a-bhatia1@ti.com>, <rogerq@kernel.org>, <sabiya.d@ti.com>,
-        <u-kumar1@ti.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-References: <20231221113042.48492-1-j-choudhary@ti.com>
- <bf271671-861d-43d4-a24f-de49256ef9d0@ideasonboard.com>
-Content-Language: en-US
-From: Jayesh Choudhary <j-choudhary@ti.com>
-In-Reply-To: <bf271671-861d-43d4-a24f-de49256ef9d0@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20240201093749.ll7uzgt7ixy7kkhw@quack3>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemd200004.china.huawei.com (7.185.36.141)
 
-Hello Tomi,
 
-On 03/01/24 18:35, Tomi Valkeinen wrote:
-> Hi,
-> 
-> On 21/12/2023 13:30, Jayesh Choudhary wrote:
->> VP2 and VP3 are unused video ports and VP3 share the same parent
->> clock as VP1 causing issue with pixel clock setting for HDMI (VP1).
->> So remove the parent clocks for unused VPs.
+
+On 2024/2/1 17:37, Jan Kara wrote:
+> On Thu 01-02-24 18:08:35, Liu Shixin wrote:
+>> When the pagefault is not for write and the refault distance is close,
+>> the page will be activated directly. If there are too many such pages in
+>> a file, that means the pages may be reclaimed immediately.
+>> In such situation, there is no positive effect to read-ahead since it will
+>> only waste IO. So collect the number of such pages and when the number is
+>> too large, stop bothering with read-ahead for a while until it decreased
+>> automatically.
 >>
->> Fixes: 6f8605fd7d11 ("arm64: dts: ti: k3-am69-sk: Add DP and HDMI 
->> support")
->> Reported-by: Nishanth Menon <nm@ti.com>
->> Closes: 
->> https://storage.kernelci.org/mainline/master/v6.7-rc6/arm64/defconfig/gcc-10/lab-ti/baseline-nfs-am69_sk-fs.txt
->> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+>> Define 'too large' as 10000 experientially, which can solves the problem
+>> and does not affect by the occasional active refault.
+>>
+>> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> So I'm not convinced this new logic is needed. We already have
+> ra->mmap_miss which gets incremented when a page fault has to read the page
+> (and decremented when a page fault found the page already in cache). This
+> should already work to detect trashing as well, shouldn't it? If it does
+> not, why?
+>
+> 								Honza
+ra->mmap_miss doesn't help, it increased only one in do_sync_mmap_readahead()
+and then decreased one for every page in filemap_map_pages(). So in this scenario,
+it can't exceed MMAP_LOTSAMISS.
+
+Thanks,
+>
 >> ---
+>>  include/linux/fs.h      |  2 ++
+>>  include/linux/pagemap.h |  1 +
+>>  mm/filemap.c            | 16 ++++++++++++++++
+>>  mm/readahead.c          |  4 ++++
+>>  4 files changed, 23 insertions(+)
 >>
->> Local testing log for HDMI on AM69-SK:
->> <https://gist.github.com/Jayesh2000/517395cd85eb28d65b8ee4568cefb809>
+>> diff --git a/include/linux/fs.h b/include/linux/fs.h
+>> index ed5966a704951..f2a1825442f5a 100644
+>> --- a/include/linux/fs.h
+>> +++ b/include/linux/fs.h
+>> @@ -960,6 +960,7 @@ struct fown_struct {
+>>   *      the first of these pages is accessed.
+>>   * @ra_pages: Maximum size of a readahead request, copied from the bdi.
+>>   * @mmap_miss: How many mmap accesses missed in the page cache.
+>> + * @active_refault: Number of active page refault.
+>>   * @prev_pos: The last byte in the most recent read request.
+>>   *
+>>   * When this structure is passed to ->readahead(), the "most recent"
+>> @@ -971,6 +972,7 @@ struct file_ra_state {
+>>  	unsigned int async_size;
+>>  	unsigned int ra_pages;
+>>  	unsigned int mmap_miss;
+>> +	unsigned int active_refault;
+>>  	loff_t prev_pos;
+>>  };
+>>  
+>> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+>> index 2df35e65557d2..da9eaf985dec4 100644
+>> --- a/include/linux/pagemap.h
+>> +++ b/include/linux/pagemap.h
+>> @@ -1256,6 +1256,7 @@ struct readahead_control {
+>>  	pgoff_t _index;
+>>  	unsigned int _nr_pages;
+>>  	unsigned int _batch_count;
+>> +	unsigned int _active_refault;
+>>  	bool _workingset;
+>>  	unsigned long _pflags;
+>>  };
+>> diff --git a/mm/filemap.c b/mm/filemap.c
+>> index 750e779c23db7..4de80592ab270 100644
+>> --- a/mm/filemap.c
+>> +++ b/mm/filemap.c
+>> @@ -3037,6 +3037,7 @@ loff_t mapping_seek_hole_data(struct address_space *mapping, loff_t start,
+>>  
+>>  #ifdef CONFIG_MMU
+>>  #define MMAP_LOTSAMISS  (100)
+>> +#define ACTIVE_REFAULT_LIMIT	(10000)
+>>  /*
+>>   * lock_folio_maybe_drop_mmap - lock the page, possibly dropping the mmap_lock
+>>   * @vmf - the vm_fault for this fault.
+>> @@ -3142,6 +3143,18 @@ static struct file *do_sync_mmap_readahead(struct vm_fault *vmf)
+>>  	if (mmap_miss > MMAP_LOTSAMISS)
+>>  		return fpin;
+>>  
+>> +	ractl._active_refault = READ_ONCE(ra->active_refault);
+>> +	if (ractl._active_refault)
+>> +		WRITE_ONCE(ra->active_refault, --ractl._active_refault);
+>> +
+>> +	/*
+>> +	 * If there are a lot of refault of active pages in this file,
+>> +	 * that means the memory reclaim is ongoing. Stop bothering with
+>> +	 * read-ahead since it will only waste IO.
+>> +	 */
+>> +	if (ractl._active_refault >= ACTIVE_REFAULT_LIMIT)
+>> +		return fpin;
+>> +
+>>  	/*
+>>  	 * mmap read-around
+>>  	 */
+>> @@ -3151,6 +3164,9 @@ static struct file *do_sync_mmap_readahead(struct vm_fault *vmf)
+>>  	ra->async_size = ra->ra_pages / 4;
+>>  	ractl._index = ra->start;
+>>  	page_cache_ra_order(&ractl, ra, 0);
+>> +
+>> +	WRITE_ONCE(ra->active_refault, ractl._active_refault);
+>> +
+>>  	return fpin;
+>>  }
+>>  
+>> diff --git a/mm/readahead.c b/mm/readahead.c
+>> index cc4abb67eb223..d79bb70a232c4 100644
+>> --- a/mm/readahead.c
+>> +++ b/mm/readahead.c
+>> @@ -263,6 +263,10 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
+>>  			folio_set_readahead(folio);
+>>  		ractl->_workingset |= folio_test_workingset(folio);
+>>  		ractl->_nr_pages++;
+>> +		if (unlikely(folio_test_workingset(folio)))
+>> +			ractl->_active_refault++;
+>> +		else if (unlikely(ractl->_active_refault))
+>> +			ractl->_active_refault--;
+>>  	}
+>>  
+>>  	/*
+>> -- 
+>> 2.25.1
 >>
->>   arch/arm64/boot/dts/ti/k3-am69-sk.dts | 8 ++------
->>   1 file changed, 2 insertions(+), 6 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-am69-sk.dts 
->> b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
->> index 8da591579868..370980eb59b0 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am69-sk.dts
->> +++ b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
->> @@ -918,13 +918,9 @@ &dss {
->>       pinctrl-names = "default";
->>       pinctrl-0 = <&dss_vout0_pins_default>;
->>       assigned-clocks = <&k3_clks 218 2>,
->> -              <&k3_clks 218 5>,
->> -              <&k3_clks 218 14>,
->> -              <&k3_clks 218 18>;
->> +              <&k3_clks 218 5>;
->>       assigned-clock-parents = <&k3_clks 218 3>,
->> -                 <&k3_clks 218 7>,
->> -                 <&k3_clks 218 16>,
->> -                 <&k3_clks 218 22>;
->> +                 <&k3_clks 218 7>;
->>   };
->>   &serdes_wiz4 {
-> 
-> The SK has two outputs, using VP0 and VP1, so the above kind of makes 
-> sense. Then again, setting up 4 clocks here really shouldn't break the 
-> SK, should it? The AM69 has 4 available VPs. How does one configure the 
-> clocks for a board that uses 4 VPs, or possibly a different selection of 
-> VPs?
 
-> 
-> I think the patch desc should explain why this doesn't work. Afaik, the 
-> dts is not wrong as such, but there's an underlying issue that breaks 
-> the clocking if all four clocks are set up here.
-> 
-
-I discussed this with firmware team, there is an issue with sibling
-child clocks. If parent clock is shared, DM cannot set its rate.
-The determine_rate and set_rate query are behaving unexpectedly in
-this case. determine_rate is returning 0 and set_rate is setting it
-to 1.8G even when VP can support max 600M.
-
-Jayesh
-
-> So, with the desc updated, as this fixes an issue and is not wrong:
-> 
-> Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> 
-> But I also feel this is dodging a firmware (?) issue.
-> 
->   Tomi
-> 
 
