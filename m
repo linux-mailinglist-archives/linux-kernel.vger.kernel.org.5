@@ -1,110 +1,101 @@
-Return-Path: <linux-kernel+bounces-48388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53C95845B52
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:23:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F241845B56
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:24:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85EBD1C284D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:23:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C2BD2930A8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:24:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 217CB6A32E;
-	Thu,  1 Feb 2024 15:19:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Y8rlhkVK"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CF456216A;
+	Thu,  1 Feb 2024 15:21:50 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B9D3779EA
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 15:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6FF062164;
+	Thu,  1 Feb 2024 15:21:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706800791; cv=none; b=iVqYF9C9xmSj0SNNl/0R101fyuL2rXOJOfMhl6FvHRxwW/WZH1rbhTjX9pNPyYc2eQpqlfaSVOqFb5eRZcRss6ApyGtPOPEw20RYs713WD+5tMfw/dUbTu19U9b4tE6FIiKXnVdyqF/LkVBUG/4cMoDqveBqjw2GGOSNtIRhTuU=
+	t=1706800909; cv=none; b=Fo8XC0VzK1+gmyHKGvzVALMBqE9/aYCCssqsQMWwKBsE8xYIKRom696388fEe0vq2mNdIcHJBip6BK7WH15m3fjF/NzSN0D+Z4rW8Fa/WCcTgyWZVxV9uFFymd+aMjQviUZXa2h1btW1hDhnWuklZK0fVD22x34h7Qzq9ZG529U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706800791; c=relaxed/simple;
-	bh=atE6eRegdz/BiaRQH20mz9rNccJ3IJb0I5UDSQIHy5o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T2cfKXBv6zsAL6wRtSI7lvpA1v+73qmmITNnli2pvXlH5u43Mu82kznHctpWyWU35cnTejM6hmkG1AbBrwml7ttZUE3ShGqienIUKjfRWGn7EItcRXI/S1ThOegcqsE4oiH6bdgfA3gCrmba/4sTqNnncNloE31cO6OuRK3W5SQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Y8rlhkVK; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id BC8C340E01A9;
-	Thu,  1 Feb 2024 15:19:46 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id HMImUzNma5oW; Thu,  1 Feb 2024 15:19:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706800784; bh=pjw6kYn/uDg011VqXwRJEPbupdiC09ecf8P/cyc91FQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Y8rlhkVK+X2C+XSLekMtj+Gn/JfgemTy564P/vB/GEWjwoTAmML2L1auIcNJnnKGi
-	 htcdMQcYblXVPUWuSkIGLgd+X6+ibrry6eZb0dlgYmQ3NOnuzHGBy11e4p7QKcJxeL
-	 sJ4skbq0rFmq/ybnlV/qrwXpDdCLEZrHgYWiI8yjS6a+5+yku5Pi96fkyPEhBTnYUk
-	 LiXuSeYSx8aYO1LaFQvEPSwVfw2bQAF9gql2WWg/lKiWafIAHZKu3xYAQDvphK2+12
-	 r4Z73HuRKcCu0CbHgsknHe/MTTq4FqPsojWgswJvyuuIC3bzYE0nxW9W2Xi+XZkG5I
-	 AIUAf9NF7zaDvT9o9JWnuN6ncVmCESIj7a/V/+YDB/D7jEjNBRUAODj+neb078U5j+
-	 hOpSRHVW9yKlcKhOdjhobgBWWVYI+wrPKmHIEFwyaaNW5GbkTa8wnFtc59XK+qavh5
-	 QO/v0PSuiK2RD5aT4MuAE8Z8t/6KxHUuU5fiVy0xV3uXdo3i+bOwHvBpM7ZeKmkY7l
-	 0SSOyLWrSFzy+8i59VRlgc5N58tiT0S1efhMjhZxdTLlqjRh3tuCKHRBbQmjXLl4yf
-	 Slz7XiDKgvLYOTmhmG2x7aE+Kyf3n08quwXVk8iHmOxe68BFbbIscJL5o/jdhTSMhW
-	 0L0YKGgHdOzMmkhQEfop6oI8=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DC5AD40E00B2;
-	Thu,  1 Feb 2024 15:19:25 +0000 (UTC)
-Date: Thu, 1 Feb 2024 16:19:20 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Andrew Cooper <andrew.cooper3@citrix.com>,
-	Arjan van de Ven <arjan@linux.intel.com>,
-	Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
-	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-	Sohil Mehta <sohil.mehta@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Zhang Rui <rui.zhang@intel.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Feng Tang <feng.tang@intel.com>,
-	Andy Shevchenko <andy@infradead.org>,
-	Michael Kelley <mhklinux@outlook.com>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: [patch v5 08/19] x86/cpu/amd: Provide a separate accessor for
- Node ID
-Message-ID: <20240201151920.GLZbu2eGaGaENG7L94@fat_crate.local>
-References: <20240117115752.863482697@linutronix.de>
- <20240117115908.813770902@linutronix.de>
+	s=arc-20240116; t=1706800909; c=relaxed/simple;
+	bh=J2Fi4XHVN1Jz6WkErdbO9Tc/fjc+p7m1fDIZnr5SYJA=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cHoMYfDRfnMhUa2E0C96kaFOSIn2DSF3skPM5e/kKNcd8kEa9yMsrHQnwHSKSYIpFt/Q8oiX++XUmgfZ/RUFxfKtQubDx4g9syMzG0DlapJN9jUxauReZkdW6HUnJdSJNvP/f0C844cHyjuV1N3hmi7CAP0AploTdm7loKPLEIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TQjGh5Yt0z6K8wZ;
+	Thu,  1 Feb 2024 23:18:36 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 689371400DB;
+	Thu,  1 Feb 2024 23:21:45 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 1 Feb
+ 2024 15:21:44 +0000
+Date: Thu, 1 Feb 2024 15:21:44 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC: Jonathan Cameron <jic23@kernel.org>, <linux-iio@vger.kernel.org>, "Rob
+ Herring" <robh@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
+	<linux-kernel@vger.kernel.org>, Julia Lawall <Julia.Lawall@inria.fr>,
+	"Nicolas Palix" <nicolas.palix@imag.fr>, Sumera Priyadarsini
+	<sylphrenadin@gmail.com>, "Rafael J . Wysocki" <rafael@kernel.org>, "Len
+ Brown" <lenb@kernel.org>, <linux-acpi@vger.kernel.org>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>, Nuno =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>
+Subject: Re: [RFC PATCH 0/5] of: automate of_node_put() - new approach to
+ loops.
+Message-ID: <20240201152144.000078d6@Huawei.com>
+In-Reply-To: <Zbt-fw8eUrQzBjX9@smile.fi.intel.com>
+References: <20240128160542.178315-1-jic23@kernel.org>
+	<Zbt-fw8eUrQzBjX9@smile.fi.intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240117115908.813770902@linutronix.de>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Tue, Jan 23, 2024 at 01:53:42PM +0100, Thomas Gleixner wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
+> > 3) Introduced the pointer to auto put device_node only within the
+> >    for loop scope.
+> > 
+> > +#define for_each_child_of_node_scoped(parent, child) \
+> > +	for (struct device_node *child __free(device_node) =		\
+> > +	     of_get_next_child(parent, NULL);				\
+> > +	     child != NULL;						\  
 > 
-> AMD (ab)uses topology_die_id() to store the Node ID information and
-> topology_max_dies_per_pkg to store the number of nodes per package.
+> Just
+> 
+> 	     child;
 
-topology_max_die_per_package()
+Agreed that's the same, but was thinking to follow local style.
+I don't feel strongly though so fine with dropping the != NULL
 
-is what I can find.
+> 
+> > +	     child = of_get_next_available_child(parent, child))
+> > +
+> > 
+> > This series is presenting option 3.  I only implemented this loop out of
+> > all the similar ones and it is only compile tested.
+> > 
+> > Disadvantage Rob raised is that it isn't obvious this macro will instantiate
+> > a struct device_node *child.  I can't see a way around that other than option 2
+> > above, but all suggestions welcome.  Note that if a conversion leaves an
+> > 'external' struct device_node *child variable, in many cases the compiler
+> > will catch that as an unused variable. We don't currently run shaddow
+> > variable detection in normal kernel builds, but that could also be used
+> > to catch such bugs.  
+> 
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
 
