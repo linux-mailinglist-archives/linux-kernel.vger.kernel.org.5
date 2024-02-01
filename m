@@ -1,155 +1,125 @@
-Return-Path: <linux-kernel+bounces-48035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6462D845686
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:51:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AC338456B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:59:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2148A290237
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:51:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F47A1F267D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:59:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A1615DBA1;
-	Thu,  1 Feb 2024 11:50:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1BE215D5C4;
+	Thu,  1 Feb 2024 11:59:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="IXXaOLMS"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RiBNNyMw"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 399D415D5CA;
-	Thu,  1 Feb 2024 11:50:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4B7A15D5B4;
+	Thu,  1 Feb 2024 11:59:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706788202; cv=none; b=sG9HhLjIR0OYew6FMp8mIa7XuiSm8uJHzzdC5nYqWjU+9cg8uAfTyk+HCxyEczvjfdQn+wZKRzhloO5KkkuOqxX+meKcE9NjgAoEOnXBYLm4t3XF7RkGYXGNX/ktBoMFdxe//uJea+5nkuHmCtYmiPmg/jSOGBO3m2wZTe/HGwU=
+	t=1706788778; cv=none; b=p05150c0HQNbd1d0OlSCF19UPmky9T/6QjpdvcohIPKMmGwthJa6qDzzj+Na+TwgUzq481gzZMcuWpF2HvCOTDPOqrG0FhBE7avwIBvCCdRmqqyIhTunzUgJK0Fj1ZoV9lNv8tXIUjjJmiquPG0YD/xZGjPMcPRe6b9I60baftU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706788202; c=relaxed/simple;
-	bh=gsyE1W4bsrrTahd04s1tVYBjBTSJ9ADslLu7TIwcQJY=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
-	 In-Reply-To:Content-Type; b=B98SMp/p//CBxEXFJz3uQnWpFeblCK1n+OoiKmpriqgL7O4eGEyDJnhbr9PShfcdrO/hhz9a0ETl6PAjdCzcYZqNfQrP02if0wy7dsm+CMmptmY7dcXVHFKHc6jOH8jLcwWTwo7sWFm7vQdoo5DO/kFP5KXmHr+jpt+IAMnjKIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=IXXaOLMS; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 411BJ9hB017825;
-	Thu, 1 Feb 2024 11:49:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:from:to:cc:references
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=poig66Qauuj3+aCfWML9OzLxJ3EYXmSQfOtwaVslujE=; b=IX
-	XaOLMSkpaVntVydO6XTFj3qR1FaHx9Hnkwyckn3cpUf3ATG/RjCAc7D7EGzyYeO7
-	9eE9glmCiSJWo4SL9dJxsYlNDfSIt3c4ppmHkdfKj6UweDUK+GAISaPN1ZNO1fBV
-	QA6h6pOcxW8dlhQbSapO7EPqhmcoi2SyQadhMRjZh+cf3hSoivlzswI4h9uAX8+C
-	cyeatw+ZXGAMFihgrUFftOO0UhveECbCR/GW8AAf0sOyLNam+U0VzCXIaSJ/b3Fk
-	zkD5KsblEBo1BZNcv/vc37oNFzHWCZc1eOmz9b2M6KBLiKpPaZrkTzo1Vz2yPULI
-	WDDWkG7wS7cvI5JXBoDA==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w09q684ms-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 11:49:56 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 411Bntwg003058
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 1 Feb 2024 11:49:55 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 1 Feb
- 2024 03:49:49 -0800
-Message-ID: <b28904a6-c1ef-44b5-96ca-313a9a2a3f8b@quicinc.com>
-Date: Thu, 1 Feb 2024 19:49:46 +0800
+	s=arc-20240116; t=1706788778; c=relaxed/simple;
+	bh=TVUCRYYR7L1IT+ME8oTcX1x2Rr9n3YCLMjyOODsG+BU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eT9daKrl2NiiqPGm1z8mQYHOi+LBfsU0b57lg2qN5Y6Val3R25Uv07KngdfZM0p4VgsxNnRuYRQA+I24QKGSBxyBX3R1c5wsaKGNXHV7yUsfkbXemSf2zumGYr8xkPsZrooyPg0+i9Fne/rfa/wLWrk56HK0h3ilQSf6up9Q6pA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RiBNNyMw; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706788777; x=1738324777;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=TVUCRYYR7L1IT+ME8oTcX1x2Rr9n3YCLMjyOODsG+BU=;
+  b=RiBNNyMwVlE5SKeiqTu0Hv5jJNLUxwVcITT+TBBZGTfI/EagY5DlslQI
+   5zW5AS8IPCbirZvKJZP64WisKH6cbt1AaIbQ0N6zds/rVVgM7ldCuQahW
+   sN68e6RE/Xx6h7FtNKRf/pD+2qTNUFZX7ErmnlfyxxENoqWr/eUiQf+Q/
+   SXe7l0smXxUAygc6B7K4pWa4s6fKkpORtOmxr0QzlQTFSaks9LUm5g1xX
+   KKybGVJZZ3pjl5WvchjhPuvCPcXl4zVloBsJ1xSQn7d87XOMd96Xz+4hl
+   SIe4VjT8qU7gcJ92LpU7638a2YaAjBc0ndtfZB1LXLzYvDAGsTQLR30iI
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10531082"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="10531082"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 03:59:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="738409877"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="738409877"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 03:59:32 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rVVbz-00000000p6M-3icn;
+	Thu, 01 Feb 2024 13:52:07 +0200
+Date: Thu, 1 Feb 2024 13:52:07 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Rengarajan.S@microchip.com
+Cc: Kumaravel.Thiagarajan@microchip.com, jiaqing.zhao@linux.intel.com,
+	gregkh@linuxfoundation.org, ilpo.jarvinen@linux.intel.com,
+	john.ogness@linutronix.de, tony@atomide.com,
+	linux-kernel@vger.kernel.org, Tharunkumar.Pasumarthi@microchip.com,
+	jirislaby@kernel.org, f.fainelli@gmail.com, tglx@linutronix.de,
+	UNGLinuxDriver@microchip.com, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v1 tty] 8250: microchip: Add 4 Mbps support in PCI1XXXX
+ UART
+Message-ID: <ZbuF53TlbnD09rZA@smile.fi.intel.com>
+References: <20240125100619.154873-1-rengarajan.s@microchip.com>
+ <ZbZyW_g4OOkCqIxf@smile.fi.intel.com>
+ <8406d8866968950b9bb2f2c01aaa92e3107a7a00.camel@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/6] arm64: dts: qcom: aim300: add AIM300 AIoT
-From: Tengfei Fan <quic_tengfan@quicinc.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <dmitry.baryshkov@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
-        Qiang Yu
-	<quic_qianyu@quicinc.com>,
-        Ziyue Zhang <quic_ziyuzhan@quicinc.com>
-References: <20240119100621.11788-1-quic_tengfan@quicinc.com>
- <20240119100621.11788-7-quic_tengfan@quicinc.com>
- <d3ef45cf-2de8-4f5b-8857-62d1996f3f58@linaro.org>
- <842bf6ad-46e1-43d8-86be-79ab0f49710b@quicinc.com>
- <c17dafd2-db89-4fe2-8e98-2a031f7237c2@quicinc.com>
-In-Reply-To: <c17dafd2-db89-4fe2-8e98-2a031f7237c2@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: svgA3E3KxTNsOoBFiEqbfSefLkOThBHJ
-X-Proofpoint-GUID: svgA3E3KxTNsOoBFiEqbfSefLkOThBHJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-31_10,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=528 impostorscore=0 phishscore=0 spamscore=0 mlxscore=0
- priorityscore=1501 malwarescore=0 clxscore=1015 adultscore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2402010095
+In-Reply-To: <8406d8866968950b9bb2f2c01aaa92e3107a7a00.camel@microchip.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
+On Tue, Jan 30, 2024 at 10:52:41AM +0000, Rengarajan.S@microchip.com wrote:
+> On Sun, 2024-01-28 at 17:27 +0200, Andy Shevchenko wrote:
+> > On Thu, Jan 25, 2024 at 03:36:19PM +0530, Rengarajan S wrote:
 
+..
 
-On 1/30/2024 3:25 PM, Tengfei Fan wrote:
+> > > +���� /*
+> > > +����� * Microchip PCI1XXXX UART supports maximum baud rate up to 4
+> > > Mbps
+> > > +����� */
+> > > +���� if (up->port.type == PORT_MCHP16550A)
+> > > +������������ max = 4000000;
+> > 
+> > No. Please refactor the way the 8250_port won't be modified.
+> > 
+> > Also you have a define for this constant, use it.
 > 
-> 
-> On 1/29/2024 4:18 PM, Tengfei Fan wrote:
->>
->>
->> On 1/29/2024 4:09 PM, Krzysztof Kozlowski wrote:
->>> On 19/01/2024 11:06, Tengfei Fan wrote:
->>>> Add AIM300 AIoT board DTS support, including usb, serial, PCIe, mpss,
->>>> adsp, cdsp and sound card functions support.
->>>>
->>>
->>> ...
->>>
->>>> +
->>>> +    sound {
->>>> +        compatible = "qcom,sm8550-sndcard", "qcom,sm8450-sndcard";
->>>> +        model = "AIM300-AIOT";
->>>> +        audio-routing = "SpkrLeft IN", "WSA_SPK1 OUT",
->>>> +                "SpkrRight IN", "WSA_SPK2 OUT",
->>>> +                "IN1_HPHL", "HPHL_OUT",
->>>> +                "IN2_HPHR", "HPHR_OUT",
->>>> +                "AMIC2", "MIC BIAS2",
->>>> +                "VA DMIC0", "MIC BIAS1",
->>>> +                "VA DMIC1", "MIC BIAS1",
->>>> +                "VA DMIC2", "MIC BIAS3",
->>>> +                "TX DMIC0", "MIC BIAS1",
->>>> +                "TX DMIC1", "MIC BIAS2",
->>>> +                "TX DMIC2", "MIC BIAS3",
->>>> +                "TX SWR_ADC1", "ADC2_OUTPUT";
->>>
->>> This should be probably TX SWR_INPUT1.
->>>
->>> Best regards,
->>> Krzysztof
->>>
->>
->> I will double check this with related team and I will update this.
->>
-> 
-> I will apply "TX SWR_INPUT1" on audio-routing node in the next patch 
-> series.
-> 
+> The current UART clk in MCHP Ports in pci1xxxx.c is set to 62.5 MHz in
+> order to support fractional baud rates which enables generation of
+> acceptable baud rate and lower error percentage from any available
+> frequency. With 62.5 MHz the maximum supported baud rate supported as
+> per serial_8250_get_baud_rate is 3.9 Mbps. In order to extend the
+> support to 4 Mbps we had hardcoded the max value to 4 Mbps. Since, baud
+> rate is calculated here we needed to make these changes in 8250_port
+> and could not find a way to handle as part 8250_pci1xxxx. Can you let
+> us know any alternatives to address this upper(max) limit? 
 
-This patch series has been sent for nearly two weeks. do you think it is 
-better to modify the patch series acording to the current comments and 
-submit a new patch series, or continue to wait for your review comments 
-on the current path series?
+Update port->uartclk accordingly in your driver, see how other 8250_* drivers
+do that (e.g., 8250_mid).
+
+So, it will no go with hack in the 8250_port.
 
 -- 
-Thx and BRs,
-Tengfei Fan
+With Best Regards,
+Andy Shevchenko
+
+
 
