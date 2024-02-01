@@ -1,115 +1,106 @@
-Return-Path: <linux-kernel+bounces-48108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4D8D845753
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:22:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2470E845750
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:21:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 778A2B258F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:22:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52F061C22D6D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:21:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1436D15DBC0;
-	Thu,  1 Feb 2024 12:22:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dd/CU1EV"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C36915DBC3;
+	Thu,  1 Feb 2024 12:21:48 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 146DE15DBA6;
-	Thu,  1 Feb 2024 12:22:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9926E15AAB9
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 12:21:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706790128; cv=none; b=N7l+oHf4auzFLbSj5wGll3lCnv0ON7KXRBloMWuM/VJG75fvTMZ5C7eW/Dfuw0s42TioICHMFTWk9tO4fD3REIcxpk+TF7d4n3IdP4AycAW0FsFlvglxLbFvdUznsuUrehX2ZRsI3CMf3ow9Yn/3trWB4EDUjhJ09SQNddqgS04=
+	t=1706790107; cv=none; b=Ti1yIjdU8uv0a2OXyzy+lTtnOXG/dtTOy8IrKBiqAwIDByw8EMANv1SvTPynFCDLj7IF/UQgTvO3rfkQQLjluRUmko2ALQPgPZuyx8pz95q3Mahqf8P6Gk4jj9mDDJyqhdfHTBafeQTG1sERBikKySm7T3MOqN8yO1qOkuhC9TA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706790128; c=relaxed/simple;
-	bh=Mo3g/8cqomXn8ixe5bxoeElp6dyY7KpGNezYRF7gozc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ukLvx+99YDF8o3WdkfxNd3YIModLSxCSIFwHLgLXSVvQurw9UQKzrHKF4a/em0uuSDALtRFO8T0Vu5VLhfplpcYTuegrVE2/zAcqdjFa79UDbobqEsZIUIG/aXBD3ZLWD5ieiTRiJsySAkumYdeX+7l4L5dQ+HKWPos5VzOifjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dd/CU1EV; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6de0f53f8e8so1578851b3a.0;
-        Thu, 01 Feb 2024 04:22:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706790126; x=1707394926; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=P+0tF3oqmWl88v5P0WDQqvV2piKFSEOQwx64jG9GX/g=;
-        b=dd/CU1EVN3wJdZBHHapkCQzyCkg0Q8IQqlskVp210EOwcG4hwIJKEsMgn0gmQg8sy+
-         upfd3A/sd5P0Lox10aIWnKEUd7yqR4cH2D31ZTLq1VIYtaPet2M6w1GIjaemP11JNInT
-         gGUyt1DAIKm5kasapH8D8G4QuESOAMSlHEXb+aQPRX5eY2TOb5sORB9+cp/Jny9rQ3ph
-         v9/RADRbsjKQ9OF7j9VKn+oQo8RAZvNxVTwhzMJ7H5QkPJPyibj8ukmRA/AglxrXjd7a
-         voT9pHZNLP1M92NTM4VQ/itiD1CiGA8HuckmTs/EeFbA3+N19v/GO+t4dXgKzbkR83v7
-         m3Nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706790126; x=1707394926;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=P+0tF3oqmWl88v5P0WDQqvV2piKFSEOQwx64jG9GX/g=;
-        b=d/CI706mFF1KCMoBxlwfgOTMdO+tnLicgJ8U5R+IlWZojlcHigTdt4KmqLkx6QdrTs
-         rL1tj2BMYRrELCcmVKUkSeFzeTJ0AkidMh2ogB68kSBvoymAw+ua1XJX8US1CI/Naoc9
-         PM2L0TucMNTMb0vCTLNJJ7wlqkc7+Hry/gvwS6lDMUJoPBL7D/toTDrPBIHOuCwEDmWx
-         TbtuP+9VaHtZky0nxy/i0TZk+MpwimllIjprVsvXGRYJZdXtTeN6hcvMXOTZKx8WXKo6
-         W2MSb9KXrNtAMRnMxycuaApmdtcV3kircfsQ6jVFVx4LLsxJ77H/JgKLFNQUWOxXr2sv
-         k5kw==
-X-Gm-Message-State: AOJu0Yz1j0HwRQYCoBtKy4xJme+w8M5xpOeJKff/yeGKkqfnmcfpF/TX
-	A1dsSPxGf9ZWOcE65k074L1mV6Jyv+BUq/aIBJNSPCidpHJ/LV9H
-X-Google-Smtp-Source: AGHT+IG9gpalsHvSnUxG7Yy8G0uxD3AHxw960cD+IgMRdCRWYT1npBwaey2rQ8AU3FjJoh5SPnm9Vg==
-X-Received: by 2002:a05:6a20:5488:b0:19e:2d00:10c6 with SMTP id i8-20020a056a20548800b0019e2d0010c6mr9710167pzk.23.1706790126178;
-        Thu, 01 Feb 2024 04:22:06 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWZ8y9IWd+JVNOWEgD5RZ41nNxvIcSPAs/ylZWl4Vu73kE0OyGH5yy1PGj+dihySpi1brvoN11cC2zSOIR2fWwDnBWvoDMAFKYSPNx94xVfriRnrYA+yX7V3MVHr0KnezZJl5+Ivg4ehQoFzxASw+lb9vbaYqTLlrGhzPoMQbFzB2WcYyvqjL4AVQQtWhNQYs4CKH1u7/fFMpSgNjmNL5fZkpamqZ5/jHpo399XHOY/ry7JINovAMFWJqO2gMWDJqL1Kh0bFuhqGEpIf6N0pH3HOtHvP0J4awqQPOAWrGCLei0BXoSpPqrVVk+4Dt5tx2vJTLEkrKx8jUTNqqD6wl+6EYq/qvr9yIMVHJbVRB19amlzOmZp6BzSo2fwqQhbiehbHwtQLbY2McWa94qnw/E=
-Received: from localhost.localdomain ([187.17.230.203])
-        by smtp.gmail.com with ESMTPSA id l2-20020a63f302000000b005cd8044c6fesm12363894pgh.23.2024.02.01.04.22.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 04:22:05 -0800 (PST)
-From: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
-To: tiwai@suse.com
-Cc: perex@perex.cz,
-	sbinding@opensource.cirrus.com,
-	kailang@realtek.com,
-	luke@ljones.dev,
-	andy.chi@canonical.com,
-	shenghao-ding@ti.com,
-	ruinairas1992@gmail.com,
-	vitalyr@opensource.cirrus.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	edson.drosdeck@gmail.com
-Subject: [PATCH] ALSA: hda/realtek: Enable headset mic on Vaio VJFE-ADL
-Date: Thu,  1 Feb 2024 09:21:14 -0300
-Message-Id: <20240201122114.30080-1-edson.drosdeck@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706790107; c=relaxed/simple;
+	bh=vaLdbaLRwXVHsBkr/tc4RRKyddRu3QROiEgFWWQ1wcs=;
+	h=Message-ID:Date:MIME-Version:From:To:Cc:Subject:Content-Type; b=p3qZXTHCg8QQgdWLORiPkyuLYzTzR3oM3Ykm2DlEzF9TM1EX8hRCiR+4ehtyGguMTtzywATduh9jg+/fsQ9zErxok8Chy0yFpRX3qK8Pta/tQ1EiKz2w+yef8tNccZOMAHVc0HXsVxA4xdV3+JSFs3aQqmyfKck/g3vLi+x2uEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
+	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
+	(envelope-from <a.fatoum@pengutronix.de>)
+	id 1rVW4X-0000w9-Vf; Thu, 01 Feb 2024 13:21:38 +0100
+Message-ID: <d33e5271-219d-4b8e-be5a-8903219d7fd6@pengutronix.de>
+Date: Thu, 1 Feb 2024 13:21:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+From: Ahmad Fatoum <a.fatoum@pengutronix.de>
+To: linux-trace-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Boot-time dumping of ftrace fuctiongraph buffer
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Vaio VJFE-ADL is equipped with ALC269VC, and it needs
-ALC298_FIXUP_SPK_VOLUME quirk to make its headset mic work.
+Hello,
 
-Signed-off-by: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+I semi-regularly debug probe failures. For drivers that use dev_err_probe
+rigorously, this is a quick matter: The probe function records a deferral reason
+and if the deferral persists, deferred_probe_timeout_work_func() will print
+the collected reasons, even if PID 1 is never started.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index f6f16622f9cc..c7e8b27d486e 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -10322,6 +10322,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1d72, 0x1945, "Redmi G", ALC256_FIXUP_ASUS_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1d72, 0x1947, "RedmiBook Air", ALC255_FIXUP_XIAOMI_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x2782, 0x0232, "CHUWI CoreBook XPro", ALC269VB_FIXUP_CHUWI_COREBOOK_XPRO),
-+	SND_PCI_QUIRK(0x2782, 0x1707, "Vaio VJFE-ADL", ALC298_FIXUP_SPK_VOLUME),
- 	SND_PCI_QUIRK(0x8086, 0x2074, "Intel NUC 8", ALC233_FIXUP_INTEL_NUC8_DMIC),
- 	SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
- 	SND_PCI_QUIRK(0x8086, 0x2081, "Intel NUC 10", ALC256_FIXUP_INTEL_NUC10),
+For drivers that don't call dev_err_probe, I find myself sometimes doing printf
+debugging inside the probe function.
+
+I would like to replace this with the function graph tracer:
+
+  - record the probe function, configured over kernel command line
+    (The device indefinitely deferring probe is printed to the console,
+     so I know what I am looking for on the next boot)
+
+  - Dump the function graph trace
+
+  - See if the last call before (non-devm) cleanup is getting a clock, a GPIO,
+    a regulator or w/e.
+
+For this to be maximally useful, I need to configure this not only at boot-time,
+but also dump the ftrace buffer at boot time. Probe deferral can hinder the kernel from
+calling init and providing a shell, where I could read /sys/kernel/tracing/trace.
+
+I found following two mechanisms that looked relevant, but seem not to
+do exactly what I want:
+
+  - tp_printk: seems to be related to trace points only and not usable
+    for the function graph output
+
+  - dump_on_oops: I don't get an Oops if probe deferral times out, but maybe
+    one could patch the kernel to check a oops_on_probe_deferral or dump_on_probe_deferral
+    kernel command line parameter in deferred_probe_timeout_work_func()?
+
+
+Is there existing support that I am missing? Any input on whether this
+would be a welcome feature to have?
+
+Thanks!
+
+Cheers,
+Ahmad
+    
 -- 
-2.39.2
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+ 
 
