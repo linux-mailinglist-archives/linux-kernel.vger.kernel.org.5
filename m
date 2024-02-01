@@ -1,154 +1,134 @@
-Return-Path: <linux-kernel+bounces-48409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47A4D845B8C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 999AD845B8E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:30:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAB471F2C02B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:30:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 367441F2C068
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:30:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4EF077A07;
-	Thu,  1 Feb 2024 15:27:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADC94626B8;
+	Thu,  1 Feb 2024 15:28:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CD6Xr1pc";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CD6Xr1pc"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=cknow.org header.i=@cknow.org header.b="dbsB0s4y"
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1945462166
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 15:27:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05482626AC
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 15:28:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706801269; cv=none; b=FpJzIqfjreWfMbIVmHAh7P13g/lZAHKSCyyZ90H3SzT3l2vM3twmWbh0aL7dZVviqPbipJ38FPcVhc1AgG3Q79JuQG1VN+VMWeYLuV1S4GF7BIDDcdfz4f3WCPhrOq9iUjCRShrmrIwofBPIJAdM0vCe6Raj0fzZi5EjBHfwAvg=
+	t=1706801310; cv=none; b=H+xZGPM1JIHS7doMaQMAZT/sqT+w5Ni4m8COoYbAHraFFJ+tr4cw4jB9MM148AreEaicHCx8AvlaXu0vC13pi5x11jRe0Ja8moENP3FV+Xmck+75DZ0hetCC2NI7x5m3WIoUJFeQdADTk3HNDAQdRgI5GFhUgLyn7UG5bR2XzRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706801269; c=relaxed/simple;
-	bh=fE8MeC5OUYILXw2iVfVL7PRnwrgLXZ44twPWRJqIZzg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fGsJ21nRW05rR/gY7ESNjWN550KqQItIiHXACrPNBxa+ef0dntyauDUUZR16jMvzE6Q54PoT2pkLXqw7P4od4YLvfau7abPUSaXK/ypaK3IIdk72g9HZgG7rrItFFxHDezbM7jp8fWetB7aEb1JaZ6tD/csyuGwDEraxvjqCAP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CD6Xr1pc; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CD6Xr1pc; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 387E42207F;
-	Thu,  1 Feb 2024 15:27:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706801265; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1706801310; c=relaxed/simple;
+	bh=E6HdKpIdSATrP20bipx9SvKrBN7kLgJKWEle80Dc3sE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=IFLrzGvA4SUEVy4VXbEGyf5VmzFRvWeNRrdfX3QJumd1NU0rJid6Ze2MLhviUIsTgkOqf5YvTI8AOeoad7NgR4TyvDr9Dlv1nRDewSg+G41kI+NjlD3NxJHDbXOrhEb7Di52majqoHbPcKJJCBZ+3mrPEP0ndKbhAh0+yJ7NuJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cknow.org; spf=pass smtp.mailfrom=cknow.org; dkim=pass (2048-bit key) header.d=cknow.org header.i=@cknow.org header.b=dbsB0s4y; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cknow.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cknow.org
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cknow.org; s=key1;
+	t=1706801306;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tG3CpxDS02v6gYxnYwbFaNjzAhNUjXma24vFvRO3lrE=;
-	b=CD6Xr1pcp1MOpdXP7WUqj63Qf9UNGqBnq1lU3nlxRU2oiJsOqc9pjRFzb2RVBWVeuIrLvW
-	MwVuRtzHVs2chgGpu8cQStRn0+VRLRR5TLvqCVNtHxCQKFQbmPBkfwTvO+z9M31GF6bktc
-	zJl/v7z9EmshwiNJVehzh12S4qsUfxE=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706801265; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tG3CpxDS02v6gYxnYwbFaNjzAhNUjXma24vFvRO3lrE=;
-	b=CD6Xr1pcp1MOpdXP7WUqj63Qf9UNGqBnq1lU3nlxRU2oiJsOqc9pjRFzb2RVBWVeuIrLvW
-	MwVuRtzHVs2chgGpu8cQStRn0+VRLRR5TLvqCVNtHxCQKFQbmPBkfwTvO+z9M31GF6bktc
-	zJl/v7z9EmshwiNJVehzh12S4qsUfxE=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 14077139AB;
-	Thu,  1 Feb 2024 15:27:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id droPA3G4u2V2eQAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Thu, 01 Feb 2024 15:27:45 +0000
-Date: Thu, 1 Feb 2024 16:27:44 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: akpm@linux-foundation.org, muchun.song@linux.dev, osalvador@suse.de,
-	david@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mm: hugetlb: remove __GFP_THISNODE flag when
- dissolving the old hugetlb
-Message-ID: <Zbu4cD1XLFLfKan8@tiehlicka>
-References: <6f26ce22d2fcd523418a085f2c588fe0776d46e7.1706794035.git.baolin.wang@linux.alibaba.com>
+	bh=26SIQ5pnUVxGBuzI6N0P1NMwW5cCHuoQn92ze0+AFsQ=;
+	b=dbsB0s4yLvfcXftjxVr1PtbRs0QgJobNiO59PIQlR+5vqDeS6MwE3KDheQe7Zeo/6jj9Wu
+	3YYkWz02yT5UvIE6dYU778APsSZ3OoLjiw2acfpe6EN01sFNvUpeSrL9WCuwQ7DKzvVNL3
+	TPT83bfEyHiowg7jkGq16z+gZOX95kRZ2T6KvX8sKvgryAaTlZGnuhBVcZpDNzM/RHvOGv
+	4/CZVqJC3FKT9xqUgVCBSIcnoNPNHdQzMlaMeEzMw2mqMwUxCbwJIRXSNEwJOKrXBBIN8r
+	hxvCJau/xkmanotkIlFn8oAO33+ZY43btxhwKWKJUXJ3S3dKTANUGpCdb6Y4Sw==
+From: Diederik de Haas <didi.debian@cknow.org>
+To: Neil Armstrong <neil.armstrong@linaro.org>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+ Sandy Huang <hjc@rock-chips.com>, Mark Yao <markyao0591@gmail.com>,
+ Segfault <awarnecke002@hotmail.com>, Arnaud Ferraris <aferraris@debian.org>,
+ Danct12 <danct12@riseup.net>, Ondrej Jirman <megi@xff.cz>,
+ Manuel Traut <manut@mecka.net>
+Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, Manuel Traut <manut@mecka.net>
+Subject:
+ Re: [PATCH v4 4/4] arm64: dts: rockchip: Add devicetree for Pine64 PineTab2
+Date: Thu, 01 Feb 2024 16:28:15 +0100
+Message-ID: <13234147.MA61SxHe9P@bagend>
+Organization: Connecting Knowledge
+In-Reply-To: <20240127-pinetab2-v4-4-37aab1c39194@mecka.net>
+References:
+ <20240127-pinetab2-v4-0-37aab1c39194@mecka.net>
+ <20240127-pinetab2-v4-4-37aab1c39194@mecka.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6f26ce22d2fcd523418a085f2c588fe0776d46e7.1706794035.git.baolin.wang@linux.alibaba.com>
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=CD6Xr1pc
-X-Spamd-Result: default: False [-2.81 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 387E42207F
-X-Spam-Level: 
-X-Spam-Score: -2.81
-X-Spam-Flag: NO
+Content-Type: multipart/signed; boundary="nextPart1794107.V1UpVPejRP";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-Migadu-Flow: FLOW_OUT
 
-On Thu 01-02-24 21:31:13, Baolin Wang wrote:
-> Since commit 369fa227c219 ("mm: make alloc_contig_range handle free
-> hugetlb pages"), the alloc_contig_range() can handle free hugetlb pages
-> by allocating a new fresh hugepage, and replacing the old one in the
-> free hugepage pool.
+--nextPart1794107.V1UpVPejRP
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Diederik de Haas <didi.debian@cknow.org>
+Date: Thu, 01 Feb 2024 16:28:15 +0100
+Message-ID: <13234147.MA61SxHe9P@bagend>
+Organization: Connecting Knowledge
+In-Reply-To: <20240127-pinetab2-v4-4-37aab1c39194@mecka.net>
+MIME-Version: 1.0
+
+On Saturday, 27 January 2024 10:48:45 CET Manuel Traut wrote:
+> This includes support for both the v0.1 units that were sent to developers
+> and the v2.0 units from production.
 > 
-> However, our customers can still see the failure of alloc_contig_range()
-> when seeing a free hugetlb page. The reason is that, there are few memory
-> on the old hugetlb page's node, and it can not allocate a fresh hugetlb
-> page on the old hugetlb page's node in isolate_or_dissolve_huge_page() with
-> setting __GFP_THISNODE flag. This makes sense to some degree.
+> v1.0 is not included as no units are known to exist.
 > 
-> Later, the commit ae37c7ff79f1 (" mm: make alloc_contig_range handle
-> in-use hugetlb pages") handles the in-use hugetlb pages by isolating it
-> and doing migration in __alloc_contig_migrate_range(), but it can allow
-> fallbacking to other numa node when allocating a new hugetlb in
-> alloc_migration_target().
+> Working/Tested:
+> - SDMMC
+> - UART
+> - Buttons
+> - Charging/Battery/PMIC
+> - Audio
+> - USB
+> - Display
+> - SPI NOR Flash
 > 
-> This introduces inconsistency to handling free and in-use hugetlb.
-> Considering the CMA allocation and memory hotplug relying on the
-> alloc_contig_range() are important in some scenarios, as well as keeping
-> the consistent hugetlb handling, we should remove the __GFP_THISNODE flag
-> in isolate_or_dissolve_huge_page() to allow fallbacking to other numa node,
-> which can solve the failure of alloc_contig_range() in our case.
+> Signed-off-by: Alexander Warnecke <awarnecke002@hotmail.com>
+> Signed-off-by: Manuel Traut <manut@mecka.net>
 
-I do agree that the inconsistency is not really good but I am not sure
-dropping __GFP_THISNODE is the right way forward. Breaking pre-allocated
-per-node pools might result in unexpected failures when node bound
-workloads doesn't get what is asssumed available. Keep in mind that our
-user APIs allow to pre-allocate per-node pools separately.
+Everything seems to (still) work, so:
+Tested-By: Diederik de Haas <didi.debian@cknow.org>
 
-The in-use hugetlb is a very similar case. While having a temporarily
-misplaced page doesn't really look terrible once that hugetlb page is
-released back into the pool we are back to the case above. Either we
-make sure that the node affinity is restored later on or it shouldn't be
-migrated to a different node at all.
+Thanks for submitting this upstream :-)
 
--- 
-Michal Hocko
-SUSE Labs
+Cheers,
+  Diederik
+--nextPart1794107.V1UpVPejRP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQT1sUPBYsyGmi4usy/XblvOeH7bbgUCZbu4kAAKCRDXblvOeH7b
+blXGAQDP5qENxaN5dIVjBieTyOlY8fPPngqtXwFL4vkEdreqjQD/b48bb1yvUxQr
+vS2R3FNuHLcDSnHLKoxjZg+592xUfAU=
+=5fTJ
+-----END PGP SIGNATURE-----
+
+--nextPart1794107.V1UpVPejRP--
+
+
+
 
