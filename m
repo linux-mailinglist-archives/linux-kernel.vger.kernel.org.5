@@ -1,125 +1,118 @@
-Return-Path: <linux-kernel+bounces-47863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0A0D8453DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:30:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF701845414
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:35:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 833D5B220ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:30:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EADB91C22111
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:35:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08BFC15B0F9;
-	Thu,  1 Feb 2024 09:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54D504DA05;
+	Thu,  1 Feb 2024 09:31:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FHwRg8MB"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=proton.me header.i=@proton.me header.b="L1SpQ0ZK"
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B039015AAB9;
-	Thu,  1 Feb 2024 09:29:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F34184DA12;
+	Thu,  1 Feb 2024 09:31:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706779793; cv=none; b=Dd5boGBfVCychg2s2cvNehrSdC2BQ7mJAe/4EMDnKMRgM0mZgKqllhxzX3oR5QEuYaFgd44ISial0B2mGl/XJw4nRvErENhokQRvoH4Z/mT4Cm9jdu9ZpHS9F64zwComNFGobpfk3y3itonGMuX/zNRhMTDB9/gUzBPFhKKCdD4=
+	t=1706779886; cv=none; b=oTXhHriP9+1OtEjc0XOzJ9phkrKfI93nAyJ3CM/kLUR3gPi7tSiV4UXTsxxvhDSmFwo3JhAnLkhzlyMM55HuBFy2W6lHfiLpDhLQz7mNFriE4yiXLf8O7Ia5hfxIfFx+zuRbXUNJ+Meu7SerVQstuE9Oii1r7B24ytgb1228Rbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706779793; c=relaxed/simple;
-	bh=+NCwuuUEC8gh4wddwJD1ZoXxyVyQK76LQS+PgiYO2+g=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BWF4TTGOLbE2HPkofwtXghHTmELIPH/Y7PU0WIYokOEmYLWpbtl4AGr+H6iIRH01wh4hshWTXryXgREAicAePBN88cET1EDdFj6k2iiR+Et68VDdncrbE7TrBclZne1wIaa+Isf8MUI+GF+UUIcu20RETB0+EeKzszRpgog56TQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FHwRg8MB; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-51124d86022so1133758e87.0;
-        Thu, 01 Feb 2024 01:29:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706779789; x=1707384589; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=gR2SCc4BIE8sv2cc5ChJ04+ZAy4Os5pvthMcTA+RFl4=;
-        b=FHwRg8MBbZz9LTfqahu/eeaEIoEL2gZun3E5ETN0LDqIh3ssanfBB4adiY4/emZMrQ
-         knFxAwUaA8RfhZTlrgCZVxO7KV3ChwZ3+zk7ArnTNi3akAavIrAD5tSeNKMwtJ26FLge
-         EHgiEZQ2N/TlzlrJynns/8ZjuFXU24/HSDxfMkz+lzOf+nXhTNM7brCALny4BICGY3tD
-         ByXDYXf8WrVgzDhbW3D76T+MVd9e74m3KkL9+9N+cf7qhfwCvTxqkKwlRr0XPOpX7r6k
-         PKnhkxE2I8rp095ta8kFngzPKjGqFB1cCHBpumGmvCG1Ihja35wRyd3Gb8r8jwS4fJ1s
-         E4DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706779789; x=1707384589;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gR2SCc4BIE8sv2cc5ChJ04+ZAy4Os5pvthMcTA+RFl4=;
-        b=iTn1SNxFeyHfL7qT2eL8sHAjafTcWZY1bowsL9zOMv1R9BKqPPnH2stft7H4cOEnD2
-         +fXEqyu4xRCvl4VpO8CvFYUoFLOc5IMM2miiX79icew7VETo5tDQDVaKyHVHCZ4QtAM3
-         czoBMqYqvEE1NbdLJ/m746pUUYOKvc6jOa8SFre3UYXi17+sPdCiyk4BFhh8Fw57+lYd
-         3bYt5Uk3pNoz59CpxLjeLsEQQVQPxHd/lariZiv+vBSAkeKatr6px2Y1MX01vXJCygtA
-         P2x+PwbAaaOJnyJtyC1YSQIH6vCkYBw2sFJwayL3reXftQOWlsoBFtyYTyFmP0RkHcZi
-         /jZA==
-X-Gm-Message-State: AOJu0YyVOBGEne3W/V7dZJHe50cFsEkl6ItstmVAxdKCpYNVy0EkUo7D
-	1hZBuAcTq16uGKw8HgMIq4ixyixoMFpBeXKiLpE3sXZUJpTwV5d0
-X-Google-Smtp-Source: AGHT+IFbfqsdGNQ6Wd46t2iNvuziOkb8PC1smvpxI4cq1BjUl4UTFC/HQ0I0EBborC1Ks4Nt1NmrTQ==
-X-Received: by 2002:a05:6512:21c1:b0:50e:6b5d:5976 with SMTP id d1-20020a05651221c100b0050e6b5d5976mr1296346lft.40.1706779789357;
-        Thu, 01 Feb 2024 01:29:49 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWqnYUTtWXGe3JQ3yFJz0StJ0H2XP76LgcJO3yNTUDd3r5jlndDZgz1LhqosHGqFg1UCaI8VuwW7z73Ynx1FhROro2avzqUVaiRi/6RKSKsKqN4ZtOZLRTtIoqO14upwk8SulrX4cdu3+lBVdfrQ+dppF7DHp5BQ1TOmwjZUixp
-Received: from akanner-r14. ([77.222.24.25])
-        by smtp.gmail.com with ESMTPSA id b25-20020a196719000000b0050e74ec73f6sm2177203lfc.124.2024.02.01.01.29.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 01:29:48 -0800 (PST)
-Message-ID: <65bb648c.190a0220.d431d.4f63@mx.google.com>
-X-Google-Original-Message-ID: <ZbtkigG3xRB/hSto@akanner-r14.>
-Date: Thu, 1 Feb 2024 12:29:46 +0300
-From: Andrew Kanner <andrew.kanner@gmail.com>
-To: Christoph Hellwig <hch@lst.de>
-Cc: mcgrof@kernel.org, linux-modules@vger.kernel.org,
-	linux-kernel@vger.kernel.org, mchehab@kernel.org
-Subject: Re: [PATCH v1] module.h: define __symbol_get_gpl() as a regular
- __symbol_get()
-References: <20240131190251.4668-1-andrew.kanner@gmail.com>
- <20240201052958.GA14943@lst.de>
+	s=arc-20240116; t=1706779886; c=relaxed/simple;
+	bh=Pxf0gkPUSV6ML8ezzNHzC2q4EU2zzV+BO6VfllDl0nE=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=iKa3jFJVdYw/7kQSB8w26CwBjXYXjJlQnl7BlyvJB6c4V2OU0lCuUXm2T8R3m3Hiwf7GDcV3c27YtUzda+zxyAvcl4MzWaXmnhqQvaVjiu53bO4YBknxdGuO/uue6QOBFnD5iDnkMVgFY3cFMRBTScbljZ50Nh3FbCekQKWVHXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=L1SpQ0ZK; arc=none smtp.client-ip=185.70.40.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1706779872; x=1707039072;
+	bh=/TpO0duNnWXfuRmnGBDmPg/iJAgdmf8+TRYZheB4zzo=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=L1SpQ0ZKZj0vEZbuhSTKvRRrWW6xgW5wTGeQWEXnf0CAAopQ1uUuErf6ZJShY6zcS
+	 DRaGadbR1O069/g9s9vLme57qnXWHn72kNrcA+mO+vh8yOp9yqaFlXTb1PwRQgWd0+
+	 yMzbr7gTl8PCjvZnGQ92+rl6Ksv1VhFApC3vcrsIywUVB1RvQEjz2VuC/YV+PGkPj4
+	 k/p04fwZ8Qntri1r7/csU62ytmv2qaweNFBv58TA9fTur7Ledik1jgashxmaq1QdE+
+	 5FH7Pz+Zg34ZVOj9+l+Ra6iTKzPI46/NOfWQGZzlceuUHTmcnI2CvCI6wjt6ZDY/L/
+	 WUXng+BOezWig==
+Date: Thu, 01 Feb 2024 09:30:46 +0000
+To: Alice Ryhl <aliceryhl@google.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, Dan Williams <dan.j.williams@intel.com>, Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 1/9] rust: file: add Rust abstraction for `struct file`
+Message-ID: <84850d04-c1cb-460d-bc4e-d5032489da0d@proton.me>
+In-Reply-To: <CAH5fLghgc_z23dOR2L5vnPhVmhiKqZxR6jin9KCA5e_ii4BL3w@mail.gmail.com>
+References: <20240118-alice-file-v3-0-9694b6f9580c@google.com> <20240118-alice-file-v3-1-9694b6f9580c@google.com> <5dbbaba2-fd7f-4734-9f44-15d2a09b4216@proton.me> <CAH5fLghgc_z23dOR2L5vnPhVmhiKqZxR6jin9KCA5e_ii4BL3w@mail.gmail.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240201052958.GA14943@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 01, 2024 at 06:29:58AM +0100, Christoph Hellwig wrote:
-> On Wed, Jan 31, 2024 at 10:02:52PM +0300, Andrew Kanner wrote:
-> > Prototype for __symbol_get_gpl() was introduced in the initial git
-> > commit 1da177e4c3f4 ("Linux-2.6.12-rc2"), but was not used after that.
-> > 
-> > In commit 9011e49d54dc ("modules: only allow symbol_get of
-> > EXPORT_SYMBOL_GPL modules") Christoph Hellwig switched __symbol_get()
-> > to process GPL symbols only, most likely this is what
-> > __symbol_get_gpl() was designed to do.
-> > 
-> > We might either define __symbol_get_gpl() as __symbol_get() or remove
-> > it completely as suggested by Mauro Carvalho Chehab.
-> 
-> Just remove it, there is no need to keep unused funtionality around.
-> 
-> Btw, where did the discussion start?  I hope you're not trying to
-> add new symbol_get users?
-> 
+On 29.01.24 17:34, Alice Ryhl wrote:
+> On Fri, Jan 26, 2024 at 4:04=E2=80=AFPM Benno Lossin <benno.lossin@proton=
+me> wrote:
+>>> +///   closed.
+>>> +/// * A light refcount must be dropped before returning to userspace.
+>>> +#[repr(transparent)]
+>>> +pub struct File(Opaque<bindings::file>);
+>>> +
+>>> +// SAFETY: By design, the only way to access a `File` is via an immuta=
+ble reference or an `ARef`.
+>>> +// This means that the only situation in which a `File` can be accesse=
+d mutably is when the
+>>> +// refcount drops to zero and the destructor runs. It is safe for that=
+ to happen on any thread, so
+>>> +// it is ok for this type to be `Send`.
+>>
+>> Technically, `drop` is never called for `File`, since it is only used
+>> via `ARef<File>` which calls `dec_ref` instead. Also since it only conta=
+ins
+>> an `Opaque`, dropping it is a noop.
+>> But what does `Send` mean for this type? Since it is used together with
+>> `ARef`, being `Send` means that `File::dec_ref` can be called from any
+>> thread. I think we are missing this as a safety requirement on
+>> `AlwaysRefCounted`, do you agree?
+>> I think the safety justification here could be (with the requirement add=
+ed
+>> to `AlwaysRefCounted`):
+>>
+>>       SAFETY:
+>>       - `File::drop` can be called from any thread.
+>>       - `File::dec_ref` can be called from any thread.
+>=20
+> This wording was taken from rust/kernel/task.rs. I think it's out of
+> scope to reword it.
 
-Of course not, no new users needed.
+Rewording the safety docs on `AlwaysRefCounted`, yes that is out of scope,
+I was just checking if you agree that the current wording is incomplete.
 
-I haven't discussed it directly. I found the unused __symbol_get_gpl()
-myself, but during investigation of wether it was ever used somewhere
-found the old patch series suggested by Mauro Carvalho Chehab (in Cc).
+> Besides, it says "destructor runs", not "drop runs". The destructor
+> can be interpreted to mean the right thing for ARef.
 
-Link: https://lore.kernel.org/lkml/5f001015990a76c0da35a4c3cf08e457ec353ab2.1652113087.git.mchehab@kernel.org/
+To me "destructor runs" and "drop runs" are synonyms.
 
-The patch series is from 2022 and not merged. You can take [PATCH v6
-1/4] which removes the unused symbol from the link.
+> The right safety comment would probably be that dec_ref can be called
+> from any thread.
 
-Or I can resend v2 with my commit msg. But not sure about how it works
-in such a case - will adding Suggested-by tag (if no objections from
-Mauro) with the Link be ok?
+Yes and no, I would prefer if you could remove the "By design, ..."
+part and only focus on `dec_ref` being callable from any thread and
+it being ok to send a `File` to a different thread.
 
--- 
-Andrew Kanner
+--=20
+Cheers,
+Benno
+
+
 
