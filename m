@@ -1,112 +1,84 @@
-Return-Path: <linux-kernel+bounces-47579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41903844FC2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:30:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63C5F844FC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:30:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7E14B296FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:30:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F2A32931EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:30:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C6D3AC08;
-	Thu,  1 Feb 2024 03:30:16 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD7EA3A8C5;
-	Thu,  1 Feb 2024 03:30:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC60A3B191;
+	Thu,  1 Feb 2024 03:30:41 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A23423A8C5;
+	Thu,  1 Feb 2024 03:30:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706758216; cv=none; b=YdgKtrcLVvI7UKC2t4a5HYuS3rvk73jHiUgpUnTbVXL84hAnHGcvRE3u/THtj+1InA/iorg56hz2hJkJ0EdK+vwccw4TC8XF1HW3xnnACpBECFHweYusSVrpWg7/bwbpR27vmxf21rOEZkISMVMr0CZAzSWjKeEmSHsOVImXTnY=
+	t=1706758241; cv=none; b=hcYvPoR8W/2uCg5nc9z9glehCFcB7hL9dfV91r7N/jk36t2iDqYBb9Aiw6311tHYJ1g7psv0EX6dbjSbINqhiNwxgNQhNX8ZUHkkT1dktNcN4gACkQxM0YYtlwmQs6hBpzRpZkDOJRTsEQkGv7DNzIPpOmuViUSmdRKwqQntFww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706758216; c=relaxed/simple;
-	bh=9uBM/8fJawcJ3y/dAPR6vQeEhlmYRiH/RTb/Lg63Fxg=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=O21879v0IbjcNC9sOElcexJ8SqBpJkUcFt7eWo9UE1F+X6uv9mTmaO2B68TvfNrvqD2UU2UDoXDBlKiRXfXmAxMCU1akvfSU18mipAj+YCqOrG4l4k0rHctAE4CM81Xa4gYQItixF52vYM4foICdgVXpWAN7QELa5/+vqcZnGwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.183])
-	by gateway (Coremail) with SMTP id _____8BxefBEELtlFlYJAA--.28279S3;
-	Thu, 01 Feb 2024 11:30:12 +0800 (CST)
-Received: from [10.20.42.183] (unknown [10.20.42.183])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Dxfs1DELtlZEYrAA--.33789S3;
-	Thu, 01 Feb 2024 11:30:11 +0800 (CST)
-Subject: Re: [PATCH] LoongArch: KVM: Remove unnecessary CSR register saving
- during enter guest
-To: maobibo <maobibo@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>
-Cc: kvm@vger.kernel.org, loongarch@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <20240112035039.833974-1-maobibo@loongson.cn>
- <b7c08e0d-bd7d-aea9-250e-1649e95599b7@loongson.cn>
-From: zhaotianrui <zhaotianrui@loongson.cn>
-Message-ID: <fbd8b226-1972-322b-d884-bb41d262dd16@loongson.cn>
-Date: Thu, 1 Feb 2024 11:29:12 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+	s=arc-20240116; t=1706758241; c=relaxed/simple;
+	bh=0U0DRnxOD6IVrdCQPmo32znrfxpOuyUvuYMn1ho150w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AaU7UBeSPkm44jP2ZtQEVGGnbP0izIzyynUNf9/F/ulAMjwZtz2pXX5F2Z421wb4pV7gzH9KaGoqDUZswXuEXTNzjuyVQTeSVIPLW7fpdW7iuP7GDv0Ir8ARsg5p1rUq+j+c8b+zL1JuNpg3KYGrG+NZSkeqdZNeS45+jXdD44I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4B63DA7;
+	Wed, 31 Jan 2024 19:31:21 -0800 (PST)
+Received: from [10.162.42.11] (a077893.blr.arm.com [10.162.42.11])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DADF33F738;
+	Wed, 31 Jan 2024 19:30:26 -0800 (PST)
+Message-ID: <08a4971e-c31d-46f7-afbc-7404bd9a293f@arm.com>
+Date: Thu, 1 Feb 2024 09:00:23 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <b7c08e0d-bd7d-aea9-250e-1649e95599b7@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v3 12/35] mm: Call arch_swap_prepare_to_restore()
+ before arch_swap_restore()
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8Dxfs1DELtlZEYrAA--.33789S3
-X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoW7Cw1xtr4rtF1DGr1xury8WFX_yoW8JFyUpF
-	97AF1vyFW5urn7ArWDKas8WryUJ347K3Z5WFyUJFy5Gr45Zry0gr1UXFn2gF1UZw48Jr18
-	uF1UJrnavFWUA3XCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
-	wI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI
-	0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280
-	aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2
-	xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
-	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r
-	1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF
-	7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxV
-	WUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UR
-	a0PUUUUU=
+To: Alexandru Elisei <alexandru.elisei@arm.com>, catalin.marinas@arm.com,
+ will@kernel.org, oliver.upton@linux.dev, maz@kernel.org,
+ james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com,
+ arnd@arndb.de, akpm@linux-foundation.org, mingo@redhat.com,
+ peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+ mhiramat@kernel.org, rppt@kernel.org, hughd@google.com
+Cc: pcc@google.com, steven.price@arm.com, vincenzo.frascino@arm.com,
+ david@redhat.com, eugenis@google.com, kcc@google.com, hyesoo.yu@samsung.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-mm@kvack.org,
+ linux-trace-kernel@vger.kernel.org
+References: <20240125164256.4147-1-alexandru.elisei@arm.com>
+ <20240125164256.4147-13-alexandru.elisei@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <20240125164256.4147-13-alexandru.elisei@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Reviewed-by: Tianrui Zhao <zhaotianrui@loongson.cn>
 
-在 2024/1/31 上午11:48, maobibo 写道:
-> slightly ping :)
+
+On 1/25/24 22:12, Alexandru Elisei wrote:
+> arm64 uses arch_swap_restore() to restore saved tags before the page is
+> swapped in and it's called in atomic context (with the ptl lock held).
 > 
-> On 2024/1/12 上午11:50, Bibo Mao wrote:
->> Some CSR registers like CRMD/PRMD are saved during enter VM mode. However
->> they are not restored for actual use, saving for these CSR registers
->> can be removed.
->>
->> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
->> ---
->>   arch/loongarch/kvm/switch.S | 6 ------
->>   1 file changed, 6 deletions(-)
->>
->> diff --git a/arch/loongarch/kvm/switch.S b/arch/loongarch/kvm/switch.S
->> index 0ed9040307b7..905b90de50e8 100644
->> --- a/arch/loongarch/kvm/switch.S
->> +++ b/arch/loongarch/kvm/switch.S
->> @@ -213,12 +213,6 @@ SYM_FUNC_START(kvm_enter_guest)
->>       /* Save host GPRs */
->>       kvm_save_host_gpr a2
->> -    /* Save host CRMD, PRMD to stack */
->> -    csrrd    a3, LOONGARCH_CSR_CRMD
->> -    st.d    a3, a2, PT_CRMD
->> -    csrrd    a3, LOONGARCH_CSR_PRMD
->> -    st.d    a3, a2, PT_PRMD
->> -
->>       addi.d    a2, a1, KVM_VCPU_ARCH
->>       st.d    sp, a2, KVM_ARCH_HSP
->>       st.d    tp, a2, KVM_ARCH_HTP
->>
->> base-commit: de927f6c0b07d9e698416c5b287c521b07694cac
->>
+> Introduce arch_swap_prepare_to_restore() that will allow an architecture to
+> perform extra work during swap in and outside of a critical section.
+> This will be used by arm64 to allocate a buffer in memory where to
+> temporarily save tags if tag storage is not available for the page being
+> swapped in.
 
+Just wondering if tag storage will always be unavailable for tagged pages
+being swapped in ? OR there are cases where allocation might not even be
+required ? This prepare phase needs to be outside the critical section -
+only because there might be memory allocations ?
 
