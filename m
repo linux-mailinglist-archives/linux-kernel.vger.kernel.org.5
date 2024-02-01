@@ -1,166 +1,106 @@
-Return-Path: <linux-kernel+bounces-47985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB8878455B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:45:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A5218455BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:47:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DDEB2811AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:45:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA175280FF3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1932315B97E;
-	Thu,  1 Feb 2024 10:45:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="TeYaN4Zz"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A994D15B97E;
+	Thu,  1 Feb 2024 10:46:57 +0000 (UTC)
+Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A3AE5684;
-	Thu,  1 Feb 2024 10:45:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0955415B970;
+	Thu,  1 Feb 2024 10:46:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706784342; cv=none; b=LcW3KTxRFsvE0Fl9RkPWoFXWSBSJ2f6nRPDEBSk20oe3J1eCdBtvssaPSk+uWoIwvMIc83XM7MMMtToICmZ6f5ksqfEbDNqhEFxuxubuQAg/OVfr2aUA6+lN87OEbhS7Dd7xy4otvMgCy1USmPk08CeHIFDtOkcmiwTX36B57lw=
+	t=1706784417; cv=none; b=fKzD+8W4/nEdnL7JborArpWv7zmTZvF/z7OTG0KWodysF2c3RplW1Hpx2ZrrAVHu6+Y0WsNduvNrS1B/sFtVEsCauRSAcP2ujShTf5FAFpHr9di5BqtYVujlUIP2yxyzGISoGlgvKIO/3pCQ3IMqmzjyZ3jZ7CPTq2HtNSqCGlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706784342; c=relaxed/simple;
-	bh=y5p7YWxCixLSRC8L9+RtySskgo4VXq55VYvzVOHQv4c=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
-	 References:In-Reply-To; b=MsoK8BwkwEuxdXk9MfutXdjbBbat33peOHdTOFMlN/nX4af2xU4ghXtotc/A/AHo35DSMYQXSZuITx+86IyXr4AtnNjP7uV5TyKVtKlxIa/xndmo4XscqCIcz1tYrIP4nGCuN3FWiNDkSWiIpD/nhkmT83Sg5BGFJUxFMR0rSmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=TeYaN4Zz; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8CED0C0003;
-	Thu,  1 Feb 2024 10:45:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1706784337;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mT1oLGRWsLYnRlkvBBGQg6iP7R72Zz+RmHUhiF//kno=;
-	b=TeYaN4Zzv++6cefywcds2sJiBvMlGpIpwmNVn2e+XGroZq2dhIzPTCZ4gA0ksIQlhmw9AC
-	SeWCItj6viug5VQWEHJWUn6f2q/OvTrky+O1KrzAFGIHG0biwm3Bmod68kKyFXxu54mlVe
-	y1LsTPVUbSx+XUJ6+n/DIkM8F30T2zTJQyuRyGbq7F0ljNDNsvbFW1IqSAM3f0DymHiM0k
-	5RO81KKE5ACZH54/l8GFUQ8t7vMD1PQGQ9lP4uFJGWcgER+uYKT0zKngEW75DnwVaz5hJY
-	qVmDrF5fSnTw9ZSi/kqS8HCKwNpX1ElEf+yR8Qe1czAGWoY7DK8dfd25EbvlJQ==
+	s=arc-20240116; t=1706784417; c=relaxed/simple;
+	bh=V/x1b1ldsDYK3JfVzlP9ZZq7WJ2uPOBTgaU55XZNPrU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uae74+ml/x9I8YHsawncyZ/bLn9nMjJgD/nQyKq5iSu/6u9CGaLlOl4FAWn20jMx8XtzDq72Nt/QgJpyEDlVaY2gwESdAWOoltPW1GSoQzMXhse1vCGvQf2FaRI/juEPR33rjgcZN5MBwWsl/hXl3wBpqoPsVKa4KsxVa/mEVCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-46b2aaa36d5so314226137.1;
+        Thu, 01 Feb 2024 02:46:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706784413; x=1707389213;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HFZPcFLhDs+gYYjGu7bIEoeJY8eTRZGl5q1i/K40hjQ=;
+        b=AfuD/sPbMby0fAp02Uipxv1N1hhgGlyfRNBoHYWA5TxYrbndJ7584pgDZFssUVyyoA
+         tzmh5/mHUh4uEaJ46pxMfVIm0hLkefgukuPlTc58ElBFdIgx5RZfUCvMEG000CyEdLyc
+         DtNeweYULzfHKJ4LkEHR5UtyOedmc49kgWt76NFIHbH1v9ub3XmRG978ecgBpFDTnurJ
+         EGiK22H9CN2TGQ7NLD5RobNSa7JvwKGruu5JU4LESwPB4C2DT2QELOKnsKkcVUmZEKNT
+         nzUAjU58clAK3Pnsf3d/fRxQrQr1kjUVqCcNn2z7qQHppQDZwF1NKQeCi/U8ld5jnpQD
+         ioOw==
+X-Gm-Message-State: AOJu0YxHEe8ubUmZcjL/kT9sbQO9p7wDesxu328zED16Ocw4fB72g0b9
+	tS6enfEBNVHHzDd0qSPIZEA5HbPhFneU/f+Zav/ZHOEtM/QTTKfSBjsIo97eirQ=
+X-Google-Smtp-Source: AGHT+IGAax/Sb4kznliaD3ZikyM2fMNpStWpgDSjdppPgPo6zArlRUDDpv43TD1zZV1AYQmu+PZg0A==
+X-Received: by 2002:a05:6102:529:b0:46c:ad31:a013 with SMTP id m9-20020a056102052900b0046cad31a013mr1938286vsa.32.1706784413193;
+        Thu, 01 Feb 2024 02:46:53 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUCcA6+DcW2Zid2/1Bir3jdUBSreyAhSoWuY/+WAnYhGDWSwKlYqOphWSKItWfgw1kvyyOrhc8AQanKU1MTMniidZzz8SYazmZoA8HCkuZGCq9DgERUd5F32ESn8X1KKaVTwp0MF+rxTU+DbSzAOIqG0l/v4EOswjtN+PXeDCLKqE8CJS9bE8mBeRewetkh+hWKiUJHL1JW4iDFrBgIqZXouAS4nU2xmoWXz6wja0SotnznG9cDzGnaan4xHDAqL5ME8uQ=
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com. [209.85.222.169])
+        by smtp.gmail.com with ESMTPSA id ly9-20020a0562145c0900b0068509353fb6sm5840691qvb.133.2024.02.01.02.46.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Feb 2024 02:46:52 -0800 (PST)
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-78406c22dc7so58782585a.0;
+        Thu, 01 Feb 2024 02:46:52 -0800 (PST)
+X-Received: by 2002:a0d:ea85:0:b0:5ff:7cdc:404b with SMTP id
+ t127-20020a0dea85000000b005ff7cdc404bmr1645047ywe.52.1706784391742; Thu, 01
+ Feb 2024 02:46:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20240131055159.2506-1-yan.y.zhao@intel.com> <5e55b5c0-6c8d-45b4-ac04-cf694bcb08d3@app.fastmail.com>
+ <ZbrfcTaiuu2gaa2A@yzhao56-desk.sh.intel.com> <9f27c23b-ea8b-443c-b09c-03ecaa210cd5@app.fastmail.com>
+In-Reply-To: <9f27c23b-ea8b-443c-b09c-03ecaa210cd5@app.fastmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 1 Feb 2024 11:46:19 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWPToeXdcBWv2LJuu2Z6td-JYz3GGf5fD1+ScqVD+Wurg@mail.gmail.com>
+Message-ID: <CAMuHMdWPToeXdcBWv2LJuu2Z6td-JYz3GGf5fD1+ScqVD+Wurg@mail.gmail.com>
+Subject: Re: [PATCH 0/4] apply page shift to PFN instead of VA in pfn_to_virt
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Yan Zhao <yan.y.zhao@intel.com>, Linus Walleij <linus.walleij@linaro.org>, 
+	guoren <guoren@kernel.org>, Brian Cain <bcain@quicinc.com>, Jonas Bonn <jonas@southpole.se>, 
+	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, 
+	Linux-Arch <linux-arch@vger.kernel.org>, linux-kernel@vger.kernel.org, 
+	"linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>, linux-hexagon@vger.kernel.org, 
+	"linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 01 Feb 2024 11:45:36 +0100
-Message-Id: <CYTOJVMATYTW.2G1JB1CVPECYA@bootlin.com>
-Subject: Re: [PATCH v4 07/18] dt-bindings: soc: mobileye: add EyeQ5 OLB
- system controller
-Cc: "Vladimir Kondratiev" <vladimir.kondratiev@mobileye.com>,
- <linux-mips@vger.kernel.org>, <linux-clk@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Thomas
- Petazzoni" <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>, <linux-gpio@vger.kernel.org>
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Gregory
- CLEMENT" <gregory.clement@bootlin.com>, "Michael Turquette"
- <mturquette@baylibre.com>, "Stephen Boyd" <sboyd@kernel.org>, "Rob Herring"
- <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>, "Linus Walleij"
- <linus.walleij@linaro.org>, =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?=
- <rafal@milecki.pl>, "Philipp Zabel" <p.zabel@pengutronix.de>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: aerc 0.15.2
-References: <20240131-mbly-clk-v4-0-bcd00510d6a0@bootlin.com>
- <20240131-mbly-clk-v4-7-bcd00510d6a0@bootlin.com>
- <ca618c6e-ef29-4ee5-860f-68b48ebbeb9e@linaro.org>
-In-Reply-To: <ca618c6e-ef29-4ee5-860f-68b48ebbeb9e@linaro.org>
-X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hello,
+Hi Arnd,
 
-On Thu Feb 1, 2024 at 10:36 AM CET, Krzysztof Kozlowski wrote:
-> On 31/01/2024 17:26, Th=C3=A9o Lebrun wrote:
-> > Add documentation to describe the "Other Logic Block" syscon.
-> >=20
-> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
-> > ---
-> >  .../bindings/soc/mobileye/mobileye,eyeq5-olb.yaml  | 89 ++++++++++++++=
-++++++++
-> >  MAINTAINERS                                        |  1 +
-> >  2 files changed, 90 insertions(+)
-> >=20
->
-> ...
->
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - '#address-cells'
-> > +  - '#size-cells'
-> > +  - ranges
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    soc {
-> > +      #address-cells =3D <2>;
-> > +      #size-cells =3D <2>;
-> > +
-> > +      system-controller@e00000 {
-> > +        compatible =3D "mobileye,eyeq5-olb", "syscon", "simple-mfd";
-> > +        reg =3D <0x0 0xe00000 0x0 0x400>;
-> > +        #address-cells =3D <1>;
-> > +        #size-cells =3D <1>;
-> > +        ranges =3D <0x0 0x0 0xe00000 0x400>;
->
-> If there is going to be any resend:
-> 1. ranges follows reg
-> 2. Use lower-case hex
->
-> See DTS coding style.
+On Thu, Feb 1, 2024 at 11:11=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> wrote=
+:
+> I think it's fair to assume we won't need asm-generic/page.h any
+> more, as we likely won't be adding new NOMMU architectures.
 
-I'm re-reading Documentation/devicetree/bindings/dts-coding-style.rst
-right now. Thanks.
+So you think riscv-nommu (k210) was the last one we will ever see?
 
->
-> > +
-> > +        clocks: clock-controller@2c {
-> > +          compatible =3D "mobileye,eyeq5-clk";
-> > +          reg =3D <0x02C 0x50>, <0x11C 0x04>;
-> > +          reg-names =3D "plls", "ospi";
-> > +          #clock-cells =3D <1>;
-> > +          clocks =3D <&xtal>;
-> > +          clock-names =3D "ref";
-> > +        };
-> > +
-> > +        reset: reset-controller@0 {
->
-> 0 is before 2c, keep nodes properly ordered.
+Gr{oetje,eeting}s,
 
-Indeed.
+                        Geert
 
-> > +          compatible =3D "mobileye,eyeq5-reset";
-> > +          reg =3D <0x000 0x0C>, <0x200 0x34>, <0x120 0x04>;
-> > +          reg-names =3D "d0", "d1", "d2";
-> > +          #reset-cells =3D <2>;
-> > +        };
-> > +
-> > +        pinctrl: pinctrl@b0 {
-> > +          compatible =3D "mobileye,eyeq5-pinctrl";
-> > +          reg =3D <0x0B0 0x30>;
->
-> This looks incomplete. Your binding mentions children, so provide at
-> least one child.
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
-Will do. Didn't think about adding a child example to the dt-bindings
-example.
-
-Thanks,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
