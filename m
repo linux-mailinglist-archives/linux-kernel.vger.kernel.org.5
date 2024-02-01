@@ -1,383 +1,147 @@
-Return-Path: <linux-kernel+bounces-48539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60631845D62
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:35:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12ED9845D61
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:35:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18C68287CDF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:35:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A52E01F2B4C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:35:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F6365257;
-	Thu,  1 Feb 2024 16:35:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E69454C67;
+	Thu,  1 Feb 2024 16:35:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="JYoDOZUn"
-Received: from xry111.site (xry111.site [89.208.246.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CXUxypiu"
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 732701FDB;
-	Thu,  1 Feb 2024 16:35:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C56DF7E0EA
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 16:35:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706805324; cv=none; b=EkNH8bjaatOQUiA+3/jiilXGi7ZmmbFyUaAUld4rR4CKzNH5M2iVZu1GRbBuYrqIdTY6G02+pu0UPFNklFuDDm91MtdvD1dU64r1T26B7jVtIvcknu5491bivtRKU/u6uY/M7qZbNUimJ27kPtZrbgALFVnxW+eGRUaGIvctdnc=
+	t=1706805324; cv=none; b=jh/FnTfI2FLa0cZu+Gsk3ZDcx/TDDGRG9gJ4waKoXI8kUpdxl+Ydvw07mp4AgxghNGrcsPkBCcjwOmQxslvuquSsIXz/BPFoFRT09KRGIg59GJVuN6CeKXJukUHHBr0Q56CgEObcD4wNwlXN/932uBdqm8t+OWyVxDaS/5rQs48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706805324; c=relaxed/simple;
-	bh=v7yRlc8JbVP7rQJskWuydHy/lSbUiMt1FoOZpCEGI8U=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=rIul/qem1xE9gWKnBiBTZPCVtkomdXXrxh7lrawSEnJEIhuezmqKsYJSQwsCoPX1Q99yAMGugP/OHN3yZBrcgJvHSyOCZUFb6SoBZK3uizdPVszfvMdwRQszGYzJYl0F93+bbQdCO8tSdKK3dKA/Sgrzi+XM1hSp9ZGK8uxw4T0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=JYoDOZUn; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1706805314;
-	bh=v7yRlc8JbVP7rQJskWuydHy/lSbUiMt1FoOZpCEGI8U=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=JYoDOZUn8MgttQo2WLaIYWcNLO+qZHiVJvxm3Rm4lci1/VFs7m/TrprXoqL7q7DBv
-	 9+nWGS9OcbqYLiZ1L2l1ZbwFkIYhg/ALGXbmXOuyMPcP9lroSSx3Xgffb6g4bKhvWs
-	 jq2oNQLazmxM1vjcP3757V8G8KHEKEF9pIvoILCs=
-Received: from [IPv6:240e:358:11d4:5700:dc73:854d:832e:4] (unknown [IPv6:240e:358:11d4:5700:dc73:854d:832e:4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 0BB2866EF0;
-	Thu,  1 Feb 2024 11:35:08 -0500 (EST)
-Message-ID: <9d1d51e69c3f96bf5992e9a988969515ba97f883.camel@xry111.site>
-Subject: Re: [PATCH 1/3] ptrace: Introduce exception_ip arch hook
-From: Xi Ruoyao <xry111@xry111.site>
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>, Oleg Nesterov <oleg@redhat.com>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Andrew Morton
- <akpm@linux-foundation.org>, Ben Hutchings <ben@decadent.org.uk>
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-mm@kvack.org
-Date: Fri, 02 Feb 2024 00:35:01 +0800
-In-Reply-To: <20240201-exception_ip-v1-1-aa26ab3ee0b5@flygoat.com>
-References: <20240201-exception_ip-v1-0-aa26ab3ee0b5@flygoat.com>
-	 <20240201-exception_ip-v1-1-aa26ab3ee0b5@flygoat.com>
-Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
- keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	bh=xNU2G1wWCYAXemLHQIapTJ+woUfaGlzNvEQHLSN2LlU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YG9sJuzDC676CV9WGPt8EgEOTwjt/z4ocedkFYS0CEIz2aJOOMLPej9Xvs8OHArxLr/lUS3EV/kDQbRPWQHJOE1zY9IsoWLek4FQZ88nxcMvXafaIULHo7KGUFb85Li0QlbZ0qBzqoFapk2qYw1JlXdYZXrNI+ajcNEu0jxCJBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CXUxypiu; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-29080973530so849128a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 08:35:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706805322; x=1707410122; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JEnWz5ZST/dH/UlGa6pT/UbRvB/1V8kTgwNMqCtd58o=;
+        b=CXUxypiuVGjC9/CYeZ/vWVC3OO8m8ap5epfdMpBtpsQPeBlhaQJJrxahb51dD5ipUI
+         49pfIoBhz0cWMkvfmESsD00VHAu7xvi5rFyZlRJ7r8xoIlbbcOnhkfbx9Xbkgsuj/Ai+
+         R4NJKIRta6o/7FMZ3zzHDxmoO1i8cJzsJtbq17lo3albDWkfXlqHFia3eexATkuFWxEP
+         fOB6EA7ZVOtrFNS66CXmQoNtfSa8oSmZ7kF+jiknvidXktTIK+daUcbfr8fGW2e7Vacd
+         MGsf/KRhK+39ZfvtLWj9bkrUjnVm198IRbmQTuZPN4pCHvo1f7EcDkUhVFvTzaTm/ZyB
+         siSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706805322; x=1707410122;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JEnWz5ZST/dH/UlGa6pT/UbRvB/1V8kTgwNMqCtd58o=;
+        b=WAM6jKSWoMII1qm/Uwbd5perHH4T9J5gEp77ddzu+7nJnWjvYsfL7ZNbKdUQingkll
+         mZfQ7xiuqfBmg64t+wzqJWIfrKCZSLb00LM77eArYm7T0q6XazR364WJ3LRvrjCTSsfW
+         SXs3sZvVAqVhgIVu1UHNodfUXIdNuhNRDLA71neoZh9BnY80dln314ipnnx6AQ/Zuv0L
+         5QKmEb14A49kkT36fRr01vuqyZHvZUdhM3B2Zfo5i7hKrPoBx2n6qt1zkc+HpFnxv00E
+         q2LLu6Fy2MbDhT0D7LAeZUUC9XPC9Hkzhjvstpj4HpEcdQdtRgw0pxv5jajz7PdmaCa1
+         5ECw==
+X-Gm-Message-State: AOJu0YyXdcE2/Syjd+HJDtKz58U8IzOUe7b5z6QhXd4u7eBQaCkzmVrM
+	RxhT/FmhhSYiTZr9CLykFCPLrYLx93tYxEHn/xd62flFDe9bOKdcovrr5vRCjQ==
+X-Google-Smtp-Source: AGHT+IFuEuJM0fB+6LKcH/h6Kz9oMWgeazwllVl+2+39fGDBVo4YBYxQBVl080VfgQPHjK/lXRUsGQ==
+X-Received: by 2002:a17:90a:d78f:b0:296:1d9f:93d5 with SMTP id z15-20020a17090ad78f00b002961d9f93d5mr1574261pju.18.1706805321860;
+        Thu, 01 Feb 2024 08:35:21 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXHs+lSFlCnoIia2qkGpKQwtoJDxQdOarxtWJPx423pvrYhY0lfFSMH2RETUWglEI1BA/xHOwFm1FNehrXvkWVpd4KsDkSmWiKXz+0vDkfFq84MWO8t22pNcbjtg52+eF+ypbh2flU+5RM/Jd9M4PljlhBBK6c3lAY0mp9nsNp2Q0gjBhvNLBxCDf1wArLW8tlAhWy9RyJT2Ye3b6KPgotrtYmswItdZh/oDaQCbc6JSTT34fp5zQRjRY/eHPidhN/YMwZHn8lnBWuCfgyuQj99Z6iefMT1vWwQ+fTpD9XBX8h1F6mk0mwkIkURn0RIOQ==
+Received: from google.com (152.33.83.34.bc.googleusercontent.com. [34.83.33.152])
+        by smtp.gmail.com with ESMTPSA id sg15-20020a17090b520f00b00293851b198csm12770pjb.56.2024.02.01.08.35.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 08:35:21 -0800 (PST)
+Date: Thu, 1 Feb 2024 16:35:17 +0000
+From: Carlos Llamas <cmllamas@google.com>
+To: Zhiguo Niu <zhiguo.niu@unisoc.com>
+Cc: peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+	longman@redhat.com, boqun.feng@gmail.com,
+	linux-kernel@vger.kernel.org, niuzhiguo84@gmail.com,
+	ke.wang@unisoc.com, xuewen.yan@unisoc.com,
+	Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [PATCH V2] lockdep: fix deadlock issue between lockdep and rcu
+Message-ID: <ZbvIRZLyx7C8EzvW@google.com>
+References: <1705477714-10467-1-git-send-email-zhiguo.niu@unisoc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1705477714-10467-1-git-send-email-zhiguo.niu@unisoc.com>
 
-On Thu, 2024-02-01 at 15:46 +0000, Jiaxun Yang wrote:
-> On architectures with delay slot, architecture level instruction
-> pointer (or program counter) in pt_regs may differ from where
-> exception was triggered.
->=20
-> Introduce exception_ip hook to invoke architecture code and determine
-> actual instruction pointer to the exception.
->=20
-> Link:
-> https://lore.kernel.org/lkml/00d1b813-c55f-4365-8d81-d70258e10b16@app.fas=
-tmail.com/
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+On Wed, Jan 17, 2024 at 03:48:34PM +0800, Zhiguo Niu wrote:
+> There is a deadlock scenario between lockdep and rcu when
+> rcu nocb feature is enabled, just as following call stack:
+> 
+>      rcuop/x
+> -000|queued_spin_lock_slowpath(lock = 0xFFFFFF817F2A8A80, val = ?)
+> -001|queued_spin_lock(inline) // try to hold nocb_gp_lock
+> -001|do_raw_spin_lock(lock = 0xFFFFFF817F2A8A80)
+> -002|__raw_spin_lock_irqsave(inline)
+> -002|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F2A8A80)
+> -003|wake_nocb_gp_defer(inline)
+> -003|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F30B680)
+> -004|__call_rcu_common(inline)
+> -004|call_rcu(head = 0xFFFFFFC082EECC28, func = ?)
+> -005|call_rcu_zapped(inline)
+> -005|free_zapped_rcu(ch = ?)// hold graph lock
+> -006|rcu_do_batch(rdp = 0xFFFFFF817F245680)
+> -007|nocb_cb_wait(inline)
+> -007|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F245680)
+> -008|kthread(_create = 0xFFFFFF80803122C0)
+> -009|ret_from_fork(asm)
+> 
+>      rcuop/y
+> -000|queued_spin_lock_slowpath(lock = 0xFFFFFFC08291BBC8, val = 0)
+> -001|queued_spin_lock()
+> -001|lockdep_lock()
+> -001|graph_lock() // try to hold graph lock
+> -002|lookup_chain_cache_add()
+> -002|validate_chain()
+> -003|lock_acquire
+> -004|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F211D80)
+> -005|lock_timer_base(inline)
+> -006|mod_timer(inline)
+> -006|wake_nocb_gp_defer(inline)// hold nocb_gp_lock
+> -006|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F2A8680)
+> -007|__call_rcu_common(inline)
+> -007|call_rcu(head = 0xFFFFFFC0822E0B58, func = ?)
+> -008|call_rcu_hurry(inline)
+> -008|rcu_sync_call(inline)
+> -008|rcu_sync_func(rhp = 0xFFFFFFC0822E0B58)
+> -009|rcu_do_batch(rdp = 0xFFFFFF817F266680)
+> -010|nocb_cb_wait(inline)
+> -010|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F266680)
+> -011|kthread(_create = 0xFFFFFF8080363740)
+> -012|ret_from_fork(asm)
+> 
+> rcuop/x and rcuop/y are rcu nocb threads with the same nocb gp thread.
+> This patch release the graph lock before lockdep call_rcu.
+> 
+> Fixes: a0b0fd53e1e6 ("locking/lockdep: Free lock classes that are no longer in use")
 
-How about adding something like
+This has a "Fixes" tag but I don't see Cc: stable. Does this need to be
+picked for stable branches? Or does tip branch does something special?
 
-#ifndef arch_exception_ip
-#define exception_ip(regs) instruction_pointer(regs)
-#else
-#define exception_ip(regs) arch_exception_ip(regs)
-#endif
+Also, Cc: Bart Van Assche <bvanassche@acm.org> (blamed_fixes) just FYI.
 
-into a generic header, instead of having to add exception_ip definition
-everywhere?
-
-> ---
-> =C2=A0arch/alpha/include/asm/ptrace.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 | 1 +
-> =C2=A0arch/arc/include/asm/ptrace.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 | 1 +
-> =C2=A0arch/arm/include/asm/ptrace.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 | 1 +
-> =C2=A0arch/csky/include/asm/ptrace.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 | 1 +
-> =C2=A0arch/hexagon/include/uapi/asm/ptrace.h | 1 +
-> =C2=A0arch/loongarch/include/asm/ptrace.h=C2=A0=C2=A0=C2=A0 | 1 +
-> =C2=A0arch/m68k/include/asm/ptrace.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 | 1 +
-> =C2=A0arch/microblaze/include/asm/ptrace.h=C2=A0=C2=A0 | 3 ++-
-> =C2=A0arch/mips/include/asm/ptrace.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 | 1 +
-> =C2=A0arch/mips/kernel/ptrace.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 7 +++++++
-> =C2=A0arch/nios2/include/asm/ptrace.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 | 3 ++-
-> =C2=A0arch/openrisc/include/asm/ptrace.h=C2=A0=C2=A0=C2=A0=C2=A0 | 1 +
-> =C2=A0arch/parisc/include/asm/ptrace.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 | 1 +
-> =C2=A0arch/s390/include/asm/ptrace.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 | 1 +
-> =C2=A0arch/sparc/include/asm/ptrace.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 | 2 ++
-> =C2=A0arch/um/include/asm/ptrace-generic.h=C2=A0=C2=A0 | 1 +
-> =C2=A016 files changed, 25 insertions(+), 2 deletions(-)
->=20
-> diff --git a/arch/alpha/include/asm/ptrace.h
-> b/arch/alpha/include/asm/ptrace.h
-> index 3557ce64ed21..1ded3f2d09e9 100644
-> --- a/arch/alpha/include/asm/ptrace.h
-> +++ b/arch/alpha/include/asm/ptrace.h
-> @@ -8,6 +8,7 @@
-> =C2=A0#define arch_has_single_step()		(1)
-> =C2=A0#define user_mode(regs) (((regs)->ps & 8) !=3D 0)
-> =C2=A0#define instruction_pointer(regs) ((regs)->pc)
-> +#define exception_ip(regs) instruction_pointer(regs)
-> =C2=A0#define profile_pc(regs) instruction_pointer(regs)
-> =C2=A0#define current_user_stack_pointer() rdusp()
-> =C2=A0
-> diff --git a/arch/arc/include/asm/ptrace.h
-> b/arch/arc/include/asm/ptrace.h
-> index 00b9318e551e..94084f1048df 100644
-> --- a/arch/arc/include/asm/ptrace.h
-> +++ b/arch/arc/include/asm/ptrace.h
-> @@ -105,6 +105,7 @@ struct callee_regs {
-> =C2=A0#endif
-> =C2=A0
-> =C2=A0#define instruction_pointer(regs)	((regs)->ret)
-> +#define exception_ip(regs)		instruction_pointer(regs)
-> =C2=A0#define profile_pc(regs)		instruction_pointer(regs)
-> =C2=A0
-> =C2=A0/* return 1 if user mode or 0 if kernel mode */
-> diff --git a/arch/arm/include/asm/ptrace.h
-> b/arch/arm/include/asm/ptrace.h
-> index 7f44e88d1f25..fb4dc23eba78 100644
-> --- a/arch/arm/include/asm/ptrace.h
-> +++ b/arch/arm/include/asm/ptrace.h
-> @@ -89,6 +89,7 @@ static inline long regs_return_value(struct pt_regs
-> *regs)
-> =C2=A0}
-> =C2=A0
-> =C2=A0#define instruction_pointer(regs)	(regs)->ARM_pc
-> +#define
-> exception_ip(regs)			instruction_pointer(regs)
-> =C2=A0
-> =C2=A0#ifdef CONFIG_THUMB2_KERNEL
-> =C2=A0#define frame_pointer(regs) (regs)->ARM_r7
-> diff --git a/arch/csky/include/asm/ptrace.h
-> b/arch/csky/include/asm/ptrace.h
-> index 0634b7895d81..a738630e64b0 100644
-> --- a/arch/csky/include/asm/ptrace.h
-> +++ b/arch/csky/include/asm/ptrace.h
-> @@ -22,6 +22,7 @@
-> =C2=A0
-> =C2=A0#define user_mode(regs) (!((regs)->sr & PS_S))
-> =C2=A0#define instruction_pointer(regs) ((regs)->pc)
-> +#define exception_ip(regs) instruction_pointer(regs)
-> =C2=A0#define profile_pc(regs) instruction_pointer(regs)
-> =C2=A0#define trap_no(regs) ((regs->sr >> 16) & 0xff)
-> =C2=A0
-> diff --git a/arch/hexagon/include/uapi/asm/ptrace.h
-> b/arch/hexagon/include/uapi/asm/ptrace.h
-> index 2a3ea14ad9b9..846471936237 100644
-> --- a/arch/hexagon/include/uapi/asm/ptrace.h
-> +++ b/arch/hexagon/include/uapi/asm/ptrace.h
-> @@ -25,6 +25,7 @@
-> =C2=A0#include <asm/registers.h>
-> =C2=A0
-> =C2=A0#define instruction_pointer(regs) pt_elr(regs)
-> +#define exception_ip(regs) instruction_pointer(regs)
-> =C2=A0#define user_stack_pointer(regs) ((regs)->r29)
-> =C2=A0
-> =C2=A0#define profile_pc(regs) instruction_pointer(regs)
-> diff --git a/arch/loongarch/include/asm/ptrace.h
-> b/arch/loongarch/include/asm/ptrace.h
-> index f3ddaed9ef7f..a34327f0e69d 100644
-> --- a/arch/loongarch/include/asm/ptrace.h
-> +++ b/arch/loongarch/include/asm/ptrace.h
-> @@ -160,6 +160,7 @@ static inline void regs_set_return_value(struct
-> pt_regs *regs, unsigned long val
-> =C2=A0}
-> =C2=A0
-> =C2=A0#define instruction_pointer(regs) ((regs)->csr_era)
-> +#define exception_ip(regs) instruction_pointer(regs)
-> =C2=A0#define profile_pc(regs) instruction_pointer(regs)
-> =C2=A0
-> =C2=A0extern void die(const char *str, struct pt_regs *regs);
-> diff --git a/arch/m68k/include/asm/ptrace.h
-> b/arch/m68k/include/asm/ptrace.h
-> index ea5a80ca1ab3..cb553e2ec73a 100644
-> --- a/arch/m68k/include/asm/ptrace.h
-> +++ b/arch/m68k/include/asm/ptrace.h
-> @@ -13,6 +13,7 @@
-> =C2=A0
-> =C2=A0#define user_mode(regs) (!((regs)->sr & PS_S))
-> =C2=A0#define instruction_pointer(regs) ((regs)->pc)
-> +#define exception_ip(regs) instruction_pointer(regs)
-> =C2=A0#define profile_pc(regs) instruction_pointer(regs)
-> =C2=A0#define current_pt_regs() \
-> =C2=A0	(struct pt_regs *)((char *)current_thread_info() +
-> THREAD_SIZE) - 1
-> diff --git a/arch/microblaze/include/asm/ptrace.h
-> b/arch/microblaze/include/asm/ptrace.h
-> index bfcb89df5e26..974c00fa7212 100644
-> --- a/arch/microblaze/include/asm/ptrace.h
-> +++ b/arch/microblaze/include/asm/ptrace.h
-> @@ -12,7 +12,8 @@
-> =C2=A0#define user_mode(regs)			(!kernel_mode(regs))
-> =C2=A0
-> =C2=A0#define instruction_pointer(regs)	((regs)->pc)
-> -#define profile_pc(regs)		instruction_pointer(regs)
-> +#define
-> exception_ip(regs)			instruction_pointer(regs)
-> +#define
-> profile_pc(regs)			instruction_pointer(regs)
-> =C2=A0#define user_stack_pointer(regs)	((regs)->r1)
-> =C2=A0
-> =C2=A0static inline long regs_return_value(struct pt_regs *regs)
-> diff --git a/arch/mips/include/asm/ptrace.h
-> b/arch/mips/include/asm/ptrace.h
-> index daf3cf244ea9..97589731fd40 100644
-> --- a/arch/mips/include/asm/ptrace.h
-> +++ b/arch/mips/include/asm/ptrace.h
-> @@ -154,6 +154,7 @@ static inline long regs_return_value(struct
-> pt_regs *regs)
-> =C2=A0}
-> =C2=A0
-> =C2=A0#define instruction_pointer(regs) ((regs)->cp0_epc)
-> +extern unsigned long exception_ip(struct pt_regs *regs);
-> =C2=A0#define profile_pc(regs) instruction_pointer(regs)
-> =C2=A0
-> =C2=A0extern asmlinkage long syscall_trace_enter(struct pt_regs *regs, lo=
-ng
-> syscall);
-> diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
-> index d9df543f7e2c..59288c13b581 100644
-> --- a/arch/mips/kernel/ptrace.c
-> +++ b/arch/mips/kernel/ptrace.c
-> @@ -31,6 +31,7 @@
-> =C2=A0#include <linux/seccomp.h>
-> =C2=A0#include <linux/ftrace.h>
-> =C2=A0
-> +#include <asm/branch.h>
-> =C2=A0#include <asm/byteorder.h>
-> =C2=A0#include <asm/cpu.h>
-> =C2=A0#include <asm/cpu-info.h>
-> @@ -48,6 +49,12 @@
-> =C2=A0#define CREATE_TRACE_POINTS
-> =C2=A0#include <trace/events/syscalls.h>
-> =C2=A0
-> +unsigned long exception_ip(struct pt_regs *regs)
-> +{
-> +	return exception_epc(regs);
-> +}
-> +EXPORT_SYMBOL(exception_ip);
-> +
-> =C2=A0/*
-> =C2=A0 * Called by kernel/ptrace.c when detaching..
-> =C2=A0 *
-> diff --git a/arch/nios2/include/asm/ptrace.h
-> b/arch/nios2/include/asm/ptrace.h
-> index 9da34c3022a2..136f5679ae79 100644
-> --- a/arch/nios2/include/asm/ptrace.h
-> +++ b/arch/nios2/include/asm/ptrace.h
-> @@ -66,7 +66,8 @@ struct switch_stack {
-> =C2=A0#define user_mode(regs)	(((regs)->estatus & ESTATUS_EU))
-> =C2=A0
-> =C2=A0#define instruction_pointer(regs)	((regs)->ra)
-> -#define profile_pc(regs)		instruction_pointer(regs)
-> +#define
-> exception_ip(regs)			instruction_pointer(regs)
-> +#define
-> profile_pc(regs)			instruction_pointer(regs)
-> =C2=A0#define user_stack_pointer(regs)	((regs)->sp)
-> =C2=A0extern void show_regs(struct pt_regs *);
-> =C2=A0
-> diff --git a/arch/openrisc/include/asm/ptrace.h
-> b/arch/openrisc/include/asm/ptrace.h
-> index 375147ff71fc..67c28484d17e 100644
-> --- a/arch/openrisc/include/asm/ptrace.h
-> +++ b/arch/openrisc/include/asm/ptrace.h
-> @@ -67,6 +67,7 @@ struct pt_regs {
-> =C2=A0#define STACK_FRAME_OVERHEAD=C2=A0 128=C2=A0 /* size of minimum sta=
-ck frame */
-> =C2=A0
-> =C2=A0#define instruction_pointer(regs)	((regs)->pc)
-> +#define
-> exception_ip(regs)			instruction_pointer(regs)
-> =C2=A0#define user_mode(regs)			(((regs)->sr &
-> SPR_SR_SM) =3D=3D 0)
-> =C2=A0#define user_stack_pointer(regs)	((unsigned long)(regs)->sp)
-> =C2=A0#define profile_pc(regs)		instruction_pointer(regs)
-> diff --git a/arch/parisc/include/asm/ptrace.h
-> b/arch/parisc/include/asm/ptrace.h
-> index eea3f3df0823..d7e8dcf26582 100644
-> --- a/arch/parisc/include/asm/ptrace.h
-> +++ b/arch/parisc/include/asm/ptrace.h
-> @@ -17,6 +17,7 @@
-> =C2=A0#define user_mode(regs)			(((regs)->iaoq[0] &
-> 3) !=3D PRIV_KERNEL)
-> =C2=A0#define user_space(regs)		((regs)->iasq[1] !=3D
-> PRIV_KERNEL)
-> =C2=A0#define instruction_pointer(regs)	((regs)->iaoq[0] & ~3)
-> +#define
-> exception_ip(regs)			instruction_pointer(regs)
-> =C2=A0#define user_stack_pointer(regs)	((regs)->gr[30])
-> =C2=A0unsigned long profile_pc(struct pt_regs *);
-> =C2=A0
-> diff --git a/arch/s390/include/asm/ptrace.h
-> b/arch/s390/include/asm/ptrace.h
-> index d28bf8fb2799..a5255b2337af 100644
-> --- a/arch/s390/include/asm/ptrace.h
-> +++ b/arch/s390/include/asm/ptrace.h
-> @@ -211,6 +211,7 @@ static inline int
-> test_and_clear_pt_regs_flag(struct pt_regs *regs, int flag)
-> =C2=A0
-> =C2=A0#define user_mode(regs) (((regs)->psw.mask & PSW_MASK_PSTATE) !=3D =
-0)
-> =C2=A0#define instruction_pointer(regs) ((regs)->psw.addr)
-> +#define exception_ip(regs) instruction_pointer(regs)
-> =C2=A0#define user_stack_pointer(regs)((regs)->gprs[15])
-> =C2=A0#define profile_pc(regs) instruction_pointer(regs)
-> =C2=A0
-> diff --git a/arch/sparc/include/asm/ptrace.h
-> b/arch/sparc/include/asm/ptrace.h
-> index d1419e669027..41ae186f2245 100644
-> --- a/arch/sparc/include/asm/ptrace.h
-> +++ b/arch/sparc/include/asm/ptrace.h
-> @@ -63,6 +63,7 @@ extern union global_cpu_snapshot
-> global_cpu_snapshot[NR_CPUS];
-> =C2=A0#define force_successful_syscall_return() set_thread_noerror(1)
-> =C2=A0#define user_mode(regs) (!((regs)->tstate & TSTATE_PRIV))
-> =C2=A0#define instruction_pointer(regs) ((regs)->tpc)
-> +#define exception_ip(regs) instruction_pointer(regs)
-> =C2=A0#define instruction_pointer_set(regs, val) do { \
-> =C2=A0		(regs)->tpc =3D (val); \
-> =C2=A0		(regs)->tnpc =3D (val)+4; \
-> @@ -142,6 +143,7 @@ static inline bool pt_regs_clear_syscall(struct
-> pt_regs *regs)
-> =C2=A0
-> =C2=A0#define user_mode(regs) (!((regs)->psr & PSR_PS))
-> =C2=A0#define instruction_pointer(regs) ((regs)->pc)
-> +#define exception_ip(regs) instruction_pointer(regs)
-> =C2=A0#define user_stack_pointer(regs) ((regs)->u_regs[UREG_FP])
-> =C2=A0unsigned long profile_pc(struct pt_regs *);
-> =C2=A0#else /* (!__ASSEMBLY__) */
-> diff --git a/arch/um/include/asm/ptrace-generic.h
-> b/arch/um/include/asm/ptrace-generic.h
-> index adf91ef553ae..f9ada287ca12 100644
-> --- a/arch/um/include/asm/ptrace-generic.h
-> +++ b/arch/um/include/asm/ptrace-generic.h
-> @@ -26,6 +26,7 @@ struct pt_regs {
-> =C2=A0#define PT_REGS_SYSCALL_NR(r) UPT_SYSCALL_NR(&(r)->regs)
-> =C2=A0
-> =C2=A0#define instruction_pointer(regs) PT_REGS_IP(regs)
-> +#define exception_ip(regs) instruction_pointer(regs)
-> =C2=A0
-> =C2=A0#define PTRACE_OLDSETOPTIONS 21
-> =C2=A0
->=20
-
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+--
+Carlos Llamas
 
