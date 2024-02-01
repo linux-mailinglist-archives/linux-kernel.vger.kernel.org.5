@@ -1,240 +1,402 @@
-Return-Path: <linux-kernel+bounces-47535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DBBB844F15
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:19:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9B3A844F17
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:19:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE98528DF76
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:19:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AB261F285D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:19:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7666221112;
-	Thu,  1 Feb 2024 02:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B6AD17BD1;
+	Thu,  1 Feb 2024 02:19:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b="BvNbdoF/"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2125.outbound.protection.outlook.com [40.107.92.125])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="okkk1Cb8"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6819F504;
-	Thu,  1 Feb 2024 02:19:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.125
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706753945; cv=fail; b=XewkQ1XkWji+HdxwxJkyFSayNh+Gno8Q9J0dkNIgYEh826sfBBDKvkXfT/kE3VR4HsDmDWoDBlxCkSErHnvdXzPQOamxPcpo3LoMtQkvxC4QRfGb+tqhtmA9xDNqKmIuTSt8Cstou2/A8TtmldXMb8PpBVD9jQvJqXFv/WsD6jw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706753945; c=relaxed/simple;
-	bh=MgvLlGJ2Plgp5RIssM1vL84dDdn5qjK3/h6FmbXo9Ko=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=UuXm+sBgCqyHs8CULg6tkU00CdRv3ooEip/ROFze3yU3Fhs+Cax37gCsSwXlwU0OIaEMEBiiPCwWwpRK4NaSTz9jTUG08/Bg2XlFFZK7FWmfB8wIoane0LV1OhS8Omp5CvDBSA/sahPOBKlaQs/q5kebKXUNespNTGZhpxQZUSE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com; spf=pass smtp.mailfrom=memverge.com; dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b=BvNbdoF/; arc=fail smtp.client-ip=40.107.92.125
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=memverge.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DcU2t1Ihxn77fOmQzwFeaB6596KNvMTJqBrZo98F5xBp99VCi+8xNegFziEc/EVbFuvYDLDqQ5BwEYuh/fC1rWSGf40sfohzKIshLEfceELCU6ZqbPS84Z9NnuT+1yA8SPjVokTVteN8MLzhBSU6dVfDU7umc6pTvEQ9h8qrnwRhMeQq+rPZ9l+NmWeOfBD+htS8hyY8jGkgn4VO3p+FnYGvsHMgDsVuJ4T2KivVdSyYkvKhss+YSGntFtdeg2zyCiYCoRUTF9g7GhqsPFWwEsNAvHGFHKeTshh0T7d+pf4otZ0yWMHVhRVdmc0S/Bfvy2e1o7oRXoF7IIfZGc8I6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uJNQdC4DY/Jo6ggOm5vDn+vMqxcJugLZxLSnTEFZmVA=;
- b=X3FAQUvnvaPIgcahlIVkX7EiZ3ZApiHZf8jvFd04oHV0GbOnIfLsBhAY6YcVIngedVHvUuR1qbfd/gl6qZYPnyjQFCaOMqHieuevx/rAVliAfKx/rs8jUCxnV1sCdDDb0sFJ14P5cdzdmxlAcAX5Boj3SdPe/Ilx0/P5bBW42qAc429NTMgTOsrG1t/fQLcy0vgauMIVsuRsYmMKiNL8a/Z0gIDFs0KhMqInPzUvp2eiXAfTCaB97WQ11gHhAw1g/YILABZ1ivaMXNt4S3WWB/IBjtu7ds9KFbolfX2igqVS+HUc+zMMSrsZYYUrs4I3F7/mnZ4YDnbWjq252txV/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
- dkim=pass header.d=memverge.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uJNQdC4DY/Jo6ggOm5vDn+vMqxcJugLZxLSnTEFZmVA=;
- b=BvNbdoF/4BkNPctZi2obVkoFe+0jiy2L3Nz0GdZ0p3y8p3HCCkKfHYF6DSBMkchTKGDiJ3R4n20rbsyhCLKtikuZOc92O9UAs0CRguLEMIlYfrOYQzrewn7fAoXFoBQI6KZpuBLIOeCcPkYRi2JX1cwuE4KroAtUUSfMg9Zdy1A=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=memverge.com;
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
- by PH7PR17MB5973.namprd17.prod.outlook.com (2603:10b6:510:159::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.37; Thu, 1 Feb
- 2024 02:18:59 +0000
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::7a04:dc86:2799:2f15]) by SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::7a04:dc86:2799:2f15%5]) with mapi id 15.20.7249.025; Thu, 1 Feb 2024
- 02:18:59 +0000
-Date: Wed, 31 Jan 2024 21:18:50 -0500
-From: Gregory Price <gregory.price@memverge.com>
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-	corbet@lwn.net, akpm@linux-foundation.org, honggyu.kim@sk.com,
-	rakie.kim@sk.com, hyeongtak.ji@sk.com, mhocko@kernel.org,
-	vtavarespetr@micron.com, jgroves@micron.com,
-	ravis.opensrc@micron.com, sthanneeru@micron.com,
-	emirakhur@micron.com, Hasan.Maruf@amd.com, seungjun.ha@samsung.com,
-	hannes@cmpxchg.org, dan.j.williams@intel.com,
-	Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
-Subject: Re: [PATCH v4 3/3] mm/mempolicy: introduce MPOL_WEIGHTED_INTERLEAVE
- for weighted interleaving
-Message-ID: <Zbr/iv3IfVqhOglE@memverge.com>
-References: <20240130182046.74278-1-gregory.price@memverge.com>
- <20240130182046.74278-4-gregory.price@memverge.com>
- <877cjqgfzz.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <Zbn6FG3346jhrQga@memverge.com>
- <87y1c5g8qw.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ZbqDgaOsAeXnqRP2@memverge.com>
- <871q9xeyo4.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871q9xeyo4.fsf@yhuang6-desk2.ccr.corp.intel.com>
-X-ClientProxiedBy: BYAPR03CA0007.namprd03.prod.outlook.com
- (2603:10b6:a02:a8::20) To SJ0PR17MB5512.namprd17.prod.outlook.com
- (2603:10b6:a03:394::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EDA433CC6;
+	Thu,  1 Feb 2024 02:19:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706753955; cv=none; b=H3oSAK4HMkf5gjnMxFT0fSA39y4097DFOwLZIjys1i0Dqi6b5t8rFW7M0ZJgaKy7ruP6nvCSZ+QUiijOBrsMdF9xGUeVft1U+Ui51B7tyCwtZ4V223dOWHl6SXYhXQABufN7IuYgYuunzY+COvY7PRWKv47bCA/SFXfsKaP/zYk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706753955; c=relaxed/simple;
+	bh=LmNjmraZk+WS9gdE4M5+8LWWlzYmyX353zJe/xpeAeQ=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MdE639RdZeTvCIGDcwQQeSYmcgJuTFUdu0gJfW5udItxCZ6fwBoPsnRALyJnKZPGcG2r7WUm9WYV0gz7NxmlPuCIhB230ZFeICyHowI8drNnfHhmU958yz7EIOkWKa/Kmexqk5vgzdsFhVPK6rvSSTUis7hsKOTptTOBPEgoSpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=okkk1Cb8; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40VLIchp010605;
+	Thu, 1 Feb 2024 02:19:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=PU1zeIEEaGx4EL7Rhsm2x
+	OONX/kLjzZ7k7bT4ihUE80=; b=okkk1Cb8sK11reuiCwu0RcooacXIVbkrAqBrK
+	0IYsXtePaIKmiVNWE96YjmnCZBDVvwqdKQjxVpoEV51RFFW5Ihcctn2FPEl6U6Ji
+	F/3lc4RSeOzq093hpaJJ72tZcuAhJaj3+m4bbrDqXu6MYypHwnyInt2/TcVtlT+b
+	VaFEIORzNuS7KClbk68qie+Dz8GeMRx1yTgoZswg5w9Anh/IIwgIE9UbyI8pdC0Y
+	1Q5Yll1VsS1YwP5PuQqcXcG2T/6wQrsCIWr9M1H7zMeqFa7o3dvDjfb1kTTv0lQt
+	Ej+WgHIge6jOgN3a73fYNmNNIIBJv6AbgGL/RJOoAXwn6Hr0g==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vyve60sgw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 01 Feb 2024 02:19:04 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4112J4WQ032591
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 1 Feb 2024 02:19:04 GMT
+Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 31 Jan 2024 18:19:03 -0800
+Date: Wed, 31 Jan 2024 18:19:03 -0800
+From: Elliot Berman <quic_eberman@quicinc.com>
+To: Abel Vesa <abel.vesa@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay
+ Abraham I <kishon@kernel.org>,
+        Dmitry Baryshkov
+	<dmitry.baryshkov@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] phy: qualcomm: eusb2-repeater: Rework init to drop
+ redundant zero-out loop
+Message-ID: <ocecdc6cmznvrvjbllm6vzuvwem7c2754phltllbfw6ab4bqfd@cj2fcywg4nso>
+Mail-Followup-To: Abel Vesa <abel.vesa@linaro.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+References: <20240129-phy-qcom-eusb2-repeater-fixes-v3-1-9a61ef3490de@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|PH7PR17MB5973:EE_
-X-MS-Office365-Filtering-Correlation-Id: 15b65ebd-665b-4b7e-4073-08dc22cc25e4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	RzEiKVPo94wQt2qF2SL7hMcfQyKVrbleSkYqRz6vICru3Xuo+OPWbMNmorropp6GOHF3sNXOLtfweqPBQC0F65nCDjkTW1VEcdOjVlViYsoa/PPoD3NM2fYhK299tlwUY58vmROl7CDfJzO5MCuG2TXPz450uIFze+hXkgfmpuSXdpH8MQWzwrdgv+9I5UchxM2NlY5VwrUAkKOc3GicMB6HtW06EZI+jBL0sWIdJF58Bqe631WTJyp+u6ckyLKRRYmXGh0Op0G+hiDy7vQ1WPV6gTEFg7KopQCiVqa5MWEMZDf2GdqUnWoc9E+5WpOB5h6SsZ9mu1WijYmVYdAZqJQ9Stts1E77NvxBZn7J+iTy8tkveuKTQU1eY9AQn8oinhD2Yfg5BIhMFTaFzSL8bNViNwBvmgNo03YdWeDMX3rsMAfaDPUO1bSEVVeovAhZI7Tr89J7ogtprWB+c99WFba81UQjTEW+D2rtXrojTfq4iJzV4RZIfs9VL+N+7cOZu6M0Lbxqk97hCKYSPNvH7YiMy6pXfwMzGdaQPbAaxRIoBbXZg8N46QBmbPVo+8xEezuHGjgTF0pbp3PcobXm5NQaD8qQZLEbtRlK6WSfg2iBHFkk3mkVnVdU4n8Q3jlt
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(366004)(376002)(39850400004)(136003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(5660300002)(36756003)(41300700001)(86362001)(38100700002)(316002)(6666004)(4326008)(66476007)(54906003)(6506007)(8676002)(8936002)(6916009)(6486002)(66946007)(66556008)(26005)(478600001)(2906002)(7416002)(83380400001)(2616005)(44832011)(6512007)(16393002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?iz28Mpn/QGj3sJx6Tbloen01Y6PsJF/Ry1IHAAPoq7ceOmDdk4Wv6fzFFbZ/?=
- =?us-ascii?Q?UZk2ov7489vlpb06H1NTRQvqOCDVJxuo8xe1MBmThAkyR+LhyKeZzkRYHfjN?=
- =?us-ascii?Q?9epb/o4Sg1LZx5aqOfDEnkJvqV65oZee72kbyzt9eDya5Jhuem09AsW07tZW?=
- =?us-ascii?Q?XMzIlVlnsaTV1Jdz1cUgI/AYuldBHHeXuXlgiLteZoJrtBvUL/6fZbHaNuWx?=
- =?us-ascii?Q?DCeYPcozQys8Xf04Ul9qdb21Y0kztsKzuFJNV3Mb9ca6jL/aBogSkuQKReHe?=
- =?us-ascii?Q?ugM2UQn6k43j4MbM9+OmYRjU4hUCo2M5RuYrm8bcUOXQxIdZdvOX0nnvE8oa?=
- =?us-ascii?Q?9UlFB33xOzt1MyyYxHJxP4FocE5njAQaNkx1/QreTDVsMXbuH7h6Cqi561Jg?=
- =?us-ascii?Q?satXWBesYN7gGzT0ISdKiu3HlF2d8jlmfdF9XZv8zVDxFsr2YvYkwpT/gmac?=
- =?us-ascii?Q?5KSQbi/dX7sYITaOrr0zJ4QIUJjEgM5unThrgM7RXu2AaNrJ0knSwasvzB+j?=
- =?us-ascii?Q?jf1CDhDWBMljg/b5F7gHwcmNJ7+LQv2X2r2d4XQjWJzjTqaEIUXahbDYNY3D?=
- =?us-ascii?Q?tHgHQmDDRnMP+v0RWsQBu5RBBwz91W28EKygRnmxM/hx6/swL43Y4zsoewn6?=
- =?us-ascii?Q?sXaL272roMy3xcaYjtnZZO8QIVIHDsQn3IzxHip1H59tvaCCGG12NmrkAnY3?=
- =?us-ascii?Q?md3l46sV0oVzSEO3abwpYZeW0MKfnRl/qQVTykBpfXO3cBHHbnMFVbNHuUbR?=
- =?us-ascii?Q?B+BQzdScU5NJ/Jnu6m9tud5uweAWZqoKjCdFf5q+wnY4KMoG5PKIIKbr4FJu?=
- =?us-ascii?Q?uw/vKbmI9PCf1+m1tykssZL7mAvsLK1ggJkSXhBTkrUOsQl2uxNGDkdonz1F?=
- =?us-ascii?Q?2SGKMP8ujzS7+o3DwmcoYmAyqy7IZOSFNbrEJgaJgPPUjyAEKnNLhrtLID5t?=
- =?us-ascii?Q?B78zoNnBHRxHKcF7n1X2TY3LPlQp8et/BrL4TRe4D1BOapwOiR4fi4pNzbG5?=
- =?us-ascii?Q?KRE7OGV64oq1KCpOrFZdWcYVIsH1CCSZdl7Lc3EqNBiamzecAkN/TLfo6Ri/?=
- =?us-ascii?Q?EyFjl/ud5xgZkxobXInrFQfOdIxrcS4oExrExugauul0diZ9F2iRqTSeW7ty?=
- =?us-ascii?Q?kmoBoA8UxnRX1nQgeC44JL1fs/1c/NT9KAlUsyXlJliuiBx7duQjO1wqn0ug?=
- =?us-ascii?Q?Mnmr08CkDXzO3q8zVXYO0m8OBPiqfobCwym1hOCLmG2BqP9B70Oz9a7fqkE7?=
- =?us-ascii?Q?RY5mvsgFQmbMxB5mtwr3SJz3G51riEEnA9xlgNH1vIV+OhRMOKNR8Ji/A5GV?=
- =?us-ascii?Q?UM8Pw67qHxEiyw1B6Mvol9ybLuyENSTFN9BK48/zS3ktBOX2X52VYyQPSBN2?=
- =?us-ascii?Q?4Z3IDmMBVBkuQW7nqsYyHZKWK999w9n6a7q8jAuzTQWh7UtZ+h1wERngU8XS?=
- =?us-ascii?Q?hHXF56P+tNAlsgYZsMmLdzSr6gYpEz8I/O/niGzrnjm2cF3XnVNpxiyt9ooF?=
- =?us-ascii?Q?eP23PBvAqA4foLC5Ns/JOp1WLG7GoVmmg7ToDLhahg3WSao1Z8OYmRwiEXiY?=
- =?us-ascii?Q?DqeeEuerj0IG1EH/acbuMny553jcyPMRrZALJEtQEE5a3uj4u1pYe+oBFhNR?=
- =?us-ascii?Q?kw=3D=3D?=
-X-OriginatorOrg: memverge.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15b65ebd-665b-4b7e-4073-08dc22cc25e4
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2024 02:18:58.9553
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Si/3WD/5GXAyxiouzn5oHfyWRlwWMHXYORJrjbGm8yzRN+bA0ovFOnCdfwaSd8Z8XkKZReEbIpgwHvyKhCWjaSy9Tx02/fs7V8mCYWkTnNo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR17MB5973
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240129-phy-qcom-eusb2-repeater-fixes-v3-1-9a61ef3490de@linaro.org>
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: FypysBqDUxRfFH5VIscL6_p7rbdU-x6k
+X-Proofpoint-ORIG-GUID: FypysBqDUxRfFH5VIscL6_p7rbdU-x6k
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-31_10,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ malwarescore=0 spamscore=0 clxscore=1011 impostorscore=0 bulkscore=0
+ mlxlogscore=999 suspectscore=0 lowpriorityscore=0 priorityscore=1501
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2402010016
 
-On Thu, Feb 01, 2024 at 09:55:07AM +0800, Huang, Ying wrote:
-> Gregory Price <gregory.price@memverge.com> writes:
-> > -       u8 __rcu *table, *weights, weight;
-> > +       u8 __rcu *table, __rcu *weights, weight;
+On Mon, Jan 29, 2024 at 03:03:24PM +0200, Abel Vesa wrote:
+> The device match config init table already has zero values, so rework
+> the container struct to hold a copy of the init table that can be
+> override be the DT specified values. By doing this, only the number of
+> vregs remain in the device match config that will be later needed, so
+> instead of holding the cfg after probe, store the number of vregs in the
+> container struct.
 > 
-> The __rcu usage can be checked with `sparse` directly.  For example,
+> Fixes: 99a517a582fc ("phy: qualcomm: phy-qcom-eusb2-repeater: Zero out untouched tuning regs")
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+
+I forgot I've been having this on my device for past few days and USB's
+been coming up consistently, so I'll count that as:
+
+Tested-by: Elliot Berman <quic_eberman@quicinc.com> # sm8650-qrd
+
+> ---
+> Changes in v3:
+> - Reworked so that it uses base + reg-index.
+> - Link to v2: https://lore.kernel.org/r/20240105-phy-qcom-eusb2-repeater-fixes-v2-0-775d98e7df05@linaro.org
 > 
-> make C=1 mm/mempolicy.o
+> Changes in v2:
+> - The regfields is being dropped from the repeater init, but it's done
+>   in the second patch in order to not break bisectability, as it is
+>   still needed by the zero-out loop.
+> - Added Konrad's R-b tag to the first patch. Did not add Elliot's T-b
+>   tag as the second patch has been reworked massively.
+> - The zero-out loop is dropped now by holding a copy of the init_tlb in
+>   the container struct. This led to dropping the cfg from the container
+>   struct (see second patch commit message for more details).
+> - Link to v1: https://lore.kernel.org/r/20240104-phy-qcom-eusb2-repeater-fixes-v1-0-047b7b6b8333@linaro.org
+> ---
+>  drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c | 166 +++++++++----------------
+>  1 file changed, 62 insertions(+), 104 deletions(-)
 > 
-
-fixed and squashed, all the __rcu usage i had except the global pointer
-have been used.  Thanks for the reference material, was struggling to
-understand that.
-
-> > task->mems_allowed_seq protection (added as 4th patch)
-> > ------------------------------------------------------
-> >
-> > +       cpuset_mems_cookie = read_mems_allowed_begin();
-> >         if (!current->il_weight || !node_isset(node, policy->nodes)) {
-> >                 node = next_node_in(node, policy->nodes);
+> diff --git a/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c b/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
+> index a623f092b11f..a43e20abb10d 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
+> @@ -37,56 +37,28 @@
+>  #define EUSB2_TUNE_EUSB_EQU		0x5A
+>  #define EUSB2_TUNE_EUSB_HS_COMP_CUR	0x5B
+>  
+> -#define QCOM_EUSB2_REPEATER_INIT_CFG(r, v)	\
+> -	{					\
+> -		.reg = r,			\
+> -		.val = v,			\
+> -	}
+> -
+> -enum reg_fields {
+> -	F_TUNE_EUSB_HS_COMP_CUR,
+> -	F_TUNE_EUSB_EQU,
+> -	F_TUNE_EUSB_SLEW,
+> -	F_TUNE_USB2_HS_COMP_CUR,
+> -	F_TUNE_USB2_PREEM,
+> -	F_TUNE_USB2_EQU,
+> -	F_TUNE_USB2_SLEW,
+> -	F_TUNE_SQUELCH_U,
+> -	F_TUNE_HSDISC,
+> -	F_TUNE_RES_FSDIF,
+> -	F_TUNE_IUSB2,
+> -	F_TUNE_USB2_CROSSOVER,
+> -	F_NUM_TUNE_FIELDS,
+> -
+> -	F_FORCE_VAL_5 = F_NUM_TUNE_FIELDS,
+> -	F_FORCE_EN_5,
+> -
+> -	F_EN_CTL1,
+> -
+> -	F_RPTR_STATUS,
+> -	F_NUM_FIELDS,
+> -};
+> -
+> -static struct reg_field eusb2_repeater_tune_reg_fields[F_NUM_FIELDS] = {
+> -	[F_TUNE_EUSB_HS_COMP_CUR] = REG_FIELD(EUSB2_TUNE_EUSB_HS_COMP_CUR, 0, 1),
+> -	[F_TUNE_EUSB_EQU] = REG_FIELD(EUSB2_TUNE_EUSB_EQU, 0, 1),
+> -	[F_TUNE_EUSB_SLEW] = REG_FIELD(EUSB2_TUNE_EUSB_SLEW, 0, 1),
+> -	[F_TUNE_USB2_HS_COMP_CUR] = REG_FIELD(EUSB2_TUNE_USB2_HS_COMP_CUR, 0, 1),
+> -	[F_TUNE_USB2_PREEM] = REG_FIELD(EUSB2_TUNE_USB2_PREEM, 0, 2),
+> -	[F_TUNE_USB2_EQU] = REG_FIELD(EUSB2_TUNE_USB2_EQU, 0, 1),
+> -	[F_TUNE_USB2_SLEW] = REG_FIELD(EUSB2_TUNE_USB2_SLEW, 0, 1),
+> -	[F_TUNE_SQUELCH_U] = REG_FIELD(EUSB2_TUNE_SQUELCH_U, 0, 2),
+> -	[F_TUNE_HSDISC] = REG_FIELD(EUSB2_TUNE_HSDISC, 0, 2),
+> -	[F_TUNE_RES_FSDIF] = REG_FIELD(EUSB2_TUNE_RES_FSDIF, 0, 2),
+> -	[F_TUNE_IUSB2] = REG_FIELD(EUSB2_TUNE_IUSB2, 0, 3),
+> -	[F_TUNE_USB2_CROSSOVER] = REG_FIELD(EUSB2_TUNE_USB2_CROSSOVER, 0, 2),
+> -
+> -	[F_FORCE_VAL_5] = REG_FIELD(EUSB2_FORCE_VAL_5, 0, 7),
+> -	[F_FORCE_EN_5] = REG_FIELD(EUSB2_FORCE_EN_5, 0, 7),
+> -
+> -	[F_EN_CTL1] = REG_FIELD(EUSB2_EN_CTL1, 0, 7),
+> -
+> -	[F_RPTR_STATUS] = REG_FIELD(EUSB2_RPTR_STATUS, 0, 7),
+> +enum eusb2_reg_layout {
+> +	TUNE_EUSB_HS_COMP_CUR,
+> +	TUNE_EUSB_EQU,
+> +	TUNE_EUSB_SLEW,
+> +	TUNE_USB2_HS_COMP_CUR,
+> +	TUNE_USB2_PREEM,
+> +	TUNE_USB2_EQU,
+> +	TUNE_USB2_SLEW,
+> +	TUNE_SQUELCH_U,
+> +	TUNE_HSDISC,
+> +	TUNE_RES_FSDIF,
+> +	TUNE_IUSB2,
+> +	TUNE_USB2_CROSSOVER,
+> +	NUM_TUNE_FIELDS,
+> +
+> +	FORCE_VAL_5 = NUM_TUNE_FIELDS,
+> +	FORCE_EN_5,
+> +
+> +	EN_CTL1,
+> +
+> +	RPTR_STATUS,
+> +	LAYOUT_SIZE,
+>  };
+>  
+>  struct eusb2_repeater_cfg {
+> @@ -98,10 +70,11 @@ struct eusb2_repeater_cfg {
+>  
+>  struct eusb2_repeater {
+>  	struct device *dev;
+> -	struct regmap_field *regs[F_NUM_FIELDS];
+> +	struct regmap *regmap;
+>  	struct phy *phy;
+>  	struct regulator_bulk_data *vregs;
+>  	const struct eusb2_repeater_cfg *cfg;
+> +	u32 base;
+>  	enum phy_mode mode;
+>  };
+>  
+> @@ -109,10 +82,10 @@ static const char * const pm8550b_vreg_l[] = {
+>  	"vdd18", "vdd3",
+>  };
+>  
+> -static const u32 pm8550b_init_tbl[F_NUM_TUNE_FIELDS] = {
+> -	[F_TUNE_IUSB2] = 0x8,
+> -	[F_TUNE_SQUELCH_U] = 0x3,
+> -	[F_TUNE_USB2_PREEM] = 0x5,
+> +static const u32 pm8550b_init_tbl[NUM_TUNE_FIELDS] = {
+> +	[TUNE_IUSB2] = 0x8,
+> +	[TUNE_SQUELCH_U] = 0x3,
+> +	[TUNE_USB2_PREEM] = 0x5,
+>  };
+>  
+>  static const struct eusb2_repeater_cfg pm8550b_eusb2_cfg = {
+> @@ -140,47 +113,42 @@ static int eusb2_repeater_init_vregs(struct eusb2_repeater *rptr)
+>  
+>  static int eusb2_repeater_init(struct phy *phy)
+>  {
+> -	struct reg_field *regfields = eusb2_repeater_tune_reg_fields;
+>  	struct eusb2_repeater *rptr = phy_get_drvdata(phy);
+>  	struct device_node *np = rptr->dev->of_node;
+> -	u32 init_tbl[F_NUM_TUNE_FIELDS] = { 0 };
+> -	u8 override;
+> +	struct regmap *regmap = rptr->regmap;
+> +	const u32 *init_tbl = rptr->cfg->init_tbl;
+> +	u8 tune_usb2_preem = init_tbl[TUNE_USB2_PREEM];
+> +	u8 tune_hsdisc = init_tbl[TUNE_HSDISC];
+> +	u8 tune_iusb2 = init_tbl[TUNE_IUSB2];
+> +	u32 base = rptr->base;
+>  	u32 val;
+>  	int ret;
+> -	int i;
+> +
+> +	of_property_read_u8(np, "qcom,tune-usb2-amplitude", &tune_iusb2);
+> +	of_property_read_u8(np, "qcom,tune-usb2-disc-thres", &tune_hsdisc);
+> +	of_property_read_u8(np, "qcom,tune-usb2-preem", &tune_usb2_preem);
+>  
+>  	ret = regulator_bulk_enable(rptr->cfg->num_vregs, rptr->vregs);
+>  	if (ret)
+>  		return ret;
+>  
+> -	regmap_field_update_bits(rptr->regs[F_EN_CTL1], EUSB2_RPTR_EN, EUSB2_RPTR_EN);
+> +	regmap_write(regmap, base + EUSB2_EN_CTL1, EUSB2_RPTR_EN);
+>  
+> -	for (i = 0; i < F_NUM_TUNE_FIELDS; i++) {
+> -		if (init_tbl[i]) {
+> -			regmap_field_update_bits(rptr->regs[i], init_tbl[i], init_tbl[i]);
+> -		} else {
+> -			/* Write 0 if there's no value set */
+> -			u32 mask = GENMASK(regfields[i].msb, regfields[i].lsb);
+> -
+> -			regmap_field_update_bits(rptr->regs[i], mask, 0);
+> -		}
+> -	}
+> -	memcpy(init_tbl, rptr->cfg->init_tbl, sizeof(init_tbl));
+> +	regmap_write(regmap, base + EUSB2_TUNE_EUSB_HS_COMP_CUR, init_tbl[TUNE_EUSB_HS_COMP_CUR]);
+> +	regmap_write(regmap, base + EUSB2_TUNE_EUSB_EQU, init_tbl[TUNE_EUSB_EQU]);
+> +	regmap_write(regmap, base + EUSB2_TUNE_EUSB_SLEW, init_tbl[TUNE_EUSB_SLEW]);
+> +	regmap_write(regmap, base + EUSB2_TUNE_USB2_HS_COMP_CUR, init_tbl[TUNE_USB2_HS_COMP_CUR]);
+> +	regmap_write(regmap, base + EUSB2_TUNE_USB2_EQU, init_tbl[TUNE_USB2_EQU]);
+> +	regmap_write(regmap, base + EUSB2_TUNE_USB2_SLEW, init_tbl[TUNE_USB2_SLEW]);
+> +	regmap_write(regmap, base + EUSB2_TUNE_SQUELCH_U, init_tbl[TUNE_SQUELCH_U]);
+> +	regmap_write(regmap, base + EUSB2_TUNE_RES_FSDIF, init_tbl[TUNE_RES_FSDIF]);
+> +	regmap_write(regmap, base + EUSB2_TUNE_USB2_CROSSOVER, init_tbl[TUNE_USB2_CROSSOVER]);
+>  
+> -	if (!of_property_read_u8(np, "qcom,tune-usb2-amplitude", &override))
+> -		init_tbl[F_TUNE_IUSB2] = override;
+> +	regmap_write(regmap, base + EUSB2_TUNE_USB2_PREEM, tune_usb2_preem);
+> +	regmap_write(regmap, base + EUSB2_TUNE_HSDISC, tune_hsdisc);
+> +	regmap_write(regmap, base + EUSB2_TUNE_IUSB2, tune_iusb2);
+>  
+> -	if (!of_property_read_u8(np, "qcom,tune-usb2-disc-thres", &override))
+> -		init_tbl[F_TUNE_HSDISC] = override;
+> -
+> -	if (!of_property_read_u8(np, "qcom,tune-usb2-preem", &override))
+> -		init_tbl[F_TUNE_USB2_PREEM] = override;
+> -
+> -	for (i = 0; i < F_NUM_TUNE_FIELDS; i++)
+> -		regmap_field_update_bits(rptr->regs[i], init_tbl[i], init_tbl[i]);
+> -
+> -	ret = regmap_field_read_poll_timeout(rptr->regs[F_RPTR_STATUS],
+> -					     val, val & RPTR_OK, 10, 5);
+> +	ret = regmap_read_poll_timeout(regmap, base + EUSB2_RPTR_STATUS, val, val & RPTR_OK, 10, 5);
+>  	if (ret)
+>  		dev_err(rptr->dev, "initialization timed-out\n");
+>  
+> @@ -191,6 +159,8 @@ static int eusb2_repeater_set_mode(struct phy *phy,
+>  				   enum phy_mode mode, int submode)
+>  {
+>  	struct eusb2_repeater *rptr = phy_get_drvdata(phy);
+> +	struct regmap *regmap = rptr->regmap;
+> +	u32 base = rptr->base;
+>  
+>  	switch (mode) {
+>  	case PHY_MODE_USB_HOST:
+> @@ -199,10 +169,8 @@ static int eusb2_repeater_set_mode(struct phy *phy,
+>  		 * per eUSB 1.2 Spec. Below implement software workaround until
+>  		 * PHY and controller is fixing seen observation.
+>  		 */
+> -		regmap_field_update_bits(rptr->regs[F_FORCE_EN_5],
+> -					 F_CLK_19P2M_EN, F_CLK_19P2M_EN);
+> -		regmap_field_update_bits(rptr->regs[F_FORCE_VAL_5],
+> -					 V_CLK_19P2M_EN, V_CLK_19P2M_EN);
+> +		regmap_write(regmap, base + EUSB2_FORCE_EN_5, F_CLK_19P2M_EN);
+> +		regmap_write(regmap, base + EUSB2_FORCE_VAL_5, V_CLK_19P2M_EN);
+>  		break;
+>  	case PHY_MODE_USB_DEVICE:
+>  		/*
+> @@ -211,10 +179,8 @@ static int eusb2_repeater_set_mode(struct phy *phy,
+>  		 * repeater doesn't clear previous value due to shared
+>  		 * regulators (say host <-> device mode switch).
+>  		 */
+> -		regmap_field_update_bits(rptr->regs[F_FORCE_EN_5],
+> -					 F_CLK_19P2M_EN, 0);
+> -		regmap_field_update_bits(rptr->regs[F_FORCE_VAL_5],
+> -					 V_CLK_19P2M_EN, 0);
+> +		regmap_write(regmap, base + EUSB2_FORCE_EN_5, 0);
+> +		regmap_write(regmap, base + EUSB2_FORCE_VAL_5, 0);
+>  		break;
+>  	default:
+>  		return -EINVAL;
+> @@ -243,9 +209,8 @@ static int eusb2_repeater_probe(struct platform_device *pdev)
+>  	struct device *dev = &pdev->dev;
+>  	struct phy_provider *phy_provider;
+>  	struct device_node *np = dev->of_node;
+> -	struct regmap *regmap;
+> -	int i, ret;
+>  	u32 res;
+> +	int ret;
+>  
+>  	rptr = devm_kzalloc(dev, sizeof(*rptr), GFP_KERNEL);
+>  	if (!rptr)
+> @@ -258,22 +223,15 @@ static int eusb2_repeater_probe(struct platform_device *pdev)
+>  	if (!rptr->cfg)
+>  		return -EINVAL;
+>  
+> -	regmap = dev_get_regmap(dev->parent, NULL);
+> -	if (!regmap)
+> +	rptr->regmap = dev_get_regmap(dev->parent, NULL);
+> +	if (!rptr->regmap)
+>  		return -ENODEV;
+>  
+>  	ret = of_property_read_u32(np, "reg", &res);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	for (i = 0; i < F_NUM_FIELDS; i++)
+> -		eusb2_repeater_tune_reg_fields[i].reg += res;
+> -
+> -	ret = devm_regmap_field_bulk_alloc(dev, regmap, rptr->regs,
+> -					   eusb2_repeater_tune_reg_fields,
+> -					   F_NUM_FIELDS);
+> -	if (ret)
+> -		return ret;
+> +	rptr->base = res;
+>  
+>  	ret = eusb2_repeater_init_vregs(rptr);
+>  	if (ret < 0) {
 > 
-> node will be changed in the loop.  So we need to change the logic here.
+> ---
+> base-commit: 01af33cc9894b4489fb68fa35c40e9fe85df63dc
+> change-id: 20240104-phy-qcom-eusb2-repeater-fixes-c9201113032c
 > 
-
-new patch, if it all looks good i'll ship it in v5
-
-~Gregory
-
-
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index d8cc3a577986..4e5a640d10b8 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -1878,11 +1878,17 @@ bool apply_policy_zone(struct mempolicy *policy, enum zone_type zone)
-
- static unsigned int weighted_interleave_nodes(struct mempolicy *policy)
- {
--       unsigned int node = current->il_prev;
--
--       if (!current->il_weight || !node_isset(node, policy->nodes)) {
--               node = next_node_in(node, policy->nodes);
--               /* can only happen if nodemask is being rebound */
-+       unsigned int node;
-+       unsigned int cpuset_mems_cookie;
-+
-+retry:
-+       /* to prevent miscount use tsk->mems_allowed_seq to detect rebind */
-+       cpuset_mems_cookie = read_mems_allowed_begin();
-+       if (!current->il_weight ||
-+           !node_isset(current->il_prev, policy->nodes)) {
-+               node = next_node_in(current->il_prev, policy->nodes);
-+               if (read_mems_allowed_retry(cpuset_mems_cookie))
-+                       goto retry;
-                if (node == MAX_NUMNODES)
-                        return node;
-                current->il_prev = node;
-@@ -1896,8 +1902,14 @@ static unsigned int weighted_interleave_nodes(struct mempolicy *policy)
- static unsigned int interleave_nodes(struct mempolicy *policy)
- {
-        unsigned int nid;
-+       unsigned int cpuset_mems_cookie;
-+
-+       /* to prevent miscount, use tsk->mems_allowed_seq to detect rebind */
-+       do {
-+               cpuset_mems_cookie = read_mems_allowed_begin();
-+               nid = next_node_in(current->il_prev, policy->nodes);
-+       } while (read_mems_allowed_retry(cpuset_mems_cookie));
-
--       nid = next_node_in(current->il_prev, policy->nodes);
-        if (nid < MAX_NUMNODES)
-                current->il_prev = nid;
-        return nid;
-@@ -2374,6 +2386,7 @@ static unsigned long alloc_pages_bulk_array_weighted_interleave(gfp_t gfp,
-                struct page **page_array)
- {
-        struct task_struct *me = current;
-+       unsigned int cpuset_mems_cookie;
-        unsigned long total_allocated = 0;
-        unsigned long nr_allocated = 0;
-        unsigned long rounds;
-@@ -2391,7 +2404,13 @@ static unsigned long alloc_pages_bulk_array_weighted_interleave(gfp_t gfp,
-        if (!nr_pages)
-                return 0;
-
--       nnodes = read_once_policy_nodemask(pol, &nodes);
-+       /* read the nodes onto the stack, retry if done during rebind */
-+       do {
-+               cpuset_mems_cookie = read_mems_allowed_begin();
-+               nnodes = read_once_policy_nodemask(pol, &nodes);
-+       } while (read_mems_allowed_retry(cpuset_mems_cookie));
-+
-+       /* if the nodemask has become invalid, we cannot do anything */
-        if (!nnodes)
-                return 0;
+> Best regards,
+> -- 
+> Abel Vesa <abel.vesa@linaro.org>
+> 
 
