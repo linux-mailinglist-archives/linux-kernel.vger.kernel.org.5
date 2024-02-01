@@ -1,177 +1,149 @@
-Return-Path: <linux-kernel+bounces-48801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84EC48461BC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:02:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C560C8461C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:06:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC6FD1F28C73
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:02:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3731B2235C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:06:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48BFB85641;
-	Thu,  1 Feb 2024 20:02:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="SdhvkOni"
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B9E85638;
+	Thu,  1 Feb 2024 20:06:07 +0000 (UTC)
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF6185289
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 20:02:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06F874176B;
+	Thu,  1 Feb 2024 20:06:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706817738; cv=none; b=keP/X69vsraL1/UoOtUGBnWgWSc9F5H7Fp1+KVtgewR1GHslzknJs9ow28tau3VPBiWHJatYzuUMtZCZJwasQ/GEdZVQr/n9H060L8UC+J3SlKL5l2DeLDQGtdgNqUG0qtPV+y2CWHqN31xwDkeJYmnh4/wuN5R/c3K5BiVj66M=
+	t=1706817967; cv=none; b=Ra4tfbIn2BMLse8xrthG6hQhmsvSNug6g8OuPEQx/ICbQst42fB1fNB2JEviy4F41hQi7FAuJvj7FCdnFz1K2E5QoiybqVNZ+Yd1dG8chxZIWosKNLZ5WyPFso0cMOQtDygoDSQe/PThYNue+6CoMUwMHxn4HVTLHyMt0OZHy9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706817738; c=relaxed/simple;
-	bh=tvy6mSud+tO0FW2Ix++bq0Yqn3nq8l29ZBq1/shnleU=;
+	s=arc-20240116; t=1706817967; c=relaxed/simple;
+	bh=gkH8/pxKYHSTaCK13vrWJcmjWEK0Tt9tmbvF+BfSfLw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MFZB0jLkDXguma1WB7QN1tzJcfXaHIgaFtsdAA4fj2DdPnTduECM9mhRx3G6lJd8qFNMR/WAMIm9itk+PfGWKo0g5K8YGLbr0hdtVPIvQHvmVz8M4s5HGNffWKslSOn55qG8NXdfP7YvoocbN3xC6YSQJXN89ClzYNXPwIMR1T4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=SdhvkOni; arc=none smtp.client-ip=209.85.167.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3bbbc6e51d0so876924b6e.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 12:02:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03; t=1706817734; x=1707422534; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oKtKU9ec/rsz7HBSzIU5uqFOSZbUdu+2rlARf46Czpw=;
-        b=SdhvkOnie1LRW6jS1+B8/uSuT6goBwPJ5Ysv4a0WhSxROFWET7z6lXc6zDSsNw3lfT
-         l4pUCQ13wLkl+D0Rkxcb7xsaI3ncktvMANX2AqlxF6jM/6uRS31Wvn62Pw/u0AXPEU3C
-         lUD20nZY+iDBO5RWhY3sLWc1PkOtFQMIaBHGO6wuzhuZL8XK3WwNEvRzKLJPXv4eVnYN
-         CH+7SkmGsNySP4rt8hM3f8M14PaRW78PVEpA/s+kEawiyY8uD7kznYhDlQ5IwBSpWWI2
-         Uxkac9x/ZCcnpWh3ZwwJyfMhYqJ/Xsmv8hYUFMqecMSIheVkdkBpPUSt1YT8bM2p1NY/
-         L6hw==
+	 To:Cc:Content-Type; b=tMS9BOOjkUq0OtikXeBiMolfkOYpUDGAK6WMe8LcOHKsNsphDOOXqLFgycnyLxta+/56BnvfGZP/amQ20XE/R4sAni+otE8BUnW5N2CExJVH89wf7U/BT66zCQYNwYJL8TU1lM08l0AON1FtlngjYXB+DCVpYGNUHPYdRmJoypE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3bbc649c275so794329b6e.0;
+        Thu, 01 Feb 2024 12:06:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706817734; x=1707422534;
+        d=1e100.net; s=20230601; t=1706817963; x=1707422763;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oKtKU9ec/rsz7HBSzIU5uqFOSZbUdu+2rlARf46Czpw=;
-        b=p9QzP0ZaR7Wl/7IMyljTYjTE1ij+RuSPZoeI9SOczvMKAiqTkkwbaI3K0l9Bdf/qLt
-         LXDJORvTGCmHIYUuOsaxSVjMJh6vB4t6p8rGvTZDGU6L5mXy1EODM218kUbUB3V3wZMm
-         Z94aQEmEKGk8s+1zfPGtSWLy61k2dngkChePJ9dY7WOUFNApP5Gp9ptpAf4njorI2h6q
-         +EnEHT7YRkct/xdlo4BOTlsWexlmWbl4E4+bKElYUgPjmRoUwQ3o+ICg/3GfJLoLfjNN
-         15uJ0RFzNAAiWItPF6e/DCGDHLqAN4B7qCaRmxH3K2ml5GVoUL59qbAvKpswO+ugc+Mu
-         +B5Q==
-X-Gm-Message-State: AOJu0Yz4Cn1DTio+f2BHf2Z4K719fwi0dv5duBM0Jhgz87BUir4L/IEd
-	fr+2sjwO5kvWr/ZKkSJ2scdHphI6cAuSwqiSsKZd0rHKDxSHMcA6J8wQS4jiOmxtcYRGWW4kkFS
-	LGPOrDH6boWlRS/LrksAcLfcH5ufx/9NaRZo1bQ==
-X-Google-Smtp-Source: AGHT+IGkopw9KI9BmtHxGeMn+uc0bvHsWIA3VKpCBS/bF9G1Oq6uAmfg6Qe9qX+sxvKiL3uBS6W453i2/9uWDYwy3Dw=
-X-Received: by 2002:a05:6808:640e:b0:3be:aafd:cc6 with SMTP id
- fg14-20020a056808640e00b003beaafd0cc6mr3387394oib.17.1706817734567; Thu, 01
- Feb 2024 12:02:14 -0800 (PST)
+        bh=rW2ZDwtdk3kDeJBYbJGjBGq8DnNTgVshHb5YupyHpEo=;
+        b=iOwDAh4IP8nsFtl5RywPoX3dtUPjXL+u93ssiqcGmMI73gdM8dVXyIhSuk19xQaoeI
+         F67n316Jvx7sfC4FsvlzN7c5xc5leMKB+D5B0uq3t6F78fnNwoPJCyI4mgJ2x0Qqoooq
+         TLMnq1+raz+aYCcIPYL2TkKkfw1yj2RFCL5KgguiL5HdBFgivBxZauUUg4Fs/SRFqtOJ
+         aFa3UWHzrsqIYS/dehGmLU9oAdA66JlB9ubD1fi/9jSkYUJWmQgN/DV2zNU69XAaK+CA
+         fcvqBrpYGJyWcQxQE3MRWgq8BjSoPjEQ+GJerUzrUbkBvn9C5SBqLLw8aX7b9sSuBdHA
+         0x9Q==
+X-Gm-Message-State: AOJu0YyeHr8BcE/OOMh2dhZxOqA0YqO9ZU83weZZGh3dVzkaseNOa5Lf
+	gHYxGo+RpPVeizRyxSY2BDj1By+PhaU5nNwFjR/DYbFJmQAEsKyKIRw5l/ycoIU=
+X-Google-Smtp-Source: AGHT+IGPYWyOZXU6pjRuWu7Y8OLEFwEQsafle/0m1Yib5u4+HtJQxv1ndATrEmcdxgZIzjieSp3Kug==
+X-Received: by 2002:a05:6808:3990:b0:3bf:bbda:9db9 with SMTP id gq16-20020a056808399000b003bfbbda9db9mr332790oib.15.1706817963118;
+        Thu, 01 Feb 2024 12:06:03 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXTgb8PWYor/xrkzQ82rqj1tAoKuG9KZ4ujo+eeiAA2SiYo3zOnGYjz5QbctNS9rdUqFMPbducf3tCO7x5WwVfAcer4JUvTJZ5t2Ez4Nz330lpiBbJJ42WyJlmqKhHBC0sclCaQO+1Ev5l2aeDhrN5vlZyd9HiZ8A0/PpedZa0rLRGmjyc=
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
+        by smtp.gmail.com with ESMTPSA id n23-20020a25d617000000b00dc6e30b77b3sm59093ybg.55.2024.02.01.12.06.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Feb 2024 12:06:02 -0800 (PST)
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc6d8bd612dso1050906276.1;
+        Thu, 01 Feb 2024 12:06:02 -0800 (PST)
+X-Received: by 2002:a25:9346:0:b0:dc2:2979:fcd5 with SMTP id
+ g6-20020a259346000000b00dc22979fcd5mr118750ybo.28.1706817962160; Thu, 01 Feb
+ 2024 12:06:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201-rockchip-rust-phy_depend-v2-0-c5fa4faab924@christina-quast.de>
- <20240201-rockchip-rust-phy_depend-v2-2-c5fa4faab924@christina-quast.de>
-In-Reply-To: <20240201-rockchip-rust-phy_depend-v2-2-c5fa4faab924@christina-quast.de>
-From: Trevor Gross <tmgross@umich.edu>
-Date: Thu, 1 Feb 2024 14:02:03 -0600
-Message-ID: <CALNs47tWNNi2GXHAwwT=A1LP=xWwXvrPy4xVapqMQOeyeN0+9Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] rust: phy: add some phy_driver and genphy_ functions
-To: Christina Quast <contact@christina-quast.de>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, FUJITA Tomonori <fujita.tomonori@gmail.com>, 
-	Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, 
-	Russell King <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Heiko Stuebner <heiko@sntech.de>, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
+References: <cover.1706802756.git.geert+renesas@glider.be> <b20aab137058c02ab5af9aaa1280729a02c6ea49.1706802756.git.geert+renesas@glider.be>
+ <170680870030.996964.6959185693674664805.robh@kernel.org>
+In-Reply-To: <170680870030.996964.6959185693674664805.robh@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 1 Feb 2024 21:05:49 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWfovGkvrk4coitFgDTuHS_fQcvFb8kJj-1AWtUgkAYgg@mail.gmail.com>
+Message-ID: <CAMuHMdWfovGkvrk4coitFgDTuHS_fQcvFb8kJj-1AWtUgkAYgg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] regulator: dt-bindings: gpio-regulator: Fix
+ {gpios-,}states limits
+To: Rob Herring <robh@kernel.org>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, 
+	Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, 
+	Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 1, 2024 at 12:07=E2=80=AFPM Christina Quast
-<contact@christina-quast.de> wrote:
-> diff --git a/rust/kernel/net/phy.rs b/rust/kernel/net/phy.rs
-> index e457b3c7cb2f..373a4d358e9f 100644
-> --- a/rust/kernel/net/phy.rs
-> +++ b/rust/kernel/net/phy.rs
-> @@ -95,6 +95,22 @@ pub fn phy_id(&self) -> u32 {
->          unsafe { (*phydev).phy_id }
->      }
+Hi Rob The Robot ;-)
+
+On Thu, Feb 1, 2024 at 6:31=E2=80=AFPM Rob Herring <robh@kernel.org> wrote:
+> On Thu, 01 Feb 2024 16:58:41 +0100, Geert Uytterhoeven wrote:
+> > make dtbs_check:
+> >
+> >     arch/arm64/boot/dts/renesas/r8a77951-salvator-xs.dtb: regulator-vcc=
+q-sdhi0: Unevaluated properties are not allowed ('gpios-states', 'states' w=
+ere unexpected)
+> >           from schema $id: http://devicetree.org/schemas/regulator/gpio=
+-regulator.yaml#
+> >
+> > The number of items in "gpios-states" must match the number of items in
+> > "gpios", so their limits should be identical.
+> >
+> > The number of items in "states" must lie within the range from zero up
+> > to 2^{number of gpios}.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > ---
+> > The second issue did not cause any dtbs_check errors?
+> > ---
+> >  .../devicetree/bindings/regulator/gpio-regulator.yaml         | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >
 >
-> +    /// Gets the current crossover of the PHY.
-> +    pub fn mdix(&self) -> u8 {
-
-Are possible values for mdix always ETH_TP_MDI{,_INVALID,_X,_AUTO}? If
-so, this would be better as an enum.
-
-> +        let phydev =3D self.0.get();
-> +        // SAFETY: The struct invariant ensures that we may access
-> +        // this field without additional synchronization.
-> +        unsafe { (*phydev).mdix }
-> +    }
-
-> +
->      /// Gets the state of PHY state machine states.
->      pub fn state(&self) -> DeviceState {
->          let phydev =3D self.0.get();
-> @@ -300,6 +316,15 @@ pub fn genphy_read_abilities(&mut self) -> Result {
->          // So it's just an FFI call.
->          to_result(unsafe { bindings::genphy_read_abilities(phydev) })
->      }
-> +
-> +    /// Writes BMCR
-> +    pub fn genphy_config_aneg(&mut self) -> Result {
-
-The docs need an update here
-
-> +        let phydev =3D self.0.get();
-> +        // SAFETY: `phydev` is pointing to a valid object by the type in=
-variant of `Self`.
-> +        // So it's just an FFI call.
-> +        // second param =3D false =3D> autoneg not requested
-> +        to_result(unsafe { bindings::__genphy_config_aneg(phydev, false)=
- })
-
-I assume you did this since the non-dunder `genphy_config_aneg` is
-inline. I think that is ok since the implementation is so minimal, but
-you could also add a binding helper and call that (rust/helpers.c).
-
-> +    }
->  }
+> My bot found errors running 'make DT_CHECKER_FLAGS=3D-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
 >
->  /// Defines certain other features this PHY supports (like interrupts).
-> @@ -583,6 +608,12 @@ fn soft_reset(_dev: &mut Device) -> Result {
->          Err(code::ENOTSUPP)
->      }
+> yamllint warnings/errors:
 >
-> +    /// Called to initialize the PHY,
-> +    /// including after a reset
+> dtschema/dtc warnings/errors:
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/r=
+egulator/gpio-regulator.yaml: properties:states:minItems: 0 is less than th=
+e minimum of 1
+>         hint: An array property has at least 1 item or is not present
+>         from schema $id: http://devicetree.org/meta-schemas/keywords.yaml=
+#
 
-Docs wrapping
+Oops, I changed this from 1 to 0 _after_ running dt_binding_check, so
+I'm totally to blame for this.
 
-> +    fn config_init(_dev: &mut Device) -> Result {
-> +        Err(code::ENOTSUPP)
-> +    }
+The description says:
 
-These have been changed to raise a build error rather than ENOTSUPP in
-recent , see [1]. That patch is in net-next so you should see it next
-time you rebase.
+    If there are no states in the "states" array, use a fixed regulator ins=
+tead.
 
-Also - these functions are meant for the vtable and don't do anything
-if they are not wired up. See the create_phy_driver function, you will
-need to add the field.
+which I misinterpreted as "states can be empty", especially as the
+driver does seem to support that?
 
->      /// Probes the hardware to determine what abilities it has.
->      fn get_features(_dev: &mut Device) -> Result {
->          Err(code::ENOTSUPP)
->
-> --
-> 2.43.0
->
+I guess 1 is the proper minimum?
 
-[1]: https://lore.kernel.org/rust-for-linux/20240125014502.3527275-2-fujita=
-tomonori@gmail.com/
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
