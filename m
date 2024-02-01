@@ -1,179 +1,176 @@
-Return-Path: <linux-kernel+bounces-47841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEC20845391
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:15:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 22A55845395
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:16:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33132B240C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:15:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BE55B266BB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:16:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C12715B103;
-	Thu,  1 Feb 2024 09:14:30 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F3A415B0E8;
+	Thu,  1 Feb 2024 09:16:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Vv9JpJmz"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D56515B99B
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 09:14:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3E1115AAC2
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 09:16:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706778869; cv=none; b=CRBmmTI49lHg02Ti2Fs14lQxwZJsB5c5IuQSXOS23PK8zHfglad1PBdlUujmp4D76HrxeGb5t06y9a15z0Jp+4cW3N4m255PgFR1wiN6PVEP2nZcZwgST7CIbTGYVamHhffYvLOsnthFO7ION4Xux3q6lt74nCE4ncDU1G1OLx4=
+	t=1706778986; cv=none; b=IpKvSVx88iEOKK19fJLKU34IwIkEvIeBtsVqFzrN1rLLpgaN0BVa9X39XvAxFi7OIRG2DZkYwj+mwZetvyqUfGEKIaVdtHlvCS7cmpqxR0DIFU4roGU2iwigA7RYFwbhHBFQYy6b4lNkYRjEytwPu524Qi7WutCFzudVpbvBNnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706778869; c=relaxed/simple;
-	bh=bed9xyodDyMyEJ4BC6RZnB9FKOYwGHhD9QSHoHjvZFw=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=PKZ5Jy7fR5nt7tyR/AfvTMDWvKKCMNy65TSY3GS3dyBAYcKRotlDTGCynt2lc3t9bFgvTji0hVAgVMFGMxHIynj/FXJ4lqPdbTGI/kRldWFtqJEAs1hpVLnceVJbtcecuD2ndcLJBCF9/T5vbq71X9TMCuWccNGaW+AN3aCrstI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36384f513c3so4847435ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 01:14:27 -0800 (PST)
+	s=arc-20240116; t=1706778986; c=relaxed/simple;
+	bh=5OTikD6CuPK8gKbmtuehnyPLyBNME4taPsrO/Ys9BZw=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=l3j4cWMur6yH3cArSZkESS0ZhrCA7/y54DYORoSgRFdQduXcyv+BtEOSrM0X5q1pcYlEJdKkSMXgIfT+1clyw6JsBC3lI9YwZaCrIByy5QYPBbyfd3UFHVZUjxWdy49UIalkM3Nz8BmSpEF/4jAv3Gd/lm8jYvN4ZCPuJ+geNo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Vv9JpJmz; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40eacb4bfa0so5899195e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 01:16:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706778983; x=1707383783; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KbM4ttdeCgtUREmJp18n91Tmg8C/A3C0WQ15eddMLUo=;
+        b=Vv9JpJmzJP1omTVYowGKo1ODBhAScLvPJS0qKC/n3KwtJbVbHhJ+KU0fDWWpTG/LjM
+         vWOMnLf7skdNm/D2ewMU6J6gVaqz0IiXOA8tLgA0WsMLbLDjLRLhcee3mo4wd1AIHEZ4
+         Dw0eGXK013V0v/f/XOSVpDQkCrUT75aK2IYBrBew5dmgNqvoxJdIXkt+BgrDr5yUp+gQ
+         bBkwUnPnWLqDP5yUBYiVHhHN8hxaRq+DOr2TWeMFGrCEjVBjkj07sUj+EizrskiTkEJ5
+         DJi8VZbgYRxu1nHF1tO9oo3QbsFAdk+3uA6eDTN6v3x9w7ppuUcldK8cljFqFKQkGjj9
+         00KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706778867; x=1707383667;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=o4noN0O6yFVomwvxVTGTAf5XWk3ASZshtfIGcmu1hIE=;
-        b=fZ8f7ECWKmoBStfTKrAYh4+/pB6vmihBDSf5clh5Qicvzx/VbdU4DB/iUbugeVqpRm
-         CYvw8a+RAIQDPOIMIOspL2xnzygWd3fYwwJv1njncHEawZw5pbsO3uDSnz0rMVrIyCvo
-         cCCtYBF+eDHBLm+EsiMX6eKCGkCvYfJhqC2T3aT+62BojaOtrtjZPcGK9fDF+tIfNGVH
-         bX85uRqPfuWHn1vXurMPgu34L/Ze9s48FGZI0l9vayVZkvKV+NElrH9A/7EYPT0gejMd
-         3JVU4VMqEpXMdcb/hyMUbLszFavXfdgZK0gKvISEa5Uy/9lJxpyGoKcGd2283/iFvhWl
-         svvA==
-X-Gm-Message-State: AOJu0YyLy6fU7gaipFNGxlVvJLhQBB5cKW9cIF9sH3keCoItn4P5S/6D
-	9YHOnssT//COHxtZ79O5m2TsswOcnnp8JCKcfdLDAxx/k7Vqrxsugp/cPZ7Tsz32ExE3YHHzvEy
-	ywlKQfxqtWQTxcYvMwiV99JQYuxH13hYgki9Iu2FZUz0bErOpx7K2mS4=
-X-Google-Smtp-Source: AGHT+IEmlqgMs9OByRJIoH1H4W4mLctLxU69IfDmVx7zMJPWDvxPzy37ceYeg+qS9sOsWOSpvS1YB3a/D2bqlGXriBsFnibuSAsU
+        d=1e100.net; s=20230601; t=1706778983; x=1707383783;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KbM4ttdeCgtUREmJp18n91Tmg8C/A3C0WQ15eddMLUo=;
+        b=kiUWe2qOA+gqVi2vgLXau2kn8oFCuKMVPHFZ4sH6oVZLny9MDaF83tOZnpGNaoQyg6
+         nqWj9M+3hmQfBPeYZx1LgNq+RQQ3DpGEFpSeF/QdZYlF1mgiJtBQiHWeN06IbUued2vx
+         xBo0ahq1lX9sUqDvPqseTk3IOFsSP1FFRlq5K/2i65uWPQ4pwVHZe1bbz0x+F7zOgO4s
+         j3AnN7P/Um9yazgOgYNdcwJA4XIMRZ1yE05Mni0vqy+IP6LolCYyLcmscJaIdDrrJIQJ
+         AG7QtlvszVjmNRsOdBDEGitov2csyOeQvUEHzVTGQLXKMFb2XjKpcphsGE8IIvat2v3M
+         VAyg==
+X-Gm-Message-State: AOJu0YwZSHlu8LEEooi1jOb0I/MLSxRyW1FtnEL3tjt5zjYA3KcwGuaf
+	pAmwWn4I75kkwnNlh77KNMB32KIcLF+8OUz07waff5lEIxnta2uIRXMEH7USAfI=
+X-Google-Smtp-Source: AGHT+IEEpYejzM4XUH+oYeUuGYpKcB2ZFEYwFkYNkUdFuHQItoqzDMOptLCRHJrPVhpiBEVsDktmPA==
+X-Received: by 2002:a05:600c:4589:b0:40e:8fe8:a173 with SMTP id r9-20020a05600c458900b0040e8fe8a173mr1325416wmo.4.1706778983084;
+        Thu, 01 Feb 2024 01:16:23 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUmfmXqD2prUNRuX6FAeUYPHkAeC6zyJoArufPykTwgy3U/UhlaCKbnerO0KDJnPiwoBU1tZlexnGgTm2DrczyYvLOB22hQSlBRUVSzxBJhdiL60S1/q7/H1Anqpz1rGx1mTROPcEX0CVZsH1kpj5RzIV5gvW25hsWvuk0/+Aag06gdN7BEEYHGmitcpVLG8T4y64nS71g0lkO7Q+T7B8shrpIn/BMyiC+QJZgBO32VFJ60bowcEDh7RDvJ01xOVGICJ6poi5uWi2gpIhVnSo+oGy12vxOVjd9e0O/Va6FRB6WH
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id jn22-20020a05600c6b1600b0040ef63a162dsm3804881wmb.26.2024.02.01.01.16.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 01:16:22 -0800 (PST)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Date: Thu, 01 Feb 2024 10:16:21 +0100
+Subject: [PATCH] arm64: dts: qcom: sm8550-hdk: correct WCD9385 route and
+ port mapping
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1aad:b0:363:8be6:2b22 with SMTP id
- l13-20020a056e021aad00b003638be62b22mr346870ilv.1.1706778867236; Thu, 01 Feb
- 2024 01:14:27 -0800 (PST)
-Date: Thu, 01 Feb 2024 01:14:27 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000017878306104e6c59@google.com>
-Subject: [syzbot] [ext4?] [block?] kernel BUG in set_blocksize
-From: syzbot <syzbot+4bfc572b93963675a662@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, axboe@kernel.dk, linux-block@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240201-topic-sm8550-hdk8550-audio-fix-v1-1-aa526c9c91d5@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAGRhu2UC/x2NSwqAMAwFryJZG0iLxc9VxIXaVINopVURxLtbX
+ A0zi/ceiByEIzTZA4EvieK3JCrPYJz7bWIUmxw06YI0KTz8LiPGtTKGcLbLz/604tHJjaasXVU
+ 6RfVgII3sgVP+D9rufT8c3LoocAAAAA==
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2412;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=5OTikD6CuPK8gKbmtuehnyPLyBNME4taPsrO/Ys9BZw=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlu2FlCJhAxbNR2uAtR8CkZIlAdrUez9GIT5QqknIe
+ /uuaoH+JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZbthZQAKCRB33NvayMhJ0QpnD/
+ 97YNRMRsDuqWFFHIz8Lw+AOQfhCgq+nfmWUK3MHVgglsO5sfPPrJR2tJBZO9tX8bP8XQAO6mkq+xam
+ 416fGhEWupmRj+RQ5rfjq1evhr6FxsknBgBJ5V1vhd/sEp035VZLHOLEw6fk9KUQhOZlT79w8jeeHC
+ 3yCN042jDKri2l5k8ygP4PiFNGBV8o4lgsIOh9TSkId/yWdJeuFox9Ac0+T1w5bVDQZG326Tu8fEgA
+ fVCpE0NTyKei2Tf++dH8oEquNYrX25oWCAWFNJBT358d4DRwFTl36wUB3JIIsF9fFqgqAxdYmR0ho2
+ JIw0db134DfBIMTVOqUQ108WMY2GWyn1UCKGaZ4Oj0KDQWgHhTCxxQvdM+dj1tpMHZlmKH8iOUQaxk
+ T2suGKdgFaZVU5iOmrHsESuAeIwE3qhCKlLWuLyH33B+wZMjtE7pj+KCrJgZ24eihewWNlKNo6wSfe
+ tg1jHVuPttr5cGd6czIqIkPhOi225VWOsDXaLutIsu3pNxXjldIT3cQPsxqe/aveNzhYTb3SFfQ+pn
+ 7MnIYuxnt4fiUcqS3yV2Ow3l8OrzT0cC/jbpS9J9C50mKhtCVXJWP2WFZG03kw0XKASvDpIB1QSFSM
+ +Hx0XmlxOp7kD2jz1th8xWs67P5ZsnJZf2zRyetzmYEb0FwaaEGteOOtFxjA==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 
-Hello,
+Starting from SM8550, the TX ADC input soundwire port is offset by 1,
+and uses the new SWR_INPUTx input ports, so replace the legacy
+SWR_ADCx routes for SWR_INPUT0 & SWR_INPUT1 following the correct
+TX Soundwire port mapping.
 
-syzbot found the following issue on:
+Add some comments on the routing for clarity.
 
-HEAD commit:    1bbb19b6eb1b Merge tag 'erofs-for-6.8-rc3-fixes' of git://..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=146e3d40180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=13fb219792fd389b
-dashboard link: https://syzkaller.appspot.com/bug?extid=4bfc572b93963675a662
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=175dc87be80000
+Fixes: b5e25ded2721 ("arm64: dts: qcom: sm8550: add support for the SM8550-HDK board")
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/sm8550-hdk.dts | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/798e03d5a1df/disk-1bbb19b6.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/54077750a6bf/vmlinux-1bbb19b6.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/840fdc1b94f1/bzImage-1bbb19b6.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/63a064a072f7/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4bfc572b93963675a662@syzkaller.appspotmail.com
-
- __fput+0x429/0x8a0 fs/file_table.c:376
- __do_sys_close fs/open.c:1554 [inline]
- __se_sys_close fs/open.c:1539 [inline]
- __x64_sys_close+0x7e/0x110 fs/open.c:1539
- do_syscall_64+0xf9/0x240
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
-------------[ cut here ]------------
-kernel BUG at mm/truncate.c:413!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 0 PID: 8131 Comm: syz-executor.1 Not tainted 6.8.0-rc2-syzkaller-00047-g1bbb19b6eb1b #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-RIP: 0010:truncate_inode_pages_range+0xe33/0xf70 mm/truncate.c:413
-Code: 38 c1 0f 8c d5 f8 ff ff 4c 89 f7 e8 27 7f 24 00 e9 c8 f8 ff ff e8 ed b1 c5 ff 4c 89 e7 48 c7 c6 a0 8a b3 8b e8 2e 73 0a 00 90 <0f> 0b e8 96 b8 8f 09 e8 d1 b1 c5 ff 48 8b 7c 24 18 48 c7 c6 e0 8b
-RSP: 0018:ffffc9000afc76c0 EFLAGS: 00010246
-RAX: f4eb776fbe124800 RBX: 0000000000000001 RCX: ffffc9000afc7503
-RDX: 0000000000000001 RSI: ffffffff8baac6e0 RDI: ffffffff8bfd9420
-RBP: ffffc9000afc7920 R08: ffffffff8f84262f R09: 1ffffffff1f084c5
-R10: dffffc0000000000 R11: fffffbfff1f084c6 R12: ffffea0001a41e40
-R13: 0000000000000002 R14: ffffc9000afc7808 R15: ffffc9000afc7770
-FS:  00007f35ceaab6c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f29e7309d58 CR3: 0000000025a64000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- kill_bdev block/bdev.c:79 [inline]
- set_blocksize+0x315/0x390 block/bdev.c:155
- sb_set_blocksize block/bdev.c:164 [inline]
- sb_min_blocksize+0xb3/0x190 block/bdev.c:180
- ext4_load_super fs/ext4/super.c:5030 [inline]
- __ext4_fill_super fs/ext4/super.c:5227 [inline]
- ext4_fill_super+0x6ec/0x6da0 fs/ext4/super.c:5703
- get_tree_bdev+0x3f7/0x570 fs/super.c:1619
- vfs_get_tree+0x90/0x2a0 fs/super.c:1784
- do_new_mount+0x2be/0xb40 fs/namespace.c:3352
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
- do_syscall_64+0xf9/0x240
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
-RIP: 0033:0x7f35cdc7f4aa
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 09 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f35ceaaaef8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007f35ceaaaf80 RCX: 00007f35cdc7f4aa
-RDX: 0000000020000100 RSI: 00000000200002c0 RDI: 00007f35ceaaaf40
-RBP: 0000000020000100 R08: 00007f35ceaaaf80 R09: 0000000003000480
-R10: 0000000003000480 R11: 0000000000000246 R12: 00000000200002c0
-R13: 00007f35ceaaaf40 R14: 0000000000000786 R15: 00000000200000c0
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:truncate_inode_pages_range+0xe33/0xf70 mm/truncate.c:413
-Code: 38 c1 0f 8c d5 f8 ff ff 4c 89 f7 e8 27 7f 24 00 e9 c8 f8 ff ff e8 ed b1 c5 ff 4c 89 e7 48 c7 c6 a0 8a b3 8b e8 2e 73 0a 00 90 <0f> 0b e8 96 b8 8f 09 e8 d1 b1 c5 ff 48 8b 7c 24 18 48 c7 c6 e0 8b
-RSP: 0018:ffffc9000afc76c0 EFLAGS: 00010246
-RAX: f4eb776fbe124800 RBX: 0000000000000001 RCX: ffffc9000afc7503
-RDX: 0000000000000001 RSI: ffffffff8baac6e0 RDI: ffffffff8bfd9420
-RBP: ffffc9000afc7920 R08: ffffffff8f84262f R09: 1ffffffff1f084c5
-R10: dffffc0000000000 R11: fffffbfff1f084c6 R12: ffffea0001a41e40
-R13: 0000000000000002 R14: ffffc9000afc7808 R15: ffffc9000afc7770
-FS:  00007f35ceaab6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f29dd4ff000 CR3: 0000000025a64000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
+diff --git a/arch/arm64/boot/dts/qcom/sm8550-hdk.dts b/arch/arm64/boot/dts/qcom/sm8550-hdk.dts
+index 87276c39c589..12d60a0ee095 100644
+--- a/arch/arm64/boot/dts/qcom/sm8550-hdk.dts
++++ b/arch/arm64/boot/dts/qcom/sm8550-hdk.dts
+@@ -211,9 +211,9 @@ sound {
+ 				"AMIC1", "MIC BIAS1",
+ 				"AMIC2", "MIC BIAS2",
+ 				"AMIC5", "MIC BIAS4",
+-				"TX SWR_ADC0", "ADC1_OUTPUT",
+-				"TX SWR_ADC1", "ADC2_OUTPUT",
+-				"TX SWR_ADC3", "ADC4_OUTPUT";
++				"TX SWR_INPUT0", "ADC1_OUTPUT",
++				"TX SWR_INPUT1", "ADC2_OUTPUT",
++				"TX SWR_INPUT1", "ADC4_OUTPUT";
+ 
+ 		wcd-playback-dai-link {
+ 			link-name = "WCD Playback";
+@@ -1139,6 +1139,13 @@ wcd_rx: codec@0,4 {
+ 		compatible = "sdw20217010d00";
+ 		reg = <0 4>;
+ 
++		/*
++		 * WCD9385 RX Port 1 (HPH_L/R)      <=> SWR1 Port 1 (HPH_L/R)
++		 * WCD9385 RX Port 2 (CLSH)         <=> SWR1 Port 2 (CLSH)
++		 * WCD9385 RX Port 3 (COMP_L/R)     <=> SWR1 Port 3 (COMP_L/R)
++		 * WCD9385 RX Port 4 (LO)           <=> SWR1 Port 4 (LO)
++		 * WCD9385 RX Port 5 (DSD_L/R)      <=> SWR1 Port 5 (DSD_L/R)
++		 */
+ 		qcom,rx-port-mapping = <1 2 3 4 5>;
+ 	};
+ };
+@@ -1151,7 +1158,13 @@ wcd_tx: codec@0,3 {
+ 		compatible = "sdw20217010d00";
+ 		reg = <0 3>;
+ 
+-		qcom,tx-port-mapping = <1 1 2 3>;
++		/*
++		 * WCD9385 TX Port 1 (ADC1,2)             <=> SWR2 Port 2 (TX SWR_INPUT 0,1,2,3)
++		 * WCD9385 TX Port 2 (ADC3,4)             <=> SWR2 Port 2 (TX SWR_INPUT 0,1,2,3)
++		 * WCD9385 TX Port 3 (DMIC0,1,2,3 & MBHC) <=> SWR2 Port 3 (TX SWR_INPUT 4,5,6,7)
++		 * WCD9385 TX Port 4 (DMIC4,5,6,7)        <=> SWR2 Port 4 (TX SWR_INPUT 8,9,10,11)
++		 */
++		qcom,tx-port-mapping = <2 2 3 4>;
+ 	};
+ };
+ 
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+base-commit: 51b70ff55ed88edd19b080a524063446bcc34b62
+change-id: 20240201-topic-sm8550-hdk8550-audio-fix-579f87f109b5
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Best regards,
+-- 
+Neil Armstrong <neil.armstrong@linaro.org>
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
