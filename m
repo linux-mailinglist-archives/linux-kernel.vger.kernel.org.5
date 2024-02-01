@@ -1,253 +1,302 @@
-Return-Path: <linux-kernel+bounces-48859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61F5D846272
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:10:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D7A2846271
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:10:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0436B2A721
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:10:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A8221C24AAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:10:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B4703F8DA;
-	Thu,  1 Feb 2024 21:07:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC273E497;
+	Thu,  1 Feb 2024 21:07:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=soleen.com header.i=@soleen.com header.b="Rq1seCxt"
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
+	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="GNaUeSe7"
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E23603EA87
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 21:07:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E03413CF6B
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 21:06:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706821626; cv=none; b=W2Sc8sPMPumIMkRJJ4y2FyyluAhP89DtYbwYHGlg3Q/Orrz3C59iKOxuPAhC4lcL8cX35ohrwlQscvleLfmN3/qxP9ODP9VX6awy9fOxWPjset7hdntDDRQRg4TVuiJ5LjPkZizqXjF0+EFFGbj+uBJUCpp7UkO+5401ULORS8s=
+	t=1706821623; cv=none; b=LItjmFbmq+QiWzSyenLDSnDRS1ZwVofzXbwcP50PwuUlUsaLAvAau52QEtLaOobCCD5yk4NQMW8hHNP8BuGhez23fVsDwTUYEFO4cjPhfpeWg6AvKxnt1FS/4Ym9Vw8n6ifg3aBLN9FroWK/MeO5jRdvLP7mklwkKqhmMboFrSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706821626; c=relaxed/simple;
-	bh=7ZoHgpdBSvGdJPrarfgjnz43g7iyXARldk+R14Nq+XA=;
+	s=arc-20240116; t=1706821623; c=relaxed/simple;
+	bh=oPJOZv03hwxbqkYwudlxIPTDiQRZpFGwDc+SB/ATHDM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JUg9yfFuog5c5DN5RWFrrr+B/dSrm0TuvsAtIZm3ZTQxREIJ3Innlq3GHCfsrmfIglV5aiDaE6cqtu6BIvyCIqbyBvhjOGP3cKI7mXsTg2uFKUHjaLS22k6a+VnumQ6p7YhzBKh7fF9FhvrFcTtavzQ7Ywi1B8SNu2/x8RcKVV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com; spf=none smtp.mailfrom=soleen.com; dkim=fail (0-bit key) header.d=soleen.com header.i=@soleen.com header.b=Rq1seCxt reason="key not found in DNS"; arc=none smtp.client-ip=209.85.167.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=soleen.com
-Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3bbbc6bcc78so980986b6e.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 13:07:04 -0800 (PST)
+	 To:Cc:Content-Type; b=JTwQNK8Fh77cbzftZ5N87HOO6Lrt5OZxyZkk9yNpadyn9s6obGQS5Tb+Df01ZIrF9rw/2JspcwK8j68N1jDt8YY2yO+LXeQLyYlJ5mskauEmiYrmrQyReTxNr5/Vvcj+Dm9FW8TgjrTdaYIBD91N6lN6XZa9jQY6hZS2guMO/PY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=GNaUeSe7; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60406f4e1d0so14110267b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 13:06:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1706821624; x=1707426424; darn=vger.kernel.org;
+        d=umich.edu; s=google-2016-06-03; t=1706821619; x=1707426419; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Xpf1puraZK0YLhm6VC32jQUIE3+0XR7H+iAbplKocpw=;
-        b=Rq1seCxtGBi0qHV4TidYujk6zTax06X063K2y3dSKgsTqhQjytPSXF4lqwQ0o9K434
-         c8E6ipbigldG87YVUzx1SAB/5XgNQHOyv4qfLLKd+bJsyk9dTBExp51ItQWP7s4QF6i6
-         Zd3ATwtHMqyW8QNiCxcfbJ+WQOiG441yLRNHC3Vaz6v11VGKDZU5gV02DPJa7JX64Zpi
-         oVj76j3kcMTWwvDLBokOuC7GjQ5tKgDnC6HKdfb76TG0+yjxbRHkhVC5yU+8ZjOvrqKp
-         2d9+phVcRCAs8V1X1THXjMM3iiSlYjIs0G7BgYMKp0sbnVwPIs3Lq8hlECGgCparZn4x
-         /8kA==
+        bh=Yt7e5kW67jPJRZM8ErOQj6BquenTsqSTjJPhbNcD7fw=;
+        b=GNaUeSe7A3mHBwARmu5PgQQlF34wzp2roJJMQ7FBpM4dmXq1y9eWsulUwONYwZU2Kr
+         Z/KmrVBxiM4Z28O8v/6lDo8JySTh0XUAUh3zvteIUhw1MyA8Vy77y1T33EqdbxX8SLjg
+         Cs+7yenilbNn4n90l71QyQqV2c32lBgr3Z1qJfhPRX8DHdIy/pf62utIN7sW4bvpgZKY
+         rG9D8s/0S+8AYeo7USUHQqcWuO+xlhqvN+7dxKP0M9KAXoJhvhODld7HGJtziUgO0HoW
+         H4f/ZcB3X653UyUjEUWsF/GIhQfYl+3c+JJiBMz7Vz3/JRqH2wdxB+EivncC7mimpqRX
+         TdSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706821624; x=1707426424;
+        d=1e100.net; s=20230601; t=1706821619; x=1707426419;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Xpf1puraZK0YLhm6VC32jQUIE3+0XR7H+iAbplKocpw=;
-        b=GqFNkROXRKb6139SpTRB465P3DrsQbjLlIckhZNjiMP9cg86dVmxLem3ApuDCy/xMj
-         +DLOLXh8zR39pvcaqTTVJ9LFyRk998Med2j7t/zuMsapwmbXCzTk3ehT4+QIAiqAmDPn
-         lLPsR2Qs9ekY5W9uyGQWPBCCVYt8APKD6RTw3PRzhHWtSlBmmfE4iqd0CZxSiOVbf8Qu
-         XVad/5L7tvB+wzfWhlc76IfDU3XiYIR5f7FUC6mRahvi0rfdx4x2ww0vUVT+gJdR9G72
-         jJJyaJQgoIblm6AZ6q7RBCjmvlddxa/XoUS148PQITFfjxjPXQkkh4vngnPbRXP/kZMD
-         +GXQ==
-X-Gm-Message-State: AOJu0YwxiGoJc88JhbCGac1XbLi57zhuooyvhyyvFfMybsln9RSgJMBD
-	qI9QHg+nOPNntZFlapiOe/QVeHJdDIiVRPLmuvTe1seD//F1zqCgpAFsEi7lvfvZ+Q151us0Xn0
-	0fRtyx/GC2iOlWFjARCemkciJMHJudbpSntowrw==
-X-Google-Smtp-Source: AGHT+IHGtpacZ+jaBeIGAsk6QQM31sihBMAtG5jzOo+mB5SscJQIhVF2DHVshWAHRjZKVuxKH7/NbyOPrZUa5kEDaHc=
-X-Received: by 2002:a05:6808:2220:b0:3be:aafd:ce3 with SMTP id
- bd32-20020a056808222000b003beaafd0ce3mr7132823oib.3.1706821623809; Thu, 01
- Feb 2024 13:07:03 -0800 (PST)
+        bh=Yt7e5kW67jPJRZM8ErOQj6BquenTsqSTjJPhbNcD7fw=;
+        b=OcTKHyVlODVYRt/AT5QA0WPJcpSJOzrSR9Dfv5DN9HWrGFcoNitxPThHRIrQ1xjgOl
+         6mZ6TKbwFxTCh2Jci9d1jB7Cto6ZRvxq7CwZPZLlo55AipbpYBueB1Fsi1vikpHAgDUL
+         h315+54wWQWNx9RiQkAyBCjMvT0RYfU40qCoXN8srqXUgGVGAAGSIIvJuQ+Gbmn+BLTW
+         MlQWiMGLCs0/j21g6cmQyfQ7V/CreUnVeb4M2r5/ylMmp+VDSXGIBppoYyQyWpOERhff
+         KZeSzji9Iw9BADa/e4sl2BuoSQ0fJPjtFmIOIKws9WaJ1DxNkYXLaM46LUZ3WJcVPtKU
+         0Y2A==
+X-Gm-Message-State: AOJu0Yy/mIfwE8NBGVQKCRmdO//Qu0Cg6yRpNf/w6fSaXDfo/3rA0e+8
+	Ve8P8mQr/SS0jfxyx04oLSthj080CujdnIA3JTY404oySiDEaxjkfScJ2GFMcviv+p2ZP7PZ0Sm
+	kz8UTphWjgrlJoPtUNpIIRE+/gjjxTIymYKQbgw==
+X-Google-Smtp-Source: AGHT+IGEUKSA0ksa3LSL8TqJTFxwolHbJCZbeQLC+r6L2WGPwgMdAzKp16oStnHvrtxqabrcInoFkHb1EhGBbU2VoDs=
+X-Received: by 2002:a81:4813:0:b0:602:9f2e:c513 with SMTP id
+ v19-20020a814813000000b006029f2ec513mr3819062ywa.4.1706821618780; Thu, 01 Feb
+ 2024 13:06:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201193014.2785570-1-tatashin@google.com> <02610629-05ef-4956-a122-36b6ac98fbc2@arm.com>
-In-Reply-To: <02610629-05ef-4956-a122-36b6ac98fbc2@arm.com>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Thu, 1 Feb 2024 16:06:27 -0500
-Message-ID: <CA+CK2bD_q3pnThtLVSzFCjyevBEaG6Ad+1o2=1tVZsYg35UMmg@mail.gmail.com>
-Subject: Re: [PATCH] iommu/iova: use named kmem_cache for iova magazines
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: joro@8bytes.org, will@kernel.org, iommu@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, rientjes@google.com
+References: <20240201-rockchip-rust-phy_depend-v2-0-c5fa4faab924@christina-quast.de>
+ <20240201-rockchip-rust-phy_depend-v2-3-c5fa4faab924@christina-quast.de>
+In-Reply-To: <20240201-rockchip-rust-phy_depend-v2-3-c5fa4faab924@christina-quast.de>
+From: Trevor Gross <tmgross@umich.edu>
+Date: Thu, 1 Feb 2024 15:06:47 -0600
+Message-ID: <CALNs47tnwCgyvM2jBo=bTt1=2AJFt3b6W+JsTHM3Np2tbNJYCA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] net: phy: add Rust Rockchip PHY driver
+To: Christina Quast <contact@christina-quast.de>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, FUJITA Tomonori <fujita.tomonori@gmail.com>, 
+	Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, 
+	Russell King <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Heiko Stuebner <heiko@sntech.de>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 1, 2024 at 3:56=E2=80=AFPM Robin Murphy <robin.murphy@arm.com> =
-wrote:
->
-> On 2024-02-01 7:30 pm, Pasha Tatashin wrote:
-> > From: Pasha Tatashin <pasha.tatashin@soleen.com>
-> >
-> > The magazine buffers can take gigabytes of kmem memory, dominating all
-> > other allocations. For observability prurpose create named slab cache s=
-o
-> > the iova magazine memory overhead can be clearly observed.
-> >
-> > With this change:
-> >
-> >> slabtop -o | head
-> >   Active / Total Objects (% used)    : 869731 / 952904 (91.3%)
-> >   Active / Total Slabs (% used)      : 103411 / 103974 (99.5%)
-> >   Active / Total Caches (% used)     : 135 / 211 (64.0%)
-> >   Active / Total Size (% used)       : 395389.68K / 411430.20K (96.1%)
-> >   Minimum / Average / Maximum Object : 0.02K / 0.43K / 8.00K
-> >
-> > OBJS ACTIVE  USE OBJ SIZE  SLABS OBJ/SLAB CACHE SIZE NAME
-> > 244412 244239 99%    1.00K  61103       4    244412K iommu_iova_magazin=
-e
-> >   91636  88343 96%    0.03K    739     124      2956K kmalloc-32
-> >   75744  74844 98%    0.12K   2367      32      9468K kernfs_node_cache
-> >
-> > On this machine it is now clear that magazine use 242M of kmem memory.
->
-> Hmm, something smells there...
->
-> In the "worst" case there should be a maximum of 6 * 2 *
-> num_online_cpus() empty magazines in the iova_cpu_rcache structures,
-> i.e., 12KB per CPU. Under normal use those will contain at least some
-> PFNs, but mainly every additional magazine stored in a depot is full
-> with 127 PFNs, and each one of those PFNs is backed by a 40-byte struct
-> iova, i.e. ~5KB per 1KB magazine. Unless that machine has many thousands
-> of CPUs, if iova_magazine allocations are the top consumer of memory
-> then something's gone wrong.
+On Thu, Feb 1, 2024 at 12:07=E2=80=AFPM Christina Quast
+<contact@christina-quast.de> wrote:
+> +++ b/drivers/net/phy/rockchip_rust.rs
+> @@ -0,0 +1,131 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (C) 2024 Christina Quast <contact@christina-quast.de>
+> +
+> +//! Rust Rockchip PHY driver
+> +//!
+> +//! C version of this driver: [`drivers/net/phy/rockchip.c`](./rockchip.=
+c)
+> +use kernel::{
+> +    c_str,
+> +    net::phy::{self, DeviceId, Driver},
+> +    prelude::*,
+> +    uapi,
+> +};
+> +
+> +kernel::module_phy_driver! {
+> +    drivers: [PhyRockchip],
+> +    device_table: [
+> +        DeviceId::new_with_driver::<PhyRockchip>(),
+> +    ],
+> +    name: "rust_asix_phy",
+> +    author: "FUJITA Tomonori <fujita.tomonori@gmail.com>",
 
-This is an upstream kernel  + few drivers that is booted on AMD EPYC,
-with 128 CPUs.
+Tomo wrote this? :)
 
-It has allocations stacks like these:
-init_iova_domain+0x1ed/0x230 iommu_setup_dma_ops+0xf8/0x4b0
-amd_iommu_probe_finalize.
-And also init_iova_domain() calls for Google's TPU drivers 242M is
-actually not that much, compared to the size of the system.
+> +    description: "Rust Asix PHYs driver",
+> +    license: "GPL",
+> +}
+> +
+> +
+> +const MII_INTERNAL_CTRL_STATUS: u16 =3D 17;
+> +const SMI_ADDR_TSTCNTL: u16 =3D 20;
+> +const SMI_ADDR_TSTWRITE: u16 =3D 23;
+> +
+> +const MII_AUTO_MDIX_EN: u16 =3D bit(7);
+> +const MII_MDIX_EN: u16 =3D bit(6);
+> +
+> +const TSTCNTL_WR: u16 =3D bit(14) | bit(10);
+> +
+> +const TSTMODE_ENABLE: u16 =3D 0x400;
+> +const TSTMODE_DISABLE: u16 =3D 0x0;
+> +
+> +const WR_ADDR_A7CFG: u16 =3D 0x18;
 
-Pasha
+Most of these are clear enough, but could you add comments about what
+the more ambiguous constants are for? (e.g. A7CFG).
 
+> +struct PhyRockchip;
+> +
+> +impl PhyRockchip {
+
+Remove the `helper_` prefix for these functions, and change the docs.
+Their use as helpers is obvious enough based on where they are called,
+better to say what they actually accomplish.
+
+Since they don't take `self`, these could also just be standalone
+functions rather than in an `impl PhyRockchip` block. This makes
+calling them a bit cleaner since you don't need the `PhyRockchip::`
+prefix.
+
+> +   /// Helper function for helper_integrated_phy_analog_init
+> +    fn helper_init_tstmode(dev: &mut phy::Device) -> Result {
+> +        // Enable access to Analog and DSP register banks
+> +        dev.write(SMI_ADDR_TSTCNTL, TSTMODE_ENABLE)?;
+> +        dev.write(SMI_ADDR_TSTCNTL, TSTMODE_DISABLE)?;
+> +        dev.write(SMI_ADDR_TSTCNTL, TSTMODE_ENABLE)
+> +    }
+
+For consistency, just make the last write also end with `?;` and add a
+`Ok(())` line.
+
+> +
+> +    /// Helper function for helper_integrated_phy_analog_init
+> +    fn helper_close_tstmode(dev: &mut phy::Device) -> Result {
+> +        dev.write(SMI_ADDR_TSTCNTL, TSTMODE_DISABLE)
+> +    }
+> +
+> +    /// Helper function for rockchip_config_init
+> +    fn helper_integrated_phy_analog_init(dev: &mut phy::Device) -> Resul=
+t {
+> +        Self::helper_init_tstmode(dev)?;
+> +        dev.write(SMI_ADDR_TSTWRITE, 0xB)?;
+> +        dev.write(SMI_ADDR_TSTCNTL, TSTCNTL_WR | WR_ADDR_A7CFG)?;
+> +        Self::helper_close_tstmode(dev)
+> +    }
+> +
+> +    /// Helper function for config_init
+> +    fn helper_config_init(dev: &mut phy::Device) -> Result {
+> +        let val =3D !MII_AUTO_MDIX_EN & dev.read(MII_INTERNAL_CTRL_STATU=
+S)?;
+> +        dev.write(MII_INTERNAL_CTRL_STATUS, val)?;
+> +        Self::helper_integrated_phy_analog_init(dev)
+> +    }
+> +
+> +    fn helper_set_polarity(dev: &mut phy::Device, polarity: u8) -> Resul=
+t {
+> +        let reg =3D !MII_AUTO_MDIX_EN & dev.read(MII_INTERNAL_CTRL_STATU=
+S)?;
+> +        let val =3D match polarity as u32 {
+> +            // status: MDI; control: force MDI
+> +            uapi::ETH_TP_MDI =3D> Some(reg & !MII_MDIX_EN),
+> +            // status: MDI-X; control: force MDI-X
+> +            uapi::ETH_TP_MDI_X =3D> Some(reg | MII_MDIX_EN),
+> +            // uapi::ETH_TP_MDI_AUTO =3D> control: auto-select
+> +            // uapi::ETH_TP_MDI_INVALID =3D> status: unknown; control: u=
+nsupported
+> +            _ =3D> None,
+
+Is receiving an invalid value not an error? I.e.
+
+    uapi::ETH_TP_MDI_AUTO | uapi::ETH_TP_MDI_INVALID =3D> None,
+    _ =3D> return Err(...)
+
+I know the current implementation came from the C version, just
+wondering about correctness here.
+
+> +        };
+> +        if let Some(v) =3D val {
+> +            if v !=3D reg {
+> +                return dev.write(MII_INTERNAL_CTRL_STATUS, v);
+> +            }
+> +        }
+
+In the match statement above - I think you can replace `=3D> None` with
+`=3D> return Ok(())` and drop the `Some(...)` wrappers. Then you don't
+need to destructure val here.
+
+> +        Ok(())
+> +
+> +    }
+> +}
+> +
+> +#[vtable]
+> +impl Driver for PhyRockchip {
+> +    const FLAGS: u32 =3D 0;
+> +    const NAME: &'static CStr =3D c_str!("Rockchip integrated EPHY");
+> +    const PHY_DEVICE_ID: DeviceId =3D DeviceId::new_with_custom_mask(0x1=
+234d400, 0xfffffff0);
+> +
+> +    fn link_change_notify(dev: &mut phy::Device) {
+> +    // If mode switch happens from 10BT to 100BT, all DSP/AFE
+> +    // registers are set to default values. So any AFE/DSP
+> +    // registers have to be re-initialized in this case.
+
+Comment indent
+
+> +        if dev.state() =3D=3D phy::DeviceState::Running && dev.speed() =
+=3D=3D uapi::SPEED_100 {
+> +            if let Err(e) =3D Self::helper_integrated_phy_analog_init(de=
+v) {
+> +                pr_err!("rockchip: integrated_phy_analog_init err: {:?}"=
+, e);
+> +            }
+> +        }
+> +    }
+> +
+> +    fn soft_reset(dev: &mut phy::Device) -> Result {
+> +        dev.genphy_soft_reset()
+> +    }
+> +
+> +    fn config_init(dev: &mut phy::Device) -> Result {
+> +        PhyRockchip::helper_config_init(dev)
+> +    }
+> +
+> +    fn config_aneg(dev: &mut phy::Device) -> Result {
+> +        PhyRockchip::helper_set_polarity(dev, dev.mdix())?;
+> +        dev.genphy_config_aneg()
+> +    }
+> +
+> +    fn suspend(dev: &mut phy::Device) -> Result {
+> +        dev.genphy_suspend()
+> +    }
+> +
+> +    fn resume(dev: &mut phy::Device) -> Result {
+> +        let _ =3D dev.genphy_resume();
+
+Why not `?` the possible error?
+
+> +
+> +        PhyRockchip::helper_config_init(dev)
+> +    }
+> +}
 >
-> Thanks,
-> Robin.
+> --
+> 2.43.0
 >
-> > Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-> > ---
-> >   drivers/iommu/iova.c | 57 +++++++++++++++++++++++++++++++++++++++++--=
--
-> >   1 file changed, 54 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-> > index d30e453d0fb4..617bbc2b79f5 100644
-> > --- a/drivers/iommu/iova.c
-> > +++ b/drivers/iommu/iova.c
-> > @@ -630,6 +630,10 @@ EXPORT_SYMBOL_GPL(reserve_iova);
-> >
-> >   #define IOVA_DEPOT_DELAY msecs_to_jiffies(100)
-> >
-> > +static struct kmem_cache *iova_magazine_cache;
-> > +static unsigned int iova_magazine_cache_users;
-> > +static DEFINE_MUTEX(iova_magazine_cache_mutex);
-> > +
-> >   struct iova_magazine {
-> >       union {
-> >               unsigned long size;
-> > @@ -654,11 +658,51 @@ struct iova_rcache {
-> >       struct delayed_work work;
-> >   };
-> >
-> > +static int iova_magazine_cache_init(void)
-> > +{
-> > +     int ret =3D 0;
-> > +
-> > +     mutex_lock(&iova_magazine_cache_mutex);
-> > +
-> > +     iova_magazine_cache_users++;
-> > +     if (iova_magazine_cache_users > 1)
-> > +             goto out_unlock;
-> > +
-> > +     iova_magazine_cache =3D kmem_cache_create("iommu_iova_magazine",
-> > +                                             sizeof(struct iova_magazi=
-ne),
-> > +                                             0, SLAB_HWCACHE_ALIGN, NU=
-LL);
-> > +
-> > +     if (!iova_magazine_cache) {
-> > +             pr_err("Couldn't create iova magazine cache\n");
-> > +             ret =3D -ENOMEM;
-> > +     }
-> > +
-> > +out_unlock:
-> > +     mutex_unlock(&iova_magazine_cache_mutex);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static void iova_magazine_cache_fini(void)
-> > +{
-> > +     mutex_lock(&iova_magazine_cache_mutex);
-> > +
-> > +     if (WARN_ON(!iova_magazine_cache_users))
-> > +             goto out_unlock;
-> > +
-> > +     iova_magazine_cache_users--;
-> > +     if (!iova_magazine_cache_users)
-> > +             kmem_cache_destroy(iova_magazine_cache);
-> > +
-> > +out_unlock:
-> > +     mutex_unlock(&iova_magazine_cache_mutex);
-> > +}
-> > +
-> >   static struct iova_magazine *iova_magazine_alloc(gfp_t flags)
-> >   {
-> >       struct iova_magazine *mag;
-> >
-> > -     mag =3D kmalloc(sizeof(*mag), flags);
-> > +     mag =3D kmem_cache_alloc(iova_magazine_cache, flags);
-> >       if (mag)
-> >               mag->size =3D 0;
-> >
-> > @@ -667,7 +711,7 @@ static struct iova_magazine *iova_magazine_alloc(gf=
-p_t flags)
-> >
-> >   static void iova_magazine_free(struct iova_magazine *mag)
-> >   {
-> > -     kfree(mag);
-> > +     kmem_cache_free(iova_magazine_cache, mag);
-> >   }
-> >
-> >   static void
-> > @@ -766,11 +810,17 @@ int iova_domain_init_rcaches(struct iova_domain *=
-iovad)
-> >       unsigned int cpu;
-> >       int i, ret;
-> >
-> > +     ret =3D iova_magazine_cache_init();
-> > +     if (ret)
-> > +             return -ENOMEM;
-> > +
-> >       iovad->rcaches =3D kcalloc(IOVA_RANGE_CACHE_MAX_SIZE,
-> >                                sizeof(struct iova_rcache),
-> >                                GFP_KERNEL);
-> > -     if (!iovad->rcaches)
-> > +     if (!iovad->rcaches) {
-> > +             iova_magazine_cache_fini();
-> >               return -ENOMEM;
-> > +     }
-> >
-> >       for (i =3D 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
-> >               struct iova_cpu_rcache *cpu_rcache;
-> > @@ -948,6 +998,7 @@ static void free_iova_rcaches(struct iova_domain *i=
-ovad)
-> >
-> >       kfree(iovad->rcaches);
-> >       iovad->rcaches =3D NULL;
-> > +     iova_magazine_cache_fini();
-> >   }
-> >
-> >   /*
+
+As Greg and Dragan mentioned, duplicate drivers are generally not
+accepted in-tree to avoid double maintenance and confusing config. Is
+there a specific goal?
+
+It is quite alright to request feedback on Rust drivers (and I have
+provided some) or even ask if anyone is willing to help test it out,
+but please use RFC PATCH and make it clear that this is for
+experimentation rather than upstreaming.
+
+Netdev has seemed relatively open to adding Rust drivers for new phys
+that don't have a C implementation, but these phys are of course
+tougher to find.
+
+Also for future reference, changes intended for the net tree should be
+labeled [PATCH v? net-next].
+
+Best regards,
+Trevor
 
