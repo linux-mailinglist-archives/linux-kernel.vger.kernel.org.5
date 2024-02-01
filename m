@@ -1,39 +1,62 @@
-Return-Path: <linux-kernel+bounces-47956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DF34845531
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:24:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74755845534
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:24:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B967428DFC9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:23:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 142DF1F2E0E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:24:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E6F15B119;
-	Thu,  1 Feb 2024 10:23:54 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392914DA19
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 10:23:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5664115B965;
+	Thu,  1 Feb 2024 10:24:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="QzsCbL1w"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A80E15B111;
+	Thu,  1 Feb 2024 10:24:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706783033; cv=none; b=SjZUg6p5mcX/Re65i+gc+iPg1Azk+peVSLZ42uI4NbHgcaSRJKAPAwBA1CmmzdWrrmel1nqqVgKHaiBqymkGS6hAQGBNiCDkojDVVDQfsl/QUTFiG/SG0qGx8/rHSEdroLQZhh8j9dVz3WhqlOssmw/0j9Um5xK4jpWyExJJtGw=
+	t=1706783042; cv=none; b=bNmyekD4s+9wmpboZCK9nlR4OO5DDA4v9E6VEgSr2V9Z5Lsw4wsvAdYOiUdxNso+IYlFEIttp7vC7H27zcpdSD7DdKB+z09/DFrc5X48FU6lSVOB3Jd5ya5FKDswHK24N1VCYyonsH78UpdA8ONamv0j6byHWFcK8ZvMUKpQeko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706783033; c=relaxed/simple;
-	bh=l9xtZA6JyQO0ZHM7v7uq57ACeSAqeiH0RxnWACFvzGs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LcQgNz0SXYvVNbItUwquo9enuzmqDfXqkdD+4YAh7z6825Y85fRUxaMr7gFqSButkWOyk4HdU423XzJkuRo53saW8KSGBbLwvzItkqXUiD2l3djMPFIzoIC96UuVtDfrnvxtLmiHPo2QtNyiLhdiKJGX4LfLVS2Bpvdg3X9xb2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 48D84DA7;
-	Thu,  1 Feb 2024 02:24:33 -0800 (PST)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C7F73F738;
-	Thu,  1 Feb 2024 02:23:47 -0800 (PST)
-Message-ID: <a05a9c6a-af7a-4591-a6b7-69e15109aed2@arm.com>
-Date: Thu, 1 Feb 2024 10:23:45 +0000
+	s=arc-20240116; t=1706783042; c=relaxed/simple;
+	bh=UzApKOwAu6KXGb5r1whM6A4X+Y50am79ZhevAwHik4A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=emonwBriARi70uyCW8iryzXl1MZvK/TBAxTBj7eiuP1xelmmCiJYQB8q2M9gCCVGuEhEkqZhkwHiEDAekG7W9ZpkW4bbbvydTRhkReva7QrUBxpbZkTfUwDNRE5NKc8feXO8vm19UbbFgl2+Mi2QTcUS7ZbJwo3ZWF1ZfF7+/OU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=QzsCbL1w; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4114lBkn008203;
+	Thu, 1 Feb 2024 10:23:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=kjEZOoEUgErW7tInatabktJlStgF5tg8wctHS4rIlqE=; b=Qz
+	sCbL1wgasU3hyMC2egYkGbUatO1HmHULroMq1aFUy1VcziuFk78RTXPKEVb9MLbn
+	jugIiah6NnayI7O4ZfBVSVxmiGvm8O5wNpSuE8wJsdSCFAtkktaIYGF2bqGbJVzm
+	sDSpJObKLGiXCbF1m4YTC3E2D8GzbbVE1AZmK4IbnaBXW3KMZCGNchvURWv/8ThX
+	BRtuiGzUOFtZuBiFIch3QMpfpzxoK7yINfT4CKMns0sRS0SnNWvBTjP6bdmFyH9/
+	o5RPF/mp2jfwIEvZH+CakVBNViYmiUgsakck8awwJfyCrFP/lnc/1nGDfkkt3knf
+	kEZjOu8khZN8IiCJdh7g==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w03hh8xc7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 01 Feb 2024 10:23:57 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 411ANtda012887
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 1 Feb 2024 10:23:55 GMT
+Received: from [10.218.25.146] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 1 Feb
+ 2024 02:23:52 -0800
+Message-ID: <ad0b0ce4-3f20-4268-ab86-165a9e8bfbff@quicinc.com>
+Date: Thu, 1 Feb 2024 15:53:48 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,45 +64,57 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/10] KVM: arm64: fix many kernel-doc warnings
+Subject: Re: [V2] i2c: i2c-qcom-geni: Correct I2C TRE sequence
 Content-Language: en-US
-To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>,
- James Morse <james.morse@arm.com>, Zenghui Yu <yuzenghui@huawei.com>,
- linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-References: <20240117230714.31025-1-rdunlap@infradead.org>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20240117230714.31025-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Bryan O'Donoghue <pure.logic@nexus-software.ie>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <andi.shyti@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <vkoul@kernel.org>,
+        <quic_bjorande@quicinc.com>, <manivannan.sadhasivam@linaro.org>
+CC: <quic_msavaliy@quicinc.com>, <quic_vtanuku@quicinc.com>
+References: <20240129061003.4085-1-quic_vdadhani@quicinc.com>
+ <b94c4c9f-a3dd-40fb-a80e-569199e93ee2@nexus-software.ie>
+From: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+In-Reply-To: <b94c4c9f-a3dd-40fb-a80e-569199e93ee2@nexus-software.ie>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: RkpqUqceY4130C-Rrf38Q_5Bf7i7cDqk
+X-Proofpoint-ORIG-GUID: RkpqUqceY4130C-Rrf38Q_5Bf7i7cDqk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-31_10,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ clxscore=1011 mlxscore=0 priorityscore=1501 phishscore=0
+ lowpriorityscore=0 malwarescore=0 mlxlogscore=717 bulkscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2402010083
 
-On 17/01/2024 23:07, Randy Dunlap wrote:
-> Fix a bunch of kernel-doc warnings in arch/arm64/kvm/.
+
+
+On 1/30/2024 8:54 PM, Bryan O'Donoghue wrote:
+> On 29/01/2024 06:10, Viken Dadhaniya wrote:
+>> As per HPG(Hardware programming guide
 > 
->   [PATCH 01/10] KVM: arm64: debug: fix kernel-doc warnings
->   [PATCH 02/10] KVM: arm64: guest: fix kernel-doc warnings
->   [PATCH 03/10] KVM: arm64: hyp/aarch32: fix kernel-doc warnings
->   [PATCH 04/10] KVM: arm64: vhe: fix a kernel-doc warning
->   [PATCH 05/10] KVM: arm64: mmu: fix a kernel-doc warning
->   [PATCH 06/10] KVM: arm64: PMU: fix kernel-doc warnings
->   [PATCH 07/10] KVM: arm64: sys_regs: fix kernel-doc warnings
->   [PATCH 08/10] KVM: arm64: vgic-init: fix a kernel-doc warning
->   [PATCH 09/10] KVM: arm64: vgic-its: fix kernel-doc warnings
->   [PATCH 10/10] KVM: arm64: vgic: fix a kernel-doc warning
+> Since you are doing a V3 here, please amend this too.
 > 
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Oliver Upton <oliver.upton@linux.dev>
-> Cc: James Morse <james.morse@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Zenghui Yu <yuzenghui@huawei.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: kvmarm@lists.linux.dev
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
+> "As per HPG" means almost nothing outside of qcom.
+> 
+> "As per Qualcomm's internal Hardware Programming Guide"
+> 
+> Right thing to do to reference the document IMO but, you should make 
+> clear its an internal silicon specification that's not public.
+> 
+> Also not sure the TRE description adds much.
+> 
+> Just give a high level description of the sequences being out-of-order 
+> with respect to the hardware spec.
+> 
+> ---
+> bod
 
-For the series:
-
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-
+Updated commit log and provided TRE description with sequence in V3.
 
