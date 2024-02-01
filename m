@@ -1,222 +1,205 @@
-Return-Path: <linux-kernel+bounces-48771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D13BA846100
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:33:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D3DB8460FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:31:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96F79B26AD7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:30:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59E6328587E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:31:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A1828527D;
-	Thu,  1 Feb 2024 19:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF01D85285;
+	Thu,  1 Feb 2024 19:31:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=soleen.com header.i=@soleen.com header.b="hVjt/R+x"
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="SKjI1kF4"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3397929B0
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 19:30:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87E7085278;
+	Thu,  1 Feb 2024 19:31:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706815821; cv=none; b=qzl5jxso+QSo/I8pZzcDiiexQ48YMLUM9aFTpeKNgPI6Tuh49ecfoNfdZEzIFZB2xn/O90OasLM48FZmVMAVFC6uGpQJEXPGWKQdwF9HPqrAIMCBxyX/ffJAuiKFY+itDWM5uVTwAwM/3KNz+OtrkTxAHzQ47nOr3U9yLJPIpBk=
+	t=1706815909; cv=none; b=Y/G5kEEVS8KdgCCt7qWPssIl2H+FEtwfGf3kmW+qML5DkKv9LkIZAnWmikEMEwj+NTro7SMMY8H9Bn9lT0zzxBPGgceTF0Az/s5hCdPpDQM82tV1h45HDecZWjoyfWpYeRiwNTDRa8neSdBOEUcP6RFdsDG4Zz8aHy8TYCHa7L4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706815821; c=relaxed/simple;
-	bh=7loz5bo6hwRwp9fF34CU0TwzHWopBNAJLtAZsKpdYJY=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=C2UVjzx3+6CF8eTgzwv3kcgn3/tb8JgIHANizeEuSvAABZCymEaM2bkIup31xwYZVm3uQ9UYVfC9JGxMeacyWSLsECBWr/SYg8Mu5yEYxTkghwY2Dqq0pJY4OGqJHayNXsWmF6I8pwn8u+YDAwMR2ehSy5a3MnErVVF+A+nrTc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com; spf=none smtp.mailfrom=soleen.com; dkim=fail (0-bit key) header.d=soleen.com header.i=@soleen.com header.b=hVjt/R+x reason="key not found in DNS"; arc=none smtp.client-ip=209.85.217.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=soleen.com
-Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-46b20b23ff7so495713137.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 11:30:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1706815817; x=1707420617; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BSEQBUwLYtDyX8SfM7b6fTPQYYyhCXu8tsAp9rUSiMw=;
-        b=hVjt/R+xGXDvi83npwK1UtBz4RPQVC8TrNCJ1tZOnbhE+C+fo5eVGKBNK8xqesdoUP
-         FBkCGhxj/yZkVoroWKYsDh0+ssD01BkiD7LTvlFai6SqH4a5GscgS/otLZFh/uYCySyS
-         s1hu0cB/QVFgtV1IAe/xkxOgOIFZB5RNvsTlGUI7HC+fP9VnKf70Al8wvMR7ylFyTQf3
-         f2hZy0qsMNLrfzweR8uIe7I5aecMYsFczBZQ+Oj0JstB06ZV8i+fogepPqrsWunMuZql
-         6ZFkozCEZXDrIyPK3/keAn1XYTpZf2eDoiF1vxN+3I1CAIcmtt7XCSxrRmqkSVwSUv+y
-         D+Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706815817; x=1707420617;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BSEQBUwLYtDyX8SfM7b6fTPQYYyhCXu8tsAp9rUSiMw=;
-        b=KwA1JtlPiGGp+qxj9qRq0hmY9ZflE39b3EuHsqfdq7WCueedMMKFXpogJArVq0QJeh
-         APtd9Y7VN4B7C9i72rsDcUEufHwlPNKnu68zDtFSP46z7vwiBbdeeqG2UKVhbH8rhR//
-         IAP+0kZLs2KRFgT2K2CgVTvzPQtg0Q+4Fep8DyBxGz+P9bowWFY1Ca1lXKMtV0tX1a/M
-         X6pVUrZYFiXk/CAe759pZafqqS6N+NQsWhVfXhxNlVH3pQGaXO4saNWbBJqswz0eoSKz
-         tglmwkJLegKILEIDjJCaEsih/NbQiEQBUVK18TKu9ncATGCCvVMDXa7nOoDsSOSyQRB6
-         DZGw==
-X-Gm-Message-State: AOJu0Yy8wMBlvK19WJD5PpBpuoPPXVXP6uGcl4Qy024mI//8k0Qis+zT
-	UyQZJ3YWZ+tZEBdMkS4YQv7982HQvmwBrCPeOMsYMaMsIbd+nav7N3709SYxD+8=
-X-Google-Smtp-Source: AGHT+IET93Vs0eqCzQUdFrwgDKKIhEbJwk6iAT2cMBeQIiq6TG6SVpcwALrgdlhKSo1JBgLLU5iGkA==
-X-Received: by 2002:a05:6102:316c:b0:46b:159e:bf04 with SMTP id l12-20020a056102316c00b0046b159ebf04mr6285592vsm.2.1706815816873;
-        Thu, 01 Feb 2024 11:30:16 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUbTUU/Nlcj6oufqZ9IAZI/9jykB57i+q5vJUcSyMfSXMQRX5nRq/VbOwv5We1qFiKsHSdD7s8/MjqeEFVGLMNwkff7T4Qgj0EeVt9bhyeAoHbv04nlO5LFzIBdsHmNbQf7Vfm2vhlhVWweFrQWRpVA2xQwu/P49MiyEL6Zh1pCk+/vUADBYM2rLeMH8HVCkvoXZJh06/iCgcSd+ue6+o/VG/zOyn/T3mgonWNQ2MjM7t3t27PsCbTZIWLixNH5U5jl/XZH76hxYbE=
-Received: from soleen.c.googlers.com.com (249.240.85.34.bc.googleusercontent.com. [34.85.240.249])
-        by smtp.gmail.com with ESMTPSA id r18-20020ad44052000000b0068c50dec857sm58648qvp.128.2024.02.01.11.30.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 11:30:16 -0800 (PST)
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-X-Google-Original-From: Pasha Tatashin <tatashin@google.com>
-To: robin.murphy@arm.com,
-	joro@8bytes.org,
-	will@kernel.org,
-	iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	pasha.tatashin@soleen.com,
-	rientjes@google.com
-Subject: [PATCH] iommu/iova: use named kmem_cache for iova magazines
-Date: Thu,  1 Feb 2024 19:30:14 +0000
-Message-ID: <20240201193014.2785570-1-tatashin@google.com>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
+	s=arc-20240116; t=1706815909; c=relaxed/simple;
+	bh=30CrakodQoj7bnMNjvntO6yWV9ILkjgkGXFZuyqQ044=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=c9tnWhszpmvgKXTBuvISzO+1PxnEqgCsZP+qvs/dOvEqVAOW9MY+FOnLRmmPhqoV4Epouo/pNVP6jiWtE4ah3BxEVB6oMC62unYM3ShmEWPAAGDEy0plTwoim5oynFQAuCtMtjwDTze2fhPSIkEhbE+pNojzqkKqu1vvHvWTXy4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=SKjI1kF4; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1706815904;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7kLN+F37wlT4potTE1hxcRfMjPjrCtSNMuo+YwMDxvM=;
+	b=SKjI1kF4cfxpbkHEOLzLGDRB+LXTqrbLitQsEeHkR/7RxPOUGJVJ2P2VgqbhveMtNdmZRm
+	24XYitFv27nxw1ajFlSGJZuXYbjuWMWAygSOiEA/F+wP8G5MCgtrBqyhP9VzsL9IlK8D7X
+	P8zXcvfNKuQ/tB2Lpblx56WcVM/wbfSp9SHN+tU/87sdtjRkfZDZ7Ha2joCdegtx4yEkb7
+	iu1CLpI5lZj/PJfPWfK9Y20ILQsHQI56KqIRUEEO11NOhn8vifcymHB8jaw0GION9pjkhb
+	w68TWDLx/Ktp04QDIeyldb20ljLUsr/4thalc+AducLysS6upbxlMZ+MAXhRFg==
+Date: Thu, 01 Feb 2024 20:31:43 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: Alexey Charkov <alchark@gmail.com>
+Cc: wens@kernel.org, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano
+ <daniel.lezcano@linaro.org>, Viresh Kumar <viresh.kumar@linaro.org>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] arm64: dts: rockchip: enable temperature driven
+ fan control on Rock 5B
+In-Reply-To: <CABjd4Yx0kQ67fScrFVavjObMLaNt_PJ3TVOhLpCmj00Dx9dOqA@mail.gmail.com>
+References: <20240130-rk-dts-additions-v2-0-c6222c4c78df@gmail.com>
+ <20240130-rk-dts-additions-v2-2-c6222c4c78df@gmail.com>
+ <CAGb2v65--rgb2FqmG_0-w1-jUL0odqKXxiZJ-XPYA4uomfYmaQ@mail.gmail.com>
+ <5e3e12d65e4919372e7fb02d56202393@manjaro.org>
+ <CABjd4Yx0kQ67fScrFVavjObMLaNt_PJ3TVOhLpCmj00Dx9dOqA@mail.gmail.com>
+Message-ID: <a8aa04ca0061cd09c7b3eb5336e534a4@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
+On 2024-02-01 20:15, Alexey Charkov wrote:
+> On Thu, Feb 1, 2024 at 9:34 PM Dragan Simic <dsimic@manjaro.org> wrote:
+>> On 2024-02-01 15:26, Chen-Yu Tsai wrote:
+>> > On Wed, Jan 31, 2024 at 2:22 AM Alexey Charkov <alchark@gmail.com>
+>> > wrote:
+>> >>
+>> >> This enables thermal monitoring on Radxa Rock 5B and links the PWM
+>> >> fan as an active cooling device managed automatically by the thermal
+>> >> subsystem, with a target SoC temperature of 65C and a minimum-spin
+>> >> interval from 55C to 65C to ensure airflow when the system gets warm
+>> >>
+>> >> Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>> >> Signed-off-by: Alexey Charkov <alchark@gmail.com>
+>> >> ---
+>> >>  arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts | 34
+>> >> ++++++++++++++++++++++++-
+>> >>  1 file changed, 33 insertions(+), 1 deletion(-)
+>> >>
+>> >> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+>> >> b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+>> >> index a0e303c3a1dc..b485edeef876 100644
+>> >> --- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+>> >> +++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+>> >> @@ -52,7 +52,7 @@ led_rgb_b {
+>> >>
+>> >>         fan: pwm-fan {
+>> >>                 compatible = "pwm-fan";
+>> >> -               cooling-levels = <0 95 145 195 255>;
+>> >> +               cooling-levels = <0 120 150 180 210 240 255>;
+>> >>                 fan-supply = <&vcc5v0_sys>;
+>> >>                 pwms = <&pwm1 0 50000 0>;
+>> >>                 #cooling-cells = <2>;
+>> >> @@ -173,6 +173,34 @@ &cpu_l3 {
+>> >>         cpu-supply = <&vdd_cpu_lit_s0>;
+>> >>  };
+>> >>
+>> >> +&package_thermal {
+>> >> +       polling-delay = <1000>;
+>> >> +
+>> >> +       trips {
+>> >> +               package_fan0: package-fan0 {
+>> >> +                       temperature = <55000>;
+>> >> +                       hysteresis = <2000>;
+>> >> +                       type = "active";
+>> >> +               };
+>> >> +               package_fan1: package-fan1 {
+>> >> +                       temperature = <65000>;
+>> >> +                       hysteresis = <2000>;
+>> >> +                       type = "active";
+>> >> +               };
+>> >> +       };
+>> >> +
+>> >> +       cooling-maps {
+>> >> +               map0 {
+>> >> +                       trip = <&package_fan0>;
+>> >> +                       cooling-device = <&fan THERMAL_NO_LIMIT 1>;
+>> >> +               };
+>> >> +               map1 {
+>> >> +                       trip = <&package_fan1>;
+>> >> +                       cooling-device = <&fan 1 THERMAL_NO_LIMIT>;
+>> >> +               };
+>> >> +       };
+>> >> +};
+>> >> +
+>> >>  &i2c0 {
+>> >>         pinctrl-names = "default";
+>> >>         pinctrl-0 = <&i2c0m2_xfer>;
+>> >> @@ -731,6 +759,10 @@ regulator-state-mem {
+>> >>         };
+>> >>  };
+>> >>
+>> >> +&tsadc {
+>> >> +       status = "okay";
+>> >> +};
+>> >> +
+>> >
+>> > Is there any reason this can't be enabled by default in the .dtsi file?
+>> > The thermal sensor doesn't depend on anything external, so there should
+>> > be no reason to push this down to the board level.
+>> 
+>> Actually, there is a reason.  Different boards can handle the critical
+>> overheating differently, by letting the CRU or the PMIC handle it.  
+>> This
+>> was also the case for the RK3399.
+>> 
+>> Please, have a look at the following DT properties, which are consumed
+>> by drivers/thermal/rockchip_thermal.c:
+>>    - "rockchip,hw-tshut-mode"
+>>    - "rockchip,hw-tshut-polarity"
+>> 
+>> See also page 1,372 of the RK3588 TRM v1.0.
+>> 
+>> This has also reminded me to check how is the Rock 5B actually wired,
+>> just to make sure.  We actually need to provide the two DT properties
+>> listed above, at least to avoid emitting the warnings.
+> 
+> Well the defaults are already provided in rk3588s.dtsi, so there won't
+> be any warnings (see lines 2222-2223 in Linus' master version), and
+> according to the vendor kernel those are also what Rock 5B uses.
 
-The magazine buffers can take gigabytes of kmem memory, dominating all
-other allocations. For observability prurpose create named slab cache so
-the iova magazine memory overhead can be clearly observed.
+Yes, I noticed the same a couple of minutes after sending my last
+message, but didn't want to make more noise about it. :)  I would've
+mentioned it in my next message, of course.
 
-With this change:
+> This made me think however: what if a board doesn't enable TSADC, but
+> has OPPs in place for higher voltage and frequency states? There won't
+> be any throttling (as there won't be any thermal monitoring) and there
+> might not be a critical shutdown at all if it heats up - possibly even
+> causing hardware damage. In this case it seems that having TSADC
+> enabled by default would at least trigger passive cooling, hopefully
+> avoiding the critical shutdown altogether and making those properties
+> irrelevant in 99% cases.
 
-> slabtop -o | head
- Active / Total Objects (% used)    : 869731 / 952904 (91.3%)
- Active / Total Slabs (% used)      : 103411 / 103974 (99.5%)
- Active / Total Caches (% used)     : 135 / 211 (64.0%)
- Active / Total Size (% used)       : 395389.68K / 411430.20K (96.1%)
- Minimum / Average / Maximum Object : 0.02K / 0.43K / 8.00K
+Those are very good questions.  Thumbs up!
 
-OBJS ACTIVE  USE OBJ SIZE  SLABS OBJ/SLAB CACHE SIZE NAME
-244412 244239 99%    1.00K  61103       4    244412K iommu_iova_magazine
- 91636  88343 96%    0.03K    739     124      2956K kmalloc-32
- 75744  74844 98%    0.12K   2367      32      9468K kernfs_node_cache
+The trouble is that the boards can use different wiring to handle the
+thermal runaways, by expecting the PMIC to handle it or not.  Thus,
+it's IMHO better to simply leave that to be tested and enabled on a
+board-by-board basis, whenever a new RK3588(s)-based board is added.
 
-On this machine it is now clear that magazine use 242M of kmem memory.
+Thus, the only right way at this point would be to merge the addition
+of the OPPs and the enabling of the TSADC for all currently supported
+RK3588(s)-based boards at once, instead of just for the Rock 5B.
 
-Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
----
- drivers/iommu/iova.c | 57 +++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 54 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-index d30e453d0fb4..617bbc2b79f5 100644
---- a/drivers/iommu/iova.c
-+++ b/drivers/iommu/iova.c
-@@ -630,6 +630,10 @@ EXPORT_SYMBOL_GPL(reserve_iova);
- 
- #define IOVA_DEPOT_DELAY msecs_to_jiffies(100)
- 
-+static struct kmem_cache *iova_magazine_cache;
-+static unsigned int iova_magazine_cache_users;
-+static DEFINE_MUTEX(iova_magazine_cache_mutex);
-+
- struct iova_magazine {
- 	union {
- 		unsigned long size;
-@@ -654,11 +658,51 @@ struct iova_rcache {
- 	struct delayed_work work;
- };
- 
-+static int iova_magazine_cache_init(void)
-+{
-+	int ret = 0;
-+
-+	mutex_lock(&iova_magazine_cache_mutex);
-+
-+	iova_magazine_cache_users++;
-+	if (iova_magazine_cache_users > 1)
-+		goto out_unlock;
-+
-+	iova_magazine_cache = kmem_cache_create("iommu_iova_magazine",
-+						sizeof(struct iova_magazine),
-+						0, SLAB_HWCACHE_ALIGN, NULL);
-+
-+	if (!iova_magazine_cache) {
-+		pr_err("Couldn't create iova magazine cache\n");
-+		ret = -ENOMEM;
-+	}
-+
-+out_unlock:
-+	mutex_unlock(&iova_magazine_cache_mutex);
-+
-+	return ret;
-+}
-+
-+static void iova_magazine_cache_fini(void)
-+{
-+	mutex_lock(&iova_magazine_cache_mutex);
-+
-+	if (WARN_ON(!iova_magazine_cache_users))
-+		goto out_unlock;
-+
-+	iova_magazine_cache_users--;
-+	if (!iova_magazine_cache_users)
-+		kmem_cache_destroy(iova_magazine_cache);
-+
-+out_unlock:
-+	mutex_unlock(&iova_magazine_cache_mutex);
-+}
-+
- static struct iova_magazine *iova_magazine_alloc(gfp_t flags)
- {
- 	struct iova_magazine *mag;
- 
--	mag = kmalloc(sizeof(*mag), flags);
-+	mag = kmem_cache_alloc(iova_magazine_cache, flags);
- 	if (mag)
- 		mag->size = 0;
- 
-@@ -667,7 +711,7 @@ static struct iova_magazine *iova_magazine_alloc(gfp_t flags)
- 
- static void iova_magazine_free(struct iova_magazine *mag)
- {
--	kfree(mag);
-+	kmem_cache_free(iova_magazine_cache, mag);
- }
- 
- static void
-@@ -766,11 +810,17 @@ int iova_domain_init_rcaches(struct iova_domain *iovad)
- 	unsigned int cpu;
- 	int i, ret;
- 
-+	ret = iova_magazine_cache_init();
-+	if (ret)
-+		return -ENOMEM;
-+
- 	iovad->rcaches = kcalloc(IOVA_RANGE_CACHE_MAX_SIZE,
- 				 sizeof(struct iova_rcache),
- 				 GFP_KERNEL);
--	if (!iovad->rcaches)
-+	if (!iovad->rcaches) {
-+		iova_magazine_cache_fini();
- 		return -ENOMEM;
-+	}
- 
- 	for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
- 		struct iova_cpu_rcache *cpu_rcache;
-@@ -948,6 +998,7 @@ static void free_iova_rcaches(struct iova_domain *iovad)
- 
- 	kfree(iovad->rcaches);
- 	iovad->rcaches = NULL;
-+	iova_magazine_cache_fini();
- }
- 
- /*
--- 
-2.43.0.594.gd9cf4e227d-goog
-
+I can handle the required changes for the QuartzPro64 dts file.  For
+other supported RK3588(s)-based boards, if there are no people having
+access to them and willing to perform the dts changes and the testing,
+I'd be willing to go through the board schematics, to enable the
+TSADC for them as well.
 
