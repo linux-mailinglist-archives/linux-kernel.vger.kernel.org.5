@@ -1,87 +1,269 @@
-Return-Path: <linux-kernel+bounces-48989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3FE184646C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:28:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDE2E84646E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:28:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 602EA281C18
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:28:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40B3DB24B85
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:28:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AD7847F57;
-	Thu,  1 Feb 2024 23:28:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0348F47F58;
+	Thu,  1 Feb 2024 23:28:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JmIuxBzX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o0jG1s2h"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ED4E47F41;
-	Thu,  1 Feb 2024 23:28:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08A0B47F45;
+	Thu,  1 Feb 2024 23:28:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706830086; cv=none; b=AN3EX97xTvbstw5B9L+jmHT+OsG60FEdXL9u9bpuh9Mu37N9eEVYgr2m9GSn6OzQRUyA9kj9+WRkRdb8QawqOaXNmACg/+yp8HFjc2hN0OZG4zmqQtt3arBBSvg5AYyDdZ0fvCaOMKUAyJy8NFfM2/kI19DkN8Nz6LKd6Nmg7cc=
+	t=1706830119; cv=none; b=pwe08G1KB2CjcL+EQE0Oo8nJsPzC2/UDlBUMsPQOTt7W5DxLTew2qJCnUes9u8UNOWJVoiUXa9JGz8tr7bqx0+aJ6SoT5U7qUJtTA1LdxkjhCSD1/5OA+P1MkJtCHNgL7z7g41AKXeW4BL9k+dMmDWmSl0kDzri4E+zaiI8YWsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706830086; c=relaxed/simple;
-	bh=payIiLg6forS04gjbDZWmNc0lv97aB/Ofx+IK/zqWkc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZDi/kPvOTmrxLY7Tq97netlFrawEgFy46oGLhcrhjqgBUD3TopLfgvF++3sgVYaQbgKIVF72Twdq8ZGE4D4OlpkVKmfn9eO8bwC9e4kelCvQPX4jNBgGFT/PJ6Fo1pcgXesrPjPY5s9EDg3H+0D288Vm3hLdMRtJPLLsoWumljU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JmIuxBzX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5612EC433C7;
-	Thu,  1 Feb 2024 23:28:04 +0000 (UTC)
+	s=arc-20240116; t=1706830119; c=relaxed/simple;
+	bh=vwVSBjMVGrB3T8i81OBsdcOGsrxP1w/yplr+RskeJjA=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=TdGbxRHjB1YNhH6xpFJ8fMSOwsqDu6H2HdFZE3aWBLTX0u1WkYLRMx+BIKkVVmqmb8orCCBRzBO7SccrVt3FhJQoud696cMk4fa/BWCC8MiL7PDgndmLeLCzQnKRVc1pNky5iEiW9HG/pewAZZ+q8jemwBr+TTtN/CbFOJtyfm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o0jG1s2h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61816C433C7;
+	Thu,  1 Feb 2024 23:28:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706830085;
-	bh=payIiLg6forS04gjbDZWmNc0lv97aB/Ofx+IK/zqWkc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JmIuxBzXFfJXUsgjJHiKUMHSqs2oGZ7MYZ4z0exkCOS0neM+zfxX+Iu/VPnTWc5B+
-	 puzE3QZ+G5iQn9+BmSUgonVnmgDr2qT7HQcUSAjzLgRRM26nOoNGMdSTV93B5ejHmI
-	 Zi3n7yX8iWX1x6cUkD1afB0Y+95Aechn4NePLcbGWHI7PPigXLHriRkkEgbmisGPhI
-	 HyOdQXlQy4xysoxWWmxwzyjmra70zEYyC9sSx62Izs7bGX4fDirCndntUI78Cbw8D6
-	 XOorupF4qVV6WoSnmpNSLBsXBtzM4g5PlMcMsXs9kCEjD7jy46Gj/x2zp784nUzZA9
-	 2DBL9vsjn3qDA==
-Date: Thu, 1 Feb 2024 17:28:02 -0600
-From: Bjorn Andersson <andersson@kernel.org>
-To: Lee Jones <lee@kernel.org>
-Cc: Anjelique Melendez <quic_amelende@quicinc.com>, pavel@ucw.cz, 
-	thierry.reding@gmail.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
-	conor+dt@kernel.org, agross@kernel.org, luca.weiss@fairphone.com, 
-	konrad.dybcio@linaro.org, u.kleine-koenig@pengutronix.de, quic_subbaram@quicinc.com, 
-	quic_gurus@quicinc.com, linux-leds@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: Re: [PATCH v8 3/7] soc: qcom: add QCOM PBS driver
-Message-ID: <kfs2nkkrwsa2enz67vfb5nenv2obzuomekqjdzaksldd75lows@3mcfd2r55fc3>
-References: <20231221185838.28440-1-quic_amelende@quicinc.com>
- <20231221185838.28440-4-quic_amelende@quicinc.com>
- <ut6jbawqqdgfyoxmt76hm67rbnv67x54eho3nae2dd2szbejfb@7joy57g4i3qt>
- <20240131085842.GF8551@google.com>
+	s=k20201202; t=1706830118;
+	bh=vwVSBjMVGrB3T8i81OBsdcOGsrxP1w/yplr+RskeJjA=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=o0jG1s2hTncjFmR/SiqVsD9S+SPA4PmQsRd92nL2QMyTRu5Moyo5Ico5M/Bui/Yf3
+	 TaWq3OTo5xlySloLUKHHMidNaEY2DI4rrh+dUDNQy/APZZaq+ZWWDbGz8v4u9Gvq6R
+	 Wnda99xeU1kW3qCS1PJnJMEIQldZ8/5DYHbUv/6G53l5zT7m1TLxTx7mi4gNn5hwCs
+	 rgd0U7lo75K9+yECcEWo9z6VmJOUTUCynsnmEFFHGckYUYzYGE1yJB3w3j/JF9L+Az
+	 EDMxnb+8SziMbmRFLIjoSoPGWx6R4ocd16GYXv2myFIVXo9fxd1kqd4fxFiGJVCD96
+	 kzKHnT5cdPUgw==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131085842.GF8551@google.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 02 Feb 2024 01:28:32 +0200
+Message-Id: <CYU4S0Y9SVZ2.2G9RM5Y3K28XI@suppilovahvero>
+Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+ <zhanb@microsoft.com>, <anakrish@microsoft.com>,
+ <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
+ <chrisyan@microsoft.com>
+Subject: Re: [PATCH v8 05/15] x86/sgx: Add sgx_epc_lru_list to encapsulate
+ LRU list
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>,
+ <dave.hansen@linux.intel.com>, <tj@kernel.org>, <mkoutny@suse.com>,
+ <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+ <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+ <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+ <sohil.mehta@intel.com>
+X-Mailer: aerc 0.15.2
+References: <20240130020938.10025-1-haitao.huang@linux.intel.com>
+ <20240130020938.10025-6-haitao.huang@linux.intel.com>
+In-Reply-To: <20240130020938.10025-6-haitao.huang@linux.intel.com>
 
-On Wed, Jan 31, 2024 at 08:58:42AM +0000, Lee Jones wrote:
-> Intentional generic top-post reply.
-> 
-> Please work quickly to resolve Bjorn's comments.
-> 
-> I'm being hounded over a broken LEDs tree due to the missing headerfile.
-> 
+On Tue Jan 30, 2024 at 4:09 AM EET, Haitao Huang wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>
+> Introduce a data structure to wrap the existing reclaimable list and its
+> spinlock. Each cgroup later will have one instance of this structure to
+> track EPC pages allocated for processes associated with the same cgroup.
+> Just like the global SGX reclaimer (ksgxd), an EPC cgroup reclaims pages
+> from the reclaimable list in this structure when its usage reaches near
+> its limit.
+>
+> Use this structure to encapsulate the LRU list and its lock used by the
+> global reclaimer.
+>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Co-developed-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
 
-I've merged the updated patches into the qcom tree.
+I'd put author as last sob but that said I'm not sure if there is rigid
+rule to do so. Thus not saying must here.
 
-I presume though that you'd like to have this build issue resolved in
-your tree as well. Please feel free to pull the branch:
+> Cc: Sean Christopherson <seanjc@google.com>
+> ---
+> V6:
+> - removed introduction to unreclaimables in commit message.
+>
+> V4:
+> - Removed unneeded comments for the spinlock and the non-reclaimables.
+> (Kai, Jarkko)
+> - Revised the commit to add introduction comments for unreclaimables and
+> multiple LRU lists.(Kai)
+> - Reordered the patches: delay all changes for unreclaimables to
+> later, and this one becomes the first change in the SGX subsystem.
+>
+> V3:
+> - Removed the helper functions and revised commit messages.
+> ---
+>  arch/x86/kernel/cpu/sgx/main.c | 39 +++++++++++++++++-----------------
+>  arch/x86/kernel/cpu/sgx/sgx.h  | 15 +++++++++++++
+>  2 files changed, 35 insertions(+), 19 deletions(-)
+>
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/mai=
+n.c
+> index c32f18b70c73..912959c7ecc9 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -28,10 +28,9 @@ static DEFINE_XARRAY(sgx_epc_address_space);
+> =20
+>  /*
+>   * These variables are part of the state of the reclaimer, and must be a=
+ccessed
+> - * with sgx_reclaimer_lock acquired.
+> + * with sgx_global_lru.lock acquired.
+>   */
+> -static LIST_HEAD(sgx_active_page_list);
+> -static DEFINE_SPINLOCK(sgx_reclaimer_lock);
+> +static struct sgx_epc_lru_list sgx_global_lru;
+> =20
+>  static atomic_long_t sgx_nr_free_pages =3D ATOMIC_LONG_INIT(0);
+> =20
+> @@ -306,13 +305,13 @@ static void sgx_reclaim_pages(void)
+>  	int ret;
+>  	int i;
+> =20
+> -	spin_lock(&sgx_reclaimer_lock);
+> +	spin_lock(&sgx_global_lru.lock);
+>  	for (i =3D 0; i < SGX_NR_TO_SCAN; i++) {
+> -		if (list_empty(&sgx_active_page_list))
+> +		epc_page =3D list_first_entry_or_null(&sgx_global_lru.reclaimable,
+> +						    struct sgx_epc_page, list);
+> +		if (!epc_page)
+>  			break;
+> =20
+> -		epc_page =3D list_first_entry(&sgx_active_page_list,
+> -					    struct sgx_epc_page, list);
+>  		list_del_init(&epc_page->list);
+>  		encl_page =3D epc_page->owner;
+> =20
+> @@ -324,7 +323,7 @@ static void sgx_reclaim_pages(void)
+>  			 */
+>  			epc_page->flags &=3D ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
+>  	}
+> -	spin_unlock(&sgx_reclaimer_lock);
+> +	spin_unlock(&sgx_global_lru.lock);
+> =20
+>  	for (i =3D 0; i < cnt; i++) {
+>  		epc_page =3D chunk[i];
+> @@ -347,9 +346,9 @@ static void sgx_reclaim_pages(void)
+>  		continue;
+> =20
+>  skip:
+> -		spin_lock(&sgx_reclaimer_lock);
+> -		list_add_tail(&epc_page->list, &sgx_active_page_list);
+> -		spin_unlock(&sgx_reclaimer_lock);
+> +		spin_lock(&sgx_global_lru.lock);
+> +		list_add_tail(&epc_page->list, &sgx_global_lru.reclaimable);
+> +		spin_unlock(&sgx_global_lru.lock);
+> =20
+>  		kref_put(&encl_page->encl->refcount, sgx_encl_release);
+> =20
+> @@ -380,7 +379,7 @@ static void sgx_reclaim_pages(void)
+>  static bool sgx_should_reclaim(unsigned long watermark)
+>  {
+>  	return atomic_long_read(&sgx_nr_free_pages) < watermark &&
+> -	       !list_empty(&sgx_active_page_list);
+> +	       !list_empty(&sgx_global_lru.reclaimable);
+>  }
+> =20
+>  /*
+> @@ -432,6 +431,8 @@ static bool __init sgx_page_reclaimer_init(void)
+> =20
+>  	ksgxd_tsk =3D tsk;
+> =20
+> +	sgx_lru_init(&sgx_global_lru);
+> +
+>  	return true;
+>  }
+> =20
+> @@ -507,10 +508,10 @@ struct sgx_epc_page *__sgx_alloc_epc_page(void)
+>   */
+>  void sgx_mark_page_reclaimable(struct sgx_epc_page *page)
+>  {
+> -	spin_lock(&sgx_reclaimer_lock);
+> +	spin_lock(&sgx_global_lru.lock);
+>  	page->flags |=3D SGX_EPC_PAGE_RECLAIMER_TRACKED;
+> -	list_add_tail(&page->list, &sgx_active_page_list);
+> -	spin_unlock(&sgx_reclaimer_lock);
+> +	list_add_tail(&page->list, &sgx_global_lru.reclaimable);
+> +	spin_unlock(&sgx_global_lru.lock);
+>  }
+> =20
+>  /**
+> @@ -525,18 +526,18 @@ void sgx_mark_page_reclaimable(struct sgx_epc_page =
+*page)
+>   */
+>  int sgx_unmark_page_reclaimable(struct sgx_epc_page *page)
+>  {
+> -	spin_lock(&sgx_reclaimer_lock);
+> +	spin_lock(&sgx_global_lru.lock);
+>  	if (page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED) {
+>  		/* The page is being reclaimed. */
+>  		if (list_empty(&page->list)) {
+> -			spin_unlock(&sgx_reclaimer_lock);
+> +			spin_unlock(&sgx_global_lru.lock);
+>  			return -EBUSY;
+>  		}
+> =20
+>  		list_del(&page->list);
+>  		page->flags &=3D ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
+>  	}
+> -	spin_unlock(&sgx_reclaimer_lock);
+> +	spin_unlock(&sgx_global_lru.lock);
+> =20
+>  	return 0;
+>  }
+> @@ -578,7 +579,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, =
+bool reclaim)
+>  			break;
+>  		}
+> =20
+> -		if (list_empty(&sgx_active_page_list)) {
+> +		if (list_empty(&sgx_global_lru.reclaimable)) {
+>  			page =3D ERR_PTR(-ENOMEM);
+>  			break;
+>  		}
+> diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.=
+h
+> index a898d86dead0..0e99e9ae3a67 100644
+> --- a/arch/x86/kernel/cpu/sgx/sgx.h
+> +++ b/arch/x86/kernel/cpu/sgx/sgx.h
+> @@ -88,6 +88,21 @@ static inline void *sgx_get_epc_virt_addr(struct sgx_e=
+pc_page *page)
+>  	return section->virt_addr + index * PAGE_SIZE;
+>  }
+> =20
+> +/*
+> + * Contains EPC pages tracked by the global reclaimer (ksgxd) or an EPC
+> + * cgroup.
+> + */
+> +struct sgx_epc_lru_list {
+> +	spinlock_t lock;
+> +	struct list_head reclaimable;
+> +};
+> +
+> +static inline void sgx_lru_init(struct sgx_epc_lru_list *lru)
+> +{
+> +	spin_lock_init(&lru->lock);
+> +	INIT_LIST_HEAD(&lru->reclaimable);
+> +}
+> +
+>  struct sgx_epc_page *__sgx_alloc_epc_page(void);
+>  void sgx_free_epc_page(struct sgx_epc_page *page);
+> =20
 
-20240201204421.16992-2-quic_amelende@quicinc.com (5b2dd77be1d85ac3a8be3749f5605bf0830e2998)
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-from https://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux.git
-
-Regards,
-Bjorn
+BR, Jarkko
 
