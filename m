@@ -1,127 +1,126 @@
-Return-Path: <linux-kernel+bounces-47590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 574AA844FE3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:45:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0B5E844FE4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:46:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D19E7B220F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:45:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5C981F232CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:46:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA4E3A8FE;
-	Thu,  1 Feb 2024 03:45:33 +0000 (UTC)
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D72E13AC08;
+	Thu,  1 Feb 2024 03:46:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UMZWz6nC"
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B89B615E9C
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 03:45:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B0503B182
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 03:46:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706759133; cv=none; b=NBuGzef9Zc5aNVRlMIGYToMyihU7dw3GtaP+MQrd5RW05Dr4H6iqmKtZPbGzZuLZN1aD9/Rp5IwQIQbVRF/7GAka+TPQVE+kVU/TE3RDvZmZJYhxjm/22TOxJk9Y0klPJ0YHT5F2CPtH8ECe7MN59Byl8ZGCMQDWiyG6XWrba3o=
+	t=1706759179; cv=none; b=ixvw3A5gdVNoPBfXdcA4K1VontvQTcObVfiHXYHm8jpl9OHpHhFvZuO04hTlUwOjbT2lJKQHwWmujz2cuvZXe1x/KIbIGx7FHaY7rlgkkDS59Lqy33fAcFq1MGdBBTuoixVlG3nNOFiSvtcKMVbzUcBu7JPMgA2XYg3aswhSlWQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706759133; c=relaxed/simple;
-	bh=x3WIoSNADotrc9sqjymJkZO1f23pArUE6DC4hQ5aYRc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E/beBuOuDfvF0yvA+OyJ8eJ4e2ec9yUzhYudvZDEznMBk4tlOdfqmTwiMmIH/2N60dXEnc0Sx7SIL6Gsq1w0aGaRuVO2opOrxSYC4qiQdzSptqw02GPQYeH1133oxu9PRaYewmEOcoxLqkctCDfjA96AiGgwfT4oVJB7ibwp4q8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d7393de183so3691325ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 19:45:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706759131; x=1707363931;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1706759179; c=relaxed/simple;
+	bh=jLZl2svZauxC4ea4Z0jDZi5dNNmdxwWEhOWyRJ7STJk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cD2BYCdRPDLj9yO5tLtcUE0X3PSLLJYECf0ptvuGySIROrbVdnR7wlg6kKmi3HK1DeIi3IYIVMF69GaMISe/hz1PXlbEX85FuLONOTIvC0AOhw1HxAsCFKeVRVAiH0UrvJvfY796sFFCa//zjegZILLFgRHfsnW3rpFFDCBLR8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UMZWz6nC; arc=none smtp.client-ip=209.85.219.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6861538916cso2756866d6.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 19:46:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706759175; x=1707363975; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AQXOa7LLPA5mB3r9PE/ky7/S4vcRmc/Br7XQyR94fo0=;
-        b=eGUo8zZ4TL0bt+MvtfSm059Fv4K+2LMLfe/0VxDP2/NtO1hLJsBlLHOJCLt6ixMkiJ
-         b9xC4gURiTKdu8HcQ7TFcxtV9jE0BNSGEkv2AxmO6qw1+h3Sl0vCT9C+bXWQNTFJInaY
-         CMCRHLzIpyAjNOE/amhSYragCvMP+aiC8YicX4Z9DwqZF8WD+DQRJFGKa69k6FqbQ8cs
-         fKMCiAscYDv35gbe+arz+FLO7wq7J477FcoCeFXvVW7iy1vWV04MDuewKY7bBc4jE6PP
-         kaB4eCGbSL2tR2sNqFLRrxzMuQy8PyPKIaX+9GnbmV8OK3xV4zi4Av9m7zs7IU2ZznZV
-         Z1hg==
-X-Gm-Message-State: AOJu0YyjK+pGdWWjAN1cl59bJQ1PA8dvBYkp2OXkCtMmWyRJHj2V413d
-	/nqjI/3mwBEB5VgraC5ew/J/AElX0N2AVEfBlt3gtZ/FGjVFnMGF
-X-Google-Smtp-Source: AGHT+IFU+kNk+ULCHcmfo/aZK9crCvQ3jzOGrofjo4buD7yKUlwRS0hvchEIf3yt781RKndm3iMeCg==
-X-Received: by 2002:a17:902:c20b:b0:1d7:2311:8070 with SMTP id 11-20020a170902c20b00b001d723118070mr1020131pll.37.1706759130859;
-        Wed, 31 Jan 2024 19:45:30 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWbTE23w+aY6SO58GQM8848CPSCeHcgtEIaYruFrAbBi6wGjLUR7fJ/+T1OngtW0R001QZ8GH14t+w8vukY/AXyPnljE6Ynym95EVRs+E8O02Ha89r+DVa4Q85QNYJMPW3sZiFtTX+4PlXHrWbEALoFyqIoOC9I8860+Z/E36HrtX4QyzgKea8HHBainUiwfY2C4j7u0yT9mE26IcMTOloypyKCw1zY7DaVA3qHHQh0UdKdx60=
-Received: from snowbird ([136.25.84.107])
-        by smtp.gmail.com with ESMTPSA id m3-20020a170902f20300b001d8f3c7fb96sm564524plc.166.2024.01.31.19.45.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 19:45:30 -0800 (PST)
-Date: Wed, 31 Jan 2024 19:45:27 -0800
-From: Dennis Zhou <dennis@kernel.org>
-To: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: alexghiti@rivosinc.com, Paul Walmsley <paul.walmsley@sifive.com>,
-	aou@eecs.berkeley.edu, geert@linux-m68k.org,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: Fix wrong size passed to
- local_flush_tlb_range_asid()
-Message-ID: <ZbsT16CvwSDXtlAL@snowbird>
-References: <ZbdpTPMOw4lsPxBi@snowbird>
- <mhng-d603d0d3-2f72-4dfc-b635-c270ae79fd85@palmer-ri-x1c9a>
+        bh=mFF8rhKxfnZfXzZDWT495muOJWGnqIPs5LoDZ1rl5gE=;
+        b=UMZWz6nCc5ZxcDG7yvHZnGQIfOxDmTnCMSEQWod0Pq7Ts8cp9a861RkVYMoMLZuyA8
+         lgd8XtoRUbVTs03N22RZMnQax65KkaL3ysW9JK3dlYAvYs9O+/JIlVNN0cD4+7oE3u2F
+         ZD21wEEgF58Q01b0HluOA0rHTGTpJjpiniDpmRwYUSFPwjmco2vO+TGVTx0wwa2P+ZMJ
+         OVN7aaztnEdBJIr6lYrTIMyHlVPREESkbpPZuPFECmbOJ/8zBiv/Ks+63ShdjBlGr0g8
+         IvjcFRIFPsB569GziR5Ga8Bf9XXWWHkBos9RgxEWG674U0de9QqhaN9GbwvmEbpvttKs
+         XOng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706759175; x=1707363975;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mFF8rhKxfnZfXzZDWT495muOJWGnqIPs5LoDZ1rl5gE=;
+        b=IlSwgv2ZUyzSj/bFSevFEfm+iN8vJPEIelCqfeHU3X1bjZmSxKQ6O3lUBa5tuAGxMt
+         9HYvvUvPOdt3e1QuQ27j1elq1WNS3zG8NfVeWSYF3+neuP4m1WRPqUp8hv60mY/LXwiC
+         DwwYC7Zn1/jkZPJsJCme9zVzl9YN4Hp2UrQhlvhdROcdqEEJKoSGSQT9PDrNrALhNMPr
+         7rJOdMQFUn4A5ZdxAtWey6k0RJleev0xkVy+tWKAEysSOfcoy2TXGKPvZY8xMip+Fb1R
+         y+2jSCue+gZCerphvf4q78ZgW9G697+PIbXl0oWFmlNrOuwVyhqMuDSMUGy5ZaAiSaJY
+         iD5w==
+X-Gm-Message-State: AOJu0YzmWl5chMFGk+1/p9DeklSqIqrAv4lY9jPYRNILCimlzifi6WDV
+	Eo2JNiRfYjzlo5aPFaCfLyKyLy3tHXKPmwMLKAnUMETf5CR8VTjKifjQRnBSTj0PJgbjK+kSNwL
+	NMslGtmWy7iLExAqSCzZ7zzz06hmOL4ZDRkSO
+X-Google-Smtp-Source: AGHT+IGl3N0KrMo4pI0gs+wWPmLLPDTG5QuX4lcGW2kiKQyFlHOmi4pC0Z0bfHJbRXQX44gvJC50zjr6/z8SDinOs0E=
+X-Received: by 2002:a05:6214:21eb:b0:686:aaad:e36d with SMTP id
+ p11-20020a05621421eb00b00686aaade36dmr3110186qvj.2.1706759174991; Wed, 31 Jan
+ 2024 19:46:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <mhng-d603d0d3-2f72-4dfc-b635-c270ae79fd85@palmer-ri-x1c9a>
+References: <20240112055251.36101-1-vannapurve@google.com> <20240112055251.36101-6-vannapurve@google.com>
+ <6709a57c-48a0-4ddd-b64e-a1e34ae2b763@intel.com>
+In-Reply-To: <6709a57c-48a0-4ddd-b64e-a1e34ae2b763@intel.com>
+From: Vishal Annapurve <vannapurve@google.com>
+Date: Thu, 1 Feb 2024 09:16:03 +0530
+Message-ID: <CAGtprH_ANUVU+Dh1KOq0vpT7BGbCEvD2ab9B=sxjzHYsKxFGeA@mail.gmail.com>
+Subject: Re: [RFC V1 5/5] x86: CVMs: Ensure that memory conversions happen at
+ 2M alignment
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org, pbonzini@redhat.com, 
+	rientjes@google.com, seanjc@google.com, erdemaktas@google.com, 
+	ackerleytng@google.com, jxgao@google.com, sagis@google.com, oupton@google.com, 
+	peterx@redhat.com, vkuznets@redhat.com, dmatlack@google.com, 
+	pgonda@google.com, michael.roth@amd.com, kirill@shutemov.name, 
+	thomas.lendacky@amd.com, dave.hansen@linux.intel.com, 
+	linux-coco@lists.linux.dev, chao.p.peng@linux.intel.com, 
+	isaku.yamahata@gmail.com, andrew.jones@linux.dev, corbet@lwn.net, hch@lst.de, 
+	m.szyprowski@samsung.com, rostedt@goodmis.org, iommu@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Palmer,
+On Wed, Jan 31, 2024 at 10:03=E2=80=AFPM Dave Hansen <dave.hansen@intel.com=
+> wrote:
+>
+> On 1/11/24 21:52, Vishal Annapurve wrote:
+> > @@ -2133,8 +2133,10 @@ static int __set_memory_enc_pgtable(unsigned lon=
+g addr, int numpages, bool enc)
+> >       int ret;
+> >
+> >       /* Should not be working on unaligned addresses */
+> > -     if (WARN_ONCE(addr & ~PAGE_MASK, "misaligned address: %#lx\n", ad=
+dr))
+> > -             addr &=3D PAGE_MASK;
+> > +     if (WARN_ONCE(addr & ~HPAGE_MASK, "misaligned address: %#lx\n", a=
+ddr)
+> > +             || WARN_ONCE((numpages << PAGE_SHIFT) & ~HPAGE_MASK,
+> > +                     "misaligned numpages: %#lx\n", numpages))
+> > +             return -EINVAL;
+>
+> This series is talking about swiotlb and DMA, then this applies a
+> restriction to what I *thought* was a much more generic function:
+> __set_memory_enc_pgtable().  What prevents this function from getting
+> used on 4k mappings?
+>
+>
 
-On Wed, Jan 31, 2024 at 12:34:40PM -0800, Palmer Dabbelt wrote:
-> On Mon, 29 Jan 2024 01:01:00 PST (-0800), dennis@kernel.org wrote:
-> > Hi Alexandre,
-> > 
-> > On Tue, Jan 23, 2024 at 02:27:30PM +0100, Alexandre Ghiti wrote:
-> > > local_flush_tlb_range_asid() takes the size as argument, not the end of
-> > > the range to flush, so fix this by computing the size from the end and
-> > > the start of the range.
-> > > 
-> > > Fixes: 7a92fc8b4d20 ("mm: Introduce flush_cache_vmap_early()")
-> > > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> > > ---
-> > >  arch/riscv/mm/tlbflush.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> > > index 8d12b26f5ac3..9619965f6501 100644
-> > > --- a/arch/riscv/mm/tlbflush.c
-> > > +++ b/arch/riscv/mm/tlbflush.c
-> > > @@ -68,7 +68,7 @@ static inline void local_flush_tlb_range_asid(unsigned long start,
-> > > 
-> > >  void local_flush_tlb_kernel_range(unsigned long start, unsigned long end)
-> > >  {
-> > > -	local_flush_tlb_range_asid(start, end, PAGE_SIZE, FLUSH_TLB_NO_ASID);
-> > > +	local_flush_tlb_range_asid(start, end - start, PAGE_SIZE, FLUSH_TLB_NO_ASID);
-> > >  }
-> > > 
-> > >  static void __ipi_flush_tlb_all(void *info)
-> > > --
-> > > 2.39.2
-> > > 
-> > 
-> > Sorry for the delay, I just pulled this into percpu#for-6.8-fixes. I'll
-> > send it to Linus this week.
-> 
-> Do you mind if we do a shared tag or something?  It's going to conflict with
-> https://lore.kernel.org/all/20240117140333.2479667-1-vincent.chen@sifive.com/
-> .  No big deal as it's a pretty trivial conflict, but they'll both need
-> stable backports.
+The end goal here is to limit the conversion granularity to hugepage
+sizes. SWIOTLB allocations are the major source of unaligned
+allocations(and so the conversions) that need to be fixed before
+achieving this goal.
 
-This alone won't need a stable backport, I merged the bug as part of
-enabling the percpu page allocator in the recent 6.8 merge window.
-
-That being said, this is the only patch I'm carrying for v6.8. I'm happy
-to drop it and have you pick it up instead. Saves me a tag and a PR.
-Lmk if that works for you.
-
-Thanks,
-Dennis
+This change will ensure that conversion fails for unaligned ranges, as
+I don't foresee the need for 4K aligned conversions apart from DMA
+allocations.
 
