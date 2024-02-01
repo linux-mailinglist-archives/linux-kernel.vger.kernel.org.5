@@ -1,258 +1,238 @@
-Return-Path: <linux-kernel+bounces-48083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6259845704
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:10:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69A8B84570A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:11:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BDD01F275C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:10:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 208A2290E1C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:11:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EE0615D5D6;
-	Thu,  1 Feb 2024 12:10:33 +0000 (UTC)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 191B915DBA1;
+	Thu,  1 Feb 2024 12:11:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eFXudBYv"
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4430115CD72
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 12:10:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E13A15CD72;
+	Thu,  1 Feb 2024 12:11:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706789432; cv=none; b=XnshFOgUnaaLVrBqvMVOLPZ1Vw343Obe41YHXsTPwJaeal95sI3kQfnHQ/N5+fxlrc73VYVrDMVrBO6785PT4rS/rdbG3dGSxH6Zy5QXQ/2tAq0DHlSoqKUYzX7E+eDwmeJXaNJAuOel8N6LQlmCeb46gZ7s0lfgjqTtW2mEszg=
+	t=1706789473; cv=none; b=arld/fkXYjiOXN76/nAarJuTYJEeeUj7ZI/vaxYOBiwow8jlzw+AIvPA8cvxp9eKJ11cI7J4pv4t2ipi3+ioDa0NeFbONytF6Jdgov50Tco/3li7y+8ka3dykNJeWV/mWJZu5Kynp+vEnBaVoM52k905CQAYLc5muEwcDE5IrJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706789432; c=relaxed/simple;
-	bh=3zXdHysR0JAwX3tF3mnRMrYAEtkIGUPf6lPXcE2IErI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=h0R8qRG/iFGbT6Ex8BJwSfZ7THeVymXKVMxymtcy+bANJuyqyZgQ3+GMh75CFr4Cwe/0Qu8aecZOEyAtvhO4h1gK0+D3W1Pe7b1gz1EboTVvDHKPdIbpg0dYB55nbNwsjwf65JgBWTinGy7rLHSRkNe0JNfhbRifwFP1f1p/uI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TQd3Q2PP9z1Q8TN;
-	Thu,  1 Feb 2024 20:08:34 +0800 (CST)
-Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0AB3E14040D;
-	Thu,  1 Feb 2024 20:10:26 +0800 (CST)
-Received: from [10.174.179.160] (10.174.179.160) by
- kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 1 Feb 2024 20:10:24 +0800
-Message-ID: <4da573ec-a2f9-84f4-f729-540492192957@huawei.com>
-Date: Thu, 1 Feb 2024 20:10:24 +0800
+	s=arc-20240116; t=1706789473; c=relaxed/simple;
+	bh=BKkgs5o3flr8DLm3fRhM8fmYE/Cis38Wwzz6W7RuFKw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kQc1Cl8peuMxRtkKyFUhdH1v0izQUoFTvvb22onni9iF+X3We1+srX33Ibb8pxoA5cYbYbWtOTV4uZde84E04jR9b+CEU8JBTJ7dzMfzZZL0op1oz6r/Dtszt4JD9sMK1hzG4CoeSj+uVHCqqsXzt9PYUkXf9Dc8DsXwGXq1sU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eFXudBYv; arc=none smtp.client-ip=209.85.222.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-783def87c8cso55057885a.0;
+        Thu, 01 Feb 2024 04:11:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706789470; x=1707394270; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ot6Gz4jMBpIlofVX53+ZXvqyeKrVY8kBh2nwQY9He9E=;
+        b=eFXudBYvX2tcpFNSUP2cazwHp3jOYG+ZdrYS4wh6m4wsR9ORg/zK6R8NgJZgfvZi1T
+         nyfqbPCzN9fkLyU8bMzkVy31OkediJZszk7kXAuT406rhbbh1zpGPe98+5ae5ahD8vVL
+         qfGMWolbvoe3gjpGTwVbuX3ZcizxmHruR0WfML2yQmdYjB+LMYraAFHkSfBHEjbwLnPV
+         7Wg86Bgd96eMPozWFgCm/ZIRHptY52G5akn/QfxXQjI7++M7MsK6eyXZaDsM+SgXEfhS
+         5m8CmMc7i08QrSftbwfz0rnJmZzODWPrw/S9AiAQL3hQoBXmjGAKs168Du0mudibfb/Z
+         rjBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706789470; x=1707394270;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ot6Gz4jMBpIlofVX53+ZXvqyeKrVY8kBh2nwQY9He9E=;
+        b=sdGWcerYoFYS8Cqm3NwrAYdEL1C0O96QDLUFKVuuCONIQtNcYcABvs79vZkyG/fjgw
+         7/RNiGpPPCMsTbod8KZXB64lghwg4q2nqv1upZqJdtgBbzyu5wLJ1rzSC4EhXVDks2BF
+         5Td8hqKnhIb0WOUcLzVRewVu7DIvqe6+ckQLPn9h6AkOvCrEtb5OlFL3NFAeCnsEkqgw
+         Jq0BbtszAcqcq1Cnd9tlQmrKBzoXJj3bDVSr4Wlxfi/QVxBD5eVjXjqdcjx9L7nDhxIG
+         4XwXjsLcImtWB8doG501l9ehlBEgFxVbRiW4qFg+gZRNKryBiHqFdCnQvgpT5Ols5jmq
+         ZdhQ==
+X-Gm-Message-State: AOJu0YzReK1Okx2/fFKR/eysnm32REusatw7doCDXJrEEh4S8Ws13aOs
+	UPOoSvUKpXiac8giCMMmn+h8RTeRVQ+5+srroe4QdB4eQ35WsELrZiZ3nIj76eJvUjYa0AhcA+p
+	0D5hn1NtFGdoAIrSs0XVQ567nOq0=
+X-Google-Smtp-Source: AGHT+IHz6LtCx2w85BoWFdo+DeI9pIZ3+8vPu7taC1c5PJhh8sKbBeBLxRBVp/IF+mUCKoIMsRCelHFrrApZQHhaDAc=
+X-Received: by 2002:a05:6214:d6a:b0:686:abad:6f13 with SMTP id
+ 10-20020a0562140d6a00b00686abad6f13mr4705853qvs.7.1706789470211; Thu, 01 Feb
+ 2024 04:11:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [RFC PATCH] mm: filemap: avoid unnecessary major faults in
- filemap_fault()
-Content-Language: en-US
-To: "Huang, Ying" <ying.huang@intel.com>
-CC: Yin Fengwei <fengwei.yin@intel.com>, <linux-mm@kvack.org>,
-	<linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
-	<willy@infradead.org>, <aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>,
-	<hughd@google.com>, <david@redhat.com>, <wangkefeng.wang@huawei.com>,
-	<sunnanyong@huawei.com>
-References: <20231122140052.4092083-1-zhangpeng362@huawei.com>
- <f4dba5b5-2e6e-4c5a-a269-4abe8fe2bcd8@intel.com>
- <b0d869e4-108b-8ffe-e9f7-65c4d98f2bf8@huawei.com>
- <801bd0c9-7d0c-4231-93e5-7532e8231756@intel.com>
- <48235d73-3dc6-263d-7822-6d479b753d46@huawei.com>
- <87y1en7pq3.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <87ttpb7p4z.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <a4b53c04-681c-4cc0-07f1-db3fc702f8d1@huawei.com>
- <87lean7f2c.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ab5cf58f-f7bd-73a8-5b71-4ffe90d811c1@huawei.com>
- <87plzt464d.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
-In-Reply-To: <87plzt464d.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600020.china.huawei.com (7.193.23.147)
+References: <20240130214620.3155380-1-stefanb@linux.ibm.com>
+ <20240130214620.3155380-5-stefanb@linux.ibm.com> <38230b4c-54ae-45ed-a6fb-34e63501e5b1@linux.ibm.com>
+ <CAOQ4uxiYARZBSgzb4_W-RKvB1XLSF3GUBqeLw2kH+eVeZ_8ARQ@mail.gmail.com>
+ <c018b014-9ba8-4395-86dc-b61346ab20a8@linux.ibm.com> <CAOQ4uxi6Te8izWpXROthknRaXrVA9jho5nbc+mkuQDrcTLY44Q@mail.gmail.com>
+ <CAOQ4uxigdNeE+2nfr4VxS9piQf5hez=ryT0a-jzW+tW0BT-zuw@mail.gmail.com> <492ea12a-d79d-47da-9bbe-a7f33051bd3f@linux.ibm.com>
+In-Reply-To: <492ea12a-d79d-47da-9bbe-a7f33051bd3f@linux.ibm.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 1 Feb 2024 14:10:58 +0200
+Message-ID: <CAOQ4uxgiO1RbsmqOu4F4Foy-MBPecnEXO7BvgDGz-Lzb1Eysog@mail.gmail.com>
+Subject: Re: [PATCH 4/5] evm: Use the real inode's metadata to calculate
+ metadata hash
+To: Stefan Berger <stefanb@linux.ibm.com>
+Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
+	roberto.sassu@huawei.com, miklos@szeredi.hu
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2023/11/29 10:59, Huang, Ying wrote:
-
-> "zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
+On Wed, Jan 31, 2024 at 7:46=E2=80=AFPM Stefan Berger <stefanb@linux.ibm.co=
+m> wrote:
 >
->> On 2023/11/24 16:04, Huang, Ying wrote:
->>
->>> "zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
->>>
->>>> On 2023/11/24 12:26, Huang, Ying wrote:
->>>>
->>>>> "Huang, Ying" <ying.huang@intel.com> writes:
->>>>>
->>>>>> "zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
->>>>>>
->>>>>>> On 2023/11/23 13:26, Yin Fengwei wrote:
->>>>>>>
->>>>>>>> On 11/23/23 12:12, zhangpeng (AS) wrote:
->>>>>>>>> On 2023/11/23 9:09, Yin Fengwei wrote:
->>>>>>>>>
->>>>>>>>>> Hi Peng,
->>>>>>>>>>
->>>>>>>>>> On 11/22/23 22:00, Peng Zhang wrote:
->>>>>>>>>>> From: ZhangPeng <zhangpeng362@huawei.com>
->>>>>>>>>>>
->>>>>>>>>>> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
->>>>>>>>>>> in application, which leading to an unexpected performance issue[1].
->>>>>>>>>>>
->>>>>>>>>>> This caused by temporarily cleared pte during a read/modify/write update
->>>>>>>>>>> of the pte, eg, do_numa_page()/change_pte_range().
->>>>>>>>>>>
->>>>>>>>>>> For the data segment of the user-mode program, the global variable area
->>>>>>>>>>> is a private mapping. After the pagecache is loaded, the private anonymous
->>>>>>>>>>> page is generated after the COW is triggered. Mlockall can lock COW pages
->>>>>>>>>>> (anonymous pages), but the original file pages cannot be locked and may
->>>>>>>>>>> be reclaimed. If the global variable (private anon page) is accessed when
->>>>>>>>>>> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
->>>>>>>>>>>
->>>>>>>>>>> At this time, the original private file page may have been reclaimed.
->>>>>>>>>>> If the page cache is not available at this time, a major fault will be
->>>>>>>>>>> triggered and the file will be read, causing additional overhead.
->>>>>>>>>>>
->>>>>>>>>>> Fix this by rechecking the pte by holding ptl in filemap_fault() before
->>>>>>>>>>> triggering a major fault.
->>>>>>>>>>>
->>>>>>>>>>> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
->>>>>>>>>>>
->>>>>>>>>>> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
->>>>>>>>>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->>>>>>>>>>> ---
->>>>>>>>>>>       mm/filemap.c | 14 ++++++++++++++
->>>>>>>>>>>       1 file changed, 14 insertions(+)
->>>>>>>>>>>
->>>>>>>>>>> diff --git a/mm/filemap.c b/mm/filemap.c
->>>>>>>>>>> index 71f00539ac00..bb5e6a2790dc 100644
->>>>>>>>>>> --- a/mm/filemap.c
->>>>>>>>>>> +++ b/mm/filemap.c
->>>>>>>>>>> @@ -3226,6 +3226,20 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
->>>>>>>>>>>                   mapping_locked = true;
->>>>>>>>>>>               }
->>>>>>>>>>>           } else {
->>>>>>>>>>> +        pte_t *ptep = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd,
->>>>>>>>>>> +                          vmf->address, &vmf->ptl);
->>>>>>>>>>> +        if (ptep) {
->>>>>>>>>>> +            /*
->>>>>>>>>>> +             * Recheck pte with ptl locked as the pte can be cleared
->>>>>>>>>>> +             * temporarily during a read/modify/write update.
->>>>>>>>>>> +             */
->>>>>>>>>>> +            if (unlikely(!pte_none(ptep_get(ptep))))
->>>>>>>>>>> +                ret = VM_FAULT_NOPAGE;
->>>>>>>>>>> +            pte_unmap_unlock(ptep, vmf->ptl);
->>>>>>>>>>> +            if (unlikely(ret))
->>>>>>>>>>> +                return ret;
->>>>>>>>>>> +        }
->>>>>>>>>> I am curious. Did you try not to take PTL here and just check whether PTE is not NONE?
->>>>>>>>> Thank you for your reply.
->>>>>>>>>
->>>>>>>>> If we don't take PTL, the current use case won't trigger this issue either.
->>>>>>>> Is this verified by testing or just in theory?
->>>>>>> If we add a delay between ptep_modify_prot_start() and ptep_modify_prot_commit(),
->>>>>>> this issue will also trigger. Without delay, we haven't reproduced this problem
->>>>>>> so far.
->>>>>>>
->>>>>>>>> In most cases, if we don't take PTL, this issue won't be triggered. However,
->>>>>>>>> there is still a possibility of triggering this issue. The corner case is that
->>>>>>>>> task 2 triggers a page fault when task 1 is between ptep_modify_prot_start()
->>>>>>>>> and ptep_modify_prot_commit() in do_numa_page(). Furthermore,task 2 passes the
->>>>>>>>> check whether the PTE is not NONE before task 1 updates PTE in
->>>>>>>>> ptep_modify_prot_commit() without taking PTL.
->>>>>>>> There is very limited operations between ptep_modify_prot_start() and
->>>>>>>> ptep_modify_prot_commit(). While the code path from page fault to this check is
->>>>>>>> long. My understanding is it's very likely the PTE is not NONE when do PTE check
->>>>>>>> here without hold PTL (This is my theory. :)).
->>>>>>> Yes, there is a high probability that this issue won't occur without taking PTL.
->>>>>>>
->>>>>>>> In the other side, acquiring/releasing PTL may bring performance impaction. It may
->>>>>>>> not be big deal because the IO operations in this code path. But it's better to
->>>>>>>> collect some performance data IMHO.
->>>>>>> We tested the performance of file private mapping page fault (page_fault2.c of
->>>>>>> will-it-scale [1]) and file shared mapping page fault (page_fault3.c of will-it-scale).
->>>>>>> The difference in performance (in operations per second) before and after patch
->>>>>>> applied is about 0.7% on a x86 physical machine.
->>>>>> Whether is it improvement or reduction?
->>>>> And I think that you need to test ramdisk cases too to verify whether
->>>>> this will cause performance regression and how much.
->>>> Yes, I will.
->>>> In addition, are there any ramdisk test cases recommended? 😁
->>> I think that you can start with the will-it-scale test case you used
->>> before.  And you can try some workload with large number of major fault,
->>> like file read with mmap.
->> I used will-it-scale to test the page faults of ext4 files and
->> tmpfs files. The data is the average change compared with the
->> mainline after the patch is applied. The test results are within
->> the range of fluctuation, and there is no obvious difference.
->> The test results are as follows:
->>
->>                            processes processes_idle threads threads_idle
->> ext4  private file write: -0.51%    0.08%          -0.03%  -0.04%
->> ext4  shared  file write:  0.135%  -0.531%          2.883% -0.772%
->> tmpfs private file write: -0.344%  -0.110%          0.200%  0.145%
->> tmpfs shared  file write:  0.958%   0.101%          2.781% -0.337%
->> tmpfs private file read:  -0.16%    0.00%          -0.12%   0.41%
-> Thank you very much for test results!
 >
-> We shouldn't use tmpfs, because there will be no major faults.  Please
-> check your major faults number to verify that.  IIUC, ram disk + disk
-> file system should be used.
 >
-> And, please make sure that there's no heavy lock contention in the base
-> kernel.  Because if some heavy lock contention kills performance, there
-> will no performance difference between based and patched kernel.
+> On 1/31/24 12:23, Amir Goldstein wrote:
+> > On Wed, Jan 31, 2024 at 5:54=E2=80=AFPM Amir Goldstein <amir73il@gmail.=
+com> wrote:
+> >>
+> >> On Wed, Jan 31, 2024 at 4:40=E2=80=AFPM Stefan Berger <stefanb@linux.i=
+bm.com> wrote:
+> >>>
+> >>>
+> >>>
+> >>> On 1/31/24 08:16, Amir Goldstein wrote:
+> >>>> On Wed, Jan 31, 2024 at 4:11=E2=80=AFAM Stefan Berger <stefanb@linux=
+ibm.com> wrote:
+> >>>>>
+> >>>>>
+> >>>>>
+> >>>>> On 1/30/24 16:46, Stefan Berger wrote:
+> >>>>>> Changes to the file attribute (mode bits, uid, gid) on the lower l=
+ayer
+> >>>>>> are not take into account when d_backing_inode() is used when a fi=
+le is
+> >>>>>> accessed on the overlay layer and this file has not yet been copie=
+d up.
+> >>>>>> This is because d_backing_inode() does not return the real inode o=
+f the
+> >>>>>> lower layer but instead returns the backing inode which holds old =
+file
+> >>>>>> attributes. When the old file attributes are used for calculating =
+the
+> >>>>>> metadata hash then the expected hash is calculated and the file th=
+en
+> >>>>>> mistakenly passes signature verification. Therefore, use d_real_in=
+ode()
+> >>>>>> which returns the inode of the lower layer for as long as the file=
+ has
+> >>>>>> not been copied up and returns the upper layer's inode otherwise.
+> >>>>>>
+> >>>>>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> >>>>>> ---
+> >>>>>>     security/integrity/evm/evm_crypto.c | 2 +-
+> >>>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>>>>
+> >>>>>> diff --git a/security/integrity/evm/evm_crypto.c b/security/integr=
+ity/evm/evm_crypto.c
+> >>>>>> index b1ffd4cc0b44..2e48fe54e899 100644
+> >>>>>> --- a/security/integrity/evm/evm_crypto.c
+> >>>>>> +++ b/security/integrity/evm/evm_crypto.c
+> >>>>>> @@ -223,7 +223,7 @@ static int evm_calc_hmac_or_hash(struct dentry=
+ *dentry,
+> >>>>>>                                  size_t req_xattr_value_len,
+> >>>>>>                                  uint8_t type, struct evm_digest *=
+data)
+> >>>>>>     {
+> >>>>>> -     struct inode *inode =3D d_backing_inode(dentry);
+> >>>>>> +     struct inode *inode =3D d_real_inode(dentry);
+> >>>>>>         struct xattr_list *xattr;
+> >>>>>>         struct shash_desc *desc;
+> >>>>>>         size_t xattr_size =3D 0;
+> >>>>>
+> >>>>> We need this patch when NOT activating CONFIG_OVERLAY_FS_METACOPY b=
+ut
+> >>>>> when setting CONFIG_OVERLAY_FS_METACOPY=3Dy it has to be reverted..=
+  I am
+> >>>>> not sure what the solution is.
+> >>>>
+> >>>> I think d_real_inode() does not work correctly for all its current u=
+sers for
+> >>>> a metacopy file.
+> >>>>
+> >>>> I think the solution is to change d_real_inode() to return the data =
+inode
+> >>>> and add another helper to get the metadata inode if needed.
+> >>>> I will post some patches for it.
+> >>>
+> >>> I thought that we may have to go through vfs_getattr() but even bette=
+r
+> >>> if we don't because we don't have the file *file anywhere 'near'.
+> >>>
+> >>>>
+> >>>> However, I must say that I do not know if evm_calc_hmac_or_hash()
+> >>>> needs the lower data inode, the upper metadata inode or both.
+> >>>
+> >>> What it needs are data structures with mode bits, uid, and gid that s=
+tat
+> >>> in userspace would show.
+> >>>
+> >>>
+> >>
+> >> With or without metacopy enabled, an overlay inode st_uid st_gid st_mo=
+de
+> >> are always taken from the upper most inode which is what d_real_inode(=
+)
+> >> currently returns, so I do not understand what the problem is.
+> >>
+> >
+> > No, I was wrong. It is the other way around.
+> > d_real_inode() always returns the real data inode and you need the
+> > upper most real inode.
+> >
+> > You can try this:
+> >
+> >   -     struct inode *inode =3D d_backing_inode(dentry);
+> > +     struct inode *inode =3D d_inode(d_real(dentry, false));
+> >
+> > With the changes in:
+> >
+> > https://github.com/amir73il/linux/commits/overlayfs-devel/
+> >
+> > Not thoroughly tested...
+>
+> The change + 3 topmost patches cherry-picked is unfortunately are
+> crashing for me.
+>
 
-I'm so sorry I was so late to finish the test and reply.
+I will look into it.
+But anyway, the patch I suggested above is not enough exactly because
+of the reason I told you earlier.
 
-I used will-it-scale to test the page faults of ramdisk files. The
-data is the average change compared with the mainline after the patch
-is applied. The test results are as follows:
+Mimi's fix ("ima: detect changes to the backing overlay file") detects
+a change in d_real_inode(file_dentry(file)) in order to invalidate the
+IMA cache.
 
-                           processes processes_idle threads threads_idle
-ramdisk private file write: -0.48%   0.23%          -1.08%   0.27%
-ramdisk private file  read:  0.07%  -6.90%          -5.85%  -0.70%
+Your change also invalidates EVM cache on a change in
+d_real_inode(file_dentry(file)) and that makes sense.
 
+But on "meta copy up" for example on chmod(), an upper inode with no data
+is created (a metacopy) and all the attributes and xattr are copied
+from lower inode.
+The data remains in the lower inode.
 
-Applied patch:
+At this point , the IMA cache and the EVM cache refer to two different inod=
+es
+so you cannot share the same logic with IMA cache invalidation.
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 32eedf3afd45..2db9ccfbd5e3 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -3226,6 +3226,22 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
-                         mapping_locked = true;
-                 }
-         } else {
-+               if (!pmd_none(*vmf->pmd)) {
-+                       pte_t *ptep = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd,
-+                                                         vmf->address, &vmf->ptl);
-+                       if (unlikely(!ptep))
-+                               return VM_FAULT_NOPAGE;
-+                       /*
-+                        * Recheck pte with ptl locked as the pte can be cleared
-+                        * temporarily during a read/modify/write update.
-+                        */
-+                       if (unlikely(!pte_none(ptep_get(ptep))))
-+                               ret = VM_FAULT_NOPAGE;
-+                       pte_unmap_unlock(ptep, vmf->ptl);
-+                       if (unlikely(ret))
-+                               return ret;
-+               }
-+
-                 /* No page in the page cache at all */
-                 count_vm_event(PGMAJFAULT);
-                 count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
+My patches are meant to provide you with a helper e.g. d_real_meta_inode()
+that you could use to get the upper inode in the case of a metacopy, but
+IMA would still need to use the d_real_data_inode().
 
-> --
-> Best Regards,
-> Huang, Ying
+Is that explanation clear? Is it clear why I said that the problem is more
+complicated?
 
--- 
-Best Regards,
-Peng
-
+Thanks,
+Amir.
 
