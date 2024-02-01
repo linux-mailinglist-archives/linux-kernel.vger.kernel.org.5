@@ -1,122 +1,185 @@
-Return-Path: <linux-kernel+bounces-48564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53B42845DF6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:00:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0112D845DFA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:01:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 015EE1F2B45F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:00:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB1BE293F68
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:01:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AD8D5A4FA;
-	Thu,  1 Feb 2024 17:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FC127E100;
+	Thu,  1 Feb 2024 17:01:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yaSfUf4q"
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F99T2ocV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52AB85A4F3
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 17:00:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E98D15CDD1
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 17:01:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706806821; cv=none; b=e/Z/zKIfeKY37A9oFUbtl72A8gfLaIjgA8PMRq+VswEkFmRDcl376G7cj7UpceuLg8KMxLZ+O0Sn7VIJBgcL4Po3+4m8oGmvOtuWlTi0O35nImzVhNsYfhRRMn1awkJTPOu7jb9LyQV2I1J5xs1GPXESLbq0ptKqv0nG56KiqKk=
+	t=1706806865; cv=none; b=ALRMbps4gbJm15Uy9CtfZNVKSdCOy7coOZiK93eRBxwiDOnjVIUajoEZG1clHSSPlH37fts2lEki7gtwgDq3wOr69wnr2QgnT2QGXnQLnkfrIvCx/ap4/SiPnbdMREzwbkIC0tkSAuF3kfSdg+7wd/FuCCQyiveCq/jpmqmbHWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706806821; c=relaxed/simple;
-	bh=N4n3zRIvR+VTDaguBtwM3JkuHD6WLYuDJPmBPDcTpS4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=koMJTvFDgxN1Fttt7WOAjsErve46FKOVkprcJ0N+bvxpVJmk2NTiKC/+Li6hGInRA7byASTMmbkNxzeouLmaCRlvM9sNLZ5r4Z+7hxA6i40Sj1w96ABAF+7yy9jOAa/Bz6c7GhIfxdQ9m7R11j9YdjlsPZ42eBHg3Q31Dxkwy9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yaSfUf4q; arc=none smtp.client-ip=209.85.214.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1d8f0e4bd05so9572345ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 09:00:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706806819; x=1707411619; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/x3jlCLNc7UiUHoyVg434LJ4SeDSaVulHM99QrXsAOg=;
-        b=yaSfUf4qjNdx+8mecKoY/fSIpRbXUcC2IWLwR+bfxg+bLTfXaQ71owfoew/ibncffw
-         daiLgWckS6VUrYZrsNCMIzJNSMtGrsbjT1yie3bfkFGsg7yZ5c4VIqZ28lcigYR55y+X
-         48s/LJ5QPWua9VwbW9STTNjS6/pD6yDCh6KN2OL0BCUC+HsU8ColMgXUQzWMjKB75BcG
-         hsn7tKjgBKrYtjupX47SXFqILMW7dN3p8reSLp8nfgHh2zwUCecvCIET3LrrMQfkBTnF
-         GUrmIEtoMhWfBEEcUKjuIutSbAnGn5tJmVmB/HmPWO2m5T7xUanx00SYOn0Zl3ALlbmf
-         itjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706806819; x=1707411619;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/x3jlCLNc7UiUHoyVg434LJ4SeDSaVulHM99QrXsAOg=;
-        b=Fnn219mOUUDOmDAAAuemcW95opcwNqviOJ0HKiuCpM4fQaur4nFtCuvUb/t3zrzsSM
-         kBt/PMSjBYSaujYgecZY0ZwufFq4TQuzfa2R8jzLbZPHCAIqIIPoeHNhyuMiCxZ1279k
-         GZtFIE/Vd8hIkP5OBZBXR7AYLrnPQEuRBT57x0aJmqwW/4ztVo8o1ocUdi49D5/ERY3m
-         WzuaBzkOx5qqzObDq6+kFgMdmwnTA9HaUxd8vpIn9fH2Gh6mn4RtgFvq97ciQo/90K5t
-         cEarmxYwEsKxn5nLBgcK0upevGOhk9jniA8klIjoklSHYhwzu7SqdERdY9G6kW0+DrKR
-         3Z5A==
-X-Gm-Message-State: AOJu0YwEI34c7GkuwOw2hxntRe/0qcwaIyiaSzTl5EGIF6MFvHDfs5bS
-	nKDwJGZJkl97+z1hzxlTf/IoISZPKimGXTBxnN+a0YCAKZ6OBv1gIeSqSSdJ8lslXX83A7KkVjP
-	i5Q==
-X-Google-Smtp-Source: AGHT+IHzf36y0HnGIX/3H+jUOKEMIK/NvtVO4O2y3aiz38JRM3qjQA3HJXJ+4Z9mqhTO31dM1UgLkbISPBo=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:348b:b0:1d7:8535:d089 with SMTP id
- mg11-20020a170903348b00b001d78535d089mr14916plb.11.1706806819590; Thu, 01 Feb
- 2024 09:00:19 -0800 (PST)
-Date: Thu, 1 Feb 2024 09:00:17 -0800
-In-Reply-To: <170666266778.3861845.16453599042139259499.b4-ty@google.com>
+	s=arc-20240116; t=1706806865; c=relaxed/simple;
+	bh=ORVetPFkmT4UVVKKyCuUwRmeXNPw9HlZpcxW5dV/1Dk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EkxgHlGe6gwLWCGcFOGRHkmXdaQ2AaToKVHsKt3yCtoH/h3eDl0VPEc21cph1kxNtiUYPwO8dL9ckOPVrWUAOTgtQFoqUpRm3Xe2vqrMDEJLf9+4r5dWFWJxL8KKT805zRIbJ5KE8DVYvKr2Tj+LwzOrTES+vyFQKHfmbEzZRiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F99T2ocV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5109C433C7;
+	Thu,  1 Feb 2024 17:01:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706806864;
+	bh=ORVetPFkmT4UVVKKyCuUwRmeXNPw9HlZpcxW5dV/1Dk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=F99T2ocV6qN+IxcFBwsn1LL6d0OPn/uvYQqJ2bqeNJphRnC6Hb19Iz0KZVFjYNc6s
+	 cdrGzteR7vwQyZHb44z5Yd1qtb1DHg9xBvK06x2qpVIf/uyzjM8xDzRNkJTMLRTsYG
+	 9ieheOzFg9iddMtn2M1k2ll66EmdnIc4tovtT4atRBTOaHv7ihbp7HnhZcSgaj9mRF
+	 Vf0REkKwiiuU4fR4MCwFO9TyAgtP1XDOGomXwI6KRQZEfiYqfnxwXFXk5YsxHL3AqI
+	 6KLyxNZCUfXr9JxLG+NyQjqk3SYXxRqoxD/dic1yTuYWXmUkQ3GVQ5eKyDrvGCoh5z
+	 vPH6M5krOt8yg==
+Date: Thu, 1 Feb 2024 18:01:01 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: "Klymenko, Anatoliy" <Anatoliy.Klymenko@amd.com>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+	"maarten.lankhorst@linux.intel.com" <maarten.lankhorst@linux.intel.com>, "tzimmermann@suse.de" <tzimmermann@suse.de>, 
+	"airlied@gmail.com" <airlied@gmail.com>, "daniel@ffwll.ch" <daniel@ffwll.ch>, 
+	"Simek, Michal" <michal.simek@amd.com>, 
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, 
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: RE: Re: [PATCH 0/4] Fixing live video input in ZynqMP DPSUB
+Message-ID: <2ytxhpti53e743b5pca3oa5jmscffi4vpsyeh727bcoh4v6cuw@zkz5pqkcv7v2>
+References: <20240112234222.913138-1-anatoliy.klymenko@amd.com>
+ <6jhwss2wego6yoo5mwmphwawhsj5bbj62gwrzcpapoixwkrkli@g4fbxdooopby>
+ <20240117142343.GD17920@pendragon.ideasonboard.com>
+ <u5mngxudtdgy3vqkfbpgqng6tdahijnet2jtj345hrowbt47ce@t3e7hul45mr3>
+ <MW4PR12MB7165D35189BEECA8769552AFE6792@MW4PR12MB7165.namprd12.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240109141121.1619463-1-vkuznets@redhat.com> <170666266778.3861845.16453599042139259499.b4-ty@google.com>
-Message-ID: <ZbvOIQqGt6SJMJrm@google.com>
-Subject: Re: [PATCH 0/5] KVM: selftests: Fix clocksource requirements in tests
-From: Sean Christopherson <seanjc@google.com>
-To: kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
-	Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: linux-kernel@vger.kernel.org, Oliver Upton <oliver.upton@linux.dev>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="pjqnxa646r7gclj6"
+Content-Disposition: inline
+In-Reply-To: <MW4PR12MB7165D35189BEECA8769552AFE6792@MW4PR12MB7165.namprd12.prod.outlook.com>
 
-On Tue, Jan 30, 2024, Sean Christopherson wrote:
-> On Tue, 09 Jan 2024 15:11:16 +0100, Vitaly Kuznetsov wrote:
-> > It was discovered that 'hyperv_clock' fails miserably when the system is
-> > using an unsupported (by KVM) clocksource, e.g. 'kvm-clock'. The root cause
-> > of the failure is that 'hyperv_clock' doesn't actually check which clocksource
-> > is currently in use. Other tests (kvm_clock_test, vmx_nested_tsc_scaling_test)
-> > have the required check but each test does it on its own.
-> > 
-> > Generalize clocksource checking infrastructure, make all three clocksource
-> > dependent tests run with 'tsc' and 'hyperv_clocksource_tsc_page', and skip
-> > gracefully when run in an unsupported configuration.
-> > 
-> > [...]
-> 
-> Applied to kvm-x86 selftests, thanks!
-> 
-> [1/5] KVM: selftests: Generalize check_clocksource() from kvm_clock_test
->       https://github.com/kvm-x86/linux/commit/449d0d6ccf55
-> [2/5] KVM: selftests: Use generic sys_clocksource_is_tsc() in vmx_nested_tsc_scaling_test
->       https://github.com/kvm-x86/linux/commit/a79036441a68
-> [3/5] KVM: selftests: Run clocksource dependent tests with hyperv_clocksource_tsc_page too
->       https://github.com/kvm-x86/linux/commit/436e6e541cb2
-> [4/5] KVM: selftests: Make hyperv_clock require TSC based system clocksource
->       https://github.com/kvm-x86/linux/commit/14fce852a14b
-> [5/5] KVM: x86: Make gtod_is_based_on_tsc() return 'bool'
->       https://github.com/kvm-x86/linux/commit/57cc53712934
 
-FYI, I dropped the xen_shinfo patch, and past me wasn't clever enough to make sure
-that patch was applied last.  New hashes are:
+--pjqnxa646r7gclj6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[1/5] KVM: selftests: Generalize check_clocksource() from kvm_clock_test
-      https://github.com/kvm-x86/linux/commit/e440c5f2e3e6
-[2/5] KVM: selftests: Use generic sys_clocksource_is_tsc() in vmx_nested_tsc_scaling_test
-      https://github.com/kvm-x86/linux/commit/410cb01ead5b
-[3/5] KVM: selftests: Run clocksource dependent tests with hyperv_clocksource_tsc_page too
-      https://github.com/kvm-x86/linux/commit/09951bf2cbb3
-[4/5] KVM: selftests: Make hyperv_clock require TSC based system clocksource
-      https://github.com/kvm-x86/linux/commit/b6831a108be1
-[5/5] KVM: x86: Make gtod_is_based_on_tsc() return 'bool'
-      https://github.com/kvm-x86/linux/commit/9e62797fd7e8
+On Fri, Jan 26, 2024 at 11:18:30PM +0000, Klymenko, Anatoliy wrote:
+>=20
+>=20
+> > -----Original Message-----
+> > From: Maxime Ripard <mripard@kernel.org>
+> > Sent: Friday, January 26, 2024 4:26 AM
+> > To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > Cc: Klymenko, Anatoliy <Anatoliy.Klymenko@amd.com>;
+> > maarten.lankhorst@linux.intel.com; tzimmermann@suse.de; airlied@gmail.c=
+om;
+> > daniel@ffwll.ch; Simek, Michal <michal.simek@amd.com>; dri-
+> > devel@lists.freedesktop.org; linux-arm-kernel@lists.infradead.org; linu=
+x-
+> > kernel@vger.kernel.org
+> > Subject: Re: Re: [PATCH 0/4] Fixing live video input in ZynqMP DPSUB
+> >=20
+> > On Wed, Jan 17, 2024 at 04:23:43PM +0200, Laurent Pinchart wrote:
+> > > On Mon, Jan 15, 2024 at 09:28:39AM +0100, Maxime Ripard wrote:
+> > > > On Fri, Jan 12, 2024 at 03:42:18PM -0800, Anatoliy Klymenko wrote:
+> > > > > Patches 1/4,2/4,3/4 are minor fixes.
+> > > > >
+> > > > > DPSUB requires input live video format to be configured.
+> > > > > Patch 4/4: The DP Subsystem requires the input live video format =
+to be
+> > > > > configured. In this patch we are assuming that the CRTC's bus for=
+mat is fixed
+> > > > > and comes from the device tree. This is a proposed solution, as t=
+here are no
+> > api
+> > > > > to query CRTC output bus format.
+> > > > >
+> > > > > Is this a good approach to go with?
+> > > >
+> > > > I guess you would need to expand a bit on what "live video input" i=
+s? Is
+> > > > it some kind of mechanism to bypass memory and take your pixels str=
+aight
+> > > > from a FIFO from another device, or something else?
+> > >
+> > > Yes and no.
+> > >
+> > > The DPSUB integrates DMA engines, a blending engine (two planes), and=
+ a
+> > > DP encoder. The dpsub driver supports all of this, and creates a DRM
+> > > device. The DP encoder hardware always takes its input data from the
+> > > output of the blending engine.
+> > >
+> > > The blending engine can optionally take input data from a bus connect=
+ed
+> > > to the FPGA fabric, instead of taking it from the DPSUB internal DMA
+> > > engines. When operating in that mode, the dpsub driver exposes the DP
+> > > encoder as a bridge, and internally programs the blending engine to
+> > > disable blending. Typically, the FPGA fabric will then contain a CRTC=
+ of
+> > > some sort, with a driver that will acquire the DP encoder bridge as
+> > > usually done.
+> > >
+> > > In this mode of operation, it is typical for the IP cores in FPGA fab=
+ric
+> > > to be synthesized with a fixed format (as that saves resources), while
+> > > the DPSUB supports multiple input formats.
+> >=20
+> > Where is that CRTC driver? It's not clear to me why the format would
+> > need to be in the device tree at all. Format negociation between the
+> > CRTC and whatever comes next is already done in a number of drivers so
+> > it would be useful to have that kind of API outside of the bridge
+> > support.
+>
+> One example of such CRTC driver:
+> https://github.com/Xilinx/linux-xlnx/blob/master/drivers/gpu/drm/xlnx/xln=
+x_mixer.c It's not
+> upstreamed yet. Bus format negotiations here are handled by utilizing Xil=
+inx-specific bridge
+> framework. Ideally, it would be nice to rework this to comply with the up=
+stream DRM bridge
+> framework.
+>
+> > > Bridge drivers in the upstream kernel work the other way around, with
+> > > the bridge hardware supporting a limited set of formats, and the CRTC
+> > > then being programmed with whatever the bridges chain needs. Here, the
+> > > negotiation needs to go the other way around, as the CRTC is the
+> > > limiting factor, not the bridge.
+> >=20
+> > Sounds like there's something to rework in the API then?
+> >=20
+> Adding an optional CRTC callback imposing CRTC specific bus format restri=
+ctions, which may be
+> called from here https://github.com/torvalds/linux/blob/master/drivers/gp=
+u/drm/drm_bridge.c#L935
+> would solve the problem.
+
+CRTCs and bridges are orthogonal. If anything, I'd expect that callback
+to be set at the CRTC, encoder and connector levels and filled by the
+drm_bridge code if relevant.
+
+Maxime
+
+--pjqnxa646r7gclj6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZbvOTAAKCRDj7w1vZxhR
+xbVPAP49vGrbelyhqSYUXSE85/vH2qXOXAJu3q1Y/CUU9DUANwEAlmtHkOex/CVN
+fX5vhl8ixN+4cmpKXQHWEroLwF3pxAQ=
+=Pm76
+-----END PGP SIGNATURE-----
+
+--pjqnxa646r7gclj6--
 
