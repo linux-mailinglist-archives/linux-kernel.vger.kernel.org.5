@@ -1,418 +1,189 @@
-Return-Path: <linux-kernel+bounces-48827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48821-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 495F484621F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:46:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36F89846209
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:44:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AF561C2450C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:46:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9125E1F25690
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:44:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C2B03CF4B;
-	Thu,  1 Feb 2024 20:46:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="RtpMI/Ly"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E65C3BB43;
+	Thu,  1 Feb 2024 20:44:33 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 318243A1BA;
-	Thu,  1 Feb 2024 20:46:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57BA33A1C1
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 20:44:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706820384; cv=none; b=gXmiFP6O13kR+b4k3Ou9+OklbcB2n9nW2cGi7QDoDlHf+atgghcMdoRofLnHsYrPBOloTN5YXUewreu05nJ+w16mpXtXGK+VUi9CbpElj8kDWwrpsFJ2IckCSHB6we8+pAMAD4bHtCieYaJlkXEB0quiFcxD6FE+iteT2iPBXKI=
+	t=1706820273; cv=none; b=XaUMz05Dl5NwlcYU54wRzqTkSlvpFufajkFTVC2AD3Ad+dS1LSAk6Y24J98Dzhu/yOqdHJGXL0962s/KnCJJNljJwsyRYepv1EUO7FLUs4/LLjUFfFzD7/U0vgXzcHURn2ND1bvRim5DWemrFIEjhMm9pcKe3yRPB9YpxpyurEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706820384; c=relaxed/simple;
-	bh=t09CtJbWPWWsJyZ10cfRu8KBrOeZpB9O9/16992I+P4=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UvoPnYkA+XilBZafV9e4UsSHLUAyChBX7h0nGIrAV9wTajXhTvD4ehYCdYjgKrCU0QmeHVtOJftyQZ9uogS76b0xwEtyjObNplRMvf00hDGPb1AT5HkZlTLPJR94YZgRX10sftkeBMrKQZwUzWg/KSmI1PfUWTwLwmdzWDhH3+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=RtpMI/Ly; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 411JkGtW018554;
-	Thu, 1 Feb 2024 20:46:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=graNKSh9djGaHBgZ18hC3bWHCAiqvlQdmmsaj93OQBQ=; b=Rt
-	pMI/LyvjOFLc6VNzBorEYuSMysXp9j8vFHsxqDftAX+7rruZLxrmdBqojL+jNGy9
-	swjLBOZXMVHJd3FlW7qrl+0EV9uScXXc9WO/OSoHgfr3/4ayWaHlXoWySKh3q6Vr
-	jHb5b7xjgpUujpuSMozvDR/ajiLod04VscR/hEFd33GkPxEL9T5dVYYqIbh5ZTV3
-	WFJgoubYXeoXHPtmvl8OwHnGRGvxbH0JAPUpR+GJnec4mqZ9wodg/n9ecFfRYw5G
-	RBn6Zxut3eqy2mrLx6RnKBReb9oq4FmtcJYD+fm/OF44zKi+aqo8g5XfW3kzAeYD
-	nuqpOxq7VOVoO7WhZ7YA==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vyvb5kc70-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 20:46:17 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 411KkGxx000995
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 1 Feb 2024 20:46:16 GMT
-Received: from hu-amelende-lv.qualcomm.com (10.49.16.6) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 1 Feb 2024 12:46:15 -0800
-From: Anjelique Melendez <quic_amelende@quicinc.com>
-To: <lee@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <agross@kernel.org>, <andersson@kernel.org>
-CC: <konrad.dybcio@linaro.org>, <linux-leds@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pwm@vger.kernel.org>,
-        "Anjelique
- Melendez" <quic_amelende@quicinc.com>
-Subject: [PATCH 2/2] soc: qcom: add QCOM PBS driver
-Date: Thu, 1 Feb 2024 12:44:24 -0800
-Message-ID: <20240201204421.16992-6-quic_amelende@quicinc.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20240201204421.16992-2-quic_amelende@quicinc.com>
-References: <20240201204421.16992-2-quic_amelende@quicinc.com>
+	s=arc-20240116; t=1706820273; c=relaxed/simple;
+	bh=Mvi21yqYkpHvW15IKAFRhnUigRYgPxJrbYhCyg1rxYE=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=IsgOTIsNjr0m1i/ZGQtvqGMVa49rovvgsY4Xs3Hjvxmj5NQJIWY5BAS0yFx7w2Ly0ilURFKP6jcpmJ4IafTvoPPq7p5kZJs4jxH7M/fcvnSLQJMkyQQqPcsDORHlZMciia9wY0FI+s3Uj2gZDEwZe0Na3T3CEFjUNoqYTYT14GU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3610073a306so12128305ab.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 12:44:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706820270; x=1707425070;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=R/oFNeBc2h/vg/VplsbvV+FmlhdDnizmFYiiNw1gpQs=;
+        b=hxgFqEnG77a+9SNpN01C+IERQbfq1ajKEWa9I2Aux/ATpeLQhjGuniUvvfTvkFPqER
+         rHrfuEU6RfsARWlTL4LBmub2CgW2bxEs1fcwqd6phKWLXXdAwbOM0aXXrZOuox9U7rf7
+         DRRkRKhBxIz/lBRNycg73zoJ1HRMb+xohptfVlz7r3TrgHc9u6w+hcIqAdqr/OAYpnc5
+         WeBJ34mDPUtJjBq+apMC6jkVOHVSsdI4GG/0v4/7RfX8YoQ3RGZon+trVdSTx+ScnnUy
+         8ETJPb2WINAHBG85Bu8eGpYbpppvPUwT1BUg4bbsA0upF+VHIO4CzVj28znbDwVmipY+
+         bdKg==
+X-Gm-Message-State: AOJu0YxTXC3YGHP6Ga2Awbu4ig5lOhIkM9Ijn5ul2wd9HtaDe8OB82Wi
+	6C8UhkBrTSWGbXSxAHtVApSvec96n3hfWM68JskmrRu8Xt02g3mwKippNg4fo2S0ni2bjgZv3VV
+	9K5OrDF0ZRLjxudL7jztU9x3QpHwb9hxQfjYCeTSZbfw09d+KrGYCCiU=
+X-Google-Smtp-Source: AGHT+IFkcwU/iOgmiK7lpWN24R/CyAiTTYJbHdl1MSeCwTPZMBvQxGG+Y8Z0g9lOvDmnJqdC/8RCgWMVOy+X9IKVEFhBUKL0zJds
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: NaQeHL_RmJARlk5bI-wdo3oLKB3ZIApl
-X-Proofpoint-ORIG-GUID: NaQeHL_RmJARlk5bI-wdo3oLKB3ZIApl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-01_06,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- spamscore=0 clxscore=1015 impostorscore=0 malwarescore=0 bulkscore=0
- priorityscore=1501 lowpriorityscore=0 phishscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2402010160
+X-Received: by 2002:a05:6e02:1b0c:b0:363:9211:a723 with SMTP id
+ i12-20020a056e021b0c00b003639211a723mr532381ilv.2.1706820270047; Thu, 01 Feb
+ 2024 12:44:30 -0800 (PST)
+Date: Thu, 01 Feb 2024 12:44:30 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e447290610580f33@google.com>
+Subject: [syzbot] [bpf?] linux-next boot error: WARNING in register_btf_kfunc_id_set
+From: syzbot <syzbot+0e9c9f96dbdc31a8431b@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-next@vger.kernel.org, 
+	martin.lau@linux.dev, sdf@google.com, sfr@canb.auug.org.au, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-Add the Qualcomm PBS (Programmable Boot Sequencer) driver. The QCOM PBS
-driver supports configuring software PBS trigger events through PBS RAM
-on Qualcomm Technologies, Inc (QTI) PMICs.
+Hello,
 
-Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
+syzbot found the following issue on:
+
+HEAD commit:    51b70ff55ed8 Add linux-next specific files for 20240201
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17b05288180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=88d85200b6a62126
+dashboard link: https://syzkaller.appspot.com/bug?extid=0e9c9f96dbdc31a8431b
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/f2d3a98d07e5/disk-51b70ff5.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d525430ddf13/vmlinux-51b70ff5.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6d1ec0b50066/bzImage-51b70ff5.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0e9c9f96dbdc31a8431b@syzkaller.appspotmail.com
+
+greybus: registered new driver hid
+greybus: registered new driver gbphy
+gb_gbphy: registered new driver usb
+asus_wmi: ASUS WMI generic driver loaded
+usbcore: registered new interface driver snd-usb-audio
+usbcore: registered new interface driver snd-ua101
+usbcore: registered new interface driver snd-usb-usx2y
+usbcore: registered new interface driver snd-usb-us122l
+usbcore: registered new interface driver snd-usb-caiaq
+usbcore: registered new interface driver snd-usb-6fire
+usbcore: registered new interface driver snd-usb-hiface
+usbcore: registered new interface driver snd-bcd2000
+usbcore: registered new interface driver snd_usb_pod
+usbcore: registered new interface driver snd_usb_podhd
+usbcore: registered new interface driver snd_usb_toneport
+usbcore: registered new interface driver snd_usb_variax
+drop_monitor: Initializing network drop monitor service
+NET: Registered PF_LLC protocol family
+GACT probability on
+Mirror/redirect action on
+Simple TC action Loaded
+netem: version 1.3
+u32 classifier
+    Performance counters on
+    input device check on
+    Actions configured
+nf_conntrack_irc: failed to register helpers
+nf_conntrack_sane: failed to register helpers
+nf_conntrack_sip: failed to register helpers
+xt_time: kernel timezone is -0000
+IPVS: Registered protocols (TCP, UDP, SCTP, AH, ESP)
+IPVS: Connection hash table configured (size=4096, memory=32Kbytes)
+IPVS: ipvs loaded.
+IPVS: [rr] scheduler registered.
+IPVS: [wrr] scheduler registered.
+IPVS: [lc] scheduler registered.
+IPVS: [wlc] scheduler registered.
+IPVS: [fo] scheduler registered.
+IPVS: [ovf] scheduler registered.
+IPVS: [lblc] scheduler registered.
+IPVS: [lblcr] scheduler registered.
+IPVS: [dh] scheduler registered.
+IPVS: [sh] scheduler registered.
+IPVS: [mh] scheduler registered.
+IPVS: [sed] scheduler registered.
+IPVS: [nq] scheduler registered.
+IPVS: [twos] scheduler registered.
+IPVS: [sip] pe registered.
+ipip: IPv4 and MPLS over IPv4 tunneling driver
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 1 at kernel/bpf/btf.c:8131 register_btf_kfunc_id_set+0x261/0x290 kernel/bpf/btf.c:8131
+Modules linked in:
+CPU: 1 PID: 1 Comm: swapper/0 Not tainted 6.8.0-rc2-next-20240201-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+RIP: 0010:register_btf_kfunc_id_set+0x261/0x290 kernel/bpf/btf.c:8131
+Code: 16 e8 b3 fb db ff bd 0b 00 00 00 eb 0a e8 a7 fb db ff bd 0d 00 00 00 89 ef 4c 89 f6 5b 41 5e 41 5f 5d eb 45 e8 90 fb db ff 90 <0f> 0b 90 e9 22 fe ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c da fd
+RSP: 0000:ffffc90000067940 EFLAGS: 00010293
+RAX: ffffffff81b7d510 RBX: 0000000000000000 RCX: ffff888016a98000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000003 R08: ffffffff81b7d311 R09: 1ffffffff1f0b5bd
+R10: dffffc0000000000 R11: fffffbfff1f0b5be R12: 1ffffffff21e0e1d
+R13: dffffc0000000000 R14: ffffffff8caa77c0 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000000df32000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ fou_init+0x50/0x110 net/ipv4/fou_core.c:1239
+ do_one_initcall+0x238/0x830 init/main.c:1233
+ do_initcall_level+0x157/0x210 init/main.c:1295
+ do_initcalls+0x3f/0x80 init/main.c:1311
+ kernel_init_freeable+0x430/0x5d0 init/main.c:1549
+ kernel_init+0x1d/0x2b0 init/main.c:1439
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:242
+ </TASK>
+
+
 ---
- drivers/soc/qcom/Kconfig          |   9 ++
- drivers/soc/qcom/Makefile         |   1 +
- drivers/soc/qcom/qcom-pbs.c       | 236 ++++++++++++++++++++++++++++++
- include/linux/soc/qcom/qcom-pbs.h |  30 ++++
- 4 files changed, 276 insertions(+)
- create mode 100644 drivers/soc/qcom/qcom-pbs.c
- create mode 100644 include/linux/soc/qcom/qcom-pbs.h
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-index b3634e10f6f5..52aa58b02e72 100644
---- a/drivers/soc/qcom/Kconfig
-+++ b/drivers/soc/qcom/Kconfig
-@@ -254,4 +254,13 @@ config QCOM_INLINE_CRYPTO_ENGINE
- 	tristate
- 	select QCOM_SCM
- 
-+config QCOM_PBS
-+	tristate "PBS trigger support for Qualcomm Technologies, Inc. PMICS"
-+	depends on SPMI
-+	help
-+	  This driver supports configuring software programmable boot sequencer (PBS)
-+	  trigger event through PBS RAM on Qualcomm Technologies, Inc. PMICs.
-+	  This module provides the APIs to the client drivers that wants to send the
-+	  PBS trigger event to the PBS RAM.
-+
- endmenu
-diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
-index bbca2e1e55bb..49bb86b0fe33 100644
---- a/drivers/soc/qcom/Makefile
-+++ b/drivers/soc/qcom/Makefile
-@@ -32,3 +32,4 @@ obj-$(CONFIG_QCOM_KRYO_L2_ACCESSORS) +=	kryo-l2-accessors.o
- obj-$(CONFIG_QCOM_ICC_BWMON)	+= icc-bwmon.o
- qcom_ice-objs			+= ice.o
- obj-$(CONFIG_QCOM_INLINE_CRYPTO_ENGINE)	+= qcom_ice.o
-+obj-$(CONFIG_QCOM_PBS) +=	qcom-pbs.o
-diff --git a/drivers/soc/qcom/qcom-pbs.c b/drivers/soc/qcom/qcom-pbs.c
-new file mode 100644
-index 000000000000..f17805489552
---- /dev/null
-+++ b/drivers/soc/qcom/qcom-pbs.c
-@@ -0,0 +1,236 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/err.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/of_platform.h>
-+#include <linux/regmap.h>
-+#include <linux/spmi.h>
-+#include <linux/soc/qcom/qcom-pbs.h>
-+
-+#define PBS_CLIENT_TRIG_CTL		0x42
-+#define PBS_CLIENT_SW_TRIG_BIT		BIT(7)
-+#define PBS_CLIENT_SCRATCH1		0x50
-+#define PBS_CLIENT_SCRATCH2		0x51
-+#define PBS_CLIENT_SCRATCH2_ERROR	0xFF
-+
-+#define RETRIES				2000
-+#define DELAY				1100
-+
-+struct pbs_dev {
-+	struct device		*dev;
-+	struct regmap		*regmap;
-+	struct mutex		lock;
-+	struct device_link	*link;
-+
-+	u32			base;
-+};
-+
-+static int qcom_pbs_wait_for_ack(struct pbs_dev *pbs, u8 bit_pos)
-+{
-+	unsigned int val;
-+	int ret;
-+
-+	ret = regmap_read_poll_timeout(pbs->regmap,  pbs->base + PBS_CLIENT_SCRATCH2,
-+					val, val & BIT(bit_pos), DELAY, DELAY * RETRIES);
-+
-+	if (ret < 0) {
-+		dev_err(pbs->dev, "Timeout for PBS ACK/NACK for bit %u\n", bit_pos);
-+		return -ETIMEDOUT;
-+	}
-+
-+	if (val == PBS_CLIENT_SCRATCH2_ERROR) {
-+		ret = regmap_write(pbs->regmap, pbs->base + PBS_CLIENT_SCRATCH2, 0);
-+		dev_err(pbs->dev, "NACK from PBS for bit %u\n", bit_pos);
-+		return -EINVAL;
-+	}
-+
-+	dev_dbg(pbs->dev, "PBS sequence for bit %u executed!\n", bit_pos);
-+	return 0;
-+}
-+
-+/**
-+ * qcom_pbs_trigger_event() - Trigger the PBS RAM sequence
-+ * @pbs: Pointer to PBS device
-+ * @bitmap: bitmap
-+ *
-+ * This function is used to trigger the PBS RAM sequence to be
-+ * executed by the client driver.
-+ *
-+ * The PBS trigger sequence involves
-+ * 1. setting the PBS sequence bit in PBS_CLIENT_SCRATCH1
-+ * 2. Initiating the SW PBS trigger
-+ * 3. Checking the equivalent bit in PBS_CLIENT_SCRATCH2 for the
-+ *    completion of the sequence.
-+ * 4. If PBS_CLIENT_SCRATCH2 == 0xFF, the PBS sequence failed to execute
-+ *
-+ * Return: 0 on success, < 0 on failure
-+ */
-+int qcom_pbs_trigger_event(struct pbs_dev *pbs, u8 bitmap)
-+{
-+	unsigned int val;
-+	u16 bit_pos;
-+	int ret;
-+
-+	if (WARN_ON(!bitmap))
-+		return -EINVAL;
-+
-+	if (IS_ERR_OR_NULL(pbs))
-+		return -EINVAL;
-+
-+	mutex_lock(&pbs->lock);
-+	ret = regmap_read(pbs->regmap, pbs->base + PBS_CLIENT_SCRATCH2, &val);
-+	if (ret < 0)
-+		goto out;
-+
-+	if (val == PBS_CLIENT_SCRATCH2_ERROR) {
-+		/* PBS error - clear SCRATCH2 register */
-+		ret = regmap_write(pbs->regmap, pbs->base + PBS_CLIENT_SCRATCH2, 0);
-+		if (ret < 0)
-+			goto out;
-+	}
-+
-+	for (bit_pos = 0; bit_pos < 8; bit_pos++) {
-+		if (!(bitmap & BIT(bit_pos)))
-+			continue;
-+
-+		/* Clear the PBS sequence bit position */
-+		ret = regmap_update_bits(pbs->regmap, pbs->base + PBS_CLIENT_SCRATCH2,
-+					BIT(bit_pos), 0);
-+		if (ret < 0)
-+			goto out_clear_scratch1;
-+
-+		/* Set the PBS sequence bit position */
-+		ret = regmap_update_bits(pbs->regmap, pbs->base + PBS_CLIENT_SCRATCH1,
-+					BIT(bit_pos), BIT(bit_pos));
-+		if (ret < 0)
-+			goto out_clear_scratch1;
-+
-+		/* Initiate the SW trigger */
-+		ret = regmap_update_bits(pbs->regmap, pbs->base + PBS_CLIENT_TRIG_CTL,
-+					PBS_CLIENT_SW_TRIG_BIT, PBS_CLIENT_SW_TRIG_BIT);
-+		if (ret < 0)
-+			goto out_clear_scratch1;
-+
-+		ret = qcom_pbs_wait_for_ack(pbs, bit_pos);
-+		if (ret < 0)
-+			goto out_clear_scratch1;
-+
-+		/* Clear the PBS sequence bit position */
-+		regmap_update_bits(pbs->regmap, pbs->base + PBS_CLIENT_SCRATCH1, BIT(bit_pos), 0);
-+		regmap_update_bits(pbs->regmap, pbs->base + PBS_CLIENT_SCRATCH2, BIT(bit_pos), 0);
-+	}
-+
-+out_clear_scratch1:
-+	/* Clear all the requested bitmap */
-+	ret = regmap_update_bits(pbs->regmap, pbs->base + PBS_CLIENT_SCRATCH1, bitmap, 0);
-+
-+out:
-+	mutex_unlock(&pbs->lock);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(qcom_pbs_trigger_event);
-+
-+/**
-+ * get_pbs_client_device() - Get the PBS device used by client
-+ * @dev: Client device
-+ *
-+ * This function is used to get the PBS device that is being
-+ * used by the client.
-+ *
-+ * Return: pbs_dev on success, ERR_PTR on failure
-+ */
-+struct pbs_dev *get_pbs_client_device(struct device *dev)
-+{
-+	struct device_node *pbs_dev_node;
-+	struct platform_device *pdev;
-+	struct pbs_dev *pbs;
-+
-+	pbs_dev_node = of_parse_phandle(dev->of_node, "qcom,pbs", 0);
-+	if (!pbs_dev_node) {
-+		dev_err(dev, "Missing qcom,pbs property\n");
-+		return ERR_PTR(-ENODEV);
-+	}
-+
-+	pdev = of_find_device_by_node(pbs_dev_node);
-+	if (!pdev) {
-+		dev_err(dev, "Unable to find PBS dev_node\n");
-+		pbs = ERR_PTR(-EPROBE_DEFER);
-+		goto out;
-+	}
-+
-+	pbs = platform_get_drvdata(pdev);
-+	if (!pbs) {
-+		dev_err(dev, "Cannot get pbs instance from %s\n", dev_name(&pdev->dev));
-+		platform_device_put(pdev);
-+		pbs = ERR_PTR(-EPROBE_DEFER);
-+		goto out;
-+	}
-+
-+	pbs->link = device_link_add(dev, &pdev->dev, DL_FLAG_AUTOREMOVE_SUPPLIER);
-+	if (!pbs->link) {
-+		dev_err(&pdev->dev, "Failed to create device link to consumer %s\n", dev_name(dev));
-+		platform_device_put(pdev);
-+		pbs = ERR_PTR(-EINVAL);
-+		goto out;
-+	}
-+
-+out:
-+	of_node_put(pbs_dev_node);
-+	return pbs;
-+}
-+EXPORT_SYMBOL_GPL(get_pbs_client_device);
-+
-+static int qcom_pbs_probe(struct platform_device *pdev)
-+{
-+	struct pbs_dev *pbs;
-+	u32 val;
-+	int ret;
-+
-+	pbs = devm_kzalloc(&pdev->dev, sizeof(*pbs), GFP_KERNEL);
-+	if (!pbs)
-+		return -ENOMEM;
-+
-+	pbs->dev = &pdev->dev;
-+	pbs->regmap = dev_get_regmap(pbs->dev->parent, NULL);
-+	if (!pbs->regmap) {
-+		dev_err(pbs->dev, "Couldn't get parent's regmap\n");
-+		return -EINVAL;
-+	}
-+
-+	ret = device_property_read_u32(pbs->dev, "reg", &val);
-+	if (ret < 0) {
-+		dev_err(pbs->dev, "Couldn't find reg, ret = %d\n", ret);
-+		return ret;
-+	}
-+	pbs->base = val;
-+	mutex_init(&pbs->lock);
-+
-+	platform_set_drvdata(pdev, pbs);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id qcom_pbs_match_table[] = {
-+	{ .compatible = "qcom,pbs" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, qcom_pbs_match_table);
-+
-+static struct platform_driver qcom_pbs_driver = {
-+	.driver = {
-+		.name		= "qcom-pbs",
-+		.of_match_table	= qcom_pbs_match_table,
-+	},
-+	.probe = qcom_pbs_probe,
-+};
-+module_platform_driver(qcom_pbs_driver)
-+
-+MODULE_DESCRIPTION("QCOM PBS DRIVER");
-+MODULE_LICENSE("GPL");
-diff --git a/include/linux/soc/qcom/qcom-pbs.h b/include/linux/soc/qcom/qcom-pbs.h
-new file mode 100644
-index 000000000000..8a46209ccf13
---- /dev/null
-+++ b/include/linux/soc/qcom/qcom-pbs.h
-@@ -0,0 +1,30 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#ifndef _QCOM_PBS_H
-+#define _QCOM_PBS_H
-+
-+#include <linux/errno.h>
-+#include <linux/types.h>
-+
-+struct device_node;
-+struct pbs_dev;
-+
-+#if IS_ENABLED(CONFIG_QCOM_PBS)
-+int qcom_pbs_trigger_event(struct pbs_dev *pbs, u8 bitmap);
-+struct pbs_dev *get_pbs_client_device(struct device *client_dev);
-+#else
-+static inline int qcom_pbs_trigger_event(struct pbs_dev *pbs, u8 bitmap)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline struct pbs_dev *get_pbs_client_device(struct device *client_dev)
-+{
-+	return ERR_PTR(-ENODEV);
-+}
-+#endif
-+
-+#endif
--- 
-2.41.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
