@@ -1,171 +1,141 @@
-Return-Path: <linux-kernel+bounces-48730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8238C84605F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:51:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21C1A846061
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:52:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A54531C288E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:51:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A06D91F22C27
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:52:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CCED84FD6;
-	Thu,  1 Feb 2024 18:49:41 +0000 (UTC)
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1527D84FAC;
-	Thu,  1 Feb 2024 18:49:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 549F962158;
+	Thu,  1 Feb 2024 18:52:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="WMbWZ0f5"
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E34D5F46B
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 18:52:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706813381; cv=none; b=TV79EGZBau37ZLfn7J9w6s2V8khQumd5RjRIEvSQgE9ituzo8tJO6uITkfqeTekhM/w/OlZQSMP5RxaZZtffgSI6gs5eWg3C3xEMJDHKZR0Usv4ajZWrWHfSwJ7MclQWY393HqLKNjdg3yS/wgaIr/8p2cXwI9tpvs9nHAuYivQ=
+	t=1706813555; cv=none; b=ZdF5HD493d1mzfWXcJ36cysVo5dYcgKEQVqY8/4x0PQV6rXG2zpmGk0kwLRO5K5AIJRS4Q0PxhOGPuTHhgKQwcdQk6/yAfy8vCj1Jk+PFJUw8Wm/go/qhWOEI85v4QwyjW2xN+EbnHrx5rGdvRIc4I/MPAWXj09X+kylB5bJX4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706813381; c=relaxed/simple;
-	bh=4kQszUoBJ5ep+V9GiUUQxx2RZAcg0NaaLqCv4hDSd8o=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=gRH0IXVip70vOLKpI8dDNWBfZ5yJLgWu6iIlg5zR2ervxbLHs9K+V3dNwNHo0R3dCd5sGrk4KTvOhYNvYcAmcNv7iUjGno2tu+UvZqu3I4ibPxCAq9jdiWZh8Pc3QhHVXAKHIkXq29KJAZKCRpTunGtZ7BZhaQaSK3c/u+ukYWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 6761992009C; Thu,  1 Feb 2024 19:49:30 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 603D692009B;
-	Thu,  1 Feb 2024 18:49:30 +0000 (GMT)
-Date: Thu, 1 Feb 2024 18:49:30 +0000 (GMT)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-cc: Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>, 
-    Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH 1/2] PCI: Clear LBMS on resume to avoid Target Speed
- quirk
-In-Reply-To: <d5f14b8f-f935-5d5e-e098-f2e78a2766c6@linux.intel.com>
-Message-ID: <alpine.DEB.2.21.2402011800320.15781@angie.orcam.me.uk>
-References: <20240129184354.GA470131@bhelgaas> <aa2d1c4e-9961-d54a-00c7-ddf8e858a9b0@linux.intel.com> <alpine.DEB.2.21.2401301537070.15781@angie.orcam.me.uk> <a7ff7695-77c5-cf5a-812a-e24b716c3842@linux.intel.com>
- <d5f14b8f-f935-5d5e-e098-f2e78a2766c6@linux.intel.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	s=arc-20240116; t=1706813555; c=relaxed/simple;
+	bh=BzUIxA+7NJz5Q/lO17UIfooNXHzOooJUwuCdnCRGEZU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Iqh/IN4cxQQ44BX9LMRJhSc50wyhYwDFbhKaoChDjvifB5C9au+UB1aZqHEFE19Ib1z8mlGgeiznOgGxMCL76iNOtVJiC8f0UiUoJ0iRwSlkwz1TxGh8PRYqepyUMYQabfdBA20oJ51OF6plraDosfBPF180YJt9QA/HY7KZxYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=WMbWZ0f5; arc=none smtp.client-ip=209.85.160.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-42bf8f26673so3665561cf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 10:52:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1706813553; x=1707418353; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7eTCfSpE8BSX3w2muEo/jhEsigVfUc1eYeRG/TfFs0A=;
+        b=WMbWZ0f58Wi06jru1s78cBEgwxv66cu7ylYNnw95B963/qIOrspvYMuA0yxwcawmcW
+         vaFpBSLsJi975u2l7ql+GEPT5YHVsKf4V9qO36Qt15gJXZDV90wOk5WIBpNXXBSQfibc
+         boBcKgOB2a8mIdQdDk+sg/zaUZCs7uN8dWE4c+m9WMsSKvHl5PTiKDyuka6W2UBVjhFB
+         yosbtypcoea8hB/tLiZWsBHBMGX4/XDHH3SEG+GXD3jFPIxuLl2pSk4gvclePeVncULX
+         lc+ugSRlnzIWnTb9ulvzUauWxQ/orsEoW+lnVg0/H/YvXTrOA4ZVNuirMEuBxz4iLTDD
+         nkwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706813553; x=1707418353;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7eTCfSpE8BSX3w2muEo/jhEsigVfUc1eYeRG/TfFs0A=;
+        b=HcTXfW3pFQDg2Xj86ckzHFCp59gOF2uVhTGrxX9cWlD8nUE6sgD+XdJePvRwPcFQgv
+         xjlP63xmTFJsTIr9ns80MWIdk2BILI2cj/wyRh423XXrKu3Rcqoz74cqifrOKC1vAeZW
+         dmEE2MheiB0+4G8CgdMiQ+BSfmK7dWA6RsqGJJWl8SrNl62nwoELOJtCcu5KGW1+0Sra
+         LX0nUfh8IuZG0wFmgCzE8tsgRnkZP2vplp8404771jLcUxP6npgXd68uoZTibvBC/Ief
+         ITMpUP4KXT6oPdq3DafujhDAvw6FDrDwFyZ57RxTDTfx71j28JJxZ9sQCcFyfbKtsAF5
+         tskw==
+X-Gm-Message-State: AOJu0Ywhk9paKuNIjBVJ8DJhGr02YXMgW+AwOvADgz8gD5/QvopALAsz
+	XQfbhNb5Z5XbbbwaMVQO0WwAssACPXa4X1Ws1qXoTZJbXi+3kgjiureUHLvKziY=
+X-Google-Smtp-Source: AGHT+IFgJjDZxGoU+AfH6P+MRx9vRucn+J7TQs9/JS1FLA6fwYCChoHxRRKWYO6S0i3pCkO2ELKixA==
+X-Received: by 2002:a05:622a:1b16:b0:42a:b346:4e10 with SMTP id bb22-20020a05622a1b1600b0042ab3464e10mr6579555qtb.39.1706813552851;
+        Thu, 01 Feb 2024 10:52:32 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWvSVnDQ95l7NoA6swosk450Ra3893m7dUOxMRLKXwIczYcRr98wDcEaSiaXjPZGbqgqjb9aOVo8tKTXjI6QLEbWkFTCNQzlFGOelvNhYrOPQt1rMPtbQj2oAlPY2ChcstNH2lvjXfoR7NnIx236XeajzyDy5QwmCHJ6XIM+6+Y2EMxnjWjAyzLu98dsRXPqjdZh9k18rSZEOrWbGf1NZv/6yGuCdla1KhCfNuMYyoSM7O09WPAb6c/G6w4U7gg8cYF5BX80/cL0ReHSabR2tUund0W2x280+7ECvcV7bj4DSFENmWtAStsICp0G77sdMQqXGK283bQtfHQc5w+pnNiVFXcaTBzdy1ABf8s1PrkKSECFbXkXsO+o7MEScGfGLvsZDq8nkTcyiMLpm+VTb4/XmTfHJHldNvoYDI+Ly2OaMa/pAKVMRit1oM0dw9rDZQDp+Zlu0WhyTxdnFV/d40VsjpgvMYZhY8ws3MpssDL2SbgqxmokUlNVB4ds5lQUYAE+F02PQ==
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id bs26-20020ac86f1a000000b0042a992d8289sm43838qtb.19.2024.02.01.10.52.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 10:52:32 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rVcAp-00AnuA-Ka;
+	Thu, 01 Feb 2024 14:52:31 -0400
+Date: Thu, 1 Feb 2024 14:52:31 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Shivaprasad G Bhat <sbhat@linux.ibm.com>
+Cc: iommu@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org, mpe@ellerman.id.au, npiggin@gmail.com,
+	christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
+	naveen.n.rao@linux.ibm.com, jroedel@suse.de,
+	tpearson@raptorengineering.com, aik@amd.com, bgray@linux.ibm.com,
+	gregkh@linuxfoundation.org, gbatra@linux.vnet.ibm.com,
+	vaibhav@linux.ibm.com
+Subject: Re: [PATCH v2] powerpc: iommu: Bring back table group
+ release_ownership() call
+Message-ID: <20240201185231.GP50608@ziepe.ca>
+References: <170628173462.3742.18330000394415935845.stgit@ltcd48-lp2.aus.stglab.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170628173462.3742.18330000394415935845.stgit@ltcd48-lp2.aus.stglab.ibm.com>
 
-On Thu, 1 Feb 2024, Ilpo Järvinen wrote:
-
-> > >  I think there is a corner case here indeed.  If Link Active reporting is 
-> > > supported and neither DLLLA nor LBMS are set at entry, then the function 
-> > > indeed returns success even though the link is down and no attempt to 
-> > > retrain will have been made.  So this does indeed look a case for a return 
-> > > with the FALSE result.
-> > > 
-> > >  I think most easily this can be sorted by delegating the return result to 
-> > > a temporary variable, preset to FALSE and then only updated from results 
-> > > of the calls to `pcie_retrain_link'.  I can offer a patch as the author of 
-> > > the code and one who has means to verify it right away if that helped.
-> > 
-> > I already wrote a patch which addresses this together with the caller 
-> > site changes.
-
- Can you post it here for review then, as surely it's a standalone change?
-
-> > >  This can be problematic AFAICT however.  While I am not able to verify 
-> > > suspend/resume operation with my devices, I expect the behaviour to be 
-> > > exactly the same after resume as after a bus reset: the link will fail to 
-> > > negotiate and the LBMS and DLLLA bits will be respectively set and clear.  
-> > > Consequently if you clear LBMS at resume, then the workaround won't 
-> > > trigger and the link will remain inoperational in its limbo state.
-> > 
-> > How do you get the LBMS set in the first place? Isn't that because the 
-> > link tries to come up so shouldn't it reassert that bit again before the 
-> > code ends up into the target speed quirk? That is, I assumed you actually 
-> > wanted to detect LBMS getting set during pcie_wait_for_link_status() call 
-> > preceeding pcie_failed_link_retrain() call?
-
- It is a good question what the sequence of events exactly is that sets 
-the LBMS bit.  I don't know the answer offhand.
-
-> > There's always an option to store it into pci_dev for later use when the 
-> > quirk is found to be working for the first time if other solutions don't 
-> > work.
-
- Indeed there is.
-
-> > In any case and unrelated to this patch, the way this quirk monopolizes 
-> > LBMS bit is going to have to be changed because it won't be reliable with 
-> > the PCIe BW controller that sets up and irq for LBMS (and clears the bit).
-> > In bwctrl v5 (yet to be posted) I'll add LBMS counter into bwctrl to allow 
-> > this quirk to keep working (which will need to be confirmed).
-
- If there's an interrupt handler for LBMS events, then it may be the best 
-approach if the quirk is triggered by the handler instead, possibly as a 
-softirq.
-
-> > >  What kind of scenario does the LBMS bit get set in that you have a 
-> > > trouble with?  You write that in your case the downstream device has been 
-> > > disconnected while the bug hierarchy was suspended and it is not present 
-> > > anymore at resume, is that correct?
-> > >
-> > >  But in that case no link negotiation could have been possible and 
-> > > consequently the LBMS bit mustn't have been set by hardware (according to 
-> > > my understanding of PCIe), because (for compliant, non-broken devices 
-> > > anyway) it is only specified to be set for ports that can communicate with 
-> > > the other link end (the spec explicitly says there mustn't have been a 
-> > > transition through the DL_Down status for the port).
-> > >
-> > >  Am I missing something?
-> > 
-> > Yes, when resuming the device is already gone but the bridge still has 
-> > LBMS set. My understanding is that it was set because it was there
-> > from pre-suspend time but I've not really taken a deep look into it 
-> > because the problem and fix seemed obvious.
-
- I've always been confused with the suspend/resume terminology: I'd have 
-assumed this would have gone through a power cycle, in which case the LBMS 
-bit would have necessarily been cleared in the transition, because its 
-required state at power-up/reset is 0, so the value of 1 observed would be 
-a result of what has happened solely through the resume stage.  Otherwise 
-it may make sense to clear the bit in the course of the suspend stage, 
-though it wouldn't be race-free I'm afraid.
-
-> > I read that "without the Port transitioning through DL_Down status" 
-> > differently than you, I only interpret that it relates to the two 
-> > bullets following it. ...So if retrain bit is set, and link then goes 
-> > down, the bullet no longer applies and LBMS should not be set because 
-> > there was transition through DL_Down. But I could well be wrong...
-
- What I refer to is that if you suspend your system, remove the device 
-that originally caused the quirk to trigger and then resume your system 
-with the device absent, then LBMS couldn't have been set in the course of 
-resume, because the port couldn't have come out of the DL_Down status in 
-the absence of the downstream device.  Do you interpret it differently?
-
- Of course once set the bit isn't self-clearing except at power-up/reset.
-
-> So I would be really curious now to know how you get the LBMS on the 
-> device that needs the Target Speed quirk? Is this true (from the commit 
-> a89c82249c37 ("PCI: Work around PCIe link training failures")):
+On Fri, Jan 26, 2024 at 09:09:18AM -0600, Shivaprasad G Bhat wrote:
+> The commit 2ad56efa80db ("powerpc/iommu: Setup a default domain and
+> remove set_platform_dma_ops") refactored the code removing the
+> set_platform_dma_ops(). It missed out the table group
+> release_ownership() call which would have got called otherwise
+> during the guest shutdown via vfio_group_detach_container(). On
+> PPC64, this particular call actually sets up the 32-bit TCE table,
+> and enables the 64-bit DMA bypass etc. Now after guest shutdown,
+> the subsequent host driver (e.g megaraid-sas) probe post unbind
+> from vfio-pci fails like,
 > 
-> "Instead the link continues oscillating between the two speeds, at the 
-> rate of 34-35 times per second, with link training reported repeatedly 
-> active ~84% of the time."
+> megaraid_sas 0031:01:00.0: Warning: IOMMU dma not supported: mask 0x7fffffffffffffff, table unavailable
+> megaraid_sas 0031:01:00.0: Warning: IOMMU dma not supported: mask 0xffffffff, table unavailable
+> megaraid_sas 0031:01:00.0: Failed to set DMA mask
+> megaraid_sas 0031:01:00.0: Failed from megasas_init_fw 6539
 > 
-> ?
+> The patch brings back the call to table_group release_ownership()
+> call when switching back to PLATFORM domain from BLOCKED, while
+> also separates the domain_ops for both.
+> 
+> Fixes: 2ad56efa80db ("powerpc/iommu: Setup a default domain and remove set_platform_dma_ops")
+> Signed-off-by: Shivaprasad G Bhat <sbhat@linux.ibm.com>
+> ---
+> Changelog:
+> v1: https://lore.kernel.org/linux-iommu/170618451433.3805.9015493852395837391.stgit@ltcd48-lp2.aus.stglab.ibm.com/
+>  - Split the common attach_dev call to platform and blocked attach_dev
+>    calls as suggested.
+> 
+>  arch/powerpc/kernel/iommu.c |   37 ++++++++++++++++++++++++++++---------
+>  1 file changed, 28 insertions(+), 9 deletions(-)
 
- That is what I have observed.  It was so long ago I don't remember how I 
-calculated the figures anymore, it may have been with a U-Boot debug patch 
-made to collect samples (because with U-Boot you can just poll the LT bit 
-while busy-looping).  I'd have to try and dig out the old stuff.
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-> Because if it is constantly picking another speed, it would mean you get 
-> LBMS set over and over again, no? If that happens 34-35 times per second, 
-> it should be set already again when we get into that quirk because there 
-> was some wait before it gets called.
+> @@ -1312,13 +1312,32 @@ static struct iommu_domain spapr_tce_platform_domain = {
+>  	.ops = &spapr_tce_platform_domain_ops,
+>  };
+> 
+> -static struct iommu_domain spapr_tce_blocked_domain = {
+> -	.type = IOMMU_DOMAIN_BLOCKED,
+> +static int
+> +spapr_tce_blocked_iommu_attach_dev(struct iommu_domain *platform_domain,
 
- I'll see if I can experiment with the hardware over the next couple of 
-days and come back with my findings.
+It was my typo but this should be "struct iommu_domain *blocked_domain"
 
-  Maciej
+Jason
 
