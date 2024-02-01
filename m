@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-48441-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4520C845C1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:50:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 333F1845C1F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:50:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 015DA29B1E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:50:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C625E1F24791
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:50:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45347626DE;
-	Thu,  1 Feb 2024 15:50:24 +0000 (UTC)
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E55A626B4;
+	Thu,  1 Feb 2024 15:50:27 +0000 (UTC)
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6363626B1
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 15:50:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2D62779E4
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 15:50:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706802623; cv=none; b=mrpFEZT4RjrgZRNOsyeHsJvF1N+ykS3g0ERJrZip4eE/3CMvkWD12r1xGxXHtSlnAvrZCAE+02IVg50e4XYNHDhT2mrpY0KwekhobFLHYEKUtVlUScH3QxOyfeQYbOJOcx73ziNt0OQfCfqAWkhoyWHp9GWohu38ccWW+Dj3nWw=
+	t=1706802626; cv=none; b=SDA3JsX2tbkC/j0M1FqfKdrM1o4MDiqlKONUr+pG7Jjr0wL2DtvzztXwLNTqZhguv2Qx8Rmy+EZGumjwz5Z8sep1DjEa2bT4Xn/jhayV7bF9i5nzwIWgmQHA9Wg0nSzAnEg5y1jufUcXBRVXhul4t0OcXB260VWj1gDBXqwVeoE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706802623; c=relaxed/simple;
-	bh=VIfBITSqfy8Lon0qFpUTWH3+qtn/IpinT6X9/XbmeYc=;
+	s=arc-20240116; t=1706802626; c=relaxed/simple;
+	bh=IDU9hzcPvRfJeOwCR6AGEfqusObhjLsrCZZpAPc6C7E=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=YmZndBLW7fx/uTaRVDuUHV55FEweuXbJqi4+OxHVcmaFUjCd/hBCNKSj52/w1eNLTjQbtXbIb8Q+Q1PYn3jHvPYaOLwUYGAQorhzDIjAXI394JipekXoVyDe9t/Va4FIwqarmqIWEZGMIIDCwmJ1AUOUh3tgh4J/GSL/be3/xjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.189
+	 In-Reply-To:To:Cc; b=Bfw+nb4aXo3nRkGNoNKJ76N9HJsbW/qIHQAOf9LgyWO9qfKST1dK5/ln6uRaN+r0akTXtCSoWnz/hQhs4dyCLgBFSZvQjZd5K7cLZ6ZYQ/zoTHL2s2kYzEolLUijvWuDaH8YiuXMYAjegqDlU+HwQkk7ME3v1Pn7RuQib9Z0LT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Chengming Zhou <zhouchengming@bytedance.com>
-Date: Thu, 01 Feb 2024 15:49:01 +0000
-Subject: [PATCH 1/6] mm/zswap: add more comments in shrink_memcg_cb()
+Date: Thu, 01 Feb 2024 15:49:02 +0000
+Subject: [PATCH 2/6] mm/zswap: invalidate zswap entry when swap entry free
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -40,7 +40,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240201-b4-zswap-invalidate-entry-v1-1-56ed496b6e55@bytedance.com>
+Message-Id: <20240201-b4-zswap-invalidate-entry-v1-2-56ed496b6e55@bytedance.com>
 References: <20240201-b4-zswap-invalidate-entry-v1-0-56ed496b6e55@bytedance.com>
 In-Reply-To: <20240201-b4-zswap-invalidate-entry-v1-0-56ed496b6e55@bytedance.com>
 To: Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>,
@@ -49,85 +49,101 @@ Cc: linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>, Chengming
  Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org
 X-Migadu-Flow: FLOW_OUT
 
-Add more comments in shrink_memcg_cb() to describe the deref dance
-which is implemented to fix race problem between lru writeback and
-swapoff, and the reason why we rotate the entry at the beginning.
+During testing I found there are some times the zswap_writeback_entry()
+return -ENOMEM, which is not we expected:
 
-Also fix the stale comments in zswap_writeback_entry(), and add
-more comments to state that we only deref the tree after we get
-the swapcache reference.
+bpftrace -e 'kr:zswap_writeback_entry {@[(int32)retval]=count()}'
+@[-12]: 1563
+@[0]: 277221
 
-Suggested-by: Yosry Ahmed <yosryahmed@google.com>
-Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+The reason is that __read_swap_cache_async() return NULL because
+swapcache_prepare() failed. The reason is that we won't invalidate
+zswap entry when swap entry freed to the per-cpu pool, these zswap
+entries are still on the zswap tree and lru list.
+
+This patch moves the invalidation ahead to when swap entry freed
+to the per-cpu pool, since there is no any benefit to leave trashy
+zswap entry on the tree and lru list.
+
+With this patch:
+bpftrace -e 'kr:zswap_writeback_entry {@[(int32)retval]=count()}'
+@[0]: 259744
+
+Note: large folio can't have zswap entry for now, so don't bother
+to add zswap entry invalidation in the large folio swap free path.
+
 Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 ---
- mm/zswap.c | 43 ++++++++++++++++++++++++++-----------------
- 1 file changed, 26 insertions(+), 17 deletions(-)
+ include/linux/zswap.h | 4 ++--
+ mm/swap_slots.c       | 2 ++
+ mm/swapfile.c         | 1 -
+ mm/zswap.c            | 5 +++--
+ 4 files changed, 7 insertions(+), 5 deletions(-)
 
+diff --git a/include/linux/zswap.h b/include/linux/zswap.h
+index 91895ce1fdbc..341aea490070 100644
+--- a/include/linux/zswap.h
++++ b/include/linux/zswap.h
+@@ -29,7 +29,7 @@ struct zswap_lruvec_state {
+ 
+ bool zswap_store(struct folio *folio);
+ bool zswap_load(struct folio *folio);
+-void zswap_invalidate(int type, pgoff_t offset);
++void zswap_invalidate(swp_entry_t swp);
+ int zswap_swapon(int type, unsigned long nr_pages);
+ void zswap_swapoff(int type);
+ void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
+@@ -50,7 +50,7 @@ static inline bool zswap_load(struct folio *folio)
+ 	return false;
+ }
+ 
+-static inline void zswap_invalidate(int type, pgoff_t offset) {}
++static inline void zswap_invalidate(swp_entry_t swp) {}
+ static inline int zswap_swapon(int type, unsigned long nr_pages)
+ {
+ 	return 0;
+diff --git a/mm/swap_slots.c b/mm/swap_slots.c
+index 0bec1f705f8e..d24cdea26daa 100644
+--- a/mm/swap_slots.c
++++ b/mm/swap_slots.c
+@@ -273,6 +273,8 @@ void free_swap_slot(swp_entry_t entry)
+ {
+ 	struct swap_slots_cache *cache;
+ 
++	zswap_invalidate(entry);
++
+ 	cache = raw_cpu_ptr(&swp_slots);
+ 	if (likely(use_swap_slot_cache && cache->slots_ret)) {
+ 		spin_lock_irq(&cache->free_lock);
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 0580bb3e34d7..65b49db89b36 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -744,7 +744,6 @@ static void swap_range_free(struct swap_info_struct *si, unsigned long offset,
+ 		swap_slot_free_notify = NULL;
+ 	while (offset <= end) {
+ 		arch_swap_invalidate_page(si->type, offset);
+-		zswap_invalidate(si->type, offset);
+ 		if (swap_slot_free_notify)
+ 			swap_slot_free_notify(si->bdev, offset);
+ 		offset++;
 diff --git a/mm/zswap.c b/mm/zswap.c
-index 4aea03285532..735f1a6ef336 100644
+index 735f1a6ef336..d8bb0e06e2b0 100644
 --- a/mm/zswap.c
 +++ b/mm/zswap.c
-@@ -1207,10 +1207,12 @@ static int zswap_writeback_entry(struct zswap_entry *entry,
+@@ -1738,9 +1738,10 @@ bool zswap_load(struct folio *folio)
+ 	return true;
+ }
  
- 	/*
- 	 * folio is locked, and the swapcache is now secured against
--	 * concurrent swapping to and from the slot. Verify that the
--	 * swap entry hasn't been invalidated and recycled behind our
--	 * backs (our zswap_entry reference doesn't prevent that), to
--	 * avoid overwriting a new swap folio with old compressed data.
-+	 * concurrent swapping to and from the slot, and concurrent
-+	 * swapoff so we can safely dereference the zswap tree here.
-+	 * Verify that the swap entry hasn't been invalidated and recycled
-+	 * behind our backs, to avoid overwriting a new swap folio with
-+	 * old compressed data. Only when this is successful can the entry
-+	 * be dereferenced.
- 	 */
- 	tree = swap_zswap_tree(swpentry);
+-void zswap_invalidate(int type, pgoff_t offset)
++void zswap_invalidate(swp_entry_t swp)
+ {
+-	struct zswap_tree *tree = swap_zswap_tree(swp_entry(type, offset));
++	pgoff_t offset = swp_offset(swp);
++	struct zswap_tree *tree = swap_zswap_tree(swp);
+ 	struct zswap_entry *entry;
+ 
  	spin_lock(&tree->lock);
-@@ -1263,22 +1265,29 @@ static enum lru_status shrink_memcg_cb(struct list_head *item, struct list_lru_o
- 	int writeback_result;
- 
- 	/*
--	 * Rotate the entry to the tail before unlocking the LRU,
--	 * so that in case of an invalidation race concurrent
--	 * reclaimers don't waste their time on it.
-+	 * As soon as we drop the LRU lock, the entry can be freed by
-+	 * a concurrent invalidation. This means the following:
- 	 *
--	 * If writeback succeeds, or failure is due to the entry
--	 * being invalidated by the swap subsystem, the invalidation
--	 * will unlink and free it.
-+	 * 1. We extract the swp_entry_t to the stack, allowing
-+	 *    zswap_writeback_entry() to pin the swap entry and
-+	 *    then validate the zwap entry against that swap entry's
-+	 *    tree using pointer value comparison. Only when that
-+	 *    is successful can the entry be dereferenced.
- 	 *
--	 * Temporary failures, where the same entry should be tried
--	 * again immediately, almost never happen for this shrinker.
--	 * We don't do any trylocking; -ENOMEM comes closest,
--	 * but that's extremely rare and doesn't happen spuriously
--	 * either. Don't bother distinguishing this case.
-+	 * 2. Usually, objects are taken off the LRU for reclaim. In
-+	 *    this case this isn't possible, because if reclaim fails
-+	 *    for whatever reason, we have no means of knowing if the
-+	 *    entry is alive to put it back on the LRU.
- 	 *
--	 * But since they do exist in theory, the entry cannot just
--	 * be unlinked, or we could leak it. Hence, rotate.
-+	 *    So rotate it before dropping the lock. If the entry is
-+	 *    written back or invalidated, the free path will unlink
-+	 *    it. For failures, rotation is the right thing as well.
-+	 *
-+	 *    Temporary failures, where the same entry should be tried
-+	 *    again immediately, almost never happen for this shrinker.
-+	 *    We don't do any trylocking; -ENOMEM comes closest,
-+	 *    but that's extremely rare and doesn't happen spuriously
-+	 *    either. Don't bother distinguishing this case.
- 	 */
- 	list_move_tail(item, &l->list);
- 
 
 -- 
 b4 0.10.1
