@@ -1,106 +1,91 @@
-Return-Path: <linux-kernel+bounces-47770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 005A784528E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A6E2845290
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:20:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 330EA1C22D41
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:19:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAF351C264E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:20:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9A8A159571;
-	Thu,  1 Feb 2024 08:19:51 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25EFD159587;
+	Thu,  1 Feb 2024 08:20:07 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25C39158D76;
-	Thu,  1 Feb 2024 08:19:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 554BF158D8B
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 08:20:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706775591; cv=none; b=iAnXxhQSTL20GBZ2Awcmhqf43KKrM43GigNROtdi6OTmVFJnGHQtamKY0KYdfnCiAPuLAjUh/bA1tSAp6gvsuEMjrq+GJeq7Urju80R17T7DgoCgdOGdkXPPhX50G21ihOoas93+KQfqO1pEkSA5Flxvt8103+sr11l4znMsEiQ=
+	t=1706775606; cv=none; b=T8uFoosOZDgeL3gU+n1tQ6POLany0RKNJAbBCN2/+8/6x4HK/MR/nnRMvJNjS2KBg5uu4Ljtnn1zE4sMjKIJQzE4Z6cNxgA4l/cAZ8r6KQ7KbMdK24EX38rxCeoPP7JbvQPVqYhMMQMIY8aZqpt+7gQp5i1R6zl9Iuu8flR0WgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706775591; c=relaxed/simple;
-	bh=dpj7BQrTh0UjOXplbKxWBBtt23WR/YSUKBByrVjv5Nw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YrMUXOS07S0Q7WPqlIQVChb2MbYeMeFzohU7NUmvJg9Jr/hp0VorxtLbHapNRHIQC6/lpANbaB6xgMpAIUrW/WQ/ETJGfbNLwWLc2xbi4p0TtXq8sPNYt2h42S3ikIGay7+5No/sC4m63b20BlVSwRagMIbTN/4NsHaTUL2VIBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 37791ac224ac437d8b6e2347458ab69e-20240201
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:2050252c-341c-4a4e-8f25-f548989288d7,IP:10,
-	URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-	ION:release,TS:20
-X-CID-INFO: VERSION:1.1.35,REQID:2050252c-341c-4a4e-8f25-f548989288d7,IP:10,UR
-	L:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:20
-X-CID-META: VersionHash:5d391d7,CLOUDID:738965fe-c16b-4159-a099-3b9d0558e447,B
-	ulkID:24020116194210GQBIOB,BulkQuantity:0,Recheck:0,SF:17|19|44|66|38|24|1
-	02,TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL
-	:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-UUID: 37791ac224ac437d8b6e2347458ab69e-20240201
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1346395004; Thu, 01 Feb 2024 16:19:40 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id F250CE000EB9;
-	Thu,  1 Feb 2024 16:19:39 +0800 (CST)
-X-ns-mid: postfix-65BB541B-786294796
-Received: from kernel.. (unknown [172.20.15.254])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 82DABE000EB9;
-	Thu,  1 Feb 2024 16:19:37 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: chuck.lever@oracle.com,
-	jlayton@kernel.org,
-	neilb@suse.de,
-	kolga@netapp.com,
-	Dai.Ngo@oracle.com,
-	tom@talpey.com
-Cc: linux-nfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] nfsd: Simplify the allocation of slab caches in nfsd_drc_slab_create
-Date: Thu,  1 Feb 2024 16:19:35 +0800
-Message-Id: <20240201081935.200031-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706775606; c=relaxed/simple;
+	bh=IT+/IznFUZfP8voVJHxGSDhujN2yYOYuh0E8y5jDUBw=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=RdPfpB8QO7PF6nuN3FhijuJ3ubdNCsxZqGP9m04o2QqaH0AFxoZnfpK0MOjzCmBIcemuqjznwPqS5hPRaJqgn21RR2q4TqPmrEAhvN/jDGP/MfyVcrWXClnmSpl72G7O3JlHlOE5LJteNh6f5WYIaZaFS3VUm7eMXV4AqpuQJd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c0088dc494so48049739f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 00:20:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706775604; x=1707380404;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oj5sIJNV5dqs7fT2C4aqfxRFgCGhxW6XP8G9oXlz16I=;
+        b=Qb3QHhni14MUlrKsFDMLT+nstj1GFTfG5lP2qOIotepB3mRxcGlP3fs6PA3yCB6B10
+         U/4o2jvFOACDVwT+q3Tddzbow4EwC+MW7sjm4Gqp3Jb1WhWto+AwR/YGgrU8hYZ+0cYh
+         oGNnl6MLTtBSUK/xaDbqkL+IK1qqK17MlkiGsZyK//3dzjMWb+V0D21DPJO26dad0+oz
+         m4zVvC6Fb+K8HL08Y7QiaQZz+xxMpsrVoXgxChzxSnUink6xUf3BbEWQjNkgZN3ErtFh
+         V4AV6x7WetlNHJRobBW9p0n8BoBfNvD+j3pSDgataOtMeaWHXCJF/U2FKVZZLoELCTlV
+         JPOQ==
+X-Gm-Message-State: AOJu0Yz2KIj80PpWI/FxNVReOk4gTenkMwP+pKI5SzLEBJMBFtvhwfvA
+	y56YDwJNooree3Otd1BerXZie03wHPD3+sr1c8GkDu9uS1b4gghe0DqSOM7F4w6pQ4WJECfu3wE
+	f71/ZjoUQNaKfKKkNGH2VMMoqIjt1bf2xxGRs1FB3V6D8PfnN+NE+2Ms=
+X-Google-Smtp-Source: AGHT+IGMneXP1VwttEU6QqMbn9Gto8Ha2qHva7b18FS6I488vw1v7coYv7Pm5/27FVSdHOXBwv51x8UF1Ur1lNgCzbwHZrnXMOmr
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a05:6e02:1d01:b0:363:9d58:805b with SMTP id
+ i1-20020a056e021d0100b003639d58805bmr115442ila.3.1706775604492; Thu, 01 Feb
+ 2024 00:20:04 -0800 (PST)
+Date: Thu, 01 Feb 2024 00:20:04 -0800
+In-Reply-To: <000000000000b62cdb05f7dfab8b@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009e002e06104da983@google.com>
+Subject: Re: [syzbot] [ext4?] KASAN: slab-use-after-free Read in ext4_convert_inline_data_nolock
+From: syzbot <syzbot+db6caad9ebd2c8022b41@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org, 
+	jack@suse.cz, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, nogikh@google.com, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-to simplify the creation of SLAB caches.
-Make the code cleaner and more readable.
+syzbot suspects this issue was fixed by commit:
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- fs/nfsd/nfscache.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-diff --git a/fs/nfsd/nfscache.c b/fs/nfsd/nfscache.c
-index 5c1a4a0aa605..64ce0cc22197 100644
---- a/fs/nfsd/nfscache.c
-+++ b/fs/nfsd/nfscache.c
-@@ -166,8 +166,7 @@ nfsd_reply_cache_free(struct nfsd_drc_bucket *b, stru=
-ct nfsd_cacherep *rp,
-=20
- int nfsd_drc_slab_create(void)
- {
--	drc_slab =3D kmem_cache_create("nfsd_drc",
--				sizeof(struct nfsd_cacherep), 0, 0, NULL);
-+	drc_slab =3D KMEM_CACHE(nfsd_cacherep, 0);
- 	return drc_slab ? 0: -ENOMEM;
- }
-=20
---=20
-2.39.2
+    fs: Block writes to mounted block devices
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1606d4ffe80000
+start commit:   3a93e40326c8 Merge tag 'for-linus' of git://git.kernel.org..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9c35b3803e5ad668
+dashboard link: https://syzkaller.appspot.com/bug?extid=db6caad9ebd2c8022b41
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a2cd05c80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=158e1f29c80000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
