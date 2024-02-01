@@ -1,86 +1,82 @@
-Return-Path: <linux-kernel+bounces-47519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEAE8844EDC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:49:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AEAA844EF9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:06:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A31711F24222
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:49:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E22B71F234C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:06:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3341EACC;
-	Thu,  1 Feb 2024 01:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E80CF101D2;
+	Thu,  1 Feb 2024 02:05:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CWJmy8wI"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EML5+2Kh"
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEBC8EAEF;
-	Thu,  1 Feb 2024 01:48:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E839BFC14;
+	Thu,  1 Feb 2024 02:05:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706752140; cv=none; b=dtQQduC8yQGTjmL9plvLN+LTDqo2S17jo6DEymZ2hKg+SZRlfU8OGjPRxVqIVtb/OpZBbBBp0idj+Pp8LZrC/hEZdgAYB8qNi23aOSTrrK79vxvMStKr7hVajROGau93QBNdNP9nFd/ysnEB57izW8HhYcxR60by710M65OKLyU=
+	t=1706753159; cv=none; b=g+6W/Hm5Y/dp4ogQOTPdO2zui37EaHy1e369WJgn3TplcnPax4DMbmCftA9nRdKi0hz/Bn8pZNqbtuKmpzT7f2yVk9cEXY0TOLa3G5H9RyFn8cTNUHP6Pr3W0+Zxw2Uqg3l/cT13WGnC4CRLy7m1yYalRDOgpfJIkMLuBU/kXvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706752140; c=relaxed/simple;
-	bh=N6QKfiFvZzxxTVFRsxwYsWWNcRXAOchRha0k2f+iqCg=;
+	s=arc-20240116; t=1706753159; c=relaxed/simple;
+	bh=WZKyyU3njHxkaPfTiuVOaKohUtAcLb9qZANIc0cHy6E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g0jXwMApCs2sm8txI+NNwSle8E1kcvJ1MFljmIQGv22gWsugvTokMCIPPOGFRls/GtvnoyJ7gu4dXShllrUz+RS2S962y6nnK9H4jFvgHNe/XXiuCzjVtcMyogfoaGUjztWIxWDEcZVU+7H3NVSDJV2MwB3Oh0UcVicCxu+FkUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CWJmy8wI; arc=none smtp.client-ip=209.85.210.181
+	 Content-Type:Content-Disposition:In-Reply-To; b=kaUGgsYQj3IERjm8Qfn+nyLQAGEuq4CPhXFaqloJffXKcE3KwtgpTEVb/08j6onD9yksDjqzKHBiXwPrVzFYFg7NkRUoixLp4ADe6YKuPb/C0K6UAqeu36RXr2fdN7OlKOhylROEDlVU702VITVuQotvvRr+3dJfh2nCcNbmo7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EML5+2Kh; arc=none smtp.client-ip=209.85.215.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6dfc321c677so282571b3a.3;
-        Wed, 31 Jan 2024 17:48:58 -0800 (PST)
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so388918a12.1;
+        Wed, 31 Jan 2024 18:05:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706752138; x=1707356938; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706753157; x=1707357957; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5yoyeQ03SLQ2/KhLtmuYs2D9JtsD1upyRCzOcNiDbmA=;
-        b=CWJmy8wIgaTohXSffw3wwa1nkAMbvBkI4Xw+Ok3rpV3EfbKDgxCT1O3SfaycZY25Jt
-         uGQFUF1QrwEnbLNW2V+Ug1wli+a+gmPPOeFm0aqa1ICoiQYXfVECHGpMN89k2vDkgR3/
-         uVbAYgvsJmNgxqKPAyQl+9oEETmTnMAG4Km+M0rqU5/CyEKt2xKa4vSwntboYUx9WEZk
-         RApG9TCyKfexdnWw36nnED+Gb1dFVrbZY33VX+2la/3Zvt0f1v0t7ZoFcDzEcn4gi1BR
-         290exQVQMN8p7W5a8KG0XBM37d3z3p1HucU8CV1C3PPfZFxKvY7Ysa9Z099/5PlASguF
-         /xQw==
+        bh=CabtX6HVlcsvD8Lc4Od57wI4l06g03/hrDUv1/sVAuA=;
+        b=EML5+2Kh5g9Z1EK26kI3zprTTMkJP+Yjw4WiZAvPJvyhHHYgc1k+NE58c7KzJcFYIY
+         aY+vYE+ubdI4/CtGoyd3heFPTAskiLzxKuAm1UN0+X+EDmR5B3Av6a80wxUXhoTlcrs5
+         Dm76jRdWaoOH8BgFwG3z8JDvHOt4fbq6GP9fptwVNtPkj1SzGNzXjUaSeLENSBM2AhIf
+         FvW52bAgiHu8+00iO6jjFtAj7QoAxky5kxd0pCuYoOhuSLx07mbOZqKpFQ2btAKZ2SSe
+         zJJN1rTqPZKlIe/ALwlSxJHPHyO7FddgmxcAel6hkzgDbNK19dhoOVMWoBWvmR67wW78
+         01nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706752138; x=1707356938;
+        d=1e100.net; s=20230601; t=1706753157; x=1707357957;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5yoyeQ03SLQ2/KhLtmuYs2D9JtsD1upyRCzOcNiDbmA=;
-        b=P8SD1TKZMfwTHzYEjGLv1CSffTmkaI2hbc9tHpZb40xDjTs05mTmplW79e7n98bcl/
-         6gnlLnpDpHeq4G9wF2BxmHK54NFXo6WwgX7Cca7Wrv9EGVPlF0MeqNGcZjV2FbNVpiP3
-         2gusRg9/YEvSiUhgk0B3KOAGMvRvOtFIcGHrJpYa3+sJUxcy5SoX6L11DvePnVFh5fkv
-         4Lm9GNGzu3hlCTR9lq08IS72B22uJ7s1BnJGH+mQslF1knMGP/tosafQp2V7WS1GL8fM
-         n1ysasae7SXQhiCS/Pv0maaDHGK1I8LaIUxGeN63k63DY5BWp8ZeajJeFCI5chNcZtHD
-         ESpw==
-X-Gm-Message-State: AOJu0Yyyt08t5GJo9Jv8nrRWL/ALCmyNQFzTwICPryN0EvE77HKsoKZg
-	P0gV5Rxr+uzumFuuvMvyeQEay4Z4fYJxLLxnJHlvlob5e9FaGG0Nm6qFkFBPnhIC6Q==
-X-Google-Smtp-Source: AGHT+IFxYwb1zXm5LsSCQsfI8y7IMZ5+/9g8tqNylKmrp/LkcNjBnoFR24f3iCwh74oislzN6KhgYw==
-X-Received: by 2002:a62:e705:0:b0:6de:352c:c2c2 with SMTP id s5-20020a62e705000000b006de352cc2c2mr3217324pfh.30.1706752138075;
-        Wed, 31 Jan 2024 17:48:58 -0800 (PST)
+        bh=CabtX6HVlcsvD8Lc4Od57wI4l06g03/hrDUv1/sVAuA=;
+        b=Yp1d+erA5pu5ah/ZK/cx4hEzQ/PcaB5xaVj0omnzZmOfQeY1J9tz8sxgM7/rFp/cEa
+         /OMQVZnXbTJQR/spQtFj3Y6Ky6tXpETNGWkGE82yrsJ8a0Z4Becl056f/JQmmrXSWE32
+         +h+T7i0sssGRWPizkY6LorDm6dwL5c8Bg3nE6ecuEiL2DvfJku5GdgYKvrbMv9I6xaW0
+         cbJJRMATouYmy9FTaD0GQHuaZG9XcSK7KQjXA8GeiILLsI+Jg7p8PHcm82YtrAj7XPDl
+         zGd5X2nTRhwVhw94kcernyScBdH8LHgR+sCn2uqvl2rz0KdjSpmjrlu0CqiArEwXjKVB
+         5Jpg==
+X-Gm-Message-State: AOJu0YxDkMBSB8LtUkZEvz2zyOhnNl4wCdXjhYi4P4uPiO/kELp+ZcFT
+	LD5gG5w1tAz0hGn+CA36qBPDI6a/C3qLhbOE1qME6dFj39AeaQ9oa0YNwOngpECN6w==
+X-Google-Smtp-Source: AGHT+IEAZdmadmtlqNJT0DdlQkBf4IfmFoc/IRSry9cgLFX6xq5IoETw0+TLgbp6VWQDYULteetUxQ==
+X-Received: by 2002:a05:6a21:9214:b0:199:d9c9:2b65 with SMTP id tl20-20020a056a21921400b00199d9c92b65mr3518060pzb.55.1706753157208;
+        Wed, 31 Jan 2024 18:05:57 -0800 (PST)
 Received: from dragon (173.242.119.193.16clouds.com. [173.242.119.193])
-        by smtp.gmail.com with ESMTPSA id t5-20020a62d145000000b006dde36aaae7sm11033921pfl.64.2024.01.31.17.48.49
+        by smtp.gmail.com with ESMTPSA id h3-20020aa786c3000000b006ddc30172c7sm10512734pfo.30.2024.01.31.18.05.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 17:48:57 -0800 (PST)
-Date: Thu, 1 Feb 2024 17:47:48 +0800
+        Wed, 31 Jan 2024 18:05:56 -0800 (PST)
+Date: Thu, 1 Feb 2024 18:04:47 +0800
 From: Shawn Guo <shawn.gsc@gmail.com>
-To: Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Marek Vasut <marex@denx.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	NXP Linux Team <linux-imx@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 0/4] TQMa8Xx (i.MX8QXP/i.MX8DXP) support
-Message-ID: <20240201094748.GC463595@dragon>
-References: <20231214142327.1962914-1-alexander.stein@ew.tq-group.com>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: shawnguo@kernel.org, xiaolei.wang@windriver.com, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, festevam@gmail.com, imx@lists.linux.dev,
+	kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
+	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+	linux-kernel@vger.kernel.org, marcel.ziswiler@toradex.com,
+	qiangqing.zhang@nxp.com, robh+dt@kernel.org, s.hauer@pengutronix.de
+Subject: Re: [PATCH 1/2] arm64: dts: imx8qm: Align edma3 power-domains
+ resources indentation
+Message-ID: <20240201100447.GE463595@dragon>
+References: <20231214194655.608902-1-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,14 +85,13 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231214142327.1962914-1-alexander.stein@ew.tq-group.com>
+In-Reply-To: <20231214194655.608902-1-Frank.Li@nxp.com>
 
-On Thu, Dec 14, 2023 at 03:23:23PM +0100, Alexander Stein wrote:
-> Alexander Stein (4):
->   arm64: dts: imx: add imx8dxp support
->   dt-bindings: arm: add TQMa8Xx boards
->   arm64: dts: freescale: add initial device tree for TQMa8Xx
->   arm64: defconfig: Enable i.MX8QXP device drivers
+On Thu, Dec 14, 2023 at 02:46:54PM -0500, Frank Li wrote:
+> <&pd IMX_SC_R_DMA_1_CH*> is now properly aligned with the previous line
+> for improved code readability.
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
-Applied all, thanks!
+Applied both, thanks!
 
