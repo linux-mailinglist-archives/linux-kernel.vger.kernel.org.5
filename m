@@ -1,402 +1,311 @@
-Return-Path: <linux-kernel+bounces-47536-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9B3A844F17
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:19:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DFBA844F19
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:23:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AB261F285D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:19:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0C98B2C475
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:23:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B6AD17BD1;
-	Thu,  1 Feb 2024 02:19:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A76B317554;
+	Thu,  1 Feb 2024 02:23:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="okkk1Cb8"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="cJx0YHTR"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EDA433CC6;
-	Thu,  1 Feb 2024 02:19:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9683125D2
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 02:23:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706753955; cv=none; b=H3oSAK4HMkf5gjnMxFT0fSA39y4097DFOwLZIjys1i0Dqi6b5t8rFW7M0ZJgaKy7ruP6nvCSZ+QUiijOBrsMdF9xGUeVft1U+Ui51B7tyCwtZ4V223dOWHl6SXYhXQABufN7IuYgYuunzY+COvY7PRWKv47bCA/SFXfsKaP/zYk=
+	t=1706754193; cv=none; b=MTiJMFVFc2ZeybmUrDOLDSiSPYPRjr9Yn7AxP8S2v65w2AJeuFofcI4iPPu63hoTGnxLCfjMDkIk+m/1m6PZIPMGHup4BfKB+mBvxnAZypWFnc5lMbnYv6pMA33RmI8B8BasdnCFTAnz4tBbk1JdmMEm7F9FQ9Kfn+yHewn0GZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706753955; c=relaxed/simple;
-	bh=LmNjmraZk+WS9gdE4M5+8LWWlzYmyX353zJe/xpeAeQ=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MdE639RdZeTvCIGDcwQQeSYmcgJuTFUdu0gJfW5udItxCZ6fwBoPsnRALyJnKZPGcG2r7WUm9WYV0gz7NxmlPuCIhB230ZFeICyHowI8drNnfHhmU958yz7EIOkWKa/Kmexqk5vgzdsFhVPK6rvSSTUis7hsKOTptTOBPEgoSpQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=okkk1Cb8; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40VLIchp010605;
-	Thu, 1 Feb 2024 02:19:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=PU1zeIEEaGx4EL7Rhsm2x
-	OONX/kLjzZ7k7bT4ihUE80=; b=okkk1Cb8sK11reuiCwu0RcooacXIVbkrAqBrK
-	0IYsXtePaIKmiVNWE96YjmnCZBDVvwqdKQjxVpoEV51RFFW5Ihcctn2FPEl6U6Ji
-	F/3lc4RSeOzq093hpaJJ72tZcuAhJaj3+m4bbrDqXu6MYypHwnyInt2/TcVtlT+b
-	VaFEIORzNuS7KClbk68qie+Dz8GeMRx1yTgoZswg5w9Anh/IIwgIE9UbyI8pdC0Y
-	1Q5Yll1VsS1YwP5PuQqcXcG2T/6wQrsCIWr9M1H7zMeqFa7o3dvDjfb1kTTv0lQt
-	Ej+WgHIge6jOgN3a73fYNmNNIIBJv6AbgGL/RJOoAXwn6Hr0g==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vyve60sgw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 02:19:04 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4112J4WQ032591
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 1 Feb 2024 02:19:04 GMT
-Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 31 Jan 2024 18:19:03 -0800
-Date: Wed, 31 Jan 2024 18:19:03 -0800
-From: Elliot Berman <quic_eberman@quicinc.com>
-To: Abel Vesa <abel.vesa@linaro.org>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay
- Abraham I <kishon@kernel.org>,
-        Dmitry Baryshkov
-	<dmitry.baryshkov@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] phy: qualcomm: eusb2-repeater: Rework init to drop
- redundant zero-out loop
-Message-ID: <ocecdc6cmznvrvjbllm6vzuvwem7c2754phltllbfw6ab4bqfd@cj2fcywg4nso>
-Mail-Followup-To: Abel Vesa <abel.vesa@linaro.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-References: <20240129-phy-qcom-eusb2-repeater-fixes-v3-1-9a61ef3490de@linaro.org>
+	s=arc-20240116; t=1706754193; c=relaxed/simple;
+	bh=nu0kNQbxC1lod5nqjmBr0FQZkXkPSSaDf6JaK5AYOl8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ELk3TpjNiOsCKwFnO87gW+SU31Qj2Gb3/ru2MGKat4rO6YDBws0i+BO7oFT0SDAm5b9Q14ir+Lv7TeWg6hSNZAuk6bXHekyXMPFhx+pKMKeb6GmzmTetfwgTwLUFrP3urb5C7jFcR8MIzYr7SE5fcy6hNaC5Yu1pONrAqrEGpQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=cJx0YHTR; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55f19a3ca7aso2965913a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 18:23:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706754189; x=1707358989; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0iv6b2i9l9rFe8vA78TEWX0/zmUGmgrOJP47imeaplQ=;
+        b=cJx0YHTRbSC/0r0kVPXxfH4pV57hjJg3y81MUBioaBJGdQ8k/BQJPzJW/eTS46Fwis
+         ywr61urhG36SCYoZsNpeAvzqvcuOB15O+93TMK2ipwB0HxFe5RWvgo37Q7+BU/mF4F4t
+         yRqmg2B0gr0wXOM323hxLAg2fqWMycRNiqvl8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706754189; x=1707358989;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0iv6b2i9l9rFe8vA78TEWX0/zmUGmgrOJP47imeaplQ=;
+        b=APFkUvufjcTXy/3pBR1oEWpz7gAhrn7ZHK0vFJ+eYG6mXuMc2MyoSoiL3YW19Yh3jP
+         C7i2QO4VCl+vRtDUmvlfCH3HqzhT47ZMOfUhS08gNGJUrA34/JjddoIbG5aBYASCPvqW
+         8JUErAv0MykqFQWHFJ3amvqMaxkvOp+UBITppFhgxFMmtmNnPepbP1OnkrgZn+Z6Hvcv
+         VCcNyNIjaNcLyvnj51Oc0ZLBaQuG+bnfOv2WVuRoEy3ksym9vjelrZwjo7Cl0wFTSDUS
+         qYfbwq4DM6E9oXoef+A8KFa/6/MvA3Pj655XFQjPu3jmltWA1wRh7ZQYF2rFms8uDFo0
+         n7Mg==
+X-Gm-Message-State: AOJu0Yyp22AlQI9ft+/4l8J/WgaZSpweDQfaHg8F3Wgec2EgMV3CF3ZZ
+	WtT1nXtA7Md4x1TQ83JThd5ofLPrTQ56j8VgEcFGM4waf3skmr4AAkyFedri4nxPpuIY6yML1Wl
+	c2Q==
+X-Google-Smtp-Source: AGHT+IGLIN0t7DNfyFYdJM9nZLt7GBf54TKW+NLjY8F8ERytdBov19+LkbvXadXw8fzUtdxj6PmayQ==
+X-Received: by 2002:a05:6402:5201:b0:55f:3463:2109 with SMTP id s1-20020a056402520100b0055f34632109mr3964450edd.10.1706754188777;
+        Wed, 31 Jan 2024 18:23:08 -0800 (PST)
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com. [209.85.128.50])
+        by smtp.gmail.com with ESMTPSA id h28-20020a50cddc000000b0055f384e7530sm2433422edj.32.2024.01.31.18.23.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 18:23:07 -0800 (PST)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40ef9382752so27715e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 18:23:07 -0800 (PST)
+X-Received: by 2002:a05:600c:518e:b0:40f:b642:1919 with SMTP id
+ fa14-20020a05600c518e00b0040fb6421919mr49606wmb.5.1706754187220; Wed, 31 Jan
+ 2024 18:23:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240129-phy-qcom-eusb2-repeater-fixes-v3-1-9a61ef3490de@linaro.org>
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: FypysBqDUxRfFH5VIscL6_p7rbdU-x6k
-X-Proofpoint-ORIG-GUID: FypysBqDUxRfFH5VIscL6_p7rbdU-x6k
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-31_10,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- malwarescore=0 spamscore=0 clxscore=1011 impostorscore=0 bulkscore=0
- mlxlogscore=999 suspectscore=0 lowpriorityscore=0 priorityscore=1501
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2402010016
+References: <20240131171738.35496-1-yaoma@linux.alibaba.com> <20240131171738.35496-2-yaoma@linux.alibaba.com>
+In-Reply-To: <20240131171738.35496-2-yaoma@linux.alibaba.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Wed, 31 Jan 2024 18:22:51 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=VOYo-OsjKwPQFuBHgB6Uk9E-nb3CiwKjj_yLtPDa7sYQ@mail.gmail.com>
+Message-ID: <CAD=FV=VOYo-OsjKwPQFuBHgB6Uk9E-nb3CiwKjj_yLtPDa7sYQ@mail.gmail.com>
+Subject: Re: [PATCHv3 1/2] watchdog/softlockup: low-overhead detection of
+ interrupt storm
+To: Bitao Hu <yaoma@linux.alibaba.com>
+Cc: akpm@linux-foundation.org, pmladek@suse.com, kernelfans@gmail.com, 
+	liusong@linux.alibaba.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 29, 2024 at 03:03:24PM +0200, Abel Vesa wrote:
-> The device match config init table already has zero values, so rework
-> the container struct to hold a copy of the init table that can be
-> override be the DT specified values. By doing this, only the number of
-> vregs remain in the device match config that will be later needed, so
-> instead of holding the cfg after probe, store the number of vregs in the
-> container struct.
-> 
-> Fixes: 99a517a582fc ("phy: qualcomm: phy-qcom-eusb2-repeater: Zero out untouched tuning regs")
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+Hi,
 
-I forgot I've been having this on my device for past few days and USB's
-been coming up consistently, so I'll count that as:
-
-Tested-by: Elliot Berman <quic_eberman@quicinc.com> # sm8650-qrd
-
+On Wed, Jan 31, 2024 at 9:17=E2=80=AFAM Bitao Hu <yaoma@linux.alibaba.com> =
+wrote:
+>
+> The following softlockup is caused by interrupt storm, but it cannot be
+> identified from the call tree. Because the call tree is just a snapshot
+> and doesn't fully capture the behavior of the CPU during the soft lockup.
+>   watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
+>   ...
+>   Call trace:
+>     __do_softirq+0xa0/0x37c
+>     __irq_exit_rcu+0x108/0x140
+>     irq_exit+0x14/0x20
+>     __handle_domain_irq+0x84/0xe0
+>     gic_handle_irq+0x80/0x108
+>     el0_irq_naked+0x50/0x58
+>
+> Therefore=EF=BC=8CI think it is necessary to report CPU utilization durin=
+g the
+> softlockup_thresh period (report once every sample_period, for a total
+> of 5 reportings), like this:
+>   watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
+>   CPU#28 Utilization every 4s during lockup:
+>     #1: 0% system, 0% softirq, 100% hardirq, 0% idle
+>     #2: 0% system, 0% softirq, 100% hardirq, 0% idle
+>     #3: 0% system, 0% softirq, 100% hardirq, 0% idle
+>     #4: 0% system, 0% softirq, 100% hardirq, 0% idle
+>     #5: 0% system, 0% softirq, 100% hardirq, 0% idle
+>   ...
+>
+> This would be helpful in determining whether an interrupt storm has
+> occurred or in identifying the cause of the softlockup. The criteria for
+> determination are as follows:
+>   a. If the hardirq utilization is high, then interrupt storm should be
+>   considered and the root cause cannot be determined from the call tree.
+>   b. If the softirq utilization is high, then we could analyze the call
+>   tree but it may cannot reflect the root cause.
+>   c. If the system utilization is high, then we could analyze the root
+>   cause from the call tree.
+>
+> Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
 > ---
-> Changes in v3:
-> - Reworked so that it uses base + reg-index.
-> - Link to v2: https://lore.kernel.org/r/20240105-phy-qcom-eusb2-repeater-fixes-v2-0-775d98e7df05@linaro.org
-> 
-> Changes in v2:
-> - The regfields is being dropped from the repeater init, but it's done
->   in the second patch in order to not break bisectability, as it is
->   still needed by the zero-out loop.
-> - Added Konrad's R-b tag to the first patch. Did not add Elliot's T-b
->   tag as the second patch has been reworked massively.
-> - The zero-out loop is dropped now by holding a copy of the init_tlb in
->   the container struct. This led to dropping the cfg from the container
->   struct (see second patch commit message for more details).
-> - Link to v1: https://lore.kernel.org/r/20240104-phy-qcom-eusb2-repeater-fixes-v1-0-047b7b6b8333@linaro.org
-> ---
->  drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c | 166 +++++++++----------------
->  1 file changed, 62 insertions(+), 104 deletions(-)
-> 
-> diff --git a/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c b/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
-> index a623f092b11f..a43e20abb10d 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
-> @@ -37,56 +37,28 @@
->  #define EUSB2_TUNE_EUSB_EQU		0x5A
->  #define EUSB2_TUNE_EUSB_HS_COMP_CUR	0x5B
->  
-> -#define QCOM_EUSB2_REPEATER_INIT_CFG(r, v)	\
-> -	{					\
-> -		.reg = r,			\
-> -		.val = v,			\
-> -	}
-> -
-> -enum reg_fields {
-> -	F_TUNE_EUSB_HS_COMP_CUR,
-> -	F_TUNE_EUSB_EQU,
-> -	F_TUNE_EUSB_SLEW,
-> -	F_TUNE_USB2_HS_COMP_CUR,
-> -	F_TUNE_USB2_PREEM,
-> -	F_TUNE_USB2_EQU,
-> -	F_TUNE_USB2_SLEW,
-> -	F_TUNE_SQUELCH_U,
-> -	F_TUNE_HSDISC,
-> -	F_TUNE_RES_FSDIF,
-> -	F_TUNE_IUSB2,
-> -	F_TUNE_USB2_CROSSOVER,
-> -	F_NUM_TUNE_FIELDS,
-> -
-> -	F_FORCE_VAL_5 = F_NUM_TUNE_FIELDS,
-> -	F_FORCE_EN_5,
-> -
-> -	F_EN_CTL1,
-> -
-> -	F_RPTR_STATUS,
-> -	F_NUM_FIELDS,
-> -};
-> -
-> -static struct reg_field eusb2_repeater_tune_reg_fields[F_NUM_FIELDS] = {
-> -	[F_TUNE_EUSB_HS_COMP_CUR] = REG_FIELD(EUSB2_TUNE_EUSB_HS_COMP_CUR, 0, 1),
-> -	[F_TUNE_EUSB_EQU] = REG_FIELD(EUSB2_TUNE_EUSB_EQU, 0, 1),
-> -	[F_TUNE_EUSB_SLEW] = REG_FIELD(EUSB2_TUNE_EUSB_SLEW, 0, 1),
-> -	[F_TUNE_USB2_HS_COMP_CUR] = REG_FIELD(EUSB2_TUNE_USB2_HS_COMP_CUR, 0, 1),
-> -	[F_TUNE_USB2_PREEM] = REG_FIELD(EUSB2_TUNE_USB2_PREEM, 0, 2),
-> -	[F_TUNE_USB2_EQU] = REG_FIELD(EUSB2_TUNE_USB2_EQU, 0, 1),
-> -	[F_TUNE_USB2_SLEW] = REG_FIELD(EUSB2_TUNE_USB2_SLEW, 0, 1),
-> -	[F_TUNE_SQUELCH_U] = REG_FIELD(EUSB2_TUNE_SQUELCH_U, 0, 2),
-> -	[F_TUNE_HSDISC] = REG_FIELD(EUSB2_TUNE_HSDISC, 0, 2),
-> -	[F_TUNE_RES_FSDIF] = REG_FIELD(EUSB2_TUNE_RES_FSDIF, 0, 2),
-> -	[F_TUNE_IUSB2] = REG_FIELD(EUSB2_TUNE_IUSB2, 0, 3),
-> -	[F_TUNE_USB2_CROSSOVER] = REG_FIELD(EUSB2_TUNE_USB2_CROSSOVER, 0, 2),
-> -
-> -	[F_FORCE_VAL_5] = REG_FIELD(EUSB2_FORCE_VAL_5, 0, 7),
-> -	[F_FORCE_EN_5] = REG_FIELD(EUSB2_FORCE_EN_5, 0, 7),
-> -
-> -	[F_EN_CTL1] = REG_FIELD(EUSB2_EN_CTL1, 0, 7),
-> -
-> -	[F_RPTR_STATUS] = REG_FIELD(EUSB2_RPTR_STATUS, 0, 7),
-> +enum eusb2_reg_layout {
-> +	TUNE_EUSB_HS_COMP_CUR,
-> +	TUNE_EUSB_EQU,
-> +	TUNE_EUSB_SLEW,
-> +	TUNE_USB2_HS_COMP_CUR,
-> +	TUNE_USB2_PREEM,
-> +	TUNE_USB2_EQU,
-> +	TUNE_USB2_SLEW,
-> +	TUNE_SQUELCH_U,
-> +	TUNE_HSDISC,
-> +	TUNE_RES_FSDIF,
-> +	TUNE_IUSB2,
-> +	TUNE_USB2_CROSSOVER,
-> +	NUM_TUNE_FIELDS,
+>  kernel/watchdog.c | 84 +++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 84 insertions(+)
+
+Random high-level question: I'm trying to figure out exactly when your
+code will trigger. The only way it will trigger is if the timer
+interrupt is a higher priority than the storming interrupt. By this I
+don't mean that the timer will interrupt the storming one (it's not a
+nested interrupt), but that if both interrupts are currently asserted
+we'll service the timer first.
+
+If the storming interrupt is always serviced before the timer
+interrupt then the softlockup code won't trigger at all. In that case
+we should detect a hard lockup and hopefully you've got the buddy
+detector enabled and pseudo-NMI turned on. Then hopefully we'll have
+actually interrupted the storming interrupt and it'll be on the
+callstack.
+
+I just wanted to make sure I was understanding correctly. This is why
+you don't print the stats from watchdog_hardlockup_check() because
+they're not useful there, right?
+
+
+> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+> index 81a8862295d6..046507be4eb5 100644
+> --- a/kernel/watchdog.c
+> +++ b/kernel/watchdog.c
+> @@ -23,6 +23,8 @@
+>  #include <linux/sched/debug.h>
+>  #include <linux/sched/isolation.h>
+>  #include <linux/stop_machine.h>
+> +#include <linux/kernel_stat.h>
+> +#include <linux/math64.h>
+
+nit: instead of adding to the end, add these in sorted order. The
+includes we have now are _almost_ in sorted order. I'd add these
+between "init.h" and "module.h"
+
+
+>  #include <asm/irq_regs.h>
+>  #include <linux/kvm_para.h>
+> @@ -441,6 +443,85 @@ static int is_softlockup(unsigned long touch_ts,
+>         return 0;
+>  }
+>
+> +#ifdef CONFIG_IRQ_TIME_ACCOUNTING
+
+In v1 I think I suggested adding a new config. Even with your
+optimizations you've quoted this as taking up "237,568 bytes" of
+global storage when things are configured for the max number of CPUs.
+It feels like someone might not want that. Adding a new Kconfig knob
+shouldn't be a huge problem. Maybe you can have it default to "yes" if
+the max number of CPUs is <=3D 64 or 128 or something?
+
+
+> +#define NUM_STATS_GROUPS       5
+> +enum stats_per_group {
+> +       STATS_SYSTEM,
+> +       STATS_SOFTIRQ,
+> +       STATS_HARDIRQ,
+> +       STATS_IDLE,
+> +       NUM_STATS_PER_GROUP,
+> +};
+> +static enum cpu_usage_stat stats[NUM_STATS_PER_GROUP] =3D {
+
+"static const", not just "static"
+
+nit: maybe call this "tracked_stats" since "stats" is a bit of a
+generic name for a global.
+
+
+> +       CPUTIME_SYSTEM,
+> +       CPUTIME_SOFTIRQ,
+> +       CPUTIME_IRQ,
+> +       CPUTIME_IDLE,
+> +};
+> +static DEFINE_PER_CPU(u16, cpustat_old[NUM_STATS_PER_GROUP]);
+> +static DEFINE_PER_CPU(u8, cpustat_utilization[NUM_STATS_GROUPS][NUM_STAT=
+S_PER_GROUP]);
+> +static DEFINE_PER_CPU(u8, cpustat_tail);
 > +
-> +	FORCE_VAL_5 = NUM_TUNE_FIELDS,
-> +	FORCE_EN_5,
+> +/*
+> + * We don't need nanosecond resolution. A granularity of 16ms is
+> + * sufficient for our precision, allowing us to use u16 to store
+> + * cpustats, which will roll over roughly every ~1000 seconds.
+> + * 2^24 ~=3D 16 * 10^6
+> + */
+> +static u16 get_16bit_precision(u64 data)
+
+nit: instead of "data", call it "data_ns"
+
+
+> +{
+> +       return data >> 24LL; /* 2^24ns ~=3D 16.8ms */
+> +}
 > +
-> +	EN_CTL1,
+> +static void update_cpustat(void)
+> +{
+> +       u8 i;
+
+FWIW, Andrew Morton (who will likely be the one landing this patch)
+was quoted in LWN [1] the other week saying that "i" should be an
+integer. :-P Making it an "int" won't make the code any less
+efficient.
+
+[1] https://lwn.net/Articles/958417/
+
+
+> +       u16 old;
+> +       u8 utilization;
+> +       u8 tail =3D __this_cpu_read(cpustat_tail);
+> +       struct kernel_cpustat kcpustat;
+> +       u64 *cpustat =3D kcpustat.cpustat;
+> +       u16 sample_period_ms =3D get_16bit_precision(sample_period);
+
+It's not really milliseconds, right? Maybe "sample_period_16"?
+
+
+> +       kcpustat_cpu_fetch(&kcpustat, smp_processor_id());
+> +       for (i =3D STATS_SYSTEM; i < NUM_STATS_PER_GROUP; i++) {
+
+nit: start i as 0 instead of assuming that STATS_SYSTEM is 0.
+
+
+> +               old =3D __this_cpu_read(cpustat_old[i]);
+> +               cpustat[stats[i]] =3D get_16bit_precision(cpustat[stats[i=
+]]);
+
+IMO make a local called "new" and store the 16-bit precision there.
+That's easier to read, gets rid of the cast below, and is probably
+more efficient (the compiler doesn't need to upcast the 16-bit value
+and store it in a 64-bit memory location). ...oh, or maybe "new" is a
+reserved keyword? You could call them "old_stat_16" and "new_stat_16".
+
+
+> +               utilization =3D 100 * (u16)(cpustat[stats[i]] - old) / sa=
+mple_period_ms;
+
+Maybe slightly better to round, with:
+
+utilization =3D DIV_ROUND_UP(100 * (new - old), sample_period_ms);
+
+What do you think?
+
+
+> +               __this_cpu_write(cpustat_utilization[tail][i], utilizatio=
+n);
+> +               __this_cpu_write(cpustat_old[i], cpustat[stats[i]]);
+> +       }
+> +       __this_cpu_write(cpustat_tail, (tail + 1) % NUM_STATS_GROUPS);
+> +}
 > +
-> +	RPTR_STATUS,
-> +	LAYOUT_SIZE,
->  };
->  
->  struct eusb2_repeater_cfg {
-> @@ -98,10 +70,11 @@ struct eusb2_repeater_cfg {
->  
->  struct eusb2_repeater {
->  	struct device *dev;
-> -	struct regmap_field *regs[F_NUM_FIELDS];
-> +	struct regmap *regmap;
->  	struct phy *phy;
->  	struct regulator_bulk_data *vregs;
->  	const struct eusb2_repeater_cfg *cfg;
-> +	u32 base;
->  	enum phy_mode mode;
->  };
->  
-> @@ -109,10 +82,10 @@ static const char * const pm8550b_vreg_l[] = {
->  	"vdd18", "vdd3",
->  };
->  
-> -static const u32 pm8550b_init_tbl[F_NUM_TUNE_FIELDS] = {
-> -	[F_TUNE_IUSB2] = 0x8,
-> -	[F_TUNE_SQUELCH_U] = 0x3,
-> -	[F_TUNE_USB2_PREEM] = 0x5,
-> +static const u32 pm8550b_init_tbl[NUM_TUNE_FIELDS] = {
-> +	[TUNE_IUSB2] = 0x8,
-> +	[TUNE_SQUELCH_U] = 0x3,
-> +	[TUNE_USB2_PREEM] = 0x5,
->  };
->  
->  static const struct eusb2_repeater_cfg pm8550b_eusb2_cfg = {
-> @@ -140,47 +113,42 @@ static int eusb2_repeater_init_vregs(struct eusb2_repeater *rptr)
->  
->  static int eusb2_repeater_init(struct phy *phy)
->  {
-> -	struct reg_field *regfields = eusb2_repeater_tune_reg_fields;
->  	struct eusb2_repeater *rptr = phy_get_drvdata(phy);
->  	struct device_node *np = rptr->dev->of_node;
-> -	u32 init_tbl[F_NUM_TUNE_FIELDS] = { 0 };
-> -	u8 override;
-> +	struct regmap *regmap = rptr->regmap;
-> +	const u32 *init_tbl = rptr->cfg->init_tbl;
-> +	u8 tune_usb2_preem = init_tbl[TUNE_USB2_PREEM];
-> +	u8 tune_hsdisc = init_tbl[TUNE_HSDISC];
-> +	u8 tune_iusb2 = init_tbl[TUNE_IUSB2];
-> +	u32 base = rptr->base;
->  	u32 val;
->  	int ret;
-> -	int i;
+> +static void print_cpustat(void)
+> +{
+> +       u8 i, j;
+> +       u8 tail =3D __this_cpu_read(cpustat_tail);
+> +       u64 sample_period_second =3D sample_period;
 > +
-> +	of_property_read_u8(np, "qcom,tune-usb2-amplitude", &tune_iusb2);
-> +	of_property_read_u8(np, "qcom,tune-usb2-disc-thres", &tune_hsdisc);
-> +	of_property_read_u8(np, "qcom,tune-usb2-preem", &tune_usb2_preem);
->  
->  	ret = regulator_bulk_enable(rptr->cfg->num_vregs, rptr->vregs);
->  	if (ret)
->  		return ret;
->  
-> -	regmap_field_update_bits(rptr->regs[F_EN_CTL1], EUSB2_RPTR_EN, EUSB2_RPTR_EN);
-> +	regmap_write(regmap, base + EUSB2_EN_CTL1, EUSB2_RPTR_EN);
->  
-> -	for (i = 0; i < F_NUM_TUNE_FIELDS; i++) {
-> -		if (init_tbl[i]) {
-> -			regmap_field_update_bits(rptr->regs[i], init_tbl[i], init_tbl[i]);
-> -		} else {
-> -			/* Write 0 if there's no value set */
-> -			u32 mask = GENMASK(regfields[i].msb, regfields[i].lsb);
-> -
-> -			regmap_field_update_bits(rptr->regs[i], mask, 0);
-> -		}
-> -	}
-> -	memcpy(init_tbl, rptr->cfg->init_tbl, sizeof(init_tbl));
-> +	regmap_write(regmap, base + EUSB2_TUNE_EUSB_HS_COMP_CUR, init_tbl[TUNE_EUSB_HS_COMP_CUR]);
-> +	regmap_write(regmap, base + EUSB2_TUNE_EUSB_EQU, init_tbl[TUNE_EUSB_EQU]);
-> +	regmap_write(regmap, base + EUSB2_TUNE_EUSB_SLEW, init_tbl[TUNE_EUSB_SLEW]);
-> +	regmap_write(regmap, base + EUSB2_TUNE_USB2_HS_COMP_CUR, init_tbl[TUNE_USB2_HS_COMP_CUR]);
-> +	regmap_write(regmap, base + EUSB2_TUNE_USB2_EQU, init_tbl[TUNE_USB2_EQU]);
-> +	regmap_write(regmap, base + EUSB2_TUNE_USB2_SLEW, init_tbl[TUNE_USB2_SLEW]);
-> +	regmap_write(regmap, base + EUSB2_TUNE_SQUELCH_U, init_tbl[TUNE_SQUELCH_U]);
-> +	regmap_write(regmap, base + EUSB2_TUNE_RES_FSDIF, init_tbl[TUNE_RES_FSDIF]);
-> +	regmap_write(regmap, base + EUSB2_TUNE_USB2_CROSSOVER, init_tbl[TUNE_USB2_CROSSOVER]);
->  
-> -	if (!of_property_read_u8(np, "qcom,tune-usb2-amplitude", &override))
-> -		init_tbl[F_TUNE_IUSB2] = override;
-> +	regmap_write(regmap, base + EUSB2_TUNE_USB2_PREEM, tune_usb2_preem);
-> +	regmap_write(regmap, base + EUSB2_TUNE_HSDISC, tune_hsdisc);
-> +	regmap_write(regmap, base + EUSB2_TUNE_IUSB2, tune_iusb2);
->  
-> -	if (!of_property_read_u8(np, "qcom,tune-usb2-disc-thres", &override))
-> -		init_tbl[F_TUNE_HSDISC] = override;
-> -
-> -	if (!of_property_read_u8(np, "qcom,tune-usb2-preem", &override))
-> -		init_tbl[F_TUNE_USB2_PREEM] = override;
-> -
-> -	for (i = 0; i < F_NUM_TUNE_FIELDS; i++)
-> -		regmap_field_update_bits(rptr->regs[i], init_tbl[i], init_tbl[i]);
-> -
-> -	ret = regmap_field_read_poll_timeout(rptr->regs[F_RPTR_STATUS],
-> -					     val, val & RPTR_OK, 10, 5);
-> +	ret = regmap_read_poll_timeout(regmap, base + EUSB2_RPTR_STATUS, val, val & RPTR_OK, 10, 5);
->  	if (ret)
->  		dev_err(rptr->dev, "initialization timed-out\n");
->  
-> @@ -191,6 +159,8 @@ static int eusb2_repeater_set_mode(struct phy *phy,
->  				   enum phy_mode mode, int submode)
->  {
->  	struct eusb2_repeater *rptr = phy_get_drvdata(phy);
-> +	struct regmap *regmap = rptr->regmap;
-> +	u32 base = rptr->base;
->  
->  	switch (mode) {
->  	case PHY_MODE_USB_HOST:
-> @@ -199,10 +169,8 @@ static int eusb2_repeater_set_mode(struct phy *phy,
->  		 * per eUSB 1.2 Spec. Below implement software workaround until
->  		 * PHY and controller is fixing seen observation.
->  		 */
-> -		regmap_field_update_bits(rptr->regs[F_FORCE_EN_5],
-> -					 F_CLK_19P2M_EN, F_CLK_19P2M_EN);
-> -		regmap_field_update_bits(rptr->regs[F_FORCE_VAL_5],
-> -					 V_CLK_19P2M_EN, V_CLK_19P2M_EN);
-> +		regmap_write(regmap, base + EUSB2_FORCE_EN_5, F_CLK_19P2M_EN);
-> +		regmap_write(regmap, base + EUSB2_FORCE_VAL_5, V_CLK_19P2M_EN);
->  		break;
->  	case PHY_MODE_USB_DEVICE:
->  		/*
-> @@ -211,10 +179,8 @@ static int eusb2_repeater_set_mode(struct phy *phy,
->  		 * repeater doesn't clear previous value due to shared
->  		 * regulators (say host <-> device mode switch).
->  		 */
-> -		regmap_field_update_bits(rptr->regs[F_FORCE_EN_5],
-> -					 F_CLK_19P2M_EN, 0);
-> -		regmap_field_update_bits(rptr->regs[F_FORCE_VAL_5],
-> -					 V_CLK_19P2M_EN, 0);
-> +		regmap_write(regmap, base + EUSB2_FORCE_EN_5, 0);
-> +		regmap_write(regmap, base + EUSB2_FORCE_VAL_5, 0);
->  		break;
->  	default:
->  		return -EINVAL;
-> @@ -243,9 +209,8 @@ static int eusb2_repeater_probe(struct platform_device *pdev)
->  	struct device *dev = &pdev->dev;
->  	struct phy_provider *phy_provider;
->  	struct device_node *np = dev->of_node;
-> -	struct regmap *regmap;
-> -	int i, ret;
->  	u32 res;
-> +	int ret;
->  
->  	rptr = devm_kzalloc(dev, sizeof(*rptr), GFP_KERNEL);
->  	if (!rptr)
-> @@ -258,22 +223,15 @@ static int eusb2_repeater_probe(struct platform_device *pdev)
->  	if (!rptr->cfg)
->  		return -EINVAL;
->  
-> -	regmap = dev_get_regmap(dev->parent, NULL);
-> -	if (!regmap)
-> +	rptr->regmap = dev_get_regmap(dev->parent, NULL);
-> +	if (!rptr->regmap)
->  		return -ENODEV;
->  
->  	ret = of_property_read_u32(np, "reg", &res);
->  	if (ret < 0)
->  		return ret;
->  
-> -	for (i = 0; i < F_NUM_FIELDS; i++)
-> -		eusb2_repeater_tune_reg_fields[i].reg += res;
-> -
-> -	ret = devm_regmap_field_bulk_alloc(dev, regmap, rptr->regs,
-> -					   eusb2_repeater_tune_reg_fields,
-> -					   F_NUM_FIELDS);
-> -	if (ret)
-> -		return ret;
-> +	rptr->base = res;
->  
->  	ret = eusb2_repeater_init_vregs(rptr);
->  	if (ret < 0) {
-> 
-> ---
-> base-commit: 01af33cc9894b4489fb68fa35c40e9fe85df63dc
-> change-id: 20240104-phy-qcom-eusb2-repeater-fixes-c9201113032c
-> 
-> Best regards,
-> -- 
-> Abel Vesa <abel.vesa@linaro.org>
-> 
+> +       do_div(sample_period_second, NSEC_PER_SEC);
+> +       /*
+> +        * We do not want the "watchdog: " prefix on every line,
+> +        * hence we use "printk" instead of "pr_crit".
+> +        */
+> +       printk(KERN_CRIT "CPU#%d Utilization every %llus during lockup:\n=
+",
+> +               smp_processor_id(), sample_period_second);
+> +       for (j =3D STATS_SYSTEM, i =3D tail; j < NUM_STATS_GROUPS;
+
+Here initting "j" to STATS_SYSTEM definitely doesn't make sense. Init to 0.
+
+You could also make your loop easier to understand with just:
+
+for (i =3D 0; i < NUM_STATS_GROUPS; i++) {
+  unsigned int group =3D (tail + i) % NUM_STATS_GROUPS;
+
+
+-Doug
 
