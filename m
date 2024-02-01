@@ -1,412 +1,133 @@
-Return-Path: <linux-kernel+bounces-48353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A034845ACD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:03:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D459845AD0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:04:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB5F11F25FA8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:03:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ABAD1C25935
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:04:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64BE244360;
-	Thu,  1 Feb 2024 15:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28C3D5F49A;
+	Thu,  1 Feb 2024 15:03:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="b+6t6MjR";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XEyjaUX3"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RkWqBAYE"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DFB45F48A
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 15:03:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D64335D473;
+	Thu,  1 Feb 2024 15:03:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706799794; cv=none; b=ICqMG5UXX7CM6dzbbxhIhw5yzdBmTtvRvkpNq68de9Wfp7QUJDkOjoGEXE+2JwnYKvJB8pbgBBmuDve9RFbc8Fi9n2qeopdB+WGRl5aQ9jO1IrW9lGw2XYaKeCgJOEhZAMPthDbeLcWGt3l9z8ZbhGipyJBnnaxsqHCni2Dqy5k=
+	t=1706799837; cv=none; b=M4zLIerm33WmRFI//hciseXcAml+Z2dqInGQVdciEBMr8gmg+6KHcvcSBN+lST3aUDtza7zk6Oj7OQ01qLePB7uy0rBQHABVR793MvnbgXytF1XYGk0FnB5QhgSSYbxYH2H9x5lxna9Ad5vl8GfsMDWbIvH8u+TRUoBcoYgtW1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706799794; c=relaxed/simple;
-	bh=x7Zj+cIRZSWPj17jP1hKHUw4e3QT3tCy4fVkBrFA3D4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=N5YV9WtuA0OIWD6rNHcXj0hVbcpxuOzTSWwqW2DITPQZ1olQR5s2QqyiBfHtx509goF8LnYElJzSfaGfuQxr8jhOgFEW0f+m81bWKUZ5ptS3OymrpDuzD2LOvLVbjUrLDYHWgzLYuOsA3Dc2/zsPhclIDWOhpLZlgGEGNBSmKO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=b+6t6MjR; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=XEyjaUX3; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706799789;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3NyRq5MDvcnlhr+La2cOze3ufvmlL0dPS6aSpGDMQvQ=;
-	b=b+6t6MjR3LdDmSU5qs8s4A5y+Hud+1GyESzTImSs64g3cQp9bSa7w9coXKtrwvRGkVBe5Z
-	hR4Hbo2+5exXt6VLbR7mosFgyWkIYmo2x3PTMtgqLwFde8hJ8X4yJ9AAL8KPYj0nBipUv/
-	RaG5CkhL76SJ4mHG4ZCxZo/FsjgaYnwoaHqabaMpxZNwfhwwZXzMAl/zauAZjE6m6HlKnC
-	UfgMl4+rQvG3+uRXCCbjBCKm+ygv47gii9N9NZdFoxpLnCgxlpIGISbOlnPacqhl1/+kdM
-	uptKqQiBU8MeCc90u9lBv1lCwMkYANJ57daG1dKHNbYxAc5udaNKbvUI6KktGQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706799789;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3NyRq5MDvcnlhr+La2cOze3ufvmlL0dPS6aSpGDMQvQ=;
-	b=XEyjaUX3QR9cS7hjtj4V930gvypTgMUs4Bp8ty3+aPJnNzyE3wNhPvzipI5yfzb3wHdw/6
-	uaTH3hNR/v6w6xBw==
-To: Christian Loehle <christian.loehle@arm.com>, linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, John Stultz <jstultz@google.com>,
- Thomas Gleixner <tglx@linutronix.de>, Eric Dumazet <edumazet@google.com>,
- "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Arjan van de Ven
- <arjan@infradead.org>, "Paul E . McKenney" <paulmck@kernel.org>, Frederic
- Weisbecker <frederic@kernel.org>, Rik van Riel <riel@surriel.com>, Steven
- Rostedt <rostedt@goodmis.org>, Sebastian Siewior <bigeasy@linutronix.de>,
- Giovanni Gherdovich <ggherdovich@suse.cz>, Lukasz Luba
- <lukasz.luba@arm.com>, "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
- Srinivas Pandruvada <srinivas.pandruvada@intel.com>, K Prateek Nayak
- <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v10 00/20] timers: Move from a push remote at enqueue to
- a pull at expiry model
-In-Reply-To: <a330b3ee-26fc-4e85-8724-db80b9e4ccab@arm.com>
-References: <20240115143743.27827-1-anna-maria@linutronix.de>
- <a330b3ee-26fc-4e85-8724-db80b9e4ccab@arm.com>
-Date: Thu, 01 Feb 2024 16:03:09 +0100
-Message-ID: <87plxg6xci.fsf@somnus>
+	s=arc-20240116; t=1706799837; c=relaxed/simple;
+	bh=V/ONzrff4iKHb3CCc2p1U9n5EASoNMBZGX8D6oRCtP4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tWXOIfbxCIPks1PcdJoYHWJNE85jDggg6xy5a/bU0sLWRsxx6atjrfnS3mnMWbPmZa+AsjO4N3alkt0e8BEuwK0EvVWJlcbWW4t3SG4aFYXQao1lj2QyS9yLnZ2U15wJ0OG6hpcYz6zBqkvVkhAe+/jJCdOv3VSbO8V/E5MIxz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RkWqBAYE; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e80046264so9256535e9.0;
+        Thu, 01 Feb 2024 07:03:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706799834; x=1707404634; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TQI82xkebwfzT3j+NbzdVCePUJoKXQTTgiIMRHd9tA0=;
+        b=RkWqBAYEYynbQiNMX7OXhIfiRCcceHKoO+Dma1ggp+vvBEw3TrAGgKCLxzeA3O9A5y
+         7E9Idun/cSuEVALjvV3qOYZIPOUnnbV3GPxDhFeN/Hj20adGAPpxPM+WCnhG+qtab/HZ
+         pY3aksbXYi7R6Wxm0czV4kTRVbD2+Y6fe5r5jgBlmM1ocXbn0i1jpFUAfRpBmCNvxrBE
+         iJzttPtRYRaNMR2igX0hs6y+SGhT61p9mhS4HbHvY1tvQzntqkNTO65d7k98X+gFqV6K
+         gsck/jWZoRJL4Kc1LjwIdTtzYtNROGenRoW2ED/bjcVbth47YgRsSgN/DE1W7z3mttfZ
+         6HFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706799834; x=1707404634;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TQI82xkebwfzT3j+NbzdVCePUJoKXQTTgiIMRHd9tA0=;
+        b=PojqinmA7IqGGp+Ff7aQkIBN+BR3aEBkt1fGxJe1NMkfq6V9x66SwKDOX387dHIno7
+         mCDnge4XQtYTLBGyoK7wQh3Fv0MJ1nzWSceJNBUzCSe9rsgBJsqxYwgfDhdb/QAroi4Z
+         UayalZdZS5AZNit3KGwa0j1ea4B4t/4UqM76rERHrwkt1ziHC/tXP8TUtTRb4vq1nslB
+         ThZO/aQg/y2RvXhU/SzV7Sl+NWkdnykp4REqejn8PwC7sZ0SrJEPIq6s86lpf7VchJFY
+         xAdcdM2JUp2J/ohaDxSHNBB23UUZMtVc+CL/u6T7PeVNuZZSYnXWySlk4GfAtepcIENN
+         XjHg==
+X-Gm-Message-State: AOJu0YzxvTRxkexdtU497WZEtxF71ZJR3TFr9af/fES4Qy9IK0Ejo0J6
+	5OMe3edGTfMj8r1h5ict94jJT4JerRv968W3MGM+N0bOdUuAWIhO
+X-Google-Smtp-Source: AGHT+IHgq8VDz2gMVFec1rt9xa8alnLqg6m1IYYBrYWka6TlPpdIpPCK3IdQ6EOAmX4jWd4gg88q+A==
+X-Received: by 2002:a05:600c:1c9b:b0:40e:f702:a304 with SMTP id k27-20020a05600c1c9b00b0040ef702a304mr3558063wms.32.1706799833416;
+        Thu, 01 Feb 2024 07:03:53 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUDpgq0/uHUFP6DOMM/DOOgv6iaPTfvvlORJEtejjXG7NB3wNC7NPVgdP/a80SSBXcJjbaEEIyh+mqStaWE9ShiuHnhGiu0Ude3P4CSFQ3d+CGq9+DAjgcm1aQxefjN0mJjaRHu+d+pEnI81EDPulpbkTCKWAzVI1NQ2CjyFnruwvjT3XSCNT2xi8Rz/Pm9l+yrTYDvmZzT8WwkDZ4TJRCZL7qKJ7JE0w208ZTXS3EdwtHkyMVxRJFjaC6vmbIEV3KJHxW+9E8y6RugEGGGc+RAgrRS2/mcChzL72DvHvv09MdkNJ3SyGTtS/aWraB/umbXkoKBO3eu0iaPDyYl45cI7AIDf4cvnmpMVE36WXwBNDuS5C+dFi6826+JbRT5aVrMB/812NuBe36eW2blfMeKt3OBcyvpvyCF+9r1L742OlcdPyGlBCXjfCg1ZVYrnPqeTySi49U/aQRdxiXSjmMzo/VA+l2tLlv2iNnZdz/5YM0P8SL4ZrgKVPAT0fLShXJOKH7m6PpeKfu+0fpLDF8QTj1FESwPMhuWww/x2V1Ed9CIW4dUvtVF5d9pzMZaqIdpMFOCe6tTae1G15CtxUebt68+gSBiml4shJT3SMHsg1px/hmq3Vr8DBHs63fugiLnN0pAWPPBo3jKqA==
+Received: from andrea ([31.189.34.185])
+        by smtp.gmail.com with ESMTPSA id bk7-20020a0560001d8700b0033addbf2d2csm16043387wrb.9.2024.02.01.07.03.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 07:03:52 -0800 (PST)
+Date: Thu, 1 Feb 2024 16:03:48 +0100
+From: Andrea Parri <parri.andrea@gmail.com>
+To: Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Ved Shanbhogue <ved@rivosinc.com>, Matt Evans <mev@rivosinc.com>,
+	Dylan Jhong <dylan@andestech.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org, linux-mm@kvack.org
+Subject: Re: [PATCH RFC/RFT v2 4/4] riscv: Stop emitting preventive
+ sfence.vma for new userspace mappings with Svvptc
+Message-ID: <Zbuy1E7mz9Oui1Dl@andrea>
+References: <20240131155929.169961-1-alexghiti@rivosinc.com>
+ <20240131155929.169961-5-alexghiti@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240131155929.169961-5-alexghiti@rivosinc.com>
 
-Hi,
+On Wed, Jan 31, 2024 at 04:59:29PM +0100, Alexandre Ghiti wrote:
+> The preventive sfence.vma were emitted because new mappings must be made
+> visible to the page table walker but Svvptc guarantees that xRET act as
+> a fence, so no need to sfence.vma for the uarchs that implement this
+> extension.
 
-Christian Loehle <christian.loehle@arm.com> writes:
+AFAIU, your first submission shows that you don't need that xRET property.
+Similarly for other archs.  What was rationale behind this Svvptc change?
 
-> On 15/01/2024 14:37, Anna-Maria Behnsen wrote:
->> Hi,
->> 
->> the cleanup patches are already applied and so the contains only two parts:
->> 
->> - Patches 1 - 4: timer base idle marking rework with two preparatory
->>   changes. See the section below for more details.
->> 
->> - Patches 5 - 20: Updated timer pull model on top of timer idle rework
->> 
->> 
->> The queue is available here:
->> 
->>   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel timers/pushpull
->> 
->> 
->> Move marking timer bases as idle into tick_nohz_stop_tick()
->> -----------------------------------------------------------
->> 
->> The idle marking of timer bases is done in get_next_timer_interrupt()
->> whenever possible. The timer bases are idle, even if the tick will not be
->> stopped. This lead to an IPI when a new first timer is enqueued remote. To
->> prevent this, setting timer_base->in_idle flag is postponed to
->> tick_nohz_stop_tick().
->> 
->> Furthermore this synchronizes the states of timer base is_idle and
->> tick_stopped. With the timer pull model in place, also the idle state in
->> the hierarchy of a CPU is synchronized with the other idle related states.
->> 
->> 
->> Timer pull model
->> ----------------
->> 
->> Placing timers at enqueue time on a target CPU based on dubious heuristics
->> does not make any sense:
->> 
->>  1) Most timer wheel timers are canceled or rearmed before they expire.
->> 
->>  2) The heuristics to predict which CPU will be busy when the timer expires
->>     are wrong by definition.
->> 
->> So placing the timers at enqueue wastes precious cycles.
->> 
->> The proper solution to this problem is to always queue the timers on the
->> local CPU and allow the non pinned timers to be pulled onto a busy CPU at
->> expiry time.
->> 
->> Therefore split the timer storage into local pinned and global timers:
->> Local pinned timers are always expired on the CPU on which they have been
->> queued. Global timers can be expired on any CPU.
->> 
->> As long as a CPU is busy it expires both local and global timers. When a
->> CPU goes idle it arms for the first expiring local timer. If the first
->> expiring pinned (local) timer is before the first expiring movable timer,
->> then no action is required because the CPU will wake up before the first
->> movable timer expires. If the first expiring movable timer is before the
->> first expiring pinned (local) timer, then this timer is queued into a idle
->> timerqueue and eventually expired by some other active CPU.
->> 
->> To avoid global locking the timerqueues are implemented as a hierarchy. The
->> lowest level of the hierarchy holds the CPUs. The CPUs are associated to
->> groups of 8, which are separated per node. If more than one CPU group
->> exist, then a second level in the hierarchy collects the groups. Depending
->> on the size of the system more than 2 levels are required. Each group has a
->> "migrator" which checks the timerqueue during the tick for remote timers to
->> be expired.
->> 
->> If the last CPU in a group goes idle it reports the first expiring event in
->> the group up to the next group(s) in the hierarchy. If the last CPU goes
->> idle it arms its timer for the first system wide expiring timer to ensure
->> that no timer event is missed.
->> 
->> 
->> Testing
->> ~~~~~~~
->> 
->> Enqueue
->> ^^^^^^^
->> 
->> The impact of wasting cycles during enqueue by using the heuristic in
->> contrast to always queuing the timer on the local CPU was measured with a
->> micro benchmark. Therefore a timer is enqueued and dequeued in a loop with
->> 1000 repetitions on a isolated CPU. The time the loop takes is measured. A
->> quarter of the remaining CPUs was kept busy. This measurement was repeated
->> several times. With the patch queue the average duration was reduced by
->> approximately 25%.
->> 
->> 	145ns	plain v6
->> 	109ns	v6 with patch queue
->> 
->> 
->> Furthermore the impact of residence in deep idle states of an idle system
->> was investigated. The patch queue doesn't downgrade this behavior.
->> 
->> dbench test
->> ^^^^^^^^^^^
->> 
->> A dbench test starting X pairs of client servers are used to create load on
->> the system. The measurable value is the throughput. The tests were executed
->> on a zen3 machine. The base is the tip tree branch timers/core which is
->> based on a v6.6-rc1.
->> 
->> governor menu
->> 
->> NR	timers/core	pull-model	impact
->> ----------------------------------------------
->> 1	353.19 (0.19)	353.45 (0.30)	0.07%
->> 2	700.10 (0.96)	687.00 (0.20)	-1.87%
->> 4	1329.37 (0.63)	1282.91 (0.64)	-3.49%
->> 8	2561.16 (1.28)	2493.56	(1.76)	-2.64%
->> 16	4959.96 (0.80)	4914.59 (0.64)	-0.91%
->> 32	9741.92 (3.44)	8979.83 (1.13)	-7.82%
->> 64	16535.40 (2.84)	16388.47 (4.02)	-0.89%
->> 128	22136.83 (2.42)	23174.50 (1.43)	4.69%
->> 256	39256.77 (4.48)	38994.00 (0.39)	-0.67%
->> 512	36799.03 (1.83)	38091.10 (0.63)	3.51%
->> 1024	32903.03 (0.86)	35370.70 (0.89)	7.50%
->> 
->> 
->> governor teo
->> 
->> NR	timers/core	pull-model	impact
->> ----------------------------------------------
->> 1	350.83 (1.27)	352.45 (0.96)	0.46%
->> 2	699.52 (0.85)	690.10 (0.54)	-1.35%
->> 4	1339.53 (1.99)	1294.71 (2.71)	-3.35%
->> 8	2574.10 (0.76)	2495.46 (1.97)	-3.06%
->> 16	4898.50 (1.74)	4783.06 (1.64)	-2.36%
->> 32	9115.50 (4.63)	9037.83 (1.58)	-0.85%
->> 64	16663.90 (3.80)	16042.00 (1.72)	-3.73%
->> 128	25044.93 (1.11)	23250.03 (1.08)	-7.17%
->> 256	38059.53 (1.70)	39658.57 (2.98)	4.20%
->> 512	36369.30 (0.39)	38890.13 (0.36)	6.93%
->> 1024	33956.83 (1.14)	35514.83 (0.29)	4.59%
->> 
->> 
->> 
->> Ping Pong Oberservation
->> ^^^^^^^^^^^^^^^^^^^^^^^
->> 
->> During testing on a mostly idle machine a ping pong game could be observed:
->> a process_timeout timer is expired remotely on a non idle CPU. Then the CPU
->> where the schedule_timeout() was executed to enqueue the timer comes out of
->> idle and restarts the timer using schedule_timeout() and goes back to idle
->> again. This is due to the fair scheduler which tries to keep the task on
->> the CPU which it previously executed on.
->> 
->> 
->> 
->> 
->> Possible Next Steps
->> ~~~~~~~~~~~~~~~~~~~
->> 
->> Simple deferrable timers are no longer required as they can be converted to
->> global timers. If a CPU goes idle, a formerly deferrable timer will not
->> prevent the CPU to sleep as long as possible. Only the last migrator CPU
->> has to take care of them. Deferrable timers with timer pinned flags needs
->> to be expired on the specified CPU but must not prevent CPU from going
->> idle. They require their own timer base which is never taken into account
->> when calculating the next expiry time. This conversation and required
->> cleanup will be done in a follow up series.
->> 
->> 
->> v9..v10: https://lore.kernel.org/r/20231201092654.34614-1-anna-maria@linutronix.de/
->>   - Address review Feedback of Bigeasy
->> 
->> 
->> v8..v9: https://lore.kernel.org/r/20231004123454.15691-1-anna-maria@linutronix.de
->>   - Address review feedback
->>   - Add more minor cleanup fixes
->>   - fixes inconsistent idle related states
->> 
->> 
->> v7..v8: https://lore.kernel.org/r/20230524070629.6377-1-anna-maria@linutronix.de
->>   - Address review feedback
->>   - Move marking timer base idle into tick_nohz_stop_tick()
->>   - Look ahead function to determine possible sleep lenght
->> 
->> 
->> v6..v7:
->>   - Address review feedback of Frederic and bigeasy
->>   - Change lock, unlock fetch next timer interrupt logic after remote expiry
->>   - Move timer_expire_remote() into tick-internal.h
->>   - Add documentation section about "Required event and timerqueue update
->>     after remote expiry"
->>   - Fix fallout of kernel test robot
->> 
->> 
->> v5..v6:
->> 
->>   - Address review of Frederic Weisbecker and Peter Zijlstra (spelling,
->>     locking, race in tmigr_handle_remote_cpu())
->> 
->>   - unconditionally set TIMER_PINNED flag in add_timer_on(); introduce
->>     add_timer() variants which set/unset TIMER_PINNED flag; drop fixing
->>     add_timer_on() call sites, as TIMER_PINNED flag is set implicitly;
->>     Fixing workqueue to use add_timer_global() instead of simply
->>     add_timer() for unbound work.
->> 
->>   - Drop support for siblings to end up in the same level 0 group (could be
->>     added again in a better way as an improvement later on)
->> 
->>   - Do not send IPI for new first deferrable timers
->> 
->> v4..v5:
->>   - address review feedback of Frederic Weisbecker
->>   - fix issue with group timer update after remote expiry
->> 
->> v3..v4:
->>   - address review feedback of Frederic Weisbecker
->>   - address kernel test robot fallout
->>   - Move patch 16 "add_timer_on(): Make sure callers have TIMER_PINNED
->>     flag" at the begin of the queue to prevent timers to end up in global
->>     timer base when they were queued using add_timer_on()
->>   - Fix some comments and typos
->> 
->> v2..v3: https://lore.kernel.org/r/20170418111102.490432548@linutronix.de/
->>   - Minimize usage of locks by storing data using atomic_cmpxchg() for
->>     migrator information and information about active cpus.
->> 
->> 
->> Thanks,
->> 
->> 	Anna-Maria
->> 
->> 
->> 
->> 
->> Anna-Maria Behnsen (18):
->>   timers: Restructure get_next_timer_interrupt()
->>   timers: Split out get next timer interrupt
->>   timers: Move marking timer bases idle into tick_nohz_stop_tick()
->>   timers: Optimization for timer_base_try_to_set_idle()
->>   timers: Introduce add_timer() variants which modify timer flags
->>   workqueue: Use global variant for add_timer()
->>   timers: add_timer_on(): Make sure TIMER_PINNED flag is set
->>   timers: Ease code in run_local_timers()
->>   timers: Split next timer interrupt logic
->>   timers: Keep the pinned timers separate from the others
->>   timers: Retrieve next expiry of pinned/non-pinned timers separately
->>   timers: Split out "get next timer interrupt" functionality
->>   timers: Add get next timer interrupt functionality for remote CPUs
->>   timers: Check if timers base is handled already
->>   timers: Introduce function to check timer base is_idle flag
->>   timers: Implement the hierarchical pull model
->>   timer_migration: Add tracepoints
->>   timers: Always queue timers on the local CPU
->> 
->> Richard Cochran (linutronix GmbH) (2):
->>   timers: Restructure internal locking
->>   tick/sched: Split out jiffies update helper function
->> 
->>  MAINTAINERS                            |    1 +
->>  include/linux/cpuhotplug.h             |    1 +
->>  include/linux/timer.h                  |   16 +-
->>  include/trace/events/timer_migration.h |  297 +++++
->>  kernel/time/Makefile                   |    3 +
->>  kernel/time/tick-internal.h            |   14 +
->>  kernel/time/tick-sched.c               |   65 +-
->>  kernel/time/timer.c                    |  505 +++++--
->>  kernel/time/timer_migration.c          | 1693 ++++++++++++++++++++++++
->>  kernel/time/timer_migration.h          |  147 ++
->>  kernel/workqueue.c                     |    2 +-
->>  11 files changed, 2629 insertions(+), 115 deletions(-)
->>  create mode 100644 include/trace/events/timer_migration.h
->>  create mode 100644 kernel/time/timer_migration.c
->>  create mode 100644 kernel/time/timer_migration.h
->
-> Hi Anna-Maria,
-> I did some quick measurements on a pixel6 Android 14 with 6.6 kernel baseline.
-> The workload is 5 iterations of uibenchjanktests (~70 Min runtime total).
-> Backport of timers/pushpull up to:
-> 6b7e23d1f495 ("timers: Always queue timers on the local CPU").
->
-> Power:
-> +------------+--------+------------+-------+-----------+
-> |  channel   | metric |    tag     | value | perc_diff |
-> +------------+--------+------------+-------+-----------+
-> |    CPU     | gmean  | mainline_5 | 196.6 |   0.0%    |
-> |  CPU-Big   | gmean  | mainline_5 | 65.3  |   0.0%    |
-> | CPU-Little | gmean  | mainline_5 | 99.6  |   0.0%    |
-> |  CPU-Mid   | gmean  | mainline_5 | 31.6  |   0.0%    |
-> |    GPU     | gmean  | mainline_5 | 36.7  |   0.0%    |
-> |   Total    | gmean  | mainline_5 | 233.3 |   0.0%    |
-> |    CPU     | gmean  | pushpull_5 | 195.9 |  -0.35%   |
-> |  CPU-Big   | gmean  | pushpull_5 | 64.8  |  -0.85%   |
-> | CPU-Little | gmean  | pushpull_5 | 98.5  |  -1.12%   |
-> |  CPU-Mid   | gmean  | pushpull_5 | 32.6  |   3.13%   |
-> |    GPU     | gmean  | pushpull_5 | 36.8  |   0.19%   |
-> |   Total    | gmean  | pushpull_5 | 232.6 |  -0.26%   |
-> +------------+--------+------------+-------+-----------+
-> (Slightly skewed in favor of mainline because of starting
-> temperature.)
->
-> Idle residency:
-> +------------+---------+------------+--------+
-> |    tag     | cluster | idle_state |  time  |
-> +------------+---------+------------+--------+
-> | mainline_5 | little  |    -1.0    | 518.42 |
-> | mainline_5 | little  |    0.0     | 238.28 |
-> | mainline_5 | little  |    1.0     |  19.7  |
-> | mainline_5 |   mid   |    -1.0    | 201.0  |
-> | mainline_5 |   mid   |    0.0     | 335.26 |
-> | mainline_5 |   mid   |    1.0     | 240.15 |
-> | mainline_5 |   big   |    -1.0    | 173.86 |
-> | mainline_5 |   big   |    0.0     | 330.93 |
-> | mainline_5 |   big   |    1.0     | 271.61 |
-> | pushpull_5 | little  |    -1.0    | 526.45 |
-> | pushpull_5 | little  |    0.0     | 257.77 |
-> | pushpull_5 | little  |    1.0     |  5.18  |
-> | pushpull_5 |   mid   |    -1.0    | 220.98 |
-> | pushpull_5 |   mid   |    0.0     | 347.43 |
-> | pushpull_5 |   mid   |    1.0     | 220.98 |
-> | pushpull_5 |   big   |    -1.0    | 177.36 |
-> | pushpull_5 |   big   |    0.0     | 331.61 |
-> | pushpull_5 |   big   |    1.0     | 280.42 |
-> +------------+---------+------------+--------+
->
-> We can see the improvement we were hoping for:
-> Longer idle times on the big cores.
 
-This is good to know, that it works and I didn't break this in the
-meantime :)
+> This allows to drastically reduce the number of sfence.vma emitted:
+> 
+> * Ubuntu boot to login:
+> Before: ~630k sfence.vma
+> After:  ~200k sfence.vma
+> 
+> * ltp - mmapstress01
+> Before: ~45k
+> After:  ~6.3k
+> 
+> * lmbench - lat_pagefault
+> Before: ~665k
+> After:   832 (!)
+> 
+> * lmbench - lat_mmap
+> Before: ~546k
+> After:   718 (!)
 
-Thanks a lot for testing!
+This Svvptc seems to move/add the "burden" of the synchronization to xRET:
+Perhaps integrate the above counts w/ the perf gains in the cover letter?
 
-	Anna-Maria
-
+  Andrea
 
