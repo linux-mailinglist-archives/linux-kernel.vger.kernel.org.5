@@ -1,118 +1,238 @@
-Return-Path: <linux-kernel+bounces-48803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CD628461C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:06:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 276898461C6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:09:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B377BB231F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:06:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A71AF1F22A9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:09:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88EEE8562B;
-	Thu,  1 Feb 2024 20:06:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B8C18563A;
+	Thu,  1 Feb 2024 20:09:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="SBo4/l3M"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ilFj2PNV"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D42748528B
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 20:06:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 510808527E;
+	Thu,  1 Feb 2024 20:09:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706818000; cv=none; b=j/VaeaRgfcIgg9+GuyLZ36eyFnvTRvI8dkCrCj16gigLAZstDhd/uSjkyeGRufmE/D6fUaPehoLChYCGVo1m7mEp5fqQfmaWJCPS12Lnwb1x/8eZJYifQ1odU8IjJhGCi0JfI99ncOf0iepuVLcstuiuyQfILkGGu/5NbZt1lVs=
+	t=1706818159; cv=none; b=VQDIo4JjE9wMHuT6jnM3orpPI5GlDJjlnqS2N8R4hYtz16D1z7y06g0DYLyuzbtY8OB1MzIrsT3c5a/G6hM/XFKrUIIi6ZPxz0OwVmaFi/RiJ6Db5NgLANVZL13Bmy0AvaNaExbQ4ainbDXkAQN+gNU0PP8u2tLRo7QVd2uCqls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706818000; c=relaxed/simple;
-	bh=oA7/NspYB65l8rTsetujkWO2pCTj/tsZobfNjYRmfKc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fihiKy8NplNNJn8Ki6gZBtTMbIdzJ2HMgPKBLS981+wnVzjvpI2p7QkW72D8KUsgIA0MkBdDWCKOgZodktg0ByZqS4OCpBJIDVLDw77xxGOnu3wzUPakVXqkOxRGEofsCnXZBBmYClN4+EEVxTgd2WTLIoQMBSWuZeVz7mx6HZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=SBo4/l3M; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55a8fd60af0so1913942a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 12:06:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706817996; x=1707422796; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kP3MIyg6XgOfzN8W5NDTvSQr/3wxGR91YVPW2iDkboc=;
-        b=SBo4/l3MwuUmebhLknMVjJiuyErNiSKGUuEVap6fg8rpef0Lac34Oy150IEMpc9U0U
-         z8JyU6SsIBo9pv+zEQ4w4iWvqYaDwnRoUDo8C8KhbYMLdXKoyhvHHIfF6wjFuBdpu7Te
-         UmAs0o5N15W56AOruvzKjtvJwUhebCMI9QYZU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706817996; x=1707422796;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kP3MIyg6XgOfzN8W5NDTvSQr/3wxGR91YVPW2iDkboc=;
-        b=hDEeFTH+FiMeW5nUYw+WHKmW7lmD4hcKVrqPKRRMTPqsUGJQVi7bF5N8iySwri2Z8w
-         qkEu0xIhc92qKXsyduhWFp+QOCgfxOxevydMSb5qLgqpqyJERArL66OHrUUlK9tpeAsj
-         SoN6tthGas4WsbTiMz7dqX5u2tkUIrtz5lXCKjwmt7Qjxx0L6Ddz2WVzGHoifkb7IN8y
-         ykFHGmmNabirxsvtxKxfEJZ+z3ZlrTojUyKkbCWHKJ4cyyvKoWRhi4jXVU2PZVlymnkw
-         kspZUK+qW/PfrrLjIIpKGerCVDFgLg2wdudl6mxpBEPwiWzKLhiu2MKo+YOHFmxqx5WV
-         dNUQ==
-X-Gm-Message-State: AOJu0YyV+QCvTnTji2rM1maeEgmn5rWmDR0Vy06/NAPTWF7Onz56igvV
-	/xLJPYwoa5NAxtSCJf3hu4ZegLWDJNaqDAzcSBQLg0wJhXAch4A5IXpyu1S2U85D8ZwdFhcZJhW
-	kEUsAlg==
-X-Google-Smtp-Source: AGHT+IF+cjIwTpzrw+QPoq7Qe7koyovnkS4wGHWandUfUZEneOUqjfE/3ne304cPvkkW4WD2jfCKMw==
-X-Received: by 2002:a05:6402:3588:b0:55f:11cf:ee53 with SMTP id y8-20020a056402358800b0055f11cfee53mr6384947edc.31.1706817996531;
-        Thu, 01 Feb 2024 12:06:36 -0800 (PST)
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com. [209.85.208.46])
-        by smtp.gmail.com with ESMTPSA id k7-20020aa7c387000000b0055fbc52457fsm139614edq.30.2024.02.01.12.06.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 12:06:36 -0800 (PST)
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55a90a0a1a1so2044533a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 12:06:35 -0800 (PST)
-X-Received: by 2002:a05:6402:509:b0:55f:43af:19d7 with SMTP id
- m9-20020a056402050900b0055f43af19d7mr4668961edv.34.1706817995577; Thu, 01 Feb
- 2024 12:06:35 -0800 (PST)
+	s=arc-20240116; t=1706818159; c=relaxed/simple;
+	bh=EW6zO50jNE8LEi7zqDDeFfEa1UehgXfcEViL8fAmN/Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Qiuj5G8Odi6XmIEkGWDByse5n3dkEQZKSG1ihgyKHCcg4ou9wZEEm7gaU2hMPGmXc/FkJdv1ooSNOrSqaqFmOb2hnOvfzPwCcBOQaKPxndV0LDudMzZJyf5C9a/jz/rx199etiA4Sf0xkJTQ+/UCECzMybgxFLT5fWvoHk16f04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ilFj2PNV; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 411K8ti0025389;
+	Thu, 1 Feb 2024 14:08:55 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706818135;
+	bh=vq6l9bOA+9EPk9QsUKSbSwGB/jfjZrse3PWQvl2f88s=;
+	h=Date:Subject:To:References:From:In-Reply-To;
+	b=ilFj2PNViSj3oGI7aFHI9l5HhTT8dv99TtnXaHP4OczwHHfgcQMrBgAPuOlwAeAka
+	 MBnpNgENPS+T3+Vms4Axp7YFP29OnsplmaAmNztNlVrDbDrG8iSkgme0km6uhJA8js
+	 koMcXWeCZ9zzlJd3NoAHUhp3F3VRgSUyii+33oAQ=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 411K8tdI128262
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 1 Feb 2024 14:08:55 -0600
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 1
+ Feb 2024 14:08:54 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 1 Feb 2024 14:08:54 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 411K8rgh092262;
+	Thu, 1 Feb 2024 14:08:53 -0600
+Message-ID: <799640ba-3b7f-474b-8d70-64ed013e0755@ti.com>
+Date: Thu, 1 Feb 2024 14:08:53 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAK7LNASGqfMkTuzP28qydpYCC0ct3cAgMpbPpmgHuQHZbtLhbA@mail.gmail.com>
-In-Reply-To: <CAK7LNASGqfMkTuzP28qydpYCC0ct3cAgMpbPpmgHuQHZbtLhbA@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 1 Feb 2024 12:06:19 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whJKZNZWsa-VNDKafS_VfY4a5dAjG-r8BZgWk_a-xSepw@mail.gmail.com>
-Message-ID: <CAHk-=whJKZNZWsa-VNDKafS_VfY4a5dAjG-r8BZgWk_a-xSepw@mail.gmail.com>
-Subject: Re: [GIT PULL] Kbuild fixes for v6.8-rc3
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/6] arm64: dts: ti: k3-j784s4: Add Wave5 Video
+ Encoder/Decoder Node
+Content-Language: en-US
+To: "Brnich, Brandon" <b-brnich@ti.com>, "Menon, Nishanth" <nm@ti.com>,
+        "Raghavendra, Vignesh" <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Geert Uytterhoeven
+	<geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>,
+        "Etheridge, Darren" <detheridge@ti.com>
+References: <20240131212625.1862775-1-b-brnich@ti.com>
+ <20240131212625.1862775-2-b-brnich@ti.com>
+ <a5f0059d-b80f-44e6-8c1e-793054586e0a@ti.com>
+ <a168bbdc2efd4cb1a71c6c6421dbd7ce@ti.com>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <a168bbdc2efd4cb1a71c6c6421dbd7ce@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Thu, 1 Feb 2024 at 05:40, Masahiro Yamada <masahiroy@kernel.org> wrote:
->
->  - Replace tabs with spaces when followed by conditionals for
->    future GNU Make versions
+On 2/1/24 1:13 PM, Brnich, Brandon wrote:
+> Hi Andrew,
+> 
+>> -----Original Message-----
+>> From: Davis, Andrew <afd@ti.com>
+>> Sent: Thursday, February 1, 2024 12:35 PM
+>> To: Brnich, Brandon <b-brnich@ti.com>; Menon, Nishanth <nm@ti.com>;
+>> Raghavendra, Vignesh <vigneshr@ti.com>; Tero Kristo <kristo@kernel.org>;
+>> Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
+>> <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley <conor+dt@kernel.org>;
+>> Catalin Marinas <catalin.marinas@arm.com>; Will Deacon
+>> <will@kernel.org>; Bjorn Andersson <quic_bjorande@quicinc.com>; Geert
+>> Uytterhoeven <geert+renesas@glider.be>; Arnd Bergmann
+>> <arnd@arndb.de>; Konrad Dybcio <konrad.dybcio@linaro.org>; Neil
+>> Armstrong <neil.armstrong@linaro.org>; Nícolas F . R . A . Prado
+>> <nfraprado@collabora.com>; Marek Szyprowski
+>> <m.szyprowski@samsung.com>; linux-arm-kernel@lists.infradead.org;
+>> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Etheridge, Darren
+>> <detheridge@ti.com>
+>> Subject: Re: [PATCH v3 1/6] arm64: dts: ti: k3-j784s4: Add Wave5 Video
+>> Encoder/Decoder Node
+>>
+>> On 1/31/24 3:26 PM, Brandon Brnich wrote:
+>>> This patch adds support for the Wave521cl on the J784S4-evm.
+>>>
+>>> Signed-off-by: Brandon Brnich <b-brnich@ti.com>
+>>> ---
+>>>    arch/arm64/boot/dts/ti/k3-j784s4-evm.dts   |  8 ++++++++
+>>>    arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 20 ++++++++++++++++++++
+>>>    arch/arm64/boot/dts/ti/k3-j784s4.dtsi      |  2 ++
+>>>    3 files changed, 30 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+>>> b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+>>> index f34b92acc56d..7d37c11b4df4 100644
+>>> --- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+>>> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+>>> @@ -784,6 +784,14 @@ &main_gpio0 {
+>>>    	status = "okay";
+>>>    };
+>>>
+>>> +&vpu0 {
+>>> +	status = "okay";
+>>> +};
+>>> +
+>>> +&vpu1 {
+>>> +	status = "okay";
+>>> +};
+>>> +
+>>>    &mcu_cpsw {
+>>>    	status = "okay";
+>>>    	pinctrl-names = "default";
+>>> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+>>> b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+>>> index f2b720ed1e4f..8b2623ac8160 100644
+>>> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+>>> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+>>> @@ -662,6 +662,26 @@ main_i2c6: i2c@2060000 {
+>>>    		status = "disabled";
+>>>    	};
+>>>
+>>> +	vpu0: video-codec@4210000 {
+>>> +		compatible = "ti,j721s2-wave521c", "cnm,wave521c";
+>>> +		reg = <0x00 0x4210000 0x00 0x10000>;
+>>> +		interrupts = <GIC_SPI 182 IRQ_TYPE_LEVEL_HIGH>;
+>>> +		clocks = <&k3_clks 241 2>;
+>>> +		clock-names = "vcodec";
+>>> +		power-domains = <&k3_pds 241 TI_SCI_PD_EXCLUSIVE>;
+>>> +		status = "disabled";
+>>
+>> Why are these default disabled? I don't see anything missing that would
+>> need to be added at the board level. You disable them just to re-enable them
+>> in the next patch. Leave these default enabled.
+> 
+> I thought that disabled by default was the standard for node in dtsi files, where
+> they get specifically enabled in the particular dts file for the SoC.
+> 
 
-This is horrid.
+Only disabled if there is missing information needed for the node to function
+that can only be added at the board level, e.g. pinmux usually.
 
-Now, the whole "whitespace type matters" is broken in Make anyway, so
-clearly this is a fundamental make problem, but this commit makes
-things worse by making the tab replacement use eight spaces, so it
-really visually is entirely indistinguishable.
+> In V4 I will remove the disabled by default. Should this apply to all platforms in
+> the series?
 
-Don't make a 'make' problem worse by not visually distinguishing tabs
-from spaces.
+Yes
 
-IOW, those "that can't be a tab" cases should have used pretty much
-_anything_ but 8 spaces. Yes on indentation of nested 'if' statements,
-but no on then using something that visually makes no sense.
+Andrew
 
-IOW, those nested if-statements should use perhaps just 2-4 spaces
-instead. That tends to match what we sometimes see in C files too, and
-it is visually very clearly not a tab with the kernel coding rules
-(yes, yes, some people set tabstops to smaller values, that's _their_
-problem).
-
-I've pulled this, but please fix it, and don't make an insane Makefile
-whitespace situation worse.
-
-                Linus
+>   
+>>> +	};
+>>> +
+>>> +	vpu1: video-codec@4220000 {
+>>> +		compatible = "ti,j721s2-wave521c", "cnm,wave521c";
+>>> +		reg = <0x00 0x4220000 0x00 0x10000>;
+>>> +		interrupts = <GIC_SPI 183 IRQ_TYPE_LEVEL_HIGH>;
+>>> +		clocks = <&k3_clks 242 2>;
+>>> +		clock-names = "vcodec";
+>>> +		power-domains = <&k3_pds 242 TI_SCI_PD_EXCLUSIVE>;
+>>> +		status = "disabled";
+>>> +	};
+>>> +
+>>>    	main_sdhci0: mmc@4f80000 {
+>>>    		compatible = "ti,j721e-sdhci-8bit";
+>>>    		reg = <0x00 0x04f80000 0x00 0x1000>, diff --git
+>>> a/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
+>>> b/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
+>>> index 4398c3a463e1..93bb0cba1b48 100644
+>>> --- a/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
+>>> +++ b/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
+>>> @@ -247,6 +247,8 @@ cbass_main: bus@100000 {
+>>>    			 <0x00 0x30000000 0x00 0x30000000 0x00
+>> 0x0c400000>, /* MAIN NAVSS */
+>>>    			 <0x41 0x00000000 0x41 0x00000000 0x01
+>> 0x00000000>, /* PCIe1 DAT1 */
+>>>    			 <0x4e 0x20000000 0x4e 0x20000000 0x00
+>> 0x00080000>, /* GPU */
+>>> +			 <0x00 0x04210000 0x00 0x04210000 0x00
+>> 0x00010000>, /* VPU0 */
+>>> +			 <0x00 0x04220000 0x00 0x04220000 0x00
+>> 0x00010000>, /* VPU1 */
+>>
+>> Add these in sorted by memory address order.
+> 
+> Will do in V4 as well.
+> 
+>>
+>> Andrew
+>>
+>>>
+>>>    			 /* MCUSS_WKUP Range */
+>>>    			 <0x00 0x28380000 0x00 0x28380000 0x00
+>> 0x03880000>,
+> 
+> Brandon
 
