@@ -1,187 +1,156 @@
-Return-Path: <linux-kernel+bounces-47946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21A17845507
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:17:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D72D8845509
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:17:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A10211F2BBAF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:17:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6793AB2806C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:17:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABA581586E6;
-	Thu,  1 Feb 2024 10:16:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F80215B99B;
+	Thu,  1 Feb 2024 10:16:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="u6uGVWes"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2051.outbound.protection.outlook.com [40.107.237.51])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="OyN24PAm"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BE7E1586E0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2DAA15B102;
+	Thu,  1 Feb 2024 10:16:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706782611; cv=none; b=pnZ4HaPhB5hmyy6cunhOnGSojbyZ4CFFTEYiENVreuHrp5JHglnoKE44gtGl9+WDfv02osXx9nq5Hm6ES2gSBTTXbHULJLpzqCuDNe2+tUImhne+lhMqFbVjJ2IPWjVJA56E63QDXkKn3AlqjQr2/9yTJieYxlZsY/AcyDCPgJw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706782611; c=relaxed/simple;
+	bh=o1wVIMmJ520BEQsqM1zAURXL/Zn0xmObwP0BDMXU0tE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=txU0Y3Z7N6BGe6ZcgI8vOtFtzZ/ozxPQtb31W5M86EiDlMChg+mGsFl1rspcMBLgeAgAJfzKf0O83ytSgZCftQfWUBI+i7Q+h7kcbzFNxP4b1eNuAGoGUnO/tHZYTkrym2GMFBT4xi8U6NHyhcGWeDHNEmGb4Go7maHKrSYsQbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=OyN24PAm; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706782607;
+	bh=o1wVIMmJ520BEQsqM1zAURXL/Zn0xmObwP0BDMXU0tE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=OyN24PAmgPssyDz6LNpoS4vKe68IhaXzpboE/QWs9lBIfLX3OKEG0tWptllPgBmXe
+	 5wbN1U84A9sgPBUaw7OG1MKf3+2nED7MU9/1HmNvwZziLcV+umKeH3o1GyXpS+dcIJ
+	 kZfE069dG1fXd3nautF8hE8Fz6WmkMob3LfE1PBks0EYWXhQ/R3h4bCl+OxphF/jXU
+	 FM68yojo/8cYHUrfFi8eJHbz3uqQqkHBCi9JqCCjTAEbxgpvm1+fcmr7cFIU0aptss
+	 uadO8A5LRV7aLlTCn4TDCyl3CQxdN0ZWDtWFI3E+tR7lTNv1bpB0PRrbeVOecoJUVc
+	 vzIPOyvY3HKBg==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id BC29E3782081;
 	Thu,  1 Feb 2024 10:16:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.51
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706782608; cv=fail; b=DoNsw9fBHTxZJyYNvGAY4F4tczxzwncuh+aG1Ib0eRf9MNfOTKgAJAlJFyKnj85l+lftYT50xlx0I1tptHY2cYaE+agPtsodaaOyvocXSbiXi2HKVzvQwSQxdR+BzEnppOniOCH8qRmLNTsgBBY1Nm4qAwTZ3tfEMuX3Dx+38eE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706782608; c=relaxed/simple;
-	bh=vsbr52wRtzp5r2T0DCjIBPtGP3rRjRhSs6CeJRjRR7I=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=FSj5g91wGasthjrBa94ckaM0rJbACjWJAttZX2fBUbB+paFuUubjHeZT1pVmL2KKRPONsE+JdHsmwfz46AwQRv8T8EBnP4QXEvnsQdLw/wnO8w9ey6N02DmX7JK8WRoljPUs4zaIZNwjdXFCL6CdOkf8U9ufAc6aBQHJlonGGUs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=u6uGVWes; arc=fail smtp.client-ip=40.107.237.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FcNU3a+3oFsx+56MiwNqa6ah/QmlUOlY1oXrlRcd5IU/8VnHoulAf34XAYBdnBErAVxSgP1VwySIexZwsmHYAE/abZUiLPtCwxAYiGX6wiZvRStT0HKT7DnDCYG04SL/8YJKj2wjDI4x8vI9mv150aDVZRYUzwSZkD2cJ0sh7CSMscp3r4V7NV6sEHBzWHCQycf1OCQrME/nPLhMn0DOxeD2QPi0yLlZqbshVHmbR/BTLAwTHpqrKhLvJF6oJlJLl07W3c7vNUHe38awqjvrPEh30cvsKYepTw0lfsCHyn1WZechNoUWf8Rq0Uvy0zomy6GsnCWMsqPEYIQj+l1YiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nOrJe5HKDFq8O0snB6lbAnsxAqXqeQInEtQU2TvmvgQ=;
- b=aFYey7s1rMlWxDo/zvaB+/dOdj3oNS4D/KrIGoaWmlxLMERP+b5njoQnYzoUb3nQ5A/Y+mQ3j4Ft6ooWDo+a/p38jxsCPGg8Au1AtoqWb+mLeboB4XOF6Tbr05JbaFgZgOfoa5EOTbJK2c2OPrqKhzQCENaEJTnFsY1P0lKnU8p8CUIgflH6mvLH2U39r8bCYBpR5dbWkSfs6f32N9aTxrfJiVlau8wAbErhOLK64Z11XpTNUn2/evCdF1YdZy7rLAhb7vSsU5BCaMJT12jmfPHfC2eLNo6zj6estDavoK1bfk9egDgEBDcJgfUKaK1VoNNJIKqxQx5qbdUjD3yckQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nOrJe5HKDFq8O0snB6lbAnsxAqXqeQInEtQU2TvmvgQ=;
- b=u6uGVWesytomhgmWpTc8gyL5a0yTdIksdRGPrz83fybb1dTbVN0p5QS6EJPuLnm+alrMcsiXwzBsPYBZZbUQLjMSRVXjsw63bZf48Y8pnjSIaaxj3mxGqT96fL/LN7zjpWKIxwbiMBh3FQDRfBqEz3HYiOorLoYKyyyGXnqw6W4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CH3PR12MB9194.namprd12.prod.outlook.com (2603:10b6:610:19f::7)
- by SA1PR12MB7198.namprd12.prod.outlook.com (2603:10b6:806:2bf::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.11; Thu, 1 Feb
- 2024 10:16:44 +0000
-Received: from CH3PR12MB9194.namprd12.prod.outlook.com
- ([fe80::c167:ed6d:bcf1:4638]) by CH3PR12MB9194.namprd12.prod.outlook.com
- ([fe80::c167:ed6d:bcf1:4638%7]) with mapi id 15.20.7228.029; Thu, 1 Feb 2024
- 10:16:44 +0000
-Message-ID: <895b31de-f7f8-425c-870b-1524be21c688@amd.com>
-Date: Thu, 1 Feb 2024 21:16:37 +1100
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH kernel 1/4] pci/doe: Define protocol types and make those
- public
-Content-Language: en-US
-To: Lukas Wunner <lukas@wunner.de>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- Bjorn Helgaas <bhelgaas@google.com>,
- Jonathan Cameron <jonathan.cameron@huawei.com>
-References: <20240201060228.3070928-1-aik@amd.com>
- <20240201060228.3070928-2-aik@amd.com> <20240201065040.GA31925@wunner.de>
-From: Alexey Kardashevskiy <aik@amd.com>
-In-Reply-To: <20240201065040.GA31925@wunner.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SYBPR01CA0084.ausprd01.prod.outlook.com
- (2603:10c6:10:3::24) To CH3PR12MB9194.namprd12.prod.outlook.com
- (2603:10b6:610:19f::7)
+Message-ID: <488c6f38-02c6-4e62-b90b-d2ac112541ae@collabora.com>
+Date: Thu, 1 Feb 2024 11:16:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB9194:EE_|SA1PR12MB7198:EE_
-X-MS-Office365-Filtering-Correlation-Id: 00430813-4906-4648-897a-08dc230ee3ea
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	UD8cxXbwipBrxSZ5h0+P7tI/cjnA9Qefo1TrXhdPLgTPCCHbRKx8mtUsViWAKsFkQ8TNbkFMrviWvvbQ+yWTjj9Akx7drZ7nzw5SBNP94Gx4jL0MjTu2zKZbTNGK+82RlQ5fIrGA011O1d0THbrofyTiG8heF5JwVeUP9dszzL0GawHPc2VaDxjp1quedys+lVOkdvayldO3ySmLjShqc/hix6u+h7u5CP7wp6e4NjqdbF5VWnhqODtioyUeOVLkF66aILBl7nd7TJqs0gAZMFT0fxpM7HRfByN5qUM946z4ljc2AAxZ1ml1bdqpegcYPiU5UzhrbKwp6sE54AgPsYP/jYYZIGuBUIcEk8mrXznvxz4C3dBLbKEca8dhpoQc30I/sP/ybah1FbZRQ5NgKmuy9qyCcKScPxrxj7ay/YgxrePiXW48cB/0gNAQX868WVSrkDErujfc1ZlnE6sKybzoujq/BrsfPdkFSIk0FgXfmzZIYkNHB/f5fwfKhPX29w8lIu5cE1S5gvqH/u7nvdXRVItTQheZ5/6xVOvUlRB6ZQxNxDnnxHJGtPM+TrhFBya60PcgUrCqiejCDltyyaxLqPI+JRXQnF3WSkJAR4k0caRVbncrgJpc0L4uyCRo
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB9194.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(396003)(346002)(366004)(39860400002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(31686004)(36756003)(31696002)(41300700001)(2616005)(26005)(38100700002)(6512007)(6486002)(966005)(6506007)(2906002)(478600001)(6916009)(66946007)(66556008)(316002)(66476007)(53546011)(54906003)(6666004)(4326008)(5660300002)(8936002)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?d1Bjc0NOWjRBQnhNOEwvWG5qYWRqdGliWUZhcWRrZG1Cd0tsSW50OUY4aHl6?=
- =?utf-8?B?OUlmY1ZrdEhleTRuYVhWa2F4S1pCSll0MjZQUkgwSnJLOHd4KytCWjJBVXFn?=
- =?utf-8?B?emh3SStORHAvSlhxZS9BUjR6Nll6dDZxUlNlblpvWXB0bVNZOWtQZmgydnhl?=
- =?utf-8?B?QytCVytwR0pYWG9KMUg3Y2tYU09KT3QzTmZZbWZaNzNLWk9JZ2dXSURsbG1D?=
- =?utf-8?B?c2tmQ1ltSnB4L3NTbnAzVHhnSUFNZ1cyRzM5d1VaSFdybW85UEtLNldTUzdx?=
- =?utf-8?B?WkUrK1AxVFlRUGJyOG41OXRpWUJVSGVnOENhOTgxVVJnSUhBcXF3T1dkOTZ0?=
- =?utf-8?B?Q3JXOFgxakJxZU9MN3hpampWUUl6eFRsMk9zVnQ4bkhxUnRTVlUvTlE3c0o3?=
- =?utf-8?B?TjMrUFphdWtpTFVMV01vVlpmVHV0ZS9tYVNkeWJ2QW1NMmdmcHBtNmg4Ylp3?=
- =?utf-8?B?NGQ1aC9Yb200YjNFNkVvNkZ5NDVjTkxDUnRoMjF1ZWZTakdXOEw3V1pWcjZX?=
- =?utf-8?B?L2xuYS9SV255Q1lTMjJ2bW5WQkl5aXV4dTNQNFVEaGVTUm9vT1dScTllTVhw?=
- =?utf-8?B?aXQ0RnNUSGwzc0orRnlxMksvd0l0WjltNHdKQ25KWDMzeUN3eWlLMDlqTDZm?=
- =?utf-8?B?UTJLWGpXODRtVExiMFVsYkJqa0RKTlhyY0dab0hiVTJSNEl5ZWR6SE1heWZp?=
- =?utf-8?B?YWZHdVBMR29WWXpLUlE1cEhpTkl6ZUxCaXduQzBRQkJ4cUwySXVtdVpuZ01F?=
- =?utf-8?B?ekZvbjg2V3RzUUwzdTNSdE1yVVVEdTc2d0ova3RjWkp2eEJOYnNWdGpxVlg5?=
- =?utf-8?B?Sjc3SWoraTVocmpibTNqUnZIaW1kSUQyMnArd2g5MjBhODhQKzIzNjhHYUky?=
- =?utf-8?B?dSsyY1hoQlNzb2xORGZzYkZBcjY3eGJlMnJoZUl4SGhjc2tueENUdk92NUlZ?=
- =?utf-8?B?YnprUXdnZ053KzRWUzlKSTNxYjc1cTBoUEg1OEIwZ1FpSkRqWmJzQnJVcUtP?=
- =?utf-8?B?alNCVkhtUDlxVUVPU2Zob2o5SVJGclBJQ3JSSlF0bEpZN3JwVFcrVWw1Qm9B?=
- =?utf-8?B?L1pXTVVGOTZkWTE2S3JxbW1tRmVKUlpaZE8xUDZMd0Y2ajUzSWR6WGpIOWEv?=
- =?utf-8?B?VkwvU0NVVUJpbHVrUVVzTkhKVjYwbWYwNEVEVWdTU0FLUHNnaXlacVdNYmFP?=
- =?utf-8?B?MFl5ZlozSGxyYThETXlnZG1IL2pEaGZ2aFY2S3U5eFUvNFZFY1FCUHB2c1M4?=
- =?utf-8?B?eUJISng3bjZFRU9LbEgvS014MTVQT3V0eVNNYzJKSkloVWFWbjl4cEVhSy9p?=
- =?utf-8?B?WFpWc2ZmUG0rMW1MNVpkbmEyODdZV203WUtIdEhiVGt4bVFYQmpTS2E3dCtW?=
- =?utf-8?B?NE1mWjkzQmh4QWVKUEZTYkNlTXpsRDlTR3dnbXRTRFZ5L0RWUEhmQ05hY3FH?=
- =?utf-8?B?NCtJSWQ5WTQ0N0dpVVlxMS9JUGNhd3l6Ymg5QnNhVGZNOXVRbDJia2w3M3A3?=
- =?utf-8?B?ZmIwS3BwekMrcGtzeVgvazNGRFhBYUVxWkxhS1E0bGNWOE03aEJiVkE2dklQ?=
- =?utf-8?B?M3pkK3FFVjFXdkZaOXdMbWNtU0VMaHB5dGwzZEtvWWR5am43VnhzNksxYWsr?=
- =?utf-8?B?Ty9YZmpXM2c1Y2NvTVdmUHU5YVRBbTlYWk9GZlpKbEJEd2tQb1ZEM0J3c3Ix?=
- =?utf-8?B?QnhuOFZRK2RLRHpkcHhwS2NKVEYwclFPZXJiTXpvaHl5VytjVlIwYjlvL2tS?=
- =?utf-8?B?amFYVmU0OUJmampHaU5CelpUOXpDRzRFbDF1cEJFMW16YlFaYWdRRGdwa3Nz?=
- =?utf-8?B?dTBRRjUvemd1RTBqR3NUazdhRHpqQitzc0tqRnB3VC9zdHN2UnZGcFFnWG11?=
- =?utf-8?B?azlmYXVYbXluRVpuc1RGcmVnSG5NMyt2VTB2anpIQjJyOXNWellUdXVlQ3A1?=
- =?utf-8?B?OERsZDlzR25GYkZuNnQ5b0ZNcHNTSzBScjZrYzRlaFU3SDcyeHd2YWhWV1M3?=
- =?utf-8?B?d0QveUxqa1p2M2RpWHdUYlZ3ZWppSlI1L2tzNjRJNWNGZ2szSnduenNNK1Ft?=
- =?utf-8?B?SGMxTkhRWEcrUDdNZW5BK01sTjdNbHVvUU1YN25KVDFicUZLZlBkbUpOd01X?=
- =?utf-8?Q?X6t2a0tLjLr9lr6gaeA39//hv?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 00430813-4906-4648-897a-08dc230ee3ea
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB9194.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2024 10:16:44.3091
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7HNryE/chGGDDnYWdRvPxaVIyg1B9Id0PgyeqQpNl/4XaDkXX0mtIQ7o+3QrZR+sJtJkxiszh6eSjjGMdV0TRA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7198
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 00/17] Support IGT in display driver
+Content-Language: en-US
+To: Hsiao Chien Sung <shawn.sung@mediatek.com>,
+ Chun-Kuang Hu <chunkuang.hu@kernel.org>, CK Hu <ck.hu@mediatek.com>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Chen-Yu Tsai
+ <wenst@chromium.org>, Sean Paul <sean@poorly.run>,
+ Fei Shao <fshao@chromium.org>, Bibby Hsieh <bibby.hsieh@mediatek.com>,
+ dri-devel@lists.freedesktop.org, linux-mediatek@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20231212121957.19231-1-shawn.sung@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231212121957.19231-1-shawn.sung@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 1/2/24 17:50, Lukas Wunner wrote:
-> On Thu, Feb 01, 2024 at 05:02:25PM +1100, Alexey Kardashevskiy wrote:
->> Already public pci_doe() takes a protocol type argument.
->> PCIe 6.0 defines three, define them in a header for use with pci_doe().
-> [...]
->> --- a/include/linux/pci-doe.h
->> +++ b/include/linux/pci-doe.h
->> @@ -13,6 +13,10 @@
->>   #ifndef LINUX_PCI_DOE_H
->>   #define LINUX_PCI_DOE_H
->>   
->> +#define PCI_DOE_PROTOCOL_DISCOVERY		0
->> +#define PCI_DOE_PROTOCOL_CMA_SPDM		1
->> +#define PCI_DOE_PROTOCOL_SECURED_CMA_SPDM	2
+Il 12/12/23 13:19, Hsiao Chien Sung ha scritto:
+> This series is based on mediatek-drm-next.
 > 
-> These are deliberately defined in the .c files which actually need them,
-> i.e. DISCOVERY is defined in drivers/pci/doe.c and CMA_SPDM is defined in
-> drivers/pci/cma.c:
+> This series adds support for running IGT (Intel GPU Tool) tests
+> with MediaTek display driver. The following changes will be
+> applied:
 > 
-> https://lore.kernel.org/all/7721bfa3b4f8a99a111f7808ad8890c3c13df56d.1695921657.git.lukas@wunner.de/
+> 1. Add a new API for creating GCE thread loop to retrieve CRCs
+>     from the hardware component
+> 2. Support hardware CRC calculation in both VDOSYS0 and VDOSYS1
+> 3. Support alpha blending in both VDOSYS0 and VDOSYS1
 > 
-> I don't see why they would have to be public if they're each only needed
-> in a single .c file.
 
-SEV TIO needs both CMA and SECURED_CMA for DOE device<->firmware 
-bouncing and it is going to use pci_doe() for this. I should have put 
-this into the commit log, sorry about that.
+Hello,
+is there still interest in upstreaming this?
 
-Or the plan is to add pci_doe_secure_transport() to cma.c and force 
-everyone use that?
+We're interested in enabling more comprehensive IGT tests on MediaTek SoCs
+and this series is definitely useful.
 
-The PCI SIG DOE protocol numbers (discovery, CMA, secure CMA) are all 
-defined in one place in the PCIe spec and defining them in different 
-places (doe.c, cma.c) is weird imho.
+Regards,
+Angelo
 
-
+> Changes in v4:
+> - Seperate the patch into smaller ones
+> - Change the title of some patches
+> - Revert the changes that are not related to the series
 > 
-> Thanks,
+> Changes in v3:
+> - Modify the dt-binding document of Mediatek OVL
+> - Set DRM mode configs accroding to the hardware capabilities
+> - Replace cmdq_pkt_jump_absolute() with cmdq_pkt_jump()
 > 
-> Lukas
+> Changes in v2:
+> - Simplify CMDQ by adding commands that are currently used only
+> - Integrate CRC related codes into new APIs for Mixer and OVL to reuse
+> - Add CPU version CRC retrieval when CMDQ is disabled
+> 
+> Hsiao Chien Sung (17):
+>    soc: mediatek: Add register definitions for GCE
+>    soc: mediatek: Disable 9-bit alpha in ETHDR
+>    dt-bindings: display: mediatek: ovl: Modify rules for MT8195/MT8188
+>    drm/mediatek: Add OVL compatible name for MT8195
+>    drm/mediatek: Set DRM mode configs accordingly
+>    drm/mediatek: Support alpha blending in OVL
+>    drm/mediatek: Support alpha blending in Mixer
+>    drm/mediatek: Support alpha blending in display driver
+>    drm/mediatek: Support CSC in OVL
+>    drm/mediatek: Support more color formats in OVL
+>    drm/mediatek: Turn off the layers with zero width or height
+>    drm/mediatek: Support CRC in display driver
+>    drm/mediatek: Support CRC in OVL
+>    drm/mediatek: Support CRC in OVL adaptor
+>    drm/mediatek: Add missing plane settings when async update
+>    drm/mediatek: Fix errors when reporting rotation capability
+>    drm/mediatek: Add comments for the structures
+> 
+>   .../display/mediatek/mediatek,ovl.yaml        |  12 +-
+>   drivers/gpu/drm/mediatek/mtk_disp_drv.h       |   7 +
+>   drivers/gpu/drm/mediatek/mtk_disp_ovl.c       | 326 +++++++++++++++---
+>   .../gpu/drm/mediatek/mtk_disp_ovl_adaptor.c   |  32 +-
+>   drivers/gpu/drm/mediatek/mtk_drm_crtc.c       | 261 +++++++++++++-
+>   drivers/gpu/drm/mediatek/mtk_drm_crtc.h       |  39 +++
+>   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c   |   7 +
+>   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h   |  35 ++
+>   drivers/gpu/drm/mediatek/mtk_drm_drv.c        |  30 +-
+>   drivers/gpu/drm/mediatek/mtk_drm_drv.h        |  16 +
+>   drivers/gpu/drm/mediatek/mtk_drm_plane.c      |  15 +-
+>   drivers/gpu/drm/mediatek/mtk_ethdr.c          | 106 +++++-
+>   drivers/gpu/drm/mediatek/mtk_ethdr.h          |   5 +
+>   drivers/soc/mediatek/mtk-mmsys.c              |   1 +
+>   include/linux/soc/mediatek/mtk-cmdq.h         |  10 +
+>   15 files changed, 834 insertions(+), 68 deletions(-)
+> 
+> --
+> 2.18.0
+> 
 
--- 
-Alexey
 
 
