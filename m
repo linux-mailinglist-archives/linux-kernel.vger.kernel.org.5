@@ -1,150 +1,90 @@
-Return-Path: <linux-kernel+bounces-47524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8F20844EEB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:57:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 253CC844EED
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:59:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8F6D28B4C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:57:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFCFE1F2C1E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:59:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A03ED125D2;
-	Thu,  1 Feb 2024 01:57:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hxYJD/rL"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC638FBE7;
+	Thu,  1 Feb 2024 01:58:53 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E785EAE3;
-	Thu,  1 Feb 2024 01:57:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BD56EACC;
+	Thu,  1 Feb 2024 01:58:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706752655; cv=none; b=OsPASRRyMcERj5rdh5J3kl3nWBhe5Xm1KeHdyKtcmVuldj0Ayn1qn6Xc2M30SSbiTu4juR6mokih7d5FztwTynNkzaA6R9CuE/Uvq2LTq1w/Ca/wS1phzUHqtcqf+jCh3FUCRPSgbLve7heKIlVdhQbYykvuQDBTUXzEukjQFuU=
+	t=1706752733; cv=none; b=c5OwqIx6MhlWyVdnCuHVPRFcOOf3i+arUTCNUQzaUTDjLY+MIObIka3fp2fVReg1+OnJgczzz8PaRsc9F7X+nBf8ujVVwwKrqDRdYZQ+YAI40CyThyFXtJsIfue3nB7ZQrm1/WoClhdiAdSRpsGNA0oVEcyaBg/FCYc5xoFl1PE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706752655; c=relaxed/simple;
-	bh=ntPLv7GhCXDRjysAd8J9WhbQvJEwCo5yWUs1jbfxMoE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IDuoS8UmgufJmOc8WY+YPkFLDx2XmevGr7iDZ0EaNIEl5W2hIHy5uk/ZyyK1+uygS+IO1rzbQ8k9ldhBuJlJF/TliFGO9/TjQSDi/TFHLjXYpXtrQJ5Q9/TxpayA5ZHzmQK5nsex9FpcsL+cXsZkRyIpcEA/t2ERtPndodqT7CI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hxYJD/rL; arc=none smtp.client-ip=134.134.136.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706752653; x=1738288653;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ntPLv7GhCXDRjysAd8J9WhbQvJEwCo5yWUs1jbfxMoE=;
-  b=hxYJD/rL7nQdr/h2kd4T/MYAjILzYko8N7S53aU90XZ6QIhkKMIF1UH8
-   dW9V+iU7gwH/pc68pes2dSwsJqSwdWM0wn+FRvt69LnhBQtM/7aauumFA
-   Dr7NFmUwVxuIh5GG/sp2q4KT2Xmp/0vKC8T64+dIHg70846tPwRu6hlPl
-   peP3/VPhWr1erv+hzlZ4rWs9bW+GO8YVNMqYRg6MiLpx7tsulpnKK8z0e
-   81c5wx6aZZ0YDJ+vvLk5OExFlC8KSjrbxXSVilnZD/qyiKZdyFJG9ieNN
-   M0lp7Yfj7ATkF5tpwWLX3VqMVXdfsstNLk1N0w6FKfHlvPCMUDByI35vT
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="394229031"
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="394229031"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 17:57:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="4375413"
-Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
-  by orviesa004.jf.intel.com with ESMTP; 31 Jan 2024 17:57:31 -0800
-Date: Thu, 1 Feb 2024 09:57:29 +0800
-From: Yuan Yao <yuan.yao@linux.intel.com>
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-	erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
-Subject: Re: [PATCH v18 001/121] x86/virt/tdx: Export TDX KeyID information
-Message-ID: <20240201015729.6n5uavy7rxdjtqwc@yy-desk-7060>
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <fed47cd35b32ee66f7ec55bdda6ccab12c139e85.1705965634.git.isaku.yamahata@intel.com>
+	s=arc-20240116; t=1706752733; c=relaxed/simple;
+	bh=Xor6owu58Ln6T3Af5RESZax2j6h4UOSBR2UkbAZpWec=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
+	 In-Reply-To:Content-Type; b=YdYyftGt9Hyv1IPUsDVrjdDZsYqE3IDB+4CguNW64LukF1xSLgH6WwYOxgGxiF9WRiw9MRd700UP1WOXQCbLHx4fMaPpAaKwckXMLBz5zXsFZI12eZ0c8BHmyF/X9EfvSll8OAHLTbAmhbvqaKUmrF7+j816YTGHHdFQsa3dnig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TQMTh6yvDz29kq5;
+	Thu,  1 Feb 2024 09:56:56 +0800 (CST)
+Received: from dggpeml500001.china.huawei.com (unknown [7.185.36.227])
+	by mail.maildlp.com (Postfix) with ESMTPS id F36961400D4;
+	Thu,  1 Feb 2024 09:58:47 +0800 (CST)
+Received: from [10.67.121.42] (10.67.121.42) by dggpeml500001.china.huawei.com
+ (7.185.36.227) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 1 Feb
+ 2024 09:58:47 +0800
+Message-ID: <667a313b-beae-4340-9173-82363c8e9aa8@huawei.com>
+Date: Thu, 1 Feb 2024 09:58:47 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fed47cd35b32ee66f7ec55bdda6ccab12c139e85.1705965634.git.isaku.yamahata@intel.com>
-User-Agent: NeoMutt/20171215
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/4] some updates and cleanups for hisilicon/sec2.
+From: taoqi <taoqi10@huawei.com>
+To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+	<liulongfang@huawei.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>
+References: <20240126093828.14131-1-taoqi10@huawei.com>
+In-Reply-To: <20240126093828.14131-1-taoqi10@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500001.china.huawei.com (7.185.36.227)
 
-On Mon, Jan 22, 2024 at 03:52:37PM -0800, isaku.yamahata@intel.com wrote:
-> From: Kai Huang <kai.huang@intel.com>
->
-> Each TDX guest must be protected by its own unique TDX KeyID.  KVM will
-> need to tell the TDX module the unique KeyID for a TDX guest when KVM
-> creates it.
->
-> Export the TDX KeyID range that can be used by TDX guests for KVM to
-> use.  KVM can then manage these KeyIDs and assign one for each TDX guest
-> when it is created.
->
-> Each TDX guest has a root control structure called "Trust Domain Root"
-> (TDR).  Unlike the rest of the TDX guest, the TDR is protected by the
-> TDX global KeyID.  When tearing down the TDR, KVM will need to pass the
-> TDX global KeyID explicitly to the TDX module to flush cache associated
-> to the TDR.
->
-> Also export the TDX global KeyID for KVM to tear down the TDR.
->
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
+On 2024/1/26 17:38, Qi Tao wrote:
+> This seires patch mainly add some RAS registers to enhance the
+> DFX positioning function and fix some cleanup issues.
+> 
+> [PATCH v1 3/4] -> [PATCH v2 3/4]
+> 	sec_sqe3->c_len_ivin |= cpu_to_le32(c_req->c_len);
+> -	sec_sqe3->tag = cpu_to_le64((unsigned long)(uintptr_t)req);
+> +	sec_sqe3->tag = cpu_to_le64((unsigned long)req);
+> 
+> Other patches are not modified.
+> 
+> Qi Tao (3):
+>    crypto: hisilicon/sec2 - updates the sec DFX function register
+>    crypto: hisilicon/sec2 - modify nested macro call
+>    crypto: hisilicon/sec2 - fix some cleanup issues
+> 
+> Wenkai Lin (1):
+>    crypto: hisilicon/sec - remove unused parameter
+> 
+>    drivers/crypto/hisilicon/sec2/sec_crypto.c | 33 ++++++++--------------
+>    drivers/crypto/hisilicon/sec2/sec_main.c   |  5 ++++
+>    2 files changed, 17 insertions(+), 21 deletions(-)
+> 
 
-The variables exported by this patch are used first time in patch 18 IIUC...
-So how about move this one just before the patch 18 ?
+The email is sent repeatedly. Please ignore other duplicate patches.
 
-> ---
->  arch/x86/include/asm/tdx.h  |  5 +++++
->  arch/x86/virt/vmx/tdx/tdx.c | 11 ++++++++---
->  2 files changed, 13 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-> index 4595fbe4639b..4e219fc2e8ee 100644
-> --- a/arch/x86/include/asm/tdx.h
-> +++ b/arch/x86/include/asm/tdx.h
-> @@ -88,6 +88,11 @@ static inline long tdx_kvm_hypercall(unsigned int nr, unsigned long p1,
->  #endif /* CONFIG_INTEL_TDX_GUEST && CONFIG_KVM_GUEST */
->
->  #ifdef CONFIG_INTEL_TDX_HOST
-> +
-> +extern u32 tdx_global_keyid;
-> +extern u32 tdx_guest_keyid_start;
-> +extern u32 tdx_nr_guest_keyids;
-> +
->  u64 __seamcall(u64 fn, struct tdx_module_args *args);
->  u64 __seamcall_ret(u64 fn, struct tdx_module_args *args);
->  u64 __seamcall_saved_ret(u64 fn, struct tdx_module_args *args);
-> diff --git a/arch/x86/virt/vmx/tdx/tdx.c b/arch/x86/virt/vmx/tdx/tdx.c
-> index 06fbd0b9ea29..14e068ee2640 100644
-> --- a/arch/x86/virt/vmx/tdx/tdx.c
-> +++ b/arch/x86/virt/vmx/tdx/tdx.c
-> @@ -39,9 +39,14 @@
->  #include <asm/mce.h>
->  #include "tdx.h"
->
-> -static u32 tdx_global_keyid __ro_after_init;
-> -static u32 tdx_guest_keyid_start __ro_after_init;
-> -static u32 tdx_nr_guest_keyids __ro_after_init;
-> +u32 tdx_global_keyid __ro_after_init;
-> +EXPORT_SYMBOL_GPL(tdx_global_keyid);
-> +
-> +u32 tdx_guest_keyid_start __ro_after_init;
-> +EXPORT_SYMBOL_GPL(tdx_guest_keyid_start);
-> +
-> +u32 tdx_nr_guest_keyids __ro_after_init;
-> +EXPORT_SYMBOL_GPL(tdx_nr_guest_keyids);
->
->  static DEFINE_PER_CPU(bool, tdx_lp_initialized);
->
-> --
-> 2.25.1
->
->
+Thanks
+taoqi
 
