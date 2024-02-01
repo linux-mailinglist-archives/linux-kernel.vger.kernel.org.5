@@ -1,119 +1,143 @@
-Return-Path: <linux-kernel+bounces-48295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 603478459B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:13:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD29D8459C6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:15:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D9BB289C64
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:13:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E05F91C242B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:15:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 376AF5D484;
-	Thu,  1 Feb 2024 14:12:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EBFE5D488;
+	Thu,  1 Feb 2024 14:15:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nl5vs/Gt"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kc06Ur2D"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78BD95336D;
-	Thu,  1 Feb 2024 14:12:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB5A45337E;
+	Thu,  1 Feb 2024 14:15:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706796774; cv=none; b=kDWZfrB5E+8UGITI0ASusohhdAfdiukYXmlceM1p1f/QiT3XY5fbTccfPKP4E9cH2EzY3XS1i4LwRItXtmrd7wva5T9vEyl65R8TPFPBW6F07chauEBIGdybejKF+xYiFE+7Q53DopBLkmJPVxdecvhikztPHYr4Q+NyP7H0pOs=
+	t=1706796931; cv=none; b=sKM6FAqX+VFYK5bTe7AoW2JaqkjpUQ/gVf4O4QlFyt6nrUFIQ2KTXAWyCst1YY/Ae9jsUg7i5m8KhrDuGrCrn5cjR/j/pXLRug4PLtUF92/hc7luAdObmGS8Mw+Qi1eY4dyc7wos3XjBtL9jjFOJsvOUd4s4yrd4V6Fx3MLuW/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706796774; c=relaxed/simple;
-	bh=8pxph5DDQ1i3FUXJ1ruGLd1ysZhEeq1PElzze4t5/wg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a/5T3r0DApfQqUlfYkgNeC4A8ysh3+3moi2/KYGAtwgqW5jS09xHqrMmKmZJLB8FxJ+oLZ6tEcIYlYcOnN+4JmRKWyVrTP0UW7L/Q9gm3itXDMcdr//DH7jy4HMuUsb3+/X1W3185HvVFzgJtOMKP73qLtG4KowUDXaIHRBOQXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nl5vs/Gt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5856FC433C7;
-	Thu,  1 Feb 2024 14:12:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706796774;
-	bh=8pxph5DDQ1i3FUXJ1ruGLd1ysZhEeq1PElzze4t5/wg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nl5vs/Gt1V98kTsMUdiLxbqaLnsDTlbUa2MngQcURrYPh2Fg2K0VVYs/LD+rZl8sc
-	 uZl3EUF99D01Ce5mQrOaJFy7L/Cxt2AejodO2hRCQyjYo88U85eW0RImSYToVK9vYN
-	 tFX3sD6Tdy7mXtKIqEIRtKYidJSaIxOMItZh2xYg/96Rde0B/eRWm/cr1oapYVTqDY
-	 vArPT47NlmbOgqG9YOgYa5YTe9bxluWaRasrrXb/hq+RWu+q+2X9YgMVXoJFynyMwf
-	 ibGYyQNa9/D6KuLh9vqy+iEMdvjJaD6Nx231JJQxvi07vzlWHAfOHWEskMuP+q77a3
-	 fMgLtFTV0VuQw==
-Date: Thu, 1 Feb 2024 14:12:48 +0000
-From: Will Deacon <will@kernel.org>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
-	iommu@lists.linux.dev, Christoph Hellwig <hch@lst.de>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Petr Tesarik <petr.tesarik1@huawei-partners.com>,
-	Dexuan Cui <decui@microsoft.com>
-Subject: Re: [PATCH v2 1/3] swiotlb: Fix allocation alignment requirement
- when searching slots
-Message-ID: <20240201141248.GA15753@willie-the-truck>
-References: <20240131122543.14791-1-will@kernel.org>
- <20240131122543.14791-2-will@kernel.org>
- <4c9f50d2-05f9-4a37-ac50-dcd98e40e87f@arm.com>
- <20240201124634.GA15707@willie-the-truck>
- <c235493f-c28d-43cf-969f-0fb148cb5dda@arm.com>
+	s=arc-20240116; t=1706796931; c=relaxed/simple;
+	bh=gJfEYE0597179ZmLxN/fGRj5iBfPVSnPPdFVqXYTudA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LMkmgO8TQlvHvvXlECmHJzjjpeZ/Lf+lZLVaZFGO/Z3fzmW++NgEWV8fVhEZyyEF2my7ojbxY079gvSepjBrOdnFlP11N7UdHROzQexcFLSbedAqzh7+EEqCRkst8uH2d0I/97gbroemhZ5X7KhxAryHmQNrabcMD7UTdXMUy4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kc06Ur2D; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a359e6fde44so100863566b.3;
+        Thu, 01 Feb 2024 06:15:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706796928; x=1707401728; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GG4y8pUYqdaN9W5dgoBJ87G9KYZX8k/K4851BbIdGxs=;
+        b=kc06Ur2DDzu1T43BLPa1z9x8G70LwnHG5gHSV18eD2GjYVaC1GjxICmGaIwudMTjKC
+         njTLyDbgTWABQS+UGOBCc3VdC9iZbFrvTUiEyNkF9BvIU0XQGr5G8xJ8tnSryWSBKdH7
+         Yhg1N3czQintaZFiM+qn26L8c0I9UaDZ1BR095P2+DXt0fo/8P+MVY7+QODtrLON6Z5I
+         cgEdqqXp5iOJylT8k2gKfy+7fW7Cd2u18wnJekuNQeWPFKh48w058Gw/N19lhAfHSnQv
+         FZVzA6DExUBZbtcZeGG5sqWqEzE6zhx/T+YdxfXZdpcIOPzI2eqFQbsX9Zw9D8FY/dSS
+         81oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706796928; x=1707401728;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GG4y8pUYqdaN9W5dgoBJ87G9KYZX8k/K4851BbIdGxs=;
+        b=ovqzcxVca27myJrISfWF35j6U/lWYATbCUVF/DeyOHfzvOhOohMOQNfHK6/1Wci2d3
+         eLQJwKq1vGQb38pol8DvwMRKMLkz5li87dvDcwGX3g5jl85WEKHcWYSFoS5j2FWE8Ckl
+         hlJy63rb+1T0OOLC4jRjVfatrbopkJfw43VfRzG2DMi3TfH25hQa/xgGGPZYvQp7vr8L
+         wT0sQFY1hzwi79VAToXxHeLvV5afeH2DpZbnUYzns/bB/3LA2stykEF99tNvKUTo6bm5
+         9saxxk/mNCxgO8/BMDOP3vfB2Qpc9L+R28mzrlvT26Kw3W4Q4zVVuN+/FvsSNFmiENNM
+         xtsw==
+X-Gm-Message-State: AOJu0Yz6riPJrV0fMlcZrRNERoguVRQO1pnX2pMWLlzSops5gHVCeY7S
+	DYExswyVlXh6kvLsz9foBEeCT3Qmj2jd1QDtJD+tTkiOG6qb0xGT
+X-Google-Smtp-Source: AGHT+IF1v1vf9i2YDCcd5GDPJC7NAu8AsCZtL/xJaObagkcVDqvbmfhrYrrShyiAIXrTWubw1FImmA==
+X-Received: by 2002:a17:906:fa8e:b0:a36:c338:49b with SMTP id lt14-20020a170906fa8e00b00a36c338049bmr1355670ejb.60.1706796927667;
+        Thu, 01 Feb 2024 06:15:27 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVGlzpTqZPJvV2dIsLIgxHvQ5rJvfzrGvea6V3gMulB7a/mEguyZIjW1IYI3T5BVUiZJQPiDUuiV6LWTzuwW2VANSLCdASbKYW4Csy2w2K7xibKw6bVVe8gnIJjntn+AbKQpDHKeow7GzAOI4cotciekraO5fH8wknYND91T/xXMp2t5UxCU6xuI0IDH8hFXilvGsZWvOtG0nKXCitWuAOMGwMkTW7o2T9BFLIyv6JCKcdUxVMG4zp/Z4RyN7U8U7TIub9heemENQmiJNhZs4OgNLdDaVsDuR/y91PFIgQ8zcOUmGIQt3thAN8J0pTdrya//xfPmmwZ+N62PGx1guZPUBN55x5bZi8E6XDQ4Qah1kq9M5lK2g==
+Received: from localhost.localdomain (IN-84-15-186-107.bitemobile.lt. [84.15.186.107])
+        by smtp.gmail.com with ESMTPSA id kb4-20020a1709070f8400b00a3493e2dbfesm7185784ejc.53.2024.02.01.06.15.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 06:15:27 -0800 (PST)
+From: Arturas Moskvinas <arturas.moskvinas@gmail.com>
+To: linus.walleij@linaro.org,
+	biju.das.jz@bp.renesas.com,
+	akaessens@gmail.com,
+	thomas.preston@codethink.co.uk,
+	andriy.shevchenko@linux.intel.com,
+	preid@electromag.com.au,
+	u.kleine-koenig@pengutronix.de
+Cc: linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Arturas Moskvinas <arturas.moskvinas@gmail.com>
+Subject: [PATCH v2] pinctrl: mcp23s08: Check only GPIOs which have interrupts enabled
+Date: Thu,  1 Feb 2024 16:14:07 +0200
+Message-ID: <20240201141406.32484-2-arturas.moskvinas@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c235493f-c28d-43cf-969f-0fb148cb5dda@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 01, 2024 at 01:30:15PM +0000, Robin Murphy wrote:
-> On 01/02/2024 12:46 pm, Will Deacon wrote:
-> > On Wed, Jan 31, 2024 at 03:54:03PM +0000, Robin Murphy wrote:
-> > > On 31/01/2024 12:25 pm, Will Deacon wrote:
-> > > > Commit bbb73a103fbb ("swiotlb: fix a braino in the alignment check fix"),
-> > > > which was a fix for commit 0eee5ae10256 ("swiotlb: fix slot alignment
-> > > > checks"), causes a functional regression with vsock in a virtual machine
-> > > > using bouncing via a restricted DMA SWIOTLB pool.
-> > > > 
-> > > > When virtio allocates the virtqueues for the vsock device using
-> > > > dma_alloc_coherent(), the SWIOTLB search fails to take into account the
-> > > > 8KiB buffer size and returns page-unaligned allocations if 'area->index'
-> > > > was left unaligned by a previous allocation from the buffer:
-> > > 
-> > > Hmm, but isn't this fundamentally swiotlb_alloc()'s fault for assuming it's
-> > > going to get a page-aligned address back despite asking for 0 alignment in
-> > > the first place? I'm not sure SWIOTLB has ever promised implicit
-> > > size-alignment, so it feels somewhat misplaced to be messing with the
-> > > algorithm before fixing the obvious issue in the caller :/
-> > 
-> > It's hard to tell which guarantees are intentional here given that this
-> > interface is all internal to swiotlb.c, but the 'alloc_align_mask'
-> > parameter didn't even exist prior to e81e99bacc9f ("swiotlb: Support
-> > aligned swiotlb buffers") and practically the implementation has ensured
-> > page-aligned allocations for buffers >= PAGE_SIZE prior to 0eee5ae10256
-> > ("swiotlb: fix slot alignment checks") by virtue of aligning the search
-> > index to the stride.
-> > 
-> > In any case, this patch is required because the current state of
-> > swiotlb_search_pool_area() conflates the DMA alignment mask, the
-> > allocation alignment mask and the stride so that even if a non-zero
-> > 'alloc_align_mask' is passed in, it won't necessarily be honoured.
-> 
-> Sure, I didn't mean to suggest there wasn't anything to fix here - if the
-> existing code was intending to align to PAGE_SIZE even for a
-> alloc_align_mask=0 and failing then that's clearly its own bug - I'm mostly
-> being confused by the example of returning an unsuitably-aligned address for
-> an 8KB dma_alloc_coherent() 75% of the time, if the end result of this fix
-> is that we'll *still* return an incorrectly-aligned buffer for that same
-> request 50% of the time (which just happens to be less fatal), since there
-> are two separate bugs in that path.
+GPINTEN register contains information about GPIOs with enabled
+interrupts no need to check other GPIOs for changes.
 
-I'll have a go at improving the commit message a bit, since I wrote that
-before I'd really appreciated that we weren't returning natural alignment
-(and page-alignment seems to be sufficient for whatever vsock needs).
+Signed-off-by: Arturas Moskvinas <arturas.moskvinas@gmail.com>
+---
+ drivers/pinctrl/pinctrl-mcp23s08.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-Thanks,
+diff --git a/drivers/pinctrl/pinctrl-mcp23s08.c b/drivers/pinctrl/pinctrl-mcp23s08.c
+index 4551575e4e7d..38c3a14c8b58 100644
+--- a/drivers/pinctrl/pinctrl-mcp23s08.c
++++ b/drivers/pinctrl/pinctrl-mcp23s08.c
+@@ -375,7 +375,8 @@ mcp23s08_direction_output(struct gpio_chip *chip, unsigned offset, int value)
+ static irqreturn_t mcp23s08_irq(int irq, void *data)
+ {
+ 	struct mcp23s08 *mcp = data;
+-	int intcap, intcon, intf, i, gpio, gpio_orig, intcap_mask, defval;
++	int intcap, intcon, intf, i, gpio, gpio_orig, intcap_mask, defval, gpinten;
++	unsigned long int enabled_interrupts;
+ 	unsigned int child_irq;
+ 	bool intf_set, intcap_changed, gpio_bit_changed,
+ 		defval_changed, gpio_set;
+@@ -395,6 +396,9 @@ static irqreturn_t mcp23s08_irq(int irq, void *data)
+ 	if (mcp_read(mcp, MCP_INTCON, &intcon))
+ 		goto unlock;
+ 
++	if (mcp_read(mcp, MCP_GPINTEN, &gpinten))
++		goto unlock;
++
+ 	if (mcp_read(mcp, MCP_DEFVAL, &defval))
+ 		goto unlock;
+ 
+@@ -410,9 +414,12 @@ static irqreturn_t mcp23s08_irq(int irq, void *data)
+ 		"intcap 0x%04X intf 0x%04X gpio_orig 0x%04X gpio 0x%04X\n",
+ 		intcap, intf, gpio_orig, gpio);
+ 
+-	for (i = 0; i < mcp->chip.ngpio; i++) {
+-		/* We must check all of the inputs on the chip,
+-		 * otherwise we may not notice a change on >=2 pins.
++	enabled_interrupts = gpinten;
++	for_each_set_bit(i, &enabled_interrupts, mcp->chip.ngpio) {
++		/*
++		 * We must check all of the inputs with enabled interrupts
++		 * on the chip, otherwise we may not notice a change
++		 * on more than one pin.
+ 		 *
+ 		 * On at least the mcp23s17, INTCAP is only updated
+ 		 * one byte at a time(INTCAPA and INTCAPB are
 
-Will
+base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
+-- 
+2.43.0
+
 
