@@ -1,73 +1,74 @@
-Return-Path: <linux-kernel+bounces-47732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD1428451F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BA6D845216
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:35:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C88C11C23BCB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 07:32:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FB171C2385C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 07:35:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F42C1586EA;
-	Thu,  1 Feb 2024 07:32:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36283158D65;
+	Thu,  1 Feb 2024 07:33:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XvY/GFlm"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Xg/pO1Ap"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8F481586E2
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 07:32:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9267063510
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 07:33:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706772724; cv=none; b=fkt+EKh8diBy74MfYv4KIgJwsQ6DWsJrD5K6208ytCcEU/mxZqAfFaoiHzpwTeKTZDsEbSI9xgNnSZUJU972Xib3odKgWmXAoMs8fNzztkEOevhs4w1Gx3QmoXRlrQN39hCJuDa14GzrfK3+rpUrkde9n0cPdSVLaOke4q4dqEA=
+	t=1706772834; cv=none; b=TmzCc0B0xSCIGqPg9JOL734FDXxK7epMDMKmS63BFe3HFoftznDEoHaCy5HtPXNL64q9BostTlEjMc9O/EAvtf9ZZre8xkDREvKF9WEHGxFgkvv8zyiTK2/U7KJaiWv+W6rEkheRE4iuKJYmDW9PHKgsCQT+yWb6vRR03k1OzRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706772724; c=relaxed/simple;
-	bh=Ug6VbW6scob4zyacyL7DKfYD8E3cWUv2TjZXN9c3JUs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Cc44wFjEwCM8/MXWwSXKRZnfa+/6BV/wUEvFWBCFObEc4+JFAg/ct1DxdSAgJkg6qR6MVdZNNCpSHMoOiwbn/6uxqg28ux7OqZr30hWefFEMHcN2cKnQJPb/1NSlqt4AKvg0aQ7oTAe9+OaPWi5VRzcaH9pQ6me7S7xpjXW2o9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XvY/GFlm; arc=none smtp.client-ip=209.85.218.49
+	s=arc-20240116; t=1706772834; c=relaxed/simple;
+	bh=+l2Ag7PX16j96Ov/hwHWa1239FQ+HRP1iBdLX4+eWTA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=RY02BCJP8KvnylsbZSIPdmUM0/Cb5v3zy6NyDPAz1XAa6pFzEoOhfJ9fdPizWeKUQbqA9v3Riuqz8L9HYbmeUaG6/nPzfeGJHIePvIdAjbIKzD17OFZfdT84S33mhcjsH3gj3oGofiX85968hE1jFTXOUDiY5vXI1yoGJwWCB1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Xg/pO1Ap; arc=none smtp.client-ip=209.85.218.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a3566c0309fso67430566b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 23:32:02 -0800 (PST)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a354fc17f24so68783966b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 23:33:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706772721; x=1707377521; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1706772831; x=1707377631; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=TkihkoVp+1Q0+WMCFTmpmA5Epw3+p6C5zEBoeBY4VKg=;
-        b=XvY/GFlmEu0mElawvuHfVeaF4gpg/iwaNhDHQ5+rA0OFMRCFN7An5Z7MIWL2EWdnlG
-         tiLvRpnWqtvltA+ItrsAyRteMZ8zBjlomTptKaVxl52Bjf9NWC2sPR5k+wbSeemcsApi
-         iizpCKgsojMnHHJbvrDUZBNaNGwFphKXIHRzN7L2w2STpyCW3M0mqShxSU9CU1x/zYz0
-         +K4dZTxEEHWOLhG76ApOrqrLqpAtMdSDyz5Vl2FkbmxnVvBjhPoZmxECOAy2w/4WQoHX
-         P3+4EwB/POJkBDYXRPDt0did/YzBZ0P9gkQdB/yye3IERMhNhD1yFlI5633j/kkEuGhQ
-         A1kw==
+        bh=5bhHrpfsefGDzlPnEVd7TFzEGIjcYRazdyAMstd3JmE=;
+        b=Xg/pO1ApvURlhKLNM0QWb3B1ffoogTBSOaArSMM1X/5b+FWU1BmrDtf7VnMvp+ep24
+         09LW0sCwEjoLTFlBc1Z1l10xDEPDCqS70ULTTKNuTuRQJKl02FPR8EaGiJQHtUaeEFNM
+         F/TF+DO8DzLOqFFAaPKHPfc2x8XgCs/5sxe+zlG7m2Ewc4/BD+Lfjpg7tBuVJLW0GfSg
+         n3S1XVW7lJAzMRxBNZXLWpvsW5b6A4cbJV8OfSjg7Ihv58TMc4tzpN5A6nMBUzkQzR2X
+         9zOVQl1zZ4OZiXwPXoPiTdxTrEbLU0XsaR8DOdkzOmOhtqtpSKD7y+i/TL6aw53IodnS
+         QXCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706772721; x=1707377521;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1706772831; x=1707377631;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TkihkoVp+1Q0+WMCFTmpmA5Epw3+p6C5zEBoeBY4VKg=;
-        b=oIMqqtjpT8mZng4uN/hAck0YB78uGqqrZJt7ufo8vTcaMILVNl91rZ5Bafk6Xe2LyZ
-         VJlggorDUx8l3sRn+gp2SoeDfoAsh/2bMqRl17UqerXp18oA/tuun5hSx1D5+qvjn60R
-         2RA6gqHzqMX5ZJezNfut9i0/LwiafMlMGyMFoeCGc8i78snHN0BiYfKV/mobx2uKqV+A
-         AADFHDD95J93v+grzQs1yJ6fFe5Pvilg/bppiNcWrT2emYjbbFMPMWwEeh98OCZRZ2h2
-         9CA9Jelz5dxDCbLZkxaHJYdiJCdN7psX1EvNsrZ+ulORV9NR/HZvpokDJxCXEcsuKlUw
-         fMyA==
-X-Gm-Message-State: AOJu0Yz1vg1/rdCQMD0ceulakekGNKy3Mda23TwiqsBqAzM6wOSdWc2j
-	2qCdZPtPKaxdsDbN47d1trplp0oy553p02Jp8cSmnd6x0UyZecLNPOBXFa1KopY=
-X-Google-Smtp-Source: AGHT+IHJAAKW2oakvnFSZPvrgZF3goQ3YyggDyofe9lXor6fwC2SQY7yWvc0unDHIEpZhD146f/PWg==
-X-Received: by 2002:a17:906:13d3:b0:a30:fb95:9387 with SMTP id g19-20020a17090613d300b00a30fb959387mr2880569ejc.75.1706772720921;
-        Wed, 31 Jan 2024 23:32:00 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXN/ZYgF+xQa2PwJIMR77grLNDHJg5YLLcPfXzjO9FduHf5+SsEsxfQOqBEYGB09oIeqvkL0TJYTPMv8ehZfqTlRQfeznXNprk/MEfkCcGPn/bMk5nT4Ca3MM7FcPIcR+fB39BRX+Ckk+QECNi478L17Q33pb5RY1xxNEoPEL6J+EZYaV0gGShWrbV+33Jlkdj3XjbUm3cUhyckFj7onTAYlHqAewBfPI4d78abQEPDXjLwDrtlYZWCXZqnv6QWOt+ZSLx/u9wouV4I4G+qjILkvW7Biw4NRK60jmQDGTbzabvx8Wv9Eu3T5+3i0nIj+JUmdg==
+        bh=5bhHrpfsefGDzlPnEVd7TFzEGIjcYRazdyAMstd3JmE=;
+        b=Pzvcgk34oV3N5qbuYD95wC0ghM9+ePYW8hDgJFMuPo+WxpznDkATFkz68RkEyypRg7
+         dwZHvEeFaEL1yE5lkqNBnpic5oF6MjpxEwRINdEWQezY9kSBgvAiaJPdcnMO78Ezrg1t
+         XvBa+zebm01diDw2lWYe8Icf/Rn++Uz2rj6UYPM8srULb+fDyU6hivsQXbvEyWlBkxB9
+         uFlkqXVLG7LUzQ91n301qvUHCp/i2yO8onH3x9dMGP1dkfVPLZL9pHmrKa51ZC7HOHCd
+         SnX/nkOkzI3i0LEpN60BLQ9B3+LZ6GeKdBTkKZKNhv13b6BJNWxGwmyguLiUdeumVUtn
+         z1cA==
+X-Gm-Message-State: AOJu0YyZ4DHUq1snSvd4GdjvCUc3nu2L0FEWJsIQbgMh7KtFfneXSob5
+	6X8LCQbXkvVHjezBN/wfjgRQHaK4sl+spjUXBc3Y95Zzxa8wUwj40NbLyie1G0Fg3/DBm34Pv2w
+	n
+X-Google-Smtp-Source: AGHT+IGfUC7SaoWq03EXY79Tj1+PRlpzWgfNFGy0dKh7FelV7UWKCaZTOgiWOtumoPm/ca+A4Xdn1g==
+X-Received: by 2002:a17:906:ff53:b0:a30:f4a2:5688 with SMTP id zo19-20020a170906ff5300b00a30f4a25688mr1089269ejb.1.1706772830870;
+        Wed, 31 Jan 2024 23:33:50 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVl/eANfocFl7Zfj5p9HB6h8o5t43trQRVW02PggdwOwb5yPn56NonJOhL+DMASe4xZQ69I7puHdbllIj59J/AFbkCbGK89pJ5in4sVfSb98fdQGhNWEiwYK7C3uEoXJ+eFN4Xf6qcnfA+aAFi8HRc2ozKaz5N7FDj5a+rtz0MTcbvGFwRYi1n67rwMIxMH48cGarxpTD05y/1aJKH3B4iyvjzFV+DEPutrbZjSE2i3Nsqpp1iPjOHl9G/3SGOO38R09KwSCLkmJv2oU3gcvcNv+1f7yRs9iVMEcgk86yTEwrmJJkMSJCEvAXPrJbHce8LPI5ali7T30i+dXO3H2sxaVmIlMezp2nx8rwTeSwB+smzvQDRzq1a3AFLmwcdvooV6/2uLLbooiDspr8sACZ55hkvPDXZursEk9xGH22BdMzQr2S/X1PMVYQjnDr+pDzt/5BVTKRhvS/uAVP6zDBalerF87XPqyDo5M+L9d/KQimripEVkJopr2GzMV5pxdmxVffSM1J9Z+kpQ4U80x/Qt
 Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id hu17-20020a170907a09100b00a3603b49889sm2904618ejc.21.2024.01.31.23.31.59
+        by smtp.gmail.com with ESMTPSA id tk3-20020a170907c28300b00a35464aab3asm5732191ejc.97.2024.01.31.23.33.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Jan 2024 23:32:00 -0800 (PST)
-Message-ID: <2824fd42-d588-4a0b-b6f9-1e9cb6055d6a@linaro.org>
-Date: Thu, 1 Feb 2024 08:31:58 +0100
+        Wed, 31 Jan 2024 23:33:50 -0800 (PST)
+Message-ID: <00f8ae5d-5556-4ef6-9bb9-d1cdac5bea9e@linaro.org>
+Date: Thu, 1 Feb 2024 08:33:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,16 +76,20 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: mfd: syscon: Add ti,k3-pcie-ctrl compatible
+Subject: Re: [PATCH 1/2] dt-bindings: i2c: designware: allow fine tuning
+ tuning waveform from device tree
 Content-Language: en-US
-To: Siddharth Vadapalli <s-vadapalli@ti.com>, Andrew Davis <afd@ti.com>
-Cc: lee@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- srk@ti.com
-References: <20240131112342.1300893-1-s-vadapalli@ti.com>
- <be60e695-894e-4281-a62c-b77e45680293@ti.com>
- <91737281-8249-4fcb-b5bf-750c015b7c24@ti.com>
+To: Aahil Awatramani <aahila@google.com>, David Dillow <dillow@google.com>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Andi Shyti <andi.shyti@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Jan Dabros <jsd@semihalf.com>, linux-i2c@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240201044623.374389-1-aahila@google.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -130,54 +135,38 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <91737281-8249-4fcb-b5bf-750c015b7c24@ti.com>
+In-Reply-To: <20240201044623.374389-1-aahila@google.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 01/02/2024 05:48, Siddharth Vadapalli wrote:
-> Hello Andrew,
+On 01/02/2024 05:46, Aahil Awatramani wrote:
+> The Synopsys i2c driver allows a user to override the parameters
+
+Driver? That already suggests it is not suitable for binding...
+
+> controlling the waveform using ACPI; this is useful for fine tuning when
+> needed to make spec compliance. Extend this support to the device tree to
+> allow non-ACPI platforms the same capabilities.
 > 
-> On 31/01/24 21:43, Andrew Davis wrote:
->> On 1/31/24 5:23 AM, Siddharth Vadapalli wrote:
->>> The PCIE_CTRL registers within the CTRL_MMR space of TI's K3 SoCs are
->>> used to configure the link speed, lane count and mode of operation of
->>> the respective PCIe instance. Add compatible for allowing the PCIe
->>> driver to obtain a regmap for the PCIE_CTRL register within the System
->>> Controller device-tree node in order to configure the PCIe instance
->>> accordingly.
->>>
->>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
->>> ---
->>>
->>> This patch is based on linux-next tagged next-20240131.
->>>
->>>   Documentation/devicetree/bindings/mfd/syscon.yaml | 1 +
->>>   1 file changed, 1 insertion(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml
->>> b/Documentation/devicetree/bindings/mfd/syscon.yaml
->>> index 084b5c2a2a3c..da571a24e21f 100644
->>> --- a/Documentation/devicetree/bindings/mfd/syscon.yaml
->>> +++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
->>> @@ -73,6 +73,7 @@ properties:
->>>                 - rockchip,rv1126-qos
->>>                 - starfive,jh7100-sysmain
->>>                 - ti,am654-dss-oldi-io-ctrl
->>> +              - ti,k3-pcie-ctrl
->>
->> This might not be the same for all K3 devices, you should use
->> the name of the first device which uses this, so:
->>
->> ti,j721e-pcie-ctrl
+> Signed-off-by: Aahil Awatramani <aahila@google.com>
+> ---
+>  Documentation/devicetree/bindings/i2c/i2c.txt | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
 > 
-> It is the same for all K3 devices so far. However, since the convention appears
-> to be the first device that it is applicable to as you pointed out, I will post
-> the v2 patch for this accordingly.
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c.txt b/Documentation/devicetree/bindings/i2c/i2c.txt
+> index fc3dd7ec0445..3c33c36571f9 100644
+> --- a/Documentation/devicetree/bindings/i2c/i2c.txt
+> +++ b/Documentation/devicetree/bindings/i2c/i2c.txt
+> @@ -45,6 +45,24 @@ wants to support one of the below features, it should adapt these bindings.
+>  	Number of nanoseconds the SCL signal takes to rise; t(r) in the I2C
+>  	specification.
+>  
+> +- i2c-scl-ss-hcnt
+> +	HCNT value for standard speed mode in I2C Controller.
 
-This was repeated so many times... so one more. Compatibles are specific
-to SoC, not to family.
-
-https://elixir.bootlin.com/linux/v6.1-rc1/source/Documentation/devicetree/bindings/writing-bindings.rst#L42
+I have no clue what is HCNT, so I expect you to help us understand what
+is this and why this is suitable for DT. Your reference to driver
+suggests it is not suitable for DT.
 
 Best regards,
 Krzysztof
