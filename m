@@ -1,169 +1,98 @@
-Return-Path: <linux-kernel+bounces-48050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3ED38456A5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:55:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5D1B845689
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:52:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 220EA1C23AD8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:55:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31EF6B21D55
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:52:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD57C15DBB8;
-	Thu,  1 Feb 2024 11:54:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BDAA15D5AA;
+	Thu,  1 Feb 2024 11:51:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OMazQHzj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sdyQcwWQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAF8C15D5DC;
-	Thu,  1 Feb 2024 11:54:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D36614D9FF
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 11:51:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706788467; cv=none; b=eBZ/g377gnGHRn3RSEi/F1eaSuQjpx9FwZAnn+8J8j0RAEVjPj5ABge8kwdbtrsWsBZfXbs+Ij7sNYd6ZSIC69ScA0R4OAIDv0/fTChsbICEf6wPAaBexxRQfgZllwveOCSkH+Ow3NtqRqGLZYXjjPDA8oqZQuQOVhk5GU9C15k=
+	t=1706788316; cv=none; b=uP0ztEszZZxKnW9iS4J1t9AAHm90zkpeCxw8fF0ittsUJ1L9yUyA6PG5u5ahpfqXueJJyWbBW4r4km384elLHzPYFSH/qYuBT31YmcTT0ZWhxZvLd4Yw/56fyrhnHaYKj/uOLexaTgso0Cjfakthi2tFmgHl9rFC2WEEDflg2zk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706788467; c=relaxed/simple;
-	bh=GB2DzGR8rSdaDGGViF7AyPEKEPBcMSXhHGw9fn/ScLk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pzp066SEesbns6FESlbv11ATSA3hzJrRJiB8/hnkdDwrOok1WI+p7eFphfQOQdfdD8CsCtQi5v7sn//r+awrbgAtO5mSg/d7ZlLT672+iTK/ZjJDlhyuQWOrOQi1mYv1CvmYWxtX4OXGss1JJL4FbSQ9QPVGHCt8YcBzI00PL4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OMazQHzj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4917BC43394;
-	Thu,  1 Feb 2024 11:54:19 +0000 (UTC)
+	s=arc-20240116; t=1706788316; c=relaxed/simple;
+	bh=O9lJmDiBxnZNyye1euS5klV+iMTllHBMyaYWSuHg2Sk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OzXGO805Yl5/PVWpFnSkDMCtLTujk5QpjTd9wHSGgmSdfmPzRBlg7JPofJJLRMTYuNoQUDKOvCDY1NrYAsZZ3HonLoIayxRk1yPNVfB9ZPx6l2w3Y7iz/ZRbsVeey8fn4spFbvOv+zbgudpNqOW2bCJx4DbrGCxyDFQHQuKSxe8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sdyQcwWQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E630C433C7;
+	Thu,  1 Feb 2024 11:51:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706788467;
-	bh=GB2DzGR8rSdaDGGViF7AyPEKEPBcMSXhHGw9fn/ScLk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OMazQHzjzyWYNjHB2ZMl8l/ZGjok5KbOXXkW3J1Mjx4FRVeHdVcKYUwXW9yqXeKw8
-	 rlmHY2Xk4QIXWi/3nBb36aBoXClUtowoS04icFhxmFjfcV6TmV1PgJTt6GfqQlBHcL
-	 TR8E8B7h54N6CF9l/4435X6VsyJwPruKxuDTvAHgzP55uJR8yR9ukVXcQFVgOeV9gb
-	 /TBnZM9RyePfyAZCwfhOdeRqzseiuLEkdyVV/m8w7apGIiRNXa9oD2CvTSQg4unIXE
-	 ibQRiMExJuh3IZmW4N1NJP7A2HtxJTXZbSrntEKIcBlv0nTNo1bZdKvD16iEB7Va1j
-	 tLT1QQKmTcyIA==
-Date: Thu, 1 Feb 2024 17:24:15 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Brian Masney <bmasney@redhat.com>,
-	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
-	vireshk@kernel.org, quic_vbadigan@quicinc.com,
-	quic_skananth@quicinc.com, quic_nitegupt@quicinc.com,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 6/6] PCI: qcom: Add OPP support to scale performance
- state of power domain
-Message-ID: <20240201115415.GA2934@thinkpad>
-References: <20240112-opp_support-v6-0-77bbf7d0cc37@quicinc.com>
- <20240112-opp_support-v6-6-77bbf7d0cc37@quicinc.com>
- <CAA8EJpqwOfeS-QpLVvYGf0jmTVxiT02POwK+9tkN03Cr4DgL+g@mail.gmail.com>
- <da1945ce-7e34-6ad5-7b9b-478fcbd4a2c6@quicinc.com>
- <CAA8EJpoZakDcBXYE57bRPMFvGEXh1o82r7Znv8mwCK6mRf5xog@mail.gmail.com>
+	s=k20201202; t=1706788316;
+	bh=O9lJmDiBxnZNyye1euS5klV+iMTllHBMyaYWSuHg2Sk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=sdyQcwWQsCVyIqopa1k1f2BgcYqWMHQ5QtzFEJaeydc6127IZ3AxgVg3a9mhAoaQt
+	 WFvLMAHHQ5yg3szW4KTgDA9qZHo8mk5yC+el57i3+iGpSpyjGTilwbQGdGK4sqDmuA
+	 DulQ26fkpoUvsIVlQagwTlgVnmlx+HD5q8ZEvMuHS3lGCYJ9W46WPVxRhfJB8Q/TEg
+	 cILS689+hLoB6R5l/lDhNxALL8Vp+ujQLTXEGucse1pjX9v1onPuZEThHd7TwoJYx+
+	 VsTEmX3I2jyglZpw5GfvJhdAtQ/LO4Z/mjHdCN+yBuQHXz1e5E+yGsqwhmuBP4kYok
+	 xpZh/tgXaz5Ew==
+From: alexs@kernel.org
+To: Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	ricardo.neri-calderon@linux.intel.com,
+	sshegde@linux.ibm.com
+Cc: Alex Shi <alexs@kernel.org>
+Subject: [PATCH v3 1/4] sched/fair: add SD_CLUSTER in comments
+Date: Thu,  1 Feb 2024 19:54:44 +0800
+Message-ID: <20240201115447.522627-1-alexs@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAA8EJpoZakDcBXYE57bRPMFvGEXh1o82r7Znv8mwCK6mRf5xog@mail.gmail.com>
 
-On Tue, Jan 16, 2024 at 11:55:17AM +0200, Dmitry Baryshkov wrote:
-> On Tue, 16 Jan 2024 at 07:17, Krishna Chaitanya Chundru
-> <quic_krichai@quicinc.com> wrote:
-> >
-> >
-> >
-> > On 1/12/2024 9:03 PM, Dmitry Baryshkov wrote:
-> > > On Fri, 12 Jan 2024 at 16:25, Krishna chaitanya chundru
-> > > <quic_krichai@quicinc.com> wrote:
-> > >>
-> > >> QCOM Resource Power Manager-hardened (RPMh) is a hardware block which
-> > >> maintains hardware state of a regulator by performing max aggregation of
-> > >> the requests made by all of the processors.
-> > >>
-> > >> PCIe controller can operate on different RPMh performance state of power
-> > >> domain based up on the speed of the link. And this performance state varies
-> > >> from target to target.
-> > >>
-> > >> It is manadate to scale the performance state based up on the PCIe speed
-> > >> link operates so that SoC can run under optimum power conditions.
-> > >>
-> > >> Add Operating Performance Points(OPP) support to vote for RPMh state based
-> > >> upon GEN speed link is operating.
-> > >>
-> > >> OPP can handle ICC bw voting also, so move icc bw voting through opp
-> > >> framework if opp entries are present.
-> > >>
-> > >> In PCIe certain gen speeds like GEN1x2 & GEN2X1 or GEN3x2 & GEN4x1 use
-> > >> same icc bw and has frequency, so use frequency based search to reduce
-> > >> number of entries in the opp table.
-> > >>
-> > >> Don't initialize icc if opp is supported.
-> > >>
-> > >> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> > >> ---
-> > >>   drivers/pci/controller/dwc/pcie-qcom.c | 83 ++++++++++++++++++++++++++++------
-> > >>   1 file changed, 70 insertions(+), 13 deletions(-)
-> > >>
-> > >> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> > >> index 035953f0b6d8..31512dc9d6ff 100644
-> > >> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> > >> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+From: Alex Shi <alexs@kernel.org>
 
-[...]
+The description of SD_CLUSTER is missing. Add it.
 
-> > >>   static int qcom_pcie_link_transition_count(struct seq_file *s, void *data)
-> > >> @@ -1471,8 +1502,10 @@ static void qcom_pcie_init_debugfs(struct qcom_pcie *pcie)
-> > >>   static int qcom_pcie_probe(struct platform_device *pdev)
-> > >>   {
-> > >>          const struct qcom_pcie_cfg *pcie_cfg;
-> > >> +       unsigned long max_freq = INT_MAX;
-> > >>          struct device *dev = &pdev->dev;
-> > >>          struct qcom_pcie *pcie;
-> > >> +       struct dev_pm_opp *opp;
-> > >>          struct dw_pcie_rp *pp;
-> > >>          struct resource *res;
-> > >>          struct dw_pcie *pci;
-> > >> @@ -1539,9 +1572,33 @@ static int qcom_pcie_probe(struct platform_device *pdev)
-> > >>                  goto err_pm_runtime_put;
-> > >>          }
-> > >>
-> > >> -       ret = qcom_pcie_icc_init(pcie);
-> > >> -       if (ret)
-> > >> +        /* OPP table is optional */
-> > >> +       ret = devm_pm_opp_of_add_table(dev);
-> > >> +       if (ret && ret != -ENODEV) {
-> > >> +               dev_err_probe(dev, ret, "Failed to add OPP table\n");
-> > >>                  goto err_pm_runtime_put;
-> > >> +       }
-> > >
-> > > Can we initialise the table from the driver if it is not found? This
-> > > will help us by having the common code later on.
-> > >
-> > we already icc voting if there is no opp table present in the dts.
-> 
-> Yes. So later we have two different code paths: one for the OPP table
-> being present and another one for the absent OPP table. My suggestion
-> is to initialise minimal OPP table by hand and then have a common code
-> path in qcom_pcie_icc_update().
-> 
+Signed-off-by: Alex Shi <alexs@kernel.org>
+To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To: Valentin Schneider <vschneid@redhat.com>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+To: Juri Lelli <juri.lelli@redhat.com>
+To: Peter Zijlstra <peterz@infradead.org>
+To: Ingo Molnar <mingo@redhat.com>
+---
+ kernel/sched/topology.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Are you suggesting to duplicate DT in the driver?
-
-- Mani
-
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 10d1391e7416..8b45f16a1890 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -1554,6 +1554,7 @@ static struct cpumask		***sched_domains_numa_masks;
+  * function:
+  *
+  *   SD_SHARE_CPUCAPACITY   - describes SMT topologies
++ *   SD_CLUSTER             - describes CPU Cluster topologies
+  *   SD_SHARE_PKG_RESOURCES - describes shared caches
+  *   SD_NUMA                - describes NUMA topologies
+  *
 -- 
-மணிவண்ணன் சதாசிவம்
+2.43.0
+
 
