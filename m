@@ -1,74 +1,73 @@
-Return-Path: <linux-kernel+bounces-48051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B83988456AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 10FBD8456AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:57:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD5581C23AEB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:56:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 439F91C23AD8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:57:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8391715D5C1;
-	Thu,  1 Feb 2024 11:56:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D489315D5B2;
+	Thu,  1 Feb 2024 11:57:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="evldtosh"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gJ9eaTew"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DA7812CDB4
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 11:56:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB5DD12CDB4
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 11:57:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706788610; cv=none; b=uaIOFDlpYJPSUqvkhValyVCxMpOgdY6d6AP3wIB7cUMa+rFGGz5uufApPh6kqGvuaXvQK6RvqhUkP0cch7hYQZcvTSYxuy5B5rWGdbRA/RT7w3XfhRh/wIndCuQRqLKJ7FFL9eK4AKnYit1N/IMTZyE0bQc1uE5ExxVcT1pY4J0=
+	t=1706788670; cv=none; b=hEM04NRPkpnByzJKdtbog+AFcsSL1mqZ7OhN5dEyZIX/5sR1NIZ2m1w/aWh/DYe2dsVsz6Djt0HyMIUmGcmIiuSqSaDR9IrdkEv5zx3DmOl2sZLe4DzhFpQU7NRjLzxbjFOHq1NSnkASlHE/uOLNlTXrY6bcH6MC2bZmvLnar/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706788610; c=relaxed/simple;
-	bh=RfmXQyvEyel69xPdhImaszos039ws3Lu/IQlwJQIF3g=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=r7DgbSUlUt5J7127Bf2AOEz8baJrIrQ9d1rn/tBkshNpYqQVmf7ETV3KSV8M5xAwUj4Ae03NkW9vZtM3yzeMLPl0t75M+R9RcXItzNK4Se/h5CPLjzXofKXMCIbKPPvJ40/Yz8cdnI49zUGxWn5mXfa4rkTjnxak1SpCKnnBJZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=evldtosh; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40eacb4bfa0so7188835e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 03:56:47 -0800 (PST)
+	s=arc-20240116; t=1706788670; c=relaxed/simple;
+	bh=mUw9QBw6pQM2qZYSxHpKbKIjaHzlrcyFKT2XZgI3KL4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=XFnfxiNG0e/W5ba4Svv9Gc/LlOkCi595zCjTBqkwSwaBIEm9S3CimggyspFlD097q+9dBv1Ccbu6cVEEYim2KZcEo5+Lzu7O72UxELXmmnJVvlR3qSBRhTON4v5IK13HBPRdce3U7Fihi0OQ8A5DbP48hZNq6ZKDMUoX2Pm3mW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gJ9eaTew; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6da9c834646so572515b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 03:57:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706788606; x=1707393406; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=UzaWP/6dtk16YfMVdAvaDfLCxRKNmuhmg2gmErctQc8=;
-        b=evldtoshW45feD2aPb3OoYeqnFY2GG4gHjyEAeHCZf1bIdHal9vqOr8PcPTGVYEHZo
-         WUMsM3kgtKbLZV/H6Gw1CquJoDP4jB5iUkaMLCpczB7TYVInXofmg162yIsTutfi+yV0
-         IaGZyUk2pP7YYzBxnDKVVQbRzsfqJ/R3cXY6w3nICiU0KpBcEr+h5pRRU/g1ss7Adk45
-         bLDiRIxh4ac0bkKrS5/ZeIcSgThMKzww0HKPSqbgbeueOfERToOc2EUKll0XAHc+OXJG
-         YO5nUm5C/ErAaws2IDc6trEDW86HxbMkKFbGrY6PCdEFLuvui87MG5KqpQ2iHQsr9XIY
-         iUnQ==
+        d=gmail.com; s=20230601; t=1706788668; x=1707393468; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qpF8lNtVtYc8qMZP5Nps3Nw9hB/q8N4bWH9miAWBlJE=;
+        b=gJ9eaTewFc8vZaqz7GFZdVkqZbcjpTQ2E5WaBtwaeu6BdJWfTidb+8h0XpYkJjOEug
+         xqdRwQCRLdGaqQLy7HZ0Pny+Lzkdq7WpZUukChIQuFbDpJds+EUp01gdsipSZOBWPnu1
+         LXAj0ajeDeEl1PX0kE44DR/rxhgkI7iPU5gGQRpsIF7Ag8T1mjQG6vpFFgv8Hao6t7sl
+         JCUUng2Vu2vEGU9mWEtEWrZW2yWbvQyMzU6Yz6ZB5lOFza6Rovrz5WceXp7HDxlUObUr
+         zzhe9vgTkkwFpZ9muqfz54oLfYZJjSANvvImP+UUwVy17TQQSAJPdV5tJe4sSRnIn3RX
+         nt3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706788606; x=1707393406;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UzaWP/6dtk16YfMVdAvaDfLCxRKNmuhmg2gmErctQc8=;
-        b=SYqwGWwPyLhJpo4jYwYls4C4ltjMdgSa3Rh05W5uVAnw15aai8ubFSNkEAnKNV2Fxm
-         lsqC03yS52o3OceqOeqq4nLPdhE6NrK31PIG9+0B1TrFKs7iEKesmbrsF/OGzBnk4n2D
-         rBx7Mrwv8GwxjwTvPbvz4W7hxHXn+qyKsoia0JX6xYmRRGHeDzWBe6ZKAtHtEzFD/A/k
-         20p8uG/bjvYtLgFl2YS3J0+mDHnpgrvge2SGJveB8tetpVM6JoF5YCfq7Po0GedQXEYQ
-         TZAb621PFeFzvtTuLBtE50EBpfhey5CwbeMc3nADirVPOSX9d2oPG/6Tfq1JUiyL+5nk
-         qEqA==
-X-Gm-Message-State: AOJu0Yw2ydSB11Y3MuveUqJKwesmiJcFND1zElnFsx38orrY2GocDah3
-	sZpbapfduwkMWiLP3/p9yg9D6r8bBQGhDUYZaAcvrnoDf66wH+NyerMw+OG48NA=
-X-Google-Smtp-Source: AGHT+IH3xQv15i/rUEPOTbg1xkEyQ/z+dTi//c+Mo/pC9to5fm/kXZccoS2X8OLxv+GC/rXP2Zn1VA==
-X-Received: by 2002:a05:600c:1c06:b0:40e:46b6:bc48 with SMTP id j6-20020a05600c1c0600b0040e46b6bc48mr1586219wms.41.1706788605859;
-        Thu, 01 Feb 2024 03:56:45 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUSbCo4GSIJ1EQ1Lh5Gndw9BXaoOrip1LEEj+lfkbP2EfE33NOZRz2cNqppVBEzOouSsaqfrqyuZy3fRFCSATxZdil1v/qESdp3mxpdptGNsjnuyjlpdtH2eyuT3mL7xDifDMQMd+JlYOlA+VJStnVmd8xq1yszvx202pCmd5HqfBG5QOt4oIdsn07ZC3+Cdc98tOzRZVC4Cc5GA4ra3dNADbxtBAyV8e5Ns7RyRSeOlIzKylhmaKfjjh63U5GfF9wBi8xHkE3CO9hdT/olr8y7geZ/tggYHQKRQHVn1gL/uS1ib0sDvrFoNx/iZCMlMCqheIxRFzzZBWFkch1JMS/Xvb+PzydzGxH2ELstLlpOhTPIyuLjQGGZ4iKuU+aVT11rq3RI4aOHxiFdwwh1s2ry/xSvZ9GxsSk2Ubb/u8ZwsKllCjnVDFN2D5gxuJLJ7tTUCBytUTxP8b+eZpbjhLX5bMJcMF1nQV+fi8V4Zd36pg==
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id e6-20020a05600c448600b0040efb490814sm4141897wmo.27.2024.02.01.03.56.44
+        d=1e100.net; s=20230601; t=1706788668; x=1707393468;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qpF8lNtVtYc8qMZP5Nps3Nw9hB/q8N4bWH9miAWBlJE=;
+        b=kZX2TtAY+Gk2yejwnRKE53pRd5Z8kmFhnpDzfQPzxwv2zS8QLWxXZLjFCRmTUmOUW0
+         ZNR6K82YAUQqeGhGF89gsHzSxaomVsPEGnZ29Rs2uMVLzjSqVDp7qsi+SRb0oEzHPU4b
+         X9cWrO2ZBYAXL52GcFh2OYd0xI6FdEw6lvUPb+VHuEcNBDv8iAKKwgED0YjMHCHBQKSY
+         CwrKHLVtyQZHTO4tCyL806gkbG2emrX2ba+0giJPVPJ8m2yfsesh24WafaKToFRhrAez
+         5aNNWrdL7lzgLrkYRFhOcJGn9rCAc/up15ykvAEXtxityzlSDVFvz/vANGm2GY0czQHF
+         +/lg==
+X-Gm-Message-State: AOJu0Yya8vvNK6shGpoeHeiOtfLd3kPue9kZShjuufV3d3pezRxEDaGB
+	go+oePH+UzzuODofE1JdgugdWP17S46l6Ar6LCkd6Btvtt6vYpyWJSmuGrYfGfU=
+X-Google-Smtp-Source: AGHT+IG7Ix9Y4fYjGM4zih3YmcVkTMwTMXIx9s+VAcbetlN2AQRBPxEvp3HKcRo3OIgXIWd5fw4iyA==
+X-Received: by 2002:a05:6a00:17a1:b0:6db:a1f9:a7b0 with SMTP id s33-20020a056a0017a100b006dba1f9a7b0mr5387376pfg.21.1706788667962;
+        Thu, 01 Feb 2024 03:57:47 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUV2DhyypLh0mUqNS/BpKB/VFUMgm66APOuStkHvO7csqTRyPKe86oE7w2BprZkvwouxvyytR3wY1B2fwN6/GXVvlfhRLQkYV1CEc8phY60/vZqiSya7woSrM0J2i55/ZaB+79MeMzTfM4eIgknTvyz/urvzX7WFQ==
+Received: from [192.168.255.10] ([43.132.141.21])
+        by smtp.gmail.com with ESMTPSA id ks19-20020a056a004b9300b006d9a7a48bbesm11754439pfb.116.2024.02.01.03.57.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 03:56:45 -0800 (PST)
-Message-ID: <4c2c425b-3ddd-4484-98cf-3f7768c94e82@linaro.org>
-Date: Thu, 1 Feb 2024 12:56:43 +0100
+        Thu, 01 Feb 2024 03:57:47 -0800 (PST)
+Message-ID: <d9a902ac-4a0a-4ee6-a84c-aff4c0e42a87@gmail.com>
+Date: Thu, 1 Feb 2024 19:57:46 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,95 +75,89 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: (subset) [PATCH v2 3/3] arm64: dts: exynos: Add SPI nodes for
- Exynos850
+Subject: Re: [PATCH] objtool: remove unused parameter
 Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
- Sam Protsenko <semen.protsenko@linaro.org>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
- Alim Akhtar <alim.akhtar@samsung.com>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Tomasz Figa <tomasz.figa@gmail.com>, Chanwoo Choi <cw00.choi@samsung.com>,
- linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240125013858.3986-1-semen.protsenko@linaro.org>
- <20240125013858.3986-4-semen.protsenko@linaro.org>
- <170678377409.179918.13077326172475089482.b4-ty@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <170678377409.179918.13077326172475089482.b4-ty@linaro.org>
+To: alexs@kernel.org, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
+References: <20240119040241.2925185-1-alexs@kernel.org>
+From: kuiliang Shi <seakeel@gmail.com>
+In-Reply-To: <20240119040241.2925185-1-alexs@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 01/02/2024 11:36, Krzysztof Kozlowski wrote:
+ping
+
+On 1/19/24 12:02 PM, alexs@kernel.org wrote:
+> From: Alex Shi <alexs@kernel.org>
 > 
-> On Wed, 24 Jan 2024 19:38:58 -0600, Sam Protsenko wrote:
->> Some USI blocks can be configured as SPI controllers. Add corresponding
->> SPI nodes to Exynos850 SoC device tree.
->>
->>
+> Remove unused file parameter from init_insn_state(), insn from
+> has_modified_stack_frame().
 > 
-> Applied, thanks!
+> Signed-off-by: Alex Shi <alexs@kernel.org>
+> To: linux-kernel@vger.kernel.org
+> To: Peter Zijlstra <peterz@infradead.org>
+> To: Josh Poimboeuf <jpoimboe@kernel.org>
+> ---
+>  tools/objtool/check.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
 > 
-> [3/3] arm64: dts: exynos: Add SPI nodes for Exynos850
->       https://git.kernel.org/krzk/linux/c/98473b0d78caa5502b7eee05553ee168f0b0b424
-
-And dropped. You did not test it.
-
-For some time, all Samsung SoCs and its variants are expected not to
-introduce any new `dtbs_check W=1` warnings. Several platforms, like all
-ARM64 Samsung SoCs, have already zero warnings, thus for such platforms
-it is extra easy for the submitter to validate DTS before posting a
-patch. The patch briefly looks like it is not conforming to this rule.
-Please confirm that you tested your patch and it does not introduce any
-new warnings (linux-next is decisive here).
-
-Best regards,
-Krzysztof
-
+> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+> index 548ec3cd7c00..ecc56a5ad174 100644
+> --- a/tools/objtool/check.c
+> +++ b/tools/objtool/check.c
+> @@ -274,8 +274,7 @@ static void init_cfi_state(struct cfi_state *cfi)
+>  	cfi->drap_offset = -1;
+>  }
+>  
+> -static void init_insn_state(struct objtool_file *file, struct insn_state *state,
+> -			    struct section *sec)
+> +static void init_insn_state(struct insn_state *state, struct section *sec)
+>  {
+>  	memset(state, 0, sizeof(*state));
+>  	init_cfi_state(&state->cfi);
+> @@ -2681,7 +2680,7 @@ static bool is_special_call(struct instruction *insn)
+>  	return false;
+>  }
+>  
+> -static bool has_modified_stack_frame(struct instruction *insn, struct insn_state *state)
+> +static bool has_modified_stack_frame(struct insn_state *state)
+>  {
+>  	struct cfi_state *cfi = &state->cfi;
+>  	int i;
+> @@ -3474,7 +3473,7 @@ static int validate_sibling_call(struct objtool_file *file,
+>  				 struct instruction *insn,
+>  				 struct insn_state *state)
+>  {
+> -	if (insn_func(insn) && has_modified_stack_frame(insn, state)) {
+> +	if (insn_func(insn) && has_modified_stack_frame(state)) {
+>  		WARN_INSN(insn, "sibling call from callable instruction with modified stack frame");
+>  		return 1;
+>  	}
+> @@ -3504,7 +3503,7 @@ static int validate_return(struct symbol *func, struct instruction *insn, struct
+>  		return 1;
+>  	}
+>  
+> -	if (func && has_modified_stack_frame(insn, state)) {
+> +	if (func && has_modified_stack_frame(state)) {
+>  		WARN_INSN(insn, "return with modified stack frame");
+>  		return 1;
+>  	}
+> @@ -3814,7 +3813,7 @@ static int validate_unwind_hints(struct objtool_file *file, struct section *sec)
+>  	if (!file->hints)
+>  		return 0;
+>  
+> -	init_insn_state(file, &state, sec);
+> +	init_insn_state(&state, sec);
+>  
+>  	if (sec) {
+>  		sec_for_each_insn(file, sec, insn)
+> @@ -4221,7 +4220,7 @@ static int validate_section(struct objtool_file *file, struct section *sec)
+>  		if (func->type != STT_FUNC)
+>  			continue;
+>  
+> -		init_insn_state(file, &state, sec);
+> +		init_insn_state(&state, sec);
+>  		set_func_state(&state.cfi);
+>  
+>  		warnings += validate_symbol(file, sec, func, &state);
 
