@@ -1,187 +1,119 @@
-Return-Path: <linux-kernel+bounces-48079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF23C8456F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:08:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA0B68456FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:09:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89572290DB0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:08:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 879DB291A55
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:09:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E7DD15D5DD;
-	Thu,  1 Feb 2024 12:07:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF9515DBC7;
+	Thu,  1 Feb 2024 12:08:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G5ufFrP9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="M3LEou8M"
+Received: from mout.web.de (mout.web.de [212.227.15.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D5CC15DBB0;
-	Thu,  1 Feb 2024 12:07:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4756615D5DD;
+	Thu,  1 Feb 2024 12:08:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706789274; cv=none; b=L/S4PWpdcieDKZfRBhJucYtP3X4fTRyV+DU9i21mZvbeiTwSpOxSJ4HxMwpQ4O+5l2ZeJlyHboray488cEgP6TyvSRPthQlwWNL8ZHyc6bgvpgBAnG1SfHLfwHxMyS1/F9DZNO8YqBUpdbI+UuzUoQyHmNjceDz6z7HUnAfJ/cE=
+	t=1706789317; cv=none; b=tPj7NJxyjyuhDpKBVfSV/sFazLsakCNw2m8RG2sORbFpt3rdqBkmnrxMGF5Xg0T0/RG3j4fdBBx2vY/CCI7TuRZhu8hsJfzuUCq/xXesxulkunwh+p2p03VqplQP6EL1zWtkWGBek1qdqPXhdr0n7GLm8TLlP119NedKGbW/tio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706789274; c=relaxed/simple;
-	bh=fS2LtSupcmm3ZXyoVBzO9/Kodhf7J87JZaH+pdhJneo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QNJU96rYUQEirwfLSfHtPBoGrvUKAY/dWES6rzt11SRFQ4HmZW4p0hNmKZA2AVK5LI28ge1TX1gzBpL/05LsdHttFdONwjT34aUOn0UkNTXq35mGlpu5jErBuyOtWOaCRCieNafEwqHoFxNuFk7EnivVSIfai0amIvkwXiTYqOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G5ufFrP9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F2A1C433F1;
-	Thu,  1 Feb 2024 12:07:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706789274;
-	bh=fS2LtSupcmm3ZXyoVBzO9/Kodhf7J87JZaH+pdhJneo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=G5ufFrP9K+FQCp02N/zFYcw8gNFiY6WBscknVj1Qy0ASTbs2O4Jx4nCAo7yxdHo9P
-	 JIPOl09R/iY4apB2FTy26235jBu0LOsdGDnyyiZN4nHlII0IUMcwGptvsjhpwL1UJH
-	 dYn27ERC2l3qZitah7MLlfiVpC29Mo9X2/X2B1cLqQo640IHgGSQTc7TMWaVTlJpWM
-	 2qB4rok7ILSg06up8unpc41P8iG6CsWxxVlHEce5bIqo47Wf0eukGWGmHA6nsu9C7v
-	 aHzY0zkJzUhEwrI0C30duNzyRWXFxJxS5dvgRf1qMxHoDMxtTCVZcN7q3n4dG6a8FF
-	 ICG8bBsOIX3dQ==
-Date: Thu, 1 Feb 2024 17:37:40 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Brian Masney <bmasney@redhat.com>,
-	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
-	vireshk@kernel.org, quic_vbadigan@quicinc.com,
-	quic_skananth@quicinc.com, quic_nitegupt@quicinc.com,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 6/6] PCI: qcom: Add OPP support to scale performance
- state of power domain
-Message-ID: <20240201120740.GB2934@thinkpad>
-References: <20240112-opp_support-v6-0-77bbf7d0cc37@quicinc.com>
- <20240112-opp_support-v6-6-77bbf7d0cc37@quicinc.com>
- <CAA8EJpqwOfeS-QpLVvYGf0jmTVxiT02POwK+9tkN03Cr4DgL+g@mail.gmail.com>
- <da1945ce-7e34-6ad5-7b9b-478fcbd4a2c6@quicinc.com>
- <CAA8EJpoZakDcBXYE57bRPMFvGEXh1o82r7Znv8mwCK6mRf5xog@mail.gmail.com>
- <20240201115415.GA2934@thinkpad>
- <CAA8EJppAL44ZLL5SnmX7SSwzvRUm2PffFUL6=gQRjq4neaLtRA@mail.gmail.com>
+	s=arc-20240116; t=1706789317; c=relaxed/simple;
+	bh=5YHOQ4t6yvK3SOA0EQMMmdoojJngamhIGtLZGsyLgo4=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=Ie0SwaSOl1JFQNGeZqpavO0fit+TSLRSazBOhl9c1Evjln7d1lQk1gHYbxCbFARRD+aAy9UvpxQmI5cplAxzDOTB+OEPq/j2A9qIW/vsRHD9TcZ28EBt4TZ7E4VrsELWhaEGaWtkzNOaPYv8IWtf4X6kbS7zpcXJ4shLHI/x0/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=M3LEou8M; arc=none smtp.client-ip=212.227.15.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1706789291; x=1707394091; i=markus.elfring@web.de;
+	bh=5YHOQ4t6yvK3SOA0EQMMmdoojJngamhIGtLZGsyLgo4=;
+	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
+	 In-Reply-To;
+	b=M3LEou8MMS9TNQvjNu/ylUsfrcTZ1OUVx30pCajQzVW/8shzoQbC+WfK/r4ARlk+
+	 vfQ7je1kym7XyDIT+KglvMYc9Zv0yW02NQS0Kj41Pb5rV6J1TwQgARHk/7uhJNCK+
+	 pByTTKceEB7hhg4qz9upH/siB0sKs8ciN40UgBrXudIKyYea46r/+FXqeJOAOZ3H9
+	 Ab7Vr6GSIq+4d/7SAJexowrmTqfw1U6GUVqwKoVEzAzEFUFI31QF45kOuW/fhjF5g
+	 Gd5+xhucxfQKrq/FsvAJCJ20M24Y1CGsePZ5pERshr+B553p+QjK0qlDo4Z+W3cA4
+	 0YepboYwYebp/R+A5A==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MOm0x-1rgs0y0diR-00PweK; Thu, 01
+ Feb 2024 13:08:11 +0100
+Message-ID: <dc42614d-adee-4cf9-96e4-b27604360a9b@web.de>
+Date: Thu, 1 Feb 2024 13:07:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAA8EJppAL44ZLL5SnmX7SSwzvRUm2PffFUL6=gQRjq4neaLtRA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+To: Kunwu Chan <chentao@kylinos.cn>, linux-btrfs@vger.kernel.org,
+ kernel-janitors@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
+ David Sterba <dsterba@suse.com>,
+ Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+ Josef Bacik <josef@toxicpanda.com>
+References: <a6ed9030-8d48-4f9c-8504-9a5308813791@kylinos.cn>
+Subject: Re: btrfs: Simplify the allocation of slab caches in
+ btrfs_delayed_inode_init
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <a6ed9030-8d48-4f9c-8504-9a5308813791@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:tTR37h8N46o+RCJpvASlOfWYMAUb/RsxgvmxcFn4VqZVCNz+VOQ
+ +TOTHTfBox+SSAX1Ef7at2fUMMNHBbUN+xOXpHMPMpgj+LmeSgeQUxF0fb8G/sfCGZUKPIY
+ UJGTFWcVOfTUalTsN6ZpHzFKfPHkjihgixACFQuiY6DcyiU3bHMDAhyTz18t8qolD1V3YYw
+ 6QkSWgkylotG5Tunt/IVg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:mqIb6wq4LtU=;b4G7ICZaPcoftmM5jOtpljxBMY4
+ 5GLrhfnMWHfJ6VvAcmVMCGYLumi7hV2GNCE98m8mSBXZi8WL/Ua08FGxmRin8EFt/jzMnE+jy
+ zS4S9+1wZts0+1ndt5Aun4t87+tn2mmrG9vX6PHLh/5kHfdde7YYMSVc969NjziLWJmgVYUV+
+ hYM58UnZFhD4dO1ea5jdjCggdYN/kRox4qk8eRD+LeFkEwtNnjlRwWxGZcBDW5FIr8Vdjsd/7
+ 0DHk+ZxVFVCdJMp2M51S2SQ+CYlUPZQ+PlrTlSGSSbHGTx8I6kFFyv90j3gvf2AUotCwHtdco
+ UlGlGwnSi7quqXL22Ty+JHVaANvke3496t7CYjq0NkJjl/07S+YGBA5GtVQjhQ1k5j26EJlbV
+ 9wSphFvxdpmIMHGLn1NHRD7B7BVOFkThcnkYQrsSEVtHHpVR2XyN1Spjgm41I2nA0aLfbY4HI
+ zJIXNGfZwQNVQSHHBMf3L20zfB8TrZVa+O/CvV6Orz1iGh/V+gdfvBRtvp9Iz0RjxpxinAJ1P
+ bn1M/axtSiB/HBaMJK5dXX+lz914FwX5FDv2uL76BzuYGVMKMvV3dgM9cUesbrv69lUnpVBIz
+ OvAWFwPIQieIgdfA9yJcRakODNYXgtU5ddvkTHwVdqtpfRVJBCXzJpnuEGLuhea8qNgt+Tdi3
+ 9qQx3CLm9f1Y9ogLqqBXhIbts2JveK03iIglZZYaUTbP03lE7qPsiIJJ8fGos7kTgHbTj6zTm
+ 0P4v9u8zagOHAzBk3d9GAAg61XAUCCEo6SZRgn6S3eII2bEFwkvYwKZbhy5mg0oqXGnVD0p/8
+ mME5tysoru8UP6+kMaPukDmPKzeHl8YiSoThCeD8UIPms=
 
-On Thu, Feb 01, 2024 at 01:58:58PM +0200, Dmitry Baryshkov wrote:
-> On Thu, 1 Feb 2024 at 13:54, Manivannan Sadhasivam <mani@kernel.org> wrote:
-> >
-> > On Tue, Jan 16, 2024 at 11:55:17AM +0200, Dmitry Baryshkov wrote:
-> > > On Tue, 16 Jan 2024 at 07:17, Krishna Chaitanya Chundru
-> > > <quic_krichai@quicinc.com> wrote:
-> > > >
-> > > >
-> > > >
-> > > > On 1/12/2024 9:03 PM, Dmitry Baryshkov wrote:
-> > > > > On Fri, 12 Jan 2024 at 16:25, Krishna chaitanya chundru
-> > > > > <quic_krichai@quicinc.com> wrote:
-> > > > >>
-> > > > >> QCOM Resource Power Manager-hardened (RPMh) is a hardware block which
-> > > > >> maintains hardware state of a regulator by performing max aggregation of
-> > > > >> the requests made by all of the processors.
-> > > > >>
-> > > > >> PCIe controller can operate on different RPMh performance state of power
-> > > > >> domain based up on the speed of the link. And this performance state varies
-> > > > >> from target to target.
-> > > > >>
-> > > > >> It is manadate to scale the performance state based up on the PCIe speed
-> > > > >> link operates so that SoC can run under optimum power conditions.
-> > > > >>
-> > > > >> Add Operating Performance Points(OPP) support to vote for RPMh state based
-> > > > >> upon GEN speed link is operating.
-> > > > >>
-> > > > >> OPP can handle ICC bw voting also, so move icc bw voting through opp
-> > > > >> framework if opp entries are present.
-> > > > >>
-> > > > >> In PCIe certain gen speeds like GEN1x2 & GEN2X1 or GEN3x2 & GEN4x1 use
-> > > > >> same icc bw and has frequency, so use frequency based search to reduce
-> > > > >> number of entries in the opp table.
-> > > > >>
-> > > > >> Don't initialize icc if opp is supported.
-> > > > >>
-> > > > >> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> > > > >> ---
-> > > > >>   drivers/pci/controller/dwc/pcie-qcom.c | 83 ++++++++++++++++++++++++++++------
-> > > > >>   1 file changed, 70 insertions(+), 13 deletions(-)
-> > > > >>
-> > > > >> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> > > > >> index 035953f0b6d8..31512dc9d6ff 100644
-> > > > >> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> > > > >> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> >
-> > [...]
-> >
-> > > > >>   static int qcom_pcie_link_transition_count(struct seq_file *s, void *data)
-> > > > >> @@ -1471,8 +1502,10 @@ static void qcom_pcie_init_debugfs(struct qcom_pcie *pcie)
-> > > > >>   static int qcom_pcie_probe(struct platform_device *pdev)
-> > > > >>   {
-> > > > >>          const struct qcom_pcie_cfg *pcie_cfg;
-> > > > >> +       unsigned long max_freq = INT_MAX;
-> > > > >>          struct device *dev = &pdev->dev;
-> > > > >>          struct qcom_pcie *pcie;
-> > > > >> +       struct dev_pm_opp *opp;
-> > > > >>          struct dw_pcie_rp *pp;
-> > > > >>          struct resource *res;
-> > > > >>          struct dw_pcie *pci;
-> > > > >> @@ -1539,9 +1572,33 @@ static int qcom_pcie_probe(struct platform_device *pdev)
-> > > > >>                  goto err_pm_runtime_put;
-> > > > >>          }
-> > > > >>
-> > > > >> -       ret = qcom_pcie_icc_init(pcie);
-> > > > >> -       if (ret)
-> > > > >> +        /* OPP table is optional */
-> > > > >> +       ret = devm_pm_opp_of_add_table(dev);
-> > > > >> +       if (ret && ret != -ENODEV) {
-> > > > >> +               dev_err_probe(dev, ret, "Failed to add OPP table\n");
-> > > > >>                  goto err_pm_runtime_put;
-> > > > >> +       }
-> > > > >
-> > > > > Can we initialise the table from the driver if it is not found? This
-> > > > > will help us by having the common code later on.
-> > > > >
-> > > > we already icc voting if there is no opp table present in the dts.
-> > >
-> > > Yes. So later we have two different code paths: one for the OPP table
-> > > being present and another one for the absent OPP table. My suggestion
-> > > is to initialise minimal OPP table by hand and then have a common code
-> > > path in qcom_pcie_icc_update().
-> > >
-> >
-> > Are you suggesting to duplicate DT in the driver?
-> 
-> As a fallback for the cases when there is no OPP table in the driver
-> it might make sense. See
-> Otherwise the DT is still somewhat duplicated in the form of calling
-> icc functions directly.
-> 
+=E2=80=A6
+> So i'll update the commit msg to this:
+>
+> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+> to simplify the creation of SLAB caches.
+> Make the code cleaner and more readable.
+=E2=80=A6
 
-No, DT is not duplicated. With this approach, we will end up hardcoding the DT
-entries in the driver which sounds backwards to me. Even with 2 different code
-paths, the hardware info will be left to the DT itself, so the driver just
-consumes it.
+* Please replace the word =E2=80=9Cnew=E2=80=9D by a reference to the comm=
+it 8eb8284b412906181357c2b0110d879d5af95e52
+  ("usercopy: Prepare for usercopy whitelisting").
 
-So please, let's not do it.
+  See also related background information from 2017-06-10.
 
-- Mani
+* How does your response fit to the repetition of improvable change descri=
+ptions?
 
--- 
-மணிவண்ணன் சதாசிவம்
+  Example:
+  [PATCH] btrfs: Simplify the allocation of slab caches in btrfs_transacti=
+on_init
+  https://lore.kernel.org/lkml/20240201093554.208092-1-chentao@kylinos.cn/
+  https://lkml.org/lkml/2024/2/1/387
+
+* How do you think about to group similar source code transformations
+  into patch series?
+
+
+Regards,
+Markus
 
