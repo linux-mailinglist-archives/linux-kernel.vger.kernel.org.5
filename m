@@ -1,122 +1,211 @@
-Return-Path: <linux-kernel+bounces-48332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70AD1845A86
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:47:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FF15845A89
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:47:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF657B25139
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:47:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 070AA2868D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:47:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 092445F485;
-	Thu,  1 Feb 2024 14:47:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CAD45F492;
+	Thu,  1 Feb 2024 14:47:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Hp7wO7jo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IU/9G31n"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 269AF53385;
-	Thu,  1 Feb 2024 14:47:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C07945F491;
+	Thu,  1 Feb 2024 14:47:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706798829; cv=none; b=GgBfxM/r4c4UyPynLKIhetQb+wYkuPY7V1RwQfTYu8gIrkR2D4HQ2QJ1o7FBEhsqYVvshCVZk/Dy2vPkWxaKeo5ydAp7BlqghxHNgmyksE1iBE4s+ugvQLTbXUNW9stA0/CO5D22TUZezuD/fgYL7TImuJ/zXCdsN46nBhFvfEY=
+	t=1706798844; cv=none; b=Zv3l7lny6zbwgabwR6eOq3v5Qmoh25faaiBGp6dXFOzoEm8i7b/PQIuxf0UOwBwtElZ/0mCBffpmy/ezdGGe+HJLBbCoKPUk8h5/B4pBlrDZDgwogMCbLYZBmeWFWwQHGR0JrKxlS8hcgsjHz3kNapKSIzTT9bj/SkfX4lMy5vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706798829; c=relaxed/simple;
-	bh=Op51wgxnKz739GQ7m4pPxxOXzlkXkfmYI8j1uup/GdY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H9M5lWMAatFOfzu2fQ2gGWqCZ+3szGvi+DwyUVyzuKnbKmJo3r+tOckBnyBfsc6/5Og5ZcLHTVkZSFGmdDQ8sohshWAzHLwW+JqML/MVLJ4t/NqZuvKefdlmhAF2jcFBF0gyYh3wNTGnKQc7xFmV7OZtWTb7sJebhrOCjbUL6wo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Hp7wO7jo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98943C433C7;
-	Thu,  1 Feb 2024 14:47:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706798828;
-	bh=Op51wgxnKz739GQ7m4pPxxOXzlkXkfmYI8j1uup/GdY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Hp7wO7joI4VfWLO6zvQiKjqUaV0d9262qFHOff7P74jMMApODqxoEUP/HiFTbiEb6
-	 IOwqX6HNOj5F29AOYwYQbJ+/hgcgupu6Fm2tJHV990tK35odGevqhXIettd3tHnr8K
-	 Ej080f4gIw8vUr1tla86542hXwCP+9jwqdq0AgLg=
-Date: Thu, 1 Feb 2024 06:47:07 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: "Hegde, Suma" <Suma.Hegde@amd.com>, naveenkrishna.chatradhi@amd.com,
-	LKML <linux-kernel@vger.kernel.org>,
-	Carlos Bilbao <carlos.bilbao@amd.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH] platform/x86/amd/hsmp: switch to use device_add_groups()
-Message-ID: <2024020135-sly-theft-0594@gregkh>
-References: <2024012822-exalted-fidgeting-f180@gregkh>
- <0d110d2a-da0c-017a-0e5a-fc6bef7b066a@linux.intel.com>
- <e73426f6-6d50-4ed7-8613-1ec42fa3f991@amd.com>
- <2024020144-duplicity-nuptials-1cd7@gregkh>
- <f48ebcb1-8f87-efee-08ed-844775c995aa@linux.intel.com>
+	s=arc-20240116; t=1706798844; c=relaxed/simple;
+	bh=qgms/9isPo0TXHC6cRuho639q8nVW5hPrmWxyYGXX6Q=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=lJR6qlSh2EfxQDqI7GLALhd/ilVPEfd25j2X00Vb2vwuGZPoT9mtO/7n58jilzimbcJ4kfUflKNReGdKOkLH8BQUlpCnRf7dpSUY5TTYQdipBL5nsp7B3QAyQDmrcRm3+XJliIiMQHpD3xzEO9YHtQaTLQn6E09wrl0E6bhQp5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IU/9G31n; arc=none smtp.client-ip=134.134.136.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706798842; x=1738334842;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=qgms/9isPo0TXHC6cRuho639q8nVW5hPrmWxyYGXX6Q=;
+  b=IU/9G31nm9/5rgh15vuSaxp08Ulo93ev+f7aOUnfDp2/sacjBfcBXD8r
+   0BOhUce4aNlHNzoJmk36LWsYWo1IiHwNI5eAq0ZKFLqRLRbp3qFd69RnZ
+   pM0ZtkNqCJdGQFOBZj3ANmHTG9IsqV2aV7wjww6dpcB3OjBjplut22VZ8
+   B2v4B8aV5J1jXsdHWOcaC4mdXM/bvayvNHQOb+p4nDJHoM/HlZr641Pu0
+   2rtEsBnip8I/KFKs7YuJ8A01yFOzYidLMlvD5n5PjFcuu5NbBV54M/8E6
+   zKM73RLf/tcOP9nrMKPZbECIm475wPuv3n8A/1fZogccAAnbAeTt1f9D1
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="407626471"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="407626471"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 06:47:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="4394902"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.33.1])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 06:47:19 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Thu, 1 Feb 2024 16:47:14 +0200 (EET)
+To: Jonathan Woithe <jwoithe@just42.net>
+cc: Igor Mammedov <imammedo@redhat.com>, 
+    Andy Shevchenko <andriy.shevchenko@intel.com>, linux-pci@vger.kernel.org, 
+    Bjorn Helgaas <bhelgaas@google.com>, 
+    Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, 
+    Rob Herring <robh@kernel.org>, 
+    =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>, 
+    Lukas Wunner <lukas@wunner.de>, 
+    Mika Westerberg <mika.westerberg@linux.intel.com>, 
+    "Rafael J . Wysocki" <rafael@kernel.org>, 
+    LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/7] PCI: Solve two bridge window sizing issues
+In-Reply-To: <ZbrOW/eTC0FFPjec@marvin.atrad.com.au>
+Message-ID: <1ee94000-14af-3edf-10b6-acd821075d3e@linux.intel.com>
+References: <20231228165707.3447-1-ilpo.jarvinen@linux.intel.com> <20240104131210.71f44d4b@imammedo.users.ipa.redhat.com> <ZZaiLOR4aO84CG2S@marvin.atrad.com.au> <ZZ+gEmxI/TxdbmyQ@marvin.atrad.com.au> <ZajJzcquyvRebAFN@marvin.atrad.com.au>
+ <Za0T_siv79qz1jkk@smile.fi.intel.com> <Za2YtnwLKKeMquv6@marvin.atrad.com.au> <62b66d58-7824-3650-6a73-12068a22563e@linux.intel.com> <20240122144520.7761c5a6@imammedo.users.ipa.redhat.com> <ZbrOW/eTC0FFPjec@marvin.atrad.com.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f48ebcb1-8f87-efee-08ed-844775c995aa@linux.intel.com>
+Content-Type: multipart/mixed; boundary="8323328-945909834-1706798834=:1028"
 
-On Thu, Feb 01, 2024 at 04:34:30PM +0200, Ilpo Järvinen wrote:
-> On Thu, 1 Feb 2024, Greg Kroah-Hartman wrote:
-> 
-> > On Thu, Feb 01, 2024 at 06:50:33PM +0530, Hegde, Suma wrote:
-> > > On 1/29/2024 6:16 PM, Ilpo Järvinen wrote:
-> > > > Caution: This message originated from an External Source. Use proper caution when opening attachments, clicking links, or responding.
-> > > > 
-> > > > 
-> > > > + Cc Suma Hegde.
-> > > > 
-> > > > On Sun, 28 Jan 2024, Greg Kroah-Hartman wrote:
-> > > > 
-> > > > > The use of devm_*() functions works properly for when the device
-> > > > > structure itself is dynamic, but the hsmp driver is attempting to have a
-> > > > > local, static, struct device and then calls devm_() functions attaching
-> > > > > memory to the device that will never be freed.
-> > > > > 
-> > > > > The logic of having a static struct device is almost never a wise
-> > > > > choice, but for now, just remove the use of devm_device_add_groups() in
-> > > > > this driver as it obviously is not needed.
-> > > 
-> > > Hi Greg,
-> > > 
-> > > Could you please hold on merging this patch for a week? I will push a patch
-> > > for converting platform specific structure's memory allocation from static
-> > > to a dynamic
-> > > 
-> > > allocation.
-> > 
-> > Push it where?  Ususally we do "first patch wins" type stuff, why not
-> > just do your work on top of mine?
-> > 
-> > Also, when you do make the needed changes, please remove the explicit
-> > call to create sysfs groups and use the default groups pointer instead,
-> > that will make things much simpler and avoid races in the code.
-> 
-> Hi Greg,
-> 
-> Well, if you really want to "win" :-), please provide an updated version 
-> which considers the changes already made in the for-next branch (the 
-> current one won't apply).
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Fair enough, I don't want to "win", I just want to squash any "hold off
-and don't make any changes to this file because I was going to plan on
-doing something else here in the future" type of stuff, as that is what
-has been documented to take down many projects in the past.
+--8323328-945909834-1706798834=:1028
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-That's why we almost always take patches that people have submitted
-today, instead of ignoring them for potential future changes, unless of
-course, they are not acceptable.
+On Thu, 1 Feb 2024, Jonathan Woithe wrote:
 
-I'll rebase on linux-next, rejecting it for that reason is totally valid :)
+> On Mon, Jan 22, 2024 at 02:45:20PM +0100, Igor Mammedov wrote:
+> > On Mon, 22 Jan 2024 14:37:32 +0200 (EET)
+> > Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com> wrote:
+> >=20
+> > > On Mon, 22 Jan 2024, Jonathan Woithe wrote:
+> > >=20
+> > > > On Sun, Jan 21, 2024 at 02:54:22PM +0200, Andy Shevchenko wrote: =
+=20
+> > > > > On Thu, Jan 18, 2024 at 05:18:45PM +1030, Jonathan Woithe wrote: =
+=20
+> > > > > > On Thu, Jan 11, 2024 at 06:30:22PM +1030, Jonathan Woithe wrote=
+: =20
+> > > > > > > On Thu, Jan 04, 2024 at 10:48:53PM +1030, Jonathan Woithe wro=
+te: =20
+> > > > > > > > On Thu, Jan 04, 2024 at 01:12:10PM +0100, Igor Mammedov wro=
+te: =20
+> > > > > > > > > On Thu, 28 Dec 2023 18:57:00 +0200
+> > > > > > > > > Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com> wrote:
+> > > > > > > > >  =20
+> > > > > > > > > > Hi all,
+> > > > > > > > > >=20
+> > > > > > > > > > Here's a series that contains two fixes to PCI bridge w=
+indow sizing
+> > > > > > > > > > algorithm. Together, they should enable remove & rescan=
+ cycle to work
+> > > > > > > > > > for a PCI bus that has PCI devices with optional resour=
+ces and/or
+> > > > > > > > > > disparity in BAR sizes.
+> > > > > > > > > >=20
+> > > > > > > > > > For the second fix, I chose to expose find_empty_resour=
+ce_slot() from
+> > > > > > > > > > kernel/resource.c because it should increase accuracy o=
+f the cannot-fit
+> > > > > > > > > > decision (currently that function is called find_resour=
+ce()). In order
+> > > > > > > > > > to do that sensibly, a few improvements seemed in order=
+ to make its
+> > > > > > > > > > interface and name of the function sane before exposing=
+ it. Thus, the
+> > > > > > > > > > few extra patches on resource side.
+> > > > > > > > > >=20
+> > > > > > > > > > Unfortunately I don't have a reason to suspect these wo=
+uld help with
+> > > > > > > > > > the issues related to the currently ongoing resource re=
+gression
+> > > > > > > > > > thread [1]. =20
 
-thanks,
+> > > > Thanks, and understood.  In this case the request from Igor was=20
+> > > >=20
+> > > >     can you test this series on affected machine with broken kernel=
+ to see if
+> > > >     it's of any help in your case?
+> > > >=20
+> > > > The latest vanilla kernel (6.7) has (AFAIK) had the offending commi=
+t
+> > > > reverted, so it's not a "broken" kernel in this respect.  Therefore=
+, if I've
+> > > > understood the request correctly, working with that kernel won't pr=
+oduce the
+> > > > desired test. =20
+> > >=20
+> > > Well, you can revert the revert again to get back to the broken state=
+=2E
+> >=20
+> > either this or just a hand patching as Ilpo has suggested earlier
+> > would do.
+>=20
+> No problem.  This was the easiest approach for me and I have now done thi=
+s.=20
+> Apologies for the delay in getting to this: I ran out of time last Thursd=
+ay.
+>=20
+> > There is non zero chance that this series might fix issues
+> > Jonathan is facing. i.e. failed resource reallocation which
+> > offending patches trigger.
+>=20
+> I can confirm that as expected, this patch series has had no effect on th=
+e
+> system which experiences the failed resource reallocation.  From syslog,
+> running a 5.15.141+ kernel[1]:
+>=20
+>     kernel: radeon 0000:4b:00.0: Fatal error during GPU init
+>     kernel: radeon: probe of 0000:4b:00.0 failed with error -12
+>=20
+> This is unchanged from what is seen with the unaltered 5.15.141 kernel.
+>=20
+> In case it's important, can also confirm that the errors related to the
+> thunderbolt device are are also still present in the patched 5.15.141+
+> kernel:
+>=20
+>     thunderbolt 0000:04:00.0: interrupt for TX ring 0 is already enabled
+>     :
+>     thunderbolt 0000:04:00.0: interrupt for RX ring 0 is already enabled
+>     :
+>=20
+> Like the GPU failure, they do not appear in the working kernels on this
+> system.
+>=20
+> Let me know if you would like to me to run further tests.
+>=20
+> Regards
+>   jonathan
+>=20
+> [1] This is 5.15.141, patched with the series of interest here and the ha=
+nd
+>     patch from Ilpo.
 
-greg k-h
+Hi Jonathan,
+
+Thanks a lot for testing it regardless. The end result was not a big=20
+surprise given how it looked like based on the logs but was certainly=20
+worth a test like Igor mentioned. The resource allocation code isn't among=
+=20
+the easiest to track.
+
+
+--=20
+ i.
+
+--8323328-945909834-1706798834=:1028--
 
