@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-48044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EAC2845696
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:54:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A3D7845698
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:54:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AE6C283FC6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:54:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E54BB24BBA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:54:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A17B15F300;
-	Thu,  1 Feb 2024 11:53:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5925F15F32A;
+	Thu,  1 Feb 2024 11:53:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VHZ5XMxG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hyig5QNm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A195415DBD1;
-	Thu,  1 Feb 2024 11:53:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978D115F313;
+	Thu,  1 Feb 2024 11:53:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706788410; cv=none; b=gY14VRitLsFObEl31yYs9WZE/UIHrqJcikGn9xtXKI+XHjCLkxIhFZN2JBZCZ5WDQ+6rz1MFVG1GXTrj/oMoWeY+2aEAs1yxnQjOoXBUry3JShm91dDp6ODuLk/sopXlh8BVJ/EwqoMVfHJGGgy1qz4ZF7nlau6v9QtI+t2tjb0=
+	t=1706788412; cv=none; b=Lm5Pivo5Dc4Y5mY8ZfEQvcRPRUSbWkcTyentAWnr/YHmL8it8D3/P7u5QXoNYdweh2nbW5Y+bm2KmXdZR2KBVreWGxfJ+ZDvL1JPRLC/m3qErO2/X5Cgc0kgaB/05F1MlQAtwFrVQUKSKIYcFq1mVqRPQbrVzZ4yVlgxwopYTwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706788410; c=relaxed/simple;
-	bh=R9mqcGZb3HMeav7eRqumn5/IPLY4C5cuLq+LnSwMoPg=;
+	s=arc-20240116; t=1706788412; c=relaxed/simple;
+	bh=+uVdvJGsc8lGb6YyNtoRve9i5Z0FqJFy9u1zLI/NIAg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X8Bg0TgOM3OUyQYvlNIn7CFKuFXZ0EnzyWG13I7KJslPPldGFMdsfTLzlJmcqpBzXzrTk04s/8AB2DtWegQIRkMW860zVCjV2XBt4vy7zciYFyi8r0tYBZZpmbwYh+0cYEJC3MhECdkZjTKLiyPLHo3C3eBuyja1GBhp7sZjyMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VHZ5XMxG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F40E2C43394;
-	Thu,  1 Feb 2024 11:53:28 +0000 (UTC)
+	 MIME-Version; b=tvO1xjtSomZHHi3CHiCzG+mvpPFx43d1xohbFWSRkwy1WaeL3tVqzWSCM5xzPf0PfCKUjy1mtuuZOhM9N/sdxE+ut+DGpcTtuckXQtkQN8tlhvb98T6L/tjHqoywGv+evimDbgddidZ1I6Fn0uRzz5LxqZ9LjS+MCcD7eyN2As8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hyig5QNm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A441CC43399;
+	Thu,  1 Feb 2024 11:53:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706788410;
-	bh=R9mqcGZb3HMeav7eRqumn5/IPLY4C5cuLq+LnSwMoPg=;
+	s=k20201202; t=1706788412;
+	bh=+uVdvJGsc8lGb6YyNtoRve9i5Z0FqJFy9u1zLI/NIAg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VHZ5XMxGtA8VGFAHELiWxWp1TYfwdLGudPaHlCjFVRz6z97iIb4EHBwiChbXjoVSf
-	 Yinshu6Xpsu/owG2i4xIYTn6T1QCdBMvZuYMkzyjcOANW8e4+KQ1ZwTjca5FvISyeZ
-	 LbjDcYRfKDsdQ7gOlbOhsS7xKM70i8gbo2Vj31sBDrYwyDbZqa1R5j3bdolgM5VPzV
-	 nHSY4YKkowuGhVDG8zhxS5gcGeMiemlARIOvSqTkMf9ezirZZdSjQdur5LK5o/cZDN
-	 YWaJkky8uL0KhusM24069OvlmlwPJPOYEXplCQyxmEGU3tdriWjORLtaJ71NKpPZ1X
-	 FKdHqN65Qzocw==
+	b=Hyig5QNmLrPTECu94ugQSjEwP01vifZIkEi9RiqpwxC+MlWfnD6EqvT00Qr5Gnw1G
+	 ReR+GN9u3Kr0tZj+OQ8t8cY+92ctBglpPzJRxqMBOJzwrxAjvcSkfTTH6vUv6P5c21
+	 E3cspd+wUUQy70nTvdCwQVykgBJFHkb7oW5dcE7aCjdnp481BwYGuAfUewvNNqdH9M
+	 dGMuy/IhWsgJwRMuGkk6zwF8XF45b2Rnf8+jm9ZYAgYpsE8wNCM95vMTDNobKjC6Hv
+	 UZcOhYzw+fjA9UvwvPFmNBKdhwuofXPrcc3KhXCG7CiuoE6zX6b+qGMxMsvTQ2+Reu
+	 d2VtJ59ZJx9ow==
 From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To: jikos@kernel.org
 Cc: linux-input@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+	Gary Stein <LordCnidarian@gmail.com>,
 	Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: [PATCH 3/7] HID: protect hid_device::bpf by CONFIG_HID_BPF
-Date: Thu,  1 Feb 2024 12:53:16 +0100
-Message-ID: <20240201115320.684-4-jirislaby@kernel.org>
+Subject: [PATCH 4/7] HID: hid-lg3ff: remove unused struct lg3ff_device
+Date: Thu,  1 Feb 2024 12:53:17 +0100
+Message-ID: <20240201115320.684-5-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240201115320.684-1-jirislaby@kernel.org>
 References: <20240201115320.684-1-jirislaby@kernel.org>
@@ -60,36 +61,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-And not by CONFIG_BPF. BPF can be selected while HID_BPF does not have
-to. It actually cannot be on some platforms due to Kconfig dependences.
+struct lg3ff_device is present in the driver since its addition by
+commit 74f292ca8c7a (HID: add driver for the Logitech Flight System
+G940).
 
-This saves quite some bytes on those setups.
+But it was never used, remove it.
 
 Found by https://github.com/jirislaby/clang-struct.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+Cc: Gary Stein <LordCnidarian@gmail.com>
 Cc: Jiri Kosina <jikos@kernel.org>
 Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 ---
- include/linux/hid.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/hid/hid-lg3ff.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/include/linux/hid.h b/include/linux/hid.h
-index 7c26db874ff0..b12cb1c8e682 100644
---- a/include/linux/hid.h
-+++ b/include/linux/hid.h
-@@ -683,9 +683,9 @@ struct hid_device {							/* device report descriptor */
+diff --git a/drivers/hid/hid-lg3ff.c b/drivers/hid/hid-lg3ff.c
+index b7e1949f3cf7..109735b89b7a 100644
+--- a/drivers/hid/hid-lg3ff.c
++++ b/drivers/hid/hid-lg3ff.c
+@@ -41,10 +41,6 @@
+  * I'm sure these are effects that I don't know enough about them
+  */
  
- 	unsigned int id;						/* system unique id */
- 
--#ifdef CONFIG_BPF
-+#ifdef CONFIG_HID_BPF
- 	struct hid_bpf bpf;						/* hid-bpf data */
--#endif /* CONFIG_BPF */
-+#endif /* CONFIG_HID_BPF */
- };
- 
- void hiddev_free(struct kref *ref);
+-struct lg3ff_device {
+-	struct hid_report *report;
+-};
+-
+ static int hid_lg3ff_play(struct input_dev *dev, void *data,
+ 			 struct ff_effect *effect)
+ {
 -- 
 2.43.0
 
