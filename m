@@ -1,91 +1,139 @@
-Return-Path: <linux-kernel+bounces-47771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A6E2845290
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:20:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E3B9084529B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:22:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAF351C264E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:20:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 214711C20C59
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:22:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25EFD159587;
-	Thu,  1 Feb 2024 08:20:07 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FF65159572;
+	Thu,  1 Feb 2024 08:22:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Q/SUoU82"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 554BF158D8B
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 08:20:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80784158D7C;
+	Thu,  1 Feb 2024 08:21:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706775606; cv=none; b=T8uFoosOZDgeL3gU+n1tQ6POLany0RKNJAbBCN2/+8/6x4HK/MR/nnRMvJNjS2KBg5uu4Ljtnn1zE4sMjKIJQzE4Z6cNxgA4l/cAZ8r6KQ7KbMdK24EX38rxCeoPP7JbvQPVqYhMMQMIY8aZqpt+7gQp5i1R6zl9Iuu8flR0WgI=
+	t=1706775719; cv=none; b=BPNnyyf73lklb6e0j2Hh3dPR+Qycl6OAR0tDDq75ACqe6d0Z0GxRX+3b1eL5G6S13VR7HiZR4ceGNwwWaf2AcnKNOUtYf8lc4yTYZ24Mo+QTUIUDX7Ewz3w+WQ3WXL6kzBleKHhR4BdUz8kf3OADVeR3/l8hF4XQRjXlhUutIAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706775606; c=relaxed/simple;
-	bh=IT+/IznFUZfP8voVJHxGSDhujN2yYOYuh0E8y5jDUBw=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=RdPfpB8QO7PF6nuN3FhijuJ3ubdNCsxZqGP9m04o2QqaH0AFxoZnfpK0MOjzCmBIcemuqjznwPqS5hPRaJqgn21RR2q4TqPmrEAhvN/jDGP/MfyVcrWXClnmSpl72G7O3JlHlOE5LJteNh6f5WYIaZaFS3VUm7eMXV4AqpuQJd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c0088dc494so48049739f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 00:20:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706775604; x=1707380404;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oj5sIJNV5dqs7fT2C4aqfxRFgCGhxW6XP8G9oXlz16I=;
-        b=Qb3QHhni14MUlrKsFDMLT+nstj1GFTfG5lP2qOIotepB3mRxcGlP3fs6PA3yCB6B10
-         U/4o2jvFOACDVwT+q3Tddzbow4EwC+MW7sjm4Gqp3Jb1WhWto+AwR/YGgrU8hYZ+0cYh
-         oGNnl6MLTtBSUK/xaDbqkL+IK1qqK17MlkiGsZyK//3dzjMWb+V0D21DPJO26dad0+oz
-         m4zVvC6Fb+K8HL08Y7QiaQZz+xxMpsrVoXgxChzxSnUink6xUf3BbEWQjNkgZN3ErtFh
-         V4AV6x7WetlNHJRobBW9p0n8BoBfNvD+j3pSDgataOtMeaWHXCJF/U2FKVZZLoELCTlV
-         JPOQ==
-X-Gm-Message-State: AOJu0Yz2KIj80PpWI/FxNVReOk4gTenkMwP+pKI5SzLEBJMBFtvhwfvA
-	y56YDwJNooree3Otd1BerXZie03wHPD3+sr1c8GkDu9uS1b4gghe0DqSOM7F4w6pQ4WJECfu3wE
-	f71/ZjoUQNaKfKKkNGH2VMMoqIjt1bf2xxGRs1FB3V6D8PfnN+NE+2Ms=
-X-Google-Smtp-Source: AGHT+IGMneXP1VwttEU6QqMbn9Gto8Ha2qHva7b18FS6I488vw1v7coYv7Pm5/27FVSdHOXBwv51x8UF1Ur1lNgCzbwHZrnXMOmr
+	s=arc-20240116; t=1706775719; c=relaxed/simple;
+	bh=wfZpdZl/N31/4tOLTGcfIu3SyJ0XLAVEJXeoyLZ1J48=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HTVE30HQdO7DpvUCAS1WdhzxpaDfPPFN4Id06eXT3+rOWucjoUoDtefBLaN9FKA7Y4Rqhl8txMQJGpytUtuNf7Lrn+PH3osSqxWfeMJFUgNHAoOLLJhcE0rNbE2iDOXOxODVyVMM+MfjxNgax4lHy3iS5h3cMC/aIiLuPRQKaTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=Q/SUoU82; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1706775717; x=1738311717;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wfZpdZl/N31/4tOLTGcfIu3SyJ0XLAVEJXeoyLZ1J48=;
+  b=Q/SUoU82TsjUo1XPhiuQLZtSMnq5sleLQAIgzb0p4/H0qwk0ymd52Lru
+   +BiuJ/w7lUGaFEhCJgJeQlMyh0bjBp+L7XtzOtYKpS4GLWDUqocSVl8Tx
+   1aCYmWjBpPBjgUA6zCiXFEpY0/k6SUipTci5DVxSURuSCMDinxNQsPwHD
+   NdXOKT7HGVQqS7BwFJ1k5DLAcoGY74OFPh4rc7fhvTCDP/kohIOz1sWLc
+   j1XCtYF9oh4RxWQXkP/Ct3en6DTBviLT3CQoJ6VrNliB6o+58I5v7leX4
+   0d9UKXLINgo7BkP5qdgYEFRZfJrHG3MofSwHHZYWtz+kVMSakxc9odFjY
+   w==;
+X-CSE-ConnectionGUID: xeT3MgaNR+W5qlWhP2avng==
+X-CSE-MsgGUID: hgNpKvbOS5yYpYQTXvgMYw==
+X-IronPort-AV: E=Sophos;i="6.05,234,1701154800"; 
+   d="asc'?scan'208";a="246338219"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 01 Feb 2024 01:21:54 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 1 Feb 2024 01:21:32 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Thu, 1 Feb 2024 01:21:30 -0700
+Date: Thu, 1 Feb 2024 08:20:51 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC: Guenter Roeck <linux@roeck-us.net>, Conor Dooley <conor@kernel.org>,
+	Charles Hsu <ythsu0511@gmail.com>, <jdelvare@suse.com>, <corbet@lwn.net>,
+	<Delphine_CC_Chiu@wiwynn.com>, <robh+dt@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+	<linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] dt-bindings: Add MPQ8785 voltage regulator device
+Message-ID: <20240201-professor-slobbery-a77c9c76ca82@wendy>
+References: <20240131055526.2700452-1-ythsu0511@gmail.com>
+ <20240131055526.2700452-2-ythsu0511@gmail.com>
+ <20240131-eraser-given-8381a44f41a4@spud>
+ <d20e1f93-4e6c-4c18-b4bd-19412eb4e8da@roeck-us.net>
+ <f99af7ee-1a6c-4e00-9a7d-3a1ddc9574d2@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d01:b0:363:9d58:805b with SMTP id
- i1-20020a056e021d0100b003639d58805bmr115442ila.3.1706775604492; Thu, 01 Feb
- 2024 00:20:04 -0800 (PST)
-Date: Thu, 01 Feb 2024 00:20:04 -0800
-In-Reply-To: <000000000000b62cdb05f7dfab8b@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009e002e06104da983@google.com>
-Subject: Re: [syzbot] [ext4?] KASAN: slab-use-after-free Read in ext4_convert_inline_data_nolock
-From: syzbot <syzbot+db6caad9ebd2c8022b41@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org, 
-	jack@suse.cz, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, nogikh@google.com, 
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="eiYzcIx+MwHK8ugQ"
+Content-Disposition: inline
+In-Reply-To: <f99af7ee-1a6c-4e00-9a7d-3a1ddc9574d2@linaro.org>
 
-syzbot suspects this issue was fixed by commit:
+--eiYzcIx+MwHK8ugQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+On Thu, Feb 01, 2024 at 08:47:07AM +0100, Krzysztof Kozlowski wrote:
+> On 01/02/2024 01:41, Guenter Roeck wrote:
+> > On 1/31/24 07:41, Conor Dooley wrote:
+> >> On Wed, Jan 31, 2024 at 01:55:26PM +0800, Charles Hsu wrote:
+> >>> Monolithic Power Systems, Inc. (MPS) synchronous step-down converter.
+> >>>
+> >>> Signed-off-by: Charles Hsu <ythsu0511@gmail.com>
+> >>> ---
+> >>>   Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
+> >>>   1 file changed, 2 insertions(+)
+> >>>
+> >>> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b=
+/Documentation/devicetree/bindings/trivial-devices.yaml
+> >>> index 79dcd92c4a43..088b23ed2ae6 100644
+> >>> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
+> >>> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+> >>> @@ -129,6 +129,8 @@ properties:
+> >>>             - mps,mp2975
+> >>>               # Monolithic Power Systems Inc. multi-phase hot-swap co=
+ntroller mp5990
+> >>>             - mps,mp5990
+> >>> +            # Monolithic Power Systems Inc. synchronous step-down co=
+nverter mpq8785
+> >>> +          - mps,mpq8785
+> >>
+> >> q sorts before 2, otherwise
+> >=20
+> > It does ? Not in ASCII. Am I missing something ?
+>=20
+> Also `sort` agrees with q being after numbers.
 
-    fs: Block writes to mounted block devices
+Disregard that comment so.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1606d4ffe80000
-start commit:   3a93e40326c8 Merge tag 'for-linus' of git://git.kernel.org..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9c35b3803e5ad668
-dashboard link: https://syzkaller.appspot.com/bug?extid=db6caad9ebd2c8022b41
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a2cd05c80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=158e1f29c80000
+--eiYzcIx+MwHK8ugQ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If the result looks correct, please mark the issue as fixed by replying with:
+-----BEGIN PGP SIGNATURE-----
 
-#syz fix: fs: Block writes to mounted block devices
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbtUVgAKCRB4tDGHoIJi
+0gN/AP4tg5L5FIzAL86HeXCni6iANExtZEzYQm/GuHvM/xL1AwD/SkChM5F+gynW
+lmkadnEGZQvZYnT4OxYJANK+EUVBnwA=
+=tEEr
+-----END PGP SIGNATURE-----
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+--eiYzcIx+MwHK8ugQ--
 
