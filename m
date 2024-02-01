@@ -1,139 +1,122 @@
-Return-Path: <linux-kernel+bounces-48277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAAF684597B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:00:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48E9B84598F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:03:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28B951C28E19
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:00:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05F8E28D0F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:03:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB7605D479;
-	Thu,  1 Feb 2024 14:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43EEB5D47D;
+	Thu,  1 Feb 2024 14:03:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="F6gZrOgC";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Ox+jViU1"
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LOu2A/5Z"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23ACA5D461;
-	Thu,  1 Feb 2024 14:00:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.27
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336C35D47F;
+	Thu,  1 Feb 2024 14:03:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706796030; cv=none; b=HkZleadKEMzvRrJ4F2z2O7HPfnAuGa/E98MsCi3HW11gYcV9JQn3Or0VkP8zzeFOIWaB8SwuCDNPONWF2c/Dc1z97Qd7OIiSbdIN9qTnPhwHn9dLrY4tRbk5fK3dv4nrA4Yj1+pCozdHhijWjL+ks1gGm9GfKwk7CXANaf+Oq94=
+	t=1706796228; cv=none; b=bn5gOoAB7tYsiYnilJqezBqYnoDdn+KNiquJ86ydAe1g1J34Fuk99tEzDr61De7cnvYmd8FeDrQrgpOwXK67ztw4ETfvO82fVTRhcfMHHLc3tJh88LJYF6A54g7uoISWv22b5Z+tZqI8fxTJjNjTEq2H6oVilf7uZSImaCRxBts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706796030; c=relaxed/simple;
-	bh=xMwJiP7MmYCabqx5cyil4Dn67arKtEGuoUBogTvOSRs=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=HTfBHpuoFKivzstAup7qY3UGA/fWwgHCyeX44Y2vphj3Ciiw/AU18GGx1HYVu574MXchoqbRPRgSgDl+U4b72u0GC8GiRASuY9UyIz78r2mK5HugGYeJeKo0nBgAg+/TMNN1+1HqoyheGjGuipQrPNKI0JNgBFpKqSNNtI6uupo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=F6gZrOgC; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Ox+jViU1; arc=none smtp.client-ip=66.111.4.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id E50DC5C0195;
-	Thu,  1 Feb 2024 09:00:26 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 01 Feb 2024 09:00:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1706796026; x=1706882426; bh=N58mymRXnR
-	4Pivcrh/fWTAT8wYPAf8WjYxse+92s2hg=; b=F6gZrOgCErZol5JlEh8BtMNAAb
-	XFReSGz51PnubydifA5UziGQWaOjUrlVeJd6wiyUI30AwznPkjRggrV+/JvEUpmZ
-	G6VXhMGYuhsrj+b3Bum2FDSREvLwm8TL9V0hWKXZYgIExd94qv9mJBRPI+aKUVKB
-	Y5AtvJMiux1PV2I/rfluHWYMY0GfWGK2OVUSP0bnwNa6S2VSA97h3zrQ0ul7xvAR
-	SWNED1m+gGD7C4tWxPUrE83bR2sBPURGZI7Pr+XmSJVD97dLAzGZMhCUuFv+V+7/
-	RhcmPrTvAjRWpDVqY4AcYshN+I/OSQIY9eLoRJEhUD/bhkyJc7bM5yzEwZvg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1706796026; x=1706882426; bh=N58mymRXnR4Pivcrh/fWTAT8wYPA
-	f8WjYxse+92s2hg=; b=Ox+jViU1ThqKcmFL67a2ZjB2HYMpauiDnSxeuTlvBTyK
-	8nBc62vVLeqniUs8Bk0nQti6pITiM/ZQ4ynVSCwnpjSWXWgJtAP2g7eK/YRUuEYJ
-	/fg7XorJbEVc4bpRnsJzjNmZdoVVzdSIjWyuacscpUSxDqlSDTj/GOFdKdcuAvNY
-	5G3p7le5cbfmhwc3hc35udXXc+7VN8w81Uvx07fufE5O7ZWX9mYYjp3UlWDu0xpk
-	aiVFkQJ2wdh+tUOg7EqZ7VQ5e6wofeM7jSJ2PBar0qNgfm5mUJxTr7y3SDCbM1Eg
-	+HOYtwxJnGioeZtDxqeNE/BfLonCG1uF2NCaicW/zA==
-X-ME-Sender: <xms:-qO7ZVk2qdClUQ7_aDgANRo7zUUhm5i1rYkJA-HDXJUc9jbfVVzeLA>
-    <xme:-qO7ZQ024m7euwGqPZudfKU4sA3LMDLAgVOAVZ1QpD12geP7UtrulClU7l-8wBfyh
-    5mqfnGMrFx8xJ5UDxw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeduuddgheeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:-qO7ZboJPYSuxzznt-4RVVRpxtal5gjQ9nsVIGTYC_9wq5KnGEVYtw>
-    <xmx:-qO7ZVmsFa0YBhMsN3EuoqnfrgDQZTp3A56uewgHz65X-oI0YBv0Hg>
-    <xmx:-qO7ZT0cYnf5dAIM08AQgvaBHvr7AgmcBolw1WsQxdlFtMGa52AiIQ>
-    <xmx:-qO7Zcs3LFB3apPfbt1S1mCmk3keICfucKt8dp73qRGMvuPZcx5krQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 15664B6008D; Thu,  1 Feb 2024 09:00:26 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
+	s=arc-20240116; t=1706796228; c=relaxed/simple;
+	bh=jo0lrXCr+ByQjN7lNIgf3/5HMNYXX9RLoXwcL4UFG68=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bsZS98wTZJrF5M3Ylsx+mtz12Zmrxczdqv5cGWjMmQFZxNfKKx7/wX+91JHbwimsUkTjwCTMgigNB8r8wGYCFaqygVeQYZOIHGHK2+SOK3FwyNlwSOfk4qYYFz4M09xgDQWqSZ3s4F3PvGPDND1aWz9Ow0ofbgBFCqtV9xxc928=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LOu2A/5Z; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6dddee3ba13so645251b3a.1;
+        Thu, 01 Feb 2024 06:03:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706796225; x=1707401025; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RiE5Onayz6cyE5+MyLfFrdqfq7HqpeSLCHp3c1TdnJ4=;
+        b=LOu2A/5ZTD7qUurQ9Frp3pfBg9rTB2WpbaVf9Bf4OY5qTe7Lb+6hxLn1CebWPFuk8z
+         +DNsjANNNLb0NaG6Adgf3/Z6H1ugS7y6ilxLVcAhhXB6sfPHa1WI3zUOZBe4t4JVtFfq
+         JQ6fjz2uYdWLq1DWBgFsqwiEfKWKvbS2Aez1d+YE5vtx9rzYewWZj3NBBaWASBWw7srL
+         Okq1uqA5z20uk4WeuuywO89Al85fsL5J7bvzHINVwx8bv57ghgh58ZIV9YOuBKDXyfvl
+         Ja/x4CJS1xWKPBRjd5NKkLzp9MRnUoWqb5jMkjwI7lA8HkTpyDDfMt/AKabt4+SYLaxT
+         LWqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706796225; x=1707401025;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RiE5Onayz6cyE5+MyLfFrdqfq7HqpeSLCHp3c1TdnJ4=;
+        b=Cyt7eoxkc+FFzLyaBa5V4Cgdpws7HrBna269doqj2MPFrEE1o9XkPn8U52F6kk6F/L
+         5P2KcGpEJB3mY1NEUjDn6LZf12r0ncYR2zorhSX98C4IGRJ3B0OInUFatBHnyad2qM9i
+         xk7W2KhD2vt7IG8ZkBHXU8niYKzY+3mfjqgi6UIZloOrUBzh+qJXtAiyWZ2Rj8BkinbS
+         YJabDml2iM4iC6ZDkofmc5dpooVh/lbpLcRGFB9l6qfWm1uF/6H5HMRh/Dwsr7kVtn+b
+         2nxUlxqJsvaD5QFoGkokMYZvrc6rkPvqkXdIkM7RKZ+A7ArTQWdhRj9yt2mNedhgUBze
+         8MRQ==
+X-Gm-Message-State: AOJu0Yz3oWbrPcRoUcs656VaQr2lmHVG5ICqcRxM2zRCUXmkKf0gkniS
+	jYsMKxbyeeB9r/KvQaMsvMpBdM6HGywP9F9JJbOB87GppwiAECUoGV2vqrlUAOQ=
+X-Google-Smtp-Source: AGHT+IEXOMtth7Vcaoi9vKZ25QuQJIIReWzUToo5//Tpyww2+VbtLIAH6lnQ8JReO/6qUxJ+gEgkDg==
+X-Received: by 2002:a05:6a00:1ca1:b0:6dd:da40:948d with SMTP id y33-20020a056a001ca100b006ddda40948dmr5448587pfw.25.1706796225384;
+        Thu, 01 Feb 2024 06:03:45 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWYdMpnY2InEs7uHYKz+la0wznH/ZEKH9EFQHr5pJyjvybbtBC/TjiPBcLBatTAjHeq0TKWpMXUCC4k7QU2hYUzsJf6+PX0qechE0OozEIoM05UpaMuRxTCrX0Zde7U59YIjF8V42Cf6Z38xASMnJdbRh3e3OAVyhZKDqo5iy1ofmbLXESjpdeXbRbEMCTauxnwOklavH2b1/jm+A/nVsfs62jBOX0MWZqPibm3EHVwqPLPrzPx6J8FSEi7+9sToFn/cPcTM9nSK3LLD42KjI9+FQ==
+Received: from penguin.lxd (133-32-135-143.east.xps.vectant.ne.jp. [133.32.135.143])
+        by smtp.gmail.com with ESMTPSA id l23-20020a62be17000000b006dfebfd0481sm1169171pff.7.2024.02.01.06.03.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 06:03:44 -0800 (PST)
+From: Tomasz Figa <tomasz.figa@gmail.com>
+To: linux-samsung-soc@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Chanwoo Choi <cw00.choi@samsung.com>,
+	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers),
+	linux-kernel@vger.kernel.org (open list),
+	Tomasz Figa <tomasz.figa@gmail.com>
+Subject: [PATCH] MAINTAINERS: Remove Tomasz from Samsung clock and pinctrl entries
+Date: Thu,  1 Feb 2024 23:01:34 +0900
+Message-Id: <20240201140134.4345-1-tomasz.figa@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <789b7ca0-80c5-449a-99eb-8c05b5380245@app.fastmail.com>
-In-Reply-To: <ZbuZ_55a-qqDqkeN@smile.fi.intel.com>
-References: <20240131-descriptors-wireless-v1-0-e1c7c5d68746@linaro.org>
- <20240131-descriptors-wireless-v1-1-e1c7c5d68746@linaro.org>
- <613ae419-9a2c-477e-8b19-8a29d42a3164@app.fastmail.com>
- <ZbuZ_55a-qqDqkeN@smile.fi.intel.com>
-Date: Thu, 01 Feb 2024 15:00:05 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>
-Cc: "Linus Walleij" <linus.walleij@linaro.org>,
- =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
- "Kalle Valo" <kvalo@kernel.org>, "Arend van Spriel" <aspriel@gmail.com>,
- "Franky Lin" <franky.lin@broadcom.com>,
- "Hante Meuleman" <hante.meuleman@broadcom.com>, "Lee Jones" <lee@kernel.org>,
- "Brian Norris" <briannorris@chromium.org>,
- "Srinivasan Raju" <srini.raju@purelifi.com>, linux-wireless@vger.kernel.org,
- linux-kernel@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com
-Subject: Re: [PATCH 1/6] wifi: ath9k: Obtain system GPIOS from descriptors
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 1, 2024, at 14:17, Andy Shevchenko wrote:
-> On Thu, Feb 01, 2024 at 01:20:16PM +0100, Arnd Bergmann wrote:
->> On Wed, Jan 31, 2024, at 23:37, Linus Walleij wrote:
->
->> +	} else if (ah->led_pin < 0) {
->
-> ...
->
->> +	if (sc->sc_ah->led_gpio)
->
-> Dup check
+I have been no longer at Samsung for a long time, the platforms
+that I am knowledgable about (S3C24xx, S3C64xx, Exynos 4) are no longer
+relevant and we have people with better capabilities as maintainers
+already, so let me remove myself. Thanks for the nice collaboration
+everyone!
 
-I don't know what you mean here. To explain what I'm
-trying to do: The idea is that the LED is always backed
-by either gpiolib or the internal gpio controller on
-the PCI device. This means every access to an LED must
-be guarded with 
+Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
+---
+ MAINTAINERS | 2 --
+ 1 file changed, 2 deletions(-)
 
-   if (gpiodesc)
-         gpio_*(gpiodesc);
-   else
-         internal(ah);
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 61117c3afa80..7f550edab68e 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -17343,7 +17343,6 @@ F:	Documentation/devicetree/bindings/pinctrl/renesas,*
+ F:	drivers/pinctrl/renesas/
+ 
+ PIN CONTROLLER - SAMSUNG
+-M:	Tomasz Figa <tomasz.figa@gmail.com>
+ M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+ M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
+ R:	Alim Akhtar <alim.akhtar@samsung.com>
+@@ -19392,7 +19391,6 @@ F:	drivers/media/platform/samsung/exynos4-is/
+ SAMSUNG SOC CLOCK DRIVERS
+ M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+ M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
+-M:	Tomasz Figa <tomasz.figa@gmail.com>
+ M:	Chanwoo Choi <cw00.choi@samsung.com>
+ R:	Alim Akhtar <alim.akhtar@samsung.com>
+ L:	linux-samsung-soc@vger.kernel.org
+-- 
+2.39.2
 
-We could probably go a little further in the cleanup and
-throw out the gpiolib path entirely, instead relying
-on the existing leds-gpio driver. Since there are currently
-no upstream users of the gpiolib path, that would likely
-lead to cleaner code but require more changes to any
-out-of-tree users that rely on the platform_data to
-pass the GPIOs today.
-
-     Arnd
 
