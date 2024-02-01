@@ -1,150 +1,202 @@
-Return-Path: <linux-kernel+bounces-48001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F4DF8455FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D650E845606
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:10:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A45111C22FB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:09:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 077531C22291
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:10:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9B0315CD4F;
-	Thu,  1 Feb 2024 11:08:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16B5915CD5B;
+	Thu,  1 Feb 2024 11:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="AM+J8TzO"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Zoau17Di"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2048.outbound.protection.outlook.com [40.107.243.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F4FB3A1C3;
-	Thu,  1 Feb 2024 11:08:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706785735; cv=none; b=MNWeGrfZuNTIKKF6UikhK0yM5KnfM0frw+7dgzqm9BvFZjVUNJdTcRbc+mVVTbdyYyRbdXzWfaDjKf6qtEtAGtrvTVJP2hBu0ClCRHEwQ7kDWiMg1NofT7PGdMqe+jukGW3c8iqaiZ33ddeSBJzATS55u9I4X73iaS4ELKn3NTA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706785735; c=relaxed/simple;
-	bh=6bpSokjHon0c17IYlPlXNa4vGCmRvq0YvKBR2clqsoE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=U8ufSA9CSOM7ljA/8YsCibTMeqb/m6m4PmpFMI331CS4TXEtfhKq1Kf1dE0z3boi/WGus/t16a7rIQPu70JjFoLgu0ohhnn7PcNQ6zv1JawpI+ElNqH5tylr+dsem7kmQ07kBk2haDGtJJ0dxQ7nUAJTs2QKJQM9r0Tb7R1pNFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=AM+J8TzO; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 411B2JW8011863;
-	Thu, 1 Feb 2024 11:08:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=XqPVJ7jlVkPhIr1he1/ixfWoyCjmJKYn9ah2UgfTpeA=;
- b=AM+J8TzOYzY1e10ffbkDCfOAGOXAwUknOUBblxTtGDUT9UNirIvi4jKMwVY4rCfrMCdC
- b4sbdD3HX0QBU1X1CbUx4MX/ZA5XtOv8hxHd59EnLa98ei18cvCk8vV2/CCmx677HiQ9
- 2qG5jAvIA3n9JupOIkSVQhvtD91do5cvr9A7oj4hVo7orMg//j+g9nri0Endg529ZB68
- Ck/lavquz9MF0dDs6es/A+kk+657MlEdu03vvN1xHi6ZpeZ3rC27kEC+7uQo6HzSK0yX
- 5Wp1Vid4EcUF6fw2JkXw8j7Syu7b03zV9t5L7Rm79Se2UHWrt4pAov3qymSmsiH56Gr9 8w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w0a2r848j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 11:08:41 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 411B3a6C014658;
-	Thu, 1 Feb 2024 11:08:41 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w0a2r8488-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 11:08:41 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4118U9Pm007196;
-	Thu, 1 Feb 2024 11:08:40 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vwev2k96s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 11:08:39 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 411B8ckn6685294
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 1 Feb 2024 11:08:38 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 26DDE20043;
-	Thu,  1 Feb 2024 11:08:38 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0859220040;
-	Thu,  1 Feb 2024 11:08:36 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.82])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu,  1 Feb 2024 11:08:35 +0000 (GMT)
-Date: Thu, 1 Feb 2024 16:38:33 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, ritesh.list@gmail.com,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, yukuai3@huawei.com, stable@kernel.org
-Subject: Re: [PATCH] ext4: correct best extent lstart adjustment logic
-Message-ID: <Zbt7setS4c/Q4fyv@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20240122123332.555370-1-libaokun1@huawei.com>
- <20240131124636.gmxaiex6yqrhvxcj@quack3>
- <3630fa7f-b432-7afd-5f79-781bc3b2c5ea@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3630fa7f-b432-7afd-5f79-781bc3b2c5ea@huawei.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: t0l8mDG-kyFUd1bHDF_sa6q-Ab2sEpc_
-X-Proofpoint-ORIG-GUID: _qNtGuRtMSpxbzZrfIeiGohSONdM0oVw
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F672158D9A;
+	Thu,  1 Feb 2024 11:10:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.48
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706785825; cv=fail; b=NddfidZIaqvJbmCUSThK6yegFwugg2O3uq0M5WNHOi9qEDzNuVMioxlBtt7Oa2C55TrvO9WbHE87duYh1WTRnEz2TF1ExbGRf4Ly8rjEQa/gpru0kFXrHTCS12GFNE9/28SAkZN0xDHv/PyvAywlhBUEw9HXXZ9i4f7YlDcWAbQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706785825; c=relaxed/simple;
+	bh=bQpjPgRVSCG6NVwSnhfEHaDfhpEgLnAeZqqrN1QCgWI=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=qBP7UjDSgwFDGYgPUakDZzjyccPhO5N5PTv60VloLilr0Fflvqqz9cggLeD9OXwPnFMrXzT4OCIaatr+/jpr5Y2VbwGBmkhQfXyioRAvykfNNLxfOLnIdxusYxWNDtOFb6Td/AvDqWaRw+CM6fp/1Id5ShNzHSl3IBXPB4XVBwE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Zoau17Di; arc=fail smtp.client-ip=40.107.243.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mdeqb2Fnbp4vyylUoSq5cMMedI0H5EAYGyfWyqZ+I3XznDybgY0KBGhBnjR8CGLMyTzOECi8DwG1nhFK593WP2FIlFf36AXhxM5iZ3B5Kv4aIJebFv4CyYqF6XBP+fCgbdQ/+3g74VBsRf3Qxwyzoig8LMglD2rHjg01h2rZdKdxCg/TGkUObYrmSnkNyv0v6W6wPvaIDbCjYkrZwH/FnruJ4R3U48vBA2mzAjUUydSwcuM5kNrzDDfX1aFLz0WQI2oFH37mEV+eULQkZe1ElH2zalWlhEfm/Opv4ntiVmBNPDDCdTkkwxFWKYaUI0x4au+aN1q/kSeCJuaiRTiIJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lfuHFtGEkhRePYEPmYLzf3XrFNbM5bmnSTL1pTsH/rM=;
+ b=awt2XPVCBbub80Lr3qRUvqdrxKp54oBI8QRtPLJmsnlMPezqi4k82KtEdCyWxf9xGkcJhPb+US7cdcUsgSBeX+ANIyQxGm/EYLf98H+FKOCYTnEh1L3iiDvEKNp4F5TuVp4wfH8Ad1uELID32Q1loTzmdpGecwnhhvVvii1ccGQPoOMUmmZRBsyzCc7aLbn1ljZabfbxhOAqeaMDoSMkwpUnPMX8AnsQP0lGcme8zzLbQo5Pl0NlP6oxflmvra86cWbL388jI9OM+NTAkgkHAX14Pon79ILJ2apFYoKvNo0oiOPp4qxpEeBvG8W27FDTQn/Hy/ZZmbOpG86S/sazjA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lfuHFtGEkhRePYEPmYLzf3XrFNbM5bmnSTL1pTsH/rM=;
+ b=Zoau17DiPmLuBsEcHt+FJnOXE7wHiHB/iLagDmA0ADGUmYBp9rjTfNOEJqVSXyGEYKqz+oOnsGXMQ9f7Y6WfSTu/c1WXaRUShhlEPZINMZzVhracywKB9aKxSWONq4Cqvmg5osCmoIVq2G5J/PIXxSbsJX9DCMe8hEpRXLknAks=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS7PR12MB6309.namprd12.prod.outlook.com (2603:10b6:8:96::19) by
+ DS7PR12MB8232.namprd12.prod.outlook.com (2603:10b6:8:e3::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7249.22; Thu, 1 Feb 2024 11:10:20 +0000
+Received: from DS7PR12MB6309.namprd12.prod.outlook.com
+ ([fe80::9c66:393e:556b:7420]) by DS7PR12MB6309.namprd12.prod.outlook.com
+ ([fe80::9c66:393e:556b:7420%4]) with mapi id 15.20.7228.029; Thu, 1 Feb 2024
+ 11:10:20 +0000
+Message-ID: <98b23de9-48e4-4599-9e7f-0736055893fc@amd.com>
+Date: Thu, 1 Feb 2024 16:40:10 +0530
+User-Agent: Mozilla Thunderbird
+Reply-To: nikunj@amd.com
+Subject: Re: [PATCH v7 03/16] virt: sev-guest: Add SNP guest request structure
+Content-Language: en-US
+To: Borislav Petkov <bp@alien8.de>
+Cc: linux-kernel@vger.kernel.org, thomas.lendacky@amd.com, x86@kernel.org,
+ kvm@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
+ dave.hansen@linux.intel.com, dionnaglaze@google.com, pgonda@google.com,
+ seanjc@google.com, pbonzini@redhat.com
+References: <20231220151358.2147066-1-nikunj@amd.com>
+ <20231220151358.2147066-4-nikunj@amd.com>
+ <20240125115952.GXZbJNOGfxfuiC5WRT@fat_crate.local>
+ <03719b26-9b59-4e88-9e7e-60c6f2617565@amd.com>
+ <20240201102946.GCZbtymsufm3j2KI85@fat_crate.local>
+From: "Nikunj A. Dadhania" <nikunj@amd.com>
+In-Reply-To: <20240201102946.GCZbtymsufm3j2KI85@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN3PR01CA0021.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:97::19) To DS7PR12MB6309.namprd12.prod.outlook.com
+ (2603:10b6:8:96::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-31_10,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
- priorityscore=1501 spamscore=0 bulkscore=0 malwarescore=0 clxscore=1011
- adultscore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402010089
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB6309:EE_|DS7PR12MB8232:EE_
+X-MS-Office365-Filtering-Correlation-Id: ac52b1f4-49f9-43e4-0c8d-08dc23166089
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	SM4E8oyiK4GMlO6wRo9ndi5GE4RZLaeNttx8O87x3PSB30Gf5NAwhqt8h4EVWg7mTdN2ClwVHBkMjpQjUUCR34g/wXC4y3Urs5BgJRDxkel8eRNazkeXYLUCAMwdKvwXwLkKFPCEVLuQAmWISxvwgJjgY4OQlns41jnPQcVTQ4M3oUcEWaV5Oev4zd9axGN7rvhg2I6MfCNS2SUqJSNdZ9pL9tIgSAx9FatXDNgOIto9Rar02qzu+hRTyDnZZxug1jLP6UuEUyopitQz7EC1BKbxcPBS42ucyv8skIAF3uZDCyB43rRGSc1uRilt7BAefsQY8zARDNyqrO4+h/WaO4cYlbZRBQYa93sMA8I023DIC69vFYh8gtrWY4L8uuEsRORd5gy+E3QqRq15aEa6ODwxWJUezHNNQ0wKXKVcs3xE6I6wScWv1DkHSR36xgt+d3RiV9T2yRKj/1brnR8HUVEFRapU8jXYkY8ROV8dULvMF772+Fww+sUu6lyi3EiVvemV0oCkoBDap/ZLdcI1aeHTuJBuXK0wANfvED+OSLT5Rhuy6+DWXd2hFdkkt1Zb7MKhAX6340aWkgHQWWNKKErJ3xg/4UwRwlFsjGeHvM06Ph7IaJcVIUKhkOq8afkYHxl6yoGIyOYqCKvFhn/Orw==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6309.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(396003)(136003)(366004)(376002)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(83380400001)(7416002)(2906002)(2616005)(5660300002)(26005)(38100700002)(3450700001)(6916009)(6486002)(66476007)(966005)(8676002)(66946007)(31686004)(66556008)(53546011)(4326008)(6506007)(8936002)(6666004)(6512007)(316002)(478600001)(31696002)(41300700001)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?dS9tdXVCak8ybE9QODRMdThDVHg2MVJoMzA1TDJWaVJkL1NyVVpGTVJPMmRM?=
+ =?utf-8?B?RTZqTm5OcjJDMm8rV3lNcjl3M1RsN0JuT1dsbXcyTnpyc3c4ZVVBWVh4c2FC?=
+ =?utf-8?B?SWNKNlg5KzNwNmF0SDZNbFdHNFYzdVN6a3ltRTNIVVZoNVZ3UDFHTm9Nakg1?=
+ =?utf-8?B?N0dFQ0grdHA3LzRvVkplSVZ1OWVrb1UrcERPNjNIb1ZHbGl0QXRFUFN6Zzhk?=
+ =?utf-8?B?QlA3Z3dERTluRnFOOElCRCs4N3QzbG0rRHhRc3BsT0FtanN4cGRvZ1JjejBG?=
+ =?utf-8?B?MU8rZmlLbXVKKzJjT2lSL3p4UjhVNmx6MHZiaXl1dnhyZ3VXK29XUWFVK3FC?=
+ =?utf-8?B?akJ3aUJNdG0yNkRuck41Z3pZb3FrK0ExMGFCZmRNa0pJbFY2TUgreW9lZTNn?=
+ =?utf-8?B?WEhqL2pJWUU4ZmJoYnRBbjhxeGpneWQwKzdyZlk0MDQyZUZxak5zQVo1eCti?=
+ =?utf-8?B?TzlKOFBxUzg1NzZRR210YnRlbmFWa29VUUFyMHRncUlXb0NqVXNFL05lWnRY?=
+ =?utf-8?B?ekFOOTVQNHZZeXpWL0VYaTZkemdrYmZwb0llNkxMOEYySjhZRU42VER6OXI3?=
+ =?utf-8?B?c3doaHY3U2gzYXlxRjFIekRmU3huWEF2VkhHaWlYQm5QRU1BY044UzU3NUgw?=
+ =?utf-8?B?R0FUbG1ZajE2dEdvNk92NllGc0xSaHk3WGMzWGhDeXN2MHZTSGR2TEgyTWcx?=
+ =?utf-8?B?S2EwdFNTeU8vMVlvZ3JWTnU4TDN1QWFQMFNlSkhsejJmQy9RZXIwWThadkN2?=
+ =?utf-8?B?VTJxWUR5WHBwUms4eWY5ZFJYSUtJdXpwSzV5QUx5cU1TbDZBRDA4Y1cvSTlk?=
+ =?utf-8?B?WVh4aFdSSHVuMWFZaVlSQjZuRU5zY2N0eEJmOVIvUFEwTDZvWEVWVkNDSUhz?=
+ =?utf-8?B?dnllVjhYNnhQUXBUL3BGM2dwTnM5YW9tWnI2TW5oRkpqNlQ2SmFHd2NzOHBr?=
+ =?utf-8?B?TmpONTVSaHR4R1FDOG9LSjlCelNhYm0zSkplZVMwdzhqQkpXVStIdVRxVEhE?=
+ =?utf-8?B?OEFzM1FYOG5lVTBQMmtOVjExS1BUbkNKV3RFOFBjMXJxVkxaMHYyaG5DQ0pk?=
+ =?utf-8?B?QUM3SzFzY0VpczJrMXhqWTBYalJHVzMwcGhlL2hydVhGY1RVbXNNRTJDOGlJ?=
+ =?utf-8?B?R2k5NGlXVm11SDV4QTkybG1CU1FmUWU4T3J5L09DYVdPbDEyRWhFUm5XemNT?=
+ =?utf-8?B?TzVVcjVSZThTZVBHSGFhWFZNWStWS3hJTC9MaXkyNDRNT3J4MXoza1loZ2VN?=
+ =?utf-8?B?OEdUMUhhWUZCYW5CQkRLOUZiREVoaHpLbEp4dVluNEIvNm1UQ3phMW9JbHpY?=
+ =?utf-8?B?ZWJxc3FCRVVmQ1d6TmdWNnJ0L0VtYXNIOVBEcC9RcmV0S2F4ZWh6UTQvRTJ5?=
+ =?utf-8?B?ald4TVh3c1BPR2w4TktlOEptdElWQzJPc3MrNFh1YXFHcTFFR3RhQ3lrTm1h?=
+ =?utf-8?B?M0ZMY0xnVkh4WmhEb29qMktIbGxLSHB3NEpwOGtNMHNndDVoVlB3RUtJQjNy?=
+ =?utf-8?B?R2IrQTRCalBjK1JYQk1aLzhFZUhRSS9MSEpwbFRTeUs4aGRsb0IrNFdyYk1S?=
+ =?utf-8?B?dDdnZ3JSa3JCSGxoOXBlTWx3OUdIVml4ZkNONmpzTW9INUQzLytsL0JUcmpo?=
+ =?utf-8?B?T3RoRzh3UVZPOUp3VUVJMEpRdWpSVU14LzE4czU2dkU0L0lGMHZaai9CdUwy?=
+ =?utf-8?B?MUlhYS8rWHVZTVltZnFJVnlIU1A5YzRROVAzaFFqdnkzS2dHWEN2VjVPN0dW?=
+ =?utf-8?B?aHQ5WFB4c0NTdnMzWkR6SkpQeGVFNXZtZ3pOcDB4cWQrN1JlcCtlWlh4TU55?=
+ =?utf-8?B?RnpWb1E0ZThNOWRCeXhxYWtyMVFVakV1VEU1aFNLZ1ZrWkVSeThQdjRjdE1U?=
+ =?utf-8?B?b1ZlVWdtMDJmUzdvMjF6SmwveGlYQTNwbEdHa3hHeWN2eXFkazBDdko4S3Rx?=
+ =?utf-8?B?ZkozQnF4UzBZRGhMdlI4Y1NQMUp5UHduWUdqbzNBOVpCaXp3RHZkL0F1UDc2?=
+ =?utf-8?B?UGYySzE1aDVpdlJGRTRoeW9yQ3IrMVZndTFrdTBodThyRjZEdnNpMytMdVR3?=
+ =?utf-8?B?T0tWTTlQUmF3QktCREJhYjdsRUd4RW1yNWNuYUV2SU51bHdYbG95LzFjRWR1?=
+ =?utf-8?Q?sPphJQlBBlIpXyR1tOSVFSWF5?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ac52b1f4-49f9-43e4-0c8d-08dc23166089
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6309.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2024 11:10:19.9320
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: E5AlXHhD5JCtM3gIaHxduqA50CP8fo0m6qU4L/+SHrrSNcDkpnkwUj22XPv0kmIM1oHjltC/dWgdVVt+8LfKGg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8232
 
-Hi Baokun, Jan
+On 2/1/2024 3:59 PM, Borislav Petkov wrote:
+> On Wed, Jan 31, 2024 at 07:28:05PM +0530, Nikunj A. Dadhania wrote:
+>> Changed to "req" for all the guest request throughout the file. Other "req" 
+>> usage are renamed appropriately.
+> 
+> Yes, better from what I can tell.
+> 
+> However, I can't apply this patch in order to have a better look, it is
+> mangled. Next time, before you send a patch this way, send it yourself
+> first and try applying it.
+>
+> If it doesn't work, throw away your mailer and use a proper one:
+> 
+> Documentation/process/email-clients.rst
 
-Thanks for the CC, I somehow missed this patch.
+Sorry for that, will fix it. 
 
-As described in the discussion Jan linked [1] , there is a known bug in the
-normalize code (which i should probably get back to now ) where we sometimes
-end up with a goal range which doesn't completely cover the original extent and
-this was causing issues when we tried to cover the complete original request in
-the PA window adjustment logic. That and to minimize fragmentation, we ended up
-going with the logic we have right now.
+> 
+>> Subject: [PATCH] virt: sev-guest: Add SNP guest request structure
+>>
+>> Add a snp_guest_req structure to simplify the function arguments. The
+>> structure will be used to call the SNP Guest message request API
+>> instead of passing a long list of parameters. Use "req" as variable name
+>> for guest req throughout the file and rename other variables appropriately.
+>>
+>> Update snp_issue_guest_request() prototype to include the new guest request
+>> structure and move the prototype to sev_guest.h.
+>>
+>> Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
+>> Tested-by: Peter Gonda <pgonda@google.com>
+> 
+> Tested-by: tags must be dropped if you change a patch in a non-trivial
+> way. And this change is not that trivial I'd say.
+> 
+>> ---
+>>  .../x86/include/asm}/sev-guest.h              |  18 ++
+>>  arch/x86/include/asm/sev.h                    |   8 -
+>>  arch/x86/kernel/sev.c                         |  16 +-
+>>  drivers/virt/coco/sev-guest/sev-guest.c       | 195 ++++++++++--------
+>>  4 files changed, 135 insertions(+), 102 deletions(-)
+>>  rename {drivers/virt/coco/sev-guest => arch/x86/include/asm}/sev-guest.h (78%)
+> 
+> I didn't notice this before: why am I getting a sev-guest.h header in
+> arch/x86/?
+> 
+> Lemme quote again the file paths we agreed upon:
+> 
+> https://lore.kernel.org/all/Yg5nh1RknPRwIrb8@zn.tnic/
 
-In short, I agree that in the example Baokun pointed out, it is not optimal to
-have to make an allocation request twice when we can get it in one go.
+I will move it to arch/x86/coco/sev, do we need a separate "include" directory ?
 
-I also think Baokun is correct that if keeping the best extent at the end doesn't 
-cover the original start, then any other case should not lead to it overflowing out
-of goal extent, including the case where original extent is overflowing goal extent.
+As we are doing this movement, should we move guest messaging related code to arch/x86/coco/sev/guest-msg.c ?
 
-So, as mentioned, it boils down to a trade off between multiple allocations and slightly 
-increased fragmentation. iiuc preallocations are anyways dropped when the file closes
-so I think it shouldn't hurt too much fragmentation wise to prioritize less
-allocations. What are your thoughts on this Jan, Baokun?
+Regards
+Nikunj
 
-Coming to the code, the only thing I think might cause an issue is the following line:
-
--		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
-+		BUG_ON(o_ex_end > extent_logical_end(sbi, &ex));
-
-So as discussed towards the end here [1] we could have ac_o_ex that
-overflows the goal and hence would be beyond the best length. I'll try
-to look into the normalize logic to fix this however till then, I think
-we should not have this BUG_ON since it would crash the kernel if this
-happens.
-
-Rest of it looks good to me.
-
-Regards,
-Ojaswin
-
-[1]
-https://lore.kernel.org/all/Y+UzQJRIJEiAr4Z4@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com/
 
