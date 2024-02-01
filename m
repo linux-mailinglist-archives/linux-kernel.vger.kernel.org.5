@@ -1,216 +1,332 @@
-Return-Path: <linux-kernel+bounces-47714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97FD58451A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 07:52:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FA998451A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 07:55:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15E281F21729
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 06:52:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51D38B22740
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 06:55:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DAF4157E8C;
-	Thu,  1 Feb 2024 06:51:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB47F2B9D1;
+	Thu,  1 Feb 2024 06:55:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hxNqXi9L"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="1rDWMe1O"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 260B214D421
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 06:51:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E39C4141998
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 06:54:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706770312; cv=none; b=fRQPBg91JVInQEWzO3RxK/eF0uyfH01iDZnPw1SgQWFf1+UXSs1ObB1cCL4Wvpmtn1p13a1H1yNHzDRiJ0ZwUtblDApfhHRcMYGkXe7UEhl12ZaiXy78SrcmNOpJF3Yntx5orHU0DBGrlydUUC1+URe+EoLozjj2oaYXjiAkeCY=
+	t=1706770499; cv=none; b=rI2xkduq6Ce7uK2irWJ23f0mLi/cSEnFU0QsTQJRZ9TJPAfWDAvszUJIk7J1b9pC0ywcGlbKbWtrgYOpCH4XwFCumCE1/0RqSXxHKF8Gqw1bhv8bzI1uXHZXBibSdkEk+YGfruTs6Q5tHVElxtYM5RmCWY5NvYxfYSUVo4b710Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706770312; c=relaxed/simple;
-	bh=kcU/JSXqFb2zhN+9KbK19o8jOs4wZ1zC6e1HSNjnvnw=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=aeKc/YPLl+y8Wysuf2fYeG+1Qdb6dVVhBEYl5I1HWvVSztmcd5WBqztDgyPVGAi0oV8g06I0LQg39X8S/roKhngOz0GwiA7C4gir5ep0ZKT6iyeWnZL3pc0hNa380cZAYPo4I0bS5rqWPdHOMPuzgoXP/b+1NiUJusA9EnHclio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hxNqXi9L; arc=none smtp.client-ip=192.55.52.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706770311; x=1738306311;
-  h=date:from:to:cc:subject:message-id;
-  bh=kcU/JSXqFb2zhN+9KbK19o8jOs4wZ1zC6e1HSNjnvnw=;
-  b=hxNqXi9LuHWJ6uql7PeO+k/03CLxBXbmeOWjFFEAB2eGC/Ti0He2hnJV
-   KU/GfCTu5wXWnrLOo+OLKwGB8xgkD5EHdlFTjxUbRA/gIossiw1yftDcx
-   zK/fQJ1VuYkTzJKUVtFZSAbEBpCtfM0aB5cMV0ta3+a2FH7Ow9rPwxmC8
-   Cmu72ydTDuKCXTyo4MHQwkPrWuhDmDuvfT6HNKqAthjQF2wxwDXgWHle2
-   s8AQu1nyTryw+LunPn18j1+qDF6zAF2+yhnh86vqLysotfkBZ1akM/u30
-   oXW0vnWKxaS64YshUlxLbYtntSf3229eTVb4R3qDnRbV9/aW7DRjiTpsS
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="402669667"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="402669667"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 22:51:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="738344402"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="738344402"
-Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 31 Jan 2024 22:51:48 -0800
-Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rVQvK-0002Tb-0H;
-	Thu, 01 Feb 2024 06:51:46 +0000
-Date: Thu, 01 Feb 2024 14:51:27 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/boot] BUILD SUCCESS
- 15675706241887ed7fdad9e91f4bf977b9896d0f
-Message-ID: <202402011425.thyKuEVT-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1706770499; c=relaxed/simple;
+	bh=YfW1LfkXACdoQYA1nIBVdX6vp/rgsVNBCafSdk+OqQs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JLpwVhIwcwGetwCIxXejwpZki6GD0JmlItF3gdfy+Ck+vwBQCLF7jC0OomZ4RWct5UNsStHAkLe0MFwZ19o54jIQzMt9rACsl5jvCYPMMnIICpHhvoUZ6GI5g1dVb1FuK746f0f18SCF38YywyBJNn4yE5CkhbCuxz0RWMzP+Lg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=1rDWMe1O; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706770496;
+	bh=YfW1LfkXACdoQYA1nIBVdX6vp/rgsVNBCafSdk+OqQs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=1rDWMe1OS37RZKpC/mPK3reJUsLW+dgW8T9t3yKUn/nKDn+LEWo2W3aAT/HRi8JyS
+	 o2mCACHtv8vrbTpr/hTjLrNmQ5T+iMchCwbJoJ9+3H2jreMOYnlxY/N5SLDBSqVCr2
+	 Fs3hPaWHE4ZMZ7vhqXyju8Voo6uPFS854LBNC+dc3WNsmuX/9MfNUMQLFlURQeqxfY
+	 EZqFERJFecckrmfyWdjgNXpLkK9i00FdjuQqoPg9Y75XLqKMhHzZYLXkvhB7U4qima
+	 jxEvqF6OGZmu2fSuRXEsqeix7RHGzIOnhF8725FK2HEAtud734V0iLf8WwWoYCYTVV
+	 h6Y5SOl5yHLnw==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: vignesh)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 090BC37803EE;
+	Thu,  1 Feb 2024 06:54:50 +0000 (UTC)
+From: Vignesh Raman <vignesh.raman@collabora.com>
+To: dri-devel@lists.freedesktop.org
+Cc: airlied@gmail.com,
+	daniel@ffwll.ch,
+	rodrigosiqueiramelo@gmail.com,
+	melissa.srw@gmail.com,
+	mairacanal@riseup.net,
+	hamohammed.sa@gmail.com,
+	robdclark@gmail.com,
+	daniels@collabora.com,
+	helen.koike@collabora.com,
+	david.heidelberg@collabora.com,
+	guilherme.gallo@collabora.com,
+	sergi.blanch.torne@collabora.com,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v4] drm/ci: add tests on vkms
+Date: Thu,  1 Feb 2024 12:23:46 +0530
+Message-Id: <20240201065346.801038-1-vignesh.raman@collabora.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/boot
-branch HEAD: 15675706241887ed7fdad9e91f4bf977b9896d0f  x86/startup_64: Drop long return to initial_code pointer
+Add job that runs igt on top of vkms.
 
-elapsed time: 741m
+Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+Acked-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+Tested-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+Acked-by: Maxime Ripard <mripard@kernel.org>
+Signed-off-by: Helen Koike <helen.koike@collabora.com>
+---
 
-configs tested: 127
-configs skipped: 133
+v2:
+- do not mv modules to /lib/modules in the job definition, leave it to
+  crosvm-runner.sh
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+v3:
+- Enable CONFIG_DRM_VKMS in x86_64.config and update xfails
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                               defconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                                 defconfig   gcc  
-arc                            hsdk_defconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                                 defconfig   clang
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20240201   gcc  
-i386         buildonly-randconfig-002-20240201   gcc  
-i386         buildonly-randconfig-003-20240201   gcc  
-i386         buildonly-randconfig-004-20240201   gcc  
-i386         buildonly-randconfig-005-20240201   gcc  
-i386         buildonly-randconfig-006-20240201   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20240201   gcc  
-i386                  randconfig-002-20240201   gcc  
-i386                  randconfig-003-20240201   gcc  
-i386                  randconfig-004-20240201   gcc  
-i386                  randconfig-005-20240201   gcc  
-i386                  randconfig-006-20240201   gcc  
-i386                  randconfig-011-20240201   clang
-i386                  randconfig-012-20240201   clang
-i386                  randconfig-013-20240201   clang
-i386                  randconfig-014-20240201   clang
-i386                  randconfig-015-20240201   clang
-i386                  randconfig-016-20240201   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-microblaze                      mmu_defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   clang
-mips                             allyesconfig   gcc  
-nios2                         10m50_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                      arches_defconfig   gcc  
-powerpc                   currituck_defconfig   gcc  
-powerpc                    ge_imp3a_defconfig   gcc  
-powerpc                     ksi8560_defconfig   gcc  
-powerpc                      ppc40x_defconfig   gcc  
-powerpc                  storcenter_defconfig   gcc  
-powerpc                        warp_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                          polaris_defconfig   gcc  
-sh                          r7785rp_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240201   gcc  
-x86_64       buildonly-randconfig-002-20240201   gcc  
-x86_64       buildonly-randconfig-003-20240201   gcc  
-x86_64       buildonly-randconfig-004-20240201   gcc  
-x86_64       buildonly-randconfig-005-20240201   gcc  
-x86_64       buildonly-randconfig-006-20240201   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-011-20240201   gcc  
-x86_64                randconfig-012-20240201   gcc  
-x86_64                randconfig-013-20240201   gcc  
-x86_64                randconfig-014-20240201   gcc  
-x86_64                randconfig-015-20240201   gcc  
-x86_64                randconfig-016-20240201   gcc  
-x86_64                randconfig-071-20240201   gcc  
-x86_64                randconfig-072-20240201   gcc  
-x86_64                randconfig-073-20240201   gcc  
-x86_64                randconfig-074-20240201   gcc  
-x86_64                randconfig-075-20240201   gcc  
-x86_64                randconfig-076-20240201   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
+v3:
+- Build vkms as module and test with latest IGT. 
+  This patch depends on https://lore.kernel.org/dri-devel/20240130150340.687871-1-vignesh.raman@collabora.com/
 
+---
+ MAINTAINERS                                   |  1 +
+ drivers/gpu/drm/ci/build.sh                   |  1 -
+ drivers/gpu/drm/ci/gitlab-ci.yml              |  2 +-
+ drivers/gpu/drm/ci/igt_runner.sh              |  6 ++--
+ drivers/gpu/drm/ci/image-tags.yml             |  2 +-
+ drivers/gpu/drm/ci/test.yml                   | 24 +++++++++++++-
+ drivers/gpu/drm/ci/x86_64.config              |  1 +
+ .../drm/ci/xfails/virtio_gpu-none-fails.txt   |  1 -
+ drivers/gpu/drm/ci/xfails/vkms-none-fails.txt | 32 +++++++++++++++++++
+ .../gpu/drm/ci/xfails/vkms-none-flakes.txt    | 19 +++++++++++
+ drivers/gpu/drm/ci/xfails/vkms-none-skips.txt | 16 ++++++++++
+ 11 files changed, 97 insertions(+), 8 deletions(-)
+ create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index bcdc17d1aa26..09310a6f4b5f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6923,6 +6923,7 @@ L:	dri-devel@lists.freedesktop.org
+ S:	Maintained
+ T:	git git://anongit.freedesktop.org/drm/drm-misc
+ F:	Documentation/gpu/vkms.rst
++F:	drivers/gpu/drm/ci/xfails/vkms*
+ F:	drivers/gpu/drm/vkms/
+ 
+ DRM DRIVER FOR VIRTUALBOX VIRTUAL GPU
+diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
+index 331a61e0d25a..2e089e03f061 100644
+--- a/drivers/gpu/drm/ci/build.sh
++++ b/drivers/gpu/drm/ci/build.sh
+@@ -152,7 +152,6 @@ fi
+ 
+ mkdir -p artifacts/install/lib
+ mv install/* artifacts/install/.
+-rm -rf artifacts/install/modules
+ ln -s common artifacts/install/ci-common
+ cp .config artifacts/${CI_JOB_NAME}_config
+ 
+diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
+index e2b021616a8e..c69fb6af4cf8 100644
+--- a/drivers/gpu/drm/ci/gitlab-ci.yml
++++ b/drivers/gpu/drm/ci/gitlab-ci.yml
+@@ -107,7 +107,7 @@ stages:
+   - meson
+   - msm
+   - rockchip
+-  - virtio-gpu
++  - software-driver
+ 
+ # YAML anchors for rule conditions
+ # --------------------------------
+diff --git a/drivers/gpu/drm/ci/igt_runner.sh b/drivers/gpu/drm/ci/igt_runner.sh
+index 2fd09b9b7cf6..3c7f000805e5 100755
+--- a/drivers/gpu/drm/ci/igt_runner.sh
++++ b/drivers/gpu/drm/ci/igt_runner.sh
+@@ -20,10 +20,10 @@ cat /sys/kernel/debug/dri/*/state
+ set -e
+ 
+ case "$DRIVER_NAME" in
+-    amdgpu)
++    amdgpu|vkms)
+         # Cannot use HWCI_KERNEL_MODULES as at that point we don't have the module in /lib
+-        mv /install/modules/lib/modules/* /lib/modules/.
+-        modprobe amdgpu
++        mv /install/modules/lib/modules/* /lib/modules/. || true
++        modprobe --first-time $DRIVER_NAME
+         ;;
+ esac
+ 
+diff --git a/drivers/gpu/drm/ci/image-tags.yml b/drivers/gpu/drm/ci/image-tags.yml
+index cf07c3e09b8c..bf861ab8b9c2 100644
+--- a/drivers/gpu/drm/ci/image-tags.yml
++++ b/drivers/gpu/drm/ci/image-tags.yml
+@@ -4,7 +4,7 @@ variables:
+    DEBIAN_BASE_TAG: "${CONTAINER_TAG}"
+ 
+    DEBIAN_X86_64_BUILD_IMAGE_PATH: "debian/x86_64_build"
+-   DEBIAN_BUILD_TAG: "2023-10-08-config"
++   DEBIAN_BUILD_TAG: "2024-01-29-vkms"
+ 
+    KERNEL_ROOTFS_TAG: "2023-10-06-amd"
+    PKG_REPO_REV: "67f2c46b"
+diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
+index 8ab8a8f56d6a..58c3cf4b18e0 100644
+--- a/drivers/gpu/drm/ci/test.yml
++++ b/drivers/gpu/drm/ci/test.yml
+@@ -399,7 +399,7 @@ meson:g12b-display:
+     DRIVER_NAME: meson
+ 
+ virtio_gpu:none:
+-  stage: virtio-gpu
++  stage: software-driver
+   variables:
+     CROSVM_GALLIUM_DRIVER: llvmpipe
+     DRIVER_NAME: virtio_gpu
+@@ -419,3 +419,25 @@ virtio_gpu:none:
+     - debian/x86_64_test-gl
+     - testing:x86_64
+     - igt:x86_64
++
++vkms:none:
++  stage: software-driver
++  variables:
++    DRIVER_NAME: vkms
++    GPU_VERSION: vkms-none
++  extends:
++    - .test-gl
++    - .test-rules
++  tags:
++    - kvm
++  script:
++    - ln -sf $CI_PROJECT_DIR/install /install
++    - mv install/bzImage /lava-files/bzImage
++    - mkdir -p /lib/modules
++    - mkdir -p $CI_PROJECT_DIR/results
++    - ln -sf $CI_PROJECT_DIR/results /results
++    - ./install/crosvm-runner.sh ./install/igt_runner.sh
++  needs:
++    - debian/x86_64_test-gl
++    - testing:x86_64
++    - igt:x86_64
+diff --git a/drivers/gpu/drm/ci/x86_64.config b/drivers/gpu/drm/ci/x86_64.config
+index 1cbd49a5b23a..8eaba388b141 100644
+--- a/drivers/gpu/drm/ci/x86_64.config
++++ b/drivers/gpu/drm/ci/x86_64.config
+@@ -24,6 +24,7 @@ CONFIG_DRM=y
+ CONFIG_DRM_PANEL_SIMPLE=y
+ CONFIG_PWM_CROS_EC=y
+ CONFIG_BACKLIGHT_PWM=y
++CONFIG_DRM_VKMS=m
+ 
+ # Strip out some stuff we don't need for graphics testing, to reduce
+ # the build.
+diff --git a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
+index 007f21e56d89..f82d437909b5 100644
+--- a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
++++ b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
+@@ -41,7 +41,6 @@ kms_flip@flip-vs-absolute-wf_vblank,Fail
+ kms_flip@flip-vs-absolute-wf_vblank-interruptible,Fail
+ kms_flip@flip-vs-blocking-wf-vblank,Fail
+ kms_flip@flip-vs-expired-vblank,Fail
+-kms_flip@flip-vs-expired-vblank-interruptible,Fail
+ kms_flip@flip-vs-modeset-vs-hang,Fail
+ kms_flip@flip-vs-panning-vs-hang,Fail
+ kms_flip@flip-vs-wf_vblank-interruptible,Fail
+diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt b/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
+new file mode 100644
+index 000000000000..a8b9d79d9a16
+--- /dev/null
++++ b/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
+@@ -0,0 +1,32 @@
++kms_cursor_crc@cursor-rapid-movement-128x128,Fail
++kms_cursor_crc@cursor-rapid-movement-128x42,Fail
++kms_cursor_crc@cursor-rapid-movement-256x256,Fail
++kms_cursor_crc@cursor-rapid-movement-256x85,Fail
++kms_cursor_crc@cursor-rapid-movement-32x10,Fail
++kms_cursor_crc@cursor-rapid-movement-32x32,Fail
++kms_cursor_crc@cursor-rapid-movement-512x170,Fail
++kms_cursor_crc@cursor-rapid-movement-512x512,Fail
++kms_cursor_crc@cursor-rapid-movement-64x21,Fail
++kms_cursor_crc@cursor-rapid-movement-64x64,Fail
++kms_cursor_legacy@basic-flip-before-cursor-atomic,Fail
++kms_cursor_legacy@basic-flip-before-cursor-legacy,Fail
++kms_cursor_legacy@cursor-vs-flip-atomic,Fail
++kms_cursor_legacy@cursor-vs-flip-legacy,Fail
++kms_cursor_legacy@cursor-vs-flip-toggle,Fail
++kms_cursor_legacy@cursor-vs-flip-varying-size,Fail
++kms_cursor_legacy@flip-vs-cursor-atomic,Fail
++kms_cursor_legacy@flip-vs-cursor-crc-atomic,Fail
++kms_cursor_legacy@flip-vs-cursor-crc-legacy,Fail
++kms_cursor_legacy@flip-vs-cursor-legacy,Fail
++kms_flip@flip-vs-modeset-vs-hang,Fail
++kms_flip@flip-vs-panning-vs-hang,Fail
++kms_pipe_crc_basic@nonblocking-crc,Fail
++kms_pipe_crc_basic@nonblocking-crc-frame-sequence,Fail
++kms_pipe_crc_basic@suspend-read-crc,Fail
++kms_plane@plane-panning-bottom-right-suspend,Fail
++kms_universal_plane@universal-plane-pipe-A-sanity,Fail
++kms_vblank@pipe-A-ts-continuation-dpms-suspend,Fail
++kms_writeback@writeback-check-output,Fail
++kms_writeback@writeback-fb-id,Fail
++kms_writeback@writeback-invalid-parameters,Fail
++kms_writeback@writeback-pixel-formats,Fail
+diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt b/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
+new file mode 100644
+index 000000000000..18afbfcc1c52
+--- /dev/null
++++ b/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
+@@ -0,0 +1,19 @@
++# Board Name: vkms
++# Bug Report: https://lore.kernel.org/dri-devel/005da8f1-8050-bffd-653c-2a87ae6376f7@collabora.com/T/#u
++# IGT Version: 1.28-gb0cc8160e
++# Linux Version: 6.7.0-rc3
++# Failure Rate: 50
++
++# Reported by deqp-runner
++kms_cursor_legacy@cursorA-vs-flipA-legacy
++kms_cursor_legacy@cursorA-vs-flipA-varying-size
++kms_flip@flip-vs-expired-vblank-interruptible
++kms_flip@flip-vs-expired-vblank
++kms_flip@plain-flip-fb-recreate
++kms_flip@plain-flip-fb-recreate-interruptible
++kms_flip@plain-flip-ts-check-interruptible
++
++# The below test shows inconsistency across multiple runs,
++# giving results of Pass and Fail alternately.
++kms_cursor_legacy@cursorA-vs-flipA-toggle
++kms_pipe_crc_basic@nonblocking-crc
+diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt b/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
+new file mode 100644
+index 000000000000..524e7972c75a
+--- /dev/null
++++ b/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
+@@ -0,0 +1,16 @@
++# Hits:
++# rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
++# rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1): P749/1:b..l
++kms_prop_blob@invalid-get-prop
++
++# keeps printing vkms_vblank_simulate: vblank timer overrun and never ends
++kms_invalid_mode@int-max-clock
++
++# Suspend seems to be broken
++.*suspend.*
++
++# Hangs machine and timeout occurs
++kms_flip@flip-vs-absolute-wf_vblank-interruptible
++kms_invalid_mode@zero-hdisplay
++kms_invalid_mode@bad-vtotal
++kms_cursor_crc.*
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.40.1
+
 
