@@ -1,120 +1,99 @@
-Return-Path: <linux-kernel+bounces-48156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C84684580B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:48:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C73C845808
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:47:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F3E01C29F59
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:48:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C6621F27A18
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:47:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDF8586652;
-	Thu,  1 Feb 2024 12:47:47 +0000 (UTC)
-Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E891653363;
-	Thu,  1 Feb 2024 12:47:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.101.248.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEE728664F;
+	Thu,  1 Feb 2024 12:47:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="aI1/fiHr"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2791DFF3
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 12:47:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706791667; cv=none; b=gNfdw6XBTUXSui+tZs4vzNCUcXeXp17bQ5uIcsg8bNYkWCIbFPUMh+NT5ITBtYIiCZOBqDuWE2YMPDddZuelxq/OaoorxSJf+HQGKk0V5pQYL9ZqmP8R64aKOJzEr7P2loCz7y6vDzXhIDuCcxoi7BRG61jEgCqOEEhK2kov8yk=
+	t=1706791654; cv=none; b=TnGqbyHItI+ugMdlmaduTMjkgWd3VyBmwPtoqnX/Cs+HNZsEm1mSJG9qiY1qKkwXZQMyaOlNQqjlFc1Zz6OC+C6hpXOi96ZmiGm76B6SWoto8w4NSOwMDnAkhCW/f929qS194tbyY6Qa+Bb6DZSrm4jlhT+Gk6zi3dX1kOeM8M4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706791667; c=relaxed/simple;
-	bh=WK8ow8z0KhSe3WrYq5ZZUDwAfiid7skMNsxiDeRPrsw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Y70l80SzWVeGLI+60EeMej89VudRdyfKXq11d01yX4Oz/762K0BLjPMha/QsTud77fxxeVW/UGtzsk/Ge9dpxQdAprVyhjhlTMykNj5oaN8GcEa7xUMR9uGioJp11StVOc/oQncm32NctJCwq5H+YWfRYbjcIk8tpU4+oY5yvVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=46.101.248.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from luzhipeng.223.5.5.5 (unknown [183.128.135.43])
-	by mail-app2 (Coremail) with SMTP id by_KCgDHCanWkrtl4sUxAQ--.60206S2;
-	Thu, 01 Feb 2024 20:47:19 +0800 (CST)
-From: Zhipeng Lu <alexious@zju.edu.cn>
-To: alexious@zju.edu.cn
-Cc: Sunil Goutham <sgoutham@marvell.com>,
-	Geetha sowjanya <gakula@marvell.com>,
-	Subbaraya Sundeep <sbhatta@marvell.com>,
-	hariprasad <hkelam@marvell.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	netdev@vger.kernel.org,
+	s=arc-20240116; t=1706791654; c=relaxed/simple;
+	bh=SrCCSDqnT83NBejFDqLvZhNBdZEM7c/GDlvAag2DkXA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bDJTA++zf6OvWa+I3plPcCxXRpnhva95BFMz9AwDVPaVeIluDWIr6k7wUnsjv/+PcfcbwAenu/qMhy/9cKUEBiR1ZiL5D4JGBMZb8OlZq9N//j72dDaSepgS0crSSMxGeAa1xpMCbQpBcP4hn3NxnaNNVwg2A27FC7SKuwdMkkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=aI1/fiHr; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33aef64f702so507199f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 04:47:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1706791650; x=1707396450; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=SrCCSDqnT83NBejFDqLvZhNBdZEM7c/GDlvAag2DkXA=;
+        b=aI1/fiHr6NErtr0KIAfc5sKxYgbxdGCNb05/KAC6/UbWsuUxsWYLM0XNT90TQLTm54
+         CEkw32xscbGCB2SaZfxUr5AoGLoETQL/VDk9FyzDYszmn3UN0FWOW32yEMsZJzE7intX
+         e28UwOGOi/aVK9gL6i+0hkBHokLASqE8fzpCA8r7vrg7iyG9906kdnYLymmQJu7KptJQ
+         0m85+kIfrDt1ZGbMcfs0zB8/2yXWv++Prz1Y1dti5xanRSQxPmjcpUE5bqckoj8kOUT2
+         OOvakqwgHqLG4e+zZXNX4WvHv8JtAaouY52gpSODD1FvUIKuLGb30ltSzQ7Q0sGEuElD
+         ctrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706791650; x=1707396450;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SrCCSDqnT83NBejFDqLvZhNBdZEM7c/GDlvAag2DkXA=;
+        b=qiuA3OtbNJLJo64xqcnGciCwyD0fOX8fiSOGFAvNzg1O2uF0ZeujMr/FnArtd290Sk
+         WD6b6blEQyAFSy78OUhSoqZOauMOZLPvf5+bjMDVpitXZL+uLFBgl7gD3C9an8HUaw/i
+         2Siusy0EkZn6cbCx6W8kpyHTDy6xSS61A2SgdohcESHORfrXA6CAgq6yfX0cHrKY272X
+         N9bY6mZ1Xmy1MAOMQSftKCn7Qm8IAair2C4wrRLq13QDAgn1PHJIBi6Dn2ZfSKzD4gKY
+         4bTqbP246ZD0Ck252mYp7JLKJgyYuCJiEUgtfEu1VKLRZzXXU5orlV/yQAFUR1D9iKne
+         c28Q==
+X-Gm-Message-State: AOJu0YzjMGCMToCKuKmr+ikRdSY/JjuMWbbc/gsOhjb/X8Zx5xKF3tcM
+	esbiW5oMS9N7GDVnH+V0tKB4Z5H2kYkdFC0Y1qx3agRjgZZUZAN0kabjI59BKFQ=
+X-Google-Smtp-Source: AGHT+IFBQDMjB9QaO2zF8XjHM829y8wQFGbOhiy7LTTNAI0oH7do/LOdRbfw60OBh09NOApacPt4Xw==
+X-Received: by 2002:adf:ea8f:0:b0:337:c73f:db0f with SMTP id s15-20020adfea8f000000b00337c73fdb0fmr2765113wrm.41.1706791650430;
+        Thu, 01 Feb 2024 04:47:30 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUgoQNbt3yJXfH7E2BOIhJs+AzgLHGcMAQhcPyICRIlMkpiRP+/hBdsENkApsvxCAuI0g5AIskYnAXSr1M3h6H6fYbiWiRNBlZbRHylTt9VQNK2tpJJHRnCrXl6tBMvajWkywnTWDaLOv5ZVbW5CBODV4KYYQbc6m/kUGz6gOGuwkfOY9KyISmHgR7JDeP717oUvPtbwGA+QFhnWQ4XrKEdEMsHeMYtfC4274B92qU33D9O7GF0muyY5+6gGjZD1fk6DHmEGszC0NGSxVi922d6Z0czanKQA4XTc2jexMJOmlkoKjwpTZR5rYWhpKbuIIy5h38SKqC6VkjQyxmk
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id cw7-20020a056000090700b0033afcb5b5d2sm6653298wrb.80.2024.02.01.04.47.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 04:47:29 -0800 (PST)
+Date: Thu, 1 Feb 2024 13:47:26 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Kunwu Chan <chentao@kylinos.cn>
+Cc: dhowells@redhat.com, marc.dionne@auristor.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	linux-afs@lists.infradead.org, netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] octeontx2-pf: Fix a memleak otx2_sq_init
-Date: Thu,  1 Feb 2024 20:47:13 +0800
-Message-Id: <20240201124714.3053525-1-alexious@zju.edu.cn>
-X-Mailer: git-send-email 2.34.1
+Subject: Re: [PATCH net-next] rxrpc: Simplify the allocation of slab caches
+Message-ID: <ZbuS3n8DM4QqoUGg@nanopsycho>
+References: <20240201100924.210298-1-chentao@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:by_KCgDHCanWkrtl4sUxAQ--.60206S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr13Kw17KF1rJF45Gr18Grg_yoW8Gr4fpa
-	1FkryxJF90yr13XwnrXF1rZwn8Kan7ta4xKFy7CwnagwnYvwn5A3sYyFWSgr1fGrZ7uas0
-	yFWqyFWrCFn5Xw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9E14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFylc2xSY4AK67AK6ryUMxAIw28IcxkI7VAKI4
-	8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
-	wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
-	v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
-	Y4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
-	AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbbo7tUUUUU==
-X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201100924.210298-1-chentao@kylinos.cn>
 
-When qmem_alloc and pfvf->hw_ops->sq_aq_init fails, sq->sg should be
-freed to prevent memleak.
+Thu, Feb 01, 2024 at 11:09:24AM CET, chentao@kylinos.cn wrote:
+>Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+>to simplify the creation of SLAB caches.
+>
+>Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 
-Fixes: c9c12d339d93 ("octeontx2-pf: Add support for PTP clock")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
----
- .../ethernet/marvell/octeontx2/nic/otx2_common.c   | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-index 7ca6941ea0b9..02d0b707aea5 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-@@ -951,8 +951,11 @@ int otx2_sq_init(struct otx2_nic *pfvf, u16 qidx, u16 sqb_aura)
- 	if (pfvf->ptp && qidx < pfvf->hw.tx_queues) {
- 		err = qmem_alloc(pfvf->dev, &sq->timestamps, qset->sqe_cnt,
- 				 sizeof(*sq->timestamps));
--		if (err)
-+		if (err) {
-+			kfree(sq->sg);
-+			sq->sg = NULL;
- 			return err;
-+		}
- 	}
- 
- 	sq->head = 0;
-@@ -968,7 +971,14 @@ int otx2_sq_init(struct otx2_nic *pfvf, u16 qidx, u16 sqb_aura)
- 	sq->stats.bytes = 0;
- 	sq->stats.pkts = 0;
- 
--	return pfvf->hw_ops->sq_aq_init(pfvf, qidx, sqb_aura);
-+	err = pfvf->hw_ops->sq_aq_init(pfvf, qidx, sqb_aura);
-+	if (err) {
-+		kfree(sq->sg);
-+		sq->sg = NULL;
-+		return err;
-+	}
-+
-+	return 0;
- 
- }
- 
--- 
-2.34.1
-
+btw, why don't you bulk these changes into patchsets of 15 patches? Or,
+given the low complexicity of the patch, just merge multiple patches
+that are changing similar locations togeter.
 
