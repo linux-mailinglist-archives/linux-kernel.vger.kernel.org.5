@@ -1,135 +1,125 @@
-Return-Path: <linux-kernel+bounces-47632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3206684507E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:48:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AC4B845081
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:48:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1D041F22AC4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:48:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDCBB1F22765
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:48:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A4E03BB43;
-	Thu,  1 Feb 2024 04:48:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A77143C08D;
+	Thu,  1 Feb 2024 04:48:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="mJ30WTYx"
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="K2AEv6BW"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91CA03BB24
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 04:48:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 500B43BB3D;
+	Thu,  1 Feb 2024 04:48:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706762911; cv=none; b=d12FDbzFFU1GZjjwFJNOUF6IDYyN206WSIcwLGnszd+2aNo3FyqPzVzc6H48W9R9gZt/2R9ZKksBKe68IKYdYME9Ap7SfDv9qBJakTxffGpWwePSMZpJzk8M2CGqZc3lL2eyOTPdPlMMB2JaZFeZyIirU2k5hLMhoQ3Vtsozgow=
+	t=1706762927; cv=none; b=G52xmbd9VAXuGMYkw/b19hvFJndtRJtTspAZ8bUYdOYeUFrg7JdNXfPxiEHjcI3j8Zuf0mlmakFWA1xqav9Uz47vk3tmsS+x5T/9ArSLRveZMr6aC95Om/JcR7TfyXjzdYchgpJjQDwZHrxZmNDlCfxvgcqojiZ2ZJ70cgsAeQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706762911; c=relaxed/simple;
-	bh=/6YbQjizUZMS23f4SnahTuQrczLTdM9PS2UdU1MpK0Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WmRAKjQGtX8yR3bGObhESfAt8Zk5dfWkwn9ElHhKUUljtFpcGPOo6Czi0MWPrRG6Nc58RifF93vBrtcdvSlt+2Ht30cNOLe2r95VBNwjdbO1iGqplcMtQzZvlE/96CmuW5QzMtrOX32sgW7qvC/1QdIA82nS8zjPGaRw3/DaOdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=mJ30WTYx; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-116-252.bstnma.fios.verizon.net [173.48.116.252])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 4114lZfQ008107
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 Jan 2024 23:47:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1706762860; bh=BFvwTRtGW9jE9hJ9zWULwsFsLtUy+2JhKU5qj42LjRA=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=mJ30WTYxc+jicP7NtTK/sK5Qfp95EW8SIPC2VIt9Hzvo9pTY5TmZllPzbBdvk4ZUo
-	 UYSUOxqKUp5oiWbSqQ4fLsWLNA+3TypHcQyeiC6pMUGXELlycJAK2TaI3D0ffRaLr2
-	 P7roc1WYEgo3lj+yK0jfWco5SSFrlRma8WYGCUyA2lt/8/dLbYLJbBR8CWcR2/MIqq
-	 uEHH2OuzMoxaxAee9TKjipvL/uyGMktk1sdCKRS0A2EqBVzNSs95apz28LMfoHxakU
-	 ig/XuRLSYNTpATsbWP9GAevXLr3TCr7olt7sb8FJ90hrMiMIqRa/OhLWBrEjuIYdVN
-	 3MlsY+rvHfWSA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 8C87115C0667; Wed, 31 Jan 2024 23:47:35 -0500 (EST)
-Date: Wed, 31 Jan 2024 23:47:35 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: "Dr. Greg" <greg@enjellic.com>
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>,
-        "Daniel P. Berrang??" <berrange@redhat.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Kalra, Ashish" <ashish.kalra@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] x86/random: Issue a warning if RDRAND or RDSEED fails
-Message-ID: <20240201044735.GC2356784@mit.edu>
-References: <20240130083007.1876787-1-kirill.shutemov@linux.intel.com>
- <20240130083007.1876787-2-kirill.shutemov@linux.intel.com>
- <CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com>
- <DM8PR11MB57507611D651E6D7CBC2A2F3E77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
- <88a72370-e300-4bbc-8077-acd1cc831fe7@intel.com>
- <CAHmME9oSQbd3V8+qR0e9oPb7ppO=E7GrCW-a2RN8QNdY_ARbSQ@mail.gmail.com>
- <Zbk6h0ogqeInLa_1@redhat.com>
- <DM8PR11MB575052B985CA97B29A443F9AE77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
- <CAHmME9ps6W5snQrYeNVMFgfhMKFKciky=-UxxGFbAx_RrxSHoA@mail.gmail.com>
- <20240131203531.GA12035@wind.enjellic.com>
+	s=arc-20240116; t=1706762927; c=relaxed/simple;
+	bh=xL0nyKVhrIcxuqV0BG6FMGU+ell3gSDDFs4QRYJiaCc=;
+	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=rMLlkNwBoi/1q48QRCG46zrPO7Hc30DMthuu/7824rqmC0ShV5p/mCg1DiN5gxhMNTTsttbWnSvbVwq5XbVa5GmR85dqj8q/BuDFutfAfJROoyvQH6I/0TjrSlxiHKS/TH9d3sLOQtYCY2b5StjSfckZj1uWv0qSHub2wu4HvQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=K2AEv6BW; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4114mb0x107740;
+	Wed, 31 Jan 2024 22:48:37 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706762917;
+	bh=EIKilEn6zEi1dZ781Pbh1VH1L78d33wt2fu321g7goo=;
+	h=Date:CC:Subject:To:References:From:In-Reply-To;
+	b=K2AEv6BWjxxm8nZLsB5rHmfEIlRoTZFgBVUHvGJqJq42bRGJdKRaRPNKVKL6SDmFP
+	 U6npScF4ampBbDkQg9EsabUDITwfPWB32qPfd5za4QQuhVn5Y4WsJa+U0gZkMmOTI0
+	 OfWtxGWhMLbBCBBTmEcCgXzUltj0zz63UplNHILw=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4114mbXZ094131
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 31 Jan 2024 22:48:37 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 31
+ Jan 2024 22:48:36 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 31 Jan 2024 22:48:36 -0600
+Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4114mXP4041142;
+	Wed, 31 Jan 2024 22:48:34 -0600
+Message-ID: <91737281-8249-4fcb-b5bf-750c015b7c24@ti.com>
+Date: Thu, 1 Feb 2024 10:18:32 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131203531.GA12035@wind.enjellic.com>
+User-Agent: Mozilla Thunderbird
+CC: <lee@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
+        <s-vadapalli@ti.com>
+Subject: Re: [PATCH] dt-bindings: mfd: syscon: Add ti,k3-pcie-ctrl compatible
+Content-Language: en-US
+To: Andrew Davis <afd@ti.com>
+References: <20240131112342.1300893-1-s-vadapalli@ti.com>
+ <be60e695-894e-4281-a62c-b77e45680293@ti.com>
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+In-Reply-To: <be60e695-894e-4281-a62c-b77e45680293@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Wed, Jan 31, 2024 at 02:35:32PM -0600, Dr. Greg wrote:
-> I think it would demonstrate a lack of appropriate engineering
-> diligence on the part of our community to declare RDRAND 'busted' at
-> this point.
+Hello Andrew,
+
+On 31/01/24 21:43, Andrew Davis wrote:
+> On 1/31/24 5:23 AM, Siddharth Vadapalli wrote:
+>> The PCIE_CTRL registers within the CTRL_MMR space of TI's K3 SoCs are
+>> used to configure the link speed, lane count and mode of operation of
+>> the respective PCIe instance. Add compatible for allowing the PCIe
+>> driver to obtain a regmap for the PCIE_CTRL register within the System
+>> Controller device-tree node in order to configure the PCIe instance
+>> accordingly.
+>>
+>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+>> ---
+>>
+>> This patch is based on linux-next tagged next-20240131.
+>>
+>>   Documentation/devicetree/bindings/mfd/syscon.yaml | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml
+>> b/Documentation/devicetree/bindings/mfd/syscon.yaml
+>> index 084b5c2a2a3c..da571a24e21f 100644
+>> --- a/Documentation/devicetree/bindings/mfd/syscon.yaml
+>> +++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+>> @@ -73,6 +73,7 @@ properties:
+>>                 - rockchip,rv1126-qos
+>>                 - starfive,jh7100-sysmain
+>>                 - ti,am654-dss-oldi-io-ctrl
+>> +              - ti,k3-pcie-ctrl
 > 
-> While it appeares to be trivially easy to force RDSEED into depletion,
-> there does not seem to be a suggestion, at least in the open
-> literature, that this directly or easily translates into stalling
-> output from RDRAND in any type of relevant adversarial fashion.
+> This might not be the same for all K3 devices, you should use
+> the name of the first device which uses this, so:
 > 
-> If this were the case, given what CVE's seem to be worth on a resume,
-> someone would have rented a cloud machine and come up with a POC
-> against RDRAND in a multi-tenant environment and then promptly put up
-> a web-site called 'Random Starve' or something equally ominous.
+> ti,j721e-pcie-ctrl
 
-I suspect the reason why DOS attacks aren't happening in practice, is
-because of concerns over the ability to trust the RDRAND (how do you
-prove that the NSA didn't put a backdoor into the hardware with
-Intel's acquisence --- after all, the NSA absolutely positively didn't
-encourage the kneecaping of WEP and absolutely didn't put a trapdoor
-into DUAL_EC_DRBG...)  since it can not externally audited and verfied
-by a third party, in contrast to the source code for the /dev/random
-driver or the RNG used in OpenSSL.
+It is the same for all K3 devices so far. However, since the convention appears
+to be the first device that it is applicable to as you pointed out, I will post
+the v2 patch for this accordingly.
 
-As a result, most random number generators use RDRAND in combination
-with other techniques.  If RDRAND is absolutely trustworthy, the extra
-sources won't hurt --- and if it isn't trustworthy mixing in other
-sources will likely make things harder for Fort Meade.  And even if
-these other sources might be observable for someone who can listen in
-on the inter-packet arrival times on the LAN (for example), it might
-not be so easy for an analyst sitting at their desk in Fort Meade.
-
-And once you do _that_, you don't need to necessarily loop on RDRAND,
-because it's one of multiple sources of entropies that are getting
-mixed togethwer.  Hence, even if someone drives RDRAND into depletion,
-if they are using getrandom(2), it's not a big deal.
-
-There's a special case with Confidential Compute VM's, since the
-assumption is that you want to protect against even a malicious
-hypervisor who could theoretically control all other sources of timing
-uncertainty.  And so, yes, in that case, the only thing we can do is
-Panic if RDRAND fails.
-
-   	    	  		     	 - Ted
+-- 
+Regards,
+Siddharth.
 
