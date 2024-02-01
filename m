@@ -1,56 +1,74 @@
-Return-Path: <linux-kernel+bounces-48368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48391-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B985845B04
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:13:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91A8F845B5A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:24:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD4A61C263DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:13:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87DE1B2109E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:24:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E20D05F496;
-	Thu,  1 Feb 2024 15:13:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFABF159572;
+	Thu,  1 Feb 2024 15:21:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WwRdsEgn"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F9C6h7Bo"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A43E5F49E;
-	Thu,  1 Feb 2024 15:13:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E0CF77A06;
+	Thu,  1 Feb 2024 15:21:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706800430; cv=none; b=fFWik2sO5Ogu1H7jwMJKSNdUQu9p3/NFL68P0WfyREhIk1+tkmQV5G1y0tJwL16+N9z/HOUB8Ci7Ht/YuGTig/bHyqbhZGSWpX86Op0QdkAutWB6sshOkrBNwWCk5c5bIfiygQbXBSMRLVHQk9tot67msBDH+3bdfxKg2P514l4=
+	t=1706800912; cv=none; b=JhageEzXODrB9uHYCO/W5TmmjOCA/rB/2NS/BVaGBIaeZEGIggoIo5h/8Zu4/2zNu+WHMUFRjw5S+iWyv8VQJ6b0DFMTJXuYlxWxSZ3YWthSwvK4zK3a5L/ofkONftMMCqFvZj7+reGSuKTT5F2vYgkllBeP5kSV2r6jf9mMQww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706800430; c=relaxed/simple;
-	bh=J25LSF02c3Gihi6ywJToP8/0dpuIX20uFfdRTlYxyRg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Giya0wkA4NM5SBmK7pVoD+r/vzGsxxAsMEqCA0OV+241RwzkKQdtEsgwoLPYw9IK5kTdaugCAdatSqjr4odZWRMma9ajh4/t9q+5xHHoKAyM9mrtaHVDTer7UykelmbE2iHNTXPmlYgIe0We8F4nyxaP4Tq5COt1w21bW3yZUfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WwRdsEgn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F423DC433F1;
-	Thu,  1 Feb 2024 15:13:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706800429;
-	bh=J25LSF02c3Gihi6ywJToP8/0dpuIX20uFfdRTlYxyRg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=WwRdsEgnfVREwIGEX7L2Y0qvFc4a+QOfttbXdf6t8ZoZNJqEAF6ntKisAF9lamz/c
-	 CKCOXaJCB1NwUOAuFSWq5OWNXl4pXVdZJnYhNcZuW8JGTQ8u0Z4Sosso2c5GgnCgPB
-	 7dR5pfRAW6HrAqvmWuJCBnh6Y5X0kIVJ/KhHUPFuPT9K03GqVRjJtfGP6m6hNgbZP2
-	 X3Sn7bLvYa98cxeGVu0bS+gecxyjnBFLZlorUBZQDP2GS/v+EMk8hjl0Evn3X1dB5N
-	 EIKY1bGR+sRwskTDZMEvuuAvwRImAxta9NDT3WI6wbIW8tPUXCNpYlze1Q51t/tRyl
-	 8tmRRAUrucKXg==
-From: Daniel Bristot de Oliveira <bristot@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH] tracing/timerlat: Move hrtimer_init to timerlat_fd open()
-Date: Thu,  1 Feb 2024 16:13:39 +0100
-Message-ID: <7324dd3fc0035658c99b825204a66049389c56e3.1706798888.git.bristot@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706800912; c=relaxed/simple;
+	bh=wIQGdFqlY0xAMd+07bg96OAGO6sKPhtrx96e+mX0ZBE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ODmT/RUuqRowJ3tWVM8LzO+14JMf2QBpZ8fEfdSf1QOI0iVEvnD7KRE68yogJPgjtDdiHqaIK2th592+KSQx+bLReHwP0xivI2zXJOB1zrGX0I4LvkzUWPZa8OiC1mTOVHkLGCLN1bRyoCnQ0Q9c63PS/+2FFXb6l1RAtIffVvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F9C6h7Bo; arc=none smtp.client-ip=192.55.52.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706800910; x=1738336910;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=wIQGdFqlY0xAMd+07bg96OAGO6sKPhtrx96e+mX0ZBE=;
+  b=F9C6h7Bo9cJLXeaTQzGJ60VBTRbHYEC4iBNhAZ3Vs/fSxCdMgEcoIJPr
+   T+Sw4RhAcxyGvNdbp/sxhogOZMtHjbFafAnkHkmJjJ88kkIO+ILFOvyNk
+   Hg4rWdXdTQ2evhdAMWkDv6s3pgb3lRY3CIW05PCDzowVlKBWSBKdnrj11
+   4e7zTdH/IozfWza4uXSfgCfx/fzkylKvUdOyc27FIX2IBrbYD/BlzWYrL
+   Y8xmwaq4nt4n4+wu+L2XEyVGcNyU730dWnnQabALNyEGSyzv3BQy33WCO
+   IRzxfuPIQw8Al+B/E/hNn2+HPO81LFex3ZnQCp0DgSzvcks9gyF5vjASa
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="402762457"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="402762457"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 07:21:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="788953699"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="788953699"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga002.jf.intel.com with ESMTP; 01 Feb 2024 07:21:41 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id B8E0CBA3; Thu,  1 Feb 2024 17:15:42 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Flavio Suligoi <f.suligoi@asem.it>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	dri-devel@lists.freedesktop.org,
+	linux-fbdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Lee Jones <lee@kernel.org>,
+	Daniel Thompson <daniel.thompson@linaro.org>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Helge Deller <deller@gmx.de>
+Subject: [PATCH v2 0/3] backlight: mp3309c: Allow to use on non-OF platforms
+Date: Thu,  1 Feb 2024 17:14:12 +0200
+Message-ID: <20240201151537.367218-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,45 +77,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, the timerlat's hrtimer is initialized at the first read of
-timerlat_fd, and destroyed at close(). It works, but it causes an error
-if the user program open() and close() the file without reading.
+Allow to use driver on non-OF platforms and other cleanups.
 
-Move hrtimer_init to timerlat_fd open() to avoid this problem.
+Changelog v2:
+- rename pm3309c_parse_dt_node() --> mp3309c_parse_fwnode() (Daniel)
+- add tags (Daniel, Flavio)
+- new patch 2
 
-No functional changes.
+Andy Shevchenko (3):
+  backlight: mp3309c: Make use of device properties
+  backlight: mp3309c: use dev_err_probe() instead of dev_err()
+  backlight: mp3309c: Utilise temporary variable for struct device
 
-Fixes: e88ed227f639 ("tracing/timerlat: Add user-space interface")
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- kernel/trace/trace_osnoise.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/video/backlight/mp3309c.c | 88 ++++++++++++-------------------
+ 1 file changed, 35 insertions(+), 53 deletions(-)
 
-diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index bd0d01d00fb9..a8e28f9b9271 100644
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -2444,6 +2444,9 @@ static int timerlat_fd_open(struct inode *inode, struct file *file)
- 	tlat = this_cpu_tmr_var();
- 	tlat->count = 0;
- 
-+	hrtimer_init(&tlat->timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_PINNED_HARD);
-+	tlat->timer.function = timerlat_irq;
-+
- 	migrate_enable();
- 	return 0;
- };
-@@ -2526,9 +2529,6 @@ timerlat_fd_read(struct file *file, char __user *ubuf, size_t count,
- 		tlat->tracing_thread = false;
- 		tlat->kthread = current;
- 
--		hrtimer_init(&tlat->timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_PINNED_HARD);
--		tlat->timer.function = timerlat_irq;
--
- 		/* Annotate now to drift new period */
- 		tlat->abs_period = hrtimer_cb_get_time(&tlat->timer);
- 
 -- 
-2.43.0
+2.43.0.rc1.1.gbec44491f096
 
 
