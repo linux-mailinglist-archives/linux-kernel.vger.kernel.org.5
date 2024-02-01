@@ -1,184 +1,130 @@
-Return-Path: <linux-kernel+bounces-48304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11AF78459FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:20:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC93C845A06
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:21:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81A61B296F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:20:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B0711C247B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:21:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE415F473;
-	Thu,  1 Feb 2024 14:19:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20D5A5D498;
+	Thu,  1 Feb 2024 14:20:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QvJIuLQJ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="PCKLKH2G"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 512BC5F466
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 14:19:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF635D47C;
+	Thu,  1 Feb 2024 14:20:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706797198; cv=none; b=UgOAq9f90T3WLY+aPWFpxv7ujKKvUw4FWIxoIUrqDEGjtXYEm2TQAAJ3qbdx95+U1SD0p8fVkVoLAiyMU4JJCozxtBujN8+6xSkrs4+jJeMSfVvSELgoGEAoH1He4kBbAwlISOINjkUheMllXe9EMVVlM50d3DVyZAOoNDI4Jgw=
+	t=1706797240; cv=none; b=U8c339bQc5JKEa56UDISXMukvOkja+ZhUNRt/yygA/2GY53KG5Qe5Gu04Ab360QkCjq3I24YuWkn22T45bPPQppvFF4dutrFOKEf5IM2lguJ+fgIUhC0e5dHDNDLviTyPPEeS95YFldz211ptynzDfwnJrA4W3MR/b488Khtlxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706797198; c=relaxed/simple;
-	bh=FRbvlYyjpnr7PyYFkq4RqomDGaXl3+k4Hq2BQKrbKYg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ImB4GHdavsyde+FQhWCbezAud01aSMOwM861nzncaJTWOVTpeCMqw7BYVZ1Qvtlf4AMxZEGqqT0XxXNhCbdYJhWmp+QHThREyjPRVJHIkkPmd92gLRMJ/UR0bWSFW99jEhDCghASNGzNmoQGyMxef9rV/VK9igLxYSnJlTFez2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QvJIuLQJ; arc=none smtp.client-ip=192.55.52.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706797196; x=1738333196;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=FRbvlYyjpnr7PyYFkq4RqomDGaXl3+k4Hq2BQKrbKYg=;
-  b=QvJIuLQJY7BS702qFrjnRLkChmW2QPPpTW1WZ0cExAp0s3Blm26kmkek
-   ce10YpT1pyuvB16RmXqFNbXs6mvxzvfgcL5fe70VEv5CyN2iDZxj7VxWQ
-   h2Othsv/P3w76l5yvmd8aLUxJLsfWQYknxqmAknYukQHy1g2uag1yT8o1
-   65j44Crh1MVTS2pG+am5lMZFK0cT6i72iCqjR/fN/IoCoDypAMKel+Q31
-   IofmeE+aAp/KnGHtKbtfQFAFGEVvheUTBw2DNo9fnt++W8w0hlqLTlZ75
-   I7VYy+yzFLszlr7zxGqon2LmGBCa4TrZmnqqc0+H8urrYFX0FvzixyPcW
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="401033595"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="401033595"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 06:19:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="4422947"
-Received: from osandru-mobl1.ger.corp.intel.com (HELO [10.252.41.143]) ([10.252.41.143])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 06:19:52 -0800
-Message-ID: <ed96c60e-c6ea-490f-9811-57b92d87083e@linux.intel.com>
-Date: Thu, 1 Feb 2024 15:19:50 +0100
+	s=arc-20240116; t=1706797240; c=relaxed/simple;
+	bh=ls3Y9r/Uq4irY8NRgnSFG7fUl9lG9vHTYW3B2Qo0Tj8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f0Tk2psx0Yyg6WSZ6seUVTBSfuhArRN/01sRlSlY4tGJ1NTdS5dLkSI+JX/pPh1BkSg+YvVyOsOhvOgRZH/o7FVm1xoAtUN7cg+T/XjxYCB46Ep2YXv5WmVbLcWr4nMVm1rE1a6L+XeMWsxSbMrqfxRpb2aMi37bM27tF6YIWQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=fail (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=PCKLKH2G reason="signature verification failed"; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A2BA140E01A9;
+	Thu,  1 Feb 2024 14:20:35 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
+	reason="fail (body has been altered)" header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 88CsPpaq-GMn; Thu,  1 Feb 2024 14:20:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706797233; bh=xLdndXITEY495qtqbGzZcEEPT9mnJ0YIOGrS6BKjJaM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PCKLKH2GkFT3YzrJ8zxsR7Ehs6Wl+PfNG/Dkdd7QMeybdYcaLVfX6ROGM2FM8DBbk
+	 pDmdTpb5pJMNFrVM3bhv+5mH2AWEa7s9Eo20bzpQ6+ZU+lDKmz3s9RWhlbe6eti1FG
+	 7RQuRZwmEJhvftzGBIvW6P/lCNTx+mrfT/EwpcCYUWdsqMmGAXZYQg41/22/Tbflt1
+	 U06MBKgX/d6yq9vauEkcPeB5++5fksDWecFa36Di4P2MISXL66lLnpL00scQSiEsl8
+	 0fa2ZI/fuIl+s823oru494flUcBFsw1cZxFsmT9n0ectL4ylZVmnFM9NmcdAkff+aX
+	 hCAGks4QivkqDRcO6dxB6SuaYCYlYRVn+L/2PloWZm0L3JCc+k5BWTSImegkx5ijPc
+	 SZ9EwSSYSfz+u3u7HS8GnwGT9WsQwvkQKirwjANhNQFv2rC9rZ8nPJXh8QAX07UhQE
+	 vl+aCknAX4g3BXtku8hnEml4nARoZVt+isnROhC1t5EvdvwQzB7gB4qu1JAFA8UeqH
+	 2eimCKBkVKMISn0JOu2xAnfMLipmuxfgkTTQG8JkiJy9T6ZYfIKDoCmyud8+GRaTCE
+	 0Y1/t0JIqsPyfNnGBqv8vzBxC09bpR8gw5cs9iVzXww6lb3NzOHUPL5OLPu9QEEYk6
+	 k7cwvBP7UQ5VEXHclrZ1IjG4=
+Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6C90940E016C;
+	Thu,  1 Feb 2024 14:20:17 +0000 (UTC)
+Date: Thu, 1 Feb 2024 15:20:16 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Tong Tiangen <tongtiangen@huawei.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	wangkefeng.wang@huawei.com,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Naoya Horiguchi <naoya.horiguchi@nec.com>,
+	linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+	linux-mm@kvack.org, Guohanjun <guohanjun@huawei.com>
+Subject: Re: [PATCH -next v4 2/3] x86/mce: rename MCE_IN_KERNEL_COPYIN to
+ MCE_IN_KERNEL_COPY_MC
+Message-ID: <20240201142016.GFZbuooG9CRoK90U2C@fat_crate.local>
+References: <20240111135548.3207437-1-tongtiangen@huawei.com>
+ <20240111135548.3207437-3-tongtiangen@huawei.com>
+ <20240131070258.GGZbnwov0g918F-FGz@fat_crate.local>
+ <3009aadd-69d6-c797-20b4-95cf926b6dd9@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/xe/display: Fix memleak in display initialization
-To: Jani Nikula <jani.nikula@linux.intel.com>,
- Lucas De Marchi <lucas.demarchi@intel.com>,
- wangxiaoming321 <xiaoming.wang@intel.com>
-Cc: ogabbay@kernel.org, thomas.hellstrom@linux.intel.com, mripard@kernel.org,
- tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
- intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240125063633.989944-1-xiaoming.wang@intel.com>
- <20240126153453.997855-1-xiaoming.wang@intel.com>
- <abko5y3n5mju6srjly257bpqlvjf5ie6h6snboaekxnfv5mu76@jjumdgev76ag>
- <87zfwlh78b.fsf@intel.com>
-Content-Language: en-US
-From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-In-Reply-To: <87zfwlh78b.fsf@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <3009aadd-69d6-c797-20b4-95cf926b6dd9@huawei.com>
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Feb 01, 2024 at 07:37:25PM +0800, Tong Tiangen wrote:
+> =E5=9C=A8 2024/1/31 15:02, Borislav Petkov =E5=86=99=E9=81=93:
+> > On Thu, Jan 11, 2024 at 09:55:47PM +0800, Tong Tiangen wrote:
+> > > Currently, there are some kernel memory copy scenarios is also mc s=
+afe
+> > > which use copy_mc_to_kernel() or copy_mc_user_highpage().
+> >=20
+> > Both of those end up in copy_mc_enhanced_fast_string() which does
+> > EX_TYPE_DEFAULT_MCE_SAFE.
+>=20
+> OK, how about this commit msg change? :)
+>=20
+> Currently, there are some kernel memory copy scenarios is also mc safe
+> which use copy_mc_to_kernel() or copy_mc_user_highpage(), **both of tho=
+se
+> end up in copy_mc_enhanced_fast_string() or copy_mc_fragile() which doe=
+s
+> EX_TYPE_DEFAULT_MCE_SAFE.**
+>=20
+> In these scenarios, posion pages need to be isolated too. Therefore, a
+> macro similar to MCE_IN_KERNEL_COPYIN is required. For this reason, we
+> can rename MCE_IN_KERNEL_COPYIN to MCE_IN_KERNEL_COPY_MC, the new macro
+> can be applied to both user-to-kernel mc safe copy and kernel-to-kernel
+> mc safe copy.
 
+Maybe my question wasn't clear: why is that renaming churn needed at
+all? What are you "fixing" here?
 
-On 2024-01-31 16:07, Jani Nikula wrote:
-> On Wed, 31 Jan 2024, Lucas De Marchi <lucas.demarchi@intel.com> wrote:
->> +Jani
->>
->> On Fri, Jan 26, 2024 at 11:34:53PM +0800, wangxiaoming321 wrote:
->>> intel_power_domains_init has been called twice in xe_device_probe:
->>> xe_device_probe -> xe_display_init_nommio -> intel_power_domains_init(xe)
->>> xe_device_probe -> xe_display_init_noirq -> intel_display_driver_probe_noirq
->>> -> intel_power_domains_init(i915)
->>
->> ok, once upon a time intel_power_domains_init() was called by the driver
->> initialization code and not initialized inside the display. I think.
->> Now it's part of the display probe and we never updated the xe side.
->>
->>>
->>> It needs remove one to avoid power_domains->power_wells double malloc.
->>>
->>> unreferenced object 0xffff88811150ee00 (size 512):
->>>   comm "systemd-udevd", pid 506, jiffies 4294674198 (age 3605.560s)
->>>   hex dump (first 32 bytes):
->>>     10 b4 9d a0 ff ff ff ff ff ff ff ff ff ff ff ff  ................
->>>     ff ff ff ff ff ff ff ff 00 00 00 00 00 00 00 00  ................
->>>   backtrace:
->>>     [<ffffffff8134b901>] __kmem_cache_alloc_node+0x1c1/0x2b0
->>>     [<ffffffff812c98b2>] __kmalloc+0x52/0x150
->>>     [<ffffffffa08b0033>] __set_power_wells+0xc3/0x360 [xe]
->>>     [<ffffffffa08562fc>] xe_display_init_nommio+0x4c/0x70 [xe]
->>>     [<ffffffffa07f0d1c>] xe_device_probe+0x3c/0x5a0 [xe]
->>>     [<ffffffffa082e48f>] xe_pci_probe+0x33f/0x5a0 [xe]
->>>     [<ffffffff817f2187>] local_pci_probe+0x47/0xa0
->>>     [<ffffffff817f3db3>] pci_device_probe+0xc3/0x1f0
->>>     [<ffffffff8192f2a2>] really_probe+0x1a2/0x410
->>>     [<ffffffff8192f598>] __driver_probe_device+0x78/0x160
->>>     [<ffffffff8192f6ae>] driver_probe_device+0x1e/0x90
->>>     [<ffffffff8192f92a>] __driver_attach+0xda/0x1d0
->>>     [<ffffffff8192c95c>] bus_for_each_dev+0x7c/0xd0
->>>     [<ffffffff8192e159>] bus_add_driver+0x119/0x220
->>>     [<ffffffff81930d00>] driver_register+0x60/0x120
->>>     [<ffffffffa05e50a0>] 0xffffffffa05e50a0
->>>
->>
->> This will need a Fixes trailer.  This seems to be a suitable one:
->>
->> Fixes: 44e694958b95 ("drm/xe/display: Implement display support")
->>
->>> Signed-off-by: wangxiaoming321 <xiaoming.wang@intel.com>
->>> ---
->>> drivers/gpu/drm/xe/xe_display.c | 6 ------
->>> 1 file changed, 6 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/xe/xe_display.c b/drivers/gpu/drm/xe/xe_display.c
->>> index 74391d9b11ae..e4db069f0db3 100644
->>> --- a/drivers/gpu/drm/xe/xe_display.c
->>> +++ b/drivers/gpu/drm/xe/xe_display.c
->>> @@ -134,8 +134,6 @@ static void xe_display_fini_nommio(struct drm_device *dev, void *dummy)
->>>
->>> int xe_display_init_nommio(struct xe_device *xe)
->>> {
->>> -	int err;
->>> -
->>> 	if (!xe->info.enable_display)
->>> 		return 0;
->>>
->>> @@ -145,10 +143,6 @@ int xe_display_init_nommio(struct xe_device *xe)
->>> 	/* This must be called before any calls to HAS_PCH_* */
->>> 	intel_detect_pch(xe);
->>>
->>> -	err = intel_power_domains_init(xe);
->>> -	if (err)
->>> -		return err;
->>
->> xe_display_init_nommio() has xe_display_fini_nommio() as its destructor
->> counter part. Unfortunately display side looks wrong as it does:
->>
->> init:
->> 	intel_display_driver_probe_noirq() -> intel_power_domains_init()
->>
->> destroy:
->> 	i915_driver_late_release() -> intel_power_domains_cleanup()
->>
->> I think leaving intel_power_domains_cleanup() as is for now so it's
->> called by xe works, but this needs to go through CI, which apparently
->> this series didn't go. I re-triggered it.
->>
->> +Jani if he thinks this can be changed in another way or already have
->> the complete solution.
-> 
-> I don't. But it is and will be a recurring problem. i915 and xe core
-> drivers should handle display init and cleanup the same way. But
-> currently i915 goes on to call e.g. intel_power_domains_cleanup()
-> directly from top level driver code. There are other examples.
-> 
-> And we seem to have recently added *more*. See e.g. bd738d859e71
-> ("drm/i915: Prevent modesets during driver init/shutdown").
-That commit seems terrible Should we instead not only enable any code 
-that can cause modesets after it's safe to do so?
+What is the problem that you're encountering which needs fixing?
 
-Cheers,
-~Maarten
+Thx.
+
+--=20
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
