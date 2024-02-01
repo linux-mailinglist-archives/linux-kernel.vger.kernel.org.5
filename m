@@ -1,216 +1,139 @@
-Return-Path: <linux-kernel+bounces-48016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5EF3845645
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:31:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC60A845648
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:32:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FF961F22D25
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:31:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBFF91C22B0C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:32:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B373D15D5AE;
-	Thu,  1 Feb 2024 11:31:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 134BB15CD6A;
+	Thu,  1 Feb 2024 11:32:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="WqJBI7BU"
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="g9nADXxR"
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 640A74DA1E
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 11:31:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1146F51A
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 11:32:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706787084; cv=none; b=cqZh5G9J99heepEdx/iEz0SVH5mo4WJoXplyIFqC8hgW/hsij9tXkEWShzmeDIdYA8VNEgumVeX2duEc2D3fNXXth73lC6GHck/Hau9G3JRTt59m++SmAxk9WQu+Obwq8+O66Ck3bcabIppbAJUIIxgqssuKB6arcHra0gI+/bs=
+	t=1706787143; cv=none; b=WLo44bqo/jLrqDdvMDRHx1Yvf6ePeaqWvtkSJbRzmA9ZmBSNEIK/OmgqQJrdFis6kFLoq4FzbFMleGg+CuiYjCVHFjVvwkb0ZnEotBvQlzVPWZBOE1YIzYz23VeTrw5IxUwPniTNHgeyI7hqLiG2ak54TWYlfy8YW00rizkhSjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706787084; c=relaxed/simple;
-	bh=Y43K/9Pr3/J8pQcr6auVY9urd1fE9ip+x6T1JXZeiuk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
-	 Content-Type:References; b=hjpGBmMWrucMm1p4v6lvesX62w1eomOPMiwW17tIFaI7fd/BGjLDMbg0fjwEHj7jZmIK53yridnyVjPIm+SugSQl/n4qLUdypq/gt6GHjoYbzaIP0pkFxQ93Ep5RLF/ZUzcQhqArjk8A7Ewaf8IAqPL4wSJDmo5xRQ1zwJ85MqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=WqJBI7BU; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240201113120euoutp02f680de284b781ca6509b956d7ca2d5f4~vuc6DqpIy3263232632euoutp02I
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 11:31:20 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240201113120euoutp02f680de284b781ca6509b956d7ca2d5f4~vuc6DqpIy3263232632euoutp02I
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1706787080;
-	bh=wQ0RO1zhNPtAJDp+vpA11gjRu7eZ5H9BUbR2r8jxAJg=;
-	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-	b=WqJBI7BUqlsQWq4Nl5Vbm8WSh+YyvYXFd/Y7Nm4F4SOyS+1tb2pcYKwEYN7pl6ww7
-	 Ex49vc1woFrv7ESyyhIz6Q4yanew77f3qZfqBQH2dtftAlbMLskeGxFDnGpxu0uvib
-	 otK/+gjlfOR7CE9Hrz1qTlKoKajO3dzxiezlLi28=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240201113120eucas1p10dcc6b1b835492224c4a86b115a06ffa~vuc50RlLF2368023680eucas1p1L;
-	Thu,  1 Feb 2024 11:31:20 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges2new.samsung.com (EUCPMTA) with SMTP id 03.3B.09814.7018BB56; Thu,  1
-	Feb 2024 11:31:20 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240201113119eucas1p2da4ad2b5b7549c5fb99e540531411c2a~vuc5cxAS32810128101eucas1p2T;
-	Thu,  1 Feb 2024 11:31:19 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240201113119eusmtrp11e8a64689c0d3b7776afca799a2da318~vuc5cI-wg2587625876eusmtrp1N;
-	Thu,  1 Feb 2024 11:31:19 +0000 (GMT)
-X-AuditID: cbfec7f4-727ff70000002656-88-65bb81078e1c
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id BD.13.09146.7018BB56; Thu,  1
-	Feb 2024 11:31:19 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240201113119eusmtip28cd4f02af464816248dc207c234d9b95~vuc45F0fP0033700337eusmtip2Y;
-	Thu,  1 Feb 2024 11:31:19 +0000 (GMT)
-Message-ID: <a5fafb40-0782-4b85-a9fd-7fda886dd70a@samsung.com>
-Date: Thu, 1 Feb 2024 12:31:18 +0100
+	s=arc-20240116; t=1706787143; c=relaxed/simple;
+	bh=+JCXQ/F5lEphfjTu5WTd25Ol8SqJqt0VAt5iHLuRepY=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=XxNHgS57SRQoKAd4loBToG8WoPEnZVBiSvyQyc55az3fko1BErMBgdhOZI0creMNxv+R4dZ+PHRanGSj3ZJEoOHulbSTSSQr12dquzmoTh3G2Q9SWXvjV34Cq1iK4lk5LS0gfYXTe8cCwq+SsIuofjvkYvHD6bTxpm3SOGVau8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=g9nADXxR; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-68c794970d5so4512916d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 03:32:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706787140; x=1707391940; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=uOIkFgtn+5CGBhF6IYD+AtjX4nq3rhY5L7Cp0vY+fM0=;
+        b=g9nADXxRvuEMqGrDd8HUsGNP3chp37TPsqPtW7Nhjk85+XYBTamsPmidSqxN3ut84H
+         4IPUGEWUkrvygLwZwfxoTBfcEAa+0dJ+AqEtB8uyGAgGFxqUeg1utm8ghT3Fh05i6SCD
+         5TTIX7dMMsEbzCsVfeb6KHaui7Pje/UU1XukLOAXO4f7q1FCxZtsxWrOSN0JMxOtGfRY
+         gbRpvsdsgTyyWxBi2CGc8WzUnmczM3+bRGGz+LdKVOMKHWMh1m581H7hu9GlHE9gahQV
+         lteyQk8ydeR981PTbOIOSKmkVCM/apRMXHwb7qULC3FnE3wxvX6keRdcDpI5RpTmmPcI
+         U6zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706787140; x=1707391940;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uOIkFgtn+5CGBhF6IYD+AtjX4nq3rhY5L7Cp0vY+fM0=;
+        b=Q07/fc4R/6XzqT30hm0vvfcQTnl680v5dg3x1DlNZRaswOwnaTfFZUi5qoEpwN/wAT
+         8ZSSZXJxaB+Cebgs2SP/iGaJ4oNu1xELFKVZcrGDwZUuBY8auyQodWgo8tiP8RKvc9hD
+         Fu7mMQ9m7bse7TE1zoo9/n3tyZVv0fvtOk5930uiRD1L8cbqT6oXv5d91pWZMrwKDemD
+         GAX8zWkNRuysJrgddzkvJhPfLfyekQRr5pTehWUkbpBXYXWAZn02t3kNUsEKHHcEo8q2
+         LfEyWfeGCxNJcMJ4rUhOx6FJOUWlNUhYvWZZwBK/uC/u/niC/nqzF68UFwtbSyoktbM/
+         Rq9w==
+X-Gm-Message-State: AOJu0Yyv7yhsJCJZXHEzVpmvaKFjyiAkJI9c3zjIkpcDqGKoBcPnz9Ka
+	YXKGiWHHtnjx+IhEr6FKXmfHECnADn53XvZF9Ddf6YFoYEjNNZ5IBLXdtbQAuMIwZJy/vqVwFFA
+	VUyNoQ/2ZMCQaGICMiqVGXrm1q29/RmCBW8m0cQ==
+X-Google-Smtp-Source: AGHT+IEn/DdYnb4HbGcodvZpVi0fy3Ok/BebPtt2rZ4aQx47747TBTjBGaYePw+Arowpy/mNwi8CPKs2RWowIN2yRxU=
+X-Received: by 2002:a0c:b456:0:b0:68c:5149:7619 with SMTP id
+ e22-20020a0cb456000000b0068c51497619mr7887302qvf.24.1706787140649; Thu, 01
+ Feb 2024 03:32:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: runtime warnings after merge of the bpf-next tree
-Content-Language: en-US
-To: Daniel Xu <dxu@dxuuu.xyz>, Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
-	<ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, bpf
-	<bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>, Linux Kernel
-	Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
-	<linux-next@vger.kernel.org>
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <yeujnwul3nd6vhk2pidnh72l5lx4zp4sgup4qzgbe2fpex42yf@2wtt67dvl7s3>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01SaUwTYRD1292WLaa6lGI/C4HQKAYPQKNmEwiI8WhMRBOMRDSRxn4BIhRs
-	QYT4A0woUDzw1goKIlCwCCWcLWioR0W0avGoaMQYVERRjiKnIO2i8u+9mXnzZiZD4jwNS0jG
-	ypKQXCaJE7GdifoHY09XkRkGFFAxCOiRiSs4bRt760QP3TOx6eKiXzg9WHIM0B36fDbdWqQE
-	9IPCRXRdy0unDRxxhtXKFve8eoOLVVYLLq6pyGGLh2o8d7IinYOkKC72MJL7B0c5x+S2WFmJ
-	rzyPaL61EemgebEKkCSk1sIXhiQVcCZ5lAZA2/gJgiG2GWK8gjNkCEBz7j0nFeA4FINaPcYk
-	ygAsnz4PGDIA4DHdZ7a9iksFw5eTWsyOCWoJrOp5y2LiLrDtcjdhx26UF+zqvOTo6kptg3pd
-	DrBjnBLAzu5rDi2f2gJLH+sdY+CUFoOtp62ORmxqNVT1qRxmHCoMtulGWIzYCzb05TsEkOon
-	4Z13zTgz9yao7GuYxa6w11Q7u48HbD97nGAEWQAWTnRhDMkDMP1LJ2CqAuE78zjbfjOc8oVV
-	en8mHAqL82sJ5pQLoLXPhRliATxTfxFnwlyYreQx1T5Qbbr1z7b1mQXPAyL1nLuo5+yvnrOO
-	+r9vISAqgAAlK+KjkWKNDKX4KSTximRZtN+BhPgaMPNM7VMmWyMo6x3wMwKMBEYASVzE55Z7
-	NiEeVypJTUPyhP3y5DikMAJ3khAJuEulXohHRUuS0EGEEpH8bxYjOcJ0rKF6bLT/0u22Ol2Q
-	948X9Zll06bQj5Wnks5+n5fYW8F6zu/I8Aa1aTeb9BkTI4cKOO4/WfcHKk0dAst3dOd6pIdm
-	cnIqxdjYnhUd8fioz8rmkJSSEXNXeHZLeMzyT++7Y6Ie+X4ILBHzKkPzz2mfiPbs59EpIRe2
-	RhwOkz7xtihPZu711y3zkF8dXTuw/lpWwEbXUm5BA0Fj6/lf1+3YIdx6yBymL+Z2D5cK7xua
-	tD2vA+8Kg2QGHMu08Q3zd2keLrak3tjWb963Pe1DgXuUyms4NdZnbAXIlhZJqqvcXTb+vjA/
-	URhUrpyK+2SaF/UsddqyGxFugma3hQfPba5tPCMiFDGS1ctxuULyByYM7ya7AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFIsWRmVeSWpSXmKPExsVy+t/xe7rsjbtTDe6eUbP4/ns2s8WXn7fZ
-	LT4fOc5msXjhN2aLT0ubGC0u75rDZnFwYRujxbEFYhZb915ld+D0aLxxg83jxbWbzB5dNy4x
-	e2xa1cnm8XmTXABrlJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamSvp1NSmpO
-	Zllqkb5dgl5G994brAXX5CpWvD7J0sC4R7KLkZNDQsBE4tOaXUxdjFwcQgJLGSVONjxhhkjI
-	SJyc1sAKYQtL/LnWxQZR9J5R4sbjU0wgCV4BO4mrf9aA2SwCKhLrX9xmhYgLSpyc+YQFxBYV
-	kJe4f2sGO4gtLOAlsWtjJyOIzSwgLnHryXywXhEBN4llZ3YxgyxgFljDJLHxzC2wQUICVRJ3
-	Dl0Ds9kEDCW63oJcwcnBKeAncXLjd1aIQWYSXVu7oIbKS2x/O4d5AqPQLCR3zEKybxaSlllI
-	WhYwsqxiFEktLc5Nzy021CtOzC0uzUvXS87P3cQIjMRtx35u3sE479VHvUOMTByMhxglOJiV
-	RHhXyu1MFeJNSaysSi3Kjy8qzUktPsRoCgyMicxSosn5wFSQVxJvaGZgamhiZmlgamlmrCTO
-	61nQkSgkkJ5YkpqdmlqQWgTTx8TBKdXAJHmueN6L8mmHJmw9nGYi5bZg64NUGS2pXcuXTN3+
-	8EmxZWruoZcatUEWDx08k65t2PQpt8RRm/f8tKCm2iD9Nh3FLy5fgraKxYl4Lee9yxqiszzW
-	ZdGsd0WM97SYL6eoXz3xTGylYcnfE4tuzeQ1/uA+4bTF9zPZjN/PSHK+X3Cr33zpUov/DNKv
-	bxyR/HHb+ovkR9YZN4125t579W71yvmXtpxa0nDoQ/4edn2P1VeWbpZZvcaSc7+l4QpZv9ab
-	MjypXPUP/zZE9rLOOGJhsEMkt/HBo+6MZexZXEL/j5roccfe1xFpU+88XzbrkJsws8SbrvIj
-	U6Qu7W7/v1HsSEFJ6knNAOYHi9alK38V3afEUpyRaKjFXFScCAB14NLfTQMAAA==
-X-CMS-MailID: 20240201113119eucas1p2da4ad2b5b7549c5fb99e540531411c2a
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20240201113119eucas1p2da4ad2b5b7549c5fb99e540531411c2a
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240201113119eucas1p2da4ad2b5b7549c5fb99e540531411c2a
-References: <20240201142348.38ac52d5@canb.auug.org.au>
-	<yeujnwul3nd6vhk2pidnh72l5lx4zp4sgup4qzgbe2fpex42yf@2wtt67dvl7s3>
-	<CGME20240201113119eucas1p2da4ad2b5b7549c5fb99e540531411c2a@eucas1p2.samsung.com>
+From: Anders Roxell <anders.roxell@linaro.org>
+Date: Thu, 1 Feb 2024 12:32:09 +0100
+Message-ID: <CADYN=9+DUzu6xEThaWQKp0udCsPs7h3XijyE5zmn-UYG8oM+AA@mail.gmail.com>
+Subject: Perf not able to cross compile
+To: linux-perf-users@vger.kernel.org, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, james.clark@arm.com, Arnd Bergmann <arnd@arndb.de>, 
+	Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Dear All,
+Hey,
 
-On 01.02.2024 04:55, Daniel Xu wrote:
-> Hi Stephen,
->
-> Thanks for the report.
->
-> On Thu, Feb 01, 2024 at 02:23:48PM +1100, Stephen Rothwell wrote:
->> Hi all,
->>
->> After merging the bpf-next tree, today's linux-next build (powerpc
->> pseries_le_defconfig) produced these runtime warnings in my qemu boot
-> I can't quite find that config in-tree. Mind giving me a pointer?
->
->> tests:
->>
->>    ipip: IPv4 and MPLS over IPv4 tunneling driver
->>    ------------[ cut here ]------------
->>    WARNING: CPU: 0 PID: 1 at kernel/bpf/btf.c:8131 register_btf_kfunc_id_set+0x68/0x74
->>    Modules linked in:
->>    CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.8.0-rc2-03380-gd0c0d80c1162 #2
->>    Hardware name: IBM pSeries (emulated by qemu) POWER8 (raw) 0x4d0200 0xf000004 of:SLOF,HEAD pSeries
->>    NIP:  c0000000003bfbfc LR: c00000000209ba3c CTR: c00000000209b9a4
->>    REGS: c0000000049bf960 TRAP: 0700   Not tainted  (6.8.0-rc2-03380-gd0c0d80c1162)
->>    MSR:  8000000002029033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 24000482  XER: 00000000
->>    CFAR: c0000000003bfbb0 IRQMASK: 0
->>    GPR00: c00000000209ba3c c0000000049bfc00 c0000000015c9900 000000000000001b
->>    GPR04: c0000000012bc980 000000000000019a 000000000000019a 0000000000000133
->>    GPR08: c000000002969900 0000000000000001 c000000002969900 c000000002969900
->>    GPR12: c00000000209b9a4 c000000002b60000 c0000000000110cc 0000000000000000
->>    GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
->>    GPR20: 0000000000000000 0000000000000000 0000000000000000 c0000000014cd250
->>    GPR24: c000000002003e6c c000000001582c78 000000000000018b c0000000020c1060
->>    GPR28: 0000000000000000 0000000000000007 c0000000020c10a8 c000000002968f80
->>    NIP [c0000000003bfbfc] register_btf_kfunc_id_set+0x68/0x74
->>    LR [c00000000209ba3c] cubictcp_register+0x98/0xc8
->>    Call Trace:
->>    [c0000000049bfc30] [c000000000010d58] do_one_initcall+0x80/0x2f8
->>    [c0000000049bfd00] [c000000002005aec] kernel_init_freeable+0x32c/0x520
->>    [c0000000049bfde0] [c0000000000110f8] kernel_init+0x34/0x25c
->>    [c0000000049bfe50] [c00000000000debc] ret_from_kernel_user_thread+0x14/0x1c
->>    --- interrupt: 0 at 0x0
->>    Code: 60420000 3d22ffc6 39290708 7d291a14 89290270 7d290774 79230020 4bfff8c0 60420000 e9240000 7d290074 7929d182 <0b090000> 3860ffea 4e800020 3c4c0121
->>    ---[ end trace 0000000000000000 ]---
->>    NET: Registered PF_INET6 protocol family
-> [...]
->
->> Exposed (and maybe caused) by commit
->>
->>    6e7769e6419f ("bpf: treewide: Annotate BPF kfuncs in BTF")
->>
-> My guess is the config does not enable CONFIG_DEBUG_INFO_BTF which
-> causes compilation to use the dummy definitions for BTF_KFUNCS_START().
->
-> I think there's probably a few ways to fix it. This untested diff should
-> work if I am guessing correctly. There's probably a cleaner way to do
-> this.  I'll take a closer look in the morning.
-
-I've observed this issue while testing today's linux-next on ARM64 bit 
-boards. The below patch fixes (or hides?) this warning. Feel free to add:
-
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+I'm trying to cross compile perf ARCH=3Darm64 on my x86_64 host from
+linus tree [1], branch master.
 
 
-> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-> index 0fe4f1cd1918..e24aabfe8ecc 100644
-> --- a/include/linux/btf_ids.h
-> +++ b/include/linux/btf_ids.h
-> @@ -227,7 +227,7 @@ BTF_SET8_END(name)
->   #define BTF_SET_END(name)
->   #define BTF_SET8_START(name) static struct btf_id_set8 __maybe_unused name = { 0 };
->   #define BTF_SET8_END(name)
-> -#define BTF_KFUNCS_START(name) static struct btf_id_set8 __maybe_unused name = { 0 };
-> +#define BTF_KFUNCS_START(name) static struct btf_id_set8 __maybe_unused name = { .flags = BTF_SET8_KFUNCS };
->   #define BTF_KFUNCS_END(name)
->
->   #endif /* CONFIG_DEBUG_INFO_BTF */
->
->
-> Thanks,
-> Daniel
+This is the failue I see, full log [2]:
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+..
+  CC      /home/tuxbuild/.cache/tuxmake/builds/1/build/libbpf/staticobjs/el=
+f.o
+  CC      /home/tuxbuild/.cache/tuxmake/builds/1/build/libbpf/staticobjs/fe=
+atures.o
+cc1: error: =E2=80=98-fcf-protection=3Dfull=E2=80=99 is not supported for t=
+his target
+error: command '/usr/local/bin/sccache' failed with exit code 1
+cp: cannot stat
+'/home/tuxbuild/.cache/tuxmake/builds/1/build/python_ext_build/lib/perf*.so=
+':
+No such file or directory
+make[2]: *** [Makefile.perf:678:
+/home/tuxbuild/.cache/tuxmake/builds/1/build/python/perf.cpython-311-x86_64=
+-linux-gnu.so]
+Error 1
+make[2]: *** Waiting for unfinished jobs....
+  LD      /home/tuxbuild/.cache/tuxmake/builds/1/build/libbpf/staticobjs/li=
+bbpf-in.o
+  LINK    /home/tuxbuild/.cache/tuxmake/builds/1/build/libbpf/libbpf.a
+make[1]: *** [Makefile.perf:261: sub-make] Error 2
+make: *** [Makefile:70: all] Error 2
 
+Running 'x86_64-linux-gnu-python3-config --cflags' I see
+'-fcf-protection' in the output and this happens when I'm building
+cross compile arm64 on my x86_64 host machine. Building on an arm64
+host works. cross compile x86_64 on my x86_64 host works too.
+
+I have 'aarch64-linux-gnu-python3-config' installed but that isn't used.
+
+$ x86_64-linux-gnu-python3-config --cflags
+-I/usr/include/python3.11 -I/usr/include/python3.11  -Wsign-compare -g
+  -fstack-protector-strong -fstack-clash-protection -Wformat
+-Werror=3Dformat-security -fcf-protection  -DNDEBUG -g -fwrapv -O2 -Wall
+$ aarch64-linux-gnu-python3-config --cflags
+-I/usr/include/python3.11 -I/usr/include/python3.11  -Wsign-compare -g
+  -fstack-protector-strong -fstack-clash-protection -Wformat
+-Werror=3Dformat-security -mbranch-protection=3Dstandard  -DNDEBUG -g
+-fwrapv -O2 -Wall
+
+I tried to set PYTHON and PYTHON_CONFIG too, but didn't work.
+
+It doesn't try to use $(CROSS_COMPILE)python3-config, any idea how to
+use the correct config?
+
+Cheers,
+Anders
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+[2]  https://storage.tuxsuite.com/public/linaro/lkft/builds/2bc6x6cISHzG9Jg=
+o0oAVv2OgLOG/build.log
 
