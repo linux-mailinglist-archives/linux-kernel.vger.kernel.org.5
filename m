@@ -1,129 +1,118 @@
-Return-Path: <linux-kernel+bounces-47935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFB9E8454D2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:05:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E4C98454D5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:06:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADA762836CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:05:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF08A28805A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:06:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1417315B111;
-	Thu,  1 Feb 2024 10:05:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bHRqrwND"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAE6E15B971;
+	Thu,  1 Feb 2024 10:06:15 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 471994D9F4;
-	Thu,  1 Feb 2024 10:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E5015B11F
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 10:06:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706781946; cv=none; b=HnMksamZ1CRCqDpDzDQXBgNxu8yGj9fWM9zwvbP8Eo1aJeVp5SYIIuRQb5wgLPYU8vYdHOQrvMdn+GmDl9jm81Llo5gdZtesNAIi6QI17CLE9wHGbTn5b9+ZXMEU6l4qaFaJGWhHI903zO77tYotfvtfAPZjJa3lH70Vq/CSFIE=
+	t=1706781975; cv=none; b=a5dT28bn2WdhDyp5qnQP7pG6DDjI4zEKObKzJ4G1p9fH8Db73EU4Z7q6XoFpbqNT0wTeIMyv02EFYY66ia5yc+ZEGGfCliERFA+vnO2iy7iO+JMD4kes53Q0DkX2E3h+fEX2Cu9vyOD9kbPqFqADAS/B+pPpBtY9Xw1goMLquzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706781946; c=relaxed/simple;
-	bh=OCNyn/+xthVB/CqbVTIbZppBhTX2tBQqtngKgAF+EVU=;
+	s=arc-20240116; t=1706781975; c=relaxed/simple;
+	bh=uzUShjiFX/7f0dsrKJDkxwU7eQEa2Tnovp7BWZ43Vwk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AOf1hpwJ053AzfOCEPH9HpI4l4JXGqec/QttNkcmDt1p2/N+/As/EpOHE5cfDxcQ+co63NjrR/MUzuZNErEp1IM/3vNzciUi7K9erqfUNLGXzgGuHD7RawJEwv5maFOTVkCXUIDQhZFbFxpwlRM3E5GgHTuh7wXl8svggf/KM8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bHRqrwND; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF129C43390;
-	Thu,  1 Feb 2024 10:05:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706781945;
-	bh=OCNyn/+xthVB/CqbVTIbZppBhTX2tBQqtngKgAF+EVU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bHRqrwNDCBUSpevdR2oKRzmtqXY9LZ2Vt8YhL/C46k/Aittq0sbfuP7a4DJPlD9ib
-	 Sw+UYpgXUOwQty/m4/V8pLakfQPwCdTiOUEBtqLeVVITg4p0dkgz+fyRCRoJWg8ekE
-	 cT7PjUWI/BAmuP+1LMcYY3l5oWeNOdWyDYQVW5lFSuBHcsRdWSyzM2tUo/VQn2pn+/
-	 VpVGqyAsDRDm+t2d18ZXTCFyg9oQGxHLxOhJoOtiPAmNj9ZW9OxJbEGW15j+EN6ap0
-	 uBIgtieGe6HDPKDDHHeyGsTUnyIgSIPnoDOTncfC2EO7YhnfGQ9YRA6PINUg8zoomP
-	 J9wgwubT3oFOg==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rVTx5-000000006DY-09wo;
-	Thu, 01 Feb 2024 11:05:47 +0100
-Date: Thu, 1 Feb 2024 11:05:47 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-	Jiri Kosina <jikos@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Konrad Dybcio <konrad.dybcio@somainline.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v4 1/3] dt-bindings: HID: i2c-hid: Document reset-related
- properties
-Message-ID: <Zbts-9tRDPcXbhYi@hovoldconsulting.com>
-References: <20240131-x13s-touchscreen-v4-0-39c0f9925d3c@quicinc.com>
- <20240131-x13s-touchscreen-v4-1-39c0f9925d3c@quicinc.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=KV220HDnzt9me498zS3siFh9hzr0KB3veRMg70Odn54H5IsZU+lEL1PcNnlfQ5D6YLpdMNs7BGp2Pm1K6JY63Q9wG9gQ9gGgr3N2ESg+QKDQyu5jXR7jXhPWHzeVbolRnOpJJ+cPBsXCZOXvAnea+a1w8z06whnhJ7v6+q7bav0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rVTxH-0008GF-CA; Thu, 01 Feb 2024 11:05:59 +0100
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rVTxG-003pfd-HH; Thu, 01 Feb 2024 11:05:58 +0100
+Received: from pengutronix.de (unknown [172.20.34.65])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 1FDF6282BF9;
+	Thu,  1 Feb 2024 10:05:58 +0000 (UTC)
+Date: Thu, 1 Feb 2024 11:05:57 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: carlos.song@nxp.com
+Cc: broonie@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de, 
+	kernel@pengutronix.de, linux-imx@nxp.com, benjamin@bigler.one, stefanmoring@gmail.com, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH v3] spi: imx: fix the burst length at DMA mode and CPU
+ mode
+Message-ID: <20240201-resupply-doorframe-feb41940155f-mkl@pengutronix.de>
+References: <20240201100115.503296-1-carlos.song@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240131-x13s-touchscreen-v4-1-39c0f9925d3c@quicinc.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240201100115.503296-1-carlos.song@nxp.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Wed, Jan 31, 2024 at 07:07:26PM -0800, Bjorn Andersson wrote:
-> Some I2C HID devices has a reset pin and requires that some specified
-> time elapses after this reset pin is deasserted, before communication
-> with the device is attempted.
-> 
-> The Linux implementation is looking for these in the "reset-gpios" and
-> "post-reset-deassert-delay-ms" properties already, so use these property
-> names.
-> 
-> Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+On 01.02.2024 18:01:15, carlos.song@nxp.com wrote:
+> From: Carlos Song <carlos.song@nxp.com>
+>=20
+> For DMA mode, the bus width of the DMA is equal to the size of data
+> word, so burst length should be configured as bits per word.
+>=20
+> For CPU mode, because of the spi transfer len is in byte, so burst
+> length should be configured as bits per byte * spi_imx->count.
+>=20
+> Signed-off-by: Carlos Song <carlos.song@nxp.com>
+> Reviewed-by: Clark Wang <xiaoning.wang@nxp.com>
+> Fixes: e9b220aeacf1 ("spi: spi-imx: correctly configure burst length when=
+ using dma")
+> Fixes: 5f66db08cbd3 ("spi: imx: Take in account bits per word instead of =
+assuming 8-bits")
 > ---
->  Documentation/devicetree/bindings/input/hid-over-i2c.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/input/hid-over-i2c.yaml b/Documentation/devicetree/bindings/input/hid-over-i2c.yaml
-> index 138caad96a29..f07ff4cb3d26 100644
-> --- a/Documentation/devicetree/bindings/input/hid-over-i2c.yaml
-> +++ b/Documentation/devicetree/bindings/input/hid-over-i2c.yaml
-> @@ -50,6 +50,12 @@ properties:
->      description: Time required by the device after enabling its regulators
->        or powering it on, before it is ready for communication.
->  
-> +  post-reset-deassert-delay-ms:
-> +    description: Time required by the device after reset has been deasserted,
-> +      before it is ready for communication.
+> Changes for V3:
+> - include <linux/bits.h>=20
+> ---
+>  drivers/spi/spi-imx.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
+> index 546cdce525fc..2a1ae7b00760 100644
+> --- a/drivers/spi/spi-imx.c
+> +++ b/drivers/spi/spi-imx.c
+> @@ -21,7 +21,7 @@
+>  #include <linux/types.h>
+>  #include <linux/of.h>
+>  #include <linux/property.h>
+> -
+> +#include <linux/bits.h>
 
-I know that Rob reluctantly acked this, but re-reading the commit
-message for the commit that added support for the reset gpio to the
-driver, and added a comment about this not having been added to the
-devicetree binding, it becomes obvious that the latter was done on
-purpose and that we probably should not be adding the
-'post-reset-deassert-delay-ms' property after all:
+nitpick:
+Please keep the includes sorted alphabetically.
 
-	For now the new "post-reset-deassert-delay-ms" property is only
-	used on x86/ACPI (non devicetree) devs. IOW it is not used in
-	actual devicetree files and the same goes for the reset GPIO.
-	The devicetree-bindings maintainers have requested properties
-	like these to not be added to the devicetree-bindings, so the
-	new property + GPIO are deliberately not added to the existing
-	devicetree-bindings.
+>  #include <linux/dma/imx-dma.h>
 
-	2be404486c05 ("HID: i2c-hid-of: Add reset GPIO support to i2c-hid-of")
+Marc
 
-So perhaps we should just do this properly and add a new compatible
-property for X13s touchscreen which can be used to determine these
-delays (e.g. for cases where some default values are insufficient).
-
-Johan
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
