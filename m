@@ -1,188 +1,148 @@
-Return-Path: <linux-kernel+bounces-47736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9129684521D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:39:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA91A845221
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:40:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3C4B28D959
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 07:39:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 546AB28DC22
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 07:40:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D14158D72;
-	Thu,  1 Feb 2024 07:39:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42680158D8A;
+	Thu,  1 Feb 2024 07:39:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="cIkXFR+n"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="jXMAm/6F"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 993A6208DD;
-	Thu,  1 Feb 2024 07:39:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF95158D73
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 07:39:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706773146; cv=none; b=esFXr8JAJVCC6bJ3KxT/aXO2ksb34kAu0sBgJSaTk/eXd/ykx5qqNCfE2o1B8QkJvbsYgPa3QM2tHmKG+GVOPn/cympoV+4c1ZGHE75dUTrc7tssU41cV8kYym5TCsLLVBMuZoa5r3j0UWS7yAgzRzeAr+13egfl7t0uabme9j0=
+	t=1706773193; cv=none; b=NVQjdGtk8Q2vyA6aNC/V81Qx/Dgi8nBxsb/B0/79nJ1FKE/kpO32GhVixs3N1W58ViuJ5+8Shq18CgMybUwJuzza81nODqyMbMgPxhD2ytfNnN+4HEabk10nlqq4oMAXAjwE8TdKwQfwxHg8Czq7LmY4UJWqOjR51oXRl27oneE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706773146; c=relaxed/simple;
-	bh=Vy3QAsyp6Zh8+Hcn9aLRVk8VwYfa3R24xQXNfWAKT4M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JAKSUxILUQY7Ruo7iOx6NcfGS3CtyyTTNtbH8ryxpg/3gKLeNnyg/jaQCHYA/Pk6TLe9MEaNyMchyWSjGTdNXeV39in9uYYuGSJxs99bo9khpNoZ8okk+z9btIkL4BACZXlBktK8SFBkXGnzyN3PfPS7wJX1kjQVZWJEmi/E0mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=cIkXFR+n; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41167OjR023207;
-	Thu, 1 Feb 2024 07:38:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=O5xbgGIVQTFeQwn1snTqVjPyk1UJqDq7NObWf8KUYvU=;
- b=cIkXFR+n/pu1/YCFuL3LWp5TOK+UO2VLs5whWub60JTQvqf7suBBLJs13FHLYc9zWQ1W
- d7JcT8/RNZwbGn/W9zSt3rfaBTNLYdDeyuE6YMcoH5fmZYF7NFUYjlyREmOtGMtMfskT
- HRY/TVn8v2Tf/srs8UsUY3sS7ni6PvYdHi7HiI6iDLVTD1FyPMl8WE5q4/nXQOoznlw7
- aAKl/QCb1GgQdQQdknUYQD49mCWo5/n6UIFW66TcWc0JZVK6DW0fKJF9D86ubAiq+4tT
- amyz0z2suBSkX+5Rf/t3P598z4ONL5iKeResvWudmHo76N13suWP/lxmy8dM7gGYnTIm gA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w05re1wty-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 07:38:49 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4117TlOG016946;
-	Thu, 1 Feb 2024 07:38:48 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w05re1wtf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 07:38:48 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4116sqx1008242;
-	Thu, 1 Feb 2024 07:38:47 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vwdnmajk0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 07:38:47 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4117cj8X39518878
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 1 Feb 2024 07:38:45 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1431920043;
-	Thu,  1 Feb 2024 07:38:45 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DA4DE20040;
-	Thu,  1 Feb 2024 07:38:44 +0000 (GMT)
-Received: from DESKTOP-2CCOB1S. (unknown [9.171.218.73])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu,  1 Feb 2024 07:38:44 +0000 (GMT)
-Date: Thu, 1 Feb 2024 08:38:43 +0100
-From: Tobias Huschle <huschle@linux.ibm.com>
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>, Abel Wu <wuyun.abel@bytedance.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux.dev, netdev@vger.kernel.org
-Subject: Re: Re: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6
- sched/fair: Add lag based placement)
-Message-ID: <ZbtKg6815Uwg3HPw@DESKTOP-2CCOB1S.>
-References: <20231211115329-mutt-send-email-mst@kernel.org>
- <CACGkMEudZnF7hUajgt0wtNPCxH8j6A3L1DgJj2ayJWhv9Bh1WA@mail.gmail.com>
- <20231212111433-mutt-send-email-mst@kernel.org>
- <42870.123121305373200110@us-mta-641.us.mimecast.lan>
- <20231213061719-mutt-send-email-mst@kernel.org>
- <25485.123121307454100283@us-mta-18.us.mimecast.lan>
- <20231213094854-mutt-send-email-mst@kernel.org>
- <20231214021328-mutt-send-email-mst@kernel.org>
- <92916.124010808133201076@us-mta-622.us.mimecast.lan>
- <20240121134311-mutt-send-email-mst@kernel.org>
+	s=arc-20240116; t=1706773193; c=relaxed/simple;
+	bh=D7vt8t+Zz5UIHdX41lnFPsMLKfKHutOJU93bZnKmsy4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=opAmd9z4dowDALB11fJ8QSLcxIfWC07kXU0Hu2c0wRfQUWEd/dz+rJ9njw8FGkxt2LhnkxrCl6U7F447tKZQBfY+5CEMP5BXU4ciSHDS09LIWM2qiLDNEyVr7jCXC+waRE7+HI1+EywXXM4Xd93TUHmxY+di6epKrdL8i2/FdSI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=jXMAm/6F; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-35-128.elisa-laajakaista.fi [91.154.35.128])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 622AA4AB0;
+	Thu,  1 Feb 2024 08:38:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1706773104;
+	bh=D7vt8t+Zz5UIHdX41lnFPsMLKfKHutOJU93bZnKmsy4=;
+	h=Date:Subject:To:References:From:Cc:In-Reply-To:From;
+	b=jXMAm/6FqXEI4p0Oq9kMtUWqQ8OgELAqXEnqx8IwTG0GYBKBRkoCeyjHkFi+4HBQP
+	 NmoS2gmXBKGT4AFTKOhuQwMqaU//8b9Tj93c4g7PCaaTkJzvoT2R1rxK9D4s1RhS++
+	 SWCUq+8hH0IT5QbwvoaUCdq9z8x7Cm9jXcfM7qCI=
+Message-ID: <a5de522e-240c-44f7-a968-74a10a4cb62f@ideasonboard.com>
+Date: Thu, 1 Feb 2024 09:39:39 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240121134311-mutt-send-email-mst@kernel.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: dszN-J_Pt26RmI-Q8iq1vbjEbXr0EEWP
-X-Proofpoint-ORIG-GUID: TIVluWx1UphXsst12-HPeQ90EczE4qo0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-31_10,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
- spamscore=0 lowpriorityscore=0 suspectscore=0 adultscore=0 malwarescore=0
- mlxlogscore=686 bulkscore=0 phishscore=0 priorityscore=1501 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402010060
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/5] drm: xlnx: zynqmp_dpsub: Clear status register
+ ASAP
+Content-Language: en-US
+To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+References: <20240124025402.373620-1-anatoliy.klymenko@amd.com>
+ <20240124025402.373620-4-anatoliy.klymenko@amd.com>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: laurent.pinchart@ideasonboard.com, maarten.lankhorst@linux.intel.com,
+ mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+ michal.simek@amd.com, dri-devel@lists.freedesktop.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20240124025402.373620-4-anatoliy.klymenko@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sun, Jan 21, 2024 at 01:44:32PM -0500, Michael S. Tsirkin wrote:
-> On Mon, Jan 08, 2024 at 02:13:25PM +0100, Tobias Huschle wrote:
-> > On Thu, Dec 14, 2023 at 02:14:59AM -0500, Michael S. Tsirkin wrote:
-> > - Along with the wakeup of the kworker, need_resched needs to
-> >   be set, such that cond_resched() triggers a reschedule.
+On 24/01/2024 04:54, Anatoliy Klymenko wrote:
+> Clear status register as soon as we read it.
 > 
-> Let's try this? Does not look like discussing vhost itself will
-> draw attention from scheduler guys but posting a scheduling
-> patch probably will? Can you post a patch?
-
-As a baseline, I verified that the following two options fix
-the regression:
-
-- replacing the cond_resched in the vhost_worker function with a hard
-  schedule 
-- setting the need_resched flag using set_tsk_need_resched(current)
-  right before calling cond_resched
-
-I then tried to find a better spot to put the set_tsk_need_resched
-call. 
-
-One approach I found to be working is setting the need_resched flag 
-at the end of handle_tx and hande_rx.
-This would be after data has been actually passed to the socket, so 
-the originally blocked kworker has something to do and will profit
-from the reschedule. 
-It might be possible to go deeper and place the set_tsk_need_resched
-call to the location right after actually passing the data, but this
-might leave us with sprinkling that call in multiple places and
-might be too intrusive.
-Furthermore, it might be possible to check if an error occured when
-preparing the transmission and then skip the setting of the flag.
-
-This would require a conceptual decision on the vhost side.
-This solution would not touch the scheduler, only incentivise it to
-do the right thing for this particular regression.
-
-Another idea could be to find the counterpart that initiates the
-actual data transfer, which I assume wakes up the kworker. From
-what I gather it seems to be an eventfd notification that ends up
-somewhere in the qemu code. Not sure if that context would allow
-to set the need_resched flag, nor whether this would be a good idea.
-
+> Addressing comments from
+> https://lore.kernel.org/dri-devel/beb551c7-bb7e-4cd0-b166-e9aad90c4620@ideasonboard.com/
 > 
-> > - On cond_resched(), verify if the consumed runtime of the caller
-> >   is outweighing the negative lag of another process (e.g. the 
-> >   kworker) and schedule the other process. Introduces overhead
-> >   to cond_resched.
+> Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+> ---
+>   drivers/gpu/drm/xlnx/zynqmp_dp.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Or this last one.
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> index d60b7431603f..5a3335e1fffa 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> @@ -1624,6 +1624,8 @@ static irqreturn_t zynqmp_dp_irq_handler(int irq, void *data)
+>   	u32 status, mask;
+>   
+>   	status = zynqmp_dp_read(dp, ZYNQMP_DP_INT_STATUS);
+> +	/* clear status register as soon as we read it */
+> +	zynqmp_dp_write(dp, ZYNQMP_DP_INT_STATUS, status);
+>   	mask = zynqmp_dp_read(dp, ZYNQMP_DP_INT_MASK);
+>   	if (!(status & ~mask))
+>   		return IRQ_NONE;
+> @@ -1634,8 +1636,6 @@ static irqreturn_t zynqmp_dp_irq_handler(int irq, void *data)
+>   	if (status & ZYNQMP_DP_INT_CHBUF_OVERFLW_MASK)
+>   		dev_dbg_ratelimited(dp->dev, "overflow interrupt\n");
+>   
+> -	zynqmp_dp_write(dp, ZYNQMP_DP_INT_STATUS, status);
+> -
+>   	if (status & ZYNQMP_DP_INT_VBLANK_START)
+>   		zynqmp_dpsub_drm_handle_vblank(dp->dpsub);
+>   
 
-On cond_resched itself, this will probably only be possible in a very 
-very hacky way. That is because currently, there is no immidiate access
-to the necessary data available, which would make it necessary to 
-bloat up the cond_resched function quite a bit, with a probably 
-non-negligible amount of overhead.
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-Changing other aspects in the scheduler might get us in trouble as
-they all would probably resolve back to the question "What is the magic
-value that determines whether a small task not being scheduled justifies
-setting the need_resched flag for a currently running task or adjusting 
-its lag?". As this would then also have to work for all non-vhost related
-cases, this looks like a dangerous path to me on second thought.
+  Tomi
 
-
--------- Summary --------
-
-In my (non-vhost experience) opinion the way to go would be either
-replacing the cond_resched with a hard schedule or setting the
-need_resched flag within vhost if the a data transfer was successfully
-initiated. It will be necessary to check if this causes problems with
-other workloads/benchmarks.
 
