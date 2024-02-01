@@ -1,158 +1,171 @@
-Return-Path: <linux-kernel+bounces-48135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B0AE8457DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:33:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E53198457DB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:33:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE0FB1F21257
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:33:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A05692903F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:33:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6D8853375;
-	Thu,  1 Feb 2024 12:27:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41BB5B697;
+	Thu,  1 Feb 2024 12:30:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="czaYRD7d"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lSbyEQTE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7568E53363;
-	Thu,  1 Feb 2024 12:27:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2221E5B675;
+	Thu,  1 Feb 2024 12:30:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706790452; cv=none; b=bBF8dDCqxqbJALAR6ayyZFiQL1+YGOJaOH6YHuOyCloYfRopaWLLVNiOluDbE8msQVWmc3xMdI0ra7JYWXjppETEBpVV1wb3MxybxzKZlTiYPCk2FxWdFpmaOIbjIbYul02XKYY51cfjTC87e6T3wP3wVsT8BASu6eRjud0/S2c=
+	t=1706790611; cv=none; b=cOi3fDsdaBmAjuigsLYWGyAJ+s4yyQRLPce8UKRI2IGLytK+6XQ78BJ+ipYVidoW6Fpiruhq3y81ZZXmvRqTgd4P527GZwuElJpsfmRRWmvn2k2wBwQvzfT9jrNXPNVZSFqletExVX5ysed3fZuOvfdqvFIrhj8Ds/ssC3gRKwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706790452; c=relaxed/simple;
-	bh=GvJ6UC3m5Gt80ckKHHc5Z0iPYxmYUNv9YAO1yLrwBxw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=To2AzdAIkR90yORc58rrcxKc20dNzmOHDrEUZylhv7a2RBG0QI/bdrfEQIm25FBtRAPWzvOmxAO1qmTTz7Wd4ApbUbEWpDASAefEkJ3ydwORShC6bJRmRVbPuE5IYs+CVFCByIIGeEjhgr4SIPQAlTXpk2GkIx+WROkPDI36GjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=czaYRD7d; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 411CFMkc018597;
-	Thu, 1 Feb 2024 12:27:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=nphFBV7jRUlL4pJWoJtaUA6/hmMdEE8mLfbOdZWsKFc=; b=cz
-	aYRD7deBYz2VhGa2ex43+TdjHvXEoiRJC2xMMukDGN+QPbiG+YUk9EzKY2oBIy41
-	5CeOEkb/euIqWP/6K0T+M19M8YRp5a1y0creMmKtPMyj1B49jd7u8FfxUDyYB2kn
-	ix4Oa2eSR564weWbWGUD9FzagEMpa01tXKPQgTGoWPN0k4GepNVQIRx30aQJ+FRU
-	/l3SP5TdPM+2xd5QO9nmOpYr9DNjMS5hbhpGlzA4DpVbxCvZPMvBgIKy96CyO9dU
-	+rvsL9xTUlbyLj4gLVr1l9PbilSX5meVy+IQzZLx6GGfxWcPMCq4LMYNO8q3rHPz
-	du12aBWHjrshB5G/nj0Q==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0b4y00tf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 12:27:26 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 411CRQm1006554
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 1 Feb 2024 12:27:26 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 1 Feb
- 2024 04:27:20 -0800
-Message-ID: <a163702b-40f9-4082-a4d1-d89de645a651@quicinc.com>
-Date: Thu, 1 Feb 2024 20:27:17 +0800
+	s=arc-20240116; t=1706790611; c=relaxed/simple;
+	bh=rmELVqCs4ikLv5jAKdVyJAPps8W0PUgMVeUUwWBQpRA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XTo2jrgKkR3zlIehD5+3YsldHDEb59+BrOsk6UHYz9JrWa7IQhzvpOAMbx2Rd1oU2wAj5tzWJ3mF2GDjfGAVgoa0DncypUbTRuOf4V3W5qb5ASIhoUWRwPl7NJPUk+kMxu1npay6iAgQzrV6EchfCbWCZcMADdfVSBWoDJqV0Pk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lSbyEQTE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 307BFC43390;
+	Thu,  1 Feb 2024 12:30:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706790610;
+	bh=rmELVqCs4ikLv5jAKdVyJAPps8W0PUgMVeUUwWBQpRA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lSbyEQTE218AJfS4lkow46hitJEmhR5LoGoOpATK3DKPCzy5hzHLI+gdkNeZbs+Rs
+	 CCFzznShBjxWnlYLytIa3ixKjNyGnjrtytdXMJT83kc7YjVo8fRVu0Mf/s5cOpNdp8
+	 wnxVcMYCn6jz5T6Dc+q0j9c0EP6nkQujGTgf7zVRUTlfNWQ48DjIKa0XHkEQ4Yooe6
+	 l1F1sjaWr5p4MHoWlSAN+ES1/NMIQudiol59cskF0zdDdr6ZPHhACbNUK929adYcv6
+	 oZKZz+OazSSUeU0jNaxQddyOnPe0INtR9310oL8WCZVQdhxsYXxlzgRtvYKNwOHSvV
+	 ov8+bMzc5WNmQ==
+Date: Thu, 1 Feb 2024 12:30:04 +0000
+From: Lee Jones <lee@kernel.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Crutcher Dunnavant <crutcher+kernel@datastacks.com>,
+	Juergen Quade <quade@hsnr.de>,
+	David Laight <David.Laight@aculab.com>
+Subject: Re: [PATCH v3 1/1] lib/vsprintf: Implement spprintf() to catch
+ truncated strings
+Message-ID: <20240201123004.GA938078@google.com>
+References: <20240130160953.766676-1-lee@kernel.org>
+ <ZbuFSIIGbfhXeP92@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/6] arm64: dts: qcom: aim300: add AIM300 AIoT
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <dmitry.baryshkov@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
-        Qiang Yu
-	<quic_qianyu@quicinc.com>,
-        Ziyue Zhang <quic_ziyuzhan@quicinc.com>
-References: <20240119100621.11788-1-quic_tengfan@quicinc.com>
- <20240119100621.11788-7-quic_tengfan@quicinc.com>
- <d3ef45cf-2de8-4f5b-8857-62d1996f3f58@linaro.org>
- <842bf6ad-46e1-43d8-86be-79ab0f49710b@quicinc.com>
- <c17dafd2-db89-4fe2-8e98-2a031f7237c2@quicinc.com>
- <b28904a6-c1ef-44b5-96ca-313a9a2a3f8b@quicinc.com>
- <3e3cbc36-2f3f-4295-9325-90757f0d77ce@linaro.org>
- <012bb387-2472-4bcb-ba87-3bf75dd88d64@quicinc.com>
- <5c6fec5f-79ed-4c93-b337-68a2c25d8a44@linaro.org>
-From: Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <5c6fec5f-79ed-4c93-b337-68a2c25d8a44@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: UnX-wVQ6ezZSGJuR7TVmZyFlQ2-Ay2sB
-X-Proofpoint-GUID: UnX-wVQ6ezZSGJuR7TVmZyFlQ2-Ay2sB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-01_01,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- bulkscore=0 priorityscore=1501 impostorscore=0 suspectscore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 phishscore=0 mlxscore=0
- mlxlogscore=547 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2402010099
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZbuFSIIGbfhXeP92@smile.fi.intel.com>
 
+On Thu, 01 Feb 2024, Andy Shevchenko wrote:
 
-
-On 2/1/2024 8:20 PM, Krzysztof Kozlowski wrote:
-> On 01/02/2024 13:16, Tengfei Fan wrote:
->>
->>
->> On 2/1/2024 8:03 PM, Krzysztof Kozlowski wrote:
->>> On 01/02/2024 12:49, Tengfei Fan wrote:
->>>>>>> This should be probably TX SWR_INPUT1.
->>>>>>>
->>>>>>> Best regards,
->>>>>>> Krzysztof
->>>>>>>
->>>>>>
->>>>>> I will double check this with related team and I will update this.
->>>>>>
->>>>>
->>>>> I will apply "TX SWR_INPUT1" on audio-routing node in the next patch
->>>>> series.
->>>>>
->>>>
->>>> This patch series has been sent for nearly two weeks. do you think it is
->>>> better to modify the patch series acording to the current comments and
->>>> submit a new patch series, or continue to wait for your review comments
->>>> on the current path series?
->>>
->>> Hi,
->>>
->>> Whom do you ask?
->>>
->>> Best regards,
->>> Krzysztof
->>>
->>
->> Sorry Krzysztof, can you give sone guidance on whether I should update
->> patch and submit a new patch series, or do you need time to review
->> current patch series?
+> On Tue, Jan 30, 2024 at 04:09:53PM +0000, Lee Jones wrote:
+> > There is an ongoing effort to replace the use of {v}snprintf() variants
+> > with safer alternatives - for a more in depth view, see Jon's write-up
+> > on LWN [0] and/or Alex's on the Kernel Self Protection Project [1].
+> > 
+> > Whist executing the task, it quickly became apparent that the initial
+> > thought of simply s/snprintf/scnprintf/ wasn't going to be adequate for
+> > a number of cases.  Specifically ones where the caller needs to know
+> > whether the given string ends up being truncated.  This is where
+> > spprintf() comes in, since it takes the best parts of both of the
+> > aforementioned variants.  It has the testability of truncation of
+> > snprintf() and returns the number of Bytes *actually* written, similar
+> > to scnprintf(), making it a very programmer friendly alternative.
+> > 
+> > Here's some examples to show the differences:
+> > 
+> >   Success: No truncation - all 9 Bytes successfully written to the buffer
+> > 
+> >     ret = snprintf (buf, 10, "%s", "123456789");  // ret = 9
+> >     ret = scnprintf(buf, 10, "%s", "123456789");  // ret = 9
+> >     ret = spprintf (buf, 10, "%s", "123456789");  // ret = 9
+> > 
+> >   Failure: Truncation - only 9 of 10 Bytes written; '-' is truncated
+> > 
+> >     ret = snprintf (buf, 10, "%s", "123456789---"); // ret = 12
+> > 
+> >       Reports: "12 Bytes would have been written if buf was large enough"
+> >       Issue: Too easy for programmers to assume ret is Bytes written
+> > 
+> >     ret = scnprintf(buf, 10, "%s", "123456789---"); // ret = 9
+> > 
+> >       Reports: "9 Bytes actually written"
+> >       Issue: Not testable - returns 9 on success AND failure (see above)
+> > 
+> >     ret = spprintf (buf, 10, "%s", "123456789---"); // ret = 10
+> > 
+> >       Reports: "Data provided is too large to fit in the buffer"
+> >       Issue: No tangible impact: No way to tell how much data was lost
+> > 
+> > Since spprintf() only reports the total size of the buffer, it's easy to
+> > test if they buffer overflowed since if we include the compulsory '\0',
+> > only 9 Bytes additional Bytes can fit, so the return of 10 informs the
+> > caller of an overflow.  Also, if the return data is plugged straight
+> > into an additional call to spprintf() after the occurrence of an
+> > overflow, no out-of-bounds will occur:
+> > 
+> >     int size = 10;
+> >     char buf[size];
+> >     char *b = buf;
+> > 
+> >     ret = spprintf(b, size, "1234");
+> >     size -= ret;
+> >     b += ret;
+> >     // ret = 4  size = 6  buf = "1234\0"
+> > 
+> >     ret = spprintf(b, size, "5678");
+> >     size -= ret;
+> >     b += ret;
+> >     // ret = 4  size = 2  buf = "12345678\0"
+> > 
+> >     ret = spprintf(b, size, "9***");
+> >     size -= ret;
+> >     b += ret;
+> >     // ret = 2  size = 0  buf = "123456789\0"
+> > 
+> > Since size is now 0, further calls result in no changes of state.
+> > 
+> >     ret = spprintf(b, size, "----");
+> >     size -= ret;
+> >     b += ret;
+> >     // ret = 0  size = 0  buf = "123456789\0"
 > 
-> Up to you, I do not plan to provide more reviews on this. I just
-> commented about this thing here, because I was doing similar work for QRD.
+> > [0] https://lwn.net/Articles/69419/
+> > [1] https://github.com/KSPP/linux/issues/105
 > 
-> Best regards,
-> Krzysztof
+> Link: ... [0]
+> Link: ... [1]
+
+OOI, what does that do?
+
+Does tooling pick-up on them?
+
+These links are for humans.
+
+Is there documentation I can go look at?
+
+> > Signed-off-by: Lee Jones <lee@kernel.org>
 > 
+> ...
+> 
+> I'm a bit late in this discussion, but the commit message doesn't spit a single
+> word on why seq_buf() approach can't be used in those cases?
 
-Thank youfor clarification.
-
-Next I will update patches according to the current comments and submit 
-a new path series.
+When I can carve out a little more free time, investigating seq_buf() is
+the next step.
 
 -- 
-Thx and BRs,
-Tengfei Fan
+Lee Jones [李琼斯]
 
