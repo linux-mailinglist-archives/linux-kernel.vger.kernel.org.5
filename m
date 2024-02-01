@@ -1,115 +1,113 @@
-Return-Path: <linux-kernel+bounces-48958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6A798463C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:48:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 528CA8463CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:49:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6436028EBD9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:48:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C85D41F28AEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:49:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 907D445016;
-	Thu,  1 Feb 2024 22:48:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7882945BF6;
+	Thu,  1 Feb 2024 22:48:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZaqcIwJI"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hn4+2HDY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A60A3F9C6;
-	Thu,  1 Feb 2024 22:48:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACE0B4643B;
+	Thu,  1 Feb 2024 22:48:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706827718; cv=none; b=ZFbyzjiX6p+475MVNFf0KqV5dOHaekb/bpUCd218QOmJ1Bmz2zZ6nDO0y1tWzS/gU5Kkp1xY+RJUk9Oa0snJ1PN5ZSZsjX+mJh9GpnacJGJOYc0YvVMFYY5qNOoi3MQcqHVxhsh90ubSdfvadaY+rBpOJ2C9tiDAyzimn+ck7NU=
+	t=1706827730; cv=none; b=EWW+cDNQniT0Jpmtf56KInfPPkoxlJ7w2XBCeOoI4w6mbzknvb0NH7aBsbElDDitWfjhA5yXyh3rO5WAxrkqPyPLTTDiwSXDQhVz0a9HI7d86G3k+RARndokAF+RQEsqXDF/ZtW9uRkL7p+COU0xO1OM1pUzf2JYz+DUh1N/8sA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706827718; c=relaxed/simple;
-	bh=qTGnHB0DhHdP+Fu6JUh7KJI1E4IexDxNou/9SW9fmzY=;
+	s=arc-20240116; t=1706827730; c=relaxed/simple;
+	bh=e8x2BkkjxYMoP713pO7VA7If6AbOHEDo8GQsevRtfDE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kGu72JlcfutoeQwUJkZ9+ZUM2axqPaLUBENbJn4ptdIvaYxf51E/2O7VgY14JZKjDCY/FUQPyYhMUYit5LB8+JpGPETDpdTEP+FowB+T5exAitKVOHY9cQclq7EAKXdKPga9C7kOv0iK8WTshUvoiAlVou55VJXPlaXNi8FJnoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZaqcIwJI; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-51032e62171so2011705e87.3;
-        Thu, 01 Feb 2024 14:48:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706827715; x=1707432515; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sxYrwtr/Z6VwsxCyi+RbcGQ468EzuStvTx+1ulE3Fa0=;
-        b=ZaqcIwJIkR/13n2/F2i2xiQJaQ7I9TJ3FD5UZh9RbBnQClJ02+4wgtvag0LUD/RVkd
-         jYT90Dc9JsT/F5Xuj3OGE3vka+8nVttCeQphLCllaZAw8VzUPiNXqRCB4F1IsIcpitKH
-         ia+sPWXlNkYAWPCsYX0zX/+EGHx5MCqPadX4HIKSgK840ZepzW6S0UkZRzMCpRzLq6et
-         nobHyvnpIGPOB8dQ/rnIc0ifPFjyuqyT+Ime7eMxJt1K0tE12Gn6GuTLtie+4Wc7wb84
-         IkvKJqOiNfyFHcb40Q0iWLfBhzh93f79vUKhRbGSGcqrLbja3eA+PofQP9R3FWGEv3Ce
-         hkIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706827715; x=1707432515;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sxYrwtr/Z6VwsxCyi+RbcGQ468EzuStvTx+1ulE3Fa0=;
-        b=FBECb5IGTn/nvb1w14fZQ0nBn8tmso1gPrOP9MC/O8yGekRsmP/etEaJPPaOiwtiQi
-         mOGQOB4syvJ8a/cwjiuFBZD3/jDTXg1B2WkGDWSUI26qQAG4/TmMGdquP4KJewjwD0bX
-         PcyHopQitKH489Uq3qfBRLPWaZU60z9sWAWcaFtLo35RGEGQRAumuC5uY9vKh0nZTpJo
-         RksCrk1sBJT7Hxj8tuVFlPoiu+aeJ7CsYaJtbq2d8pxKHOYCseafGTtqWOwWTvVCMLqJ
-         4IjJKbXmf/KhI+fhEZV6yYE0os1tbHvCRE7Nph4GmAHNTP75u76drJPkdlDQm/xu0GPS
-         HUmg==
-X-Gm-Message-State: AOJu0YyfN3h3Xi9eN2mi/fhvV/h6ltF8FcZu1qYKC3BOstERkgIXBtQx
-	zDAEZfeuiWE0ne437wr3nCwAo/639xZ6E1IOAa7JupJrphgfZN5C
-X-Google-Smtp-Source: AGHT+IEE4Ce1/WxQ5k63wwHgKBAIR4jpl+gidSzyN0phD4SbsMdkxHrOq8NbJ3sIlCvw6gXM/sljyg==
-X-Received: by 2002:a19:4f4f:0:b0:50e:7a04:2229 with SMTP id a15-20020a194f4f000000b0050e7a042229mr177995lfk.25.1706827714998;
-        Thu, 01 Feb 2024 14:48:34 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWgtBvcXo+Vfq8WJCO2coH+abhtj2BfZgjearznhqrmldNjxnHwK4ejVJghdpLPlmYR2igDwoAj0XtbFODJDzeFqAU6djFqM9HDdYcuxqvHWMifiahvlPHaFb3CtdMqMoxyuORS9APmOdk6LAQMgQRzsbRvIYMN7hk5l5z1B/gs6tonu5N9PqFvf1/G0u51nuTx1LFS47CO/LB6gv+utu2Hluz8LP6SVRjp/KKm8rOPm8IFM06zpg/la0QQReI1LVfqtXBSSiWcCBnvegpisVqIHtKuxiR0kVRy+B1EvUOwGsWd79QEutbzIc8UhfXSIadtZpC3WhZncnWgwB8LZ+Li4fUorGs=
-Received: from skbuf ([188.25.173.195])
-        by smtp.gmail.com with ESMTPSA id vi2-20020a170907d40200b00a37024b48d1sm35614ejc.189.2024.02.01.14.48.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 14:48:34 -0800 (PST)
-Date: Fri, 2 Feb 2024 00:48:32 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v5 10/11] net: dsa: realtek: use the same mii
- bus driver for both interfaces
-Message-ID: <20240201224832.w6562z462pntove5@skbuf>
-References: <20240130-realtek_reverse-v5-0-ecafd9283a07@gmail.com>
- <20240130-realtek_reverse-v5-0-ecafd9283a07@gmail.com>
- <20240130-realtek_reverse-v5-10-ecafd9283a07@gmail.com>
- <20240130-realtek_reverse-v5-10-ecafd9283a07@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=EgXnA5Tv/KOwCjKGZCmYg9T8FHFGO+XxaAoC1uh4rNdJ4CLG+VJsVxw2DGpND1TqHoQ3zaxBJbbeaQY6i/DSc4wpP7ZF73zqHaw6HJ7Wt1PYIpFPBkyj7YfJmJF+ZKQE+3+oqmERDI3Xre64+AU51LphfHUXM2uo+IyEHs16T8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hn4+2HDY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09752C433F1;
+	Thu,  1 Feb 2024 22:48:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706827730;
+	bh=e8x2BkkjxYMoP713pO7VA7If6AbOHEDo8GQsevRtfDE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hn4+2HDY+u4MutWr8+gG2cnzJpisRMQFKWk+rzNs48SqxrZbbZ+CRY8MP+/HkmOob
+	 CXi3dBwibYjzrJSuVfk0MZ6ZYjEBjZ+X7RaN9hwes6S189lkFfGj5wkEnSY02mCJbq
+	 j3p1bPYLAWh7500uWUT/uNd8SzvAfkzOY/jq3J3zkO+6Mq+XJ/4k8jxgKamSTBuMWz
+	 vFdXQ/6J8q15MQrnvFJVWZBRZoSM5AHAIxDv28GdOu4hTNPlBBF7X/hgYIZos4dwJ0
+	 v6GlFScpfhAz8MDzUn4eGQi9mmy4YlZk7fdXQRCPUMhMXKvBtbZhRz7bTUVCOvMjMR
+	 3253Y8EQHpPPQ==
+Date: Thu, 1 Feb 2024 16:48:47 -0600
+From: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Svyatoslav <clamor95@gmail.com>, Conor Dooley <conor@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Kees Cook <keescook@chromium.org>,
+	Maxim Schwalm <maxim.schwalm@gmail.com>, devicetree@vger.kernel.org,
+	linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v1 1/4] dt-bindings: vendor-prefixes: add LG Electronics,
+ Inc. prefix
+Message-ID: <20240201224847.GA1875713-robh@kernel.org>
+References: <20240131105153.8070-1-clamor95@gmail.com>
+ <20240131105153.8070-2-clamor95@gmail.com>
+ <20240131-elderly-passover-341b89f65189@spud>
+ <656FDD69-D7B1-4910-B848-108CB985AAAC@gmail.com>
+ <20240131-tractor-roundish-f6f90b5bd640@spud>
+ <BCBF1994-C5AE-4D2B-B645-C3C67BE19000@gmail.com>
+ <e77ac513-3f8c-4979-b887-f6b9aff6963f@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240130-realtek_reverse-v5-10-ecafd9283a07@gmail.com>
- <20240130-realtek_reverse-v5-10-ecafd9283a07@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e77ac513-3f8c-4979-b887-f6b9aff6963f@linaro.org>
 
-On Tue, Jan 30, 2024 at 08:13:29PM -0300, Luiz Angelo Daros de Luca wrote:
-> The realtek-mdio will now use this driver instead of the generic DSA
-> driver ("dsa user smi"), which should not be used with OF[1].
+On Thu, Feb 01, 2024 at 09:48:28AM +0100, Krzysztof Kozlowski wrote:
+> On 31/01/2024 17:06, Svyatoslav wrote:
+> > 
+> > 
+> > 31 січня 2024 р. 18:02:31 GMT+02:00, Conor Dooley <conor@kernel.org> написав(-ла):
+> >> On Wed, Jan 31, 2024 at 05:30:58PM +0200, Svyatoslav wrote:
+> >>>
+> >>>
+> >>> 31 січня 2024 р. 17:28:49 GMT+02:00, Conor Dooley <conor@kernel.org> написав(-ла):
+> >>>> On Wed, Jan 31, 2024 at 12:51:50PM +0200, Svyatoslav Ryhel wrote:
+> >>>>> Add missing LG Electronics, Inc. prefix used by some older devices.
+> >>>>
+> >>>> Is it? You're only adding these devices now as far as I can see.
+> >>>>
+> >>>
+> >>> Hammerhead (LG Nexus 5)
+> >>
+> >> I have absolutely no idea what this means. Please link me the in-tree
+> >> devicetree of the user (or the patchset adding it).
+> >>
+> >> Thanks,
+> >> Conor
+> >>
+> > 
+> > Sure, here you go
+> > <https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts?h=linux-6.4.y#n11>
+> > 
+> > So devices I have sent are not the first.
 > 
-> With a single ds_ops for both interfaces, the ds_ops in realtek_priv is
-> no longer necessary. Now, the realtek_variant.ds_ops can be used
-> directly.
-> 
-> The realtek_priv.setup_interface() has been removed as we can directly
-> call the new common function.
-> 
-> [1] https://lkml.kernel.org/netdev/20220630200423.tieprdu5fpabflj7@bang-olufsen.dk/T/
-> 
-> Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-> ---
+> Please look for existing work doing the same...
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Took me a minute to parse this.
+
+I believe what Krzysztof means is look at the link he posted and follow 
+the suggestion there. Fix the one case, lge,hammerhead, to use 'lg'.
+
+Rob
 
