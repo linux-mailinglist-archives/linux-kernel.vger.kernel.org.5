@@ -1,163 +1,214 @@
-Return-Path: <linux-kernel+bounces-48486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0E66845CBD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 37590845CC7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:15:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FEB729D136
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:14:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC2B929D242
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:15:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3FAB15A485;
-	Thu,  1 Feb 2024 16:13:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F50277A17;
+	Thu,  1 Feb 2024 16:13:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jo52lV7E"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="V3NPFSZI"
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2088.outbound.protection.outlook.com [40.107.104.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 703AC15D5B5
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 16:13:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706803999; cv=none; b=EokvBgTV5exrfPGHgsJ1j5/6kx/weBBKuoL0Vdz6SM/KR4FLTJtX7wy2VhyoOVsWE02xjCtOZSOjDOWo8W2F0wSOJ3t8GEwl6qr0G51V+gwIyHkHyORM0W83iX0rghR+p8cM0gCjFnp7iM8RKUxXIyXeh9veKGtlqamCeeGBv/c=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706803999; c=relaxed/simple;
-	bh=2FLyLSMxouej+8orm8pfQuuanEcEjePQYiFIIWFUSo4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cxKxR2QSSvqAQNKGt1AUgh0AFtbfRFizVBrxpHi82LVtJcvRLRUPWVymbTM/Nk7nkUDb1PoBw+qE7bcC9IMAZVJf9wwSoY1xrxzxZZuLbGv6oWYHOIC2ZVfmyAUBtWx+5PHAvFZL7ioqvZr3/Z/fFePthzsBLJYtbz2+PyyH3YI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jo52lV7E; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55faa1e3822so1516065a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 08:13:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706803995; x=1707408795; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6fevGXd4BI2moq50653412xOu8d51z/JG91u6Lfu1FI=;
-        b=jo52lV7EjWHoD0CYBioZkYywofybp7RjJvtYdZIjKJpg2Lub0SQMkP7lskces+emd6
-         A271Y1SFlm/x0cG/CBRfUcYmFq77+23ln/4zefOdMqy7gVmzdxjkG6m++w8yWhU69V0N
-         +WHy28Lw2GMzBuDqIaV500D2dh4ZJarIBu0nIPAy39BfLQApGyyfzCQyr2tUFUnGBImy
-         WhwucGU7RFajUlqLBbPCltpKepiIsNRt7mQ9u6uPcWZwma13Zq3ejjEuOwhCqw4YSfxS
-         zi0veu6fxm4cd0u2peRJUeuu/ApBZQ81XNvXbYzk8naa8dFlwbGrOwnu/MjSdHV/pDm8
-         wA0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706803995; x=1707408795;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6fevGXd4BI2moq50653412xOu8d51z/JG91u6Lfu1FI=;
-        b=ZaqDC7+XtB/z5TdXdCuIb58VG8GYYCIpnlVtQJda2Vcy0OKf8G3ypTGNvS5ZO4gynX
-         Z7yP0HeeCU+aoh1d/CG3GcSFoime/1Px8W2qr/LAdMbyXjwhRQ7vC0fCxT0n3Ju0iUkC
-         E4Ex3SwSpN9iRO+BGlY8yktcwXpWYlKSM5xtVjaCVdF/mX5vUe8fkH+YzPgQHmk6wsP0
-         NOMyYh2luFBSQSQxDUWJ9wFEzq9ItKxE9H8rN0MZUioJSne7ImHeJ+q08RWDVMJA4VVc
-         fPa5SqVV2fK+z6gGMrdA4rDoPB76sWoc/hAiCMVCdpmyxfD9BGDMbxHbI4l9qAGrVq22
-         q/9Q==
-X-Gm-Message-State: AOJu0Yz8VQmqde3BBedWGI6cFBOBAXOyFxOUAg9zsZ5y7ILq3WNWveUh
-	x/MzC5DfpbL0IVYQucUFArJ4wDuBIfPLZxJ7yPVUJ+wj/n6Y1JocrNrckaniHR4=
-X-Google-Smtp-Source: AGHT+IFhguAAclKiCco3fTM0sMYbI4pIplRkK1mebkhTq/cDb502YVYUsPkO5B4sHMqbRZc9IMlAvQ==
-X-Received: by 2002:a17:906:3bdb:b0:a28:c5dc:4802 with SMTP id v27-20020a1709063bdb00b00a28c5dc4802mr4232485ejf.31.1706803995513;
-        Thu, 01 Feb 2024 08:13:15 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXgXwPBpLUULH/EFtlJUUDVpxeUuu9ta39bfZsGelmXsPC+kz1N6I0M1kt39vtMHwxsH3jItgc88CdUtbdWXZEUWVKPAD8IqwdFSrKjAQ/9QJZHy9R+pyfJ+6olLx3VMvNqa/XtFcfNVMNXlVusvxqjHxMadll6Og3/J1tdq0Re1iLBL+JtemX2g9DWue86SBRCFLH8nS/b1uhazP/F3OlQg+57tLywDmQUKVvfDjXln1SWvx3yvFlidPBjumEAqFdnvA4WFzvNkh65etjdRQl42l6KokmQGryBhkCK4vL6XoNDtL2ebw5bVm6AdloXI2MqJxGBaVSfLLbmiA88WXoq9Td7JNY7TCx064N1vVOYca2Y8XeIMhJU4pUaWl4/cqT5rHWepz1jzCjpHjwItYUYE7hO0pXBw5DGFVEeNlBzIGakd8NeeRfBiQr1BH1NSBP2GU3xkQuIMHnh+io2scCvGMvnkahi+T0+J2uTgvPxkgIGuzopMOs1yDpAa1TvV5rN/NMgSh+v9YAdmIr75yhgm82sHoZqIuAyeq7u8WW/sRSmvxH7kPwauodjPf3Op/IzQxtOZyqC1HLKrQHDv4lOVB89K37UklnOwFJo8G2qWMvDIXexkBO6sbu6rO1OqWT3Ktj6SLbPOV7/+fsQgfO85Fj5UzWEv1//qbJCRsvdSaN4DcKKKA==
-Received: from puffmais.c.googlers.com.com (94.189.141.34.bc.googleusercontent.com. [34.141.189.94])
-        by smtp.gmail.com with ESMTPSA id hw18-20020a170907a0d200b00a3600d7c2fbsm3449288ejc.176.2024.02.01.08.13.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 08:13:14 -0800 (PST)
-From: =?UTF-8?q?Andr=C3=A9=20Draszik?= <andre.draszik@linaro.org>
-To: peter.griffin@linaro.org,
-	mturquette@baylibre.com,
-	sboyd@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@android.com,
-	tudor.ambarus@linaro.org,
-	willmcvicker@google.com,
-	semen.protsenko@linaro.org,
-	alim.akhtar@samsung.com,
-	s.nawrocki@samsung.com,
-	tomasz.figa@gmail.com,
-	cw00.choi@samsung.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	=?UTF-8?q?Andr=C3=A9=20Draszik?= <andre.draszik@linaro.org>
-Subject: [PATCH v3 7/7] arm64: dts: exynos: gs101: enable i2c bus 12 on gs101-oriole
-Date: Thu,  1 Feb 2024 16:11:43 +0000
-Message-ID: <20240201161258.1013664-8-andre.draszik@linaro.org>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-In-Reply-To: <20240201161258.1013664-1-andre.draszik@linaro.org>
-References: <20240201161258.1013664-1-andre.draszik@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D65E779E2;
+	Thu,  1 Feb 2024 16:13:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.88
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706804029; cv=fail; b=nx+VmDCYtNkp4StdXFDF61XCrbzY5u+ju2hnz5/7ypFCqckB2zjAJ90bEmx5iiRQg8XCdylc65vK4lrN+TSHG3lg1rxzL4zfXtmlwmMugHdocf6fFShI4akxr+cqdxTR0Q5Xmdgtj5FZYGLXFJuGjJabpk/w/GROUmUs4N8p1To=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706804029; c=relaxed/simple;
+	bh=l26KsReRhgM2C7kbGDUQzugdouvzriphT23lNWx0xPI=;
+	h=From:Subject:Date:Message-Id:Content-Type:To:Cc:MIME-Version; b=FNAPC5TqeszrDJ96tWepYgZ3BV63DsAfSuwBJUKvMbpl6stlquXVc9kT/lRBnKLKf44SCImV9z07zIaK/4w+FT+wZcA13M52VkR8vd8WWdtdBISILU3J50KIB185ZANyjdRvPNC27uG1IISi5RW75xU9nqZXD1mkJmAilIJs5Ms=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=V3NPFSZI; arc=fail smtp.client-ip=40.107.104.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CSD+eekJYQAdU2xpd9Kvcpgev9Kmku3aNsCHqtK6jaNt+pmTLn4nYouAcRJLwsmCVvSaSqOPb5J/TOrcPVaTXeHGVmPfiW8S0tyCY3K6//kM2Ab7PhiOIckdzDj9tdO2z1lWEK79yMSy68Qsyu94gNz1Y+fCaynHdpGK5CmDK/5KIoulttpiVXi1XhQ72nLbGT4G+stvhfn/aFOpwQnt/0Y7ndfPoMHrVA7Y8/HM7QSy8Z6o/JmWYmi73VKCYzaueuB3ZdCv9Q95p000VUKBxgdrFPG1VDPXGZ0nr35S/eW0ppsVsoX40bQt9NO7jASZwDlQoZs/AifcXdP/0kj1Iw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tekF0dzNY3P4bRczl6CIJryxj96n+dq2Y/qjnOHeBqM=;
+ b=hEKSPXX+V6spxBAAtTxsSoJwRBFIJ1ZZKzqf0j3D1LV7RwewMFDAkOxsOl+wB9DGnYpKv9G79PP3yLF79t8Rm/UVa2FC8a4j7vfzeQWq0jxqN0dQVqjWwQ5PqOZBC3xfEC4iBVLstBtthODeVMAKf5WSkHzlPa3BpSb5BKzGFOU6H6JHPuu5vlaKESrAPOGKfiEPpi/wtKClICHvLDRmmW3MRLAgvJtr+xJz4H04tmiPohL/VYsQXhm3DMhpiQNCAbTptJabpXq6xzoLaydnSk6u2Q7uKy3ItWQlL3Jz7vroXOKc1ekKbekJusYlw2ygRWXL+Yg3loZongG7eL+Tww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tekF0dzNY3P4bRczl6CIJryxj96n+dq2Y/qjnOHeBqM=;
+ b=V3NPFSZI8XAdThDTFJz5GkLwqnrh8N9058guccXSz1ohEeGZbpykIP/KERzhj9nrdYqRON2S5CB74NkXJbje12oqp4tfJQD98c3ZxYFRhxAihTLlwl76X8cKNmECgx1C9tixQGSXarbC2bPOowcCRbAz/mwe53t2bdFGM5hujL0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AS8PR04MB9110.eurprd04.prod.outlook.com (2603:10a6:20b:449::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.26; Thu, 1 Feb
+ 2024 16:13:44 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7228.029; Thu, 1 Feb 2024
+ 16:13:44 +0000
+From: Frank Li <Frank.Li@nxp.com>
+Subject: [PATCH v2 0/6] PCI: dwc: Add common pme_turn_off message by using
+ outbound iATU
+Date: Thu, 01 Feb 2024 11:13:24 -0500
+Message-Id: <20240201-pme_msg-v2-0-6767052fe6a4@nxp.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACTDu2UC/2XMywrCMBCF4VcpszaSRKvRle8hRWpmbGeRC4mES
+ sm7G7t1+R8O3wqZElOGa7dCosKZg2+hdx3YefQTCcbWoKU+SnWQIjp6uDwJRI1GEV2MOUF7x0Q
+ vXjbpPrSeOb9D+mxwUb/13yhKSIG9fsoRsbdne/NL3NvgYKi1fgEuLbwOnAAAAA==
+To: Bjorn Helgaas <bhelgaas@google.com>, Jingoo Han <jingoohan1@gmail.com>, 
+ Gustavo Pimentel <gustavo.pimentel@synopsys.com>, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+ =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, imx@lists.linux.dev
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ devicetree@vger.kernel.org, Frank Li <Frank.Li@nxp.com>, 
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, 
+ Serge Semin <fancer.lancer@gmail.com>
+X-Mailer: b4 0.13-dev-c87ef
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706804020; l=2913;
+ i=Frank.Li@nxp.com; s=20240130; h=from:subject:message-id;
+ bh=l26KsReRhgM2C7kbGDUQzugdouvzriphT23lNWx0xPI=;
+ b=ohoHABmi4M2ZpD5Bx77/xDFSKdFNecTnzxlNYQ6yVBEgZHXv1TQ9fsWml0Yfvk/bK0U5VWbE6
+ 3cLMtKuP6l4CTLWiH/hKJtsJuvQHRA70HLS/b/vPDcft170OD17MAw1
+X-Developer-Key: i=Frank.Li@nxp.com; a=ed25519;
+ pk=I0L1sDUfPxpAkRvPKy7MdauTuSENRq+DnA+G4qcS94Q=
+X-ClientProxiedBy: BYAPR05CA0065.namprd05.prod.outlook.com
+ (2603:10b6:a03:74::42) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS8PR04MB9110:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5f6156ca-e81c-43e0-a21b-08dc2340c34e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	5gUR0BrnfJB13vHeUZF8EGmNdiLZJisjZiwQ2mDRvTcW4VRTpMd8IoNd7Xk5O5Hc3dxWgV5SQK67JY0lbtr1G++n6ZXFhJFAFeBQtRBq4Xm011vkditnhBHf8dZdX1yoHEyD4LUbm/UPocXMJB/GKrIuC38ztx5DMSmlLMEJ4lQTV69zAc6hu6JCCc9G/d3qZkZ4d25p/U5S4ADci09hDfVIRbQLpUm4YyePHruIG4wpFTgPeXi42t3WKJ9iAt3kiKZQ/IJRrCZxx9eQ3ueA3IbVFgh5d40JTI34vKyU0OtsK9ht9h35NA0aWn+vU9crhy381uzeidBBc8Ao/wO7w4t/AwpL6DtyqzvATfRCAK164z+UVQj96J9w/x1O+kcBW3QXwBnd9UlN1K3EMSL3DzrRt3xC9Ntdh8+Uup6nyPuLp/HrIBhtdnz/Gvi1sh8DuUAaxD0ZAboTcZkqvOfnR5qCHL0yjP0GL/Uxjodx8zJ/V2Act6IrwT0WZV55GbD7F6agdD6Mk6ywE7oRNy4LfA2vXKl6s9c+7Q28MLwEPh0DnaXVhbp4tAjIuiIwgO53g62jsYc0TI5e2oOb0DP2pJ45h14glheupI8uEm1Vb27Za/gy4f7FT9XQEFpmIW67
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(376002)(136003)(396003)(366004)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(15650500001)(2906002)(7416002)(5660300002)(41300700001)(6486002)(36756003)(966005)(86362001)(38100700002)(478600001)(38350700005)(52116002)(83380400001)(6512007)(2616005)(6506007)(26005)(6666004)(8676002)(8936002)(4326008)(921011)(316002)(66556008)(66476007)(110136005)(66946007)(54906003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?NGNmNzhldERYbXdHVHNmQjFVb0dYZWl1cE8yeXlrRVBkRHp0SFVqSG9lbFBq?=
+ =?utf-8?B?QTFzakY0YzRFTTNrVWRZa1ErSG1rRUNHS3pRNUh2OWRSQzhsa0VSQ0d3VmNi?=
+ =?utf-8?B?bkwvWWE2Nk50M0JzdkgzN0JtUUNtVnZ2aGQxQWNWcVVqYWxIZDlMempuVno5?=
+ =?utf-8?B?dzhLSHBiNVFDeDZxbStCUm8xWGdBb2FabmhsYjJjRW40Znd6dHA5Z1Q0eUZW?=
+ =?utf-8?B?OW9xYXAwOXRzN1REYmtNRlpzdENyZXl0WjEwdk1DemVHRk5WQk1MQ2I0OG0w?=
+ =?utf-8?B?eDZzV1V1RFF1Q3dWTC8wVEY3Y01zdHYrWSt4WHZCakR0Z3NIY0tjZ3NjWWlH?=
+ =?utf-8?B?c0duOG5Wek1pWC9TS2NDTDdDakRpSkxoR2xIeFp3S1BhVmQ1TWVtTmZVSEJu?=
+ =?utf-8?B?OWFES0RmdGJ4aVRYR05XR1pnMUdPR0FYaG1BT25wNTlVdGNJQkVxcE82TldL?=
+ =?utf-8?B?Lzdybm50MFFWd0FYellhbEZuUzJUZGFZc0x2Z0ZlQVN2UkZJNmYyVWUySTFG?=
+ =?utf-8?B?U0YwNllhTTRXemFuNjdWd2FlTy9pN1M0UXNIS3huNDAvRk1KeWpMbjJ4SlQy?=
+ =?utf-8?B?aUNFM2taZE9KdXFheU1JVVZOMm5Oellia0FyckR1K3RMU084TjdoSFVpL0NJ?=
+ =?utf-8?B?V2JrTWJKZ2NpWWs5M0V0WEIwUmR3UFpTc211TW5DTTFBaVgwaFJwY2RVd1M5?=
+ =?utf-8?B?bGp6THhHMmR2Tzl3NVNLV2tERklGUllLWldONmFTTytVZGpad3FmNW5QYjdK?=
+ =?utf-8?B?MXZoVlZ0SlloZmNJaHlwOUpLZmdtazVTdGN4MG81bXhRakRLTzVUc0Z0SHIr?=
+ =?utf-8?B?ZHBsdlE1czlUM3NBaVlSM3hXeHQwc1lHNFErV1hSTnc0OXF6MGZUcDhwOFhH?=
+ =?utf-8?B?M1ZVTE5GQlVVejZFVGtscWdUcU5maWlrS05OSG1EL3JqNUIvSGdHTms2bUdP?=
+ =?utf-8?B?TEl2bXQvNkNJSTZiVkZGWllTbW1qS0lMdWZ6VWtkYXNySGZXcWU1UzkwSE81?=
+ =?utf-8?B?UlBMRC92bHZiSllsUXdQbHd3Ny9pTGw1ZGFPNEpvSVZxVnIvcUFNRjdaTjJu?=
+ =?utf-8?B?Z0M4VTI5SFA3SGZJcmM5V2VwaGQ1QXlQZGZ2Zm9oVTZJUkpxNW5xQ211VzlD?=
+ =?utf-8?B?SVZSdzN1WURXUWg1REdsOURYeHBoMlU4L0FaSkozSjJpVWY2eEtiaG04ZVRU?=
+ =?utf-8?B?RlJhcFBYWXhEM1JmRU95Mm9iYmluajhaKzBKQW5ZRGRaRmFQZy83azFuQkRu?=
+ =?utf-8?B?UGwyVms4QkFpZndHNEgrbDRnWGttblU4RTdvbEVMZW8wVlNYeGhGRC9YUkV2?=
+ =?utf-8?B?R0lOcytPdjNXdzRzMzBFV0hNSElOUENxUTMwbEE3VFRvenNUZHMxdkVsejRh?=
+ =?utf-8?B?alJqVURGVHpBajk2YWFPNzF0TXYwWGFlNUZVcDBGUmdWbU5Lbmhxai9zSko3?=
+ =?utf-8?B?ZWVQcFowTDVPeHVBQVZUREd4VHg3U0dmdjZTRklMMmdWZ3dQWUJGNGpoRVZw?=
+ =?utf-8?B?UlovRjhKbWE2eUEzTXNVTnVRWkhlS1NQOVNseWFDZk5ta0k3VlB1THdNN0lG?=
+ =?utf-8?B?NnhFRVYramdkeVdFcXQ4bmxQckx3aWUzNFdIcXlpa3JXUVpxYkZIeUtvMFpZ?=
+ =?utf-8?B?ZGJnZm5tVjlOVGJUVldxTnFieGsvWDRxV3kvYVMxQWxRQmp2NkZyaFJKdVJW?=
+ =?utf-8?B?bDlyellTVlpKZC92Yjg4bjk2SjdPOFZDN1BYRXRWUmFxaENRV2N6eWRIc0sy?=
+ =?utf-8?B?QnMyVms0VW4wSFFhK21QRFdRUTFyS1RzSW16Q1BxMVBvamxwMUFaTkF4VzVU?=
+ =?utf-8?B?Q3FDQ0UvVG8vREtrT00rRTllWDN3TXVNUzFIb3dzMzJ0SEpJVGR0R0NuUlVs?=
+ =?utf-8?B?WkhmVFlkcGJqWkNJRzNKdVVhVmljR2ljaXpRVllFSEZDOEsyQW8raHFQZmtl?=
+ =?utf-8?B?TGVpUTBQQkdsYms0cmttUjRUTE5tSnpyL1JXTTdUaUluZ1ROdUNoM0tObHRZ?=
+ =?utf-8?B?cFpmTzVMVXFpWCtYRDV3ZCtFVlJLNEF4RzJuVlpZT08rN0I2RWVQSGhMaEFB?=
+ =?utf-8?B?L3VmSHdjWUVFTFkzSnNTazYzbjR5Um9WekYwMzE2OUVTLzR5ZHdrN2dWcm5T?=
+ =?utf-8?Q?5kw0=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5f6156ca-e81c-43e0-a21b-08dc2340c34e
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2024 16:13:44.2763
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5BdipdeTyCQIBwxIaOA5EGm/DNtf7i1kL5m+g8027jg4NuzpMYVWvYV2+pKlmJCp1UmxZv/PogASqIC4C9/4KQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB9110
 
-This bus has three USB-related devices attached to it:
-    0x25: Maxim 77759 Type-C port controller
-    0x35: Maxim 20339EWB Surge protection IC
-    0x36: Maxim 77759 Fuel gauge
-    0x57: NXP PCA9468 Battery charger
-    0x66: Maxim 77759 PMIC
-    0x69: Maxim 77759 Charger
-where the Maxim 77759 has multiple i2c slave addresses.
+Involve an new and common mathod to send pme_turn_off() message. Previously
+pme_turn_off() implement by platform related special register to trigge    
+it.                                                                        
+                                                                           
+But Yoshihiro give good idea by using iATU to send out message. Previously 
+Yoshihiro provide patches to raise INTx message by dummy write to outbound 
+iATU.                                                                      
+                                                                           
+Use similar mathod to send out pme_turn_off message.                       
+                                                                           
+Previous two patches is picked from Yoshihiro' big patch serialise.        
+ PCI: dwc: Change arguments of dw_pcie_prog_outbound_atu()                 
+ PCI: Add INTx Mechanism Messages macros                                   
+                                                                           
+PCI: Add PME_TURN_OFF message macro                                        
+dt-bindings: PCI: dwc: Add 'msg" register region, Add "msg" region to use  
+to map PCI msg.                                                            
+                                                                           
+PCI: dwc: Add common pme_turn_off message method                           
+Using common pme_turn_off() message if platform have not define their.
 
-These don't have (upstream) Linux drivers yet, but nevertheless we can
-enable the bus so as to allow working on them (and to make i2cdetect /
-i2cdump / etc. work).
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
+Changes in v2:
+  - Add my sign off at PCI: dwc: Add outbound MSG TLPs support
+  - Add Bjorn review tag at  Add INTx Mechanism Messages macros
+  - using PME_Turn_Off match PCIe spec
+  - ref to pcie spec v6.1
+  - using section number.
 
-Signed-off-by: André Draszik <andre.draszik@linaro.org>
-Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+- Link to v1: https://lore.kernel.org/r/20240130-pme_msg-v1-0-d52b0add5c7c@nxp.com
 
 ---
-v3: collect Reviewed-by: tags
+Frank Li (3):
+      PCI: Add PME_TURN_OFF message macro
+      dt-bindings: PCI: dwc: Add 'msg" register region
+      PCI: dwc: Add common send PME_Turn_Off message method
 
-v2:
-* add short summary of devices attached to this bus & add TODO
-* collect Reviewed-by: tags
+Yoshihiro Shimoda (3):
+      PCI: Add INTx Mechanism Messages macros
+      PCI: dwc: Consolidate args of dw_pcie_prog_outbound_atu() into a structure
+      PCI: dwc: Add outbound MSG TLPs support
+
+ .../devicetree/bindings/pci/snps,dw-pcie.yaml      |   4 +
+ drivers/pci/controller/dwc/pcie-designware-ep.c    |  21 +++--
+ drivers/pci/controller/dwc/pcie-designware-host.c  | 103 +++++++++++++++++----
+ drivers/pci/controller/dwc/pcie-designware.c       |  62 ++++++-------
+ drivers/pci/controller/dwc/pcie-designware.h       |  22 ++++-
+ drivers/pci/pci.h                                  |  20 ++++
+ 6 files changed, 168 insertions(+), 64 deletions(-)
 ---
- arch/arm64/boot/dts/exynos/google/gs101-oriole.dts | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+base-commit: e08fc59eee9991afa467d406d684d46d543299a9
+change-id: 20240130-pme_msg-dd2d81ee9886
 
-diff --git a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
-index cb4d17339b6b..6ccade2c8cb4 100644
---- a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
-+++ b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
-@@ -72,6 +72,11 @@ eeprom: eeprom@50 {
- 	};
- };
- 
-+&hsi2c_12 {
-+	status = "okay";
-+	/* TODO: add the devices once drivers exist */
-+};
-+
- &pinctrl_far_alive {
- 	key_voldown: key-voldown-pins {
- 		samsung,pins = "gpa7-3";
-@@ -113,6 +118,11 @@ &usi8 {
- 	status = "okay";
- };
- 
-+&usi12 {
-+	samsung,mode = <USI_V2_I2C>;
-+	status = "okay";
-+};
-+
- &watchdog_cl0 {
- 	timeout-sec = <30>;
- 	status = "okay";
+Best regards,
 -- 
-2.43.0.594.gd9cf4e227d-goog
+Frank Li <Frank.Li@nxp.com>
 
 
