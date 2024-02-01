@@ -1,451 +1,235 @@
-Return-Path: <linux-kernel+bounces-48573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17BE6845E47
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:15:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80152845E44
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:14:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BD90B2B473
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:14:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1406C1F28107
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:14:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6260B15F33D;
-	Thu,  1 Feb 2024 17:14:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9167F161B5B;
+	Thu,  1 Feb 2024 17:14:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="xopk6q0Z";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="PA0m+sYx"
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="qJ1SNigq"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE67C15F313;
-	Thu,  1 Feb 2024 17:13:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B261160899;
+	Thu,  1 Feb 2024 17:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706807640; cv=none; b=SRMZlFGg3nMbI9HEZy2aMDa/a/TRr6mR7E7YPHqt/kSPSCyXKRMEXacIkwymMPxwWBFGbdPcCDsUy0g+NJ3V8LYH+24P/Fgjs/hmFVBrul/qdQ9VGq4v0Ik3lVi3PIH7PmeeQeA9FJClQb8Mecztl3CNB9VJOuvLyvMiNkayX6M=
+	t=1706807650; cv=none; b=K1R0rUzUHfZYrgPpJCOZi/33f1d8ttjdpMlKfwhqe0t829xtrqkwMX6I3vsrKpA57STfu9naFyE1bPDAx7IMauQbBAsLRKmBjfZ44xlMoLQhrZex2XHYFLLYGI5q1LipHIsCBF5xp4vZdkRgmPBbldohrYz+xmp3tIDBgzlSW6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706807640; c=relaxed/simple;
-	bh=FNJMXoesCASx0C5mvXo8pCpfD0E1Xdpp6ulUZEz0tK0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DUd4yA56sjpmuCLjb8gAccX9CQdKtxWq2I7DbGnccto6zYI+9rL8L04j1hJFXW6pqSrC7XmbmfQkbmftb+z0/wia2P+iIWM0zntlmgO6VQOB8lFOJn/luGkebforkxLeDpkOHwUjt26axYdMSDy5KwIi6dZ9L6PhQkd7a6S0xSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=xopk6q0Z; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=PA0m+sYx; arc=none smtp.client-ip=66.111.4.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id A4EE35C00FB;
-	Thu,  1 Feb 2024 12:13:57 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 01 Feb 2024 12:13:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1706807637;
-	 x=1706894037; bh=lMjjV1buWDHIcimo2xOiRU3Rzznhm3EuA6XfF7iUovY=; b=
-	xopk6q0Zn0HPx7bkzr4eFb11QFjmerO6GVID/tlAK+PXLXuMelBjuoSt368KmGaz
-	FYgfoJOYucAKaNkavygZy1EhcNAlIGfDoFpqDzXdoAiypIDtLgcYKPFyB+2XNuzK
-	u2vL+NrX4TwJ7KxJlbBs5ld9NT04u41yl7ZzKaicYc11F5m6RcuE0TnYO2U/NOIO
-	eSeYwhFGGn3+wTAE8Ksrppiyy8bIEUdZ+O10tV23dw6R63LFgtb5xxsGzWL3VSdM
-	REAQNxjRqteVLqXFELMlmJHAMQF/rSK1ZbbSkbazUVdYrT7fXaGah73xF+hRtcqr
-	gi49nBiIoAl//ArC1D5rTg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706807637; x=
-	1706894037; bh=lMjjV1buWDHIcimo2xOiRU3Rzznhm3EuA6XfF7iUovY=; b=P
-	A0m+sYxnohpGaGUB2DeVYRmpBlUvl3Brng3TgvMqoOucCrLKBd1xdawC/dL7CDpl
-	/lC5Xyj4KAMRXFdAVGnch40AeZMIISRSSMwrrfru0lKkxn+zwyZdcbnCwARLGX4W
-	/BGIqgSM7UIiZLK0AbP7TUhpE2ncyWhwp9IXyxVhF+gHkqeveiWf43h1Ff3snm/S
-	JeHqvJSHyHbp9yMqu91ZFZQzkHwUQPv3LjqEoIGUvUyu5wm2vv8QAMNHmob/qHAJ
-	v0uFik47BQrVM2eSakqC9pkeWtCL+80MXpmjkFrSYvUaNRTmszN/TDdREPqXH5Bf
-	QCgtrxtidPcv+ZmQ6phjA==
-X-ME-Sender: <xms:VdG7ZbsWEXNHR4ZEPE9H_opSzKAFcSGwhkuJgO_5yXYH_ijOJmHynQ>
-    <xme:VdG7ZcfLDL_wANMraaEAPGqphSuvwjd-jl66k82j2yZSAivNLwoitQkkBtCMgQScp
-    sqmr2HSun0xa1yqfTs>
-X-ME-Received: <xmr:VdG7ZezlWzwc7xSRVa9BRI1RoTpypgJQw9b6URgVMiOq2pq_ffim8ABGs6bXoH51joKrCfSKJuvVttyaSi9bmxbWIWtcM0QNlEoTJ0o>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeduuddgleegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpeflihgr
-    gihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
-    cuggftrfgrthhtvghrnhepudehjefgtedvkeevvdevieekleekhfevkeevleehieekfedu
-    teeuffduhfehtdehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvg
-    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhg
-    sehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:VdG7ZaNZJiYGLcztyAA4g-zvcbDYMAfYjY9IqOMLoBO5L3aBo_-jrQ>
-    <xmx:VdG7Zb9gZOv24Ff4dh9xV6d9AFQOpEzsR6L_86uX2giC3eOaMGHR_Q>
-    <xmx:VdG7ZaVno7t3Q8pJjNKSmKogizZ1Tl00jp2JC6-D-58Fj39DUWInOg>
-    <xmx:VdG7ZcPVbITOXa59vrr1t0UeZfPBYWdaoaW0y8YxgfjAda2dq88CBA>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 1 Feb 2024 12:13:55 -0500 (EST)
-Message-ID: <61debd68-4262-431e-a017-163eb820f739@flygoat.com>
-Date: Thu, 1 Feb 2024 17:13:54 +0000
+	s=arc-20240116; t=1706807650; c=relaxed/simple;
+	bh=+lIVjqeyffI/zgaJ7BuVC114MXPVDQGJwzdFEPzYLWs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=PbU4x9rW/7xHpswBJhHnG6sp+7otY8fYVsWiltIH/gNzoW+ow2/0oO2TTQgNLYZ22FszLFw9YZ/fakYVjTRme8HSLAr/uLos1gcSlb48lqEGZ1k4rKIeaxpWsvxs3/1jmeCBBkVguSOxrBdDmbQg08aW9Aw7rngbpB5nyBCRuOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=qJ1SNigq; arc=none smtp.client-ip=45.89.224.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 6B283120006;
+	Thu,  1 Feb 2024 20:13:57 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 6B283120006
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1706807637;
+	bh=mPZuNvTkk/N4kF/J6YO7atqu/SZxpPBkvHjvXTITUwk=;
+	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version:From;
+	b=qJ1SNigqY3gzQ3z/ccnM7nODjl9MI3bUgeQizfpEsOHM1lLX13CLHDP5hiSBDOwWb
+	 7lbf9eylMBXQzqnCGEogmLszsYIuZZ7ECl2L05ZhkH/L/DtdbdCUfYvvxZQu3WQg7O
+	 4pnAr7QaprBCClo0ewrE8J6zrQO65lpbx/P7EpxK7Qjhr+5Yu6p/aJoOPTHW0DRe/m
+	 4BsKgLlCNAdc8z6Ca+eLxGl5WW7QdsO2dOgFssQdmjiQ5qC3SDH5VLkvDWDV2B7ICZ
+	 1WwQqHe1PU4bzGpd5m1wBlSYTM+dgyOJXPg1mwD+Z2k8VHDJygpfI/74UhKd83+Dgg
+	 oAe/UVqnHeI2A==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Thu,  1 Feb 2024 20:13:57 +0300 (MSK)
+Received: from p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 1 Feb 2024 20:13:56 +0300
+Received: from p-i-exch-sc-m01.sberdevices.ru ([fe80::25de:2e74:8821:eb9a]) by
+ p-i-exch-sc-m01.sberdevices.ru ([fe80::25de:2e74:8821:eb9a%7]) with mapi id
+ 15.02.1118.040; Thu, 1 Feb 2024 20:13:56 +0300
+From: Alexey Romanov <avromanov@salutedevices.com>
+To: Corentin Labbe <clabbe.montjoie@gmail.com>
+CC: "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
+	"clabbe@baylibre.com" <clabbe@baylibre.com>, "herbert@gondor.apana.org.au"
+	<herbert@gondor.apana.org.au>, "davem@davemloft.net" <davem@davemloft.net>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>, "khilman@baylibre.com"
+	<khilman@baylibre.com>, "jbrunet@baylibre.com" <jbrunet@baylibre.com>,
+	"martin.blumenstingl@googlemail.com" <martin.blumenstingl@googlemail.com>,
+	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+	"linux-amlogic@lists.infradead.org" <linux-amlogic@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, kernel <kernel@sberdevices.ru>
+Subject: Re: [PATCH v2 03/20] drviers: crypto: meson: add platform data
+Thread-Topic: [PATCH v2 03/20] drviers: crypto: meson: add platform data
+Thread-Index: AQHaTh1s2/zZexXjGk+hgEk0Ax0wPrDoX/oAgA01jwA=
+Date: Thu, 1 Feb 2024 17:13:56 +0000
+Message-ID: <20240201171352.ut5xhw3u2b77v33d@cab-wsm-0029881>
+References: <20240123165831.970023-1-avromanov@salutedevices.com>
+ <20240123165831.970023-4-avromanov@salutedevices.com> <ZbC8qLXogjxJD8LD@Red>
+In-Reply-To: <ZbC8qLXogjxJD8LD@Red>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <E74E91B6684D234DA5CB2A0551E4FAC0@sberdevices.ru>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] ptrace: Introduce exception_ip arch hook
-To: Xi Ruoyao <xry111@xry111.site>, Oleg Nesterov <oleg@redhat.com>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Andrew Morton <akpm@linux-foundation.org>,
- Ben Hutchings <ben@decadent.org.uk>
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-mm@kvack.org
-References: <20240201-exception_ip-v1-0-aa26ab3ee0b5@flygoat.com>
- <20240201-exception_ip-v1-1-aa26ab3ee0b5@flygoat.com>
- <9d1d51e69c3f96bf5992e9a988969515ba97f883.camel@xry111.site>
-Content-Language: en-US
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Autocrypt: addr=jiaxun.yang@flygoat.com;
- keydata= xsFNBFnp/kwBEADEHKlSYJNLpFE1HPHfvsxjggAIK3ZtHTj5iLuRkEHDPiyyiLtmIgimmD3+
- XN/uu2k1FFbrYiYgMjpGCXeRtdCLqkd+g9V4kYMlgi4MPHLt3XEuHcoKD1Yd2qYPT/OiQeGM
- 6bPtGUZlgfOpze1XuqHQ2VMWATL+kLYzk6FUUL715t8J5J9TgZBvSy8zc6gvpp3awsCwjFSv
- X3fiPMTC2dIiiMh4rKQKGboI1c7svgu6blHpy/Q5pXlEVqfLc7tFTGnvUp95jsK639GD8Ht3
- 0fSBxHGrTslrT775Aqi+1IsbJKBOmxIuU9eUGBUaZ00beGE09ovxiz2n2JKXKKZklNqhzifb
- 6uyVCOKdckR8uGqzRuohxDS7vlDZfFD5Z5OhplFY/9q+2IjCrWMmbHGSWYs9VV52XGM+wiEG
- sM5bup03N2q1kDXUWJ+zNNYowuOJKN9uxF3jBjdXSDi3uJu/ZUL/mBqI58SkHq5NTaHypRoE
- 5BxVmgDMCGQe93adKHUNmt4HK28R506S7019+umg1bq5vA/ncmh/J2k8MFGPXqO8t1xVI2O5
- qrRheRKu1oST46ZJ7vKET1UwgcXTZ1iwqFlA26/iKxXoL7R7/AqWrapokEsUzRblGcutGZ/b
- 4lJVOxxAWaRcajpWvwqscI2mUF++O7DxYbhOJ/EFY2rv0i6+/QARAQABzSVKaWF4dW4gWWFu
- ZyA8amlheHVuLnlhbmdAZmx5Z29hdC5jb20+wsGRBBMBCAA7AhsjAh4BAheABQsJCAcCBhUK
- CQgLAgQWAgMBFiEEmAN5vv6/v0d+oE75wRGUkHP8D2cFAmKcjj8CGQEACgkQwRGUkHP8D2fx
- LxAAuNjknjfMBXIwEDpY+L2KMMU4V5rvTBATQ0dHZZzTlmTJuEduj/YdlVo0uTClRr9qkfEr
- Nfdr/YIS6BN6Am1x6nF2PAqHu/MkTNNFSAFiABh35hcm032jhrZVqLgAPLeydwQguIR8KXQB
- pP6S/jL3c7mUvVkoYy2g5PE1eH1MPeBwkg/r/ib9qNJSTuJH3SXnfZ4zoynvf3ipqnHsn2Sa
- 90Ta0Bux6ZgXIVlTL+LRDU88LISTpjBITyzn5F6fNEArxNDQFm4yrbPNbpWJXml50AWqsywp
- q9jRpu9Ly4qX2szkruJ/EnnAuS/FbEd4Agx2KZFb6LxxGAr4useXn6vab9p1bwRVBzfiXzqR
- WeTRAqwmJtdvzyo3tpkLmNC/jC3UsjqgfyBtiDSQzq0pSu7baOjvCGiRgeDCRSWq/T3HGZug
- 02QAi0Wwt/k5DX7jJS4Z5AAkfimXG3gq2nhiA6R995bYRyO8nIa+jmkMlYRFkwWdead3i/a0
- zrtUyfZnIyWxUOsqHrfsN45rF2b0wHGpnFUfnR3Paa4my1uuwfp4BI6ZDVSVjz0oFBJ5y39A
- DCvFSpJkiJM/q71Erhyqn6c1weRnMok3hmG0rZ8RCSh5t7HllmyUUWe4OT97d5dhI7K/rnhc
- ze8vkrTNT6/fOvyPFqpSgYRDXGz2qboX/P6MG3zOOARlnqgjEgorBgEEAZdVAQUBAQdAUBqi
- bYcf0EGVya3wlwRABMwYsMimlsLEzvE4cKwoZzEDAQgHwsF2BBgBCAAgFiEEmAN5vv6/v0d+
- oE75wRGUkHP8D2cFAmWeqCMCGwwACgkQwRGUkHP8D2dXlw/8CGKNXDloh1d7v/jDgcPPmlXd
- lQ4hssICgi6D+9aj3qYChIyuaNncRsUEOYvTmZoCHgQ6ymUUUBDuuog1KpuP3Ap8Pa3r5Tr6
- TXtOl6Zi23ZWsrmthuYtJ8Yn5brxs6KQ5k4vCTkbF8ukue4Xl4O0RVlaIgJihJHZTfd9rUZy
- QugM8X98iLuUqYHCq2bAXHOq9h+mTLrhdy09dUalFyhOVejWMftULGfoXnRVz6OaHSBjTz5P
- HwZDAFChOUUR6vh31Lac2exTqtY/g+TjiUbXUPDEzN4mENACF/Aw+783v5CSEkSNYNxrCdt8
- 5+MRdhcj7y1wGfnSsKubHTOkBQJSanNr0cZZlPsJK0gxB2YTG6Nin13oX8mV7sAa3vBqqwfj
- ZtjNA+Up9IJY4Iz5upykUDAtCcvm82UnJoe5bMuoiyVccuqd5K/058AAxWv8fIvB4bSgmGMM
- aAN9l7GLyi4NhsKCCcAGSc2YAsxFrH6whVqY6JIF+08n1kur5ULrEKHpTTeffwajCgZPWpFc
- 7Mg2PDpoOwdpKLKlmIpyDexGVH0Lj/ycBL8ujDYZ2tA9HhEaO4dW6zsQyt1v6mZffpWK+ZXb
- Cs8oFeACbrtNFF0nhNI6LUPH3oaVOkUoRQUYDuX6mIc4VTwMA8EoZlueKEHfZIKrRf2QYbOZ
- HVO98ZmbMeg=
-In-Reply-To: <9d1d51e69c3f96bf5992e9a988969515ba97f883.camel@xry111.site>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 183130 [Feb 01 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: avromanov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;smtp.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1, FromAlignment: s
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/01 13:26:00 #23335101
+X-KSMG-AntiVirus-Status: Clean, skipped
 
+Hello,
 
+On Wed, Jan 24, 2024 at 08:30:48AM +0100, Corentin Labbe wrote:
+> Le Tue, Jan 23, 2024 at 07:58:14PM +0300, Alexey Romanov a 'ecrit :
+> > To support other Amlogic SoC's we have to
+> > use platform data: descriptors and status registers
+> > offsets are individual for each SoC series.
+> >=20
+> > Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
+> > ---
+> >  drivers/crypto/amlogic/amlogic-gxl-cipher.c |  2 +-
+> >  drivers/crypto/amlogic/amlogic-gxl-core.c   | 31 +++++++++++++++------
+> >  drivers/crypto/amlogic/amlogic-gxl.h        | 11 ++++++++
+> >  3 files changed, 35 insertions(+), 9 deletions(-)
+> >=20
+> > diff --git a/drivers/crypto/amlogic/amlogic-gxl-cipher.c b/drivers/cryp=
+to/amlogic/amlogic-gxl-cipher.c
+> > index b19032f92415..7eff3ae7356f 100644
+> > --- a/drivers/crypto/amlogic/amlogic-gxl-cipher.c
+> > +++ b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
+> > @@ -225,7 +225,7 @@ static int meson_cipher(struct skcipher_request *ar=
+eq)
+> > =20
+> >  	reinit_completion(&mc->chanlist[flow].complete);
+> >  	mc->chanlist[flow].status =3D 0;
+> > -	writel(mc->chanlist[flow].t_phy | 2, mc->base + (flow << 2));
+> > +	writel(mc->chanlist[flow].t_phy | 2, mc->base + ((mc->pdata->descs_re=
+g + flow) << 2));
+> >  	wait_for_completion_interruptible_timeout(&mc->chanlist[flow].complet=
+e,
+> >  						  msecs_to_jiffies(500));
+> >  	if (mc->chanlist[flow].status =3D=3D 0) {
+> > diff --git a/drivers/crypto/amlogic/amlogic-gxl-core.c b/drivers/crypto=
+/amlogic/amlogic-gxl-core.c
+> > index a58644be76e9..2be381e157c4 100644
+> > --- a/drivers/crypto/amlogic/amlogic-gxl-core.c
+> > +++ b/drivers/crypto/amlogic/amlogic-gxl-core.c
+> > @@ -18,6 +18,7 @@
+> >  #include <linux/kernel.h>
+> >  #include <linux/module.h>
+> >  #include <linux/of.h>
+> > +#include <linux/of_device.h>
+> >  #include <linux/platform_device.h>
+> > =20
+> >  #include "amlogic-gxl.h"
+> > @@ -30,9 +31,10 @@ static irqreturn_t meson_irq_handler(int irq, void *=
+data)
+> > =20
+> >  	for (flow =3D 0; flow < mc->flow_cnt; flow++) {
+> >  		if (mc->chanlist[flow].irq =3D=3D irq) {
+> > -			p =3D readl(mc->base + ((0x04 + flow) << 2));
+> > +			p =3D readl(mc->base + ((mc->pdata->status_reg + flow) << 2));
+> >  			if (p) {
+> > -				writel_relaxed(0xF, mc->base + ((0x4 + flow) << 2));
+> > +				writel_relaxed(0xF, mc->base +
+> > +					      ((mc->pdata->status_reg + flow) << 2));
+> >  				mc->chanlist[flow].status =3D 1;
+> >  				complete(&mc->chanlist[flow].complete);
+> >  				return IRQ_HANDLED;
+> > @@ -245,15 +247,34 @@ static void meson_unregister_algs(struct meson_de=
+v *mc)
+> >  	}
+> >  }
+> > =20
+> > +static const struct meson_pdata meson_gxl_pdata =3D {
+> > +	.descs_reg =3D 0x0,
+> > +	.status_reg =3D 0x4,
+> > +};
+> > +
+> > +static const struct of_device_id meson_crypto_of_match_table[] =3D {
+> > +	{
+> > +		.compatible =3D "amlogic,gxl-crypto",
+> > +		.data =3D &meson_gxl_pdata,
+> > +	},
+> > +	{},
+> > +};
+> > +
+> >  static int meson_crypto_probe(struct platform_device *pdev)
+> >  {
+> > +	const struct of_device_id *match;
+> >  	struct meson_dev *mc;
+> >  	int err;
+> > =20
+> > +	match =3D of_match_device(meson_crypto_of_match_table, &pdev->dev);
+> > +	if (!match)
+> > +		return -EINVAL;
+> > +
+> >  	mc =3D devm_kzalloc(&pdev->dev, sizeof(*mc), GFP_KERNEL);
+> >  	if (!mc)
+> >  		return -ENOMEM;
+> > =20
+> > +	mc->pdata =3D match->data;
+> >  	mc->dev =3D &pdev->dev;
+> >  	platform_set_drvdata(pdev, mc);
+> > =20
+> > @@ -312,12 +333,6 @@ static void meson_crypto_remove(struct platform_de=
+vice *pdev)
+> >  	clk_disable_unprepare(mc->busclk);
+> >  }
+> > =20
+> > -static const struct of_device_id meson_crypto_of_match_table[] =3D {
+> > -	{ .compatible =3D "amlogic,gxl-crypto", },
+> > -	{}
+> > -};
+> > -MODULE_DEVICE_TABLE(of, meson_crypto_of_match_table);
+>=20
+> Hello
+>=20
+> This patch breaks bisection, since it removes MODULE_DEVICE_TABLE.
+> After applying patchs 1,2,3 the driver does not load anymore on lepotato =
+board.
 
-在 2024/2/1 16:35, Xi Ruoyao 写道:
-> On Thu, 2024-02-01 at 15:46 +0000, Jiaxun Yang wrote:
->> On architectures with delay slot, architecture level instruction
->> pointer (or program counter) in pt_regs may differ from where
->> exception was triggered.
->>
->> Introduce exception_ip hook to invoke architecture code and determine
->> actual instruction pointer to the exception.
->>
->> Link:
->> https://lore.kernel.org/lkml/00d1b813-c55f-4365-8d81-d70258e10b16@app.fastmail.com/
->> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> How about adding something like
->
-> #ifndef arch_exception_ip
-> #define exception_ip(regs) instruction_pointer(regs)
-> #else
-> #define exception_ip(regs) arch_exception_ip(regs)
-> #endif
->
-> into a generic header, instead of having to add exception_ip definition
-> everywhere?
+Please, give more information.=20
 
-Actually I tried but failed, cuz there is no asm-generic version of 
-ptrace.h, besides
-exception_ip shall be used at many scenarios so extable.h is also a no go.
+I applied the first 3 patches and the driver probes correctly.
 
-Thanks
-- Jiaxun
+>=20
+> Regards
 
->
->> ---
->>   arch/alpha/include/asm/ptrace.h        | 1 +
->>   arch/arc/include/asm/ptrace.h          | 1 +
->>   arch/arm/include/asm/ptrace.h          | 1 +
->>   arch/csky/include/asm/ptrace.h         | 1 +
->>   arch/hexagon/include/uapi/asm/ptrace.h | 1 +
->>   arch/loongarch/include/asm/ptrace.h    | 1 +
->>   arch/m68k/include/asm/ptrace.h         | 1 +
->>   arch/microblaze/include/asm/ptrace.h   | 3 ++-
->>   arch/mips/include/asm/ptrace.h         | 1 +
->>   arch/mips/kernel/ptrace.c              | 7 +++++++
->>   arch/nios2/include/asm/ptrace.h        | 3 ++-
->>   arch/openrisc/include/asm/ptrace.h     | 1 +
->>   arch/parisc/include/asm/ptrace.h       | 1 +
->>   arch/s390/include/asm/ptrace.h         | 1 +
->>   arch/sparc/include/asm/ptrace.h        | 2 ++
->>   arch/um/include/asm/ptrace-generic.h   | 1 +
->>   16 files changed, 25 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/alpha/include/asm/ptrace.h
->> b/arch/alpha/include/asm/ptrace.h
->> index 3557ce64ed21..1ded3f2d09e9 100644
->> --- a/arch/alpha/include/asm/ptrace.h
->> +++ b/arch/alpha/include/asm/ptrace.h
->> @@ -8,6 +8,7 @@
->>   #define arch_has_single_step()		(1)
->>   #define user_mode(regs) (((regs)->ps & 8) != 0)
->>   #define instruction_pointer(regs) ((regs)->pc)
->> +#define exception_ip(regs) instruction_pointer(regs)
->>   #define profile_pc(regs) instruction_pointer(regs)
->>   #define current_user_stack_pointer() rdusp()
->>   
->> diff --git a/arch/arc/include/asm/ptrace.h
->> b/arch/arc/include/asm/ptrace.h
->> index 00b9318e551e..94084f1048df 100644
->> --- a/arch/arc/include/asm/ptrace.h
->> +++ b/arch/arc/include/asm/ptrace.h
->> @@ -105,6 +105,7 @@ struct callee_regs {
->>   #endif
->>   
->>   #define instruction_pointer(regs)	((regs)->ret)
->> +#define exception_ip(regs)		instruction_pointer(regs)
->>   #define profile_pc(regs)		instruction_pointer(regs)
->>   
->>   /* return 1 if user mode or 0 if kernel mode */
->> diff --git a/arch/arm/include/asm/ptrace.h
->> b/arch/arm/include/asm/ptrace.h
->> index 7f44e88d1f25..fb4dc23eba78 100644
->> --- a/arch/arm/include/asm/ptrace.h
->> +++ b/arch/arm/include/asm/ptrace.h
->> @@ -89,6 +89,7 @@ static inline long regs_return_value(struct pt_regs
->> *regs)
->>   }
->>   
->>   #define instruction_pointer(regs)	(regs)->ARM_pc
->> +#define
->> exception_ip(regs)			instruction_pointer(regs)
->>   
->>   #ifdef CONFIG_THUMB2_KERNEL
->>   #define frame_pointer(regs) (regs)->ARM_r7
->> diff --git a/arch/csky/include/asm/ptrace.h
->> b/arch/csky/include/asm/ptrace.h
->> index 0634b7895d81..a738630e64b0 100644
->> --- a/arch/csky/include/asm/ptrace.h
->> +++ b/arch/csky/include/asm/ptrace.h
->> @@ -22,6 +22,7 @@
->>   
->>   #define user_mode(regs) (!((regs)->sr & PS_S))
->>   #define instruction_pointer(regs) ((regs)->pc)
->> +#define exception_ip(regs) instruction_pointer(regs)
->>   #define profile_pc(regs) instruction_pointer(regs)
->>   #define trap_no(regs) ((regs->sr >> 16) & 0xff)
->>   
->> diff --git a/arch/hexagon/include/uapi/asm/ptrace.h
->> b/arch/hexagon/include/uapi/asm/ptrace.h
->> index 2a3ea14ad9b9..846471936237 100644
->> --- a/arch/hexagon/include/uapi/asm/ptrace.h
->> +++ b/arch/hexagon/include/uapi/asm/ptrace.h
->> @@ -25,6 +25,7 @@
->>   #include <asm/registers.h>
->>   
->>   #define instruction_pointer(regs) pt_elr(regs)
->> +#define exception_ip(regs) instruction_pointer(regs)
->>   #define user_stack_pointer(regs) ((regs)->r29)
->>   
->>   #define profile_pc(regs) instruction_pointer(regs)
->> diff --git a/arch/loongarch/include/asm/ptrace.h
->> b/arch/loongarch/include/asm/ptrace.h
->> index f3ddaed9ef7f..a34327f0e69d 100644
->> --- a/arch/loongarch/include/asm/ptrace.h
->> +++ b/arch/loongarch/include/asm/ptrace.h
->> @@ -160,6 +160,7 @@ static inline void regs_set_return_value(struct
->> pt_regs *regs, unsigned long val
->>   }
->>   
->>   #define instruction_pointer(regs) ((regs)->csr_era)
->> +#define exception_ip(regs) instruction_pointer(regs)
->>   #define profile_pc(regs) instruction_pointer(regs)
->>   
->>   extern void die(const char *str, struct pt_regs *regs);
->> diff --git a/arch/m68k/include/asm/ptrace.h
->> b/arch/m68k/include/asm/ptrace.h
->> index ea5a80ca1ab3..cb553e2ec73a 100644
->> --- a/arch/m68k/include/asm/ptrace.h
->> +++ b/arch/m68k/include/asm/ptrace.h
->> @@ -13,6 +13,7 @@
->>   
->>   #define user_mode(regs) (!((regs)->sr & PS_S))
->>   #define instruction_pointer(regs) ((regs)->pc)
->> +#define exception_ip(regs) instruction_pointer(regs)
->>   #define profile_pc(regs) instruction_pointer(regs)
->>   #define current_pt_regs() \
->>   	(struct pt_regs *)((char *)current_thread_info() +
->> THREAD_SIZE) - 1
->> diff --git a/arch/microblaze/include/asm/ptrace.h
->> b/arch/microblaze/include/asm/ptrace.h
->> index bfcb89df5e26..974c00fa7212 100644
->> --- a/arch/microblaze/include/asm/ptrace.h
->> +++ b/arch/microblaze/include/asm/ptrace.h
->> @@ -12,7 +12,8 @@
->>   #define user_mode(regs)			(!kernel_mode(regs))
->>   
->>   #define instruction_pointer(regs)	((regs)->pc)
->> -#define profile_pc(regs)		instruction_pointer(regs)
->> +#define
->> exception_ip(regs)			instruction_pointer(regs)
->> +#define
->> profile_pc(regs)			instruction_pointer(regs)
->>   #define user_stack_pointer(regs)	((regs)->r1)
->>   
->>   static inline long regs_return_value(struct pt_regs *regs)
->> diff --git a/arch/mips/include/asm/ptrace.h
->> b/arch/mips/include/asm/ptrace.h
->> index daf3cf244ea9..97589731fd40 100644
->> --- a/arch/mips/include/asm/ptrace.h
->> +++ b/arch/mips/include/asm/ptrace.h
->> @@ -154,6 +154,7 @@ static inline long regs_return_value(struct
->> pt_regs *regs)
->>   }
->>   
->>   #define instruction_pointer(regs) ((regs)->cp0_epc)
->> +extern unsigned long exception_ip(struct pt_regs *regs);
->>   #define profile_pc(regs) instruction_pointer(regs)
->>   
->>   extern asmlinkage long syscall_trace_enter(struct pt_regs *regs, long
->> syscall);
->> diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
->> index d9df543f7e2c..59288c13b581 100644
->> --- a/arch/mips/kernel/ptrace.c
->> +++ b/arch/mips/kernel/ptrace.c
->> @@ -31,6 +31,7 @@
->>   #include <linux/seccomp.h>
->>   #include <linux/ftrace.h>
->>   
->> +#include <asm/branch.h>
->>   #include <asm/byteorder.h>
->>   #include <asm/cpu.h>
->>   #include <asm/cpu-info.h>
->> @@ -48,6 +49,12 @@
->>   #define CREATE_TRACE_POINTS
->>   #include <trace/events/syscalls.h>
->>   
->> +unsigned long exception_ip(struct pt_regs *regs)
->> +{
->> +	return exception_epc(regs);
->> +}
->> +EXPORT_SYMBOL(exception_ip);
->> +
->>   /*
->>    * Called by kernel/ptrace.c when detaching..
->>    *
->> diff --git a/arch/nios2/include/asm/ptrace.h
->> b/arch/nios2/include/asm/ptrace.h
->> index 9da34c3022a2..136f5679ae79 100644
->> --- a/arch/nios2/include/asm/ptrace.h
->> +++ b/arch/nios2/include/asm/ptrace.h
->> @@ -66,7 +66,8 @@ struct switch_stack {
->>   #define user_mode(regs)	(((regs)->estatus & ESTATUS_EU))
->>   
->>   #define instruction_pointer(regs)	((regs)->ra)
->> -#define profile_pc(regs)		instruction_pointer(regs)
->> +#define
->> exception_ip(regs)			instruction_pointer(regs)
->> +#define
->> profile_pc(regs)			instruction_pointer(regs)
->>   #define user_stack_pointer(regs)	((regs)->sp)
->>   extern void show_regs(struct pt_regs *);
->>   
->> diff --git a/arch/openrisc/include/asm/ptrace.h
->> b/arch/openrisc/include/asm/ptrace.h
->> index 375147ff71fc..67c28484d17e 100644
->> --- a/arch/openrisc/include/asm/ptrace.h
->> +++ b/arch/openrisc/include/asm/ptrace.h
->> @@ -67,6 +67,7 @@ struct pt_regs {
->>   #define STACK_FRAME_OVERHEAD  128  /* size of minimum stack frame */
->>   
->>   #define instruction_pointer(regs)	((regs)->pc)
->> +#define
->> exception_ip(regs)			instruction_pointer(regs)
->>   #define user_mode(regs)			(((regs)->sr &
->> SPR_SR_SM) == 0)
->>   #define user_stack_pointer(regs)	((unsigned long)(regs)->sp)
->>   #define profile_pc(regs)		instruction_pointer(regs)
->> diff --git a/arch/parisc/include/asm/ptrace.h
->> b/arch/parisc/include/asm/ptrace.h
->> index eea3f3df0823..d7e8dcf26582 100644
->> --- a/arch/parisc/include/asm/ptrace.h
->> +++ b/arch/parisc/include/asm/ptrace.h
->> @@ -17,6 +17,7 @@
->>   #define user_mode(regs)			(((regs)->iaoq[0] &
->> 3) != PRIV_KERNEL)
->>   #define user_space(regs)		((regs)->iasq[1] !=
->> PRIV_KERNEL)
->>   #define instruction_pointer(regs)	((regs)->iaoq[0] & ~3)
->> +#define
->> exception_ip(regs)			instruction_pointer(regs)
->>   #define user_stack_pointer(regs)	((regs)->gr[30])
->>   unsigned long profile_pc(struct pt_regs *);
->>   
->> diff --git a/arch/s390/include/asm/ptrace.h
->> b/arch/s390/include/asm/ptrace.h
->> index d28bf8fb2799..a5255b2337af 100644
->> --- a/arch/s390/include/asm/ptrace.h
->> +++ b/arch/s390/include/asm/ptrace.h
->> @@ -211,6 +211,7 @@ static inline int
->> test_and_clear_pt_regs_flag(struct pt_regs *regs, int flag)
->>   
->>   #define user_mode(regs) (((regs)->psw.mask & PSW_MASK_PSTATE) != 0)
->>   #define instruction_pointer(regs) ((regs)->psw.addr)
->> +#define exception_ip(regs) instruction_pointer(regs)
->>   #define user_stack_pointer(regs)((regs)->gprs[15])
->>   #define profile_pc(regs) instruction_pointer(regs)
->>   
->> diff --git a/arch/sparc/include/asm/ptrace.h
->> b/arch/sparc/include/asm/ptrace.h
->> index d1419e669027..41ae186f2245 100644
->> --- a/arch/sparc/include/asm/ptrace.h
->> +++ b/arch/sparc/include/asm/ptrace.h
->> @@ -63,6 +63,7 @@ extern union global_cpu_snapshot
->> global_cpu_snapshot[NR_CPUS];
->>   #define force_successful_syscall_return() set_thread_noerror(1)
->>   #define user_mode(regs) (!((regs)->tstate & TSTATE_PRIV))
->>   #define instruction_pointer(regs) ((regs)->tpc)
->> +#define exception_ip(regs) instruction_pointer(regs)
->>   #define instruction_pointer_set(regs, val) do { \
->>   		(regs)->tpc = (val); \
->>   		(regs)->tnpc = (val)+4; \
->> @@ -142,6 +143,7 @@ static inline bool pt_regs_clear_syscall(struct
->> pt_regs *regs)
->>   
->>   #define user_mode(regs) (!((regs)->psr & PSR_PS))
->>   #define instruction_pointer(regs) ((regs)->pc)
->> +#define exception_ip(regs) instruction_pointer(regs)
->>   #define user_stack_pointer(regs) ((regs)->u_regs[UREG_FP])
->>   unsigned long profile_pc(struct pt_regs *);
->>   #else /* (!__ASSEMBLY__) */
->> diff --git a/arch/um/include/asm/ptrace-generic.h
->> b/arch/um/include/asm/ptrace-generic.h
->> index adf91ef553ae..f9ada287ca12 100644
->> --- a/arch/um/include/asm/ptrace-generic.h
->> +++ b/arch/um/include/asm/ptrace-generic.h
->> @@ -26,6 +26,7 @@ struct pt_regs {
->>   #define PT_REGS_SYSCALL_NR(r) UPT_SYSCALL_NR(&(r)->regs)
->>   
->>   #define instruction_pointer(regs) PT_REGS_IP(regs)
->> +#define exception_ip(regs) instruction_pointer(regs)
->>   
->>   #define PTRACE_OLDSETOPTIONS 21
->>   
->>
-
--- 
----
-Jiaxun Yang
-
+--=20
+Thank you,
+Alexey=
 
