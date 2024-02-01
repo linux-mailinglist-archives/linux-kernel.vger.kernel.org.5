@@ -1,161 +1,178 @@
-Return-Path: <linux-kernel+bounces-48777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8446184610F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:36:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F57C846112
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:38:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B64E41C222BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:36:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 535912875AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:38:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 572058527E;
-	Thu,  1 Feb 2024 19:36:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E4088528E;
+	Thu,  1 Feb 2024 19:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="oEyiAhnI"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KuIuNajf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EFEF85622;
-	Thu,  1 Feb 2024 19:36:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 779B06D39;
+	Thu,  1 Feb 2024 19:38:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706816206; cv=none; b=Pd9GNe0pUN2rf+Ntb7ZXCv0kOlzE9UkE5CCiA+8LvmoiRpSUrIMP+SlMGpHGEuIZOy8XyZk5CGaITn2LNXWOq7a4DRYEb/4hfEXzKUgZLcu1yzf+VRRlZeg20yE/Nixe1ZzWvsqBksQiTCK4xxhT2Eydn8EyKXrY4ev+7sAnOe0=
+	t=1706816292; cv=none; b=uXIR/gB+kYzb5pvGsnEya57hG6ofeYBKrP1LfzPIUt8p7CrvuX3eM/IOKodLH8R5DVERESAWxLZXb20Y6vAvK+7dCudzwi0xtDpTtrJEH1/jpK5yMW/UV7j2dEz6IUyvKcerafIOmNMM1uX0ACkv7LCDI2ITw0sOdwmlK7SM3Fo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706816206; c=relaxed/simple;
-	bh=ankfZc7iRLTEJBMFjGLfV0NhiS117eh39H3c+xq9XJI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=LI6+zHQf3H/2F7wa5aQxqUfd1oCV019CrnIfnbjEf+IhfUsI/iCHNeZ2Bj2GJCb/pRw5U0FegDxZEY616/X6lpnMYO6Phn47h4CymMCjaUnb74aWW5d0Zl0fMVtW2nG/hnDa28+QfU0ri1EM/6pamDMn/5zxiqEyXOFRpn+J7Vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=oEyiAhnI; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 411JafP1095297;
-	Thu, 1 Feb 2024 13:36:41 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706816201;
-	bh=SQ5y3kDSRpyJYfnU8Ihu5tFQbqlEUZZH5whWOT0PNCo=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=oEyiAhnI/blup1CgeEc8CeMo8PaNwBJyuuNDliHDdRHlPc+/Dlme18V9nbIjSIrnN
-	 3u8vERswqra84+x09ErKOMxV9LVQmixKVyWPXdwiG0JUaNOX6zB1jNuHTLvalP45R5
-	 JtoHQPglquudX/fiNwiY/feVVHNogoTowR9OWZjE=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 411Jafxm021261
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 1 Feb 2024 13:36:41 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 1
- Feb 2024 13:36:41 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 1 Feb 2024 13:36:41 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 411Jae9c113425;
-	Thu, 1 Feb 2024 13:36:40 -0600
-Message-ID: <54161b26-329c-4faa-b6f7-73fe82efb525@ti.com>
-Date: Thu, 1 Feb 2024 13:36:40 -0600
+	s=arc-20240116; t=1706816292; c=relaxed/simple;
+	bh=Pc8RJJh2G6jJWkbbYSZ2kbzKYJeZHz+HBeINvqtqkOM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=vBe25lWU1xOw8SwOYXYQccQS8iHBHe3WN/moXCqEq7vDECxtxA7VHYrXGtoFQJvcaGtoFCTIOzu6e8eeZLZkoYSr6zoI/eeyHFQIPxhEakiDjz+pVxb8bC8y/BwHPjYHBckjH2tMZtbsI+3fU6NmPKrcBU3+5F3VSJ08Hkz+5JI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KuIuNajf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A5D0C433F1;
+	Thu,  1 Feb 2024 19:38:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706816291;
+	bh=Pc8RJJh2G6jJWkbbYSZ2kbzKYJeZHz+HBeINvqtqkOM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KuIuNajfDKG7/E3ZIeBHtV8/CFSrNKOmaY0nx8dkI1GH6VMIRsyZxDrqaI/vwG0vB
+	 KDp9YxOgUAVfuq2bbtqh+KGA3/3/Wrkf4MSI36WHQXy6daeHlgWKK4eA1nyoq3hGQY
+	 pESBJ3BX6KstsHRVP3NdvYGcHpJBrKEs8HBPZdKEnzoUJmcUFF8qPjBkmVWLkIIA/V
+	 VFIbbNlj2joyAFFwNC8nQA7KLn21Aa/uh5ldgZArRkj++y0xY6WfVk/0i0fmEi6I+D
+	 9iqe/X1HD/ZPIk9XpcRu3O85JYIraeMKU/sMwCQK1rXpbxWQSEcLA3VRgzAdPDFvHK
+	 OuvcYIYaquUNA==
+Date: Thu, 1 Feb 2024 12:38:09 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Wanpeng Li <wanpengli@tencent.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	David Rientjes <rientjes@google.com>, llvm@lists.linux.dev
+Subject: Re: [PATCH, RESEND] x86/sev: Fix SEV check in sev_map_percpu_data()
+Message-ID: <20240201193809.GA2710596@dev-arch.thelio-3990X>
+References: <20240124130317.495519-1-kirill.shutemov@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/5] mmc: sdhci_am654: Write ITAPDLY for DDR52 timing
-Content-Language: en-US
-To: Judith Mendez <jm@ti.com>, Ulf Hansson <ulf.hansson@linaro.org>
-CC: Adrian Hunter <adrian.hunter@intel.com>, <linux-mmc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Randolph Sapp <rs@ti.com>,
-        Vignesh
- Raghavendra <vigneshr@ti.com>
-References: <20240131215044.3163469-1-jm@ti.com>
- <20240131215044.3163469-3-jm@ti.com>
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <20240131215044.3163469-3-jm@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240124130317.495519-1-kirill.shutemov@linux.intel.com>
 
-On 1/31/24 3:50 PM, Judith Mendez wrote:
-> For DDR52 timing, DLL is enabled but tuning is not carried
-> out, therefore the ITAPDLY value in PHY CTRL 4 register is
-> not correct. Fix this by writing ITAPDLY after enabling DLL.
+On Wed, Jan 24, 2024 at 03:03:17PM +0200, Kirill A. Shutemov wrote:
+> The function sev_map_percpu_data() checks if it is running on an SEV
+> platform by checking the CC_ATTR_GUEST_MEM_ENCRYPT attribute. However,
+> this attribute is also defined for TDX.
 > 
-> Fixes: a161c45f2979 ("mmc: sdhci_am654: Enable DLL only for some speed modes")
-> Signed-off-by: Judith Mendez <jm@ti.com>
+> To avoid false positives, add a cc_vendor check.
+> 
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Fixes: 4d96f9109109 ("x86/sev: Replace occurrences of sev_active() with cc_platform_has()")
+> Suggested-by: Borislav Petkov (AMD) <bp@alien8.de>
+> Acked-by: David Rientjes <rientjes@google.com>
 > ---
->   drivers/mmc/host/sdhci_am654.c | 27 +++++++++++++++------------
->   1 file changed, 15 insertions(+), 12 deletions(-)
+>  arch/x86/kernel/kvm.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
-> index a3798c9912f6..ff18a274b6f2 100644
-> --- a/drivers/mmc/host/sdhci_am654.c
-> +++ b/drivers/mmc/host/sdhci_am654.c
-> @@ -170,7 +170,19 @@ struct sdhci_am654_driver_data {
->   #define DLL_CALIB	(1 << 4)
->   };
->   
-> -static void sdhci_am654_setup_dll(struct sdhci_host *host, unsigned int clock)
-> +static void sdhci_am654_write_itapdly(struct sdhci_am654_data *sdhci_am654,
-> +				      u32 itapdly)
+> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+> index dfe9945b9bec..428ee74002e1 100644
+> --- a/arch/x86/kernel/kvm.c
+> +++ b/arch/x86/kernel/kvm.c
+> @@ -434,7 +434,8 @@ static void __init sev_map_percpu_data(void)
+>  {
+>  	int cpu;
+>  
+> -	if (!cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
+> +	if (cc_vendor != CC_VENDOR_AMD ||
+> +	    !cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
+>  		return;
+>  
+>  	for_each_possible_cpu(cpu) {
+> -- 
+> 2.43.0
+> 
 
-This patch is confusing, looks like you switched the place of these two
-functions, but diff is not really liking that. You can mess with
---diff-algorithm and the like to get a more readable patch. But in
-this case why switch their spots at all?
+Our CI has started seeing a build failure as a result of this patch when
+using LLVM to build x86_64_defconfig + CONFIG_GCOV_KERNEL=y +
+CONFIG_GCOV_PROFILE_ALL=y:
 
-Seems to be so you can call sdhci_am654_write_itapdly() from
-sdhci_am654_setup_dll() without a forward declaration, instead
-why not just call sdhci_am654_write_itapdly() after calling
-sdhci_am654_setup_dll() below. That also saves to from having
-to pass in `timing` to sdhci_am654_write_itapdly() just to
-have it pass it right through to sdhci_am654_setup_dll().
+  $ echo 'CONFIG_GCOV_KERNEL=y
+  CONFIG_GCOV_PROFILE_ALL=y' >kernel/configs/gcov.config
 
-Andrew
+  $ make -skj"$(nproc)" ARCH=x86_64 LLVM=1 mrproper defconfig gcov.config vmlinux
+  ...
+  ld.lld: error: undefined symbol: cc_vendor
+  >>> referenced by kvm.c
+  >>>               arch/x86/kernel/kvm.o:(kvm_smp_prepare_boot_cpu) in archive vmlinux.a
+  ...
 
-> +{
-> +	/* Set ITAPCHGWIN before writing to ITAPDLY */
-> +	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPCHGWIN_MASK,
-> +			   0x1 << ITAPCHGWIN_SHIFT);
-> +	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPDLYSEL_MASK,
-> +			   itapdly << ITAPDLYSEL_SHIFT);
-> +	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPCHGWIN_MASK, 0);
-> +}
-> +
-> +static void sdhci_am654_setup_dll(struct sdhci_host *host, unsigned int clock,
-> +				  unsigned char timing)
->   {
->   	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
->   	struct sdhci_am654_data *sdhci_am654 = sdhci_pltfm_priv(pltfm_host);
-> @@ -236,17 +248,8 @@ static void sdhci_am654_setup_dll(struct sdhci_host *host, unsigned int clock)
->   		dev_err(mmc_dev(host->mmc), "DLL failed to relock\n");
->   		return;
->   	}
-> -}
->   
-> -static void sdhci_am654_write_itapdly(struct sdhci_am654_data *sdhci_am654,
-> -				      u32 itapdly)
-> -{
-> -	/* Set ITAPCHGWIN before writing to ITAPDLY */
-> -	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPCHGWIN_MASK,
-> -			   1 << ITAPCHGWIN_SHIFT);
-> -	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPDLYSEL_MASK,
-> -			   itapdly << ITAPDLYSEL_SHIFT);
-> -	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPCHGWIN_MASK, 0);
-> +	sdhci_am654_write_itapdly(sdhci_am654, sdhci_am654->itap_del_sel[timing]);
->   }
->   
->   static void sdhci_am654_setup_delay_chain(struct sdhci_am654_data *sdhci_am654,
-> @@ -298,7 +301,7 @@ static void sdhci_am654_set_clock(struct sdhci_host *host, unsigned int clock)
->   	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, mask, val);
->   
->   	if (timing > MMC_TIMING_UHS_SDR25 && clock >= CLOCK_TOO_SLOW_HZ) {
-> -		sdhci_am654_setup_dll(host, clock);
-> +		sdhci_am654_setup_dll(host, clock, timing);
->   		sdhci_am654->dll_enable = true;
->   	} else {
->   		sdhci_am654_setup_delay_chain(sdhci_am654, timing);
+I was somewhat confused at first why this build error only shows up with
+GCOV until I looked at the optimized IR. This configuration has
+CONFIG_ARCH_HAS_CC_PLATFORM=n, which means that cc_vendor is declared
+but not defined anywhere, so I was expecting an unconditional error.
+Looking closer, I realized that cc_platform_has() evaluates to
+false in that configuration, so the compiler can always turn
+
+  if (cond || !false)
+      action();
+
+into
+
+  action();
+
+but it seems like with the GCOV instrumentation, it keeps both branches
+(since GCOV is about code coverage, it makes sense that you would want
+to see if each branch is ever taken). I can eliminate the error with the
+following diff, I am not sure if that is too much though.
+
+diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+index 428ee74002e1..4432ee09cbcb 100644
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -434,7 +434,7 @@ static void __init sev_map_percpu_data(void)
+ {
+ 	int cpu;
+ 
+-	if (cc_vendor != CC_VENDOR_AMD ||
++	if ((IS_ENABLED(CONFIG_ARCH_HAS_CC_PLATFORM) && cc_vendor != CC_VENDOR_AMD) ||
+ 	    !cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
+ 		return;
+ 
+Perhaps another solution would be to just
+
+  #define cc_vendor (CC_VENDOR_NONE)
+
+if CONFIG_ARCH_HAS_CC_PLATFORM is not set, since it can never be changed
+from the default in arch/x86/coco/core.c.
+
+diff --git a/arch/x86/include/asm/coco.h b/arch/x86/include/asm/coco.h
+index 6ae2d16a7613..f3909894f82f 100644
+--- a/arch/x86/include/asm/coco.h
++++ b/arch/x86/include/asm/coco.h
+@@ -10,13 +10,13 @@ enum cc_vendor {
+ 	CC_VENDOR_INTEL,
+ };
+ 
+-extern enum cc_vendor cc_vendor;
+-
+ #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
++extern enum cc_vendor cc_vendor;
+ void cc_set_mask(u64 mask);
+ u64 cc_mkenc(u64 val);
+ u64 cc_mkdec(u64 val);
+ #else
++#define cc_vendor (CC_VENDOR_NONE)
+ static inline u64 cc_mkenc(u64 val)
+ {
+ 	return val;
+
+Cheers,
+Nathan
+
 
