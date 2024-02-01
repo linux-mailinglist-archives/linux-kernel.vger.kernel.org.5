@@ -1,160 +1,147 @@
-Return-Path: <linux-kernel+bounces-48289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 025F78459A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:06:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4312784598D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:03:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16717B2341B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:06:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92E2CB2546D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:03:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E546D5D498;
-	Thu,  1 Feb 2024 14:05:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 795AA5D48E;
+	Thu,  1 Feb 2024 14:03:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="rSHHkAJi"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="V6uoivNv";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="EtUyAS1n"
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFFF3626AD
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 14:05:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE9625338E;
+	Thu,  1 Feb 2024 14:03:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.27
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706796344; cv=none; b=YzHWuc3u0sez7x9JJg4Q7/VeXXu8rROJlCsvOCwHO24lDtJUNbtDnesqAAdc0laEwFmqb0ClvxcAI1oa15ky1i4v7LtgZPF2/5wZO++qL4kx2zKxAmeMrubkQcZJ3M+tpXypCqH9lAHHjn/C62TXC7RrY0ykN2zh4RmP3p23mbo=
+	t=1706796199; cv=none; b=BTbyd6zMFvYVIADLQjLKuSM6XA49oHbk20schr19IvwFQU5FGLEo1G5qX4cQISwxhZLdzUljkJu+0lYppEze5fftpyFiFA+7zF7MgKUM/fOryvLcinXUEMquhuniywxGNxUBURErkKZ3R6nj6ELGpynKywxHHPYLc6q2WPcoLh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706796344; c=relaxed/simple;
-	bh=7BvcHpGNojuMkGldGxA7daDj6oUHy4iiyQOkU+6RsWY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ILOom7w/KPO42HuKbA8Vh9ysQPLeDDvFEhQjJ6RPzM7QOojkN2RCwzOF26M/aI1/71gvoUtWo5Sw/dyXG5iskIAhL5eoibt4H1OVEGy8yFoy8+qYY28Il8hA6JOpK+fKV/T2eKgtcJtiVwvGkKOeLA7y/ZFqm9QTqwk1KxR5obU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=rSHHkAJi; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d7517fe9d4so712295ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 06:05:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706796336; x=1707401136; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JiEpcBE0z8Q5t3JWdIgJHWEI2G0S1HPZ9ikeHZvifi4=;
-        b=rSHHkAJitqpY8jYzEFpBLQbaIfCepERGoPtXmgjMFW5vaALlYQd2crm10cF+Wm+0tb
-         mCjPuxfGOIEyUKZ7e7aEslz2IjEA2IqGMi1ZI4ph6EZdUc0XcgnMmjyFLOeBILj8gb3a
-         st12gmXbw+EBz3Wl4/S6D7DL0FbjSFhbCmJYx3211dqsXCsOiLn0lb5QBNYP8j77VN2U
-         CobBhVBpl8C8mbHloriG7lGkquvJoqJHcYpVl/IOkxz9FOwQT2U4arBW1vdUvASL1hp+
-         CFdFR7rh6l3iiuS6iml4/dT2g20p5ihaErwr8W3yLgrL1biOFXPGH6WL5c+Gg+VxqN9S
-         5VjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706796336; x=1707401136;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JiEpcBE0z8Q5t3JWdIgJHWEI2G0S1HPZ9ikeHZvifi4=;
-        b=axl4vlDyodx1GmM9zpPtVBLpQ12fomJV8VAKDfCN3qsXaTLIDQt/VZD7twjZxBJtM1
-         C8DoFhGotIQYiNWP+EEwCli6wqVg9BGag7yhzetO3EFORXD+Y/oXVwZc2TrqUfY+9gee
-         UKoIBwG5Q0U8N3IxXaVySGRTddbvu/eoD1bT6ZUJ9gTpyHFveX/VqfQcAiAjcbLpwHKQ
-         A2jifROyp5jfwGIHeNmAfeRoOQQvjktW0UQF7wBwQAJSleWwxIYnIqQk7Xq+os/FXq0v
-         fm94ydtTSqUiewqwVzv3KpERaFuSXpPndRDZ0RR1OohTUGrYZBIUjHZw+XSVoBNQMRRU
-         y8ZA==
-X-Forwarded-Encrypted: i=0; AJvYcCX9bZfrMwrKw+zG9/BH7TZ5hSiSABh0rgHGw63nxQC88I4LyaFuCWbRHAc6JLqcFODU5dqJQi0f/l2ptLvvZOU04BLkJgrYioxLQExS
-X-Gm-Message-State: AOJu0YxjbneET8MeVhf+X59zp9pfMPLP56TC+5w8JHWYnoWbwWnX3u4b
-	WTu526uQ4fPJ9LoSiW2ywsWCptAW1yg0CkhzOOBEEf9Q7Z6LIENwvyJh89ZTTjM=
-X-Google-Smtp-Source: AGHT+IH8tWdldiYSjIIvCar+NyjyZ+8lWYi2wVCMLRjX2BxVq2M9ONUwvbyZ78JOaLsGgI8+DCI/jQ==
-X-Received: by 2002:a17:902:ea08:b0:1d8:d1f5:e5d with SMTP id s8-20020a170902ea0800b001d8d1f50e5dmr2801264plg.0.1706796335668;
-        Thu, 01 Feb 2024 06:05:35 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU25vJ3ilONQ5+/2C4Wo2EpHNVQs3nHC9z6Guhj5ymJAU6kxBvc3F//8Q+scr/hLvk8cIRUNkuurwXW45PCazS3ATmw/SnLm77EZOQ5TLzQaZxwVz9beY1BoTbofuwYSOjNSrYouvlGBRh5WS9oj0ANDmSCutNP3ZHt5m2gCwJHrnuFGlHgQ6bdn6QSPWEnbdFWb8Z4mFT50NQABIOvwob+iHVHb8iq7tM4FZPxfNIUz1GmPKdRDJ5JiWaqnVA+S6yu+q2wH3eQ2GPTLoh4+tFD4tCseVmgacj20XaeMvCa9g==
-Received: from carbon-x1.. ([2a01:e0a:999:a3a0:189:f9cd:e10f:7a3f])
-        by smtp.gmail.com with ESMTPSA id kb16-20020a170903339000b001d8ec844fe7sm6914308plb.283.2024.02.01.06.05.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 06:05:35 -0800 (PST)
-From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
-To: Jonathan Corbet <corbet@lwn.net>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	linux-doc@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
-	Robin Ehn <rehn@rivosinc.com>
-Subject: [PATCH] riscv: hwprobe: export VA_BITS
-Date: Thu,  1 Feb 2024 15:02:45 +0100
-Message-ID: <20240201140319.360088-1-cleger@rivosinc.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706796199; c=relaxed/simple;
+	bh=ca8fj2gTG3iRmOfEmYapKTreDfkQJ3NcDZ7iQMWLM0k=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=VGTizVjS8xtbv58wuSsbXRm+SKuIi21CW1KjzAKgC1PiDkphxrmQcR0uBzFamEr5fsMzYTqvshulVtwdn9ML3GPnX3zNIQU7h/U9XIyzTtPHeZDsbxFZHLGAPJ8gavZx//6Ks+QEh128IFtzRgLQPX94yrN6NEw4tLBBg3Z53Gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=V6uoivNv; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=EtUyAS1n; arc=none smtp.client-ip=66.111.4.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id DA5765C015A;
+	Thu,  1 Feb 2024 09:03:11 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 01 Feb 2024 09:03:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1706796191;
+	 x=1706882591; bh=SrMsYSSdXBYrmJby1JuNx2foZxC1DPyP8T36AKwqkBI=; b=
+	V6uoivNvjOsWV8cVN414irLYJXlAxzYQLgIylQ4tIF25byDBNWNzWAFRdI2GHwXG
+	MqrpO04Rai1GLgT488yZbPpEnexlkT78FRbLnCRXSaWv2p3LNcpZ4KTQj6PDU8/q
+	P6/4YK57n8AJ+xvxcKFoSC6LRAiV2duWOBxPr0Ritc2iBXQrQcEgJSax/ELkNevM
+	omXro5wjkLCT/+BKTEDszb5lU6H1AUTKueRvQTV6brqfIO2Y0wc3RKBF4B/FODLZ
+	4aQe53Rg812/uIB13jRoudEycB0R4CeE+UWFQLBv5xdj1cR/SWQ31ELe4mPQ1LqG
+	XjZupRbQN8z0d9JXMsNNpw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706796191; x=
+	1706882591; bh=SrMsYSSdXBYrmJby1JuNx2foZxC1DPyP8T36AKwqkBI=; b=E
+	tUyAS1nQPJjZFmzE8hd+Xi0j0IDvz3Hj5hZHLkcVSkEToZ0xLDtzH9zrFdQhPVcK
+	4ORifOcYB+qP1esUYHQdMeUjevk2wtAGWtA5UVQDmm4sGazF/Amv2cM9/CwjrYeh
+	cqXkC/mZeon+LU7GBTrjTrrs6bbSouPNyaRdnPvvcqNH3aSDpkzx5WwNltvOzj52
+	bCL7x7DU7gVGQk5urJJm/SOrdhx0sgIs5PgHAQl+Xq0zJhmcgVyX20aZjUQfJfS0
+	8cBWyDtfuOdcvqDZH0NEneABQY8yGy9zLW6Rl5VSXFOPPa7M9P9aeID1iBIZDvez
+	RrfCGP2rJwYWO17+hRQSg==
+X-ME-Sender: <xms:nqS7ZeZL0sSN5_odCeX5vdkvsOCiCpCr0DlG98SBeLHiqMPBiChcYg>
+    <xme:nqS7ZRYRuXF7tf-BBEqzi-kMH3lfeKk4hWLR5Z4K4g5I-RCib-Acttig8AG15z0xM
+    LYwh5UddWERCG88iPg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeduuddgheeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
+    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:nqS7ZY9iznyhiGKP7YnBR_mUnhKxBooFkyaLliDR2nfmBTEMcgsymw>
+    <xmx:nqS7ZQrdI7OIfLpGnDRXupFZQTd2lvuYxCIkWQq0YwhHJk_-Xfnypw>
+    <xmx:nqS7ZZrdVyx3b5AJi1L8hmKTwflW3Tx7m_LLx88vZYDxN2HSclYC-Q>
+    <xmx:n6S7ZQ5EuvV7yz_oWjsSWX4fKvwtp0TLNHOe6ZoA5H8SyRV2YAKZbw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 9F57BB6008D; Thu,  1 Feb 2024 09:03:10 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Message-Id: <b4309c85-026c-4fc9-8c26-61689ac38fa1@app.fastmail.com>
+In-Reply-To: 
+ <CAG_fn=Wb81V+axD2eLLiE9SfdbJ8yncrkhuyw8b+6OBJJ_M9Sw@mail.gmail.com>
+References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
+ <20240201122216.2634007-2-aleksander.lobakin@intel.com>
+ <3f6df876-4b25-4dc8-bbac-ce678c428d86@app.fastmail.com>
+ <CAG_fn=Wb81V+axD2eLLiE9SfdbJ8yncrkhuyw8b+6OBJJ_M9Sw@mail.gmail.com>
+Date: Thu, 01 Feb 2024 15:02:50 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Alexander Potapenko" <glider@google.com>
+Cc: "Alexander Lobakin" <aleksander.lobakin@intel.com>,
+ "David S . Miller" <davem@davemloft.net>,
+ "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
+ "Paolo Abeni" <pabeni@redhat.com>,
+ "Michal Swiatkowski" <michal.swiatkowski@linux.intel.com>,
+ "Marcin Szycik" <marcin.szycik@linux.intel.com>,
+ "Wojciech Drewek" <wojciech.drewek@intel.com>,
+ "Yury Norov" <yury.norov@gmail.com>, "Andy Shevchenko" <andy@kernel.org>,
+ "Rasmus Villemoes" <linux@rasmusvillemoes.dk>,
+ "Jiri Pirko" <jiri@resnulli.us>, "Ido Schimmel" <idosch@nvidia.com>,
+ "Przemek Kitszel" <przemyslaw.kitszel@intel.com>,
+ "Simon Horman" <horms@kernel.org>, linux-btrfs@vger.kernel.org,
+ dm-devel@redhat.com, ntfs3@lists.linux.dev, linux-s390@vger.kernel.org,
+ "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+ Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+ "Syed Nayyar Waris" <syednwaris@gmail.com>,
+ "William Breathitt Gray" <william.gray@linaro.org>,
+ "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH net-next v5 01/21] lib/bitmap: add bitmap_{read,write}()
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Some userspace applications (OpenJDK for instance) uses the free bits
-in pointers to insert additional information for their own logic.
-Currently they rely on parsing /proc/cpuinfo to obtain the current value
-of virtual address used bits [1]. Exporting VA_BITS through hwprobe will
-allow for a more stable interface to be used.
+On Thu, Feb 1, 2024, at 14:45, Alexander Potapenko wrote:
+> On Thu, Feb 1, 2024 at 2:23=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> w=
+rote:
+>> On Thu, Feb 1, 2024, at 13:21, Alexander Lobakin wrote:
+>>
+>> As far as I can tell, the header ends up being included
+>> indirectly almost everywhere, so just parsing these functions
+>> likey adds not just dependencies but also compile time.
+>>
+>
+> Removing particular functions from a header to reduce compilation time
+> does not really scale.
+> Do we know this case has a noticeable impact on the compilation time?
+> If yes, maybe we need to tackle this problem in a different way (e.g.
+> reduce the number of dependencies on it)?
 
-Link: https://github.com/openjdk/jdk/blob/master/src/hotspot/os_cpu/linux_riscv/vm_version_linux_riscv.cpp#L171 [1]
-Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Cleaning up the header dependencies is definitely possible in
+theory, and there are other places we could start this, but
+it's also a multi-year effort that several people have tried
+without much success.
 
----
- Documentation/arch/riscv/hwprobe.rst  | 3 +++
- arch/riscv/include/asm/hwprobe.h      | 2 +-
- arch/riscv/include/uapi/asm/hwprobe.h | 1 +
- arch/riscv/kernel/sys_hwprobe.c       | 3 +++
- 4 files changed, 8 insertions(+), 1 deletion(-)
+All I'm asking here is to not make it worse by adding this
+one without need. If the function is not normally inlined
+anyway, there is no benefit to having it in the header.
 
-diff --git a/Documentation/arch/riscv/hwprobe.rst b/Documentation/arch/riscv/hwprobe.rst
-index b2bcc9eed9aa..6f198c6ed4f0 100644
---- a/Documentation/arch/riscv/hwprobe.rst
-+++ b/Documentation/arch/riscv/hwprobe.rst
-@@ -210,3 +210,6 @@ The following keys are defined:
- 
- * :c:macro:`RISCV_HWPROBE_KEY_ZICBOZ_BLOCK_SIZE`: An unsigned int which
-   represents the size of the Zicboz block in bytes.
-+
-+* :c:macro:`RISCV_HWPROBE_KEY_VA_BITS`: An unsigned long which
-+  represent the number of bits used to store virtual addresses.
-diff --git a/arch/riscv/include/asm/hwprobe.h b/arch/riscv/include/asm/hwprobe.h
-index 630507dff5ea..150a9877b0af 100644
---- a/arch/riscv/include/asm/hwprobe.h
-+++ b/arch/riscv/include/asm/hwprobe.h
-@@ -8,7 +8,7 @@
- 
- #include <uapi/asm/hwprobe.h>
- 
--#define RISCV_HWPROBE_MAX_KEY 6
-+#define RISCV_HWPROBE_MAX_KEY 7
- 
- static inline bool riscv_hwprobe_key_is_valid(__s64 key)
- {
-diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include/uapi/asm/hwprobe.h
-index 9f2a8e3ff204..2a5006cddb7b 100644
---- a/arch/riscv/include/uapi/asm/hwprobe.h
-+++ b/arch/riscv/include/uapi/asm/hwprobe.h
-@@ -67,6 +67,7 @@ struct riscv_hwprobe {
- #define		RISCV_HWPROBE_MISALIGNED_UNSUPPORTED	(4 << 0)
- #define		RISCV_HWPROBE_MISALIGNED_MASK		(7 << 0)
- #define RISCV_HWPROBE_KEY_ZICBOZ_BLOCK_SIZE	6
-+#define RISCV_HWPROBE_KEY_VA_BITS		7
- /* Increase RISCV_HWPROBE_MAX_KEY when adding items. */
- 
- /* Flags */
-diff --git a/arch/riscv/kernel/sys_hwprobe.c b/arch/riscv/kernel/sys_hwprobe.c
-index a7c56b41efd2..328435836e36 100644
---- a/arch/riscv/kernel/sys_hwprobe.c
-+++ b/arch/riscv/kernel/sys_hwprobe.c
-@@ -202,6 +202,9 @@ static void hwprobe_one_pair(struct riscv_hwprobe *pair,
- 		if (hwprobe_ext0_has(cpus, RISCV_HWPROBE_EXT_ZICBOZ))
- 			pair->value = riscv_cboz_block_size;
- 		break;
-+	case RISCV_HWPROBE_KEY_VA_BITS:
-+		pair->value = VA_BITS;
-+		break;
- 
- 	/*
- 	 * For forward compatibility, unknown keys don't fail the whole
--- 
-2.43.0
-
+      Arnd
 
