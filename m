@@ -1,130 +1,120 @@
-Return-Path: <linux-kernel+bounces-48715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EB33846022
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:41:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C819C84602A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:43:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D56D1C2494D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:41:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8349028970D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:43:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE2182C96;
-	Thu,  1 Feb 2024 18:40:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A71BF7429F;
+	Thu,  1 Feb 2024 18:42:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Grc3BH8n"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="sTWw38OL"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C73112FB08;
-	Thu,  1 Feb 2024 18:40:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60AFA12FB08;
+	Thu,  1 Feb 2024 18:42:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706812855; cv=none; b=Zeij1yoLYYkbHrLpX/dttccAMStfkTaZSNTF/k480sqLXqswDdQxHmXgAu7vuzfnyofKxQWIoe9ogpQ8RpD9M3Jnl6z/oIHrwHX+E1kSRlhMDd2v9mxM95y/fc53He2dR6eOVxwCi8D7G3+2clGrwLbpVqFu0yP+vtznrtdMBMA=
+	t=1706812972; cv=none; b=IvoB8RP3R5yyKXp3sN7hixpqh+LBZ0vKOVq2LXnQKPwoUWxUCCRx3pNB6D+zEkBdDTohRPxAIG7CcOMPFG2soyqCLOt+I2kcaVKgmKGYCPKmkiZqkwaNPqabXzPQWK2nwKv37eUKwL2rz+VWl4y9uN1GnVz8pELg6ukprBObyvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706812855; c=relaxed/simple;
-	bh=irXIYBIlkLI23IErRP19IjcdedDm9j+GXtl3atTGeKQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NqbUkxnNgFBFV2xhqI2NVZG+vgmEJFk+OV7wlU7fOGFHkay1oKTpIEY1C+Pk1YFX2ZyGbaN09MFtNDgf3+0JWr9UL6oCFCQwAhY3//fmftYFrIzU+w6jN8yHSr1m9afl3TbWmWWmMy5Ox95+MYIVz5uobklEnK7CcNI639OUxnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Grc3BH8n; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72D5AC433F1;
-	Thu,  1 Feb 2024 18:40:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706812854;
-	bh=irXIYBIlkLI23IErRP19IjcdedDm9j+GXtl3atTGeKQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Grc3BH8nkeiQywvhYoPspwhUAK2bf1HceO+KaFQ0+FDGuAsW8kG09akfB9IT1/dpR
-	 WtxgrCCunFAAN49RmnCi5p1ZdUOc+/tU7O5Uw50tUPDZCUchIq0gP8xlobsIMfT5Pg
-	 RYcCGzcpLZxqgwbLRvjMlsdTKNIt0d67xM9fbUBNGI4VB/Qa3NIHXPiqNtMPTIIOFe
-	 F3SNTpljn7ciUQXKxlkEzOMbaOdvz6q0g5+IkB2Qyw4uU5j6qjn4PQsvcQm8jQi2FM
-	 rBcxqxfQPJlrUZi5Z32TbFJCwe1SNELYdwj4SUW2u1tHIHRgENB5U9DLND3sOsNCVA
-	 HvrvRw43CnCzA==
-Date: Thu, 1 Feb 2024 18:40:49 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Peng Fan <peng.fan@nxp.com>
-Cc: Rob Herring <robh@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	"Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-	"wg@grandegger.com" <wg@grandegger.com>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"pabeni@redhat.com" <pabeni@redhat.com>,
-	"linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] dt-bindings: can: fsl,flexcan: add i.MX95 compatible
- string
-Message-ID: <20240201-relish-glacial-a73532d3e8c6@spud>
-References: <20240122091738.2078746-1-peng.fan@oss.nxp.com>
- <20240122-skilled-wimp-4bc1769bf235-mkl@pengutronix.de>
- <20240122125631.4c54eba1@kernel.org>
- <DU0PR04MB941750744E86A1656009B7BE88742@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <20240131145736.GA1262278-robh@kernel.org>
- <DU0PR04MB94178632D6F774339FB13375887C2@DU0PR04MB9417.eurprd04.prod.outlook.com>
+	s=arc-20240116; t=1706812972; c=relaxed/simple;
+	bh=VIvy4lTH+SG5Ye0Xk/ugj+PgutpBZ54WPeCaP7NfPJ8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=q0FIgEMx7hoSXYOYMd9RdQ2JEEoRuUywdnL1b+NR6zdKNh6LRrf1HG9rlsRVzPHxCsiwz8LCKOB58C/KDTuYLGEqMKNEDs0FrmGggncFz+YODFqe9j413xtrD9LRL+wZVqWKF03vAV9Ff7fA1qBRsgVc8T0efZUIAfK8ljJSq0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=sTWw38OL; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 411IgfX5006990;
+	Thu, 1 Feb 2024 12:42:41 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706812961;
+	bh=Ew1MvrMW2/yaRtaTroFMXsF9Ix1hzxk1BU3jjawkr2k=;
+	h=From:To:CC:Subject:Date;
+	b=sTWw38OL1IluL6GvAACoKlFW9X7dmgmrVfjQ6iXvAx7qAmOkhgfJpJgRhc2sLmVx7
+	 usO1ypP0yaNcBblMI6fb4F+3IO9Sbj7AXTz5toapXM4Ob9lqAv0m5DsDLTOjWJob6t
+	 oEEMP9hisLqEBssr/O1GcH7ZwzYH/5yQ6fyElgog=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 411Igf1r023903
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 1 Feb 2024 12:42:41 -0600
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 1
+ Feb 2024 12:42:40 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 1 Feb 2024 12:42:40 -0600
+Received: from udba0500997.dhcp.ti.com (udba0500997.dhcp.ti.com [128.247.81.249])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 411IgeuD042789;
+	Thu, 1 Feb 2024 12:42:40 -0600
+From: Brandon Brnich <b-brnich@ti.com>
+To: Nas Chung <nas.chung@chipsnmedia.com>,
+        Jackson Lee
+	<jackson.lee@chipsnmedia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Nishanth Menon <nm@ti.com>, Vignesh
+ Raghavendra <vigneshr@ti.com>
+CC: Darren Etheridge <detheridge@ti.com>, Brandon Brnich <b-brnich@ti.com>
+Subject: [PATCH v2] dt-bindings: media: Add sram-size Property for Wave5
+Date: Thu, 1 Feb 2024 12:42:38 -0600
+Message-ID: <20240201184238.2542695-1-b-brnich@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="XxIjggpR5LQGNVIU"
-Content-Disposition: inline
-In-Reply-To: <DU0PR04MB94178632D6F774339FB13375887C2@DU0PR04MB9417.eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
+Wave521c has capability to use SRAM carveout to store reference data with
+purpose of reducing memory bandwidth. To properly use this pool, the driver
+expects to have an sram and sram-size node. Without sram-size node, driver
+will default value to zero, making sram node irrelevant.
 
---XxIjggpR5LQGNVIU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Brandon Brnich <b-brnich@ti.com>
+---
+ Documentation/devicetree/bindings/media/cnm,wave521c.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-On Wed, Jan 31, 2024 at 11:22:49PM +0000, Peng Fan wrote:
-> > Subject: Re: [PATCH] dt-bindings: can: fsl,flexcan: add i.MX95 compatib=
-le
-> > string
-> >=20
-> > On Tue, Jan 23, 2024 at 07:00:27AM +0000, Peng Fan wrote:
-> > > > Subject: Re: [PATCH] dt-bindings: can: fsl,flexcan: add i.MX95
-> > > > compatible string
-> > > >
-> > > > On Mon, 22 Jan 2024 11:26:25 +0100 Marc Kleine-Budde wrote:
-> > > > > > Add i.MX95 flexcan which is compatible i.MX93 flexcan
-> > > > > >
-> > > > > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> > > > >
-> > > > > Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> > > >
-> > > > Hm, you don't apply CAN DTB patches?
-> > >
-> > > Nope. I am preparing dt-binding first, then post the i.MX95 SoC dtsi.
-> > > The CAN will be in the i.MX95 SOC dtsi file, not a single patch only
-> > > for CAN node.
-> >=20
-> > The question was why isn't Marc, the CAN maintainer, applying this. I h=
-ave
-> > the same question.
->=20
-> That's fine, let's drop this patch, the CAN node will not be put in my so=
-c dtsi
-> patch file, it will be in a separate patchset with some i.MX95 patches.
+diff --git a/Documentation/devicetree/bindings/media/cnm,wave521c.yaml b/Documentation/devicetree/bindings/media/cnm,wave521c.yaml
+index 6a11c1d11fb5..ea5469eb38f9 100644
+--- a/Documentation/devicetree/bindings/media/cnm,wave521c.yaml
++++ b/Documentation/devicetree/bindings/media/cnm,wave521c.yaml
+@@ -43,6 +43,12 @@ properties:
+       storing it on DMA memory. It is mainly used for the purpose of reducing
+       bandwidth.
+ 
++  sram-size:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      SRAM size reserved for VPU operations. If not specified, size will default
++      to zero.
++
+ required:
+   - compatible
+   - reg
+@@ -58,4 +64,5 @@ examples:
+         clocks = <&clks 42>;
+         interrupts = <42>;
+         sram = <&sram>;
++        sram-size = <0x1234>;
+     };
+-- 
+2.34.1
 
-I am confused. This patch (for the binding) needs to be applied
-regardless of what you are doing with your soc dtsi file.
-
---XxIjggpR5LQGNVIU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbvlsQAKCRB4tDGHoIJi
-0lKXAQD9Q4v0VDU/Dyun0tgqIB2JBr3Fh9ja/fUDKvmCx66YyQD/cqPjogSsgjOw
-SCCzaqrgXBrwCRCJNuBV6lywKxI1ngc=
-=L85i
------END PGP SIGNATURE-----
-
---XxIjggpR5LQGNVIU--
 
