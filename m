@@ -1,346 +1,185 @@
-Return-Path: <linux-kernel+bounces-47731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 556558451E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:29:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD1428451F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:32:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3319D1F25191
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 07:29:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C88C11C23BCB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 07:32:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BD5C1586F9;
-	Thu,  1 Feb 2024 07:29:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F42C1586EA;
+	Thu,  1 Feb 2024 07:32:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PpEGprZN"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XvY/GFlm"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DB683FE0;
-	Thu,  1 Feb 2024 07:29:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8F481586E2
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 07:32:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706772550; cv=none; b=XmFMEU9r76f1QsSKcKen1A6AkmLGar4mdjW/OgFUoS68gCPedH2IUQ8ufRNmMm5i+lqGqPv2lQOwfJAPRObPsmPhlZE8AcwwafRc9HIzUlfbwv5yEkOk4fRArpFeWtBxMamEnedIciaN7fn0gilBUwRHxTYdXYCuF2gSWsHRzOI=
+	t=1706772724; cv=none; b=fkt+EKh8diBy74MfYv4KIgJwsQ6DWsJrD5K6208ytCcEU/mxZqAfFaoiHzpwTeKTZDsEbSI9xgNnSZUJU972Xib3odKgWmXAoMs8fNzztkEOevhs4w1Gx3QmoXRlrQN39hCJuDa14GzrfK3+rpUrkde9n0cPdSVLaOke4q4dqEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706772550; c=relaxed/simple;
-	bh=W9cY8OGwEt3hGv4G3S7kAMP8lNKUny1RsNcjpYlLSPQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b2eA8l4O1ltOL7dabRaa6NthAiO3gcSejLBIvqDed7WfEqqeQZeeu9UgfYISjCe7S2UT3W7tIKq+HisSHq0JUo7923PPmUPDPF9+aQxHXYXQnFYS09/GTbM1PMsGTapBM+9+vqUXoL5SoGi9w9jJtl58ursXwGiMrW11azYBo/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PpEGprZN; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-557dcb0f870so816328a12.2;
-        Wed, 31 Jan 2024 23:29:07 -0800 (PST)
+	s=arc-20240116; t=1706772724; c=relaxed/simple;
+	bh=Ug6VbW6scob4zyacyL7DKfYD8E3cWUv2TjZXN9c3JUs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Cc44wFjEwCM8/MXWwSXKRZnfa+/6BV/wUEvFWBCFObEc4+JFAg/ct1DxdSAgJkg6qR6MVdZNNCpSHMoOiwbn/6uxqg28ux7OqZr30hWefFEMHcN2cKnQJPb/1NSlqt4AKvg0aQ7oTAe9+OaPWi5VRzcaH9pQ6me7S7xpjXW2o9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XvY/GFlm; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a3566c0309fso67430566b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 23:32:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706772546; x=1707377346; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tLaWFDZsEpQvtDVfJc1CSfkCtVX7RFRHGCgQXJS8kTo=;
-        b=PpEGprZNa7kLMRoTxiaXKzvSfx1cr+8iGxBqoBciCwF87ppcHYY0AeNQClDMcTVFpp
-         ffIjCdiNRq0G8Gq8qWlIL1tCA8fH4kmLLYdxT/jubm0nAVNq9Gs2JwL6zOlOy6MWsywO
-         uqpXcRAvOV+tUeAYKcB8fqJ0At2eyxMHhdM0XJyBI6ysChCMv6da/qVrjYanLv61xK4N
-         KF3NNmvCIAK4/JqaqTYU2pIGedsGal94qO8GugnPuEO1KQjEbcG70r8G8H5fIFR8YKfV
-         Vn3XoFyNQUIUgU8GIf/smCPlN6JW+Fx0QYz+J9UyY00C1JP/RP4CvD6nccm2zy2SgOQ9
-         i48A==
+        d=linaro.org; s=google; t=1706772721; x=1707377521; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TkihkoVp+1Q0+WMCFTmpmA5Epw3+p6C5zEBoeBY4VKg=;
+        b=XvY/GFlmEu0mElawvuHfVeaF4gpg/iwaNhDHQ5+rA0OFMRCFN7An5Z7MIWL2EWdnlG
+         tiLvRpnWqtvltA+ItrsAyRteMZ8zBjlomTptKaVxl52Bjf9NWC2sPR5k+wbSeemcsApi
+         iizpCKgsojMnHHJbvrDUZBNaNGwFphKXIHRzN7L2w2STpyCW3M0mqShxSU9CU1x/zYz0
+         +K4dZTxEEHWOLhG76ApOrqrLqpAtMdSDyz5Vl2FkbmxnVvBjhPoZmxECOAy2w/4WQoHX
+         P3+4EwB/POJkBDYXRPDt0did/YzBZ0P9gkQdB/yye3IERMhNhD1yFlI5633j/kkEuGhQ
+         A1kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706772546; x=1707377346;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tLaWFDZsEpQvtDVfJc1CSfkCtVX7RFRHGCgQXJS8kTo=;
-        b=nbGMGbTWSNkhXp0iN8GwniTw7ldeYLA9675vhqJJ6Fx269Ey/VIN1psccMbtvo6q0c
-         P4IJZNhn7NtAuCnwWoqPQ+YzvRuJFH341pzThgitAkk/0N3AhBiNTESf7fWcyPHjbH7A
-         w2aPulC8Gv0WBnFa2kPhY4g2hLvFlnQqpwsFwhTLzsh5gRZYjtOgooKQEbS7lr5l9TX3
-         RG+4BrtzzlDyaM4v/O5BaoYrVqjajivdycsUZ/RDCttJ4faghGahUX7OUYBr4DRW3Gn1
-         /Y1w4sG6m6db43+pLQb9AGl84xKcmpGf/a7wS1K19yUFLr0zb8Jix0ra9X30yTDf13/7
-         dCag==
-X-Gm-Message-State: AOJu0Yy5uc2SOJR+SUBWhIv+gzTudZkbpWwIWa3hUNk4lnstySA+MTLs
-	O9+tTkrN4dXG3BjcQDpB7Rb5lvodh5ek6L2EpALFPXjfvsxg77E1
-X-Google-Smtp-Source: AGHT+IGwQpb4PCK+youy5XxDB/EkwZ45dOdqpu0j2LuSNrhRo2TWRg6TVokCOx3woyIY3O8OPuLFcg==
-X-Received: by 2002:a17:906:84c:b0:a34:dbdc:929b with SMTP id f12-20020a170906084c00b00a34dbdc929bmr2975089ejd.0.1706772545831;
-        Wed, 31 Jan 2024 23:29:05 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVtjpCLKpRbEbtNtbs2cus9oL/fxd+RE1c5xSNX3Bs38BG4NYTR6vsNO/JR3HfUrwLeqjEL775RLVjRAIe8Xuq+9Bylc09NH8IWYQFRFks2u16CZIbpEabI8NDm2ronXc9xWiBZTDZcTOgaP1b4JjNLnRDRqUbINgIXuzMomOIgzKpPWhnF/M15SyUJ5W3hO/pk9pW25aXTPe/6OkUIkgMql7ULhHsgKrGq4s2ZgrnHidpMooUcB8Ljv4MxU4ISRcXfvwgEg+x5VTyQC7sDNj/oT2m9TheqdHNPoQ+aroHxGpdlMEvSasFkkDVKdqxVy0DYPekABiWgDe5zffbhKjAZqcKJbu+n2TsahK8Hd/yAcN3DAViKefOB375avU0=
-Received: from cjw-notebook (2a02-8388-0502-f480-6c32-186a-368b-d6a9.cable.dynamic.v6.surfer.at. [2a02:8388:502:f480:6c32:186a:368b:d6a9])
-        by smtp.gmail.com with ESMTPSA id g22-20020a170906349600b00a367bdce1fcsm1243432ejb.64.2024.01.31.23.29.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 23:29:05 -0800 (PST)
-Date: Thu, 1 Feb 2024 08:29:02 +0100
-From: Christoph Winklhofer <cj.winklhofer@gmail.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Jonathan Corbet <corbet@lwn.net>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v5 3/3] w1: add UART w1 bus driver
-Message-ID: <ZbtIPo--1hfzNmho@cjw-notebook>
-References: <20240126-w1-uart-v5-0-1d82bfdc2ae9@gmail.com>
- <20240126-w1-uart-v5-3-1d82bfdc2ae9@gmail.com>
- <092a9986-5ebb-483d-9911-37a93d7cb2dd@kernel.org>
+        d=1e100.net; s=20230601; t=1706772721; x=1707377521;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TkihkoVp+1Q0+WMCFTmpmA5Epw3+p6C5zEBoeBY4VKg=;
+        b=oIMqqtjpT8mZng4uN/hAck0YB78uGqqrZJt7ufo8vTcaMILVNl91rZ5Bafk6Xe2LyZ
+         VJlggorDUx8l3sRn+gp2SoeDfoAsh/2bMqRl17UqerXp18oA/tuun5hSx1D5+qvjn60R
+         2RA6gqHzqMX5ZJezNfut9i0/LwiafMlMGyMFoeCGc8i78snHN0BiYfKV/mobx2uKqV+A
+         AADFHDD95J93v+grzQs1yJ6fFe5Pvilg/bppiNcWrT2emYjbbFMPMWwEeh98OCZRZ2h2
+         9CA9Jelz5dxDCbLZkxaHJYdiJCdN7psX1EvNsrZ+ulORV9NR/HZvpokDJxCXEcsuKlUw
+         fMyA==
+X-Gm-Message-State: AOJu0Yz1vg1/rdCQMD0ceulakekGNKy3Mda23TwiqsBqAzM6wOSdWc2j
+	2qCdZPtPKaxdsDbN47d1trplp0oy553p02Jp8cSmnd6x0UyZecLNPOBXFa1KopY=
+X-Google-Smtp-Source: AGHT+IHJAAKW2oakvnFSZPvrgZF3goQ3YyggDyofe9lXor6fwC2SQY7yWvc0unDHIEpZhD146f/PWg==
+X-Received: by 2002:a17:906:13d3:b0:a30:fb95:9387 with SMTP id g19-20020a17090613d300b00a30fb959387mr2880569ejc.75.1706772720921;
+        Wed, 31 Jan 2024 23:32:00 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXN/ZYgF+xQa2PwJIMR77grLNDHJg5YLLcPfXzjO9FduHf5+SsEsxfQOqBEYGB09oIeqvkL0TJYTPMv8ehZfqTlRQfeznXNprk/MEfkCcGPn/bMk5nT4Ca3MM7FcPIcR+fB39BRX+Ckk+QECNi478L17Q33pb5RY1xxNEoPEL6J+EZYaV0gGShWrbV+33Jlkdj3XjbUm3cUhyckFj7onTAYlHqAewBfPI4d78abQEPDXjLwDrtlYZWCXZqnv6QWOt+ZSLx/u9wouV4I4G+qjILkvW7Biw4NRK60jmQDGTbzabvx8Wv9Eu3T5+3i0nIj+JUmdg==
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id hu17-20020a170907a09100b00a3603b49889sm2904618ejc.21.2024.01.31.23.31.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 23:32:00 -0800 (PST)
+Message-ID: <2824fd42-d588-4a0b-b6f9-1e9cb6055d6a@linaro.org>
+Date: Thu, 1 Feb 2024 08:31:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <092a9986-5ebb-483d-9911-37a93d7cb2dd@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: mfd: syscon: Add ti,k3-pcie-ctrl compatible
+Content-Language: en-US
+To: Siddharth Vadapalli <s-vadapalli@ti.com>, Andrew Davis <afd@ti.com>
+Cc: lee@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ srk@ti.com
+References: <20240131112342.1300893-1-s-vadapalli@ti.com>
+ <be60e695-894e-4281-a62c-b77e45680293@ti.com>
+ <91737281-8249-4fcb-b5bf-750c015b7c24@ti.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <91737281-8249-4fcb-b5bf-750c015b7c24@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 31, 2024 at 02:12:34PM +0100, Krzysztof Kozlowski wrote:
-> On 26/01/2024 16:42, Christoph Winklhofer via B4 Relay wrote:
-> > From: Christoph Winklhofer <cj.winklhofer@gmail.com>
-> > 
-> > Add a UART 1-Wire bus driver. The driver utilizes the UART interface via
-> > the Serial Device Bus to create the 1-Wire timing patterns. The driver
-> > was tested on a "Raspberry Pi 3B" with a DS18B20 and on a "Variscite
-> > DART-6UL" with a DS18S20 temperature sensor.
-> > 
+On 01/02/2024 05:48, Siddharth Vadapalli wrote:
+> Hello Andrew,
 > 
-> ...
+> On 31/01/24 21:43, Andrew Davis wrote:
+>> On 1/31/24 5:23 AM, Siddharth Vadapalli wrote:
+>>> The PCIE_CTRL registers within the CTRL_MMR space of TI's K3 SoCs are
+>>> used to configure the link speed, lane count and mode of operation of
+>>> the respective PCIe instance. Add compatible for allowing the PCIe
+>>> driver to obtain a regmap for the PCIE_CTRL register within the System
+>>> Controller device-tree node in order to configure the PCIe instance
+>>> accordingly.
+>>>
+>>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+>>> ---
+>>>
+>>> This patch is based on linux-next tagged next-20240131.
+>>>
+>>>   Documentation/devicetree/bindings/mfd/syscon.yaml | 1 +
+>>>   1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml
+>>> b/Documentation/devicetree/bindings/mfd/syscon.yaml
+>>> index 084b5c2a2a3c..da571a24e21f 100644
+>>> --- a/Documentation/devicetree/bindings/mfd/syscon.yaml
+>>> +++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+>>> @@ -73,6 +73,7 @@ properties:
+>>>                 - rockchip,rv1126-qos
+>>>                 - starfive,jh7100-sysmain
+>>>                 - ti,am654-dss-oldi-io-ctrl
+>>> +              - ti,k3-pcie-ctrl
+>>
+>> This might not be the same for all K3 devices, you should use
+>> the name of the first device which uses this, so:
+>>
+>> ti,j721e-pcie-ctrl
 > 
-> > + * struct w1_uart_config - configuration for 1-Wire operation
-> > + *
-> > + * @baudrate: baud-rate returned from serdev
-> > + * @delay_us: delay to complete a 1-Wire cycle (in us)
-> > + * @tx_byte: byte to generate 1-Wire timing pattern
-> > + */
-> > +struct w1_uart_config {
-> > +	unsigned int baudrate;
-> > +	unsigned int delay_us;
-> > +	u8 tx_byte;
-> > +};
-> > +
-> > +struct w1_uart_device {
-> > +	struct serdev_device *serdev;
-> > +	struct w1_bus_master bus;
-> > +
-> > +	struct w1_uart_config cfg_reset;
-> > +	struct w1_uart_config cfg_touch_0;
-> > +	struct w1_uart_config cfg_touch_1;
-> > +
-> > +	struct completion rx_byte_received;
-> > +	int rx_err;
-> > +	u8 rx_byte;
-> > +
-> 
-> Missing documentation of mutex scope. What does it protect?
-> 
+> It is the same for all K3 devices so far. However, since the convention appears
+> to be the first device that it is applicable to as you pointed out, I will post
+> the v2 patch for this accordingly.
 
-The mutex should protect concurrent access to rx_err and rx_byte. It
-would be not be required in the good case: a write is initiated solely
-by the w1-callbacks in 'w1_uart_serdev_tx_rx' and a completion is used
-to wait for the result of serdev-receive.
+This was repeated so many times... so one more. Compatibles are specific
+to SoC, not to family.
 
-However, in case the UART is not configured as a loop, a serdev-receive
-may occur when w1_uart_serdev_tx_rx evaluates rx_err and rx_byte in
-w1_uart_serdev_tx_rx, so it is protected - however, I will try to find
-a better way to detect such an error.
+https://elixir.bootlin.com/linux/v6.1-rc1/source/Documentation/devicetree/bindings/writing-bindings.rst#L42
 
-In addition, the w1-callbacks should also return during a 'remove' (with
-the mutex_try_lock) - see comment on that below.
+Best regards,
+Krzysztof
 
-> > +	struct mutex mutex;
-> > +};
-> > +
-> 
-> ...
-> 
-> > +/*
-> > + * Send one byte (tx_byte) and read one byte (rx_byte) via serdev.
-> > + */
-> > +static int w1_uart_serdev_tx_rx(struct w1_uart_device *w1dev,
-> > +				const struct w1_uart_config *w1cfg, u8 *rx_byte)
-> > +{
-> > +	struct serdev_device *serdev = w1dev->serdev;
-> > +	int ret;
-> > +
-> > +	serdev_device_write_flush(serdev);
-> > +	serdev_device_set_baudrate(serdev, w1cfg->baudrate);
-> > +
-> > +	/* write and immediately read one byte */
-> > +	reinit_completion(&w1dev->rx_byte_received);
-> > +	ret = serdev_device_write_buf(serdev, &w1cfg->tx_byte, 1);
-> > +	if (ret != 1)
-> > +		return -EIO;
-> > +	ret = wait_for_completion_interruptible_timeout(
-> > +		&w1dev->rx_byte_received, W1_UART_TIMEOUT);
-> > +	if (ret <= 0)
-> > +		return -EIO;
-> > +
-> > +	/* locking could fail during driver remove or when serdev is
-> 
-> It's not netdev, so:
-> /*
->  *
-> 
-
-Ok.
-
-> > +	 * unexpectedly in the receive callback.
-> > +	 */
-> > +	if (!mutex_trylock(&w1dev->mutex))
-> > +		return -EIO;
-> > +
-> > +	ret = w1dev->rx_err;
-> > +	if (ret == 0)
-> > +		*rx_byte = w1dev->rx_byte;
-> > +
-> > +	if (w1cfg->delay_us > 0)
-> > +		fsleep(w1cfg->delay_us);
-> > +
-> > +	mutex_unlock(&w1dev->mutex);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static ssize_t w1_uart_serdev_receive_buf(struct serdev_device *serdev,
-> > +					  const u8 *buf, size_t count)
-> > +{
-> > +	struct w1_uart_device *w1dev = serdev_device_get_drvdata(serdev);
-> > +
-> > +	mutex_lock(&w1dev->mutex);
-> > +
-> > +	/* sent a single byte and receive one single byte */
-> > +	if (count == 1) {
-> > +		w1dev->rx_byte = buf[0];
-> > +		w1dev->rx_err = 0;
-> > +	} else {
-> > +		w1dev->rx_err = -EIO;
-> > +	}
-> > +
-> > +	mutex_unlock(&w1dev->mutex);
-> > +	complete(&w1dev->rx_byte_received);
-> > +
-> > +	return count;
-> > +}
-> > +
-> > +static const struct serdev_device_ops w1_uart_serdev_ops = {
-> > +	.receive_buf = w1_uart_serdev_receive_buf,
-> > +	.write_wakeup = serdev_device_write_wakeup,
-> > +};
-> > +
-> > +/*
-> > + * 1-wire reset and presence detect: A present slave will manipulate
-> > + * the received byte by pulling the 1-Wire low.
-> > + */
-> > +static u8 w1_uart_reset_bus(void *data)
-> > +{
-> > +	struct w1_uart_device *w1dev = data;
-> > +	const struct w1_uart_config *w1cfg = &w1dev->cfg_reset;
-> > +	int ret;
-> > +	u8 val;
-> > +
-> > +	ret = w1_uart_serdev_tx_rx(w1dev, w1cfg, &val);
-> > +	if (ret < 0)
-> > +		return -1;
-> > +
-> > +	/* Device present (0) or no device (1) */
-> > +	return val != w1cfg->tx_byte ? 0 : 1;
-> > +}
-> > +
-> > +/*
-> > + * 1-Wire read and write cycle: Only the read-0 manipulates the
-> > + * received byte, all others left the line untouched.
-> > + */
-> > +static u8 w1_uart_touch_bit(void *data, u8 bit)
-> > +{
-> > +	struct w1_uart_device *w1dev = data;
-> > +	const struct w1_uart_config *w1cfg = bit ? &w1dev->cfg_touch_1 :
-> > +						   &w1dev->cfg_touch_0;
-> > +	int ret;
-> > +	u8 val;
-> > +
-> > +	ret = w1_uart_serdev_tx_rx(w1dev, w1cfg, &val);
-> > +
-> > +	/* return inactive bus state on error */
-> > +	if (ret < 0)
-> > +		return 1;
-> > +
-> > +	return val == w1cfg->tx_byte ? 1 : 0;
-> > +}
-> > +
-> > +static int w1_uart_probe(struct serdev_device *serdev)
-> > +{
-> > +	struct device *dev = &serdev->dev;
-> > +	struct w1_uart_device *w1dev;
-> > +	int ret;
-> > +
-> > +	w1dev = devm_kzalloc(dev, sizeof(*w1dev), GFP_KERNEL);
-> > +	if (!w1dev)
-> > +		return -ENOMEM;
-> > +	w1dev->bus.data = w1dev;
-> > +	w1dev->bus.reset_bus = w1_uart_reset_bus;
-> > +	w1dev->bus.touch_bit = w1_uart_touch_bit;
-> > +	w1dev->serdev = serdev;
-> > +
-> > +	init_completion(&w1dev->rx_byte_received);
-> > +	mutex_init(&w1dev->mutex);
-> > +
-> > +	ret = w1_uart_serdev_open(w1dev);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +	serdev_device_set_drvdata(serdev, w1dev);
-> > +	serdev_device_set_client_ops(serdev, &w1_uart_serdev_ops);
-> > +
-> > +	return w1_add_master_device(&w1dev->bus);
-> > +}
-> > +
-> > +static void w1_uart_remove(struct serdev_device *serdev)
-> > +{
-> > +	struct w1_uart_device *w1dev = serdev_device_get_drvdata(serdev);
-> > +
-> > +	mutex_lock(&w1dev->mutex);
-> > +
-> > +	w1_remove_master_device(&w1dev->bus);
-> > +
-> > +	mutex_unlock(&w1dev->mutex);
-> 
-> This is still suspicious. You do not have serdev_device_close and you
-> want to protect from concurrent access but it looks insufficient.
-> 
-> This code assumes that:
-> 
-> w1_uart_remove()
->   <-- here concurrent read/write might start
->   mutex_lock()
->   w1_remove_master_device()
->   mutex_unlock()
->   <-- now w1_uart_serdev_tx_rx() or w1_uart_serdev_receive_buf() can be
-> executed, but device is removed. So what's the point of the mutex here?
-> 
-> What exactly is protected by the mutex? So far it looks like only some
-> contents of w1dev, but it does not matter, because it that memory is
-> still valid at this point.
-> 
-> After describing what is protected we can think whether it is really
-> protected...
-> 
-> 
-> > 
-> 
-> Best regards,
-> Krzysztof
-> 
-
-Yes, it is still suspicious, sorry..
-
-After w1_uart_remove, serdev is closed and w1dev is released. Therefore
-the w1-callback (w1_uart_serdev_tx_rx) must be finished before returning
-from w1_uart_remove. That was the intention with the lock and trylock.
-
-I thought that after w1_remove_master_device, the w1-callback
-(w1_uart_serdev_tx_rx) is finished which is not the case. I will check
-the working of w1_remove_master_device, probably it requires a lock to
-a mutex from w1-bus.
-
-Many thanks for your review and pointing the things out!
-
-Kind regards,
-Christoph
 
