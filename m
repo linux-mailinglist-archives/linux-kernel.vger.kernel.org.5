@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-47702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DD74845180
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 07:39:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DE9E845186
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 07:40:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A09B21C23366
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 06:39:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37F2F295443
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 06:40:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17BA6158D90;
-	Thu,  1 Feb 2024 06:38:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5803F15AAAB;
+	Thu,  1 Feb 2024 06:38:37 +0000 (UTC)
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B971157050;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9490D157E6B;
 	Thu,  1 Feb 2024 06:38:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706769515; cv=none; b=lc91wCJC5hTnCVEt6K2eDXis4eY2RcvAPUIBKTTr/ANjIwvOVilHaIUpkkwYtJkZaxBuLBssWpr8gxx+wRgIRPoCMhw3iPLmnP6B6AJjCV6NQGLu/04j7xqJBiFGs+VMPzOA7UAhLGiAaKm6EH9FPYAyKfj2wl2cHmbZVOwC76w=
+	t=1706769516; cv=none; b=ox2Gh8/t1lu9b5el9jF50arXaWOXmDHXfoSANaQD4tDoX3kXSNIZKSq9c27xsSoh7Yo3fbfPRMG256tmxSQqu/hv8WBIljnaeHJdODI56Xfxk2OgwtjU+NTkXVuXHvH3UT1dIBuAUjye3m4cZfpcG6g9qIHZNVbtA+Cfkwe6TGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706769515; c=relaxed/simple;
-	bh=ftZkeplxga5glU/a1AQpEFCjQrpl9nc9WPVPM/ByKWA=;
+	s=arc-20240116; t=1706769516; c=relaxed/simple;
+	bh=2ui+26hVUMX6PdqicUPRi8cSQN5CIv5m/cqEznh7b6g=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=uyAZb1doYm1r1nBdbNYawulY0phNMljDF1JF8S0mVz1P86v4QFGhBPpzvNxNenhn6kqc+wd1+DpbI6zH2TD2o9Q6eKAZf6B2Ba7Mvz0e129bp0BxGUVvbcKPmVrjZxMJ2S2rz3Ih0uAKkC/GdPp3LjXNuv32EkrdsFaIoA73lEg=
+	 MIME-Version; b=fxX5aOeF8fWwJsZuYvMjnOymuHmeGcLV5EPB/L9muAWTpdkfFVQwQGXOMtf/Tq3WPOupaRSVaI3akeYytUrdXbXn5bOm92ZqHnRTnUaigBr7y3xl5Ra4FllFQBfg/ir0mDZqTo8dKcGIk9WhYq+9Oq8aMY8qdB06uBopJGJhLRs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TQTkR4dF1z4f3lWC;
-	Thu,  1 Feb 2024 14:38:23 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TQTkS0ggXz4f3lW2;
+	Thu,  1 Feb 2024 14:38:24 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 2DB2C1A0175;
+	by mail.maildlp.com (Postfix) with ESMTP id 9C4781A0199;
 	Thu,  1 Feb 2024 14:38:30 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgAX5g5iPLtllCl+Cg--.15155S8;
-	Thu, 01 Feb 2024 14:38:29 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgAX5g5iPLtllCl+Cg--.15155S9;
+	Thu, 01 Feb 2024 14:38:30 +0800 (CST)
 From: linan666@huaweicloud.com
 To: song@kernel.org,
 	neilb@suse.com,
@@ -49,9 +49,9 @@ Cc: linux-raid@vger.kernel.org,
 	yi.zhang@huawei.com,
 	houtao1@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH v5 4/8] md: return directly before setting did_set_md_closing
-Date: Thu,  1 Feb 2024 14:34:00 +0800
-Message-Id: <20240201063404.772797-5-linan666@huaweicloud.com>
+Subject: [PATCH v5 5/8] md: Don't clear MD_CLOSING when the raid is about to stop
+Date: Thu,  1 Feb 2024 14:34:01 +0800
+Message-Id: <20240201063404.772797-6-linan666@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240201063404.772797-1-linan666@huaweicloud.com>
 References: <20240201063404.772797-1-linan666@huaweicloud.com>
@@ -62,10 +62,10 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAX5g5iPLtllCl+Cg--.15155S8
-X-Coremail-Antispam: 1UD129KBjvJXoW7tFWfXw4UKry7uw15CF48JFb_yoW8Zr4xpF
-	ZagF9xtrWrJFWUKr1DJa4DZFyYqw13KFWvkryxCryjvF9FyrsxZryFg3yFqry0g34kA3y5
-	tF12qa15Wa4xJFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:cCh0CgAX5g5iPLtllCl+Cg--.15155S9
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw13Zr18XryUAw4DCFy5CFg_yoW8Cw13pa
+	1xKFy5KrWUJ3sI9w4Utw1kW3WFq34SgrWvyry2va4rZa4UAry7Jr9Yg3yDCr95WFZ5ZFs8
+	X3WUXayUWw1xW3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUQY14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -84,76 +84,63 @@ X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
 
 From: Li Nan <linan122@huawei.com>
 
-There is nothing to do at 'out' before setting 'did_set_md_closing'
-in md_ioctl(). Return directly, and it will help us to remove
-'did_set_md_closing' later.
+The raid should not be opened anymore when it is about to be stopped.
+However, other processes can open it again if the flag MD_CLOSING is
+cleared before exiting. From now on, this flag will not be cleared when
+the raid will be stopped.
 
+Fixes: 065e519e71b2 ("md: MD_CLOSING needs to be cleared after called md_set_readonly or do_md_stop")
 Signed-off-by: Li Nan <linan122@huawei.com>
 ---
- drivers/md/md.c | 23 ++++++++---------------
- 1 file changed, 8 insertions(+), 15 deletions(-)
+ drivers/md/md.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 656080086052..5442e8e3c161 100644
+index 5442e8e3c161..deee004b8f22 100644
 --- a/drivers/md/md.c
 +++ b/drivers/md/md.c
-@@ -7636,10 +7636,8 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
- 	 * Commands dealing with the RAID driver but not any
- 	 * particular array:
- 	 */
--	if (cmd == RAID_VERSION) {
--		err = get_version(argp);
--		goto out;
--	}
-+	if (cmd == RAID_VERSION)
-+		return get_version(argp);
+@@ -6247,7 +6247,15 @@ static void md_clean(struct mddev *mddev)
+ 	mddev->persistent = 0;
+ 	mddev->level = LEVEL_NONE;
+ 	mddev->clevel[0] = 0;
+-	mddev->flags = 0;
++	/*
++	 * Don't clear MD_CLOSING, or mddev can be opened again.
++	 * 'hold_active != 0' means mddev is still in the creation
++	 * process and will be used later.
++	 */
++	if (mddev->hold_active)
++		mddev->flags = 0;
++	else
++		mddev->flags &= BIT_ULL_MASK(MD_CLOSING);
+ 	mddev->sb_flags = 0;
+ 	mddev->ro = MD_RDWR;
+ 	mddev->metadata_type[0] = 0;
+@@ -7626,7 +7634,6 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
+ 	int err = 0;
+ 	void __user *argp = (void __user *)arg;
+ 	struct mddev *mddev = NULL;
+-	bool did_set_md_closing = false;
  
- 	/*
- 	 * Commands creating/starting a new array:
-@@ -7654,23 +7652,20 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
- 			err = -ENODEV;
- 		else
- 			err = get_array_info(mddev, argp);
--		goto out;
-+		return err;
- 
- 	case GET_DISK_INFO:
- 		if (!mddev->raid_disks && !mddev->external)
- 			err = -ENODEV;
- 		else
- 			err = get_disk_info(mddev, argp);
--		goto out;
-+		return err;
- 
- 	case SET_DISK_FAULTY:
--		err = set_disk_faulty(mddev, new_decode_dev(arg));
--		goto out;
-+		return set_disk_faulty(mddev, new_decode_dev(arg));
- 
- 	case GET_BITMAP_FILE:
--		err = get_bitmap_file(mddev, argp);
--		goto out;
--
-+		return get_bitmap_file(mddev, argp);
- 	}
- 
- 	if (cmd == HOT_REMOVE_DISK)
-@@ -7686,13 +7681,11 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
- 		mutex_lock(&mddev->open_mutex);
- 		if (mddev->pers && atomic_read(&mddev->openers) > 1) {
+ 	err = md_ioctl_valid(cmd);
+ 	if (err)
+@@ -7687,7 +7694,6 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
  			mutex_unlock(&mddev->open_mutex);
--			err = -EBUSY;
--			goto out;
-+			return -EBUSY;
+ 			return -EBUSY;
  		}
- 		if (test_and_set_bit(MD_CLOSING, &mddev->flags)) {
- 			mutex_unlock(&mddev->open_mutex);
--			err = -EBUSY;
--			goto out;
-+			return -EBUSY;
- 		}
- 		did_set_md_closing = true;
+-		did_set_md_closing = true;
  		mutex_unlock(&mddev->open_mutex);
+ 		sync_blockdev(bdev);
+ 	}
+@@ -7829,7 +7835,7 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
+ 				     mddev_unlock(mddev);
+ 
+ out:
+-	if(did_set_md_closing)
++	if (cmd == STOP_ARRAY_RO || (err && cmd == STOP_ARRAY))
+ 		clear_bit(MD_CLOSING, &mddev->flags);
+ 	return err;
+ }
 -- 
 2.39.2
 
