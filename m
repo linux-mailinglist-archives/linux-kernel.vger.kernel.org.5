@@ -1,97 +1,196 @@
-Return-Path: <linux-kernel+bounces-47528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AEAA844EF9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:06:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E248F844F50
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:05:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E22B71F234C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:06:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2434F292B00
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:05:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E80CF101D2;
-	Thu,  1 Feb 2024 02:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01E0E3A1C1;
+	Thu,  1 Feb 2024 03:04:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EML5+2Kh"
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HvWjrgRi"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E839BFC14;
-	Thu,  1 Feb 2024 02:05:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66B4B39FD8;
+	Thu,  1 Feb 2024 03:04:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706753159; cv=none; b=g+6W/Hm5Y/dp4ogQOTPdO2zui37EaHy1e369WJgn3TplcnPax4DMbmCftA9nRdKi0hz/Bn8pZNqbtuKmpzT7f2yVk9cEXY0TOLa3G5H9RyFn8cTNUHP6Pr3W0+Zxw2Uqg3l/cT13WGnC4CRLy7m1yYalRDOgpfJIkMLuBU/kXvM=
+	t=1706756693; cv=none; b=uzKQhZAlrupgGCZr5waaSg+zoycbWdhy13oU9ozKgxm5y7dNa7avRDbWMSagPF11j9Q7ZUsLhEC4GbpFpLuU+wZgXVRtsMqzcGcQwq87IH0m3QWRVjzyWbJdD/tNKaooAAElIFD6NmJW/yAvXxhUVuzgD8qsHnUR+3JX3XIM7oo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706753159; c=relaxed/simple;
-	bh=WZKyyU3njHxkaPfTiuVOaKohUtAcLb9qZANIc0cHy6E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kaUGgsYQj3IERjm8Qfn+nyLQAGEuq4CPhXFaqloJffXKcE3KwtgpTEVb/08j6onD9yksDjqzKHBiXwPrVzFYFg7NkRUoixLp4ADe6YKuPb/C0K6UAqeu36RXr2fdN7OlKOhylROEDlVU702VITVuQotvvRr+3dJfh2nCcNbmo7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EML5+2Kh; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so388918a12.1;
-        Wed, 31 Jan 2024 18:05:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706753157; x=1707357957; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CabtX6HVlcsvD8Lc4Od57wI4l06g03/hrDUv1/sVAuA=;
-        b=EML5+2Kh5g9Z1EK26kI3zprTTMkJP+Yjw4WiZAvPJvyhHHYgc1k+NE58c7KzJcFYIY
-         aY+vYE+ubdI4/CtGoyd3heFPTAskiLzxKuAm1UN0+X+EDmR5B3Av6a80wxUXhoTlcrs5
-         Dm76jRdWaoOH8BgFwG3z8JDvHOt4fbq6GP9fptwVNtPkj1SzGNzXjUaSeLENSBM2AhIf
-         FvW52bAgiHu8+00iO6jjFtAj7QoAxky5kxd0pCuYoOhuSLx07mbOZqKpFQ2btAKZ2SSe
-         zJJN1rTqPZKlIe/ALwlSxJHPHyO7FddgmxcAel6hkzgDbNK19dhoOVMWoBWvmR67wW78
-         01nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706753157; x=1707357957;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CabtX6HVlcsvD8Lc4Od57wI4l06g03/hrDUv1/sVAuA=;
-        b=Yp1d+erA5pu5ah/ZK/cx4hEzQ/PcaB5xaVj0omnzZmOfQeY1J9tz8sxgM7/rFp/cEa
-         /OMQVZnXbTJQR/spQtFj3Y6Ky6tXpETNGWkGE82yrsJ8a0Z4Becl056f/JQmmrXSWE32
-         +h+T7i0sssGRWPizkY6LorDm6dwL5c8Bg3nE6ecuEiL2DvfJku5GdgYKvrbMv9I6xaW0
-         cbJJRMATouYmy9FTaD0GQHuaZG9XcSK7KQjXA8GeiILLsI+Jg7p8PHcm82YtrAj7XPDl
-         zGd5X2nTRhwVhw94kcernyScBdH8LHgR+sCn2uqvl2rz0KdjSpmjrlu0CqiArEwXjKVB
-         5Jpg==
-X-Gm-Message-State: AOJu0YxDkMBSB8LtUkZEvz2zyOhnNl4wCdXjhYi4P4uPiO/kELp+ZcFT
-	LD5gG5w1tAz0hGn+CA36qBPDI6a/C3qLhbOE1qME6dFj39AeaQ9oa0YNwOngpECN6w==
-X-Google-Smtp-Source: AGHT+IEAZdmadmtlqNJT0DdlQkBf4IfmFoc/IRSry9cgLFX6xq5IoETw0+TLgbp6VWQDYULteetUxQ==
-X-Received: by 2002:a05:6a21:9214:b0:199:d9c9:2b65 with SMTP id tl20-20020a056a21921400b00199d9c92b65mr3518060pzb.55.1706753157208;
-        Wed, 31 Jan 2024 18:05:57 -0800 (PST)
-Received: from dragon (173.242.119.193.16clouds.com. [173.242.119.193])
-        by smtp.gmail.com with ESMTPSA id h3-20020aa786c3000000b006ddc30172c7sm10512734pfo.30.2024.01.31.18.05.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 18:05:56 -0800 (PST)
-Date: Thu, 1 Feb 2024 18:04:47 +0800
-From: Shawn Guo <shawn.gsc@gmail.com>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: shawnguo@kernel.org, xiaolei.wang@windriver.com, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, festevam@gmail.com, imx@lists.linux.dev,
-	kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
-	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-	linux-kernel@vger.kernel.org, marcel.ziswiler@toradex.com,
-	qiangqing.zhang@nxp.com, robh+dt@kernel.org, s.hauer@pengutronix.de
-Subject: Re: [PATCH 1/2] arm64: dts: imx8qm: Align edma3 power-domains
- resources indentation
-Message-ID: <20240201100447.GE463595@dragon>
-References: <20231214194655.608902-1-Frank.Li@nxp.com>
+	s=arc-20240116; t=1706756693; c=relaxed/simple;
+	bh=GXFw6LRGTigVHPUohOYoyxlMbD7hcQgUJZ58+lT30Dk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Y0A7Vres6jysZPiuGGOuYwNUf5oWCEkJoed5DkZutb6kMtGpvPaASEQ+msRpUNzdyNk+cE11Ar1hTBL2cCYQHJY99WTBFHWhWFVImVUYgKaupSwyTWkZ+ZuHzqXRTkPDPdvRgYsBNScZNsZpw67o1Xzxu3nDCLvS6GPrvKXcq9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HvWjrgRi; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706756692; x=1738292692;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=GXFw6LRGTigVHPUohOYoyxlMbD7hcQgUJZ58+lT30Dk=;
+  b=HvWjrgRi96X+IdNR0UlHToOg16/Wpp2iTYKJ+fvxffI8Jq9QsM/ceuHF
+   Mrst21doldTBqrapYgI0xUQNOPcGDN66yZKvrEx7VelYOpIAx3hm3QiZx
+   HjFoL57Df4UblW+HrC8DrjnBQlNpnn7G3UKjanrih7Py6uAjUdxHZZhl6
+   N+6ElD3wfJ6woCShibndnw8AIYz8Qt9oeY4t9qdDSvDKLZ5w5RSy63uDz
+   N22X9n/O3GH1vy64JI0cbaPI1z0KOQDzBfjKtXrolTU/wme8v3nVdKVTt
+   38NYQ89eEXSFEBxJ2qs3GYemJH4Pf+GNbQ5M80KKdvx2PFhoyOXFkQY3Y
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="22297689"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="22297689"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 19:04:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="961795024"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="961795024"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 19:04:44 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Gregory Price <gregory.price@memverge.com>
+Cc: Gregory Price <gourry.memverge@gmail.com>,  <linux-mm@kvack.org>,
+  <linux-kernel@vger.kernel.org>,  <linux-doc@vger.kernel.org>,
+  <linux-fsdevel@vger.kernel.org>,  <linux-api@vger.kernel.org>,
+  <corbet@lwn.net>,  <akpm@linux-foundation.org>,  <honggyu.kim@sk.com>,
+  <rakie.kim@sk.com>,  <hyeongtak.ji@sk.com>,  <mhocko@kernel.org>,
+  <vtavarespetr@micron.com>,  <jgroves@micron.com>,
+  <ravis.opensrc@micron.com>,  <sthanneeru@micron.com>,
+  <emirakhur@micron.com>,  <Hasan.Maruf@amd.com>,
+  <seungjun.ha@samsung.com>,  <hannes@cmpxchg.org>,
+  <dan.j.williams@intel.com>,  Srinivasulu Thanneeru
+ <sthanneeru.opensrc@micron.com>
+Subject: Re: [PATCH v4 3/3] mm/mempolicy: introduce MPOL_WEIGHTED_INTERLEAVE
+ for weighted interleaving
+In-Reply-To: <Zbr/iv3IfVqhOglE@memverge.com> (Gregory Price's message of "Wed,
+	31 Jan 2024 21:18:50 -0500")
+References: <20240130182046.74278-1-gregory.price@memverge.com>
+	<20240130182046.74278-4-gregory.price@memverge.com>
+	<877cjqgfzz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<Zbn6FG3346jhrQga@memverge.com>
+	<87y1c5g8qw.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<ZbqDgaOsAeXnqRP2@memverge.com>
+	<871q9xeyo4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<Zbr/iv3IfVqhOglE@memverge.com>
+Date: Thu, 01 Feb 2024 11:02:47 +0800
+Message-ID: <87wmroevjc.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214194655.608902-1-Frank.Li@nxp.com>
+Content-Type: text/plain; charset=ascii
 
-On Thu, Dec 14, 2023 at 02:46:54PM -0500, Frank Li wrote:
-> <&pd IMX_SC_R_DMA_1_CH*> is now properly aligned with the previous line
-> for improved code readability.
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+Gregory Price <gregory.price@memverge.com> writes:
 
-Applied both, thanks!
+> On Thu, Feb 01, 2024 at 09:55:07AM +0800, Huang, Ying wrote:
+>> Gregory Price <gregory.price@memverge.com> writes:
+>> > -       u8 __rcu *table, *weights, weight;
+>> > +       u8 __rcu *table, __rcu *weights, weight;
+>> 
+>> The __rcu usage can be checked with `sparse` directly.  For example,
+>> 
+>> make C=1 mm/mempolicy.o
+>> 
+>
+> fixed and squashed, all the __rcu usage i had except the global pointer
+> have been used.  Thanks for the reference material, was struggling to
+> understand that.
+>
+>> > task->mems_allowed_seq protection (added as 4th patch)
+>> > ------------------------------------------------------
+>> >
+>> > +       cpuset_mems_cookie = read_mems_allowed_begin();
+>> >         if (!current->il_weight || !node_isset(node, policy->nodes)) {
+>> >                 node = next_node_in(node, policy->nodes);
+>> 
+>> node will be changed in the loop.  So we need to change the logic here.
+>> 
+>
+> new patch, if it all looks good i'll ship it in v5
+>
+> ~Gregory
+>
+>
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index d8cc3a577986..4e5a640d10b8 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -1878,11 +1878,17 @@ bool apply_policy_zone(struct mempolicy *policy, enum zone_type zone)
+>
+>  static unsigned int weighted_interleave_nodes(struct mempolicy *policy)
+>  {
+> -       unsigned int node = current->il_prev;
+> -
+> -       if (!current->il_weight || !node_isset(node, policy->nodes)) {
+> -               node = next_node_in(node, policy->nodes);
+> -               /* can only happen if nodemask is being rebound */
+> +       unsigned int node;
+
+IIUC, "node" may be used without initialization.
+
+--
+Best Regards,
+Huang, Ying
+
+> +       unsigned int cpuset_mems_cookie;
+> +
+> +retry:
+> +       /* to prevent miscount use tsk->mems_allowed_seq to detect rebind */
+> +       cpuset_mems_cookie = read_mems_allowed_begin();
+> +       if (!current->il_weight ||
+> +           !node_isset(current->il_prev, policy->nodes)) {
+> +               node = next_node_in(current->il_prev, policy->nodes);
+> +               if (read_mems_allowed_retry(cpuset_mems_cookie))
+> +                       goto retry;
+>                 if (node == MAX_NUMNODES)
+>                         return node;
+>                 current->il_prev = node;
+> @@ -1896,8 +1902,14 @@ static unsigned int weighted_interleave_nodes(struct mempolicy *policy)
+>  static unsigned int interleave_nodes(struct mempolicy *policy)
+>  {
+>         unsigned int nid;
+> +       unsigned int cpuset_mems_cookie;
+> +
+> +       /* to prevent miscount, use tsk->mems_allowed_seq to detect rebind */
+> +       do {
+> +               cpuset_mems_cookie = read_mems_allowed_begin();
+> +               nid = next_node_in(current->il_prev, policy->nodes);
+> +       } while (read_mems_allowed_retry(cpuset_mems_cookie));
+>
+> -       nid = next_node_in(current->il_prev, policy->nodes);
+>         if (nid < MAX_NUMNODES)
+>                 current->il_prev = nid;
+>         return nid;
+> @@ -2374,6 +2386,7 @@ static unsigned long alloc_pages_bulk_array_weighted_interleave(gfp_t gfp,
+>                 struct page **page_array)
+>  {
+>         struct task_struct *me = current;
+> +       unsigned int cpuset_mems_cookie;
+>         unsigned long total_allocated = 0;
+>         unsigned long nr_allocated = 0;
+>         unsigned long rounds;
+> @@ -2391,7 +2404,13 @@ static unsigned long alloc_pages_bulk_array_weighted_interleave(gfp_t gfp,
+>         if (!nr_pages)
+>                 return 0;
+>
+> -       nnodes = read_once_policy_nodemask(pol, &nodes);
+> +       /* read the nodes onto the stack, retry if done during rebind */
+> +       do {
+> +               cpuset_mems_cookie = read_mems_allowed_begin();
+> +               nnodes = read_once_policy_nodemask(pol, &nodes);
+> +       } while (read_mems_allowed_retry(cpuset_mems_cookie));
+> +
+> +       /* if the nodemask has become invalid, we cannot do anything */
+>         if (!nnodes)
+>                 return 0;
 
