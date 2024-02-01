@@ -1,90 +1,88 @@
-Return-Path: <linux-kernel+bounces-47576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 413D6844FB1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:28:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C4EB5844FBD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:29:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECBBE28CC59
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:28:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50B6528F43D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:28:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F21CC3A8E3;
-	Thu,  1 Feb 2024 03:27:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CE613B78D;
+	Thu,  1 Feb 2024 03:28:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lsMZfNxn"
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mBELPiiX"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED57E3B18C;
-	Thu,  1 Feb 2024 03:27:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C58A63B786;
+	Thu,  1 Feb 2024 03:28:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706758046; cv=none; b=gM5PnzqvZTmik7dnJ8nUFSoW/uEY8I6PWlbdtOSVfQa4dQSNW9WTHlms3zoDFLZzxrOkKGapVan41y4G+7qzHP0NnrKng3/NIDDUCuR5cY1KAgMMsTMjsFLyDVdEehuKte+A1wqip9OLBorOFHpKb8ywxaMRZhB+O11scjWRcbI=
+	t=1706758118; cv=none; b=kfK636/H5OfLyBA/VXVKYpQOHXGU/ibW6qmdxqyFInRnSWHUYSzCbaQsTcLeqXtPbTUkcvTl9OQv+3nItF06lINRIQaQ9Km4h9Gxsd6aaDa2UxN4Wj8Db6Au7dN2QEALBXbd0vX6nd93OWdyLHz0vIIB+auD/iI9KjdiUoEGWT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706758046; c=relaxed/simple;
-	bh=SleVqChczJMQNB2boi8n5e6NvqX3ckStjnVVeEsnqB0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GWNtqRi6JZosdlRfpOBqFrFI0YlkyJ0jvb8BTcyh2xJaO1CGyYOk5Ru2KXE+ktOjhtpjDwSI+l17z7E3+hHtEIjGPCo9gAn/QYyp1BtROm5CaAu7JADE03G1k/WaKWzUF5Fye88JB+ajnshf5PNFf1+IhlgKAU3J4NTuDuOseZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lsMZfNxn; arc=none smtp.client-ip=209.85.222.178
+	s=arc-20240116; t=1706758118; c=relaxed/simple;
+	bh=emwqzbfyj2CjwDXfFxr2yguXLoC7xr2j8vCVmi+56Ms=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=S+EQAzKLm3NvcysdiisNkIE5pSXSh8hpUl/dJ4NcEQZu9nSRmQf1KrLZJpygTY1fJtHkW9SxOvt1pQRLYYwv0b8r4w80I/ROkfA1tVOBa+5BCn+v2oBY0o5rXHZO7V95yaruf78oNqv/M1YygTxTS2o4gRG0x6H65ThQY6yb0KY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mBELPiiX; arc=none smtp.client-ip=209.85.215.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-783d4b3a00bso35896185a.3;
-        Wed, 31 Jan 2024 19:27:22 -0800 (PST)
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5c6bd3100fcso367161a12.3;
+        Wed, 31 Jan 2024 19:28:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706758041; x=1707362841; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rTqBj0H08VxjpoFeh5ezYndc7+HSVccdU5yqVd6FGXw=;
-        b=lsMZfNxnU3DyZ0qa+sQcgHVt65mxjGI0htzzqP9s7p7UaYHh/7T17kOK39Mi+soR57
-         NVOJ8FzS39P6rTlAS8z4lcIrI9THUbogVFIg9K0ENjZSc4xMR8Nb5ijx+R0GjS5kYxMb
-         DMPbWtbE4yk3XQGtNC5koYhuUIuWUrrBzU2Plqf1l7HP0LrzjKe7w4v62Tegk9RToZLT
-         NjjFxPgYliGwYU63Jzt8KXSzfATm6QnJXYgz/8i4mKbFUt0i4mLJqBqhJ/IBzrD8vUl8
-         /Q9fOkVguGWyUmWLehPeq/HTgmVv4lasKxcgMWOsPiDvALuwdF6bqMuiLkemLU4enmyy
-         YbGw==
+        d=gmail.com; s=20230601; t=1706758116; x=1707362916; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4Ho6tWOUJQG5jwgdiQ+YC/nc1aAPjOngvOC35lqmr7A=;
+        b=mBELPiiXKuLics7srQM2DZE4cUcti2pBcBrZ+AVMhMpaEnv8eB6VvqeyR/yarNDKaR
+         oaQVDmobaB24PBRSKzIWokVYF5YpVCxe99ey/94qJ+N1KHCJGcz/mbgl3Q267Nj3g7H8
+         ODTS2EqcqRLe0Lz/V59cXFHc3kDRXEKzX7ZS6CEDdKVBToqWVFHK0wv82+IZ4zmt4IJN
+         g5ip44mZNYpmNMjpxeFI0iRxFrthIUL+sQxoS9vbeMtkLluahFKsxCZO9KkDOKpVb1e1
+         VVfYAwS/pEJvNmOl9Bxp2EsUr+VX79PTHC5rw14dAP2pRSzLC+XTU0J0TePwdAsXOxTd
+         eB/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706758041; x=1707362841;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rTqBj0H08VxjpoFeh5ezYndc7+HSVccdU5yqVd6FGXw=;
-        b=evQLl67v42pF1HCHuf2WrB7Gt1e2r1JTQsfRgfOHoAsIMygcVhpu9HbKRskLIaArh7
-         NA5IRr8ETPqupcQsWhM/vT9YZuqA16cidSC5g4ftBZcq+Fkf/iqJmW3SQa+kPEaqaufG
-         s6RSKJA/PMqCQ1GobfXGZotbuOzg4lsAjbLMJ5XraKAwpL1lToFKb8tC1HME24ciCVQT
-         RK5aK35U43lkFVPxRtZpr+uK1UFkjQW8YIFa2DKJaAE4xONcMbTPfhZ0eV/kExfa3u0f
-         /f6dmvmb1MbTx2HlPJ53tUFsUPNLt3LRqQ/DqRGO2ZBfVUVWZyNst/PFPJpFfOPc5FB1
-         ktBg==
-X-Gm-Message-State: AOJu0YzgsuOv3hmmVnAZnTT6KymNgGWfebzzB548eQPpjBQh8UKZPm1z
-	l1991ift+CA+ef5RrIXFv+OlqGF/7a7xV4pKrv7mqeSnfjb6W+BN
-X-Google-Smtp-Source: AGHT+IHPWXSjkdUZuigp/9B7j6ivfpKy5HxAUMa6O9hLIMzhBIt/uWnFjXMQetpqhcvAu9PSMKwhVQ==
-X-Received: by 2002:a05:620a:4148:b0:785:46f0:615b with SMTP id k8-20020a05620a414800b0078546f0615bmr358625qko.2.1706758041672;
-        Wed, 31 Jan 2024 19:27:21 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUIv71tJwO29OMitKPFnpPOCXCL8BuVktI6doG1tJVc7/qR+y0O1AXR3wBOmsC4Qpffj7sUQ/KvOHDJ3cjhityaWK8c6DQta2mok58PQKzyNMRYi0NBxE+fudr705gyldiLvtVDxeVD4Y/YBHb0b/QTNJBIXuB6UgcZyUeKMza5ekf49cqVqrwZ+yFdNzpD4eR3WySWDx0k6eHPjVEjtMAYQMMFpHdujzSNJ24YQgSlib3EdrjukJE9XYj5tQUTBP7eM86wjlW/Eo9XAjgXgVqReu2zzRc0V4aBxOGW8RQSM8/9+pDlticWA+KTxQANd6ZrLRySCqgVqZR+0qhBBavYdTkV8LgIibWRilyUHyT/2lAZKZI/
-Received: from localhost (fwdproxy-nao-009.fbsv.net. [2a03:2880:23ff:9::face:b00c])
-        by smtp.gmail.com with ESMTPSA id v18-20020ae9e312000000b0078535190648sm1450417qkf.67.2024.01.31.19.27.21
+        d=1e100.net; s=20230601; t=1706758116; x=1707362916;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4Ho6tWOUJQG5jwgdiQ+YC/nc1aAPjOngvOC35lqmr7A=;
+        b=MfAN+5jde1l/bDDF1C/0ebLqXHfhlUsIlsTVrzaCBkHiT7mRRnx122mWmledjBcqAk
+         HTtQFHZwsQufiE46wIkevjXa00K8G93rLZReSmOTWWfLLmtxW2wAxybEKwbOTuVzR1yU
+         5Q1nItGv/l7weNlkRmJXM87sNKbX5cvDKeWCFEuEpso4auC57Res2pMG/ONRPESaZapr
+         58EyGzwoZYw/C3QVU0ulvWhjSV7Kky4ann1koR2U/4GhjJhonV/KdfvBoJRxTWEEBC8z
+         FSJvNK96OFJHxPPGNP5lxp/2WG3IYk1NL5qI5ZJ3dz06zfrIDi652J76/7DkUqCR7f9y
+         4vHQ==
+X-Gm-Message-State: AOJu0YwMafAa9iB6L1zcA/py4nEsCf1Ooze/GFjLQluQw0ycUQV6S7ip
+	ccq0vU1sTGf/UylH4gjJZzZO/icbsffu9pUbHgn82EVpvE+A8eRF
+X-Google-Smtp-Source: AGHT+IEg4yxMdZKR72aUWYqIJObTXDnPnApeUkWrbWcBkPgWJ9jQiF6bv9EpHP9LqAQfMdqtWN+v9Q==
+X-Received: by 2002:a05:6a20:d485:b0:19c:881d:78e6 with SMTP id im5-20020a056a20d48500b0019c881d78e6mr3543871pzb.42.1706758115776;
+        Wed, 31 Jan 2024 19:28:35 -0800 (PST)
+Received: from ocxma-dut.. ([153.126.233.62])
+        by smtp.gmail.com with ESMTPSA id im23-20020a170902bb1700b001d8c8c903c0sm347852plb.149.2024.01.31.19.28.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 19:27:21 -0800 (PST)
-From: Nhat Pham <nphamcs@gmail.com>
-To: akpm@linux-foundation.org
-Cc: riel@surriel.com,
-	shuah@kernel.org,
-	hannes@cmpxchg.org,
-	yosryahmed@google.com,
-	tj@kernel.org,
-	lizefan.x@bytedance.com,
-	linux-mm@kvack.org,
-	kernel-team@meta.com,
+        Wed, 31 Jan 2024 19:28:35 -0800 (PST)
+From: Takeru Hayasaka <hayatake396@gmail.com>
+To: Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>
+Cc: intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v2 3/3] selftests: add zswapin and no zswap tests
-Date: Wed, 31 Jan 2024 19:27:18 -0800
-Message-Id: <20240201032718.1968208-4-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240201032718.1968208-1-nphamcs@gmail.com>
-References: <20240201032718.1968208-1-nphamcs@gmail.com>
+	mailhol.vincent@wanadoo.fr,
+	vladimir.oltean@nxp.com,
+	laforge@gnumonks.org,
+	Takeru Hayasaka <hayatake396@gmail.com>
+Subject: [PATCH net-next v6 1/2] ethtool: Add GTP RSS hash options to ethtool.h
+Date: Thu,  1 Feb 2024 03:27:49 +0000
+Message-Id: <20240201032748.1027121-1-hayatake396@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,144 +91,115 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a selftest to cover the zswapin code path, allocating more memory
-than the cgroup limit to trigger swapout/zswapout, then reading the
-pages back in memory several times. This is inspired by a recently
-encountered kernel crash on the zswapin path in our internal kernel,
-which went undetected because of a lack of test coverage for this path.
+This is a patch that enables RSS functionality for GTP packets using ethtool.
 
-Add a selftest to verify that when memory.zswap.max = 0, no pages can go
-to the zswap pool for the cgroup.
+A user can include TEID and make RSS work for GTP-U over IPv4 by doing the
+following:`ethtool -N ens3 rx-flow-hash gtpu4 sde`
 
-Suggested-by: Rik van Riel <riel@surriel.com>
-Suggested-by: Yosry Ahmed <yosryahmed@google.com>
-Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+In addition to gtpu(4|6), we now support gtpc(4|6),gtpc(4|6)t,gtpu(4|6)e,
+gtpu(4|6)u, and gtpu(4|6)d.
+
+gtpc(4|6): Used for GTP-C in IPv4 and IPv6, where the GTP header format does
+not include a TEID.
+gtpc(4|6)t: Used for GTP-C in IPv4 and IPv6, with a GTP header format that
+includes a TEID.
+gtpu(4|6): Used for GTP-U in both IPv4 and IPv6 scenarios.
+gtpu(4|6)e: Used for GTP-U with extended headers in both IPv4 and IPv6.
+gtpu(4|6)u: Used when the PSC (PDU session container) in the GTP-U extended
+header includes Uplink, applicable to both IPv4 and IPv6.
+gtpu(4|6)d: Used when the PSC in the GTP-U extended header includes Downlink,
+for both IPv4 and IPv6.
+
+GTP generates a flow that includes an ID called TEID to identify the tunnel.
+This tunnel is created for each UE (User Equipment).By performing RSS based on
+this flow, it is possible to apply RSS for each communication unit from the UE.
+Without this, RSS would only be effective within the range of IP addresses. For
+instance, the PGW can only perform RSS within the IP range of the SGW.
+Problematic from a load distribution perspective, especially if there's a bias
+in the terminals connected to a particular base station.This case can be
+solved by using this patch.
+
+Signed-off-by: Takeru Hayasaka <hayatake396@gmail.com>
 ---
- tools/testing/selftests/cgroup/test_zswap.c | 97 +++++++++++++++++++++
- 1 file changed, 97 insertions(+)
+v2->v3: Based on Harald-san's review, I added documentation and comments to 
+ethtool.h and ice.rst.
+v3->v4: Based on Marcin-san's review, I added the missing code for GTPC and 
+GTPC_TEID, and revised the documentation and comments.
+v4->v5: Based on Marcin-san's review, I fixed rename and wrong code regarding
+GTPC
+v5->v6: Based on Marcin-san's review, Undoing the addition of unnecessary
+blank lines.Minor fixes.
+v6->v7 Based on Jakub-san's review, Split the patch.
+ include/uapi/linux/ethtool.h | 48 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
-index 32ce975b21d1..14d1f18f1098 100644
---- a/tools/testing/selftests/cgroup/test_zswap.c
-+++ b/tools/testing/selftests/cgroup/test_zswap.c
-@@ -60,6 +60,27 @@ static long get_zswpout(const char *cgroup)
- 	return cg_read_key_long(cgroup, "memory.stat", "zswpout ");
- }
- 
-+static int allocate_bytes_and_read(const char *cgroup, void *arg)
-+{
-+	size_t size = (size_t)arg;
-+	char *mem = (char *)malloc(size);
-+	int ret = 0;
+diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
+index 06ef6b78b7de..11fc18988bc2 100644
+--- a/include/uapi/linux/ethtool.h
++++ b/include/uapi/linux/ethtool.h
+@@ -2023,6 +2023,53 @@ static inline int ethtool_validate_duplex(__u8 duplex)
+ #define	IPV4_FLOW	0x10	/* hash only */
+ #define	IPV6_FLOW	0x11	/* hash only */
+ #define	ETHER_FLOW	0x12	/* spec only (ether_spec) */
 +
-+	if (!mem)
-+		return -1;
-+	for (int i = 0; i < size; i += 4095)
-+		mem[i] = 'a';
-+
-+	/* go through the allocated memory to (z)swap in and out pages */
-+	for (int i = 0; i < size; i += 4095) {
-+		if (mem[i] != 'a')
-+			ret = -1;
-+	}
-+
-+	free(mem);
-+	return ret;
-+}
-+
- static int allocate_bytes(const char *cgroup, void *arg)
- {
- 	size_t size = (size_t)arg;
-@@ -133,6 +154,80 @@ static int test_zswap_usage(const char *root)
- 	return ret;
- }
- 
-+/*
-+ * Check that when memory.zswap.max = 0, no pages can go to the zswap pool for
-+ * the cgroup.
++/* Used for GTP-U IPv4 and IPv6.
++ * The format of GTP packets only includes
++ * elements such as TEID and GTP version.
++ * It is primarily intended for data communication of the UE.
 + */
-+static int test_swapin_nozswap(const char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	char *test_group;
-+	long zswpout;
++#define GTPU_V4_FLOW 0x13	/* hash only */
++#define GTPU_V6_FLOW 0x14	/* hash only */
 +
-+	/* Set up */
-+	test_group = cg_name(root, "no_zswap_test");
++/* Use for GTP-C IPv4 and v6.
++ * The format of these GTP packets does not include TEID.
++ * Primarily expected to be used for communication
++ * to create sessions for UE data communication,
++ * commonly referred to as CSR (Create Session Request).
++ */
++#define GTPC_V4_FLOW 0x15	/* hash only */
++#define GTPC_V6_FLOW 0x16	/* hash only */
 +
-+	if (!test_group)
-+		goto out;
-+	if (cg_create(test_group))
-+		goto out;
-+	if (cg_write(test_group, "memory.max", "8M"))
-+		goto out;
-+	/* Disable zswap */
-+	if (cg_write(test_group, "memory.zswap.max", "0"))
-+		goto out;
++/* Use for GTP-C IPv4 and v6.
++ * Unlike GTPC_V4_FLOW, the format of these GTP packets includes TEID.
++ * After session creation, it becomes this packet.
++ * This is mainly used for requests to realize UE handover.
++ */
++#define GTPC_TEID_V4_FLOW 0x17	/* hash only */
++#define GTPC_TEID_V6_FLOW 0x18	/* hash only */
 +
-+	/* Allocate and read more than memory.max to trigger swapin */
-+	if (cg_run(test_group, allocate_bytes_and_read, (void *)MB(32)))
-+		goto out;
++/* Use for GTP-U and extended headers for the PSC (PDU Session Container).
++ * The format of these GTP packets includes TEID and QFI.
++ * In 5G communication using UPF (User Plane Function),
++ * data communication with this extended header is performed.
++ */
++#define GTPU_EH_V4_FLOW 0x19	/* hash only */
++#define GTPU_EH_V6_FLOW 0x1a	/* hash only */
 +
-+	/* Verify that no zswap happened */
-+	zswpout = get_zswpout(test_group);
-+	if (zswpout < 0) {
-+		ksft_print_msg("Failed to get zswpout\n");
-+		goto out;
-+	} else if (zswpout > 0) {
-+		ksft_print_msg(
-+			"Pages should not go to zswap when memory.zswap.max = 0\n");
-+		goto out;
-+	}
-+	ret = KSFT_PASS;
++/* Use for GTP-U IPv4 and v6 PSC (PDU Session Container) extended headers.
++ * This differs from GTPU_EH_V(4|6)_FLOW in that it is distinguished by
++ * UL/DL included in the PSC.
++ * There are differences in the data included based on Downlink/Uplink,
++ * and can be used to distinguish packets.
++ * The functions described so far are useful when you want to
++ * handle communication from the mobile network in UPF, PGW, etc.
++ */
++#define GTPU_UL_V4_FLOW 0x1b	/* hash only */
++#define GTPU_UL_V6_FLOW 0x1c	/* hash only */
++#define GTPU_DL_V4_FLOW 0x1d	/* hash only */
++#define GTPU_DL_V6_FLOW 0x1e	/* hash only */
 +
-+out:
-+	cg_destroy(test_group);
-+	free(test_group);
-+	return ret;
-+}
-+
-+/* Simple test to verify the (z)swapin code paths */
-+static int test_zswapin_no_limit(const char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	char *test_group;
-+
-+	/* Set up */
-+	test_group = cg_name(root, "zswapin_test");
-+	if (!test_group)
-+		goto out;
-+	if (cg_create(test_group))
-+		goto out;
-+	if (cg_write(test_group, "memory.max", "8M"))
-+		goto out;
-+	if (cg_write(test_group, "memory.zswap.max", "max"))
-+		goto out;
-+
-+	/* Allocate and read more than memory.max to trigger (z)swap in */
-+	if (cg_run(test_group, allocate_bytes_and_read, (void *)MB(32)))
-+		goto out;
-+
-+	ret = KSFT_PASS;
-+
-+out:
-+	cg_destroy(test_group);
-+	free(test_group);
-+	return ret;
-+}
-+
- /*
-  * When trying to store a memcg page in zswap, if the memcg hits its memory
-  * limit in zswap, writeback should affect only the zswapped pages of that
-@@ -309,6 +404,8 @@ struct zswap_test {
- 	const char *name;
- } tests[] = {
- 	T(test_zswap_usage),
-+	T(test_swapin_nozswap),
-+	T(test_zswapin_no_limit),
- 	T(test_no_kmem_bypass),
- 	T(test_no_invasive_cgroup_shrink),
- };
+ /* Flag to enable additional fields in struct ethtool_rx_flow_spec */
+ #define	FLOW_EXT	0x80000000
+ #define	FLOW_MAC_EXT	0x40000000
+@@ -2037,6 +2084,7 @@ static inline int ethtool_validate_duplex(__u8 duplex)
+ #define	RXH_IP_DST	(1 << 5)
+ #define	RXH_L4_B_0_1	(1 << 6) /* src port in case of TCP/UDP/SCTP */
+ #define	RXH_L4_B_2_3	(1 << 7) /* dst port in case of TCP/UDP/SCTP */
++#define	RXH_GTP_TEID	(1 << 8) /* teid in case of GTP */
+ #define	RXH_DISCARD	(1 << 31)
+ 
+ #define	RX_CLS_FLOW_DISC	0xffffffffffffffffULL
 -- 
-2.39.3
+2.34.1
+
 
