@@ -1,115 +1,105 @@
-Return-Path: <linux-kernel+bounces-48157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36E9E84580D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:48:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5753F845811
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:49:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8F221F27BBA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:48:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 846651C22E8A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:49:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D75E8664B;
-	Thu,  1 Feb 2024 12:48:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XuiDy2ze"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FD3B86634;
-	Thu,  1 Feb 2024 12:48:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 537B286653;
+	Thu,  1 Feb 2024 12:49:27 +0000 (UTC)
+Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9BBA8663F;
+	Thu,  1 Feb 2024 12:49:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.164.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706791702; cv=none; b=S4HAkvReEZ9UmD+H3SWAj22wWbUkHcRk7FjDVOHEUcv39Ohbbf9WhU+0ATYFzR2vSFKQ/YXGkT9IqY5PwAE8GH8KMDr9UxAd6tc7wqyroBm3mt6NV4u/cH7gKfz4KqbsPqwtUAGBxJlAQ++dN5H3MZeJJ+QgeLiFUgfDMnT6WOo=
+	t=1706791766; cv=none; b=OiU7qJF8akDwINMo/YHNUOr65PQYi/OJwNyJ12GV1b5Z0Bs5B++vCFxxuwxIGPpjr9VfwOQIzcXSFmv++zAl/bLpN27WBuCkagrzfCmXUcKqsD/hcudeeDNU/jMhHGXJ+9zaY10eNiHmQ37g8ejM+bE+oQ/DtI8BIJo72xJUai8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706791702; c=relaxed/simple;
-	bh=YnRtTpNpTQxt2XnhcsroxzL3b51GCvpDICjR9ygSGDo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M7XR2kdwnwmUbiEvZ1/MagJjfHTgaMua+LCTVAxBiAYRjv2UIzBN8zxiCO0RQY7S2gwN91O0eAy8c++o7zSLQ9gM/4bd4AR0wK3dvOiOwQbFCIY+hT1DSRIGAWztXKwc/jFVEqtIlradjkBc6uOb0WDdqvItCTkhq29J9xGnRmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XuiDy2ze; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44DDEC433C7;
-	Thu,  1 Feb 2024 12:48:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706791701;
-	bh=YnRtTpNpTQxt2XnhcsroxzL3b51GCvpDICjR9ygSGDo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XuiDy2zeBXNfjRlxYry3vuawC6QPm/Q4DOnhZlxds7dCy6sdBMmAXpUCjozdP0saL
-	 8799dhAH34b0sm+UZa6o0MkyDfzvcdrHeMzt8b8KPsIkaaLf43RLIYuxIklQO2rAAs
-	 m4TGC6TZDULElSexskS7+8OacGitdvteEn7OGnf0tQn1vZ9tHfvB8P97m0NXjOipAy
-	 qKlWEblPDCJTEXo9QSKI7ZhfdicfFCmgQ4gkbWZYgt0FdTrS8nx53pFqcm4LAiL0Dw
-	 2QD0Od3ytN8iNcY9Qllh/jVUQIsnzJ3WKUNj6vrjzsZI4C/sR6VJOFVKchGQ3I/zUX
-	 dTMLBOvinM90g==
-Date: Thu, 1 Feb 2024 12:48:16 +0000
-From: Will Deacon <will@kernel.org>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
-	iommu@lists.linux.dev, Christoph Hellwig <hch@lst.de>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Petr Tesarik <petr.tesarik1@huawei-partners.com>,
-	Dexuan Cui <decui@microsoft.com>
-Subject: Re: [PATCH v2 2/3] swiotlb: Enforce page alignment in swiotlb_alloc()
-Message-ID: <20240201124816.GB15707@willie-the-truck>
-References: <20240131122543.14791-1-will@kernel.org>
- <20240131122543.14791-3-will@kernel.org>
- <b4045104-7ea4-47b2-ad74-a44bab76c796@arm.com>
+	s=arc-20240116; t=1706791766; c=relaxed/simple;
+	bh=Yi8Yp0mra6HVN4MohQAem1CrTDUOAi3hKvHb8V/rYVg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AIgTFWQAyAeJkT2ttOW6+6ARxwVQzlQHwGQTAmdKVWi1120AozIO59XrCoDIC7RwHdO/9/RjV7QBo9OyE91L+qa7EbcOOyck82pRidF2DkSyWRrSyc/hS4NuHEyqDGnJ9GY4B1v/gYGj4z95mWhhJJBgDEp1GatUh/dxqbtDJWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=162.243.164.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from luzhipeng.223.5.5.5 (unknown [183.128.135.43])
+	by mail-app2 (Coremail) with SMTP id by_KCgDXGqpDk7tl6tQxAQ--.4622S2;
+	Thu, 01 Feb 2024 20:49:07 +0800 (CST)
+From: Zhipeng Lu <alexious@zju.edu.cn>
+To: alexious@zju.edu.cn
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+	linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] media: v4l2-mem2mem: fix a memleak in v4l2_m2m_register_entity
+Date: Thu,  1 Feb 2024 20:48:44 +0800
+Message-Id: <20240201124846.3054579-1-alexious@zju.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b4045104-7ea4-47b2-ad74-a44bab76c796@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:by_KCgDXGqpDk7tl6tQxAQ--.4622S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKw4rWryrJFy3AF45KF48JFb_yoWkAFg_uF
+	s7uFnxWF1UKw43G3WUK395Z340ga9Fqrn3Ga13tF43tFy5JasxtFWDZrn8X397WF17A3sx
+	Crn8WrWfCF1jkjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbskFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
+	AVWUtwCY02Avz4vE14v_Xr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+	1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+	14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+	IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
+	87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
+	IFyTuYvjfU0FApUUUUU
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
 
-On Wed, Jan 31, 2024 at 03:14:18PM +0000, Robin Murphy wrote:
-> On 31/01/2024 12:25 pm, Will Deacon wrote:
-> > When allocating pages from a restricted DMA pool in swiotlb_alloc(),
-> > the buffer address is blindly converted to a 'struct page *' that is
-> > returned to the caller. In the unlikely event of an allocation bug,
-> > page-unaligned addresses are not detected and slots can silently be
-> > double-allocated.
-> > 
-> > Add a simple check of the buffer alignment in swiotlb_alloc() to make
-> > debugging a little easier if something has gone wonky.
-> > 
-> > Cc: Christoph Hellwig <hch@lst.de>
-> > Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> > Cc: Robin Murphy <robin.murphy@arm.com>
-> > Cc: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-> > Cc: Dexuan Cui <decui@microsoft.com>
-> > Signed-off-by: Will Deacon <will@kernel.org>
-> > ---
-> >   kernel/dma/swiotlb.c | 6 ++++++
-> >   1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> > index 56cc08b1fbd6..4485f216e620 100644
-> > --- a/kernel/dma/swiotlb.c
-> > +++ b/kernel/dma/swiotlb.c
-> > @@ -1642,6 +1642,12 @@ struct page *swiotlb_alloc(struct device *dev, size_t size)
-> >   		return NULL;
-> >   	tlb_addr = slot_addr(pool->start, index);
-> > +	if (unlikely(!PAGE_ALIGNED(tlb_addr))) {
-> > +		dev_WARN_ONCE(dev, 1, "Cannot allocate pages from non page-aligned swiotlb addr 0x%pa.\n",
-> > +			      &tlb_addr);
-> 
-> Nit: if there's cause for another respin, I'd be inclined to use a
-> straightforward "if (WARN_ON(...))" here - this condition should represent
-> SWIOTLB itself going badly wrong, which isn't really attributable to
-> whatever device happened to be involved in the call.
+The entity->name (i.e. name) is allocated in v4l2_m2m_register_entity
+but isn't freed in its following error-handling paths. This patch
+adds such deallocation to prevent memleak of entity->name.
 
-Well, there'll definitely be a v3 thanks to my idiotic dropping of the
-'continue' statement when I reworked the searching loop for v2.
+Fixes: be2fff656322 ("media: add helpers for memory-to-memory media controller")
+Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+---
+ drivers/media/v4l2-core/v4l2-mem2mem.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-However, given that we're returning NULL, I think printing the device is
-helpful as we're likely to cause some horrible error (e.g. probe failure)
-in the caller and then it will be obvious why that happened from looking
-at the logs. So I'd prefer to keep it unless you insist.
+diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
+index 0cc30397fbad..8db9ac9c1433 100644
+--- a/drivers/media/v4l2-core/v4l2-mem2mem.c
++++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
+@@ -1084,11 +1084,17 @@ static int v4l2_m2m_register_entity(struct media_device *mdev,
+ 	entity->function = function;
+ 
+ 	ret = media_entity_pads_init(entity, num_pads, pads);
+-	if (ret)
++	if (ret) {
++		kfree(entity->name);
++		entity->name = NULL;
+ 		return ret;
++	}
+ 	ret = media_device_register_entity(mdev, entity);
+-	if (ret)
++	if (ret) {
++		kfree(entity->name);
++		entity->name = NULL;
+ 		return ret;
++	}
+ 
+ 	return 0;
+ }
+-- 
+2.34.1
 
-Cheers,
-
-Will
 
