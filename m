@@ -1,435 +1,160 @@
-Return-Path: <linux-kernel+bounces-48383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BC4D845B4A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:22:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C38A9845B4C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:22:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2D8029443E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:22:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53A9F1F22D25
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:22:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2158161B75;
-	Thu,  1 Feb 2024 15:18:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CBEF163AA1;
+	Thu,  1 Feb 2024 15:18:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b3Brzrk2"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XSAH0TgN"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C7A6160878;
-	Thu,  1 Feb 2024 15:18:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3088A161B77;
+	Thu,  1 Feb 2024 15:18:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706800713; cv=none; b=mii/+XX0Ig2xGOhsCcPeIdBLiZQvvvuhlmmzCj6brWCQNj0XSKjstiFdaqt7/Rpgnt/oaBbGcYPjp3rxGN11BzxI3fXri/Mfn3rsFpCA4SM8rWYPTDoaLGsqTmbyd6fbDO7+5fmKCsvks6nsXWajvgd00uG7ca/sa+W5JhAsHpA=
+	t=1706800716; cv=none; b=IiDnK3YBaOICCkDtbd4etX0iKN9mmnlp9LX64rk58/jEjYN8GN1rLXVTtBDqZPyqM4mPp/q0Ms2u+EtdgjhR5xJtAnUmDmD48Aprp62XaBrAEgVCJnl4KpidDWjapWu85y5yJs6KI4wuFHOFDjZpRx75zxayuquAkDV9XGTIphU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706800713; c=relaxed/simple;
-	bh=k2sOP785pc0oOoJN++0dNNzykTF1ju30lV9nO1lO7mQ=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uG3gVRnh+S0s/9ePz9OSyh+XxiYJQkEKB8wU7ojXd1yqkuPUh9sQTte0XVVdUoSJmqmzXiTD56sPONbKrh4GMAzrgucld/RYLViJboUNIwNUzFHOT3gYsEH/zFXlaWZLPdo1eOvaXo5hdvRs5qeB6fSB4dViVinlIw1RdY/Cf24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b3Brzrk2; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d07f2696a4so3100211fa.3;
-        Thu, 01 Feb 2024 07:18:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706800709; x=1707405509; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LPDJTzuzSaVXPpWPlsQr2wpNCRYD0dBZ+TyHi5To/ZA=;
-        b=b3Brzrk2lBPMWvhxn2UmdYLpAhKieHmB+6d/aOIPWEQsVErstRERguxfQzf5zfqSfW
-         c86hWxPJOUh0fO9wEPv7K0OyNULN3IxhEDpRsRMYFgzv+bhddfEVZ54lwTrsNxoRKHNQ
-         bFUqIsY/JT35j/gN3oAjxHM1eW75sAL/8p9jhHQRxCzsaA9AKmk2P6PbRlvr8fQarWo2
-         6VeSGPowD9Dp9GovY1dLPl6lx9aGfk9NV0ixjSMBRj4muAK9//JxYK5gsBgC8ctYQylW
-         tZh7wjQsNvuFb8TkQq3CKxhuq+XyR2Io0MEBEqrPvi9T5oUCThfyS3pMt1Kk+UKX2492
-         sdfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706800709; x=1707405509;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LPDJTzuzSaVXPpWPlsQr2wpNCRYD0dBZ+TyHi5To/ZA=;
-        b=PkwqfP4mfArCxMIitl2LO3Zxhxt4eXBkb4avyYZb5bCpWcna5pI2UoGQb5SC2FJsqV
-         izycg/dtHzRBX5EmWTWnJ59ghDc/EOBXNdCdIszd3ZZSnReyWjd6q4XZak9XO5FqCOtV
-         tD5tdRRwFffvqvXNL6i6B8TjJQjLsS5NqvdLXl6lTRXuspudn8/2ufW34U1taXzkfO8P
-         ptAnnZyDPoB9Skvcivc9xq5ILcRdg99xrhdS7rVWtb1R12IoTCMQBj0qHB80WupkNJyn
-         E2npWO97KwQystAYQnvRGTTuusJF+4+rQ4u+ShXHRXZmffdOhA6A1nhRWv/5pRloNnmp
-         HFQQ==
-X-Gm-Message-State: AOJu0Yxwb98R9my63b12ZBC9QY7KuVb8bVnmXHv6FPAkTXLW/evsxlG2
-	6TK5qu4IWKrqg556S3g19ljU2RYn2l9YAUMw06UNTnRihwCbx0jZ
-X-Google-Smtp-Source: AGHT+IEtskKvSGCGmwWceQcyC9B0HCHd87vN71sLlBXdNSqU+1VzjZoPTDllNZyf5VaPLk6PLA/aTg==
-X-Received: by 2002:a2e:9e95:0:b0:2d0:78b4:329a with SMTP id f21-20020a2e9e95000000b002d078b4329amr1456352ljk.35.1706800709480;
-        Thu, 01 Feb 2024 07:18:29 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVjkj1ajue1Zf464zibJ7pVsut1kqBrOMmIHeU+AZuUHKYmEMhEAARoVWTg7zBnnMo5YOtcpLh/6bkXzavJuPa3cch8fYmKf4tioCXVFJUbd+ttV42bSpm6cV2woNrxd6EwnmAG/RY14x8tZfAC11TXgoDn8/xJhFKA1J00p33gKuNExjOv6BxBd3jS14HMMai2+Lvkj276rctgDjPgr9MMwPN/3Q9Aa1wpuJw4zkCHm+TDjzt2JjldmE9/dCKGRryHK25YuJnadip9lO08dx3yT9lTfyBtVZmcCYH014bLzgGxbtpoLnOmoLBiD7tuj87v3I5pHzRQTI1RrS1IJy3yMTLj2NP1LYfEn3vJipU2zWFnt56VdLmd0aSxd/GusMoKGsuukS6tRtJRQAv9xp3tdjroOkL9OSjSKCgqqJZcq547HuYTr4mmo0u+Jhklsz9EgPE1Axr2DcSQtsKxFmUtozSjensTzyS9VNWZVrUDmGerTT5s4aCb2mjWSbH+Tpxvgz0EO/d2fvAvs+dfyuAlPUuAVwbqKqOHuJBaavnHT324wzZpyhh0GFUwlft0VEoHUb4tlw0zz0ZWAh3m83gJLT1NegKQ9mtWKLgjg4fxLPpZiv0ER2Mr
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id z9-20020a2e3509000000b002cdf37ee19dsm2437978ljz.7.2024.02.01.07.18.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 07:18:29 -0800 (PST)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	Robert Marko <robert.marko@sartura.hr>,
-	netdev@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org
-Subject: [net-next PATCH v5 9/9] net: phy: qca807x: add support for configurable LED
-Date: Thu,  1 Feb 2024 16:17:35 +0100
-Message-ID: <20240201151747.7524-10-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240201151747.7524-1-ansuelsmth@gmail.com>
-References: <20240201151747.7524-1-ansuelsmth@gmail.com>
+	s=arc-20240116; t=1706800716; c=relaxed/simple;
+	bh=3RevnAVAbHAEBydU8gSpDEND0TRcHLa+idBC6gA4zJQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=qHJ3+s2Me++N04jE0gNxxKR6P69wxAPoZfo44qD5DQfRflU6gJMjCPwQ70vxp4Wva4qzCC0vVL35uiHnhknAh18hVWX6DKyrRVYSXRB+LzcAMIxj+UVrVdN0pBa2Nn4t9af4sPZqs7EB3b4toYfME9FQdv+rs5gTS+Wl1/qo1zE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XSAH0TgN; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706800716; x=1738336716;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=3RevnAVAbHAEBydU8gSpDEND0TRcHLa+idBC6gA4zJQ=;
+  b=XSAH0TgNPdypoxNchZJNydk1Ps7jv2o1jqOfjYoH1HteJFg3yXFrrJJP
+   gtm91RTqZNnLtSBOwml8SDrXjdXOtMfydPpk6IEWFC87esdWZ9NaSKBKQ
+   88bsEoHydT1kTkfEKaCYvVfTQA2OXAk0DwDs1fwhq2JRZIe/bPelFcaS7
+   R1Gc4W7PgrPx8koVLAf9e3AFV0WNj9T5rdNtdRkNZVJHxeUz94UJJX+I1
+   l5EB9F0LKANhWtjraD1AY6BMWDGalgv5jp+GJ+ue3Rf9CnRlWHtQyPUBr
+   2r2LLwhbZfH/2y+dTYfJyrdzF0JQqEe0J6bGANZSWisihmR2liC9VeQCH
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10545503"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="10545503"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 07:18:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="961943769"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="961943769"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 07:18:30 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rVYpf-00000000rtt-0oZx;
+	Thu, 01 Feb 2024 17:18:27 +0200
+Date: Thu, 1 Feb 2024 17:18:26 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Qu Wenruo <wqu@suse.com>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+	christophe.jaillet@wanadoo.fr, David.Laight@aculab.com,
+	ddiss@suse.de, geert@linux-m68k.org
+Subject: Re: [PATCH v3 0/4] kstrtox: introduce memparse_safe()
+Message-ID: <Zbu2QqhC2LyK4ttb@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-QCA8072/5 have up to 2 LEDs attached for PHY.
+On Mon, Jan 15, 2024 at 06:31:05AM +1030, Qu Wenruo wrote:
+> On 2024/1/15 00:12, Andy Shevchenko wrote:
+> > On Sun, Jan 07, 2024 at 07:28:27AM +1030, Qu Wenruo wrote:
+> > > On 2024/1/7 01:04, Andy Shevchenko wrote:
+> > > > On Thu, Jan 04, 2024 at 09:57:47AM +1030, Qu Wenruo wrote:
 
-LEDs can be configured to be ON/hw blink or be set to HW control.
+..
 
-Hw blink mode is set to blink at 4Hz or 250ms.
+> > > > Having test cases is quite good, thanks!
+> > > > But as I understood what Alexey wanted, is not using the kstrtox files for this.
+> > > > You can introduce it in the cmdline.c, correct? Just include local "kstrtox.h".
+> > > 
+> > > Not really possible, all the needed parsing helpers are internal inside
+> > > kstrtox.c.
+> > 
+> > I'm not sure I follow. The functions are available to other library (built-in)
+> > modules.
+> 
+> Did I miss something?
+> 
+> Firstly neither _parse_integer_fixup_radix() nor _parse_integer_limit() is
+> exported to modules. (No EXPORT_SYMBOL() call on them).
 
-PHY can support both copper (TP) or fiber (FIBRE) kind and supports
-different HW control modes based on the port type.
+Should they?
 
-HW control modes supported for netdev trigger for copper ports are:
-- LINK_10
-- LINK_100
-- LINK_1000
-- TX
-- RX
-- FULL_DUPLEX
-- HALF_DUPLEX
+> Secondly _parse_integer_fixup_radix() and _parse_integer_limit have "_"
+> prefix, and is only declared in "lib/kstrtox.h", which means they are
+> designed only for internal usage.
+> If putting memparse_safe() into cmdline.c, at least we would need to include
+> local header "kstrtox.h", and I'm not sure if this is any better than
+> putting memparse_safe() into kstrtox.[ch].
 
-HW control modes supported for netdev trigger for fiber ports are:
-- LINK_100
-- LINK_1000
-- TX
-- RX
-- FULL_DUPLEX
-- HALF_DUPLEX
+Yes, this is much better.
 
-LED support conflicts with GPIO controller feature and must be disabled
-if gpio-controller is used for the PHY.
+> Finally, I just tried putting memparse_safe() into cmdline.c, and it failed
+> at linkage stage, even if that offending file has no call to
+> memparse_safe():
+> 
+>   ld: arch/x86/boot/compressed/kaslr.o: in function `memparse_safe':
+> kaslr.c:(.text+0xbb1): undefined reference to `_parse_integer_fixup_radix'
+>   ld: kaslr.c:(.text+0xbc5): undefined reference to `_parse_integer'
+>   ld: arch/x86/boot/compressed/vmlinux: hidden symbol `_parse_integer' isn't
+> defined
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
- drivers/net/phy/qcom/qca807x.c | 258 ++++++++++++++++++++++++++++++++-
- 1 file changed, 256 insertions(+), 2 deletions(-)
+I don't understand. Implement memparse_safe() in the C file
+(i.e.  lib/cmdline.c) and if it's needed to be exported, export it.
 
-diff --git a/drivers/net/phy/qcom/qca807x.c b/drivers/net/phy/qcom/qca807x.c
-index 5ff6ba9fa1a0..0d7fd1a9404e 100644
---- a/drivers/net/phy/qcom/qca807x.c
-+++ b/drivers/net/phy/qcom/qca807x.c
-@@ -47,8 +47,18 @@
- #define QCA807X_MMD7_LED_CTRL(x)			(0x8074 + ((x) * 2))
- #define QCA807X_MMD7_LED_FORCE_CTRL(x)			(0x8075 + ((x) * 2))
- 
--#define QCA807X_GPIO_FORCE_EN				BIT(15)
--#define QCA807X_GPIO_FORCE_MODE_MASK			GENMASK(14, 13)
-+/* LED hw control pattern for fiber port */
-+#define QCA807X_LED_FIBER_PATTERN_MASK			GENMASK(11, 1)
-+#define QCA807X_LED_FIBER_TXACT_BLK_EN			BIT(10)
-+#define QCA807X_LED_FIBER_RXACT_BLK_EN			BIT(9)
-+#define QCA807X_LED_FIBER_FDX_ON_EN			BIT(6)
-+#define QCA807X_LED_FIBER_HDX_ON_EN			BIT(5)
-+#define QCA807X_LED_FIBER_1000BX_ON_EN			BIT(2)
-+#define QCA807X_LED_FIBER_100FX_ON_EN			BIT(1)
-+
-+/* Some device repurpose the LED as GPIO out */
-+#define QCA807X_GPIO_FORCE_EN				QCA808X_LED_FORCE_EN
-+#define QCA807X_GPIO_FORCE_MODE_MASK			QCA808X_LED_FORCE_MODE_MASK
- 
- #define QCA807X_FUNCTION_CONTROL			0x10
- #define QCA807X_FC_MDI_CROSSOVER_MODE_MASK		GENMASK(6, 5)
-@@ -105,6 +115,233 @@ static int qca807x_cable_test_start(struct phy_device *phydev)
- 	return 0;
- }
- 
-+static int qca807x_led_parse_netdev(struct phy_device *phydev, unsigned long rules,
-+				    u16 *offload_trigger)
-+{
-+	/* Parsing specific to netdev trigger */
-+	switch (phydev->port) {
-+	case PORT_TP:
-+		if (test_bit(TRIGGER_NETDEV_TX, &rules))
-+			*offload_trigger |= QCA808X_LED_TX_BLINK;
-+		if (test_bit(TRIGGER_NETDEV_RX, &rules))
-+			*offload_trigger |= QCA808X_LED_RX_BLINK;
-+		if (test_bit(TRIGGER_NETDEV_LINK_10, &rules))
-+			*offload_trigger |= QCA808X_LED_SPEED10_ON;
-+		if (test_bit(TRIGGER_NETDEV_LINK_100, &rules))
-+			*offload_trigger |= QCA808X_LED_SPEED100_ON;
-+		if (test_bit(TRIGGER_NETDEV_LINK_1000, &rules))
-+			*offload_trigger |= QCA808X_LED_SPEED1000_ON;
-+		if (test_bit(TRIGGER_NETDEV_HALF_DUPLEX, &rules))
-+			*offload_trigger |= QCA808X_LED_HALF_DUPLEX_ON;
-+		if (test_bit(TRIGGER_NETDEV_FULL_DUPLEX, &rules))
-+			*offload_trigger |= QCA808X_LED_FULL_DUPLEX_ON;
-+		break;
-+	case PORT_FIBRE:
-+		if (test_bit(TRIGGER_NETDEV_TX, &rules))
-+			*offload_trigger |= QCA807X_LED_FIBER_TXACT_BLK_EN;
-+		if (test_bit(TRIGGER_NETDEV_RX, &rules))
-+			*offload_trigger |= QCA807X_LED_FIBER_RXACT_BLK_EN;
-+		if (test_bit(TRIGGER_NETDEV_LINK_100, &rules))
-+			*offload_trigger |= QCA807X_LED_FIBER_100FX_ON_EN;
-+		if (test_bit(TRIGGER_NETDEV_LINK_1000, &rules))
-+			*offload_trigger |= QCA807X_LED_FIBER_1000BX_ON_EN;
-+		if (test_bit(TRIGGER_NETDEV_HALF_DUPLEX, &rules))
-+			*offload_trigger |= QCA807X_LED_FIBER_HDX_ON_EN;
-+		if (test_bit(TRIGGER_NETDEV_FULL_DUPLEX, &rules))
-+			*offload_trigger |= QCA807X_LED_FIBER_FDX_ON_EN;
-+		break;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (rules && !*offload_trigger)
-+		return -EOPNOTSUPP;
-+
-+	return 0;
-+}
-+
-+static int qca807x_led_hw_control_enable(struct phy_device *phydev, u8 index)
-+{
-+	u16 reg;
-+
-+	if (index > 1)
-+		return -EINVAL;
-+
-+	reg = QCA807X_MMD7_LED_FORCE_CTRL(index);
-+	return qca808x_led_reg_hw_control_enable(phydev, reg);
-+}
-+
-+static int qca807x_led_hw_is_supported(struct phy_device *phydev, u8 index,
-+				       unsigned long rules)
-+{
-+	u16 offload_trigger = 0;
-+
-+	if (index > 1)
-+		return -EINVAL;
-+
-+	return qca807x_led_parse_netdev(phydev, rules, &offload_trigger);
-+}
-+
-+static int qca807x_led_hw_control_set(struct phy_device *phydev, u8 index,
-+				      unsigned long rules)
-+{
-+	u16 reg, mask, offload_trigger = 0;
-+	int ret;
-+
-+	if (index > 1)
-+		return -EINVAL;
-+
-+	ret = qca807x_led_parse_netdev(phydev, rules, &offload_trigger);
-+	if (ret)
-+		return ret;
-+
-+	ret = qca807x_led_hw_control_enable(phydev, index);
-+	if (ret)
-+		return ret;
-+
-+	switch (phydev->port) {
-+	case PORT_TP:
-+		reg = QCA807X_MMD7_LED_CTRL(index);
-+		mask = QCA808X_LED_PATTERN_MASK;
-+		break;
-+	case PORT_FIBRE:
-+		/* HW control pattern bits are in LED FORCE reg */
-+		reg = QCA807X_MMD7_LED_FORCE_CTRL(index);
-+		mask = QCA807X_LED_FIBER_PATTERN_MASK;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return phy_modify_mmd(phydev, MDIO_MMD_AN, reg, mask,
-+			      offload_trigger);
-+}
-+
-+static bool qca807x_led_hw_control_status(struct phy_device *phydev, u8 index)
-+{
-+	u16 reg;
-+
-+	if (index > 1)
-+		return false;
-+
-+	reg = QCA807X_MMD7_LED_FORCE_CTRL(index);
-+	return qca808x_led_reg_hw_control_status(phydev, reg);
-+}
-+
-+static int qca807x_led_hw_control_get(struct phy_device *phydev, u8 index,
-+				      unsigned long *rules)
-+{
-+	u16 reg;
-+	int val;
-+
-+	if (index > 1)
-+		return -EINVAL;
-+
-+	/* Check if we have hw control enabled */
-+	if (qca807x_led_hw_control_status(phydev, index))
-+		return -EINVAL;
-+
-+	/* Parsing specific to netdev trigger */
-+	switch (phydev->port) {
-+	case PORT_TP:
-+		reg = QCA807X_MMD7_LED_CTRL(index);
-+		val = phy_read_mmd(phydev, MDIO_MMD_AN, reg);
-+		if (val & QCA808X_LED_TX_BLINK)
-+			set_bit(TRIGGER_NETDEV_TX, rules);
-+		if (val & QCA808X_LED_RX_BLINK)
-+			set_bit(TRIGGER_NETDEV_RX, rules);
-+		if (val & QCA808X_LED_SPEED10_ON)
-+			set_bit(TRIGGER_NETDEV_LINK_10, rules);
-+		if (val & QCA808X_LED_SPEED100_ON)
-+			set_bit(TRIGGER_NETDEV_LINK_100, rules);
-+		if (val & QCA808X_LED_SPEED1000_ON)
-+			set_bit(TRIGGER_NETDEV_LINK_1000, rules);
-+		if (val & QCA808X_LED_HALF_DUPLEX_ON)
-+			set_bit(TRIGGER_NETDEV_HALF_DUPLEX, rules);
-+		if (val & QCA808X_LED_FULL_DUPLEX_ON)
-+			set_bit(TRIGGER_NETDEV_FULL_DUPLEX, rules);
-+		break;
-+	case PORT_FIBRE:
-+		/* HW control pattern bits are in LED FORCE reg */
-+		reg = QCA807X_MMD7_LED_FORCE_CTRL(index);
-+		val = phy_read_mmd(phydev, MDIO_MMD_AN, reg);
-+		if (val & QCA807X_LED_FIBER_TXACT_BLK_EN)
-+			set_bit(TRIGGER_NETDEV_TX, rules);
-+		if (val & QCA807X_LED_FIBER_RXACT_BLK_EN)
-+			set_bit(TRIGGER_NETDEV_RX, rules);
-+		if (val & QCA807X_LED_FIBER_100FX_ON_EN)
-+			set_bit(TRIGGER_NETDEV_LINK_100, rules);
-+		if (val & QCA807X_LED_FIBER_1000BX_ON_EN)
-+			set_bit(TRIGGER_NETDEV_LINK_1000, rules);
-+		if (val & QCA807X_LED_FIBER_HDX_ON_EN)
-+			set_bit(TRIGGER_NETDEV_HALF_DUPLEX, rules);
-+		if (val & QCA807X_LED_FIBER_FDX_ON_EN)
-+			set_bit(TRIGGER_NETDEV_FULL_DUPLEX, rules);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int qca807x_led_hw_control_reset(struct phy_device *phydev, u8 index)
-+{
-+	u16 reg, mask;
-+
-+	if (index > 1)
-+		return -EINVAL;
-+
-+	switch (phydev->port) {
-+	case PORT_TP:
-+		reg = QCA807X_MMD7_LED_CTRL(index);
-+		mask = QCA808X_LED_PATTERN_MASK;
-+		break;
-+	case PORT_FIBRE:
-+		/* HW control pattern bits are in LED FORCE reg */
-+		reg = QCA807X_MMD7_LED_FORCE_CTRL(index);
-+		mask = QCA807X_LED_FIBER_PATTERN_MASK;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return phy_clear_bits_mmd(phydev, MDIO_MMD_AN, reg, mask);
-+}
-+
-+static int qca807x_led_brightness_set(struct phy_device *phydev,
-+				      u8 index, enum led_brightness value)
-+{
-+	u16 reg;
-+	int ret;
-+
-+	if (index > 1)
-+		return -EINVAL;
-+
-+	/* If we are setting off the LED reset any hw control rule */
-+	if (!value) {
-+		ret = qca807x_led_hw_control_reset(phydev, index);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	reg = QCA807X_MMD7_LED_FORCE_CTRL(index);
-+	return qca808x_led_reg_brightness_set(phydev, reg, value);
-+}
-+
-+static int qca807x_led_blink_set(struct phy_device *phydev, u8 index,
-+				 unsigned long *delay_on,
-+				 unsigned long *delay_off)
-+{
-+	u16 reg;
-+
-+	if (index > 1)
-+		return -EINVAL;
-+
-+	reg = QCA807X_MMD7_LED_FORCE_CTRL(index);
-+	return qca808x_led_reg_blink_set(phydev, reg, delay_on, delay_off);
-+}
-+
- #ifdef CONFIG_GPIOLIB
- static int qca807x_gpio_get_direction(struct gpio_chip *gc, unsigned int offset)
- {
-@@ -481,11 +718,23 @@ static int qca807x_probe(struct phy_device *phydev)
- 		return -EINVAL;
- 
- 	if (IS_ENABLED(CONFIG_GPIOLIB)) {
-+		if (of_find_property(node, "leds", NULL) &&
-+		    of_find_property(node, "gpio-controller", NULL)) {
-+			phydev_err(phydev, "Invalid property detected. LEDs and gpio-controller are mutually exclusive.");
-+			return -EINVAL;
-+		}
-+
- 		/* Do not register a GPIO controller unless flagged for it */
- 		if (of_property_read_bool(node, "gpio-controller")) {
- 			ret = qca807x_gpio(phydev);
- 			if (ret)
- 				return ret;
-+
-+			phydev->drv->led_brightness_set = NULL;
-+			phydev->drv->led_blink_set = NULL;
-+			phydev->drv->led_hw_is_supported = NULL;
-+			phydev->drv->led_hw_control_set = NULL;
-+			phydev->drv->led_hw_control_get = NULL;
- 		}
- 	}
- 
-@@ -561,6 +810,11 @@ static struct phy_driver qca807x_drivers[] = {
- 		.suspend	= genphy_suspend,
- 		.cable_test_start	= qca807x_cable_test_start,
- 		.cable_test_get_status	= qca808x_cable_test_get_status,
-+		.led_brightness_set = qca807x_led_brightness_set,
-+		.led_blink_set = qca807x_led_blink_set,
-+		.led_hw_is_supported = qca807x_led_hw_is_supported,
-+		.led_hw_control_set = qca807x_led_hw_control_set,
-+		.led_hw_control_get = qca807x_led_hw_control_get,
- 	},
- };
- module_phy_driver(qca807x_drivers);
+> I can try again but I'm not sure if it's possible to move memparse_safe() to
+> cmdline.[ch].
+
+Please do. I do not see design issues with proposed approach.
+
+..
+
+> > > Furthermore, this also means memparse() can not be enhanced due to:
+> > > 
+> > > - Lack of ways to return errors
+> > 
+> > What does this mean?
+> 
+> If you want to keep the prototype of memparse() (aka, a drop-in
+> enhancement), then there is no good way to indicate the errors like overflow
+> at all.
+
+No need to replace one by another in the implementation side, having two is
+okay, while moving affected code to the better one one-by-one. Then we may
+remove the old one. And then, if there is a wish, we may rename it back.
+
+> > > - Unable to call the parsing helpers inside cmdline.c
+> > 
+> > ??? (see above)
+> > 
+> See above.
+
+Got it, but please try again. I do believe it's possible to avoid touching
+kstrotox.c.
+
 -- 
-2.43.0
+With Best Regards,
+Andy Shevchenko
 
 
