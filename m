@@ -1,111 +1,155 @@
-Return-Path: <linux-kernel+bounces-47914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4246E84548F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DC73A8454AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:59:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F13E9289FD7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:51:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94138287215
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:59:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 979174DA0B;
-	Thu,  1 Feb 2024 09:51:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TzVuWCGS"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67D624DA0A;
-	Thu,  1 Feb 2024 09:51:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCE24157E8C;
+	Thu,  1 Feb 2024 09:59:52 +0000 (UTC)
+Received: from wind.enjellic.com (wind.enjellic.com [76.10.64.91])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51B0A4D9F4
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 09:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=76.10.64.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706781111; cv=none; b=mBa29szWtIexqaYuL5RgnPLJmTVG9Ui63l8TluDukGG21k9t7fPI4yF3oA0Xs9IOVo7IOCtp36nedz0jVz6tfB5Ws8lEery+GQ4tnSfc5lU+bhrJJKQczqEgWFqRWCww3gYyk1xyJdy/n24fYyYYOPy/nD5f+82N79rcsTa0nig=
+	t=1706781592; cv=none; b=Ij0e9+GwW95NMK8jL7DDuky0GWHSEClUuAayOFAMslZQNSDXIyKT9aV5mYEPm+Y/Z6rKI2ZNJVpIKNUQ+4uvJZ5HZqFsr43oMKEXi/ZuKeblvY/HSInSt8TCQGWqfzO7qKYcMDeWqNkJ+gIWiPMb/xzC2o2WAKs/myvdZDPG0jA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706781111; c=relaxed/simple;
-	bh=E1+GCQDHek1+2wmj8RNma2P9bsBdvtEiwXmkmZ9/tj4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FT7y3nSEKIWtIKIvGU5/yopIo/adrgwTym2eLM6v1Jp+eE57adhb0F8orWajDOY/BhmYYu1e/va701TwdOmSBKFsbReUa60b0U7fTydDb0kNVXXyeWt10kUV8Ek5+kJFath1N1eZ55/sVUXeRzZmke6p7b3P7NL2pIIWEZZ3oZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TzVuWCGS; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33ae4eb360aso418834f8f.0;
-        Thu, 01 Feb 2024 01:51:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706781108; x=1707385908; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OTxDGqdpEuvtyT/5nhwfv4UEX1AAehG3D/fXJ8HusCg=;
-        b=TzVuWCGSEcxXx2iFx93w8BBmmPNPWdSaIK5LAXv6fanhl+erhGboXBII4BeAY5bxAF
-         meyRBx27Hu5DsW0vItBlxltWJQClg7Qvcsjc9bKRuxkXH411tf+E4gbviXXhilJ121eW
-         YyezQWQjL6h+FHy9/WV/SABdfvcY6hJZnr8A+NIBEztnf2udvQu8uVqd64C2EGtJpJkp
-         HUR9vWVBR3w4yyWSLBetMWsW43CUGVhacEqJcxKc0TkoXTyVxoOQx59fPCALJe/v+Q9V
-         ttK+f1hCxyWGfjUqAfe7x+OhVhwYAho4QKX1twZy5kGb9lYitJf9oLLXdE1gHVz5jgjG
-         uo5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706781108; x=1707385908;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OTxDGqdpEuvtyT/5nhwfv4UEX1AAehG3D/fXJ8HusCg=;
-        b=WeGuDuF9vD29ZsplstK/iAqwFEZNcNqJO/Vt7Lty/HJoCBDBS4ccXmvE2xUnro4UHV
-         4sC0BWtcfNUIO4l1MhNSs4bOq22h6JOOn7oa5VVqPKOjsf91qJ4DrjKPAbKWp5esbP7A
-         3C+ux/gSBzLC/UbyI3gy6Lo1PqtFd2Gd0NV1rX+6NJ8ixWrnnsUguy6Wj2h16RXvap42
-         wXqowyZqPGGiIZWJ5yhYaDD6sPoHGtaFA5Anaqsco3CgbS9HXrPqIwFsU2uNkZHbjyqf
-         ZU5RLX33Jjz27hxAcC2uRkEctJ+8zEUx6a3AQ0Rd3hV6k6F5ZmvEShPN3/bf6HTUnI+S
-         fHwQ==
-X-Gm-Message-State: AOJu0YzWmT3ZB11og0mlTzWWX3kEMn3C3FsenJylQv6uV+j3CSYtkNZm
-	Yp3Ci8gWhG7jL+rXDYQ8dgz+ABAScxwy2uyQsMkPuVxZNTxuzp8tyDgfKT71UaRGryRXxTcXXxl
-	Vq3axY7+wZUcB+7P72GR4Tmkgwik=
-X-Google-Smtp-Source: AGHT+IE6FpuOwniww3kwxpIiXlxPL2wED9CiYjVdmSfQtdaonn4P9Lxb/XGOgooLPL5oXoKkPzjUlFnpDpylFHowoyo=
-X-Received: by 2002:a05:6000:108e:b0:33b:feb:8b19 with SMTP id
- y14-20020a056000108e00b0033b0feb8b19mr1738964wrw.41.1706781108536; Thu, 01
- Feb 2024 01:51:48 -0800 (PST)
+	s=arc-20240116; t=1706781592; c=relaxed/simple;
+	bh=HpRKshTR53h1WMYXI/4/LpBIWmTwxTMmuHtPn3QrAg4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Mime-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XHLaQAAdHH7eoWeySvTCc0zCVUUm2QHo/tDFY6CWfr5N1Kl6rzSiF0d7Gxc4p2ACsx+iKFFXq2r8tgAJddaYQxzPCn7+nkkISAeSTENfx9oQAe9Ki68mxlVrePALTy4SlOu2VqjIFgSXxIG/vPa9jx5g5ujGpq6NsWktWwFjDms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com; spf=pass smtp.mailfrom=wind.enjellic.com; arc=none smtp.client-ip=76.10.64.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wind.enjellic.com
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+	by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 4119sqmr017945;
+	Thu, 1 Feb 2024 03:54:52 -0600
+Received: (from greg@localhost)
+	by wind.enjellic.com (8.15.2/8.15.2/Submit) id 4119sp8g017944;
+	Thu, 1 Feb 2024 03:54:51 -0600
+Date: Thu, 1 Feb 2024 03:54:51 -0600
+From: "Dr. Greg" <greg@enjellic.com>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "Daniel P. Berrang??" <berrange@redhat.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kalra, Ashish" <ashish.kalra@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] x86/random: Issue a warning if RDRAND or RDSEED fails
+Message-ID: <20240201095451.GA17612@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+References: <20240130083007.1876787-2-kirill.shutemov@linux.intel.com> <CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com> <DM8PR11MB57507611D651E6D7CBC2A2F3E77D2@DM8PR11MB5750.namprd11.prod.outlook.com> <88a72370-e300-4bbc-8077-acd1cc831fe7@intel.com> <CAHmME9oSQbd3V8+qR0e9oPb7ppO=E7GrCW-a2RN8QNdY_ARbSQ@mail.gmail.com> <Zbk6h0ogqeInLa_1@redhat.com> <DM8PR11MB575052B985CA97B29A443F9AE77C2@DM8PR11MB5750.namprd11.prod.outlook.com> <CAHmME9ps6W5snQrYeNVMFgfhMKFKciky=-UxxGFbAx_RrxSHoA@mail.gmail.com> <20240131203531.GA12035@wind.enjellic.com> <20240201044735.GC2356784@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240201092033.10690-1-clamor95@gmail.com> <20240201092033.10690-4-clamor95@gmail.com>
- <523895fd-5a7d-4467-9a51-b5f85668f0af@linaro.org>
-In-Reply-To: <523895fd-5a7d-4467-9a51-b5f85668f0af@linaro.org>
-From: Svyatoslav Ryhel <clamor95@gmail.com>
-Date: Thu, 1 Feb 2024 11:51:37 +0200
-Message-ID: <CAPVz0n3VnEAxHviOF1RVzMybVEe=BdMcpPFpZXvpoU7HizTNog@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] ARM: tegra: Add device-tree for LG Optimus 4X HD (P880)
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, 
-	Kees Cook <keescook@chromium.org>, Maxim Schwalm <maxim.schwalm@gmail.com>, 
-	devicetree@vger.kernel.org, linux-tegra@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201044735.GC2356784@mit.edu>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Thu, 01 Feb 2024 03:54:53 -0600 (CST)
 
-=D1=87=D1=82, 1 =D0=BB=D1=8E=D1=82. 2024=E2=80=AF=D1=80. =D0=BE 11:22 Krzys=
-ztof Kozlowski
-<krzysztof.kozlowski@linaro.org> =D0=BF=D0=B8=D1=88=D0=B5:
->
-> On 01/02/2024 10:20, Svyatoslav Ryhel wrote:
-> > +     pinmux@70000868 {
-> > +             pinctrl-names =3D "default";
-> > +             pinctrl-0 =3D <&state_default>;
-> > +
-> > +             state_default: pinmux {
-> > +                     /* WLAN SDIO pinmux */
-> > +                     host_wlan_wake {
->
-> Not much improved around this.
->
+On Wed, Jan 31, 2024 at 11:47:35PM -0500, Theodore Ts'o wrote:
+> On Wed, Jan 31, 2024 at 02:35:32PM -0600, Dr. Greg wrote:
+> > I think it would demonstrate a lack of appropriate engineering
+> > diligence on the part of our community to declare RDRAND 'busted' at
+> > this point.
+> > 
+> > While it appeares to be trivially easy to force RDSEED into depletion,
+> > there does not seem to be a suggestion, at least in the open
+> > literature, that this directly or easily translates into stalling
+> > output from RDRAND in any type of relevant adversarial fashion.
+> > 
+> > If this were the case, given what CVE's seem to be worth on a resume,
+> > someone would have rented a cloud machine and come up with a POC
+> > against RDRAND in a multi-tenant environment and then promptly put up
+> > a web-site called 'Random Starve' or something equally ominous.
 
-All existing tegra pinmux nodes are bind this way. Ask Thierry Reding
-about this pls.
+> I suspect the reason why DOS attacks aren't happening in practice, is
+> because of concerns over the ability to trust the RDRAND (how do you
+> prove that the NSA didn't put a backdoor into the hardware with
+> Intel's acquisence --- after all, the NSA absolutely positively didn't
+> encourage the kneecaping of WEP and absolutely didn't put a trapdoor
+> into DUAL_EC_DRBG...)  since it can not externally audited and verfied
+> by a third party, in contrast to the source code for the /dev/random
+> driver or the RNG used in OpenSSL.
+> 
+> As a result, most random number generators use RDRAND in combination
+> with other techniques.  If RDRAND is absolutely trustworthy, the extra
+> sources won't hurt --- and if it isn't trustworthy mixing in other
+> sources will likely make things harder for Fort Meade.  And even if
+> these other sources might be observable for someone who can listen in
+> on the inter-packet arrival times on the LAN (for example), it might
+> not be so easy for an analyst sitting at their desk in Fort Meade.
+> 
+> And once you do _that_, you don't need to necessarily loop on RDRAND,
+> because it's one of multiple sources of entropies that are getting
+> mixed togethwer.  Hence, even if someone drives RDRAND into depletion,
+> if they are using getrandom(2), it's not a big deal.
 
-> Best regards,
-> Krzysztof
->
+All well taken points, the Linux RNG and associated community has
+benefited from your and Jason's concerns and work on all of this.
+
+However, whether or not DOS attacks based on RNG depletion are
+happening in the wild, and the reasons they are not, are orthogonal to
+whether or not they can be proven to exist, which was the point I was
+trying to make.
+
+Demonstrating a vulnerability in something as critical as Intel's RNG
+implementation would be a big motivation for some research group.  The
+fact that hasn't occurred would seem to suggest that the RDRAND
+resource depletion we are concerned with is not adversarially
+exploitable.
+
+I suspect that the achievable socket core count cannot effectively
+overwhelm the 1022x amplification factor inherent in the design of the
+RDSEED based seeding of RDRAND.
+
+We will see if Elena can come up with what Intel engineering's
+definition of 'astronomical' is.. :-)
+
+> There's a special case with Confidential Compute VM's, since the
+> assumption is that you want to protect against even a malicious
+> hypervisor who could theoretically control all other sources of
+> timing uncertainty.  And so, yes, in that case, the only thing we
+> can do is Panic if RDRAND fails.
+
+Indeed.
+
+The bigger question, which I will respond to Elena with, is how much
+this issue calls the entire question of confidential computing into
+question.
+
+>    	    	  		     	 - Ted
+
+Have a good day, it has been a long time since you and I were standing
+around with Phil Hughes in the Galleria in Atlanta argueing about
+whether or not Active Directory was going to dominate enterprise
+computing.
+
+It does seem to have gained some significant amount of traction... :-)
+
+As always,
+Dr. Greg
+
+The Quixote Project - Flailing at the Travails of Cybersecurity
+              https://github.com/Quixote-Project
 
