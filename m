@@ -1,78 +1,79 @@
-Return-Path: <linux-kernel+bounces-47621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7B70845054
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:35:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45F3584505D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:38:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 791881F26DDB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:35:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED9891F2714A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:38:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 063853A8C5;
-	Thu,  1 Feb 2024 04:35:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66D813BB3C;
+	Thu,  1 Feb 2024 04:37:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="boE2QDee"
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="MROG4QYT"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F146E3BB21;
-	Thu,  1 Feb 2024 04:34:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F57C1E49E;
+	Thu,  1 Feb 2024 04:37:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706762100; cv=none; b=AzjIeEHcd8TcROxhQnNo1LDSPHwEwHXsN3olIFJE7hMTgZII7ZYDLpeDRd0Ze5sRrgKAolIoYXmsH+Z96wE7syA5G8pXdxves0HoQoLunE76VrNQB9PksPo51rTfH/qRREXieejP2+cj848kN8prI7NqC65yqtyZVv3rcS2wFaE=
+	t=1706762273; cv=none; b=W+tyZWc7GV9oDH79BapE/Y/RiNq6hUHlGpFL990p7JKjx7s4sZmDQCqD4fB/EUObviSmCTRGak77W6rvwuRl4Syi0fXAEKYwlFoogjXaV0GRM93Ur6S+lMqZiaIvbbowOPaKCKt/uNWAQzsBZjpFGeIToNnLm/oKyx1gRWOpOVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706762100; c=relaxed/simple;
-	bh=f0+PHC5vQ+d+yRWTRhJb+Zv1Y2yEfAkTMwZRktMNHl4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=LZ3UCHPriSmJGn1hQhT+tPh0lrKzGbFVov2YRWu5GSBlvsrkyaDweAcbWVsem7UWIr8A4bmLZCnTXcz2np389w0L10iSqGpWfu6D2ki/lYBq2n7KjPPvtRr85DKwKXnV7VagWHHRg7GscZC4GnkVwDogZrbgbTtlTH5CTvbSBy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=boE2QDee; arc=none smtp.client-ip=203.29.241.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
-Received: from [192.168.68.112] (ppp14-2-76-194.adl-apt-pir-bras31.tpg.internode.on.net [14.2.76.194])
-	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 5DAA5200EF;
-	Thu,  1 Feb 2024 12:34:56 +0800 (AWST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=codeconstruct.com.au; s=2022a; t=1706762097;
-	bh=f0+PHC5vQ+d+yRWTRhJb+Zv1Y2yEfAkTMwZRktMNHl4=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=boE2QDeenJQGBeNM/djbPIc7oxi/VpV12agk8TH4SJW6/SdAJjVhuhchuP39kEfFO
-	 QIBh8GHO3UPdBZ7KL6h/zlr8Qj8v4nprduajw50G+4AJnhRdQlQ7qYOCwdRaWcNdet
-	 i/apIKYNFHvzuCIWEj2R80ZaJ5qvRI1FeWj/uT/kxrdwv2//FHDxxlXzVNooomtzj9
-	 DS/Czd6u1DcpGkiZ5cb2+7cByNZl4T/4LyvYcUr7X1LMAeHC5BRrsjVVMwNTb+9cAz
-	 X6pjbXRh5HE2VpyDTqJh2bamY3q0lgXhiigpzGykQC7K/96QiDYGPAofuod33zIWQS
-	 Hge56An/KqT1g==
-Message-ID: <0456fec7512d01ce143d06e21a96c208b0e31cdf.camel@codeconstruct.com.au>
-Subject: Re: [PATCH v5 10/21] ARM: dts: aspeed: yosemite4: Add power sensor
- for power module reading
-From: Andrew Jeffery <andrew@codeconstruct.com.au>
-To: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>, patrick@stwcx.xyz, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Joel Stanley <joel@jms.id.au>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date: Thu, 01 Feb 2024 15:04:55 +1030
-In-Reply-To: <20240131084134.328307-11-Delphine_CC_Chiu@wiwynn.com>
-References: <20240131084134.328307-1-Delphine_CC_Chiu@wiwynn.com>
-	 <20240131084134.328307-11-Delphine_CC_Chiu@wiwynn.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1706762273; c=relaxed/simple;
+	bh=ARRYNneIEyXEDaxYz6fwEt7fJdvAk9Doy/74t5Afyos=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IbMqZESXCcu6wkTI4iEoQGU0z3tk7wDyfchaqizUWkwg0Fc0I2nGcICTmbe1idQ2kWnS5XFYKYbrEPKkgCkwyZrgEiUvojzCYhXL8AV7poiXMYjTAWiYq3WatniZ2waQPn8Mo3gtv3jP2ZJtkXWdgfetxn75i94Gr+3pdjMioLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=MROG4QYT; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=ARRYNneIEyXEDaxYz6fwEt7fJdvAk9Doy/74t5Afyos=; b=MROG4QYTNG5JZFB8NEnuVPeI8Z
+	TNtyPTdK9S7Vr8CYnd88Mg7jPKXLciOp7l0RuZIfOwEqVRofZBfPZKwEzLMm92AMP1ankMW3F7Hqz
+	SBmAULRZXzU61nFgfZWuqhavU2NZJ/C7hRvsF6X0bLP7BHeuQ2s3KOjArU7bPcjrSdKzAzrwhelAM
+	JDzLU2nxPK3vt+/kmhwR+AcdWMVfXN0LnWscd9tTfmJPsB1lsv/9MoS6pyAbUUdEahZIgGzFtBHVZ
+	+QhYPxUSddEuZmYAlo+/nTuwFsjvNyOTmPmyeBzyaWLFewDR4tx5y0sKVcinRTDNuBiLZ6+wGSErB
+	bG8+3lww==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rVOpV-0000000ErgJ-30iy;
+	Thu, 01 Feb 2024 04:37:37 +0000
+Date: Thu, 1 Feb 2024 04:37:37 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jens Axboe <axboe@kernel.dk>, Yu Zhao <yuzhao@google.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Niklas Cassel <niklas.cassel@wdc.com>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
+	Hannes Reinecke <hare@suse.de>,
+	Linus Walleij <linus.walleij@linaro.org>, linux-mm@kvack.org,
+	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, steve.kang@unisoc.com
+Subject: Re: [PATCHv6 1/1] block: introduce content activity based ioprio
+Message-ID: <ZbsgEb9PY4b-LRr4@casper.infradead.org>
+References: <20240131105912.3849767-1-zhaoyang.huang@unisoc.com>
+ <ZbpJqYvkoGM7fvbC@casper.infradead.org>
+ <CAGWkznGLt-T1S7_BM8-2eLhxVYktYYLmdfMbRKRK88Ami-mEdg@mail.gmail.com>
+ <CAGWkznEv=A1AOe=xGWvNnaUq2eAfrHy2TQFyScNyu9rqQ+Q6xA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGWkznEv=A1AOe=xGWvNnaUq2eAfrHy2TQFyScNyu9rqQ+Q6xA@mail.gmail.com>
 
-On Wed, 2024-01-31 at 16:41 +0800, Delphine CC Chiu wrote:
-> Add power sensor for power module reading
+On Thu, Feb 01, 2024 at 12:05:23PM +0800, Zhaoyang Huang wrote:
+> OR could I restrict the change by judging bio_op as below
 
-It would be nice if we had a bit more of a description about e.g. what
-they're monitoring.
-
-Andrew
-
+bio_set_active_prio() like I said last time you posted a patch set.
 
