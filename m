@@ -1,104 +1,93 @@
-Return-Path: <linux-kernel+bounces-47432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82F0E844DD7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:29:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40014844DD9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:30:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BE66291DDB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:29:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F202F290605
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:30:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF2EA35;
-	Thu,  1 Feb 2024 00:29:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CB2723D2;
+	Thu,  1 Feb 2024 00:30:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YX9cNd5n"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DqvHczmP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7EFBA47;
-	Thu,  1 Feb 2024 00:29:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4578C2107;
+	Thu,  1 Feb 2024 00:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706747366; cv=none; b=WSigBhITFNVHdBumvykh3mcaZuLFViq3ZWIT3OXIDcP04pyglqO82is9FkVmUGORmpzsGPrNxeN59DzbGxP6P887Oy8iUQAEFtZlH8BC3nKAEqQTIv3CYabD4oW3jdYjcgHJCYzpBQ+mG0wcTztX8gicE8LS2ldUyNeVGqnMjaE=
+	t=1706747430; cv=none; b=PCDlS56HTnpSpfDifQuuCW3yTjf3SE0nEHjKw01rZHiU5/ouZSguXQaJQnUxctcvr7ulu5d6Oecq/MHAoh7E6SVkQWb9S9+nAhnzRFNjw8CAA14yE5RJo4/ywMMwV+wJestv9vdQ+UzHP1qlaU6D6PuyT9jpBIr9NEkp084Qna4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706747366; c=relaxed/simple;
-	bh=Y/SrHT/IyBbLZFRWROvBqEmc7qg87vDdOcmhfxplfE8=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=a2dfrzlat4rbVL/gxot3B93L2p0/u9LWY0IjNHrb7YnQfEuTOukaFCfsFzSQ/Tzq5Y6KK342YTDJSy/6ZO6+/XleOIyECe483fz/MlOfONE+TKVyUlOmM9uEhBWrXJ5EchrHw6Q/xR6EM0fxNHRv1h6S+etflV1l6Y4JcahcpX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YX9cNd5n; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D906C433F1;
-	Thu,  1 Feb 2024 00:29:25 +0000 (UTC)
+	s=arc-20240116; t=1706747430; c=relaxed/simple;
+	bh=s9Lc3xCZcWT6Gc/qFKin3FTGgWgE4VISCyf253K8LYQ=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=jteKlErdkbmkXaEixl/zbTGYgvKFB7TAlj63PdZ20/87V593D2IBjm9+86WuMU9HJ7wgoF92glfk7Y7HGhW7nFcaBb8Kak2htBzZ09w7YQVUOHG8G+L3dVfP21XNURpRtnynW37EJgWA1II2cuLngbOUp8NIssc6n0iTbDh2eTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DqvHczmP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BF446C43390;
+	Thu,  1 Feb 2024 00:30:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706747365;
-	bh=Y/SrHT/IyBbLZFRWROvBqEmc7qg87vDdOcmhfxplfE8=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=YX9cNd5nsMu9TKfXiOzz4km4HlJuBMQkso0yYJqeOGjjo8AhRRItDvOZF9mn52vrQ
-	 1EPfCyzhjMubROS/tB2ZSzBAHtsoMiKtGGQ3cfa7G9MS2OB6xp+xEoQ4Dp60+z7qh3
-	 M5goLKHRg/M+KyuCIQlfVI0LLmeH06NT5aquJ1kGvZ5f6MvPZGhNAId0PEC/Vr4qNM
-	 if5n/GrUki0BLZr5mBhQo+bw2AdCs2HrrwL4mlKohg39g2t85OWG7Aos6/akbggN/j
-	 Oh5t2/IwqFTkT3a+FvJnx30OMW4pzElvuc3JkpNUnpTaI4rrYga8eIfNTv7bDTf5E5
-	 iCnoUK0OU9QCA==
-Date: Wed, 31 Jan 2024 18:29:24 -0600
+	s=k20201202; t=1706747429;
+	bh=s9Lc3xCZcWT6Gc/qFKin3FTGgWgE4VISCyf253K8LYQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=DqvHczmPrRqbedC76fEBYyvHSzsrw/m2EKqJdMWzfsF/hdE/UZ2jsZfWjEg4PwyVZ
+	 yc2IVhtSavp+q2HLIE6/cq8YUakFq9EVDImRxfVuQtRCUyTQocyUKaxp2qdP+gJFuL
+	 EmzOSKbphRiOkhR1oVup74CX8sTcCSKfFOawxX4EAvZ4qTcFX3IgDQdfHfInXy9xGb
+	 IrJfLTqdW5wXyy7tpa2aD/o0LhmqvM4IxOe9O/dvr1pd3fkQ2Cbd73r2AapA0YSRV2
+	 kMtYyAleWoj2LpfGabuQ+WXrLERHZqkAB5+P67GTGOGnm4DIWv5KMpFw2Su/YGA+AL
+	 sJ+7qC7pJ5bIA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A347CD8C96C;
+	Thu,  1 Feb 2024 00:30:29 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Brandon Brnich <b-brnich@ti.com>
-Cc: linux-media@vger.kernel.org, devicetree@vger.kernel.org, 
- Darren Etheridge <detheridge@ti.com>, Nas Chung <nas.chung@chipsnmedia.com>, 
- Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Jackson Lee <jackson.lee@chipsnmedia.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>, linux-kernel@vger.kernel.org
-In-Reply-To: <20240131234008.2108672-1-b-brnich@ti.com>
-References: <20240131234008.2108672-1-b-brnich@ti.com>
-Message-Id: <170674736344.2987842.3265742697245667442.robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: media: Add sram-size Property for Wave5
+Content-Transfer-Encoding: 8bit
+Subject: Re: [net-next v5 0/2] Prevent nullptr exceptions in ISR
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170674742966.15954.14353747489471422118.git-patchwork-notify@kernel.org>
+Date: Thu, 01 Feb 2024 00:30:29 +0000
+References: <20240129135734.18975-1-andre.werner@systec-electronic.com>
+In-Reply-To: <20240129135734.18975-1-andre.werner@systec-electronic.com>
+To: Andre Werner <andre.werner@systec-electronic.com>
+Cc: andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ linux@armlinux.org.uk, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
+Hello:
 
-On Wed, 31 Jan 2024 17:40:08 -0600, Brandon Brnich wrote:
-> Wave521c has capability to use SRAM carveout to store reference data with
-> purpose of reducing memory bandwidth. To properly use this pool, the driver
-> expects to have an sram and sram-size node. Without sram-size node, driver
-> will default value to zero, making sram node irrelevant.
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Mon, 29 Jan 2024 14:55:03 +0100 you wrote:
+> In case phydev->irq is modified unconditionally to a valid IRQ, handling
+> the IRQ may lead to a nullptr exception if no interrupt handler is
+> registered to the phy driver. phy_interrupt calls a
+> phy_device->handle_interrupt unconditionally. And interrupts are enabled
+> in phy_connect_direct if phydev->irq is not equal to PHY_POLL or
+> PHY_MAC_INTERRUPT, so it does not check for a phy driver providing an ISR.
 > 
-> Signed-off-by: Brandon Brnich <b-brnich@ti.com>
-> ---
->  Documentation/devicetree/bindings/media/cnm,wave521c.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
+> [...]
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Here is the summary with links:
+  - [net-next,v5,1/2] net: phy: phy_device: Prevent nullptr exceptions on ISR
+    https://git.kernel.org/netdev/net-next/c/61c81872815f
+  - [net-next,v5,2/2] net: phy: adin1100: Add interrupt support for link change
+    https://git.kernel.org/netdev/net-next/c/08b47dfdd6b8
 
-yamllint warnings/errors:
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/media/cnm,wave521c.yaml: sram-size: missing type definition
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240131234008.2108672-1-b-brnich@ti.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
 
 
