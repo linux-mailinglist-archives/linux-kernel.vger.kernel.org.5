@@ -1,114 +1,157 @@
-Return-Path: <linux-kernel+bounces-48941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25B9F84636D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:26:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2292584636F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:29:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AACB228B828
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:26:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DD5B28C1D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:29:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44DDD3FE4E;
-	Thu,  1 Feb 2024 22:26:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86CBB3FE48;
+	Thu,  1 Feb 2024 22:29:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Y2sUzDTq"
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wErVjros"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE6AB3FB38
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 22:26:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 235EC3FB34
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 22:29:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706826389; cv=none; b=pcnpmBupq6+xHReXqYgUwBcjTdPlbcF0ejGjoyT9JLkHX1aLx2PlCnI2OFcEVc6wO0RoHDLDWICguIARm1qFV6zzC7SJ6Fhb3jKGJ+8GQUU1cSlX1dWHvnQIHQg5c8nfBoofq5tiuKdGE23umRoS8f20+BiYVwAZfu8Qj/2CO00=
+	t=1706826579; cv=none; b=b2zMDL/LRUbpkacuOZHO/InkMsBcJBgW/Oqqs4xiSsbhTj/n1Gv8DoSduxgdqrl7OTqDghqotyZBt38pxHRqeY7NL43qZwp2Kihnizzta5Sc049kSq3Au/yOBEjI5tB1PJHNR7e9wIgV4g05yq7SZwgPRqNP6oQXAdpvHlpStoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706826389; c=relaxed/simple;
-	bh=g1niz+9BFP8nJJvQSZtstaXWeqGreuVXwyIK+21IaXQ=;
+	s=arc-20240116; t=1706826579; c=relaxed/simple;
+	bh=dEloljQr9NL2fQj+p5tojv6uWV6NH/+lSQT7Nh2TvXc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WThh3fuGrpJHMrclQ5y6H4a7VNdOrZ8y/gb0XZy9xZcV3hcXJkpKp5AQZKskYrkweEd6/OhGIEAcfQCUPs2dIRJsjcf1tMR0udLhC4332NlTjRZJRxP3bduvOW1KvdcklvHm8DNDv0LRBYR15DsOkXIQCLPpLE5D1BXaQP5m4XI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Y2sUzDTq; arc=none smtp.client-ip=209.85.217.44
+	 To:Cc:Content-Type; b=rIRQboZYupUvdAgA94FO+dJDqRh1XxIPhC9qegnc8IaT3LCfGf1Aauc3q6ZqZx66QKMFp6COD6mDkizJ5gxbHa2q/AuLRTMGEWE+BXwpNTQco5k3QXgVS819vn7MvbhUxVeh1HKVPzk6/M12uRuiNtOOSWMirBiFjOLczf473w8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wErVjros; arc=none smtp.client-ip=209.85.208.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-46b165745deso628704137.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 14:26:27 -0800 (PST)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55f19a3ca7aso5018020a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 14:29:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706826387; x=1707431187; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706826576; x=1707431376; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=g1niz+9BFP8nJJvQSZtstaXWeqGreuVXwyIK+21IaXQ=;
-        b=Y2sUzDTqMNuq2LzRYMJ2GlU9BO6W+f/1pmQLHYXUfbCvU7tgwRHhY9fPU9PS4ZiRR8
-         Cd0z4e4zrmZ//iqvBng9HRHRqgrN2atants60IeG+KzI85kYnfLPNcehqSB5ZwX2CbN7
-         Q15Nt+B2z878uj+vMtVJppo5mqdtoUCfADGQRqHyO1UVsXncSOHHGnL2LB/iTRl9ZbRP
-         yiGdXnCiJqwvkFGQF5QqdWGlQlkChh/rJr8rwK7X2EHvu7YUEGhoOWYYXOuko2jQiFUK
-         Rk1u5IbEDkWq8vLsWnvlEkOkVPmfvwBaJcKprAAkUKWCYrOQSRcVAUN7BTpK3OyaeuW+
-         EL6w==
+        bh=fGDKw/IQ4kdSzFRMSnxN+nzueWWpVC66gEX7pOJuy80=;
+        b=wErVjrosp7/KZjmtztomcDUfTaTxvv8l1rNd27ZFmiJEvYwUHgH3Dhgmg6JAmw1g77
+         2uTRMUjNzK0gN6IpdQQj5QMUnOB/T4VfwHK3KNgJyutITIWpIRUoX7XBN71UCGr4yyTD
+         6eEwLJHVKXXK8pB+X/smglsF2e2pjlh8vXSHAScL7RWqyVR6Qd63OQF5cNF13hC7zdu0
+         sbMUuNUcdw0/5Fq+HGZCqxBS8eZj7f//t0it0Aomp5OQZ6NjVYlrIsYIxg2ceMmAKE2Q
+         5whWy0edpnFCEt/MmSC40HRqZvC8G5s5KlT9YHL2d+oQ9m8L3Mg7mpvSZuQTie7LjAP1
+         qsLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706826387; x=1707431187;
+        d=1e100.net; s=20230601; t=1706826576; x=1707431376;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=g1niz+9BFP8nJJvQSZtstaXWeqGreuVXwyIK+21IaXQ=;
-        b=YzdDn2EVjLJi7gaS4tyyL3x5c4oxRnXLgJZ80x/uBgPUg1QeakR9yW3oyLQEGuJQdR
-         bZEXGGkkipnoILT3KUFOSsUt5dXxYUbuwJsW5HTuPrMNcwNKBg814qpK7ytn+1rqb/dx
-         /IaqP7J+6qIi1xb7Pwm0xC8S8B6fmpHozIU5RzvM7iqx0zhvFg3yHhov9K+wKmWoCu2z
-         GfyYADpPIN/8thPQa4Afnl5Am4fmtuWwdng3gzhmGPOy9zFaW1N6DW0uhT4HV24DJA5S
-         BElvJBhGaqOtLg3ZjtSveCzwohsMP8MTvoDRDpsAniWPolVPL3fghrVV1KPt5zdR6+pl
-         MrVg==
-X-Gm-Message-State: AOJu0Yxg1VnTv0l8YESJH6sIwafco0qdkP3G0cvjbxN/HptIj1M5nVHD
-	kUJA+ET3qOnNEKwQ06IpXYyKEs8HmKTSVjOvPomoMljUsy2sJgxaR771I2fDpd7IhoZ6M5n8NbF
-	aRfgansQmX4hf/wzZS8IzHdLqCKF4VpqfTgGZ
-X-Google-Smtp-Source: AGHT+IFCuKF6QiU+ny6kuZUF3GaDPIhQfm+qSFreoCq2anMqN2UYkMUcoGIgF+ZV3z+Yz9/V09IBhzG82IgRKFYsfqw=
-X-Received: by 2002:a05:6102:806:b0:46a:fd91:c15b with SMTP id
- g6-20020a056102080600b0046afd91c15bmr339945vsb.13.1706826386679; Thu, 01 Feb
- 2024 14:26:26 -0800 (PST)
+        bh=fGDKw/IQ4kdSzFRMSnxN+nzueWWpVC66gEX7pOJuy80=;
+        b=tqUzYSBy7zpt7ElTi0ghvXUPTsiReFMt1DKeQxfxBKXKVqgkt6/jthM3wQvFAVo2ws
+         nYLc3oT5dQQMb+dEiYa7uFfdWo87N6EFrklNcOiuPcKbB8oQYTgSaKemtsytJwmfjgfc
+         JHSkLu/r3J0jSCPFSXnjbvkdqs/jXx7H5jl1Eg0ClZUs0D1LUiptz1OVBlQnpIdlVS+x
+         BIZ/yUg9RXuuhzsAB/IcLXtTCoiJxsJHMx/q+soxZlqhy1SUy8jojdZ6LL5ipslj128p
+         9sWXH+AGIEQzEIFpRbKCP0KMi5VEKVEOFql878QcR5FmDlg+WPCnPGp2a2mT5gThi3Ub
+         eutQ==
+X-Gm-Message-State: AOJu0Yxd9/11aBub3xQw2iVBwdAJj5HVGQou+wSxqmcqLIOPeL67dI/8
+	3Dqw1777hfRPui8IgPCXJRQ7hGf7qQ0ViH3tRR3rqDscoOfT+6tNGQx8BmQaI/iPUrnG+P/ucsS
+	XGR1DRUCb0vQOfZl5hdU+zKbIK1D8dMnaFBqJ
+X-Google-Smtp-Source: AGHT+IEuhiZvixWFGymGW7m4qj1dTBRZUXAhAcduL9snVjgqkWJ4xtPr92++LvjpCa9nwtPiSV2wXnbN3Xjfiu/tP6M=
+X-Received: by 2002:a17:906:43:b0:a36:c8fa:45a2 with SMTP id
+ 3-20020a170906004300b00a36c8fa45a2mr320163ejg.1.1706826576073; Thu, 01 Feb
+ 2024 14:29:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240128-fix-clang-warnings-v1-0-1d946013a421@chromium.org>
- <20240128-fix-clang-warnings-v1-3-1d946013a421@chromium.org> <20240201221654.GC2240065@dev-arch.thelio-3990X>
-In-Reply-To: <20240201221654.GC2240065@dev-arch.thelio-3990X>
-From: Sami Tolvanen <samitolvanen@google.com>
-Date: Thu, 1 Feb 2024 22:25:48 +0000
-Message-ID: <CABCJKudd3SUy3Qor7Tc0zyJsSAWy0PavbbBFALuWEpBa32pBCQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] media: mediatek: vcodedc: Fix Wcast-function-type-strict
- warnings
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Ricardo Ribalda <ribalda@chromium.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Mike Isely <isely@pobox.com>, 
-	Tiffany Lin <tiffany.lin@mediatek.com>, Andrew-CT Chen <andrew-ct.chen@mediatek.com>, 
-	Yunfei Dong <yunfei.dong@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, linux-media@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20240201193014.2785570-1-tatashin@google.com>
+In-Reply-To: <20240201193014.2785570-1-tatashin@google.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Thu, 1 Feb 2024 14:28:58 -0800
+Message-ID: <CAJD7tkbDwwzTfm5h6v5f8XSN8KduBy6h7EVuQt0CAfX--Nb0gQ@mail.gmail.com>
+Subject: Re: [PATCH] iommu/iova: use named kmem_cache for iova magazines
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: robin.murphy@arm.com, joro@8bytes.org, will@kernel.org, 
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	rientjes@google.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 1, 2024 at 10:17=E2=80=AFPM Nathan Chancellor <nathan@kernel.or=
-g> wrote:
+On Thu, Feb 1, 2024 at 11:30=E2=80=AFAM Pasha Tatashin
+<pasha.tatashin@soleen.com> wrote:
 >
-> On Sun, Jan 28, 2024 at 02:12:22AM +0000, Ricardo Ribalda wrote:
-> > Building with LLVM=3D1 throws the following warning:
-> > drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c:38:32=
-: warning: cast from 'mtk_vcodec_ipi_handler' (aka 'void (*)(void *, unsign=
-ed int, void *)') to 'ipi_handler_t' (aka 'void (*)(const void *, unsigned =
-int, void *)') converts to incompatible function type [-Wcast-function-type=
--strict]
-> >
-> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> From: Pasha Tatashin <pasha.tatashin@soleen.com>
 >
-> I am not positive because I don't have any hardware to test this driver
-> but I suspect this patch is just hiding the warning without actually
-> addressing the issue that it is pointing out.
+> The magazine buffers can take gigabytes of kmem memory, dominating all
+> other allocations. For observability prurpose create named slab cache so
+> the iova magazine memory overhead can be clearly observed.
+>
+> With this change:
+>
+> > slabtop -o | head
+>  Active / Total Objects (% used)    : 869731 / 952904 (91.3%)
+>  Active / Total Slabs (% used)      : 103411 / 103974 (99.5%)
+>  Active / Total Caches (% used)     : 135 / 211 (64.0%)
+>  Active / Total Size (% used)       : 395389.68K / 411430.20K (96.1%)
+>  Minimum / Average / Maximum Object : 0.02K / 0.43K / 8.00K
+>
+> OBJS ACTIVE  USE OBJ SIZE  SLABS OBJ/SLAB CACHE SIZE NAME
+> 244412 244239 99%    1.00K  61103       4    244412K iommu_iova_magazine
+>  91636  88343 96%    0.03K    739     124      2956K kmalloc-32
+>  75744  74844 98%    0.12K   2367      32      9468K kernfs_node_cache
+>
+> On this machine it is now clear that magazine use 242M of kmem memory.
+>
+> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+> ---
+>  drivers/iommu/iova.c | 57 +++++++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 54 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+> index d30e453d0fb4..617bbc2b79f5 100644
+> --- a/drivers/iommu/iova.c
+> +++ b/drivers/iommu/iova.c
+> @@ -630,6 +630,10 @@ EXPORT_SYMBOL_GPL(reserve_iova);
+>
+>  #define IOVA_DEPOT_DELAY msecs_to_jiffies(100)
+>
+> +static struct kmem_cache *iova_magazine_cache;
+> +static unsigned int iova_magazine_cache_users;
+> +static DEFINE_MUTEX(iova_magazine_cache_mutex);
+> +
+>  struct iova_magazine {
+>         union {
+>                 unsigned long size;
+> @@ -654,11 +658,51 @@ struct iova_rcache {
+>         struct delayed_work work;
+>  };
+>
+> +static int iova_magazine_cache_init(void)
+> +{
+> +       int ret =3D 0;
+> +
+> +       mutex_lock(&iova_magazine_cache_mutex);
+> +
+> +       iova_magazine_cache_users++;
+> +       if (iova_magazine_cache_users > 1)
+> +               goto out_unlock;
+> +
+> +       iova_magazine_cache =3D kmem_cache_create("iommu_iova_magazine",
+> +                                               sizeof(struct iova_magazi=
+ne),
+> +                                               0, SLAB_HWCACHE_ALIGN, NU=
+LL);
 
-Agreed, this won't fix the issue. The correct solution is to drop the
-cast and change the handler type to match the pointer type (i.e. use
-const void* for the first argument).
+Could this slab cache be merged with a compatible one in the slab
+code? If this happens, do we still get a separate entry in
+/proc/slabinfo?
 
-Sami
+It may be useful to use SLAB_NO_MERGE if the purpose is to
+specifically have observability into this slab cache, but the comments
+above the flag make me think I may be misunderstanding it.
 
