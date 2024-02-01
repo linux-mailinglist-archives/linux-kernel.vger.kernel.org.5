@@ -1,93 +1,131 @@
-Return-Path: <linux-kernel+bounces-47916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CF2B845496
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:56:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 905848454AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:59:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 207901F2B304
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:56:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DB7B286CA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:59:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 829E84DA09;
-	Thu,  1 Feb 2024 09:55:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF2715A4A1;
+	Thu,  1 Feb 2024 09:59:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="udU+noJs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="YCiSTW1Y"
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA07B4D9F1;
-	Thu,  1 Feb 2024 09:55:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF41B15A498
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 09:59:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706781350; cv=none; b=aW4IJoTqVhJ9XdOPSanFGcj/l0kKX97al8zM6KiWRnH+rRoKBzh+mgb5sn96eZFeq5FGuUpjkqez7OdPYZlA5arIAAI+TzuCAns3s/EwRs4KsuTt3uGvT5h3iiRTZXQYQCvv0Roc6MimaTtg0W/YmzCcaiWnw0jTA5xZ7XIiNM0=
+	t=1706781552; cv=none; b=dl6azFOFVIGFBg85aYo2Ye6msMJH1tQ97xCeqTuqBr6dBPco3a7+uk5lsnRxI5hVzjRXZFM7KIuaR81yJOYP9A4Z7tCfRgLLTKQkv3WFMF1YZXik7AtUBhnBhbDgrUZBmSu7at8ytPZLA+R+UX+JCjmfie6ru6GLupn4jmV5DOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706781350; c=relaxed/simple;
-	bh=vJ1BkR2GfCGMDVdnAPNTubCrwkh1sWpvq2C/V4sxRlw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ftDsPLa7x1iaAVBCKqoOGyHGoDZlfa0Xaq0cq0Flvvn4VTOc4ghHwhPeYztN7Sa/ZZpf8nSAl3ND56Com3PnuM3RFBNQ8maJnKexYCUN2LjdNlWlgRRagNYfO9l12PRYwbC2RmRa7Bttoi8uAmQHL9gSfh2PSMoWaPrDTPjcuwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=udU+noJs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AD99C43394;
-	Thu,  1 Feb 2024 09:55:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706781350;
-	bh=vJ1BkR2GfCGMDVdnAPNTubCrwkh1sWpvq2C/V4sxRlw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=udU+noJs3w5E5ck/mdeMWLhTqvrzTumyFgYCEg16WRSyWn0uAvjMDBnR+Cf2YT19f
-	 Oky6gZw+fSKadzmpuH2b704oVqsnIkl+eGZVYWkw9gz4CZZhe8aEU4Ozo6a2uK5XEI
-	 +5FyIOFhEyX3BKdfkHi9FiQwWdstJCtJ5dCD76mYcl63T+Jq7rK53AlYEqQGKhGOn2
-	 4q3ScG3RDRZHOIg8isVdYgToSQMSTyiafCADkCrm9Pk5/NuvZrg2VNNtBA6DyZin28
-	 u7ZOsNX5BTN/QidK6xJ4VVS91u/naiOUjvw7FTexORi8n3cFkAst70UZhAkiQyZJW+
-	 qOBQpuhQ4X1wg==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rVTnT-0000000069s-1XJ5;
-	Thu, 01 Feb 2024 10:55:52 +0100
-Date: Thu, 1 Feb 2024 10:55:51 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Doug Anderson <dianders@chromium.org>
-Cc: Johan Hovold <johan+linaro@kernel.org>, Jiri Kosina <jikos@kernel.org>,
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] HID: i2c-hid-of: fix NULL-deref on failed power up
-Message-ID: <Zbtqp1wgHI0LSSaE@hovoldconsulting.com>
-References: <20240126170901.893-1-johan+linaro@kernel.org>
- <CAD=FV=UzGcneoL1d-DDXVugAeq2+YLCKrq8-5B7TfVAAKgF=SQ@mail.gmail.com>
+	s=arc-20240116; t=1706781552; c=relaxed/simple;
+	bh=0Py4q+pTOmqEv1tbTXSx6iTRN0wAURlDATZNMO9qr/Y=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LUTtHTDsb+sroNKz6PCoQwXpVLWxFeUSFgAgLddpsOSRutNk2rKnvKfyg8S7F4bYiE9C6UoxkgwouE8LnzlR5nuN0o9OoAqhThzOcKn7Rfpdl5GxiFBWWZwYyZO8dWPeZ50uryWpMrFzAKHpRqnE+Cghpn+6yTRn19JIk2CCUPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=YCiSTW1Y; arc=none smtp.client-ip=60.244.123.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 853e8c8ec0e811ee9e680517dc993faa-20240201
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=IV7dhqul9WvXyKJ2ZoYl348suTPEjJTKUrzYhGujRks=;
+	b=YCiSTW1YR5WgUfsccaksI0OH8Bg4smHLY1RBb3EkzQVTX+CrdDB7eyIUsXUCfXwibT2/YyXM/zMMUL5UdsCvOT6xcaN5PpYdNHS/vWGv4jEAWIvy+64lWrBJfUZFRyy9h5+cvo/FBi5V0Y8Wz9KIG11casO10Qwvf1ONKgAgpu4=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.36,REQID:a80a9e6f-1e5a-4ff2-8fec-d4d2eef05944,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6e16cf4,CLOUDID:f192e88e-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 853e8c8ec0e811ee9e680517dc993faa-20240201
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
+	(envelope-from <flash.liu@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 763909255; Thu, 01 Feb 2024 17:58:59 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 1 Feb 2024 17:58:57 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Thu, 1 Feb 2024 17:58:57 +0800
+From: Pin-Chuan Liu <flash.liu@mediatek.com>
+To: Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi
+	<cristian.marussi@arm.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+CC: <wsd_upstream@mediatek.com>, <cylen.yao@mediatek.com>, Pin-Chuan Liu
+	<flash.liu@mediatek.com>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v2] firmware: arm_scmi: Avoid to call mbox_client_txdone on txdone_irq mode
+Date: Thu, 1 Feb 2024 17:57:52 +0800
+Message-ID: <20240201095754.25374-1-flash.liu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=UzGcneoL1d-DDXVugAeq2+YLCKrq8-5B7TfVAAKgF=SQ@mail.gmail.com>
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--2.422700-8.000000
+X-TMASE-MatchedRID: wpfAD6xEq/V3VjVXh/TSj0+4wmL9kCTxsEf8CpnIYtnz+Z+5iD+iRb87
+	jWxVKGOh6lVWmieuZwnS1Xndr/786uHxFb2pjr4bsyNb+yeIRApCX8V1FiRRkt9RlPzeVuQQost
+	SmZzTxtqmuE8sHNH+0VdTP5dw4GERGN63p9ap1YqTEgTE0DYkgNJ178I1tpklvQmfz7H+YLGjxY
+	yRBa/qJcFwgTvxipFa9xS3mVzWUuCMx6OO8+QGvvp6VplSc3s0tpvpvul44/cJ0fmqU3YzVcLTD
+	yr2YnVuSsYg+5kG385nseWfOBeyocaMMthp5d9Dfe0egsLORU77IUwzFKThe3mVKZusLp922v9O
+	jYWA2uMMswg45VMfPadst5iAforfVlxr1FJij9s=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--2.422700-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 35B1F35528FCD59015ED3E5BC9AED8B5A4809366F666BAE20EA5A4EB88B2D1CE2000:8
 
-On Fri, Jan 26, 2024 at 09:47:23AM -0800, Doug Anderson wrote:
-> On Fri, Jan 26, 2024 at 9:10 AM Johan Hovold <johan+linaro@kernel.org> wrote:
+On txdone_irq mode, tx_tick is done from mbox_chan_txdone.
+Calling to mbox_client_txdone could get error message
+and return directly, add a check to avoid this.
 
-> > A while back the I2C HID implementation was split in an ACPI and OF
-> > part, but the new OF driver never initialises the client pointer which
-> > is dereferenced on power-up failures.
+Signed-off-by: Pin-Chuan Liu <flash.liu@mediatek.com>
+---
+V1 -> V2:
+ - Remove Change-Id
+ - Use single line comment
+ 
+ drivers/firmware/arm_scmi/mailbox.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-> Good catch and thanks for the fix. FWIW, I'd be OK w/
-> 
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> 
-> That being said, I'd be even happier if you simply removed the
-> "client" from the structure and removed the error printout.
-> regulator_bulk_enable() already prints error messages when a failure
-> happens and thus the error printout is redundant and wastes space.
+diff --git a/drivers/firmware/arm_scmi/mailbox.c b/drivers/firmware/arm_scmi/mailbox.c
+index b8d470417e8f..d391463e3208 100644
+--- a/drivers/firmware/arm_scmi/mailbox.c
++++ b/drivers/firmware/arm_scmi/mailbox.c
+@@ -8,6 +8,7 @@
+ 
+ #include <linux/err.h>
+ #include <linux/device.h>
++#include <linux/mailbox_controller.h>
+ #include <linux/mailbox_client.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+@@ -275,7 +276,10 @@ static void mailbox_mark_txdone(struct scmi_chan_info *cinfo, int ret,
+ 	 * Unfortunately, we have to kick the mailbox framework after we have
+ 	 * received our message.
+ 	 */
+-	mbox_client_txdone(smbox->chan, ret);
++
++	/* With txdone_irq mode, kick can be done by mbox_chan_txdone */
++	if (!(smbox->chan->mbox->txdone_irq))
++		mbox_client_txdone(smbox->chan, ret);
+ }
+ 
+ static void mailbox_fetch_response(struct scmi_chan_info *cinfo,
+-- 
+2.18.0
 
-True, but that error message does not include the device that tried to
-use the regulator.
-
-I actually hit this when adding dev_dbg() to the function in question.
-For such cases, it's also convenient to have struct device easily
-accessible so I think it should be ok to just leave this pointer in.
-
-Johan
 
