@@ -1,119 +1,118 @@
-Return-Path: <linux-kernel+bounces-47970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4A9D84557B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:35:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EAF384557F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:36:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2E621F22BC2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:35:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8E3F1F21FA6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:36:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E87D3B282;
-	Thu,  1 Feb 2024 10:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 946E57BAEA;
+	Thu,  1 Feb 2024 10:36:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L6JKkdPY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ju2WgEPp"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D6F02747F;
-	Thu,  1 Feb 2024 10:35:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25160440E
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 10:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706783711; cv=none; b=nCnhCQQByXev/+8i29k/vN42l0f0vjx1wBgiFue6npndC2yLsoIf/VbO+uBzqkj8nB2+KHd/3+HYme69S9Q/F44dzFmNACBJrmnVJWtIgWaaQe9J2omPAP+CNhIZ2KYJrODYJAoDb16G/pr9dIJdx2LOKM22EWFe7fYq1amc0jw=
+	t=1706783772; cv=none; b=eVqfSMWAeWaGG9jfTFpsTiX0RCIsucYylbnsZpkrP3fXFJ55NS7oLgSIyRC2JbjqoWJUI2aGRm++Vg1ic83g/5GDUxNljcAS9PZrK+fmCnLQf1zhTaUIpAROZyL+dBj+zQn2Jp9NuQrOa0VVk+M7OVAiBdhlzEtu5p2LyFmTf1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706783711; c=relaxed/simple;
-	bh=Bb1rYm9y/hSa3JbuBT1OhhXmxnhnEzNS0Vs6wyeIOyk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I4i8p0qv1Xu+jBxBLnF/iXJqXt3wo+AG6z8orHi2+GlHndpNhvGiu8G5uUewkYPTmayBAowRhdPsgNQ4h9eE3BDoQ9qXIpgHnMpZA7AAuwuLa9MNg9UmXkGl3+bsZdgDDgYGgVWAzJMBNtT5ZYpY8raMnx1wuxszERu9pGt7QII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L6JKkdPY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5642EC43394;
-	Thu,  1 Feb 2024 10:35:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706783711;
-	bh=Bb1rYm9y/hSa3JbuBT1OhhXmxnhnEzNS0Vs6wyeIOyk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=L6JKkdPYUrZVOFe2NKrIVbNs4kvuubA0Mzz5CQHvjyen/csbYWeZR++BVNFwtT7ET
-	 HRpHqJl51i4FU3eNDoo80SfF/bzLHRRzBJubnNFbngJy06l6lr3PEYwKLm75eh6nVq
-	 6ZST4KfYGCnCpiWszKFhG8rAPlYOqwyKbIxN5Fj18VetLeVEHrOZhoxr9lmMgGfb5o
-	 UOKp5bXfZvKOCHrUmkPM7/0BMBELHQ6ia8HSqFUarT/UtmyTWVIPxkYzwd7UgHCpq0
-	 IrGx0YlJealEG+ekOryOvM+9j4ejRt7mPEHH/AORnRj8dYCRcHSqlFR8S7wCTpShqD
-	 8bNzOkdebEndg==
-Date: Thu, 1 Feb 2024 11:35:04 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: =?utf-8?B?0JLQuNGC0LDQu9C40Lkg0KHQvtC70L7QvNC+0L3QvtCy?= <solomonov.v@gmail.com>
-Cc: Daniel Drake <drake@endlessos.org>, Jian-Hong Pan <jhp@endlessos.org>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	David Box <david.e.box@linux.intel.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Nirmal Patel <nirmal.patel@linux.intel.com>,
-	Jonathan Derrick <jonathan.derrick@linux.dev>,
-	linux-ide@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux@endlessos.org
-Subject: Re: [PATCH 1/2] ata: ahci: Add force LPM policy quirk for ASUS
- B1400CEAE
-Message-ID: <Zbtz2G+OHvm/WB4b@x1-carbon>
-References: <20240130095933.14158-1-jhp@endlessos.org>
- <20240130101335.GU2543524@black.fi.intel.com>
- <CAPpJ_ef4KuZzBaMupH-iW0ricyY_9toa7A4rB2vyeaFu7ROiDA@mail.gmail.com>
- <Zbonprq/1SircQon@x1-carbon>
- <CAD8Lp47SH+xcCbZ9qdRwrk2KOHNoHUE5AMieVHoSMbVsMrdiNg@mail.gmail.com>
- <ZbrNLxHL03R66PxQ@x1-carbon>
- <CADMpKLrNmmQ3PRTsiDXWBQ6iiJ9F+93xEk6HpuuK4Ev=n-i7wA@mail.gmail.com>
+	s=arc-20240116; t=1706783772; c=relaxed/simple;
+	bh=hke+AcsGSJc4QX/LANnvQFD9/kVcMq16pY1/yHnO/B4=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=jAo2thcDFT2WHAoEUjpVibSMdZx3s3wSnsIjxvazlxA45w5yRZPx3N17okAsVWxp4NLaRNm99bmD9C5c1E89ugekbN8YLyWdfC6S0QGmdheKa0a02VnyrOSf7/sTJ7TxtFQh4qgQdlVyp+X2JvC1q9EthYl7omasxfz04YjfDa0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ju2WgEPp; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55c33773c0aso1030259a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 02:36:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706783769; x=1707388569; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O9bW5DWKZwEm3XWa3arzOrQZClJJLst9IgsA8gjEHUE=;
+        b=Ju2WgEPprqwHxfJ8/T6ilxYwgHxQQkfyipXik1MhVdQ6PlpBNpyg7RgHDftMcN7+k3
+         7xYi39Sf83Xa9H14wqxjJcRPhntg8IMTZRCTpwk3Pn9L1qvNm3ixSdi8BmS4HM6vj+Gw
+         +EH47pPBUoZEuOX4OxnED/gzSSpHZ5zyeoPU8kRryTt3ll2++au5v1jaKWneJsGILcqj
+         HqdzSea3LbxU+YFhLKOySj06HioXTzWS/6ltkgraLHYQh/rLekXXUPNJfCS1p5XQWyo7
+         VpXmMPP7RdLEVckjIerYVZ4m1BVZTwIau81Xuxo7sAL9X2exvpiUENtbWChCQaeOe5/u
+         dKoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706783769; x=1707388569;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O9bW5DWKZwEm3XWa3arzOrQZClJJLst9IgsA8gjEHUE=;
+        b=nA5Bpl4eqeV81PEKdjmHW73J+zHmxnr6VEq/ptszz6+pf2XF/Lcgi+OpMyZPFurFan
+         A5vR+usV2yPgBfXy9hZMBxAkPGMn/ivvWYRu0RlCPHUAf+y08Cr2fCEc190sGoFcqenq
+         bT/K4ODJ8TDsFcezbLf9dftUtKZsupkrFDp3Jkzr35yZfN04zCg7EprTuIL/csziBW1v
+         OQ2/RIF/QV43ArUbozgB3EvOeuBkdB0+pwEdprGJambh3dRrsWW3el4MhPuZuT82d8IM
+         Ys+10p28fwyf1GgtO6yK8pbtb4Zmv9nG25j0spMQqDA05jIm4IINuBYHy91b9CZwFoUr
+         9MIQ==
+X-Gm-Message-State: AOJu0YylxGui/YzJ+EOYRywajSgSrGgkJzQK09+0AhUgpiYHmWYDDstH
+	H0rIsz+jcWR8bZ08TH0IRnC/d2CqNbWveUNNVOu025q2l6h9kJANy0qHsxg/DZ8=
+X-Google-Smtp-Source: AGHT+IH0PEtxtdLjw0ROF0VltCVw5n5mnSK/kesalTaXz2Q0NcDj/fGcH9Qh1lX1fUcDEcV6k4E5PQ==
+X-Received: by 2002:a17:906:688d:b0:a36:72f5:af5 with SMTP id n13-20020a170906688d00b00a3672f50af5mr3475965ejr.11.1706783769344;
+        Thu, 01 Feb 2024 02:36:09 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCW1ZdWP5vVe6GXZKwGv0eleCpoPE9D5supFbviv5vsvqLias0vAsT8XvaCIlZflJRIbwZBcOD53aj1WaerF6+ZnY7O+eB/SuVidU3N6WESgXKJYJLoDMAG3yhTNOcWHubs5PUTrV+IIhmpY/3s+PTgWPEo4LS7lna7nrBKfzkPUijWD1eTG/TLfh7OkhvxW+InHmIsumoJ2LBLtKtEaL2PqAIXRdNDF7FH45YipsYTZGC71NuioEWEJn5d8Jxipg2VrCwfn/lw4KcB1SJc3bx0k/UCGgHKQQJHB483e+Fa6fJfQKO7Mgb85No4xh7omxwSa2Hnp+ZkFgi08k4n3BNBPodQfIyjgK4J+n+BjBTFhg+wf53/Ahpzkyx0Hq7lMmhQvrqkh848TAUgW7mVUWbuDzQUjSp4kcQUuspSqaBGamrt5YB5fI/SQ9GFpzA+yJlkqCn5OMSFDQrScKRZPbnrzuQQcQLxusgONa77KZOGR6381Z2WkSdgfC8OE+UyxNGjuphT3wig4pX4bTjZaDeniSkohhz0Xn8Mfku5YV7L3keHmszqgA9oFQDVIUr6dp0HBWXtqnySJxOLGjpbVS/98XJwMd4mpllSG9Et69dIwYsb2ydzk4dgq+tV2IOa3v5zeVJ2tcFWw74pR0x2lBhkSoEB67y3iU5QgU+eAlMNM1IMmgnQN+A==
+Received: from [127.0.1.1] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id hu17-20020a170907a09100b00a3603b49889sm3041749ejc.21.2024.02.01.02.36.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 02:36:08 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: peter.griffin@linaro.org, mturquette@baylibre.com, sboyd@kernel.org, 
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+ =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
+Cc: linux-kernel@vger.kernel.org, kernel-team@android.com, 
+ tudor.ambarus@linaro.org, willmcvicker@google.com, 
+ semen.protsenko@linaro.org, alim.akhtar@samsung.com, s.nawrocki@samsung.com, 
+ tomasz.figa@gmail.com, cw00.choi@samsung.com, 
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20240130093812.1746512-4-andre.draszik@linaro.org>
+References: <20240130093812.1746512-1-andre.draszik@linaro.org>
+ <20240130093812.1746512-4-andre.draszik@linaro.org>
+Subject: Re: (subset) [PATCH v2 3/6] arm64: dts: exynos: gs101: use correct
+ clocks for usi8
+Message-Id: <170678376730.179918.14593646521347774739.b4-ty@linaro.org>
+Date: Thu, 01 Feb 2024 11:36:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADMpKLrNmmQ3PRTsiDXWBQ6iiJ9F+93xEk6HpuuK4Ev=n-i7wA@mail.gmail.com>
+X-Mailer: b4 0.12.4
 
-On Thu, Feb 01, 2024 at 06:50:53AM +0300, Виталий Соломонов wrote:
-> Hello Daniel, Niklas
+
+On Tue, 30 Jan 2024 09:36:42 +0000, André Draszik wrote:
+> Wrong pclk clocks have been used in this usi8 instance here. For USI
+> and I2C, we need the ipclk and pclk, where pclk is the bus clock.
+> Without it, nothing can work.
 > 
-> I assume that both of these logs are from the same kernel binary.
-> > Does this kernel binary have the Tiger Lake LPM enablement patch included?
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/patch/?id=104ff59af73aba524e57ae0fef70121643ff270e
+> It is unclear what exactly is using USI8_USI_CLK, but it is not
+> required for the IP to be operational at this stage, while pclk is.
+> This also brings the DT in line with the clock names expected by the
+> usi and i2c drivers.
 > 
-> Yes, it's the same kernel binary with applied patch.
-> 
-> 
-> 
-> > Could you please try to set:
-> > CONFIG_SATA_MOBILE_LPM_POLICY=3
-> > and enable VMD again, and see if that makes you able to detect the SATA
-> > drive even with VMD enabled.
-> >
->  With this policy settings my laptop was able to mount lvm volumes (/ and
-> /boot) on SSD (/dev/nvme), and stuck on mounting HDD volumes (/home)
-> dmesg: https://bugzilla.kernel.org/attachment.cgi?id=305804
-> journalctl: https://bugzilla.kernel.org/attachment.cgi?id=305805
+> [...]
 
-Just to clarify, in this latest log VMD_on_LPM_3_dmesg:
-[    0.957793] ahci 10000:e0:17.0: AHCI 0001.0301 32 slots 1 ports 6 Gbps 0x1 impl SATA mode
-[    0.957796] ahci 10000:e0:17.0: flags: 64bit ncq sntf pm clo only pio slum part deso sadm sds 
-[    0.957982] ata1: SATA max UDMA/133 abar m2048@0x82102000 port 0x82102100 irq 142 lpm-pol 4
-[    1.271254] ata1: SATA link down (SStatus 4 SControl 300)
+Applied, thanks!
 
-We still don't get any link up, so LPM policy == 3 did no difference.
+[3/6] arm64: dts: exynos: gs101: use correct clocks for usi8
+      https://git.kernel.org/krzk/linux/c/512b5a875cd8b8352257fefe71513097ee97be77
 
-I guess someone at Intel needs to debug why we don't get a link up with
-VMD enabled, since AFAICT, having VMD enabled is like adding an extra HW layer:
-libata -> Intel VMD -> Intel AHCI controller
-instead of the normal
-libata -> Intel AHCI controller
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Since it works when talking to the AHCI controller directly, the question
-is if it is VMD not following the spec, or if it libata that is not following
-the spec (and we are just lucky that it works when talking to the Intel AHCI
-controller directly).
-
-
-Kind regards,
-Niklas
 
