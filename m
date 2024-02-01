@@ -1,101 +1,95 @@
-Return-Path: <linux-kernel+bounces-48389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F241845B56
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:24:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C4BF845B5B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:24:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C2BD2930A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:24:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57A522954EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:24:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CF456216A;
-	Thu,  1 Feb 2024 15:21:50 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 336AD15D5BA;
+	Thu,  1 Feb 2024 15:22:22 +0000 (UTC)
+Received: from proxmox-new.maurer-it.com (proxmox-new.maurer-it.com [94.136.29.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6FF062164;
-	Thu,  1 Feb 2024 15:21:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11B7A15DBBD
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 15:22:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.136.29.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706800909; cv=none; b=Fo8XC0VzK1+gmyHKGvzVALMBqE9/aYCCssqsQMWwKBsE8xYIKRom696388fEe0vq2mNdIcHJBip6BK7WH15m3fjF/NzSN0D+Z4rW8Fa/WCcTgyWZVxV9uFFymd+aMjQviUZXa2h1btW1hDhnWuklZK0fVD22x34h7Qzq9ZG529U=
+	t=1706800941; cv=none; b=CH3eekubq2LABqlAyUcP9KREMwrvLR774y1csgNu0hzghGgwYnA6NbGW+F/Ulm660clDcq1PXdcX+oZAUBkkChK0zrQ4+WzdzotcpJNxPtXPBxJVeQ6fv4Xa+D35gnhR9Bu8jL4NYPMQyp8GD9kUoyBsk4YK5X0G7gg7Nj3B4zA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706800909; c=relaxed/simple;
-	bh=J2Fi4XHVN1Jz6WkErdbO9Tc/fjc+p7m1fDIZnr5SYJA=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cHoMYfDRfnMhUa2E0C96kaFOSIn2DSF3skPM5e/kKNcd8kEa9yMsrHQnwHSKSYIpFt/Q8oiX++XUmgfZ/RUFxfKtQubDx4g9syMzG0DlapJN9jUxauReZkdW6HUnJdSJNvP/f0C844cHyjuV1N3hmi7CAP0AploTdm7loKPLEIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TQjGh5Yt0z6K8wZ;
-	Thu,  1 Feb 2024 23:18:36 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 689371400DB;
-	Thu,  1 Feb 2024 23:21:45 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 1 Feb
- 2024 15:21:44 +0000
-Date: Thu, 1 Feb 2024 15:21:44 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC: Jonathan Cameron <jic23@kernel.org>, <linux-iio@vger.kernel.org>, "Rob
- Herring" <robh@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
-	<linux-kernel@vger.kernel.org>, Julia Lawall <Julia.Lawall@inria.fr>,
-	"Nicolas Palix" <nicolas.palix@imag.fr>, Sumera Priyadarsini
-	<sylphrenadin@gmail.com>, "Rafael J . Wysocki" <rafael@kernel.org>, "Len
- Brown" <lenb@kernel.org>, <linux-acpi@vger.kernel.org>, Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>, Nuno =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>
-Subject: Re: [RFC PATCH 0/5] of: automate of_node_put() - new approach to
- loops.
-Message-ID: <20240201152144.000078d6@Huawei.com>
-In-Reply-To: <Zbt-fw8eUrQzBjX9@smile.fi.intel.com>
-References: <20240128160542.178315-1-jic23@kernel.org>
-	<Zbt-fw8eUrQzBjX9@smile.fi.intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1706800941; c=relaxed/simple;
+	bh=/fNW+EnrstF3l6Tjhf3Juk+33vhljOeeF3e/iB7fpLg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=K6sauhZCMESpUnWxNWrBQycdjLhpRh1tJ9pgWeeqMa/UCAkTKUkWOp5iPAg7YJoggNbk27I5gzdGYLxax3rXWiWWBiEcXEOO8n/GZvybsdtPmi81cqZHFBYdwVOh3/Hely30l7ix9FHIPKrwb5FOX4ajbkfp65RwkRGA2JebFXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=proxmox.com; spf=pass smtp.mailfrom=proxmox.com; arc=none smtp.client-ip=94.136.29.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=proxmox.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proxmox.com
+Received: from proxmox-new.maurer-it.com (localhost.localdomain [127.0.0.1])
+	by proxmox-new.maurer-it.com (Proxmox) with ESMTP id 0410E41ED5;
+	Thu,  1 Feb 2024 16:22:13 +0100 (CET)
+Message-ID: <34292692-67e9-4132-be1c-eba79dd3a84f@proxmox.com>
+Date: Thu, 1 Feb 2024 16:22:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] sched/core: Drop spinlocks on contention iff kernel is
+ preemptible
+To: Sean Christopherson <seanjc@google.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>
+Cc: linux-kernel@vger.kernel.org,
+ Valentin Schneider <valentin.schneider@arm.com>,
+ Marco Elver <elver@google.com>, Frederic Weisbecker <frederic@kernel.org>,
+ David Matlack <dmatlack@google.com>
+References: <20240110214723.695930-1-seanjc@google.com>
+Content-Language: en-US
+From: Friedrich Weber <f.weber@proxmox.com>
+In-Reply-To: <20240110214723.695930-1-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
 
-> > 3) Introduced the pointer to auto put device_node only within the
-> >    for loop scope.
-> > 
-> > +#define for_each_child_of_node_scoped(parent, child) \
-> > +	for (struct device_node *child __free(device_node) =		\
-> > +	     of_get_next_child(parent, NULL);				\
-> > +	     child != NULL;						\  
+On 10/01/2024 22:47, Sean Christopherson wrote:
+> Use preempt_model_preemptible() to detect a preemptible kernel when
+> deciding whether or not to reschedule in order to drop a contended
+> spinlock or rwlock.  Because PREEMPT_DYNAMIC selects PREEMPTION, kernels
+> built with PREEMPT_DYNAMIC=y will yield contended locks even if the live
+> preemption model is "none" or "voluntary".  In short, make kernels with
+> dynamically selected models behave the same as kernels with statically
+> selected models.
 > 
-> Just
-> 
-> 	     child;
+> Somewhat counter-intuitively, NOT yielding a lock can provide better
+> latency for the relevant tasks/processes.  E.g. KVM x86's mmu_lock, a
+> rwlock, is often contended between an invalidation event (takes mmu_lock
+> for write) and a vCPU servicing a guest page fault (takes mmu_lock for
+> read).  For _some_ setups, letting the invalidation task complete even
+> if there is mmu_lock contention provides lower latency for *all* tasks,
+> i.e. the invalidation completes sooner *and* the vCPU services the guest
+> page fault sooner.
 
-Agreed that's the same, but was thinking to follow local style.
-I don't feel strongly though so fine with dropping the != NULL
+I've been testing this patch for some time now:
 
-> 
-> > +	     child = of_get_next_available_child(parent, child))
-> > +
-> > 
-> > This series is presenting option 3.  I only implemented this loop out of
-> > all the similar ones and it is only compile tested.
-> > 
-> > Disadvantage Rob raised is that it isn't obvious this macro will instantiate
-> > a struct device_node *child.  I can't see a way around that other than option 2
-> > above, but all suggestions welcome.  Note that if a conversion leaves an
-> > 'external' struct device_node *child variable, in many cases the compiler
-> > will catch that as an unused variable. We don't currently run shaddow
-> > variable detection in normal kernel builds, but that could also be used
-> > to catch such bugs.  
-> 
+Applied on top of Linux 6.7 (0dd3ee31) on a PREEMPT_DYNAMIC kernel with
+preempt=voluntary, it fixes an issue for me where KVM guests would
+temporarily freeze if NUMA balancing and KSM are active on a NUMA host.
+See [1] for more details.
+
+In addition, I've been running with this patch on my (non-NUMA)
+workstation with (admittedly fairly light) VM workloads for two weeks
+now and so far didn't notice any negative effects (this is on top of a
+modified 6.5.11 kernel though).
+
+Side note: I noticed the patch doesn't apply anymore on 6.8-rc2, seems
+like sched.h was refactored in the meantime.
+
+[1]
+https://lore.kernel.org/kvm/ef81ff36-64bb-4cfe-ae9b-e3acf47bff24@proxmox.com/
 
 
