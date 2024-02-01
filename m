@@ -1,188 +1,138 @@
-Return-Path: <linux-kernel+bounces-48363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E7D2845AEB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:07:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 535AE845AF0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:08:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1536FB2B176
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:07:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2BB5CB2B519
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:08:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A577C6215E;
-	Thu,  1 Feb 2024 15:07:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F073E62171;
+	Thu,  1 Feb 2024 15:07:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="mFjzsx5Z"
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TYF+RqoW"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC89A626C6
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 15:07:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA11779E0;
+	Thu,  1 Feb 2024 15:07:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706800023; cv=none; b=rNx+sFk1ZtsUd5/vHBgCIqAvUYWBdGwYq6dwIw1DAdjqNMIyNR03+6JHXoSxKfEmaB9lpZXUuDcfpSvefXlIDloOUunLyMszvdLiaHaA1vcQoAeBnSDnfLwU0e395Wtx8rTQEpGSpaUgutcKXa/B1mmUzHGN4dWzn4zkXG1V0LI=
+	t=1706800033; cv=none; b=ldynbnV3G3wbmiSYsfAe8IK26pFOiMTDxNl7S6rysZ7QkI8DWZBXYHPQ53nc7Zmjz2W06yeimqkH3481vejTE1QbCpRfl9VrgMyASehRXuri+HOIScQk1pM8YTwH1DzWhmPqvjer0i9yK59sNSWQa6f0TPn06IihgCnlLUwidx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706800023; c=relaxed/simple;
-	bh=0S4hj/l+E8fsE2seDVwsBMXhR7T3oEgasUj3VCasABU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y10HSa0uHi4i6RvtHVWFpFVZ8W3a8qAaFywYWeyA04ZJ37npTps/mkRU0aZpReB5EA0zxuwviogyF0o+tkL/pgXfVEw7jXn2ha7N5WkZYRY1io4lhLT0pneuOSrd5OyC07viGEoeeg1xhdpPa3kr+GBIy8W7p4s8bkULk+MkXno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=mFjzsx5Z; arc=none smtp.client-ip=209.85.222.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7d2e1832d4dso509080241.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 07:07:00 -0800 (PST)
+	s=arc-20240116; t=1706800033; c=relaxed/simple;
+	bh=h3pF1J2Y7kD2DXqK7FYxLp/Ne6w/RwV/LgnGUdj/cGQ=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=k0RHOhUw0d7KG7YkW4RikzNdRk/038WiAu7I8oP/Rtxa6jQri1IgqkS8d9qyvfSLOYxx84Rq/+v+fz9CUloykpfOS8sD8J5SgtGyJ3bz9h9ZtA/izwDIadTyIDEQ7Dgyi5Gzz2tz/yEjDvznnrXj5RY12y/YyTQsuoyTTfeNPeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TYF+RqoW; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55790581457so1457656a12.3;
+        Thu, 01 Feb 2024 07:07:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706800019; x=1707404819; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1706800029; x=1707404829; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pi8CL4e6ck2HTzkpX3NWKGudKljP6kgJIpvXQoGWMOY=;
-        b=mFjzsx5ZgxHudLKcLanxLprPq0zmzRqkABqO66ISPmCfBYNYVvx6cnKjlVjI20kuR6
-         OldRh+6izDGy3wqF3NTLdZ+soDWUeSAFbdbYEvGaUGR6pKuypJZ4bikvyToSJtCILL46
-         Ndm3waRKAAUkJI6uunaQOJs5sea1DD1w7BRzuehwcoS4nhPgUukSgu3sAowUTNjUAQ/t
-         6XfULaZsTvjMtdeCP/V9xUpF2jVifV9oBV66jx5EqTlZMH5Js+MjotzU3w+G+UlD6POS
-         TcdHDS9ScnWTX1V7BGgDlUE79qhhysayrxTYPLDekaxaW3XnETTsU9lbURSGoxB3i4Kr
-         fMFw==
+        bh=c6kNM7+P4ZoD4vrIwh2/Maqu21Cod8+oG65RL/+v3EI=;
+        b=TYF+RqoWfP7RuD1udpB1vLIWDgEA4c5QVL6inBdvGXaV8GpmxetwYxelbNnhZx3CoJ
+         7qpp5OpZhXEHvDrzhiACXM62fsulEgUbC0Ly4RiLprjDMaV4WHn6ptatexa/SNOuGS8S
+         QagZ+yLX3XPOqrBiWxwDPTkDu8PZlv4scr85PRFHAzQXOQDAxSxH8cgaPNWr5yRW9Kl7
+         sRMImerRrxIC3+ENGcmoIFn/6Ffq8cKMlGxlXe1sbSsr+uu+3jC6pPnul28L7q4pm7C1
+         DltLkjhyKXklWPnTKjr1ykL5tYttANfWTMpmIp2gKSgKR1RbiRP6SDq2ZPJZF6J/ohYL
+         QAPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706800019; x=1707404819;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pi8CL4e6ck2HTzkpX3NWKGudKljP6kgJIpvXQoGWMOY=;
-        b=Sg6N+FqSYbH+eoE3Ix0cBvbWm1VR1p+kqpcx2XgPTPxWotP4SE7GnCClMG92mrGNFy
-         o5Utes1vKL5wkskCnLptJmxuTeb2uh4fyr3OCVpsVCZ01ti0PEM9/9xZ40QQt1KvbxOv
-         LsinnFv7DX+h49VaBGLgBE7pm1ShGW8cACO0u4iq6qj7ampB/JiE0Q/wXw9lMofgBaFE
-         KZn3zX02Y1M5tILnjirZEaB5BYdxINuOX/WPshXH6cdSpir8sNZwN7mA3V3PHIX5iOAH
-         C23Qa6qeNboeFYHZyfqXpyIzIhW/5FuQe/o3BWbC28469heNnPhvC7e+rbaLeDDdB6tJ
-         Fmfg==
-X-Gm-Message-State: AOJu0YySN0IAfgErM3IyuG4sN/JobQmv9k/gPp6LnjL3x+Ox37x7RZMi
-	7gBi/brTumvpgGXHR/vqEFgmxra5m3rSLnTUahTCYrmVfO6IfZE7uHCsXv2tPGjHLOrj2515Ct3
-	nu+Vz6wxktS3U9OeHNB70Geu3ruJr5sfx670V3A==
-X-Google-Smtp-Source: AGHT+IEG5q+Ht07Sn9fefoBaUopYmurwwnmOpHyEtbhdBigl1iJ2zdTN4V4J9cZ4y2zMj9AA5AY9J15gI6CDwoltmeQ=
-X-Received: by 2002:a05:6122:449a:b0:4bd:32c9:acb with SMTP id
- cz26-20020a056122449a00b004bd32c90acbmr2413468vkb.7.1706800019494; Thu, 01
- Feb 2024 07:06:59 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706800029; x=1707404829;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=c6kNM7+P4ZoD4vrIwh2/Maqu21Cod8+oG65RL/+v3EI=;
+        b=DEzCoD2ARG1NIMMMBBAjcDHkH3jDVZEgGLiSWAPz1qvajDCa36m1rsLDBe8XsoBnpD
+         UWrHYm10Fi1Il/L+Zu5SACz8ekpIcj7nfxtemprgGmW+XVtF69fShHva1/ako0V2g0M2
+         5undDsWL3jhV+51YUfmNNSN7AE91jvbVZYNYVwwNnajXz27+fKga+DpFiMqYi6zes3GG
+         R3Jo37INo3yzDP00gaxKr8cdZorY3PaF1dIz6cSNFBCxYTyCPkuwV6/avqM+BR5wzWYw
+         jqBRGbLbbE7IHE2ckUKf8HiMmmztmcxbAW9Y0ERf+mjbxe2Vhtk1r0gu2q+XsejRG+WK
+         SrnA==
+X-Gm-Message-State: AOJu0YyLmbsRFdZ+rCm6UMZcUuOUb8fEZsUXMqoefTXuxfngrpF/RjBg
+	T6MDp/wAtEN6LOVw3p+8LPceahnjraYvRSHt/jRy7XMZWyrlXuou0ZtwUIRA
+X-Google-Smtp-Source: AGHT+IEI6GYkYAaN2UQKxbqF0jFNrD3InRZixcUzz3s7038/VKRQQv7EOijspj3ZPOcnbX5jFyRbng==
+X-Received: by 2002:a17:906:806:b0:a36:459:51fd with SMTP id e6-20020a170906080600b00a36045951fdmr3768397ejd.69.1706800029163;
+        Thu, 01 Feb 2024 07:07:09 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXXxpiQCZJqEx19t4J+GfFAE2DbpEq/i69JR4Er4q/chEhvQHsLUDkBsKj51c+JLihAYJLmgBJD2mhWExfdhRDwrGMLfbQL7YLTit/iaGvwuJT2QqNLzdmpyqUpuyuWqaC8pXo/ddj8k2+ehlLkALMvr/OjAfNiB58MNSSgNSfO3ThmS7v4lwNwgG/N/BAqnCtJ8kjkr+Wts1LCfWNQ1fb+gjz5mlzQXxKCUaAlo1mTl3OF3+ZXlEVe5uosT3ZB9843784RZi5ZsmhG1Oxnkg49eAw=
+Received: from localhost (p200300e41f147f00f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f14:7f00:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id lz13-20020a170906fb0d00b00a317ca8b422sm6006663ejb.92.2024.02.01.07.07.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Feb 2024 07:07:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240122102157.22761-1-brgl@bgdev.pl>
-In-Reply-To: <20240122102157.22761-1-brgl@bgdev.pl>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 1 Feb 2024 16:06:47 +0100
-Message-ID: <CAMRc=MfURBi=5frjL2EB0M-bzoiXU-5do+gtWDKqK9fp48HvXA@mail.gmail.com>
-Subject: Re: [RESEND PATCH v6 00/12] arm64: qcom: add and enable SHM Bridge support
-To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Elliot Berman <quic_eberman@quicinc.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
-	Guru Das Srinagesh <quic_gurus@quicinc.com>, Andrew Halaney <ahalaney@redhat.com>, 
-	Maximilian Luz <luzmaximilian@gmail.com>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, kernel@quicinc.com, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 01 Feb 2024 16:07:08 +0100
+Message-Id: <CYTU44ED147E.2V11E1VTOPYSE@gmail.com>
+Cc: "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+ "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "Thierry
+ Reding" <treding@nvidia.com>
+Subject: Re: linux-next: Tree for Jan 29 (soc/tegra/fuse/fuse-tegra30.c)
+From: "Thierry Reding" <thierry.reding@gmail.com>
+To: "Arnd Bergmann" <arnd@arndb.de>, "Jon Hunter" <jonathanh@nvidia.com>,
+ "Randy Dunlap" <rdunlap@infradead.org>, "Stephen Rothwell"
+ <sfr@canb.auug.org.au>, "linux-next" <linux-next@vger.kernel.org>, "Kartik"
+ <kkartik@nvidia.com>
+X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
+References: <20240129143030.16647483@canb.auug.org.au>
+ <d0e1a7c1-06a2-4fa4-b4f8-df149af8eccb@infradead.org>
+ <61e8b6ae-fd30-4443-8473-6429f6de8768@nvidia.com>
+ <dafa2fb5-276d-4c87-b003-4b7f30d44f0a@app.fastmail.com>
+In-Reply-To: <dafa2fb5-276d-4c87-b003-4b7f30d44f0a@app.fastmail.com>
 
-On Mon, Jan 22, 2024 at 11:22=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
-> wrote:
+On Tue Jan 30, 2024 at 11:59 AM CET, Arnd Bergmann wrote:
+> On Tue, Jan 30, 2024, at 11:46, Jon Hunter wrote:
+> > On 30/01/2024 04:06, Randy Dunlap wrote:
 >
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > Looks like we are missing the following ...
+> >
+> > diff --git a/drivers/soc/tegra/fuse/fuse-tegra30.c=20
+> > b/drivers/soc/tegra/fuse/fuse-tegra30.c
+> > index 2070d36c510d..eb14e5ff5a0a 100644
+> > --- a/drivers/soc/tegra/fuse/fuse-tegra30.c
+> > +++ b/drivers/soc/tegra/fuse/fuse-tegra30.c
+> > @@ -38,7 +38,8 @@
+> >       defined(CONFIG_ARCH_TEGRA_210_SOC) || \
+> >       defined(CONFIG_ARCH_TEGRA_186_SOC) || \
+> >       defined(CONFIG_ARCH_TEGRA_194_SOC) || \
+> > -    defined(CONFIG_ARCH_TEGRA_234_SOC)
+> > +    defined(CONFIG_ARCH_TEGRA_234_SOC) || \
+> > +    defined(CONFIG_ARCH_TEGRA_241_SOC)
+> >   static u32 tegra30_fuse_read_early(struct tegra_fuse *fuse, unsigned=
+=20
+> > int offset)
+> >
+> >
+> > Kartik, can you send a fix for this?
 >
-> Resending after the merge window. I dropped the first patch which was a
-> fix and was picked up last release cycle.
+> If I get an Ack for my original patch, I can pick that
+> up into the soc tree directly:
 >
-> We've established the need for using separate secured memory pools for
-> SCM and QSEECOM as well as the upcoming scminvoke driver.
->
-> It's also become clear that in order to be future-proof, the new
-> allocator must be an abstraction layer of a higher level as the SHM
-> Bridge will not be the only memory protection mechanism that we'll see
-> upstream. Hence the rename to TrustZone Memory rather than SCM Memory
-> allocator.
->
-> Also to that end: the new allocator is its own module now and provides a
-> Kconfig choice menu for selecting the mode of operation (currently
-> default and SHM Bridge).
->
-> Tested on sm8550 and sa8775p with the Inline Crypto Engine and
-> remoteproc.
->
-> v5 -> v6:
-> Fixed two issues reported by autobuilders:
-> - add a fix for memory leaks in the qseecom driver as the first patch for
->   easier backporting to the v6.6.y branch
-> - explicitly cast the bus address stored in a variable of type dma_addr_t
->   to phys_addr_t expected by the genpool API
->
-> v4 -> v5:
-> - fix the return value from qcom_tzmem_init() if SHM Bridge is not suppor=
-ted
-> - remove a comment that's no longer useful
-> - collect tags
->
-> v3 -> v4:
-> - include linux/sizes.h for SZ_X macros
-> - use dedicated RCU APIs to dereference radix tree slots
-> - fix kerneldocs
-> - fix the comment in patch 14/15: it's the hypervisor, not the TrustZone
->   that creates the SHM bridge
->
-> v2 -> v3:
-> - restore pool management and use separate pools for different users
-> - don't use the new allocator in qcom_scm_pas_init_image() as the
->   TrustZone will create an SHM bridge for us here
-> - rewrite the entire series again for most part
->
-> v1 -> v2:
-> - too many changes to list, it's a complete rewrite as explained above
->
-> Bartosz Golaszewski (12):
->   firmware: qcom: add a dedicated TrustZone buffer allocator
->   firmware: qcom: scm: enable the TZ mem allocator
->   firmware: qcom: scm: smc: switch to using the SCM allocator
->   firmware: qcom: scm: make qcom_scm_assign_mem() use the TZ allocator
->   firmware: qcom: scm: make qcom_scm_ice_set_key() use the TZ allocator
->   firmware: qcom: scm: make qcom_scm_lmh_dcvsh() use the TZ allocator
->   firmware: qcom: scm: make qcom_scm_qseecom_app_get_id() use the TZ
->     allocator
->   firmware: qcom: qseecom: convert to using the TZ allocator
->   firmware: qcom: scm: add support for SHM bridge operations
->   firmware: qcom: tzmem: enable SHM Bridge support
->   firmware: qcom: scm: clarify the comment in qcom_scm_pas_init_image()
->   arm64: defconfig: enable SHM Bridge support for the TZ memory
->     allocator
->
->  MAINTAINERS                                   |   8 +
->  arch/arm64/configs/defconfig                  |   1 +
->  drivers/firmware/qcom/Kconfig                 |  30 ++
->  drivers/firmware/qcom/Makefile                |   1 +
->  .../firmware/qcom/qcom_qseecom_uefisecapp.c   | 281 +++++---------
->  drivers/firmware/qcom/qcom_scm-smc.c          |  30 +-
->  drivers/firmware/qcom/qcom_scm.c              | 179 +++++----
->  drivers/firmware/qcom/qcom_scm.h              |   6 +
->  drivers/firmware/qcom/qcom_tzmem.c            | 365 ++++++++++++++++++
->  drivers/firmware/qcom/qcom_tzmem.h            |  13 +
->  include/linux/firmware/qcom/qcom_qseecom.h    |   4 +-
->  include/linux/firmware/qcom/qcom_scm.h        |   6 +
->  include/linux/firmware/qcom/qcom_tzmem.h      |  28 ++
->  13 files changed, 684 insertions(+), 268 deletions(-)
->  create mode 100644 drivers/firmware/qcom/qcom_tzmem.c
->  create mode 100644 drivers/firmware/qcom/qcom_tzmem.h
->  create mode 100644 include/linux/firmware/qcom/qcom_tzmem.h
->
-> --
-> 2.40.1
->
+> https://lore.kernel.org/all/20240103102654.3779458-1-arnd@kernel.org/
 
-Bjorn,
+Sorry for the delay on this. I guess you can't really apply that to ARM
+SoC directly because the patch that introduces Tegra241 support is only
+in the Tegra tree.
 
-I tested it on db410c as well so let me gently ping you about picking
-it up into your tree.
+In any case, I've applied your patch now, so the fixed version should
+show up in tomorrow's linux-next.
 
-Bartosz
+I'm considering squashing it into the original since that'd preserve
+bisectability, though that'd probably be of limited usefulness because
+most people doing regression builds involving this will likely have one
+of the other bits enabled.
+
+Thierry
 
