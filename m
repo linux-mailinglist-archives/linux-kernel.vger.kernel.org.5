@@ -1,139 +1,134 @@
-Return-Path: <linux-kernel+bounces-48017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC60A845648
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:32:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A6018456DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:05:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBFF91C22B0C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:32:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE0AA1F28E8D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:05:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 134BB15CD6A;
-	Thu,  1 Feb 2024 11:32:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C1BA163A87;
+	Thu,  1 Feb 2024 12:03:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="g9nADXxR"
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XuQfNKpL"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1146F51A
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 11:32:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25E92161B6B;
+	Thu,  1 Feb 2024 12:03:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706787143; cv=none; b=WLo44bqo/jLrqDdvMDRHx1Yvf6ePeaqWvtkSJbRzmA9ZmBSNEIK/OmgqQJrdFis6kFLoq4FzbFMleGg+CuiYjCVHFjVvwkb0ZnEotBvQlzVPWZBOE1YIzYz23VeTrw5IxUwPniTNHgeyI7hqLiG2ak54TWYlfy8YW00rizkhSjQ=
+	t=1706789035; cv=none; b=Pqd+GQ7Y3YgyW+4b5q4uTwzuuFm1lOmfw6R2yzvTNdsdHz77KLalObCdiKSlN2Gfd+8FFL2AS0zNrBcR6M6xSByHHNsZOIfj2cnH7RCGTzlCWytRIydAcDr6N4A5SCCDUXd8tCp0ZF6bpJX9Q2hBezGmxLDJXEOn3EIBLdFSioY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706787143; c=relaxed/simple;
-	bh=+JCXQ/F5lEphfjTu5WTd25Ol8SqJqt0VAt5iHLuRepY=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=XxNHgS57SRQoKAd4loBToG8WoPEnZVBiSvyQyc55az3fko1BErMBgdhOZI0creMNxv+R4dZ+PHRanGSj3ZJEoOHulbSTSSQr12dquzmoTh3G2Q9SWXvjV34Cq1iK4lk5LS0gfYXTe8cCwq+SsIuofjvkYvHD6bTxpm3SOGVau8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=g9nADXxR; arc=none smtp.client-ip=209.85.219.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-68c794970d5so4512916d6.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 03:32:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706787140; x=1707391940; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uOIkFgtn+5CGBhF6IYD+AtjX4nq3rhY5L7Cp0vY+fM0=;
-        b=g9nADXxRvuEMqGrDd8HUsGNP3chp37TPsqPtW7Nhjk85+XYBTamsPmidSqxN3ut84H
-         4IPUGEWUkrvygLwZwfxoTBfcEAa+0dJ+AqEtB8uyGAgGFxqUeg1utm8ghT3Fh05i6SCD
-         5TTIX7dMMsEbzCsVfeb6KHaui7Pje/UU1XukLOAXO4f7q1FCxZtsxWrOSN0JMxOtGfRY
-         gbRpvsdsgTyyWxBi2CGc8WzUnmczM3+bRGGz+LdKVOMKHWMh1m581H7hu9GlHE9gahQV
-         lteyQk8ydeR981PTbOIOSKmkVCM/apRMXHwb7qULC3FnE3wxvX6keRdcDpI5RpTmmPcI
-         U6zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706787140; x=1707391940;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uOIkFgtn+5CGBhF6IYD+AtjX4nq3rhY5L7Cp0vY+fM0=;
-        b=Q07/fc4R/6XzqT30hm0vvfcQTnl680v5dg3x1DlNZRaswOwnaTfFZUi5qoEpwN/wAT
-         8ZSSZXJxaB+Cebgs2SP/iGaJ4oNu1xELFKVZcrGDwZUuBY8auyQodWgo8tiP8RKvc9hD
-         Fu7mMQ9m7bse7TE1zoo9/n3tyZVv0fvtOk5930uiRD1L8cbqT6oXv5d91pWZMrwKDemD
-         GAX8zWkNRuysJrgddzkvJhPfLfyekQRr5pTehWUkbpBXYXWAZn02t3kNUsEKHHcEo8q2
-         LfEyWfeGCxNJcMJ4rUhOx6FJOUWlNUhYvWZZwBK/uC/u/niC/nqzF68UFwtbSyoktbM/
-         Rq9w==
-X-Gm-Message-State: AOJu0Yyv7yhsJCJZXHEzVpmvaKFjyiAkJI9c3zjIkpcDqGKoBcPnz9Ka
-	YXKGiWHHtnjx+IhEr6FKXmfHECnADn53XvZF9Ddf6YFoYEjNNZ5IBLXdtbQAuMIwZJy/vqVwFFA
-	VUyNoQ/2ZMCQaGICMiqVGXrm1q29/RmCBW8m0cQ==
-X-Google-Smtp-Source: AGHT+IEn/DdYnb4HbGcodvZpVi0fy3Ok/BebPtt2rZ4aQx47747TBTjBGaYePw+Arowpy/mNwi8CPKs2RWowIN2yRxU=
-X-Received: by 2002:a0c:b456:0:b0:68c:5149:7619 with SMTP id
- e22-20020a0cb456000000b0068c51497619mr7887302qvf.24.1706787140649; Thu, 01
- Feb 2024 03:32:20 -0800 (PST)
+	s=arc-20240116; t=1706789035; c=relaxed/simple;
+	bh=HmMQXeLGQdDe0lD1nXkW7jz/UDWrlhubI0Aip/rEHN4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YSOrHI2vToI9NK7wqfX+qo2N8tuCyn95NFRnjXe4wGkY2tfre4mJogucqDmIksUdMxoLYq3x1iUmzCeCJBKbPozFURqbc72u0M6tcjxxbbrP2d0kAAt2Z7gECAg9jcys+1tpHLj2A3iRAcoWB5ByTPOixjhdImai0BtqZGlAj90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XuQfNKpL; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706789034; x=1738325034;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HmMQXeLGQdDe0lD1nXkW7jz/UDWrlhubI0Aip/rEHN4=;
+  b=XuQfNKpLwOujWx1ziuTuzPg+zkyL5dKICwu8or0Flqg3do3m5andIX8M
+   4BuGZiYLp9Omi6ZQPNgWl2tP7yLb5g7Dn4o0FxhPGXIwpFK+5l7FGQ+IS
+   rXmey8H3st6o44jgnZfYaL8MiRVGfEmq6bfRD7OZ/utyOAY/c0VfMuuJH
+   Qd8qYbkfWav+99YLj9nqtIWFTGWln2hGXWbaYCe7B94HfI2pwoSBTyCjz
+   L6zatSTPGJj1wLMbyX6yeE89dvEKhSFFwk7siR8wzd9m00KrYLiY7hrg/
+   gtU9XRwQIa4XXAOJaz5+4nrDIlNbQgk+qEIA9ibujqX8vHZcoXFVEZqL8
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="60251"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="60251"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 04:03:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="788919040"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="788919040"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 04:03:47 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rVVIh-00000000onx-0xJW;
+	Thu, 01 Feb 2024 13:32:11 +0200
+Date: Thu, 1 Feb 2024 13:32:10 +0200
+From: "'andriy.shevchenko@linux.intel.com'" <andriy.shevchenko@linux.intel.com>
+To: "Corona, Ernesto" <ernesto.corona@intel.com>
+Cc: "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+	"Castro, Omar Eduardo" <omar.eduardo.castro@intel.com>,
+	"'omar.eduardo.castro@linux.intel.com'" <omar.eduardo.castro@linux.intel.com>,
+	"'arnd@arndb.de'" <arnd@arndb.de>,
+	"'jiri@nvidia.com'" <jiri@nvidia.com>,
+	"'vadimp@mellanox.com'" <vadimp@mellanox.com>,
+	"'mchehab+samsung@kernel.org'" <mchehab+samsung@kernel.org>,
+	"'gregkh@linuxfoundation.org'" <gregkh@linuxfoundation.org>,
+	"'davem@davemloft.net'" <davem@davemloft.net>,
+	"'nicolas.ferre@microchip.com'" <nicolas.ferre@microchip.com>,
+	"'robh@kernel.org'" <robh@kernel.org>,
+	"'lukas.bulwahn@gmail.com'" <lukas.bulwahn@gmail.com>,
+	"Filary, Steven A" <steven.a.filary@intel.com>,
+	"'amithash@fb.com'" <amithash@fb.com>,
+	"'patrickw3@fb.com'" <patrickw3@fb.com>,
+	"Chen, Luke" <luke_chen@aspeedtech.com>,
+	Billy Tsai <billy_tsai@aspeedtech.com>
+Subject: Re: [PATCH 30 7/7] Add AST2500 and AST2600 JTAG device in DTS
+Message-ID: <ZbuBOmtyYdlmnCBa@smile.fi.intel.com>
+References: <LV8PR11MB8463F88C2364A08DEF3ABAC28B7D2@LV8PR11MB8463.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Anders Roxell <anders.roxell@linaro.org>
-Date: Thu, 1 Feb 2024 12:32:09 +0100
-Message-ID: <CADYN=9+DUzu6xEThaWQKp0udCsPs7h3XijyE5zmn-UYG8oM+AA@mail.gmail.com>
-Subject: Perf not able to cross compile
-To: linux-perf-users@vger.kernel.org, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, james.clark@arm.com, Arnd Bergmann <arnd@arndb.de>, 
-	Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <LV8PR11MB8463F88C2364A08DEF3ABAC28B7D2@LV8PR11MB8463.namprd11.prod.outlook.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hey,
+On Tue, Jan 30, 2024 at 11:32:48PM +0000, Corona, Ernesto wrote:
+> Adding aspeed jtag device to device tree
+> 
+> Signed-off-by: Ernesto Corona <ernesto.corona@intel.com>
+> Signed-off-by: Omar Castro <omar.eduardo.castro@linux.intel.com>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-I'm trying to cross compile perf ARCH=3Darm64 on my x86_64 host from
-linus tree [1], branch master.
+First of all, please use --thread to git-format-patch when preparing the
+series.
+
+> Cc: Jiri Pirko <jiri@nvidia.com>
+> Cc: Vadim Pasternak <vadimp@mellanox.com>
+> Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: David S. Miller <davem@davemloft.net>
+> Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Cc: Steven Filary <steven.a.filary@intel.com>
+> Cc: Amithash Prasad <amithash@fb.com>
+> Cc: Patrick Williams <patrickw3@fb.com>
+> Cc: Luke Chen <luke_chen@aspeedtech.com>
+> Cc: Billy Tsai <billy_tsai@aspeedtech.com>
+
+Second, please avoid flooding commit message with unneeded details, i.e. move
+these Cc:s to...
+
+> ---
+..the after this cutter line.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-This is the failue I see, full log [2]:
-
-..
-  CC      /home/tuxbuild/.cache/tuxmake/builds/1/build/libbpf/staticobjs/el=
-f.o
-  CC      /home/tuxbuild/.cache/tuxmake/builds/1/build/libbpf/staticobjs/fe=
-atures.o
-cc1: error: =E2=80=98-fcf-protection=3Dfull=E2=80=99 is not supported for t=
-his target
-error: command '/usr/local/bin/sccache' failed with exit code 1
-cp: cannot stat
-'/home/tuxbuild/.cache/tuxmake/builds/1/build/python_ext_build/lib/perf*.so=
-':
-No such file or directory
-make[2]: *** [Makefile.perf:678:
-/home/tuxbuild/.cache/tuxmake/builds/1/build/python/perf.cpython-311-x86_64=
--linux-gnu.so]
-Error 1
-make[2]: *** Waiting for unfinished jobs....
-  LD      /home/tuxbuild/.cache/tuxmake/builds/1/build/libbpf/staticobjs/li=
-bbpf-in.o
-  LINK    /home/tuxbuild/.cache/tuxmake/builds/1/build/libbpf/libbpf.a
-make[1]: *** [Makefile.perf:261: sub-make] Error 2
-make: *** [Makefile:70: all] Error 2
-
-Running 'x86_64-linux-gnu-python3-config --cflags' I see
-'-fcf-protection' in the output and this happens when I'm building
-cross compile arm64 on my x86_64 host machine. Building on an arm64
-host works. cross compile x86_64 on my x86_64 host works too.
-
-I have 'aarch64-linux-gnu-python3-config' installed but that isn't used.
-
-$ x86_64-linux-gnu-python3-config --cflags
--I/usr/include/python3.11 -I/usr/include/python3.11  -Wsign-compare -g
-  -fstack-protector-strong -fstack-clash-protection -Wformat
--Werror=3Dformat-security -fcf-protection  -DNDEBUG -g -fwrapv -O2 -Wall
-$ aarch64-linux-gnu-python3-config --cflags
--I/usr/include/python3.11 -I/usr/include/python3.11  -Wsign-compare -g
-  -fstack-protector-strong -fstack-clash-protection -Wformat
--Werror=3Dformat-security -mbranch-protection=3Dstandard  -DNDEBUG -g
--fwrapv -O2 -Wall
-
-I tried to set PYTHON and PYTHON_CONFIG too, but didn't work.
-
-It doesn't try to use $(CROSS_COMPILE)python3-config, any idea how to
-use the correct config?
-
-Cheers,
-Anders
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-[2]  https://storage.tuxsuite.com/public/linaro/lkft/builds/2bc6x6cISHzG9Jg=
-o0oAVv2OgLOG/build.log
 
