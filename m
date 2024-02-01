@@ -1,99 +1,128 @@
-Return-Path: <linux-kernel+bounces-47480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E661844E78
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:13:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 229E3844E75
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:12:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8264294218
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:13:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54E3A1C2A47B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:12:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61F2215E9C;
-	Thu,  1 Feb 2024 01:10:25 +0000 (UTC)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D4385CB5;
+	Thu,  1 Feb 2024 01:09:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="K/8GZyUj"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25EDBFBFA;
-	Thu,  1 Feb 2024 01:10:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.75.126.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69A7D2C1A7
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 01:09:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706749824; cv=none; b=I+QRV7bbp8FpnSwcApRG4f5H4XuR2NJ29FD4x9xXm140NN2jffADQLQVC/g5PohmVlM5LZF95McKQmaeuZe1agYfOvWLDdo/7ilKX+gmdZaRRshnnLRruEkC+myAqYysVurh09PNCTnrWwM6/M4z+SELAy1ROwEOS/44Zyp+s3c=
+	t=1706749758; cv=none; b=l739gWv3A8lUWolRqgIfUhhYCwu7NRglCijs6yGq18W6Z/BTmJrxFETh4kW+XI4DDQRxbi1309tnA6C4NpZUq17kpx0aBgEapN/U8XDHzKlfmhO+lQXjrouGDNfM6wsrrNXvcXh6QMxPzJS11avETr4Qn/nVblZCK4g0JJOl108=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706749824; c=relaxed/simple;
-	bh=oXyZ94HQjIDlcU47fwE4bXXm8+FGbxZrkGWQO9/D9rM=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=lEG+xnYC0LMSoH3hzcE/jAxFwY2C9QLswNV0EK3lgP63yCjz4MjSy+8Fsfu0bd/LYQK3ta8dEXRKyvv2eJ0AChqjnP77J96bs9W1G5bcHFVJHY52EsS1q6WWKhu9C7TQ91fkWMEO5pWlx3pj04mGL+oYfZ/KXqfOkQcvuiwVmbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com; spf=pass smtp.mailfrom=realtek.com; arc=none smtp.client-ip=211.75.126.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 41119nYoA1198478, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 41119nYoA1198478
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 1 Feb 2024 09:09:49 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2375.32; Thu, 1 Feb 2024 09:09:50 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 1 Feb 2024 09:09:50 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::c9b7:82a9:7e98:fa7f]) by
- RTEXMBS04.realtek.com.tw ([fe80::c9b7:82a9:7e98:fa7f%7]) with mapi id
- 15.01.2507.035; Thu, 1 Feb 2024 09:09:50 +0800
-From: Ping-Ke Shih <pkshih@realtek.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>,
-        Martin Kaistra
-	<martin.kaistra@linutronix.de>
-CC: Jes Sorensen <Jes.Sorensen@gmail.com>, Kalle Valo <kvalo@kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Subject: RE: [PATCH] wifi: rtl8xxxu: fix error messages
-Thread-Topic: [PATCH] wifi: rtl8xxxu: fix error messages
-Thread-Index: AQHaVBSKyusWX7FLnUifv/dz8Jm+y7D0rgxQ
-Date: Thu, 1 Feb 2024 01:09:49 +0000
-Message-ID: <05fc965bb66746d196c2da08a0455fdf@realtek.com>
-References: <7b144531-a8da-4725-8911-9b614a525a35@moroto.mountain>
-In-Reply-To: <7b144531-a8da-4725-8911-9b614a525a35@moroto.mountain>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1706749758; c=relaxed/simple;
+	bh=7fgLJaTz+fjvVRnJCmgZZzswtZ/OzmScjrU1Huk7Eh0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=st4TbSP7AHHLVQFT32hf9e9GHqRWmcwiyjMttN6zulgqTaJFtOt4sUJ03u4ghIO/CZtdPBwSV1bOM6jhUdBJqNg1+YvkkRnmb1nbv1G8WqXk8pYLDV7kDfZztf/FdznUpVRf5OlElIlGowfSRpV9W5ivINbn3G4aHlTKCA+lLWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=K/8GZyUj; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706749758; x=1738285758;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=7fgLJaTz+fjvVRnJCmgZZzswtZ/OzmScjrU1Huk7Eh0=;
+  b=K/8GZyUj/UHTM+NjL+Ktt4VMOhQ76MwbOyVArCJ6PEAFs/Vq3rS5v9uU
+   1gzgd+4EyKeV5rGDAg9ug+fHq39y8PyK0ATgePbsPrn58kUbhEhrSMt+g
+   MtJgHcL6HgNeoCwo2lxQ6VsMWccMPFswSv4M37ll5OKKKCP6gFzEMirZ4
+   yqhG5Zy2NR26qPxZgWqPCRj8FvnJfv7PY0FI+ivAKDo1uiVSg4oyS6ZQ8
+   2JbL+rf2r/taNPP6Ndw/nrN/anVigfG3j3K7GXxObRomLS+pwa95mMn+J
+   jW/bwAJ448eWnR0y1gNpfZuCYmSkseRfN80T7KeeByQS/KGVeZgr/F7Vs
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10427927"
+X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
+   d="scan'208";a="10427927"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 17:09:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="878964939"
+X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
+   d="scan'208";a="878964939"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 17:09:16 -0800
+Date: Wed, 31 Jan 2024 17:10:38 -0800
+From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To: alexs@kernel.org
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	linux-kernel@vger.kernel.org, sshegde@linux.ibm.com
+Subject: Re: [PATCH v2 6/6 RFT] sched/fair: change sched asym checking
+ condition
+Message-ID: <20240201011038.GD18560@ranerica-svr.sc.intel.com>
+References: <20240130131708.429425-1-alexs@kernel.org>
+ <20240130131708.429425-6-alexs@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240130131708.429425-6-alexs@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 
+On Tue, Jan 30, 2024 at 09:17:08PM +0800, alexs@kernel.org wrote:
+> From: Alex Shi <alexs@kernel.org>
+> 
+> Asym only used on SMT sd, or core sd with ITMT and core idled.
+> !sched_smt_active isn't necessary.
 
+sched_smt_active() is implemented as a static key. Thus, if SMT is not
+enabled, we can quickly return without having to check the rest of the
+conditions, as we should.
 
-> -----Original Message-----
-> From: Dan Carpenter <dan.carpenter@linaro.org>
-> Sent: Wednesday, January 31, 2024 3:10 PM
-> To: Martin Kaistra <martin.kaistra@linutronix.de>
-> Cc: Jes Sorensen <Jes.Sorensen@gmail.com>; Kalle Valo <kvalo@kernel.org>;=
- Ping-Ke Shih
-> <pkshih@realtek.com>; linux-wireless@vger.kernel.org; linux-kernel@vger.k=
-ernel.org;
-> kernel-janitors@vger.kernel.org
-> Subject: [PATCH] wifi: rtl8xxxu: fix error messages
->=20
-> The first parameter of WARN_ONCE() is a condition so this code will end
-> up printing the function name instead of the proper message.
->=20
-> Fixes: 3ff7a05996f9 ("wifi: rtl8xxxu: support setting bssid register for =
-multiple interfaces")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> 
+> Signed-off-by: Alex Shi <alexs@kernel.org>
+> To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+> To: linux-kernel@vger.kernel.org
+> To: Valentin Schneider <vschneid@redhat.com>
+> To: Daniel Bristot de Oliveira <bristot@redhat.com>
+> To: Ben Segall <bsegall@google.com>
+> To: Steven Rostedt <rostedt@goodmis.org>
+> To: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> To: Vincent Guittot <vincent.guittot@linaro.org>
+> To: Juri Lelli <juri.lelli@redhat.com>
+> To: Peter Zijlstra <peterz@infradead.org>
+> To: Ingo Molnar <mingo@redhat.com>
+> ---
+>  kernel/sched/fair.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 6680cb39c787..0b7530b93429 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -9744,8 +9744,8 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
+>  	if (!(sd->flags & SD_ASYM_PACKING))
+>  		return false;
+>  
+> -	return (!sched_smt_active()) ||
+> -		(sd->flags & SD_SHARE_CPUCAPACITY) || is_core_idle(cpu);
+> +	return (sd->flags & SD_SHARE_CPUCAPACITY) ||
+> +		(is_core_idle(cpu) && test_bit(cpu_core_flags(), (void *)&sd->flags));
 
-Reviewed-by: Ping-Ke Shih <pkshih@realtek.com>
-
+cpu_core_flags() can contain more than one flag, AFAICS. Which bit should
+it check? Moreover, it is implemented differently for each architecture.
+Also, as stated, in x86 asym_packing is also used in domains other than MC.
 
