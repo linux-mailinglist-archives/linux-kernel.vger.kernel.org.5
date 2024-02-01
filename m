@@ -1,115 +1,130 @@
-Return-Path: <linux-kernel+bounces-48930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 391FE84634F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:17:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C283C846352
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:17:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC9A71F21DA3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:17:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A76141C250B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:17:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C22A63FE48;
-	Thu,  1 Feb 2024 22:16:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF54E3FB34;
+	Thu,  1 Feb 2024 22:17:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iJwm95ir"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="E6kd00h7"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B983FE27;
-	Thu,  1 Feb 2024 22:16:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF3F3FB2D
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 22:17:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706825817; cv=none; b=q4OS3Gp3AfWBtExEPTQ44sobCLX4w/cTT+Rfu/o2hZp+g3+p6miUM55R8Og7yKIxVa5c4Upg7/3+SKf6RbXW9SmQEKemGKIuG2+A3RzCvaoVsk3/4G/BQRpD5wVRxP1qzLARtvJxcGfeSbqscI6xQOvvplUbFHjvYjIPK8cEs1k=
+	t=1706825867; cv=none; b=NpCPjrtsta/t7aCRlWnXxYP1zeL3WsGl3aeu8+2lznl2X+sXp7Y6qhkW3QyoUkp5CP+YvS5QNI/ejRjkKgTgbTfVMguKzHCQPcVp57DM6HLA5bmLL4bhFlmfHfBZld9zuxOkIdzeoJuHN3Ez/8KEQFiBbMQLhrRm/3gChIf83hs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706825817; c=relaxed/simple;
-	bh=cuWu+ZnwEeDB3jYUYTTRe0UH9c6SmZiHQzhLc1hdnYM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xkf+h+klXWk0a9dr0SR6e0iKdrvq4193agVKeVgwE/8wEC27FlkVCI1qkX5ZXUUyUys06aGjnbGUeKJZ6cRC/LbVNnAIacYqVYJNIWwJHWC7EJj5twndC8KmXQy12Ql6YqmsBMaNpwjzNJDgH1iQq544z9DPPqjqDQ0145HAR1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iJwm95ir; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACE52C433C7;
-	Thu,  1 Feb 2024 22:16:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706825816;
-	bh=cuWu+ZnwEeDB3jYUYTTRe0UH9c6SmZiHQzhLc1hdnYM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iJwm95iredNZf01FKKqw1K8Cve6weFz5cAOoDZKVoWe3PpexUzoGPjJafD2pGbkGw
-	 eSEIrmo/GHdvyOSQ8oqaYHJagePer7h4jeWCFcLzrdSiR+NZQtF7X69fr3fBc2bo9d
-	 kulDLY8Kb43B7O9lIfuaOA8dxbgBM141x3/9YfJtOJ2uDaMN1G13Dk//xj7FQkbrEQ
-	 PXKTFsXVU0Tcv4J3fY2V5w4Lglh/CMUI8bgD307AaufIO7S6Stan4GILuEx+9xRapX
-	 742IhYAMMkBEGPl9+wv/uNc3ltlBirIMVY5YaxuoWdmIcNDXOjJeSG1SzUHPwX0Smm
-	 BVgzx6ULRUBhQ==
-Date: Thu, 1 Feb 2024 15:16:54 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>, Mike Isely <isely@pobox.com>,
-	Tiffany Lin <tiffany.lin@mediatek.com>,
-	Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-	Yunfei Dong <yunfei.dong@mediatek.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 3/3] media: mediatek: vcodedc: Fix
- Wcast-function-type-strict warnings
-Message-ID: <20240201221654.GC2240065@dev-arch.thelio-3990X>
-References: <20240128-fix-clang-warnings-v1-0-1d946013a421@chromium.org>
- <20240128-fix-clang-warnings-v1-3-1d946013a421@chromium.org>
+	s=arc-20240116; t=1706825867; c=relaxed/simple;
+	bh=iZHKh2zliymJZpYaEKcxSCcIowDn/Ybs7gN4/3MkGSE=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=iBGjrDCFbpWHjoSW1PXAbaohFq0XGjAY/sgniGhzDl86WjyT11KtWNwgdcyUvuTOI+oJyOdDRSWp3WhKq4TNuBJXg56YW2FNvo2OvhHULXPbxQnyf7uPtWwBKi6uTm5pK2w+9YeRWgF4rpQ2I1t7Vq88STdTVTZD3iQQmASCs1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=E6kd00h7; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55ee686b5d5so2017720a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 14:17:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706825863; x=1707430663; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=H5FxhcLv5qt61Bot8nd609pAKj24jXJR+vudDR0/c4M=;
+        b=E6kd00h7Nko4NfYOB8yP1pug47OxOJPBAyWDd+KQcB6gF5aALWo3qqJh2184nfufz8
+         s1zJJ41IoG1euY0JQDm0qJ5Jxqsk3ihifnU+2IHsSRO024P+LGPeLLS+pUj0EDDngzKW
+         i8VHFn7/RrEdmb9q4pd9eXzGiqp+K+YMhZXK05yfsWl/VgBtfY2Q+sM4esjbGsoYeZtm
+         qX0GE9qZRbRlZ4/+rRc00sjxn4XomZ5XRQxjlWqo0+pqIj/03JsL4QSHxJoriXhC/n9h
+         otq4ZxCVY//y2Bf46f6LWFnbbqqKxwV049LjRsfrdSOYr11f3JBQiL6DYwB5B0E9eip7
+         oiUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706825863; x=1707430663;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=H5FxhcLv5qt61Bot8nd609pAKj24jXJR+vudDR0/c4M=;
+        b=Ct9TAXoQj5za9Z+58BL/PqgboWS0v5INBB8ZJJOUeVgX9JxA5ktZZJNmq7RNArqW51
+         NbNWzqZMZd6YTA6SFipwuw883Uk4AYzQ6eXnFluj9cSPtm4WZVMc2IrsJFUztA72pzSE
+         i87oWkc16cd35fps1cmrK9zxaT7fMBh52xg+oy/HKUAuN3yCelOhegrYQw90/L5Jutbu
+         nQ5v1cYMN/1FYvDOYFtFn1I0xHJlLCbMvGqy4glPn4Cw0JZNE/CbiRItsWEOSNFRD8V9
+         H7Awr+7wxvuoQtXkrjt25T3LMA8KWmNqKI7yO0oaZfqDZAULB/MKMnMmfDEYrMV8tLpq
+         QI8A==
+X-Gm-Message-State: AOJu0YxxCmkOaiqgfxa0pWArzJO6XomS3T9RCMmLfubNXafS4KlnjFkX
+	F6VckB4JEFXZlKx1yq0cvGw5gvaAXKy3UeqRh7DfbaG9RX0dBFOOUgKg/aq6/cE=
+X-Google-Smtp-Source: AGHT+IFJ6EHmx0YJ2thZJU4PB6f8gtc5YBURP5MbpmvfA9IxhlEOjKueAP4bvunCOE9xVHZHKrwLZQ==
+X-Received: by 2002:aa7:c690:0:b0:55f:b217:4215 with SMTP id n16-20020aa7c690000000b0055fb2174215mr91663edq.0.1706825863515;
+        Thu, 01 Feb 2024 14:17:43 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCW1UUR612wXs4/EqcaQQs1drV3Gqekft5m9dM2k6X0PdnjWzRtS0Gwcpt+vYTDu09ug5prp+Ur9E3Rxusj8lTXR+CHyCc1dICjiApnVJrr2ozLp0587KhEGB9ve+7SJ+n+gKWYVDCdB+cGzcYbYrf1e0d6hjF3n0iwMTgpQIjD5Oyi4GIlBB7dcifB1rjgO3j/aMwlE2iAhjHTjZhmrSuXuYChrcnwe7tqBvaOHzSjPne+eHpgXR+grx7RWQWJD0qNhEW6ozJMA51RaEnk65zE9P++Dxg8qbAQXfgPydjhlbQnfaiNgcZU/MngFtyo5xoNc/vvEhctUao8XHR2LdJJmm5aWB/RVLRrhFMOpPgCh0/xvs8yr4vklVUSmF4NyQlTvFQoMcsvMX4+P3tnACh1lS4ScGImPdvt0eypLbQBE
+Received: from [10.167.154.1] (178235179129.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.129])
+        by smtp.gmail.com with ESMTPSA id l15-20020a056402124f00b0055f0de1166csm225297edw.26.2024.02.01.14.17.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 14:17:43 -0800 (PST)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Date: Thu, 01 Feb 2024 23:17:40 +0100
+Subject: [PATCH] drm/panel: novatek-nt36523: Set prepare_prev_first
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240128-fix-clang-warnings-v1-3-1d946013a421@chromium.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240201-topic-3623_fix-v1-1-86ee6f20876e@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAIMYvGUC/x2NUQqDMBAFryL77UISUzVepRSJcdUFiZK0Ioh3d
+ +nnDG94F2RKTBm64oJEB2feooAuCwiLjzMhj8JglLHKKI3fbeeAVW2qfuITnXat1Y5eZBuQaPC
+ ZcEg+hkWy+FtXkXsi2f5f3p/7fgDqclg7dQAAAA==
+To: Jianhua Lu <lujianhua000@gmail.com>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, 
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706825861; l=1022;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=iZHKh2zliymJZpYaEKcxSCcIowDn/Ybs7gN4/3MkGSE=;
+ b=w1RN+2cCKHYNfNmB1ZoJSveJxUYPydExEMBIZ3s/hSAJ+vyUBX0r2tASV9T13V9iiLdwNRex1
+ Uwx+TC31FpyCgZKEFIajVnXkYfpYjQozMOmMv6cKrTN1+6K+HE/mTmk
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-On Sun, Jan 28, 2024 at 02:12:22AM +0000, Ricardo Ribalda wrote:
-> Building with LLVM=1 throws the following warning:
-> drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c:38:32: warning: cast from 'mtk_vcodec_ipi_handler' (aka 'void (*)(void *, unsigned int, void *)') to 'ipi_handler_t' (aka 'void (*)(const void *, unsigned int, void *)') converts to incompatible function type [-Wcast-function-type-strict]
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+The .prepare callback contains the init sequence, so the DSI host *must*
+be enabled at that point. Set the prepare_prev_first flag to ensure that.
 
-I am not positive because I don't have any hardware to test this driver
-but I suspect this patch is just hiding the warning without actually
-addressing the issue that it is pointing out. If handler is called
-through vpu_ipi_register() indirectly (which it obviously is if it is
-being passed down), there will be a CFI failure because the type of
-mtk_vcodec_ipi_handler is not the same as ipi_handler_t, as the comment
-mentions.
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+ drivers/gpu/drm/panel/panel-novatek-nt36523.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Has this seen testing on real hardware with kCFI?
+diff --git a/drivers/gpu/drm/panel/panel-novatek-nt36523.c b/drivers/gpu/drm/panel/panel-novatek-nt36523.c
+index a189ce236328..32cae1bc9162 100644
+--- a/drivers/gpu/drm/panel/panel-novatek-nt36523.c
++++ b/drivers/gpu/drm/panel/panel-novatek-nt36523.c
+@@ -1270,6 +1270,8 @@ static int nt36523_probe(struct mipi_dsi_device *dsi)
+ 		return ret;
+ 	}
+ 
++	pinfo->panel.prepare_prev_first = true;
++
+ 	if (pinfo->desc->has_dcs_backlight) {
+ 		pinfo->panel.backlight = nt36523_create_backlight(dsi);
+ 		if (IS_ERR(pinfo->panel.backlight))
 
-> ---
->  drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c b/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c
-> index 9f6e4b59455d..781a0359afdc 100644
-> --- a/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c
-> +++ b/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c
-> @@ -33,9 +33,11 @@ static int mtk_vcodec_vpu_set_ipi_register(struct mtk_vcodec_fw *fw, int id,
->  	 * The handler we receive takes a void * as its first argument. We
->  	 * cannot change this because it needs to be passed down to the rproc
->  	 * subsystem when SCP is used. VPU takes a const argument, which is
-> -	 * more constrained, so the conversion below is safe.
-> +	 * more constrained, so the conversion below is safe. We use the void
-> +	 * casting, to convince clang with -Wcast-function-type-sctrict that
-> +	 * this is safe.
->  	 */
-> -	ipi_handler_t handler_const = (ipi_handler_t)handler;
-> +	ipi_handler_t handler_const = (ipi_handler_t)((void *)handler);
->  
->  	return vpu_ipi_register(fw->pdev, id, handler_const, name, priv);
->  }
-> 
-> -- 
-> 2.43.0.429.g432eaa2c6b-goog
-> 
+---
+base-commit: 51b70ff55ed88edd19b080a524063446bcc34b62
+change-id: 20240201-topic-3623_fix-9198419e5e47
+
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
+
 
