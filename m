@@ -1,93 +1,97 @@
-Return-Path: <linux-kernel+bounces-48252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65107845925
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:44:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C1B1845926
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:45:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C82C5B215DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:44:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 168BD28BA9D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:45:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2FF75CDF4;
-	Thu,  1 Feb 2024 13:44:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5524C53371;
+	Thu,  1 Feb 2024 13:45:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BpvwpqNH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dzi8HOVF"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 372E25CDE2;
-	Thu,  1 Feb 2024 13:44:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97C485CDDC;
+	Thu,  1 Feb 2024 13:45:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706795056; cv=none; b=rneNXuxXY/QrpOvurVxQqlzcmTJqUcEZ5DwVwriiH+Fr2PsdPevIb/R2AnRR3kIJTzs4/LFY3c2hPLditeDtKJIW5ajWVH58Jwk9U4zktFdccTIXhVSI9e2El95+sS36Ts8fSaZu/l6UiXimy0nkvVReeGYnARFClLxlycLb7I8=
+	t=1706795107; cv=none; b=KPSNeKyCtorj5AOqbulA8VwzrT0yKS6wda6HGSzPlmmf6I8Hk6MpWtt6Ny/NeMUuT9DlwqInpOaEJ0HkPjZw9tRqmBr308s8C9ShpyIaqM84fbH7tQLPRTmWrXGnpjgVsBS6/7WTTVcHaaS2+zl2ZxM4dRozFJvxiH4+izPAtyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706795056; c=relaxed/simple;
-	bh=Msf2lTT82pvd+Y2JFn9SvqSk+OAHLJCSOGfkBm5c9aE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tfRYSQjJ6D6m6t8Q7W0sdLX5mbGs1barV0LMC+/ONd9vvFM3iLJEbFDkkT8kz3MB8V7eXYVBlv/uz2d5U+0W/SRI78twtcx1FlFpm3XJM58H8zieWhO7p+qejaVUU3x7s6UHTxUCDyhRxCvuswbP4c6HkaexweZ1bfujW0buTwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BpvwpqNH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A3CDC433C7;
-	Thu,  1 Feb 2024 13:44:12 +0000 (UTC)
+	s=arc-20240116; t=1706795107; c=relaxed/simple;
+	bh=FiYr1QSJ92WGJeIOhxuFzsYXtPUzZ/kEiinAXGIV594=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=VcwCgdpJDaCLbLVe2NXbgZW0xvSAiVT/XiHWL0p95dye/hfsQN3A0L3aich9q2QdTevXyDYAJQHsNHbBSn3dfdwxQNx8m/6mhto0QwGekIfbsw7ssIEmsQpMphQKr0VKfR2QLokBYoVfkUGd2VSWJEJqITwhlLnogp042qeGqbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dzi8HOVF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10E5CC43394;
+	Thu,  1 Feb 2024 13:45:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706795055;
-	bh=Msf2lTT82pvd+Y2JFn9SvqSk+OAHLJCSOGfkBm5c9aE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BpvwpqNHfGxpiG5WFFWI74s4F2ZciU5GrmZYIAennh8bH+DenvJ9lfuxHSuVXgIwI
-	 ulX4YyFhwDseSLSpCyQPCPtbv274afIykVymHUM1DpTRsYQQin4sKAIY/zrd5JFH7L
-	 piRAEUXENuq49IRH58HqIYwuP8fxLft0aizTUlydFWzbXRcXOk8Q54C4CIilr14eZ6
-	 rwiPUhqkKFh8IDptO2xiEh60BkAD1xYQ6quOyvasDjn8PfnMun669laS1zUnUc0oNG
-	 +nBhNUTLiwLGbEeS5WUuvxxr4uDNGVNBEFRumokVgqzHysJ5taoYCOVmHiE12QhU6r
-	 pm9pS7cygFoPQ==
-Date: Thu, 1 Feb 2024 14:44:09 +0100
-From: Simon Horman <horms@kernel.org>
-To: Furong Xu <0x1207@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Joao Pinto <jpinto@synopsys.com>,
-	Serge Semin <fancer.lancer@gmail.com>, netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	xfr@outlook.com, rock.xu@nio.com
-Subject: Re: [PATCH net v3] net: stmmac: xgmac: fix handling of DPP safety
- error for DMA channels
-Message-ID: <20240201134409.GD530335@kernel.org>
-References: <20240131020828.2007741-1-0x1207@gmail.com>
+	s=k20201202; t=1706795107;
+	bh=FiYr1QSJ92WGJeIOhxuFzsYXtPUzZ/kEiinAXGIV594=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=dzi8HOVFxs2qcg9pm0FY6RmtXe9LW9mv5vv6J/lcs6PoV7aqDycOYbjnOVIs+qJV4
+	 qqtCA93UnKIQoXaAcFdwWMT/nmjLapeyYjPWyqCObBQQ/qtfszqeegVxCLZ2mTgs9V
+	 AEKQuK74LbM8ZWYa/UacPEGeS+NQ0uL+DDzTe2cx6RBBOV+pc1mifvZM0quIHPOaph
+	 I3M1GgZSjUdwuiv8j25EKw0COgkmmk/mieaM5c/WuHUc4GiY+tN8H/6LHcKeFqVEp+
+	 UgNxXusxPA+gwAsM0r6kqbf/ihsR8ngnNr2UUD4ro5bnQeUV3ieh2Eg5E3T9wvv2C5
+	 xNo4oV74bKKVA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rVXNI-00GwPg-F8;
+	Thu, 01 Feb 2024 13:45:04 +0000
+Date: Thu, 01 Feb 2024 13:45:04 +0000
+Message-ID: <86le8470yn.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose
+ <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 00/10] KVM: arm64: fix many kernel-doc warnings
+In-Reply-To: <618cb278-0b9f-4cc2-bfc6-bfcbefc79b69@infradead.org>
+References: <20240117230714.31025-1-rdunlap@infradead.org>
+	<618cb278-0b9f-4cc2-bfc6-bfcbefc79b69@infradead.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131020828.2007741-1-0x1207@gmail.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: rdunlap@infradead.org, linux-kernel@vger.kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, catalin.marinas@arm.com, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Wed, Jan 31, 2024 at 10:08:28AM +0800, Furong Xu wrote:
-> Commit 56e58d6c8a56 ("net: stmmac: Implement Safety Features in
-> XGMAC core") checks and reports safety errors, but leaves the
-> Data Path Parity Errors for each channel in DMA unhandled at all, lead to
-> a storm of interrupt.
-> Fix it by checking and clearing the DMA_DPP_Interrupt_Status register.
+On Thu, 01 Feb 2024 06:19:14 +0000,
+Randy Dunlap <rdunlap@infradead.org> wrote:
 > 
-> Fixes: 56e58d6c8a56 ("net: stmmac: Implement Safety Features in XGMAC core")
-> Signed-off-by: Furong Xu <0x1207@gmail.com>
-> ---
-> Changes in v3:
->  - code style fix, thanks Paolo Abeni
-> 
-> Changes in v2:
->   - explicit enable Data Path Parity Protection
->   - add new counters to stmmac_safety_stats
->   - add detailed log
+> Hi,
+>
+> Any comments on this series?
 
-Thanks for the updates.
+This is currently earmarked for 6.9.
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Thanks,
 
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
