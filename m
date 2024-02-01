@@ -1,146 +1,162 @@
-Return-Path: <linux-kernel+bounces-48025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09116845665
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:40:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93BE2845662
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:40:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B4BD1C24364
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:40:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1410E287ED8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:40:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7933115D5B1;
-	Thu,  1 Feb 2024 11:40:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B79E215CD6C;
+	Thu,  1 Feb 2024 11:40:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=public-files.de header.i=frank-w@public-files.de header.b="Gb/4rflU"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BNK0YPOQ"
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57C7A15B99C;
-	Thu,  1 Feb 2024 11:40:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7192439852
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 11:40:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706787648; cv=none; b=VVXqwWIIFR7xJNQKdR8UYruPgKn+K1JvrZOO+WMvLdtITChwjlhXNsxquPJ3hBrqa7cmZ1S/l8dzbzoNcGju5NmI6RG5LgHHTp25DRBtJH4iHRKN8krK344uddQQGaV2CvpLq1ZY2IGpSqeprAtDGWWXcBorMNvPQlb2KcWwBi8=
+	t=1706787633; cv=none; b=dG28/IHC2SZNB2sKBWTMxSlyhpaZQUilGpr51hVtrD2fK4CXYrgyiA4ZKN6KRMokw3gbkAw8luJRqcF4svTOw4/eJ1YQMKK5NMU0ehN5yYzE0wjJ4bva1vxyBpvShH5SxH27fxMUN15u4Ka8EoxavKoY3m/RIAV4JGxJGMfw6YY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706787648; c=relaxed/simple;
-	bh=0ml7viK80JH0Jva8+KAcBgTkHRB2cpSTmxKESK/H3VU=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=trAiznzWYuaGF1BRolSievI5f+Iaxjk2OKXl/8oAEhNlcBOj4ZSqmjFY4b4MPZFRtEIcfydJOWAJ7IFKAoiP2ayT+3X6sX8d50H9kt3z1N6f5Eh1yyvTjvfBGUQcOqf1Ten2hbnM38APx92xQ82FlswE/tetK9VE3sCq4uD0YVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=public-files.de; spf=pass smtp.mailfrom=public-files.de; dkim=pass (2048-bit key) header.d=public-files.de header.i=frank-w@public-files.de header.b=Gb/4rflU; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=public-files.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=public-files.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=public-files.de;
-	s=s31663417; t=1706787620; x=1707392420; i=frank-w@public-files.de;
-	bh=0ml7viK80JH0Jva8+KAcBgTkHRB2cpSTmxKESK/H3VU=;
-	h=X-UI-Sender-Class:Date:From:To:CC:Subject:Reply-to:In-Reply-To:
-	 References;
-	b=Gb/4rflUUnnLFGxlwx6g6lBB1v1L7/XE05d5gFvf5JXZD7yB752i0+4ejoMT8y30
-	 69ogzd1P38x2+Rc8ve5u6nMotZgucM57eRVVHJCa0cLPtKIce0/ROZlfNILk3zCRD
-	 OylAaGWJmzLcuRn2ZvwqsAmNkOQYQAIxObILRNe7juejwjKGanUqP4EK3dLIM2bzF
-	 YPWSx0CGQ+6GQODxfYQlaqsuK+b3u2nOoBQhII6+pJaRXciasb3c89dIDIakNUWDn
-	 XsEEZoitD5ZTN+76CAjLk/N/5TPARvNcZF/ipWTXmGWLcaWK/yQ4/aXCIzDyQhY/8
-	 c1tWUYoABVhf4CR8/g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [127.0.0.1] ([217.61.148.248]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mw9UK-1rEwXw1fXg-00s97s; Thu, 01
- Feb 2024 12:40:20 +0100
-Date: Thu, 01 Feb 2024 12:40:17 +0100
-From: Frank Wunderlich <frank-w@public-files.de>
-To: Conor Dooley <conor@kernel.org>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-CC: Frank Wunderlich <linux@fw-web.de>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Sam Shih <sam.shih@mediatek.com>,
- Daniel Golle <daniel@makrotopia.org>, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org
-Subject: =?US-ASCII?Q?Re=3A_Aw=3A_Re=3A_=5BPATCH_v3_1/2=5D_dt-bindings?= =?US-ASCII?Q?=3A_reset=3A_mediatek=3A_add_MT7988_reset_IDs?=
-User-Agent: K-9 Mail for Android
-Reply-to: frank-w@public-files.de
-In-Reply-To: <20240119-dupe-obligate-707b3a01b356@spud>
-References: <20240117184111.62371-1-linux@fw-web.de> <20240117184111.62371-2-linux@fw-web.de> <20240118-calcium-krypton-3c787b8d1912@spud> <trinity-afc4f48e-65e1-46ee-a78b-1d670cc0f310-1705615200900@3c-app-gmx-bap21> <43f946cc-07e1-48c5-9b31-40fc9bc93037@collabora.com> <20240119-dupe-obligate-707b3a01b356@spud>
-Message-ID: <0EA6A126-DDC0-4E9F-BEBC-FD018B08CA84@public-files.de>
+	s=arc-20240116; t=1706787633; c=relaxed/simple;
+	bh=ooxgsmDwolcjOc5z3JL9PAyy2HPwV0ZKrDoMbg++r78=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FYm4l1txX6tfXwtsr2gcrJM2yfyQtiINX3Rqq5E2A9oe8jv3GuMx9dRyNVpoAmAKwCO2pEsweqS3WaAe6OChnv3xlv4pvPKAWBfkIlK5xV3vLknXIb9Tbo0BsbgAZxMj8SbBLRdmoOGVneyIdx34AiQWiM32RDN0pN3CtvEq+FA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BNK0YPOQ; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5d7005ea1d0so531433a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 03:40:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706787630; x=1707392430; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+TaNg8LNfDXnOCUMiuqt2O/eC/tk+kH5Sp1RgXLemkg=;
+        b=BNK0YPOQZsUji+uHgYPcQgE9jOne+s/UvAAK43hh/O4VJyfDbA3BXHr9zyntu45gej
+         p6Y12nvQT0pJMTz83xcVPD27l7AdJd+4rmhE1rrpmAMVbG9ttOHRPsRKmiD01nEKqs+R
+         edDi5A6hf44P/dg5xU6EuJ3VdlFktRwOfNWdp2vnOwrPwlOYryMDrabJ4h5lIii+Dwyn
+         +LIgYWFgaguYvpM9xsKIAUJ2Zcasy9hjwHDw4LSfJm7MQLDHjtIV53MyEfPCbs0OM+aJ
+         Gu2BzdvsHUgxii77spgUPfZCvvro3x5IfpFjvbXFxeiuz/pks/p4Te8mLCblaqHTySoD
+         hnnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706787630; x=1707392430;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+TaNg8LNfDXnOCUMiuqt2O/eC/tk+kH5Sp1RgXLemkg=;
+        b=bieNtx0pwEBvogwtGuDOOtm/iYNf36T5dXjkruXZ9sgH/3KcvHloFaEwsEBYZ2WtDI
+         ZyGlCmYr9qRhCp86G/+5W2Th2YuwGBs6uUz5+GBpzYyBNMFFxRTxo1Y56cHECs3JJeCc
+         G11YL763I6F7FVGz/oEmiqE2oP3yXfTb8/qqgodUJARBpZsuv3uncnmckVfuFm2ui791
+         ohZ17eIhaY85gDLLiEYxtio3ylxx2EJhRQFnrTxxuHA7wxdkB1l3542MxkAqVAtQwyQL
+         8rD1uvi+z7+S6DR42rO/LbMXY1egOv5f/4QDdL/NqqIO13D7BODRottUZ7UVcrOhGfRo
+         zCoQ==
+X-Gm-Message-State: AOJu0YzMYoZniWg6P5kzcu9/pUbob6WY8eNIXMlOD/r7sh11FFBMLp3e
+	zJv5QGdudv+bjEVb1YjAkZ904CbprsaJwfFuUHv1+GlrXS55T0hO
+X-Google-Smtp-Source: AGHT+IGlZMeKBgeoLSrktOUtG0zh8IbMjwHwM7NK9hrB4ezuIofltKs0YIFufn16yLZHUYlby0t21Q==
+X-Received: by 2002:a17:90a:d483:b0:296:435:395c with SMTP id s3-20020a17090ad48300b002960435395cmr3832307pju.3.1706787630142;
+        Thu, 01 Feb 2024 03:40:30 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXmXM3AeUzkleAd3GY2R8TsrOl5QV0QRuGvVAN+7wge1rDLLNERUondbV7l7s8+1LtJzAPFY/kwlknBAMy9Z8I+V03AdUU+AmZ1rADXa5fTI1dH3l2G8gVoWycJGLYu0uYN6nxwU8MfQ4nNwckLBVX8OK5mQsHL+NiqvtRBSpd3GGbP0MJNMVXJYVRJRusa5dAqilLwkYMob8SWKSqKekeMIRNxcRRyzudA0VFv2HBK2O+4DzcxZ/OxNaZnoTF/kCjk3IjD20c6iiG7EmfbRHwrefB8bouP+fPmQUMr17km0hl4h32VlviWo/bMWic0wJ/c/en0a1ziIFs4vGzrFJ6KctT1St6J+bNu/ArHzuyX+AnDx+HtUnlpf4rBThw8edSEpy8F+1rkEs8j
+Received: from [192.168.255.10] ([43.132.141.20])
+        by smtp.gmail.com with ESMTPSA id jx14-20020a17090b46ce00b002902076c395sm3322401pjb.34.2024.02.01.03.40.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Feb 2024 03:40:29 -0800 (PST)
+Message-ID: <4a6d2404-46ab-41ca-856e-e4cbfebba185@gmail.com>
+Date: Thu, 1 Feb 2024 19:40:24 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:y1z6Q7jXj+pqO1HZuYlxzuYbo5XGWT2nhBglJsaS3D/jXYPHO/E
- fqQckoUFrqWOYtFnR0avV/83ZiKtvFzTv0jNqDkQ4JQkSYb1R4TamPDpKXNjN/ArOiiFzUw
- zz54ZZENgvZguVYhLrfnI8TdVnyLp9SGIgiAOMryKrfSKWWH0/gDELEWzHvIOTEo1pVI+ZW
- WyQJhWE01UcOjxOi5rADA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:pWne6h6kXCc=;pZaGvfKj0LTWoHMsy0FDDU4zrVI
- CewLpa8CIG3a3PXERoJlwqw5wE5gAL0HhZsj4pEcxrPQvzVCVfQSNrL5EPhEoFZmJRbcplvbO
- Cr4RQGG+PggquRYr3QnqvRhEEVsNfJ8blN83TiVomrrbUE3tDo4rfMOVLX+J9/QPtGxjP8KRG
- X6sTL5tZgtMjmONbS3Tfusw12GL9d9uwaIj7kiWolOyx8dOozA4MGW10/cc0NECcImpwo1yrI
- TgksSBZihpqet5jMBEa9imsZUFvGFEh3md2Bitg5AOQw0pr8AQ6dMlxasEC+ADew9ZTSSZmck
- IwZGJCEkg5gK6DcwhV8JS/fnCNn5Pa6YF5Qa6Tnpa/VMzZVvVUY/PaxM/mOuL79OacrFDYkI3
- co5g4gco8F/LJ4AuBIwUTlXWrWTL0Nsv0IHVXnOlvvQUP124TL6mMPoENzEu5oS+kKiW1kdZc
- 4Dt4u/J3rW4/3ZGBLUeUF07OwXya0By3rfTCafR6UDBECjR7bLTD86S55bn9DrqmTblL/GjQY
- a68XW1M7h0d6ifO/98UR2YXp2eqP6G9RJu3nV155M86fPK4vA/DZfn5EopIz653pDnT/QYm/m
- nWFeupFQLb9JJuaH/GIhFjVJvpJhop7gU1Tc2vIt6S5iiAB6LZ6sSbJXw5ye/z8CeC/8XHC4s
- yrDK6lXHTNF1F27cFzLy+g9fvkKb9dDCRHaWSL9SsO68hLAFJQCy2zQ3uAZP9GT9UuyI74oPU
- X97C3XhX/ZKHMTvnfzMGtaQbu59TuCB5C/Rm2QQxZyXBZMuq+QrjQetUoOxTgU2GFJx3wSGbN
- 8bo840wwR7QOQi3H0YvPAUJzHxtS6gyeYT+fooHIZAwYw=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 6/6 RFT] sched/fair: change sched asym checking
+ condition
+Content-Language: en-US
+To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>, alexs@kernel.org
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org,
+ sshegde@linux.ibm.com
+References: <20240130131708.429425-1-alexs@kernel.org>
+ <20240130131708.429425-6-alexs@kernel.org>
+ <20240201011038.GD18560@ranerica-svr.sc.intel.com>
+From: kuiliang Shi <seakeel@gmail.com>
+In-Reply-To: <20240201011038.GD18560@ranerica-svr.sc.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Am 19=2E Januar 2024 18:04:36 MEZ schrieb Conor Dooley <conor@kernel=2Eorg>=
-:
->On Fri, Jan 19, 2024 at 10:28:30AM +0100, AngeloGioacchino Del Regno wrot=
-e:
+
+
+On 2/1/24 9:10 AM, Ricardo Neri wrote:
+> On Tue, Jan 30, 2024 at 09:17:08PM +0800, alexs@kernel.org wrote:
+>> From: Alex Shi <alexs@kernel.org>
 >>
->> The resets are organized on a per-reset-controller basis, so, the ETHWA=
-RP
->> reset controller's first reset is RST_SWITCH, the second one is RST_som=
-ething_else,
->> etc=2E while the first reset of the INFRA reset controller is PEXTP_MAC=
-_SWRST=2E
->>=20
->> That's why ETHWARP has a reset index 0 and INFRA also starts at 0=2E
->> I think that the numbering is good as it is, and having one driver star=
-t at index 5
->> while the other starts at index 12 would only overcomplicate registerin=
-g the resets
->> in each driver, or waste bytes by making unnecessarily large arrays, fo=
-r (imo) no
->> good reason=2E
->>=20
->> This is one header, but it should "in theory" be more than one=2E=2E=2E=
- so we would have
->> one for each hardware block - but that'd make the reset directory over-=
-crowded, as
->> other MediaTek SoCs have got even more resets in even more hardware blo=
-cks than the
->> MT7988=2E That'd be something like ~4 reset headers per SoC (and will i=
-ncrease with
->> newer ones)=2E=2E=2E
->> =2E=2E=2Eand this is why we have one binding header for resets=2E
->
->That's okay=2E The commit message leaves me, who clearly isn't a mediatek
->guy, with no information as to why these are not one contiguous set=2E
->IMO being for different reset controllers entirely is fine=2E
->
->> On the topic of leaving space to allow grouping RST0/RST1: -> No=2E <-
->> The indices have to start from zero and have to be sequential, with no =
-holes=2E
->
->Agreed=2E
+>> Asym only used on SMT sd, or core sd with ITMT and core idled.
+>> !sched_smt_active isn't necessary.
+> 
+> sched_smt_active() is implemented as a static key. Thus, if SMT is not
+> enabled, we can quickly return without having to check the rest of the
+> conditions, as we should.
 
-Hi,
+Hi Ricardo,
 
-Just a friendly reminder=2E
+Thanks a lot for comments! I will drop this patch in this series.
 
-As far as i understood, Patches are fine so far and do not need any rework=
-,right?
+But forgive my stupidity, asym feature is possible when SMT enabled instead of SMT disable. Why no SMT is a condition for asm feature? For this asym feature, I only see the SMT and MC domain use this, correct me if I'm wrong. 
 
-But i have not seen them picked up yet in linux-next=2E
-regards Frank
+> 
+>>
+>> Signed-off-by: Alex Shi <alexs@kernel.org>
+>> To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+>> To: linux-kernel@vger.kernel.org
+>> To: Valentin Schneider <vschneid@redhat.com>
+>> To: Daniel Bristot de Oliveira <bristot@redhat.com>
+>> To: Ben Segall <bsegall@google.com>
+>> To: Steven Rostedt <rostedt@goodmis.org>
+>> To: Dietmar Eggemann <dietmar.eggemann@arm.com>
+>> To: Vincent Guittot <vincent.guittot@linaro.org>
+>> To: Juri Lelli <juri.lelli@redhat.com>
+>> To: Peter Zijlstra <peterz@infradead.org>
+>> To: Ingo Molnar <mingo@redhat.com>
+>> ---
+>>  kernel/sched/fair.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 6680cb39c787..0b7530b93429 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -9744,8 +9744,8 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
+>>  	if (!(sd->flags & SD_ASYM_PACKING))
+>>  		return false;
+>>  
+>> -	return (!sched_smt_active()) ||
+>> -		(sd->flags & SD_SHARE_CPUCAPACITY) || is_core_idle(cpu);
+>> +	return (sd->flags & SD_SHARE_CPUCAPACITY) ||
+>> +		(is_core_idle(cpu) && test_bit(cpu_core_flags(), (void *)&sd->flags));
+> 
+> cpu_core_flags() can contain more than one flag, AFAICS. Which bit should
+> it check? Moreover, it is implemented differently for each architecture.
+
+It seems only x86 using the function. But there is still a error which SMT/CLUSTER domain also has this flags bit.
+$ git  grep 'cpu_core_flags('
+arch/x86/kernel/smpboot.c:      return cpu_core_flags() | x86_sched_itmt_flags();
+include/linux/sched/topology.h:static inline int cpu_core_flags(void)
+
+> Also, as stated, in x86 asym_packing is also used in domains other than MC.
+
+For the feature SD_ASYM_PACKING and SD_ASYM_CPUCAPACITY, for guts of 2 features, is it possible to combine them into one, if we give a little bit more capacity to priority cpus, like 5%?
+
+Thanks
+Alex
 
