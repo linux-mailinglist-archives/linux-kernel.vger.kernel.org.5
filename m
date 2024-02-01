@@ -1,108 +1,112 @@
-Return-Path: <linux-kernel+bounces-47777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE5518452AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:27:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 303748452A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:26:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3EE1B25792
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:27:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4E9B1F287F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:26:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1D4315AAB2;
-	Thu,  1 Feb 2024 08:26:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E211F159591;
+	Thu,  1 Feb 2024 08:26:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nsjYj7+v"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="izkQ1vgd"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2691715A499;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B49015957F;
 	Thu,  1 Feb 2024 08:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706775986; cv=none; b=rJ8fChhKrZO2DgQnu7sg8Jw4qmOpIN8D1nE0LoZbd6YPS9I/8kzXaUTqC7wO51ICRLkGAO2Wv0TUQcUTNkjxxdm0yCXu4Xdoys9/NdseSHipOZkorx8Vi1K5NXaQhhP9wEvrusXmByen82SROYHiOPj1vAXNWqMp9+Jv276nE6k=
+	t=1706775985; cv=none; b=uZxfYGWdvBu3bzBD0xW656/U6XJnyec7zD9kzAHsQBwz2tEvgsgFxnGMqGqHPX95yh6U1NP2NfSXk4eTheiwBXpr0UdbkT4PtXwT0nU7eaNhxrNaN7MYCZzOd6ulAa+6uG8B3hfPzOwYZnI90AJDXjgzynt3AgKXq+ihnbkZ7Dw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706775986; c=relaxed/simple;
-	bh=XpKiZdYw73rtXNsgKWeaOkuxm+QdTdp3TunoJ61mePs=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=uCOhOKCiXIOEd513i64cUbhJgXKqCxzY18HwtIGzv2I2kf/lX7sM88VKM8dbWnpvrkoT5/A3rbqbNOhCBq4C5Y9yZoZvh+gMVu5VuYkMgXrdObBfsSUvxrMkRM9XHDAc+RFhWbHR+JX0NnJbModFZL/ZgWgUGRc33CE0us/Wazg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nsjYj7+v; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706775985; x=1738311985;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=XpKiZdYw73rtXNsgKWeaOkuxm+QdTdp3TunoJ61mePs=;
-  b=nsjYj7+vsXyNJcehqFZzk08MXS7kXSCleunOBfXkpmJ9wErSDCIGenE7
-   BunOkfqhDqDoGzlnQ/Qqetp1nkORdxEQV754aJksuhIJc32dk9wCEUoOk
-   0OUR96VaVCaSEfYDyAOUTKrxWQdyK2MfFVt7mF6YVmi0nzXL3bGbKSzMZ
-   XIc5sYRzQFYZ3ZD57mSe0XnP40xHKxicZoln9bvrlRmz61bfWelIYgRsO
-   RxSAiNbw/Gkb8qLYkPP7VH4MyBnPSdTaNojZksxWPQelb2tXusd7SYL2o
-   ljq/dy3WJUkj7tBzZaU8NYGJRFzZMnG9RecVNydbHtradBtKDbodZ85AC
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="22232"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="22232"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 00:26:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="24057"
-Received: from lutzwalt-mobl.ger.corp.intel.com (HELO localhost) ([10.246.33.1])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 00:25:58 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Thu, 1 Feb 2024 10:25:53 +0200 (EET)
-To: Maximilian Luz <luzmaximilian@gmail.com>
-cc: Guenter Roeck <linux@roeck-us.net>, Ivor Wanders <ivor@iwanders.net>, 
-    Hans de Goede <hdegoede@redhat.com>, Jean Delvare <jdelvare@suse.com>, 
-    Jonathan Corbet <corbet@lwn.net>, Mark Gross <markgross@kernel.org>, 
-    linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] platform/surface: aggregator_registry: add entry
- for fan speed
-In-Reply-To: <8552a795-9ce4-417a-bc71-593571a6b363@gmail.com>
-Message-ID: <6659d49c-4a70-1a92-2a76-ce7144fed50c@linux.intel.com>
-References: <20240131005856.10180-1-ivor@iwanders.net> <20240131005856.10180-3-ivor@iwanders.net> <7e392c1e-2cb2-43e4-804e-227551ed2dd7@roeck-us.net> <8552a795-9ce4-417a-bc71-593571a6b363@gmail.com>
+	s=arc-20240116; t=1706775985; c=relaxed/simple;
+	bh=knJJzWChot6X2VFh0WEfUeOlcQaLFTlFMogt5kBThYc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OcidzaC6Wc5sTb0NSJ9MxM96IH75tZEZ8yIhzBsIRNluDUGF/xWkuW2pU7bl6m1XvUFhPImM3Jyk1Vo9WV8hkTckCG/OG4SC24/C3Nh8QAlfy3RttwDoYOYDMF6Z0caQ5Rofa05VqyhjGwHBCHtqIw1AhHmecHUj3XpxxSAYK5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=izkQ1vgd; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a28a6cef709so85899666b.1;
+        Thu, 01 Feb 2024 00:26:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706775982; x=1707380782; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wknF7XfhG8tU0qg5dVgdBNdPsQJNDA0DXfRviA7Oev0=;
+        b=izkQ1vgdlJblx9CBD05gcWTAW9RFD0oNeZAtA7ih3akowI1EQbYvbloAXCM/JNv9hl
+         HGY3uqgOeGe5Vi28Kd1Fwfwr1Wzm4pZbju1Tr+PU1Rr01qn2zCL3csOnc4dDx0Qr78bG
+         mf5xyzSoF9UqOxiZWfOeRK76XW9GTbPzSP2nYKQ4ei8quHvxtj/Cb7NWgXso/m6QGkm5
+         1JgxOpRy5rFps635s1W1xYN5uolNx75bo6qVWgVDnnFzmu93D/iklVdiZSc+3u/2gF5F
+         q9ik3klixMgNJv57iftEX9CPkl4oayZ7ZkwEGzIU6iPx7GUQe1mYiyhcZeaP9NLN8+Kw
+         hmNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706775982; x=1707380782;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wknF7XfhG8tU0qg5dVgdBNdPsQJNDA0DXfRviA7Oev0=;
+        b=oTjj/osuYaEVQxneX7ROmZBFbWF2HiRjapUQARaRAJ04+CrpVrk0ERql09r1QBaUmf
+         1xlIjhOKmycObagBLkm5Ph9ZKBsGfzYdd+G50BT971TfejQcwGmYfuIvCYv4ICpzNYRe
+         Bi6mIVOoITY88oP38M3sw9XzZNiDyd7H1mxNEiDy5bPPHe0b+OvLnN+TfekL5U+1gB/M
+         sm/5iA+aO2qhLyMO9cjrmP3mKDOIinjtIi3WaarCVgKn+gnl4oIw48ae7eB7SWgxz+Fd
+         RUPUuev68YmmySa/V6FeJf3HqxdJzotvbJf6FLtNTPhe/Kbip26GIKPpPYQNT9S+IU2O
+         PRDA==
+X-Gm-Message-State: AOJu0YzDfzTnncVmTRN4pA0B0k+GuXB3Q8Dpq4dIHjtisQp5MZg4UGLp
+	5sz8HKIWFgv/wDJqj9HIbGhy1xP3jiqxwE+19v2thM8xRI+R0SrT
+X-Google-Smtp-Source: AGHT+IEh3MZ9iHUhPviRYTlqzQo6tIbLK5NyJ10RL3fuXuHdtpdrprze52LPElRCtt+oo3YbL/CGIg==
+X-Received: by 2002:a17:906:278c:b0:a35:d914:c33e with SMTP id j12-20020a170906278c00b00a35d914c33emr2652050ejc.52.1706775981529;
+        Thu, 01 Feb 2024 00:26:21 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXmnA3fbWCQG3HQHXGYZ9KzJdOqAkX/clkebtqocjZDoKxNhiPpEHbdbtRjfriOSgP9godqO6S45NtH+l3zqP7g7P6xM3jjBhYG0AulYL1U+WVH2t8RSrb5BrzTyEZ/En8Ha+3tOOLIgrqq+gnmmGtOutDWFhtQZEmFvgxLvuaE45cJITCHLp8p6HW7ER6zN2kZjrXwusdY+iqSgeb0rq+HoiRje7m/NOZLMsJ+z/5TrSlRJEqINveAx1ErRkFFiR1T3ExOJEH4tDlXB8tKSsE/WEikRpWAgQE=
+Received: from localhost.localdomain ([213.55.221.11])
+        by smtp.gmail.com with ESMTPSA id pk27-20020a170906d7bb00b00a35242f5976sm6171849ejb.164.2024.02.01.00.26.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 00:26:20 -0800 (PST)
+From: Ali Zahraee <ahzahraee@gmail.com>
+To: rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com,
+	shuah@kernel.org
+Cc: Ali Zahraee <ahzahraee@gmail.com>,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH] selftests: ftrace: fix typo in test report
+Date: Thu,  1 Feb 2024 09:25:57 +0100
+Message-Id: <20240201082557.15965-1-ahzahraee@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 
-On Wed, 31 Jan 2024, Maximilian Luz wrote:
+This is just another trivial typo fix. The typo shows up in the final
+report after tests are done.
 
-> Am 1/31/2024 um 2:24 PM schrieb Guenter Roeck:
-> > On Tue, Jan 30, 2024 at 07:58:56PM -0500, Ivor Wanders wrote:
-> > > Add an entry for the fan speed function.
-> > > Add this new entry to the Surface Pro 9 group.
-> > > 
-> > > Signed-off-by: Ivor Wanders <ivor@iwanders.net>
-> > > Link: https://github.com/linux-surface/kernel/pull/144
-> > > Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
-> > 
-> > I wasn't sure if the Reviewed-by: tag means that I should apply the patch
-> > through the hwmon subsystem. If so, please let me know. For now I'll
-> > assume that it will be applied through a platform tree.
-> 
-> I think it would make more sense for it to go through pdx86 (as usual
-> for platform/surface). That would avoid any potential merge conflicts
-> if we get more changes to the surface_aggregator_registry later on.
-> 
-> Hans, Ilpo, could you please take this?
-> 
-> Also I just noticed that Ilpo wasn't CCd, I assume because of an older
-> MAINTAINERS list. Ivor, please add him for any next submissions to
-> platform/surface.
+Signed-off-by: Ali Zahraee <ahzahraee@gmail.com>
+---
+ tools/testing/selftests/ftrace/ftracetest | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Okay, thanks for letting me know (I assumed the opposite). I'll take it 
-through pdx86.
-
+diff --git a/tools/testing/selftests/ftrace/ftracetest b/tools/testing/selftests/ftrace/ftracetest
+index c778d4dcc17e..25d4e0fca385 100755
+--- a/tools/testing/selftests/ftrace/ftracetest
++++ b/tools/testing/selftests/ftrace/ftracetest
+@@ -504,7 +504,7 @@ prlog "# of undefined(test bug): " `echo $UNDEFINED_CASES | wc -w`
+ if [ "$KTAP" = "1" ]; then
+   echo -n "# Totals:"
+   echo -n " pass:"`echo $PASSED_CASES | wc -w`
+-  echo -n " faii:"`echo $FAILED_CASES | wc -w`
++  echo -n " fail:"`echo $FAILED_CASES | wc -w`
+   echo -n " xfail:"`echo $XFAILED_CASES | wc -w`
+   echo -n " xpass:0"
+   echo -n " skip:"`echo $UNTESTED_CASES $UNSUPPORTED_CASES | wc -w`
 -- 
- i.
+2.34.1
 
 
