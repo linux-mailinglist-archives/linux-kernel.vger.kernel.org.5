@@ -1,222 +1,89 @@
-Return-Path: <linux-kernel+bounces-47897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01698845447
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:41:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0523D84544A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:41:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 808291F27C0D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:41:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98DE81F24471
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:41:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A17AE15CD4F;
-	Thu,  1 Feb 2024 09:39:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBE2F4DA0E;
+	Thu,  1 Feb 2024 09:40:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FPKKqRfT"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bOdD5Fm5";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vQerAkrn"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 013DC15CD46;
-	Thu,  1 Feb 2024 09:39:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8724C4DA05
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 09:40:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706780380; cv=none; b=CWIX+mbkHVaOH1/Na6WJsWOyXGApa80Cxv0CqE8PaNa+1kBGDEdfVfxUS+H5MbYMP2NlDVZ3vfyB5kwFJbXsLxVTA2A3m9w1B8XnpkDYVETZNPhlkC2By0HuiCZf+wulT/fqkaDXyZcA+IPDKTzPvsTWG0fBtcoPAA4u1J5TR4g=
+	t=1706780415; cv=none; b=nhN/foN6V66DBjMP392sOigJsuA92LoDqzQdMwYeONucsRc4vDluAhX9jpK3uIJ7ZJOIcYTZ1jccEEpV0BxjN2ngkvsB/MQrY9//3gji55gK/YyMIlu2PsrwYVL8a7jU2bSgx8bGWv+w/uH7NRS9GuHuVD8LL3RXCfqh1SxX7TU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706780380; c=relaxed/simple;
-	bh=SxZGJXR/5Za9XHdSodFNXRgmS/8/RLHnfvyBWtyAkKg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZbrhgiN8PxSlyDKtymVVks0X2kzNWT/53V95Q3qZEsWpWT3Kzk/9PkRhl5et2eXnkEeOtjdQAFjuvHqs1Tk95a4iTpYSG99PlGfFgvbIJyuPjORO4i9Z4hZW5gm0nFdB1ve72yGVE4j9Kias4wSZhHGsEJsGVUZz7Kw+rf9ZjzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FPKKqRfT; arc=none smtp.client-ip=192.55.52.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706780379; x=1738316379;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=SxZGJXR/5Za9XHdSodFNXRgmS/8/RLHnfvyBWtyAkKg=;
-  b=FPKKqRfTsl+hfVXUQS+r9B1ghyNZubioGZfKFhuQMMdHmLfF3on2ymTw
-   yUihFmviaUfH04TERCbuZA5EdPujxuEtn6EYMRV7wEOC+bbiHBUlSJrN7
-   lcCBjWLrLPtTzjvW3ofXbbu2R7biLleOKxOPUhru7okKXaMZVK8qpsoNs
-   qAK7hfRH0MpVT1OVubhW1ZNEAKEhUF+kHNUm1bnEDCLFlVXicdGVaBXwr
-   HDkWGD+Z5I1k3uQSzJRCujRhXeUjZPllb4Nxt9nW3X/NnMYHxn86pAXAf
-   hlMY+C47W9+vBpEH1zJuOhnZBfpka9z51UcdKJQi2BDsHIxdldX6iibHj
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="402700434"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="402700434"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 01:39:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="788896822"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="788896822"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.33.17]) ([10.93.33.17])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 01:39:34 -0800
-Message-ID: <750b9252-fc0a-490e-96e5-d90525053c4f@intel.com>
-Date: Thu, 1 Feb 2024 17:39:30 +0800
+	s=arc-20240116; t=1706780415; c=relaxed/simple;
+	bh=Yw6CwQJLniazKUtT+U8g4/MPXo7C7LOlF0oEgz0Hd6Y=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=joGn3dYdoWmB7o7q3FasXAOsHcjBTIR+QOxWYYfgV8HPbQFCAh6i61wEIjhY6iXTdtdNZJrutWULf1DyK+pHtDoyKXBPZs2f1wEQC9pLw+QxMIZeoHTLeb9oAIP7oJQxpnZBJWAJHYmHbYEsbe9oz9hOEKQ9dAZq0xDHo2yXGmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bOdD5Fm5; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vQerAkrn; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706780411;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L9Q5jjgLj7eKlaEplPRaPpJNFTv/wD2bvjRT6tpdFWY=;
+	b=bOdD5Fm52sMGMNvlYxz+G0SbuJ8CA7fxNcoLfj0XhHW56JEzbfm3ZZwM2h4vpz2eb4vbRj
+	X22gG30mWHdPEVXdy+XhjqKCHsy5c+vZKngice0MF6GTqqG6vVSxGlPCxrP1VtnAxR2Pe8
+	7pqgyDmcCYx5rJFncWP4UKjC6P3TkQ9exOt19hU80zBNV3eIEoBlT0B8QNaFtnFhpvKZHk
+	mL2FHM9YdZ1ZiZu6gndH+l5sDCNZv6EyBUKeroLXrU0NHim4pCvR0i5oqwKF10UQ9/9rwm
+	UWd6WA9SPnANYTwnSs3gB3EPtMTuqEcUFZkIm8vFCZHWvjPc/lSchpw36JTVXQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706780411;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L9Q5jjgLj7eKlaEplPRaPpJNFTv/wD2bvjRT6tpdFWY=;
+	b=vQerAkrngqmJyay481fVBltJpflVSbLF5biadgNMh/Ff9sFj/XnNsfmXhNEQFMEnEJ9or8
+	QSrfr4Xkp5PP/JCQ==
+To: Frederic Weisbecker <frederic@kernel.org>, LKML
+ <linux-kernel@vger.kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>, Peng Liu
+ <liupeng17@lenovo.com>, Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 03/15] tick: Remove useless oneshot ifdeffery
+In-Reply-To: <20240131231120.12006-4-frederic@kernel.org>
+References: <20240131231120.12006-1-frederic@kernel.org>
+ <20240131231120.12006-4-frederic@kernel.org>
+Date: Thu, 01 Feb 2024 10:40:10 +0100
+Message-ID: <87ttmsikud.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v18 009/121] KVM: TDX: Add placeholders for TDX VM/vcpu
- structure
-Content-Language: en-US
-To: isaku.yamahata@intel.com, kvm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <bb29cde17a53fc1afdabdf24cb88ad1d35d6b4a2.1705965634.git.isaku.yamahata@intel.com>
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <bb29cde17a53fc1afdabdf24cb88ad1d35d6b4a2.1705965634.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 1/23/2024 7:52 AM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
-> 
-> Add placeholders TDX VM/vcpu structure that overlays with VMX VM/vcpu
-> structures.  Initialize VM structure size and vcpu size/align so that x86
-> KVM common code knows those size irrespective of VMX or TDX.  Those
-> structures will be populated as guest creation logic develops.
-> 
-> Add helper functions to check if the VM is guest TD and add conversion
-> functions between KVM VM/VCPU and TDX VM/VCPU.
-> 
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> 
-> ---
-> v14 -> v15:
-> - use KVM_X86_TDX_VM
-> ---
->   arch/x86/kvm/vmx/main.c | 18 +++++++++++++--
->   arch/x86/kvm/vmx/tdx.c  |  1 +
->   arch/x86/kvm/vmx/tdx.h  | 50 +++++++++++++++++++++++++++++++++++++++++
->   3 files changed, 67 insertions(+), 2 deletions(-)
->   create mode 100644 arch/x86/kvm/vmx/tdx.h
-> 
-> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
-> index 1e1feaacac59..f6b66f18c070 100644
-> --- a/arch/x86/kvm/vmx/main.c
-> +++ b/arch/x86/kvm/vmx/main.c
-> @@ -5,6 +5,7 @@
->   #include "vmx.h"
->   #include "nested.h"
->   #include "pmu.h"
-> +#include "tdx.h"
->   
->   static bool enable_tdx __ro_after_init;
->   module_param_named(tdx, enable_tdx, bool, 0444);
-> @@ -216,6 +217,21 @@ static int __init vt_init(void)
->   	 */
->   	hv_init_evmcs();
->   
-> +	/*
-> +	 * kvm_x86_ops is updated with vt_x86_ops.  vt_x86_ops.vm_size must
-> +	 * be set before kvm_x86_vendor_init().
-> +	 */
-> +	vcpu_size = sizeof(struct vcpu_vmx);
-> +	vcpu_align = __alignof__(struct vcpu_vmx);
-> +	if (enable_tdx) {
+Frederic Weisbecker <frederic@kernel.org> writes:
 
-until now, 'enable_tdx' is totally decided by module_param, which might 
-change from Y to N if tdx fails enabling. In this case, the below should 
-not be updated.
+> tick-sched.c is only built when CONFIG_TICK_ONESHOT=y, which is selected
+> only if CONFIG_NO_HZ_COMMON=y or CONFIG_HIGH_RES_TIMERS=y. Therefore
+> the related ifdeferry in this file is needless and can be removed.
+>
+> Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-> +		vt_x86_ops.vm_size = max_t(unsigned int, vt_x86_ops.vm_size,
-> +					   sizeof(struct kvm_tdx));
-> +		vcpu_size = max_t(unsigned int, vcpu_size,
-> +				  sizeof(struct vcpu_tdx));
-> +		vcpu_align = max_t(unsigned int, vcpu_align,
-> +				   __alignof__(struct vcpu_tdx));
-> +	}
-> +
->   	r = vmx_init();
->   	if (r)
->   		goto err_vmx_init;
-> @@ -228,8 +244,6 @@ static int __init vt_init(void)
->   	 * Common KVM initialization _must_ come last, after this, /dev/kvm is
->   	 * exposed to userspace!
->   	 */
-> -	vcpu_size = sizeof(struct vcpu_vmx);
-> -	vcpu_align = __alignof__(struct vcpu_vmx);
->   	r = kvm_init(vcpu_size, vcpu_align, THIS_MODULE);
->   	if (r)
->   		goto err_kvm_init;
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> index 8a378fb6f1d4..1c9884164566 100644
-> --- a/arch/x86/kvm/vmx/tdx.c
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -6,6 +6,7 @@
->   #include "capabilities.h"
->   #include "x86_ops.h"
->   #include "x86.h"
-> +#include "tdx.h"
->   
->   #undef pr_fmt
->   #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> diff --git a/arch/x86/kvm/vmx/tdx.h b/arch/x86/kvm/vmx/tdx.h
-> new file mode 100644
-> index 000000000000..473013265bd8
-> --- /dev/null
-> +++ b/arch/x86/kvm/vmx/tdx.h
-> @@ -0,0 +1,50 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __KVM_X86_TDX_H
-> +#define __KVM_X86_TDX_H
-> +
-> +#ifdef CONFIG_INTEL_TDX_HOST
-> +struct kvm_tdx {
-> +	struct kvm kvm;
-> +	/* TDX specific members follow. */
-> +};
-> +
-> +struct vcpu_tdx {
-> +	struct kvm_vcpu	vcpu;
-> +	/* TDX specific members follow. */
-> +};
-> +
-> +static inline bool is_td(struct kvm *kvm)
-> +{
-> +	return kvm->arch.vm_type == KVM_X86_TDX_VM;
-> +}
-> +
-> +static inline bool is_td_vcpu(struct kvm_vcpu *vcpu)
-> +{
-> +	return is_td(vcpu->kvm);
-> +}
-> +
-> +static inline struct kvm_tdx *to_kvm_tdx(struct kvm *kvm)
-> +{
-> +	return container_of(kvm, struct kvm_tdx, kvm);
-> +}
-> +
-> +static inline struct vcpu_tdx *to_tdx(struct kvm_vcpu *vcpu)
-> +{
-> +	return container_of(vcpu, struct vcpu_tdx, vcpu);
-> +}
-> +#else
-> +struct kvm_tdx {
-> +	struct kvm kvm;
-> +};
-> +
-> +struct vcpu_tdx {
-> +	struct kvm_vcpu	vcpu;
-> +};
-> +
-> +static inline bool is_td(struct kvm *kvm) { return false; }
-> +static inline bool is_td_vcpu(struct kvm_vcpu *vcpu) { return false; }
-> +static inline struct kvm_tdx *to_kvm_tdx(struct kvm *kvm) { return NULL; }
-> +static inline struct vcpu_tdx *to_tdx(struct kvm_vcpu *vcpu) { return NULL; }
-> +#endif /* CONFIG_INTEL_TDX_HOST */
-> +
-> +#endif /* __KVM_X86_TDX_H */
+It's a nitpick, but shouldn't the ordering of sob and reviewed-by be the
+other way round?
+
+Thanks,
+
+	Anna-Maria
 
 
