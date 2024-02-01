@@ -1,322 +1,602 @@
-Return-Path: <linux-kernel+bounces-48703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41978845FF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:32:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F979846080
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:59:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A088C1F241E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:32:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4767AB2503B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:59:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C300662158;
-	Thu,  1 Feb 2024 18:32:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEE3A84FDE;
+	Thu,  1 Feb 2024 18:59:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gSsdxOkd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="Mjhp/YgE"
+Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF82F12FB0E;
-	Thu,  1 Feb 2024 18:32:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E07084FC0;
+	Thu,  1 Feb 2024 18:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706812334; cv=none; b=ufiqQjOqCoFpw+tyousiv6HvWQSNnmoq57oQcW8vMEbQ92Cb/akqpjiDsWOJE6Khgt/ZdmtsjorfYDUl6lFCdEzeS6OfDHqZXZzkTO5hYRyJmqjou2cO7BJTecSRS8cIIEQUfFuVZfeNOMjtVPngooj57hz0Vjt++akbyphL9Os=
+	t=1706813970; cv=none; b=hBOuIJl+lOLr9Ew6ceojNmq4IR3bsg+fg7jyIet8SFJ8Y0OTZ8Oo/i6m0zvnvOQLt3sQ9/vWqY5VJnC3ZDHOY+nbcrW3693a086pyZJMP//OLsQeFGh1WsA7dBJ7+vGrWHYjIeZkaK3xfZiG7Nir0Spv+rfkP7uvk0FEN2O53G8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706812334; c=relaxed/simple;
-	bh=HBONCdrxzDqsxndhvVUnYO6LFvC8ZcUi1vLplgj5IO8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K/yidI5sloCES8F70OtTEGsNmk++zngN/VDceUvMs2ljX8dzLmJVOJI9ZrHwS0e29g2uPGeUYD9DmhvqQeYpucPfqWkjvRmpmvUU1LQkt5oV+1BXR6woEjx5K/cxdBqKVw5Y7bVGteg54PmoEhUrV6322bh+BIC2wNP8ltwnwtk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gSsdxOkd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EF8DC433C7;
-	Thu,  1 Feb 2024 18:32:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706812334;
-	bh=HBONCdrxzDqsxndhvVUnYO6LFvC8ZcUi1vLplgj5IO8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gSsdxOkdBhbQAtPx9jBFEUfHGCwzCZ6edeHKJcNVeywrqCdY9zdUgOVZgDCnj+Z8+
-	 7GkqdwI0CTph2ii7IV8ROrZkSAVVIOYonb7Ij+kvVfiMENKSQYlakprWWFCB+t63pZ
-	 j1ZtdSPIid5DyqCluM5OBkoY1MFI6ik6QNKyT2ZaqdVa8aX1Nx92NpsIHhhQLXlXTT
-	 an00Jwx5gLXg781IrDQtS907l1GxqExYTbW5hEhdUl28Rzqojgqj/W9+u3bONiW0Oj
-	 3thn3wbo+tD9lAEZFbD/CFgCBBUi1Bqnu8+GNFKnK8TGM6atGxhKuV1rM8oIFok4eK
-	 1U7gsZzUm0BFg==
-Date: Thu, 1 Feb 2024 18:32:09 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Charles Hsu <ythsu0511@gmail.com>,
-	linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: trivial-devices: sort entries
- alphanumerically
-Message-ID: <20240201-silliness-unfair-265a0d896377@spud>
-References: <20240201075805.7492-1-krzysztof.kozlowski@linaro.org>
- <5461a237-1df4-4077-86ef-e9ff6ff17e27@roeck-us.net>
+	s=arc-20240116; t=1706813970; c=relaxed/simple;
+	bh=AOqkuc3mA1ZmdTqkaTNKPOdUeF+sPETOFfQiypVXHO8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=VB+T4aqRjFg5IvSsHxTCKQ+uHWtTGtnZ4ZUGvrOxQhSIEtUZtf+fEnMx2tLpiEroyLkPdv19kgbhsEXYGmsK3ji86AOuT2Q548RqkMmTCUDeufvpONDbfGHMqJSxySz3+UaBKwhFLd8s42uH1n6yTG3xaV7yVF5xc7U8bMgjcsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=Mjhp/YgE; arc=none smtp.client-ip=91.207.212.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 411CS7sK012505;
+	Thu, 1 Feb 2024 19:33:48 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=gzJ24ZXAV5ws0PQ9Gy6w1fWQIRpK+wHRqE6kVfCt1BI=; b=Mj
+	hp/YgEEe3T/JJxUrdCB5EfLXyWzRH5pVlkUZ8sS8wd9AtvTMWepWYG8E3xYFWBrZ
+	ZDnqsa+5Ihw5KgAfB4+U8fMy1CMmEgyZdtM5/N9CA30/WtNrfOLEBuuAcPwAuz8F
+	GEbQoXa5svCNkLOQoq37BpqPrApuZbNy9CUS7GpKNcYB2tXKsX9fY+K3voOo40vC
+	zf4SMTaTuWHQrF2xMkKSsbeFDfJQIIb86ihtzKmzbtRXTOXktP4beD0+232ezJYe
+	OLp4YOO2ucUAtr8e7+MEZ1fUD0eurF4iEX9qpjH/8CpGVZ2c3o5jdAQPC/xaLZQ5
+	Ut7W+c50XZOX8I20L+cw==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vwdnp3u6p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 01 Feb 2024 19:33:48 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id ADD29100053;
+	Thu,  1 Feb 2024 19:33:37 +0100 (CET)
+Received: from Webmail-eu.st.com (eqndag1node4.st.com [10.75.129.133])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8E28B2C38BF;
+	Thu,  1 Feb 2024 19:33:37 +0100 (CET)
+Received: from SAFDAG1NODE1.st.com (10.75.90.17) by EQNDAG1NODE4.st.com
+ (10.75.129.133) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 1 Feb
+ 2024 19:33:37 +0100
+Received: from [10.201.20.75] (10.201.20.75) by SAFDAG1NODE1.st.com
+ (10.75.90.17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 1 Feb
+ 2024 19:33:36 +0100
+Message-ID: <a52e00c5-fb60-4a9e-85ff-0f9649850f48@foss.st.com>
+Date: Thu, 1 Feb 2024 19:33:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="N+zoBAHBXolU7sZ9"
-Content-Disposition: inline
-In-Reply-To: <5461a237-1df4-4077-86ef-e9ff6ff17e27@roeck-us.net>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/4] remoteproc: stm32: Add support of an OP-TEE TA to
+ load the firmware
+Content-Language: en-US
+To: Mathieu Poirier <mathieu.poirier@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Jens Wiklander
+	<jens.wiklander@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <op-tee@lists.trustedfirmware.org>, <devicetree@vger.kernel.org>
+References: <20240118100433.3984196-1-arnaud.pouliquen@foss.st.com>
+ <20240118100433.3984196-5-arnaud.pouliquen@foss.st.com>
+ <ZbPnsJm67G10+HQ3@p14s> <7ec6c9e8-9267-4e7c-81a4-abcdb2ab4239@foss.st.com>
+ <ZbqW5YfDmEWG4G1X@p14s> <8ede77bb-0fbc-4de2-b51b-67674744b551@foss.st.com>
+ <ZbvAmxHscnbUQGOD@p14s>
+From: Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Organization: STMicroelectronics
+In-Reply-To: <ZbvAmxHscnbUQGOD@p14s>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SAFDAG1NODE1.st.com
+ (10.75.90.17)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-01_05,2024-01-31_01,2023-05-22_02
 
 
---N+zoBAHBXolU7sZ9
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 01, 2024 at 05:25:13AM -0800, Guenter Roeck wrote:
-> On 1/31/24 23:58, Krzysztof Kozlowski wrote:
-> > Sort entries alphanumerically.  This was a semi manual job with help of:
-> >=20
-> >    cat Documentation/devicetree/bindings/trivial-devices.yaml | grep ' =
-   - ' > old
-> >    cat old | sort -n > new
-> >    diff -ubB old new
-> >=20
-> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> >=20
->=20
-> Acked-by: Guenter Roeck <linux@roeck-us.net>
+On 2/1/24 17:02, Mathieu Poirier wrote:
+> On Thu, Feb 01, 2024 at 04:06:37PM +0100, Arnaud POULIQUEN wrote:
+>> hello Mathieu,
+>>
+>> On 1/31/24 19:52, Mathieu Poirier wrote:
+>>> On Tue, Jan 30, 2024 at 10:13:48AM +0100, Arnaud POULIQUEN wrote:
+>>>>
+>>>>
+>>>> On 1/26/24 18:11, Mathieu Poirier wrote:
+>>>>> On Thu, Jan 18, 2024 at 11:04:33AM +0100, Arnaud Pouliquen wrote:
+>>>>>> The new TEE remoteproc device is used to manage remote firmware in a
+>>>>>> secure, trusted context. The 'st,stm32mp1-m4-tee' compatibility is
+>>>>>> introduced to delegate the loading of the firmware to the trusted
+>>>>>> execution context. In such cases, the firmware should be signed and
+>>>>>> adhere to the image format defined by the TEE.
+>>>>>>
+>>>>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+>>>>>> ---
+>>>>>> V1 to V2 update:
+>>>>>> - remove the select "TEE_REMOTEPROC" in STM32_RPROC config as detected by
+>>>>>>   the kernel test robot:
+>>>>>>      WARNING: unmet direct dependencies detected for TEE_REMOTEPROC
+>>>>>>      Depends on [n]: REMOTEPROC [=y] && OPTEE [=n]
+>>>>>>      Selected by [y]:
+>>>>>>      - STM32_RPROC [=y] && (ARCH_STM32 || COMPILE_TEST [=y]) && REMOTEPROC [=y]
+>>>>>> - Fix initialized trproc variable in  stm32_rproc_probe
+>>>>>> ---
+>>>>>>  drivers/remoteproc/stm32_rproc.c | 149 +++++++++++++++++++++++++++++--
+>>>>>>  1 file changed, 144 insertions(+), 5 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+>>>>>> index fcc0001e2657..cf6a21bac945 100644
+>>>>>> --- a/drivers/remoteproc/stm32_rproc.c
+>>>>>> +++ b/drivers/remoteproc/stm32_rproc.c
+>>>>>> @@ -20,6 +20,7 @@
+>>>>>>  #include <linux/remoteproc.h>
+>>>>>>  #include <linux/reset.h>
+>>>>>>  #include <linux/slab.h>
+>>>>>> +#include <linux/tee_remoteproc.h>
+>>>>>>  #include <linux/workqueue.h>
+>>>>>>  
+>>>>>>  #include "remoteproc_internal.h"
+>>>>>> @@ -49,6 +50,9 @@
+>>>>>>  #define M4_STATE_STANDBY	4
+>>>>>>  #define M4_STATE_CRASH		5
+>>>>>>  
+>>>>>> +/* Remote processor unique identifier aligned with the Trusted Execution Environment definitions */
+>>>>>> +#define STM32_MP1_M4_PROC_ID    0
+>>>>>> +
+>>>>>>  struct stm32_syscon {
+>>>>>>  	struct regmap *map;
+>>>>>>  	u32 reg;
+>>>>>> @@ -90,6 +94,8 @@ struct stm32_rproc {
+>>>>>>  	struct stm32_mbox mb[MBOX_NB_MBX];
+>>>>>>  	struct workqueue_struct *workqueue;
+>>>>>>  	bool hold_boot_smc;
+>>>>>> +	bool fw_loaded;
+>>>>>> +	struct tee_rproc *trproc;
+>>>>>>  	void __iomem *rsc_va;
+>>>>>>  };
+>>>>>>  
+>>>>>> @@ -257,6 +263,91 @@ static int stm32_rproc_release(struct rproc *rproc)
+>>>>>>  	return err;
+>>>>>>  }
+>>>>>>  
+>>>>>> +static int stm32_rproc_tee_elf_sanity_check(struct rproc *rproc,
+>>>>>> +					    const struct firmware *fw)
+>>>>>> +{
+>>>>>> +	struct stm32_rproc *ddata = rproc->priv;
+>>>>>> +	unsigned int ret = 0;
+>>>>>> +
+>>>>>> +	if (rproc->state == RPROC_DETACHED)
+>>>>>> +		return 0;
+>>>>>> +
+>>>>>> +	ret = tee_rproc_load_fw(ddata->trproc, fw);
+>>>>>> +	if (!ret)
+>>>>>> +		ddata->fw_loaded = true;
+>>>>>> +
+>>>>>> +	return ret;
+>>>>>> +}
+>>>>>> +
+>>>>>> +static int stm32_rproc_tee_elf_load(struct rproc *rproc,
+>>>>>> +				    const struct firmware *fw)
+>>>>>> +{
+>>>>>> +	struct stm32_rproc *ddata = rproc->priv;
+>>>>>> +	unsigned int ret;
+>>>>>> +
+>>>>>> +	/*
+>>>>>> +	 * This function can be called by remote proc for recovery
+>>>>>> +	 * without the sanity check. In this case we need to load the firmware
+>>>>>> +	 * else nothing done here as the firmware has been preloaded for the
+>>>>>> +	 * sanity check to be able to parse it for the resource table.
+>>>>>> +	 */
+>>>>>
+>>>>> This comment is very confusing - please consider refactoring.  
+>>>>>
+>>>>>> +	if (ddata->fw_loaded)
+>>>>>> +		return 0;
+>>>>>> +
+>>>>>
+>>>>> I'm not sure about keeping a flag to indicate the status of the loaded firmware.
+>>>>> It is not done for the non-secure method, I don't see why it would be needed for
+>>>>> the secure one.
+>>>>>
+>>>>
+>>>> The difference is on the sanity check.
+>>>> - in rproc_elf_sanity_check we  parse the elf file to verify that it is
+>>>> valid.
+>>>> - in stm32_rproc_tee_elf_sanity_check we have to do the same, that means to
+>>>> authenticate it. the authentication is done during the load.
+>>>>
+>>>> So this flag is used to avoid to reload it twice time.
+>>>> refactoring the comment should help to understand this flag
+>>>>
+>>>>
+>>>> An alternative would be to bypass the sanity check. But this lead to same
+>>>> limitation.
+>>>> Before loading the firmware in remoteproc_core, we call rproc_parse_fw() that is
+>>>> used to get the resource table address. To get it from tee we need to
+>>>> authenticate the firmware so load it...
+>>>>
+>>>
+>>> I spent a long time thinking about this patchset.  Looking at the code as it
+>>> is now, request_firmware() in rproc_boot() is called even when the TEE is
+>>> responsible for loading the firmware.  There should be some conditional code
+>>> that calls either request_firmware() or tee_rproc_load_fw().  The latter should
+>>> also be renamed to tee_rproc_request_firmware() to avoid confusion.
+>>
+>>
+>> The request_firmware() call is needed in both cases to get the image from the
+>> filesystem. The tee_rproc_load_fw() gets, as input, the struct firmware provided
+>> by request_firmware().
+> 
+> The cover letter clearly state the secure side is responsible for loading the
+> firmware image but here you're telling me it has to be loaded twice.  This is
+> very confusing.
 
-z sorts before a, please fix in the whole file.
+Concerning the call of request_firmware()
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+By "both cases" I would say that the call of request_firmware() is needed in
+both modes:
+- the ELF firmware is parsed and loaded by linux (legacy)
+- the binary firmware is parsed and loaded by OP-TEE.
+
+The Op-TEE is not able to get the firmware image from the file system.
+
+
+Concerning the call of tee_rproc_load_fw twice time
+
+There are 2 use cases:
+
+- First boot of the remote processor:
+
+  1) The Linux rproc gets the binary firmware image from the file system by
+     calling  request_firmware(). A copy is stored in memory.
+  2) the linux performs a sanity check on the firmware calling
+     rproc_fw_sanity_check()
+	=> from OP-TEE point of view this means to autenticate the firmware
+	=> let consider in this exemple that we bypass this step
+           (ops->sanity_check = NULL)
+		
+  3) the linux rproc call rproc_parse_fw() to get the resource table
+	=> From OP-TEE point of view the resource table is available only when
+           the firmware is loaded
+	=> We need to call tee_rproc_load_fw() to be able then to get the
+           address of the resource table.
+  4) The Linux rproc calls rproc_handle_resources() to parse the resource table.
+  5) The linux rproc calls rproc_start()
+	- load the firrmware calling rproc_load_segments()
+		=> we don't want to call tee_rproc_load_fw() it a second time
+	- start the firmware calling ops->start()
+
+- Reboot on crash recovery using rproc_boot_recovery()
+
+  1)  The Linux rproc gets the binary firmware image from the file system by
+     calling request_firmware(). A copy is stored in memory.
+  5) The linux rproc calls rproc_start()
+	- load the firrmware calling rproc_load_segments()
+		=> we have to call tee_rproc_load_fw() to reload the firmware
+	- start the firmware calling ops->start()
+
+In first use case we have to load the firmware on rproc_parse_fw(), in second
+usecase on rproc_load_segments().
+
+This is the point I have tried to solve with the ddata->fw_loaded variable.
+
+> 
+> I'm also confused as to why stm32_rproc_tee_elf_sanity_check() is calling
+> tee_rproc_load_fw().  There should be one call to load the firmware and another
+> to perform a sanity check on it.  If the sanity check is done at load time by
+> the secure world then ops::sanity_check() is NULL.
+
+Sure, make sense to remove the sanity_check ops
 
 Thanks,
-Conor.
+Arnaud
 
->=20
-> > ---
-> >=20
-> > Cc: Charles Hsu <ythsu0511@gmail.com>
-> > Cc: linux-hwmon@vger.kernel.org
-> > Cc: Guenter Roeck <linux@roeck-us.net>
-> > ---
-> >   .../devicetree/bindings/trivial-devices.yaml  | 73 ++++++++++---------
-> >   1 file changed, 37 insertions(+), 36 deletions(-)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/D=
-ocumentation/devicetree/bindings/trivial-devices.yaml
-> > index 5b52950e6bfc..41982a41398a 100644
-> > --- a/Documentation/devicetree/bindings/trivial-devices.yaml
-> > +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-> > @@ -28,6 +28,7 @@ properties:
-> >     compatible:
-> >       items:
-> > +      # Entries are sorted alphanumerically by the compatible
-> >         - enum:
-> >               # Acbel fsg032 power supply
-> >             - acbel,fsg032
-> > @@ -49,12 +50,12 @@ properties:
-> >             - ams,iaq-core
-> >               # i2c serial eeprom (24cxx)
-> >             - at,24c08
-> > +            # i2c h/w elliptic curve crypto module
-> > +          - atmel,atecc508a
-> >               # ATSHA204 - i2c h/w symmetric crypto module
-> >             - atmel,atsha204
-> >               # ATSHA204A - i2c h/w symmetric crypto module
-> >             - atmel,atsha204a
-> > -            # i2c h/w elliptic curve crypto module
-> > -          - atmel,atecc508a
-> >               # BPA-RS600: Power Supply
-> >             - blutek,bpa-rs600
-> >               # Bosch Sensortec pressure, temperature, humididty and VO=
-C sensor
-> > @@ -115,20 +116,6 @@ properties:
-> >             - fsl,mpl3115
-> >               # MPR121: Proximity Capacitive Touch Sensor Controller
-> >             - fsl,mpr121
-> > -            # Monolithic Power Systems Inc. multi-phase controller mp2=
-856
-> > -          - mps,mp2856
-> > -            # Monolithic Power Systems Inc. multi-phase controller mp2=
-857
-> > -          - mps,mp2857
-> > -            # Monolithic Power Systems Inc. multi-phase controller mp2=
-888
-> > -          - mps,mp2888
-> > -            # Monolithic Power Systems Inc. multi-phase controller mp2=
-971
-> > -          - mps,mp2971
-> > -            # Monolithic Power Systems Inc. multi-phase controller mp2=
-973
-> > -          - mps,mp2973
-> > -            # Monolithic Power Systems Inc. multi-phase controller mp2=
-975
-> > -          - mps,mp2975
-> > -            # Monolithic Power Systems Inc. multi-phase hot-swap contr=
-oller mp5990
-> > -          - mps,mp5990
-> >               # Honeywell Humidicon HIH-6130 humidity/temperature sensor
-> >             - honeywell,hi6130
-> >               # IBM Common Form Factor Power Supply Versions (all versi=
-ons)
-> > @@ -197,6 +184,8 @@ properties:
-> >             - maxim,max1237
-> >               # Temperature Sensor, I2C interface
-> >             - maxim,max1619
-> > +            # 3-Channel Remote Temperature Sensor
-> > +          - maxim,max31730
-> >               # 10-bit 10 kOhm linear programmable voltage divider
-> >             - maxim,max5481
-> >               # 10-bit 50 kOhm linear programmable voltage divider
-> > @@ -209,8 +198,6 @@ properties:
-> >             - maxim,max6621
-> >               # 9-Bit/12-Bit Temperature Sensors with I=B2C-Compatible =
-Serial Interface
-> >             - maxim,max6625
-> > -            # 3-Channel Remote Temperature Sensor
-> > -          - maxim,max31730
-> >               # mCube 3-axis 8-bit digital accelerometer
-> >             - mcube,mc3230
-> >               # Measurement Specialities I2C temperature and humidity s=
-ensor
-> > @@ -241,8 +228,6 @@ properties:
-> >             - memsic,mxc6655
-> >               # Menlo on-board CPLD trivial SPI device
-> >             - menlo,m53cpld
-> > -            # Micron SPI NOR Authenta
-> > -          - micron,spi-authenta
-> >               # Microchip differential I2C ADC, 1 Channel, 18 bit
-> >             - microchip,mcp3421
-> >               # Microchip differential I2C ADC, 2 Channel, 18 bit
-> > @@ -259,40 +244,56 @@ properties:
-> >             - microchip,mcp3427
-> >               # Microchip differential I2C ADC, 4 Channel, 16 bit
-> >             - microchip,mcp3428
-> > -            # Microchip 7-bit Single I2C Digital POT (5k)
-> > -          - microchip,mcp4017-502
-> >               # Microchip 7-bit Single I2C Digital POT (10k)
-> >             - microchip,mcp4017-103
-> > -            # Microchip 7-bit Single I2C Digital POT (50k)
-> > -          - microchip,mcp4017-503
-> >               # Microchip 7-bit Single I2C Digital POT (100k)
-> >             - microchip,mcp4017-104
-> >               # Microchip 7-bit Single I2C Digital POT (5k)
-> > -          - microchip,mcp4018-502
-> > +          - microchip,mcp4017-502
-> > +            # Microchip 7-bit Single I2C Digital POT (50k)
-> > +          - microchip,mcp4017-503
-> >               # Microchip 7-bit Single I2C Digital POT (10k)
-> >             - microchip,mcp4018-103
-> > -            # Microchip 7-bit Single I2C Digital POT (50k)
-> > -          - microchip,mcp4018-503
-> >               # Microchip 7-bit Single I2C Digital POT (100k)
-> >             - microchip,mcp4018-104
-> >               # Microchip 7-bit Single I2C Digital POT (5k)
-> > -          - microchip,mcp4019-502
-> > +          - microchip,mcp4018-502
-> > +            # Microchip 7-bit Single I2C Digital POT (50k)
-> > +          - microchip,mcp4018-503
-> >               # Microchip 7-bit Single I2C Digital POT (10k)
-> >             - microchip,mcp4019-103
-> > -            # Microchip 7-bit Single I2C Digital POT (50k)
-> > -          - microchip,mcp4019-503
-> >               # Microchip 7-bit Single I2C Digital POT (100k)
-> >             - microchip,mcp4019-104
-> > +            # Microchip 7-bit Single I2C Digital POT (5k)
-> > +          - microchip,mcp4019-502
-> > +            # Microchip 7-bit Single I2C Digital POT (50k)
-> > +          - microchip,mcp4019-503
-> >               # PWM Fan Speed Controller With Fan Fault Detection
-> >             - microchip,tc654
-> >               # PWM Fan Speed Controller With Fan Fault Detection
-> >             - microchip,tc655
-> > +            # Micron SPI NOR Authenta
-> > +          - micron,spi-authenta
-> >               # MiraMEMS DA226 2-axis 14-bit digital accelerometer
-> >             - miramems,da226
-> >               # MiraMEMS DA280 3-axis 14-bit digital accelerometer
-> >             - miramems,da280
-> >               # MiraMEMS DA311 3-axis 12-bit digital accelerometer
-> >             - miramems,da311
-> > +            # Monolithic Power Systems Inc. multi-phase controller mp2=
-856
-> > +          - mps,mp2856
-> > +            # Monolithic Power Systems Inc. multi-phase controller mp2=
-857
-> > +          - mps,mp2857
-> > +            # Monolithic Power Systems Inc. multi-phase controller mp2=
-888
-> > +          - mps,mp2888
-> > +            # Monolithic Power Systems Inc. multi-phase controller mp2=
-971
-> > +          - mps,mp2971
-> > +            # Monolithic Power Systems Inc. multi-phase controller mp2=
-973
-> > +          - mps,mp2973
-> > +            # Monolithic Power Systems Inc. multi-phase controller mp2=
-975
-> > +          - mps,mp2975
-> > +            # Monolithic Power Systems Inc. multi-phase hot-swap contr=
-oller mp5990
-> > +          - mps,mp5990
-> >               # Temperature sensor with integrated fan control
-> >             - national,lm63
-> >               # Serial Interface ACPI-Compatible Microprocessor System =
-Hardware Monitor
-> > @@ -323,12 +324,12 @@ properties:
-> >             - samsung,exynos-sataphy-i2c
-> >               # Semtech sx1301 baseband processor
-> >             - semtech,sx1301
-> > -            # Sensirion low power multi-pixel gas sensor with I2C inte=
-rface
-> > -          - sensirion,sgpc3
-> >               # Sensirion multi-pixel gas sensor with I2C interface
-> >             - sensirion,sgp30
-> >               # Sensirion gas sensor with I2C interface
-> >             - sensirion,sgp40
-> > +            # Sensirion low power multi-pixel gas sensor with I2C inte=
-rface
-> > +          - sensirion,sgpc3
-> >               # Sensirion temperature & humidity sensor with I2C interf=
-ace
-> >             - sensirion,sht4x
-> >               # Sensortek 3 axis accelerometer
-> > @@ -374,8 +375,6 @@ properties:
-> >             - ti,lm74
-> >               # Temperature sensor with integrated fan control
-> >             - ti,lm96000
-> > -            # I2C Touch-Screen Controller
-> > -          - ti,tsc2003
-> >               # Low Power Digital Temperature Sensor with SMBUS/Two Wir=
-e Serial Interface
-> >             - ti,tmp103
-> >               # Thermometer with SPI interface
-> > @@ -397,10 +396,12 @@ properties:
-> >             - ti,tps544b25
-> >             - ti,tps544c20
-> >             - ti,tps544c25
-> > -            # Winbond/Nuvoton H/W Monitor
-> > -          - winbond,w83793
-> > +            # I2C Touch-Screen Controller
-> > +          - ti,tsc2003
-> >               # Vicor Corporation Digital Supervisor
-> >             - vicor,pli1209bc
-> > +            # Winbond/Nuvoton H/W Monitor
-> > +          - winbond,w83793
-> >   required:
-> >     - compatible
->=20
-
---N+zoBAHBXolU7sZ9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbvjqQAKCRB4tDGHoIJi
-0pUkAQC7COG0wQHXHHVbr9oUN80S3HyMBEKEt1fd8f2t04rMUgEAxFHMu3kpe2Oi
-8v4ZZvn3JWpDH2UeG3AlDkN1ByEr0gE=
-=hyjd
------END PGP SIGNATURE-----
-
---N+zoBAHBXolU7sZ9--
+> 
+> Most of what this patchset does makes sense, but some of it needs to be moved
+> around.  
+> 
+> Thanks,
+> Mathieu
+> 
+>>
+>> If we want to integrate in remoteproc_core the solution could probably have to
+>> create the equivalent of the rproc_fw_boot() to load the firmware with an
+>> external method. Here is an example based on a new rproc_ops ( not tested)
+>>
+>> + static int rproc_fw_ext_boot(struct rproc *rproc, const struct firmware *fw)
+>> + {
+>> + 	struct device *dev = &rproc->dev;
+>> + 	const char *name = rproc->firmware;
+>> + 	int ret;
+>> +
+>> +
+>> + 	dev_info(dev, "Booting fw image %s, size %zd\n", name, fw->size);
+>> + 	
+>> + 	/* ops to load and start the remoteprocessor */
+>> + 	ret = rproc->ops->boot(rproc, fw);
+>> + 	if (ret)
+>> + 		return ret;
+>> +
+>> + 	/*
+>> + 	 * if enabling an IOMMU isn't relevant for this rproc, this is
+>> + 	 * just a nop
+>> + 	 */
+>> + 	ret = rproc_enable_iommu(rproc);
+>> + 	if (ret) {
+>> + 		dev_err(dev, "can't enable iommu: %d\n", ret);
+>> + 		return ret;
+>> + 	}
+>> +
+>> + 	/* Prepare rproc for firmware loading if needed */
+>> + 	ret = rproc_prepare_device(rproc);
+>> + 	if (ret) {
+>> + 		dev_err(dev, "can't prepare rproc %s: %d\n", rproc->name, ret);
+>> + 		goto disable_iommu;
+>> + 	}
+>> +
+>> + 	ret = rproc_set_rsc_table(rproc);
+>> + 	if (ret) {
+>> + 		dev_err(dev, "can't load resource table: %d\n", ret);
+>> + 		goto unprepare_device;
+>> + 	}
+>> +
+>> +
+>> + 	/* reset max_notifyid */
+>> + 	rproc->max_notifyid = -1;
+>> +
+>> + 	/* reset handled vdev */
+>> + 	rproc->nb_vdev = 0;
+>> +
+>> + 	/* handle fw resources which are required to boot rproc */
+>> + 	ret = rproc_handle_resources(rproc, rproc_loading_handlers);
+>> + 	if (ret) {
+>> + 		dev_err(dev, "Failed to process resources: %d\n", ret);
+>> + 		goto clean_up_resources;
+>> + 	}
+>> +
+>> + 	/* Allocate carveout resources associated to rproc */
+>> + 	ret = rproc_alloc_registered_carveouts(rproc);
+>> + 	if (ret) {
+>> + 		dev_err(dev, "Failed to allocate associated carveouts: %d\n",
+>> + 			ret);
+>> + 		goto clean_up_resources;
+>> + 	}
+>> +
+>> + 	return 0;
+>> +
+>> + clean_up_resources:
+>> + 	rproc_resource_cleanup(rproc);
+>> + unprepare_rproc:
+>> + 	/* release HW resources if needed */
+>> + 	rproc_unprepare_device(rproc);
+>> + disable_iommu:
+>> + 	rproc_disable_iommu(rproc);
+>> + 	return ret;
+>> + }
+>>
+>>
+>> int rproc_boot(struct rproc *rproc)
+>> {
+>> [...]
+>>
+>> - 		ret = rproc_fw_boot(rproc, firmware_p);
+>> + 		if(rproc->ops->boot)
+>> + 			ret = rproc_fw_ext_boot(rproc, firmware_p);
+>> + 		else
+>> + 			ret = rproc_fw_boot(rproc, firmware_p);
+>>
+>> Another advantage of this solution is that it opens the framework to other
+>> formats. For instance it could be a way to support dtb format requested in [RFC]
+>> Passing device-tree to remoteproc [1].
+>>
+>> [1]
+>> https://lore.kernel.org/linux-remoteproc/f67cd822-4e29-71f2-7c42-e11dbaa6cd8c@kalrayinc.com/T/#t
+>>
+>> Thanks,
+>> Arnaud
+>>
+>>
+>>
+>>>
+>>> I touched on that before but please rename rproc_tee_get_rsc_table() to
+>>> rproc_tee_elf_load_rsc_table().  I also suggest to introduce a new function,
+>>> rproc_tee_get_loaded_rsc_table() that would be called from
+>>> rproc_tee_elf_load_rsc_table().  That way we don't need trproc->rsc_va.  
+>>>
+>>> I also think tee_rproc should be renamed to "rproc_tee_interface" and folded
+>>> under struct rproc.  
+>>>
+>>> With the above most of the problems with the current implementation should
+>>> naturally go away.
+>>>
+>>> Thanks,
+>>> Mathieu
+>>>
+>>>>
+>>>>>> +	ret = tee_rproc_load_fw(ddata->trproc, fw);
+>>>>>> +	if (ret)
+>>>>>> +		return ret;
+>>>>>> +	ddata->fw_loaded = true;
+>>>>>> +
+>>>>>> +	/* Update the resource table parameters. */
+>>>>>> +	if (rproc_tee_get_rsc_table(ddata->trproc)) {
+>>>>>> +		/* No resource table: reset the related fields. */
+>>>>>> +		rproc->cached_table = NULL;
+>>>>>> +		rproc->table_ptr = NULL;
+>>>>>> +		rproc->table_sz = 0;
+>>>>>> +	}
+>>>>>> +
+>>>>>> +	return 0;
+>>>>>> +}
+>>>>>> +
+>>>>>> +static struct resource_table *
+>>>>>> +stm32_rproc_tee_elf_find_loaded_rsc_table(struct rproc *rproc,
+>>>>>> +					  const struct firmware *fw)
+>>>>>> +{
+>>>>>> +	struct stm32_rproc *ddata = rproc->priv;
+>>>>>> +
+>>>>>> +	return tee_rproc_get_loaded_rsc_table(ddata->trproc);
+>>>>>> +}
+>>>>>> +
+>>>>>> +static int stm32_rproc_tee_start(struct rproc *rproc)
+>>>>>> +{
+>>>>>> +	struct stm32_rproc *ddata = rproc->priv;
+>>>>>> +
+>>>>>> +	return tee_rproc_start(ddata->trproc);
+>>>>>> +}
+>>>>>> +
+>>>>>> +static int stm32_rproc_tee_attach(struct rproc *rproc)
+>>>>>> +{
+>>>>>> +	/* Nothing to do, remote proc already started by the secured context. */
+>>>>>> +	return 0;
+>>>>>> +}
+>>>>>> +
+>>>>>> +static int stm32_rproc_tee_stop(struct rproc *rproc)
+>>>>>> +{
+>>>>>> +	struct stm32_rproc *ddata = rproc->priv;
+>>>>>> +	int err;
+>>>>>> +
+>>>>>> +	stm32_rproc_request_shutdown(rproc);
+>>>>>> +
+>>>>>> +	err = tee_rproc_stop(ddata->trproc);
+>>>>>> +	if (err)
+>>>>>> +		return err;
+>>>>>> +
+>>>>>> +	ddata->fw_loaded = false;
+>>>>>> +
+>>>>>> +	return stm32_rproc_release(rproc);
+>>>>>> +}
+>>>>>> +
+>>>>>>  static int stm32_rproc_prepare(struct rproc *rproc)
+>>>>>>  {
+>>>>>>  	struct device *dev = rproc->dev.parent;
+>>>>>> @@ -319,7 +410,14 @@ static int stm32_rproc_prepare(struct rproc *rproc)
+>>>>>>  
+>>>>>>  static int stm32_rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
+>>>>>>  {
+>>>>>> -	if (rproc_elf_load_rsc_table(rproc, fw))
+>>>>>> +	struct stm32_rproc *ddata = rproc->priv;
+>>>>>> +	int ret;
+>>>>>> +
+>>>>>> +	if (ddata->trproc)
+>>>>>> +		ret = rproc_tee_get_rsc_table(ddata->trproc);
+>>>>>> +	else
+>>>>>> +		ret = rproc_elf_load_rsc_table(rproc, fw);
+>>>>>> +	if (ret)
+>>>>>>  		dev_warn(&rproc->dev, "no resource table found for this firmware\n");
+>>>>>>  
+>>>>>>  	return 0;
+>>>>>> @@ -693,8 +791,22 @@ static const struct rproc_ops st_rproc_ops = {
+>>>>>>  	.get_boot_addr	= rproc_elf_get_boot_addr,
+>>>>>>  };
+>>>>>>  
+>>>>>> +static const struct rproc_ops st_rproc_tee_ops = {
+>>>>>> +	.prepare	= stm32_rproc_prepare,
+>>>>>> +	.start		= stm32_rproc_tee_start,
+>>>>>> +	.stop		= stm32_rproc_tee_stop,
+>>>>>> +	.attach		= stm32_rproc_tee_attach,
+>>>>>> +	.kick		= stm32_rproc_kick,
+>>>>>> +	.parse_fw	= stm32_rproc_parse_fw,
+>>>>>> +	.find_loaded_rsc_table = stm32_rproc_tee_elf_find_loaded_rsc_table,
+>>>>>> +	.get_loaded_rsc_table = stm32_rproc_get_loaded_rsc_table,
+>>>>>> +	.sanity_check	= stm32_rproc_tee_elf_sanity_check,
+>>>>>> +	.load		= stm32_rproc_tee_elf_load,
+>>>>>> +};
+>>>>>> +
+>>>>>>  static const struct of_device_id stm32_rproc_match[] = {
+>>>>>> -	{ .compatible = "st,stm32mp1-m4" },
+>>>>>> +	{.compatible = "st,stm32mp1-m4",},
+>>>>>> +	{.compatible = "st,stm32mp1-m4-tee",},
+>>>>>>  	{},
+>>>>>>  };
+>>>>>>  MODULE_DEVICE_TABLE(of, stm32_rproc_match);
+>>>>>> @@ -853,6 +965,7 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+>>>>>>  	struct device *dev = &pdev->dev;
+>>>>>>  	struct stm32_rproc *ddata;
+>>>>>>  	struct device_node *np = dev->of_node;
+>>>>>> +	struct tee_rproc *trproc = NULL;
+>>>>>>  	struct rproc *rproc;
+>>>>>>  	unsigned int state;
+>>>>>>  	int ret;
+>>>>>> @@ -861,11 +974,31 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+>>>>>>  	if (ret)
+>>>>>>  		return ret;
+>>>>>>  
+>>>>>> -	rproc = rproc_alloc(dev, np->name, &st_rproc_ops, NULL, sizeof(*ddata));
+>>>>>> -	if (!rproc)
+>>>>>> -		return -ENOMEM;
+>>>>>> +	if (of_device_is_compatible(np, "st,stm32mp1-m4-tee")) {
+>>>>>> +		trproc = tee_rproc_register(dev, STM32_MP1_M4_PROC_ID);
+>>>>>> +		if (IS_ERR(trproc)) {
+>>>>>> +			dev_err_probe(dev, PTR_ERR(trproc),
+>>>>>> +				      "signed firmware not supported by TEE\n");
+>>>>>> +			return PTR_ERR(trproc);
+>>>>>> +		}
+>>>>>> +		/*
+>>>>>> +		 * Delegate the firmware management to the secure context.
+>>>>>> +		 * The firmware loaded has to be signed.
+>>>>>> +		 */
+>>>>>> +		dev_info(dev, "Support of signed firmware only\n");
+>>>>>
+>>>>> Not sure what this adds.  Please remove.
+>>>>
+>>>> This is used to inform the user that only a signed firmware can be loaded, not
+>>>> an ELF file.
+>>>> I have a patch in my pipe to provide the supported format in the debugfs. In a
+>>>> first step, I can suppress this message and we can revisit the issue when I push
+>>>> the debugfs proposal.
+>>>>
+>>>> Thanks,
+>>>> Arnaud
+>>>>
+>>>>>
+>>>>>> +	}
+>>>>>> +	rproc = rproc_alloc(dev, np->name,
+>>>>>> +			    trproc ? &st_rproc_tee_ops : &st_rproc_ops,
+>>>>>> +			    NULL, sizeof(*ddata));
+>>>>>> +	if (!rproc) {
+>>>>>> +		ret = -ENOMEM;
+>>>>>> +		goto free_tee;
+>>>>>> +	}
+>>>>>>  
+>>>>>>  	ddata = rproc->priv;
+>>>>>> +	ddata->trproc = trproc;
+>>>>>> +	if (trproc)
+>>>>>> +		trproc->rproc = rproc;
+>>>>>>  
+>>>>>>  	rproc_coredump_set_elf_info(rproc, ELFCLASS32, EM_NONE);
+>>>>>>  
+>>>>>> @@ -916,6 +1049,10 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+>>>>>>  		device_init_wakeup(dev, false);
+>>>>>>  	}
+>>>>>>  	rproc_free(rproc);
+>>>>>> +free_tee:
+>>>>>> +	if (trproc)
+>>>>>> +		tee_rproc_unregister(trproc);
+>>>>>> +
+>>>>>>  	return ret;
+>>>>>>  }
+>>>>>>  
+>>>>>> @@ -937,6 +1074,8 @@ static void stm32_rproc_remove(struct platform_device *pdev)
+>>>>>>  		device_init_wakeup(dev, false);
+>>>>>>  	}
+>>>>>>  	rproc_free(rproc);
+>>>>>> +	if (ddata->trproc)
+>>>>>> +		tee_rproc_unregister(ddata->trproc);
+>>>>>>  }
+>>>>>>  
+>>>>>>  static int stm32_rproc_suspend(struct device *dev)
+>>>>>> -- 
+>>>>>> 2.25.1
+>>>>>>
 
