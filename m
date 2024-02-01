@@ -1,146 +1,148 @@
-Return-Path: <linux-kernel+bounces-48947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00539846378
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:33:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40B85846384
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:37:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93B5D1F23FD4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:33:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA5BFB24B00
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:37:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4737246449;
-	Thu,  1 Feb 2024 22:33:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 220344120F;
+	Thu,  1 Feb 2024 22:37:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q1XfYw9e"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zUrQV2Up"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8758046439;
-	Thu,  1 Feb 2024 22:33:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDEF23FB1D
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 22:37:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706826809; cv=none; b=pb/WV8Ae5K5v5VrJztAtCWD1FVpiJFqm2y2NjoDIX6bU84uLxFViXlsywYPmw/xnb/vmmZBpC98lC1NDRcjePbHyLpMpEK0Elac0S1BjlBBlz69LjkARQbLiiKlzkpQV4bQcMFHu6EK1/syOSAddzku2kUsPJg0Lr1Q1ici8bIs=
+	t=1706827023; cv=none; b=epv29azH9CG58p0d6iCKfE1Ka/qmwQBOgVmFA/3J4Yy4lsxt2C5olrmsrjX+rx8Zrbs+70GWDz/URbkYy5K0/VgboTyRXRzw3kay8vuxESAqKP6G5r0NROR931MsbDH0mbumcXQ6ic5gCmesNMaRYgxUz32UvKeOxITgP1c24Tg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706826809; c=relaxed/simple;
-	bh=dbpaJ6xp7dnMzLTQgOGkgQ/59dglQ1pro5UKwxRA1ZI=;
-	h=Mime-Version:Content-Type:Date:Subject:From:To:Cc:Message-Id:
-	 References:In-Reply-To; b=jhF1Sn0PtpM5IBipeZevE+V9trzkXP5Hl2xZWGY+gncX4QDEaITlPdlzYGr/IkxzLewFFnE414ToSVloYViHybdtUEctyQPrNHaJ3roMoy3lQEEH4Beht+jrPv33rUnT9Ng6eyTcY+wtK6wYOd4nfaNyz4dmB5s9fOiPcplxcxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q1XfYw9e; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5769C433C7;
-	Thu,  1 Feb 2024 22:33:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706826809;
-	bh=dbpaJ6xp7dnMzLTQgOGkgQ/59dglQ1pro5UKwxRA1ZI=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=Q1XfYw9eheza+NUrhrdtku/nykjTnSunIqOZjdzuF5y6IfPJpn8ETdm6pxs6XsyS1
-	 9pA8xZNw3L833Awrw4mQQH8n7gluq1R1T5GvA1yn+mbqf2/KSK7JGmPx/DL5NZPlK/
-	 kXHL/ewGeFBlFiuzqcpE6u62g6+Cltdv08gtwDDEtUF6LoZQnyugUO6xCgXHtVG4LL
-	 O5DUH5iLNKfsC3kGjAvIy1R3R4cId3L0SsWYtDOL+E7vwhBm1iqmD/FbUv24yv2fhK
-	 b23FDmjFIATI2K/oEaa0BvAUl/OtW1Vuy21WnPbFgwRE11w6GoL0HTxpoQu9cu2gty
-	 /w2VtnOLimZdg==
+	s=arc-20240116; t=1706827023; c=relaxed/simple;
+	bh=C1Td7LS6mQYWKcz4HPRMpRrQao7T6kT+I564bAgKsBU=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=pmZb8wSnC4kazbLHEoRgjgValAzKYAaThQH/qg6tCfwFFqVo7BlPhILOn/+blyGO1oxQiNVciYnDOibD8N/dcYi4+umci/W3FL4Lekh30Yp/rd0kbCBNDCjC+nEuSVSpM4FV+n+sfuojNkMupTCel8ALZsHZ+TJfygL5bSS8zKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--maskray.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zUrQV2Up; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--maskray.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbf618042daso2114982276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 14:37:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706827021; x=1707431821; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3B3tF1HYvRY1UkQ2K7cnSqpuGaSyeDgjRqaJd9RSiXg=;
+        b=zUrQV2Upjx8/DfFBOJflmwchTh9DcgyYDnSJXqn3q5/OwLg5BLdy8Ah8HZfKJYtlJS
+         28Nc+A+2y8rrdqcetumgwLd1QBqm2nzHrV/AHX6rTWyaP93zmLl6z1GqX8oEoChaaEjp
+         tcQmn2OakN+SUmpSU6B6Cn59B3bCyFcssKyH2Sn30EGoFbSBoosWgHezncRzeq71YmnM
+         H3MmsplIjTHtElydFCsQTSc1BvIicbnl1+DdWFDlRFkaMFxrzD4qUHqV68xys0prd3Q6
+         4wqmRhDfPyC/yYA4H+gBqMA27L1EJryhphVVPS2Il/nZDyeOZFR4r6+khYwKz5Pzet8a
+         XCJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706827021; x=1707431821;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3B3tF1HYvRY1UkQ2K7cnSqpuGaSyeDgjRqaJd9RSiXg=;
+        b=Uk5r86SfktO1MfavuKIp/ZlXLLeKV8HmMjJI27F98bbQs67w/Uj1gmeUVFKvYSMhMu
+         bEXznZtZLo3WvTqXlCFalnxfuYoQLWgRVf+lTFTVXeq9s+mGSb2b1w5jWT+Ae1oMepy2
+         Ydmc189IJnUWoa8BlKXItM8oU6dT3CKxFbciFEScYIR0QKJCv3pi+D2la+s+kgX0SZEQ
+         RX1YWQJQ+N7P0N6ZoZRAyd7qTdoExN9lvRcvOBk4BMqQaEBVQJTUe10nVPiu7renA5Zp
+         0HN0Ri6lr4UQLeyMM20D++e+97Ow69xsbgqVN25Aoxeoz+iAaMfa0lQJRCsLQUePsRRt
+         J2zw==
+X-Gm-Message-State: AOJu0YxSM4u98CZpzX2nkbKOmzsJMBA/sm81uCdsaYdegabSLHbE9uQO
+	TxY+PpMVzqtREgALOfFOqJrlwHD3jVgEFibUb0xtYzDr9YMM5wY1aoZVfSdrg8SmchXn8uYlICt
+	epdHR9Q==
+X-Google-Smtp-Source: AGHT+IEtIsVPxgDfG98U8Bbl2kwE3MvRjxByJZVySc1k/DECQFUpeiwq33gwZ/XYHnQ4uktoKoW718gMTm1N
+X-Received: from maskray.svl.corp.google.com ([2620:15c:2d3:205:7de7:721a:241f:7455])
+ (user=maskray job=sendgmr) by 2002:a05:6902:cc9:b0:dc2:57c9:b44d with SMTP id
+ cq9-20020a0569020cc900b00dc257c9b44dmr149539ybb.8.1706827021012; Thu, 01 Feb
+ 2024 14:37:01 -0800 (PST)
+Date: Thu,  1 Feb 2024 14:35:45 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 02 Feb 2024 00:33:25 +0200
-Subject: Re: [PATCH 2/3] tpm: ensure tpm is in known state at startup
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Daniel P. Smith" <dpsmith@apertussolutions.com>, "Jason Gunthorpe"
- <jgg@ziepe.ca>, <linux-integrity@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-Cc: "Ross Philipson" <ross.philipson@oracle.com>, "Peter Huewe"
- <peterhuewe@gmx.de>
-Message-Id: <CYU3H17QGBR0.37HWK14BDMGCD@suppilovahvero>
-X-Mailer: aerc 0.15.2
-References: <20240131170824.6183-1-dpsmith@apertussolutions.com>
- <20240131170824.6183-3-dpsmith@apertussolutions.com>
-In-Reply-To: <20240131170824.6183-3-dpsmith@apertussolutions.com>
+Message-ID: <20240201223545.728028-1-maskray@google.com>
+Subject: [PATCH] arm64: jump_label: use constraints "Si" instead of "i"
+From: Fangrui Song <maskray@google.com>
+To: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	linux-arm-kernel@lists.infradead.org
+Cc: Jisheng Zhang <jszhang@kernel.org>, Dave Martin <Dave.Martin@arm.com>, 
+	Ard Biesheuvel <ardb@kernel.org>, Peter Smith <peter.smith@arm.com>, llvm@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, Fangrui Song <maskray@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed Jan 31, 2024 at 7:08 PM EET, Daniel P. Smith wrote:
-> When tis core initializes, it assumes all localities are closed. There
-       ~~~~~~~~
-       tpm_tis_core
+The generic constraint "i" seems to be copied from x86 or arm (and with
+a redundant generic operand modifier "c"). It works with -fno-PIE but
+not with -fPIE/-fPIC in GCC's aarch64 port.
 
-> are cases when this may not be the case. This commit addresses this by
-> ensuring all localities are closed before initializing begins.
+The machine constraint "S", which denotes a symbol or label reference
+with a constant offset, supports PIC and has been available in GCC since
+2012 and in Clang since 7.0. However, Clang before 19 does not support
+"S" on a symbol with a constant offset [1] (e.g.
+`static_key_false(&nf_hooks_needed[pf][hook])` in
+include/linux/netfilter.h), so we use "i" as a fallback.
 
-Remove the last sentence and replace with this paragraph:
+Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Fangrui Song <maskray@google.com>
+Link: https://github.com/llvm/llvm-project/pull/80255 [1]
 
-"Address this by ensuring all the localities are closed in the beginning
-of tpm_tis_core_init(). There are environments, like Intel TXT, which
-may leave a locality open. Close all localities to start from a known
-state."
+---
+Changes from
+arm64: jump_label: use constraint "S" instead of "i" (https://lore.kernel.org/all/20240131065322.1126831-1-maskray@google.com/)
 
-BTW, why we should motivated to take this patch anyway?
+* Use "Si" as Ard suggested to support Clang<19
+* Make branch a separate operand
+---
+ arch/arm64/include/asm/jump_label.h | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-Since the patch is not marked as a bug fix the commit message must pitch
-why it is important to care.
+diff --git a/arch/arm64/include/asm/jump_label.h b/arch/arm64/include/asm/jump_label.h
+index 48ddc0f45d22..1f7d529be608 100644
+--- a/arch/arm64/include/asm/jump_label.h
++++ b/arch/arm64/include/asm/jump_label.h
+@@ -15,6 +15,10 @@
+ 
+ #define JUMP_LABEL_NOP_SIZE		AARCH64_INSN_SIZE
+ 
++/*
++ * Prefer the constraint "S" to support PIC with GCC. Clang before 19 does not
++ * support "S" on a symbol with a constant offset, so we use "i" as a fallback.
++ */
+ static __always_inline bool arch_static_branch(struct static_key * const key,
+ 					       const bool branch)
+ {
+@@ -23,9 +27,9 @@ static __always_inline bool arch_static_branch(struct static_key * const key,
+ 		 "	.pushsection	__jump_table, \"aw\"	\n\t"
+ 		 "	.align		3			\n\t"
+ 		 "	.long		1b - ., %l[l_yes] - .	\n\t"
+-		 "	.quad		%c0 - .			\n\t"
++		 "	.quad		%0 + %1 - .		\n\t"
+ 		 "	.popsection				\n\t"
+-		 :  :  "i"(&((char *)key)[branch]) :  : l_yes);
++		 :  :  "Si"(key), "i"(branch) :  : l_yes);
+ 
+ 	return false;
+ l_yes:
+@@ -40,9 +44,9 @@ static __always_inline bool arch_static_branch_jump(struct static_key * const ke
+ 		 "	.pushsection	__jump_table, \"aw\"	\n\t"
+ 		 "	.align		3			\n\t"
+ 		 "	.long		1b - ., %l[l_yes] - .	\n\t"
+-		 "	.quad		%c0 - .			\n\t"
++		 "	.quad		%0 + %1 - .		\n\t"
+ 		 "	.popsection				\n\t"
+-		 :  :  "i"(&((char *)key)[branch]) :  : l_yes);
++		 :  :  "Si"(key), "i"(branch) :  : l_yes);
+ 
+ 	return false;
+ l_yes:
+-- 
+2.43.0.594.gd9cf4e227d-goog
 
-> Signed-off-by: Daniel P. Smith <dpsmith@apertussolutions.com>
-> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
-> ---
->  drivers/char/tpm/tpm_tis_core.c | 11 ++++++++++-
->  include/linux/tpm.h             |  6 ++++++
->  2 files changed, 16 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_c=
-ore.c
-> index 4176d3bd1f04..5709f87991d9 100644
-> --- a/drivers/char/tpm/tpm_tis_core.c
-> +++ b/drivers/char/tpm/tpm_tis_core.c
-> @@ -1109,7 +1109,7 @@ int tpm_tis_core_init(struct device *dev, struct tp=
-m_tis_data *priv, int irq,
->  	u32 intmask;
->  	u32 clkrun_val;
->  	u8 rid;
-> -	int rc, probe;
-> +	int rc, probe, i;
->  	struct tpm_chip *chip;
-> =20
->  	chip =3D tpmm_chip_alloc(dev, &tpm_tis);
-> @@ -1170,6 +1170,15 @@ int tpm_tis_core_init(struct device *dev, struct t=
-pm_tis_data *priv, int irq,
->  		goto out_err;
->  	}
-> =20
-> +	/*
-> +	 * There are environments, like Intel TXT, that may leave a TPM
-> +	 * locality open. Close all localities to start from a known state.
-> +	 */
-> +	for (i =3D 0; i <=3D TPM_MAX_LOCALITY; i++) {
-> +		if (check_locality(chip, i))
-> +			tpm_tis_relinquish_locality(chip, i);
-> +	}
-> +
->  	/* Take control of the TPM's interrupt hardware and shut it off */
->  	rc =3D tpm_tis_read32(priv, TPM_INT_ENABLE(priv->locality), &intmask);
->  	if (rc < 0)
-> diff --git a/include/linux/tpm.h b/include/linux/tpm.h
-> index 4ee9d13749ad..abe0d44d00ee 100644
-> --- a/include/linux/tpm.h
-> +++ b/include/linux/tpm.h
-> @@ -116,6 +116,12 @@ struct tpm_chip_seqops {
->  	const struct seq_operations *seqops;
->  };
-> =20
-> +/*
-> + * The maximum locality (0 - 4) for a TPM, as defined in section 3.2 of =
-the
-> + * Client Platform Profile Specification.
-> + */
-> +#define TPM_MAX_LOCALITY		4
-> +
->  struct tpm_chip {
->  	struct device dev;
->  	struct device devs;
-
-Is there a dependency to 1/3?
-
-BR, Jarkko
 
