@@ -1,76 +1,79 @@
-Return-Path: <linux-kernel+bounces-47607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1DB4845032
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:23:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD0E8845033
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:23:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 470901F225FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:23:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B743A1C23215
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:23:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E80963B199;
-	Thu,  1 Feb 2024 04:22:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9147B3CF51;
+	Thu,  1 Feb 2024 04:22:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="enEd3XZY"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uoXs6WNQ"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD8843B793
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 04:22:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F1413BB4E
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 04:22:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706761371; cv=none; b=rEixtMiCL4Ks9fmRX2zC2+kqa8HegZqtdq7xNyPgly2EwgevbYuJdbCkwxVlY2r4b9/MTxqwF1banC0gcOftj6t2uOghTxyly0DXnMcPURyHXsRrJ2nTZeAovzZSybffpsEN9zwWwCwNkoqL7mqUJFWnWOGFh1hcrtISMZcHn0I=
+	t=1706761374; cv=none; b=PFR9jOHMP+RBGF4pLk1P0Aa4otGQd/wq3LFc2lfW1KdbA2uqM8y1iykuHFEC32xentsWWbZCiXImnhGK9BDTbdHGIhbF3Bzic7a4UCcjAuWQ+MMkBBAHd6DiROM5+iGPcoVs9DaBrJyUqN1Mc58zI5VGv4immS7PAZ27G/aefNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706761371; c=relaxed/simple;
-	bh=6TkGB5DEMxk29IoHd6iWubxchoiv7soE0QNIxx4qk8E=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=tQyVZb2xSvbIN3PPUlZcdIOtYPZOWcd0J6CrShXjaBRNKawNLlL5TFEWxEu3PDuZCvvXMQOdMROedFJMq0r0TgDGqJ0chO82+VQ5D8vHjG8mr7ADTIEToRkAngQ6jdJ/Tj2dO/AUVC5hTlOo7Xe97CwHoBCbiT8+PhoS8UKYWIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=enEd3XZY; arc=none smtp.client-ip=209.85.219.202
+	s=arc-20240116; t=1706761374; c=relaxed/simple;
+	bh=LEf47llM5ZntjdM1tFx+kv1F7VOaVbLqYPevCFmzKgY=;
+	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
+	 To:Content-Type; b=JiTbIomy4iA/r5HSAnJiihUUWSyTQMUxw5/Kb4NP/o21wdW3vRFJSpcoVWNUxZMeBZ/tb796soVcrBwfWzdgX8zdPEl86PuBRjIqiU+3d5iExsWtRXnd67WAayc1ZR1cwN3U60QvRXBbf2kmzDT8hXxHxiwS8kIg6U5HaRQSi/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uoXs6WNQ; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6531fa07fso633865276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:22:49 -0800 (PST)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60402c8d651so9322257b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:22:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706761368; x=1707366168; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=m0WlzH05D9HaEJ5XU0c1LIE+ZN2b2kci6XhDjYk8zIo=;
-        b=enEd3XZYkaFuRppd8TnmXUghY1TPG4OqtVUIaHfknMiM6UXp1mT8fISFoD2DBUIxLO
-         KXmtJjwvTm38QIIeot2Zc5izC7i8KdYcReSQ2HFGhTtxkT7dS0f0toHLtpxvjRzioRk2
-         IaWcbN1F2v2bsgOCOS1noc+fReuwovqyhej0+aVjE/kTx7VajHwqLjn0L8AklPWzzfc2
-         Eb6auxYSVqObCIyhSfsI37M19MUmD+MkyR9y6UCJZ9Khe9/Sb126r8MHrAVQHwwhSj63
-         nfd9nF4mKSJwezefZNMqJazYLrHMRgVU7Z0/HKR4YGHgSXPSnVK0E42gdbiiqzaH6BO8
-         V5kA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706761368; x=1707366168;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+        d=google.com; s=20230601; t=1706761371; x=1707366171; darn=vger.kernel.org;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=m0WlzH05D9HaEJ5XU0c1LIE+ZN2b2kci6XhDjYk8zIo=;
-        b=JYWhWezhu7s33KysaDlzBWIFwjW5wjNZYsrThZYILFHEt8cZtYW5fCFiAWAlCgVxUn
-         CEBoP2Ogh7NU8CoBewY15utaTwaSomT76NCYIw0/diWgmkF7kh1aG310C1qsZ9MSULdc
-         kUwTMOVViZrS6BsYJ1HT9VFEqv8a4LvP+8DIin47M2+cmrL5CCiTyFLcYnPkZyKxJQ/7
-         m9fTCojc6WvavA34PvCOHmPdvbs5HoAshBK4uEUz6HBVCt0A2W+ot4KDflbQhRsu/8M3
-         Qa7AedMLRiDFW9golHfhTdofSRC3SxnqnTK0Nd2SR546KH833n8cYJIPpJai/ZfivTPt
-         SrcQ==
-X-Gm-Message-State: AOJu0YxalIGOoMeTRS86eqsZPwhfVmQjdGRH+3MG2I9bn6bAVWv6igPt
-	8/RP9wxDc6eBMCyTR0Rhc9eOYqp+qxC1fAfqNtmocGmw+dCzUNTVPBBhbKEAVjJtJ17tIWQTNj3
-	MNIe1Jg==
-X-Google-Smtp-Source: AGHT+IGQgcTYw1K+FmbJAzUR4XeFVo5wWmx8EVJsduZhl4fdoIB+cbLQS2aaHpH8Tiq6d5CO/xNU9EN7lzK6
+        bh=PeitV0yHOpBere8QJtZH8YRXFmaqbWcfFgW9touiCOY=;
+        b=uoXs6WNQULbQNrWWnGVc2G/XXR1mnv8bnYE1QGQF6uO1SIj/i3Nk9ZPoPTBMP2wLQr
+         M877Z2m7yRKf8mY1mhjecatsnEjV6jWPankR3vQIU6U/jKGsYv9FM1I0cQbeEeFBge77
+         X/AvaRkQmNj9FN03afBInFXFD84ictK1OAdKHLK5odHpYuDIQ2tSmet2ql3uk6locy1G
+         USYHMVF3t83n0pMl0pfSLKVZNFDctlb+Mf8ls3ikKfRGeUsKViZjGACN8gXkeqLUNelt
+         Ec/UL1j/PX6YNhn7Hvgr1m6anSWSUx2EumcAhaJ/Ie0zW5TZIhM+yLYmzxWXIbGCx7ql
+         HUhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706761371; x=1707366171;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PeitV0yHOpBere8QJtZH8YRXFmaqbWcfFgW9touiCOY=;
+        b=DNYcPabmnVUHg4gFUENwOVXt4PM/z5anoR0/Vk46Z7CG9uXwQw6XfE5LblQTMAyj6h
+         G8+wbSKdAzGkKzg/ZiOUgUUqupmSMNJHsjGRiZXikSFxRV5Q58f/t4E8M/6VIXlcfH5W
+         OkPgP/adSmq1aBHM23GCH63K93+L1t9sMrtn4ewXbekkgHCNvKMX+eeyEH76ld0fjRzI
+         IQVN4yberCb2daF1oWS5zBHhd7dZE+dIveFePH/509CtEnEnUi3UinkMxGuzB39gSYEp
+         SSG++1Vy4Mc9XRibBbuUYxFC4C16tYUx6rptCTEeYVn6o/eEJahIHM/TXSI0AwpSquqd
+         nn5Q==
+X-Gm-Message-State: AOJu0Yyn+XgYDnYELfj/Xx/k7QbEszpUdgXB6HRn3oK/OVi2F0w8eZPr
+	sPm5A3Za3tJ1oMkhPFItfWIgs766D2BdtLq8vpjg9VGvmlJYYlZXHZ1jzC6uCF4nPwoY0qp/YWr
+	DTfemfw==
+X-Google-Smtp-Source: AGHT+IFM/pA3IJeVDmvTvXS5pxixyVYGQ3hKU8vPfyFZQMkJX3zylJwKIgo/7SF5iVC6oDBpHE6QZwLb8rWS
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:16c5:1feb:bf99:a5d1])
- (user=irogers job=sendgmr) by 2002:a05:6902:161e:b0:dc2:2ace:860 with SMTP id
- bw30-20020a056902161e00b00dc22ace0860mr143929ybb.2.1706761368685; Wed, 31 Jan
- 2024 20:22:48 -0800 (PST)
-Date: Wed, 31 Jan 2024 20:22:28 -0800
-Message-Id: <20240201042236.1538928-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a05:690c:39d:b0:5ff:5135:ffcf with SMTP id
+ bh29-20020a05690c039d00b005ff5135ffcfmr196527ywb.4.1706761371160; Wed, 31 Jan
+ 2024 20:22:51 -0800 (PST)
+Date: Wed, 31 Jan 2024 20:22:29 -0800
+In-Reply-To: <20240201042236.1538928-1-irogers@google.com>
+Message-Id: <20240201042236.1538928-2-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240201042236.1538928-1-irogers@google.com>
 X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Subject: [PATCH v2 0/8] Clean up libperf cpumap's empty function
+Subject: [PATCH v2 1/8] libperf cpumap: Add any, empty and min helpers
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
@@ -96,52 +99,103 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Rename and clean up the use of libperf CPU map functions particularly
-focussing on perf_cpu_map__empty that may return true for maps
-containing CPUs but also with an "any CPU"/dummy value.
+Additional helpers to better replace
+perf_cpu_map__has_any_cpu_or_is_empty.
 
-perf_cpu_map__nr is also troubling in that iterating an empty CPU map
-will yield the "any CPU"/dummy value. Reduce the appearance of some
-calls to this by using the perf_cpu_map__for_each_cpu macro.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/lib/perf/cpumap.c              | 27 +++++++++++++++++++++++++++
+ tools/lib/perf/include/perf/cpumap.h | 16 ++++++++++++++++
+ tools/lib/perf/libperf.map           |  4 ++++
+ 3 files changed, 47 insertions(+)
 
-v2: 6 patches were merged by Arnaldo. New patch added ensure empty
-    maps are allocated as NULL (suggested by James Clark). Hopefully a
-    fix to "perf arm-spe/cs-etm: Directly iterate CPU maps".
-
-Ian Rogers (8):
-  libperf cpumap: Add any, empty and min helpers
-  libperf cpumap: Ensure empty cpumap is NULL from alloc
-  perf arm-spe/cs-etm: Directly iterate CPU maps
-  perf intel-pt/intel-bts: Switch perf_cpu_map__has_any_cpu_or_is_empty
-    use
-  perf cpumap: Clean up use of perf_cpu_map__has_any_cpu_or_is_empty
-  perf arm64 header: Remove unnecessary CPU map get and put
-  perf stat: Remove duplicate cpus_map_matched function
-  perf cpumap: Use perf_cpu_map__for_each_cpu when possible
-
- tools/lib/perf/cpumap.c                       | 33 +++++++-
- tools/lib/perf/include/perf/cpumap.h          | 16 ++++
- tools/lib/perf/libperf.map                    |  4 +
- tools/perf/arch/arm/util/cs-etm.c             | 77 ++++++++-----------
- tools/perf/arch/arm64/util/arm-spe.c          |  4 +-
- tools/perf/arch/arm64/util/header.c           | 13 +---
- tools/perf/arch/x86/util/intel-bts.c          |  4 +-
- tools/perf/arch/x86/util/intel-pt.c           | 10 +--
- tools/perf/builtin-c2c.c                      |  6 +-
- tools/perf/builtin-stat.c                     | 31 ++------
- tools/perf/tests/bitmap.c                     | 13 ++--
- tools/perf/tests/topology.c                   | 46 +++++------
- tools/perf/util/auxtrace.c                    |  4 +-
- tools/perf/util/bpf_kwork.c                   | 16 ++--
- tools/perf/util/bpf_kwork_top.c               | 12 +--
- tools/perf/util/cpumap.c                      | 12 ++-
- tools/perf/util/record.c                      |  2 +-
- .../scripting-engines/trace-event-python.c    | 12 +--
- tools/perf/util/session.c                     |  5 +-
- tools/perf/util/stat.c                        |  2 +-
- tools/perf/util/svghelper.c                   | 20 +++--
- 21 files changed, 175 insertions(+), 167 deletions(-)
-
+diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
+index 4adcd7920d03..ba49552952c5 100644
+--- a/tools/lib/perf/cpumap.c
++++ b/tools/lib/perf/cpumap.c
+@@ -316,6 +316,19 @@ bool perf_cpu_map__has_any_cpu_or_is_empty(const struct perf_cpu_map *map)
+ 	return map ? __perf_cpu_map__cpu(map, 0).cpu == -1 : true;
+ }
+ 
++bool perf_cpu_map__is_any_cpu_or_is_empty(const struct perf_cpu_map *map)
++{
++	if (!map)
++		return true;
++
++	return __perf_cpu_map__nr(map) == 1 && __perf_cpu_map__cpu(map, 0).cpu == -1;
++}
++
++bool perf_cpu_map__is_empty(const struct perf_cpu_map *map)
++{
++	return map == NULL;
++}
++
+ int perf_cpu_map__idx(const struct perf_cpu_map *cpus, struct perf_cpu cpu)
+ {
+ 	int low, high;
+@@ -372,6 +385,20 @@ bool perf_cpu_map__has_any_cpu(const struct perf_cpu_map *map)
+ 	return map && __perf_cpu_map__cpu(map, 0).cpu == -1;
+ }
+ 
++struct perf_cpu perf_cpu_map__min(const struct perf_cpu_map *map)
++{
++	struct perf_cpu cpu, result = {
++		.cpu = -1
++	};
++	int idx;
++
++	perf_cpu_map__for_each_cpu_skip_any(cpu, idx, map) {
++		result = cpu;
++		break;
++	}
++	return result;
++}
++
+ struct perf_cpu perf_cpu_map__max(const struct perf_cpu_map *map)
+ {
+ 	struct perf_cpu result = {
+diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/include/perf/cpumap.h
+index 228c6c629b0c..90457d17fb2f 100644
+--- a/tools/lib/perf/include/perf/cpumap.h
++++ b/tools/lib/perf/include/perf/cpumap.h
+@@ -61,6 +61,22 @@ LIBPERF_API int perf_cpu_map__nr(const struct perf_cpu_map *cpus);
+  * perf_cpu_map__has_any_cpu_or_is_empty - is map either empty or has the "any CPU"/dummy value.
+  */
+ LIBPERF_API bool perf_cpu_map__has_any_cpu_or_is_empty(const struct perf_cpu_map *map);
++/**
++ * perf_cpu_map__is_any_cpu_or_is_empty - is map either empty or the "any CPU"/dummy value.
++ */
++LIBPERF_API bool perf_cpu_map__is_any_cpu_or_is_empty(const struct perf_cpu_map *map);
++/**
++ * perf_cpu_map__is_empty - does the map contain no values and it doesn't
++ *                          contain the special "any CPU"/dummy value.
++ */
++LIBPERF_API bool perf_cpu_map__is_empty(const struct perf_cpu_map *map);
++/**
++ * perf_cpu_map__min - the minimum CPU value or -1 if empty or just the "any CPU"/dummy value.
++ */
++LIBPERF_API struct perf_cpu perf_cpu_map__min(const struct perf_cpu_map *map);
++/**
++ * perf_cpu_map__max - the maximum CPU value or -1 if empty or just the "any CPU"/dummy value.
++ */
+ LIBPERF_API struct perf_cpu perf_cpu_map__max(const struct perf_cpu_map *map);
+ LIBPERF_API bool perf_cpu_map__has(const struct perf_cpu_map *map, struct perf_cpu cpu);
+ LIBPERF_API bool perf_cpu_map__equal(const struct perf_cpu_map *lhs,
+diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
+index 10b3f3722642..2aa79b696032 100644
+--- a/tools/lib/perf/libperf.map
++++ b/tools/lib/perf/libperf.map
+@@ -10,6 +10,10 @@ LIBPERF_0.0.1 {
+ 		perf_cpu_map__nr;
+ 		perf_cpu_map__cpu;
+ 		perf_cpu_map__has_any_cpu_or_is_empty;
++		perf_cpu_map__is_any_cpu_or_is_empty;
++		perf_cpu_map__is_empty;
++		perf_cpu_map__has_any_cpu;
++		perf_cpu_map__min;
+ 		perf_cpu_map__max;
+ 		perf_cpu_map__has;
+ 		perf_thread_map__new_array;
 -- 
 2.43.0.429.g432eaa2c6b-goog
 
