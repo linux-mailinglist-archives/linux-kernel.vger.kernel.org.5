@@ -1,125 +1,218 @@
-Return-Path: <linux-kernel+bounces-48472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 617D4845C79
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:07:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C691845C7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:08:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DED631F2C8F6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:07:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50C651C2C034
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:08:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0C3A626A9;
-	Thu,  1 Feb 2024 16:07:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04C9B626AC;
+	Thu,  1 Feb 2024 16:08:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lgUDac1H"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cUUzmHEO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2C6262174;
-	Thu,  1 Feb 2024 16:07:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27E38626AB
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 16:08:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706803666; cv=none; b=n60zGgLrGPpQ0ayhfgo0GqD6aJbBzc47qkF16e7mQZIvg4wmOO7exPCyJrALtpIGDlwCQcVAZE7n+lUDDyRYu2PxM8/IrnGOAxokfQoG4IDoeScDFptnlRm7FyAwDgNG2/YsipjO2j+xme5YlDppB29RKy4fyGgGV8pROZ1yD4s=
+	t=1706803693; cv=none; b=Keea8EbgUPlOUoJfop3rSkYM4swvzClynyZwiXBWjOZck4OPtPFp6PMsuQp0KTDwtfT0USJSY5ZbrLW8gp26oC1l3jzsPsNalqPnEYpASsOFQ8mXN3zf2rWxqs8KKtcdPOre+mqvnVDIxrfm6hDeESLoJcamM5Yd9kdFoMPnFTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706803666; c=relaxed/simple;
-	bh=r1jaUwoxglsNWHO60/roArWTIt/rqzl1LuZUFI7RDn8=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=RGMzWyk8KZoS2J5NM/Pm6TQ5HxjfGkP7sYbN8eGhclsDwZOi74F2VNfKWIjZuo8/R0c2P69ywui8Yhm/sMbHnOituc6WSLQthoc+/6/5yyowLwfLxcgo5RU9G5ZqVyKTyX01ZCuhLyLoy/br+mfH4ohfQcxhfdSzoso2OEqQ0BQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lgUDac1H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20D4CC433C7;
-	Thu,  1 Feb 2024 16:07:43 +0000 (UTC)
+	s=arc-20240116; t=1706803693; c=relaxed/simple;
+	bh=IQySAzz9Zu8aTmpkZztHBF6bTqnVGs1D4j6xRTD+u78=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OO0vjRZ3jSB6ZQkxwbK96r8LAjTgE954tLJcPz+St38a/8au2nUN4YtYzDyqGI7ERizJ10IZGkH/6fcRqv4rtJjUWoHTZ9duhKae9Yp9pdrLq2JRBQJ96VRNApweIs9mzThbEO/0yuWqedRFBXdTNllLT0YDNOBVYfBgTS9nMa0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cUUzmHEO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF9C2C43390
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 16:08:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706803665;
-	bh=r1jaUwoxglsNWHO60/roArWTIt/rqzl1LuZUFI7RDn8=;
-	h=Date:From:To:Subject:From;
-	b=lgUDac1HbGZn4Hy7F5lK+7fOirRp07h3tY7J9GX0gUjg8IxoPrbH4n7QTJ1dnS8Sx
-	 SHq1lgiOoyBLz1b1kOLE8iObWPcBNs0MeaXFYJB8S5qiQia52nkJ2hpjBoOvy5SY4s
-	 hNTbMc/Up8hR3I8lxL7TJxUK5e7vUZ0M8kFnAucC3dzNXioqe/JKvNIythlekAnSCT
-	 30qYrYguBwsW5mAXNxBbjpS/kkzVZIVcvE98AiO6zz2CqDVdb3d6Y5EY2P7fh0e9p3
-	 UtlaDimoKposF0iCxuYwso2b7SVUKK8BJREoS062GTMfzh+EU2Av48uP83xYtxZV2+
-	 0WSxF8Cze3HTA==
-Date: Thu, 1 Feb 2024 17:07:41 +0100
-From: Helge Deller <deller@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@hansenpartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
-Subject: [GIT PULL] parisc architecture fixes for v6.8-rc3
-Message-ID: <ZbvBzWJ5k5TnpRSW@p100>
+	s=k20201202; t=1706803692;
+	bh=IQySAzz9Zu8aTmpkZztHBF6bTqnVGs1D4j6xRTD+u78=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=cUUzmHEO/igmXwIC/qHOSTaGa/XGD4ablIU+fzN4OHDEgma6p7JHRgSYAk4+Ya3n2
+	 UFyxi6U3C16UEPnSlA+5BFr0BjEXOz5/iqYyRL/jgRJDrjEiNg9jmagTUmeIGAEWRF
+	 Eyw9ox/rk8oMtd5CqeN7vAOqfr0BVEQr2noapMR8hhyMOFP1MSaWkM+jWaRU+AtazA
+	 rF4lZo2FRJpbpBbe+MRNjcY2aUckFRykLeDMKsr9fbp9Vs0bwnABHdPCEk0YsmDdCd
+	 /59/HOaw4muVD+1b1WumiFslSCRt+7tgXW1TuYe++sjdKyHs4eTiLnxA6quYvB44lR
+	 u6VyoRx774uFg==
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d070e2ba0bso12252541fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 08:08:12 -0800 (PST)
+X-Gm-Message-State: AOJu0Yz40bA+pWsNzwiHb1+Hdm/yqRMNFbVF+rk+xVX2N65breK1e/TD
+	HSzhn7HkaDWGjftxWfHi1rpmNlQRoqb/7wgkLMZDhQTD3QMnvkuTFKXslxQEZjWChKx8BeQhsjh
+	hDkReJhFlKoenRT6rAyFggpuqtbc=
+X-Google-Smtp-Source: AGHT+IE3Hk5cExk7Fw6yQzo0QX0tf+LAr5EK/c/iR5/9+KNCkLRMPottyLcZvkC3HNIjYaQ4HPMi76Ysya0jkxhojRs=
+X-Received: by 2002:a05:651c:157:b0:2cd:2771:a2fb with SMTP id
+ c23-20020a05651c015700b002cd2771a2fbmr2851945ljd.2.1706803690871; Thu, 01 Feb
+ 2024 08:08:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240131065322.1126831-1-maskray@google.com> <CAMj1kXGzADFWa7RmXyjWpCnQ=9hhz6i-XkN4PS1CboZ-kFL8dQ@mail.gmail.com>
+ <ZbpEnDK3U/O24ng0@e133380.arm.com> <20240201045551.ajg4iqcajyowl2rh@google.com>
+ <CAMj1kXEBjumu3VUySg1cQ+SYm4MugJ5f6pd1f7C0XrLyOWAoOw@mail.gmail.com>
+ <20240201091120.pbgr7ng6t2c36fut@google.com> <ZbuFWSRBntgm2ukJ@e133380.arm.com>
+In-Reply-To: <ZbuFWSRBntgm2ukJ@e133380.arm.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Thu, 1 Feb 2024 17:07:59 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGu76WHY8=Y-KhCxBq3xeHeCYQ9syqViSr9VRkjgWQ3BQ@mail.gmail.com>
+Message-ID: <CAMj1kXGu76WHY8=Y-KhCxBq3xeHeCYQ9syqViSr9VRkjgWQ3BQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: jump_label: use constraint "S" instead of "i"
+To: Dave Martin <Dave.Martin@arm.com>
+Cc: Fangrui Song <maskray@google.com>, Peter Smith <peter.smith@arm.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	linux-arm-kernel@lists.infradead.org, Jisheng Zhang <jszhang@kernel.org>, 
+	llvm@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Linus,
+On Thu, 1 Feb 2024 at 12:50, Dave Martin <Dave.Martin@arm.com> wrote:
+>
+> On Thu, Feb 01, 2024 at 01:11:20AM -0800, Fangrui Song wrote:
+..
+> >
+> > Hmm. Clang's constraint "S" implementation doesn't support a constant
+> > offset, so
+> > `static_key_false(&nf_hooks_needed[pf][hook])` in include/linux/netfilter.h:nf_hook
+> > would not compile with Clang <= 18.
+> >
+> > I have a patch https://github.com/llvm/llvm-project/pull/80255 , but
+> > even if it is accepted and cherry-picked into the 18.x release branch,
+> > if we still support older Clang, we cannot use "S" unconditionally.
+> >
+> >
+> > So we probably need the following to prepare for -fPIE support in the
+> > future:
+> >
+> > diff --git a/arch/arm64/include/asm/jump_label.h b/arch/arm64/include/asm/jump_label.h
+> > index 48ddc0f45d22..b8af2f8b0c99 100644
+> > --- a/arch/arm64/include/asm/jump_label.h
+> > +++ b/arch/arm64/include/asm/jump_label.h
+> > @@ -15,6 +15,16 @@
+> >  #define JUMP_LABEL_NOP_SIZE          AARCH64_INSN_SIZE
+> > +/*
+> > + * Prefer "S" to support PIC. However, use "i" for Clang 18 and earlier as "S"
+> > + * on a symbol with a constant offset is not supported.
+> > + */
+> > +#if defined(CONFIG_CC_IS_CLANG) && __clang_major__ <= 18
+>
+> Is a GCC version check needed?  Or is the minimum GCC version specified
+> for building the kernel new enough?
+>
+> > +#define JUMP_LABEL_STATIC_KEY_CONSTRAINT "i"
+> > +#else
+> > +#define JUMP_LABEL_STATIC_KEY_CONSTRAINT "S"
+> > +#endif
+> > +
 
-Please pull a few important fixes for the parisc architecture for 6.8-rc3:
+Can we use "Si" instead?
 
-The current exception handler, which helps on kernel accesses to userspace,
-may exhibit data corruption. The problem is that it is not guaranteed that the
-compiler will use the processor register we specified in the source code, but
-may choose another register which then will lead to silent register- and data
-corruption.  To fix this issue we now use another strategy to help the
-exception handler to always find and set the error code into the correct CPU
-register.
+> >  static __always_inline bool arch_static_branch(struct static_key * const key,
+> >                                              const bool branch)
+> >  {
+> > @@ -23,9 +33,9 @@ static __always_inline bool arch_static_branch(struct static_key * const key,
+> >                "      .pushsection    __jump_table, \"aw\"    \n\t"
+> >                "      .align          3                       \n\t"
+> >                "      .long           1b - ., %l[l_yes] - .   \n\t"
+> > -              "      .quad           %c0 - .                 \n\t"
+> > +              "      .quad           %0 + %1 - .             \n\t"
+> >                "      .popsection                             \n\t"
+> > -              :  :  "i"(&((char *)key)[branch]) :  : l_yes);
+> > +              :  :  JUMP_LABEL_STATIC_KEY_CONSTRAINT(key), "i"(branch) :  : l_yes);
+>
+> While this looks reasonable, I'm still not clear now why the asm must do
+> the addition.
+>
+> Can we roll the branch argument into the macro?
+>
+> "S"(symbol + constant) seems to do the right thing for AArch64, at least
+> in GCC.
+>
 
-The other fixes are small: fixing CPU hotplug bringup, fix the page alignment
-of the RO_DATA section, added a check for the calculated cache stride and fix
-possible hangups when printing longer output at bootup when running on serial
-console.
+'symbol' is a struct static_key pointer, so adding '1' to it will not
+produce the needed result.
 
-Most of the patches are tagged for stable series.
+..
+> > > > >If there's another reason why "S" is advantageous though, I'm happy to
+> > > > >be corrected.
+> > > >
+> > > > I remember that Ard has an RFC
+> > > > https://lore.kernel.org/linux-arm-kernel/20220427171241.2426592-1-ardb@kernel.org/
+> > > > "[RFC PATCH 0/2] arm64: use PIE code generation for KASLR kernel"
+> > > > and see some recent PIE codegen patches.
+> > > >
+> > > > > Building the KASLR kernel without -fpie but linking it with -pie works
+> > > > > in practice, but it is not something that is explicitly supported by the
+> > > > > toolchains - it happens to work because the default 'small' code model
+> > > > > used by both GCC and Clang relies mostly on ADRP+ADD/LDR to generate
+> > > > > symbol references.
+>
+> Does this mean that doing boot-time relocation on a fully statically
+> linked kernel doesn't bring much benefit?
 
-Thanks!
-Helge
+Not sure I follow you here. The boot-time relocation is necessary in
+any case, to fix up statically initialized pointer variables all over
+the kernel.
 
-----------------------------------------------------------------
-The following changes since commit 8a696a29c6905594e4abf78eaafcb62165ac61f1:
+> It would tend to be more
+> painful to do the relocation work, and mean that the kernel text has to
+> be temporarily writeable, but static linking should have the best
+> runtime performance.
+>
 
-  Merge tag 'platform-drivers-x86-v6.8-2' of git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86 (2024-01-27 09:48:55 -0800)
+Not sure what you mean by 'static linking' here.
 
-are available in the Git repository at:
+The only thing PIE linking does in the case of the kernel is
+a) complain if static relocations are used that cannot be fixed up at
+runtime (e.g., movk/movz sequences)
+b) emit dynamic relocations that the early startup code can use to fix
+up all statically initialized pointers
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-6.8-rc3
+From a codegen point-of-view, there is no difference because we don't
+use -fpic code. The problem with -fpic codegen is that it makes some
+assumptions that only hold for shared ELF objects, e.g., avoiding
+dynamic relocations in .text, using GOT entries even for variables
+defined in the same compilation so that they can be preempted, keeping
+all runtime relocatable quantities together so the CoW footprint of
+the shared library is minimized.
 
-for you to fetch changes up to 913b9d443a0180cf0de3548f1ab3149378998486:
+None of this matters for the kernel, and as it turns out, the non-PIC
+small C model produces code that the PIE linker is happy with.
 
-  parisc: BTLB: Fix crash when setting up BTLB at CPU bringup (2024-01-31 13:51:26 +0100)
+TL;DR our code (including inline and out-of-line asm) is already PIC,
+and this property is relied upon by KASLR.
 
-----------------------------------------------------------------
-parisc architecture fixes for kernel v6.8-rc3:
+> Maybe it doesn't make as much difference as I thought (certainly ADRP
+> based addressing should make a fair amount of the PIC/PIE overhead go
+> away).
+>
 
-- Fix random data corruption triggered by exception handler
-- Fix crash when setting up BTLB at CPU bringup
-- Prevent hung tasks when printing inventory on serial console
-- Make RO_DATA page aligned in vmlinux.lds.S
-- Add check for valid cache stride size
+The PIC/PIE overhead is in the indirections via the GOT. However,
+recent linkers will actually perform some relaxations too: if a symbol
+is defined in the same executable and is not preemptible, a GOT load
 
-----------------------------------------------------------------
-Helge Deller (6):
-      parisc: Make RO_DATA page aligned in vmlinux.lds.S
-      parisc: Check for valid stride size for cache flushes
-      parisc: Prevent hung tasks when printing inventory on serial console
-      parisc: Drop unneeded semicolon in parse_tree_node()
-      parisc: Fix random data corruption from exception handler
-      parisc: BTLB: Fix crash when setting up BTLB at CPU bringup
+ADRP
+LDR
 
- arch/parisc/Kconfig                     |  1 -
- arch/parisc/include/asm/assembly.h      |  1 +
- arch/parisc/include/asm/extable.h       | 64 +++++++++++++++++++++++++++++++++
- arch/parisc/include/asm/special_insns.h |  6 ++--
- arch/parisc/include/asm/uaccess.h       | 48 ++++---------------------
- arch/parisc/kernel/cache.c              | 10 ++++--
- arch/parisc/kernel/drivers.c            |  5 ++-
- arch/parisc/kernel/unaligned.c          | 44 +++++++++++------------
- arch/parisc/kernel/vmlinux.lds.S        |  2 +-
- arch/parisc/mm/fault.c                  | 11 ++++--
- 10 files changed, 118 insertions(+), 74 deletions(-)
- create mode 100644 arch/parisc/include/asm/extable.h
+can be transparently converted to
+
+ADRP
+ADD
+
+referring to the symbol directly. This is also where hidden.h comes
+in: making all symbol declarations and definitions 'hidden' will allow
+the compiler to assume that a GOT entry is never needed.
+
+So building with -fPIC is currently not need in practice, and creates
+some complications, which is why we have been avoiding it. But PIE
+linking non-PIC objects is not guaranteed to remain supported going
+forward, so it would be better to have a plan B, i.e., being able to
+turn on -fpic without massive regressions due to GOT overhead, or
+codegen problems with our asm hacks.
 
