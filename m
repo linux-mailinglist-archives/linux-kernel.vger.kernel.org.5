@@ -1,141 +1,180 @@
-Return-Path: <linux-kernel+bounces-48470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1BB6845C75
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:04:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA47B845C77
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:05:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F380E1C2C97A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:04:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A226429A99F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9291779FC;
-	Thu,  1 Feb 2024 16:03:27 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D69DE626C7;
-	Thu,  1 Feb 2024 16:03:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7424F626B5;
+	Thu,  1 Feb 2024 16:05:12 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 573DE626B2;
+	Thu,  1 Feb 2024 16:05:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706803407; cv=none; b=WFHymVsd3mE/tgfnF2qmbDB0u9HcXWaN9VrZLv3ofix6ixaLYcYjuFGc3UGA7kuQQOvkIijKDDOvZ9E0TBA95Fr5e1Dt6E/U48RWqDUU0w/1X8iRcWag8yl+n/HAurcNU6t8KlvpvxoTw8Drx8HhN5oxcAeAw8/V+hjmrbycYGI=
+	t=1706803512; cv=none; b=PG8LH+NlJvwweyJlar5US8WOYLNxS+Yknz7O3lxh6AffDitJgvxPwd1oAMJUc6oWr2Gzt6neRw0rILbOlJkElxQ3Ad+8+Ky4Wd5G+QV0jN7oK3wJxBgJQTgdWSsBcTlAyrbGx2iUn8KJ/97b5Xj+ecuyrPCScLdUQjf3MEsZxBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706803407; c=relaxed/simple;
-	bh=EJmqbrqIJ3FH5+WRXMg4jroAaU9htXPNpxM5BsQhv1Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=COKvHifAUFTp4wNcEfG7Eo7BSsOUFJwGCn4nTyxS+pCQDMCaBcYlSqMPTiIzJyAPfEbDNfIcqqpPzhcouNG4GmAZ2+FptWc5aFuFH+22Bxi+0kLybMLJKJWMpom3EoBK8EzTRB6f0wkHY02zaM1WovdgD0SYZ8VoN34PtjKcunY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A909FDA7;
-	Thu,  1 Feb 2024 08:04:03 -0800 (PST)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CC9523F738;
-	Thu,  1 Feb 2024 08:03:19 -0800 (PST)
-Message-ID: <db7a9399-702a-423a-8ad2-8ab7261a39ac@arm.com>
-Date: Thu, 1 Feb 2024 16:03:18 +0000
+	s=arc-20240116; t=1706803512; c=relaxed/simple;
+	bh=Z4KWkopw0P8NWY+NdbIbasEYRbUcxFGfdL8V5cww8KI=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=IxiUyR/GtE6DB6SLPxHIkKWx0lVxygvmS70IzInz5cady7Zuog0kmvv0cstkcx11z+DR57aV0kBqXFLa8A6HhX89sjRR10KqYz9q9wBmsS1WoS0whjShkW6ihZiUzs0t3qcVZaBUrdde2NTD16I28qjWGOYJ8A7mh0puFY5EHTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TQkDt68ZCz6FGZ8;
+	Fri,  2 Feb 2024 00:02:06 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9586A1404F5;
+	Fri,  2 Feb 2024 00:05:06 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 1 Feb
+ 2024 16:05:06 +0000
+Date: Thu, 1 Feb 2024 16:05:05 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
+CC: Peter Zijlstra <peterz@infradead.org>, <dan.j.williams@intel.com>,
+	<linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>,
+	<linux-cxl@vger.kernel.org>, Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [RFC PATCH v3] cleanup: Add cond_guard() to conditional guards
+Message-ID: <20240201160505.00007151@Huawei.com>
+In-Reply-To: <3280120.44csPzL39Z@fdefranc-mobl3>
+References: <20240131134108.423258-1-fabio.maria.de.francesco@linux.intel.com>
+	<20240201113612.00001d90@Huawei.com>
+	<2172852.irdbgypaU6@fdefranc-mobl3>
+	<3280120.44csPzL39Z@fdefranc-mobl3>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] virtio: uapi: Drop __packed attribute in
- linux/virtio_pci.h
-Content-Language: en-US
-To: linux-kernel@vger.kernel.org, mst@redhat.com
-Cc: kvm@vger.kernel.org, Feng Liu <feliu@nvidia.com>,
- Yishai Hadas <yishaih@nvidia.com>,
- Alex Williamson <alex.williamson@redhat.com>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>
-References: <20240125181227-mutt-send-email-mst@kernel.org>
- <20240125232039.913606-1-suzuki.poulose@arm.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20240125232039.913606-1-suzuki.poulose@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On 25/01/2024 23:20, Suzuki K Poulose wrote:
-> Commit 92792ac752aa ("virtio-pci: Introduce admin command sending function")
-> added "__packed" structures to UAPI header linux/virtio_pci.h. This triggers
-> build failures in the consumer userspace applications without proper "definition"
-> of __packed (e.g., kvmtool build fails).
-> 
-> Moreover, the structures are already packed well, and doesn't need explicit
-> packing, similar to the rest of the structures in all virtio_* headers. Remove
-> the __packed attribute.
-> 
-> Fixes: 92792ac752aa ("virtio-pci: Introduce admin command sending function")
-> Cc: Feng Liu <feliu@nvidia.com>
-> Cc: Michael S. Tsirkin <mst@redhat.com>
-> Cc: Yishai Hadas <yishaih@nvidia.com>
-> Cc: Alex Williamson <alex.williamson@redhat.com>
-> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Acked-by: Michael S. Tsirkin <mst@redhat.com>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
+On Thu, 01 Feb 2024 16:32:25 +0100
+"Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com> wrote:
 
-Gentle ping.
+> On Thursday, 1 February 2024 16:13:34 CET Fabio M. De Francesco wrote:
+> > On Thursday, 1 February 2024 12:36:12 CET Jonathan Cameron wrote:  
+> > > On Thu, 01 Feb 2024 09:16:59 +0100
+> > > 
+> > > "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com> wrote:  
+> > > > [snip]
+> > > > 
+> > > > Actually, I'm doing this:
+> > > > 	cond_guard(..., rc, 0, -EINTR, ...);  
+> > > 
+> > > Can we not works some magic to do.
+> > > 
+> > > 	cond_guard(..., return -EINTR, ...)
+> > > 
+> > > and not have an rc at all if we don't want to.
+> > > 
+> > > Something like
+> > > 
+> > > #define cond_guard(_name, _fail, args...) \
+> > > 
+> > > 	CLASS(_name, scope)(args); \
+> > > 	if (!__guard_ptr(_name)(&scope)) _fail
+> > > 
+> > > Completely untested so I'm probably missing some subtleties.
+> > > 
+> > > Jonathan  
+> > 
+> > Jonathan,
+> > 
+> > Can you please comment on the v5 of this RFC?
 
-Suzuki
+Would lose context of this discussion.
 
+> > It is at
+> > https://lore.kernel.org/all/20240201131033.9850-1-fabio.maria.de.francesco@
+> > linux.intel.com/
+> > 
+> > The macro introduced in v5 has the following, more general, use case:
+> > 
+> > * * 	int ret;
+> > + * 	// down_read_trylock() returns 1 on success, 0 on contention
+> > + * 	cond_guard(rwsem_read_try, ret, 1, 0, &sem);
+> > + * 	if (!ret) {
+> > + * 		dev_dbg("down_read_trylock() failed to down 'sem')\n");
+> > + * 		return ret;
+> > + * 	}
+> > 
+> > The text above has been copy-pasted from the RFC Patch v5.
+> > 
+> > Please notice that we need to provide both the success and the failure code
+> > to make it work also with the _trylock() variants (more details in the
+> > patch).  
+> 
+> The next three lines have been messed up by a copy-paste.
+> They are:
+> 
+> If we simply do something like:
+> 
+> 	cond_guard(..., ret = 0, ...)
+> 
+> We won't store the success (that is 1) in ret and it would still contain 0, 
+> that is the code of the contended case.
+
+ 
+If there are cases that need to do different things in the two paths the
+define full conditions for success and failure.
+
+#define cond_guard(_name, _fail, _success, args...) \
+ 	CLASS(_name, scope)(args); \
+ 	if (!__guard_ptr(_name)(&scope)) _fail; \
+	else _success
+
+However I'm not sure that additional complexity is worth while.
+Maybe just handling failure is all we need.
+
+This should allow
+
+cond_guard(rwsem_read_try, return -EINVAL, , lock); or
+cond_guard(rwsem_read_try, rc = 1, rc = 0, lock);
+
+So similar to scoped_cond_guard() there is no need to
+have a local variable if all you want to do is return on
+failure.
 
 > 
-> Changes since v1:
->   - Fix description for the "Fixes" tag format
->   - Collect Tags from Jean-Philippe and Michael
+> > If we simply do something like:
+> > 
+> > 	cond_guard(..., ret = 0, ...)
+> > 
+> > to be able store in 'ret' the code of the contended case, that is 0.
+> > 
+> > Since down_read_trylock() returns 1 on down semaphore, when we later check
+> > 'ret' with "if (!ret) <failure path>;" we always enter in that failure path
+> > even if the semaphore is down because we didn't store the success code in
+> > ret (and ret is still probably 0).
+> > 
+> > This is why, I think, we need a five arguments cond_guard(). This can manage
+> > also the _interruptible() and _killable() cases as:
+> > 
+> > 	cond_guard(..., ret, 0, -EINTR, ...)
+> > 
+> > In this case we don't need 5 arguments, but we have a general use case, one
+> > only macro, that can work with all the three variants of locks.
+> > 
+> > Fabio  
 > 
-> ---
->   include/uapi/linux/virtio_pci.h | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
 > 
-> diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
-> index ef3810dee7ef..a8208492e822 100644
-> --- a/include/uapi/linux/virtio_pci.h
-> +++ b/include/uapi/linux/virtio_pci.h
-> @@ -240,7 +240,7 @@ struct virtio_pci_cfg_cap {
->   #define VIRTIO_ADMIN_CMD_LEGACY_DEV_CFG_READ		0x5
->   #define VIRTIO_ADMIN_CMD_LEGACY_NOTIFY_INFO		0x6
->   
-> -struct __packed virtio_admin_cmd_hdr {
-> +struct virtio_admin_cmd_hdr {
->   	__le16 opcode;
->   	/*
->   	 * 1 - SR-IOV
-> @@ -252,20 +252,20 @@ struct __packed virtio_admin_cmd_hdr {
->   	__le64 group_member_id;
->   };
->   
-> -struct __packed virtio_admin_cmd_status {
-> +struct virtio_admin_cmd_status {
->   	__le16 status;
->   	__le16 status_qualifier;
->   	/* Unused, reserved for future extensions. */
->   	__u8 reserved2[4];
->   };
->   
-> -struct __packed virtio_admin_cmd_legacy_wr_data {
-> +struct virtio_admin_cmd_legacy_wr_data {
->   	__u8 offset; /* Starting offset of the register(s) to write. */
->   	__u8 reserved[7];
->   	__u8 registers[];
->   };
->   
-> -struct __packed virtio_admin_cmd_legacy_rd_data {
-> +struct virtio_admin_cmd_legacy_rd_data {
->   	__u8 offset; /* Starting offset of the register(s) to read. */
->   };
->   
-> @@ -275,7 +275,7 @@ struct __packed virtio_admin_cmd_legacy_rd_data {
->   
->   #define VIRTIO_ADMIN_CMD_MAX_NOTIFY_INFO 4
->   
-> -struct __packed virtio_admin_cmd_notify_info_data {
-> +struct virtio_admin_cmd_notify_info_data {
->   	__u8 flags; /* 0 = end of list, 1 = owner device, 2 = member device */
->   	__u8 bar; /* BAR of the member or the owner device */
->   	__u8 padding[6];
+> 
+> 
 
 
