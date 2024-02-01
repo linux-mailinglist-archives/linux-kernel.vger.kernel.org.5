@@ -1,204 +1,139 @@
-Return-Path: <linux-kernel+bounces-47496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 828BB844EA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:27:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D928E844EA8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:28:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15E581F2CA03
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:27:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17B791C2AC50
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:28:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1CE54A26;
-	Thu,  1 Feb 2024 01:27:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01EAB4A2E;
+	Thu,  1 Feb 2024 01:28:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="mjg46Iif"
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=peacevolution.org header.i=@peacevolution.org header.b="XwksY1+h"
+Received: from a.peacevolution.org (a.peacevolution.org [206.189.193.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BCDA4403
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 01:27:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A061442A;
+	Thu,  1 Feb 2024 01:28:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.189.193.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706750845; cv=none; b=Zf+c6B+r5n+MFpCna94W4sRZwNtc5mx9C1R2vDf/je/aqp8FYxt4B2JT0DOvoD32Uqa8B0XNduO5X+aGsjpWMZxvPLvFhyRz5HaH9btWnEofpOKCbFUg0dhEImgS8quhtOl6pZwB6AWHw2RJ+eXwPpJxXgjaTVeJOsLYcHYJAiU=
+	t=1706750918; cv=none; b=HFj2DR9tOd8dNPLUaIU30c3/7LbNPA7GMIxpSmgmZin6LlQys3LEMyD7qiTeGTrH23a4KLj7/FL2VdFBwQTRb/ikndx10EEeI+1EWrajJ2HNdsLYe5UqM2qXkb/gEmC7Oy0S8r33Buf5wbDMbv67xCPIwSI8DNHgwGjzufWopj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706750845; c=relaxed/simple;
-	bh=BQfrkfnAjRHW3tpPJSA0bCjLjUMIPrCPNnB/AXFgCO0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=pWl+4PgUMJL8QTbjZbtTqxX3+VM5Uxp2qAOxVSCVXxI0Zib6KwLH4QhdcE+LEj+czyPcXljyZcOnDW5+ouCtrwTvjpIzpKvvb0iSHwsVoIIPrrPNSdjAytbSPhqvALJlL2nnU+vM4FnF4rnyB3NbZKrAWfW0N5/GaYuyAAU7lz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=mjg46Iif; arc=none smtp.client-ip=209.85.161.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-594cb19c5d9so624712eaf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:27:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706750843; x=1707355643; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sDzJ7JgQvwxL4RB0XYtG8kPAD5jbJ2pvE+FQi7xvQPU=;
-        b=mjg46Iifo7aTLzPS5SP/EHQpyYgBjzADJcvv2oA8/jHWI0nJ0NmnJ51XFM/7rNTuso
-         YKQlmabt8guNijLJpUkNalvermaVyTKU3530A4aBTG5b+Apyx34EeAdAzAtOlCM6yEYv
-         lXhW2oZkcpjKFayh2gNph3nv6XYbg4K7UmGho=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706750843; x=1707355643;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sDzJ7JgQvwxL4RB0XYtG8kPAD5jbJ2pvE+FQi7xvQPU=;
-        b=i64DmafvmLcNbSk98QG+Y7GTuh2gpjLiQUC2UHRpfq1NZIcZHvKeKC6S1NLncJne0O
-         f4a9CX9dNGtKjmQLQw3zCwHfHGIxBbuapTnDWpLa3p9ecIDaZardzQ1p5ekvICkbzFrf
-         0K7chImGsHPl3ua1kX8J8YvTxMwYvEXG+lMC4/EDaepSOwfhUM/7C39hy6Xcy+5PXPHu
-         i1VsQ/bqOnbchUdFHPx53dSXgHEqQzZV4KAFMyXlWURvny46m+d/kxZVGJnnGCEZr2Je
-         JxLvrkEWLUEsfmFfrO9+7/Nurp6g8eq/gQIuP7LELUg78KmbSXVjZ2RnqGpITbhNiPXD
-         OZ+A==
-X-Gm-Message-State: AOJu0YznEkECx50oQqbmXBbODv30mtFLhQhRE+xzmz0QbYqNH39+Ee1n
-	IY/O2Ix+aekVA/eBoZ1534kG6+zfzRoWdNjSEYflh0lY2YFE5W2+5rUhLYDH+itVOSIrP1poyq4
-	TU3jqgwwJwtszr4raRX9Bn8IbuFoomVS23pj7
-X-Google-Smtp-Source: AGHT+IE9K01TCTZhsWGjePujNgbATRhQaKALuXvW0OHXOMwQOD3gFk7KgtXrb7TM6FbH4tdFNU0N+tvMZqAhTTCe8YA=
-X-Received: by 2002:a05:6871:a417:b0:210:dcdc:be39 with SMTP id
- vz23-20020a056871a41700b00210dcdcbe39mr1311243oab.20.1706750843175; Wed, 31
- Jan 2024 17:27:23 -0800 (PST)
+	s=arc-20240116; t=1706750918; c=relaxed/simple;
+	bh=DKwMhOah1OGnoYC5YOW3jNwpZGhwqN1yjEEOJIn4jyI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tFRxcp+ppP4c1L9STFfFxV+MfH7Z+xOpodoB0w+2OmieCLviA4u5IqRcp2Ux6P2OsHGuzXMGhPI2WrrI3pSkb0601DHMx6FJOAHvhIB5LGT2PKF74vnulme70/5iRrYPQMXJMe2vgjm1wtNDtvlhDG8DUbXw5mZNpvsH1A+SDmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=peacevolution.org; spf=pass smtp.mailfrom=peacevolution.org; dkim=pass (1024-bit key) header.d=peacevolution.org header.i=@peacevolution.org header.b=XwksY1+h; arc=none smtp.client-ip=206.189.193.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=peacevolution.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=peacevolution.org
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+	by a.peacevolution.org (Postfix) with ESMTPA id 25A3E4661F;
+	Thu,  1 Feb 2024 01:28:28 +0000 (UTC)
+Date: Wed, 31 Jan 2024 20:28:25 -0500
+From: Aren <aren@peacevolution.org>
+To: Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Miles Alan <m@milesalan.com>, 
+	Ondrej Jirman <megi@xff.cz>, Chen-Yu Tsai <wens@csie.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Samuel Holland <samuel@sholland.org>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH 3/4] arm64: dts: sun50i-a64-pinephone: add multicolor led
+ node
+Message-ID: <k26bellccok4tj3kz2nrtp2vth2rnsiea677e2kzm56m767wjx@pnkqiz5hmiyb>
+References: <20240128204740.2355092-1-aren@peacevolution.org>
+ <20240128204740.2355092-3-aren@peacevolution.org>
+ <4864457.GXAFRqVoOG@jernej-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver>
-In-Reply-To: <20240131193411.opisg5yoyxkwoyil@revolver>
-From: Jeff Xu <jeffxu@chromium.org>
-Date: Wed, 31 Jan 2024 17:27:11 -0800
-Message-ID: <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
-Subject: Re: [PATCH v8 0/4] Introduce mseal
-To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, jeffxu@chromium.org, 
-	Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org, keescook@chromium.org, 
-	jannh@google.com, sroettger@google.com, willy@infradead.org, 
-	gregkh@linuxfoundation.org, torvalds@linux-foundation.org, 
-	usama.anjum@collabora.com, rdunlap@infradead.org, jeffxu@google.com, 
-	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
-	dave.hansen@intel.com, linux-hardening@vger.kernel.org, deraadt@openbsd.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4864457.GXAFRqVoOG@jernej-laptop>
+X-Spamd-Bar: /
+Authentication-Results: auth=pass smtp.auth=aren@peacevolution.org smtp.mailfrom=aren@peacevolution.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=peacevolution.org;
+	s=dkim; t=1706750909;
+	h=from:subject:date:message-id:to:cc:mime-version:content-type:content-transfer-encoding:in-reply-to:references;
+	bh=PPAWFE9Bpec9jEfmyA4G2telwXR9/4WoySxFZmwvO+w=;
+	b=XwksY1+hGkHS+kXrChX85zoriu+GswucV939ztBtj7VLQC0OPz0dwlWKuZvJH1TlQRIi2l
+	1Gjf3ZwIYWUYBvF8yFdN82tavjLHH4iWy3Wrv0fsTbxLlrhlEHJ1FRod+AHb2bhyqZbSWU
+	MxD0r1vLZQDdd5KWeyzp0kOAs4XVxiQ=
 
-On Wed, Jan 31, 2024 at 11:34=E2=80=AFAM Liam R. Howlett
-<Liam.Howlett@oracle.com> wrote:
->
-> Please add me to the Cc list of these patches.
-Ok.
->
-> * jeffxu@chromium.org <jeffxu@chromium.org> [240131 12:50]:
-> > From: Jeff Xu <jeffxu@chromium.org>
-> >
-> > This patchset proposes a new mseal() syscall for the Linux kernel.
-> >
-> > In a nutshell, mseal() protects the VMAs of a given virtual memory
-> > range against modifications, such as changes to their permission bits.
-> >
-> > Modern CPUs support memory permissions, such as the read/write (RW)
-> > and no-execute (NX) bits. Linux has supported NX since the release of
-> > kernel version 2.6.8 in August 2004 [1]. The memory permission feature
-> > improves the security stance on memory corruption bugs, as an attacker
-> > cannot simply write to arbitrary memory and point the code to it. The
-> > memory must be marked with the X bit, or else an exception will occur.
-> > Internally, the kernel maintains the memory permissions in a data
-> > structure called VMA (vm_area_struct). mseal() additionally protects
-> > the VMA itself is against modifications of the selected seal type.
->
-> ... The v8 cut Jonathan's email discussion [1] off and
-> instead of
-> replying there, I'm going to add my question here.
->
-> The best plan to ensure it is a general safety measure for all of linux
-> is to work with the community before it lands upstream.  It's much
-> harder to change functionality provided to users after it is upstream.
-> I'm happy to hear google is super excited about sharing this, but so
-> far, the community isn't as excited.
->
-> It seems Theo has a lot of experience trying to add a feature very close
-> to what you are doing and has real data on how this went [2].  Can we
-> see if there is a solution that is, at least, different enough from what
-> he tried to do for a shot of success?  Do we have anyone in the
-> toolchain groups that sees this working well?  If this means Stephen
-> needs to do something, can we get that to happen please?
->
-For Theo's input from OpenBSD's perspective;
-IIUC: as today, the mseal-Linux and mimmutable-OpenBSD has the same
-scope on what operations to seal, e.g. considering the progress made
-on both sides since the beginning of the RFC:
-- mseal(Linux): dropped "multiple-bit" approach.
-- mimmutable(OpenBSD): Dropped "downgradable"; Added madvise(DONOTNEED).
+On Tue, Jan 30, 2024 at 08:41:14PM +0100, Jernej Škrabec wrote:
+> Dne nedelja, 28. januar 2024 ob 21:45:09 CET je Aren Moynihan napisal(a):
+> > The red, green, and blue leds currently in the device tree represent a
+> > single rgb led on the front of the PinePhone.
+> > 
+> > Signed-off-by: Aren Moynihan <aren@peacevolution.org>
+> > ---
+> > 
+> >  .../boot/dts/allwinner/sun50i-a64-pinephone.dtsi    | 13 ++++++++++---
+> >  1 file changed, 10 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+> > index ad2476ee01e4..6eab61a12cd8 100644
+> > --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+> > +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+> > @@ -39,21 +39,21 @@ chosen {
+> >  	leds {
+> >  		compatible = "gpio-leds";
+> >  
+> > -		led-0 {
+> > +		led0: led-0 {
+> >  			function = LED_FUNCTION_INDICATOR;
+> >  			color = <LED_COLOR_ID_BLUE>;
+> >  			gpios = <&pio 3 20 GPIO_ACTIVE_HIGH>; /* PD20 */
+> >  			retain-state-suspended;
+> >  		};
+> >  
+> > -		led-1 {
+> > +		led1: led-1 {
+> >  			function = LED_FUNCTION_INDICATOR;
+> >  			color = <LED_COLOR_ID_GREEN>;
+> >  			gpios = <&pio 3 18 GPIO_ACTIVE_HIGH>; /* PD18 */
+> >  			retain-state-suspended;
+> >  		};
+> >  
+> > -		led-2 {
+> > +		led2: led-2 {
+> >  			function = LED_FUNCTION_INDICATOR;
+> >  			color = <LED_COLOR_ID_RED>;
+> >  			gpios = <&pio 3 19 GPIO_ACTIVE_HIGH>; /* PD19 */
+> > @@ -61,6 +61,13 @@ led-2 {
+> >  		};
+> >  	};
+> >  
+> > +	multi-led {
+> > +		compatible = "leds-group-multicolor";
+> > +		color = <LED_COLOR_ID_RGB>;
+> > +		function = LED_FUNCTION_INDICATOR;
+> 
+> Does it make sense to have function specified here and above? Example
+> specifies it only in multi-led node.
 
-The difference is in mmap(), i.e.
-- mseal(Linux): support of PROT_SEAL in mmap().
-- mseal(Linux): use of MAP_SEALABLE in mmap().
+I'm not sure it makes much of a difference, besides perhaps confusing
+userspace. From what I can tell the only thing it'll change is the name
+of the directory in sysfs from "<color>:status" to "<color>:". I'll
+change this in v2 unless anyone has a reason not to.
 
-I considered Theo's inputs from OpenBSD's perspective regarding the
-difference, and I wasn't convinced that Linux should remove these. In
-my view, those are two different kernels code, and the difference in
-Linux is not added without reasons (for MAP_SEALABLE, there is a note
-in the documentation section with details).
+Thanks
+ - Aren
 
-I would love to hear more from Linux developers on this.
-
-> I mean, you specifically state that this is a 'very specific
-> requirement' in your cover letter.  Does this mean even other browsers
-> have no use for it?
->
-No, I don=E2=80=99t mean =E2=80=9Cother browsers have no use for it=E2=80=
-=9D.
-
-About specific requirements from Chrome, that refers to "The lifetime
-of those mappings are not tied to the lifetime of the process, which
-is not the case of libc" as in the cover letter. This addition to the
-cover letter was made in V3, thus, it might be beneficial to provide
-additional context to help answer the question.
-
-This patch series begins with multiple-bit approaches (v1,v2,v3), the
-rationale for this is that I am uncertain if Chrome's specific needs
-are common enough for other use cases.  Consequently, I am unable to
-make this decision myself without input from the community. To
-accommodate this, multiple bits are selected initially due to their
-adaptability.
-
-Since V1, after hearing from the community, Chrome has changed its
-design (no longer relying on separating out mprotect), and Linus
-acknowledged the defect of madvise(DONOTNEED) [1]. With those inputs,
-today mseal() has a simple design that:
- - meet Chrome's specific needs.
- - meet Libc's needs.
- - Chrome's specific need doesn't interfere with Libc's.
-
-[1] https://lore.kernel.org/all/CAHk-=3DwiVhHmnXviy1xqStLRozC4ziSugTk=3D1JO=
-c8ORWd2_0h7g@mail.gmail.com/
-
-> I am very concerned this feature will land and have to be maintained by
-> the core mm people for the one user it was specifically targeting.
->
-See above. This feature is not specifically targeting Chrome.
-
-> Can we also get some benchmarking on the impact of this feature?  I
-> believe my answer in v7 removed the worst offender, but since there is
-> no benchmarking we really are guessing (educated or not, hard data would
-> help).  We still have an extra loop in madvise, mprotect_pkey, mremap_to
-> (and mreamp syscall?).
->
-Yes. There is an extra loop in mmap(FIXED), munmap(),
-madvise(DONOTNEED), mremap(), to emulate the VMAs for the given
-address range. I suspect the impact would be low, but having some hard
-data would be good. I will see what I can find to assist the perf
-testing. If you have a specific test suite in mind, I can also try it.
-
-> You also did not clean up the loop you copied from mlock, which I
-> pointed out [3].  Stating that your copy/paste is easier to review is
-> not sufficient to keep unneeded assignments around.
->
-OK.
-
-> [1]. https://lore.kernel.org/linux-mm/87a5ong41h.fsf@meer.lwn.net/
-> [2]. https://lore.kernel.org/linux-mm/86181.1705962897@cvs.openbsd.org/
-> [3]. https://lore.kernel.org/linux-mm/20240124200628.ti327diy7arb7byb@rev=
-olver/
+> Best regards,
+> Jernej
+> 
+> > +		leds = <&led0>, <&led1>, <&led2>;
+> > +	};
+> > +
+> >  	reg_ps: ps-regulator {
+> >  		compatible = "regulator-fixed";
+> >  		regulator-name = "ps";
 
