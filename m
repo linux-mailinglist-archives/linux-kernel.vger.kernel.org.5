@@ -1,130 +1,158 @@
-Return-Path: <linux-kernel+bounces-48007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8A3B84562E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:24:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B60F08456C0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:03:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42B1A286345
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:24:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 579D11F28312
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:03:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9002615CD76;
-	Thu,  1 Feb 2024 11:24:17 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DEDA15CD52;
-	Thu,  1 Feb 2024 11:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFE7315D5D2;
+	Thu,  1 Feb 2024 12:03:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PnSlo+3r"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFA7715B984;
+	Thu,  1 Feb 2024 12:03:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706786657; cv=none; b=jzltFvIyEjrfPg7wZ1UvX/060Rrfox0IuC/ntZ07/Af1nuis4lYRKzzY77dZ82Yb/wwVDMxqshk8bHML1iA3LDErVwL7skpTumgmNwMRsUpHn54Ddrdyzxv3hsIh56CofX7EFwDD+okx0MDwXxsLmosWmThJHYpsS9Qb7ty643s=
+	t=1706788987; cv=none; b=GdhUk8m+cyqyYmk5EUcaRcWwwKc3OCpqJYPsBUTou3dzY2SZINsP6mr1F7dGsI/iJdenlmf6pXxX2nscup2QctILg/a3DaEiMOPW7GytmFuSTinsXU0OiF8PrxAkM9IIP05/X59b8IaIZbmIMmiwAyhYPqVCYpW4SHSP4jC+KRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706786657; c=relaxed/simple;
-	bh=uZUoJTXUOtGTmSyrM1RM4G9rWHINL+HQGMIgwpk5Gdk=;
+	s=arc-20240116; t=1706788987; c=relaxed/simple;
+	bh=pJuSO9d6uzAqQ3VtPCr5pnKI1a/DU5bzRyIqtixtObA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B+CwVJY5XUuG/bHGjcvtw7LceCq7zqI6dgi30ALwO8xt43Xjm+ed68fmHGjuNHe/V1LyZUtJYnnAypK7FVI1cyYywUYKJPxobMG9ZMLNjeQINGooqb15RIX4h/TvgZIQHt0XVzsDLDiU3wUUb1h2bX2Uag1XLETY3RRJmyT2nUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9273FDA7;
-	Thu,  1 Feb 2024 03:24:56 -0800 (PST)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D0C5F3F762;
-	Thu,  1 Feb 2024 03:19:41 -0800 (PST)
-Date: Thu, 1 Feb 2024 11:19:30 +0000
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: Peng Fan <peng.fan@nxp.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	"Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-	"souvik.chakravarty@arm.com" <Souvik.Chakravarty@arm.com>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	dl-linux-imx <linux-imx@nxp.com>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-	AKASHI Takahiro <takahiro.akashi@linaro.org>,
-	Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 0/6] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-Message-ID: <Zbt-QkWhz5d9P-v6@pluto>
-References: <20240121-pinctrl-scmi-v3-0-8d94ba79dca8@nxp.com>
- <f88d07ef-83b2-4d14-976a-6dbbd71e036f@oss.nxp.com>
- <CACRpkdYV=qYQ9qDUWYTLDAV1niay30gYH5S=zjfi31GpeY5o-A@mail.gmail.com>
- <DU0PR04MB9417A9074C5DC49AE689E65288432@DU0PR04MB9417.eurprd04.prod.outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=j6Pd8+DKPLhE532e9iHEvB2YCEXH5I+5cbQcwissGkDsNGTq9EThZ+pdAyXV6aT5K/tGdflMsOLNP3/7EZ9M9IjuHWFWDbiheLVnfxVqBUD9TLR8kC4r71sv5yYgg+w36V7tflZV1ebAAzDXXUwffmXjQGd/SGZLyKFR6R3lJ8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PnSlo+3r; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706788986; x=1738324986;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=pJuSO9d6uzAqQ3VtPCr5pnKI1a/DU5bzRyIqtixtObA=;
+  b=PnSlo+3redwfuu//uLdEuT0r9vJ7dVxtOcOkcz6TzSjtqYR7+A542oEh
+   xD5WbMPS2GWrAkLcMkr5O+l2a1K7F+tFpNHb8BnqjADDaF9MBWbKBiCsr
+   KLvUki1YwdDufleyKhvIKQLBXHHQdPfbyTcYPkjLPlRVqRfTOR7M0Aby7
+   EDGBQTQWIAi1szp7KJKFxh+FwN2EABNw1nRIiTZSKDuEMESgfNBOZ6xG0
+   yV2pru2bXR1mtOAM34QDET8nh/oAYhBseMFBW9f2b3jAAOYQcpbGFAa3K
+   14xJvwJ8GmWpaAUZqG2KMCTYou6FtwqMy8DsVoiyq0PNc7BxPd/j41val
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="17409704"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="17409704"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 04:03:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="961902005"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="961902005"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 04:03:01 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rVV7Q-00000000ofZ-1VUT;
+	Thu, 01 Feb 2024 13:20:32 +0200
+Date: Thu, 1 Feb 2024 13:20:31 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: linux-iio@vger.kernel.org, Rob Herring <robh@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>, linux-kernel@vger.kernel.org,
+	Julia Lawall <Julia.Lawall@inria.fr>,
+	Nicolas Palix <nicolas.palix@imag.fr>,
+	Sumera Priyadarsini <sylphrenadin@gmail.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [RFC PATCH 0/5] of: automate of_node_put() - new approach to
+ loops.
+Message-ID: <Zbt-fw8eUrQzBjX9@smile.fi.intel.com>
+References: <20240128160542.178315-1-jic23@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DU0PR04MB9417A9074C5DC49AE689E65288432@DU0PR04MB9417.eurprd04.prod.outlook.com>
+In-Reply-To: <20240128160542.178315-1-jic23@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, Feb 01, 2024 at 07:14:17AM +0000, Peng Fan wrote:
-> > Subject: Re: [PATCH v3 0/6] firmware: arm_scmi: Add SCMI v3.2 pincontrol
-> > protocol basic support
-> > 
-
-Hi Peng,
-
-> > On Mon, Jan 29, 2024 at 1:37 PM Peng Fan <peng.fan@oss.nxp.com> wrote:
-> > 
-> > > And for i.MX95 OEM extenstion, do you have any suggestions?
-> > > I have two points:
-> > > 1. use vendor compatible. This would also benefit when supporting
-> > > vendor protocol.
-> > > 2. Introduce a property saying supporting-generic-pinconf
-> > >
-> > > How do you think?
-> > 
-> > While I don't know how OEM extensions to SCMI were designed, the pin
-> > control subsystem has the philosophy that extensions are for minor fringe
-> > stuff, such as a pin config option that no other silicon is using and thus have
-> > no use for anyone else. Well that is actually all the custom extensions we
-> > have.
-> > (This notion is even carried over to SCMI pinctrl.)
-> > 
-> > The i.MX95 OEM extension is really odd to me, it looks like a
-> > reimplementation of the core aspects of SCMI pin control, and looks much
-> > more like the old i.MX drivers than like the SCMI driver.
+On Sun, Jan 28, 2024 at 04:05:37PM +0000, Jonathan Cameron wrote:
+> From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > 
-> i.MX SCMI pin protocol conf settings follows non-SCMI pin conf settings.
+> +CC includes peopleinterested in property.h equivalents to minimize
+> duplication of discussion.  Outcome of this discussion will affect:
+> https://lore.kernel.org/all/20240114172009.179893-1-jic23@kernel.org/
+> [PATCH 00/13] device property / IIO: Use cleanup.h magic for fwnode_handle_put() handling.
 > 
+> In discussion of previous approach with Rob Herring we talked about various
+> ways to avoid a disconnect between the declaration of the __free(device_node)
+> and the first non NULL assignment. Making this connection clear is useful for 2
+> reasons:
+> 1) Avoids out of order cleanup with respect to other cleanup.h usage.
+> 2) Avoids disconnect between how cleanup is to be done and how the reference
+>    was acquired in the first place.
+> 
+> https://lore.kernel.org/all/20240117194743.GA2888190-robh@kernel.org/
+> 
+> The options we discussed are:
+> 
+> 1) Ignore this issue and merge original set.
+> 
+> 2) Always put the declaration just before the for loop and don't set it NULL.
+> 
+> {
+> 	int ret;
+> 
+> 	ret = ... and other fun code.
+> 
+> 	struct device_node *child __free(device_node);
+> 	for_each_child_of_node(np, child) {
+> 	}
+> }
+> 
+> This works but careful review is needed to ensure that this unusual pattern is
+> followed.  We don't set it to NULL as the loop will do that anyway if there are
+> no child nodes, or the loop finishes without an early break or return.
+> 
+> 3) Introduced the pointer to auto put device_node only within the
+>    for loop scope.
+> 
+> +#define for_each_child_of_node_scoped(parent, child) \
+> +	for (struct device_node *child __free(device_node) =		\
+> +	     of_get_next_child(parent, NULL);				\
+> +	     child != NULL;						\
 
-It is not just a matter of using custom SCMI OEM types, it is the whole
-layout/definitions of the i.MX pin/groups/funcs DT bindings that deviates from
-the generic DT bindings layout as handled and expected by the Linux Pinctrl
-subsystem (AFAIU), while the SCMI Pinctrl driver as it stands in this series,
-was conceived, designed and implemented originally by Oleksii to just use the
-generic existing Pinctrl DT bindings; as a consequence, in your i.MX extensions,
-you had to add a dedicated i.MX DT parser to interpret the protocol@19 DT snippet
-in a completely different way, to try to stick your custom solution on top of
-the generic one.
+Just
 
-Thanks,
-Cristian
+	     child;							\
 
-> > 
-> > But I sure cannot speak of what is allowed in SCMI OEM extensions or not.
+> +	     child = of_get_next_available_child(parent, child))
+> +
 > 
-> + SPEC owner, Souvik. Any comments?
+> This series is presenting option 3.  I only implemented this loop out of
+> all the similar ones and it is only compile tested.
 > 
-> Thanks,
-> Peng.
-> 
-> > 
-> > Yours,
-> > Linus Walleij
+> Disadvantage Rob raised is that it isn't obvious this macro will instantiate
+> a struct device_node *child.  I can't see a way around that other than option 2
+> above, but all suggestions welcome.  Note that if a conversion leaves an
+> 'external' struct device_node *child variable, in many cases the compiler
+> will catch that as an unused variable. We don't currently run shaddow
+> variable detection in normal kernel builds, but that could also be used
+> to catch such bugs.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
