@@ -1,106 +1,184 @@
-Return-Path: <linux-kernel+bounces-48303-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48304-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52E9D8459E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:19:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11AF78459FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:20:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E27D287D6A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:19:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81A61B296F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:20:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85E285D492;
-	Thu,  1 Feb 2024 14:19:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE415F473;
+	Thu,  1 Feb 2024 14:19:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toke.dk header.i=@toke.dk header.b="neRWrpBm"
-Received: from mail.toke.dk (mail.toke.dk [45.145.95.4])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QvJIuLQJ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD2635D465;
-	Thu,  1 Feb 2024 14:19:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.95.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 512BC5F466
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 14:19:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706797149; cv=none; b=LoYIdC1Vw+3KZCf0T8CNWI8Sst2gnjNV4kTmSs+O7HWHf1J8sGYErIZajBeuSTP23srtWeIYjd2AhUE7qUItUZqechtSOOZsYokhC1anUmP0Nsw5XSmBEp6R2C+/5ia3eHUOJOF7I0Oyw/qrrBymtxJX89SWwiFRzdUz8k819i8=
+	t=1706797198; cv=none; b=UgOAq9f90T3WLY+aPWFpxv7ujKKvUw4FWIxoIUrqDEGjtXYEm2TQAAJ3qbdx95+U1SD0p8fVkVoLAiyMU4JJCozxtBujN8+6xSkrs4+jJeMSfVvSELgoGEAoH1He4kBbAwlISOINjkUheMllXe9EMVVlM50d3DVyZAOoNDI4Jgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706797149; c=relaxed/simple;
-	bh=vHCcKVvZrQL2QrV1hmgo04yutSPw1rOQhlupRpU5Ios=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Z3/QtFMLQsAkvXgaFcVZdc/GtjhHDA30qEjOjkcDYOJl6yqPGgktbMNvtmryxb+1VswF+IaQzdvquKYsY+pgqX84DCVegLWSNhO/4YZBnwFGfg+XqA9ykVys/I+RCkWyGFe1GaTYMlDJkwj+e9aTVR7NN6o/tCmIsnLtmhmyluc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=toke.dk; spf=pass smtp.mailfrom=toke.dk; dkim=pass (2048-bit key) header.d=toke.dk header.i=@toke.dk header.b=neRWrpBm; arc=none smtp.client-ip=45.145.95.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=toke.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toke.dk
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=toke.dk; s=20161023;
-	t=1706797139; bh=vHCcKVvZrQL2QrV1hmgo04yutSPw1rOQhlupRpU5Ios=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=neRWrpBmRqFUTHfKG9UtbcYAVngvJzpvVbfWu/Nx/5P2Q1rz7q/N9c1LogDsgIwed
-	 NQanMQVAff9Put9IfFPMfz16iwaupS2CpKnXp6Oz2cnOEHSCdsYBakbxmn8JRy2dHe
-	 EtSbNzZFnBj5xBviUzhq+GdJV0lcriqmEIVHFzDlQ7HpBhSklb8UfBe75U2hTOQLG+
-	 Y37634Dmm/jEt4ysDBEwen0ucetQnBj5f3lZI6ObHLdgt/AVOD66qNQukPCc1o+VcB
-	 qYGjntB+C2r2r2K3R36mK2cqxz5NTkC250pspFJBnMpKGumydx7T6YnYWnAQAXpf3b
-	 pxMlvCb7jChqw==
-To: Arnd Bergmann <arnd@arndb.de>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Kalle Valo <kvalo@kernel.org>,
- Arend van Spriel <aspriel@gmail.com>, Franky Lin
- <franky.lin@broadcom.com>, Hante Meuleman <hante.meuleman@broadcom.com>,
- Lee Jones <lee@kernel.org>, Brian Norris <briannorris@chromium.org>,
- Srinivasan Raju <srini.raju@purelifi.com>, linux-wireless@vger.kernel.org,
- linux-kernel@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com
-Subject: Re: [PATCH 1/6] wifi: ath9k: Obtain system GPIOS from descriptors
-In-Reply-To: <789b7ca0-80c5-449a-99eb-8c05b5380245@app.fastmail.com>
-References: <20240131-descriptors-wireless-v1-0-e1c7c5d68746@linaro.org>
- <20240131-descriptors-wireless-v1-1-e1c7c5d68746@linaro.org>
- <613ae419-9a2c-477e-8b19-8a29d42a3164@app.fastmail.com>
- <ZbuZ_55a-qqDqkeN@smile.fi.intel.com>
- <789b7ca0-80c5-449a-99eb-8c05b5380245@app.fastmail.com>
-Date: Thu, 01 Feb 2024 15:18:59 +0100
-X-Clacks-Overhead: GNU Terry Pratchett
-Message-ID: <871q9wz2r0.fsf@toke.dk>
+	s=arc-20240116; t=1706797198; c=relaxed/simple;
+	bh=FRbvlYyjpnr7PyYFkq4RqomDGaXl3+k4Hq2BQKrbKYg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ImB4GHdavsyde+FQhWCbezAud01aSMOwM861nzncaJTWOVTpeCMqw7BYVZ1Qvtlf4AMxZEGqqT0XxXNhCbdYJhWmp+QHThREyjPRVJHIkkPmd92gLRMJ/UR0bWSFW99jEhDCghASNGzNmoQGyMxef9rV/VK9igLxYSnJlTFez2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QvJIuLQJ; arc=none smtp.client-ip=192.55.52.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706797196; x=1738333196;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=FRbvlYyjpnr7PyYFkq4RqomDGaXl3+k4Hq2BQKrbKYg=;
+  b=QvJIuLQJY7BS702qFrjnRLkChmW2QPPpTW1WZ0cExAp0s3Blm26kmkek
+   ce10YpT1pyuvB16RmXqFNbXs6mvxzvfgcL5fe70VEv5CyN2iDZxj7VxWQ
+   h2Othsv/P3w76l5yvmd8aLUxJLsfWQYknxqmAknYukQHy1g2uag1yT8o1
+   65j44Crh1MVTS2pG+am5lMZFK0cT6i72iCqjR/fN/IoCoDypAMKel+Q31
+   IofmeE+aAp/KnGHtKbtfQFAFGEVvheUTBw2DNo9fnt++W8w0hlqLTlZ75
+   I7VYy+yzFLszlr7zxGqon2LmGBCa4TrZmnqqc0+H8urrYFX0FvzixyPcW
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="401033595"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="401033595"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 06:19:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="4422947"
+Received: from osandru-mobl1.ger.corp.intel.com (HELO [10.252.41.143]) ([10.252.41.143])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 06:19:52 -0800
+Message-ID: <ed96c60e-c6ea-490f-9811-57b92d87083e@linux.intel.com>
+Date: Thu, 1 Feb 2024 15:19:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/xe/display: Fix memleak in display initialization
+To: Jani Nikula <jani.nikula@linux.intel.com>,
+ Lucas De Marchi <lucas.demarchi@intel.com>,
+ wangxiaoming321 <xiaoming.wang@intel.com>
+Cc: ogabbay@kernel.org, thomas.hellstrom@linux.intel.com, mripard@kernel.org,
+ tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+ intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240125063633.989944-1-xiaoming.wang@intel.com>
+ <20240126153453.997855-1-xiaoming.wang@intel.com>
+ <abko5y3n5mju6srjly257bpqlvjf5ie6h6snboaekxnfv5mu76@jjumdgev76ag>
+ <87zfwlh78b.fsf@intel.com>
+Content-Language: en-US
+From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+In-Reply-To: <87zfwlh78b.fsf@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-"Arnd Bergmann" <arnd@arndb.de> writes:
 
-> On Thu, Feb 1, 2024, at 14:17, Andy Shevchenko wrote:
->> On Thu, Feb 01, 2024 at 01:20:16PM +0100, Arnd Bergmann wrote:
->>> On Wed, Jan 31, 2024, at 23:37, Linus Walleij wrote:
->>
->>> +	} else if (ah->led_pin < 0) {
->>
->> ...
->>
->>> +	if (sc->sc_ah->led_gpio)
->>
->> Dup check
->
-> I don't know what you mean here. To explain what I'm
-> trying to do: The idea is that the LED is always backed
-> by either gpiolib or the internal gpio controller on
-> the PCI device. This means every access to an LED must
-> be guarded with 
->
->    if (gpiodesc)
->          gpio_*(gpiodesc);
->    else
->          internal(ah);
->
-> We could probably go a little further in the cleanup and
-> throw out the gpiolib path entirely, instead relying
-> on the existing leds-gpio driver. Since there are currently
-> no upstream users of the gpiolib path, that would likely
-> lead to cleaner code but require more changes to any
-> out-of-tree users that rely on the platform_data to
-> pass the GPIOs today.
 
-There being exactly one such out of tree user (per your up-thread
-email) in OpenWrt? Or are you aware of others?
+On 2024-01-31 16:07, Jani Nikula wrote:
+> On Wed, 31 Jan 2024, Lucas De Marchi <lucas.demarchi@intel.com> wrote:
+>> +Jani
+>>
+>> On Fri, Jan 26, 2024 at 11:34:53PM +0800, wangxiaoming321 wrote:
+>>> intel_power_domains_init has been called twice in xe_device_probe:
+>>> xe_device_probe -> xe_display_init_nommio -> intel_power_domains_init(xe)
+>>> xe_device_probe -> xe_display_init_noirq -> intel_display_driver_probe_noirq
+>>> -> intel_power_domains_init(i915)
+>>
+>> ok, once upon a time intel_power_domains_init() was called by the driver
+>> initialization code and not initialized inside the display. I think.
+>> Now it's part of the display probe and we never updated the xe side.
+>>
+>>>
+>>> It needs remove one to avoid power_domains->power_wells double malloc.
+>>>
+>>> unreferenced object 0xffff88811150ee00 (size 512):
+>>>   comm "systemd-udevd", pid 506, jiffies 4294674198 (age 3605.560s)
+>>>   hex dump (first 32 bytes):
+>>>     10 b4 9d a0 ff ff ff ff ff ff ff ff ff ff ff ff  ................
+>>>     ff ff ff ff ff ff ff ff 00 00 00 00 00 00 00 00  ................
+>>>   backtrace:
+>>>     [<ffffffff8134b901>] __kmem_cache_alloc_node+0x1c1/0x2b0
+>>>     [<ffffffff812c98b2>] __kmalloc+0x52/0x150
+>>>     [<ffffffffa08b0033>] __set_power_wells+0xc3/0x360 [xe]
+>>>     [<ffffffffa08562fc>] xe_display_init_nommio+0x4c/0x70 [xe]
+>>>     [<ffffffffa07f0d1c>] xe_device_probe+0x3c/0x5a0 [xe]
+>>>     [<ffffffffa082e48f>] xe_pci_probe+0x33f/0x5a0 [xe]
+>>>     [<ffffffff817f2187>] local_pci_probe+0x47/0xa0
+>>>     [<ffffffff817f3db3>] pci_device_probe+0xc3/0x1f0
+>>>     [<ffffffff8192f2a2>] really_probe+0x1a2/0x410
+>>>     [<ffffffff8192f598>] __driver_probe_device+0x78/0x160
+>>>     [<ffffffff8192f6ae>] driver_probe_device+0x1e/0x90
+>>>     [<ffffffff8192f92a>] __driver_attach+0xda/0x1d0
+>>>     [<ffffffff8192c95c>] bus_for_each_dev+0x7c/0xd0
+>>>     [<ffffffff8192e159>] bus_add_driver+0x119/0x220
+>>>     [<ffffffff81930d00>] driver_register+0x60/0x120
+>>>     [<ffffffffa05e50a0>] 0xffffffffa05e50a0
+>>>
+>>
+>> This will need a Fixes trailer.  This seems to be a suitable one:
+>>
+>> Fixes: 44e694958b95 ("drm/xe/display: Implement display support")
+>>
+>>> Signed-off-by: wangxiaoming321 <xiaoming.wang@intel.com>
+>>> ---
+>>> drivers/gpu/drm/xe/xe_display.c | 6 ------
+>>> 1 file changed, 6 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/xe/xe_display.c b/drivers/gpu/drm/xe/xe_display.c
+>>> index 74391d9b11ae..e4db069f0db3 100644
+>>> --- a/drivers/gpu/drm/xe/xe_display.c
+>>> +++ b/drivers/gpu/drm/xe/xe_display.c
+>>> @@ -134,8 +134,6 @@ static void xe_display_fini_nommio(struct drm_device *dev, void *dummy)
+>>>
+>>> int xe_display_init_nommio(struct xe_device *xe)
+>>> {
+>>> -	int err;
+>>> -
+>>> 	if (!xe->info.enable_display)
+>>> 		return 0;
+>>>
+>>> @@ -145,10 +143,6 @@ int xe_display_init_nommio(struct xe_device *xe)
+>>> 	/* This must be called before any calls to HAS_PCH_* */
+>>> 	intel_detect_pch(xe);
+>>>
+>>> -	err = intel_power_domains_init(xe);
+>>> -	if (err)
+>>> -		return err;
+>>
+>> xe_display_init_nommio() has xe_display_fini_nommio() as its destructor
+>> counter part. Unfortunately display side looks wrong as it does:
+>>
+>> init:
+>> 	intel_display_driver_probe_noirq() -> intel_power_domains_init()
+>>
+>> destroy:
+>> 	i915_driver_late_release() -> intel_power_domains_cleanup()
+>>
+>> I think leaving intel_power_domains_cleanup() as is for now so it's
+>> called by xe works, but this needs to go through CI, which apparently
+>> this series didn't go. I re-triggered it.
+>>
+>> +Jani if he thinks this can be changed in another way or already have
+>> the complete solution.
+> 
+> I don't. But it is and will be a recurring problem. i915 and xe core
+> drivers should handle display init and cleanup the same way. But
+> currently i915 goes on to call e.g. intel_power_domains_cleanup()
+> directly from top level driver code. There are other examples.
+> 
+> And we seem to have recently added *more*. See e.g. bd738d859e71
+> ("drm/i915: Prevent modesets during driver init/shutdown").
+That commit seems terrible Should we instead not only enable any code 
+that can cause modesets after it's safe to do so?
 
--Toke
+Cheers,
+~Maarten
 
