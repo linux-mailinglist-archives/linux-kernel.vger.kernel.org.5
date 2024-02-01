@@ -1,81 +1,102 @@
-Return-Path: <linux-kernel+bounces-47861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C0D58453D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:26:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 948C38453DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:28:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 323922833DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:26:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02EC9B21853
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:28:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F9C915AADE;
-	Thu,  1 Feb 2024 09:26:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A214615B115;
+	Thu,  1 Feb 2024 09:28:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="TSr9Udjz"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EK1Xce2m";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ywSa7cRP";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EK1Xce2m";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ywSa7cRP"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CA7A15B0ED
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 09:26:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3496615A498;
+	Thu,  1 Feb 2024 09:28:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706779600; cv=none; b=ETWnmMoiNuw0BTYqu1TOpLRPi9F89F1v2Vm7XkkLzlpKGcpx9yUskIr22dFvv4cUVcONjA26gNsFITc7u9gUyjMs1/NyXocAwsEi+6j+U1WLdSWHV3GMLxRUBrtWEJpar5fTte1Qt07Mzb+JCxwDkyOnZmwRJavUZdiHUen9wDM=
+	t=1706779695; cv=none; b=Lzi3GR3RvPc3gr3cW+NkyIcc8NEIVJmri1KDckWVi0fV26XyMhn3QlZ0iCWXZkWbuEn5aE8DhIVp6dMYfvh7ci/9AkLOLqWgSDBWUWXsnWnL4F59srmDTTFn2fEu4v76S0QdipDy4by1VoCjD5wrPAg5Nq640PhrYuyK1o2bQdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706779600; c=relaxed/simple;
-	bh=Y8Jdx7/2I9eY+OOZmGYIEvoOpC8kaOBC/weV3+AMr9E=;
+	s=arc-20240116; t=1706779695; c=relaxed/simple;
+	bh=cZ8hpkR/3u+9nW8V/2LfRPSay0z0DtpGIpqWUwfMnlA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZPmZQiUXdLZ/h11W/Sw/mxSMZRuTnTBDGwre7p8mCNN6HmBSGVdD2Pped7/8aKt3J/yFeFjV/D+hlK06E5d/KhEJSLWRDMjVpGcjsGYCe1w9Q//iel8khIkBj5LbzLshc38iIyCXgd4ZeWZHGnLOr+mytGGNjJQjrruqslAENMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=TSr9Udjz; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50eac018059so836098e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 01:26:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1706779596; x=1707384396; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q4j/OGysh1p00GXnu3jrZ8vayx12mGduG1dVSS/BJps=;
-        b=TSr9UdjzL3/uShUlh5Q9Pm1eqnxQKOJ5mvZYFxXI7Y3Bg8Gbf4fji5Bv0FEgQVbvOC
-         ZUtnwe2jfr6ylu39XGcDktVUlXp2yALByEtM6VLj9xR8f6vhx2j6rQPppk+xzh116B3a
-         c0eyhbjSbTOwcDYExWBErjXjHIUQpo237iY8lNGIyN4JZQWBDhvm5+kC/6aDvnQ2uIjG
-         bjGKJCif/2PzT3ahDNHlvel9xVH7r8Hg1A75hwV/xI4tKGlUrZ+EyaBt4NZnheAlrmCO
-         FZO3owzvbksb6Ddw5SZaWR/pSX7t0kws/89pNZ/AbAiTs72ligbT6qTgJjvKPNkfrX3h
-         jLyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706779596; x=1707384396;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q4j/OGysh1p00GXnu3jrZ8vayx12mGduG1dVSS/BJps=;
-        b=lancIh3rbKDP/Gw9NxBev2c3fcov8BUXjaEvh7Mp2JkeR/YXq3XJ2fULjb9NZsceO0
-         Delmd6frc9Zl09Mp0DPrORoV6m2abcXyhSr2FnK2U21pSg9ksnUiTP4iTqGeFUZKu3CM
-         ujIqngtX8fVh9maHAC9ERXfVtWkyfURxG7VgqWk+qsC6tKNzBcBwhI86EkIHZbsfovDX
-         OwkMpynEfGu9JoQHN1VthaErnThbJlfKIBhTwHc0vcfXGrZrJ+bYjAsnbUe5M0xOQPUN
-         sPssoxyRybrO+qnnUChPV3dfFfjGUjX8am8Y9gqC1mBqG9a2telcYC1rKxbfv5E1vKJ+
-         FGFA==
-X-Gm-Message-State: AOJu0YxJlOs+Btn+mCYtesA54MTYg3QDiZIQ2vfsZYwhLxISa4g48l3s
-	qqmcQRwAU1LBjFc9j8+3Gojlz3SXbiGZTAiTc3yBBfPsFHzeninjWMbmXOTXX5DmPBxccUgW49I
-	DEzc=
-X-Google-Smtp-Source: AGHT+IHkZoXz7mP0kGx60Jb5V+6DneyBwVY7J5CFTS4qFQs/LhONi8vuA4PHjnbxrDzRDBiIBcgzPg==
-X-Received: by 2002:ac2:424f:0:b0:50f:1c90:d3d5 with SMTP id m15-20020ac2424f000000b0050f1c90d3d5mr1333532lfl.24.1706779596042;
-        Thu, 01 Feb 2024 01:26:36 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWOtaVz8GM+WZvodVDKtJwSMAAPbO63TGVulAslgxR+dUVpDDXHlRASNIGqIiwCX5r+AkJvjQ9jcDZUYk+NBvOwBBn4urasN5u1nERxh8t7DM5R41WFIVhWWGl0DXOw8f5obg5IU05Mrty9pd+ldnJmLHlHc19PtPGmojDjQ2hxNTayxSQ3WNSYsWczro+NAMn/Zimg7yxKDA409qFsmdopS3mwK6OetTnl0vg0kMCUA/hCDvzq0k944bf1TEomKW8WPmR345ZNYAtibOWcxQ==
-Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id l13-20020a05600c4f0d00b0040efbdd2376sm3847555wmq.41.2024.02.01.01.26.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 01:26:35 -0800 (PST)
-Date: Thu, 1 Feb 2024 10:26:32 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: "David E. Box" <david.e.box@linux.intel.com>
-Cc: netdev@vger.kernel.org, ilpo.jarvinen@linux.intel.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com,
-	linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH 4/8] platform/x86/intel/sdsi: Add netlink SPDM transport
-Message-ID: <ZbtjyOBHzVKXu_4H@nanopsycho>
-References: <20240201010747.471141-1-david.e.box@linux.intel.com>
- <20240201010747.471141-5-david.e.box@linux.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=rAiIIM6ae3MQqqhuoFAFmm77Lkf9lx4PZBITNyHPcyhXXdiNMA75+K72xYmx3phwg8OuVyhyhz8qOU1EWWgwPCWmmEOaSOMc5mDxIp6G7tal8HTvQXeyK6Zqr3E4jT/CpjPb22YA5PdBeCFwHGzKflciEdxTkSeY7/c0WBsynCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EK1Xce2m; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ywSa7cRP; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EK1Xce2m; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ywSa7cRP; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3F1E02205A;
+	Thu,  1 Feb 2024 09:28:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706779692; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5ZXgLLa0AgQAAzLt+5EkE3Qo2/vmJJ/AA1BTUNqnDIc=;
+	b=EK1Xce2mBq6yxLlhpfJlbluuhV5OslGE3Ihq9ykf96pXF7vJhk6atO/IXrz7yoZH4lkPQ0
+	cahd+9kJXp7PcDARqcqCi1l0kZ+qRxr7cs0B5VdUeF1/6JKo0Hl762DvbC3T4xYb+c3A8t
+	53PsZNMu4QDHVkC6lALalNs72sasIZY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706779692;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5ZXgLLa0AgQAAzLt+5EkE3Qo2/vmJJ/AA1BTUNqnDIc=;
+	b=ywSa7cRP+K5QgHKyokZsMb2v6/xI9DEvDMndE6k61NRtyyee4b3nrZrDVebWl4Jq+YAGyF
+	EK7zD6pNtRQqx0AA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706779692; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5ZXgLLa0AgQAAzLt+5EkE3Qo2/vmJJ/AA1BTUNqnDIc=;
+	b=EK1Xce2mBq6yxLlhpfJlbluuhV5OslGE3Ihq9ykf96pXF7vJhk6atO/IXrz7yoZH4lkPQ0
+	cahd+9kJXp7PcDARqcqCi1l0kZ+qRxr7cs0B5VdUeF1/6JKo0Hl762DvbC3T4xYb+c3A8t
+	53PsZNMu4QDHVkC6lALalNs72sasIZY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706779692;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5ZXgLLa0AgQAAzLt+5EkE3Qo2/vmJJ/AA1BTUNqnDIc=;
+	b=ywSa7cRP+K5QgHKyokZsMb2v6/xI9DEvDMndE6k61NRtyyee4b3nrZrDVebWl4Jq+YAGyF
+	EK7zD6pNtRQqx0AA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 317B513594;
+	Thu,  1 Feb 2024 09:28:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id LrYEDCxku2X+UQAAn2gu4w
+	(envelope-from <jack@suse.cz>); Thu, 01 Feb 2024 09:28:12 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id C935DA0809; Thu,  1 Feb 2024 10:28:11 +0100 (CET)
+Date: Thu, 1 Feb 2024 10:28:11 +0100
+From: Jan Kara <jack@suse.cz>
+To: Liu Shixin <liushixin2@huawei.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Matthew Wilcox <willy@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [PATCH 1/2] mm/readahead: stop readahead loop if memcg charge
+ fails
+Message-ID: <20240201092811.ycoh2rekx4wagglc@quack3>
+References: <20240201100835.1626685-1-liushixin2@huawei.com>
+ <20240201100835.1626685-2-liushixin2@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,39 +105,90 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240201010747.471141-5-david.e.box@linux.intel.com>
+In-Reply-To: <20240201100835.1626685-2-liushixin2@huawei.com>
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=EK1Xce2m;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ywSa7cRP
+X-Spamd-Result: default: False [0.18 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,huawei.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.01)[49.80%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 0.18
+X-Rspamd-Queue-Id: 3F1E02205A
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Bar: /
 
-Thu, Feb 01, 2024 at 02:07:43AM CET, david.e.box@linux.intel.com wrote:
+On Thu 01-02-24 18:08:34, Liu Shixin wrote:
+> When a task in memcg readaheads file pages, page_cache_ra_unbounded()
+> will try to readahead nr_to_read pages. Even if the new allocated page
+> fails to charge, page_cache_ra_unbounded() still tries to readahead
+> next page. This leads to too much memory reclaim.
+> 
+> Stop readahead if mem_cgroup_charge() fails, i.e. add_to_page_cache_lru()
+> returns -ENOMEM.
+> 
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> Signed-off-by: Jinjiang Tu <tujinjiang@huawei.com>
 
-[...]
+Makes sense. Feel free to add:
 
+Reviewed-by: Jan Kara <jack@suse.cz>
 
->+      -
->+        name: spdm-req
->+        type: binary
->+      -
->+        name: spdm-rsp
->+        type: binary
+								Honza
 
-I don't understand the need to use netlink for this. Basically what you
-do is you just use it to pass binary blobs to and from FW.
-Advantages, like well-defined attributes, notifications etc, for which
-it makes sense to use Netlink are not utilized at all.
-Also, I don't thing it is good idea to have hw-driver-specific genl
-family. I'm not aware of anything like that so far. Leave netlink
-for use of generic and abstracted APIs.
-
-Can't you just have a simple misc device for this?
-
-Thanks.
-
->+      -
->+        name: spdm-rsp-size
->+        type: u32
->+      -
->+        name: spdm-req-size
->+        type: u32
->+  -
-
-[...]
+> ---
+>  mm/readahead.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/readahead.c b/mm/readahead.c
+> index 23620c57c1225..cc4abb67eb223 100644
+> --- a/mm/readahead.c
+> +++ b/mm/readahead.c
+> @@ -228,6 +228,7 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
+>  	 */
+>  	for (i = 0; i < nr_to_read; i++) {
+>  		struct folio *folio = xa_load(&mapping->i_pages, index + i);
+> +		int ret;
+>  
+>  		if (folio && !xa_is_value(folio)) {
+>  			/*
+> @@ -247,9 +248,12 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
+>  		folio = filemap_alloc_folio(gfp_mask, 0);
+>  		if (!folio)
+>  			break;
+> -		if (filemap_add_folio(mapping, folio, index + i,
+> -					gfp_mask) < 0) {
+> +
+> +		ret = filemap_add_folio(mapping, folio, index + i, gfp_mask);
+> +		if (ret < 0) {
+>  			folio_put(folio);
+> +			if (ret == -ENOMEM)
+> +				break;
+>  			read_pages(ractl);
+>  			ractl->_index++;
+>  			i = ractl->_index + ractl->_nr_pages - index - 1;
+> -- 
+> 2.25.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
