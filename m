@@ -1,110 +1,219 @@
-Return-Path: <linux-kernel+bounces-48781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33052846131
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:43:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA525846135
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:43:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 664BD1C248E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:43:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF5D2B22BA5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:43:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A15678529F;
-	Thu,  1 Feb 2024 19:43:06 +0000 (UTC)
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87E4A85643;
+	Thu,  1 Feb 2024 19:43:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="uiITuexw"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7423652;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EEEE8527B;
 	Thu,  1 Feb 2024 19:43:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706816586; cv=none; b=JhXUyki/x7UFwkmX5Yj6pT0IgG494jynHjrod77U7T+u3/XNOM369rgzF5z+KlBIVcdAVJObMc2yVs77JddknB2eyMY1Z5wzXih3Tyv4X5T47B0owk//fi1Fb0VLuBWXThSipY+JS21AOhX9aexrqObuFhQcO+pPvKTnOxbWVoY=
+	t=1706816586; cv=none; b=rjtsaSBfGSzVZfyjXl566Yi68kO9l1esppnZ1uUBe33OF4ltAaA/VN6CocbIk1oqi3BJZAbP4S4ivPU16sGK7X9P1lKsBc/NiPb4MI5/EBa4qDWeDn0ZHWmtAoXl4mQuswKzoVJkdj1g9kKNbCH3eVGGrU84uzK5f6NQ9JCS3dc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706816586; c=relaxed/simple;
-	bh=EI6Wdf+UwkRuRvguDGNKbFCflnhm+lABsh5itXBFJ0o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fXVwb77tfE4BBpeNABQuVQTmxsQ/jfDsfWm+nl9YJSGjJs2sT+gLBHxXqRafnAKkzltv48p1x8uztA59lbWZ+mw5ZxoqYXC0GA+hkR1rp12Fx0Os8bl/HK5TTG94c+vRQJX1h9Z2Hk8U3W8LCyu+NtIPVLa0qKOle3vIuFAQ4YA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-59a47232667so168837eaf.0;
-        Thu, 01 Feb 2024 11:43:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706816584; x=1707421384;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KIfIQzx9YZcK7zdFdUNXFqLOVj9oiILciX2Jy5KyqR0=;
-        b=qrNI+IlWTVOm13C4PZS1Mxsc8iDSGTr8A/PPAsfx0VJxqi1AsMCCxiccldj4Ymftr5
-         Bk2+n1G8zI/ior+6ezFY3Uw3SSr4ANwaciRrvlRX2XRudpic3XNw5TAHox+l5QLbLk6H
-         pdovdpcM3QgFZuHdGGIhSWPeum8q5DwnJGR9r8uGwxPHKsM3/YtUAOteZsaUPeH/tOVg
-         3Nw0nx4DuVclG4GMjUacUXJJq3e+0dezbHjsmdrR0ohfQlYTLIW+PWUazTzq1WRggelz
-         lhrzVaQRSiGvfosbq/0hvQbsfnO0aWjylKKRKWP30EzjhmyJzRHXp2/r4CeWPQH0jmKe
-         0w2Q==
-X-Forwarded-Encrypted: i=0; AJvYcCWHCP7KHzhWF2+3EGY9jQVybGWJiDM4PwdmQ/0/7bGQNRBsaugfJtQyB12E+BXiqWVY0lzsTmjS5ol6QOB6QGx9z+JH+S8VTfeAm9kMhVbv9cMuaurBke7ByJS6p7yOavfo/Fbi7zIPbG6YUUHJgS1n+y7kEBzGdfCWkrmmfzuuKTMFTA2qxdu8xZcOvvyVF8p4zjZ/Oek3rcDmzMy5GR6uONoSld5d9Sw=
-X-Gm-Message-State: AOJu0YwJgfYSa0RQt1Rk0+z0c41mcDTzyNkJz9i3mCaxhjdp2F5EaG67
-	gGWE5wl5Z3y+iPHfXHex5vxY/Wrgx6pcj0NcPCmpJR0N6xi7zxHUQ6rCJKYfrLbFc5uveIFtdkH
-	OkR5VlrVKRWxR7ci5rgQPVt1bQ78=
-X-Google-Smtp-Source: AGHT+IF4d2qVzkyJfWAEFUKt+0yhhszmCH5h7eayyLTyhb+UTNnYVy0aTBkyzcVw4YAyAiHmxAqp4+kRoyY1okMmtGE=
-X-Received: by 2002:a05:6870:b6a4:b0:218:d1b7:e8cd with SMTP id
- cy36-20020a056870b6a400b00218d1b7e8cdmr4317354oab.3.1706816583711; Thu, 01
- Feb 2024 11:43:03 -0800 (PST)
+	bh=TGE23cUVJFk/9oNDyoC9tSJakRNR/ZlcXlTk0BrkpuM=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=lb3fKBdw8NpHbTGpwNi4I98vBkc23NfZM7hDdMmlECKfmBF5BoVOVgRXJEiucetb2Kx2bT9q5G2arcl1G99z7Vqq6/RJ9vKI4Oa+a5qohPk7y9JFqA7/l/ilqPYGSELz3dDvhHukKdTb+hha5l2WWY2MWhQgR8flRBX6bQtfa10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=uiITuexw; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130111250.185718-1-angelogioacchino.delregno@collabora.com> <20240130111250.185718-4-angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240130111250.185718-4-angelogioacchino.delregno@collabora.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 1 Feb 2024 20:42:52 +0100
-Message-ID: <CAJZ5v0g6YNDAUxaWK9KfM0tt2x4wqaCap4--UjSauwmfYiEgoA@mail.gmail.com>
-Subject: Re: [PATCH v1 03/18] thermal: Directly use thermal_zone_platform_params
- for thermal_zone_device
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: daniel.lezcano@linaro.org, miquel.raynal@bootlin.com, rafael@kernel.org, 
-	rui.zhang@intel.com, lukasz.luba@arm.com, support.opensource@diasemi.com, 
-	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, 
-	festevam@gmail.com, linux-imx@nxp.com, andersson@kernel.org, 
-	konrad.dybcio@linaro.org, amitk@kernel.org, thara.gopinath@gmail.com, 
-	niklas.soderlund@ragnatech.se, srinivas.pandruvada@linux.intel.com, 
-	baolin.wang@linux.alibaba.com, u.kleine-koenig@pengutronix.de, 
-	hayashi.kunihiko@socionext.com, d-gole@ti.com, linus.walleij@linaro.org, 
-	DLG-Adam.Ward.opensource@dm.renesas.com, error27@gmail.com, heiko@sntech.de, 
-	hdegoede@redhat.com, jernej.skrabec@gmail.com, f.fainelli@gmail.com, 
-	bchihi@baylibre.com, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1706816582;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EIkfYfYNlHUj/GmY+K0UnE1/E7dWPOhlec1knrz/+V0=;
+	b=uiITuexw2PTc1caViD53geTm3aDuLHMYkVN78zTF0e31CvMexBMTvz8lWSZ6y4XQP5s0To
+	4FFe9YprSCiHuZqcGGZssUh1gO2JBtvBTz/UOZ2o4TbFkAPXBJMU8/nKYVq3fLBl00dmBq
+	kshLaxY465bk+7hT0ZubYT6sKu9NQdZhuNAEp4OcZZn7jAf3+YrNJBO/GaFgCwHg9EGni0
+	y1bV4T4rSAmmBQyNK978Q1RxfuARQ87c/AWZWf1yZXv4pQr6TCPOZuWwFAG9MW7IvI9oOQ
+	/+0a3ALbEjAOeBLj23lQORYHj6MAmj4Pb7ReT7qXQj8Zc6o2t73zuHuyj1kzVQ==
+Date: Thu, 01 Feb 2024 20:43:01 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: Alexey Charkov <alchark@gmail.com>
+Cc: wens@kernel.org, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano
+ <daniel.lezcano@linaro.org>, Viresh Kumar <viresh.kumar@linaro.org>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] arm64: dts: rockchip: enable temperature driven
+ fan control on Rock 5B
+In-Reply-To: <a8aa04ca0061cd09c7b3eb5336e534a4@manjaro.org>
+References: <20240130-rk-dts-additions-v2-0-c6222c4c78df@gmail.com>
+ <20240130-rk-dts-additions-v2-2-c6222c4c78df@gmail.com>
+ <CAGb2v65--rgb2FqmG_0-w1-jUL0odqKXxiZJ-XPYA4uomfYmaQ@mail.gmail.com>
+ <5e3e12d65e4919372e7fb02d56202393@manjaro.org>
+ <CABjd4Yx0kQ67fScrFVavjObMLaNt_PJ3TVOhLpCmj00Dx9dOqA@mail.gmail.com>
+ <a8aa04ca0061cd09c7b3eb5336e534a4@manjaro.org>
+Message-ID: <bd6e93cf907572e86697dc10a50bfe66@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-On Tue, Jan 30, 2024 at 12:13=E2=80=AFPM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
->
-> Remove all duplicate members from thermal_zone_device and directly
-> use the corresponding ones from struct thermal_zone_platform_params.
+On 2024-02-01 20:31, Dragan Simic wrote:
+> On 2024-02-01 20:15, Alexey Charkov wrote:
+>> On Thu, Feb 1, 2024 at 9:34 PM Dragan Simic <dsimic@manjaro.org> 
+>> wrote:
+>>> On 2024-02-01 15:26, Chen-Yu Tsai wrote:
+>>> > On Wed, Jan 31, 2024 at 2:22 AM Alexey Charkov <alchark@gmail.com>
+>>> > wrote:
+>>> >>
+>>> >> This enables thermal monitoring on Radxa Rock 5B and links the PWM
+>>> >> fan as an active cooling device managed automatically by the thermal
+>>> >> subsystem, with a target SoC temperature of 65C and a minimum-spin
+>>> >> interval from 55C to 65C to ensure airflow when the system gets warm
+>>> >>
+>>> >> Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>>> >> Signed-off-by: Alexey Charkov <alchark@gmail.com>
+>>> >> ---
+>>> >>  arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts | 34
+>>> >> ++++++++++++++++++++++++-
+>>> >>  1 file changed, 33 insertions(+), 1 deletion(-)
+>>> >>
+>>> >> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+>>> >> b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+>>> >> index a0e303c3a1dc..b485edeef876 100644
+>>> >> --- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+>>> >> +++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+>>> >> @@ -52,7 +52,7 @@ led_rgb_b {
+>>> >>
+>>> >>         fan: pwm-fan {
+>>> >>                 compatible = "pwm-fan";
+>>> >> -               cooling-levels = <0 95 145 195 255>;
+>>> >> +               cooling-levels = <0 120 150 180 210 240 255>;
+>>> >>                 fan-supply = <&vcc5v0_sys>;
+>>> >>                 pwms = <&pwm1 0 50000 0>;
+>>> >>                 #cooling-cells = <2>;
+>>> >> @@ -173,6 +173,34 @@ &cpu_l3 {
+>>> >>         cpu-supply = <&vdd_cpu_lit_s0>;
+>>> >>  };
+>>> >>
+>>> >> +&package_thermal {
+>>> >> +       polling-delay = <1000>;
+>>> >> +
+>>> >> +       trips {
+>>> >> +               package_fan0: package-fan0 {
+>>> >> +                       temperature = <55000>;
+>>> >> +                       hysteresis = <2000>;
+>>> >> +                       type = "active";
+>>> >> +               };
+>>> >> +               package_fan1: package-fan1 {
+>>> >> +                       temperature = <65000>;
+>>> >> +                       hysteresis = <2000>;
+>>> >> +                       type = "active";
+>>> >> +               };
+>>> >> +       };
+>>> >> +
+>>> >> +       cooling-maps {
+>>> >> +               map0 {
+>>> >> +                       trip = <&package_fan0>;
+>>> >> +                       cooling-device = <&fan THERMAL_NO_LIMIT 1>;
+>>> >> +               };
+>>> >> +               map1 {
+>>> >> +                       trip = <&package_fan1>;
+>>> >> +                       cooling-device = <&fan 1 THERMAL_NO_LIMIT>;
+>>> >> +               };
+>>> >> +       };
+>>> >> +};
+>>> >> +
+>>> >>  &i2c0 {
+>>> >>         pinctrl-names = "default";
+>>> >>         pinctrl-0 = <&i2c0m2_xfer>;
+>>> >> @@ -731,6 +759,10 @@ regulator-state-mem {
+>>> >>         };
+>>> >>  };
+>>> >>
+>>> >> +&tsadc {
+>>> >> +       status = "okay";
+>>> >> +};
+>>> >> +
+>>> >
+>>> > Is there any reason this can't be enabled by default in the .dtsi file?
+>>> > The thermal sensor doesn't depend on anything external, so there should
+>>> > be no reason to push this down to the board level.
+>>> 
+>>> Actually, there is a reason.  Different boards can handle the 
+>>> critical
+>>> overheating differently, by letting the CRU or the PMIC handle it.  
+>>> This
+>>> was also the case for the RK3399.
+>>> 
+>>> Please, have a look at the following DT properties, which are 
+>>> consumed
+>>> by drivers/thermal/rockchip_thermal.c:
+>>>    - "rockchip,hw-tshut-mode"
+>>>    - "rockchip,hw-tshut-polarity"
+>>> 
+>>> See also page 1,372 of the RK3588 TRM v1.0.
+>>> 
+>>> This has also reminded me to check how is the Rock 5B actually wired,
+>>> just to make sure.  We actually need to provide the two DT properties
+>>> listed above, at least to avoid emitting the warnings.
+>> 
+>> Well the defaults are already provided in rk3588s.dtsi, so there won't
+>> be any warnings (see lines 2222-2223 in Linus' master version), and
+>> according to the vendor kernel those are also what Rock 5B uses.
+> 
+> Yes, I noticed the same a couple of minutes after sending my last
+> message, but didn't want to make more noise about it. :)  I would've
+> mentioned it in my next message, of course.
 
-I totally disagree with this approach.
+Just checked the Rock 5B schematic and it expects the CRU to be used
+to perform the hardware reset in case of a thermal runaway, so the
+defaults in the RK3588s dtsi are fine.  I had to double-check it. :)
 
-It does make sense to store these things in a tz directly.
+However, now I have some open questions related to interrupt-driven
+operation.  I'll research it further and come back with an update.
 
-1. devdata allows the caller of the thermal zone to get to their own
-information on it conveniently.  This patch makes it harder.
-2. It makes sense to copy type into tz to allow the zone creator to
-free the string (should they want to do that).
-3. It would make sense to copy the contents of the trips[] table to tz
-to allow the zone creator to free their initial table.  This doesn't
-happen today, but it is in the works and your patch goes against this.
-4. It makes sense to copy num_trips directly to tz, because it is
-closely related to trips[].
-5. It makes sense to copy ops directly into tz, because this will
-allow zone creators to use const ops for zone registration.  Again,
-this doesn't happen today, but it is in the works and this patch goes
-against this.
+>> This made me think however: what if a board doesn't enable TSADC, but
+>> has OPPs in place for higher voltage and frequency states? There won't
+>> be any throttling (as there won't be any thermal monitoring) and there
+>> might not be a critical shutdown at all if it heats up - possibly even
+>> causing hardware damage. In this case it seems that having TSADC
+>> enabled by default would at least trigger passive cooling, hopefully
+>> avoiding the critical shutdown altogether and making those properties
+>> irrelevant in 99% cases.
+> 
+> Those are very good questions.  Thumbs up!
+> 
+> The trouble is that the boards can use different wiring to handle the
+> thermal runaways, by expecting the PMIC to handle it or not.  Thus,
+> it's IMHO better to simply leave that to be tested and enabled on a
+> board-by-board basis, whenever a new RK3588(s)-based board is added.
+> 
+> Thus, the only right way at this point would be to merge the addition
+> of the OPPs and the enabling of the TSADC for all currently supported
+> RK3588(s)-based boards at once, instead of just for the Rock 5B.
+> 
+> I can handle the required changes for the QuartzPro64 dts file.  For
+> other supported RK3588(s)-based boards, if there are no people having
+> access to them and willing to perform the dts changes and the testing,
+> I'd be willing to go through the board schematics, to enable the
+> TSADC for them as well.
 
-As far as I'm concerned, this one is a total no-go.
-
-Thanks!
+Please, let me know are you fine with the above-described approach.
 
