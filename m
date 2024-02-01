@@ -1,88 +1,89 @@
-Return-Path: <linux-kernel+bounces-47976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4541E845593
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:37:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F99F845598
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:37:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC42D287468
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:37:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BDA628A1E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:37:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD2C615CD6B;
-	Thu,  1 Feb 2024 10:36:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80E3B15CD62;
+	Thu,  1 Feb 2024 10:36:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Yh8Ofelf"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xmcEASgn"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 521DB15B991
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 10:36:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 137DB15B973
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 10:36:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706783804; cv=none; b=WEY6WjWP0g3cLL7SZHJ6ZLicxOrzGeYxauSoXtcTnYBNFz63jOUfbQe3r4PUDVuTCc6bifpt1zISmzj1c8zdg1wMe93uaoKOQSu/lnx8F3B4gnAVuwY4rrvrA05I8wWk5mxh1Jg58z8WQ/STUQBzjBdTu2If7PmAC4d+osfX8G8=
+	t=1706783805; cv=none; b=ozEIwXNLGYF2spaNkYtj3M7gEQDk8NxGEL6umQcPUWei08I91D/PBKolk6RqY6HhLt8ku8K5Z7BEjnhX6Y1wiYn3mNwilMYslkImU7iBfMmtmhXJpC9H6SuujBW0szKPOuUvYO11jHfqSLminqxUO2rCfUddGIINbbzdv4WwHKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706783804; c=relaxed/simple;
-	bh=qgxGtqz0Hm8lEhfsyYOFZ9uLr5Gy8MYtN5ATEsQTVzs=;
+	s=arc-20240116; t=1706783805; c=relaxed/simple;
+	bh=KoUoo05PoeMgsIXh1MaXpyrR3tB7VLmmtIe7dRhHo1Q=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=eisIRsJq8bE0whN5nXZfMSj5Nd1i4AZhj8ZfiQWiF9XqWfVxG+RRY16kbW3TetKhJBf+3ffk1Uy8RkahF+h5LAIXWqEhM5Mwrcwm8frTtZXSIcWmXyQKjGgUY35HGmsfPl3p29/QFjHcU8O7Wo8kcCjkhK+aJ7aZul2biBP/6tw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Yh8Ofelf; arc=none smtp.client-ip=209.85.218.45
+	 MIME-Version:Content-Type; b=ZAZUbi+KX2801Ew/Xld650TJRdVA+X9mgzelnDL8ylwbsNaV5wWq6LpEfA3uvX5JJwxXq/9Sl61u4CS1GqrXC8D/IbRJgdVKfVclFLArsIE547P0yoHygHXP/Lus34wsRwftrb29iagAOkhlQ4WkVQMz2QLM7Rkfv/yV3uZvn6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xmcEASgn; arc=none smtp.client-ip=209.85.218.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3510d79ae9so89255466b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 02:36:42 -0800 (PST)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a36597a3104so98724066b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 02:36:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706783800; x=1707388600; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706783802; x=1707388602; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ELqpTZvLgMMzm02/IMeIQHM4yd50odkFSFWfS3rIHB8=;
-        b=Yh8OfelfyjqLUJiInJH87wphodH2rFuwk0fTEWUGNMCVSo2yFVn9fM5nkapWiPkWew
-         BEZw3WYOZG9BggtEeZPzPRoGRyCPsWuvESURIZGj2yf5ILH+zMneQA71vyoByMRICVBF
-         SVrKm6NvwJKhgBQXTJxs2DF9+x35vcMmezqfeKdVJE6IDpy7IeK3Bh46lJSsck62BWCu
-         riNKUtO1cVVbWoTR927seDAv8EQcQwmStUC2piJuJCRKVx2fD/+GSTALXkdi1+UN1LmM
-         Tq/o7xWpow4S6uUpDD3RgxEs3WBpd6eXyGDLHC11N6WiK7HntSxLTlOkX2fLpznfw918
-         vlRQ==
+        bh=MTNlR48ERg/KgHNDsxuPiu78lqC8QL37sq2ab7fXT0A=;
+        b=xmcEASgn+/5CnFHqzob7+KvNJmWbM0zu0naQAN3IldNpooH1cIcJs1s9dQgRUcCw6A
+         RQvu0TwtQTiGgNRksXsoE6Er3UgyOojdh24GI6Pz/eMatSa0HWWgJcHqRWQKhYhnBI9C
+         qjtQZgX7TSOyVsADDsw35j3y+t8WfTOQ5Waqgrk2/f2jVDQpA9yjhBLPfiKPD/sYUxtO
+         VzQ+lgO3jFAEth9B/YE1l3Nxq7SnODD/2vBMH8Yx5Fije6EqBioLepxbh3Vjzs9sL+vy
+         4m85GpnYVAn58suCXTXGsqxnrP+X+sB9QmhHUONMFZ/HYe26umHLS/mE+kczNq3Thlzf
+         YQfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706783800; x=1707388600;
+        d=1e100.net; s=20230601; t=1706783802; x=1707388602;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ELqpTZvLgMMzm02/IMeIQHM4yd50odkFSFWfS3rIHB8=;
-        b=ekhfP9H8GU3Q0EiSiSYz8EcNxHc0lKOAdigz2+yAOlR6tD1d2/vgqJy8e+fe/lNmnD
-         NTi8rf0iLRM/AXrmYxHSNV43U+/1paz9HdGcG/+Zf6aQ0AdDvYBL5rIogDUqMvAud688
-         LLi7yb4lDZD2DCvjL66DCtVY8fMO2l4lJ6p1O24qu8j0xl4+vWPpu10xdnMHWpW4C0ap
-         6AN2na3weXYjSNI7YKfQxtPy5cPOFjHDotEsvSVxTog6jXFOK4wS0gkxgi71Z+MXZL7m
-         d8Pv4Ab1H4w6qWXybb+FjdodSeLt/8I7RTtrFoiJuwnnIBxb/C9MVyAL2AtNuF9zOaRF
-         BEWg==
-X-Gm-Message-State: AOJu0YxlG+DDVXxlBVto50O7E4lHYuU2NpOrkWu58zdvp9xN8aSmAteI
-	+GvEKJZa/ZruD/AC1mjf2uopM3oQjIzpNmHowKGJNRpuMRAgOal1BLIMjVEQOI0=
-X-Google-Smtp-Source: AGHT+IG51xzHVAwchknDXRBtyIfXiaNx3yhCsqxzIRo2AHV2f7ixQ6e7ZDydPbZDY8bN3iL8mvK8+w==
-X-Received: by 2002:a17:906:e2cd:b0:a2c:5139:8b11 with SMTP id gr13-20020a170906e2cd00b00a2c51398b11mr3336749ejb.56.1706783800692;
-        Thu, 01 Feb 2024 02:36:40 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWmc9aGbJwGUYavUlRyMX9smG3xrl896IawCZCtAOTT5UuQQXkuBD41PHVIXBbT8uW9fvjz/KaDJXE2x94kOE415xUE0y6g0/MCYwp7fN/PFCDp39uHr2P8giHMLydukrFG8xEWOKlnu7GZqShsAdRJEukR/hpFXSLuVbEZ7ztWCfMWa1OeBGmcG42jXAxDMerKDHTPo24xhucyZmfinM5aHTTwP+wZ8DTiHbrd8urlSE+nWjZaWkrcl/GJilx9nRfH9EiPHbrE4aDbR5aQZfiN8aGm9e9uvMkem+nxGh4B29HLpMoe9VRUtooFzf+6TUSlbqQjLm5TYLNbNPRd34vpRMZKoadNL+E5hY4l8/VQ1atvR+4kt6Pz+X0SLkAwE9J/X559QjvurlSL7xKjKul+ff44eKfEJbF/yGMoochVwnHon8ISkQTlqjEHQdw6Yc9nw00Y1qwQ38pfztASo4sUTO9DdVzSrlh4O9D3ODEAnI5nI/3IdRA/bGHjoksV8PraE+pOHRqy4J6F06cXcLmdychwPzfzwHZZyawAFMY7TLGVSh3N6yQWQLlBeuCSoXUpmGAWtgVvYIBM2Ai1sMLf83ziqPzAzW6rfJsVpjbYzdy3IxbRPowrSBHdYvz9P2qwSTdQUXq7P53KxeCtLyckBYIJxEtnKPMMN1U2svdvOrLODg1Xeg==
+        bh=MTNlR48ERg/KgHNDsxuPiu78lqC8QL37sq2ab7fXT0A=;
+        b=C++OHkSfB/Q0aBXYWMkykgFh8+f7dk0YiZqdB1s8q+8UI1goFFjFSQyc94ip36PZsz
+         oKFILY2GkFb93XafdJ8KaMecCiBfcK1kmC+SuwcLINkGcaz9FM/YQyAY+EspTLablFZv
+         OM4l37onKz/zW2M4MAHOOD6cRs4/HdlBgGO4ao5Rf2V6iXZErQOdtqAVHxeDlYjEfPjo
+         d327Qp399UVLLCgnyYrBS06dfmnAH9UXUH2i+OfuYREMIDwJhHAiGd25Edq4f61TR5FZ
+         pnVtIIW3wyTmp76MPKTucy2RuGJFJqp1dmpEJPnBgENnki8pHKUmYH5TATksVb7qtXSa
+         xqQQ==
+X-Gm-Message-State: AOJu0YxmxzA8o7N2CPGkZn6CESF05K/ZKimUAFR9kFBF9CpFk55bcNwo
+	RJoHUNqyJHh1D2PYmUzCWVJTMtTWkiWXmIQsD8DvTom473omDKmRqrK+Ltt48wI=
+X-Google-Smtp-Source: AGHT+IGIi9dH2E5nse4iiP63tSJbSGVMRAUxwXX1cDJxXIFPAEiSDS15vicdxQG9UeoLEIiNUqO9MA==
+X-Received: by 2002:a17:906:b357:b0:a35:e5f4:fef7 with SMTP id cd23-20020a170906b35700b00a35e5f4fef7mr3058227ejb.68.1706783802460;
+        Thu, 01 Feb 2024 02:36:42 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU6c16TjBghDFlP7ujSZpDA/ME4RzgXzNnqb7Ol8iQgZAms9X5JzptAbD0OQjeMzUKTMrvp7gIx812B4JH80QO9KeNFSEj7QWpJ789H1Ji9SviGlCn/uWpDddwGq6iD4p+fnTdjmRa3aC312qFBW60z2E+q5daXBACt/7ihg/9QnDU2AFe9OkX4Q7cU1+fcS8AXk5KyRJsU+KJOC+dVouUHFCJ3f1N962G1U3aRy6NBh5GMLkV9+4oltRlvglVZrdDydFEkV3/dzjD4fI5rm55zgolbSdBCaT6KKMExHyPsPmD4DxBTbMNFTo370fOE25hsqrhwhpjAiUKG9nYdvSkZijwTyROEP3+h9f9AwJA2FSlS2stN+PeUDLJ77YlxqpTocaP8lIsXXW+N3LYVnnqho1FEMc8zN9LDoyst1Zx1RedG9EtCOBYrBizJA0ZFafyd8cm0qddE5E3SBD1ZKXC3X4FYAcKFfPcCPFPUQGaA9Q==
 Received: from [127.0.1.1] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id ty5-20020a170907c70500b00a35a8571419sm4552308ejc.135.2024.02.01.02.36.38
+        by smtp.gmail.com with ESMTPSA id ty5-20020a170907c70500b00a35a8571419sm4552308ejc.135.2024.02.01.02.36.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 02:36:40 -0800 (PST)
+        Thu, 01 Feb 2024 02:36:42 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: peter.griffin@linaro.org, mturquette@baylibre.com, sboyd@kernel.org, 
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
- =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com, 
- tudor.ambarus@linaro.org, willmcvicker@google.com, 
- semen.protsenko@linaro.org, alim.akhtar@samsung.com, s.nawrocki@samsung.com, 
- tomasz.figa@gmail.com, cw00.choi@samsung.com, 
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org
-In-Reply-To: <20240130093812.1746512-2-andre.draszik@linaro.org>
-References: <20240130093812.1746512-1-andre.draszik@linaro.org>
- <20240130093812.1746512-2-andre.draszik@linaro.org>
-Subject: Re: (subset) [PATCH v2 1/6] clk: samsung: gs101: gpio_peric0_pclk
- needs to be kept on
-Message-Id: <170678379863.179994.10165116011101753606.b4-ty@linaro.org>
-Date: Thu, 01 Feb 2024 11:36:38 +0100
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+ Sam Protsenko <semen.protsenko@linaro.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, 
+ Alim Akhtar <alim.akhtar@samsung.com>, 
+ Sylwester Nawrocki <s.nawrocki@samsung.com>, 
+ Tomasz Figa <tomasz.figa@gmail.com>, Chanwoo Choi <cw00.choi@samsung.com>, 
+ linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20240125013858.3986-2-semen.protsenko@linaro.org>
+References: <20240125013858.3986-1-semen.protsenko@linaro.org>
+ <20240125013858.3986-2-semen.protsenko@linaro.org>
+Subject: Re: (subset) [PATCH v2 1/3] clk: samsung: exynos850: Propagate SPI
+ IPCLK rate change
+Message-Id: <170678380102.179994.1389430718462116561.b4-ty@linaro.org>
+Date: Thu, 01 Feb 2024 11:36:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,25 +91,25 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.4
 
 
-On Tue, 30 Jan 2024 09:36:40 +0000, André Draszik wrote:
-> This pclk clock is required any time we access the pinctrl registers of
-> this block.
-> 
-> Since pinctrl-samsung doesn't support a clock at the moment, we just
-> keep the kernel from disabling it at boot, until we have an update for
-> pinctrl-samsung to handle this required clock, at which point we'll be
-> able to drop the flag again.
+On Wed, 24 Jan 2024 19:38:56 -0600, Sam Protsenko wrote:
+> When SPI transfer is being prepared, the spi-s3c64xx driver will call
+> clk_set_rate() to change the rate of SPI source clock (IPCLK). But IPCLK
+> is a gate (leaf) clock, so it must propagate the rate change up the
+> clock tree, so that corresponding DIV clocks can actually change their
+> divider values. Add CLK_SET_RATE_PARENT flag to corresponding clocks for
+> all SPI instances in Exynos850 (spi_0, spi_1 and spi_2) to make it
+> possible. This change involves next clocks:
 > 
 > [...]
 
 Applied, thanks!
 
-[1/6] clk: samsung: gs101: gpio_peric0_pclk needs to be kept on
-      https://git.kernel.org/krzk/linux/c/8a96d2701f7c794e45102a9cc7fc4a5c4951e699
+[1/3] clk: samsung: exynos850: Propagate SPI IPCLK rate change
+      https://git.kernel.org/krzk/linux/c/67c15187d4910ee353374676d4dddf09d8cb227e
 
 Best regards,
 -- 
