@@ -1,113 +1,128 @@
-Return-Path: <linux-kernel+bounces-48620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96B22845EEF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:52:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 024C0845EF2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:53:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C96101C2473E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:52:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 350D91C24B51
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:53:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E57DD7C6EC;
-	Thu,  1 Feb 2024 17:52:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DA227C6F8;
+	Thu,  1 Feb 2024 17:53:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GjA+1bOf"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EGk/ElPD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 770B17C6D9
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 17:52:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 728357C6D7;
+	Thu,  1 Feb 2024 17:53:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706809970; cv=none; b=RWzkn98Ugs+QGtaM8nixUERxO8c2pnLdBt8Pwf90lTjRfbGJhRsfzkdnC3gDUGQlzj6FFATPO585c8z7SXiJi5qgzCIqNAku4ffDVEAbjvL8yQiQBtByYuGAqjKjV05SqILe0uRcIa1CxoLNozbPQOQYz/h4CEbya1i+XplMOmk=
+	t=1706809996; cv=none; b=bITKmfJlrh04zec9CZ1KsS7Eo5YKwG3tLd9nvrWSzFDbED6rbpSwZ1wPdfV+48HmjIdmtoQeCNdcYamMGSvi5aCyiud7vSQ4HRBxu/fWRvc4+SXSZkdqp0YzFg2fkvCTCR5AFa62Cex3yVp0HLKCiWw80VxM8Dl5wD+wlKhk6jM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706809970; c=relaxed/simple;
-	bh=lIJSSJQHgI6dPqglJX+BpS/xv1aEFSMZz/COulwXiUY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=e2F2m0ie5YzBHQyQnpmVF0xRkCp4ksSxffmzPB9AMjlxqBvl8IuOjToaORetEFNoI70jH84W6VxkAuILGWZSeaNZ0pFs32mGbZ6wiBjMn8kXdIeEGP3s7sGk+IMUvvPZbmcrbKBkHmaXMtIdRzALtYA25Tjd5Un67PV4hTX557k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=GjA+1bOf; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6ddd1fc67d2so915563b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 09:52:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706809967; x=1707414767; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oeB/5jBcZmtDcrKzl0YysnvyegKxpdljcraOQkK2rDw=;
-        b=GjA+1bOf0PHXpamV9zWbxgGlKY89zH9SKsbJWVgbc6GrPlgcTLmIbX602grQlhL1Jy
-         LCdTG5yOn4cZZsvGGEzXqhuX3LMSDiLkLU2Ihy9MEJhzeTLFZRu93yDkrIkqGJCbvRrt
-         Hzgyn9apx6GsEd3Eb/V6VE/LXcxDIcLlrOG4M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706809967; x=1707414767;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oeB/5jBcZmtDcrKzl0YysnvyegKxpdljcraOQkK2rDw=;
-        b=tYsL8EL9/mtpAbgnJbPX5T4Sed0zDZcfXTeKrWT9igfhqzBCQ8OODP3uF2eUJC+8FR
-         2LgOULzXS56FBKUR/4YVwgKIyTceeie6XDy+6L2w2VTpCm9MTjK/GZE+ABfTogBu67WU
-         1wxJcDmGxvH8xhVArS6Z4dYs40NZsmvEkI7UUStJ+iaBFbBeefSRXih2GKGCBo9jOIWN
-         pGepEwLNUmk826I/suleRslNsKHyhYNAb6UEItQhIDfHnVCkNqGCjfmXbcktbC6IrFQY
-         upkrAKss/G3nOl+JfER5rVy5/6KQecoMiBbz9GaSJDxvNZ3G4FOmjnPjlcIiLLx/5Yku
-         +Abw==
-X-Gm-Message-State: AOJu0YyWkqyoju8tYXJiV3K58cwIyhcKTvANN0BbTyqO/0lD8SYjosJh
-	f/NAAmRgBAfcD02WCtXtbeDpHBkXLF8x1/LG9+wW6PRo8r8QxibYsaFiB7nAXQ==
-X-Google-Smtp-Source: AGHT+IFywQN1VuW1cJxTCfwWkXxphyAozHQiCzAAuSTqK+KpTMUrHhQklPCAnJl9YxQODGS8sDGZEg==
-X-Received: by 2002:a62:f242:0:b0:6df:eb95:f50b with SMTP id y2-20020a62f242000000b006dfeb95f50bmr1998531pfl.11.1706809966859;
-        Thu, 01 Feb 2024 09:52:46 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCX+hPHocTN3Krdrwx2BAO45nqlHKtddyMcZedxVYNqfzp1g5llrSQ77t/t9540v3ksZVJyxQHtPp7krFRWB79cagtGUcq8AeS2fk18vBwQA2d1Wxj5V+bsCqzxwezYa7X+BNRsEjRuA/DD5VtS1iXq9O6G7yNUp/ZLFgvOLS+nnsn7Imahnj2Zf0LcZ/e/RxzPcoteP0ppMFjLjaYdlU9LM+9f19epNvqqjUk279j7/+ZLgKsnTnB5zzxGMAcwvNfd/ZARI6PYz8PTcHSfYa8MANfTeAB443UY+Kl+gFLoC1VvSo7sXPQZvKjZIP5CDlrpicY1s/1vQEd5uHQJEK1Lzz0LMiP+z8Qlgw31NG5qePmuYhJasxqV5
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id i1-20020aa787c1000000b006ddc133f1d3sm12700pfo.194.2024.02.01.09.52.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 09:52:46 -0800 (PST)
-From: Kees Cook <keescook@chromium.org>
-To: Nick Desaulniers <nnn@google.com>,
-	Tanzir Hasan <tanzhasanwork@gmail.com>
-Cc: Kees Cook <keescook@chromium.org>,
-	Andy Shevchenko <andy@kernel.org>,
-	linux-hardening@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Greg KH <gregkh@linuxfoundation.org>,
-	llvm@lists.linux.dev,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v6 0/2] shrink lib/string.i via IWYU
-Date: Thu,  1 Feb 2024 09:52:00 -0800
-Message-Id: <170680986503.3370813.7406880929037173095.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231226-libstringheader-v6-0-80aa08c7652c@google.com>
-References: <20231226-libstringheader-v6-0-80aa08c7652c@google.com>
+	s=arc-20240116; t=1706809996; c=relaxed/simple;
+	bh=1KYxgr9o1ratY9lp3ssW0x8kI1CSjAd9LYfS2K9oLK4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=dc9cmpo1qs8rLO7X3J11yNbEIq5JQ7kgvFQ2bLk3jt2IwhWcGNv0k4mmuSs4YEiaUsfr00EqjKETuwZmhy5Xuanbdg9PRofHtwB5yK3l8j7QLiiPK5Bpk+7y4LwrFYC5Hl4pYXbrh/RROOwgrIcWV97QnusLEZw21jg+0WtvQSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EGk/ElPD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14D1CC43390;
+	Thu,  1 Feb 2024 17:53:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706809994;
+	bh=1KYxgr9o1ratY9lp3ssW0x8kI1CSjAd9LYfS2K9oLK4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=EGk/ElPD1Rngo2t5Fea3WJgs3oOw3dFABk2KXVs9k0spSKDDD6tWXwsUWIV+djEWw
+	 ydzkwWPkNoEkxTCJLDERyFbNlRPkss3WMzoAlf9sGG1FYEO5fQ3325NxAxrHRTtfEt
+	 f9NpjAyHt7a3wN3aK4hyCTo9avMkZiSxxRCxQYl0rsKwRc0u2chEQH1p9j5iRBe4q3
+	 dnmC0u4Lk6ilJLIWWoRC/1iuwZ8pi9z6bbz/r0MV+bE8qUucoT8Rrmj24TbNqIuduW
+	 55xYKXsJbm7wmion1MlVfvdih7xTkc1QccaUdaf4Q/jcLgXMCqOmD+YzY5YH0jcsYu
+	 2EWhv46jGyc4A==
+Date: Thu, 1 Feb 2024 11:53:12 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, imx@lists.linux.dev,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Serge Semin <fancer.lancer@gmail.com>
+Subject: Re: [PATCH 1/6] PCI: Add INTx Mechanism Messages macros
+Message-ID: <20240201175312.GA640762@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240131153748.GA586693@bhelgaas>
 
-On Tue, 26 Dec 2023 17:59:59 +0000, Tanzir Hasan wrote:
-> This patch series changes the include list of string.c to minimize
-> the preprocessing size. The patch series intends to remove REPEAT_BYE
-> from kernel.h and move it into its own header file because
-> word-at-a-time.h has an implicit dependancy on it but it is declared
-> in kernel.h which is bloated.
+On Wed, Jan 31, 2024 at 09:37:48AM -0600, Bjorn Helgaas wrote:
+> On Tue, Jan 30, 2024 at 07:45:26PM -0500, Frank Li wrote:
+> ...
+
+> With these updates:
 > 
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-Applied to for-next/hardening, thanks!
+Sorry, I should have mentioned that there were more comments below.
 
-[1/2] kernel.h: removed REPEAT_BYTE from kernel.h
-      https://git.kernel.org/kees/c/66a5c40f60f5
-[2/2] lib/string: shrink lib/string.i via IWYU
-      https://git.kernel.org/kees/c/38b9baf19469
-
-Take care,
-
--- 
-Kees Cook
-
+> > ---
+> >  drivers/pci/pci.h | 18 ++++++++++++++++++
+> >  1 file changed, 18 insertions(+)
+> > 
+> > diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> > index 2336a8d1edab2..fe42f5d10b010 100644
+> > --- a/drivers/pci/pci.h
+> > +++ b/drivers/pci/pci.h
+> > @@ -22,6 +22,24 @@
+> >   */
+> >  #define PCIE_PME_TO_L2_TIMEOUT_US	10000
+> >  
+> > +/* Message Routing (r[2:0]) */
+> 
+> Add citation to the comment: "PCIe r6.0, sec 2.2.8"
+> 
+> > +#define PCI_MSG_TYPE_R_RC	0
+> 
+> I think I would prefix all these with "PCIE" instead of "PCI", since
+> they are specific to PCIe and we already use "PCIE" for some of the
+> PCIe-specific timeouts.
+> 
+> > +#define PCI_MSG_TYPE_R_ADDR	1
+> > +#define PCI_MSG_TYPE_R_ID	2
+> > +#define PCI_MSG_TYPE_R_BC	3
+> > +#define PCI_MSG_TYPE_R_LOCAL	4
+> > +#define PCI_MSG_TYPE_R_GATHER	5
+> > +
+> > +/* INTx Mechanism Messages */
+> 
+> Add "PCIe r6.0, sec 2.2.8.1"
+> 
+> > +#define PCI_MSG_CODE_ASSERT_INTA	0x20
+> > +#define PCI_MSG_CODE_ASSERT_INTB	0x21
+> > +#define PCI_MSG_CODE_ASSERT_INTC	0x22
+> > +#define PCI_MSG_CODE_ASSERT_INTD	0x23
+> > +#define PCI_MSG_CODE_DEASSERT_INTA	0x24
+> > +#define PCI_MSG_CODE_DEASSERT_INTB	0x25
+> > +#define PCI_MSG_CODE_DEASSERT_INTC	0x26
+> > +#define PCI_MSG_CODE_DEASSERT_INTD	0x27
+> > +
+> >  extern const unsigned char pcie_link_speed[];
+> >  extern bool pci_early_dump;
+> >  
+> > 
+> > -- 
+> > 2.34.1
+> > 
 
