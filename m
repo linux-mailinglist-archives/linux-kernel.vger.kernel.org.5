@@ -1,105 +1,123 @@
-Return-Path: <linux-kernel+bounces-48612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63903845ED4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:46:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CBFD845ED7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:46:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16D87289B18
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:45:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F3AE1C22AEB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:46:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDB1D7C6D4;
-	Thu,  1 Feb 2024 17:45:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5619B7C6D9;
+	Thu,  1 Feb 2024 17:46:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="nUyIhUQM"
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="IT+5QloK"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D5747C6C9
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 17:45:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A958B7C6C3;
+	Thu,  1 Feb 2024 17:46:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706809553; cv=none; b=Lcgdyb87gFVrTwyC/O9ncWha3oyYvimOEksh1vjVSZusd5I8SZmQCljbvajKhfVAm2FDJZz1OBS2YBhHJPnmSrDnZ5StddGwDEUbYcJtcN9XVtpCSZXeP3/JOAliYxy7xU1hJ9oxL2xojGhoD6IiHDgjLAoS9O1H7S7Lijr1bIo=
+	t=1706809604; cv=none; b=HKVb3H7HQhqO4StzFrAXWY0W28sVNeXrPJGZ/g4IYHI4WPYlAVh0sWedZh2nzHIpb4fd7Xkg/23lkCU6Kf/qwueGBcZYXFKneYrK54n/pZK8EiYTvN0Ws5Qx1K+0/Lmj+MXcOUolgPWeA6KsAVdTDvt+ZP0ihZBfdld0rmGPUiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706809553; c=relaxed/simple;
-	bh=C1REu5UNedHoBCwnPspADgWkekbk/hgC5mSXhvhul7g=;
+	s=arc-20240116; t=1706809604; c=relaxed/simple;
+	bh=eeBtSFHjOvovJvizQTkE8r6Y6KQdJcg3niSkzZyYvq0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RotkC5BvmTkLozJynxS4jdyVY5DxNBmiMsGltIUWM9VXXDmqI9JZolI76kvcUQreG1nYtmGFWz3yd/5i1X/bKLclZ1W9WdsODjLVLJCbvZE+rsIv5/7yDvfMAiHpcDPjdPX2C53OnRSxBS5wFoYGRnrDztr+KaEfk00ZOrkn65c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=nUyIhUQM; arc=none smtp.client-ip=209.85.166.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7bfd5570ed0so40934039f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 09:45:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706809549; x=1707414349; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=i45ArjC1PKxIYAaiKhBBikWuA/veVaN7EGO1k6Zgioc=;
-        b=nUyIhUQM7GgKuTPIn0ZuEHm95nzbSumbBJEnmsroj7sH8t/Yw554cKYbSNkmFy5jix
-         KO4diQyxCwzoPiBiV2ZkBuzylKefsL1Em+ox7XO0NbYMU8MtUOTsG/uU2mYz7Rm18BaY
-         OXcY51im+EpXRhSzZ5mJ4aC1o4CPthiBUqB1e8OFpvuQ/Zkte3FMJ6n+jHHTR1FDT1Bv
-         Ike/1XpAkcL1evR4Yt/+auUMQh1qRZBmgV/0eCd0/R/yHjrq3zZ/695vKsLqQXIfPtWZ
-         dm1X5/z95tTmhWaGoN1FWQliRuXqLBSTZcQNekjUtigOq3bhOmfNH+2KlmaKrhSIGxJ6
-         RDsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706809549; x=1707414349;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i45ArjC1PKxIYAaiKhBBikWuA/veVaN7EGO1k6Zgioc=;
-        b=bixxtgcMwOuD/2hEMocAHRCNrT3PLP0CdFK1lgnJqFLNJWdGnX0REPlAxzW2NA6S5d
-         hp+0Y3Cid/IFiTqqgyyBbxBqID8NGTjYN4ijW5iBzeE93/XrW2h4WS/d4FHN1PKM8mes
-         O7WFOYjRkoN0tsRahH3z76rlRvBOdYAVcDgVCj9Upo9KE5JQC7rMY1oWn0L3Td7A7CT3
-         3sAI51AQxkltGDHZVECsGDecPgTdGrexi/a0lKsClXjqPCKv8Q0jkaFNkfWBOZXing8q
-         ycGcKCDnA4G/s9QhR6hYoD4WRyAbrYnbHw2EvzZ8w69aEwCMp2QKAy5/S9mimu/YwURq
-         Of3w==
-X-Gm-Message-State: AOJu0Yy1ckLriDM5WQ5R5GzGhf/UJhUEK1+JsqJ9jKYECgwvIWrTkypv
-	HN6pBFgqqbWPnrCLfVlofjp8rFq751W0/d7wIdpw0iCyiwRRD+XnQO4j/lxzuiM=
-X-Google-Smtp-Source: AGHT+IGGGL6ZtB7jSJbZakSuZPVzJA92Ce0HPUfmQlCchsAcoZXke6koPQ3Fwrw3hjDcPeXgtRls7g==
-X-Received: by 2002:a5d:8181:0:b0:7c0:5da:f708 with SMTP id u1-20020a5d8181000000b007c005daf708mr6126795ion.16.1706809549174;
-        Thu, 01 Feb 2024 09:45:49 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXPsSKARN4RZ90mFryfsgX84i5hyIwU/y0xHjfivVWEEGbp8P4f1RRrGdUPSYWYOzBeBa9pswEzpUUxLjV12C4Vboz4myoK9Rh0gTnASuF6f0sL/eGtT/+F8z7wuieJ9/WCb4/uXDUuzrv3Z6rv/K67uDA4txrgeWhLbVYNHncYBRkQfTohVllSNDd0haGJUv1LhQ==
-Received: from localhost (2603-7000-0c01-2716-97cf-7b55-44af-acd6.res6.spectrum.com. [2603:7000:c01:2716:97cf:7b55:44af:acd6])
-        by smtp.gmail.com with ESMTPSA id t23-20020a6b0917000000b007bfea3c536esm23386ioi.28.2024.02.01.09.45.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 09:45:48 -0800 (PST)
-Date: Thu, 1 Feb 2024 12:45:47 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Nhat Pham <nphamcs@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Yosry Ahmed <yosryahmed@google.com>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH 1/6] mm/zswap: add more comments in shrink_memcg_cb()
-Message-ID: <20240201174547.GA321148@cmpxchg.org>
-References: <20240201-b4-zswap-invalidate-entry-v1-0-56ed496b6e55@bytedance.com>
- <20240201-b4-zswap-invalidate-entry-v1-1-56ed496b6e55@bytedance.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WIx0tmHJhnET+9tQ5qgAvDixvzMQTfB1/eW/UTWsXaOI2iHx9n6NHAlDf422en5bOAtobaHQ3z6VDEOrxWC+ZIyIDcadYcJSXutVQZYxPXB1Qk73JL98uiSJyRodEquxFMD/eAUmyocL47w9zbY7WzitHoJJnQ25sfpE3ZVpB50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=IT+5QloK; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 72D8CFF80B;
+	Thu,  1 Feb 2024 17:46:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706809600;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yJtHDJMAIjYne+Wpy9ELnPjDgsMPZsdJCj8jeRX7IKg=;
+	b=IT+5QloK6fRzRQzJ7Awhi5KYa2C9GPYm90MnqIe+7bFDpi0c2iyVZceRq3+RstzDdI57ad
+	gJcmAcqRyq0Hzwh7XwomXLmj/yaVfcxllmitLR7N8jiL7KxRDZOeBK+z6kqpAqFn2WaJi6
+	spadqeijE59+618+ToghWPZwzD7v4KZY5IXjifRY9YBpb8Ll4JXjA7u6ZSAZBXaEz3t0hN
+	Ze/wS8Y15xfY3HNgrp+3uOAkoTCgMSVdf5jewuQmX11E4GLtbCPpt9G4Mm5G1jZpqDqq6N
+	7e7dkMVPVU0cmM2OW67iQj7Hc4uMLFBUZ7l/yP7HjdDfbjOlKkw8ZLSveDRbOg==
+Date: Thu, 1 Feb 2024 18:46:37 +0100
+From: Louis Chauvet <louis.chauvet@bootlin.com>
+To: Arthur Grillo <arthurgrillo@riseup.net>
+Cc: Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+	Haneen Mohammed <hamohammed.sa@gmail.com>,
+	Harry Wentland <harry.wentland@amd.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
+	Melissa Wen <melissa.srw@gmail.com>,
+	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 6/7] drm/vkms: Drop YUV formats TODO
+Message-ID: <ZbvY_bqvpLFXVXKF@localhost.localdomain>
+Mail-Followup-To: Arthur Grillo <arthurgrillo@riseup.net>,
+	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+	Haneen Mohammed <hamohammed.sa@gmail.com>,
+	Harry Wentland <harry.wentland@amd.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
+	Melissa Wen <melissa.srw@gmail.com>,
+	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-doc@vger.kernel.org
+References: <20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net>
+ <20240110-vkms-yuv-v2-6-952fcaa5a193@riseup.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240201-b4-zswap-invalidate-entry-v1-1-56ed496b6e55@bytedance.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240110-vkms-yuv-v2-6-952fcaa5a193@riseup.net>
+X-GND-Sasl: louis.chauvet@bootlin.com
 
-On Thu, Feb 01, 2024 at 03:49:01PM +0000, Chengming Zhou wrote:
-> Add more comments in shrink_memcg_cb() to describe the deref dance
-> which is implemented to fix race problem between lru writeback and
-> swapoff, and the reason why we rotate the entry at the beginning.
+Le 10/01/24 - 14:44, Arthur Grillo a écrit :
+> VKMS has support for YUV formats now. Remove the task from the TODO
+> list.
 > 
-> Also fix the stale comments in zswap_writeback_entry(), and add
-> more comments to state that we only deref the tree after we get
-> the swapcache reference.
+> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+> ---
+>  Documentation/gpu/vkms.rst | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> Suggested-by: Yosry Ahmed <yosryahmed@google.com>
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> diff --git a/Documentation/gpu/vkms.rst b/Documentation/gpu/vkms.rst
+> index ba04ac7c2167..13b866c3617c 100644
+> --- a/Documentation/gpu/vkms.rst
+> +++ b/Documentation/gpu/vkms.rst
+> @@ -122,8 +122,7 @@ There's lots of plane features we could add support for:
+>  
+>  - Scaling.
+>  
+> -- Additional buffer formats, especially YUV formats for video like NV12.
+> -  Low/high bpp RGB formats would also be interesting.
+> +- Additional buffer formats. Low/high bpp RGB formats would be interesting.
+>  
+>  - Async updates (currently only possible on cursor plane using the legacy
+>    cursor api).
+> 
+> -- 
+> 2.43.0
+> 
 
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+(Sorry Arthur for the double mail, I miss the reply-all in the previous 
+mail)
 
-Thanks!
+Reviewed-by: Louis Chauvet <louis.chauvet@bootlin.com>
 
