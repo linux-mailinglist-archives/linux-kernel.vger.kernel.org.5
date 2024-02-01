@@ -1,73 +1,74 @@
-Return-Path: <linux-kernel+bounces-48992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67CB5846473
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:30:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 986DB846474
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:30:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 045471F25BFE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:30:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5446E283D9C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:30:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CDCA47F41;
-	Thu,  1 Feb 2024 23:30:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CAA247F4D;
+	Thu,  1 Feb 2024 23:30:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HONf3GSl"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="fmfvKA2k"
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B380047F42
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 23:30:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06CBF47F41
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 23:30:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706830204; cv=none; b=F6MLw/O5OJNqKTphrNTrMYM8QKak5IRwfjHj3FNRxvGJcQRo16jBvthQlCrgtbjkPkuHlgXI19S8Qt4koc2VuMjsuaw9GX0BfGKobrgQ0g4lhLXMMZD60O3DZHrJqcfQiYTwsYK9rXRFDTxWxljZQgolU6CsRmCrN+jWz/tEfjw=
+	t=1706830251; cv=none; b=Zd+3Q/ei7Nwb15jr+SPrHgPVCfkzKQfA/5w9aGpfc9Ku+XRtkDRIHzHbpA6TP5cmz+JIWQWdziyoRqZ4+NDUJ9gKKSp+/KNP/spVr0TGmzP8yseDhfRiOOCcMp7KIxmK8XtSwPlsim4akD9yK9c8Eq7ktmxjsZisOPmO6403aBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706830204; c=relaxed/simple;
-	bh=2TJfqGHi00+5CKxG6QZ75dI/x7CtfwJIsax8vgnwxNs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=hc2kcn8DSCzZRj1pOGnpfnwlr+9oJBq+jTNte3AJ8q95/VkGkW4IVfHU2PA/2xpIIKu3tWI+vO0eQbi1PzxZOlcyYUkJ1nMuoaTI8iEG2t9Rh0sBpvd6c90dLLQBdYMUx7n0s6KWU24rjirHOqz41+BFUVKKow3UaLB1bdiRXG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HONf3GSl; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3566c0309fso201577166b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 15:30:02 -0800 (PST)
+	s=arc-20240116; t=1706830251; c=relaxed/simple;
+	bh=F3p4nG4PxoO2+hFv8J8UCk8zaUW8suFbDDH7G9TcVVo=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=b1nQw3FBKLEzJVCYbMTlcnj+pkXLxcn4to0nSWqTpdhIFkXKz1BN7Vcc2gZRB1Ce9GPs9DcuDuifjc3RtZbSiXAaF8vjPVZbl+75hY/i+oeWQYXAnJI9L0AT/K3NgW1zyS4RMnQQQaKAm0Kb/onxxY0IYtIDLNfGt4lnsw27V/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=fmfvKA2k; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so1462899a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 15:30:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706830201; x=1707435001; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FXMblYmC4slzOCLWs3RZINjmATRqfssIJI9Ew8tuxhw=;
-        b=HONf3GSlImL3po74VlPPITZ/15uV9tiG1AInsrrNx9ctWNI96IFpxSwmylOId1fAoV
-         Uvqf/yv5WsbayFA8RcQtqMKr6/RyDaHAcCeQAT/pJpLjmOwAN9jd3CO3QGy5ZFaq+yI7
-         BSsb8SbTAlYpNQFoanMb0bHjrIlKh6DtcCj7W1gfeb5NOhjZJNawwgIH+iANdnlPKO1f
-         uxLbUdcWut3QstZARyQPw7o8VxE2+7G5N6rJ5hjwsEs7wSpYFXZ2coBVpeIQmWdeoB5A
-         C/dwnAjqNBel7pMBLyP+NiM/BHY7sMShsb4HJkSLZ8NA1Gr6jh7U/GEG9mOPbRfhvBn3
-         9QGw==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706830249; x=1707435049; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=12qhkQnAsKWLfzWt/2hyVMymoIBV11wZGrf2gJtkQrU=;
+        b=fmfvKA2kpFnK+lXTU+pO2gvIzxFH3fklZkEOv8i6FP7f45v6Y6yHMzYhF2u848Pcft
+         BwUnv0cmeddYWIAf9krx23QQAPoS9cp0sX2aZU5QHuC50UOaCxd4gntbVN0h2sHltbJL
+         17FyR7dNpIyVcaAv8L/ma4wsnrCqzgNkx/Dx7QTyBPD7J4kEpvW1g4cM2k99w5C3/5ka
+         h8jHsvFDpXbGGtF/wksnt6O28vg3BnEdsz0w800p42YulFgqriORoTyUWrYUG5YnxrQU
+         tgnPECMI7qYbfyvbfpavREs8LtUHyZx5PTzRxzijbHLO1upqSCyAgm2Jl/e+gcxq7vzX
+         FUGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706830201; x=1707435001;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1706830249; x=1707435049;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=FXMblYmC4slzOCLWs3RZINjmATRqfssIJI9Ew8tuxhw=;
-        b=aAEnxDAF6X+7O0qa8d4IKl4GrkYqi99pxx0zwfYHxWk/G9cYuNhnTbxNZTcvjfbKX2
-         8GYfH3pTxP5fnKFIFsR1ylNAk0ViMkBn44Yn4gwfcuzg++nXNq+crSxMvCTEzTfojUaD
-         jRtvoEP0sd0Gsc/j1DGhL2rQNsp/14kuwqhqTcccEfpvIisqQ60/BzxaXjVa8AVO16RY
-         dpaZWal+jaRpKzB1LxCLXumxTN6/5iCxj5GDwH/umETuLKhvnSkdswndpeizCEJ5Ysl6
-         9qt3E9Jfg7068NRn6CFtBYxXe2RoDEI6dZEwJ2PIaj84YjxTnMS5XISfLuSn32X7d04L
-         6SDw==
-X-Gm-Message-State: AOJu0YweLJvTyIR1vD/iajg19Ag/x+uz64kc97TG7QLhi5Cq5N2bCV+9
-	SEAY9O4bDXd3RSyttZzQuMI5xpGiuG/nshp3YXNsGS+jrmr6ZIAUs9uim9fe1iHraK2Ow7ACx/3
-	g
-X-Google-Smtp-Source: AGHT+IE89rlzUafniVKJfARK/V5pVdq65WMFyi8lOZgPeeysq2H22grqzfjW7XLLUlAXcUQiN1fKEA==
-X-Received: by 2002:a17:906:27d6:b0:a31:117b:8b54 with SMTP id k22-20020a17090627d600b00a31117b8b54mr4527546ejc.15.1706830200983;
-        Thu, 01 Feb 2024 15:30:00 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXb9lKqDpG6XH8w6XN/ks3W3HfVaFxFFqHPmBmq+ZMwpGBsRgecwrP5Pz9ATr5mmg+lYKmS+skUipZD1hk1ipQQSz8Ycw0Ol8ZwAfPE1YEXcsK1ZT1Ad+437RMpgPhDAVa8pNqzanYVorKyeUeEXZC5mCNsV20FAmLhfTOkeudI+xfuZFMK1k6Mf7UHRUK8ETEUiXUGKSX4yon5AK7VaoRGcTIYaCbHQAxOJpbIgGfufuxnzdDGYyyLe/0YnT93IDyIppP0vEhgDqzoUE4MCpdXok3opI1MwNRl4ntBfysZOM3bNejv9TPIviU=
-Received: from [10.167.154.1] (178235179129.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.129])
-        by smtp.gmail.com with ESMTPSA id gs15-20020a1709072d0f00b00a36f3250a9asm255100ejc.224.2024.02.01.15.29.59
+        bh=12qhkQnAsKWLfzWt/2hyVMymoIBV11wZGrf2gJtkQrU=;
+        b=d5qwAMnWdtF1WiIpSBa/E+pXac8V9Y2xZ658xys/4aCJhWcYFZFvbPSsHYAK5dM1OO
+         uF3VOzvS/dSgnALFbbITBoSkoa8d287cLeg9j+GBq1ShxCSwXuzX9MlPA7Do9z3YrML7
+         wMhqcmYaz9CBipBOYhiYzp0IXimUCiKr9MC930v6ooa5VZ3+QMp1I7293TnJ3QSQqxT7
+         trZG9ecUtrkndfhPq2q7hPt1hgpHVWHq8Kl8rs/PFK9J7r7OpOVmupYcj/WHraXN77r7
+         OKC6wxfFxzT16mL5NvYS7UkZExIu0G5d+SG9NBaZHV+n68hQ/GZXztKVP8n1k2DYNFjJ
+         DgeQ==
+X-Gm-Message-State: AOJu0YxGY5lLpq5oHexNHtJxpTZ5xOsvZirjzqK86bCBGjFheSs/TSkb
+	d7F8UTZcr+XlcCckEc7lDa9MHZDOl9/ZRy+K1koIcsvR7E7vbJEwrCtikklU/1Y=
+X-Google-Smtp-Source: AGHT+IF7ynI89U+P641xK19eggYd+e8mqqBJoQ82q32/W6ptRo+YUyV7WujFf4BcPnUPElD0MpsMyw==
+X-Received: by 2002:aa7:864e:0:b0:6db:dc74:d6e with SMTP id a14-20020aa7864e000000b006dbdc740d6emr722991pfo.17.1706830249170;
+        Thu, 01 Feb 2024 15:30:49 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXelcoK7TkVoH3x8OSV3QeVFvdYCr6l/Q9iOkBxUge8YpYeqBO9GFcbMdhHnHv9djfPu1kYmNTH7iGZ6oRJAfONoT7GcKaVbykav6mnLn8J6pTAhXZ6kvj5dEo9WoooLAyKgsxRI69jyR9iU0G8p6kkLJ5UkTBXTJyQNZ2m4RXX//E8kDefNZ6ZX9vIIbesLJyDhv4v3MeWWHfnfDyTxgBSNIZgd1VeMdgHOA2ZO4LbcpZhvo74/86agisCQaysTJp5QJO5/9OGnOs=
+Received: from charlie.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id y9-20020a62ce09000000b006db85b12036sm309673pfg.137.2024.02.01.15.30.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 15:30:00 -0800 (PST)
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Fri, 02 Feb 2024 00:29:58 +0100
-Subject: [PATCH] arm64: dts: qcom: sm6115: Fix missing interconnect-names
+        Thu, 01 Feb 2024 15:30:48 -0800 (PST)
+From: Charlie Jenkins <charlie@rivosinc.com>
+Subject: [PATCH v2 0/2] riscv: Use CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+ to set misaligned access speed
+Date: Thu, 01 Feb 2024 15:30:44 -0800
+Message-Id: <20240201-disable_misaligned_probe_config-v2-0-77c368bed7b2@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,59 +76,58 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240202-topic-6115_i2c-v1-1-ecfe06f5f2ef@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAHUpvGUC/x2NUQqDMBAFryL77YIJsVWvIqUkm21dkCiJLYJ4d
- xd/HsyDYQ4onIULDNUBmf9SZEkKpq6AJp++jBKVwTbWNTq4LasQPoxp32IJ6dmF2MXeOudBpeA
- LY8g+0aRa+s2znmvmj+x3ZXyd5wXIe1K0dQAAAA==
-To: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706830199; l=1227;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=2TJfqGHi00+5CKxG6QZ75dI/x7CtfwJIsax8vgnwxNs=;
- b=y8jedLXIup1y5cGsyvOZK7BNl21WKJQbm/EiYXVlnKmuyYBTiUeNflw7a33HpoY3T/PGV/37f
- jW8I76PWzrHA4AlS2Fk86OWC6KwWpO0PiO8Pav2c8YxtFTVNF84bIAd
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAKQpvGUC/42NQQ6DIBBFr2JmXRoQSbWr3qMxBmHUSRQMNKSN4
+ e6lnqCrn/cX7x0QMRBGuFcHBEwUybsC9aUCs2g3IyNbGGpeN1xIwSxFPa44bGVXmh3aYQ9+xMF
+ 4N9HMeCM1anlTUyehWPaAE73PwrMvvFB8+fA5g0n83v/dSTDOutYKpbAzVrePQMlHcuZq/AZ9z
+ vkLJqLxkNEAAAA=
+To: Paul Walmsley <paul.walmsley@sifive.com>, 
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+ Jisheng Zhang <jszhang@kernel.org>, Evan Green <evan@rivosinc.com>, 
+ =?utf-8?q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Charlie Jenkins <charlie@rivosinc.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706830247; l=1557;
+ i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
+ bh=F3p4nG4PxoO2+hFv8J8UCk8zaUW8suFbDDH7G9TcVVo=;
+ b=NARzrW04LTpqMAM3P7yfuTSxgMpTSoFMZWJ8kPCTrMySzqbFmMcS9qw8DYu0VEOKE4p/vOCgo
+ ihPlQsTAUfOCbPMshYXmpQ4/82TNfXnzydOlyRMcIC6YluJ/z/xFTwB
+X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
+ pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
 
-Commit b3eaa47395b9 ("arm64: dts: qcom: sm6115: Hook up interconnects")
-did indeed hook up interconnects, but apparently not interconnect-names
-on I2C1, making it return -EINVAL due to an error getting icc paths..
+If CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS is enabled, no time needs to
+be spent in the misaligned access speed probe. Disable the probe in this
+case and set respective uses to "fast" misaligned accesses. On riscv,
+this config is selected if RISCV_EFFICIENT_UNALIGNED_ACCESS is selected,
+which is dependent on NONPORTABLE.
 
-Fix it!
-
-Fixes: b3eaa47395b9 ("arm64: dts: qcom: sm6115: Hook up interconnects")
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 ---
- arch/arm64/boot/dts/qcom/sm6115.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sm6115.dtsi b/arch/arm64/boot/dts/qcom/sm6115.dtsi
-index e71cbdef7784..eb93d1d57fb4 100644
---- a/arch/arm64/boot/dts/qcom/sm6115.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm6115.dtsi
-@@ -1305,6 +1305,9 @@ &clk_virt SLAVE_QUP_CORE_0 RPM_ALWAYS_TAG>,
- 						 &config_noc SLAVE_QUP_0 RPM_ALWAYS_TAG>,
- 						<&system_noc MASTER_QUP_0 RPM_ALWAYS_TAG
- 						 &bimc SLAVE_EBI_CH0 RPM_ALWAYS_TAG>;
-+				interconnect-names = "qup-core",
-+						     "qup-config",
-+						     "qup-memory";
- 				#address-cells = <1>;
- 				#size-cells = <0>;
- 				status = "disabled";
+Changes in v2:
+- Move around definitions to reduce ifdefs (Clément)
+- Make RISCV_MISALIGNED depend on !HAVE_EFFICIENT_UNALIGNED_ACCESS
+  (Clément)
+- Link to v1: https://lore.kernel.org/r/20240131-disable_misaligned_probe_config-v1-0-98d155e9cda8@rivosinc.com
 
 ---
-base-commit: 51b70ff55ed88edd19b080a524063446bcc34b62
-change-id: 20240202-topic-6115_i2c-c78bd8d9244a
+Charlie Jenkins (2):
+      riscv: lib: Introduce has_fast_misaligned_access function
+      riscv: Disable misaligned access probe when CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
 
-Best regards,
+ arch/riscv/Kconfig                               |   1 +
+ arch/riscv/include/asm/cpufeature.h              |  22 +-
+ arch/riscv/include/asm/misaligned_access_speed.h |  29 +++
+ arch/riscv/kernel/Makefile                       |   3 +
+ arch/riscv/kernel/cpufeature.c                   | 255 ----------------------
+ arch/riscv/kernel/misaligned_access_speed.c      | 265 +++++++++++++++++++++++
+ arch/riscv/kernel/sys_hwprobe.c                  |   4 +
+ arch/riscv/lib/csum.c                            |   7 +-
+ 8 files changed, 321 insertions(+), 265 deletions(-)
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240131-disable_misaligned_probe_config-043aea375f93
 -- 
-Konrad Dybcio <konrad.dybcio@linaro.org>
+- Charlie
 
 
