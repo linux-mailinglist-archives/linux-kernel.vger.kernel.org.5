@@ -1,55 +1,72 @@
-Return-Path: <linux-kernel+bounces-48237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DADB58458ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:31:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CB048458F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:32:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C36951C21F71
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:31:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE0C31C2217C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:32:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8457053391;
-	Thu,  1 Feb 2024 13:31:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="f2iaxKHw"
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B17755B678;
+	Thu,  1 Feb 2024 13:32:45 +0000 (UTC)
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70F1D53369
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 13:31:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 620465336C;
+	Thu,  1 Feb 2024 13:32:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706794293; cv=none; b=JQvFSgLKpTJjcqCJru3T9SOUBP+Si5isW7DyWxhKTKU9I5JDOB0Y+R1n+OuynzW7qUKUcMjT/Jq1agCe5K0GGxZYOscBHyatGacKEQaE1KRCf3lfodVTlCFUvht/ZPqrrjwVUd3ZJHCX3pJ8q0BmSOn8Oeu61mTnNJ/adK/eV/M=
+	t=1706794365; cv=none; b=AAqDFENJNRwgRP7ZZCtf8sd9lZbTEUZzHwRFluhGrI49wgw16vUnCC13lq6gM7P+mCrGbBoOPyg+TB4D7u5vVKg9bSpz4vE3JZ+xkr0NwAqMMH2uhQUNOSSSTB0L8s+jT02iS1hknQPjB1juLEVplK5ORhpkjF2L2r02nzgI6G8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706794293; c=relaxed/simple;
-	bh=T6/oMqfm0cTUFZu7aG4cysOe/uV1jAyX0rldyapQGag=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=p/JOYhiYGrZYvZou20wIJAP/KzzqmUOK6l73sUF8G3e20YogeDhkVAKbSIZ3zstGpi4op34oT2arprOEWUjnjC9kDTRiNP0+gJolmg1ETgslXjEQxDfiKxGqOhnuSRy/U6B+KWLWwXTmgb1hpkgGyN5JvO1sVv0dnl/NCueX7GU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=f2iaxKHw; arc=none smtp.client-ip=115.124.30.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1706794282; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=YTeBhqdSU74IlpwBPcbqYdhQu9vEwdBX/KgZ9rQ8d00=;
-	b=f2iaxKHwRYfdAnZsvsKvJF84+YvPrP0z41Chw6K2IlkPvjTa1JgXVk90orxqOZbWD3bLUDazHvrpUFatRJ5iCjwcphwIznGP+He9MaaZEsk7kNgSfO632hLR9WSMsT6Eqw/qa8dkVp82cC1OXrl8JgUyMbTERCb6Wpm5x5TkNqA=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0W.tpA.q_1706794281;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W.tpA.q_1706794281)
-          by smtp.aliyun-inc.com;
-          Thu, 01 Feb 2024 21:31:22 +0800
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-To: akpm@linux-foundation.org,
-	muchun.song@linux.dev
-Cc: osalvador@suse.de,
-	david@redhat.com,
-	mhocko@kernel.org,
-	baolin.wang@linux.alibaba.com,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] mm: hugetlb: remove __GFP_THISNODE flag when dissolving the old hugetlb
-Date: Thu,  1 Feb 2024 21:31:13 +0800
-Message-Id: <6f26ce22d2fcd523418a085f2c588fe0776d46e7.1706794035.git.baolin.wang@linux.alibaba.com>
+	s=arc-20240116; t=1706794365; c=relaxed/simple;
+	bh=L9ncuNlPiuhV+Tgp8aiHz1A9CHSswt3CwCdzJSUYnwg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fauhy/asduVuvb58vmRBLff1vlW9Y3ymPmqCVh65HzTgKAgKFSssHxC32vJ5wUnCAsLHJ8+cg2pSKBJ9X7DAxmLeqMzbIOR9xLqbbNw4o5KN6iiuJ6kkCRe3KupCvGdhpvDD1+rDoS8dtKsXiF9cwP7PcGu9LJIBD1NSSj3MWZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a26fa294e56so127092466b.0;
+        Thu, 01 Feb 2024 05:32:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706794361; x=1707399161;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DPawFIAhtjEptx34yN1DVcCgpO4g27vMV7ZWuCSE18o=;
+        b=UsA98u0BkPo6EiFB1Scle1NOjTIXCjWvMoe+9lN8Q9C6WdHGrfciKI+tWOLWg9zMtO
+         EmKmZ+/l9Xu06JE7fjuMawVK8gzLQ+N10zZ67OQVrE9xTjzD+xCFYM4BBUL0SjF+pEsd
+         bNAOgzpl9UB60FME4XSI3AHBRuYsyaln7IoocOT3qy5IB6NIJzPpOp1E47jruMw+1Sb6
+         p7QH8DIYT3kHm6xrbCAXX7njUbNmztXQxf0s169jF/OzO0T3nciSYsFKo50AbtSBlqHO
+         Ik0S9osIpXK8ck9xec3kMlVz5zdqvOsnNyl13g3xZtMaV4k+Ga9K1sLXjX1+yGVPZUaH
+         Pa0A==
+X-Gm-Message-State: AOJu0YxPCXiE9ADlN4e7I6a7qHO4q5EyQ4nkUFwFEhg1WqFQTEiSrXiB
+	xwz2Zcu2NUS99tUEw/80GNNJ2zhqWXsS2KvnbMlX7aQB9Uh+JUBy
+X-Google-Smtp-Source: AGHT+IE2dqeAMP8WIUzJIlbbIjKkCCC+rcdNuODnsW0z5TlRFolwBryDbWLYHthiNGKd+lFKmkWA8Q==
+X-Received: by 2002:a17:906:5053:b0:a35:32ae:e0c0 with SMTP id e19-20020a170906505300b00a3532aee0c0mr3578892ejk.3.1706794361382;
+        Thu, 01 Feb 2024 05:32:41 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVVG+qynyiJ0xto/6fL4lOt2J9jSM0ooLDXIVE1W5u7WlW6jISxS3h/er5GCZ4hVxQh2lgMpZv+7KFUy6/DnIMFRSS+qg/Tw8Pw5gojN/cI9zssWtqsnkFS8xxRinjAsk4zcVpDdzAq3Q6FO6meBdMaV/jVLgrHcpWit4+yeGSTK4Y2hqj9TCVaaqo8Z0WBmSsFQ4aZ+/O5dLR8Qg833nBbX6WOi2vzSqH2/1kyXrlLdNDA3bMAAQFSgMswy27dH4k6etXdWRcTBnRQn0xaPzWiqFN25BP5mOyjZ3uoxrml704sPBlIQzDe5iJFmumFXak0iuPIpH3BgsWyeFISbW4=
+Received: from localhost (fwdproxy-lla-004.fbsv.net. [2a03:2880:30ff:4::face:b00c])
+        by smtp.gmail.com with ESMTPSA id f14-20020a170906494e00b00a3681468567sm1474795ejt.81.2024.02.01.05.32.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 05:32:41 -0800 (PST)
+From: Breno Leitao <leitao@debian.org>
+To: kuba@kernel.org,
+	davem@davemloft.net,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Mahesh Bandewar <maheshb@google.com>
+Cc: weiwan@google.com,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	horms@kernel.org,
+	andrew@lunn.ch,
+	leit@fb.com
+Subject: [PATCH] blackhole_dev: Fix buil warning
+Date: Thu,  1 Feb 2024 05:32:37 -0800
+Message-Id: <20240201133238.3089363-1-leitao@debian.org>
 X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -59,57 +76,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Since commit 369fa227c219 ("mm: make alloc_contig_range handle free
-hugetlb pages"), the alloc_contig_range() can handle free hugetlb pages
-by allocating a new fresh hugepage, and replacing the old one in the
-free hugepage pool.
+lib/test_blackhole_dev.c sets a variable that is never read, causing
+this following building warning:
 
-However, our customers can still see the failure of alloc_contig_range()
-when seeing a free hugetlb page. The reason is that, there are few memory
-on the old hugetlb page's node, and it can not allocate a fresh hugetlb
-page on the old hugetlb page's node in isolate_or_dissolve_huge_page() with
-setting __GFP_THISNODE flag. This makes sense to some degree.
+	lib/test_blackhole_dev.c:32:17: warning: variable 'ethh' set but not used [-Wunused-but-set-variable]
 
-Later, the commit ae37c7ff79f1 (" mm: make alloc_contig_range handle
-in-use hugetlb pages") handles the in-use hugetlb pages by isolating it
-and doing migration in __alloc_contig_migrate_range(), but it can allow
-fallbacking to other numa node when allocating a new hugetlb in
-alloc_migration_target().
+Remove the variable struct ethhdr *ethh, which is unused.
 
-This introduces inconsistency to handling free and in-use hugetlb.
-Considering the CMA allocation and memory hotplug relying on the
-alloc_contig_range() are important in some scenarios, as well as keeping
-the consistent hugetlb handling, we should remove the __GFP_THISNODE flag
-in isolate_or_dissolve_huge_page() to allow fallbacking to other numa node,
-which can solve the failure of alloc_contig_range() in our case.
-
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Fixes: 509e56b37cc3 ("blackhole_dev: add a selftest")
+Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- mm/hugetlb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ lib/test_blackhole_dev.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 9d996fe4ecd9..9c832709728e 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3029,7 +3029,7 @@ void restore_reserve_on_error(struct hstate *h, struct vm_area_struct *vma,
- static int alloc_and_dissolve_hugetlb_folio(struct hstate *h,
- 			struct folio *old_folio, struct list_head *list)
+diff --git a/lib/test_blackhole_dev.c b/lib/test_blackhole_dev.c
+index 4c40580a99a3..f247089d63c0 100644
+--- a/lib/test_blackhole_dev.c
++++ b/lib/test_blackhole_dev.c
+@@ -29,7 +29,6 @@ static int __init test_blackholedev_init(void)
  {
--	gfp_t gfp_mask = htlb_alloc_mask(h) | __GFP_THISNODE;
-+	gfp_t gfp_mask = htlb_alloc_mask(h);
- 	int nid = folio_nid(old_folio);
- 	struct folio *new_folio;
- 	int ret = 0;
-@@ -3088,7 +3088,7 @@ static int alloc_and_dissolve_hugetlb_folio(struct hstate *h,
- 		 * Ref count on new_folio is already zero as it was dropped
- 		 * earlier.  It can be directly added to the pool free list.
- 		 */
--		__prep_account_new_huge_page(h, nid);
-+		__prep_account_new_huge_page(h, folio_nid(new_folio));
- 		enqueue_hugetlb_folio(h, new_folio);
+ 	struct ipv6hdr *ip6h;
+ 	struct sk_buff *skb;
+-	struct ethhdr *ethh;
+ 	struct udphdr *uh;
+ 	int data_len;
+ 	int ret;
+@@ -61,7 +60,7 @@ static int __init test_blackholedev_init(void)
+ 	ip6h->saddr = in6addr_loopback;
+ 	ip6h->daddr = in6addr_loopback;
+ 	/* Ether */
+-	ethh = (struct ethhdr *)skb_push(skb, sizeof(struct ethhdr));
++	skb_push(skb, sizeof(struct ethhdr));
+ 	skb_set_mac_header(skb, 0);
  
- 		/*
+ 	skb->protocol = htons(ETH_P_IPV6);
 -- 
 2.39.3
 
