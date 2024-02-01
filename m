@@ -1,81 +1,81 @@
-Return-Path: <linux-kernel+bounces-47508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 205DB844EC8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:42:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F75E844EC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:43:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA5D128BD7B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:42:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83D861F2E3A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:43:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F458D281;
-	Thu,  1 Feb 2024 01:42:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CFEA12E5F;
+	Thu,  1 Feb 2024 01:42:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hv+ft3aY"
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LZQUa7Mh"
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD5195255;
-	Thu,  1 Feb 2024 01:42:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8247463A0;
+	Thu,  1 Feb 2024 01:42:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706751736; cv=none; b=HrVu/gbVvO74T15ThLIowdFrCIQ8pKGl0NSfYHWSqq1JvVLG2IBF1w4mauCO5yVy//MUhq4hB2cBexA95/a/Mp0rOUGpsImz8gU+rHfgTsdU+892zvtRHm9ek/2jbCUFavDxNFLDndGTgyOmECQa0+urUMFihiazbY1ONlRIBoc=
+	t=1706751738; cv=none; b=WTTEMcTbp2/WHaBh3yj9NKgmuqdF1grpd9AoljSbUSnNXlCy6dwuoga4twi+rEHGRlvxUL+WiDYtLabD4M/hYUeWfpbTU4b4JeZesBR1JfwN6ta2Y5b2M/pMJod4D8G/aHy11e1MA0aFvKwiFGj50mglnMU9R0sswdrcRLgjyEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706751736; c=relaxed/simple;
-	bh=pSSj7EvIHKtcO8CNxnXkeBO80f/T+be+cHyUt2QsZkM=;
+	s=arc-20240116; t=1706751738; c=relaxed/simple;
+	bh=URsVmEp6Jr873vr5jenxJaWo72Ku3rabQQ+gAmu0f1E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GNbExlc3auSM7UhfiIfLHe/Wt93ez3p3MwiTz+jcGVtbTUzcyPeS+PyJHJiuBADwJi0pf+oledVSvph08oHeFgoRTqnPHg+jF+2sYLRZdENNMYAowHfFP1gDuAxoAL6e0ff/mDfhovN2KhL3FkmjxYY3raHWSWEM9nhl8IcJwOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hv+ft3aY; arc=none smtp.client-ip=209.85.160.181
+	 MIME-Version; b=gXGpFfytrlHZ4wevifCyEUNggv6h7755Jp9lQpPszX3R7zB26QBv7/9/J1xeqFgsh3azPkHe3ypVsxDlT+vJPeyw8RwoCN3PAeJmEa3r8RCYXNbGAEEmO9Ebd//95M2e+os9sMnnWjChiBUFhWCaIlEkIsGB173lGOBvDddf/t8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LZQUa7Mh; arc=none smtp.client-ip=209.85.219.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-42a99f34cc8so2367231cf.2;
-        Wed, 31 Jan 2024 17:42:14 -0800 (PST)
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-68c44100327so2017606d6.2;
+        Wed, 31 Jan 2024 17:42:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706751733; x=1707356533; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706751735; x=1707356535; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=p4HlLJA6ewOwBM3r/aagQRFX9+hzF0ZwosHf3q2R4gw=;
-        b=hv+ft3aYUzIpq6tWxxvhor34MCO+ATd6ORApMYmwOMfN6IHrGPz9g+QGKQ0ibUUmWf
-         aEnUvZYs4fkKFrsicTlHd6WW8nAuXVXbEdJ+qv0iAXj9+8i9K87jTMkpvGtH8YCCj7hk
-         66byqc6tYj72H9mz9wYTz1+cWnuqWVK+mPVGOoT5JTB1RoKC3V+tPeQObG6Z8j49leIr
-         Ir+II3ndh3TDfYY+4y5MafXPIhzA0nGT/kdFk9kiPHeiBPxfocNgJjsQ4xG8KBDmiDkI
-         DP0qWUUiwceLl02pPB2LWG2Y63QmSZcyA6t9d734tr0++Xv1Jhx9Zw2wYjAahx586ji9
-         kHiw==
+        bh=98uYtdjZqt8mPN8u771GmaA9N12/7R+F5RUUjJgYUPQ=;
+        b=LZQUa7MhUF0BNfXRKevudcd1zOzldfHlWvlQbbyG94tvN4k+wYl1veVoII+0e/Yo8g
+         HMYRv0PEFk6NEyPDcp1XWYHRIjggnCGXunk1E8Sc5xAMy2zZgVjnA21BHVHWFcQQXmhK
+         dTDxePnOo1zHb982AgdeqK2zga4Ixc33cSGAKXspn6gz5tntGnqfLshVYxnYg1HAL2SJ
+         6jw9kWK2y/638TNb+IA8Qy3arkGXLf8L0ekD3l7QfjHhKkTWx6uPUO0KyMI/0eNT+fox
+         Qwc+Bhe1tpd7LMURQMoKOjeXuKPoLtXUyIIWzbcIhfIqhT6Bdxj6eVNeExqqiijXNc8z
+         TgqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706751733; x=1707356533;
+        d=1e100.net; s=20230601; t=1706751735; x=1707356535;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=p4HlLJA6ewOwBM3r/aagQRFX9+hzF0ZwosHf3q2R4gw=;
-        b=EHsreN1XVT87/jeKPPqs4eRihJKB6tN+X8ewsJes/Qr5tuuwxB2QKvzhAiAbu3qsje
-         fOMzHQNcpzwZj/7zuWCsC9ny5YyCpPEcHmzx/MXsVu/KRzO05TDvwtVFOI5jqaio90Rv
-         +sNIAFBSVjahp9mA0dBONpOk5xPlAE0UevGwc3yGxOG52NziLjgYRX19aokKgDeclNkM
-         ZiBgQKR15+iIU0ir63TrOHFvFSBQWIn9NF0bJbFgizI57V7qXLpvG9DW9TwVYqSxdC17
-         kO4BDNurLHUfXeCYNMRVxTcsi22EdaG2nVXN6T1ynwaykl/1gVBefdhqpgGuYacCUWf6
-         9mGw==
-X-Gm-Message-State: AOJu0YwlHYab+2tivuV12uOILRNmLijDm8/u2cApb4TB8LOadAEruMFF
-	HkPV64cHwAcWrNWczjYQKpoN5VIg0WIJgD3ELSQszwVkVrHxFkxA
-X-Google-Smtp-Source: AGHT+IHR2I14AziyvzHaxK+XQyZBT4pd6y+PWW9W4yxucjAybiYJy8TRkriFTnLC2wJ0575mM3SFXw==
-X-Received: by 2002:ac8:5795:0:b0:42a:a934:1f4c with SMTP id v21-20020ac85795000000b0042aa9341f4cmr1433192qta.2.1706751733703;
-        Wed, 31 Jan 2024 17:42:13 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXD5i1//U9u8ubT2vzi0K2o+/GwzeSTAQDt4PPCY2iGVlZvaeJzwvA34bwkEtmcQoMOulFFSQdo9AD4Y/ZpmEHbfvf7mb9DFbXm5iGTLa+ZqJze9TZ87NASpoXm26/h30XAyDauZldtN8u51C0sdQe4lkp5HFIyiYP07OpR7boPbMxcPqxXbTORJ0tnPUgwZkZZ3WIl5SCBwjLCM0NEA8mKiKQZKcAiF+J6o3sX9SxmZ0Br0zS2qnpXJ/dt23lJtos2fRlTDlJDclZrhbr9PA7E+LmSYtBwJSyNV3wZYBV91/r/cYwcLJ1E4rIIpSl/YR24UWwstvBtpL6ZRdBAAqwE6a7QhL6qjAl+kadWlIlJdpZlXufQiME1Tg09ektM
+        bh=98uYtdjZqt8mPN8u771GmaA9N12/7R+F5RUUjJgYUPQ=;
+        b=lOpcmiQgWDgf2rQ1fU0jywC3TFB/0CnokAN3nN1L2P2rnI9lIjItS/eQOJU9y5sU+8
+         KDQbuIScdXrNYppvZyTsUWReP+7LOSkqblhHaofaXdL0vFYu913RpY8CqJkd4lUYgkZy
+         /oiaUszXWTch5u4sKFZUh2ZP+4tKscyM5fURFVpD/pilqOjY2n+lYzGSr3SDIDYfr7x+
+         QR2AbegCpMcqpF6zg6Z74cLYYXkOPa/ZPTSv8henDp0Nk3geFVOtgXFhJXPOmgCxLTWb
+         QAPLHQQLO9yRcpPjYILrXrgzSNTtJtyuY1yPq/CBXW+x4az/EMegpY7aGOG0IOpKrT9g
+         1QdQ==
+X-Gm-Message-State: AOJu0YyxIrOgtmw5bVghEZLpt4rkJbEDwsi++/S3woE2qcL/f1ncUSV2
+	hkYMR/5L04X1zUFaouEeyhwImNby1QaiJC/YrLmZgk0coMjQKKFo
+X-Google-Smtp-Source: AGHT+IGmZu+egkcf1f6ysn8wFESXHeVIjltXqOdkSszNHlpulRGuA1ijCixLr+Ou66HSNAkuYpV4eQ==
+X-Received: by 2002:a05:6214:20e6:b0:68c:4caa:dd17 with SMTP id 6-20020a05621420e600b0068c4caadd17mr4015452qvk.6.1706751735429;
+        Wed, 31 Jan 2024 17:42:15 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCV5H58O5j3sQdOL+vJNGvEAGH3Se5j3EHzm0jbl5Emvk7HuvTTSdqJiI8P12gEB7VHZI0tMOi+oHbFCB8tcfbHWoqSr8eVDiLAz+Nd1kH7UNxPM7BHiMTLWibDtND+WY1s2/dkmpcbkiSfKmfPxhMAehNYm3ygbG6ahESqeKE4zHyPaWiAuEUaNs/jnIT5MUD16IcTUJIpCgFIkaRQzsXPy7rqnG/kNrzZv0WiwgmNvEyS4fcO0d+4c5AUReRm4cgeacFQueuIrzyC/+iBOzlMV4Gubck2GXuZ44mIvqVIujzNMIJdyoFJQChJh0gpSVfn+E3Kvcv5Gyn3BCxOBeg0uJ9O73QE/G27CDzlpDLfnFTMQcJIEvV5WwYdV5Zl9f+J/jaG9DSbD+g/+o4xRXKXUMxr6moZVUw==
 Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id fv6-20020a05622a4a0600b00429be14d3bbsm3638748qtb.13.2024.01.31.17.42.13
+        by smtp.gmail.com with ESMTPSA id on6-20020a056214448600b00685ad9090basm2453293qvb.97.2024.01.31.17.42.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 17:42:13 -0800 (PST)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailauth.nyi.internal (Postfix) with ESMTP id E295F27C005B;
-	Wed, 31 Jan 2024 20:42:12 -0500 (EST)
+        Wed, 31 Jan 2024 17:42:15 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailauth.nyi.internal (Postfix) with ESMTP id A91B027C005B;
+	Wed, 31 Jan 2024 20:42:14 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 31 Jan 2024 20:42:12 -0500
-X-ME-Sender: <xms:9Pa6ZSxnpnvs48JuwLqZfHLdFmNhIUsniDnUakCfUllj6OhYMqLmQQ>
-    <xme:9Pa6ZeSREbNPSazECbf1hzlYtS4ommnd1Auh6EeuAXxrkEQp9xZ2JSH-9UgiBuqnr
-    lg6Ri4AUuPM5V1yEA>
-X-ME-Received: <xmr:9Pa6ZUVOHjXnsOFok4ymA3xIXBxpCccsD5egelcJliSVtkjDpaODk_QVMSLuMA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedutddgfeeiucetufdoteggodetrfdotf
+  by compute5.internal (MEProxy); Wed, 31 Jan 2024 20:42:14 -0500
+X-ME-Sender: <xms:9va6ZfyYk1kwFLmjXqJeV6qvM-AdogH0awuimlMUuFx1qpn2eSvH8g>
+    <xme:9va6ZXSnkJcV4DPbtjiJzgCcUwlBVnPHfGpIJRCdnsMzfwitqdxL5PUaHCj3zu026
+    pG6IbPeadLb2otnnA>
+X-ME-Received: <xmr:9va6ZZXcWW1bl2lbb1go2NlxcWtGU7TJivZEnMR6mcfgh8VafOTrEcDAFCXb2Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedutddgfeejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehoqhhu
@@ -85,17 +85,18 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedutddgfeeiucetufdoteggod
     gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
     gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
     igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:9Pa6ZYi9uBqzGVwm1NlrCswldozgdKFCYUCP2C_86zFJ6WgE0HETMw>
-    <xmx:9Pa6ZUCnlECWbG4dY7jsjd1P320DDUXn6ylobJQ9VXpL_Z_5ovf4UQ>
-    <xmx:9Pa6ZZJSdT1f1_itsFFNJt0VAqMP4Jb17JB7FplDfPM_pFggC3PpWA>
-    <xmx:9Pa6ZdItLe50fRICCrN-Ug1O6yKAp6f55XBz174RCPauPow_V-IGLQ>
+X-ME-Proxy: <xmx:9va6ZZg1sB8NK09nr1VGDmZTApBGHU0umaSRuDvi9KG5LS29gD5uKQ>
+    <xmx:9va6ZRAmkUJYbEBxQIsZ6cRqD1RFLivZROb1lNOmi7dYSZKBVW4wgQ>
+    <xmx:9va6ZSIxpjfKjUltWnWfTKx8AZAkrOBFdKP3OeUGTQAdDR1kxqkL3w>
+    <xmx:9va6ZV5J3aeGF-Mkt8D4mLlIPGOIr0hp1PlHBmXwjAtn51t_Y4rTrg>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 31 Jan 2024 20:42:11 -0500 (EST)
+ 31 Jan 2024 20:42:14 -0500 (EST)
 From: Boqun Feng <boqun.feng@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	rcu@vger.kernel.org
 Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
 	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
@@ -105,9 +106,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>
-Subject: [PATCH 2/6] rcu/nocb: Remove needless full barrier after callback advancing
-Date: Wed, 31 Jan 2024 17:40:54 -0800
-Message-ID: <20240201014100.3204532-3-boqun.feng@gmail.com>
+Subject: [PATCH 3/6] rcu/nocb: Make IRQs disablement symmetric
+Date: Wed, 31 Jan 2024 17:40:55 -0800
+Message-ID: <20240201014100.3204532-4-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240201014100.3204532-1-boqun.feng@gmail.com>
 References: <20240201014100.3204532-1-boqun.feng@gmail.com>
@@ -121,115 +122,145 @@ Content-Transfer-Encoding: 8bit
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-A full barrier is issued from nocb_gp_wait() upon callbacks advancing
-to order grace period completion with callbacks execution.
+Currently IRQs are disabled on call_rcu() and then depending on the
+context:
 
-However these two events are already ordered by the
-smp_mb__after_unlock_lock() barrier within the call to
-raw_spin_lock_rcu_node() that is necessary for callbacks advancing to
-happen.
+* If the CPU is in nocb mode:
 
-The following litmus test shows the kind of guarantee that this barrier
-provides:
+   - If the callback is enqueued in the bypass list, IRQs are re-enabled
+     implictly by rcu_nocb_try_bypass()
 
-	C smp_mb__after_unlock_lock
+   - If the callback is enqueued in the normal list, IRQs are re-enabled
+     implicitly by __call_rcu_nocb_wake()
 
-	{}
+* If the CPU is NOT in nocb mode, IRQs are reenabled explicitly from call_rcu()
 
-	// rcu_gp_cleanup()
-	P0(spinlock_t *rnp_lock, int *gpnum)
-	{
-		// Grace period cleanup increase gp sequence number
-		spin_lock(rnp_lock);
-		WRITE_ONCE(*gpnum, 1);
-		spin_unlock(rnp_lock);
-	}
+This makes the code a bit hard to follow, especially as it interleaves
+with nocb locking.
 
-	// nocb_gp_wait()
-	P1(spinlock_t *rnp_lock, spinlock_t *nocb_lock, int *gpnum, int *cb_ready)
-	{
-		int r1;
+To make the IRQ flags coverage clearer and also in order to prepare for
+moving all the nocb enqueue code to its own function, always re-enable
+the IRQ flags explicitly from call_rcu().
 
-		// Call rcu_advance_cbs() from nocb_gp_wait()
-		spin_lock(nocb_lock);
-		spin_lock(rnp_lock);
-		smp_mb__after_unlock_lock();
-		r1 = READ_ONCE(*gpnum);
-		WRITE_ONCE(*cb_ready, 1);
-		spin_unlock(rnp_lock);
-		spin_unlock(nocb_lock);
-	}
-
-	// nocb_cb_wait()
-	P2(spinlock_t *nocb_lock, int *cb_ready, int *cb_executed)
-	{
-		int r2;
-
-		// rcu_do_batch() -> rcu_segcblist_extract_done_cbs()
-		spin_lock(nocb_lock);
-		r2 = READ_ONCE(*cb_ready);
-		spin_unlock(nocb_lock);
-
-		// Actual callback execution
-		WRITE_ONCE(*cb_executed, 1);
-	}
-
-	P3(int *cb_executed, int *gpnum)
-	{
-		int r3;
-
-		WRITE_ONCE(*cb_executed, 2);
-		smp_mb();
-		r3 = READ_ONCE(*gpnum);
-	}
-
-	exists (1:r1=1 /\ 2:r2=1 /\ cb_executed=2 /\ 3:r3=0) (* Bad outcome. *)
-
-Here the bad outcome only occurs if the smp_mb__after_unlock_lock() is
-removed. This barrier orders the grace period completion against
-callbacks advancing and even later callbacks invocation, thanks to the
-opportunistic propagation via the ->nocb_lock to nocb_cb_wait().
-
-Therefore the smp_mb() placed after callbacks advancing can be safely
-removed.
-
+Reviewed-by: Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.com>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- kernel/rcu/tree.c      | 6 ++++++
- kernel/rcu/tree_nocb.h | 1 -
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ kernel/rcu/tree.c      |  9 ++++++---
+ kernel/rcu/tree_nocb.h | 20 +++++++++-----------
+ 2 files changed, 15 insertions(+), 14 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index b2bccfd37c38..d540d210e5c7 100644
+index d540d210e5c7..a402dc4e9a9c 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -2145,6 +2145,12 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	 * Extract the list of ready callbacks, disabling IRQs to prevent
- 	 * races with call_rcu() from interrupt handlers.  Leave the
- 	 * callback counts, as rcu_barrier() needs to be conservative.
-+	 *
-+	 * Callbacks execution is fully ordered against preceding grace period
-+	 * completion (materialized by rnp->gp_seq update) thanks to the
-+	 * smp_mb__after_unlock_lock() upon node locking required for callbacks
-+	 * advancing. In NOCB mode this ordering is then further relayed through
-+	 * the nocb locking that protects both callbacks advancing and extraction.
- 	 */
- 	rcu_nocb_lock_irqsave(rdp, flags);
- 	WARN_ON_ONCE(cpu_is_offline(smp_processor_id()));
+@@ -2735,8 +2735,10 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+ 	}
+ 
+ 	check_cb_ovld(rdp);
+-	if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags, lazy))
++	if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags, lazy)) {
++		local_irq_restore(flags);
+ 		return; // Enqueued onto ->nocb_bypass, so just leave.
++	}
+ 	// If no-CBs CPU gets here, rcu_nocb_try_bypass() acquired ->nocb_lock.
+ 	rcu_segcblist_enqueue(&rdp->cblist, head);
+ 	if (__is_kvfree_rcu_offset((unsigned long)func))
+@@ -2754,8 +2756,8 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+ 		__call_rcu_nocb_wake(rdp, was_alldone, flags); /* unlocks */
+ 	} else {
+ 		__call_rcu_core(rdp, head, flags);
+-		local_irq_restore(flags);
+ 	}
++	local_irq_restore(flags);
+ }
+ 
+ #ifdef CONFIG_RCU_LAZY
+@@ -4646,8 +4648,9 @@ void rcutree_migrate_callbacks(int cpu)
+ 		__call_rcu_nocb_wake(my_rdp, true, flags);
+ 	} else {
+ 		rcu_nocb_unlock(my_rdp); /* irqs remain disabled. */
+-		raw_spin_unlock_irqrestore_rcu_node(my_rnp, flags);
++		raw_spin_unlock_rcu_node(my_rnp); /* irqs remain disabled. */
+ 	}
++	local_irq_restore(flags);
+ 	if (needwake)
+ 		rcu_gp_kthread_wake();
+ 	lockdep_assert_irqs_enabled();
 diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 785946834c6b..b2c3145c4c13 100644
+index b2c3145c4c13..1d5c03c5c702 100644
 --- a/kernel/rcu/tree_nocb.h
 +++ b/kernel/rcu/tree_nocb.h
-@@ -779,7 +779,6 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
- 		if (rcu_segcblist_ready_cbs(&rdp->cblist)) {
- 			needwake = rdp->nocb_cb_sleep;
- 			WRITE_ONCE(rdp->nocb_cb_sleep, false);
--			smp_mb(); /* CB invocation -after- GP end. */
+@@ -532,9 +532,7 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 	// 2. Both of these conditions are met:
+ 	//    a. The bypass list previously had only lazy CBs, and:
+ 	//    b. The new CB is non-lazy.
+-	if (ncbs && (!bypass_is_lazy || lazy)) {
+-		local_irq_restore(flags);
+-	} else {
++	if (!ncbs || (bypass_is_lazy && !lazy)) {
+ 		// No-CBs GP kthread might be indefinitely asleep, if so, wake.
+ 		rcu_nocb_lock(rdp); // Rare during call_rcu() flood.
+ 		if (!rcu_segcblist_pend_cbs(&rdp->cblist)) {
+@@ -544,7 +542,7 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
  		} else {
- 			needwake = false;
+ 			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+ 					    TPS("FirstBQnoWake"));
+-			rcu_nocb_unlock_irqrestore(rdp, flags);
++			rcu_nocb_unlock(rdp);
  		}
+ 	}
+ 	return true; // Callback already enqueued.
+@@ -570,7 +568,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+ 	// If we are being polled or there is no kthread, just leave.
+ 	t = READ_ONCE(rdp->nocb_gp_kthread);
+ 	if (rcu_nocb_poll || !t) {
+-		rcu_nocb_unlock_irqrestore(rdp, flags);
++		rcu_nocb_unlock(rdp);
+ 		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+ 				    TPS("WakeNotPoll"));
+ 		return;
+@@ -583,17 +581,17 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+ 		rdp->qlen_last_fqs_check = len;
+ 		// Only lazy CBs in bypass list
+ 		if (lazy_len && bypass_len == lazy_len) {
+-			rcu_nocb_unlock_irqrestore(rdp, flags);
++			rcu_nocb_unlock(rdp);
+ 			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_LAZY,
+ 					   TPS("WakeLazy"));
+ 		} else if (!irqs_disabled_flags(flags)) {
+ 			/* ... if queue was empty ... */
+-			rcu_nocb_unlock_irqrestore(rdp, flags);
++			rcu_nocb_unlock(rdp);
+ 			wake_nocb_gp(rdp, false);
+ 			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+ 					    TPS("WakeEmpty"));
+ 		} else {
+-			rcu_nocb_unlock_irqrestore(rdp, flags);
++			rcu_nocb_unlock(rdp);
+ 			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE,
+ 					   TPS("WakeEmptyIsDeferred"));
+ 		}
+@@ -611,15 +609,15 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+ 		if ((rdp->nocb_cb_sleep ||
+ 		     !rcu_segcblist_ready_cbs(&rdp->cblist)) &&
+ 		    !timer_pending(&rdp->nocb_timer)) {
+-			rcu_nocb_unlock_irqrestore(rdp, flags);
++			rcu_nocb_unlock(rdp);
+ 			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_FORCE,
+ 					   TPS("WakeOvfIsDeferred"));
+ 		} else {
+-			rcu_nocb_unlock_irqrestore(rdp, flags);
++			rcu_nocb_unlock(rdp);
+ 			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("WakeNot"));
+ 		}
+ 	} else {
+-		rcu_nocb_unlock_irqrestore(rdp, flags);
++		rcu_nocb_unlock(rdp);
+ 		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("WakeNot"));
+ 	}
+ }
 -- 
 2.43.0
 
