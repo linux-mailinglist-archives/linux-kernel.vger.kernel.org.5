@@ -1,47 +1,73 @@
-Return-Path: <linux-kernel+bounces-47692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9367684515B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 07:29:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6C72845165
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 07:31:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AFA3284F21
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 06:29:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6ECC81F282EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 06:31:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1950C7E573;
-	Thu,  1 Feb 2024 06:29:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 330121386A1;
+	Thu,  1 Feb 2024 06:31:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JskVz43S"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="pjhXywCe"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AE936519D
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 06:29:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 354FD132C1E
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 06:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706768965; cv=none; b=t6WXDoWhzgq86ns5MeY42aMFtWsQjLjgU3kxtc2kq0lODu1uAb5SW2G2JIoUALy5Q11/FUulVbJAQHR3G5HH0bwFEVcnzYxzOO9x44bMfBcu2FO/XldNW9QonM3o+MG200upR/EbAxec8rAFs8yexMQSsl98yibHKiZ2ve2XYdE=
+	t=1706769098; cv=none; b=hgApy/XFs+vL2Pn4PJD5XQvbhitAe1eEAHunrh1DkQnf6C9cPwOE11KoIHI6IVKhm6KvC5Fpyt4HydUcYfhDu1c2/HOeL3z4OmnP6KweclSw/GuTeUSl3cEI/s68019NOyaK1BccT9PSoo2nQXCOD5i/1b7oPg92Jhz0wruncGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706768965; c=relaxed/simple;
-	bh=1BN6jfhT/gk45R5CPCVJSrOjxfYN0aiySJzxnvTLL9I=;
+	s=arc-20240116; t=1706769098; c=relaxed/simple;
+	bh=rhkKqXYx2bfqJ3XZQo1ZFPXeQt4Ok4Ahotcdhk9yTjc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XyIB5JLbCI9X6U+cnqEppGTTgMZQQg2bw9ZnSfUOGwKLi5yXd+uzZZ3JVtg1xHB4XSkYIhL/h67jpfM2iyzmMsQjcGDixk9ZB8nDLp77nqjKPMsNDhJ5zQEysgWg01fuUyocF3T5Xyi25PGDelz9axoFExZvNKfDtkjA+/b14wE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JskVz43S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56E97C433F1;
-	Thu,  1 Feb 2024 06:29:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706768964;
-	bh=1BN6jfhT/gk45R5CPCVJSrOjxfYN0aiySJzxnvTLL9I=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=JskVz43SXLur011T8ECNrlujln8yf0cbj2eLQ/8L+LzS/RKAXRgtfcHTotBopzob3
-	 Wlf6HNLdn2ERNJfUAEbpVsMg/4X+psQruWFS8EylML+D8qf0VZFSd7AzkSiY1of0ET
-	 d4fh85DrXTL1nTgPyN5cPHwUABlE6GyZyW0jDTRnsg489WY/7xZ1wVc348nrZy0/sD
-	 uvfinO86U48GprfFn99SqrAEhUh3fzXZ0FYkYuJoSKBGMM0PMCyT8izcQqSkr/5cpa
-	 VMjOwhbQsCwgBRJbowJPOV9yKuvAQ2DQQwMjyOtItyS5CoTpGBMy7J2d/EIgBotWbr
-	 thl2W3EjiHqAQ==
-Message-ID: <0477240f-9f52-4418-9a2d-7a5a598cd0a9@kernel.org>
-Date: Thu, 1 Feb 2024 14:29:19 +0800
+	 In-Reply-To:Content-Type; b=Mx7fHoGjadlbpPRdno0vZthw0USUpxYDHAVxBSXMVIbhfCHhofySMCnWMSnvIeCyHwT8it3oyMhzzqYEVICkhcXQ0NNQRMRkaHI0+C16CcI/IGjyEKObH5+MB8NCY99ih2Pw7L4u4X65MWSq870gvThas6iwjskiv1WFFMZDhdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=pjhXywCe; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55f19a3ca7aso3192421a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 22:31:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1706769094; x=1707373894; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3ILH3iVCOAXF1BayqkdoSoFZAWJWdaJcxQN309+oN/4=;
+        b=pjhXywCezFnTggORZ+MdQ5ZyxrYhnPfmBxEWd4S02cFLxmg9lthti1xGMzQr9mvvMC
+         SJS6xUj7d9p7FN/q/uwfs2CqnBxrVLbEzOHseAo1NGu2n8FSJSIqlWgiJqfnxHezE0ie
+         r0vs98mlA0Z+DU18ZXQIKngQ9LnnJFh9raEO+fvjmo4rT9bO61IbZL3XDp2wPgQGw5EO
+         H9p/zntYIfM+qPBzGX3eJYAInuqsPOs2KRMhZFrSzz9j/A2FXOxeJB7nGt7DEidRab1a
+         iFqwKCVfQ+70qrBahdGOe2RDwG6uiL38Yc8W8dUUTldem8sJcv24fpNIgI/PhJWJjdtb
+         8OIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706769094; x=1707373894;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3ILH3iVCOAXF1BayqkdoSoFZAWJWdaJcxQN309+oN/4=;
+        b=DPe6T3H9AJTwrN3GpZ7Cy+ZoleO8ts5URjwGd1Mg53sdivCIsKXENmu3HCN4oE6ud+
+         vIWrtGbWx8C81U+0UiD4OIOO8O2KR3uJrSpeyIaW/jQD4GXRXcUFjdgjnHABPds8otYo
+         peK5vbgAux/ayUsd+Mge6v7XzsBPiqiVvZ4NiC99m9b88kohmBKXm281XDbfXys8T8DW
+         mGRZVLKnYpdUXRFcK8ur7aBilZDWWVqlb219HlozIf7pePVOPUjZi7DEoiUhPCONOCGv
+         cPCiOi9Zj0rhshTvPNbdgmtKlWu8Q0Hh6xoO1Kuz30lyFPD+erVkEuTNj4Dr3/GIH7TW
+         6fjA==
+X-Gm-Message-State: AOJu0Ywm2tH8pprKgMq39jEX0fRazEsLwnlXi67IrWXBeebRmgxxFp0e
+	si0QtdaSYzx6dS+r1IMXkT89TpbPWZH4nlQNPV7Xd3ViYlOokQY3fvHnWxrWNDs=
+X-Google-Smtp-Source: AGHT+IFJuMt/iAwHv85KWXo5SEc8zjmjsTXgILaTRKPTGHLtJ10gxSybs1Zm87LeDlgqRJYYa0918w==
+X-Received: by 2002:a50:fa93:0:b0:55f:b5a5:9f6c with SMTP id w19-20020a50fa93000000b0055fb5a59f6cmr633497edr.4.1706769094226;
+        Wed, 31 Jan 2024 22:31:34 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCX0SQhONyb9M3xPhhEr8ZR2V2hwQXJE5ofoOfBa77A0czh8LozpdpefPWdxHGioIGOVwJvrfwd9ZPR2K1cEYHt2TJ588lUoerWDaMNpnWZJ16PEP+jeSiVmMotdJ75Xy8AixWp/1W2ID6MIjkdcvFazy+Dkh4fQGWptDY/CCqZDygxY3sYfiWYZ/AHwo8faWH/6k44kBh4BSsdzj2cRSik0PNolL4YywDb7ESMa+Or48u6rhoCJekqmAPZRtG2ZTC4uB3+HIDRCnPb8sMl1A6xtqNzhV9qOHfsoml5+lFGjN/rmVgSfRyD/sLiiMXfiWiaQhO5Ndo2pzbZZPcHzobqTNun7mELQdPm2CuW2wkgKvEJytvs8k9Y725OTkrI6Gs5FgusODpJlkhDhgw8phVhgNfujg0YScjijdbdmezMNdeobWC4=
+Received: from [192.168.50.4] ([82.78.167.87])
+        by smtp.gmail.com with ESMTPSA id p14-20020a056402500e00b0055c67e6454asm6573565eda.70.2024.01.31.22.31.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 22:31:33 -0800 (PST)
+Message-ID: <9321b515-b4da-4d18-9d87-3470caf28b6d@tuxon.dev>
+Date: Thu, 1 Feb 2024 08:31:32 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,153 +75,217 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] UPSTREAM: f2fs: sysfs: support gc_io_aware
+Subject: Re: [PATCH net-next v5 08/15] net: ravb: Move the IRQs
+ getting/requesting in the probe() method
 Content-Language: en-US
-To: liujinbao1 <jinbaoliu365@gmail.com>, jaegeuk@kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
- liujinbao1 <liujinbao1@xiaomi.corp-partner.google.com>
-References: <20240130125113.14081-1-jinbaoliu365@gmail.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <20240130125113.14081-1-jinbaoliu365@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ richardcochran@gmail.com, p.zabel@pengutronix.de, geert+renesas@glider.be
+Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240131084133.1671440-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240131084133.1671440-9-claudiu.beznea.uj@bp.renesas.com>
+ <5536e607-e03b-f38e-2909-a6f6a126ff0d@omp.ru>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <5536e607-e03b-f38e-2909-a6f6a126ff0d@omp.ru>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2024/1/30 20:51, liujinbao1 wrote:
-> From: liujinbao1 <liujinbao1@xiaomi.corp-partner.google.com>
+
+
+On 31.01.2024 21:51, Sergey Shtylyov wrote:
+>    I said the subject needs to be changed to "net: ravb: Move getting/requesting IRQs in
+> the probe() method", not "net: ravb: Move IRQs getting/requesting in the probe() method".
+> That's not very proper English, AFAIK! =)
+
+It seems I messed this up.
+
 > 
-> Currently, IO can only be ignored when GC_URGENT_HIGH is set,
->   and the default algorithm used for GC_URGENT_HIGH is greedy.
-> It gives a way to enable/disable IO aware feature for background
-> gc, so that we can tune background gc more precisely. e.g.
-> force to disable IO aware and choose more suitable algorithm
-> if there are large number of dirty segments.
+> On 1/31/24 11:41 AM, Claudiu wrote:
 > 
-> Change-Id: Ic0ea1bf8fb6602f0dd88b924088f1c1b33fcd809
-
-Should remove Change-Id line.
-
-> Signed-off-by: liujinbao1 <liujinbao1@xiaomi.corp-partner.google.com>
-> ---
->   Documentation/ABI/testing/sysfs-fs-f2fs | 6 ++++++
->   fs/f2fs/f2fs.h                          | 6 ++++++
->   fs/f2fs/gc.c                            | 3 ++-
->   fs/f2fs/gc.h                            | 1 +
->   fs/f2fs/sysfs.c                         | 9 +++++++++
->   5 files changed, 24 insertions(+), 1 deletion(-)
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> The runtime PM implementation will disable clocks at the end of
+>> ravb_probe(). As some IP variants switch to reset mode as a result of
+>> setting module standby through clock disable APIs, to implement runtime PM
+>> the resource parsing and requesting are moved in the probe function and IP
+>> settings are moved in the open function. This is done because at the end of
+>> the probe some IP variants will switch anyway to reset mode and the
+>> registers content is lost. Also keeping only register settings operations
+>> in the ravb_open()/ravb_close() functions will make them faster.
+>>
+>> Commit moves IRQ requests to ravb_probe() to have all the IRQs ready when
+>> the interface is open. As now IRQs getting/requesting are in a single place
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-> index 36c3cb547901..47f02fa471fe 100644
-> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
-> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-> @@ -16,6 +16,12 @@ Contact:	"Namjae Jeon" <namjae.jeon@samsung.com>
->   Description:	Controls the default sleep time for gc_thread. Time
->   		is in milliseconds.
->   
-> +What:		/sys/fs/f2fs/<disk>/gc_io_aware
-> +Date:		January 2024
-> +Contact:	"Jinbao Liu" <liujinbao1@xiaomi.com>
-> +Description:	It controls to enable/disable IO aware feature for background gc.
-> ++		By default, the value is 1 which indicates IO aware is on.
-> +
->   What:		/sys/fs/f2fs/<disk>/gc_idle
->   Date:		July 2013
->   Contact:	"Namjae Jeon" <namjae.jeon@samsung.com>
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index 214fdd590fdf..ebe953e7459e 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -374,6 +374,12 @@ enum {
->   	MAX_DPOLICY,
->   };
->   
-> +enum {
-> +	GC_IO_AWARE_DISABLE,	/* force to not be aware of IO */
-> +	GC_IO_AWARE_ENABLE,	/* force to be aware of IO */
-> +	GC_IO_AWARE_MAX,
-> +};
+>    Again, "getting/requesting IRQs is done"...
+> 
+>> there is no need to keep intermediary data (like ravb_rx_irqs[] and
+>> ravb_tx_irqs[] arrays or IRQs in struct ravb_private).
+>>
+>> In order to avoid accessing the IP registers while the IP is runtime
+>> suspended (e.g. in the timeframe b/w the probe requests shared IRQs and
+>> IP clocks are enabled) in the interrupt handlers were introduced
+> 
+>    But can't we just request our IRQs after we call pm_runtime_resume_and_get()?
+> We proaobly can... but then again, we call pm_runtime_put_sync() in the remove()
+> method before the IRQs are freed...  So, it still seems OK that we're adding
+> pm_runtime_active() calls to the IRQ handlers in this very patch, not when we'll
+> start calling the RPM APIs in the ndo_{open|close}() methods, correct? :-)
 
-Not needed.
+Yes, it should be safe.
 
-> +
->   struct discard_policy {
->   	int type;			/* type of discard */
->   	unsigned int min_interval;	/* used for candidates exist */
-> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-> index 309da3d0faff..34a1e6b35af6 100644
-> --- a/fs/f2fs/gc.c
-> +++ b/fs/f2fs/gc.c
-> @@ -109,7 +109,7 @@ static int gc_thread_func(void *data)
->   			goto next;
->   		}
->   
-> -		if (!is_idle(sbi, GC_TIME)) {
-> +		if (gc_th->io_aware && !is_idle(sbi, GC_TIME)) {
->   			increase_sleep_time(gc_th, &wait_ms);
->   			f2fs_up_write(&sbi->gc_lock);
->   			stat_io_skip_bggc_count(sbi);
-> @@ -182,6 +182,7 @@ int f2fs_start_gc_thread(struct f2fs_sb_info *sbi)
->   	gc_th->min_sleep_time = DEF_GC_THREAD_MIN_SLEEP_TIME;
->   	gc_th->max_sleep_time = DEF_GC_THREAD_MAX_SLEEP_TIME;
->   	gc_th->no_gc_sleep_time = DEF_GC_THREAD_NOGC_SLEEP_TIME;
-> +	gc_th->io_aware = GC_IO_AWARE_ENABLE;
+> 
+>> pm_runtime_active() checks. The device runtime PM usage counter has been
+>> incremented to avoid disabling the device's clocks while the check is in
+>> progress (if any).
+>>
+>> This is a preparatory change to add runtime PM support for all IP variants.
+>>
+>> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> [...]
+> 
+>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+>> index e70c930840ce..f9297224e527 100644
+>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> [...]
+>> @@ -1092,11 +1082,23 @@ static irqreturn_t ravb_emac_interrupt(int irq, void *dev_id)
+>>  {
+>>  	struct net_device *ndev = dev_id;
+>>  	struct ravb_private *priv = netdev_priv(ndev);
+>> +	struct device *dev = &priv->pdev->dev;
+>> +	irqreturn_t result = IRQ_HANDLED;
+>> +
+>> +	pm_runtime_get_noresume(dev);
+>> +
+> 
+>    Not sure we need en empty line here...
 
-gc_th->io_aware = true;
+That's a personal taste... more like to emphasize that this is PM runtime
+"protected"... Same for the rest of occurrences you signaled below.
 
->   
->   	gc_th->gc_wake = false;
->   
-> diff --git a/fs/f2fs/gc.h b/fs/f2fs/gc.h
-> index 28a00942802c..51d6ad26b76a 100644
-> --- a/fs/f2fs/gc.h
-> +++ b/fs/f2fs/gc.h
-> @@ -41,6 +41,7 @@ struct f2fs_gc_kthread {
->   	unsigned int min_sleep_time;
->   	unsigned int max_sleep_time;
->   	unsigned int no_gc_sleep_time;
-> +	bool io_aware;
->   
->   	/* for changing gc mode */
->   	bool gc_wake;
-> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-> index 417fae96890f..95409cfc48f4 100644
-> --- a/fs/f2fs/sysfs.c
-> +++ b/fs/f2fs/sysfs.c
-> @@ -516,6 +516,13 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
->   		return count;
->   	}
->   
-> +	if (!strcmp(a->attr.name, "gc_io_aware")) {
-> +		if (t >= GC_IO_AWARE_MAX)
+> 
+>> +	if (unlikely(!pm_runtime_active(dev))) {
+>> +		result = IRQ_NONE;
+>> +		goto out_rpm_put;
+>> +	}
+>>  
+>>  	spin_lock(&priv->lock);
+>>  	ravb_emac_interrupt_unlocked(ndev);
+>>  	spin_unlock(&priv->lock);
+>> -	return IRQ_HANDLED;
+>> +
+>> +out_rpm_put:
+>> +	pm_runtime_put_noidle(dev);
+>> +	return result;
+>>  }
+>>  
+>>  /* Error interrupt handler */
+>> @@ -1176,9 +1178,15 @@ static irqreturn_t ravb_interrupt(int irq, void *dev_id)
+>>  	struct net_device *ndev = dev_id;
+>>  	struct ravb_private *priv = netdev_priv(ndev);
+>>  	const struct ravb_hw_info *info = priv->info;
+>> +	struct device *dev = &priv->pdev->dev;
+>>  	irqreturn_t result = IRQ_NONE;
+>>  	u32 iss;
+>>  
+>> +	pm_runtime_get_noresume(dev);
+>> +
+> 
+>    And here...
+> 
+>> +	if (unlikely(!pm_runtime_active(dev)))
+>> +		goto out_rpm_put;
+>> +
+>>  	spin_lock(&priv->lock);
+>>  	/* Get interrupt status */
+>>  	iss = ravb_read(ndev, ISS);
+> [...]
+>> @@ -1230,9 +1241,15 @@ static irqreturn_t ravb_multi_interrupt(int irq, void *dev_id)
+>>  {
+>>  	struct net_device *ndev = dev_id;
+>>  	struct ravb_private *priv = netdev_priv(ndev);
+>> +	struct device *dev = &priv->pdev->dev;
+>>  	irqreturn_t result = IRQ_NONE;
+>>  	u32 iss;
+>>  
+>> +	pm_runtime_get_noresume(dev);
+>> +
+> 
+>    Here too...
+> 
+>> +	if (unlikely(!pm_runtime_active(dev)))
+>> +		goto out_rpm_put;
+>> +
+>>  	spin_lock(&priv->lock);
+>>  	/* Get interrupt status */
+>>  	iss = ravb_read(ndev, ISS);
+> [...]
+>> @@ -1261,8 +1281,14 @@ static irqreturn_t ravb_dma_interrupt(int irq, void *dev_id, int q)
+>>  {
+>>  	struct net_device *ndev = dev_id;
+>>  	struct ravb_private *priv = netdev_priv(ndev);
+>> +	struct device *dev = &priv->pdev->dev;
+>>  	irqreturn_t result = IRQ_NONE;
+>>  
+>> +	pm_runtime_get_noresume(dev);
+>> +
+> 
+>    Here as well...
+> 
+>> +	if (unlikely(!pm_runtime_active(dev)))
+>> +		goto out_rpm_put;
+>> +
+>>  	spin_lock(&priv->lock);
+>>  
+>>  	/* Network control/Best effort queue RX/TX */
+> [...]
+>> @@ -2616,6 +2548,90 @@ static void ravb_parse_delay_mode(struct device_node *np, struct net_device *nde
+>>  	}
+>>  }
+>>  
+>> +static int ravb_setup_irq(struct ravb_private *priv, const char *irq_name,
+>> +			  const char *ch, int *irq, irq_handler_t handler)
+>> +{
+>> +	struct platform_device *pdev = priv->pdev;
+>> +	struct net_device *ndev = priv->ndev;
+>> +	struct device *dev = &pdev->dev;
+>> +	const char *dev_name;
+>> +	unsigned long flags;
+>> +	int error;
+>> +
+>> +	if (irq_name) {
+>> +		dev_name = devm_kasprintf(dev, GFP_KERNEL, "%s:%s", ndev->name, ch);
+>> +		if (!dev_name)
+>> +			return -ENOMEM;
+>> +
+>> +		*irq = platform_get_irq_byname(pdev, irq_name);
+>> +		flags = 0;
+>> +	} else {
+>> +		dev_name = ndev->name;
+>> +		*irq = platform_get_irq(pdev, 0);
+>> +		flags = IRQF_SHARED;
+> 
+>    Perhaps it's worth passing flags as a parameter here instead?
 
-	if (t > 1)
+I don't see it like this. We need this flag for a single call of
+ravb_setup_irq(), we can determine for which call we need to set this flag
+so I think it is redundant to have an extra argument for it.
 
-> +			return -EINVAL;
-> +		*ui = t;
-
-	*ui = t ? true : false;
-
-Thanks,
-
-> +		return count;
-> +	}
-> +
->   	if (!strcmp(a->attr.name, "migration_granularity")) {
->   		if (t == 0 || t > sbi->segs_per_sec)
->   			return -EINVAL;
-> @@ -906,6 +913,7 @@ GC_THREAD_RW_ATTR(gc_urgent_sleep_time, urgent_sleep_time);
->   GC_THREAD_RW_ATTR(gc_min_sleep_time, min_sleep_time);
->   GC_THREAD_RW_ATTR(gc_max_sleep_time, max_sleep_time);
->   GC_THREAD_RW_ATTR(gc_no_gc_sleep_time, no_gc_sleep_time);
-> +GC_THREAD_RW_ATTR(gc_io_aware, io_aware);
->   
->   /* SM_INFO ATTR */
->   SM_INFO_RW_ATTR(reclaim_segments, rec_prefree_segments);
-> @@ -1061,6 +1069,7 @@ static struct attribute *f2fs_attrs[] = {
->   	ATTR_LIST(gc_min_sleep_time),
->   	ATTR_LIST(gc_max_sleep_time),
->   	ATTR_LIST(gc_no_gc_sleep_time),
-> +	ATTR_LIST(gc_io_aware),
->   	ATTR_LIST(gc_idle),
->   	ATTR_LIST(gc_urgent),
->   	ATTR_LIST(reclaim_segments),
+> 
+>> +	}
+>> +	if (*irq < 0)
+>> +		return *irq;
+>> +
+>> +	error = devm_request_irq(dev, *irq, handler, flags, dev_name, ndev);
+>> +	if (error)
+>> +		netdev_err(ndev, "cannot request IRQ %s\n", dev_name);
+>> +
+>> +	return error;
+>> +}
+> [...]
+> 
+> MBR, Sergey
 
