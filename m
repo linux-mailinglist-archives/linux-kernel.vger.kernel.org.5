@@ -1,205 +1,203 @@
-Return-Path: <linux-kernel+bounces-48772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D3DB8460FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:31:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF1D2846103
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:33:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59E6328587E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:31:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 672A11F26A3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:33:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF01D85285;
-	Thu,  1 Feb 2024 19:31:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B66FC8527B;
+	Thu,  1 Feb 2024 19:33:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="SKjI1kF4"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b="cBkL6P8H"
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87E7085278;
-	Thu,  1 Feb 2024 19:31:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5218684FD0
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 19:33:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706815909; cv=none; b=Y/G5kEEVS8KdgCCt7qWPssIl2H+FEtwfGf3kmW+qML5DkKv9LkIZAnWmikEMEwj+NTro7SMMY8H9Bn9lT0zzxBPGgceTF0Az/s5hCdPpDQM82tV1h45HDecZWjoyfWpYeRiwNTDRa8neSdBOEUcP6RFdsDG4Zz8aHy8TYCHa7L4=
+	t=1706816026; cv=none; b=juA5NfMPX8WQZ/TvYeXFUiwSqaGDykCplHd2x7Ozch/dtj/+v5Re62HAy1REpD7BvIqIDfJJ+TBmbw5A0U0cH1GOPb0MbP2henwSZpOCXWMWvvcvHF9TLgxXJpJlIZOIZEvRD78m9mqyyf1SuuKDYrKfxM7oUWRu/YoV+OHvrmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706815909; c=relaxed/simple;
-	bh=30CrakodQoj7bnMNjvntO6yWV9ILkjgkGXFZuyqQ044=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=c9tnWhszpmvgKXTBuvISzO+1PxnEqgCsZP+qvs/dOvEqVAOW9MY+FOnLRmmPhqoV4Epouo/pNVP6jiWtE4ah3BxEVB6oMC62unYM3ShmEWPAAGDEy0plTwoim5oynFQAuCtMtjwDTze2fhPSIkEhbE+pNojzqkKqu1vvHvWTXy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=SKjI1kF4; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1706816026; c=relaxed/simple;
+	bh=znNSk/omDjXJFiH6ViXr1vF8LWsH/+XjvQJqVZRMuKA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kXlUKJMzmmjgP4nTuxM5vMfn+ZVjFt7Ug7Xrmf8sRoLC/Wo3POACC8+HAJHWuwxHcnC4NrWm8Of/7O4wHxJgDB6yvBLFrA1B+A/9zngNnI4VMF3nNFlMVqjQm+M57HqeO1tI1bzQzDB0sGCPqKq9AWGxPSxM8fDKcKiTfuwsNow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net; spf=pass smtp.mailfrom=amacapital.net; dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b=cBkL6P8H; arc=none smtp.client-ip=209.85.222.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amacapital.net
+Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-7d2dee968a5so422196241.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 11:33:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20230601.gappssmtp.com; s=20230601; t=1706816024; x=1707420824; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H8TDXyB/dLQfx4pJhHT/t6+HjwGIKR+BaTPtjymAN14=;
+        b=cBkL6P8H+ZTAAoopEZ+YtL8AYKsKkMq9L3AWFaRxVEBxy9oeqLCBA04Av8Cby5w4uw
+         aR5hm9gNOJNtCE4Y5OWgJqG5kMnGPcZUre92J/gdSQHSSA6+KfyjP/0DlnGg8+1+cOA3
+         FEo589imYpIBC73M/u+MZXgUs3prXlloByf2t+apQgfEWcKRJBauOknh+iD+DgXpLUyu
+         ugFtL/vCZ/pCQjn6MdbRQwCJ1RifFIiJD0MXg51qQH5o4cIuseYoHiheDEKQpIVhDaUe
+         dmWUBaadKxhn+E/yd7k1Q2Jga8MU9kOleQMpHRbU6ZMk1ASY3P1IEWuaZft7hM0dDgKF
+         +adA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706816024; x=1707420824;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H8TDXyB/dLQfx4pJhHT/t6+HjwGIKR+BaTPtjymAN14=;
+        b=TLTHQoXW5r/T1B0SCmjfnsP0F1shcEWr+C1hVd/Z/PZfiQduEa+laOM63oJUkMQNlT
+         qg+ZM9EuS5zWV0mwNc4ZXwQeKnCff9K58tnKqN1bVBrXOZVuO54V+18R9g2rJeQcovvs
+         TxSC27SMIr+0PCVRR6xWT0xa/ijUPce9jNlkajratJH+f6W1NJCFnrQ/ceG4+5ChYuZZ
+         rhcmC3u+6FlJiVhdlbdbDB/NpueJIyeCwpT2WmLhVb9sOQsnGnT7rLAKS3u/Y/7A6YEn
+         CNZYqAQkSZPj/k8KLZdhEsbEvdie6JyUFp3JAXkrjeS3Ghqak49mQWmgqdCPIjOKYIH5
+         2exw==
+X-Gm-Message-State: AOJu0Yw1uio9gMfGqdDD/gMOOHjuW6njjVk7JvG+60yI84gPdhrS+DaK
+	Cx4E0YbZsfYtDFyDNikdmCOPWcaYI3ei79Ne+48knxxgRSs7K5rDyDghiLWS3jCbuWWnFuuptpz
+	qYOtJHg/HYtZbHsXJxRH8HS3Zuwx+AGIvvzweUG7RvczemPHfLw==
+X-Google-Smtp-Source: AGHT+IEGC9yHQvpZUgXv3pIXD2ajqe6DPydtm9MYIyvWPRi9Kvd72k3uKMGdDWPKgY8wALIDzg+hfttxJjz4eUly9q4=
+X-Received: by 2002:a05:6122:4683:b0:4b7:4932:203d with SMTP id
+ di3-20020a056122468300b004b74932203dmr6579952vkb.14.1706816024094; Thu, 01
+ Feb 2024 11:33:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1706815904;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7kLN+F37wlT4potTE1hxcRfMjPjrCtSNMuo+YwMDxvM=;
-	b=SKjI1kF4cfxpbkHEOLzLGDRB+LXTqrbLitQsEeHkR/7RxPOUGJVJ2P2VgqbhveMtNdmZRm
-	24XYitFv27nxw1ajFlSGJZuXYbjuWMWAygSOiEA/F+wP8G5MCgtrBqyhP9VzsL9IlK8D7X
-	P8zXcvfNKuQ/tB2Lpblx56WcVM/wbfSp9SHN+tU/87sdtjRkfZDZ7Ha2joCdegtx4yEkb7
-	iu1CLpI5lZj/PJfPWfK9Y20ILQsHQI56KqIRUEEO11NOhn8vifcymHB8jaw0GION9pjkhb
-	w68TWDLx/Ktp04QDIeyldb20ljLUsr/4thalc+AducLysS6upbxlMZ+MAXhRFg==
-Date: Thu, 01 Feb 2024 20:31:43 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Alexey Charkov <alchark@gmail.com>
-Cc: wens@kernel.org, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano
- <daniel.lezcano@linaro.org>, Viresh Kumar <viresh.kumar@linaro.org>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] arm64: dts: rockchip: enable temperature driven
- fan control on Rock 5B
-In-Reply-To: <CABjd4Yx0kQ67fScrFVavjObMLaNt_PJ3TVOhLpCmj00Dx9dOqA@mail.gmail.com>
-References: <20240130-rk-dts-additions-v2-0-c6222c4c78df@gmail.com>
- <20240130-rk-dts-additions-v2-2-c6222c4c78df@gmail.com>
- <CAGb2v65--rgb2FqmG_0-w1-jUL0odqKXxiZJ-XPYA4uomfYmaQ@mail.gmail.com>
- <5e3e12d65e4919372e7fb02d56202393@manjaro.org>
- <CABjd4Yx0kQ67fScrFVavjObMLaNt_PJ3TVOhLpCmj00Dx9dOqA@mail.gmail.com>
-Message-ID: <a8aa04ca0061cd09c7b3eb5336e534a4@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+References: <ZbVrRgIvudX242ZU@tycho.pizza> <20240127210634.GE13787@redhat.com>
+ <20240129112313.GA11635@redhat.com> <CALCETrUFDkt+K9zG8mczxzAFy9t-6Mx5Cz-Sx+it6a4nt+O0pg@mail.gmail.com>
+ <20240131184829.GE2609@redhat.com> <20240131191405.GF2609@redhat.com>
+ <CALCETrXTHsyiR6Bav7bXCCHny0Z2Bn90fTUL9__KTftESQ9=7w@mail.gmail.com>
+ <20240131-kerngesund-baumhaus-17a428b4aacb@brauner> <CALCETrUh-DJ28W-LYZd3mACb4z-rmi4kmeUCitHjyufiN7U0sQ@mail.gmail.com>
+ <20240201-laufleistung-gesessen-068ff127834d@brauner> <20240201-flugzeit-modeschau-dab703fc8b6d@brauner>
+In-Reply-To: <20240201-flugzeit-modeschau-dab703fc8b6d@brauner>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Thu, 1 Feb 2024 11:33:32 -0800
+Message-ID: <CALCETrUm3YWJCXeDufHKHj9-QU9A1sxZW2HW5a7OHEdTtB1UqQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] pidfd: implement PIDFD_THREAD flag for pidfd_open()
+To: Christian Brauner <brauner@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Tycho Andersen <tycho@tycho.pizza>, linux-kernel@vger.kernel.org, 
+	linux-api@vger.kernel.org, Tycho Andersen <tandersen@netflix.com>, 
+	"Eric W. Biederman" <ebiederm@xmission.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-02-01 20:15, Alexey Charkov wrote:
-> On Thu, Feb 1, 2024 at 9:34 PM Dragan Simic <dsimic@manjaro.org> wrote:
->> On 2024-02-01 15:26, Chen-Yu Tsai wrote:
->> > On Wed, Jan 31, 2024 at 2:22 AM Alexey Charkov <alchark@gmail.com>
->> > wrote:
->> >>
->> >> This enables thermal monitoring on Radxa Rock 5B and links the PWM
->> >> fan as an active cooling device managed automatically by the thermal
->> >> subsystem, with a target SoC temperature of 65C and a minimum-spin
->> >> interval from 55C to 65C to ensure airflow when the system gets warm
->> >>
->> >> Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->> >> Signed-off-by: Alexey Charkov <alchark@gmail.com>
->> >> ---
->> >>  arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts | 34
->> >> ++++++++++++++++++++++++-
->> >>  1 file changed, 33 insertions(+), 1 deletion(-)
->> >>
->> >> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
->> >> b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
->> >> index a0e303c3a1dc..b485edeef876 100644
->> >> --- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
->> >> +++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
->> >> @@ -52,7 +52,7 @@ led_rgb_b {
->> >>
->> >>         fan: pwm-fan {
->> >>                 compatible = "pwm-fan";
->> >> -               cooling-levels = <0 95 145 195 255>;
->> >> +               cooling-levels = <0 120 150 180 210 240 255>;
->> >>                 fan-supply = <&vcc5v0_sys>;
->> >>                 pwms = <&pwm1 0 50000 0>;
->> >>                 #cooling-cells = <2>;
->> >> @@ -173,6 +173,34 @@ &cpu_l3 {
->> >>         cpu-supply = <&vdd_cpu_lit_s0>;
->> >>  };
->> >>
->> >> +&package_thermal {
->> >> +       polling-delay = <1000>;
->> >> +
->> >> +       trips {
->> >> +               package_fan0: package-fan0 {
->> >> +                       temperature = <55000>;
->> >> +                       hysteresis = <2000>;
->> >> +                       type = "active";
->> >> +               };
->> >> +               package_fan1: package-fan1 {
->> >> +                       temperature = <65000>;
->> >> +                       hysteresis = <2000>;
->> >> +                       type = "active";
->> >> +               };
->> >> +       };
->> >> +
->> >> +       cooling-maps {
->> >> +               map0 {
->> >> +                       trip = <&package_fan0>;
->> >> +                       cooling-device = <&fan THERMAL_NO_LIMIT 1>;
->> >> +               };
->> >> +               map1 {
->> >> +                       trip = <&package_fan1>;
->> >> +                       cooling-device = <&fan 1 THERMAL_NO_LIMIT>;
->> >> +               };
->> >> +       };
->> >> +};
->> >> +
->> >>  &i2c0 {
->> >>         pinctrl-names = "default";
->> >>         pinctrl-0 = <&i2c0m2_xfer>;
->> >> @@ -731,6 +759,10 @@ regulator-state-mem {
->> >>         };
->> >>  };
->> >>
->> >> +&tsadc {
->> >> +       status = "okay";
->> >> +};
->> >> +
->> >
->> > Is there any reason this can't be enabled by default in the .dtsi file?
->> > The thermal sensor doesn't depend on anything external, so there should
->> > be no reason to push this down to the board level.
->> 
->> Actually, there is a reason.  Different boards can handle the critical
->> overheating differently, by letting the CRU or the PMIC handle it.  
->> This
->> was also the case for the RK3399.
->> 
->> Please, have a look at the following DT properties, which are consumed
->> by drivers/thermal/rockchip_thermal.c:
->>    - "rockchip,hw-tshut-mode"
->>    - "rockchip,hw-tshut-polarity"
->> 
->> See also page 1,372 of the RK3588 TRM v1.0.
->> 
->> This has also reminded me to check how is the Rock 5B actually wired,
->> just to make sure.  We actually need to provide the two DT properties
->> listed above, at least to avoid emitting the warnings.
-> 
-> Well the defaults are already provided in rk3588s.dtsi, so there won't
-> be any warnings (see lines 2222-2223 in Linus' master version), and
-> according to the vendor kernel those are also what Rock 5B uses.
+On Thu, Feb 1, 2024 at 5:39=E2=80=AFAM Christian Brauner <brauner@kernel.or=
+g> wrote:
+>
+> On Thu, Feb 01, 2024 at 02:30:46PM +0100, Christian Brauner wrote:
+> > On Wed, Jan 31, 2024 at 11:50:23AM -0800, Andy Lutomirski wrote:
+> > > On Wed, Jan 31, 2024 at 11:46=E2=80=AFAM Christian Brauner <brauner@k=
+ernel.org> wrote:
+> > > >
+> > > > On Wed, Jan 31, 2024 at 11:24:48AM -0800, Andy Lutomirski wrote:
+> > > > > > On 01/31, Oleg Nesterov wrote:
+> > > > > > >
+> > > > > > > On 01/31, Andy Lutomirski wrote:
+> > > > > > > Please note
+> > > > > > >
+> > > > > > >       /* TODO: respect PIDFD_THREAD */
+> > > > > > >
+> > > > > > > this patch adds into pidfd_send_signal().
+> > > > > > >
+> > > > > > > See also this part of discussion
+> > > > > > >
+> > > > > > >       > > +   /* TODO: respect PIDFD_THREAD */
+> > > > > > >       >
+> > > > > > >       > So I've been thinking about this at the end of last w=
+eek. Do we need to
+> > > > > > >       > give userspace a way to send a thread-group wide sign=
+al even when a
+> > > > > > >       > PIDFD_THREAD pidfd is passed? Or should we just not w=
+orry about this
+> > > > > > >       > right now and wait until someone needs this?
+> > > > > > >
+> > > > > > >       I don't know. I am fine either way, but I think this ne=
+eds a separate
+> > > > > > >       patch and another discussion in any case. Anyway should=
+ be trivial,
+> > > > > > >       pidfd_send_signal() has the "flags" argument.
+> > > > > > >
+> > > > > > > with Christian in https://lore.kernel.org/all/20240130112126.=
+GA26108@redhat.com/
+> > > > >
+> > > > > I missed that.  Whoops.
+> > > > >
+> > > > > On Wed, Jan 31, 2024 at 11:15=E2=80=AFAM Oleg Nesterov <oleg@redh=
+at.com> wrote:
+> > > > > >
+> > > > > > Forgot to mention...
+> > > > > >
+> > > > > > And I agree that pidfd_send_signal(flags =3D> PGID/SID) can mak=
+e
+> > > > > > some sense too.
+> > > > > >
+> > > > > > But this a) doesn't depend on PIDFD_THREAD, and b) needs anothe=
+r
+> > > > > > patch/discussion.
+> > > > > >
+> > > > > > But again, I am not sure I understood you correctly.
+> > > > > >
+> > > > >
+> > > > > Hmm.
+> > > > >
+> > > > > When one works with regular (non-fd) pids / pgids etc, one specif=
+ies
+> > > > > the signal domain at the time that one sends the signal.  I don't=
+ know
+> > > > > what pidfds should do.  It seems a bit inefficient for anything t=
+hat
+> > > > > wants a pidfd and might send a signal in a different mode in the
+> > > > > future to have to hold on to multiple pidfds, so it probably shou=
+ld be
+> > > > > a pidfd_send_signal flag.
+> > > > >
+> > > > > Which leaves the question of what the default should be.  Should
+> > > > > pidfd_send_signal with flags =3D 0 on a PIDFD_THREAD signal the p=
+rocess
+> > > > > or the thread?  I guess there are two reasonable solutions:
+> > > > >
+> > > > > 1. flags =3D 0 always means process.  And maybe there's a special=
+ flag
+> > > > > to send a signal that matches the pidfd type, or maybe not.
+> > > > >
+> > > > > 2. flags =3D 0 does what the pidfd seems to imply, and a new
+> > > > > PIDFD_SIGNAL_PID flag overrides it to signal the whole PID even i=
+f the
+> > > > > pidfd is PIDFD_THREAD.
+> > > > >
+> > > > > Do any of you have actual use cases in mind where one choice is
+> > > > > clearly better than the other choice?
+> > > >
+> > > > So conceptually I think having the type of pidfd dictate the defaul=
+t
+> > > > scope of the signal is the most elegant approach. And then very lik=
+ely
+> > > > we should just have:
+> > > >
+> > > > PIDFD_SIGNAL_THREAD
+> > > > PIDFD_SIGNAL_THREAD_GROUP
+> > > > PIDFD_SIGNAL_PROCESS_GROUP
+> > > >
+> > > > I think for userspace it doesn't really matter as long as we clearl=
+y
+> > > > document what's going on.
+> > > >
+> > >
+> > > This seems reasonable unless we're likely to end up with a pidfd mode
+> > > that doesn't actually make sense in a send_signal context.  But I'm
+> > > not immediately seeing any reason that that would happen.
+> >
+> > Yeah, I think that's very unlikely and we could reject it obased on api
+> > design considerations.
+>
+> Ah, forgot to ask. Did you intend to send a patch for this?
 
-Yes, I noticed the same a couple of minutes after sending my last
-message, but didn't want to make more noise about it. :)  I would've
-mentioned it in my next message, of course.
-
-> This made me think however: what if a board doesn't enable TSADC, but
-> has OPPs in place for higher voltage and frequency states? There won't
-> be any throttling (as there won't be any thermal monitoring) and there
-> might not be a critical shutdown at all if it heats up - possibly even
-> causing hardware damage. In this case it seems that having TSADC
-> enabled by default would at least trigger passive cooling, hopefully
-> avoiding the critical shutdown altogether and making those properties
-> irrelevant in 99% cases.
-
-Those are very good questions.  Thumbs up!
-
-The trouble is that the boards can use different wiring to handle the
-thermal runaways, by expecting the PMIC to handle it or not.  Thus,
-it's IMHO better to simply leave that to be tested and enabled on a
-board-by-board basis, whenever a new RK3588(s)-based board is added.
-
-Thus, the only right way at this point would be to merge the addition
-of the OPPs and the enabling of the TSADC for all currently supported
-RK3588(s)-based boards at once, instead of just for the Rock 5B.
-
-I can handle the required changes for the QuartzPro64 dts file.  For
-other supported RK3588(s)-based boards, if there are no people having
-access to them and willing to perform the dts changes and the testing,
-I'd be willing to go through the board schematics, to enable the
-TSADC for them as well.
+I can try to get to it tomorrow.  Currently trying to madly line up a
+whole bunch of stuff in time for a maintenance window.
 
