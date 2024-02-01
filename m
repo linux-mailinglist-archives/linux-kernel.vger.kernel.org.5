@@ -1,97 +1,79 @@
-Return-Path: <linux-kernel+bounces-48029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2D1A845679
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:48:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28E7D84567A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:49:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B31C28DA25
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:48:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB8061F2277B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:49:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C055815D5C7;
-	Thu,  1 Feb 2024 11:47:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 839B315D5B2;
+	Thu,  1 Feb 2024 11:49:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="r2kqjF9A"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QXcdR1+J"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 343D015A4A1;
-	Thu,  1 Feb 2024 11:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1923A15D5B1;
+	Thu,  1 Feb 2024 11:49:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706788077; cv=none; b=f+0c0M5AYFpkKupIKqM9oiCcKqHQsb1YeC6Xi7bHk286vJcKq9mTZN9swgyJ1lly1YkykBONZj7RdcQtlUul69SX8NcxJdQLKroQuAXaEmy40Fb3EOJqKjSsDB1kMUBG6+T+GOXozoTsWlln411cZCEufmjOVukZx9zpIZ61QZM=
+	t=1706788178; cv=none; b=uUWxk+3dnoiRS+KG4CGMHZDKa3J5y+wuoGDhIssn4VCRs/q32DIKZv4DwZerkuMi0uehqLC2yrWVkk0GQrcu42EhkM0JHp/hpLTHVeYYVDHKyPvoaFf3yXHk7TsyZqQNQb3KrfZJs0nZ9IaUREkBTqt/RoyjFXBDCsWx10iCKiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706788077; c=relaxed/simple;
-	bh=3YSBqGWCBu/wTnV/QgZRt0jfyeNGR91detHn2DZNthA=;
+	s=arc-20240116; t=1706788178; c=relaxed/simple;
+	bh=6bojr7VqalyrhhlCkfp8Bvy7vS2yUhZEJyFI0BLs9EE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OF7phgTg/3TZx77yi0iH3X3z0YLcVd+1C3f6HHat+J+/1Kr0qrZtpwG4+Bv/jcMZ+9pvpC78ZcSY4eGDVqXCieu7NGKQWWrFU9hLLriyWGHuBV5hN2VsRBH8cIfYVnZlPfq1PFcm2Z+4Ae30H5PZFYMnZNgYsGFCzIoAPpys9kA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=r2kqjF9A; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 411B1A55000664;
-	Thu, 1 Feb 2024 11:47:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=jnFwnh2wR+EDN18Xur/JCsm2mfiUClnfyYdp83qB8YE=;
- b=r2kqjF9AOSElQFzyDTYdZd0ghDyQflRx0k2iTaUV1xjJAV0020RKB5c6JcOSOOvFT8pj
- BlFlF4fPGAGIUxKq1vR5+EFUOMiQLbCq1pGcBbh7XvVgwaWGuj1UtXp/y5P/xd2PKJLH
- HgCiclc/uLeR+RrYFIEg9H8lvXDruLM8nfdbMJizMT5zomy9arPPLPGqgXzsadTTwa7N
- lWvgDuW8Mr+sYNuVBCZHJbUDk4TYO7PJ1SWlyVD26TtwgIUANnXwcY0UdIagZUkPufrE
- 3pYPqSZXhb2/nQvUY3bpU8Av7brLwEiwotdtS88BMma/X+q+HfttbG/TiGn9OE10T4Uf Sg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w07t4mm3p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 11:47:43 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 411B1EZ6001560;
-	Thu, 1 Feb 2024 11:47:43 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w07t4mm3a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 11:47:43 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4119512X002195;
-	Thu, 1 Feb 2024 11:47:42 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vwc5tm3vw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 11:47:42 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 411Bleqh21168692
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 1 Feb 2024 11:47:40 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 97BF02004B;
-	Thu,  1 Feb 2024 11:47:40 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6B61420043;
-	Thu,  1 Feb 2024 11:47:40 +0000 (GMT)
-Received: from DESKTOP-2CCOB1S. (unknown [9.171.218.73])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu,  1 Feb 2024 11:47:40 +0000 (GMT)
-Date: Thu, 1 Feb 2024 12:47:39 +0100
-From: Tobias Huschle <huschle@linux.ibm.com>
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>, Abel Wu <wuyun.abel@bytedance.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux.dev, netdev@vger.kernel.org
-Subject: Re: Re: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6
- sched/fair: Add lag based placement)
-Message-ID: <ZbuE23ia3lhyzItm@DESKTOP-2CCOB1S.>
-References: <20231212111433-mutt-send-email-mst@kernel.org>
- <42870.123121305373200110@us-mta-641.us.mimecast.lan>
- <20231213061719-mutt-send-email-mst@kernel.org>
- <25485.123121307454100283@us-mta-18.us.mimecast.lan>
- <20231213094854-mutt-send-email-mst@kernel.org>
- <20231214021328-mutt-send-email-mst@kernel.org>
- <92916.124010808133201076@us-mta-622.us.mimecast.lan>
- <20240121134311-mutt-send-email-mst@kernel.org>
- <07974.124020102385100135@us-mta-501.us.mimecast.lan>
- <20240201030341-mutt-send-email-mst@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ss5LnhkrUl83/S46/5DTY5zekbmAhkP7tK2orflleoUJ7Dt2DSlUQ/cenPC7f23BtBnRzlSp2+53GbTS14iInhHZzK6rhvKB22V3OPHzMp97oXGvVYuFX3GIB+QP5LAGWLln0+AqCqjbRx8FnY/1L1mtjnnVC37aPLFo26oYaU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QXcdR1+J; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706788176; x=1738324176;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6bojr7VqalyrhhlCkfp8Bvy7vS2yUhZEJyFI0BLs9EE=;
+  b=QXcdR1+JSgmGKETgzpu0GTeoad9iS6YVek5RYPelB/kLzWaP/3yXM0mp
+   GDpZxlvPM8sFfSdSiNQhc84jpqQNZzlib3ZnZwndZG8FPZKkGaULlC1/M
+   HuxuAwbK0NALYUwR4teAmpKtxA9IcwW3/69qiWo/7qUZzQBs/sI96ueNC
+   mmjxSO6SjLoZaTCHobFeQwc1M1/xUb53dQCiaONq4SFmaiVtnIpNAcBI7
+   BQ4oRt5A+232eWUK3J0nZlGau2BM1XXur7GP74HZTxv9P1qBR3T3NuUES
+   Vnd1Jo6h1Rnvqv/0bxX3xi7IsGq16QdGF4W81PujEvjziT6GPWTCUCC3d
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3709664"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="3709664"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 03:49:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="1119923600"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="1119923600"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 03:49:32 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rVVZQ-00000000p3E-4Bbk;
+	Thu, 01 Feb 2024 13:49:29 +0200
+Date: Thu, 1 Feb 2024 13:49:28 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Lee Jones <lee@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Crutcher Dunnavant <crutcher+kernel@datastacks.com>,
+	Juergen Quade <quade@hsnr.de>,
+	David Laight <David.Laight@aculab.com>
+Subject: Re: [PATCH v3 1/1] lib/vsprintf: Implement spprintf() to catch
+ truncated strings
+Message-ID: <ZbuFSIIGbfhXeP92@smile.fi.intel.com>
+References: <20240130160953.766676-1-lee@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -100,104 +82,98 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240201030341-mutt-send-email-mst@kernel.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Rvv6tM4E0SppOFo22qhAnxGudVTCSWAz
-X-Proofpoint-GUID: 3L7n8JoQg6udY9-L0Fq692DCstTudRMc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-31_10,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 impostorscore=0 lowpriorityscore=0 mlxlogscore=811
- phishscore=0 suspectscore=0 clxscore=1015 mlxscore=0 adultscore=0
- bulkscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402010095
+In-Reply-To: <20240130160953.766676-1-lee@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, Feb 01, 2024 at 03:08:07AM -0500, Michael S. Tsirkin wrote:
-> On Thu, Feb 01, 2024 at 08:38:43AM +0100, Tobias Huschle wrote:
-> > On Sun, Jan 21, 2024 at 01:44:32PM -0500, Michael S. Tsirkin wrote:
-> > > On Mon, Jan 08, 2024 at 02:13:25PM +0100, Tobias Huschle wrote:
-> > > > On Thu, Dec 14, 2023 at 02:14:59AM -0500, Michael S. Tsirkin wrote:
-> > 
-> > -------- Summary --------
-> > 
-> > In my (non-vhost experience) opinion the way to go would be either
-> > replacing the cond_resched with a hard schedule or setting the
-> > need_resched flag within vhost if the a data transfer was successfully
-> > initiated. It will be necessary to check if this causes problems with
-> > other workloads/benchmarks.
+On Tue, Jan 30, 2024 at 04:09:53PM +0000, Lee Jones wrote:
+> There is an ongoing effort to replace the use of {v}snprintf() variants
+> with safer alternatives - for a more in depth view, see Jon's write-up
+> on LWN [0] and/or Alex's on the Kernel Self Protection Project [1].
 > 
-> Yes but conceptually I am still in the dark on whether the fact that
-> periodically invoking cond_resched is no longer sufficient to be nice to
-> others is a bug, or intentional.  So you feel it is intentional?
+> Whist executing the task, it quickly became apparent that the initial
+> thought of simply s/snprintf/scnprintf/ wasn't going to be adequate for
+> a number of cases.  Specifically ones where the caller needs to know
+> whether the given string ends up being truncated.  This is where
+> spprintf() comes in, since it takes the best parts of both of the
+> aforementioned variants.  It has the testability of truncation of
+> snprintf() and returns the number of Bytes *actually* written, similar
+> to scnprintf(), making it a very programmer friendly alternative.
+> 
+> Here's some examples to show the differences:
+> 
+>   Success: No truncation - all 9 Bytes successfully written to the buffer
+> 
+>     ret = snprintf (buf, 10, "%s", "123456789");  // ret = 9
+>     ret = scnprintf(buf, 10, "%s", "123456789");  // ret = 9
+>     ret = spprintf (buf, 10, "%s", "123456789");  // ret = 9
+> 
+>   Failure: Truncation - only 9 of 10 Bytes written; '-' is truncated
+> 
+>     ret = snprintf (buf, 10, "%s", "123456789---"); // ret = 12
+> 
+>       Reports: "12 Bytes would have been written if buf was large enough"
+>       Issue: Too easy for programmers to assume ret is Bytes written
+> 
+>     ret = scnprintf(buf, 10, "%s", "123456789---"); // ret = 9
+> 
+>       Reports: "9 Bytes actually written"
+>       Issue: Not testable - returns 9 on success AND failure (see above)
+> 
+>     ret = spprintf (buf, 10, "%s", "123456789---"); // ret = 10
+> 
+>       Reports: "Data provided is too large to fit in the buffer"
+>       Issue: No tangible impact: No way to tell how much data was lost
+> 
+> Since spprintf() only reports the total size of the buffer, it's easy to
+> test if they buffer overflowed since if we include the compulsory '\0',
+> only 9 Bytes additional Bytes can fit, so the return of 10 informs the
+> caller of an overflow.  Also, if the return data is plugged straight
+> into an additional call to spprintf() after the occurrence of an
+> overflow, no out-of-bounds will occur:
+> 
+>     int size = 10;
+>     char buf[size];
+>     char *b = buf;
+> 
+>     ret = spprintf(b, size, "1234");
+>     size -= ret;
+>     b += ret;
+>     // ret = 4  size = 6  buf = "1234\0"
+> 
+>     ret = spprintf(b, size, "5678");
+>     size -= ret;
+>     b += ret;
+>     // ret = 4  size = 2  buf = "12345678\0"
+> 
+>     ret = spprintf(b, size, "9***");
+>     size -= ret;
+>     b += ret;
+>     // ret = 2  size = 0  buf = "123456789\0"
+> 
+> Since size is now 0, further calls result in no changes of state.
+> 
+>     ret = spprintf(b, size, "----");
+>     size -= ret;
+>     b += ret;
+>     // ret = 0  size = 0  buf = "123456789\0"
 
-I would assume that cond_resched is still a valid concept.
-But, in this particular scenario we have the following problem:
+> [0] https://lwn.net/Articles/69419/
+> [1] https://github.com/KSPP/linux/issues/105
 
-So far (with CFS) we had:
-1. vhost initiates data transfer
-2. kworker is woken up
-3. CFS gives priority to woken up task and schedules it
-4. kworker runs
+Link: ... [0]
+Link: ... [1]
 
-Now (with EEVDF) we have:
-0. In some cases, kworker has accumulated negative lag 
-1. vhost initiates data transfer
-2. kworker is woken up
--3a. EEVDF does not schedule kworker if it has negative lag
--4a. vhost continues running, kworker on same CPU starves
---
--3b. EEVDF schedules kworker if it has positive or no lag
--4b. kworker runs
 
-In the 3a/4a case, the kworker is given no chance to set the
-necessary flag. The flag can only be set by another CPU now.
-The schedule of the kworker was not caused by cond_resched, but
-rather by the wakeup path of the scheduler.
+> Signed-off-by: Lee Jones <lee@kernel.org>
 
-cond_resched works successfully once the load balancer (I suppose) 
-decides to migrate the vhost off to another CPU. In that case, the
-load balancer on another CPU sets that flag and we are good.
-That then eventually allows the scheduler to pick kworker, but very
-late.
+..
 
-> I propose a two patch series then:
-> 
-> patch 1: in this text in Documentation/kernel-hacking/hacking.rst
-> 
-> If you're doing longer computations: first think userspace. If you
-> **really** want to do it in kernel you should regularly check if you need
-> to give up the CPU (remember there is cooperative multitasking per CPU).
-> Idiom::
-> 
->     cond_resched(); /* Will sleep */
-> 
-> 
-> replace cond_resched -> schedule
-> 
-> 
-> Since apparently cond_resched is no longer sufficient to
-> make the scheduler check whether you need to give up the CPU.
-> 
-> patch 2: make this change for vhost.
-> 
-> WDYT?
+I'm a bit late in this discussion, but the commit message doesn't spit a single
+word on why seq_buf() approach can't be used in those cases?
 
-For patch 1, I would like to see some feedback from Peter (or someone else
-from the scheduler maintainers).
-For patch 2, I would prefer to do some more testing first if this might have
-an negative effect on other benchmarks.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-I also stumbled upon something in the scheduler code that I want to verify.
-Maybe a cgroup thing, will check that out again.
 
-I'll do some more testing with the cond_resched->schedule fix, check the
-cgroup thing and wait for Peter then.
-Will get back if any of the above yields some results.
-
-> 
-> -- 
-> MST
-> 
-> 
 
