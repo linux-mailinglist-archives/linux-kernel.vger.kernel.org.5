@@ -1,195 +1,278 @@
-Return-Path: <linux-kernel+bounces-48937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8882884635F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:24:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63AA784635D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:24:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15B5228AA60
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:24:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9DB51F23664
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:24:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 038043D566;
-	Thu,  1 Feb 2024 22:24:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2801E3FE35;
+	Thu,  1 Feb 2024 22:24:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OSyWTZxU"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="pNNruIwb"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 579F83FE51
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 22:24:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706826278; cv=fail; b=FmV99pwMMmiw36Qi99AUeEuDNHzsptLtVmqfIsdL9pTJ+udcWmgffRwmAWYKIDGguaTBB54eb1sRimtQCBiX0mTCk/zsyCtfsYWC5TyuAAiEvgQEZfATC7OANf1ZM1DsdiNqzTWiHWudgTn++Gxo8HJn9yDlsVQB4qi/t5sAtig=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706826278; c=relaxed/simple;
-	bh=PthAk0H2mLcVFoGmhV/aSvd3Qla8wwt68XCunPr9+Ec=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Tt5fsufP/Lw+e2DJazxEslSO8hF7D2PRrvc87pwDMvZ1BIpvpgrQ+hq2xxrUa4peE5UMG0wqpU7EudvKHhedWfGQRmYZ4jw+A1oWhfqcr4+NIWB7A3kt4mzJkAgz9qA1/cQLzHvzrIfKmebM9KgU37uir/xeptwDgPVplwvs8w8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OSyWTZxU; arc=fail smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706826276; x=1738362276;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=PthAk0H2mLcVFoGmhV/aSvd3Qla8wwt68XCunPr9+Ec=;
-  b=OSyWTZxUV16OzxPZEXJ8t2kiq+pkgxcmho+lk+vuO3QG+tlApKDq8OE/
-   yygiFSP7rjyJJwnqKQSL0tMFEOzuQ8ymQgNvYlrRcqB29Dh1gDBxihg5V
-   vZ5uXje6EFUvLqoTFgNLdkiHOR4i0l+q9RLfgwgV+AakNx3EDRyD0GBVG
-   +lnbm6YsWWGHUSLqyxgoxwK4R5zkNBjiOI2khHdYVXUOCzo510fvVftP8
-   7PvU9+xXBiLxRVRjPJ0vzt8tkhb5ZBu5oaqKCcrFaDfTLxj3Ln7kuegks
-   de2CcsMiKYaOi9mp/9Ks+GBVHgrh4auUSCEG2uNQKMNcmHaDKu7dPcBXs
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="11393315"
-X-IronPort-AV: E=Sophos;i="6.05,236,1701158400"; 
-   d="scan'208";a="11393315"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 14:24:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,236,1701158400"; 
-   d="scan'208";a="234043"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 01 Feb 2024 14:24:35 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 1 Feb 2024 14:24:34 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 1 Feb 2024 14:24:34 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 1 Feb 2024 14:24:34 -0800
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.41) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 1 Feb 2024 14:24:33 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FCI5B9JWx1H1BWR+Fg0QTCx3rZrInr33zHHGA6u59Dt0OYrl1i7dA9ldk6I/wzG9HXU4UEvL/tx77sShlnJ7q/Qz4Yxj0NqRN5suisFuo7O8n16gvEiqPvE7/Sf5xZIAeKnQXyLVXpNx6s0rNYZxdfpvJTj4CRMh2pZs4opf4nm2fIrwRzy7bPF30ucgtmIO61L+4PtkMTwBW7zmSiLC4c/Oj2C5YfJt35QCWkRjtBL2BNpCOJjjtkKdaQND+2od1UU4fAhHeSWTGu/dRLVdw18xuIdIv+I00XQqhyfJPlmd3glb0/eOCPPal9MYv85lJJRca77ufXHZaeIWkqiB5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GrdFKLsdXOhbdMLdC7ST3gEY6tq72PAmtuuMr9JVJXI=;
- b=meSj/gIf4XLHppCIhlJmrWSZTt02f6XeaDdnN7BYvkLgNn+BCZ7BwhSvZnvn7wIQyiUwF2gIY5mkecJc1APECfoetbGPB8vNZU5m2+aL439uxubCqDiaoz0lnyQrOemYju105Kvvta/77WOb/MOFtaxSRgVMgtBtaY5HacQfYoLBsa5qlyqKLJPgEMSjqv6vdFr95ddH/MF0cNuec05LBK8YccD1D+Vbxxwmm598JGwCH389VGlJzyBp3363bIHg8YVlqCTxNbJZNAWV4YoANuSPOIf6+2Z6/4uXXjDOkj8c4tM+BlniOfgPoJBJKoLiO7YkrNsTSfV0R4dznPfMbQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BYAPR11MB3320.namprd11.prod.outlook.com (2603:10b6:a03:18::25)
- by DS0PR11MB8020.namprd11.prod.outlook.com (2603:10b6:8:114::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.29; Thu, 1 Feb
- 2024 22:24:30 +0000
-Received: from BYAPR11MB3320.namprd11.prod.outlook.com
- ([fe80::c3aa:f75e:c0ed:e15f]) by BYAPR11MB3320.namprd11.prod.outlook.com
- ([fe80::c3aa:f75e:c0ed:e15f%3]) with mapi id 15.20.7228.035; Thu, 1 Feb 2024
- 22:24:29 +0000
-Message-ID: <49d3bba9-0235-466c-b84a-7eef4d8f6ac2@intel.com>
-Date: Thu, 1 Feb 2024 14:24:28 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [patch V2 04/22] x86/apic: Get rid of get_physical_broadcast()
-Content-Language: en-US
-To: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>
-CC: <x86@kernel.org>, Tom Lendacky <thomas.lendacky@amd.com>, Andrew Cooper
-	<andrew.cooper3@citrix.com>, Arjan van de Ven <arjan@linux.intel.com>, "Huang
- Rui" <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>, Dimitri Sivanich
-	<dimitri.sivanich@hpe.com>, K Prateek Nayak <kprateek.nayak@amd.com>, "Kan
- Liang" <kan.liang@linux.intel.com>, Zhang Rui <rui.zhang@intel.com>, "Paul E.
- McKenney" <paulmck@kernel.org>, Feng Tang <feng.tang@intel.com>, "Andy
- Shevchenko" <andy@infradead.org>, Michael Kelley <mhklinux@outlook.com>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>, Andy Shevchenko
-	<andy.shevchenko@gmail.com>, Wei Liu <wei.liu@kernel.org>
-References: <20240117124704.044462658@linutronix.de>
- <20240117124902.600583242@linutronix.de>
-From: Sohil Mehta <sohil.mehta@intel.com>
-In-Reply-To: <20240117124902.600583242@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR06CA0035.namprd06.prod.outlook.com
- (2603:10b6:a03:d4::48) To BYAPR11MB3320.namprd11.prod.outlook.com
- (2603:10b6:a03:18::25)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B77F3D566
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 22:24:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706826274; cv=none; b=QorT73fv2LhfNV2Na4gHtRck8/kKb04GqQNp0ok8ERLUqbABAQabWYI4TmIv/G3L6186hCORUvgdd8+SFXUO6R7LTWn/U3hRVxk96ZwZ/8kgZNwTrWtetMikcqashUyLf86K5TUY1JEOcXhdYcZv3ukpIlp1xXXDXzSnJW0Kuh8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706826274; c=relaxed/simple;
+	bh=UURPcYWCnKWjxOkLscKm8E7K8bDh888NWkqf1x9AD48=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JWECM+0tQ1UBr6xva4TLtPYNl8qLGKjdKIW9VQjfi5UXE0FSGIKML4bVa5HfizKZNvtyI8diprA94QUJ2wRsTj2FsqrqiMbO/0LYg997VVpA34JJxRMc1kJnK//9bu8lVb7o8/Zu4nT31k59noolhYblhgRP0p4DzKuVRYKA/Z8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=pNNruIwb; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3394ca0c874so1017839f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 14:24:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1706826270; x=1707431070; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=gQAt5aS7KRMgfogzTOOYd/eJy6smlcItxc00TEhas+w=;
+        b=pNNruIwbzfbSsDcpzHdmUpDf2N8FSX0G+iL8XwryMxCwVMsher8zkgCaO0T4GaoUY4
+         fCUAs2363PTu1hQWeOGqdp/IOfndhfg3lOfkVk0+klXzw0GCFu3I4ciUR2piiDdz1riQ
+         ytMz/L54OdQYZPlWroxQuKcnNAGvkOB0C1eUQzNQheBv1DSrqE28gKOLL6HxbQt2VImU
+         fqurIE9UId00kHAOlhva0H2+iWQ34Iw6qT+AV5B/0ZUXFMNf9uq6dlFoPBNiKUneEL+X
+         Ns3pykp/Cqu0sT1KYtpzZWGibqUlB2S/UHKapIVlf4srRcqP++L6Jhk2qmcmgkIeCJnq
+         AlWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706826270; x=1707431070;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gQAt5aS7KRMgfogzTOOYd/eJy6smlcItxc00TEhas+w=;
+        b=XEIenouHvWb0tjTujjZ9E8bO9FCBPw3CcafvQXgHZ7M76X5KYpYrs8FqySHCQxwXM4
+         jte9ZPLL5aWLAsLW2syW/OyAxKEJdjQyjPvyWxZI8zy/3I74p5pfeFFUrwC5QbBhQRXY
+         Zf/ftsswgyq5cRhRzadJMJTXJreerLuVzSt/kto6yO3dKFOUosU2AJ2QeleC1k9gM/hQ
+         lQaEC/8kaUaDpXUQxgEKKL3IVmPajW1UXEdKkx/MWsEBjDrX+AcxbezMmZOjz3w0BIG3
+         Y9Tuze5t0CjWFffQAjxA4g+WTWnH63SJDc3Mxe8ajtpFOgR2POhVwVCGB4oZa5xgHJfv
+         +V3w==
+X-Gm-Message-State: AOJu0YwohaGPEv01/Hb98hNpRlUt8gI2EtxC8LQYEYQ7PM6J0T/Z3BLw
+	W5g++B2S7KgXcctwEw1qw1F9BIRcfuvMxX7bHz4BKe94oHjV2PvxlqjJq8bG8c4=
+X-Google-Smtp-Source: AGHT+IEmnfQiKeiqwTDyY2LG7jK+n0B+bb4NVRDPmkr8rta8YSnLCzLDVChQOjP2xR9caPTSGO2LSg==
+X-Received: by 2002:adf:a3c8:0:b0:339:feca:9428 with SMTP id m8-20020adfa3c8000000b00339feca9428mr192105wrb.40.1706826270393;
+        Thu, 01 Feb 2024 14:24:30 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU9IlJa0d/4pgka5qp9MdpPfGIP4PIURjEz395NZr3C5nhAJcXzHHDA2Up/CRH+yhKJIg70ZSyvWGk3U2U4XfjS0dBjzUHNOd/NM3n43dZc/vqaZ7ZJJI7G9gGBvJs85uBNQkw00kZrFxpmKIZlQ2b6J1MwUiPAyfoZtuuRrWPsA4x9zykbr0KFG+1ImmV49Klxe1OQEGDQ43/eC5mKTeNwj9aFEGHVsmxYKMT80UxU9zkUCzjPKL5qRNcNCT+NeUoDftzkRI42iEHW8c1b4EdenbsaBakxnzRMEFVmbr/PtQDw+LGyPBtj6Gbvd7FMu+HdYELJislg/Qr76vNmvcy14VoG+b1CYLSRrOwH2r+jHg==
+Received: from airbuntu ([213.122.231.14])
+        by smtp.gmail.com with ESMTPSA id w4-20020adfec44000000b0033b1277e95dsm456968wrn.77.2024.02.01.14.24.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 14:24:29 -0800 (PST)
+Date: Thu, 1 Feb 2024 22:24:28 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+	Lukasz Luba <lukasz.luba@arm.com>, Wei Wang <wvw@google.com>,
+	Rick Yiu <rickyiu@google.com>, Chung-Kai Mei <chungkai@google.com>
+Subject: Re: [PATCH v2 8/8] sched/pelt: Introduce PELT multiplier
+Message-ID: <20240201222428.xd2sylnz66wrczal@airbuntu>
+References: <20231208002342.367117-1-qyousef@layalina.io>
+ <20231208002342.367117-9-qyousef@layalina.io>
+ <Zbk0DhibX0oDLk1s@vingu-book>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3320:EE_|DS0PR11MB8020:EE_
-X-MS-Office365-Filtering-Correlation-Id: 135a678d-f1e6-40bb-73a9-08dc23748ec6
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1n78l4/UIASAK/04eAGxcQH7oBcVL2gJJp9qnqAIJvMNQ68lsHqUxs0m1JLbT5LWMe4BRJCwNnLazw16Y9hKCdETGMmdeh1jGPKt81zIJrCyuuAovT8tkPam9H4ZJPhDpgw/Oh0N/Pzja/VT/TKLaEQeS++Ql3R2zgwpnnJX76GX/gONEO83HXd0TdL5GTGpMK7NAdAYyacYScp54Z1FKQNNvQqcUWJxqbEYJKJPKaqKlLF7ttMjLrDKPt5/WuQSgeTXhBnzrF+GxUT9cB42QJfb986Vm7yuvn9hkPhZkYUzSEe4eqe9TammSxrmYMtZDVTZ+t7xg5qpPUQ/mVVNv7sKojWnlrz9G7BBWya34T524jTIlQtLoBGIknsMtNMhGQ20w4VCqOLWYRh2ZvezMsET8vWNfLFkRl221MTmzINY/sWEpbbsCQPe2+Y85aGcYBUy9R1UrH6OSB/zKeOL8bvWVqXswrLKZWKPqbxy4urkXgdub6rlxicgsfU+KbF2zL5Ywy8ZrSEBp/17BfhHzFklyEQaQyVlywhJbyV3BhQYtZK4z7CJS7w2lhsnefBpXoUlYybHBzFfiARxBdKP27GOQUOoX8IVRmHR6jhHNq4t0OLmHr1J6WoMq6+2IEQAQ5zv2LfLKulpON13LPMOS0SKu3lrGJwv8oDHNKMyGXoTEVOa4c66VmclV7nstzjJ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3320.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(376002)(39860400002)(366004)(396003)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(478600001)(6506007)(6486002)(26005)(2616005)(38100700002)(41300700001)(86362001)(31696002)(82960400001)(36756003)(53546011)(6512007)(44832011)(7416002)(5660300002)(4326008)(8936002)(8676002)(4744005)(2906002)(31686004)(66556008)(66946007)(316002)(110136005)(66476007)(54906003)(26583001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TGk1WVp4dUx0VGxsVXRpLzdzdjE4ZEpNV0VHcFJKeVY1VDB3ZUI2RTFzWnBL?=
- =?utf-8?B?OFZyd0JrVHFDZ3dlSmU5bGlmLzJyNU13N1oySDU2cEFtUWc3SDJwREhNSUw1?=
- =?utf-8?B?ZjBTK09xNDVuWGhiMUxIVUQ0K3g4cnpaRjNjZ1JUaWlGT1oxOFRNWEVMMFh3?=
- =?utf-8?B?a21KRDhCNklsRnFHb0JPQUxFUWhZNWJQMWNMYWEzV2ZjbmZjNjM1cDF0Z1Qv?=
- =?utf-8?B?MFZZUk56eTY4TUVxNUVyUkgzZWNVOU1sOWVnbFg4TUFrUlNUYWcwNVN1Z0Zn?=
- =?utf-8?B?ZXFrK0ZZbVhFeXBlN1IyUXQ0dEpaUFlvK0FPMHl2ZDhmcHpoalFXeTlJakdI?=
- =?utf-8?B?SmppNVQ2QW42NXlvMG5UTzYyY2NYa2dUdWtPRnZDQ3c2dklpVm9yK2FhREsv?=
- =?utf-8?B?dEIwS0UySkVkbldwQ0lvalphS01IODNoRnRYVGVoakx6ZGNPR240Zm5WU0hq?=
- =?utf-8?B?aTd0VjEyT01sZ3BZajl4VWw3dm45d2ZMa254c08ybndHNUp1TTNxMFhaL242?=
- =?utf-8?B?UE5WRUdXU1ZuNU1jemkvY1lycEM3Z2VpU2ZpNHc3b2xPd2JoaHJxcDd0VDN0?=
- =?utf-8?B?OUdVVG5YNFRDM2ErTWR0RGdGQ29ldDZ1TzBIWUpwN3hzY0EwUFlXYW1lamZs?=
- =?utf-8?B?Tk0vaUZTaDAxaDRNUkpjMkxnMHhTYUw4NTRtcSs4RkF2Nmw5YXk3N2V5anJq?=
- =?utf-8?B?UEE3V0NGLzhvM0NOcVpzQ1hzU2VQeitlVUVwKzlGdXFHanlRTThlZTNYejM1?=
- =?utf-8?B?bDRIcHNHZjhUWjlZRzV2U0VaRExwalJlTDVmVmc4WlhCRUdnYWlHZXNMN2dT?=
- =?utf-8?B?UTQ1OUhZTlBUeFpOSklXLzJZRG5UelNBc1QwMExoWjB2VThMWVp6SzdCQVR1?=
- =?utf-8?B?T3c0SzJ5SHlxSXFlUyt6WEpzNk43RTNnc1poZmd1LzVxQzF4Wkw4OW5Oby9K?=
- =?utf-8?B?SU8xOW9tRXlaZlAvZFp6UXl4ZlZKdW8wRW5pOFZhVFh1RTk2WU8wOEdPTHZy?=
- =?utf-8?B?V0c5MjNVZ0MxK3hTeFNiSHQxWHJaMDdWaDk3a1NZSDFwK0lEUk5mYmhORFF1?=
- =?utf-8?B?NlBVazJaeFQ3Mkg0QStqRzVoNFQ3dktMSTR4VSsyR1FaZHZaVzFvZW1jNE1v?=
- =?utf-8?B?bFFPb1B0WlJtTUhPb1lrbWZYdHgwUlRiRDdmWHBBNitLOXZFdWZMUDF5VVQv?=
- =?utf-8?B?OFVkTTJ2dUp6TG5uM2NHUy9kckZqTkRFVzRqMFdGanJMZUNLWWZuZkxEd1Zh?=
- =?utf-8?B?MmdoM3dKQTJnTFQ2VDBxNnUwRkhkS3VWb1dUL1FwUjgzTTZQeGZxclJ0dUpW?=
- =?utf-8?B?Y3BYKzNBSkJvaitTZ3EwWC91MkZZMVBTWEw3UEw0YkdEYVNnandURVNrMmJj?=
- =?utf-8?B?SkppenlvVmZzRXZuNklxcVZEamc2ZUhvRE8rMnBSTU1LbU5reXY3Q2lpVDlm?=
- =?utf-8?B?YzM0bWJScjF2NnE5aXM3OGtRSEJGQ0s2MHRuRW1uMVNyQ3lHOG5WN2FodVZO?=
- =?utf-8?B?bk1hMkxzb083ckF6ZGpKK3RxbVFPZ0F3S1JRamdZaEtaQzdEVFhvZEFWeTlw?=
- =?utf-8?B?MTg5NHV6NlY1WVUxL3UrcVhqUy9NOThxcGtBUXRHUDBIY0pGU2lkdFdWUEZw?=
- =?utf-8?B?djVBd2JDOCsyQnlEbkZmQy9DOGd3N3pFTjdiWWxKemRwRFVoc0llNnpPdGNh?=
- =?utf-8?B?b3B6VE9wem9VUU9GL2pyb09HLzFhODdGTGtBTnplU0xpM3NoVzZYMmNVbS9O?=
- =?utf-8?B?OHcraUdKWjBidHFFbjI5TWlTMzlsTUdEb0tOcWppZ3FqYjJ3NWRYWG9mSXh5?=
- =?utf-8?B?UVRpL2RCeTI5cndjSlloaDIyUnQ3MldHZ2s1WHprcnB6ZHU4bC9oNTQ5eEFn?=
- =?utf-8?B?ZTlRM256bUpnU0krYXZNM2dCS0Nja0EyUWRaRkUvclZZSVRFcFNxckprQ3Z2?=
- =?utf-8?B?czBCRTB0aklxYW5YSnRDbjJZVW1kSkhaTlZGODJIVUNnamJnSnhDTWNFUGpm?=
- =?utf-8?B?YjJHbEJRQUZVT0ZwNUMvM1Qvd1dZZEdyS1RTK0ZHUlRQZXJHeXo0TlJVVFlJ?=
- =?utf-8?B?ZTA4WkZFQTVJWUVNSTloaExNSTlkQldPMEczYnFTWm9zNDZ5YXhWS1RVL251?=
- =?utf-8?Q?pWu1DikGrZddjuX4l1sWtxca/?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 135a678d-f1e6-40bb-73a9-08dc23748ec6
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3320.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2024 22:24:29.9361
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: o5UcPy2gXI9QEeqXAX0uZLkByi0oJreF+o4j749XgEefwChqzCXKYOgnVhBbsW1eDOHPBEISSh9vKvTYnd7PTA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB8020
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zbk0DhibX0oDLk1s@vingu-book>
 
-On 1/23/2024 5:10 AM, Thomas Gleixner wrote:
+On 01/30/24 18:38, Vincent Guittot wrote:
+> Le vendredi 08 déc. 2023 à 00:23:42 (+0000), Qais Yousef a écrit :
+> > From: Vincent Donnefort <vincent.donnefort@arm.com>
+> > 
+> > The new sched_pelt_multiplier boot param allows a user to set a clock
+> > multiplier to x2 or x4 (x1 being the default). This clock multiplier
+> > artificially speeds up PELT ramp up/down similarly to use a faster
+> > half-life than the default 32ms.
+> > 
+> >   - x1: 32ms half-life
+> >   - x2: 16ms half-life
+> >   - x4: 8ms  half-life
+> > 
+> > Internally, a new clock is created: rq->clock_task_mult. It sits in the
+> > clock hierarchy between rq->clock_task and rq->clock_pelt.
+> > 
+> > The param is set as read only and can only be changed at boot time via
+> > 
+> > 	kernel.sched_pelt_multiplier=[1, 2, 4]
+> > 
+> > PELT has a big impact on the overall system response and reactiveness to
+> > change. Smaller PELT HF means it'll require less time to reach the
+> > maximum performance point of the system when the system become fully
+> > busy; and equally shorter time to go back to lowest performance point
+> > when the system goes back to idle.
+> > 
+> > This faster reaction impacts both dvfs response and migration time
+> > between clusters in HMP system.
+> > 
+> > Smaller PELT values are expected to give better performance at the cost
+> > of more power. Under powered systems can particularly benefit from
+> > smaller values. Powerful systems can still benefit from smaller values
+> > if they want to be tuned towards perf more and power is not the major
+> > concern for them.
+> > 
+> > This combined with respone_time_ms from schedutil should give the user
+> > and sysadmin a deterministic way to control the triangular power, perf
+> > and thermals for their system. The default response_time_ms will half
+> > as PELT HF halves.
+> > 
+> > Update approximate_{util_avg, runtime}() to take into account the PELT
+> > HALFLIFE multiplier.
+> > 
+> > Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+> > Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> > [Converted from sysctl to boot param and updated commit message]
+> > Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+> > ---
+> >  kernel/sched/core.c  |  2 +-
+> >  kernel/sched/pelt.c  | 52 ++++++++++++++++++++++++++++++++++++++++++--
+> >  kernel/sched/pelt.h  | 42 +++++++++++++++++++++++++++++++----
+> >  kernel/sched/sched.h |  1 +
+> >  4 files changed, 90 insertions(+), 7 deletions(-)
+> > 
+> 
+> ...
+> 
+> > +__read_mostly unsigned int sched_pelt_lshift;
+> > +static unsigned int sched_pelt_multiplier = 1;
+> > +
+> > +static int set_sched_pelt_multiplier(const char *val, const struct kernel_param *kp)
+> > +{
+> > +	int ret;
+> > +
+> > +	ret = param_set_int(val, kp);
+> > +	if (ret)
+> > +		goto error;
+> > +
+> > +	switch (sched_pelt_multiplier)  {
+> > +	case 1:
+> > +		fallthrough;
+> > +	case 2:
+> > +		fallthrough;
+> > +	case 4:
+> > +		WRITE_ONCE(sched_pelt_lshift,
+> > +			   sched_pelt_multiplier >> 1);
+> > +		break;
+> > +	default:
+> > +		ret = -EINVAL;
+> > +		goto error;
+> > +	}
+> > +
+> > +	return 0;
+> > +
+> > +error:
+> > +	sched_pelt_multiplier = 1;
+> > +	return ret;
+> > +}
+> > +
+> > +static const struct kernel_param_ops sched_pelt_multiplier_ops = {
+> > +	.set = set_sched_pelt_multiplier,
+> > +	.get = param_get_int,
+> > +};
+> > +
+> > +#ifdef MODULE_PARAM_PREFIX
+> > +#undef MODULE_PARAM_PREFIX
+> > +#endif
+> > +/* XXX: should we use sched as prefix? */
+> > +#define MODULE_PARAM_PREFIX "kernel."
+> > +module_param_cb(sched_pelt_multiplier, &sched_pelt_multiplier_ops, &sched_pelt_multiplier, 0444);
+> > +MODULE_PARM_DESC(sched_pelt_multiplier, "PELT HALFLIFE helps control the responsiveness of the system.");
+> > +MODULE_PARM_DESC(sched_pelt_multiplier, "Accepted value: 1 32ms PELT HALIFE - roughly 200ms to go from 0 to max performance point (default).");
+> > +MODULE_PARM_DESC(sched_pelt_multiplier, "                2 16ms PELT HALIFE - roughly 100ms to go from 0 to max performance point.");
+> > +MODULE_PARM_DESC(sched_pelt_multiplier, "                4  8ms PELT HALIFE - roughly  50ms to go from 0 to max performance point.");
+> > +
+> >  /*
+> >   * Approximate the new util_avg value assuming an entity has continued to run
+> >   * for @delta us.
+> 
+> ...
+> 
+> > +
+> >  static inline void
+> > -update_rq_clock_pelt(struct rq *rq, s64 delta) { }
+> > +update_rq_clock_task_mult(struct rq *rq, s64 delta) { }
+> >  
+> >  static inline void
+> >  update_idle_rq_clock_pelt(struct rq *rq) { }
+> > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> > index bbece0eb053a..a7c89c623250 100644
+> > --- a/kernel/sched/sched.h
+> > +++ b/kernel/sched/sched.h
+> > @@ -1029,6 +1029,7 @@ struct rq {
+> >  	u64			clock;
+> >  	/* Ensure that all clocks are in the same cache line */
+> >  	u64			clock_task ____cacheline_aligned;
+> > +	u64			clock_task_mult;
+> 
+> I'm not sure that we want yet another clock and this doesn't apply for irq_avg.
+> 
+> What about the below is simpler and I think cover all cases ?
 
-> --- a/arch/x86/kernel/apic/io_apic.c
-> +++ b/arch/x86/kernel/apic/io_apic.c
+Looks better, yes. I'll change to this and if no issues come up I'll add your
+signed-off-by if that's okay with you for the next version.
 
-> @@ -1499,15 +1498,14 @@ static void __init setup_ioapic_ids_from
->  		 */
->  		if (apic->check_apicid_used(&phys_id_present_map,
->  					    mpc_ioapic_id(ioapic_idx))) {
-> -			printk(KERN_ERR "BIOS bug, IO-APIC#%d ID %d is already used!...\n",
-> +			pr_err(FW_BUG "IO-APIC#%d ID %d is already used!...\n",
->  				ioapic_idx, mpc_ioapic_id(ioapic_idx));
 
-The second line could be aligned to match the open parenthesis.
+Thanks!
+
+--
+Qais Yousef
+
+> 
+> diff --git a/kernel/sched/pelt.c b/kernel/sched/pelt.c
+> index f951c44f1d52..5cdd147b7abe 100644
+> --- a/kernel/sched/pelt.c
+> +++ b/kernel/sched/pelt.c
+> @@ -180,6 +180,7 @@ static __always_inline int
+>  ___update_load_sum(u64 now, struct sched_avg *sa,
+>  		  unsigned long load, unsigned long runnable, int running)
+>  {
+> +	int time_shift;
+>  	u64 delta;
+> 
+>  	delta = now - sa->last_update_time;
+> @@ -195,12 +196,17 @@ ___update_load_sum(u64 now, struct sched_avg *sa,
+>  	/*
+>  	 * Use 1024ns as the unit of measurement since it's a reasonable
+>  	 * approximation of 1us and fast to compute.
+> +	 * On top of this, we can change the half-time period from the default
+> +	 * 32ms to a shorter value. This is equivalent to left shifting the
+> +	 * time.
+> +	 * Merge both right and left shifts in one single right shift
+>  	 */
+> -	delta >>= 10;
+> +	time_shift = 10 - sched_pelt_lshift;
+> +	delta >>= time_shift;
+>  	if (!delta)
+>  		return 0;
+> 
+> -	sa->last_update_time += delta << 10;
+> +	sa->last_update_time += delta << time_shift;
+> 
+>  	/*
+>  	 * running is a subset of runnable (weight) so running can't be set if
+> 
+> 
+> 
+> >  	u64			clock_pelt;
+> >  	unsigned long		lost_idle_time;
+> >  	u64			clock_pelt_idle;
+> > -- 
+> > 2.34.1
+> > 
 
