@@ -1,60 +1,74 @@
-Return-Path: <linux-kernel+bounces-47812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5045845331
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:55:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE26C845334
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:56:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7E741C2637D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:55:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13D461F23176
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:56:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD6D915AACE;
-	Thu,  1 Feb 2024 08:55:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A381015A498;
+	Thu,  1 Feb 2024 08:56:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ADrcx9AS"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KIkrmPZQ"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F32A9158D9B;
-	Thu,  1 Feb 2024 08:55:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44B1C1586FE
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 08:56:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706777710; cv=none; b=Aoqfxw2tb50jSyr5saxLWYI09RKjcGWK7vpFNEup4IVNptQfRB4erjKjaWctwHv7cq/SMwIN7ZubrjYVfRU/BKMMuFeAMoTO9bPTfGHXKPBqm3rRI1fY9vWr43R9/b8Qu//UJ/j75sS5d4ueJhpWqzRN+ajkn2BN6sBKqw5Ib0k=
+	t=1706777770; cv=none; b=YdqwtLU9oq9PMUFj+wyGYAD6h+pD/1VYyikwgfoZ3/8EY3FfY5ZmNWVJJ2gehMpJKcJOVXZ3Rl54w6US0JrygU/VnTf0M0YulTq6btmw4DiltCDshnM375z8KoMGEj27TPhmnauhb2WIn2Ogt3YO0Vt48BpEZ1aSuhfxdWz22nI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706777710; c=relaxed/simple;
-	bh=b2rj9dZ0y8jK7bvIn9RbX/qXY3lPt+yCZVrBwH2TDls=;
+	s=arc-20240116; t=1706777770; c=relaxed/simple;
+	bh=RLkQH/GJxsJeVLwHLafLjvyrL5mb6HnKHTKR/Y9FUmc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TMkXJ5KqNg03VGLuAwWoNf1eQ7iu4xrtuY1n86EUqp/NQEaoU1fMCPeOdkqctmJ2+fgU9f87aqGBEe9JS7yFW0zZrxQqaU25Vg62ch1jnerBp484ZeKm9laoZtiomvAlHzJz1+N++Y+YhHWyYDn7oTas1s9qEOCDsensysxD3i4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ADrcx9AS; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706777709; x=1738313709;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=b2rj9dZ0y8jK7bvIn9RbX/qXY3lPt+yCZVrBwH2TDls=;
-  b=ADrcx9ASm0FqbquqwUZsm01XStJJw2eua0LcQrt3gUwMaI8BIMr45nn6
-   jesMYbSQSkxTZ51GPDIR7iL4nKvcO6hbVKRa9/gNQgxzBKN+mVmIEiH7e
-   tEb1xycaF1wsx9N66PO9BsbPxwLszApcjGmYkyhNN23MHRc00MrvngUFB
-   Usc1AkZYFmL/FNR55UgIgItscJs62g+T/+i1MbYfgwv7lRhTEd2z3paJk
-   R57fVSo1pbdC2p8D8wzhmnesMXuTR880ndhjf9V0KYkOj0yRaiGV4dhyO
-   Y4c1SoR3ESL2GK6lXy/yihiNierf43OZ7ofBfzECi5w+Oues0vO7SUDNu
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="31894"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="31894"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 00:55:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="31888"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.33.17]) ([10.93.33.17])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 00:55:05 -0800
-Message-ID: <c0ac9a16-16dc-4238-b045-543252411fc9@intel.com>
-Date: Thu, 1 Feb 2024 16:55:00 +0800
+	 In-Reply-To:Content-Type; b=A9Y8RRR4ns/NobEF+K2uFlS4j3mfSdUlXBnkYoe+7rMmifrvatlzQm5nXpo1Of6DCmWiBojJf5oWzrn5xlfZsEFgnTuriDM2cWVWsigOeOxcAxMbbQKwfzvGPNpWDgX9XSDbFFY+P4JtbkTQtCy7o4ADVoZvOkVoAWxr70zc8I0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KIkrmPZQ; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a36126e7459so66347566b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 00:56:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706777767; x=1707382567; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mB7vjw31zr2ME4ruwxSaUAFeK+9jaGAgfyv3NCi+5rE=;
+        b=KIkrmPZQb8Mg1/J2bBiMBW90drD4uVYMeSMSt06Tq/zfFGRrHosrgvmFLA7vsplDkt
+         JuRdesYBj1t9ccacStNBR8dMVN/5K2tqqDagZkLkyVPj1jjB2ofvmuYBv8x74mtB9ni2
+         w+7QjtrVsXouc5Gqby+NQMpFBYvwDiQvkuiyI07fFJmWkDjCgmKPWIEa3gbOyyYHA//1
+         /+hE4fblkxidN++teUO4/XJCxRg0Pu3NW9/rtKpp7GYlaIllvtokDKDx2H/+LyxjcZQe
+         FuaZyejc3i44Myr34unA117kCOZWqka6MjinMKrUUkVspRJlvjpfOghjQYqoJci5Q7rc
+         5/RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706777767; x=1707382567;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mB7vjw31zr2ME4ruwxSaUAFeK+9jaGAgfyv3NCi+5rE=;
+        b=eBhexsiCyy10C35rhGi3xt/MHIVKu1XrL77UhPrdW3TSS1n49y6uQ/Qtnuo23Mu5hL
+         PyIUp8vYHVMRx715uKjzdrCAaJluNRVUQ7b1UegQvbUp/ricNvwxfEp4m3WrZoQFJ4eR
+         qVXs2IKEQLLccvy9A4Rzy/qWvTstUJy/EQvvz7VjHpmmKXyXApqhb1yWU15xozMdNZpZ
+         oovD8iElbYki9ltcjeisvBefoW13u2a91/5bqfknL2HuAmLjo0T94Rw+8tR7QNYNJhpo
+         tcGcbU0omUTUWxnLTg8qcgJgOlZmSfC8BI2lYtbqVFBPRsYw4RlmNNy9YoHia06jL9TF
+         i+YQ==
+X-Gm-Message-State: AOJu0YzgZ84cgvrN0bJuBQWBn7AIeF4nmZiw8XnmMOyjXtyMT2OWUbY2
+	/FJ9gye8Nw4HJmCF9bWBps1ou+n/BLizwlGcHEx4p7g8YCcqqoMqgo4P/Z8Te0RmNXnnF/enPO/
+	b
+X-Google-Smtp-Source: AGHT+IEvk+ikpQ7EL9PeouXhZZ76oVWxuQ3rVJls+FGmPgsN0eFbbz9cMFGZANeF0vrFUzDStHBUDw==
+X-Received: by 2002:a17:907:1110:b0:a35:b808:8f1d with SMTP id qu16-20020a170907111000b00a35b8088f1dmr3344089ejb.67.1706777767458;
+        Thu, 01 Feb 2024 00:56:07 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWkt1xBZa5iosvZ6ourmNI65ZeYwDUNROjacpmLSg8vas4us+XlCfwUaVPLGInDDfmEDH+mM3hj7bCCpxOKH8+P6naBnNnI/GRBf962MXWkbXRs3t6806RF2HO1JgKHC99ESU5EkBhrjFe8mXsoXEr9u1PKyesUjQ1oZ/343YkjdRwDNdB/Fb8gEkDFe/xaReBJ3/ObXqm5tefuJ+2LFSO63AdRJc55GuaKhPs2CWtOUiAGwF8DRvy/Hfa09YhE/Datgkn53PH6yHO1UxUMKT1qrbJbjgOR41YZnrfNOyrjTGHjBOBXPrPx3orMjOEbFqegwN3AOls4t0OU3tvvkvfxiAtB7NpvXa3FXPFwP4i2mJFzB6OF63j+8TPZBloEanLk1cON2EVGc6tnZZIgSIWaZx2KtZrter/o/+G54QywzPQCNCFoj/NJ/yoXUmvAu+dPRgu1CTaQejZhsi5fKAtUiJ15dsKm7dDenSywes5Cz90OJZyPdnQFQ3HVyy9x0ZEmaWsZoRbRxPuwwRYVARjPkE820Ll4x8utID1XuZT4UK/zanQHu/pO0MhrXhJvlK3B5gUE
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id o14-20020a1709061d4e00b00a2c70ec1533sm6927297ejh.66.2024.02.01.00.56.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Feb 2024 00:56:06 -0800 (PST)
+Message-ID: <821ce1d4-bc15-4764-bbe0-315c57e8536e@linaro.org>
+Date: Thu, 1 Feb 2024 09:56:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,272 +76,82 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v18 008/121] KVM: TDX: Initialize the TDX module when
- loading the KVM intel kernel module
+Subject: Re: [PATCH v7 2/3] dt-bindings: input: Add TouchNetix axiom
+ touchscreen
 Content-Language: en-US
-To: isaku.yamahata@intel.com, kvm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <9804cc9409d6773115e70bbb3bdc4adb67234cd6.1705965634.git.isaku.yamahata@intel.com>
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <9804cc9409d6773115e70bbb3bdc4adb67234cd6.1705965634.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Kamel Bouhara <kamel.bouhara@bootlin.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Henrik Rydberg <rydberg@bitmath.org>, linux-input@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ Marco Felsch <m.felsch@pengutronix.de>, Jeff LaBundy <jeff@labundy.com>
+Cc: catalin.popescu@leica-geosystems.com, mark.satterthwaite@touchnetix.com,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Gregory Clement <gregory.clement@bootlin.com>,
+ bsp-development.geo@leica-geosystems.com
+References: <20240131141158.3350344-1-kamel.bouhara@bootlin.com>
+ <20240131141158.3350344-3-kamel.bouhara@bootlin.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240131141158.3350344-3-kamel.bouhara@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 1/23/2024 7:52 AM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
+On 31/01/2024 15:11, Kamel Bouhara wrote:
+> Add the TouchNetix axiom I2C touchscreen device tree bindings
+> documentation.
 > 
-> TDX requires several initialization steps for KVM to create guest TDs.
-> Detect CPU feature, enable VMX (TDX is based on VMX) on all online CPUs,
-> detect the TDX module availability, initialize it and disable VMX.
-> 
-> To enable/disable VMX on all online CPUs, utilize
-> vmx_hardware_enable/disable().  The method also initializes each CPU for
-> TDX.  TDX requires calling a TDX initialization function per logical
-> processor (LP) before the LP uses TDX.  When the CPU is becoming online,
-> call the TDX LP initialization API.  If it fails to initialize TDX, refuse
-> CPU online for simplicity instead of TDX avoiding the failed LP.
-> 
-> There are several options on when to initialize the TDX module.  A.) kernel
-> module loading time, B.) the first guest TD creation time.  A.) was chosen.
-> With B.), a user may hit an error of the TDX initialization when trying to
-> create the first guest TD.  The machine that fails to initialize the TDX
-> module can't boot any guest TD further.  Such failure is undesirable and a
-> surprise because the user expects that the machine can accommodate guest
-> TD, but not.  So A.) is better than B.).
-> 
-> Introduce a module parameter, kvm_intel.tdx, to explicitly enable TDX KVM
-> support.  It's off by default to keep the same behavior for those who don't
-> use TDX.  Implement hardware_setup method to detect TDX feature of CPU and
-> initialize TDX module.
-> 
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
 > ---
-> v18:
-> - Added comment in vt_hardware_enable() by Binbin.
-> ---
->   arch/x86/kvm/Makefile      |  1 +
->   arch/x86/kvm/vmx/main.c    | 38 ++++++++++++++++-
->   arch/x86/kvm/vmx/tdx.c     | 84 ++++++++++++++++++++++++++++++++++++++
->   arch/x86/kvm/vmx/x86_ops.h |  8 ++++
->   4 files changed, 129 insertions(+), 2 deletions(-)
->   create mode 100644 arch/x86/kvm/vmx/tdx.c
-> 
-> diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
-> index 274df24b647f..5b85ef84b2e9 100644
-> --- a/arch/x86/kvm/Makefile
-> +++ b/arch/x86/kvm/Makefile
-> @@ -24,6 +24,7 @@ kvm-intel-y		+= vmx/vmx.o vmx/vmenter.o vmx/pmu_intel.o vmx/vmcs12.o \
->   
->   kvm-intel-$(CONFIG_X86_SGX_KVM)	+= vmx/sgx.o
->   kvm-intel-$(CONFIG_KVM_HYPERV)	+= vmx/hyperv.o vmx/hyperv_evmcs.o
-> +kvm-intel-$(CONFIG_INTEL_TDX_HOST)	+= vmx/tdx.o
->   
->   kvm-amd-y		+= svm/svm.o svm/vmenter.o svm/pmu.o svm/nested.o svm/avic.o \
->   			   svm/sev.o
-> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
-> index 443db8ec5cd5..1e1feaacac59 100644
-> --- a/arch/x86/kvm/vmx/main.c
-> +++ b/arch/x86/kvm/vmx/main.c
-> @@ -6,6 +6,40 @@
->   #include "nested.h"
->   #include "pmu.h"
->   
-> +static bool enable_tdx __ro_after_init;
-> +module_param_named(tdx, enable_tdx, bool, 0444);
-> +
-> +static int vt_hardware_enable(void)
-> +{
-> +	int ret;
-> +
-> +	ret = vmx_hardware_enable();
-> +	if (ret || !enable_tdx)
-> +		return ret;
-> +
-> +	ret = tdx_cpu_enable();
 
-What's the reason for it?
 
-vt_hardware_setup()
-   -> tdx_hardware_setup()
-      -> on_each_cpu(vmx_tdx_on, &vmx_tdx, true);
-         -> vmx_tdx_on()
-            -> tdx_cpu_enable()
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-ensures tdx_cpu_enable() is called once. No need to call it every 
-vt_hardware_enable().
-
-> +	if (ret)
-> +		/*
-> +		 * In error case, we keep the CPU offline in error case.  So
-> +		 * need to revert VMXON.
-> +		 */
-> +		vmx_hardware_disable();
-> +	return ret;
-> +}
-> +
-> +static __init int vt_hardware_setup(void)
-> +{
-> +	int ret;
-> +
-> +	ret = vmx_hardware_setup();
-> +	if (ret)
-> +		return ret;
-> +
-> +	enable_tdx = enable_tdx && !tdx_hardware_setup(&vt_x86_ops);
-> +
-> +	return 0;
-> +}
-> +
->   #define VMX_REQUIRED_APICV_INHIBITS				\
->   	(BIT(APICV_INHIBIT_REASON_DISABLE)|			\
->   	 BIT(APICV_INHIBIT_REASON_ABSENT) |			\
-> @@ -22,7 +56,7 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
->   
->   	.hardware_unsetup = vmx_hardware_unsetup,
->   
-> -	.hardware_enable = vmx_hardware_enable,
-> +	.hardware_enable = vt_hardware_enable,
->   	.hardware_disable = vmx_hardware_disable,
->   	.has_emulated_msr = vmx_has_emulated_msr,
->   
-> @@ -161,7 +195,7 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
->   };
->   
->   struct kvm_x86_init_ops vt_init_ops __initdata = {
-> -	.hardware_setup = vmx_hardware_setup,
-> +	.hardware_setup = vt_hardware_setup,
->   	.handle_intel_pt_intr = NULL,
->   
->   	.runtime_ops = &vt_x86_ops,
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> new file mode 100644
-> index 000000000000..8a378fb6f1d4
-> --- /dev/null
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -0,0 +1,84 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/cpu.h>
-> +
-> +#include <asm/tdx.h>
-> +
-> +#include "capabilities.h"
-> +#include "x86_ops.h"
-> +#include "x86.h"
-> +
-> +#undef pr_fmt
-> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> +
-> +static int __init tdx_module_setup(void)
-> +{
-> +	int ret;
-> +
-> +	ret = tdx_enable();
-> +	if (ret) {
-> +		pr_info("Failed to initialize TDX module.\n");
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +struct vmx_tdx_enabled {
-
-the name is so confusing at first glance, ...
-
-> +	cpumask_var_t vmx_enabled;
-> +	atomic_t err;
-> +};
-> +
-> +static void __init vmx_tdx_on(void *_vmx_tdx)
-
-so is this function name.
-
-> +{
-> +	struct vmx_tdx_enabled *vmx_tdx = _vmx_tdx;
-> +	int r;
-> +
-> +	r = vmx_hardware_enable();
-> +	if (!r) {
-> +		cpumask_set_cpu(smp_processor_id(), vmx_tdx->vmx_enabled);
-> +		r = tdx_cpu_enable();
-> +	}
-> +	if (r)
-> +		atomic_set(&vmx_tdx->err, r);
-> +}
-> +
-> +static void __init vmx_off(void *_vmx_enabled)
-> +{
-> +	cpumask_var_t *vmx_enabled = (cpumask_var_t *)_vmx_enabled;
-> +
-> +	if (cpumask_test_cpu(smp_processor_id(), *vmx_enabled))
-> +		vmx_hardware_disable();
-> +}
-> +
-> +int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops)
-> +{
-> +	struct vmx_tdx_enabled vmx_tdx = {
-> +		.err = ATOMIC_INIT(0),
-> +	};
-> +	int r = 0;
-> +
-> +	if (!enable_ept) {
-> +		pr_warn("Cannot enable TDX with EPT disabled\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!zalloc_cpumask_var(&vmx_tdx.vmx_enabled, GFP_KERNEL)) {
-> +		r = -ENOMEM;
-> +		goto out;
-> +	}
-> +
-> +	/* tdx_enable() in tdx_module_setup() requires cpus lock. */
-> +	cpus_read_lock();
-> +	on_each_cpu(vmx_tdx_on, &vmx_tdx, true);	/* TDX requires vmxon. */
-> +	r = atomic_read(&vmx_tdx.err);
-> +	if (!r)
-> +		r = tdx_module_setup();
-> +	else
-> +		r = -EIO;
-> +	on_each_cpu(vmx_off, &vmx_tdx.vmx_enabled, true);
-> +	cpus_read_unlock();
-> +	free_cpumask_var(vmx_tdx.vmx_enabled);
-> +
-> +out:
-> +	return r;
-> +}
-> diff --git a/arch/x86/kvm/vmx/x86_ops.h b/arch/x86/kvm/vmx/x86_ops.h
-> index bca2d27b3dfd..b44cb681f74d 100644
-> --- a/arch/x86/kvm/vmx/x86_ops.h
-> +++ b/arch/x86/kvm/vmx/x86_ops.h
-> @@ -18,6 +18,8 @@ bool kvm_is_vmx_supported(void);
->   int __init vmx_init(void);
->   void vmx_exit(void);
->   
-> +__init int vmx_hardware_setup(void);
-
-superfluous declaration.
-
-It's added in patch 4 already.
-
->   extern struct kvm_x86_ops vt_x86_ops __initdata;
->   extern struct kvm_x86_init_ops vt_init_ops __initdata;
->   
-> @@ -133,4 +135,10 @@ void vmx_cancel_hv_timer(struct kvm_vcpu *vcpu);
->   #endif
->   void vmx_setup_mce(struct kvm_vcpu *vcpu);
->   
-> +#ifdef CONFIG_INTEL_TDX_HOST
-> +int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops);
-> +#else
-> +static inline int tdx_hardware_setup(struct kvm_x86_ops *x86_ops) { return -EOPNOTSUPP; }
-> +#endif
-> +
->   #endif /* __KVM_X86_VMX_X86_OPS_H */
+Best regards,
+Krzysztof
 
 
