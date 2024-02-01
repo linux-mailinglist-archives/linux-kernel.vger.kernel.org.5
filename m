@@ -1,120 +1,298 @@
-Return-Path: <linux-kernel+bounces-48716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C819C84602A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:43:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A52D7846036
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:44:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8349028970D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:43:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C46D51C243EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:44:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A71BF7429F;
-	Thu,  1 Feb 2024 18:42:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 531155A4E0;
+	Thu,  1 Feb 2024 18:43:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="sTWw38OL"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="l4Q1wIE0"
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60AFA12FB08;
-	Thu,  1 Feb 2024 18:42:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 159BA84FB2
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 18:43:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706812972; cv=none; b=IvoB8RP3R5yyKXp3sN7hixpqh+LBZ0vKOVq2LXnQKPwoUWxUCCRx3pNB6D+zEkBdDTohRPxAIG7CcOMPFG2soyqCLOt+I2kcaVKgmKGYCPKmkiZqkwaNPqabXzPQWK2nwKv37eUKwL2rz+VWl4y9uN1GnVz8pELg6ukprBObyvY=
+	t=1706813006; cv=none; b=sJboRbVImG+5xJZbBWKA39seT2fqste6S4pSUqbq3oMHGH5bZbNqtm0QD5pOH8LjzV7Ye85Wsc08qf7q4GFQQVn/+tYgOAGXYJlUx6ob3steon/EpJUP5RXvvsfdJzr/DASnjjKr/U6eF4pwr4LUgijO0X6RcxmWSgXapPQV+wk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706812972; c=relaxed/simple;
-	bh=VIvy4lTH+SG5Ye0Xk/ugj+PgutpBZ54WPeCaP7NfPJ8=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=q0FIgEMx7hoSXYOYMd9RdQ2JEEoRuUywdnL1b+NR6zdKNh6LRrf1HG9rlsRVzPHxCsiwz8LCKOB58C/KDTuYLGEqMKNEDs0FrmGggncFz+YODFqe9j413xtrD9LRL+wZVqWKF03vAV9Ff7fA1qBRsgVc8T0efZUIAfK8ljJSq0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=sTWw38OL; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 411IgfX5006990;
-	Thu, 1 Feb 2024 12:42:41 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706812961;
-	bh=Ew1MvrMW2/yaRtaTroFMXsF9Ix1hzxk1BU3jjawkr2k=;
-	h=From:To:CC:Subject:Date;
-	b=sTWw38OL1IluL6GvAACoKlFW9X7dmgmrVfjQ6iXvAx7qAmOkhgfJpJgRhc2sLmVx7
-	 usO1ypP0yaNcBblMI6fb4F+3IO9Sbj7AXTz5toapXM4Ob9lqAv0m5DsDLTOjWJob6t
-	 oEEMP9hisLqEBssr/O1GcH7ZwzYH/5yQ6fyElgog=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 411Igf1r023903
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 1 Feb 2024 12:42:41 -0600
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 1
- Feb 2024 12:42:40 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 1 Feb 2024 12:42:40 -0600
-Received: from udba0500997.dhcp.ti.com (udba0500997.dhcp.ti.com [128.247.81.249])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 411IgeuD042789;
-	Thu, 1 Feb 2024 12:42:40 -0600
-From: Brandon Brnich <b-brnich@ti.com>
-To: Nas Chung <nas.chung@chipsnmedia.com>,
-        Jackson Lee
-	<jackson.lee@chipsnmedia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, <linux-media@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Nishanth Menon <nm@ti.com>, Vignesh
- Raghavendra <vigneshr@ti.com>
-CC: Darren Etheridge <detheridge@ti.com>, Brandon Brnich <b-brnich@ti.com>
-Subject: [PATCH v2] dt-bindings: media: Add sram-size Property for Wave5
-Date: Thu, 1 Feb 2024 12:42:38 -0600
-Message-ID: <20240201184238.2542695-1-b-brnich@ti.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706813006; c=relaxed/simple;
+	bh=Wl1KrAyc7xaIE7vwdtrrQD1qSVs19T7oekxP6ciJbic=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u8bjqOm88lUUYKVEJA0HHqUnMBrgACrmSmx0yvLkxTberG9STMTP9+iP1Zc9yua8dmomyQQjh6EQdvgaFOQfSfV8xylIuwSmVQfzggl1mtSDM8Ah8oNPI6CRVK++RizMXt75CoTZ/CTL4a1oLPeNdvckj5P4aZWaQxNah8YBLOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=l4Q1wIE0; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Ex/8JouqRMpIKRvJ6xx0/vd1ATPxG3ZxEx1H8eQh0+c=; b=l4Q1wIE0JWRulV/Ug7r3ssNTto
+	53QQtjPCW7I09vWPRH6O803wXDqSmNmxocukZu6wLEPByeSsZl026MFHqtC1kBO2SsH97JfSFf24e
+	LwfeSJnZCBYc5u4pmYCtJSW4bq2k/sapgdaCe1LDpyZnDVzWo7jpV3Md9A/djQ/JLQYoF4pJVm3hl
+	wJlqLMX3D5c5G8P7ctORhHtbgV0pBItHcbH2X3zHKx3DfmlLKwPC8Xuh1w86dJ19DQ4xLGQN1h6OF
+	JTj0QkZgaIwKQsgIoIvWEDwITncgDjEuzBSFAEplLC9LclLCWwO5tNt4hHNZWC9yyAFt3jwMR/Qu0
+	TAUvOXIw==;
+Received: from [189.110.59.13] (helo=[192.168.1.111])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1rVc1X-00Cgwx-SA; Thu, 01 Feb 2024 19:42:56 +0100
+Message-ID: <a382b75d-4254-419c-aab5-a01eed845df1@igalia.com>
+Date: Thu, 1 Feb 2024 15:42:49 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/3] drm/atomic: Allow drivers to write their own plane
+ check for async flips
+To: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
+Cc: dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, kernel-dev@igalia.com,
+ alexander.deucher@amd.com, christian.koenig@amd.com,
+ Simon Ser <contact@emersion.fr>, daniel@ffwll.ch,
+ Daniel Stone <daniel@fooishbar.org>, =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?=
+ <maraeo@gmail.com>, Dave Airlie <airlied@gmail.com>,
+ ville.syrjala@linux.intel.com, Xaver Hugl <xaver.hugl@gmail.com>,
+ Joshua Ashton <joshua@froggi.es>, =?UTF-8?Q?Michel_D=C3=A4nzer?=
+ <michel.daenzer@mailbox.org>
+References: <20240128212515.630345-1-andrealmeid@igalia.com>
+ <20240128212515.630345-2-andrealmeid@igalia.com>
+ <20240129104934.0b887ec7@eldfell>
+Content-Language: en-US
+From: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+In-Reply-To: <20240129104934.0b887ec7@eldfell>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Wave521c has capability to use SRAM carveout to store reference data with
-purpose of reducing memory bandwidth. To properly use this pool, the driver
-expects to have an sram and sram-size node. Without sram-size node, driver
-will default value to zero, making sram node irrelevant.
+Hi Pekka,
 
-Signed-off-by: Brandon Brnich <b-brnich@ti.com>
----
- Documentation/devicetree/bindings/media/cnm,wave521c.yaml | 7 +++++++
- 1 file changed, 7 insertions(+)
+Em 29/01/2024 05:49, Pekka Paalanen escreveu:
+> On Sun, 28 Jan 2024 18:25:13 -0300
+> André Almeida <andrealmeid@igalia.com> wrote:
+> 
+>> Some hardware are more flexible on what they can flip asynchronously, so
+>> rework the plane check so drivers can implement their own check, lifting
+>> up some of the restrictions.
+>>
+>> Signed-off-by: André Almeida <andrealmeid@igalia.com>
+>> ---
+>> v3: no changes
+>>
+>>   drivers/gpu/drm/drm_atomic_uapi.c | 62 ++++++++++++++++++++++---------
+>>   include/drm/drm_atomic_uapi.h     | 12 ++++++
+>>   include/drm/drm_plane.h           |  5 +++
+>>   3 files changed, 62 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
+>> index aee4a65d4959..6d5b9fec90c7 100644
+>> --- a/drivers/gpu/drm/drm_atomic_uapi.c
+>> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
+>> @@ -620,7 +620,7 @@ static int drm_atomic_plane_set_property(struct drm_plane *plane,
+>>   	return 0;
+>>   }
+>>   
+>> -static int
+>> +int
+>>   drm_atomic_plane_get_property(struct drm_plane *plane,
+>>   		const struct drm_plane_state *state,
+>>   		struct drm_property *property, uint64_t *val)
+>> @@ -683,6 +683,7 @@ drm_atomic_plane_get_property(struct drm_plane *plane,
+>>   
+>>   	return 0;
+>>   }
+>> +EXPORT_SYMBOL(drm_atomic_plane_get_property);
+>>   
+>>   static int drm_atomic_set_writeback_fb_for_connector(
+>>   		struct drm_connector_state *conn_state,
+>> @@ -1026,18 +1027,54 @@ int drm_atomic_connector_commit_dpms(struct drm_atomic_state *state,
+>>   	return ret;
+>>   }
+>>   
+>> -static int drm_atomic_check_prop_changes(int ret, uint64_t old_val, uint64_t prop_value,
+>> +int drm_atomic_check_prop_changes(int ret, uint64_t old_val, uint64_t prop_value,
+> 
+> Hi,
+> 
+> should the word "async" be somewhere in the function name?
+> 
+>>   					 struct drm_property *prop)
+>>   {
+>>   	if (ret != 0 || old_val != prop_value) {
+>>   		drm_dbg_atomic(prop->dev,
+>> -			       "[PROP:%d:%s] No prop can be changed during async flip\n",
+>> +			       "[PROP:%d:%s] This prop cannot be changed during async flip\n",
+>>   			       prop->base.id, prop->name);
+>>   		return -EINVAL;
+>>   	}
+>>   
+>>   	return 0;
+>>   }
+>> +EXPORT_SYMBOL(drm_atomic_check_prop_changes);
+>> +
+>> +/* plane changes may have exceptions, so we have a special function for them */
+>> +static int drm_atomic_check_plane_changes(struct drm_property *prop,
+>> +					  struct drm_plane *plane,
+>> +					  struct drm_plane_state *plane_state,
+>> +					  struct drm_mode_object *obj,
+>> +					  u64 prop_value, u64 old_val)
+>> +{
+>> +	struct drm_mode_config *config = &plane->dev->mode_config;
+>> +	int ret;
+>> +
+>> +	if (plane->funcs->check_async_props)
+>> +		return plane->funcs->check_async_props(prop, plane, plane_state,
+>> +							     obj, prop_value, old_val);
+> 
+> Is it really ok to allow drivers to opt-in to also *reject* the FB_ID
+> and IN_FENCE_FD props on async commits?
+> 
+> Either intentionally or by accident.
+> 
 
-diff --git a/Documentation/devicetree/bindings/media/cnm,wave521c.yaml b/Documentation/devicetree/bindings/media/cnm,wave521c.yaml
-index 6a11c1d11fb5..ea5469eb38f9 100644
---- a/Documentation/devicetree/bindings/media/cnm,wave521c.yaml
-+++ b/Documentation/devicetree/bindings/media/cnm,wave521c.yaml
-@@ -43,6 +43,12 @@ properties:
-       storing it on DMA memory. It is mainly used for the purpose of reducing
-       bandwidth.
- 
-+  sram-size:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      SRAM size reserved for VPU operations. If not specified, size will default
-+      to zero.
-+
- required:
-   - compatible
-   - reg
-@@ -58,4 +64,5 @@ examples:
-         clocks = <&clks 42>;
-         interrupts = <42>;
-         sram = <&sram>;
-+        sram-size = <0x1234>;
-     };
--- 
-2.34.1
+Right, perhaps I should write this function in a way that you can only 
+lift restrictions, and not add new ones.
 
+>> +
+>> +	/*
+>> +	 * if you are trying to change something other than the FB ID, your
+>> +	 * change will be either rejected or ignored, so we can stop the check
+>> +	 * here
+>> +	 */
+>> +	if (prop != config->prop_fb_id) {
+>> +		ret = drm_atomic_plane_get_property(plane, plane_state,
+>> +						    prop, &old_val);
+>> +		return drm_atomic_check_prop_changes(ret, old_val, prop_value, prop);
+> 
+> When I first read this code, it seemed to say: "If the prop is not
+> FB_ID, then do the usual prop change checking that happens on all
+> changes, not only async.". Reading this patch a few more times over, I
+> finally realized drm_atomic_check_prop_changes() is about async
+> specifically.
+> 
+
+I see that the lack of the async word is giving some confusion, so I'll 
+add it to the functions.
+
+Thanks,
+	André
+
+>> +	}
+>> +
+>> +	if (plane_state->plane->type != DRM_PLANE_TYPE_PRIMARY) {
+>> +		drm_dbg_atomic(prop->dev,
+>> +			       "[OBJECT:%d] Only primary planes can be changed during async flip\n",
+>> +			       obj->id);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>>   
+>>   int drm_atomic_set_property(struct drm_atomic_state *state,
+>>   			    struct drm_file *file_priv,
+>> @@ -1100,7 +1137,6 @@ int drm_atomic_set_property(struct drm_atomic_state *state,
+>>   	case DRM_MODE_OBJECT_PLANE: {
+>>   		struct drm_plane *plane = obj_to_plane(obj);
+>>   		struct drm_plane_state *plane_state;
+>> -		struct drm_mode_config *config = &plane->dev->mode_config;
+>>   
+>>   		plane_state = drm_atomic_get_plane_state(state, plane);
+>>   		if (IS_ERR(plane_state)) {
+>> @@ -1108,19 +1144,11 @@ int drm_atomic_set_property(struct drm_atomic_state *state,
+>>   			break;
+>>   		}
+>>   
+>> -		if (async_flip && prop != config->prop_fb_id) {
+>> -			ret = drm_atomic_plane_get_property(plane, plane_state,
+>> -							    prop, &old_val);
+>> -			ret = drm_atomic_check_prop_changes(ret, old_val, prop_value, prop);
+>> -			break;
+>> -		}
+>> -
+>> -		if (async_flip && plane_state->plane->type != DRM_PLANE_TYPE_PRIMARY) {
+>> -			drm_dbg_atomic(prop->dev,
+>> -				       "[OBJECT:%d] Only primary planes can be changed during async flip\n",
+>> -				       obj->id);
+>> -			ret = -EINVAL;
+>> -			break;
+>> +		if (async_flip) {
+>> +			ret = drm_atomic_check_plane_changes(prop, plane, plane_state,
+> 
+> Should there be "async" somewhere in the name of
+> drm_atomic_check_plane_changes()?
+> 
+> 
+> Thanks,
+> pq
+> 
+>> +							     obj, prop_value, old_val);
+>> +			if (ret)
+>> +				break;
+>>   		}
+>>   
+>>   		ret = drm_atomic_plane_set_property(plane,
+>> diff --git a/include/drm/drm_atomic_uapi.h b/include/drm/drm_atomic_uapi.h
+>> index 4c6d39d7bdb2..d65fa8fbbca0 100644
+>> --- a/include/drm/drm_atomic_uapi.h
+>> +++ b/include/drm/drm_atomic_uapi.h
+>> @@ -29,6 +29,8 @@
+>>   #ifndef DRM_ATOMIC_UAPI_H_
+>>   #define DRM_ATOMIC_UAPI_H_
+>>   
+>> +#include <linux/types.h>
+>> +
+>>   struct drm_crtc_state;
+>>   struct drm_display_mode;
+>>   struct drm_property_blob;
+>> @@ -37,6 +39,9 @@ struct drm_crtc;
+>>   struct drm_connector_state;
+>>   struct dma_fence;
+>>   struct drm_framebuffer;
+>> +struct drm_mode_object;
+>> +struct drm_property;
+>> +struct drm_plane;
+>>   
+>>   int __must_check
+>>   drm_atomic_set_mode_for_crtc(struct drm_crtc_state *state,
+>> @@ -53,4 +58,11 @@ int __must_check
+>>   drm_atomic_set_crtc_for_connector(struct drm_connector_state *conn_state,
+>>   				  struct drm_crtc *crtc);
+>>   
+>> +int drm_atomic_plane_get_property(struct drm_plane *plane,
+>> +				  const struct drm_plane_state *state,
+>> +				  struct drm_property *property, uint64_t *val);
+>> +
+>> +int drm_atomic_check_prop_changes(int ret, uint64_t old_val, uint64_t prop_value,
+>> +				  struct drm_property *prop);
+>> +
+>>   #endif
+>> diff --git a/include/drm/drm_plane.h b/include/drm/drm_plane.h
+>> index c6565a6f9324..73dac8d76831 100644
+>> --- a/include/drm/drm_plane.h
+>> +++ b/include/drm/drm_plane.h
+>> @@ -540,6 +540,11 @@ struct drm_plane_funcs {
+>>   	 */
+>>   	bool (*format_mod_supported)(struct drm_plane *plane, uint32_t format,
+>>   				     uint64_t modifier);
+>> +
+>> +	int (*check_async_props)(struct drm_property *prop, struct drm_plane *plane,
+>> +				 struct drm_plane_state *plane_state,
+>> +				 struct drm_mode_object *obj,
+>> +				 u64 prop_value, u64 old_val);
+>>   };
+>>   
+>>   /**
+> 
 
