@@ -1,141 +1,99 @@
-Return-Path: <linux-kernel+bounces-48864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 484A5846280
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:14:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9A07846281
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:14:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04DEA28D12B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:14:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65EF61F25B28
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:14:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EADAD3E491;
-	Thu,  1 Feb 2024 21:14:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F5F93D0A6;
+	Thu,  1 Feb 2024 21:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="FtacmHPF"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bhu0w7nY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 395CF3CF5D;
-	Thu,  1 Feb 2024 21:14:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 717693BB43;
+	Thu,  1 Feb 2024 21:14:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706822056; cv=none; b=ie42kLu35Z7uPXeAClAA8F1I3IRjxpk8KQHRC0UM7c0tPfMXAYmSSOJsa1MFHdKJMhsTmHTxlEIzuPd6jIJBlWV0gqTmVU21ipSegvnJBVii9LbP5yPKvbzMV7MuwcRd7lLFuF7AsjrEvT1X3fZl7NPu4/hn6j57R5Hz6hWmEy8=
+	t=1706822066; cv=none; b=fkH9wA725vstVih1k5D+XKmAl0kyEyOmObRzUHNUs7hKuXgPgGWUhPd+bQLM2coiQ0RVxhmNmnZxdL3sKEMIYrs6MZH1YefGHs4DCAOcoL/rmyQMlci1SYloOx3R3H09K+M0TmWrVut/etmUceu8433lUsHa36MeDqudQGXrZsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706822056; c=relaxed/simple;
-	bh=9om5/uHJZU5XBcVgAeZIRJGYJUvAq7Y1kYG+2l1D41M=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NBeZiNzVYKHWfah4OvhbR1U7rgWwEN2oil8yP4mjv+yxeonamhlO7NZMjP8OKo/pM49etRG1uDTQSKK4im61cO693pkYd+4YUtqiuB/ntHxWegywSj3jeqkKgICaVdrgEl2eDnH7lLE7vx3IxxLnTayPDE6gL3xtXtYASzllBrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=FtacmHPF; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 411LE2MV100921;
-	Thu, 1 Feb 2024 15:14:02 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706822043;
-	bh=pEAsrojppbvro419UF7rpGJv30BuKmWk+tcLVk+eenQ=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=FtacmHPF72QEDzuSyCA5vjFHJFnXLWxyY9tnRvzCMGWw3NRVMSDBWE0zfBGXoF9LQ
-	 8PfgLZ1psWpVLNdbjG6iHdb1/LQ6mfXyX6LHvjXva7mK0Cvzq/PKwttPAaT1B7Ue7M
-	 BInzEVk0dUiPuLabIVEwrwHfuofNK1JH8UjHKyqI=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 411LE2kI062853
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 1 Feb 2024 15:14:02 -0600
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 1
- Feb 2024 15:14:02 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 1 Feb 2024 15:14:02 -0600
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 411LE2ir109903;
-	Thu, 1 Feb 2024 15:14:02 -0600
-Date: Thu, 1 Feb 2024 15:14:02 -0600
-From: Nishanth Menon <nm@ti.com>
-To: Andrew Davis <afd@ti.com>
-CC: Tero Kristo <kristo@kernel.org>, Santosh Shilimkar <ssantosh@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Sebastian Reichel <sre@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH 00/12] Add TI-SCI reboot driver
-Message-ID: <20240201211402.nldc6x2iosi4fkxq@morbidity>
-References: <20240131221957.213717-1-afd@ti.com>
+	s=arc-20240116; t=1706822066; c=relaxed/simple;
+	bh=oYuwgQHvj3cLJDNe/eSNutQdYZiRYjbNOF45uQlcVgs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sjGQccPxlwbi/gzmDDIqEGR60BxObdeY3mxcv+aTGVGBXAYFD6Px195Lu8Ighcb5an3yV7EziZKZL2rXGp6Xy5BsPRN4A9aZJBa9S1rsavBEHK6lQ8goR1lMiWKxje0B2YXsmjAFHVFkQUx5fxaM/lvuoTt9D4QJ4uA4Ekh9OSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bhu0w7nY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16A8EC433F1;
+	Thu,  1 Feb 2024 21:14:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706822065;
+	bh=oYuwgQHvj3cLJDNe/eSNutQdYZiRYjbNOF45uQlcVgs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Bhu0w7nYSbf9cLgUhi7cLUCL4CH1Fa/2vQ7pmXU4ExDqRrbAYH51mYkXQ3a9y6kwL
+	 8PQPJ/uzM5WbP+aJJVGHVspSlBs53NpAYuVm7zkc5+uce60257x90uR6iOmS66fIM9
+	 5q8KFFxLUQK6hT4w1GR6OZCkB6Frla91QBACR9I+lO7buDBBwWq8Ziit93wItXsBh2
+	 OHeyCc+AfUQ2vVOq72APv7/PVKz9JH/xq/gSs8VWcb0odaBgW/BpoUiqtHC0DDpX5N
+	 O2r4q0BFxlKCCgLvCyYPVv+8/FShvjs/TGk41iueHo93382HTzTpGeT73mEIbSiqHK
+	 U52GrmE4gt+Uw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 9723E40441; Thu,  1 Feb 2024 18:14:22 -0300 (-03)
+Date: Thu, 1 Feb 2024 18:14:22 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Clark Williams <williams@redhat.com>,
+	Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, James Clark <james.clark@arm.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Sun Haiyong <sunhaiyong@loongson.cn>,
+	Thomas Richter <tmricht@linux.ibm.com>,
+	Yanteng Si <siyanteng@loongson.cn>,
+	Yicong Yang <yangyicong@hisilicon.com>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [GIT PULL] perf tools fixes for v6.8
+Message-ID: <ZbwJrkkQbUxw-hyb@kernel.org>
+References: <20240201202254.15588-1-acme@kernel.org>
+ <CAHk-=wgkTKyon279Rfd_20ot9sfHmCh=t=v8GD8yHCM3Bna_hw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240131221957.213717-1-afd@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CAHk-=wgkTKyon279Rfd_20ot9sfHmCh=t=v8GD8yHCM3Bna_hw@mail.gmail.com>
+X-Url: http://acmel.wordpress.com
 
-On 16:19-20240131, Andrew Davis wrote:
-> Hello all,
-> 
-> While PCSI normally handles reboot for K3, this is an available
-> fallback in case PCSI reboot fails. This driver is registered 
-> with low priority as we want PSCI to remain the main way these
-> devices are rebooted.
-> 
-> The important part is the binding/DT changes. Currently in
-> U-Boot (which use the Linux device trees) we may not have
-> PSCI available yet (pre TF-A) and so we need this node
-> to correctly reboot. Adding this node in U-Boot is one of
-> the last remaining deltas between the two project DT files. 
-> 
-> Thanks,
-> Andrew
-> 
-> Andrew Davis (12):
->   dt-bindings: power: reset: Document ti,sci-reboot compatible
->   dt-bindings: arm: keystone: ti-sci: Add reboot-controller child node
->   power: reset: Add TI-SCI reboot driver
->   arm64: dts: ti: k3-am64: Add reboot-controller node
->   arm64: dts: ti: k3-am62: Add reboot-controller node
->   arm64: dts: ti: k3-am62a: Add reboot-controller node
->   arm64: dts: ti: k3-am62p: Add reboot-controller node
->   arm64: dts: ti: k3-am65: Add reboot-controller node
->   arm64: dts: ti: k3-j7200: Add reboot-controller node
->   arm64: dts: ti: k3-j721e: Add reboot-controller node
->   arm64: dts: ti: k3-j721s2: Add reboot-controller node
->   arm64: dts: ti: k3-j784s4: Add reboot-controller node
+Em Thu, Feb 01, 2024 at 12:57:00PM -0800, Linus Torvalds escreveu:
+> On Thu, 1 Feb 2024 at 12:23, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> >         Please consider pulling, mostly 'perf test' issues, which in its
+> > turn are mostly related to myself having Intel hybrid systems at home.
+ 
+> I started pulling, but there's some truly odd noise in the tag, so you
+> clearly have done something wrong.
+ 
+> You need to fix your odd tagging process, they are normally noisy, but
+> this is just so far off the norm that I can't overlook the craziness.
 
-Maybe after the driver has been accepted, a defconfig patch(module) might be
-useful?
+You're right, this can be routed instead thru perf-tools-next, for v6.9.
 
-> 
->  .../bindings/arm/keystone/ti,sci.yaml         |  8 +++
->  .../bindings/power/reset/ti,sci-reboot.yaml   | 33 ++++++++++
->  MAINTAINERS                                   |  2 +
->  arch/arm64/boot/dts/ti/k3-am62-main.dtsi      |  5 ++
->  arch/arm64/boot/dts/ti/k3-am62a-main.dtsi     |  4 ++
->  arch/arm64/boot/dts/ti/k3-am62p-main.dtsi     |  5 ++
->  arch/arm64/boot/dts/ti/k3-am64-main.dtsi      |  5 ++
->  arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi    |  4 ++
->  .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      |  4 ++
->  .../boot/dts/ti/k3-j721e-mcu-wakeup.dtsi      |  4 ++
->  .../boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi     |  4 ++
->  .../boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi     |  5 ++
->  drivers/power/reset/Kconfig                   |  7 +++
->  drivers/power/reset/Makefile                  |  1 +
->  drivers/power/reset/ti-sci-reboot.c           | 63 +++++++++++++++++++
->  15 files changed, 154 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/power/reset/ti,sci-reboot.yaml
->  create mode 100644 drivers/power/reset/ti-sci-reboot.c
+I should've known better and not send the noisy JSON changes at this
+point in time.
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+And the other stuff doesn't affect normal day to day operation, just a
+matter of addressiong artifacts in 'perf test' output so can wait.
+
+Namhyung, please check if you agree to have this merged into
+perf-tools-next on the way to v6.9.
+
+- Arnaldo
 
