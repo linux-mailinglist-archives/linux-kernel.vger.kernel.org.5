@@ -1,133 +1,183 @@
-Return-Path: <linux-kernel+bounces-48707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5532D846005
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8079284600C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:35:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10701290A17
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:34:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D84F293F9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:35:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12417C6EE;
-	Thu,  1 Feb 2024 18:34:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA1AA84037;
+	Thu,  1 Feb 2024 18:35:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ELVB8cY5"
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="PMAzKlAa"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEC7B1E88F;
-	Thu,  1 Feb 2024 18:34:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DABD97429E;
+	Thu,  1 Feb 2024 18:35:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706812462; cv=none; b=BEBiVlw4guBdMRoNdB71HP5NxpTZuQMLSfmrQglYnEJS7VpPP2macQgJ8OIwktTIQw6tkNxzoB4kfglDFpMgpBzSeqQZO7IOBkiGACF5GUg+am4dR0FaYpx96yeFVZXkgJbP8BSZ5UtqgQZftld8U8JLs0lo1uU2fg24myjPUtc=
+	t=1706812521; cv=none; b=KYlvudIptDNPcUspQ/aXUesJe71LIpIt4aM5c5GD0DnPWhfF3vgkwtpQ+rqVZkb6M4jklH302n8f71sb3o9AmN6dLG29h0RxwXAGs97lbk/1177A5Znv2WepTfPDplPS02J9QQARAohXo5zeNcR+/krUMmo/7KQsF8P/rvHa9jA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706812462; c=relaxed/simple;
-	bh=2Fd7ZWV1LtdaA8VIvBJoCEjDaseHpe8ZGvyJPTjzAFU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BFCzyaG2pbWTRLyYGyBqwY95oqBunjA5tqbtzJvQpDMK1nPk8JYulA5JQXzU7oxhpf+6hm3elDdNKHQOUJwPI4IRYtDM5zN6rX90vnZkijpILytgEs8OKTVPBEmm/xm8YHiMowCQNxc5XMwaq23f4Ff5MLkLRTmJzWFrE545Fr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ELVB8cY5; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-603c5d7997aso12588407b3.1;
-        Thu, 01 Feb 2024 10:34:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706812459; x=1707417259; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2Fd7ZWV1LtdaA8VIvBJoCEjDaseHpe8ZGvyJPTjzAFU=;
-        b=ELVB8cY5XfkLaja7Z7okOUs1TbOA+Ea2Td6p3UGdyc9TLUlh/zyK6kMpJ5tJgTvuVQ
-         1MDVXsUBnIJ6WgtUmebRNquh1qBOGH38AwKSAdzpCTBBgkdctv+RbAWU3SUJBVMfXh8S
-         XEUfaoZKmawGm0MSXgBnKlnTN6gvMWlRvN6M5liZI6iozUddSBlWK0yC3HA6wxV03KvV
-         XWtbq4OW666hUeCoBceJcz61JHofzJTxHBw8SsmyRF9vwh72o1MvFHjerJdwZf7s0Cm9
-         1WNoBInk0IMtQCB5SeBQ3XOYpZ3XGalIbgwHVkK2Wgk7YQBQFdJ52PcZssOkXC0SWSPz
-         JFDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706812459; x=1707417259;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2Fd7ZWV1LtdaA8VIvBJoCEjDaseHpe8ZGvyJPTjzAFU=;
-        b=pEnjffX9xy1y+RFcAC+k6DXIDD83Cfa2DhuPZY9qxGuMfnCcYQs4QWrYkeDRhGbkIA
-         nyRTSjGR6BqnySeh4g/NkGLLuwwjzvE1fWT95jyoRqcSi5troZUW6YxM0jzLHgxdnYtd
-         vcfeFMjjUkeyezJ+PWqj+UZne2W397k9B4bQFcIoa6Ac5bQQVZSdastki8BO4/buewMj
-         ICN+kpFzmYxnO77t6BWsu2hNX8HFei09spPXcGubRRuD46ceT93bzUgWb4UMTDBxqNDc
-         +tYKyeXKSX0UY93G4atanwhyGKC5l5gX0PS+m8hw+DMNj8Z/DUc4CvK0jQKGf166v0nh
-         82xQ==
-X-Gm-Message-State: AOJu0YzhYnajFPqLR2ovg7DAhhbsx7V8ImmEg3SH329TAn5aEZoRSXDV
-	wmdZW48bY/T3v/HbQ/jcO6JZPSSGp81kek7hLCg09LQ0diHZ5i5tnVR1w4WxivB7v1VVqXlfbV3
-	C6RtTnx9sy/txYYilzlkVPt1iND8=
-X-Google-Smtp-Source: AGHT+IE1UzMW3ajeW1lZaI3w44rZhcB3D2va3eYE5sqzhtCO0UvDe9iJkrBl3dzQEm5YGU+2doCeOCar7s2MtUlbPZk=
-X-Received: by 2002:a81:b64b:0:b0:602:cf62:6590 with SMTP id
- h11-20020a81b64b000000b00602cf626590mr5631484ywk.34.1706812459677; Thu, 01
- Feb 2024 10:34:19 -0800 (PST)
+	s=arc-20240116; t=1706812521; c=relaxed/simple;
+	bh=RIkbALjZPSreUFXEN2IqnBWkCSRe05VWOl3KjcYVaaU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=a78z5VhazPooAQ/7UtHH67llcRnftqV6vtlsg157WHQyEOMgLXxVafPvtgzBnFG4u9rjHNsKOf3cjKNrPtoiDFeo9uyhS1gO44PZYBuX/ZacnAaM9J6a8GH91xybSjy0mlbkPsCmdORqjg03sRCyEM9nRU3c5e4TPwqcZNw6Iqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=PMAzKlAa; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 411IYvKu004605;
+	Thu, 1 Feb 2024 12:34:57 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706812497;
+	bh=M8yVYusQsDMX27rn12ZXPGp6iti7X27Z6TtYkXc9Hlw=;
+	h=Date:Subject:To:References:From:In-Reply-To;
+	b=PMAzKlAavbNenLCMhUVCT04qGfGfCtUtkaJAbz3CnzyJTK5M6DaGeRi/HxRTYO/Du
+	 sZqkKHhAEazjsVBR+BUYw/PMmoTvA82U0N10Dz+kPZG29IqBrURfWHUfFfm5W41YPf
+	 cS7AIbVT3dbqx7HNOjjW76mZy4/IP7xRcL9p/SVM=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 411IYvRk070402
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 1 Feb 2024 12:34:57 -0600
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 1
+ Feb 2024 12:34:57 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 1 Feb 2024 12:34:56 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 411IYuU5031306;
+	Thu, 1 Feb 2024 12:34:56 -0600
+Message-ID: <a5f0059d-b80f-44e6-8c1e-793054586e0a@ti.com>
+Date: Thu, 1 Feb 2024 12:34:56 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201-rockchip-rust-phy_depend-v2-0-c5fa4faab924@christina-quast.de>
- <20240201-rockchip-rust-phy_depend-v2-1-c5fa4faab924@christina-quast.de>
-In-Reply-To: <20240201-rockchip-rust-phy_depend-v2-1-c5fa4faab924@christina-quast.de>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Thu, 1 Feb 2024 19:34:08 +0100
-Message-ID: <CANiq72nE6vy3dy3VTUkdKb3Vep72jxvHb=Jd2ykue8Nd1Vk-jg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] DONOTMERGE: rust: prelude: add bit function
-To: Christina Quast <contact@christina-quast.de>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, FUJITA Tomonori <fujita.tomonori@gmail.com>, 
-	Trevor Gross <tmgross@umich.edu>, Andrew Lunn <andrew@lunn.ch>, 
-	Heiner Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Heiko Stuebner <heiko@sntech.de>, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-rockchip@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/6] arm64: dts: ti: k3-j784s4: Add Wave5 Video
+ Encoder/Decoder Node
+Content-Language: en-US
+To: Brandon Brnich <b-brnich@ti.com>, Nishanth Menon <nm@ti.com>,
+        Vignesh
+ Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>, Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Geert Uytterhoeven
+	<geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Darren Etheridge <detheridge@ti.com>
+References: <20240131212625.1862775-1-b-brnich@ti.com>
+ <20240131212625.1862775-2-b-brnich@ti.com>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <20240131212625.1862775-2-b-brnich@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Thu, Feb 1, 2024 at 7:07=E2=80=AFPM Christina Quast
-<contact@christina-quast.de> wrote:
->
-> In order to create masks easily, the define BIT() is used in C code.
-> This commit adds the same functionality to the rust kernel.
+On 1/31/24 3:26 PM, Brandon Brnich wrote:
+> This patch adds support for the Wave521cl on the J784S4-evm.
+> 
+> Signed-off-by: Brandon Brnich <b-brnich@ti.com>
+> ---
+>   arch/arm64/boot/dts/ti/k3-j784s4-evm.dts   |  8 ++++++++
+>   arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 20 ++++++++++++++++++++
+>   arch/arm64/boot/dts/ti/k3-j784s4.dtsi      |  2 ++
+>   3 files changed, 30 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+> index f34b92acc56d..7d37c11b4df4 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+> @@ -784,6 +784,14 @@ &main_gpio0 {
+>   	status = "okay";
+>   };
+>   
+> +&vpu0 {
+> +	status = "okay";
+> +};
+> +
+> +&vpu1 {
+> +	status = "okay";
+> +};
+> +
+>   &mcu_cpsw {
+>   	status = "okay";
+>   	pinctrl-names = "default";
+> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> index f2b720ed1e4f..8b2623ac8160 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> @@ -662,6 +662,26 @@ main_i2c6: i2c@2060000 {
+>   		status = "disabled";
+>   	};
+>   
+> +	vpu0: video-codec@4210000 {
+> +		compatible = "ti,j721s2-wave521c", "cnm,wave521c";
+> +		reg = <0x00 0x4210000 0x00 0x10000>;
+> +		interrupts = <GIC_SPI 182 IRQ_TYPE_LEVEL_HIGH>;
+> +		clocks = <&k3_clks 241 2>;
+> +		clock-names = "vcodec";
+> +		power-domains = <&k3_pds 241 TI_SCI_PD_EXCLUSIVE>;
+> +		status = "disabled";
 
-Note that it is the same kernel :) Typically we would say "to the Rust
-side" or similar.
+Why are these default disabled? I don't see anything missing that
+would need to be added at the board level. You disable them
+just to re-enable them in the next patch. Leave these default
+enabled.
 
-> Do not merge this commit, because rust/kernel/types.rs in Rust-for-Linux
-> already contains this functionality and will be merged into next-net
-> soon.
+> +	};
+> +
+> +	vpu1: video-codec@4220000 {
+> +		compatible = "ti,j721s2-wave521c", "cnm,wave521c";
+> +		reg = <0x00 0x4220000 0x00 0x10000>;
+> +		interrupts = <GIC_SPI 183 IRQ_TYPE_LEVEL_HIGH>;
+> +		clocks = <&k3_clks 242 2>;
+> +		clock-names = "vcodec";
+> +		power-domains = <&k3_pds 242 TI_SCI_PD_EXCLUSIVE>;
+> +		status = "disabled";
+> +	};
+> +
+>   	main_sdhci0: mmc@4f80000 {
+>   		compatible = "ti,j721e-sdhci-8bit";
+>   		reg = <0x00 0x04f80000 0x00 0x1000>,
+> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
+> index 4398c3a463e1..93bb0cba1b48 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
+> @@ -247,6 +247,8 @@ cbass_main: bus@100000 {
+>   			 <0x00 0x30000000 0x00 0x30000000 0x00 0x0c400000>, /* MAIN NAVSS */
+>   			 <0x41 0x00000000 0x41 0x00000000 0x01 0x00000000>, /* PCIe1 DAT1 */
+>   			 <0x4e 0x20000000 0x4e 0x20000000 0x00 0x00080000>, /* GPU */
+> +			 <0x00 0x04210000 0x00 0x04210000 0x00 0x00010000>, /* VPU0 */
+> +			 <0x00 0x04220000 0x00 0x04220000 0x00 0x00010000>, /* VPU1 */
 
-I think you mean the archived `rust` branch (it is useful to point
-this out -- Rust for Linux is not just that branch).
+Add these in sorted by memory address order.
 
-However, has the `Bit` type (assuming you mean that) been submitted? I
-don't recall seeing it, and normally something like that would not go
-through `net-next`. If it has been, could you please send the Lore
-link?
+Andrew
 
-> But this driver does not compile without this commit, so I am adding it
-> to the patchset to get more feedback on the actual driver.
-
-Assuming the patch was not sent, I would suggest replacing this commit
-with the dependency you want to use, e.g. the `Bit` type, since it is
-a small enough one.
-
-In addition, this series has v2 in the title -- I think you did that
-because this patch was already submitted, but this is not really a v2
-of that series since this is mainly about the driver (and anyway this
-patch in particular is not meant to be merged; plus you didn't change
-it from what I can see).
-
-Thanks!
-
-Cheers,
-Miguel
+>   
+>   			 /* MCUSS_WKUP Range */
+>   			 <0x00 0x28380000 0x00 0x28380000 0x00 0x03880000>,
 
