@@ -1,150 +1,171 @@
-Return-Path: <linux-kernel+bounces-48729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32ACC84605C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:50:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8238C84605F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:51:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD6BF283FB7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:50:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A54531C288E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:51:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8936B85623;
-	Thu,  1 Feb 2024 18:49:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AUjBQOEK"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2106F84FD6;
-	Thu,  1 Feb 2024 18:49:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CCED84FD6;
+	Thu,  1 Feb 2024 18:49:41 +0000 (UTC)
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1527D84FAC;
+	Thu,  1 Feb 2024 18:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706813362; cv=none; b=uuxWn8d/r5gd6zYNo0qHUhKrEmDkvQMHVOaOKIrkeQgzUPXJUMzKOskTN8PJGZKS7PjfVzsAqCPzTRG+Z7A+UuE3Rmfi0I6WU0t1kae7L7kkQwlki5m16buHob8K7BfnvzHt6Tv2MK1B+aC2aplONjI/8XFw+H93Zk7Unp3mJWY=
+	t=1706813381; cv=none; b=TV79EGZBau37ZLfn7J9w6s2V8khQumd5RjRIEvSQgE9ituzo8tJO6uITkfqeTekhM/w/OlZQSMP5RxaZZtffgSI6gs5eWg3C3xEMJDHKZR0Usv4ajZWrWHfSwJ7MclQWY393HqLKNjdg3yS/wgaIr/8p2cXwI9tpvs9nHAuYivQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706813362; c=relaxed/simple;
-	bh=KFMTPvcO3d03ibcr31FFDVSDK7z2iX7xYkrIIVGimFY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=TOx3y+LSqp3Wn2EQ1Pmmeq+jprcI9g/cr2hFN4dPgmy9Ph93rhkvHh0HiAxDTQfBwM/pvm8Xq+Wx0VHuR5cgasl7VJWzJyk5T3hpqYtzKR9AkUYPlt9+2ptdfZmso5finTWfhhYa4/rRQpA6hwXm0gQIT8tA/81TidvjSLOp0Dc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AUjBQOEK; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55f15762840so1539948a12.0;
-        Thu, 01 Feb 2024 10:49:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706813359; x=1707418159; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CP10ASwjzq21gj6cHPQz3XuKiRelwR6OnJvv0UFbQiI=;
-        b=AUjBQOEK0JqM7M3mTXNMxFIHSq+kvDUiG6FNNek33B0M97O0oKWJ0SNUXDEEAhGJW+
-         cOnIM4iXZzDMIUyZ66phdfkKnoTOZ2am+eIRLscee2yY9YuwigLnvK8DSvequ2fwi4/G
-         00jD9a9EiXY/SxliyTO7btVD6S3k0yFpNDDKi6OgegeRz2Xo2e8xZbRistKov9ZkrAeX
-         lVdKxas848vcFoLsk+nh9aDwTreTnsO/wISM9TZZMmdevYErO+2qvk7qolfZVRNQFapu
-         IEZmFwnfstN137hwl/ct7jsdB34nbPrfCj7Kpak1fToeCcOA5DCV/PcsLGlfNRfVfdPd
-         gnIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706813359; x=1707418159;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CP10ASwjzq21gj6cHPQz3XuKiRelwR6OnJvv0UFbQiI=;
-        b=w+ht8HAcwsZQhNq5j9w63Jd1Xe6PRi7TrY/CgjZlz6w6ffTDCF3nkPDcMnxIhwn64X
-         eMsCBAD5asUJhQarxMKPXyQBVSSuULK6bESnRVnOLNE+kT4mtEbBiNI2g4maTjd1Flp2
-         MJhSt8Nkt/guKk+FkaWO0A7OQGAsDKyqc9xcoivreHmi2Px7/FA0GdMGdVWx8BBgPdq4
-         QUiCKGH2o49RCBxfQtZuawcJH+peS3zaxJsSKODb8yryJ0R9Ih8E897MevecA4kjQrFt
-         LS5PdYsgouqpwkPjDHrlBNSb/X0744u7jHf91P1AQsC7JPNyj0Z0051DQiXLS6UnBWSL
-         z1ZQ==
-X-Gm-Message-State: AOJu0YxYYk7oznPEFhfYmO1zEgEvEjQwayWei47oB2Oq0LsD/hAzOQr1
-	iNc+P3UBImfT9jRsRsyfuSsZFBJRIYl6S7W/g6DyVyJIJ+raaqsZ
-X-Google-Smtp-Source: AGHT+IFKlOu8htL+VeocZQsCqcN2H5lOEv7UpM8fH+qAO6/+jfphQEQwjVFyg6IbQ9oupKKzRN2jWw==
-X-Received: by 2002:aa7:d70b:0:b0:55f:caa3:f7c6 with SMTP id t11-20020aa7d70b000000b0055fcaa3f7c6mr1331654edq.31.1706813359117;
-        Thu, 01 Feb 2024 10:49:19 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXbOS/rwccwJDrMvw00+Ow/75KWAzVeEtF8qq2WRWPm6ayDE121p8dbC3RHPHu9tOWrBYelgUWK4aTwC7J1FAzb9+KSW+tHWj6wtsbPG5QpiGXFAVp9gu0NItSxirPMXd+wWZK2owMbKeG8lbel2uXljcp7iziPhebh6QeBA9+P4HrdChU0ZKZNVIHTmcaAsulFx9dQlOW1KoJCEDLoZ9wZUcpZHWH46zoXisLtVBelrQMeGZzPsEmXoVzS7SeOBu02xZuvjc3AnA6xLOh1o3f+NSZ+wGiK1qWIoKM5qaTsO/5PO2LMpGplTh45gaqd/4cquHQ/sTWJjE2cfatRGAiP7QWontk2rXqDxJ9ZTBcI3I57X84iMHE8+QSvxIVVwizyfajFO5eSqy8ED//VogzugA==
-Received: from localhost (p200300e41f147f00f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f14:7f00:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id g23-20020a50ee17000000b0055971af7a23sm75332eds.95.2024.02.01.10.49.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 10:49:18 -0800 (PST)
-From: Thierry Reding <thierry.reding@gmail.com>
-Date: Thu, 01 Feb 2024 19:49:07 +0100
-Subject: [PATCH net-next 3/3] net: stmmac: Configure AXI on Tegra234 MGBE
+	s=arc-20240116; t=1706813381; c=relaxed/simple;
+	bh=4kQszUoBJ5ep+V9GiUUQxx2RZAcg0NaaLqCv4hDSd8o=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=gRH0IXVip70vOLKpI8dDNWBfZ5yJLgWu6iIlg5zR2ervxbLHs9K+V3dNwNHo0R3dCd5sGrk4KTvOhYNvYcAmcNv7iUjGno2tu+UvZqu3I4ibPxCAq9jdiWZh8Pc3QhHVXAKHIkXq29KJAZKCRpTunGtZ7BZhaQaSK3c/u+ukYWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id 6761992009C; Thu,  1 Feb 2024 19:49:30 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id 603D692009B;
+	Thu,  1 Feb 2024 18:49:30 +0000 (GMT)
+Date: Thu, 1 Feb 2024 18:49:30 +0000 (GMT)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+cc: Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>, 
+    Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH 1/2] PCI: Clear LBMS on resume to avoid Target Speed
+ quirk
+In-Reply-To: <d5f14b8f-f935-5d5e-e098-f2e78a2766c6@linux.intel.com>
+Message-ID: <alpine.DEB.2.21.2402011800320.15781@angie.orcam.me.uk>
+References: <20240129184354.GA470131@bhelgaas> <aa2d1c4e-9961-d54a-00c7-ddf8e858a9b0@linux.intel.com> <alpine.DEB.2.21.2401301537070.15781@angie.orcam.me.uk> <a7ff7695-77c5-cf5a-812a-e24b716c3842@linux.intel.com>
+ <d5f14b8f-f935-5d5e-e098-f2e78a2766c6@linux.intel.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240201-stmmac-axi-config-v1-3-822e97b2d26e@nvidia.com>
-References: <20240201-stmmac-axi-config-v1-0-822e97b2d26e@nvidia.com>
-In-Reply-To: <20240201-stmmac-axi-config-v1-0-822e97b2d26e@nvidia.com>
-To: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- linux-tegra@vger.kernel.org, Thierry Reding <treding@nvidia.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1341; i=treding@nvidia.com;
- h=from:subject:message-id; bh=NJ6QmQ9rSuyu2yILzTMeD+XilmAw5wEYJDPvDZo2/VA=;
- b=owEBbQKS/ZANAwAIAd0jrNd/PrOhAcsmYgBlu+ep1zJWpEM8HRzktM8KpsERNnutRk7N84dvz
- K2El6DKvMuJAjMEAAEIAB0WIQSI6sMIAUnM98CNyJ/dI6zXfz6zoQUCZbvnqQAKCRDdI6zXfz6z
- ofTjD/9vqkLXf0KsRrAGJFdVsvmQwB4UULEK0xMOneRYgY1j7/xcxTaqvOZfJ81Z9hxI/U7CDRx
- XvwAIYUqbi66duOyf/viRcLGYwAWCsFdn8zvMgsM004MjLki6BhICcLabpaXoYQSwC9QtKWV4Qp
- JIHve3g6rlXez1V4SLhClwwXJRsw7iyHTeiVc9SYVEapCIaZmEJpgLNZqgQxgP/uxME4k6wwNS3
- 6Zkon2xpBLVxxdw5dRRUVdWdw56JT1Xh229MaoLARsWUtaJmjpC0HSK1EBfHLzsV3fN9O58Dq9u
- 0xVzUsOkHlvhUVPvqbJEgpzrjHaL3w4mfkpFxoDfP7qUnJKYZbFwKwl7sko4NgeYz/SQ+fiNXh1
- dIPA1FXHrHq6NyeO9/3MwKkuTiTWS1vpDhUbTXQUFzeCyFmakx9uk63lrM7fe2v3zSxmNGCBtyx
- TW3atIO720/GQc7okk8LM0MXlpg+UPEJYtQp7/G+6SludKy6yLf7v1gz8ovrQdfc0aeu8YaYahh
- +Uq35mjGpOTsDo7sYM+eONXk5zGkCaoNZCvleBvCaLJIkQvm+g1/3wJ8LeBjXNidPSGfBMsyxM+
- B7ePsc1guQNfMU1CjQITNzqu4fV/Hj5fepo+1mQmnsYmAjK/0ZA2hASSBW9cQ0GPsyxNSr6zXNX
- kCD605YF4Kg+Uig==
-X-Developer-Key: i=treding@nvidia.com; a=openpgp;
- fpr=88EAC3080149CCF7C08DC89FDD23ACD77F3EB3A1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-From: Thierry Reding <treding@nvidia.com>
+On Thu, 1 Feb 2024, Ilpo Järvinen wrote:
 
-Allow the device to use bursts and increase the maximum number of
-outstanding requests to improve performance. Measurements show an
-increase in throughput of around 5x on a 1 Gbps link.
+> > >  I think there is a corner case here indeed.  If Link Active reporting is 
+> > > supported and neither DLLLA nor LBMS are set at entry, then the function 
+> > > indeed returns success even though the link is down and no attempt to 
+> > > retrain will have been made.  So this does indeed look a case for a return 
+> > > with the FALSE result.
+> > > 
+> > >  I think most easily this can be sorted by delegating the return result to 
+> > > a temporary variable, preset to FALSE and then only updated from results 
+> > > of the calls to `pcie_retrain_link'.  I can offer a patch as the author of 
+> > > the code and one who has means to verify it right away if that helped.
+> > 
+> > I already wrote a patch which addresses this together with the caller 
+> > site changes.
 
-Signed-off-by: Thierry Reding <treding@nvidia.com>
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ Can you post it here for review then, as surely it's a standalone change?
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c
-index bab57d1675df..b6bfa48f279d 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c
-@@ -199,6 +199,12 @@ static void mgbe_uphy_lane_bringup_serdes_down(struct net_device *ndev, void *mg
- 	writel(value, mgbe->xpcs + XPCS_WRAP_UPHY_RX_CONTROL);
- }
- 
-+static const struct stmmac_axi tegra234_mgbe_axi = {
-+	.axi_wr_osr_lmt = 63,
-+	.axi_rd_osr_lmt = 63,
-+	.axi_blen = { 256, },
-+};
-+
- static int tegra_mgbe_probe(struct platform_device *pdev)
- {
- 	struct plat_stmmacenet_data *plat;
-@@ -284,6 +290,9 @@ static int tegra_mgbe_probe(struct platform_device *pdev)
- 	if (err < 0)
- 		goto disable_clks;
- 
-+	/* setup default AXI configuration */
-+	res.axi = &tegra234_mgbe_axi;
-+
- 	plat = devm_stmmac_probe_config_dt(pdev, &res);
- 	if (IS_ERR(plat)) {
- 		err = PTR_ERR(plat);
+> > >  This can be problematic AFAICT however.  While I am not able to verify 
+> > > suspend/resume operation with my devices, I expect the behaviour to be 
+> > > exactly the same after resume as after a bus reset: the link will fail to 
+> > > negotiate and the LBMS and DLLLA bits will be respectively set and clear.  
+> > > Consequently if you clear LBMS at resume, then the workaround won't 
+> > > trigger and the link will remain inoperational in its limbo state.
+> > 
+> > How do you get the LBMS set in the first place? Isn't that because the 
+> > link tries to come up so shouldn't it reassert that bit again before the 
+> > code ends up into the target speed quirk? That is, I assumed you actually 
+> > wanted to detect LBMS getting set during pcie_wait_for_link_status() call 
+> > preceeding pcie_failed_link_retrain() call?
 
--- 
-2.43.0
+ It is a good question what the sequence of events exactly is that sets 
+the LBMS bit.  I don't know the answer offhand.
 
+> > There's always an option to store it into pci_dev for later use when the 
+> > quirk is found to be working for the first time if other solutions don't 
+> > work.
+
+ Indeed there is.
+
+> > In any case and unrelated to this patch, the way this quirk monopolizes 
+> > LBMS bit is going to have to be changed because it won't be reliable with 
+> > the PCIe BW controller that sets up and irq for LBMS (and clears the bit).
+> > In bwctrl v5 (yet to be posted) I'll add LBMS counter into bwctrl to allow 
+> > this quirk to keep working (which will need to be confirmed).
+
+ If there's an interrupt handler for LBMS events, then it may be the best 
+approach if the quirk is triggered by the handler instead, possibly as a 
+softirq.
+
+> > >  What kind of scenario does the LBMS bit get set in that you have a 
+> > > trouble with?  You write that in your case the downstream device has been 
+> > > disconnected while the bug hierarchy was suspended and it is not present 
+> > > anymore at resume, is that correct?
+> > >
+> > >  But in that case no link negotiation could have been possible and 
+> > > consequently the LBMS bit mustn't have been set by hardware (according to 
+> > > my understanding of PCIe), because (for compliant, non-broken devices 
+> > > anyway) it is only specified to be set for ports that can communicate with 
+> > > the other link end (the spec explicitly says there mustn't have been a 
+> > > transition through the DL_Down status for the port).
+> > >
+> > >  Am I missing something?
+> > 
+> > Yes, when resuming the device is already gone but the bridge still has 
+> > LBMS set. My understanding is that it was set because it was there
+> > from pre-suspend time but I've not really taken a deep look into it 
+> > because the problem and fix seemed obvious.
+
+ I've always been confused with the suspend/resume terminology: I'd have 
+assumed this would have gone through a power cycle, in which case the LBMS 
+bit would have necessarily been cleared in the transition, because its 
+required state at power-up/reset is 0, so the value of 1 observed would be 
+a result of what has happened solely through the resume stage.  Otherwise 
+it may make sense to clear the bit in the course of the suspend stage, 
+though it wouldn't be race-free I'm afraid.
+
+> > I read that "without the Port transitioning through DL_Down status" 
+> > differently than you, I only interpret that it relates to the two 
+> > bullets following it. ...So if retrain bit is set, and link then goes 
+> > down, the bullet no longer applies and LBMS should not be set because 
+> > there was transition through DL_Down. But I could well be wrong...
+
+ What I refer to is that if you suspend your system, remove the device 
+that originally caused the quirk to trigger and then resume your system 
+with the device absent, then LBMS couldn't have been set in the course of 
+resume, because the port couldn't have come out of the DL_Down status in 
+the absence of the downstream device.  Do you interpret it differently?
+
+ Of course once set the bit isn't self-clearing except at power-up/reset.
+
+> So I would be really curious now to know how you get the LBMS on the 
+> device that needs the Target Speed quirk? Is this true (from the commit 
+> a89c82249c37 ("PCI: Work around PCIe link training failures")):
+> 
+> "Instead the link continues oscillating between the two speeds, at the 
+> rate of 34-35 times per second, with link training reported repeatedly 
+> active ~84% of the time."
+> 
+> ?
+
+ That is what I have observed.  It was so long ago I don't remember how I 
+calculated the figures anymore, it may have been with a U-Boot debug patch 
+made to collect samples (because with U-Boot you can just poll the LT bit 
+while busy-looping).  I'd have to try and dig out the old stuff.
+
+> Because if it is constantly picking another speed, it would mean you get 
+> LBMS set over and over again, no? If that happens 34-35 times per second, 
+> it should be set already again when we get into that quirk because there 
+> was some wait before it gets called.
+
+ I'll see if I can experiment with the hardware over the next couple of 
+days and come back with my findings.
+
+  Maciej
 
