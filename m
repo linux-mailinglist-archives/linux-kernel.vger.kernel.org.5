@@ -1,129 +1,124 @@
-Return-Path: <linux-kernel+bounces-48259-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26896845938
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:47:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 490CC845929
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:46:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C97F41F237F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:47:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0570628CE8F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:46:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E8485F499;
-	Thu,  1 Feb 2024 13:46:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E2A65CDFD;
+	Thu,  1 Feb 2024 13:46:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LJFdmqgP"
-Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SH88rKnd"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B38C65CDFF
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 13:46:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2D8753371;
+	Thu,  1 Feb 2024 13:46:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706795202; cv=none; b=k71m4xzyyq5bthG+O+oV9KXcQvAgt2QOUhZw5CkLkSAqIuesXVdWQuWcixacEs8lgIpBogDnGQ+zrRDxRoC/Sw12Tz9zSxi8/m0eAt9JrBYHCuyHySOHa9aGnZIes2sWuaNq++eXhsiflYwSzzmkuHyX/ku2MPeNhLQgEN9YY/M=
+	t=1706795174; cv=none; b=GbVUFqUcZefWuddCQx9kZL9atP1NH2rAJTFNbUM1LE1HJ6v0IImuOCLQOUdqXoGetGHXAVwjnL/XueRqABXK0dTfmG/K7FfbxiHOnww5uW51PzzG4z/T5jEiO5zFhQiWQY10taGXUALPtTZL0dXZGB3RWhhTLG9QN58Xhl7GJZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706795202; c=relaxed/simple;
-	bh=suoI7qvddasF6ze11GbOGjsGkZl9FBFquOHwW330phg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZGBS2ivCa9C1rBeZHJJQv/xZ7Nw3p5CbaLBgGCnyMJZm3h8HfDdU+rCxWKqRdZ15tbqyEpMVVEZ6sSLEj6WDFAvBDTglGUknkT8bW77mH5sABvNN1UcVnUOhOpJIdQ2SINivszmUunLO1VmHjpFJMdkWwAkS6kjzeJ2yY07juSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LJFdmqgP; arc=none smtp.client-ip=209.85.221.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-4bd80b41cbdso342452e0c.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 05:46:40 -0800 (PST)
+	s=arc-20240116; t=1706795174; c=relaxed/simple;
+	bh=jSS3kU/kYXHEvoe19QaywJy92OI0lG5OVz7ViCeEQ4g=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=WfP5VnOqsWouO8gZ+Csa+dmN//qMA0FlqRBnaY3ExBc06/Soh/LskY1jm6jGbrBR1PXD9rVb8ZMtfXIBsX4PNBh2tXN8tkHWGDIpgGENiDw0F6PJSuEGvDZallJV2HCnpI6SPChjcYCW8NAaVj80qa3zhIm9XiVzJ3fQ4bCluJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SH88rKnd; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40fc2a6f8b6so1728755e9.2;
+        Thu, 01 Feb 2024 05:46:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706795199; x=1707399999; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gYWYexFtoJ2yHocou+INVoUtLbF8tOuPvQoRlZwm2yg=;
-        b=LJFdmqgPnybJIumvPpfSejLkIEttxsn08suUHDAHBBpYlnfLY7vD/jAwsollH7N3F7
-         /3cqzMeD9q0atz+INW14/C+UpgvO/tSxQ3fo6LkcKvgvw4f2O2tNhFpqec8Fur9gMv3v
-         riRH9dgwwFJulRbu22STv/MYccrOLORyGL5QxMh/eUmOqx/CtxxU0kTQRX3Xlpy9U69n
-         YitNBjDNPl2IwwKRgG0yobZ+WUWalQ/yECvaisqyoop6BsFZXarkvBv0ii1pE/W0beLw
-         1xWK4Z/1h78PaQ7lFPIkIfmVGgl0xy/YC9sLuvBzw+MVlkobmg8Mtz/9WpmMqItaonPl
-         hcWQ==
+        d=gmail.com; s=20230601; t=1706795171; x=1707399971; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eG1Hl/g1QZ4SFsqJkUJ95bOy1xVsUGP8RzV+23c+rYY=;
+        b=SH88rKndQeFY4lzVrqe8+fls1KjhzEJW2NEEWS0TSoKB8JeZoZYeOju2pVIlVys6Qz
+         66tnCp4y/pD9+4eS8T42ZwsYJPSNBBd+EuE35/wxEXiJmrufGeBSRYqFFn1UOij9x9x9
+         rQYH9MAzo7fogQP/t54lh0D6Xg2UyvfjsurqgNZMWjcyOkvHNysLZ8R1liaUq/QuTjYG
+         uOdOaeeoZwzoJfjOp18+m4OFlOKt8HVCLeX+QMsOOhQxrrprjUY1KzA/4RYzHvsrukrc
+         meJKrUT2k3DpSMGqY/8rLT+mLIXr1o2yYjb3wao35IH6XzutPzHIhzeImrgDqV+0IZiX
+         d98Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706795199; x=1707399999;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gYWYexFtoJ2yHocou+INVoUtLbF8tOuPvQoRlZwm2yg=;
-        b=RORbEy7kLMoMOAeXa82wLI+MavE7tVj6+0uyCUawTjM/pxUh2kBtjtU7JKL1fMWXBo
-         k1pyh9X9r+3zP/idryHVHTUU1eaNvCiBbT5Sq7nwfqMzHWCMhX75FGHsjmdh6kMSM9Jy
-         JKXWMYkq18hG4Ve1GL3pQC4n6bK0Cc2q7RxX2iHUEzPMJ87jJCrf19KBB5bsd7a/VZ5F
-         nsjuZABc4RjvCAiUQNLotBsm5oR21JNa06fkNJvGHb+KMt6PCZccfIdi9Y++diwIWjNL
-         /TlGxN1htkJXfFEuqd1G8m3pUkxlVSjdoh+0/fF/WyXUklBh7y3FBM0Wzzts4tDE3WBH
-         Srcg==
-X-Gm-Message-State: AOJu0YyvT1JfgkVMB3a8IYqOJoyVe8btcDpqemikWnaGnQ607fM9Acir
-	1VqumdmOr28jcAbwo0Ocok7qrny+WlXF5pUfoU5yf+Uyzgp2lTPL/XSuiHRDTsRtUOtZlB6i4zc
-	VEZa/btbfR0pNm5FG5lbGPgLKR/zlfsQrDHTB
-X-Google-Smtp-Source: AGHT+IG80kHJI3o0nh9nc37cFYAZfNgIoolcnGet/bLjzO8FQfWUZqIqvqwlp1tA8htBaza2xRqZOec13j3l2wPN17s=
-X-Received: by 2002:a05:6122:2a0d:b0:4b6:be94:acc6 with SMTP id
- fw13-20020a0561222a0d00b004b6be94acc6mr5599008vkb.10.1706795199311; Thu, 01
- Feb 2024 05:46:39 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706795171; x=1707399971;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eG1Hl/g1QZ4SFsqJkUJ95bOy1xVsUGP8RzV+23c+rYY=;
+        b=Kw9AdiHkZsQlsnWoo2jB5AgcNDmGwd/tw/LzbyuSCvMN9j3C0QVn1Rs4olG62YTHZ6
+         E/FO95AwntBTVsVx9an1PD4EKV99PRJtYJJ0Ol9h9QwlQzAq+LYKUwLg9vGKS2f3o1dN
+         Ggpqk4RbQOTRwozMDQMrflbCxh7q/sNYHY+TxHAMh3SGS6sV2RkPDH5D59GqORAfHYs+
+         L5U6iGiEJx27yuJ8uPFiCT5hSvx4oXzkbg3wiA8r0uen2nmWt/MGbKs9fFakta9i+jcO
+         Qdhok3xl4LWMWnuKv6jcRqiFq0r9xBlK0i97RHwBLE/TlduOqm4V6GpmyVuzZgjlO0S7
+         IH7Q==
+X-Gm-Message-State: AOJu0YxGwLdWA0yhroksrxgPqLJPUtwg+if+UU5347dZ2zRYuqu4oHcU
+	L+XzLLQuuqZ0aXFCzuRpwY9Khmij8eBO3rZKgllaHidJ0SwetXfK
+X-Google-Smtp-Source: AGHT+IHVmFU6ijb8MfVbOKpT3CZlGFfiCabmyzt+ymCHEkJo1kE58gqz0YVpLTjBDIrjnicVgj6B2g==
+X-Received: by 2002:a05:600c:45d0:b0:40f:30b:ee96 with SMTP id s16-20020a05600c45d000b0040f030bee96mr3847044wmo.37.1706795170791;
+        Thu, 01 Feb 2024 05:46:10 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUgWuqDQRRvyHqkAxvyBsj8P9sX+1sn2aYJf9w8fg19NQd7NPgYao55LczFPgaS2lUNsjP7DocUMdZ9qvTIGatNhFn/x3UEXolbrLmILs88rU9JymzYrDKAs3xU1GYjWASo/FhJo/YCZ5S2Y6Ea5Si9bBRRxubGFq/CZ2uV29aYeVGrbzvmaOH3W7u7HTRd3It5/L0BB1vG49+LyZa8ZznpAAPCi0D7pCaKUVUkZmjc7pI8FIjj5375G5qiA9kDI7VCfAt0/XRvO0K42eAb+khDBw5gVWel4aWkHgbV/S4o6cZYM1XrPzOXRFgLBilXy4ANvriqtfJn2MXTI/dRqFhKyrmEQUCF7qcSrpn4LwObfAfSPKo5pSlkobFLsw0+1DEew8rvc+vO0a1gm3nVMBcPAOJOU9nnJ+zzEDLA+Gc=
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id b16-20020a5d6350000000b0033aeb0afa8fsm11691259wrw.39.2024.02.01.05.46.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 05:46:10 -0800 (PST)
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	linux-arm-msm@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [net-next PATCH 0/2] net: phy: qcom: qca808x: fixup qca808x LED
+Date: Thu,  1 Feb 2024 14:45:59 +0100
+Message-ID: <20240201134602.11085-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
- <20240201122216.2634007-2-aleksander.lobakin@intel.com> <3f6df876-4b25-4dc8-bbac-ce678c428d86@app.fastmail.com>
-In-Reply-To: <3f6df876-4b25-4dc8-bbac-ce678c428d86@app.fastmail.com>
-From: Alexander Potapenko <glider@google.com>
-Date: Thu, 1 Feb 2024 14:45:58 +0100
-Message-ID: <CAG_fn=Wb81V+axD2eLLiE9SfdbJ8yncrkhuyw8b+6OBJJ_M9Sw@mail.gmail.com>
-Subject: Re: [PATCH net-next v5 01/21] lib/bitmap: add bitmap_{read,write}()
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>, "David S . Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>, 
-	Marcin Szycik <marcin.szycik@linux.intel.com>, Wojciech Drewek <wojciech.drewek@intel.com>, 
-	Yury Norov <yury.norov@gmail.com>, Andy Shevchenko <andy@kernel.org>, 
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>, Jiri Pirko <jiri@resnulli.us>, 
-	Ido Schimmel <idosch@nvidia.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
-	Simon Horman <horms@kernel.org>, linux-btrfs@vger.kernel.org, dm-devel@redhat.com, 
-	ntfs3@lists.linux.dev, linux-s390@vger.kernel.org, 
-	"intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>, Netdev <netdev@vger.kernel.org>, 
-	linux-kernel@vger.kernel.org, Syed Nayyar Waris <syednwaris@gmail.com>, 
-	William Breathitt Gray <william.gray@linaro.org>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 1, 2024 at 2:23=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Thu, Feb 1, 2024, at 13:21, Alexander Lobakin wrote:
-> > From: Syed Nayyar Waris <syednwaris@gmail.com>
-> >
-> > The two new functions allow reading/writing values of length up to
-> > BITS_PER_LONG bits at arbitrary position in the bitmap.
-> >
-> > The code was taken from "bitops: Introduce the for_each_set_clump macro=
-"
-> > by Syed Nayyar Waris with a number of changes and simplifications:
-> >  - instead of using roundup(), which adds an unnecessary dependency
-> >    on <linux/math.h>, we calculate space as BITS_PER_LONG-offset;
-> >  - indentation is reduced by not using else-clauses (suggested by
-> >    checkpatch for bitmap_get_value());
-> >  - bitmap_get_value()/bitmap_set_value() are renamed to bitmap_read()
-> >    and bitmap_write();
-> >  - some redundant computations are omitted.
->
-> These functions feel like they should not be inline but are
-> better off in lib/bitmap.c given their length.
->
-> As far as I can tell, the header ends up being included
-> indirectly almost everywhere, so just parsing these functions
-> likey adds not just dependencies but also compile time.
->
->      Arnd
+This is a bit embarassing and totally my fault so sorry for that!
 
-Removing particular functions from a header to reduce compilation time
-does not really scale.
-Do we know this case has a noticeable impact on the compilation time?
-If yes, maybe we need to tackle this problem in a different way (e.g.
-reduce the number of dependencies on it)?
+While reworking the patch to phy_modify API, it was done a logic
+error and made the brightness_set function broken. It wasn't
+notice in last revisions test as the testing method was to verify
+if hw control was correctly working.
+
+Noticing this problem also made me notice an additional problem
+with the polarity.
+
+The introduced patch made the polarity configurable but I forgot
+to add the required code to enable Active High by default.
+(the PHY sets active low by default)
+
+This wasn't notice with hw control testing as the LED blink on
+traffic and polarity problem are not notice.
+
+It might be worth discussing if needed a change in implementation
+where the polarity function is always called but I think it's
+better this way where specific PHY apply fixup with the help
+of priv struct and on the config_init phase.
+
+Christian Marangi (2):
+  net: phy: qcom: qca808x: fix logic error in LED brightness set
+  net: phy: qcom: qca808x: default to LED active High if not set
+
+ drivers/net/phy/qcom/qca808x.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+-- 
+2.43.0
+
 
