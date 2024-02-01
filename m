@@ -1,118 +1,81 @@
-Return-Path: <linux-kernel+bounces-48825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FF3B846218
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:46:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CBEA846216
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:45:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07970284CCB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:46:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C2661F24052
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:45:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A85E63C697;
-	Thu,  1 Feb 2024 20:45:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3BFF3CF5D;
+	Thu,  1 Feb 2024 20:45:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="S+nkzNFk";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="PIZEmAXk"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="n6IeRegj"
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2057.outbound.protection.outlook.com [40.107.102.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 624636AD9;
-	Thu,  1 Feb 2024 20:45:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 987F33D960;
+	Thu,  1 Feb 2024 20:45:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.57
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706820349; cv=fail; b=dqU4kDRVURATLAt5RbrQ0Hj6T++pAJKzde4E7iJqgQn3IyxDfg47YCzxEwxbtz2xnqU4uExicjgrZMk1kEDHv6IBoVpA6sHUYCWx/rHj2prl4DWaJU1V2kueEQOi38lVw2yqBW+EvLl0kwDBFhV84sBb59pZaYfXGWvhxNezCCM=
+	t=1706820329; cv=fail; b=K04cPAdqawjlqjSgdieCZDl5v9zSstcfk+iwMYoITGdMMg4VyeoP7BGCmEO9lXw/q8PkRADdus5YNZZaSUtraQzjKB4ZevMm98YHYAyOmY1LWak9dL9/+NqkKZ/WDJkb94SCoUd42NMcBI7LBI9fwydaBU1qYuiJpuIknabjzl4=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706820349; c=relaxed/simple;
-	bh=I8DFdBD0E39vJ9Zq2VyXWjPOZnzIjG1jRZxPW2wB4wY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=IcGrnIrmEBibjMi27uTKZrLPCiY/5ASYOFZlvt9VRlsFXS4RPkgmeCPJDbbMvJmsVk3ByeMCS5CaaVDLG8V1hQZcQDmifoMNZTqo4E2cGWOLVo44HegFeNcreQ9RyxeYdf22YURD81eKH/Sv/1NQMQlFv78eSszkfn6N4Oma+90=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=Oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=S+nkzNFk; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=PIZEmAXk; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=Oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 411JEdTD008888;
-	Thu, 1 Feb 2024 20:45:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type :
- content-transfer-encoding : in-reply-to : mime-version; s=corp-2023-11-20;
- bh=CHH6wRf8UpWcf6sURE0/1IgAFi3AxyRCF85p1rztcgE=;
- b=S+nkzNFk6NL/fnfg8o+mjO8Q95mEs8BTQBS6Eej/unGJCIH4KMeB+pT/qIg2gk8QNyyR
- SiR4lSqKamriiCCq2c/CEWUKK0qgYqFI/ksMUT19tGWYdby2nnl/WAJ5kG9OTc52kCBf
- KNX78WqLnZlKz2koRbNBObo1E/jmUvczy1FYLLzqo5ZJHLO2UQZwDZsubY7lepjUeP2m
- 02bbSWmfwGJe/wrq2WF2q6Wxkr6iIgDX88WfdvDZ//YKuq36B37L6jbTQi+GiLH81wUv
- s3LvQRH/AF8fiSHEnuWpOuFRky5WJeD6LPBvaiLpcl7QlCbuQcMLKMpma1ymuGzfVm7e BQ== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vvtcv5wg5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 01 Feb 2024 20:45:20 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 411JPDxe005354;
-	Thu, 1 Feb 2024 20:45:19 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2100.outbound.protection.outlook.com [104.47.58.100])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vvr9gywfc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 01 Feb 2024 20:45:19 +0000
+	s=arc-20240116; t=1706820329; c=relaxed/simple;
+	bh=pcFnUIpFYj04wm9jVH6WkqW2OY2ZkTm4+amuOtl0TaY=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=sNSVKTqJhZaxE4E6RS+wfsWu1vbmsKd0pR4M/MUxuv4g67knMmpL2FehxIiOaBhcR1ZVsULbKiuG+yD8Ha+RzM0LZZASNTRoyhgqV8M8OgmEZRmYhJRH/w1JDzD5XcOhQP5lz+VAeszuzN9elnkAszZqOtxw3+ZXAr8KFlsb6cA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=n6IeRegj; arc=fail smtp.client-ip=40.107.102.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q88ZMgl1ZaKUis+3ZDtS/3UsawklGEtIr7WBFvUknGpeFk/5FKXLLrmTkDNrtVCOmTd2Ly81tIQcW/MbUcEnw+hgmRVYFq07Wb9+jmunlwp/F0dL53fqdamJrUiDkufcKVJsxpQyZGkhRzJ8tkdgoaYtI+i1ZYa78ojNksvOmFt7FqhqKKU6Q85OshFOoMClT/eZtYjeI31ow5BOiAoaNP/rTZ4b1RhNyrcaVCEVgclMtpe0iFKLmRkg2Ju+mer19b3hC+T8wTPAYXwQcuSL2arWX4g/hfgVeEI40Op08R3sq/u067Wo28XsxafBwyLCxbs+ehsXZRBslTd/IKqALw==
+ b=aiepqCf0XNpjYrdTeuGn0VG5uc1Vs58kmXoHh/dr1Y+LmXBjNHxDl7Eh4dW2fHr1A+ztjdhgsJlJFIK0lT0Tm3Yy9hhcjllhD2VHuQgr1Dck4pAUdJ6TZG53MqEd7BwTELYU2S4hWZaIfQhsWWX2LLxJrE+dVpXd1v3Ycm7LGOIpOwgHjtZTbDnitWTwhwEsQJYUTeqsGDU7djVDxSyzHDqvHc2pddjurSbr82V9vmagxyzFAFy+6EhPPyct8+MnA6AgWHTgv0tYMhX1D85cwg5in65vVwPF7Zzv0ydz7nVl3c+BYpC4VoKMYfIvuGaJOBPrHiBeD2ioao9XBNEzEg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CHH6wRf8UpWcf6sURE0/1IgAFi3AxyRCF85p1rztcgE=;
- b=GBaBzgLth/hzbD36O1cGOJmf7WURhOAapVnpn7zBTBVLiFXaKc4HeClrzUgP1umXK8pkCgtk87mi5ukmyakg8gLdh8yvJvkrq+YeXYB86/KtfBXXqWs1oQS9sBClCebkbFnqmn4T/ew3mCjCZb62+ZfPicSSZqto1/TBub1/N2WfzrxWV0Vexmt9hQd7rgkG4No6IQ+s3uON1UMYLA+lYtyTyplBBw+8wmHBERj9KGPUiWWGqfkInZ+fI2WYOcNSwSWnTFmQo5zSynCYFscto10oX4n4b8Arz082qlD3xeGqghfbEvTmOFldgVCeGpb0fXMqBp9M3C/HAQMAoXOazg==
+ bh=VANTp1oBF1i0be29b3+cnKRLuCUIp+zW0eMuI3Sj+qA=;
+ b=GCVgsj+DCrX4cjCBX+GoSHYf/LDHNkuB/CryG46p4wxFArpqRlsJwJKu9WxP7PQjfNIOkUNsIOAErg/onnp89+Z6//R3JhVA3rwHHV2FlLRlmXymN7C17jzSYTgjqXYMrg/WxwPbZTkMOkB8Q4wW620ALtzhlGvp4bCxlBhuBiRV0J+XIx7QLDWRYSAc4kxWTvjpUirVkdIwPC0lcCAOGeEDlK/jQgekE3GCkxDJVPlOEhi6OrCed7aj6UervOSzmmnhvX5qoeTh31/YCOO9qW4SIQUzG85KppVWHNXo/CDOEqZSjVpgiTIuO3aLIoMgNLOqx+Vg7r2QeHpjTyXMOw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CHH6wRf8UpWcf6sURE0/1IgAFi3AxyRCF85p1rztcgE=;
- b=PIZEmAXk/6MGGRWf5WsDVrcxQhE2yYEx2WpfjL8Jbbv7/LjTwffkTGjfYhZcUecDy4karoi9iiXrdgkvqLNb4ehPBOEZjsM6wUE738HPrf2vrX613QSg2+1L4LfBw+pv92gPR0E0fBVyb5ie4cRG+7g7bcqUcmSB+SVWWiMRbxU=
-Received: from DS0PR10MB7933.namprd10.prod.outlook.com (2603:10b6:8:1b8::15)
- by SN7PR10MB6449.namprd10.prod.outlook.com (2603:10b6:806:2a0::15) with
+ bh=VANTp1oBF1i0be29b3+cnKRLuCUIp+zW0eMuI3Sj+qA=;
+ b=n6IeRegj1CDyf0P7MK3Uasm/6Mh2Bfwjr/r7IlezuibTqitG2PCcq4VdrADpNdmiPvRdI0g+JsJF11I8H2GCfcst5ITmGXiwuWuoxadRIx3IJGbdpYrcpVS0ca+qtYlTShcrqc0ff8TyKJfsvhhTZP41Q/mU+GKmm1FSl6t4f2s=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CH3PR12MB8403.namprd12.prod.outlook.com (2603:10b6:610:133::14)
+ by SN7PR12MB8027.namprd12.prod.outlook.com (2603:10b6:806:32a::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.24; Thu, 1 Feb
- 2024 20:45:16 +0000
-Received: from DS0PR10MB7933.namprd10.prod.outlook.com
- ([fe80::20c8:7efa:f9a8:7606]) by DS0PR10MB7933.namprd10.prod.outlook.com
- ([fe80::20c8:7efa:f9a8:7606%4]) with mapi id 15.20.7249.017; Thu, 1 Feb 2024
- 20:45:15 +0000
-Date: Thu, 1 Feb 2024 15:45:12 -0500
-From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-To: Jeff Xu <jeffxu@chromium.org>
-Cc: Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org,
-        keescook@chromium.org, jannh@google.com, sroettger@google.com,
-        willy@infradead.org, gregkh@linuxfoundation.org,
-        torvalds@linux-foundation.org, usama.anjum@collabora.com,
-        rdunlap@infradead.org, jeffxu@google.com, jorgelo@chromium.org,
-        groeck@chromium.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        pedro.falcato@gmail.com, dave.hansen@intel.com,
-        linux-hardening@vger.kernel.org, deraadt@openbsd.org
-Subject: Re: [PATCH v8 0/4] Introduce mseal
-Message-ID: <20240201204512.ht3e33yj77kkxi4q@revolver>
-Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-	Jeff Xu <jeffxu@chromium.org>, Jonathan Corbet <corbet@lwn.net>,
-	akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com,
-	sroettger@google.com, willy@infradead.org,
-	gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
-	usama.anjum@collabora.com, rdunlap@infradead.org, jeffxu@google.com,
-	jorgelo@chromium.org, groeck@chromium.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
-	linux-hardening@vger.kernel.org, deraadt@openbsd.org
-References: <20240131175027.3287009-1-jeffxu@chromium.org>
- <20240131193411.opisg5yoyxkwoyil@revolver>
- <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
-User-Agent: NeoMutt/20220429
-X-ClientProxiedBy: YT4P288CA0095.CANP288.PROD.OUTLOOK.COM
- (2603:10b6:b01:d0::29) To DS0PR10MB7933.namprd10.prod.outlook.com
- (2603:10b6:8:1b8::15)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.27; Thu, 1 Feb
+ 2024 20:45:24 +0000
+Received: from CH3PR12MB8403.namprd12.prod.outlook.com
+ ([fe80::ea0e:199a:3686:40d4]) by CH3PR12MB8403.namprd12.prod.outlook.com
+ ([fe80::ea0e:199a:3686:40d4%4]) with mapi id 15.20.7249.024; Thu, 1 Feb 2024
+ 20:45:24 +0000
+Message-ID: <295d4eb0-6145-4a18-8439-fba933997321@amd.com>
+Date: Thu, 1 Feb 2024 14:45:22 -0600
+User-Agent: Mozilla Thunderbird
+Subject: [PATCH v3] ACPI: APEI: Skip initialization of GHES_ASSIST structures
+ for Machine Check Architecture
+Content-Language: en-US
+To: Tony Luck <tony.luck@intel.com>, rafael@kernel.org
+Cc: linux-acpi@vger.kernel.org, lenb@kernel.org, james.morse@arm.com,
+ bp@alien8.de, linux-kernel@vger.kernel.org, yazen.ghannam@amd.com,
+ Avadhut Naik <avadhut.naik@amd.com>
+References: <20231204192549.1953029-1-avadhut.naik@amd.com>
+ <b519a7e0-77a7-44b4-809b-caf96536fe1c@amd.com>
+ <c86815fe-21dc-4dd7-bf10-74e3cc754413@amd.com>
+ <ZbA1P_34pUYe6aNX@agluck-desk3>
+From: "Naik, Avadhut" <avadnaik@amd.com>
+In-Reply-To: <ZbA1P_34pUYe6aNX@agluck-desk3>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA1PR05CA0019.namprd05.prod.outlook.com
+ (2603:10b6:806:2d2::26) To CH3PR12MB8403.namprd12.prod.outlook.com
+ (2603:10b6:610:133::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -120,300 +83,241 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR10MB7933:EE_|SN7PR10MB6449:EE_
-X-MS-Office365-Filtering-Correlation-Id: c0cb9f71-3c8d-40a3-811e-08dc2366b18c
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8403:EE_|SN7PR12MB8027:EE_
+X-MS-Office365-Filtering-Correlation-Id: 30d0a6a0-c9ee-48c7-161b-08dc2366b6de
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	10m2ks+RHCF1VHzuVH4PMQ4R9MMsqHLFwOzk9zke0gvJN30+83J4tGtb8omK9K279dl6FZvOjcgwMS3X/xD2VG0JPfSGTw5E/DHAmnzR5oaqDluwSjtjZqtiRYWvOW8p2vNqAOGAaRW46x9tCOIv66NcYx0I8U5Z8Fzy5TmSzjieKIKmpg7EjMuNbWKzFJHGGXAzSfg9PqdFHqF3WYgR8lf9y+5CXDkj5TRNzMgmkva6AtA7smthmjLxEalPZ+eKE6qahgzlyy1JxkfmlrmVnk/l7RbxJ0g568XZ4hMiBaYqXPo7CnZlmTopJEe88weAtZFgRnUyGw55sEeTDdvoNDHjJLO6aNVv0PMd44IlF6wn1BadLMeYkDeM3QM+JGDToQCylQ48FRgCRT5SwX2fSx1wqyyVPhuMEzd5qlmdL+hr65sFDY6wweDIZwyq/NVJozAeWDYDWYUDXH3ONEjSKtfPd7MucJQXG1+ZXdMs9K4Sry2w6L8MDFddMf4fFX9QASPISrYObhzo1WnnhpLJ6r7fKFgAC7EO63xLAvH+JoIJ7GilVEceqlB18qquXncSiC3QgITd+IYpqqLyW3eZ1w==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB7933.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(396003)(136003)(366004)(346002)(39860400002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(66946007)(66476007)(6916009)(66556008)(316002)(2906002)(8676002)(6486002)(41300700001)(4326008)(6506007)(8936002)(86362001)(966005)(33716001)(38100700002)(53546011)(7416002)(5660300002)(83380400001)(26005)(1076003)(9686003)(6512007)(6666004)(478600001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info:
+	BtsK0rLLkZgo8yuXT0PTU+lGhxz32n3Qt3n3PpFu+YtVzlzN3PSi1VHNscx+jGd+l6QMwTAqe4DGayAgJFag6WeduCfqsEgG0N1IjrcboCzYn33DDMSTIHv0p41G0BgARHbeeAqrtu4cIXQ4YPM2NmP5i/jH34piaAUoiFHYbh1w83rpvg4LwrOMbmVQ73W57p+LJckZ80XEM0U78mB0OPFqFW5Ii967Ezz2vqsUPGxiPqRig9GLPMjxKrren00ZidUs8Hzz5/bfcUMdVWvCJJnEcn+xXBlUIgoXZ0KEOyoFDsi+7jzyRiZt664IzdPloWa1G5z4Ee76e0XT2CVlrJOgT9/uVGMbAtiHgkK1RrThgz/rXDYv3pWRNPV9A1r1km1YiNRcK2XKB3lsfCcRsNEN8vC5CuUymKd3nnoUVIyXxC+DUnCJchccRzXeu+3hU8ALNOC1qmpZSLAp8sv6Dy5LrqyxD7D+ysHwiiiDHruopFihLXJU8LekK25+b2/K9TXb/bWzkoN9v+Yk02fhOlEcFZzwotJpsG/wDggbDOM0RMK2BwmCeKaFzC2c1fx2lgC34uq9Rw7lyVvNUNCXP8NJpqFYniuKuDE3XUmWQYzluZc+7A0a5cXiXMwQ0PIQb2rrofcmkjSQ+0rDvHYv2A==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8403.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(39860400002)(346002)(136003)(376002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(31686004)(83380400001)(31696002)(36756003)(6512007)(26005)(38100700002)(2616005)(478600001)(53546011)(2906002)(6506007)(316002)(66556008)(5660300002)(8676002)(8936002)(4326008)(6486002)(66476007)(66946007)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?NkJaaUF2cnE0RG1Fc0QrbjFZbGZGTzdLc3dhM3ZiblRjSFhsUTR2WndPYkQw?=
- =?utf-8?B?VUVtQmQvdTRsTm5Udm5IeUxSNXNZc0RjWUx0OEtLaDNRN2x3RGtQQU16cFlL?=
- =?utf-8?B?bUNsSlRIRHJxWDRFSWtBeDl3dVdrM25ZcGNrUXpJVzZVd01yRFJlQml4QVBp?=
- =?utf-8?B?Uk9UTXAvQkV3M2wzNk1vaEtVNDBUOWg3RkdCQ1FvRVZjcnNOWFlsQ2o1T0Fu?=
- =?utf-8?B?dEFGTllsWlNUMFcyTjRXYy8wb3VkSnoybngrTGFNaGdld1hrTDVTbFdXdDNF?=
- =?utf-8?B?QTdGbXZaOTh6bTZBdUJScWtmSVB3eHMxZDZuREg3RmRSSVo2UjhuU3daSzZD?=
- =?utf-8?B?VzFwcERxaUg4ZjJCejN0YXBHbWsrSzhnY1IzYnI0WTU0b1owUW1OL2tVbita?=
- =?utf-8?B?bmFCMWhieWovbEMvVVF2OG53QjlGOXowVVNHY3hVSkR6cExkcHJQa3JPdldO?=
- =?utf-8?B?Q2Z5TVNQU3dpYmVlaFBqWU42b2I2ZjZaWHp4cWFIeHN4bUFLVFJkc25Xalc4?=
- =?utf-8?B?MnoxVG1QOFZYRnBBd0R3OUJieUJyUDYyZVRRd1hUK2lxaWdlZXBVZitMZUZq?=
- =?utf-8?B?RWZVVEJoSWUwN0ttM3dudThDSDZRV0JRMW9jSlhrVTUzT2o2Z0lHY3E1NDJv?=
- =?utf-8?B?aWhKdHdMc24wbGw1N2ZSMEthaytTYUJIaTRQMm95Sk1GWFhIMFcvdTNxRC9p?=
- =?utf-8?B?OWhWUGJTdGU2Mlg0a2F5N05LK0RueFJjZFMrQVJkZ2t4SkkzSGlvWnRBcktP?=
- =?utf-8?B?ZmFXbVVZSHMyZWE1bmluRVZaSmZXdVp4ZFlLQUhhVDhnRHg1K0dzbVIyV2xE?=
- =?utf-8?B?c3B4dWVjSGxMT0hIeEhXUFF6bnVaQnVRYndrSSs1eVJXMlh0RlRsTGVmd2RE?=
- =?utf-8?B?cStRUmlmSGRSTEJCdUphL2ZvVi82OTNrN2lGbHYrTDk0Tk9SRVcrK2xPZ0hP?=
- =?utf-8?B?VVEveURnc0lDS2hMRFBPRk5LUGMrdmZiTE1IWXZSRzI2R1BGK2c4d3pJb0Y5?=
- =?utf-8?B?a3NYbjlkbXZqTDduRm9CY2pBOGNoenRDVDlyRkxOSnNZZjlaOUM3RmROSUNp?=
- =?utf-8?B?MXZvZUVYOWF4dmpyNkJyb2IrT0xISGxMZlcrazNIOWRDUjZzUmlLZXEyV3JZ?=
- =?utf-8?B?NWtxVVJZdzFGQndTWjhXZzBsa00xck1XeFo5cDU2UVZsVDFIR01SVlR5UVRz?=
- =?utf-8?B?OFA4bGk2MHhETzlRdUh2djJ1VGo5eDhrYm1OeG1MOVY1cDhOejk5K1pQOFRC?=
- =?utf-8?B?Ti9EODFuWUp0TUVHOGxVRUNVM1JiVU1LK01XSEQ5emlsVjNUZUhOM0szWVl0?=
- =?utf-8?B?RnRqdTErUmI5dDljckd1eWt0aEFnS3JSZnJPbVpZWkFVdGFEbnJHcWNWbUJE?=
- =?utf-8?B?L001RU93NTJCdExDV2ZOVFZiYW15TmVNalpzMW1qSVRRZmhHVlFJeFhubzBp?=
- =?utf-8?B?aEVLam0yUGlpbWNJWFBIYndrUnMrTEpmbHdvZzZja1lvd09sMk1QKzJlZmU1?=
- =?utf-8?B?cUhNYWRnTDJGVFRjSUJQaG4vaGhCQjg0b2lNV0lHUS9IKzk1Q2ZHK3h5V3ZF?=
- =?utf-8?B?aUs1ajJVb25QTURJcnNFa2ljcHN3YmFpRXJxUDBpNWFDYXNXQ3Fwb1Yrb1NJ?=
- =?utf-8?B?M2dabjhPNDNoSUZWOHU4RXV6NDlMWXZBRjlhU29Tc2g4cWZHOGVRTDN5VXVt?=
- =?utf-8?B?WmxsR1BPZTBCeHZBbTB6Vk0rSEpURXl3bmpBSkZ5VGVVSmg0SkJ0eTdkTnF0?=
- =?utf-8?B?RXlUTnd3WmR6aStLbDBWTXdnbFJnQm0wWEJ4OVVqMTJPeWYwRUdWKzcwdGor?=
- =?utf-8?B?SnB3TGJNM0ZLb1F5clNEckI1aTZjcVQxakswa0JaQXdQeDMrNjdnb1pmQVht?=
- =?utf-8?B?dlVnWjkxbUQvMTVUMUdValVxbjg5U0lVZmJaZ3FKOWk5R29Ld1JFTGl5RXEv?=
- =?utf-8?B?VmRTSk1lUlU3eVR5OXpHT2tBbjl1bzhsRE4wQXhFa1hVaVRsY3JCNmhaOU9a?=
- =?utf-8?B?SjMvUFRhRDFaS0ZXNW9zQXNMVFV2UW1lYlhoWXVaNHFncjUzODBGM1ZmMmh0?=
- =?utf-8?B?dG5lUkF5RkZUdWl1T2x3TUo5M0ZPZHRBUnp0VHV2V3pGUmpFcSs1Z3MwMDNI?=
- =?utf-8?Q?VeD2pATomITqW9elZQRcucObw?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	Gc4GPDfr1qozVJTJK0mfaIbBVlURfzXdquzzmep3hpIfMBFfxUuWflU99r4pqLrq7zhzRi/9JDxZ4rt3330ySkwurKs/5cnbO8JipFpEJ5DbgRafSW4GBpVaAjh3P7Q5lv5IfOq9d53t8Ao9SNK1Hq7+kYz1QkGxkdXSFh1hKWDQJRP7LDZHffwBvNTrm/gcagNUNMOAXB6jl4gbJzkriQacRgqNzvjYu+0HXTzNRfv34G1hLMWoconxg3eYtOeRTqtRJmI8miqfgmX2rWxw7zHP8F1beHio1DWj5eblLNGhEG4/RkEqu6zTpXVAfFLg+XOkOjmeCtNfKb/FsfIGAnFCmfHP2pXnpVrJEwN5BA90Qvr3GavN48+fti7HalCQ9Kebnr+hkCfS6L9ZDfD6tkLD2RSgnIbKFmIVnG3ZZy28iMuANZvz3sKReczTEaEwxgjo4fiSA3vOkub0Dx0+HxT/iCh4X1PIYKdCLMh2Aw+85w8pTRgKWiAmhEFiBAj7a8FH2Vsvs/53HjLyFjwngxU+t/aokKHMeXZN1qZVtIOtq/+Dzndb2qZ/3YK+a5VkvAYxtMBESd7e0qc5JxlW3jyse0ObSXNnlnIE98veXrY=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0cb9f71-3c8d-40a3-811e-08dc2366b18c
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR10MB7933.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?NEFvakcyaE8xcjZ5VVA4NXpGU0o0Z1I1b25FVGhCak1WbVhvd2ZZMWtNM2hz?=
+ =?utf-8?B?b3ZvQXhJWTBId2cwcFcyTEVtK2t1a1AzK0VyQ3dFNFVtQVZkRW8yYTZ6cnJs?=
+ =?utf-8?B?b0ZZOXkvU0R6a0ZvVUt1NnVYaEFacGRLVkE4N2NIczlTWHZmekVDMlJrZDVY?=
+ =?utf-8?B?Y1I0eVpPbWtFSEhiaGo5WTJnYnFoeXRwRUZVdXd6SnBOaVVGbktBK3pxcG9U?=
+ =?utf-8?B?UUhLd2I0UEZsU0FXcitQcmRLZkZwejA0ZVQ0aVlYNE1DdktmRkFSaktvYm5p?=
+ =?utf-8?B?T2lqMHJZdkVjQk5vbmJqL0dPckZETE9LNGFwQzRUdStqTklQSWVmZG9kZ0F1?=
+ =?utf-8?B?Z2J6akVmcXdyakxEUnA0d1R3dzZYL1JidW9sQzBjaHBDa3FmN1UvTG5NTmhu?=
+ =?utf-8?B?TERxUUV1L3JmWkFyMm4wbUZkMzdZRjFtaTNER1hvRndRVi9IdkFUSFNTdHlZ?=
+ =?utf-8?B?eWlkWHFOWjVrUG40M0ZXNGdzSHVRcGJubkNnZTB5dDJCSk9QaHNDeUpPYmFZ?=
+ =?utf-8?B?a0UxM2VjN1VBMHg3dHp4ai96RUpjVGQ4RmtnSmlJcGdQK2FnK2JYdTQxUmpk?=
+ =?utf-8?B?Nmw0YWt4OEdtQTY3dDdqWFhwbFd3VlJOaVVRQTFiRTRPVStLSGJWZWdISXV5?=
+ =?utf-8?B?RlRQY3d2YWVUdFloVjM1SnJzV2c0Z25FWENOWVlRMlY3eDFWb1hXblZtLzBY?=
+ =?utf-8?B?TGhPb0VYSWRkdnFjaE04YXBmOVNhN1NlT1E0cld6NDBHZ25jcTR2UUtOdlcw?=
+ =?utf-8?B?RSt5SW14ZXA1Z0lpTWhSbWdSYkNmK3VnUElabFBHWDZjT0FDYUNtNG1lWjc0?=
+ =?utf-8?B?ZnFkK0FlMmJNRW5FSGtDYmVhdVZiakVsZDRpc2VhU2YvaXl4TXpwQ21XVlA2?=
+ =?utf-8?B?eWNpZXV4TTdMMzNNQTBaZTNqb2Jicy9oZGxpQlFhZGoyVDBWSmIxSGM1Tjha?=
+ =?utf-8?B?M3QwbDRJS3J1VVZDZ3pQNXBRYnNnUzF1UjZUZk5xb3hNNTVvRHhKUnQ2Ukcw?=
+ =?utf-8?B?NnFqWTV6K0hHTUVhR3AreXkwM0FNUWwwbG1zNVJsZDRxNDdOWG5ycnd1dEhE?=
+ =?utf-8?B?KzFGV281Tlk1RU4wNlJUajFEaVhxeUxjSWs3UzZhTk5lbjU4WWtBeGh0T1la?=
+ =?utf-8?B?Z1lGR3Y2emF3U3N6MURRNklRc1BhOWxySG1INHhuYjRrL29yNExxZzBJV1E0?=
+ =?utf-8?B?NEhJcFVON1dQUGNEMDdFSEFNLzNpMkRCWU5NWFYrZU9RRnhTZ0RnN0J1eEsr?=
+ =?utf-8?B?OHprcGNWYy9HWVV2L3NWdzVCWTB4MzBXUjVKbEN4V3Rrc3hIL0pvK1pHZHJ5?=
+ =?utf-8?B?T0tMTXhJNG1TVkVaVnZSUkU0d1FNeCt4NGFkVVlrQ1pTTFdNS3VoUmdxc3Rr?=
+ =?utf-8?B?SmFOSi9aUmxZb3lkQnJjT3kxQndMa1VCNjA0dGxRTm5JZ0RDV2VTcmkxcjJu?=
+ =?utf-8?B?cm1NQ2F5dnhjdmtNQ243dGJXcFJ3VnQ4SUxYNzlwRExtRERCbHI3UWQyeWdD?=
+ =?utf-8?B?dExYZ0VFY25HaWo2MEFlanNoSkNOVXg5YXQrbnpnTHlqT2JyS3FRVkZHM2Jp?=
+ =?utf-8?B?eURVelZsV3luam5HMEJheHRBMjBWcDRxdGdHK1U1K005TVppWjNWRUduTUwx?=
+ =?utf-8?B?eW91em9MK1RxY2lEMy9pbG5uMml0czZVMEFsS3M5RlVDN25sRW1YclBnUUow?=
+ =?utf-8?B?cUFsWW5mZi9qYUlFTzA2bm1BeWkvd1UyWXhNbG1mMmJBYzh3bzdOU1JCYVFV?=
+ =?utf-8?B?SG5mcmpSYndoeXU2dGVvM1ZmekIxQ1RlY1FQYm5kSzZXVmhxRjdQeGNXRWor?=
+ =?utf-8?B?LzZJRWZlYWJOT05FR29RMGpmMk0zR25lRDh4Yk1vbjY4Z1kyZFM5dFlrVEg0?=
+ =?utf-8?B?RUIwbHJYaGNQSFVGYjFyUXlxWDN1NVpsckJvNUkycUN5eE1rNXFlcFFxbUJ3?=
+ =?utf-8?B?RmNvTGZtcnhhVUNsUys3ZVFjOHlnd1dDSm1RSEI3eUhLT3B4RzF1QmhXU1V2?=
+ =?utf-8?B?cm9wOER3Y3FURU5DTnZxMkhuY2hQejBOZWVtdENLRENGWFZTcUVNRXFYaXpU?=
+ =?utf-8?B?NTJFK2tVUzFhNXlXZlJhUHRpaEVaRTJZWmVJMzh6aW1NemVLY0JTOGdPWlpp?=
+ =?utf-8?Q?d0bDI02TBeMAiQD8SpMBCKFel?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 30d0a6a0-c9ee-48c7-161b-08dc2366b6de
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8403.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2024 20:45:15.4526
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2024 20:45:24.3200
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: As1gutofTgLFzWc06eH7of/kgU8C3KzQgfJ61djg+M29dasV/+0YXP3WGcr2wTYFXJmzuVBwtGxwiV+ZF/pqVw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR10MB6449
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-01_06,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
- phishscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402010160
-X-Proofpoint-ORIG-GUID: dVapN8b2i6I9CZqj84p2lV0IcVuUMPrW
-X-Proofpoint-GUID: dVapN8b2i6I9CZqj84p2lV0IcVuUMPrW
+X-MS-Exchange-CrossTenant-UserPrincipalName: sov+Cb4f1O0ISSn3JxkTRqH8O2t8hWgS2B5TQooR/w3L/m8YI9B2YQZ30DvvBSLP8bCD0BFcZ7spNCS+N30Bzg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8027
 
-* Jeff Xu <jeffxu@chromium.org> [240131 20:27]:
-> On Wed, Jan 31, 2024 at 11:34=E2=80=AFAM Liam R. Howlett
-> <Liam.Howlett@oracle.com> wrote:
-> >
-> > Please add me to the Cc list of these patches.
-> Ok.
-> >
-> > * jeffxu@chromium.org <jeffxu@chromium.org> [240131 12:50]:
-> > > From: Jeff Xu <jeffxu@chromium.org>
-> > >
-> > > This patchset proposes a new mseal() syscall for the Linux kernel.
-> > >
-> > > In a nutshell, mseal() protects the VMAs of a given virtual memory
-> > > range against modifications, such as changes to their permission bits=
-.
-> > >
-> > > Modern CPUs support memory permissions, such as the read/write (RW)
-> > > and no-execute (NX) bits. Linux has supported NX since the release of
-> > > kernel version 2.6.8 in August 2004 [1]. The memory permission featur=
-e
-> > > improves the security stance on memory corruption bugs, as an attacke=
-r
-> > > cannot simply write to arbitrary memory and point the code to it. The
-> > > memory must be marked with the X bit, or else an exception will occur=
-.
-> > > Internally, the kernel maintains the memory permissions in a data
-> > > structure called VMA (vm_area_struct). mseal() additionally protects
-> > > the VMA itself is against modifications of the selected seal type.
-> >
-> > ... The v8 cut Jonathan's email discussion [1] off and
-> > instead of
-> > replying there, I'm going to add my question here.
-> >
-> > The best plan to ensure it is a general safety measure for all of linux
-> > is to work with the community before it lands upstream.  It's much
-> > harder to change functionality provided to users after it is upstream.
-> > I'm happy to hear google is super excited about sharing this, but so
-> > far, the community isn't as excited.
-> >
-> > It seems Theo has a lot of experience trying to add a feature very clos=
-e
-> > to what you are doing and has real data on how this went [2].  Can we
-> > see if there is a solution that is, at least, different enough from wha=
-t
-> > he tried to do for a shot of success?  Do we have anyone in the
-> > toolchain groups that sees this working well?  If this means Stephen
-> > needs to do something, can we get that to happen please?
-> >
-> For Theo's input from OpenBSD's perspective;
-> IIUC: as today, the mseal-Linux and mimmutable-OpenBSD has the same
-> scope on what operations to seal, e.g. considering the progress made
-> on both sides since the beginning of the RFC:
-> - mseal(Linux): dropped "multiple-bit" approach.
-> - mimmutable(OpenBSD): Dropped "downgradable"; Added madvise(DONOTNEED).
->=20
-> The difference is in mmap(), i.e.
-> - mseal(Linux): support of PROT_SEAL in mmap().
-> - mseal(Linux): use of MAP_SEALABLE in mmap().
->=20
-> I considered Theo's inputs from OpenBSD's perspective regarding the
-> difference, and I wasn't convinced that Linux should remove these. In
-> my view, those are two different kernels code, and the difference in
-> Linux is not added without reasons (for MAP_SEALABLE, there is a note
-> in the documentation section with details).
->=20
-> I would love to hear more from Linux developers on this.
+Thank you, Tony!
 
-Linus said it was really important to get the semantics correct, but you
-took his (unfinished) list and kept going.  I think there are some
-unanswered questions and that's frustrating some people as you may not
-be valuing the experience they have in this area.
+Hi Rafael,
 
-You dropped the RFC from the topic and incremented the version numbering
-on the patch set. I thought it was customary to restart counting after
-the RFC was complete?  Maybe I'm wrong, but it seemed a bit odd to see
-that happen.  The documentation also implies there are still questions
-to be answered, so it seems this is still an RFC in some ways?
-
-
-I'd like to talk about the design some more.
-
-Having to opt-in to allowing mseal will probably not work well.
-
-Initial library mappings happen in one huge chunk then it's cut up into
-smaller VMAs, at least that's what I see with my maple tree tracing.  If
-you opt-in, then the entire library will have to opt-in and so the
-'discourage inadvertent sealing' argument is not very strong.
-
-It also makes a somewhat messy tracking of inheritance of the attribute
-across splitting, MAP_FIXED replacement, vma_move, vma_copy.  I think
-most of this is forced on the user?
-
-It makes your call less flexible, it means you have to hope that the VMA
-origin was blessed before you decide you want to mseal it.
-
-What if you want to ensure the library mapped by a parent or on launch
-is mseal'ed?
-
-What about the initial relocated VMA (expand/shrink of VMA)?
-
-Creating something as "non-sealable" is pointless.  If you don't want it
-sealed, then don't mseal() that region.
-
-If your use case doesn't need it, then can we please drop the opt-in
-behaviour and just have all VMAs treated the same?
-
-If it does need it, can you explain why?
-
-The glibc relocation/fixup will then work.  glibc could mseal once it is
-complete - or an application could bypass glibc support and use the
-feature itself.
-
-If we proceed to remove the MAP_SEALABLE flag to mmap, then we have the
-heap/stack concerns.  We can either let people shoot their own feet off
-or try to protect them.
-
-Right now, you seem to be trying to protect them.  Keeping with that, I
-guess we could either get the kernel to mark those VMAs or tell some
-other way?  I'd suggest a range, but people do very strange things with
-these special VMAs [1].  I don't think you can predict enough crazy
-actions to make a difference in trying to protect people.
-
-There are far fewer VMAs that should not be allowed to be mseal'ed than
-should be, and the kernel creates those so it seems logical to only let
-the kernel opt-out on those ones.
-
-I'd rather just let people shoot themselves and return an error.
-
-I also hope it reduces the complexity of this code while increasing the
-flexibility of the feature.  As stated before, we remove the dependency
-of needing support from the initial loader.
-
-Merging VMAs
-I can see this going Very Bad with brk + mseal.  But, again, if someone
-decides to mseal these VMAs then they should expect Bad Things to
-happen (or maybe they know what they are doing even in some complex
-situation?)
-
-vma_merge() can also expand a VMA.  I think this is okay as it checks
-for the same flags, so you will allow VMA expansion of two (or three)
-vma areas to become one.  Is this okay in your model?
-
->=20
-> > I mean, you specifically state that this is a 'very specific
-> > requirement' in your cover letter.  Does this mean even other browsers
-> > have no use for it?
-> >
-> No, I don=E2=80=99t mean =E2=80=9Cother browsers have no use for it=E2=80=
-=9D.
->=20
-> About specific requirements from Chrome, that refers to "The lifetime
-> of those mappings are not tied to the lifetime of the process, which
-> is not the case of libc" as in the cover letter. This addition to the
-> cover letter was made in V3, thus, it might be beneficial to provide
-> additional context to help answer the question.
->=20
-> This patch series begins with multiple-bit approaches (v1,v2,v3), the
-> rationale for this is that I am uncertain if Chrome's specific needs
-> are common enough for other use cases.  Consequently, I am unable to
-> make this decision myself without input from the community. To
-> accommodate this, multiple bits are selected initially due to their
-> adaptability.
->=20
-> Since V1, after hearing from the community, Chrome has changed its
-> design (no longer relying on separating out mprotect), and Linus
-> acknowledged the defect of madvise(DONOTNEED) [1]. With those inputs,
-> today mseal() has a simple design that:
->  - meet Chrome's specific needs.
-
-How many VMAs will chrome have that are mseal'ed?  Is this a common
-operation?
-
-PROT_SEAL seems like an extra flag we could drop.  I don't expect we'll
-be sealing enough VMAs that a hand full of extra syscalls would make a
-difference?
-
->  - meet Libc's needs.
-
-What needs of libc are you referring to?  I'm looking through the
-version changelog and I guess you mean return EPERM?
-
->  - Chrome's specific need doesn't interfere with Libc's.
->=20
-> [1] https://lore.kernel.org/all/CAHk-=3DwiVhHmnXviy1xqStLRozC4ziSugTk=3D1=
-JOc8ORWd2_0h7g@mail.gmail.com/
-
-Linus said he'd be happier if we made the change in general.
-
->=20
-> > I am very concerned this feature will land and have to be maintained by
-> > the core mm people for the one user it was specifically targeting.
-> >
-> See above. This feature is not specifically targeting Chrome.
->=20
-> > Can we also get some benchmarking on the impact of this feature?  I
-> > believe my answer in v7 removed the worst offender, but since there is
-> > no benchmarking we really are guessing (educated or not, hard data woul=
-d
-> > help).  We still have an extra loop in madvise, mprotect_pkey, mremap_t=
-o
-> > (and mreamp syscall?).
-> >
-> Yes. There is an extra loop in mmap(FIXED), munmap(),
-> madvise(DONOTNEED), mremap(), to emulate the VMAs for the given
-> address range. I suspect the impact would be low, but having some hard
-> data would be good. I will see what I can find to assist the perf
-> testing. If you have a specific test suite in mind, I can also try it.
-
-You should look at mmtests [2]. But since you are adding loops across
-VMA ranges, you need to test loops across several ranges of VMAs.  That
-is, it would be good to see what happens on 1, 3, 6, 12, 24 VMAs, or
-some subset of small and large numbers to get an idea of complexity we
-are adding.  My hope is that the looping will be cache-hot in the maple
-tree and have minimum effect.
-
-In my personal testing, I've seen munmap often do a single VMA, or 3, or
-more rare 7 on x86_64.  There should be some good starting points in
-mmtests for the common operations.
-
-[1] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/=
-mem/mmapstress/mmapstress03.c
-[2] https://github.com/gormanm/mmtests
+Can this patch be merged in? Or would you prefer me resending it
+with Tony's "Reviewed-by:" tag?
 
 Thanks,
-Liam
+Avadhut Naik
+
+On 1/23/2024 15:53, Tony Luck wrote:
+> On Tue, Jan 23, 2024 at 03:39:49PM -0600, Naik, Avadhut wrote:
+>> Hi,
+>>
+>> Any further comments on this patch?
+> 
+> No. I like the comments you added to address my earlier
+> confusion/concerns.
+> 
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> 
+> -Tony
+> 
+>>
+>> On 12/18/2023 11:13 AM, Avadhut Naik wrote:
+>>> Hi,
+>>>
+>>> Any further feedback on this patch?
+>>>
+>>> On 12/4/2023 13:25, Avadhut Naik wrote:
+>>>> To support GHES_ASSIST on Machine Check Architecture (MCA) error sources,
+>>>> a set of GHES structures is provided by the system firmware for each MCA
+>>>> error source. Each of these sets consists of a GHES structure for each MCA
+>>>> bank on each logical CPU, with all structures of a set sharing a common
+>>>> Related Source ID, equal to the Source ID of one of the MCA error source
+>>>> structures.[1] On SOCs with large core counts, this typically equates to
+>>>> tens of thousands of GHES_ASSIST structures for MCA under
+>>>> "/sys/bus/platform/drivers/GHES".
+>>>>
+>>>> Support for GHES_ASSIST however, hasn't been implemented in the kernel. As
+>>>> such, the information provided through these structures is not consumed by
+>>>> Linux. Moreover, these GHES_ASSIST structures for MCA, which are supposed
+>>>> to provide supplemental information in context of an error reported by
+>>>> hardware, are setup as independent error sources by the kernel during HEST
+>>>> initialization.
+>>>>
+>>>> Additionally, if the Type field of the Notification structure, associated
+>>>> with these GHES_ASSIST structures for MCA, is set to Polled, the kernel
+>>>> sets up a timer for each individual structure. The duration of the timer
+>>>> is derived from the Poll Interval field of the Notification structure. On
+>>>> SOCs with high core counts, this will result in tens of thousands of
+>>>> timers expiring periodically causing unnecessary preemptions and wastage
+>>>> of CPU cycles. The problem will particularly intensify if Poll Interval
+>>>> duration is not sufficiently high.
+>>>>
+>>>> Since GHES_ASSIST support is not present in kernel, skip initialization
+>>>> of GHES_ASSIST structures for MCA to eliminate their performance impact.
+>>>>
+>>>> [1] ACPI specification 6.5, section 18.7
+>>>>
+>>>> Signed-off-by: Avadhut Naik <avadhut.naik@amd.com>
+>>>> Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+>>>> ---
+>>>> Changes in v2:
+>>>> 1.	Since is_ghes_assist_struct() returns if any of the conditions is hit
+>>>> if-else-if chain is redundant. Replace it with just if statements.
+>>>> 2.	Fix formatting errors.
+>>>> 3.	Add Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+>>>>
+>>>> Changes in v3:
+>>>> 1. Modify structure (mces) comment, per Tony's recommendation, to better
+>>>> reflect the structure's usage.
+>>>> ---
+>>>>  drivers/acpi/apei/hest.c | 51 ++++++++++++++++++++++++++++++++++++++++
+>>>>  1 file changed, 51 insertions(+)
+>>>>
+>>>> diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
+>>>> index 6aef1ee5e1bd..20d757687e3d 100644
+>>>> --- a/drivers/acpi/apei/hest.c
+>>>> +++ b/drivers/acpi/apei/hest.c
+>>>> @@ -37,6 +37,20 @@ EXPORT_SYMBOL_GPL(hest_disable);
+>>>>  
+>>>>  static struct acpi_table_hest *__read_mostly hest_tab;
+>>>>  
+>>>> +/*
+>>>> + * Since GHES_ASSIST is not supported, skip initialization of GHES_ASSIST
+>>>> + * structures for MCA.
+>>>> + * During HEST parsing, detected MCA error sources are cached from early
+>>>> + * table entries so that the Flags and Source Id fields from these cached
+>>>> + * values are then referred to in later table entries to determine if the
+>>>> + * encountered GHES_ASSIST structure should be initialized.
+>>>> + */
+>>>> +static struct {
+>>>> +	struct acpi_hest_ia_corrected *cmc;
+>>>> +	struct acpi_hest_ia_machine_check *mc;
+>>>> +	struct acpi_hest_ia_deferred_check *dmc;
+>>>> +} mces;
+>>>> +
+>>>>  static const int hest_esrc_len_tab[ACPI_HEST_TYPE_RESERVED] = {
+>>>>  	[ACPI_HEST_TYPE_IA32_CHECK] = -1,	/* need further calculation */
+>>>>  	[ACPI_HEST_TYPE_IA32_CORRECTED_CHECK] = -1,
+>>>> @@ -70,22 +84,54 @@ static int hest_esrc_len(struct acpi_hest_header *hest_hdr)
+>>>>  		cmc = (struct acpi_hest_ia_corrected *)hest_hdr;
+>>>>  		len = sizeof(*cmc) + cmc->num_hardware_banks *
+>>>>  			sizeof(struct acpi_hest_ia_error_bank);
+>>>> +		mces.cmc = cmc;
+>>>>  	} else if (hest_type == ACPI_HEST_TYPE_IA32_CHECK) {
+>>>>  		struct acpi_hest_ia_machine_check *mc;
+>>>>  		mc = (struct acpi_hest_ia_machine_check *)hest_hdr;
+>>>>  		len = sizeof(*mc) + mc->num_hardware_banks *
+>>>>  			sizeof(struct acpi_hest_ia_error_bank);
+>>>> +		mces.mc = mc;
+>>>>  	} else if (hest_type == ACPI_HEST_TYPE_IA32_DEFERRED_CHECK) {
+>>>>  		struct acpi_hest_ia_deferred_check *mc;
+>>>>  		mc = (struct acpi_hest_ia_deferred_check *)hest_hdr;
+>>>>  		len = sizeof(*mc) + mc->num_hardware_banks *
+>>>>  			sizeof(struct acpi_hest_ia_error_bank);
+>>>> +		mces.dmc = mc;
+>>>>  	}
+>>>>  	BUG_ON(len == -1);
+>>>>  
+>>>>  	return len;
+>>>>  };
+>>>>  
+>>>> +/*
+>>>> + * GHES and GHESv2 structures share the same format, starting from
+>>>> + * Source Id and ending in Error Status Block Length (inclusive).
+>>>> + */
+>>>> +static bool is_ghes_assist_struct(struct acpi_hest_header *hest_hdr)
+>>>> +{
+>>>> +	struct acpi_hest_generic *ghes;
+>>>> +	u16 related_source_id;
+>>>> +
+>>>> +	if (hest_hdr->type != ACPI_HEST_TYPE_GENERIC_ERROR &&
+>>>> +	    hest_hdr->type != ACPI_HEST_TYPE_GENERIC_ERROR_V2)
+>>>> +		return false;
+>>>> +
+>>>> +	ghes = (struct acpi_hest_generic *)hest_hdr;
+>>>> +	related_source_id = ghes->related_source_id;
+>>>> +
+>>>> +	if (mces.cmc && mces.cmc->flags & ACPI_HEST_GHES_ASSIST &&
+>>>> +	    related_source_id == mces.cmc->header.source_id)
+>>>> +		return true;
+>>>> +	if (mces.mc && mces.mc->flags & ACPI_HEST_GHES_ASSIST &&
+>>>> +	    related_source_id == mces.mc->header.source_id)
+>>>> +		return true;
+>>>> +	if (mces.dmc && mces.dmc->flags & ACPI_HEST_GHES_ASSIST &&
+>>>> +	    related_source_id == mces.dmc->header.source_id)
+>>>> +		return true;
+>>>> +
+>>>> +	return false;
+>>>> +}
+>>>> +
+>>>>  typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
+>>>>  
+>>>>  static int apei_hest_parse(apei_hest_func_t func, void *data)
+>>>> @@ -114,6 +160,11 @@ static int apei_hest_parse(apei_hest_func_t func, void *data)
+>>>>  			return -EINVAL;
+>>>>  		}
+>>>>  
+>>>> +		if (is_ghes_assist_struct(hest_hdr)) {
+>>>> +			hest_hdr = (void *)hest_hdr + len;
+>>>> +			continue;
+>>>> +		}
+>>>> +
+>>>>  		rc = func(hest_hdr, data);
+>>>>  		if (rc)
+>>>>  			return rc;
+>>>>
+>>>> base-commit: 629a3b49f3f957e975253c54846090b8d5ed2e9b
+>>>
+>>
+>> -- 
+>> Thanks,
+>> Avadhut Naik
+
+-- 
+
 
