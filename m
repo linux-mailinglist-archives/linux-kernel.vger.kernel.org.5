@@ -1,187 +1,123 @@
-Return-Path: <linux-kernel+bounces-48514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6421D845D28
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:25:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 191A2845D37
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:27:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CEB401F21BF2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:25:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C26762951F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:27:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 852E1608FB;
-	Thu,  1 Feb 2024 16:20:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F339D7E0FA;
+	Thu,  1 Feb 2024 16:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="o6OaG679"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="Rjktm5pU"
+Received: from mail-lf1-f67.google.com (mail-lf1-f67.google.com [209.85.167.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D54A8608E9;
-	Thu,  1 Feb 2024 16:20:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B68AC7E0E5
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 16:26:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706804456; cv=none; b=h4Y9J0UD1eim8uO3WXkUYu4uTY7XCOzg+k7Zh+gTkVGAI/Zw8p4PSFTO/ezqA186WjvN1vQ2iLda0v963St+n88s+kz38kbcF3A0QCRzCQL7lnDHKpon5FjJOVWQwIov3ADWsK64C7ASNlz2Nq6DZs5BCtX2d9I07vaO9g0qIkk=
+	t=1706804808; cv=none; b=TtXisq2HIUlMXLu2R0lzm13yaJ9U0EjesLrZzC/Yf95+HWGzeHluVfSCBsKApKqN919D7v74Q//t6/Y1GLupvSKOgb89oLPMPlc25cvb5NYjGnb2TYzaQ5P+je8D/4onlPK2K63CiiQWauUMI/TMOo2TK2RVsvLR7Yd/HykSeG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706804456; c=relaxed/simple;
-	bh=DBUwzX8KqGLX+c0Kq/oEzNmXLUwliME3QH7RqkjuAAI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Mh5UUyy1dNEv9RkMZ78FSJgv73kpdnAVtji/w2K8arLOT6PNX2IMcTz4X4G+/w2M7sEMAt9HNLsII3L1bBhn2TGpbjSBltyFwWqtcfUzHRk0Hj44S/Fl9Xdg9X+G3ZSBc0RfaI7rPPpsCb8Gs9PDd63B4fi0MQKxFQe4mByu5fA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=o6OaG679; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 411GKjHI100171;
-	Thu, 1 Feb 2024 10:20:45 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706804445;
-	bh=XmEdIqW2hn/99WyNahpO6KjdxRh9z6fH4BH+17dUyUA=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=o6OaG6798fvb4ud2thQaY5btm5hHV+GYj6XnTNpjIJ+IUL+V6BSp3+JwauYHfma+j
-	 dNpJWiZ0q4hdE3UU+C5AytocmpdqucXMWsUMtk5aXAVEkh8vQkvIMNQDS/+cZCeSqK
-	 at33BT3kejWHT0uecZCwHAih/cqL89YSdUoExIK8=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 411GKjMS074566
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 1 Feb 2024 10:20:45 -0600
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 1
- Feb 2024 10:20:44 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 1 Feb 2024 10:20:44 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 411GKi4x106981;
-	Thu, 1 Feb 2024 10:20:44 -0600
-Message-ID: <d81a060f-3d8f-44b2-8140-eb8e7ce35d93@ti.com>
-Date: Thu, 1 Feb 2024 10:20:44 -0600
+	s=arc-20240116; t=1706804808; c=relaxed/simple;
+	bh=S3AjnrNIx5BKudNt+FuYiHFiKF3Aoog4fHYyZ72OBkA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hG15K3x9coSWcmn8kRsqex2YHurxsTXNvgsIt3MYQcP0Fherlvc7zTuDW31arSb7qr8cCX4Cfd46X0f5PY3QDQLOwsvtje8mo7v8vL++Uc1VefB701Z56iiAKPJZTbtw1f2OZ1Bh0Yz3TGyuQwEzmb1pGYpgXWQWepTJSj89D64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=Rjktm5pU; arc=none smtp.client-ip=209.85.167.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-lf1-f67.google.com with SMTP id 2adb3069b0e04-510faac8c57so966577e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 08:26:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1706804805; x=1707409605; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iNllvtHZDHAWtrtv2nUVEGYjjg2CQe0uH6p+qaHk/zI=;
+        b=Rjktm5pUVyxOb60BFpT4J7/l7XAiVE49lWn3tmI560XqkqFWdPbfRfDCoaQ8/3gDrg
+         BCK//eBXLFpLavkyk5ry0s250XSHU1gSOOpY6jU8WwXqgmd/ttNWpSmuEyQqTAyWDbL8
+         aGXK5pk7Xi7Z5v5VZ8IhhO1eJLZ94bzhZM4JQIGnIvEDlsgveOWSfELr/8q1Kh6rc+im
+         9om+BP8YU/V3yYXOVBBL0RidQ1TILUHs90aVgyUPLn9Xlsk+f5uKqu4wDme2+Qsh4snU
+         OuZc/FpwCb7iSb7YOx4NgCU+6XJLy9NjBkAj74s1ricXtQwrr1XVTYwN2/+SGIOYyQ1V
+         j7GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706804805; x=1707409605;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iNllvtHZDHAWtrtv2nUVEGYjjg2CQe0uH6p+qaHk/zI=;
+        b=hd3D5dMd4C48qdqP9tpN5LT5UIJ0BGGM8k7iiIb3/5xd1zOvwBoVnE5mD6HvVXmZye
+         2nrqtmU4DsYlnDqkz2wPFvB5X3TXApjcZzneH32uKNyHjlbEzAkS+OKMZajeaIwm++et
+         5Qm7Dj1Q77jqC5W0LVYLO8eia3BAmvdsmocE4JitJxu5DdxuxRodURithLCkryrod0KZ
+         j6fRsHGIfNqbSRCrfuL5L/0gol7amhPzjdnmDh2Kpap1qaIQe1j814+n/SLZ25tb7MuS
+         4XKtF5Y3a7cYOvDAa42fu9xdfMsSOnfMSCVci1YO7Qst+YyLFa652ThTW6GTYRGJarOb
+         kTbA==
+X-Gm-Message-State: AOJu0YxZs+L8JXj+AOcRjjE2OMqffoZjPrvR8/sR4VgRIoTh+RSxqycz
+	guHfq4jTVQ5jnbFJ8vmwFrICfRjrMpXJYB/lA1fwXKGZVvJQUxKmkCNEiXIGp+txMwhlX6oKhc5
+	Fql7wtg==
+X-Google-Smtp-Source: AGHT+IFpHJ9fDp3l9urMIz13d5uHrF2tLGi6nIvV59bVO5ddL+GvcU3faJHjeQ/t/EVxkT02aIk5Hw==
+X-Received: by 2002:a05:600c:3151:b0:40f:aabd:b83 with SMTP id h17-20020a05600c315100b0040faabd0b83mr4429255wmo.13.1706804501869;
+        Thu, 01 Feb 2024 08:21:41 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU5l2dL8cK1cAB4grrA4V4D/XQXZKGpCwYEEgqMb5x2x4dcX8OR4UqDUNJHrfM/Iutif0muo/x0eAIkmpruVJZnVcs/yVyLqxI39v/alBmjYu2llkaZleZKNi4BNcDVCYzYsTDzuhgU/2EuwOjDZRJgMh8qO/us6VAOPZmnRo6b+n8aBxRVekETd5nBmkVhPgTvzDNc+cgtUoS4hGm3ef41cvU0uknmWbOvNYRMhr90Tw+0z6qHoGbYHnGj0JxhGFn5LnFDw2US/FhLgUITymjqLP1zAZuOLkSzweUB4SQworFLPUb64QcjksWzyPVI+hDEEDCXhPjUkJklVZ18BlRXw+iiv+Kyx0YTRI6g0oRH9nWI1SmaWKiC+OEZYhN2jkPtrvHzuuwxD3EzfixyEg8RJdwl/k034Il6jb83p5xV6j8keHt/nFByX83dtqLhVMqzG27njGZHXKGkc+YvoLDGVl0=
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id f6-20020a05600c154600b0040fa661ee82sm4903623wmg.44.2024.02.01.08.21.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 08:21:41 -0800 (PST)
+Date: Thu, 1 Feb 2024 17:21:38 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Aahil Awatramani <aahila@google.com>
+Cc: David Dillow <dave@thedillows.org>,
+	Mahesh Bandewar <maheshb@google.com>,
+	Jay Vosburgh <j.vosburgh@gmail.com>,
+	Hangbin Liu <liuhangbin@gmail.com>,
+	Andy Gospodarek <andy@greyhouse.net>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v6] bonding: Add independent control state
+ machine
+Message-ID: <ZbvFEtQskK3xzi6y@nanopsycho>
+References: <20240129202741.3424902-1-aahila@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mmc: pwrseq: Use proper reboot notifier path
-Content-Language: en-US
-To: Ulf Hansson <ulf.hansson@linaro.org>
-CC: Marek Szyprowski <m.szyprowski@samsung.com>,
-        Yangtao Li
-	<frank.li@vivo.com>, <linux-mmc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240126190110.148599-1-afd@ti.com>
- <CAPDyKFpc38-CFrzhnhutS7c78tZTLM6Bg6XsTKENP8oVT6SQXg@mail.gmail.com>
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <CAPDyKFpc38-CFrzhnhutS7c78tZTLM6Bg6XsTKENP8oVT6SQXg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240129202741.3424902-1-aahila@google.com>
 
-On 1/30/24 6:04 AM, Ulf Hansson wrote:
-> On Fri, 26 Jan 2024 at 20:01, Andrew Davis <afd@ti.com> wrote:
->>
->> This driver registers itself as a reboot handler, which means it claims
->> it can reboot the system. It does this so it is called during the system
->> reboot sequence. The correct way to be notified during the reboot
->> sequence is to register a notifier with register_reboot_notifier().
->> Do this here.
->>
->> Note this will be called during normal reboots but not emergency reboots.
->> This is the expected behavior, emergency reboot means emergency, not go
->> do some cleanup with emmc pins.. The reboot notifiers are intentionally
->> not called in the emergency path for a reason and working around that by
->> pretending to be a reboot handler is a hack.
-> 
-> I understand the reason for the $subject patch, but it will not work,
-> unfortunately.
-> 
-> For eMMC we need to manage emergency reboots too. The fiddling with
-> GPIOs isn't a "cleanup", but tries to move the eMMC into a clean reset
-> state. 
+Mon, Jan 29, 2024 at 09:27:41PM CET, aahila@google.com wrote:
 
-That is by definition a "cleanup", even if the cleanup is really important.
+[...]
 
-> This is needed on some platforms with broken bootloaders (ROM
-> code), that is expecting the eMMC to always start in a clean reset
-> state.
-> 
 
-I understand the reason, I don't agree with the method used to get
-the result.
+>diff --git a/drivers/net/bonding/bond_procfs.c b/drivers/net/bonding/bond_procfs.c
+>index 43be458422b3..95d88df94756 100644
+>--- a/drivers/net/bonding/bond_procfs.c
+>+++ b/drivers/net/bonding/bond_procfs.c
+>@@ -154,6 +154,8 @@ static void bond_info_show_master(struct seq_file *seq)
+> 			   (bond->params.lacp_active) ? "on" : "off");
+> 		seq_printf(seq, "LACP rate: %s\n",
+> 			   (bond->params.lacp_fast) ? "fast" : "slow");
+>+		seq_printf(seq, "LACP coupled_control: %s\n",
+>+			   (bond->params.coupled_control) ? "on" : "off");
 
-> So, we need both parts, as was discussed here [1] too.
-> 
+Hmm, I wonder how it makes sense to add new features here. This should
+rot.
 
-In this thread I see a lot of discussion about the priority of the
-handler. You want this to run before any real reboot handlers
-are run. Luckily for you, all reboot "notifiers" are run before
-any "handlers" are run. So if you register as a "notifier" as
-this patch does, you will be run first, no super high priority
-settings needed.
 
-The real issue is you want to be called even in the
-emergency_restart() path, which is fine. But from the
-docs for that function this type of restart is done:
+> 		seq_printf(seq, "Min links: %d\n", bond->params.min_links);
+> 		optval = bond_opt_get_val(BOND_OPT_AD_SELECT,
+> 					  bond->params.ad_select);
 
-> Without shutting down any hardware 
-
-So we have two options:
-
-1. Add a new notifier list that *does* get called in the
-    emergency_restart() path. Then register this driver with
-    with that.
-
-2. Remove emergency_restart() from the kernel. It only has a
-    couple of callers, and most of those callers look like they
-    should instead be using hw_protection_reboot() or panic().
-    That way all reboot paths activate the reboot notifiers.
-    Kinda wondering why you think you need to handle the
-    emergency_restart() case at all, will even be a thing on
-    your hardware, i.e. is this a real problem at all?
-
-Having this driver claim to be a real reboot handler to sneak
-around doing one of the above is preventing some cleanup I am
-working on. So if either of the above two options work for you
-just let me know, I'll help out in implementing them for you.
-
-Thanks,
-Andrew
-
-> Kind regards
-> Uffe
-> 
-> [1]
-> https://lore.kernel.org/all/1445440540-21525-1-git-send-email-javier@osg.samsung.com/
-> 
->>
->> Signed-off-by: Andrew Davis <afd@ti.com>
->> ---
->>   drivers/mmc/core/pwrseq_emmc.c | 8 +-------
->>   1 file changed, 1 insertion(+), 7 deletions(-)
->>
->> diff --git a/drivers/mmc/core/pwrseq_emmc.c b/drivers/mmc/core/pwrseq_emmc.c
->> index 3b6d69cefb4eb..d5045fd1a02c1 100644
->> --- a/drivers/mmc/core/pwrseq_emmc.c
->> +++ b/drivers/mmc/core/pwrseq_emmc.c
->> @@ -70,14 +70,8 @@ static int mmc_pwrseq_emmc_probe(struct platform_device *pdev)
->>                  return PTR_ERR(pwrseq->reset_gpio);
->>
->>          if (!gpiod_cansleep(pwrseq->reset_gpio)) {
->> -               /*
->> -                * register reset handler to ensure emmc reset also from
->> -                * emergency_reboot(), priority 255 is the highest priority
->> -                * so it will be executed before any system reboot handler.
->> -                */
->>                  pwrseq->reset_nb.notifier_call = mmc_pwrseq_emmc_reset_nb;
->> -               pwrseq->reset_nb.priority = 255;
->> -               register_restart_handler(&pwrseq->reset_nb);
->> +               register_reboot_notifier(&pwrseq->reset_nb);
->>          } else {
->>                  dev_notice(dev, "EMMC reset pin tied to a sleepy GPIO driver; reset on emergency-reboot disabled\n");
->>          }
->> --
->> 2.39.2
->>
+[...]
 
