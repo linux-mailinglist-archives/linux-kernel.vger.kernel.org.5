@@ -1,183 +1,184 @@
-Return-Path: <linux-kernel+bounces-48968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F15B38463E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:57:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 516E98463E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:58:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 667E21F28416
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:57:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB10C1F2865A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:58:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B659F46424;
-	Thu,  1 Feb 2024 22:57:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392E646420;
+	Thu,  1 Feb 2024 22:58:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EiW1VHAB"
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iHHpI8Qx"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38BE545BE6
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 22:57:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA61041236;
+	Thu,  1 Feb 2024 22:58:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706828235; cv=none; b=XSg72oEqv6ljnZZ7/uuc4HPxUWRVAH3AZT8sQbEBFtW2cPPQEXwn3jnfMrsdGHlAK7V0OKzlnobLmdOZDD/SwmfWUrZNZYtat/ZhNoWgaGi7AZWJosq3P06VGd8/vCWCZQI6sI86SgaKVztl1Lxxrj7AUkcZxigIVNGNK/Lsn30=
+	t=1706828310; cv=none; b=ii0xIErn07Fr3b5tyglqBAPA/7ityNH4jzNs5YJhUPjXONfGS5IDx9Ym8o5NLl6wkNmENAqZM2f+vkEon7+hsDgk9wNGSLlsLGUHSFnjXVeo+BAWYhtr6XsnAILpxdd7dROi6vyO/EGQnvHiFHr3Tfj2NUVqfFUnUR68i1yUBXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706828235; c=relaxed/simple;
-	bh=ZlrLcIjeqRNOlSZ3HB/cwib/SPm5jN/0suNYrWYybrY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XpOZWv/NWldGkkbYgnMEEBBJkcky9J4iNopiZd5yBeZRhVvYrUziaU6sYfGSDaLNpnIWMH2Tuc4/mysQtYind9a/aiaeMki/2cRBJrpVCVxjBUher3fOS3gZ75RsRtNwwaKdevzN0LArh/TJC2KjzDHIBiUW9I6JbMmVMOmxHLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EiW1VHAB; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-604191522daso14859107b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 14:57:13 -0800 (PST)
+	s=arc-20240116; t=1706828310; c=relaxed/simple;
+	bh=Ok7/1hpZqqt0oRB/qzn82QRcwkZczxAxEI6YBNY06oo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=vCtYZhpcdtXz8BnSkHrHeBFN2Jc4SSTxZUn2sCvEb0xB7eWav4BqmyAfrKx78cR87jz628ZNH9fSvMTC+RfS9oTCIqjlZcTTWPSoLPWij26EWBBCpivOyVtKqZNzsVBN7ebyNkSRKSX1uqOHCNZe8rtynb+zpj60d2tv1eAMRII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iHHpI8Qx; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5100cb238bcso2893217e87.3;
+        Thu, 01 Feb 2024 14:58:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706828233; x=1707433033; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OdsnChKuomg6j4pblO0liMjiO73rsaOwpJVo7hYzRr4=;
-        b=EiW1VHABL0+atG6siOeo2hxBPqqTtplABWhtHEwlmI0JNWsZ02X2AtBqHbNp7uueTo
-         21gufUe2G7LS0mTmk5Qs40SlMWdhfv0bVUAYK4nL4dvj16qeVp1SghpAyTkeOxQInuq6
-         WHTrJYxCr5MdAMGp8B1p75S39OG2fGpl4sQOiyqs0dkQDwTy/VW34yANqRexQfCXvTuT
-         uwSg/B6Lj1uUEPRnaYQv3oUP2sjnntArj1JWWoi7GE2P5GIpHDj9A8ndtoZ4/yOvjQRz
-         WftEQy/OL7FxP9KRaedKq2I+qJV/0zOx5WqKNO1rgHCGXWZI832wQk7o3HluGBJKvRQz
-         MQYQ==
+        d=gmail.com; s=20230601; t=1706828307; x=1707433107; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=GMIIiMFIvN25g5ZJXxXmxO4MRIIG5RaYJv++uyfUQOU=;
+        b=iHHpI8QxkOWgEi5ryDfXUAec96tK7LEBxIao0k3E5Z2gHaNNwk1/1jTf6VNbYbbBEv
+         BEe/HkpY7VFaHyRRTnhPnE4975B5Xag+bv/prumTOjrokqzIBXdNtO5gDEERSFWrnjSN
+         GlNzlgcovQIivDu6V7Pdi+6vJ21+AmEmL+mp4oxNfUebdVqjirQVBavrTjB9zZEoJsRq
+         BWwDsgTiIv3XVACs5OOGqQYzWYvoQaLZiAYATgapzwBzwtf4PhX5jEWKmuzcc66WR/vo
+         pKpbJ9somQsMwGZUASb3uFKNkPxEWyBvHhMAx9bMtpTT6DqX9gfDZTV920ry3Wt9xfpg
+         9uOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706828233; x=1707433033;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OdsnChKuomg6j4pblO0liMjiO73rsaOwpJVo7hYzRr4=;
-        b=OwVI4HLbDzsYBB9ynRD33bYRBErCaMHl/XGmLHHMm3iEgm/T45x83DKEUugo5KTFzm
-         06bn1UyUkhK5p99/kFrqPXX9JEoD8e8UaIu5guLzzwe2yC+oOp1UgZtsjwD+LiCuXAu8
-         EpkIDOBH0hRfXPj6NjoX8Mti4Knc44UhSxHyetuAx/Kau3Tt1FstgPOOKEq8d2tA1g+r
-         kca4tgEYabAs4hlgUxBHMaLyrcOnbdDhb1TbGKpieyDh6o0ahNwU9XJg4dLli3aVbmLz
-         vojlNZdiFV2R2Uw+nOhajb/PYtL0I8tj7UlUWPYVQS+XJ21CNLhQbT0AdI+j4uJwoL9J
-         KnoA==
-X-Gm-Message-State: AOJu0YwT0Ar8gv1k3el7MMuBOfTjMpCtAgYknTYAmNG6AlvZWe3x7WJc
-	F4O8E58x9ndy7xQOGWPTBQYV+FEC+lHE36guxvUy/fBntrJAc//hm1L86FpSaN/8gG+KIrfJ9fw
-	zpK+jyiSKeaV0vYi202pi8OhTiS3P/GiBLc9eFA==
-X-Google-Smtp-Source: AGHT+IHnePb0nUlh5xvqq3tQ9c0zd26s7DREpm3fiPu4htO3BCGcGIehlU3hlZvLTGzFauhIp7JoNs06N/IHfCVTlTo=
-X-Received: by 2002:a0d:e28a:0:b0:5f6:d2ee:2686 with SMTP id
- l132-20020a0de28a000000b005f6d2ee2686mr7022815ywe.2.1706828233099; Thu, 01
- Feb 2024 14:57:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706828307; x=1707433107;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GMIIiMFIvN25g5ZJXxXmxO4MRIIG5RaYJv++uyfUQOU=;
+        b=OwSoeki1BR/lADqjXBbl0b+31TEvlcPcLfGdwzuBIzNirWDBTPcdD8VcuitH3iQsTU
+         XFBfDp1KJ9EDzab0QzrSKzEQM8DLRfJSa9MJF9nyKJcvxqwdi/+JGSOv+/46uF3UwBn6
+         cv53wB8rB1llc+CJRRVLifH0Cm67MthkbMfv0G9UhM8JrJHZ7tQu+q0gZ5NYO/CoSToB
+         4DuWYkjh/U5XrpdUPbDLvCUWifbbvlBvDMx8WV9WdMUKL6RgxpLi8Ez65s50QPJI6ih9
+         k9fN037pdZcFPC9xJ9nXLzYZ2d1HP02gME04hcIvETJQAZ0fzI0M7PwuOhOI1I6R1Bq9
+         cvzA==
+X-Gm-Message-State: AOJu0YwM0cp00bDUEYxRJh1vPQYnzzVKfTc0KIplnKroHWyT/c7ZuR08
+	263mI1RmalPUCF5+UutHPYn5yh6jdLfnckVGm+xjVod80kcul7je
+X-Google-Smtp-Source: AGHT+IF1Z5+fSqUwVBB84fVOZDy705a+DBWOrg7uIyRx6Z2Nn9cSVYX1Q6cVqBas+AYpCsfRqgAKUA==
+X-Received: by 2002:ac2:554d:0:b0:510:3c1:52dc with SMTP id l13-20020ac2554d000000b0051003c152dcmr185355lfk.69.1706828306470;
+        Thu, 01 Feb 2024 14:58:26 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUMPsCbk9bNnuhiAjyBnKyasDiEfcpk0A2qNOAhJVEJgwBxo9pBec6dARPW3dYe1Y6P0UUSUGJvcsQ1Gb3u1kWFLT1mhJVoJT4/WNcRbHIUyGmRfFIyP8Zp6vsXFn8ZCR6n7yRCiEMtF20LTarH2GbJlfxRbHWfAVmzm1OVLI3lERXZOR9ndm+E0qJUfi3xcSYdkAaJn2AdjJm86noMx7Iv1WI4m6Fo+pAEuIvCG1dCkhf89i+i2QvQw4AW9vf5XgeUb/4+ZfaMhkEEJfbLMvII60AkErE9ABEFR6vbubY+lt2T9m8m06ZIpzlDzN4KgY6cXedcj38nI3ZtcXVswVWSTpRGWV8=
+Received: from skbuf ([188.25.173.195])
+        by smtp.gmail.com with ESMTPSA id gx23-20020a1709068a5700b00a365b3cba79sm233555ejc.186.2024.02.01.14.58.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 14:58:26 -0800 (PST)
+Date: Fri, 2 Feb 2024 00:58:24 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v5 11/11] net: dsa: realtek: embed dsa_switch
+ into realtek_priv
+Message-ID: <20240201225824.hajwp2dbj7zcbkgp@skbuf>
+References: <20240130-realtek_reverse-v5-0-ecafd9283a07@gmail.com>
+ <20240130-realtek_reverse-v5-0-ecafd9283a07@gmail.com>
+ <20240130-realtek_reverse-v5-11-ecafd9283a07@gmail.com>
+ <20240130-realtek_reverse-v5-11-ecafd9283a07@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126190110.148599-1-afd@ti.com> <CAPDyKFpc38-CFrzhnhutS7c78tZTLM6Bg6XsTKENP8oVT6SQXg@mail.gmail.com>
- <d81a060f-3d8f-44b2-8140-eb8e7ce35d93@ti.com>
-In-Reply-To: <d81a060f-3d8f-44b2-8140-eb8e7ce35d93@ti.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Thu, 1 Feb 2024 23:56:37 +0100
-Message-ID: <CAPDyKFonWCJNWcBcUTW2xrqDwJAh0fvg8Ane-phWz64GZ6tcRQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: pwrseq: Use proper reboot notifier path
-To: Andrew Davis <afd@ti.com>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>, Yangtao Li <frank.li@vivo.com>, 
-	linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Oleksij Rempel <o.rempel@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240130-realtek_reverse-v5-11-ecafd9283a07@gmail.com>
+ <20240130-realtek_reverse-v5-11-ecafd9283a07@gmail.com>
 
-+ Oleksij
+On Tue, Jan 30, 2024 at 08:13:30PM -0300, Luiz Angelo Daros de Luca wrote:
+> To eliminate the need for a second memory allocation for dsa_switch, it
+> has been embedded within realtek_priv.
+> 
+> Suggested-by: Alvin Šipraga <alsi@bang-olufsen.dk>
+> Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+> ---
 
-On Thu, 1 Feb 2024 at 17:20, Andrew Davis <afd@ti.com> wrote:
->
-> On 1/30/24 6:04 AM, Ulf Hansson wrote:
-> > On Fri, 26 Jan 2024 at 20:01, Andrew Davis <afd@ti.com> wrote:
-> >>
-> >> This driver registers itself as a reboot handler, which means it claims
-> >> it can reboot the system. It does this so it is called during the system
-> >> reboot sequence. The correct way to be notified during the reboot
-> >> sequence is to register a notifier with register_reboot_notifier().
-> >> Do this here.
-> >>
-> >> Note this will be called during normal reboots but not emergency reboots.
-> >> This is the expected behavior, emergency reboot means emergency, not go
-> >> do some cleanup with emmc pins.. The reboot notifiers are intentionally
-> >> not called in the emergency path for a reason and working around that by
-> >> pretending to be a reboot handler is a hack.
-> >
-> > I understand the reason for the $subject patch, but it will not work,
-> > unfortunately.
-> >
-> > For eMMC we need to manage emergency reboots too. The fiddling with
-> > GPIOs isn't a "cleanup", but tries to move the eMMC into a clean reset
-> > state.
->
-> That is by definition a "cleanup", even if the cleanup is really important.
->
-> > This is needed on some platforms with broken bootloaders (ROM
-> > code), that is expecting the eMMC to always start in a clean reset
-> > state.
-> >
->
-> I understand the reason, I don't agree with the method used to get
-> the result.
->
-> > So, we need both parts, as was discussed here [1] too.
-> >
->
-> In this thread I see a lot of discussion about the priority of the
-> handler. You want this to run before any real reboot handlers
-> are run. Luckily for you, all reboot "notifiers" are run before
-> any "handlers" are run. So if you register as a "notifier" as
-> this patch does, you will be run first, no super high priority
-> settings needed.
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 
-Right, I didn't say the solution we use for mmc is perfect, but it was
-the easiest solution at hand at the introduction.
+I don't think it would be bad if you could just define a local variable
 
->
-> The real issue is you want to be called even in the
-> emergency_restart() path, which is fine. But from the
-> docs for that function this type of restart is done:
->
-> > Without shutting down any hardware
->
-> So we have two options:
->
-> 1. Add a new notifier list that *does* get called in the
->     emergency_restart() path. Then register this driver with
->     with that.
->
-> 2. Remove emergency_restart() from the kernel. It only has a
->     couple of callers, and most of those callers look like they
->     should instead be using hw_protection_reboot() or panic().
->     That way all reboot paths activate the reboot notifiers.
->     Kinda wondering why you think you need to handle the
->     emergency_restart() case at all, will even be a thing on
->     your hardware, i.e. is this a real problem at all?
+	struct dsa_switch *ds = &priv->ds;
 
-The "emergency reset" is needed, due to broken bootloaders, as I
-pointed out earlier.
+in all functions, including those which reference &priv->ds just once.
 
-That said, I don't have any strong opinions around this, whatever
-option you pick to rework the code is fine by me. The important point
-is that we can continue to support the use cases we need for MMC.
+> diff --git a/drivers/net/dsa/realtek/realtek.h b/drivers/net/dsa/realtek/realtek.h
+> index 864bb9a88f14..b80bfde1ad04 100644
+> --- a/drivers/net/dsa/realtek/realtek.h
+> +++ b/drivers/net/dsa/realtek/realtek.h
+> @@ -61,7 +61,7 @@ struct realtek_priv {
+>  	const struct realtek_variant *variant;
+>  
+>  	spinlock_t		lock; /* Locks around command writes */
+> -	struct dsa_switch	*ds;
+> +	struct dsa_switch	ds;
+>  	struct irq_domain	*irqdomain;
+>  	bool			leds_disabled;
+>  
+> diff --git a/drivers/net/dsa/realtek/rtl8365mb.c b/drivers/net/dsa/realtek/rtl8365mb.c
+> index 778a962727ab..9066e34e9ace 100644
+> --- a/drivers/net/dsa/realtek/rtl8365mb.c
+> +++ b/drivers/net/dsa/realtek/rtl8365mb.c
+> @@ -880,7 +880,7 @@ static int rtl8365mb_ext_config_rgmii(struct realtek_priv *priv, int port,
+>  	if (!extint)
+>  		return -ENODEV;
+>  
+> -	dp = dsa_to_port(priv->ds, port);
+> +	dp = dsa_to_port(&priv->ds, port);
 
-BTW, there was a recent related discussion [1] that you may want to
-catch up with too, before you start doing the restructuring of the
-restart/reboot code. See the link below.
+Nitpick: I don't think it would be bad if you could just define a local variable
 
->
-> Having this driver claim to be a real reboot handler to sneak
-> around doing one of the above is preventing some cleanup I am
-> working on. So if either of the above two options work for you
-> just let me know, I'll help out in implementing them for you.
+	struct dsa_switch *ds = &priv->ds;
 
-That would be great, thanks!
+in all functions, including those which reference &priv->ds just once,
+like this one.
 
->
-> Thanks,
-> Andrew
+>  	dn = dp->dn;
+>  
+>  	/* Set the RGMII TX/RX delay
+> diff --git a/drivers/net/dsa/realtek/rtl83xx.c b/drivers/net/dsa/realtek/rtl83xx.c
+> index aa998e15c42b..f65e47339d5b 100644
+> --- a/drivers/net/dsa/realtek/rtl83xx.c
+> +++ b/drivers/net/dsa/realtek/rtl83xx.c
+> @@ -226,16 +226,12 @@ int rtl83xx_register_switch(struct realtek_priv *priv)
+>  		return ret;
+>  	}
+>  
+> -	priv->ds = devm_kzalloc(priv->dev, sizeof(*priv->ds), GFP_KERNEL);
+> -	if (!priv->ds)
+> -		return -ENOMEM;
+> +	priv->ds.priv = priv;
+> +	priv->ds.dev = priv->dev;
+> +	priv->ds.ops = priv->variant->ds_ops;
+> +	priv->ds.num_ports = priv->num_ports;
 
-Kind regards
-Uffe
+And here, I think it would actually look better to dereference just
+through "ds".
 
-[1]
-PATCH v1 0/3] introduce priority-based shutdown support]
-https://lore.kernel.org/lkml/2023112520-paper-image-ef5d@gregkh/T/#mb45749c3bc9b89caecfeca6e66da8721d920191b
+Also, priv->dev is dereferenced 4 times in rtl83xx_register_switch(),
+maybe you could add a local variable for it in the patch that introduces
+rtl83xx_register_switch().
+
+>  
+> -	priv->ds->priv = priv;
+> -	priv->ds->dev = priv->dev;
+> -	priv->ds->ops = priv->variant->ds_ops;
+> -	priv->ds->num_ports = priv->num_ports;
+> -
+> -	ret = dsa_register_switch(priv->ds);
+> +	ret = dsa_register_switch(&priv->ds);
+>  	if (ret) {
+>  		dev_err_probe(priv->dev, ret, "unable to register switch\n");
+>  		return ret;
 
