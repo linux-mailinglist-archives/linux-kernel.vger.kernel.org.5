@@ -1,155 +1,181 @@
-Return-Path: <linux-kernel+bounces-47513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F199844ECD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:44:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E780D844ECF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:46:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C318B1F2E3E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:44:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DD9C2851EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:46:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 361843A1BD;
-	Thu,  1 Feb 2024 01:42:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24C804C67;
+	Thu,  1 Feb 2024 01:46:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cOhSsOqo"
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b="f/tYr+y7"
+Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14D793A1A2
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 01:42:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09DD24C60;
+	Thu,  1 Feb 2024 01:46:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.185.137.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706751756; cv=none; b=b4ESgn0rMr7p+ypYNu4BoSyTKPZZKjEqdZw/3qxAAoQthLSaI/fKXjhJYVCvv5Jk76qDLDNYej8wZGwq3X8nHYPHKBQghzexuTv/qYATnbEvUThOe7rvE5uukbj9VWfU4BUJg78ZLD+O1hW402MPh95SpdxAS/ZYNxxVPLOcKlw=
+	t=1706752007; cv=none; b=hjKn6DIRHbWPDRj6azfsi2dqS+316TYMVIFDyxnVeuP/lHz1brACZHFL8X2XOfHdj0kOw9sD2vq3CKLNjhMDGtAocw64vWMydtnrLAQyNVKmFeskE3/xABtY1Kt7T24Il4LSOF/jO63nMJDLidU1zwSLTxZzQqP5of7c8/34wJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706751756; c=relaxed/simple;
-	bh=hHS7K9jd1Ar2zK8gbkXO7ymeRa0EUnCLE3JMNQcT+lA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Fu6iIthf16inCaolia9hH0cDEEMj9EG0Ppo9N0mfQCzB4yJBIJuOHR9d9Htv0pLJPUOtJHL2LWZRhFSW3xZi9bV4J2zlHrdoaek8GkTU3fcCRbvXiKeU6LLKOPi1joQk8LnpfyjPDqdgGVvaN3IObKc30decfx6if3Hz5NGt5YE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cOhSsOqo; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2906773c7e9so263652a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:42:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706751754; x=1707356554; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IxrvsxjGLflaggur+73WfV09BCRMmIX9yGv56ImWnQI=;
-        b=cOhSsOqottHTIyiV5kUHobzJRqAjhVRZCmLaXmlXdzYvpMebGI183JBDg7uZZWP2of
-         QY8FPZMgJhy2VqW3aRaHeVFEuVgWN1M3Nx/Agwwk2vc65FiTzcP0+jniMG9UknaW35vK
-         7oM1hRPQ7xUw3Sy6ptmt/ELyEuNWXID7WcMVoAbFgb3usEopbOHKuqg9KrkOE3lqozOZ
-         dGYrQgOsr+HdggxA2w/GHMpFG5GmV0GoK7SDk6l4/PqctPguYhc5AfRj+lxN+uBGImgt
-         gknHMWEnuSBJjUwS/nYkWtBKI5SNAaOZ+K2tsGVfgdLeMnmAIJ7PH6afsE0HJYgz7LGx
-         1fCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706751754; x=1707356554;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IxrvsxjGLflaggur+73WfV09BCRMmIX9yGv56ImWnQI=;
-        b=k2+UGnIr/z1/PsRL24nlm6Xreeq6nMASxkYTMiMwNzHc0ozVWNMVpMRKIWP4HH1KVY
-         TdU1H9WZENwPUlgv631diNxs43gCW2qjWglaFtq3FqD6Zi+vM5ayfMVep7IxuzVbCIZV
-         Ozm6OJRgGYdNhc1uXZDXgO9EQWfarZO0sCHUthdYW96a1QKfMaDg/c3/WzU7cHcOLBNb
-         luyNjxGxqXkUeJUMwHHYfeJpTGjbshP3rgUEDb1fqPLmiVEDcC6byu4s8cRFiqoWswdC
-         ExCibhXTAn9o7EAGLpqzZCmIOJ1ZfwiNX5ASk1L3zAJckWoBxwRlX/ae+JCAJmFl9nm0
-         dcag==
-X-Gm-Message-State: AOJu0Yyl+wyzGXIxCJfUvvLArJOjfhWgiJ7sdzuYOY8bcNdInVSbRyJg
-	eyYzhrqY6n+ByM/r7R/7Xbp+fkpd01edepHINVjHQ26rx4B2yQwrVgFWqiwxAPqrJY1gAcLum1c
-	+JS7n1uJLlqtIWS5i8rbyqzMseOBN78w=
-X-Google-Smtp-Source: AGHT+IHhUF5Fa//zSjPaaE1z39Uh3wUONBpiYn84dsQLYLcy4oPpShw8iUXeaNfHURGQwZUVKQL9DI2syvlSjuP8eiQ=
-X-Received: by 2002:a17:90a:9206:b0:294:bb78:3972 with SMTP id
- m6-20020a17090a920600b00294bb783972mr3225091pjo.14.1706751754258; Wed, 31 Jan
- 2024 17:42:34 -0800 (PST)
+	s=arc-20240116; t=1706752007; c=relaxed/simple;
+	bh=wFBz+k5fFVkfyImExH0Xqsk93XAwSQpXZbD4zCIYg2s=;
+	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
+	 Content-Type:Date:Message-ID; b=J19DZeywM1U+YJRNdNPJCarMR6bxeDfK/3efwe49ElzHZeEt94/0r5wnaFxF1knd9stvDiZ7ODjNA/DgYm4qLH8eXaTDhKCfdRNTXa//JHZLUpdSYLFmvBSVtlCvuBDPVsu8eLlM/ljDoul89x1nBo0FAukRHppQK/rxlT87WVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org; spf=pass smtp.mailfrom=openbsd.org; dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b=f/tYr+y7; arc=none smtp.client-ip=199.185.137.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openbsd.org
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=wFBz+k5fFV
+	kfyImExH0Xqsk93XAwSQpXZbD4zCIYg2s=; h=date:references:in-reply-to:
+	subject:cc:to:from; d=openbsd.org; b=f/tYr+y7eDPbWZOF+9LXCLUy2873vJZin
+	cxDmTaOx+Po8NNOY2V+CYGljx5zXiq22sjo1o9/xcaBYwbtKGwpn8twXv67R3Ai4vnQ4ix
+	0XyP3Rd3wNm9nkGhtobf6PAbq581Np8LbmBq9TDiiUW6dQZd89eLUf25744aecF0ESRJMO
+	CnzeKegKYHs/E+2tPoxHgc19gDJU27v11+fto+1w+T73Oli1/BMB3y2otDUFFgUM8gZfek
+	tMvc1lr97CZMwNiIpuBPL3DiINXijpMN7TBpYukDQAOTDIm5PFlfIzVZ713HXnus/8+uUR
+	5MSMI/DLDp2p51hL4cf+U0zZyxCtA==
+Received: from cvs.openbsd.org (localhost [127.0.0.1])
+	by cvs.openbsd.org (OpenSMTPD) with ESMTP id a86ce6c1;
+	Wed, 31 Jan 2024 18:46:38 -0700 (MST)
+From: "Theo de Raadt" <deraadt@openbsd.org>
+To: Jeff Xu <jeffxu@chromium.org>
+cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+    Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org,
+    keescook@chromium.org, jannh@google.com, sroettger@google.com,
+    willy@infradead.org, gregkh@linuxfoundation.org,
+    torvalds@linux-foundation.org, usama.anjum@collabora.com,
+    rdunlap@infradead.org, jeffxu@google.com, jorgelo@chromium.org,
+    groeck@chromium.org, linux-kernel@vger.kernel.org,
+    linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+    pedro.falcato@gmail.com, dave.hansen@intel.com,
+    linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v8 0/4] Introduce mseal
+In-reply-to: <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
+References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver> <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
+Comments: In-reply-to Jeff Xu <jeffxu@chromium.org>
+   message dated "Wed, 31 Jan 2024 17:27:11 -0800."
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CALGdzupf2Eh-_E-0ZyHa23sHKqo7-e==A9DR9FDsiMNPjtpbEg@mail.gmail.com>
-In-Reply-To: <CALGdzupf2Eh-_E-0ZyHa23sHKqo7-e==A9DR9FDsiMNPjtpbEg@mail.gmail.com>
-From: Chenyuan Yang <chenyuan0y@gmail.com>
-Date: Wed, 31 Jan 2024 19:42:23 -0600
-Message-ID: <CALGdzuptUXhRxft9oz9RX-FBP0iwRTWFxsb4KtQjX79_ASSRow@mail.gmail.com>
-Subject: Re: [Linux Kernel Bug] memory leak in posix_clock_open
-To: davem@davemloft.net, reibax@gmail.com, linux-kernel@vger.kernel.org
-Cc: syzkaller@googlegroups.com, Zijie Zhao <zzjas98@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <37065.1706751997.1@cvs.openbsd.org>
+Date: Wed, 31 Jan 2024 18:46:37 -0700
+Message-ID: <92663.1706751997@cvs.openbsd.org>
 
-Dear Linux Developers,
+Jeff Xu <jeffxu@chromium.org> wrote:
 
-I am reaching out to kindly inquire whether there have been any recent
-updates or progress regarding the memory leak issue.
-If you have any questions about the reproducer or config, please let me kno=
-w.
+> I considered Theo's inputs from OpenBSD's perspective regarding the
+> difference, and I wasn't convinced that Linux should remove these. In
+> my view, those are two different kernels code, and the difference in
+> Linux is not added without reasons (for MAP_SEALABLE, there is a note
+> in the documentation section with details).
 
-Best,
-Chenyuan
+That note is describing a fiction.
+
+> I would love to hear more from Linux developers on this.
+
+I'm not sure you are capable of listening.
+
+But I'll repeat for others to stop this train wreck:
 
 
-On Wed, Jan 24, 2024 at 10:22=E2=80=AFAM Chenyuan Yang <chenyuan0y@gmail.co=
-m> wrote:
->
-> Dear Linux Developers for Posix Timer,
->
-> We encountered "memory leak in posix_clock_open" when testing the
-> posix timer with
-> Syzkaller and our generated specifications.
->
-> ```
-> BUG: memory leak
-> unreferenced object 0xffff888000f66fa0 (size 16):
->   comm "syz-executor.0", pid 21073, jiffies 4295079945 (age 8.800s)
->   hex dump (first 16 bytes):
->     00 b8 d6 0d 80 88 ff ff 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<ffffffff8162788a>] kmemleak_alloc_recursive
-> include/linux/kmemleak.h:42 [inline]
->     [<ffffffff8162788a>] slab_post_alloc_hook mm/slab.h:766 [inline]
->     [<ffffffff8162788a>] slab_alloc_node mm/slub.c:3478 [inline]
->     [<ffffffff8162788a>] __kmem_cache_alloc_node+0x2fa/0x3e0 mm/slub.c:35=
-17
->     [<ffffffff81572354>] kmalloc_trace+0x24/0x90 mm/slab_common.c:1098
->     [<ffffffff81388b0e>] kmalloc include/linux/slab.h:600 [inline]
->     [<ffffffff81388b0e>] kzalloc include/linux/slab.h:721 [inline]
->     [<ffffffff81388b0e>] posix_clock_open+0x5e/0xe0
-> kernel/time/posix-clock.c:126
->     [<ffffffff81692d69>] chrdev_open+0x119/0x340 fs/char_dev.c:414
->     [<ffffffff81680706>] do_dentry_open+0x336/0x9e0 fs/open.c:948
->     [<ffffffff816a9659>] do_open fs/namei.c:3622 [inline]
->     [<ffffffff816a9659>] path_openat+0x1799/0x1b00 fs/namei.c:3779
->     [<ffffffff816aa5ce>] do_filp_open+0xce/0x1b0 fs/namei.c:3809
->     [<ffffffff816843ed>] do_sys_openat2+0xdd/0x130 fs/open.c:1440
->     [<ffffffff81684d53>] do_sys_open fs/open.c:1455 [inline]
->     [<ffffffff81684d53>] __do_sys_openat fs/open.c:1471 [inline]
->     [<ffffffff81684d53>] __se_sys_openat fs/open.c:1466 [inline]
->     [<ffffffff81684d53>] __x64_sys_openat+0x83/0xe0 fs/open.c:1466
->     [<ffffffff84ae676f>] do_syscall_x64 arch/x86/entry/common.c:51 [inlin=
-e]
->     [<ffffffff84ae676f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c=
-:82
->     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
->
-> BUG: leak checking failed
-> ```
-> I have attached the reproducible C program and its configuration for
-> this crash. Please note that the C program has not been minimized
-> because there were issues with syz-repro.
->
-> For this memory leak, it seems that the `pccontext` allocated by
-> kzalloc (https://elixir.bootlin.com/linux/v6.7/source/kernel/time/posix-c=
-lock.c#L126)
-> is not released correctly.
->
-> If you have any questions or require more information, please feel
-> free to contact us.
->
-> Reported-by: Chenyuan Yang <chenyuan0y@gmail.com>
->
-> Best,
-> Chenyuan
+1. When execve() maps a programs's .data section, does the kernel set
+   MAP_SEALABLE on that region?  Or does it not set MAP_SEALABLE?
+
+   Does the kernel seal the .data section?  It cannot, because of RELRO
+   and IFUNCS.  Do you know what those are?  (like in OpenBSD) the kernel
+   cannot and will *not* seal the .data section, it lets later code do that.
+
+2. When execve() maps a programs's .bss section, does the kernel set
+   MAP_SEALABLE on that region?  Or does it not set MAP_SEALABLE?
+
+   Does the kernel seal the .bss section?  It cannot, because of RELRO
+   and IFUNCS.  Do you know what those are?  (like in OpenBSD) the kernel
+   cannot and will *not* seal the .bss section, it lets later code do that.
+
+In the proposed diff, the kernel does not set MAP_SEALABLE on those
+regions.
+
+How does a userland program seal the .data and .bss regions?
+
+It cannot.  It is too late to set the MAP_SEALABLE, because the kernel
+already decided not do to it.
+
+So those regions cannot be sealed.
+
+3. When execve() maps a programs's stack, does the kernel set
+   MAP_SEALABLE on that region?  Or does it not set MAP_SEALABLE?
+
+In the proposed diff, the kernel does not set MAP_SEALABLE.
+
+You think you can seal the stack in the kernel??  Sorry to be the bearer
+of bad news, but glibc has code which on occasion will mprotects the
+stack executable.
+
+But if userland decides that mprotect case won't occur -- how does a
+userland program seal its stack?  It is now too late to set MAP_SEALABLE.
+
+So the stack must remain unsealed.
+
+4. What about the text segment?
+
+5. Do you know what a text-relocation is?  They are now rare, but there
+   are still compile/linker stages which will produce them, and there is
+   software which requires that to work.  It means userland fixes it's
+   own .text, then calls mprotect.  The kernel does not know if this will
+   happen.
+
+6. When execve() maps the .text segment, will it set MAP_SEALABLE?
+
+If it doesn't set it, userland cannot seal it's text after it makes the
+decision to do.
+
+
+You can continue to extrapolate those same points for all other segments
+of a static binary, all segments of a dynamic binary, all segments of the
+shared library linker.
+
+And then you can go further, and recognize the logic that will be needed
+in the shared library linker to *make the same decisions*.
+
+In each case, the *decision* to make a mapping happens in one piece of
+code, and the decision to use and NOW SEAL THAT MAPPING, happens in a
+different piece of code.
+
+
+The only answer to these problems will be to always set MAP_SEALABLE.
+To go through the entire Linux ecosystem, and change every call to mmap()
+to use this new MAP_SEALABLE flag, and it will look something like this:
+
++#ifndef MAP_SEALABLE
++#define MAP_SEALABLE 0
++#endif
+-	ptr = mmap(...., MAP...
+-	ptr = mmap(...., MAP_SEALABLE | MAP...
+
+Every single one of them, and you'll need to do it in the kernel.
+
+
+
+
+If you had spent a second trying to make this work in a second piece of
+software, you would have realized that the ONLY way this could work
+is by adding a flag with the opposite meaning:
+
+   MAP_NOTSEALABLE
+
+But nothing will use that.  I promise you
+
+
+> I would love to hear more from Linux developers on this.
+
+I'm not sure you are capable of listening.
+
 
