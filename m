@@ -1,101 +1,198 @@
-Return-Path: <linux-kernel+bounces-48307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B7D3845A14
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:22:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA827845A1C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:22:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E755E286831
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:22:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 347C5B2A7C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:22:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08CC85D48E;
-	Thu,  1 Feb 2024 14:22:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88B3B5F48C;
+	Thu,  1 Feb 2024 14:22:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="fL1Dlw7g"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eh0Iz/LY"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1161D5CDF5;
-	Thu,  1 Feb 2024 14:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD63A5F462;
+	Thu,  1 Feb 2024 14:22:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706797335; cv=none; b=CAKa+EohCvNtBnNW6WKjvDFqGmFIhXoxWoHvBuKJwfFbl6IbS0pNMWpPi6896Mh5u/5BcTap2FylxsRsTzGrehzI5ZtPrXQ0EN5F13MnylQ/FvCAgXMJEcGPYviOkjix9vltbO1CjMt6/NkcCfUnc48BvkupOOS9CD232ZOSWTo=
+	t=1706797349; cv=none; b=oookAMu/1XtQvTw2yWOj6hAhVH8w8P1ixsUGPsx+KZXaLH1eNXfw1w+GV8dt+51x5iOeXYjvnvyCt+cO6JYc2pFMHTcj2FWofCcuUhMnBgUeerSY4/hdUMLcKrY2PxB8HSd9sDEwtFO15rggS9WLkWyQj3BRWGE6tH3mLUoLyO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706797335; c=relaxed/simple;
-	bh=WNRgXpK3cyTcLjrStmAedyAdHp3cF8ZyWMJ/8P4PCE4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u10cZUDJ/vkNcRv+GUMqTjooqPgTC7zNKzdFJ2bzytgBPi8bsI2j3cyLwHC8/NJavqzeIlARGksZJRuLBXoTTouU2F/Zrd1srYTpoBc2dgxyj/zCh2SZ8x47Lbo4VsLSJY+UC14MqgKny7B8mN1qBy1QOx77z6dhCIZU76Ng6g8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=fL1Dlw7g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71F19C433F1;
-	Thu,  1 Feb 2024 14:22:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706797334;
-	bh=WNRgXpK3cyTcLjrStmAedyAdHp3cF8ZyWMJ/8P4PCE4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fL1Dlw7gOwnCWJ78CU0EbGE9YEyAiqiAq5Ep1QhAxQ06DxnpnNMxPugkP1BO/K15X
-	 ZyzG/y+WN56MiCvYz8ReuKAC98WVeSMka6b2NMqa+ViWplfqqNvYlPCHcsyEDzQxg3
-	 ltSDtZEK667nul9fTNVcStlIUBKU+GJu+jFkA9Y8=
-Date: Thu, 1 Feb 2024 06:22:13 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: "Hegde, Suma" <Suma.Hegde@amd.com>
-Cc: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	naveenkrishna.chatradhi@amd.com,
-	LKML <linux-kernel@vger.kernel.org>,
-	Carlos Bilbao <carlos.bilbao@amd.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH] platform/x86/amd/hsmp: switch to use device_add_groups()
-Message-ID: <2024020144-duplicity-nuptials-1cd7@gregkh>
-References: <2024012822-exalted-fidgeting-f180@gregkh>
- <0d110d2a-da0c-017a-0e5a-fc6bef7b066a@linux.intel.com>
- <e73426f6-6d50-4ed7-8613-1ec42fa3f991@amd.com>
+	s=arc-20240116; t=1706797349; c=relaxed/simple;
+	bh=vZ0f9QgMh/MLNXr5IM6uI3bSgBD+ttKqdlYxHv7Mncg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=q1SQ/yCqTKTh2Bc9WVndRFU2M1zgZddNbR+wvWjM7DlwWdKWJFQV+my5uezHdgr0BbJboFzrura9k/VItnIpSbYs4LbNM5yqD07swpez74p6161JsoIzUof+lLuZ+ErinVKX+MEL+GGkRY2ZTNcJQXeK7Mq6WraoJhZAQcZeTwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eh0Iz/LY; arc=none smtp.client-ip=192.55.52.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706797347; x=1738333347;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=vZ0f9QgMh/MLNXr5IM6uI3bSgBD+ttKqdlYxHv7Mncg=;
+  b=eh0Iz/LYSRxrIMy5ktuHOewhdE9InVgas6hdfpruATWNEdw8/VWAmVtk
+   lru3y9hCt8Tr8VnlQWJOEMfP4mjZLXLLRuMKWorauxY0/g6l2bz2X+D1+
+   P6wXGjvWs9uYctyUmYN+PusFgfXQegIchvcRzvqkZiGVmuidxKbWOve+q
+   qndrMW9MJr6wTQOPTnotT/rZ1oMF7WJGBB3HQelgkwlRf9Ad1AvwwLjPg
+   0P6noVVgmge495lanEGB6AIEMQib8vDeVkx+Q2XvQCVanvdmKMG+KMaFr
+   c9z56J4u+00P9ccOikYeKbyMvRRIMJZFu03IiQcGFkZr3X+I8ZG2ZWxrZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="401034126"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="401034126"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 06:22:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="1119948354"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="1119948354"
+Received: from mszycik-mobl1.ger.corp.intel.com (HELO [10.246.35.198]) ([10.246.35.198])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 06:22:23 -0800
+Message-ID: <043361a1-bb11-4d0c-bbc2-d31b38deb4dc@linux.intel.com>
+Date: Thu, 1 Feb 2024 15:22:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e73426f6-6d50-4ed7-8613-1ec42fa3f991@amd.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Intel-wired-lan] [PATCH net-next v7 1/2] ethtool: Add GTP RSS
+ hash options to ethtool.h
+Content-Language: en-US
+To: Takeru Hayasaka <hayatake396@gmail.com>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org, vladimir.oltean@nxp.com,
+ linux-kernel@vger.kernel.org, laforge@gnumonks.org,
+ intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+ mailhol.vincent@wanadoo.fr
+References: <20240201033310.1028154-1-hayatake396@gmail.com>
+From: Marcin Szycik <marcin.szycik@linux.intel.com>
+In-Reply-To: <20240201033310.1028154-1-hayatake396@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 01, 2024 at 06:50:33PM +0530, Hegde, Suma wrote:
-> On 1/29/2024 6:16 PM, Ilpo Järvinen wrote:
-> > Caution: This message originated from an External Source. Use proper caution when opening attachments, clicking links, or responding.
-> > 
-> > 
-> > + Cc Suma Hegde.
-> > 
-> > On Sun, 28 Jan 2024, Greg Kroah-Hartman wrote:
-> > 
-> > > The use of devm_*() functions works properly for when the device
-> > > structure itself is dynamic, but the hsmp driver is attempting to have a
-> > > local, static, struct device and then calls devm_() functions attaching
-> > > memory to the device that will never be freed.
-> > > 
-> > > The logic of having a static struct device is almost never a wise
-> > > choice, but for now, just remove the use of devm_device_add_groups() in
-> > > this driver as it obviously is not needed.
+
+
+On 01.02.2024 04:33, Takeru Hayasaka wrote:
+> This is a patch that enables RSS functionality for GTP packets using ethtool.
 > 
-> Hi Greg,
+> A user can include TEID and make RSS work for GTP-U over IPv4 by doing the
+> following:`ethtool -N ens3 rx-flow-hash gtpu4 sde`
 > 
-> Could you please hold on merging this patch for a week? I will push a patch
-> for converting platform specific structure's memory allocation from static
-> to a dynamic
+> In addition to gtpu(4|6), we now support gtpc(4|6),gtpc(4|6)t,gtpu(4|6)e,
+> gtpu(4|6)u, and gtpu(4|6)d.
 > 
-> allocation.
+> gtpc(4|6): Used for GTP-C in IPv4 and IPv6, where the GTP header format does
+> not include a TEID.
+> gtpc(4|6)t: Used for GTP-C in IPv4 and IPv6, with a GTP header format that
+> includes a TEID.
+> gtpu(4|6): Used for GTP-U in both IPv4 and IPv6 scenarios.
+> gtpu(4|6)e: Used for GTP-U with extended headers in both IPv4 and IPv6.
+> gtpu(4|6)u: Used when the PSC (PDU session container) in the GTP-U extended
+> header includes Uplink, applicable to both IPv4 and IPv6.
+> gtpu(4|6)d: Used when the PSC in the GTP-U extended header includes Downlink,
+> for both IPv4 and IPv6.
+> 
+> GTP generates a flow that includes an ID called TEID to identify the tunnel.
+> This tunnel is created for each UE (User Equipment).By performing RSS based on
+> this flow, it is possible to apply RSS for each communication unit from the UE.
+> Without this, RSS would only be effective within the range of IP addresses. For
+> instance, the PGW can only perform RSS within the IP range of the SGW.
+> Problematic from a load distribution perspective, especially if there's a bias
+> in the terminals connected to a particular base station.This case can be
+> solved by using this patch.
 
-Push it where?  Ususally we do "first patch wins" type stuff, why not
-just do your work on top of mine?
+Reviewed-by: Marcin Szycik <marcin.szycik@linux.intel.com>
 
-Also, when you do make the needed changes, please remove the explicit
-call to create sysfs groups and use the default groups pointer instead,
-that will make things much simpler and avoid races in the code.
-
-thanks,
-
-greg k-h
+> Signed-off-by: Takeru Hayasaka <hayatake396@gmail.com>
+> ---
+> v2->v3: Based on Harald-san's review, I added documentation and comments to
+> ethtool.h and ice.rst.
+> v3->v4: Based on Marcin-san's review, I added the missing code for GTPC and
+> GTPC_TEID, and revised the documentation and comments.
+> v4->v5: Based on Marcin-san's review, I fixed rename and wrong code regarding
+> GTPC
+> v5->v6: Based on Marcin-san's review, Undoing the addition of unnecessary
+> blank lines.Minor fixes.
+> v6->v7 Based on Jakub-san's review, Split the patch.
+>  include/uapi/linux/ethtool.h | 48 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 48 insertions(+)
+> 
+> diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
+> index 06ef6b78b7de..11fc18988bc2 100644
+> --- a/include/uapi/linux/ethtool.h
+> +++ b/include/uapi/linux/ethtool.h
+> @@ -2023,6 +2023,53 @@ static inline int ethtool_validate_duplex(__u8 duplex)
+>  #define	IPV4_FLOW	0x10	/* hash only */
+>  #define	IPV6_FLOW	0x11	/* hash only */
+>  #define	ETHER_FLOW	0x12	/* spec only (ether_spec) */
+> +
+> +/* Used for GTP-U IPv4 and IPv6.
+> + * The format of GTP packets only includes
+> + * elements such as TEID and GTP version.
+> + * It is primarily intended for data communication of the UE.
+> + */
+> +#define GTPU_V4_FLOW 0x13	/* hash only */
+> +#define GTPU_V6_FLOW 0x14	/* hash only */
+> +
+> +/* Use for GTP-C IPv4 and v6.
+> + * The format of these GTP packets does not include TEID.
+> + * Primarily expected to be used for communication
+> + * to create sessions for UE data communication,
+> + * commonly referred to as CSR (Create Session Request).
+> + */
+> +#define GTPC_V4_FLOW 0x15	/* hash only */
+> +#define GTPC_V6_FLOW 0x16	/* hash only */
+> +
+> +/* Use for GTP-C IPv4 and v6.
+> + * Unlike GTPC_V4_FLOW, the format of these GTP packets includes TEID.
+> + * After session creation, it becomes this packet.
+> + * This is mainly used for requests to realize UE handover.
+> + */
+> +#define GTPC_TEID_V4_FLOW 0x17	/* hash only */
+> +#define GTPC_TEID_V6_FLOW 0x18	/* hash only */
+> +
+> +/* Use for GTP-U and extended headers for the PSC (PDU Session Container).
+> + * The format of these GTP packets includes TEID and QFI.
+> + * In 5G communication using UPF (User Plane Function),
+> + * data communication with this extended header is performed.
+> + */
+> +#define GTPU_EH_V4_FLOW 0x19	/* hash only */
+> +#define GTPU_EH_V6_FLOW 0x1a	/* hash only */
+> +
+> +/* Use for GTP-U IPv4 and v6 PSC (PDU Session Container) extended headers.
+> + * This differs from GTPU_EH_V(4|6)_FLOW in that it is distinguished by
+> + * UL/DL included in the PSC.
+> + * There are differences in the data included based on Downlink/Uplink,
+> + * and can be used to distinguish packets.
+> + * The functions described so far are useful when you want to
+> + * handle communication from the mobile network in UPF, PGW, etc.
+> + */
+> +#define GTPU_UL_V4_FLOW 0x1b	/* hash only */
+> +#define GTPU_UL_V6_FLOW 0x1c	/* hash only */
+> +#define GTPU_DL_V4_FLOW 0x1d	/* hash only */
+> +#define GTPU_DL_V6_FLOW 0x1e	/* hash only */
+> +
+>  /* Flag to enable additional fields in struct ethtool_rx_flow_spec */
+>  #define	FLOW_EXT	0x80000000
+>  #define	FLOW_MAC_EXT	0x40000000
+> @@ -2037,6 +2084,7 @@ static inline int ethtool_validate_duplex(__u8 duplex)
+>  #define	RXH_IP_DST	(1 << 5)
+>  #define	RXH_L4_B_0_1	(1 << 6) /* src port in case of TCP/UDP/SCTP */
+>  #define	RXH_L4_B_2_3	(1 << 7) /* dst port in case of TCP/UDP/SCTP */
+> +#define	RXH_GTP_TEID	(1 << 8) /* teid in case of GTP */
+>  #define	RXH_DISCARD	(1 << 31)
+>  
+>  #define	RX_CLS_FLOW_DISC	0xffffffffffffffffULL
 
