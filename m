@@ -1,81 +1,141 @@
-Return-Path: <linux-kernel+bounces-47626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC59B84506E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:45:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1841845070
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:46:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AB101C25358
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:45:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ECFF9B29580
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:46:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEF213C064;
-	Thu,  1 Feb 2024 04:45:26 +0000 (UTC)
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725CE3BB3D;
+	Thu,  1 Feb 2024 04:46:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RWmfHnAF"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 014DA33CC6;
-	Thu,  1 Feb 2024 04:45:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23BEE3BB21;
+	Thu,  1 Feb 2024 04:46:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706762726; cv=none; b=Uib4kjKvFZF+7STbcT/G8I/QRm+5X3t9qn5yPfy6V/IOYcvED4uErivB8Yyd0ho5GYknG+SvLkc/B7ioo8bkiFSwzOvIODiGXIH/IX3cpyhUHVOCTls8KnmOqniLabKiOlQQBDdYsydh7L7wK5iZUmvjJQ1ePFYlw0l15QqjRqM=
+	t=1706762770; cv=none; b=OlzJqqCxKunURPIi8fohOJl1gqStf4AfsbPXHLfoOUMcdcMWuZztVdByITu6wyH3DKk9gJSpeaudilmPqQoEztTBgQTkyxIc1mXZAtxFfyvLMFr+YMc3WjyMI8PHPJjY2tgOYPZWsT8lGibTEh4fTH82zv1rcb9m33baIPWF3Bc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706762726; c=relaxed/simple;
-	bh=/uEIaX0EFZlt3rhgTjhZlC75KcpuGmzm/ZLfFTjsxe0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ker63R92g7RSqW+ussWIMYPJE4iX9Pth6lXwiiVA9iksV84JKR19i7GsZCbfGvAaHxfikyVIiGbS5Kilze4SwzhmOA6HUgdUR8rHwKxULmkvfG052IG/ag85z8qWTB14GjubdRPZFcY4fzXujEZ8JJGFRwq1MaON2t/CCVZ819s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 73CEF68AFE; Thu,  1 Feb 2024 05:45:21 +0100 (CET)
-Date: Thu, 1 Feb 2024 05:45:21 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Chris Leech <cleech@redhat.com>, Nilesh Javali <njavali@marvell.com>,
-	Christoph Hellwig <hch@lst.de>,
-	John Meneghini <jmeneghi@redhat.com>, Lee Duncan <lduncan@suse.com>,
-	Mike Christie <michael.christie@oracle.com>,
-	Hannes Reinecke <hare@kernel.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-	GR-QLogic-Storage-Upstream@marvell.com
-Subject: Re: [PATCH 2/2] cnic,bnx2,bnx2x: use UIO_MEM_DMA_COHERENT
-Message-ID: <20240201044521.GB14176@lst.de>
-References: <20240131191732.3247996-1-cleech@redhat.com> <20240131191732.3247996-3-cleech@redhat.com> <2024013125-unraveled-definite-7fc6@gregkh>
+	s=arc-20240116; t=1706762770; c=relaxed/simple;
+	bh=sT31d/Dktz06hVif+GESOP/aywR9taJS8IONIS8Md1s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TA8a42oygxjC8TWykkBzudqQ/0eyHKVBdG/9XDpoguivirOxXKKgbEzkJUckW35lUItWtgm4cwj5cn/tiCj8HOOwvcce9NJmCNaroVUlwslZns/hGiMunFjXGv3+VWE+YPT0Qko6IiDZnNMkXFAqBouZ31ftgg45unIz1ReND3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RWmfHnAF; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55a9008c185so764095a12.1;
+        Wed, 31 Jan 2024 20:46:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706762767; x=1707367567; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cfodC9vNrDpns69W2WTDuHfGSm1HhcI9brbrkzFOKO4=;
+        b=RWmfHnAFYIkUiDeZaSYv9hY9T/w57gDoZty8Tv3av6/WTCi3MITXXlfh4iMTBzwboU
+         mdNjhzNz3y+vu4BChXbxvsG8c1G1gzXOMBLErutz+BnzyRe6uE7esrUBOLxNcBwIS1BE
+         mqmUC8+5WYKc2v6+hIkzrlcB/dY0CvzvP24AKzpp99T23LTutjCO/dKIaj179WW4vwy1
+         Y7xINe5nDJdqhODHrleMScpjBeWhE3JPSUnV38tyRjSxWmBmzIdG4LK5fScIXqys4Qs+
+         yEp5izXcwlU6Z0KbH/qNbrLjjMYmiRVn5/9o5icdVa/ytp/hi4zi3cbv4NY+nCbWmHSG
+         mHEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706762767; x=1707367567;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cfodC9vNrDpns69W2WTDuHfGSm1HhcI9brbrkzFOKO4=;
+        b=aPimDmadIZj6J5+lohsg7EYS32S9cmWRMkJ0GCtcfnThSRqqUQk6qSP2YDecRMw4Mo
+         C/11T+2BY7ldjy7OPbYNfTgxj5+wJ2jpQP2zMqOQAwHu/OGRpsNWDScSeh5yJUHADsk4
+         hyUREWEOpGKhAprlXFK2yq4zoGj6YvqKtw14ahS8tmCiKYgJ8oPPBZ1Gwy/R1GE8GnV8
+         H0BqrTGtRhRjCYx3T8MvxnoVk68yl1vL8Hy8SGqyysSCHJca4QEONe9gndwpVlDvSA8s
+         cinLZ1/mZVxWlDDMgU8cii6ajxfRolGt5zFkuHR1uKbHAVYTIIT888RvaclK3Vl3RvEn
+         hZuA==
+X-Gm-Message-State: AOJu0YxjFUxknMJYB3Hq6/Uh/2fn+6pHUHpeRhrEuiVmdZivH+ii1tzV
+	WyGOu8ay6ZaFQ6ycqXajYfLNvdnyLd4ovyKPsbOE+1dPeQZbe3alepmHsI7/VRFbe96qUsGSY57
+	kDm5tbewF4a+7qhG3ebBGuDz/Wtw=
+X-Google-Smtp-Source: AGHT+IEZJ1ezAJFk5aGlxra7BSqIZ86xefE3rE7to+yqrwkHqHw9Iw38a0NbpIHmIvKSYXbG+1CaYv50GcsXgZSXfoM=
+X-Received: by 2002:a50:fb03:0:b0:55f:d39:9bb with SMTP id d3-20020a50fb03000000b0055f0d3909bbmr6379747edq.15.1706762767220;
+ Wed, 31 Jan 2024 20:46:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024013125-unraveled-definite-7fc6@gregkh>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20240126231348.281600-1-thepacketgeek@gmail.com>
+ <20240126231348.281600-4-thepacketgeek@gmail.com> <Zbi+Zw2o0rDfX1pj@gmail.com>
+In-Reply-To: <Zbi+Zw2o0rDfX1pj@gmail.com>
+From: Packet Geek <thepacketgeek@gmail.com>
+Date: Wed, 31 Jan 2024 20:45:56 -0800
+Message-ID: <CADvopva+tesNHtCBOadK9x3bbqgjX+ZkkyPDeX1pto7ZUU=QVA@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 3/8] net: netconsole: move newline trimming to function
+To: Breno Leitao <leitao@debian.org>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 01:29:56PM -0800, Greg Kroah-Hartman wrote:
-> On Wed, Jan 31, 2024 at 11:17:32AM -0800, Chris Leech wrote:
-> > Use the UIO_MEM_DMA_COHERENT type to properly handle mmap for
-> > dma_alloc_coherent buffers.
-> > 
-> > The cnic l2_ring and l2_buf mmaps have caused page refcount issues as
-> > the dma_alloc_coherent no longer provide __GFP_COMP allocation as per
-> > commit "dma-mapping: reject __GFP_COMP in dma_alloc_attrs".
-> > 
-> > Fix this by having the uio device use dma_mmap_coherent.
-> > 
-> > The bnx2 and bnx2x status block allocations are also dma_alloc_coherent,
-> > and should use dma_mmap_coherent. They don't allocate multiple pages,
-> > but this interface does not work correctly with an iommu enabled unless
-> > dma_mmap_coherent is used.
-> > 
-> > Fixes: bb73955c0b1d ("cnic: don't pass bogus GFP_ flags to dma_alloc_coherent")
-> 
-> This is really the commit that broke things?  By adding this, are you
-> expecting anyone to backport this change to older kernels?
+On Tue, Jan 30, 2024 at 1:16=E2=80=AFAM Breno Leitao <leitao@debian.org> wr=
+ote:
+>
+> On Fri, Jan 26, 2024 at 03:13:38PM -0800, Matthew Wood wrote:
+> > Move newline trimming logic from `dev_name_store()` to a new function
+> > (trim_newline()) for shared use in netconsole.c
+> >
+> > Signed-off-by: Matthew Wood <thepacketgeek@gmail.com>
+> > ---
+> >  drivers/net/netconsole.c | 17 +++++++++++------
+> >  1 file changed, 11 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
+> > index 085350beca87..b280d06bf152 100644
+> > --- a/drivers/net/netconsole.c
+> > +++ b/drivers/net/netconsole.c
+> > @@ -230,6 +230,16 @@ static struct netconsole_target *to_target(struct =
+config_item *item)
+> >                           struct netconsole_target, group);
+> >  }
+> >
+> > +/* Get rid of possible trailing newline, returning the new length */
+> > +static void trim_newline(char *s, size_t maxlen)
+> > +{
+> > +     size_t len;
+> > +
+> > +     len =3D strnlen(s, maxlen);
+> > +     if (s[len - 1] =3D=3D '\n')
+> > +             s[len - 1] =3D '\0';
+> > +}
+>
+> I am thinking about this one. Should we replace the first `\n` in the
+> file by `\0` no matter where it is? This will probably make it easier to
+> implement the netconsd, where we know it will be impossible to have `\n`
+> in the userdata.
+>
+> Maybe something as:
+>
+>         static inline void trim_newline(char *str)
+>         {
+>                 char *pos =3D strchr(str, '\n');
+>
+>                 if (pos)
+>                         *pos =3D '\0';
+>         }
+>
+>
+> All in all, this is a good clean up, which make the code easier to read.
+> Thanks!
 
-Well, the driver has literally been broken since day 1.  The above
-commit is what made people finally care as it also broke on more
-common setups.  So I'm not sure the fixes tag is correct.
+I like this idea, I agree that only accepting userdata values upto the
+first newline clears up the expectations for log output and parsing on
+the receiving side. I would prefer that to the case where multiple
+values (delimited by newlines) are somehow attempted with a single
+key, seems like just using additional key/value pairs would be
+cleaner.
 
