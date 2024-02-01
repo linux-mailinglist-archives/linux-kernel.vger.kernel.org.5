@@ -1,93 +1,149 @@
-Return-Path: <linux-kernel+bounces-48996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 832AD846477
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:31:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5027984647B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:34:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD3B81C23830
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:31:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7764B21278
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:34:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33024481C6;
-	Thu,  1 Feb 2024 23:30:58 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE58B47F64;
+	Thu,  1 Feb 2024 23:34:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Adu1wQi1"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 466EC481BE
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 23:30:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E35447F4D
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 23:34:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706830257; cv=none; b=W72PeU4XCwjHm42RD67AklzHTSpFLXNL+6K9i28+B7PFTe7j/D9h5TT5MK5EnJqz5DPwYP4GmtkjCz7R9Fi+NCEVv7O243keOktjMPnnyAWsyMhg0ymU1dNaQfa0Q2bhX8g0LeiA4r1AkZa9cHzSIFaI382kg/Lk4RYoV3dw4rw=
+	t=1706830463; cv=none; b=Mh7E3qSYAw890VOE8biHB5nYwnLqiEujNBUonwL/7ugctei5IM+DZcESTa9DvZoALpi5XQ1Q8zDvkBU5wDcCn5cAlqK3BohOQeIg8APBzvtgzf3FyCVPiBaMUicmX9ppOp0iRG348zNpmb/yL82lni4PbtSZDnqjM8+zr2BB48E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706830257; c=relaxed/simple;
-	bh=8INpvQI01LIkViTNlfS4VCM/BynvzCHgJbdsjskF9xA=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=UAk7IwIun3IKIlmqUmjKDBwn7HaBifOYYj0CnGeyW5naKdYaVWvhZNM87iy0w6eXAxxyS915XXeETuz+boO9XgUvxv9JiaYONDZZys2+lRtIKyXaQDXrj/1lOB7/UiCR2TY7I4mQNI5VHHmXxEzhZTD03o40JNxQY45uoZ873/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363b281a3b9so396585ab.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 15:30:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706830255; x=1707435055;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gQnJPHhUP2fBHB6E+cKfrGCV/cxpTXH4z30wnqadnLA=;
-        b=B9lNGzuJyQm1K5EBofdPQMfMceJafLT7mqMuE2DjQcF/4NC7bdXvcVIfefh4J9MU1d
-         TXcs+R4Q3slm/EMbezPZJ1PJkmOKXl7q1lgWuQx0TrJzeLvMf6qKel6wRifwMGIKpUOB
-         EFXy0GLA/O7bzhjvmsG8iw/ek1yLmhjA+41TLwlUyEmIBZIjp4XsKL3GUljG725Xnuh5
-         vZRoYFObOX8LKnaHqD4b4iCOhxKETPPtlzDTiP9jWCYD6MnGn/Yr49qauRjE8qmLbAyO
-         jaVS29wVBjycaAUVAo6crb1eNuowatR/toGnMoXWuM9mVIUtF+nGjPsG1ci9WLDRgir4
-         bmcA==
-X-Gm-Message-State: AOJu0YzqrkE9jmYTTLEuhJomI4VBbju/PbxQQYDGCCKib/H3kJyYXHnL
-	VrJdlhZTvhwdWbUcJ5yyXPyH/VjolZskn/O41oY1nujnnH/MUW3w+Sl124DmH83yDj5xooPjnXr
-	PPyPIGKdP6Ey8FLkWccE+shTR2rT01whxsSuGPHLqtnzpQm1tcDe7REDYQQ==
-X-Google-Smtp-Source: AGHT+IEUJVYniRkMK5306d1sFsBxoYihMDRdfzIbG9tjVAH/EYQD95UaNrChwF4l61aSs/f7w232WYZ3vK9cggAAHJWu0GOMU72P
+	s=arc-20240116; t=1706830463; c=relaxed/simple;
+	bh=kw+ki3WM3q8qc2SsVqZ3aaq+zpP97OZDm6P5TkPPdhM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Dl5a5nsiKRDyCGwKSN3emJCpl1K+YyZ9NEPAfZsDFkKT2X8zjU/4l+8IaWDqsOuLx9+B7ai3tlZvUpdKxyeyRRRyYZStF+ilO7z2rmMFjbH5TVF8wtwE7nd3Q28GYPmsN1OSOPTm0bSp2c70BUI1kvRgNgZ4gXOV4FyiKQ7xoUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Adu1wQi1; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706830460;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=+KNKvB+sVb0oHCzlVCeXjS4dy7AjP6uKhJvKZaZyiAA=;
+	b=Adu1wQi1CioNWw6FdoKvDmcbWlXfdjUhWN9mghTOBPDFw8akKQfqgjCmdTbnrC4ZdEUx9v
+	sUaZStJTlzc1hjnOS7Nfm7g5gdrpFN6likLEvEgsuVP8g1dsku961TttHhD8bRN46ZTd3o
+	uEMLFBhcY9fIQ3psmsidCpmr3BkdOjs=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-391-_2dxdNjMMFuAFSX8uqEhdw-1; Thu,
+ 01 Feb 2024 18:34:17 -0500
+X-MC-Unique: _2dxdNjMMFuAFSX8uqEhdw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DD9C428C976B;
+	Thu,  1 Feb 2024 23:34:16 +0000 (UTC)
+Received: from rhel-developer-toolbox-latest.rmtusor.csb (unknown [10.2.16.182])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 741AC1BDB1;
+	Thu,  1 Feb 2024 23:34:15 +0000 (UTC)
+From: Chris Leech <cleech@redhat.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Nilesh Javali <njavali@marvell.com>
+Cc: Christoph Hellwig <hch@lst.de>,
+	John Meneghini <jmeneghi@redhat.com>,
+	Lee Duncan <lduncan@suse.com>,
+	Mike Christie <michael.christie@oracle.com>,
+	Hannes Reinecke <hare@kernel.org>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	GR-QLogic-Storage-Upstream@marvell.com
+Subject: [PATCH v5 0/4] UIO_MEM_DMA_COHERENT for cnic/bnx2/bnx2x
+Date: Thu,  1 Feb 2024 15:33:56 -0800
+Message-ID: <20240201233400.3394996-1-cleech@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1aad:b0:363:8be6:2b22 with SMTP id
- l13-20020a056e021aad00b003638be62b22mr497761ilv.1.1706830255476; Thu, 01 Feb
- 2024 15:30:55 -0800 (PST)
-Date: Thu, 01 Feb 2024 15:30:55 -0800
-In-Reply-To: <000000000000d1668406104ff51e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000011dad906105a63dc@google.com>
-Subject: Re: [syzbot] Re: [syzbot] [erofs?] KMSAN: uninit-value in
- z_erofs_lz4_decompress (3)
-From: syzbot <syzbot+88ad8b0517a9d3bb9dc8@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+During bnx2i iSCSI testing we ran into page refcounting issues in the
+uio mmaps exported from cnic to the iscsiuio process, and bisected back
+to the removal of the __GFP_COMP flag from dma_alloc_coherent calls.
 
-***
+The cnic uio interface also has issues running with an iommu enabled,
+which these changes correct.
 
-Subject: Re: [syzbot] [erofs?] KMSAN: uninit-value in z_erofs_lz4_decompress (3)
-Author: eadavis@qq.com
+In order to fix these drivers to be able to mmap dma coherent memory via
+a uio device, introduce a new uio mmap type backed by dma_mmap_coherent.
 
-#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+While I understand some complaints about how these drivers have been
+structured, I also don't like letting support bitrot when there's a
+reasonable alternative to re-architecting an existing driver. I believe
+this to be the most sane way to restore these drivers to functioning
+properly.
 
-diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-index 021be5feb1bc..8ac3f96676c4 100644
---- a/fs/erofs/decompressor.c
-+++ b/fs/erofs/decompressor.c
-@@ -252,7 +252,8 @@ static int z_erofs_lz4_decompress_mem(struct z_erofs_lz4_decompress_ctx *ctx,
- 		print_hex_dump(KERN_DEBUG, "[ in]: ", DUMP_PREFIX_OFFSET,
- 			       16, 1, src + inputmargin, rq->inputsize, true);
- 		print_hex_dump(KERN_DEBUG, "[out]: ", DUMP_PREFIX_OFFSET,
--			       16, 1, out, rq->outputsize, true);
-+			       16, 1, out, (ret < 0 && rq->inputsize > 0) ? 
-+			       (ret + rq->inputsize) : rq->outputsize, true);
- 
- 		if (ret >= 0)
- 			memset(out + ret, 0, rq->outputsize - ret);
+There are two other uio drivers which are mmaping dma_alloc_coherent
+memory as UIO_MEM_PHYS, uio_dmem_genirq and uio_pruss.
+These drivers are converted in the later patches of this series.
+
+v5:
+- convert uio_pruss and uio_dmem_genirq
+- added dev_warn and comment about not adding more users
+- put some PAGE_ALIGNs back in cnic to keep checks in
+  uio_mmap_dma_coherent matched with uio_mmap_physical.
+- dropped the Fixes trailer
+v4:
+- re-introduce the dma_device member to uio_map,
+  it needs to be passed to dma_mmap_coherent somehow
+- drop patch 3 to focus only on the uio interface,
+  explicit page alignment isn't needed
+- re-add the v1 mail recipients,
+  this isn't something to be handled through linux-scsi
+v3 (Nilesh Javali <njavali@marvell.com>):
+- fix warnings reported by kernel test robot
+  and added base commit
+v2 (Nilesh Javali <njavali@marvell.com>):
+- expose only the dma_addr within uio and cnic.
+- Cleanup newly added unions comprising virtual_addr
+  and struct device
+
+previous threads:
+v1: https://lore.kernel.org/all/20230929170023.1020032-1-cleech@redhat.com/
+attempt at an alternative change: https://lore.kernel.org/all/20231219055514.12324-1-njavali@marvell.com/
+v2: https://lore.kernel.org/all/20240103091137.27142-1-njavali@marvell.com/
+v3: https://lore.kernel.org/all/20240109121458.26475-1-njavali@marvell.com/
+v4: https://lore.kernel.org/all/20240131191732.3247996-1-cleech@redhat.com/
+
+Chris Leech (4):
+  uio: introduce UIO_MEM_DMA_COHERENT type
+  cnic,bnx2,bnx2x: use UIO_MEM_DMA_COHERENT
+  uio_pruss: UIO_MEM_DMA_COHERENT conversion
+  uio_dmem_genirq: UIO_MEM_DMA_COHERENT conversion
+
+ drivers/net/ethernet/broadcom/bnx2.c          |  1 +
+ .../net/ethernet/broadcom/bnx2x/bnx2x_main.c  |  2 +
+ drivers/net/ethernet/broadcom/cnic.c          | 25 ++++++----
+ drivers/net/ethernet/broadcom/cnic.h          |  1 +
+ drivers/net/ethernet/broadcom/cnic_if.h       |  1 +
+ drivers/uio/uio.c                             | 47 +++++++++++++++++++
+ drivers/uio/uio_dmem_genirq.c                 | 22 ++++-----
+ drivers/uio/uio_pruss.c                       |  6 ++-
+ include/linux/uio_driver.h                    |  8 ++++
+ 9 files changed, 89 insertions(+), 24 deletions(-)
+
+
+base-commit: 861c0981648f5b64c86fd028ee622096eb7af05a
+-- 
+2.43.0
 
 
