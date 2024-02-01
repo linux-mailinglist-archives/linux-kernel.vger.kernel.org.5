@@ -1,125 +1,201 @@
-Return-Path: <linux-kernel+bounces-47691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6097E84515A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 07:27:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9367684515B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 07:29:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04885B25480
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 06:27:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AFA3284F21
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 06:29:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2667E83CD5;
-	Thu,  1 Feb 2024 06:27:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1950C7E573;
+	Thu,  1 Feb 2024 06:29:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="axgxy3x6"
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JskVz43S"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DFEE69D2B
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 06:27:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AE936519D
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 06:29:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706768863; cv=none; b=APeygWfkFZ/P5EzJ4sw4P178PC0zSlWLH4nl1FIiqimL4PvvU/xSj4TICKuAMYjxTdduYne2AaZW4fiStyHtDjf4010+elmFBEpjD+mxWUYVE0ASg/4/BkOYnYYdB9SIgeWoU6dm/Ehx6QmSp3L9oB6vHoBlwy0rXc5u1aiHsMc=
+	t=1706768965; cv=none; b=t6WXDoWhzgq86ns5MeY42aMFtWsQjLjgU3kxtc2kq0lODu1uAb5SW2G2JIoUALy5Q11/FUulVbJAQHR3G5HH0bwFEVcnzYxzOO9x44bMfBcu2FO/XldNW9QonM3o+MG200upR/EbAxec8rAFs8yexMQSsl98yibHKiZ2ve2XYdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706768863; c=relaxed/simple;
-	bh=qZ+RsLb2dmGFbUCMD4Q9h+jIkmnMbZKhyHgyxrJ3lH4=;
+	s=arc-20240116; t=1706768965; c=relaxed/simple;
+	bh=1BN6jfhT/gk45R5CPCVJSrOjxfYN0aiySJzxnvTLL9I=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=na+Zov1NpGWN6YoPlJCO6hTHLT8f4Q4UlVSpqP5d2URqkeqgmNK5P11SDJZLNAORdNAbca++TtyxUUDxQG8Wj56LMnhMyRNmqDjx9cbbNTbGbPjjmydhv5gW2lAEFl5dhNnnOSWq2KHZl6oJgdWY/lUpoC2b6i1Eo7tajxZnsUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=axgxy3x6; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <698633db-b066-4f75-b201-7b785819277b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706768857;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7Qvm1uhfLMC1fJLgXMV0RsQ6nifi9sUu1XYYWSZg8Cw=;
-	b=axgxy3x6LGdKdzkvApMtvByga7105wOUF1dtMY7024mq4NgCwACDwjDhUz5JSXqBpcikI8
-	QxyL0TbWBStcU3svB/8WHZMBkM5zFMc3zx4wmhqf3tCS29VKmyNxvhzCmlbx+EEwP/XnU3
-	g6gIkJKZ09uYjL4q+0W8oyiKXAz+Kw0=
-Date: Thu, 1 Feb 2024 14:27:23 +0800
+	 In-Reply-To:Content-Type; b=XyIB5JLbCI9X6U+cnqEppGTTgMZQQg2bw9ZnSfUOGwKLi5yXd+uzZZ3JVtg1xHB4XSkYIhL/h67jpfM2iyzmMsQjcGDixk9ZB8nDLp77nqjKPMsNDhJ5zQEysgWg01fuUyocF3T5Xyi25PGDelz9axoFExZvNKfDtkjA+/b14wE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JskVz43S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56E97C433F1;
+	Thu,  1 Feb 2024 06:29:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706768964;
+	bh=1BN6jfhT/gk45R5CPCVJSrOjxfYN0aiySJzxnvTLL9I=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=JskVz43SXLur011T8ECNrlujln8yf0cbj2eLQ/8L+LzS/RKAXRgtfcHTotBopzob3
+	 Wlf6HNLdn2ERNJfUAEbpVsMg/4X+psQruWFS8EylML+D8qf0VZFSd7AzkSiY1of0ET
+	 d4fh85DrXTL1nTgPyN5cPHwUABlE6GyZyW0jDTRnsg489WY/7xZ1wVc348nrZy0/sD
+	 uvfinO86U48GprfFn99SqrAEhUh3fzXZ0FYkYuJoSKBGMM0PMCyT8izcQqSkr/5cpa
+	 VMjOwhbQsCwgBRJbowJPOV9yKuvAQ2DQQwMjyOtItyS5CoTpGBMy7J2d/EIgBotWbr
+	 thl2W3EjiHqAQ==
+Message-ID: <0477240f-9f52-4418-9a2d-7a5a598cd0a9@kernel.org>
+Date: Thu, 1 Feb 2024 14:29:19 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: Do we still need SLAB_MEM_SPREAD (and possibly others)?
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] UPSTREAM: f2fs: sysfs: support gc_io_aware
 Content-Language: en-US
-To: Vlastimil Babka <vbabka@suse.cz>, Yosry Ahmed <yosryahmed@google.com>,
- Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Kees Cook <keescook@chromium.org>, Christoph Lameter <cl@linux.com>,
- David Rientjes <rientjes@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
- Xiongwei Song <xiongwei.song@windriver.com>,
- Chengming Zhou <zhouchengming@bytedance.com>,
- Zheng Yejian <zhengyejian1@huawei.com>
-References: <20240131172027.10f64405@gandalf.local.home>
- <CAJD7tkYCrFAXLey-WK8k1Nkt4SoUQ00GWNjU43HJgaLqycBm7Q@mail.gmail.com>
- <61af19ca-5f9a-40da-a04d-b04ed27b8754@suse.cz>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <61af19ca-5f9a-40da-a04d-b04ed27b8754@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+To: liujinbao1 <jinbaoliu365@gmail.com>, jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+ liujinbao1 <liujinbao1@xiaomi.corp-partner.google.com>
+References: <20240130125113.14081-1-jinbaoliu365@gmail.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <20240130125113.14081-1-jinbaoliu365@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 2024/2/1 06:40, Vlastimil Babka wrote:
-> On 1/31/24 23:25, Yosry Ahmed wrote:
->> On Wed, Jan 31, 2024 at 2:20 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->>>
->>> I was looking into moving eventfs_inode into a slab, and after cutting and
->>> pasting the tracefs allocator:
->>>
->>>         tracefs_inode_cachep = kmem_cache_create("tracefs_inode_cache",
->>>                                                  sizeof(struct tracefs_inode),
->>>                                                  0, (SLAB_RECLAIM_ACCOUNT|
->>>                                                      SLAB_MEM_SPREAD|
->>>                                                      SLAB_ACCOUNT),
->>>                                                  init_once);
->>>
->>> I figured I should know what those slab flags mean. I also looked at what
->>> others in fs use for their slabs. The above is rather common (which I
->>> probably just copied from another file system), but I wanted to know what
->>> they are for.
->>>
->>> When I got to SLAB_MEM_SPREAD, I found that it's a common flag and there's
->>> a lot of caches that just set that and nothing else.
->>>
->>> But I couldn't find how it was used.
->>>
->>> Then I found this commit:
->>>
->>>  16a1d968358a ("mm/slab: remove mm/slab.c and slab_def.h")
->>>
->>> Which I think removed the only use case of SLAB_MEM_SPREAD.
->>>
->>>  $ git grep SLAB_MEM_SPREAD mm
->>> mm/slab.h:                            SLAB_MEM_SPREAD | \
->>>
->>> That's all I find in the mm directory.
->>>
->>> Is it obsolete now? Can we delete it? Maybe there's other SLAB_* flags that
->>> are no longer used. I don't know, I haven't audited them.
->>
->> Perhaps cpuset_do_slab_mem_spread() as well.
+On 2024/1/30 20:51, liujinbao1 wrote:
+> From: liujinbao1 <liujinbao1@xiaomi.corp-partner.google.com>
 > 
-> Yep, good find. Show how obscure mm/slab.c was in the end :)
+> Currently, IO can only be ignored when GC_URGENT_HIGH is set,
+>   and the default algorithm used for GC_URGENT_HIGH is greedy.
+> It gives a way to enable/disable IO aware feature for background
+> gc, so that we can tune background gc more precisely. e.g.
+> force to disable IO aware and choose more suitable algorithm
+> if there are large number of dirty segments.
 > 
-> CCing a few more new people who did slab changes recently, who'd like some
-> low hanging fruit of negative diffcount? :)
+> Change-Id: Ic0ea1bf8fb6602f0dd88b924088f1c1b33fcd809
 
-Thanks for CCing, I can prepare the patch to do it. IIUC, what I need to do is:
+Should remove Change-Id line.
 
-1. delete SLAB_MEM_SPREAD and all its uses.
+> Signed-off-by: liujinbao1 <liujinbao1@xiaomi.corp-partner.google.com>
+> ---
+>   Documentation/ABI/testing/sysfs-fs-f2fs | 6 ++++++
+>   fs/f2fs/f2fs.h                          | 6 ++++++
+>   fs/f2fs/gc.c                            | 3 ++-
+>   fs/f2fs/gc.h                            | 1 +
+>   fs/f2fs/sysfs.c                         | 9 +++++++++
+>   5 files changed, 24 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+> index 36c3cb547901..47f02fa471fe 100644
+> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
+> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+> @@ -16,6 +16,12 @@ Contact:	"Namjae Jeon" <namjae.jeon@samsung.com>
+>   Description:	Controls the default sleep time for gc_thread. Time
+>   		is in milliseconds.
+>   
+> +What:		/sys/fs/f2fs/<disk>/gc_io_aware
+> +Date:		January 2024
+> +Contact:	"Jinbao Liu" <liujinbao1@xiaomi.com>
+> +Description:	It controls to enable/disable IO aware feature for background gc.
+> ++		By default, the value is 1 which indicates IO aware is on.
+> +
+>   What:		/sys/fs/f2fs/<disk>/gc_idle
+>   Date:		July 2013
+>   Contact:	"Namjae Jeon" <namjae.jeon@samsung.com>
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 214fdd590fdf..ebe953e7459e 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -374,6 +374,12 @@ enum {
+>   	MAX_DPOLICY,
+>   };
+>   
+> +enum {
+> +	GC_IO_AWARE_DISABLE,	/* force to not be aware of IO */
+> +	GC_IO_AWARE_ENABLE,	/* force to be aware of IO */
+> +	GC_IO_AWARE_MAX,
+> +};
 
-2. cpuset_do_slab_mem_spread() is not used anymore, should we keep the interface?
-   Since it's the interface exported by cgroup-v1 "cpuset.memory_spread_slab".
+Not needed.
 
+> +
+>   struct discard_policy {
+>   	int type;			/* type of discard */
+>   	unsigned int min_interval;	/* used for candidates exist */
+> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+> index 309da3d0faff..34a1e6b35af6 100644
+> --- a/fs/f2fs/gc.c
+> +++ b/fs/f2fs/gc.c
+> @@ -109,7 +109,7 @@ static int gc_thread_func(void *data)
+>   			goto next;
+>   		}
+>   
+> -		if (!is_idle(sbi, GC_TIME)) {
+> +		if (gc_th->io_aware && !is_idle(sbi, GC_TIME)) {
+>   			increase_sleep_time(gc_th, &wait_ms);
+>   			f2fs_up_write(&sbi->gc_lock);
+>   			stat_io_skip_bggc_count(sbi);
+> @@ -182,6 +182,7 @@ int f2fs_start_gc_thread(struct f2fs_sb_info *sbi)
+>   	gc_th->min_sleep_time = DEF_GC_THREAD_MIN_SLEEP_TIME;
+>   	gc_th->max_sleep_time = DEF_GC_THREAD_MAX_SLEEP_TIME;
+>   	gc_th->no_gc_sleep_time = DEF_GC_THREAD_NOGC_SLEEP_TIME;
+> +	gc_th->io_aware = GC_IO_AWARE_ENABLE;
+
+gc_th->io_aware = true;
+
+>   
+>   	gc_th->gc_wake = false;
+>   
+> diff --git a/fs/f2fs/gc.h b/fs/f2fs/gc.h
+> index 28a00942802c..51d6ad26b76a 100644
+> --- a/fs/f2fs/gc.h
+> +++ b/fs/f2fs/gc.h
+> @@ -41,6 +41,7 @@ struct f2fs_gc_kthread {
+>   	unsigned int min_sleep_time;
+>   	unsigned int max_sleep_time;
+>   	unsigned int no_gc_sleep_time;
+> +	bool io_aware;
+>   
+>   	/* for changing gc mode */
+>   	bool gc_wake;
+> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+> index 417fae96890f..95409cfc48f4 100644
+> --- a/fs/f2fs/sysfs.c
+> +++ b/fs/f2fs/sysfs.c
+> @@ -516,6 +516,13 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+>   		return count;
+>   	}
+>   
+> +	if (!strcmp(a->attr.name, "gc_io_aware")) {
+> +		if (t >= GC_IO_AWARE_MAX)
+
+	if (t > 1)
+
+> +			return -EINVAL;
+> +		*ui = t;
+
+	*ui = t ? true : false;
+
+Thanks,
+
+> +		return count;
+> +	}
+> +
+>   	if (!strcmp(a->attr.name, "migration_granularity")) {
+>   		if (t == 0 || t > sbi->segs_per_sec)
+>   			return -EINVAL;
+> @@ -906,6 +913,7 @@ GC_THREAD_RW_ATTR(gc_urgent_sleep_time, urgent_sleep_time);
+>   GC_THREAD_RW_ATTR(gc_min_sleep_time, min_sleep_time);
+>   GC_THREAD_RW_ATTR(gc_max_sleep_time, max_sleep_time);
+>   GC_THREAD_RW_ATTR(gc_no_gc_sleep_time, no_gc_sleep_time);
+> +GC_THREAD_RW_ATTR(gc_io_aware, io_aware);
+>   
+>   /* SM_INFO ATTR */
+>   SM_INFO_RW_ATTR(reclaim_segments, rec_prefree_segments);
+> @@ -1061,6 +1069,7 @@ static struct attribute *f2fs_attrs[] = {
+>   	ATTR_LIST(gc_min_sleep_time),
+>   	ATTR_LIST(gc_max_sleep_time),
+>   	ATTR_LIST(gc_no_gc_sleep_time),
+> +	ATTR_LIST(gc_io_aware),
+>   	ATTR_LIST(gc_idle),
+>   	ATTR_LIST(gc_urgent),
+>   	ATTR_LIST(reclaim_segments),
 
