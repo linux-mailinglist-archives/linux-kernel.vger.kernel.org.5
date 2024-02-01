@@ -1,143 +1,110 @@
-Return-Path: <linux-kernel+bounces-48956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41B9684639C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:45:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F08F88463A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:46:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB4F01F23129
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:45:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3AC91F275A8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:46:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAF074652D;
-	Thu,  1 Feb 2024 22:45:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF84146557;
+	Thu,  1 Feb 2024 22:46:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="FpYQADfV"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kRvTnHDz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7770846450;
-	Thu,  1 Feb 2024 22:45:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F421541232;
+	Thu,  1 Feb 2024 22:46:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706827528; cv=none; b=TjwKin9W+DtHkKIEtg+hAgnjpFqscB05X5W+5YbiX1pug5Xu9/nBsgR8BQaDn/QS8YJz2/fIlM6jfLqewiCtmjXLAiz3rex/FrAyy4+sQwShHO9S1mz+r0j+Zq7u30Xy6pefKOxXSXIpU2W77tSXs48WThMnBwuxJSlIP2vUhmA=
+	t=1706827572; cv=none; b=nX5r98+0Ni+KNaU8zVwqWlNGje2tWMH3TKmbfV56roXCoxLPH7+0tulYGx5If0Svv8EaFnuew+wQydzNU9IHv+K738eeMGRqIyyF08z3PFM16YgxFlA9dXgCROqA5m8PUfsyEp7NjT/2uQJgx0g/XpTeSKI7AG2lzc2foUpn9Bk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706827528; c=relaxed/simple;
-	bh=8XBsL1A3aw113J/qN7bYoaY80G0MxKQO+WepQk2DEv8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=edpKxjlcJN9jfxXVhxWpXZKTMwXt5bKZYycDrrvKRG6HXEzBW/GuO2db5XIEgdgLi3ULTdfbBBTMhd7MHAWwOX4lporOhk0O4APH3lP9GS2ROQfR2QzhH19fMJ2YbEsuCyRMlSKLmHJxZWm0lANwx4kSRaeLTEDZVldUZ6jsPIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=FpYQADfV; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706827524;
-	bh=8XBsL1A3aw113J/qN7bYoaY80G0MxKQO+WepQk2DEv8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FpYQADfVXKnGEWMRmWDQtH4LIDnaEbuZNL3BoumMJBVO7Xn0UhBwe/HT5RI0eq1AX
-	 Lrjpj+4IK8ZLpn9UpbZtR7DX7S1owvOEsG6cAJJ553AL1lMgyFxm38XnLw3mroeS3y
-	 NisNe6PwIHC6S3vAMBsbd7C0HOe/c5M4h+wGwSkP21c/KMEB78WF0RupAJD1qYRe3o
-	 IT6hWJZZsW1HFyvrOUBSFWOIOh5AJJeuII3NgKhiHKYV94UNhecjbRdrDjFKm/iebs
-	 hRp4gsU2pT3Vy7prWQi21QDMg42Zywu3zXGzi9p225Jf3m25eXEluIf0fqjPKZx8vJ
-	 HQpckr/ElAycg==
-Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 78D45378208C;
-	Thu,  1 Feb 2024 22:45:21 +0000 (UTC)
-Date: Thu, 1 Feb 2024 17:45:19 -0500
-From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Brian Norris <briannorris@chromium.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Tzung-Bi Shih <tzungbi@kernel.org>, kernel@collabora.com,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	chrome-platform@lists.linux.dev,
-	Abhijit Gangurde <abhijit.gangurde@amd.com>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Nipun Gupta <nipun.gupta@amd.com>,
-	Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>,
-	Umang Jain <umang.jain@ideasonboard.com>,
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] firmware: coreboot: Generate aliases for coreboot
- modules
-Message-ID: <679fa364-28d0-4faa-b46e-805faf56ae53@notapiano>
-References: <20240112131857.900734-1-nfraprado@collabora.com>
- <20240112131857.900734-3-nfraprado@collabora.com>
- <ZaQVScQ2AYquG-Zr@smile.fi.intel.com>
- <ZbA4VthTMPT7BSRo@google.com>
- <2024013059-poison-equation-81d1@gregkh>
- <CA+ASDXM-m6U+JFvBSSHMxAf8Ct-T-pL8tmcHxHQjepdRFR-s1w@mail.gmail.com>
- <2024013012-gully-goofy-2a55@gregkh>
+	s=arc-20240116; t=1706827572; c=relaxed/simple;
+	bh=YJS+2cuu7/F2wdO4i1rFQNUC6HDTDFemAVViu5UIbAM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KkBA+jj9c2Fuk7zkzKQX0zgmH1KQOGq1mkQ6vS3dqqRQ2ES+MugdxJZL3YO1vfqvV/jr2m4mYbkP4TsZTTDJ+k3nBwwzGlEmvrRbPh5FeJi1Ut6d8EGEBlHiv3NALAmKskerSrG4BBXgbEBZy9Q3CNs7TmHSKvt0iHNe7X39aYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kRvTnHDz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DF17C43143;
+	Thu,  1 Feb 2024 22:46:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706827571;
+	bh=YJS+2cuu7/F2wdO4i1rFQNUC6HDTDFemAVViu5UIbAM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=kRvTnHDzVYF4uQlE13BUkFgITbueGryC1RYcfbpff6uIjk9ePxXLod89vLFV+PjCQ
+	 UXwxQhEWJwi3P0e3yTna4Qr+bT0vPwI+I/02ovZ3gWKE/cN8U7kTUYFDoeJ+9Wq19C
+	 VDeuptVOHhBM3Y0mCbguz7k/+xoDB2vkgqf+bSd6yXpCByy7LGXGdIK8NYmsX08Y7C
+	 ng+j0eiuYwY1UnTH1va8/0eyKjdkerkBPqRvSude/ReEqpatHWFWWpoziZFtbuGaII
+	 /7s8Skk966NryO8c2oZVhXDBNoc7kQkTVckqdytraNuFVTmWgG65iYKK16l8bLOVTr
+	 Z8cLmYJD1gZNg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=valley-girl.lan)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rVfou-00H4ug-Fq;
+	Thu, 01 Feb 2024 22:46:08 +0000
+From: Marc Zyngier <maz@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	linux-raid@vger.kernel.org
+Cc: Song Liu <song@kernel.org>,
+	Yu Kuai <yukuai3@huawei.com>
+Subject: [PATCH] md/linear: Get rid of md-linear.h
+Date: Thu,  1 Feb 2024 22:45:49 +0000
+Message-Id: <20240201224549.750644-1-maz@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2024013012-gully-goofy-2a55@gregkh>
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org, song@kernel.org, yukuai3@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Tue, Jan 30, 2024 at 04:23:02PM -0800, Greg Kroah-Hartman wrote:
-> On Tue, Jan 30, 2024 at 04:01:57PM -0800, Brian Norris wrote:
-> > On Tue, Jan 30, 2024 at 3:51 PM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > > On Tue, Jan 23, 2024 at 02:06:14PM -0800, Brian Norris wrote:
-> > > > "Don't you want to have a driver data or so associated with this?"
-> > ...
-> > > But why limit yourself to 32bits now?  Why not make it 64?  It is going
-> > > to be sent to userspace, so you have to be very careful about it.
-> > 
-> > Is that question related to the question I pasted/replied to, about
-> > driver data? Or a new topic? Sorry if I'm misunderstanding.
-> 
-> Same question, driver data, you make it 32 bits.
-> 
-> > Anyway, for the size of the tag field: I don't have a strong opinion.
-> > But FWIW, they're coming from this project:
-> > 
-> > https://review.coreboot.org/plugins/gitiles/coreboot/+/269b23280f928510bcadd23182294e5b9dad11ec/payloads/libpayload/include/coreboot_tables.h#36
-> > 
-> > As you can see there, we're extremely far from exhausting 16 bits, let alone 32.
-> 
-> We've run into running out of bits in other subsystems before, it's
-> "free" now, just be safe and make it 64 like I think Andy is suggesting.
+Given that 849d18e27be9 ("md: Remove deprecated CONFIG_MD_LINEAR")
+killed the linear flavour of MD, it seems only logical to drop
+the leftover include file that used to come with it.
 
-Either you and Andy are suggesting different things, or I still don't quite get
-what you mean.
+I also feel that it should be my own privilege to remove my 30 year
+old attempt at writing kernel code ;-). RIP!
 
-Andy was suggesting we added a driver_data field, that is:
+Cc: Song Liu <song@kernel.org>
+Cc: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ drivers/md/md-linear.h | 17 -----------------
+ 1 file changed, 17 deletions(-)
+ delete mode 100644 drivers/md/md-linear.h
 
-struct coreboot_device_id {
-	__u32 tag;
-	kernel_ulong_t driver_data;
-};
+diff --git a/drivers/md/md-linear.h b/drivers/md/md-linear.h
+deleted file mode 100644
+index 5587eeedb882..000000000000
+--- a/drivers/md/md-linear.h
++++ /dev/null
+@@ -1,17 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _LINEAR_H
+-#define _LINEAR_H
+-
+-struct dev_info {
+-	struct md_rdev	*rdev;
+-	sector_t	end_sector;
+-};
+-
+-struct linear_conf
+-{
+-	struct rcu_head		rcu;
+-	sector_t		array_sectors;
+-	int			raid_disks; /* a copy of mddev->raid_disks */
+-	struct dev_info		disks[] __counted_by(raid_disks);
+-};
+-#endif
+-- 
+2.39.2
 
-You're suggesting we make the tag 64 bits long:
-
-struct coreboot_device_id {
-	__u64 tag;
-};
-
-Like Brian, I'm not sure I see the benefit of either change. As he said, it's
-unlikely that having a driver_data would provide any benefit and won't ever be
-required anyway, and 32 bits is already a generous space to give to coreboot
-tags. That said, I'm also not against either change, and can apply both of them
-to the next version if that's indeed what your experience says will work best.
-I'll wait another week or so before following up though to make sure we're all
-on the same page.
-
-(To be honest I also still don't see how this struct makes it to userspace and
-is considered ABI, I only see the generated modalias being ABI and hence 32 vs
-64 bit tag is ABI breakage but not adding driver_data, but I'll take your word
-for it for now)
-
-Thanks,
-Nícolas
 
