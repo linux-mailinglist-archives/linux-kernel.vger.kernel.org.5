@@ -1,110 +1,178 @@
-Return-Path: <linux-kernel+bounces-48014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5D7A845641
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:30:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A377E845643
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:31:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8542E1F272B8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:30:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5944628C479
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:31:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B1A15D5AC;
-	Thu,  1 Feb 2024 11:30:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 430C915B970;
+	Thu,  1 Feb 2024 11:30:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J+ZHcxmR"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Iho0mFhR"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2179F15D5BB
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 11:29:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2059F51A;
+	Thu,  1 Feb 2024 11:30:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706787000; cv=none; b=Cc7XNRJpbp8sxowQd2Fk9lem+WPiwIrbV3Gfq3ZFPiUKH1zt7otQxEN8nG9UZ0MdEQ7kvflzKc0FKp+BbP/3hghG+6w86TL8jfSfYCWTcUT41Uds0GEMApKNL0ilkXvU+yFLyyR3eByHbQJdtOMf8bSkhztjwoRbBQeqYwwd858=
+	t=1706787054; cv=none; b=Jo+1rJfaBVTuWzgIBneI+n4zmJuGyPVs7Jtxo84Q5/pNQpmO0R/0kYbLIU94iuALY4psFi7PWRDgu/g9EE1jUtCosTrJqmcNKVhLyunH2Unyzp0z8Qd4mGFUoanKjAWG0/WaQ40kAAxLMw+fS/G+c9sSC7nWclIzP8f5nBqUnNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706787000; c=relaxed/simple;
-	bh=ZitQxPV/j7kl+XhlRgzQLGJOQKUAInvpVIP+LGVbe78=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=VqqRnTAqQB4VuhMmbbt8SPXDbBI+jodoc6aZs/zvISs57LAiua1CEpVNpHsRhRAYtWHq97RFCsgmtzLQTyvCnwcyCrgUW0AUN0xHHzN8e24C0r1z3lx8smoeXwSHuieQDtqqS4NMRBhSJICMrO2ewinJlyh9tYbaQiuYjVRnebE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J+ZHcxmR; arc=none smtp.client-ip=209.85.128.52
+	s=arc-20240116; t=1706787054; c=relaxed/simple;
+	bh=ymwI0jN49xybT/Ng8gZ2rmIN5iSeKZU+oWXLZSdT+EE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q36izT2DVsnVyqb7AU4YEy10AWG0Jazs7v9Fbchu0KDeN1eGkJnW6MdccDK3qNKDWNGax/HiM8k1G68d1MPrfnun7MFHwFxSz56Wec114UpsHZi/jfdrtaGNVPAzzB3wrYlUhqzQq/gFhf77QW7iHcGuO9bdFXI1Q7Cfq+0Q0HM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Iho0mFhR; arc=none smtp.client-ip=209.85.208.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40fb63c40c0so7291755e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 03:29:58 -0800 (PST)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-558f523c072so1132344a12.2;
+        Thu, 01 Feb 2024 03:30:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706786997; x=1707391797; darn=vger.kernel.org;
-        h=in-reply-to:references:from:subject:cc:to:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tvrucEwAGcSRmbAvQav0oQhxQPPV6lCuxVMt41yI9Qc=;
-        b=J+ZHcxmRL9wXaoRq5QRg4V99nq1Adu0kCXYPKtq3k1V2dO/wA0bGB2N2+ztZnr5d2n
-         3DlbvvYUT5R4zvsIYjKPLCqkD4rDIZfPyiBC4NQ/DxDPJXIdldrB6XqGXBSrgONQZRmi
-         HFlu4XN4nhlF3VzJ7dD8dPtONeLKS1YxurV8X72geD6LymZfdOxqlel/dhqOzmi06bRE
-         fQNrtz3CNADG0SHj9tO3U/N3e5kfslhbVQ2kDJNOGRPUuKtmvX66NJ7ubhqbna2MJ1Rx
-         oBqfwBRsyg6knb3SVSRxYI843w2eh3qR6awuGJaWx/gPX4ym9qWslvZLDX3OmOBV6W/3
-         +XLA==
+        d=gmail.com; s=20230601; t=1706787051; x=1707391851; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OeJ8Vo9euL1nRT/+mK/nP/qb3zO+GpIrLJzkyd6z9vk=;
+        b=Iho0mFhRYpHfJ+NErtefTdd4XFfOaoJk4aJMVaekgK5o+EDC7CI2xZ0daoSECqHPwB
+         4j+RJb+s2EtSaRz3rLo+rLN88aUrEy0TXr2TytvELvHMoGc81vOWwgYINlZDTxcynbUS
+         idpcnxNLLX5D+mGt3heMdRdF+I5kMvCrGSkmo2co1uraN3f3PQEXsI9oeJdGD4eCy0/B
+         aEzLI1FZaF0dZdEX8Li5nQPELNY8NEMN02D9hqjghipd5DnnxB+GDACml7+cmLbwJT3r
+         WZPX5LJXcFul7LDdabe0aZGI1B113Y/D8vayhrH0/3v32dI7DY9edfhld6lNxJS9JOHH
+         GXMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706786997; x=1707391797;
-        h=in-reply-to:references:from:subject:cc:to:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tvrucEwAGcSRmbAvQav0oQhxQPPV6lCuxVMt41yI9Qc=;
-        b=nfMssIgr3FuZ/ZvFZcFLdcK4FG0JHtZ7+y97cj1m8+JchXcUw7Lxz2aEb73GOXPDRC
-         1SXV8plwXi+NBHZoc4VSZFB88QNE4HX4ZhJoV233IrR9un7sKuxqmCVMmU7Iq13fiT+O
-         V0f3cBu/0L7zFJQ/lHpYTg/jXeXUF+eiEwDpccD/ngMPpuawCalciF3C6gZLxfK5lLhr
-         8/WrE17WQzkV3rwLLIfbSTnDBm+J5bXSK2SLHTjIR9O3MaMT129zAlofZAHVemVhbiU/
-         kvq1+JcZEuYNuOq2BAwsXpkl8oYsuf1kEdDrG1z6gsHTTyuTkpsmWd1E6SG90Td367EN
-         U4Hg==
-X-Gm-Message-State: AOJu0YxQLp/VtIvFifUX4J/nq+iq6oKF+hntdCk+BJoS2ClS3jkaOQTQ
-	Smc9gNopyobTTlNv+2ErMtYxguB226xI9bzYdYlKgcIIDqHOYwvS
-X-Google-Smtp-Source: AGHT+IH7Fy1LmCo9sw/EShxyPOFY0NZDGCECNPaw+DBEQ8ikM4egxUb+TyBzpNXZyW/QZFuKFCES1A==
-X-Received: by 2002:a05:600c:5650:b0:40f:44b5:111c with SMTP id js16-20020a05600c565000b0040f44b5111cmr4145606wmb.41.1706786996980;
-        Thu, 01 Feb 2024 03:29:56 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWXzy6RAItz0wfWQpomq8nxru73Grg/ZfzhqP+bRPezYsWovu3v30MuPyem60Rk4vSar6FAuq38qzTSGrO1krjqFAWsng8+W/XamkPIDuFUXy+7jY6xd2zN5n0Fe5oG2Q64bO0nePQ/RK2GDPQ31GSY0ZDMS9SCpVGChaiwNOhEOXCDRRzmgtesLmUuAs8aMsC4AMaRolemxA==
-Received: from localhost (p200300e41f147f00f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f14:7f00:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id i7-20020a05600c290700b0040ecdd672fasm4069475wmd.13.2024.02.01.03.29.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 03:29:56 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706787051; x=1707391851;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OeJ8Vo9euL1nRT/+mK/nP/qb3zO+GpIrLJzkyd6z9vk=;
+        b=R6+JNShfh+Ur+YicTP/lHHcTDxUOBq4ilI0OAgpDxgdUEny0wvL0CVwEiCCWdg/jQE
+         Dx/tIZtnoQPOuAJchsJdcfwYG9eev1XB0DYZll4CVk+MEHSzOVrBZXLgi7qC8ZG0sEq5
+         K3DcfAqWipSKaqLZLVcaN6rA204lm838gwMT0elSnvpsVNEk/IPlIB9JpjEITFnb/5eN
+         y8xi8LfX3Pag9az6aO2pBJChZFbtEet7ZHQEsVjAxNLWBnDjD4UzjD7JjEYdXYklW5zY
+         D9q5Xi6DPyV0BIG0qJRtcq5hNuXg+83TBN8Rkmnqv/zt4v6wIeAu7aeGw9nBLSsLI2v7
+         Ke+Q==
+X-Gm-Message-State: AOJu0YwFgPfmzcQygNaNMSQDW8ARWEw1eX7AIDqU3rN2NqxWda/Kb9FD
+	zzir1DzhglhfrVoTUIspkp8aFIkl18Ok9LVtt0dPz3FfIV8UxgIg
+X-Google-Smtp-Source: AGHT+IG+OZWcNv5QlGSK/292NmwxUhG7WXWmnQr1AOXMHR6GCOvKOh/sC3nQLY1afE7JnUaT5apRDQ==
+X-Received: by 2002:aa7:ccce:0:b0:55f:c7ad:b92f with SMTP id y14-20020aa7ccce000000b0055fc7adb92fmr547508edt.24.1706787050510;
+        Thu, 01 Feb 2024 03:30:50 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXuPe791exN4U8Ea3ojgnWCzKEeIkBgRXEdyACk43lEzdN1Hdr1vjOjAXKP8RzQnPV85tMBuxpqj1pUmG3Q6fvW2c+b++rjlKF0iNG9zEK68k6ea2Vv5zkJTzBvr6ivlCBK+KZpNDPHlctPTMx9XdpgGc7PKS/bgbKfoMw8fTtKo7nxLwPB6yaaPIvSKHTwwJEu2uWaPWtISFutCuBvbEKTF7Wp8IgCb8AGSBuxOMlZOeHFYnGI0IzEot2mJ9cX+mWSqOnLs7gGAm7v0L1WnN15G9Xwb6jmjfSjsbMEs8wavEeSg6CEVvhXb5u1flMoG9W53M8xHNUdt/kWxVwWD4Pjofvdl+4=
+Received: from skbuf ([188.25.173.195])
+        by smtp.gmail.com with ESMTPSA id h1-20020a0564020e0100b0055d312732dbsm6717894edh.5.2024.02.01.03.30.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 03:30:50 -0800 (PST)
+Date: Thu, 1 Feb 2024 13:30:48 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v5 03/11] net: dsa: realtek: convert variants
+ into real drivers
+Message-ID: <20240201113048.67td36b6bfufb2gk@skbuf>
+References: <20240130-realtek_reverse-v5-0-ecafd9283a07@gmail.com>
+ <20240130-realtek_reverse-v5-3-ecafd9283a07@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 01 Feb 2024 12:29:55 +0100
-Message-Id: <CYTPHTGKM7FT.1DRXMURTS246L@gmail.com>
-To: "Marek Szyprowski" <m.szyprowski@samsung.com>,
- <linux-kernel@vger.kernel.org>
-Cc: "Russell King" <linux@armlinux.org.uk>, "Greg Kroah-Hartman"
- <gregkh@linuxfoundation.org>, "Jiri Slaby" <jirislaby@kernel.org>, "Konrad
- Dybcio" <konrad.dybcio@linaro.org>
-Subject: Re: [PATCH] tty: serial: amba-pl011: Fix removal of the QDF2xxx
- workarounds
-From: "Thierry Reding" <thierry.reding@gmail.com>
-X-Mailer: aerc 0.15.2
-References: <CGME20240131213600eucas1p12ecf4d6fb101425fa35e50f45a241c84@eucas1p1.samsung.com> <20240131213543.958051-1-m.szyprowski@samsung.com>
-In-Reply-To: <20240131213543.958051-1-m.szyprowski@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240130-realtek_reverse-v5-3-ecafd9283a07@gmail.com>
 
-On Wed Jan 31, 2024 at 10:35 PM CET, Marek Szyprowski wrote:
-> Commit 196f34af2bf4 ("tty: serial: amba-pl011: Remove QDF2xxx
-> workarounds") removed some quirks specific to QDF2xxx SoC family.
-> Unfortunately it removed a bit too much code from the
-> pl011_console_match() function, what broke console operation on QEMU's
-> 'virt' ARM/ARM64 machines. Restore the "pl011" related string check as it
-> was originally introduced in the commit 10879ae5f12e ("serial: pl011: add
-> console matching function").
->
-> Fixes: 196f34af2bf4 ("tty: serial: amba-pl011: Remove QDF2xxx workarounds=
-")
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+On Tue, Jan 30, 2024 at 08:13:22PM -0300, Luiz Angelo Daros de Luca wrote:
+> Previously, the interface modules realtek-smi and realtek-mdio served as
+> a platform and an MDIO driver, respectively. Each interface module
+> redundantly specified the same compatible strings for both variants and
+> referenced symbols from the variants.
+> 
+> Now, each variant module has been transformed into a unified driver
+> serving both as a platform and an MDIO driver. This modification
+> reverses the relationship between the interface and variant modules,
+> with the variant module now utilizing symbols from the interface
+> modules.
+> 
+> Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
 > ---
->  drivers/tty/serial/amba-pl011.c | 3 +++
->  1 file changed, 3 insertions(+)
 
-I was about to send out the same patch:
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 
-Reviewed-by: Thierry Reding <treding@nvidia.com>
+Some minor non-functional comments below which you might decide not to
+address now, depending on what else is pointed out during review.
+
+> diff --git a/drivers/net/dsa/realtek/realtek-mdio.c b/drivers/net/dsa/realtek/realtek-mdio.c
+> index c2572463679f..3433f64fb0d7 100644
+> --- a/drivers/net/dsa/realtek/realtek-mdio.c
+> +++ b/drivers/net/dsa/realtek/realtek-mdio.c
+> @@ -140,7 +141,19 @@ static const struct regmap_config realtek_mdio_nolock_regmap_config = {
+>  	.disable_locking = true,
+>  };
+>  
+> -static int realtek_mdio_probe(struct mdio_device *mdiodev)
+> +/**
+> + * realtek_mdio_probe() - Probe a platform device for an MDIO-connected switch
+> + * @mdiodev: mdio_device to probe on.
+> + *
+> + * This function should be used as the .probe in an mdio_driver. It
+> + * initializes realtek_priv and read data from the device-tree node. The switch
+> + * is hard resetted if a method is provided. It checks the switch chip ID and,
+
+nitpick: participle of 'reset' is 'reset'. Same comment for realtek_smi_probe().
+
+> + * finally, a DSA switch is registered.
+> + *
+> + * Context: Can sleep. Takes and releases priv->map_lock.
+> + * Return: Returns 0 on success, a negative error on failure.
+> + */
+> +int realtek_mdio_probe(struct mdio_device *mdiodev)
+>  {
+>  	struct realtek_priv *priv;
+>  	struct device *dev = &mdiodev->dev;
+> diff --git a/drivers/net/dsa/realtek/realtek-smi.c b/drivers/net/dsa/realtek/realtek-smi.c
+> index 668336515119..d8a9a6a6b5bc 100644
+> --- a/drivers/net/dsa/realtek/realtek-smi.c
+> +++ b/drivers/net/dsa/realtek/realtek-smi.c
+> @@ -505,8 +518,20 @@ static int realtek_smi_probe(struct platform_device *pdev)
+>  	}
+>  	return 0;
+>  }
+> +EXPORT_SYMBOL_NS_GPL(realtek_smi_probe, REALTEK_DSA);
+>  
+> -static void realtek_smi_remove(struct platform_device *pdev)
+> +/**
+> + * realtek_smi_remove() - Remove the driver of a SMI-connected switch
+> + * @pdev: platform_device to be removed.
+> + *
+> + * This function should be used as the .remove_new in a platform_driver. First
+> + * it unregisters the DSA switch and cleans internal data. If a method is
+> + * provided, the hard reset is asserted to avoid traffic leakage.
+
+FWIW, removing the driver unregisters the net devices, which disables
+the ports and performs an orderly shutdown of any upper virtual net
+devices as well, like bridges. So ports automatically roll back to
+standalone operation before this callback is even issued.
+
+Traffic leakage is prevented, and the switch is hard reset, but I don't
+think there is any causal relationship between the two.
+
+> + *
+> + * Context: Can sleep.
+> + * Return: Nothing.
+> + */
+> +void realtek_smi_remove(struct platform_device *pdev)
+>  {
+>  	struct realtek_priv *priv = platform_get_drvdata(pdev);
+>  
 
