@@ -1,136 +1,119 @@
-Return-Path: <linux-kernel+bounces-48101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4778384573E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:19:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 734A6845742
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:20:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A4FD1C25F65
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:19:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 166AAB20D66
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:20:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24EA715DBB4;
-	Thu,  1 Feb 2024 12:19:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3860215DBA4;
+	Thu,  1 Feb 2024 12:20:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="RC/Qzu3e";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="iXRbkXU6"
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51B544D9E9
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 12:19:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.27
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="THozEcgT"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 034C415DBB1
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 12:20:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706789974; cv=none; b=eby1FtG1httBZer6OMM1xGGH45IjwwPRgF9dXTvVugmbZs5v6KzBEs5T3HVcN4MoQT62tvOK33U46BrBMvP4ei8VJ8ixFCDY2uxzMe+/OWEYt0cFhb5Dulh84bSscGF5qA+w3o7jhpGJ6BbRrLBhTTx32w4hEwBaEJuO7P/LC2M=
+	t=1706790012; cv=none; b=MigbesTYSP4HDbUtXjE35NlC9lAj5AXg7EFtMGndDEV7e014wy+TFCQzh29KU9hFIEAfe/DQvo7cwkU3ljzVG9DvE8ebEBnZvxo1Ndp4qh2nzbjHbV45ppQfUUAetOx3Zm8xAierVJH5n6xfuId+4R2iXoGiVDI8YzZG4zehjaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706789974; c=relaxed/simple;
-	bh=VEup7kQ5lx85Rrf62gFLlylZZgc+GALWkDRL7k5jXWk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=pkzrXdm1RUk3ZJAuSYRZxgt9yYMIz03Mhz7Pwhr2c8Y233ct8Cmym3PtsZGmvQbFQaBUFPsTF7w0MDxbJUVTcx17+JRpiDoyQfQE2w6p/R4WKq3S6s2EDvCw32MJj8SfmYwVGfg2q7w4o4YmNCxZ9LhOgGvfK6U/V+VyrFAukOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=RC/Qzu3e; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=iXRbkXU6; arc=none smtp.client-ip=66.111.4.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.nyi.internal (Postfix) with ESMTP id 3467F5C0085;
-	Thu,  1 Feb 2024 07:19:31 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 01 Feb 2024 07:19:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm3; t=1706789971; x=1706876371; bh=jAOlD2wRP+TkqANNdA/oO
-	ptwRFEKnMR/PUTgpA6xP+s=; b=RC/Qzu3euPahqodoXR5ZVDunM0xNvuueZ/72j
-	3RbHvdTSIgOUA3jx/jMTqIGK/JYBxp8SFxZl8xwG4cwR7npuiIEvjNO5m6Q3Ohdm
-	EnGdeZHLoKW31GJeGTftbZVnmOBgQYBzmEAu64oKv2VhlbS+/UmVxTgLYHPWiydu
-	Zaq1Sh3BGarm9ow7A0iRCUdNg61Dots9ee6nStMzm7gOrOhBjdR+0eK4aMvR8ZHb
-	XYsr1EtIUT4+Bzoxit0EA5gjj/JyC2gx0hF/aWkJ2b8S+YtAzOASPSUHUK2njKaa
-	zjzTbuUTAX4EFEjNrFmZgaq8n7DLRgEnOjSFRVd8fHKa5tdRg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:message-id
-	:mime-version:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1706789971; x=1706876371; bh=jAOlD2wRP+TkqANNdA/oOptwRFEKnMR/PUT
-	gpA6xP+s=; b=iXRbkXU6FGFzt2VLxA6yMCBsrOEyS0/72reuGXNlxAO7XWt+zZL
-	CtFJoTKL98ggnwYjlG+BzZSnuGMtaivcJOphh+PSg3idIkE3fL2jwDigVIZGE28k
-	847dzkQhhvCdsmJiENiG5YDJiYBvrziK5ReG9kctWQrAvFkS10PQ9wnlEVHt9wWy
-	37OKJnQsWsxF4CnfYtOM/auy0M/LlLDEjLLewKqax7OGN172nY+fGKbwiVnjJWqA
-	K1A36ENUF/PkFI2M4HEyxDscYnB8VxY/Qd2dASoeNhRDbuhUEzBmxp3Sp/1CMS31
-	4ksd/t7M+wiR6yiVnJUc1nsc0+eY72VtdDQ==
-X-ME-Sender: <xms:Uoy7ZYQd3BfcG1GQL-wfE9Xxh5clOwoF-T3J5R9R3X9x1N00vM2gYw>
-    <xme:Uoy7ZVxF4-A-4Jv4NgO67GsUbtMyYW4awFU8Y1Sd31Lzd5Xegi4xQN5GRpB60oODq
-    NnyGi1WQHn0K1V9YjE>
-X-ME-Received: <xmr:Uoy7ZV2IRaHsXxBbihwLQu3apHpSjbRlKoG2xG-giI8N9DxYArNVZPFMifTjoJ-uVpVUsJvpi-KJ3gBBt-mUk1n-uF5dlwa-HHaU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeduuddgfeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfggtggusehttdertd
-    dttddvnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
-    hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeetfeeiteefve
-    egvdfggeffheetleejkeekleeugeffffdtgfdtteetkeevvddvgfenucffohhmrghinhep
-    khgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:U4y7ZcAJvsOHneN4HhK6tP6uLM2S3nLPJPrWFHnhD-W5ljsjNZJC6w>
-    <xmx:U4y7ZRhr8M0D_zcKTkLFqHBg46bbP_lAta2Qy2b9LKE1paUU9a8xPQ>
-    <xmx:U4y7ZYrFm7rOYAUSMht-84VJa0iHw8-Eb0dyPC-YhkrJQnr34qqcAw>
-    <xmx:U4y7ZRJ0ZprPGTo9UsIQ5tBwQ8L6Dlo_iFGqNVAtXwGg54kfEj_pIQ>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 1 Feb 2024 07:19:29 -0500 (EST)
-Date: Thu, 1 Feb 2024 21:19:26 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org
-Subject: [GIT PULL] firewire fixes for v6.8-rc3
-Message-ID: <20240201121926.GA87292@workstation.local>
-Mail-Followup-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-	torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1706790012; c=relaxed/simple;
+	bh=mkpPJwo8nkKG5bpESYi5qYl29ciuB88ElRNBgkzAMv8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YANVtpVsMF9KkhQ4zgZbqrbrjB8nfG2OEKMIlcn5lt102+ENKFZjOHqH7K/+juVu4+Z9MCw2mqHwM4Vq5sliIantLsFSREVcI/7xgYeGqZ9XZtEEKMsvlU4Pt6y39c8GDwioUvAfsctPyCxdZMcQffnAb5u45Xoij7P6wAvIBC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=THozEcgT; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [100.66.96.10] (unknown [108.143.43.187])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 47181206FCCE;
+	Thu,  1 Feb 2024 04:20:05 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 47181206FCCE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1706790010;
+	bh=DoGkwwTfNrBvre86yV2tHsglFQXvOb9/ZoWRaatJS54=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=THozEcgTrrRliYGkmJpSosuyTA8Ufby2M+CKXOrYTUpK3cTluLWnEniWX84AjNaJE
+	 nNw6UOATefXyM8Y+odJnBinFjc4pIBOzS6/T81BmAVl2xgcr4AtoNnISj/ZKfVXytv
+	 cfGCdqpmGjXFLpaONbOJJrTBwWPnlIvrASA6KzPw=
+Message-ID: <0fda610f-a8ae-4133-a9d5-e9084c88ba7b@linux.microsoft.com>
+Date: Thu, 1 Feb 2024 13:20:03 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC V1 3/5] x86: CVMs: Enable dynamic swiotlb by default for
+ CVMs
+Content-Language: en-US
+To: Vishal Annapurve <vannapurve@google.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: pbonzini@redhat.com, rientjes@google.com, bgardon@google.com,
+ seanjc@google.com, erdemaktas@google.com, ackerleytng@google.com,
+ jxgao@google.com, sagis@google.com, oupton@google.com, peterx@redhat.com,
+ vkuznets@redhat.com, dmatlack@google.com, pgonda@google.com,
+ michael.roth@amd.com, kirill@shutemov.name, thomas.lendacky@amd.com,
+ dave.hansen@linux.intel.com, linux-coco@lists.linux.dev,
+ chao.p.peng@linux.intel.com, isaku.yamahata@gmail.com,
+ andrew.jones@linux.dev, corbet@lwn.net, hch@lst.de,
+ m.szyprowski@samsung.com, bp@suse.de, rostedt@goodmis.org,
+ iommu@lists.linux.dev
+References: <20240112055251.36101-1-vannapurve@google.com>
+ <20240112055251.36101-4-vannapurve@google.com>
+From: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+In-Reply-To: <20240112055251.36101-4-vannapurve@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Linus,
+On 12/01/2024 06:52, Vishal Annapurve wrote:
+> CVMs used SWIOTLB for non-trusted IO using dma_map_* APIs. This series
+> will ensure that dma_alloc_* API to also allocate from SWIOTLB pools.
+> Initial size of SWIOTLB pool is decided using heuristics and has been
+> working with CVM usecases so far.
+> 
+> It's better to allow SWIOTLB to scale up on demand rather than keeping
+> the size fixed to avoid failures with possibly increased usage of
+> SWIOTLB with dma_alloc_* APIs allocating from SWIOTLB pools. This should
+> also help in future with more devices getting used from CVMs for
+> non-trusted IO.
+> 
+> Signed-off-by: Vishal Annapurve <vannapurve@google.com>
+> ---
+>  arch/x86/Kconfig | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 1566748f16c4..035c8a022c4c 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -884,6 +884,7 @@ config INTEL_TDX_GUEST
+>  	select X86_MEM_ENCRYPT
+>  	select X86_MCE
+>  	select UNACCEPTED_MEMORY
+> +	select SWIOTLB_DYNAMIC
+>  	help
+>  	  Support running as a guest under Intel TDX.  Without this support,
+>  	  the guest kernel can not boot or run under TDX.
+> @@ -1534,6 +1535,7 @@ config AMD_MEM_ENCRYPT
+>  	select ARCH_HAS_CC_PLATFORM
+>  	select X86_MEM_ENCRYPT
+>  	select UNACCEPTED_MEMORY
+> +	select SWIOTLB_DYNAMIC
+>  	help
+>  	  Say yes to enable support for the encryption of system memory.
+>  	  This requires an AMD processor that supports Secure Memory
 
-The support for legacy layout of configuratom ROM was merged to
-v6.8-rc1, while it appears that it is not enough for some devices,
-since they have a specific quirk. This pull request includes some
-changes to handle the quirk.
+What this does is unconditionally enable SWIOTLB_DYNAMIC for every kernel compiled
+to support memory encryption, regardless of whether it runs inside a confidential guest.
+I don't think that is what you intended.
 
-The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
-
-  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git tags/firewire-fixes-6.8-rc3
-
-for you to fetch changes up to 47dc55181dcbee69fc84c902e7fb060213b9b8a5:
-
-  firewire: core: search descriptor leaf just after vendor directory entry in root directory (2024-02-01 20:53:18 +0900)
-
-----------------------------------------------------------------
-firewire fixes for 6.8-rc3
-
-FireWire subsystem now supports the legacy layout of configuration ROM,
-while it appears that some of DV devices in the early 2000's have the
-legacy layout with a quirk. This pull request includes some changes to
-handle the quirk.
-
-----------------------------------------------------------------
-Takashi Sakamoto (2):
-      firewire: core: correct documentation of fw_csr_string() kernel API
-      firewire: core: search descriptor leaf just after vendor directory entry in root directory
-
- drivers/firewire/core-device.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+Best wishes,
+Jeremi
 
 
-Thanks
-
-Takashi Sakamoto
 
