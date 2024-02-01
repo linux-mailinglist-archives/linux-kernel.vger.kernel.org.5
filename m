@@ -1,128 +1,106 @@
-Return-Path: <linux-kernel+bounces-48546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2185845D82
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:42:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2490A845DA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:48:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 025171C2473B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:42:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD2BA1F270D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:47:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38B79522F;
-	Thu,  1 Feb 2024 16:42:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78F265399;
+	Thu,  1 Feb 2024 16:47:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZVIcQ1j4"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="XfPMOc1V"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85F13FFE;
-	Thu,  1 Feb 2024 16:42:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B06A2D281;
+	Thu,  1 Feb 2024 16:47:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706805757; cv=none; b=agQRx+aIJdg+uxHIF/WW/ePtdE4JvZdAm5L2z2nQzy5Lm5JE1OkLiKZYWceW/Qtj/Tn1JcNQuP53vl0NR/c/owXqLMCukKHYRIAYOESIR3VV6UdUSdOkqf1AOBVmq/1jvfywBR41Lakxhn2CYYGAdd+/1BgnT8V6XYbFNr/DM7A=
+	t=1706806063; cv=none; b=rueT7QtDwOgs6QIHbTMj1W1XaEDc6jHAzNxjw1CD0cloUfbWB+GRArIsni3OY25kT1RSLFvdiFtcM0ZQy0cVRqtrLk6stjYU2OFWS/qE8WfrGWauxVzmbOG7nzHWdwcn96q3wZ4iRwjqPA4h1BkrkIix7sn2H0R7dpJdyWqU8qQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706805757; c=relaxed/simple;
-	bh=Crd3dJgXe4fYUS6yZk7Jg/OJoQ9gKfrffjshj7lAM8A=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=NMHyyZkZO7CDB6dFLXEC7mqlExncos/maMKcQMu9X4D+6UWML7uB1cTRNcs/0V4/6I/PveIctTO8cIQQYyhsuYoNdVdV1HhaK9bEADbS3kGRUXlT6TL+ln54l2LwTFeKIyqDM0aMwjRmQa+lHSjKhRMF5wtho2jaT0Ww2Sgkv5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZVIcQ1j4; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706805756; x=1738341756;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=Crd3dJgXe4fYUS6yZk7Jg/OJoQ9gKfrffjshj7lAM8A=;
-  b=ZVIcQ1j4wLvA1kpqAyDL2PaYQFti0RlU5QiS7hxb7wmv1ProZb/MKQ/e
-   8WcfUPGX2U2na3Bq5l0+8n1Be8IGVfqKZmB87MnVNG1bgp1ePZzxW+dHL
-   a0C9SIliP/ZFEK3zUIPHNV3fPxjJsbYAfyHs3XnzFx4Of1eNE3IL6AUKN
-   pcMPcvQ6xiQwE2f9BdzzspVtPbpcEnm19Je9Men60pK/quY6/4ggIgHFv
-   IXV8NbdmlHs6DOpjKOmwYi4dnJo2jsSqEEXFRA3nc0HCGey2kXrk1qX/5
-   maDE1rTQQatYSS1QCSuONyYRd3i4+GkiKQENQg7d/QKY2kyItQyqFvhNY
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10688931"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="10688931"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 08:42:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="4437860"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmviesa005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 08:42:34 -0800
-Received: from ssigler-mobl.amr.corp.intel.com (unknown [10.209.41.165])
-	by linux.intel.com (Postfix) with ESMTP id 16F6F580D28;
-	Thu,  1 Feb 2024 08:42:34 -0800 (PST)
-Message-ID: <94a61858ac82ceaac1ef8ae41067ae7356512d7d.camel@linux.intel.com>
-Subject: Re: [PATCH 4/8] platform/x86/intel/sdsi: Add netlink SPDM transport
-From: "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: netdev@vger.kernel.org, ilpo.jarvinen@linux.intel.com, 
-	sathyanarayanan.kuppuswamy@linux.intel.com, linux-kernel@vger.kernel.org, 
-	platform-driver-x86@vger.kernel.org
-Date: Thu, 01 Feb 2024 08:42:33 -0800
-In-Reply-To: <ZbtjyOBHzVKXu_4H@nanopsycho>
-References: <20240201010747.471141-1-david.e.box@linux.intel.com>
-	 <20240201010747.471141-5-david.e.box@linux.intel.com>
-	 <ZbtjyOBHzVKXu_4H@nanopsycho>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1706806063; c=relaxed/simple;
+	bh=+K0T97CVgMNpfRwZlO4eKu8a/DzZVeS+5rFivyPss+w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=W+kq0HwV8lWIJKmjErXyL2mnFFlIsbhPkf/MsdobuFzdP510Q3JGaQ1MLn+JnZt/er7Szm5DG2aFcYkqHtvX75N0FBzY1Qg7UajfpQYWe5q2qpu2CmuMIAmEd+LjBsXwr+7zkgo0WonrVyuZYIjuJoAn1nZ7VC/oHCd6E3kkJW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=XfPMOc1V; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=bUN7yMh6xy2hWhvAEG7t+zJP6Ap6R4V2I56VA8W+GD8=; b=XfPMOc1Vq3U3HOb18Bz8QczK3k
+	g+LxL9dyOB95t/oGQzYWYyETjRxfv+GLcPmPfUfCFqCmGzlIEgl5v8EMON+nLJH+kRh9CMc2LknpE
+	M4fDU8lpc+Chg/33DQ935/cp4zaBrwvfIfoFPOsEDSTPmULjLXy99RDT4X2KWxL7ASpY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rVaDh-006hIq-0x; Thu, 01 Feb 2024 17:47:21 +0100
+Date: Thu, 1 Feb 2024 17:47:21 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Dimitri Fedrau <dima.fedrau@gmail.com>
+Cc: Guenter Roeck <linux@roeck-us.net>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jean Delvare <jdelvare@suse.com>,
+	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH v5 net-next 08/13] net: phy: marvell-88q2xxx: add support
+ for temperature sensor
+Message-ID: <b4fc0bc4-1585-4ae0-a980-10814e6d9ff6@lunn.ch>
+References: <20240122212848.3645785-1-dima.fedrau@gmail.com>
+ <20240122212848.3645785-9-dima.fedrau@gmail.com>
+ <88a60be9-083b-4618-845c-6983bcad3540@roeck-us.net>
+ <c9866a56-d82e-4a3d-b335-db22c0413416@lunn.ch>
+ <a02c7451-8515-45d4-ae7b-9e64b03b5b38@roeck-us.net>
+ <20240201162349.GC48964@debian>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201162349.GC48964@debian>
 
-Hi Jiro,
+On Thu, Feb 01, 2024 at 05:23:49PM +0100, Dimitri Fedrau wrote:
+> Am Thu, Feb 01, 2024 at 05:39:25AM -0800 schrieb Guenter Roeck:
+> > On 2/1/24 05:27, Andrew Lunn wrote:
+> > > > > +#ifdef CONFIG_HWMON
+> > > > 
+> > > > HWMON is tristate, so this may be problematic if the driver is built
+> > > > into the kernel and hwmon is built as module.
+> > > 
+> > > There should be Kconfig in addition to this, e.g.
+> > > 
+> > > config MAXLINEAR_GPHY
+> > >          tristate "Maxlinear Ethernet PHYs"
+> > >          select POLYNOMIAL if HWMON
+> > >          depends on HWMON || HWMON=n
+> > >          help
+> > >            Support for the Maxlinear GPY115, GPY211, GPY212, GPY215,
+> > >            GPY241, GPY245 PHYs.
+> > > 
+> > > So its forced to being built in, or not built at all.
+> > > 
+> > 
+> > Even then it should be "#if IS_ENABLED(HWMON)" in the code.
+> > 
+> >
+> If using "#if IS_ENABLED(HWMON)" do I have to add the dependency in
+> the KConfig file ? When looking at other PHY drivers, they do.
 
-Thanks for your comments.
+Please follow what other drivers do. Its easy to break the build,
+resulting is undefined symbols. What we have now works.
 
-On Thu, 2024-02-01 at 10:26 +0100, Jiri Pirko wrote:
-> Thu, Feb 01, 2024 at 02:07:43AM CET, david.e.box@linux.intel.com=C2=A0wro=
-te:
->=20
-> [...]
->=20
->=20
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 name: spdm-req
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 type: binary
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 name: spdm-rsp
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 type: binary
->=20
-> I don't understand the need to use netlink for this. Basically what you
-> do is you just use it to pass binary blobs to and from FW.
-> Advantages, like well-defined attributes, notifications etc, for which
-> it makes sense to use Netlink are not utilized at all.
-
-SPDM supports the setup of a secure channel between the responder and reque=
-stor
-using TLS based encryption algorthms. While this is just a transport for th=
-ose
-blobs, netlink seemed an appropriate interface for this type of communicati=
-on.
-The binary blobs can instead be broken out into the SPDM protocol messages,
-right out of the spec. But for our needs this would still just define the
-protocol. The algorithms themselves are not handled by the driver.
-
-> Also, I don't thing it is good idea to have hw-driver-specific genl
-> family. I'm not aware of anything like that so far. Leave netlink
-> for use of generic and abstracted APIs.
-
-Sounds like an implied rule. If so should it be documented somewhere?
-
->=20
-> Can't you just have a simple misc device for this?
-
-It wouldn't be too much work to convert it.
-
-David
+	Andrew	  
 
