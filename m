@@ -1,293 +1,186 @@
-Return-Path: <linux-kernel+bounces-48274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F379845972
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:59:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5731A845978
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:59:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB0F0B235C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:59:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C2CB1C23122
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:59:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AEB05D475;
-	Thu,  1 Feb 2024 13:59:15 +0000 (UTC)
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 438FD5D489;
+	Thu,  1 Feb 2024 13:59:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YjjTvuXz"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CEF65CDFE;
-	Thu,  1 Feb 2024 13:59:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE57E5D46E
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 13:59:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706795954; cv=none; b=QOJojjrF5JNsZeE4oLWK2tHNZvLa/h0M+Dqlq9oDDuqQw/LAxewM0b8U2qk1aLLfxIro7MjYydN+ZlDOxYm0DeAqNZwlkWpfMmwgzhB8fZ74o3FpVn3VBmkvpXdFzNePQZTXhIiR/VjFb3H6Vj8JX9wOCgJjkTwL/9/EexcH3xM=
+	t=1706795981; cv=none; b=DsMLIImU4PIc9TL6N/dDniGsxmEZeU0MzACxosWpflQKUR5XnDz6eb04eBlta3ASpr+ZW8O9dBbF6VE40zwgTHUPkZRwTXkNwipS0OJB96zfAUcpp0mQUyEvWzJRijQnbwgP5ycFnzQ+3/bEup7mLpjA1LREL/dbG5W1SbnU70U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706795954; c=relaxed/simple;
-	bh=grZmON5V2pS5iBkv32N1mWLVplVq2WK7EVWyx82N3PM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AfNdfgygo5imksHCtaubnEgLXlVlOp6mfiYIexw5ElYIqLBYzp+QNc2RQIAVRug31kQIxwMR3CbCTF1tqBpDis3au9+bUujn7pthCmWjQKOfChPU1HB3puccGMiSZoRuymLb644rjAYh7Zk04UWu7dHC53/7+usEKZ8YcQAkHWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-59584f41f1eso272733eaf.1;
-        Thu, 01 Feb 2024 05:59:12 -0800 (PST)
+	s=arc-20240116; t=1706795981; c=relaxed/simple;
+	bh=/TanjX0ls+2d9VS5aORID8aw8bmRlMZB4HWbPt8Yr6c=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=b/RekthS/s/nRGgspOGzfBiY+28evPfRHa0Nvgw+mQzY41onc7nw0AbXtYUnDn3Eb5+JWzoTC33PoscUuzZ5Zehy20GMOl6K8IJTwac+Q//ILHkTVVQtYNyfXDIAHtojFYfFW0QRBxT6qyAguGcm6ZzYIkvGdeJ23bEVOY1Kis4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YjjTvuXz; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d04c0b1cacso12544021fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 05:59:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706795977; x=1707400777; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UFqKBFx9916FRrB9+w9LQlnhGJJKgZ+US7vE7hHv4do=;
+        b=YjjTvuXzdEvtvxdT+n30v9T1Bxi69nC/ngLKeAubcU15Sd2BPTj54JDByBZgEfavO6
+         H4ls83yQPhtlQikepIeKWooNfEeorPJfi6Ai/YeEVIRWM0oP5/yi7RBSxY/jUki8kJik
+         xSTXw6mmw/2m2fOFYTOyyHz+EztJYMZZE/NrhG9jkS32SRlSyey7nnP9YsBJSPeocBgf
+         F13nJHlZUVkD8K0THHq+MnG8NQpZNJ8opAhmWkShMkmLSyldq44+djgXu7Ic7zcXBMg6
+         loiI4csUx4Cb/shM1wjvgB1YtzHQAgGlnLIOH3Z12el/QWLuYrLdUzcnFNYBVX6uRZ4O
+         W87A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706795951; x=1707400751;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mmjGv0GaBOTQ12K5AbRONMLGMjSiQVl1WcXF4oblEaw=;
-        b=dL31krouDag1aC15QxxTUVq3QnqdR0d1W8bA9roJuQ0lQs/fgKrMLME1rSkZbFPHx/
-         7cBfqOsM6Yy0ekVoW14pMCc4ButwrGMh9dM1ksAHVXDW5m6ERF45dmGKrZzwWYGOwcWE
-         ygfBkXduUyrj1kMmRDupvmwzt6+riHpwLP65kzQHKX/erT8n3QbaAB9jbdVR5Qp0z+jZ
-         /kmMTdPiJHlFPHSNSn62Fp+MqG/eHrHQ7131bDZ/w6c5V4tol7hR6pElv9mI6AC18/h7
-         kLwilmkI4usOr0qGbzOh1+AgDvDkBq55Qffxs673+TH0BPjtC6695Xl9BGilWWORvmCD
-         vptQ==
-X-Forwarded-Encrypted: i=0; AJvYcCW9IgRfscCDeuf8BQ0dPDK4vLG36jyu4MMDKJFn8Zpqq1mX6fdDEYxyA3GOEQQ6U9eArcyZDujU1/1yDmYG7K9YkO4jPjqutgFy1Y47tBl6sveHUi9wQm9qacKsEkNEsQd61gglaIU=
-X-Gm-Message-State: AOJu0YyP3LvO4PSbQuQ7IvPfu3Pc5QSMOk477AXjBs07zaxaNdtfb16q
-	SkcQ+cCb9pDLqyHEeMuqqJxC9YQiUtzIMdCYoErA1GdcvFu7sN9MdiDn8x8m76n2woXbxrBdjhu
-	uAmBTfIfyAPc1C5Rr2+eTLp6tUIU=
-X-Google-Smtp-Source: AGHT+IH7vQIXGCqeFSp/9OtrwVG3NcK9LlW7sW0AUDZ0WvdPl+HQ1s36SytLRPThNUSp89nPcK/6c3Uo+r+eaoIimdQ=
-X-Received: by 2002:a05:6820:2224:b0:59a:127c:bdfe with SMTP id
- cj36-20020a056820222400b0059a127cbdfemr3140773oob.1.1706795951342; Thu, 01
- Feb 2024 05:59:11 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706795977; x=1707400777;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=UFqKBFx9916FRrB9+w9LQlnhGJJKgZ+US7vE7hHv4do=;
+        b=qWN/+rpJqmW6NnVqfKY/gOdJy9NWt9An7OIwFDNmhP34JpygB13zH4aByb5X81P/ok
+         t/hki/pA/17C+ZRbqPLX8npUSRVhZ+VqhYY6Z+lWS3Fy3RZW4lRNvbGNwupDiL9U75WU
+         gtW2wTu3/MImzHuIZ44Wb2YJ1jkHBeHmuHN5Ndijb519tJ+k6dMQDjFLWCy+DapEf39I
+         tGqCgbMGX9WgBaIgSKKaDePyZY805KafLALIVSH6QoK8aPiAhJATbWxyz1vONA9BbsBy
+         dsFZKpIEU1Sz+QfSGqHhtjTcufYkW206w4KRf9IS5dgOl9l2ZHxg8BljxDwfgQ3YFGhn
+         zU7w==
+X-Gm-Message-State: AOJu0YxpvX/yhpzbQYW/L9J2SvR82DBLXMvS3f4YXJdYzB1EsPrNTC2b
+	TCM8RKf7uvuPUBN98b6lQSPRfL8+gYDxC8Ppril13NAS41QumZMypB99BaT9B9o=
+X-Google-Smtp-Source: AGHT+IGUfYuciXztX1ROTZ8aWR1m2TWyKWPDYYmZU/9mTZ01QoA0mDd84pARFxV8qA8w2ptcojpqMg==
+X-Received: by 2002:a05:651c:1cd:b0:2d0:6eff:6e38 with SMTP id d13-20020a05651c01cd00b002d06eff6e38mr3795058ljn.39.1706795976622;
+        Thu, 01 Feb 2024 05:59:36 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWLyIsxBDsE2B0dXMqRm6wtczTF1NBWRF64AAabsGaeRxyluNS74tM2RaiEMGm4qoqoU3xyTBZ1/fJkF4yGNhKI2PfuFFiFV+ul/a54NxGlLAxUtedGYwTUMPTx1aBRdivipMHqtSLysUCQAB2+HPccvJIR1zB/gqwphNd18UbpeXg5rSLKhrmtwZaBjVoPDsY3JNs0y1zhbSCPx6kussx3h1mD/uDYtoGot5E77YSwyYqB8Ifkgt9XfSs2b4LWdpJmA9LHk6YdhvuKMJEcofiTXARMhsoWjUCUSkKBgitCe1GtfYhW6gNmbu0J2Ij0RFJW/Ay1aJCKAIomdPPSynzslKP2GfFpmZOEcjOd5Ivd9dCLQv7irwf0eUM0/Fp2jXvuUy1CpDt9o+rZah+NZ9rEaUs33MjQJZg6FpK0fAcNLJOTodZ0bnlq3FfVvjIaogm92Hn5/37sqPT4SwtxzgfFlZ9Pwx7kjhgK55m1NHg+ouqOjmaYoMWEgGYPKxPsgiI2koPdqdPgylRWAp/Ro5uZG9ZxDGbhUgXUoajoEftShAnwEkbDlpDqN7xSJQhqfIA4B44i6BIP9dcYKt7fB6/5sIMDsVy8Gt+8XFqVnBYI2IckbnuCsLHxgZSGiKpsbchlvG+wbPYJEe0/h+6ZSpwA+Pg9/8fJvvMbgJgMTem3u+U//6YkYgCrpn5q5iv41XN7MApiVIkqNIto7g9Xi92yjXZS1OMJgWF0LyMhAj2Ps9JoCYZ0FKL5/jRgAMsCUHVT8J5J1OIcjMqaUzLoea6Okwi1ja7anEi1NAw+yNGv1bD5YLVjKGzGirxmcb03rIxFvVY46vMqaATZ8OakPS8=
+Received: from ?IPV6:2a01:e0a:982:cbb0:cfdd:eab5:fd8:5436? ([2a01:e0a:982:cbb0:cfdd:eab5:fd8:5436])
+        by smtp.gmail.com with ESMTPSA id bh23-20020a05600c3d1700b0040d5a9d6b68sm4533841wmb.6.2024.02.01.05.59.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Feb 2024 05:59:36 -0800 (PST)
+Message-ID: <24dbe013-60d2-49dc-8568-3277d721366d@linaro.org>
+Date: Thu, 1 Feb 2024 14:59:34 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240109130210.31938-1-vimal.kumar32@gmail.com>
- <202401292109.f115a688-oliver.sang@intel.com> <20240201044437.GA113@DESKTOP-KA7F9LU.localdomain>
-In-Reply-To: <20240201044437.GA113@DESKTOP-KA7F9LU.localdomain>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 1 Feb 2024 14:59:00 +0100
-Message-ID: <CAJZ5v0geH_xn9RDGRUZ1izFt2cOA7_mo8r=8C3HoqZ1icfVKBA@mail.gmail.com>
-Subject: Re: [PATCH v3] PM / sleep: Mechanism to find source aborting kernel
- suspend transition
-To: Vimal Kumar <vimal.kumar32@gmail.com>
-Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
-	Chinmoy Ghosh <chinmoyghosh2001@gmail.com>, Mintu Patel <mintupatel89@gmail.com>, 
-	Vishal Badole <badolevishal1116@gmail.com>, linux-pm@vger.kernel.org, rui.zhang@intel.com, 
-	yu.c.chen@intel.com, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <len.brown@intel.com>, 
-	Pavel Machek <pavel@ucw.cz>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From: neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v4 15/15] arm64: dts: qcom: sm8550: add hwkm support to
+ ufs ice
+Content-Language: en-US, fr
+To: Om Prakash Singh <quic_omprsing@quicinc.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Gaurav Kashyap <quic_gaurkash@quicinc.com>
+Cc: linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
+ andersson@kernel.org, ebiggers@google.com, srinivas.kandagatla@linaro.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, robh+dt@kernel.org,
+ linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, kernel@quicinc.com,
+ linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+ quic_nguyenb@quicinc.com, bartosz.golaszewski@linaro.org,
+ konrad.dybcio@linaro.org, ulf.hansson@linaro.org, jejb@linux.ibm.com,
+ martin.petersen@oracle.com, mani@kernel.org, davem@davemloft.net,
+ herbert@gondor.apana.org.au
+References: <20240127232436.2632187-1-quic_gaurkash@quicinc.com>
+ <20240127232436.2632187-16-quic_gaurkash@quicinc.com>
+ <CAA8EJpr5fLYR1v64-DtjOigkUy3579tx_gwHpFWr9k0GyGajGw@mail.gmail.com>
+ <a0bcca80-e91b-4b97-a548-b53ea2fe4cb5@quicinc.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <a0bcca80-e91b-4b97-a548-b53ea2fe4cb5@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 1, 2024 at 5:44=E2=80=AFAM Vimal Kumar <vimal.kumar32@gmail.com=
-> wrote:
->
-> On Mon, Jan 29, 2024 at 10:08:32PM +0800, kernel test robot wrote:
-> >
-> >
-> > Hello,
-> >
-> > kernel test robot noticed "BUG:sleeping_function_called_from_invalid_co=
-ntext_at_include/linux/sched/mm.h" on:
-> >
-> > commit: e2d228456d500f3b00ad746b353fa85eee235b7a ("[PATCH v3] PM / slee=
-p: Mechanism to find source aborting kernel suspend transition")
-> > url: https://github.com/intel-lab-lkp/linux/commits/Vimal-Kumar/PM-slee=
-p-Mechanism-to-find-source-aborting-kernel-suspend-transition/20240109-2105=
-19
-> > base: https://git.kernel.org/cgit/linux/kernel/git/rafael/linux-pm.git =
-linux-next
-> > patch link: https://lore.kernel.org/all/20240109130210.31938-1-vimal.ku=
-mar32@gmail.com/
-> > patch subject: [PATCH v3] PM / sleep: Mechanism to find source aborting=
- kernel suspend transition
-> >
-> > in testcase: suspend-stress
-> > version:
-> > with following parameters:
-> >
-> >       mode: freeze
-> >       iterations: 10
-> >
-> >
-> >
-> > compiler: gcc-12
-> > test machine: 4 threads (Broadwell) with 8G memory
-> >
-> > (please refer to attached dmesg/kmsg for entire log/backtrace)
-> >
-> >
-> >
-> > If you fix the issue in a separate patch/commit (i.e. not just a new ve=
-rsion of
-> > the same patch/commit), kindly add following tags
-> > | Reported-by: kernel test robot <oliver.sang@intel.com>
-> > | Closes: https://lore.kernel.org/oe-lkp/202401292109.f115a688-oliver.s=
-ang@intel.com
-> >
-> >
-> > kern  :err   : [   97.935754] BUG: sleeping function called from invali=
-d context at include/linux/sched/mm.h:306
-> > kern  :err   : [   97.935886] in_atomic(): 1, irqs_disabled(): 1, non_b=
-lock: 0, pid: 0, name: swapper/1
-> > kern  :err   : [   97.936000] preempt_count: 10002, expected: 0
-> > kern  :err   : [   97.936071] RCU nest depth: 0, expected: 0
-> > kern  :warn  : [   97.936138] CPU: 1 PID: 0 Comm: swapper/1 Not tainted=
- 6.7.0-rc8-00169-ge2d228456d50 #1
-> > kern  :warn  : [   97.936255] Hardware name:  /NUC5i3RYB, BIOS RYBDWi35=
-86A.0363.2017.0316.1028 03/16/2017
-> > kern  :warn  : [   97.936371] Call Trace:
-> > kern  :warn  : [   97.936419]  <IRQ>
-> > kern :warn : [   97.936461] dump_stack_lvl (lib/dump_stack.c:107 (discr=
-iminator 1))
-> > kern :warn : [   97.936529] __might_resched (kernel/sched/core.c:10152)
-> > kern :warn : [   97.936598] ? preempt_notifier_dec (kernel/sched/core.c=
-:10106)
-> > kern :warn : [   97.936672] __kmem_cache_alloc_node (include/linux/kern=
-el.h:107 include/linux/sched/mm.h:306 mm/slab.h:710 mm/slub.c:3460 mm/slub.=
-c:3517)
-> > kern :warn : [   97.936750] ? kasprintf (lib/kasprintf.c:54)
-> > kern :warn : [   97.936812] ? pointer (lib/vsprintf.c:2755)
-> > kern :warn : [   97.936875] ? kasprintf (lib/kasprintf.c:54)
-> > kern :warn : [   97.936936] __kmalloc_node_track_caller (include/linux/=
-kasan.h:198 mm/slab_common.c:1007 mm/slab_common.c:1027)
-> > kern :warn : [   97.937017] kvasprintf (lib/kasprintf.c:25)
-> > kern :warn : [   97.937079] ? bust_spinlocks (lib/kasprintf.c:16)
-> > kern :warn : [   97.937146] ? enqueue_hrtimer (kernel/time/hrtimer.c:10=
-95 (discriminator 3))
-> > kern :warn : [   97.937214] ? tick_nohz_highres_handler (kernel/time/ti=
-ck-sched.c:1530)
-> > kern :warn : [   97.937295] kasprintf (lib/kasprintf.c:54)
-> > kern :warn : [   97.937354] ? kvasprintf_const (lib/kasprintf.c:54)
-> > kern :warn : [   97.937426] ? _raw_spin_lock_irqsave (arch/x86/include/=
-asm/atomic.h:115 include/linux/atomic/atomic-arch-fallback.h:2164 include/l=
-inux/atomic/atomic-instrumented.h:1296 include/asm-generic/qspinlock.h:111 =
-include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:111 kernel/lo=
-cking/spinlock.c:162)
-> > kern :warn : [   97.937501] ? _raw_read_unlock_irqrestore (kernel/locki=
-ng/spinlock.c:161)
-> > kern :warn : [   97.937581] ? _raw_spin_lock (arch/x86/include/asm/atom=
-ic.h:115 include/linux/atomic/atomic-arch-fallback.h:2164 include/linux/ato=
-mic/atomic-instrumented.h:1296 include/asm-generic/qspinlock.h:111 include/=
-linux/spinlock.h:187 include/linux/spinlock_api_smp.h:134 kernel/locking/sp=
-inlock.c:154)
-> > kern :warn : [   97.937648] ? _raw_write_lock_irq (kernel/locking/spinl=
-ock.c:153)
-> > kern :warn : [   97.937719] ? irq_pm_check_wakeup (kernel/irq/pm.c:24)
-> > kern :warn : [   97.937793] pm_system_wakeup (drivers/base/power/wakeup=
-c:981)
-> > kern :warn : [   97.937862] irq_pm_check_wakeup (kernel/irq/pm.c:24)
-> > kern :warn : [   97.937933] handle_fasteoi_irq (kernel/irq/chip.c:518 k=
-ernel/irq/chip.c:502 kernel/irq/chip.c:698)
-> > kern :warn : [   97.938006] __common_interrupt (arch/x86/kernel/irq.c:2=
-71 (discriminator 22))
-> > kern :warn : [   97.938078] common_interrupt (arch/x86/kernel/irq.c:247=
- (discriminator 14))
-> > kern  :warn  : [   97.938145]  </IRQ>
-> > kern  :warn  : [   97.938187]  <TASK>
-> > kern :warn : [   97.938230] asm_common_interrupt (arch/x86/include/asm/=
-idtentry.h:640)
-> > kern :warn : [   97.938301] RIP: 0010:cpuidle_enter_s2idle (arch/x86/in=
-clude/asm/irqflags.h:78 drivers/cpuidle/cpuidle.c:199)
-> > kern :warn : [ 97.938384] Code: d9 75 83 85 d2 7f 11 48 83 c4 20 89 d0 =
-5b 5d 41 5c 41 5d 41 5e 41 5f c3 4c 89 c6 48 89 cf 89 14 24 e8 fb 64 9b 00 =
-fb 8b 14 24 <eb> db 31 d2 eb d7 48 89 0c 24 48 89 74 24 08 e8 03 51 9f fe 4=
-c 8b
-> > All code
-> > =3D=3D=3D=3D=3D=3D=3D=3D
-> >    0: d9 75 83                fnstenv -0x7d(%rbp)
-> >    3: 85 d2                   test   %edx,%edx
-> >    5: 7f 11                   jg     0x18
-> >    7: 48 83 c4 20             add    $0x20,%rsp
-> >    b: 89 d0                   mov    %edx,%eax
-> >    d: 5b                      pop    %rbx
-> >    e: 5d                      pop    %rbp
-> >    f: 41 5c                   pop    %r12
-> >   11: 41 5d                   pop    %r13
-> >   13: 41 5e                   pop    %r14
-> >   15: 41 5f                   pop    %r15
-> >   17: c3                      retq
-> >   18: 4c 89 c6                mov    %r8,%rsi
-> >   1b: 48 89 cf                mov    %rcx,%rdi
-> >   1e: 89 14 24                mov    %edx,(%rsp)
-> >   21: e8 fb 64 9b 00          callq  0x9b6521
-> >   26: fb                      sti
-> >   27: 8b 14 24                mov    (%rsp),%edx
-> >   2a:*        eb db                   jmp    0x7              <-- trapp=
-ing instruction
-> >   2c: 31 d2                   xor    %edx,%edx
-> >   2e: eb d7                   jmp    0x7
-> >   30: 48 89 0c 24             mov    %rcx,(%rsp)
-> >   34: 48 89 74 24 08          mov    %rsi,0x8(%rsp)
-> >   39: e8 03 51 9f fe          callq  0xfffffffffe9f5141
-> >   3e: 4c                      rex.WR
-> >   3f: 8b                      .byte 0x8b
-> >
-> > Code starting with the faulting instruction
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >    0: eb db                   jmp    0xffffffffffffffdd
-> >    2: 31 d2                   xor    %edx,%edx
-> >    4: eb d7                   jmp    0xffffffffffffffdd
-> >    6: 48 89 0c 24             mov    %rcx,(%rsp)
-> >    a: 48 89 74 24 08          mov    %rsi,0x8(%rsp)
-> >    f: e8 03 51 9f fe          callq  0xfffffffffe9f5117
-> >   14: 4c                      rex.WR
-> >   15: 8b                      .byte 0x8b
-> > kern  :warn  : [   97.938632] RSP: 0018:ffffc90000177db8 EFLAGS: 000002=
-86
-> > kern  :warn  : [   97.938717] RAX: 00000000037a402c RBX: 00000000000000=
-09 RCX: 0000000000000000
-> > kern  :warn  : [   97.938823] RDX: 0000000000000008 RSI: 0000000937e23a=
-d2 RDI: 0000000000000000
-> > kern  :warn  : [   97.938927] RBP: ffffffff84f7f680 R08: 00000000000000=
-00 R09: ffffed1021ad5530
-> > kern  :warn  : [   97.939032] R10: ffff88810d6aa987 R11: 00000000000000=
-00 R12: ffff88820decca10
-> > kern  :warn  : [   97.939137] R13: dffffc0000000000 R14: 000000000027ac=
-40 R15: 000000000027ac40
-> > kern :warn : [   97.939244] ? cpuidle_enter_s2idle (arch/x86/include/as=
-m/irqflags.h:42 arch/x86/include/asm/irqflags.h:77 drivers/cpuidle/cpuidle.=
-c:199)
-> > kern :warn : [   97.939319] cpuidle_idle_call (kernel/sched/idle.c:190)
-> > kern :warn : [   97.939389] ? arch_cpu_idle_exit+0x40/0x40
-> > kern :warn : [   97.939459] ? mark_tsc_async_resets (arch/x86/kernel/ts=
-c_sync.c:51)
-> > kern :warn : [   97.939536] do_idle (kernel/sched/idle.c:282)
-> > kern :warn : [   97.939594] cpu_startup_entry (kernel/sched/idle.c:379 =
-(discriminator 1))
-> > kern :warn : [   97.939662] start_secondary (arch/x86/kernel/smpboot.c:=
-224 arch/x86/kernel/smpboot.c:304)
-> > kern :warn : [   97.939731] ? set_cpu_sibling_map (arch/x86/kernel/smpb=
-oot.c:254)
-> > kern :warn : [   97.939808] ? soft_restart_cpu (arch/x86/kernel/head_64=
-S:485)
-> > kern :warn : [   97.939878] secondary_startup_64_no_verify (arch/x86/ke=
-rnel/head_64.S:448)
-> > kern  :warn  : [   97.939963]  </TASK>
-> > kern :info : [   97.948803] bdw_uncore 0000:00:00.0: PM: calling pci_pm=
-_resume_noirq+0x0/0x390 @ 85, parent: 00
-> > kern :info : [   97.948993] bdw_uncore 0000:00:00.0: PM: pci_pm_resume_=
-noirq+0x0/0x390 returned 0 after 17 usecs
-> >
-> >
-> >
-> > The kernel config and materials to reproduce are available at:
-> > https://download.01.org/0day-ci/archive/20240129/202401292109.f115a688-=
-oliver.sang@intel.com
-> >
-> >
-> >
-> > --
-> > 0-DAY CI Kernel Test Service
-> > https://github.com/intel/lkp-tests/wiki
-> >
->
-> Hi Greg,
->
-> This is an example where "pm_system_wakeup" can be called from atomic con=
-text. It also gives an actual instance where we can utilise this feature to=
- find the source.
->
-> The bug reported due to "GFP_KERNEL" flag, but it will be applicable for =
-using "mutex_lock" as well.
-> I will change to ATOMIC flag in kmalloc, as well as use raw_spin_lock* in=
-stead of mutex_lock.
+On 01/02/2024 10:55, Om Prakash Singh wrote:
+> 
+> 
+> On 1/28/2024 6:31 AM, Dmitry Baryshkov wrote:
+>> On Sun, 28 Jan 2024 at 01:28, Gaurav Kashyap <quic_gaurkash@quicinc.com> wrote:
+>>>
+>>> The Inline Crypto Engine (ICE) for UFS/EMMC supports the
+>>> Hardware Key Manager (HWKM) to securely manage storage
+>>> keys. Enable using this hardware on sm8550.
+>>>
+>>> This requires two changes:
+>>> 1. Register size increase: HWKM is an additional piece of hardware
+>>>     sitting alongside ICE, and extends the old ICE's register space.
+>>> 2. Explicitly tell the ICE driver to use HWKM with ICE so that
+>>>     wrapped keys are used in sm8550.
+>>>
+>>> NOTE: Although wrapped keys cannot be independently generated and
+>>> tested on this platform using generate, prepare and import key calls,
+>>> there are non-kernel paths to create wrapped keys, and still use the
+>>> kernel to program them into ICE. Hence, enabling wrapped key support
+>>> on sm8550 too.
+>>>
+>>> Signed-off-by: Gaurav Kashyap <quic_gaurkash@quicinc.com>
+>>> ---
+>>>   arch/arm64/boot/dts/qcom/sm8550.dtsi | 3 ++-
+>>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+>>> index ee1ba5a8c8fc..b5b41d0a544c 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+>>> @@ -1977,7 +1977,8 @@ ufs_mem_hc: ufs@1d84000 {
+>>>                  ice: crypto@1d88000 {
+>>>                          compatible = "qcom,sm8550-inline-crypto-engine",
+>>>                                       "qcom,inline-crypto-engine";
+>>> -                       reg = <0 0x01d88000 0 0x8000>;
+>>> +                       reg = <0 0x01d88000 0 0x10000>;
+>>
+>> Does the driver fail gracefully with the old DT size? At least it
+>> should not crash.
+> When adding  qcom,ice-use-hwkm property, DT size needs to be updated.
+> Without any DT change, there will be know issue.
 
-Maybe instead of trying to add bandaids, you could work on making the
-wakeup sources infrastructure suitable for addressing your use case?
+This must be fixed in the code because new kernels could be run with older
+DTs, so it should not fail with older DTs.
+
+In this case, simply disable the HWKM if size from DT is too small.
+
+Neil
+
+> 
+>>
+>>> +                       qcom,ice-use-hwkm;
+>>>                          clocks = <&gcc GCC_UFS_PHY_ICE_CORE_CLK>;
+>>
+
 
