@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-47472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D9F5844E64
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:10:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC5A1844E6E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:11:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 505571C21A45
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:10:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 350001F247DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:11:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B14D63B194;
-	Thu,  1 Feb 2024 01:07:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C89A53D0A3;
+	Thu,  1 Feb 2024 01:07:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GU3F8raB"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ANK1vD7B"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC598EAE3;
-	Thu,  1 Feb 2024 01:07:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE2043A1A8;
+	Thu,  1 Feb 2024 01:07:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706749673; cv=none; b=uf5vNHWuLL1uWWHLvRBtVBMwTvxVf//bSXRM9y7a5MbuFA05Xn0EcaRHxjeIWy8IjJgU6ompMCyE/vOMGjCYIqerQ72n7CxttVN0NfKDm9/WvdLyzBwpfJFgvkaEYNtjnn3rX7vrb4MEt+omSMzuVUZtGAy8at8jVz0/q43l6Z8=
+	t=1706749675; cv=none; b=ivC254vP99tbBkZGcddMtM0edPaxjNt0Thq0th9xnzIa4UKqgM/47ExNDdjv1RmEwnClyKvsGJO+qp3u75g0IEmcRbXQ6/EiNTmYQ5K5TSDh3VCkQltRah0Wb0nah7D6gXsyosxNXkdkxyrPhS35It+IffO0vc6ceqTjiOv4Vg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706749673; c=relaxed/simple;
-	bh=/sbcQrFxPD3yMhBX/Ocbb8dAANHobtfGIw+UodSoVjg=;
+	s=arc-20240116; t=1706749675; c=relaxed/simple;
+	bh=ZmlyHYXBVtbijbrpUOF8yDi/v2bX8+Dqf/m3Q2yqn+U=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IC1bmQiX9jayQejDcRXdhoeqyIYdwD72/w8yyV6SnoZ1qYlf6chgaDGiJKzyoATUFL68QMUnFBzNJUJsRMN3pNpd32UlEieeyxSJrrFFKsVKo/P0gXNqygdwVMQQCHvk+JyK61tZ3ZAkyfK1uGgsM9EfUUz34+aG6q4z0wTcAFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GU3F8raB; arc=none smtp.client-ip=192.198.163.9
+	 MIME-Version; b=XKTLkHxcUYS//0A4etslOOWwuj0SnmP0+yoqOk0wYw+0jaHtXyvfOKQ/NlmHzFDqFwqNVydBB/VXJP6WEhajug7NKNZzfHMcaXsNseAeaizqxG/6Cwoq4AjN2AurOTk2xXjEftTDqgHv1E4c9EYVqtMrM8uvo9xvMnhUYYE5H98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ANK1vD7B; arc=none smtp.client-ip=198.175.65.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706749672; x=1738285672;
+  t=1706749674; x=1738285674;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=/sbcQrFxPD3yMhBX/Ocbb8dAANHobtfGIw+UodSoVjg=;
-  b=GU3F8raBSkwRn2Yyg8MIEIgO628ztiNWWco2tJklkb6kkm1kkpbNO657
-   uc20lDiR/7ZZpLTBfE4cNgLekjBRikq/NzKjPdCCHgJtyiJbsLnBbPpaV
-   fvhLaPwQFLODvBC1smlv//eEwaaYqMSYRXiF7U1hGl0JEcZJCMDcBQGiM
-   5rbNnEnGPkdHeBCiFAzkGJ3SkSWWf8F/Gnvw6MuU/GS5ce/mMwEjhVy/m
-   4v2vQYvWCenQ0pEmE3cAkyAAVR4JRdzQaA/0LxsXrS0fdf/gP2JG7Rhbd
-   DmKfnwk2nexFWjQAupaGZOPBvc/hxa8193yUuAovr+Vg3FamxdFciahNx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10533016"
+  bh=ZmlyHYXBVtbijbrpUOF8yDi/v2bX8+Dqf/m3Q2yqn+U=;
+  b=ANK1vD7Bh4th1iRA9MovMWBkK/KAoHfXnYAEH4SraUZAmGbuQ1DvBD/8
+   WLk0HDNMQYEgD6XbkCMKgTGHTXfxMlb8caZ8aBXUNryYZ13EIaArxjlhk
+   iuUU588xRy9jlZdAysUBW0i0LRTPmQAA5a3MBYoWC8nxhjiQXPXxaw4F7
+   0AJSvmClIse2S/3NrW9o+9NhaPe3S/V2XuFo7zebkeUgBfdDnQ0uLLZTL
+   xb4NdXk2mSFjD5vWqt7h9Q99MqJC5MOtcAE5EwlDHalnyuWh4sPEVRsmN
+   rNbwxNLon+Gt1Ue8lJNIDoUDq4Z2LctXu7uwDeoYB37FsRoid75VEtxED
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="11145825"
 X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="10533016"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 17:07:50 -0800
+   d="scan'208";a="11145825"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 17:07:50 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="4265162"
+   d="scan'208";a="37057420"
 Received: from linux.intel.com ([10.54.29.200])
-  by fmviesa004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 17:07:49 -0800
+  by orviesa001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 17:07:49 -0800
 Received: from debox1-desk4.lan (unknown [10.212.205.115])
-	by linux.intel.com (Postfix) with ESMTP id 55E10580DF0;
+	by linux.intel.com (Postfix) with ESMTP id 8306F580201;
 	Wed, 31 Jan 2024 17:07:49 -0800 (PST)
 From: "David E. Box" <david.e.box@linux.intel.com>
 To: netdev@vger.kernel.org,
@@ -63,9 +63,9 @@ To: netdev@vger.kernel.org,
 	sathyanarayanan.kuppuswamy@linux.intel.com
 Cc: linux-kernel@vger.kernel.org,
 	platform-driver-x86@vger.kernel.org
-Subject: [PATCH 6/8] platform/x86/intel/sdsi: Add attribute to read the current meter state
-Date: Wed, 31 Jan 2024 17:07:45 -0800
-Message-Id: <20240201010747.471141-7-david.e.box@linux.intel.com>
+Subject: [PATCH 7/8] tools: Fix errors in meter_certificate display
+Date: Wed, 31 Jan 2024 17:07:46 -0800
+Message-Id: <20240201010747.471141-8-david.e.box@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240201010747.471141-1-david.e.box@linux.intel.com>
 References: <20240201010747.471141-1-david.e.box@linux.intel.com>
@@ -77,128 +77,143 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The meter_certificate file provides access to metering information that may
-be attested but is only updated every 8 hours. Add new attribute,
-meter_current, to allow reading an untested snapshot of the current values.
+The maximum number of bundles in the meter certificate was hardcoded to
+8 which caused extra bundles not to display. Instead, since the bundles
+appear at the end of the file, set it to the remaining size from where
+the bundles start.
 
+Add missing 'version' field to struct meter_certificate.
+
+Fix errors in the calculation of the start position of the counters and
+in the display loop.
+
+Fixes: aad129780bae ("platform/x86/intel/sdsi: Add support for reading the current meter state")
 Signed-off-by: David E. Box <david.e.box@linux.intel.com>
 ---
- drivers/platform/x86/intel/sdsi.c | 42 ++++++++++++++++++++++++++++---
- drivers/platform/x86/intel/sdsi.h |  2 ++
- 2 files changed, 41 insertions(+), 3 deletions(-)
+ tools/arch/x86/intel_sdsi/intel_sdsi.c | 51 +++++++++++++++-----------
+ 1 file changed, 30 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/platform/x86/intel/sdsi.c b/drivers/platform/x86/intel/sdsi.c
-index 287780fe65bb..171899b4a671 100644
---- a/drivers/platform/x86/intel/sdsi.c
-+++ b/drivers/platform/x86/intel/sdsi.c
-@@ -62,6 +62,7 @@
- #define CTRL_COMPLETE			BIT(6)
- #define CTRL_READY			BIT(7)
- #define CTRL_INBAND_LOCK		BIT(32)
-+#define CTRL_METER_ENABLE_DRAM		BIT(33)
- #define CTRL_STATUS			GENMASK(15, 8)
- #define CTRL_PACKET_SIZE		GENMASK(31, 16)
- #define CTRL_MSG_SIZE			GENMASK(63, 48)
-@@ -235,8 +236,10 @@ static int sdsi_mbox_cmd_read(struct sdsi_priv *priv, struct sdsi_mbox_info *inf
- 	control = FIELD_PREP(CTRL_EOM, 1) |
- 		  FIELD_PREP(CTRL_SOM, 1) |
- 		  FIELD_PREP(CTRL_RUN_BUSY, 1) |
--		  FIELD_PREP(CTRL_PACKET_SIZE, info->size);
-+		  FIELD_PREP(CTRL_PACKET_SIZE, info->size) |
-+		  priv->control_flags;
- 	writeq(control, priv->control_addr);
-+	priv->control_flags = 0;
+diff --git a/tools/arch/x86/intel_sdsi/intel_sdsi.c b/tools/arch/x86/intel_sdsi/intel_sdsi.c
+index 2cd92761f171..a8fb6d17405f 100644
+--- a/tools/arch/x86/intel_sdsi/intel_sdsi.c
++++ b/tools/arch/x86/intel_sdsi/intel_sdsi.c
+@@ -43,7 +43,6 @@
+ #define METER_CERT_MAX_SIZE	4096
+ #define STATE_MAX_NUM_LICENSES	16
+ #define STATE_MAX_NUM_IN_BUNDLE	(uint32_t)8
+-#define METER_MAX_NUM_BUNDLES	8
  
- 	return sdsi_mbox_poll(priv, info, data_size);
- }
-@@ -468,11 +471,42 @@ meter_certificate_read(struct file *filp, struct kobject *kobj,
- {
- 	struct device *dev = kobj_to_dev(kobj);
- 	struct sdsi_priv *priv = dev_get_drvdata(dev);
-+	int ret;
+ #define __round_mask(x, y) ((__typeof__(x))((y) - 1))
+ #define round_up(x, y) ((((x) - 1) | __round_mask(x, y)) + 1)
+@@ -154,11 +153,12 @@ struct bundle_encoding {
+ };
  
--	return certificate_read(SDSI_CMD_READ_METER, priv, buf, off, count);
-+	ret = mutex_lock_interruptible(&priv->meter_lock);
-+	if (ret)
-+		return ret;
-+
-+	ret = certificate_read(SDSI_CMD_READ_METER, priv, buf, off, count);
-+
-+	mutex_unlock(&priv->meter_lock);
-+
-+	return ret;
- }
- static BIN_ATTR_ADMIN_RO(meter_certificate, SDSI_SIZE_READ_MSG);
+ struct meter_certificate {
+-	uint32_t block_signature;
++	uint32_t signature;
++	uint32_t version;
++	uint64_t ppin;
+ 	uint32_t counter_unit;
+-	uint64_t ppin;
+ 	uint32_t bundle_length;
+-	uint32_t reserved;
++	uint64_t reserved;
+ 	uint32_t mmrc_encoding;
+ 	uint32_t mmrc_counter;
+ };
+@@ -167,6 +167,9 @@ struct bundle_encoding_counter {
+ 	uint32_t encoding;
+ 	uint32_t counter;
+ };
++#define METER_MAX_NUM_BUNDLES							\
++		(METER_CERT_MAX_SIZE - sizeof(struct meter_certificate) /	\
++		 sizeof(struct bundle_encoding_counter))
  
-+static ssize_t
-+meter_current_read(struct file *filp, struct kobject *kobj,
-+		   struct bin_attribute *attr, char *buf, loff_t off,
-+		   size_t count)
-+{
-+	struct device *dev = kobj_to_dev(kobj);
-+	struct sdsi_priv *priv = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = mutex_lock_interruptible(&priv->meter_lock);
-+	if (ret)
-+		return ret;
-+
-+	priv->control_flags = CTRL_METER_ENABLE_DRAM;
-+	ret = certificate_read(SDSI_CMD_READ_METER, priv, buf, off, count);
-+
-+	mutex_unlock(&priv->meter_lock);
-+
-+	return ret;
-+}
-+static BIN_ATTR_ADMIN_RO(meter_current, SDSI_SIZE_READ_MSG);
-+
- static ssize_t registers_read(struct file *filp, struct kobject *kobj,
- 			      struct bin_attribute *attr, char *buf, loff_t off,
- 			      size_t count)
-@@ -503,6 +537,7 @@ static struct bin_attribute *sdsi_bin_attrs[] = {
- 	&bin_attr_registers,
- 	&bin_attr_state_certificate,
- 	&bin_attr_meter_certificate,
-+	&bin_attr_meter_current,
- 	&bin_attr_provision_akc,
- 	&bin_attr_provision_cap,
- 	NULL
-@@ -522,7 +557,7 @@ sdsi_battr_is_visible(struct kobject *kobj, struct bin_attribute *attr, int n)
- 	if (!(priv->features & SDSI_FEATURE_SDSI))
- 		return 0;
+ struct sdsi_dev {
+ 	struct sdsi_regs regs;
+@@ -334,6 +337,7 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
+ 	uint32_t count = 0;
+ 	FILE *cert_ptr;
+ 	int ret, size;
++	char name[4];
  
--	if (attr == &bin_attr_meter_certificate)
-+	if (attr == &bin_attr_meter_certificate || attr == &bin_attr_meter_current)
- 		return (priv->features & SDSI_FEATURE_METERING) ?
- 				attr->attr.mode : 0;
+ 	ret = sdsi_update_registers(s);
+ 	if (ret)
+@@ -375,32 +379,39 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
+ 	printf("\n");
+ 	printf("Meter certificate for device %s\n", s->dev_name);
+ 	printf("\n");
+-	printf("Block Signature:       0x%x\n", mc->block_signature);
+-	printf("Count Unit:            %dms\n", mc->counter_unit);
+-	printf("PPIN:                  0x%lx\n", mc->ppin);
+-	printf("Feature Bundle Length: %d\n", mc->bundle_length);
+-	printf("MMRC encoding:         %d\n", mc->mmrc_encoding);
+-	printf("MMRC counter:          %d\n", mc->mmrc_counter);
++
++	get_feature(mc->signature, name);
++	printf("Signature:                    %.4s\n", name);
++
++	printf("Version:                      %d\n", mc->version);
++	printf("Count Unit:                   %dms\n", mc->counter_unit);
++	printf("PPIN:                         0x%lx\n", mc->ppin);
++	printf("Feature Bundle Length:        %d\n", mc->bundle_length);
++
++	get_feature(mc->mmrc_encoding, name);
++	printf("MMRC encoding:                %.4s\n", name);
++
++	printf("MMRC counter:                 %d\n", mc->mmrc_counter);
+ 	if (mc->bundle_length % 8) {
+ 		fprintf(stderr, "Invalid bundle length\n");
+ 		return -1;
+ 	}
  
-@@ -725,6 +760,7 @@ static int sdsi_probe(struct auxiliary_device *auxdev, const struct auxiliary_de
- 	priv->dev = &auxdev->dev;
- 	priv->id = auxdev->id;
- 	mutex_init(&priv->mb_lock);
-+	mutex_init(&priv->meter_lock);
- 	auxiliary_set_drvdata(auxdev, priv);
+ 	if (mc->bundle_length > METER_MAX_NUM_BUNDLES * 8)  {
+-		fprintf(stderr, "More than %d bundles: %d\n",
++		fprintf(stderr, "More than %ld bundles: actual %d\n",
+ 			METER_MAX_NUM_BUNDLES, mc->bundle_length / 8);
+ 		return -1;
+ 	}
  
- 	/* Get the SDSi discovery table */
-diff --git a/drivers/platform/x86/intel/sdsi.h b/drivers/platform/x86/intel/sdsi.h
-index 256618eb3136..e20cf279212e 100644
---- a/drivers/platform/x86/intel/sdsi.h
-+++ b/drivers/platform/x86/intel/sdsi.h
-@@ -18,12 +18,14 @@ struct device;
+-	bec = (void *)(mc) + sizeof(mc);
++	bec = (void *)(mc) + sizeof(*mc);
  
- struct sdsi_priv {
- 	struct mutex			mb_lock;	/* Mailbox access lock */
-+	struct mutex			meter_lock;
- 	struct device			*dev;
- 	struct intel_vsec_device	*ivdev;
- 	struct list_head		node;
- 	void __iomem			*control_addr;
- 	void __iomem			*mbox_addr;
- 	void __iomem			*regs_addr;
-+	u64				control_flags;
- 	int				control_size;
- 	int				maibox_size;
- 	int				registers_size;
+-	printf("Number of Feature Counters:          %d\n", mc->bundle_length / 8);
+-	while (count++ < mc->bundle_length / 8) {
+-		char feature[5];
++	printf("Number of Feature Counters:   %d\n", mc->bundle_length / 8);
++	while (count < mc->bundle_length / 8) {
++		char feature[4];
+ 
+-		feature[4] = '\0';
+ 		get_feature(bec[count].encoding, feature);
+-		printf("    %s:          %d\n", feature, bec[count].counter);
++		printf("    %.4s:          %d\n", feature, bec[count].counter);
++		++count;
+ 	}
+ 
+ 	return 0;
+@@ -480,7 +491,7 @@ static int sdsi_state_cert_show(struct sdsi_dev *s)
+ 			sizeof(*lki) +			// size of the license key info
+ 			offset;				// offset to this blob content
+ 		struct bundle_encoding *bundle = (void *)(lbc) + sizeof(*lbc);
+-		char feature[5];
++		char feature[4];
+ 		uint32_t i;
+ 
+ 		printf("     Blob %d:\n", count - 1);
+@@ -493,11 +504,9 @@ static int sdsi_state_cert_show(struct sdsi_dev *s)
+ 		printf("        Blob revision ID:           %u\n", lbc->rev_id);
+ 		printf("        Number of Features:         %u\n", lbc->num_bundles);
+ 
+-		feature[4] = '\0';
+-
+ 		for (i = 0; i < min(lbc->num_bundles, STATE_MAX_NUM_IN_BUNDLE); i++) {
+ 			get_feature(bundle[i].encoding, feature);
+-			printf("                 Feature %d:         %s\n", i, feature);
++			printf("                 Feature %d:         %.4s\n", i, feature);
+ 		}
+ 
+ 		if (lbc->num_bundles > STATE_MAX_NUM_IN_BUNDLE)
 -- 
 2.34.1
 
