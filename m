@@ -1,57 +1,56 @@
-Return-Path: <linux-kernel+bounces-48042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA1E2845691
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:53:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 470B8845693
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:54:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C55DF1C27A66
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:53:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03D92283873
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:54:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C329115D5D1;
-	Thu,  1 Feb 2024 11:53:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6E6415DBC4;
+	Thu,  1 Feb 2024 11:53:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aY6gtS1i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HlFjP2OQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B18615D5D3;
-	Thu,  1 Feb 2024 11:53:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1046C15DBB5;
+	Thu,  1 Feb 2024 11:53:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706788407; cv=none; b=NPA58JAfAED8npPL3F74wJ5Ms5MVtaMdpBz4xwlbCSRvI95tgXUuRBedF3fZJ+50mQlDiZRBWAqCngZoGA5lfRQ7zqdsHu7XQjndz+QCT30g92lszC+3MYFjBIWr1DV1N1bTYoiAm443V7vIukvIRtxxQ93dwdlfxNyznbJ2W9c=
+	t=1706788409; cv=none; b=tHk3Pf41QR7hz0mFJ/p7SQ2W2Z9Fuw/wg+WPyDlSw7XJYIdMcQOTX/JXzZ6K8s/zaQcV8tgjn83vGVCdaBnv1vxd6BnwGqtn59um0WsdWEmKNS/NHSh+p9y+zFzoKe9ER4rPr8rMjMsa4QUqXxafx6kxB8Vj08FliDz3KD4gBN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706788407; c=relaxed/simple;
-	bh=PDYxQCUZCAsEiRe/Tu00xGBkJEs17Kao85ABA/4E6Lk=;
+	s=arc-20240116; t=1706788409; c=relaxed/simple;
+	bh=xwCxROJx6BTu8Xiy2MItJhGUPUJPgxHfmZNp5V9yd+8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=H6KfrL2sJdgtyahgP0r6tqiLFFQrTsqE7NnmHyh+tD9JBXBx0fu/SiJzY7fcLdpF7bX8wZGx44kQlOKNuhxc+5IoaiYnvoLnHZ9ROVTBVIqGXurOWEMQQCPVY6upod55HMfVWQYw/NychkNhSe7EY4a6V//S/DX9mJKtXW1rZpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aY6gtS1i; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B83DEC43394;
-	Thu,  1 Feb 2024 11:53:24 +0000 (UTC)
+	 MIME-Version; b=IjkO7j4uQ7Z7lARoFPIBzMun2/OpmPcZZjbfZlpnVVI59NIrzGivm+/p/zCkBeYPMFpStzNFUFuceNTdK19nxUP1R5AqrwD52tFhzhjX/LKdsTm2/GOzTASfcDcSVP6GZWgQWf8X0HQLqCnyD4ncMDHDzLDl5tztV2UjiTT8Xxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HlFjP2OQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBFD5C43390;
+	Thu,  1 Feb 2024 11:53:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706788406;
-	bh=PDYxQCUZCAsEiRe/Tu00xGBkJEs17Kao85ABA/4E6Lk=;
+	s=k20201202; t=1706788408;
+	bh=xwCxROJx6BTu8Xiy2MItJhGUPUJPgxHfmZNp5V9yd+8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aY6gtS1iITIj11OBDRVD94Kzzg1MjAWqHY/VKBiof1s45yUxpxM+qv8lociQJ2ywy
-	 tEC/2K7eiesQsqFoyPVnAJv9NKEhLc/iPy6niD6pdwAHZvBLRiubp97DYpSLc1uhRs
-	 5Fl8dLCj7SYRcagcaP8EJ6W20VpFs3ipoNhDnxLTO7XfispCGKfKOp5f197UJkhCr0
-	 L//Y0LMrPmfBdijQSZoNt5uvCtLFc9VKn3DmLnLxuYjeBF8aSeDsh+2niLpfs/si9N
-	 cwR0W+PCgg3ZTMSnv6scrBLWjxNqLKrRHyncOn6zAvrnRvTTRHdZV4BRVYtngGSK+C
-	 cipiSuxNcOl2Q==
+	b=HlFjP2OQLDmLrfJsg0whXAVlV1xn0/yUniabZMEmxjXL4al4CquZM2uNcGrCz0dYx
+	 Xc54nBxg9+nhEv85g+B2mHcPJ6gFh6g78bkCgSBs3npFVJ7qruLuU2W3R9WjCDEkns
+	 dnmchPRH3i9z/E2degffIXzOzAEolhhQdvA+bNl7baVXTGkEGWa65AyhWZzPljBR6L
+	 nXDtHNMmJa3CcLVWjHf/BWXRizFmu+8sjC0qi6Zp0H1co7Rst+CF2GdsRiwZ8AA+Eu
+	 1QSHG4Ez6frUDDR5Ql0Cz40iH6vGJXghYojyYl8ZRxvqMGv4NqReMXnCBPTnu1esCB
+	 EmvCIPuAOBAdg==
 From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To: jikos@kernel.org
 Cc: linux-input@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-	Paul Pawlowski <paul@mrarm.io>,
-	Aun-Ali Zaidi <admin@kodeit.net>,
-	Aditya Garg <gargaditya08@live.com>,
+	Ping Cheng <ping.cheng@wacom.com>,
+	Jason Gerecke <jason.gerecke@wacom.com>,
 	Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: [PATCH 1/7] HID: apple: remove unused members from struct apple_sc_backlight
-Date: Thu,  1 Feb 2024 12:53:14 +0100
-Message-ID: <20240201115320.684-2-jirislaby@kernel.org>
+Subject: [PATCH 2/7] HID: wacom: remove unused hid_data::pressure
+Date: Thu,  1 Feb 2024 12:53:15 +0100
+Message-ID: <20240201115320.684-3-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240201115320.684-1-jirislaby@kernel.org>
 References: <20240201115320.684-1-jirislaby@kernel.org>
@@ -63,36 +62,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The backlight members in struct apple_sc_backlight are unused. They were
-added in commit 9018eacbe623 (HID: apple: Add support for keyboard
-backlight on certain T2 Macs.), but never used.
+The pressure member in struct hid_data is unused. It was
+added in commit 5ae6e89f7409 (HID: wacom: implement the finger part of
+the HID generic handling), but never used.
 
-As this is not a struct to communicate with the HW, remove these.
+As this is not a struct to communicate with the HW, remove that member.
 
 Found by https://github.com/jirislaby/clang-struct.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-Cc: Paul Pawlowski <paul@mrarm.io>
-Cc: Aun-Ali Zaidi <admin@kodeit.net>
-Cc: Aditya Garg <gargaditya08@live.com>
+Cc: Ping Cheng <ping.cheng@wacom.com>
+Cc: Jason Gerecke <jason.gerecke@wacom.com>
 Cc: Jiri Kosina <jikos@kernel.org>
 Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 ---
- drivers/hid/hid-apple.c | 1 -
+ drivers/hid/wacom_wac.h | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/hid/hid-apple.c b/drivers/hid/hid-apple.c
-index b9c7c0ed7bcc..bd022e004356 100644
---- a/drivers/hid/hid-apple.c
-+++ b/drivers/hid/hid-apple.c
-@@ -79,7 +79,6 @@ struct apple_non_apple_keyboard {
- struct apple_sc_backlight {
- 	struct led_classdev cdev;
- 	struct hid_device *hdev;
--	unsigned short backlight_off, backlight_on_min, backlight_on_max;
- };
- 
- struct apple_sc {
+diff --git a/drivers/hid/wacom_wac.h b/drivers/hid/wacom_wac.h
+index e63b1e806e34..6ec499841f70 100644
+--- a/drivers/hid/wacom_wac.h
++++ b/drivers/hid/wacom_wac.h
+@@ -309,7 +309,6 @@ struct hid_data {
+ 	bool confidence;
+ 	int x;
+ 	int y;
+-	int pressure;
+ 	int width;
+ 	int height;
+ 	int id;
 -- 
 2.43.0
 
