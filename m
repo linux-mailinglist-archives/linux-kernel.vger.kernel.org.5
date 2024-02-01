@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-47905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8FAF845472
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:44:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F93184546B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:44:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81139284E06
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:44:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43C051C27AB4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:44:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E1E015B987;
-	Thu,  1 Feb 2024 09:44:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD2FC15B0EF;
+	Thu,  1 Feb 2024 09:44:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="B6cvJlvP"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="3vKGIirR"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F363220F1;
-	Thu,  1 Feb 2024 09:44:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1FC94DA03;
+	Thu,  1 Feb 2024 09:44:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706780654; cv=none; b=Gcyyif09vA3LVAy1hBRzSRVALNiuK2Sd/EUIojTf2Zj454kbDViJy4C+5KbBFEMo+k4OECnNfsSxjxcBlIzr54INAzzPXzaUkjjrvl3qP4s8FkpJGZR0u5YkAFT5tqAN7TVncss+OB2VSv2Xe7SkjbkddoJD/1ZSHi/2yMg4QMU=
+	t=1706780652; cv=none; b=fpPGVa2GRwk+x4zDLyAHSR5gdFKqG9TQCXV5ovAkQGg6/TKXZ01C5Ycr1yYBLRF3HInwNIdCVXxRKuO/OzgHTQz7O0QfY6F94PvmGU46LMWbVHnMljIIZBO1iBxZLOma9a49Qr3VnSNtxNk5KYvF4vrvOGI5GoiCouNZric3Lzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706780654; c=relaxed/simple;
-	bh=v8UZHDHMivJNTKZkQiBRqCctvfGUTAovPj2Llh32tRA=;
+	s=arc-20240116; t=1706780652; c=relaxed/simple;
+	bh=8uDZvyulxGAafALJBopFoctWbExfba9H5gwsoOBC41M=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=O4//WhKqORYu8WYPXP0VmFDV2ft8mX0QVPAL+0Oi3VLmhiD3ccvfcNwi8rWgoO1Nv0+mFMh7r+gHZ5HYrDHQO22Kq1fpt+wXwMVJUnwNdU8jxY4vJ4/XfJjFrK+7n2njKq27ToMZg2AOvLCU2bfDadsD2JN5ij5oSIYKyCMRTe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=B6cvJlvP; arc=none smtp.client-ip=46.235.227.194
+	 In-Reply-To:Content-Type; b=VmL0jyfE11+AEUGhSf2gwLjgHjTt+LwK/sS1YVR7p8mRrf68zCQ2mpkGW1NurZvdcuctc+eYpwbVtds1w/TMYGqpeadx4f3fChTgsiuqvO1SROoJAlNvSxeT80S/bxFZs2RNdMeZneMn6emFI28h8+GLY8IMjd2cORD32+WipQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=3vKGIirR; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706780650;
-	bh=v8UZHDHMivJNTKZkQiBRqCctvfGUTAovPj2Llh32tRA=;
+	s=mail; t=1706780649;
+	bh=8uDZvyulxGAafALJBopFoctWbExfba9H5gwsoOBC41M=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=B6cvJlvPjmX5CwyjO1L4ELu8292ViO1muHIlhHodeNj5ZNPqHxQAD5q9R0nn6jiIz
-	 deXEdkM0ZfFrd0JcBqhjvDPfN8FVLGsh/rrdm0WIeJHs4dEJnazFvnw2yOTD52Ii6u
-	 YX3jTq2SwBc0p5Jrwze1Q+5BZqJK/ggcFLkRmtsb2JJlrm2msineEqwmXsUz+TKJRa
-	 Gz2cchQnHjKqr2oc/9+Bcncae6pJTnJPSUu2pmRjNj+XjQYWUtA8OBgUa6S2Us2T+2
-	 2w85mhyqSJ3JPMVxOoILHuXPRCoMUoJEruN8JJ/9QjWQdTyYBVAo1iGee/CfF0X+eC
-	 VXUPVGO7SZWCQ==
+	b=3vKGIirRu422LqvpGZAg4q2n5NYXcPkfLqVOj5KByunRrRPm6o8lK+RMrTQJ2as62
+	 J8XbQDm2BVKaKKpRpDDg/raNRnXCSNV0bvc5zwWTGuQFhEyGY7EzBClEy8zKF3RQGC
+	 VqCG/y9/dmPhN/KsoXEvWzqBVDo51TWn0pigyGiY8S+4tPvSgypFZewo94ZfEybmU6
+	 66LGTgzYmYif6crKffmnf/+wj7sPFazy7VmgKlLPmuhDMQ8MFtKs1W4rVnoxQs842j
+	 BfzFJW7Xrhq4krpWeJhQpyLbtD008FM6QxCWYvVEjCdinT1SwmzvVeZYiwPdMHNsGb
+	 EiqlsYoFSgzCA==
 Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 89959378208D;
-	Thu,  1 Feb 2024 09:44:08 +0000 (UTC)
-Message-ID: <ea4c8128-d2cb-43fb-aebf-0f4733e1248b@collabora.com>
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id C249D378208C;
+	Thu,  1 Feb 2024 09:44:07 +0000 (UTC)
+Message-ID: <e772e44f-9c60-4c4b-8054-957b07180c45@collabora.com>
 Date: Thu, 1 Feb 2024 10:44:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -56,7 +56,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 04/21] virt: geniezone: Add GenieZone hypervisor driver
+Subject: Re: [PATCH v9 05/21] virt: geniezone: Add vm support
 Content-Language: en-US
 To: Yi-De Wu <yi-de.wu@mediatek.com>,
  Yingshiuan Pan <yingshiuan.pan@mediatek.com>,
@@ -76,390 +76,259 @@ Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  Willix Yeh <chi-shen.yeh@mediatek.com>,
  Kevenny Hsieh <kevenny.hsieh@mediatek.com>
 References: <20240129083302.26044-1-yi-de.wu@mediatek.com>
- <20240129083302.26044-5-yi-de.wu@mediatek.com>
+ <20240129083302.26044-6-yi-de.wu@mediatek.com>
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240129083302.26044-5-yi-de.wu@mediatek.com>
+In-Reply-To: <20240129083302.26044-6-yi-de.wu@mediatek.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 Il 29/01/24 09:32, Yi-De Wu ha scritto:
 > From: "Yingshiuan Pan" <yingshiuan.pan@mediatek.com>
 > 
-> GenieZone hypervisor(gzvm) is a type-1 hypervisor that supports various
-> virtual machine types and provides security features such as TEE-like
-> scenarios and secure boot. It can create guest VMs for security use
-> cases and has virtualization capabilities for both platform and
-> interrupt. Although the hypervisor can be booted independently, it
-> requires the assistance of GenieZone hypervisor kernel driver(gzvm-ko)
-> to leverage the ability of Linux kernel for vCPU scheduling, memory
-> management, inter-VM communication and virtio backend support.
-> 
-> Add the basic hypervisor driver. Subsequent patches will add more
-> supported features to this driver.
+> The VM component is responsible for setting up the capability and memory
+> management for the protected VMs. The capability is mainly about the
+> lifecycle control and boot context initialization.
 > 
 > Signed-off-by: Yingshiuan Pan <yingshiuan.pan@mediatek.com>
 > Signed-off-by: Jerry Wang <ze-yu.wang@mediatek.com>
 > Signed-off-by: Liju Chen <liju-clr.chen@mediatek.com>
 > Signed-off-by: Yi-De Wu <yi-de.wu@mediatek.com>
 > ---
->   MAINTAINERS                             |  3 +
->   arch/arm64/Kbuild                       |  1 +
->   arch/arm64/geniezone/Makefile           |  9 +++
->   arch/arm64/geniezone/gzvm_arch_common.h | 44 ++++++++++++
->   arch/arm64/geniezone/vm.c               | 47 +++++++++++++
->   drivers/virt/Kconfig                    |  2 +
->   drivers/virt/geniezone/Kconfig          | 16 +++++
->   drivers/virt/geniezone/Makefile         | 10 +++
->   drivers/virt/geniezone/gzvm_main.c      | 89 +++++++++++++++++++++++++
->   include/linux/gzvm_drv.h                | 25 +++++++
->   10 files changed, 246 insertions(+)
->   create mode 100644 arch/arm64/geniezone/Makefile
->   create mode 100644 arch/arm64/geniezone/gzvm_arch_common.h
->   create mode 100644 arch/arm64/geniezone/vm.c
->   create mode 100644 drivers/virt/geniezone/Kconfig
->   create mode 100644 drivers/virt/geniezone/Makefile
->   create mode 100644 drivers/virt/geniezone/gzvm_main.c
->   create mode 100644 include/linux/gzvm_drv.h
+>   MAINTAINERS                             |   1 +
+>   arch/arm64/geniezone/gzvm_arch_common.h |   9 ++
+>   arch/arm64/geniezone/vm.c               |  29 +++++++
+>   drivers/virt/geniezone/Makefile         |   2 +-
+>   drivers/virt/geniezone/gzvm_main.c      |  19 +++++
+>   drivers/virt/geniezone/gzvm_vm.c        | 107 ++++++++++++++++++++++++
+>   include/linux/gzvm_drv.h                |  26 ++++++
+>   include/uapi/linux/gzvm.h               |  25 ++++++
+>   8 files changed, 217 insertions(+), 1 deletion(-)
+>   create mode 100644 drivers/virt/geniezone/gzvm_vm.c
+>   create mode 100644 include/uapi/linux/gzvm.h
 > 
 > diff --git a/MAINTAINERS b/MAINTAINERS
-> index 17a8e20d2baa..0cb2d0599469 100644
+> index 0cb2d0599469..3ecac8794ba9 100644
 > --- a/MAINTAINERS
 > +++ b/MAINTAINERS
-> @@ -9019,6 +9019,9 @@ M:	Ze-Yu Wang <ze-yu.wang@mediatek.com>
->   M:	Yi-De Wu <yi-de.wu@mediatek.com>
->   F:	Documentation/devicetree/bindings/hypervisor/mediatek,geniezone-hyp.yaml
->   F:	Documentation/virt/geniezone/
-> +F:	arch/arm64/geniezone/
-> +F:	drivers/virt/geniezone/
-> +F:	include/linux/gzvm_drv.h
+> @@ -9022,6 +9022,7 @@ F:	Documentation/virt/geniezone/
+>   F:	arch/arm64/geniezone/
+>   F:	drivers/virt/geniezone/
+>   F:	include/linux/gzvm_drv.h
+> +F:	include/uapi/linux/gzvm.h
 >   
 >   GENWQE (IBM Generic Workqueue Card)
 >   M:	Frank Haverkamp <haver@linux.ibm.com>
-> diff --git a/arch/arm64/Kbuild b/arch/arm64/Kbuild
-> index 5bfbf7d79c99..0c3cca572919 100644
-> --- a/arch/arm64/Kbuild
-> +++ b/arch/arm64/Kbuild
-> @@ -4,6 +4,7 @@ obj-$(CONFIG_KVM)	+= kvm/
->   obj-$(CONFIG_XEN)	+= xen/
->   obj-$(subst m,y,$(CONFIG_HYPERV))	+= hyperv/
->   obj-$(CONFIG_CRYPTO)	+= crypto/
-> +obj-$(CONFIG_MTK_GZVM)	+= geniezone/
->   
->   # for cleaning
->   subdir- += boot
-> diff --git a/arch/arm64/geniezone/Makefile b/arch/arm64/geniezone/Makefile
-> new file mode 100644
-> index 000000000000..2957898cdd05
-> --- /dev/null
-> +++ b/arch/arm64/geniezone/Makefile
-> @@ -0,0 +1,9 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# Main Makefile for gzvm, this one includes drivers/virt/geniezone/Makefile
-> +#
-> +include $(srctree)/drivers/virt/geniezone/Makefile
-> +
-> +gzvm-y += vm.o
-> +
-> +obj-$(CONFIG_MTK_GZVM) += gzvm.o
 > diff --git a/arch/arm64/geniezone/gzvm_arch_common.h b/arch/arm64/geniezone/gzvm_arch_common.h
-> new file mode 100644
-> index 000000000000..f5bddcfe3a1f
-> --- /dev/null
+> index f5bddcfe3a1f..fdaa7849353d 100644
+> --- a/arch/arm64/geniezone/gzvm_arch_common.h
 > +++ b/arch/arm64/geniezone/gzvm_arch_common.h
-> @@ -0,0 +1,44 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (c) 2023 MediaTek Inc.
-> + */
-> +
-> +#ifndef __GZVM_ARCH_COMMON_H__
-> +#define __GZVM_ARCH_COMMON_H__
-> +
-> +#include <linux/arm-smccc.h>
-> +
-> +enum {
-> +	GZVM_FUNC_PROBE = 12,
-> +	NR_GZVM_FUNC,
-> +};
-> +
-> +#define SMC_ENTITY_MTK			59
-> +#define GZVM_FUNCID_START		(0x1000)
-> +#define GZVM_HCALL_ID(func)						\
-> +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL, ARM_SMCCC_SMC_64,	\
-> +			   SMC_ENTITY_MTK, (GZVM_FUNCID_START + (func)))
-> +
-> +#define MT_HVC_GZVM_PROBE		GZVM_HCALL_ID(GZVM_FUNC_PROBE)
-> +
-> +/**
-> + * gzvm_hypcall_wrapper() - the wrapper for hvc calls
-> + * @a0: arguments passed in registers 0
-> + * @a1: arguments passed in registers 1
-> + * @a2: arguments passed in registers 2
-> + * @a3: arguments passed in registers 3
-> + * @a4: arguments passed in registers 4
-> + * @a5: arguments passed in registers 5
-> + * @a6: arguments passed in registers 6
-> + * @a7: arguments passed in registers 7
-> + * @res: result values from registers 0 to 3
-> + *
-> + * Return: The wrapper helps caller to convert geniezone errno to Linux errno.
-> + */
-> +int gzvm_hypcall_wrapper(unsigned long a0, unsigned long a1,
-> +			 unsigned long a2, unsigned long a3,
-> +			 unsigned long a4, unsigned long a5,
-> +			 unsigned long a6, unsigned long a7,
-> +			 struct arm_smccc_res *res);
-> +
-> +#endif /* __GZVM_ARCH_COMMON_H__ */
-> diff --git a/arch/arm64/geniezone/vm.c b/arch/arm64/geniezone/vm.c
-> new file mode 100644
-> index 000000000000..e313aadec212
-> --- /dev/null
-> +++ b/arch/arm64/geniezone/vm.c
-> @@ -0,0 +1,47 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2023 MediaTek Inc.
-> + */
-> +
-> +#include <linux/arm-smccc.h>
-> +#include <linux/err.h>
-> +#include <linux/uaccess.h>
-> +
-> +#include <linux/gzvm_drv.h>
-> +#include "gzvm_arch_common.h"
-> +
-> +/**
-> + * gzvm_hypcall_wrapper() - the wrapper for hvc calls
-> + * @a0: arguments passed in registers 0
+> @@ -9,6 +9,8 @@
+>   #include <linux/arm-smccc.h>
+>   
+>   enum {
+> +	GZVM_FUNC_CREATE_VM = 0,
 
-argument passed in register 0
 
-> + * @a1: arguments passed in registers 1
-> + * @a2: arguments passed in registers 2
-> + * @a3: arguments passed in registers 3
-> + * @a4: arguments passed in registers 4
-> + * @a5: arguments passed in registers 5
-> + * @a6: arguments passed in registers 6
-> + * @a7: arguments passed in registers 7
+	GZVM_FUNC_CREATE_VM,
+	GZVM_FUNC_DESTROY_VM,
 
-..in registe7
+The first one will always be zero by default, subsequent members are always
+incremental anyway.
 
-> + * @res: result values from registers 0 to 3
-> + *
-> + * Return: The wrapper helps caller to convert geniezone errno to Linux errno.
-> + */
-> +int gzvm_hypcall_wrapper(unsigned long a0, unsigned long a1,
-> +			 unsigned long a2, unsigned long a3,
-> +			 unsigned long a4, unsigned long a5,
-> +			 unsigned long a6, unsigned long a7,
-> +			 struct arm_smccc_res *res)
+> +	GZVM_FUNC_DESTROY_VM = 1,
+>   	GZVM_FUNC_PROBE = 12,
+>   	NR_GZVM_FUNC,
+>   };
+> @@ -19,6 +21,8 @@ enum {
+>   	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL, ARM_SMCCC_SMC_64,	\
+>   			   SMC_ENTITY_MTK, (GZVM_FUNCID_START + (func)))
+>   
+> +#define MT_HVC_GZVM_CREATE_VM		GZVM_HCALL_ID(GZVM_FUNC_CREATE_VM)
+> +#define MT_HVC_GZVM_DESTROY_VM		GZVM_HCALL_ID(GZVM_FUNC_DESTROY_VM)
+>   #define MT_HVC_GZVM_PROBE		GZVM_HCALL_ID(GZVM_FUNC_PROBE)
+>   
+>   /**
+> @@ -41,4 +45,9 @@ int gzvm_hypcall_wrapper(unsigned long a0, unsigned long a1,
+>   			 unsigned long a6, unsigned long a7,
+>   			 struct arm_smccc_res *res);
+>   
+> +static inline u16 get_vmid_from_tuple(unsigned int tuple)
 > +{
-> +	arm_smccc_hvc(a0, a1, a2, a3, a4, a5, a6, a7, res);
-> +	return gzvm_err_to_errno(res->a0);
+> +	return (u16)(tuple >> 16);
+
+As far as I can understand, this tuple is a union of two u16.
+
+If you add that union, you won't even need this function anymore.
+
 > +}
 > +
-> +int gzvm_arch_probe(void)
+>   #endif /* __GZVM_ARCH_COMMON_H__ */
+> diff --git a/arch/arm64/geniezone/vm.c b/arch/arm64/geniezone/vm.c
+> index e313aadec212..a15bad13c2ee 100644
+> --- a/arch/arm64/geniezone/vm.c
+> +++ b/arch/arm64/geniezone/vm.c
+> @@ -7,9 +7,12 @@
+>   #include <linux/err.h>
+>   #include <linux/uaccess.h>
+>   
+> +#include <linux/gzvm.h>
+>   #include <linux/gzvm_drv.h>
+>   #include "gzvm_arch_common.h"
+>   
+> +#define PAR_PA47_MASK ((((1UL << 48) - 1) >> 12) << 12)
+
+This value is unused. Anyway, isn't this just GENMASK_ULL(47, 12) ?!
+
+> +
+>   /**
+>    * gzvm_hypcall_wrapper() - the wrapper for hvc calls
+>    * @a0: arguments passed in registers 0
+> @@ -45,3 +48,29 @@ int gzvm_arch_probe(void)
+>   
+>   	return 0;
+>   }
+> +
+> +/**
+> + * gzvm_arch_create_vm() - create vm
+> + * @vm_type: VM type. Only supports Linux VM now.
+> + *
+> + * Return:
+> + * * positive value	- VM ID
+> + * * -ENOMEM		- Memory not enough for storing VM data
+> + */
+> +int gzvm_arch_create_vm(unsigned long vm_type)
 > +{
 > +	struct arm_smccc_res res;
 > +	int ret;
 > +
-> +	ret = gzvm_hypcall_wrapper(MT_HVC_GZVM_PROBE, 0, 0, 0, 0, 0, 0, 0, &res);
-> +	if (ret)
-> +		return -ENXIO;
-> +
-> +	return 0;
+> +	ret = gzvm_hypcall_wrapper(MT_HVC_GZVM_CREATE_VM, vm_type, 0, 0, 0, 0,
+> +				   0, 0, &res);
+> +	return ret ? ret : res.a1;
 > +}
-> diff --git a/drivers/virt/Kconfig b/drivers/virt/Kconfig
-> index 40129b6f0eca..b4e9bddbcee7 100644
-> --- a/drivers/virt/Kconfig
-> +++ b/drivers/virt/Kconfig
-> @@ -50,4 +50,6 @@ source "drivers/virt/acrn/Kconfig"
->   
->   source "drivers/virt/coco/Kconfig"
->   
-> +source "drivers/virt/geniezone/Kconfig"
 > +
->   endif
-> diff --git a/drivers/virt/geniezone/Kconfig b/drivers/virt/geniezone/Kconfig
-> new file mode 100644
-> index 000000000000..b17c06c91074
-> --- /dev/null
-> +++ b/drivers/virt/geniezone/Kconfig
-> @@ -0,0 +1,16 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +
-> +config MTK_GZVM
-> +	tristate "GenieZone Hypervisor driver for guest VM operation"
-> +	depends on ARM64 && EVENTFD
-> +	help
-> +	  This driver, gzvm, enables to run guest VMs on MTK GenieZone
-> +	  hypervisor. It exports kvm-like interfaces for VMM (e.g., crosvm) in
-> +	  order to operate guest VMs on GenieZone hypervisor.
-> +
-> +	  GenieZone hypervisor now only supports MediaTek SoC and arm64
-> +	  architecture.
-> +
-> +	  Select M if you want it be built as a module (gzvm.ko).
-> +
-> +	  If unsure, say N.
-> diff --git a/drivers/virt/geniezone/Makefile b/drivers/virt/geniezone/Makefile
-> new file mode 100644
-> index 000000000000..8c1f0053e773
-> --- /dev/null
-> +++ b/drivers/virt/geniezone/Makefile
-> @@ -0,0 +1,10 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# Makefile for GenieZone driver, this file should be include in arch's
-> +# to avoid two ko being generated.
-> +#
-> +
-> +GZVM_DIR ?= ../../../drivers/virt/geniezone
-> +
-> +gzvm-y := $(GZVM_DIR)/gzvm_main.o
-> +
-> diff --git a/drivers/virt/geniezone/gzvm_main.c b/drivers/virt/geniezone/gzvm_main.c
-> new file mode 100644
-> index 000000000000..f7d4f0646d97
-> --- /dev/null
-> +++ b/drivers/virt/geniezone/gzvm_main.c
-> @@ -0,0 +1,89 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2023 MediaTek Inc.
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/kdev_t.h>
-> +#include <linux/miscdevice.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/gzvm_drv.h>
-> +
-> +/**
-> + * gzvm_err_to_errno() - Convert geniezone return value to standard errno
-> + *
-> + * @err: Return value from geniezone function return
-> + *
-> + * Return: Standard errno
-> + */
-> +int gzvm_err_to_errno(unsigned long err)
+> +int gzvm_arch_destroy_vm(u16 vm_id)
 > +{
-> +	int gz_err = (int)err;
+> +	struct arm_smccc_res res;
 > +
-> +	switch (gz_err) {
-> +	case 0:
-> +		return 0;
-> +	case ERR_NO_MEMORY:
-> +		return -ENOMEM;
-> +	case ERR_NOT_SUPPORTED:
+> +	return gzvm_hypcall_wrapper(MT_HVC_GZVM_DESTROY_VM, vm_id, 0, 0, 0, 0,
+> +				    0, 0, &res);
+> +}
+> diff --git a/drivers/virt/geniezone/Makefile b/drivers/virt/geniezone/Makefile
+> index 8c1f0053e773..066efddc0b9c 100644
+> --- a/drivers/virt/geniezone/Makefile
+> +++ b/drivers/virt/geniezone/Makefile
+> @@ -6,5 +6,5 @@
+>   
+>   GZVM_DIR ?= ../../../drivers/virt/geniezone
+>   
+> -gzvm-y := $(GZVM_DIR)/gzvm_main.o
+> +gzvm-y := $(GZVM_DIR)/gzvm_main.o $(GZVM_DIR)/gzvm_vm.o
+>   
+> diff --git a/drivers/virt/geniezone/gzvm_main.c b/drivers/virt/geniezone/gzvm_main.c
+> index f7d4f0646d97..4e7d60067c55 100644
+> --- a/drivers/virt/geniezone/gzvm_main.c
+> +++ b/drivers/virt/geniezone/gzvm_main.c
+> @@ -4,6 +4,7 @@
+>    */
+>   
+>   #include <linux/device.h>
+> +#include <linux/file.h>
+>   #include <linux/kdev_t.h>
+>   #include <linux/miscdevice.h>
+>   #include <linux/module.h>
+> @@ -40,7 +41,24 @@ int gzvm_err_to_errno(unsigned long err)
+>   	return -EINVAL;
+>   }
+>   
+> +static long gzvm_dev_ioctl(struct file *filp, unsigned int cmd,
+> +			   unsigned long user_args)
+> +{
+> +	long ret;
+> +
+> +	switch (cmd) {
+> +	case GZVM_CREATE_VM:
+> +		ret = gzvm_dev_ioctl_create_vm(user_args);
+> +		return ret;
 
-case ERR_NOT_SUPPORTED:
-	fallthrough;
-case ERR_NOT_IMPLEMENTED:
-	return -EOPNOTSUPP;
+return gzvm_dev_ioctl_create_vm(user_args);
 
-> +		return -EOPNOTSUPP;
-> +	case ERR_NOT_IMPLEMENTED:
-> +		return -EOPNOTSUPP;
-> +	case ERR_FAULT:
-> +		return -EFAULT;
 > +	default:
 > +		break;
 > +	}
 > +
-> +	return -EINVAL;
+> +	return -ENOTTY;
 > +}
 > +
-> +static const struct file_operations gzvm_chardev_ops = {
-> +	.llseek		= noop_llseek,
-> +};
-> +
-> +static struct miscdevice gzvm_dev = {
-> +	.minor = MISC_DYNAMIC_MINOR,
-> +	.name = KBUILD_MODNAME,
-> +	.fops = &gzvm_chardev_ops,
-> +};
-> +
-> +static int gzvm_drv_probe(struct platform_device *pdev)
-> +{
-> +	if (gzvm_arch_probe() != 0) {
-> +		dev_err(&pdev->dev, "Not found available conduit\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	return misc_register(&gzvm_dev);
-> +}
-> +
-> +static int gzvm_drv_remove(struct platform_device *pdev)
-> +{
-> +	misc_deregister(&gzvm_dev);
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id gzvm_of_match[] = {
-> +	{ .compatible = "mediatek,geniezone-hyp" },
-> +	{/* sentinel */},
-> +};
-> +
-> +static struct platform_driver gzvm_driver = {
-> +	.probe = gzvm_drv_probe,
-> +	.remove = gzvm_drv_remove,
-> +	.driver = {
-> +		.name = KBUILD_MODNAME,
-> +		.owner = THIS_MODULE,
-> +		.of_match_table = gzvm_of_match,
-> +	},
-> +};
-> +
-> +module_platform_driver(gzvm_driver);
-> +
-> +MODULE_DEVICE_TABLE(of, gzvm_of_match);
-> +MODULE_AUTHOR("MediaTek");
-> +MODULE_DESCRIPTION("GenieZone interface for VMM");
-> +MODULE_LICENSE("GPL");
+>   static const struct file_operations gzvm_chardev_ops = {
+> +	.unlocked_ioctl = gzvm_dev_ioctl,
+>   	.llseek		= noop_llseek,
+>   };
+>   
+> @@ -62,6 +80,7 @@ static int gzvm_drv_probe(struct platform_device *pdev)
+>   
+>   static int gzvm_drv_remove(struct platform_device *pdev)
+>   {
+> +	gzvm_destroy_all_vms();
+>   	misc_deregister(&gzvm_dev);
+>   	return 0;
+>   }
+> diff --git a/drivers/virt/geniezone/gzvm_vm.c b/drivers/virt/geniezone/gzvm_vm.c
+> new file mode 100644
+> index 000000000000..d5e850af924a
+> --- /dev/null
+> +++ b/drivers/virt/geniezone/gzvm_vm.c
+> @@ -0,0 +1,107 @@
+
+.snip..
+
 > diff --git a/include/linux/gzvm_drv.h b/include/linux/gzvm_drv.h
+> index 907f2f984de9..f1dce23838e4 100644
+> --- a/include/linux/gzvm_drv.h
+> +++ b/include/linux/gzvm_drv.h
+> @@ -6,6 +6,12 @@
+>   #ifndef __GZVM_DRV_H__
+>   #define __GZVM_DRV_H__
+>   
+> +#include <linux/list.h>
+> +#include <linux/mutex.h>
+> +#include <linux/gzvm.h>
+> +
+> +#define INVALID_VM_ID   0xffff
+> +
+>   /*
+>    * These are the definitions of APIs between GenieZone hypervisor and driver,
+>    * there's no need to be visible to uapi. Furthermore, we need GenieZone
+> @@ -17,9 +23,29 @@
+>   #define ERR_NOT_IMPLEMENTED     (-27)
+>   #define ERR_FAULT               (-40)
+>   
+> +/*
+> + * The following data structures are for data transferring between driver and
+> + * hypervisor, and they're aligned with hypervisor definitions
+> + */
+> +
+> +struct gzvm {
+> +	/* userspace tied to this vm */
+> +	struct mm_struct *mm;
+> +	/* lock for list_add*/
 
-Why is this not `include/linux/soc/mediatek/gzvm_drv.h`?!
+Why are you not using kerneldoc to document this structure?
 
-That's MediaTek specific, so it should go there.
+After all, you're already partially documenting it.
+
+> +	struct mutex lock;
+> +	struct list_head vm_list;
+> +	u16 vm_id;
+> +};
+> +
+> +int gzvm_dev_ioctl_create_vm(unsigned long vm_type);
+> +
+>   int gzvm_err_to_errno(unsigned long err);
+>   
+
+Why is there a trailing space on this function sig?
 
 Regards,
 Angelo
-
-> new file mode 100644
-> index 000000000000..907f2f984de9
-> --- /dev/null
-> +++ b/include/linux/gzvm_drv.h
-> @@ -0,0 +1,25 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (c) 2023 MediaTek Inc.
-> + */
-> +
-> +#ifndef __GZVM_DRV_H__
-> +#define __GZVM_DRV_H__
-> +
-> +/*
-> + * These are the definitions of APIs between GenieZone hypervisor and driver,
-> + * there's no need to be visible to uapi. Furthermore, we need GenieZone
-> + * specific error code in order to map to Linux errno
-> + */
-> +#define NO_ERROR                (0)
-> +#define ERR_NO_MEMORY           (-5)
-> +#define ERR_NOT_SUPPORTED       (-24)
-> +#define ERR_NOT_IMPLEMENTED     (-27)
-> +#define ERR_FAULT               (-40)
-> +
-> +int gzvm_err_to_errno(unsigned long err);
-> +
-> +/* arch-dependant functions */
-> +int gzvm_arch_probe(void);
-> +
-> +#endif /* __GZVM_DRV_H__ */
-
 
 
