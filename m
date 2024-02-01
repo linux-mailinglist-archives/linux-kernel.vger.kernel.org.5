@@ -1,97 +1,182 @@
-Return-Path: <linux-kernel+bounces-48949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3167846380
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:36:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3503C846386
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:38:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EAA728F713
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:36:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C78211F261ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:37:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C8B4120F;
-	Thu,  1 Feb 2024 22:36:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78FAE41236;
+	Thu,  1 Feb 2024 22:37:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nV42FT9k"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="hCaxP0ny"
+Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95CDF405DB;
-	Thu,  1 Feb 2024 22:36:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FDD03FB1D
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 22:37:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706826978; cv=none; b=Nl+MH0d9VUIhVuhh21vshohOMlipyyvyR6MLlRuDWcQFF5x+CfrtuIBeduhbcazZ+xYHX7R7qoHA9p0Y8Nl8yeRD4JUKL7rYTGbCGAjVNdbXGP4hSOngIazHc6S+reutV1JlPNXOc0YArzKT7DWTZ+tsLyYWLN+AOT4rZamwsQg=
+	t=1706827072; cv=none; b=PcdrZqnj7L7Te6Tk3NPqTEHsasWEvEnVTaq+28usy6FOtOX7f4tOGrQK2u9wu9Kbyvz0dJzZqrQjMz6f5pwX6zkC7m8DTYsagozKOH9AvfIVbpIcgyfeif4fJW/Sr/JpsOQfHesMmR2eZZvyAhtmFMG/rRKfq7IH4aTdqKcEEIs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706826978; c=relaxed/simple;
-	bh=xeqyaatnEraCZ26CZitiT3fDyTSc0Y5yG9m/ZQcicx4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l3C311F9yfS5bM7lUN3lFzqTQK69whR/WFob/Whck8OJxliC3nSiBS1A74Ef79Hu8oQSlP5S3V/BSfJkgt3AdmskccKKGJxK7Fcoz19eSvBD3angVkcquBw+V4qsJKxiRIfAZW3NtY0Gj6BtBChVJsU1iAR+3o6bEL7iHxt2dgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nV42FT9k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE0D4C433F1;
-	Thu,  1 Feb 2024 22:36:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706826978;
-	bh=xeqyaatnEraCZ26CZitiT3fDyTSc0Y5yG9m/ZQcicx4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nV42FT9kp63iE84kO5nAsodc/Ea+/OFYFrpndQnFOYtYvbyN6iSjeKAAHajDcqUZZ
-	 6o80losGRkwIzmvBDbWJhHDWjjBl0SfshCb+jyH0dH6rXUu8ioNT6/Z1DbESF5hcIJ
-	 bjdJJjDD06cCpVxqKPF973R9xHEWKGJ3+VHtt5JzK64vvmsYqFoEWzjVJxgidsiFQ3
-	 qiNf/g+5dVQd9DL9K+RaYbS26a2d+4TLi/+4VzDgqXF2mBxRdKLEddqP6qsDGAu/sp
-	 boPJRveXT09ymMOEv+eFIo/SSzuGrWb/Ei3K5ULAPx1Dw1Btk3y792IUFZ3jDKIl95
-	 cGPqf9N5FFxow==
-Date: Thu, 1 Feb 2024 16:36:15 -0600
-From: Rob Herring <robh@kernel.org>
-To: Dharma.B@microchip.com
-Cc: sam@ravnborg.org, bbrezillon@kernel.org,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	Nicolas.Ferre@microchip.com, alexandre.belloni@bootlin.com,
-	claudiu.beznea@tuxon.dev, dri-devel@lists.freedesktop.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, lee@kernel.org,
-	thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
-	linux-pwm@vger.kernel.org, Hari.PrasathGE@microchip.com,
-	Manikandan.M@microchip.com
-Subject: Re: [linux][PATCH v5 0/3] Convert Microchip's HLCDC Text based DT
- bindings to JSON schema
-Message-ID: <20240201223615.GA1726520-robh@kernel.org>
-References: <20240131033523.577450-1-dharma.b@microchip.com>
- <478cab42-5f30-4fbe-b42d-02d16b81ca11@microchip.com>
+	s=arc-20240116; t=1706827072; c=relaxed/simple;
+	bh=9yIwFf6/pa2yEKL8hInept++VhBkk1WGuFw22mE/WcY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=TLNAybuWi++i8U1JjF/ewGAl/IZXbZzP06kV8nAjVqiiaT9iAAB6fCmgHVgi6j066kh0hjeZjCQCvWdiQw+1+VcXebPmIWlLxokJRBmg8Z3Dg0E3oyvkPP6kS77b+VUeEYM+zmKDXcCccn9F/4pizX6zPAmXi2lH7zYrpMPnTKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=hCaxP0ny; arc=none smtp.client-ip=209.85.160.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-218dcbd1584so951011fac.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 14:37:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706827067; x=1707431867; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PmoKB9U9mw3t4FpnGtJps1mksky8tREvppcYUjjJHJs=;
+        b=hCaxP0nyY9pgaZWKYE3aTnwHUpi0axiowGdpUByErW3qe1PkYpZAw4tYBA7yecZklw
+         6JDM5OnklC6i+4MIj/heypc8b9uSaiO3oAVwao+O4Kl+055HzYBsqvtgO7kif21DOqTU
+         G7mYtBMx+SVUtpDO4p9eIkHEkvNi9zk4k8GhQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706827067; x=1707431867;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PmoKB9U9mw3t4FpnGtJps1mksky8tREvppcYUjjJHJs=;
+        b=BqiPdIPAFjkPB2a9K9rI5UyxjXxIGfMZf7IFSDYTJcRq4nAeCfb/EaZHEvGVSpMryj
+         tSkBG9UigdLhZIVxcQ3CHTfpP/DqOPC4QK/up06iB8JdwYQPMv+Gt6ULYGZmTvgXfBOt
+         z9lCi/ez1EoxiI6rV0jCzEeJV+IiI3nwGmeVgYlrRlzqzzI0DNZZw78ltA96STxFu2p1
+         L8gtMxEdOrGolZ/eWBQxyJUqKBk4R+J0gtfnB387M3+vrpQd1nvLnQNQk22BeyszWgDb
+         TTUfHUq6SwkH3CuA4869MDZUaBIbf3wFLnRRMwyk3lWKbwvKO7HPp8TvrsCntDNrajQt
+         L5HQ==
+X-Gm-Message-State: AOJu0Ywb/zQx0Rjsfjr9LolX1HkY7J+vwgkCOEiWRxg/Q+rpqhxUp6PF
+	56KSrB9T4XX/tHONbFCyTdgy3bv9BmLZtijd6uM4zihsGWCvn2o1O10zm/dqGK/xxS4cVGndQMd
+	YYNyGVsrUGletBN8ZJlpyjCQJFCswnAzSk/EF
+X-Google-Smtp-Source: AGHT+IFXjJjh4U73XklHRwMqQKC6IUK8yT1QB2L/QSJgxVT2r+D8jpRmpXkJyI8e7UxCR3vkuM3rQ/1eDkoKFGaW8GA=
+X-Received: by 2002:a05:6870:f228:b0:210:7f85:c208 with SMTP id
+ t40-20020a056870f22800b002107f85c208mr7371815oao.46.1706827067224; Thu, 01
+ Feb 2024 14:37:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <478cab42-5f30-4fbe-b42d-02d16b81ca11@microchip.com>
+References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver>
+ <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com> <20240201204512.ht3e33yj77kkxi4q@revolver>
+In-Reply-To: <20240201204512.ht3e33yj77kkxi4q@revolver>
+From: Jeff Xu <jeffxu@chromium.org>
+Date: Thu, 1 Feb 2024 14:37:35 -0800
+Message-ID: <CABi2SkWB2eV24LBJtgJ73zEwaAWuFhAwrfqx3Rs=tqnpcJ0qRw@mail.gmail.com>
+Subject: Re: [PATCH v8 0/4] Introduce mseal
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Jeff Xu <jeffxu@chromium.org>, 
+	Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org, keescook@chromium.org, 
+	jannh@google.com, sroettger@google.com, willy@infradead.org, 
+	gregkh@linuxfoundation.org, torvalds@linux-foundation.org, 
+	usama.anjum@collabora.com, rdunlap@infradead.org, jeffxu@google.com, 
+	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
+	dave.hansen@intel.com, linux-hardening@vger.kernel.org, deraadt@openbsd.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 01, 2024 at 03:38:37AM +0000, Dharma.B@microchip.com wrote:
-> Hi Rob,
-> 
-> On 31/01/24 9:05 am, Dharma B - I70843 wrote:
-> > Converted the text bindings to YAML and validated them individually using following commands
-> > 
-> > $ make dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/
-> > $ make dtbs_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/
-> > 
-> > changelogs are available in respective patches.
-> > 
-> > As Sam suggested I'm sending the PWM binding as it is in this patch series, clean up patch
-> > will be sent as separate patch.
-> > 
-> 
-> I would want to know if I can have the examples in display and pwm 
-> bindings separately or if I have to delete them from both and have a 
-> single, comprehensive example in mfd binding. I'm a little puzzled about 
-> this.
+On Thu, Feb 1, 2024 at 12:45=E2=80=AFPM Liam R. Howlett <Liam.Howlett@oracl=
+e.com> wrote:
+> >
+> > I would love to hear more from Linux developers on this.
+>
+> Linus said it was really important to get the semantics correct, but you
+> took his (unfinished) list and kept going.  I think there are some
+> unanswered questions and that's frustrating some people as you may not
+> be valuing the experience they have in this area.
+>
+Perhaps you didn't follow the discussions closely during the RFCs, so
+I like to clarify the timeline:
 
-The strong preference is 1 complete example in the MFD binding. That 
-avoids 2 copies of the same thing, issues with incomplete examples, 
-and temporary warnings bisecting the series.
+- Dec.12:
+RFC V3 was  out for comments: [1]
+This version added MAP_SEALABLE and sealing type in mmap()
+The sealing type in mmap() was suggested by  Pedro Falcato during V1. [2]
+And MAP_SEALABLE is new to V3 and I added an open discussion in the
+cover letter.
 
-Rob
+- Dec.14
+Linus made a set of recommendations based on V3 [3], this is where
+Linus mentioned the semantics.
+
+Quoted below:
+"Particularly for new system calls with fairly specialized use, I think
+it's very important that the semantics are sensible on a conceptual
+level, and that we do not add system calls that are based on "random
+implementation issue of the day".
+
+- Jan.4:
+I sent out V4 of that patch for comments [5]
+This version implements all of Linus's recommendations made in V3.
+
+In V3, I didn't receive comments about MAP_SEALABLE, so I kept that as
+an open discussion item in V4 and specifically mentioned it in the
+first sentence of the V4 cover letter.
+
+"This is V4 of the patch, the patch has improved significantly since V1,
+thanks to diverse inputs, a few discussions remain, please read those
+in the open discussion section of v4 of change history."
+
+- Jan.4:
+Linus  gave a comment on V4: [6]
+
+Quoted below:
+"Other than that, this seems all reasonable to me now."
+
+To me, this means Linus is OK with the general signatures of the APIs.
+
+-Jan.9
+During comments for V5.
+[7]  Kees suggested dropping RFC from subsequent versions, given
+Linus's general approval
+on the v4.
+
+[1] https://lore.kernel.org/all/80897.1705769947@cvs.openbsd.org/T/#mbf4749=
+d465b80a575e1eda3c6f0c66d995abfc39
+
+[2]
+https://lore.kernel.org/lkml/CAKbZUD2A+=3Dbp_sd+Q0Yif7NJqMu8p__eb4yguq0agEc=
+mLH8SDQ@mail.gmail.com/
+
+[3]
+https://lore.kernel.org/all/CAHk-=3DwiVhHmnXviy1xqStLRozC4ziSugTk=3D1JOc8OR=
+Wd2_0h7g@mail.gmail.com/
+
+[4]
+https://lore.kernel.org/all/CABi2SkUTdF6PHrudHTZZ0oWK-oU+T-5+7Eqnei4yCj2fsW=
+2jHg@mail.gmail.com/#t
+
+[5]
+https://lore.kernel.org/lkml/796b6877-0548-4d2a-a484-ba4156104a20@infradead=
+org/T/#mb5c8bfe234759589cadf0bcee10eaa7e07b2301a
+
+[6]
+https://lore.kernel.org/lkml/CAHk-=3Dwiy0nHG9+3rXzQa=3DW8gM8F6-MhsHrs_ZqWaH=
+tjmPK4=3DFA@mail.gmail.com/
+
+[7]
+https://lore.kernel.org/lkml/20240109154547.1839886-1-jeffxu@chromium.org/T=
+/#m657fffd96ffff91902da53dc9dbc1bb093fe367c
+
+> You dropped the RFC from the topic and increment the version numbering
+> on the patch set. I thought it was customary to restart counting after
+> the RFC was complete?  Maybe I'm wrong, but it seemed a bit odd to see
+> that happen.  The documentation also implies there are still questions
+> to be answered, so it seems this is still an RFC in some ways?
+>
+The RFC has been dropped since V6.
+That said, I'm open to feedback from Linux developers.
+I will respond to the rest of your email in seperate emails.
+
+Best Regards.
+-Jeff
 
