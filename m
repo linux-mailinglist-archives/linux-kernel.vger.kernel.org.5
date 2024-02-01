@@ -1,226 +1,171 @@
-Return-Path: <linux-kernel+bounces-47425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A25E7844DC2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:21:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54420844DC8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:24:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86EFBB234A5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:21:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86FFA1C25E4E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:24:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C236652;
-	Thu,  1 Feb 2024 00:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D20CD7E6;
+	Thu,  1 Feb 2024 00:24:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AFeTbHsO"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I3h52+5J"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0FB57F4
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 00:20:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63CB2652
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 00:24:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706746857; cv=none; b=mhAVM7nN/Wudd0rjXILYuT/k7t2NtFA7svAbSVa2w16ErrInqAq9zmU/chJJdPNyn9lrWAhamVhxEyblvovtnTtuEgtiFVSTw7PSzVxskLShzXwh+h9hPxAW+WJKOHkncu7pSHbc021d4aX7PaQ0QfoAqzmWsXrFWps6RcNVRi8=
+	t=1706747071; cv=none; b=NDdG3lhaeE9kNnJKXlvWr1zA6j1QdgFWnEdKMek1tyvsg4mgnt1JC0LyS1vHrjxqEmsZKYGw58Fy9w11d/o279GdXmbqehiKYg2Wfth/I6QjJBDFpDd0E00/IBZjC2yI/CriGwwtSF1qHT5LminNiNal8oGgdvBTBz5Xh3UvVto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706746857; c=relaxed/simple;
-	bh=vPtpnLaleP3MgQmoDyqqaoE5DCMRkDO/XbE6A+o6ZGs=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=iTKtNq5W3hzTcoKca6lVSbJKCKT1/tMvc1DnUpgDBKDLeoRv9rW0q1HkPvj4UBzBmrjqCihZs46EkYHJDizKINh72dNhBcJgqEQUrNy476k88MeforTqMel2Uz+ev8dMMX+DDYcyjqTD/lfd/hhICedQhwOKcWTTRcrzHbopKjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AFeTbHsO; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60404484c23so7381607b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 16:20:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706746854; x=1707351654; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=g1PMHYRH7qb67G88ys4k0o39fe/edxcv9FM2T4EKaqk=;
-        b=AFeTbHsOsKi0IdFmI4ZHqHMqsZQrVeacIQd1k/xRKGIHIzMtd0fGZV0dv6RVKFWPzp
-         NfIdcY1+/yq9AB4JCtHAOXqOYfJAaUJhQh17mNlm+GBau9Nw5FuY9+Crtdpv1OGhgpBP
-         k+BZqbQWQNyD3KVftXmFrnVXGnLT0Cj4H/5emXpjY8cPtNjsovulp9yHl1OYFhkeejBn
-         BbguLsmNpBvN1fPIPaCakGvjv2KBMzTN3vWR37OpWUu70Y4rokHViV3Q98fA/oMd4091
-         5LqxDxF5jTSU9lj4QvFxrOBaasgXia7QUfavSW+h58reOnEjQa2HKuIPFA9h+ovDgXAa
-         9F3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706746854; x=1707351654;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=g1PMHYRH7qb67G88ys4k0o39fe/edxcv9FM2T4EKaqk=;
-        b=lYaVpWQg63wVXgKD3LWLdNvEYMacQxYZjurs4U8HyHnbrT4Q/oh+bG5bMqAlTn0+9f
-         3pEJ9eY0U5UQcNgMA3K9YdnwbYpT/MzaL/002IlMee1Lt4NXXw65dgtUMpBMciQpuyJF
-         +jGR+4rWvtR17n8B/vSqIyMpw140NsgYGZAQ/eqPu8JjWxGsx5Y2Er5QBh3PZNBvaAiU
-         VjqdnaIWrp+ToJvMNMxG1VZwUJIGfQIMkDtSrurHyoRFjXjEIYVf/Ew1HDUUwe2shw9q
-         lmoenIVkv12hnZUU+q7jFGWUjVJUy1vNM7uG8bgIk3LjbDRoq2YX2Vlaq7Ik69ynztJ2
-         oa3A==
-X-Gm-Message-State: AOJu0Yw+dJzGfaC3sjnc65WRjRQZAu5saHMLT03wcZCYsu7GuZNu9Mg4
-	mPp3gyWTKDWa5FkWnOYYr264NBa8Vp0kk5rsqPXjr8zcT05oJ6IdsUR+1wE/VLGsqBXz0l7nvLg
-	Wvg==
-X-Google-Smtp-Source: AGHT+IH80WQPe2gC0t41s8elGGKjfDMTRtXWW//0TOVmoyUvyUr43Ya/wSrUFZF+r6Z3Ca0w0TJIfiQeiMA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:f85:b0:5ff:9315:7579 with SMTP id
- df5-20020a05690c0f8500b005ff93157579mr690348ywb.6.1706746854726; Wed, 31 Jan
- 2024 16:20:54 -0800 (PST)
-Date: Wed, 31 Jan 2024 16:20:53 -0800
-In-Reply-To: <97bb1f2996d8a7b828cd9e3309380d1a86ca681b.1705965635.git.isaku.yamahata@intel.com>
+	s=arc-20240116; t=1706747071; c=relaxed/simple;
+	bh=Ew6h++/+DdbPoHox2grFx/ClbVltBqDrTN113GMVi4E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H9r8ZDOlIgDczmJDagb5aZc4av75vNCum9updCEQ/7Hh3OsRCmV73/XInkKKwB9y9srzRO13/GQN0Yggbdh/gnw5R+hFosxHI38TSavHeBFCOjSwsl9iCAbjfV3sO/fudYp9ngbzrvCtSNCeLpOkOVlA+9ACmbxPvtPCy03zD9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I3h52+5J; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706747070; x=1738283070;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Ew6h++/+DdbPoHox2grFx/ClbVltBqDrTN113GMVi4E=;
+  b=I3h52+5Jt2RvvhcjsksgPJ3pPwcPBI6add6Og5I9DATEK1cgop4DuXlr
+   ZHwJNa7wEJ5swAwlZSuSxLly/27kyr8iUhrgx/QOVBeXpYK3iUI5RZmws
+   q/MOyKUS0AKAZdpc5vlU5EtQbmcm95m7BDUbtnEfG6e/eHN/pddTHbGEU
+   o8o21I31ZweSNh52IBrybo5GpwGJ0DckkTOf+pxILE67HKqde028QTHIj
+   6PIMv+Qv4oMNbbaBdXFtSfQxU36OGqdLCRvrhMq1LIIsB/vwljKcqmHKi
+   r17MP7UqfA7E4pBaUoEOffDUt59uiFQunFzLsqdbotcqdTDkJkeKfHyEb
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10867219"
+X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
+   d="scan'208";a="10867219"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 16:24:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="878954466"
+X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
+   d="scan'208";a="878954466"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 16:24:27 -0800
+Date: Wed, 31 Jan 2024 16:25:49 -0800
+From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To: alexs@kernel.org
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	linux-kernel@vger.kernel.org, sshegde@linux.ibm.com
+Subject: Re: [PATCH v2 4/6] sched/fair: packing func
+ sched_use_asym_prio/sched_asym_prefer
+Message-ID: <20240201002549.GB18560@ranerica-svr.sc.intel.com>
+References: <20240130131708.429425-1-alexs@kernel.org>
+ <20240130131708.429425-4-alexs@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1705965634.git.isaku.yamahata@intel.com> <97bb1f2996d8a7b828cd9e3309380d1a86ca681b.1705965635.git.isaku.yamahata@intel.com>
-Message-ID: <Zbrj5WKVgMsUFDtb@google.com>
-Subject: Re: [PATCH v18 064/121] KVM: TDX: Create initial guest memory
-From: Sean Christopherson <seanjc@google.com>
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com, 
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>, chen.bo@intel.com, 
-	hang.yuan@intel.com, tina.zhang@intel.com, gkirkpatrick@google.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240130131708.429425-4-alexs@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 
-On Mon, Jan 22, 2024, isaku.yamahata@intel.com wrote:
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> index 4cbcedff4f16..1a5a91b99de9 100644
-> --- a/arch/x86/kvm/vmx/tdx.c
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -591,6 +591,69 @@ static int tdx_mem_page_aug(struct kvm *kvm, gfn_t gfn,
->  	return 0;
+On Tue, Jan 30, 2024 at 09:17:06PM +0800, alexs@kernel.org wrote:
+> From: Alex Shi <alexs@kernel.org>
+> 
+> Packing the func sched_use_asym_prio/sched_asym_prefer into one, Using
+> new func to simply code. No function change.
+
+You should use imperative mood when writing changelogs. Also, you should
+avoid abbreviations. When referring to functions,
+please use (). In this specific instance, you could probably say:
+
+     "Consolidate the functions sched_use_asym_prio() and 
+      sched_asym_prefer() into one. This makes the code easier to
+      read. No functional changes."
+> 
+> Thanks Ricardo Neri for func rename and comments suggestion!
+
+Thanks for the mention! But no need. :)
+
+Perhaps you could explain the reasons for renaming the functions as you
+did. Explaining why you make changes is an essential part of the
+changelog.
+
+> 
+> Signed-off-by: Alex Shi <alexs@kernel.org>
+> To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+> To: Valentin Schneider <vschneid@redhat.com>
+> To: Vincent Guittot <vincent.guittot@linaro.org>
+> To: Peter Zijlstra <peterz@infradead.org>
+> To: Ingo Molnar <mingo@redhat.com>
+> ---
+>  kernel/sched/fair.c | 34 ++++++++++++++++------------------
+>  1 file changed, 16 insertions(+), 18 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index ebd659af2d78..835dbe77b260 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -9745,8 +9745,15 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
+>  		(sd->flags & SD_SHARE_CPUCAPACITY) || is_core_idle(cpu);
 >  }
 >  
-> +static int tdx_mem_page_add(struct kvm *kvm, gfn_t gfn,
-> +			    enum pg_level level, kvm_pfn_t pfn)
+> +static inline bool sched_asym(struct sched_domain *sd, int dst_cpu, int src_cpu)
 > +{
-> +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
-> +	hpa_t hpa = pfn_to_hpa(pfn);
-> +	gpa_t gpa = gfn_to_gpa(gfn);
-> +	struct tdx_module_args out;
-> +	hpa_t source_pa;
-> +	bool measure;
-> +	u64 err;
-> +	int i;
+> +	/* Check if asym balance applicable, then check priorities.*/
+> +	return sched_use_asym_prio(sd, dst_cpu) &&
+> +		sched_asym_prefer(dst_cpu, src_cpu);
+> +}
 > +
-> +	/*
-> +	 * KVM_INIT_MEM_REGION, tdx_init_mem_region(), supports only 4K page
-> +	 * because tdh_mem_page_add() supports only 4K page.
-> +	 */
-> +	if (KVM_BUG_ON(level != PG_LEVEL_4K, kvm))
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * In case of TDP MMU, fault handler can run concurrently.  Note
-> +	 * 'source_pa' is a TD scope variable, meaning if there are multiple
-> +	 * threads reaching here with all needing to access 'source_pa', it
-> +	 * will break.  However fortunately this won't happen, because below
-> +	 * TDH_MEM_PAGE_ADD code path is only used when VM is being created
-> +	 * before it is running, using KVM_TDX_INIT_MEM_REGION ioctl (which
-> +	 * always uses vcpu 0's page table and protected by vcpu->mutex).
-> +	 */
+>  /**
+> - * sched_asym - Check if the destination CPU can do asym_packing load balance
+> + * sched_group_asym - Check if the destination CPU can do asym_packing balance
+>   * @env:	The load balancing environment
+>   * @sgs:	Load-balancing statistics of the candidate busiest group
+>   * @group:	The candidate busiest group
+> @@ -9766,22 +9773,15 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
+>   * otherwise.
+>   */
+>  static inline bool
+> -sched_asym(struct lb_env *env, struct sg_lb_stats *sgs, struct sched_group *group)
+> +sched_group_asym(struct lb_env *env, struct sg_lb_stats *sgs, struct sched_group *group)
+>  {
+> -	/* Ensure that the whole local core is idle, if applicable. */
+> -	if (!sched_use_asym_prio(env->sd, env->dst_cpu))
+> -		return false;
+> -
+>  	/*
+> -	 * CPU priorities does not make sense for SMT cores with more than one
+> +	 * CPU priorities do not make sense for SMT cores with more than one
+>  	 * busy sibling.
+>  	 */
+> -	if (group->flags & SD_SHARE_CPUCAPACITY) {
+> -		if (sgs->group_weight - sgs->idle_cpus != 1)
+> -			return false;
+> -	}
+> -
+> -	return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
+> +	return !(group->flags & SD_SHARE_CPUCAPACITY &&
+> +			sgs->group_weight - sgs->idle_cpus != 1) &&
+> +		sched_asym(env->sd, env->dst_cpu, group->asym_prefer_cpu);
 
-Most of the above is superflous.  tdx_mem_page_add() is called if and only if
-the TD is finalized, and the TDX module disallow running vCPUs before the TD is
-finalized.  That's it.  And maybe throw in a lockdep to assert that kvm->lock is
-held.
 
-> +	if (KVM_BUG_ON(kvm_tdx->source_pa == INVALID_PAGE, kvm)) {
-> +		tdx_unpin(kvm, pfn);
-> +		return -EINVAL;
-> +	}
-> +
-> +	source_pa = kvm_tdx->source_pa & ~KVM_TDX_MEASURE_MEMORY_REGION;
-> +	measure = kvm_tdx->source_pa & KVM_TDX_MEASURE_MEMORY_REGION;
-> +	kvm_tdx->source_pa = INVALID_PAGE;
-> +
-> +	do {
-> +		err = tdh_mem_page_add(kvm_tdx->tdr_pa, gpa, hpa, source_pa,
-> +				       &out);
-> +		/*
-> +		 * This path is executed during populating initial guest memory
-> +		 * image. i.e. before running any vcpu.  Race is rare.
+I am having second thoughts about compressing these conditions into a
+single line. For instance, the comment above only applies to the first
+condition and it is clear how the condition is met.
 
-How are races possible at all?
-
-> +		 */
-> +	} while (unlikely(err == TDX_ERROR_SEPT_BUSY));
-> +	if (KVM_BUG_ON(err, kvm)) {
-> +		pr_tdx_error(TDH_MEM_PAGE_ADD, err, &out);
-> +		tdx_unpin(kvm, pfn);
-> +		return -EIO;
-> +	} else if (measure) {
-> +		for (i = 0; i < PAGE_SIZE; i += TDX_EXTENDMR_CHUNKSIZE) {
-> +			err = tdh_mr_extend(kvm_tdx->tdr_pa, gpa + i, &out);
-> +			if (KVM_BUG_ON(err, &kvm_tdx->kvm)) {
-> +				pr_tdx_error(TDH_MR_EXTEND, err, &out);
-> +				break;
-> +			}
-> +		}
-
-Why is measurement done deep within the MMU?  At a glance, I don't see why this
-can't be done up in the ioctl, outside of a spinlock.
-
-And IIRC, the order affects the measurement but doesn't truly matter, e.g. KVM
-could choose to completely separate tdh_mr_extend() from tdh_mem_page_add(), no?
-
-> +static int tdx_init_mem_region(struct kvm *kvm, struct kvm_tdx_cmd *cmd)
-> +{
-> +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
-> +	struct kvm_tdx_init_mem_region region;
-> +	struct kvm_vcpu *vcpu;
-> +	struct page *page;
-> +	int idx, ret = 0;
-> +	bool added = false;
-> +
-> +	/* Once TD is finalized, the initial guest memory is fixed. */
-> +	if (is_td_finalized(kvm_tdx))
-> +		return -EINVAL;
-> +
-> +	/* The BSP vCPU must be created before initializing memory regions. */
-> +	if (!atomic_read(&kvm->online_vcpus))
-> +		return -EINVAL;
-> +
-> +	if (cmd->flags & ~KVM_TDX_MEASURE_MEMORY_REGION)
-> +		return -EINVAL;
-> +
-> +	if (copy_from_user(&region, (void __user *)cmd->data, sizeof(region)))
-> +		return -EFAULT;
-> +
-> +	/* Sanity check */
-> +	if (!IS_ALIGNED(region.source_addr, PAGE_SIZE) ||
-> +	    !IS_ALIGNED(region.gpa, PAGE_SIZE) ||
-> +	    !region.nr_pages ||
-> +	    region.nr_pages & GENMASK_ULL(63, 63 - PAGE_SHIFT) ||
-> +	    region.gpa + (region.nr_pages << PAGE_SHIFT) <= region.gpa ||
-> +	    !kvm_is_private_gpa(kvm, region.gpa) ||
-> +	    !kvm_is_private_gpa(kvm, region.gpa + (region.nr_pages << PAGE_SHIFT)))
-> +		return -EINVAL;
-> +
-> +	vcpu = kvm_get_vcpu(kvm, 0);
-> +	if (mutex_lock_killable(&vcpu->mutex))
-> +		return -EINTR;
-
-The real reason for this drive-by pseudo-review is that I am hoping/wishing we
-can turn this into a generic KVM ioctl() to allow userspace to pre-map guest
-memory[*].
-
-If we're going to carry non-trivial code, we might as well squeeze as much use
-out of it as we can.
-
-Beyond wanting to shove this into KVM_MEMORY_ENCRYPT_OP, is there any reason why
-this is a VM ioctl() and not a vCPU ioctl()?  Very roughly, couldn't we use a
-struct like this as input to a vCPU ioctl() that maps memory, and optionally
-initializes memory from @source?
-
-	struct kvm_memory_mapping {
-		__u64 base_gfn;
-		__u64 nr_pages;
-		__u64 flags;
-		__u64 source;
-	}
-
-TDX would need to do special things for copying the source, but beyond that most
-of the code in this function is generic.
-
-[*] https://lore.kernel.org/all/65262e67-7885-971a-896d-ad9c0a760907@polito.it
+Checking the conditions separately makes the funcion easier to read, IMO.
 
