@@ -1,286 +1,214 @@
-Return-Path: <linux-kernel+bounces-48373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E1C0845B1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:17:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 239BD845B21
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:18:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1AC1B24148
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:17:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2CFE1F24670
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:18:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3123A6215A;
-	Thu,  1 Feb 2024 15:17:27 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C0A662175;
+	Thu,  1 Feb 2024 15:18:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XcqiC5DE"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82B016214D
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 15:17:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6745B5F48C;
+	Thu,  1 Feb 2024 15:18:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706800646; cv=none; b=qPS5j02Wn3zi7f0rJ2CnT66zgirWuyxU27ZITTnK7YbrTnKj+egNJvwsUJyl59TTPeQfxqw+Ji8uBPQvncXU2YgMPJEAosyjm111sRBFQampbaYljded0Ql/oiBi3zMti6MrB2Je5QnxIUeAAeEBxHDuxSGsEOgklLr+ns6lhjg=
+	t=1706800696; cv=none; b=LNbWeVonHRQz9baQob6DbYHvs3eDtyr1DZMCtOX3munDpPhJoSOnhmV0TPdfchVTbrLXVpqbYTI2U9QjvmT7z0uUoEzRHCirAsyYW6w9idO8bfg3bTPp7+QFNF3tGU3h2sHtbLeLz6KEi5Pthhnx/YiM6QttVgrohzW7mjrBlwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706800646; c=relaxed/simple;
-	bh=HPxCSUB5zEx98b6o6g9W3iSdTbRcBAtJx2EqLbpkmnQ=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Kf4L8KfxF+wwT7xHnFmEDD5LGsO293145Y3ycdnJCtOPzspf0QrUm/v8J47fu+VvS3srr7zzljlDHgJB+jAHYGQ1qz5Par+6wLYef1XTTGG++FFtnRx+1YpvELy/fvo2QDMeJ5wP6WiFdekSFSFpq6fHt1IBZJQRuDASVf8PWVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-363abe44869so752045ab.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 07:17:24 -0800 (PST)
+	s=arc-20240116; t=1706800696; c=relaxed/simple;
+	bh=p2zjvsecwqsbWVxX3y98V4aEVEIewA84Nqu+biKQYbQ=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=O5L7mY0gsZkkDHYEDoG+7M9fd7Ls1QSEr8en0cFoLs+plf19JZXqONaumIkAMfh2m96fzgkBBjkZH4vE5cu/wm9AO5PVgvz0zQquY47Ub1gKI4Y1yLmCD1rPAaMQh6bsxO+vpEdjl4TWKfvpbrdkFYYDuWLYsu0cFvPuLU1pttE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XcqiC5DE; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2cf588c4dbcso13768371fa.1;
+        Thu, 01 Feb 2024 07:18:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706800692; x=1707405492; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FgF7oqxYUKcEdySx4Ly0ihobldR/JZonk5s5GnUnAk8=;
+        b=XcqiC5DEWtWD86+McEu4fimnsuqqKqhDizsw4Y5bEtZNhURMK2fKyUPJwytpah89EE
+         PkEC+aNlsRlA3RJBTxNODPhTYYoEe0ZlH7PXWlnXRiCnusCXswPZdl2FGliMjWGj0PZ1
+         z3z+QPHPN06J8I0uZXgxCKaeyUqhfoiFdITf5nYhNGPJZVPwvLdOi3a8fy5IJy30Y+9V
+         JWZ5FPBSOf+04U47KvE3rayn3q5JY6h3uoQEVQKbnWNx1Xlzdew3L3oV+djv3MqohtDN
+         F7TW0Ga4sU7WodKsF3RjYfiCNZIzAYlYnKpZFnWw+F716uPOGg2yNZIZAVg4z0vDGsnJ
+         /SDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706800643; x=1707405443;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=U2PR9jxlA2KYl4LaDdZfOkauFUflX5kg7bFxv7gTX2o=;
-        b=JyU7HtNUSq2PD3AKbRhuqOMU7AhRk4giJGFUwfyX11jZ5ENV0VYxMwClUckVDYnuSf
-         MAmwQQjchq6IokMQY2I33zgQvADCriqPdPvAHGYhVucUyDrAOJCFrX14Zt/rJaBiJ2OU
-         RXL2SoVECXSDXEjcczlBpvqAATYTT5c+e06pTc7TdoQe7Iege1Qna9EHkvQXX03lnbYm
-         /RHLRvTMxJRA5D+MseSB/L7n3uKcvDnwVfQOpRGH+OF3zzHmJJmxrwk+udz38B+L19mo
-         p9/sOR0wFP4vL4G9NY+agBNv7s/JCysVdG/1xiB+mdCfJNTC2MgoB297wUBbevzN9KC2
-         4vgw==
-X-Gm-Message-State: AOJu0YznMj7u+JvxSWMNfE4H4dUtvAR6EUaPFs4T6YU064GgY0UePi3q
-	U4s8pufah2GN6CrwLw3BRgXt8wU1iZXmAkwvviMY2e3rHu15PooYJVwjwerZ4WPNP1xLvi3IvyJ
-	OJJRCk4Q0sM94giVHbVRoFMWPELUsq0GNNJgZwx98wMqAscTjir32xpU=
-X-Google-Smtp-Source: AGHT+IE1g+zmbl+ljmYjmt69qpUnFFP8vaxrDFurP/9mozniNZo5RdC2v8pKoETfgZB5hw6pebQDXeDsGm7QXHA8VJFnxegwjBhD
+        d=1e100.net; s=20230601; t=1706800692; x=1707405492;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FgF7oqxYUKcEdySx4Ly0ihobldR/JZonk5s5GnUnAk8=;
+        b=UFAsbWUZbc9idDakVjtE3/1Qs4Qdvw74IPY5Jl+7VVWf2xFc/gkZ6D2TKVhp8dmAVy
+         qjTdawxc+aT39f6qZisC+ePSgZ7C7qFp9JKm85i5bi4qnDbhF34Gdph3lvwIbSNgrJG/
+         +pBLkEn2SHBEjuERNX2xFpQo9ifFh0D7LLjYPoHARRiXawgPYShuAVTXRt9Gy5f/TlE/
+         xJbsikVHJJZKoFd3zRTVP/6VsaERa3nLtfNw+w1pf/bDZ00nB8f3SUODdmM4gYz2DwTb
+         WEpsKLJ76IqWKt+8VO+cIup7I17yNXM7l/WXgflw5F0YxQeuygtGeHfy5cdvvhh8RLgl
+         fSpA==
+X-Gm-Message-State: AOJu0Yx86ahwwcrJaOUEN9oTgOIRpanejVhcvk8Jn2t4ccPMLuE4tBf9
+	6t1os94RCQBl3xPYuOiU+6vFkFAgFkLuV0hIKICc4D2BkWAHpihN
+X-Google-Smtp-Source: AGHT+IHuKMs0rC8AkpcPGwT8fMwy0LIUxBFrs+y8Uu3OWZxqcjMrsHYxgkW2zzSGkZzhoMhHHUqREA==
+X-Received: by 2002:a05:651c:b1e:b0:2d0:6c48:8777 with SMTP id b30-20020a05651c0b1e00b002d06c488777mr3912995ljr.27.1706800691924;
+        Thu, 01 Feb 2024 07:18:11 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXzHo/BMpbXlwq2Bb7Cq+XwG1cIAz96p6MJ56TRJ5l2LjvHtzPfIaCA7tT8fifrSavCHK6bOlKnwPnbrP7SXuOe1FtMAxEcTbQbNoq88YOMiDQODa3fSTnMxfEpmhpYRnYHEm0oShZxcSPqGKsjclh4E64Vow3kHQzTmrlNCljJMOHGWoCV3ZHcUcqEGQ2asyqUqgAV3ZVkELRNVlYlKvU6M65psnvm3FyFsO6FdKJEu59pbjMUJu/6XrYkgDym53tUdACQBmjBlAmCfYac8eF0O5GCcBwGLsKeFJsYIeBxryBeADJfJSC3Yyr3wP8OShbN/BNFmzFNBb81LdbqsHdD4T+Bo3ZdvZvcgvh+fzTSHIZWvg0tloVKz0ClBTv+682coao6Nbf2vwUyPrMe7Nh4krQcIRc0PBEU8sbdY63jpZY3l0iCIoKM/oxZY4384VWAdBZ/TwugAjouULZZ0SZUu6DOuYD9T+E+TXVGaxuzt2n0asEw/XmKR5WYRAPAPhKVkHH3cVTJNTHrtMFcneq84ySf8dPrurkahyNHVva8udsz+YbOCEHVZ4C4GUH5NcjUyFjOnCUgALMpyeVXB4lXTRmvtmbv/aywtnJ3N37sb2PabspxhpXb
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id z9-20020a2e3509000000b002cdf37ee19dsm2437978ljz.7.2024.02.01.07.18.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 07:18:11 -0800 (PST)
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	Robert Marko <robert.marko@sartura.hr>,
+	netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: [net-next PATCH v5 0/9] net: phy: Introduce PHY Package concept
+Date: Thu,  1 Feb 2024 16:17:26 +0100
+Message-ID: <20240201151747.7524-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:12ee:b0:363:8b04:6e01 with SMTP id
- l14-20020a056e0212ee00b003638b046e01mr470670iln.3.1706800643754; Thu, 01 Feb
- 2024 07:17:23 -0800 (PST)
-Date: Thu, 01 Feb 2024 07:17:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000012d4ed0610537e34@google.com>
-Subject: [syzbot] [ntfs3?] KASAN: slab-out-of-bounds Read in mi_enum_attr
-From: syzbot <syzbot+a426cde6dee8c2884b0b@syzkaller.appspotmail.com>
-To: almaz.alexandrovich@paragon-software.com, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, ntfs3@lists.linux.dev, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Idea of this big series is to introduce the concept of PHY package in DT
+and give PHY drivers a way to derive the base address from DT.
 
-syzbot found the following issue on:
+The concept of PHY package is nothing new and is already a thing in the
+kernel with the API phy_package_join/leave/read/write.
 
-HEAD commit:    8a696a29c690 Merge tag 'platform-drivers-x86-v6.8-2' of gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16753f17e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9247001bfee478be
-dashboard link: https://syzkaller.appspot.com/bug?extid=a426cde6dee8c2884b0b
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12c4efc3e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a562f3e80000
+What is currently lacking is describing this in DT and better reference
+a base address to calculate offset from.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/e52b675ecac5/disk-8a696a29.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/4fc98d5eb84b/vmlinux-8a696a29.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/5d4769a0b908/bzImage-8a696a29.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/d57d4609374b/mount_0.gz
+In the scenario of a PHY package where multiple address are used and
+there isn't a way to get the base address of the PHY package from some
+regs, getting the information from DT is the only way.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a426cde6dee8c2884b0b@syzkaller.appspotmail.com
+A possible example to this problem is this:
 
-==================================================================
-BUG: KASAN: slab-out-of-bounds in mi_enum_attr+0x850/0x9e0 fs/ntfs3/record.c:246
-Read of size 4 at addr ffff88807483335d by task syz-executor171/9769
+        ethernet-phy-package@0 {
+            compatible = "qcom,qca807x-package";
+            #address-cells = <1>;
+            #size-cells = <0>;
 
-CPU: 0 PID: 9769 Comm: syz-executor171 Not tainted 6.8.0-rc1-syzkaller-00356-g8a696a29c690 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0x163/0x540 mm/kasan/report.c:488
- kasan_report+0x142/0x170 mm/kasan/report.c:601
- mi_enum_attr+0x850/0x9e0 fs/ntfs3/record.c:246
- mi_find_attr+0x1c5/0x2b0 fs/ntfs3/record.c:353
- ni_find_attr+0x609/0x8d0 fs/ntfs3/frecord.c:218
- ntfs_readlink_hlp+0xa6/0xcb0 fs/ntfs3/inode.c:1922
- ntfs_get_link+0x79/0x110 fs/ntfs3/inode.c:2068
- pick_link+0x638/0xd70
- step_into+0xc9f/0x1080 fs/namei.c:1871
- open_last_lookups fs/namei.c:3588 [inline]
- path_openat+0x187c/0x31e0 fs/namei.c:3795
- do_filp_open+0x234/0x490 fs/namei.c:3825
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1404
- do_sys_open fs/open.c:1419 [inline]
- __do_sys_open fs/open.c:1427 [inline]
- __se_sys_open fs/open.c:1423 [inline]
- __x64_sys_open+0x225/0x270 fs/open.c:1423
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f1b33964c19
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 1d 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f1b338d3218 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 00007f1b33a06708 RCX: 00007f1b33964c19
-RDX: 0000000000000065 RSI: 0000000000000080 RDI: 0000000020000440
-RBP: 0000000000000020 R08: 0000000000000000 R09: 0000000000000000
-R10: 00007ffcb7e5f0f7 R11: 0000000000000246 R12: 00007f1b33a06700
-R13: 00007f1b339d2024 R14: 0030656c69662f2e R15: 0031656c69662f2e
- </TASK>
+            reg = <0>;
+            qcom,package-mode = "qsgmii";
 
-Allocated by task 5096:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x70 mm/kasan/common.c:68
- poison_kmalloc_redzone mm/kasan/common.c:372 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:389
- kasan_kmalloc include/linux/kasan.h:211 [inline]
- __do_kmalloc_node mm/slub.c:3981 [inline]
- __kmalloc+0x22e/0x490 mm/slub.c:3994
- kmalloc include/linux/slab.h:594 [inline]
- tomoyo_realpath_from_path+0xcf/0x5e0 security/tomoyo/realpath.c:251
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_path_perm+0x2b7/0x730 security/tomoyo/file.c:822
- security_inode_getattr+0xd3/0x120 security/security.c:2237
- vfs_getattr+0x46/0x430 fs/stat.c:173
- vfs_statx+0x1a5/0x4e0 fs/stat.c:248
- vfs_fstatat+0x135/0x190 fs/stat.c:304
- __do_sys_newfstatat fs/stat.c:468 [inline]
- __se_sys_newfstatat fs/stat.c:462 [inline]
- __x64_sys_newfstatat+0x117/0x190 fs/stat.c:462
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+            ethernet-phy@1 {
+              reg = <1>;
+            };
 
-Freed by task 5096:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x70 mm/kasan/common.c:68
- kasan_save_free_info+0x4e/0x60 mm/kasan/generic.c:640
- poison_slab_object+0xa6/0xe0 mm/kasan/common.c:241
- __kasan_slab_free+0x34/0x60 mm/kasan/common.c:257
- kasan_slab_free include/linux/kasan.h:184 [inline]
- slab_free_hook mm/slub.c:2121 [inline]
- slab_free mm/slub.c:4299 [inline]
- kfree+0x14a/0x380 mm/slub.c:4409
- tomoyo_realpath_from_path+0x5a3/0x5e0 security/tomoyo/realpath.c:286
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_path_perm+0x2b7/0x730 security/tomoyo/file.c:822
- security_inode_getattr+0xd3/0x120 security/security.c:2237
- vfs_getattr+0x46/0x430 fs/stat.c:173
- vfs_statx+0x1a5/0x4e0 fs/stat.c:248
- vfs_fstatat+0x135/0x190 fs/stat.c:304
- __do_sys_newfstatat fs/stat.c:468 [inline]
- __se_sys_newfstatat fs/stat.c:462 [inline]
- __x64_sys_newfstatat+0x117/0x190 fs/stat.c:462
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+            phy4: ethernet-phy@4 {
+              reg = <4>;
+            };
+        };
 
-The buggy address belongs to the object at ffff888074832000
- which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 861 bytes to the right of
- allocated 4096-byte region [ffff888074832000, ffff888074833000)
+The mdio parse functions are changed to address for this additional
+special node, the function is changed to simply detect this node and
+search also in this. (we match the node name to be "ethernet-phy-package")
 
-The buggy address belongs to the physical page:
-page:ffffea0001d20c00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x74830
-head:ffffea0001d20c00 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000840 ffff888013042140 dead000000000100 dead000000000122
-raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0x1d2040(__GFP_IO|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_HARDWALL), pid 4500, tgid 4500 (udevd), ts 828902194240, free_ts 828781426813
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1533
- prep_new_page mm/page_alloc.c:1540 [inline]
- get_page_from_freelist+0x33ea/0x3570 mm/page_alloc.c:3311
- __alloc_pages+0x255/0x680 mm/page_alloc.c:4567
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- alloc_slab_page+0x5f/0x160 mm/slub.c:2190
- allocate_slab mm/slub.c:2354 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2407
- ___slab_alloc+0xd17/0x13d0 mm/slub.c:3540
- __slab_alloc mm/slub.c:3625 [inline]
- __slab_alloc_node mm/slub.c:3678 [inline]
- slab_alloc_node mm/slub.c:3850 [inline]
- __do_kmalloc_node mm/slub.c:3980 [inline]
- __kmalloc+0x2dc/0x490 mm/slub.c:3994
- kmalloc include/linux/slab.h:594 [inline]
- tomoyo_realpath_from_path+0xcf/0x5e0 security/tomoyo/realpath.c:251
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_check_open_permission+0x255/0x500 security/tomoyo/file.c:771
- security_file_open+0x66/0x560 security/security.c:2932
- do_dentry_open+0x327/0x1590 fs/open.c:940
- do_open fs/namei.c:3641 [inline]
- path_openat+0x2823/0x31e0 fs/namei.c:3798
- do_filp_open+0x234/0x490 fs/namei.c:3825
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1404
- do_sys_open fs/open.c:1419 [inline]
- __do_sys_openat fs/open.c:1435 [inline]
- __se_sys_openat fs/open.c:1430 [inline]
- __x64_sys_openat+0x247/0x290 fs/open.c:1430
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
-page last free pid 4500 tgid 4500 stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1140 [inline]
- free_unref_page_prepare+0x959/0xa80 mm/page_alloc.c:2346
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:2486
- discard_slab mm/slub.c:2453 [inline]
- __put_partials+0xeb/0x130 mm/slub.c:2922
- put_cpu_partial+0x17b/0x250 mm/slub.c:2997
- __slab_free+0x2fe/0x410 mm/slub.c:4166
- qlink_free mm/kasan/quarantine.c:160 [inline]
- qlist_free_all+0x6d/0xd0 mm/kasan/quarantine.c:176
- kasan_quarantine_reduce+0x14b/0x160 mm/kasan/quarantine.c:283
- __kasan_slab_alloc+0x23/0x70 mm/kasan/common.c:324
- kasan_slab_alloc include/linux/kasan.h:201 [inline]
- slab_post_alloc_hook mm/slub.c:3813 [inline]
- slab_alloc_node mm/slub.c:3860 [inline]
- kmem_cache_alloc_lru+0x172/0x340 mm/slub.c:3879
- __d_alloc+0x31/0x750 fs/dcache.c:1624
- d_alloc+0x4b/0x190 fs/dcache.c:1704
- lookup_one_qstr_excl+0xce/0x250 fs/namei.c:1604
- do_unlinkat+0x297/0x830 fs/namei.c:4386
- __do_sys_unlink fs/namei.c:4446 [inline]
- __se_sys_unlink fs/namei.c:4444 [inline]
- __x64_sys_unlink+0x49/0x50 fs/namei.c:4444
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Memory state around the buggy address:
- ffff888074833200: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888074833280: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff888074833300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                                                    ^
- ffff888074833380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888074833400: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
+PHY driver can then use introduced helper of_phy_package_join to join the
+PHY to the PHY package and derive the base address from DT.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+The base addr + offset implementation adds additional complexity to
+the code but I think will make DT reviwers happier since the absolute
+reg implementation might make things confusing with having double reg
+in the DTS. I'm open to any alternative implementation and also to
+revert this to the absolute implementation.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Changes v5:
+- Rebase on top of net-next
+- Change implementation to base addr + offset in subnode
+- Adapt to all the changes and cleanup done to at803x
+Changes v4:
+- Rework DT implementation
+- Drop of autojoin support and rework to simple helper
+- Rework PHY driver to the new implementation
+- Add compatible for qca807x package
+- Further cleanup patches
+Changes v3:
+- Add back compatible implementation
+- Detach patch that can be handled separately (phy_package_mmd, 
+  phy_package extended)
+- Rework code to new simplified implementation with base addr + offset
+- Improve documentation with additional info and description
+Changes v2:
+- Drop compatible "ethernet-phy-package", use node name prefix matching
+  instead
+- Improve DT example
+- Add reg for ethernet-phy-package
+- Drop phy-mode for ethernet-phy-package
+- Drop patch for generalization of phy-mode
+- Drop global-phy property (handle internally to the PHY driver)
+- Rework OF phy package code and PHY driver to handle base address
+- Fix missing of_node_put
+- Add some missing docs for added variables in struct
+- Move some define from dt-bindings include to PHY driver
+- Handle qsgmii validation in PHY driver
+- Fix wrong include for gpiolib
+- Drop reduntant version.h include
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Christian Marangi (7):
+  dt-bindings: net: document ethernet PHY package nodes
+  net: phy: add support for scanning PHY in PHY packages nodes
+  net: phy: add devm/of_phy_package_join helper
+  net: phy: qcom: move more function to shared library
+  dt-bindings: net: Document Qcom QCA807x PHY package
+  net: phy: qcom: generalize some qca808x LED functions
+  net: phy: qca807x: add support for configurable LED
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+Robert Marko (2):
+  dt-bindings: net: add QCA807x PHY defines
+  net: phy: qcom: add support for QCA807x PHY Family
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+ .../bindings/net/ethernet-phy-package.yaml    |  55 ++
+ .../devicetree/bindings/net/qcom,qca807x.yaml | 142 +++
+ drivers/net/mdio/of_mdio.c                    |  75 +-
+ drivers/net/phy/mdio_bus.c                    |  44 +-
+ drivers/net/phy/phy_device.c                  |  84 ++
+ drivers/net/phy/qcom/Kconfig                  |   8 +
+ drivers/net/phy/qcom/Makefile                 |   1 +
+ drivers/net/phy/qcom/at803x.c                 |  35 -
+ drivers/net/phy/qcom/qca807x.c                | 832 ++++++++++++++++++
+ drivers/net/phy/qcom/qca808x.c                | 311 +------
+ drivers/net/phy/qcom/qcom-phy-lib.c           | 247 ++++++
+ drivers/net/phy/qcom/qcom.h                   | 123 +++
+ include/dt-bindings/net/qcom-qca807x.h        |  30 +
+ include/linux/of_mdio.h                       |  26 +
+ include/linux/phy.h                           |   6 +
+ 15 files changed, 1648 insertions(+), 371 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
+ create mode 100644 Documentation/devicetree/bindings/net/qcom,qca807x.yaml
+ create mode 100644 drivers/net/phy/qcom/qca807x.c
+ create mode 100644 include/dt-bindings/net/qcom-qca807x.h
 
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+2.43.0
+
 
