@@ -1,222 +1,122 @@
-Return-Path: <linux-kernel+bounces-48005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86375845620
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:22:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11CD684564B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:33:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB5221C2233A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:22:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 450951C23ACE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:33:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56FAC15CD73;
-	Thu,  1 Feb 2024 11:22:27 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FCFE15D5A3;
+	Thu,  1 Feb 2024 11:33:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mJyJ3vcY"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93CE4D9E8;
-	Thu,  1 Feb 2024 11:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F18215CD52;
+	Thu,  1 Feb 2024 11:33:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706786546; cv=none; b=GXCVOG7t3CwUCLMU+7eaQx0aLzlUi321Ysu6B9XHCQ2cqQhwdIrHaS59M4O/NfFKmZIseO/cUBZT3B01j1iybIE1gCMy/4AC3oakDC2oR+iKmAxWwAoE+XjH355z/RZI1GzAZzaQLNgW8erSgaquPbbgMGGdaGN6K6sIizOulyk=
+	t=1706787194; cv=none; b=ZG93B9mCtfQORip3rgirM41Rs/bGiN7dgKops5hZnmSocrNOwA/tO9Ii7BrBohkB+1y0qx3ErSFB3xwWl21GlegMgsG2pdu10a5tQ8eoor4gdyZ8RdjzjAo40jE/U+/j3Fr7ombK6IzSGYDT1jMYi1IR5Sa0nM54e3zdPvWGxqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706786546; c=relaxed/simple;
-	bh=E1JEBjzKqKX7niomlMIXco/erWHsqVwDhTObrROcdHk=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MMNcg2KIrLgdhE+zETyMSG88cjW29DeTuo5Bk8u1oy30f70Zf1V5qlD2vb3WBk73+eeJyewcjEbmYSs5X93fGrcVNVR0OUev+yyKvHqeiEEw82OCjed0xvmHJ3k6eKxg7NAQeO/TpORJ0TPMUEqxOrhuJ7ZSNP8hA56IKa39gP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TQby53hVBz6JBTc;
-	Thu,  1 Feb 2024 19:18:53 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id E23C7140A36;
-	Thu,  1 Feb 2024 19:22:15 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 1 Feb
- 2024 11:22:15 +0000
-Date: Thu, 1 Feb 2024 11:22:14 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Alison Schofield <alison.schofield@intel.com>
-CC: Ira Weiny <ira.weiny@intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Dave Jiang <dave.jiang@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>, <linux-acpi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-efi@vger.kernel.org>,
-	<linux-cxl@vger.kernel.org>
-Subject: Re: [PATCH 1/2] cxl/cper: Fix errant CPER prints for CXL events
-Message-ID: <20240201112214.00005fea@Huawei.com>
-In-Reply-To: <ZbrxDMwn4h3y5waj@aschofie-mobl2>
-References: <20240131-cxl-cper-fixups-v1-0-335c85b1d77b@intel.com>
-	<20240131-cxl-cper-fixups-v1-1-335c85b1d77b@intel.com>
-	<ZbrxDMwn4h3y5waj@aschofie-mobl2>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1706787194; c=relaxed/simple;
+	bh=SpA5zVrSl+lHbVMJomAs4rJfHde7ZHv1wIAINFvCdgs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=beFKM2ZVf1nOMfxmwRH9o5q1BL1Czi2wMollj57ijNdpziV2/WNwNQGRLerrbnQ+pOiWU4MC9pXdsqDajZxm/pQwX9m1C0hGHofR89cRzVauzxPZIVvZxy7QnCkM0gvxE0PPv1FL1gMTPmWZTsToKki6rLoiOzmGNInT6aLJOWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mJyJ3vcY; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706787194; x=1738323194;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=SpA5zVrSl+lHbVMJomAs4rJfHde7ZHv1wIAINFvCdgs=;
+  b=mJyJ3vcYLT5F0TdzGgkcQLr+kNf3vg5WHuPm7Ft8oK661VxpqqsCy5NW
+   vWHUBZ6923ufKd77I8wELq4fx4hKaoTsqC/unXf5iz2jDfGtBVEQfjOXH
+   DSqsSR/bJjCyrlVv/NqLJ1Gow6Nl4Y/CEVbtofHQT22psxNbGASq6cYYR
+   xQmnOHEwoshTEMno9yS/gD2sBe9UrsZxSEF6hxOUyuqI0X8spAlxyFUfu
+   ilGa2eWfTMKj9Gdru9oMZs32MLxefFjL6VrnG44Io5sYq0PJYW5vmQF8x
+   mVD3FrOHmyQFjfJ5YwadX/9jbIsKB2eODR1jOw2b++fGK/0RsicAMZxTU
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="56174"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="56174"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 03:33:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="1119919385"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="1119919385"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 03:33:00 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rVV99-00000000ogy-0PC7;
+	Thu, 01 Feb 2024 13:22:19 +0200
+Date: Thu, 1 Feb 2024 13:22:18 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Raag Jadav <raag.jadav@intel.com>, jarkko.nikula@linux.intel.com,
+	mika.westerberg@linux.intel.com, lakshmi.sowjanya.d@intel.com,
+	linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/3] pwm: dwc: simplify error handling
+Message-ID: <Zbt-6vpx1LnFBCIL@smile.fi.intel.com>
+References: <20240122030238.29437-1-raag.jadav@intel.com>
+ <20240122030238.29437-3-raag.jadav@intel.com>
+ <ZbZpMO9b7L-DNIcb@smile.fi.intel.com>
+ <r6vulwv76x7ydkmszlwlswjve7y2pmasz77wkqub73qopd5src@y3ta72owtw5b>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500001.china.huawei.com (7.191.163.213) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <r6vulwv76x7ydkmszlwlswjve7y2pmasz77wkqub73qopd5src@y3ta72owtw5b>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, 31 Jan 2024 17:17:00 -0800
-Alison Schofield <alison.schofield@intel.com> wrote:
+On Sun, Jan 28, 2024 at 05:58:38PM +0100, Uwe Kleine-König wrote:
+> On Sun, Jan 28, 2024 at 04:48:16PM +0200, Andy Shevchenko wrote:
+> > On Mon, Jan 22, 2024 at 08:32:37AM +0530, Raag Jadav wrote:
+> > > Simplify error handling in ->probe() function using dev_err_probe() helper.
 
-> On Wed, Jan 31, 2024 at 03:55:38PM -0800, Ira Weiny wrote:
-> > Jonathan reports that CXL CPER events dump an extra generic error
-> > message.
-> > 
-> > 	{1}[Hardware Error]: Hardware error from APEI Generic Hardware Error Source: 1
-> > 	{1}[Hardware Error]: event severity: recoverable
-> > 	{1}[Hardware Error]:  Error 0, type: recoverable
-> > 	{1}[Hardware Error]:   section type: unknown, fbcd0a77-c260-417f-85a9-088b1621eba6
-> > 	{1}[Hardware Error]:   section length: 0x90
-> > 	{1}[Hardware Error]:   00000000: 00000090 00000007 00000000 0d938086 ................
-> > 	{1}[Hardware Error]:   00000010: 00100000 00000000 00040000 00000000 ................
-> > 	...
-> > 
-> > CXL events were rerouted though the CXL subsystem for additional
-> > processing.  However, when that work was done it was missed that
-> > cper_estatus_print_section() continued with a generic error message
-> > which is confusing.
-> > 
-> > Teach CPER print code to ignore printing details of some section types.
-> > Assign the CXL event GUIDs to this set to prevent confusing unknown
-> > prints.  
-> 
-> Reviewed-by: Alison Schofield <alison.schofield@intel.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+..
 
-> 
-> 
+> > >  	ret = pcim_iomap_regions(pci, BIT(0), pci_name(pci));
+> > > -	if (ret) {
+> > > -		dev_err(dev, "Failed to iomap PCI BAR (%pe)\n", ERR_PTR(ret));
+> > > -		return ret;
+> > > -	}
+> > > +	if (ret)
+> > > +		return dev_err_probe(dev, ret, "Failed to iomap PCI BAR (%pe)\n", ERR_PTR(ret));
+> > >  
+> > >  	base = pcim_iomap_table(pci)[0];
 > > 
-> > Reported-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > Suggested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > ---
-> >  drivers/acpi/apei/ghes.c    | 26 --------------------------
-> >  drivers/firmware/efi/cper.c | 19 +++++++++++++++++++
-> >  include/linux/cper.h        | 23 +++++++++++++++++++++++
-> >  3 files changed, 42 insertions(+), 26 deletions(-)
+> > > -	if (!base) {
+> > > -		dev_err(dev, "Base address missing\n");
+> > > -		return -ENOMEM;
+> > > -	}
+> > > +	if (!base)
+> > > +		return dev_err_probe(dev, -ENOMEM, "Base address missing\n");
 > > 
-> > diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-> > index 7b7c605166e0..fe825a432c5b 100644
-> > --- a/drivers/acpi/apei/ghes.c
-> > +++ b/drivers/acpi/apei/ghes.c
-> > @@ -680,32 +680,6 @@ static void ghes_defer_non_standard_event(struct acpi_hest_generic_data *gdata,
-> >  static DECLARE_RWSEM(cxl_cper_rw_sem);
-> >  static cxl_cper_callback cper_callback;
-> >  
-> > -/* CXL Event record UUIDs are formatted as GUIDs and reported in section type */
-> > -
-> > -/*
-> > - * General Media Event Record
-> > - * CXL rev 3.0 Section 8.2.9.2.1.1; Table 8-43
-> > - */
-> > -#define CPER_SEC_CXL_GEN_MEDIA_GUID					\
-> > -	GUID_INIT(0xfbcd0a77, 0xc260, 0x417f,				\
-> > -		  0x85, 0xa9, 0x08, 0x8b, 0x16, 0x21, 0xeb, 0xa6)
-> > -
-> > -/*
-> > - * DRAM Event Record
-> > - * CXL rev 3.0 section 8.2.9.2.1.2; Table 8-44
-> > - */
-> > -#define CPER_SEC_CXL_DRAM_GUID						\
-> > -	GUID_INIT(0x601dcbb3, 0x9c06, 0x4eab,				\
-> > -		  0xb8, 0xaf, 0x4e, 0x9b, 0xfb, 0x5c, 0x96, 0x24)
-> > -
-> > -/*
-> > - * Memory Module Event Record
-> > - * CXL rev 3.0 section 8.2.9.2.1.3; Table 8-45
-> > - */
-> > -#define CPER_SEC_CXL_MEM_MODULE_GUID					\
-> > -	GUID_INIT(0xfe927475, 0xdd59, 0x4339,				\
-> > -		  0xa5, 0x86, 0x79, 0xba, 0xb1, 0x13, 0xb7, 0x74)
-> > -
-> >  static void cxl_cper_post_event(enum cxl_event_type event_type,
-> >  				struct cxl_cper_event_rec *rec)
-> >  {
-> > diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
-> > index 35c37f667781..9b3884ff81e6 100644
-> > --- a/drivers/firmware/efi/cper.c
-> > +++ b/drivers/firmware/efi/cper.c
-> > @@ -523,6 +523,17 @@ static void cper_print_tstamp(const char *pfx,
-> >  	}
-> >  }
-> >  
-> > +struct ignore_section {
-> > +	guid_t guid;
-> > +	const char *name;
-> > +};
-> > +
-> > +static const struct ignore_section ignore_sections[] = {
-> > +	{ .guid = CPER_SEC_CXL_GEN_MEDIA_GUID, .name = "CXL General Media Event" },
-> > +	{ .guid = CPER_SEC_CXL_DRAM_GUID, .name = "CXL DRAM Event" },
-> > +	{ .guid = CPER_SEC_CXL_MEM_MODULE_GUID, .name = "CXL Memory Module Event" },
-> > +};
-> > +
-> >  static void
-> >  cper_estatus_print_section(const char *pfx, struct acpi_hest_generic_data *gdata,
-> >  			   int sec_no)
-> > @@ -543,6 +554,14 @@ cper_estatus_print_section(const char *pfx, struct acpi_hest_generic_data *gdata
-> >  		printk("%s""fru_text: %.20s\n", pfx, gdata->fru_text);
-> >  
-> >  	snprintf(newpfx, sizeof(newpfx), "%s ", pfx);
-> > +
-> > +	for (int i = 0; i < ARRAY_SIZE(ignore_sections); i++) {
-> > +		if (guid_equal(sec_type, &ignore_sections[i].guid)) {
-> > +			printk("%ssection_type: %s\n", newpfx, ignore_sections[i].name);
-> > +			return;
-> > +		}
-> > +	}
-> > +
-> >  	if (guid_equal(sec_type, &CPER_SEC_PROC_GENERIC)) {
-> >  		struct cper_sec_proc_generic *proc_err = acpi_hest_get_payload(gdata);
-> >  
-> > diff --git a/include/linux/cper.h b/include/linux/cper.h
-> > index c1a7dc325121..265b0f8fc0b3 100644
-> > --- a/include/linux/cper.h
-> > +++ b/include/linux/cper.h
-> > @@ -90,6 +90,29 @@ enum {
-> >  	GUID_INIT(0x667DD791, 0xC6B3, 0x4c27, 0x8A, 0x6B, 0x0F, 0x8E,	\
-> >  		  0x72, 0x2D, 0xEB, 0x41)
-> >  
-> > +/* CXL Event record UUIDs are formatted as GUIDs and reported in section type */
-> > +/*
-> > + * General Media Event Record
-> > + * CXL rev 3.0 Section 8.2.9.2.1.1; Table 8-43
-> > + */
-> > +#define CPER_SEC_CXL_GEN_MEDIA_GUID					\
-> > +	GUID_INIT(0xfbcd0a77, 0xc260, 0x417f,				\
-> > +		  0x85, 0xa9, 0x08, 0x8b, 0x16, 0x21, 0xeb, 0xa6)
-> > +/*
-> > + * DRAM Event Record
-> > + * CXL rev 3.0 section 8.2.9.2.1.2; Table 8-44
-> > + */
-> > +#define CPER_SEC_CXL_DRAM_GUID						\
-> > +	GUID_INIT(0x601dcbb3, 0x9c06, 0x4eab,				\
-> > +		  0xb8, 0xaf, 0x4e, 0x9b, 0xfb, 0x5c, 0x96, 0x24)
-> > +/*
-> > + * Memory Module Event Record
-> > + * CXL rev 3.0 section 8.2.9.2.1.3; Table 8-45
-> > + */
-> > +#define CPER_SEC_CXL_MEM_MODULE_GUID					\
-> > +	GUID_INIT(0xfe927475, 0xdd59, 0x4339,				\
-> > +		  0xa5, 0x86, 0x79, 0xba, 0xb1, 0x13, 0xb7, 0x74)
-> > +
-> >  /*
-> >   * Flags bits definitions for flags in struct cper_record_header
-> >   * If set, the error has been recovered
-> > 
-> > -- 
-> > 2.43.0
-> >   
+> > This check is bogus. Just remove it completely.
 > 
+> This would be a separate patch though. IMHO mechanically converting to
+> dev_err_probe() is fine.
+
+Sure, that's what I meant. First patch to remove, followed by dev_err_probe()
+conversion.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
 
