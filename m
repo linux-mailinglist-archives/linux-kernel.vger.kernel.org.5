@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-48171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16AA5845838
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:54:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 274B484583A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:54:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD07B1C299DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:54:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CE971C29C1F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:54:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 336B139AF0;
-	Thu,  1 Feb 2024 12:53:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42ACF5337D;
+	Thu,  1 Feb 2024 12:53:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="yI0OXJ0T"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="FLckKJ25"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF3D786658
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 12:53:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E19365336C
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 12:53:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706791997; cv=none; b=b2lM87FjZxQNSfEW3C8hTVo7mud/gvWBj2tkPJIRUkZceFZvYGtKqqJgl85QzxZMC5Xc+atbwAx7r21UqmbOkbWuOHNatnAyyyqWjQZ69YYZ+FpmRinZNLp0rvquAAzxL3shOOFE2Vmvavi1yXm3jkZTFV3diTfp4agoAd6OpPM=
+	t=1706791998; cv=none; b=sMW3pjhsUPVIe7pRHB8RTdBJXk+i6l3Pk6E/sFQbUxDVSOSZ2VximRGKuq/iETkTTft86hnVxXi2c/E6tzN+Pvzd2Ptmdj0aEL3StHIkvzeRXdCwWLWeOx+AruSNh8Z4SgAOHL69DzqTNyXsfOZUAzaQwgxqJl1JTlCMJTKiepI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706791997; c=relaxed/simple;
-	bh=MYH+i/BtT+AMUARp16Q2uQJXlZ3LL8lZ/S/2XJY1/hY=;
+	s=arc-20240116; t=1706791998; c=relaxed/simple;
+	bh=soGWShtp1fE1scZOoOivLMJWWmkLBlGxzNtJ8q6CdrU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kThB1wdr6Q3q0mwRlvSejCJaae6ChP+CvYQ5O0KYXDGGpXqhCwSXmmWLAtmmhdC570UPwvX2gmxoIE9Oxp1nRjsTpDOOA8z2yeUh8/QuMpl/o8EAR3ZXFLnAs03vUa/ROYx0nxTRAUcTQ5XarJwlcVVIG+L2o6kbmignwkhvW6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=yI0OXJ0T; arc=none smtp.client-ip=46.235.227.194
+	 MIME-Version; b=jd7XVypZC7ZXH4aKRfKeV6Yo4GXVDQxTSD2iOLtByfoS5yPLj7bXkgxczPg8cNxZIPcvwzzh5XZhX0yb9arKbb9Je9TNWZ1Cbd7buVeRayymS0dmgcwH71jIIKpHpR2gsPG6WIBTs0dxbGW4hUx01yIMsnv0u1XwxMd2Ev4/7zk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=FLckKJ25; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706791994;
-	bh=MYH+i/BtT+AMUARp16Q2uQJXlZ3LL8lZ/S/2XJY1/hY=;
+	s=mail; t=1706791995;
+	bh=soGWShtp1fE1scZOoOivLMJWWmkLBlGxzNtJ8q6CdrU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=yI0OXJ0ThXQiHmKqKqrs85H1Pyh52sjE5BWediXGJgifnLTkgWwH9HOEUs9ahG3D6
-	 NJRhY9/awMkEDcptGzmnhtpVlGPgUru7Ot/2eg8qonpxgRlzlnXKCKM/KABHWXT/i8
-	 AM8td7pEJYZC23KvT0ER9gJyS5hDghc9CGdzVcolSOgCZIE3d0lG4o+mvng/br1P32
-	 4mmzRaQlZKyYKb5Ss4PxbElMbQoQb2t7ak673q8HB6PQMLmQ1DDT+7jzDadtadDsGa
-	 lXZYx3nVeXfsukdWIljxAhU8r/mFh4+fc1ojUGiL9qW0izyPlWgsqY/2YQNFeHt1cj
-	 GGQRNzSC4TIJw==
+	b=FLckKJ25YStrCwmV5MWq9MkI58ksS265iNzGTCslvCL7vXFE/iaCWN+y/AbxvW/wr
+	 /AWfHHLIw1Jj2gPYOyGWpMiGHNebUb0hqknVb2A1EdrIxi8+WK3OJqA6/zKuxHL81d
+	 gBAd7nCFnQW+KPC1BxbLJ9Z5V7iTkAQQps5Cw5C0xzhoLNRoDZm4carNn7fF8VgKlG
+	 5wUx/DJ5Fq0/S/0KDldTsfIM1TwkXWPu7v773LjRdSBRa+dWmc3JFjJDVoQLsRSt3T
+	 yFaaSqo0D5sMcwUCiB1xdYr6IDbSOlEzhLyvriE6h2i58sn/hmlm9TCZngXmW3bbIw
+	 NWp6Wy4es1BkQ==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 20AEA378208D;
-	Thu,  1 Feb 2024 12:53:13 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 48339378208F;
+	Thu,  1 Feb 2024 12:53:14 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: chunkuang.hu@kernel.org
 Cc: p.zabel@pengutronix.de,
@@ -63,9 +63,9 @@ Cc: p.zabel@pengutronix.de,
 	linux-arm-kernel@lists.infradead.org,
 	kernel@collabora.com,
 	wenst@chromium.org
-Subject: [PATCH 2/3] drm/mediatek: Perform iounmap on simple DDP component destruction
-Date: Thu,  1 Feb 2024 13:53:03 +0100
-Message-ID: <20240201125304.218467-3-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH 3/3] drm/mediatek: drm_ddp_comp: Add mtk_ddp_is_simple_comp() internal helper
+Date: Thu,  1 Feb 2024 13:53:04 +0100
+Message-ID: <20240201125304.218467-4-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240201125304.218467-1-angelogioacchino.delregno@collabora.com>
 References: <20240201125304.218467-1-angelogioacchino.delregno@collabora.com>
@@ -77,102 +77,96 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a new mtk_ddp_comp_destroy() function and call it in the teardown
-path of mtk_drm_drv to make sure that we unmap the iospace of the
-simple DDP components.
+Move the simple component check to a new mtk_ddp_is_simple_comp()
+internal helper to reduce code duplication.
 
-While at it, also fix iounmapping on mtk_ddp_comp_init() error path.
-
-Fixes: ff1395609e20 ("drm/mediatek: Move mtk_ddp_comp_init() from sub driver to DRM driver")
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 38 ++++++++++++++++++++-
- drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |  1 +
- drivers/gpu/drm/mediatek/mtk_drm_drv.c      |  4 ++-
- 3 files changed, 41 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 57 +++++++++++----------
+ 1 file changed, 31 insertions(+), 26 deletions(-)
 
 diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-index c13359eeb3cd..539b526a6b0a 100644
+index 539b526a6b0a..4ca2a02ada3c 100644
 --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
 +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-@@ -626,8 +626,11 @@ int mtk_ddp_comp_init(struct device_node *node, struct mtk_ddp_comp *comp,
- 
- 	priv->regs = of_iomap(node, 0);
- 	priv->clk = of_clk_get(node, 0);
--	if (IS_ERR(priv->clk))
-+	if (IS_ERR(priv->clk)) {
-+		iounmap(priv->regs);
-+		priv->regs = NULL;
- 		return PTR_ERR(priv->clk);
-+	}
- 
- #if IS_REACHABLE(CONFIG_MTK_CMDQ)
- 	ret = cmdq_dev_get_client_reg(comp->dev, &priv->cmdq_reg, 0);
-@@ -639,3 +642,36 @@ int mtk_ddp_comp_init(struct device_node *node, struct mtk_ddp_comp *comp,
- 
- 	return 0;
+@@ -575,6 +575,29 @@ unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
+ 	return ret;
  }
-+
-+void mtk_ddp_comp_destroy(struct mtk_ddp_comp *comp)
+ 
++static bool mtk_ddp_is_simple_comp(enum mtk_ddp_comp_type type)
 +{
-+	struct mtk_ddp_comp_dev *priv;
-+
-+	if (!comp || !comp->dev)
-+		return;
-+
-+	/* Complex components are destroyed with their own remove callback */
-+	if (type == MTK_DISP_AAL ||
-+	    type == MTK_DISP_BLS ||
-+	    type == MTK_DISP_CCORR ||
-+	    type == MTK_DISP_COLOR ||
-+	    type == MTK_DISP_GAMMA ||
-+	    type == MTK_DISP_MERGE ||
-+	    type == MTK_DISP_OVL ||
-+	    type == MTK_DISP_OVL_2L ||
-+	    type == MTK_DISP_PWM ||
-+	    type == MTK_DISP_RDMA ||
-+	    type == MTK_DPI ||
-+	    type == MTK_DP_INTF ||
-+	    type == MTK_DSI)
-+		return;
-+
-+	priv = dev_get_drvdata(comp->dev);
-+	if (!priv)
-+		return;
-+
-+	if (priv->regs) {
-+		iounmap(priv->regs);
-+		priv->regs = NULL;
++	switch (type) {
++	case MTK_DISP_AAL:
++	case MTK_DISP_BLS:
++	case MTK_DISP_CCORR:
++	case MTK_DISP_COLOR:
++	case MTK_DISP_GAMMA:
++	case MTK_DISP_MERGE:
++	case MTK_DISP_OVL:
++	case MTK_DISP_OVL_2L:
++	case MTK_DISP_OVL_ADAPTOR:
++	case MTK_DISP_PWM:
++	case MTK_DISP_RDMA:
++	case MTK_DP_INTF:
++	case MTK_DPI:
++	case MTK_DSI:
++		return false;
++	default:
++		return true;
 +	}
 +}
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-index 15b2eafff438..43372b416a3f 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-@@ -318,6 +318,7 @@ unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
- 						struct device *dev);
- int mtk_ddp_comp_init(struct device_node *comp_node, struct mtk_ddp_comp *comp,
- 		      unsigned int comp_id);
-+void mtk_ddp_comp_destroy(struct mtk_ddp_comp *comp);
- enum mtk_ddp_comp_type mtk_ddp_comp_get_type(unsigned int comp_id);
- void mtk_ddp_write(struct cmdq_pkt *cmdq_pkt, unsigned int value,
- 		   struct cmdq_client_reg *cmdq_reg, void __iomem *regs,
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index 14a1e0157cc4..89b6c31a1511 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -944,8 +944,10 @@ static void mtk_drm_remove(struct platform_device *pdev)
- 	component_master_del(&pdev->dev, &mtk_drm_ops);
- 	pm_runtime_disable(&pdev->dev);
- 	of_node_put(private->mutex_node);
--	for (i = 0; i < DDP_COMPONENT_DRM_ID_MAX; i++)
-+	for (i = 0; i < DDP_COMPONENT_DRM_ID_MAX; i++) {
-+		mtk_ddp_comp_destroy(&private->ddp_comp[i]);
- 		of_node_put(private->comp_node[i]);
-+	}
- }
++
+ int mtk_ddp_comp_init(struct device_node *node, struct mtk_ddp_comp *comp,
+ 		      unsigned int comp_id)
+ {
+@@ -605,19 +628,13 @@ int mtk_ddp_comp_init(struct device_node *node, struct mtk_ddp_comp *comp,
+ 	}
+ 	comp->dev = &comp_pdev->dev;
  
- static int mtk_drm_sys_prepare(struct device *dev)
+-	if (type == MTK_DISP_AAL ||
+-	    type == MTK_DISP_BLS ||
+-	    type == MTK_DISP_CCORR ||
+-	    type == MTK_DISP_COLOR ||
+-	    type == MTK_DISP_GAMMA ||
+-	    type == MTK_DISP_MERGE ||
+-	    type == MTK_DISP_OVL ||
+-	    type == MTK_DISP_OVL_2L ||
+-	    type == MTK_DISP_PWM ||
+-	    type == MTK_DISP_RDMA ||
+-	    type == MTK_DPI ||
+-	    type == MTK_DP_INTF ||
+-	    type == MTK_DSI)
++	/*
++	 * Resources for simple components are retrieved here as those are
++	 * managed in here without the need of more complex drivers; for
++	 * the latter, their respective probe function will do the job, so
++	 * we must avoid getting their resources here.
++	 */
++	if (!mtk_ddp_is_simple_comp(type))
+ 		return 0;
+ 
+ 	priv = devm_kzalloc(comp->dev, sizeof(*priv), GFP_KERNEL);
+@@ -651,19 +668,7 @@ void mtk_ddp_comp_destroy(struct mtk_ddp_comp *comp)
+ 		return;
+ 
+ 	/* Complex components are destroyed with their own remove callback */
+-	if (type == MTK_DISP_AAL ||
+-	    type == MTK_DISP_BLS ||
+-	    type == MTK_DISP_CCORR ||
+-	    type == MTK_DISP_COLOR ||
+-	    type == MTK_DISP_GAMMA ||
+-	    type == MTK_DISP_MERGE ||
+-	    type == MTK_DISP_OVL ||
+-	    type == MTK_DISP_OVL_2L ||
+-	    type == MTK_DISP_PWM ||
+-	    type == MTK_DISP_RDMA ||
+-	    type == MTK_DPI ||
+-	    type == MTK_DP_INTF ||
+-	    type == MTK_DSI)
++	if (!mtk_ddp_is_simple_comp(mtk_ddp_matches[comp->id].type))
+ 		return;
+ 
+ 	priv = dev_get_drvdata(comp->dev);
 -- 
 2.43.0
 
