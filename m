@@ -1,124 +1,122 @@
-Return-Path: <linux-kernel+bounces-47763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 218B084527C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:15:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDEEF845283
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:17:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB5681F23A97
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:15:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28A9E1C27ACD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:17:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8392D159574;
-	Thu,  1 Feb 2024 08:15:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD1A1158D88;
+	Thu,  1 Feb 2024 08:17:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JJazJQD5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="V9Q5Y2kL"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5E751586D3;
-	Thu,  1 Feb 2024 08:15:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9406943AC0;
+	Thu,  1 Feb 2024 08:17:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706775328; cv=none; b=XsoWrh/1oocE3sGsZTlMEIE94sCeIWoBVkhDc4RIZM0i4LZZBLo6pbxoxE1QuQfB83RXgXWzka3B1PzOVefarngqSqtTPt7iG+NyY0OU0sDZEpFuMlQ78D5A8FabP+wHaU0GZd6L/90AIrU0my1DJAsCdc4OWbeP36yij6MWkq4=
+	t=1706775427; cv=none; b=X8jQ/3jFZ4JT7d2kZLRqibCz1pmZOEUKeLiZeraCql9Drqh3lfjE02kMgYTQaiI/oH9zBTjebsDHp6Ro88jHMzUHt9Ieb+bNChX9iv80gKT6ErG2sdXqc1QdwPm/KqiptwgWsP8FBrFOJzNmOM7KHwVg5BIDfTbyi4F62OzbwDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706775328; c=relaxed/simple;
-	bh=kkm9m85BchBsg8gyaeBqfM19x9yX2lcmT5vikkpEihs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YKgA3hCTsJs9R/OOyJ8MwBC8G9110B6QaOaSb5VBVrtT/PvG/dUR1W1qlbMqRCTgEyzZ/6y5yXJXkYgbU+AhYNaEWyIMDeEqR3WIphj72wOE9CMsksy69uYiFvk8gOh8hTJZnmhphZjMKDCjJaxZYJBEc1DG8sFimRrbOPgfkvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JJazJQD5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 383F0C433F1;
-	Thu,  1 Feb 2024 08:15:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706775328;
-	bh=kkm9m85BchBsg8gyaeBqfM19x9yX2lcmT5vikkpEihs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JJazJQD5szwbMpJjuDL/t7jXeKWf6+Ijqym93J1qnpgke0tVyOxVGhkhGQFkiGNMs
-	 ttaJMhC3XyipqNfXK08pO9FnS61CrIyGPPBH4wVfW/bJuM7EsOaH045gKDD/TMzJvQ
-	 R11u5YQ6YkJeqv5I1kqMnS9GOBmnbyLp1wdhVro6D1B10HLyGxrpILn3YsmL3Y9Wel
-	 wGBTYcn+Qh5DdzVM5V76DhXN3LnA5AhGZqMFPY6AJvQw7R8pDsNA8jsXTF48Ue0DNO
-	 kyhpohL1nC3ewZJARLrTUVm5OZJnTB3RbyhMnxekBaRtcSEITFl9uy0Qv2u2qtE5sq
-	 U/+pdea5NfSnQ==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rVSEL-000000005lV-1gxB;
-	Thu, 01 Feb 2024 09:15:29 +0100
-Date: Thu, 1 Feb 2024 09:15:29 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Cc: Bjorn Andersson <quic_bjorande@quicinc.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-	Jiri Kosina <jikos@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Konrad Dybcio <konrad.dybcio@somainline.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v3 1/2] dt-bindings: HID: i2c-hid: Document reset-related
- properties
-Message-ID: <ZbtTIYFzMVLMxb10@hovoldconsulting.com>
-References: <20240129-x13s-touchscreen-v3-0-c4a933034145@quicinc.com>
- <20240129-x13s-touchscreen-v3-1-c4a933034145@quicinc.com>
- <ZbfYzyHaNmjJyNpY@hovoldconsulting.com>
- <20240131202239.GA2222869-robh@kernel.org>
+	s=arc-20240116; t=1706775427; c=relaxed/simple;
+	bh=lgBMpNmuZS58C3wWqdInFJ2/en+rrDKUD9rdFLLWX2M=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lxpAzXcDk6ywtipVZFI6qBOeCbf+3tXANKmeUlJAiLTiiNPjfLpuvITv9El4TQ+rPcAinASg6eccvGV6tiYLGS4YSVfTYQ3niJc3b5oKuXBAmMgO4eqQTgi6TIZs0FRGq6BryfJl+zpopG5LhdhuJUKJzIwLX9hs6PpaQP0U9IA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=V9Q5Y2kL; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706775425; x=1738311425;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=lgBMpNmuZS58C3wWqdInFJ2/en+rrDKUD9rdFLLWX2M=;
+  b=V9Q5Y2kLRCCFpdss2/+3MRFn7W19Pw0d1QdJOHCZOYqcti6X2Q0h9NfD
+   lCQRtBnOPNw5rRmnVHQPuZN2oOAmkfPQnAjulp6gMNS2GxbZBryWBh1nQ
+   KBRYw4KtSrlrNdYu1pIJGWqcn9tjd4ZY8l0V2Jrw48q2waSI6LBu+LrP/
+   WlTND9fvCZnjW641GWi3qUBwjqQSYWG2M6sQDVeQ3RNJGlTYEZDghsi8f
+   kJJIAsq1extPF9iHVJngtPNt/KAd+jUwNCY2P9X53NqGe5yUJ5x0xHvHY
+   v3rGZT9PSITl3Ugm+0qhVqjAkA8ERmAMMeLofrab5X7BmsXeA3xmiQi7W
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="11217331"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="11217331"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 00:17:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="908169066"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="908169066"
+Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.localnet) ([10.213.21.108])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 00:17:02 -0800
+From: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
+To: Peter Zijlstra <peterz@infradead.org>, dan.j.williams@intel.com,
+ Dan Williams <dan.j.williams@intel.com>
+Cc: linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+ linux-cxl@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [RFC PATCH v3] cleanup: Add cond_guard() to conditional guards
+Date: Thu, 01 Feb 2024 09:16:59 +0100
+Message-ID: <1785013.VLH7GnMWUR@fdefranc-mobl3>
+Organization: intel
+In-Reply-To: <65baefec49c1a_4e7f52946b@dwillia2-xfh.jf.intel.com.notmuch>
+References:
+ <20240131134108.423258-1-fabio.maria.de.francesco@linux.intel.com>
+ <6168759.DvuYhMxLoT@fdefranc-mobl3>
+ <65baefec49c1a_4e7f52946b@dwillia2-xfh.jf.intel.com.notmuch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131202239.GA2222869-robh@kernel.org>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, Jan 31, 2024 at 02:22:39PM -0600, Rob Herring wrote:
-> On Mon, Jan 29, 2024 at 05:56:47PM +0100, Johan Hovold wrote:
-> > On Mon, Jan 29, 2024 at 08:47:47AM -0800, Bjorn Andersson wrote:
-> > > Some I2C HID devices has a reset pin and requires that some specified
-> > > time elapses after this reset pin is deasserted, before communication
-> > > with the device is attempted.
-> > > 
-> > > The Linux implementation is looking for these in the "reset-gpios" and
-> > > "post-reset-deassert-delay-ms" properties already, so use these property
-> > > names.
-> > 
-> > > +  post-reset-deassert-delay-ms:
-> > > +    description: Time required by the device after reset has been deasserted,
-> > > +      before it is ready for communication.
-> > > +
-> > > +  reset-gpios: true
-> > 
-> > Hmm, for the third time, it seems you ignored my comment that you need
-> > to remove the comment about these properties from the driver as part of
-> > this series.
-> > 
-> > 	/*
-> > 	 * Note this is a kernel internal device-property set by x86 platform code,
-> > 	 * this MUST not be used in devicetree files without first adding it to
-> > 	 * the DT bindings.
-> > 	 */
-> > 	if (!device_property_read_u32(dev, "post-reset-deassert-delay-ms", &val))
-> > 		ihid_of->post_reset_delay_ms = val;
+On Thursday, 1 February 2024 02:12:12 CET Dan Williams wrote:
+> Fabio M. De Francesco wrote:
+> > I just noticed that this is not the final version. It misses a semicolon.
+> > Please discard this v3. I'm sending v4.
 > 
-> DT devices should have a specific compatible that gives enough detail to 
-> handle this delay or *any* other power sequencing requirement.
-> 
-> OTOH, we've already got one other delay property, what's one more. Sigh.
-> 
-> Acked-by: Rob Herring <robh@kernel.org>
+> Ok, but do please copy the aspect of scoped_conf_guard() to take a
+> "_fail" statement argument. Passing a return code collector variable by
+> reference just feels a bit too magical. I like the explicitness of
+> passing the statement directly.
 
-Right, and I guess we could do this now before this new property gets
-more use. Who knows if those delays are actually correct or may need to
-be tweaked down the line.
+I had introduced a bug in my tests that made me see failures when there were 
+not. Now I fixed it and tests don't fail.
 
-Apparently we only have one specific i2c-hid compatible in the kernel
-(and it's not yet used by the driver).
+I'm sending a new version that passes the return variable directly, not as a 
+reference, similar but not equal to:
 
-Johan
+	cond_guard(..., rc, -EINTR, ...);
+
+Actually, I'm doing this:
+
+	cond_guard(..., rc, 0, -EINTR, ...);
+
+I'm not passing 'rc = -EINTR' because I want to take into account the 
+possibility that rc contains values different than 0 from previous assignments. 
+I'm passing rc, so that the macro can assign either a success code or a 
+failure error to this variable. Any value from previous assignments must be 
+always overwritten: 
+
+	#define cond_guard(_name, _ret, _scs, _err, args...) \
+        	CLASS(_name, scope)(args); \
+        	if (!__guard_ptr(_name)(&scope)) _ret = _err; \
+        	else _ret = _scs;
+
+I should have seen long ago that my tests were failing because of a missing 
+'else' when passing a statement in 'cond_guard(..., rc = -EINTR, ...);'. It 
+had nothing to do with how to pass 'rc'. Sorry for that confusion.
+
+Fabio
+
+Fabio 
+
+
 
