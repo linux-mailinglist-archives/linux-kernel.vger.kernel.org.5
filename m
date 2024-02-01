@@ -1,129 +1,116 @@
-Return-Path: <linux-kernel+bounces-48584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D637A845E73
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:24:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70C32845E66
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:22:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7530A1F24E3B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:24:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 244DA1F233CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:22:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AB0A5E3A8;
-	Thu,  1 Feb 2024 17:23:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="UmpFDUEY"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1553A5B058;
+	Thu,  1 Feb 2024 17:22:27 +0000 (UTC)
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D0DE63098
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 17:22:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F92C5B046
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 17:22:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706808181; cv=none; b=t9h7/hNXHpPj+wbL4mCBz61HVBXKzwi8+DRT5/kv5zw9P8G5sh58lCKBD9JSXb97AvnXE5S3RugPpgxEXMHbYtuEWVQ8ooznUFi6fn9MYjmK79a5HgNQtuFYZlw5tuWcA7DqV1BKkcvgR504t0NzC8EExSv1alf+rb6cLdo0ADc=
+	t=1706808146; cv=none; b=jz7OJwtNHALFVBzG/QHHz9LPXocKL/RAs4Z6OgTJCQtkL2/72vKCX1D6/eybZ47TRn67pBXtQ3oVgUU9ia1ZCoFtZpbCbpV8eMD9bb9JPzCew4PjrT10f1YnJmh9QtZVDnw7Mf5EyX/Ah3Eawygwhym2iGy3FrWSA1J43HluZ+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706808181; c=relaxed/simple;
-	bh=SjzQZTD+sIbiu6w9HzyUneWmrJHrZfAbUcEvaaBl5Rc=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=L0QVz1lqPQuGDDewfui5Tdgh/MrdooVTj5uyWGiS8WOQzjYMq5g5cUjQXgzklLGra/43tHuuaF6wWKH6weaMML9DMwZr82LVrOmrSTbQtJ6AEOqx2xu0MrSWFHbbEv0ArlDnATHz8fGhNqteFVWUikA81YJ3HLXRAi2A6uuIJVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=UmpFDUEY; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [127.0.0.1] ([76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 411HMB4D4123592
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Thu, 1 Feb 2024 09:22:12 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 411HMB4D4123592
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024011201; t=1706808133;
-	bh=qDm9VDWqRsWDkKkO2YQaFYPv/FOs5ua9dgqvY62NzlE=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=UmpFDUEYl3+HEiif9hUV7hvuzkJSK+BxPCg7Gs83v/h0mQE0ZnDfrxX4o0TH31ugc
-	 GaUC+SVRQ6GZobJAiC+hGRTM5+WFD1HkRPmxrs1qFXt6PpKIRGaGyIcCBarCJuWR9N
-	 o6YDDKkpIvXeD0ZmlyTMy8xEuDH8hRUCav5Dfq1kVkIpHBywZgdT7778ZEPBTW6Vwi
-	 IypLNKbOfcXmn5SjfwePABKBBzLrFyt0jhKAoJyjWP/8Ewa+vyQLQfW1YmbuDQNh9r
-	 yGxbBY0ENg41LzYDG803Ail7CggJQBwNg1V3E3JgljPhqXQWGEclIimQIiPdpAifeQ
-	 2V9cq242161sg==
-Date: Thu, 01 Feb 2024 09:22:09 -0800
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: =?UTF-8?B?Tk9NVVJBIEpVTklDSEko6YeO5p2R44CA5rez5LiAKQ==?= <junichi.nomura@nec.com>,
-        Borislav Petkov <bp@alien8.de>
-CC: "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "ardb@kernel.org" <ardb@kernel.org>,
-        "david@redhat.com" <david@redhat.com>,
-        "nikunj@amd.com" <nikunj@amd.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "debarbos@redhat.com" <debarbos@redhat.com>,
-        "jlelli@redhat.com" <jlelli@redhat.com>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
-        "dzickus@redhat.com" <dzickus@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] x86/boot: Add a message about ignored early NMIs
-User-Agent: K-9 Mail for Android
-In-Reply-To: <TYCPR01MB83890E6AAACF90C3A45A8E0F83792@TYCPR01MB8389.jpnprd01.prod.outlook.com>
-References: <ZaEe8FC767f+sxRQ@jeru.linux.bs1.fc.nec.co.jp> <20240112120616.5zjojjmjeqg5egb7@box> <ZaTziftQSSg/v5Np@jeru.linux.bs1.fc.nec.co.jp> <20240123112624.GBZa-iYP1l9SSYtr-V@fat_crate.local> <TYCPR01MB8389C46BF755C31EACE8DB37837B2@TYCPR01MB8389.jpnprd01.prod.outlook.com> <c0527ca3-22c3-4b92-a34f-adf0cae78146@zytor.com> <TYCPR01MB83890E6AAACF90C3A45A8E0F83792@TYCPR01MB8389.jpnprd01.prod.outlook.com>
-Message-ID: <411D32E2-4D7F-457A-B61A-731E1264CAA8@zytor.com>
+	s=arc-20240116; t=1706808146; c=relaxed/simple;
+	bh=rHZbjNL8tRxKipsBLSqjYxs8COfcgDSsNiRrJZJBiFw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Icnpjmw+GaY1fVnD7D9tW8iS1H6foC/HatnSNgsfDpedl2EM2teYRHs0s4jSX8lmTuYQFFNgjJBpHM3LOeiceDHWrSHHHdKIYuWiTuUGW35f1y67A2N/I5ICv4bpj6QUgNXw9NQZOVtgyWV1/2TX5eA5uQMZCJsKn5fFeUphZKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso1017715a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 09:22:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706808143; x=1707412943;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aZtAaumIvU3IAWyjvvbYXJr6tn3IceIszOO9KSScbmk=;
+        b=AEvRRM+xTYySNG1QROtEZTpu57tZcZ7NapUXrRBrEjrUBVhtOCasWL2m5n0Ife4M1z
+         oAyWf7cPvPs2eBsqmUxP1UqYqRbXkvPqiyiM3zkBpUjji4dpTJnGv9JHj6xNM1H1QKun
+         LVfMr3tuVNLgni83NUuJ9CI6ZeGPJ3dvZcY22tQSl13KagVuCaxM90JUsqAF5prnwEJZ
+         HQyBUHbdd65oaw9JcvAlIAGxVXBllt2DqzUcKiUV0wUHUqkmf1VRvvwWBI3DgLBArHuk
+         sJ1JGea3sjCMrbU5wQZDFdmVDrNK94Drq9IAUX6v0ZO/eckKM6/7AmHD/jfM83PRwqdC
+         +Tnw==
+X-Gm-Message-State: AOJu0YxfJswUSmLl0lYmkM1iFLMHtMr/S4nfzHcD/b8R8avvI7822Q5l
+	LCBL6A3LBlCj9GVVmnT9Ywy6Pfb+CG+tDqcIfBMYaECdmBFQike2Ohl0y0Xu
+X-Google-Smtp-Source: AGHT+IGxifk4iveoBRmwTjYQ06upWNmNzxZw/szV4Bov7vw6rxSIlqMjtU+h01kkSVVWtsgm4hROEg==
+X-Received: by 2002:a05:6a20:b3a9:b0:19c:a7e2:c1d6 with SMTP id eg41-20020a056a20b3a900b0019ca7e2c1d6mr4971130pzb.25.1706808143369;
+        Thu, 01 Feb 2024 09:22:23 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVFQrXyxOIpQOPuCQCiME6pADWOWifdCiqBlBAdNJ+VYjaEnr2CaZ5MnUI6rKgYI54KL0kQMGXubBd5+o9y7H+bDbGsPHisFtM/sYfNi5nSgsTzC96ckjVREz/cDWd8fj7g55H5twtVAkOuRVThcXJCc+O8TVFAfy3pbUc4imCfRMcTikQ76pMi3SL6NklLUINxoZG1BSGTOIBCe8tUbVPKaa36mjTy4H1mo99vGVGRw2yaBSqYwT+VbCvnnTpVPZP0bnQLxrki0HhwwNix69Pj41fdKA43hXZzbPJJiGk3ACp3LMNJtoH5
+Received: from ?IPV6:2620:0:1000:8411:170e:a1a5:1887:adb2? ([2620:0:1000:8411:170e:a1a5:1887:adb2])
+        by smtp.gmail.com with ESMTPSA id n13-20020a056a000d4d00b006dddd5cc47csm12098253pfv.157.2024.02.01.09.22.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Feb 2024 09:22:22 -0800 (PST)
+Message-ID: <2d1f4f16-6d66-4449-a7b7-5e2b2a4eaeb3@acm.org>
+Date: Thu, 1 Feb 2024 09:22:20 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2] lockdep: fix deadlock issue between lockdep and rcu
+Content-Language: en-US
+To: Zhiguo Niu <zhiguo.niu@unisoc.com>, peterz@infradead.org,
+ mingo@redhat.com, will@kernel.org, longman@redhat.com, boqun.feng@gmail.com
+Cc: linux-kernel@vger.kernel.org, niuzhiguo84@gmail.com, ke.wang@unisoc.com,
+ xuewen.yan@unisoc.com, Carlos Llamas <cmllamas@google.com>
+References: <1705477714-10467-1-git-send-email-zhiguo.niu@unisoc.com>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <1705477714-10467-1-git-send-email-zhiguo.niu@unisoc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On January 25, 2024 6:15:15 PM PST, "NOMURA JUNICHI(=E9=87=8E=E6=9D=91=E3=
-=80=80=E6=B7=B3=E4=B8=80)" <junichi=2Enomura@nec=2Ecom> wrote:
->> From: H=2E Peter Anvin <hpa@zytor=2Ecom>
->> On 1/24/24 03:44, NOMURA JUNICHI(=E9=87=8E=E6=9D=91 =E6=B7=B3=E4=B8=80)=
- wrote:
->> >> From: Borislav Petkov <bp@alien8=2Ede>
->> >> On Mon, Jan 15, 2024 at 08:57:45AM +0000, NOMURA JUNICHI(=E9=87=8E=
-=E6=9D=91 =E6=B7=B3=E4=B8=80) wrote:
->> >>> +	if (spurious_nmi_count) {
->> >>> +		error_putstr("Spurious early NMI ignored=2E Number of NMIs: 0x")=
-;
->> >>> +		error_puthex(spurious_nmi_count);
->> >>> +		error_putstr("\n");
->> >>
->> >> Uff, that's just silly:
->> >>
->> >> Spurious early NMIs ignored: 0x0000000000000017
->> >>
->> >> Would you like to add a error_putnum() or so in a prepatch which wou=
-ld
->> >> make this output
->> >>
->> >> Spurious early NMIs ignored: 23=2E
->> >>
->> >> ?
->> >>
->> >> So that it is human readable and doesn't make me wonder what that he=
-x
->> >> value is supposed to mean?
->> >
->> > Yes, it would be nicer to print that way=2E  I used the existing erro=
-r_puthex() just
->> > to keep the patch minimal=2E  I will try to add error_putnum()=2E
->> >
->> >> Btw, please use this version when sending next time:
->>=20
->> Here is a *completely* untested patch for you=2E=2E=2E
->
->Ah, I was preparing decimal only version but yours is much better=2E
->I tested and it just works=2E
->
->I would like to use yours as a prepatch=2E  May I have your signed-off-by=
-?
->
->--
->Jun'ichi Nomura, NEC Corporation / NEC Solution Innovators, Ltd=2E
+On 1/16/24 23:48, Zhiguo Niu wrote:
+> There is a deadlock scenario between lockdep and rcu when
+> rcu nocb feature is enabled, just as following call stack:
 
-Signed-off-by: H=2E Peter Anvin (Intel) <hpa@zytor=2Ecom>
+Is it necessary to support lockdep for this kernel configuration or should we
+rather forbid this combination by changing lib/Kconfig.debug?
+
+>   /*
+> - * Schedule an RCU callback if no RCU callback is pending. Must be called with
+> - * the graph lock held.
+> - */
+> -static void call_rcu_zapped(struct pending_free *pf)
+> +* See if we need to queue an RCU callback, must called with
+> +* the lockdep lock held, returns false if either we don't have
+> +* any pending free or the callback is already scheduled.
+> +* Otherwise, a call_rcu() must follow this function call.
+> +*/
+
+Why has the name been changed from "graph lock" into "lockdep lock"? I think
+elsewhere in this source file it is called the "graph lock".
+
+>   	/*
+> -	 * If there's anything on the open list, close and start a new callback.
+> -	 */
+> -	call_rcu_zapped(delayed_free.pf + delayed_free.index);
+> +	* If there's anything on the open list, close and start a new callback.
+> +	*/
+> +	if (need_callback)
+> +		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
+
+The comment above the if-statement refers to the call_rcu_zapped() function
+while call_rcu_zapped() has been changed into call_rcu(). So the comment is
+now incorrect.
+
+Additionally, what guarantees that the above code won't be triggered
+concurrently from two different threads? As you may know calling call_rcu()
+twice before the callback has been started is not allowed. I think that can
+happen with the above code.
+
+Bart.
 
