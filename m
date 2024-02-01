@@ -1,107 +1,204 @@
-Return-Path: <linux-kernel+bounces-47495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BDFD844EA4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:26:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 828BB844EA6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:27:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3974E1C28209
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:26:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15E581F2CA03
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:27:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27FF4442D;
-	Thu,  1 Feb 2024 01:25:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1CE54A26;
+	Thu,  1 Feb 2024 01:27:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VRYRA8v8"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="mjg46Iif"
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C99474417;
-	Thu,  1 Feb 2024 01:25:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BCDA4403
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 01:27:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706750755; cv=none; b=OpR3fhquI0vh1VO+Gf5f73UiclUOi8jlTOCVsOLMhQn4I2z6DncrOPNloeW6lcRsL26KEkuhDz6ahLiACiLfkkjulIQC8yG1dgVPpFBwr2OmgDbxwzfY+g1VcQNPW5ABfXlO7j3OEY5Ng75X++dTdxTcNPCo7LjGkCtIljjaaeA=
+	t=1706750845; cv=none; b=Zf+c6B+r5n+MFpCna94W4sRZwNtc5mx9C1R2vDf/je/aqp8FYxt4B2JT0DOvoD32Uqa8B0XNduO5X+aGsjpWMZxvPLvFhyRz5HaH9btWnEofpOKCbFUg0dhEImgS8quhtOl6pZwB6AWHw2RJ+eXwPpJxXgjaTVeJOsLYcHYJAiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706750755; c=relaxed/simple;
-	bh=frfQKxLoEzeMVr6mq09w8CamaELprKykJ2MCygBUcGY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=G6rMyU8KUA2r8tbRgk+ZjPTIG0dhTUB0xypLhUoFctRUjYM0W4EurhG+iefTKvPta5iPIXLe6/pAz0ZqzEQb/0UKuiHty6c9CI050MVMJ728Z/XSE8BGq+CpjTChfbTcPNVF7NP9MeuvQ/5cdvSs6RU3jvXp9klo1jCG5j7wp2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VRYRA8v8; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706750754; x=1738286754;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=frfQKxLoEzeMVr6mq09w8CamaELprKykJ2MCygBUcGY=;
-  b=VRYRA8v8W3/xOxU4OMWpDLNxUXVv/ZV18O2BTv+4IfhNLp9T0kiQBaiK
-   V0NHHX239i55NNuMNZvvNc6eXsEh5oXM9f0dSvfpT7I8UpII7uCvMfv6M
-   wOHMT1UDAPbBPMRcoiThGWMUHFT8watFJbto69DzLxsJn71Zx4v/05rA+
-   VFPbui9GFKv96NE3qsizAFmxaOksJLFp8IeDm+B9XMtqEzps1jJzYLeeb
-   48oacYvn5Ufe2afDCyV6K0RFeue4a+RJQsabteL7ppNV3jYT/Ltyo1laA
-   QZOt8+UGXShy1PIIeM2MQNsQj/6UJDQ0lg2RNfJp5y0vEmxh/slsmSghU
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3614805"
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="3614805"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 17:25:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="911975143"
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="911975143"
-Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.localnet) ([10.213.21.45])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 17:25:49 -0800
-From: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
-To: Peter Zijlstra <peterz@infradead.org>,
- Dan Williams <dan.j.williams@intel.com>
-Cc: linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
- linux-cxl@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>
-Subject: Re: [RFC PATCH v3] cleanup: Add cond_guard() to conditional guards
-Date: Thu, 01 Feb 2024 02:25:46 +0100
-Message-ID: <5284664.GXAFRqVoOG@fdefranc-mobl3>
-Organization: intel
-In-Reply-To: <65baefec49c1a_4e7f52946b@dwillia2-xfh.jf.intel.com.notmuch>
-References:
- <20240131134108.423258-1-fabio.maria.de.francesco@linux.intel.com>
- <6168759.DvuYhMxLoT@fdefranc-mobl3>
- <65baefec49c1a_4e7f52946b@dwillia2-xfh.jf.intel.com.notmuch>
+	s=arc-20240116; t=1706750845; c=relaxed/simple;
+	bh=BQfrkfnAjRHW3tpPJSA0bCjLjUMIPrCPNnB/AXFgCO0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=pWl+4PgUMJL8QTbjZbtTqxX3+VM5Uxp2qAOxVSCVXxI0Zib6KwLH4QhdcE+LEj+czyPcXljyZcOnDW5+ouCtrwTvjpIzpKvvb0iSHwsVoIIPrrPNSdjAytbSPhqvALJlL2nnU+vM4FnF4rnyB3NbZKrAWfW0N5/GaYuyAAU7lz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=mjg46Iif; arc=none smtp.client-ip=209.85.161.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-594cb19c5d9so624712eaf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:27:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706750843; x=1707355643; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sDzJ7JgQvwxL4RB0XYtG8kPAD5jbJ2pvE+FQi7xvQPU=;
+        b=mjg46Iifo7aTLzPS5SP/EHQpyYgBjzADJcvv2oA8/jHWI0nJ0NmnJ51XFM/7rNTuso
+         YKQlmabt8guNijLJpUkNalvermaVyTKU3530A4aBTG5b+Apyx34EeAdAzAtOlCM6yEYv
+         lXhW2oZkcpjKFayh2gNph3nv6XYbg4K7UmGho=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706750843; x=1707355643;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sDzJ7JgQvwxL4RB0XYtG8kPAD5jbJ2pvE+FQi7xvQPU=;
+        b=i64DmafvmLcNbSk98QG+Y7GTuh2gpjLiQUC2UHRpfq1NZIcZHvKeKC6S1NLncJne0O
+         f4a9CX9dNGtKjmQLQw3zCwHfHGIxBbuapTnDWpLa3p9ecIDaZardzQ1p5ekvICkbzFrf
+         0K7chImGsHPl3ua1kX8J8YvTxMwYvEXG+lMC4/EDaepSOwfhUM/7C39hy6Xcy+5PXPHu
+         i1VsQ/bqOnbchUdFHPx53dSXgHEqQzZV4KAFMyXlWURvny46m+d/kxZVGJnnGCEZr2Je
+         JxLvrkEWLUEsfmFfrO9+7/Nurp6g8eq/gQIuP7LELUg78KmbSXVjZ2RnqGpITbhNiPXD
+         OZ+A==
+X-Gm-Message-State: AOJu0YznEkECx50oQqbmXBbODv30mtFLhQhRE+xzmz0QbYqNH39+Ee1n
+	IY/O2Ix+aekVA/eBoZ1534kG6+zfzRoWdNjSEYflh0lY2YFE5W2+5rUhLYDH+itVOSIrP1poyq4
+	TU3jqgwwJwtszr4raRX9Bn8IbuFoomVS23pj7
+X-Google-Smtp-Source: AGHT+IE9K01TCTZhsWGjePujNgbATRhQaKALuXvW0OHXOMwQOD3gFk7KgtXrb7TM6FbH4tdFNU0N+tvMZqAhTTCe8YA=
+X-Received: by 2002:a05:6871:a417:b0:210:dcdc:be39 with SMTP id
+ vz23-20020a056871a41700b00210dcdcbe39mr1311243oab.20.1706750843175; Wed, 31
+ Jan 2024 17:27:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver>
+In-Reply-To: <20240131193411.opisg5yoyxkwoyil@revolver>
+From: Jeff Xu <jeffxu@chromium.org>
+Date: Wed, 31 Jan 2024 17:27:11 -0800
+Message-ID: <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
+Subject: Re: [PATCH v8 0/4] Introduce mseal
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, jeffxu@chromium.org, 
+	Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org, keescook@chromium.org, 
+	jannh@google.com, sroettger@google.com, willy@infradead.org, 
+	gregkh@linuxfoundation.org, torvalds@linux-foundation.org, 
+	usama.anjum@collabora.com, rdunlap@infradead.org, jeffxu@google.com, 
+	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
+	dave.hansen@intel.com, linux-hardening@vger.kernel.org, deraadt@openbsd.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thursday, 1 February 2024 02:12:12 CET Dan Williams wrote:
-> Fabio M. De Francesco wrote:
-> > I just noticed that this is not the final version. It misses a semicolon.
-> > Please discard this v3. I'm sending v4.
-> 
-> Ok, but do please copy the aspect of scoped_conf_guard() to take a
-> "_fail" statement argument. Passing a return code collector variable by
-> reference just feels a bit too magical. I like the explicitness of
-> passing the statement directly.
+On Wed, Jan 31, 2024 at 11:34=E2=80=AFAM Liam R. Howlett
+<Liam.Howlett@oracle.com> wrote:
+>
+> Please add me to the Cc list of these patches.
+Ok.
+>
+> * jeffxu@chromium.org <jeffxu@chromium.org> [240131 12:50]:
+> > From: Jeff Xu <jeffxu@chromium.org>
+> >
+> > This patchset proposes a new mseal() syscall for the Linux kernel.
+> >
+> > In a nutshell, mseal() protects the VMAs of a given virtual memory
+> > range against modifications, such as changes to their permission bits.
+> >
+> > Modern CPUs support memory permissions, such as the read/write (RW)
+> > and no-execute (NX) bits. Linux has supported NX since the release of
+> > kernel version 2.6.8 in August 2004 [1]. The memory permission feature
+> > improves the security stance on memory corruption bugs, as an attacker
+> > cannot simply write to arbitrary memory and point the code to it. The
+> > memory must be marked with the X bit, or else an exception will occur.
+> > Internally, the kernel maintains the memory permissions in a data
+> > structure called VMA (vm_area_struct). mseal() additionally protects
+> > the VMA itself is against modifications of the selected seal type.
+>
+> ... The v8 cut Jonathan's email discussion [1] off and
+> instead of
+> replying there, I'm going to add my question here.
+>
+> The best plan to ensure it is a general safety measure for all of linux
+> is to work with the community before it lands upstream.  It's much
+> harder to change functionality provided to users after it is upstream.
+> I'm happy to hear google is super excited about sharing this, but so
+> far, the community isn't as excited.
+>
+> It seems Theo has a lot of experience trying to add a feature very close
+> to what you are doing and has real data on how this went [2].  Can we
+> see if there is a solution that is, at least, different enough from what
+> he tried to do for a shot of success?  Do we have anyone in the
+> toolchain groups that sees this working well?  If this means Stephen
+> needs to do something, can we get that to happen please?
+>
+For Theo's input from OpenBSD's perspective;
+IIUC: as today, the mseal-Linux and mimmutable-OpenBSD has the same
+scope on what operations to seal, e.g. considering the progress made
+on both sides since the beginning of the RFC:
+- mseal(Linux): dropped "multiple-bit" approach.
+- mimmutable(OpenBSD): Dropped "downgradable"; Added madvise(DONOTNEED).
 
-I'm sorry I haven't been clear. The following call convention fails my tests:
+The difference is in mmap(), i.e.
+- mseal(Linux): support of PROT_SEAL in mmap().
+- mseal(Linux): use of MAP_SEALABLE in mmap().
 
-	cond_guard(..., rc = -EINTR, ...);
+I considered Theo's inputs from OpenBSD's perspective regarding the
+difference, and I wasn't convinced that Linux should remove these. In
+my view, those are two different kernels code, and the difference in
+Linux is not added without reasons (for MAP_SEALABLE, there is a note
+in the documentation section with details).
 
-It always returns -EINTR, regardless of the success of 
-down_read_interuptible(). There must be a reason that I can't see.
+I would love to hear more from Linux developers on this.
 
-It works only if we immediaely return an error code: 
+> I mean, you specifically state that this is a 'very specific
+> requirement' in your cover letter.  Does this mean even other browsers
+> have no use for it?
+>
+No, I don=E2=80=99t mean =E2=80=9Cother browsers have no use for it=E2=80=
+=9D.
 
-	cond_guard(..., return -EINTR, ...);
+About specific requirements from Chrome, that refers to "The lifetime
+of those mappings are not tied to the lifetime of the process, which
+is not the case of libc" as in the cover letter. This addition to the
+cover letter was made in V3, thus, it might be beneficial to provide
+additional context to help answer the question.
 
-But this is not what we want since we want to check 'rc'.
+This patch series begins with multiple-bit approaches (v1,v2,v3), the
+rationale for this is that I am uncertain if Chrome's specific needs
+are common enough for other use cases.  Consequently, I am unable to
+make this decision myself without input from the community. To
+accommodate this, multiple bits are selected initially due to their
+adaptability.
 
-Fabio
+Since V1, after hearing from the community, Chrome has changed its
+design (no longer relying on separating out mprotect), and Linus
+acknowledged the defect of madvise(DONOTNEED) [1]. With those inputs,
+today mseal() has a simple design that:
+ - meet Chrome's specific needs.
+ - meet Libc's needs.
+ - Chrome's specific need doesn't interfere with Libc's.
 
+[1] https://lore.kernel.org/all/CAHk-=3DwiVhHmnXviy1xqStLRozC4ziSugTk=3D1JO=
+c8ORWd2_0h7g@mail.gmail.com/
 
+> I am very concerned this feature will land and have to be maintained by
+> the core mm people for the one user it was specifically targeting.
+>
+See above. This feature is not specifically targeting Chrome.
 
+> Can we also get some benchmarking on the impact of this feature?  I
+> believe my answer in v7 removed the worst offender, but since there is
+> no benchmarking we really are guessing (educated or not, hard data would
+> help).  We still have an extra loop in madvise, mprotect_pkey, mremap_to
+> (and mreamp syscall?).
+>
+Yes. There is an extra loop in mmap(FIXED), munmap(),
+madvise(DONOTNEED), mremap(), to emulate the VMAs for the given
+address range. I suspect the impact would be low, but having some hard
+data would be good. I will see what I can find to assist the perf
+testing. If you have a specific test suite in mind, I can also try it.
+
+> You also did not clean up the loop you copied from mlock, which I
+> pointed out [3].  Stating that your copy/paste is easier to review is
+> not sufficient to keep unneeded assignments around.
+>
+OK.
+
+> [1]. https://lore.kernel.org/linux-mm/87a5ong41h.fsf@meer.lwn.net/
+> [2]. https://lore.kernel.org/linux-mm/86181.1705962897@cvs.openbsd.org/
+> [3]. https://lore.kernel.org/linux-mm/20240124200628.ti327diy7arb7byb@rev=
+olver/
 
