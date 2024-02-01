@@ -1,135 +1,213 @@
-Return-Path: <linux-kernel+bounces-48743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD118846096
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:03:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFFF58461B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:01:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0EB5B23637
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:03:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18CB11F26EDA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:01:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B04385264;
-	Thu,  1 Feb 2024 19:03:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C171F8529F;
+	Thu,  1 Feb 2024 20:01:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="lQuIo6xO"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mkNGhkJu"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 045EF84FBF
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 19:03:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56BBD5F46B;
+	Thu,  1 Feb 2024 20:01:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706814196; cv=none; b=SW66uAIuZQf09Gl20NqiR7NdAIWVobJ856Y/kreTLRI9+NMr7lkCjS2pcaxenRNs+mDZ272q5f5k948bEB3Zw2w4XAl80ln1bdUH1oATYNdJxbFb8slDCPPSbmDQ7U91g/RLrSVL26FOHB2SyzNHhNCWH91B/ye5vqtIhBAf1rQ=
+	t=1706817708; cv=none; b=Emrso9aUjOdm9iIMfWXbOLU4AAVUxQBKwLvivITRYM+FjLpWspCOSmyb1F/YNJn0xM9LeU6fvY/jZe/oKarxbAWWNx75q0SCsXPyx7XHlu1QwoLvnt/rScRJwqdOoEBvxT79vus3x0KbSl6MxiryIxGmgjPVOz46J9cS0VA2yVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706814196; c=relaxed/simple;
-	bh=/k+B1mAjGbVHW0u2oSbT1r0tPCzVnEoOzFJ/awMko9E=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=pSYmJri4DJIkmVM43s0PfegqUc0k8r55TsNcnGQLTa3xE/R99fZBk9xzPiqioZDeVD1j+e4A7q2X9TSAlNTjVswa2Q9fCrqAvt12vb8ZEF1kRUykV4PnT0fU28ZaCDDPHNid97SymxbjPAM7NO+JErS+M1BTsbzM5I7GhT6EbGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=fail (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=lQuIo6xO reason="signature verification failed"; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [127.0.0.1] ([76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 411J2YGs4164724
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Thu, 1 Feb 2024 11:02:35 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 411J2YGs4164724
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024011201; t=1706814155;
-	bh=kTXZyCcIqsNzCBXtIsoCaFjWy3OW00U35UzSwYcLSMo=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=lQuIo6xOi7oNx4tIHkF1PGZbqvLVDtNXhxS0pj5tZMDm2pJ+X+bmBJjabf5/ual1Y
-	 WYSqI2jN7dJEyv0ajkY8IwhSEMiJ+r5412GDFUObznHTY9ZTwvpSbBQHOBnmHAAWO8
-	 HiSJf3oFwOkbinYlQ/PqvC/jZfme4xNyeBjQYDGenDBaVJtCMX2+3HAPjmN5oQuRod
-	 UJ8V8BCKAnUaQJdw3zUI7KpOMRyw8v9ZgcFvHI6mbARp/7/5QpreEMJUz3t3dxB80p
-	 tQf9OE6h8n/dItJvhSYw0MyjmtIePa6aP+EYzLzGVUpghdQ/ywI9+l0xphDlFGpCh0
-	 w+ZhbevD4A9eQ==
-Date: Thu, 01 Feb 2024 11:02:32 -0800
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: Dave Hansen <dave.hansen@intel.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-CC: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Kalra, Ashish" <ashish.kalra@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] x86/random: Retry on RDSEED failure
-User-Agent: K-9 Mail for Android
-In-Reply-To: <bed77821-1e36-4f92-86c5-e49628431c53@intel.com>
-References: <CAHmME9rum4uwSNFd_GkD9p_+vN4DBxA=feZX7k9RvugFZsZNJg@mail.gmail.com> <DM8PR11MB5750797D0B9B8EB32740F55DE77D2@DM8PR11MB5750.namprd11.prod.outlook.com> <CAHmME9oC=GE-7QS2m9FA5cs_ss+tQgB9Pj3tKnTtMMFpQmUshg@mail.gmail.com> <DM8PR11MB5750B861F7A105886AA5FCE4E77C2@DM8PR11MB5750.namprd11.prod.outlook.com> <CAHmME9oJvbZgT4yT9Vydc2ZQVSo3Ea65G5aVK7gFxphkV00BnQ@mail.gmail.com> <20240131140756.GB2356784@mit.edu> <Zbpc8tppxuKr-hnN@zx2c4.com> <20240131171042.GA2371371@mit.edu> <DM8PR11MB5750C7D16DC566CD1329D5A5E77C2@DM8PR11MB5750.namprd11.prod.outlook.com> <CAHmME9q-eUXnXnpaDu0VOQemOYysst7SaJ-=b8-vCFP9h50Szg@mail.gmail.com> <20240201045710.GD2356784@mit.edu> <CAHmME9oqM2a766dBK22-yKr8=2-icg=UkQzmBOF8G5Zh_Y9E9w@mail.gmail.com> <bed77821-1e36-4f92-86c5-e49628431c53@intel.com>
-Message-ID: <52A2842D-AC23-4321-B06B-CDA082183862@zytor.com>
+	s=arc-20240116; t=1706817708; c=relaxed/simple;
+	bh=Eogk3XjgcRHFKVfwFBmgrv6XFe+ww9n/tWDnoLocj6o=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=V+QYiyE1gKxmeIHVkiee1Y0lqi+N3lTR97S8VTNILgYYpomocPzhhIkDlVq8TVZVb+yR+SteRxMAjyQP2OA8GEGzOlGDEqEs/wChQ7qnSNyg/zLQFyQ9ZFUya4nBbQxIM8lLip0OtuVkQgKrUEp3tOEumFvIeakGtw17/QY0P/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mkNGhkJu; arc=none smtp.client-ip=192.55.52.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706817706; x=1738353706;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Eogk3XjgcRHFKVfwFBmgrv6XFe+ww9n/tWDnoLocj6o=;
+  b=mkNGhkJuULoZzOZf6Hl9mFTK3ip+At1oZJ9WY9GgXdgH9yyU4v/P3hUR
+   uIwoamh8NmqciZUZ7asJ30Z/PhFSFgj5RIUS8FEbQ1yxoLeUpo3YOXSm5
+   So5ajUBE0ix8rnVMxB9A/uBEDE/bVb8CFEuxfAqt5XfPBhxPSUvZaCALN
+   ggi7DqIU6Y+ojin3NNXoF+g7sHlKzWKWNczHZnUU+e9gKEEtmuhlvi0OR
+   pb4KQkIjw3Tt6qxvRJmORoxs8tDxInTVnSIckztn9KUiHizqsFCTlujP5
+   fwT0+JpAPobtoO3Pm1mS/sUs7fBKPzg8NUA7OwV7jJpN43aKXHZekEtfa
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="435148104"
+X-IronPort-AV: E=Sophos;i="6.05,236,1701158400"; 
+   d="scan'208";a="435148104"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 12:01:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="1120050426"
+X-IronPort-AV: E=Sophos;i="6.05,236,1701158400"; 
+   d="scan'208";a="1120050426"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga005.fm.intel.com with ESMTP; 01 Feb 2024 12:01:42 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id C5F0CB84; Thu,  1 Feb 2024 17:15:42 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Flavio Suligoi <f.suligoi@asem.it>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	dri-devel@lists.freedesktop.org,
+	linux-fbdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Lee Jones <lee@kernel.org>,
+	Daniel Thompson <daniel.thompson@linaro.org>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Helge Deller <deller@gmx.de>
+Subject: [PATCH v2 1/3] backlight: mp3309c: Make use of device properties
+Date: Thu,  1 Feb 2024 17:14:13 +0200
+Message-ID: <20240201151537.367218-2-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+In-Reply-To: <20240201151537.367218-1-andriy.shevchenko@linux.intel.com>
+References: <20240201151537.367218-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On February 1, 2024 10:46:06 AM PST, Dave Hansen <dave=2Ehansen@intel=2Ecom=
-> wrote:
->On 2/1/24 10:09, Jason A=2E Donenfeld wrote:
->> Question ii) Just how DoS-able is RDRAND? From host to guest, where
->> the host controls scheduling, that seems easier, but how much so, and
->> what's the granularity of these operations, and could retries still
->> help, or not at all? What about from guest to guest, where the
->> scheduling is out of control; in that case is there a value of N for
->> which N retries makes it actually impossible to DoS? What about from
->> userspace to kernelspace; good value of N?
->
->So far, in practice, I haven't seen a single failure of RDRAND=2E  It's
->been limited to RDSEED=2E  In a perfect world, I'd change the architectur=
-e
->docs to say, "RDRAND only fails when the hardware breaks" and leave
->RDSEED defined to be the one that fails easily=2E
->
->Dealing with a fragile RDSEED seems like a much easier problem than
->dealing with a fragile RDRAND since RDSEED is used _much_ more sparingly
->in the kernel today=2E
->
->But I'm not sure if the hardware implementations fit into this perfect
->world I've conjured up=2E  We're going to wrangle up the folks at Intel
->who can hopefully tell me if I'm totally deluded=2E
->
->Has anyone seen RDRAND failures in practice?  Or just RDSEED?
->
->> Question iii) How likely is Intel to actually fix this in a
->> satisfactory way (see "specifying this is an interesting question" in
->> [1])? And if they would, what would the timeline even be?
->
->If the fix is pure documentation, it's on the order of months=2E  I'm
->holding out hope that some kind of anti-DoS claims like you mentioned:
->
->> Specifying this is an interesting question=2E What exactly might our
->> requirements be for a "non-broken" RDRAND? It seems like we have two
->> basic ones:
->>=20
->> - One VMX (or host) context can't DoS another one=2E
->> - Ring 3 can't DoS ring 0=2E
->
->are still possible on existing hardware, at least for RDRAND=2E
+Convert the module to be property provider agnostic and allow
+it to be used on non-OF platforms.
 
-The real question is: what do we actually need?
+Add mod_devicetable.h include.
 
-During startup, we could afford a *lot* of looping to collect enough entro=
-py before giving up=2E After that, even if RDSEED fails 99% of the time, it=
- will still produce far more entropy than a typical external randomness sou=
-rce=2E We don't want to loop that long, obviously (*), but instead try peri=
-odically and let the entropy accumulate=2E
+Tested-by: Flavio Suligoi <f.suligoi@asem.it>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/video/backlight/mp3309c.c | 44 +++++++++++++------------------
+ 1 file changed, 18 insertions(+), 26 deletions(-)
 
-(*) We *could* of course choose to aggressively loop in task context if th=
-ere task would otherwise block on /dev/random=2E
+diff --git a/drivers/video/backlight/mp3309c.c b/drivers/video/backlight/mp3309c.c
+index 34d71259fac1..762bd738c903 100644
+--- a/drivers/video/backlight/mp3309c.c
++++ b/drivers/video/backlight/mp3309c.c
+@@ -15,6 +15,8 @@
+ #include <linux/delay.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/i2c.h>
++#include <linux/mod_devicetable.h>
++#include <linux/property.h>
+ #include <linux/pwm.h>
+ #include <linux/regmap.h>
+ 
+@@ -199,18 +201,15 @@ static const struct backlight_ops mp3309c_bl_ops = {
+ 	.update_status = mp3309c_bl_update_status,
+ };
+ 
+-static int pm3309c_parse_dt_node(struct mp3309c_chip *chip,
+-				 struct mp3309c_platform_data *pdata)
++static int mp3309c_parse_fwnode(struct mp3309c_chip *chip,
++				struct mp3309c_platform_data *pdata)
+ {
+-	struct device_node *node = chip->dev->of_node;
+-	struct property *prop_pwms;
+-	struct property *prop_levels = NULL;
+-	int length = 0;
+ 	int ret, i;
+ 	unsigned int num_levels, tmp_value;
++	struct device *dev = chip->dev;
+ 
+-	if (!node) {
+-		dev_err(chip->dev, "failed to get DT node\n");
++	if (!dev_fwnode(dev)) {
++		dev_err(dev, "failed to get firmware node\n");
+ 		return -ENODEV;
+ 	}
+ 
+@@ -224,8 +223,7 @@ static int pm3309c_parse_dt_node(struct mp3309c_chip *chip,
+ 	 * found in the backlight node, the mode switches to PWM mode.
+ 	 */
+ 	pdata->dimming_mode = DIMMING_ANALOG_I2C;
+-	prop_pwms = of_find_property(node, "pwms", &length);
+-	if (prop_pwms) {
++	if (device_property_present(dev, "pwms")) {
+ 		chip->pwmd = devm_pwm_get(chip->dev, NULL);
+ 		if (IS_ERR(chip->pwmd))
+ 			return dev_err_probe(chip->dev, PTR_ERR(chip->pwmd),
+@@ -257,11 +255,9 @@ static int pm3309c_parse_dt_node(struct mp3309c_chip *chip,
+ 		/*
+ 		 * PWM control mode: check for brightness level in DT
+ 		 */
+-		prop_levels = of_find_property(node, "brightness-levels",
+-					       &length);
+-		if (prop_levels) {
++		if (device_property_present(dev, "brightness-levels")) {
+ 			/* Read brightness levels from DT */
+-			num_levels = length / sizeof(u32);
++			num_levels = device_property_count_u32(dev, "brightness-levels");
+ 			if (num_levels < 2)
+ 				return -EINVAL;
+ 		} else {
+@@ -275,10 +271,9 @@ static int pm3309c_parse_dt_node(struct mp3309c_chip *chip,
+ 				     sizeof(*pdata->levels), GFP_KERNEL);
+ 	if (!pdata->levels)
+ 		return -ENOMEM;
+-	if (prop_levels) {
+-		ret = of_property_read_u32_array(node, "brightness-levels",
+-						 pdata->levels,
+-						 num_levels);
++	if (device_property_present(dev, "brightness-levels")) {
++		ret = device_property_read_u32_array(dev, "brightness-levels",
++						     pdata->levels, num_levels);
+ 		if (ret < 0)
+ 			return ret;
+ 	} else {
+@@ -288,8 +283,7 @@ static int pm3309c_parse_dt_node(struct mp3309c_chip *chip,
+ 
+ 	pdata->max_brightness = num_levels - 1;
+ 
+-	ret = of_property_read_u32(node, "default-brightness",
+-				   &pdata->default_brightness);
++	ret = device_property_read_u32(dev, "default-brightness", &pdata->default_brightness);
+ 	if (ret)
+ 		pdata->default_brightness = pdata->max_brightness;
+ 	if (pdata->default_brightness > pdata->max_brightness) {
+@@ -310,8 +304,8 @@ static int pm3309c_parse_dt_node(struct mp3309c_chip *chip,
+ 	 * If missing, the default value for OVP is 35.5V
+ 	 */
+ 	pdata->over_voltage_protection = REG_I2C_1_OVP1;
+-	if (!of_property_read_u32(node, "mps,overvoltage-protection-microvolt",
+-				  &tmp_value)) {
++	ret = device_property_read_u32(dev, "mps,overvoltage-protection-microvolt", &tmp_value);
++	if (!ret) {
+ 		switch (tmp_value) {
+ 		case 13500000:
+ 			pdata->over_voltage_protection = 0x00;
+@@ -328,9 +322,7 @@ static int pm3309c_parse_dt_node(struct mp3309c_chip *chip,
+ 	}
+ 
+ 	/* Synchronous (default) and non-synchronous mode */
+-	pdata->sync_mode = true;
+-	if (of_property_read_bool(node, "mps,no-sync-mode"))
+-		pdata->sync_mode = false;
++	pdata->sync_mode = !device_property_read_bool(dev, "mps,no-sync-mode");
+ 
+ 	return 0;
+ }
+@@ -366,7 +358,7 @@ static int mp3309c_probe(struct i2c_client *client)
+ 		if (!pdata)
+ 			return -ENOMEM;
+ 
+-		ret = pm3309c_parse_dt_node(chip, pdata);
++		ret = mp3309c_parse_fwnode(chip, pdata);
+ 		if (ret)
+ 			return ret;
+ 	}
+-- 
+2.43.0.rc1.1.gbec44491f096
 
 
