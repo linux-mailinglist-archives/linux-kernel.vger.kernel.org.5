@@ -1,60 +1,85 @@
-Return-Path: <linux-kernel+bounces-48603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC651845EB0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:38:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 593F0845EB3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:38:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A969228A45A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:38:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8F081F242D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:38:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1A2B161B75;
-	Thu,  1 Feb 2024 17:38:15 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2051984035;
-	Thu,  1 Feb 2024 17:38:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C6C46FB9F;
+	Thu,  1 Feb 2024 17:38:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="mnUumbRJ"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F37656FB88;
+	Thu,  1 Feb 2024 17:38:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706809095; cv=none; b=g4drrgKqdnKjPRy7dpXwPCz2MU05Q0sST+4QzQwm+SYIZ5ilnkzYJbuZaaTJ7wodPaM3dIeUvdcVwdtLCq0+avpf6aQ7J3tWQ6eYYbkdEw0w6EK4rcN6N9MAPJAIAipSS+QiH8Ex79VZ3rEQNjW4DPQySetCvbaYv1LuWT6ptq4=
+	t=1706809124; cv=none; b=cKpcW5kYwKxcgQuG4PvZDb7ycvPwGDyyRYt50MZ4Gz8ohRaCM89UqEprvjCeb8GjlgVLCAkWafaYo5d364WAjAoMGoNjnYvfXsYST3ZPjY6hu0kdth6c/L7Hg1ATuZk/BJmxHZF1zc3y01L8q3k6FN+Rp4KRrrH9pmcKKFpoN0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706809095; c=relaxed/simple;
-	bh=jhs6/w/DeOvJUV7Jwr+kDKKldZRIn41+ZSTQPxuy7jk=;
+	s=arc-20240116; t=1706809124; c=relaxed/simple;
+	bh=DU0hI8fCYbHgDvs7Two4TcIzKB7Uo2ia6fgwN4gB6zo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UriR61GQtfeMQsFi/bOhOO50Uu8TUPYiPxd9V/xOqflRYOyFHnNe/0kpcbqO4HIQzgvvIPvlBPIii979wLNJnkCOVwUCeL02WWUMkP4Ed+04kDMkfFaaMHnV40cUdAIn4XF2Zzjk4JDbQUmdzsQ/9cFwu5WibV25Yw9Venmpm8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 01D83DA7;
-	Thu,  1 Feb 2024 09:38:55 -0800 (PST)
-Received: from raptor (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 50C163F738;
-	Thu,  1 Feb 2024 09:38:07 -0800 (PST)
-Date: Thu, 1 Feb 2024 17:38:04 +0000
-From: Alexandru Elisei <alexandru.elisei@arm.com>
-To: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-	maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-	yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-	rppt@kernel.org, hughd@google.com, pcc@google.com,
-	steven.price@arm.com, vincenzo.frascino@arm.com, david@redhat.com,
-	eugenis@google.com, kcc@google.com, hyesoo.yu@samsung.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v3 30/35] arm64: mte: ptrace: Handle pages with
- missing tag storage
-Message-ID: <ZbvW_HlrSMOpETlF@raptor>
-References: <20240125164256.4147-1-alexandru.elisei@arm.com>
- <20240125164256.4147-31-alexandru.elisei@arm.com>
- <30278898-c4b2-4dd6-ba68-a19575f81a65@arm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=uOXt3aKXfno69IVRV3rFMUm13fn41D9a1mP4+8MZWhk9ikWYOfslXn2hxai9IrjJ7kayTb5J9hSnCwZh5fa9lFSP5If6M25kg7mvU7O1RYdPsaWqDWj2yM5pnTp/dvWroEgJHPNWjuOEEroCCjPkQWkFBi8WwQdDyrbduTMwbwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=mnUumbRJ; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 233201BF204;
+	Thu,  1 Feb 2024 17:38:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706809119;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Phm3LOaeo0CAt3mJTSZF3S+4OBemom8lCjPI30lOO+Q=;
+	b=mnUumbRJjAfeE+fZXzwzLUPaPu23TiXrcMolGgfz8GCDIANhL7boNGpNkZpzaoHerB68/e
+	UJ9h7JKxDMo5JLhC9V8xtMHAVqe59D1rVoHPBsfS84EZgxB0blpsGC6bCF9EsadwWpDIAg
+	Wiu+WXYKcT+RxZsAeWDe2d0QE2XPyYVwfRjoc1MPcWurpl+9GkWjycB/6Qw4BaBZ8I6ZHM
+	YPQCSlcnN/32Hwruo5HR0VBhIA20Tu4SPJXViJxmGz/+qdBJS2XXYq8nibBhGrumn7NSfZ
+	vTng+5DYBfX6KypquIXKUPr/n7OZjdER+PRGWBq1XDAu1BTGFVTOdmoj/Zdomg==
+Date: Thu, 1 Feb 2024 18:38:36 +0100
+From: Louis Chauvet <louis.chauvet@bootlin.com>
+To: Arthur Grillo <arthurgrillo@riseup.net>
+Cc: Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+	Haneen Mohammed <hamohammed.sa@gmail.com>,
+	Harry Wentland <harry.wentland@amd.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
+	Melissa Wen <melissa.srw@gmail.com>,
+	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-doc@vger.kernel.org, miquel.raynal@bootlin.com,
+	thomas.petazzoni@bootlin.com, seanpaul@google.com,
+	nicolejadeyee@google.com, marcheu@google.com
+Subject: Re: [PATCH v2 2/7] drm/vkms: Add support for multy-planar
+ framebuffers
+Message-ID: <ZbvXHECSBmH0NDZn@localhost.localdomain>
+Mail-Followup-To: Arthur Grillo <arthurgrillo@riseup.net>,
+	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+	Haneen Mohammed <hamohammed.sa@gmail.com>,
+	Harry Wentland <harry.wentland@amd.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
+	Melissa Wen <melissa.srw@gmail.com>,
+	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-doc@vger.kernel.org, miquel.raynal@bootlin.com,
+	thomas.petazzoni@bootlin.com, seanpaul@google.com,
+	nicolejadeyee@google.com, marcheu@google.com
+References: <20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net>
+ <20240110-vkms-yuv-v2-2-952fcaa5a193@riseup.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,95 +88,148 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <30278898-c4b2-4dd6-ba68-a19575f81a65@arm.com>
+In-Reply-To: <20240110-vkms-yuv-v2-2-952fcaa5a193@riseup.net>
+X-GND-Sasl: louis.chauvet@bootlin.com
 
-Hi,
+Hello,
 
-On Thu, Feb 01, 2024 at 02:51:39PM +0530, Anshuman Khandual wrote:
-> 
-> 
-> On 1/25/24 22:12, Alexandru Elisei wrote:
-> > A page can end up mapped in a MTE enabled VMA without the corresponding tag
-> > storage block reserved. Tag accesses made by ptrace in this case can lead
-> > to the wrong tags being read or memory corruption for the process that is
-> > using the tag storage memory as data.
-> > 
-> > Reserve tag storage by treating ptrace accesses like a fault.
-> > 
-> > Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> > ---
-> > 
-> > Changes since rfc v2:
-> > 
-> > * New patch, issue reported by Peter Collingbourne.
-> > 
-> >  arch/arm64/kernel/mte.c | 26 ++++++++++++++++++++++++--
-> >  1 file changed, 24 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> > index faf09da3400a..b1fa02dad4fd 100644
-> > --- a/arch/arm64/kernel/mte.c
-> > +++ b/arch/arm64/kernel/mte.c
-> > @@ -412,10 +412,13 @@ static int __access_remote_tags(struct mm_struct *mm, unsigned long addr,
-> >  	while (len) {
-> >  		struct vm_area_struct *vma;
-> >  		unsigned long tags, offset;
-> > +		unsigned int fault_flags;
-> > +		struct page *page;
-> > +		vm_fault_t ret;
-> >  		void *maddr;
-> > -		struct page *page = get_user_page_vma_remote(mm, addr,
-> > -							     gup_flags, &vma);
-> >  
-> > +get_page:
-> > +		page = get_user_page_vma_remote(mm, addr, gup_flags, &vma);
-> 
-> But if there is valid page returned here in the first GUP attempt, will there
-> still be a subsequent handle_mm_fault() on the same vma and addr ?
+I think there are some bugs in this implementation of multi-planar 
+support (and not mylty-planar, there is a typo in the title), especially 
+for the "new" drm_format_info description which uses block_w and block_h.
 
-Only if it's missing tag storage. If it's missing tag storage, the page has
-been mapped as arch_fault_on_access_pte(), and
-handle_mm_fault()->..->arch_handle_folio_fault_on_access() will either
-reserve tag storage, or migrate it.
+I will propose two patches [1] solving these issues and hopefully also 
+simplifying a bit the composition.
 
-> 
-> >  		if (IS_ERR(page)) {
-> >  			err = PTR_ERR(page);
-> >  			break;
-> > @@ -433,6 +436,25 @@ static int __access_remote_tags(struct mm_struct *mm, unsigned long addr,
-> >  			put_page(page);
-> >  			break;
-> >  		}
-> > +
-> > +		if (tag_storage_enabled() && !page_tag_storage_reserved(page)) {
-> 
-> Should not '!page' be checked here as well ?
+TBH I'm not an expert, it's my first ever contribution in DRM, so please 
+don't hesitate to correct me if you thin I missunderstood something, it 
+actually took me a bit of time to fully understand the whole series and 
+how it interacted with the rest of the vkms driver.
 
-I was under the impression that get_user_page_vma_remote() returns an error
-pointer if gup couldn't pin the page.
+> -static size_t pixel_offset(const struct vkms_frame_info *frame_info, int x, int y)
+> +static size_t pixel_offset(const struct vkms_frame_info *frame_info, int x, int y, size_t index)
+>  {
+>  	struct drm_framebuffer *fb = frame_info->fb;
+>  
+> -	return fb->offsets[0] + (y * fb->pitches[0])
+> -			      + (x * fb->format->cpp[0]);
+> +	return fb->offsets[index] + (y * fb->pitches[index])
+> +				  + (x * fb->format->cpp[index]);
+>  }
+>  
+>  /*
+> @@ -23,27 +23,25 @@ static size_t pixel_offset(const struct vkms_frame_info *frame_info, int x, int
+>   * @frame_info: Buffer metadata
+>   * @x: The x(width) coordinate of the 2D buffer
+>   * @y: The y(Heigth) coordinate of the 2D buffer
+> + * @index: The index of the plane on the 2D buffer
+>   *
+>   * Takes the information stored in the frame_info, a pair of coordinates, and
+> - * returns the address of the first color channel.
+> - * This function assumes the channels are packed together, i.e. a color channel
+> - * comes immediately after another in the memory. And therefore, this function
+> - * doesn't work for YUV with chroma subsampling (e.g. YUV420 and NV21).
+> + * returns the address of the first color channel on the desired index.
+>   */
+>  static void *packed_pixels_addr(const struct vkms_frame_info *frame_info,
+> -				int x, int y)
+> +				int x, int y, size_t index)
+>  {
+> -	size_t offset = pixel_offset(frame_info, x, y);
+> +	size_t offset = pixel_offset(frame_info, x, y, index);
+>  
+>  	return (u8 *)frame_info->map[0].vaddr + offset;
+>  }
 
-Thanks,
-Alex
+This implementation of packed_pixels_addr will only work with
+block_w == block_h == 1. For packed or tiled formats we will need to use
+x/y information to extract the correct address, and this address will not 
+be a single pixel. See below my explanation.
 
-> 
-> > +			fault_flags = FAULT_FLAG_DEFAULT | \
-> > +				      FAULT_FLAG_USER | \
-> > +				      FAULT_FLAG_REMOTE | \
-> > +				      FAULT_FLAG_ALLOW_RETRY | \
-> > +				      FAULT_FLAG_RETRY_NOWAIT;
-> > +			if (write)
-> > +				fault_flags |= FAULT_FLAG_WRITE;
-> > +
-> > +			put_page(page);
-> > +			ret = handle_mm_fault(vma, addr, fault_flags, NULL);
-> > +			if (ret & VM_FAULT_ERROR) {
-> > +				err = -EFAULT;
-> > +				break;
-> > +			}
-> > +			goto get_page;
-> > +		}
-> > +
-> >  		WARN_ON_ONCE(!page_mte_tagged(page));
-> >  
-> >  		/* limit access to the end of the page */
+[...]
+
+> @@ -130,17 +128,28 @@ void vkms_compose_row(struct line_buffer *stage_buffer, struct vkms_plane_state
+>  {
+>  	struct pixel_argb_u16 *out_pixels = stage_buffer->pixels;
+>  	struct vkms_frame_info *frame_info = plane->frame_info;
+> -	u8 *src_pixels = get_packed_src_addr(frame_info, y);
+> +	const struct drm_format_info *frame_format = frame_info->fb->format;
+>  	int limit = min_t(size_t, drm_rect_width(&frame_info->dst), stage_buffer->n_pixels);
+> +	u8 *src_pixels[DRM_FORMAT_MAX_PLANES];
+>  
+> -	for (size_t x = 0; x < limit; x++, src_pixels += frame_info->fb->format->cpp[0]) {
+> +	for (size_t i = 0; i < frame_format->num_planes; i++)
+> +		src_pixels[i] = get_packed_src_addr(frame_info, y, i);
+> +
+> +	for (size_t x = 0; x < limit; x++) {
+>  		int x_pos = get_x_position(frame_info, limit, x);
+>  
+> -		if (drm_rotation_90_or_270(frame_info->rotation))
+> -			src_pixels = get_packed_src_addr(frame_info, x + frame_info->rotated.y1)
+> -				+ frame_info->fb->format->cpp[0] * y;
+> +		if (drm_rotation_90_or_270(frame_info->rotation)) {
+> +			for (size_t i = 0; i < frame_format->num_planes; i++) {
+> +				src_pixels[i] = get_packed_src_addr(frame_info,
+> +								    x + frame_info->rotated.y1, i);
+> +				src_pixels[i] += frame_format->cpp[i] * y;
+
+I find the current rotation management a bit complex to understand. This 
+is not related to your patch, but as I had to understand this to create my 
+second patch, I think this could be significanlty simplified.
+
+Please see the below comment about frame_format->cpp, it applies here too. 
+I think the "easy" way here is simply to reuse the method 
+get_packed_src_addr every time you need a new pixel.
+
+> +			}
+> +		}
+>  
+>		plane->pixel_read(src_pixels, &out_pixels[x_pos]);
+> +
+
+The usage of cpp and pointer to specific pixel only work for non-packed 
+and non-blocked pixels, but for example NV30 or Y0L0 need more 
+informations about the exact location of the pixel to convert and write 
+the correct pixel value (each pixel can't be referenced directly by a 
+pointer). For example NV30 uses 5 bytes to store 3 pixels (10 bits each), 
+so to access the "middle" one you need to read the 5 bytes and do a small 
+computation to extract it's value.
+
+I think a simple solution to handle most cases would be to profide two 
+more parameters: the x and y positions of the pixel to copy, using 
+"absolute coordinates" (i.e x=0,y=0 means the first byte of the src 
+buffer, not the first pixel in the `drm_rect src`, this way the method 
+`pixel_read` can extract the correct value).
+
+This way it become easy to manage "complex" pixel representations in this 
+loop: simply increment x/y and let the pixel_read method handle 
+everything.
+
+The second patch I will send is doing this. And as explained before, it 
+will also simplify a lot the code related to rotation and translation (no 
+more switch case everywhere to add offset to x/y, it simply use drm_rect_* 
+helpers).
+
+It's not optimal in term of performance (in some situation it will read 
+the same block multiple time to generate different pixels), but I 
+believe it still is an intersting trade-off.
+
+In the future, if performance is actally critical, the whole composition 
+loop will have to be specialized for each pixel formats: some can be 
+treated line by line (as it's done today), but with blocks or packed 
+pixels it's more complex.
+
+> +		for (size_t i = 0; i < frame_format->num_planes; i++)
+> +			src_pixels[i] += frame_format->cpp[i];
+
+This is likely working with format with block_w != 1, see explanation 
+above.
+
+[...]
+
+[1]: https://lore.kernel.org/dri-devel/20240201-yuv-v1-0-3ca376f27632@bootlin.com/T/#t
+
+-- 
+Louis Chauvet, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
