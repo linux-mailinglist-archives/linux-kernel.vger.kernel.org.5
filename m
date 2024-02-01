@@ -1,159 +1,143 @@
-Return-Path: <linux-kernel+bounces-48955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69C0D846399
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:45:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41B9684639C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:45:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 801011C258F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:45:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB4F01F23129
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:45:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8015141236;
-	Thu,  1 Feb 2024 22:45:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAF074652D;
+	Thu,  1 Feb 2024 22:45:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UfVCH8Ee"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="FpYQADfV"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F3A841208;
-	Thu,  1 Feb 2024 22:45:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7770846450;
+	Thu,  1 Feb 2024 22:45:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706827522; cv=none; b=PQ1edMt3HLvTasSLD4t9F25mqGtEDnqQFRRh8Ndp4J9lMa5DZG9/ZPUeI/1bcCS/k3kEexaS+KiW4Yz4DXquvLQSDz38kKEtqMVDKfbPsFqHVhouf2QD2dJQ8RggQNP3Y9QkKklcfcI312iGQ8YsXfi3ZkcVJcvoXus8kxgR0KQ=
+	t=1706827528; cv=none; b=TjwKin9W+DtHkKIEtg+hAgnjpFqscB05X5W+5YbiX1pug5Xu9/nBsgR8BQaDn/QS8YJz2/fIlM6jfLqewiCtmjXLAiz3rex/FrAyy4+sQwShHO9S1mz+r0j+Zq7u30Xy6pefKOxXSXIpU2W77tSXs48WThMnBwuxJSlIP2vUhmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706827522; c=relaxed/simple;
-	bh=MTnSrMq8i1x++ESn+SIH1QLN42cjYh/PlfT7IxAwwC0=;
+	s=arc-20240116; t=1706827528; c=relaxed/simple;
+	bh=8XBsL1A3aw113J/qN7bYoaY80G0MxKQO+WepQk2DEv8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oABoTQQ90as1xFJ/oVdR4Q9F+aFCL0j2SlAXTp6BNd/GJYfZfeKSzSQ0yuvA7DqAyKcO71M2M3gKMHlbSe2dPichUcK4h2eZbg/RLM/uY+wykO78tXBNOene8g4n9VtU84dEzXQ5hmYguV16vBh3SpFSVIhEebrdlw8F5yaUAGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UfVCH8Ee; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55c2cf644f3so1891660a12.1;
-        Thu, 01 Feb 2024 14:45:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706827519; x=1707432319; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5fGYdKfwHRpUOUYn273X9Mhr4fH/tkJBZxTmCbsLDgg=;
-        b=UfVCH8EeIEhkrpMfeTfeTqpdHlxzSp7CUXq6Vo34t9osNcRUFiid6axY00xrCmrAD+
-         XaVLb/XKtsxeJ61dqrw2aM4em3qlqFpOxn9yZ0XdAPIB9kQT4sCcCPp1D4Ts0XuRlA1L
-         q3TrKr6WxSCp6vTg3j6sK436xcboF6ClygXe6O8rYd+GI/T8/AsCf+E70cKmJL3ONyAQ
-         ISbGeeDbxznaVWxpo4Pztf+lQTztNkgMuBCN1MPS91dprsm9p6lQQ9JJqqu8tNueeJSr
-         n+GIrydYcRK8LabUVEgDg7wNKqErQg/QvB0aa27NfK3SBmnEAQ7QxB/YaCdfv1Uc2XZC
-         wXaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706827519; x=1707432319;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5fGYdKfwHRpUOUYn273X9Mhr4fH/tkJBZxTmCbsLDgg=;
-        b=agB0g32ei63XodOZpoRLgemElaUm+Ww1r7Uic4iFzD6ffZ/TytNYePlJylav2SK5cc
-         bbYXyd9kXFEHZ/wwJTgJYYXNKblz1nKFDXhVoilsBO7bxqLxDo/B0+ltNsyzD7LPpzIq
-         bjLCPKwkZW0dNXCj15haKolLCaVRHLBN6PfuC4WBRCOc+ua+GBNw3ydbGMnjuPlRAwt9
-         IcBhhaA8o93MfUDwi2YIgnJFcur7RDEVAeXpZI9QqxbSmZ9IihPm0RgqQHCTfD3Ua70t
-         aYoupzmIB6fTvwntpKRQba5zeiywYj9MwGxLGWFXmlJCB/VBr3JbEzi8xUo+H4YUq07R
-         9Udg==
-X-Gm-Message-State: AOJu0YyQxcm1QcTLuQI6UkXfplYRwMXd0F+Nh5JApIDsPL4pkPSg06wU
-	9khutpUwnjHUHCJqc7ew/MtyQMWfdSgT/vQyWCc/YY0MD8e39vYZ
-X-Google-Smtp-Source: AGHT+IHrRG6KdcJoOWJ0ti2YqgpNxWeeibbNcSidMyvWTpFC/vNgQCl+H7ng+V7cQGc6eT8gxBX8Sw==
-X-Received: by 2002:a05:6402:160c:b0:55f:d80a:d641 with SMTP id f12-20020a056402160c00b0055fd80ad641mr1032641edv.9.1706827519072;
-        Thu, 01 Feb 2024 14:45:19 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWGsDSrtt8pCql64mwXFDMszUWKQdycnC6Oy2HR18d0q9+zQrrd8ZhC8Gt35m3zcdraLS5ZNNE9HD5oVwtmEcGG/I3bbOO4qBBeEuHwh4BAhsfharD0holKKSm2i3FWREjVc9LSs7jzno409WhAZ2dYpvljPiqkWjUuvIaNcr9rIf7r5auQ2nTQU7WBNRrOt/n6kGDG55468oc4Qa7uYH5Ag+KMR78xYjZDYVt1b7Yn0xHLmzMB6cqRvo6qKiobUECllz2Q3vkzRXc+VjnzAtwrjXfDe/tjXU2yrltKqwfT204kkhzW3j3jgYoCVfwR5enL6Ixmv0qLaGhV9K91oswn8uh9PA4=
-Received: from skbuf ([188.25.173.195])
-        by smtp.gmail.com with ESMTPSA id cn21-20020a0564020cb500b0055f98c703easm247632edb.6.2024.02.01.14.45.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 14:45:18 -0800 (PST)
-Date: Fri, 2 Feb 2024 00:45:16 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v5 09/11] net: dsa: realtek: migrate
- user_mii_bus setup to realtek-dsa
-Message-ID: <20240201224516.pujapjenqtyejihg@skbuf>
-References: <20240130-realtek_reverse-v5-0-ecafd9283a07@gmail.com>
- <20240130-realtek_reverse-v5-0-ecafd9283a07@gmail.com>
- <20240130-realtek_reverse-v5-9-ecafd9283a07@gmail.com>
- <20240130-realtek_reverse-v5-9-ecafd9283a07@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=edpKxjlcJN9jfxXVhxWpXZKTMwXt5bKZYycDrrvKRG6HXEzBW/GuO2db5XIEgdgLi3ULTdfbBBTMhd7MHAWwOX4lporOhk0O4APH3lP9GS2ROQfR2QzhH19fMJ2YbEsuCyRMlSKLmHJxZWm0lANwx4kSRaeLTEDZVldUZ6jsPIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=FpYQADfV; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706827524;
+	bh=8XBsL1A3aw113J/qN7bYoaY80G0MxKQO+WepQk2DEv8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FpYQADfVXKnGEWMRmWDQtH4LIDnaEbuZNL3BoumMJBVO7Xn0UhBwe/HT5RI0eq1AX
+	 Lrjpj+4IK8ZLpn9UpbZtR7DX7S1owvOEsG6cAJJ553AL1lMgyFxm38XnLw3mroeS3y
+	 NisNe6PwIHC6S3vAMBsbd7C0HOe/c5M4h+wGwSkP21c/KMEB78WF0RupAJD1qYRe3o
+	 IT6hWJZZsW1HFyvrOUBSFWOIOh5AJJeuII3NgKhiHKYV94UNhecjbRdrDjFKm/iebs
+	 hRp4gsU2pT3Vy7prWQi21QDMg42Zywu3zXGzi9p225Jf3m25eXEluIf0fqjPKZx8vJ
+	 HQpckr/ElAycg==
+Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: nfraprado)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 78D45378208C;
+	Thu,  1 Feb 2024 22:45:21 +0000 (UTC)
+Date: Thu, 1 Feb 2024 17:45:19 -0500
+From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Brian Norris <briannorris@chromium.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Tzung-Bi Shih <tzungbi@kernel.org>, kernel@collabora.com,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	chrome-platform@lists.linux.dev,
+	Abhijit Gangurde <abhijit.gangurde@amd.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Nipun Gupta <nipun.gupta@amd.com>,
+	Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>,
+	Umang Jain <umang.jain@ideasonboard.com>,
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/7] firmware: coreboot: Generate aliases for coreboot
+ modules
+Message-ID: <679fa364-28d0-4faa-b46e-805faf56ae53@notapiano>
+References: <20240112131857.900734-1-nfraprado@collabora.com>
+ <20240112131857.900734-3-nfraprado@collabora.com>
+ <ZaQVScQ2AYquG-Zr@smile.fi.intel.com>
+ <ZbA4VthTMPT7BSRo@google.com>
+ <2024013059-poison-equation-81d1@gregkh>
+ <CA+ASDXM-m6U+JFvBSSHMxAf8Ct-T-pL8tmcHxHQjepdRFR-s1w@mail.gmail.com>
+ <2024013012-gully-goofy-2a55@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240130-realtek_reverse-v5-9-ecafd9283a07@gmail.com>
- <20240130-realtek_reverse-v5-9-ecafd9283a07@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2024013012-gully-goofy-2a55@gregkh>
 
-On Tue, Jan 30, 2024 at 08:13:28PM -0300, Luiz Angelo Daros de Luca wrote:
-> +/**
-> + * rtl83xx_setup_user_mdio() - register the user mii bus driver
-> + * @ds: DSA switch associated with this user_mii_bus
-> + *
-> + * This function first gets and mdio node under the dev OF node, aborting
-> + * if missing. That mdio node describing an mdio bus is used to register a
-> + * new mdio bus.
+On Tue, Jan 30, 2024 at 04:23:02PM -0800, Greg Kroah-Hartman wrote:
+> On Tue, Jan 30, 2024 at 04:01:57PM -0800, Brian Norris wrote:
+> > On Tue, Jan 30, 2024 at 3:51 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > > On Tue, Jan 23, 2024 at 02:06:14PM -0800, Brian Norris wrote:
+> > > > "Don't you want to have a driver data or so associated with this?"
+> > ...
+> > > But why limit yourself to 32bits now?  Why not make it 64?  It is going
+> > > to be sent to userspace, so you have to be very careful about it.
+> > 
+> > Is that question related to the question I pasted/replied to, about
+> > driver data? Or a new topic? Sorry if I'm misunderstanding.
+> 
+> Same question, driver data, you make it 32 bits.
+> 
+> > Anyway, for the size of the tag field: I don't have a strong opinion.
+> > But FWIW, they're coming from this project:
+> > 
+> > https://review.coreboot.org/plugins/gitiles/coreboot/+/269b23280f928510bcadd23182294e5b9dad11ec/payloads/libpayload/include/coreboot_tables.h#36
+> > 
+> > As you can see there, we're extremely far from exhausting 16 bits, let alone 32.
+> 
+> We've run into running out of bits in other subsystems before, it's
+> "free" now, just be safe and make it 64 like I think Andy is suggesting.
 
-The description has the overall feel of "Family Guy - Peter narrates his life"
-(https://www.youtube.com/watch?v=zw8zUMjEW0I).
+Either you and Andy are suggesting different things, or I still don't quite get
+what you mean.
 
-You could be a bit more succinct and say something like "Registers the
-MDIO bus for built-in Ethernet PHYs, and associates it with the
-mandatory 'mdio' child OF node of the switch".
+Andy was suggesting we added a driver_data field, that is:
 
-> + *
-> + * Context: Can sleep.
-> + * Return: 0 on success, negative value for failure.
-> + */
-> +int rtl83xx_setup_user_mdio(struct dsa_switch *ds)
-> +{
-> +	struct realtek_priv *priv = ds->priv;
-> +	struct device_node *mdio_np;
-> +	struct mii_bus *bus;
-> +	int ret = 0;
-> +
-> +	mdio_np = of_get_child_by_name(priv->dev->of_node, "mdio");
-> +	if (!mdio_np) {
-> +		dev_err(priv->dev, "no MDIO bus node\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	bus = devm_mdiobus_alloc(priv->dev);
-> +	if (!bus) {
-> +		ret = -ENOMEM;
-> +		goto err_put_node;
-> +	}
-> +
-> +	bus->priv = priv;
-> +	bus->name = "Realtek user MII";
-> +	bus->read = rtl83xx_user_mdio_read;
-> +	bus->write = rtl83xx_user_mdio_write;
-> +	snprintf(bus->id, MII_BUS_ID_SIZE, "%s:user_mii", dev_name(priv->dev));
-> +	bus->parent = priv->dev;
-> +
-> +	ret = devm_of_mdiobus_register(priv->dev, bus, mdio_np);
-> +	if (ret) {
-> +		dev_err(priv->dev, "unable to register MDIO bus %s\n",
-> +			bus->id);
-> +		goto err_put_node;
-> +	}
-> +
-> +	priv->user_mii_bus = bus;
-> +
-> +err_put_node:
-> +	of_node_put(mdio_np);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_NS_GPL(rtl83xx_setup_user_mdio, REALTEK_DSA);
+struct coreboot_device_id {
+	__u32 tag;
+	kernel_ulong_t driver_data;
+};
+
+You're suggesting we make the tag 64 bits long:
+
+struct coreboot_device_id {
+	__u64 tag;
+};
+
+Like Brian, I'm not sure I see the benefit of either change. As he said, it's
+unlikely that having a driver_data would provide any benefit and won't ever be
+required anyway, and 32 bits is already a generous space to give to coreboot
+tags. That said, I'm also not against either change, and can apply both of them
+to the next version if that's indeed what your experience says will work best.
+I'll wait another week or so before following up though to make sure we're all
+on the same page.
+
+(To be honest I also still don't see how this struct makes it to userspace and
+is considered ABI, I only see the generated modalias being ABI and hence 32 vs
+64 bit tag is ABI breakage but not adding driver_data, but I'll take your word
+for it for now)
+
+Thanks,
+Nícolas
 
