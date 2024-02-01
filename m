@@ -1,227 +1,214 @@
-Return-Path: <linux-kernel+bounces-47989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47994-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 995128455C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:47:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7D578455DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:58:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 469872856D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:47:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F653289D71
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:58:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA5615B973;
-	Thu,  1 Feb 2024 10:47:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="r/a2OJlv"
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2063.outbound.protection.outlook.com [40.107.104.63])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E639CA42;
-	Thu,  1 Feb 2024 10:47:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.63
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706784440; cv=fail; b=mE6G05R5gC/loY1oqXj+7tst9HhFJj6bZuEpQaWPYELcWmtnyfwqulvM3YCeqpNFGjcZJRyqQ3LGFZAXhbp7iVbw1UBCwZ6ug94cHf5zroaMemkVsaNIxQnqBQzG1tmU3qoXbSvMckyxMj+lKA7yfciC8PrlrqJHYKeHcCLJu80=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706784440; c=relaxed/simple;
-	bh=wJ+q0Ix+cfBJDD7nyEgJ5SppUHk+rX9d7sriLfsdiMo=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=QYGj/Z7z/zSFc9vbPRO6Loi2xz2jNvFIjliUWPqwzWVx/RkNREA1lLU/mJWDqw7mYEq7aQrJp6rsO1/yD7Dab5ehhcKGwqZDDgMNeISNvUuSDy3cEnM97Q3Q51bhZvZ7N/UMaRQHHrEhJJWZhppjWT3muC4sM3lvWJD3IXuxJjs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=r/a2OJlv; arc=fail smtp.client-ip=40.107.104.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SR4uGLCeS7BJnly2UijEFE/BZswRSI0mkAs8qx8MsnSGjW1zGGzmxiCX5ccYxzAKDGcN0sy3jt5UICproNnk5Xz4M4P+s/eb5ddtuj1/wfy+ihbXoenV8/+dTFPJ5xRCYy8W8q22L9KugE+HwPJzWlOL9xCqSwjBO3hmbZ5xYuaUtKcw/ZhkNJe1qyih8g4xYUuC+KjYfsGjqwnx7u6MscPhb/xGZecW6w6it9CZOG0EyMbwyqq7OXFZ87AD3568/t1QGLlsjKKnhf+dbb4a0kWAKyS1OoRwQzqlZCHvDKtY5RWlO27t3brtK6GNYS8bntvYVsRnk9QS5zvgHmxfcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UMD/SrffeHjoGR2WDDNQdMRfwR+l9/JgMk40yI8FGvk=;
- b=f7OLHtLgIb387BkCKYk1y563AKovBlEMsySfts4P0h+c9XLQ4aOMbr5edG4cIhWxIKY6u4Zaun8nidbJfww397DdleNf4wXU3sULBDRVukMiV7kriSWDfN/biX5NGdNi52+ZcXPaLDZ7qOMgzHOBOIlj92n0d8fDVuU92IHlnr4ztLGGdikA9Uda3mi+f3X2BrRtCWfEcI1a9f/X5m5W3Rt+2jC5lMU7ZOJN2fdr1m4uDauDv7sMjK4dKjwkNo5iveq9D5eaS1kr6cV28XXX2HSL6otEoNfL2cqippLJMDm6zZtj7AG2asT4ZwtAdwqrMcUU/wIbEQ6orYI7RkQaHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UMD/SrffeHjoGR2WDDNQdMRfwR+l9/JgMk40yI8FGvk=;
- b=r/a2OJlvokhi5d6LneJMEtpNIwhtLYq4dWB8DVrskeQPR7G9NIRu4zMHTWLFiXELHLCKY7zrQ9+EO9gVOGfSer4zDQmKpd1ZiAY1nsqeR6ZyhyLgmyKl3O0jDU/4crbBQXrl6vC57Y2DpHaEo5Td1+a0QK8g7+x/yGnRniYluxU=
-Received: from VI1PR04MB5005.eurprd04.prod.outlook.com (2603:10a6:803:57::30)
- by AS8PR04MB7718.eurprd04.prod.outlook.com (2603:10a6:20b:29b::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.26; Thu, 1 Feb
- 2024 10:47:15 +0000
-Received: from VI1PR04MB5005.eurprd04.prod.outlook.com
- ([fe80::f363:2b4f:4f8b:8af5]) by VI1PR04MB5005.eurprd04.prod.outlook.com
- ([fe80::f363:2b4f:4f8b:8af5%6]) with mapi id 15.20.7249.024; Thu, 1 Feb 2024
- 10:47:15 +0000
-From: Carlos Song <carlos.song@nxp.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-CC: "broonie@kernel.org" <broonie@kernel.org>, "shawnguo@kernel.org"
-	<shawnguo@kernel.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-	"kernel@pengutronix.de" <kernel@pengutronix.de>, dl-linux-imx
-	<linux-imx@nxp.com>, "benjamin@bigler.one" <benjamin@bigler.one>,
-	"stefanmoring@gmail.com" <stefanmoring@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-spi@vger.kernel.org"
-	<linux-spi@vger.kernel.org>
-Subject: Re: [PATCH v3] spi: imx: fix the burst length at DMA mode and CPU
- mode
-Thread-Topic: [PATCH v3] spi: imx: fix the burst length at DMA mode and CPU
- mode
-Thread-Index: AQHaVPwEME6t2WRuYE6Wft2lrEFNzA==
-Date: Thu, 1 Feb 2024 10:47:14 +0000
-Message-ID:
- <VI1PR04MB500557BCDB04B9385F20906BE8432@VI1PR04MB5005.eurprd04.prod.outlook.com>
-References: <20240201100115.503296-1-carlos.song@nxp.com>
- <20240201-resupply-doorframe-feb41940155f-mkl@pengutronix.de>
-In-Reply-To: <20240201-resupply-doorframe-feb41940155f-mkl@pengutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: VI1PR04MB5005:EE_|AS8PR04MB7718:EE_
-x-ms-office365-filtering-correlation-id: a85fdcb9-e17d-44ef-9d7b-08dc23132745
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 18jwcDTLNjM5KYteSwG0uWJbClBGQ2kObDqT8AuTq6KysJ2N4lHY0QLERrAm6k9hvfQoIPUJCq0XKxsrq2nUxFASQwug8ZnEpzNTZwa5/0lVLug+r1zjnjUvb9qrnnn277kg+Ox8sJtN+XI3KF2rFBUwL7MhQcxpFGP35fWvRUW/SBUMhrIRXUZuctLkmiM/41KASlQ3AYiDUQBlpKWcRBY02UXhvv+yFme+KFJsstwlyzm/lg/WXrnaWIEAPzOgcr3FRFRHchgziFtezZM1FSKuh8SPlXa4lFDZCKnqEvpmiPoITXBin9WoDD1tm3nMigEHvA7Tk3wF6qAWxNK1VIOwQCygCt2AiNi7obM97XXs7lbYUNb+RQw30liFNj03In2DFv8c3lvzIumjfX98nz/rattiMF8p455VrlhceCzmRdQCdo4VdARsVVYHMYFUV+GDaeRzlKtEfzzixjRN6he+mDoyJ+EK+S3j92imC5YD9n5gGPMUGXMLi9cCkEKWZaWUVTXgtwKND9chmJF7/UumSog/MKVXG0yarw/VlVz6dGOj67BTxDCZY6RAvDNff7EVziGD7rC1RfmyCNDY/QweQGIFPgakig9h3nSgjdGf5IMo6mFnuKhOoopOhFGyYiH97wx1lauMrrLNEVW6fw==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5005.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(376002)(136003)(346002)(366004)(230922051799003)(230173577357003)(230273577357003)(451199024)(186009)(1800799012)(64100799003)(41300700001)(2906002)(44832011)(86362001)(4326008)(8676002)(8936002)(52536014)(5660300002)(33656002)(7416002)(76116006)(6916009)(64756008)(66446008)(316002)(66476007)(38070700009)(54906003)(38100700002)(66556008)(122000001)(53546011)(83380400001)(6506007)(66946007)(478600001)(9686003)(71200400001)(45080400002)(7696005)(966005)(66574015)(26005)(55016003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?ZT9r/0u6yMmWvs/VDu+N373vuUBDqfhmCYnIlnidRKBvmXVSsFeT8AeRje?=
- =?iso-8859-1?Q?8Umg26gTgsiUTeLZVF87Krc6t39ZhFz8JHrae/SNaf3dm43FgiXAZGjaOE?=
- =?iso-8859-1?Q?wKUs46eux5Ftbt4/MrHh1JsCsjJLMD0cFpcUZl8p5wMk+mG8mhLix9gVTK?=
- =?iso-8859-1?Q?zaZGPSomNJYhzelP0S09LTxnH9SqNH6toUmi6A/fyvXm7nYhnkvicjixjc?=
- =?iso-8859-1?Q?ncwtUB3pg2TVSWe4YQwIMPQk66GxMJOC2KWsvvOjeboUuDE9DnV/gCxBfv?=
- =?iso-8859-1?Q?/cIZ/5MWx0jSza4L4UDfYesUZg8H1YtMYLlcb+gIHS7TgJvisbgv/OQGWy?=
- =?iso-8859-1?Q?6O/89rDKkbBk2n3LF7EOAdqvLX5PiI2jat3EjWjFwiMk1sTdGAmC2nCuLw?=
- =?iso-8859-1?Q?5k5lDjap7dpUxhZ5suR5aSE7PC9rE+h2HMYLHJeeKGbxAWz1WmdQAVkT0p?=
- =?iso-8859-1?Q?hFFlVlUDwENDJouAYAB29OTa/KCUpY/J0biMMDOjkPs3/D+oYMNzCE3mzX?=
- =?iso-8859-1?Q?jhRs2vhrKvUYk0Zg4ARc/+bJqAVBrWZmkeNirPZi6YJWaCf2398E0tV8/5?=
- =?iso-8859-1?Q?f02XnwbLaZRaOaWVRy/StOGxVWLx1knS9NbQp9MQ1s/P8WEs4/NeRA2m8H?=
- =?iso-8859-1?Q?tBflHEmAgVTfrYuBDyzviZ7C8Wpsy6fjM8NUI6tXUel/FngJyCA3/GzYc3?=
- =?iso-8859-1?Q?bI0a78yb8BESwLHnh6CUPVvwcce/QbwE7MrVYom/COEWA6eeOvej4OORV/?=
- =?iso-8859-1?Q?19KRzwLMsRHDeBPvdUJURbHffd0VGqEi7/CEhUbk8kGmi7fr++UFL35wIX?=
- =?iso-8859-1?Q?vrQderKY+75olZrYoYFL968bwXxMPdWXoAleteqtfjnkJDLChGkZNtOWSc?=
- =?iso-8859-1?Q?IeiAF9JYhhGqJ0jkjZ4ov03gNhXzvsTchDhagUmJa9UnG/BcHm15qFUW8G?=
- =?iso-8859-1?Q?XYqbG0tqJaA7w2u+/77wOV564D0A8SGl3fG6PtRdmH1sP1kWhJAco3TCtc?=
- =?iso-8859-1?Q?HiWpJaQclltgvlZOmgoN8ZcJeRE+Nj50/59cJRgO81LfYoPf7ckspWRO43?=
- =?iso-8859-1?Q?+d914Gv/siyWYiyppAIfXCcib+dEjGcdiFIPow3pAucsLBL7qThXLS//9T?=
- =?iso-8859-1?Q?dKBJvgTc/tyoBxXu4HqeBwc+dSx4I70MjyLlXMxloi5TtDFa/ZcaBQHTuJ?=
- =?iso-8859-1?Q?PQQdxIi/Wjn/QRY0F8UQ+41394hx6e9Sc+7ofxnaS97l1CK+Hm2hfSYF9a?=
- =?iso-8859-1?Q?oHhx6kqF4MIYRezDmY4r9WjPk6v6MYRz5u1ccCZmABCw8IQTv4w0vvBpbG?=
- =?iso-8859-1?Q?abqy6CEIrf+gLHtV6piKcPxM+EwZrKXjCffLZfhN9H1qN/XHpHg0/Twfqb?=
- =?iso-8859-1?Q?8OVx4FOFYXaiogI7Hsmcj1a3wIok0yspcX2TcQwRIze9n142O5ZLSwM8Hx?=
- =?iso-8859-1?Q?mlZBG+c5UiBh80l70tnqh4d/08dlKXc7jXg0O3UMVdbqWenCcUbqdLY+B6?=
- =?iso-8859-1?Q?xIZIAQPSxjbP8C2t4MYYoDjtRd/00NBhDAG4xb4Gd5CPMEoqlrNjiO3Bja?=
- =?iso-8859-1?Q?yFHlkDEew0WRnZ32sX4zT1BbV1BC2upSj9ah31M4NCDvU+RM5RyikSlVuE?=
- =?iso-8859-1?Q?kCPzqOupqrKSsttXpAX/SBd6mYeqqt3V2X?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6A5215B990;
+	Thu,  1 Feb 2024 10:57:56 +0000 (UTC)
+Received: from wind.enjellic.com (wind.enjellic.com [76.10.64.91])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55AC84D9EC
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 10:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=76.10.64.91
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706785076; cv=none; b=GxBXA/OVM2ZC3VZLRrpM+eg/6fst5D5zTutTp/lMS8nk71i6O34EOEQaLvmMfHTdIN5vszPPsm96p+mgICFkjuy8tXhdF9uz9+9geOdm8E6Xb4KDss2zngo2mPp7gZ2pT+9aA8IjoUXllaIS7UB+KuEUgiBfhg7CO2AVsSnVn3s=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706785076; c=relaxed/simple;
+	bh=z+tD5pWFN5jz+qp55YaYahO9z6v+XGOpjnMoRHg7OqE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Mime-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hi0oToWqoMF81scup59MS0VGWjbm19+476Okb77klhfWF4/kxie/FYfsiqyXYMVo+6XMLtilR6QVpMX1OY5tK/ByZ0t26R49kZ3uKvhhOGxaR1REwp/ONkgg8UtJOBZbuQaedg2S68+KqNyuNHNq9lV+awlDkbCz0R1jgeOPJxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com; spf=pass smtp.mailfrom=wind.enjellic.com; arc=none smtp.client-ip=76.10.64.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wind.enjellic.com
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+	by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 411AqvaH018437;
+	Thu, 1 Feb 2024 04:52:57 -0600
+Received: (from greg@localhost)
+	by wind.enjellic.com (8.15.2/8.15.2/Submit) id 411AquTL018436;
+	Thu, 1 Feb 2024 04:52:56 -0600
+Date: Thu, 1 Feb 2024 04:52:56 -0600
+From: "Dr. Greg" <greg@enjellic.com>
+To: "Reshetova, Elena" <elena.reshetova@intel.com>
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Daniel P. Berrang??" <berrange@redhat.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kalra, Ashish" <ashish.kalra@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] x86/random: Issue a warning if RDRAND or RDSEED fails
+Message-ID: <20240201105256.GB17612@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+References: <20240130083007.1876787-2-kirill.shutemov@linux.intel.com> <CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com> <DM8PR11MB57507611D651E6D7CBC2A2F3E77D2@DM8PR11MB5750.namprd11.prod.outlook.com> <88a72370-e300-4bbc-8077-acd1cc831fe7@intel.com> <CAHmME9oSQbd3V8+qR0e9oPb7ppO=E7GrCW-a2RN8QNdY_ARbSQ@mail.gmail.com> <Zbk6h0ogqeInLa_1@redhat.com> <DM8PR11MB575052B985CA97B29A443F9AE77C2@DM8PR11MB5750.namprd11.prod.outlook.com> <CAHmME9ps6W5snQrYeNVMFgfhMKFKciky=-UxxGFbAx_RrxSHoA@mail.gmail.com> <20240131203531.GA12035@wind.enjellic.com> <DM8PR11MB5750FDC379F54F8591246DF0E7432@DM8PR11MB5750.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5005.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a85fdcb9-e17d-44ef-9d7b-08dc23132745
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Feb 2024 10:47:14.9461
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WtgYZhvXjjAb09pMI9N+8NBGadaMEpdN1UHKBZ19nqPQZuyg+ksjHFY1KgxNn5TZJwsWHuke6S9aT8SDoXweSg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7718
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM8PR11MB5750FDC379F54F8591246DF0E7432@DM8PR11MB5750.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Thu, 01 Feb 2024 04:52:57 -0600 (CST)
 
+On Thu, Feb 01, 2024 at 07:26:15AM +0000, Reshetova, Elena wrote:
 
-> -----Original Message-----
-> From: Marc Kleine-Budde <mkl@pengutronix.de>
-> Sent: Thursday, February 1, 2024 6:06 PM
-> To: Carlos Song <carlos.song@nxp.com>
-> Cc: broonie@kernel.org; shawnguo@kernel.org; s.hauer@pengutronix.de;
-> kernel@pengutronix.de; dl-linux-imx <linux-imx@nxp.com>; benjamin@bigler.=
-one;
-> stefanmoring@gmail.com; linux-kernel@vger.kernel.org;
-> linux-arm-kernel@lists.infradead.org; linux-spi@vger.kernel.org
-> Subject: [EXT] Re: [PATCH v3] spi: imx: fix the burst length at DMA mode =
-and CPU
-> mode
->
-> Caution: This is an external email. Please take care when clicking links =
-or opening
-> attachments. When in doubt, report the message using the 'Report this ema=
-il'
-> button
->
->
-> On 01.02.2024 18:01:15, carlos.song@nxp.com wrote:
-> > From: Carlos Song <carlos.song@nxp.com>
-> >
-> > For DMA mode, the bus width of the DMA is equal to the size of data
-> > word, so burst length should be configured as bits per word.
-> >
-> > For CPU mode, because of the spi transfer len is in byte, so burst
-> > length should be configured as bits per byte * spi_imx->count.
-> >
-> > Signed-off-by: Carlos Song <carlos.song@nxp.com>
-> > Reviewed-by: Clark Wang <xiaoning.wang@nxp.com>
-> > Fixes: e9b220aeacf1 ("spi: spi-imx: correctly configure burst length
-> > when using dma")
-> > Fixes: 5f66db08cbd3 ("spi: imx: Take in account bits per word instead
-> > of assuming 8-bits")
-> > ---
-> > Changes for V3:
-> > - include <linux/bits.h>
-> > ---
-> >  drivers/spi/spi-imx.c | 9 ++++-----
-> >  1 file changed, 4 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c index
-> > 546cdce525fc..2a1ae7b00760 100644
-> > --- a/drivers/spi/spi-imx.c
-> > +++ b/drivers/spi/spi-imx.c
-> > @@ -21,7 +21,7 @@
-> >  #include <linux/types.h>
-> >  #include <linux/of.h>
-> >  #include <linux/property.h>
-> > -
-> > +#include <linux/bits.h>
->
-> nitpick:
-> Please keep the includes sorted alphabetically.
->
-> >  #include <linux/dma/imx-dma.h>
->
-Hi,
+Good morning to everyone.
 
-Hhh, thank you!
-I will try my best to strictly adhere to the code format in the future!
-This is a good habit and I couldn't agree more! V4 will be sent.
+> > On Wed, Jan 31, 2024 at 02:06:13PM +0100, Jason A. Donenfeld wrote:
+> > 
+> > Hi again to everyone, beautiful day here in North Dakota.
+> > 
+> > > On Wed, Jan 31, 2024 at 9:17???AM Reshetova, Elena
+> > > <elena.reshetova@intel.com> wrote:
+> > > > This matches both my understanding (I do have cryptography background
+> > > > and understanding how cryptographic RNGs work)
+> > > > and official public docs that Intel published on this matter.
+> > > > Given that the physical entropy source is limited anyhow, and by giving
+> > > > enough pressure on the whole construction you should be able to
+> > > > make RDRAND fail because if the intermediate AES-CBC MAC extractor/
+> > > > conditioner is not getting its min entropy input rate, it wont
+> > > > produce a proper seed for AES CTR DRBG.
+> > > > Of course exact details/numbers can wary between different generations of
+> > > > Intel DRNG implementation, and the platforms where it is running on,
+> > > > so be careful to sticking to concrete numbers.
+> > 
+> > > Alright, so RDRAND is not reliable. The question for us now is: do
+> > > we want RDRAND unreliability to translate to another form of
+> > > unreliability elsewhere, e.g. DoS/infiniteloop/latency/WARN_ON()? Or
+> > > would it be better to declare the hardware simply broken and ask
+> > > Intel to fix it? (I don't know the answer to that question.)
+> > 
+> > I think it would demonstrate a lack of appropriate engineering
+> > diligence on the part of our community to declare RDRAND 'busted' at
+> > this point.
+> > 
+> > While it appeares to be trivially easy to force RDSEED into depletion,
+> > there does not seem to be a suggestion, at least in the open
+> > literature, that this directly or easily translates into stalling
+> > output from RDRAND in any type of relevant adversarial fashion.
+> > 
+> > If this were the case, given what CVE's seem to be worth on a resume,
+> > someone would have rented a cloud machine and come up with a POC
+> > against RDRAND in a multi-tenant environment and then promptly put up
+> > a web-site called 'Random Starve' or something equally ominous.
+> > 
+> > This is no doubt secondary to the 1022x amplication factor inherent in
+> > the 'Bull Mountain' architecture.
+> > 
+> > I'm a bit surprised that no one from the Intel side of this
+> > conversation didn't pitch this over the wall as soon as this
+> > conversation came up, but I would suggest that everyone concerned
+> > about this issue give the following a thorough read:
+> > 
+> > https://www.intel.com/content/www/us/en/developer/articles/guide/intel-digital-
+> > random-number-generator-drng-software-implementation-guide.html
+> > 
+> > Relevant highlights:
+> > 
+> > - As I suggested in my earlier e-mail, random number generation is a
+> >   socket based resource, hence an adversarial domain limited to only
+> >   the cores on a common socket.
+> > 
+> > - There is a maximum randomness throughput rate of 800 MB/s over all
+> >   cores sharing common random number infrastructure.  Single thread
+> >   throughput rates of 70-200 MB/s are demonstratable.
+> > 
+> > - A failure of RDRAND over 10 re-tries is 'astronomically' small, with
+> >   no definition of astronomical provided, one would assume really
+> >   small, given they are using the word astronomical.
 
-BR
-Carlos
+> As I said, I want to investigate this properly before stating
+> anything.  In a CoCo VM we cannot guarantee that a victim guest is
+> able to execute this 10 re-try loop (there is also a tightness
+> requirement listed in official guide that is not further specified)
+> without interruption since all guest scheduling is under the host
+> control. Again, this is the angle that was not present before and I
+> want to make sure we are protected against this case.
 
+I suspect that all of this may be the source of interesting
+discussions inside of Intel, see my closing question below.
 
-> Marc
->
-> --
-> Pengutronix e.K.                 | Marc Kleine-Budde          |
-> Embedded Linux                   |
-> https://www.pen/
-> gutronix.de%2F&data=3D05%7C02%7Ccarlos.song%40nxp.com%7C53112bdae1e4
-> 478f5fff08dc230d69fb%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%
-> 7C638423787724098671%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAw
-> MDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C0%7C%7C%7C&s
-> data=3D33MzYSg%2Fq5ciMNGJmbrUcprP%2BH%2F%2FNl0IPNcUO%2BHoeF4%3D
-> &reserved=3D0 |
-> Vertretung N=FCrnberg              | Phone: +49-5121-206917-129 |
-> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+If nothing else, we will wait with baited breath for a definition of
+astronomical, if of course, the definition of that value is
+unprivileged and you would be free to forward it along... :-)
+
+> > > > That said, I have taken an AR to follow up internally on what can be done
+> > > > to improve our situation with RDRAND/RDSEED.
+> > 
+> > I think I can save you some time Elena.
+> > 
+> > > Specifying this is an interesting question. What exactly might our
+> > > requirements be for a "non-broken" RDRAND? It seems like we have two
+> > > basic ones:
+> > >
+> > > - One VMX (or host) context can't DoS another one.
+> > > - Ring 3 can't DoS ring 0.
+> > >
+> > > I don't know whether that'd be implemented with context-tied rate
+> > > limiting or more state or what. But I think, short of just making
+> > > RDRAND never fail, that's basically what's needed.
+> > 
+> > I think we probably have that, for all intents and purposes, given
+> > that we embrace the following methodogy:
+> > 
+> > - Use RDRAND exclusively.
+> > 
+> > - Be willing to take 10 swings at the plate.
+> > 
+> > - Given the somewhat demanding requirements for TDX/COCO, fail and
+> >   either deadlock or panic after 10 swings since that would seem to
+> >   suggest the hardware is broken, ie. RMA time.
+
+> Again, my worry here that a CoCo guest is not in control of its own
+> scheduling and this might make an impact on the above statement,
+> i.e. it might theoretical be possible to cause this without
+> physically broken HW.
+
+So all of this leaves open a very significant question that would seem
+to be worthy of further enlightenment from inside the bowels of
+Intel engineering.
+
+Our discussion has now led us to a point where there appears to be a
+legitimate concern that the hypervisor has such significant control
+over a confidential VM that the integrity of a simple re-try loop is
+an open question.
+
+Let us posit for argument, that confidential computing resolves down
+to the implementation of a trusted computing platform that in turn
+resolves to a requirement for competent and robust cryptography for
+initial and ongoing attestation, let alone confidentiality in the face
+of possible side-channel and timing attacks.
+
+I'm sure there would be a great deal of interest in any information
+that can be provided that this scenario is possible, given the level
+of control that is being suggested that a hypervisor would enjoy over
+an ostensibly confidential and trusted guest.
+
+> Best Regards,
+> Elena.
+
+Have a good day.
+
+As always,
+Dr. Greg
+
+The Quixote Project - Flailing at the Travails of Cybersecurity
+              https://github.com/Quixote-Project
 
