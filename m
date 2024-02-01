@@ -1,41 +1,41 @@
-Return-Path: <linux-kernel+bounces-47866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47867-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABB558453EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:31:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 403E18453EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:31:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67F2828B64A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:31:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBA5828A76F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:31:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD1515CD5F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C456715CD75;
 	Thu,  1 Feb 2024 09:30:33 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9592915AAB9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E09C15B0FA;
 	Thu,  1 Feb 2024 09:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706779832; cv=none; b=i6RXa6LFcy1OzG9BYElybDzAe6ybDjBFhoFv1Cpl7qHYZc7uknfuBB1hU1vRCosmdfEEXbSw+1t3ahVcDHbAmYEvhYFwzJyfnBHk2c5e98HnqjHgQ7gWkruKgdIrEQVV7GRioyTXFNS44RrX/+x2aNip+Sm8k4HmT9FJiCmVP20=
+	t=1706779833; cv=none; b=WzIam8dU4qsg7PQns4TbiNPhEHmUIn+RQiTGo/44z98FTkEaWK0PQUEOHXWhfaarAm711eTjmM5qmfzrXKNI9tLRXXIlmXRGzW9XD/UohPbQq3XqTS6zqL/Ogq9QBLHoMfKjkvNGHYVgmlsv9b6U1WgtPs3QreiQ7DzWrep3ZDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706779832; c=relaxed/simple;
-	bh=h4mAM5munNDh64f9BT7eKjkJVG7xHUqubnznwxYlHRM=;
+	s=arc-20240116; t=1706779833; c=relaxed/simple;
+	bh=uuJ8tRuvIPDNbFzYKdOhbv8+B/r7ZvglzLK7hF7sQ34=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YN3mow2QnGKulmWShuvi2DwD8K52V5gKvZg5UlkTnrLK4I0PZLh+Ucy5GVpMoKVzfCO/Ph3IxyopvrDt/nb1Z9BAlWHta9koobG6rvSLyCtmMEwT1aOuOpnkY1ARBgWD+LOf4UZ+rSIyZH1uPXJghG4ejnpfGKFMkWufYY5iRzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=nBsnh8XhONeF4sLhi1VgtPYw9eW7kKHSBQw2goGgm2duwbav5jRmJvGEovGM2V/FeUrIVbIr8n2nrUrQk1oMMS8llmhEmdRn5FE/8etjpr6TPv4fQrUedQ3TD5Tcg7C31CNjjyext9TcmD0fjr7oLYzlshokt7bd3ahYpuX5gWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TQYXv60ztz4f3k6S;
-	Thu,  1 Feb 2024 17:30:23 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TQYXt6xxWz4f3l7J;
+	Thu,  1 Feb 2024 17:30:22 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 6C9221A038B;
-	Thu,  1 Feb 2024 17:30:26 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 2E25B1A0232;
+	Thu,  1 Feb 2024 17:30:27 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgCXaBGtZLtl8V6KCg--.33515S6;
+	by APP1 (Coremail) with SMTP id cCh0CgCXaBGtZLtl8V6KCg--.33515S7;
 	Thu, 01 Feb 2024 17:30:26 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: mpatocka@redhat.com,
@@ -56,9 +56,9 @@ Cc: linux-kernel@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH v5 02/14] md: don't ignore read-only array in md_check_recovery()
-Date: Thu,  1 Feb 2024 17:25:47 +0800
-Message-Id: <20240201092559.910982-3-yukuai1@huaweicloud.com>
+Subject: [PATCH v5 03/14] md: make sure md_do_sync() will set MD_RECOVERY_DONE
+Date: Thu,  1 Feb 2024 17:25:48 +0800
+Message-Id: <20240201092559.910982-4-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240201092559.910982-1-yukuai1@huaweicloud.com>
 References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
@@ -69,12 +69,12 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCXaBGtZLtl8V6KCg--.33515S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxCF1xZw47XF4fCr17tFyUGFg_yoWrXw45pa
-	yfKas8Cr4UtFy3urZrK3WDXayYvr10qrZ0yFy3u34fAw1rtr4Sk34ruFyUJFWDtFyFqw4Y
-	vw4rJF43ZFy8Kw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:cCh0CgCXaBGtZLtl8V6KCg--.33515S7
+X-Coremail-Antispam: 1UD129KBjvJXoW7WF48JF18KF48Xr1fZFW7twb_yoW8tr1rpF
+	WkCF98ZrW8ArW7urW2qa4UZFy5Ar10qrW7CFyfW34rAF13Kw4akryjkFyUXFWqkFWxJw4F
+	vFs8JFZ8uF95C3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPj14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
 	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
 	Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
 	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
@@ -85,132 +85,63 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxCF1xZw47XF4fCr17tFyUGFg_yoWrXw45pa
 	6r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2
 	Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_
 	Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8Jw
-	CI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUOJPEUUUU
+	CI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUojjgUUUU
 	U
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Usually if the array is not read-write, md_check_recovery() won't
-register new sync_thread in the first place. And if the array is
-read-write and sync_thread is registered, md_set_readonly() will
-unregister sync_thread before setting the array read-only. md/raid
-follow this behavior hence there is no problem.
+stop_sync_thread() will interrupt md_do_sync(), and md_do_sync() must
+set MD_RECOVERY_DONE, so that follow up md_check_recovery() will
+unregister sync_thread, clear MD_RECOVERY_RUNNING and wake up
+stop_sync_thread().
 
-After commit f52f5c71f3d4 ("md: fix stopping sync thread"), following
-hang can be triggered by test shell/integrity-caching.sh:
+If MD_RECOVERY_WAIT is set or the array is read-only, md_do_sync() will
+return without setting MD_RECOVERY_DONE, and after commit f52f5c71f3d4
+("md: fix stopping sync thread"), dm-raid switch from
+md_reap_sync_thread() to stop_sync_thread() to unregister sync_thread
+from md_stop() and md_stop_writes(), causing the test
+shell/lvconvert-raid-reshape.sh hang.
 
-1) array is read-only. dm-raid update super block:
-rs_update_sbs
- ro = mddev->ro
- mddev->ro = 0
-  -> set array read-write
- md_update_sb
-
-2) register new sync thread concurrently.
-
-3) dm-raid set array back to read-only:
-rs_update_sbs
- mddev->ro = ro
-
-4) stop the array:
-raid_dtr
- md_stop
-  stop_sync_thread
-    set_bit(MD_RECOVERY_INTR, &mddev->recovery);
-    md_wakeup_thread_directly(mddev->sync_thread);
-    wait_event(..., !test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
-
-5) sync thread done:
- md_do_sync
- set_bit(MD_RECOVERY_DONE, &mddev->recovery);
- md_wakeup_thread(mddev->thread);
-
-6) daemon thread can't unregister sync thread:
- md_check_recovery
-  if (!md_is_rdwr(mddev) &&
-      !test_bit(MD_RECOVERY_NEEDED, &mddev->recovery))
-   return;
-  -> -> MD_RECOVERY_RUNNING can't be cleared, hence step 4 hang;
-
-The root cause is that dm-raid manipulate 'mddev->ro' by itself,
-however, dm-raid really should stop sync thread before setting the
-array read-only. Unfortunately, I need to read more code before I
-can refacter the handler of 'mddev->ro' in dm-raid, hence let's fix
-the problem the easy way for now to prevent dm-raid regression.
+We shouldn't switch back to md_reap_sync_thread() because it's
+problematic in the first place. Fix the problem by making sure
+md_do_sync() will set MD_RECOVERY_DONE.
 
 Reported-by: Mikulas Patocka <mpatocka@redhat.com>
-Closes: https://lore.kernel.org/all/9801e40-8ac7-e225-6a71-309dcf9dc9aa@redhat.com/
-Fixes: ecbfb9f118bc ("dm raid: add raid level takeover support")
+Closes: https://lore.kernel.org/all/ece2b06f-d647-6613-a534-ff4c9bec1142@redhat.com/
+Fixes: d5d885fd514f ("md: introduce new personality funciton start()")
+Fixes: 5fd6c1dce06e ("[PATCH] md: allow checkpoint of recovery with version-1 superblock")
 Fixes: f52f5c71f3d4 ("md: fix stopping sync thread")
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/md.c | 31 ++++++++++++++++++-------------
- 1 file changed, 18 insertions(+), 13 deletions(-)
+ drivers/md/md.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 07b80278eaa5..6906d023f1d6 100644
+index 6906d023f1d6..c65dfd156090 100644
 --- a/drivers/md/md.c
 +++ b/drivers/md/md.c
-@@ -9445,6 +9445,20 @@ static void md_start_sync(struct work_struct *ws)
- 		sysfs_notify_dirent_safe(mddev->sysfs_action);
- }
+@@ -8788,12 +8788,16 @@ void md_do_sync(struct md_thread *thread)
+ 	int ret;
  
-+static void unregister_sync_thread(struct mddev *mddev)
-+{
-+	if (!test_bit(MD_RECOVERY_DONE, &mddev->recovery)) {
-+		/* resync/recovery still happening */
-+		clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
-+		return;
-+	}
+ 	/* just incase thread restarts... */
+-	if (test_bit(MD_RECOVERY_DONE, &mddev->recovery) ||
+-	    test_bit(MD_RECOVERY_WAIT, &mddev->recovery))
++	if (test_bit(MD_RECOVERY_DONE, &mddev->recovery))
+ 		return;
+-	if (!md_is_rdwr(mddev)) {/* never try to sync a read-only array */
 +
-+	if (WARN_ON_ONCE(!mddev->sync_thread))
-+		return;
++	if (test_bit(MD_RECOVERY_INTR, &mddev->recovery))
++		goto skip;
 +
-+	md_reap_sync_thread(mddev);
-+}
-+
- /*
-  * This routine is regularly called by all per-raid-array threads to
-  * deal with generic issues like resync and super-block update.
-@@ -9482,7 +9496,8 @@ void md_check_recovery(struct mddev *mddev)
++	if (test_bit(MD_RECOVERY_WAIT, &mddev->recovery) ||
++	    !md_is_rdwr(mddev)) {/* never try to sync a read-only array */
+ 		set_bit(MD_RECOVERY_INTR, &mddev->recovery);
+-		return;
++		goto skip;
  	}
  
- 	if (!md_is_rdwr(mddev) &&
--	    !test_bit(MD_RECOVERY_NEEDED, &mddev->recovery))
-+	    !test_bit(MD_RECOVERY_NEEDED, &mddev->recovery) &&
-+	    !test_bit(MD_RECOVERY_DONE, &mddev->recovery))
- 		return;
- 	if ( ! (
- 		(mddev->sb_flags & ~ (1<<MD_SB_CHANGE_PENDING)) ||
-@@ -9504,8 +9519,7 @@ void md_check_recovery(struct mddev *mddev)
- 			struct md_rdev *rdev;
- 
- 			if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery)) {
--				/* sync_work already queued. */
--				clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
-+				unregister_sync_thread(mddev);
- 				goto unlock;
- 			}
- 
-@@ -9568,16 +9582,7 @@ void md_check_recovery(struct mddev *mddev)
- 		 * still set.
- 		 */
- 		if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery)) {
--			if (!test_bit(MD_RECOVERY_DONE, &mddev->recovery)) {
--				/* resync/recovery still happening */
--				clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
--				goto unlock;
--			}
--
--			if (WARN_ON_ONCE(!mddev->sync_thread))
--				goto unlock;
--
--			md_reap_sync_thread(mddev);
-+			unregister_sync_thread(mddev);
- 			goto unlock;
- 		}
- 
+ 	if (mddev_is_clustered(mddev)) {
 -- 
 2.39.2
 
