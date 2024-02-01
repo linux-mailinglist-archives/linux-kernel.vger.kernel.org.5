@@ -1,123 +1,72 @@
-Return-Path: <linux-kernel+bounces-47438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A65D2844DEF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:38:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FD4A844DEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:36:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A19D1F287C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:38:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A32C61F25410
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:36:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E9462107;
-	Thu,  1 Feb 2024 00:37:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9E5F210D;
+	Thu,  1 Feb 2024 00:36:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PZXNDsk9"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FFTQZnQv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 510B41FC4
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 00:37:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E36AD23DB;
+	Thu,  1 Feb 2024 00:36:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706747873; cv=none; b=Eomv+WuZYLZOehQtp/gNa8yLv8APXFdoxt7X2XASj483jUc06HCxgnHrK30Bt39JMtlOIljfYldNF6Ar8Hy6+7HJELGVLUkjLW5PhTLn2KNkNzP0HNAIQnbvOkRvsjv9qKkPWTN/Os2SkmvProruDH6R0ef9IPg7BexUj+XCyJQ=
+	t=1706747796; cv=none; b=ZcVyqilc9uvq7mWtwNFZH8gI04rp/QVVR3SXMXhVLdssuyc2BHwPcNvdgw3eO25ET+hJnJoZ2SIYZpK684C448i6C1o0mtxdT81u+mqO46fLOMmsQf1rUqpKf+5sXMPUxInxOti9Vkfj8quhbwAeqqPHXer9kfm6QX7E1MwgnsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706747873; c=relaxed/simple;
-	bh=qr8rACMNs5RIY8f9kv6asHpnLhXEAXtdGkLGoE0MlO4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=G6l7tcsldaizd5/mVf5vGPOP92dJhzrPyeCiPmD422sLSl6/uqJNYo6O21QcFk9f7/XpwrseVlCYyFTVD1iyClqhq76r1fxLg3A5ESIcQbs+dR5fldPvbaLRbpP0pdVkDMcj4/6dn8EyjTfIoUD4t3M6rSW6XkwkOfXgmhuSBVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PZXNDsk9; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706747871;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=ah1RKuhRRRnaXJKeyFjE6ASX3Aql4IiSaABAAELIE4M=;
-	b=PZXNDsk9+1Bu35dZDS550PLN14viR1ntCFnPMAwKT5URh9XW2C7ncCqSSPIWJ88M3HHwFd
-	ZeRmWpXeKe1nKhW3FdQBheBye4w/9R1aTai/O7e9OiVfEmGf+wBJpRd/QOTST4Wmmv1wpl
-	tzwV59TVR9a2PC02YU+dnyqEiXjXDKY=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-634-Yrwu-v3rPWCE82p2J6UpYg-1; Wed,
- 31 Jan 2024 19:37:47 -0500
-X-MC-Unique: Yrwu-v3rPWCE82p2J6UpYg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3FED138005CC;
-	Thu,  1 Feb 2024 00:37:47 +0000 (UTC)
-Received: from li-a71a4dcc-35d1-11b2-a85c-951838863c8d.ibm.com.com (unknown [10.72.112.67])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 1874C1C060AF;
-	Thu,  1 Feb 2024 00:37:41 +0000 (UTC)
-From: xiubli@redhat.com
-To: linux-fscrypt@vger.kernel.org
-Cc: ebiggers@kernel.org,
-	tytso@mit.edu,
-	jaegeuk@kernel.org,
-	linux-kernel@vger.kernel.org,
-	idryomov@gmail.com,
-	ceph-devel@vger.kernel.org,
-	jlayton@kernel.org,
-	vshankar@redhat.com,
-	mchangir@redhat.com,
-	Xiubo Li <xiubli@redhat.com>
-Subject: [PATCH v2] fscrypt: to make sure the inode->i_blkbits is correctly set
-Date: Thu,  1 Feb 2024 08:35:25 +0800
-Message-ID: <20240201003525.1788594-1-xiubli@redhat.com>
+	s=arc-20240116; t=1706747796; c=relaxed/simple;
+	bh=rIVBZ0YpKKKh/UQafWWF5fY8LlCJ4PxbdsL0vpFL1/o=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=matfMH7VmGnVjrPucOsUxy0TO/896BbDwmGM4vYh90hRYWRVzP6r6JxrPoYsFkktmcYs9TBbE6uetULE7jJNA7GzwlssLDmdM6wnrHaGU5+Wz8LAV6Czy6uBeySovktwyNn10yHIOQcUv5Rlgc6FaZmqO8XoXzIxZ6iwYG+Ddeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FFTQZnQv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15B08C433C7;
+	Thu,  1 Feb 2024 00:36:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706747795;
+	bh=rIVBZ0YpKKKh/UQafWWF5fY8LlCJ4PxbdsL0vpFL1/o=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=FFTQZnQvLkBkFBrETXyP3QUSU10eHP0og8ee60GJo5L/b4qIiQoSrAHoPpPDSlfnY
+	 cSeawZIEB/2Dlnw4dOv2QAYtszhgGe+VX/Q1491rcOAipm71cLnxbRzlyDfnUcEbn5
+	 rFugDw2umvOgSppUZuimbg7fU2apoJBugQCkHTklpW6/YjtdQVObVkl4kLRz+a316y
+	 Pf9dZ+6h65csjHfbLZ9yq1IGO/TRC6fQfb8xIxrIvKpennzzoV44/MGb0mMKe4TLC4
+	 kYiEiaTmu7NHr62zWd0p+7bIBsvgDOULKUJD8NoM6XylHGyao+UWQaO2qwW4w1ZPYe
+	 aAikeVhqmHVXg==
+Date: Wed, 31 Jan 2024 16:36:30 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Dmitry Safonov <dima@arista.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Shuah Khan
+ <shuah@kernel.org>, Dmitry Safonov <0x7f454c46@gmail.com>, Mohammad Nassiri
+ <mnassiri@ciena.com>, Simon Horman <horms@kernel.org>,
+ netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] selftests/net: A couple of typos fixes in
+ key-management/rst tests
+Message-ID: <20240131163630.31309ee0@kernel.org>
+In-Reply-To: <20240130-tcp-ao-test-key-mgmt-v2-0-d190430a6c60@arista.com>
+References: <20240130-tcp-ao-test-key-mgmt-v2-0-d190430a6c60@arista.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Xiubo Li <xiubli@redhat.com>
+On Tue, 30 Jan 2024 03:51:51 +0000 Dmitry Safonov wrote:
+> Two typo fixes, noticed by Mohammad's review.
+> And a fix for an issue that got uncovered.
 
-The inode->i_blkbits should be already set before calling
-fscrypt_get_encryption_info() and it will use this to setup the
-ci_data_unit_bits later.
-
-URL: https://tracker.ceph.com/issues/64035
-Signed-off-by: Xiubo Li <xiubli@redhat.com>
----
-
-V2:
-- Fixed the comments suggested by Eric, thanks.
-
-
-
- fs/crypto/keysetup.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index d71f7c799e79..9a0a40c81bf2 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -687,7 +687,7 @@ int fscrypt_get_encryption_info(struct inode *inode, bool allow_unsupported)
- /**
-  * fscrypt_prepare_new_inode() - prepare to create a new inode in a directory
-  * @dir: a possibly-encrypted directory
-- * @inode: the new inode.  ->i_mode must be set already.
-+ * @inode: the new inode.  ->i_mode and ->i_blkbits must be set already.
-  *	   ->i_ino doesn't need to be set yet.
-  * @encrypt_ret: (output) set to %true if the new inode will be encrypted
-  *
-@@ -717,6 +717,9 @@ int fscrypt_prepare_new_inode(struct inode *dir, struct inode *inode,
- 	if (IS_ERR(policy))
- 		return PTR_ERR(policy);
- 
-+	if (WARN_ON_ONCE(inode->i_blkbits == 0))
-+		return -EINVAL;
-+
- 	if (WARN_ON_ONCE(inode->i_mode == 0))
- 		return -EINVAL;
- 
--- 
-2.43.0
-
+I can confirm that all tests pass now :)
+Thank you!
 
