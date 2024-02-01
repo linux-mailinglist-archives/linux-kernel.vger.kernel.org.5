@@ -1,122 +1,119 @@
-Return-Path: <linux-kernel+bounces-48140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA3078457E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:35:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 162D78457E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:36:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD8721C23234
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:35:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C585D28950E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:36:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 448031A27A;
-	Thu,  1 Feb 2024 12:35:03 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27CA786633;
+	Thu,  1 Feb 2024 12:36:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="nhL5AXsH"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94C4786626;
-	Thu,  1 Feb 2024 12:34:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EFA41A27A;
+	Thu,  1 Feb 2024 12:36:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706790902; cv=none; b=UWix29YnGXKNqJV6frEqcywWf8ABoR4JbeXCPBlf87SZWgxubrS8sxKpQqUx1LoByxHyE8cP+COR9TtFKgoiXqi7SM8iBb51BLl5P76GBiPtAlu39t4zF3jJdWksd/NbxK+R21mrQAQqJxHPhCelvFK3JIIMpO6kXhBO8zVoyXQ=
+	t=1706790966; cv=none; b=euHoQE73GdByQUOzI6OeD3fFOW12eWSNTRRr8cfhaanC6nwkc6gmtAldqrXmnASNAlkrovpqJ3UiHgK7NRL2X7cqpCQamit4TTMUTGoeruyTldRF10YQyYlTwrQBPeNDtKFXpkDtxwTHQ8JZliCAtfzTvkIY+6k9UJ3w7AK+O/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706790902; c=relaxed/simple;
-	bh=pgvxh8iwZDY76Bk5zc0MOB5kIp6sgO3F/tNC3N2l0s0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Ct17NNkebg9NlPFytLTEkH/vfgLOqD8n9NVm5uAJX2Ek+v7a2P9fXZ1dS8WB9e/QhHunD0U0PrYDfJxyTDwS1orCj//tzOhL7IhdQhCed+0bc0zmMYm4l14jM4oK9p8PfckgTq3YYJfM1MzHT0U/S7XpnkH8A1jPVYpLrTdl6eA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TQddM3VsQz1vsxv;
-	Thu,  1 Feb 2024 20:34:31 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0F7E41400D4;
-	Thu,  1 Feb 2024 20:34:57 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 1 Feb 2024 20:34:56 +0800
-Message-ID: <0ab855b2-e484-e571-d6d2-7f4789f4ef77@huawei.com>
-Date: Thu, 1 Feb 2024 20:34:56 +0800
+	s=arc-20240116; t=1706790966; c=relaxed/simple;
+	bh=+/1B/ZiGvDNaDgWpGqJgtvc8sqY9G/ruite8ydY3jRw=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=Bcr2zu+me94nF8EEppaI84CL13r8W4SFq+G1Humj2gEFSKsU7PyoX7SeMd//09qpQV8ML7Wy/GqB9keIv1U84fggwXoMf6h9RgvjgGeZiJECnvigu1X/+5V96VbnNCsQ9F2b1lBeK2KCrLKVLZxcJkeokyu8Ds17IiTLM/fYg2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=nhL5AXsH; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH] ext4: correct best extent lstart adjustment logic
-Content-Language: en-US
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>
-CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-	<stable@kernel.org>, Baokun Li <libaokun1@huawei.com>
-References: <20240122123332.555370-1-libaokun1@huawei.com>
- <20240131124636.gmxaiex6yqrhvxcj@quack3>
- <3630fa7f-b432-7afd-5f79-781bc3b2c5ea@huawei.com>
- <Zbt7setS4c/Q4fyv@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <Zbt7setS4c/Q4fyv@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1706790954;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TNyn5Df3rgP7z195cu82vjAEsVN9pPRraJv9Xn4e6Rc=;
+	b=nhL5AXsH0UqTo5sX9FwKfgCdD9oqkOaTfqnaE8JgTfx/DSZos/Ltmg8rTB+TmkBu0dfZQv
+	K0X2TaqpuQKKAX4yoGtVXiY4BRaK524w/GI9mSnM/oBl2OODYP4SgCaVb+B5dxb/rk597a
+	Q2Pn3l+YZv5NnR9oWtoMQHvOUb2gAS2mjSavi/O0VBvrQfS2SkJEnsN32RU9BsQXAROEby
+	QwcsXBba2bE5hwsRCz1D24Nr7xKV7OTF+Hc+2Qj3IQFooHCuYg+v41WCYyqCDglcBRA61g
+	08t3qhE+pnt2Qf0xnFPdJUrfdnA3RCuJL+O7s2SRrB1tmEIdkNYuLvJWe+qrFw==
+Date: Thu, 01 Feb 2024 13:35:53 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: Andy Yan <andyshrk@163.com>
+Cc: heiko@sntech.de, krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v2 3/4] arm64: dts: rockchip: rename vcc5v0_usb30_host
+ regulator for Cool Pi CM5 EVB
+In-Reply-To: <20240201121106.1471301-3-andyshrk@163.com>
+References: <20240201121106.1471301-1-andyshrk@163.com>
+ <20240201121106.1471301-3-andyshrk@163.com>
+Message-ID: <2da07d89de139b6325c7353273b16805@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-On 2024/2/1 19:08, Ojaswin Mujoo wrote:
+On 2024-02-01 13:11, Andy Yan wrote:
+> According to the schematic, USB20 HOST0 and HOST1 each have their own
+> independent power supply, but these two regulators controlled by a
+> same GPIO, so give it a more appropriate name.
+> 
+> Fixes: 791c154c3982 ("arm64: dts: rockchip: Add support for rk3588
+> based board Cool Pi CM5 EVB")
+> Signed-off-by: Andy Yan <andyshrk@163.com>
 
-Hi Ojaswin, Jan
+Looking good to me.
 
-> Hi Baokun, Jan
->
-> Thanks for the CC, I somehow missed this patch.
->
-> As described in the discussion Jan linked [1] , there is a known bug in the
-> normalize code (which i should probably get back to now ) where we sometimes
-> end up with a goal range which doesn't completely cover the original extent and
-> this was causing issues when we tried to cover the complete original request in
-> the PA window adjustment logic. That and to minimize fragmentation, we ended up
-> going with the logic we have right now.
->
-> In short, I agree that in the example Baokun pointed out, it is not optimal to
-> have to make an allocation request twice when we can get it in one go.
->
-> I also think Baokun is correct that if keeping the best extent at the end doesn't
-> cover the original start, then any other case should not lead to it overflowing out
-> of goal extent, including the case where original extent is overflowing goal extent.
->
-> So, as mentioned, it boils down to a trade off between multiple allocations and slightly
-> increased fragmentation. iiuc preallocations are anyways dropped when the file closes
-> so I think it shouldn't hurt too much fragmentation wise to prioritize less
-> allocations. What are your thoughts on this Jan, Baokun?
->
-> Coming to the code, the only thing I think might cause an issue is the following line:
->
-> -		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
-> +		BUG_ON(o_ex_end > extent_logical_end(sbi, &ex));
->
-> So as discussed towards the end here [1] we could have ac_o_ex that
-> overflows the goal and hence would be beyond the best length. I'll try
-> to look into the normalize logic to fix this however till then, I think
-> we should not have this BUG_ON since it would crash the kernel if this
-> happens.
->
-> Rest of it looks good to me.
->
-> Regards,
-> Ojaswin
->
-> [1]
-> https://lore.kernel.org/all/Y+UzQJRIJEiAr4Z4@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com/
-I will remove the problematic BUG_ON and add some comments in
-the next version.
+Reviewed-by: Dragan Simic <dsimic@manjaro.org>
 
-Thanks to Ojaswin and Jan for the review!
--- 
-With Best Regards,
-Baokun Li
-.
+> ---
+> 
+> Changes in v2:
+> - Add two lable for this regulator
+> 
+>  arch/arm64/boot/dts/rockchip/rk3588-coolpi-cm5-evb.dts | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-coolpi-cm5-evb.dts
+> b/arch/arm64/boot/dts/rockchip/rk3588-coolpi-cm5-evb.dts
+> index 1b5681fe0471..9c0f408ef339 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3588-coolpi-cm5-evb.dts
+> +++ b/arch/arm64/boot/dts/rockchip/rk3588-coolpi-cm5-evb.dts
+> @@ -84,7 +84,7 @@ vcc3v3_lcd: vcc3v3-lcd-regulator {
+>  		vin-supply = <&vcc3v3_sys>;
+>  	};
+> 
+> -	vcc5v0_usb30_host: vcc5v0-usb30-host-regulator {
+> +	vcc5v0_usb_host1: vcc5v0_usb_host2: vcc5v0-usb-host-regulator {
+>  		compatible = "regulator-fixed";
+>  		regulator-name = "vcc5v0_host";
+>  		regulator-boot-on;
+> @@ -200,12 +200,12 @@ &u2phy3 {
+>  };
+> 
+>  &u2phy2_host {
+> -	phy-supply = <&vcc5v0_usb30_host>;
+> +	phy-supply = <&vcc5v0_usb_host1>;
+>  	status = "okay";
+>  };
+> 
+>  &u2phy3_host {
+> -	phy-supply = <&vcc5v0_usb30_host>;
+> +	phy-supply = <&vcc5v0_usb_host2>;
+>  	status = "okay";
+>  };
 
