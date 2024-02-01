@@ -1,210 +1,219 @@
-Return-Path: <linux-kernel+bounces-47498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C084844EAC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:29:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 573C3844E40
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:06:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8181B1C2ADCA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:29:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 639B81C23422
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:06:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26190522F;
-	Thu,  1 Feb 2024 01:29:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41BA03FDB;
+	Thu,  1 Feb 2024 01:06:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=opensynergy.com header.i=@opensynergy.com header.b="S2xv7JtR"
-Received: from refb02.tmes.trendmicro.eu (refb02.tmes.trendmicro.eu [18.185.115.60])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aANuj/m8"
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC364442D
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 01:29:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=18.185.115.60
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706750972; cv=fail; b=f27JLVdAmBNZuT0OpPNIjXlpB2/8YBCy+omuE0OL+saiSBk8ahZlFgBOgifh8SZoD4bhBv6zYtQNA8qVkLKRD1zzAxJbV5yVRAPf/c+9y8Cb+8yd38KohdGsA7jUiILwPtUkRcZZMYn7l0aSnx9IDHKlH/XD/Bsv5NqCXoFQBbw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706750972; c=relaxed/simple;
-	bh=zk85uvIQqp/ot0OdT5DejcghRs82+xu4izURtMvuhQE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gxQl2obVxP9uwnehzZbC/Ge1GJXhSJR4Xvt2FjV5TvkmERzGEgFYcR4tg++rTnryOQi70r1aCRzju6WuF+d4P/jSc+BSFuHtdu1xciG/U1E517Jx1t6xMZnBBhXkNwRU0Q/2SsIfh2ou6xoeZLfIDLTshRB9pjILSyDO+R5P5uo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensynergy.com; spf=pass smtp.mailfrom=opensynergy.com; dkim=pass (2048-bit key) header.d=opensynergy.com header.i=@opensynergy.com header.b=S2xv7JtR; arc=fail smtp.client-ip=18.185.115.60
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensynergy.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensynergy.com
-Received: from 104.47.11.169_.trendmicro.com (unknown [172.21.10.202])
-	by refb02.tmes.trendmicro.eu (Postfix) with ESMTPS id 5DD3010A7E2DE;
-	Thu,  1 Feb 2024 01:06:31 +0000 (UTC)
-Received: from 104.47.11.169_.trendmicro.com (unknown [172.21.181.221])
-	by repost01.tmes.trendmicro.eu (Postfix) with SMTP id 5F0CD10000467;
-	Thu,  1 Feb 2024 01:06:24 +0000 (UTC)
-X-TM-MAIL-RECEIVED-TIME: 1706749551.393000
-X-TM-MAIL-UUID: c251587e-0784-4822-aaaa-ce694d2446bc
-Received: from DEU01-FR2-obe.outbound.protection.outlook.com (unknown [104.47.11.169])
-	by repre01.tmes.trendmicro.eu (Trend Micro Email Security) with ESMTPS id 601041000006C;
-	Thu,  1 Feb 2024 01:05:51 +0000 (UTC)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VMAXjbBwdTirr7a8YVsKo/UCwcvyFH6AW6aW5ynzOXvHCA8O0CwXwj06tAU7KlrqyIJ89+bKCjdkYrZ7spjBHce4VdNn3QCrimq69a3GYIWGIcebQl5V1ZSFcq6EepnIV+/mSFZ11izRzWUWO6enGJC6p6aJicUbLMo0DA6CjkUph5HrO2xmkhX0RH+j2+naiuD1sjpFFDFZJILQLyTiDggcSl3Hom44XOj7+jqLOIsbwSLmS1gheiLBCWIa0RKJeAHayfy6wbOycLnaA9NkMl9liz5grU4lJhEz1kHtQ5bVtO7atMe7DYmWU+4cP+nd4oRpMIaAAB18/8DLYtJYeg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=68UszWC6u1kb+YBX2FtVzcNWjvSlFHvLWP68hbFsEfk=;
- b=cP1HvY+x1Ecki6ol0Cq5gvttjDeDOahAaGdCMaPzqPv1vAqCzmdKf5cbbgiyGseUAZV4aFkBV0KbbmDHhXRRdofigspsQbv1OlWyN5yEZiHx4TWvSnpJ2K/MsKy338iWknjtim1EFpz+heq5XYtcpFL/2E51fgq78FRzN/x+7AuQVd9t9BG9HnNNkPZXUBc6qEadmJCAN190/KC34Qnx+eLACdGe75FkxuPe238N1QBcLvYvWHSWbLVWvQSzSF3+298P27iv5ULUUKxRQHsev6kC7kQo+hkM7fGWwsOuay/lxlaEkXHftfWg42Rq8DUUSiEMZPc9XncCuZjsA5Zv3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 217.66.60.4) smtp.rcpttodomain=alien8.de smtp.mailfrom=opensynergy.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=opensynergy.com; dkim=none (message not signed); arc=none (0)
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 217.66.60.4)
- smtp.mailfrom=opensynergy.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=opensynergy.com;
-Received-SPF: Pass (protection.outlook.com: domain of opensynergy.com
- designates 217.66.60.4 as permitted sender) receiver=protection.outlook.com;
- client-ip=217.66.60.4; helo=SR-MAIL-03.open-synergy.com; pr=C
-From: Peter Hilber <peter.hilber@opensynergy.com>
-To: linux-kernel@vger.kernel.org
-Cc: Peter Hilber <peter.hilber@opensynergy.com>,
-	"D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	jstultz@google.com,
-	giometti@enneenne.com,
-	corbet@lwn.net,
-	"Dong, Eddie" <eddie.dong@intel.com>,
-	"Hall, Christopher S" <christopher.s.hall@intel.com>,
-	Simon Horman <horms@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Richard Cochran <richardcochran@gmail.com>,
-	kvm@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH v3 8/8] kvmclock: Unexport kvmclock clocksource
-Date: Thu,  1 Feb 2024 02:04:53 +0100
-Message-Id: <20240201010453.2212371-9-peter.hilber@opensynergy.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240201010453.2212371-1-peter.hilber@opensynergy.com>
-References: <20240201010453.2212371-1-peter.hilber@opensynergy.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A152114
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 01:05:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706749561; cv=none; b=eN0j/YRHjA7aNPj5MClIy35Wsj5aADyJwNDxZUvh9SU+fA0ZrebSehQ0ozuS25dMjNKCo+6T1x2TKdFUhdapfPcEtU67VNKHtPTErtEK8zpsUqAGptzRgcYmBgwM1Op7jsbwS5TMK6G6yDRkNhT7jwPuiQzl0+bJOu0fyL79G5I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706749561; c=relaxed/simple;
+	bh=jfAgTK4FWkM81+8lgHiaLuVDHEluyhg55DBX/mVWYUo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rQi/Vnwhgx5tBY4tc1Zsxx6SKa2WMixCn8Ld0XkyhVMAfCM76EOZJ3lzSVrpVlH9T9oBrXN+khFIUJbeDaqOxFmf9ZvlAaP7exzGHRDZBmsS6ZMSn06pUntkUmc6LqgaDdPNkkwJjedxZTnWn1+6HcG70AnTNTCm+d/2Y1g00sA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aANuj/m8; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-60412a23225so3972247b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 17:05:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706749558; x=1707354358; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=MiJfKuLh0ReoY4qt8Rcgd+MaO8ThKHNzK3ZyVm/U3ws=;
+        b=aANuj/m8/5kGZRjqAIvAnwzFIlnHuIF1MQW2c2ZFCOJ0V6XpYoA9BGjue+1oSgrqyD
+         goFTMeVhJzhE7B4pqOe19Nj3vRPdMRLh7liXLdAY2mYVr/7Iw05ALeFQYj85Mgl25i/5
+         XcK+isr0qqtDVVQyWi5rUUrs5aKRr8nDo7LR2tJQ57qA2w7pIIcErHZo5aWYmuq5dkAF
+         OrUhhjHhXN7utmUrzwayOgCkLD8yRpySJ6wmhSzrA7xq/wUbTuOpTQ1PRNgXwIko/7Cn
+         bBPmWrpMPRSByn7/rG/m6B6IXYFpTgliQErt+0eO+ii1WEppSeCV9ucHpPrwyuRcnjh8
+         2Fyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706749558; x=1707354358;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MiJfKuLh0ReoY4qt8Rcgd+MaO8ThKHNzK3ZyVm/U3ws=;
+        b=NwHi7HIyIG0yM/xInW6/R1lOHKfMQpsoUpATsOck83x0pfGI2ZYVx4iCpf+J6HJgSj
+         m+vyLD8KoCI4M7R+Q1RDSTGe2K5UvPeJaOidVD6vC/hgnYM5xY5YWjmWG3q+oi1sfo9k
+         Wlgo4D/ASufomqf5GTWAJCnzwUr4AqCch56AM+G+RATHSR9eup4qSIu966LDwWzvDfCM
+         WHFuoqd5B1vI2lnDrNtNUoTDJcHcNMpO5EtOIFku7XxrgGJVGz5id07tXbfg7SAcJY6C
+         U4gnALMcarRYg5X7KWK2hR9HHmu9xw0AKZmTRBwkgs/8S+hbIucUic8EN4n4tFrfGUBI
+         j3rg==
+X-Gm-Message-State: AOJu0YxP7SMjze8O8ekaBR2rDUDPBkDaeXLIJgh7aJTMjsTPpRdaP3WF
+	55YKWRuY95jwYoQFYmmDIe1TBP23qgww64kO4U8livC9cBTlXEht+V3KKu25H423jXiowmZzH3B
+	6Xtej2na59OBnOjhEOoPtGv4Ek1NAzCYBwWE1Fw==
+X-Google-Smtp-Source: AGHT+IESNgSAKisM93yefyhvpq+nkBlr7eYYAtyVS7Xq+pTa0xcg9+3f75rHn9uaV33udWIAlqA0sRA0UBgZm5qqp6U=
+X-Received: by 2002:a81:9bd4:0:b0:604:bf4:97df with SMTP id
+ s203-20020a819bd4000000b006040bf497dfmr2977198ywg.52.1706749558318; Wed, 31
+ Jan 2024 17:05:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB8EUR05FT032:EE_|FR0P281MB1772:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: c14f677c-f065-4500-e808-08dc22c1ed98
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	pEBVQBoI7ER14sO37xJWJ1AOU6PqRSWdL5pil9aOxK4Ii4WV90SPDMcI5loyElujHD6B1CuDnhgTgWPRWZB0Blru+VeWrHkkRmVVqQzEKAOvqBBAWCceMZ6RovcjqrYzNGOITFZeS43mXI3yS1HPbD6qocDM7uCkcYutShu2hUJ2O6kHo/6jchbhyWQ7M+nnsFxU0B3IGHMa+CTFUt8hE6E3BLaAEtNDrjvaHWMEtyXrtMAE/wpuPMMkgyRzGdFub+BtNBSq/2+2k6mQPFSjFAKmZIQpgbvzbgMGVIhmKLYlswufmbibbzPIDXYMrW/ZlVrRzLDy1i8xn1cS3rMw0P3CleoifZcOUOcSYMZp0wOewLQSIaiZWAOX5ANlrt+r3ordhi6+X4iRzxxEiqhujCE40VQLirsdRWTynt3gZQHxsTVJ2f1Oa6K0nHj9RIvhBvqcVfG2kx9oYs6IleU2Dvq9dp0yoLduvAan3e8REDvuIbFZejZP8HiR+vFe4ZtsKlLEmyhntgszMHl/xor0rjUgAFJe5R9hJWqOels0xmx/aRzCtjEGa578NMY8pXi8m1vxthXGe6KJkyda8bGxnkcWL+gqDJpyKzA3hEzxqI3904LP/0i3agQut6Qp3NXZE6RgjDHCpveHvuzQZfnXW82FOQBEkHnzqBKeqh4lkckh7uU67JcXWFH/hcWDAmVa9XaYmgIOezPgcfK0llXWQiyGqwzMrcnyrBmPOmr0to1W+wdvqJR4mcZh12usu5DR
-X-Forefront-Antispam-Report:
-	CIP:217.66.60.4;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SR-MAIL-03.open-synergy.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(39850400004)(396003)(346002)(136003)(376002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(82310400011)(36840700001)(46966006)(478600001)(70586007)(2616005)(82740400003)(5660300002)(7416002)(44832011)(81166007)(41300700001)(2906002)(54906003)(336012)(36860700001)(1076003)(86362001)(8676002)(4326008)(83380400001)(36756003)(8936002)(6916009)(26005)(47076005)(70206006)(42186006)(316002)(40480700001)(36900700001);DIR:OUT;SFP:1102;
-X-OriginatorOrg: opensynergy.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2024 01:05:48.8771
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c14f677c-f065-4500-e808-08dc22c1ed98
-X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=800fae25-9b1b-4edc-993d-c939c4e84a64;Ip=[217.66.60.4];Helo=[SR-MAIL-03.open-synergy.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DB8EUR05FT032.eop-eur05.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: FR0P281MB1772
-X-TM-AS-ERS: 104.47.11.169-0.0.0.0
-X-TMASE-Version: StarCloud-1.3-9.1.1015-28152.007
-X-TMASE-Result: 10--1.575700-4.000000
-X-TMASE-MatchedRID: BoYRaA2j95x5JK6VZ/y/JZIdC0Q5JDAc3O2+pOfl+vcwLJ9PZUBQhdqK
-	Kei3fK/BwLkzWLqYXGIPTxis+8SzNY5D3dtciD32DnyoB5C0LDMhB2S/EqeA6zB4jJltGVDbLN5
-	wGPX3TPXYeXOEzfM22ez1ZBVjJwp/DeUZOJCXHMgCZpI9UgJMHqJYuGaIjh0/fiAqrjYtFiT3az
-	xU5+I+Ep2+6DCWmW4Hr44iRWuVPqIG9pdpHgJL8H7cGd19dSFd
-X-TMASE-XGENCLOUD: eea5c0c0-86de-44e7-8521-2a9364c6a452-0-0-200-0
-X-TM-Deliver-Signature: D157937CD86D805F530F564B2F0A321C
-X-TM-Addin-Auth: Vaa7inNIa4Kf4UMh99Ebri8D1i4dm2eKOqZvseVqXrsbZRwjQtOM6PzGMjy
-	5TzBaknLnNz2cEimtzDRWvv+xmBLR7CIQxUum61DMqJjBKpCxGcGedulQR4ZQN92yynXa1fij0k
-	vocD1ZklCfanlgFUWZoGujN7kM9xxIMcHITRdpIeXWaJ+0IGXdBa40PLZrApm7SJm3027CvkRLw
-	daHR9vhYEjL7bQPfpAAgBuFOkRDsCp1FHNdj6IrfheLVrgJcJN2Q3oCTSZjoU6xVgOgxRnuZ95e
-	ZGeuH+QD/J3r8YfCPDiblMMps/PTTTKuxE6J.xsND+Adgvd/qzlxtk+lr0WvcLsnJnV9xKdIYB4
-	UODIVl5rF+BU3zHE1zlQGJ4AUrqv7+PoYYZCF24E8WXB8VDiqDT7p5pqj2V2fzz4OQbNyGOShai
-	UV1UqTeE37GWz8iQyvF519L9EOQRtX0m3pMj7iA7cRN4sjgULtSYUkfDzqYaJEvseeq62BPBNIp
-	l4CJ5IgbN0zYQh6SV6ouGdvpHCMBu4o0EwQkgXPSQ+pfseli4u6yaSY9sCu/r4c2HDY+tZDvFcH
-	WIqurLcLuVUY1PpGuZe5lA/bCy9LZYW+rhbBy4nAQZQMzVVffABSLRKCJ6k6nWoEMoR/nWVszgj
-	BOUQ==
-X-TM-Addin-ProductCode: EMS
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=opensynergy.com;
-	s=TM-DKIM-20210503141657; t=1706749584;
-	bh=zk85uvIQqp/ot0OdT5DejcghRs82+xu4izURtMvuhQE=; l=1545;
-	h=From:To:Date;
-	b=S2xv7JtRyCjSV3LgQnsvmudC0BquLZmiEPO1HPmtnQDWiQ8e5yaPb6n4GKpLGAZ9e
-	 b80FpCZ0mAmkA4H7kSCEYB+mhcC9X+SRs25BpFkUpisgSfGojMoci2akybUQp5O9VV
-	 g2m1Fndfe+mtWJ5sjFnnvO227iR/4XnBW5nMO3QEEeYELLlQLKG5XmMGwDCUjmTOCP
-	 gHNvUg6pnjOpufemFLgnhk354vpF9cVCwGV/rF/UAKNO6zdc++dKrVHAZYY4bGRyqF
-	 qSXXExP/Q5MQDPkYp3s/xKcR6KnZsv1gEd/tgFbVAZPohrOgdMtoGwRgQ3qE3YDRfK
-	 hjVuuMFshAZ4A==
+References: <20240201004737.2478-1-quic_abhinavk@quicinc.com>
+In-Reply-To: <20240201004737.2478-1-quic_abhinavk@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 1 Feb 2024 03:05:47 +0200
+Message-ID: <CAA8EJpqG8C=ydpE_w7mWN-PJoAcOyZjQ5J1e7QoVY=MBUkWMxQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/dpu: fix the programming of INTF_CFG2_DATA_HCTL_EN
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Stephen Boyd <swboyd@chromium.org>, 
+	Kuogee Hsieh <quic_khsieh@quicinc.com>, dri-devel@lists.freedesktop.org, 
+	seanpaul@chromium.org, quic_jesszhan@quicinc.com, quic_parellan@quicinc.com, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-The KVM PTP driver now refers to the clocksource ID CSID_X86_KVM_CLK, not
-to the clocksource itself any more. There are no remaining users of the
-clocksource export.
+On Thu, 1 Feb 2024 at 02:48, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>
+> Currently INTF_CFG2_DATA_HCTL_EN is coupled with the enablement
+> of widebus but this is incorrect because we should be enabling
+> this bit independent of widebus except for cases where compression
+> is enabled in one pixel per clock mode.
+>
+> Fix this by making the condition checks more explicit and enabling
+> INTF_CFG2_DATA_HCTL_EN for all other cases when supported by DPU.
+>
+> Fixes: 3309a7563971 ("drm/msm/dpu: revise timing engine programming to support widebus feature")
+> Suggested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
-Therefore, make the clocksource static again.
+Thank you!
 
-Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
----
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Notes:
-    v2:
-    
-    Added in v2.
+For the reference: although it is marked as a fix, I'd prefer if this
+patch undergoes a full cycle through msm-next rather than
+fast-tracking through msm-fixes. This would allow us to catch possible
+issues. WDYT?
 
- arch/x86/include/asm/kvmclock.h | 2 --
- arch/x86/kernel/kvmclock.c      | 3 +--
- 2 files changed, 1 insertion(+), 4 deletions(-)
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c       |  7 +++++++
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h       |  7 +++++++
+>  .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c  |  1 +
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c       | 15 +++++++++------
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h       |  1 +
+>  5 files changed, 25 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> index 83380bc92a00..467f874979d5 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> @@ -230,6 +230,13 @@ bool dpu_encoder_is_widebus_enabled(const struct drm_encoder *drm_enc)
+>         return dpu_enc->wide_bus_en;
+>  }
+>
+> +bool dpu_encoder_is_dsc_enabled(const struct drm_encoder *drm_enc)
+> +{
+> +       const struct dpu_encoder_virt *dpu_enc = to_dpu_encoder_virt(drm_enc);
+> +
+> +       return dpu_enc->dsc ? true : false;
+> +}
+> +
+>  int dpu_encoder_get_crc_values_cnt(const struct drm_encoder *drm_enc)
+>  {
+>         struct dpu_encoder_virt *dpu_enc;
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
+> index 4c05fd5e9ed1..fe6b1d312a74 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
+> @@ -158,6 +158,13 @@ int dpu_encoder_get_vsync_count(struct drm_encoder *drm_enc);
+>
+>  bool dpu_encoder_is_widebus_enabled(const struct drm_encoder *drm_enc);
+>
+> +/**
+> + * dpu_encoder_is_dsc_enabled - indicate whether dsc is enabled
+> + *                             for the encoder.
+> + * @drm_enc:    Pointer to previously created drm encoder structure
+> + */
+> +bool dpu_encoder_is_dsc_enabled(const struct drm_encoder *drm_enc);
+> +
+>  /**
+>   * dpu_encoder_get_crc_values_cnt - get number of physical encoders contained
+>   *     in virtual encoder that can collect CRC values
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> index d0f56c5c4cce..f562beb6f797 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> @@ -102,6 +102,7 @@ static void drm_mode_to_intf_timing_params(
+>         }
+>
+>         timing->wide_bus_en = dpu_encoder_is_widebus_enabled(phys_enc->parent);
+> +       timing->compression_en = dpu_encoder_is_dsc_enabled(phys_enc->parent);
+>
+>         /*
+>          * for DP, divide the horizonal parameters by 2 when
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
+> index 6bba531d6dc4..965692ef7892 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
+> @@ -163,13 +163,8 @@ static void dpu_hw_intf_setup_timing_engine(struct dpu_hw_intf *ctx,
+>         hsync_ctl = (hsync_period << 16) | p->hsync_pulse_width;
+>         display_hctl = (hsync_end_x << 16) | hsync_start_x;
+>
+> -       /*
+> -        * DATA_HCTL_EN controls data timing which can be different from
+> -        * video timing. It is recommended to enable it for all cases, except
+> -        * if compression is enabled in 1 pixel per clock mode
+> -        */
+>         if (p->wide_bus_en)
+> -               intf_cfg2 |= INTF_CFG2_DATABUS_WIDEN | INTF_CFG2_DATA_HCTL_EN;
+> +               intf_cfg2 |= INTF_CFG2_DATABUS_WIDEN;
+>
+>         data_width = p->width;
+>
+> @@ -229,6 +224,14 @@ static void dpu_hw_intf_setup_timing_engine(struct dpu_hw_intf *ctx,
+>         DPU_REG_WRITE(c, INTF_CONFIG, intf_cfg);
+>         DPU_REG_WRITE(c, INTF_PANEL_FORMAT, panel_format);
+>         if (ctx->cap->features & BIT(DPU_DATA_HCTL_EN)) {
+> +               /*
+> +                * DATA_HCTL_EN controls data timing which can be different from
+> +                * video timing. It is recommended to enable it for all cases, except
+> +                * if compression is enabled in 1 pixel per clock mode
+> +                */
+> +               if (!(p->compression_en && !p->wide_bus_en))
+> +                       intf_cfg2 |= INTF_CFG2_DATA_HCTL_EN;
+> +
+>                 DPU_REG_WRITE(c, INTF_CONFIG2, intf_cfg2);
+>                 DPU_REG_WRITE(c, INTF_DISPLAY_DATA_HCTL, display_data_hctl);
+>                 DPU_REG_WRITE(c, INTF_ACTIVE_DATA_HCTL, active_data_hctl);
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
+> index 0bd57a32144a..6f4c87244f94 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
+> @@ -33,6 +33,7 @@ struct dpu_hw_intf_timing_params {
+>         u32 hsync_skew;
+>
+>         bool wide_bus_en;
+> +       bool compression_en;
+>  };
+>
+>  struct dpu_hw_intf_prog_fetch {
+> --
+> 2.40.1
+>
 
-diff --git a/arch/x86/include/asm/kvmclock.h b/arch/x86/include/asm/kvmclock.h
-index 511b35069187..f163176d6f7f 100644
---- a/arch/x86/include/asm/kvmclock.h
-+++ b/arch/x86/include/asm/kvmclock.h
-@@ -4,8 +4,6 @@
- 
- #include <linux/percpu.h>
- 
--extern struct clocksource kvm_clock;
--
- DECLARE_PER_CPU(struct pvclock_vsyscall_time_info *, hv_clock_per_cpu);
- 
- static __always_inline struct pvclock_vcpu_time_info *this_cpu_pvti(void)
-diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-index 2f1bbf730f45..5b2c15214a6b 100644
---- a/arch/x86/kernel/kvmclock.c
-+++ b/arch/x86/kernel/kvmclock.c
-@@ -154,7 +154,7 @@ static int kvm_cs_enable(struct clocksource *cs)
- 	return 0;
- }
- 
--struct clocksource kvm_clock = {
-+static struct clocksource kvm_clock = {
- 	.name	= "kvm-clock",
- 	.read	= kvm_clock_get_cycles,
- 	.rating	= 400,
-@@ -163,7 +163,6 @@ struct clocksource kvm_clock = {
- 	.id     = CSID_X86_KVM_CLK,
- 	.enable	= kvm_cs_enable,
- };
--EXPORT_SYMBOL_GPL(kvm_clock);
- 
- static void kvm_register_clock(char *txt)
- {
+
 -- 
-2.40.1
-
+With best wishes
+Dmitry
 
