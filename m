@@ -1,144 +1,97 @@
-Return-Path: <linux-kernel+bounces-48982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F3C6846458
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:16:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BC3F84645C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:19:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61B2F1C239CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:16:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F0431C22528
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:19:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9138D47F45;
-	Thu,  1 Feb 2024 23:16:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6887447F52;
+	Thu,  1 Feb 2024 23:19:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="AAEX2585"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lqqy/x+M"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C953C47F4A
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 23:16:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A186B41211;
+	Thu,  1 Feb 2024 23:19:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706829379; cv=none; b=BLFkTDh+QnyRL8VfbdauFfpN5PycHXEINlUdrKyrbAuzN8N/GzKqlsM3qGAQM4fl65qcho3AzDunvE5znOd0f09sdnS91LnGyrDt+hQiKLwDOeg37KmywTnqdKkmdpG/lCs8bkPXxekIbhOb7pZyLeCt6QdcwpgV6SUnP69v4Ao=
+	t=1706829543; cv=none; b=iyW9+bkl2xlFi99GxnMx6VpmQrkHbp/is4ZnezT5qccoerXSj4pLJ96Sr/Elwj/OgBKeagu0vmjPvhhrVgESWwx76xjqYCbC7/6ko5NTGEh+sWZvAVSE9+XImp/A4kAbzfKc1D/dWIHWGVdd/yoEVc7STQWe3EoDa6TYJrXjVug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706829379; c=relaxed/simple;
-	bh=8DRxgBGU1ReP9XZT3CY1GNWPgF7ZstYhfsgrlplcm8s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=cXbgqPsD7zRlBwrLOd9UvRVGCToH1BJSxVJGDA/Gf3leTmVexm4mOPCu6nvOfqsrrBBP8F86RWYEJnYLoqeqRmoYUaF29RSXZqrSv7RnxXCcXvwfWMjGOPJj5211dbTvK8t5HQhhRO00GFjpfoEK7OO/iz/fZuh9kVKHWsA8Sis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=AAEX2585; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 411Mx0Nc031358;
-	Thu, 1 Feb 2024 23:15:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=m4tXmsGkjhrdAbPMvzX2Vc5kgLbLhYTsco4rss/rGiw=; b=AA
-	EX2585kmzo0StrPs3AoKPiYjCFeg10wVuTvCJbNQjV3cUczOteieH56DHPn3br5J
-	hGWj189P4wpi+QQ60C80PrEyS1YcYNpvQiH9EylNjCPu8R3zPC+qRrYNPgyD2yJP
-	4LB0SWIzDd/9M7/AltqUvzdoJy2d1TEC8AOvIGT1VEeT3SYaTsS3FTJ83n8x/VIZ
-	ebUZBwJNW7SAqkjjc/9T/5qfu00K4KN5oXqJ5F3kTTtxgSNDWZ/SGVS+AyaByduc
-	HfGWZhO49sZe7nA2IrzrLTw6YXMVVLFNpVVk2m1Du+4aM/blK6RX1wsL2jL1KbOd
-	9D+o8Xti8OzkFU/KRIaw==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vyvb5kn03-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 23:15:58 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 411NFvid013179
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 1 Feb 2024 23:15:57 GMT
-Received: from [10.71.111.207] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 1 Feb
- 2024 15:15:57 -0800
-Message-ID: <d7027516-dc30-4a94-9bb0-0a8f38b638be@quicinc.com>
-Date: Thu, 1 Feb 2024 15:15:56 -0800
+	s=arc-20240116; t=1706829543; c=relaxed/simple;
+	bh=g/Fqx31XYNOhlJ9ECDsRvPPG0ycRV++0qSKtdAFxaxg=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=j7q64ct7GQoCzq3G60HLUc3rHYgI40LznWLYPD01VbGb8kKjb2T+/mETz6ksWxciMe3BEcbsplAyfIU3IeuFXfCrobJuStQu4iXLGD3vztnIrnsvb/TGpfLuCYZ/bkFh/Anq0abc4OTpJ/LJtcy238kD8rXbofXY92moLM7a424=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lqqy/x+M; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11851C433F1;
+	Thu,  1 Feb 2024 23:19:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706829543;
+	bh=g/Fqx31XYNOhlJ9ECDsRvPPG0ycRV++0qSKtdAFxaxg=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=lqqy/x+M6PKHk6qI+VElPsSLnPfv79iVSVo15fdzGE+KkQVXj0k0Dn/SX+Nhs7L1y
+	 ALMVaX8aNE8nK9WpHt/gRv9iGbN+u7SuAjEOWMHqkqHETQTp8PuMwatsnEbk3yK/pt
+	 p6BnBx5jtRywsHk9i8AhB+Q4h55A4CI18bz7tZ+QG3MSD6/hKDPpP75aB7D5H+s/z6
+	 kR/9AAHAtEuU4H539UqLw/9QHF7Lu8N3LPuJyQsUsrYyTYVPp8LOFXgYGV4OeXGxbX
+	 8zhxfLIwyMNzmtgPBRN0/zbNecijFMwAsh+4iJnYubwkK5gM4D3+qNzst+Juz8Unmc
+	 sPRp/H03he1yw==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/panel: novatek-nt36523: Set prepare_prev_first
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Jianhua Lu
-	<lujianhua000@gmail.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam
- Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-CC: Marijn Suijten <marijn.suijten@somainline.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20240201-topic-3623_fix-v1-1-86ee6f20876e@linaro.org>
-From: Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <20240201-topic-3623_fix-v1-1-86ee6f20876e@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: We3RrldAbfDccZnd-oJsH14sne14AE_u
-X-Proofpoint-ORIG-GUID: We3RrldAbfDccZnd-oJsH14sne14AE_u
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-01_08,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- spamscore=0 clxscore=1011 impostorscore=0 malwarescore=0 bulkscore=0
- priorityscore=1501 lowpriorityscore=0 phishscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2402010179
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 02 Feb 2024 01:18:59 +0200
+Message-Id: <CYU4KPJIDWTI.1ZPBLGOCZR0BK@suppilovahvero>
+Cc: "LinoSanfilippo@gmx.de" <LinoSanfilippo@gmx.de>,
+ "p.rosenberger@kunbus.com" <p.rosenberger@kunbus.com>, "lukas@wunner.de"
+ <lukas@wunner.de>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+ "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH] tpm,tpm_tis: Avoid warning splat at shutdown
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Elliott, Robert (Servers)" <elliott@hpe.com>, "Lino Sanfilippo"
+ <l.sanfilippo@kunbus.com>, "peterhuewe@gmx.de" <peterhuewe@gmx.de>
+X-Mailer: aerc 0.15.2
+References: <20240201113646.31734-1-l.sanfilippo@kunbus.com>
+ <MW5PR84MB184274E28D83DC337B486CEFAB432@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
+In-Reply-To: <MW5PR84MB184274E28D83DC337B486CEFAB432@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
 
+On Thu Feb 1, 2024 at 6:40 PM EET, Elliott, Robert (Servers) wrote:
+> > From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+> > Sent: Thursday, February 1, 2024 5:37 AM
+> > Subject: [PATCH] tpm,tpm_tis: Avoid warning splat at shutdown
+> >=20
+> > If interrupts are not activated the work struct 'free_irq_work' is not
+> > initialized. This results in a warning splat at module shutdown.
+> >=20
+> > Fix this by always initializing the work regardless of whether interrup=
+ts
+> > are activated or not.
+>
+> That's using flush_work(), which just waits for one to complete. Is there
+> any case where multiple work entries could be queued, and cancel_work_syn=
+c()=20
+> would be necessary?
 
+Questions are cool but please explain how this aligns with the patch
+review because I already accepted the patch.
 
-On 2/1/2024 2:17 PM, Konrad Dybcio wrote:
-> The .prepare callback contains the init sequence, so the DSI host *must*
-> be enabled at that point. Set the prepare_prev_first flag to ensure that.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Should I drop it based on this question, and if so, why?
 
-Hi Konrad,
+> tpm_tis_probe_irq() has a loop calling tpm_tis_probe_irq_single()
+> for 3 to 15. Could each of those could trigger an interrupt storm and
+> call tpm_tis_revert_interrupts(), which calls schedule_work()?
 
-Reviewed-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+AFAIK no based on that TPM_CHIP_FLAG_IRQ should take care of this.
 
-Thanks,
-
-Jessica Zhang
-
-> ---
->   drivers/gpu/drm/panel/panel-novatek-nt36523.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/panel/panel-novatek-nt36523.c b/drivers/gpu/drm/panel/panel-novatek-nt36523.c
-> index a189ce236328..32cae1bc9162 100644
-> --- a/drivers/gpu/drm/panel/panel-novatek-nt36523.c
-> +++ b/drivers/gpu/drm/panel/panel-novatek-nt36523.c
-> @@ -1270,6 +1270,8 @@ static int nt36523_probe(struct mipi_dsi_device *dsi)
->   		return ret;
->   	}
->   
-> +	pinfo->panel.prepare_prev_first = true;
-> +
->   	if (pinfo->desc->has_dcs_backlight) {
->   		pinfo->panel.backlight = nt36523_create_backlight(dsi);
->   		if (IS_ERR(pinfo->panel.backlight))
-> 
-> ---
-> base-commit: 51b70ff55ed88edd19b080a524063446bcc34b62
-> change-id: 20240201-topic-3623_fix-9198419e5e47
-> 
-> Best regards,
-> -- 
-> Konrad Dybcio <konrad.dybcio@linaro.org>
-> 
+BR, Jarkko
 
