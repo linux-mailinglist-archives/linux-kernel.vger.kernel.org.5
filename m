@@ -1,62 +1,69 @@
-Return-Path: <linux-kernel+bounces-48900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5F328462FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:54:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A5A3846304
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:55:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A312B28C3D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:54:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3AD00B27FB0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:55:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C2A46425;
-	Thu,  1 Feb 2024 21:54:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 229CC46B9B;
+	Thu,  1 Feb 2024 21:54:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fAlKm5uw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="erXDY+/B"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FF4645016;
-	Thu,  1 Feb 2024 21:54:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555EA4644C;
+	Thu,  1 Feb 2024 21:54:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706824440; cv=none; b=naZFSPsl27DUX/s+wiK1N3/kW2+o9zx4KwlaT5RFfNLlG5q2Gmvd3lIu8/J7lJaAu334HUnx+l3LytjN0riKFJBv+N5dWlXx4cKkRkUATjc4eqPZkwsE0upAO5FJmbNNx8I+IVxoCLvX+UGlC1Si2uZnDIlz5Cn1RNAZeNqGxXY=
+	t=1706824442; cv=none; b=npG02KNltm4VCj5gp5VHGc3EpUp7CHwwbcOdQ4kZsLe/2mxgMMoR9N+OaXhTtC6VM0mB97xYM0NZqoQyAIwsoocOQxPpJp1pXjsYGl7miFFGwFKFywzyJQwkutFl1bT/e4rWuTK9PIweSOVIh/CXVLCmi5Ee670UpPZfka07iKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706824440; c=relaxed/simple;
-	bh=UCVnGGP6dgSIA1bb1c3Zby+Z9IKSgvYCCBuMXuk74NY=;
+	s=arc-20240116; t=1706824442; c=relaxed/simple;
+	bh=6HuV3IIZv6Gf48oHjnacch7E8ba8dfFz7iHDkHJ9gJI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k8RVoH4FbXdXxjbEQ1ZdOCre0SKQEPo/HFMdHqk9YAZM2sZAx8TMrL+rcHpXdGeCaiF2LtY8V+at5ybWOvWm1LaGD2EymTKMu+Udp74N4bO1jhE6Osd8PDOcgX4FMKuhtJYNroYdPohZwW/eEMHdDsSfIF118TlfHT1maxEZkpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fAlKm5uw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ACCEC43394;
-	Thu,  1 Feb 2024 21:53:59 +0000 (UTC)
+	 MIME-Version:Content-Type; b=ZDrDJnAghmbXdTZy87VGZsgzTk9aoUhzyZ25GUHDJXviFznUjL7m/f2B59iCCwB2tkTBR+ZwBdvLD1ozCw/DwEp7BPZsTYjcJsBF25BHyitbdU4JYEK82MjvWOunmYiXgiZo5CO86zD82H0l+MJ6h9UKaRS682tZbKi4U2J1Iq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=erXDY+/B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B46DFC43390;
+	Thu,  1 Feb 2024 21:54:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706824440;
-	bh=UCVnGGP6dgSIA1bb1c3Zby+Z9IKSgvYCCBuMXuk74NY=;
+	s=k20201202; t=1706824442;
+	bh=6HuV3IIZv6Gf48oHjnacch7E8ba8dfFz7iHDkHJ9gJI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fAlKm5uwXM0goNtWqUUDx8JPMIEPb0crscbi5pwT/zMXrVzhfefxZ67WuruRJztVo
-	 p5GbWbT6W3l+bpIF2ChXGaVTARPY1D1BT9Shs0MfB+PHEfwFyaatBxZ14eBCi2YXlN
-	 NYHG+G12Gs0Z+SPs+rjCTG1QdySg0hRYhUsAeUNLogJBPA5HndLmLygt2G/ELIkwS/
-	 ZErIlilQAGcp/2Hsz2eZXlu+C6HGRVSSOUDRogbXMCFi/JQGjSc8tdEBgecuGjn/KV
-	 JPodJ2HXGjN167xvwrCqJxzp+YcVQqkj0jKmF0Zj1PVQa2gtUAVYeMYyoVaYpwGFFm
-	 kGdcoKWqpaKVg==
+	b=erXDY+/Bb93G2WJSSqUUkhCiY/ubBVOs8IA8L4TUx2CHlO8Syb1DeHTebG66YUdxO
+	 REQb3miA8wyyztzLNnF3q144P+9BMBH8lRYVC++miKROrpJvwcWPorNv3/KJVcHEbr
+	 jPrZ3QwKqG1bD56dj6pc9x7udg0/kLuZguSBjM07O5z7ywb3L88N6hi/33ynFulnDo
+	 HXWz0mEGnd73ychg51zppt/MfQhq9Z5fph5Ew01A6ZnmaoJN5Tc9kjnsBUO1Kzl/2+
+	 YPvDOywCGK5b0qS+GqxKEu8itj3BabKtNmblp+EhuEkMNOjJOHW23GImV+bl96zth/
+	 SxhrparPbyZWg==
 From: Bjorn Andersson <andersson@kernel.org>
-To: ~postmarketos/upstreaming@lists.sr.ht,
-	phone-devel@vger.kernel.org,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
 	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Luca Weiss <luca@z3ntu.xyz>
+	Taniya Das <quic_tdas@quicinc.com>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Bjorn Andersson <quic_bjorande@quicinc.com>
 Cc: linux-arm-msm@vger.kernel.org,
+	linux-clk@vger.kernel.org,
 	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: qcom: apq8026-lg-lenok: Add vibrator support
-Date: Thu,  1 Feb 2024 15:53:50 -0600
-Message-ID: <170682442873.248329.16640760772830725680.b4-ty@kernel.org>
+	linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: (subset) [PATCH v4 0/8] arm64: dts: qcom: sa8295p: Enable GPU
+Date: Thu,  1 Feb 2024 15:53:51 -0600
+Message-ID: <170682442869.248329.14691453184149397609.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240121-lenok-vibrator-v1-1-d4703ff92021@z3ntu.xyz>
-References: <20240121-lenok-vibrator-v1-1-d4703ff92021@z3ntu.xyz>
+In-Reply-To: <20240125-sa8295p-gpu-v4-0-7011c2a63037@quicinc.com>
+References: <20240125-sa8295p-gpu-v4-0-7011c2a63037@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,16 +74,22 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Sun, 21 Jan 2024 11:09:57 +0100, Luca Weiss wrote:
-> This device has a vibrator attached to the CAMSS_GP0_CLK, use clk-pwm
-> and pwm-vibrator to make the vibrator work.
+On Thu, 25 Jan 2024 13:05:06 -0800, Bjorn Andersson wrote:
+> Due to the different PMIC configuration found in the SA8295P platform,
+> compared to SC8280XP, the VDD_GFX pads are supplied by an dedicated
+> MAX20411 LDO.
 > 
+> Support for expressing the regulator supply is added to the binding, the
+> support for enabling the parent supply for GX is added, the missing
+> gfx.lvl power-domain is dropped, and the DeviceTree is wired up to
+> enable the GPU in this configuration.
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] ARM: dts: qcom: apq8026-lg-lenok: Add vibrator support
-      commit: 4d679e3c29e3609962de43edddd51c8c1abda34e
+[8/8] arm64: defconfig: Enable MAX20411 regulator driver
+      commit: 42945eb663d88471a0c394d9f466401b1a8d791f
 
 Best regards,
 -- 
