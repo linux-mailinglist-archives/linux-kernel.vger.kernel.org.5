@@ -1,228 +1,232 @@
-Return-Path: <linux-kernel+bounces-47490-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF5D4844E94
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:17:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93A76844E95
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:17:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 763FF280F5E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:17:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 094201F241D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:17:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7BFE442F;
-	Thu,  1 Feb 2024 01:17:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2842E442C;
+	Thu,  1 Feb 2024 01:17:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="d+lu4MWJ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vG4LSPlr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16E6B1FD7;
-	Thu,  1 Feb 2024 01:17:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4914B2119
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 01:17:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706750226; cv=none; b=PunF175viweYhE1mlYSCYuYZntxTQyoUaXwx/0mtcEZgwa1rmEPqHXf5Vy0vhzDHasF6WNeYzAb9kCavSX+cFDnWixWip8F33eo46VXK5d3jQoS44xpTEjRvK8JcGeFg3h3kSOgt2a2+pSESHwxKq1ZT1MJdrePWUJGxQvMeI9Q=
+	t=1706750256; cv=none; b=WgAck+MaGyImWYhNA6yz8voSXdP/J0ZbhF/hhQO36/qNgKcSo/L1Y5gmZ3GHCIm+zrHolWwur9uq3DOdFD4eh+OM2bdTQU2SpuSiddg51BnGth4Tli6ufR37KI7489KUrh/0ilV8IiDdiJK4edRNAYRTxg8sRkSkncsBPjuj3SE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706750226; c=relaxed/simple;
-	bh=/yzOHUGz8I5VmiYmy9LqG/OTwYwmI0QnLNBMfvd/EmQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kP0UQd8zecYgasz9K7xx90v8O2O5KmuQRe0p5noJvaM5jOrb8zJ7kt2pMW9OJ6zto53v1bMBKT/9ol2igXe4LN4YwzUIZ02urXbYnt6ZFMKnEDVPZHwJpg1jHC17BoWaZbqj8qwyq1vEEq909F9aOe5ey2sIl2sLtsD9jlMG6/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=d+lu4MWJ; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706750225; x=1738286225;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/yzOHUGz8I5VmiYmy9LqG/OTwYwmI0QnLNBMfvd/EmQ=;
-  b=d+lu4MWJr0RmyIxnAVQPZsnZlFbnFfJw0c14heLK6EhprR5cVAoA4Z6t
-   z/3Hq6S12xLbAzb730gvP9BuYhtTmg3XJditwcK94O3ig1qIzjjv2lwtj
-   77QOl8PqjjCVNr+ihTzZGz5Gykyal+sImoICgcITSvrfLlnDaDAjEgEyl
-   VS/xoCswWZ05NxqnoHchRSXn1oqUgBPogVQ8MpQpUX+NYonRYWL01/NOb
-   Cqjl6oeQEoKr0mDaR9Dib2cD/qo56E0mFWo4uxydZco2G7MFx3M6gLuTS
-   u3ZvqVszqFnVRIewzHTDeQMivwskJ2UmwqWBPwvKDtXnCWV6772PkK8zr
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="22277930"
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="22277930"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 17:17:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="858992489"
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="858992489"
-Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.209.39.51])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 17:17:02 -0800
-Date: Wed, 31 Jan 2024 17:17:00 -0800
-From: Alison Schofield <alison.schofield@intel.com>
-To: Ira Weiny <ira.weiny@intel.com>
-Cc: Dan Williams <dan.j.williams@intel.com>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
-	linux-cxl@vger.kernel.org
-Subject: Re: [PATCH 1/2] cxl/cper: Fix errant CPER prints for CXL events
-Message-ID: <ZbrxDMwn4h3y5waj@aschofie-mobl2>
-References: <20240131-cxl-cper-fixups-v1-0-335c85b1d77b@intel.com>
- <20240131-cxl-cper-fixups-v1-1-335c85b1d77b@intel.com>
+	s=arc-20240116; t=1706750256; c=relaxed/simple;
+	bh=UKxm5P0VYwSzMdnn3vI88JphP4KA0MGzRb/TUQaS9vc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=J0LV7S6NQFXNSUPxNbN+52lDDoAvtk/tpjQxNei3KZJ3ws0miGGKK7CpYfghiD30beWHLqCwz4Z1MGe9w6Z225kK4oUPidkmaYK5yHaZeA49JsTiKCXAGv+Fy7fO7knVUXkwydt9DIvDLAgwJxSSmS0XD2Oc99XFSiVvMXWpJJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vG4LSPlr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2EA9C433F1;
+	Thu,  1 Feb 2024 01:17:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706750255;
+	bh=UKxm5P0VYwSzMdnn3vI88JphP4KA0MGzRb/TUQaS9vc=;
+	h=From:Date:Subject:To:Cc:From;
+	b=vG4LSPlrX45rnD1bfgTx0HQ4lPQPb8wZ7wWwb307hOP36/lrjxAj72zaZUFWHIdIW
+	 b2my9Q++9VM3K3cjNKxImmgtdlsnny0K/DsqoWpfmQYDKQhHSGJvVnPmsN2kZuYuFa
+	 29CdyRmBuBam6fJ2ZI43sSO5VKS80jxc+qD7Y5Hb98A1eiw6Rc+SneUcSBtc70hsTA
+	 qdOIiUGZXGTZjWNxO11459aGwyz5seIpa/EF/2tLbklYVe/v2k9C3PidIoXv1Wl31/
+	 kxN8eDWsj8gXiiNMkAdqfQjKiaP4qN2M+K7RYbNou/lqKZzZNdWfUjFpvg2OrPkdum
+	 QCTvUBs079l8w==
+From: Chris Li <chrisl@kernel.org>
+Date: Wed, 31 Jan 2024 17:17:31 -0800
+Subject: [PATCH v2] mm: swap: async free swap slot cache entries
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131-cxl-cper-fixups-v1-1-335c85b1d77b@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240131-async-free-v2-1-525f03e07184@kernel.org>
+X-B4-Tracking: v=1; b=H4sIACrxumUC/03MQQ6CMBCF4auQWVvTmaKkrryHYQE4hUbTkqkhE
+ tK7W4kLl/9L3rdBYvGc4FJtILz45GMoQYcKhqkLIyt/Lw2kySDhWXVpDYNywqx6dsaSxlNtCMp
+ hFnb+vWO3tvTk0yvKutsLftcfQ/jPLKhQ2bqnprGWhl5fHyyBn8coI7Q55w+zHmippQAAAA==
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+ =?utf-8?q?Wei_Xu=EF=BF=BC?= <weixugc@google.com>, 
+ =?utf-8?q?Yu_Zhao=EF=BF=BC?= <yuzhao@google.com>, 
+ Greg Thelen <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, 
+ =?utf-8?q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
+ =?utf-8?q?Yosry_Ahmed=EF=BF=BC?= <yosryahmed@google.com>, 
+ Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, 
+ Michal Hocko <mhocko@suse.com>, Mel Gorman <mgorman@techsingularity.net>, 
+ Huang Ying <ying.huang@intel.com>, Nhat Pham <nphamcs@gmail.com>, 
+ Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
+ Zhongkun He <hezhongkun.hzk@bytedance.com>, 
+ Kemeng Shi <shikemeng@huaweicloud.com>, Barry Song <v-songbaohua@oppo.com>, 
+ Chris Li <chrisl@kernel.org>
+X-Mailer: b4 0.12.3
 
-On Wed, Jan 31, 2024 at 03:55:38PM -0800, Ira Weiny wrote:
-> Jonathan reports that CXL CPER events dump an extra generic error
-> message.
-> 
-> 	{1}[Hardware Error]: Hardware error from APEI Generic Hardware Error Source: 1
-> 	{1}[Hardware Error]: event severity: recoverable
-> 	{1}[Hardware Error]:  Error 0, type: recoverable
-> 	{1}[Hardware Error]:   section type: unknown, fbcd0a77-c260-417f-85a9-088b1621eba6
-> 	{1}[Hardware Error]:   section length: 0x90
-> 	{1}[Hardware Error]:   00000000: 00000090 00000007 00000000 0d938086 ................
-> 	{1}[Hardware Error]:   00000010: 00100000 00000000 00040000 00000000 ................
-> 	...
-> 
-> CXL events were rerouted though the CXL subsystem for additional
-> processing.  However, when that work was done it was missed that
-> cper_estatus_print_section() continued with a generic error message
-> which is confusing.
-> 
-> Teach CPER print code to ignore printing details of some section types.
-> Assign the CXL event GUIDs to this set to prevent confusing unknown
-> prints.
+We discovered that 1% swap page fault is 100us+ while 50% of
+the swap fault is under 20us.
 
-Reviewed-by: Alison Schofield <alison.schofield@intel.com>
+Further investigation show that a large portion of the time
+spent in the free_swap_slots() function for the long tail case.
 
+The percpu cache of swap slots is freed in a batch of 64 entries
+inside free_swap_slots(). These cache entries are accumulated
+from previous page faults, which may not be related to the current
+process.
 
-> 
-> Reported-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Suggested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> ---
->  drivers/acpi/apei/ghes.c    | 26 --------------------------
->  drivers/firmware/efi/cper.c | 19 +++++++++++++++++++
->  include/linux/cper.h        | 23 +++++++++++++++++++++++
->  3 files changed, 42 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-> index 7b7c605166e0..fe825a432c5b 100644
-> --- a/drivers/acpi/apei/ghes.c
-> +++ b/drivers/acpi/apei/ghes.c
-> @@ -680,32 +680,6 @@ static void ghes_defer_non_standard_event(struct acpi_hest_generic_data *gdata,
->  static DECLARE_RWSEM(cxl_cper_rw_sem);
->  static cxl_cper_callback cper_callback;
->  
-> -/* CXL Event record UUIDs are formatted as GUIDs and reported in section type */
-> -
-> -/*
-> - * General Media Event Record
-> - * CXL rev 3.0 Section 8.2.9.2.1.1; Table 8-43
-> - */
-> -#define CPER_SEC_CXL_GEN_MEDIA_GUID					\
-> -	GUID_INIT(0xfbcd0a77, 0xc260, 0x417f,				\
-> -		  0x85, 0xa9, 0x08, 0x8b, 0x16, 0x21, 0xeb, 0xa6)
-> -
-> -/*
-> - * DRAM Event Record
-> - * CXL rev 3.0 section 8.2.9.2.1.2; Table 8-44
-> - */
-> -#define CPER_SEC_CXL_DRAM_GUID						\
-> -	GUID_INIT(0x601dcbb3, 0x9c06, 0x4eab,				\
-> -		  0xb8, 0xaf, 0x4e, 0x9b, 0xfb, 0x5c, 0x96, 0x24)
-> -
-> -/*
-> - * Memory Module Event Record
-> - * CXL rev 3.0 section 8.2.9.2.1.3; Table 8-45
-> - */
-> -#define CPER_SEC_CXL_MEM_MODULE_GUID					\
-> -	GUID_INIT(0xfe927475, 0xdd59, 0x4339,				\
-> -		  0xa5, 0x86, 0x79, 0xba, 0xb1, 0x13, 0xb7, 0x74)
-> -
->  static void cxl_cper_post_event(enum cxl_event_type event_type,
->  				struct cxl_cper_event_rec *rec)
->  {
-> diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
-> index 35c37f667781..9b3884ff81e6 100644
-> --- a/drivers/firmware/efi/cper.c
-> +++ b/drivers/firmware/efi/cper.c
-> @@ -523,6 +523,17 @@ static void cper_print_tstamp(const char *pfx,
->  	}
->  }
->  
-> +struct ignore_section {
-> +	guid_t guid;
-> +	const char *name;
-> +};
-> +
-> +static const struct ignore_section ignore_sections[] = {
-> +	{ .guid = CPER_SEC_CXL_GEN_MEDIA_GUID, .name = "CXL General Media Event" },
-> +	{ .guid = CPER_SEC_CXL_DRAM_GUID, .name = "CXL DRAM Event" },
-> +	{ .guid = CPER_SEC_CXL_MEM_MODULE_GUID, .name = "CXL Memory Module Event" },
-> +};
-> +
->  static void
->  cper_estatus_print_section(const char *pfx, struct acpi_hest_generic_data *gdata,
->  			   int sec_no)
-> @@ -543,6 +554,14 @@ cper_estatus_print_section(const char *pfx, struct acpi_hest_generic_data *gdata
->  		printk("%s""fru_text: %.20s\n", pfx, gdata->fru_text);
->  
->  	snprintf(newpfx, sizeof(newpfx), "%s ", pfx);
-> +
-> +	for (int i = 0; i < ARRAY_SIZE(ignore_sections); i++) {
-> +		if (guid_equal(sec_type, &ignore_sections[i].guid)) {
-> +			printk("%ssection_type: %s\n", newpfx, ignore_sections[i].name);
-> +			return;
-> +		}
-> +	}
-> +
->  	if (guid_equal(sec_type, &CPER_SEC_PROC_GENERIC)) {
->  		struct cper_sec_proc_generic *proc_err = acpi_hest_get_payload(gdata);
->  
-> diff --git a/include/linux/cper.h b/include/linux/cper.h
-> index c1a7dc325121..265b0f8fc0b3 100644
-> --- a/include/linux/cper.h
-> +++ b/include/linux/cper.h
-> @@ -90,6 +90,29 @@ enum {
->  	GUID_INIT(0x667DD791, 0xC6B3, 0x4c27, 0x8A, 0x6B, 0x0F, 0x8E,	\
->  		  0x72, 0x2D, 0xEB, 0x41)
->  
-> +/* CXL Event record UUIDs are formatted as GUIDs and reported in section type */
-> +/*
-> + * General Media Event Record
-> + * CXL rev 3.0 Section 8.2.9.2.1.1; Table 8-43
-> + */
-> +#define CPER_SEC_CXL_GEN_MEDIA_GUID					\
-> +	GUID_INIT(0xfbcd0a77, 0xc260, 0x417f,				\
-> +		  0x85, 0xa9, 0x08, 0x8b, 0x16, 0x21, 0xeb, 0xa6)
-> +/*
-> + * DRAM Event Record
-> + * CXL rev 3.0 section 8.2.9.2.1.2; Table 8-44
-> + */
-> +#define CPER_SEC_CXL_DRAM_GUID						\
-> +	GUID_INIT(0x601dcbb3, 0x9c06, 0x4eab,				\
-> +		  0xb8, 0xaf, 0x4e, 0x9b, 0xfb, 0x5c, 0x96, 0x24)
-> +/*
-> + * Memory Module Event Record
-> + * CXL rev 3.0 section 8.2.9.2.1.3; Table 8-45
-> + */
-> +#define CPER_SEC_CXL_MEM_MODULE_GUID					\
-> +	GUID_INIT(0xfe927475, 0xdd59, 0x4339,				\
-> +		  0xa5, 0x86, 0x79, 0xba, 0xb1, 0x13, 0xb7, 0x74)
-> +
->  /*
->   * Flags bits definitions for flags in struct cper_record_header
->   * If set, the error has been recovered
-> 
-> -- 
-> 2.43.0
-> 
+Doing the batch free in the page fault handler causes longer
+tail latencies and penalizes the current process.
+
+Move free_swap_slots() outside of the swapin page fault handler into an
+async work queue to avoid such long tail latencies.
+
+The batch free of swap slots is typically at 100us level. Such a
+short time will not have a significant impact on the CPU accounting.
+Notice that the previous swap slot batching behavior already performs
+a delayed batch free. It waits for the entries accumulated to 64.
+Adding the async scheduling time does not change the original
+free timing significantly.
+
+Testing:
+
+Chun-Tse did some benchmark in chromebook, showing that
+zram_wait_metrics improve about 15% with 80% and 95% confidence.
+
+I recently ran some experiments on about 1000 Google production
+machines. It shows swapin latency drops in the long tail
+100us - 500us bucket dramatically.
+
+platform	(100-500us)	 	(0-100us)
+A		1.12% -> 0.36%		98.47% -> 99.22%
+B		0.65% -> 0.15%		98.96% -> 99.46%
+C		0.61% -> 0.23%		98.96% -> 99.38%
+
+Signed-off-by: Chris Li <chrisl@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: Wei Xu￼<weixugc@google.com>
+Cc: Yu Zhao￼<yuzhao@google.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Chun-Tse Shao <ctshao@google.com>
+Cc: Suren Baghdasaryan￼<surenb@google.com>
+Cc: Yosry Ahmed￼ <yosryahmed@google.com>
+Cc: Brain Geffon <bgeffon@google.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Huang Ying <ying.huang@intel.com>
+Cc: Nhat Pham <nphamcs@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Kairui Song <kasong@tencent.com>
+Cc: Zhongkun He <hezhongkun.hzk@bytedance.com>
+Cc: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: Barry Song <v-songbaohua@oppo.com>
+
+remove create_work queue
+
+remove another work queue usage
+
+---
+Changes in v2:
+- Add description of the impact of time changing suggest by Ying.
+- Remove create_workqueue() and use schedule_work()
+- Link to v1: https://lore.kernel.org/r/20231221-async-free-v1-1-94b277992cb0@kernel.org
+---
+ include/linux/swap_slots.h |  1 +
+ mm/swap_slots.c            | 29 +++++++++++++++++++++--------
+ 2 files changed, 22 insertions(+), 8 deletions(-)
+
+diff --git a/include/linux/swap_slots.h b/include/linux/swap_slots.h
+index 15adfb8c813a..67bc8fa30d63 100644
+--- a/include/linux/swap_slots.h
++++ b/include/linux/swap_slots.h
+@@ -19,6 +19,7 @@ struct swap_slots_cache {
+ 	spinlock_t	free_lock;  /* protects slots_ret, n_ret */
+ 	swp_entry_t	*slots_ret;
+ 	int		n_ret;
++	struct work_struct async_free;
+ };
+ 
+ void disable_swap_slots_cache_lock(void);
+diff --git a/mm/swap_slots.c b/mm/swap_slots.c
+index 0bec1f705f8e..71d344564e55 100644
+--- a/mm/swap_slots.c
++++ b/mm/swap_slots.c
+@@ -44,6 +44,7 @@ static DEFINE_MUTEX(swap_slots_cache_mutex);
+ static DEFINE_MUTEX(swap_slots_cache_enable_mutex);
+ 
+ static void __drain_swap_slots_cache(unsigned int type);
++static void swapcache_async_free_entries(struct work_struct *data);
+ 
+ #define use_swap_slot_cache (swap_slot_cache_active && swap_slot_cache_enabled)
+ #define SLOTS_CACHE 0x1
+@@ -149,6 +150,7 @@ static int alloc_swap_slot_cache(unsigned int cpu)
+ 		spin_lock_init(&cache->free_lock);
+ 		cache->lock_initialized = true;
+ 	}
++	INIT_WORK(&cache->async_free, swapcache_async_free_entries);
+ 	cache->nr = 0;
+ 	cache->cur = 0;
+ 	cache->n_ret = 0;
+@@ -269,6 +271,20 @@ static int refill_swap_slots_cache(struct swap_slots_cache *cache)
+ 	return cache->nr;
+ }
+ 
++static void swapcache_async_free_entries(struct work_struct *data)
++{
++	struct swap_slots_cache *cache;
++
++	cache = container_of(data, struct swap_slots_cache, async_free);
++	spin_lock_irq(&cache->free_lock);
++	/* Swap slots cache may be deactivated before acquiring lock */
++	if (cache->slots_ret) {
++		swapcache_free_entries(cache->slots_ret, cache->n_ret);
++		cache->n_ret = 0;
++	}
++	spin_unlock_irq(&cache->free_lock);
++}
++
+ void free_swap_slot(swp_entry_t entry)
+ {
+ 	struct swap_slots_cache *cache;
+@@ -282,17 +298,14 @@ void free_swap_slot(swp_entry_t entry)
+ 			goto direct_free;
+ 		}
+ 		if (cache->n_ret >= SWAP_SLOTS_CACHE_SIZE) {
+-			/*
+-			 * Return slots to global pool.
+-			 * The current swap_map value is SWAP_HAS_CACHE.
+-			 * Set it to 0 to indicate it is available for
+-			 * allocation in global pool
+-			 */
+-			swapcache_free_entries(cache->slots_ret, cache->n_ret);
+-			cache->n_ret = 0;
++			spin_unlock_irq(&cache->free_lock);
++			schedule_work(&cache->async_free);
++			goto direct_free;
+ 		}
+ 		cache->slots_ret[cache->n_ret++] = entry;
+ 		spin_unlock_irq(&cache->free_lock);
++		if (cache->n_ret >= SWAP_SLOTS_CACHE_SIZE)
++			schedule_work(&cache->async_free);
+ 	} else {
+ direct_free:
+ 		swapcache_free_entries(&entry, 1);
+
+---
+base-commit: eacce8189e28717da6f44ee492b7404c636ae0de
+change-id: 20231216-async-free-bef392015432
+
+Best regards,
+-- 
+Chris Li <chrisl@kernel.org>
+
 
