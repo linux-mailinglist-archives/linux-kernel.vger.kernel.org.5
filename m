@@ -1,119 +1,153 @@
-Return-Path: <linux-kernel+bounces-48944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48948-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 081BB846372
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:31:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5689984637C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:33:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34F631C20D4E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:31:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F0DB28ECD0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:33:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96E1C405F4;
-	Thu,  1 Feb 2024 22:31:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22E6C41757;
+	Thu,  1 Feb 2024 22:33:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="nBOFyOVr"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kUCJFliT"
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 446253CF4F
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 22:31:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3F0C3FB37
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 22:33:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706826694; cv=none; b=K1fUboAhbbm0cMksyOW9QCte0H1NNgqU5mMJIcafxPA4rlKPm/4JK8wtpIHSvgHQs6qB247GdqQA44e8nAO+s7Yd4014xrKJfTlsycz1kb46tyEG8PgCEoyGU0EziJCMBayfzDLfWBFnVkp+ZJxhz7UPkURGOnOAw5vxc6e+sEI=
+	t=1706826829; cv=none; b=UeFcxyCKlmyyR8BTLSFayMx5ydppuWS8rDRXemXny6Cs64afExhUQKa03fm64qYjnZKgHiC5Gy6zE9+0JmT7FirtLEiJJcV6pRWG6DKfl8l1mSxeof+vnvW9kMpOhrY7/2Dj1yvdi3q7nuLZtamSaiEIRIFoLObfN2YJSioU7mE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706826694; c=relaxed/simple;
-	bh=P85U7qVEtiwib4InPfeSXcENaMJdinVkRUgfk7DtKHY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kM19Yf7VlZNPtndy3KKMfEPLYEkiuccCihreerFLqHu9gLHwlvFrvkQQmZlnFscLlOgjySe62rhh8QAEVBloSPGjqMQbsOzvPKvkPxWtZREYm0KndXCyPzc9lWx6yySX5Id8a7D4mhtarzcDYIgJsdHqN2lWhkU/h+B0NmM2jec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=nBOFyOVr; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40e80046264so12716425e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 14:31:33 -0800 (PST)
+	s=arc-20240116; t=1706826829; c=relaxed/simple;
+	bh=KPsuTJp7C2O14rQ/OpkjWMA8klxdzcOuKfmwo10erDg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FYSOoXrpUSaTqCpJaJPrtdQCM2Y3FAlQQRd2coBU2sTUe4Bnhb/ggZwIx+uA7789jdTu+uxzjLVUmdaHfMeGEDA54ucE5Gil9OPnGXEvF2D0r7FgEFMYqjvb7jDtKJ1sJHjYGiiXXa5Png5JOC7LiFBYHCYGa/UIpxOe1GNdJEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kUCJFliT; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6041779e75eso15952027b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 14:33:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1706826691; x=1707431491; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bSwwFBcdZU7AoQFv7c4YL4HHZxb8TbX42mV1GK+DKhc=;
-        b=nBOFyOVrwYU8v5+SrJXKESazdNxqy/IU3SDuOuKMOVsmM4B1zSSU8AcNwkWeybxKdf
-         40YyKujzupfDMJDZBnimxy2PUnTvsqnm4iFRQEWY6pdgLSDo3wV79Qi57Jf+H4HaWRiV
-         OsBmIdSuVpZlKQHTaU11u32DC0W3CnZ3L0IV84QRl6doenpay5Eot6WEbRrnnbxG3MEo
-         6epRoReXuik2ZU00IbC/dwBdUZCqNjDwBp+x5Rzi3EslF3vEVdsgPNlhBNu7ICtjwmkU
-         zYzOTDgSOL9TYXJXXnFtjHUXyzxMEbad/ITx1V1vrcIsD4dIEuNv5vStYzc+36M/DKNh
-         ztxQ==
+        d=linaro.org; s=google; t=1706826825; x=1707431625; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dIIwz+3axs9ofDIOeEvHfTKblaO7IqF1Ngm8UvpUX1Q=;
+        b=kUCJFliTr8A6aqTvxw2EKSSABBqpD6stsBEFeqB6syyt1ZGB0ZwNFRMnt3kUP4a6nV
+         NYVTE6DdXwPRdKqHC3RsBUETqP+rzPIQISYS9fCtKv3X3wOLAHXb3dqL1Gsqm0KZocQ8
+         FXoHf4x6l21jwKfeaftujwUAUYTLfNtdtuBztMrIEEePI0XsGtQiFUtq1tNfJHR/+kz2
+         x5tmURGLp2HOcR/3K9Uo75zFjrM5fFY8TLOAKjG44l/gZSPPvgRukPH2HTz/SLmxbjPj
+         8vPa9Z6eku2U83Y+Fu4OCzNAZ5X/q5FqyEcUnMoBpX14xsVPVwx/8H086kWLxg2VzYtK
+         p4Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706826691; x=1707431491;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bSwwFBcdZU7AoQFv7c4YL4HHZxb8TbX42mV1GK+DKhc=;
-        b=E87zXfvOdH808HLRmm/V5UfFHdwHnXyYl92GjiFA8PWtEyY2RvdbyX+ZyJh8hDo4uY
-         G4xv+gNtKyVPfPZdaQwbfCyiUhIpWxHUuqdq2NXSy+VBFCu+em07dCzGAkyuJXeOzACD
-         43uFLvLmyVWKb0tP1vhd6j2LnuM2FzXD1Pe1v+diPXKqBg770iCStz4Pb9RZ7quG9QZ5
-         Mrkry4m6pMuYuv/y/NH07y2AvoEp4atYy+CgZYOGxs6all7vtVt4trrpSfw8Ae5fD6Sr
-         EwcXy5t74RTO6GfKEj3kbWxafaYYXYj7jGc9nEH7vZxwwn0pIKGA9DFVBukTXdSN5hSr
-         xe0w==
-X-Gm-Message-State: AOJu0YxnT5PNHrByql4f5VL9TPRJYhUAZrUp0VKdc6Z6r+NSN9sW4NQi
-	UfAwRmTpXOXGY3EEY1UJXYlrrG0tHj3S7rm5LB5sXt8/WSWm/uWJDxRADZSRB7M=
-X-Google-Smtp-Source: AGHT+IF8QApT7bATZDY+w5kW8aQ4j60TNo6unSXL6IYGopuNDYPYb+8DLkY4V4sQt1uNgqgtE55e1A==
-X-Received: by 2002:a05:600c:519a:b0:40f:aff2:7e47 with SMTP id fa26-20020a05600c519a00b0040faff27e47mr262722wmb.9.1706826691295;
-        Thu, 01 Feb 2024 14:31:31 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWIf31ZoqlyXSpCq4fHgoJGp+ghpYzElUZnT2g5S0rmRR1kZ+Og+7ds3qYKF8aMdhUtXUM+IqpHmefJnjkGigCIrWgSBWBMvfIAmO6ZVGy8U5y3LdxVBf07WfuaBDHgw4AH/jNzmn5JlHnVcCjdgl77BGgXa+comDcI3VdAVgCTpIIPxb0dCBd+OkQ8cmv37RxG5CHG26KWa46M1Y7bA1ciiVL0GuuL3PlJQ6L8QObXE2koc3cFz5J5TLw/Ke60x/f8saMdns0vTnKG78ufhdW20+jIuyQIt8J++Kf5wUg289QgyxqdrsMnWUvapDqy0B4HNmm/eD88dCQGVUJMNJG1P5uXG/dpk3HsQHKtJ4w=
-Received: from airbuntu ([213.122.231.14])
-        by smtp.gmail.com with ESMTPSA id o7-20020a05600c4fc700b0040fb44a9288sm5680446wmq.48.2024.02.01.14.31.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 14:31:30 -0800 (PST)
-Date: Thu, 1 Feb 2024 22:31:29 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-	Lukasz Luba <lukasz.luba@arm.com>, Wei Wang <wvw@google.com>,
-	Rick Yiu <rickyiu@google.com>, Chung-Kai Mei <chungkai@google.com>
-Subject: Re: [PATCH v2 7/8] sched/schedutil: Add a new tunable to dictate
- response time
-Message-ID: <20240201223129.2dgeko4aikkpisqf@airbuntu>
-References: <20231208002342.367117-1-qyousef@layalina.io>
- <20231208002342.367117-8-qyousef@layalina.io>
+        d=1e100.net; s=20230601; t=1706826825; x=1707431625;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dIIwz+3axs9ofDIOeEvHfTKblaO7IqF1Ngm8UvpUX1Q=;
+        b=IlBEd1U1bIK8hpY8OLaGaKt6W8q6i/LQ3XEcTpVSqI167G3nXPwu7Z/KL7EmAINt8q
+         EMOCXvphJozUI/QwD9pTt/guOoLnKldDFB91WU7RESpIc3zehxPMHfY1NsccfDrHLvyV
+         8/PLaxoe367/7tXBHmUKu0N5zstjfx6IVUKE7qo2Zm8MsnBIq2Swl2OLPvC/X+16kLqg
+         drAHW9Qe2Z0ETKuX4gwzkS5T1m5T2+uCJoAe6zEbbNbIQKM2mX3ZUjb9reBH+2jZ0Lsd
+         qwU/pOT4Sydld4/NBnjeAO9bANIN0a4ElsGoSHuh8geAvb1WbR4CrUOoJGRrEIgXOKEE
+         a2wA==
+X-Gm-Message-State: AOJu0Yzd9mFbLuSybS+oZhXkyIIrDu6qTr7DkRfbIed0Z7qDnO8NNWSW
+	kwHTCA8gA4PEjqjB69HGLagBKW2AD9jvMdbEY6qR47zcXJW/4yKM/vRcL0ZfJ1g81ukxY5oNamU
+	mRHtIBh7WidOuigR9EKvq81tr5RB/YHNFrDQnqQ==
+X-Google-Smtp-Source: AGHT+IF7BDmJIAD3GWfaR3LtCEEoe0JI/tVQDjPpj6nt/WoSO5SWJoDA8NTnrqWTr5/sudeieo2dIjRJcvM54TnT/YE=
+X-Received: by 2002:a81:488d:0:b0:5ff:b104:cc74 with SMTP id
+ v135-20020a81488d000000b005ffb104cc74mr640319ywa.2.1706826825581; Thu, 01 Feb
+ 2024 14:33:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231208002342.367117-8-qyousef@layalina.io>
+References: <20240106223951.387067-1-aford173@gmail.com> <20240106223951.387067-2-aford173@gmail.com>
+In-Reply-To: <20240106223951.387067-2-aford173@gmail.com>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Thu, 1 Feb 2024 23:33:09 +0100
+Message-ID: <CAPDyKFpx_Xo6Y5yGfuMiV8w3kR2hL6f8t31pKC=91-wEperqjA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] pmdomain: imx8mp-blk-ctrl: imx8mp_blk: Add fdcc clock
+ to hdmimix domain
+To: Adam Ford <aford173@gmail.com>
+Cc: linux-pm@vger.kernel.org, Sandor Yu <Sandor.yu@nxp.com>, 
+	Jacky Bai <ping.bai@nxp.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	NXP Linux Team <linux-imx@nxp.com>, Lucas Stach <l.stach@pengutronix.de>, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 12/08/23 00:23, Qais Yousef wrote:
+On Sat, 6 Jan 2024 at 23:40, Adam Ford <aford173@gmail.com> wrote:
+>
+> According to i.MX8MP RM and HDMI ADD, the fdcc clock is part of
+> hdmi rx verification IP that should not enable for HDMI TX.
+> But actually if the clock is disabled before HDMI/LCDIF probe,
+> LCDIF will not get pixel clock from HDMI PHY and print the error
+> logs:
+>
+> [CRTC:39:crtc-2] vblank wait timed out
+> WARNING: CPU: 2 PID: 9 at drivers/gpu/drm/drm_atomic_helper.c:1634 drm_atomic_helper_wait_for_vblanks.part.0+0x23c/0x260
+>
+> Add fdcc clock to LCDIF and HDMI TX power domains to fix the issue.
+>
+> Signed-off-by: Sandor Yu <Sandor.yu@nxp.com>
+> Reviewed-by: Jacky Bai <ping.bai@nxp.com>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-> +static inline u64 sugov_calc_freq_response_ms(struct sugov_policy *sg_policy)
-> +{
-> +	int cpu = cpumask_first(sg_policy->policy->cpus);
-> +	unsigned long cap = arch_scale_cpu_capacity(cpu);
-> +	unsigned int max_freq, sec_max_freq;
-> +
-> +	max_freq = sg_policy->policy->cpuinfo.max_freq;
-> +	sec_max_freq = __resolve_freq(sg_policy->policy,
-> +				      max_freq - 1,
-> +				      CPUFREQ_RELATION_H);
-> +
-> +	/*
-> +	 * We will request max_freq as soon as util crosses the capacity at
-> +	 * second highest frequency. So effectively our response time is the
-> +	 * util at which we cross the cap@2nd_highest_freq.
-> +	 */
-> +	cap = sec_max_freq * cap / max_freq;
-> +
-> +	return approximate_runtime(cap + 1);
+Just to let you know, this looks good to me and it seems like the NXP
+people like this too. What I am waiting for is an ack on the DT patch,
+then I am ready to queue this up.
 
-After Linus problem (and more testing) I realize this is not correct. This
-value is correct for the biggest core only, for smaller cores I must stretch
-time with capacity. I have similar invariance issues that I need to address in
-this series and uclamp max aggregation series.
+Kind regards
+Uffe
+
+> ---
+> The original work was from Sandor on the NXP Down-stream kernel
+>
+> diff --git a/drivers/pmdomain/imx/imx8mp-blk-ctrl.c b/drivers/pmdomain/imx/imx8mp-blk-ctrl.c
+> index e3203eb6a022..a56f7f92d091 100644
+> --- a/drivers/pmdomain/imx/imx8mp-blk-ctrl.c
+> +++ b/drivers/pmdomain/imx/imx8mp-blk-ctrl.c
+> @@ -55,7 +55,7 @@ struct imx8mp_blk_ctrl_domain_data {
+>         const char *gpc_name;
+>  };
+>
+> -#define DOMAIN_MAX_CLKS 2
+> +#define DOMAIN_MAX_CLKS 3
+>  #define DOMAIN_MAX_PATHS 3
+>
+>  struct imx8mp_blk_ctrl_domain {
+> @@ -457,8 +457,8 @@ static const struct imx8mp_blk_ctrl_domain_data imx8mp_hdmi_domain_data[] = {
+>         },
+>         [IMX8MP_HDMIBLK_PD_LCDIF] = {
+>                 .name = "hdmiblk-lcdif",
+> -               .clk_names = (const char *[]){ "axi", "apb" },
+> -               .num_clks = 2,
+> +               .clk_names = (const char *[]){ "axi", "apb", "fdcc" },
+> +               .num_clks = 3,
+>                 .gpc_name = "lcdif",
+>                 .path_names = (const char *[]){"lcdif-hdmi"},
+>                 .num_paths = 1,
+> @@ -483,8 +483,8 @@ static const struct imx8mp_blk_ctrl_domain_data imx8mp_hdmi_domain_data[] = {
+>         },
+>         [IMX8MP_HDMIBLK_PD_HDMI_TX] = {
+>                 .name = "hdmiblk-hdmi-tx",
+> -               .clk_names = (const char *[]){ "apb", "ref_266m" },
+> -               .num_clks = 2,
+> +               .clk_names = (const char *[]){ "apb", "ref_266m", "fdcc" },
+> +               .num_clks = 3,
+>                 .gpc_name = "hdmi-tx",
+>         },
+>         [IMX8MP_HDMIBLK_PD_HDMI_TX_PHY] = {
+> --
+> 2.43.0
+>
 
