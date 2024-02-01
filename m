@@ -1,146 +1,106 @@
-Return-Path: <linux-kernel+bounces-48300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0AB68459D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:16:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52E9D8459E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:19:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33D9CB278E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:16:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E27D287D6A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:19:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054A45D498;
-	Thu,  1 Feb 2024 14:16:32 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85E285D492;
+	Thu,  1 Feb 2024 14:19:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=toke.dk header.i=@toke.dk header.b="neRWrpBm"
+Received: from mail.toke.dk (mail.toke.dk [45.145.95.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37EC5D491;
-	Thu,  1 Feb 2024 14:16:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD2635D465;
+	Thu,  1 Feb 2024 14:19:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.95.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706796991; cv=none; b=oixYbdVrE3zSxPcZCI5kScR92/FmS9pyogkI/cMkjjBV30nVMiL5EGwOvyq5VFNscoVDqgExLFrT8Y9yDbeGUUcqDGaibwcZ68K65alYIPRh16WXAZBy8zkBkuX81sLOAT0FY3/qnYY1O3pev7WAKga9DmqYS43MGm9ZknVOiAA=
+	t=1706797149; cv=none; b=LoYIdC1Vw+3KZCf0T8CNWI8Sst2gnjNV4kTmSs+O7HWHf1J8sGYErIZajBeuSTP23srtWeIYjd2AhUE7qUItUZqechtSOOZsYokhC1anUmP0Nsw5XSmBEp6R2C+/5ia3eHUOJOF7I0Oyw/qrrBymtxJX89SWwiFRzdUz8k819i8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706796991; c=relaxed/simple;
-	bh=7RgMnk9HW84EbxS2xyK1O0Sz4jbb2wR+0AQQeJkbATI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ebhtO2pLf57EvzmE2P/3huEcbUyXpnNhHVToLApfLcWntUUc3pQ4FE1XrPsrMyWgNZaCr6u4853SVdLVd9rDKw0gGhbIr1knBNtCUMwlP8aNrDIb0eDfU7qBWwpyt7ZmjDBBDkeeHHzccWRWzgq2e0m1+D0b7yC+14Z6fyFnHUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TQgrm679Rz29ktV;
-	Thu,  1 Feb 2024 22:14:32 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id 518421400D4;
-	Thu,  1 Feb 2024 22:16:24 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
- (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 1 Feb
- 2024 22:16:23 +0800
-From: Baokun Li <libaokun1@huawei.com>
-To: <linux-ext4@vger.kernel.org>
-CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-	<ritesh.list@gmail.com>, <ojaswin@linux.ibm.com>,
-	<linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-	<yangerkun@huawei.com>, <chengzhihao1@huawei.com>, <yukuai3@huawei.com>,
-	<libaokun1@huawei.com>, <stable@kernel.org>
-Subject: [PATCH v2] ext4: correct best extent lstart adjustment logic
-Date: Thu, 1 Feb 2024 22:18:45 +0800
-Message-ID: <20240201141845.1879253-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+	s=arc-20240116; t=1706797149; c=relaxed/simple;
+	bh=vHCcKVvZrQL2QrV1hmgo04yutSPw1rOQhlupRpU5Ios=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Z3/QtFMLQsAkvXgaFcVZdc/GtjhHDA30qEjOjkcDYOJl6yqPGgktbMNvtmryxb+1VswF+IaQzdvquKYsY+pgqX84DCVegLWSNhO/4YZBnwFGfg+XqA9ykVys/I+RCkWyGFe1GaTYMlDJkwj+e9aTVR7NN6o/tCmIsnLtmhmyluc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=toke.dk; spf=pass smtp.mailfrom=toke.dk; dkim=pass (2048-bit key) header.d=toke.dk header.i=@toke.dk header.b=neRWrpBm; arc=none smtp.client-ip=45.145.95.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=toke.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toke.dk
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=toke.dk; s=20161023;
+	t=1706797139; bh=vHCcKVvZrQL2QrV1hmgo04yutSPw1rOQhlupRpU5Ios=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=neRWrpBmRqFUTHfKG9UtbcYAVngvJzpvVbfWu/Nx/5P2Q1rz7q/N9c1LogDsgIwed
+	 NQanMQVAff9Put9IfFPMfz16iwaupS2CpKnXp6Oz2cnOEHSCdsYBakbxmn8JRy2dHe
+	 EtSbNzZFnBj5xBviUzhq+GdJV0lcriqmEIVHFzDlQ7HpBhSklb8UfBe75U2hTOQLG+
+	 Y37634Dmm/jEt4ysDBEwen0ucetQnBj5f3lZI6ObHLdgt/AVOD66qNQukPCc1o+VcB
+	 qYGjntB+C2r2r2K3R36mK2cqxz5NTkC250pspFJBnMpKGumydx7T6YnYWnAQAXpf3b
+	 pxMlvCb7jChqw==
+To: Arnd Bergmann <arnd@arndb.de>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Kalle Valo <kvalo@kernel.org>,
+ Arend van Spriel <aspriel@gmail.com>, Franky Lin
+ <franky.lin@broadcom.com>, Hante Meuleman <hante.meuleman@broadcom.com>,
+ Lee Jones <lee@kernel.org>, Brian Norris <briannorris@chromium.org>,
+ Srinivasan Raju <srini.raju@purelifi.com>, linux-wireless@vger.kernel.org,
+ linux-kernel@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com
+Subject: Re: [PATCH 1/6] wifi: ath9k: Obtain system GPIOS from descriptors
+In-Reply-To: <789b7ca0-80c5-449a-99eb-8c05b5380245@app.fastmail.com>
+References: <20240131-descriptors-wireless-v1-0-e1c7c5d68746@linaro.org>
+ <20240131-descriptors-wireless-v1-1-e1c7c5d68746@linaro.org>
+ <613ae419-9a2c-477e-8b19-8a29d42a3164@app.fastmail.com>
+ <ZbuZ_55a-qqDqkeN@smile.fi.intel.com>
+ <789b7ca0-80c5-449a-99eb-8c05b5380245@app.fastmail.com>
+Date: Thu, 01 Feb 2024 15:18:59 +0100
+X-Clacks-Overhead: GNU Terry Pratchett
+Message-ID: <871q9wz2r0.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500021.china.huawei.com (7.185.36.21)
 
-When yangerkun review commit 93cdf49f6eca ("ext4: Fix best extent lstart
-adjustment logic in ext4_mb_new_inode_pa()"), it was found that the best
-extent did not completely cover the original request after adjusting the
-best extent lstart in ext4_mb_new_inode_pa() as follows:
+"Arnd Bergmann" <arnd@arndb.de> writes:
 
-  original request: 2/10(8)
-  normalized request: 0/64(64)
-  best extent: 0/9(9)
+> On Thu, Feb 1, 2024, at 14:17, Andy Shevchenko wrote:
+>> On Thu, Feb 01, 2024 at 01:20:16PM +0100, Arnd Bergmann wrote:
+>>> On Wed, Jan 31, 2024, at 23:37, Linus Walleij wrote:
+>>
+>>> +	} else if (ah->led_pin < 0) {
+>>
+>> ...
+>>
+>>> +	if (sc->sc_ah->led_gpio)
+>>
+>> Dup check
+>
+> I don't know what you mean here. To explain what I'm
+> trying to do: The idea is that the LED is always backed
+> by either gpiolib or the internal gpio controller on
+> the PCI device. This means every access to an LED must
+> be guarded with 
+>
+>    if (gpiodesc)
+>          gpio_*(gpiodesc);
+>    else
+>          internal(ah);
+>
+> We could probably go a little further in the cleanup and
+> throw out the gpiolib path entirely, instead relying
+> on the existing leds-gpio driver. Since there are currently
+> no upstream users of the gpiolib path, that would likely
+> lead to cleaner code but require more changes to any
+> out-of-tree users that rely on the platform_data to
+> pass the GPIOs today.
 
-When we check if best ex can be kept at start of goal, ac_o_ex.fe_logical
-is 2 less than the adjusted best extent logical end 9, so we think the
-adjustment is done. But obviously 0/9(9) doesn't cover 2/10(8), so we
-should determine here if the original request logical end is less than or
-equal to the adjusted best extent logical end.
+There being exactly one such out of tree user (per your up-thread
+email) in OpenWrt? Or are you aware of others?
 
-In addition, add a comment stating when adjusted best_ex will not cover
-the original request, and remove the duplicate assertion because adjusting
-lstart makes no change to b_ex.fe_len.
-
-Link: https://lore.kernel.org/r/3630fa7f-b432-7afd-5f79-781bc3b2c5ea@huawei.com
-Fixes: 93cdf49f6eca ("ext4: Fix best extent lstart adjustment logic in ext4_mb_new_inode_pa()")
-Cc: stable@kernel.org
-Signed-off-by: yangerkun <yangerkun@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
-V1->V2:
-	Remove the problematic BUG_ON and add some comments.
-
- fs/ext4/mballoc.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
-
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 1ea6491b6b00..20cad0676aab 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -5148,10 +5148,16 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 			.fe_len = ac->ac_orig_goal_len,
- 		};
- 		loff_t orig_goal_end = extent_logical_end(sbi, &ex);
-+		loff_t o_ex_end = extent_logical_end(sbi, &ac->ac_o_ex);
- 
--		/* we can't allocate as much as normalizer wants.
--		 * so, found space must get proper lstart
--		 * to cover original request */
-+		/*
-+		 * We can't allocate as much as normalizer wants, so we try
-+		 * to get proper lstart to cover the original request, except
-+		 * when the goal doesn't cover the original request as below:
-+		 *
-+		 * orig_ex:2045/2055(10), isize:8417280 -> normalized:0/2048
-+		 * best_ex:0/200(200) -> adjusted: 1848/2048(200)
-+		 */
- 		BUG_ON(ac->ac_g_ex.fe_logical > ac->ac_o_ex.fe_logical);
- 		BUG_ON(ac->ac_g_ex.fe_len < ac->ac_o_ex.fe_len);
- 
-@@ -5163,7 +5169,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 		 * 1. Check if best ex can be kept at end of goal (before
- 		 *    cr_best_avail trimmed it) and still cover original start
- 		 * 2. Else, check if best ex can be kept at start of goal and
--		 *    still cover original start
-+		 *    still cover original end
- 		 * 3. Else, keep the best ex at start of original request.
- 		 */
- 		ex.fe_len = ac->ac_b_ex.fe_len;
-@@ -5173,7 +5179,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 			goto adjust_bex;
- 
- 		ex.fe_logical = ac->ac_g_ex.fe_logical;
--		if (ac->ac_o_ex.fe_logical < extent_logical_end(sbi, &ex))
-+		if (o_ex_end <= extent_logical_end(sbi, &ex))
- 			goto adjust_bex;
- 
- 		ex.fe_logical = ac->ac_o_ex.fe_logical;
-@@ -5181,7 +5187,6 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 		ac->ac_b_ex.fe_logical = ex.fe_logical;
- 
- 		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
--		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
- 		BUG_ON(extent_logical_end(sbi, &ex) > orig_goal_end);
- 	}
- 
--- 
-2.31.1
-
+-Toke
 
