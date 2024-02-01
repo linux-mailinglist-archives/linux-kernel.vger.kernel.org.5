@@ -1,158 +1,139 @@
-Return-Path: <linux-kernel+bounces-48272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 398F584596C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:56:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4C3384596E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:57:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E511A28D7EB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:56:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9549428226E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:57:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BA1B5D46E;
-	Thu,  1 Feb 2024 13:56:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 168435D46C;
+	Thu,  1 Feb 2024 13:57:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="W0p4JHLm"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="PQLAbFzt";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="PQLAbFzt"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 360715D467
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 13:55:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA2FC5CDD8;
+	Thu,  1 Feb 2024 13:57:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706795762; cv=none; b=hzv01DCpoEIqJLkLkjLLz4pQU2QZzfmeoFR5hSgx6vNAoboBA94vewng+Tgav7yT+hMqF35oDkrlNY4TeyxdVoU8GS4G0lHn5kitfg/SfFxBDQUjK9o2dcLm6I8c5ov5xeNJQuzy2c2Vgc3MJN1pO+M40eCgyhO+hOfOIlB+RnQ=
+	t=1706795847; cv=none; b=F0JP8u3Lf0AlhGI/chX3QyxeDIV3oX/Az84qBJW2ur3uMr5TOMZjuCoCY6bTitooOqSXMIroOzroZ4Ekm9jnvJphrXscXYVqYbY5XHhSZIOfyKVqcSfu6tD7qjQq4WBWLUUYiokCUdeA16I8TgX/K6pQGnKBnlwWdMm6yzMkKro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706795762; c=relaxed/simple;
-	bh=1zTZgcOYnwlRgtKZS/Sq9BrObJqBjZ2W0dNUVF4azgQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Eih5FQ0LqUu2NtT+jGIlQQ3iLwkjgDA9lrB7k09eygSE9ivDkxohaG7njmU3IBx6PANBxK/XWdmlh3N4fpD31qmJqLdrLhdxNm5Gl9ivNXu8sfjai7C9/W819SjqVvLue3hBEls/6xYNLq6bl/NwtNkOwXfQGQelp6pdkDJSh1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=W0p4JHLm; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e80046264so8587045e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 05:55:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1706795757; x=1707400557; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vKR2tnR7SDwYLhlrG5+kES8qnhup08T48WX8IqqDxng=;
-        b=W0p4JHLm1ovOJOsgywVbCnbbs4G3jl6zheEKfr6FE0x/TIhxjsdcp1D5siCMjJiiUX
-         zCV59GLUq7xHAngTtQ5ay44rvPTD/p7c6NNENu5h67Bk+9BBTTj3kRzOXr2B1uNCvph5
-         3YFuTSsAyf1IJ45qNiPyxDoeUuMmIY4KawIMxJZEKqEc4HIbAB7ZznxofP3U7kzqwmlG
-         d/bJLCtAIDF1hOYBaarJrBIuxJLp9G7EujI/YUZ10EV4NuOEK+mGYQbYRYzkvIr94nmv
-         q59PwbLJ1NgUZicXb+uqckzTSciA5vMgkeH3NF9MfMLR2nRH72gWFdWP7P+yr+a5Cbi6
-         3r0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706795757; x=1707400557;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vKR2tnR7SDwYLhlrG5+kES8qnhup08T48WX8IqqDxng=;
-        b=rFguQ2SMxoukHqE204SW/L3EaVboZ21VLSfOAfostG9myzak682Da77JjBVj99uWyi
-         OW+nCntgjONFJ/vAhMRPshsoZqngozlemFhVC7KxX+vVGbO+MHNWc33ttOICbh3DKH90
-         zhjyHo0816lTD9X9KHNHHu3+uEnrdc3h/0mKqzVyYWOYn05pqkYlynvsjc5OsfYQvcee
-         tof2KOXZQfsH/ZcweyDdMoHP5SC4rL+OqzFENQfvv6Zz0ndTYu+e9D0qNuNpRG1wsGIK
-         HWXueKxd8WKpgve7kIj346al4riVAd4PVwPAOfw+X9IEglmWwEwBZmhLz7C5hwQ5rx06
-         0IZw==
-X-Gm-Message-State: AOJu0YwyokU+tKsMGb5OTbWekF4SGbUIOtlKa4HuemNvG63HVEWCl/6K
-	2GLMo+TLS48D0HABU+xCEgtDhMQUh7m7forEl9ZXLvWQqh6bA8eVZ2KLKGy2jzs=
-X-Google-Smtp-Source: AGHT+IElrLBDHXwS+SyMV+1fxU+Fe+PNN5hObR4e6jXYPhsj5BAmp/ooVq7vhLCo/QjiEBRGG2tmMQ==
-X-Received: by 2002:a05:600c:3554:b0:40f:bda1:f8c7 with SMTP id i20-20020a05600c355400b0040fbda1f8c7mr1332729wmq.34.1706795757256;
-        Thu, 01 Feb 2024 05:55:57 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUiRfj0KYNWg9ExH3rqKax2WCoAHeO6PNpelXuLDwpQbk83fIYtTRu1qUFs61bHdL3qy4UCQvTXOqPWK3UjDCLd6SpIDG2rTtzOaB85wWjW34O4QrA71X7MklFYZsmPb+3rNN0alF1VzKhlmRhm6xqqEgv0uZi6X9fgtkQ3xTfWMOBiiB7yt0Ljycb5YmLmVaI3qGbRHMrZO3r3j1Gg8f9ZT36D0A8wGtgYaGE9eGPLz4Vu2LT/DIeBLddimYznHVV98/1ivM3euoQmmDYb4JLJJIke/BfMdbio1ivma9HtJh1591ppGJKBbtQr3t0SqGSB2Ur3ok8CMaeBghlP8VXZejTc+SqIXHYebqkxGpEtBv7crZIwTX1l4A4st4FYa03NqavWInRghohOdLTrCYvlO5kju2RXVjcrxvNAdoLht5psNSgtVROG1Fm6t95f6tCWDIwbitXDw66ioEfoqs18JuR6zVryqZqM43aSa2mxnTmF7r4KQzNMB7FJuTVqYQjL1+g/qlvERvQrHjOcL++ccpGPmTQZ/xLE8/NL71U5SnjoUXixJTe7+M22zy0DV+TlCZs6no9z/Wy5Q59DFIjd01PkY9ieCxhbcQkyR+UAW/iksUE3ixnyvYbD+bQkedNVqTAcgW1WIAo8tDPPW2GwDw==
-Received: from localhost ([82.66.159.240])
-        by smtp.gmail.com with ESMTPSA id m39-20020a05600c3b2700b0040fb7695620sm2880542wms.0.2024.02.01.05.55.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 05:55:56 -0800 (PST)
-From: Mattijs Korpershoek <mkorpershoek@baylibre.com>
-To: Brandon Brnich <b-brnich@ti.com>, Nishanth Menon <nm@ti.com>, Vignesh
- Raghavendra <vigneshr@ti.com>, Tero
- Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Will
- Deacon <will@kernel.org>, Bjorn Andersson <quic_bjorande@quicinc.com>,
- Geert
- Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>,
- Konrad
- Dybcio <konrad.dybcio@linaro.org>, Neil Armstrong
- <neil.armstrong@linaro.org>, =?utf-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Pra?=
- =?utf-8?Q?do?=
- <nfraprado@collabora.com>, Marek Szyprowski <m.szyprowski@samsung.com>,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Darren Etheridge <detheridge@ti.com>
-Cc: Brandon Brnich <b-brnich@ti.com>
-Subject: Re: [PATCH v3 5/6] arm64: dts: ti: k3-am62p: Add Wave5 Video
- Encoder/Decoder Node
-In-Reply-To: <20240131212625.1862775-6-b-brnich@ti.com>
-References: <20240131212625.1862775-1-b-brnich@ti.com>
- <20240131212625.1862775-6-b-brnich@ti.com>
-Date: Thu, 01 Feb 2024 14:55:55 +0100
-Message-ID: <8734ucmgpg.fsf@baylibre.com>
+	s=arc-20240116; t=1706795847; c=relaxed/simple;
+	bh=2m6rRqMt8QCSHWwoNoBeNn1DPvb5rzoixdRUuk/jPJ0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XSrtNyV7C8CqK6gJ0ShPMPjZXfPY1MmOG3XDtgUcg8IRiWnD3ljhM2QhCc72oq/IQ2QTSQCTGFJ1jcMub1l56zA95226+eRQqLhA4cAqOqo3YXssnG45VojXQjLGQBDjmO97dJl06zXhp5s7giZHOL8vLKhJRh3CUNJSbvoyO9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=PQLAbFzt; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=PQLAbFzt; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from blackpad (unknown [10.100.12.75])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A84E51FB83;
+	Thu,  1 Feb 2024 13:57:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706795843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fst3aRufxJr0rB3Ah1VL5pp6dKU4WyR76KU19pMYREY=;
+	b=PQLAbFztYbBgxaasVRpxcOj6DsBbGHYiXm5TRBjWaK9ScDigefcGsrARMWnSdx2QpPan6j
+	pZaaihD1N7EDLjec5v/4GL6dVrlk/kpWnCypMcQj3jH8kpdp6b4E0y3VI3UqBfcnQpT0K6
+	z++SlRgeush0Y4iV3EH4IF6zUuP7yJI=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706795843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fst3aRufxJr0rB3Ah1VL5pp6dKU4WyR76KU19pMYREY=;
+	b=PQLAbFztYbBgxaasVRpxcOj6DsBbGHYiXm5TRBjWaK9ScDigefcGsrARMWnSdx2QpPan6j
+	pZaaihD1N7EDLjec5v/4GL6dVrlk/kpWnCypMcQj3jH8kpdp6b4E0y3VI3UqBfcnQpT0K6
+	z++SlRgeush0Y4iV3EH4IF6zUuP7yJI=
+Date: Thu, 1 Feb 2024 14:57:22 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Efly Young <yangyifei03@kuaishou.com>, android-mm@google.com, yuzhao@google.com, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcg: Use larger chunks for proactive reclaim
+Message-ID: <q3m42iuxahsjrskuio3ajz2edrisiw56cwy2etx2jyht5l7jzq@ttbsrvgu4mvl>
+References: <20240131162442.3487473-1-tjmercier@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="lz6s2q5edho5n2za"
+Content-Disposition: inline
+In-Reply-To: <20240131162442.3487473-1-tjmercier@google.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-1.75 / 50.00];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 SIGNED_PGP(-2.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_COUNT_ZERO(0.00)[0];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 BAYES_HAM(-0.05)[59.23%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -1.75
 
-Hi Brandon,
 
-Thank you for the patch.
+--lz6s2q5edho5n2za
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On mer., janv. 31, 2024 at 15:26, Brandon Brnich <b-brnich@ti.com> wrote:
+Hello.
 
-> This patch adds support for the Wave521cl on the AM62P.
->
-> Signed-off-by: Brandon Brnich <b-brnich@ti.com>
+On Wed, Jan 31, 2024 at 04:24:41PM +0000, "T.J. Mercier" <tjmercier@google.=
+com> wrote:
+>  		reclaimed =3D try_to_free_mem_cgroup_pages(memcg,
+> -					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
+> +					max((nr_to_reclaim - nr_reclaimed) / 4,
+> +					    (nr_to_reclaim - nr_reclaimed) % 4),
 
-Reviewed-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+The 1/4 factor looks like magic.=20
 
-> ---
->  arch/arm64/boot/dts/ti/k3-am62p-main.dtsi | 10 ++++++++++
->  arch/arm64/boot/dts/ti/k3-am62p5-sk.dts   |  4 ++++
->  2 files changed, 14 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-> index 4c51bae06b57..94c89699b35f 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-> @@ -891,4 +891,14 @@ mcasp2: audio-controller@2b20000 {
->  		power-domains = <&k3_pds 192 TI_SCI_PD_EXCLUSIVE>;
->  		status = "disabled";
->  	};
-> +
-> +	vpu: video-codec@30210000 {
-> +		compatible = "ti,j721s2-wave521c", "cnm,wave521c";
-> +		reg = <0x00 0x30210000 0x00 0x10000>;
-> +		interrupts = <GIC_SPI 225 IRQ_TYPE_LEVEL_HIGH>;
-> +		clocks = <&k3_clks 204 2>;
-> +		clock-names = "vcodec";
-> +		power-domains = <&k3_pds 204 TI_SCI_PD_EXCLUSIVE>;
-> +		status = "disabled";
-> +	};
->  };
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
-> index 1773c05f752c..0aec79ed5578 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
-> @@ -569,6 +569,10 @@ &main_uart0 {
->  	bootph-all;
->  };
->  
-> +&vpu {
-> +	status = "okay";
-> +};
-> +
->  &main_uart1 {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&main_uart1_pins_default>;
-> -- 
-> 2.34.1
->
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Commit 0388536ac291 says:
+| In theory, the amount of reclaimed would be in [request, 2 * request).
+
+Doesn't this suggest 1/2 as a better option? (I didn't pursue the
+theory.)
+
+Also IMO importantly, when nr_to_reclaim - nr_reclaimed is less than 8,
+the formula gives arbitrary (unrelated to delta's magnitude) values.
+
+Regards,
+Michal
+
+--lz6s2q5edho5n2za
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZbujQAAKCRAGvrMr/1gc
+jiEnAQCQGBITdwktnX+PB1XMOwtBDaDA8QEg/Imo7oFBWH8AMwEAsK96LQZSYVCP
+vXmosthBsfuwtAklzkEeE5PYQsmvKgw=
+=hhY/
+-----END PGP SIGNATURE-----
+
+--lz6s2q5edho5n2za--
 
