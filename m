@@ -1,133 +1,121 @@
-Return-Path: <linux-kernel+bounces-47893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E58A84543E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:39:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DDC9845441
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:40:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89326B24FC7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:39:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE44328E5D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:40:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63DA54DA1F;
-	Thu,  1 Feb 2024 09:38:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BDCF15B977;
+	Thu,  1 Feb 2024 09:38:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=proton.me header.i=@proton.me header.b="KYnEaCgL"
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UTydyzgl"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA9204D9E3;
-	Thu,  1 Feb 2024 09:38:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C71415D5B2
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 09:38:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706780310; cv=none; b=HsRglmzHhAyfjb+JvJAXW66HkTwtobq9pnt5BKzM2YeItA6U+VB1jci6uPng2VOhqtsoOMdQI9BDEH6DNI/EkvYPEFjeVphUq71hotvvEADI0Y07aNOOyN6RxyhXhd+tA9s5QP+4DYNrhuxhvxtz9Z6UMfPK1+WaLxC5d0tEGLs=
+	t=1706780330; cv=none; b=WtbzO0cYTeKYeZAxYV25BWVuEiX2Q5yt6wYT7JrLq/L36cyxGolusSYwPEd+IQ/i9hb50Excxr0Twhv/Gs0scoOZNJqzzbSxS0aN0s9PIALdkh1CVaehhZlA9bXIoYVhV7XqbPqSxtM/o3v7wEPDTqCehLlLGKsqISvFUOecu6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706780310; c=relaxed/simple;
-	bh=6lwo5mHkqU86wnmQyHk4p9ijbfTpZMXDy9cRvEQb22E=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Jbjg5/v4K49BSHZfG5BLqIXCuZ8lEW4Vw0IBLK0mE2yOD2DTrZ6A8scrg9BuSIPG++ulDIywdOtGE8UdFu0ClPw3ebHz0WWJxZbdZkBt8IRTB6Tu7VT7qqYXI36Q2DEneJmCwKcoJoImmwY8UDaOAGbT82xYDzQN1MoPeKzWftA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=KYnEaCgL; arc=none smtp.client-ip=185.70.43.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1706780306; x=1707039506;
-	bh=1FStN9/C374bnafIEvUZ7Cpc0dKu4duK0n7lhMP+VYU=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=KYnEaCgLAdUiq++OxJfmF37wIbraSL489oPCIVTPysr4oRamyzkGO6VLZr5XC1Ofv
-	 +cC/z15kU9mDndCuP42WyDL9iDxHO2uoUETfoKHiA4MeJ1XjEBzWspA2vx7VRmdcOV
-	 7oGlq++970t/81q627ScB7mstRvHuYtm+ZdNxRdMPeqr4x3nIprC7aaoNJR9kNMYA4
-	 4OhruoY7a0LXQJbokCfgWztbQNWkS8zw2npfuQ1trk12o5VOiRJuu+Rkkt2AaDUn4D
-	 Q0WM2Mq945vxmT43mLIFBmQfKXlw1Br7y23IYKmtqbmaDkox2OtLm56T7M0a+f1SO5
-	 8g2ByeZOfOdJA==
-Date: Thu, 01 Feb 2024 09:38:13 +0000
-To: Alice Ryhl <aliceryhl@google.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, Dan Williams <dan.j.williams@intel.com>, Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 1/9] rust: file: add Rust abstraction for `struct file`
-Message-ID: <38afc0bb-8874-4847-9b44-ea929880a9ba@proton.me>
-In-Reply-To: <CAH5fLgioyr7NsX+-VSwbpQZtm2u9gFmSF8URHGzdSWEruRRrSQ@mail.gmail.com>
-References: <20240118-alice-file-v3-0-9694b6f9580c@google.com> <20240118-alice-file-v3-1-9694b6f9580c@google.com> <5dbbaba2-fd7f-4734-9f44-15d2a09b4216@proton.me> <CAH5fLghgc_z23dOR2L5vnPhVmhiKqZxR6jin9KCA5e_ii4BL3w@mail.gmail.com> <84850d04-c1cb-460d-bc4e-d5032489da0d@proton.me> <CAH5fLgioyr7NsX+-VSwbpQZtm2u9gFmSF8URHGzdSWEruRRrSQ@mail.gmail.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1706780330; c=relaxed/simple;
+	bh=9l/wcXT+bs/WGiyv1cRps49ciJ9TEQfO/iHpcmKSk20=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rDyK8tQ4z988PcwAjhNodRG6KmLhSt8vXxu/ay8zyzA0KQwolVE9iJrJjhkFrM9BkwnEj/W9UmNGcuGQroROfUtWkqeOAQSEC346tka3hE7jEoRfoNymBwJvaxFkMDgtLNQLowopF/KOH/6zGRF4qUzJZRMMfjBmADWCBwouiH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UTydyzgl; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55a5e7fa471so840035a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 01:38:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1706780326; x=1707385126; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ETrdbaHyveHNyICbP2DXqhvu68zNHBWwdNewWmRtz18=;
+        b=UTydyzglxjJxAhMsW1gDk+FG3EiXNSuEQaqXcodPIqr46Yz1vJJXJLQU2GM42pqPsR
+         wk1BgVO/DybEnV3/8yAnFETHBe08ZIeArnkutsuDV5EJAOCzx/2cY8w2y+9nXgHGNyx+
+         d7RuejNI0kS5RY/rWXRODyBxSMFck58x7EbeMV5bQJk7oAhgimxaM0gi9xOCuAZqw47v
+         mBbq5E7l1zLXldKNUA7QXqZ6qWdVG0NrUZ7xhiiwQnx8Puo2G/tJhJN0lODHXIHRzAGd
+         rH2I/XCCosdiJptYNwUI8EOITzDNVpETOE3FrgoG70DOon0/g7YmVDpMtC3flSNhuNNp
+         U4dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706780326; x=1707385126;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ETrdbaHyveHNyICbP2DXqhvu68zNHBWwdNewWmRtz18=;
+        b=YXZOaTisdn1fKPwcmxKxR0zIoiDtDLZ80P0HNcg6/z92NoSQxbSblHxS7gyjeQGSAZ
+         sh2DI3FY8qBTVB/jGzkD2UO/TiFey55e0FrcsbivtHRH/1goV2PxNBCqylNCjrGGVZgO
+         6q7hSiuTHRmLn7VCDocXD+uy52GhtcIlg71XJODQ//ObNAg7jJioigb2FyNfWO8WXqie
+         oU/MTHZGwowRZvvNpzEzWr3cizp8B9DJLIQpGEAYN6LJ0+4shig/cQCqRjpaCAftW/Wl
+         Sfy8DA+i8CMH9y6QyHOMArTWT3rq1N4N7N6xnb0YvNT4VF2V3M9idiGoQh7lwaNZfKMs
+         8aBg==
+X-Gm-Message-State: AOJu0Yx7mniLVffJp3CO1jb1fqRkzptKmEeSBA6x1lc+0DDRc7O4AfF6
+	8accOh8TiV6KgZYCc55ji8Moe8aVgND1eIVqY/Ph87C2PH3EazLoAQZvfa19tQk=
+X-Google-Smtp-Source: AGHT+IHxmn0xHdwcOe8J8slylRP8BO1emqCK/Lm1LnQPUY17Fiyt3TUyFc0RlSUnQc7x52p7IIlldg==
+X-Received: by 2002:a17:906:5fca:b0:a35:fe4c:e76b with SMTP id k10-20020a1709065fca00b00a35fe4ce76bmr3021090ejv.66.1706780326536;
+        Thu, 01 Feb 2024 01:38:46 -0800 (PST)
+Received: from ?IPV6:2001:a61:1366:6801:7ce4:a9a1:7f22:a638? ([2001:a61:1366:6801:7ce4:a9a1:7f22:a638])
+        by smtp.gmail.com with ESMTPSA id rs6-20020a170907890600b00a26d20a48dasm7002102ejc.125.2024.02.01.01.38.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Feb 2024 01:38:46 -0800 (PST)
+Message-ID: <09fce208-72b1-49e8-988e-ea149fbaf0b5@suse.com>
+Date: Thu, 1 Feb 2024 10:38:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] [RFC] usb: host: Allow userspace to control usb suspend
+ flows
+To: Guan-Yu Lin <guanyulin@google.com>, Alan Stern <stern@rowland.harvard.edu>
+Cc: gregkh@linuxfoundation.org, mathias.nyman@intel.com, royluo@google.com,
+ hadess@hadess.net, benjamin.tissoires@redhat.com,
+ heikki.krogerus@linux.intel.com, oneukum@suse.com, grundler@chromium.org,
+ yajun.deng@linux.dev, dianders@chromium.org, linux-kernel@vger.kernel.org,
+ linux-usb@vger.kernel.org, badhri@google.com, albertccwang@google.com,
+ pumahsu@google.com
+References: <20240130064819.1362642-1-guanyulin@google.com>
+ <0e4221b5-bafe-4bea-b533-0ed8add81ef1@rowland.harvard.edu>
+ <CAOuDEK2VSBcQdLKt27VrLUxH2S22275ffbe5mdVM=vBZDhceQA@mail.gmail.com>
+Content-Language: en-US
+From: Oliver Neukum <oneukum@suse.com>
+In-Reply-To: <CAOuDEK2VSBcQdLKt27VrLUxH2S22275ffbe5mdVM=vBZDhceQA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 01.02.24 10:33, Alice Ryhl wrote:
-> On Thu, Feb 1, 2024 at 10:31=E2=80=AFAM Benno Lossin <benno.lossin@proton=
-me> wrote:
->>
->> On 29.01.24 17:34, Alice Ryhl wrote:
->>> On Fri, Jan 26, 2024 at 4:04=E2=80=AFPM Benno Lossin <benno.lossin@prot=
-on.me> wrote:
->>>>> +///   closed.
->>>>> +/// * A light refcount must be dropped before returning to userspace=
-.
->>>>> +#[repr(transparent)]
->>>>> +pub struct File(Opaque<bindings::file>);
->>>>> +
->>>>> +// SAFETY: By design, the only way to access a `File` is via an immu=
-table reference or an `ARef`.
->>>>> +// This means that the only situation in which a `File` can be acces=
-sed mutably is when the
->>>>> +// refcount drops to zero and the destructor runs. It is safe for th=
-at to happen on any thread, so
->>>>> +// it is ok for this type to be `Send`.
->>>>
->>>> Technically, `drop` is never called for `File`, since it is only used
->>>> via `ARef<File>` which calls `dec_ref` instead. Also since it only con=
-tains
->>>> an `Opaque`, dropping it is a noop.
->>>> But what does `Send` mean for this type? Since it is used together wit=
-h
->>>> `ARef`, being `Send` means that `File::dec_ref` can be called from any
->>>> thread. I think we are missing this as a safety requirement on
->>>> `AlwaysRefCounted`, do you agree?
->>>> I think the safety justification here could be (with the requirement a=
-dded
->>>> to `AlwaysRefCounted`):
->>>>
->>>>        SAFETY:
->>>>        - `File::drop` can be called from any thread.
->>>>        - `File::dec_ref` can be called from any thread.
->>>
->>> This wording was taken from rust/kernel/task.rs. I think it's out of
->>> scope to reword it.
->>
->> Rewording the safety docs on `AlwaysRefCounted`, yes that is out of scop=
-e,
->> I was just checking if you agree that the current wording is incomplete.
->=20
-> That's not what I meant. The wording of this safety comment is
-> identical to the wording in other existing safety comments in the
-> kernel, such as e.g. the one for `impl Send for Task`.
 
-Ah I see. But I still think changing it is better, since it would only get
-shorter. The comment on `Task` can be fixed later.
-Or do you want to keep consistency here? Because I would prefer to make
-this right and then change `Task` later.
 
---=20
-Cheers,
-Benno
+On 01.02.24 10:02, Guan-Yu Lin wrote:
+> On Wed, Jan 31, 2024 at 1:12 AM Alan Stern <stern@rowland.harvard.edu> wrote:
+>>
+>> On Tue, Jan 30, 2024 at 06:47:13AM +0000, Guan-Yu Lin wrote:
 
->>> Besides, it says "destructor runs", not "drop runs". The destructor
->>> can be interpreted to mean the right thing for ARef.
+>> Why does this affect only the USB subsystem?  Can't the co-processor
+>> use other, non-USB, devices on the system?
 >>
->> To me "destructor runs" and "drop runs" are synonyms.
->>
->>> The right safety comment would probably be that dec_ref can be called
->>> from any thread.
->>
->> Yes and no, I would prefer if you could remove the "By design, ..."
->> part and only focus on `dec_ref` being callable from any thread and
->> it being ok to send a `File` to a different thread.
+> In our use case, the co-processor only supports USB subsystem. There might be
+> other co-processors support more subsystems, but we're not sure about how they
+> will interact with the system.
+
+Hi,
+
+it would be very good if you decided this now, before we add attributes.
+
+The reason is that if this feature is needed for multiple subsystems,
+the attribute should be added to the generic device structure, so that
+the naming and semantics are consistent.
+You really don't want to repeat this discussion for every subsystem.
+
+	Regards
+		Oliver
 
 
