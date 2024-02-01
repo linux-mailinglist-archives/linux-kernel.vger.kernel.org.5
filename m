@@ -1,131 +1,126 @@
-Return-Path: <linux-kernel+bounces-48234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B0288458E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:30:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BE9A8458E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:30:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 108821F28D50
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:30:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DC7F1C25AB4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:30:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E16F5339C;
-	Thu,  1 Feb 2024 13:30:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DEXUWemM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 600E653377;
-	Thu,  1 Feb 2024 13:30:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACFA35339F;
+	Thu,  1 Feb 2024 13:30:20 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68C2D5337D
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 13:30:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706794207; cv=none; b=JPHq2JjVuQycUFcgAKNbLEJLXZTVg/hXag24DtrvoiLtyaoy9G/Kmr5+YY5j9hIr8zjEZfELvnygVyWo1vQae1l6X1YWUfIng/cTc3QGNG5ymXz3lRiCFVrBof/+Ha2hDFLSAOg4icAd2DMrmT5jO1Sf8PrpjjucNWeHK99J4jM=
+	t=1706794220; cv=none; b=PLL5qeF9KjSPAXySrPD0xZ68ZqoV/Okf8zkcdgolfK7zO7uaUpd7IpbwsLno9FhPeOOJnOhZnZJdxdfJlojs03wDDtR+s1OSKINWvZKfkIkV40JmOZg3vQKB6zZiBlYGeUUGU4xGj4ZzbZ59PB9cE0AR7bMXjWqBJVkiwPBlg1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706794207; c=relaxed/simple;
-	bh=4swrM4alFmGHIV9rLYolfhNl1z4eenjzX5UGMuP51e4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fhF68CewDSf1BHW2wfPqVtL5uAQ69xoi1udGjgukw6tSmD61AgLmO/F253gVOTHRpJBZZabvrjcChEfMmBS6G06aYYZpNW4uTVTkDFg2WDtQw9FmVUKZKGjP4CNkn9fnnP/f2m7deAQ8/jiQdltJI22KA5mHLioqbXLBr8uUYwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DEXUWemM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B116C433C7;
-	Thu,  1 Feb 2024 13:30:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706794206;
-	bh=4swrM4alFmGHIV9rLYolfhNl1z4eenjzX5UGMuP51e4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DEXUWemMB88V51rl7TUk+J2QCqlF4Wq5rjg3xkr0QM+eund5jsdf995s5EiPgUC4F
-	 R0wXxRt9n+wuxTzIPAEbqYDpz8JjqVdhA/OTicluDgNOiTYIqiv8tiTigNYrsKSb73
-	 N2LbZVMIeCGQpTWLZmE7HT5JPPrpKz94rrzn6mHxbNSuJxoXdq19PBNoRBNuUH6RmQ
-	 hTSKry8JNkfog8weOGQdO0ntwFLUgvXZddYL3CpLAdZ+Or2+C51d39GZ2BVA6oLllz
-	 cm567Npkg8E1bmG9AEDcJBqC/5LrvL25xn2xQiEfMnn4vG+b2a6DB2iymKkWiN9MxG
-	 DOJP2aWwf8C+w==
-Date: Thu, 1 Feb 2024 14:30:01 +0100
-From: Simon Horman <horms@kernel.org>
-To: Ravi Gunasekaran <r-gunasekaran@ti.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, andrew@lunn.ch, rogerq@kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	s-vadapalli@ti.com, srk@ti.com
-Subject: Re: [RFC PATCH net-next 1/2] net: ethernet: ti: Introduce
- inter-core-virt-eth as RPMsg driver
-Message-ID: <20240201133001.GC530335@kernel.org>
-References: <20240130110944.26771-1-r-gunasekaran@ti.com>
- <20240130110944.26771-2-r-gunasekaran@ti.com>
+	s=arc-20240116; t=1706794220; c=relaxed/simple;
+	bh=DFw6Y6AV74nxmXZ6bTlW+4jAaGysDzHyhcexGl8zs4g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LhwJDf8tbosiYewNpfNFhJU+pBWVR/1RHcXFasHGpSqG10Dz1SkZ98vso0+pKRrEPzIFC0qNnB6m8r0YBG5VxxLcMaQCo1rbgRaFlvhDlkqxfDoiK6jjOtzqOWnfAwQ5DXWHgx0A8UZmdeXlaxSp37+HZq8prNK8MWVMOHc6B6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9013FDA7;
+	Thu,  1 Feb 2024 05:31:00 -0800 (PST)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E25553F762;
+	Thu,  1 Feb 2024 05:30:16 -0800 (PST)
+Message-ID: <c235493f-c28d-43cf-969f-0fb148cb5dda@arm.com>
+Date: Thu, 1 Feb 2024 13:30:15 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240130110944.26771-2-r-gunasekaran@ti.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] swiotlb: Fix allocation alignment requirement when
+ searching slots
+Content-Language: en-GB
+To: Will Deacon <will@kernel.org>
+Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
+ iommu@lists.linux.dev, Christoph Hellwig <hch@lst.de>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Petr Tesarik <petr.tesarik1@huawei-partners.com>,
+ Dexuan Cui <decui@microsoft.com>
+References: <20240131122543.14791-1-will@kernel.org>
+ <20240131122543.14791-2-will@kernel.org>
+ <4c9f50d2-05f9-4a37-ac50-dcd98e40e87f@arm.com>
+ <20240201124634.GA15707@willie-the-truck>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20240201124634.GA15707@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 30, 2024 at 04:39:43PM +0530, Ravi Gunasekaran wrote:
-> TI's K3 SoCs comprises heterogeneous processors (Cortex A, Cortex R).
-> When the ethernet controller is completely managed by a core (Cortex R)
-> running a flavor of RTOS, in a non virtualized environment, network traffic
-> tunnelling between heterogeneous processors can be realized by means of
-> RPMsg based shared memory ethernet driver. With the shared memory used
-> for the data plane and the RPMsg end point channel used for control plane.
+On 01/02/2024 12:46 pm, Will Deacon wrote:
+> Hey Robin,
 > 
-> inter-core-virt-eth driver is modelled as a RPMsg based shared
-> memory ethernet driver for such an use case.
+> Cheers for having a look.
 > 
-> As a first step, register the inter-core-virt-eth as a RPMsg driver.
-> And introduce basic control messages for querying and responding.
+> On Wed, Jan 31, 2024 at 03:54:03PM +0000, Robin Murphy wrote:
+>> On 31/01/2024 12:25 pm, Will Deacon wrote:
+>>> Commit bbb73a103fbb ("swiotlb: fix a braino in the alignment check fix"),
+>>> which was a fix for commit 0eee5ae10256 ("swiotlb: fix slot alignment
+>>> checks"), causes a functional regression with vsock in a virtual machine
+>>> using bouncing via a restricted DMA SWIOTLB pool.
+>>>
+>>> When virtio allocates the virtqueues for the vsock device using
+>>> dma_alloc_coherent(), the SWIOTLB search fails to take into account the
+>>> 8KiB buffer size and returns page-unaligned allocations if 'area->index'
+>>> was left unaligned by a previous allocation from the buffer:
+>>
+>> Hmm, but isn't this fundamentally swiotlb_alloc()'s fault for assuming it's
+>> going to get a page-aligned address back despite asking for 0 alignment in
+>> the first place? I'm not sure SWIOTLB has ever promised implicit
+>> size-alignment, so it feels somewhat misplaced to be messing with the
+>> algorithm before fixing the obvious issue in the caller :/
 > 
-> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> Signed-off-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
-> ---
->  drivers/net/ethernet/ti/inter-core-virt-eth.c | 139 ++++++++++++++++++
->  drivers/net/ethernet/ti/inter-core-virt-eth.h |  89 +++++++++++
->  2 files changed, 228 insertions(+)
->  create mode 100644 drivers/net/ethernet/ti/inter-core-virt-eth.c
->  create mode 100644 drivers/net/ethernet/ti/inter-core-virt-eth.h
+> It's hard to tell which guarantees are intentional here given that this
+> interface is all internal to swiotlb.c, but the 'alloc_align_mask'
+> parameter didn't even exist prior to e81e99bacc9f ("swiotlb: Support
+> aligned swiotlb buffers") and practically the implementation has ensured
+> page-aligned allocations for buffers >= PAGE_SIZE prior to 0eee5ae10256
+> ("swiotlb: fix slot alignment checks") by virtue of aligning the search
+> index to the stride.
 > 
-> diff --git a/drivers/net/ethernet/ti/inter-core-virt-eth.c b/drivers/net/ethernet/ti/inter-core-virt-eth.c
-> new file mode 100644
-> index 000000000000..d3b689eab1c0
-> --- /dev/null
-> +++ b/drivers/net/ethernet/ti/inter-core-virt-eth.c
-> @@ -0,0 +1,139 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
+> In any case, this patch is required because the current state of
+> swiotlb_search_pool_area() conflates the DMA alignment mask, the
+> allocation alignment mask and the stride so that even if a non-zero
+> 'alloc_align_mask' is passed in, it won't necessarily be honoured.
 
-Hi Ravi and Siddharth,
+Sure, I didn't mean to suggest there wasn't anything to fix here - if 
+the existing code was intending to align to PAGE_SIZE even for a 
+alloc_align_mask=0 and failing then that's clearly its own bug - I'm 
+mostly being confused by the example of returning an unsuitably-aligned 
+address for an 8KB dma_alloc_coherent() 75% of the time, if the end 
+result of this fix is that we'll *still* return an incorrectly-aligned 
+buffer for that same request 50% of the time (which just happens to be 
+less fatal), since there are two separate bugs in that path.
 
-The correct style for SPDX headers in .c files is a '//' comment:
+Cheers,
+Robin.
 
-// SPDX-License-Identifier: GPL-2.0
-
-> +/* Texas Instruments K3 Inter Core Virtual Ethernet Driver
-> + *
-> + * Copyright (C) 2024 Texas Instruments Incorporated - https://www.ti.com/
-> + */
-
-..
-
-> diff --git a/drivers/net/ethernet/ti/inter-core-virt-eth.h b/drivers/net/ethernet/ti/inter-core-virt-eth.h
-
-..
-
-> +struct icve_common {
-> +	struct rpmsg_device *rpdev;
-> +	spinlock_t send_msg_lock;
-> +	spinlock_t recv_msg_lock;
-
-Spinlocks ought to come with an comment regarding what they lock.
-
-> +	struct message send_msg;
-> +	struct message recv_msg;
-> +	struct icve_port *port;
-> +	struct device *dev;
-> +} __packed;
-> +
-> +#endif /* __INTER_CORE_VIRT_ETH_H__ */
-> -- 
-> 2.17.1
 > 
+> For example, I just gave it a spin with only patch #3 and then this log:
 > 
+>>>    # Final address in brackets is the SWIOTLB address returned to the caller
+>>>    | virtio-pci 0000:00:07.0: orig_addr 0x0 alloc_size 0x2000, iotlb_align_mask 0x800 stride 0x2: got slot 1645-1649/7168 (0x98326800)
+> 
+> Becomes:
+> 
+>    | virtio-pci 0000:00:07.0: alloc_size 0x2000, iotlb_align_mask 0x1800 stride 0x4: got slot 1645-1649/7168 (0x98326800)
+> 
+> So even though the stride is correct, we still end up with a 2KiB aligned
+> allocation.
+> 
+> Cheers,
+> 
+> Will
 
