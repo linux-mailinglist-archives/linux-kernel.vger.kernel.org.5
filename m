@@ -1,318 +1,151 @@
-Return-Path: <linux-kernel+bounces-48524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B450845DBD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:51:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2660E845D3E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:29:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0D43B3472B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:29:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54AB71C214D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:29:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F4C75E212;
-	Thu,  1 Feb 2024 16:27:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A059E7E0E1;
+	Thu,  1 Feb 2024 16:28:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="CyhM5eQo"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="0J/BUUBD"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 292047E0EF;
-	Thu,  1 Feb 2024 16:27:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706804855; cv=fail; b=uWqBBzltsZacWYabSjLKXpN4ezcn02tMI5xs59Y2XX8DcCCu54ywayoGF5EEHuLyFTjFzwppbHfr4QN/Ar28efjR9ko3dFPXaqezAZ2Ib/V90Ruh1FrYzO2UUefc8UPZ2qT5yGrTcOysJckp8PQk+U4A7lQf/NVQBhK0dXYzGEc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706804855; c=relaxed/simple;
-	bh=WspPIuWR618ok2whFPeB/scbGkd7xwz0YwQ/0WWVrAM=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=YdtgFVsVSUfBe9SzzJWRX5qyHxaokhCE4cXenVukdhncAU/UiLczhPxt6v2ry7Yngkxwy6zfcJ7jcbzi6RDDrHaPaZ07n6Ak3/FMqxce5pU/5MugRImbsn9sMtgTEnLO/7jd6xt9GsiVvCLMpXhv0p2rfuPLJ1qmklLTsmLqYpk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=CyhM5eQo; arc=fail smtp.client-ip=40.107.236.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ut0Y3a2SojorxdVWKrFl8A3hB1ctrpAHslUQMB3SS5ywZjih9316USq6xZdz3SWz20EBblj87oqO5OFngA/G2FnzGRCI9jNP2h54IXO8AYyswLd98LjRFqId6qwC6CguMfK0sCpnJ0WfgbIPWGbsx4acJlPLejlFgdMr7zXDWlDfdQPrOUudGkcwHZ7BBGlDxQsNaclsqqazSLDhmw5ZE42Vd5jjo/xTCopRRB7bJpM5uFVIS8YHjVlImDYLQcjyy+b881cWKvwHvm05jAwZeSzLdCzRHW/V+88wOOrqKp2RhGhNT8qL6T1Rn7rGc5/dBp1lAX5nn1ZEMRNkQKr9DQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YzfVAesZqJTcpecjyteX+ISVsMho/gwwy8+Pmfjrx3k=;
- b=YMYWAErY+5qrHEhTa1/rpn8IeWgM711ZV1NiTGrtd9zqEom16ic8gRJbALn2TwixmYNqZRvIYHLqWENwNUE+TAXNdEFo2+UXv/WkAaGPR7QHtn6miuoFKQGrI9u/xlcOPxaz67kz9mQNU3AjkZPnoQn/cx5tUi74yIicqX2Im8VGdmmULPZFBlcBs0gV1V9yccl2Rg9PIu5bl8lURdedlsubeWjaoEeWtVKqmTaWT6D4pntiu3nxT3NEjJoAd4PomX8hm+UzhJkde6wA+RqAU7DGTkF6W5FBxeSfFdHgVSA92tkF5xRRvqHbMycW0t+KdWrtXsWuS7NWMpBV41UTCw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YzfVAesZqJTcpecjyteX+ISVsMho/gwwy8+Pmfjrx3k=;
- b=CyhM5eQoLMRLN8vJOU16LkD3HNhZ6cW/Ns7kw0eRSwjvjoQNoG/nIFzEYHbweSNqlM+R1yBy8hbK5opTN+g0LfLvb98Qgoles07zAmJfKqZP1013nJ527IkkaEQ8Fq+wrMSnAC/xKgNVIrR6BVbK4KD+nr06Qw48aWUoKN505jA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
- by SJ2PR12MB7943.namprd12.prod.outlook.com (2603:10b6:a03:4c8::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.9; Thu, 1 Feb
- 2024 16:27:30 +0000
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::200:c1d0:b9aa:e16c]) by BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::200:c1d0:b9aa:e16c%4]) with mapi id 15.20.7270.009; Thu, 1 Feb 2024
- 16:27:30 +0000
-Message-ID: <7d74cea0-2d98-476b-8d55-ec3a4e3c0fc7@amd.com>
-Date: Thu, 1 Feb 2024 10:27:28 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/4] KVM: SVM: Use unsigned integers when dealing with
- ASIDs
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- Ashish Kalra <ashish.kalra@amd.com>
-References: <20240131235609.4161407-1-seanjc@google.com>
- <20240131235609.4161407-3-seanjc@google.com>
-From: Tom Lendacky <thomas.lendacky@amd.com>
-Autocrypt: addr=thomas.lendacky@amd.com; keydata=
- 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
- vFkWitqCJg==
-In-Reply-To: <20240131235609.4161407-3-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA1P222CA0034.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:806:2d0::7) To BL1PR12MB5732.namprd12.prod.outlook.com
- (2603:10b6:208:387::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1EDE5E22E
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 16:28:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706804884; cv=none; b=Au9fZWhkZT8KoNiB+hM7ffRdRhIzJaxIPyLInrSa5vRr9YT9Ja6Q4sPspKuzRpFfPDMlDvB7qikZWp9cBRshQvRuSC8eUByUsiOsKerGpp1OlMt9+c9Cwv/5QuVtYwP04H7i+cWW5IplaFuXu6SQz6lgiUrNd4jSTQVSYCkTsqI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706804884; c=relaxed/simple;
+	bh=0dL33Z8IzWy/mhm5Lu3goB/z7dH8jhdH8Ln94Ohl2Y8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DtcvTxyWaS0R1HtpsChAtPy85V0JBXU91HXxTgSJP6GjHRh1xp2jLNFM/jwXxO2WK/524JNKb1S68DDdoHgl9qOE9En6uSYyrUMzffemYgaP9LZeOHLCIfK9r+ZcqdnbuJCOUHvEX9qghDqdnrYajr7RQzXyhp20H3PuGdP2y1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=0J/BUUBD; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-51124d86022so1818796e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 08:28:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706804881; x=1707409681; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ClezJrRGNQxozypAZkAn5qg08BvU4YaqeAiEmP8ZGPI=;
+        b=0J/BUUBD0ZBqAr2j7KPnWqJCVz5Eov+lI/BThTpCR3Tg5UyTmf3ov+9Hq/DJWSV9d4
+         MWZ2k28OJgbTLttQr45biyZM2cLPKbfc/V0wtoVWbijd+ON2izjXDLa21T1FTlJcNxzQ
+         9vkcGGO9E384KyZDtz7xHAAIoZ2g5SfHGNpCj1GTENduhfnX3tLfNEDFUcsUreDJC+eG
+         c+torkOjE+LYjhp+dOEmiB0xMjNqbIRxsoMvsBfZXI80ktJRo6DVt4xJYmuYNlb4BhGB
+         iHqdymT9JgTonrrb6PwL4PAu2zyEqTdmAejNvByGT8jA7ALpEfiK61p7RM317t5M0zxS
+         O9XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706804881; x=1707409681;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ClezJrRGNQxozypAZkAn5qg08BvU4YaqeAiEmP8ZGPI=;
+        b=JYLwBdkBximnAq0oJY+xkIFCXLkyKL17Ur5j4PBYDM85IF8E5yUeD3/zdZW5f53s/t
+         y7HEJ45TX77u4K7whFWC0GLMkfV9tRHQasbS0E7K9N4zFeFPSsMYUg2FSDZ0Os1uOXD1
+         1FKWdFKIzpL1Tr2laWWzswOjEDAorArZ8GlsJTb8O9sa5SRjdu+RdgID2LjZ4HLkUZfp
+         5UIWjufYdm51H4C7XNny849HnAy59+u9M1YHPK8OMwzOjSiFYcvv9qXAxtyk4ys7cc/1
+         ZaqRef1Tuan7dKOSyaXX2ndju3fl2urrqL97Qk5tbZW4An4I8gKVtrOEXqNgP7dn90ly
+         F0Mg==
+X-Gm-Message-State: AOJu0YxPyy0cmAPBPct/W2iU/YMqnYLvi2MWgBzCgrSoA3zSA7ti+Ye8
+	WCKIll4AbTlgZEi/XmijiSJ3yD/SkX1Ky+hd8WXjZxQfjVJRI5jFcixf0lb/Lx8=
+X-Google-Smtp-Source: AGHT+IHKzZsfuTZqoSUj+pCd6soemXtR7LJZpKOXOdiQf/vJ7sz7oreB9zWTsW/LtDf8yezbRs6uDg==
+X-Received: by 2002:a19:3847:0:b0:511:3331:f999 with SMTP id d7-20020a193847000000b005113331f999mr170216lfj.9.1706804880810;
+        Thu, 01 Feb 2024 08:28:00 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXJnI3TOqNVutexmTrbOX97gmmSjsX0rbkRRxW6G9Eozt5scvJ3N72SmgUrOF23up7OpEWGgFbzJLdB+RhCOWxC5zx/12DQAfr/hcia/TMdx3sX7soICw7DhIgn4hHfD65S0Z4OVZOL3+OGFhE=
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:dd01:5dec:43e3:b607])
+        by smtp.gmail.com with ESMTPSA id p10-20020a05600c358a00b0040ed49605a0sm4926902wmq.47.2024.02.01.08.28.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 08:28:00 -0800 (PST)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH] gpio: set device type for GPIO chips
+Date: Thu,  1 Feb 2024 17:27:58 +0100
+Message-Id: <20240201162758.50733-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|SJ2PR12MB7943:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2e1ff61c-434e-444e-0225-08dc2342af80
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	M6tSBizvTRkUKKdKgzWuzlH/Pj4Y1ardg7nIxtxS5Xz8PBxuzoxqZD4ni07fmTdLUprcgOdyKgqviFDxpDKLsRfH/r+P7dVtYiTA61CNlVGkGVFktMYFzCbGiB0n4fMyw1ayr74n1jRWfZ29kHO/sInpge4sQUzOw5ARHfGE5PWIUnM56yADpComon3bKvT0j/gCg/8wx2PTIQw8IsZJReLHvYBYFx4GPKW1EocNqkgaFCGArLMRjpCAk7ImAjC48tUOyUVmrmwvLx7zhFBOIuXyY1gA+uGXfBmlY5B/ARMFxmJoaT+0/MZMfmd1AxkadulRyDjVbK4iETaZ96WF3uh7MxPI310hs04WQ6Xot2LrYW7fh9HmhP1j8VwbjH531tGfxAzwz16bG+I1qL0FWPn6s2VaqtGsizdetMAGrC1c4E5oo+praXlmE8tPv9aYMjyFanjfFTTJOl/8u0bSpMiXytcmu4EJDQYaXjVBfTy4puqS6tXxYYmlrZhnhYzQCxNxHijL1QBUtu7K9B4MpbaVqnBzGJUJChZU+/odICGuYEq/UQ2zacfyFaF8g6YJ8DBv1gdJDet7rpQCVYf787r5JhQ8zt3xEmMMlyzgeCUCfxb1LHkatjIcs07DZfnur383IondM6y3YDoWZkTFpQ==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(346002)(136003)(376002)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(5660300002)(478600001)(6506007)(6486002)(31696002)(6512007)(86362001)(53546011)(4326008)(8676002)(110136005)(66556008)(66476007)(66946007)(8936002)(316002)(36756003)(38100700002)(2616005)(41300700001)(26005)(83380400001)(31686004)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?QVlheEZKRnYvUW9oTW1PbTdBTG9hdFpRbkE2QUZsTDNmVUVVTUNwKzNjR3F2?=
- =?utf-8?B?UkxpRDB6Q01OdHkxcjNaVHNMOVoxU0JSeXcwMWY3T1hMcjByVGpIc2NZYkpn?=
- =?utf-8?B?VFE4UW1PRW5nNVg3THA0dTYwS2lObFZXVWYzbm5MSEdHc2RsOUo3cHJCcFI3?=
- =?utf-8?B?Tk94V3o4YmdseU9EWG1SaCthUEgwKzdqRzYzYXo5L3NVWE42cTBkZTB3aVJY?=
- =?utf-8?B?cGhJQ1IzUTNtQ0pwbHZFeHdDTXlIK1JnZytZdWlUcjFFaE93eGdMOFd4OE1N?=
- =?utf-8?B?ZUdqeTEvcEIxV2ZvVkk2bHQzNFlLM1R4ejlVWnc2eTZ6NjRyTHhqeHNYZU1G?=
- =?utf-8?B?bjhob1h1Y3lUUXphRDJKeHN1QUFCNTlkNzRFeGFTM1VGQ2R3Yi9QMUhoeTBn?=
- =?utf-8?B?ajh6N2ZZZHZBakEzbjdoVWd2Z21yUitRMmVUdDNzejZDa2gvWU42U0dKWW1j?=
- =?utf-8?B?aEw1SzBKRVFBQUNBUloxbjZ2d0krSndWZHoxdjBZS0g0WWRLZnBTcjBrUk9Z?=
- =?utf-8?B?OVJidmp6R1ZWQklvUGhvNFJEOFpHOCtkM3A5cldoNkNJcXpQMStpYlVXTWgr?=
- =?utf-8?B?UEtxeFRFdW9TTUxweldvSnM3Y0pDOHRrMHpZU2NVUm0vYjlvaSt1bDJtR2Rm?=
- =?utf-8?B?aHYvbEdONS85Y05hNk5TMHFnc0pjczZCQklmeHdHVityMXRVTU5vRndDaDRZ?=
- =?utf-8?B?SlkrYVJSMmg4RnhDMTBXVExHYzYxUnNPUmsxcjMrWERpU2w0UGdxQVF1NjRs?=
- =?utf-8?B?alFmS2YzNE12ZW9Nanhnc0NOUDJSNTNSOVE2MEh5Vlh1MkxGeFNUMTY2TlB4?=
- =?utf-8?B?aUJoOCtTSzlUTEM2V3FjeFNnU016UllnK2xFZzNTQVN3VThTV2N0QitGZjl6?=
- =?utf-8?B?WWRjRGdGMmtETGgwdVpwbzdMMHRHeXlycUpuTHRkU2ZlV2tjZnRxZE9td1kx?=
- =?utf-8?B?M2JXRi9kVkYzQjJMYzAvSkIwNS9WZUpxZHRCZnY5Ti9EQndnNks3MTY2Tmpi?=
- =?utf-8?B?TmtnU2ljdlJISXNjazJUbXlkbVE3bkRoNWNyL3huNXMzdzBEajlkM21jdjlF?=
- =?utf-8?B?QmIya2dqeVdqdW1FNnhyRzVOY1BxSzEvVUN2RGg1WnhnMFlxNWRvdGVxOVJG?=
- =?utf-8?B?TitXM3FKOWF1ZGJjMU43aytkK0s1ZUFPbmFhSTNUWkNZZjYweVFycDcycXNL?=
- =?utf-8?B?T3JGUXBRaTFsWGRmc012MGtyb1FtNU9BK0doWnZZMWdUd0NhL1dKN1g2cGUw?=
- =?utf-8?B?ZHFqQVFSK2pudmR2VHBIbDFqdkxjeHJYdEdDNDI0ZytIUTFoT1NXVXRZUlBq?=
- =?utf-8?B?OTh1bEtxb3ErSEZ6ZWhHKythNm1haFdXckhVTU5ZYXF4ZkM4Z0cycThpVEtE?=
- =?utf-8?B?cVJmd3RnQnJ0OXQ4b1QyemJVSVlPTTNIaDNtNzVvL21TT2JTZU15aXNJV2xE?=
- =?utf-8?B?VXpJN0NqbDBFSFkvOERUR0hoVE4za1NEa2pLRGZzMUhiU2lRSEZ0OVRVUEpU?=
- =?utf-8?B?TXRtdUE1ODNEeUtlbk9Qc1B2endveGh2TUxTbzRUVWFmSnJXSFVFaXF5NmN1?=
- =?utf-8?B?cFd5bWxZRE82Q20yZGVKeGhDdG9vOWIyVEVwOXZVUVBMSGZjaGVFS2xRbmF3?=
- =?utf-8?B?TW5SSFJ2NUJvVlNVSk9RY2FOZWphVWxHV1czc1hGRFNBMjBmc1RBUkJ3bVJM?=
- =?utf-8?B?dzR2bXJ4UGZWRG45YmVkY1c3ZTJrN3VhZGRxMDdMbEtXZXdEa0ZrVyt3WjZl?=
- =?utf-8?B?aWI0c3pvay9yU1RLK0lkdGRTbHUwS2FKZTVZV0FDOERhQXlVVEVYTDdlcHdJ?=
- =?utf-8?B?V01PdnB2WmErYnBkbVVOQUhZZjcyZlVId1pGcFpJU3ZPcGhyQmdrYTNaaVJV?=
- =?utf-8?B?alhKREpMVmx2aGNYSUFESTZvRWw1MHFRYXdvMHMybXBYUHhZTHZwTkozZ0k1?=
- =?utf-8?B?UElKUjZLVlJJeThWYTM0dmFSUnNmTjN6SHZaYkZUTG01T2RZNjZDR014YkNh?=
- =?utf-8?B?RmlJWWYyaDc0dHdNMHg5LzlBTzhBZ0UwL09FaE9JSDBhaFBTM1JIVDZrTDlp?=
- =?utf-8?B?RGNGUnpWbWxKZW90K1VxUW5LSEFJUzlEUzg1SXhCQnl1NXMzOEQ1TkVYR29y?=
- =?utf-8?Q?5w4oKE3R9l3S/M8uZamGy9F66?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e1ff61c-434e-444e-0225-08dc2342af80
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2024 16:27:30.0092
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Aq3hfZ4rwIRV+lnWlU2UVrgLD1V041RI6+EhxrVWMpcH6XRhVgomMtB52e54GEWcVS58yLP41ehmyLSRJapHxw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7943
+Content-Transfer-Encoding: 8bit
 
-On 1/31/24 17:56, Sean Christopherson wrote:
-> Convert all local ASID variables and parameters throughout the SEV code
-> from signed integers to unsigned integers.  As ASIDs are fundamentally
-> unsigned values, and the global min/max variables are appropriately
-> unsigned integers, too.
-> 
-> Functionally, this is a glorified nop as KVM guarantees min_sev_asid is
-> non-zero, and no CPU supports -1u as the _only_ asid, i.e. the signed vs.
-> unsigned goof won't cause problems in practice.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Just one minor comment below, but either way...
+It's useful to have the device type information for those sub-devices
+that are actually GPIO chips registered with GPIOLIB. While at it: use
+the device type struct to setup the release callback which is the
+preferred way to use the device API.
 
-Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+ drivers/gpio/gpiolib.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-> ---
->   arch/x86/kvm/svm/sev.c | 18 ++++++++++--------
->   arch/x86/kvm/trace.h   | 10 +++++-----
->   2 files changed, 15 insertions(+), 13 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 7c000088bca6..04c4c14473fd 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -84,9 +84,10 @@ struct enc_region {
->   };
->   
->   /* Called with the sev_bitmap_lock held, or on shutdown  */
-> -static int sev_flush_asids(int min_asid, int max_asid)
-> +static int sev_flush_asids(unsigned int min_asid, unsigned int max_asid)
->   {
-> -	int ret, asid, error = 0;
-> +	int ret, error = 0;
-> +	unsigned int asid;
->   
->   	/* Check if there are any ASIDs to reclaim before performing a flush */
->   	asid = find_next_bit(sev_reclaim_asid_bitmap, nr_asids, min_asid);
-> @@ -116,7 +117,7 @@ static inline bool is_mirroring_enc_context(struct kvm *kvm)
->   }
->   
->   /* Must be called with the sev_bitmap_lock held */
-> -static bool __sev_recycle_asids(int min_asid, int max_asid)
-> +static bool __sev_recycle_asids(unsigned int min_asid, unsigned int max_asid)
->   {
->   	if (sev_flush_asids(min_asid, max_asid))
->   		return false;
-> @@ -143,8 +144,9 @@ static void sev_misc_cg_uncharge(struct kvm_sev_info *sev)
->   
->   static int sev_asid_new(struct kvm_sev_info *sev)
->   {
-> -	int asid, min_asid, max_asid, ret;
-> +	unsigned int asid, min_asid, max_asid;
->   	bool retry = true;
-> +	int ret;
->   
->   	WARN_ON(sev->misc_cg);
->   	sev->misc_cg = get_current_misc_cg();
-> @@ -188,7 +190,7 @@ static int sev_asid_new(struct kvm_sev_info *sev)
->   	return ret;
->   }
->   
-> -static int sev_get_asid(struct kvm *kvm)
-> +static unsigned int sev_get_asid(struct kvm *kvm)
->   {
->   	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
->   
-> @@ -284,8 +286,8 @@ static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
->   
->   static int sev_bind_asid(struct kvm *kvm, unsigned int handle, int *error)
->   {
-> +	unsigned int asid = sev_get_asid(kvm);
->   	struct sev_data_activate activate;
-> -	int asid = sev_get_asid(kvm);
->   	int ret;
->   
->   	/* activate ASID on the given handle */
-> @@ -2312,7 +2314,7 @@ int sev_cpu_init(struct svm_cpu_data *sd)
->    */
->   static void sev_flush_encrypted_page(struct kvm_vcpu *vcpu, void *va)
->   {
-> -	int asid = to_kvm_svm(vcpu->kvm)->sev_info.asid;
-> +	unsigned int asid = to_kvm_svm(vcpu->kvm)->sev_info.asid;
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index d50a786f8176..6b1f16c15deb 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -663,6 +663,11 @@ static void gpiodev_release(struct device *dev)
+ 	kfree(gdev);
+ }
+ 
++static struct device_type gpio_dev_type = {
++	.name = "gpio_chip",
++	.release = gpiodev_release,
++};
++
+ #ifdef CONFIG_GPIO_CDEV
+ #define gcdev_register(gdev, devt)	gpiolib_cdev_register((gdev), (devt))
+ #define gcdev_unregister(gdev)		gpiolib_cdev_unregister((gdev))
+@@ -680,6 +685,8 @@ static int gpiochip_setup_dev(struct gpio_device *gdev)
+ 	struct fwnode_handle *fwnode = dev_fwnode(&gdev->dev);
+ 	int ret;
+ 
++	device_initialize(&gdev->dev);
++
+ 	/*
+ 	 * If fwnode doesn't belong to another device, it's safe to clear its
+ 	 * initialized flag.
+@@ -691,9 +698,6 @@ static int gpiochip_setup_dev(struct gpio_device *gdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	/* From this point, the .release() function cleans up gpio_device */
+-	gdev->dev.release = gpiodev_release;
+-
+ 	ret = gpiochip_sysfs_register(gdev);
+ 	if (ret)
+ 		goto err_remove_device;
+@@ -825,6 +829,8 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ 	gdev = kzalloc(sizeof(*gdev), GFP_KERNEL);
+ 	if (!gdev)
+ 		return -ENOMEM;
++
++	gdev->dev.type = &gpio_dev_type;
+ 	gdev->dev.bus = &gpio_bus_type;
+ 	gdev->dev.parent = gc->parent;
+ 	gdev->chip = gc;
+@@ -851,7 +857,6 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ 	if (ret)
+ 		goto err_free_ida;
+ 
+-	device_initialize(&gdev->dev);
+ 	if (gc->parent && gc->parent->driver)
+ 		gdev->owner = gc->parent->driver->owner;
+ 	else if (gc->owner)
+-- 
+2.40.1
 
-Since you're touching this, you could switch this to:
-
-	unsigned int asid = sev_get_asid(vcpu->kvm);
-
->   
->   	/*
->   	 * Note!  The address must be a kernel address, as regular page walk
-> @@ -2630,7 +2632,7 @@ void sev_es_unmap_ghcb(struct vcpu_svm *svm)
->   void pre_sev_run(struct vcpu_svm *svm, int cpu)
->   {
->   	struct svm_cpu_data *sd = per_cpu_ptr(&svm_data, cpu);
-> -	int asid = sev_get_asid(svm->vcpu.kvm);
-> +	unsigned int asid = sev_get_asid(svm->vcpu.kvm);
->   
->   	/* Assign the asid allocated with this SEV guest */
->   	svm->asid = asid;
-> diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
-> index 83843379813e..b82e6ed4f024 100644
-> --- a/arch/x86/kvm/trace.h
-> +++ b/arch/x86/kvm/trace.h
-> @@ -732,13 +732,13 @@ TRACE_EVENT(kvm_nested_intr_vmexit,
->    * Tracepoint for nested #vmexit because of interrupt pending
->    */
->   TRACE_EVENT(kvm_invlpga,
-> -	    TP_PROTO(__u64 rip, int asid, u64 address),
-> +	    TP_PROTO(__u64 rip, unsigned int asid, u64 address),
->   	    TP_ARGS(rip, asid, address),
->   
->   	TP_STRUCT__entry(
-> -		__field(	__u64,	rip	)
-> -		__field(	int,	asid	)
-> -		__field(	__u64,	address	)
-> +		__field(	__u64,		rip	)
-> +		__field(	unsigned int,	asid	)
-> +		__field(	__u64,		address	)
->   	),
->   
->   	TP_fast_assign(
-> @@ -747,7 +747,7 @@ TRACE_EVENT(kvm_invlpga,
->   		__entry->address	=	address;
->   	),
->   
-> -	TP_printk("rip: 0x%016llx asid: %d address: 0x%016llx",
-> +	TP_printk("rip: 0x%016llx asid: %u address: 0x%016llx",
->   		  __entry->rip, __entry->asid, __entry->address)
->   );
->   
 
