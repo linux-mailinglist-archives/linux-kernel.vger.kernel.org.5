@@ -1,116 +1,121 @@
-Return-Path: <linux-kernel+bounces-47410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5ACD844D9B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:08:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01484844DC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:23:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D039B22C8B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:08:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02304B23076
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:23:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BAD11110;
-	Thu,  1 Feb 2024 00:08:04 +0000 (UTC)
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 809CE7F4;
+	Thu,  1 Feb 2024 00:23:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=zgredder.pl header.i=@zgredder.pl header.b="mlUTHJCp"
+Received: from mail1.hosting.lp.pl (mail1.hosting.lp.pl [194.1.144.125])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BBD137A
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 00:08:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF050374
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 00:23:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.1.144.125
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706746084; cv=none; b=KFa3Hvqf/qhWFBnUIX6QBJHrvC1OZAH3ILH3A3wG9rZniCTqD6xBa689OzLfJtvGooh630WjZo3vDb5Q+aGq2vm1rafiqJFPnYhmmWI0HDPBiiMNbUODDhIa2WTiKOurwmuYvmTB/x9bNJmrf1I5aCgV11kqf9Yhy3m0nfVGvKA=
+	t=1706746989; cv=none; b=U63oflzy3JiNORdvLL9NTTGjywmh5/96tTqFN6cOH8JOnHGao6+uQzSFaPlOeHYhcvlMBDWE5coKWRJbOFfsS+n/jVG6GGJAM0PvX7uSeYg8c+z8Wnq5VAjfFOoZpriSeJjbKvg9xIGqHLtCn41GtayqigXaXJKEg9I6D8OEK0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706746084; c=relaxed/simple;
-	bh=38P365134+J9VPA+zhc8aLgUCIaPw0JB4YMCk+7cmFE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=may6KoRbiWsT5pu/ZXsUx76aoK8SaIXyV1uEQnnWaLzX/pJQfWmKdxt+WA0NWYWPimWLNpjyOwb6QnzLmReA/NqRMKkkKlpIE+tsCaUIKdQxBxFeny0I7QrBQUYDRo/6BJw5S3+OoE9OPqYYiJS8SCk+F2kjopKs8v3tNkzxNyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.219.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-68c3a14c6e7so1838696d6.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 16:08:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706746081; x=1707350881;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qrs2I23dhH0mTURdgAb5k5EfiOmRT2De1cDkKW/nTGE=;
-        b=HHUHTIYKqPhUek/9OPYZ7Ewq30Ixd/79JEfD0qwJBFxHbeWDjoXrjimvTEVUYB1opd
-         4P/hYn5nkJDHp9dfT7qbgv8IWHwTxyafPy7g+Kz2nvDd7/ClmboLoBaRBaUkDVacbjY0
-         PwWnI/uVTVl2NvpyZbt1LzuUroBbk+5Wpkgx0/RInMCwYlZM+1MTP102iqJE7SpbKisj
-         +rD+RwsL52Cjh2eR52ZAZK9+vbCuVQR5W92w6Daf/wMkkXbTm/ip0RfissmvOlF6c4V5
-         lL/5hZ9yddAirpjp/7fQrRcKhFeiJAQi3FkWpZ3dP/BS1t1Va2u58c/4IA5719B9iGYe
-         3uhQ==
-X-Gm-Message-State: AOJu0Yw+Nz260kx+0LajWfRi4c0YJikfjF/hGXv0TuKbYyRNQsE4QSvh
-	/scWKkOKsajxb3xlVnWdnDHFWGHT8PQ1VC3hkd5ddTPHZ4FlEM2kz3oXuzu/TA==
-X-Google-Smtp-Source: AGHT+IEe3YqJohRcAR1VwoxJkrEhnRReH5b/r+upsva+yD3zxs9J8V7tz0UiYmRaCPklzW0kkC04PA==
-X-Received: by 2002:a05:6214:4105:b0:68c:5d76:2ed7 with SMTP id kc5-20020a056214410500b0068c5d762ed7mr964043qvb.46.1706746081232;
-        Wed, 31 Jan 2024 16:08:01 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXrW6E1QlCIEvdGVX53QLZt5ZxVN2lYtBdrwhU8x8EI350kfPWELndRJ9m3hjLrqF+OA/jmM3H433A6hI5canmqO5rNjU3V95LIVKL6r5bvMVucwZxjY7Wzn2rcDvGDRxumln2g6oX7csjzoMbiqW/eCVi5sErdBf16+SKQ8SY1sxd7+bPHOq0VAavE6BO5lo2F48H3ALmH8KxSXpUrjDb+z0hd0IBkZv5QxSXXm7wR9UfEyNOTJUBWCZ4cLl9NtY7aZLRhXZ0MWKYPYkznsLZg1emSIWIvH3Ve86QFjMtSR/nq29VR77c9OMtXj2RRM3nSay4IPh9wOmWV38a0pTd7XTaFvNETUlj+cs4k0igz3oC8gTNu2VEwG7nBTPlc+N2LOI/JiPsM51rCXhQvxizYKrDABHRCsJqH2yVYnuwFN8G6fbw6IDH1sa+Bnw==
-Received: from localhost ([107.173.73.29])
-        by smtp.gmail.com with ESMTPSA id pc4-20020a056214488400b0068c6d0c3f5esm265608qvb.58.2024.01.31.16.08.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 16:08:00 -0800 (PST)
-Date: Wed, 31 Jan 2024 19:07:57 -0500
-From: Mike Snitzer <snitzer@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Tejun Heo <tj@kernel.org>, Mikulas Patocka <mpatocka@redhat.com>,
-	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev,
-	ignat@cloudflare.com, damien.lemoal@wdc.com, bob.liu@oracle.com,
-	houtao1@huawei.com, peterz@infradead.org, mingo@kernel.org,
-	netdev@vger.kernel.org, allen.lkml@gmail.com, kernel-team@meta.com,
-	Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH 8/8] dm-verity: Convert from tasklet to BH workqueue
-Message-ID: <Zbrg3aRFkgS7XCFE@redhat.com>
-References: <20240130091300.2968534-1-tj@kernel.org>
- <20240130091300.2968534-9-tj@kernel.org>
- <c2539f87-b4fe-ac7d-64d9-cbf8db929c7@redhat.com>
- <Zbq8cE3Y2ZL6dl8r@slm.duckdns.org>
- <CAHk-=wjMz_1mb+WJsPhfp5VBNrM=o8f-x2=6UW2eK5n4DHff9g@mail.gmail.com>
+	s=arc-20240116; t=1706746989; c=relaxed/simple;
+	bh=8EQCJ0zRWIJAH4B7S7rBKKBSElX4FaQmCDWO7VGXYbY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z6CoCDYqIe+bIgTG0atz6L746wXSzT6JR2bkQeC2/Cv1p6iI2ojEKcAcDF8t6B4NW5DpqrxKw2zQC251rz4swuFtEIWPI4+fMPeq6DJBkQocRj9yFKF2Q4D3s4KCBEgauGu6u0tXg0F1tWINqq/gANyVMnJ6b9w5qGyWoU8DHVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zgredder.pl; spf=pass smtp.mailfrom=zgredder.pl; dkim=pass (2048-bit key) header.d=zgredder.pl header.i=@zgredder.pl header.b=mlUTHJCp; arc=none smtp.client-ip=194.1.144.125
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zgredder.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zgredder.pl
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail1.hosting.lp.pl (Postfix) with ESMTP id EA55C88B69;
+	Thu,  1 Feb 2024 01:15:12 +0100 (CET)
+Authentication-Results: mail1.hosting.lp.pl (amavisd-new);
+	dkim=pass (2048-bit key) reason="pass (just generated, assumed good)"
+	header.d=zgredder.pl
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=zgredder.pl; h=
+	content-transfer-encoding:mime-version:x-mailer:message-id:date
+	:date:subject:subject:from:from; s=default; t=1706746511; x=
+	1708560912; bh=8EQCJ0zRWIJAH4B7S7rBKKBSElX4FaQmCDWO7VGXYbY=; b=m
+	lUTHJCpwmkpihcMCOMRM5IQmeGl0jDsHesvRAiesKDRIC9pH4HTv5mgDS2e/fYnj
+	pM2tVoCHwtCZtzR84W47Qi4I4+rCNMJKUgp+IKaefSWi0upzZSilmUCYwlmyLjKI
+	5jtA7eDZHY4KFgPxay+twisDkOwOfvq2LN7UG08ckGjzn/WFljNLT8wKFibfOhQA
+	LercHP6fDtfP3+qHaEB7D/4GQe+F71sbXZHj9iCXm2bU2jxu8z4sclbvC+aOXEKe
+	t2Xq2FZaT6HD7IG5rU6R7UBQ4vgEk1DKZ50kP6Y4PRQKIEMk9ulDfj+e14ps4Ibn
+	c8RdGfMSXGsseyTq3FCaQ==
+X-Virus-Scanned: Debian amavisd-new at mail1.hosting.lp.pl
+Received: from mail1.hosting.lp.pl ([127.0.0.1])
+	by localhost (mail1.hosting.lp.pl [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id FBzgoY_-3Q_q; Thu,  1 Feb 2024 01:15:11 +0100 (CET)
+Received: from localhost.localdomain (31-178-92-228.dynamic.chello.pl [31.178.92.228])
+	(Authenticated sender: zgredder@zgredder.pl)
+	by smtp.lmail.pl (Postfix) with ESMTPSA id B693788A5C;
+	Thu,  1 Feb 2024 01:15:11 +0100 (CET)
+From: Bartosz Szreder <zgredder@zgredder.pl>
+To: tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	colin.i.king@gmail.com,
+	linux-kernel@vger.kernel.org
+Cc: Bartosz Szreder <zgredder@zgredder.pl>
+Subject: [PATCH] x86/lib: Avoid undefined behavior on sign flip
+Date: Thu,  1 Feb 2024 01:10:33 +0100
+Message-ID: <20240201001033.9483-1-zgredder@zgredder.pl>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjMz_1mb+WJsPhfp5VBNrM=o8f-x2=6UW2eK5n4DHff9g@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31 2024 at  6:19P -0500,
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+If argument to function num_digits() is equal to INT_MIN, the sign change
+operation results in undefined behavior due to signed integer overflow.
 
-> On Wed, 31 Jan 2024 at 13:32, Tejun Heo <tj@kernel.org> wrote:
-> >
-> > I don't know, so just did the dumb thing. If the caller always guarantees
-> > that the work items are never queued at the same time, reusing is fine.
-> 
-> So the reason I thought it would be a good cleanup to introduce that
-> "atomic" workqueue thing (now "bh") was that this case literally has a
-> switch between "use tasklets' or "use workqueues".
-> 
-> So it's not even about "reusing" the workqueue, it's literally a
-> matter of making it always just use workqueues, and the switch then
-> becomes just *which* workqueue to use - system or bh.
+Avoid that issue by converting to unsigned type.
 
-DM generally always use dedicated workqueues instead of the system.
+Signed-off-by: Bartosz Szreder <zgredder@zgredder.pl>
+---
+ arch/x86/lib/misc.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-The dm-crypt tasklet's completion path did punt to the workqueue
-otherwise there was use-after-free of the per-bio-data that included
-the tasklet. And for verity there was fallback to workqueue if
-tasklet-based verification failed. Didn't inspire confidence.
+diff --git a/arch/x86/lib/misc.c b/arch/x86/lib/misc.c
+index 40b81c338ae5..778ab6d27372 100644
+--- a/arch/x86/lib/misc.c
++++ b/arch/x86/lib/misc.c
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <asm/misc.h>
++#include <linux/limits.h>
+=20
+ /*
+  * Count the digits of @val including a possible sign.
+@@ -9,14 +10,17 @@
+ int num_digits(int val)
+ {
+ 	long long m =3D 10;
++	unsigned int tmp =3D val;
+ 	int d =3D 1;
+=20
+ 	if (val < 0) {
+ 		d++;
+-		val =3D -val;
++
++		if (val !=3D INT_MIN)
++			tmp =3D -val;
+ 	}
+=20
+-	while (val >=3D m) {
++	while (tmp >=3D m) {
+ 		m *=3D 10;
+ 		d++;
+ 	}
+--=20
+2.43.0
 
-> In fact, I suspect there is very little reason ever to *not* just use
-> the bh one, and even the switch could be removed.
->
-> Because I think the only reason the "workqueue of tasklet" choice
-> existed in the first place was that workqueues were the "proper" data
-> structure, and the tasklet case was added later as a latency hack, and
-> everybody knew that tasklets were deprecated.
-
-Correct, abusing tasklets was a very contrived latency optimization.
-Happy to see it all go away! (hindsight: it never should have gone in).
-
-Mike
 
