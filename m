@@ -1,221 +1,477 @@
-Return-Path: <linux-kernel+bounces-47915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F961845490
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:52:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EEEC84546A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:44:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4D382861E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:52:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC68F28239C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:44:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A5714DA1F;
-	Thu,  1 Feb 2024 09:52:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2A8915AAB9;
+	Thu,  1 Feb 2024 09:44:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="nGa8Ueje"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D828E4DA0A
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 09:52:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="COkrPBTE"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 998724D9FC;
+	Thu,  1 Feb 2024 09:44:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706781141; cv=none; b=KvCwJk1WM+/irQiDrkeJgq+btxLn1asRuBLyEzPL0N1qdON/Iy2brYy6cHrwvQf73vB7mvWjlavBk3FCy7B9OVM4wf6xE84Dl4Wkg1COhCnOctGDEyVHJ7nO7ynDo/ulM8DonboQZeirDzSrMRLIwmIp+Vjd4n41w48DD8CiTCo=
+	t=1706780652; cv=none; b=pGPYV6XJOtEyZAKIlbOrhTFUNY5bFTAM1UzSq2xR5mXxmJUfj9t6Gm+tZaI+y67Bo2ULK1VrkhZl3LB6iMkMpNO3tC6ETPh78MZo43Gjoseyd5v4X4k+BJsvrmYtZp6qtsYOyzbC6Mrk8mg/167OI77MPOzNtT/GTC9ujZUmBpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706781141; c=relaxed/simple;
-	bh=KVmAMhGQmGTXU8wRr2+/1XQtBd+XWWxeqbhxttmmaio=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Sd+vZoY82n9OoG70HxerhgcVR889sI/TvaYk+v9Uoq4Ijb/f0Q9grX3MmsCGezbRRLAnYULyl2viIrRZqFD5X2+QJDZ+caO0udNVR0VmZdY07YorVVnFZJWoaAitztMS84/Y8f4UcWLcekVnle2HHlBLYbfiSz5tmM32HvVlgqA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=nGa8Ueje; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id 5D31E20B2000; Thu,  1 Feb 2024 01:42:32 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5D31E20B2000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1706780552;
-	bh=TtVVIL0fmT4jjW5yn/IxlLyRPHFaxctFi3+VsBe+BZU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nGa8UejeJLqvimFc4lVrLgGnYGlZyDw90nN8sL8OEsPBgrRvhW9sAiD7IJKGLn9jq
-	 luPCD6RkUlrJyTa+XWSmAZPxsWJJs1YZupadlhNZfqUdQNSRgdfGAYxPDcsRMSEdBq
-	 NeYawDBEcnIwVqffaTCipB6K6vZePb/Y1C8IBlbU=
-Date: Thu, 1 Feb 2024 01:42:32 -0800
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: kernel test robot <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Saurabh Singh Sengar <ssengar@linux.microsoft.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>
-Subject: Re: [PATCH v3] drm: Check output polling initialized before disabling
-Message-ID: <20240201094232.GA22003@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1705293646-31301-1-git-send-email-shradhagupta@linux.microsoft.com>
- <202401191128.db8423f1-oliver.sang@intel.com>
- <20240122104959.GA20221@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	s=arc-20240116; t=1706780652; c=relaxed/simple;
+	bh=tgkduB+n8TnPBdHD34UzC0Y9amJQZ87VxYvXvbidh5s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NHAxWwMd+Xm20qLjQeTZ3uCrIDLGHwvAdykM7cz5vRTY7kznDjQQXbi9RlhHyrFKfnOHNFQ4L32r4byqGHJ4vQkul9RdyJ6i9vt3n0UcHPVDo3Y+bMHT0vMIbVBDZ8PuAHHYFiYLXXbQI2mH7M4vD8L/N6bGxgg2Qa+qnsTpd+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=COkrPBTE; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706780648;
+	bh=tgkduB+n8TnPBdHD34UzC0Y9amJQZ87VxYvXvbidh5s=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=COkrPBTELEdgUUw1zxH8TCCZAhOECqgODg9ObmY/iHVrzT6zx+KGGFEnsIjwaFu3S
+	 /cYBHOSaqyO/t4llcmdYV3BW/FPuWOENxtY1V7viRuGd/Hay2xM0hibmap6YeEK5H7
+	 FJBltL1adkWbv9ZQj/YFD6Xl09evMBgNSWQR76/H1n66HGgO6ZVG2QDjInbZdgeWOn
+	 Ui4qRfyqcvTmaGBEmoRHZjjSCGjCPuKguHN0idawSqXAf3zcbxMi43Wge5czY8xqPZ
+	 UBaDOlWgv577avKafS5SqJ7OYlRYcp8Y0AkqavqQhyuDH+NtK/8fUkvETKrCasT7kZ
+	 nYmco7T+TGoQg==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 0CAEB3782081;
+	Thu,  1 Feb 2024 09:44:06 +0000 (UTC)
+Message-ID: <c117f6a7-59ea-4291-aa70-7c363d928ff7@collabora.com>
+Date: Thu, 1 Feb 2024 10:44:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240122104959.GA20221@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 09/21] virt: geniezone: Add vcpu support
+Content-Language: en-US
+To: Yi-De Wu <yi-de.wu@mediatek.com>,
+ Yingshiuan Pan <yingshiuan.pan@mediatek.com>,
+ Ze-Yu Wang <ze-yu.wang@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
+ David Bradil <dbrazdil@google.com>, Trilok Soni <quic_tsoni@quicinc.com>,
+ My Chuang <my.chuang@mediatek.com>, Shawn Hsiao <shawn.hsiao@mediatek.com>,
+ PeiLun Suei <peilun.suei@mediatek.com>,
+ Liju Chen <liju-clr.chen@mediatek.com>,
+ Willix Yeh <chi-shen.yeh@mediatek.com>,
+ Kevenny Hsieh <kevenny.hsieh@mediatek.com>
+References: <20240129083302.26044-1-yi-de.wu@mediatek.com>
+ <20240129083302.26044-10-yi-de.wu@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240129083302.26044-10-yi-de.wu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 22, 2024 at 02:49:59AM -0800, Shradha Gupta wrote:
-> Hi all, 
-> to me it seems like the patch has uncovered a genuine warning in drm_helper_probe_single_connector_modes() function.
-> Before calling drm_kms_helper_poll_enable() there should be check to see if mode_config.poll_enabled is set similar
-> to the new suspend/resume changes in the patch.
-> Is this understanding correct? Thoughts?
-Gentle reminder about this.
-I am planning of submitted this suggested fix, along with the original patch in a patchset. Hope that makes sense.
+Il 29/01/24 09:32, Yi-De Wu ha scritto:
+> From: "Yingshiuan Pan" <yingshiuan.pan@mediatek.com>
 > 
-> On Fri, Jan 19, 2024 at 02:46:47PM +0800, kernel test robot wrote:
-> > 
-> > 
-> > Hello,
-> > 
-> > kernel test robot noticed "WARNING:at_drivers/gpu/drm/drm_probe_helper.c:#drm_kms_helper_poll_enable[drm_kms_helper]" on:
-> > 
-> > commit: 98a690eb11a5f722cfff1dd5c3ac46f9ba326919 ("[PATCH v3] drm: Check output polling initialized before disabling")
-> > url: https://github.com/intel-lab-lkp/linux/commits/Shradha-Gupta/drm-Check-output-polling-initialized-before-disabling/20240115-124300
-> > base: git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-> > patch subject: [PATCH v3] drm: Check output polling initialized before disabling
-> > 
-> > in testcase: boot
-> > 
-> > compiler: gcc-12
-> > test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-> > 
-> > (please refer to attached dmesg/kmsg for entire log/backtrace)
-> > 
-> > 
-> > +-------------------------------------------------------------------------------------------+------------+------------+
-> > |                                                                                           | 45017df303 | 98a690eb11 |
-> > +-------------------------------------------------------------------------------------------+------------+------------+
-> > | WARNING:at_drivers/gpu/drm/drm_probe_helper.c:#drm_kms_helper_poll_enable[drm_kms_helper] | 0          | 8          |
-> > | RIP:drm_kms_helper_poll_enable[drm_kms_helper]                                            | 0          | 8          |
-> > +-------------------------------------------------------------------------------------------+------------+------------+
-> > 
-> > 
-> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> > the same patch/commit), kindly add following tags
-> > | Reported-by: kernel test robot <oliver.sang@intel.com>
-> > | Closes: https://lore.kernel.org/oe-lkp/202401191128.db8423f1-oliver.sang@intel.com
-> > 
-> > 
-> > 
-> > The kernel config and materials to reproduce are available at:
-> > https://download.01.org/0day-ci/archive/20240119/202401191128.db8423f1-oliver.sang@intel.com
-> > 
-> > 
-> > 
-> > [   19.037694][  T142] [drm] Initialized bochs-drm 1.0.0 20130925 for 0000:00:02.0 on minor 0
-> > [   19.038726][  T142] ------------[ cut here ]------------
-> > [   19.039197][  T142] bochs-drm 0000:00:02.0: drm_WARN_ON_ONCE(!dev->mode_config.poll_enabled)
-> > [   19.039241][  T142] WARNING: CPU: 0 PID: 142 at drivers/gpu/drm/drm_probe_helper.c:305 drm_kms_helper_poll_enable+0x329/0x410 [drm_kms_helper]
-> > [   19.040963][  T142] Modules linked in: parport(+) bochs(+) joydev serio_raw drm_vram_helper ata_piix(+) drm_ttm_helper ttm libata ipmi_devintf ipmi_msghandler drm_kms_helper i2c_piix4 fuse drm ip_tables
-> > [   19.042413][  T142] CPU: 0 PID: 142 Comm: systemd-udevd Not tainted 6.7.0-rc3-00770-g98a690eb11a5 #1
-> > [   19.043146][  T142] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> > [   19.043972][  T142] RIP: 0010:drm_kms_helper_poll_enable+0x329/0x410 [drm_kms_helper]
-> > [   19.044685][  T142] Code: 48 8b 6b 50 48 85 ed 74 41 48 89 df e8 30 e0 5d c3 48 c7 c1 e0 8c 4b c0 48 89 ea 48 c7 c7 40 8a 4b c0 48 89 c6 e8 77 a3 d3 c1 <0f> 0b e9 ae fd ff ff e8 9b c6 53 c2 e9 4c fd ff ff 48 8b 7c 24 08
-> > [   19.046268][  T142] RSP: 0000:ffffc900007ef1c0 EFLAGS: 00010286
-> > [   19.046755][  T142] RAX: 0000000000000000 RBX: ffff888121dc40c0 RCX: 0000000000000027
-> > [   19.047400][  T142] RDX: 0000000000000027 RSI: 0000000000000004 RDI: ffff8883af030848
-> > [   19.048042][  T142] RBP: ffff888121d84260 R08: 0000000000000001 R09: ffffed1075e06109
-> > [   19.048688][  T142] R10: ffff8883af03084b R11: 0000000000000001 R12: ffff88815688a7a0
-> > [   19.049362][  T142] R13: 1ffff920000fde3b R14: 0000000000000000 R15: 0000000000000003
-> > [   19.050001][  T142] FS:  0000000000000000(0000) GS:ffff8883af000000(0063) knlGS:00000000f7950b00
-> > [   19.050722][  T142] CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-> > [   19.051259][  T142] CR2: 0000000058b17d6c CR3: 000000012463e000 CR4: 00000000000406f0
-> > [   19.051892][  T142] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > [   19.052568][  T142] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > [   19.053242][  T142] Call Trace:
-> > [   19.053531][  T142]  <TASK>
-> > [   19.053780][  T142]  ? __warn+0xcd/0x260
-> > [   19.054149][  T142]  ? drm_kms_helper_poll_enable+0x329/0x410 [drm_kms_helper]
-> > [   19.054787][  T142]  ? report_bug+0x267/0x2d0
-> > [   19.055173][  T142]  ? handle_bug+0x3c/0x70
-> > [   19.055523][  T142]  ? exc_invalid_op+0x17/0x40
-> > [   19.055904][  T142]  ? asm_exc_invalid_op+0x1a/0x20
-> > [   19.056332][  T142]  ? drm_kms_helper_poll_enable+0x329/0x410 [drm_kms_helper]
-> > [   19.056941][  T142]  ? drm_kms_helper_poll_fini+0x80/0x80 [drm_kms_helper]
-> > [   19.057567][  T142]  ? drm_modeset_lock+0xbf/0x2e0 [drm]
-> > [   19.058099][  T142]  drm_helper_probe_single_connector_modes+0x3b6/0xe70 [drm_kms_helper]
-> > [   19.058788][  T142]  ? __drm_helper_update_and_validate+0xc30/0xc30 [drm_kms_helper]
-> > [   19.059484][  T142]  ? __mutex_lock_slowpath+0x10/0x10
-> > [   19.059924][  T142]  drm_client_modeset_probe+0x3ab/0xef0 [drm]
-> > [   19.060491][  T142]  ? drm_client_firmware_config+0x1980/0x1980 [drm]
-> > [   19.061233][  T142]  __drm_fb_helper_initial_config_and_unlock+0xfa/0x7c0 [drm_kms_helper]
-> > [   19.061935][  T142]  ? __drm_fb_helper_find_sizes+0x1170/0x1170 [drm_kms_helper]
-> > [   19.062577][  T142]  ? mutex_lock+0xa3/0xf0
-> > [   19.062941][  T142]  ? __mutex_lock_slowpath+0x10/0x10
-> > [   19.063398][  T142]  ? mutex_lock+0xa3/0xf0
-> > [   19.063756][  T142]  ? __mutex_lock_slowpath+0x10/0x10
-> > [   19.064214][  T142]  drm_fbdev_generic_client_hotplug+0x161/0x210 [drm_kms_helper]
-> > [   19.064868][  T142]  drm_client_register+0x168/0x230 [drm]
-> > [   19.065410][  T142]  bochs_pci_probe+0x68f/0x8c0 [bochs]
-> > [   19.065860][  T142]  ? _raw_spin_lock_irqsave+0x8b/0xe0
-> > [   19.066318][  T142]  ? bochs_hw_init+0x650/0x650 [bochs]
-> > [   19.066821][  T142]  ? bochs_hw_init+0x650/0x650 [bochs]
-> > [   19.067346][  T142]  local_pci_probe+0xda/0x180
-> > [   19.067756][  T142]  pci_call_probe+0x160/0x510
-> > [   19.068172][  T142]  ? _raw_spin_lock+0x85/0xe0
-> > [   19.068575][  T142]  ? pci_dev_set_disconnected+0x30/0x30
-> > [   19.069059][  T142]  ? kernfs_add_one+0x2d4/0x440
-> > [   19.069483][  T142]  ? pci_assign_irq+0x8a/0x280
-> > [   19.069892][  T142]  ? pci_match_device+0x38c/0x690
-> > [   19.070338][  T142]  ? kernfs_put+0x1c/0x30
-> > [   19.070700][  T142]  pci_device_probe+0xef/0x230
-> > [   19.071112][  T142]  ? pci_dma_configure+0x11d/0x170
-> > [   19.071532][  T142]  really_probe+0x3d2/0xb40
-> > [   19.071911][  T142]  __driver_probe_device+0x18c/0x440
-> > [   19.072369][  T142]  ? klist_iter_init+0x70/0x70
-> > [   19.072770][  T142]  driver_probe_device+0x4a/0x120
-> > [   19.073209][  T142]  __driver_attach+0x1d2/0x490
-> > [   19.073609][  T142]  ? __device_attach_driver+0x260/0x260
-> > [   19.074084][  T142]  bus_for_each_dev+0x103/0x180
-> > [   19.074494][  T142]  ? bus_remove_file+0x40/0x40
-> > [   19.074887][  T142]  ? klist_add_tail+0x133/0x260
-> > [   19.075311][  T142]  bus_add_driver+0x29a/0x570
-> > [   19.075701][  T142]  driver_register+0x134/0x450
-> > [   19.076109][  T142]  ? 0xffffffffc06d6000
-> > [   19.076457][  T142]  do_one_initcall+0xa1/0x370
-> > [   19.076855][  T142]  ? trace_event_raw_event_initcall_level+0x1a0/0x1a0
-> > [   19.077428][  T142]  ? kasan_unpoison+0x44/0x70
-> > [   19.077823][  T142]  do_init_module+0x22e/0x720
-> > [   19.078222][  T142]  load_module+0x1826/0x25e0
-> > [   19.078603][  T142]  ? post_relocation+0x370/0x370
-> > [   19.079022][  T142]  ? kernel_read_file+0x243/0x820
-> > [   19.079431][  T142]  ? __x64_sys_fspick+0x2a0/0x2a0
-> > [   19.079844][  T142]  ? init_module_from_file+0xd1/0x130
-> > [   19.080295][  T142]  init_module_from_file+0xd1/0x130
-> > [   19.080725][  T142]  ? __ia32_sys_init_module+0xb0/0xb0
-> > [   19.081194][  T142]  ? userfaultfd_unmap_prep+0x3d0/0x3d0
-> > [   19.081657][  T142]  ? _raw_write_lock_irq+0xe0/0xe0
-> > [   19.082097][  T142]  idempotent_init_module+0x23b/0x660
-> > [   19.082540][  T142]  ? init_module_from_file+0x130/0x130
-> > [   19.082986][  T142]  ? __fget_light+0x57/0x3d0
-> > [   19.083386][  T142]  __ia32_sys_finit_module+0xbe/0x130
-> > [   19.083818][  T142]  __do_fast_syscall_32+0x61/0xd0
-> > [   19.084243][  T142]  do_fast_syscall_32+0x33/0x70
-> > [   19.084643][  T142]  entry_SYSENTER_compat_after_hwframe+0x70/0x7a
-> > [   19.085165][  T142] RIP: 0023:0xf7fb7579
-> > [   19.085503][  T142] Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-> > [   19.086546][  T142] RSP: 002b:00000000ff888b1c EFLAGS: 00200206 ORIG_RAX: 000000000000015e
-> > [   19.087012][  T142] RAX: ffffffffffffffda RBX: 0000000000000012 RCX: 00000000f7fa1d41
-> > [   19.087442][  T142] RDX: 0000000000000000 RSI: 0000000056b70730 RDI: 0000000056b6c600
-> > [   19.087868][  T142] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> > [   19.088324][  T142] R10: 0000000000000000 R11: 0000000000200206 R12: 0000000000000000
-> > [   19.088747][  T142] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> > [   19.089176][  T142]  </TASK>
-> > [   19.089354][  T142] ---[ end trace 0000000000000000 ]---
-> > 
-> > 
-> > -- 
-> > 0-DAY CI Kernel Test Service
-> > https://github.com/intel/lkp-tests/wiki
+> VMM use this interface to create vcpu instance which is a fd, and this
+> fd will be for any vcpu operations, such as setting vcpu registers and
+> accepts the most important ioctl GZVM_VCPU_RUN which requests GenieZone
+> hypervisor to do context switch to execute VM's vcpu context.
+> 
+> Signed-off-by: Yingshiuan Pan <yingshiuan.pan@mediatek.com>
+> Signed-off-by: Jerry Wang <ze-yu.wang@mediatek.com>
+> Signed-off-by: kevenny hsieh <kevenny.hsieh@mediatek.com>
+> Signed-off-by: Liju Chen <liju-clr.chen@mediatek.com>
+> Signed-off-by: Yi-De Wu <yi-de.wu@mediatek.com>
+> ---
+>   arch/arm64/geniezone/Makefile           |   2 +-
+>   arch/arm64/geniezone/gzvm_arch_common.h |  30 +++
+>   arch/arm64/geniezone/vcpu.c             |  80 ++++++++
+>   arch/arm64/geniezone/vm.c               |  12 ++
+>   drivers/virt/geniezone/Makefile         |   2 +-
+>   drivers/virt/geniezone/gzvm_vcpu.c      | 251 ++++++++++++++++++++++++
+>   drivers/virt/geniezone/gzvm_vm.c        |   5 +
+>   include/linux/gzvm_drv.h                |  23 +++
+>   include/uapi/linux/gzvm.h               | 163 +++++++++++++++
+>   9 files changed, 566 insertions(+), 2 deletions(-)
+>   create mode 100644 arch/arm64/geniezone/vcpu.c
+>   create mode 100644 drivers/virt/geniezone/gzvm_vcpu.c
+> 
+> diff --git a/arch/arm64/geniezone/Makefile b/arch/arm64/geniezone/Makefile
+> index 2957898cdd05..69b0a4abeab0 100644
+> --- a/arch/arm64/geniezone/Makefile
+> +++ b/arch/arm64/geniezone/Makefile
+> @@ -4,6 +4,6 @@
+>   #
+>   include $(srctree)/drivers/virt/geniezone/Makefile
+>   
+> -gzvm-y += vm.o
+> +gzvm-y += vm.o vcpu.o
+>   
+>   obj-$(CONFIG_MTK_GZVM) += gzvm.o
+> diff --git a/arch/arm64/geniezone/gzvm_arch_common.h b/arch/arm64/geniezone/gzvm_arch_common.h
+> index 383af0829f11..684c35e2d9bc 100644
+> --- a/arch/arm64/geniezone/gzvm_arch_common.h
+> +++ b/arch/arm64/geniezone/gzvm_arch_common.h
+> @@ -11,9 +11,15 @@
+>   enum {
+>   	GZVM_FUNC_CREATE_VM = 0,
+>   	GZVM_FUNC_DESTROY_VM = 1,
+> +	GZVM_FUNC_CREATE_VCPU = 2,
+> +	GZVM_FUNC_DESTROY_VCPU = 3,
+>   	GZVM_FUNC_SET_MEMREGION = 4,
+> +	GZVM_FUNC_RUN = 5,
+> +	GZVM_FUNC_GET_ONE_REG = 8,
+> +	GZVM_FUNC_SET_ONE_REG = 9,
+>   	GZVM_FUNC_PROBE = 12,
+>   	GZVM_FUNC_ENABLE_CAP = 13,
+> +	GZVM_FUNC_INFORM_EXIT = 14,
+>   	NR_GZVM_FUNC,
+>   };
+>   
+> @@ -25,9 +31,15 @@ enum {
+>   
+>   #define MT_HVC_GZVM_CREATE_VM		GZVM_HCALL_ID(GZVM_FUNC_CREATE_VM)
+>   #define MT_HVC_GZVM_DESTROY_VM		GZVM_HCALL_ID(GZVM_FUNC_DESTROY_VM)
+> +#define MT_HVC_GZVM_CREATE_VCPU		GZVM_HCALL_ID(GZVM_FUNC_CREATE_VCPU)
+> +#define MT_HVC_GZVM_DESTROY_VCPU	GZVM_HCALL_ID(GZVM_FUNC_DESTROY_VCPU)
+>   #define MT_HVC_GZVM_SET_MEMREGION	GZVM_HCALL_ID(GZVM_FUNC_SET_MEMREGION)
+> +#define MT_HVC_GZVM_RUN			GZVM_HCALL_ID(GZVM_FUNC_RUN)
+> +#define MT_HVC_GZVM_GET_ONE_REG		GZVM_HCALL_ID(GZVM_FUNC_GET_ONE_REG)
+> +#define MT_HVC_GZVM_SET_ONE_REG		GZVM_HCALL_ID(GZVM_FUNC_SET_ONE_REG)
+>   #define MT_HVC_GZVM_PROBE		GZVM_HCALL_ID(GZVM_FUNC_PROBE)
+>   #define MT_HVC_GZVM_ENABLE_CAP		GZVM_HCALL_ID(GZVM_FUNC_ENABLE_CAP)
+> +#define MT_HVC_GZVM_INFORM_EXIT		GZVM_HCALL_ID(GZVM_FUNC_INFORM_EXIT)
+>   
+>   /**
+>    * gzvm_hypcall_wrapper() - the wrapper for hvc calls
+> @@ -54,4 +66,22 @@ static inline u16 get_vmid_from_tuple(unsigned int tuple)
+>   	return (u16)(tuple >> 16);
+>   }
+>   
+> +static inline u16 get_vcpuid_from_tuple(unsigned int tuple)
+> +{
+> +	return (u16)(tuple & 0xffff);
+> +}
+> +
+> +static inline unsigned int
+> +assemble_vm_vcpu_tuple(u16 vmid, u16 vcpuid)
+> +{
+> +	return ((unsigned int)vmid << 16 | vcpuid);
+
+A union could be useful for this one too.
+
+> +}
+> +
+> +static inline void
+> +disassemble_vm_vcpu_tuple(unsigned int tuple, u16 *vmid, u16 *vcpuid)
+> +{
+> +	*vmid = get_vmid_from_tuple(tuple);
+> +	*vcpuid = get_vcpuid_from_tuple(tuple);
+> +}
+> +
+>   #endif /* __GZVM_ARCH_COMMON_H__ */
+> diff --git a/arch/arm64/geniezone/vcpu.c b/arch/arm64/geniezone/vcpu.c
+> new file mode 100644
+> index 000000000000..f6670bd77ad6
+> --- /dev/null
+> +++ b/arch/arm64/geniezone/vcpu.c
+> @@ -0,0 +1,80 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 MediaTek Inc.
+> + */
+> +
+> +#include <linux/arm-smccc.h>
+> +#include <linux/err.h>
+> +#include <linux/uaccess.h>
+> +
+> +#include <linux/gzvm.h>
+> +#include <linux/gzvm_drv.h>
+> +#include "gzvm_arch_common.h"
+> +
+> +int gzvm_arch_vcpu_update_one_reg(struct gzvm_vcpu *vcpu, __u64 reg_id,
+> +				  bool is_write, __u64 *data)
+> +{
+> +	struct arm_smccc_res res;
+> +	unsigned long a1;
+> +	int ret;
+> +
+> +	a1 = assemble_vm_vcpu_tuple(vcpu->gzvm->vm_id, vcpu->vcpuid);
+
+	if (is_write)
+		return gzvm_hypcall_wrapper(MT_HVC_GZVM_GET_ONE_REG,
+					   a1, reg_id, *data, 0, 0, 0, 0, &res);
+
+	ret = gzvm_hypcall_wrapper(MT_HVC_GZVM_GET_ONE_REG,
+					   a1, reg_id, 0, 0, 0, 0, 0, &res);
+	if (ret)
+		return ret;
+
+	*data = res.a1;
+
+	return 0;
+}
+
+
+> +	if (!is_write) {
+> +		ret = gzvm_hypcall_wrapper(MT_HVC_GZVM_GET_ONE_REG,
+> +					   a1, reg_id, 0, 0, 0, 0, 0, &res);
+
+		if (ret)
+			return ret;
+		*data = res.a1;
+	}
+
+> +		if (ret == 0)
+> +			*data = res.a1;
+> +	} else {
+> +		ret = gzvm_hypcall_wrapper(MT_HVC_GZVM_SET_ONE_REG,
+> +					   a1, reg_id, *data, 0, 0, 0, 0, &res);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +int gzvm_arch_vcpu_run(struct gzvm_vcpu *vcpu, __u64 *exit_reason)
+> +{
+> +	struct arm_smccc_res res;
+> +	unsigned long a1;
+> +	int ret;
+> +
+> +	a1 = assemble_vm_vcpu_tuple(vcpu->gzvm->vm_id, vcpu->vcpuid);
+> +	ret = gzvm_hypcall_wrapper(MT_HVC_GZVM_RUN, a1, 0, 0, 0, 0, 0,
+> +				   0, &res);
+> +	*exit_reason = res.a1;
+> +	return ret;
+> +}
+> +
+> +int gzvm_arch_destroy_vcpu(u16 vm_id, int vcpuid)
+> +{
+> +	struct arm_smccc_res res;
+> +	unsigned long a1;
+> +
+> +	a1 = assemble_vm_vcpu_tuple(vm_id, vcpuid);
+> +	gzvm_hypcall_wrapper(MT_HVC_GZVM_DESTROY_VCPU, a1, 0, 0, 0, 0, 0, 0,
+> +			     &res);
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * gzvm_arch_create_vcpu() - Call smc to gz hypervisor to create vcpu
+> + * @vm_id: vm id
+> + * @vcpuid: vcpu id
+> + * @run: Virtual address of vcpu->run
+> + *
+> + * Return: The wrapper helps caller to convert geniezone errno to Linux errno.
+> + */
+> +int gzvm_arch_create_vcpu(u16 vm_id, int vcpuid, void *run)
+> +{
+> +	struct arm_smccc_res res;
+> +	unsigned long a1, a2;
+> +	int ret;
+> +
+> +	a1 = assemble_vm_vcpu_tuple(vm_id, vcpuid);
+> +	a2 = (__u64)virt_to_phys(run);
+> +	ret = gzvm_hypcall_wrapper(MT_HVC_GZVM_CREATE_VCPU, a1, a2, 0, 0, 0, 0,
+> +				   0, &res);
+> +
+> +	return ret;
+> +}
+> diff --git a/arch/arm64/geniezone/vm.c b/arch/arm64/geniezone/vm.c
+> index b6a2bfa98b43..1fac10b98c11 100644
+> --- a/arch/arm64/geniezone/vm.c
+> +++ b/arch/arm64/geniezone/vm.c
+> @@ -37,6 +37,18 @@ int gzvm_hypcall_wrapper(unsigned long a0, unsigned long a1,
+>   	return gzvm_err_to_errno(res->a0);
+>   }
+>   
+> +int gzvm_arch_inform_exit(u16 vm_id)
+> +{
+> +	struct arm_smccc_res res;
+> +	int ret;
+> +
+> +	ret = gzvm_hypcall_wrapper(MT_HVC_GZVM_INFORM_EXIT, vm_id, 0, 0, 0, 0, 0, 0, &res);
+> +	if (ret)
+> +		return -ENXIO;
+> +
+> +	return 0;
+> +}
+> +
+>   int gzvm_arch_probe(void)
+>   {
+>   	struct arm_smccc_res res;
+> diff --git a/drivers/virt/geniezone/Makefile b/drivers/virt/geniezone/Makefile
+> index 59fc4510a843..a630b919cda5 100644
+> --- a/drivers/virt/geniezone/Makefile
+> +++ b/drivers/virt/geniezone/Makefile
+> @@ -7,4 +7,4 @@
+>   GZVM_DIR ?= ../../../drivers/virt/geniezone
+>   
+>   gzvm-y := $(GZVM_DIR)/gzvm_main.o $(GZVM_DIR)/gzvm_vm.o \
+> -	  $(GZVM_DIR)/gzvm_mmu.o
+> +	  $(GZVM_DIR)/gzvm_mmu.o $(GZVM_DIR)/gzvm_vcpu.o
+> diff --git a/drivers/virt/geniezone/gzvm_vcpu.c b/drivers/virt/geniezone/gzvm_vcpu.c
+> new file mode 100644
+> index 000000000000..39c471d0d257
+> --- /dev/null
+> +++ b/drivers/virt/geniezone/gzvm_vcpu.c
+> @@ -0,0 +1,251 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 MediaTek Inc.
+> + */
+> +
+> +#include <asm/sysreg.h>
+> +#include <linux/anon_inodes.h>
+> +#include <linux/device.h>
+> +#include <linux/file.h>
+> +#include <linux/mm.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +#include <linux/gzvm_drv.h>
+> +
+> +/* maximum size needed for holding an integer */
+> +#define ITOA_MAX_LEN 12
+> +
+> +static long gzvm_vcpu_update_one_reg(struct gzvm_vcpu *vcpu,
+> +				     void __user *argp,
+> +				     bool is_write)
+> +{
+> +	struct gzvm_one_reg reg;
+> +	void __user *reg_addr;
+> +	u64 data = 0;
+> +	u64 reg_size;
+> +	long ret;
+> +
+> +	if (copy_from_user(&reg, argp, sizeof(reg)))
+> +		return -EFAULT;
+> +
+> +	reg_addr = (void __user *)reg.addr;
+> +	reg_size = (reg.id & GZVM_REG_SIZE_MASK) >> GZVM_REG_SIZE_SHIFT;
+> +	reg_size = BIT(reg_size);
+> +
+> +	if (reg_size != 1 && reg_size != 2 && reg_size != 4 && reg_size != 8)
+> +		return -EINVAL;
+> +
+
+	if (!is_write)
+		return -EOPNOTSUPP;
+
+	/* GZ hypervisor would filter out invalid vcpu register access */
+	if (copy_from_user(&data, reg_addr, reg_size))
+		return -EFAULT;
+
+> +	if (is_write) {
+> +		/* GZ hypervisor would filter out invalid vcpu register access */
+> +		if (copy_from_user(&data, reg_addr, reg_size))
+> +			return -EFAULT;
+> +	} else {
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	ret = gzvm_arch_vcpu_update_one_reg(vcpu, reg.id, is_write, &data);
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * gzvm_vcpu_run() - Handle vcpu run ioctl, entry point to guest and exit
+> + *		     point from guest
+> + * @vcpu: Pointer to struct gzvm_vcpu
+> + * @argp: Pointer to struct gzvm_vcpu_run in userspace
+> + *
+> + * Return:
+> + * * 0			- Success.
+> + * * Negative		- Failure.
+> + */
+> +static long gzvm_vcpu_run(struct gzvm_vcpu *vcpu, void __user *argp)
+> +{
+> +	bool need_userspace = false;
+> +	u64 exit_reason = 0;
+> +
+> +	if (copy_from_user(vcpu->run, argp, sizeof(struct gzvm_vcpu_run)))
+> +		return -EFAULT;
+> +
+> +	for (int i = 0; i < ARRAY_SIZE(vcpu->run->padding1); i++) {
+> +		if (vcpu->run->padding1[i])
+> +			return -EINVAL;
+> +	}
+> +
+> +	if (vcpu->run->immediate_exit == 1)
+> +		return -EINTR;
+> +
+> +	while (!need_userspace && !signal_pending(current)) {
+> +		gzvm_arch_vcpu_run(vcpu, &exit_reason);
+> +
+> +		switch (exit_reason) {
+> +		case GZVM_EXIT_MMIO:
+> +			need_userspace = true;
+> +			break;
+> +		/**
+> +		 * it's geniezone's responsibility to fill corresponding data
+> +		 * structure
+> +		 */
+> +		case GZVM_EXIT_HYPERCALL:
+> +			fallthrough;
+> +		case GZVM_EXIT_EXCEPTION:
+> +			fallthrough;
+> +		case GZVM_EXIT_DEBUG:
+> +			fallthrough;
+> +		case GZVM_EXIT_FAIL_ENTRY:
+> +			fallthrough;
+> +		case GZVM_EXIT_INTERNAL_ERROR:
+> +			fallthrough;
+> +		case GZVM_EXIT_SYSTEM_EVENT:
+> +			fallthrough;
+> +		case GZVM_EXIT_SHUTDOWN:
+> +			need_userspace = true;
+> +			break;
+> +		case GZVM_EXIT_IRQ:
+> +			fallthrough;
+> +		case GZVM_EXIT_GZ:
+> +			break;
+> +		case GZVM_EXIT_UNKNOWN:
+> +			fallthrough;
+> +		default:
+> +			pr_err("vcpu unknown exit\n");
+> +			need_userspace = true;
+> +			goto out;
+> +		}
+> +	}
+> +
+> +out:
+> +	if (copy_to_user(argp, vcpu->run, sizeof(struct gzvm_vcpu_run)))
+> +		return -EFAULT;
+> +	if (signal_pending(current)) {
+> +		// invoke hvc to inform gz to map memory
+
+/* invoke ... */
+
+> +		gzvm_arch_inform_exit(vcpu->gzvm->vm_id);
+> +		return -ERESTARTSYS;
+> +	}
+> +	return 0;
+> +}
+
+Regards,
+Angelo
+
+
 
