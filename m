@@ -1,184 +1,279 @@
-Return-Path: <linux-kernel+bounces-48828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21597846221
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:47:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD7D1846222
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:48:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A449B28CEC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:47:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46CBA2864ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B74A3BB2D;
-	Thu,  1 Feb 2024 20:47:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 627963BB2D;
+	Thu,  1 Feb 2024 20:47:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UwVpOCKH"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="OXe8tpiI"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75C2C3CF40;
-	Thu,  1 Feb 2024 20:47:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.55.52.120
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706820429; cv=fail; b=nRnGOQd1cHEmR9kvSCutaivfZJyw/TMCYUibaeMTHOTq0CJe9tNympHxl13rgJZDp+SfxCL0db/X020tUkCNq8W7YHro6MaQGCNvaKh/Bc1y0UUUHc6XnKt9CkeQMdlS+EUumtkIG2N6FdgF9U8LizxnI9iO49T8lo0U7WxQmfw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706820429; c=relaxed/simple;
-	bh=wT3xf3UrUlUUfc0Ty6ggosFPVbzK2GV7tXxCxW2yHgs=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=J9MmFy26gP+oRHsVZOOR7HFPylRDOl/PlyNSQ80KAGX5150XFM7BPw5y5Ih9Pg96jkwtpH/KuOY32E7P8ce8tS2gB11/GFMF3HYTh5WTJ8cspMjDEDQND90dhHIY4h6s6bEfOcETs/yJnWlvD/UBO69EMXJCqcogrO84rglmBTU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UwVpOCKH; arc=fail smtp.client-ip=192.55.52.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706820427; x=1738356427;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=wT3xf3UrUlUUfc0Ty6ggosFPVbzK2GV7tXxCxW2yHgs=;
-  b=UwVpOCKHjX22rc1QWCK1Bd9bzNmFwFU7qZ7A00c2HXbOFZYBeWB0uGqj
-   VaVMOcFa/w+8jlB87x/Kn2xyJQOEBZSvGO7q0j70Shl3sRKCK2PhlxRdz
-   PaEU+CGiGqzA7oYdP869E97KPzuRlW4EKX2QJFKK4GK+DLYossedUgAeo
-   Ntm+2ExTUy7X7DX1dRDQltLExLcepnm/K0sa9Wwsw2CnhLUegOAxAjb9a
-   52RZyv4LfE7gjSsh59q4U7QwVooLITEuTspErVMppNDSmvNjH2o2O7h8j
-   JCpcUawKA8LGGLb4sGMvGPDMBuQ6t44l8eBgsiMXWCyIcqIQIY7ux1YZg
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="402844189"
-X-IronPort-AV: E=Sophos;i="6.05,236,1701158400"; 
-   d="scan'208";a="402844189"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 12:47:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="908367314"
-X-IronPort-AV: E=Sophos;i="6.05,236,1701158400"; 
-   d="scan'208";a="908367314"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 01 Feb 2024 12:47:05 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 1 Feb 2024 12:47:04 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 1 Feb 2024 12:47:04 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 1 Feb 2024 12:47:04 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Cv1XTt/lIrl2fKrN1da3e33U72q+rGH4/zP1K2ijAWrgwDZG8EhCtIdX5HCpJ0s3ZGC4P1ng7d9h2/mwolqOSo1cdcO8s1Iry8d8CdZvOzJutauvj+BdvdKPgESAjnCb2BPV0xomjO1lKTjl5nPC5ezOnjBZjfOUrCpSlb3UQ7Xt0mokJ84yzQVjZoPuORYxxVzlV5CPYavwtfZBwifU7duU1+5dXCwhrhXAhhkj0138xFQix3QoM2y3NzotOXqIwumskHpjYHw16xga4Cph0rPNZh6uVDnVGrqRG1Y4MkSVpbZ5low6ehTAdtxV4rzh7TfBPfhUv1GzU9w8YBjrOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=B3Cv+JjVvYaJc0G+Pv1rdEkr67p9d41tPR3aSNHSbhE=;
- b=fXIC6kvdRT+LzQVVJpUHAHSuUEmgWD52PO467v+1kUKZyDV6i9HN/q3t6qgbwM4EMZt5ZOT6iT41gf8DzXRbESJG0MSDHas/0wE1+8nRQ9vvoeyudfUP//83VtDYWD6CqONuHd6HBC42y0Dbuam2J9phiCIVyrMbwEB21vgbGJsQyultuG4rqQfVM5ch2oNtUNRGKlRWHJnEcZQx8dX8aPgaT05UYyEyDBWLqzThIjwKZrBncD4fTI6H+xFlDdL5Wz6BM02WHSt6HcNmidZit9A3vJzNbMFiJXwrXTPwkyPrk4Vy1+98iGp5u/QsZiqWgZm+V4Le95e5G6q0EnFVZQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
- by CH3PR11MB8384.namprd11.prod.outlook.com (2603:10b6:610:176::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.24; Thu, 1 Feb
- 2024 20:47:03 +0000
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::7103:9cf7:fcc0:e802]) by SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::7103:9cf7:fcc0:e802%3]) with mapi id 15.20.7228.037; Thu, 1 Feb 2024
- 20:47:03 +0000
-From: "Luck, Tony" <tony.luck@intel.com>
-To: "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-CC: Borislav Petkov <bp@alien8.de>, Aristeu Rozanski <aris@redhat.com>, "Mauro
- Carvalho Chehab" <mchehab@kernel.org>, "linux-edac@vger.kernel.org"
-	<linux-edac@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "Li, Lili" <lili.li@intel.com>,
-	"ricardo.neri-calderon@linux.intel.com"
-	<ricardo.neri-calderon@linux.intel.com>
-Subject: RE: [PATCH 0/2] EDAC/{igen6,i10nm}: Add EDAC support for two Intel
- CPUs
-Thread-Topic: [PATCH 0/2] EDAC/{igen6,i10nm}: Add EDAC support for two Intel
- CPUs
-Thread-Index: AQHaUntqeLPIHg/x00SS/sl6ntrMbrD1+jZg
-Date: Thu, 1 Feb 2024 20:47:02 +0000
-Message-ID: <SJ1PR11MB6083A37E3A43C7055B5B4203FC432@SJ1PR11MB6083.namprd11.prod.outlook.com>
-References: <20240129062040.60809-1-qiuxu.zhuo@intel.com>
-In-Reply-To: <20240129062040.60809-1-qiuxu.zhuo@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|CH3PR11MB8384:EE_
-x-ms-office365-filtering-correlation-id: e4690d72-84d1-466d-831f-08dc2366f1c8
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: MpWA1CxpRVjl0wcpsscHHTeu6JHuv/GBaN/b+ybtkWpKZ8cjytgvWaysABu+zM4K3qBw7+vL1k2ryOT4fU22B6JHQHy8N/0e2xwzuIvdcE8uQw8+INAjOQucBTgP3zysrbO8Ipq9jrOFMfyQ0lq20fCIWVpu7SwNC+KZ5fkYpAXB4oe+wcPKm50NN1sE+hshrDTRWjogU4zRT27HV8/COV2Li3Y4DxQzCuuGNuAcVafuJmzU/nNQ+Gc0H298qudOBEWO97TfURqvZ6PHmRwxCXDFxPTunwxb/7fajWeIONoSdxK+pFevv7yv40hiZKlR2w5dC4LNr6+P5ggsqPlmSumQjxloCkBqyixA5mtlJg5cPkUSizrseMx0Lh1e0WD3gZ7Kxdygx5gaZuRK0BFfzu8U3oFSsfrjvEjvKR8rSPJL51xcqiYEdxJ44cNvq+4JaWKvb8SsgiZXXlDdA6Vsjp7F8A/3WF7x4VYzysWxPFORYAq47eknK2xXFIc7yaaTreQGSmNTnkA/eSirb6Ke07//W5q6skzgMIfInuL6tuk9kNZrmt/pT7IJBSRBCwwU0HIYIDnZHAoAYcp0rRL+j6bslLGeMIzUHbJ3SGxw+7tcxpLBfrafWBm/e4UtFLLS
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(396003)(136003)(39860400002)(346002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(71200400001)(55016003)(86362001)(316002)(64756008)(66946007)(54906003)(66556008)(76116006)(6636002)(66446008)(66476007)(38100700002)(122000001)(52536014)(4326008)(82960400001)(6862004)(8676002)(33656002)(8936002)(478600001)(9686003)(6506007)(26005)(5660300002)(7696005)(4744005)(2906002)(38070700009)(41300700001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ijVOrzbR6tUgeFF5aDbMPvJe2LIKMaanhkSw5ORan+P/tp610emgJLbxyItc?=
- =?us-ascii?Q?Go7T0UTU6jlzSqq6gWt8Epz9SDk4wdxAocKX1gzNzQW8pdlQTg+Km4coGAdw?=
- =?us-ascii?Q?fq6Gwl4eW+j5jQVtY4y2842FSsY0+T0uOSWE5/k09f/+EiqrTuE3bC4VeSZs?=
- =?us-ascii?Q?Wc3Xfshhl3pHA2p5mEr09I0I68H91o2VQaqO4V0n+zHkXrtDaow8+eq6YTCW?=
- =?us-ascii?Q?jddMjcAntyamuTh4oBS6Z08y4Cl2cIAIqnZPCTnFhWizZtWA/DYQl3PxxK3b?=
- =?us-ascii?Q?689UYQt0j8KfxTryHclYvoyOVasjvx1PIjaE8fl0VSGN1wCCn0L1sXAhZ7Lc?=
- =?us-ascii?Q?GvfTFjIubdobp0mek4ZkTuzEutTxnW/QSfp6TFa70b52unAnH3/JvO9iKUw8?=
- =?us-ascii?Q?q6S1ukS8xuglqzlRJcso40M05D3pSpzXm9Mc/e7cyI5+xuKDwah+K1oIscW/?=
- =?us-ascii?Q?6T66/32UAAsLvT5TPYhbdYG1ky5RrDLMk8RS8fpv5/nwB7Gj4rFQAHOhEf9d?=
- =?us-ascii?Q?jxmYsM6XRqG3b7yguU5oJ2gii01/6FyHZ5PnDLYXqtEMlQv9Dq/IRoFPdYaJ?=
- =?us-ascii?Q?7ib7w4puCB9GORv998TNL8cWWctF1dZnsXNqBRRIltLufSvck9vARuDYM+su?=
- =?us-ascii?Q?h1maGfGFe28atzK6Qn0hRd59nJyR5hlPxKZYEttYDltJnlH+WHMrvL0bjD9u?=
- =?us-ascii?Q?GLzw2MIuTdkn/y735wb7PJ4UZTdVqSQLFav3HJiCJENMvPEPIOyikv68Ldl1?=
- =?us-ascii?Q?jjsnPIe/cwPvoAWWzkUSqM8DPBYLKUeY/LDjWvksAe8qkU2IToemYYOKu2ZD?=
- =?us-ascii?Q?qCJzONLaNFTMBm3dCFUG2/a9885XopuTPxfh0nxpcnRRkjO/QKTHqyeVa19C?=
- =?us-ascii?Q?9u+T2lNgclSCW8uSEKtOYX6JqMMtCINztwmaWlKSbVwAL6sD7c1+CT5jajSS?=
- =?us-ascii?Q?H3zBdvRikndgp1xFksrQyi13hL1AkmuN4y0P4tSXWn1/zIwiw80EEdMwx16A?=
- =?us-ascii?Q?joDdnDilE9qVd4/qEh77gouMp6s4COW+RGjz4/jYhgsZOpv0/IbddNnb+ehO?=
- =?us-ascii?Q?c7KAR4OkrIx/F65d1UN8NfJoH0NHF7nw78go/jqU92A2SajHUZX24Zbd5vn8?=
- =?us-ascii?Q?xuDsgeyhUYmsCLffDHAPoIA1klKCp0KJeGTo5OFr4mPfCjmyUjHlF7EJK1Px?=
- =?us-ascii?Q?ObrWB8BVc9cUavkvMw42Co4XFwscdoN+G9SU7SWlTOjt6MUXIIDOF6L8iZLg?=
- =?us-ascii?Q?ev8Re25pQagEBQGny5VfGVxeFIxr4xigoZef/Oks+rBlleiLChD7JYl5KdSL?=
- =?us-ascii?Q?3A2K7bl41oHE48gab0gvL7LtukVF38XTPgESd4fTzLRxfcsTdkPkzOoJGohg?=
- =?us-ascii?Q?tmDOuWBo1WC5VSKtb7DdQg+Qns02ThKWyDsDjd4Ro1G/fjvZsFVavFRE8Iqi?=
- =?us-ascii?Q?w4chmKuwTYDfyMt5dch5VBgJ7H+o0CupBjA9QgDm0xqQnAsUr3DiVV+Loo9+?=
- =?us-ascii?Q?cUGLJz0L+65jCImfniJdA5Lhh8Hgi4cMnDaXqaaq7PJdoe5YSt9U8OmWG6SL?=
- =?us-ascii?Q?odzUwiD5GQn0BNxpsU6xtEfZJwIhmOIEq+fpbE2N?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EEAD3A1BA
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 20:47:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706820473; cv=none; b=sKht3545s0rx6Uzl5OP4Yt1RKhHXCBUVV7y/nM9CDc4KvvOBbCCoaZ1nx++J5E2/odyRyorS04gRX/GnenAdRGZzLNJ6J1TB395U8N6BRX/BfspWC4YLwk8HW/nNDxH+d1xBcbR0fg3USvR6udCbiMQk/UdDZyOctXHn7ge3Y/U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706820473; c=relaxed/simple;
+	bh=8+xV4hM00I349jTbE0tWi8okdRXci+2FlIun4v7dDG8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N3FIp8LF+sl7/VyKlgtPyww9Xv0TTtplH1/bj05CO+SxZIH2zWvBcvQwNjYeF7h4dpkkuQwlMvOdNWvFecqx8XyzACHvLtBwrlh2q1WTtgFbyjUWYFhJbt/Nh/GVLkyYkB+1he3h3AU+1R5M4ynGtQWRyJZRolbcSGhLNnarS/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=OXe8tpiI; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d95d67ff45so5697425ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 12:47:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706820470; x=1707425270; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=V5OFv3V9vAEx3/vFkSC2MQ2MFNooXfm20T7y4yL4xMo=;
+        b=OXe8tpiIU28nZAX+qufo+iJ9/hfmJ4kzMF5QLpQoVl4jGj8ltcMOpc8HIR4IY+LBWm
+         SKrKYc2TLYXXWLKm/49eU2MjLprdkf6udJpHV+Jwp3gwYQbnG/fs1HTxxYuaJxgXXvGN
+         BR0LzfYRww3ksqkxsSWr802WhNJDN9akU/eFiGKOIJnrP4aOyeEJv24f+iqkEPijimx/
+         FVKGMonBjG8vs15h/S3CsuP5cH8GrAm7UpJb3qvh2AFDTnlyAOVj0ptoJEke7EcxUFYK
+         lclT+ZGtmohjYEaqNVarBJiup6jquT7Tg6DyfWaFCbVmzwyPcjzKlCzPBsbvZIzNYlzO
+         K2tA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706820470; x=1707425270;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V5OFv3V9vAEx3/vFkSC2MQ2MFNooXfm20T7y4yL4xMo=;
+        b=DmBVhcb/X6q13r08Xz4UQOjM4tYLZRC5b5AQgxOmU4rvmnr+9z0XUOyCsTJaECCgP/
+         QywbncqiJcwtxDQNS7YY4fVKbkXoK07hJt2z7FyvbWhvtG23YdzFfssAjMs8nrZ1u/DG
+         KlZp6K6ggwf7QbRkb5iuyJSoFL9ASLWSEpvES4ET8LGM+ljKrjKUfOx2sgk/l0uk0Cmm
+         bE0IAQCcpf4OPDULVkS3p3hiNYi/Ibk6iclbV12OvvqZq7CoEjsKREV9OoosVaIylB7t
+         5gv/lJM3CVHUkuAUByIX3IA0ux3ORqdsaHwwvuq4xbN/qyVYy8cguPtA9X6tulQMOmKF
+         Qu0Q==
+X-Gm-Message-State: AOJu0Ywye7NvFQsk+Oq97jxwXSJNkx/x1V8zZhR2km9YcccF6vG2EGQC
+	dbBiaaoe35NiH9e98MlbRITcmBq1Gpf5X3HqhiIwbstZVAFeA1p0VKcJMsDy50w=
+X-Google-Smtp-Source: AGHT+IETKfl4OA1GZ8qBdST/c29q6Nx1vfHqTF5Ti6cPOho9knL2dpu/n3IyickJQBQ8qVAx/Vr2/g==
+X-Received: by 2002:a17:90b:1196:b0:296:67b:eea0 with SMTP id gk22-20020a17090b119600b00296067beea0mr184787pjb.38.1706820470558;
+        Thu, 01 Feb 2024 12:47:50 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVFaL7pxWSuq8dC99seakjEMZFyui3q7s2BZhpFYoVSG/AjHBCe7OrZeEqB+SGopkx/HRJZUO6JrSupiAZN+LE8933hIFcyrTRMMSDvke3byPI6NJIuvzL951EzpGtICSLBWWO+9ehHuSEIuby+VVHaY//1LgQmhoD0xXys1rSoqr3IshVuzLFDZKR6BG1rOQ9GphXo2F1ZV4LFhkbyNi0xUY2noEsUCDOIdgEZ4796EW3l7/QuVDP5wGnwMt7oqIY4RmVUmVKX/ll6vLnudNhTBfQPQT8Ltz3n
+Received: from ghost ([12.44.203.122])
+        by smtp.gmail.com with ESMTPSA id w14-20020a17090a780e00b002961a98c181sm1784666pjk.56.2024.02.01.12.47.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 12:47:50 -0800 (PST)
+Date: Thu, 1 Feb 2024 12:47:48 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Charles Lohr <lohr85@gmail.com>
+Cc: =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Jisheng Zhang <jszhang@kernel.org>, Evan Green <evan@rivosinc.com>,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] riscv: Disable misaligned access probe when
+ CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+Message-ID: <ZbwDdLmO1l9WDLxF@ghost>
+References: <20240131-disable_misaligned_probe_config-v1-0-98d155e9cda8@rivosinc.com>
+ <20240131-disable_misaligned_probe_config-v1-2-98d155e9cda8@rivosinc.com>
+ <48e6b009-c79c-4a2e-a532-e46c7b8b6fc8@rivosinc.com>
+ <Zbvslcl7YTy38HNF@ghost>
+ <CAGu26P85ZO1dY+qftMndKzwBpsA72x=KNWVyry=38uPhfuFweQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e4690d72-84d1-466d-831f-08dc2366f1c8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Feb 2024 20:47:02.9771
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cQWHxckEJVJNnx9CBBfTgbgjqL+JUIl2c+gT5rpTqVo9NTVkpErAglhq0P5Hn5cOsv9N5WQ+4tLjYFx6qI3K8Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8384
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGu26P85ZO1dY+qftMndKzwBpsA72x=KNWVyry=38uPhfuFweQ@mail.gmail.com>
 
-> Both patches solely add CPU IDs for EDAC support.
->
-> - Part1: Add a new Alder Lake-N SoC compute die ID for EDAC support.
-> - Part2: Add the Grand Ridge (micro-server) CPU model ID for EDAC support=
-.
->
-> Lili Li (1):
->   EDAC/igen6: Add one more Intel Alder Lake-N SoC support
->
-> Qiuxu Zhuo (1):
->   EDAC/i10nm: Add Intel Grand Ridge micro-server support
+On Thu, Feb 01, 2024 at 11:57:04AM -0800, Charles Lohr wrote:
+> I am a little confused here - I was testing with 6.8-rc1 and it didn't
+> seem to have the behavior of performing the probe (The probe kills
+> boot performance in my application and I've had to patch out the probe
+> in mid-6.x kernels).
+> 
+> Did something get reverted to bring back the probe even when
+> CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS=Y between rc1 and trunk?  Or am
+> I misremembering/accidentally patched?
 
-Applied both patches.
+After pulling a clean version of 6.8-rc1 and setting
+CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS I still see the probe happen.
+Before sending this I looked for a patch that disabled the probe but was
+unable to find one, if there exists a patch can you point me to it?
 
-Thanks
+- Charlie
 
--Tony
+> 
+> On Thu, Feb 1, 2024 at 11:10 AM Charlie Jenkins <charlie@rivosinc.com> wrote:
+> >
+> > On Thu, Feb 01, 2024 at 02:43:43PM +0100, Clément Léger wrote:
+> > >
+> > >
+> > > On 01/02/2024 07:40, Charlie Jenkins wrote:
+> > > > When CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS is selected, the cpus can be
+> > > > set to have fast misaligned access without needing to probe.
+> > > >
+> > > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > > > ---
+> > > >  arch/riscv/include/asm/cpufeature.h  | 7 +++++++
+> > > >  arch/riscv/kernel/cpufeature.c       | 4 ++++
+> > > >  arch/riscv/kernel/sys_hwprobe.c      | 4 ++++
+> > > >  arch/riscv/kernel/traps_misaligned.c | 4 ++++
+> > > >  4 files changed, 19 insertions(+)
+> > > >
+> > > > diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm/cpufeature.h
+> > > > index dfdcca229174..7d8d64783e38 100644
+> > > > --- a/arch/riscv/include/asm/cpufeature.h
+> > > > +++ b/arch/riscv/include/asm/cpufeature.h
+> > > > @@ -137,10 +137,17 @@ static __always_inline bool riscv_cpu_has_extension_unlikely(int cpu, const unsi
+> > > >     return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
+> > > >  }
+> > > >
+> > > > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+> > > >  DECLARE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
+> > > >
+> > > >  static __always_inline bool has_fast_misaligned_accesses(void)
+> > > >  {
+> > > >     return static_branch_likely(&fast_misaligned_access_speed_key);
+> > > >  }
+> > > > +#else
+> > > > +static __always_inline bool has_fast_misaligned_accesses(void)
+> > > > +{
+> > > > +   return true;
+> > > > +}
+> > > > +#endif
+> > > >  #endif
+> > > > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+> > > > index 89920f84d0a3..d787846c0b68 100644
+> > > > --- a/arch/riscv/kernel/cpufeature.c
+> > > > +++ b/arch/riscv/kernel/cpufeature.c
+> > > > @@ -43,10 +43,12 @@ static DECLARE_BITMAP(riscv_isa, RISCV_ISA_EXT_MAX) __read_mostly;
+> > > >  /* Per-cpu ISA extensions. */
+> > > >  struct riscv_isainfo hart_isa[NR_CPUS];
+> > > >
+> > > > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+> > > >  /* Performance information */
+> > > >  DEFINE_PER_CPU(long, misaligned_access_speed);
+> > > >
+> > > >  static cpumask_t fast_misaligned_access;
+> > > > +#endif
+> > > >
+> > > >  /**
+> > > >   * riscv_isa_extension_base() - Get base extension word
+> > > > @@ -706,6 +708,7 @@ unsigned long riscv_get_elf_hwcap(void)
+> > > >     return hwcap;
+> > > >  }
+> > > >
+> > > > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+> > > >  static int check_unaligned_access(void *param)
+> > > >  {
+> > > >     int cpu = smp_processor_id();
+> > > > @@ -946,6 +949,7 @@ static int check_unaligned_access_all_cpus(void)
+> > > >  }
+> > > >
+> > > >  arch_initcall(check_unaligned_access_all_cpus);
+> > > > +#endif /* CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS */
+> > > >
+> > > >  void riscv_user_isa_enable(void)
+> > > >  {
+> > >
+> > > Hi Charlie,
+> > >
+> > > Generally, having so much ifdef in various pieces of code is probably
+> > > not a good idea.
+> > >
+> > > AFAICT, if CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS is enabled, the whole
+> > > misaligned access speed checking could be opt-out. which means that
+> > > probably everything related to misaligned accesses should be moved in
+> > > it's own file build it only for CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS=n
+> > > only.
+> >
+> > I will look into doing something more clever here! I agree it is not
+> > very nice to have so many ifdefs scattered.
+> >
+> > >
+> > > > diff --git a/arch/riscv/kernel/sys_hwprobe.c b/arch/riscv/kernel/sys_hwprobe.c
+> > > > index a7c56b41efd2..3f1a6edfdb08 100644
+> > > > --- a/arch/riscv/kernel/sys_hwprobe.c
+> > > > +++ b/arch/riscv/kernel/sys_hwprobe.c
+> > > > @@ -149,6 +149,7 @@ static bool hwprobe_ext0_has(const struct cpumask *cpus, unsigned long ext)
+> > > >
+> > > >  static u64 hwprobe_misaligned(const struct cpumask *cpus)
+> > > >  {
+> > > > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+> > > >     int cpu;
+> > > >     u64 perf = -1ULL;
+> > > >
+> > > > @@ -168,6 +169,9 @@ static u64 hwprobe_misaligned(const struct cpumask *cpus)
+> > > >             return RISCV_HWPROBE_MISALIGNED_UNKNOWN;
+> > > >
+> > > >     return perf;
+> > > > +#else
+> > > > +   return RISCV_HWPROBE_MISALIGNED_FAST;
+> > > > +#endif
+> > > >  }
+> > > >
+> > > >  static void hwprobe_one_pair(struct riscv_hwprobe *pair,
+> > > > diff --git a/arch/riscv/kernel/traps_misaligned.c b/arch/riscv/kernel/traps_misaligned> index 8ded225e8c5b..c24f79d769f6 100644
+> > > > --- a/arch/riscv/kernel/traps_misaligned.c
+> > > > +++ b/arch/riscv/kernel/traps_misaligned.c
+> > > > @@ -413,7 +413,9 @@ int handle_misaligned_load(struct pt_regs *regs)
+> > > >
+> > > >     perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, regs, addr);
+> > > >
+> > > > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+> > > >     *this_cpu_ptr(&misaligned_access_speed) = RISCV_HWPROBE_MISALIGNED_EMULATED;
+> > > > +#endif
+> > >
+> > > I think that rather using ifdefery inside this file (traps_misaligned.c)
+> > >  it can be totally opt-out in case we have
+> > > CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS since it implies that misaligned
+> > > accesses are not emulated (at least that is my understanding).
+> > >
+> >
+> > That's a great idea, I believe that is correct.
+> >
+> > - Charlie
+> >
+> > > Thanks,
+> > >
+> > > Clément
+> > >
+> > >
+> > > >
+> > > >     if (!unaligned_enabled)
+> > > >             return -1;
+> > > > @@ -596,6 +598,7 @@ int handle_misaligned_store(struct pt_regs *regs)
+> > > >     return 0;
+> > > >  }
+> > > >
+> > > > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+> > > >  bool check_unaligned_access_emulated(int cpu)
+> > > >  {
+> > > >     long *mas_ptr = per_cpu_ptr(&misaligned_access_speed, cpu);
+> > > > @@ -640,6 +643,7 @@ void unaligned_emulation_finish(void)
+> > > >     }
+> > > >     unaligned_ctl = true;
+> > > >  }
+> > > > +#endif
+> > > >
+> > > >  bool unaligned_ctl_available(void)
+> > > >  {
+> > > >
+> > >
+> > >
+> > >
+> >
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
 
