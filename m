@@ -1,182 +1,122 @@
-Return-Path: <linux-kernel+bounces-48331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D347845A7F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:45:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70AD1845A86
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:47:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC70C1F29F30
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:45:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF657B25139
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:47:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C417E5F469;
-	Thu,  1 Feb 2024 14:45:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 092445F485;
+	Thu,  1 Feb 2024 14:47:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UEH1QWEi"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Hp7wO7jo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B7485CDEC
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 14:45:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 269AF53385;
+	Thu,  1 Feb 2024 14:47:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706798724; cv=none; b=KNGc9T/njMFKhh2d6xgTIyunEYcrRc7OJAE/8pmV7GG7ne3mkovXr/FUlnvU70HP8mZbrlPIU466UXJ9KC6O7QrcFrE5MiCgyMRIyN4uaRex3OJjmaNb9Xi+HIFRwbSCbtXr1U6EMNoqY3pjvHusBMYFXu8biTEUe2z7hImEB0o=
+	t=1706798829; cv=none; b=GgBfxM/r4c4UyPynLKIhetQb+wYkuPY7V1RwQfTYu8gIrkR2D4HQ2QJ1o7FBEhsqYVvshCVZk/Dy2vPkWxaKeo5ydAp7BlqghxHNgmyksE1iBE4s+ugvQLTbXUNW9stA0/CO5D22TUZezuD/fgYL7TImuJ/zXCdsN46nBhFvfEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706798724; c=relaxed/simple;
-	bh=g28Uh0jEGcZw1jbRzd3E+2nC216DW2FMQTibILMYzNI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZfdQTIijIrhYHsIY2Onf6+Yuc4tk+t9Ji3rTuVX0F0VkQbZjLhQoTcm61ATH8kA4qrUhVNdRZ4oPKrLlutC7abBwnTxN9M5t0usofvo8VMI/apcxTPUCeuAr7wb8dlxZs40Js1KMi63i9vu7CR8D1lD+UbyrV5DuaiYTqoIFL4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UEH1QWEi; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55fc7f63639so719395a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 06:45:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706798721; x=1707403521; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=emBBEOIhMF1O2hGGxGh+HkrTeoWxjLOYDw2I2/VoJkU=;
-        b=UEH1QWEiOaTyvl9ngqYMoCBIYNijdWlGw7STHgUI6kVOHP7BKiGPcBUVkoinhRoKeZ
-         lZKVzysnFje27nCQ46l7Tn6/mxzqub3pRYXtjFVPnjo759OgoMC6LY/tm2A3bYhjXRCB
-         /mUrq0eKS534zZBM80RmojkuLgZBRQ4AR7m7dNbO79u0NFWR+dmouYABxvuRy1Y2gdR+
-         ZEG3OlzJ6HyMzC4flVIPmQ933kxvtyCDoh8D/IpYFOrmCUamEBQniW9V9ML0VCJcqRpQ
-         li0qOG9DI4ZgluVXI9UyKZbAyjlcf84xxA7hQ9DqoETDu2zDbfhbuJr2VJJA75464HB2
-         mVaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706798721; x=1707403521;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=emBBEOIhMF1O2hGGxGh+HkrTeoWxjLOYDw2I2/VoJkU=;
-        b=JB5J4rtlvFETKD/ceTWpeVZE67YNZZfaWHuvGnFR0MUy0NZvuS6Q0diNITjQvjIVzu
-         t13T5I85C1pezgHR+tOIjY/cHZxcQyVQfy418eKe7QDzX5PiwFr3cmgro7F4k1Tq0u3X
-         5AN++YCpNTsFqNtsp4mDViP6VkiOzfi58wW2c431FBLDsXkaGbnhz0iBRys6tZGp5gwH
-         McqPRZaNDZynIHyzt0dRkIdihy4IKoYeGO7KCA3p8rogMcCOFHfQYzZOtf/lcTPejOuX
-         vCyj+n8v14goKKHY8m7nZG5gHOqbzpP+3PvX5iGmwU4tDFWwDyHGEv+Jx3KWuPIX1akB
-         9gdA==
-X-Gm-Message-State: AOJu0YzqsweSejl3UPbIaXYTEQjzhQLVY0G26vBfemtbukzecFLfOZCw
-	DGn4TpM8HMO/ZPzNFpZtlkb1caKuN6U2YyaMJ+hSlYxfxuc4NBR7UK3m5o40Oh4=
-X-Google-Smtp-Source: AGHT+IFeiHTp3Fuz7wGLQZ4zS4Zvyu5bQGeQK1nbyADucc/rYuDqxeNfv/vTAVPG4XaqEunLGNirUA==
-X-Received: by 2002:a17:906:8315:b0:a2e:93d6:3680 with SMTP id j21-20020a170906831500b00a2e93d63680mr1934018ejx.43.1706798721404;
-        Thu, 01 Feb 2024 06:45:21 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXeJzG0tsIH89YgeMZULH19Hzp5v5mM27kxBeCtFb4kukzeRP13p874DcpHhU+xT9boslD2j1H/T05C0OTf2OTHaMTqVAoEZHoY3wL583AQrXHPAVYXec/JSo5TPDfEmKpYz3T1p8uTNlXGiwV96g33tMDvyARHkjZL6x5PCkuhEOBL2v0suO5I9P8cvdjzaYGSeNK50eE1Z1HujCbGChDbjSzQm8/kT7KWi5SPzuKRLUeti4F5PzUtGZ4O2yLnhPCLqD4MMHQ1GQk+IPjJuuAkEMXoUcXoVYkbdx7ZUt1gNKOfZw4oichrbTsmcJIa+6sPHRvwsh/DVLH9IrhrnwRPzv7oQWoricpCli5lb3Fx73vdteC+kxTEYGr/rZ8mtQJgAzGv7gIAllu39yGoHGng20i1YL67mcRxn4KtogMb3MDk1Cq/xvLJbqvpRMUBxZvBWSzMn9AU9KUTWLjvgM2TuL8KXIvgzwkIzCl2zEsGSMELLRESpDm2LMgNmg88QaKtonMc5B1sfNztf3LK8WBxJWYMt7LEzejBlhApQtkW2aeORkOZM/FhAM6DFe3fng13c3L94HjZhXjr8O5pvC1OVUL/WKZrNGM8KmvlAtPWXLih4IPY2PZpq0XKZeG/ZzwPc238nPyv/abTQNGoHHvFrmj+lob2A7gm7gfqxmAhk9WJIr1+
-Received: from [192.168.159.104] (178235179129.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.129])
-        by smtp.gmail.com with ESMTPSA id ci11-20020a170906c34b00b00a2f181266f6sm7372628ejb.148.2024.02.01.06.45.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 06:45:20 -0800 (PST)
-Message-ID: <610d5d7c-ec8d-42f1-81a2-1376b8a1a43f@linaro.org>
-Date: Thu, 1 Feb 2024 15:45:17 +0100
+	s=arc-20240116; t=1706798829; c=relaxed/simple;
+	bh=Op51wgxnKz739GQ7m4pPxxOXzlkXkfmYI8j1uup/GdY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H9M5lWMAatFOfzu2fQ2gGWqCZ+3szGvi+DwyUVyzuKnbKmJo3r+tOckBnyBfsc6/5Og5ZcLHTVkZSFGmdDQ8sohshWAzHLwW+JqML/MVLJ4t/NqZuvKefdlmhAF2jcFBF0gyYh3wNTGnKQc7xFmV7OZtWTb7sJebhrOCjbUL6wo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Hp7wO7jo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98943C433C7;
+	Thu,  1 Feb 2024 14:47:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1706798828;
+	bh=Op51wgxnKz739GQ7m4pPxxOXzlkXkfmYI8j1uup/GdY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Hp7wO7joI4VfWLO6zvQiKjqUaV0d9262qFHOff7P74jMMApODqxoEUP/HiFTbiEb6
+	 IOwqX6HNOj5F29AOYwYQbJ+/hgcgupu6Fm2tJHV990tK35odGevqhXIettd3tHnr8K
+	 Ej080f4gIw8vUr1tla86542hXwCP+9jwqdq0AgLg=
+Date: Thu, 1 Feb 2024 06:47:07 -0800
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: "Hegde, Suma" <Suma.Hegde@amd.com>, naveenkrishna.chatradhi@amd.com,
+	LKML <linux-kernel@vger.kernel.org>,
+	Carlos Bilbao <carlos.bilbao@amd.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH] platform/x86/amd/hsmp: switch to use device_add_groups()
+Message-ID: <2024020135-sly-theft-0594@gregkh>
+References: <2024012822-exalted-fidgeting-f180@gregkh>
+ <0d110d2a-da0c-017a-0e5a-fc6bef7b066a@linux.intel.com>
+ <e73426f6-6d50-4ed7-8613-1ec42fa3f991@amd.com>
+ <2024020144-duplicity-nuptials-1cd7@gregkh>
+ <f48ebcb1-8f87-efee-08ed-844775c995aa@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 5/6] arm64: dts: qcom: sm8450: Add opp table support to
- PCIe
-To: Viresh Kumar <viresh.kumar@linaro.org>,
- Manivannan Sadhasivam <mani@kernel.org>
-Cc: Krishna chaitanya chundru <quic_krichai@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Johan Hovold <johan+linaro@kernel.org>, Brian Masney <bmasney@redhat.com>,
- Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
- vireshk@kernel.org, quic_vbadigan@quicinc.com, quic_skananth@quicinc.com,
- quic_nitegupt@quicinc.com, linux-pci@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240112-opp_support-v6-0-77bbf7d0cc37@quicinc.com>
- <20240112-opp_support-v6-5-77bbf7d0cc37@quicinc.com>
- <20240129160420.GA27739@thinkpad>
- <20240130061111.eeo2fzaltpbh35sj@vireshk-i7>
- <20240130071449.GG32821@thinkpad>
- <20240130083619.lqbj47fl7aa5j3k5@vireshk-i7>
- <20240130094804.GD83288@thinkpad>
- <20240130095508.zgufudflizrpxqhy@vireshk-i7> <20240130131625.GA2554@thinkpad>
- <20240131052335.6nqpmccgr64voque@vireshk-i7>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240131052335.6nqpmccgr64voque@vireshk-i7>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f48ebcb1-8f87-efee-08ed-844775c995aa@linux.intel.com>
 
-On 31.01.2024 06:23, Viresh Kumar wrote:
-> On 30-01-24, 18:46, Manivannan Sadhasivam wrote:
->> Agree. But what I'm saying is, right now there is no DT property in the
->> interconnect consumer nodes to specificy the bw requirements. This is all
->> hardcoded in the respective ICC consumer drivers.
+On Thu, Feb 01, 2024 at 04:34:30PM +0200, Ilpo Järvinen wrote:
+> On Thu, 1 Feb 2024, Greg Kroah-Hartman wrote:
 > 
-> I thought there are a lot of users already in there..
+> > On Thu, Feb 01, 2024 at 06:50:33PM +0530, Hegde, Suma wrote:
+> > > On 1/29/2024 6:16 PM, Ilpo Järvinen wrote:
+> > > > Caution: This message originated from an External Source. Use proper caution when opening attachments, clicking links, or responding.
+> > > > 
+> > > > 
+> > > > + Cc Suma Hegde.
+> > > > 
+> > > > On Sun, 28 Jan 2024, Greg Kroah-Hartman wrote:
+> > > > 
+> > > > > The use of devm_*() functions works properly for when the device
+> > > > > structure itself is dynamic, but the hsmp driver is attempting to have a
+> > > > > local, static, struct device and then calls devm_() functions attaching
+> > > > > memory to the device that will never be freed.
+> > > > > 
+> > > > > The logic of having a static struct device is almost never a wise
+> > > > > choice, but for now, just remove the use of devm_device_add_groups() in
+> > > > > this driver as it obviously is not needed.
+> > > 
+> > > Hi Greg,
+> > > 
+> > > Could you please hold on merging this patch for a week? I will push a patch
+> > > for converting platform specific structure's memory allocation from static
+> > > to a dynamic
+> > > 
+> > > allocation.
+> > 
+> > Push it where?  Ususally we do "first patch wins" type stuff, why not
+> > just do your work on top of mine?
+> > 
+> > Also, when you do make the needed changes, please remove the explicit
+> > call to create sysfs groups and use the default groups pointer instead,
+> > that will make things much simpler and avoid races in the code.
 > 
-> $ git grep -i opp.*bps arch/arm64/boot/dts/ | wc -l
-> 864
+> Hi Greg,
 > 
->> But when we use OPP to control bw, the bw requirements come from DT. This is
->> what I see as a difference. Because, only nodes making use of OPP will specify
->> bw in DT and other nodes making use of just ICC will not.
->>
->> Maybe I'm worrying too much about these details... But it looks like
->> inconsistency to me.
-> 
-> Right. So is there inconsistency right now ? Yes, there is.
-> 
-> The important question we need to answer is where do we want to see
-> all these drivers (specially new ones) in the future. What's the right
-> thing to do eventually ? Hardcode stuff ? Or Move it to DT ?
-> 
-> The answer is DT for me, so the code can be generic enough to be
-> reused. This is just one step in the right direction I guess.
-> Eventually the drivers must get simplified, which they are I guess.
+> Well, if you really want to "win" :-), please provide an updated version 
+> which considers the changes already made in the for-next branch (the 
+> current one won't apply).
 
-I'm lukewarm on this.
+Fair enough, I don't want to "win", I just want to squash any "hold off
+and don't make any changes to this file because I was going to plan on
+doing something else here in the future" type of stuff, as that is what
+has been documented to take down many projects in the past.
 
-A *lot* of hardware has more complex requirements than "x MBps at y MHz",
-especially when performance counters come into the picture for dynamic
-bw management.
+That's why we almost always take patches that people have submitted
+today, instead of ignoring them for potential future changes, unless of
+course, they are not acceptable.
 
-OPP tables can't really handle this properly.
+I'll rebase on linux-next, rejecting it for that reason is totally valid :)
 
-Konrad
+thanks,
+
+greg k-h
 
