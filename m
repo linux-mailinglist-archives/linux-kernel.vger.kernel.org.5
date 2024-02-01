@@ -1,290 +1,367 @@
-Return-Path: <linux-kernel+bounces-47747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E76A84524C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:01:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADE4F845250
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:04:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA87C1F238C0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:01:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63573288EA3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:04:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B723C158D78;
-	Thu,  1 Feb 2024 08:01:06 +0000 (UTC)
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 384FD158D8A;
+	Thu,  1 Feb 2024 08:03:55 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8D8C3B182;
-	Thu,  1 Feb 2024 08:01:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6611F14C5A2;
+	Thu,  1 Feb 2024 08:03:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706774466; cv=none; b=VmnJKoZqolUKZsQUyz3KWXUzr+Bw7p1MB24qnErQ+UMxAHhpFNQ9G7J/824S6Seqx0m7pbcCGVO3G2Ieu2TAzE6p9EZj+5Gs1Qi/IBULX/wSKHUc2Sk/VSKWXdTVpnb+M38/Sc4Y8fsau/Rd50AYiXvGMoRw8drWKVCzSlKL+AQ=
+	t=1706774634; cv=none; b=oSwDCV3WiJyR1qwBrHPKqXVAdDY5dySdoFFOYhpEIOGvEiIAj1IqItKY/oxC88WSBv9a0mabebT8EJeYN1uVorF3n46hfJQMqqXjyjP428Q9XWr8BEGUGDJO6qBAdrQGzAKQjZt0+H4hGsxfxQD6n2BfwMgnVHiM4Z/ve4spUhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706774466; c=relaxed/simple;
-	bh=kS9DYB4BEmc66Mc51nkbeAZk5TYUzacr2iWVxMq1DIk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KtVRDBSVk3pnK84KKiylh57BQ/WETBnvO5zCe3z0SYKM6oq7NMjiEr3svBc9ioQVFKlStU0UJwNOpKvwon15ruzPJQRRQEU8OVyY4AwyS1hEcqlxAz2ZY7bkNP5nqhMaH4jtZXv3SjKfphVotbOHsVRP22MTr9rUP2GItBrUVFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from [192.168.0.6] (ip5f5af685.dynamic.kabel-deutschland.de [95.90.246.133])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 371B861E5FE01;
-	Thu,  1 Feb 2024 09:00:15 +0100 (CET)
-Message-ID: <943270a2-3125-4767-b4e7-2852b0f8ea94@molgen.mpg.de>
-Date: Thu, 1 Feb 2024 09:00:14 +0100
+	s=arc-20240116; t=1706774634; c=relaxed/simple;
+	bh=tKcwMRDgvBFJP+WtgVhk6nVNrLK6Rc4EnYPBvWe7TCA=;
+	h=Subject:To:References:CC:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=XFrY4CBqJjd+GyOZzYfKlLUQWuy9TZgi/RRN6dBhXsIsLWG95Mu9TV2f3SqPGQrBIGMz2+nAzCBxVWuqT6DRDSYr6JXZhEGfHMcbc2Gg5FEwjIKTfKX+xvIAJOhI1VdmFrnuN8GEO5G8HnPM5RW/tcmYu1R6b2RVhFj9IRqt8lo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TQWZk4bnLz1Q83V;
+	Thu,  1 Feb 2024 16:01:50 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2D0C714040D;
+	Thu,  1 Feb 2024 16:03:42 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 1 Feb 2024 16:03:39 +0800
+Subject: Re: [PATCH v2 8/8] perf cpumap: Use perf_cpu_map__for_each_cpu when
+ possible
+To: Ian Rogers <irogers@google.com>
+References: <20240201042236.1538928-1-irogers@google.com>
+ <20240201042236.1538928-9-irogers@google.com>
+CC: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland
+	<mark.rutland@arm.com>, Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Namhyung
+ Kim <namhyung@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, Suzuki K
+ Poulose <suzuki.poulose@arm.com>, Mike Leach <mike.leach@linaro.org>, James
+ Clark <james.clark@arm.com>, Leo Yan <leo.yan@linaro.org>, John Garry
+	<john.g.garry@oracle.com>, Will Deacon <will@kernel.org>, Thomas Gleixner
+	<tglx@linutronix.de>, Darren Hart <dvhart@infradead.org>, Davidlohr Bueso
+	<dave@stgolabs.net>, =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+	Kan Liang <kan.liang@linux.intel.com>, K Prateek Nayak
+	<kprateek.nayak@amd.com>, Sean Christopherson <seanjc@google.com>, Paolo
+ Bonzini <pbonzini@redhat.com>, Kajol Jain <kjain@linux.ibm.com>, Athira
+ Rajeev <atrajeev@linux.vnet.ibm.com>, Andrew Jones <ajones@ventanamicro.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>, Atish Patra <atishp@rivosinc.com>,
+	"Steinar H. Gunderson" <sesse@google.com>, Yang Li
+	<yang.lee@linux.alibaba.com>, Changbin Du <changbin.du@huawei.com>, Sandipan
+ Das <sandipan.das@amd.com>, Ravi Bangoria <ravi.bangoria@amd.com>, Paran Lee
+	<p4ranlee@gmail.com>, Nick Desaulniers <ndesaulniers@google.com>, Huacai Chen
+	<chenhuacai@kernel.org>, Yanteng Si <siyanteng@loongson.cn>,
+	<linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+	<bpf@vger.kernel.org>
+From: Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <aa719d3b-5b96-a341-b776-a67cc6fad64a@huawei.com>
+Date: Thu, 1 Feb 2024 16:03:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Intel-wired-lan] [PATCH] ice: Add get/set hw address for VF
- representor ports
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: ksundara@redhat.com, jesse.brandeburg@intel.com,
- anthony.l.nguyen@intel.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, intel-wired-lan@lists.osuosl.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, rjarry@redhat.com,
- aharivel@redhat.com, cfontain@redhat.com, vchundur@redhat.com
-References: <20240131080847.30614-1-ksundara@redhat.com>
- <64c36525-9177-48b1-abbb-c69dbdeb6d79@molgen.mpg.de>
- <ZbtK6PwsYLosTem8@nanopsycho>
+In-Reply-To: <20240201042236.1538928-9-irogers@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <ZbtK6PwsYLosTem8@nanopsycho>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
 
-Dear Jiri,
+Hello,
 
-
-Am 01.02.24 um 08:40 schrieb Jiri Pirko:
-> Wed, Jan 31, 2024 at 05:15:46PM CET, pmenzel@molgen.mpg.de wrote:
-
-[…]
-
->> Am 31.01.24 um 09:08 schrieb karthiksundaravel:
->>> Changing the mac address of the VF representor ports are not
->>
->> Do you mean “is not possible”?
->>
->>> available via devlink. Add the function handlers to set and get
->>> the HW address for the VF representor ports.
->>
->> How did you test this? It’d be great if you documented it.
->>
->>> Signed-off-by: karthiksundaravel <ksundara@redhat.com>
->>
->> Is “karthiksundaravel” the official spelling of your name. If not, you can
->> change it with
->>
->>     git config --global user.name "Your Name"
->>     git commit -s --amend --author="Your Name <ksundara@redhat.com>"
->>
->>> ---
->>>    drivers/net/ethernet/intel/ice/ice_devlink.c | 134 ++++++++++++++++++-
->>>    1 file changed, 132 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/net/ethernet/intel/ice/ice_devlink.c b/drivers/net/ethernet/intel/ice/ice_devlink.c
->>> index 80dc5445b50d..56d81836c469 100644
->>> --- a/drivers/net/ethernet/intel/ice/ice_devlink.c
->>> +++ b/drivers/net/ethernet/intel/ice/ice_devlink.c
->>> @@ -9,6 +9,8 @@
->>>    #include "ice_eswitch.h"
->>>    #include "ice_fw_update.h"
->>>    #include "ice_dcb_lib.h"
->>> +#include "ice_fltr.h"
->>> +#include "ice_tc_lib.h"
->>>    static int ice_active_port_option = -1;
->>> @@ -1576,6 +1578,134 @@ void ice_devlink_destroy_pf_port(struct ice_pf *pf)
->>>    	devlink_port_unregister(&pf->devlink_port);
->>>    }
->>> +/**
->>> + * ice_devlink_port_get_vf_mac_address - .port_fn_hw_addr_get devlink handler
->>> + * @port: devlink port structure
->>> + * @hw_addr: Mac address of the port
->>> + * @hw_addr_len: length of mac address
->>
->> Mac/mac is spelled differently. (Also below.)
->>
->>> + * @extack: extended netdev ack structure
->>> + *
->>> + * Callback for the devlink .port_fn_hw_addr_get operation
->>> + * Return: zero on success or an error code on failure.
->>> + */
->>> +
->>> +static int ice_devlink_port_get_vf_mac_address(struct devlink_port *port,
->>> +					       u8 *hw_addr, int *hw_addr_len,
->>> +					       struct netlink_ext_ack *extack)
->>> +{
->>> +	struct net_device *netdev = port->type_eth.netdev;
->>> +
->>> +	if (!netdev || !netdev->dev_addr)
->>> +		return -EADDRNOTAVAIL;
->>> +
->>> +	ether_addr_copy(hw_addr, netdev->dev_addr);
->>> +	*hw_addr_len = ETH_ALEN;
->>> +	return 0;
->>> +}
->>> +
->>> +/**
->>> + * ice_devlink_port_set_vf_mac_address - .port_fn_hw_addr_set devlink handler
->>> + * @port: devlink port structure
->>> + * @hw_addr: Mac address of the port
->>> + * @hw_addr_len: length of mac address
->>> + * @extack: extended netdev ack structure
->>> + *
->>> + * Callback for the devlink .port_fn_hw_addr_set operation
->>> + * Return: zero on success or an error code on failure.
->>> + */
->>> +static int ice_devlink_port_set_vf_mac_address(struct devlink_port *port,
->>> +					       const u8 *hw_addr,
->>> +					       int hw_addr_len,
->>> +					       struct netlink_ext_ack *extack)
->>> +{
->>> +	struct devlink *devlink = port->devlink;
->>> +	struct net_device *netdev = port->type_eth.netdev;
->>> +	struct ice_pf *pf = devlink_priv(devlink);
->>> +	struct ice_vsi *vsi = *pf->vsi;
->>> +	struct ice_hw *hw = &pf->hw;
->>> +	struct device *dev = ice_pf_to_dev(pf);
->>> +	u8 old_mac[ETH_ALEN];
->>> +	u8 flags = 0;
->>> +	const u8 *mac = hw_addr;
->>> +	int err;
->>> +
->>> +	if (!netdev)
->>> +		return -EADDRNOTAVAIL;
->>> +
->>> +	if (!is_valid_ether_addr(mac))
->>> +		return -EADDRNOTAVAIL;
->>> +
->>> +	if (ether_addr_equal(netdev->dev_addr, mac)) {
->>> +		dev_dbg(dev, "already using mac %pM\n", mac);
->>> +		return 0;
->>> +	}
->>> +
->>> +	if (test_bit(ICE_DOWN, pf->state) ||
->>> +	    ice_is_reset_in_progress(pf->state)) {
->>> +		dev_err(dev, "can't set mac %pM. device not ready\n", mac);
->>> +		return -EBUSY;
->>> +	}
->>> +
->>> +	if (ice_chnl_dmac_fltr_cnt(pf)) {
->>> +		dev_err(dev, "can't set mac %pM. Device has tc-flower filters, delete all of them and try again\n",
->>> +			mac);
->>> +		return -EAGAIN;
->>> +	}
->>> +
->>> +	netif_addr_lock_bh(netdev);
->>> +	ether_addr_copy(old_mac, netdev->dev_addr);
->>> +	/* change the netdev's MAC address */
->>
->> The comment seems redundant.
->>
->>> +	eth_hw_addr_set(netdev, mac);
->>> +	netif_addr_unlock_bh(netdev);
->>> +
->>> +	/* Clean up old MAC filter. Not an error if old filter doesn't exist */
->>> +	err = ice_fltr_remove_mac(vsi, old_mac, ICE_FWD_TO_VSI);
->>> +	if (err && err != -ENOENT) {
->>> +		err = -EADDRNOTAVAIL;
->>> +		goto err_update_filters;
->>> +	}
->>> +
->>> +	/* Add filter for new MAC. If filter exists, return success */
->>> +	err = ice_fltr_add_mac(vsi, mac, ICE_FWD_TO_VSI);
->>> +	if (err == -EEXIST) {
->>> +		/* Although this MAC filter is already present in hardware it's
->>> +		 * possible in some cases (e.g. bonding) that dev_addr was
->>> +		 * modified outside of the driver and needs to be restored back
->>> +		 * to this value.
->>> +		 */
->>> +		dev_dbg(dev, "filter for MAC %pM already exists\n", mac);
->>> +		return 0;
->>> +	} else if (err) {
->>> +		/* error if the new filter addition failed */
->>
->> The comment seems redundant.
->>
->>> +		err = -EADDRNOTAVAIL;
->>> +	}
->>> +
->>> +err_update_filters:
->>> +	if (err) {
->>> +		dev_err(dev, "can't set MAC %pM. filter update failed\n", mac);
->>> +		netif_addr_lock_bh(netdev);
->>> +		eth_hw_addr_set(netdev, old_mac);
->>> +		netif_addr_unlock_bh(netdev);
->>> +		return err;
->>> +	}
->>> +
->>> +	dev_dbg(dev, "updated MAC address to %pM\n", netdev->dev_addr);
->>
->> Should it be level info?
->>
->>> +
->>> +	/* write new MAC address to the firmware */
->>> +	flags = ICE_AQC_MAN_MAC_UPDATE_LAA_WOL;
->>> +	err = ice_aq_manage_mac_write(hw, mac, flags, NULL);
->>> +	if (err) {
->>> +		dev_err(dev, "can't set MAC %pM. write to firmware failed error %d\n",
->>> +			mac, err);
->>> +	}
->>> +	return 0;
->>> +}
->>> +
->>> +static const struct devlink_port_ops ice_devlink_vf_port_ops = {
->>> +	.port_fn_hw_addr_get = ice_devlink_port_get_vf_mac_address,
->>> +	.port_fn_hw_addr_set = ice_devlink_port_set_vf_mac_address,
->>> +};
->>> +
->>>    /**
->>>     * ice_devlink_create_vf_port - Create a devlink port for this VF
->>>     * @vf: the VF to create a port for
->>> @@ -1611,7 +1741,8 @@ int ice_devlink_create_vf_port(struct ice_vf *vf)
->>>    	devlink_port_attrs_set(devlink_port, &attrs);
->>>    	devlink = priv_to_devlink(pf);
->>> -	err = devlink_port_register(devlink, devlink_port, vsi->idx);
->>> +	err = devlink_port_register_with_ops(devlink, devlink_port,
->>> +					     vsi->idx, &ice_devlink_vf_port_ops);
->>>    	if (err) {
->>>    		dev_err(dev, "Failed to create devlink port for VF %d, error %d\n",
->>>    			vf->vf_id, err);
->>> @@ -1620,7 +1751,6 @@ int ice_devlink_create_vf_port(struct ice_vf *vf)
->>>    	return 0;
->>>    }
->>> -
->>
->> Unrelated whitespace change.
->>
->>>    /**
->>>     * ice_devlink_destroy_vf_port - Destroy the devlink_port for this VF
->>>     * @vf: the VF to cleanup
->>
->> Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+On 2024/2/1 12:22, Ian Rogers wrote:
+> Rather than manually iterating the CPU map, use
+> perf_cpu_map__for_each_cpu. When possible tidy local variables.
 > 
-> Paul. It looks a bit weird you put in multiple comments that require
-> changes and then the Reviewed-by tag. Usually, you put the tag only if
-> you are 100% happy with the patch as it is.
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> Reviewed-by: James Clark <james.clark@arm.com>
+> ---
+>   tools/perf/arch/arm64/util/header.c           | 10 ++--
+>   tools/perf/tests/bitmap.c                     | 13 +++---
+>   tools/perf/tests/topology.c                   | 46 +++++++++----------
+>   tools/perf/util/bpf_kwork.c                   | 16 ++++---
+>   tools/perf/util/bpf_kwork_top.c               | 12 ++---
+>   tools/perf/util/cpumap.c                      | 12 ++---
+>   .../scripting-engines/trace-event-python.c    | 12 +++--
+>   tools/perf/util/session.c                     |  5 +-
+>   tools/perf/util/svghelper.c                   | 20 ++++----
+>   9 files changed, 72 insertions(+), 74 deletions(-)
+> 
+> diff --git a/tools/perf/arch/arm64/util/header.c b/tools/perf/arch/arm64/util/header.c
+> index a9de0b5187dd..741df3614a09 100644
+> --- a/tools/perf/arch/arm64/util/header.c
+> +++ b/tools/perf/arch/arm64/util/header.c
+> @@ -4,8 +4,6 @@
+>   #include <stdio.h>
+>   #include <stdlib.h>
+>   #include <perf/cpumap.h>
+> -#include <util/cpumap.h>
+> -#include <internal/cpumap.h>
+>   #include <api/fs/fs.h>
+>   #include <errno.h>
+>   #include "debug.h"
+> @@ -19,18 +17,18 @@
+>   static int _get_cpuid(char *buf, size_t sz, struct perf_cpu_map *cpus)
+>   {
+>   	const char *sysfs = sysfs__mountpoint();
+> -	int cpu;
+> -	int ret = EINVAL;
+> +	struct perf_cpu cpu;
+> +	int idx, ret = EINVAL;
+>   
+>   	if (!sysfs || sz < MIDR_SIZE)
+>   		return EINVAL;
+>   
+> -	for (cpu = 0; cpu < perf_cpu_map__nr(cpus); cpu++) {
+> +	perf_cpu_map__for_each_cpu(cpu, idx, cpus) {
+>   		char path[PATH_MAX];
+>   		FILE *file;
+>   
+>   		scnprintf(path, PATH_MAX, "%s/devices/system/cpu/cpu%d" MIDR,
+> -			  sysfs, RC_CHK_ACCESS(cpus)->map[cpu].cpu);
+> +			  sysfs, cpu.cpu);
+>   
+>   		file = fopen(path, "r");
+>   		if (!file) {
+> diff --git a/tools/perf/tests/bitmap.c b/tools/perf/tests/bitmap.c
+> index 0173f5402a35..98956e0e0765 100644
+> --- a/tools/perf/tests/bitmap.c
+> +++ b/tools/perf/tests/bitmap.c
+> @@ -11,18 +11,19 @@
+>   static unsigned long *get_bitmap(const char *str, int nbits)
+>   {
+>   	struct perf_cpu_map *map = perf_cpu_map__new(str);
+> -	unsigned long *bm = NULL;
+> -	int i;
+> +	unsigned long *bm;
+>   
+>   	bm = bitmap_zalloc(nbits);
+>   
+>   	if (map && bm) {
+> -		for (i = 0; i < perf_cpu_map__nr(map); i++)
+> -			__set_bit(perf_cpu_map__cpu(map, i).cpu, bm);
+> +		int i;
+> +		struct perf_cpu cpu;
+> +
+> +		perf_cpu_map__for_each_cpu(cpu, i, map)
+> +			__set_bit(cpu.cpu, bm);
+>   	}
+>   
+> -	if (map)
+> -		perf_cpu_map__put(map);
+> +	perf_cpu_map__put(map);
+>   	return bm;
+>   }
+>   
+> diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
+> index 2a842f53fbb5..a8cb5ba898ab 100644
+> --- a/tools/perf/tests/topology.c
+> +++ b/tools/perf/tests/topology.c
+> @@ -68,6 +68,7 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+>   	};
+>   	int i;
+>   	struct aggr_cpu_id id;
+> +	struct perf_cpu cpu;
+>   
+>   	session = perf_session__new(&data, NULL);
+>   	TEST_ASSERT_VAL("can't get session", !IS_ERR(session));
+> @@ -113,8 +114,7 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+>   	TEST_ASSERT_VAL("Session header CPU map not set", session->header.env.cpu);
+>   
+>   	for (i = 0; i < session->header.env.nr_cpus_avail; i++) {
+> -		struct perf_cpu cpu = { .cpu = i };
+> -
+> +		cpu.cpu = i;
+>   		if (!perf_cpu_map__has(map, cpu))
+>   			continue;
+>   		pr_debug("CPU %d, core %d, socket %d\n", i,
+> @@ -123,48 +123,48 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+>   	}
+>   
+>   	// Test that CPU ID contains socket, die, core and CPU
+> -	for (i = 0; i < perf_cpu_map__nr(map); i++) {
+> -		id = aggr_cpu_id__cpu(perf_cpu_map__cpu(map, i), NULL);
+> +	perf_cpu_map__for_each_cpu(cpu, i, map) {
+> +		id = aggr_cpu_id__cpu(cpu, NULL);
+>   		TEST_ASSERT_VAL("Cpu map - CPU ID doesn't match",
+> -				perf_cpu_map__cpu(map, i).cpu == id.cpu.cpu);
+> +				cpu.cpu == id.cpu.cpu);
+>   
+>   		TEST_ASSERT_VAL("Cpu map - Core ID doesn't match",
+> -			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].core_id == id.core);
+> +			session->header.env.cpu[cpu.cpu].core_id == id.core);
+>   		TEST_ASSERT_VAL("Cpu map - Socket ID doesn't match",
+> -			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].socket_id ==
+> +			session->header.env.cpu[cpu.cpu].socket_id ==
+>   			id.socket);
+>   
+>   		TEST_ASSERT_VAL("Cpu map - Die ID doesn't match",
+> -			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].die_id == id.die);
+> +			session->header.env.cpu[cpu.cpu].die_id == id.die);
+>   		TEST_ASSERT_VAL("Cpu map - Node ID is set", id.node == -1);
+>   		TEST_ASSERT_VAL("Cpu map - Thread IDX is set", id.thread_idx == -1);
+>   	}
+>   
+>   	// Test that core ID contains socket, die and core
+> -	for (i = 0; i < perf_cpu_map__nr(map); i++) {
+> -		id = aggr_cpu_id__core(perf_cpu_map__cpu(map, i), NULL);
+> +	perf_cpu_map__for_each_cpu(cpu, i, map) {
+> +		id = aggr_cpu_id__core(cpu, NULL);
+>   		TEST_ASSERT_VAL("Core map - Core ID doesn't match",
+> -			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].core_id == id.core);
+> +			session->header.env.cpu[cpu.cpu].core_id == id.core);
+>   
+>   		TEST_ASSERT_VAL("Core map - Socket ID doesn't match",
+> -			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].socket_id ==
+> +			session->header.env.cpu[cpu.cpu].socket_id ==
+>   			id.socket);
+>   
+>   		TEST_ASSERT_VAL("Core map - Die ID doesn't match",
+> -			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].die_id == id.die);
+> +			session->header.env.cpu[cpu.cpu].die_id == id.die);
+>   		TEST_ASSERT_VAL("Core map - Node ID is set", id.node == -1);
+>   		TEST_ASSERT_VAL("Core map - Thread IDX is set", id.thread_idx == -1);
+>   	}
+>   
+>   	// Test that die ID contains socket and die
+> -	for (i = 0; i < perf_cpu_map__nr(map); i++) {
+> -		id = aggr_cpu_id__die(perf_cpu_map__cpu(map, i), NULL);
+> +	perf_cpu_map__for_each_cpu(cpu, i, map) {
+> +		id = aggr_cpu_id__die(cpu, NULL);
+>   		TEST_ASSERT_VAL("Die map - Socket ID doesn't match",
+> -			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].socket_id ==
+> +			session->header.env.cpu[cpu.cpu].socket_id ==
+>   			id.socket);
+>   
+>   		TEST_ASSERT_VAL("Die map - Die ID doesn't match",
+> -			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].die_id == id.die);
+> +			session->header.env.cpu[cpu.cpu].die_id == id.die);
+>   
+>   		TEST_ASSERT_VAL("Die map - Node ID is set", id.node == -1);
+>   		TEST_ASSERT_VAL("Die map - Core is set", id.core == -1);
+> @@ -173,10 +173,10 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+>   	}
+>   
+>   	// Test that socket ID contains only socket
+> -	for (i = 0; i < perf_cpu_map__nr(map); i++) {
+> -		id = aggr_cpu_id__socket(perf_cpu_map__cpu(map, i), NULL);
+> +	perf_cpu_map__for_each_cpu(cpu, i, map) {
+> +		id = aggr_cpu_id__socket(cpu, NULL);
+>   		TEST_ASSERT_VAL("Socket map - Socket ID doesn't match",
+> -			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].socket_id ==
+> +			session->header.env.cpu[cpu.cpu].socket_id ==
+>   			id.socket);
+>   
+>   		TEST_ASSERT_VAL("Socket map - Node ID is set", id.node == -1);
+> @@ -187,10 +187,10 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+>   	}
+>   
+>   	// Test that node ID contains only node
+> -	for (i = 0; i < perf_cpu_map__nr(map); i++) {
+> -		id = aggr_cpu_id__node(perf_cpu_map__cpu(map, i), NULL);
+> +	perf_cpu_map__for_each_cpu(cpu, i, map) {
+> +		id = aggr_cpu_id__node(cpu, NULL);
+>   		TEST_ASSERT_VAL("Node map - Node ID doesn't match",
+> -				cpu__get_node(perf_cpu_map__cpu(map, i)) == id.node);
+> +				cpu__get_node(cpu) == id.node);
+>   		TEST_ASSERT_VAL("Node map - Socket is set", id.socket == -1);
+>   		TEST_ASSERT_VAL("Node map - Die ID is set", id.die == -1);
+>   		TEST_ASSERT_VAL("Node map - Core is set", id.core == -1);
+> diff --git a/tools/perf/util/bpf_kwork.c b/tools/perf/util/bpf_kwork.c
+> index 6eb2c78fd7f4..44f0f708a15d 100644
+> --- a/tools/perf/util/bpf_kwork.c
+> +++ b/tools/perf/util/bpf_kwork.c
+> @@ -147,12 +147,12 @@ static bool valid_kwork_class_type(enum kwork_class_type type)
+>   
+>   static int setup_filters(struct perf_kwork *kwork)
+>   {
+> -	u8 val = 1;
+> -	int i, nr_cpus, key, fd;
+> -	struct perf_cpu_map *map;
+> -
+>   	if (kwork->cpu_list != NULL) {
+> -		fd = bpf_map__fd(skel->maps.perf_kwork_cpu_filter);
+> +		int idx, nr_cpus;
+> +		struct perf_cpu_map *map;
+> +		struct perf_cpu cpu;
+> +		int fd = bpf_map__fd(skel->maps.perf_kwork_cpu_filter);
+> +
+>   		if (fd < 0) {
+>   			pr_debug("Invalid cpu filter fd\n");
+>   			return -1;
+> @@ -165,8 +165,8 @@ static int setup_filters(struct perf_kwork *kwork)
+>   		}
+>   
+>   		nr_cpus = libbpf_num_possible_cpus();
+> -		for (i = 0; i < perf_cpu_map__nr(map); i++) {
+> -			struct perf_cpu cpu = perf_cpu_map__cpu(map, i);
+> +		perf_cpu_map__for_each_cpu(cpu, idx, map) {
+> +			u8 val = 1;
+>   
+>   			if (cpu.cpu >= nr_cpus) {
+>   				perf_cpu_map__put(map);
+> @@ -181,6 +181,8 @@ static int setup_filters(struct perf_kwork *kwork)
+>   	}
+>   
+>   	if (kwork->profile_name != NULL) {
+> +		int key, fd;
+> +
+>   		if (strlen(kwork->profile_name) >= MAX_KWORKNAME) {
+>   			pr_err("Requested name filter %s too large, limit to %d\n",
+>   			       kwork->profile_name, MAX_KWORKNAME - 1);
+> diff --git a/tools/perf/util/bpf_kwork_top.c b/tools/perf/util/bpf_kwork_top.c
+> index 035e02272790..22a3b00a1e23 100644
+> --- a/tools/perf/util/bpf_kwork_top.c
+> +++ b/tools/perf/util/bpf_kwork_top.c
+> @@ -122,11 +122,11 @@ static bool valid_kwork_class_type(enum kwork_class_type type)
+>   
+>   static int setup_filters(struct perf_kwork *kwork)
+>   {
+> -	u8 val = 1;
+> -	int i, nr_cpus, fd;
+> -	struct perf_cpu_map *map;
+> -
+>   	if (kwork->cpu_list) {
+> +		int idx, nr_cpus, fd;
+> +		struct perf_cpu_map *map;
+> +		struct perf_cpu cpu;
+> +
+>   		fd = bpf_map__fd(skel->maps.kwork_top_cpu_filter);
+>   		if (fd < 0) {
+>   			pr_debug("Invalid cpu filter fd\n");
+> @@ -140,8 +140,8 @@ static int setup_filters(struct perf_kwork *kwork)
+>   		}
+>   
+>   		nr_cpus = libbpf_num_possible_cpus();
+> -		for (i = 0; i < perf_cpu_map__nr(map); i++) {
+> -			struct perf_cpu cpu = perf_cpu_map__cpu(map, i);
+> +		perf_cpu_map__for_each_cpu(cpu, idx, map) {
+> +			u8 val = 1;
+>   
+>   			if (cpu.cpu >= nr_cpus) {
+>   				perf_cpu_map__put(map);
 
-Sorry about that. I will keep this in mind.
-
-> It is also weird you put in a tag in this case when the patch
-> is completely wrong, as I pointed out in my first reply. Did you miss
-> it?
-
-Yes, I missed it. (I disabled threading in Mozilla Thunderbird. I am 
-going to change that again. Sorry about that.)
+For part of perf-kwork utility:
+Reviewed-and-tested-by: Yang Jihong <yangjihong1@huawei.com>
 
 
-Kind regards,
-
-Paul
+Thanks,
+Yang
 
