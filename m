@@ -1,106 +1,191 @@
-Return-Path: <linux-kernel+bounces-47987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A5218455BC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:47:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C969F8455BE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:47:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA175280FF3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:47:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54E071F2163E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:47:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A994D15B97E;
-	Thu,  1 Feb 2024 10:46:57 +0000 (UTC)
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02DB915B98F;
+	Thu,  1 Feb 2024 10:47:09 +0000 (UTC)
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0955415B970;
-	Thu,  1 Feb 2024 10:46:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6714415B969;
+	Thu,  1 Feb 2024 10:47:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706784417; cv=none; b=fKzD+8W4/nEdnL7JborArpWv7zmTZvF/z7OTG0KWodysF2c3RplW1Hpx2ZrrAVHu6+Y0WsNduvNrS1B/sFtVEsCauRSAcP2ujShTf5FAFpHr9di5BqtYVujlUIP2yxyzGISoGlgvKIO/3pCQ3IMqmzjyZ3jZ7CPTq2HtNSqCGlY=
+	t=1706784428; cv=none; b=eAX5WoGfgxjEb9+RDA4nnLcvnZEzdGLszn8r0r2wy34KHe/GXUocjDugWr3kb6y+09FgDCLCrxBiUvRoAM0Foo/nFHZ25E1ROfuyY6EYeNrET/7BCWPBJTnlfY7/cNHkIaWHj1w23UgQPow3t5yfbjl7HDoD9myb3wjkxKLumWQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706784417; c=relaxed/simple;
-	bh=V/x1b1ldsDYK3JfVzlP9ZZq7WJ2uPOBTgaU55XZNPrU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uae74+ml/x9I8YHsawncyZ/bLn9nMjJgD/nQyKq5iSu/6u9CGaLlOl4FAWn20jMx8XtzDq72Nt/QgJpyEDlVaY2gwESdAWOoltPW1GSoQzMXhse1vCGvQf2FaRI/juEPR33rjgcZN5MBwWsl/hXl3wBpqoPsVKa4KsxVa/mEVCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-46b2aaa36d5so314226137.1;
-        Thu, 01 Feb 2024 02:46:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706784413; x=1707389213;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HFZPcFLhDs+gYYjGu7bIEoeJY8eTRZGl5q1i/K40hjQ=;
-        b=AfuD/sPbMby0fAp02Uipxv1N1hhgGlyfRNBoHYWA5TxYrbndJ7584pgDZFssUVyyoA
-         tzmh5/mHUh4uEaJ46pxMfVIm0hLkefgukuPlTc58ElBFdIgx5RZfUCvMEG000CyEdLyc
-         DtNeweYULzfHKJ4LkEHR5UtyOedmc49kgWt76NFIHbH1v9ub3XmRG978ecgBpFDTnurJ
-         EGiK22H9CN2TGQ7NLD5RobNSa7JvwKGruu5JU4LESwPB4C2DT2QELOKnsKkcVUmZEKNT
-         nzUAjU58clAK3Pnsf3d/fRxQrQr1kjUVqCcNn2z7qQHppQDZwF1NKQeCi/U8ld5jnpQD
-         ioOw==
-X-Gm-Message-State: AOJu0YxHEe8ubUmZcjL/kT9sbQO9p7wDesxu328zED16Ocw4fB72g0b9
-	tS6enfEBNVHHzDd0qSPIZEA5HbPhFneU/f+Zav/ZHOEtM/QTTKfSBjsIo97eirQ=
-X-Google-Smtp-Source: AGHT+IGAax/Sb4kznliaD3ZikyM2fMNpStWpgDSjdppPgPo6zArlRUDDpv43TD1zZV1AYQmu+PZg0A==
-X-Received: by 2002:a05:6102:529:b0:46c:ad31:a013 with SMTP id m9-20020a056102052900b0046cad31a013mr1938286vsa.32.1706784413193;
-        Thu, 01 Feb 2024 02:46:53 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUCcA6+DcW2Zid2/1Bir3jdUBSreyAhSoWuY/+WAnYhGDWSwKlYqOphWSKItWfgw1kvyyOrhc8AQanKU1MTMniidZzz8SYazmZoA8HCkuZGCq9DgERUd5F32ESn8X1KKaVTwp0MF+rxTU+DbSzAOIqG0l/v4EOswjtN+PXeDCLKqE8CJS9bE8mBeRewetkh+hWKiUJHL1JW4iDFrBgIqZXouAS4nU2xmoWXz6wja0SotnznG9cDzGnaan4xHDAqL5ME8uQ=
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com. [209.85.222.169])
-        by smtp.gmail.com with ESMTPSA id ly9-20020a0562145c0900b0068509353fb6sm5840691qvb.133.2024.02.01.02.46.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 02:46:52 -0800 (PST)
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-78406c22dc7so58782585a.0;
-        Thu, 01 Feb 2024 02:46:52 -0800 (PST)
-X-Received: by 2002:a0d:ea85:0:b0:5ff:7cdc:404b with SMTP id
- t127-20020a0dea85000000b005ff7cdc404bmr1645047ywe.52.1706784391742; Thu, 01
- Feb 2024 02:46:31 -0800 (PST)
+	s=arc-20240116; t=1706784428; c=relaxed/simple;
+	bh=kw+Mml9tKYD5/MBGDcOdd7+s+r8727WzA8VTInU+Dgs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bxpXfGBt9yfukMtQfy8HglUsaMVAEvuanCMFDWjPpDIX+s46fKalSUkOgMiF8nIwLokfd88NhgF0GVf0XN9e+iGNW5wbhsYmRXEz+nnV9SyAGGuwl38avy+X7lwrVIT+M5s6QmkHwUAp5P4+2y2CZ8NOoOdceYuc3dZzYwROMfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rVUb1-0007vf-0a; Thu, 01 Feb 2024 11:47:03 +0100
+Message-ID: <95eae92a-ecad-4e0e-b381-5835f370a9e7@leemhuis.info>
+Date: Thu, 1 Feb 2024 11:47:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131055159.2506-1-yan.y.zhao@intel.com> <5e55b5c0-6c8d-45b4-ac04-cf694bcb08d3@app.fastmail.com>
- <ZbrfcTaiuu2gaa2A@yzhao56-desk.sh.intel.com> <9f27c23b-ea8b-443c-b09c-03ecaa210cd5@app.fastmail.com>
-In-Reply-To: <9f27c23b-ea8b-443c-b09c-03ecaa210cd5@app.fastmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 1 Feb 2024 11:46:19 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWPToeXdcBWv2LJuu2Z6td-JYz3GGf5fD1+ScqVD+Wurg@mail.gmail.com>
-Message-ID: <CAMuHMdWPToeXdcBWv2LJuu2Z6td-JYz3GGf5fD1+ScqVD+Wurg@mail.gmail.com>
-Subject: Re: [PATCH 0/4] apply page shift to PFN instead of VA in pfn_to_virt
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Yan Zhao <yan.y.zhao@intel.com>, Linus Walleij <linus.walleij@linaro.org>, 
-	guoren <guoren@kernel.org>, Brian Cain <bcain@quicinc.com>, Jonas Bonn <jonas@southpole.se>, 
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, 
-	Linux-Arch <linux-arch@vger.kernel.org>, linux-kernel@vger.kernel.org, 
-	"linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>, linux-hexagon@vger.kernel.org, 
-	"linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: Recent-ish changes in binfmt_elf made my program segfault
+Content-Language: en-US, de-DE
+To: Kees Cook <keescook@chromium.org>,
+ "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Jan Bujak <j@exia.io>, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ viro@zeniv.linux.org.uk, brauner@kernel.org, linux-fsdevel@vger.kernel.org,
+ Linux kernel regressions list <regressions@lists.linux.dev>
+References: <c7209e19-89c4-446a-b364-83100e30cc00@exia.io>
+ <874jf5co8g.fsf@email.froward.int.ebiederm.org>
+ <202401221226.DAFA58B78@keescook>
+ <87v87laxrh.fsf@email.froward.int.ebiederm.org>
+ <202401221339.85DBD3931@keescook>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+In-Reply-To: <202401221339.85DBD3931@keescook>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1706784426;339156dc;
+X-HE-SMSGID: 1rVUb1-0007vf-0a
 
-Hi Arnd,
+Hi, Thorsten here, the Linux kernel's regression tracker. Top-posting
+for once, to make this easily accessible to everyone.
 
-On Thu, Feb 1, 2024 at 11:11=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> wrote=
-:
-> I think it's fair to assume we won't need asm-generic/page.h any
-> more, as we likely won't be adding new NOMMU architectures.
+Eric, what's the status wrt. to this regression? Things from here look
+stalled, but I might be missing something.
 
-So you think riscv-nommu (k210) was the last one we will ever see?
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
-Gr{oetje,eeting}s,
+#regzbot poke
 
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+On 22.01.24 23:12, Kees Cook wrote:
+> On Mon, Jan 22, 2024 at 03:01:06PM -0600, Eric W. Biederman wrote:
+>> Kees Cook <keescook@chromium.org> writes:
+>>
+>>> On Mon, Jan 22, 2024 at 10:43:59AM -0600, Eric W. Biederman wrote:
+>>>> Jan Bujak <j@exia.io> writes:
+>>>>
+>>>>> Hi.
+>>>>>
+>>>>> I recently updated my kernel and one of my programs started segfaulting.
+>>>>>
+>>>>> The issue seems to be related to how the kernel interprets PT_LOAD headers;
+>>>>> consider the following program headers (from 'readelf' of my reproduction):
+>>>>>
+>>>>> Program Headers:
+>>>>>   Type  Offset   VirtAddr  PhysAddr  FileSiz  MemSiz   Flg Align
+>>>>>   LOAD  0x001000 0x10000   0x10000   0x000010 0x000010 R   0x1000
+>>>>>   LOAD  0x002000 0x11000   0x11000   0x000010 0x000010 RW  0x1000
+>>>>>   LOAD  0x002010 0x11010   0x11010   0x000000 0x000004 RW  0x1000
+>>>>>   LOAD  0x003000 0x12000   0x12000   0x0000d2 0x0000d2 R E 0x1000
+>>>>>   LOAD  0x004000 0x20000   0x20000   0x000004 0x000004 RW  0x1000
+>>>>>
+>>>>> Old kernels load this ELF file in the following way ('/proc/self/maps'):
+>>>>>
+>>>>> 00010000-00011000 r--p 00001000 00:02 131  ./bug-reproduction
+>>>>> 00011000-00012000 rw-p 00002000 00:02 131  ./bug-reproduction
+>>>>> 00012000-00013000 r-xp 00003000 00:02 131  ./bug-reproduction
+>>>>> 00020000-00021000 rw-p 00004000 00:02 131  ./bug-reproduction
+>>>>>
+>>>>> And new kernels do it like this:
+>>>>>
+>>>>> 00010000-00011000 r--p 00001000 00:02 131  ./bug-reproduction
+>>>>> 00011000-00012000 rw-p 00000000 00:00 0
+>>>>> 00012000-00013000 r-xp 00003000 00:02 131  ./bug-reproduction
+>>>>> 00020000-00021000 rw-p 00004000 00:02 131  ./bug-reproduction
+>>>>>
+>>>>> That map between 0x11000 and 0x12000 is the program's '.data' and '.bss'
+>>>>> sections to which it tries to write to, and since the kernel doesn't map
+>>>>> them anymore it crashes.
+>>>>>
+>>>>> I bisected the issue to the following commit:
+>>>>>
+>>>>> commit 585a018627b4d7ed37387211f667916840b5c5ea
+>>>>> Author: Eric W. Biederman <ebiederm@xmission.com>
+>>>>> Date:   Thu Sep 28 20:24:29 2023 -0700
+>>>>>
+>>>>>     binfmt_elf: Support segments with 0 filesz and misaligned starts
+>>>>>
+>>>>> I can confirm that with this commit the issue reproduces, and with it
+>>>>> reverted it doesn't.
+>>>>>
+>>>>> I have prepared a minimal reproduction of the problem available here,
+>>>>> along with all of the scripts I used for bisecting:
+>>>>>
+>>>>> https://github.com/koute/linux-elf-loading-bug
+>>>>>
+>>>>> You can either compile it from source (requires Rust and LLD), or there's
+>>>>> a prebuilt binary in 'bin/bug-reproduction` which you can run. (It's tiny,
+>>>>> so you can easily check with 'objdump -d' that it isn't malicious).
+>>>>>
+>>>>> On old kernels this will run fine, and on new kernels it will
+>>>>> segfault.
+>>>>
+>>>> Frankly your ELF binary is buggy, and probably the best fix would be to
+>>>> fix the linker script that is used to generate your binary.
+>>>>
+>>>> The problem is the SYSV ABI defines everything in terms of pages and so
+>>>> placing two ELF segments on the same page results in undefined behavior.
+>>>>
+>>>> The code was fixed to honor your .bss segment and now your .data segment
+>>>> is being stomped, because you defined them to overlap.
+>>>>
+>>>> Ideally your linker script would place both your .data and .bss in
+>>>> the same segment.  That would both fix the issue and give you a more
+>>>> compact elf binary, while not changing the generated code at all.
+>>>>
+>>>>
+>>>> That said regressions suck and it would be good if we could update the
+>>>> code to do something reasonable in this case.
+>>>>
+>>>> We can perhaps we can update the .bss segment to just memset an existing
+>>>> page if one has already been mapped.  Which would cleanly handle a case
+>>>> like yours.  I need to think about that for a moment to see what the
+>>>> code would look like to do that.
+>>>
+>>> It's the "if one has already been mapped" part which might
+>>> become expensive...
+>>
+>> I am wondering if perhaps we can add MAP_FIXED_NOREPLACE and take
+>> some appropriate action if there is already a mapping there.
+> 
+> Yeah, in the general case we had to back out MAP_FIXED_NOREPLACE usage
+> for individual LOADs because there were so many cases of overlapping
+> LOADs. :( Currently it's only used during the initial mapping (when
+> "total_size" is set), to avoid colliding with the stack.
+> 
+> But, as you suggest, if we only use it for filesz==0, it could work.
+> 
+>> Such as printing a warning and skipping the action entirely for
+>> a pure bss segment.  That would essentially replicate the previous
+>> behavior.
+> 
+> Instead of failing, perhaps we just fallback to not using
+> MAP_FIXED_NOREPLACE and do the memset? (And maybe pr_warn_once?)
+> 
+>> At a minimum adding MAP_FIXED_NOREPLACE should allow us to
+>> deterministically detect and warn about problems, making it easier
+>> for people to understand why their binary won't run.
+> 
+> Yeah, it seems like it's the vm_brk_flags() that is clobber the mapping,
+> so we have to skip that for the MAP_FIXED_NOREPLACE fails on a filesz==0
+> case?
+> 
 
