@@ -1,105 +1,113 @@
-Return-Path: <linux-kernel+bounces-48516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8ABF845D2C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:25:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 033A4845D32
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:26:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DAEA293ABC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:25:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96EBB1F239E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:26:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C4B77E0FB;
-	Thu,  1 Feb 2024 16:23:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94E665A4D0;
+	Thu,  1 Feb 2024 16:23:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="fm/0m8EL"
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0d2InUYm"
+Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E03267E0F2
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 16:23:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 660BD7E119
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 16:23:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706804601; cv=none; b=H98mx7+ALt1VN50D6jdgkug8zp9Mfe3rIbepbk8SS6c6MiZNBSo+N2d/mCv6lTZJEEjBWXUOkEtNEs1o0HVOl0yfculXygbrx8vpCNdCvMVTu/qw3VRt9rV8w8l3qmjGI6VSqGO/hoj28fADA9yvnQeURP498OvuIGRDf8leimY=
+	t=1706804634; cv=none; b=aVPERGHL+C6A/Lr213WHqeNEQvxEzQIdo2IIzM2mgIJs3VPdH+y03m7tJKQlPw20lpt3+FhtVgD7VawaVc9VsmLCse8hNdoKLPtQlJtGIIftb5PdZT5dh+/4T41A2zwt+hEfMrr6Xyr//5xpzvEwYJ1ALlWK9hTQwp7cEhF/Bwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706804601; c=relaxed/simple;
-	bh=CcTsJRuBV7FsnKfKzyIU75uXHMZOKiQnJvCybgMg5QM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hne1awESp49tmaZJtTH9fqa+0zIzMwyaJbDFeL48Lj0j3F5yj+oOvMfSLySyUXE2GMIrkWjNj8/8XDmTGZPdEmYmgVOCCgRj2L4zkoeP0BnppGg+XN2ZYyrg6p8j3JbXMfM9/VYVUq+FhXvVbm+sdRkmhyCuZBjjD1Goyr+9MPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=fm/0m8EL; arc=none smtp.client-ip=209.85.222.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-783d916d039so79856985a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 08:23:19 -0800 (PST)
+	s=arc-20240116; t=1706804634; c=relaxed/simple;
+	bh=r6HuU+nMuZPxOqccbs5Of8zd1RTaXx42PjFB7lXu1/I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=T1Bz0EhOQDtoNuMkDys3PZfIRB084iPkJfpuzR1NRYl79tWpAGoU48/LsexUcoN005JQd8z6ogogh7BT+vSc+5q6BBXyeJmN+6+vgf5eBT1+ByLAy5PJUPwrPooHuTVsaDhdnbA9jcl5Ft2dTgwl4WFgSfWFmDXjX0BgXq46MbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0d2InUYm; arc=none smtp.client-ip=209.85.217.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-4676a37e2c4so482064137.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 08:23:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1706804599; x=1707409399; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CcTsJRuBV7FsnKfKzyIU75uXHMZOKiQnJvCybgMg5QM=;
-        b=fm/0m8EL1YPF9qE9pK9yhdCvVihSdc1Sc7bIS3lSuV13elfTFd/H5FfGPjzMK6Pvoa
-         xBw1HZ8VgyZSbNPVZcx2Wybz+bTHxVDqfvu3jMdn1GYbKUchUJVwsm5njTA3IHICJmwk
-         DBCnOvCI/R25/J6DHsIG5v/O0wyBhh2Z6BKu9sq52jXGgsonwF7AC9rE1qxEfDc0lFvn
-         J65eD7fX4NPEM05jQj9omcDLqVDO7y+WFer7xvf1ZkEvgSIg2ZsG7GjGDJiK8bieZRvL
-         5LlXCQavwVUL4PIdQdH33j5H69vbulYdBsOi94TM5E9YlQxnf4n1VbuTRpgMAq6+7CkW
-         LOJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706804599; x=1707409399;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1706804632; x=1707409432; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CcTsJRuBV7FsnKfKzyIU75uXHMZOKiQnJvCybgMg5QM=;
-        b=YfBkdHgs7An2twc5C5Fwry85GtrhTz6IKVztloX2B8L7rC7AoSHFmaln3TJnWusosl
-         a4J6GOf59DsZdLl3jATEnTW7FsnVpJzp3fJNq/+mTVyU1QWWSoj+YQUCAm13qzsmTkqf
-         qkqlyrh2QM/F4TXpC80r2s6nq7Jw33FMyY9ObnZ5gtDUe2mYBL69woOHJ9p0fjjCSDFF
-         Bakjihzod6k2qKhv3ren0UidNQbARQ9v98PpEjfnG4xd0CRi3Mda35uN1MummB73OXRx
-         NGWmQuk12qY1bdTGZnezSlBzzjKzePOPMKz/jLSb+ifNVt7ShfQXnJE2F2yNUCY+tAPH
-         lW1g==
-X-Gm-Message-State: AOJu0YyhIX1pw+GFIgj/bNjtyWbmvzglP04VLwxCMldBLUrRHD1/nVrq
-	frNjPBoxzvFfvj7osNzXZinTO9PdjkSdJNeW0Ncxrlp87/9cQxVEghi7URZAkWc=
-X-Google-Smtp-Source: AGHT+IFi4KZwaIGRm3q47w7BjMsKmiX4fpOGOKit+SVa9n3QbWQY3Wl0wBNYNELUTfzSXr2sJraYZg==
-X-Received: by 2002:a05:620a:2491:b0:785:501c:2bd2 with SMTP id i17-20020a05620a249100b00785501c2bd2mr1035299qkn.38.1706804598763;
-        Thu, 01 Feb 2024 08:23:18 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU87vsPNAg+pZEP5zUOh6/YC+YRKj4IweuYEznAwhlkaHTekFELvGEStc9E8xPfg6fdFoHbklzzDDEyWsQEF68iOX77q3SltmJfpPNZaLSf4Q5bmL9RMxTq1lt8kN+kEiP8o3PZzz3GzB0VtEY1vjmTkktIMB3EgdsUDAXX+roW0AYz77LG0s654wnd8RyTj2TsWgPGQBHsbf2kpVNp2bBCVaa6tg8=
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id d23-20020a05620a205700b00783f77b968fsm4034200qka.109.2024.02.01.08.23.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 08:23:18 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rVZqP-00Ammc-N5;
-	Thu, 01 Feb 2024 12:23:17 -0400
-Date: Thu, 1 Feb 2024 12:23:17 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Nikhil V <quic_nprakash@quicinc.com>
-Cc: Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Charan Teja Kalla <quic_charante@quicinc.com>,
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] iommu: Avoid races around default domain allocations
-Message-ID: <20240201162317.GI50608@ziepe.ca>
-References: <e605b38a2d40b1e7589e10110c6d3ece35f6af4e.1705571894.git.quic_nprakash@quicinc.com>
- <139a9abe-75d8-3bda-3ec9-a14a493eb2a9@quicinc.com>
+        bh=r6HuU+nMuZPxOqccbs5Of8zd1RTaXx42PjFB7lXu1/I=;
+        b=0d2InUYmDxOyOfqid/WGR/Xpy61ElDA17p4pnCN5yHWmxkWydBhVbwxaKqsN9djm3R
+         nHod7/b8GpwkLaFYyK0qccRxCiLxcaj4j6N9IHNglpHlQazf9C5CFcZxtGiFiWlSEJWd
+         umucrCBbVUPRZ9WuQTemTYSOQ7ewjAvR0FmmoElQmLPna8zRji28lA2AZK/kXNN0Krgp
+         DJMRdwAM5E9ZBoEko8WYwcyq5zlC7fQjcZPaNsd9EL7VlrVo3djCCXkc0WEmcX3GIWTo
+         Xl4RZXv1eCTR+4vpZ36r93z6Ma+IK22eIoFZNgZcWDC2odDjbbqmweWNn0IQTALblEYt
+         QT5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706804632; x=1707409432;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=r6HuU+nMuZPxOqccbs5Of8zd1RTaXx42PjFB7lXu1/I=;
+        b=H5ZC1EHOnbbbv1ILJissoVckiMrREX9ucAtcngBFbI9d30HniAPzMgJKMtVeYaDpYU
+         EuzH3pxzoyurRYC7MEyRXEN0b3K26BBcGMsYRF0SiqPw5n1lQ/24Gu4ngoW0DiTncok2
+         EztGSbViFrJ7sg1AHOjp7dYRM6Cw03yc1emoA7OxKIXXaDXVFffST1A236pAsSreUuMR
+         lXfGH9BVBXQwKufpEDMBws9SQ5IO6YIj3+xnnoIgHh/rBQEqH28fdeAvwJXMdSxmTwly
+         Yglz1RQgXghSZa4xH4wkTxHEcCm+6a92f0Y7Vj07lt8/lnQuE8EEGaq+xbt4LbzobDoa
+         J9tA==
+X-Gm-Message-State: AOJu0Yw8BF+9/+8E61sBs7kyO0SPAIMFAr1S85ZJ+ZKlBDvJiVuR1/CH
+	Ig5ZIVvHTXGyLQe7mS5E7AsFZDE0UsfxWGP+PvZgEgwbMV4ewuj+qycm3i1alsyttqgQ16xhI7I
+	+CMO6awwYajLwu+u+k7O9wX6kvkEx3aA3hUIZ
+X-Google-Smtp-Source: AGHT+IHZLNoTy9E7TayTesZ1prle6Vi1TuRcJ9benAaEiMnkjqKwtoceCYTAuIKDKKFkE7hFgE89TvCQ3nXaE5/5lg4=
+X-Received: by 2002:a67:fad9:0:b0:467:9f70:e137 with SMTP id
+ g25-20020a67fad9000000b004679f70e137mr5119440vsq.34.1706804632143; Thu, 01
+ Feb 2024 08:23:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <139a9abe-75d8-3bda-3ec9-a14a493eb2a9@quicinc.com>
+References: <20240129180502.4069817-21-ardb+git@google.com>
+ <20240129180502.4069817-22-ardb+git@google.com> <20240131073156.GHZbn3bILaWLEluzp-@fat_crate.local>
+In-Reply-To: <20240131073156.GHZbn3bILaWLEluzp-@fat_crate.local>
+From: Kevin Loughlin <kevinloughlin@google.com>
+Date: Thu, 1 Feb 2024 08:23:41 -0800
+Message-ID: <CAGdbjmJi_b0jt4-noJEdVFvQ80BOBULmHic8D-uGsNn4m9rTyg@mail.gmail.com>
+Subject: Re: [PATCH v3 01/19] efi/libstub: Add generic support for parsing mem_encrypt=
+To: Borislav Petkov <bp@alien8.de>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
+	Ard Biesheuvel <ardb@kernel.org>, Tom Lendacky <thomas.lendacky@amd.com>, 
+	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev, Conrad Grobler <grobler@google.com>, 
+	Andri Saar <andrisaar@google.com>, Sidharth Telang <sidtelang@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 29, 2024 at 01:29:12PM +0530, Nikhil V wrote:
+On Tue, Jan 30, 2024 at 11:32=E2=80=AFPM Borislav Petkov <bp@alien8.de> wro=
+te:
+>
+> On Mon, Jan 29, 2024 at 07:05:04PM +0100, Ard Biesheuvel wrote:
+> > From: Ard Biesheuvel <ardb@kernel.org>
+> >
+> > Parse the mem_encrypt=3D command line parameter from the EFI stub if
+> > CONFIG_ARCH_HAS_MEM_ENCRYPT=3Dy, so that it can be passed to the early
+> > boot code by the arch code in the stub.
+>
+> I guess all systems which do memory encryption are EFI systems anyway so
+> we should not worry about the old ones...
 
-> Gentle ping to have your valuable feedback. This fix is helping us
-> downstream without which we see a bunch of kernel crashes.
+There is at least one non-EFI firmware supporting memory encryption:
+Oak stage0 firmware [0]. However, I think Ard's patch seems simple
+enough to adopt in non-EFI firmware(s) if needed. I merely wanted to
+point out the existence of non-EFI memory encryption systems for
+potential future cases (ex: reviewing more complex patches at the
+firmware interface).
 
-What are you expecting here? This was fixed in Linus's tree some time
-ago now
-
-Are you asking for the stable team to put something weird in 6.1? I
-don't think they generally do that?
-
-Jason
+[0] https://github.com/project-oak/oak/tree/main/stage0_bin
 
