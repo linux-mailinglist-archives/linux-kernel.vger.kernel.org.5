@@ -1,230 +1,103 @@
-Return-Path: <linux-kernel+bounces-47938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FA188454DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:08:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A360884537C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:13:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9DDC1F23547
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:08:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35D34B27588
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:13:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53939157E8C;
-	Thu,  1 Feb 2024 10:07:57 +0000 (UTC)
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 420B615B0E8;
+	Thu,  1 Feb 2024 09:13:15 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CAE34D9E7
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 10:07:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE9B515A4B1;
+	Thu,  1 Feb 2024 09:13:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706782076; cv=none; b=drYipehoR2LkHeWp43cDrgNV7xEoJlILOj+b33SiHuIPiaWfoZQ67VxdtFi6gXtGcmGat6y1QbGJEqgQGTbfJ8caQ1CkI+3NB6xSUVtZ8Df7EJZtiM0FaZwzWPgrLXAlBj+1k5uo1pNjljfpSc1KdstKyfTXbvmBovL91jIUX90=
+	t=1706778794; cv=none; b=oG1S4DnbpHp0tVuxnkzlZ4WpqgPkoa2d7TRU/ayTHUv+ovXVqi4S+w7X4xy74Z9FBtjpo27N+CkDa4aZiFZjfusD2o3w8CqNB8UYZ9fNGlH2ciHGLZvTMIFIsp27h8XzLtbuYgME8ws6xWUkSjHOxlLl+sP7HPtWwFdQAZlf/k0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706782076; c=relaxed/simple;
-	bh=H3NlgKMwCfq774/B0cUI4gDakYJQeaoj9l7F/QS62HE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SFqUJ1sgqV1kGuYSKoQc6CDOUsGHrMEz0Lmjt/cAhEl0jPYnpnkIxVsIcNsFZKI4zvjAxRxhkVzd4460ev26L37h75x3UJrdBdGVGOdJpchw72cHIhsgjFkFKarhBg1VWRVTdd8V7eBMxnp6k1Q1W5DCdw7GuSRtv2m1lrWOt+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5B34E24000C;
-	Thu,  1 Feb 2024 10:07:49 +0000 (UTC)
-Message-ID: <4bf64df4-43a4-4207-b7d5-ff07adb98193@ghiti.fr>
-Date: Thu, 1 Feb 2024 11:07:48 +0100
+	s=arc-20240116; t=1706778794; c=relaxed/simple;
+	bh=vdcjgpSSe3vHkaNcPGjjlLa0vhqVfEdHpZMs8SYg4f0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AvGA8mjN8vkMyuEcNAqD4aAt5YmZi+UFKAyb1ihKkgCPIdqTDb95WgwyvbRKjF9pXbxnqb9wLpIBqGR0FeX+n6CS8t+PtmKSZ/voAmYHQwjisWlcqUNic1bXnqGKVzigaXnW8fGONF8m9KHxSD744QnRv8/D/gsy46Jxw/VPprc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TQY6s3h8Bz1Q8Ks;
+	Thu,  1 Feb 2024 17:11:17 +0800 (CST)
+Received: from dggpemd200004.china.huawei.com (unknown [7.185.36.141])
+	by mail.maildlp.com (Postfix) with ESMTPS id 205971400D4;
+	Thu,  1 Feb 2024 17:13:09 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by dggpemd200004.china.huawei.com
+ (7.185.36.141) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Thu, 1 Feb
+ 2024 17:13:08 +0800
+From: Liu Shixin <liushixin2@huawei.com>
+To: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner
+	<brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox
+	<willy@infradead.org>, Andrew Morton <akpm@linux-foundation.org>
+CC: <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-mm@kvack.org>, Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH 0/2] Fix I/O high when memory almost met memcg limit
+Date: Thu, 1 Feb 2024 18:08:33 +0800
+Message-ID: <20240201100835.1626685-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: add CALLER_ADDRx support
-Content-Language: en-US
-To: Zong Li <zong.li@sifive.com>, Conor Dooley <conor.dooley@microchip.com>
-Cc: palmer@dabbelt.com, paul.walmsley@sifive.com, aou@eecs.berkeley.edu,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231205085959.32177-1-zong.li@sifive.com>
- <139cdbd6-73d9-4452-94ce-825689b7c0c8@ghiti.fr>
- <CANXhq0oA7LsKev+5gZCtNzCJ64RVOyimM1yQnY0kqs22VE6S4A@mail.gmail.com>
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <CANXhq0oA7LsKev+5gZCtNzCJ64RVOyimM1yQnY0kqs22VE6S4A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alex@ghiti.fr
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemd200004.china.huawei.com (7.185.36.141)
 
-On 01/02/2024 09:43, Zong Li wrote:
-> On Thu, Feb 1, 2024 at 1:10 AM Alexandre Ghiti <alex@ghiti.fr> wrote:
->> On 05/12/2023 09:59, Zong Li wrote:
->>> CALLER_ADDRx returns caller's address at specified level, they are used
->>> for several tracers. These macros eventually use
->>> __builtin_return_address(n) to get the caller's address if arch doesn't
->>> define their own implementation.
->>>
->>> In RISC-V, __builtin_return_address(n) only works when n == 0, we need
->>> to walk the stack frame to get the caller's address at specified level.
->>
->> Is that a bug in gcc or something expected for riscv in general?
->>
-> I think it isn't supported for riscv in general.
->
->>> data.level started from 'level + 3' due to the call flow of getting
->>> caller's address in RISC-V implementation. If we don't have additional
->>> three iteration, the level is corresponding to follows:
->>>
->>> callsite -> return_address -> arch_stack_walk -> walk_stackframe
->>> |           |                 |                  |
->>> level 3     level 2           level 1            level 0
->>>
->>> Signed-off-by: Zong Li <zong.li@sifive.com>
->>> ---
->>>    arch/riscv/include/asm/ftrace.h    |  5 ++++
->>>    arch/riscv/kernel/Makefile         |  2 ++
->>>    arch/riscv/kernel/return_address.c | 48 ++++++++++++++++++++++++++++++
->>>    3 files changed, 55 insertions(+)
->>>    create mode 100644 arch/riscv/kernel/return_address.c
->>>
->>> diff --git a/arch/riscv/include/asm/ftrace.h b/arch/riscv/include/asm/ftrace.h
->>> index 2b2f5df7ef2c..42777f91a9c5 100644
->>> --- a/arch/riscv/include/asm/ftrace.h
->>> +++ b/arch/riscv/include/asm/ftrace.h
->>> @@ -25,6 +25,11 @@
->>>
->>>    #define ARCH_SUPPORTS_FTRACE_OPS 1
->>>    #ifndef __ASSEMBLY__
->>> +
->>> +extern void *return_address(unsigned int level);
->>> +
->>> +#define ftrace_return_address(n) return_address(n)
->>> +
->>>    void MCOUNT_NAME(void);
->>>    static inline unsigned long ftrace_call_adjust(unsigned long addr)
->>>    {
->>> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
->>> index fee22a3d1b53..40d054939ae2 100644
->>> --- a/arch/riscv/kernel/Makefile
->>> +++ b/arch/riscv/kernel/Makefile
->>> @@ -7,6 +7,7 @@ ifdef CONFIG_FTRACE
->>>    CFLAGS_REMOVE_ftrace.o      = $(CC_FLAGS_FTRACE)
->>>    CFLAGS_REMOVE_patch.o       = $(CC_FLAGS_FTRACE)
->>>    CFLAGS_REMOVE_sbi.o = $(CC_FLAGS_FTRACE)
->>> +CFLAGS_REMOVE_return_address.o       = $(CC_FLAGS_FTRACE)
->>>    endif
->>>    CFLAGS_syscall_table.o      += $(call cc-option,-Wno-override-init,)
->>>    CFLAGS_compat_syscall_table.o += $(call cc-option,-Wno-override-init,)
->>> @@ -46,6 +47,7 @@ obj-y       += irq.o
->>>    obj-y       += process.o
->>>    obj-y       += ptrace.o
->>>    obj-y       += reset.o
->>> +obj-y        += return_address.o
->>>    obj-y       += setup.o
->>>    obj-y       += signal.o
->>>    obj-y       += syscall_table.o
->>> diff --git a/arch/riscv/kernel/return_address.c b/arch/riscv/kernel/return_address.c
->>> new file mode 100644
->>> index 000000000000..c2008d4aa6e5
->>> --- /dev/null
->>> +++ b/arch/riscv/kernel/return_address.c
->>> @@ -0,0 +1,48 @@
->>> +// SPDX-License-Identifier: GPL-2.0-only
->>> +/*
->>> + * This code come from arch/arm64/kernel/return_address.c
->>> + *
->>> + * Copyright (C) 2023 SiFive.
->>> + */
->>> +
->>> +#include <linux/export.h>
->>> +#include <linux/kprobes.h>
->>> +#include <linux/stacktrace.h>
->>> +
->>> +struct return_address_data {
->>> +     unsigned int level;
->>> +     void *addr;
->>> +};
->>> +
->>> +static bool save_return_addr(void *d, unsigned long pc)
->>> +{
->>> +     struct return_address_data *data = d;
->>> +
->>> +     if (!data->level) {
->>> +             data->addr = (void *)pc;
->>> +             return false;
->>> +     }
->>> +
->>> +     --data->level;
->>> +
->>> +     return true;
->>> +}
->>> +NOKPROBE_SYMBOL(save_return_addr);
->>> +
->>> +void *return_address(unsigned int level)
->>
->> Maybe return_address() should be noinline to make sure it's not inlined
->> as it would break the "+ 3"? Not sure it's necessary though.
-> Yes, thanks for pointing it out. We should ensure it's not inlined in
-> any case. I will send the next version.
->
->>
->>> +{
->>> +     struct return_address_data data;
->>> +
->>> +     data.level = level + 3;
->>> +     data.addr = NULL;
->>> +
->>> +     arch_stack_walk(save_return_addr, &data, current, NULL);
->>> +
->>> +     if (!data.level)
->>> +             return data.addr;
->>> +     else
->>> +             return NULL;
->>> +
->>> +}
->>> +EXPORT_SYMBOL_GPL(return_address);
->>> +NOKPROBE_SYMBOL(return_address);
->>
->> And I see that with this patch, ftrace_return_address() is now defined
->> whether CONFIG_FRAME_POINTER is set or not, is that correct?
-> Yes, that is what I understand. In this patch, the
-> ftrace_return_address() is still defined to return_address() when
-> CONFIG_FRAME_POINTER isn't enabled, and return_address still works
-> because riscv port can walk stackframe without fp.
->
->> This looks like a fix to me so that should go into -fixes with a Fixes
->> tag (but we'll have to make sure that the "+ 3" is correct on all
->> backports...):
->>
->> Fixes: 10626c32e382 ("riscv/ftrace: Add basic support")
-> The return_address() invokes arch_stack_walk(), which enabled by the
-> '5cb0080f1bfd ("riscv: Enable ARCH_STACKWALK")'
->
-> I guess that we are not able to apply it on all backports. Is this
-> right? "+3" is correct after enabling ARCH_STACKWALK.
+Recently, when install package in a docker environment where the memory
+almost reached the memcg limit, the program have no respond severely for
+more than 15 minutes. During this period, the I/O is high(~1G/s) which
+cause other programs failed to work properly.
 
+The problem can be constructed in the following way:
 
-5cb0080f1bfd was introduced in v5.11, so that will make the backport possible up to 5.15, I guess that's ok, nobody will ever use a riscv kernel that old (?).
+ 1. Download the image:
+	docker pull centos:7
+ 2. Create a docker with 4G memory limit and 6G memsw limit(cgroupv1):
+	docker create --name dockerhub_centos7 --cpu-period=100000
+	--cpu-quota=400000 --memory 4G --memory-swap 6G --cap-add=SYS_PTRACE
+	--cap-add=SYS_ADMIN --cap-add=NET_ADMIN --cap-add=NET_RAW
+	--pids-limit=20000 --ulimit nofile=1048576:1048576
+	--ulimit memlock=-1:-1 dockerhub_centos7:latest /usr/sbin/init
+ 3. Start the docker:
+	docker start dockerhub_centos7
+ 4. Allocate 6094MB memory in docker.
+ 5. run 'yum install expect'.
 
-So I'd add the Fixes tag I proposed above, and let the backport fail for < 5.15. @Conor any opinion?
+We found that this problem is caused by a lot ot meaningless readahead.
+Since memory is almost met memcg limit, the readahead page will be
+reclaimed immediately and will readahead and reclaim again and again.
 
+These two patch will stop readahead early when memcg charge failed and
+will skip readahead when there are too many active refault.
 
->
->> And you can finally add for your v2 (or not if you don't respin):
->>
->> Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> Thanks for the review, Alexandre. I will add it in v2:)
+[1] https://lore.kernel.org/linux-mm/c2f4a2fa-3bde-72ce-66f5-db81a373fdbc@huawei.com/T/
 
+Liu Shixin (2):
+  mm/readahead: stop readahead loop if memcg charge fails
+  mm/readahead: limit sync readahead while too many active refault
 
-Thanks,
+ include/linux/fs.h      |  2 ++
+ include/linux/pagemap.h |  1 +
+ mm/filemap.c            | 16 ++++++++++++++++
+ mm/readahead.c          | 12 ++++++++++--
+ 4 files changed, 29 insertions(+), 2 deletions(-)
 
-Alex
+-- 
+2.25.1
 
-
->
->> Thanks and sorry for the delay!
->>
->> Alex
->>
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
