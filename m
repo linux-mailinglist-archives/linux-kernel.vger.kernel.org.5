@@ -1,168 +1,104 @@
-Return-Path: <linux-kernel+bounces-48288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B009284599E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:06:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E523845997
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:05:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A5E6B23C0D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:06:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AED481C27FDB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:05:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E2A262179;
-	Thu,  1 Feb 2024 14:05:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 340BC5D475;
+	Thu,  1 Feb 2024 14:05:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cU4kvFll"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="GKWED4Y5";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="/aX3yW02"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 024DF62168
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 14:05:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 180225D473
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 14:05:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706796322; cv=none; b=GdpHlpxHie+sUx+0pAjWeC1TqEyvbWuJEIH09NIBmurbJsF6AA15PVIoAUIM47kckppp7XhyKUnZwFF9n/uxlomDBcMnTt32BQDux2sGdJRoIFqf+gvxPBSMLIp3swVpsrbEhE3bt9+UtJDVxQHReYrdABU8bGvhnOxcS291nik=
+	t=1706796303; cv=none; b=NcWvkb5QjIWYYmIo2g/w/fpPEt/iBUyVDnaQQnQ+Shvxdj0ea/mEarAYLBMA2u95QUuklJl992Ohp5R34KLN0qAHLtUUyRFCdvcFn/pwXrGTRvgkkP3QPoa6Nvq4u19FxduFeEHtuNQomfevnoPgcrDHJaK8i5KbWMdlm1BP3AI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706796322; c=relaxed/simple;
-	bh=dUpEwtl6HrWQwmNRsfssIbEHclysv218wLdB+QE1DWA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jk05YjESouB18sDzLjoUY4SXCyC+UKETDjqHjT2sYZD4wb1AqZk0jum5EnGZ8zz+aKIuq2Jju5eO79/kYqfPEmr/vEDtRLFYWVQ3qW3sIz4979V9NcR7jQ/HlajA443HNn2yJ4iD3FsWmbu4fFmVt+Bg5oqsxewYC0mjj453H+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cU4kvFll; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40fc2a6f8b6so1927905e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 06:05:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706796318; x=1707401118; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JdXU5rj7eakY5p27mKvfYSeW9QV6FkZ4NSs0xJtV3vw=;
-        b=cU4kvFllJeNSQHkFTb/uosGoV06aqDnHpdE1rQqEfmGb5AR8apLwsNarzMQhXOoa2g
-         aWK6qLeAQszkf0MlZy0LKOT0wC7tqcrZ35c1bfde1ftJLZmikLuQgqmczI5YX37gmDp6
-         SSykZidl62EP9zaigmJ/LUzayrntmu9vuCUaiOKPQ2P2AsLdTjzmehLKc3EampI8xKAY
-         qzA5wbr/sDiSZjrLRo54Ch+NSDVphKcwwVGiUkj1PssMN+/EcZ9iTu65Qn4LPHgr688a
-         P2Z010IMc669K1qVJ15869969Opw+2uZUyhbR79/bA5/oGimgkRapWnLaQEfRFlkvyDL
-         xK/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706796318; x=1707401118;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JdXU5rj7eakY5p27mKvfYSeW9QV6FkZ4NSs0xJtV3vw=;
-        b=lvH54APqK5OVL72a5BRdXBUInuUKE7rzm5pp+25q+2xil15Zj3HP38lnowEZe4Xg5a
-         Xfx3H88ensNnKR5DbCwRuGstWUqL5VLIWK7cU4dtTPJLHd73dUsMw7HxyKXTOcExx/OV
-         QAPxIkQO7WceAd/FqHnVh0wgfqBneharfluQBlPhY+khG0/2T95MMpxmR9ijfbULPER0
-         AL3HYzmSS9bYjA7mu7HZGPE8556RxPAfSh0k20L7pGI8twzbSxtxSR7eeR13Ip9P0kvl
-         Qxrbh7QaAXdOURtwyL0FfyPEM5TpG90siLAOTCaCmv8vp7gp6F0PeA0lYdEWFdwUiriW
-         hVqQ==
-X-Gm-Message-State: AOJu0Yy+vp3hnK2DiQ9NXUsICVWNyuu1Qoim0b8vImrIEQhL454uzzOy
-	E6coP1yk6Si3JSZ+NrlkIUlR+AQM/D46Yh5rsbjyDtBdqP253466
-X-Google-Smtp-Source: AGHT+IFxA1ogf/virsIXTJ/ZtZ86nDJzZNd+ZydaO5BklUltbf9SJS/NkIfszYgY8bLVS1VThYs9MA==
-X-Received: by 2002:a5d:548d:0:b0:33b:1bb9:af19 with SMTP id h13-20020a5d548d000000b0033b1bb9af19mr104050wrv.54.1706796318130;
-        Thu, 01 Feb 2024 06:05:18 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUzk7AUvEJhqoe8POG+VzWLqYmptGvNd08BPjkPQ1kmC8OFA9WF9m1GHxCGXGlIBVWAqGx17N/Fd1KJzwdO2T+vJgu+spml0jKpInVNXFRlL9zpSLqAdiHbP7Yx59I3NMA8kBtzWXxqfrIO+kw53JWVXH5JywfjfCy8x4luRyad1jhX8ynqFvvEoOQV6Xhve7i6kZ/mxhNySsZqiMgrUVxys67LWO0I
-Received: from Ubuntu22.myguest.virtualbox.org ([46.121.140.152])
-        by smtp.gmail.com with ESMTPSA id ci10-20020a5d5d8a000000b00339281d98c9sm16522227wrb.72.2024.02.01.06.05.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 06:05:17 -0800 (PST)
-From: Meir Elisha <meir6264@gmail.com>
-X-Google-Original-From: Meir Elisha <meir6264@Gmail.com>
-Received: by Ubuntu22.myguest.virtualbox.org (sSMTP sendmail emulation); Thu, 01 Feb 2024 16:05:14 +0200
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Ruan Jinjie <ruanjinjie@huawei.com>,
-	Yang Yingliang <yangyingliang@huawei.com>
-Cc: linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Meir Elisha <meir6264@Gmail.com>
-Subject: [PATCH v2 4/4] Staging: rtl8723bs: fix else after break warning
-Date: Thu,  1 Feb 2024 16:04:59 +0200
-Message-Id: <20240201140459.438479-5-meir6264@Gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240201140459.438479-1-meir6264@Gmail.com>
-References: <20240201140459.438479-1-meir6264@Gmail.com>
+	s=arc-20240116; t=1706796303; c=relaxed/simple;
+	bh=qTbe2w2YOxtxZeFo7i+Hbfe5GUaAqTNREuYYUhZ4JRg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=qZ9tcD28OBR7Kp49ZeXqIC/54MNdHKKRTwDWh72D5hWmboYCXZ8IfZsn4L/Sk8CYcuguWLfhHkEL7gj0uttJi7vIKxOpJZd9kAzGMTJ3x80OWKXAOKFqCvck0T4EC3lYGjKDysAeAj8mVE+neQQArhX82FzJBGdepPJqqGozFUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=GKWED4Y5; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=/aX3yW02; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706796300;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d8FZuGBOU1pHC+8Sc4g536Zw8P/8F9nULgyDhskpGg0=;
+	b=GKWED4Y5w2e4gRq7iBnx5koSzwwyJjsNWO5zd2FFM+oBSEHoEr8nJWnUQgs5l39aENYsmc
+	v7KmCZyS2IJOjB3Q12aVxWjtS0v1mytBzOW75762VayrulRES7dvVNJNQ04MGj9Q+iZlSL
+	8eqax6XS9Js2jo75HLDv1K42ZUgXp6wymL1BkHoB2vAmKqKqnRXWyPWzr1j3kWMVTNsqzE
+	qJhTl5Lr8yhixo+GXetrTZTnYISBNqC960dcPG9CdkFw0mXfyc1gwNIgVgbHKbRTcttE9b
+	81zIJZSLDRhCFuU10X4m4OqiellpvmYRsk7vAuvDs3uxEtY21UETuaEMy2xKvA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706796300;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d8FZuGBOU1pHC+8Sc4g536Zw8P/8F9nULgyDhskpGg0=;
+	b=/aX3yW0250WjiLbGFnHQ+NttUrEVcV6WbMROFki6tCxV0eAKR45LYLmyy5FEe7Qsmc1dMb
+	HwugZRPJPEcMrfDQ==
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>, Peng Liu
+ <liupeng17@lenovo.com>, Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 03/15] tick: Remove useless oneshot ifdeffery
+In-Reply-To: <ZbuZyu2XmRO-UVCY@localhost.localdomain>
+References: <20240131231120.12006-1-frederic@kernel.org>
+ <20240131231120.12006-4-frederic@kernel.org> <87ttmsikud.fsf@somnus>
+ <ZbuZyu2XmRO-UVCY@localhost.localdomain>
+Date: Thu, 01 Feb 2024 15:04:59 +0100
+Message-ID: <87il38i8l0.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Fix checkpatch warning:
-else is not generally useful after a break or return
+Frederic Weisbecker <frederic@kernel.org> writes:
 
-Signed-off-by: Meir Elisha <meir6264@Gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_mlme.c | 40 +++++++++--------------
- 1 file changed, 16 insertions(+), 24 deletions(-)
+> Le Thu, Feb 01, 2024 at 10:40:10AM +0100, Anna-Maria Behnsen a =C3=A9crit=
+ :
+>> Frederic Weisbecker <frederic@kernel.org> writes:
+>>=20
+>> > tick-sched.c is only built when CONFIG_TICK_ONESHOT=3Dy, which is sele=
+cted
+>> > only if CONFIG_NO_HZ_COMMON=3Dy or CONFIG_HIGH_RES_TIMERS=3Dy. Therefo=
+re
+>> > the related ifdeferry in this file is needless and can be removed.
+>> >
+>> > Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+>> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+>>=20
+>> It's a nitpick, but shouldn't the ordering of sob and reviewed-by be the
+>> other way round?
+>
+> I've seen it both ways here and there, I'm not sure if there is a strict =
+rule
+> for it...
+>
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-index 13bc0ebca247..6a9b57fd1a97 100644
---- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-@@ -1498,30 +1498,25 @@ void _rtw_join_timeout_handler(struct timer_list *t)
- 
- 	spin_lock_bh(&pmlmepriv->lock);
- 
--	if (rtw_to_roam(adapter) > 0) { /* join timeout caused by roaming */
-+	if (rtw_to_roam(adapter) == 0) {
-+		rtw_indicate_disconnect(adapter);
-+		free_scanqueue(pmlmepriv);
-+		/* indicate disconnect for the case that join_timeout
-+		 * and check_fwstate != FW_LINKED
-+		 */
-+		rtw_cfg80211_indicate_disconnect(adapter);
-+	} else { /* join timeout caused by roaming */
- 		while (1) {
- 			rtw_dec_to_roam(adapter);
--			if (rtw_to_roam(adapter) != 0) { /* try another */
--				int do_join_r;
--
--				do_join_r = rtw_do_join(adapter);
--				if (do_join_r != _SUCCESS)
--					continue;
--
--				break;
--			} else {
-+			if (rtw_to_roam(adapter) == 0) {
- 				rtw_indicate_disconnect(adapter);
- 				break;
-+			} else if (rtw_do_join(adapter) != _SUCCESS) { /* try another */
-+				continue;
- 			}
--		}
--
--	} else {
--		rtw_indicate_disconnect(adapter);
--		free_scanqueue(pmlmepriv);/*  */
--
--		/* indicate disconnect for the case that join_timeout and check_fwstate != FW_LINKED */
--		rtw_cfg80211_indicate_disconnect(adapter);
- 
-+			break;
-+		}
- 	}
- 
- 	spin_unlock_bh(&pmlmepriv->lock);
-@@ -2052,12 +2047,9 @@ signed int rtw_restruct_sec_ie(struct adapter *adapter, u8 *in_ie, u8 *out_ie, u
- 	}
- 
- 	iEntry = SecIsInPMKIDList(adapter, pmlmepriv->assoc_bssid);
--	if (iEntry < 0) {
--		return ielength;
--	} else {
--		if (authmode == WLAN_EID_RSN)
--			ielength = rtw_append_pmkid(adapter, iEntry, out_ie, ielength);
--	}
-+	if (iEntry > 0 && authmode == WLAN_EID_RSN)
-+		ielength = rtw_append_pmkid(adapter, iEntry, out_ie, ielength);
-+
- 	return ielength;
- }
- 
--- 
-2.34.1
+As it is for the tip maintainers, they have some rules - I don't know
+how strictly they are used :)
+
+  Documentation/process/maintainer-tip.rst
 
 
