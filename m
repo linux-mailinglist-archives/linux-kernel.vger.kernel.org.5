@@ -1,76 +1,102 @@
-Return-Path: <linux-kernel+bounces-48031-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A34DC84567B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AE5784566F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:46:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 292B4B24BCE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:50:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D30FCB22B33
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:46:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B07C15DBA1;
-	Thu,  1 Feb 2024 11:49:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6B6415D5AF;
+	Thu,  1 Feb 2024 11:46:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WdCfsK5F"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pinzLHWf";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lnggnc1M";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pinzLHWf";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lnggnc1M"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 251CE15D5BD
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 11:49:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7519315CD4F;
+	Thu,  1 Feb 2024 11:46:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706788181; cv=none; b=Y6RcS3Z08V8U1OtYJjGyPhWxWeNMyqbz8S4nkNa9HffvdlNQrMx930d45rtKTz6ogqfnF0+Sy9MbeZ5vb5Fjls91DHwPk4JOP7Tacx6q+8Nf5pIl6Ap7buneOSyOiT9YDvZFSUx5YWWF1Li64JwHaUbJYO8f12kGGEtzeBHFEqA=
+	t=1706787978; cv=none; b=sSVC3b+l2To/IktB5qgAots1I1qwrgs+wDn2l8fpjRVyFjoQ9i3nLwYkWrA1PJbyPIXwaiRDInh3Kl+M/Fbo2Uh175r2QQbi4F69QFTcH+M3ilF6CbExH8PY197acZ0McaYxMg07uBJnwlRWemblxkGs9+gVtG6iAYp7wr1kla4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706788181; c=relaxed/simple;
-	bh=LW71KuuAIUVJWedR4aaeNff0Yio4Rtb4Pgs9MRUCuiw=;
+	s=arc-20240116; t=1706787978; c=relaxed/simple;
+	bh=dyKu5gOYG3cW5DXvumuesAjji+Qtsbt9OWZDBgfLJqM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p5rQfwJ+OjXmBJ3Jo+A3nzNOI5B8oPsC2AYqoB40RaefOAlJ94eW8j1dussyX85YbakHtj/akN+JiGmp4MNPQsWSvVrFDMSW72b5H1+W+InVRa4ah2+vMjzFvvs7XBM9U8YZ9P0oC7r3N4XkNQPff/fWCjwFOe7Blzw9PwRDNbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WdCfsK5F; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706788180; x=1738324180;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=LW71KuuAIUVJWedR4aaeNff0Yio4Rtb4Pgs9MRUCuiw=;
-  b=WdCfsK5FmNG9PaRAFTkdniPUQXNxFGXZVZIKTfN4yZIUWP3SyaGwGip8
-   qbeidG7+0K59eTpuqt9B7FT6BwRLyH2raNP1ZFSMOCwFORG6Kg3jz20QC
-   IGhzYBec9b7nnvOnrjRReHmp6pBk5JV6ed0eJlJgBj2Pe78kqSlAzBgij
-   XQIHnJpla6lpVJRFNIW472pXlZTykV20IFo6M7iDbYCX+5vfmKzFFrr3c
-   2CikybXQAXHbFqWBm6jzT26LUtqb1sml4G69D9lNwlF6/JBdNecnmjzD+
-   fniTIyUPLbIEE0pFj0JBBLGWr1NtJKhK0TxCR63FT87ZtQ1k/rkBOLOSh
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3709678"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="3709678"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 03:49:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="1119923610"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="1119923610"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 03:49:36 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rVVVQ-00000000oza-0W5b;
-	Thu, 01 Feb 2024 13:45:20 +0200
-Date: Thu, 1 Feb 2024 13:45:19 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: Howard Yen <howardyen@google.com>, hch@lst.de, m.szyprowski@samsung.com,
-	gregkh@linuxfoundation.org, petr.tesarik.ext@huawei.com,
-	rafael@kernel.org, broonie@kernel.org, james@equiv.tech,
-	james.clark@arm.com, masahiroy@kernel.org,
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev
-Subject: Re: [PATCH] dma-coherent: add support for multi coherent rmems per
- dev
-Message-ID: <ZbuETxd_MfFN45C8@smile.fi.intel.com>
-References: <20240201093515.849873-1-howardyen@google.com>
- <f5b626ae-bda1-479f-bc14-b1fd7ba043cf@arm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=T298njXX6WlMTD55aKoHFmsad3VZH+tRpb/6QAFabPns6Oa+rxmY3HuGFk14ZEh+taL0vlqukIyXwzk1ptmUWjTG1g2ictPVXjjOjKC23ydsiftkpmFGWidyN0CIi8bgmHVsk15TCvsFmIqyGryyqP3L3AkGqUp8HOnF0NNyd8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pinzLHWf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lnggnc1M; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pinzLHWf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lnggnc1M; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 82CC31FD10;
+	Thu,  1 Feb 2024 11:46:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706787974; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uhi8t6NDbG3WnRa+lrhzLoNDE+1STw2ZJvyqnqre/Ew=;
+	b=pinzLHWf1il9zaWdKxJkCHCBr7aivvFibDksAUlodXEo41flY61nY0P4kYe0CYq0wRKXCb
+	OspTgEi3WvETNKDWQu19lIIqL7e/66KyDZpxM6pReNXATKbdtrZYWmbxxSBD2jiSCaUo5+
+	1Acr8Tp1EHnJIfeUbPM6Yx4Watfhx2M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706787974;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uhi8t6NDbG3WnRa+lrhzLoNDE+1STw2ZJvyqnqre/Ew=;
+	b=lnggnc1MoaFNuSxrKNE2CoZOyW5RR4F5jYb9k4H1XgS3OW/Bq/x0SYVqDlMIS8LJ9uLSY2
+	Xx8wcEfwpI4VHCCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706787974; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uhi8t6NDbG3WnRa+lrhzLoNDE+1STw2ZJvyqnqre/Ew=;
+	b=pinzLHWf1il9zaWdKxJkCHCBr7aivvFibDksAUlodXEo41flY61nY0P4kYe0CYq0wRKXCb
+	OspTgEi3WvETNKDWQu19lIIqL7e/66KyDZpxM6pReNXATKbdtrZYWmbxxSBD2jiSCaUo5+
+	1Acr8Tp1EHnJIfeUbPM6Yx4Watfhx2M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706787974;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uhi8t6NDbG3WnRa+lrhzLoNDE+1STw2ZJvyqnqre/Ew=;
+	b=lnggnc1MoaFNuSxrKNE2CoZOyW5RR4F5jYb9k4H1XgS3OW/Bq/x0SYVqDlMIS8LJ9uLSY2
+	Xx8wcEfwpI4VHCCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 72DAE13672;
+	Thu,  1 Feb 2024 11:46:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Y5MGHIaEu2VqKwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 01 Feb 2024 11:46:14 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 1B371A0809; Thu,  1 Feb 2024 12:46:14 +0100 (CET)
+Date: Thu, 1 Feb 2024 12:46:14 +0100
+From: Jan Kara <jack@suse.cz>
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc: Baokun Li <libaokun1@huawei.com>, Jan Kara <jack@suse.cz>,
+	linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+	ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com,
+	stable@kernel.org
+Subject: Re: [PATCH] ext4: correct best extent lstart adjustment logic
+Message-ID: <20240201114614.4jkvi2c6buuovsj7@quack3>
+References: <20240122123332.555370-1-libaokun1@huawei.com>
+ <20240131124636.gmxaiex6yqrhvxcj@quack3>
+ <3630fa7f-b432-7afd-5f79-781bc3b2c5ea@huawei.com>
+ <Zbt7setS4c/Q4fyv@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,27 +105,74 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f5b626ae-bda1-479f-bc14-b1fd7ba043cf@arm.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <Zbt7setS4c/Q4fyv@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=pinzLHWf;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=lnggnc1M
+X-Spamd-Result: default: False [1.69 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[huawei.com,suse.cz,vger.kernel.org,mit.edu,dilger.ca,gmail.com,kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 1.69
+X-Rspamd-Queue-Id: 82CC31FD10
+X-Spam-Level: *
+X-Spam-Flag: NO
+X-Spamd-Bar: +
 
-On Thu, Feb 01, 2024 at 10:45:30AM +0000, Robin Murphy wrote:
-> On 2024-02-01 9:35 am, Howard Yen wrote:
+Hi guys!
 
-..
-
-> >   	struct dma_coherent_mem	*dma_mem; /* internal for coherent mem
-> >   					     override */
-> > +	struct list_head	dma_mem_list;
+On Thu 01-02-24 16:38:33, Ojaswin Mujoo wrote:
+> Thanks for the CC, I somehow missed this patch.
 > 
-> I'm not necessarily against the idea, but only if it's implemented sensibly.
-> If we're going to have a list of these it should *replace* the existing
-> pointer, not do this weird thing with both.
+> As described in the discussion Jan linked [1] , there is a known bug in the
+> normalize code (which i should probably get back to now ) where we sometimes
+> end up with a goal range which doesn't completely cover the original extent and
+> this was causing issues when we tried to cover the complete original request in
+> the PA window adjustment logic. That and to minimize fragmentation, we ended up
+> going with the logic we have right now.
+> 
+> In short, I agree that in the example Baokun pointed out, it is not
+> optimal to have to make an allocation request twice when we can get it in
+> one go.
+> 
+> I also think Baokun is correct that if keeping the best extent at the end
+> doesn't cover the original start, then any other case should not lead to
+> it overflowing out of goal extent, including the case where original
+> extent is overflowing goal extent.
 
-+1 on the comment.
+Right, it was not obvious to me yesterday but when I've now reread how the
+normalization shifts the goal window, it is obvious.
 
+> So, as mentioned, it boils down to a trade off between multiple allocations and slightly 
+> increased fragmentation. iiuc preallocations are anyways dropped when the file closes
+> so I think it shouldn't hurt too much fragmentation wise to prioritize less
+> allocations. What are your thoughts on this Jan, Baokun?
+
+OK, I'm fine with the Baokun's change if we remove the problematic BUG_ON.
+
+								Honza
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
