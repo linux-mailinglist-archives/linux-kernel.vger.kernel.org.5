@@ -1,69 +1,81 @@
-Return-Path: <linux-kernel+bounces-48608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43CF5845EC9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D6231845ECC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:43:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 761E01C25728
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:43:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01EDD1C24F4E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:43:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ACBB7C6D5;
-	Thu,  1 Feb 2024 17:43:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE90C7C6D9;
+	Thu,  1 Feb 2024 17:43:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ehzY6HQT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="kOW6lnTv"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FF7D7C6C4
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 17:43:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985A67C6C9;
+	Thu,  1 Feb 2024 17:43:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706809386; cv=none; b=oTw5Hjrb8y2q2XXD/sStTTcZGVAPVDa0PnSxMR9bvmf6Up/5FmYAa1QlX70GojvGNcdo+FAfE8KPH/A1oprAl1n2UWs1LcCVMUXMsBYqN4TJDKeFwSXjqu22d6a3v8VA5VYrlRqQIEjpVEhI4jMnIni/a5lwCkHw/8RBjgtuxH4=
+	t=1706809427; cv=none; b=LtJwKDSY8bP6v/QuxRdoThBB1huzjh3aP2jqmhLLmJNg9JLQj+JR72iJm24R9L1wiX8LQgKp7qG0kGy2cj4MwEbgb1ru7IpXqf+DLyw1eWvRCsWdVlkASbsD86A2t97PapR1s08wWhM9aqlmxfeRXMdBuUqbte2inTsjM+rPuHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706809386; c=relaxed/simple;
-	bh=26JRDELdEoaW+QL/CncCjrGKkR2p6/0I9DM2N8AaJHQ=;
+	s=arc-20240116; t=1706809427; c=relaxed/simple;
+	bh=zNaI67gQwGY7XBmNa5Jg7GH30q48/1KPhw6uF+V0oKc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DtVu9ptFW1/lyO1AsQExHMm5VTfBN2VXjM3fZlpdHM32LScMT5pbQW17LFaWbkKNgEStSzPzlciOHL4Zqg1EjIESe6Hu7ag0FgzhhVOg0tsn61PEHhNMTDu7wzmxr/vJ/e48chQi980Cv9jJeGMKKTxQ3Rp15QZPJ0ER9kNZs/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ehzY6HQT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7193C433C7;
-	Thu,  1 Feb 2024 17:43:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706809386;
-	bh=26JRDELdEoaW+QL/CncCjrGKkR2p6/0I9DM2N8AaJHQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ehzY6HQT/JRf7vz2D5NQO3k9euoht9RE8kpeVxe/YntuUHhrqiVA0sWOXJGoCzTak
-	 CQPzx07Sb/7rSOix7ONCdFU1XYyqJqjRsjUYk34RDXVrfPQCF6j3nCGRiSUQWgIgnc
-	 rKSsfYzLRAdo8iZng/9JcIZS3GPxpDcPiXhQsgMB5UmwptB827TUfGJt2HHWYzVvOR
-	 +USO9I5CLoVjR3mhTgwRbBnWVzT1HVcAzpTc0ScAjnxDLU7Xl7+rE5qxwEe7akB5tE
-	 71pzV1E/GL7oCzcS/p0lXv37QE5GtH9ywi973UfNmCWZNVMgvj8RkOKlwruNhPS3eb
-	 snpdOeDhKqiaw==
-Date: Thu, 1 Feb 2024 18:43:03 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Eric Dumazet <edumazet@google.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	Arjan van de Ven <arjan@infradead.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Rik van Riel <riel@surriel.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Sebastian Siewior <bigeasy@linutronix.de>,
-	Giovanni Gherdovich <ggherdovich@suse.cz>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v10 18/20] timers: Implement the hierarchical pull model
-Message-ID: <ZbvYJysR7gnaQiNg@localhost.localdomain>
-References: <20240115143743.27827-1-anna-maria@linutronix.de>
- <20240115143743.27827-19-anna-maria@linutronix.de>
- <ZbuzMeKlCgebhJZ-@localhost.localdomain>
- <87bk90i2ja.fsf@somnus>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bqmVez6fT/zeJqK8j3PJMZSKwr3ZU0CPTkbkiuGgF5W1God2nb1uW53LiZgFCh0XHcDYXHE2cndPk8+p9ek0cHGnlvbRhB7vPnk9Fz14aQ2BzK9NJX26gy+sv4NFFsIVbFHwjJCyl/ak0kaSVj0RD4m0WNeWuBk3ESh4RfA13qk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=kOW6lnTv; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 10C37E0002;
+	Thu,  1 Feb 2024 17:43:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706809417;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=n2GjarAU0/4cvseSJWv/5fwzExnbqC46sAfI2wFgFzc=;
+	b=kOW6lnTvVzPDeiy/lu4wSWZFBzJst7yBqhhQNvBp2ArqbalQRIOwZxuSqh5TMGTfA/PfPP
+	KcdpV8U86DHKrlfUSsVWBszNXSwFFsN6Vl1yUA00iVJR1ZlGJ7wdaKodmuzbN93cQhemP2
+	4DswGWCuLp5kt584AqHDjfLeCrq/74mKpM5Ty1uRh6eLajEWLA6XPL/uCRrVcLmo4wgoG+
+	2yLdqMZLiWPc45VPQjInhUxohzWopaG6ZZvYR2v3PwO/VELnm6jHobsbrdV67xI6hhkxbD
+	/PE3dFqJpnuzXYpK2l/eapTEE032S5zVBz+SO3R0EFAUDVp/6cFc+iDnTNiiPw==
+Date: Thu, 1 Feb 2024 18:43:34 +0100
+From: Louis Chauvet <louis.chauvet@bootlin.com>
+To: Arthur Grillo <arthurgrillo@riseup.net>
+Cc: Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+	Haneen Mohammed <hamohammed.sa@gmail.com>,
+	Harry Wentland <harry.wentland@amd.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
+	Melissa Wen <melissa.srw@gmail.com>,
+	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 1/7] drm/vkms: Use drm_frame directly
+Message-ID: <ZbvYRss3UuSlCSdW@localhost.localdomain>
+Mail-Followup-To: Arthur Grillo <arthurgrillo@riseup.net>,
+	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+	Haneen Mohammed <hamohammed.sa@gmail.com>,
+	Harry Wentland <harry.wentland@amd.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
+	Melissa Wen <melissa.srw@gmail.com>,
+	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-doc@vger.kernel.org
+References: <20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net>
+ <20240110-vkms-yuv-v2-1-952fcaa5a193@riseup.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,80 +85,110 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87bk90i2ja.fsf@somnus>
+In-Reply-To: <20240110-vkms-yuv-v2-1-952fcaa5a193@riseup.net>
+X-GND-Sasl: louis.chauvet@bootlin.com
 
-Le Thu, Feb 01, 2024 at 05:15:37PM +0100, Anna-Maria Behnsen a écrit :
-> Frederic Weisbecker <frederic@kernel.org> writes:
+Le 10/01/24 - 14:44, Arthur Grillo a écrit :
+> Remove intermidiary variables and access the variables directly from
+> drm_frame. These changes should be noop.
 > 
-> > Le Mon, Jan 15, 2024 at 03:37:41PM +0100, Anna-Maria Behnsen a écrit :
-> >> +static void tmigr_connect_child_parent(struct tmigr_group *child,
-> >> +				       struct tmigr_group *parent)
-> >> +{
-> >> +	union tmigr_state childstate;
-> >> +
-> >> +	raw_spin_lock_irq(&child->lock);
-> >> +	raw_spin_lock_nested(&parent->lock, SINGLE_DEPTH_NESTING);
-> >> +
-> >> +	child->parent = parent;
-> >> +	child->childmask = BIT(parent->num_children++);
-> >> +
-> >> +	raw_spin_unlock(&parent->lock);
-> >> +	raw_spin_unlock_irq(&child->lock);
-> >> +
-> >> +	/*
-> >> +	 * To prevent inconsistent states, active children need to be active in
-> >> +	 * the new parent as well. Inactive children are already marked inactive
-> >> +	 * in the parent group.
-> >> +	 */
-> >> +	childstate.state = atomic_read(&child->migr_state);
-> >> +	if (childstate.migrator != TMIGR_NONE) {
-> >
-> > Is it possible here to connect a running online child (not one that we just
-> > created) to a new parent?
+> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+> ---
+>  drivers/gpu/drm/vkms/vkms_drv.h       |  3 ---
+>  drivers/gpu/drm/vkms/vkms_formats.c   | 12 +++++++-----
+>  drivers/gpu/drm/vkms/vkms_plane.c     |  3 ---
+>  drivers/gpu/drm/vkms/vkms_writeback.c |  5 -----
+>  4 files changed, 7 insertions(+), 16 deletions(-)
 > 
-> connect_child_parent() is only executed for the just created ones. So,
-> yes in theory this would be possible, but it doesn't happen as
-> tmigr_setup_groups() takes care to make it right (hopefully :)). When a
-> LVL0 group has some space left, only the connection between tmc and the
-> LVL0 group is done in tmigr_setup_groups(). If there is no space left in
-> LVL0 group, then a new group is created and depending on the levels
-> which has to be created only executed for the new ones.
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
+> index 8f5710debb1e..b4b357447292 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.h
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
+> @@ -31,9 +31,6 @@ struct vkms_frame_info {
+>  	struct drm_rect rotated;
+>  	struct iosys_map map[DRM_FORMAT_MAX_PLANES];
+>  	unsigned int rotation;
+> -	unsigned int offset;
+> -	unsigned int pitch;
+> -	unsigned int cpp;
+>  };
+>  
+>  struct pixel_argb_u16 {
+> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
+> index 36046b12f296..172830a3936a 100644
+> --- a/drivers/gpu/drm/vkms/vkms_formats.c
+> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
+> @@ -11,8 +11,10 @@
+>  
+>  static size_t pixel_offset(const struct vkms_frame_info *frame_info, int x, int y)
+>  {
+> -	return frame_info->offset + (y * frame_info->pitch)
+> -				  + (x * frame_info->cpp);
+> +	struct drm_framebuffer *fb = frame_info->fb;
+> +
+> +	return fb->offsets[0] + (y * fb->pitches[0])
+> +			      + (x * fb->format->cpp[0]);
+>  }
+>  
+>  /*
+> @@ -131,12 +133,12 @@ void vkms_compose_row(struct line_buffer *stage_buffer, struct vkms_plane_state
+>  	u8 *src_pixels = get_packed_src_addr(frame_info, y);
+>  	int limit = min_t(size_t, drm_rect_width(&frame_info->dst), stage_buffer->n_pixels);
+>  
+> -	for (size_t x = 0; x < limit; x++, src_pixels += frame_info->cpp) {
+> +	for (size_t x = 0; x < limit; x++, src_pixels += frame_info->fb->format->cpp[0]) {
+>  		int x_pos = get_x_position(frame_info, limit, x);
+>  
+>  		if (drm_rotation_90_or_270(frame_info->rotation))
+>  			src_pixels = get_packed_src_addr(frame_info, x + frame_info->rotated.y1)
+> -				+ frame_info->cpp * y;
+> +				+ frame_info->fb->format->cpp[0] * y;
+>  
+>  		plane->pixel_read(src_pixels, &out_pixels[x_pos]);
+>  	}
+> @@ -223,7 +225,7 @@ void vkms_writeback_row(struct vkms_writeback_job *wb,
+>  	struct pixel_argb_u16 *in_pixels = src_buffer->pixels;
+>  	int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst), src_buffer->n_pixels);
+>  
+> -	for (size_t x = 0; x < x_limit; x++, dst_pixels += frame_info->cpp)
+> +	for (size_t x = 0; x < x_limit; x++, dst_pixels += frame_info->fb->format->cpp[0])
+>  		wb->pixel_write(dst_pixels, &in_pixels[x]);
+>  }
+>  
+> diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkms_plane.c
+> index e5c625ab8e3e..8f2c6ea419a3 100644
+> --- a/drivers/gpu/drm/vkms/vkms_plane.c
+> +++ b/drivers/gpu/drm/vkms/vkms_plane.c
+> @@ -125,9 +125,6 @@ static void vkms_plane_atomic_update(struct drm_plane *plane,
+>  	drm_rect_rotate(&frame_info->rotated, drm_rect_width(&frame_info->rotated),
+>  			drm_rect_height(&frame_info->rotated), frame_info->rotation);
+>  
+> -	frame_info->offset = fb->offsets[0];
+> -	frame_info->pitch = fb->pitches[0];
+> -	frame_info->cpp = fb->format->cpp[0];
+>  	vkms_plane_state->pixel_read = get_pixel_conversion_function(fmt);
+>  }
+>  
+> diff --git a/drivers/gpu/drm/vkms/vkms_writeback.c b/drivers/gpu/drm/vkms/vkms_writeback.c
+> index bc724cbd5e3a..c8582df1f739 100644
+> --- a/drivers/gpu/drm/vkms/vkms_writeback.c
+> +++ b/drivers/gpu/drm/vkms/vkms_writeback.c
+> @@ -149,11 +149,6 @@ static void vkms_wb_atomic_commit(struct drm_connector *conn,
+>  	crtc_state->active_writeback = active_wb;
+>  	crtc_state->wb_pending = true;
+>  	spin_unlock_irq(&output->composer_lock);
+> -
+> -	wb_frame_info->offset = fb->offsets[0];
+> -	wb_frame_info->pitch = fb->pitches[0];
+> -	wb_frame_info->cpp = fb->format->cpp[0];
+> -
+>  	drm_writeback_queue_job(wb_conn, connector_state);
+>  	active_wb->pixel_write = get_pixel_write_function(wb_format);
+>  	drm_rect_init(&wb_frame_info->src, 0, 0, crtc_width, crtc_height);
 > 
-> > If not, is it possible that a newly created child is
-> > not TMIGR_NONE?
+> -- 
+> 2.43.0
 > 
-> Yes. See tmigr_cpu_online(). When new groups have to be created starting
-> from LVL0, then they are not active - so TMIGR_NONE is set. Activating
-> the new online CPU is done afterwards.
-> 
-> But if it is required to add also a new level at the top, then it is
-> mandatory to propagate the active state of the already existing child to
-> the new parent. The connect_child_parent() is then also executed for the
-> formerly top level group (child) to the newly created group (parent).
 
-Ah and this is why we have the "if (childstate.migrator != TMIGR_NONE)"
-branch, right?
-
-> > Heh, I was about to say that it's impossible that timer_base_is_idle()
-> > at this stage but actually if we run in nohz_full...
-> >
-> > It happens so that nohz_full is deactivated until rcutree_online_cpu()
-> > which calls tick_dep_clear() but it's a pure coincidence that might
-> > disappear one day. So yes, let's keep it that way.
-> 
-> I instrumented the code (with NOHZ FULL and NOHZ_IDLE) to make sure the
-> timer migration hierarchy state 'idle' is in sync with the timer base
-> 'idle'. And this was one part where it was possible that it runs out of
-> sync as I remember correctly. But if I understood you correctly, this
-> shouldn't happen at the moment?
-
-Well, it's not supposed to :-)
-
-Thanks.
-
-> 
-> Thanks,
-> 
-> 	Anna-Maria
-> 
+Reviewed-by: Louis Chauvet <louis.chauvet@bootlin.com>
 
