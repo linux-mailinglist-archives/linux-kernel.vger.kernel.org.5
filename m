@@ -1,171 +1,165 @@
-Return-Path: <linux-kernel+bounces-47427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54420844DC8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:24:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 756E9844DCB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:26:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86FFA1C25E4E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:24:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A3301C21E29
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:26:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D20CD7E6;
-	Thu,  1 Feb 2024 00:24:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08038A3F;
+	Thu,  1 Feb 2024 00:26:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I3h52+5J"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Q12SluHY"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63CB2652
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 00:24:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9310D7FE
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 00:26:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706747071; cv=none; b=NDdG3lhaeE9kNnJKXlvWr1zA6j1QdgFWnEdKMek1tyvsg4mgnt1JC0LyS1vHrjxqEmsZKYGw58Fy9w11d/o279GdXmbqehiKYg2Wfth/I6QjJBDFpDd0E00/IBZjC2yI/CriGwwtSF1qHT5LminNiNal8oGgdvBTBz5Xh3UvVto=
+	t=1706747174; cv=none; b=OsRJ2iodTsO0RBdi1NHH3RtVpU3jgti91Y2bnZ6HuTOGlckkpReEMQujqssVHPHUsq6o8dBM1iC958Mj0P9EL9KVTJxTtOACms5oUz+uU9wYoHvApH3FJ4Xwcl8wea5dxuTGGfWQ0bisWzPqERzMC9UiNgfJ8j4GWWpn6j1H9gA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706747071; c=relaxed/simple;
-	bh=Ew6h++/+DdbPoHox2grFx/ClbVltBqDrTN113GMVi4E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H9r8ZDOlIgDczmJDagb5aZc4av75vNCum9updCEQ/7Hh3OsRCmV73/XInkKKwB9y9srzRO13/GQN0Yggbdh/gnw5R+hFosxHI38TSavHeBFCOjSwsl9iCAbjfV3sO/fudYp9ngbzrvCtSNCeLpOkOVlA+9ACmbxPvtPCy03zD9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I3h52+5J; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706747070; x=1738283070;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Ew6h++/+DdbPoHox2grFx/ClbVltBqDrTN113GMVi4E=;
-  b=I3h52+5Jt2RvvhcjsksgPJ3pPwcPBI6add6Og5I9DATEK1cgop4DuXlr
-   ZHwJNa7wEJ5swAwlZSuSxLly/27kyr8iUhrgx/QOVBeXpYK3iUI5RZmws
-   q/MOyKUS0AKAZdpc5vlU5EtQbmcm95m7BDUbtnEfG6e/eHN/pddTHbGEU
-   o8o21I31ZweSNh52IBrybo5GpwGJ0DckkTOf+pxILE67HKqde028QTHIj
-   6PIMv+Qv4oMNbbaBdXFtSfQxU36OGqdLCRvrhMq1LIIsB/vwljKcqmHKi
-   r17MP7UqfA7E4pBaUoEOffDUt59uiFQunFzLsqdbotcqdTDkJkeKfHyEb
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10867219"
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="10867219"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 16:24:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="878954466"
-X-IronPort-AV: E=Sophos;i="6.05,233,1701158400"; 
-   d="scan'208";a="878954466"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 16:24:27 -0800
-Date: Wed, 31 Jan 2024 16:25:49 -0800
-From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To: alexs@kernel.org
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	linux-kernel@vger.kernel.org, sshegde@linux.ibm.com
-Subject: Re: [PATCH v2 4/6] sched/fair: packing func
- sched_use_asym_prio/sched_asym_prefer
-Message-ID: <20240201002549.GB18560@ranerica-svr.sc.intel.com>
-References: <20240130131708.429425-1-alexs@kernel.org>
- <20240130131708.429425-4-alexs@kernel.org>
+	s=arc-20240116; t=1706747174; c=relaxed/simple;
+	bh=3jQfyxCUmbYgMag6DLXoDWZodwkuBz+a0egfu7gu12Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UnB3W/Sdb2FXyTrIevy/P7/8WDbnzXq/J0MWgU/804oM0DSLWCb4QqYX3vRiKuGIXDZJ/HSJRUTiIkKtNwnwENPZjBFY/anEvVj5VfrSHqDpel+rLJyzdXzC4o3EYttav/IuOShulXSN+f5GxAR8Jgx2QXgMYehzutPQfbiZVpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Q12SluHY; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706747171;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vHOXrV3Wiv6Jv3OmanQRBteZrjHiu4ynfoOlkoDIri4=;
+	b=Q12SluHYWaMvce90wcER2XxjcHFI1GW+F+4ZRp2Q27A78iIl+AmVMTomaCYdT2vC0tDLPn
+	bqHkCvvASaC1Pf1H1jMU8EC4msAwzTTvSj5i5RLE3duyBIh8PVrcUfdlddDIwpFNySKdkM
+	WYnNEYSxkWm1C8IgjwU6SPnvO6tlBQ8=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-107-laGXLCrlP_S66qr8cIj0_A-1; Wed, 31 Jan 2024 19:26:09 -0500
+X-MC-Unique: laGXLCrlP_S66qr8cIj0_A-1
+Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3be7c0d25ccso423184b6e.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 16:26:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706747168; x=1707351968;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vHOXrV3Wiv6Jv3OmanQRBteZrjHiu4ynfoOlkoDIri4=;
+        b=knVxvAczpJbAtC2KPgEqPYJTxPdBFftaTzMouZmBlBS13fj8+9+pUzhKBf/thxSEHD
+         ClPdW3R+dcXbgqYI7kqEQPNlLcRJQ1YTEAhKJQkosYOKXvuEBW/H0ghu8X8HcnrRbXRm
+         GzGeGytl1RaUvLRrxxOQA6oYXlaeAQmq+e2tCCnGeuzoFt7qK2gD833fq2+/JJ95X2Tr
+         o+y7fQO1JBV4DyGTlZ5jTAFhtjasFYRE+2jzHioi2ZszAFny5tmA8GmFQIP7fdmSkkhs
+         e4WMbZgVtabO+WnSBGXRrqyz4sCWNpXM6y7hVD1yffLBFYACZ7m47fxSRVIKma7pEICZ
+         eZyg==
+X-Gm-Message-State: AOJu0Yz2+xS9MSncQQtZ2zzj6qT1akTH2AUqjrpwYv6tmT13CGknCBYa
+	AO8iE7DMlofs188O25c4D0oEkArGGGPjJF88OEgIY1mvGL1V7qX8zVMfeqJ1EknnGAjlqG2SE9S
+	iPk1DRQ9pTqUnpVkX1sF5WQyszk35CusvtuIpr5pceQDGPew+9obrZ5K92tiksg==
+X-Received: by 2002:a05:6808:23c2:b0:3bd:e011:fc8a with SMTP id bq2-20020a05680823c200b003bde011fc8amr810418oib.42.1706747168597;
+        Wed, 31 Jan 2024 16:26:08 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGLWxgDltGr/OA2YFHx9+M/uDzQyHC1ofpUnUtwaxeXCQyVz8cY4uWTlWRO/sey1RCSPS0KMA==
+X-Received: by 2002:a05:6808:23c2:b0:3bd:e011:fc8a with SMTP id bq2-20020a05680823c200b003bde011fc8amr810404oib.42.1706747168333;
+        Wed, 31 Jan 2024 16:26:08 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUyxE87UjAAbxVbvp3ua7m84sjYQ3UxgQNkw9U0sDU6fKmPBmNDsBR++zFmSg7YtKgpCJKdVEDGZhBLlK1Uhd2HNgXzMNMTHF9EV7nNi3I7f7449pvPB8WHWo2n33bReTpSgnJiTd6DB/9MdluzQKWuZO+BX9JfBzg5ri5Niq6l052CumuX/Fuk+p0OZLIq64dtM8yfVJ0M3oE4ToXQdmIaKTk2kiJxkqIo1a++B82L7yw3nHEg2ok/SITRKm2EUPmOjA3MYwXqtw==
+Received: from [10.72.112.67] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id t15-20020a056a0021cf00b006dd6c439996sm10470629pfj.161.2024.01.31.16.26.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 16:26:08 -0800 (PST)
+Message-ID: <6cc9dca0-52f6-44f8-87d4-9a937e3f83e6@redhat.com>
+Date: Thu, 1 Feb 2024 08:26:02 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240130131708.429425-4-alexs@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-
-On Tue, Jan 30, 2024 at 09:17:06PM +0800, alexs@kernel.org wrote:
-> From: Alex Shi <alexs@kernel.org>
-> 
-> Packing the func sched_use_asym_prio/sched_asym_prefer into one, Using
-> new func to simply code. No function change.
-
-You should use imperative mood when writing changelogs. Also, you should
-avoid abbreviations. When referring to functions,
-please use (). In this specific instance, you could probably say:
-
-     "Consolidate the functions sched_use_asym_prio() and 
-      sched_asym_prefer() into one. This makes the code easier to
-      read. No functional changes."
-> 
-> Thanks Ricardo Neri for func rename and comments suggestion!
-
-Thanks for the mention! But no need. :)
-
-Perhaps you could explain the reasons for renaming the functions as you
-did. Explaining why you make changes is an essential part of the
-changelog.
-
-> 
-> Signed-off-by: Alex Shi <alexs@kernel.org>
-> To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-> To: Valentin Schneider <vschneid@redhat.com>
-> To: Vincent Guittot <vincent.guittot@linaro.org>
-> To: Peter Zijlstra <peterz@infradead.org>
-> To: Ingo Molnar <mingo@redhat.com>
-> ---
->  kernel/sched/fair.c | 34 ++++++++++++++++------------------
->  1 file changed, 16 insertions(+), 18 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index ebd659af2d78..835dbe77b260 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -9745,8 +9745,15 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
->  		(sd->flags & SD_SHARE_CPUCAPACITY) || is_core_idle(cpu);
->  }
->  
-> +static inline bool sched_asym(struct sched_domain *sd, int dst_cpu, int src_cpu)
-> +{
-> +	/* Check if asym balance applicable, then check priorities.*/
-> +	return sched_use_asym_prio(sd, dst_cpu) &&
-> +		sched_asym_prefer(dst_cpu, src_cpu);
-> +}
-> +
->  /**
-> - * sched_asym - Check if the destination CPU can do asym_packing load balance
-> + * sched_group_asym - Check if the destination CPU can do asym_packing balance
->   * @env:	The load balancing environment
->   * @sgs:	Load-balancing statistics of the candidate busiest group
->   * @group:	The candidate busiest group
-> @@ -9766,22 +9773,15 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
->   * otherwise.
->   */
->  static inline bool
-> -sched_asym(struct lb_env *env, struct sg_lb_stats *sgs, struct sched_group *group)
-> +sched_group_asym(struct lb_env *env, struct sg_lb_stats *sgs, struct sched_group *group)
->  {
-> -	/* Ensure that the whole local core is idle, if applicable. */
-> -	if (!sched_use_asym_prio(env->sd, env->dst_cpu))
-> -		return false;
-> -
->  	/*
-> -	 * CPU priorities does not make sense for SMT cores with more than one
-> +	 * CPU priorities do not make sense for SMT cores with more than one
->  	 * busy sibling.
->  	 */
-> -	if (group->flags & SD_SHARE_CPUCAPACITY) {
-> -		if (sgs->group_weight - sgs->idle_cpus != 1)
-> -			return false;
-> -	}
-> -
-> -	return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
-> +	return !(group->flags & SD_SHARE_CPUCAPACITY &&
-> +			sgs->group_weight - sgs->idle_cpus != 1) &&
-> +		sched_asym(env->sd, env->dst_cpu, group->asym_prefer_cpu);
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fscrypt: to make sure the inode->i_blkbits is correctly
+ set
+Content-Language: en-US
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-fscrypt@vger.kernel.org, tytso@mit.edu, jaegeuk@kernel.org,
+ linux-kernel@vger.kernel.org, idryomov@gmail.com,
+ ceph-devel@vger.kernel.org, jlayton@kernel.org, vshankar@redhat.com
+References: <20240125044826.1294268-1-xiubli@redhat.com>
+ <20240127063754.GA11935@sol.localdomain>
+From: Xiubo Li <xiubli@redhat.com>
+In-Reply-To: <20240127063754.GA11935@sol.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
-I am having second thoughts about compressing these conditions into a
-single line. For instance, the comment above only applies to the first
-condition and it is clear how the condition is met.
+On 1/27/24 14:37, Eric Biggers wrote:
+> On Thu, Jan 25, 2024 at 12:48:25PM +0800, xiubli@redhat.com wrote:
+>> From: Xiubo Li <xiubli@redhat.com>
+>>
+>> The inode->i_blkbits should be already set before calling
+>> fscrypt_get_encryption_info() and it will be used this to setup the
+>> ci_data_unit_bits.
+>>
+>> Signed-off-by: Xiubo Li <xiubli@redhat.com>
+>> ---
+>>   fs/crypto/keysetup.c | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+>> index d71f7c799e79..909187e52bae 100644
+>> --- a/fs/crypto/keysetup.c
+>> +++ b/fs/crypto/keysetup.c
+>> @@ -702,6 +702,9 @@ int fscrypt_get_encryption_info(struct inode *inode, bool allow_unsupported)
+>>   /**
+>>    * fscrypt_prepare_new_inode() - prepare to create a new inode in a directory
+>>    * @dir: a possibly-encrypted directory
+>>    * @inode: the new inode.  ->i_mode must be set already.
+>>    *         ->i_ino doesn't need to be set yet.
+> Maybe just change the above to "->i_mode and ->i_blkbits", instead of adding a
+> separate paragraph?
 
-Checking the conditions separately makes the funcion easier to read, IMO.
+Just back from PTO.
+
+Yeah, this sounds much better. I will fix it.
+
+Thanks
+
+- Xiubo
+
+
+>>    * @encrypt_ret: (output) set to %true if the new inode will be encrypted
+>>    *
+>>    * If the directory is encrypted, set up its ->i_crypt_info in preparation for
+>>    * encrypting the name of the new file.  Also, if the new inode will be
+>>    * encrypted, set up its ->i_crypt_info and set *encrypt_ret=true.
+>>    *
+>>    * This isn't %GFP_NOFS-safe, and therefore it should be called before starting
+>>    * any filesystem transaction to create the inode.  For this reason, ->i_ino
+>>    * isn't required to be set yet, as the filesystem may not have set it yet.
+>>    *
+>>    * This doesn't persist the new inode's encryption context.  That still needs to
+>>    * be done later by calling fscrypt_set_context().
+>>    *
+>> + * Please note that the inode->i_blkbits should be already set before calling
+>> + * this and later it will be used to setup the ci_data_unit_bits.
+>> + *
+>>    * Return: 0 on success, -ENOKEY if the encryption key is missing, or another
+>>    *	   -errno code
+>>    */
+>> @@ -717,6 +720,9 @@ int fscrypt_prepare_new_inode(struct inode *dir, struct inode *inode,
+>>   	if (IS_ERR(policy))
+>>   		return PTR_ERR(policy);
+>>   
+>> +	if (WARN_ON_ONCE(inode->i_blkbits == 0))
+>> +		return -EINVAL;
+>> +
+> Thanks,
+>
+> - Eric
+>
+
 
