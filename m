@@ -1,102 +1,81 @@
-Return-Path: <linux-kernel+bounces-47862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 948C38453DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:28:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0A0D8453DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:30:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02EC9B21853
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:28:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 833D5B220ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:30:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A214615B115;
-	Thu,  1 Feb 2024 09:28:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08BFC15B0F9;
+	Thu,  1 Feb 2024 09:29:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EK1Xce2m";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ywSa7cRP";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EK1Xce2m";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ywSa7cRP"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FHwRg8MB"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3496615A498;
-	Thu,  1 Feb 2024 09:28:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B039015AAB9;
+	Thu,  1 Feb 2024 09:29:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706779695; cv=none; b=Lzi3GR3RvPc3gr3cW+NkyIcc8NEIVJmri1KDckWVi0fV26XyMhn3QlZ0iCWXZkWbuEn5aE8DhIVp6dMYfvh7ci/9AkLOLqWgSDBWUWXsnWnL4F59srmDTTFn2fEu4v76S0QdipDy4by1VoCjD5wrPAg5Nq640PhrYuyK1o2bQdo=
+	t=1706779793; cv=none; b=Dd5boGBfVCychg2s2cvNehrSdC2BQ7mJAe/4EMDnKMRgM0mZgKqllhxzX3oR5QEuYaFgd44ISial0B2mGl/XJw4nRvErENhokQRvoH4Z/mT4Cm9jdu9ZpHS9F64zwComNFGobpfk3y3itonGMuX/zNRhMTDB9/gUzBPFhKKCdD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706779695; c=relaxed/simple;
-	bh=cZ8hpkR/3u+9nW8V/2LfRPSay0z0DtpGIpqWUwfMnlA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rAiIIM6ae3MQqqhuoFAFmm77Lkf9lx4PZBITNyHPcyhXXdiNMA75+K72xYmx3phwg8OuVyhyhz8qOU1EWWgwPCWmmEOaSOMc5mDxIp6G7tal8HTvQXeyK6Zqr3E4jT/CpjPb22YA5PdBeCFwHGzKflciEdxTkSeY7/c0WBsynCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EK1Xce2m; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ywSa7cRP; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EK1Xce2m; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ywSa7cRP; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3F1E02205A;
-	Thu,  1 Feb 2024 09:28:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706779692; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5ZXgLLa0AgQAAzLt+5EkE3Qo2/vmJJ/AA1BTUNqnDIc=;
-	b=EK1Xce2mBq6yxLlhpfJlbluuhV5OslGE3Ihq9ykf96pXF7vJhk6atO/IXrz7yoZH4lkPQ0
-	cahd+9kJXp7PcDARqcqCi1l0kZ+qRxr7cs0B5VdUeF1/6JKo0Hl762DvbC3T4xYb+c3A8t
-	53PsZNMu4QDHVkC6lALalNs72sasIZY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706779692;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5ZXgLLa0AgQAAzLt+5EkE3Qo2/vmJJ/AA1BTUNqnDIc=;
-	b=ywSa7cRP+K5QgHKyokZsMb2v6/xI9DEvDMndE6k61NRtyyee4b3nrZrDVebWl4Jq+YAGyF
-	EK7zD6pNtRQqx0AA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706779692; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5ZXgLLa0AgQAAzLt+5EkE3Qo2/vmJJ/AA1BTUNqnDIc=;
-	b=EK1Xce2mBq6yxLlhpfJlbluuhV5OslGE3Ihq9ykf96pXF7vJhk6atO/IXrz7yoZH4lkPQ0
-	cahd+9kJXp7PcDARqcqCi1l0kZ+qRxr7cs0B5VdUeF1/6JKo0Hl762DvbC3T4xYb+c3A8t
-	53PsZNMu4QDHVkC6lALalNs72sasIZY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706779692;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5ZXgLLa0AgQAAzLt+5EkE3Qo2/vmJJ/AA1BTUNqnDIc=;
-	b=ywSa7cRP+K5QgHKyokZsMb2v6/xI9DEvDMndE6k61NRtyyee4b3nrZrDVebWl4Jq+YAGyF
-	EK7zD6pNtRQqx0AA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 317B513594;
-	Thu,  1 Feb 2024 09:28:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id LrYEDCxku2X+UQAAn2gu4w
-	(envelope-from <jack@suse.cz>); Thu, 01 Feb 2024 09:28:12 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id C935DA0809; Thu,  1 Feb 2024 10:28:11 +0100 (CET)
-Date: Thu, 1 Feb 2024 10:28:11 +0100
-From: Jan Kara <jack@suse.cz>
-To: Liu Shixin <liushixin2@huawei.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Matthew Wilcox <willy@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH 1/2] mm/readahead: stop readahead loop if memcg charge
- fails
-Message-ID: <20240201092811.ycoh2rekx4wagglc@quack3>
-References: <20240201100835.1626685-1-liushixin2@huawei.com>
- <20240201100835.1626685-2-liushixin2@huawei.com>
+	s=arc-20240116; t=1706779793; c=relaxed/simple;
+	bh=+NCwuuUEC8gh4wddwJD1ZoXxyVyQK76LQS+PgiYO2+g=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BWF4TTGOLbE2HPkofwtXghHTmELIPH/Y7PU0WIYokOEmYLWpbtl4AGr+H6iIRH01wh4hshWTXryXgREAicAePBN88cET1EDdFj6k2iiR+Et68VDdncrbE7TrBclZne1wIaa+Isf8MUI+GF+UUIcu20RETB0+EeKzszRpgog56TQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FHwRg8MB; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-51124d86022so1133758e87.0;
+        Thu, 01 Feb 2024 01:29:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706779789; x=1707384589; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=gR2SCc4BIE8sv2cc5ChJ04+ZAy4Os5pvthMcTA+RFl4=;
+        b=FHwRg8MBbZz9LTfqahu/eeaEIoEL2gZun3E5ETN0LDqIh3ssanfBB4adiY4/emZMrQ
+         knFxAwUaA8RfhZTlrgCZVxO7KV3ChwZ3+zk7ArnTNi3akAavIrAD5tSeNKMwtJ26FLge
+         EHgiEZQ2N/TlzlrJynns/8ZjuFXU24/HSDxfMkz+lzOf+nXhTNM7brCALny4BICGY3tD
+         ByXDYXf8WrVgzDhbW3D76T+MVd9e74m3KkL9+9N+cf7qhfwCvTxqkKwlRr0XPOpX7r6k
+         PKnhkxE2I8rp095ta8kFngzPKjGqFB1cCHBpumGmvCG1Ihja35wRyd3Gb8r8jwS4fJ1s
+         E4DQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706779789; x=1707384589;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gR2SCc4BIE8sv2cc5ChJ04+ZAy4Os5pvthMcTA+RFl4=;
+        b=iTn1SNxFeyHfL7qT2eL8sHAjafTcWZY1bowsL9zOMv1R9BKqPPnH2stft7H4cOEnD2
+         +fXEqyu4xRCvl4VpO8CvFYUoFLOc5IMM2miiX79icew7VETo5tDQDVaKyHVHCZ4QtAM3
+         czoBMqYqvEE1NbdLJ/m746pUUYOKvc6jOa8SFre3UYXi17+sPdCiyk4BFhh8Fw57+lYd
+         3bYt5Uk3pNoz59CpxLjeLsEQQVQPxHd/lariZiv+vBSAkeKatr6px2Y1MX01vXJCygtA
+         P2x+PwbAaaOJnyJtyC1YSQIH6vCkYBw2sFJwayL3reXftQOWlsoBFtyYTyFmP0RkHcZi
+         /jZA==
+X-Gm-Message-State: AOJu0YyVOBGEne3W/V7dZJHe50cFsEkl6ItstmVAxdKCpYNVy0EkUo7D
+	1hZBuAcTq16uGKw8HgMIq4ixyixoMFpBeXKiLpE3sXZUJpTwV5d0
+X-Google-Smtp-Source: AGHT+IFbfqsdGNQ6Wd46t2iNvuziOkb8PC1smvpxI4cq1BjUl4UTFC/HQ0I0EBborC1Ks4Nt1NmrTQ==
+X-Received: by 2002:a05:6512:21c1:b0:50e:6b5d:5976 with SMTP id d1-20020a05651221c100b0050e6b5d5976mr1296346lft.40.1706779789357;
+        Thu, 01 Feb 2024 01:29:49 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWqnYUTtWXGe3JQ3yFJz0StJ0H2XP76LgcJO3yNTUDd3r5jlndDZgz1LhqosHGqFg1UCaI8VuwW7z73Ynx1FhROro2avzqUVaiRi/6RKSKsKqN4ZtOZLRTtIoqO14upwk8SulrX4cdu3+lBVdfrQ+dppF7DHp5BQ1TOmwjZUixp
+Received: from akanner-r14. ([77.222.24.25])
+        by smtp.gmail.com with ESMTPSA id b25-20020a196719000000b0050e74ec73f6sm2177203lfc.124.2024.02.01.01.29.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 01:29:48 -0800 (PST)
+Message-ID: <65bb648c.190a0220.d431d.4f63@mx.google.com>
+X-Google-Original-Message-ID: <ZbtkigG3xRB/hSto@akanner-r14.>
+Date: Thu, 1 Feb 2024 12:29:46 +0300
+From: Andrew Kanner <andrew.kanner@gmail.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: mcgrof@kernel.org, linux-modules@vger.kernel.org,
+	linux-kernel@vger.kernel.org, mchehab@kernel.org
+Subject: Re: [PATCH v1] module.h: define __symbol_get_gpl() as a regular
+ __symbol_get()
+References: <20240131190251.4668-1-andrew.kanner@gmail.com>
+ <20240201052958.GA14943@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -105,90 +84,42 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240201100835.1626685-2-liushixin2@huawei.com>
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=EK1Xce2m;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ywSa7cRP
-X-Spamd-Result: default: False [0.18 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,huawei.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.01)[49.80%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 0.18
-X-Rspamd-Queue-Id: 3F1E02205A
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Bar: /
+In-Reply-To: <20240201052958.GA14943@lst.de>
 
-On Thu 01-02-24 18:08:34, Liu Shixin wrote:
-> When a task in memcg readaheads file pages, page_cache_ra_unbounded()
-> will try to readahead nr_to_read pages. Even if the new allocated page
-> fails to charge, page_cache_ra_unbounded() still tries to readahead
-> next page. This leads to too much memory reclaim.
+On Thu, Feb 01, 2024 at 06:29:58AM +0100, Christoph Hellwig wrote:
+> On Wed, Jan 31, 2024 at 10:02:52PM +0300, Andrew Kanner wrote:
+> > Prototype for __symbol_get_gpl() was introduced in the initial git
+> > commit 1da177e4c3f4 ("Linux-2.6.12-rc2"), but was not used after that.
+> > 
+> > In commit 9011e49d54dc ("modules: only allow symbol_get of
+> > EXPORT_SYMBOL_GPL modules") Christoph Hellwig switched __symbol_get()
+> > to process GPL symbols only, most likely this is what
+> > __symbol_get_gpl() was designed to do.
+> > 
+> > We might either define __symbol_get_gpl() as __symbol_get() or remove
+> > it completely as suggested by Mauro Carvalho Chehab.
 > 
-> Stop readahead if mem_cgroup_charge() fails, i.e. add_to_page_cache_lru()
-> returns -ENOMEM.
+> Just remove it, there is no need to keep unused funtionality around.
 > 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> Signed-off-by: Jinjiang Tu <tujinjiang@huawei.com>
-
-Makes sense. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  mm/readahead.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+> Btw, where did the discussion start?  I hope you're not trying to
+> add new symbol_get users?
 > 
-> diff --git a/mm/readahead.c b/mm/readahead.c
-> index 23620c57c1225..cc4abb67eb223 100644
-> --- a/mm/readahead.c
-> +++ b/mm/readahead.c
-> @@ -228,6 +228,7 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
->  	 */
->  	for (i = 0; i < nr_to_read; i++) {
->  		struct folio *folio = xa_load(&mapping->i_pages, index + i);
-> +		int ret;
->  
->  		if (folio && !xa_is_value(folio)) {
->  			/*
-> @@ -247,9 +248,12 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
->  		folio = filemap_alloc_folio(gfp_mask, 0);
->  		if (!folio)
->  			break;
-> -		if (filemap_add_folio(mapping, folio, index + i,
-> -					gfp_mask) < 0) {
-> +
-> +		ret = filemap_add_folio(mapping, folio, index + i, gfp_mask);
-> +		if (ret < 0) {
->  			folio_put(folio);
-> +			if (ret == -ENOMEM)
-> +				break;
->  			read_pages(ractl);
->  			ractl->_index++;
->  			i = ractl->_index + ractl->_nr_pages - index - 1;
-> -- 
-> 2.25.1
-> 
+
+Of course not, no new users needed.
+
+I haven't discussed it directly. I found the unused __symbol_get_gpl()
+myself, but during investigation of wether it was ever used somewhere
+found the old patch series suggested by Mauro Carvalho Chehab (in Cc).
+
+Link: https://lore.kernel.org/lkml/5f001015990a76c0da35a4c3cf08e457ec353ab2.1652113087.git.mchehab@kernel.org/
+
+The patch series is from 2022 and not merged. You can take [PATCH v6
+1/4] which removes the unused symbol from the link.
+
+Or I can resend v2 with my commit msg. But not sure about how it works
+in such a case - will adding Suggested-by tag (if no objections from
+Mauro) with the Link be ok?
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Andrew Kanner
 
