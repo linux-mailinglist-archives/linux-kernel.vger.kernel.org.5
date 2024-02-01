@@ -1,157 +1,159 @@
-Return-Path: <linux-kernel+bounces-48435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 606AE845C09
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:47:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B9E2845C0D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:48:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D647293695
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:47:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CED821C22F6D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:48:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E51C212BEB3;
-	Thu,  1 Feb 2024 15:46:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7269D626A6;
+	Thu,  1 Feb 2024 15:48:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="ogNS4GpH";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Zv7vFK8h"
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="njcdIKUi"
+Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7509B779F0;
-	Thu,  1 Feb 2024 15:46:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D79265F489
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 15:48:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706802399; cv=none; b=fJuAwlEkqOBb6YIzF51rrkpYw7r9xTxbO5iDAyXk6JL2gxVhsLN8VUoNPlEgMYdnZ72jQHRUBZ6tF5vA7i6+otdzZkGRZLTZRW5R0ucbVdfVHkGBfG9VjxpIt25dPH10jMcy5Aub//gf+ZGWqPJrHOZPOGDwlwEQ8a9mraCaHXs=
+	t=1706802498; cv=none; b=Dl73he46z7IpBk6Dg9nD+HTDeokg5UCnENlf2wbLWMCSAR8MzAcYirc/Pikey2Y4VBJCmGSJUIZqXraLGgGZkOOgFZBJj7gbVHvOGfcNwsZGM/6cViMhWo+MU0FiGXuF3LTvwMqPODClZx6Z1yn5bZonsby5blZpysxZ89PaSyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706802399; c=relaxed/simple;
-	bh=uKuLCoMYm7TN/5FDEmNqhpyC6JKJvRlQkX2qQKN8ZTg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=MIhRhE0FoY2P+q9zLoHm2mLv2bgHHhQffd2ZYNp+9ENU4LIYdc8IBaCvB9hDXXtmOfqL9BtBx1YubaeEuWfsMEwEeCxQ9fAtiYT/d+N+VPltNDdP8tHKo9th1SDjcCivFksJ30to78rKq4Q09vXNlzYMMQQ9fXK42dcXLUbLee4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=ogNS4GpH; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Zv7vFK8h; arc=none smtp.client-ip=66.111.4.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.nyi.internal (Postfix) with ESMTP id 751975C0143;
-	Thu,  1 Feb 2024 10:46:36 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 01 Feb 2024 10:46:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1706802396;
-	 x=1706888796; bh=PkffIQ/TwdfU+2w1YXK1H3DJt1XQppKKQHpkyIAY8Jw=; b=
-	ogNS4GpHLOaAi26YwvNGDn2O/lkVyJMCKH4ZLzdYBxvNF4Ghg+1pAS7N+7fe3PEQ
-	F7U03j5yLZfBYr9bPyahFksuvY7GaYExKi0iBKAc8Hk6GqnizcaCLXyAFLCCEpXC
-	AAX9DKxr/ZwxJ/FdNGr01oFM0sW6gRIyxhTkq99EulTm4pDloXDVGC1l89ZwZMfa
-	F0CbBoftKcYqOXwCkLZwhPJ644yqZJelFRqgAxGz/uHR3IC9AFTai5ARHwqX/O6I
-	u8HtBisIX2VLfLBtkDclhJkOx4RmpCqYQdmcoDHGINyWL/BIRP/bp98GL9AcfQmL
-	IZvC9hNk77GCvSkpwET2KQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706802396; x=
-	1706888796; bh=PkffIQ/TwdfU+2w1YXK1H3DJt1XQppKKQHpkyIAY8Jw=; b=Z
-	v7vFK8h6WyGCZO+fTEtv3JQhFyhoWTvILxwV2NRWBdSK1vdjFMCVXW2GwTXx/GZZ
-	XBQSt1aqtTonHlvkFoOhTh6d+by+aReRfLMNARK8312ZdUbnzZyEGAOBjRIBuxU4
-	85NXS0HATkVvRpxYb1G0zp3NZ3ADGDRYaccdGeb+vffRs93pvjIqx6nUiTt1D8ny
-	mGqzioXUePtDNS6HeWHnuUFkgFl6gJVgZVx4Xm2hSgDAQ73Bo/964MVd2/gTVo4Y
-	FZD/yYJhMTAISTPGoUIid5krD4B4xst1ENOGPHMZ4I/j+rCYGPriAtVs9JD3RGG5
-	/I4/Hl8vvbpBKYCMxpSRA==
-X-ME-Sender: <xms:3Ly7ZegrwF-HGZ-4D3_2DchrRtSBqLg8IdG3M4oYhlU6jNcAHxPHpA>
-    <xme:3Ly7ZfA9G16qXg6zutH4IVp_3COSyhS4eGQpcU2dqVDLL185fjRdyZYkwwx6fz9q9
-    bEPsj8Q49i6aTFshCI>
-X-ME-Received: <xmr:3Ly7ZWFX37urArgNuBeig6_wHReDpa64NJX_UOR1Ow2_m7knqA2Fez1MU7FwlpJ2GOKy_cOmghz8Tr8XCRF5QFiYkg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeduuddgjeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephfffufggtgfgkfhfjgfvvefosehtjeertdertdejnecuhfhrohhmpeflihgr
-    gihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
-    cuggftrfgrthhtvghrnhepvedujefhfffhveekhfffkeetvefgteejkeeutdduieehieeg
-    feejtdelveejtedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvg
-    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhg
-    sehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:3Ly7ZXTG6JY7EqV_vQHpNTdn8JAWolp4FpWaS0BwBoYuALnLhDL1IA>
-    <xmx:3Ly7Zbx7nCr0e0h_WMXgSs__cM2lDlHnHbfWedr3XO33Pwhh71QAhw>
-    <xmx:3Ly7ZV4zAlY1TuSm84sx_hlSG-A2k-VHIfJbdE3Ukkk3Oj4pMSOFUA>
-    <xmx:3Ly7ZTdsTKza5t_N_SYFom1zppPyDQto2lhv-P1gCKTa4jBo1b9-bg>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 1 Feb 2024 10:46:34 -0500 (EST)
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Date: Thu, 01 Feb 2024 15:46:29 +0000
-Subject: [PATCH 3/3] mm/memory: Use exception ip to search exception tables
+	s=arc-20240116; t=1706802498; c=relaxed/simple;
+	bh=YPgAPS9hepoxlOxUq4K/sY7J/ijRZYX2Afv0qMU768s=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LqKv5j691M0+s8oEWxw17x1qOhxzQ/HR4bHg09yOVcze106pPaB0H9BTuGcGuwv/oWsigmk75pCoeHqA1f0wQsjo8lomLWwS5t2XpB7yIt+gpOUM+SVVLs19Tx+boKiEquY8/G1EybHrXa7cE5iuUyKwu/xTgQGNUBMgCXq5jkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=njcdIKUi; arc=none smtp.client-ip=185.70.40.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+	s=protonmail3; t=1706802494; x=1707061694;
+	bh=v+NeIwtJum3xWfJlGdeGLluWTi1c+KfBwIIBcQ5KxuA=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=njcdIKUiNvWZ60ugZwlkSl8NrPghoARhtxuYJob48WIVjpUZCcpLZ0c4WwTFeoru7
+	 +w2cFfJMXXzLNEBNxL86uX+270tWit/zPJ2+dmgOUiUfHiavjaCG76Nu77CUZ3gHQB
+	 LF0B7NFpehhPVf5TpONIIwJgwAHfw2r+kxXrjufNiL+1cOzC2dDhBWtHQ3ePM1tTBl
+	 CckpPte89iN5R0s0uW2UX3Ih8uWNHlyztSvC+GfPFMEKvO1KJnSn7Ve2hCLpBIwAQp
+	 7Lr7GUyi+zGLykAosSPUJIAp38BjToKKkWEL5KFK8xVFfhZJOvsEuX3ujlnKMxO2NQ
+	 us5fsbvFtA4og==
+Date: Thu, 01 Feb 2024 15:48:00 +0000
+To: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+From: Emil Kronborg <emil.kronborg@protonmail.com>
+Cc: gregkh@linuxfoundation.org, linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] serial: core: introduce uart_port_tx_flags()
+Message-ID: <eduudp2uvoer2haaixxhh7vntvir2qtm62nceykxn6jcfaepno@ws2iiisuxq7o>
+In-Reply-To: <20240201105557.28043-1-jirislaby@kernel.org>
+References: <20240201105557.28043-1-jirislaby@kernel.org>
+Feedback-ID: 20949900:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240201-exception_ip-v1-3-aa26ab3ee0b5@flygoat.com>
-References: <20240201-exception_ip-v1-0-aa26ab3ee0b5@flygoat.com>
-In-Reply-To: <20240201-exception_ip-v1-0-aa26ab3ee0b5@flygoat.com>
-To: Oleg Nesterov <oleg@redhat.com>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Andrew Morton <akpm@linux-foundation.org>, 
- Ben Hutchings <ben@decadent.org.uk>
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-mips@vger.kernel.org, linux-mm@kvack.org, 
- Jiaxun Yang <jiaxun.yang@flygoat.com>, Xi Ruoyao <xry111@xry111.site>, 
- Linus Torvalds <torvalds@linux-foundation.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1379;
- i=jiaxun.yang@flygoat.com; h=from:subject:message-id;
- bh=uKuLCoMYm7TN/5FDEmNqhpyC6JKJvRlQkX2qQKN8ZTg=;
- b=owGbwMvMwCXmXMhTe71c8zDjabUkhtTde672x4SsrfVewuR6t1Nnmlr5QtH+q/m1zqculPqee
- +n7amJERykLgxgXg6yYIkuIgFLfhsaLC64/yPoDM4eVCWQIAxenAEyk2oHhn8q3ba8O6dkcYv32
- cfqJCbVLm8pE31xT/LY88sIrTq7Li2cw/Pdfnj5VT79IOtfx81mrjQXq64WdoqsvPp4d/UHlQPI
- XQx4A
-X-Developer-Key: i=jiaxun.yang@flygoat.com; a=openpgp;
- fpr=980379BEFEBFBF477EA04EF9C111949073FC0F67
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On architectures with delay slot, instruction_pointer() may differ
-from where exception was triggered.
+On Thu, Feb 01, 2024 at 11:55 +0100, Jiri Slaby (SUSE) wrote:
+> And an enum with a flag: UART_TX_NOSTOP. To NOT call
+> __port->ops->stop_tx() when the circular buffer is empty. mxs-uart needs
+> this (see the next patch).
+>=20
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+> Cc: Emil Kronborg <emil.kronborg@protonmail.com>
+> ---
+>=20
+> Notes:
+>     [v2] fix/invert the condition
+>=20
+>  include/linux/serial_core.h | 32 +++++++++++++++++++++++++++-----
+>  1 file changed, 27 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
+> index 536b2581d3e2..55b1f3ba48ac 100644
+> --- a/include/linux/serial_core.h
+> +++ b/include/linux/serial_core.h
+> @@ -748,8 +748,17 @@ struct uart_driver {
+>=20
+>  void uart_write_wakeup(struct uart_port *port);
+>=20
+> -#define __uart_port_tx(uport, ch, tx_ready, put_char, tx_done, for_test,=
+      \
+> -=09=09for_post)=09=09=09=09=09=09      \
+> +/**
+> + * enum UART_TX_FLAGS -- flags for uart_port_tx_flags()
+> + *
+> + * @UART_TX_NOSTOP: don't call port->ops->stop_tx() on empty buffer
+> + */
+> +enum UART_TX_FLAGS {
+> +=09UART_TX_NOSTOP =3D BIT(0),
+> +};
+> +
+> +#define __uart_port_tx(uport, ch, flags, tx_ready, put_char, tx_done,=09=
+      \
+> +=09=09       for_test, for_post)=09=09=09=09      \
+>  ({=09=09=09=09=09=09=09=09=09      \
+>  =09struct uart_port *__port =3D (uport);=09=09=09=09      \
+>  =09struct circ_buf *xmit =3D &__port->state->xmit;=09=09=09      \
+> @@ -777,7 +786,7 @@ void uart_write_wakeup(struct uart_port *port);
+>  =09if (pending < WAKEUP_CHARS) {=09=09=09=09=09      \
+>  =09=09uart_write_wakeup(__port);=09=09=09=09      \
+>  =09=09=09=09=09=09=09=09=09      \
+> -=09=09if (pending =3D=3D 0)=09=09=09=09=09      \
+> +=09=09if (!((flags) & UART_TX_NOSTOP) && pending =3D=3D 0)=09      \
+>  =09=09=09__port->ops->stop_tx(__port);=09=09=09      \
+>  =09}=09=09=09=09=09=09=09=09      \
+>  =09=09=09=09=09=09=09=09=09      \
+> @@ -812,7 +821,7 @@ void uart_write_wakeup(struct uart_port *port);
+>   */
+>  #define uart_port_tx_limited(port, ch, count, tx_ready, put_char, tx_don=
+e) ({ \
+>  =09unsigned int __count =3D (count);=09=09=09=09=09      \
+> -=09__uart_port_tx(port, ch, tx_ready, put_char, tx_done, __count,=09    =
+  \
+> +=09__uart_port_tx(port, ch, 0, tx_ready, put_char, tx_done, __count,    =
+ \
+>  =09=09=09__count--);=09=09=09=09=09      \
+>  })
+>=20
+> @@ -826,8 +835,21 @@ void uart_write_wakeup(struct uart_port *port);
+>   * See uart_port_tx_limited() for more details.
+>   */
+>  #define uart_port_tx(port, ch, tx_ready, put_char)=09=09=09\
+> -=09__uart_port_tx(port, ch, tx_ready, put_char, ({}), true, ({}))
+> +=09__uart_port_tx(port, ch, 0, tx_ready, put_char, ({}), true, ({}))
+> +
+>=20
+> +/**
+> + * uart_port_tx_flags -- transmit helper for uart_port with flags
+> + * @port: uart port
+> + * @ch: variable to store a character to be written to the HW
+> + * @flags: %UART_TX_NOSTOP or similar
+> + * @tx_ready: can HW accept more data function
+> + * @put_char: function to write a character
+> + *
+> + * See uart_port_tx_limited() for more details.
+> + */
+> +#define uart_port_tx_flags(port, ch, flags, tx_ready, put_char)=09=09\
+> +=09__uart_port_tx(port, ch, flags, tx_ready, put_char, ({}), true, ({}))
+>  /*
+>   * Baud rate helpers.
+>   */
+> --
+> 2.43.0
+>=20
 
-Use exception_ip we just introduced to search exception tables to
-get rid of the problem.
+Tested on i.MX28 board.
 
-Fixes: 4bce37a68ff8 ("mips/mm: Convert to using lock_mm_and_find_vma()")
-Reported-by: Xi Ruoyao <xry111@xry111.site>
-Link: https://lore.kernel.org/r/75e9fd7b08562ad9b456a5bdaacb7cc220311cc9.camel@xry111.site/
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- mm/memory.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Tested-by: Emil Kronborg <emil.kronborg@protonmail.com>
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 8d14ba440929..49433612444a 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -5481,7 +5481,7 @@ static inline bool get_mmap_lock_carefully(struct mm_struct *mm, struct pt_regs
- 		return true;
- 
- 	if (regs && !user_mode(regs)) {
--		unsigned long ip = instruction_pointer(regs);
-+		unsigned long ip = exception_ip(regs);
- 		if (!search_exception_tables(ip))
- 			return false;
- 	}
-@@ -5506,7 +5506,7 @@ static inline bool upgrade_mmap_lock_carefully(struct mm_struct *mm, struct pt_r
- {
- 	mmap_read_unlock(mm);
- 	if (regs && !user_mode(regs)) {
--		unsigned long ip = instruction_pointer(regs);
-+		unsigned long ip = exception_ip(regs);
- 		if (!search_exception_tables(ip))
- 			return false;
- 	}
-
--- 
-2.43.0
+--=20
+Emil Kronborg
 
 
