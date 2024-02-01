@@ -1,186 +1,364 @@
-Return-Path: <linux-kernel+bounces-48275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5731A845978
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:59:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2EFF845979
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:00:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C2CB1C23122
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:59:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67AE31F24385
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:00:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 438FD5D489;
-	Thu,  1 Feb 2024 13:59:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YjjTvuXz"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE57E5D46E
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 13:59:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F185D47C;
+	Thu,  1 Feb 2024 13:59:53 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CD195D473;
+	Thu,  1 Feb 2024 13:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706795981; cv=none; b=DsMLIImU4PIc9TL6N/dDniGsxmEZeU0MzACxosWpflQKUR5XnDz6eb04eBlta3ASpr+ZW8O9dBbF6VE40zwgTHUPkZRwTXkNwipS0OJB96zfAUcpp0mQUyEvWzJRijQnbwgP5ycFnzQ+3/bEup7mLpjA1LREL/dbG5W1SbnU70U=
+	t=1706795992; cv=none; b=FOSgmlC/h9NPaBXSqnV8ltpPcRTRACV95AagCTlySg66iWkyNru95vT13VXcS1z/GFuaBJOCLFFPG6+nWIcvfK3LHONlkmtJ53VwWAjELhL/dzTgaTVYTC/VG3w0UQCLNsBDiJRvRervwyYZZaKLisydSAFWxj3ehghO7YLsNcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706795981; c=relaxed/simple;
-	bh=/TanjX0ls+2d9VS5aORID8aw8bmRlMZB4HWbPt8Yr6c=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=b/RekthS/s/nRGgspOGzfBiY+28evPfRHa0Nvgw+mQzY41onc7nw0AbXtYUnDn3Eb5+JWzoTC33PoscUuzZ5Zehy20GMOl6K8IJTwac+Q//ILHkTVVQtYNyfXDIAHtojFYfFW0QRBxT6qyAguGcm6ZzYIkvGdeJ23bEVOY1Kis4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YjjTvuXz; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d04c0b1cacso12544021fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 05:59:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706795977; x=1707400777; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UFqKBFx9916FRrB9+w9LQlnhGJJKgZ+US7vE7hHv4do=;
-        b=YjjTvuXzdEvtvxdT+n30v9T1Bxi69nC/ngLKeAubcU15Sd2BPTj54JDByBZgEfavO6
-         H4ls83yQPhtlQikepIeKWooNfEeorPJfi6Ai/YeEVIRWM0oP5/yi7RBSxY/jUki8kJik
-         xSTXw6mmw/2m2fOFYTOyyHz+EztJYMZZE/NrhG9jkS32SRlSyey7nnP9YsBJSPeocBgf
-         F13nJHlZUVkD8K0THHq+MnG8NQpZNJ8opAhmWkShMkmLSyldq44+djgXu7Ic7zcXBMg6
-         loiI4csUx4Cb/shM1wjvgB1YtzHQAgGlnLIOH3Z12el/QWLuYrLdUzcnFNYBVX6uRZ4O
-         W87A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706795977; x=1707400777;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=UFqKBFx9916FRrB9+w9LQlnhGJJKgZ+US7vE7hHv4do=;
-        b=qWN/+rpJqmW6NnVqfKY/gOdJy9NWt9An7OIwFDNmhP34JpygB13zH4aByb5X81P/ok
-         t/hki/pA/17C+ZRbqPLX8npUSRVhZ+VqhYY6Z+lWS3Fy3RZW4lRNvbGNwupDiL9U75WU
-         gtW2wTu3/MImzHuIZ44Wb2YJ1jkHBeHmuHN5Ndijb519tJ+k6dMQDjFLWCy+DapEf39I
-         tGqCgbMGX9WgBaIgSKKaDePyZY805KafLALIVSH6QoK8aPiAhJATbWxyz1vONA9BbsBy
-         dsFZKpIEU1Sz+QfSGqHhtjTcufYkW206w4KRf9IS5dgOl9l2ZHxg8BljxDwfgQ3YFGhn
-         zU7w==
-X-Gm-Message-State: AOJu0YxpvX/yhpzbQYW/L9J2SvR82DBLXMvS3f4YXJdYzB1EsPrNTC2b
-	TCM8RKf7uvuPUBN98b6lQSPRfL8+gYDxC8Ppril13NAS41QumZMypB99BaT9B9o=
-X-Google-Smtp-Source: AGHT+IGUfYuciXztX1ROTZ8aWR1m2TWyKWPDYYmZU/9mTZ01QoA0mDd84pARFxV8qA8w2ptcojpqMg==
-X-Received: by 2002:a05:651c:1cd:b0:2d0:6eff:6e38 with SMTP id d13-20020a05651c01cd00b002d06eff6e38mr3795058ljn.39.1706795976622;
-        Thu, 01 Feb 2024 05:59:36 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWLyIsxBDsE2B0dXMqRm6wtczTF1NBWRF64AAabsGaeRxyluNS74tM2RaiEMGm4qoqoU3xyTBZ1/fJkF4yGNhKI2PfuFFiFV+ul/a54NxGlLAxUtedGYwTUMPTx1aBRdivipMHqtSLysUCQAB2+HPccvJIR1zB/gqwphNd18UbpeXg5rSLKhrmtwZaBjVoPDsY3JNs0y1zhbSCPx6kussx3h1mD/uDYtoGot5E77YSwyYqB8Ifkgt9XfSs2b4LWdpJmA9LHk6YdhvuKMJEcofiTXARMhsoWjUCUSkKBgitCe1GtfYhW6gNmbu0J2Ij0RFJW/Ay1aJCKAIomdPPSynzslKP2GfFpmZOEcjOd5Ivd9dCLQv7irwf0eUM0/Fp2jXvuUy1CpDt9o+rZah+NZ9rEaUs33MjQJZg6FpK0fAcNLJOTodZ0bnlq3FfVvjIaogm92Hn5/37sqPT4SwtxzgfFlZ9Pwx7kjhgK55m1NHg+ouqOjmaYoMWEgGYPKxPsgiI2koPdqdPgylRWAp/Ro5uZG9ZxDGbhUgXUoajoEftShAnwEkbDlpDqN7xSJQhqfIA4B44i6BIP9dcYKt7fB6/5sIMDsVy8Gt+8XFqVnBYI2IckbnuCsLHxgZSGiKpsbchlvG+wbPYJEe0/h+6ZSpwA+Pg9/8fJvvMbgJgMTem3u+U//6YkYgCrpn5q5iv41XN7MApiVIkqNIto7g9Xi92yjXZS1OMJgWF0LyMhAj2Ps9JoCYZ0FKL5/jRgAMsCUHVT8J5J1OIcjMqaUzLoea6Okwi1ja7anEi1NAw+yNGv1bD5YLVjKGzGirxmcb03rIxFvVY46vMqaATZ8OakPS8=
-Received: from ?IPV6:2a01:e0a:982:cbb0:cfdd:eab5:fd8:5436? ([2a01:e0a:982:cbb0:cfdd:eab5:fd8:5436])
-        by smtp.gmail.com with ESMTPSA id bh23-20020a05600c3d1700b0040d5a9d6b68sm4533841wmb.6.2024.02.01.05.59.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 05:59:36 -0800 (PST)
-Message-ID: <24dbe013-60d2-49dc-8568-3277d721366d@linaro.org>
-Date: Thu, 1 Feb 2024 14:59:34 +0100
+	s=arc-20240116; t=1706795992; c=relaxed/simple;
+	bh=K7q5cSAIeTM8WqX9EyF/nwFh8i796tFFyNlq5vThvZk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
+	 In-Reply-To:Content-Type; b=I7bXBk4tSZW+ao3Z6Ydmu6DafXsj9n8UH3/NMRXTU0IHhF3WPG9sC66OrpY2VTyNqo+hbMInEFmUq9CSGeLRNBJ70PiA+/JD+8wGTlkQkcfJHUxvKQJlh4Yzvq7enBc74eMdrcUh/pm5bvI3YLGqNZzQSh7b9DEMAwYnMJRj9Sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 815F6DA7;
+	Thu,  1 Feb 2024 06:00:32 -0800 (PST)
+Received: from [192.168.1.100] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1BC9D3F762;
+	Thu,  1 Feb 2024 05:59:48 -0800 (PST)
+Message-ID: <a86103e9-fe26-70ec-7cbd-4a67c68f165d@arm.com>
+Date: Thu, 1 Feb 2024 13:59:46 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v4 15/15] arm64: dts: qcom: sm8550: add hwkm support to
- ufs ice
-Content-Language: en-US, fr
-To: Om Prakash Singh <quic_omprsing@quicinc.com>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Gaurav Kashyap <quic_gaurkash@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
- andersson@kernel.org, ebiggers@google.com, srinivas.kandagatla@linaro.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, robh+dt@kernel.org,
- linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, kernel@quicinc.com,
- linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
- quic_nguyenb@quicinc.com, bartosz.golaszewski@linaro.org,
- konrad.dybcio@linaro.org, ulf.hansson@linaro.org, jejb@linux.ibm.com,
- martin.petersen@oracle.com, mani@kernel.org, davem@davemloft.net,
- herbert@gondor.apana.org.au
-References: <20240127232436.2632187-1-quic_gaurkash@quicinc.com>
- <20240127232436.2632187-16-quic_gaurkash@quicinc.com>
- <CAA8EJpr5fLYR1v64-DtjOigkUy3579tx_gwHpFWr9k0GyGajGw@mail.gmail.com>
- <a0bcca80-e91b-4b97-a548-b53ea2fe4cb5@quicinc.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <a0bcca80-e91b-4b97-a548-b53ea2fe4cb5@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 3/3] perf parse-events: Print all errors
+Content-Language: en-US
+To: Ian Rogers <irogers@google.com>
+References: <20240131134940.593788-1-irogers@google.com>
+ <20240131134940.593788-3-irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
+ Kan Liang <kan.liang@linux.intel.com>, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tchen168@asu.edu,
+ Michael Petlan <mpetlan@redhat.com>
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <20240131134940.593788-3-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 01/02/2024 10:55, Om Prakash Singh wrote:
+
+
+On 31/01/2024 13:49, Ian Rogers wrote:
+> Prior to this patch the first and the last error encountered during
+> parsing are printed. To see other errors verbose needs
+> enabling. Unfortunately this can drop useful errors, in particular on
+> terms. This patch changes the errors so that instead of the first and
+> last all errors are recorded and printed, the underlying data
+> structure is changed to a list.
 > 
+> Before:
+> ```
+> $ perf stat -e 'slots/edge=2/' true
+> event syntax error: 'slots/edge=2/'
+>                                 \___ Bad event or PMU
 > 
-> On 1/28/2024 6:31 AM, Dmitry Baryshkov wrote:
->> On Sun, 28 Jan 2024 at 01:28, Gaurav Kashyap <quic_gaurkash@quicinc.com> wrote:
->>>
->>> The Inline Crypto Engine (ICE) for UFS/EMMC supports the
->>> Hardware Key Manager (HWKM) to securely manage storage
->>> keys. Enable using this hardware on sm8550.
->>>
->>> This requires two changes:
->>> 1. Register size increase: HWKM is an additional piece of hardware
->>>     sitting alongside ICE, and extends the old ICE's register space.
->>> 2. Explicitly tell the ICE driver to use HWKM with ICE so that
->>>     wrapped keys are used in sm8550.
->>>
->>> NOTE: Although wrapped keys cannot be independently generated and
->>> tested on this platform using generate, prepare and import key calls,
->>> there are non-kernel paths to create wrapped keys, and still use the
->>> kernel to program them into ICE. Hence, enabling wrapped key support
->>> on sm8550 too.
->>>
->>> Signed-off-by: Gaurav Kashyap <quic_gaurkash@quicinc.com>
->>> ---
->>>   arch/arm64/boot/dts/qcom/sm8550.dtsi | 3 ++-
->>>   1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
->>> index ee1ba5a8c8fc..b5b41d0a544c 100644
->>> --- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
->>> +++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
->>> @@ -1977,7 +1977,8 @@ ufs_mem_hc: ufs@1d84000 {
->>>                  ice: crypto@1d88000 {
->>>                          compatible = "qcom,sm8550-inline-crypto-engine",
->>>                                       "qcom,inline-crypto-engine";
->>> -                       reg = <0 0x01d88000 0 0x8000>;
->>> +                       reg = <0 0x01d88000 0 0x10000>;
->>
->> Does the driver fail gracefully with the old DT size? At least it
->> should not crash.
-> When adding  qcom,ice-use-hwkm property, DT size needs to be updated.
-> Without any DT change, there will be know issue.
-
-This must be fixed in the code because new kernels could be run with older
-DTs, so it should not fail with older DTs.
-
-In this case, simply disable the HWKM if size from DT is too small.
-
-Neil
-
+> Unable to find PMU or event on a PMU of 'slots'
 > 
->>
->>> +                       qcom,ice-use-hwkm;
->>>                          clocks = <&gcc GCC_UFS_PHY_ICE_CORE_CLK>;
->>
+> Initial error:
+> event syntax error: 'slots/edge=2/'
+>                      \___ Cannot find PMU `slots'. Missing kernel support?
+> Run 'perf list' for a list of valid events
+> 
+>  Usage: perf stat [<options>] [<command>]
+> 
+>     -e, --event <event>   event selector. use 'perf list' to list available events
+> ```
+> 
+> After:
+> ```
+> $ perf stat -e 'slots/edge=2/' true
+> event syntax error: 'slots/edge=2/'
+>                      \___ Bad event or PMU
+> 
+> Unable to find PMU or event on a PMU of 'slots'
+> 
+> event syntax error: 'slots/edge=2/'
+>                                 \___ value too big for format (edge), maximum is 1
+> 
+> event syntax error: 'slots/edge=2/'
+>                      \___ Cannot find PMU `slots'. Missing kernel support?
+> Run 'perf list' for a list of valid events
+> 
+>  Usage: perf stat [<options>] [<command>]
+> 
+>     -e, --event <event>   event selector. use 'perf list' to list available events
+> ```
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
+Reviewed-by: James Clark <james.clark@arm.com>
+
+> ---
+> Prompted by discussion:
+> https://lore.kernel.org/linux-perf-users/9dd303cb-0455-d8ac-ce0c-f4a8320b787b@arm.com/
+> ---
+>  tools/perf/arch/x86/tests/hybrid.c |  5 +-
+>  tools/perf/tests/expand-cgroup.c   |  3 +-
+>  tools/perf/tests/parse-events.c    |  9 ++-
+>  tools/perf/util/parse-events.c     | 92 ++++++++++++++++++------------
+>  tools/perf/util/parse-events.h     | 14 ++---
+>  tools/perf/util/parse-events.y     |  2 -
+>  6 files changed, 67 insertions(+), 58 deletions(-)
+> 
+> diff --git a/tools/perf/arch/x86/tests/hybrid.c b/tools/perf/arch/x86/tests/hybrid.c
+> index 40f5d17fedab..e221ea104174 100644
+> --- a/tools/perf/arch/x86/tests/hybrid.c
+> +++ b/tools/perf/arch/x86/tests/hybrid.c
+> @@ -259,11 +259,10 @@ static int test_event(const struct evlist_test *e)
+>  	parse_events_error__init(&err);
+>  	ret = parse_events(evlist, e->name, &err);
+>  	if (ret) {
+> -		pr_debug("failed to parse event '%s', err %d, str '%s'\n",
+> -			 e->name, ret, err.str);
+> +		pr_debug("failed to parse event '%s', err %d\n", e->name, ret);
+>  		parse_events_error__print(&err, e->name);
+>  		ret = TEST_FAIL;
+> -		if (strstr(err.str, "can't access trace events"))
+> +		if (parse_events_error__contains(&err, "can't access trace events"))
+>  			ret = TEST_SKIP;
+>  	} else {
+>  		ret = e->check(evlist);
+> diff --git a/tools/perf/tests/expand-cgroup.c b/tools/perf/tests/expand-cgroup.c
+> index 9c1a1f18db75..31966ff856f8 100644
+> --- a/tools/perf/tests/expand-cgroup.c
+> +++ b/tools/perf/tests/expand-cgroup.c
+> @@ -127,8 +127,7 @@ static int expand_group_events(void)
+>  	parse_events_error__init(&err);
+>  	ret = parse_events(evlist, event_str, &err);
+>  	if (ret < 0) {
+> -		pr_debug("failed to parse event '%s', err %d, str '%s'\n",
+> -			 event_str, ret, err.str);
+> +		pr_debug("failed to parse event '%s', err %d\n", event_str, ret);
+>  		parse_events_error__print(&err, event_str);
+>  		goto out;
+>  	}
+> diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
+> index fbdf710d5eea..feb5727584d1 100644
+> --- a/tools/perf/tests/parse-events.c
+> +++ b/tools/perf/tests/parse-events.c
+> @@ -2506,11 +2506,10 @@ static int test_event(const struct evlist_test *e)
+>  	parse_events_error__init(&err);
+>  	ret = parse_events(evlist, e->name, &err);
+>  	if (ret) {
+> -		pr_debug("failed to parse event '%s', err %d, str '%s'\n",
+> -			 e->name, ret, err.str);
+> +		pr_debug("failed to parse event '%s', err %d\n", e->name, ret);
+>  		parse_events_error__print(&err, e->name);
+>  		ret = TEST_FAIL;
+> -		if (err.str && strstr(err.str, "can't access trace events"))
+> +		if (parse_events_error__contains(&err, "can't access trace events"))
+>  			ret = TEST_SKIP;
+>  	} else {
+>  		ret = e->check(evlist);
+> @@ -2535,8 +2534,8 @@ static int test_event_fake_pmu(const char *str)
+>  	ret = __parse_events(evlist, str, /*pmu_filter=*/NULL, &err,
+>  			     &perf_pmu__fake, /*warn_if_reordered=*/true);
+>  	if (ret) {
+> -		pr_debug("failed to parse event '%s', err %d, str '%s'\n",
+> -			 str, ret, err.str);
+> +		pr_debug("failed to parse event '%s', err %d\n",
+> +			 str, ret);
+>  		parse_events_error__print(&err, str);
+>  	}
+>  
+> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> index 66eabcea4242..6f8b0fa17689 100644
+> --- a/tools/perf/util/parse-events.c
+> +++ b/tools/perf/util/parse-events.c
+> @@ -2181,50 +2181,53 @@ int parse_event(struct evlist *evlist, const char *str)
+>  	return ret;
+>  }
+>  
+> +struct parse_events_error_entry {
+> +	/** @list: The list the error is part of. */
+> +	struct list_head list;
+> +	/** @idx: index in the parsed string */
+> +	int   idx;
+> +	/** @str: string to display at the index */
+> +	char *str;
+> +	/** @help: optional help string */
+> +	char *help;
+> +};
+> +
+>  void parse_events_error__init(struct parse_events_error *err)
+>  {
+> -	bzero(err, sizeof(*err));
+> +	INIT_LIST_HEAD(&err->list);
+>  }
+>  
+>  void parse_events_error__exit(struct parse_events_error *err)
+>  {
+> -	zfree(&err->str);
+> -	zfree(&err->help);
+> -	zfree(&err->first_str);
+> -	zfree(&err->first_help);
+> +	struct parse_events_error_entry *pos, *tmp;
+> +
+> +	list_for_each_entry_safe(pos, tmp, &err->list, list) {
+> +		zfree(&pos->str);
+> +		zfree(&pos->help);
+> +		list_del_init(&pos->list);
+> +		free(pos);
+> +	}
+>  }
+>  
+>  void parse_events_error__handle(struct parse_events_error *err, int idx,
+>  				char *str, char *help)
+>  {
+> +	struct parse_events_error_entry *entry;
+> +
+>  	if (WARN(!str || !err, "WARNING: failed to provide error string or struct\n"))
+>  		goto out_free;
+> -	switch (err->num_errors) {
+> -	case 0:
+> -		err->idx = idx;
+> -		err->str = str;
+> -		err->help = help;
+> -		break;
+> -	case 1:
+> -		err->first_idx = err->idx;
+> -		err->idx = idx;
+> -		err->first_str = err->str;
+> -		err->str = str;
+> -		err->first_help = err->help;
+> -		err->help = help;
+> -		break;
+> -	default:
+> -		pr_debug("Multiple errors dropping message: %s (%s)\n",
+> -			err->str, err->help ?: "<no help>");
+> -		free(err->str);
+> -		err->str = str;
+> -		free(err->help);
+> -		err->help = help;
+> -		break;
+> +
+> +	entry = zalloc(sizeof(*entry));
+> +	if (!entry) {
+> +		pr_err("Failed to allocate memory for event parsing error: %s (%s)\n",
+> +			str, help ?: "<no help>");
+> +		goto out_free;
+>  	}
+> -	err->num_errors++;
+> +	entry->idx = idx;
+> +	entry->str = str;
+> +	entry->help = help;
+> +	list_add(&entry->list, &err->list);
+>  	return;
+> -
+>  out_free:
+>  	free(str);
+>  	free(help);
+> @@ -2294,19 +2297,34 @@ static void __parse_events_error__print(int err_idx, const char *err_str,
+>  	}
+>  }
+>  
+> -void parse_events_error__print(struct parse_events_error *err,
+> +void parse_events_error__print(const struct parse_events_error *err,
+>  			       const char *event)
+>  {
+> -	if (!err->num_errors)
+> -		return;
+> +	struct parse_events_error_entry *pos;
+> +	bool first = true;
+> +
+> +	list_for_each_entry(pos, &err->list, list) {
+> +		if (!first)
+> +			fputs("\n", stderr);
+> +		__parse_events_error__print(pos->idx, pos->str, pos->help, event);
+> +		first = false;
+> +	}
+> +}
+>  
+> -	__parse_events_error__print(err->idx, err->str, err->help, event);
+> +/*
+> + * In the list of errors err, do any of the error strings (str) contain the
+> + * given needle string?
+> + */
+> +bool parse_events_error__contains(const struct parse_events_error *err,
+> +				  const char *needle)
+> +{
+> +	struct parse_events_error_entry *pos;
+>  
+> -	if (err->num_errors > 1) {
+> -		fputs("\nInitial error:\n", stderr);
+> -		__parse_events_error__print(err->first_idx, err->first_str,
+> -					err->first_help, event);
+> +	list_for_each_entry(pos, &err->list, list) {
+> +		if (strstr(pos->str, needle) != NULL)
+> +			return true;
+>  	}
+> +	return false;
+>  }
+>  
+>  #undef MAX_WIDTH
+> diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
+> index 63c0a36a4bf1..809359e8544e 100644
+> --- a/tools/perf/util/parse-events.h
+> +++ b/tools/perf/util/parse-events.h
+> @@ -130,13 +130,8 @@ struct parse_events_term {
+>  };
+>  
+>  struct parse_events_error {
+> -	int   num_errors;       /* number of errors encountered */
+> -	int   idx;	/* index in the parsed string */
+> -	char *str;      /* string to display at the index */
+> -	char *help;	/* optional help string */
+> -	int   first_idx;/* as above, but for the first encountered error */
+> -	char *first_str;
+> -	char *first_help;
+> +	/** @list: The head of a list of errors. */
+> +	struct list_head list;
+>  };
+>  
+>  /* A wrapper around a list of terms for the sake of better type safety. */
+> @@ -247,9 +242,10 @@ void parse_events_error__init(struct parse_events_error *err);
+>  void parse_events_error__exit(struct parse_events_error *err);
+>  void parse_events_error__handle(struct parse_events_error *err, int idx,
+>  				char *str, char *help);
+> -void parse_events_error__print(struct parse_events_error *err,
+> +void parse_events_error__print(const struct parse_events_error *err,
+>  			       const char *event);
+> -
+> +bool parse_events_error__contains(const struct parse_events_error *err,
+> +				  const char *needle);
+>  #ifdef HAVE_LIBELF_SUPPORT
+>  /*
+>   * If the probe point starts with '%',
+> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+> index de098caf0c1c..d70f5d84af92 100644
+> --- a/tools/perf/util/parse-events.y
+> +++ b/tools/perf/util/parse-events.y
+> @@ -536,8 +536,6 @@ tracepoint_name opt_event_config
+>  	list = alloc_list();
+>  	if (!list)
+>  		YYNOMEM;
+> -	if (error)
+> -		error->idx = @1.first_column;
+>  
+>  	err = parse_events_add_tracepoint(list, &parse_state->idx, $1.sys, $1.event,
+>  					error, $2, &@1);
 
