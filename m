@@ -1,49 +1,45 @@
-Return-Path: <linux-kernel+bounces-47543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7327844F2F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:30:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0731B844F30
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:37:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 673DEB2384E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:30:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E3EE1C2309F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:37:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0144A3A8C2;
-	Thu,  1 Feb 2024 02:30:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gOeRE3mL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 408A03A1A7;
-	Thu,  1 Feb 2024 02:30:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26E3739FD8;
+	Thu,  1 Feb 2024 02:37:28 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8ECB376E6
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 02:37:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706754627; cv=none; b=D5pH5PGlCl02QtJrWdBVx2whsHfB8f0Or7VNszz+9/7NFK+yHfhqoSsloQU0EMIYpJG10ebxm0UM/QkVxmgJLCADevVDmKSVAHhl5kWls/83y56RNY87aWDe1Ev/r8I3YHnl/qv3j8vqOPPCnRUiowrTDTnbaOdZwzCERTOu7Kc=
+	t=1706755047; cv=none; b=etFwaY8KYx4PqGjYOJ9ZdCE5GxYnvDCydLA2Q5DYDhNHvYQRo/LYzNXhQe8FO0frzTzHDV6nP4FVNv0Y9JQYmC9rDmylrX35TujBMv/T4w06Bz3AXnKSlyi+w8jsizUF2bsp8hLNDNtZPYiE2eiCKjd4GgBUp1R/eYKXJcfa+5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706754627; c=relaxed/simple;
-	bh=S+jr708Pod0UIEq/0dWHTcTmcKIzfbnKpRJabkfwEmg=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=CkkqQ2xJG7LUZsR6V1tgqFgTiCqmweKM5si0wvU4so8/FrCgz7SnnEWoHGii6leqooaBueSOwlyCNKJ1gJ7v26w4duCyxX7fwpK/KRtOW4YpqxrW7yVBUKtlr/qYUu+aBsQPbCr1TNCCZbC4dTsUlPh+Np0XJUzpvx5M8KJUmFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gOeRE3mL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9CD34C43390;
-	Thu,  1 Feb 2024 02:30:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706754626;
-	bh=S+jr708Pod0UIEq/0dWHTcTmcKIzfbnKpRJabkfwEmg=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=gOeRE3mLH8/r0twSrCu2IKPVl+uSNnbRMCurmCAjpsQHxlJmM9Pj9gWjYG/NZfVYc
-	 b/OkU7T8t+LbW8aqWhQIrCNuusK9p4925mbrbSFBcEzteKrU5Ei7n1r5hTcdzcIVNI
-	 QIoJJ6D0MbiQxUYZhlJCiHjrsmDgyHsWEV72u/RkzuicVAVE/5LF9JAaEaDLeD9nBR
-	 JEJi5IJab56LwblGT1uiwlu7SR01YTOw4wokWEnb3SWYj3dXZXO/oCvU/ssjMDkI5H
-	 0liULWYDmxvA40nkCS6SE53HHeLfKRVuDmclfFiUyjQI91awegSwDjGGuXxlzaPr2A
-	 4Wxz0vYhxt6tw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8286EC4166F;
-	Thu,  1 Feb 2024 02:30:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1706755047; c=relaxed/simple;
+	bh=/OXksEnSFlXIOc+J6tvL/j6uTr3vE9N3sXiHcc+DOAA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PosbEe+Aboti8uRzm5f4/ZS5ihleJejqsnNclGSSl+L3a0o4UCNHblHezBgDkPGMq8SDm6pVVW9XcEfI1axmijxekzTM+5vH5IlcjKr3TvY8Vm+vq+uwyLYDXbEmhAe/2yhCMXvPrp2GI/YLWCdiEFs/TjQw6Dvzz3wTiZHkqUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 96DD1DA7;
+	Wed, 31 Jan 2024 18:38:06 -0800 (PST)
+Received: from a077893.blr.arm.com (a077893.blr.arm.com [10.162.42.11])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C87B23F738;
+	Wed, 31 Jan 2024 18:37:21 -0800 (PST)
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+To: linux-mm@kvack.org
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/cma: Don't treat bad input arguments for cma_alloc() as its failure
+Date: Thu,  1 Feb 2024 08:07:14 +0530
+Message-Id: <20240201023714.3871061-1-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,53 +47,69 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 0/6] pds_core: Various fixes
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170675462653.12000.4039462358825460921.git-patchwork-notify@kernel.org>
-Date: Thu, 01 Feb 2024 02:30:26 +0000
-References: <20240129234035.69802-1-brett.creeley@amd.com>
-In-Reply-To: <20240129234035.69802-1-brett.creeley@amd.com>
-To: Brett Creeley <brett.creeley@amd.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- shannon.nelson@amd.com
 
-Hello:
+Invalid cma_alloc() input scenarios - including excess allocation request
+should neither be counted as CMA_ALLOC_FAIL nor 'cma->nr_pages_failed' be
+updated when applicable with CONFIG_CMA_SYSFS. This also drops 'out' jump
+label which has become redundant.
 
-This series was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+Also inclined to fold (!count) check into the first one i.e (!cma || ..)
+before the pr_debug() output. This applies on v6.8-rc2.
 
-On Mon, 29 Jan 2024 15:40:29 -0800 you wrote:
-> This series includes the following changes:
-> 
-> There can be many users of the pds_core's adminq. This includes
-> pds_core's uses and any clients that depend on it. When the pds_core
-> device goes through a reset for any reason the adminq is freed
-> and reconfigured. There are some gaps in the current implementation
-> that will cause crashes during reset if any of the previously mentioned
-> users of the adminq attempt to use it after it's been freed.
-> 
-> [...]
+ mm/cma.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-Here is the summary with links:
-  - [net,1/6] pds_core: Prevent health thread from running during reset/remove
-    https://git.kernel.org/netdev/net/c/d9407ff11809
-  - [net,2/6] pds_core: Cancel AQ work on teardown
-    https://git.kernel.org/netdev/net/c/d321067e2cfa
-  - [net,3/6] pds_core: Use struct pdsc for the pdsc_adminq_isr private data
-    https://git.kernel.org/netdev/net/c/951705151e50
-  - [net,4/6] pds_core: Prevent race issues involving the adminq
-    https://git.kernel.org/netdev/net/c/7e82a8745b95
-  - [net,5/6] pds_core: Clear BARs on reset
-    https://git.kernel.org/netdev/net/c/e96094c1d11c
-  - [net,6/6] pds_core: Rework teardown/setup flow to be more common
-    https://git.kernel.org/netdev/net/c/bc90fbe0c318
-
-You are awesome, thank you!
+diff --git a/mm/cma.c b/mm/cma.c
+index 7c09c47e530b..464fb4c8b4f0 100644
+--- a/mm/cma.c
++++ b/mm/cma.c
+@@ -438,13 +438,13 @@ struct page *cma_alloc(struct cma *cma, unsigned long count,
+ 	int ret = -ENOMEM;
+ 
+ 	if (!cma || !cma->count || !cma->bitmap)
+-		goto out;
++		return page;
+ 
+ 	pr_debug("%s(cma %p, name: %s, count %lu, align %d)\n", __func__,
+ 		(void *)cma, cma->name, count, align);
+ 
+ 	if (!count)
+-		goto out;
++		return page;
+ 
+ 	trace_cma_alloc_start(cma->name, count, align);
+ 
+@@ -454,7 +454,7 @@ struct page *cma_alloc(struct cma *cma, unsigned long count,
+ 	bitmap_count = cma_bitmap_pages_to_bits(cma, count);
+ 
+ 	if (bitmap_count > bitmap_maxno)
+-		goto out;
++		return page;
+ 
+ 	for (;;) {
+ 		spin_lock_irq(&cma->lock);
+@@ -515,14 +515,12 @@ struct page *cma_alloc(struct cma *cma, unsigned long count,
+ 	}
+ 
+ 	pr_debug("%s(): returned %p\n", __func__, page);
+-out:
+ 	if (page) {
+ 		count_vm_event(CMA_ALLOC_SUCCESS);
+ 		cma_sysfs_account_success_pages(cma, count);
+ 	} else {
+ 		count_vm_event(CMA_ALLOC_FAIL);
+-		if (cma)
+-			cma_sysfs_account_fail_pages(cma, count);
++		cma_sysfs_account_fail_pages(cma, count);
+ 	}
+ 
+ 	return page;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
 
