@@ -1,117 +1,136 @@
-Return-Path: <linux-kernel+bounces-48010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C792B845634
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:27:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8E528456CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:04:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1D381C2397D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 11:27:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DCD71F28E1D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:04:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED4F815CD74;
-	Thu,  1 Feb 2024 11:27:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0E3E15F32D;
+	Thu,  1 Feb 2024 12:03:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CQkKB6Iy"
-Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JwlJyvOW"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D224D15B971
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 11:27:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D71BC15F31D;
+	Thu,  1 Feb 2024 12:03:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706786827; cv=none; b=JQxkwQpCa2srct1v6wHGHVcWydpbj1+7KsOEdraU5H2GXlFKk2kkDmpfvN7wzuySS/mDbLVIP3CqBaO59SPDAKqsMcL8EIqL+AOGkb1pYEcRPMJqu8P7Yyqq5iDFoyddLEoApvPbolT8Qk1R3MRFFPH1NvqNWyfaYRvIhNTwheA=
+	t=1706789016; cv=none; b=Agd9lBaeysgLkZY8mHr8Ar9EDZR7rc/3wjVTElHL149g4EEXFx+8fZEHJpfuEoe1BYYz8qKAHIYQP9mlTNzpUrw/mFVwIiTjd1hl2uytSvRpBiRXU8090/EBvwaIWTelgghRkrCy+V5jSBVjN3kyHdDJqAMj4pYS6qBKWFsqy7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706786827; c=relaxed/simple;
-	bh=7t3cN4A5Nlnf8vbZj/GgzpI6OT/EQej8eCPkMolSN48=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hrJtpYiWt6W20xjaJKmsvd5UwExqkIABl+ZsL10AnWK2jx0864rarO86yIW9tSGneFAjns8XKDYYgABkB8z73fAgOrkCeXbKfeQQFaDlmnTdkYcpFNAmfDn59zvYjLNQxTi69Juxc8avyPKkomaaI80yA89UPrlSIyMuUvz/lyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CQkKB6Iy; arc=none smtp.client-ip=209.85.161.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-59a1a03d09aso310415eaf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 03:27:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706786825; x=1707391625; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6xvSwpoCaGMK0fP8eY36xc5e6rfWbJpXKZf4oFjUro4=;
-        b=CQkKB6Iy8WPZ1nc4Wy8M4ODGe592/Ur30qxkn2q5AzbcYqLL4xhe0NQJ8N/ALrM7a5
-         WJdlpOmBRRqJ8+ATJWgzfQ/OYI6nqCidoDNSvbgqVd0HVAOAb+t5ZaZS++C4yzAwx45k
-         q7CtX8LMWuH7ktZq8CE+ndw8gcU3MB3AswD+zPEhidqpvLtxKgYdXOv0GvL/rnIYI8NC
-         aT241XwR4WLiACswBf5aeHY8YKZ2iMJZN5NaLVHijTUd7Quyi1i83a1BfM+2iBSbB7vt
-         c4HAHYVax0QfeGenIu9ZJwrlNoDxjtm9ElGMr2R6P8sJuv91NOMZLaJssJDyWSgNOGoC
-         1T1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706786825; x=1707391625;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6xvSwpoCaGMK0fP8eY36xc5e6rfWbJpXKZf4oFjUro4=;
-        b=dluqfIVVDrfZtdXn73VE497TpGUpXq3SF+bsBgeLfkPKz4HT8Y5bII/EIvpD45/e1T
-         su6OLHVCc9UOsJA1EiPEc5pLKP3fjI+zss3+1mX7sPHQGMsXI5O53CRfT+W7asxV3Hfj
-         t/dfKUTpJARjeZ51vQJsmTwe+wo/RPGsZ4Jh0XOOwPEPWmQBRJb20G20EDYUnw6tfaF/
-         8KBtoRLPsphzVuZ0p91jDwZNgSqhErjgkaKS189pYJdnQZKuhQh1txaRy9JFxYcjGXEJ
-         3L3qMQoxrrU7SxuLwW2RZSBahJeolihLO62Hpvx48f7b0l3p1Y2P0kLnfF0+IU7jyLYX
-         B/xw==
-X-Gm-Message-State: AOJu0YyzHliorb0CGF23twWMuaF/HZrNpZylgpeK5j8GMBkg6++rpUx3
-	r7yhcHmfZKtRWqD4hTfyPWzheNmdXjbRPSbWo152vNsB1NKJ+plvAzOPQuSMVm6gfMSPeJFWRlu
-	c+ePgQAmakglE9cB97ODS/GxMjX1nQ4UCJ0aIJw==
-X-Google-Smtp-Source: AGHT+IGzv5bqyac0Sl+E4Ott6FDfnvYUxR7kEJdGMC/RTOZsnHXv+0sPxgCUUESgqBg+PtcOcG5cX5u/cPC2w3/wXn0=
-X-Received: by 2002:a4a:a283:0:b0:59a:3c1b:70a1 with SMTP id
- h3-20020a4aa283000000b0059a3c1b70a1mr4693871ool.1.1706786824672; Thu, 01 Feb
- 2024 03:27:04 -0800 (PST)
+	s=arc-20240116; t=1706789016; c=relaxed/simple;
+	bh=xVSfc7rtZNEubzwrbp9DZR56mDddDOEvo4VK0ZpA1cA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Xi1tHu3CTA5cCIswF0ncMzybGhcaN5GdXLOhJAJD9FxKRKT9xyEZOL9yJvpJDx8ChBTs/G5Ki2H1/gyruLsQBmLuqG+D2/O6doQk2C44Lok3FGXVWiC5As8AvdY1rhK53AE27UjqLpA8u9HIXlB3UyRTVDwiFPCRijxqe1m/UGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JwlJyvOW; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706789015; x=1738325015;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xVSfc7rtZNEubzwrbp9DZR56mDddDOEvo4VK0ZpA1cA=;
+  b=JwlJyvOWzLsKGuHKNVDTu+NTukGLSFUF6lVYivHnp9L87EIHRGoG9gt9
+   7Gf6QHjbtXZOHYZlv+4yvE2EYUC7EQgeb3EvznwTLYtXkNXvRAJTde3ak
+   AX9XpXVHGqx2BfEe3F8j0dkMUI0YCXTw6KoPi1/75wQ9pnK/tVd5ykAjJ
+   44pCaezCCu5PXK7rD4gJrUWj2c2LehV3fgt1VeuDfAJXjRyFearbSX6co
+   OwcVc0GF2s6XqXPyA34XMVoml1miOFqFsZhMkgn6X4LSQAGwDryGtO3TR
+   Mfymmizc8fVipIr8zwYv22K6PfZmWLj+HoUMJfXyEsEv05Jpiy8dDqWIL
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10531590"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="10531590"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 04:03:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="738410714"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="738410714"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 04:03:31 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rVVDa-00000000ok5-0Gob;
+	Thu, 01 Feb 2024 13:26:54 +0200
+Date: Thu, 1 Feb 2024 13:26:53 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Raag Jadav <raag.jadav@intel.com>
+Cc: u.kleine-koenig@pengutronix.de, jarkko.nikula@linux.intel.com,
+	mika.westerberg@linux.intel.com, lakshmi.sowjanya.d@intel.com,
+	linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/3] pwm: dwc: Add 16 channel support for Intel
+ Elkhart Lake
+Message-ID: <Zbt__WmU74vmLpPR@smile.fi.intel.com>
+References: <20240122030238.29437-1-raag.jadav@intel.com>
+ <20240122030238.29437-2-raag.jadav@intel.com>
+ <ZbZqZDvdw-_D3hyb@smile.fi.intel.com>
+ <ZbjPv_-S-6CQsaja@black.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131174347.510961-1-jens.wiklander@linaro.org>
- <20240131174347.510961-2-jens.wiklander@linaro.org> <2024013108-hamster-audacious-9e3a@gregkh>
-In-Reply-To: <2024013108-hamster-audacious-9e3a@gregkh>
-From: Jens Wiklander <jens.wiklander@linaro.org>
-Date: Thu, 1 Feb 2024 12:26:53 +0100
-Message-ID: <CAHUa44HFiShTKrY33iUsi0fq++4YrFva503wh1pJT4GZ7z7ocA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] rpmb: add Replay Protected Memory Block (RPMB) subsystem
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
-	op-tee@lists.trustedfirmware.org, 
-	Shyam Saini <shyamsaini@linux.microsoft.com>, Ulf Hansson <ulf.hansson@linaro.org>, 
-	Jerome Forissier <jerome.forissier@linaro.org>, Sumit Garg <sumit.garg@linaro.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Bart Van Assche <bvanassche@acm.org>, 
-	Randy Dunlap <rdunlap@infradead.org>, Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Tomas Winkler <tomas.winkler@intel.com>, =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZbjPv_-S-6CQsaja@black.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Jan 31, 2024 at 10:13=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Jan 31, 2024 at 06:43:45PM +0100, Jens Wiklander wrote:
-> > +struct class rpmb_class =3D {
->
-> This structure should be marked as 'const', right?
+On Tue, Jan 30, 2024 at 12:30:23PM +0200, Raag Jadav wrote:
+> On Sun, Jan 28, 2024 at 04:53:24PM +0200, Andy Shevchenko wrote:
+> > On Mon, Jan 22, 2024 at 08:32:36AM +0530, Raag Jadav wrote:
+> > > Intel Elkhart Lake PSE includes two instances of PWM as a single PCI
+> > > function with 8 channels each. Add support for the remaining channels.
 
-You're right, of course.
+..
 
->
-> > +     .name =3D "rpmb",
-> > +     .dev_release =3D rpmb_dev_release,
-> > +};
-> > +EXPORT_SYMBOL(rpmb_class);
->
-> EXPORT_SYMBOL_GPL() to match all the other exports in this file please.
+> > First option: Always provide driver data (info is never NULL).
+> 
+> Allowing empty driver_data would save us from adding dummy info
+> for single instance devices in the future.
 
-Sure, I'll fix it.
+Which may be too premature "optimisation". Why? Because if we ever have
+something like pci_dev_get_match_data(), the empty will mean NULL, and
+we may not get difference between empty and missing one.
 
-Thanks,
-Jens
+> > Second option, have the body of the for-loop be factored to a helper
+> > dwc_pwm_init_one() and here
+> > 
+> > 	if (!info)
+> > 		return dwc_pwm_init_one(..., 1, 0);
+> > 
+> > 	for (i = 0; i < info->nr; i++) {
+> > 		ret = dwc_pwm_init_one(...);
+> > 		if (ret)
+> > 			return ret;
+> > 	}
+> 
+> Considering above, we're looking at something like this.
 
->
-> thanks,
->
-> greg k-h
+As one option, yes.
+
+> static int dwc_pwm_init_one(struct device *dev, void __iomem *base, unsigned int size)
+> {
+>         struct dwc_pwm *dwc;
+> 
+>         dwc = dwc_pwm_alloc(dev);
+>         if (!dwc)
+>                 return -ENOMEM;
+> 
+>         dwc->base = base + size;
+> 
+>         return devm_pwmchip_add(dev, &dwc->chip);
+> }
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
