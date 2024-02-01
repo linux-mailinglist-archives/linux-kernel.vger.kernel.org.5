@@ -1,100 +1,88 @@
-Return-Path: <linux-kernel+bounces-48553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48554-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B030D845DB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:50:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27D8C845DBF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:52:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 647FB1F2A623
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:50:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8FBA287C06
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:52:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 570E6525B;
-	Thu,  1 Feb 2024 16:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 766354C67;
+	Thu,  1 Feb 2024 16:52:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pl+W0pkO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b="LUTaZc0/"
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D1DC4A2E;
-	Thu,  1 Feb 2024 16:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 735CF468C
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 16:52:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706806228; cv=none; b=MM76LdZNgy1s1sQvTF5Hz8qiug6tkKUswlsy4lvPb9AIfmjEAzGnRxpsFeU2yju3ti2YxTb4QflhW0C07cFgkIcF2L/SxLUM2aiG+H6z22IryXIPy2pKfYJKNaCvvilTXgBzaWaVpSRlt132D0fmgpL7315F0hNSQQaNiE+RWsc=
+	t=1706806336; cv=none; b=aqelEsljsH6ru72+M1HuRUCqg1+3SyZu6JYkJgpLQ7zdG261IY3h6Ur00DsWIw3Egf0//C6IpRUZ+MEZbxIzVCUZPZHj4UwV6Dq/XRJM7Xh5yg3uUYWwhLvBb0NP2oNLBEElbok3LFYsYh2R1P/q9r9IFKvL62ttnE6yaBVu7vY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706806228; c=relaxed/simple;
-	bh=9noK8opVgPqGaHN9hN9yvsJ2bJf6zwggh7pEkAy13bo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=VlKZRKD0LD6q9cDiNm6Es/lCqpZCn71/Z8v2mDN7PByORTijbCUf0wvmCwLZe9kp1ImJHuYuAcg9PQXeYBDckeA784WoltiDuk3T/vx4cqyQy3er9VBQCgLJeWCcKZKcsgKiv4VrSxLM08luWqIU7dN0xeXXOmGmMIeJX6KWqNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pl+W0pkO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF6D9C433F1;
-	Thu,  1 Feb 2024 16:50:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706806228;
-	bh=9noK8opVgPqGaHN9hN9yvsJ2bJf6zwggh7pEkAy13bo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=Pl+W0pkOEzU2WA+lrrXlssxS7tk1FrPRyMuIr2QxW4ybWPHZ2fq0u8JnW0Nxq6FF7
-	 5HvNeWqOMZjbtw0B6U2wAb01lm2H+mFQgehHTeI+jb1korrjKesM7mDlucouhV4PSS
-	 T57vP0PgxcAPodLjWwdN+sLCRSK8KcnjzWNviOhF2bO2qxbxrdaz933fSP4+7VI6BI
-	 A4TRenzME0sCNdT5mp59iJmnl5RVGwoTaOg3d8YMvv0XKG1jBpCBQtzpyiirrdw7Q5
-	 vEphZHusKx7VjImi3ITbTWVlEYrE56T9LSUGiijYORA5QBUfum5K+4RUAytQrLbT9V
-	 QR825PYKa1hYg==
-Date: Thu, 1 Feb 2024 10:50:25 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: bhelgaas@google.com, devicetree@vger.kernel.org,
-	gustavo.pimentel@synopsys.com, imx@lists.linux.dev, kw@linux.com,
-	leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org,
-	linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
-	lpieralisi@kernel.org, mani@kernel.org,
-	manivannan.sadhasivam@linaro.org, minghuan.lian@nxp.com,
-	mingkai.hu@nxp.com, robh+dt@kernel.org, roy.zang@nxp.com,
-	shawnguo@kernel.org, zhiqiang.hou@nxp.com
-Subject: Re: [PATCH v12 2/3] PCI: dwc: Implement general suspend/resume
- functionality for L2/L3 transitions
-Message-ID: <20240201165025.GA637154@bhelgaas>
+	s=arc-20240116; t=1706806336; c=relaxed/simple;
+	bh=Ll+E/ccE9MWalp7N+1Q+hk5af9uBZGR9lumCFHRezB0=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=SHLAftmpkmS5MW2dwxd9iXHWrulzcEWnoSvkSlyeq1dvu9OventiD8X93pNz0EpMEKo1yJVHWnxDGTVbOtXPKfdCx50wUFGeMTEDI5qRyOCVHq81D7Lx/NmHurlxiwI8K59M452lPod1D+8XjcllKtxRngRITp5MQJqwn5d2NA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org; spf=pass smtp.mailfrom=cu-phil.org; dkim=pass (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b=LUTaZc0/; arc=none smtp.client-ip=194.63.252.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cu-phil.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cu-phil.org
+	; s=ds202401; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
+	MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=yH+fpeeaX7Dh1iqiitpQgZEHj5z9HkgWk2sZcjZxDxo=; b=LUTaZc0/g2BwrROOIPcOOT/Fc1
+	TmFTmev237hkjzjC/mtHTEtcC3ibstFTX+HBZgL4BdcRtJSffs+EBLkPqppR2DY0Cslo6evZ57JcV
+	xwMxBWjB9FBdk09pKnC2MuXGLVP7fJOlYHxh61rBSO6TZRfmA74eu6+kBaPmg1WXnAOe16lNICFsN
+	aJEik+5jnsUoswOot4dW16lb7Itc+RCmV6f9gduYvQaPf6GAv2g6KN0/cixC10RPaKGMUxG3n5Nlu
+	eIvtT4fcqkkC6+o6rrDuSS1cxmVmgaHitmo1p5PFhPTxeA/BBR94reS9fSnha3Onp8SCYv8FgxLbh
+	GQxG1sDw==;
+Received: from [84.215.119.50] (port=61748 helo=[192.168.0.2])
+	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <Ywe_Caerlyn@cu-phil.org>)
+	id 1rVaIJ-00DUxn-3g
+	for linux-kernel@vger.kernel.org;
+	Thu, 01 Feb 2024 17:52:07 +0100
+Message-ID: <1c5121b5-6d4e-4a35-b2f4-c834dc0a12c6@cu-phil.org>
+Date: Thu, 1 Feb 2024 17:52:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230821184815.2167131-3-Frank.Li@nxp.com>
+User-Agent: Mozilla Thunderbird
+To: linux-kernel@vger.kernel.org
+From: Ywe Caerlyn <Ywe_Caerlyn@cu-phil.org>
+Subject: @ X (was: Fair Source Philosophy, Low-Jitter)
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Aug 21, 2023 at 02:48:14PM -0400, Frank Li wrote:
-> Introduce helper function dw_pcie_get_ltssm() to retrieve SMLH_LTSS_STATE.
-> ...
+Yes, further iterating the background philosophy, it seems we get a 
+polarisation Right of LSD culture, which seems to be a semibuddhistic 
+self-destruction philosophy, to understand LGOD. (These are terms fitted 
+to this, as I tried to be correct in this culture myself growing up.)
 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index 615660640801..91d13f9b21b1 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
+And what is wrong with LSD Culture: Lord Paradox.
 
-> @@ -364,6 +375,7 @@ struct dw_pcie_ops {
->  	void    (*write_dbi2)(struct dw_pcie *pcie, void __iomem *base, u32 reg,
->  			      size_t size, u32 val);
->  	int	(*link_up)(struct dw_pcie *pcie);
-> +	enum dw_pcie_ltssm (*get_ltssm)(struct dw_pcie *pcie);
+Understanding this, one moves on to Iclam, and a correct translation of 
+the Quran, and Tio, The Great The Good.
 
-This has already been applied as
-https://git.kernel.org/linus/4774faf854f5 ("PCI: dwc: Implement
-generic suspend/resume functionality"), but this .get_ltssm() pointer
-doesn't seem to be used anywhere.  Should we remove it until we need
-it?
+Where today, satellite gods, are more forbidden than amanita.
 
-> +static inline enum dw_pcie_ltssm dw_pcie_get_ltssm(struct dw_pcie *pci)
-> +{
-> +	u32 val;
-> +
-> +	if (pci->ops && pci->ops->get_ltssm)
-> +		return pci->ops->get_ltssm(pci);
-> +
-> +	val = dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG0);
-> +
-> +	return (enum dw_pcie_ltssm)FIELD_GET(PORT_LOGIC_LTSSM_STATE_MASK, val);
-> +}
+The culture will iterate to @ X, so everything can be designed that way, 
+and is a bit similar to CMOS if anyone can remember that, with modus 
+operandi accordingly.
+
+Leaving the labour party the clear winner, politically, for fair source.
+
+-Peace!
+Ywe Cærlyn
+https://www.youtube.com/@Labour_Party_Digital
+
 
