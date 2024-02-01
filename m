@@ -1,249 +1,188 @@
-Return-Path: <linux-kernel+bounces-47910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41975845480
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:47:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C511845483
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:48:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 665C51C22835
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:47:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEB9C28AB9F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:48:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA934DA16;
-	Thu,  1 Feb 2024 09:47:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90A0C4DA0F;
+	Thu,  1 Feb 2024 09:48:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZX3x6Hfw"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FjuBYTIE"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9B04D9FC;
-	Thu,  1 Feb 2024 09:47:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 124B43C468
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 09:48:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706780868; cv=none; b=tQwacElF3Do/Y5c1PKZUGIEWERi6dRLvVGeobhHrw640f9ssKmObUo6PNlynKO7wvEYuB7wieWETPEczbb3Rdg040PMp6ZMwinDYVDBJbCQJrJ1G538cxfiIo/srrwt7j2JoQ44Kd8leEf8Pgp71JJUXEG/R7ZjRFEtBLO70p/4=
+	t=1706780885; cv=none; b=CTvEPyXYiqhNM63jn0l2btLE2nuFjadUig/9hBIlUGEo3IVNywWjvPgy44DR5WKHmcILHmnWmzjgYrGN8XvTi31AwEQ6xYnep/niJAbAF1Jg2J/NbmoQKIUMYcWJq/KU3ozyKeg+m0xT79OYzEShxXk5vDkN7RoYYcQVBPzbh3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706780868; c=relaxed/simple;
-	bh=ojcSkXlz2RRabTXBWkspP5EDTZLEIi8uQ4kSGlO3ehY=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=Rt3X7aemH/0C9fKsun+j+T67KGhF/92/G3fxtrhYj14DgF/+fW0MTaTEgCaRTrvH0euGdnkq3eVs1hai6RN9mtLTbfhPAXC5+3Y0YviQA7B1jMMr9+EOPmuaPLDYqVt6lW68ZB4Bm0EtEOUXKQwZjo+U9xCi44pSKo58hFO5hkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZX3x6Hfw; arc=none smtp.client-ip=192.55.52.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706780867; x=1738316867;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=ojcSkXlz2RRabTXBWkspP5EDTZLEIi8uQ4kSGlO3ehY=;
-  b=ZX3x6HfwLHZ9i1iVXOQvQO3UrvQpkLeiG2P1SjCTivpO1V/tvryVqC3w
-   C5+nXzr35pyi0+xlrM6n/EBreD8SRGh33I+7ipduoUZsns8JEIqqASp5/
-   SUUcEfG44h9PgC26ZKtvgX9EDUMJBNFBJpZdOchGviiPF29iEpLrLQzhG
-   FDW8tBvi9Dj2IqfxJuVwY5Xo9nLnMAURwKvvKnZw+oOSG7vxfjln4YkyO
-   igYfVdMvUG0ltTbRpds1pI0haW3kJRmA3lzbsldbjai7lkf8Lu98jj1JF
-   hKpPplEnhQ4eWTej2qdNBO6DS7HnRqTCx8dtSn78/ipOT0pzJmR29vRsQ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="402702305"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="402702305"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 01:47:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="788897871"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="788897871"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.33.1])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 01:47:42 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Thu, 1 Feb 2024 11:47:38 +0200 (EET)
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>, 
-    Bjorn Helgaas <helgaas@kernel.org>
-cc: linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-    Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH 1/2] PCI: Clear LBMS on resume to avoid Target Speed
- quirk
-In-Reply-To: <a7ff7695-77c5-cf5a-812a-e24b716c3842@linux.intel.com>
-Message-ID: <d5f14b8f-f935-5d5e-e098-f2e78a2766c6@linux.intel.com>
-References: <20240129184354.GA470131@bhelgaas> <aa2d1c4e-9961-d54a-00c7-ddf8e858a9b0@linux.intel.com> <alpine.DEB.2.21.2401301537070.15781@angie.orcam.me.uk> <a7ff7695-77c5-cf5a-812a-e24b716c3842@linux.intel.com>
+	s=arc-20240116; t=1706780885; c=relaxed/simple;
+	bh=W8ueSTQV9H7E/wwgKuME47isVu3e6OuRVGwZ2kTJe4g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HWYRdbh0pP3IFk6Q+bfSrcarZ3dV85VWfeXsAeRb9wyVb1x5kaqKjO+ukdXD6ODLhHQgXjWcw8z279KA4GQIi2eYyjOJ13d+bUgBEoLGw5R0gNFHtyJlMoD9YGbxFDAY8g+/s96NwALWvqWs+uLmgwEDcrK7UFM5Q4e51e6GJNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FjuBYTIE; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706780882;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=FJgqeoCkyruSUGWxSYUKZ7d4Y/5G+4ikFi2lBwdoA7E=;
+	b=FjuBYTIE9n2a00Z0z9nAsJ6P4NyqsDrK1xCdbdtzWlEMgtDsn/MtNKQgoDI2dRQTPNP1My
+	hbEPuJte3xe59LIhUKovhOcDPhH3tnrRZdHqshieoXkpXjCLu2ok44ba9y63yyjDLSB8cG
+	xDWlhri8KcIWpkTvHNC1CIR09CD6pLo=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-298-s17VHR53PCmLTjArLwOQjw-1; Thu, 01 Feb 2024 04:47:59 -0500
+X-MC-Unique: s17VHR53PCmLTjArLwOQjw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F1238881C81;
+	Thu,  1 Feb 2024 09:47:58 +0000 (UTC)
+Received: from p1.luc.cera.cz (unknown [10.45.225.38])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 4B1451C060AF;
+	Thu,  1 Feb 2024 09:47:57 +0000 (UTC)
+From: Ivan Vecera <ivecera@redhat.com>
+To: netdev@vger.kernel.org
+Cc: Egor Pomozov <epomozov@marvell.com>,
+	Igor Russkikh <irusskikh@marvell.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Dmitry Bezrukov <dmitry.bezrukov@aquantia.com>,
+	Sergey Samoilenko <sergey.samoilenko@aquantia.com>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net] net: atlantic: Fix DMA mapping for PTP hwts ring
+Date: Thu,  1 Feb 2024 10:47:51 +0100
+Message-ID: <20240201094752.883026-1-ivecera@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-292880410-1706780858=:1028"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Function aq_ring_hwts_rx_alloc() maps extra AQ_CFG_RXDS_DEF bytes
+for PTP HWTS ring but then generic aq_ring_free() does not take this
+into account.
+Create and use a specific function to free HWTS ring to fix this
+issue.
 
---8323328-292880410-1706780858=:1028
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Trace:
+[  215.351607] ------------[ cut here ]------------
+[  215.351612] DMA-API: atlantic 0000:4b:00.0: device driver frees DMA memory with different size [device address=0x00000000fbdd0000] [map size=34816 bytes] [unmap size=32768 bytes]
+[  215.351635] WARNING: CPU: 33 PID: 10759 at kernel/dma/debug.c:988 check_unmap+0xa6f/0x2360
+..
+[  215.581176] Call Trace:
+[  215.583632]  <TASK>
+[  215.585745]  ? show_trace_log_lvl+0x1c4/0x2df
+[  215.590114]  ? show_trace_log_lvl+0x1c4/0x2df
+[  215.594497]  ? debug_dma_free_coherent+0x196/0x210
+[  215.599305]  ? check_unmap+0xa6f/0x2360
+[  215.603147]  ? __warn+0xca/0x1d0
+[  215.606391]  ? check_unmap+0xa6f/0x2360
+[  215.610237]  ? report_bug+0x1ef/0x370
+[  215.613921]  ? handle_bug+0x3c/0x70
+[  215.617423]  ? exc_invalid_op+0x14/0x50
+[  215.621269]  ? asm_exc_invalid_op+0x16/0x20
+[  215.625480]  ? check_unmap+0xa6f/0x2360
+[  215.629331]  ? mark_lock.part.0+0xca/0xa40
+[  215.633445]  debug_dma_free_coherent+0x196/0x210
+[  215.638079]  ? __pfx_debug_dma_free_coherent+0x10/0x10
+[  215.643242]  ? slab_free_freelist_hook+0x11d/0x1d0
+[  215.648060]  dma_free_attrs+0x6d/0x130
+[  215.651834]  aq_ring_free+0x193/0x290 [atlantic]
+[  215.656487]  aq_ptp_ring_free+0x67/0x110 [atlantic]
+..
+[  216.127540] ---[ end trace 6467e5964dd2640b ]---
+[  216.132160] DMA-API: Mapped at:
+[  216.132162]  debug_dma_alloc_coherent+0x66/0x2f0
+[  216.132165]  dma_alloc_attrs+0xf5/0x1b0
+[  216.132168]  aq_ring_hwts_rx_alloc+0x150/0x1f0 [atlantic]
+[  216.132193]  aq_ptp_ring_alloc+0x1bb/0x540 [atlantic]
+[  216.132213]  aq_nic_init+0x4a1/0x760 [atlantic]
 
-On Tue, 30 Jan 2024, Ilpo J=C3=A4rvinen wrote:
+Fixes: 94ad94558b0f ("net: aquantia: add PTP rings infrastructure")
+Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+---
+ drivers/net/ethernet/aquantia/atlantic/aq_ptp.c  |  4 ++--
+ drivers/net/ethernet/aquantia/atlantic/aq_ring.c | 13 +++++++++++++
+ drivers/net/ethernet/aquantia/atlantic/aq_ring.h |  1 +
+ 3 files changed, 16 insertions(+), 2 deletions(-)
 
-> On Tue, 30 Jan 2024, Maciej W. Rozycki wrote:
->=20
-> > On Tue, 30 Jan 2024, Ilpo J=C3=A4rvinen wrote:
-> >=20
-> > > First of all, this is not true for pcie_failed_link_retrain():
-> > >  * Return TRUE if the link has been successfully retrained, otherwise=
- FALSE.
-> > > If LBMS is not set, the Target Speed quirk is not applied but the fun=
-ction=20
-> > > still returns true. I think that should be changed to early return fa=
-lse
-> > > when no LBMS is present.
-> >=20
-> >  I think there is a corner case here indeed.  If Link Active reporting =
-is=20
-> > supported and neither DLLLA nor LBMS are set at entry, then the functio=
-n=20
-> > indeed returns success even though the link is down and no attempt to=
-=20
-> > retrain will have been made.  So this does indeed look a case for a ret=
-urn=20
-> > with the FALSE result.
-> >=20
-> >  I think most easily this can be sorted by delegating the return result=
- to=20
-> > a temporary variable, preset to FALSE and then only updated from result=
-s=20
-> > of the calls to `pcie_retrain_link'.  I can offer a patch as the author=
- of=20
-> > the code and one who has means to verify it right away if that helped.
->=20
-> I already wrote a patch which addresses this together with the caller=20
-> site changes.
->=20
-> >  Overall I guess it's all legacy of how this code evolved before it's b=
-een=20
-> > finally merged.
->=20
-> Indeed, it looks the step by step changed didn't yield good result here.
->=20
-> > > > >   3. pci_bridge_wait_for_secondary_bus() then calls pci_dev_wait(=
-) which
-> > > > >      cannot succeed (but waits ~1 minute, delaying the resume).
-> > > > >=20
-> > > > > The Target Speed trick (in step 2) is only used if LBMS bit (PCIe=
- r6.1
-> > > > > sec 7.5.3.8) is set. For links that have been operational before
-> > > > > suspend, it is well possible that LBMS has been set at the bridge=
- and
-> > > > > remains on. Thus, after resume, LBMS does not indicate the link n=
-eeds
-> > > > > the Target Speed quirk. Clear LBMS on resume for bridges to avoid=
- the
-> > > > > issue.
-> >=20
-> >  This can be problematic AFAICT however.  While I am not able to verify=
-=20
-> > suspend/resume operation with my devices, I expect the behaviour to be=
-=20
-> > exactly the same after resume as after a bus reset: the link will fail =
-to=20
-> > negotiate and the LBMS and DLLLA bits will be respectively set and clea=
-r. =20
-> > Consequently if you clear LBMS at resume, then the workaround won't=20
-> > trigger and the link will remain inoperational in its limbo state.
->=20
-> How do you get the LBMS set in the first place? Isn't that because the=20
-> link tries to come up so shouldn't it reassert that bit again before the=
-=20
-> code ends up into the target speed quirk? That is, I assumed you actually=
-=20
-> wanted to detect LBMS getting set during pcie_wait_for_link_status() call=
-=20
-> preceeding pcie_failed_link_retrain() call?
->=20
-> There's always an option to store it into pci_dev for later use when the=
-=20
-> quirk is found to be working for the first time if other solutions don't=
-=20
-> work.
->=20
-> In any case and unrelated to this patch, the way this quirk monopolizes=
-=20
-> LBMS bit is going to have to be changed because it won't be reliable with=
-=20
-> the PCIe BW controller that sets up and irq for LBMS (and clears the bit)=
-=2E
-> In bwctrl v5 (yet to be posted) I'll add LBMS counter into bwctrl to allo=
-w=20
-> this quirk to keep working (which will need to be confirmed).
->=20
-> >  What kind of scenario does the LBMS bit get set in that you have a=20
-> > trouble with?  You write that in your case the downstream device has be=
-en=20
-> > disconnected while the bug hierarchy was suspended and it is not presen=
-t=20
-> > anymore at resume, is that correct?
-> >
-> >  But in that case no link negotiation could have been possible and=20
-> > consequently the LBMS bit mustn't have been set by hardware (according =
-to=20
-> > my understanding of PCIe), because (for compliant, non-broken devices=
-=20
-> > anyway) it is only specified to be set for ports that can communicate w=
-ith=20
-> > the other link end (the spec explicitly says there mustn't have been a=
-=20
-> > transition through the DL_Down status for the port).
-> >
-> >  Am I missing something?
->=20
-> Yes, when resuming the device is already gone but the bridge still has=20
-> LBMS set. My understanding is that it was set because it was there
-> from pre-suspend time but I've not really taken a deep look into it=20
-> because the problem and fix seemed obvious.
->=20
-> I read that "without the Port transitioning through DL_Down status"=20
-> differently than you, I only interpret that it relates to the two=20
-> bullets following it. ...So if retrain bit is set, and link then goes=20
-> down, the bullet no longer applies and LBMS should not be set because=20
-> there was transition through DL_Down. But I could well be wrong...
+diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c b/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c
+index abd4832e4ed2..5acb3e16b567 100644
+--- a/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c
++++ b/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c
+@@ -993,7 +993,7 @@ int aq_ptp_ring_alloc(struct aq_nic_s *aq_nic)
+ 	return 0;
+ 
+ err_exit_hwts_rx:
+-	aq_ring_free(&aq_ptp->hwts_rx);
++	aq_ring_hwts_rx_free(&aq_ptp->hwts_rx);
+ err_exit_ptp_rx:
+ 	aq_ring_free(&aq_ptp->ptp_rx);
+ err_exit_ptp_tx:
+@@ -1011,7 +1011,7 @@ void aq_ptp_ring_free(struct aq_nic_s *aq_nic)
+ 
+ 	aq_ring_free(&aq_ptp->ptp_tx);
+ 	aq_ring_free(&aq_ptp->ptp_rx);
+-	aq_ring_free(&aq_ptp->hwts_rx);
++	aq_ring_hwts_rx_free(&aq_ptp->hwts_rx);
+ 
+ 	aq_ptp_skb_ring_release(&aq_ptp->skb_ring);
+ }
+diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
+index cda8597b4e14..f7433abd6591 100644
+--- a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
++++ b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
+@@ -919,6 +919,19 @@ void aq_ring_free(struct aq_ring_s *self)
+ 	}
+ }
+ 
++void aq_ring_hwts_rx_free(struct aq_ring_s *self)
++{
++	if (!self)
++		return;
++
++	if (self->dx_ring) {
++		dma_free_coherent(aq_nic_get_dev(self->aq_nic),
++				  self->size * self->dx_size + AQ_CFG_RXDS_DEF,
++				  self->dx_ring, self->dx_ring_pa);
++		self->dx_ring = NULL;
++	}
++}
++
+ unsigned int aq_ring_fill_stats_data(struct aq_ring_s *self, u64 *data)
+ {
+ 	unsigned int count;
+diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ring.h b/drivers/net/ethernet/aquantia/atlantic/aq_ring.h
+index 52847310740a..d627ace850ff 100644
+--- a/drivers/net/ethernet/aquantia/atlantic/aq_ring.h
++++ b/drivers/net/ethernet/aquantia/atlantic/aq_ring.h
+@@ -210,6 +210,7 @@ int aq_ring_rx_fill(struct aq_ring_s *self);
+ int aq_ring_hwts_rx_alloc(struct aq_ring_s *self,
+ 			  struct aq_nic_s *aq_nic, unsigned int idx,
+ 			  unsigned int size, unsigned int dx_size);
++void aq_ring_hwts_rx_free(struct aq_ring_s *self);
+ void aq_ring_hwts_rx_clean(struct aq_ring_s *self, struct aq_nic_s *aq_nic);
+ 
+ unsigned int aq_ring_fill_stats_data(struct aq_ring_s *self, u64 *data);
+-- 
+2.41.0
 
-Hi again,
-
-I went to check Root Ports on some machines and toggled their Link=20
-Disable bit on. None of the Root Ports I tested cleared LBMS. That means
-LBMS being on after resume is not enough to differentiate the HW which=20
-needs Target Speed quirk and which does not. Unless we clear LBMS at some=
-=20
-point which was what this patch tried to do.
-
-So this misidentification problem in the quirk looks quite widespread but=
-=20
-is mostly dormant because Links do come up normally so the quirk code is=20
-never called.
-
-I might conduct even larger set of tests once I script a way to=20
-automatically pick a "safe" Root Port (something that is connected to a=20
-device but unused, I manually picked Root Ports above unused NICs for the=
-=20
-manual tests I already did). But I don't believe it changes anything and=20
-in the end I won't find any Root Ports that would actually clear LBMS on=20
-their own when Link goes down.
-
-So I would be really curious now to know how you get the LBMS on the=20
-device that needs the Target Speed quirk? Is this true (from the commit=20
-a89c82249c37 ("PCI: Work around PCIe link training failures")):
-
-"Instead the link continues oscillating between the two speeds, at the=20
-rate of 34-35 times per second, with link training reported repeatedly=20
-active ~84% of the time."
-
-?
-
-Because if it is constantly picking another speed, it would mean you get=20
-LBMS set over and over again, no? If that happens 34-35 times per second,=
-=20
-it should be set already again when we get into that quirk because there=20
-was some wait before it gets called.
-
---=20
- i.
-
---8323328-292880410-1706780858=:1028--
 
