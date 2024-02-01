@@ -1,406 +1,187 @@
-Return-Path: <linux-kernel+bounces-47787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C18C08452E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:39:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16A7F8452E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:40:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25382294F1F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:39:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8034D1F24DC1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:40:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 501CA1586E6;
-	Thu,  1 Feb 2024 08:39:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054CD15A49F;
+	Thu,  1 Feb 2024 08:39:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gRcwzlAL"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="FTc9W/U0"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64344158D8B
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 08:39:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 496FB15A498
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 08:39:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706776785; cv=none; b=TrTeg06bpv+fB54libhIweHGsWjSNkpa+JR2G3qceqJwRWOZZk3X0ZprqTRwJ8UQJQbrVRey24DayOTGH83f9lKjHJmLlRERgV9bcG0FUSM86jUMCvru4xXGCnCMNV5P5HeuBSFEvCWUEPRnyjN4GAytYOBe9g8Bg4LNlyI5vs0=
+	t=1706776794; cv=none; b=odry9uygpNEc0Al+tnRuaQR6lUAN+Xhih5XuVy3uZ4yCc7PpXkySVE1XMpq2vREcw6F+EMNAj9CF8PmLEU55HGr/848fZpZbSwCLpRQL/82IO0atC4mP1+Wtn/1ke7MREu5YszZXgBOTO5hp6lSvfMcgo9AQeScM7VY0eVET0Mo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706776785; c=relaxed/simple;
-	bh=xintUEzQ8uM7chXI5krxWTSVIW10j1fGNmwxGlIfins=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=to/D95nyWUIzn4u+vqyPKz3olPG73tf6wu7T3zW9nZVHZurkemH9qlvGbTN+xagB+whyD+438qor3XINw1TV6aqd2EaDR7oRy8X3uepQNr7ePlKZFR3LeKvjXTINDtnKXiYCoKpRKmovn/DSdzag9RLTJbtIkRGg1khetxzVWSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gRcwzlAL; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a30f7c9574eso79832566b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 00:39:42 -0800 (PST)
+	s=arc-20240116; t=1706776794; c=relaxed/simple;
+	bh=Y19IbEX3FXAZ7R2Z+dmkGvLzD3cE4MKEu+r+iHhHUaU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cxh67V/kRFoT/W/Xz+6S/K5+L/bVgBWNTg6iKaviKAlwKG4kdwyFTAfF+KdgBrUv0VUbqzi2D3omItlMmC/HUXphzFqZkTabwhzLAxW9qkOUz6JXFztYaS4hYNqOkhqNVlEuTF42IfoWhVI4UAkYEoWNfw/g8vJcf/KxOve9YrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com; spf=pass smtp.mailfrom=cloud.com; dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b=FTc9W/U0; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40ef6da20feso3123535e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 00:39:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706776780; x=1707381580; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/LUOnsZoWQv3AKUXusOG3iHBw6xyGVqBDQ81NDvZ0PQ=;
-        b=gRcwzlALQTDKWGRxX7lcMCgtRjl5Gt3jtWpC3McX77NNkcb31cqy4PZql4+kOAcwNX
-         B1fpAMZVrw2Q1+TNZXF4dSngW4CS6br7APJXhOISxz8MKbnWo7w2vi23vMswNX0EZeAP
-         Ann+LLFN15BTJ3WQ1KvZ19LlM3XQm26iBJ7MHfsUlIOY6usLQeqp3en6ddjNQeJ/i7u1
-         f6qsAn424H+GbfnJsz7rzruBcIFCU0+JRvkl8Oh49MUvGXNemd9PDu94rLJ5vSG8ppmj
-         zLtCCbCyyOckLIHSmPZVU6v5t3c0FioExiCGthoeECpYtAoY8CuaFNrWcL1rCNTOGfkY
-         SP2Q==
+        d=citrix.com; s=google; t=1706776790; x=1707381590; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Mmx7Ge44ylq+xRaE54Mmi5lsueMZNlgqIRQYM/UNpUU=;
+        b=FTc9W/U0K6Iz1YQa0AFdLfWmj+AzqhUx3NaSA666dcrUnhZCzPDhZyMpDp6DmkAsHH
+         CXdHxaC4SS3UocOmv6B5DOrLjbGKXDYFzibbitlteovquDPxWfD7JmavCadrXmdKn799
+         mD31YISgaWqEJNW2xjLkBk0EP8lg8cNJHmWTc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706776780; x=1707381580;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/LUOnsZoWQv3AKUXusOG3iHBw6xyGVqBDQ81NDvZ0PQ=;
-        b=RHuJ4y7G0DvMKfWy1kchAuRMGyVRiLcXm6q3b2lU27Q0QmQNXpi+7eIef69mNejJn4
-         /B1AQeJ3RW3slFLseHK4ED20lA6L2f48tZtBqk37wcR/wvF5p8dx2z5PvZgUTJuQ9H+p
-         +YF9mQ+CBLXIQzBZsT+DnDA0yQf0aVAtkFUzjqTUehCRYnyE7BsRhHEPEeREqZ6iJBGP
-         m+hRT/TPRbe15qyGdXaZML2KB9REKEn+ixBCy0cQyPUpjfJShk4aCzphk/ZHMBGQGZjk
-         W3vJPCCUL08KnFcNo8syR6VdyicrSLJAldEaPyXutTlfxRuK9tPDlUjNF22JdHD4CglL
-         b7mw==
-X-Gm-Message-State: AOJu0YwKSFmmeTDi6NfjsHURIWMy5S/G6GNmJ76Fy61kbb5UKBkutvc/
-	zhoHqjUcF3xZRg+Gl5LLL4FwjHm/wPN1OMvrtsitkm4NQXonxFSSD9oq+NnDjMg=
-X-Google-Smtp-Source: AGHT+IHumu1PNcZ4qBTo97y4VlBNSZUTcGGVqMQ2/51E+ymKFjhoQwTPdGjfzhiOmljtMExeRWOrLA==
-X-Received: by 2002:a17:906:cecc:b0:a36:5b1c:fb4b with SMTP id si12-20020a170906cecc00b00a365b1cfb4bmr1133063ejb.13.1706776780568;
-        Thu, 01 Feb 2024 00:39:40 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUpbreCLyRwzBpbin+TdP1i+rgU+9hVeCHVIQRogtpJALHH6GZadYRsacPcihVu6He4BxHV6Pw4GYH/B0luu88AfQRS/vH0MdgvyCDbSKms0GR1Ep9J1jCk5RunHcAS1eJtHncGRwbfFftIlYlhthH8ZQ+UT49nDf9cjWYuKavShk/+TLbMKt2F2JHbTRpHYXCfRU4wMJdbiIANqZHrXe4f5j1uve7QxCXWiW5HCnVtzdGwXBZH/ElNkpQn9aRJOKFBOfdid/CVAEjvwqwbKRJQzo2XcDdMK/ZAZcgr7u66tsCLVuOSqNF0yDr+g5IILCeUCv4R4wzb1L29rPs=
-Received: from [127.0.1.1] ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id s7-20020a17090699c700b00a36c60180aesm253691ejn.60.2024.02.01.00.39.39
+        d=1e100.net; s=20230601; t=1706776790; x=1707381590;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Mmx7Ge44ylq+xRaE54Mmi5lsueMZNlgqIRQYM/UNpUU=;
+        b=CLWrp/n7bVkFchY2ifNfWhEaOodfK9DcONuAnnFARicf8g83PGn5zMgPMp9LiqPKA1
+         Kcay//qUfP5/JoHKIZmIuW7Lq2kvAw1+qYSOrVS1pcfbCdVM6YNojgffVbIZXh0sqL0A
+         E78JEqEDsM4uZAZ0BLtZhW6YgOhGinhFsCimIVDkKiyu61rhgG7dke5kR7OkhS3h5QZj
+         6tpCnm4ojnMJ7gzmV3syuS133X45Q05ML27XYLsl9094nMa1q1P4F69a8FJpzrbPTvSA
+         1CCK551fHE4uvGinROsYzTqTudgYKTxVEsNyBEo6YgdRVj3eGBpvNVIJieEANe8J5sRW
+         qQxQ==
+X-Gm-Message-State: AOJu0Yyi+cg6CbZll/7WV76b9RxxdoLrxfpjeR/+O9YNATQ0Lt1KwBF0
+	Y8BFGGp7kACSJNu7yGYdpSWBxfzYj7MeoNhngp3bKjichO6GF0frvU/+yZhGD5I=
+X-Google-Smtp-Source: AGHT+IGW7bgbJkTrR4Yza/IRXj8QJZwTE7Cr91T4ok2nKqWk8e0wQ2sciL8gpCHIKiRmLekUEHkNew==
+X-Received: by 2002:a05:600c:1c9a:b0:40e:f972:9901 with SMTP id k26-20020a05600c1c9a00b0040ef9729901mr3736599wms.4.1706776790540;
+        Thu, 01 Feb 2024 00:39:50 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXDCVhgfb0o24SN4Wqn/FgnWkJYm9QCYpD/ESYbFl4VjZTFA1lzb2EecVom9k5fEwfP12Y/uppYGzcffTRrzp/icQGv3HjGZpMbEHP1O0bmMpkENMmh/i5WpK5zIezuae0Uf4YZJFj/GIIpi8YgFkSb+ve1+U2VK0dRTY3tLYI0EKqJsftwJxoWx8X1Knfb8tnC76BuOBql1srwLsN7vGSl2wcbMkEqp6rlaRVuZC9dj8g2KKow5t0/nsSr8nJZlls/92TMW3QXD5Uc/pJNuCeeBPj2+nM9/cIi4ZkYdMgG2c7Y3W/85xx3atQ7NFnga1NjCNQMDhJbuqruZaGAYHg7aAFbNfLKQC7xPnI5wPmFp1E3D2qFqwlvqSIyLUOZrN5YudkUPsFIPL0Qk1faQOXY4FjKqsnSsDMGI58pczPV4freLpRkOBnJ+zblZe0frUgjrALk1NdUEoPj3Y9vKQ+JxYOJfr1AnKZs/vkDbp6joC8yuId8ZmXn+YeGnhlWwAZhccdcXntd3R0=
+Received: from localhost ([213.195.118.74])
+        by smtp.gmail.com with ESMTPSA id g10-20020a05600c4eca00b0040fbba734f3sm1082225wmq.34.2024.02.01.00.39.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 00:39:40 -0800 (PST)
-From: Abel Vesa <abel.vesa@linaro.org>
-Date: Thu, 01 Feb 2024 10:39:33 +0200
-Subject: [PATCH v4] phy: qualcomm: eusb2-repeater: Rework init to drop
- redundant zero-out loop
+        Thu, 01 Feb 2024 00:39:50 -0800 (PST)
+Date: Thu, 1 Feb 2024 09:39:49 +0100
+From: Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: "Chen, Jiqian" <Jiqian.Chen@amd.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Juergen Gross <jgross@suse.com>,
+	Stefano Stabellini <sstabellini@kernel.org>,
+	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	"xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+	"Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
+	"Huang, Ray" <Ray.Huang@amd.com>,
+	"Ragiadakou, Xenia" <Xenia.Ragiadakou@amd.com>
+Subject: Re: [RFC KERNEL PATCH v4 3/3] PCI/sysfs: Add gsi sysfs for pci_dev
+Message-ID: <ZbtY1R15pYZz3F3B@macbook>
+References: <ZboLq6kZhwpUC_c3@macbook>
+ <20240131190014.GA593286@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240201-phy-qcom-eusb2-repeater-fixes-v4-1-cf18c8cef6d7@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAMRYu2UC/43Nyw6CMBCF4VcxXTtmesFaV76HccFlkCZKscVGQ
- nh3CyuMC13+Z5JvRhbIWwrsuBmZp2iDdW0Ktd2wssnbK4GtUjOBQiFHBV0zwKN0d6BnKAR46ij
- vyUNtXxSgNAI55xKlKFkyOk/LIRHnS+rGht75YXkX+bz+K0cOCKh0oYt9cZBSnm62zb3bOX9lM
- x3Fmst+cSJxWmeVOZCuasy+OLnihPnFSeBg8j2nWiqDFX1w0zS9AYI9yoFpAQAA
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>
-Cc: Elliot Berman <quic_eberman@quicinc.com>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
- linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
- linux-kernel@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=10624; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=xintUEzQ8uM7chXI5krxWTSVIW10j1fGNmwxGlIfins=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlu1jGQEjJF6LQvhZJxo9atbLwNVYbuxO1/OEn+
- itaQqh0CZ6JAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZbtYxgAKCRAbX0TJAJUV
- VuyFEACHhi61T52YNsLXfVwydXS8A42aXEGj4POrs3OMgRFB1+noMlBMGLZhX+zH7pTub6Y/p2w
- IO+Ok7UAy/bpaW84pRijwq4wWIyEBNf2aFjglqqpnuGeo3LBPzVdks7VH23PiId3yY4eG3NqNKd
- Y/UBO6qdQU0NL/GXB2QG5kGQowztHcYL+j70ciVgXV1Gp+SSc/24PTK88WlJAkFDvcTB5F3IPd9
- FWj5h5cgHjdAXyNLHCdjrIzSS1aBsYdKfHdR5UKVLYjZEDZbR3H5ypUZbkPpADaaDG3omuBWeRv
- HAjNpXynQpNHE23li8Pco4kVDINaPkdnpNI2HShAmtoPUbjnFZMtSSwXdu0oTa8zqPI30tjagAy
- orCj66fKIsV5geWKfWdgp5+YUDKHAOb9k8gTwxtgJgajR5d70UOa79jgdAUrzLs4jovV5tSERx1
- w+k8wQDwf9YW/lxyzDa82Nn8Qj4zUkgi55UHWVJVWX7LrII4U1PMegNLi0dpKRrFz1zODkL18jK
- Y2EoV75bvxbYV6I7Q+c8EoNO1GII4DWf4Y32129XqoQLlc/Abm1KKrMqWs2qUKnLTu8HUFtnayg
- SKuwsMayu4a3x01gBFJ1QQUuM5eeWIDYp8KZ/KlKM3OjlaBQcR4J73Aqpz1xGH3jBQ45zvUP7R4
- QS8rVSwil9r/dDA==
-X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
- fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240131190014.GA593286@bhelgaas>
 
-Instead of incrementing the base of the global reg fields, which renders
-the second instance of the repeater broken due to wrong offsets, use
-regmap with base and offset. As for zeroing out the rest of the tuning
-regs, avoid looping though the table and just use the table as is,
-as it is already zero initialized.
+On Wed, Jan 31, 2024 at 01:00:14PM -0600, Bjorn Helgaas wrote:
+> On Wed, Jan 31, 2024 at 09:58:19AM +0100, Roger Pau Monné wrote:
+> > On Tue, Jan 30, 2024 at 02:44:03PM -0600, Bjorn Helgaas wrote:
+> > > On Tue, Jan 30, 2024 at 10:07:36AM +0100, Roger Pau Monné wrote:
+> > > > On Mon, Jan 29, 2024 at 04:01:13PM -0600, Bjorn Helgaas wrote:
+> > > > > On Thu, Jan 25, 2024 at 07:17:24AM +0000, Chen, Jiqian wrote:
+> > > > > > On 2024/1/24 00:02, Bjorn Helgaas wrote:
+> > > > > > > On Tue, Jan 23, 2024 at 10:13:52AM +0000, Chen, Jiqian wrote:
+> > > > > > >> On 2024/1/23 07:37, Bjorn Helgaas wrote:
+> > > > > > >>> On Fri, Jan 05, 2024 at 02:22:17PM +0800, Jiqian Chen wrote:
+> > > > > > >>>> There is a need for some scenarios to use gsi sysfs.
+> > > > > > >>>> For example, when xen passthrough a device to dumU, it will
+> > > > > > >>>> use gsi to map pirq, but currently userspace can't get gsi
+> > > > > > >>>> number.
+> > > > > > >>>> So, add gsi sysfs for that and for other potential scenarios.
+> > > > > > >> ...
+> > > > > > > 
+> > > > > > >>> I don't know enough about Xen to know why it needs the GSI in
+> > > > > > >>> userspace.  Is this passthrough brand new functionality that can't be
+> > > > > > >>> done today because we don't expose the GSI yet?
+> > > > > 
+> > > > > I assume this must be new functionality, i.e., this kind of
+> > > > > passthrough does not work today, right?
+> > > > > 
+> > > > > > >> has ACPI support and is responsible for detecting and controlling
+> > > > > > >> the hardware, also it performs privileged operations such as the
+> > > > > > >> creation of normal (unprivileged) domains DomUs. When we give to a
+> > > > > > >> DomU direct access to a device, we need also to route the physical
+> > > > > > >> interrupts to the DomU. In order to do so Xen needs to setup and map
+> > > > > > >> the interrupts appropriately.
+> > > > > > > 
+> > > > > > > What kernel interfaces are used for this setup and mapping?
+> > > > > >
+> > > > > > For passthrough devices, the setup and mapping of routing physical
+> > > > > > interrupts to DomU are done on Xen hypervisor side, hypervisor only
+> > > > > > need userspace to provide the GSI info, see Xen code:
+> > > > > > xc_physdev_map_pirq require GSI and then will call hypercall to pass
+> > > > > > GSI into hypervisor and then hypervisor will do the mapping and
+> > > > > > routing, kernel doesn't do the setup and mapping.
+> > > > > 
+> > > > > So we have to expose the GSI to userspace not because userspace itself
+> > > > > uses it, but so userspace can turn around and pass it back into the
+> > > > > kernel?
+> > > > 
+> > > > No, the point is to pass it back to Xen, which doesn't know the
+> > > > mapping between GSIs and PCI devices because it can't execute the ACPI
+> > > > AML resource methods that provide such information.
+> > > > 
+> > > > The (Linux) kernel is just a proxy that forwards the hypercalls from
+> > > > user-space tools into Xen.
+> > > 
+> > > But I guess Xen knows how to interpret a GSI even though it doesn't
+> > > have access to AML?
+> > 
+> > On x86 Xen does know how to map a GSI into an IO-APIC pin, in order
+> > configure the RTE as requested.
+> 
+> IIUC, mapping a GSI to an IO-APIC pin requires information from the
+> MADT.  So I guess Xen does use the static ACPI tables, but not the AML
+> _PRT methods that would connect a GSI with a PCI device?
 
-Fixes: 99a517a582fc ("phy: qualcomm: phy-qcom-eusb2-repeater: Zero out untouched tuning regs")
-Tested-by: Elliot Berman <quic_eberman@quicinc.com> # sm8650-qrd
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
----
-Changes in v4:
-- Added Elliot's T-b tag
-- Re-worded commit message
-- Link to v3: https://lore.kernel.org/r/20240129-phy-qcom-eusb2-repeater-fixes-v3-1-9a61ef3490de@linaro.org
+Yes, Xen can parse the static tables, and knows the base GSI of
+IO-APICs from the MADT.
 
-Changes in v3:
-- Reworked so that it uses base + reg-index.
-- Link to v2: https://lore.kernel.org/r/20240105-phy-qcom-eusb2-repeater-fixes-v2-0-775d98e7df05@linaro.org
+> I guess this means Xen would not be able to deal with _MAT methods,
+> which also contains MADT entries?  I don't know the implications of
+> this -- maybe it means Xen might not be able to use with hot-added
+> devices?
 
-Changes in v2:
-- The regfields is being dropped from the repeater init, but it's done
-  in the second patch in order to not break bisectability, as it is
-  still needed by the zero-out loop.
-- Added Konrad's R-b tag to the first patch. Did not add Elliot's T-b
-  tag as the second patch has been reworked massively.
-- The zero-out loop is dropped now by holding a copy of the init_tlb in
-  the container struct. This led to dropping the cfg from the container
-  struct (see second patch commit message for more details).
-- Link to v1: https://lore.kernel.org/r/20240104-phy-qcom-eusb2-repeater-fixes-v1-0-047b7b6b8333@linaro.org
----
- drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c | 166 +++++++++----------------
- 1 file changed, 62 insertions(+), 104 deletions(-)
+It's my understanding _MAT will only be present on some very specific
+devices (IO-APIC or CPU objects).  Xen doesn't support hotplug of
+IO-APICs, but hotplug of CPUs should in principle be supported with
+cooperation from the control domain OS (albeit it's not something that
+we tests on our CI).  I don't expect however that a CPU object _MAT
+method will return IO APIC entries.
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c b/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
-index a623f092b11f..a43e20abb10d 100644
---- a/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
-+++ b/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
-@@ -37,56 +37,28 @@
- #define EUSB2_TUNE_EUSB_EQU		0x5A
- #define EUSB2_TUNE_EUSB_HS_COMP_CUR	0x5B
- 
--#define QCOM_EUSB2_REPEATER_INIT_CFG(r, v)	\
--	{					\
--		.reg = r,			\
--		.val = v,			\
--	}
--
--enum reg_fields {
--	F_TUNE_EUSB_HS_COMP_CUR,
--	F_TUNE_EUSB_EQU,
--	F_TUNE_EUSB_SLEW,
--	F_TUNE_USB2_HS_COMP_CUR,
--	F_TUNE_USB2_PREEM,
--	F_TUNE_USB2_EQU,
--	F_TUNE_USB2_SLEW,
--	F_TUNE_SQUELCH_U,
--	F_TUNE_HSDISC,
--	F_TUNE_RES_FSDIF,
--	F_TUNE_IUSB2,
--	F_TUNE_USB2_CROSSOVER,
--	F_NUM_TUNE_FIELDS,
--
--	F_FORCE_VAL_5 = F_NUM_TUNE_FIELDS,
--	F_FORCE_EN_5,
--
--	F_EN_CTL1,
--
--	F_RPTR_STATUS,
--	F_NUM_FIELDS,
--};
--
--static struct reg_field eusb2_repeater_tune_reg_fields[F_NUM_FIELDS] = {
--	[F_TUNE_EUSB_HS_COMP_CUR] = REG_FIELD(EUSB2_TUNE_EUSB_HS_COMP_CUR, 0, 1),
--	[F_TUNE_EUSB_EQU] = REG_FIELD(EUSB2_TUNE_EUSB_EQU, 0, 1),
--	[F_TUNE_EUSB_SLEW] = REG_FIELD(EUSB2_TUNE_EUSB_SLEW, 0, 1),
--	[F_TUNE_USB2_HS_COMP_CUR] = REG_FIELD(EUSB2_TUNE_USB2_HS_COMP_CUR, 0, 1),
--	[F_TUNE_USB2_PREEM] = REG_FIELD(EUSB2_TUNE_USB2_PREEM, 0, 2),
--	[F_TUNE_USB2_EQU] = REG_FIELD(EUSB2_TUNE_USB2_EQU, 0, 1),
--	[F_TUNE_USB2_SLEW] = REG_FIELD(EUSB2_TUNE_USB2_SLEW, 0, 1),
--	[F_TUNE_SQUELCH_U] = REG_FIELD(EUSB2_TUNE_SQUELCH_U, 0, 2),
--	[F_TUNE_HSDISC] = REG_FIELD(EUSB2_TUNE_HSDISC, 0, 2),
--	[F_TUNE_RES_FSDIF] = REG_FIELD(EUSB2_TUNE_RES_FSDIF, 0, 2),
--	[F_TUNE_IUSB2] = REG_FIELD(EUSB2_TUNE_IUSB2, 0, 3),
--	[F_TUNE_USB2_CROSSOVER] = REG_FIELD(EUSB2_TUNE_USB2_CROSSOVER, 0, 2),
--
--	[F_FORCE_VAL_5] = REG_FIELD(EUSB2_FORCE_VAL_5, 0, 7),
--	[F_FORCE_EN_5] = REG_FIELD(EUSB2_FORCE_EN_5, 0, 7),
--
--	[F_EN_CTL1] = REG_FIELD(EUSB2_EN_CTL1, 0, 7),
--
--	[F_RPTR_STATUS] = REG_FIELD(EUSB2_RPTR_STATUS, 0, 7),
-+enum eusb2_reg_layout {
-+	TUNE_EUSB_HS_COMP_CUR,
-+	TUNE_EUSB_EQU,
-+	TUNE_EUSB_SLEW,
-+	TUNE_USB2_HS_COMP_CUR,
-+	TUNE_USB2_PREEM,
-+	TUNE_USB2_EQU,
-+	TUNE_USB2_SLEW,
-+	TUNE_SQUELCH_U,
-+	TUNE_HSDISC,
-+	TUNE_RES_FSDIF,
-+	TUNE_IUSB2,
-+	TUNE_USB2_CROSSOVER,
-+	NUM_TUNE_FIELDS,
-+
-+	FORCE_VAL_5 = NUM_TUNE_FIELDS,
-+	FORCE_EN_5,
-+
-+	EN_CTL1,
-+
-+	RPTR_STATUS,
-+	LAYOUT_SIZE,
- };
- 
- struct eusb2_repeater_cfg {
-@@ -98,10 +70,11 @@ struct eusb2_repeater_cfg {
- 
- struct eusb2_repeater {
- 	struct device *dev;
--	struct regmap_field *regs[F_NUM_FIELDS];
-+	struct regmap *regmap;
- 	struct phy *phy;
- 	struct regulator_bulk_data *vregs;
- 	const struct eusb2_repeater_cfg *cfg;
-+	u32 base;
- 	enum phy_mode mode;
- };
- 
-@@ -109,10 +82,10 @@ static const char * const pm8550b_vreg_l[] = {
- 	"vdd18", "vdd3",
- };
- 
--static const u32 pm8550b_init_tbl[F_NUM_TUNE_FIELDS] = {
--	[F_TUNE_IUSB2] = 0x8,
--	[F_TUNE_SQUELCH_U] = 0x3,
--	[F_TUNE_USB2_PREEM] = 0x5,
-+static const u32 pm8550b_init_tbl[NUM_TUNE_FIELDS] = {
-+	[TUNE_IUSB2] = 0x8,
-+	[TUNE_SQUELCH_U] = 0x3,
-+	[TUNE_USB2_PREEM] = 0x5,
- };
- 
- static const struct eusb2_repeater_cfg pm8550b_eusb2_cfg = {
-@@ -140,47 +113,42 @@ static int eusb2_repeater_init_vregs(struct eusb2_repeater *rptr)
- 
- static int eusb2_repeater_init(struct phy *phy)
- {
--	struct reg_field *regfields = eusb2_repeater_tune_reg_fields;
- 	struct eusb2_repeater *rptr = phy_get_drvdata(phy);
- 	struct device_node *np = rptr->dev->of_node;
--	u32 init_tbl[F_NUM_TUNE_FIELDS] = { 0 };
--	u8 override;
-+	struct regmap *regmap = rptr->regmap;
-+	const u32 *init_tbl = rptr->cfg->init_tbl;
-+	u8 tune_usb2_preem = init_tbl[TUNE_USB2_PREEM];
-+	u8 tune_hsdisc = init_tbl[TUNE_HSDISC];
-+	u8 tune_iusb2 = init_tbl[TUNE_IUSB2];
-+	u32 base = rptr->base;
- 	u32 val;
- 	int ret;
--	int i;
-+
-+	of_property_read_u8(np, "qcom,tune-usb2-amplitude", &tune_iusb2);
-+	of_property_read_u8(np, "qcom,tune-usb2-disc-thres", &tune_hsdisc);
-+	of_property_read_u8(np, "qcom,tune-usb2-preem", &tune_usb2_preem);
- 
- 	ret = regulator_bulk_enable(rptr->cfg->num_vregs, rptr->vregs);
- 	if (ret)
- 		return ret;
- 
--	regmap_field_update_bits(rptr->regs[F_EN_CTL1], EUSB2_RPTR_EN, EUSB2_RPTR_EN);
-+	regmap_write(regmap, base + EUSB2_EN_CTL1, EUSB2_RPTR_EN);
- 
--	for (i = 0; i < F_NUM_TUNE_FIELDS; i++) {
--		if (init_tbl[i]) {
--			regmap_field_update_bits(rptr->regs[i], init_tbl[i], init_tbl[i]);
--		} else {
--			/* Write 0 if there's no value set */
--			u32 mask = GENMASK(regfields[i].msb, regfields[i].lsb);
--
--			regmap_field_update_bits(rptr->regs[i], mask, 0);
--		}
--	}
--	memcpy(init_tbl, rptr->cfg->init_tbl, sizeof(init_tbl));
-+	regmap_write(regmap, base + EUSB2_TUNE_EUSB_HS_COMP_CUR, init_tbl[TUNE_EUSB_HS_COMP_CUR]);
-+	regmap_write(regmap, base + EUSB2_TUNE_EUSB_EQU, init_tbl[TUNE_EUSB_EQU]);
-+	regmap_write(regmap, base + EUSB2_TUNE_EUSB_SLEW, init_tbl[TUNE_EUSB_SLEW]);
-+	regmap_write(regmap, base + EUSB2_TUNE_USB2_HS_COMP_CUR, init_tbl[TUNE_USB2_HS_COMP_CUR]);
-+	regmap_write(regmap, base + EUSB2_TUNE_USB2_EQU, init_tbl[TUNE_USB2_EQU]);
-+	regmap_write(regmap, base + EUSB2_TUNE_USB2_SLEW, init_tbl[TUNE_USB2_SLEW]);
-+	regmap_write(regmap, base + EUSB2_TUNE_SQUELCH_U, init_tbl[TUNE_SQUELCH_U]);
-+	regmap_write(regmap, base + EUSB2_TUNE_RES_FSDIF, init_tbl[TUNE_RES_FSDIF]);
-+	regmap_write(regmap, base + EUSB2_TUNE_USB2_CROSSOVER, init_tbl[TUNE_USB2_CROSSOVER]);
- 
--	if (!of_property_read_u8(np, "qcom,tune-usb2-amplitude", &override))
--		init_tbl[F_TUNE_IUSB2] = override;
-+	regmap_write(regmap, base + EUSB2_TUNE_USB2_PREEM, tune_usb2_preem);
-+	regmap_write(regmap, base + EUSB2_TUNE_HSDISC, tune_hsdisc);
-+	regmap_write(regmap, base + EUSB2_TUNE_IUSB2, tune_iusb2);
- 
--	if (!of_property_read_u8(np, "qcom,tune-usb2-disc-thres", &override))
--		init_tbl[F_TUNE_HSDISC] = override;
--
--	if (!of_property_read_u8(np, "qcom,tune-usb2-preem", &override))
--		init_tbl[F_TUNE_USB2_PREEM] = override;
--
--	for (i = 0; i < F_NUM_TUNE_FIELDS; i++)
--		regmap_field_update_bits(rptr->regs[i], init_tbl[i], init_tbl[i]);
--
--	ret = regmap_field_read_poll_timeout(rptr->regs[F_RPTR_STATUS],
--					     val, val & RPTR_OK, 10, 5);
-+	ret = regmap_read_poll_timeout(regmap, base + EUSB2_RPTR_STATUS, val, val & RPTR_OK, 10, 5);
- 	if (ret)
- 		dev_err(rptr->dev, "initialization timed-out\n");
- 
-@@ -191,6 +159,8 @@ static int eusb2_repeater_set_mode(struct phy *phy,
- 				   enum phy_mode mode, int submode)
- {
- 	struct eusb2_repeater *rptr = phy_get_drvdata(phy);
-+	struct regmap *regmap = rptr->regmap;
-+	u32 base = rptr->base;
- 
- 	switch (mode) {
- 	case PHY_MODE_USB_HOST:
-@@ -199,10 +169,8 @@ static int eusb2_repeater_set_mode(struct phy *phy,
- 		 * per eUSB 1.2 Spec. Below implement software workaround until
- 		 * PHY and controller is fixing seen observation.
- 		 */
--		regmap_field_update_bits(rptr->regs[F_FORCE_EN_5],
--					 F_CLK_19P2M_EN, F_CLK_19P2M_EN);
--		regmap_field_update_bits(rptr->regs[F_FORCE_VAL_5],
--					 V_CLK_19P2M_EN, V_CLK_19P2M_EN);
-+		regmap_write(regmap, base + EUSB2_FORCE_EN_5, F_CLK_19P2M_EN);
-+		regmap_write(regmap, base + EUSB2_FORCE_VAL_5, V_CLK_19P2M_EN);
- 		break;
- 	case PHY_MODE_USB_DEVICE:
- 		/*
-@@ -211,10 +179,8 @@ static int eusb2_repeater_set_mode(struct phy *phy,
- 		 * repeater doesn't clear previous value due to shared
- 		 * regulators (say host <-> device mode switch).
- 		 */
--		regmap_field_update_bits(rptr->regs[F_FORCE_EN_5],
--					 F_CLK_19P2M_EN, 0);
--		regmap_field_update_bits(rptr->regs[F_FORCE_VAL_5],
--					 V_CLK_19P2M_EN, 0);
-+		regmap_write(regmap, base + EUSB2_FORCE_EN_5, 0);
-+		regmap_write(regmap, base + EUSB2_FORCE_VAL_5, 0);
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -243,9 +209,8 @@ static int eusb2_repeater_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct phy_provider *phy_provider;
- 	struct device_node *np = dev->of_node;
--	struct regmap *regmap;
--	int i, ret;
- 	u32 res;
-+	int ret;
- 
- 	rptr = devm_kzalloc(dev, sizeof(*rptr), GFP_KERNEL);
- 	if (!rptr)
-@@ -258,22 +223,15 @@ static int eusb2_repeater_probe(struct platform_device *pdev)
- 	if (!rptr->cfg)
- 		return -EINVAL;
- 
--	regmap = dev_get_regmap(dev->parent, NULL);
--	if (!regmap)
-+	rptr->regmap = dev_get_regmap(dev->parent, NULL);
-+	if (!rptr->regmap)
- 		return -ENODEV;
- 
- 	ret = of_property_read_u32(np, "reg", &res);
- 	if (ret < 0)
- 		return ret;
- 
--	for (i = 0; i < F_NUM_FIELDS; i++)
--		eusb2_repeater_tune_reg_fields[i].reg += res;
--
--	ret = devm_regmap_field_bulk_alloc(dev, regmap, rptr->regs,
--					   eusb2_repeater_tune_reg_fields,
--					   F_NUM_FIELDS);
--	if (ret)
--		return ret;
-+	rptr->base = res;
- 
- 	ret = eusb2_repeater_init_vregs(rptr);
- 	if (ret < 0) {
+> The tables (including DSDT and SSDTS that contain the AML) are exposed
+> to userspace via /sys/firmware/acpi/tables/, but of course that
+> doesn't mean Xen knows how to interpret the AML, and even if it did,
+> Xen probably wouldn't be able to *evaluate* it since that could
+> conflict with the host kernel's use of AML.
 
----
-base-commit: 596764183be8ebb13352b281a442a1f1151c9b06
-change-id: 20240104-phy-qcom-eusb2-repeater-fixes-c9201113032c
+Indeed, there can only be a single OSPM, and that's the dom0 OS (Linux
+in our context).
 
-Best regards,
--- 
-Abel Vesa <abel.vesa@linaro.org>
+Getting back to our context though, what would be a suitable place for
+exposing the GSI assigned to each device?
 
+Thanks, Roger.
 
