@@ -1,108 +1,108 @@
-Return-Path: <linux-kernel+bounces-48835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48836-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92286846233
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:57:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5398E846234
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:57:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDEBB28137A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:57:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A3E428B6D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:57:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 247193F8DB;
-	Thu,  1 Feb 2024 20:56:41 +0000 (UTC)
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D0F93BB4C;
+	Thu,  1 Feb 2024 20:57:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="WXSzkJrL"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 649E33F8CC
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 20:56:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB5F43CF40
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 20:57:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706821000; cv=none; b=fJGvbMx002cJvzibaHTO+Bai3nTSBAHmFo7BdRfq3Oa7rHcPdfpOU5DxTxQc7+3ZfidoqOC+kdbvRv7MBUIT66Dr9UDosQpXy9uwL06tQKduhkzmiIXYZjPwXVZj64aG20SJIHcF9iqio5QZksu5Lna4QQAKcRHlJji3vzuNOUY=
+	t=1706821042; cv=none; b=lIEx4PjcxM+swxtMVozP1Bkn3sFVCHXwxFe3OV+Nde2gqPOlfRDN7kLF/kNjZtlv9Y2IQr4yPCfOhyRdjOygWtf4eMeL/WtJYUyqqEWP9TShljyDg7Py8HxwCVPZt0TyNTZhNB8NnZ0HE/wpgrjxSAuhS+1YCINqy/h8b8SMQWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706821000; c=relaxed/simple;
-	bh=BfG5LbFqIJNFLtIFJevV6JP66mOxWEe5j6NZgrNC/Qc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BA/+U7vikvhB8Fv+Rjit8nx87Rt50w6RUXhzSeQClslVOBieffd/oDQVdDoEONbAiZzm3fLNU/LUvEqOYAigFqRlCJmXT+vsZ5A6xEwLq074LQn+zcRk5G//o+rzLtk6picTWLtA5//TGql/ymAa91e70FJwAhIklLuqmt+hjEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d928a8dee8so17627795ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 12:56:39 -0800 (PST)
+	s=arc-20240116; t=1706821042; c=relaxed/simple;
+	bh=urrJyHrBIsQS9KKLtMLnx2kfVk9RVyLYlhfhNo7Fw9k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Vc+eFbStOVAaWaItbpcqkc1qOnFSl101yJIafUVy6hWsVivm32HiP9LTP7pL6qvQTx0HC0jo6N7rWkmGYSUHAuGMPBhJgZLCDeIolduqbE6+u9kgxYF0diM/DrLv9w66kmUf6aUSz/Q/XMg46ia8SbKACH6sP95sYq6AhvTIA3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=WXSzkJrL; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55f2b0c5ae9so1878761a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 12:57:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1706821039; x=1707425839; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=U47R3tnrX6FGfSIGHpWmTF5rVj64ObwGeUEFtVpqF+4=;
+        b=WXSzkJrLLBo8YfVKcsrBuqSwO+C00sqHv4+52wN8SkmmO6vg/ve0XyX4syEEryiFeb
+         60PthlqmwyHj1UVt2fkW2gjabVjMXmha55/zvvIEUa4GmdmDrawFV2Ur5RykRoP4ZiZF
+         wyo/bVSvoIN/vw3uPa2yEwl7NCvxpdNZ/SuqY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706820998; x=1707425798;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+FFXbp+1HAqiP5p0rle86MEwsAGG8Lke6vnUeB5b9fc=;
-        b=cPAGgIbycfXoLKNIYP6ndpzq4XArWW4wgSLNAhELYaYrh6fPFESx07d+XEbXSqmKZ5
-         MO/qnFzlDZU4/VZToAgyag1g+OFHMm29U1PRQhX57YejeqmJQJYiwclebyOxFUeEAB74
-         X0hA5WwNqXsomwcXul1A8Y73spODaJe4RT3/4VYUegdUdwzgTOFJ0q2l5n+6TmQFP8oW
-         zZKsDdlaP2+19QtJ0NZ6t63Nhoy31mF1v9D/In9LfjTGzE0tzDCaIn69PTmwNnhp06F9
-         WvqMFJ1cJFc26RY8RGIpjcVPt9H/KvytOnytTX16MQcf2Hdd3Wc/OTUdAjZhsWTo9R3e
-         uKPg==
-X-Gm-Message-State: AOJu0Yxvt1XWyxQtZ3ZbyAzc+PaIsg6P4ZNEt1DlPbcTHznD+nceEGit
-	7IqD4lnUqZmwIlpeiwTpXPj6EUlv9qkpPDCYcrFfAs6hObw+UTnL
-X-Google-Smtp-Source: AGHT+IGW8RKGAYeb8vqRtV5ZWfkRArkZlT7H9G1ilESdzAPe7Vjn5NJlk82DUdzJebapCr8a4pzCuA==
-X-Received: by 2002:a17:903:22d0:b0:1d7:1a90:65ba with SMTP id y16-20020a17090322d000b001d71a9065bamr293063plg.25.1706820998244;
-        Thu, 01 Feb 2024 12:56:38 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUoniBvy1+ZujmmdDIIP10uEKowxeXFc8sHlTOvkushYAILIWjPBsidp9YbnAT6blpn3e/Vv6ezRGtMGbKlFHBZoGO5Uc1QdZb1MaRfdRXjQ5IL6dmgwSkaZVQQNOaBQ2bhk5Q26wpuWXwSdqJbNhGqBsbfeSO6Ohcj8nzBfta+58ch5b4NKie0yF7rxU2HxKEH2ndTjv8wkBNNRSd46WrTUDL2Mjv8ug3H7mzRe+tWh8uE0qSqScsVj/oBQKRF8HZuyoSWQQb+SU93C0aGQRYPwrtC2UZGqbtBkoJVDTTWHs0OaMnTWvxYXnTQaJTWTWU=
-Received: from ?IPV6:2620:0:1000:8411:170e:a1a5:1887:adb2? ([2620:0:1000:8411:170e:a1a5:1887:adb2])
-        by smtp.gmail.com with ESMTPSA id mm4-20020a1709030a0400b001d8dbb867b1sm237967plb.179.2024.02.01.12.56.37
+        d=1e100.net; s=20230601; t=1706821039; x=1707425839;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U47R3tnrX6FGfSIGHpWmTF5rVj64ObwGeUEFtVpqF+4=;
+        b=EYqOtTKehJbCDH/Q4Eyd8mOm1nPZdie1Kyg+V+ul2rTEtcohMqCVdeT8NO4SJglHhX
+         7MFGEYzI4HUmo210HrYgIVYx2++B7CTMOfwgpYwPI51qM4AeWvBwm2sdke0tOh+mQ0Xl
+         PTtOJtm2AqFgsJ2Y+vmDKDkWQ7b/eQf4ExunTa1Ynvw0f6ShSkcz66DEkxtSuK5ymxaP
+         +YGXWemtoKlcqBL+rY8Nw0geHHZOCs4vfCdozEgLIJxJVnKX9RMRh/7RRjgTCf7zmxnE
+         80X5nl0xQ4UIJVZOiF/gM+NFvFbILCx8qbzxsUtdnNqEQFE535obPM3KLDxjsfv0k0xl
+         jJHQ==
+X-Gm-Message-State: AOJu0YxsAXr/P3uDh5dOU2EAa9MobIgb7MdbKNIjnTHggbCMFhVtWKcR
+	UnRC0/xbZfIzs0E7AvqPC38fdQt1GKFx0oifIpeJndYmjIh8bzh13eTrNKdRgQrZxg/zoPlPQ2I
+	jdXGnug==
+X-Google-Smtp-Source: AGHT+IEDuD60rCogtAVsbZvvJjG1XbCYOz+/bFwpRkAyByPEwxLJKiUd6acEsdCekh6GD1Dk8/3JJw==
+X-Received: by 2002:a17:906:111a:b0:a31:6e92:6d2c with SMTP id h26-20020a170906111a00b00a316e926d2cmr4372562eja.59.1706821038770;
+        Thu, 01 Feb 2024 12:57:18 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCX9aP43QRwmp9ypN/iaz+OugQ26QdxkAKcP+AEiK4hfmwm99orhJGqSNdLN/ho0NNBBXerQyCcBEraktBkx6BbwOKBFjQgDmJhIzUJc
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
+        by smtp.gmail.com with ESMTPSA id cw9-20020a170907160900b00a35757cbd9esm159727ejd.4.2024.02.01.12.57.17
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 12:56:37 -0800 (PST)
-Message-ID: <c485e96c-6aed-4c4c-bbba-de5c8784be69@acm.org>
-Date: Thu, 1 Feb 2024 12:56:36 -0800
+        Thu, 01 Feb 2024 12:57:18 -0800 (PST)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55f15762840so1688348a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 12:57:17 -0800 (PST)
+X-Received: by 2002:a05:6402:3181:b0:55c:d503:764c with SMTP id
+ di1-20020a056402318100b0055cd503764cmr4327080edb.22.1706821037656; Thu, 01
+ Feb 2024 12:57:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2] lockdep: fix deadlock issue between lockdep and rcu
-Content-Language: en-US
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, peterz@infradead.org,
- mingo@redhat.com, will@kernel.org, longman@redhat.com,
- linux-kernel@vger.kernel.org, niuzhiguo84@gmail.com, ke.wang@unisoc.com,
- xuewen.yan@unisoc.com, Carlos Llamas <cmllamas@google.com>
-References: <1705477714-10467-1-git-send-email-zhiguo.niu@unisoc.com>
- <2d1f4f16-6d66-4449-a7b7-5e2b2a4eaeb3@acm.org>
- <Zbv31aq6aZuSXpY1@boqun-archlinux>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <Zbv31aq6aZuSXpY1@boqun-archlinux>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240201202254.15588-1-acme@kernel.org>
+In-Reply-To: <20240201202254.15588-1-acme@kernel.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 1 Feb 2024 12:57:00 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgkTKyon279Rfd_20ot9sfHmCh=t=v8GD8yHCM3Bna_hw@mail.gmail.com>
+Message-ID: <CAHk-=wgkTKyon279Rfd_20ot9sfHmCh=t=v8GD8yHCM3Bna_hw@mail.gmail.com>
+Subject: Re: [GIT PULL] perf tools fixes for v6.8
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Clark Williams <williams@redhat.com>, 
+	Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, James Clark <james.clark@arm.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Sun Haiyong <sunhaiyong@loongson.cn>, 
+	Thomas Richter <tmricht@linux.ibm.com>, Yanteng Si <siyanteng@loongson.cn>, 
+	Yicong Yang <yangyicong@hisilicon.com>, Arnaldo Carvalho de Melo <acme@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 2/1/24 11:58, Boqun Feng wrote:
-> On Thu, Feb 01, 2024 at 09:22:20AM -0800, Bart Van Assche wrote:
->> On 1/16/24 23:48, Zhiguo Niu wrote:
->>>    	/*
->>> -	 * If there's anything on the open list, close and start a new callback.
->>> -	 */
->>> -	call_rcu_zapped(delayed_free.pf + delayed_free.index);
->>> +	* If there's anything on the open list, close and start a new callback.
->>> +	*/
->>> +	if (need_callback)
->>> +		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
->>
->> The comment above the if-statement refers to the call_rcu_zapped() function
->> while call_rcu_zapped() has been changed into call_rcu(). So the comment is
->> now incorrect.
->>
->> Additionally, what guarantees that the above code won't be triggered
->> concurrently from two different threads? As you may know calling call_rcu()
->> twice before the callback has been started is not allowed. I think that can
->> happen with the above code.
-> 
-> No, it's synchronized by the delayed_free.schedule. Only one thread/CPU
-> can schedule at a time. Or am I missing something subtle?
+On Thu, 1 Feb 2024 at 12:23, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+>
+>         Please consider pulling, mostly 'perf test' issues, which in its
+> turn are mostly related to myself having Intel hybrid systems at home.
 
-Only call_rcu_zapped() reads and modifies delayed_free.scheduled. Direct
-call_rcu() calls do neither read nor modify delayed_free.scheduled.
+I started pulling, but there's some truly odd noise in the tag, so you
+clearly have done something wrong.
 
-Bart.
+You need to fix your odd tagging process, they are normally noisy, but
+this is just so far off the norm that I can't overlook the craziness.
 
+                  Linus
 
