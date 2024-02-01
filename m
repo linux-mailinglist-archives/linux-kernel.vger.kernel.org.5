@@ -1,126 +1,161 @@
-Return-Path: <linux-kernel+bounces-48776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 263F984610C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:36:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8446184610F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:36:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC9D528A75B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:36:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B64E41C222BD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:36:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 148E485289;
-	Thu,  1 Feb 2024 19:36:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 572058527E;
+	Thu,  1 Feb 2024 19:36:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cIaNTsdg"
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="oEyiAhnI"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0657984FCC
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 19:36:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EFEF85622;
+	Thu,  1 Feb 2024 19:36:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706816178; cv=none; b=uh0qt7fJJVkyzn2Z1yQEqedI8MT8A6FViFgh/GFy6dXo2nA4Y/xB5SLax21Efbhd+geoFeIJ1IHWJNJYQ27aKH2SJgpOiMJXROHJRY4UlgbtlGu9xfVoFCVTnZ5aLXftz8OS6sH+FNmxqFuOAVuA8yW0oSAD8/lm2FPpE0tO8Tg=
+	t=1706816206; cv=none; b=Pd9GNe0pUN2rf+Ntb7ZXCv0kOlzE9UkE5CCiA+8LvmoiRpSUrIMP+SlMGpHGEuIZOy8XyZk5CGaITn2LNXWOq7a4DRYEb/4hfEXzKUgZLcu1yzf+VRRlZeg20yE/Nixe1ZzWvsqBksQiTCK4xxhT2Eydn8EyKXrY4ev+7sAnOe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706816178; c=relaxed/simple;
-	bh=qfMTZUwrX0hQseYFBDB6O+l3/V7yP1wzA1uQCR9WF6M=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=V10a9gBb4pxyMrSkTYy+MdSjulAHjMYQz3STYxdipGiyxdFoXJHy+RB5MRNVh/6Co9YcHKicfcXznfDCs9Q5B7BbjecAtAJXa8dIxilIl4ouYN6LlPumTQjZaQi6SzJuVLx+3CGhW5LU50YPWbYfCTM6LakKJFqZfBsKGheLEew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cIaNTsdg; arc=none smtp.client-ip=209.85.214.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1d96da0f7b1so468335ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 11:36:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706816176; x=1707420976; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FsllCZK2FAGWJHcpt8xBy9rt8mAFX0Y7/cdzkhjefJw=;
-        b=cIaNTsdgRqqgDv8m1WRIY9xzMLxL5yvzgHNSZVnL5gbjVk8YtpQw6QSsvoNn/skTWD
-         eckgKoAG3avVzDHgtLdFYtqW0hSIPcT1tGXKEDpXioJvK8EJcewQZ+dPzuuoo5tBYL7I
-         9DgWOA/b21QojdCu8ESBusw6wuYVlw+XIyYBOMD3QOl6MqcMTARldYR2CnxldT5RNnA1
-         P1/cYEtJH4tevcECe/nY7M+Kx98uK5P5GXrTYFKL7rWehbwILQerOuXa1v7dHlQLLacw
-         pQU7miM2gJGx+30SxuUDXqMRH199rlxq4ABVmUwHhcevOVE7+kHjjfNhtztDa+VUYp6Z
-         002w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706816176; x=1707420976;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FsllCZK2FAGWJHcpt8xBy9rt8mAFX0Y7/cdzkhjefJw=;
-        b=B30r1/mgFUO6Fb9EJtZHJqwu8KYQlTgSk/jaG5LevoeIgwyG2GNu67GcMlHt9ZNF1g
-         R9l2dBpKjOMWL4XliRZFVeyAXbs+zKIy9YUWOWLQX422d3hve+G126RyGu/rZrTZci+I
-         pfG0dAW8nYHaDjqyLGt0CLI3wMFEc0vgNtw2m3IkQHIpO6vu192UCJqQPim0Z136FJkC
-         zSIsd6+MG+/jdZ/C5v+2nFX4NvtNzxVS/1fvcYWWj6e6ruNwpOhOIhKENCho/BryXu7h
-         49ORG2ZeputnmkrA+fuTiLjRs5gr8w4a+4KcggBcAm8UTbWiTka6ZGtLW7YL6ImO8j4e
-         dpkg==
-X-Gm-Message-State: AOJu0YyiGVa5EllWFDAdbDMptHRwdQ8gJRu0hcurLKsef51rtmF/vymc
-	3aC9p0DjN9k7jOLzvQ3pyciO66oibLk0DhxPr6FiPWBePHyrM0FxTRuoMOaZA4PyNkBb30fnhCn
-	Cag==
-X-Google-Smtp-Source: AGHT+IGBPaQJijU+ZClk1MamKTuF3e9qb4VlY549Op2uZmIOtLM3UnE8nRsFRbt7USk8HD+C1KynLRxBCIc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:8ecc:b0:1d8:debb:413a with SMTP id
- x12-20020a1709028ecc00b001d8debb413amr18118plo.8.1706816176244; Thu, 01 Feb
- 2024 11:36:16 -0800 (PST)
-Date: Thu, 1 Feb 2024 11:36:14 -0800
-In-Reply-To: <ZbvjKtsVjpuQmKE2@google.com>
+	s=arc-20240116; t=1706816206; c=relaxed/simple;
+	bh=ankfZc7iRLTEJBMFjGLfV0NhiS117eh39H3c+xq9XJI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=LI6+zHQf3H/2F7wa5aQxqUfd1oCV019CrnIfnbjEf+IhfUsI/iCHNeZ2Bj2GJCb/pRw5U0FegDxZEY616/X6lpnMYO6Phn47h4CymMCjaUnb74aWW5d0Zl0fMVtW2nG/hnDa28+QfU0ri1EM/6pamDMn/5zxiqEyXOFRpn+J7Vs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=oEyiAhnI; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 411JafP1095297;
+	Thu, 1 Feb 2024 13:36:41 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706816201;
+	bh=SQ5y3kDSRpyJYfnU8Ihu5tFQbqlEUZZH5whWOT0PNCo=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=oEyiAhnI/blup1CgeEc8CeMo8PaNwBJyuuNDliHDdRHlPc+/Dlme18V9nbIjSIrnN
+	 3u8vERswqra84+x09ErKOMxV9LVQmixKVyWPXdwiG0JUaNOX6zB1jNuHTLvalP45R5
+	 JtoHQPglquudX/fiNwiY/feVVHNogoTowR9OWZjE=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 411Jafxm021261
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 1 Feb 2024 13:36:41 -0600
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 1
+ Feb 2024 13:36:41 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 1 Feb 2024 13:36:41 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 411Jae9c113425;
+	Thu, 1 Feb 2024 13:36:40 -0600
+Message-ID: <54161b26-329c-4faa-b6f7-73fe82efb525@ti.com>
+Date: Thu, 1 Feb 2024 13:36:40 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240123221220.3911317-1-mizhang@google.com> <ZbpqoU49k44xR4zB@google.com>
- <368248d0-d379-23c8-dedf-af7e1e8d23c7@oracle.com> <CAL715WJDesggP0S0M0SWX2QaFfjBNdqD1j1tDU10Qxk6h7O0pA@mail.gmail.com>
- <ZbvUyaEypRmb2s73@google.com> <ZbvjKtsVjpuQmKE2@google.com>
-Message-ID: <ZbvyrvvZM-Tocza2@google.com>
-Subject: Re: [PATCH] KVM: x86/pmu: Fix type length error when reading pmu->fixed_ctr_ctrl
-From: Sean Christopherson <seanjc@google.com>
-To: Mingwei Zhang <mizhang@google.com>
-Cc: Dongli Zhang <dongli.zhang@oracle.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	"H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/5] mmc: sdhci_am654: Write ITAPDLY for DDR52 timing
+Content-Language: en-US
+To: Judith Mendez <jm@ti.com>, Ulf Hansson <ulf.hansson@linaro.org>
+CC: Adrian Hunter <adrian.hunter@intel.com>, <linux-mmc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Randolph Sapp <rs@ti.com>,
+        Vignesh
+ Raghavendra <vigneshr@ti.com>
+References: <20240131215044.3163469-1-jm@ti.com>
+ <20240131215044.3163469-3-jm@ti.com>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <20240131215044.3163469-3-jm@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Thu, Feb 01, 2024, Mingwei Zhang wrote:
-> On Thu, Feb 01, 2024, Sean Christopherson wrote:
-> > On Wed, Jan 31, 2024, Mingwei Zhang wrote:
-> > > > The PMC is still active while the VM side handle_pmi_common() is not going to handle it?
-> > > 
-> > > hmm, so the new value is '0', but the old value is non-zero, KVM is
-> > > supposed to zero out (stop) the fix counter), but it skips it. This
-> > > leads to the counter continuously increasing until it overflows, but
-> > > guest PMU thought it had disabled it. That's why you got this warning?
-> > 
-> > No, that can't happen, and KVM would have a massive bug if that were the case.
-> > The truncation can _only_ cause bits to disappear, it can't magically make bits
-> > appear, i.e. the _only_ way this can cause a problem is for KVM to incorrectly
-> > think a PMC is being disabled.
+On 1/31/24 3:50 PM, Judith Mendez wrote:
+> For DDR52 timing, DLL is enabled but tuning is not carried
+> out, therefore the ITAPDLY value in PHY CTRL 4 register is
+> not correct. Fix this by writing ITAPDLY after enabling DLL.
 > 
-> The reason why the bug does not happen is because there is global
-> control. So disabling a counter will be effectively done in the global
-> disable part, ie., when guest PMU writes to MSR 0x38f.
-
-
-> > fixed PMC is disabled. KVM will pause the counter in reprogram_counter(), and
-> > then leave the perf event paused counter as pmc_event_is_allowed() will return
-> > %false due to the PMC being locally disabled.
-> >
-> > But in this case, _if_ the counter is actually enabled, KVM will simply reprogram
-> > the PMC.  Reprogramming is unnecessary and wasteful, but it's not broken.
+> Fixes: a161c45f2979 ("mmc: sdhci_am654: Enable DLL only for some speed modes")
+> Signed-off-by: Judith Mendez <jm@ti.com>
+> ---
+>   drivers/mmc/host/sdhci_am654.c | 27 +++++++++++++++------------
+>   1 file changed, 15 insertions(+), 12 deletions(-)
 > 
-> no, if the counter is actually enabled, but then it is assigned to
-> old_fixed_ctr_ctrl, the value is truncated. When control goes to the
-> check at the time of disabling the counter, KVM thinks it is disabled,
-> since the value is already truncated to 0. So KVM will skip by saying
-> "oh, the counter is already disabled, why reprogram? No need!".
+> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
+> index a3798c9912f6..ff18a274b6f2 100644
+> --- a/drivers/mmc/host/sdhci_am654.c
+> +++ b/drivers/mmc/host/sdhci_am654.c
+> @@ -170,7 +170,19 @@ struct sdhci_am654_driver_data {
+>   #define DLL_CALIB	(1 << 4)
+>   };
+>   
+> -static void sdhci_am654_setup_dll(struct sdhci_host *host, unsigned int clock)
+> +static void sdhci_am654_write_itapdly(struct sdhci_am654_data *sdhci_am654,
+> +				      u32 itapdly)
 
-Ooh, I had them backwards.  KVM can miss 1=>0, but not 0=>1.  I'll apply this
-for 6.8; does this changelog work for you?
+This patch is confusing, looks like you switched the place of these two
+functions, but diff is not really liking that. You can mess with
+--diff-algorithm and the like to get a more readable patch. But in
+this case why switch their spots at all?
 
-  Use a u64 instead of a u8 when taking a snapshot of pmu->fixed_ctr_ctrl
-  when reprogramming fixed counters, as truncating the value results in KVM
-  thinking all fixed counters, except counter 0, are already disabled.  As
-  a result, if the guest disables a fixed counter, KVM will get a false
-  negative and fail to reprogram/disable emulation of the counter, which can
-  leads to spurious PMIs in the guest.
+Seems to be so you can call sdhci_am654_write_itapdly() from
+sdhci_am654_setup_dll() without a forward declaration, instead
+why not just call sdhci_am654_write_itapdly() after calling
+sdhci_am654_setup_dll() below. That also saves to from having
+to pass in `timing` to sdhci_am654_write_itapdly() just to
+have it pass it right through to sdhci_am654_setup_dll().
+
+Andrew
+
+> +{
+> +	/* Set ITAPCHGWIN before writing to ITAPDLY */
+> +	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPCHGWIN_MASK,
+> +			   0x1 << ITAPCHGWIN_SHIFT);
+> +	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPDLYSEL_MASK,
+> +			   itapdly << ITAPDLYSEL_SHIFT);
+> +	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPCHGWIN_MASK, 0);
+> +}
+> +
+> +static void sdhci_am654_setup_dll(struct sdhci_host *host, unsigned int clock,
+> +				  unsigned char timing)
+>   {
+>   	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+>   	struct sdhci_am654_data *sdhci_am654 = sdhci_pltfm_priv(pltfm_host);
+> @@ -236,17 +248,8 @@ static void sdhci_am654_setup_dll(struct sdhci_host *host, unsigned int clock)
+>   		dev_err(mmc_dev(host->mmc), "DLL failed to relock\n");
+>   		return;
+>   	}
+> -}
+>   
+> -static void sdhci_am654_write_itapdly(struct sdhci_am654_data *sdhci_am654,
+> -				      u32 itapdly)
+> -{
+> -	/* Set ITAPCHGWIN before writing to ITAPDLY */
+> -	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPCHGWIN_MASK,
+> -			   1 << ITAPCHGWIN_SHIFT);
+> -	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPDLYSEL_MASK,
+> -			   itapdly << ITAPDLYSEL_SHIFT);
+> -	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPCHGWIN_MASK, 0);
+> +	sdhci_am654_write_itapdly(sdhci_am654, sdhci_am654->itap_del_sel[timing]);
+>   }
+>   
+>   static void sdhci_am654_setup_delay_chain(struct sdhci_am654_data *sdhci_am654,
+> @@ -298,7 +301,7 @@ static void sdhci_am654_set_clock(struct sdhci_host *host, unsigned int clock)
+>   	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, mask, val);
+>   
+>   	if (timing > MMC_TIMING_UHS_SDR25 && clock >= CLOCK_TOO_SLOW_HZ) {
+> -		sdhci_am654_setup_dll(host, clock);
+> +		sdhci_am654_setup_dll(host, clock, timing);
+>   		sdhci_am654->dll_enable = true;
+>   	} else {
+>   		sdhci_am654_setup_delay_chain(sdhci_am654, timing);
 
