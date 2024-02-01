@@ -1,216 +1,281 @@
-Return-Path: <linux-kernel+bounces-47541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA9F2844F29
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:26:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1E98844F2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:26:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BAE628D6D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:26:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E60731C27939
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:26:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84C0D21112;
-	Thu,  1 Feb 2024 02:25:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="edWK/qKu"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF9F29424;
+	Thu,  1 Feb 2024 02:26:29 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39E2A13ACC;
-	Thu,  1 Feb 2024 02:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 055C017BD1;
+	Thu,  1 Feb 2024 02:26:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706754350; cv=none; b=rZ4SIc7oF9VOn0MhlYLnv1Sy8BsuAM/V75O3udowQJbaP2cHOSWFK1yOrhlYEhvLuLhZR/u+pGNuMWj1WH9Z8KOrUG6iyY22C9eAbYhf++65yfEs13jonyMxmPs/QYeDB2o7m2qQiR2huLjLsKv5jB/dxkxrmJjaqzh38hB752k=
+	t=1706754389; cv=none; b=KpgO8RgDivlaRBnNPG6kJgrM+SuThLi+E0N//AZUwDbxM+iu5zcOBQFUfJ45FMp0ORksE7s9C9CCsI3AvjAEqtvZdWhP9tnLqZyriTj2tckyB1YrXisnzWCGrxTmPe3zue3OKPPdnxnZHOTJqmncD0cAKc9qNL4RZnlc0LDDdE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706754350; c=relaxed/simple;
-	bh=qNdZhTVFgd025ShlvmgP6R//8hlQVb0ky9OFh9tKr2M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=UjON6tsFYf+UygwkTM0R1H0IYdq+yuRZSuHMBY8FLvMGe85dx0Dj2i2q04EoK+Tj2BsbxcTW2+Z+Q+vLyNxdMpxkii3My45ZElbhod0AFQq0aA7QfWtcZ5GoeJhZP9nD19ntu5O21vznnUiDtcVjzCqWrl3usO2xL72ZcXNmS6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=edWK/qKu; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41110lve021386;
-	Thu, 1 Feb 2024 02:25:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=e6QfPL58tFmvIDXgNSU3VF86qmA5NqePFSNt5z4LGQk=; b=ed
-	WK/qKu234FbWYVI6tM46FOUbajsgQygVFrWTMsfC1n2CucG0qR0wVcH65ljCaO5r
-	NHHWtTTo8qcOOKNJariobW8c4jj4dsQx3Tc7UQ9PMoISEpOai3t2RJ+suH88ntTy
-	Pm7EZjxkmTf26rgmGM0DgNp2qVjCJr7UveIBXyU95TKr2UZQORYUxjqw0FeuO8hp
-	9IZiDS5iq6/Oje0HjKe7xzgWIDS5AY+wvDp4dJq83fM/dhgixG/74DeD/C7UgYpW
-	jO/DRZ/o5MkgeNwYIzuMsfsTMGQK88obj7YHO7zbndtLzWScM7/S5Q2WIJROaWC+
-	X4GdTZEJMHCffPYvb9Aw==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vyjas2ek8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Feb 2024 02:25:31 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4112PUgi024868
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 1 Feb 2024 02:25:30 GMT
-Received: from [10.239.133.211] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 31 Jan
- 2024 18:25:25 -0800
-Message-ID: <9fca774e-3519-4d0c-ba61-6b84965f36c2@quicinc.com>
-Date: Thu, 1 Feb 2024 10:25:22 +0800
+	s=arc-20240116; t=1706754389; c=relaxed/simple;
+	bh=C76rDHye3e75u7mr6wn5Qnyl+rZcvHVi8SCeAnXSbXY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=mXLDMx1sqk72EC95q5beVaLMNUsiVnc3TrveIjZOvWE8wguPVSVhA8PyivJ+rWdWY16gsjMfqfjk1qkN2Gw8ETXO1DppA4sRsHYeWK3Q4Td1dP5mAKrtd8evvczjcGjWFDHkRJ5TUiNQYPz8vuoom2KNpIpYRrwiU3OLnEHU5FQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DD08C433F1;
+	Thu,  1 Feb 2024 02:26:27 +0000 (UTC)
+Date: Wed, 31 Jan 2024 21:26:42 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, Linus Torvalds
+ <torvalds@linux-foundation.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Christian Brauner <brauner@kernel.org>,
+ Ajay Kaher <ajay.kaher@broadcom.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Subject: Re: [PATCH v2 4/7] tracefs: dentry lookup crapectomy
+Message-ID: <20240131212642.2e384250@gandalf.local.home>
+In-Reply-To: <20240201002719.GS2087318@ZenIV>
+References: <20240131184918.945345370@goodmis.org>
+	<20240131185512.799813912@goodmis.org>
+	<20240201002719.GS2087318@ZenIV>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 05/10] coresight-tpda: Add support to configure CMB
- element
-Content-Language: en-US
-To: Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mathieu Poirier
-	<mathieu.poirier@linaro.org>,
-        Alexander Shishkin
-	<alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Mike Leach <mike.leach@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC: Jinlong Mao <quic_jinlmao@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Tingwei Zhang
-	<quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Song Chai <quic_songchai@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <andersson@kernel.org>
-References: <1706605366-31705-1-git-send-email-quic_taozha@quicinc.com>
- <1706605366-31705-6-git-send-email-quic_taozha@quicinc.com>
- <6ccb98f2-2f68-45db-9941-1c7b05da84d0@arm.com>
- <6fff5991-01ed-44ea-aa08-9f302d2465e8@quicinc.com>
- <1f5a7c7b-56de-4f19-9d48-652ae6efe50f@arm.com>
-From: Tao Zhang <quic_taozha@quicinc.com>
-In-Reply-To: <1f5a7c7b-56de-4f19-9d48-652ae6efe50f@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 0Bf34MPd5X6n3r0oydvDqiDsMIurGVG3
-X-Proofpoint-ORIG-GUID: 0Bf34MPd5X6n3r0oydvDqiDsMIurGVG3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-31_10,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 lowpriorityscore=0 phishscore=0 mlxscore=0
- mlxlogscore=757 suspectscore=0 adultscore=0 bulkscore=0 impostorscore=0
- clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2402010017
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+
+On Thu, 1 Feb 2024 00:27:19 +0000
+Al Viro <viro@zeniv.linux.org.uk> wrote:
+
+> On Wed, Jan 31, 2024 at 01:49:22PM -0500, Steven Rostedt wrote:
+> 
+> > @@ -329,32 +320,29 @@ static struct dentry *create_file(const char *name, umode_t mode,
+> >  
+> >  	ti = get_tracefs(inode);
+> >  	ti->flags |= TRACEFS_EVENT_INODE;
+> > -	d_instantiate(dentry, inode);
+> > +
+> > +	d_add(dentry, inode);
+> >  	fsnotify_create(dentry->d_parent->d_inode, dentry);  
+> 
+> Seriously?  stat(2), have it go away from dcache on memory pressure,
+> lather, rinse, repeat...  Won't *snotify get confused by the stream
+> of creations of the same thing, with not a removal in sight?
+> 
+
+That looks to be cut and paste from the old create in tracefs. I don't know
+of a real use case for that. I think we could possibly delete it without
+anyone noticing.
 
 
-On 1/31/2024 6:02 PM, Suzuki K Poulose wrote:
-> On 31/01/2024 01:39, Tao Zhang wrote:
->>
->> On 1/30/2024 8:35 PM, Suzuki K Poulose wrote:
->>> On 30/01/2024 09:02, Tao Zhang wrote:
->>>> Read the CMB element size from the device tree. Set the register
->>>> bit that controls the CMB element size of the corresponding port.
->>>>
->>>> Reviewed-by: James Clark <james.clark@arm.com>
->>>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
->>>> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
->>>> ---
->>>>   drivers/hwtracing/coresight/coresight-tpda.c | 123 
->>>> +++++++++++--------
->>>>   drivers/hwtracing/coresight/coresight-tpda.h |   6 +
->>>>   2 files changed, 79 insertions(+), 50 deletions(-)
->>>>
->>>> diff --git a/drivers/hwtracing/coresight/coresight-tpda.c 
->>>> b/drivers/hwtracing/coresight/coresight-tpda.c
->>>> index 4ac954f4bc13..fcddff3ded81 100644
->>>> --- a/drivers/hwtracing/coresight/coresight-tpda.c
->>>> +++ b/drivers/hwtracing/coresight/coresight-tpda.c
->>>> @@ -18,6 +18,7 @@
->>>>   #include "coresight-priv.h"
->>>>   #include "coresight-tpda.h"
->>>>   #include "coresight-trace-id.h"
->>>> +#include "coresight-tpdm.h"
->>>>     DEFINE_CORESIGHT_DEVLIST(tpda_devs, "tpda");
->>>>   @@ -28,24 +29,57 @@ static bool coresight_device_is_tpdm(struct 
->>>> coresight_device *csdev)
->>>>               CORESIGHT_DEV_SUBTYPE_SOURCE_TPDM);
->>>>   }
->>>>   +static void tpdm_clear_element_size(struct coresight_device *csdev)
->>>> +{
->>>> +    struct tpda_drvdata *drvdata = 
->>>> dev_get_drvdata(csdev->dev.parent);
->>>> +
->>>> +    drvdata->dsb_esize = 0;
->>>> +    drvdata->cmb_esize = 0;
->>>> +}
->>>> +
->>>> +static void tpda_set_element_size(struct tpda_drvdata *drvdata, 
->>>> u32 *val)
->>>> +{
->>>> +
->>>
->>>
->>>
->>>> +    if (drvdata->dsb_esize == 64)
->>>> +        *val |= TPDA_Pn_CR_DSBSIZE;
->>>
->>> We don't seem to be clearing the fields we modify, before updating 
->>> them. This may be OK in real world where the device connected to 
->>> TPDA port
->>> may not change. But it is always safer to clear the bits and set it.
->>>
->>> e.g.:
->>>     *val &= ~(TPDA_Pn_CR_DSBSIZE | TPDA_Pn_CR_CMBSIZE);
->>>
->>>
->>>
->>>> +    else if (drvdata->dsb_esize == 32)
->>>> +        *val &= ~TPDA_Pn_CR_DSBSIZE;
->>>> +
->>>> +    if (drvdata->cmb_esize == 64)
->>>> +        *val |= FIELD_PREP(TPDA_Pn_CR_CMBSIZE, 0x2);
->>>> +    else if (drvdata->cmb_esize == 32)
->>>> +        *val |= FIELD_PREP(TPDA_Pn_CR_CMBSIZE, 0x1);
->>>
->>> Similarly here ^^^. I am happy to fix it up if you are OK with it 
->>> (unless there are other changes that need a respin)
->>
->> Thank you. I would be very grateful if you could help for this.
->
-> Given, you need to respin, please incorporate this change too.
+> > -	return eventfs_end_creating(dentry);
+> > +	return dentry;
+> >  };
+> >  
 
-Sure.
 
-Is it OK if I modify the code as follow and update to this patch directly?
+> > @@ -371,11 +359,14 @@ static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent
+> >  	/* Only directories have ti->private set to an ei, not files */
+> >  	ti->private = ei;
+> >  
+> > +	dentry->d_fsdata = ei;
+> > +        ei->dentry = dentry;	// Remove me!
+> > +
+> >  	inc_nlink(inode);
+> > -	d_instantiate(dentry, inode);
+> > +	d_add(dentry, inode);
+> >  	inc_nlink(dentry->d_parent->d_inode);  
+> 
+> What will happen when that thing gets evicted from dcache,
+> gets looked up again, and again, and...?
+> 
+> >  	fsnotify_mkdir(dentry->d_parent->d_inode, dentry);  
+> 
+> Same re snotify confusion...
 
-     *val &= ~(TPDA_Pn_CR_DSBSIZE | TPDA_Pn_CR_CMBSIZE);
+Yeah, again, I think it's useless. Doing that is more useless than taring
+the tracefs directory ;-)
 
-     if (drvdata->dsb_esize == 64)
-         *val |= TPDA_Pn_CR_DSBSIZE;
-     else if (drvdata->dsb_esize == 32)
-         *val &= ~TPDA_Pn_CR_DSBSIZE;
+> 
+> > -	return eventfs_end_creating(dentry);
+> > +	return dentry;
+> >  }
+> >  
+> >  static void free_ei(struct eventfs_inode *ei)
+> > @@ -425,7 +416,7 @@ void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry)
+> >  }
+> >  
 
-     if (drvdata->cmb_esize == 64)
-         *val |= FIELD_PREP(TPDA_Pn_CR_CMBSIZE, 0x2);
-     else if (drvdata->cmb_esize == 32)
-         *val |= FIELD_PREP(TPDA_Pn_CR_CMBSIZE, 0x1);
-     else if (drvdata->cmb_esize == 8)
-         *val &= ~TPDA_Pn_CR_CMBSIZE;
 
-Best,
+> > @@ -607,79 +462,55 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
+> >  					  struct dentry *dentry,
+> >  					  unsigned int flags)
+> >  {
+> > -	const struct file_operations *fops;
+> > -	const struct eventfs_entry *entry;
+> >  	struct eventfs_inode *ei_child;
+> >  	struct tracefs_inode *ti;
+> >  	struct eventfs_inode *ei;
+> > -	struct dentry *ei_dentry = NULL;
+> > -	struct dentry *ret = NULL;
+> > -	struct dentry *d;
+> >  	const char *name = dentry->d_name.name;
+> > -	umode_t mode;
+> > -	void *data;
+> > -	int idx;
+> > -	int i;
+> > -	int r;
+> > +	struct dentry *result = NULL;
+> >  
+> >  	ti = get_tracefs(dir);
+> >  	if (!(ti->flags & TRACEFS_EVENT_INODE))  
+> 
+> 	Can that ever happen?  I mean, why set ->i_op to something that
+> has this for ->lookup() on a directory without TRACEFS_EVENT_INODE in
+> its inode?  It's not as if you ever removed that flag...
 
-Tao
+That's been there mostly as paranoia. Should probably be switched to:
 
->
-> Suzuki
->
->
->
+	if (WARN_ON_ONCE(!(ti->flags & TRACEFS_EVENT_INODE)))
+
+
+> 
+> > -		return NULL;
+> > -
+> > -	/* Grab srcu to prevent the ei from going away */
+> > -	idx = srcu_read_lock(&eventfs_srcu);
+> > +		return ERR_PTR(-EIO);
+> >  
+> > -	/*
+> > -	 * Grab the eventfs_mutex to consistent value from ti->private.
+> > -	 * This s
+> > -	 */
+> >  	mutex_lock(&eventfs_mutex);
+> > -	ei = READ_ONCE(ti->private);
+> > -	if (ei && !ei->is_freed)
+> > -		ei_dentry = READ_ONCE(ei->dentry);
+> > -	mutex_unlock(&eventfs_mutex);
+> > -
+> > -	if (!ei || !ei_dentry)
+> > -		goto out;
+> >  
+> > -	data = ei->data;
+> > +	ei = ti->private;
+> > +	if (!ei || ei->is_freed)
+> > +		goto enoent;
+> >  
+> > -	list_for_each_entry_srcu(ei_child, &ei->children, list,
+> > -				 srcu_read_lock_held(&eventfs_srcu)) {
+> > +	list_for_each_entry(ei_child, &ei->children, list) {
+> >  		if (strcmp(ei_child->name, name) != 0)
+> >  			continue;
+> > -		ret = simple_lookup(dir, dentry, flags);
+> > -		if (IS_ERR(ret))
+> > -			goto out;
+> > -		d = create_dir_dentry(ei, ei_child, ei_dentry);
+> > -		dput(d);
+> > +		if (ei_child->is_freed)
+> > +			goto enoent;  
+> 
+> Out of curiosity - can that happen now?  You've got exclusion with
+> eventfs_remove_rec(), so you shouldn't be able to catch the moment
+> between setting ->is_freed and removal from the list...
+
+Yeah, that's from when we just used SRCU. If anything, it too should just
+add a WARN_ON_ONCE() to it.
+
+> 
+> > +		lookup_dir_entry(dentry, ei, ei_child);
+> >  		goto out;
+> >  	}
+> >  
+> > -	for (i = 0; i < ei->nr_entries; i++) {
+> > -		entry = &ei->entries[i];
+> > -		if (strcmp(name, entry->name) == 0) {
+> > -			void *cdata = data;
+> > -			mutex_lock(&eventfs_mutex);
+> > -			/* If ei->is_freed, then the event itself may be too */
+> > -			if (!ei->is_freed)
+> > -				r = entry->callback(name, &mode, &cdata, &fops);
+> > -			else
+> > -				r = -1;
+> > -			mutex_unlock(&eventfs_mutex);
+> > -			if (r <= 0)
+> > -				continue;
+> > -			ret = simple_lookup(dir, dentry, flags);
+> > -			if (IS_ERR(ret))
+> > -				goto out;
+> > -			d = create_file_dentry(ei, i, ei_dentry, name, mode, cdata, fops);
+> > -			dput(d);
+> > -			break;
+> > -		}
+> > +	for (int i = 0; i < ei->nr_entries; i++) {
+> > +		void *data;
+> > +		umode_t mode;
+> > +		const struct file_operations *fops;
+> > +		const struct eventfs_entry *entry = &ei->entries[i];
+> > +
+> > +		if (strcmp(name, entry->name) != 0)
+> > +			continue;
+> > +
+> > +		data = ei->data;
+> > +		if (entry->callback(name, &mode, &data, &fops) <= 0)
+> > +			goto enoent;
+> > +
+> > +		lookup_file_dentry(dentry, ei, i, mode, data, fops);
+> > +		goto out;
+> >  	}
+> > +
+> > + enoent:
+> > +	/* Don't cache negative lookups, just return an error */
+> > +	result = ERR_PTR(-ENOENT);  
+> 
+> Huh?  Just return NULL and be done with that - you'll get an
+> unhashed negative dentry and let the caller turn that into
+> -ENOENT...
+
+We had a problem here with just returning NULL. It leaves the negative
+dentry around and doesn't get refreshed.
+
+I did this:
+
+ # cd /sys/kernel/tracing
+ # ls events/kprobes/sched/
+ls: cannot access 'events/kprobes/sched/': No such file or directory
+ # echo 'p:sched schedule' >> kprobe_events
+ # ls events/kprobes/sched/
+ls: cannot access 'events/kprobes/sched/': No such file or directory
+
+When it should have been:
+
+ # ls events/kprobes/sched/
+enable  filter  format  hist  hist_debug  id  inject  trigger
+
+Leaving the negative dentry there will have it fail when the directory
+exists the next time.
+
+-- Steve
+
+
+
+> 
+> >   out:
+> > -	srcu_read_unlock(&eventfs_srcu, idx);
+> > -	return ret;
+> > +	mutex_unlock(&eventfs_mutex);
+> > +	return result;
+> >  }
+> >  
+> >  /*  
+
 
