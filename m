@@ -1,97 +1,92 @@
-Return-Path: <linux-kernel+bounces-48074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EE678456EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:07:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D3848456EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:07:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FADF1C21A2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:07:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FFF81C2445B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 12:07:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1954E16086E;
-	Thu,  1 Feb 2024 12:05:41 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BCBD16087C;
+	Thu,  1 Feb 2024 12:05:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sfEDY/aJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8356F15DBA2;
-	Thu,  1 Feb 2024 12:05:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB052160872
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 12:05:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706789135; cv=none; b=nydZYFVhKTpqoc/T0JhgtZtWzoKK6GfZRM0MM1l5VCGugfx08JRBSQn/r6g5jLEj0WmxcQvwKoZLbpSrrdtynP7k1GICNARJoE9j2TMvVekv9P52mtkJnmKNnPCBaXFobaN1XdWdjMeijhdYZCTLN2+bUk9lmtOfu7De0+txx4M=
+	t=1706789146; cv=none; b=buN5nuBavfY0C1QSD2Lct3GyfrluLOmSbywIft6X1ZHtsFYUZKn21Ks29prxtwm9nmSnhw1wlvtq8MFpRPO71BeIWYSTEsUafx5/1InjzKgigc1Ul3pJYhA5Wc6DzsdIYpq3/k7a7nZuKD9Bam1bMPoXPB7VwHVrw/o56WXeUoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706789135; c=relaxed/simple;
-	bh=4b6J3WQy1ZuklldGS5umROhnm/eI6zxFrBGfBb5XyAs=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=p/Za/jpuuKj6IlMBct/n+a4+W0K1CV+KS7B1WAZ+JpWhw9NHaV7WXEGzcwF2fkc8GUG5bQD/zkV0uF0YMuLq3y5Z8LgbNZo1b16/eSEOjUQbaR0rWVZiE2fMzGaNPKJbbWI+Gs5ymfkhdWF4KNy/u0UTLDFipz54GXpdzaiYKHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TQctg25F5z1FK5w;
-	Thu,  1 Feb 2024 20:00:59 +0800 (CST)
-Received: from dggpemm500008.china.huawei.com (unknown [7.185.36.136])
-	by mail.maildlp.com (Postfix) with ESMTPS id BAE4C1A016B;
-	Thu,  1 Feb 2024 20:05:25 +0800 (CST)
-Received: from localhost (10.174.242.157) by dggpemm500008.china.huawei.com
- (7.185.36.136) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 1 Feb
- 2024 20:05:25 +0800
-From: Yunjian Wang <wangyunjian@huawei.com>
-To: <willemdebruijn.kernel@gmail.com>, <jasowang@redhat.com>,
-	<kuba@kernel.org>, <davem@davemloft.net>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<xudingke@huawei.com>, Yunjian Wang <wangyunjian@huawei.com>
-Subject: [PATCH net-next] tun: Implement ethtool's get_channels() callback
-Date: Thu, 1 Feb 2024 20:05:09 +0800
-Message-ID: <1706789109-36556-1-git-send-email-wangyunjian@huawei.com>
-X-Mailer: git-send-email 1.9.5.msysgit.1
+	s=arc-20240116; t=1706789146; c=relaxed/simple;
+	bh=L1pZgBy8XKVaEMmM3oAJoPPScR/wOkyGZkKhfGFN87g=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=gva8mG3smr76bsvOPuy78CY88nN3JMCMdenPmsvP/omdtdpUE7jf5VyoHD4EZ5/YcPVsDqVz8cMxCbvbiDUs352NdNpCIWO4cGFjzRPeX/EppoGUYPu1XOKPEXX//iQVgy3E42a1AXtuy1KS7UkE8boFC+ZOrmDPkOqfeRXqkQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sfEDY/aJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1645CC43394;
+	Thu,  1 Feb 2024 12:05:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706789146;
+	bh=L1pZgBy8XKVaEMmM3oAJoPPScR/wOkyGZkKhfGFN87g=;
+	h=From:To:Cc:Subject:Date:From;
+	b=sfEDY/aJ/PJoy0498zvYFlBY0vVk/SClbeUZE5Le3ep9P6TaR3mqZR9PEiEVJEXN7
+	 iX+x6lY8pXh5u3+VWCTeP8x61IrQq+XKTDmsiH0TXKslUFYIRCSD6pJy7ek0+RXGKO
+	 AinWTEJcKvGPGLX2TqiTmkEoEMQi92MBpSwcxuWU60dLMA9YB9PPOQPpoeLuvhs8sO
+	 Y9VRG1cWljkYQ8aC6XR+5Ek/pRs2snYJBJgAEXpvHC0JuHEa6sU6dtxpnq8/FVg5yx
+	 b1rMES5unR0IzT34NMh8/TujjDniNZKy2Ie1tT5enl4ch9CM4u0Lgzg9oIPkTkZ8YO
+	 5YuJKdpDw7ojA==
+From: Mark Brown <broonie@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] regulator fixes for v6.8-rc2
+Date: Thu, 01 Feb 2024 12:05:37 +0000
+Message-Id: <20240201120546.1645CC43394@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500008.china.huawei.com (7.185.36.136)
 
-Implement the tun .get_channels functionality. This feature is necessary
-for some tools, such as libxdp, which need to retrieve the queue count.
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
 
-Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
----
- drivers/net/tun.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
 
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index afa5497f7c35..7cf448ff93ee 100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -3638,12 +3638,22 @@ static int tun_set_coalesce(struct net_device *dev,
- 	return 0;
- }
- 
-+static void tun_get_channels(struct net_device *dev,
-+			     struct ethtool_channels *channels)
-+{
-+	struct tun_struct *tun = netdev_priv(dev);
-+
-+	channels->combined_count = tun->numqueues;
-+	channels->max_combined = MAX_TAP_QUEUES;
-+}
-+
- static const struct ethtool_ops tun_ethtool_ops = {
- 	.supported_coalesce_params = ETHTOOL_COALESCE_RX_MAX_FRAMES,
- 	.get_drvinfo	= tun_get_drvinfo,
- 	.get_msglevel	= tun_get_msglevel,
- 	.set_msglevel	= tun_set_msglevel,
- 	.get_link	= ethtool_op_get_link,
-+	.get_channels   = tun_get_channels,
- 	.get_ts_info	= ethtool_op_get_ts_info,
- 	.get_coalesce   = tun_get_coalesce,
- 	.set_coalesce   = tun_set_coalesce,
--- 
-2.33.0
+are available in the Git repository at:
 
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v6.8-rc2
+
+for you to fetch changes up to a3fa9838e8140584a6f338e8516f2b05d3bea812:
+
+  regulator (max5970): Fix IRQ handler (2024-01-30 15:27:16 +0000)
+
+----------------------------------------------------------------
+regulator: Fixes for v6.8
+
+The main set of fixes here are for the PWM regulator, fixing
+bootstrapping issues on some platforms where the hardware setup looked
+like it was out of spec for the constraints we have for the regulator
+causing us to make spurious and unhelpful changes to try to bring things
+in line with the constraints.  There's also a couple of other driver
+specific fixes.
+
+----------------------------------------------------------------
+Martin Blumenstingl (3):
+      regulator: pwm-regulator: Add validity checks in continuous .get_voltage
+      regulator: pwm-regulator: Calculate the output voltage for disabled PWMs
+      regulator: pwm-regulator: Manage boot-on with disabled PWM channels
+
+Patrick Rudolph (1):
+      regulator (max5970): Fix IRQ handler
+
+Romain Naour (1):
+      regulator: ti-abb: don't use devm_platform_ioremap_resource_byname for shared interrupt register
+
+ drivers/regulator/max5970-regulator.c |  2 +-
+ drivers/regulator/pwm-regulator.c     | 43 +++++++++++++++++++++++++++++++++++
+ drivers/regulator/ti-abb-regulator.c  | 22 +++++++++++++++---
+ 3 files changed, 63 insertions(+), 4 deletions(-)
 
