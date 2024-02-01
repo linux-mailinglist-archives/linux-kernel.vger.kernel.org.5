@@ -1,107 +1,178 @@
-Return-Path: <linux-kernel+bounces-48860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48861-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9A8D846273
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 477A3846276
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:11:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84BA71F27179
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:10:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D41C91F273D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:11:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12F673FB38;
-	Thu,  1 Feb 2024 21:07:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07391405F7;
+	Thu,  1 Feb 2024 21:09:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BEi55vND"
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bn0Kx9Wy"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D43C73FB3B
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 21:07:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 402FA39AE1;
+	Thu,  1 Feb 2024 21:09:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706821633; cv=none; b=l2OBlDctNK6uVwjEDRaQatsD99Q/62KiGH7kWw6esTuIik2wlONanYahHiCO/qJNqe/9Ux5XVGo+9b3slFpnok3rC6xexTQvUemxWi/PKdiR7I2LVAjgCO88wkGVa6EwdTckM5LykDQnhFxOkZzaCcN7oIzUGiWbCDZaCrctBhk=
+	t=1706821768; cv=none; b=jZrUo7iK7J1S5zVtwisM7gBag0d4s4s6Cn87i/UkoQAB2r4WG7RDhfcFuISJYe9j2JA2fTbVdbK6A1v9JsS0/aBpjRRPNLH9ApgOboSy76oxSdMkc81UqsvPsO+IphPrgZC+swhuGD9w2IbWtBjXD9223xVD0uGck280H+De0Gw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706821633; c=relaxed/simple;
-	bh=7EmwMioNxZXrojX8nMWHbwqJFpxP0JNO+hJYa0MADuU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ngLtXyGPrFkwwPfAS8jbUNp9k2INHyxYDOdOt1gjtotMpzmwLxloLMTJtlQfH6P2O0J8IxtRhDXUxp4FZLtxSzEqWJpofYf64Ua+vqFsie+QP7qgTsX72bgYsTf60s6vU0WJ7WvljD2eiDC64xg6V+pWJL4xjzzaVkv7xjtujQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BEi55vND; arc=none smtp.client-ip=209.85.222.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-783cdbecfe2so40684985a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 13:07:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706821631; x=1707426431; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fNUsRQWJRD/SdtoJ06hRNIrvyVsnBVIIyaRokLoeu84=;
-        b=BEi55vND3LUrV2s1JbOIuWw+n5ILiMRVwHA0GYo+mghMr/XLpBUyTDCurmOOeN24ug
-         tUOUrZ2d7E4vVjmeIQDdZp4EGUHEtuDAW49ruzqFMp0dyzMwp00DrvjyxWjGdxfTgtdm
-         4tWRw2AlK+CNJjJ7gOsbnkcncZa/Pn6MX64zYijhWX78kZDuoenxh2NhmHtxV+p83pKl
-         F1pUu8nAaSVW4IvMgsvEQ7SIeI0CmaXoQ8P2m0xjUp+IRzzP/5pzP8a2zFyTamIRo1r+
-         11eyAJ1epAWC3f4VXE7nGO0nFgWxYi/f0UWg7AYTooyQge/LLGEU/HHhrPDObZEN2XgK
-         +jMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706821631; x=1707426431;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fNUsRQWJRD/SdtoJ06hRNIrvyVsnBVIIyaRokLoeu84=;
-        b=U+6UBuCHpl4ajXsVprLCKFMSMB4/wqQlcu/JqEINgiNgF5Y+PVbikM1vaWJm5ffmoo
-         1Uun3mN3IMm2mmvBuAe1MGMB0NpGaslsyqffGi+TMOc/g7JXawfYwvmM9ZEhS/A0NliK
-         xSNhmnJ+Ta1qJynXQfvBrVeO+flZoqaiLSoZFYDYahkDTMa+7QndbA+xaW5ROeKmnTm8
-         yZwPSbqVwGsnDJbVPoy0/BgVJj55c3ss7jvzRjdHYD+BnbXNKMStbcH4x3cPBDjGkElR
-         cOznvHMB+7w6whRU89vKajbczTYncIULTI4ZU9ZTr7mZhWJAwgDdcTa0h78WI9HsLOch
-         3oaQ==
-X-Gm-Message-State: AOJu0YzqZQz5YFIkTCD+dckdiBH9Ahv7Kf4nBkdOiTrJL2rDWuHBNcrb
-	4plqCqIE+5jzFYC04W+n6cpw1/AYusKCjG1GoLccZA3zQqGWGiEM
-X-Google-Smtp-Source: AGHT+IF8oF0nC6tGdbCX6Sy80api5qcXhhwLPM6Yg3kdlboF3pSOM6Aqoeg2JcClHarMiturlUn3fw==
-X-Received: by 2002:a05:6214:aa8:b0:68c:6eb5:c727 with SMTP id ew8-20020a0562140aa800b0068c6eb5c727mr3869586qvb.6.1706821630646;
-        Thu, 01 Feb 2024 13:07:10 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUNybhWeQ64BmWfJoCjsJARxp+lYkniBeFdWKYSls90Bv2w36QA1aWymKsIFGufrTcCs9KreBmPrngOdQLathlLszNnMCoKbHwc4FtitkQ96Su2ZJ3sQmmnLk6xWBIUiUNbkxiYo3Igfw==
-Received: from [192.168.0.104] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id mk17-20020a056214581100b0068c7c91b04bsm126741qvb.104.2024.02.01.13.07.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 13:07:10 -0800 (PST)
-Message-ID: <d2033061-2f85-4215-9d39-0c56da17cd37@gmail.com>
-Date: Thu, 1 Feb 2024 22:07:07 +0100
+	s=arc-20240116; t=1706821768; c=relaxed/simple;
+	bh=6v01RU+zLBfMH3ycqivUxPJyd9tsVfriHpIcjMGbkes=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QG24YDyc7uIWDgX65NpZH0OkRpOJUMFnylAL7YLr0XyFri1rbr0zE1aW8GCDdWTcXIYW3K5iRnArX7xdBsWB6CU8CTbNFUzhHGWoEMb93w2XMsXuz+6fjFE4sIApFILohe8rqIIiEj50nAx5McyRUECtE2AXe4hPRSwln8XHugM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bn0Kx9Wy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3994C43390;
+	Thu,  1 Feb 2024 21:09:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706821767;
+	bh=6v01RU+zLBfMH3ycqivUxPJyd9tsVfriHpIcjMGbkes=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Bn0Kx9WybaQsW2pRh0Btwv1/jeZ9YrtkMLOy6D5HjMROH6mqJVGRuzWEkekfQt79H
+	 szsqxSalbLFCLrIMbRzgdWINX8HtTO6iySGW5iDstwAMfsP8x5RQJkFtaWt48nIZpR
+	 cp5sVZbAt0/wmSmAL4AjES7fV5+LhBCp2E3SqxF0g9aSTKtzNAmbPCHv0FPFcjvlHd
+	 kdre5oOfR9jsPfz9SmN/9TNbIsEqEcee2U78ZOLJOIAdYG+IfmG30H2Q16gmYRmgQV
+	 CZUjS9z8GsDB70D548p52Q3fGmsOw1uZ1MOl/aXm6gwzGBTBGA5aKXYW7DXuXUlcsi
+	 RTXv55zbNJCYw==
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-510322d5363so2184835e87.1;
+        Thu, 01 Feb 2024 13:09:27 -0800 (PST)
+X-Gm-Message-State: AOJu0Yw+oIAqPPuCZopbuQyYPyTHkoRlakKS+43mqLiRwfqnSkwtRthL
+	qzwP39waWHmT/ttGBPsK4bVs0tYUdD+QLJHApsJXzzuIowVr1JjeUMU0gaO2CjD084WilVc5MdN
+	EnEAmu0JUE8lNHNpr4RVqgIelOQ==
+X-Google-Smtp-Source: AGHT+IESdk8xIEMiHdjhEcwakMNvof5/KilzUrpxx4OTDQHF0zbvvJoEq0dv0O8IGj/3mjZHLvI28EeOsT5B/gQ7v60=
+X-Received: by 2002:a05:6512:3b0:b0:511:21e4:5a69 with SMTP id
+ v16-20020a05651203b000b0051121e45a69mr2724946lfp.40.1706821765984; Thu, 01
+ Feb 2024 13:09:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] staging: rtl8192e: some coding style cleanups
-To: Michael Straube <straube.linux@gmail.com>, gregkh@linuxfoundation.org
-Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240201081824.6998-1-straube.linux@gmail.com>
-Content-Language: en-US
-From: Philipp Hortmann <philipp.g.hortmann@gmail.com>
-In-Reply-To: <20240201081824.6998-1-straube.linux@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240130105236.3097126-1-dawei.li@shingroup.cn>
+ <20240130105236.3097126-2-dawei.li@shingroup.cn> <20240131212938.GB2303754-robh@kernel.org>
+ <F096F87333105368+Zbtr1h1ryCvzA3fB@centos8>
+In-Reply-To: <F096F87333105368+Zbtr1h1ryCvzA3fB@centos8>
+From: Rob Herring <robh@kernel.org>
+Date: Thu, 1 Feb 2024 15:09:13 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLC0_mLmgtATkh48963n-GrkHE-MryD_=MN5sNWBeq_RA@mail.gmail.com>
+Message-ID: <CAL_JsqLC0_mLmgtATkh48963n-GrkHE-MryD_=MN5sNWBeq_RA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] of: Introduce __of_phandle_update_cache
+To: Dawei Li <dawei.li@shingroup.cn>
+Cc: frowand.list@gmail.com, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, set_pte_at@outlook.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/1/24 09:18, Michael Straube wrote:
-> This series contains some simple coding style cleanups to clear some
-> checkpatch warnings. Compile-tested only.
-> 
-> Michael Straube (3):
->    staging: rtl8192e: remove braces from single statement blocks
->    staging: rtl8192e: remove return from void function rtl92e_set_channel
->    staging: rtl8192e: initialize variables at declaration
-> 
->   drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c | 5 ++---
->   drivers/staging/rtl8192e/rtl8192e/r8192E_phy.c | 1 -
->   drivers/staging/rtl8192e/rtl8192e/rtl_core.c   | 3 +--
->   drivers/staging/rtl8192e/rtl819x_HTProc.c      | 4 ++--
->   drivers/staging/rtl8192e/rtllib_rx.c           | 5 ++---
->   5 files changed, 7 insertions(+), 11 deletions(-)
-> 
+On Thu, Feb 1, 2024 at 4:01=E2=80=AFAM Dawei Li <dawei.li@shingroup.cn> wro=
+te:
+>
+> Hi Rob,
+>
+> Thanks for reviewing,
+>
+> On Wed, Jan 31, 2024 at 03:29:38PM -0600, Rob Herring wrote:
+> > On Tue, Jan 30, 2024 at 06:52:35PM +0800, Dawei Li wrote:
+> > > For system with CONFIG_OF_DYNAMIC=3Dy, device nodes can be inserted/r=
+emoved
+> > > dynamically from device tree. Meanwhile phandle_cache is created for =
+fast
+> > > lookup from phandle to device node.
+> >
+> > Why do we need it to be fast? What's the usecase (upstream dynamic DT
+> > usecases are limited) and what's the performance difference? We'll
+> > already cache the new phandle on the first lookup. Plus with only 128
+> > entries you are likely evicting an entry.
+>
+> I read the history changelog and get that a _lot_ of lookup has been
+> taken before of_core_init(), so the update of cache in lookup operation
+> mean a lot to performance improvement.
 
-Tested-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+Yes, and there was compelling data on the performance difference to
+justify the added complexity.
 
+> > > For node detach, phandle cache of removed node is invalidated to main=
+tain
+> > > the mapping up to date, but the counterpart operation on node attach =
+is
+> > > not implemented yet.
+> > >
+> > > Thus, implement the cache updating operation on node attach.
+> >
+> > Except this patch does not do that. The next patch does.
+>
+> Agreed.
+>
+> >
+> > >
+> > > Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+> > > ---
+> > >  drivers/of/base.c       | 16 ++++++++++++++++
+> > >  drivers/of/of_private.h |  1 +
+> > >  2 files changed, 17 insertions(+)
+> > >
+> > > diff --git a/drivers/of/base.c b/drivers/of/base.c
+> > > index b0ad8fc06e80..8b7da27835eb 100644
+> > > --- a/drivers/of/base.c
+> > > +++ b/drivers/of/base.c
+> > > @@ -163,6 +163,22 @@ void __of_phandle_cache_inv_entry(phandle handle=
+)
+> > >             phandle_cache[handle_hash] =3D NULL;
+> > >  }
+> > >
+> > > +void __of_phandle_update_cache(struct device_node *np, bool lock)
+> > > +{
+> > > +   u32 hash;
+> > > +
+> > > +   if (lock)
+> > > +           lockdep_assert_held(&devtree_lock);
+> >
+> > I don't think this is a good use of a function parameter.
+>
+> Yep, assertion under condition is odd.
+>
+> >
+> > > +
+> > > +   if (unlikely(!np || !np->phandle))
+> > > +           return;
+> > > +
+> > > +   hash =3D of_phandle_cache_hash(np->phandle);
+> > > +
+> > > +   if (!phandle_cache[hash])
+> > > +           phandle_cache[hash] =3D np;
+> >
+> > Okay, so you don't evict existing entries. I'm not sure what makes more
+>
+> Yes, the updating policy of dynamic nodes is exactly same with static nod=
+es
+> (the ones in of_core_init()), no eviction/invalidation on _existing_ cach=
+e
+> involved.
+>
+> > sense. I would imagine old entries are less likely to be accessed than
+>
+> Well, I don't think we are gonna implement a full-fledged cache replacing
+> algorithm such as LRU.
+>
+> > new phandles for just added nodes given DT is kind of parse it all once
+> > (e.g. at boot time). Again, need to understand your usecase and
+> > performance differences.
+>
+> It's kinda awkward that no such usecases/stats are available for now.
+>
+> My motivation is simple as that:
+> As long as detached nodes are supposed to be removed from cache entries,
+> the newly inserted nodes should be added to cache entries, it is more
+> balanced and symmetric.
+
+The difference is that no entry for attach works fine while accessing
+a detached node that may have been freed would be a problem.
+
+Rob
 
