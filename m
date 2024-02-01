@@ -1,141 +1,129 @@
-Return-Path: <linux-kernel+bounces-47627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1841845070
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:46:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 035C4845076
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:47:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ECFF9B29580
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:46:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F2891C26EA3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 04:47:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725CE3BB3D;
-	Thu,  1 Feb 2024 04:46:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 587653B190;
+	Thu,  1 Feb 2024 04:46:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RWmfHnAF"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MtSY0Pj/"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23BEE3BB21;
-	Thu,  1 Feb 2024 04:46:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CCFF3CF52
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 04:46:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706762770; cv=none; b=OlzJqqCxKunURPIi8fohOJl1gqStf4AfsbPXHLfoOUMcdcMWuZztVdByITu6wyH3DKk9gJSpeaudilmPqQoEztTBgQTkyxIc1mXZAtxFfyvLMFr+YMc3WjyMI8PHPJjY2tgOYPZWsT8lGibTEh4fTH82zv1rcb9m33baIPWF3Bc=
+	t=1706762807; cv=none; b=RESyq6LlH+dudOJ2kcyHyHJdM7W0Xj7Lc8OaWBoLVS49e/79WNMmFwzc/tatFDKW+5qakwhryNF/GzV53UIhCTia7BrW7h5YRedVqeWFiKvQIu+/HT0ckaB7O3Yw+mc02Ma6ClcK/2hiVyvC7FajdV5tkFMJc6COdQr4r+YeqTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706762770; c=relaxed/simple;
-	bh=sT31d/Dktz06hVif+GESOP/aywR9taJS8IONIS8Md1s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TA8a42oygxjC8TWykkBzudqQ/0eyHKVBdG/9XDpoguivirOxXKKgbEzkJUckW35lUItWtgm4cwj5cn/tiCj8HOOwvcce9NJmCNaroVUlwslZns/hGiMunFjXGv3+VWE+YPT0Qko6IiDZnNMkXFAqBouZ31ftgg45unIz1ReND3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RWmfHnAF; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55a9008c185so764095a12.1;
-        Wed, 31 Jan 2024 20:46:08 -0800 (PST)
+	s=arc-20240116; t=1706762807; c=relaxed/simple;
+	bh=4VGGGcaYk35HxXgdSmdu935kGFSoAd32AIvMtmVqZPQ=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Content-Type; b=MGZADbCS1bW7K5jBbwQ46siHlfCcA0NAOFofRWBm0MoFKmg6yDv6UDsxT25eRUvg+YmyFK7H7prrFuvsJz5zVNcVBAbsvcPwX+V3/qpYlmqSqh5Ikufd2lx9yc65MOZLv87ZhWkV9sxjcleF5+Im+TNRL6vUGy9g1nW9BgWGipE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aahila.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MtSY0Pj/; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aahila.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5d8c924c8bbso589575a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 20:46:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706762767; x=1707367567; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cfodC9vNrDpns69W2WTDuHfGSm1HhcI9brbrkzFOKO4=;
-        b=RWmfHnAFYIkUiDeZaSYv9hY9T/w57gDoZty8Tv3av6/WTCi3MITXXlfh4iMTBzwboU
-         mdNjhzNz3y+vu4BChXbxvsG8c1G1gzXOMBLErutz+BnzyRe6uE7esrUBOLxNcBwIS1BE
-         mqmUC8+5WYKc2v6+hIkzrlcB/dY0CvzvP24AKzpp99T23LTutjCO/dKIaj179WW4vwy1
-         Y7xINe5nDJdqhODHrleMScpjBeWhE3JPSUnV38tyRjSxWmBmzIdG4LK5fScIXqys4Qs+
-         yEp5izXcwlU6Z0KbH/qNbrLjjMYmiRVn5/9o5icdVa/ytp/hi4zi3cbv4NY+nCbWmHSG
-         mHEA==
+        d=google.com; s=20230601; t=1706762805; x=1707367605; darn=vger.kernel.org;
+        h=to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=uYSo7dLHiN39LMct+TvOkaek+OHlhRLiZBJ+JHrrHE0=;
+        b=MtSY0Pj/cyrsCH8V6NyW1kLO7ySRKjHc0+PYyqlrfa3mmN4mkUPx8Gsn9OutO007t+
+         Rmxg1nesn9bkf5/O2Zn8/gWqYKmqel1mWZvD/Xn5iNeHtAz2bD5TicAYAXBXMKpYrnyg
+         z1IEcHUH5hvlCv0c/W7en6F8ktGwJAjpqaNZQMbhz7cxDLI1L58+boETjp76buNcqoNN
+         dwd2+0y1ya7F6UQHncWBpY0P4csOZmCHzRlGWdD9Anno/YCi8rNzM9AjvShzVIFZH5dz
+         4LVlljbCzZPQj2zC5ypFH4FqjKkmW+x7G2vEj9OPllsxAHkQTbdqX2bNNf4L7BMUEk7q
+         aIJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706762767; x=1707367567;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cfodC9vNrDpns69W2WTDuHfGSm1HhcI9brbrkzFOKO4=;
-        b=aPimDmadIZj6J5+lohsg7EYS32S9cmWRMkJ0GCtcfnThSRqqUQk6qSP2YDecRMw4Mo
-         C/11T+2BY7ldjy7OPbYNfTgxj5+wJ2jpQP2zMqOQAwHu/OGRpsNWDScSeh5yJUHADsk4
-         hyUREWEOpGKhAprlXFK2yq4zoGj6YvqKtw14ahS8tmCiKYgJ8oPPBZ1Gwy/R1GE8GnV8
-         H0BqrTGtRhRjCYx3T8MvxnoVk68yl1vL8Hy8SGqyysSCHJca4QEONe9gndwpVlDvSA8s
-         cinLZ1/mZVxWlDDMgU8cii6ajxfRolGt5zFkuHR1uKbHAVYTIIT888RvaclK3Vl3RvEn
-         hZuA==
-X-Gm-Message-State: AOJu0YxjFUxknMJYB3Hq6/Uh/2fn+6pHUHpeRhrEuiVmdZivH+ii1tzV
-	WyGOu8ay6ZaFQ6ycqXajYfLNvdnyLd4ovyKPsbOE+1dPeQZbe3alepmHsI7/VRFbe96qUsGSY57
-	kDm5tbewF4a+7qhG3ebBGuDz/Wtw=
-X-Google-Smtp-Source: AGHT+IEZJ1ezAJFk5aGlxra7BSqIZ86xefE3rE7to+yqrwkHqHw9Iw38a0NbpIHmIvKSYXbG+1CaYv50GcsXgZSXfoM=
-X-Received: by 2002:a50:fb03:0:b0:55f:d39:9bb with SMTP id d3-20020a50fb03000000b0055f0d3909bbmr6379747edq.15.1706762767220;
- Wed, 31 Jan 2024 20:46:07 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706762805; x=1707367605;
+        h=to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uYSo7dLHiN39LMct+TvOkaek+OHlhRLiZBJ+JHrrHE0=;
+        b=taUeyTV7DUsjIKxOtVHvwZBGHLFX6xuMUwANzkIn2LAEfk2VSIcKm5K9eftJdKLN5m
+         +EBgxdIWkMqFtRln4ODHOvvx34i5SHtTVyPjivNVnBuCoH7WjMRbCgLIJKTCr71amoWi
+         dhOAR0WRxmAxOz4aTBOUbORZx5woNKdi+hjQUoRTjM1y7rpCZcue7z9jV9IYY3b1MyiC
+         Y9Vq4zQGBRoPgZPE57spD8XmqmsbvZY+99AZrFCupJ/T0+llbW3w215XLceZSMeSnvzR
+         Z0REIEbQuvtfYRpISlSjFUKDbQ+uKrVNNjK+VbzfuhB3/eq8zEXuqzOwYXqWAGAChza1
+         TD0w==
+X-Gm-Message-State: AOJu0Yzm8fPqdGTyreJIDXIIdB1CqqfxJRKuSUvE1dj42l6+zaekqC+a
+	2gLoTinrO9Etmqs6r6Wf9sF43dm202VY0arTh6QfhxI6veYRk/9AGlzPsbEOo+FUsiy6GRHugI+
+	yWg==
+X-Google-Smtp-Source: AGHT+IH1mpGNqqs+VrlIIPUSdBXJXXj54xNBJG7viPKa5/ZRAaOUdYVX8hyYK8Eb2TKfEfxpyqG2TrgIDQI=
+X-Received: from aahila.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2f3])
+ (user=aahila job=sendgmr) by 2002:a65:6115:0:b0:5d4:e18a:1e5 with SMTP id
+ z21-20020a656115000000b005d4e18a01e5mr88518pgu.5.1706762805440; Wed, 31 Jan
+ 2024 20:46:45 -0800 (PST)
+Date: Thu,  1 Feb 2024 04:46:22 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240126231348.281600-1-thepacketgeek@gmail.com>
- <20240126231348.281600-4-thepacketgeek@gmail.com> <Zbi+Zw2o0rDfX1pj@gmail.com>
-In-Reply-To: <Zbi+Zw2o0rDfX1pj@gmail.com>
-From: Packet Geek <thepacketgeek@gmail.com>
-Date: Wed, 31 Jan 2024 20:45:56 -0800
-Message-ID: <CADvopva+tesNHtCBOadK9x3bbqgjX+ZkkyPDeX1pto7ZUU=QVA@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 3/8] net: netconsole: move newline trimming to function
-To: Breno Leitao <leitao@debian.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, 
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240201044623.374389-1-aahila@google.com>
+Subject: [PATCH 1/2] dt-bindings: i2c: designware: allow fine tuning tuning
+ waveform from device tree
+From: Aahil Awatramani <aahila@google.com>
+To: Aahil Awatramani <aahila@google.com>, David Dillow <dillow@google.com>, 
+	Wolfram Sang <wsa+renesas@sang-engineering.com>, Andi Shyti <andi.shyti@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Jarkko Nikula <jarkko.nikula@linux.intel.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Mika Westerberg <mika.westerberg@linux.intel.com>, Jan Dabros <jsd@semihalf.com>, 
+	linux-i2c@vger.kernel.org, devicetree@vger.kernel.org, 
 	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 30, 2024 at 1:16=E2=80=AFAM Breno Leitao <leitao@debian.org> wr=
-ote:
->
-> On Fri, Jan 26, 2024 at 03:13:38PM -0800, Matthew Wood wrote:
-> > Move newline trimming logic from `dev_name_store()` to a new function
-> > (trim_newline()) for shared use in netconsole.c
-> >
-> > Signed-off-by: Matthew Wood <thepacketgeek@gmail.com>
-> > ---
-> >  drivers/net/netconsole.c | 17 +++++++++++------
-> >  1 file changed, 11 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
-> > index 085350beca87..b280d06bf152 100644
-> > --- a/drivers/net/netconsole.c
-> > +++ b/drivers/net/netconsole.c
-> > @@ -230,6 +230,16 @@ static struct netconsole_target *to_target(struct =
-config_item *item)
-> >                           struct netconsole_target, group);
-> >  }
-> >
-> > +/* Get rid of possible trailing newline, returning the new length */
-> > +static void trim_newline(char *s, size_t maxlen)
-> > +{
-> > +     size_t len;
-> > +
-> > +     len =3D strnlen(s, maxlen);
-> > +     if (s[len - 1] =3D=3D '\n')
-> > +             s[len - 1] =3D '\0';
-> > +}
->
-> I am thinking about this one. Should we replace the first `\n` in the
-> file by `\0` no matter where it is? This will probably make it easier to
-> implement the netconsd, where we know it will be impossible to have `\n`
-> in the userdata.
->
-> Maybe something as:
->
->         static inline void trim_newline(char *str)
->         {
->                 char *pos =3D strchr(str, '\n');
->
->                 if (pos)
->                         *pos =3D '\0';
->         }
->
->
-> All in all, this is a good clean up, which make the code easier to read.
-> Thanks!
+The Synopsys i2c driver allows a user to override the parameters
+controlling the waveform using ACPI; this is useful for fine tuning when
+needed to make spec compliance. Extend this support to the device tree to
+allow non-ACPI platforms the same capabilities.
 
-I like this idea, I agree that only accepting userdata values upto the
-first newline clears up the expectations for log output and parsing on
-the receiving side. I would prefer that to the case where multiple
-values (delimited by newlines) are somehow attempted with a single
-key, seems like just using additional key/value pairs would be
-cleaner.
+Signed-off-by: Aahil Awatramani <aahila@google.com>
+---
+ Documentation/devicetree/bindings/i2c/i2c.txt | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/i2c/i2c.txt b/Documentation/devicetree/bindings/i2c/i2c.txt
+index fc3dd7ec0445..3c33c36571f9 100644
+--- a/Documentation/devicetree/bindings/i2c/i2c.txt
++++ b/Documentation/devicetree/bindings/i2c/i2c.txt
+@@ -45,6 +45,24 @@ wants to support one of the below features, it should adapt these bindings.
+ 	Number of nanoseconds the SCL signal takes to rise; t(r) in the I2C
+ 	specification.
+ 
++- i2c-scl-ss-hcnt
++	HCNT value for standard speed mode in I2C Controller.
++
++- i2c-scl-ss-lcnt
++	LCNT value for standard speed mode in I2C Controller.
++
++- i2c-scl-fs-hcnt
++	HCNT value for fast speed mode in I2C Controller.
++
++- i2c-scl-fs-lcnt
++	LCNT value for fast speed mode in I2C Controller.
++
++- i2c-scl-hs-hcnt
++	HCNT value for high speed mode in I2C Controller.
++
++- i2c-scl-hs-lcnt
++	LCNT value for high speed mode in I2C Controller.
++
+ - i2c-sda-falling-time-ns
+ 	Number of nanoseconds the SDA signal takes to fall; t(f) in the I2C
+ 	specification.
+-- 
+2.43.0.429.g432eaa2c6b-goog
+
 
