@@ -1,90 +1,74 @@
-Return-Path: <linux-kernel+bounces-48521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 191A2845D37
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:27:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A46AB845D59
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:34:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C26762951F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:27:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73109B2F707
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:25:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F339D7E0FA;
-	Thu,  1 Feb 2024 16:26:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9252660911;
+	Thu,  1 Feb 2024 16:22:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="Rjktm5pU"
-Received: from mail-lf1-f67.google.com (mail-lf1-f67.google.com [209.85.167.67])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CWVzhlFy"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B68AC7E0E5
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 16:26:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 830197E0E3
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 16:22:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706804808; cv=none; b=TtXisq2HIUlMXLu2R0lzm13yaJ9U0EjesLrZzC/Yf95+HWGzeHluVfSCBsKApKqN919D7v74Q//t6/Y1GLupvSKOgb89oLPMPlc25cvb5NYjGnb2TYzaQ5P+je8D/4onlPK2K63CiiQWauUMI/TMOo2TK2RVsvLR7Yd/HykSeG0=
+	t=1706804546; cv=none; b=Uwywm8ORIBiojFiAakBI17YgLt3JFiouHW3RSCp2Bx4AI6azhsinsmfVyMvjBjMxAe9Xpa8fui8ZTsdF9gRGjvv27mdD/c18z7C+qzJAmSNdTl0DhZa2nzZkRsC9nHOWwcWpDWEvsx4Ebl0SoMmZyl0nQ3R0J8+Q1JU6mJirjU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706804808; c=relaxed/simple;
-	bh=S3AjnrNIx5BKudNt+FuYiHFiKF3Aoog4fHYyZ72OBkA=;
+	s=arc-20240116; t=1706804546; c=relaxed/simple;
+	bh=eK22VroIPslBUu5CJjaYl0/B1pPbJ41Qb3IUc5ym+cc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hG15K3x9coSWcmn8kRsqex2YHurxsTXNvgsIt3MYQcP0Fherlvc7zTuDW31arSb7qr8cCX4Cfd46X0f5PY3QDQLOwsvtje8mo7v8vL++Uc1VefB701Z56iiAKPJZTbtw1f2OZ1Bh0Yz3TGyuQwEzmb1pGYpgXWQWepTJSj89D64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=Rjktm5pU; arc=none smtp.client-ip=209.85.167.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-lf1-f67.google.com with SMTP id 2adb3069b0e04-510faac8c57so966577e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 08:26:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1706804805; x=1707409605; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iNllvtHZDHAWtrtv2nUVEGYjjg2CQe0uH6p+qaHk/zI=;
-        b=Rjktm5pUVyxOb60BFpT4J7/l7XAiVE49lWn3tmI560XqkqFWdPbfRfDCoaQ8/3gDrg
-         BCK//eBXLFpLavkyk5ry0s250XSHU1gSOOpY6jU8WwXqgmd/ttNWpSmuEyQqTAyWDbL8
-         aGXK5pk7Xi7Z5v5VZ8IhhO1eJLZ94bzhZM4JQIGnIvEDlsgveOWSfELr/8q1Kh6rc+im
-         9om+BP8YU/V3yYXOVBBL0RidQ1TILUHs90aVgyUPLn9Xlsk+f5uKqu4wDme2+Qsh4snU
-         OuZc/FpwCb7iSb7YOx4NgCU+6XJLy9NjBkAj74s1ricXtQwrr1XVTYwN2/+SGIOYyQ1V
-         j7GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706804805; x=1707409605;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iNllvtHZDHAWtrtv2nUVEGYjjg2CQe0uH6p+qaHk/zI=;
-        b=hd3D5dMd4C48qdqP9tpN5LT5UIJ0BGGM8k7iiIb3/5xd1zOvwBoVnE5mD6HvVXmZye
-         2nrqtmU4DsYlnDqkz2wPFvB5X3TXApjcZzneH32uKNyHjlbEzAkS+OKMZajeaIwm++et
-         5Qm7Dj1Q77jqC5W0LVYLO8eia3BAmvdsmocE4JitJxu5DdxuxRodURithLCkryrod0KZ
-         j6fRsHGIfNqbSRCrfuL5L/0gol7amhPzjdnmDh2Kpap1qaIQe1j814+n/SLZ25tb7MuS
-         4XKtF5Y3a7cYOvDAa42fu9xdfMsSOnfMSCVci1YO7Qst+YyLFa652ThTW6GTYRGJarOb
-         kTbA==
-X-Gm-Message-State: AOJu0YxZs+L8JXj+AOcRjjE2OMqffoZjPrvR8/sR4VgRIoTh+RSxqycz
-	guHfq4jTVQ5jnbFJ8vmwFrICfRjrMpXJYB/lA1fwXKGZVvJQUxKmkCNEiXIGp+txMwhlX6oKhc5
-	Fql7wtg==
-X-Google-Smtp-Source: AGHT+IFpHJ9fDp3l9urMIz13d5uHrF2tLGi6nIvV59bVO5ddL+GvcU3faJHjeQ/t/EVxkT02aIk5Hw==
-X-Received: by 2002:a05:600c:3151:b0:40f:aabd:b83 with SMTP id h17-20020a05600c315100b0040faabd0b83mr4429255wmo.13.1706804501869;
-        Thu, 01 Feb 2024 08:21:41 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU5l2dL8cK1cAB4grrA4V4D/XQXZKGpCwYEEgqMb5x2x4dcX8OR4UqDUNJHrfM/Iutif0muo/x0eAIkmpruVJZnVcs/yVyLqxI39v/alBmjYu2llkaZleZKNi4BNcDVCYzYsTDzuhgU/2EuwOjDZRJgMh8qO/us6VAOPZmnRo6b+n8aBxRVekETd5nBmkVhPgTvzDNc+cgtUoS4hGm3ef41cvU0uknmWbOvNYRMhr90Tw+0z6qHoGbYHnGj0JxhGFn5LnFDw2US/FhLgUITymjqLP1zAZuOLkSzweUB4SQworFLPUb64QcjksWzyPVI+hDEEDCXhPjUkJklVZ18BlRXw+iiv+Kyx0YTRI6g0oRH9nWI1SmaWKiC+OEZYhN2jkPtrvHzuuwxD3EzfixyEg8RJdwl/k034Il6jb83p5xV6j8keHt/nFByX83dtqLhVMqzG27njGZHXKGkc+YvoLDGVl0=
-Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id f6-20020a05600c154600b0040fa661ee82sm4903623wmg.44.2024.02.01.08.21.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 08:21:41 -0800 (PST)
-Date: Thu, 1 Feb 2024 17:21:38 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Aahil Awatramani <aahila@google.com>
-Cc: David Dillow <dave@thedillows.org>,
-	Mahesh Bandewar <maheshb@google.com>,
-	Jay Vosburgh <j.vosburgh@gmail.com>,
-	Hangbin Liu <liuhangbin@gmail.com>,
-	Andy Gospodarek <andy@greyhouse.net>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v6] bonding: Add independent control state
- machine
-Message-ID: <ZbvFEtQskK3xzi6y@nanopsycho>
-References: <20240129202741.3424902-1-aahila@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=lmSS4LDy/c53n+2X43+VUhUY669v4v7m8Y781ZcS+xSouc+nyzRjTuJhsTloPidV7DPJNKx2gc4GGbP/DB80vjCOQ/9gQpclHGa3t/s4Yrf2z04gj6LJaNP3bkwZIr9zhczTcVMx1z/op7NL9G8YzWfSt9emH0kyQm+ploU1R+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CWVzhlFy; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706804545; x=1738340545;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=eK22VroIPslBUu5CJjaYl0/B1pPbJ41Qb3IUc5ym+cc=;
+  b=CWVzhlFyOx5x3uhY5r+ptHgzmMc45ZF9ASPak+7gnAXeI/Lm8Fz2uQEa
+   uR6TI6uIB+CkYpWLPweKrdJ/eZetrEOe/7WTSgWV/sxUarc/jKwKpLWCL
+   uXlvgN7JGbLuugypwK0r+CEN6VZS4vh33oiTHdhacnnyg69lsBB5QYhVV
+   Bc6sFFkmh1k/J1ZSmQw5DWY3J3B9ii4NF7geQsgCRQ7dOPfEWcS2g25iO
+   166wqhBpH9e3CvPst0cCSfi5gmUm2l9uR0dhaBjYh2QjUzR7NjHi7ulqW
+   1lmC1nmdjM9bK/eJTFMsun430MqetyCOF/9501NzKnmt/b0OFut/0xcYO
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="17321354"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="17321354"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 08:22:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="788972648"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="788972648"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 08:22:23 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rVZpV-000000011R4-0LNR;
+	Thu, 01 Feb 2024 18:22:21 +0200
+Date: Thu, 1 Feb 2024 18:22:20 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Dominik Brodowski <linux@dominikbrodowski.net>
+Cc: linux-kernel@vger.kernel.org,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Subject: Re: [PATCH v1 1/1] pcmcia: Convert to use less arguments in
+ pci_bus_for_each_resource()
+Message-ID: <ZbvFPM0jQYFXZhHA@smile.fi.intel.com>
+References: <20231030115053.2752588-1-andriy.shevchenko@linux.intel.com>
+ <Zbu19xfahgI_dKLt@smile.fi.intel.com>
+ <ZbvEhVw-k7UT7Wpm@owl.dominikbrodowski.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,31 +77,26 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240129202741.3424902-1-aahila@google.com>
+In-Reply-To: <ZbvEhVw-k7UT7Wpm@owl.dominikbrodowski.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Mon, Jan 29, 2024 at 09:27:41PM CET, aahila@google.com wrote:
+On Thu, Feb 01, 2024 at 05:19:17PM +0100, Dominik Brodowski wrote:
+> Am Thu, Feb 01, 2024 at 05:17:11PM +0200 schrieb Andy Shevchenko:
+> > On Mon, Oct 30, 2023 at 01:50:53PM +0200, Andy Shevchenko wrote:
+> > > The pci_bus_for_each_resource() can hide the iterator loop since
+> > > it may be not used otherwise. With this, we may drop that iterator
+> > > variable definition.
+> > 
+> > Can it be now applied?
+> 
+> Which tree will this go through? No need to involve the PCMCIA tree, and you
+> already have my ACK...
 
-[...]
+I believe PCI one, okay, seems like I have to resend with Bjorn being included.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
->diff --git a/drivers/net/bonding/bond_procfs.c b/drivers/net/bonding/bond_procfs.c
->index 43be458422b3..95d88df94756 100644
->--- a/drivers/net/bonding/bond_procfs.c
->+++ b/drivers/net/bonding/bond_procfs.c
->@@ -154,6 +154,8 @@ static void bond_info_show_master(struct seq_file *seq)
-> 			   (bond->params.lacp_active) ? "on" : "off");
-> 		seq_printf(seq, "LACP rate: %s\n",
-> 			   (bond->params.lacp_fast) ? "fast" : "slow");
->+		seq_printf(seq, "LACP coupled_control: %s\n",
->+			   (bond->params.coupled_control) ? "on" : "off");
-
-Hmm, I wonder how it makes sense to add new features here. This should
-rot.
-
-
-> 		seq_printf(seq, "Min links: %d\n", bond->params.min_links);
-> 		optval = bond_opt_get_val(BOND_OPT_AD_SELECT,
-> 					  bond->params.ad_select);
-
-[...]
 
