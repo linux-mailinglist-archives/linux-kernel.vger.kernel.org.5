@@ -1,97 +1,129 @@
-Return-Path: <linux-kernel+bounces-48253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C1B1845926
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:45:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26896845938
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:47:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 168BD28BA9D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:45:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C97F41F237F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:47:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5524C53371;
-	Thu,  1 Feb 2024 13:45:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E8485F499;
+	Thu,  1 Feb 2024 13:46:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dzi8HOVF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LJFdmqgP"
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97C485CDDC;
-	Thu,  1 Feb 2024 13:45:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B38C65CDFF
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 13:46:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706795107; cv=none; b=KPSNeKyCtorj5AOqbulA8VwzrT0yKS6wda6HGSzPlmmf6I8Hk6MpWtt6Ny/NeMUuT9DlwqInpOaEJ0HkPjZw9tRqmBr308s8C9ShpyIaqM84fbH7tQLPRTmWrXGnpjgVsBS6/7WTTVcHaaS2+zl2ZxM4dRozFJvxiH4+izPAtyQ=
+	t=1706795202; cv=none; b=k71m4xzyyq5bthG+O+oV9KXcQvAgt2QOUhZw5CkLkSAqIuesXVdWQuWcixacEs8lgIpBogDnGQ+zrRDxRoC/Sw12Tz9zSxi8/m0eAt9JrBYHCuyHySOHa9aGnZIes2sWuaNq++eXhsiflYwSzzmkuHyX/ku2MPeNhLQgEN9YY/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706795107; c=relaxed/simple;
-	bh=FiYr1QSJ92WGJeIOhxuFzsYXtPUzZ/kEiinAXGIV594=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VcwCgdpJDaCLbLVe2NXbgZW0xvSAiVT/XiHWL0p95dye/hfsQN3A0L3aich9q2QdTevXyDYAJQHsNHbBSn3dfdwxQNx8m/6mhto0QwGekIfbsw7ssIEmsQpMphQKr0VKfR2QLokBYoVfkUGd2VSWJEJqITwhlLnogp042qeGqbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dzi8HOVF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10E5CC43394;
-	Thu,  1 Feb 2024 13:45:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706795107;
-	bh=FiYr1QSJ92WGJeIOhxuFzsYXtPUzZ/kEiinAXGIV594=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=dzi8HOVFxs2qcg9pm0FY6RmtXe9LW9mv5vv6J/lcs6PoV7aqDycOYbjnOVIs+qJV4
-	 qqtCA93UnKIQoXaAcFdwWMT/nmjLapeyYjPWyqCObBQQ/qtfszqeegVxCLZ2mTgs9V
-	 AEKQuK74LbM8ZWYa/UacPEGeS+NQ0uL+DDzTe2cx6RBBOV+pc1mifvZM0quIHPOaph
-	 I3M1GgZSjUdwuiv8j25EKw0COgkmmk/mieaM5c/WuHUc4GiY+tN8H/6LHcKeFqVEp+
-	 UgNxXusxPA+gwAsM0r6kqbf/ihsR8ngnNr2UUD4ro5bnQeUV3ieh2Eg5E3T9wvv2C5
-	 xNo4oV74bKKVA==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rVXNI-00GwPg-F8;
-	Thu, 01 Feb 2024 13:45:04 +0000
-Date: Thu, 01 Feb 2024 13:45:04 +0000
-Message-ID: <86le8470yn.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose
- <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 00/10] KVM: arm64: fix many kernel-doc warnings
-In-Reply-To: <618cb278-0b9f-4cc2-bfc6-bfcbefc79b69@infradead.org>
-References: <20240117230714.31025-1-rdunlap@infradead.org>
-	<618cb278-0b9f-4cc2-bfc6-bfcbefc79b69@infradead.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1706795202; c=relaxed/simple;
+	bh=suoI7qvddasF6ze11GbOGjsGkZl9FBFquOHwW330phg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZGBS2ivCa9C1rBeZHJJQv/xZ7Nw3p5CbaLBgGCnyMJZm3h8HfDdU+rCxWKqRdZ15tbqyEpMVVEZ6sSLEj6WDFAvBDTglGUknkT8bW77mH5sABvNN1UcVnUOhOpJIdQ2SINivszmUunLO1VmHjpFJMdkWwAkS6kjzeJ2yY07juSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LJFdmqgP; arc=none smtp.client-ip=209.85.221.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-4bd80b41cbdso342452e0c.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 05:46:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706795199; x=1707399999; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gYWYexFtoJ2yHocou+INVoUtLbF8tOuPvQoRlZwm2yg=;
+        b=LJFdmqgPnybJIumvPpfSejLkIEttxsn08suUHDAHBBpYlnfLY7vD/jAwsollH7N3F7
+         /3cqzMeD9q0atz+INW14/C+UpgvO/tSxQ3fo6LkcKvgvw4f2O2tNhFpqec8Fur9gMv3v
+         riRH9dgwwFJulRbu22STv/MYccrOLORyGL5QxMh/eUmOqx/CtxxU0kTQRX3Xlpy9U69n
+         YitNBjDNPl2IwwKRgG0yobZ+WUWalQ/yECvaisqyoop6BsFZXarkvBv0ii1pE/W0beLw
+         1xWK4Z/1h78PaQ7lFPIkIfmVGgl0xy/YC9sLuvBzw+MVlkobmg8Mtz/9WpmMqItaonPl
+         hcWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706795199; x=1707399999;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gYWYexFtoJ2yHocou+INVoUtLbF8tOuPvQoRlZwm2yg=;
+        b=RORbEy7kLMoMOAeXa82wLI+MavE7tVj6+0uyCUawTjM/pxUh2kBtjtU7JKL1fMWXBo
+         k1pyh9X9r+3zP/idryHVHTUU1eaNvCiBbT5Sq7nwfqMzHWCMhX75FGHsjmdh6kMSM9Jy
+         JKXWMYkq18hG4Ve1GL3pQC4n6bK0Cc2q7RxX2iHUEzPMJ87jJCrf19KBB5bsd7a/VZ5F
+         nsjuZABc4RjvCAiUQNLotBsm5oR21JNa06fkNJvGHb+KMt6PCZccfIdi9Y++diwIWjNL
+         /TlGxN1htkJXfFEuqd1G8m3pUkxlVSjdoh+0/fF/WyXUklBh7y3FBM0Wzzts4tDE3WBH
+         Srcg==
+X-Gm-Message-State: AOJu0YyvT1JfgkVMB3a8IYqOJoyVe8btcDpqemikWnaGnQ607fM9Acir
+	1VqumdmOr28jcAbwo0Ocok7qrny+WlXF5pUfoU5yf+Uyzgp2lTPL/XSuiHRDTsRtUOtZlB6i4zc
+	VEZa/btbfR0pNm5FG5lbGPgLKR/zlfsQrDHTB
+X-Google-Smtp-Source: AGHT+IG80kHJI3o0nh9nc37cFYAZfNgIoolcnGet/bLjzO8FQfWUZqIqvqwlp1tA8htBaza2xRqZOec13j3l2wPN17s=
+X-Received: by 2002:a05:6122:2a0d:b0:4b6:be94:acc6 with SMTP id
+ fw13-20020a0561222a0d00b004b6be94acc6mr5599008vkb.10.1706795199311; Thu, 01
+ Feb 2024 05:46:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: rdunlap@infradead.org, linux-kernel@vger.kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, catalin.marinas@arm.com, will@kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
+ <20240201122216.2634007-2-aleksander.lobakin@intel.com> <3f6df876-4b25-4dc8-bbac-ce678c428d86@app.fastmail.com>
+In-Reply-To: <3f6df876-4b25-4dc8-bbac-ce678c428d86@app.fastmail.com>
+From: Alexander Potapenko <glider@google.com>
+Date: Thu, 1 Feb 2024 14:45:58 +0100
+Message-ID: <CAG_fn=Wb81V+axD2eLLiE9SfdbJ8yncrkhuyw8b+6OBJJ_M9Sw@mail.gmail.com>
+Subject: Re: [PATCH net-next v5 01/21] lib/bitmap: add bitmap_{read,write}()
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>, 
+	Marcin Szycik <marcin.szycik@linux.intel.com>, Wojciech Drewek <wojciech.drewek@intel.com>, 
+	Yury Norov <yury.norov@gmail.com>, Andy Shevchenko <andy@kernel.org>, 
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>, Jiri Pirko <jiri@resnulli.us>, 
+	Ido Schimmel <idosch@nvidia.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+	Simon Horman <horms@kernel.org>, linux-btrfs@vger.kernel.org, dm-devel@redhat.com, 
+	ntfs3@lists.linux.dev, linux-s390@vger.kernel.org, 
+	"intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>, Netdev <netdev@vger.kernel.org>, 
+	linux-kernel@vger.kernel.org, Syed Nayyar Waris <syednwaris@gmail.com>, 
+	William Breathitt Gray <william.gray@linaro.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 01 Feb 2024 06:19:14 +0000,
-Randy Dunlap <rdunlap@infradead.org> wrote:
-> 
-> Hi,
+On Thu, Feb 1, 2024 at 2:23=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrote:
 >
-> Any comments on this series?
+> On Thu, Feb 1, 2024, at 13:21, Alexander Lobakin wrote:
+> > From: Syed Nayyar Waris <syednwaris@gmail.com>
+> >
+> > The two new functions allow reading/writing values of length up to
+> > BITS_PER_LONG bits at arbitrary position in the bitmap.
+> >
+> > The code was taken from "bitops: Introduce the for_each_set_clump macro=
+"
+> > by Syed Nayyar Waris with a number of changes and simplifications:
+> >  - instead of using roundup(), which adds an unnecessary dependency
+> >    on <linux/math.h>, we calculate space as BITS_PER_LONG-offset;
+> >  - indentation is reduced by not using else-clauses (suggested by
+> >    checkpatch for bitmap_get_value());
+> >  - bitmap_get_value()/bitmap_set_value() are renamed to bitmap_read()
+> >    and bitmap_write();
+> >  - some redundant computations are omitted.
+>
+> These functions feel like they should not be inline but are
+> better off in lib/bitmap.c given their length.
+>
+> As far as I can tell, the header ends up being included
+> indirectly almost everywhere, so just parsing these functions
+> likey adds not just dependencies but also compile time.
+>
+>      Arnd
 
-This is currently earmarked for 6.9.
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Removing particular functions from a header to reduce compilation time
+does not really scale.
+Do we know this case has a noticeable impact on the compilation time?
+If yes, maybe we need to tackle this problem in a different way (e.g.
+reduce the number of dependencies on it)?
 
