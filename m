@@ -1,92 +1,81 @@
-Return-Path: <linux-kernel+bounces-48559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34A2B845DDD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:56:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B02AD845DE0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:57:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD7FC295918
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:56:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFFDE1C25CC7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:57:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0454F5CBE;
-	Thu,  1 Feb 2024 16:56:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 769111AABD;
+	Thu,  1 Feb 2024 16:56:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="memqZ//+"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="CN+THqdt"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72271468C;
-	Thu,  1 Feb 2024 16:56:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BC4053AB
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 16:56:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706806575; cv=none; b=DkDtSzLCyJrO+De1cpWOhwW7fKiDZ7l6b3vQ28PXvuf9SY3Umc5+C/WqAGwmXVhs/ZJhjfZdq/ClSPRbDp/ewJg+IxMnl4gnYDASqTZhHihyXClAYFXIoOmjnoWNPvX3BUYc0vTmGP9qCKIFDnltKOXcjxgj3fDDCRTaugETpRg=
+	t=1706806618; cv=none; b=YeQOCkE5LfGM33Xur37DPFKGnl+S3Eq5SdWA/txjMmxa1VZpcQ/sipZMa+TSe79lQYE/1XT5Nts232eJTB9x0Aw8hrDHcgFRTvr42S+CS7Rrbaun9CBH4wDvK53gedv3BWRI+kCPPStbJVSN3n65KNHF6KqDG3+II7eNn+W9LUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706806575; c=relaxed/simple;
-	bh=z3Remv4QfHt/lpAm+q6drL+AsGVbzUcUothMsaLNhTM=;
+	s=arc-20240116; t=1706806618; c=relaxed/simple;
+	bh=1TyGcUJteUe3Ay1dqqyUUF9jwFYj9b1XBMtLo4KWxoY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C3gadKLrRiw0yQXgt0m4m1iVFdrfXtxwvf8/KEwVFkdKkGGZF0vvDjPFU7igDXTEVx8FSMuPhGal1f6cFKRpKXp+B0ATRKdqgMfdmCmcjxpNSFlbQYmvSwRu2DD+TwpcJBdmzm1vbG3iDIAF4LvIpWiwiRxgG3MTtPG6DMHh2qw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=memqZ//+; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33b0e5d1e89so811062f8f.0;
-        Thu, 01 Feb 2024 08:56:13 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=KSCrYJBgvEMkbz7kvp5IQ6TvjFUa52LyXh49m7K2e73RqG3qkXq5NN1w0fhvBX8szuF1Kd3OdCJ920yBeCX3L5zD4XcuRhok50MgeDiCjbcP1vuqmHTnZtZ1vtIHoNQxqqYEjutU0b01YA7tgNu4bqKL7ycHorpiMJPbjwt/ueM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=CN+THqdt; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-55f0367b15fso1545825a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 08:56:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706806571; x=1707411371; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1706806613; x=1707411413; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WRONz3zs2Ye8kp8mlNb2mkGa+oDmC9gtz59sMXR+/Aw=;
-        b=memqZ//+/GIPJydCbOq8OdYi+Lksvq5kWAaDqpiCbeLyvFCd86JcoawneAxshEg3Y4
-         XPJW44tqBm3ILm4Vp6s2lkGyIv9bkS9LvleXTbE+rlPB7CPZARYcYPKHJXiFKKzWSvBZ
-         BAcbj1DkAcoyrUozri9BcKmcNnzG9XZoCHTfHHhswaVr2fF2ss38oCiO8OvN+HBoj8JA
-         buoxLhakKMP6z8bD84J/qoHEDYTc6zjU5pUW0V7e05ZDZvIqnAyvcyBxTutjZpjyl4jr
-         s8g6M6w2eOLyeB3PU5LSAKNoh/KVdLgZvhR66sYJkknNBrvcxFqekbY4fgzRbEhcfaUm
-         6Xug==
+        bh=r2zWO0smLAGmtvPb3ivEDnsJI2xQS1BwMneE9ALhqNA=;
+        b=CN+THqdtgGdQOfM5E/5wk1o81nBvU8QwEvjH46WTrXjDN5IYOanck3YQecAdYzUyOJ
+         hwdgf+2D416R58Oz5I48DUi9WXN08g44cYvbs1N5OncKJecozqki5JEUWgwGP1ZSnzGD
+         /+mS2z5T/euPt9USxloBjpG7m/e3twwPhdhbQ7PqSKMjbBFn5K1/l00i3WRU3z6jMkuj
+         K1PORfGo4RDOurfuiOqsW20jM/Y8LZ1LVHdiGHjHllDYkC70b86Owxgqo0Amd9pQbLuW
+         76zYyQjg3y6tgTqY8DjpcC4fspCRC9E7xO8NUVOMOs4znHaTaFd683AIUiVrbWZA2ahZ
+         /How==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706806571; x=1707411371;
+        d=1e100.net; s=20230601; t=1706806613; x=1707411413;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WRONz3zs2Ye8kp8mlNb2mkGa+oDmC9gtz59sMXR+/Aw=;
-        b=lXxPj+RRrZqfCNnxqgdjJH18AMjEuirlH+jgEUVENYCvi6Gd+LZrSk0q6iTJWxwkz0
-         IcRBe/v/w7miCEzARvyPQDfJalSBEOikvPz55LwQZ6mSDE4/niECLxfJQAA2lMPPzS8f
-         WzxaBp/nt85zJXxFHwkWxhs/1E+/1fQ/cz9bnWtcIdQzEkgtAUJr7v07bGUdQnIScUjb
-         lP12HWba02yLrZeA+Q9/fCoQaLhE2ktqVUwY1V/inT11UqLiqaM2ekoyyeMlmXXPcugP
-         Cw+jZu+WIE+sxt5HYcXLUSS58TOqNW98HBueL8API9THli0ZlfA8u+eE161xMffiBVVd
-         94HQ==
-X-Gm-Message-State: AOJu0YxnGTKuz32+QmuSKk5OHETQVqRrmukEHlyfiw9J4m0t3JIR4W5e
-	Ieq+AjPxDQdfvW+ZesPJGjwT/DAoVA0bD2piKNyZjXu1F+kHpQvY
-X-Google-Smtp-Source: AGHT+IEN7piBAHgnsH6iF/KjuouX1TsTmXKCFnH6zypAeAmK3ksCuMdXsSBTTbmVGDAgLcth2+4FKg==
-X-Received: by 2002:a5d:64e2:0:b0:33b:17c5:f25a with SMTP id g2-20020a5d64e2000000b0033b17c5f25amr1723832wri.64.1706806571598;
-        Thu, 01 Feb 2024 08:56:11 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVeIhYc1bdHcoOq49k918ll9ufcHPwUS1uMRPCBVPg6NM0QHqmbl/8a0+Kc5D+nxToRxKb/os+NbNRaE3FUHYWb/AeDqmke6MYZm6AArQbY7vrqUj7uLw3vNSWx6DFnLUgeNkGzW2Ao9uLsQnWudVBvld+j30BEGZ2MuXDbFtxUTqRjKHi9RC704VM2/KdUOy3ZupHBL3YzIwvpQgO1f13eeixA8M0n3RAPQuyEqNV93YVjbDzeGvziclROkPQIo5M09LswlYi3yzOJnQ6sFvZYxGjG9mRMaJyNVS4S2wxF2fYiz521256/m6G9gEcqYIpHPBF3IFZbGsNq99Lz0nVA2S+xk7zuOjBL6gmHAglKGZ15hyiFj3FAJm9i9nQrXIlz2g==
-Received: from debian ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id ba15-20020a0560001c0f00b0033ae54cdd97sm14380311wrb.100.2024.02.01.08.56.10
+        bh=r2zWO0smLAGmtvPb3ivEDnsJI2xQS1BwMneE9ALhqNA=;
+        b=iSmc8YKb846KF1/3nkzi/UFhLh0+c/gWBO50IYuTO2y12msWFzDZzLGgnAh5LilQMv
+         iEnFew7nT74zvjWzeKrGAX8gMaqJyLchRniuM4wxr1RebSPYAc0uJYbvW2T5eFYvJGFo
+         2ZsLdQTGf7qeMcg0xHb1pafWFkWz4HzQkxPi2dYS5tIJ4h2tXBVZnfgN2mrrSj8jQKmR
+         QZeSK52kf0CgD9s/w5Ce2ODfdJZEU2swL8WvGwIIzOD1MTNO9l4a1HwxvcbaXMRzioN9
+         Fw0Q4pAgkhHOE/Q/QoiiZ6ec/u+iMEjo7qFvb378TLwezUNFNJ8p+0UX+xLIbkMl0aa+
+         wikg==
+X-Gm-Message-State: AOJu0YxPz5Rnq7iPxO3dKl2I9Kcgdnm3Mgd1oKA+ZgUZzrO/T0IC1QRV
+	uvH244/UoAPYzPS1fNWxKCmgLaZCk6tdd0+AQoPurnKdObnZdSVK5HbXww+zEGU=
+X-Google-Smtp-Source: AGHT+IFP9OOGaeXQkhAJVgUdAod4AclPuX+eiGYFpsJIL6p1CvCS3OpFzOMaQ7flfZO9FaI/0RZrDg==
+X-Received: by 2002:aa7:c353:0:b0:55f:41b8:7a2d with SMTP id j19-20020aa7c353000000b0055f41b87a2dmr3639683edr.32.1706806613356;
+        Thu, 01 Feb 2024 08:56:53 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWRyF/K4rE+1A+WEDZO9x9IqgaiXJHFX12WjuDps+gjNm6/LZVl2OGcWxVmQDZQxmdzDeyO1t+OPR6Ux0sTjbB0oQiCDRv3ikQfSWPwn3/3hV38bU/2qAQANfz5dkg/TkWLfWOJoTM1hF4VhTiUDSo7RpJz7UY=
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id i26-20020aa7c9da000000b005581573e251sm6980810edt.2.2024.02.01.08.56.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 08:56:11 -0800 (PST)
-Date: Thu, 1 Feb 2024 17:56:09 +0100
-From: Dimitri Fedrau <dima.fedrau@gmail.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Guenter Roeck <linux@roeck-us.net>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jean Delvare <jdelvare@suse.com>,
-	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH v5 net-next 08/13] net: phy: marvell-88q2xxx: add support
- for temperature sensor
-Message-ID: <20240201165609.GE48964@debian>
-References: <20240122212848.3645785-1-dima.fedrau@gmail.com>
- <20240122212848.3645785-9-dima.fedrau@gmail.com>
- <88a60be9-083b-4618-845c-6983bcad3540@roeck-us.net>
- <c9866a56-d82e-4a3d-b335-db22c0413416@lunn.ch>
- <a02c7451-8515-45d4-ae7b-9e64b03b5b38@roeck-us.net>
- <20240201162349.GC48964@debian>
- <b4fc0bc4-1585-4ae0-a980-10814e6d9ff6@lunn.ch>
+        Thu, 01 Feb 2024 08:56:53 -0800 (PST)
+Date: Thu, 1 Feb 2024 17:56:51 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v3 10/14] printk: ringbuffer: Skip non-finalized
+ records in panic
+Message-ID: <ZbvNUz326uZg6ogt@alley>
+References: <20231214214201.499426-1-john.ogness@linutronix.de>
+ <20231214214201.499426-11-john.ogness@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,38 +84,36 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b4fc0bc4-1585-4ae0-a980-10814e6d9ff6@lunn.ch>
+In-Reply-To: <20231214214201.499426-11-john.ogness@linutronix.de>
 
-Am Thu, Feb 01, 2024 at 05:47:21PM +0100 schrieb Andrew Lunn:
-> On Thu, Feb 01, 2024 at 05:23:49PM +0100, Dimitri Fedrau wrote:
-> > Am Thu, Feb 01, 2024 at 05:39:25AM -0800 schrieb Guenter Roeck:
-> > > On 2/1/24 05:27, Andrew Lunn wrote:
-> > > > > > +#ifdef CONFIG_HWMON
-> > > > > 
-> > > > > HWMON is tristate, so this may be problematic if the driver is built
-> > > > > into the kernel and hwmon is built as module.
-> > > > 
-> > > > There should be Kconfig in addition to this, e.g.
-> > > > 
-> > > > config MAXLINEAR_GPHY
-> > > >          tristate "Maxlinear Ethernet PHYs"
-> > > >          select POLYNOMIAL if HWMON
-> > > >          depends on HWMON || HWMON=n
-> > > >          help
-> > > >            Support for the Maxlinear GPY115, GPY211, GPY212, GPY215,
-> > > >            GPY241, GPY245 PHYs.
-> > > > 
-> > > > So its forced to being built in, or not built at all.
-> > > > 
-> > > 
-> > > Even then it should be "#if IS_ENABLED(HWMON)" in the code.
-> > > 
-> > >
-> > If using "#if IS_ENABLED(HWMON)" do I have to add the dependency in
-> > the KConfig file ? When looking at other PHY drivers, they do.
+On Thu 2023-12-14 22:47:57, John Ogness wrote:
+> Normally a reader will stop once reaching a non-finalized
+> record. However, when a panic happens, writers from other CPUs
+> (or an interrupted context on the panic CPU) may have been
+> writing a record and were unable to finalize it. The panic CPU
+> will reserve/commit/finalize its panic records, but these will
+> be located after the non-finalized records. This results in
+> panic() not flushing the panic messages.
 > 
-> Please follow what other drivers do. Its easy to break the build,
-> resulting is undefined symbols. What we have now works.
+> Extend _prb_read_valid() to skip over non-finalized records if
+> on the panic CPU.
+> 
+> Fixes: 896fbe20b4e2 ("printk: use the lockless ringbuffer")
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-Sure.
+Makes sense.
+
+The most interesting information from other CPUs are backtraces. But
+they should be finalized before reaching panic().
+trigger_all_cpu_backtrace() waits until all CPUs print the backtrace.
+
+In fact, it might be even useful because other CPUs might just spam
+the ring buffer with mess caused by the panic() situation.
+Messages which caused the panic() situation should be in the ring
+buffer before panic() gets called.
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+Best Regards,
+Petr
 
