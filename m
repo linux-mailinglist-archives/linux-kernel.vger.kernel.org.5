@@ -1,107 +1,138 @@
-Return-Path: <linux-kernel+bounces-48652-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48654-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3700E845F4D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:07:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 967DC845F5D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:08:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C77821F24075
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:07:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA4461C21E20
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:08:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 881E612FB3A;
-	Thu,  1 Feb 2024 18:02:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA5AD8564F;
+	Thu,  1 Feb 2024 18:03:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iBeRCQHw"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KNiOOtZ7"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BC5E74281
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 18:02:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F74963064;
+	Thu,  1 Feb 2024 18:03:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706810571; cv=none; b=a5KjEH2/snJgy9IdehMN2Z8JnFWtG8VLEhFqFGI2bi5rhuseEYcwvvey9cE+0Fbt19PVm2o08AyRcsqnTGwzzFs+4aNU6YFn7anJC9vKCTdisBJfItKvGjGb4knuVE1uyWsYf5aHoZOL9x+gJw70Ijx4ivqfFAhr5YCT9jt1PL0=
+	t=1706810638; cv=none; b=e1RygEiqbxGxwmSoAy7T2SG5TLvCDMIOmWKPpEtJIVn1y7V/gg2WI471iVbfT+Pa5+53rIvcLwd0Uwhxwg7C4Kn++UnfOcy8wW/Bl4Ig97MqZu/fToo4yz7FpWzQOwAWVao/YT5CoCnYtmbdPeRPqnP2OeU1t7LgjfSV6Lmu0cU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706810571; c=relaxed/simple;
-	bh=ColfYwGzOWxKPXerfApdGAeGET6bCQa3gNPmYycvkQM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Urt229891h4krMDSNhiH+5THN/NRg/m6B6KHSCbilsZAdv138IfwBbJ+e85k369lkfn1VZDfqObltgekQBTI1d5J6p2JrESICd5MyLgzj6TUM0umMjSu204fdRr8qQ4zgqgUsoZWByNIDWkbN5tz7fp1cGMBOKoNwNdJ7v7Y14s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iBeRCQHw; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6c2643a07so2048114276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 10:02:50 -0800 (PST)
+	s=arc-20240116; t=1706810638; c=relaxed/simple;
+	bh=ei3GU93TpcAtuwfzbvmohYvxmckdj+VwphSS7eolsSU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oJthlddWggC1yVFCf6WOe2ezskBzPklWYLQkhWu5f4kfyVIa+4PnmpIwpvMLEXheOWeRvL2aLKDfuhtVxNzlclMiJu60wFm8/8R17yyvvSQo/HBcuvEQKCaGwd80lKEvw1vX1lHWBPRer1MHaoYbOv230rhzb0ER6dDemiHUSOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KNiOOtZ7; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d04fb2f36bso13628291fa.2;
+        Thu, 01 Feb 2024 10:03:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706810569; x=1707415369; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vt7MU0bmv3DhhiQJ3wtJw9K+Dqd9x1ouKjCbyi3XDIo=;
-        b=iBeRCQHwnhng3F7xF2wvH9rngX7LXNNuPb4fIrcvbWP0PKEchzldpXqbtvENO0q2af
-         8ufDzTTB14ip4V47s2EbwMRCybDCocdBE8iYQwwmKv4HwL5EcHUqc89OZCg/CvwfD8eh
-         kdV+WzDrl41kQ++QUXTNQoGBaouklYy83LvdvLajTYBun6f5/VUhO0yF8VpX4BfyiZv/
-         gQ9Ueb8gYuFztOFz+6nmkX0sZfej2ov2Eb1vnoNKys5esCjsXIhUNR/fQAc8KxPlsnSs
-         aAbM2TNGdJ0OC8Oxjit+M7Yk0zABfE0dW5AoFvWQ+NH1td3UVxOA/kmUS7Mw529NX7tN
-         B08Q==
+        d=gmail.com; s=20230601; t=1706810634; x=1707415434; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hTAoHYeKQLtPBdjixfUnNuljkxxPtCdOxpFFRhJl/2Q=;
+        b=KNiOOtZ7Mz9h6rE+y5/ee9DcHRRNnvUVf6UdWpFykYHlug0zyu9JVub06MzMTXdC6z
+         cytZWE5HXpLaJfUc9gHfWihAYeUjSR7XJCYA+WOm9hydTKfiU+NS4qrZzFdQXFgfIb0B
+         Ts6qtfCFKCeQy0gbTRAnpmj1nxNsbqWLMxbiiJU3pRCoP/pTChU5phJRYuNFA1addXbC
+         yqnH8t3YoI6ok54CY4uY97z1ZjWH7wxAt0M4beDTNaU5Qzaqt5hTvFc2EhszzNFoNggi
+         RIJ9f1e0rQbR62nDLaupURSS3PTHZaE+2bR2K4F5nQ5YbM9hA7/SgWbiD7Abzr0P70pz
+         2xhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706810569; x=1707415369;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vt7MU0bmv3DhhiQJ3wtJw9K+Dqd9x1ouKjCbyi3XDIo=;
-        b=VQlnSYv5YguY33/LyRi6pOcaMh7jAlb+UyoKcr2EsAYF4BupnR0tY6A0XX2oU2ke4N
-         dWSUJMwtNSab568Li8FLQ4jRSqP7iNX6TeIsxNBLF2lVD/iQZzp/oh+Fb7Idh3k8ukMj
-         Phi0l2xa7yjjF89zB4jPZQlC8ivsteCgjYgFctTdJumKFDmJD5Rz8LA2riQTkD/ms2PJ
-         djM9AodsIBGacXseBLcHx2FxCqk0WCexRHvBtW0oL44Mx9At7I9SbyYu6lpcWu/vMiGQ
-         rQxQKFT0iIHr+TA+cW9G/KLgVFe5cjcq6q4zvit8DSRrugTMSxlABx07tCj3uQo0o6ak
-         jGTA==
-X-Gm-Message-State: AOJu0YwdrFUIWpXX3WDMzDoxZiV76mjVIHopxciluIhrG1o91Gsa3cGy
-	gBI6ghzc/X21eSSsX4uvLHrpUuA2by0JwBXzbSSr3udULIvqysBLaPtnZ/5FF+OfGG1ErE9hXyR
-	zog==
-X-Google-Smtp-Source: AGHT+IGoUgKcoa4GAi8Lw+GdpN5bAXMcZfSWEQrKdT61wiJMGMnkzYXnrDgYCKzRULVUjofcJPOdgJcRbDc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:13ce:b0:dc2:1bde:b7ed with SMTP id
- y14-20020a05690213ce00b00dc21bdeb7edmr1349889ybu.8.1706810569436; Thu, 01 Feb
- 2024 10:02:49 -0800 (PST)
-Date: Thu, 1 Feb 2024 10:02:47 -0800
-In-Reply-To: <20240201061505.2027804-1-dapeng1.mi@linux.intel.com>
+        d=1e100.net; s=20230601; t=1706810634; x=1707415434;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hTAoHYeKQLtPBdjixfUnNuljkxxPtCdOxpFFRhJl/2Q=;
+        b=SjkOh46HrT+Hp7PaP59trGDmq1sSY2Gpv2h+1K8zWnVAKlz8ot2q7udLVURRoxHwG+
+         bPP0drbLcUrAvbajYWEto1iTeAy49I4is8NsHLaYx0xSUIFTw2PdIpCm5+xtPfMcAIyN
+         DGIIQd17vRb3toEEcnT/qaNjdf29TzQGrt42zhcW+jq0yY+m7F26mnQyVKZ+33KCpPiA
+         Um8blJpBwbLRa7ZQHnIDbrCz5vi6MYYVSJW8ngHN/yOGoMFKWwLCxOH1AOlE14xHtpys
+         vKiM+lcL3BlH2LQdjPxiTXboU09ie44g6fFDFbdQrOkNlBpRnIZJCChAE8BLJHlR3XQo
+         NXjA==
+X-Gm-Message-State: AOJu0Yw6hAlh0TvANysBA1dE8VeC8orcU8GQUSsZM7mtL5MTBVVDFIwA
+	YtExibKYviojg8itBcharURVsKzgitsEqsSuJddmQSKJvaC62j9z9oGSvFv3b/kGZZu1mk7v0x0
+	BY+6i57zvhhpEKdfp/VXUit1/uh4=
+X-Google-Smtp-Source: AGHT+IG6aFTsoUrEMDYFANpK5HAl7Gn8TU4aWP4RDoIE0rQHqlzep51EeKVr0UR3GkDC6FxhKRvQUk8SgxCd4RvOjO8=
+X-Received: by 2002:a2e:b254:0:b0:2d0:506f:5c0a with SMTP id
+ n20-20020a2eb254000000b002d0506f5c0amr4357647ljm.9.1706810634318; Thu, 01 Feb
+ 2024 10:03:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240201061505.2027804-1-dapeng1.mi@linux.intel.com>
-Message-ID: <Zbvcx0A-Ln2sP6XA@google.com>
-Subject: Re: [PATCH] KVM: selftests: Test top-down slots event
-From: Sean Christopherson <seanjc@google.com>
-To: Dapeng Mi <dapeng1.mi@linux.intel.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Kan Liang <kan.liang@linux.intel.com>, Jim Mattson <jmattson@google.com>, 
-	Jinrong Liang <cloudliang@tencent.com>, Aaron Lewis <aaronlewis@google.com>, 
-	Dapeng Mi <dapeng1.mi@intel.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <bf90de00-4d6a-4440-b6a1-42ac9e358158@moroto.mountain>
+In-Reply-To: <bf90de00-4d6a-4440-b6a1-42ac9e358158@moroto.mountain>
+From: Steve French <smfrench@gmail.com>
+Date: Thu, 1 Feb 2024 12:03:43 -0600
+Message-ID: <CAH2r5mv-HdiM2zasyq1F-LN=kqD93EfKf+UMcnR+0_GNv3xB2Q@mail.gmail.com>
+Subject: Re: [PATCH] smb: client: Fix a double lock bug in smb2_reconnect()
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Shyam Prasad N <sprasad@microsoft.com>, Steve French <sfrench@samba.org>, 
+	Paulo Alcantara <pc@manguebit.com>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, Tom Talpey <tom@talpey.com>, 
+	linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 01, 2024, Dapeng Mi wrote:
-> Although the fixed counter 3 and the exclusive pseudo slots events is
-> not supported by KVM yet, the architectural slots event is supported by
-> KVM and can be programed on any GP counter. Thus add validation for this
-> architectural slots event.
-> 
-> Top-down slots event "counts the total number of available slots for an
-> unhalted logical processor, and increments by machine-width of the
-> narrowest pipeline as employed by the Top-down Microarchitecture
-> Analysis method." So suppose the measured count of slots event would be
-> always larger than 0.
+This (and a loosely related problem   were already fixed in an updated
+version of that patch (updated in cifs-2.6.git for-next yesterday);
+https://git.samba.org/?p=3Dsfrench/cifs-2.6.git;a=3Dcommit;h=3Dee36a3b345c4=
+33a846effcdcfba437c2298eeda5
 
-Please translate that into something non-perf folks can understand.  I know what
-a pipeline slot is, and I know a dictionary's definition of "available" is, but I
-still have no idea what this event actually counts.  In other words, I want a
-precise definition of exactly what constitutes an "available slot", in verbiage
-that anyone with basic understanding of x86 architectures can follow after reading
-the whitepaper[*], which is helpful for understanding the concepts, but doesn't
-crisply explain what this event counts.
 
-Examples of when a slot is available vs. unavailable would be extremely helpful.
+On Thu, Feb 1, 2024 at 6:19=E2=80=AFAM Dan Carpenter <dan.carpenter@linaro.=
+org> wrote:
+>
+> This goto will try to lock spin_lock(&ses->ses_lock) twice which will
+> lead to a deadlock.
+>
+> Fixes: 17525952fa83 ("cifs: make sure that channel scaling is done only o=
+nce")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> ---
+>  fs/smb/client/smb2pdu.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/smb/client/smb2pdu.c b/fs/smb/client/smb2pdu.c
+> index 2837fc4465a7..dcd3f6f08c7f 100644
+> --- a/fs/smb/client/smb2pdu.c
+> +++ b/fs/smb/client/smb2pdu.c
+> @@ -401,7 +401,7 @@ smb2_reconnect(__le16 smb2_command, struct cifs_tcon =
+*tcon,
+>
+>         spin_lock(&ses->ses_lock);
+>         if (ses->flags & CIFS_SES_FLAG_SCALE_CHANNELS)
+> -               goto skip_add_channels;
+> +               goto skip_add_channels_locked;
+>         ses->flags |=3D CIFS_SES_FLAG_SCALE_CHANNELS;
+>         spin_unlock(&ses->ses_lock);
+>
+> @@ -448,6 +448,7 @@ smb2_reconnect(__le16 smb2_command, struct cifs_tcon =
+*tcon,
+>
+>  skip_add_channels:
+>         spin_lock(&ses->ses_lock);
+> +skip_add_channels_locked:
+>         ses->flags &=3D ~CIFS_SES_FLAG_SCALE_CHANNELS;
+>         spin_unlock(&ses->ses_lock);
+>
+> --
+> 2.43.0
+>
+>
 
-[*] https://www.intel.com/content/www/us/en/docs/vtune-profiler/cookbook/2023-0/top-down-microarchitecture-analysis-method.html
+
+--=20
+Thanks,
+
+Steve
 
