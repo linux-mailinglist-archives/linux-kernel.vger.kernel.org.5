@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-48375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48376-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B6A4845B27
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:18:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BCD5845B2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:19:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9BCBBB28B58
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:18:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F5091C26E32
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:19:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 926ED626BD;
-	Thu,  1 Feb 2024 15:18:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF1B5779F2;
+	Thu,  1 Feb 2024 15:18:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AFvaswjG"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lesuJMSu"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 119AC1E894;
-	Thu,  1 Feb 2024 15:18:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D851F626A3;
+	Thu,  1 Feb 2024 15:18:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706800697; cv=none; b=L/TC+v+jJEMGSmv2cOG8XICPtLMKeVlgI1V/JW/6Vnw+eaPQA5ZKPgcX+1r0GqWZ2vs9pwRjAV2JEw2+H3iKpaA+I/bJpgkjhVzzCFAiM+Jwk1XyNfejS3B0RZ3Fe/XEHvV6oSKtY5+k+r2drzBn9QqgUkHASaPutRzm5pUDT7M=
+	t=1706800699; cv=none; b=eZ1z8If1zUJQA5ccE5Ei9zqEHJopahOdqTjesVh2uO+S9BaIdco0AHeC5AgCqUI27QnvD/4LC1zb/AqorojNdHiokepzYBUU7OQSBZKOVASoIhoQBRh7L8JShxYZ+s39mBj3g8D7eRPJ5LNJpf1EK6UAyQ6qRoNT6+0EGWX9XiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706800697; c=relaxed/simple;
-	bh=bggx5HzauvZU9OkSp9vlWgoNvtT+JuJSFKaHN79sbXE=;
+	s=arc-20240116; t=1706800699; c=relaxed/simple;
+	bh=Bl00NQENXqEm4pXlmgt1Yiiwk8vIc6KVi7lXc/n1j6c=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mHrV7vdhsL0aciDZnP65fs19Tevbr+KPTJtUrkvz0cREAtGpF9/687sBwY97VOCkKb5C7/rGqJEnhohQ/jYRmvIvjb7XwGYZKUkU4Q3TSz9WqxYpsj+ctyARdi13zRT2WbaJWK+y+t4L04kTrxbVhyNKIKASuDGgVjQEVfQXDVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AFvaswjG; arc=none smtp.client-ip=209.85.208.180
+	 MIME-Version; b=drKaKbS92BdabZUll5g/1WKzG1a7eCQ68ZDhAQv4uILgk3l8eukJ+Y/kGHlzOSiKCZru+2dwom98mMd7SfoT08bh42pUuEekEdzkz2VFw1adYGONFmGdhu1x6unAKKIgKZm9kvfeh1QEjdxJvLhtZokN+7hKpngGU6EngExCOFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lesuJMSu; arc=none smtp.client-ip=209.85.208.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cf4d2175b2so11956991fa.0;
-        Thu, 01 Feb 2024 07:18:15 -0800 (PST)
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2cf206e4d56so13536041fa.3;
+        Thu, 01 Feb 2024 07:18:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706800694; x=1707405494; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706800696; x=1707405496; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=q1Ibo8v/sTW9ZV+SHnIB5lIu7S/Dsq2pFigCp4Xf4aU=;
-        b=AFvaswjGdeTwS871I8B1Gi/qcyhFVGwsx7wHdVASDR+x86KQRylIM3v9jGqU0FoSYc
-         ElvT1vVMUGPI7jLqk3JOIPPuNLJ81ng/drunIZcQc05ow6Ojk2BKczWsFCfuusGsBEMk
-         0rkN+YId/JuFIVT/vQCuBJzwvAL4pQFbYQl1mMtCQvouPuj8TXsFTJwBnDPoLA09wcr1
-         EeSn9i/l4fnV+RGC4IJBMmnQO/cnyvnymipIznGH6wagcc7+0wsQO6wqqul/i88zfZuA
-         /VuSLzhWaai7wv1zFw1+qcfmN2RSqdOtwp6ys2UtpzsLM+n9zPg4pYEdsDmVOvzuyTA/
-         w0Ow==
+        bh=lodvHw/FwxJ4HaaqD63vKwSgnThs64bJ3+PDTf7WPII=;
+        b=lesuJMSuxm3a/aHhZ8GnwNbjPLeJh1SU6h887L3Z5uF/8bG+iMx5utWhMYwSFrBI5E
+         E5KI15gNXWMDz0TAFm1QTKaA+DMZxi9tzp+qMNiWKF6xmtFSIBh0snioZJS502vCJYDa
+         lu2ySZ4BECO5oZXediESr3mIfORUrH8BUvogR1ccBWy0NScW18qXLvOWcJLxfWH2q+u1
+         CgyZDWQYpkx1iIRG32PhqaFiAWzs7XmfaC2iMlaaUu2Iki0oxtyIVWJNsg5wZwhNXL4Q
+         6bAQJuCG8x2iEo6XfXm7GdnCWXMLgIIwyqtij2VGoDXTdiKUJTCylATLSjgoqDfP82fD
+         HZOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706800694; x=1707405494;
+        d=1e100.net; s=20230601; t=1706800696; x=1707405496;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=q1Ibo8v/sTW9ZV+SHnIB5lIu7S/Dsq2pFigCp4Xf4aU=;
-        b=rurByiMgb5kANPLicYUqrH+xyvb5OIdjawVwUQnjjC1IMFi5I8xLusNYm4dEmaASS9
-         Bc5MAEvU7EdSbkvtiHKzU2+qc1Z6Qdzyrti1RiwqbXMDtboA9ZASDM8e3NEcMI+fOweY
-         QvIAdrwQxk+aWKrY/HAofV2Doi7zpr3SlTPUfe321G0I6a7eaB5Fef3rGQs733XgwaB6
-         zFjkOuzIK5aeCLw8WiIJcpU1UdhARr3gkjVmUJOFXwbjYaZjOS8OzB3x2uwD9ElFnzV2
-         VycGB0/9QHYzyWkZVd/e3XFTbBeUVqsnw5RTeWGbCSDfMi13rmAFTLZ4WMDIHw1TFuKO
-         mZXw==
-X-Gm-Message-State: AOJu0Yw5xvjcgyOk9poWxB0RHwOVLlxM8QZgvyPW7QdgP1HNVZ9oamPF
-	lzogLBinFrdaTUSy1wY0T2j9WeUWUfd8isH4W9mk1mqu0qyutmv8
-X-Google-Smtp-Source: AGHT+IEnUDKRJCvh0O404vK+KTJexrkdslnQr7U492JDijOxUYHSjjMjS8Ry3M2j68SgRL3JSaK2Og==
-X-Received: by 2002:a2e:a405:0:b0:2d0:7c49:78bb with SMTP id p5-20020a2ea405000000b002d07c4978bbmr948215ljn.16.1706800693861;
-        Thu, 01 Feb 2024 07:18:13 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU+2E4bRvJIUKOwlaksewdMBpOsgPZ1q4uQ/XMsq01qOZRFF2OuNvcZ+V+MUicvCkAo5yo07Pw0ku2MGKOzg6+v6oIAmd2O20SO7SI7ntabXn+lEwpDvyOOSTS8xZhYCa2B9VcprnhmhISZTlqff7aesPxYzqIlgdTIucfWW66lx8+I9bxuiJq5QrCI3yvNs6ZriwPdy+HL+HBdCbOrcQkf1mC9GlW6TPC8r/ct6F3LBc0R9e2NCQ0NE1wpfqE0kuXWtHQzuWMFP39tEh+vpTViQz6Kq0KTmwg38HiFO6gV5WJAcYQnodSNFRPl8meFJm02runRmF/CVCdM4p8gRXgNAs8b1OGdsxtEM8SAVNw8fFnD7uILP+RVekG/vyrZa4aIW3Ipzoi/6VHOXMoVmh6Yf/YRP6liz6A6/ST3pUtyUCBQ+4lLP9DkZx2syQt0d6yWb+YVvYCRv957iibpeJ8p3eXl6M6UoYHo5hRvbbgnLT+Bki5ExlTkU6o7TMDdsYVOVdB2axzG3jNx2bVtcIneOXQekyKcFwlHND6ZHB4erM8wPT5YKst/T08+QMCnyBPDSmdzYeErGF9Q4NbB6IY7jRR3yVa+SsW8kFtVZHb+2HZzsICPKGJa
+        bh=lodvHw/FwxJ4HaaqD63vKwSgnThs64bJ3+PDTf7WPII=;
+        b=DAZWvUB7KztlreSvCID40amHaBDCtfoY4R+UtLgEsvRnMilOFKPlz3QBiZLJqlwjNx
+         hfUTSmEqEUBQPcafZouUg5JAxfzsWADQ5es+JmSGhg1bKrDqbvcT8K2xcvWTX8sndvul
+         23wcQfkkj8Bt16k4hkXKljFp5oLwVbS3cu3MzjLczs6yuedxDb2mf3PCdDwLGDAS7mnQ
+         82BDaT+K7wp4vXQPbS+ogSrGLyAgUrJGHb0A9F+H2DSOFaNfYeHVmX04WgQU6LLauaES
+         oR3ACs9bfD6xZkZ81md/YiGiRtXHZDRESrkW255fFspfrcYVVUTWkrztxnYvhVlvzHzd
+         csxw==
+X-Gm-Message-State: AOJu0YyR+GUzYxiMqyBDRWlveLIl/XfMp+0whunBZXEb0BNzM0SayeIn
+	C/ryQftlTvHWYilBmrA6RWtT+MOpgS8z0HTxiM45vjmamJ7QLVJt
+X-Google-Smtp-Source: AGHT+IGJWnzH/ut4VtYSd/gVIprYVbIRd/tYyZa7pPdPcxhl5kRAFX3qELo0+LC1UazYJF9G7NOYHg==
+X-Received: by 2002:a2e:a40f:0:b0:2cf:1033:c745 with SMTP id p15-20020a2ea40f000000b002cf1033c745mr1471029ljn.51.1706800695761;
+        Thu, 01 Feb 2024 07:18:15 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWFBK2nkDT2oq9LHPJu15t1S+WfoYHhZouoO0/Y9nxWoOmG60znQ5EbW2W31KZ31lBRFPlyLshe/WDbPj/fI6uuyBs5zAh6up1iOdRF7VBBvxLPO7vmvLexk4GpfpwV55ZBMDmneLat5vrR/DrOKa3Z1bujhQk57ellOGQpFbXcGykIuj6P0rB4RaaIhQmYxkfqYllKKvXg5tVjLDg2jL8+pC7uVLF3GPyifbM+tvgXflYeQpC3bjzcitYzla/tpRrsmmmKWlOhz7ZqQZWj3nWp+f5IIcfHaMdhlp5E539SA6IIALijJxSOvlneBYsjjSaFTl/pNR8TKJUD3kf1RcNFtg5NcAlATFUHSpmw8fOSwa/U/lajjfoyxb6fDQbhwv/UCkamgnKBIyTGmk/AGo2mitYQu3yRcdrpW6HL/m0StUi85pRx9A/GTB4+pHSXA3esMFkKU2Tc+SJOEt7zFAbIYYZ9nQECiEfXZEX6puuUsHPpcBO/WwjgaYV8pbz3mxjHgx8LzxREVKfqKMYs8OcOvcNhXCHMvQDh3Jo9i5fmS9jwKPoY/aPbN2h2RZkqJeWj2p+OCoCNRBBvBRXVNrIakdVEdH8iW/gMda25pxbBm/Su9IZ1pbCu
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id z9-20020a2e3509000000b002cdf37ee19dsm2437978ljz.7.2024.02.01.07.18.12
+        by smtp.googlemail.com with ESMTPSA id z9-20020a2e3509000000b002cdf37ee19dsm2437978ljz.7.2024.02.01.07.18.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 07:18:13 -0800 (PST)
+        Thu, 01 Feb 2024 07:18:15 -0800 (PST)
 From: Christian Marangi <ansuelsmth@gmail.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -86,9 +86,9 @@ To: "David S. Miller" <davem@davemloft.net>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-msm@vger.kernel.org
-Subject: [net-next PATCH v5 1/9] dt-bindings: net: document ethernet PHY package nodes
-Date: Thu,  1 Feb 2024 16:17:27 +0100
-Message-ID: <20240201151747.7524-2-ansuelsmth@gmail.com>
+Subject: [net-next PATCH v5 2/9] net: phy: add support for scanning PHY in PHY packages nodes
+Date: Thu,  1 Feb 2024 16:17:28 +0100
+Message-ID: <20240201151747.7524-3-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240201151747.7524-1-ansuelsmth@gmail.com>
 References: <20240201151747.7524-1-ansuelsmth@gmail.com>
@@ -100,90 +100,245 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Document ethernet PHY package nodes used to describe PHY shipped in
-bundle of 2-5 PHY. The special node describe a container of PHY that
-share common properties. This is a generic schema and PHY package
-should create specialized version with the required additional shared
-properties.
+Add support for scanning PHY in PHY packages nodes. PHY packages nodes
+are just container for actual PHY on the MDIO bus.
 
-Example are PHY packages that have some regs only in one PHY of the
-package and will affect every other PHY in the package, for example
-related to PHY interface mode calibration or global PHY mode selection.
+Their PHY address is defined as offset of the PHY package base address
+defined in DT. of_mdio_parse_addr_offset helper is introduced to
+validate the final address is correct.
 
-The PHY package node MUST declare the base address used by the PHY driver
-for global configuration by calculating the offsets of the global PHY
-based on the base address of the PHY package.
-
-Each reg of the PHYs defined in the PHY Package node is an offset of the
-PHY Package reg.
+mdio_bus.c and of_mdio.c is updated to now support and parse also
+PHY package subnote by checking if the node name match
+"ethernet-phy-package".
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
- .../bindings/net/ethernet-phy-package.yaml    | 55 +++++++++++++++++++
- 1 file changed, 55 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
+ drivers/net/mdio/of_mdio.c | 75 +++++++++++++++++++++++++++-----------
+ drivers/net/phy/mdio_bus.c | 44 +++++++++++++++++-----
+ include/linux/of_mdio.h    | 26 +++++++++++++
+ 3 files changed, 115 insertions(+), 30 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/ethernet-phy-package.yaml b/Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
-new file mode 100644
-index 000000000000..d7cdbb1a4b3e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
-@@ -0,0 +1,55 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/ethernet-phy-package.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/net/mdio/of_mdio.c b/drivers/net/mdio/of_mdio.c
+index 64ebcb6d235c..58b54c644f11 100644
+--- a/drivers/net/mdio/of_mdio.c
++++ b/drivers/net/mdio/of_mdio.c
+@@ -139,6 +139,54 @@ bool of_mdiobus_child_is_phy(struct device_node *child)
+ }
+ EXPORT_SYMBOL(of_mdiobus_child_is_phy);
+ 
++static int __of_mdiobus_parse_phys(struct mii_bus *mdio, struct device_node *np,
++				   int base_addr, bool *scanphys)
++{
++	struct device_node *child;
++	int addr, rc = 0;
 +
-+title: Ethernet PHY Package Common Properties
++	/* Loop over the child nodes and register a phy_device for each phy */
++	for_each_available_child_of_node(np, child) {
++		if (of_node_name_eq(child, "ethernet-phy-package")) {
++			rc = of_property_read_u32(child, "reg", &addr);
++			if (rc)
++				goto exit;
 +
-+maintainers:
-+  - Christian Marangi <ansuelsmth@gmail.com>
++			rc = __of_mdiobus_parse_phys(mdio, child, addr, scanphys);
++			if (rc && rc != -ENODEV)
++				goto exit;
 +
-+description:
-+  PHY packages are multi-port Ethernet PHY of the same family
-+  and each Ethernet PHY is affected by the global configuration
-+  of the PHY package.
++			continue;
++		}
 +
-+  Each reg of the PHYs defined in the PHY Package node is
-+  an offset of the PHY Package reg.
++		if (base_addr)
++			addr = of_mdio_parse_addr_offset(&mdio->dev, child, base_addr);
++		else
++			addr = of_mdio_parse_addr(&mdio->dev, child);
++		if (addr < 0) {
++			*scanphys = true;
++			continue;
++		}
 +
-+  Each Ethernet PHYs defined in the PHY package node is
-+  reachable in the MDIO bus at the address of the PHY
-+  Package offset of the Ethernet PHY reg.
++		if (of_mdiobus_child_is_phy(child))
++			rc = of_mdiobus_register_phy(mdio, child, addr);
++		else
++			rc = of_mdiobus_register_device(mdio, child, addr);
 +
-+properties:
-+  $nodename:
-+    pattern: "^ethernet-phy-package(@[a-f0-9]+)?$"
++		if (rc == -ENODEV)
++			dev_err(&mdio->dev,
++				"MDIO device at address %d is missing.\n",
++				addr);
++		else if (rc)
++			goto exit;
++	}
 +
-+  reg:
-+    minimum: 0
-+    maximum: 31
-+    description:
-+      The base ID number for the PHY package.
-+      Commonly the ID of the first PHY in the PHY package.
++	return 0;
++exit:
++	of_node_put(child);
++	return rc;
++}
 +
-+      Some PHY in the PHY package might be not defined but
-+      still occupy ID on the device (just not attached to
-+      anything) hence the PHY package reg might correspond
-+      to a not attached PHY (offset 0).
+ /**
+  * __of_mdiobus_register - Register mii_bus and create PHYs from the device tree
+  * @mdio: pointer to mii_bus structure
+@@ -180,25 +228,9 @@ int __of_mdiobus_register(struct mii_bus *mdio, struct device_node *np,
+ 		return rc;
+ 
+ 	/* Loop over the child nodes and register a phy_device for each phy */
+-	for_each_available_child_of_node(np, child) {
+-		addr = of_mdio_parse_addr(&mdio->dev, child);
+-		if (addr < 0) {
+-			scanphys = true;
+-			continue;
+-		}
+-
+-		if (of_mdiobus_child_is_phy(child))
+-			rc = of_mdiobus_register_phy(mdio, child, addr);
+-		else
+-			rc = of_mdiobus_register_device(mdio, child, addr);
+-
+-		if (rc == -ENODEV)
+-			dev_err(&mdio->dev,
+-				"MDIO device at address %d is missing.\n",
+-				addr);
+-		else if (rc)
+-			goto unregister;
+-	}
++	rc = __of_mdiobus_parse_phys(mdio, np, 0, &scanphys);
++	if (rc)
++		goto unregister;
+ 
+ 	if (!scanphys)
+ 		return 0;
+@@ -227,15 +259,16 @@ int __of_mdiobus_register(struct mii_bus *mdio, struct device_node *np,
+ 				if (!rc)
+ 					break;
+ 				if (rc != -ENODEV)
+-					goto unregister;
++					goto put_unregister;
+ 			}
+ 		}
+ 	}
+ 
+ 	return 0;
+ 
+-unregister:
++put_unregister:
+ 	of_node_put(child);
++unregister:
+ 	mdiobus_unregister(mdio);
+ 	return rc;
+ }
+diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+index afbad1ad8683..7737d0101d7b 100644
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -459,20 +459,33 @@ EXPORT_SYMBOL(of_mdio_find_bus);
+  * found, set the of_node pointer for the mdio device. This allows
+  * auto-probed phy devices to be supplied with information passed in
+  * via DT.
++ * If a PHY package is found, PHY is searched also there.
+  */
+-static void of_mdiobus_link_mdiodev(struct mii_bus *bus,
+-				    struct mdio_device *mdiodev)
++static int of_mdiobus_find_phy(struct device *dev, struct mdio_device *mdiodev,
++			       struct device_node *np, int base_addr)
+ {
+-	struct device *dev = &mdiodev->dev;
+ 	struct device_node *child;
+ 
+-	if (dev->of_node || !bus->dev.of_node)
+-		return;
++	for_each_available_child_of_node(np, child) {
++		int addr, ret;
+ 
+-	for_each_available_child_of_node(bus->dev.of_node, child) {
+-		int addr;
++		if (of_node_name_eq(child, "ethernet-phy-package")) {
++			ret = of_property_read_u32(child, "reg", &addr);
++			if (ret)
++				return ret;
+ 
+-		addr = of_mdio_parse_addr(dev, child);
++			if (!of_mdiobus_find_phy(dev, mdiodev, child, addr)) {
++				of_node_put(child);
++				return 0;
++			}
 +
-+  '#address-cells':
-+    const: 1
++			continue;
++		}
 +
-+  '#size-cells':
-+    const: 0
++		if (base_addr)
++			addr = of_mdio_parse_addr_offset(dev, child, base_addr);
++		else
++			addr = of_mdio_parse_addr(dev, child);
+ 		if (addr < 0)
+ 			continue;
+ 
+@@ -481,9 +494,22 @@ static void of_mdiobus_link_mdiodev(struct mii_bus *bus,
+ 			/* The refcount on "child" is passed to the mdio
+ 			 * device. Do _not_ use of_node_put(child) here.
+ 			 */
+-			return;
++			return 0;
+ 		}
+ 	}
 +
-+patternProperties:
-+  ^ethernet-phy(@[a-f0-9]+)?$:
-+    $ref: ethernet-phy.yaml#
++	return -ENODEV;
++}
 +
-+required:
-+  - reg
-+  - '#address-cells'
-+  - '#size-cells'
++static void of_mdiobus_link_mdiodev(struct mii_bus *bus,
++				    struct mdio_device *mdiodev)
++{
++	struct device *dev = &mdiodev->dev;
 +
-+additionalProperties: true
++	if (dev->of_node || !bus->dev.of_node)
++		return;
++
++	of_mdiobus_find_phy(dev, mdiodev, bus->dev.of_node, 0);
+ }
+ #else /* !IS_ENABLED(CONFIG_OF_MDIO) */
+ static inline void of_mdiobus_link_mdiodev(struct mii_bus *mdio,
+diff --git a/include/linux/of_mdio.h b/include/linux/of_mdio.h
+index 8a52ef2e6fa6..8566df2afbe6 100644
+--- a/include/linux/of_mdio.h
++++ b/include/linux/of_mdio.h
+@@ -72,6 +72,27 @@ static inline int of_mdio_parse_addr(struct device *dev,
+ 	return addr;
+ }
+ 
++static inline int of_mdio_parse_addr_offset(struct device *dev,
++					    const struct device_node *np,
++					    u16 offset)
++{
++	int addr;
++
++	addr = of_mdio_parse_addr(dev, np);
++	if (addr < 0)
++		return addr;
++
++	/* Validate final address with offset */
++	addr += offset;
++	if (addr >= PHY_MAX_ADDR) {
++		dev_err(dev, "%s PHY address offset %i is too large\n",
++			np->full_name, addr);
++		return -EINVAL;
++	}
++
++	return addr;
++}
++
+ #else /* CONFIG_OF_MDIO */
+ static inline bool of_mdiobus_child_is_phy(struct device_node *child)
+ {
+@@ -130,6 +151,11 @@ static inline int of_mdio_parse_addr(struct device *dev,
+ {
+ 	return -ENOSYS;
+ }
++static inline int of_mdio_parse_addr_offset(struct device *dev,
++					    const struct device_node *np)
++{
++	return -ENOSYS;
++}
+ static inline int of_phy_register_fixed_link(struct device_node *np)
+ {
+ 	return -ENOSYS;
 -- 
 2.43.0
 
