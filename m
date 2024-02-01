@@ -1,166 +1,285 @@
-Return-Path: <linux-kernel+bounces-49002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F2B184648B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:37:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C04E984648E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:37:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F1A8B20BF1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:37:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6830A28B309
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:37:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D4DA47F5B;
-	Thu,  1 Feb 2024 23:37:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF69147F5B;
+	Thu,  1 Feb 2024 23:37:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="jKsS7RJf"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YEAFKojo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA9B1405FC
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 23:37:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE15B4120F;
+	Thu,  1 Feb 2024 23:37:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706830637; cv=none; b=cw9I/0XkCMJbNM9C3oAr2NnRXD2PTwcqiWvGo+VeB8NKzGByi5jO4qYRfGIyPTkU3LUMWu2RCnsvEqwFIvKyYxIWmfk44XTSmV33bf6NC2XC4OD5kNaXAeZ+bQix2VP3K2+qQnhS6+uHeQpuehWoTSSN9Jmr8OyG73yVTeoGSp8=
+	t=1706830670; cv=none; b=LnwxetgoCCxhNsTd7gXpGf+orevj9GvfhWinbVEgoWP8UCF6Lxk4fla/3mfSuuXna3AoLVLGLyRodLV8A1XXa7bnR2SGTehpuVxXcKLZBzgwBOGqC1j8T3DLT8wyGwU3H55lzZm5K/va++p+k8h/VzlknH/JOXb0QDaALzS9Ck8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706830637; c=relaxed/simple;
-	bh=72DVGZsPCwexZxLU2zcYfw3TYZY+hy7mlHmIPt0qEn4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PDpKQd/8xTgNSFAQO65EeBP4eAo8iBdNSWnFI4cYAZmr7wMF60B+9ycz+Vowwn3GT1bmmCJISBkcNNgDDFNm1R8yXbW/CLiZk81QiWT2bDLzVwrvzalPHco3HEczr7huW0+8IweQHdUq6GboD45YD8GgSerKlgWAVBH5c7tnhaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com; spf=pass smtp.mailfrom=arista.com; dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b=jKsS7RJf; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40ef6bbb61fso12961785e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 15:37:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1706830634; x=1707435434; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OzbcPdwB7/6WmKWK5IMLm0VrY4vYJq2nVK95Czw1I8U=;
-        b=jKsS7RJf92MdORx6jkINA0pOuDH96sV9qqJ7+Nl8R0IPCVr1x3wkKq96MEdikuVFZD
-         GWyMYn6mOiv10RGVQKZAzxhz+NuvS6B5AL3orNd+0EcCymq8mI2XXQHjfiYBTe8aLvrt
-         9yOVm3Zubm3VrX1byZ6ACJ9DuOruCWIXAU+MpzabYRasExMAx3OI6Hp3QWmMI5Fexw4P
-         uYKvaR0qG6lN3yBOSmJmlZs/DgCLMB0j2EVvuD32S3FNQkJMMEzTiAYm9Zd2a8eIDcV5
-         tl8s5OxTfXlA5vof/DWoKhdQZ39ncEBVVOqY1lOkBvnogO0eJ+XlrrDoQBEp7vQlorNd
-         y4Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706830634; x=1707435434;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OzbcPdwB7/6WmKWK5IMLm0VrY4vYJq2nVK95Czw1I8U=;
-        b=vfeuxpxa/07nr+RUpbnR6mQT63ub7r+9t5Yj0cfgyZLFUoriLhrt04klJE1GOH5dUc
-         K3bukFQhnb4ZpLepcfum4m71gyLPZy7V9+HcZp0gOQetFx9Jj5uOSIoA9N4b4tqrcPAl
-         k28vIqqEMKGN/UnPMNR55Y+pATjym8+cCF7Q9i/K6oRbuukI2NSs3h1tKcK/qwQEiLpm
-         CxUboxjhz32otblbu/JWpXSaOMuG2/lby+YVvaHJYofUpjw4+qVXmY4xD6tvTRmUQxgu
-         QycNvDxbJ7Gbmh3KO6eRj+QkrAf/HkxLTIkRRhBa19JMFZIopCHHlDdfpUqn9aVfy6DI
-         EUiw==
-X-Gm-Message-State: AOJu0YxfQOetxPDwBBzOCbYJ6ab73zXObCpZvt6G6yoywyxYjef3J5xZ
-	GkYXKh6a2UL4slhBCvoaJKf2JQAbZVy9gZqzNx3s8SlisldVM1HxdyWVVdq0+g==
-X-Google-Smtp-Source: AGHT+IEBgyqNdcx7X4WjzGqORG4raBezxBSjVm4nh7egvHo46furQbZLnJchD5Nv8rGb+PkiF1vPTw==
-X-Received: by 2002:a05:600c:4fd2:b0:40e:f693:94dc with SMTP id o18-20020a05600c4fd200b0040ef69394dcmr303299wmq.11.1706830634198;
-        Thu, 01 Feb 2024 15:37:14 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCX/4prkdBFWttbX70piivEYb9na7iVpUkyQ7exA66ZROlVNizRygGmPAtt9loGk78LM7B+Lc3o1RT3X2apq8dM7qXD5jeF+uT3P26Fyoh3R1ZGktqNeg6Pjq9XUb8lNftXiHxKypR70EspiKY1GIefZqFeCNYmLBsl+hxUUuqWOKmrpJPcK7LA256N8xgYaIEZqhzgVzEv0sUrDWPnI9JS54xtakziQM98TzdQmTT0+G0fzQ9BCsf4hxQAOXxA9O9G+y3RFBbxFtUkVYiA+m6MhAIUSLWFHUEPNfG33kV5dczA4sfx1t3qY4WxOVhYISufKmo1UgvP6jnubOwGsKuCEPzZO5ZY/ybO3qgIv
-Received: from [10.83.37.178] ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id u16-20020a05600c19d000b0040fc4fa15f4sm631571wmq.36.2024.02.01.15.37.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 15:37:13 -0800 (PST)
-Message-ID: <a1ac7a6e-4447-4476-8fb7-fb5f0d7ec979@arista.com>
-Date: Thu, 1 Feb 2024 23:37:06 +0000
+	s=arc-20240116; t=1706830670; c=relaxed/simple;
+	bh=zeLTxssbzif5e1MXLU8fnbuHnEx1Yo+J1kOsZzbJ9VE=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=ubxV9q+WrzgQbZkyFeRmuVbsfcvNBZdNxnTbH0PIPHSF240ECePUPURHDe/7LT+nffg/Hdee1baCBI5bkozytVv054wZqbXlIZ+qJR00eiRI+MvN28e1qu7JiPDlpR6H4OEI6t3aCnwb6DoYR+/NEyaVWqXlvOCOCL24FIh4PwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YEAFKojo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28EFDC433C7;
+	Thu,  1 Feb 2024 23:37:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706830670;
+	bh=zeLTxssbzif5e1MXLU8fnbuHnEx1Yo+J1kOsZzbJ9VE=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=YEAFKojozU8ytSUk0wufLfNEnhJ+R7VUFDwFHmdNwnVpGE91eIjqYXzr2jZHAQi5+
+	 0ZbAoeY6GswLvDB3l9iJYYPXNXIJRS+z1UH9VtAILCjd0FsnXhyBKItDHPR2yo8yjk
+	 pCLMMTyenMbx/baTOmMeLkQamgJZUaxVGqe9f/tzv0bh1fEX3p74lO65Kd1eyYF4g9
+	 +iFNg5Nf2HzVLNZRcz742miMvf2GxNsiqC8SpAb7rvQ4PivX+fophqVB3FFSsGE97r
+	 97DJWuQNH2PV/3kfblpOHUhd3PO/hCkOPuyl0oHXPV+sCEA3zCUyD7QJaqTlkAKQby
+	 Um2Xl41Z+Ya9g==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/3] selftests/net: A couple of typos fixes in
- key-management/rst tests
-Content-Language: en-US
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Shuah Khan <shuah@kernel.org>, Dmitry Safonov <0x7f454c46@gmail.com>,
- Mohammad Nassiri <mnassiri@ciena.com>, Simon Horman <horms@kernel.org>,
- netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240130-tcp-ao-test-key-mgmt-v2-0-d190430a6c60@arista.com>
- <20240131163630.31309ee0@kernel.org>
- <e88d5133-94a9-42e7-af7f-3086a6a3da7c@arista.com>
- <20240201132153.4d68f45e@kernel.org>
- <44d893b4-10b0-4876-bbf7-f6a81940b300@arista.com>
-From: Dmitry Safonov <dima@arista.com>
-In-Reply-To: <44d893b4-10b0-4876-bbf7-f6a81940b300@arista.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Date: Fri, 02 Feb 2024 01:37:44 +0200
+Message-Id: <CYU4Z2HB9QTM.27NW3GSTRPXCM@suppilovahvero>
+Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+ <zhanb@microsoft.com>, <anakrish@microsoft.com>,
+ <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
+ <chrisyan@microsoft.com>
+Subject: Re: [PATCH v8 07/15] x86/sgx: Expose sgx_reclaim_pages() for cgroup
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>,
+ <dave.hansen@linux.intel.com>, <tj@kernel.org>, <mkoutny@suse.com>,
+ <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+ <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+ <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+ <sohil.mehta@intel.com>
+X-Mailer: aerc 0.15.2
+References: <20240130020938.10025-1-haitao.huang@linux.intel.com>
+ <20240130020938.10025-8-haitao.huang@linux.intel.com>
+In-Reply-To: <20240130020938.10025-8-haitao.huang@linux.intel.com>
 
-On 2/1/24 22:25, Dmitry Safonov wrote:
-> Hi Jakub,
-> 
-> On 2/1/24 21:21, Jakub Kicinski wrote:
->> On Thu, 1 Feb 2024 00:50:46 +0000 Dmitry Safonov wrote:
->>> Please, let me know if there will be other issues with tcp-ao tests :)
->>>
->>> Going to work on tracepoints and some other TCP-AO stuff for net-next.
->>
->> Since you're being nice and helpful I figured I'll try testing TCP-AO
->> with debug options enabled :) (kernel/configs/debug.config and
->> kernel/configs/x86_debug.config included),
-> 
-> Haha :)
-> 
->> that slows things down 
->> and causes a bit of flakiness in unsigned-md5-* tests:
->>
->> https://netdev.bots.linux.dev/flakes.html?br-cnt=75&tn-needle=tcp-ao
->>
->> This has links to outputs:
->> https://netdev.bots.linux.dev/contest.html?executor=vmksft-tcp-ao-dbg&pass=0
->>
->> If it's a timing thing - FWIW we started exporting
->> KSFT_MACHINE_SLOW=yes on the slow runners.
-> 
-> I think, I know what happens here:
-> 
-> # ok 8 AO server (AO_REQUIRED): AO client: counter TCPAOGood increased 4
-> => 6
-> # ok 9 AO server (AO_REQUIRED): unsigned client
-> # ok 10 AO server (AO_REQUIRED): unsigned client: counter TCPAORequired
-> increased 1 => 2
-> # not ok 11 AO server (AO_REQUIRED): unsigned client: Counter
-> netns_ao_good was not expected to increase 7 => 8
-> 
-> for each of tests the server listens at a new port, but re-uses the same
-> namespaces+veth. If the node/machine is quite slow, I guess a segment
-> might have been retransmitted and the test that initiated it had already
-> finished.
-> And as result, the per-namespace counters are incremented, which makes
-> the test fail (IOW, the test expects all segments in ns being dropped).
-> 
-> So, I should do one of the options:
-> 
-> 1. relax per-namespace checks (the per-socket and per-key counters are
->    checked)
-> 2. unshare(net) + veth setup for each test
-> 3. split the selftest on smaller ones (as they create new net-ns in
->    initialization)
+On Tue Jan 30, 2024 at 4:09 AM EET, Haitao Huang wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>
+> Each EPC cgroup will have an LRU structure to track reclaimable EPC pages=
+.
+> When a cgroup usage reaches its limit, the cgroup needs to reclaim pages
+> from its LRU or LRUs of its descendants to make room for any new
+> allocations.
+>
+> To prepare for reclamation per cgroup, expose the top level reclamation
+> function, sgx_reclaim_pages(), in header file for reuse. Add a parameter
+> to the function to pass in an LRU so cgroups can pass in different
+> tracking LRUs later.  Add another parameter for passing in the number of
+> pages to scan and make the function return the number of pages reclaimed
+> as a cgroup reclaimer may need to track reclamation progress from its
+> descendants, change number of pages to scan in subsequent calls.
+>
+> Create a wrapper for the global reclaimer, sgx_reclaim_pages_global(),
+> to just call this function with the global LRU passed in. When
+> per-cgroup LRU is added later, the wrapper will perform global
+> reclamation from the root cgroup.
+>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Co-developed-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> ---
+> V8:
+> - Use width of 80 characters in text paragraphs. (Jarkko)
+>
+> V7:
+> - Reworked from patch 9 of V6, "x86/sgx: Restructure top-level EPC reclai=
+m
+> function". Do not split the top level function (Kai)
+> - Dropped patches 7 and 8 of V6.
+> ---
+>  arch/x86/kernel/cpu/sgx/main.c | 53 +++++++++++++++++++++++-----------
+>  arch/x86/kernel/cpu/sgx/sgx.h  |  1 +
+>  2 files changed, 37 insertions(+), 17 deletions(-)
+>
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/mai=
+n.c
+> index a131aa985c95..4f5824c4751d 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -286,11 +286,13 @@ static void sgx_reclaimer_write(struct sgx_epc_page=
+ *epc_page,
+>  	mutex_unlock(&encl->lock);
+>  }
+> =20
+> -/*
+> - * Take a fixed number of pages from the head of the active page pool an=
+d
+> - * reclaim them to the enclave's private shmem files. Skip the pages, wh=
+ich have
+> - * been accessed since the last scan. Move those pages to the tail of ac=
+tive
+> - * page pool so that the pages get scanned in LRU like fashion.
+> +/**
+> + * sgx_reclaim_pages() - Reclaim a fixed number of pages from an LRU
+> + *
+> + * Take a fixed number of pages from the head of a given LRU and reclaim=
+ them to
+> + * the enclave's private shmem files. Skip the pages, which have been ac=
+cessed
+> + * since the last scan. Move those pages to the tail of the list so that=
+ the
+> + * pages get scanned in LRU like fashion.
+>   *
+>   * Batch process a chunk of pages (at the moment 16) in order to degrade=
+ amount
+>   * of IPI's and ETRACK's potentially required. sgx_encl_ewb() does degra=
+de a bit
+> @@ -298,8 +300,13 @@ static void sgx_reclaimer_write(struct sgx_epc_page =
+*epc_page,
+>   * + EWB) but not sufficiently. Reclaiming one page at a time would also=
+ be
+>   * problematic as it would increase the lock contention too much, which =
+would
+>   * halt forward progress.
+> + *
+> + * @lru:	The LRU from which pages are reclaimed.
+> + * @nr_to_scan: Pointer to the target number of pages to scan, must be l=
+ess than
+> + *		SGX_NR_TO_SCAN.
+> + * Return:	Number of pages reclaimed.
+>   */
+> -static void sgx_reclaim_pages(void)
+> +unsigned int sgx_reclaim_pages(struct sgx_epc_lru_list *lru, unsigned in=
+t *nr_to_scan)
+>  {
+>  	struct sgx_epc_page *chunk[SGX_NR_TO_SCAN];
+>  	struct sgx_backing backing[SGX_NR_TO_SCAN];
+> @@ -310,10 +317,10 @@ static void sgx_reclaim_pages(void)
+>  	int ret;
+>  	int i;
+> =20
+> -	spin_lock(&sgx_global_lru.lock);
+> -	for (i =3D 0; i < SGX_NR_TO_SCAN; i++) {
+> -		epc_page =3D list_first_entry_or_null(&sgx_global_lru.reclaimable,
+> -						    struct sgx_epc_page, list);
+> +	spin_lock(&lru->lock);
+> +
+> +	for (; *nr_to_scan > 0; --(*nr_to_scan)) {
+> +		epc_page =3D list_first_entry_or_null(&lru->reclaimable, struct sgx_ep=
+c_page, list);
+>  		if (!epc_page)
+>  			break;
+> =20
+> @@ -328,7 +335,8 @@ static void sgx_reclaim_pages(void)
+>  			 */
+>  			epc_page->flags &=3D ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
+>  	}
+> -	spin_unlock(&sgx_global_lru.lock);
+> +
+> +	spin_unlock(&lru->lock);
+> =20
+>  	for (i =3D 0; i < cnt; i++) {
+>  		epc_page =3D chunk[i];
+> @@ -351,9 +359,9 @@ static void sgx_reclaim_pages(void)
+>  		continue;
+> =20
+>  skip:
+> -		spin_lock(&sgx_global_lru.lock);
+> -		list_add_tail(&epc_page->list, &sgx_global_lru.reclaimable);
+> -		spin_unlock(&sgx_global_lru.lock);
+> +		spin_lock(&lru->lock);
+> +		list_add_tail(&epc_page->list, &lru->reclaimable);
+> +		spin_unlock(&lru->lock);
+> =20
+>  		kref_put(&encl_page->encl->refcount, sgx_encl_release);
+> =20
+> @@ -366,6 +374,7 @@ static void sgx_reclaim_pages(void)
+>  			sgx_reclaimer_block(epc_page);
+>  	}
+> =20
+> +	ret =3D 0;
+>  	for (i =3D 0; i < cnt; i++) {
+>  		epc_page =3D chunk[i];
+>  		if (!epc_page)
+> @@ -378,7 +387,10 @@ static void sgx_reclaim_pages(void)
+>  		epc_page->flags &=3D ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
+> =20
+>  		sgx_free_epc_page(epc_page);
+> +		ret++;
+>  	}
+> +
+> +	return (unsigned int)ret;
+>  }
+> =20
+>  static bool sgx_should_reclaim(unsigned long watermark)
+> @@ -387,6 +399,13 @@ static bool sgx_should_reclaim(unsigned long waterma=
+rk)
+>  	       !list_empty(&sgx_global_lru.reclaimable);
+>  }
+> =20
+> +static void sgx_reclaim_pages_global(void)
+> +{
+> +	unsigned int nr_to_scan =3D SGX_NR_TO_SCAN;
+> +
+> +	sgx_reclaim_pages(&sgx_global_lru, &nr_to_scan);
+> +}
+> +
+>  /*
+>   * sgx_reclaim_direct() should be called (without enclave's mutex held)
+>   * in locations where SGX memory resources might be low and might be
+> @@ -395,7 +414,7 @@ static bool sgx_should_reclaim(unsigned long watermar=
+k)
+>  void sgx_reclaim_direct(void)
+>  {
+>  	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
+> -		sgx_reclaim_pages();
+> +		sgx_reclaim_pages_global();
+>  }
+> =20
+>  static int ksgxd(void *p)
+> @@ -418,7 +437,7 @@ static int ksgxd(void *p)
+>  				     sgx_should_reclaim(SGX_NR_HIGH_PAGES));
+> =20
+>  		if (sgx_should_reclaim(SGX_NR_HIGH_PAGES))
+> -			sgx_reclaim_pages();
+> +			sgx_reclaim_pages_global();
+> =20
+>  		cond_resched();
+>  	}
+> @@ -604,7 +623,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, =
+bool reclaim)
+>  		 * Need to do a global reclamation if cgroup was not full but free
+>  		 * physical pages run out, causing __sgx_alloc_epc_page() to fail.
+>  		 */
+> -		sgx_reclaim_pages();
+> +		sgx_reclaim_pages_global();
+>  		cond_resched();
+>  	}
+> =20
+> diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.=
+h
+> index 0e99e9ae3a67..2593c013d091 100644
+> --- a/arch/x86/kernel/cpu/sgx/sgx.h
+> +++ b/arch/x86/kernel/cpu/sgx/sgx.h
+> @@ -110,6 +110,7 @@ void sgx_reclaim_direct(void);
+>  void sgx_mark_page_reclaimable(struct sgx_epc_page *page);
+>  int sgx_unmark_page_reclaimable(struct sgx_epc_page *page);
+>  struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim);
+> +unsigned int sgx_reclaim_pages(struct sgx_epc_lru_list *lru, unsigned in=
+t *nr_to_scan);
+> =20
+>  void sgx_ipi_cb(void *info);
+> =20
 
-Actually, I think there may be an easier fix:
 
-4. Make sure that client close()s TCP-AO first, making it twsk.
-   And also make sure that net-ns counters read post server's close().
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-Will do this, let's see if this fixes the flakiness on the netdev bot :)
-
-> I'd probably prefer (2), albeit it slows down that slow machine even
-> more, but I don't think creating 2 net-ns + veth pair per each test
-> would add a lot more overhead even on some rpi board. But let's see,
-> maybe I'll just go with (1) as that's really easy.
-> 
-> I'll cook a patch this week.
-
-Thanks,
-            Dmitry
-
+BR, Jarkko
 
