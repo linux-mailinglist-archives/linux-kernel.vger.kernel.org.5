@@ -1,395 +1,148 @@
-Return-Path: <linux-kernel+bounces-48452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D926D845C45
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41D9B845C5D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:00:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A5501C2ABE7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:57:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C15B1C211C6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:00:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F8E615F31A;
-	Thu,  1 Feb 2024 15:55:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AE2F626D8;
+	Thu,  1 Feb 2024 15:56:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="G9RWTJ74"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="X3vYBIkP"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D399A779F9
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 15:55:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B420B1649BD
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 15:55:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706802949; cv=none; b=Bh9l8OYS1d1ROlEzMe0brTnDPFFZVFyiZnVkC7g1LKE30mJt1/dLwKzTEuE3jDFklGXoBUO7gyXUQ5C0n1diQtriE/T9pagNARkntLJtQw+JaGfToCnddJkU8qUcve6pB4jChNHEXboju+PQqqRIX9lDOVqB+zlBv9b438x2iqo=
+	t=1706802960; cv=none; b=q3nCQGbt9Oq6KvY0VqH/USwsQ5L3ynuR9wESZsqCmW5feU7j912CcbKKupuIT9jW+SpjjDXzdsNQtuRJUnirYRbxIrAq5rxPvd6Rl+1xFXHfZbhc7k07odQ2WQz1M+sC9FpgSWojKznJnFcptZwxyaL9VMK8FR1yvmFXVSWp1P0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706802949; c=relaxed/simple;
-	bh=l970XQK253auBEaf1sxyowqJp9xH8paHYFxN6sDXauI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cxmMi8AkgnQXeHWkX9Fx+5J8J4F1lsQuyj+j4gZ15BNJiy4ErPjb+C4/kAJmQikMChnBd8jMFztx7b3dd4HlsYeE7QQrgGLBIHpVnPgbkMN2y68Zi+w+MOQjs8DaLOYgBVdMEv4mMHfYWEbFsMxxyL0yNsQxI5r/mtZLpeNupzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=G9RWTJ74; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33b1b95df3bso156590f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 07:55:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706802945; x=1707407745; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LiBDDlOs/2wfibbPM7pcc8BqiHTc+Y7z4AiaXyajHnk=;
-        b=G9RWTJ746Il9xgpvbYa/5DB88zEYC1FN5DandYEhLoXxVacjQi7qCbIkPI6Bb3M006
-         0dXeq/a9lnijUHPM+hdoe6bLrU1hViCqmHH06/Xa5H7uIkx6tKm6W3HA4lfg0GOiYGql
-         TSZ/SGs57KheHbcwBhqbczLf4fnOay0iCAbRRXeAeIxQxKmU5rKg2CZel26xO27xxvqn
-         q7nqcp7qF/nscWvxjoOLVhvmOJjllTufMWFssUmFKUuM2jaE6vU8NBikMYjbhXPkNOZb
-         HAVBxhM49Qs36Q/vtNq/BlKmej1xiEhq+Nsu86s5h1l9/+U5rzdbtbLXanfXEw3Szbvu
-         u38g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706802945; x=1707407745;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LiBDDlOs/2wfibbPM7pcc8BqiHTc+Y7z4AiaXyajHnk=;
-        b=fvjWWP4Iv4DYphJZXIZt5SPji87TPaEn/RATfuVAO4dVO43TCPobLiQAzn7T/eCT4v
-         vQ/ipx0MmCK05d9EnYp3IkyGYaPwLfVrBODrYezpGL5bXvGVz06b1deUagCV55cv7QvV
-         eCBWRt320fReNoMCXsghda9YlpQ5lPitbn2Zn3Iu5Nl2LJualbFbgqI2oc/0+FttdnIG
-         8imuYHoGjRihm/SDPTAJZDFL4Ffo5rFsbX9CDGUR1Hz7AJLe9vfK1DiJW6KsJC2S88PD
-         DIjOdGD6xEmknvHe+p+FMaUTKZ65DFIErp+a9Qm2ZITF7qXN/w5iMAr5dJUGZWAPKiPz
-         0D/w==
-X-Gm-Message-State: AOJu0YwrVMqTdiaUmS+4bpjgy+M0r3o3XVO4kPVyIYs0aKMKm0cvCswO
-	/gDpc+l+JafN2qf6Sa63X8JszZmwEET+W6xtX4VSphPbu4vCZNorfxPvYGQN7RA=
-X-Google-Smtp-Source: AGHT+IHxONjLYq+jzZhOLqBDb8Gde9vLS8rl0OD8rTABSRercwHSWNE8jCpnLlSK2NSuoUdjMDgg3A==
-X-Received: by 2002:a05:6000:192:b0:33a:eeec:88a0 with SMTP id p18-20020a056000019200b0033aeeec88a0mr3985658wrx.37.1706802945207;
-        Thu, 01 Feb 2024 07:55:45 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUaySnrCpckAG9NxaYAlvPP8d7ea+hPHInzet8cV6mP05yLPA3X3eVUPeRSd5tyEQTjEK2RfI6Z000TtduQHxFZjajbUTJgSZP0SnKkTxq0Sp36jZ6hvtpOv5UFAmBcVZEMi+S7ALmOf8UOhS5EWeh8pCP6sFcTY+DvNDzyOmEJbZXFECyWPvvKZ7G3Vk6kiQ3Un4lnyIRxrAajgBOo+IuFMXFOxpNkVavcaixTnLVHxjyxAK/A/rG9mSHEaT1ENyNcloNiC9jFsxAjnyQNJ03sgIa3/CX2+vaMHcGK78oAFSItGyZszpE0Eq+uTd1Xv5QRoeDnaEXmXt3hh+dabnLxLO05r55BaLKduYH8q09ulAd7Qr7kBJi4cSNZ7Dwk/T5kWj1Z/rGFY5ZhDmJ0JA/eYJ6LP9wakINW7EAanza0r40cKFRl9vFzSJ66dXuJbbb9YiOvRpT/jsTi1U48tzrjkAvvs22Bg0Dzx31P7R8Hhk+Q6qnILQ58sm/j9q0suSh+jc+mj7qjX1UQmS441o/wiuSBTETLvJkiXp998mBM5mG8rAMudS8YmVv/tvnQxbnsXgiFrzXlr8MFE5oC8NS1FFrvBw4W/bB/0ASIK3YqBaWV+BNvrqjq2jznDQ5nwYRaHGQz9jP6yjMFni0M6qBiC9xTNhjN60oN4xdJUTAN3/m+4eM7g9qjy1MfZWktNv9KxVt44o+R
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:dd01:5dec:43e3:b607])
-        by smtp.gmail.com with ESMTPSA id ce2-20020a5d5e02000000b0033af4848124sm9650318wrb.109.2024.02.01.07.55.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 07:55:44 -0800 (PST)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Alex Elder <elder@linaro.org>,
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Abel Vesa <abel.vesa@linaro.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Lukas Wunner <lukas@wunner.de>
-Cc: linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-bluetooth@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [RFC 4/9] power: pwrseq: add a driver for the QCA6390 PMU module
-Date: Thu,  1 Feb 2024 16:55:27 +0100
-Message-Id: <20240201155532.49707-5-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240201155532.49707-1-brgl@bgdev.pl>
-References: <20240201155532.49707-1-brgl@bgdev.pl>
+	s=arc-20240116; t=1706802960; c=relaxed/simple;
+	bh=SQegs6INxW4kbPdC7mvM+U9nwZDqBjt36yUdWjaMJek=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LA7Eqy6tKEz+PuIU0cBPbd4EH10es+RSs+eyGeggZlIsVxzCEu9159bvpzw6MfTo6FNmbz/H/N/hk0iP4RXybvWBfjAVio09H3SPa/AsJbUL/uFh/q1/Pr6ZYDMRNt0xaw+56cbtG/uQbteXAJzyx/jeqpPdbvRG99krvi/O0ts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=X3vYBIkP; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2E26140E01A2;
+	Thu,  1 Feb 2024 15:55:55 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id m0CzX3uIrqKW; Thu,  1 Feb 2024 15:55:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706802952; bh=d3Jg7UFKEpSAr3MxVdix9yi+n7maj5VnqFmdHn+65KQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=X3vYBIkPaOc6g+wQkxcvsXrDE4d5y2DT9KB/w1c1RLpv7MEmXrNhA+gnuEC95rnBE
+	 RWtYGJebza7ohziFIRSSkavhrJlz4DROooFBaK/s0Hs1yQsECRIz0i5+728flhDfoi
+	 pf5MeIdPvUH7cG257IiwQLsE9IK8QN4o3uYcrZt4NHhZZBHF/GkNjV+s4dgOwT2GBG
+	 xh7+EBrH+GNkmSycp+aRLsSZHUGE3Yrg5pSxDtFFI8KOT6MPys+boN7C+G84IS+Ns5
+	 iSe7k2muk5bwurSjboV8gVzznjgehDHHiO5MwgS/tl/BDuXRvuWYscyWI/065o8x8L
+	 j6hjCGfmgEw+EsUg9VwPkf3rOpGjj8i0cc4Ppe7oX0xbrmaA4imQuKP5xHuvFQ14G8
+	 NfEWQX4hvuvNl2GYT+Cbi16y4R6lokz/Qn//b3CNMUFiHiJcuVRRGL67OiEwooz5L5
+	 ZCDDxZSy0Qw5Mpvzi4IdyzC3VksAxVZDg8SgxtyFLLf7w3ZGfWINEejwCJEX7ZZM9t
+	 E4HVatEpWdvYxL+bzL824SqpX2LC+nGRhh3olAD9ZGgb1pBkNezwKeLTlHq0x9IPGG
+	 wnD4AkNPtRAKjEvRZQQ/rLGaJ/YF+6GxZ1fHJGshZ6+Uqe3SnZC5PqB9g4+XxJJMnV
+	 SnM4POkuPSv+ANnQeao3z8qU=
+Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7FC9140E016C;
+	Thu,  1 Feb 2024 15:55:34 +0000 (UTC)
+Date: Thu, 1 Feb 2024 16:55:28 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Andrew Cooper <andrew.cooper3@citrix.com>,
+	Arjan van de Ven <arjan@linux.intel.com>,
+	Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+	Sohil Mehta <sohil.mehta@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Zhang Rui <rui.zhang@intel.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Feng Tang <feng.tang@intel.com>,
+	Andy Shevchenko <andy@infradead.org>,
+	Michael Kelley <mhklinux@outlook.com>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: [patch v5 09/19] x86/cpu: Provide an AMD/HYGON specific topology
+ parser
+Message-ID: <20240201155528.GMZbu-8NRAYFMQPyD_@fat_crate.local>
+References: <20240117115752.863482697@linutronix.de>
+ <20240117115908.880472059@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240117115908.880472059@linutronix.de>
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Tue, Jan 23, 2024 at 01:53:43PM +0100, Thomas Gleixner wrote:
+> --- a/arch/x86/kernel/cpu/topology.h
+> +++ b/arch/x86/kernel/cpu/topology.h
+> @@ -9,6 +9,10 @@ struct topo_scan {
+>  
+>  	// Legacy CPUID[1]:EBX[23:16] number of logical processors
 
-This adds the power sequencing driver for the QCA6390's PMU module. It
-uses the pwrseq subsystem and knows how to match the sequencer to the
-consumer device by verifying the relevant properties and DT layout.
+/* comments pls.
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
- drivers/power/sequencing/Kconfig          |  16 ++
- drivers/power/sequencing/Makefile         |   2 +
- drivers/power/sequencing/pwrseq-qca6390.c | 232 ++++++++++++++++++++++
- 3 files changed, 250 insertions(+)
- create mode 100644 drivers/power/sequencing/pwrseq-qca6390.c
+>  	unsigned int		ebx1_nproc_shift;
+> +
+> +	// AMD specific node ID which cannot be mapped into APIC space.
+> +	u16			amd_nodes_per_pkg;
+> +	u16			amd_node_id;
+>  };
 
-diff --git a/drivers/power/sequencing/Kconfig b/drivers/power/sequencing/Kconfig
-index ba5732b1dbf8..84ddf3b4ae56 100644
---- a/drivers/power/sequencing/Kconfig
-+++ b/drivers/power/sequencing/Kconfig
-@@ -10,3 +10,19 @@ menuconfig POWER_SEQUENCING
- 	  during power-up.
- 
- 	  If unsure, say no.
-+
-+if POWER_SEQUENCING
-+
-+config POWER_SEQUENCING_QCA6390
-+	tristate "QCA6390 PMU driver"
-+	default m if ARCH_QCOM
-+	help
-+	  Say U here to enable the power sequencing driver for Qualcomm
-+	  QCA6390.
-+
-+	  The QCA6390 package contains the BT and WLAN modules whose power
-+	  is controlled by the PMU module. As the former two share the power-up
-+	  sequence which is executed by the PMU, this driver is needed for
-+	  correct power control.
-+
-+endif
-diff --git a/drivers/power/sequencing/Makefile b/drivers/power/sequencing/Makefile
-index dcdf8c0c159e..628345c4e7ae 100644
---- a/drivers/power/sequencing/Makefile
-+++ b/drivers/power/sequencing/Makefile
-@@ -2,3 +2,5 @@
- 
- obj-$(CONFIG_POWER_SEQUENCING)		+= pwrseq-core.o
- pwrseq-core-y				:= core.o
-+
-+obj-$(CONFIG_POWER_SEQUENCING_QCA6390)	+= pwrseq-qca6390.o
-diff --git a/drivers/power/sequencing/pwrseq-qca6390.c b/drivers/power/sequencing/pwrseq-qca6390.c
-new file mode 100644
-index 000000000000..6c930e3e88ec
---- /dev/null
-+++ b/drivers/power/sequencing/pwrseq-qca6390.c
-@@ -0,0 +1,232 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2024 Linaro Ltd.
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/pwrseq/provider.h>
-+#include <linux/string.h>
-+#include <linux/types.h>
-+
-+struct pwrseq_qca6390_vreg {
-+	const char *name;
-+	unsigned int load_uA;
-+};
-+
-+struct pwrseq_qca6390_pdata {
-+	const struct pwrseq_qca6390_vreg *vregs;
-+	size_t num_vregs;
-+	unsigned int pwup_delay_msec;
-+};
-+
-+struct pwrseq_qca6390_ctx {
-+	struct pwrseq_device *pwrseq;
-+	struct device_node *of_node;
-+	const struct pwrseq_qca6390_pdata *pdata;
-+	struct regulator_bulk_data *regs;
-+	struct gpio_desc *bt_gpio;
-+	struct gpio_desc *wlan_gpio;
-+};
-+
-+static const struct pwrseq_qca6390_vreg pwrseq_qca6390_vregs[] = {
-+	{
-+		.name = "vddio",
-+		.load_uA = 20000,
-+	},
-+	{
-+		.name = "vddaon",
-+		.load_uA = 100000,
-+	},
-+	{
-+		.name = "vddpmu",
-+		.load_uA = 1250000,
-+	},
-+	{
-+		.name = "vddpcie1",
-+		.load_uA = 35000,
-+	},
-+	{
-+		.name = "vddpcie2",
-+		.load_uA = 15000,
-+	},
-+	{
-+		.name = "vddrfa1",
-+		.load_uA = 200000,
-+	},
-+	{
-+		.name = "vddrfa2",
-+		.load_uA = 400000,
-+	},
-+	{
-+		.name = "vddrfa3",
-+		.load_uA = 400000,
-+	},
-+};
-+
-+static const struct pwrseq_qca6390_pdata pwrseq_qca6390_of_data = {
-+	.vregs = pwrseq_qca6390_vregs,
-+	.num_vregs = ARRAY_SIZE(pwrseq_qca6390_vregs),
-+	.pwup_delay_msec = 16,
-+};
-+
-+static int pwrseq_qca6390_power_on(struct pwrseq_device *pwrseq)
-+{
-+	struct pwrseq_qca6390_ctx *ctx = pwrseq_device_get_data(pwrseq);
-+	int ret;
-+
-+	ret = regulator_bulk_enable(ctx->pdata->num_vregs, ctx->regs);
-+	if (ret)
-+		return ret;
-+
-+	gpiod_set_value_cansleep(ctx->bt_gpio, 1);
-+	gpiod_set_value_cansleep(ctx->wlan_gpio, 1);
-+
-+	if (ctx->pdata->pwup_delay_msec)
-+		msleep(ctx->pdata->pwup_delay_msec);
-+
-+	return 0;
-+}
-+
-+static int pwrseq_qca6390_power_off(struct pwrseq_device *pwrseq)
-+{
-+	struct pwrseq_qca6390_ctx *ctx = pwrseq_device_get_data(pwrseq);
-+
-+	gpiod_set_value_cansleep(ctx->bt_gpio, 0);
-+	gpiod_set_value_cansleep(ctx->wlan_gpio, 0);
-+
-+	return regulator_bulk_disable(ctx->pdata->num_vregs, ctx->regs);
-+}
-+
-+static int pwrseq_qca6390_match(struct pwrseq_device *pwrseq,
-+				struct device *dev)
-+{
-+	struct pwrseq_qca6390_ctx *ctx = pwrseq_device_get_data(pwrseq);
-+	struct device_node *dev_node = dev->of_node;
-+
-+	/*
-+	 * The PMU supplies power to the Bluetooth and WLAN modules. both
-+	 * consume the PMU AON output so check the presence of the
-+	 * 'vddaon-supply' property and whether it leads us to the right
-+	 * device.
-+	 */
-+	if (!of_property_present(dev_node, "vddaon-supply"))
-+		return 0;
-+
-+	struct device_node *reg_node __free(of_node) =
-+			of_parse_phandle(dev_node, "vddaon-supply", 0);
-+	if (!reg_node)
-+		return 0;
-+
-+	/*
-+	 * `reg_node` is the PMU AON regulator, its parent is the `regulators`
-+	 * node and finally its grandparent is the PMU device node that we're
-+	 * looking for.
-+	 */
-+	if (!reg_node->parent || !reg_node->parent->parent ||
-+	    reg_node->parent->parent != ctx->of_node)
-+		return 0;
-+
-+	return 1;
-+}
-+
-+static int pwrseq_qca6390_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct pwrseq_qca6390_ctx *ctx;
-+	struct pwrseq_config config;
-+	int ret, i;
-+
-+	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
-+	if (!ctx)
-+		return -ENOMEM;
-+
-+	ctx->of_node = dev->of_node;
-+
-+	ctx->pdata = of_device_get_match_data(dev);
-+	if (!ctx->pdata)
-+		return dev_err_probe(dev, -ENODEV,
-+				     "Failed to obtain platform data\n");
-+
-+	if (ctx->pdata->vregs) {
-+		ctx->regs = devm_kcalloc(dev, ctx->pdata->num_vregs,
-+					 sizeof(*ctx->regs), GFP_KERNEL);
-+		if (!ctx->regs)
-+			return -ENOMEM;
-+
-+		for (i = 0; i < ctx->pdata->num_vregs; i++)
-+			ctx->regs[i].supply = ctx->pdata->vregs[i].name;
-+
-+		ret = devm_regulator_bulk_get(dev, ctx->pdata->num_vregs,
-+					      ctx->regs);
-+		if (ret < 0)
-+			return dev_err_probe(dev, ret,
-+					     "Failed to get all regulators\n");
-+
-+		for (i = 0; i < ctx->pdata->num_vregs; i++) {
-+			if (!ctx->pdata->vregs[1].load_uA)
-+				continue;
-+
-+			ret = regulator_set_load(ctx->regs[i].consumer,
-+						 ctx->pdata->vregs[i].load_uA);
-+			if (ret)
-+				return dev_err_probe(dev, ret,
-+						     "Failed to set vreg load\n");
-+		}
-+	}
-+
-+	ctx->bt_gpio = devm_gpiod_get_optional(dev, "bt-enable", GPIOD_OUT_LOW);
-+	if (IS_ERR(ctx->bt_gpio))
-+		return dev_err_probe(dev, PTR_ERR(ctx->bt_gpio),
-+				     "Failed to get the Bluetooth enable GPIO\n");
-+
-+	ctx->wlan_gpio = devm_gpiod_get_optional(dev, "wlan-enable",
-+						 GPIOD_OUT_LOW);
-+	if (IS_ERR(ctx->wlan_gpio))
-+		return dev_err_probe(dev, PTR_ERR(ctx->wlan_gpio),
-+				     "Failed to get the WLAN enable GPIO\n");
-+
-+	memset(&config, 0, sizeof(config));
-+
-+	config.parent = dev;
-+	config.owner = THIS_MODULE;
-+	config.drvdata = ctx;
-+	config.match = pwrseq_qca6390_match;
-+	config.power_on = pwrseq_qca6390_power_on;
-+	config.power_off = pwrseq_qca6390_power_off;
-+
-+	ctx->pwrseq = devm_pwrseq_device_register(dev, &config);
-+	if (IS_ERR(ctx->pwrseq))
-+		return dev_err_probe(dev, PTR_ERR(ctx->pwrseq),
-+				     "Failed to register the power sequencer\n");
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id pwrseq_qca6390_of_match[] = {
-+	{
-+		.compatible = "qcom,qca6390-pmu",
-+		.data = &pwrseq_qca6390_of_data,
-+	},
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, pwrseq_qca6390_of_match);
-+
-+static struct platform_driver pwrseq_qca6390_driver = {
-+	.driver = {
-+		.name = "pwrseq-qca6390",
-+		.of_match_table = pwrseq_qca6390_of_match,
-+	},
-+	.probe = pwrseq_qca6390_probe,
-+};
-+module_platform_driver(pwrseq_qca6390_driver);
-+
-+MODULE_AUTHOR("Bartosz Golaszewski <bartosz.golaszewski@linaro.org>");
-+MODULE_DESCRIPTION("QCA6390 PMU power sequencing driver");
-+MODULE_LICENSE("GPL");
+..
+
+> +static bool parse_8000_001e(struct topo_scan *tscan, bool has_0xb)
+> +{
+> +	struct {
+> +		// eax
+> +		u32	x2apic_id	: 32;
+
+The docs call this ExtendedApicId, not x2apic_id.
+
+> +		// ebx
+> +		u32	cuid		:  8,
+> +			threads_per_cu	:  8,
+> +			__rsvd0		: 16;
+> +		// ecx
+> +		u32	nodeid		:  8,
+> +			nodes_per_pkg	:  3,
+> +			__rsvd1		: 21;
+> +		// edx
+> +		u32	__rsvd2		: 32;
+> +	} leaf;
+> +
+> +	if (!boot_cpu_has(X86_FEATURE_TOPOEXT))
+
+s/boot_cpu_has/cpu_feature_enabled/g
+
+> +		return false;
+> +
+> +	cpuid_leaf(0x8000001e, &leaf);
+
+..
+
 -- 
-2.40.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
