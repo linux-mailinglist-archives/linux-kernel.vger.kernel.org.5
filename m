@@ -1,150 +1,187 @@
-Return-Path: <linux-kernel+bounces-48370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDC7B845B12
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:16:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80251845D58
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:34:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A312A1F218B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:16:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9C321F27FF4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:34:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D8A06215B;
-	Thu,  1 Feb 2024 15:16:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 038564C79;
+	Thu,  1 Feb 2024 16:33:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ThgMJo1o"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a6zOFB0Y"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8654862141
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 15:16:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 184364C6C;
+	Thu,  1 Feb 2024 16:33:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706800565; cv=none; b=JCGudWh90hkikaPlS/RQadDu4D+3Yjc6IiAoxUEAJ/uGcrWhwkvn3TNNYShgxaJf5ILWXyTtdQT2mUZaZOHQJY8i9sj0UVH4B8yEhYvPFEXy3KfBeDaegSGlDByCH2gkMMduJy+PhnHRIT42nqVrETlql5b/B+ASrWCRtH9hwao=
+	t=1706805235; cv=none; b=lbnAhJSXsSq9PwPEH1xdi5cMoRq7olYqYW/V9VrFyzcLJvfPDfOvzx2O1YIZ7evEheE/rAMuxx9G8vq31KDb16m5srrKWY21tRp5BDNQMvMiTmiasFdAavbjoWMlkOgB+M9tg9itv8TAeoz6eN0An6kK8lwS1Y9Ww7RwmceuN6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706800565; c=relaxed/simple;
-	bh=2c2O8Cc9VKYP/y1ar4r+bdMh2y3qB+F8BIbxfjXxo4I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lXJaoq7ud4pTkUfFx52gaFMbmDXvIYrg6/oWmV1is0NEhNhLDaKNZlk9KG6iOinuVh2PgXUGJdlEKH07bKySIURmhpUL4lqTtULiGNf6yuWgIfzHAlL4+nmv6fo/dS45Y7AxSgp8Ubs8WG/4wKsTQq9lKzpqkoLtGR/AWWGO5Ao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ThgMJo1o; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706800561;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=H+qWz/DQvoXRtLaiUs+ygF3UhqzsPEEWrkmZUq5EmAU=;
-	b=ThgMJo1owUli8s60jdOhEcifYMwG2/BuBx40H7oCtXukQ6/Kfd4YpBL2+ON79Ae/Aa1Rbt
-	CPDW06P/wjxw1IhlluAQe5Kes3dWUMfEfpAvraGO6vRjVRW0cAo5sXYnQLxzJvXTyH0U35
-	imiKvSFs59oVjm0HtId0tboeMjgNJU0=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-515-SHjAwtzkO56Kf-9vhZXCOQ-1; Thu, 01 Feb 2024 10:14:22 -0500
-X-MC-Unique: SHjAwtzkO56Kf-9vhZXCOQ-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33aebf85ce9so414019f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 07:14:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706800458; x=1707405258;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H+qWz/DQvoXRtLaiUs+ygF3UhqzsPEEWrkmZUq5EmAU=;
-        b=V8xRwbPVkJMoTbQVrZUmQDUnam0K/2AAdYuObEzotov3NWirPaXSmCt92K+JWY1b/r
-         Qzl8mqiI/Vf+bGet97FpmDhPG4WeJWu71PwmjO/CkBBbEGH+Hylyx18sMNXNt1LSuMcr
-         EVmfxFt6cUXXBassaC4k1guiY/vPm7uoi4V8IJ2liU5O24fX2VsBNt048adVf+63EmrL
-         3/L0UShEX7QEavc9Iid7TBnJC02N7mhFWRnDnOXpSLsJHqgNCRq1hKx8ba+G2Rbt8JBz
-         7QaRHpWaWNEG0Nakrt0Nb7Y8LYtIeWc27b9g3W+DqvFJAS90Hd3BG71bBLpnxOigcdLs
-         d4OA==
-X-Gm-Message-State: AOJu0Yy90nodXdn22TgsKbt85VEFiOQLTUMdBPvKMx1DfIJNwlZewhnt
-	cHZ/0RNs7upTuxLPxTSl11ODIAmaYNPZ3JDN5Hh7SrRbnmoFYe+f2RZ/pIbfUMsT9IihkiNhWO1
-	zUbr1WRhCbfRj8kB7zi3lOWKR9yIx1UYEvNz4eP6uCoORU5LFYdptZefBz8D4
-X-Received: by 2002:adf:fec3:0:b0:33b:1ae4:10be with SMTP id q3-20020adffec3000000b0033b1ae410bemr656919wrs.46.1706800457805;
-        Thu, 01 Feb 2024 07:14:17 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEQ1LSSiNVgFItzWKTj0LfVmS5upYQ2eKQBxvYDmMDMD7a3/zefheP6gAwFbMonNNjA8rzILA==
-X-Received: by 2002:adf:fec3:0:b0:33b:1ae4:10be with SMTP id q3-20020adffec3000000b0033b1ae410bemr656907wrs.46.1706800457493;
-        Thu, 01 Feb 2024 07:14:17 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXaEwqOkI/VK9eNkoA4uPPbdatQOwtq1EPu0xJA7z2SWYUIWqy+ov7zZDoNulKSTiXoUR02WK++vXcyW3dU0M6SaRBhGyrdona8fTbFXXg6h/5CDcoicVaNzGGOT3Dq+E7irt+xb03koPH/lr13Dv/mESKncyMmLbTR7lbsWUeailm79/RQZ1JJhhfsEzgbmw2fW6uaGkrMX5wjRHu5T9Q=
-Received: from [192.168.9.34] (net-2-34-24-75.cust.vodafonedsl.it. [2.34.24.75])
-        by smtp.gmail.com with ESMTPSA id t8-20020adfe108000000b0033921c383b2sm16400154wrz.67.2024.02.01.07.14.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 07:14:17 -0800 (PST)
-Message-ID: <985729eb-08c5-4c0d-9172-1642a45caffd@redhat.com>
-Date: Thu, 1 Feb 2024 16:14:15 +0100
+	s=arc-20240116; t=1706805235; c=relaxed/simple;
+	bh=Y4tGleDCKLWtxFwW/vft+m/ukBpChbYl89eQXzMV72U=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=FnjqWufN4tUas0/aivIHPHuR+uy5acHsIxeWJimZk+Fx2XAKrVyAJihKd7c2l97pMTyK4sHm/x7daJodbYmjtzNzSJhXOpsGBv5CoXLKbNnmgHKbMGmZe7aqZcsP14+j/cb4iYNravYS63l7iKHA5ypDUah4BX8Wrg/AEpdtynI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=a6zOFB0Y; arc=none smtp.client-ip=134.134.136.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706805233; x=1738341233;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Y4tGleDCKLWtxFwW/vft+m/ukBpChbYl89eQXzMV72U=;
+  b=a6zOFB0YS7Xb50kcscGV0/RRu/D6+hjzoZtuEsRPxizC0n/QrHTbHNsv
+   HBFGnwnbHN3p2p8yuTH0t3hMoygjN92CPqu8KXqXxcETdVGo/Io+BkFph
+   wqPzLfjV6NANyF7qhgPEhAk+yZWpPycHSX230pMZApcvliWe/5j0NPO3D
+   3+r8zWksdCiNaLVbAPHmmnMnxAgGtN7QFCFBIG4KKawyJLCHAq1n4QT1z
+   nQIpMknsG/FEbOSEcGokczCpcafs0+sQbxNLJBLnIIcUKkU/zHh0Jb4Rg
+   Op+3/pJKqH+vi2zFMu0kMoiSaLYZOMQ43uw6Pp9q9EbK6u3cHG6BKluT9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="468167634"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="468167634"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 08:31:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="908292478"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="908292478"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 01 Feb 2024 08:31:41 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id DEA06C41; Thu,  1 Feb 2024 17:15:42 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Flavio Suligoi <f.suligoi@asem.it>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	dri-devel@lists.freedesktop.org,
+	linux-fbdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Lee Jones <lee@kernel.org>,
+	Daniel Thompson <daniel.thompson@linaro.org>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Helge Deller <deller@gmx.de>
+Subject: [PATCH v2 3/3] backlight: mp3309c: Utilise temporary variable for struct device
+Date: Thu,  1 Feb 2024 17:14:15 +0200
+Message-ID: <20240201151537.367218-4-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+In-Reply-To: <20240201151537.367218-1-andriy.shevchenko@linux.intel.com>
+References: <20240201151537.367218-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fpga: remove redundant checks for bridge ops
-Content-Language: en-US
-To: Xu Yilun <yilun.xu@linux.intel.com>
-Cc: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
- Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
- linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240124152408.88068-1-marpagan@redhat.com>
- <Zbi+yJC7KNvl9med@yilunxu-OptiPlex-7050>
-From: Marco Pagani <marpagan@redhat.com>
-In-Reply-To: <Zbi+yJC7KNvl9med@yilunxu-OptiPlex-7050>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+We have a temporary variable to keep pointer to struct device.
+Utilise it where it makes sense.
 
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+Tested-by: Flavio Suligoi <f.suligoi@asem.it>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/video/backlight/mp3309c.c | 30 ++++++++++++------------------
+ 1 file changed, 12 insertions(+), 18 deletions(-)
 
-On 2024-01-30 10:18, Xu Yilun wrote:
-> On Wed, Jan 24, 2024 at 04:24:07PM +0100, Marco Pagani wrote:
->> Commit 0d70af3c2530 ("fpga: bridge: Use standard dev_release for class
->> driver") introduced a check in fpga_bridge_register() that prevents
->> registering a bridge without ops, making checking on every call
->> redundant.
->>
->> Signed-off-by: Marco Pagani <marpagan@redhat.com>
->> ---
->>  drivers/fpga/fpga-bridge.c | 6 +++---
->>  1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/fpga/fpga-bridge.c b/drivers/fpga/fpga-bridge.c
->> index a024be2b84e2..e0a5ef318f5e 100644
->> --- a/drivers/fpga/fpga-bridge.c
->> +++ b/drivers/fpga/fpga-bridge.c
->> @@ -30,7 +30,7 @@ int fpga_bridge_enable(struct fpga_bridge *bridge)
->>  {
->>  	dev_dbg(&bridge->dev, "enable\n");
->>  
->> -	if (bridge->br_ops && bridge->br_ops->enable_set)
->> +	if (bridge->br_ops->enable_set)
->>  		return bridge->br_ops->enable_set(bridge, 1);
->>  
->>  	return 0;
->> @@ -48,7 +48,7 @@ int fpga_bridge_disable(struct fpga_bridge *bridge)
->>  {
->>  	dev_dbg(&bridge->dev, "disable\n");
->>  
->> -	if (bridge->br_ops && bridge->br_ops->enable_set)
->> +	if (bridge->br_ops->enable_set)
->>  		return bridge->br_ops->enable_set(bridge, 0);
->>  
->>  	return 0;
->> @@ -401,7 +401,7 @@ void fpga_bridge_unregister(struct fpga_bridge *bridge)
->>  	 * If the low level driver provides a method for putting bridge into
->>  	 * a desired state upon unregister, do it.
->>  	 */
->> -	if (bridge->br_ops && bridge->br_ops->fpga_bridge_remove)
->> +	if (bridge->br_ops->fpga_bridge_remove)
->>  		bridge->br_ops->fpga_bridge_remove(bridge);
-> 
-> Also for state_show()?
-
-Right, I missed that one. I'll remove it in v2
-
-Thanks,
-Marco
-
+diff --git a/drivers/video/backlight/mp3309c.c b/drivers/video/backlight/mp3309c.c
+index 2d6bd1a180b3..e7abefd175a4 100644
+--- a/drivers/video/backlight/mp3309c.c
++++ b/drivers/video/backlight/mp3309c.c
+@@ -222,10 +222,9 @@ static int mp3309c_parse_fwnode(struct mp3309c_chip *chip,
+ 	 */
+ 	pdata->dimming_mode = DIMMING_ANALOG_I2C;
+ 	if (device_property_present(dev, "pwms")) {
+-		chip->pwmd = devm_pwm_get(chip->dev, NULL);
++		chip->pwmd = devm_pwm_get(dev, NULL);
+ 		if (IS_ERR(chip->pwmd))
+-			return dev_err_probe(chip->dev, PTR_ERR(chip->pwmd),
+-					     "error getting pwm data\n");
++			return dev_err_probe(dev, PTR_ERR(chip->pwmd), "error getting pwm data\n");
+ 		pdata->dimming_mode = DIMMING_PWM;
+ 		pwm_apply_args(chip->pwmd);
+ 	}
+@@ -243,11 +242,9 @@ static int mp3309c_parse_fwnode(struct mp3309c_chip *chip,
+ 		num_levels = ANALOG_I2C_NUM_LEVELS;
  
+ 		/* Enable GPIO used in I2C dimming mode only */
+-		chip->enable_gpio = devm_gpiod_get(chip->dev, "enable",
+-						   GPIOD_OUT_HIGH);
++		chip->enable_gpio = devm_gpiod_get(dev, "enable", GPIOD_OUT_HIGH);
+ 		if (IS_ERR(chip->enable_gpio))
+-			return dev_err_probe(chip->dev,
+-					     PTR_ERR(chip->enable_gpio),
++			return dev_err_probe(dev, PTR_ERR(chip->enable_gpio),
+ 					     "error getting enable gpio\n");
+ 	} else {
+ 		/*
+@@ -265,8 +262,7 @@ static int mp3309c_parse_fwnode(struct mp3309c_chip *chip,
+ 	}
+ 
+ 	/* Fill brightness levels array */
+-	pdata->levels = devm_kcalloc(chip->dev, num_levels,
+-				     sizeof(*pdata->levels), GFP_KERNEL);
++	pdata->levels = devm_kcalloc(dev, num_levels, sizeof(*pdata->levels), GFP_KERNEL);
+ 	if (!pdata->levels)
+ 		return -ENOMEM;
+ 	if (device_property_present(dev, "brightness-levels")) {
+@@ -336,21 +332,21 @@ static int mp3309c_probe(struct i2c_client *client)
+ 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
+ 		return dev_err_probe(dev, -EOPNOTSUPP, "failed to check i2c functionality\n");
+ 
+-	chip = devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
++	chip = devm_kzalloc(dev, sizeof(*chip), GFP_KERNEL);
+ 	if (!chip)
+ 		return -ENOMEM;
+ 
+-	chip->dev = &client->dev;
++	chip->dev = dev;
+ 
+ 	chip->regmap = devm_regmap_init_i2c(client, &mp3309c_regmap);
+ 	if (IS_ERR(chip->regmap))
+-		return dev_err_probe(&client->dev, PTR_ERR(chip->regmap),
++		return dev_err_probe(dev, PTR_ERR(chip->regmap),
+ 				     "failed to allocate register map\n");
+ 
+ 	i2c_set_clientdata(client, chip);
+ 
+ 	if (!pdata) {
+-		pdata = devm_kzalloc(chip->dev, sizeof(*pdata), GFP_KERNEL);
++		pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+ 		if (!pdata)
+ 			return -ENOMEM;
+ 
+@@ -367,11 +363,10 @@ static int mp3309c_probe(struct i2c_client *client)
+ 	props.type = BACKLIGHT_RAW;
+ 	props.power = FB_BLANK_UNBLANK;
+ 	props.fb_blank = FB_BLANK_UNBLANK;
+-	chip->bl = devm_backlight_device_register(chip->dev, "mp3309c",
+-						  chip->dev, chip,
++	chip->bl = devm_backlight_device_register(dev, "mp3309c", dev, chip,
+ 						  &mp3309c_bl_ops, &props);
+ 	if (IS_ERR(chip->bl))
+-		return dev_err_probe(chip->dev, PTR_ERR(chip->bl),
++		return dev_err_probe(dev, PTR_ERR(chip->bl),
+ 				     "error registering backlight device\n");
+ 
+ 	/* In PWM dimming mode, enable pwm device */
+@@ -383,8 +378,7 @@ static int mp3309c_probe(struct i2c_client *client)
+ 		pwmstate.enabled = true;
+ 		ret = pwm_apply_state(chip->pwmd, &pwmstate);
+ 		if (ret)
+-			return dev_err_probe(chip->dev, ret,
+-					     "error setting pwm device\n");
++			return dev_err_probe(dev, ret, "error setting pwm device\n");
+ 	}
+ 
+ 	chip->pdata->status = FIRST_POWER_ON;
+-- 
+2.43.0.rc1.1.gbec44491f096
 
 
