@@ -1,226 +1,139 @@
-Return-Path: <linux-kernel+bounces-48670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DB19845F9B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:13:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18C2F845F9C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:13:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 728121C27542
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:13:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BFB61C28593
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:13:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36E6F85290;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CBE885298;
 	Thu,  1 Feb 2024 18:10:43 +0000 (UTC)
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ubEkjYIc"
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F004912FB05;
-	Thu,  1 Feb 2024 18:10:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4198284FBF
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 18:10:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706811042; cv=none; b=H5NT471wBlpX4FR34nVXhHV1Qton3FCVZrBamA9LyJUa/0tTjDO2h35EfHY+kPDJUM7ePZyvcHY4ZejCbE6GfEzqmAwMeqJpQrWwZOZYxK7mnQ87q/PLo25CoC+0b5RzgZnelUEQHhVwK7v0pjTgQDk/0DBHM24R/UN582AruFM=
+	t=1706811042; cv=none; b=Skmi/qv5FN+zYa7reB8/Hx1BLDpQBNGmnY1XeSBNYum4Gto8GcbWxU7UVgbvU5ioG90whl1VtaBWvAj1WCuAwuxYQcM1wrn3iAjv4TXbApHOGfONwPPs5HyYvA1cOrmSQyhlwXQZ7Bwp4M7XU/VPzCRnn28/Iy9TtebFgjOOfLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706811042; c=relaxed/simple;
-	bh=dNRmWLW4qsaW4MOpb+pEVEKn4Tx40C4u33xEP6L33ic=;
+	bh=ygaCEicSt3gW34jkFaYHRJ8iK0y2xGpVsgeFstll66Y=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=P8NzgCZg0cZ6ZwFUoMQt8Of4E0njZycQH9J3sfRFb1qm4j9SSAeGBr0QiS6xS5e0B2Q2gRkM01acnIIoogL+7tA11IQ+Nf8EXEWCiPcpgPdyfv/7YuQzaEuK8U0n1bMAvZp2l9G892QKN6NEqCluLpM5jQr3Nja0b6Lk8kDy3BQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3be2ba0ffd8so165092b6e.0;
-        Thu, 01 Feb 2024 10:10:40 -0800 (PST)
+	 To:Cc:Content-Type; b=p3bvdNddv5OfAHtNXE5M2ECZtlje+BUZ8z5FCTdZSirS3hDjpg1HcVYftczeLivGbYbBlLNo9Gxk5ePkMgTe96/pj1a10LRQIXm6wZiYnSviULJhHseAgQG6Hcmz6y1sFAENJEGRQbcsISaN5DY5j+MtxWMSg3v7C4rdbyA7DDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ubEkjYIc; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc6db13f1abso829150276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 10:10:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706811040; x=1707415840; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yHfuYMEKwOkGfq9jIdDUbSlih9i80eEwJ6EkAPpJJng=;
+        b=ubEkjYIcJaSL/42MxpDd6wLbTQ4NAuD5AJhGtPNyFVBG3Ormv2I0kA0QTCR7uHLkL7
+         KFsOgilkvLFADGcsqT6SgWy31yIRG/XEGrQjdhEhNkcHNwsd5nsp2j9NcK6kVPbsCu5A
+         AaBurVU4wCN61syaPbzzcZNPTZo5te6OAsUP+YV29Ib5iN0f4alkHTKH2nVvN01nSY1g
+         Mo/kI73Rc5d+nJTtmGTZ2XbN+Os3cwAzbSrk2iyVAYtqjjqGqHcZ1IpFQC8WSAy3n5Co
+         ccPTTC/LY1fTqY2YDBjqHU+uOZuO0nsFNvseZDAEYmxqaJH/7Z+qhppF1CL6okOCZ1Yc
+         lkog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1706811040; x=1707415840;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=t7K2m1hjkCVzp42ssBbLht83KsIxMJIS717mDSy4hWI=;
-        b=Ea+CSqkJza18DzkVs56PzokWhnV4mQxxhjlHhs2LhhRJt9taK0ELNYI+l7AXXSh7HQ
-         mLOAUc33Ul6UluF2A8u7utLENr31FNSPvkH/+en53jsbBHcViJJHOfgvvz+B3aZIQ6L/
-         jp/zcLfAE5YUz2jZtzVqJHFctcnEvbXdHTRziAdzINtVLVOqX+Z9v762+q89FQYeKth7
-         TKqEIXdRD3QyIoalsIcPfjIOzhIVbNy/vt69zPAjau/YL0U5ASCdXkAsBvCTfvHR+pkR
-         NG/o7iQ6iAAD8BsAJX4MuyUyYMxYsXY8m7E2+2csCWO/IIMdetwOVXlbgMbjA14Y+MM8
-         Hd3Q==
-X-Gm-Message-State: AOJu0YzThAUKPyNkXdcbE+KzKx8zwp5r18epDi7Hr2Y9U2F3TdO73zKO
-	qPgdI2YoMavoj1mUelljpNvIx3wJM5IAl5zaG1IaTL68G0ib4BYnNnNGKIg/eOMj3R9VVJqn7tl
-	iErPEiMaZmkmEIdy208vg4OyMzx0=
-X-Google-Smtp-Source: AGHT+IGhgYJn6KsHi/QptCtDQVi4EiETT3Ordm1Cq+9U5IBgGQtd4dFzNprS6Moq70ompSbbd8eAwusq2WaBH+MGmvk=
-X-Received: by 2002:a05:6870:828a:b0:218:d68f:fe29 with SMTP id
- q10-20020a056870828a00b00218d68ffe29mr3483142oae.3.1706811039953; Thu, 01 Feb
- 2024 10:10:39 -0800 (PST)
+        bh=yHfuYMEKwOkGfq9jIdDUbSlih9i80eEwJ6EkAPpJJng=;
+        b=sb8WVBuVH1dJZ8I/YdTos5hKNdygifIPdXghdlmMtz0M0raDnkSOxnhk7Qne4gSfMo
+         GGgevtrsAOoWd99ygBXKSro66xfoa2l3jxBVYkM++RAL2oeK/G/CJEvt35XLVZL+PQr5
+         H0MTQcPG7md+/Sm7ghZK+Vz+Qbvd/lMt/zdfUZZRkzQhcS8vfbXG5Ekbjf1hF5gihIQC
+         pCo0kL2G+ZRYYaLyT/sle7rxQEhhvB53SBVe7vA95EAiOqy3ujpAkaFL2MtW+OZDEiE4
+         gKvLPuoufk3K+OPwIecJ7B6+3Z4SYm3NClGdqAWaaDhL9NHt87jmYThAKbn5r+03MDYw
+         +HVw==
+X-Gm-Message-State: AOJu0Ywr4peOculq0cjCAT1mN+kSsaMMckqzcyLKmAUcS0y862Q7OCS1
+	JiLGIcaBJCakHaWV7YeIZpyepISx2NzgmvunqbWQsJWg4MHkC9ta5OnmtG8a9TJPDEJ7mmaPg0m
+	PdiCsdsUs/GH5vYtTqHYOgPJt5POibYOYSC1i
+X-Google-Smtp-Source: AGHT+IFX6go0V30fwrlIueitJQAg1llY0QsQgiGHGUNldgZN6DNqY5vqrIPusWJFHRdFdDUbuQfm/f6tTKwgOgZguqU=
+X-Received: by 2002:a25:aa14:0:b0:dbe:974:fb85 with SMTP id
+ s20-20020a25aa14000000b00dbe0974fb85mr6028810ybi.22.1706811039987; Thu, 01
+ Feb 2024 10:10:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231219174526.2235150-1-sunilvl@ventanamicro.com>
- <CAJZ5v0j6Veze8xDFKTbVZ5=WAfmLdeJ8NXRnh9kwCZgyaDdgew@mail.gmail.com> <ZbiQ/tO/odnJCBD1@sunil-laptop>
-In-Reply-To: <ZbiQ/tO/odnJCBD1@sunil-laptop>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 1 Feb 2024 19:10:28 +0100
-Message-ID: <CAJZ5v0gnH0uPEM0q9VzJOg2Z_7bOP9XdQbOttpRtnkLGej45Sw@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 00/17] RISC-V: ACPI: Add external interrupt
- controller support
-To: Sunil V L <sunilvl@ventanamicro.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Len Brown <lenb@kernel.org>, 
-	Anup Patel <anup@brainfault.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Haibo Xu <haibo1.xu@intel.com>, 
-	Conor Dooley <conor.dooley@microchip.com>, Andrew Jones <ajones@ventanamicro.com>, 
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Marc Zyngier <maz@kernel.org>
+References: <20240131162442.3487473-1-tjmercier@google.com>
+ <q3m42iuxahsjrskuio3ajz2edrisiw56cwy2etx2jyht5l7jzq@ttbsrvgu4mvl> <20240201153428.GA307226@cmpxchg.org>
+In-Reply-To: <20240201153428.GA307226@cmpxchg.org>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Thu, 1 Feb 2024 10:10:28 -0800
+Message-ID: <CABdmKX3fPRdh+Q0n43nXAexnJshPf3e2U6RgLyo5FW3b4T53iQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcg: Use larger chunks for proactive reclaim
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Efly Young <yangyifei03@kuaishou.com>, 
+	android-mm@google.com, yuzhao@google.com, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 30, 2024 at 7:02=E2=80=AFAM Sunil V L <sunilvl@ventanamicro.com=
-> wrote:
+On Thu, Feb 1, 2024 at 7:34=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org>=
+ wrote:
 >
-> On Tue, Dec 19, 2023 at 06:50:19PM +0100, Rafael J. Wysocki wrote:
-> > On Tue, Dec 19, 2023 at 6:45=E2=80=AFPM Sunil V L <sunilvl@ventanamicro=
-com> wrote:
-> > >
-> > > This series adds support for the below ECR approved by ASWG.
-> > > 1) MADT - https://drive.google.com/file/d/1oMGPyOD58JaPgMl1pKasT-VKsI=
-Kia7zR/view?usp=3Dsharing
-> > >
-> > > The series primarily enables irqchip drivers for RISC-V ACPI based
-> > > platforms.
-> > >
-> > > The series can be broadly categorized like below.
-> > >
-> > > 1) PCI ACPI related functions are migrated from arm64 to common file =
-so
-> > > that we don't need to duplicate them for RISC-V.
-> > >
-> > > 2) Introduced support for fw_devlink for ACPI nodes for IRQ dependenc=
-y.
-> > > This helps to support deferred probe of interrupt controller drivers.
-> > >
-> > > 3) Modified pnp_irq() to try registering the IRQ  again if it sees it=
- in
-> > > disabled state. This solution is similar to how
-> > > platform_get_irq_optional() works for regular platform devices.
-> > >
-> > > 4) Added support for re-ordering the probe of interrupt controllers w=
-hen
-> > > IRQCHIP_ACPI_DECLARE is used.
-> > >
-> > > 5) ACPI support added in RISC-V interrupt controller drivers.
-> > >
-> > > This series is based on Anup's AIA v11 series. Since Anup's AIA v11 i=
-s
-> > > not merged yet and first time introducing fw_devlink, deferred probe =
-and
-> > > reordering support for IRQCHIP probe, this series is still kept as RF=
-C.
-> > > Looking forward for the feedback!
-> > >
-> > > Changes since RFC v2:
-> > >         1) Introduced fw_devlink for ACPI nodes for IRQ dependency.
-> > >         2) Dropped patches in drivers which are not required due to
-> > >            fw_devlink support.
-> > >         3) Dropped pci_set_msi() patch and added a patch in
-> > >            pci_create_root_bus().
-> > >         4) Updated pnp_irq() patch so that none of the actual PNP
-> > >            drivers need to change.
-> > >
-> > > Changes since RFC v1:
-> > >         1) Abandoned swnode approach as per Marc's feedback.
-> > >         2) To cope up with AIA series changes which changed irqchip d=
-river
-> > >            probe from core_initcall() to platform_driver, added patch=
-es
-> > >            to support deferred probing.
-> > >         3) Rebased on top of Anup's AIA v11 and added tags.
-> > >
-> > > To test the series,
-> > >
-> > > 1) Qemu should be built using the riscv_acpi_b2_v8 branch at
-> > > https://github.com/vlsunil/qemu.git
-> > >
-> > > 2) EDK2 should be built using the instructions at:
-> > > https://github.com/tianocore/edk2/blob/master/OvmfPkg/RiscVVirt/READM=
-E.md
-> > >
-> > > 3) Build Linux using this series on top of Anup's AIA v11 series.
-> > >
-> > > Run Qemu:
-> > > qemu-system-riscv64 \
-> > >  -M virt,pflash0=3Dpflash0,pflash1=3Dpflash1,aia=3Daplic-imsic \
-> > >  -m 2G -smp 8 \
-> > >  -serial mon:stdio \
-> > >  -device virtio-gpu-pci -full-screen \
-> > >  -device qemu-xhci \
-> > >  -device usb-kbd \
-> > >  -blockdev node-name=3Dpflash0,driver=3Dfile,read-only=3Don,filename=
-=3DRISCV_VIRT_CODE.fd \
-> > >  -blockdev node-name=3Dpflash1,driver=3Dfile,filename=3DRISCV_VIRT_VA=
-RS.fd \
-> > >  -netdev user,id=3Dnet0 -device virtio-net-pci,netdev=3Dnet0 \
-> > >  -kernel arch/riscv/boot/Image \
-> > >  -initrd rootfs.cpio \
-> > >  -append "root=3D/dev/ram ro console=3DttyS0 rootwait earlycon=3Duart=
-8250,mmio,0x10000000"
-> > >
-> > > To boot with APLIC only, use aia=3Daplic.
-> > > To boot with PLIC, remove aia=3D option.
-> > >
-> > > This series is also available in acpi_b2_v3_riscv_aia_v11 branch at
-> > > https://github.com/vlsunil/linux.git
-> > >
-> > > Based-on: 20231023172800.315343-1-apatel@ventanamicro.com
-> > > (https://lore.kernel.org/lkml/20231023172800.315343-1-apatel@ventanam=
-icro.com/)
-> > >
-> > > Sunil V L (17):
-> > >   arm64: PCI: Migrate ACPI related functions to pci-acpi.c
-> > >   RISC-V: ACPI: Implement PCI related functionality
-> > >   PCI: Make pci_create_root_bus() declare its reliance on MSI domains
-> > >   ACPI: Add fw_devlink support for ACPI fwnode for IRQ dependency
-> > >   ACPI: irq: Add support for deferred probe in acpi_register_gsi()
-> > >   pnp.h: Reconfigure IRQ in pnp_irq() to support deferred probe
-> > >   ACPI: scan.c: Add weak arch specific function to reorder the IRQCHI=
-P
-> > >     probe
-> > >   ACPI: RISC-V: Implement arch function to reorder irqchip probe entr=
-ies
-> > >   irqchip: riscv-intc: Add ACPI support for AIA
-> > >   irqchip: riscv-imsic: Add ACPI support
-> > >   irqchip: riscv-aplic: Add ACPI support
-> > >   irqchip: irq-sifive-plic: Add ACPI support
-> > >   ACPI: bus: Add RINTC IRQ model for RISC-V
-> > >   ACPI: bus: Add acpi_riscv_init function
-> > >   ACPI: RISC-V: Create APLIC platform device
-> > >   ACPI: RISC-V: Create PLIC platform device
-> > >   irqchip: riscv-intc: Set ACPI irqmodel
+> On Thu, Feb 01, 2024 at 02:57:22PM +0100, Michal Koutn=C3=BD wrote:
+> > Hello.
 > >
-> > JFYI, I have no capacity to provide any feedback on this till 6.8-rc1 i=
-s out.
+> > On Wed, Jan 31, 2024 at 04:24:41PM +0000, "T.J. Mercier" <tjmercier@goo=
+gle.com> wrote:
+> > >             reclaimed =3D try_to_free_mem_cgroup_pages(memcg,
+> > > -                                   min(nr_to_reclaim - nr_reclaimed,=
+ SWAP_CLUSTER_MAX),
+> > > +                                   max((nr_to_reclaim - nr_reclaimed=
+) / 4,
+> > > +                                       (nr_to_reclaim - nr_reclaimed=
+) % 4),
 > >
-> Hi Rafael,
+> > The 1/4 factor looks like magic.
 >
-> Gentle ping.
+> It's just cutting the work into quarters to balance throughput with
+> goal accuracy. It's no more or less magic than DEF_PRIORITY being 12,
+> or SWAP_CLUSTER_MAX being 32.
+
+Using SWAP_CLUSTER_MAX is sort of like having a really large divisor
+instead of 4 (or 1 like before).
+
+I recorded the average number of iterations required to complete the
+1G reclaim for the measurements I took and it looks like this:
+pre-0388536ac291     : 1
+post-0388536ac291    : 1814
+(reclaim-reclaimed)/4: 17
+
+Given the results with /4, I don't think the perf we get here is
+particularly sensitive to the number we choose, but it's definitely a
+tradeoff.
+
+<snip>
+
+> > Also IMO importantly, when nr_to_reclaim - nr_reclaimed is less than 8,
+> > the formula gives arbitrary (unrelated to delta's magnitude) values.
 >
-> Could you please provide feedback on the series? Patches 4, 5, 6, 7 and
-> 8 are bit critical IMO. So, I really look forward for your and other
-> ACPI experts!.
+> try_to_free_mem_cgroup_pages() rounds up to SWAP_CLUSTER_MAX. So the
+> error margin is much higher at the smaller end of requests anyway.
+> But practically speaking, users care much less if you reclaim 32 pages
+> when 16 were requested than if you reclaim 2G when 1G was requested.
 
-There was quite a bit of discussion on patch [6/21] and it still seems
-relevant to me.
-
-ACPI actually has a way to at least indicate what the probe ordering
-should be which is _DEP.
-
-The current handling of _DEP in the kernel may not be covering this
-particular use case, but I would rather extend it (if necessary)
-instead of doing all of the -EPROBE_DEFER dance which seems fragile to
-me.
-
-Thanks!
+I like Johannes's suggestion of just a comment instead of the mod op.
+It's easier to read, slightly less generated code, and even if we
+didn't have the .nr_to_reclaim =3D max(nr_pages, SWAP_CLUSTER_MAX) in
+try_to_free_mem_cgroup_pages, memory_reclaim would still get very
+close to the target before running out of nr_retries.
 
