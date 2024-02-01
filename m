@@ -1,159 +1,123 @@
-Return-Path: <linux-kernel+bounces-48938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33F6E846361
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:25:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FDEC846368
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:25:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF061B2769F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:25:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6B63B244D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:25:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55D9440C0C;
-	Thu,  1 Feb 2024 22:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6118A40C15;
+	Thu,  1 Feb 2024 22:25:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b="mQtvNz/2"
-Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xxpg1ylp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22CFC40BE2;
-	Thu,  1 Feb 2024 22:24:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.185.137.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 509083FE24;
+	Thu,  1 Feb 2024 22:25:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706826283; cv=none; b=n4rDELgtjXQkrXrtiQXOxssTgT2ZZDCIVnUczZWB2dYJlAcVFngxv3U3yHkXDOSY4aTi1l71KVXBQbot9Cq+JzvI1nUBokhsrD49nh74HgVoOv4m5oYcHxQAOUb1Xrw5EKzNvF4x5RsT6wmM2IJSnSJmxNYcDtYJdr94miVcLRo=
+	t=1706826319; cv=none; b=nQ8rvRE08UL9uWmMkI7E9zaiXr+OoqV68yROFihFaUIi4WhGudKpXcHLje5j1u4lJDhsG4XjQ04e4ygmpa1aB6D9Li/gOlKw0kd6g7MpCioWvShj1V/4RMXn/7KUus3CeYc/O497oNVJhi8rW7NbZxSa2vjSU/9jUZZK777b6gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706826283; c=relaxed/simple;
-	bh=V+pgcDkLptPWj1ZsXMjO/YpMP2pXDVV5rTLspffLxF0=;
-	h=From:To:Subject:In-reply-to:References:MIME-Version:Content-Type:
-	 Date:Message-ID; b=BBqLUnv2qEk+lxcqSYUo7A0QkvdUipaldpE6XHlFCAFDHA1r4hAfufZ9XGfhCBj1PM1uIBN9MYL/T+F5vlqx/N1r9kZ80PSRE6ezkC4oBEeQpJw6rC/7jUP3Rtnu3YNZl0avB06G8sCLiAmEn0FSlcyiPdJcG2JGRUJnffAEspM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org; spf=pass smtp.mailfrom=openbsd.org; dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b=mQtvNz/2; arc=none smtp.client-ip=199.185.137.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openbsd.org
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=V+pgcDkLpt
-	PWj1ZsXMjO/YpMP2pXDVV5rTLspffLxF0=; h=date:references:in-reply-to:
-	subject:to:from; d=openbsd.org; b=mQtvNz/2l4bObNXPQCEXRYkfvH+3kuXrFbmQ
-	5ccm3cu6lDooMGrgLBn1n2RoQ/QYXvQOUNcLRqrZ1kWyTib3gOGK7YIOBFvIxj+aEJ2Can
-	NzFcAvwgTKE5s2p15GrjKIZSJ5E83Qw4JU2rm21yzOxjmlYmkAW7Vw82dIzpUc8IJ2Mn+N
-	zNbdkKOgBXPLJirZSmKXDwXvoKqt5rpDUHQQ7Q9PX8zVxzrTKL1QzXP4xl2DC0D5KuGUke
-	IwafprPJe305G7qvBX7SCXPSP2/jXehf8l2taZ6+A2C7tIOAj8YjRxhVXYXwUELwobIUL6
-	AbgXvaGSEL3HyNiF7p9jTivZtg==
-Received: from cvs.openbsd.org (localhost [127.0.0.1])
-	by cvs.openbsd.org (OpenSMTPD) with ESMTP id 90ae0d7d;
-	Thu, 1 Feb 2024 15:24:40 -0700 (MST)
-From: "Theo de Raadt" <deraadt@openbsd.org>
-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-    Jeff Xu <jeffxu@chromium.org>, Jonathan Corbet <corbet@lwn.net>,
-    akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com,
-    sroettger@google.com, willy@infradead.org,
-    gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
-    usama.anjum@collabora.com, rdunlap@infradead.org, jeffxu@google.com,
-    jorgelo@chromium.org, groeck@chromium.org,
-    linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-    linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
-    linux-hardening@vger.kernel.org
-Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-                  Jeff Xu <jeffxu@chromium.org>,
-                  Jonathan Corbet <corbet@lwn.net>,
-                  akpm@linux-foundation.org, keescook@chromium.org,
-                  jannh@google.com, sroettger@google.com,
-                  willy@infradead.org, gregkh@linuxfoundation.org,
-                  torvalds@linux-foundation.org,
-                  usama.anjum@collabora.com, rdunlap@infradead.org,
-                  jeffxu@google.com, jorgelo@chromium.org,
-                  groeck@chromium.org, linux-kernel@vger.kernel.org,
-                  linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-                  pedro.falcato@gmail.com, dave.hansen@intel.com,
-                  linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v8 0/4] Introduce mseal
-In-reply-to: <20240201204512.ht3e33yj77kkxi4q@revolver>
-References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver> <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com> <20240201204512.ht3e33yj77kkxi4q@revolver>
-Comments: In-reply-to "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-   message dated "Thu, 01 Feb 2024 15:45:12 -0500."
+	s=arc-20240116; t=1706826319; c=relaxed/simple;
+	bh=Hj4d6tN880SUXjND3akJlhPUopmSpfbUPijmcRAWHYE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=soJ0Jz8T2BwJRtF8P6HKOaeReYXE4XrmnoBtl30zxeJYdHX+z9AR53NMY80DBAq2X2QLODcM0cf/9Nqp/hN3dD0WwTQTCisq3P1RO1uyFqY7FC9yOsVLTYrMx2lTOhq6FN8OUI7WxnUlPK1qom55weM/46fnNsK0i2Bryl2OEYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xxpg1ylp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A150FC433F1;
+	Thu,  1 Feb 2024 22:25:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706826318;
+	bh=Hj4d6tN880SUXjND3akJlhPUopmSpfbUPijmcRAWHYE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Xxpg1ylppvjDGiJJEtcytqf1u4ejPPuK5J07pbr3BADGVTo/qTSyRQZcN5kJwQoHj
+	 1B6JRsIR2+4dbuvaw//cRSwMIg/pmizdahVxp5I4twMy/hVBPvVyJdJvHwD9vyv+5/
+	 SuAnGViWMHubN1I1cB6nqJOaD+Y/Su2BhyyMBKSxod0Kfr9jmzGE8DL20g32vXh/Ul
+	 IDAWKX+cJ+n8hX+b38tPR+t4zXXlmNNsRHIBXnd0KFc6xQv2EwYGYhAIpNEv1oRZ7K
+	 h4A3PAfdTjsK9r2TM7FFqNgdiubue8JZmUihY0wrSf7ziXh9cjeIas8+oRjkrhwmWs
+	 pLEABPoFrUacg==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-510322d5363so2289940e87.1;
+        Thu, 01 Feb 2024 14:25:18 -0800 (PST)
+X-Gm-Message-State: AOJu0YyRyamhkZjXYwBfckJuvlRuMMyMd48H0MoKmMVbmiqmDhgNyuuy
+	SqhVehVmKhYIdon/jPrcPXGz9PY8biIleTS+MQu36Ied3S5noDnEi9Mur6RuEkd5QivC9gmsZLr
+	TRs5VS1pu25FtqlLIFrlfxUhCew==
+X-Google-Smtp-Source: AGHT+IGC041DLcAtPTvGVodFo3zQTW46kSgTDcCXUZXpug1NyyDWiMZCMKTeZC7ZZ9y013U1fjsI3yyBvKhZeLZD3M4=
+X-Received: by 2002:a05:6512:25e:b0:511:33ca:ac47 with SMTP id
+ b30-20020a056512025e00b0051133caac47mr533077lfo.9.1706826316861; Thu, 01 Feb
+ 2024 14:25:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <85538.1706826280.1@cvs.openbsd.org>
-Date: Thu, 01 Feb 2024 15:24:40 -0700
-Message-ID: <60731.1706826280@cvs.openbsd.org>
+References: <20240201155532.49707-1-brgl@bgdev.pl> <20240201155532.49707-4-brgl@bgdev.pl>
+In-Reply-To: <20240201155532.49707-4-brgl@bgdev.pl>
+From: Rob Herring <robh@kernel.org>
+Date: Thu, 1 Feb 2024 16:25:04 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJ6E9aBd4QMOJ62HuRSiR8BMtrS3tBUDBhPcb1iCGeyfQ@mail.gmail.com>
+Message-ID: <CAL_JsqJ6E9aBd4QMOJ62HuRSiR8BMtrS3tBUDBhPcb1iCGeyfQ@mail.gmail.com>
+Subject: Re: [RFC 3/9] power: sequencing: new subsystem
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Alex Elder <elder@linaro.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Abel Vesa <abel.vesa@linaro.org>, Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
+	linux-pci@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-There is another problem with adding PROT_SEAL to the mprotect()
-call.
+On Thu, Feb 1, 2024 at 9:55=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl> =
+wrote:
+>
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> Implement the power sequencing subsystem allowing devices to share
+> complex powering-up and down procedures. It's split into the consumer
+> and provider parts but does not implement any new DT bindings so that
+> the actual power sequencing is never revealed in the DT representation.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-What are the precise semantics?
-
-If one reviews how mprotect() behaves, it is quickly clear that
-it is very sloppy specification.  We spent quite a bit of effort
-making our manual page as clear as possible to the most it gaurantees,
-in the standard, and in all the various Unix:
-
-     Not all implementations will guarantee protection on a page basis; the
-     granularity of protection changes may be as large as an entire region.
-     Nor will all implementations guarantee to give exactly the requested
-     permissions; more permissions may be granted than requested by prot.
-     However, if PROT_WRITE was not specified then the page will not be
-     writable.
-
-Anything else is different.
-
-That is the specification in case of PROT_READ, PROT_WRITE, and PROT_EXEC.
-
-What happens if you add additional PROT_* flags?
-
-Does mprotect still behave just as sloppy (as specified)?
-
-Or it now return an error partway through an operation?
-
-When it returns the error, does it skip doing the work on the remaining
-region?
-
-Or does it skip doing any protection operation at all? (That means the code
-has to do two passes over the region; first one checks if it may proceed,
-second pass performs the change.  I think I've reat PROT_SEAL was supposed
-to try to do things as one pass; is that actually possible without requiring
-a second pass in the kernel?
-
-To wit, do these two sequences have _exactly_ the same behaviour in
-all cases that we can think of
-    - unmapped sub-regions
-    - sealed sub-regions
-    - and who knows what else mprotect() may encounter
-
-a)
-
-    mprotect(addr, len, PROT_READ);
-    mseal(addr, len, 0);
-
-b)
-
-    mprotect(addr, len, PROT_READ | PROT_SEAL);
-
-Are they the same, or are they different?
-
-Here's what I think: mprotect() behaves quite differently if you add
-the PROT_SEAL flag, but I can't quite tell precisely what happens because
-I don't understand the linux vm system enough.
+> +++ b/drivers/power/sequencing/Kconfig
+> @@ -0,0 +1,12 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
 
 
-(As an outsider, I have glanced at the new PROT_MTE flag changes; that
-one seem to just "set a flag where possible", rather than performing
-an action which could result in an error, and seems to not have this
-problem).
+> diff --git a/drivers/power/sequencing/Makefile b/drivers/power/sequencing=
+/Makefile
+> new file mode 100644
+> index 000000000000..dcdf8c0c159e
+> --- /dev/null
+> +++ b/drivers/power/sequencing/Makefile
+> @@ -0,0 +1,4 @@
+> +# SPDX-License-Identifier: GPL-2.0
 
+GPL-2.0-only to be consistent.
 
-As an outsider, Linux development is really strange:
+> +
+> +obj-$(CONFIG_POWER_SEQUENCING)         +=3D pwrseq-core.o
+> +pwrseq-core-y                          :=3D core.o
+> diff --git a/drivers/power/sequencing/core.c b/drivers/power/sequencing/c=
+ore.c
+> new file mode 100644
+> index 000000000000..f035caed0e4e
+> --- /dev/null
+> +++ b/drivers/power/sequencing/core.c
+> @@ -0,0 +1,482 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
 
-Two sub-features are being pushed very hard, and the primary developer
-doesn't have code which uses either of them.  And once it goes in, it
-cannot be changed.
+Why the deviation from the kernel's default license?
 
-It's very different from my world, where the absolutely minimal
-interface was written to apply to a whole operating system plus 10,000+
-applications, and then took months of testing before it was approved for
-inclusion.  And if it was subtly wrong, we would be able to change it.
-
+Rob
 
