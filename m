@@ -1,144 +1,135 @@
-Return-Path: <linux-kernel+bounces-48877-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CDB684629D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:30:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 562AD846298
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 22:27:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34B0028B068
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:30:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89B2C1C21E51
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:27:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AED873D0A6;
-	Thu,  1 Feb 2024 21:30:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE69D3EA89;
+	Thu,  1 Feb 2024 21:26:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DPZORThD"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BtS0Ov1+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E56183FB01
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 21:30:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B80F3BB43;
+	Thu,  1 Feb 2024 21:26:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706823027; cv=none; b=gDWs4LlrRg3S4LY96Rs9v1G26mGB0eODvXKlfk7UoO2nKAA8lHTWdTWT208RuACaP4oBbsWyY74ykHzWnbig60c6JoKPPVX/ZjhxWZS8FAxagunHn+/Jy2cFOEZDZ8Clk8cmLcwmVG57Sxf9k88oOYxTOMzcj8bH/Ewbl+g4ubk=
+	t=1706822810; cv=none; b=n0DI+Pf/jSStpnSfTkvfO7GWfpkPcHIDG4FiGhYOG4omujkQUffx1A2P4gkifmrYP2BqHOCVBlk77AV21hBS5mqLGEBVLLN0tbi1D0klvKiyYhtnQl18ealixMq3Wgb/KJadWeUZTZ27vQh4brLN1LcEhPQZTLDY1np78d/6NUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706823027; c=relaxed/simple;
-	bh=PbdIUqPhYiA6AB3X+rs8Be25vy0jyf89naAwB2nQj1Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VgToYyEgipJ5siWB21jmaRzkZ2wId1OGftOYpDCl+f8g8P3jVJGa/jeUbBisepk1xsHMRr0keYmX9+wod/pluvMnPPhRcxIQF+ECUH0qB7KDu0uo/lva7RvrdIi+B20n4/k4ckTJU/h1ronXOybNdlOkJFMod4guqbCQa0gbCRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DPZORThD; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a358ec50b7cso30026366b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 13:30:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706823023; x=1707427823; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6/QeHBpQyFPB5QhxpYTGrBvtFQrY95kd1lO0Bi8UaxU=;
-        b=DPZORThDPoXzLgCzVtxaLPNByk9k6XXDS0lMiSItp5Rtsn4eQYBzk8HhQ4wES9XD3E
-         hARqmxOHvcX8oOtZiOI1zd8BbHJu9fmWcObInQIZ5NCJP12K9s3NF58EmIa/sZhZOSsE
-         Ga0rYpWo9GEzfwFkMRzozNBZ4cK8zt42RyK+1eYcOfUQUxFzn6kzBUnEw8A6WDsfLPoI
-         sGBELbxzblryR8AsZh6XRZRzF1fy2oNbVi+0zv4tGi5IdWiU2NGJO3Miym2DAYROkv0K
-         hnVTI5pp94Ckeugm4NAEPZcWpahkhx6rHKmovt9ja5GuLdfHOGmKEvat8ODqY97l74Iy
-         W+SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706823023; x=1707427823;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6/QeHBpQyFPB5QhxpYTGrBvtFQrY95kd1lO0Bi8UaxU=;
-        b=YTXBLr99FmhNX4E+dTQjwYm7GjAPwdsMyhZQY1upb6MihfLpnmNMWa4Ij5BW2vf/2e
-         NyKkr4kUO1/Lg2k4GCvSwsg1jPJIP7Nx1J8PVJCnw2ecjlYeClGfVBeE2UCObwFRspqc
-         rg/XQiUsKRG2TZ193+FOxqQGXdbH1bDR2eo6gGEsvCyj9k3qtu1c71FGyLig0IkPHr1z
-         3TM0CCYE2/jFg1I8xBMY4N17JRLefzOZJdGfwLG3IfjCk27d6Y5sU7S0cUqz+k+A2rRl
-         BVVa/AkUOEXcCi3D/fG+Qf1H8PKk2Cv7QQSghNpsniteZPFcpaW/iYC/DJIexJvgjiK2
-         My7A==
-X-Gm-Message-State: AOJu0YwG5acZfrHuaVz0EoYCzfQIKYGOOVB+7hUlwnXsE7XikZ9EApZE
-	0vHEKY9jKfj24ZN3RIybD6DIttaM6OSOS43RO51Xo6S8MW5/wYbIIYLUqFHxspbtIWi+oA8KgmX
-	x
-X-Google-Smtp-Source: AGHT+IHtJvQqsTQUguHfqfY/hfR6i77WkkUasxCHl7HQl8VYXpNsvAtsieZkmkFJ+Vqc4qtxS7NwgQ==
-X-Received: by 2002:a17:907:7782:b0:a35:3c1f:b29f with SMTP id ky2-20020a170907778200b00a353c1fb29fmr169075ejc.5.1706823022667;
-        Thu, 01 Feb 2024 13:30:22 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVMRc3D9T5IxagDk3x3d6wMkDlSrnKJgtV+EG1BYuZtNjs6K1RNC0CXhuhRxcI8pGVl59dyItFYSZaZZkyQ2CLlXSDzUJsyKHKE52kCsNmfFBFmBbU9Om/FRsTmm+pTvhaM5CLPQbAvl9OX0JTIVOOptsz6gLrbJRKh2PmbKTjL/o3Yp87T/nYvgXgs3/Pqjsf2/VCzGw==
-Received: from [192.168.159.104] (178235179129.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.129])
-        by smtp.gmail.com with ESMTPSA id hd34-20020a17090796a200b00a36f314daa6sm182740ejc.46.2024.02.01.13.30.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 13:30:22 -0800 (PST)
-Message-ID: <67c87d4e-bfab-4248-8f4c-60a80ca3969f@linaro.org>
-Date: Thu, 1 Feb 2024 22:30:20 +0100
+	s=arc-20240116; t=1706822810; c=relaxed/simple;
+	bh=VR/a8iPw20/aKaajgHIqiK8JjLNzC/p31Ouefl5Ivf4=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=eL8Dpk7rGjIxKespS9z4zZ3wU8dY/oDOLdnCr4dHu7YYqWSLH4kaH5iiICqL1eaR679vmntbS5ld8i0n/Hey1QeyQwikvObMLQ1gVHNR63MEnkFLXw+PAmtQkWHUA/MqRMUcHL/twJ5/f4+jFr7D1i5HkxeKeZ3OqG97kEy8i+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BtS0Ov1+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A1F73C433C7;
+	Thu,  1 Feb 2024 21:26:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706822809;
+	bh=VR/a8iPw20/aKaajgHIqiK8JjLNzC/p31Ouefl5Ivf4=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=BtS0Ov1+1n+xvhX3KKNy3PGrDN4AN36h2uDo8s7rAav3imdzYMX6hRv/7sPDNtHhm
+	 JLS/ALKNre5XLmxInWzUbB0pqABgk9ILP0pvP9F6qhhqoNlsKyodtdgi6n1SZxF28J
+	 iDzaww089UYYy70BCDRV/eWO7QVBMv5katAFqSxATPCXdrmkCTsrBcREjOoJELKYwk
+	 DlkTldw8n8u0icffmLBqwMtcUx+s02YyknNSicAIiJPflOYZJxk9NaUZtf7eXHLhAj
+	 XndIkJITGuw1s3Vl4cuIgM++o737FRBuG3CS3/djQZH4O1xs4PiWrzVs4uwR7fQ5mG
+	 Am8JXDXY31YAw==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88AEDC4828D;
+	Thu,  1 Feb 2024 21:26:49 +0000 (UTC)
+From:
+ Bjorn Andersson via B4 Relay <devnull+quic_bjorande.quicinc.com@kernel.org>
+Date: Thu, 01 Feb 2024 13:31:19 -0800
+Subject: [PATCH] arm64: defconfig: Enable Qualcomm interconnect providers
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: defconfig: Enable Qualcomm interconnect providers
-Content-Language: en-US
-To: quic_bjorande@quicinc.com, Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org
-References: <20240201-enable-icc-8250-2290-v1-1-8ded02750521@quicinc.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240201-enable-icc-8250-2290-v1-1-8ded02750521@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20240201-enable-icc-8250-2290-v1-1-8ded02750521@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAKYNvGUC/x2MSQqAMAwAvyI5G4ih4vIV8dAlakCqtCCC+HeLx
+ xmYeSBLUskwVg8kuTTrEQs0dQV+s3EV1FAYmNgQU4MSrduL9R57bgmZB0JnFtsF37khCJT0TLL
+ o/W+n+X0/dim61WYAAAA=
+To: Catalin Marinas <catalin.marinas@arm.com>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Will Deacon <will@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, Bjorn Andersson <quic_bjorande@quicinc.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1606;
+ i=quic_bjorande@quicinc.com; h=from:subject:message-id;
+ bh=PrRvWI3v6LUZy5gGPJMmYHZxgRkosEui53nfZHHVYmI=;
+ b=owEBgwJ8/ZANAwAIAQsfOT8Nma3FAcsmYgBlvA2xeaQWX56SHdES03wVrRhZc5n1qzqikkpUs
+ 3iffg/eBJaJAkkEAAEIADMWIQQF3gPMXzXqTwlm1SULHzk/DZmtxQUCZbwNsRUcYW5kZXJzc29u
+ QGtlcm5lbC5vcmcACgkQCx85Pw2ZrcXURBAAp2ZEzZ5VHTUvPh2jGmshtNoJ3rw3667luu9Wa7O
+ +zTrJzuPVMYydm7VBER85Vvz2NSgXfE4M3syN8q4856+zE81uXPERay+k9J/7NTCyZpWLdvWYT+
+ y9O0EpDD3hRPYagegaM0kj3saPdlPwIP/pMiwkG0gwcwWceSdxbLu0aSIumtNSwLkeJfWm9iFbN
+ mvBvbtnNg50DmZ1IH0LFv0uNJ5h3Btb9gWD+ceuvD0BpQ8ivkggeXN74faBQteo4/VGrYqKFVKU
+ BQNu7dQKtsKGAKw8VAriuqbRds/2fQTJbofvuMYoZA4eOeObgVKytdazSZmWfMrHIaQ58ei2WqJ
+ I/JBxirh5Xf5daHQHseUSdljmdjF38naBdAgBtTG2/jA5T3eJjsDXkL5tiru9j/K+RHm1p00L29
+ weMqHbyBtPrngyzUCu2jAZOhM8aJ4ByZu1LVyWYykMy+PUC31N0jq/kHLMXFIRGA50W47zMaI2N
+ Zx3WH8eL9pxWag2AmJy3exSm0Jcbs3EYlz7TZDoVI3A36KSmAkBVSnhe1nd9llOocQ8hTdp3igs
+ HgqkaqO9uXaKi2Uze3EgOB4evzb6FUXiVBZ8BB32sGmuwhsnO49WM4IP8gdTDntR1YDJalAGmRU
+ F7UTvz0iCJqNPSCKaKu4QmwlBL2xQ71ia7Af6tfUV0RA=
+X-Developer-Key: i=quic_bjorande@quicinc.com; a=openpgp;
+ fpr=05DE03CC5F35EA4F0966D5250B1F393F0D99ADC5
+X-Endpoint-Received:
+ by B4 Relay for quic_bjorande@quicinc.com/default with auth_id=118
+X-Original-From: Bjorn Andersson <quic_bjorande@quicinc.com>
+Reply-To: <quic_bjorande@quicinc.com>
 
-On 1.02.2024 22:31, Bjorn Andersson via B4 Relay wrote:
-> From: Bjorn Andersson <quic_bjorande@quicinc.com>
-> 
-> With interconnect providers built as modules Qualcomm SM8250 and QCM2290
-> platforms launches init without /dev/console being backed by the debug
-> UART.
-> 
-> Build there drivers into the kernel, to make sure the dependencies for
-> the UART driver are available and thereby give userspace access to the
-> UART without having to re-open the console, once the deferred UART
-> driver has probed.
-> 
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+With interconnect providers built as modules Qualcomm SM8250 and QCM2290
+platforms launches init without /dev/console being backed by the debug
+UART.
 
-Konrad
+Build there drivers into the kernel, to make sure the dependencies for
+the UART driver are available and thereby give userspace access to the
+UART without having to re-open the console, once the deferred UART
+driver has probed.
+
+Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+---
+ arch/arm64/configs/defconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index e6cf3e5d63c3..0463db563215 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -1550,7 +1550,7 @@ CONFIG_INTERCONNECT_QCOM=y
+ CONFIG_INTERCONNECT_QCOM_MSM8916=m
+ CONFIG_INTERCONNECT_QCOM_MSM8996=m
+ CONFIG_INTERCONNECT_QCOM_OSM_L3=m
+-CONFIG_INTERCONNECT_QCOM_QCM2290=m
++CONFIG_INTERCONNECT_QCOM_QCM2290=y
+ CONFIG_INTERCONNECT_QCOM_QCS404=m
+ CONFIG_INTERCONNECT_QCOM_SA8775P=y
+ CONFIG_INTERCONNECT_QCOM_SC7180=y
+@@ -1560,7 +1560,7 @@ CONFIG_INTERCONNECT_QCOM_SC8280XP=y
+ CONFIG_INTERCONNECT_QCOM_SDM845=y
+ CONFIG_INTERCONNECT_QCOM_SDX75=y
+ CONFIG_INTERCONNECT_QCOM_SM8150=m
+-CONFIG_INTERCONNECT_QCOM_SM8250=m
++CONFIG_INTERCONNECT_QCOM_SM8250=y
+ CONFIG_INTERCONNECT_QCOM_SM8350=m
+ CONFIG_INTERCONNECT_QCOM_SM8450=y
+ CONFIG_INTERCONNECT_QCOM_SM8550=y
+
+---
+base-commit: 06f658aadff0e483ee4f807b0b46c9e5cba62bfa
+change-id: 20240201-enable-icc-8250-2290-b4fa7dc7b9de
+
+Best regards,
+-- 
+Bjorn Andersson <quic_bjorande@quicinc.com>
+
 
