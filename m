@@ -1,204 +1,138 @@
-Return-Path: <linux-kernel+bounces-47775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AE2A8452A7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:26:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 106E48452B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:29:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6F69B247A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:26:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 426BA1C25C69
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:29:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49DD415A49E;
-	Thu,  1 Feb 2024 08:26:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C3E6159594;
+	Thu,  1 Feb 2024 08:29:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="pzkZFjMj"
-Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Dhlfos4y"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2BC5157056;
-	Thu,  1 Feb 2024 08:26:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.30.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00F57208DD;
+	Thu,  1 Feb 2024 08:29:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706775983; cv=none; b=ePgty8vlItjmcyLrF5ly9+4KkhP46a4S6WpdbVwfS9K0RahJOI5qmZivuuxPVFr2CsVYgYCWjtWZKbNFh/egUCNgXCk7qyVAnm8yAi/vNecm6LrKEuSyg+5NB0bKc1Tg3yRB27eOM5QzLg67z3CFNiAxphjSCbROHUyTGt+h278=
+	t=1706776150; cv=none; b=eAfwL1PbBQLlMagX15txgcU8kJURMkURNU4iucRb3ZLNi1iyGJuO4jJbiFEFXWaIpqeWko/xScPlHeLsjlbPtEygycdx3lvrKtUZNKqsVOjIwZTUpZm1g16mrJCZmL5q0LsXEIa0AFluzBt1yn2J+45WR7CFDKod7jE+gCIxB34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706775983; c=relaxed/simple;
-	bh=L7J9l+tQr12cszugiTQ2/jJwHQL4P8qY+gS5EWtcA+I=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=LhVFE0iHLLmA0l2+yfx37CA4NFl3+1UbzC4BiJouZ2BQm11XQQvp1tz5c9sZq7PHBcngohW2YrIoHDcZWj9EsIcdv+o52qplG0ocPegghK+7FZnRDmgNryq1bDTtd7YqGQkCLiBWFrAZgenpcybKCoqdT7pAlaj49ys2QTIwWJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=pzkZFjMj; arc=none smtp.client-ip=188.40.30.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
-	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=L7J9l+tQr12cszugiTQ2/jJwHQL4P8qY+gS5EWtcA+I=; b=pzkZFjMjeqS+UrlgihHusc+0EJ
-	JlY8keQHJE1OXGauS1N85D/qEI8+OLJM3JYseJ8XnEZi/jWjEwvvcGL1z/GnJtvZT5VKsGrRPQ79C
-	gNAC0D1Q8IP1uKxg5ye1BDOCx2rZo3tFr3Fmm725VznEsgkcFSf1cp1MzMKzEHC9kXdp9JVTPZjZj
-	2c7m8lOqiylRf7VskVGkaYjeT88XVwhHpCt/IAoXeJtrFENe4cRj39ux2EcK9kwqqXQ9A1UIATO77
-	xlpmqYlrvhqe3eCnvstZtrGUgWSHZ3lV6eGKkHwXZmLPTlu2WWuNKcbu6xHA0oBhd1MqcNwGC0KW9
-	Mweamwgw==;
-Received: from sslproxy07.your-server.de ([78.47.199.104])
-	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <esben@geanix.com>)
-	id 1rVSOe-000JUV-54; Thu, 01 Feb 2024 09:26:08 +0100
-Received: from [185.17.218.86] (helo=localhost)
-	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <esben@geanix.com>)
-	id 1rVSOc-0002s1-1r;
-	Thu, 01 Feb 2024 09:26:06 +0100
-From: Esben Haabendal <esben@geanix.com>
-To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-Cc: Rohan G Thomas <rohan.g.thomas@intel.com>,  "David S . Miller"
- <davem@davemloft.net>,  Alexandre Torgue <alexandre.torgue@foss.st.com>,
-  "Jose Abreu" <joabreu@synopsys.com>,  Eric Dumazet <edumazet@google.com>,
-  "Jakub Kicinski" <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>,
-  Maxime Coquelin <mcoquelin.stm32@gmail.com>,  Rob Herring
- <robh+dt@kernel.org>,  "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
-  Giuseppe Cavallaro <peppe.cavallaro@st.com>,  "Serge Semin"
- <fancer.lancer@gmail.com>,  Andrew Halaney <ahalaney@redhat.com>,
-  <elder@linaro.org>,  <netdev@vger.kernel.org>,
-  <linux-stm32@st-md-mailman.stormreply.com>,
-  <linux-arm-kernel@lists.infradead.org>,  <devicetree@vger.kernel.org>,
-  <linux-kernel@vger.kernel.org>,  <quic_bhaviks@quicinc.com>,
-  <kernel.upstream@quicinc.com>
-Subject: Re: [PATCH net-next 2/2] net: stmmac: TBS support for platform driver
-In-Reply-To: <5626e874-066c-4bf2-842d-a7f3387b6c1b@quicinc.com> (Abhishek
-	Chauhan's message of "Wed, 31 Jan 2024 13:59:20 -0800")
-References: <20230927130919.25683-1-rohan.g.thomas@intel.com>
-	<20230927130919.25683-3-rohan.g.thomas@intel.com>
-	<92892988-bb77-4075-812e-19f6112f436e@quicinc.com>
-	<87r0i44h8v.fsf@geanix.com>
-	<5626e874-066c-4bf2-842d-a7f3387b6c1b@quicinc.com>
-Date: Thu, 01 Feb 2024 09:26:06 +0100
-Message-ID: <87a5okvbdt.fsf@geanix.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1706776150; c=relaxed/simple;
+	bh=aAEPwHBMhvs06qKUqIQOH0eIMJYGZLZUqs6EJXIJ6Vc=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sxI0Sx3NalBh/c4OB3Ybz0eYovLHewQQXLra5CtKOX7R0ckRNmVsuqMUPjx1a4T3k61IB3c1AFyGsXZVF5BRHAVgSFK8DdS3WVEPIGmlynUwG0qtiNA31BZj4fsKI3omimHdFnw9BdqoyvNVkw/ub0qzRNf/M2+vGImFHCyBW1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=Dhlfos4y; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1706776150; x=1738312150;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=aAEPwHBMhvs06qKUqIQOH0eIMJYGZLZUqs6EJXIJ6Vc=;
+  b=Dhlfos4yUPCq4kBpD8Flx/cE5BxfdI1SinXVJJbbDPlsnI8yCKzrFULv
+   c52Jg4+YA7DHXuI5K7TLJPuvALTAxslb+6DmdVc/c9BNuZGO4Rcmp41vA
+   uIVazlvx/wXTuKR0AQkqOoI5Kqh9nqOVGyphpHBaiSf1l4wb/oeAb7Nog
+   Mcgf6T0RHOPYLRLEKzzMZ+UAtn3kiNLphUAyNjHLh9wRPXb2FP4/Bx2tZ
+   56FSO/j0tW84h32cFStsvqADynAJrVbZWHUNtXt9uZ9K71oKFADx42J50
+   XgliG1sYvDg0KJkUYJnxA9qd2xTaaMPq5Ge0StmJ6ouKB0lhRCw870v6s
+   A==;
+X-CSE-ConnectionGUID: BKt1nUV+QE+jut1LZSBZSA==
+X-CSE-MsgGUID: zGYG3IuvSuCoVTuOFUOF7A==
+X-IronPort-AV: E=Sophos;i="6.05,234,1701154800"; 
+   d="asc'?scan'208";a="15607613"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 01 Feb 2024 01:29:08 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 1 Feb 2024 01:28:45 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Thu, 1 Feb 2024 01:28:43 -0700
+Date: Thu, 1 Feb 2024 08:28:04 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: =?utf-8?B?5b6Q5rC46KyE?= <ythsu0511@gmail.com>
+CC: Conor Dooley <conor@kernel.org>, <jdelvare@suse.com>,
+	<linux@roeck-us.net>, <corbet@lwn.net>, <Delphine_CC_Chiu@wiwynn.com>,
+	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+	<conor+dt@kernel.org>, <linux-hwmon@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] dt-bindings: Add MPQ8785 voltage regulator device
+Message-ID: <20240201-peso-album-360208dc74c0@wendy>
+References: <20240131055526.2700452-1-ythsu0511@gmail.com>
+ <20240131055526.2700452-2-ythsu0511@gmail.com>
+ <20240131-eraser-given-8381a44f41a4@spud>
+ <CAE+7-j=uWxQhEVF4YhAGmyjrryzMxF2E9Qi6xgRVYwusmaZMMw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Authenticated-Sender: esben@geanix.com
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27171/Wed Jan 31 10:46:17 2024)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="CCoDc/ir44IAA2yC"
+Content-Disposition: inline
+In-Reply-To: <CAE+7-j=uWxQhEVF4YhAGmyjrryzMxF2E9Qi6xgRVYwusmaZMMw@mail.gmail.com>
 
-"Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com> writes:
-> On 1/26/2024 12:43 AM, Esben Haabendal wrote:
->> "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com> writes:
->>
->>> Qualcomm had similar discussions with respect to enabling of TBS for a
->>> particular queue. We had similar discussion on these terms yesterday
->>> with Redhat. Adding Andrew from Redhat here
->>>
->>> What we discovered as part of the discussions is listed below.
->>>
->>> 1. Today upstream stmmac code is designed in such a way that TBS flag
->>> is put as part of queue configurations(see below snippet) and as well
->>> know that stmmac queue configuration comes from the dtsi file.
->>>
->>> //ndo_open => stmmac_open
->>> int tbs_en = priv->plat->tx_queues_cfg[chan].tbs_en;(comes from tx_queues_cfg)
->>>
->>> /* Setup per-TXQ tbs flag before TX descriptor alloc */
->>> tx_q->tbs |= tbs_en ? STMMAC_TBS_AVAIL : 0;
->>>
->>> 2. There is a no way to do this dynamically from user space because
->>> we don't have any API exposed which can do it from user space
->>
->> Not now. But why not extend ethtool API to allow enabling TBS for
->> supported controllers?
->
-> ethtool API can be implemented but that still doesn't solve the
-> problem of stopping the entire MAC block because of enhanced desc
-> allocation.
+--CCoDc/ir44IAA2yC
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I am not sure what you exact point is here.
+On Thu, Feb 01, 2024 at 08:34:32AM +0800, =E5=BE=90=E6=B0=B8=E8=AC=84 wrote:
+> On Wed, Jan 31, 2024 at 11:41=E2=80=AFPM Conor Dooley <conor@kernel.org> =
+wrote:
+> >
+> > On Wed, Jan 31, 2024 at 01:55:26PM +0800, Charles Hsu wrote:
+> > > Monolithic Power Systems, Inc. (MPS) synchronous step-down converter.
+> > >
+> > > Signed-off-by: Charles Hsu <ythsu0511@gmail.com>
+> > > ---
+> > >  Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b=
+/Documentation/devicetree/bindings/trivial-devices.yaml
+> > > index 79dcd92c4a43..088b23ed2ae6 100644
+> > > --- a/Documentation/devicetree/bindings/trivial-devices.yaml
+> > > +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+> > > @@ -129,6 +129,8 @@ properties:
+> > >            - mps,mp2975
+> > >              # Monolithic Power Systems Inc. multi-phase hot-swap con=
+troller mp5990
+> > >            - mps,mp5990
+> > > +            # Monolithic Power Systems Inc. synchronous step-down co=
+nverter mpq8785
+> > > +          - mps,mpq8785
+> >
+> > q sorts before 2, otherwise
+> Okay, I got it.
 
-If you look at the implementation of ethtool API for changing ring
-parameters, you have stmmac_set_ringparam() which calls
-stmmac_reinit_ringparam(), which again calls stmmac_release() if the
-interface is up (stopping the entire MAC), and then stmmac_open() which
-reinitializes everything.
+Apparently I am wrong, sorry about that! Please ignore this comment.
 
-The same pattern could be applied to changes to enable enhanced
-descriptor allocation.
+Thanks,
+Conor.
 
-I don't see why that will not be acceptable. Why would anyone have to do
-that while critical traffic is flowing? In your system you should be
-able to know which queues needs enhanced descriptors before starting
-communication.
+--CCoDc/ir44IAA2yC
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 1. We can either allocate enhanced desc for all channels at bootup and
-> then choose to switch to enable TBS mode at runtime (Additional memory
-> usage)
+-----BEGIN PGP SIGNATURE-----
 
-A good default would IMHO be to enable enhanced descriptors for all but
-TX queue 0. This will allow use of TBS without needing to change
-anything. If the rather minimal extra memory usage is disturbing anyone,
-then they can tune it at boot time before bringing the interface up.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbtWFAAKCRB4tDGHoIJi
+0sbKAQDIDuEx9DkoRbJqLhVfM+jO7J1InETLgtByeLSDmNDzAQEAlKELUYFDeKFJ
+4UrgmTlYHnO7hCz2iY6GhpHAfvH+oQk=
+=C6+A
+-----END PGP SIGNATURE-----
 
-> 2. Live with the disruption of traffic for a brief duration of time.
-> Which is not a good solution for priority and critical traffic.
-
-As mentioned above, I don't see why anyone would need to modify the
-descriptor allocation while critical traffic is flowing.
-
-If you are able put this information in your device tree, you definitely
-will be able to put it in an boot script in some form.
-
->>> and also TBS rely on special descriptors aka enhanced desc this
->>> cannot be done run time and stmmac has to be aware of it before we
->>> do DMA/MAC/MTL start.
->>
->> Isn't this somewhat similar to changing the RX/TX ring parameters,
->> which I believe also is quite difficult to do at run time, and
->> ethtool therefore requires the interface to be down in oroer to
->> change them?
->>
->>> To do this dynamically would only mean stopping DMA/MAC/MTL realloc
->>> resources for enhanced desc and the starting MAC/DMA/MTL. This means
->>> we are disrupting other traffic(By stopping MAC block).
->>
->> Yes. But you would be disrupting traffic less than by requiring a
->> complete reboot of the target which is needed if the devicetree must be
->> changed.
->>
-> any DTS solution today anyway requires completely loading the boot
-> image and rebooting the device, but once the device is functional, End
-> user can activate TBS, as he knows the exact usecase and requirements.
-> I understand the solution is not scalable, but at this point we don't
-> have a solution to activate TBS at runtime.
-
-Exactly. We are discussing a solution to activate enhanced descriptors
-at "runtime". But I propose to do it in a similar way as changing ring
-parameters, so it is in runtime seen from a CPU perspective, but the
-interface will be shortly brought down when changing it.
-
->>> 3. I dont think there is a way we can enable this dynamically today. I
->>> would like upstream community to share your thoughts as well.
->>
->> Hereby done. Could we investigate the possibility of using ethtool to
->> change TBS enable/disable "run-time"?
->>
-> We can either allocate enhanced desc for all channels at bootup
-> and then choose to switch to enable TBS mode at runtime.
-
-I think we should do something like this:
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=3b12ec8f618e
-
-for all glue drivers, so a sane default is established that allows using
-TBS from boot up.
-
-But in addition to that, I think it would make sense to create an
-ethtool API to change it from that default. And it will bring down the
-interface while applying the change.
-
-/Esben
+--CCoDc/ir44IAA2yC--
 
