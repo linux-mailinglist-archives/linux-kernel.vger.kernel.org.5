@@ -1,278 +1,140 @@
-Return-Path: <linux-kernel+bounces-48466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30C35845CA9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:13:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41B4B845C8F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:11:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 192CEB32D5C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:03:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90F71B330E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:03:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F569779FE;
-	Thu,  1 Feb 2024 16:02:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 528D312FF79;
+	Thu,  1 Feb 2024 16:02:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="HxBSqBJf"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="iEdHyO8D"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D672262159;
-	Thu,  1 Feb 2024 16:02:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0257977A08
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 16:02:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706803339; cv=none; b=NFJNQmXJrs32bMiq8xO960LCxGVWTMCpEY/qU/0oFNVKEOCPcq/k+vWb1EDX9Jf6Ip4Q6NIeB5kSYjK72a89KZdaW3EQvXMWeaqPJyD6ErBeX/S8rnZWnxbtMC/xy0cjFHyaqO6DfYlnp0IRj9nEK5JZqLJvlONpJwreTWmJicI=
+	t=1706803345; cv=none; b=NFBj+8Le1TspEChI+nhrX0aIlbqQn/VMYmZyor9z93vhovWUDdGjK22AA9Xe8lRaNjcda3VOcnfH8YqXtryGy1XeoH+olL+K4j8a2KF4ZKNl/ZXdxCsJbQkcYKNbcw8OxIf+meUixQJ//8aI+O24QPh6romw1kTyAY69bf2gNpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706803339; c=relaxed/simple;
-	bh=JjCBJs2+blIlirPozwQ0nRAAbqv5U+lX8HbTP1k5z24=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=pjWq1P2QFygn7Uv89WSBuJ9tOQoIuJicITAME3YJErPuKbiI4RTjdRRFM7BT+T1LlCPdEBm+6jfUy+NLV8OkYYBHdH0rW8n/9zKHtiC/ifg57WcQyNUDEDRWpCZJpmtO+Jr3JTuyVCxXwozem57zcjl57EZphetifAmR1klkFJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=HxBSqBJf; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=JjCBJs2+blIlirPozwQ0nRAAbqv5U+lX8HbTP1k5z24=; b=HxBSqBJfnZ56oknWlxO+4ngILF
-	j3wBPqiuZTQXfmCuY5dN1O70pr4Ojlj8bjgRDF1mGM84cx09awHUz7NdR2MsCl01X+6Ktc+j/Vz+H
-	1M2qd0+/0M02GZH02UdMn+KbQ4K6St/tLUQndz0Me8Y/IE0jATboze/a2S8bYw7gJW1WJ2yfaXglr
-	V9IQueR9sNTNRk4o/5pGxvvk3GdC/t7GSA22Hj+NUpp42K64950yLu0lSFLlrGxOUkUVsHTtKnc3C
-	ei1p4zNanUiObBALK5c5MeE4kuYH1uH+DXw1d3T0fM84WANvraeudgh0CZwmOqFfT29cwY9bge/Zv
-	5e8+05/g==;
-Received: from [205.251.233.234] (helo=iad12-dhcp-142-231-114.iad12.amazon.com)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVZVq-0000000GDXj-2aLr;
-	Thu, 01 Feb 2024 16:02:04 +0000
-Message-ID: <edbd29815cfed8e5b94e6af6395b6a25abb681c8.camel@infradead.org>
-Subject: Re: [PATCH] KVM: selftests: Compare wall time from xen shinfo
- against KVM_GET_CLOCK
-From: David Woodhouse <dwmw2@infradead.org>
-To: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: Jan Richter <jarichte@redhat.com>, linux-kernel@vger.kernel.org, 
- kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, Sean
- Christopherson <seanjc@google.com>
-Date: Thu, 01 Feb 2024 08:02:00 -0800
-In-Reply-To: <87h6is7agi.fsf@redhat.com>
-References: <20240111135901.1785096-1-vkuznets@redhat.com>
-	 <596b2d7ce6941e5dd6bd7b2da6d3ea7d74f6c95a.camel@infradead.org>
-	 <87h6is7agi.fsf@redhat.com>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-	boundary="=-XMPlC68ccDGI6Hw9e/oR"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1706803345; c=relaxed/simple;
+	bh=U24fXnRqD3dOh5+P6dppxxAVP72lv89006UrPUI/kuc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cnNVKFenDRBKzlZpShSVrCWOdRrXaAaU6JkRy5QKR9tJdh9imzX1nK28kc2Rf1K8Y76C280MriOD8n3S0kx9kaToBoUlfwSLz+/PkUybgfiT/Evga29+EKFjN9mXS4UuXyDuj55MKRMcq1Krr32VQJ8nhfLI1ZMaqPMR3shXUmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=iEdHyO8D; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3394bec856fso1443404f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 08:02:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1706803342; x=1707408142; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HOnhFau+Mczj5sTvCdYfAZH4E5T76nRZ5OXsZ+LtuLo=;
+        b=iEdHyO8DvStN1nUNrAXFbkzwD6UcZxqect9x1/R5GqJUnmCRe9N+iCKRhyc8iY5RT4
+         yvoBhM2nZbNCk/b29bjNjQilU/ifvkeJI7G14XxQtZqQ5TPv6tbRlG6Rr/14a9J4NnXS
+         7GS+GSMFSQTemix2+SUSiHf0f4vVIfduGaQlkaYpwYSu5J0SgpKSE02uy61hkM0EJ+6+
+         oulBPRfTdNhyGTBXRZyzlX3CL8XvjgUKRkY0XNuGLU330kxNhQ+c4Uts26OFrujuZsjA
+         jJDYIVWt0Ed14YWaC6VOimymt+iVyqZLAdYVECX5Cre5+N2l5VcqIafR7cr6LDJJYEP7
+         6QrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706803342; x=1707408142;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HOnhFau+Mczj5sTvCdYfAZH4E5T76nRZ5OXsZ+LtuLo=;
+        b=q6ZDSfE9QqQb6LOQw1s3uyo/koHKtLT1mpm9Xa9wFsASTeLYBT49qBmFVcSImOfQVa
+         R+LLmKLqERCtyLwY8U+9/xc2xejFSBl7LW1+AzQBJj0LdOvr1HGZ1MabJergMmtzzbGL
+         aliY7nbvQDBDRAVqi8zdsgqFBn3oT1Wjw0jxZnR/NrFQBV4Z2tu3amLZAd/lYe4pZSJh
+         UfxqBuuap8udCNcd0UlBDzYZxC9m5MMR69Mj9TGn9i+3S53ISwGIHI4yCNqQiPZjDnE5
+         6Yq67NdcCfWRQWxzaz1zWNpTwblIxLHASUjF7ytSsz2/re488aDkMV5HtOyFTQPolBKm
+         DrkQ==
+X-Gm-Message-State: AOJu0Yz8NNyzh0QGHvB4pOM8dVRTGivtOAk39IMWL22zMiyUFTVVutoS
+	uuLKZCwJvTMV3KwJSwWXWhtOYi7PPBxOV+70AboguwSM3HIdy3lGj76EKxJAq5w=
+X-Google-Smtp-Source: AGHT+IEhPCyMcjo+bIKLNhPT2rEIpC1fE3T0Xn3OKMkuAbGB4/W1gfryxjECtWwFqOrjrczet4m2Xw==
+X-Received: by 2002:adf:e8c2:0:b0:33a:f277:8f6 with SMTP id k2-20020adfe8c2000000b0033af27708f6mr7541335wrn.14.1706803342109;
+        Thu, 01 Feb 2024 08:02:22 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUso9ydzZ8gdGjO73/U9lNujpuXhy9lYTJ0tvKFLzKScdRJ59qLqPz3BRG1QmpivZubMtbuPqGiOV9GCr9PP0keXKnO2a/r0iuHtRDzfDLZ4jVd2FD3yqiWJu0gB06CrB70Aei8IR2WWs3mmLqhZMT+jRL4md5AXF9I0pfW2xBLrXfnJbzGwKaSCPJhTFb6arOtbn51Qm/zwtEb8B2jnppE8Jy4YAQmloiRO0/7weh8dIl0KcuNu7VUweWKFHhKlfGTF0K5LWFMPnWQT9jC8axiDhhFu2oxfssczbuCVL2D9CveZotUpLdhktQkCKb4Smt7bzCYSnjeYb11Jfn8Go04xYi9t+syVd+NSFx4Y+8zirJZkv7hPZqvHMJbl6OUfg0osFtV
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id cx16-20020a056000093000b00337d5cd0d8asm16469273wrb.90.2024.02.01.08.02.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 08:02:21 -0800 (PST)
+Date: Thu, 1 Feb 2024 17:02:18 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Breno Leitao <leitao@debian.org>
+Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
+	edumazet@google.com, Andrew Morton <akpm@linux-foundation.org>,
+	Mahesh Bandewar <maheshb@google.com>, weiwan@google.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	horms@kernel.org, andrew@lunn.ch, leit@fb.com
+Subject: Re: [PATCH] blackhole_dev: Fix buil warning
+Message-ID: <ZbvAigcKvxTLjHrr@nanopsycho>
+References: <20240201133238.3089363-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201133238.3089363-1-leitao@debian.org>
+
+s/buil/build/ in the subject.
+
+Also, indicate which tree are you targetting. In this case, should be:
+[patch net-next] xxx
 
 
---=-XMPlC68ccDGI6Hw9e/oR
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Thu, Feb 01, 2024 at 02:32:37PM CET, leitao@debian.org wrote:
+>lib/test_blackhole_dev.c sets a variable that is never read, causing
+>this following building warning:
+>
+>	lib/test_blackhole_dev.c:32:17: warning: variable 'ethh' set but not used [-Wunused-but-set-variable]
+>
+>Remove the variable struct ethhdr *ethh, which is unused.
+>
+>Fixes: 509e56b37cc3 ("blackhole_dev: add a selftest")
+>Signed-off-by: Breno Leitao <leitao@debian.org>
 
-On Thu, 2024-02-01 at 11:19 +0100, Vitaly Kuznetsov wrote:
-> David Woodhouse <dwmw2@infradead.org> writes:
->=20
-> > Sorry for delayed response.
-> >=20
-> > On Thu, 2024-01-11 at 14:59 +0100, Vitaly Kuznetsov wrote:
-> > >=20
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vm_ioctl(vm, KVM_GET_CLOCK, &kc=
-data);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 delta =3D (wc->sec * NSEC_PER_S=
-EC + wc->nsec) - (kcdata.realtime - kcdata.clock);
-> >=20
-> > I think you need to check for KVM_CLOCK_REALTIME in the flags here,
-> > don't you? It might not always be set.
->=20
-> Good suggestion; while this shouldn't be a common use-case on x86_64, it
-> is possible when TSC is *not* the clocksource used on the host. I guess
-> we can just skip the sub-test with a message in this case.
->=20
-> >=20
-> > And also, nobody should ever be using KVM_CLOCK_REALTIME as it stands
-> > at the moment. It's fundamentally broken because it should always have
-> > used CLOCK_TAI not CLOCK_REALTIME.
-> >=20
-> > I'm in the process of fixing that up as an incremental ABI change,
-> > putting the TAI offset into one of the spare pad fields in the
-> > kvm_clock_data and adding a new KVM_CLOCK_TAI_OFFSET flag.
-> >=20
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 TEST_ASSERT(llabs(delta) < 100,
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "Guest's epoch from shinfo %d.%0=
-9d differs from KVM_GET_CLOCK %lld.%lld",
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 wc->sec, wc->nsec, (kcdata.realt=
-ime - kcdata.clock) / NSEC_PER_SEC,
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (kcdata.realtime - kcdata.clock)=
- % NSEC_PER_SEC);
-> > >=20
-> >=20
-> > > Replace the check with comparing wall clock data from shinfo to
-> > > KVM_GET_CLOCK. The later gives both realtime and kvmclock so guest's =
-epoch
-> > > can be calculated by subtraction. Note, the computed epoch may still =
-differ
-> > > a few nanoseconds from shinfo as different TSC is used and there are
-> > > rounding errors but 100 nanoseconds margin should be enough to cover
-> > > it (famous last words).
-> >=20
-> > Aren't those just bugs? Surely this *should* be cycle-perfect, if the
-> > host has a stable TSC?
-> >=20
-> > But I suppose this isn't the test case for that. This is just testing
-> > that the Xen shinfo is doing basically the right thing.
-> >=20
-> > And we're going to need a few more fixes like this WIP before we get
-> > get to cycle perfection from the horrid mess that is our kvmclock code:
-> > https://git.infradead.org/?p=3Dusers/dwmw2/linux.git;a=3Dcommitdiff;h=
-=3Dbc557e5ee4
->=20
-> (Some time ago I was considering suggesting we switch to Hypet-V TSC page
-> clocksource for Linux guests to avoid fixing the mess :-) It's becoming
-> less and less relevant as with modern hardware which supports TSC
-> scaling (and which doesn't support famous TSC bugs like TSC divergence
-> across sockets :-) passing through raw TSC to guests is becoming more
-> and more popular.)
-
-Except for migration, which is kind of hosed. And live update too.
-Where you are only doing a kexec on the *same* host and your time
-source is the *same* TSC, there's no excuse for anything less than
-cycle perfection. But KVM is a long way from that :)
-
-> Regarding this fix, what's your decree? My intention here is to
-> basically get rid on xen_shinfo flakyness without reducing test
-> coverage. I.e. we still want to test that shinfo data is somewhat
-> sane. Later, when you get your 'cycle perfection' and 'TAI' patches in,
-> we can always adjust the test accordingly. In case you agree, I can
-> re-send this with KVM_CLOCK_REALTIME check added.
-
-I think just the KVM_CLOCK_REALTIME check is all we need. No need for
-*this* test to be pedantic about the clock precision; mostly it's just
-checking that something that looks a *bit* like a time value is written
-to the right place in guest memory.
-
-So forget TAI, accept a slop of over 1s, with a snarky comment that the
-API using CLOCK_REALTIME should never have been accepted into the
-kernel in the first place. (I mean that; we don't want people cutting
-and pasting it as an example).
-
---=-XMPlC68ccDGI6Hw9e/oR
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwMjAxMTYwMjAwWjAvBgkqhkiG9w0BCQQxIgQgiLH2vq0n
-DNmG454UooU7Hc9Era8NXb80WGRGntHr6PYwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBRFx4L7sqrkSDvn9e9CW+dbu1hJPplbWCa
-8O8JoDNR8Qsu1WbcArJ8oH6+g5IK+LZWNkS6/tDyOYsi3WN/056FxqNG3b6VkKDfa2kJiAjIjJWr
-3SYIQU6gYHHegWMBCUbyanlPVSPltAzugLOusHgRS93jU4o9VCVTJMvmQvz3uFCSkzRZLkPQ+Ey7
-dXOuNwwb8Rf/u+Wipndzktl8F6nmFHoCakTgjPrGtjFqZv7Vropmt1UJw+jYEGTpc53aybMwcq9a
-IlUTITnQVXkS/BRurSKFrsUCEN/l8Me5m6vQMgbLMw4u1mCR4VKtRGeiiH4aUTNeVkKOSbgyj+Kj
-pbjYUa0j5yfFKWn93wkZdyzFRcXGaZAR0ofjAb6Qw+ZfSfaYU8B6exbn0lD2uhifZmS6pNafLAM0
-4Xy4x1oXDzW9aL7n0fGmUxuivkkX04SRyQzDSwpBHe9aa35EA4XgxgUEjEiSpcUgunDTuMxRGL9s
-PpTHGc40K/y1ZIo6GyAzKRpmFkbH/l7QDmWw7SUhFLFE8W7HJjakjW4+nmOhWqOwJymSLavdfIY5
-/yo9BvEsfD76OpwOmex4TtirWyreWPT/b8CI2bAdYzKa8qyPxZbiloSxwk2ria3tEyxkoYnVtSOY
-nGllnKSSkdWkEyyKsE4Nri7d4kFTAGS9RDU58mDNugAAAAAAAA==
+The patch itself looks good. Feel free to attach
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+with the v2 with fixed subject. Thanks!
 
 
---=-XMPlC68ccDGI6Hw9e/oR--
+>---
+> lib/test_blackhole_dev.c | 3 +--
+> 1 file changed, 1 insertion(+), 2 deletions(-)
+>
+>diff --git a/lib/test_blackhole_dev.c b/lib/test_blackhole_dev.c
+>index 4c40580a99a3..f247089d63c0 100644
+>--- a/lib/test_blackhole_dev.c
+>+++ b/lib/test_blackhole_dev.c
+>@@ -29,7 +29,6 @@ static int __init test_blackholedev_init(void)
+> {
+> 	struct ipv6hdr *ip6h;
+> 	struct sk_buff *skb;
+>-	struct ethhdr *ethh;
+> 	struct udphdr *uh;
+> 	int data_len;
+> 	int ret;
+>@@ -61,7 +60,7 @@ static int __init test_blackholedev_init(void)
+> 	ip6h->saddr = in6addr_loopback;
+> 	ip6h->daddr = in6addr_loopback;
+> 	/* Ether */
+>-	ethh = (struct ethhdr *)skb_push(skb, sizeof(struct ethhdr));
+>+	skb_push(skb, sizeof(struct ethhdr));
+> 	skb_set_mac_header(skb, 0);
+> 
+> 	skb->protocol = htons(ETH_P_IPV6);
+>-- 
+>2.39.3
+>
+>
 
