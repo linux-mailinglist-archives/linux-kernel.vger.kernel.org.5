@@ -1,174 +1,122 @@
-Return-Path: <linux-kernel+bounces-47878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47861-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E395845410
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:35:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C0D58453D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 10:26:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10B282832EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:35:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 323922833DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:26:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 717B21649D6;
-	Thu,  1 Feb 2024 09:30:43 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F9C915AADE;
+	Thu,  1 Feb 2024 09:26:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="TSr9Udjz"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646991649AD;
-	Thu,  1 Feb 2024 09:30:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CA7A15B0ED
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 09:26:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706779843; cv=none; b=cS+r96GcXzHOFxwYtdZ9Q3udmSso4vJfLoDCt55Dlsfn71D3aU5tsRQhwydacCK4GW5YxzJidbF0AJJ5H4UQh0E6cTD83UPYZiA2Gd3ZLS6BG6brFQZUI6oEyqFYKXxiqAuppKEDYFT3Gctr7+yaiTh46iDa2s87xqnEsNHKxkc=
+	t=1706779600; cv=none; b=ETWnmMoiNuw0BTYqu1TOpLRPi9F89F1v2Vm7XkkLzlpKGcpx9yUskIr22dFvv4cUVcONjA26gNsFITc7u9gUyjMs1/NyXocAwsEi+6j+U1WLdSWHV3GMLxRUBrtWEJpar5fTte1Qt07Mzb+JCxwDkyOnZmwRJavUZdiHUen9wDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706779843; c=relaxed/simple;
-	bh=Pw8nxEepj3SW3fuzUXlVu8OndBo1SbgV3fSER76rjfk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ivz8vl+5acLGcqxweoSlnOR39eiPstaE/3RqCXdu0G6/fcY7Ty67Npx/jJFQI/7TwUyYzZkaW0r0S2ppdLG0LD+0gfQ7XBXQiZsIfluxfGbJj6m6LLJfT2eXrNg46/blzg6v7K5AuO0aM1XqRBonuD8vuBKrNK8dqGUjjAaMXS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TQYY42zs3z4f3l7p;
-	Thu,  1 Feb 2024 17:30:32 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 9DD691A0390;
-	Thu,  1 Feb 2024 17:30:36 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgCXaBGtZLtl8V6KCg--.33515S18;
-	Thu, 01 Feb 2024 17:30:36 +0800 (CST)
-From: Yu Kuai <yukuai1@huaweicloud.com>
-To: mpatocka@redhat.com,
-	heinzm@redhat.com,
-	xni@redhat.com,
-	blazej.kucman@linux.intel.com,
-	agk@redhat.com,
-	snitzer@kernel.org,
-	dm-devel@lists.linux.dev,
-	song@kernel.org,
-	yukuai3@huawei.com,
-	jbrassow@f14.redhat.com,
-	neilb@suse.de,
-	shli@fb.com,
-	akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-raid@vger.kernel.org,
-	yukuai1@huaweicloud.com,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH v5 14/14] dm-raid: remove mddev_suspend/resume()
-Date: Thu,  1 Feb 2024 17:25:59 +0800
-Message-Id: <20240201092559.910982-15-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240201092559.910982-1-yukuai1@huaweicloud.com>
-References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
+	s=arc-20240116; t=1706779600; c=relaxed/simple;
+	bh=Y8Jdx7/2I9eY+OOZmGYIEvoOpC8kaOBC/weV3+AMr9E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZPmZQiUXdLZ/h11W/Sw/mxSMZRuTnTBDGwre7p8mCNN6HmBSGVdD2Pped7/8aKt3J/yFeFjV/D+hlK06E5d/KhEJSLWRDMjVpGcjsGYCe1w9Q//iel8khIkBj5LbzLshc38iIyCXgd4ZeWZHGnLOr+mytGGNjJQjrruqslAENMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=TSr9Udjz; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50eac018059so836098e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 01:26:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1706779596; x=1707384396; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q4j/OGysh1p00GXnu3jrZ8vayx12mGduG1dVSS/BJps=;
+        b=TSr9UdjzL3/uShUlh5Q9Pm1eqnxQKOJ5mvZYFxXI7Y3Bg8Gbf4fji5Bv0FEgQVbvOC
+         ZUtnwe2jfr6ylu39XGcDktVUlXp2yALByEtM6VLj9xR8f6vhx2j6rQPppk+xzh116B3a
+         c0eyhbjSbTOwcDYExWBErjXjHIUQpo237iY8lNGIyN4JZQWBDhvm5+kC/6aDvnQ2uIjG
+         bjGKJCif/2PzT3ahDNHlvel9xVH7r8Hg1A75hwV/xI4tKGlUrZ+EyaBt4NZnheAlrmCO
+         FZO3owzvbksb6Ddw5SZaWR/pSX7t0kws/89pNZ/AbAiTs72ligbT6qTgJjvKPNkfrX3h
+         jLyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706779596; x=1707384396;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q4j/OGysh1p00GXnu3jrZ8vayx12mGduG1dVSS/BJps=;
+        b=lancIh3rbKDP/Gw9NxBev2c3fcov8BUXjaEvh7Mp2JkeR/YXq3XJ2fULjb9NZsceO0
+         Delmd6frc9Zl09Mp0DPrORoV6m2abcXyhSr2FnK2U21pSg9ksnUiTP4iTqGeFUZKu3CM
+         ujIqngtX8fVh9maHAC9ERXfVtWkyfURxG7VgqWk+qsC6tKNzBcBwhI86EkIHZbsfovDX
+         OwkMpynEfGu9JoQHN1VthaErnThbJlfKIBhTwHc0vcfXGrZrJ+bYjAsnbUe5M0xOQPUN
+         sPssoxyRybrO+qnnUChPV3dfFfjGUjX8am8Y9gqC1mBqG9a2telcYC1rKxbfv5E1vKJ+
+         FGFA==
+X-Gm-Message-State: AOJu0YxJlOs+Btn+mCYtesA54MTYg3QDiZIQ2vfsZYwhLxISa4g48l3s
+	qqmcQRwAU1LBjFc9j8+3Gojlz3SXbiGZTAiTc3yBBfPsFHzeninjWMbmXOTXX5DmPBxccUgW49I
+	DEzc=
+X-Google-Smtp-Source: AGHT+IHkZoXz7mP0kGx60Jb5V+6DneyBwVY7J5CFTS4qFQs/LhONi8vuA4PHjnbxrDzRDBiIBcgzPg==
+X-Received: by 2002:ac2:424f:0:b0:50f:1c90:d3d5 with SMTP id m15-20020ac2424f000000b0050f1c90d3d5mr1333532lfl.24.1706779596042;
+        Thu, 01 Feb 2024 01:26:36 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWOtaVz8GM+WZvodVDKtJwSMAAPbO63TGVulAslgxR+dUVpDDXHlRASNIGqIiwCX5r+AkJvjQ9jcDZUYk+NBvOwBBn4urasN5u1nERxh8t7DM5R41WFIVhWWGl0DXOw8f5obg5IU05Mrty9pd+ldnJmLHlHc19PtPGmojDjQ2hxNTayxSQ3WNSYsWczro+NAMn/Zimg7yxKDA409qFsmdopS3mwK6OetTnl0vg0kMCUA/hCDvzq0k944bf1TEomKW8WPmR345ZNYAtibOWcxQ==
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id l13-20020a05600c4f0d00b0040efbdd2376sm3847555wmq.41.2024.02.01.01.26.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 01:26:35 -0800 (PST)
+Date: Thu, 1 Feb 2024 10:26:32 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: "David E. Box" <david.e.box@linux.intel.com>
+Cc: netdev@vger.kernel.org, ilpo.jarvinen@linux.intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com,
+	linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 4/8] platform/x86/intel/sdsi: Add netlink SPDM transport
+Message-ID: <ZbtjyOBHzVKXu_4H@nanopsycho>
+References: <20240201010747.471141-1-david.e.box@linux.intel.com>
+ <20240201010747.471141-5-david.e.box@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCXaBGtZLtl8V6KCg--.33515S18
-X-Coremail-Antispam: 1UD129KBjvJXoWxCF4UXw48Cw4kXrW8Cw4DJwb_yoW5GrWDpw
-	4IqFWayw4UtFZrXwsrA3WvgFy5twn5KrWjkrZxW34fWa43Gr13Wr18Gay5XFWDKFWfJF1D
-	Aa1Utw48uryIgrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUP214x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j6r
-	xdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
-	M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
-	v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
-	F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
-	IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
-	wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc4
-	0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AK
-	xVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JV
-	WxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUbmZ
-	X7UUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201010747.471141-5-david.e.box@linux.intel.com>
 
-From: Yu Kuai <yukuai3@huawei.com>
+Thu, Feb 01, 2024 at 02:07:43AM CET, david.e.box@linux.intel.com wrote:
 
-dm layer will make sure that no new IO can be issued and will wait for
-all dispatched IO to be done during suspend or before removing the
-device. Hence there is no need to call mddev_suspend/resume() again.
+[...]
 
-BTW, mddev_suspend/resume() can't gurantee that there are no sync IO,
-and previous patch make sure that presuspend will stop sync thread.
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- drivers/md/dm-raid.c |  8 +++-----
- drivers/md/md.c      | 11 +++++++++++
- 2 files changed, 14 insertions(+), 5 deletions(-)
+>+      -
+>+        name: spdm-req
+>+        type: binary
+>+      -
+>+        name: spdm-rsp
+>+        type: binary
 
-diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
-index 5f78cc19d6f3..ed8c28952b14 100644
---- a/drivers/md/dm-raid.c
-+++ b/drivers/md/dm-raid.c
-@@ -3241,7 +3241,7 @@ static int raid_ctr(struct dm_target *ti, unsigned int argc, char **argv)
- 	rs->md.in_sync = 1;
- 
- 	/* Has to be held on running the array */
--	mddev_suspend_and_lock_nointr(&rs->md);
-+	mddev_lock_nointr(&rs->md);
- 
- 	/* Keep array frozen until resume. */
- 	md_frozen_sync_thread(&rs->md);
-@@ -3829,11 +3829,9 @@ static void raid_postsuspend(struct dm_target *ti)
- {
- 	struct raid_set *rs = ti->private;
- 
--	if (!test_and_set_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags)) {
-+	if (!test_and_set_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags))
- 		/* Writes have to be stopped before suspending to avoid deadlocks. */
- 		md_stop_writes(&rs->md);
--		mddev_suspend(&rs->md, false);
--	}
- }
- 
- static void attempt_restore_of_faulty_devices(struct raid_set *rs)
-@@ -4091,7 +4089,7 @@ static void raid_resume(struct dm_target *ti)
- 		mddev->ro = 0;
- 		mddev->in_sync = 0;
- 		md_unfrozen_sync_thread(mddev);
--		mddev_unlock_and_resume(mddev);
-+		mddev_unlock(mddev);
- 	}
- }
- 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 2c245341148a..a8db84c200fe 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -437,6 +437,10 @@ int mddev_suspend(struct mddev *mddev, bool interruptible)
- {
- 	int err = 0;
- 
-+	/* Array is supended from dm_suspend() for dm-raid. */
-+	if (!mddev->gendisk)
-+		return 0;
-+
- 	/*
- 	 * hold reconfig_mutex to wait for normal io will deadlock, because
- 	 * other context can't update super_block, and normal io can rely on
-@@ -488,6 +492,13 @@ EXPORT_SYMBOL_GPL(mddev_suspend);
- 
- static void __mddev_resume(struct mddev *mddev, bool recovery_needed)
- {
-+	/*
-+	 * Array is supended from dm_suspend() and resumed from dm_resume() for
-+	 * dm-raid.
-+	 */
-+	if (!mddev->gendisk)
-+		return;
-+
- 	lockdep_assert_not_held(&mddev->reconfig_mutex);
- 
- 	mutex_lock(&mddev->suspend_mutex);
--- 
-2.39.2
+I don't understand the need to use netlink for this. Basically what you
+do is you just use it to pass binary blobs to and from FW.
+Advantages, like well-defined attributes, notifications etc, for which
+it makes sense to use Netlink are not utilized at all.
+Also, I don't thing it is good idea to have hw-driver-specific genl
+family. I'm not aware of anything like that so far. Leave netlink
+for use of generic and abstracted APIs.
 
+Can't you just have a simple misc device for this?
+
+Thanks.
+
+>+      -
+>+        name: spdm-rsp-size
+>+        type: u32
+>+      -
+>+        name: spdm-req-size
+>+        type: u32
+>+  -
+
+[...]
 
