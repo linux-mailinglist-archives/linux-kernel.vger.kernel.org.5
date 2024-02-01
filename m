@@ -1,138 +1,222 @@
-Return-Path: <linux-kernel+bounces-48770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47C188460FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:30:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D13BA846100
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:33:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 693A91C269D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:30:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96F79B26AD7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:30:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBBD085632;
-	Thu,  1 Feb 2024 19:30:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A1828527D;
+	Thu,  1 Feb 2024 19:30:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EjLxYP15"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=soleen.com header.i=@soleen.com header.b="hVjt/R+x"
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45DC98562C
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 19:30:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3397929B0
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 19:30:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706815810; cv=none; b=INAtvQA3oXCkg41bpF+mPjvjzhzXtXsQZzkOUBTX4xD7FjCRZM6XqcJotPTs+OOA8doC1OCPbvd6vj9VA4axp5mE0jpe7Bon0unIItY5xkiCwvhD6mSp7fVlhSeO710zbLnOJGOezJt78Qq4NLMeCocTpQIj4etolEDPAYUkBDw=
+	t=1706815821; cv=none; b=qzl5jxso+QSo/I8pZzcDiiexQ48YMLUM9aFTpeKNgPI6Tuh49ecfoNfdZEzIFZB2xn/O90OasLM48FZmVMAVFC6uGpQJEXPGWKQdwF9HPqrAIMCBxyX/ffJAuiKFY+itDWM5uVTwAwM/3KNz+OtrkTxAHzQ47nOr3U9yLJPIpBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706815810; c=relaxed/simple;
-	bh=qEdOIhplANC0gorwcTR2WxNxvxwlx3uplcYTcQ9qBKY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mt3alaZYAs6rgo50Usut/x0RACZpSAkYJTgh4PrsevpltF6wvqH4f1doZ4AsFs7x3DHFEh9SkYALXbtyPwcSqMramFZbUq574nb7De5SvHkLmanaNZUEpF5qZVTLDh4Gk3po9cmweVlZaApj6+GFwFTXvjkt+DcPeUSkR4FNNg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EjLxYP15; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-55f15762840so1588187a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 11:30:08 -0800 (PST)
+	s=arc-20240116; t=1706815821; c=relaxed/simple;
+	bh=7loz5bo6hwRwp9fF34CU0TwzHWopBNAJLtAZsKpdYJY=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=C2UVjzx3+6CF8eTgzwv3kcgn3/tb8JgIHANizeEuSvAABZCymEaM2bkIup31xwYZVm3uQ9UYVfC9JGxMeacyWSLsECBWr/SYg8Mu5yEYxTkghwY2Dqq0pJY4OGqJHayNXsWmF6I8pwn8u+YDAwMR2ehSy5a3MnErVVF+A+nrTc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com; spf=none smtp.mailfrom=soleen.com; dkim=fail (0-bit key) header.d=soleen.com header.i=@soleen.com header.b=hVjt/R+x reason="key not found in DNS"; arc=none smtp.client-ip=209.85.217.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=soleen.com
+Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-46b20b23ff7so495713137.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 11:30:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706815806; x=1707420606; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=p8AF+nF7f6GKyHNgDkKIyrm92UYx2InesUiKuHDgxjA=;
-        b=EjLxYP154gSgNB+thsRnMUshj1rlGe6xzFjcBC3IRcQ+kf9ygr0DL3ReS8n014oQix
-         4/8RW6k2A+uaWKXuMx5XyX5liJwe4VV94DP31z75X2bIlJd15u6/U4vYvWNoCDAgtGGx
-         90ztDHzCAS+psSeNJv9sOrSFHD0iWvpuLP1KwC6CSB1cfOC+A8iY2HWLase8QVPqmr4U
-         j/G1CmMp6gqnT5hSrG8ydL9vIPtyc3m6jGhWCuaJHP4ApcAN7C3mtyRa3PxEmOfix82E
-         mqH3GHGJ2vifGzB8dXZ81YORLKf1aNNNFlHZwKnAtaytWg6AghbEoSsWqHN0by5Qxi4R
-         a0CA==
+        d=soleen.com; s=google; t=1706815817; x=1707420617; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BSEQBUwLYtDyX8SfM7b6fTPQYYyhCXu8tsAp9rUSiMw=;
+        b=hVjt/R+xGXDvi83npwK1UtBz4RPQVC8TrNCJ1tZOnbhE+C+fo5eVGKBNK8xqesdoUP
+         FBkCGhxj/yZkVoroWKYsDh0+ssD01BkiD7LTvlFai6SqH4a5GscgS/otLZFh/uYCySyS
+         s1hu0cB/QVFgtV1IAe/xkxOgOIFZB5RNvsTlGUI7HC+fP9VnKf70Al8wvMR7ylFyTQf3
+         f2hZy0qsMNLrfzweR8uIe7I5aecMYsFczBZQ+Oj0JstB06ZV8i+fogepPqrsWunMuZql
+         6ZFkozCEZXDrIyPK3/keAn1XYTpZf2eDoiF1vxN+3I1CAIcmtt7XCSxrRmqkSVwSUv+y
+         D+Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706815806; x=1707420606;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=p8AF+nF7f6GKyHNgDkKIyrm92UYx2InesUiKuHDgxjA=;
-        b=HYjTUIDAMb/ZeCP3iZTsEudnJdsO/zlD9hGCCc/+Sz9AKkEJ0aaxpULXjNEakyXiHK
-         GP+yg/vOQEVkGZF4cY8GOpOJFjwumP2UaAvewVAm20+E+n2OcJP02jwFZgsTcHjM88BS
-         KDUL8CJyGULLmRA0bUf9dvXfDZKYNqfOcf4C29rHqr9Hf/Is45SzeB/TAAtalFFW7CqS
-         m2DSav0xfuRUF0Ad5+bldrlMZFBe5LXfHp68rZIQYvFh0seiqXH+dQlM5o1MYKs2npbC
-         lj3PK8Jh3MBq1HepHv43Xlgakd47Rk2Sf8W0XRAsRtfVDefvqUwMsLkij3DYYAf+e71Q
-         9SWQ==
-X-Gm-Message-State: AOJu0Yyv5UiNK4wDRkWGIGq4sAyjHbD3d88n1YHsemj4XnUz7zHF4LnB
-	/MxT7Fuk33uv0IA34G7n9Jy9zHon2PAwrUeiYSuE0a+6L2eYjmhDeh7S+lLhA60=
-X-Google-Smtp-Source: AGHT+IEkKtSLNo+Ps5dlB9BfkBVWWZSEfjFQelsor9HO5y8oGLVBKmRLPigMyO4ZMQPPKKtg4A1XQw==
-X-Received: by 2002:a05:6402:1aca:b0:55f:e35e:1450 with SMTP id ba10-20020a0564021aca00b0055fe35e1450mr363191edb.0.1706815806611;
-        Thu, 01 Feb 2024 11:30:06 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVLFV2meBnZyL2aQToPalM5dRVdfEbeV5Rqhbw7IHafWJYZKhQg6t7RZ8bVZm+x4uAH4YThlx0QGCmwNRk1Nxkj56PXICjd0fI2BGoQBHpn6B8pHoO7RDtxsDeCT9FKh0Bf+DvmcjxQEajOjPTpDM7MoEzBuKJBfVHJeFZ7KVJzVX/hB8tw6kDAiubxvtEO0b2WEACkl0dChcGGl1GIezVl4BGv7UtceKSJWvPJxgSBgtnibCenWUCENT7vobB5efcSrz043CPoIAUy
-Received: from [192.168.159.104] (178235179129.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.129])
-        by smtp.gmail.com with ESMTPSA id h2-20020a0564020e0200b0055eed9cac54sm110982edh.12.2024.02.01.11.30.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 11:30:06 -0800 (PST)
-Message-ID: <d16729a0-ce5e-4587-aeaf-b9fceffd2696@linaro.org>
-Date: Thu, 1 Feb 2024 20:30:05 +0100
+        d=1e100.net; s=20230601; t=1706815817; x=1707420617;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BSEQBUwLYtDyX8SfM7b6fTPQYYyhCXu8tsAp9rUSiMw=;
+        b=KwA1JtlPiGGp+qxj9qRq0hmY9ZflE39b3EuHsqfdq7WCueedMMKFXpogJArVq0QJeh
+         APtd9Y7VN4B7C9i72rsDcUEufHwlPNKnu68zDtFSP46z7vwiBbdeeqG2UKVhbH8rhR//
+         IAP+0kZLs2KRFgT2K2CgVTvzPQtg0Q+4Fep8DyBxGz+P9bowWFY1Ca1lXKMtV0tX1a/M
+         X6pVUrZYFiXk/CAe759pZafqqS6N+NQsWhVfXhxNlVH3pQGaXO4saNWbBJqswz0eoSKz
+         tglmwkJLegKILEIDjJCaEsih/NbQiEQBUVK18TKu9ncATGCCvVMDXa7nOoDsSOSyQRB6
+         DZGw==
+X-Gm-Message-State: AOJu0Yy8wMBlvK19WJD5PpBpuoPPXVXP6uGcl4Qy024mI//8k0Qis+zT
+	UyQZJ3YWZ+tZEBdMkS4YQv7982HQvmwBrCPeOMsYMaMsIbd+nav7N3709SYxD+8=
+X-Google-Smtp-Source: AGHT+IET93Vs0eqCzQUdFrwgDKKIhEbJwk6iAT2cMBeQIiq6TG6SVpcwALrgdlhKSo1JBgLLU5iGkA==
+X-Received: by 2002:a05:6102:316c:b0:46b:159e:bf04 with SMTP id l12-20020a056102316c00b0046b159ebf04mr6285592vsm.2.1706815816873;
+        Thu, 01 Feb 2024 11:30:16 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUbTUU/Nlcj6oufqZ9IAZI/9jykB57i+q5vJUcSyMfSXMQRX5nRq/VbOwv5We1qFiKsHSdD7s8/MjqeEFVGLMNwkff7T4Qgj0EeVt9bhyeAoHbv04nlO5LFzIBdsHmNbQf7Vfm2vhlhVWweFrQWRpVA2xQwu/P49MiyEL6Zh1pCk+/vUADBYM2rLeMH8HVCkvoXZJh06/iCgcSd+ue6+o/VG/zOyn/T3mgonWNQ2MjM7t3t27PsCbTZIWLixNH5U5jl/XZH76hxYbE=
+Received: from soleen.c.googlers.com.com (249.240.85.34.bc.googleusercontent.com. [34.85.240.249])
+        by smtp.gmail.com with ESMTPSA id r18-20020ad44052000000b0068c50dec857sm58648qvp.128.2024.02.01.11.30.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 11:30:16 -0800 (PST)
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+X-Google-Original-From: Pasha Tatashin <tatashin@google.com>
+To: robin.murphy@arm.com,
+	joro@8bytes.org,
+	will@kernel.org,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	pasha.tatashin@soleen.com,
+	rientjes@google.com
+Subject: [PATCH] iommu/iova: use named kmem_cache for iova magazines
+Date: Thu,  1 Feb 2024 19:30:14 +0000
+Message-ID: <20240201193014.2785570-1-tatashin@google.com>
+X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/5] arm64: dts: qcom: sc8180x-lenovo-flex-5g: fix GPU
- firmware path
-Content-Language: en-US
-To: Anton Bambura <jenneron@postmarketos.org>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240130202755.2289952-1-jenneron@postmarketos.org>
- <20240130202755.2289952-2-jenneron@postmarketos.org>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240130202755.2289952-2-jenneron@postmarketos.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 30.01.2024 21:27, Anton Bambura wrote:
-> Fix GPU firmware path so it uses model-specific directory.
-> 
-> Signed-off-by: Anton Bambura <jenneron@postmarketos.org>
-> ---
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+The magazine buffers can take gigabytes of kmem memory, dominating all
+other allocations. For observability prurpose create named slab cache so
+the iova magazine memory overhead can be clearly observed.
 
-Konrad
+With this change:
+
+> slabtop -o | head
+ Active / Total Objects (% used)    : 869731 / 952904 (91.3%)
+ Active / Total Slabs (% used)      : 103411 / 103974 (99.5%)
+ Active / Total Caches (% used)     : 135 / 211 (64.0%)
+ Active / Total Size (% used)       : 395389.68K / 411430.20K (96.1%)
+ Minimum / Average / Maximum Object : 0.02K / 0.43K / 8.00K
+
+OBJS ACTIVE  USE OBJ SIZE  SLABS OBJ/SLAB CACHE SIZE NAME
+244412 244239 99%    1.00K  61103       4    244412K iommu_iova_magazine
+ 91636  88343 96%    0.03K    739     124      2956K kmalloc-32
+ 75744  74844 98%    0.12K   2367      32      9468K kernfs_node_cache
+
+On this machine it is now clear that magazine use 242M of kmem memory.
+
+Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+---
+ drivers/iommu/iova.c | 57 +++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 54 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+index d30e453d0fb4..617bbc2b79f5 100644
+--- a/drivers/iommu/iova.c
++++ b/drivers/iommu/iova.c
+@@ -630,6 +630,10 @@ EXPORT_SYMBOL_GPL(reserve_iova);
+ 
+ #define IOVA_DEPOT_DELAY msecs_to_jiffies(100)
+ 
++static struct kmem_cache *iova_magazine_cache;
++static unsigned int iova_magazine_cache_users;
++static DEFINE_MUTEX(iova_magazine_cache_mutex);
++
+ struct iova_magazine {
+ 	union {
+ 		unsigned long size;
+@@ -654,11 +658,51 @@ struct iova_rcache {
+ 	struct delayed_work work;
+ };
+ 
++static int iova_magazine_cache_init(void)
++{
++	int ret = 0;
++
++	mutex_lock(&iova_magazine_cache_mutex);
++
++	iova_magazine_cache_users++;
++	if (iova_magazine_cache_users > 1)
++		goto out_unlock;
++
++	iova_magazine_cache = kmem_cache_create("iommu_iova_magazine",
++						sizeof(struct iova_magazine),
++						0, SLAB_HWCACHE_ALIGN, NULL);
++
++	if (!iova_magazine_cache) {
++		pr_err("Couldn't create iova magazine cache\n");
++		ret = -ENOMEM;
++	}
++
++out_unlock:
++	mutex_unlock(&iova_magazine_cache_mutex);
++
++	return ret;
++}
++
++static void iova_magazine_cache_fini(void)
++{
++	mutex_lock(&iova_magazine_cache_mutex);
++
++	if (WARN_ON(!iova_magazine_cache_users))
++		goto out_unlock;
++
++	iova_magazine_cache_users--;
++	if (!iova_magazine_cache_users)
++		kmem_cache_destroy(iova_magazine_cache);
++
++out_unlock:
++	mutex_unlock(&iova_magazine_cache_mutex);
++}
++
+ static struct iova_magazine *iova_magazine_alloc(gfp_t flags)
+ {
+ 	struct iova_magazine *mag;
+ 
+-	mag = kmalloc(sizeof(*mag), flags);
++	mag = kmem_cache_alloc(iova_magazine_cache, flags);
+ 	if (mag)
+ 		mag->size = 0;
+ 
+@@ -667,7 +711,7 @@ static struct iova_magazine *iova_magazine_alloc(gfp_t flags)
+ 
+ static void iova_magazine_free(struct iova_magazine *mag)
+ {
+-	kfree(mag);
++	kmem_cache_free(iova_magazine_cache, mag);
+ }
+ 
+ static void
+@@ -766,11 +810,17 @@ int iova_domain_init_rcaches(struct iova_domain *iovad)
+ 	unsigned int cpu;
+ 	int i, ret;
+ 
++	ret = iova_magazine_cache_init();
++	if (ret)
++		return -ENOMEM;
++
+ 	iovad->rcaches = kcalloc(IOVA_RANGE_CACHE_MAX_SIZE,
+ 				 sizeof(struct iova_rcache),
+ 				 GFP_KERNEL);
+-	if (!iovad->rcaches)
++	if (!iovad->rcaches) {
++		iova_magazine_cache_fini();
+ 		return -ENOMEM;
++	}
+ 
+ 	for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
+ 		struct iova_cpu_rcache *cpu_rcache;
+@@ -948,6 +998,7 @@ static void free_iova_rcaches(struct iova_domain *iovad)
+ 
+ 	kfree(iovad->rcaches);
+ 	iovad->rcaches = NULL;
++	iova_magazine_cache_fini();
+ }
+ 
+ /*
+-- 
+2.43.0.594.gd9cf4e227d-goog
+
 
