@@ -1,138 +1,163 @@
-Return-Path: <linux-kernel+bounces-47539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11B1E844F1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:24:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25B3A844F25
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:25:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1EDE28BA2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:24:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F13A1F2AA8D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:25:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 156AA17BD1;
-	Thu,  1 Feb 2024 02:24:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="EEPzukSa"
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB8B31A29F;
+	Thu,  1 Feb 2024 02:25:16 +0000 (UTC)
+Received: from smtpbguseast3.qq.com (smtpbguseast3.qq.com [54.243.244.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 689082C686
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 02:24:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6C90210E0
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 02:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.243.244.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706754248; cv=none; b=Jo8pw+dA3A47e9f7u3ae6Oc6vA5Uq+acccclkRbyLPqNKhTZdVvZxNb4M838q8Px+V2k/rS/wrAhq4dJkhhz4svVZpJVCKcp4iemr+bmz4sZwyBAyY6uCYhpBFrasEM0cLTyXe5w847Rna2g3JF+7S7tFTslyR8cac0HXlpKAGI=
+	t=1706754316; cv=none; b=sV3MiTJ8j1O8T5eTPpQ7jVg38HPpQU40N3r6yzgKvMQk6E9xLBkIBY5JjCpfU/G/dTLSbbjAgmih9Slbf1auBqQZI56CJuQAPnGSKn/P8mPXC/wpqN4jKAYWu8Ja740hbJHeJ+TwXC+QgNF5w1H9UBdrJSxkNokziqAlkcZFG38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706754248; c=relaxed/simple;
-	bh=fkXFos6L/rV1zWpZDWOfhA322McaQHE9Bg/adiPhBFQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Eu4DS0HqS1oN8uNK12LowIlKaIsi5uXuzLtZu/AU6HrosmvmhUgSNdV2yzc7mBo+JQuiepdaG79hrR++z3MfBe7nJCL6Si6rQK25c6lI4vSUbOPvzpMufOJyxPyqEy2li5vEuDxAQZx4jNdAbhi31zLE6cVbATEMwVlncN/jLi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=EEPzukSa; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc238cb1b17so410270276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 18:24:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03; t=1706754245; x=1707359045; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qv9t+IRz0wmSb4+k+n2HrMuYyzYj5ilzOfW+hmCAer0=;
-        b=EEPzukSaLKvrksbqis9HHjVin2117HV2j1or5bagH2+o0t7FatYOKbhF1BaEnBlDtI
-         w7B3Qz+RRUAkD5RVoPtOs5UDYj/fqstt/SkU6mvfX98jT2M8GquLJClOv9WBCwo7TMq2
-         Dccj4I3K3pVwmWwQUPcZBq4AhAbZ12rrHpupWmAiroO4VWbRlA22Oetcds+UCkgfP3Sj
-         z1plVxhFhElNTLMhnquyF/krzK/w3FXmdzqbGLrOel1qnhTWtvJ4N6fEPu3evD+tLIg5
-         I3Sxe2A3OYfZU/gT4Fz5x7Z4UodxEjMtzRAfLfGjeEgK965kdTR+C2EdsKcp444dVfpo
-         PGDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706754245; x=1707359045;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qv9t+IRz0wmSb4+k+n2HrMuYyzYj5ilzOfW+hmCAer0=;
-        b=YJJ22YKbmkvvT3gdhlEOO8804G9xiRBAMrOzLy972KBSC3Zl/GCaqMQEI+XynvK9aV
-         qHHJX+oayUBCcQYL5wdrw3IuZgTgRlOgEPdMBRG/8ONaSyAFedeF4D/hwBrs2gphMsvq
-         9Rp3fvb+v2vhuSu+fCsOk4ChPpLo4NPJAqLBCUQYFmHfUzgAbe32Fz2kDFsJA09PZjLb
-         sLJNpSQQhLfB+ldbiTaW4B/jTWyVisxlV8PhndQt232pjt/j3++79LU7KAY8Moc5CUQh
-         GU0QWY9GCc12hDLW1sgAzkNlKSzr7g5K5LzDPkE7nCp/l6vd8UMPhiegHMsxUujLKROF
-         bEvg==
-X-Gm-Message-State: AOJu0Yw45Ec44WgSckhYm4xF8ZXy+0YZLWu9dvjMiBVpMsGNJJOjEJMq
-	liZiZshVu9g9pCBfi6P4wyZSbnMcnZKNl6UEhH/eJk/4cXc4j0tDq2TkIfhjcr5npGiQsvI0vXd
-	Tfd9at+ORLRieEJqxva+uLennq9Gw6QpTwhWHzw==
-X-Google-Smtp-Source: AGHT+IGFdlt1xxouZCrqMQsuo4SbJafYi7z8vsV1/H2fVQtIyjxA5hGHOKunnfjVMjM5v9SAOouIHOknc/Hzrdxjy8U=
-X-Received: by 2002:a25:1e83:0:b0:dc6:1869:9919 with SMTP id
- e125-20020a251e83000000b00dc618699919mr3203708ybe.41.1706754245121; Wed, 31
- Jan 2024 18:24:05 -0800 (PST)
+	s=arc-20240116; t=1706754316; c=relaxed/simple;
+	bh=+vXisyTED3oYjSB3fpGPEFDtkBLUsa77LAHwLPrG0y8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PbcMaHDf9nK93AoefkCKeHww79T+bcYHBUuPbTjNVDVCZ7oSMOcGAkuKQX2QmfhTm7Ynr16/HOWmceelvn6+5ZThSj8qjo9MDtYFMsBtOm+rMKaN7rlK75hj/2uLuyAbrDAoiXMlqmPoYOsBFPYmVP+nxqFCvq935byNxb6hEf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.243.244.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp75t1706754277tdnhvipn
+X-QQ-Originating-IP: kbaL+n5H+N5CjyyZxgbzU94/3JnTA9cqlLwUkW78w1g=
+Received: from [127.0.0.1] ( [223.112.234.130])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Thu, 01 Feb 2024 10:24:35 +0800 (CST)
+X-QQ-SSF: 00400000000000B0B000000A0000000
+X-QQ-FEAT: lm7sZZPcOdbLaBr9ejGiuJs25GZF8B5iemLB1NJcutsEeAisshX7xVdH2h/Lu
+	/UpGw+iooGoYuuitGGU7W/Qqwam/v1MYsjqpzhOkiy20kDsw01DQGI8M2TVTsyROYvkIWMi
+	/W/04hfBeofCwCI/bOS86BJkHE8QcSzW2aIbqlHovpSnv5yIjgnMGEpEW9LdXWDrW/p6Aal
+	r06TPBG9sNtIwRvXUecpDPXh7SDwW0kQ3V1Ltcs9ug3OyQm/1HM4zUHVdr4YHYyXH+pw+Z5
+	2PSJIRslnAHuTvdKzMGCVr3Y2D9NjxAufDhMwxQ525qoO1sXB5Ncy4ox+rKrLUmco8FoIW3
+	oRJpmbHxq2kIr+Z3NrNuqMH0t1pL7VgV7mVUHiq7Xk6CEP+ckwZET5aRLBDCHbQvd3nTBTP
+	o736OylHaHk=
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 14490681971206590225
+Message-ID: <D520CF9C25E9CB81+46dd0dde-cfea-4606-a227-45892ca762ac@shingroup.cn>
+Date: Thu, 1 Feb 2024 10:24:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131-doc-fixes-v3-v3-0-0c8af94ed7de@valentinobst.de> <20240131-doc-fixes-v3-v3-2-0c8af94ed7de@valentinobst.de>
-In-Reply-To: <20240131-doc-fixes-v3-v3-2-0c8af94ed7de@valentinobst.de>
-From: Trevor Gross <tmgross@umich.edu>
-Date: Wed, 31 Jan 2024 21:23:48 -0500
-Message-ID: <CALNs47t1OME29WyYqv_O8PQ0ZesrXEHtg4xntwQWgL0O6f3L=A@mail.gmail.com>
-Subject: Re: [PATCH v3 02/12] rust: error: improve unsafe code in example
-To: kernel@valentinobst.de
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] dt-bingdings: perf: Support uncore ARM NI-700 PMU
+Content-Language: en-US
+To: Robin Murphy <robin.murphy@arm.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, will
+ <will@kernel.org>, "mark.rutland" <mark.rutland@arm.com>
+Cc: shenghui.qu@shingroup.cn, =?UTF-8?B?6LW15Y+v?= <ke.zhao@shingroup.cn>,
+ zhijie.ren@shingroup.cn, linux-kernel@vger.kernel.org,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ Jonathan Cameron <jonathan.cameron@huawei.com>
+References: <20240131065953.9634-1-jialong.yang@shingroup.cn>
+ <e7bf16fc-b12d-47eb-9197-0694e6829ac8@linaro.org>
+ <02B995F774AB7A9D+adfd0934-00cb-4dc3-8bf8-058b83dc2fbb@shingroup.cn>
+ <ebbc9d73-9be2-49ae-98f3-0d71ce624ee4@linaro.org>
+ <873A6CC450C1D0E6+75a39d6c-4fbf-4e30-8630-3226bd725901@shingroup.cn>
+ <b99efbd4-7c12-485d-8688-a4ec606f0cf5@linaro.org>
+ <EC1445AF2C5DB6F4+64772ecd-5e7a-42bb-aaa8-bc2857b2ab8b@shingroup.cn>
+ <c68f8b00-c5df-45e1-b75a-f86ce128ddf0@arm.com>
+From: =?UTF-8?B?WWFuZyBKaWFsb25nIOadqOS9s+m+mQ==?= <jialong.yang@shingroup.cn>
+In-Reply-To: <c68f8b00-c5df-45e1-b75a-f86ce128ddf0@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz6a-1
 
-On Wed, Jan 31, 2024 at 3:24=E2=80=AFPM Valentin Obst via B4 Relay
-<devnull+kernel.valentinobst.de@kernel.org> wrote:
->
-> From: Valentin Obst <kernel@valentinobst.de>
->
-> The `from_err_ptr` function is safe. There is no need for the call to it
-> to be inside the unsafe block.
->
-> Reword the SAFETY comment to provide a better justification of why the
-> FFI call is safe.
->
-> Signed-off-by: Valentin Obst <kernel@valentinobst.de>
-> Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-> Reviewed-by: Alice Ryhl <aliceryhl@google.com>
 
-Reviewed-by: Trevor Gross <tmgross@umich.edu>
 
-> ---
->  rust/kernel/error.rs | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
->
-> diff --git a/rust/kernel/error.rs b/rust/kernel/error.rs
-> index 4f0c1edd63b7..4786d3ee1e92 100644
-> --- a/rust/kernel/error.rs
-> +++ b/rust/kernel/error.rs
-> @@ -264,13 +264,9 @@ pub fn to_result(err: core::ffi::c_int) -> Result {
->  ///     pdev: &mut PlatformDevice,
->  ///     index: u32,
->  /// ) -> Result<*mut core::ffi::c_void> {
-> -///     // SAFETY: FFI call.
-> -///     unsafe {
-> -///         from_err_ptr(bindings::devm_platform_ioremap_resource(
-> -///             pdev.to_ptr(),
-> -///             index,
-> -///         ))
-> -///     }
-> +///     // SAFETY: `pdev` points to a valid platform device. There are n=
-o safety requirements
-> +///     // on `index`.
-> +///     from_err_ptr(unsafe { bindings::devm_platform_ioremap_resource(p=
-dev.to_ptr(), index) })
->  /// }
->  /// ```
->  // TODO: Remove `dead_code` marker once an in-kernel client is available=
-.
->
-> --
-> 2.43.0
->
->
+在 2024/2/1 0:59, Robin Murphy 写道:
+> On 31/01/2024 10:18 am, Yang Jialong 杨佳龙 wrote:
+>>
+>>
+>> 在 2024/1/31 18:16, Krzysztof Kozlowski 写道:
+>>> On 31/01/2024 11:13, Yang Jialong 杨佳龙 wrote:
+>>>>
+>>>>
+>>>> 在 2024/1/31 17:30, Krzysztof Kozlowski 写道:
+>>>>> On 31/01/2024 10:26, Yang Jialong 杨佳龙 wrote:
+>>>>>>
+>>>>>>
+>>>>>> 在 2024/1/31 15:49, Krzysztof Kozlowski 写道:
+>>>>>>> On 31/01/2024 07:59, JiaLong.Yang wrote:
+>>>>>>>> Add file corresponding to hx_arm_ni.c introducing ARM NI-700 PMU 
+>>>>>>>> driver
+>>>>>>>> for HX.
+>>>>>>>>
+>>>>>>>> Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
+>>>>>>>> ---
+>>>>>>>> v1 --> v2:
+>>>>>>>> 1. Submit dt-bindings file Seperately.
+>>>>>>>
+>>>>>>> Where is the driver?
+>>>>>>>
+>>>>>>> Please read:
+>>>>>>> https://elixir.bootlin.com/linux/v6.8-rc2/source/Documentation/process/submitting-patches.rst
+>>>>>>> before posting.
+>>>>>>>
+>>>>>
+>>>>> Keep all discussions public.
+>>>>
+>>>> Get.
+>>>>
+>>>>>
+>>>>>
+>>>>>>>> +  pccs-id:
+>>>>>>>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>>>>>>>> +    description: Used to identify NIs in system which has more 
+>>>>>>>> than
+>>>>>>>> +      one NI.
+>>>>>>>
+>>>>>>> No, reg does it. Drop the property. Anyway you miss here vendor 
+>>>>>>> prefix
+>>>>>>> and proper explanation.
+>>>>>>>
+>>>>>>
+>>>>>> reg will tell phy address. Phy address is too long. I just want a id.
+>>>>>> example: perf stat -a -e ni_pmu_${pccs-id}/cycles/
+>>>>>> I will use it in user space. Not only in driver.
+>>>>>
+>>>>> Custom vendor property is not for that purpose. Use for example 
+>>>>> IDR, DT
+>>>>> aliases or something else.
+>>>>>
+>>>>>
+>>>>
+>>>> I have considered TD aliases. It's not very easy. Two places...
+>>>> IDR.. I have tested. But it chouldn't correspond to the HWs.
+>>>> I need it to identify NIs.
+>>>> DT aliases is reachable. But no very easy.
+>>>
+>>> Except that "you want" I did not see any rationale, any argument
+>>> explaining why this is needed and why this has to be present.
+>>
+>> OK. DT aliases it good.
+> 
+> The real way to address that particular issue is to fix perf to properly 
+> associate the PMU device with the underlying hardware device. Jonathan 
+> had a series doing that[1], but I'm not sure what its status is now.
+> 
+
+Good news.
+In NI, we have to consider NIs and PMUs in one NI.
+
+> Thanks,
+> Robin.
+> 
+> [1] 
+> https://lore.kernel.org/linux-arm-kernel/20230404134225.13408-1-Jonathan.Cameron@huawei.com/
+> 
+
 
