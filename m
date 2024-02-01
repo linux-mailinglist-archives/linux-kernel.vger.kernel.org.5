@@ -1,116 +1,129 @@
-Return-Path: <linux-kernel+bounces-47549-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE486844F3E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:53:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AD6F844F41
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 03:58:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E919B25D81
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:53:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C829E1F2BFAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 02:58:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 433B439AFE;
-	Thu,  1 Feb 2024 02:52:56 +0000 (UTC)
-Received: from mx10.didiglobal.com (mx10.didiglobal.com [111.202.70.125])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id 95D531E89B
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 02:52:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.202.70.125
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD013A1BD;
+	Thu,  1 Feb 2024 02:57:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="sKMHctqj"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7397439FD8;
+	Thu,  1 Feb 2024 02:57:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706755975; cv=none; b=oHh7Ej2jvSnnNiGZI/rO15gct14LQsfNBahc0nyyAZRH6UKJMjcDC2ZUar2d1ZYGlDOWJzpEpXnhLxgnqkFHqyMhLphXD+xsnuJIruPVhH75bhRVKJdqXN0kXp2bdCJYPucMGQglRhiLR+lbF1b5AR9mThq2os9oa/ybrOZlnKo=
+	t=1706756276; cv=none; b=ixVwq4x0k/op2YXLNBUIFhBCcK3NXqmW4ZdSAFqKumIF0O8M7MPwJecNywcI7D5m2vnDfUGI5+8l0HMMDzA58GpKuVhyTkNY/Kqx8BesIUA+xyYmfa9fMRZ4GsHvPHekoj6WKA7kuGg6CVxHPxt+LkvsGSgg+2ZEzr1Pgi29RSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706755975; c=relaxed/simple;
-	bh=M9s+Wv4rdw7a0i7+ZTyNHuRaQaFyBoxaKf72Yw3ZR50=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:From:In-Reply-To:
-	 Content-Type; b=iHbjGz4thT1AgHUIKx2+fcQJU6WioPgDrhcmcqssu57uDZmvO62MU0eFuJQXWBAMVL0LjLHYNckwT+sYN+kzzgdbDUjSKJZUKZ+9xFOk3UNWH4digjXA3hy4jxwGlVLDXa2g/1RXUfhCZK45F4ifqfvmIvNY/SH4aFWB4w0ZGOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=didichuxing.com; spf=pass smtp.mailfrom=didiglobal.com; arc=none smtp.client-ip=111.202.70.125
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=didichuxing.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=didiglobal.com
-Received: from mail.didiglobal.com (unknown [10.79.64.13])
-	by mx10.didiglobal.com (MailData Gateway V2.8.8) with ESMTPS id E47E018A0053BB;
-	Thu,  1 Feb 2024 10:52:48 +0800 (CST)
-Received: from [172.24.140.10] (10.79.71.101) by
- ZJY01-ACTMBX-03.didichuxing.com (10.79.64.13) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 1 Feb 2024 10:52:48 +0800
-Message-ID: <c8a1b948-4e03-418b-94b9-c35045b8f886@didichuxing.com>
-Date: Thu, 1 Feb 2024 10:52:47 +0800
+	s=arc-20240116; t=1706756276; c=relaxed/simple;
+	bh=Ckk4dA0lhTu8OCzSPVKAAtWrIpoweRypmk6TLFFp3tY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=jB7hySA4mpZzi0W6FA53uC0FHrIczkC9mvHxctmZ4QTAODqachKqG7Kxq+UChPAtYE9vFffTpgYKGcl+w4BR3L8zPldFyYV09l0mTlI8lCOWxAHOlxXgf7vporQWDn0UACPPiIc6YYwdRm82Bqi3ZSLJNf/SerkaazeOdqXWqlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=sKMHctqj; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1706756270;
+	bh=IfwlPw1Ok0+Ig6svzdkR7FSpw9GH19cNnmEWdrPvCHs=;
+	h=Date:From:To:Cc:Subject:From;
+	b=sKMHctqjryXt60zpuDgUbw6yhyOSQIdfJGjfFh5kEm82zv+cAF2jiHDqab+mv46tR
+	 41YAN9VWgJB7uX3UAgS5JFpDiHZxuuWHAsA2pJWCydtr53ncOBnYQjM8uadpcfH4OQ
+	 wwWGVJHtI+Jp8DTJlj8SIaRv4ZGQIkVr2y9z69SpPA7B2M8MBRtGM2u4zXrYKE+eMx
+	 JcMGtqmv/XbUb6yPkgr4Im6YStlPdtBelqnOmigFf/3aNAI/lZBHQdtb/YAv200QJo
+	 vuxItKnRH96URiyPG80sOPUNkbNSxDvlTaqpM0O8knI7wpRBvi5u9yYgpAP70SMycV
+	 N5PGEx3ZJbqAQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TQNqy1QbDz4x5K;
+	Thu,  1 Feb 2024 13:57:50 +1100 (AEDT)
+Date: Thu, 1 Feb 2024 13:57:47 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Marco Elver <elver@google.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the mm tree
+Message-ID: <20240201135747.18eca98e@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [linus:master] [sched/eevdf] 2227a957e1:
- BUG:kernel_NULL_pointer_dereference,address
-Content-Language: en-US
-To: Oliver Sang <oliver.sang@intel.com>
-CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, <linux-kernel@vger.kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, <aubrey.li@linux.intel.com>,
-	<yu.c.chen@intel.com>, Tiwei Bie <tiwei.btw@antgroup.com>, Abel Wu
-	<wuyun.abel@bytedance.com>
-X-MD-Sfrom: wanghonglei@didiglobal.com
-X-MD-SrcIP: 10.79.64.13
-From: Honglei Wang <wanghonglei@didichuxing.com>
-In-Reply-To: <Zbr51SNYUpH2J+3z@xsang-OptiPlex-9020>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: ZJY02-PUBMBX-01.didichuxing.com (10.79.65.31) To
- ZJY01-ACTMBX-03.didichuxing.com (10.79.64.13)
+Content-Type: multipart/signed; boundary="Sig_/dsqBj0nMlICd8gJX8CY2S6H";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
+--Sig_/dsqBj0nMlICd8gJX8CY2S6H
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 2024/2/1 09:54, Oliver Sang wrote:
-> hi, Honglei,
-> 
-> On Thu, Feb 01, 2024 at 09:29:30AM +0800, Honglei Wang wrote:
->>
->>
->> On 2024/1/30 22:09, Oliver Sang wrote:
->>> hi, Abel,
->>>
->>> On Tue, Jan 30, 2024 at 06:13:32PM +0800, Abel Wu wrote:
->>>> On 1/30/24 3:24 PM, kernel test robot Wrote:
->>>>>
->>>>>
->>>>> Hello,
->>>>>
->>>>> (besides a previous performance report),
->>>>> kernel test robot noticed "BUG:kernel_NULL_pointer_dereference,address" on:
->>>>>
->>>>> commit: 2227a957e1d5b1941be4e4207879ec74f4bb37f8 ("sched/eevdf: Sort the rbtree by virtual deadline")
->>>>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
->>>>>
->>>>> [test failed on linus/master 3a5879d495b226d0404098e3564462d5f1daa33b]
->>>>> [test failed on linux-next/master 01af33cc9894b4489fb68fa35c40e9fe85df63dc]
->>>>>
->>>>> in testcase: trinity
->>>>> version: trinity-i386-abe9de86-1_20230429
->>
->> Hi Oliver,
->>
->> I'm a bit curious, did the problem happen on i386 only? Did you hit it on
->> x86_64 or other platform with the same trinity testcases?
-> 
-> we did not observe same issue on x86_64 so far.
-> 
-> we can run performance tests with this commit on x86_64 (compiled with gcc-12).
-> FYI, we sent out a performance report before this crash one.
-> 
-> https://lore.kernel.org/all/202401292151.829b01b0-oliver.sang@intel.com/
-> 
+After merging the mm tree, today's linux-next build (i386 defconfig)
+failed like this:
 
-Thanks for the feedback. The performance improvement is as expected. I 
-assume the panic is not introduced by 2227a957e1. We don't know where 
-the "EEVDF scheduling fail, picking leftmost" messages come from even 
-before this patch.
+In file included from arch/x86/include/asm/string.h:3,
+                 from include/linux/string.h:61,
+                 from arch/x86/include/asm/page_32.h:18,
+                 from arch/x86/include/asm/page.h:14,
+                 from arch/x86/include/asm/thread_info.h:12,
+                 from include/linux/thread_info.h:60,
+                 from include/linux/spinlock.h:60,
+                 from include/linux/wait.h:9,
+                 from include/linux/wait_bit.h:8,
+                 from include/linux/fs.h:6,
+                 from include/linux/debugfs.h:15,
+                 from lib/stackdepot.c:17:
+In function 'depot_alloc_stack',
+    inlined from 'stack_depot_save_flags' at lib/stackdepot.c:688:4:
+arch/x86/include/asm/string_32.h:150:25: error: '__builtin_memcpy' specifie=
+d bound 4294967295 exceeds maximum object size 2147483647 [-Werror=3Dstring=
+op-overflow=3D]
+  150 | #define memcpy(t, f, n) __builtin_memcpy(t, f, n)
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+lib/stackdepot.c:459:9: note: in expansion of macro 'memcpy'
+  459 |         memcpy(stack->entries, entries, flex_array_size(stack, entr=
+ies, nr_entries));
+      |         ^~~~~~
+cc1: all warnings being treated as errors
 
-It would be great if we can find a way to reproduce the problem. Seems 
-it's worth a try on VM with fewer cpus and a bit more syscall workload 
-like testcase trinity.
+Presumably caused by commit
 
->>
->> Thanks,
->> Honglei
+  d869d3fb362c ("stackdepot: use variable size records for non-evictable en=
+tries")
+
+from the mm-unstable branch of the mm tree.
+
+I have reverted that commit and the following one for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/dsqBj0nMlICd8gJX8CY2S6H
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmW7CKsACgkQAVBC80lX
+0GwhBgf/S8pw3lrXhEH1f9k4juzn0PrXKu3Sv62t9OFfYfettQCTmE0AvxK4ZOKR
+ebU3u49ici6EJB7Y/yk/VBtMZSAHh21v7HbRpqoF4WWG/LlLecPqTT/8PzGCOhun
+9Agx+sY22x/bNyUqyofAFxcf+cMLyzfZVfhWjqN69Jayq7kgsNIK628dFRM9p4PO
+mkIcHU6WpnIO2MDPtumM+xjrJf34dDaVfbJutx08BX0q9gkc+KhXKJQgSHoCGB5g
+sqCEwZQps2/qPUWxX79dCGLuGaZc7mL7KXHOTf0vWUNiauvzVMVCCqCw0JrojjXK
+6MWvegiaJ9UWuvBJkQ0E4MDICJRw6w==
+=ww20
+-----END PGP SIGNATURE-----
+
+--Sig_/dsqBj0nMlICd8gJX8CY2S6H--
 
