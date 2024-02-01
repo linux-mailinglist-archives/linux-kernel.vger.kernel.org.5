@@ -1,204 +1,144 @@
-Return-Path: <linux-kernel+bounces-48984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCA2D84645E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:21:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 414D1846460
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:22:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B9CA1F24CF9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:21:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED37528B506
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 23:22:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F48F47A7F;
-	Thu,  1 Feb 2024 23:21:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560A147F4D;
+	Thu,  1 Feb 2024 23:22:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DYz1Uw65"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sqDS41EM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F2241211
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 23:20:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 829BC47A7A;
+	Thu,  1 Feb 2024 23:22:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706829661; cv=none; b=EJRMDydu+qNt//TLP2GImPv2eB76zRkHuJr05Th07qlcgAqXa4KyxlnS62o3Wdb9lEfjl00h8jkVAWw9YECj3LRpjEKS9uF7EDpRJbXN5Yx60wFNxP6SjoIYdHC0HtXGjvEnubsVdHVNW4F2E17GWuJHa8tp7zYEBluOvkXPHuQ=
+	t=1706829722; cv=none; b=O+rEGrlt496JnxhpXhBua7xCL+YOTc5SginuUqQyQ4WQMEUU0ZqDl1QPPniXPLpAu4VFZLO7Jx7d2z9p+m6ViUNtXmwqPnSswHvLuwfZMSow9uuJYr9i8XLRtz9A4Q1cyKqfpbh3/q946lYb8dQwcojhxtBTr4by1iBAw61msPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706829661; c=relaxed/simple;
-	bh=l9z7Z/CPSJRsgaZ/pWgOCZAEvFTdT/WuuGesqxR6Q/s=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=GHiS1RKGfjncIkSIzuXKexnNWDRlS42SPLeTtp2gSleP7JNg1B1WpleIkgEGrrvPC/LmM28G39lgKXYfA6khZAxu3xXMkdBDCAFJO5U94VAEK49gHiz20bhGOOflulCjRaUQEKPXee3r3MEVv+Aspl7GgBzw2PSCT1SQc6AHTsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DYz1Uw65; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706829661; x=1738365661;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=l9z7Z/CPSJRsgaZ/pWgOCZAEvFTdT/WuuGesqxR6Q/s=;
-  b=DYz1Uw65Bozgq1Q2vrT2kv5bKgkiZWUphE4hB5jxohVK0H9nvmEG2dfS
-   4R1OedvcZzjzQJPQb8oq1t+tx+tKvVD/C+u+vMZW9U2rpZQgGto+UV2rc
-   giQwHnaR2QGgEOCH4J+6T0sF4E4SK155yUoOHILQ8RP6iCgzXMExVtFC8
-   qV2y2f+AXjARMSZ8gPujkRK3+pshewfTcoq7Vxz4kJ/oqb75pTOJfbIg3
-   XrHEjK4Yo/dLpCI4LXTN7eXwHCbnOmJKUhuWjMISngVXXz0kFNo6Tk9QL
-   2gzrTgwenOgqmQhWwqorqShByND9iFUyuw51DYNePaXYJnoCMCOd+HM/P
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="11133236"
-X-IronPort-AV: E=Sophos;i="6.05,236,1701158400"; 
-   d="scan'208";a="11133236"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 15:21:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,236,1701158400"; 
-   d="scan'208";a="4654575"
-Received: from xzhou1-mobl.amr.corp.intel.com (HELO [10.212.155.8]) ([10.212.155.8])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 15:20:59 -0800
-Message-ID: <7f19b4d69ff20efe8260a174c7866b4819532b1f.camel@linux.intel.com>
-Subject: Re: [PATCH v2] mm: swap: async free swap slot cache entries
-From: Tim Chen <tim.c.chen@linux.intel.com>
-To: "Huang, Ying" <ying.huang@intel.com>, Chris Li <chrisl@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-  linux-mm@kvack.org, Wei =?UTF-8?Q?Xu=EF=BF=BC?= <weixugc@google.com>, Yu
- =?UTF-8?Q?Zhao=EF=BF=BC?= <yuzhao@google.com>, Greg Thelen
- <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, Suren
- =?UTF-8?Q?Baghdasaryan=EF=BF=BC?= <surenb@google.com>,  Yosry
- =?UTF-8?Q?Ahmed=EF=BF=BC?= <yosryahmed@google.com>, Brain Geffon
- <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko
- <mhocko@suse.com>, Mel Gorman <mgorman@techsingularity.net>, Nhat Pham
- <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Kairui Song
- <kasong@tencent.com>, Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng
- Shi <shikemeng@huaweicloud.com>,  Barry Song <v-songbaohua@oppo.com>
-Date: Thu, 01 Feb 2024 15:20:58 -0800
-In-Reply-To: <87sf2ceoks.fsf@yhuang6-desk2.ccr.corp.intel.com>
-References: <20240131-async-free-v2-1-525f03e07184@kernel.org>
-	 <87sf2ceoks.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+	s=arc-20240116; t=1706829722; c=relaxed/simple;
+	bh=G6WlvYnkVrB0wsoSQYsuZNh4sVfvs3Gqe3vjwXFttD0=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=Xoh65GdyQkQ+8iIkaU9rjAGQSrxGvunmIpcVcBYiDGy3x3G8c7JpZV8XaIgDjiYJZOmrroxtUkRDHVD1NazVUwcZx7kowTXVkivzXmsdyIJcHzOBPqLF0AcR5qzV5i4458R0ljp6VvAk9HdUNxxGH2DjmZ3XKooKvAH3yvVknaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sqDS41EM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05682C433F1;
+	Thu,  1 Feb 2024 23:21:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706829722;
+	bh=G6WlvYnkVrB0wsoSQYsuZNh4sVfvs3Gqe3vjwXFttD0=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=sqDS41EMGOKSBtpX0WoSlvxKFtrclrRkhidXvwtvZp3GiKfjUuf1zT+Qq5+HQeFIG
+	 FX/EgpYJbGWDtWn5MIGOgeTGK8lrvxJGgbGyoOmcEkn5Bt8KyRdduvZe3CBmrgBwb6
+	 oPTMPL5cndZ2Z3qGzpcL27tk/8ETXgVGtJXbUv91sI1z5gT9ZhfJ4pogF45nJOENXI
+	 TJqkM3/7nck+eqDhc9F3gSsevRw10vaaIN904xBfL7J8/H9YKltcxw1fdAXDIvZQIT
+	 vnjthjzHwSN8R6zMCvfhhgqkA7tlkR1pBR9shzlY5fU4irt0b64FqMlW7S8qd3SIDo
+	 FDrlmxqz+Eeeg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 02 Feb 2024 01:21:56 +0200
+Message-Id: <CYU4MYUKCVN2.1RWCHNS9QO7XB@suppilovahvero>
+Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+ <zhanb@microsoft.com>, <anakrish@microsoft.com>,
+ <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>
+Subject: Re: [PATCH v7 04/15] x86/sgx: Implement basic EPC misc cgroup
+ functionality
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>,
+ <dave.hansen@linux.intel.com>, <tj@kernel.org>, <mkoutny@suse.com>,
+ <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+ <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+ <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+ <sohil.mehta@intel.com>
+X-Mailer: aerc 0.15.2
+References: <20240122172048.11953-1-haitao.huang@linux.intel.com>
+ <20240122172048.11953-5-haitao.huang@linux.intel.com>
+ <CYLIJZZJON62.24BNN310T3B2F@suppilovahvero>
+ <op.2h07ypcmwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.2h07ypcmwjvjmi@hhuan26-mobl.amr.corp.intel.com>
 
-On Thu, 2024-02-01 at 13:33 +0800, Huang, Ying wrote:
-> Chris Li <chrisl@kernel.org> writes:
->=20
-> >=20
-> > Changes in v2:
-> > - Add description of the impact of time changing suggest by Ying.
-> > - Remove create_workqueue() and use schedule_work()
-> > - Link to v1: https://lore.kernel.org/r/20231221-async-free-v1-1-94b277=
-992cb0@kernel.org
-> > ---
-> >  include/linux/swap_slots.h |  1 +
-> >  mm/swap_slots.c            | 29 +++++++++++++++++++++--------
-> >  2 files changed, 22 insertions(+), 8 deletions(-)
-> >=20
-> > diff --git a/include/linux/swap_slots.h b/include/linux/swap_slots.h
-> > index 15adfb8c813a..67bc8fa30d63 100644
-> > --- a/include/linux/swap_slots.h
-> > +++ b/include/linux/swap_slots.h
-> > @@ -19,6 +19,7 @@ struct swap_slots_cache {
-> >  	spinlock_t	free_lock;  /* protects slots_ret, n_ret */
-> >  	swp_entry_t	*slots_ret;
-> >  	int		n_ret;
-> > +	struct work_struct async_free;
-> >  };
-> > =20
-> >  void disable_swap_slots_cache_lock(void);
-> > diff --git a/mm/swap_slots.c b/mm/swap_slots.c
-> > index 0bec1f705f8e..71d344564e55 100644
-> > --- a/mm/swap_slots.c
-> > +++ b/mm/swap_slots.c
-> > @@ -44,6 +44,7 @@ static DEFINE_MUTEX(swap_slots_cache_mutex);
-> >  static DEFINE_MUTEX(swap_slots_cache_enable_mutex);
-> > =20
-> >  static void __drain_swap_slots_cache(unsigned int type);
-> > +static void swapcache_async_free_entries(struct work_struct *data);
-> > =20
-> >  #define use_swap_slot_cache (swap_slot_cache_active && swap_slot_cache=
-_enabled)
-> >  #define SLOTS_CACHE 0x1
-> > @@ -149,6 +150,7 @@ static int alloc_swap_slot_cache(unsigned int cpu)
-> >  		spin_lock_init(&cache->free_lock);
-> >  		cache->lock_initialized =3D true;
-> >  	}
-> > +	INIT_WORK(&cache->async_free, swapcache_async_free_entries);
-> >  	cache->nr =3D 0;
-> >  	cache->cur =3D 0;
-> >  	cache->n_ret =3D 0;
-> > @@ -269,6 +271,20 @@ static int refill_swap_slots_cache(struct swap_slo=
-ts_cache *cache)
-> >  	return cache->nr;
-> >  }
-> > =20
-> > +static void swapcache_async_free_entries(struct work_struct *data)
-> > +{
-> > +	struct swap_slots_cache *cache;
-> > +
-> > +	cache =3D container_of(data, struct swap_slots_cache, async_free);
-> > +	spin_lock_irq(&cache->free_lock);
-> > +	/* Swap slots cache may be deactivated before acquiring lock */
-> > +	if (cache->slots_ret) {
-> > +		swapcache_free_entries(cache->slots_ret, cache->n_ret);
-> > +		cache->n_ret =3D 0;
-> > +	}
-> > +	spin_unlock_irq(&cache->free_lock);
-> > +}
-> > +
-> >  void free_swap_slot(swp_entry_t entry)
-> >  {
-> >  	struct swap_slots_cache *cache;
-> > @@ -282,17 +298,14 @@ void free_swap_slot(swp_entry_t entry)
-> >  			goto direct_free;
-> >  		}
-> >  		if (cache->n_ret >=3D SWAP_SLOTS_CACHE_SIZE) {
-> > -			/*
-> > -			 * Return slots to global pool.
-> > -			 * The current swap_map value is SWAP_HAS_CACHE.
-> > -			 * Set it to 0 to indicate it is available for
-> > -			 * allocation in global pool
-> > -			 */
-> > -			swapcache_free_entries(cache->slots_ret, cache->n_ret);
-> > -			cache->n_ret =3D 0;
-> > +			spin_unlock_irq(&cache->free_lock);
-> > +			schedule_work(&cache->async_free);
-> > +			goto direct_free;
-> >  		}
-> >  		cache->slots_ret[cache->n_ret++] =3D entry;
-> >  		spin_unlock_irq(&cache->free_lock);
-> > +		if (cache->n_ret >=3D SWAP_SLOTS_CACHE_SIZE)
-> > +			schedule_work(&cache->async_free);
+On Wed Jan 24, 2024 at 5:29 AM EET, Haitao Huang wrote:
+> On Mon, 22 Jan 2024 14:25:53 -0600, Jarkko Sakkinen <jarkko@kernel.org> =
+=20
+> wrote:
+>
+> > On Mon Jan 22, 2024 at 7:20 PM EET, Haitao Huang wrote:
+> >> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+> >>
+> >> SGX Enclave Page Cache (EPC) memory allocations are separate from norm=
+al
+> >> RAM allocations, and are managed solely by the SGX subsystem. The
+> >> existing cgroup memory controller cannot be used to limit or account f=
+or
+> >> SGX EPC memory, which is a desirable feature in some environments.  Fo=
+r
+> >> example, in a Kubernates environment, a user can request certain EPC
+> >> quota for a pod but the orchestrator can not enforce the quota to limi=
+t
+> >> runtime EPC usage of the pod without an EPC cgroup controller.
+> >>
+> >> Utilize the misc controller [admin-guide/cgroup-v2.rst, 5-9. Misc] to
+> >> limit and track EPC allocations per cgroup. Earlier patches have added
+> >> the "sgx_epc" resource type in the misc cgroup subsystem. Add basic
+> >> support in SGX driver as the "sgx_epc" resource provider:
+> >>
+> >> - Set "capacity" of EPC by calling misc_cg_set_capacity()
+> >> - Update EPC usage counter, "current", by calling charge and uncharge
+> >> APIs for EPC allocation and deallocation, respectively.
+> >> - Setup sgx_epc resource type specific callbacks, which perform
+> >> initialization and cleanup during cgroup allocation and deallocation,
+> >> respectively.
+> >>
+> >> With these changes, the misc cgroup controller enables user to set a =
+=20
+> >> hard
+> >> limit for EPC usage in the "misc.max" interface file. It reports curre=
+nt
+> >> usage in "misc.current", the total EPC memory available in
+> >> "misc.capacity", and the number of times EPC usage reached the max lim=
+it
+> >> in "misc.events".
+> >>
+> >> For now, the EPC cgroup simply blocks additional EPC allocation in
+> >> sgx_alloc_epc_page() when the limit is reached. Reclaimable pages are
+> >> still tracked in the global active list, only reclaimed by the global
+> >> reclaimer when the total free page count is lower than a threshold.
+> >>
+> >> Later patches will reorganize the tracking and reclamation code in the
+> >> global reclaimer and implement per-cgroup tracking and reclaiming.
+> >>
+> >> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> >> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> >> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> >> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+> >> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> >
+> > For consistency sake I'd also add co-developed-by for Kristen. This is
+> > at least the format suggested by kernel documentation.
+> >
+> She is the "From Author", so only Signed-off-by is needed for her =20
+> according to the second example in the doc[1]?
 
+Right but okay then Kristen afaik  be the last sob so only re-ordering
+is needed I guess.
 
-I have some concerns about the current patch with the change above.
-We could hit the direct_free path very often.
+>
+> Thanks
+> Haitao
+> [1]https://docs.kernel.org/process/submitting-patches.html#when-to-use-ac=
+ked-by-cc-and-co-developed-by
 
-By delaying the freeing of entries in the return
-cache, we have to do more freeing of swap entry one at a time. When
-we try to free an entry, we can find the return cache still full, waiting t=
-o be freed.
-
-So we have fewer batch free of swap entries, resulting in an increase in
-number of sis->lock acquisitions overall. This could have the
-effect of reducing swap throughput overall when swap is under heavy
-operations and sis->lock is contended.
-
-Tim
-
->=20
-
-> >  	} else {
-> >  direct_free:
-> >  		swapcache_free_entries(&entry, 1);
-> >=20
-> > ---
-> > base-commit: eacce8189e28717da6f44ee492b7404c636ae0de
-> > change-id: 20231216-async-free-bef392015432
-> >=20
-> > Best regards,
->=20
-
+BR, Jarkko
 
