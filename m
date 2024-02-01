@@ -1,40 +1,39 @@
-Return-Path: <linux-kernel+bounces-48664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7171845F87
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:11:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C2C6845F8B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 19:12:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83BFD29AF13
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:11:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 941341F2315C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 18:12:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27FDD12E1EE;
-	Thu,  1 Feb 2024 18:07:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB0EC12EBE9;
+	Thu,  1 Feb 2024 18:07:22 +0000 (UTC)
 Received: from mail.someserver.de (mail.someserver.de [116.202.193.223])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92BD912D162;
-	Thu,  1 Feb 2024 18:07:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A8512E1CC;
+	Thu,  1 Feb 2024 18:07:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.202.193.223
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706810840; cv=none; b=pkILYfYFNi0HBtzkjay0rnbJ49sWc9EiexE1DD7dIAD1mP6LVy2qKllt2t8B6LPWYikpQuwaBc85tJhBlokfX7Qy6cBwjVWFNzU4jhf9x/3WEOhZovTcs3va2vn91zNqiaH+8Z+6YzTtT05+qR19H6ANVQ9rOlHcprWgbWbGAmM=
+	t=1706810842; cv=none; b=SnqKSweXWaUWi2iiuuJfo1gn0qh1drJ799Y9Fiiur22RLC7LNamnrEzQYLCcZIM2e9gGzaONzmScH0rS0j/iIjcajmaLIvcRZDrZFTxNJlkKtx0qp51Uw0huATIU6OAqbrdiIWwYYgVY4oPS0oR6pQm5bdOo74w697/rTtuIRbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706810840; c=relaxed/simple;
-	bh=lj9jzLLyVHFhew0Zi2auFkzyMGCjvKyZGt3bltSvs9k=;
+	s=arc-20240116; t=1706810842; c=relaxed/simple;
+	bh=TIHsrpiXhvakc3QpotZKPzxEDzOuO24UX7NpNCsypps=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=k4VGjZ2pnk5iCCMCGeMU/0p8uDuMlUNDG+fSbj1/PQD184tSW0/7JrDGfNpzKZ5e6So9D27to0iNNLujv5e8d4y/29D/G7ZW3YPjsOJ6qLgouAXGOQh+Yqpz6hMXcA02pCG4k7IwLSi+e7Bm/y0QZ3M6EUsPGDPraGB1X2T1pJU=
+	 In-Reply-To:To:Cc; b=Ny9nyHI3Ou9wgX9nys79M/sOep77TZ2j9nCOlS1oLotC70thNXlp1togM6kc58pkEKa2Cdu5leWQh+BX61qzB0L42WqOrRreYnA2T8bZkzqPGQk5Qn2vE2k0BiS/SGngyYUEkl7K2qOIFeYHxRShXFZ4jWSY/hgWyqCY5qmsSnw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christina-quast.de; spf=pass smtp.mailfrom=christina-quast.de; arc=none smtp.client-ip=116.202.193.223
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christina-quast.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=christina-quast.de
 Received: from localhost (unknown [195.162.191.218])
-	by mail.someserver.de (Postfix) with ESMTPSA id 8B6DAA2250;
-	Thu,  1 Feb 2024 19:07:15 +0100 (CET)
+	by mail.someserver.de (Postfix) with ESMTPSA id F41BCA2267;
+	Thu,  1 Feb 2024 19:07:17 +0100 (CET)
 From: Christina Quast <contact@christina-quast.de>
-Date: Thu, 01 Feb 2024 19:06:59 +0100
-Subject: [PATCH v2 2/3] rust: phy: add some phy_driver and genphy_
- functions
+Date: Thu, 01 Feb 2024 19:07:00 +0100
+Subject: [PATCH v2 3/3] net: phy: add Rust Rockchip PHY driver
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -43,7 +42,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240201-rockchip-rust-phy_depend-v2-2-c5fa4faab924@christina-quast.de>
+Message-Id: <20240201-rockchip-rust-phy_depend-v2-3-c5fa4faab924@christina-quast.de>
 References: <20240201-rockchip-rust-phy_depend-v2-0-c5fa4faab924@christina-quast.de>
 In-Reply-To: <20240201-rockchip-rust-phy_depend-v2-0-c5fa4faab924@christina-quast.de>
 To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
@@ -65,83 +64,197 @@ Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-rockchip@lists.infradead.org, 
  Christina Quast <contact@christina-quast.de>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706810819; l=2422;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706810819; l=6330;
  i=contact@christina-quast.de; s=20240130; h=from:subject:message-id;
- bh=lj9jzLLyVHFhew0Zi2auFkzyMGCjvKyZGt3bltSvs9k=;
- b=aBY8aB9sq9C6dAXsUFZ7GKm0DaKOL3Rg4HPRhXog0o3VGGiSAUmMpGA4nPU0r6SNJlN/kCQ8Q
- 6lt+pqrQgCmB3oQRdIWJxLCdbPCslYHVrYtUjsrYQoPoH+xjpDn+Imd
+ bh=TIHsrpiXhvakc3QpotZKPzxEDzOuO24UX7NpNCsypps=;
+ b=8X+Cl8CgP8FACgRIhTspxgnky8uPVFD6oK9+YPkEb03a9uYnKVWs2Fjil6lGl/w6frseON75r
+ cp6NdHHykN+DubHZ8prPcfHHGD5OQHP108x7AX4hJtENdpJQ/MTXYUM
 X-Developer-Key: i=contact@christina-quast.de; a=ed25519;
  pk=aoQfinjbnr265vCkIZdYteLDcmIqLBhY1m74WfFUU9E=
 
-Those functions are need for the rockchip_rust.rs implementation.
-
-Added functions:
-genphy_config_aneg
-config_init
-
-Getter functions for mdix and speed.
+This is the Rust implementation of drivers/net/phy/rockchip.c. The
+features are equivalent. You can choose C or Rust version kernel
+configuration.
 
 Signed-off-by: Christina Quast <contact@christina-quast.de>
 ---
- rust/kernel/net/phy.rs | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ drivers/net/phy/Kconfig          |   8 +++
+ drivers/net/phy/Makefile         |   4 ++
+ drivers/net/phy/rockchip_rust.rs | 131 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 143 insertions(+)
 
-diff --git a/rust/kernel/net/phy.rs b/rust/kernel/net/phy.rs
-index e457b3c7cb2f..373a4d358e9f 100644
---- a/rust/kernel/net/phy.rs
-+++ b/rust/kernel/net/phy.rs
-@@ -95,6 +95,22 @@ pub fn phy_id(&self) -> u32 {
-         unsafe { (*phydev).phy_id }
-     }
+diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+index 9e2672800f0b..8b73edb7e836 100644
+--- a/drivers/net/phy/Kconfig
++++ b/drivers/net/phy/Kconfig
+@@ -362,6 +362,14 @@ config ROCKCHIP_PHY
+ 	help
+ 	  Currently supports the integrated Ethernet PHY.
  
-+    /// Gets the current crossover of the PHY.
-+    pub fn mdix(&self) -> u8 {
-+        let phydev = self.0.get();
-+        // SAFETY: The struct invariant ensures that we may access
-+        // this field without additional synchronization.
-+        unsafe { (*phydev).mdix }
++config ROCKCHIP_RUST_PHY
++	bool "Rust driver for Rockchip Ethernet PHYs"
++	depends on RUST_PHYLIB_ABSTRACTIONS && ROCKCHIP_PHY
++	help
++	  Uses the Rust reference driver for Rockchip PHYs (rockchip_rust.ko).
++	  The features are equivalent. It supports the integrated Ethernet PHY.
++
++
+ config SMSC_PHY
+ 	tristate "SMSC PHYs"
+ 	select CRC16
+diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
+index 6097afd44392..045d2913bf2e 100644
+--- a/drivers/net/phy/Makefile
++++ b/drivers/net/phy/Makefile
+@@ -94,7 +94,11 @@ obj-$(CONFIG_NXP_TJA11XX_PHY)	+= nxp-tja11xx.o
+ obj-$(CONFIG_QSEMI_PHY)		+= qsemi.o
+ obj-$(CONFIG_REALTEK_PHY)	+= realtek.o
+ obj-$(CONFIG_RENESAS_PHY)	+= uPD60620.o
++ifdef CONFIG_ROCKCHIP_RUST_PHY
++obj-$(CONFIG_ROCKCHIP_PHY)	+= rockchip_rust.o
++else
+ obj-$(CONFIG_ROCKCHIP_PHY)	+= rockchip.o
++endif
+ obj-$(CONFIG_SMSC_PHY)		+= smsc.o
+ obj-$(CONFIG_STE10XP)		+= ste10Xp.o
+ obj-$(CONFIG_TERANETICS_PHY)	+= teranetics.o
+diff --git a/drivers/net/phy/rockchip_rust.rs b/drivers/net/phy/rockchip_rust.rs
+new file mode 100644
+index 000000000000..17a1f94da8c1
+--- /dev/null
++++ b/drivers/net/phy/rockchip_rust.rs
+@@ -0,0 +1,131 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (C) 2024 Christina Quast <contact@christina-quast.de>
++
++//! Rust Rockchip PHY driver
++//!
++//! C version of this driver: [`drivers/net/phy/rockchip.c`](./rockchip.c)
++use kernel::{
++    c_str,
++    net::phy::{self, DeviceId, Driver},
++    prelude::*,
++    uapi,
++};
++
++kernel::module_phy_driver! {
++    drivers: [PhyRockchip],
++    device_table: [
++        DeviceId::new_with_driver::<PhyRockchip>(),
++    ],
++    name: "rust_asix_phy",
++    author: "FUJITA Tomonori <fujita.tomonori@gmail.com>",
++    description: "Rust Asix PHYs driver",
++    license: "GPL",
++}
++
++
++const MII_INTERNAL_CTRL_STATUS: u16 = 17;
++const SMI_ADDR_TSTCNTL: u16 = 20;
++const SMI_ADDR_TSTWRITE: u16 = 23;
++
++const MII_AUTO_MDIX_EN: u16 = bit(7);
++const MII_MDIX_EN: u16 = bit(6);
++
++const TSTCNTL_WR: u16 = bit(14) | bit(10);
++
++const TSTMODE_ENABLE: u16 = 0x400;
++const TSTMODE_DISABLE: u16 = 0x0;
++
++const WR_ADDR_A7CFG: u16 = 0x18;
++
++struct PhyRockchip;
++
++impl PhyRockchip {
++   /// Helper function for helper_integrated_phy_analog_init
++    fn helper_init_tstmode(dev: &mut phy::Device) -> Result {
++        // Enable access to Analog and DSP register banks
++        dev.write(SMI_ADDR_TSTCNTL, TSTMODE_ENABLE)?;
++        dev.write(SMI_ADDR_TSTCNTL, TSTMODE_DISABLE)?;
++        dev.write(SMI_ADDR_TSTCNTL, TSTMODE_ENABLE)
 +    }
 +
-+    /// Gets the speed of the PHY.
-+    pub fn speed(&mut self) -> u32 {
-+        let phydev = self.0.get();
-+        // SAFETY: The struct invariant ensures that we may access
-+        // this field without additional synchronization.
-+        unsafe { (*phydev).speed as u32 }
++    /// Helper function for helper_integrated_phy_analog_init
++    fn helper_close_tstmode(dev: &mut phy::Device) -> Result {
++        dev.write(SMI_ADDR_TSTCNTL, TSTMODE_DISABLE)
 +    }
 +
-     /// Gets the state of PHY state machine states.
-     pub fn state(&self) -> DeviceState {
-         let phydev = self.0.get();
-@@ -300,6 +316,15 @@ pub fn genphy_read_abilities(&mut self) -> Result {
-         // So it's just an FFI call.
-         to_result(unsafe { bindings::genphy_read_abilities(phydev) })
-     }
-+
-+    /// Writes BMCR
-+    pub fn genphy_config_aneg(&mut self) -> Result {
-+        let phydev = self.0.get();
-+        // SAFETY: `phydev` is pointing to a valid object by the type invariant of `Self`.
-+        // So it's just an FFI call.
-+        // second param = false => autoneg not requested
-+        to_result(unsafe { bindings::__genphy_config_aneg(phydev, false) })
-+    }
- }
- 
- /// Defines certain other features this PHY supports (like interrupts).
-@@ -583,6 +608,12 @@ fn soft_reset(_dev: &mut Device) -> Result {
-         Err(code::ENOTSUPP)
-     }
- 
-+    /// Called to initialize the PHY,
-+    /// including after a reset
-+    fn config_init(_dev: &mut Device) -> Result {
-+        Err(code::ENOTSUPP)
++    /// Helper function for rockchip_config_init
++    fn helper_integrated_phy_analog_init(dev: &mut phy::Device) -> Result {
++        Self::helper_init_tstmode(dev)?;
++        dev.write(SMI_ADDR_TSTWRITE, 0xB)?;
++        dev.write(SMI_ADDR_TSTCNTL, TSTCNTL_WR | WR_ADDR_A7CFG)?;
++        Self::helper_close_tstmode(dev)
 +    }
 +
-     /// Probes the hardware to determine what abilities it has.
-     fn get_features(_dev: &mut Device) -> Result {
-         Err(code::ENOTSUPP)
++    /// Helper function for config_init
++    fn helper_config_init(dev: &mut phy::Device) -> Result {
++        let val = !MII_AUTO_MDIX_EN & dev.read(MII_INTERNAL_CTRL_STATUS)?;
++        dev.write(MII_INTERNAL_CTRL_STATUS, val)?;
++        Self::helper_integrated_phy_analog_init(dev)
++    }
++
++    fn helper_set_polarity(dev: &mut phy::Device, polarity: u8) -> Result {
++        let reg = !MII_AUTO_MDIX_EN & dev.read(MII_INTERNAL_CTRL_STATUS)?;
++        let val = match polarity as u32 {
++            // status: MDI; control: force MDI
++            uapi::ETH_TP_MDI => Some(reg & !MII_MDIX_EN),
++            // status: MDI-X; control: force MDI-X
++            uapi::ETH_TP_MDI_X => Some(reg | MII_MDIX_EN),
++            // uapi::ETH_TP_MDI_AUTO => control: auto-select
++            // uapi::ETH_TP_MDI_INVALID => status: unknown; control: unsupported
++            _ => None,
++        };
++        if let Some(v) = val {
++            if v != reg {
++                return dev.write(MII_INTERNAL_CTRL_STATUS, v);
++            }
++        }
++        Ok(())
++
++    }
++}
++
++#[vtable]
++impl Driver for PhyRockchip {
++    const FLAGS: u32 = 0;
++    const NAME: &'static CStr = c_str!("Rockchip integrated EPHY");
++    const PHY_DEVICE_ID: DeviceId = DeviceId::new_with_custom_mask(0x1234d400, 0xfffffff0);
++
++    fn link_change_notify(dev: &mut phy::Device) {
++    // If mode switch happens from 10BT to 100BT, all DSP/AFE
++    // registers are set to default values. So any AFE/DSP
++    // registers have to be re-initialized in this case.
++        if dev.state() == phy::DeviceState::Running && dev.speed() == uapi::SPEED_100 {
++            if let Err(e) = Self::helper_integrated_phy_analog_init(dev) {
++                pr_err!("rockchip: integrated_phy_analog_init err: {:?}", e);
++            }
++        }
++    }
++
++    fn soft_reset(dev: &mut phy::Device) -> Result {
++        dev.genphy_soft_reset()
++    }
++
++    fn config_init(dev: &mut phy::Device) -> Result {
++        PhyRockchip::helper_config_init(dev)
++    }
++
++    fn config_aneg(dev: &mut phy::Device) -> Result {
++        PhyRockchip::helper_set_polarity(dev, dev.mdix())?;
++        dev.genphy_config_aneg()
++    }
++
++    fn suspend(dev: &mut phy::Device) -> Result {
++        dev.genphy_suspend()
++    }
++
++    fn resume(dev: &mut phy::Device) -> Result {
++        let _ = dev.genphy_resume();
++
++        PhyRockchip::helper_config_init(dev)
++    }
++}
 
 -- 
 2.43.0
