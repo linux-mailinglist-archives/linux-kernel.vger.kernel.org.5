@@ -1,198 +1,221 @@
-Return-Path: <linux-kernel+bounces-48814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A27088461EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:25:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62CE28461DB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:23:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0D441C2172D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:25:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66712B22385
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:23:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBB8A85628;
-	Thu,  1 Feb 2024 20:23:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8D985627;
+	Thu,  1 Feb 2024 20:23:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="iik3PPU4"
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2077.outbound.protection.outlook.com [40.107.104.77])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WBUtnAKk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D02E8565F;
-	Thu,  1 Feb 2024 20:23:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.77
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706819013; cv=fail; b=m2AgVK8vZjEYOlEQxxvdkcgOhCO7ts4ICan4g6lakFT+Pbvd/AlgrONS0LkDtBO/XDPBVCl9xUd01XmttJciPPXlr2hDVmFV86eQvH39+KQi257ST3/yKqLcQ7BYmjNFKDG4Zd3/3oQH7VLVgF8lpLIJXPF4JEQhc9lx3YjApcs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706819013; c=relaxed/simple;
-	bh=qsBASj8wELXNSQjge9hEzOH1eTBBwUlo9/pgy3KjJ5o=;
-	h=From:Date:Subject:Content-Type:Message-Id:References:In-Reply-To:
-	 To:Cc:MIME-Version; b=hyv0ttYthVHsduSfj2zOF9RTBLCmC/hKo8jdMy7Axe9P+7sghO0Hwh/i+Ic8RsuRnTYlWBLRusqTRk/QOcs2QNx/pPZ8/ioxPGEvvFLX2IDTB/WS4RsLkeuLm13coEP2M9lB/KmYqpm/OYFo01rHV6jSBRYqAkB4WbaWI6YNqvU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=iik3PPU4; arc=fail smtp.client-ip=40.107.104.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FG0E7hvQLRjQf4WS7WvF6q1YCeMK24tHUZFdyQnuaJ+FghFvpQoz1ayQD0OfqkzOQBYeZe/Trp451DxO9rMEazFLlDynwPKEKTLmcmBKGN4xfb+EGfg1gQFKzJbmCbGN1xSspXu4cawM31gDCVsu0vQcZCiYi0rHDp2R7tCnNQ26a/gOOLZehDyxxa/MUWRos6iGHlid05lmsRL9zKif6PCLuiB1ITu/hXwYMKHSaCq+yWZ5L14S03wXvAWjH4nTtZbCRsmHc1HqxQPAERkBoO8hCAc5mqIlMrl9AIMXT5SljZFSI9S0qJ+ooENONyTEo8k/G9XmJofvfyYbx7vykA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bsrGLd7LU3E/W8W/PARAKzO9bsjv3wSVaXLjxNrXUpw=;
- b=K81HzFTuKwru2jVT7Zs3mrLRAWba0V/rCiakdlzIum6CLfsr4JQe8waKoTYWRyYXVTXTU3fkcrm1AnIpufg8ZLCkiRltzUtFZPga3k/a4PGSrjn/e7d9ie7030qr3nt+sUecFkCtmli58Bt0128Z8b9kFuK1a80FzYCd/dr5kAb46/V77u++h3lQzWc2TZpI4tYfig3xw3xUH88Bo3ViviSpj4o08VBIsYVcV1JgetHACBBoCFb+ZIcJBA7VXhAC+CyuHpUA1nGjXBekCicJ1I2pMsxVLld8inhLR3Hl+O6iG7MmjQbgvRDRKvNLOwtdKlmtL0tPdtgZGh2xYHfVeQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bsrGLd7LU3E/W8W/PARAKzO9bsjv3wSVaXLjxNrXUpw=;
- b=iik3PPU4V2EkS8Vn/YuxB8FNSW/h/xtwmGZDsp3kT+W3EaWuDJLK0IyDNbiIA67DrUt6t9+53h20Rvaf6mmpG2z5kjL/55WewuVk1pnKL6GJe5sTD/qf5F/hMPufaaWzb/Sgzk97c1IJyyUcsqMflPdxtt38JZOAvyV0fJ7veuk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by DU2PR04MB8741.eurprd04.prod.outlook.com (2603:10a6:10:2df::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.30; Thu, 1 Feb
- 2024 20:23:29 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7228.029; Thu, 1 Feb 2024
- 20:23:29 +0000
-From: Frank Li <Frank.Li@nxp.com>
-Date: Thu, 01 Feb 2024 15:22:44 -0500
-Subject: [PATCH v2 4/4] arm64: dts: imx8qm: add smmu stream id information
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240201-8qm_smmu-v2-4-3d12a80201a3@nxp.com>
-References: <20240201-8qm_smmu-v2-0-3d12a80201a3@nxp.com>
-In-Reply-To: <20240201-8qm_smmu-v2-0-3d12a80201a3@nxp.com>
-To: Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
- Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
- Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, 
- Clark Wang <xiaoning.wang@nxp.com>, "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>
-Cc: linux-mmc@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- netdev@vger.kernel.org, imx@lists.linux.dev, Frank Li <Frank.Li@nxp.com>
-X-Mailer: b4 0.13-dev-c87ef
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706818983; l=1104;
- i=Frank.Li@nxp.com; s=20240130; h=from:subject:message-id;
- bh=qsBASj8wELXNSQjge9hEzOH1eTBBwUlo9/pgy3KjJ5o=;
- b=ErB32Cteh009wmmgkNBUwHXU9oRHHzhSmcOKAq6yabv07t2ybi/qTzrbrowQd0qP0Bzgbi9r5
- 4unGprav2SLAXVd3kOapayTeB7EbdtyWf7dSVUwhHKVuklaDbPLsVVl
-X-Developer-Key: i=Frank.Li@nxp.com; a=ed25519;
- pk=I0L1sDUfPxpAkRvPKy7MdauTuSENRq+DnA+G4qcS94Q=
-X-ClientProxiedBy: BYAPR07CA0066.namprd07.prod.outlook.com
- (2603:10b6:a03:60::43) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C35E98527E;
+	Thu,  1 Feb 2024 20:23:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706818987; cv=none; b=czjTgXT9JxRhJoM85oqMVDnU4cJk/00heApmhHVtFW2x57wgt51eVgEMC9JTxHsZrHxtw3Z4cmNjEqE7eMqG6FD0yEV+qma0UIdEovp4DC0kGRWCilCZXu3xp4NXLbkspxlXnssaV+SbKMbCle1pq/0r/bEdzQk/x97z9nv2JnI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706818987; c=relaxed/simple;
+	bh=R238ACRc7Yd3i4LA4FkGtAqjAgNIiVAR0SlpktbetVc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=GKA2ifKMhr5+461gfsu+4ReCZWTzYRkQLI2WxMeil1WYnC07YreyzKAYN3O+fRPkydsCRp8jlG5a1XiJPuJbpFJYwiaTfnhHynn4/IBBGCnqmxg+QB6W3IX/0UyOBcG4FR1f7tVj4NSQ3bXmgHOd+6AgYdKdhDedBLV7pTh5wNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WBUtnAKk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC5D4C433C7;
+	Thu,  1 Feb 2024 20:23:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706818987;
+	bh=R238ACRc7Yd3i4LA4FkGtAqjAgNIiVAR0SlpktbetVc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=WBUtnAKkcH6iuep6aNV4f9hAgM6tzS6Ld+j5cblWk1kIiAyEjT9Taksch2kto0iHQ
+	 z9tD/bDhBQVtBngZfPoEOXTJ1oyzBplattFQABcQjYymT9zJD6/tqNUECvka+rOClq
+	 mxslsZtCIOppAPn5uqxgxPM5guNxQnaCSCrdKYFWnsAxfICQAVOk9K61F0BrsXX+k3
+	 vGyVzEKIhQUsf7QNwOaFpCfEm3uB6Y5tyEYYepbkPwerwRyGe73Gj1vyej804sCWTi
+	 jO27an+OozYhCaNusMCZiufEais88jB+oc6NoqfT10ePapHn+AMqQL9tNr2+BFQvJ1
+	 1GEkfbSmKY4DQ==
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Ingo Molnar <mingo@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Clark Williams <williams@redhat.com>,
+	Kate Carcia <kcarcia@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	James Clark <james.clark@arm.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Sun Haiyong <sunhaiyong@loongson.cn>,
+	Thomas Richter <tmricht@linux.ibm.com>,
+	Yanteng Si <siyanteng@loongson.cn>,
+	Yicong Yang <yangyicong@hisilicon.com>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [GIT PULL] perf tools fixes for v6.8
+Date: Thu,  1 Feb 2024 17:22:54 -0300
+Message-ID: <20240201202254.15588-1-acme@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DU2PR04MB8741:EE_
-X-MS-Office365-Filtering-Correlation-Id: 184d3a85-b2b8-421b-5fb6-08dc2363a73b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	cRaLVxykCTYOUkriCzIKfFNKvwFKiaoyYrBtlKQBI6BKXwLjn+AMxC+GS6V9NG8V3pOguLj0S6srdVSa1dBV7Vdy57yU+t4DgSPsXqv2xaI3gg2IUOOXCjU7fwYIJNOkiUscCkuEPMlBdqNkf+/m/UGRRUELYyhQMl5SAmK0biJK4JcDIwmvVx1amdaW8DqaNAf09MTxa5fL5Peo3Qy6VRbBj4u/qaSk2/RU52C09/rqOqgR5tMxhENjYF4YAoRY97fTk0JO1vmYhIfrljPNeKNp54pGg6iZg2vS7XCQmPn4v1L4U6drgH0B8q6NhN1wx8fXu4hTfTRaKMAr6s1bpifYm2D1EV0+q+s0asXwI6PaObd9IfrCckRI0LzxcrlkP6jVA89KbCco83QMRdcpqsXsGousNFntrZpt3fn0dl92l1RNZS6XenC35Y3zXlXds8U5EgDS+GuAgEj+TfB/ggU8BaAgVe5W6Fq4C7IpsQjHZQ1fzHx6nhLm2eX2Sc/ghXuQzWPEc/B7nxk/PEgMnaIcGEPY0vfvtD+1be3tz239HeVIldKHN0G1aerbyktdCwbrMZB99+wsKscDaoe5rEWMIzHs1HNhPTjse90CeuvpqhS8QLb8LLjEYtqKA5vaD5NrQAJmMlhXeMKrsugmyxxv6ZVaHGQXLdIPw0xKlTA=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(39860400002)(366004)(346002)(136003)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(26005)(2616005)(921011)(41300700001)(478600001)(6666004)(6512007)(6486002)(6506007)(316002)(52116002)(7416002)(110136005)(66946007)(66556008)(66476007)(36756003)(8936002)(4326008)(8676002)(5660300002)(38100700002)(2906002)(86362001)(38350700005)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?S0FGOGdoaGtzU2ZnQ3hQTnZNMkEzVHF1YjZXRE9wV2R5Y1YrWGN1YXFBRzJo?=
- =?utf-8?B?WThka2tlWnk2VnJjRFVjSWVVc3dYY1VOWEdLZEw1WnZ2WlVOOGRFd1FEUTF5?=
- =?utf-8?B?WDY5bjFZeFhjY2NqQXE2VXdrOTVHeW44cjFLeFZsLzE3LzZ4R2pUcGlrZ3M0?=
- =?utf-8?B?Wi9VZ2Fjb29ob3o3RkZpQ0l2L2R3N21tem9acVdiV0psUmhQdWhIODB1KzFp?=
- =?utf-8?B?VDlEQVlDRWJLdWF4alNCUnVkQ3pHMzM3UUp2SVZMeWwwSU9yM2NqV3BUdFg3?=
- =?utf-8?B?Mm1ZajZrMkdCSTVLbnFCYzJIWUQ1NXAzbVF4cEQ1K0hXS0N5SnNncnIzWDdG?=
- =?utf-8?B?QUxNV2lMVnlpVkp1TVJ5OVd6aUhzTFVuc2dwN2gyZDdub0xNSHUwQ0pnSUE5?=
- =?utf-8?B?dGZIaTFaeXJXWllpUUYyd2hmYVhmR0N5dUFMUkcwOGxTN0N1NC9ndUF4MVdt?=
- =?utf-8?B?a1YvZDROZFhDeUl5ZW81d1lOcUM3MDViQk5GZjZKUUQ1bW5JT044dUwwdlQ5?=
- =?utf-8?B?azU5V3VETHFRd3JQdDFUb1N0K2RKWWNISHBsa3dOdWRRK3I0eFVHWXNoWmRC?=
- =?utf-8?B?MTJDVnlBSzR0dGVmdG1DUXlPZWFBY093N2MzSXJBVmhRaWdBSWJPaWx2QU5r?=
- =?utf-8?B?bGhSTmYwWnpxS3hkZExVOEo4cjBhT1VyYjBsK0VkYy8zWXpVTnd2bmZ4V0lN?=
- =?utf-8?B?ZlV0NDk2MG1pdFYvQjRybjBxN3YyMGQvNTBTbVpobmwxUnJTTDZxU1hLZ012?=
- =?utf-8?B?dmNrODdBV0pjdkh0SmlPbHlCMW4zdFJ2ZUlZVTA3dU5EdzZ4dCtCeVVFaDlW?=
- =?utf-8?B?elJWMW5ZaTI0V1FQb0prT3pzSFhPWDR5Qm1EV1JuZ0podHdFVDVrdFpVNXdS?=
- =?utf-8?B?U1c3Q29HZWYwQVR1TGhid3FzL0tCMlgrZDlGME54VVhJSWxUYWxlRTBhRnJu?=
- =?utf-8?B?aVFTeldzM0RBTUlxVWV3OTFNWXBBVUQzZWcveUNzYWh6ZENUNmJmOXcrVXZR?=
- =?utf-8?B?OFBnbW5Ndm82anI3OVIvL1dTZ2plUStTbUhrZHZpYllzbGV2RGc1a0QzdHhI?=
- =?utf-8?B?Nk43d3hCeDIwbzhEclhPN0p1eE9LTWYrNWljVy9nMnN3SFBheGlyejdlcDYx?=
- =?utf-8?B?WDRjd1BQTkxaYlk3RXc5RGFVVG9vcTFjeFZlMHNUczlPcVNrN2x1L0NuK29T?=
- =?utf-8?B?aUwxOXZzbHZOK3J0WWVnam8xaWgxa25XemNMUEQyZndWTm0wZW5XTzlHK2hC?=
- =?utf-8?B?ZmtXVzhFSGZFQ2NneUhmd3UvOXVNWDdkOWoweTVSWTJTOVRMS200NDhxZkZu?=
- =?utf-8?B?Y0E3UnFqaFJxQ0dXRmpTN2pNWmpCdUtMaW1sb0Nza3orL1pBSEZnNi9jMGh2?=
- =?utf-8?B?NlZ4c3o0NzlHbGVMVHBQRUxyd3ZsSmRTVmpjYTRNV0srUTlBNGU5RytRbld0?=
- =?utf-8?B?MUNFMXBTMGNBRjhkZzArdnd0a3pFTzlzODRNLy9kSWpTWGRrVzdBalFZRVkw?=
- =?utf-8?B?bHppL1BnYWRJbzViR3k4d2JLQ0d5dzJvdE1KdkpJUUZnaEg4MjZtSVdKaGE1?=
- =?utf-8?B?YVlhelR6ajF4MThvNzh2YStiajdjVDEvYmw0NFY5MjdOdlF6OVk5NHJ5Nk1Y?=
- =?utf-8?B?cVpkQVczQnladW1SZGRLdUJ2RGh0YzZhSzMxTzMyS1N2RTVOR2VYa3pqaWhZ?=
- =?utf-8?B?TXJnZkFNUXVwYi8rdnVJTDNMTTkrb2JkQUdJSDhsSlVMNkJ6NVZsb05SdWlt?=
- =?utf-8?B?UWRFNCsyMS9kellhNGxreVR0dzQ4UE5QRnFINU9oZEg3NTJoRTBJSy8yVEF5?=
- =?utf-8?B?SUpCdnlHYUIyR3hsVUppZ1drdU1VZTdFQmFmY3FDQ1haZ3Z5b0NESG9hYlpY?=
- =?utf-8?B?YnNjNDdoM0w3MkNhUy9KbVNMQnh0MS9MNy9keEdGUS9jbkc0VXo1UTdjL1hK?=
- =?utf-8?B?ak5OZXhlZlJvU0hzUEZ4QzZXVTQvR0lJQ0h2WWEzMEI3T0pQMVpPMzc1cU5P?=
- =?utf-8?B?aGlyQ3FJUFlqUldRV1dKbEtKeTRPZCswblk4RlYyQ1loNUwzSHdqY3pyUGFu?=
- =?utf-8?B?bEVidWM2WU1rQ0Jha0xMVnZUZ1JYQTA4TTd6a0FManl3RjdMOWlGT3oyYUR6?=
- =?utf-8?Q?2HsYBJkRP4tRDk+cmrICGMM5E?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 184d3a85-b2b8-421b-5fb6-08dc2363a73b
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2024 20:23:29.5267
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /Yc5ruUaU6a3NPvZXUfqzQZGMOoE5mYya4Wjy1mQYbqVjRmLdSo1YHbW6yIKpzJzJw+dMXmOh8tZ39o5Yzfasw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8741
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Add smmu stream id information for fec and esdhc.
+Hi Linus,
 
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
- arch/arm64/boot/dts/freescale/imx8qm-ss-conn.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+	Please consider pulling, mostly 'perf test' issues, which in its
+turn are mostly related to myself having Intel hybrid systems at home.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8qm-ss-conn.dtsi b/arch/arm64/boot/dts/freescale/imx8qm-ss-conn.dtsi
-index ec1639174e2e5..3cbc861400b43 100644
---- a/arch/arm64/boot/dts/freescale/imx8qm-ss-conn.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8qm-ss-conn.dtsi
-@@ -6,20 +6,26 @@
- 
- &fec1 {
- 	compatible = "fsl,imx8qm-fec", "fsl,imx6sx-fec";
-+	iommus = <&smmu 0x12 0x7f80>;
- };
- 
- &fec2 {
- 	compatible = "fsl,imx8qm-fec", "fsl,imx6sx-fec";
-+	iommus = <&smmu 0x12 0x7f80>;
- };
- 
- &usdhc1 {
- 	compatible = "fsl,imx8qm-usdhc", "fsl,imx8qxp-usdhc", "fsl,imx7d-usdhc";
-+	iommus = <&smmu 0x11 0x7f80>;
- };
- 
- &usdhc2 {
- 	compatible = "fsl,imx8qm-usdhc", "fsl,imx8qxp-usdhc", "fsl,imx7d-usdhc";
-+	iommus = <&smmu 0x11 0x7f80>;
- };
- 
- &usdhc3 {
- 	compatible = "fsl,imx8qm-usdhc", "fsl,imx8qxp-usdhc", "fsl,imx7d-usdhc";
-+	iommus = <&smmu 0x11 0x7f80>;
- };
-+
+	All in all its about making the build and 'perf test' output
+clean in more systems.
 
--- 
-2.34.1
+	This is being done after a laptop refresh, so maybe something is
+out of place, lemme know if you find something broken, last refresh was
+before the pandemic, so...
 
+Best regards,
+
+- Arnaldo
+
+The following changes since commit ecb1b8288dc7ccbdcb3b9df005fa1c0e0c0388a7:
+
+  Merge tag 'net-6.8-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2024-01-25 10:58:35 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git perf-tools-fixes-for-v6.8-1-2024-02-01
+
+for you to fetch changes up to fdd0ae72b34e56eb5e896d067c49a78ecb451032:
+
+  perf tools headers: update the asm-generic/unaligned.h copy with the kernel sources (2024-01-31 14:02:41 -0300)
+
+----------------------------------------------------------------
+perf tools fixes for v6.8:
+
+Vendor events:
+
+- Intel Alderlake/Sapphire Rapids metric fixes, the CPU type ("cpu_atom", "cpu_core")
+  needs to be used as a prefix to be considered on a metric formula, detected via one
+  of the 'perf test' entries.
+
+'perf test' fixes:
+
+- Fix the creation of event selector lists on 'perf test' entries, by initializing
+  the sample ID flag, which is done by 'perf record', so this fix only the tests,
+  the common case isn't affected.
+
+- Make 'perf list' respect debug settings (-v) to fix its 'perf test' entry.
+
+- Fix 'perf script' test when python support isn't enabled.
+
+- Special case 'perf script' tests on s390, where only DWARF call graphs are
+  supported and only on software events.
+
+- Make 'perf daemon' signal test less racy.
+
+Compiler warnings/errors:
+
+- Remove needless malloc(0) call in 'perf top' that triggers -Walloc-size.
+
+- Fix calloc() argument order to address error introduced in gcc-14.
+
+Build:
+
+- Make minimal shellcheck version to v0.6.0, avoiding the build to fail with older versions.
+
+Sync kernel header copies:
+
+  - stat.h to pick STATX_MNT_ID_UNIQUE.
+
+  - msr-index.h to pick IA32_MKTME_KEYID_PARTITIONING.
+
+  - drm.h to pick DRM_IOCTL_MODE_CLOSEFB.
+
+  - unistd.h to pick {list,stat}mount, lsm_{[gs]et_self_attr,list_modules} syscall numbers.
+
+  - x86 cpufeatures to pick TDX, Zen, APIC MSR fence changes.
+
+  - x86's mem{cpy,set}_64.S used in 'perf bench'.
+
+  - Also, without tooling effects: asm-generic/unaligned.h, mount.h, fcntl.h, kvm headers.
+
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
+----------------------------------------------------------------
+Arnaldo Carvalho de Melo (10):
+      tools headers uapi: Sync linux/stat.h with the kernel sources to pick STATX_MNT_ID_UNIQUE
+      tools arch x86: Sync the msr-index.h copy with the kernel sources to pick IA32_MKTME_KEYID_PARTITIONING
+      tools headers UAPI: Sync linux/fcntl.h with the kernel sources
+      tools headers UAPI: Update tools's copy of drm.h headers to pick DRM_IOCTL_MODE_CLOSEFB
+      tools headers UAPI: Sync kvm headers with the kernel sources
+      tools headers UAPI: Sync unistd.h to pick {list,stat}mount, lsm_{[gs]et_self_attr,list_modules} syscall numbers
+      tools headers x86 cpufeatures: Sync with the kernel sources to pick TDX, Zen, APIC MSR fence changes
+      tools headers: Update the copy of x86's mem{cpy,set}_64.S used in 'perf bench'
+      tools include UAPI: Sync linux/mount.h copy with the kernel sources
+      perf tools headers: update the asm-generic/unaligned.h copy with the kernel sources
+
+Ian Rogers (6):
+      perf list: Switch error message to pr_err() to respect debug settings (-v)
+      perf list: Add output file option
+      perf test: Workaround debug output in list test
+      perf test shell script: Fix test for python being disabled
+      perf test shell daemon: Make signal test less racy
+      perf vendor events intel: Alderlake/sapphirerapids metric fixes
+
+James Clark (1):
+      perf evlist: Fix evlist__new_default() for > 1 core PMU
+
+Sun Haiyong (2):
+      perf top: Remove needless malloc(0) call that triggers -Walloc-size
+      perf tools: Fix calloc() arguments to address error introduced in gcc-14
+
+Thomas Richter (1):
+      perf test: Fix 'perf script' tests on s390
+
+Yicong Yang (1):
+      perf build: Make minimal shellcheck version to v0.6.0
+
+ tools/arch/x86/include/asm/cpufeatures.h           |   8 +-
+ tools/arch/x86/include/asm/msr-index.h             |   8 +
+ tools/arch/x86/include/uapi/asm/kvm.h              |   3 +
+ tools/arch/x86/lib/memcpy_64.S                     |   4 +-
+ tools/arch/x86/lib/memset_64.S                     |   4 +-
+ tools/include/asm-generic/unaligned.h              |  24 +-
+ tools/include/uapi/asm-generic/unistd.h            |  15 +-
+ tools/include/uapi/drm/drm.h                       |  72 +++++-
+ tools/include/uapi/drm/i915_drm.h                  |  12 +-
+ tools/include/uapi/linux/fcntl.h                   |   3 +
+ tools/include/uapi/linux/kvm.h                     | 140 ++++--------
+ tools/include/uapi/linux/mount.h                   |  70 ++++++
+ tools/include/uapi/linux/stat.h                    |   1 +
+ tools/perf/Documentation/perf-list.txt             |   4 +
+ tools/perf/Makefile.perf                           |  10 +
+ tools/perf/builtin-list.c                          | 211 ++++++++++-------
+ tools/perf/builtin-record.c                        |   4 +-
+ tools/perf/builtin-top.c                           |   2 +-
+ .../pmu-events/arch/x86/alderlake/adl-metrics.json | 254 ++++++++++-----------
+ .../arch/x86/alderlaken/adln-metrics.json          |   4 -
+ .../arch/x86/sapphirerapids/spr-metrics.json       |  25 +-
+ tools/perf/tests/shell/daemon.sh                   |  34 ++-
+ tools/perf/tests/shell/list.sh                     |  21 +-
+ tools/perf/tests/shell/script.sh                   |  12 +-
+ tools/perf/trace/beauty/statx.c                    |   1 +
+ tools/perf/util/evlist.c                           |   9 +-
+ tools/perf/util/hist.c                             |   4 +-
+ tools/perf/util/include/linux/linkage.h            |   4 +
+ tools/perf/util/metricgroup.c                      |   2 +-
+ tools/perf/util/print-events.c                     |   2 +-
+ tools/perf/util/synthetic-events.c                 |   4 +-
+ 31 files changed, 588 insertions(+), 383 deletions(-)
 
