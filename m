@@ -1,158 +1,188 @@
-Return-Path: <linux-kernel+bounces-48200-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEEEB84588D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:11:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A05E984588E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 14:11:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 695DF283C17
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:11:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2A881C22A9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 13:11:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABEFF53373;
-	Thu,  1 Feb 2024 13:10:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 022DC5B671;
+	Thu,  1 Feb 2024 13:10:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O716Seli"
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jhNcqcKZ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EAA853366;
-	Thu,  1 Feb 2024 13:10:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 934585338C;
+	Thu,  1 Feb 2024 13:10:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706793036; cv=none; b=A0fSEbKF/185VaxGR50odD4Xrt2zDgqCDuuXRh5Oe1aCHNnsgvAt3eSX/FOOMwkIbF/I7ybXTfCSOjHvqQRylwtyKdspW62kuLip0KI+HiqLjn7LFnQ+rZoLH02NwLFaq2xutt9ftk6Z4nHp1WocGm6sRymPkoFV+/nRf1ZDvNg=
+	t=1706793047; cv=none; b=kEuH1pXEGoJZ9dS3ozU3VoEeF37F5x1eexb7le62RPyEBo+oVcXg4zC/aIuIbXgJque+XD7e/+gDoRLyPEeXDNsdGxtx8vfKuOZTKeorS2aI5TyWEfOv9RfjcT8HvRegk2OAP85eH6o/xJGIl/NH0fs8/L8s9cTl+ny0MXd9gAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706793036; c=relaxed/simple;
-	bh=ZJhq/a0ru1u/PCGz29gdCFIS3GlsWoUhfYVg1I8Q/fw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KO31aksEIljf/SKSeFs3InZpaqpgY6SEj48pOzcJ2xgrlaLqBGY/8ZhjDmQR9q6mT3cWWZbHeAqWLbLbd+of2NGvmOZRIrnXJYSKUIA/XXJmEq/jjZ2c1TSnyr7Xy1vefS0SdwxzSRwdjUxvbg0F3/70m0NNqvdxTaJGscHUi34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O716Seli; arc=none smtp.client-ip=209.85.222.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-7d625a3ace6so316955241.0;
-        Thu, 01 Feb 2024 05:10:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706793033; x=1707397833; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CwqkQIF71vpcy9N9j4GerjRpbbfKrzc/uUzrxwJJGYo=;
-        b=O716Selih6X3rxS1os1aR88sizk+dZOd1kb3dWFnGusbk4gXW65m1MFB7nd0UVhUBq
-         9Phlz5GEgD54uxyqfdRBij2uj9dAa3dwpK/mNGfZOoEUDJYNNN7hOC4xc0gphMfdCjbQ
-         ZrwB7Pzfbaj3oHm7NsnIiG3qVbl7XofPTvaiJ3NCAZ2YDrZ+FpU4i/UptYUWe9OXxwYH
-         czzTjtbTf40pGTajS/6rfHCnXCnSO3FcEyjG4J3fT8l/LYiuKGTSVR4IJhE8pXa8rPXd
-         K3jaAEdVy7l4NdVkPakBjs1k3hDrZHblOT8yb+Qa8925R/En3PFz+ga3B5oMPXW7MJvt
-         Bq4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706793033; x=1707397833;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CwqkQIF71vpcy9N9j4GerjRpbbfKrzc/uUzrxwJJGYo=;
-        b=vGDLpJTGagHst76adUXFULEmgFeR8lv4kRi0pzOMhSQ26DqQP4QuGPwmmQGHiLHwHG
-         BDFTPklv6UXlsXvUS+1NdLHJFjXvCMvCSgFdZICTBr5q2WGqgJtySsID2MPCpBoiLRW6
-         JwXBHjxEBuRYZ2LxF/DdEcXGVUDJ0wfKdEg5XWi9+Q+Ao2y96lBZWn4SfULUNOSrt+qm
-         QmL4V0LKJBX1YYuyC6mrs7PaIMdJ5BCjMKd1zjq3h4Zi5Pzel6wagacGPNQg9RqyvFNO
-         f4641KIwX4Wi9x+8ErHyqeO9phwI/0zZIjhfafwGM5GAupgiiyH6tBcyzgoSJgPvcSPq
-         M3tg==
-X-Gm-Message-State: AOJu0YymiH/ZbAqJiK5RSU4HhOKyrvG14NUft0q7+lbQVpIceX3BZYM2
-	O2dWqpu5XhRnG4bjQx+Y+/OClvfz0el+YANqVem0A/Tz/LpiEKn1ldsf23MrliqoYpjYsy8gXwp
-	RtMzgKrXQt5jB0xnB6mGMOR0MrSg=
-X-Google-Smtp-Source: AGHT+IGsf+rRSEKnjNQAqd67Fb46xfvPvSc/YPD5cESPQuN63qNLUZEqMRkqhla21Oa+2++defXTos7E//YR0ZZoJDQ=
-X-Received: by 2002:a05:6122:cb:b0:4b6:e3b6:41ea with SMTP id
- h11-20020a05612200cb00b004b6e3b641eamr2291081vkc.4.1706793033217; Thu, 01 Feb
- 2024 05:10:33 -0800 (PST)
+	s=arc-20240116; t=1706793047; c=relaxed/simple;
+	bh=5AhN+56yyPZ/UPaJHZIX7QR4zt1xAGI4R1FdhndMxKE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DVqs1Tjmkv9rsYSN5QuBMJl6nbCNTZQFEd+3+/x8DNcmgfjxTHzMLUczv90dyl3r0wrC4hPeqvxumc7mgGNZVNFQZlKUCyQ5G0yQJwHW9y2yl7ZBo/Abu0XFCr4AcFzh8/BU95pj/Z9DUIEfO050aQ0aTDSmHbK2ksfkMuDH7k8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jhNcqcKZ; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706793046; x=1738329046;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=5AhN+56yyPZ/UPaJHZIX7QR4zt1xAGI4R1FdhndMxKE=;
+  b=jhNcqcKZtBLY+hFklhzSQ4o4H01ULXLIr1hdDHASj5P0Th/xC9t06aSH
+   WryG8G4kjfRYu+5BsuhC8kEOw3bkkBITuGcKC2xEFkOy4zymaUSowaL0b
+   Qb5pu0p5O/nDfWwd+1aq+b6MCugIpdQGXJXM1tVLgVmgAdsklmYn3AKOn
+   ySPEIPCjdkBkTxLoO3AN1yjmBgbNka5WI+bDUPuaXD4NvqnkSU3NaApct
+   hT90bDwnqcKys4di/e3Swu1YHwq6hBJ2x0cxqZCU/Ru0ts2JcxW08+OsW
+   2j9DYZSncdZV4ijhaf4qLhcNB9rcQgQil6B3S8sn5KaG8M+g5Bhce/1HM
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="71086"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="71086"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 05:10:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="79456"
+Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.intel.com) ([10.213.1.220])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 05:10:42 -0800
+From: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Dan Williams <dan.j.williams@intel.com>,
+	linux-kernel@vger.kernel.org
+Cc: linux-cxl@vger.kernel.org,
+	"Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>,
+	Ira Weiny <ira.weiny@intel.com>
+Subject: [RFC PATCH v5] cleanup: Add cond_guard() to conditional guards
+Date: Thu,  1 Feb 2024 14:10:33 +0100
+Message-ID: <20240201131033.9850-1-fabio.maria.de.francesco@linux.intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129151618.90922-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240129151618.90922-4-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdV=E5VDZn0QjiGQL73j135LiA1QNrYH-hCve1Yk0PqJ=A@mail.gmail.com>
-In-Reply-To: <CAMuHMdV=E5VDZn0QjiGQL73j135LiA1QNrYH-hCve1Yk0PqJ=A@mail.gmail.com>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Thu, 1 Feb 2024 13:09:58 +0000
-Message-ID: <CA+V-a8tJfJTEOkSP-F1B3Q7EO6Cu9ij88ceGJcXCQjTFneWxUA@mail.gmail.com>
-Subject: Re: [PATCH 3/5] riscv: dts: renesas: r9a07g043f: Add IRQC node to
- RZ/Five SoC DTSI
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, linux-renesas-soc@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Geert,
+Add cond_guard() to conditional guards.
 
-Thank you for the review.
+cond_guard() is used for the _interruptible(), _killable(), and _try
+versions of locks.
 
-On Tue, Jan 30, 2024 at 11:25=E2=80=AFAM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Mon, Jan 29, 2024 at 4:16=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail=
-com> wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > Add the IRQC node to RZ/Five (R9A07G043F) SoC DTSI.
->
-> Thanks for your patch!
->
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> > --- a/arch/riscv/boot/dts/renesas/r9a07g043f.dtsi
-> > +++ b/arch/riscv/boot/dts/renesas/r9a07g043f.dtsi
-> > @@ -50,6 +50,82 @@ &soc {
-> >         dma-noncoherent;
-> >         interrupt-parent =3D <&plic>;
-> >
-> > +       irqc: interrupt-controller@110a0000 {
-> > +               compatible =3D "renesas,r9a07g043f-irqc",
-> > +                            "renesas,rzg2l-irqc";
-> > +               reg =3D <0 0x110a0000 0 0x20000>;
-> > +               #interrupt-cells =3D <2>;
-> > +               #address-cells =3D <0>;
-> > +               interrupt-controller;
-> > +               interrupts =3D <SOC_PERIPHERAL_IRQ(0) IRQ_TYPE_LEVEL_HI=
-GH>,
->
-> As this is the RZ/Five-specific .dtsi file, and not the common base
-> .dtsi, you could avoid using SOC_PERIPHERAL_IRQ() here.
-> I am not sure what is most readable...
->
-Ok, ill switch to the usual way here..
+It stores a return value to a variable that is given to its second
+argument. In case of success it stores the third argument, whereas in case
+of failure it stores the fourth.
 
->+                            <SOC_PERIPHERAL_IRQ(25) IRQ_TYPE_EDGE_RISING>=
-,
-In RZ/Five HW manual this is documented as LEVEL_HIGH and RZ/G2UL this
-is documented as EDGE. I ve internally asked for clarification with
-the HW team. If it's the same for both the SoCs I'll move this node to
-common SoC dtsi and just update the compat string in rz/five specific
-dtsi.
+The returned value can be checked to act accordingly. cond_guard() always
+stores either success or failure codes because certain functions, e.g.
+down_read_trylock(), return 1 on success and 0 on contention. By storing 1
+to ret, an 'if (!ret)' after a successful down_read_trylock() will correctly
+evaluate false and so the failure path is not executed.
 
-Cheers,
-Prabhakar
+As the other guards, it avoids to open code the release of the lock after a
+goto to an 'out' label.
 
-> The rest LGTM (pending interrupt names review comments).
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
-8k.org
->
-> In personal conversations with technical people, I call myself a hacker. =
-But
-> when I'm talking to journalists I just say "programmer" or something like=
- that.
->                                 -- Linus Torvalds
+This remains an RFC because Dan suggested a different syntax.
+
+The changes to the CXL code are provided only to show the use of this
+macro. If consensus is reached on this macro, the cleanup of show_targetN()
+will be submitted later with a separate patch.
+
+Cc: Peter Zijlstra <peterz@infradead.org>
+Suggested-by: Dan Williams <dan.j.williams@intel.com>
+Suggested-by: Ira Weiny <ira.weiny@intel.com>
+Signed-off-by: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.com>
+---
+
+Changes from v1-4:
+	Addressed Dan's requests (thanks) to change cond_guard() interface.
+
+ drivers/cxl/core/region.c | 13 ++++---------
+ include/linux/cleanup.h   | 20 ++++++++++++++++++++
+ 2 files changed, 24 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
+index 0f05692bfec3..15e03edce7af 100644
+--- a/drivers/cxl/core/region.c
++++ b/drivers/cxl/core/region.c
+@@ -668,26 +668,21 @@ static size_t show_targetN(struct cxl_region *cxlr, char *buf, int pos)
+ 	struct cxl_endpoint_decoder *cxled;
+ 	int rc;
+ 
+-	rc = down_read_interruptible(&cxl_region_rwsem);
++	cond_guard(rwsem_read_intr, rc, 0, -EINTR, &cxl_region_rwsem);
+ 	if (rc)
+ 		return rc;
+ 
+ 	if (pos >= p->interleave_ways) {
+ 		dev_dbg(&cxlr->dev, "position %d out of range %d\n", pos,
+ 			p->interleave_ways);
+-		rc = -ENXIO;
+-		goto out;
++		return -ENXIO;
+ 	}
+ 
+ 	cxled = p->targets[pos];
+ 	if (!cxled)
+-		rc = sysfs_emit(buf, "\n");
++		return sysfs_emit(buf, "\n");
+ 	else
+-		rc = sysfs_emit(buf, "%s\n", dev_name(&cxled->cxld.dev));
+-out:
+-	up_read(&cxl_region_rwsem);
+-
+-	return rc;
++		return sysfs_emit(buf, "%s\n", dev_name(&cxled->cxld.dev));
+ }
+ 
+ static int match_free_decoder(struct device *dev, void *data)
+diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
+index c2d09bc4f976..63d7d5bc374f 100644
+--- a/include/linux/cleanup.h
++++ b/include/linux/cleanup.h
+@@ -134,6 +134,21 @@ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
+  *	an anonymous instance of the (guard) class, not recommended for
+  *	conditional locks.
+  *
++ * cond_guard(name, ret, scs, err, args...):
++ * 	for conditional locks like mutex_trylock() or down_read_interruptible().
++ * 	'ret' is a variable where this macro stores 'scs' on success and 'err'
++ * 	on failure to acquire a lock.
++ *
++ * 	Example:
++ *
++ * 	int ret;
++ * 	// down_read_trylock() returns 1 on success, 0 on contention
++ * 	cond_guard(rwsem_read_try, ret, 1, 0, &sem);
++ * 	if (!ret) {
++ * 		dev_dbg("down_read_trylock() failed to down 'sem')\n");
++ * 		return ret;
++ * 	}
++ *
+  * scoped_guard (name, args...) { }:
+  *	similar to CLASS(name, scope)(args), except the variable (with the
+  *	explicit name 'scope') is declard in a for-loop such that its scope is
+@@ -165,6 +180,11 @@ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
+ 
+ #define __guard_ptr(_name) class_##_name##_lock_ptr
+ 
++#define cond_guard(_name, _ret, _scs, _err, args...) \
++	CLASS(_name, scope)(args); \
++	if (!__guard_ptr(_name)(&scope)) _ret = _err; \
++	else _ret = _scs
++
+ #define scoped_guard(_name, args...)					\
+ 	for (CLASS(_name, scope)(args),					\
+ 	     *done = NULL; __guard_ptr(_name)(&scope) && !done; done = (void *)1)
+-- 
+2.43.0
+
 
