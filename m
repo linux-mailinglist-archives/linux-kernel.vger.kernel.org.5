@@ -1,120 +1,226 @@
-Return-Path: <linux-kernel+bounces-47424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F971844DBE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:19:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A25E7844DC2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:21:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 713181C25CD9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:19:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86EFBB234A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:21:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E30A3F;
-	Thu,  1 Feb 2024 00:19:21 +0000 (UTC)
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C236652;
+	Thu,  1 Feb 2024 00:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AFeTbHsO"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C83CF380
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 00:19:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0FB57F4
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 00:20:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706746761; cv=none; b=f9mjFQebr2CgLtXIZBK6lCDtnvUNwnmFiTK5HwSc2rBPnUC588oNJ3nncifK7WmooHA+hGAwJMBg5n325ohqtDhVrO1o6mHa/ux+H8G6LxwNzXLTizxiC/tCIyckcTvTmaj0sX8aFGZklS36/s+vNtk2yH5Ry6btknEsyf83wC8=
+	t=1706746857; cv=none; b=mhAVM7nN/Wudd0rjXILYuT/k7t2NtFA7svAbSVa2w16ErrInqAq9zmU/chJJdPNyn9lrWAhamVhxEyblvovtnTtuEgtiFVSTw7PSzVxskLShzXwh+h9hPxAW+WJKOHkncu7pSHbc021d4aX7PaQ0QfoAqzmWsXrFWps6RcNVRi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706746761; c=relaxed/simple;
-	bh=SXoSUb25N4SIhzDyHycEEGGNHFWUa2jrgC425uOAoDk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S6tF0T5uPzjAcl+eDTinMpYSRCQkYQ6dvRwAb1MCxNmMHki6S/iNPoVu4mnpG7NJpBsv0dVxqLD9Wg3zZn18d+F6dRKpAF0zaDm41/NtHk2eatnQC3Iqk9Zb8+tEXIFX+F/z4wDXeB3dh5qbxUXmN9XSfMTC0a5CXtwAKmYW9RM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.219.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6818aa08a33so2528636d6.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 16:19:19 -0800 (PST)
+	s=arc-20240116; t=1706746857; c=relaxed/simple;
+	bh=vPtpnLaleP3MgQmoDyqqaoE5DCMRkDO/XbE6A+o6ZGs=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=iTKtNq5W3hzTcoKca6lVSbJKCKT1/tMvc1DnUpgDBKDLeoRv9rW0q1HkPvj4UBzBmrjqCihZs46EkYHJDizKINh72dNhBcJgqEQUrNy476k88MeforTqMel2Uz+ev8dMMX+DDYcyjqTD/lfd/hhICedQhwOKcWTTRcrzHbopKjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AFeTbHsO; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60404484c23so7381607b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 16:20:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706746854; x=1707351654; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=g1PMHYRH7qb67G88ys4k0o39fe/edxcv9FM2T4EKaqk=;
+        b=AFeTbHsOsKi0IdFmI4ZHqHMqsZQrVeacIQd1k/xRKGIHIzMtd0fGZV0dv6RVKFWPzp
+         NfIdcY1+/yq9AB4JCtHAOXqOYfJAaUJhQh17mNlm+GBau9Nw5FuY9+Crtdpv1OGhgpBP
+         k+BZqbQWQNyD3KVftXmFrnVXGnLT0Cj4H/5emXpjY8cPtNjsovulp9yHl1OYFhkeejBn
+         BbguLsmNpBvN1fPIPaCakGvjv2KBMzTN3vWR37OpWUu70Y4rokHViV3Q98fA/oMd4091
+         5LqxDxF5jTSU9lj4QvFxrOBaasgXia7QUfavSW+h58reOnEjQa2HKuIPFA9h+ovDgXAa
+         9F3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706746758; x=1707351558;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JOGWXS4vIGOtPO57OizB9tZVNU4X/XL4dLBYqD+darE=;
-        b=wqCvaEwgavRYZL3G2oHKhunckka39nQRA2G5yCgpeY+9GaSH9tPTF5YpWtjUKXIRAy
-         b4tmPj76uTDSSs8iCx7hzj3+QA7JtT4Sb/6APt0aMnMB227YfBNKIy1eTiromg1i1yIr
-         KLD0UJOef1MmA8AT48y/K+PNgqjPRQjxFZ6LUn2mO/h/qVxSUf6Dp6WWalwGiqY5/uZP
-         mjXCFWi29JuF4ZVB0Tabwpiy0nzd+XU4z5tX9PlU+Cr9j7SAXM0VSURkZz7keECTCwYd
-         6q0aCnobCaPZmghj+2s+R9PwQ6GB8n/jAacPgvg+ZVNEJm4UJXNI+2/oHV0B7lmFSlQc
-         leeg==
-X-Gm-Message-State: AOJu0YwxP/QNMffXr62kFeYvZ1mDs8b6DNfR8CJBfhWS6t6wWbMbxfDB
-	d/LNpLFNDvFLOFwD/oFAvU17JZFonIvTuUYC/XVP4CtqCagSHsUz+ZifLvBkFg==
-X-Google-Smtp-Source: AGHT+IFz2ZMJEVVJyslGbL2NC9jJRXeluErPH4TTAKBoKq5hLhQo2sNCISfpNnDx3bysA3PSYCdTaw==
-X-Received: by 2002:a0c:f3cb:0:b0:68c:5a3b:330f with SMTP id f11-20020a0cf3cb000000b0068c5a3b330fmr6629455qvm.0.1706746758679;
-        Wed, 31 Jan 2024 16:19:18 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUM/cFc6R6aZLbDsLKxeq42vMwKC0o7KnnDGJCJ3KsJJPmIYoFQ5SBpKU2Sbat2qv3A8jiuYLvVic3C0NCl1MXyn/r5kUL7DbN38/3NkhYv0d4+gLEnl4NOyrdW/+90eMg+x7A+3tggeoxVSZ+9uPhUgg5e5CyuytXUVms9rKmtsaUnU8BcLNdHQnBFzzNODgVRhhp/S/vyHVAV+7chsE/dfcMwc20O9d15aMpf/MxT3YTk7Lq0dcajFy1MACFnKiVvs3EYVwV4+LtZm4pDknbu6VEUi6lhMXIekjCHOsd09JGgB/spEReR/fyS3EwQg2DiX5GFfHJ/3ktzCsFxtInPQs/lb6FH6Y3NRWPS0B0uKaQUT+vxXTHq2hSbFJsNFoyVUA1zmPMVpviNmFcMXU42RrqO9WWuGy9q+3AXX3abD0/BV0Cxx7/hTd5+QwsvMeFF23vzfmX8TIHJ4ntDHNK6Dw==
-Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
-        by smtp.gmail.com with ESMTPSA id ob9-20020a0562142f8900b0068c56e0f8aesm2864309qvb.138.2024.01.31.16.19.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 16:19:18 -0800 (PST)
-Date: Wed, 31 Jan 2024 19:19:16 -0500
-From: Mike Snitzer <snitzer@kernel.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Mikulas Patocka <mpatocka@redhat.com>, linux-kernel@vger.kernel.org,
-	dm-devel@lists.linux.dev, msnitzer@redhat.com, ignat@cloudflare.com,
-	damien.lemoal@wdc.com, bob.liu@oracle.com, houtao1@huawei.com,
-	peterz@infradead.org, mingo@kernel.org, netdev@vger.kernel.org,
-	allen.lkml@gmail.com, kernel-team@meta.com,
-	Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH 8/8] dm-verity: Convert from tasklet to BH workqueue
-Message-ID: <ZbrjhJFMttj8lh3X@redhat.com>
-References: <20240130091300.2968534-1-tj@kernel.org>
- <20240130091300.2968534-9-tj@kernel.org>
- <c2539f87-b4fe-ac7d-64d9-cbf8db929c7@redhat.com>
- <Zbq8cE3Y2ZL6dl8r@slm.duckdns.org>
- <CAHk-=wjMz_1mb+WJsPhfp5VBNrM=o8f-x2=6UW2eK5n4DHff9g@mail.gmail.com>
- <ZbrgCPEolPJNfg1x@slm.duckdns.org>
+        d=1e100.net; s=20230601; t=1706746854; x=1707351654;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g1PMHYRH7qb67G88ys4k0o39fe/edxcv9FM2T4EKaqk=;
+        b=lYaVpWQg63wVXgKD3LWLdNvEYMacQxYZjurs4U8HyHnbrT4Q/oh+bG5bMqAlTn0+9f
+         3pEJ9eY0U5UQcNgMA3K9YdnwbYpT/MzaL/002IlMee1Lt4NXXw65dgtUMpBMciQpuyJF
+         +jGR+4rWvtR17n8B/vSqIyMpw140NsgYGZAQ/eqPu8JjWxGsx5Y2Er5QBh3PZNBvaAiU
+         VjqdnaIWrp+ToJvMNMxG1VZwUJIGfQIMkDtSrurHyoRFjXjEIYVf/Ew1HDUUwe2shw9q
+         lmoenIVkv12hnZUU+q7jFGWUjVJUy1vNM7uG8bgIk3LjbDRoq2YX2Vlaq7Ik69ynztJ2
+         oa3A==
+X-Gm-Message-State: AOJu0Yw+dJzGfaC3sjnc65WRjRQZAu5saHMLT03wcZCYsu7GuZNu9Mg4
+	mPp3gyWTKDWa5FkWnOYYr264NBa8Vp0kk5rsqPXjr8zcT05oJ6IdsUR+1wE/VLGsqBXz0l7nvLg
+	Wvg==
+X-Google-Smtp-Source: AGHT+IH80WQPe2gC0t41s8elGGKjfDMTRtXWW//0TOVmoyUvyUr43Ya/wSrUFZF+r6Z3Ca0w0TJIfiQeiMA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:690c:f85:b0:5ff:9315:7579 with SMTP id
+ df5-20020a05690c0f8500b005ff93157579mr690348ywb.6.1706746854726; Wed, 31 Jan
+ 2024 16:20:54 -0800 (PST)
+Date: Wed, 31 Jan 2024 16:20:53 -0800
+In-Reply-To: <97bb1f2996d8a7b828cd9e3309380d1a86ca681b.1705965635.git.isaku.yamahata@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbrgCPEolPJNfg1x@slm.duckdns.org>
+Mime-Version: 1.0
+References: <cover.1705965634.git.isaku.yamahata@intel.com> <97bb1f2996d8a7b828cd9e3309380d1a86ca681b.1705965635.git.isaku.yamahata@intel.com>
+Message-ID: <Zbrj5WKVgMsUFDtb@google.com>
+Subject: Re: [PATCH v18 064/121] KVM: TDX: Create initial guest memory
+From: Sean Christopherson <seanjc@google.com>
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com, 
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>, chen.bo@intel.com, 
+	hang.yuan@intel.com, tina.zhang@intel.com, gkirkpatrick@google.com
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, Jan 31 2024 at  7:04P -0500,
-Tejun Heo <tj@kernel.org> wrote:
+On Mon, Jan 22, 2024, isaku.yamahata@intel.com wrote:
+> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> index 4cbcedff4f16..1a5a91b99de9 100644
+> --- a/arch/x86/kvm/vmx/tdx.c
+> +++ b/arch/x86/kvm/vmx/tdx.c
+> @@ -591,6 +591,69 @@ static int tdx_mem_page_aug(struct kvm *kvm, gfn_t gfn,
+>  	return 0;
+>  }
+>  
+> +static int tdx_mem_page_add(struct kvm *kvm, gfn_t gfn,
+> +			    enum pg_level level, kvm_pfn_t pfn)
+> +{
+> +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+> +	hpa_t hpa = pfn_to_hpa(pfn);
+> +	gpa_t gpa = gfn_to_gpa(gfn);
+> +	struct tdx_module_args out;
+> +	hpa_t source_pa;
+> +	bool measure;
+> +	u64 err;
+> +	int i;
+> +
+> +	/*
+> +	 * KVM_INIT_MEM_REGION, tdx_init_mem_region(), supports only 4K page
+> +	 * because tdh_mem_page_add() supports only 4K page.
+> +	 */
+> +	if (KVM_BUG_ON(level != PG_LEVEL_4K, kvm))
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * In case of TDP MMU, fault handler can run concurrently.  Note
+> +	 * 'source_pa' is a TD scope variable, meaning if there are multiple
+> +	 * threads reaching here with all needing to access 'source_pa', it
+> +	 * will break.  However fortunately this won't happen, because below
+> +	 * TDH_MEM_PAGE_ADD code path is only used when VM is being created
+> +	 * before it is running, using KVM_TDX_INIT_MEM_REGION ioctl (which
+> +	 * always uses vcpu 0's page table and protected by vcpu->mutex).
+> +	 */
 
-> Hello, Linus.
-> 
-> On Wed, Jan 31, 2024 at 03:19:01PM -0800, Linus Torvalds wrote:
-> > On Wed, 31 Jan 2024 at 13:32, Tejun Heo <tj@kernel.org> wrote:
-> > >
-> > > I don't know, so just did the dumb thing. If the caller always guarantees
-> > > that the work items are never queued at the same time, reusing is fine.
-> > 
-> > So the reason I thought it would be a good cleanup to introduce that
-> > "atomic" workqueue thing (now "bh") was that this case literally has a
-> > switch between "use tasklets' or "use workqueues".
-> > 
-> > So it's not even about "reusing" the workqueue, it's literally a
-> > matter of making it always just use workqueues, and the switch then
-> > becomes just *which* workqueue to use - system or bh.
-> 
-> Yeah, that's how the dm-crypt got converted. The patch just before this one.
-> This one probably can be converted the same way. I don't see the work item
-> being re-initialized. It probably is better to initialize the work item
-> together with the enclosing struct and then just queue it when needed.
+Most of the above is superflous.  tdx_mem_page_add() is called if and only if
+the TD is finalized, and the TDX module disallow running vCPUs before the TD is
+finalized.  That's it.  And maybe throw in a lockdep to assert that kvm->lock is
+held.
 
-Sounds good.
- 
-> Mikulas, I couldn't decide what to do with the "try_verify_in_tasklet"
-> option and just decided to do the minimal thing hoping that someone more
-> familiar with the code can take over the actual conversion. How much of user
-> interface commitment is that? Should it be renamed or would it be better to
-> leave it be?
+> +	if (KVM_BUG_ON(kvm_tdx->source_pa == INVALID_PAGE, kvm)) {
+> +		tdx_unpin(kvm, pfn);
+> +		return -EINVAL;
+> +	}
+> +
+> +	source_pa = kvm_tdx->source_pa & ~KVM_TDX_MEASURE_MEMORY_REGION;
+> +	measure = kvm_tdx->source_pa & KVM_TDX_MEASURE_MEMORY_REGION;
+> +	kvm_tdx->source_pa = INVALID_PAGE;
+> +
+> +	do {
+> +		err = tdh_mem_page_add(kvm_tdx->tdr_pa, gpa, hpa, source_pa,
+> +				       &out);
+> +		/*
+> +		 * This path is executed during populating initial guest memory
+> +		 * image. i.e. before running any vcpu.  Race is rare.
 
-cryptsetup did add support for it, so I think it worthwhile to
-preserve the option; but it'd be fine to have it just be a backward
-compatible alias for a more appropriately named option?
+How are races possible at all?
 
-Mike
+> +		 */
+> +	} while (unlikely(err == TDX_ERROR_SEPT_BUSY));
+> +	if (KVM_BUG_ON(err, kvm)) {
+> +		pr_tdx_error(TDH_MEM_PAGE_ADD, err, &out);
+> +		tdx_unpin(kvm, pfn);
+> +		return -EIO;
+> +	} else if (measure) {
+> +		for (i = 0; i < PAGE_SIZE; i += TDX_EXTENDMR_CHUNKSIZE) {
+> +			err = tdh_mr_extend(kvm_tdx->tdr_pa, gpa + i, &out);
+> +			if (KVM_BUG_ON(err, &kvm_tdx->kvm)) {
+> +				pr_tdx_error(TDH_MR_EXTEND, err, &out);
+> +				break;
+> +			}
+> +		}
+
+Why is measurement done deep within the MMU?  At a glance, I don't see why this
+can't be done up in the ioctl, outside of a spinlock.
+
+And IIRC, the order affects the measurement but doesn't truly matter, e.g. KVM
+could choose to completely separate tdh_mr_extend() from tdh_mem_page_add(), no?
+
+> +static int tdx_init_mem_region(struct kvm *kvm, struct kvm_tdx_cmd *cmd)
+> +{
+> +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+> +	struct kvm_tdx_init_mem_region region;
+> +	struct kvm_vcpu *vcpu;
+> +	struct page *page;
+> +	int idx, ret = 0;
+> +	bool added = false;
+> +
+> +	/* Once TD is finalized, the initial guest memory is fixed. */
+> +	if (is_td_finalized(kvm_tdx))
+> +		return -EINVAL;
+> +
+> +	/* The BSP vCPU must be created before initializing memory regions. */
+> +	if (!atomic_read(&kvm->online_vcpus))
+> +		return -EINVAL;
+> +
+> +	if (cmd->flags & ~KVM_TDX_MEASURE_MEMORY_REGION)
+> +		return -EINVAL;
+> +
+> +	if (copy_from_user(&region, (void __user *)cmd->data, sizeof(region)))
+> +		return -EFAULT;
+> +
+> +	/* Sanity check */
+> +	if (!IS_ALIGNED(region.source_addr, PAGE_SIZE) ||
+> +	    !IS_ALIGNED(region.gpa, PAGE_SIZE) ||
+> +	    !region.nr_pages ||
+> +	    region.nr_pages & GENMASK_ULL(63, 63 - PAGE_SHIFT) ||
+> +	    region.gpa + (region.nr_pages << PAGE_SHIFT) <= region.gpa ||
+> +	    !kvm_is_private_gpa(kvm, region.gpa) ||
+> +	    !kvm_is_private_gpa(kvm, region.gpa + (region.nr_pages << PAGE_SHIFT)))
+> +		return -EINVAL;
+> +
+> +	vcpu = kvm_get_vcpu(kvm, 0);
+> +	if (mutex_lock_killable(&vcpu->mutex))
+> +		return -EINTR;
+
+The real reason for this drive-by pseudo-review is that I am hoping/wishing we
+can turn this into a generic KVM ioctl() to allow userspace to pre-map guest
+memory[*].
+
+If we're going to carry non-trivial code, we might as well squeeze as much use
+out of it as we can.
+
+Beyond wanting to shove this into KVM_MEMORY_ENCRYPT_OP, is there any reason why
+this is a VM ioctl() and not a vCPU ioctl()?  Very roughly, couldn't we use a
+struct like this as input to a vCPU ioctl() that maps memory, and optionally
+initializes memory from @source?
+
+	struct kvm_memory_mapping {
+		__u64 base_gfn;
+		__u64 nr_pages;
+		__u64 flags;
+		__u64 source;
+	}
+
+TDX would need to do special things for copying the source, but beyond that most
+of the code in this function is generic.
+
+[*] https://lore.kernel.org/all/65262e67-7885-971a-896d-ad9c0a760907@polito.it
 
