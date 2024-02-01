@@ -1,83 +1,92 @@
-Return-Path: <linux-kernel+bounces-48557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AED71845DCD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 34A2B845DDD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 17:56:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A60C28CECC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:54:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD7FC295918
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:56:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B72C5399;
-	Thu,  1 Feb 2024 16:54:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0454F5CBE;
+	Thu,  1 Feb 2024 16:56:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RMeEsvY4"
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="memqZ//+"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B5925242;
-	Thu,  1 Feb 2024 16:54:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72271468C;
+	Thu,  1 Feb 2024 16:56:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706806489; cv=none; b=r5aFpqzm/AOBao6yT3bQ+fmDnA+Ni6XNPzc6TDyGuVsCQwNu3mNeUzYP5rxeRCYGcrUMaxtu8fRTtTFMk6nQG+h0qiwM3UXG/E6bANxczftpyG/E0LwdpxsiqmmlGVhhVKqryksc9EWNID79DSoDhk9Np8nDCedF709szTDr3Zg=
+	t=1706806575; cv=none; b=DkDtSzLCyJrO+De1cpWOhwW7fKiDZ7l6b3vQ28PXvuf9SY3Umc5+C/WqAGwmXVhs/ZJhjfZdq/ClSPRbDp/ewJg+IxMnl4gnYDASqTZhHihyXClAYFXIoOmjnoWNPvX3BUYc0vTmGP9qCKIFDnltKOXcjxgj3fDDCRTaugETpRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706806489; c=relaxed/simple;
-	bh=paVA37qC7UagKYbaYGHhj5L2kN0/melhn59qPaD0UmM=;
+	s=arc-20240116; t=1706806575; c=relaxed/simple;
+	bh=z3Remv4QfHt/lpAm+q6drL+AsGVbzUcUothMsaLNhTM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RUu2Xt3SxodqzqfV3g7rKn9uDc63HcyEVW4/1mSnDcNvFKUCOwuuQ4bUuvNqFlJVHX4bbTvjX8ZiQRrdFboXaByRIRWRq+0pfj9VuSCV7wco/N24ze7hh8mevBJeGPGQLAg5iRaKi3ZyRwtuci7UpwurYX9cfb6LJb5Qg8WyojA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RMeEsvY4; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=C3gadKLrRiw0yQXgt0m4m1iVFdrfXtxwvf8/KEwVFkdKkGGZF0vvDjPFU7igDXTEVx8FSMuPhGal1f6cFKRpKXp+B0ATRKdqgMfdmCmcjxpNSFlbQYmvSwRu2DD+TwpcJBdmzm1vbG3iDIAF4LvIpWiwiRxgG3MTtPG6DMHh2qw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=memqZ//+; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5d8df34835aso880214a12.0;
-        Thu, 01 Feb 2024 08:54:47 -0800 (PST)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33b0e5d1e89so811062f8f.0;
+        Thu, 01 Feb 2024 08:56:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706806487; x=1707411287; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706806571; x=1707411371; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Le26Her3iuF2oyQhqRLORCxI/GBX9Z+AzUxUWgF+utg=;
-        b=RMeEsvY4Ran70ahVgYqPZc5V7plB/CQJtrmnarg7OSip50jYy1IyUgVcs5QC/kxWkS
-         hzbFaj6MO/d7iRCCSX/FpbBx38hxyTdDr2eF9HnzkZftN6Accxh02yEinPKeooRbPdG2
-         3bSjjSL4z4cXA+eb4VQhIKIPLZFbZuaCTiIbtme417A5jSWvVxZ6jWkDwob06v8zW++0
-         aYRrIk9AGCJBgE0Rjr+NrcKvAHlwkxg6dJvBuF/GxrWicCzEPqinfl4emSHAsHzrWePB
-         EgKXdAFlidwTrHr1U3GPM29CapemA3z/2RrwE4KmRDEie/2stGcgMiLDlv8DZ/TllMTH
-         R8bQ==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WRONz3zs2Ye8kp8mlNb2mkGa+oDmC9gtz59sMXR+/Aw=;
+        b=memqZ//+/GIPJydCbOq8OdYi+Lksvq5kWAaDqpiCbeLyvFCd86JcoawneAxshEg3Y4
+         XPJW44tqBm3ILm4Vp6s2lkGyIv9bkS9LvleXTbE+rlPB7CPZARYcYPKHJXiFKKzWSvBZ
+         BAcbj1DkAcoyrUozri9BcKmcNnzG9XZoCHTfHHhswaVr2fF2ss38oCiO8OvN+HBoj8JA
+         buoxLhakKMP6z8bD84J/qoHEDYTc6zjU5pUW0V7e05ZDZvIqnAyvcyBxTutjZpjyl4jr
+         s8g6M6w2eOLyeB3PU5LSAKNoh/KVdLgZvhR66sYJkknNBrvcxFqekbY4fgzRbEhcfaUm
+         6Xug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706806487; x=1707411287;
+        d=1e100.net; s=20230601; t=1706806571; x=1707411371;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Le26Her3iuF2oyQhqRLORCxI/GBX9Z+AzUxUWgF+utg=;
-        b=k7TNozOmswnmb+JReV7Z7Xz1Z9lMKSGI+jLw605xAsFtS2kxSkmoHs/KNbGD6keq9b
-         J4wMhRxAMzkCL9l6xTNwd8zs7a0f4VrhTtmFOXHd8DyB9LQ9ld1JJ1dzr5xBXsI/X28S
-         vOauK9gKUMSNoAXjkBkC+6oGb4499BwUBQPx4jnoWQgDCZaZrBKIzDo2JmQiF/ZQYQ7A
-         1DxFLw6fZLiX5ppCEQ8aeKGdiCdjHb56ZiVIagtjNINHW0/u+8VDgavrG+kZoCKqH7+u
-         3a8amJrn0lQRp10RMGo8kRKBMsSH2eGrkMsmG0okHfpU4wanvvOLJnQHWITutdgBa23p
-         wsgQ==
-X-Gm-Message-State: AOJu0YxlI6yCuP2PeVdNckMpgjun2QXKmaQLXMVjiyipHLW5t0ZWfMRH
-	kqPYBqSPCgkU+uGsrsySdQe3Aq5A9tu+ocv/H4QbhKU+RFOZZrv/
-X-Google-Smtp-Source: AGHT+IHgS0JUF5oqOAt1EuMRkPOrJ3ytf37UrR80F1aeEmI2/7NvuDIB98SbIB6Jn/e/9kBFghzJoQ==
-X-Received: by 2002:a05:6a20:5488:b0:19e:2d00:10c6 with SMTP id i8-20020a056a20548800b0019e2d0010c6mr11084501pzk.23.1706806487287;
-        Thu, 01 Feb 2024 08:54:47 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUTlW5dC0lx8f6Ilw5WQKSfoag1Z8lvuDLBKcLSl6zDcdI4i2Z7abT2WlJal6M2jncVnNn5VZzV0+K1/kouwDvN52NWSz+p13VUI12cbZAH/WFZ6OxVT0lpa1Y0bvfzro85d4cjubz/FpNJB0T5K5OdtF9ZVsFPyAFmYM6N9cQImXTcbzYpDwEz9y07NewN5/V6/lhd
-Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
-        by smtp.gmail.com with ESMTPSA id y7-20020a655287000000b005db034d1514sm5276785pgp.82.2024.02.01.08.54.46
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WRONz3zs2Ye8kp8mlNb2mkGa+oDmC9gtz59sMXR+/Aw=;
+        b=lXxPj+RRrZqfCNnxqgdjJH18AMjEuirlH+jgEUVENYCvi6Gd+LZrSk0q6iTJWxwkz0
+         IcRBe/v/w7miCEzARvyPQDfJalSBEOikvPz55LwQZ6mSDE4/niECLxfJQAA2lMPPzS8f
+         WzxaBp/nt85zJXxFHwkWxhs/1E+/1fQ/cz9bnWtcIdQzEkgtAUJr7v07bGUdQnIScUjb
+         lP12HWba02yLrZeA+Q9/fCoQaLhE2ktqVUwY1V/inT11UqLiqaM2ekoyyeMlmXXPcugP
+         Cw+jZu+WIE+sxt5HYcXLUSS58TOqNW98HBueL8API9THli0ZlfA8u+eE161xMffiBVVd
+         94HQ==
+X-Gm-Message-State: AOJu0YxnGTKuz32+QmuSKk5OHETQVqRrmukEHlyfiw9J4m0t3JIR4W5e
+	Ieq+AjPxDQdfvW+ZesPJGjwT/DAoVA0bD2piKNyZjXu1F+kHpQvY
+X-Google-Smtp-Source: AGHT+IEN7piBAHgnsH6iF/KjuouX1TsTmXKCFnH6zypAeAmK3ksCuMdXsSBTTbmVGDAgLcth2+4FKg==
+X-Received: by 2002:a5d:64e2:0:b0:33b:17c5:f25a with SMTP id g2-20020a5d64e2000000b0033b17c5f25amr1723832wri.64.1706806571598;
+        Thu, 01 Feb 2024 08:56:11 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVeIhYc1bdHcoOq49k918ll9ufcHPwUS1uMRPCBVPg6NM0QHqmbl/8a0+Kc5D+nxToRxKb/os+NbNRaE3FUHYWb/AeDqmke6MYZm6AArQbY7vrqUj7uLw3vNSWx6DFnLUgeNkGzW2Ao9uLsQnWudVBvld+j30BEGZ2MuXDbFtxUTqRjKHi9RC704VM2/KdUOy3ZupHBL3YzIwvpQgO1f13eeixA8M0n3RAPQuyEqNV93YVjbDzeGvziclROkPQIo5M09LswlYi3yzOJnQ6sFvZYxGjG9mRMaJyNVS4S2wxF2fYiz521256/m6G9gEcqYIpHPBF3IFZbGsNq99Lz0nVA2S+xk7zuOjBL6gmHAglKGZ15hyiFj3FAJm9i9nQrXIlz2g==
+Received: from debian ([93.184.186.109])
+        by smtp.gmail.com with ESMTPSA id ba15-20020a0560001c0f00b0033ae54cdd97sm14380311wrb.100.2024.02.01.08.56.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 08:54:46 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 1 Feb 2024 06:54:45 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Helge Deller <deller@gmx.de>
-Cc: Helge Deller <deller@kernel.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-Subject: Re: [PATCH][RFC] workqueue: Fix kernel panic on CPU hot-unplug
-Message-ID: <ZbvM1V8CYNeds14r@slm.duckdns.org>
-References: <ZbqfMR_mVLaSCj4Q@carbonx1>
- <ZbrJq3X63hIMkbl2@slm.duckdns.org>
- <8a266076-b3dc-4a39-aac4-089e2ef77da3@gmx.de>
+        Thu, 01 Feb 2024 08:56:11 -0800 (PST)
+Date: Thu, 1 Feb 2024 17:56:09 +0100
+From: Dimitri Fedrau <dima.fedrau@gmail.com>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Guenter Roeck <linux@roeck-us.net>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jean Delvare <jdelvare@suse.com>,
+	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH v5 net-next 08/13] net: phy: marvell-88q2xxx: add support
+ for temperature sensor
+Message-ID: <20240201165609.GE48964@debian>
+References: <20240122212848.3645785-1-dima.fedrau@gmail.com>
+ <20240122212848.3645785-9-dima.fedrau@gmail.com>
+ <88a60be9-083b-4618-845c-6983bcad3540@roeck-us.net>
+ <c9866a56-d82e-4a3d-b335-db22c0413416@lunn.ch>
+ <a02c7451-8515-45d4-ae7b-9e64b03b5b38@roeck-us.net>
+ <20240201162349.GC48964@debian>
+ <b4fc0bc4-1585-4ae0-a980-10814e6d9ff6@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,50 +95,38 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8a266076-b3dc-4a39-aac4-089e2ef77da3@gmx.de>
+In-Reply-To: <b4fc0bc4-1585-4ae0-a980-10814e6d9ff6@lunn.ch>
 
-Hello, Helge.
-
-On Thu, Feb 01, 2024 at 05:41:10PM +0100, Helge Deller wrote:
-> > Hmm... I have a hard time imagining a scenario where some CPUs don't have
-> > pwq installed on wq->cpu_pwq. Can you please run `drgn
-> > tools/workqueue/wq_dump.py` before triggering the hotplug event and paste
-> > the output along with full dmesg?
+Am Thu, Feb 01, 2024 at 05:47:21PM +0100 schrieb Andrew Lunn:
+> On Thu, Feb 01, 2024 at 05:23:49PM +0100, Dimitri Fedrau wrote:
+> > Am Thu, Feb 01, 2024 at 05:39:25AM -0800 schrieb Guenter Roeck:
+> > > On 2/1/24 05:27, Andrew Lunn wrote:
+> > > > > > +#ifdef CONFIG_HWMON
+> > > > > 
+> > > > > HWMON is tristate, so this may be problematic if the driver is built
+> > > > > into the kernel and hwmon is built as module.
+> > > > 
+> > > > There should be Kconfig in addition to this, e.g.
+> > > > 
+> > > > config MAXLINEAR_GPHY
+> > > >          tristate "Maxlinear Ethernet PHYs"
+> > > >          select POLYNOMIAL if HWMON
+> > > >          depends on HWMON || HWMON=n
+> > > >          help
+> > > >            Support for the Maxlinear GPY115, GPY211, GPY212, GPY215,
+> > > >            GPY241, GPY245 PHYs.
+> > > > 
+> > > > So its forced to being built in, or not built at all.
+> > > > 
+> > > 
+> > > Even then it should be "#if IS_ENABLED(HWMON)" in the code.
+> > > 
+> > >
+> > If using "#if IS_ENABLED(HWMON)" do I have to add the dependency in
+> > the KConfig file ? When looking at other PHY drivers, they do.
 > 
-> I'm not sure if parisc is already fully supported with that tool, or
-> if I'm doing something wrong:
-> 
-> root@debian:~# uname -a
-> Linux debian 6.8.0-rc1-32bit+ #1292 SMP PREEMPT Thu Feb  1 11:31:38 CET 2024 parisc GNU/Linux
-> 
-> root@debian:~# drgn --main-symbols -s ./vmlinux ./wq_dump.py
-> Traceback (most recent call last):
->   File "/usr/bin/drgn", line 33, in <module>
->     sys.exit(load_entry_point('drgn==0.0.25', 'console_scripts', 'drgn')())
->              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->   File "/usr/lib/python3/dist-packages/drgn/cli.py", line 301, in _main
->     runpy.run_path(script, init_globals={"prog": prog}, run_name="__main__")
->   File "<frozen runpy>", line 291, in run_path
->   File "<frozen runpy>", line 98, in _run_module_code
->   File "<frozen runpy>", line 88, in _run_code
->   File "./wq_dump.py", line 78, in <module>
->     worker_pool_idr         = prog['worker_pool_idr']
->                               ~~~~^^^^^^^^^^^^^^^^^^^
-> KeyError: 'worker_pool_idr'
+> Please follow what other drivers do. Its easy to break the build,
+> resulting is undefined symbols. What we have now works.
 
-Does the kernel have CONFIG_DEBUG_INFO enabled? If you can look up
-worker_pool_idr in gdb, drgn should be able to do the same.
-
-> Maybe you have an idea? I'll check further, but otherwise it's probably
-> easier for me to add some printk() to the kernel function wq_update_pod()
-> and send that info?
-
-Can you first try with drgn? The script dumps all the config info, so it's
-likely easier to view that way. If that doesn't work out, I can write up a
-debug patch.
-
-Thanks.
-
--- 
-tejun
+Sure.
 
