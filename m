@@ -1,128 +1,79 @@
-Return-Path: <linux-kernel+bounces-48360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B117C845AE4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BD75F845AD3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 16:04:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C2022939EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:07:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E38B28E355
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 15:04:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7673162168;
-	Thu,  1 Feb 2024 15:06:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55A6E6216B;
+	Thu,  1 Feb 2024 15:04:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mokQ+Tka"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="YhYk+fye"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B0535F494;
-	Thu,  1 Feb 2024 15:06:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.115
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CB8B62151;
+	Thu,  1 Feb 2024 15:03:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706800007; cv=none; b=LJfw5jcw449tlc219mVFIR5hLgKi7qk3BJMyNkBzZfhW3eXne+ZGjihEN8sKddufte56OS0QCybm++Gko6GS6TLjduPgUD/QXMGEpiMHPDknr9COS/eJ9heNrRRrGMacreHFuBn/nN6T8ldVl6v2uU+dFae1QPmwM4ZPzUD1EuA=
+	t=1706799839; cv=none; b=mpVbnLrL+U1CgK+Udbxsn/DqgAhPoSv3dl9CbEWNeKyUYWJa25ohhgTrwyxofPJGwpAwiONp0MPgMrYNzeoqkyNieM/0ZNSbqxhO2doaFlOeCFCYW7TMtMPO7BHNNBK5q7qUGvsRx8OxurrYXxE6Ai8l/qtz3XEZG7Vk2pDTEuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706800007; c=relaxed/simple;
-	bh=owxSNrvDkg3gD50cec2iQ+m3WCWKt4TbmkW4j3XR5ow=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pXz0OqZLyVp0kQNkUXYuwm6IPQkR5vdICjv6rGMNIy1Bxlhle4vj2qI4UgZy3ptT22J1Xo+bde9iYWZC4uVp1s8Tqs1Xl/YM+B5bxrzLyyk0io7eF2zxDud4aRa6s2ZqAKV1RaDpNw0afahTbnZOCvYMtYLXz/vJ8Gji6hg188g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mokQ+Tka; arc=none smtp.client-ip=192.55.52.115
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706800006; x=1738336006;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=owxSNrvDkg3gD50cec2iQ+m3WCWKt4TbmkW4j3XR5ow=;
-  b=mokQ+Tkaa4s4+O29luDCr7zIUxriHwR6W5OuZ8ygz4o/ertOjqB7PkQk
-   j4we5K7nJv5E+OjqEz0nwMVosVbhKC8aevHfLhRFLSTWMZHXtlwcdO0IQ
-   zjf3MBXw5WNrVdzrOSpe+/ParfdKbBDMp5NsuqLGXMnJKKAi5FTVFH1OF
-   53Al2VrVUo0olhAJZN2lQzHKsVCtmsikaVC7qIhC0DqpwgMbU1U6o5EHd
-   PvBQvsKrqwKeDwVJBGSYaoolvCLw6nWplLfbrX3yp347obY5EdQ4VG0x/
-   sEbioocg885EhniutOaIM+6LtTUeoTYsu4X5tjikQZ5u9mJgB7A3xxbkF
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="403525484"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="403525484"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 07:06:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="859168148"
-X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="859168148"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 01 Feb 2024 07:06:41 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 19175BA3; Thu,  1 Feb 2024 16:49:53 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Daniel Thompson <daniel.thompson@linaro.org>,
-	dri-devel@lists.freedesktop.org,
-	linux-fbdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Lee Jones <lee@kernel.org>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Helge Deller <deller@gmx.de>,
-	Javier Martinez Canillas <javierm@redhat.com>
-Subject: [PATCH v2 4/4] backlight: hx8357: Utilise temporary variable for struct device
-Date: Thu,  1 Feb 2024 16:47:45 +0200
-Message-ID: <20240201144951.294215-5-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
-In-Reply-To: <20240201144951.294215-1-andriy.shevchenko@linux.intel.com>
-References: <20240201144951.294215-1-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1706799839; c=relaxed/simple;
+	bh=U09eNR21Lbmrd2l9PZFgQtRK0fx92Ls+0PVGzJDFuko=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q03mstUH/4jMs0JFa0pEaHIEz/47wgx6HASGlPFsuGCE0UklzIyHKULnv8+zkN1jTLijgZ42FB7djWa04KXT96fFj+4YRS3cre85f1nLfVVAmU4skG587SyvjCb+oV7T33v+DUVGWPzuGUbHLxHc+1vcyrdW7oArAoq2yL5ljf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=YhYk+fye; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0AFCC43390;
+	Thu,  1 Feb 2024 15:03:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1706799839;
+	bh=U09eNR21Lbmrd2l9PZFgQtRK0fx92Ls+0PVGzJDFuko=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YhYk+fye2duZoKq7wrP/wZM3zLUsVgooOMGedUBMv9sY58Fkhw1LQoOv10cUkea5d
+	 XQmlhMIApgGld71PJf4ibrlNyNGdZvNr9qUrHG4/+C3CtP5B0Vc6cpYHLKOg8mOz+M
+	 gAaH3/y/b900seFnbfsnWCIoEhJlBzf4hikXk2Ao=
+Date: Thu, 1 Feb 2024 07:03:58 -0800
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Chris Leech <cleech@redhat.com>, Nilesh Javali <njavali@marvell.com>,
+	John Meneghini <jmeneghi@redhat.com>, Lee Duncan <lduncan@suse.com>,
+	Mike Christie <michael.christie@oracle.com>,
+	Hannes Reinecke <hare@kernel.org>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+	GR-QLogic-Storage-Upstream@marvell.com
+Subject: Re: [PATCH 1/2] uio: introduce UIO_MEM_DMA_COHERENT type
+Message-ID: <2024020125-bunt-nearest-242b@gregkh>
+References: <20240131191732.3247996-1-cleech@redhat.com>
+ <20240131191732.3247996-2-cleech@redhat.com>
+ <20240201044637.GC14176@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201044637.GC14176@lst.de>
 
-We have a temporary variable to keep pointer to struct device.
-Utilise it inside the ->probe() implementation.
+On Thu, Feb 01, 2024 at 05:46:37AM +0100, Christoph Hellwig wrote:
+> As the least horrible way out this looks ok:
+> 
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> 
+> Bt maybe you can add some commentary why this mem mode exists and
+> why no one should be using it in new code?
+> 
 
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/video/backlight/hx8357.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Good idea, and perhaps a kernel log warning when this is used as well
+just to prevent anyone new from ever considering it.
 
-diff --git a/drivers/video/backlight/hx8357.c b/drivers/video/backlight/hx8357.c
-index 70a62755805a..339d9128fbde 100644
---- a/drivers/video/backlight/hx8357.c
-+++ b/drivers/video/backlight/hx8357.c
-@@ -574,7 +574,7 @@ static int hx8357_probe(struct spi_device *spi)
- 	hx8357_init_fn init_fn;
- 	int i, ret;
- 
--	lcd = devm_kzalloc(&spi->dev, sizeof(*lcd), GFP_KERNEL);
-+	lcd = devm_kzalloc(dev, sizeof(*lcd), GFP_KERNEL);
- 	if (!lcd)
- 		return -ENOMEM;
- 
-@@ -604,8 +604,7 @@ static int hx8357_probe(struct spi_device *spi)
- 			gpiod_set_consumer_name(lcd->im_pins->desc[i], "im_pins");
- 	}
- 
--	lcdev = devm_lcd_device_register(&spi->dev, "mxsfb", &spi->dev, lcd,
--					&hx8357_ops);
-+	lcdev = devm_lcd_device_register(dev, "mxsfb", dev, lcd, &hx8357_ops);
- 	if (IS_ERR(lcdev)) {
- 		ret = PTR_ERR(lcdev);
- 		return ret;
-@@ -618,7 +617,7 @@ static int hx8357_probe(struct spi_device *spi)
- 	if (ret)
- 		return dev_err_probe(dev, ret, "Couldn't initialize panel\n");
- 
--	dev_info(&spi->dev, "Panel probed\n");
-+	dev_info(dev, "Panel probed\n");
- 
- 	return 0;
- }
--- 
-2.43.0.rc1.1.gbec44491f096
+thanks,
 
+greg k-h
 
