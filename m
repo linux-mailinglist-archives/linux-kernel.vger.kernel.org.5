@@ -1,51 +1,53 @@
-Return-Path: <linux-kernel+bounces-47644-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47645-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 105018450A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 06:16:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C8478450AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 06:26:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C207E28E704
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:16:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F0311F24316
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:26:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E0A83C48E;
-	Thu,  1 Feb 2024 05:16:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D80E3CF41;
+	Thu,  1 Feb 2024 05:26:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="0uKcdaHm"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="BBRxnRA2"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F3C2C1BF;
-	Thu,  1 Feb 2024 05:16:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 895C13C48D;
+	Thu,  1 Feb 2024 05:26:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706764591; cv=none; b=Oisk/gjDy67M7z3ZzAFGYl3Ir7enat/BFadCRO7msA0sElegqWP7vgCoGIFUSRatlp8FIufenrGSx0107wQ4b5at5fULJOiJMdJyGUAZH7ur+E42hNc7I5wkQP7+Dy4frwD0uu57x73wXuU42UP3llbh83ZGeAu/Hg5tqk1aNo4=
+	t=1706765191; cv=none; b=FM9UonLNhHy//1aeHmFMkIhsaoUtAHlTVMH379sZ/f0xaAjY8uNBsn/wBTlnp7SJycBsKuUwcLifzgZbmAzPfW+O61XXN3GK7uVTj+oUrAMZMiGcQeXaDqSnSPZWf9FzhBqObRU5LxoILEsSzwP2mcNN56sb1mKfqcKQNnOV5X0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706764591; c=relaxed/simple;
-	bh=CvSb+Gil1ji46VexZFFVDkpAh7xY7sGUymNfmluuP8g=;
+	s=arc-20240116; t=1706765191; c=relaxed/simple;
+	bh=JMh6u4SheanmdzGxarK7jSTab60QQ2yWVfcOhV0YnSM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jBYAJJ8Hx+kmnO9c1Vxpm+oke7FixgyT1Bk4//ztPfp+trTRsFxgM4r9Penq9aul43pl/uaa41LAstXiSW5AECcNNXQi/85wW65k5+F/M+iaejmJC5mOgn6lw1uFPhuiqNws/sDLIKIdRfgAST9phj1hymEfB3mPJOxTbzC5SpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=0uKcdaHm; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=Mjh8PuY8+e5eF0GSyu0fRtJSsUkC5zDTJI32X7tIhQs=; b=0uKcdaHmeoMpzFrSRx/owahvGb
-	L9Tq+yFiz2oFwHM9zVDVBxg3kJutVEBrB3ACrZP2987brgR4wRDowlJyx1cg32xIgCcne/mxAgmnW
-	CJ12Pt8wNFdo15nNqkQ+3Q+qDtC5IZL3GNH6Mt2sM/N9L8gvdn4HIE0czHhS1Ja3jp0dn3TSDLrCy
-	e7Z62A/hGyP2+3XoE03fsfTGlAcTe4RIz7UUpZSN2UtJoy/K6kbsTalt3ftgX2jjOjlHgb+6uJIju
-	kW1RHN24jhqcZ7yL3tnzgS55Qq409eoGBCAlXePMUDGdgLmxdjWSBc38jZY0QbuZO6iQ1m8i1uaiK
-	rPlNGvqg==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVPR6-00000006bxu-2Q3C;
-	Thu, 01 Feb 2024 05:16:28 +0000
-Message-ID: <ac67aa4a-cba9-4daa-93f6-0bbdc0d4ec86@infradead.org>
-Date: Wed, 31 Jan 2024 21:16:27 -0800
+	 In-Reply-To:Content-Type; b=Tz9os9wAYKOA6nl1d2gH1BjsUcG5tE10dQcHnOiFu7DxK8ngDoIkkVoJsi72YlxM1pu3EWTFXfQaTa5vXoC08iiJjo6SOOIhkqRQSIlAj+qNL/ERX5A2msE/gESTO9wgHLoeltRVRx7N1jJTfaQuJEK8BQ46PnHyQlf86o7wIXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=BBRxnRA2; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [192.168.7.187] ([73.202.249.128])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 4115PilR3808446
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Wed, 31 Jan 2024 21:25:45 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 4115PilR3808446
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024011201; t=1706765146;
+	bh=r1Iqv6cnbCQa3sxh+vPP8wkKkcfxa6/xNtNlwkoNnPI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=BBRxnRA2+g/H4X50W9EMgM+V+4QrFUvYElbl9d9C3s5H8yRgSEbNaDAlJcoIOR0av
+	 KGGCxUSjDtynFEDNFHHaxmvaQqMCMgZmgO75c+ul+5R9LV3N1bpk8ztVTzXBZUiV0e
+	 ZPQrtKlk+cWwOxXcWzg7nsD0tr7wnX5e9CznOLy54l7LVBMXlCjC2T7qryZi67QWrh
+	 mpr2+CExdroGN22a5hdc55PwulPkut3YjD0IckriH4iGG+PYvstTf08VA7kGu8Gooz
+	 kZDD6dhFaU6Q2EDTBoiK/Du3XA1Xm0FuVikF92BAQ5CfDYGfx83Twp0uO/1yuw2euN
+	 RTpH+tlQ9KWIA==
+Message-ID: <2b2d6108-21c5-4661-b03d-80d06ec46fa7@zytor.com>
+Date: Wed, 31 Jan 2024 21:25:42 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,77 +55,69 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] lib/test_kmod: fix kernel-doc warnings
+Subject: Re: linux-next: build warning after merge of the tip tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc: "Borislav Petkov (AMD)" <bp@alien8.de>, Xin Li <xin3.li@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20240201111453.0ee3beff@canb.auug.org.au>
 Content-Language: en-US
-To: linux-kernel@vger.kernel.org
-Cc: Luis Chamberlain <mcgrof@kernel.org>, linux-modules@vger.kernel.org
-References: <20231104042044.17807-1-rdunlap@infradead.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231104042044.17807-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=UTF-8
+From: Xin Li <xin@zytor.com>
+Autocrypt: addr=xin@zytor.com; keydata=
+ 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
+ l75w1xInsg==
+In-Reply-To: <20240201111453.0ee3beff@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi,
-
-Any comments on this patch?
-Thanks.
-
-
-On 11/3/23 21:20, Randy Dunlap wrote:
-> Fix all kernel-doc warnings in test_kmod.c:
-> - Mark some enum values as private so that kernel-doc is not needed
->   for them
-> - s/thread_mutex/thread_lock/ in a struct's kernel-doc comments
-> - add kernel-doc info for @task_sync
+On 1/31/2024 4:14 PM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> test_kmod.c:67: warning: Enum value '__TEST_KMOD_INVALID' not described in enum 'kmod_test_case'
-> test_kmod.c:67: warning: Enum value '__TEST_KMOD_MAX' not described in enum 'kmod_test_case'
-> test_kmod.c:100: warning: Function parameter or member 'task_sync' not described in 'kmod_test_device_info'
-> test_kmod.c:134: warning: Function parameter or member 'thread_mutex' not described in 'kmod_test_device'
+> After merging the tip tree, today's linux-next build (x86_64 allmodconfig)
+> produced this warning:
 > 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Luis Chamberlain <mcgrof@kernel.org>
-> Cc: linux-modules@vger.kernel.org
-> ---
->  lib/test_kmod.c |    6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+> vmlinux.o: warning: objtool: fred_extint+0x1c: call to array_index_mask_nospec.constprop.0() leaves .noinstr.text section
 > 
-> diff -- a/lib/test_kmod.c b/lib/test_kmod.c
-> --- a/lib/test_kmod.c
-> +++ b/lib/test_kmod.c
-> @@ -58,11 +58,14 @@ static int num_test_devs;
->   * @need_mod_put for your tests case.
->   */
->  enum kmod_test_case {
-> +	/* private: */
->  	__TEST_KMOD_INVALID = 0,
-> +	/* public: */
->  
->  	TEST_KMOD_DRIVER,
->  	TEST_KMOD_FS_TYPE,
->  
-> +	/* private: */
->  	__TEST_KMOD_MAX,
->  };
->  
-> @@ -82,6 +85,7 @@ struct kmod_test_device;
->   * @ret_sync: return value if request_module() is used, sync request for
->   * 	@TEST_KMOD_DRIVER
->   * @fs_sync: return value of get_fs_type() for @TEST_KMOD_FS_TYPE
-> + * @task_sync: kthread's task_struct or %NULL if not running
->   * @thread_idx: thread ID
->   * @test_dev: test device test is being performed under
->   * @need_mod_put: Some tests (get_fs_type() is one) requires putting the module
-> @@ -108,7 +112,7 @@ struct kmod_test_device_info {
->   * @dev: pointer to misc_dev's own struct device
->   * @config_mutex: protects configuration of test
->   * @trigger_mutex: the test trigger can only be fired once at a time
-> - * @thread_lock: protects @done count, and the @info per each thread
-> + * @thread_mutex: protects @done count, and the @info per each thread
->   * @done: number of threads which have completed or failed
->   * @test_is_oom: when we run out of memory, use this to halt moving forward
->   * @kthreads_done: completion used to signal when all work is done
+> Probably introduced by commit
+> 
+>    6786137bf8fd ("x86/fred: FRED entry/exit and dispatch code")
+> 
 
--- 
-#Randy
+Thanks for reporting, I will take care of it.
+     Xin
+
 
