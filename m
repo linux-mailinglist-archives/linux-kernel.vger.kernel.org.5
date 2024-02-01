@@ -1,167 +1,201 @@
-Return-Path: <linux-kernel+bounces-48831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-48832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C266884622A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:53:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F7BB84622D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 21:56:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 176BE287F30
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:53:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C39621F26592
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 20:56:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27BEA3CF52;
-	Thu,  1 Feb 2024 20:53:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="kjC8SJTu";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="c+bpgpd+"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FC943CF40
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 20:53:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 452D63CF48;
+	Thu,  1 Feb 2024 20:56:11 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2756B3B19E
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 20:56:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706820785; cv=none; b=WVWA/6CVPSH0CZyNAd4P11OzS4y8UcvgNLrBAEEsZDbtBz1vF9Z6D3OQmL0MX7wHPV2bUSXmCqHAKcHO80mUjNTFzyirgx1FOF+vYg1MUxCthE2oJWprBzCbWmeTU/Fc5l4krAkcBieBQ6L3zdWRZjxJiSEos1AXrFbzIHYnPcQ=
+	t=1706820970; cv=none; b=gDp3RRv+prhg50KBhSJjhj/PhOL1Qj719Ad6sMqeZo0z869E4g/Vc9AstbdTKJdGJi6Z9Q8gvZDEeG+s2Js5w+MGW30O6ImzP/4pgn+JJiDTH/8Hd/HGDQMmxXwoeNF5eUnxaRuo/4wMX6i+CC/mZIpsYa/y+jvlyhwPaUveFzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706820785; c=relaxed/simple;
-	bh=b2JItZ51zEB/YEAZpwvKdAFils5MDdWV1SqvVQvFhco=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=t98gQ2QP9+LnoxtRd55UT+bf4cxMHh/M1sqb1H0erfS9RPhotnF81RZDZeMhpU6qlp6iog7QrAoDYvpeMKIJNe8quzFzN+C84QfK8yQKt/EA9dFV+HjU7AtUP5R96Z6z8USSWEde7yGbF6CMTs2TjicbBpE8kuZ9aDlB7PU1nXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=kjC8SJTu; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=c+bpgpd+; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706820781;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vjv+KgDQ1GYxe+4D5pZPTXuYE3TGKfPQ5fig2YXspLI=;
-	b=kjC8SJTul+SSUd/sUXzaVrx0e10rbhaBkI5dCuEWpKszKR21HtC1j+QXxypWO1F574EF00
-	OA54r805yF3jD5vlIYupHvp6DEIWixzkPS08GfUWnLWbtxTEzgRjTELNiozpSujF8A/5UZ
-	0FIDDpaIROWneF8yy+KAh0geLCuw+IDsD/bgNCAgd9BQHCuKXvOpCOIp6eOz74QgUJwZhL
-	iSXVvrKXgf+F7dcIhlwN9mRo1mD2sGrKM91Pxn4inrpYBexqY/di9SlN62IS10oUxtKhft
-	x7A9pTJOTfZN114rz+/L1MF+Vjt7LCzqlHLdnKVjxcHaAp6yO3x9GXyQQIQVEg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706820781;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vjv+KgDQ1GYxe+4D5pZPTXuYE3TGKfPQ5fig2YXspLI=;
-	b=c+bpgpd+6hIdxPORgrUI47zTs4vUYUjDfv33i1PV3Fhdeyl541unlip3FzAuoffew9uNsG
-	hNISxqRgX3ZFjSAA==
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
- John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
- Eric Dumazet <edumazet@google.com>, "Rafael J . Wysocki"
- <rafael.j.wysocki@intel.com>, Arjan van de Ven <arjan@infradead.org>,
- "Paul E . McKenney" <paulmck@kernel.org>, Rik van Riel <riel@surriel.com>,
- Steven Rostedt <rostedt@goodmis.org>, Sebastian Siewior
- <bigeasy@linutronix.de>, Giovanni Gherdovich <ggherdovich@suse.cz>, Lukasz
- Luba <lukasz.luba@arm.com>, "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
- Srinivas Pandruvada <srinivas.pandruvada@intel.com>, K Prateek Nayak
- <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v10 18/20] timers: Implement the hierarchical pull model
-In-Reply-To: <ZbvYJysR7gnaQiNg@localhost.localdomain>
-References: <20240115143743.27827-1-anna-maria@linutronix.de>
- <20240115143743.27827-19-anna-maria@linutronix.de>
- <ZbuzMeKlCgebhJZ-@localhost.localdomain> <87bk90i2ja.fsf@somnus>
- <ZbvYJysR7gnaQiNg@localhost.localdomain>
-Date: Thu, 01 Feb 2024 21:52:59 +0100
-Message-ID: <87y1c3lxec.fsf@somnus>
+	s=arc-20240116; t=1706820970; c=relaxed/simple;
+	bh=hV2Pa9TpTnqHiwHmL171NsgT80DhhsKgfd2bCkMYvCA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=BiFofCKxTXzpGYVX4z491AnKQrGitxX7uGCQowRGfYH30VRA0rx5bfKlpT0lw1mQBy5uHR7yxf7iF68Rhc9sPqwzJwHG8rzl5nMp7ieIfhEZifjyK1CKjUP6v1pfn9XPYpO5hX8rYLWZJYjpQyrwdHGiissriNAc8fjCjur7Zek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4886DA7;
+	Thu,  1 Feb 2024 12:56:49 -0800 (PST)
+Received: from [10.57.47.101] (unknown [10.57.47.101])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF6AB3F762;
+	Thu,  1 Feb 2024 12:56:05 -0800 (PST)
+Message-ID: <02610629-05ef-4956-a122-36b6ac98fbc2@arm.com>
+Date: Thu, 1 Feb 2024 20:56:04 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] iommu/iova: use named kmem_cache for iova magazines
+Content-Language: en-GB
+To: Pasha Tatashin <pasha.tatashin@soleen.com>, joro@8bytes.org,
+ will@kernel.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, rientjes@google.com
+References: <20240201193014.2785570-1-tatashin@google.com>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20240201193014.2785570-1-tatashin@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Frederic Weisbecker <frederic@kernel.org> writes:
+On 2024-02-01 7:30 pm, Pasha Tatashin wrote:
+> From: Pasha Tatashin <pasha.tatashin@soleen.com>
+> 
+> The magazine buffers can take gigabytes of kmem memory, dominating all
+> other allocations. For observability prurpose create named slab cache so
+> the iova magazine memory overhead can be clearly observed.
+> 
+> With this change:
+> 
+>> slabtop -o | head
+>   Active / Total Objects (% used)    : 869731 / 952904 (91.3%)
+>   Active / Total Slabs (% used)      : 103411 / 103974 (99.5%)
+>   Active / Total Caches (% used)     : 135 / 211 (64.0%)
+>   Active / Total Size (% used)       : 395389.68K / 411430.20K (96.1%)
+>   Minimum / Average / Maximum Object : 0.02K / 0.43K / 8.00K
+> 
+> OBJS ACTIVE  USE OBJ SIZE  SLABS OBJ/SLAB CACHE SIZE NAME
+> 244412 244239 99%    1.00K  61103       4    244412K iommu_iova_magazine
+>   91636  88343 96%    0.03K    739     124      2956K kmalloc-32
+>   75744  74844 98%    0.12K   2367      32      9468K kernfs_node_cache
+> 
+> On this machine it is now clear that magazine use 242M of kmem memory.
 
-> Le Thu, Feb 01, 2024 at 05:15:37PM +0100, Anna-Maria Behnsen a =C3=A9crit=
- :
->> Frederic Weisbecker <frederic@kernel.org> writes:
->>=20
->> > Le Mon, Jan 15, 2024 at 03:37:41PM +0100, Anna-Maria Behnsen a =C3=A9c=
-rit :
->> >> +static void tmigr_connect_child_parent(struct tmigr_group *child,
->> >> +				       struct tmigr_group *parent)
->> >> +{
->> >> +	union tmigr_state childstate;
->> >> +
->> >> +	raw_spin_lock_irq(&child->lock);
->> >> +	raw_spin_lock_nested(&parent->lock, SINGLE_DEPTH_NESTING);
->> >> +
->> >> +	child->parent =3D parent;
->> >> +	child->childmask =3D BIT(parent->num_children++);
->> >> +
->> >> +	raw_spin_unlock(&parent->lock);
->> >> +	raw_spin_unlock_irq(&child->lock);
->> >> +
->> >> +	/*
->> >> +	 * To prevent inconsistent states, active children need to be activ=
-e in
->> >> +	 * the new parent as well. Inactive children are already marked ina=
-ctive
->> >> +	 * in the parent group.
->> >> +	 */
->> >> +	childstate.state =3D atomic_read(&child->migr_state);
->> >> +	if (childstate.migrator !=3D TMIGR_NONE) {
->> >
->> > Is it possible here to connect a running online child (not one that we=
- just
->> > created) to a new parent?
->>=20
->> connect_child_parent() is only executed for the just created ones. So,
->> yes in theory this would be possible, but it doesn't happen as
->> tmigr_setup_groups() takes care to make it right (hopefully :)). When a
->> LVL0 group has some space left, only the connection between tmc and the
->> LVL0 group is done in tmigr_setup_groups(). If there is no space left in
->> LVL0 group, then a new group is created and depending on the levels
->> which has to be created only executed for the new ones.
->>=20
->> > If not, is it possible that a newly created child is
->> > not TMIGR_NONE?
->>=20
->> Yes. See tmigr_cpu_online(). When new groups have to be created starting
->> from LVL0, then they are not active - so TMIGR_NONE is set. Activating
->> the new online CPU is done afterwards.
->>=20
->> But if it is required to add also a new level at the top, then it is
->> mandatory to propagate the active state of the already existing child to
->> the new parent. The connect_child_parent() is then also executed for the
->> formerly top level group (child) to the newly created group (parent).
->
-> Ah and this is why we have the "if (childstate.migrator !=3D TMIGR_NONE)"
-> branch, right?
+Hmm, something smells there...
 
-yes - I see, comments would be helpful here :)
-
->> > Heh, I was about to say that it's impossible that timer_base_is_idle()
->> > at this stage but actually if we run in nohz_full...
->> >
->> > It happens so that nohz_full is deactivated until rcutree_online_cpu()
->> > which calls tick_dep_clear() but it's a pure coincidence that might
->> > disappear one day. So yes, let's keep it that way.
->>=20
->> I instrumented the code (with NOHZ FULL and NOHZ_IDLE) to make sure the
->> timer migration hierarchy state 'idle' is in sync with the timer base
->> 'idle'. And this was one part where it was possible that it runs out of
->> sync as I remember correctly. But if I understood you correctly, this
->> shouldn't happen at the moment?
->
-> Well, it's not supposed to :-)
-
-Hmm, let me double check this and run the tests on the instrumented
-version...
+In the "worst" case there should be a maximum of 6 * 2 * 
+num_online_cpus() empty magazines in the iova_cpu_rcache structures, 
+i.e., 12KB per CPU. Under normal use those will contain at least some 
+PFNs, but mainly every additional magazine stored in a depot is full 
+with 127 PFNs, and each one of those PFNs is backed by a 40-byte struct 
+iova, i.e. ~5KB per 1KB magazine. Unless that machine has many thousands 
+of CPUs, if iova_magazine allocations are the top consumer of memory 
+then something's gone wrong.
 
 Thanks,
+Robin.
 
-	Anna-Maria
-
+> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+> ---
+>   drivers/iommu/iova.c | 57 +++++++++++++++++++++++++++++++++++++++++---
+>   1 file changed, 54 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+> index d30e453d0fb4..617bbc2b79f5 100644
+> --- a/drivers/iommu/iova.c
+> +++ b/drivers/iommu/iova.c
+> @@ -630,6 +630,10 @@ EXPORT_SYMBOL_GPL(reserve_iova);
+>   
+>   #define IOVA_DEPOT_DELAY msecs_to_jiffies(100)
+>   
+> +static struct kmem_cache *iova_magazine_cache;
+> +static unsigned int iova_magazine_cache_users;
+> +static DEFINE_MUTEX(iova_magazine_cache_mutex);
+> +
+>   struct iova_magazine {
+>   	union {
+>   		unsigned long size;
+> @@ -654,11 +658,51 @@ struct iova_rcache {
+>   	struct delayed_work work;
+>   };
+>   
+> +static int iova_magazine_cache_init(void)
+> +{
+> +	int ret = 0;
+> +
+> +	mutex_lock(&iova_magazine_cache_mutex);
+> +
+> +	iova_magazine_cache_users++;
+> +	if (iova_magazine_cache_users > 1)
+> +		goto out_unlock;
+> +
+> +	iova_magazine_cache = kmem_cache_create("iommu_iova_magazine",
+> +						sizeof(struct iova_magazine),
+> +						0, SLAB_HWCACHE_ALIGN, NULL);
+> +
+> +	if (!iova_magazine_cache) {
+> +		pr_err("Couldn't create iova magazine cache\n");
+> +		ret = -ENOMEM;
+> +	}
+> +
+> +out_unlock:
+> +	mutex_unlock(&iova_magazine_cache_mutex);
+> +
+> +	return ret;
+> +}
+> +
+> +static void iova_magazine_cache_fini(void)
+> +{
+> +	mutex_lock(&iova_magazine_cache_mutex);
+> +
+> +	if (WARN_ON(!iova_magazine_cache_users))
+> +		goto out_unlock;
+> +
+> +	iova_magazine_cache_users--;
+> +	if (!iova_magazine_cache_users)
+> +		kmem_cache_destroy(iova_magazine_cache);
+> +
+> +out_unlock:
+> +	mutex_unlock(&iova_magazine_cache_mutex);
+> +}
+> +
+>   static struct iova_magazine *iova_magazine_alloc(gfp_t flags)
+>   {
+>   	struct iova_magazine *mag;
+>   
+> -	mag = kmalloc(sizeof(*mag), flags);
+> +	mag = kmem_cache_alloc(iova_magazine_cache, flags);
+>   	if (mag)
+>   		mag->size = 0;
+>   
+> @@ -667,7 +711,7 @@ static struct iova_magazine *iova_magazine_alloc(gfp_t flags)
+>   
+>   static void iova_magazine_free(struct iova_magazine *mag)
+>   {
+> -	kfree(mag);
+> +	kmem_cache_free(iova_magazine_cache, mag);
+>   }
+>   
+>   static void
+> @@ -766,11 +810,17 @@ int iova_domain_init_rcaches(struct iova_domain *iovad)
+>   	unsigned int cpu;
+>   	int i, ret;
+>   
+> +	ret = iova_magazine_cache_init();
+> +	if (ret)
+> +		return -ENOMEM;
+> +
+>   	iovad->rcaches = kcalloc(IOVA_RANGE_CACHE_MAX_SIZE,
+>   				 sizeof(struct iova_rcache),
+>   				 GFP_KERNEL);
+> -	if (!iovad->rcaches)
+> +	if (!iovad->rcaches) {
+> +		iova_magazine_cache_fini();
+>   		return -ENOMEM;
+> +	}
+>   
+>   	for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
+>   		struct iova_cpu_rcache *cpu_rcache;
+> @@ -948,6 +998,7 @@ static void free_iova_rcaches(struct iova_domain *iovad)
+>   
+>   	kfree(iovad->rcaches);
+>   	iovad->rcaches = NULL;
+> +	iova_magazine_cache_fini();
+>   }
+>   
+>   /*
 
