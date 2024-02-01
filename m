@@ -1,124 +1,283 @@
-Return-Path: <linux-kernel+bounces-47648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9E578450B8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 06:32:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDD728450B9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 06:32:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8120D28F90B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:32:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2FBD1C22757
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 05:32:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAF4C3CF5A;
-	Thu,  1 Feb 2024 05:31:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD8193CF4B;
+	Thu,  1 Feb 2024 05:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="prQsizSH"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aHhSqsFj"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA1093C47C;
-	Thu,  1 Feb 2024 05:31:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 077883C48D;
+	Thu,  1 Feb 2024 05:32:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706765517; cv=none; b=QLlXY60EkcXbzr3nj1aWvgyIkpjWGWnm2Nu8aYNVGtSafTw8f7Vcs2zG7hxilmT7A2oaeykmSBdlndW7DHf/djWu8qalJ0dUr5fkCfdxNh0xHVS/BBJM70sn0w1YtTSbiDPdlFzk5Cp8Mbb9JlYNp/jUC0hwGIuH53QTx+XGUpk=
+	t=1706765548; cv=none; b=hcs1lhr/RIucd1vyJz9zfdilgYJ3SDmWPVt0uAL5Z5j55IZL7wj6SKJO4LMhXi1D05M4oM3voUgEVhBTiNqxNiSeAyW6P1h+n/qLEVODW8kzS/AfYkrKvGUVsH4BdP/n7FBwP7kUuYR73eBmjv4LmuR03n4322/jjNBrKR0eKuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706765517; c=relaxed/simple;
-	bh=WHpCOZePbBwBglVW5QS+vkPT0PP9bu8zGm2jCuH0QLE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rROPxI+/fYCnjW3JWhk2zVUHptrZrWrajlfHpxL+8WbezOkxA2oBzv34p0aNxIoPxdDbXCsKIyQbfjkExjlqb0Wxqb6L4ezEeADi8Te2dWAigtSRLbElUYnKU9CO0AVaQBQSBRbD+fhUNK2OUa6H2pZKFYIVRxOZNJ9UZwahmu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=prQsizSH; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1706765511;
-	bh=Wq0OX9iGYMKibk/yBWk9PuT0P3GOtaz4/wfWoStPuyw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=prQsizSHB4wI7s7V/lWkXuWATRv8tET3RHgQM+ydf7ao3/Hno1dOQt/m7QDNIPsOd
-	 A5MXTbViJMu/hIsZUmbGOl2cPTpzJJUZBkLjnwPlzshDm9KZpOS6D/N2pPHU+cQ2/2
-	 fv8ZH15ztXs5JpsdeXko041lKX7bFU55AmqZp0JPhAIgkizSHh/2/qpLFX7PQE+4cK
-	 GciEv/t+jDMCoOpCqw7n/FsLXGrzAKDVjzWM8oC7J8Rcu7dQzfFSsmErN31mMgBhOT
-	 exgLgpsggmw5kLKCM8eoR3qwb5GhXGI8WatA84FNxsQsXMWbi9tNz08oNBW/zvUUnT
-	 I9qruzEoN7KSQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TQSFg0DYSz4wp0;
-	Thu,  1 Feb 2024 16:31:50 +1100 (AEDT)
-Date: Thu, 1 Feb 2024 16:31:49 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Daniel Xu <dxu@dxuuu.xyz>, Daniel Borkmann <daniel@iogearbox.net>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>, Linux
- Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: runtime warnings after merge of the bpf-next tree
-Message-ID: <20240201163149.0d02fe46@canb.auug.org.au>
-In-Reply-To: <CAADnVQJT8nOiiX90g3Pm7Ud0hzBBjBOQmPtPV1iwUYKMcuBFig@mail.gmail.com>
-References: <20240201142348.38ac52d5@canb.auug.org.au>
-	<yeujnwul3nd6vhk2pidnh72l5lx4zp4sgup4qzgbe2fpex42yf@2wtt67dvl7s3>
-	<CAADnVQJT8nOiiX90g3Pm7Ud0hzBBjBOQmPtPV1iwUYKMcuBFig@mail.gmail.com>
+	s=arc-20240116; t=1706765548; c=relaxed/simple;
+	bh=Fa5/UvlMsHAjzZZribGcNm9FV3I5qa09T2F62x3/RdI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ewd6mRTaRWp7W7PYUKcbnSrQuIL/axk14E4cDrWE/z1cqjYmQodxpFnCbsO6//AJNfIXyN9ZUo6AeI7bHVhLG4KIGn9FtIlOtc2GB+wygc10Re4P3+fwJvYemdggTYiBoiXiXvr/gJv8sHM9HJOEdbPmrshnxD+Y6mS5H0RjMi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aHhSqsFj; arc=none smtp.client-ip=192.55.52.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706765546; x=1738301546;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Fa5/UvlMsHAjzZZribGcNm9FV3I5qa09T2F62x3/RdI=;
+  b=aHhSqsFjgTpNFn/oCKBHXHTqR/3oRaAQwxzfN+WD0q6GMjTgJfC+UVj/
+   xsDqgSzOm91OxiE0Tf/aVz9DhlqbmzGejY187cGdLXfyh4w2JvqjqGUyq
+   x4IdKeNNG0jSY1ZOnkdemcmGjpdmL2hKhtuDGQkwYiWKbXjRj4JJ9G/D1
+   SSriZXlcUJZwnAqzBRmxS5A0EVMtJvfaG/GzDiW/Inl0w/lcKvEGYGezG
+   JBcHo4YusP5Y57usviZPbgFQXy6m4iGBgHhZhJirylYuJVDU//meLULBK
+   saYS2BmigfCVcbJLf3Unbewu7gEESGlIkV3yMCbAXlprrn7mlEesWM6Tg
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="434979726"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="434979726"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 21:32:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="822824594"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="822824594"
+Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
+  by orsmga001.jf.intel.com with ESMTP; 31 Jan 2024 21:32:20 -0800
+Date: Thu, 1 Feb 2024 13:32:19 +0800
+From: Yuan Yao <yuan.yao@linux.intel.com>
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+	erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
+Subject: Re: [PATCH v18 020/121] x86/virt/tdx: Get system-wide info about TDX
+ module on initialization
+Message-ID: <20240201053219.4kvwhuz27dsicfu3@yy-desk-7060>
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <d82142369de93661bdb57b8819a409694cede56e.1705965634.git.isaku.yamahata@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/rVS2M8ZBg49XUBcG0i+RcMC";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d82142369de93661bdb57b8819a409694cede56e.1705965634.git.isaku.yamahata@intel.com>
+User-Agent: NeoMutt/20171215
 
---Sig_/rVS2M8ZBg49XUBcG0i+RcMC
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Wed, 31 Jan 2024 20:02:28 -0800 Alexei Starovoitov <alexei.starovoitov@g=
-mail.com> wrote:
+On Mon, Jan 22, 2024 at 03:52:56PM -0800, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
 >
-> On Wed, Jan 31, 2024 at 7:55=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> >
-> > diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-> > index 0fe4f1cd1918..e24aabfe8ecc 100644
-> > --- a/include/linux/btf_ids.h
-> > +++ b/include/linux/btf_ids.h
-> > @@ -227,7 +227,7 @@ BTF_SET8_END(name)
-> >  #define BTF_SET_END(name)
-> >  #define BTF_SET8_START(name) static struct btf_id_set8 __maybe_unused =
-name =3D { 0 };
-> >  #define BTF_SET8_END(name)
-> > -#define BTF_KFUNCS_START(name) static struct btf_id_set8 __maybe_unuse=
-d name =3D { 0 };
-> > +#define BTF_KFUNCS_START(name) static struct btf_id_set8 __maybe_unuse=
-d name =3D { .flags =3D BTF_SET8_KFUNCS };
-> >  #define BTF_KFUNCS_END(name) =20
->=20
-> Most likely you're correct.
-> Force pushed bpf-next with this fix.
+> TDX KVM needs system-wide information about the TDX module, store it in
+> struct tdx_info.
+>
+> TODO: Once TDX host patch series introduces a framework to read TDX meta
+> data, convert the code to it.
+>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+> Change v18:
+> - Newly Added
+> ---
+>  arch/x86/include/uapi/asm/kvm.h | 11 +++++
+>  arch/x86/kvm/vmx/main.c         |  9 +++-
+>  arch/x86/kvm/vmx/tdx.c          | 79 ++++++++++++++++++++++++++++++++-
+>  arch/x86/kvm/vmx/x86_ops.h      |  2 +
+>  4 files changed, 99 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
+> index aa7a56a47564..45b2c2304491 100644
+> --- a/arch/x86/include/uapi/asm/kvm.h
+> +++ b/arch/x86/include/uapi/asm/kvm.h
+> @@ -567,4 +567,15 @@ struct kvm_pmu_event_filter {
+>  #define KVM_X86_TDX_VM		2
+>  #define KVM_X86_SNP_VM		3
+>
+> +#define KVM_TDX_CPUID_NO_SUBLEAF	((__u32)-1)
+> +
+> +struct kvm_tdx_cpuid_config {
+> +	__u32 leaf;
+> +	__u32 sub_leaf;
+> +	__u32 eax;
+> +	__u32 ebx;
+> +	__u32 ecx;
+> +	__u32 edx;
+> +};
+> +
+>  #endif /* _ASM_X86_KVM_H */
+> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
+> index 62236bde3779..f181620b2922 100644
+> --- a/arch/x86/kvm/vmx/main.c
+> +++ b/arch/x86/kvm/vmx/main.c
+> @@ -47,6 +47,13 @@ static __init int vt_hardware_setup(void)
+>  	return 0;
+>  }
+>
+> +static void vt_hardware_unsetup(void)
+> +{
+> +	if (enable_tdx)
+> +		tdx_hardware_unsetup();
+> +	vmx_hardware_unsetup();
+> +}
+> +
+>  static int vt_vm_init(struct kvm *kvm)
+>  {
+>  	if (is_td(kvm))
+> @@ -69,7 +76,7 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
+>
+>  	.check_processor_compatibility = vmx_check_processor_compat,
+>
+> -	.hardware_unsetup = vmx_hardware_unsetup,
+> +	.hardware_unsetup = vt_hardware_unsetup,
+>
+>  	.hardware_enable = vt_hardware_enable,
+>  	.hardware_disable = vmx_hardware_disable,
+> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> index 1608bdf2381d..55399136b680 100644
+> --- a/arch/x86/kvm/vmx/tdx.c
+> +++ b/arch/x86/kvm/vmx/tdx.c
+> @@ -67,7 +67,7 @@ static size_t tdx_md_element_size(u64 fid)
+>  	}
+>  }
+>
+> -int tdx_md_read(struct tdx_md_map *maps, int nr_maps)
+> +static int tdx_md_read(struct tdx_md_map *maps, int nr_maps)
+>  {
+>  	struct tdx_md_map *m;
+>  	int ret, i;
+> @@ -85,9 +85,39 @@ int tdx_md_read(struct tdx_md_map *maps, int nr_maps)
+>  	return 0;
+>  }
+>
+> +struct tdx_info {
+> +	u64 attributes_fixed0;
+> +	u64 attributes_fixed1;
+> +	u64 xfam_fixed0;
+> +	u64 xfam_fixed1;
+> +
+> +	u16 num_cpuid_config;
+> +	/* This must the last member. */
+> +	DECLARE_FLEX_ARRAY(struct kvm_tdx_cpuid_config, cpuid_configs);
+> +};
+> +
+> +/* Info about the TDX module. */
+> +static struct tdx_info *tdx_info;
+> +
+>  static int __init tdx_module_setup(void)
+>  {
+> +	u16 num_cpuid_config;
+>  	int ret;
+> +	u32 i;
+> +
+> +	struct tdx_md_map mds[] = {
+> +		TDX_MD_MAP(NUM_CPUID_CONFIG, &num_cpuid_config),
+> +	};
+> +
+> +#define TDX_INFO_MAP(_field_id, _member)			\
+> +	TD_SYSINFO_MAP(_field_id, struct tdx_info, _member)
+> +
+> +	struct tdx_metadata_field_mapping tdx_info_md[] = {
+> +		TDX_INFO_MAP(ATTRS_FIXED0, attributes_fixed0),
+> +		TDX_INFO_MAP(ATTRS_FIXED1, attributes_fixed1),
+> +		TDX_INFO_MAP(XFAM_FIXED0, xfam_fixed0),
+> +		TDX_INFO_MAP(XFAM_FIXED1, xfam_fixed1),
+> +	};
+>
+>  	ret = tdx_enable();
+>  	if (ret) {
+> @@ -95,7 +125,49 @@ static int __init tdx_module_setup(void)
+>  		return ret;
+>  	}
+>
+> +	ret = tdx_md_read(mds, ARRAY_SIZE(mds));
+> +	if (ret)
+> +		return ret;
+> +
+> +	tdx_info = kzalloc(sizeof(*tdx_info) +
+> +			   sizeof(*tdx_info->cpuid_configs) * num_cpuid_config,
+> +			   GFP_KERNEL);
+> +	if (!tdx_info)
+> +		return -ENOMEM;
+> +	tdx_info->num_cpuid_config = num_cpuid_config;
+> +
+> +	ret = tdx_sys_metadata_read(tdx_info_md, ARRAY_SIZE(tdx_info_md), tdx_info);
+> +	if (ret)
+> +		return ret;
 
-That fixed it for me, thanks.
+"goto error_sys_rd" as below to free the tdx_info ?
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/rVS2M8ZBg49XUBcG0i+RcMC
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmW7LMUACgkQAVBC80lX
-0Gw6AAgAkhhWhoh7Zm7eJDkxPh29fNJUDPJEluw2WsNh1n2+2xwMBS6Mrsh4f8/d
-+lI8AiEvf7G0zr8QHCUbV0oGIeF5ziKkO8zZ7B2MJSQfZerG2LbCjqasjB2on2o5
-gWaQrX/PaYN/oox1MAtgEyLWAEnwgDQNM1xXVMACfRyERAdERJC6wKqYqrJPQ44g
-GQ8wmaTpXRXFhQc9yni3ZrX0JQEkl97nqyzUvly0Lu2E7fM3okXtvIFRQHlafnmn
-z2O/NYTaXMSx7UV35Mg+bJjshOMPeJsp/EhNfbTBtDogo3IGTGk1CNsyIabtMXdN
-3qVGz+M514bhN9gXtdqpSOaaqJF9jA==
-=GtH/
------END PGP SIGNATURE-----
-
---Sig_/rVS2M8ZBg49XUBcG0i+RcMC--
+> +
+> +	for (i = 0; i < num_cpuid_config; i++) {
+> +		struct kvm_tdx_cpuid_config *c = &tdx_info->cpuid_configs[i];
+> +		u64 leaf, eax_ebx, ecx_edx;
+> +		struct tdx_md_map cpuids[] = {
+> +			TDX_MD_MAP(CPUID_CONFIG_LEAVES + i, &leaf),
+> +			TDX_MD_MAP(CPUID_CONFIG_VALUES + i * 2, &eax_ebx),
+> +			TDX_MD_MAP(CPUID_CONFIG_VALUES + i * 2 + 1, &ecx_edx),
+> +		};
+> +
+> +		ret = tdx_md_read(cpuids, ARRAY_SIZE(cpuids));
+> +		if (ret)
+> +			goto error_sys_rd;
+> +
+> +		c->leaf = (u32)leaf;
+> +		c->sub_leaf = leaf >> 32;
+> +		c->eax = (u32)eax_ebx;
+> +		c->ebx = eax_ebx >> 32;
+> +		c->ecx = (u32)ecx_edx;
+> +		c->edx = ecx_edx >> 32;
+> +	}
+> +
+>  	return 0;
+> +
+> +error_sys_rd:
+> +	ret = -EIO;
+> +	/* kfree() accepts NULL. */
+> +	kfree(tdx_info);
+> +	return ret;
+>  }
+>
+>  bool tdx_is_vm_type_supported(unsigned long type)
+> @@ -163,3 +235,8 @@ int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops)
+>  out:
+>  	return r;
+>  }
+> +
+> +void tdx_hardware_unsetup(void)
+> +{
+> +	kfree(tdx_info);
+> +}
+> diff --git a/arch/x86/kvm/vmx/x86_ops.h b/arch/x86/kvm/vmx/x86_ops.h
+> index 5da7a5fd91cb..9523087ae355 100644
+> --- a/arch/x86/kvm/vmx/x86_ops.h
+> +++ b/arch/x86/kvm/vmx/x86_ops.h
+> @@ -136,9 +136,11 @@ void vmx_setup_mce(struct kvm_vcpu *vcpu);
+>
+>  #ifdef CONFIG_INTEL_TDX_HOST
+>  int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops);
+> +void tdx_hardware_unsetup(void);
+>  bool tdx_is_vm_type_supported(unsigned long type);
+>  #else
+>  static inline int tdx_hardware_setup(struct kvm_x86_ops *x86_ops) { return -EOPNOTSUPP; }
+> +static inline void tdx_hardware_unsetup(void) {}
+>  static inline bool tdx_is_vm_type_supported(unsigned long type) { return false; }
+>  #endif
+>
+> --
+> 2.25.1
+>
+>
 
