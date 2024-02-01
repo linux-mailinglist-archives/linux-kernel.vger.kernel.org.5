@@ -1,165 +1,192 @@
-Return-Path: <linux-kernel+bounces-47444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6514F844DFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:41:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DAB1844E0A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 01:43:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 816E21C2603B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:41:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A53811F2B528
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 00:43:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00A921848;
-	Thu,  1 Feb 2024 00:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 827C43D64;
+	Thu,  1 Feb 2024 00:43:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q6Rnb49t"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="acZ/v7pp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F3802107;
-	Thu,  1 Feb 2024 00:41:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B35FC3C24
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 00:43:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706748073; cv=none; b=SVq+GXVT/3zzPibAoX9lBbl20qmy22ZKnHEtvFmdF1em3QczxwUWhRKPsmqhdoRQV52KYbaEEYGUbbBAVqqbqN108mMizVnShfWK4sI3sVh4inkt2lCN7I/7bXbj501i3DzV0xfkVPKIEKs+oUBMVV3q3+TBw60JGwGiTSNU6F8=
+	t=1706748198; cv=none; b=lr3MTzi0g43Zy2/OTYiLY9fj2V88XnkSbcHEL1V0demqjXmQKlQmuMz8nl1udmLbhrcUvpkH3PKiRxpzCRLH3nj4GcFkdgiYV/OY4tDH3CoZzbmqV+NeveZxAnnOLMS1ttPoXhbtPhv5teZPyoOi2z0YcasAcL2823dfsF0j++4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706748073; c=relaxed/simple;
-	bh=uUmJSq6btKnv5W49olTzUlxdEegZOvbNbgtUSFSVkIs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MC1UucEl6iTZki5elsEXmEQSkO5ob1R8cERX+sRYOMi5+gEJFdwD+uVCuJL7f52v5zZeS8hhGKZxJjtMOX9naxmCl/uFNHe4oCeTDwfD4tpnw9a/RaTicxcUYL01DkuXQ53Ft+Hj1KHccRNy3gbDzUQw/+JV+rfxcvWZF4Si1Wg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q6Rnb49t; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ddc1b30458so317193b3a.1;
-        Wed, 31 Jan 2024 16:41:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706748070; x=1707352870; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=38E/3enwOkQa6c3xlGOttOG0xIG/9fEDu/gcDwqCk84=;
-        b=Q6Rnb49tmvYSJobmET6UTToheAkR1coySlas4MnhT9LarTaR8+6/9sXUIX2HkIRSym
-         f5rgY/RxGYDwbDDV4aTDN7e3mGaCo8/C4fpVpo1Uc/H1d+Gcp2lyX3v4jh+5xttVXnph
-         PJfMPuoB9Mjq4IriTVo9xkF66SZLiNW8rFQL1SRzAVI779UHaCn9rSv4JhdYX8nBvqWe
-         URZ2/bHouuxzw+6z5GFhiHw1QGZlQwWcQtjTB7S6n67zR7VWBaOpNFFxhOFSIC/sepOy
-         NXIOWzfglhb4yAkvMsf8EvImE2+g3a5mKGa0B+N6Wk10wvE2Qe8QNBDMiYfmo6JLZBdW
-         SCmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706748070; x=1707352870;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=38E/3enwOkQa6c3xlGOttOG0xIG/9fEDu/gcDwqCk84=;
-        b=fE5B2vs/PBFlToqX/5VecDk20jbh7qWnaZfyL5DTxT1pSQ1auyVkGBsgk/JJcQlz7V
-         w0Cau2N9XFWumIRlv5dEqyH/HiMrlN63D2zDubKcuLPpKLnd3ZO3qtljUS3ftcnF3bqV
-         5pKGKCctzxMj6T2aarQwPiaofdGMwQwdVLRRPJvTYLhq/nEusxSTAlTh9XnmviIyK94y
-         9mpiEIyWIJ95Qq1BRFdCjfhVf6XZZoMrHg228dHw7WSgn0PCEIdw6gxeXq8Y8aUB2XBu
-         hsw/caODq68p0RSwvdfhP0uCnN7npRkkCHlRKFgaFn0nD9ncDg9s3ZTTSn1GjEmsF3hE
-         Ageg==
-X-Gm-Message-State: AOJu0Ywf5CCWquO20JpB4tDhId10LGO+O9a3qz8nu47ZyP1Sjxf5vnti
-	os/EY/S1GUnws45kd8/nLuGPQLci54GeH0vpt1r94+HYBSGT4aEx
-X-Google-Smtp-Source: AGHT+IG9Eg5K5Wmm4nSEVCLYxTSHIxMfVJYkTFqkdc/HaVM1EtAhfeQ34QAP4aAFkoGdFurV0pQlWg==
-X-Received: by 2002:a05:6a00:80d8:b0:6db:a0ef:5f2d with SMTP id ei24-20020a056a0080d800b006dba0ef5f2dmr3299444pfb.19.1706748070435;
-        Wed, 31 Jan 2024 16:41:10 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVS+5/yGp5evlDkCVRCzzfckgay7JW589dQi6Acp+wgc/1FQM7BgZMtUNF6P+NDrqdzTwN/4rzXWim2jNxQbssFrjEqXkarqP64b3YQtz9mo3evz4VDY2mRpT+5Eaxn8Jo7/AlzRgUAcVTFTSIgP+60FQJJwelLnVNzwOtIlQrkylFL0bXR4egCvT0C0xm8BC9nIPeod3AbB/elqAbx83duMW8zMdhbUrI1g7R/QQNxxvoWpyV4cVdXFHeYl4ZYK0MwhA/4CfYaXkkrbS6iky6amFd3hSSrp6FUpuq89yXehI8A6V75Fz2FlCLLq5iPI/6jV4mVEsP8/oBcN6YUdQ==
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n1-20020a635901000000b005d7b18bb7e2sm11175642pgb.45.2024.01.31.16.41.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Jan 2024 16:41:09 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <d20e1f93-4e6c-4c18-b4bd-19412eb4e8da@roeck-us.net>
-Date: Wed, 31 Jan 2024 16:41:05 -0800
+	s=arc-20240116; t=1706748198; c=relaxed/simple;
+	bh=SAKZoIcbXQBhVU/XPjInF6+T+qpKARwlN1qzK6xE+uA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TDZsowYorR6xoePsP9EtchK2eY4xwo/93PWNCkhFKUDkFz+NH+MvgoHVcPpTk1WZzL8/+3Sf3g5mxF1Ce50dz0/ixmhk1KCCXkq78m18ZnKW10bn4tgWzv7AG2t2VsgWrTeEmgbh9lbVTWB/Z0G3wD4Y6qR7LB6wgVzl0OpKJw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=acZ/v7pp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D716C433F1
+	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 00:43:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706748198;
+	bh=SAKZoIcbXQBhVU/XPjInF6+T+qpKARwlN1qzK6xE+uA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=acZ/v7ppW2j+V2QYbN4IPPvvf9H6a7QoZRMjBpSkVeizW6EmPz4EDjVdSC3i33T1S
+	 NRHKX6yW045sRFKDq3mBlnlMdViMgVZfg7BfLP+vJMnUIlEyc43aLyo2uPLBuvp+En
+	 8waF7O4Mg/zESlH5//p+C8HmnS6bziHpjfcVGO/pYUw4oDKY1Q+hEqWehH7lWaAy/+
+	 sV5I+MFRxzkpGfzfPWVUxfORStQ+f3ujdMnPDxuXs7utcJJ7A/E+7rX6v0hid4VgsC
+	 f85qTZBbt1viNIiXoL4p5maOCFA06/7bbcCW+DQnm8lRoviwALl9uv2Ge4jz96TXbV
+	 BTIQCWL2T3/AA==
+Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-3637860f03bso1458965ab.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Jan 2024 16:43:18 -0800 (PST)
+X-Gm-Message-State: AOJu0YxLHPiyNgAY906oP4I+95amFcm5eTBISrUD1UzLpyEwe2gBxsDe
+	6Cbfnnt4FhmpLgNjRBjlzveIAhPqJwvk3EUrHDxEoYelb+tWAfscKMHRdX5sXii9QYScsPvPuc/
+	zfaEGVuKNZ3DTABGYJHAtZGzfSkepI3Kp1LSh
+X-Google-Smtp-Source: AGHT+IGB7oLJrmaP/aXwop9ABqv4dDhMbyhMzCapn/Tj3EXZBP4RineWW6y0EDYIXROFb6PYeUXWZWt7R/5EYthupYg=
+X-Received: by 2002:a92:c74f:0:b0:363:8594:350 with SMTP id
+ y15-20020a92c74f000000b0036385940350mr3537392ilp.1.1706748197388; Wed, 31 Jan
+ 2024 16:43:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] dt-bindings: Add MPQ8785 voltage regulator device
-Content-Language: en-US
-To: Conor Dooley <conor@kernel.org>, Charles Hsu <ythsu0511@gmail.com>
-Cc: jdelvare@suse.com, corbet@lwn.net, Delphine_CC_Chiu@wiwynn.com,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240131055526.2700452-1-ythsu0511@gmail.com>
- <20240131055526.2700452-2-ythsu0511@gmail.com>
- <20240131-eraser-given-8381a44f41a4@spud>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20240131-eraser-given-8381a44f41a4@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20231221-async-free-v1-1-94b277992cb0@kernel.org>
+ <20231222115208.ab4d2aeacdafa4158b14e532@linux-foundation.org>
+ <ZYYY1VBKdLHH-Kl3@google.com> <87o7eeg3ow.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <87o7eeg3ow.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Wed, 31 Jan 2024 16:43:05 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuPh=J9k=kSCSYzvdzdH4tSWtubzgQS9EtGAwZaAgRPn7g@mail.gmail.com>
+Message-ID: <CAF8kJuPh=J9k=kSCSYzvdzdH4tSWtubzgQS9EtGAwZaAgRPn7g@mail.gmail.com>
+Subject: Re: [PATCH] mm: swap: async free swap slot cache entries
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, Wei Xu <weixugc@google.com>, Yu Zhao <yuzhao@google.com>, 
+	Greg Thelen <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Yosry Ahmed <yosryahmed@google.com>, 
+	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
+	Mel Gorman <mgorman@techsingularity.net>, Nhat Pham <nphamcs@gmail.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
+	Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
+	Barry Song <v-songbaohua@oppo.com>, Hugh Dickins <hughd@google.com>, 
+	Tim Chen <tim.c.chen@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/31/24 07:41, Conor Dooley wrote:
-> On Wed, Jan 31, 2024 at 01:55:26PM +0800, Charles Hsu wrote:
->> Monolithic Power Systems, Inc. (MPS) synchronous step-down converter.
->>
->> Signed-off-by: Charles Hsu <ythsu0511@gmail.com>
->> ---
->>   Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
->> index 79dcd92c4a43..088b23ed2ae6 100644
->> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
->> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
->> @@ -129,6 +129,8 @@ properties:
->>             - mps,mp2975
->>               # Monolithic Power Systems Inc. multi-phase hot-swap controller mp5990
->>             - mps,mp5990
->> +            # Monolithic Power Systems Inc. synchronous step-down converter mpq8785
->> +          - mps,mpq8785
-> 
-> q sorts before 2, otherwise
+Hi Ying,
 
-It does ? Not in ASCII. Am I missing something ?
+Sorry for the late reply.
 
-Thanks,
-Guenter
+On Sun, Dec 24, 2023 at 11:10=E2=80=AFPM Huang, Ying <ying.huang@intel.com>=
+ wrote:
+>
+> Chris Li <chrisl@kernel.org> writes:
+>
+> > On Fri, Dec 22, 2023 at 11:52:08AM -0800, Andrew Morton wrote:
+> >> On Thu, 21 Dec 2023 22:25:39 -0800 Chris Li <chrisl@kernel.org> wrote:
+> >>
+> >> > We discovered that 1% swap page fault is 100us+ while 50% of
+> >> > the swap fault is under 20us.
+> >> >
+> >> > Further investigation show that a large portion of the time
+> >> > spent in the free_swap_slots() function for the long tail case.
+> >> >
+> >> > The percpu cache of swap slots is freed in a batch of 64 entries
+> >> > inside free_swap_slots(). These cache entries are accumulated
+> >> > from previous page faults, which may not be related to the current
+> >> > process.
+> >> >
+> >> > Doing the batch free in the page fault handler causes longer
+> >> > tail latencies and penalizes the current process.
+> >> >
+> >> > Move free_swap_slots() outside of the swapin page fault handler into=
+ an
+> >> > async work queue to avoid such long tail latencies.
+> >>
+> >> This will require a larger amount of total work than the current
+> >
+> > Yes, there will be a tiny little bit of extra overhead to schedule the =
+job
+> > on to the other work queue.
+> >
+> >> scheme.  So we're trading that off against better latency.
+> >>
+> >> Why is this a good tradeoff?
+> >
+> > That is a very good question. Both Hugh and Wei had asked me similar qu=
+estions
+> > before. +Hugh.
+> >
+> > The TL;DR is that it makes the swap more palleralizedable.
+> >
+> > Because morden computers typically have more than one CPU and the CPU u=
+tilization
+> > is rarely reached to 100%. We are actually not trading the latency for =
+some one
+> > run slower. Most of the time the real impact is that the current swapin=
+ page fault
+> > can return quicker so more work can submit to the kernel sooner, at the=
+ same time
+> > the other idle CPU can pick up the non latency critical work of freeing=
+ of the
+> > swap slot cache entries. The net effect is that we speed things up and =
+increase
+> > the overall system utilization rather than slow things down.
+>
+> You solution depends on there is enough idle time in the system.  This
+> isn't always true.
+>
+> In general, all async solutions have 2 possible issues.
+>
+> a) Unrelated applications may be punished.  Because they may wait for
+> CPU which is running the async operations.  In the original solution,
+> the application swap more will be punished.
 
+The typical time to perform on the async free is very brief, at about
+100ms level.
+So the amount of punishment would be small.
+
+The original behavior was already delaying the freeing of swap slots
+due to batching.
+Adding a tiny bit of time does not change the overall behavior too much.
+Another thing is that, if the async free is pending, it will go
+through the direct free path.
+
+> b) The CPU time cannot be charged to appropriate applications.  The
+> original behavior isn't perfect too.  But it's better than async worker.
+
+Yes, the original behavior will free other cgroups' swap entries.
+
+> Given the runtime of worker is at 100us level, these issues may be not
+> severe.  But I think that you may need to explain them at least.
+
+Thanks for the suggestion. Will do in V2.
+
+>
+> And, when swap slots freeing batching was introduced, it was mainly used
+> to reduce the lock contention of sis->lock (via swap_info_get_cont()).
+> So, we may move some operations (e.g., mem_cgroup_uncharge_swap,
+> clear_shadow_from_swap_cache(), etc.) out of batched operation (before
+> calling free_swap_slot()) to reduce the latency impact.
+
+That is good to know. Thanks for the explanation.
+
+Chris
+
+>
+> > The test result of chromebook and Google production server should be ab=
+le to show
+> > that it is beneficial to both laptop and server workloads, making them =
+more responsive
+> > in swap related workload.
+>
+> --
+> Best Regards,
+> Huang, Ying
+>
 
