@@ -1,192 +1,191 @@
-Return-Path: <linux-kernel+bounces-47753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD64D845260
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:07:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0280845269
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 09:09:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D21351C236B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:07:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BB0F2931D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Feb 2024 08:08:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82DA4159585;
-	Thu,  1 Feb 2024 08:07:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2012415B0E9;
+	Thu,  1 Feb 2024 08:07:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cWeNVJhH"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="st/PS34M"
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2058.outbound.protection.outlook.com [40.107.13.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF18A158D73
-	for <linux-kernel@vger.kernel.org>; Thu,  1 Feb 2024 08:07:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706774860; cv=none; b=n5d00Iu9ynHz7kyIHONUbzr7TrMyJvDLNOjrP9TjcyBii8KFX1PzhthN+I9jN71VJ3VZAsb87hh8QZZT8VM0g861XYs5mO+wTlglr8Lxdej6zB+HzDeIlNEiPVbTElrLyxAPoS7Os9GXcbQOk9bmtTJd4VxrDcDYpZaXF/qMAJs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706774860; c=relaxed/simple;
-	bh=USQ13aZ+rV6iGwkRKMbbqSfiZqcawCNaWDOlstQWM0s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KtdjV7FGJnfAzb/hWmpoxrDMNvC1rexTaEqmv2BJEHO7DtBrT5DEoRh5/3TbmaC4O3tYiipX2qduemPGWLYWfWWiBCr1mrQXy55YK8vzwr5/Dl9fSzTj8nVVukib/IYptlitXP1j1dvPcrOQpO7M4TKpyeKB+SGaV7Sz+Vmiess=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cWeNVJhH; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55a9008c185so1030197a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 00:07:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706774857; x=1707379657; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WhYsK52Kis24WxaL+kBzGIActO/T1+nmrCSum9NZSj8=;
-        b=cWeNVJhHdI28O+jIn1WFbYDsyLis1Zb+M2uCTXQ/42WeZNaESwcfNU/NDGXU/rDVce
-         n5hTJHiCJtDekqy2Mhc0AaE8s86rirPwgap9NyQk/H1MZgHuSQ4eMmlZqE2OnB7nF1PE
-         gIjCHo3IvvZmGDsb9D4oGMyFatvC2RZvY5zgoZfvsbWqlrsTOHxefcHoTqkNktphwLNZ
-         MVOC4WcbaGqsv82fvjobyu5nud1v+0BfIuAQGIMfEza8CLUhsfcQPymay06paLw0PbYR
-         VQcEqERF/fBG+YtFxDaEg1KzYG3EfZ4U5ktCFfZcXzWAuSVZQ1Azl3nSh8SGV3YHHb6U
-         TOfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706774857; x=1707379657;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WhYsK52Kis24WxaL+kBzGIActO/T1+nmrCSum9NZSj8=;
-        b=dPx4B6kETkOAsQo8XjlASQshuknHKQxzjbtN5OAHWRLGQmfJIKGHuXnHMqfjoOY6uc
-         n/W1r3x0tCWMNAA6pYvkrtuMw1dcMMmwKPFtfxDyFxeFUb0thpLM9dyhCyq4xSjoReNq
-         pR5H/L4MTYZdw7qiyQ83w9NUIjlWVHq79w2gKGC30L0PymjUqjt20pdAKGn32DvIoyZX
-         EObsFCEXYKb6yzhrYUuI09t8Js6+Jtqa0pHbWbXlJB/SfwlRS9aYuDtpK8PsrSmUJBeH
-         P8lJZPo3AFteczzhd5gdjiNN85L6q9Ko0u5pr++V3aB2si17mgXv6Iuf4i0WU/mfLHf3
-         9cQw==
-X-Gm-Message-State: AOJu0Yz5aHR1HUdw3wa/HqsfxR9X9iFfUXfAfc0BnAEUvYINtJhWUte7
-	yrxemNVAHUp2AhSPkZacc3CFULfyIpYeARRyFahDrOI0b037PNdNVTkkvpI+l1I=
-X-Google-Smtp-Source: AGHT+IEX5Kqci7fZQHEEOSQZ/q8zByfhnqr1/3GR8aFZDgdNQcYGJdfxu19t0u10OfX9U8yvyG0cAg==
-X-Received: by 2002:a50:c359:0:b0:55f:ca00:f0ab with SMTP id q25-20020a50c359000000b0055fca00f0abmr84626edb.18.1706774857102;
-        Thu, 01 Feb 2024 00:07:37 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCW2n6LRu1Vtb4sI3Id3x5GMUZGycLv2NEXZBUgZdPo+Kb7/WmthyygFMVNo0l79hROJlUpgNrXXOyl2OkGyFhJIb2WfUoumCb4rnKW0hlpEvINOchrugssrj+E0EHb1sJjGkw4zZU+5yf98Ihqf0tWYRC7Vnshh8bweCFhltlXonwAICaQY02pTUXuDofa0ujq7E9bxWyvYyN7rx77o3fJwCbHuJpw4whOVbCSFEocP8FbeJJpmUaCwdhjVWYeKTTOfbnFnvvqzPGGRwzidmgOOvELVQ0zfy0KwSv3uMkxz/ma6MYwLov1kmuUvEevG4t6pcw47x8nifcx4jQM0n9YgY6bs/18Cfjkl1iU/brfgvY81fkWl5UMozCaeiaL1I90J+De3EGE6xAATKmWMURTiPz6qEsdhFS8vK9Ci0Sd1rrY9dibkhy+PGSZoPdTgTkRJ5uKxALHongrnCmM2dZMs84Y+2Dyis4cSWKA=
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id v6-20020aa7d646000000b0055f129cea52sm3369489edr.49.2024.02.01.00.07.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 00:07:36 -0800 (PST)
-Message-ID: <d5fe1ec2-b647-4902-a599-fb866e96e9cf@linaro.org>
-Date: Thu, 1 Feb 2024 09:07:34 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A3A915AADF;
+	Thu,  1 Feb 2024 08:07:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.13.58
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706774877; cv=fail; b=YJPQaJxUGgcI2X3rSHanX46+GDZmPtjBtDzLQqoEqcJZBJ1jJJEei/3fOGwFk9uYaGFNTUW2vRXnLdgJVvMvVP7eLodILVMY9kphuuZF1oVng/h3O3xt+oaxbbiCoafT00JjBLC8VcLnZUyYI72gefRYBbPl+tbcSHVie5dM8VE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706774877; c=relaxed/simple;
+	bh=ZRyTPWlVwo7mPBSPWx/RNJX4YLAeho0YclTfa8v5EOY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Nkmp/thYTsm3vxjJqf39J2k3OZMP7GUEfHH1jx4vhtjINy2/Gc6/lxkvk0JaoIKsxsJmPBXx2k1Bd54X4LCGdYkXOq8nT6lOKo47u/tu3Y2Ub/r+px/wa2h8hcI0jjgJcUfN93+IiZc7ONT+uH0PpEydDoJLI7xWSot/Je9zpY0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=st/PS34M; arc=fail smtp.client-ip=40.107.13.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VJdS30rc6Ngodb56e04NgYTlE71+sNf2GR07hNy2etNUQ7lWUdOcQfqnMRrSKoUq+TXqtCuTnrTfnPwSOaHe7T+a1RSOLedXwmYrKvI+UHsMHzdggoa7lTbruvv6kajP9JaeHueIm70sUW2EzbB0NXIXoAmU/NlLlwiWvyBsX+ugqoT7PJZPfv3uJ6xWnaiLOs0B4RPiKeVRMbxX6LHL/lkv6dlHd/UknG56LP6f1SyNh+9M0cA08v6CMeb+7HSNrf6AFFAGD5M5Ueq/BCjMDH4C4ot9XPhVAgfVOHJ3EZ/6SqOcketun5XNTqJsidju3U3eQOAZXYlzkXrmdF6Fmw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZRyTPWlVwo7mPBSPWx/RNJX4YLAeho0YclTfa8v5EOY=;
+ b=BBAYlQvXclwN7wbiWGoT8bLt1lDj3aKkX1C4a919WZYtougqe0qIWItKULJHg/EZKyF0dUyH+l4Lvs5LUwnGB8tOidiv0nQ6qLFNVkVkqj4kD1dUzEgwwNwlRm7I020nqIuTqFNQUQErQnROcHpK13cUdfvUkqzRCdPAJfLpp5jIvevMrlUF9ENLikl40P256Ev8AWj0Y7IiOuQ+3qngwjN3XdeRd/kRuzI2zy5yyh/xLMKt3YlmVBIVgr2NR/qcn2hchM8jSKzf5e33G4Wt2oxcLmYgQ/iunCAEzFlZeOPzunR4Da7Sitr92dU3khGMR0lTUVo88nGMtZuqRvfWDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZRyTPWlVwo7mPBSPWx/RNJX4YLAeho0YclTfa8v5EOY=;
+ b=st/PS34Ml19aoBL47ANiHcPYOc4sh5ko1WsGWD3rU9UYz5FG9Xfwjsa+tyHqQOF8rL57NnyL7/VNX21ja/fdxm6Kik2Ftyids9XQO4z5HwjNhq0w8UQ0I5sRcMfg0z4T1mEx4OigkSnzYGMHujRwMemW6kzgB9xld4YiRPuOKxw=
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by DB9PR04MB8461.eurprd04.prod.outlook.com (2603:10a6:10:2cf::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.27; Thu, 1 Feb
+ 2024 08:07:51 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::c499:8cef:9bb1:ced6]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::c499:8cef:9bb1:ced6%3]) with mapi id 15.20.7249.023; Thu, 1 Feb 2024
+ 08:07:51 +0000
+From: Peng Fan <peng.fan@nxp.com>
+To: Sudeep Holla <sudeep.holla@arm.com>, "Peng Fan (OSS)"
+	<peng.fan@oss.nxp.com>, "cristian.marussi@arm.com" <cristian.marussi@arm.com>
+CC: Cristian Marussi <cristian.marussi@arm.com>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Oleksii Moisieiev <oleksii_moisieiev@epam.com>, Linus Walleij
+	<linus.walleij@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
+	<s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-gpio@vger.kernel.org"
+	<linux-gpio@vger.kernel.org>, AKASHI Takahiro <takahiro.akashi@linaro.org>,
+	Rob Herring <robh@kernel.org>
+Subject: RE: [PATCH v3 0/6] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Thread-Topic: [PATCH v3 0/6] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Thread-Index: AQHaTFMXfSW/KLMkFECgD1P261LWWrDwxwIAgABBWYCABBu3YA==
+Date: Thu, 1 Feb 2024 08:07:51 +0000
+Message-ID:
+ <DU0PR04MB94178FAC347A4500E9449ECB88432@DU0PR04MB9417.eurprd04.prod.outlook.com>
+References: <20240121-pinctrl-scmi-v3-0-8d94ba79dca8@nxp.com>
+ <f88d07ef-83b2-4d14-976a-6dbbd71e036f@oss.nxp.com>
+ <20240129163043.if5jj4kyacqfe2n5@bogus>
+In-Reply-To: <20240129163043.if5jj4kyacqfe2n5@bogus>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|DB9PR04MB8461:EE_
+x-ms-office365-filtering-correlation-id: 26cf52ae-a158-4536-f17e-08dc22fce2cf
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ OChOf3wnOAhEHYaYvaEgUoT0tTnMz39vbZSoBL8LPAbGube4pT8NC2bH5+bEhhTAjtZySgkFpyKdY/MaV14YFhVydnjTYzNEh2hUxWZyAOjmn8uOTJEbbGB9vRyB9z0e45O6xEgKEl70YvJ4td0N+bXnsryy3tmOKL5BJzuupxKA0DI45LoxpYj/FbDab/pNOSB1719q3aQ6TWiM2BgisTL1sXMju1ksAgzkKNdGwaK6cL2zE9JTmbzm7tqHIX3nPeGUH5CohZv2YP1fiHM93jjUHvuSz4DcavoH1RAvG4RBHXJdVSxZ99ULaTdzpKucncyu8GNECsStUxoeny87zhFGzeetVFi9DYi3ij6LRk1zSxwpL9vIicx+nyPNH7X6NosfUvP2tjdeVoNf4AAV86eLbhXnAHg+yH2ASfAm5LG02Cxy6C40XM5GBNr09MZAcE3cwIUTsr+RsVOTFiSWLHLGeM65h+SynYyrvLqYVY0b/SiBvxhfF+aSeKy0PLypvYq5ulXsFtM/lifF9EIQhfynobTgGKzDHUFxkt8o3SA+yBzaYpVLRpi9GGJYlFrBaCjZyubbwtKuiDfJPP3/3VPPDNJJgfoCVKOb+hNgAA2VhQ3oyP1BdnTlhJJfrPJW
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(366004)(396003)(136003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(64756008)(110136005)(76116006)(66946007)(55016003)(2906002)(54906003)(7416002)(5660300002)(44832011)(316002)(52536014)(66556008)(66446008)(66476007)(4326008)(8676002)(8936002)(478600001)(41300700001)(38100700002)(33656002)(86362001)(26005)(71200400001)(9686003)(122000001)(38070700009)(6506007)(7696005)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?MKknItNHlYCSCydzCjFJJfezivWHPzLmHN3ElrL+l9LGa23jrmRBMYCSgDw3?=
+ =?us-ascii?Q?OqjZIlILToYTS0vLLyxP+N7NSrtq6WApGYi7Nq/Zek4JXH8ynpDuuT3OO3bt?=
+ =?us-ascii?Q?ufRbZfJJ0VT6A5h+p6eF/32ttKPtRpxVDRIaCEKC6PjmAJLteloxPOIZ/goH?=
+ =?us-ascii?Q?JIWoRIVOjD71VRykHwWHeieO+HVLGtApH+OT5cHIofSoNLuSO/iFyRx3MSsR?=
+ =?us-ascii?Q?d7fcDtAcR4TC38JcJ7eFJD8IkzcHdvLqw8Xz3jHJjNkW3/IhevrGCHJK5ZM4?=
+ =?us-ascii?Q?kfXvh7/+srs/P9tOiF8trOoQLU/nAEK11SWOSpSSnwNocx6tZQDHsZqdWNxR?=
+ =?us-ascii?Q?DY5jPkKExWi915kMB9KF7nPXQhVcPhzBG7SDgwPWX2o98Yv9YnApRutmIIaL?=
+ =?us-ascii?Q?MBVO6Vc51J/d5QArtBFQSilWvsCZ8jRcpLWMHrt2bWgyE9fJvWC6KI/2bQXX?=
+ =?us-ascii?Q?AEAdTGS06zWPki4R0bwYYiAXTGZBFwPkDz+Fgdw70HT3svvPx36Qdg+f9DgQ?=
+ =?us-ascii?Q?r45o5Lgevb2IGWKxVRqbyfIQ4GNuBw7XuKHysY0C5rqtcQNZA93tKJc0DvMz?=
+ =?us-ascii?Q?JYtiLdOtNlFs94mQbIQdf122Cnv91oSDj4mLWDmsbOIy4An9HuHaNLyIOSZO?=
+ =?us-ascii?Q?QxlqUiDOq1CvKn+kg1/YpbHlLhctJM3CBMmHnFw1DttX8RU0SEp+Pl98Dp+O?=
+ =?us-ascii?Q?LFayiJG2lrbmFbqoLg7O361jv7VjEHu7jpcSBENie3s6dS0K/EkrbVPb1uYv?=
+ =?us-ascii?Q?sDRrYiV3ag1MCuLKRubpwdsiskcla33ZEg9UPloVsygzVppogNTZ2VBxnjN1?=
+ =?us-ascii?Q?CRskFl7LIfzTNEYS2PUu/SmJbArCdkBneldfl8T78zYQcC/xGVyLY9u8xC2r?=
+ =?us-ascii?Q?+lpwAKWg1dCAYYuNQircd9yihz2kQJNCqQN3z909gQ4auDv6scPMwxtlmWEN?=
+ =?us-ascii?Q?YUJkayiT5FAI4UVvxzg4uOOlK/MQQRLWYTso0H0UE3bu1UPkJB0hJN5LfF0X?=
+ =?us-ascii?Q?LXU8rqSBiMyeDb/9j7+OGk+7Vs9sMKhvrMXYIzBmX11+spocQWK1TEtAhMsj?=
+ =?us-ascii?Q?lElkNihz9OMuLytRBREZM8p8/AesOHAIcbIavDQAkTx54M+LmRCrArFH+Y7t?=
+ =?us-ascii?Q?4ii+5if/AeGYqrOpNk1ryzdUcOLPcD6xu5iHQG0+H1XmZMgTDljipE+CrGkT?=
+ =?us-ascii?Q?PSBDilL+YY7X7xMfrkZNIeCdQ87fWm3qafGVkY8kaZMZy8G8g3AwR+f9HLNY?=
+ =?us-ascii?Q?a4QYA9xg/YAqHxc1mBTJBUAdxHFJ5r39o2wNF+8ZZUQNSjrhJ52yHlGpRa2e?=
+ =?us-ascii?Q?3wDUfljj+8jnPgAC+ue8oSqwRPF7/P/RH54jWRzm9smCCQWUPjqD8G9qTRuQ?=
+ =?us-ascii?Q?f/m9wBv0HtW+IzdL7dAxmYdEasgyCVS0r7iqp1N2Eg0njIQdZ4AOrKpeWvN9?=
+ =?us-ascii?Q?PbPt4+ibblPl2oukx8Om2GAILBt9K5D8tTz8ehyIfwXd1u8WI7Z8AINedb4B?=
+ =?us-ascii?Q?ewdBEZLq4kt0fpj+dFpU+fOKV8gz8kH/fV5uOOB1nOfcRaKyP7GYgkWW2ZJC?=
+ =?us-ascii?Q?7huvKqrCrhnEUswXGUQ=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dt-bindings: fpga: xlnx,fpga-slave-selectmap: add DT
- schema
-Content-Language: en-US
-To: Charles Perry <charles.perry@savoirfairelinux.com>, mdf@kernel.org
-Cc: avandiver@markem-imaje.com, bcody@markem-imaje.com,
- Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
- Tom Rix <trix@redhat.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Michal Simek <michal.simek@amd.com>,
- linux-fpga@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20240129225602.3832449-1-charles.perry@savoirfairelinux.com>
- <20240131230542.3993409-1-charles.perry@savoirfairelinux.com>
- <20240131230542.3993409-3-charles.perry@savoirfairelinux.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240131230542.3993409-3-charles.perry@savoirfairelinux.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26cf52ae-a158-4536-f17e-08dc22fce2cf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Feb 2024 08:07:51.2057
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: IGbpZZGl2qZtLHpi8yAWo6TMZZThKI0oBuXL3ctu2mvhM7sAmAIeaUgsILAeMmZj/ea/qip60hXTXconoYWWAQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8461
 
-On 01/02/2024 00:05, Charles Perry wrote:
-> Document the slave SelectMAP interface of Xilinx 7 series FPGA.
-> 
-> Signed-off-by: Charles Perry <charles.perry@savoirfairelinux.com>
-> ---
->  .../bindings/fpga/xlnx,fpga-selectmap.yaml    | 83 +++++++++++++++++++
->  1 file changed, 83 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml b/Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
-> new file mode 100644
-> index 0000000000000..c9a446b43cdd9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
-> @@ -0,0 +1,83 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/fpga/xlnx,fpga-selectmap.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Xilinx SelectMAP FPGA interface
-> +
-> +maintainers:
-> +  - Charles Perry <charles.perry@savoirfairelinux.com>
-> +
-> +description: |
-> +  Xilinx 7 Series FPGAs support a method of loading the bitstream over a
-> +  parallel port named the SelectMAP interface in the documentation. Only
-> +  the x8 mode is supported where data is loaded at one byte per rising edge of
-> +  the clock, with the MSB of each byte presented to the D0 pin.
-> +
-> +  Datasheets:
-> +    https://www.xilinx.com/support/documentation/user_guides/ug470_7Series_Config.pdf
-> +
-> +allOf:
-> +  - $ref: /schemas/memory-controllers/mc-peripheral-props.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - xlnx,fpga-selectmap
+> Subject: Re: [PATCH v3 0/6] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+> protocol basic support
+>=20
+> On Mon, Jan 29, 2024 at 08:36:50PM +0800, Peng Fan wrote:
+> > Hi Sudeep, Cristian
+> >
+> > Would you pick up patch 1-4?
+>=20
+> I will for v6.9 sometime.
+>=20
+> > And for i.MX95 OEM extenstion, do you have any suggestions?
+> > I have two points:
+> > 1. use vendor compatible. This would also benefit when supporting
+> > vendor protocol.
+>=20
+> May be, but that was never on plate for standard protocols. So I don't li=
+ke
+> that approach either.
+>=20
+> > 2. Introduce a property saying supporting-generic-pinconf
+> >
+>=20
+> I am not sure what you mean by that. But that doesn't sound right especia=
+l in
+> context of SCMI. So I would say no.
+>=20
+> > How do you think?
+> >
+>=20
+> I don't have any other suggestions than fix your driver to use the pinmux
+> properly with features in the upstream pinmux subsystem.
 
-Your description mentions "7 Series" which is not present in compatible
-and title. What is exactly the product here? Interface usually is not
-the final binding, so is this specific to some particular FPGA or SoC?
+So for OEM specific units in Pin Configuration Type and Enumerations,
+Any ideas how to support them if not talking about i.MX?
 
+Thanks,
+Peng.
 
-Best regards,
-Krzysztof
-
+>=20
+> --
+> Regards,
+> Sudeep
 
