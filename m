@@ -1,78 +1,169 @@
-Return-Path: <linux-kernel+bounces-50570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A3CB847AE8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:01:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A73B4847B35
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:05:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB860284ADE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:01:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2FA16B24590
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:05:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FF4585925;
-	Fri,  2 Feb 2024 21:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F0F91332AB;
+	Fri,  2 Feb 2024 21:00:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KrH23P0m"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="fQOdZGB8"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 614838061F;
-	Fri,  2 Feb 2024 21:00:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFA4612F365;
+	Fri,  2 Feb 2024 21:00:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706907621; cv=none; b=iwlzlnTSexftHYLZxaFFdL42Rf+g/mni0BqdOFTTudOmpQzlO5U607SnmYiUl+8lOvs3p4Wx5VNwkxXg4aIbIdb8K6w2I2Us7cV7+bsrHXcISlTpzzzl5rp4FaMbICJV5W0v9MMnxiB1spPUwubKv2Jrt7p8+g24T/98QmNGQ2Q=
+	t=1706907634; cv=none; b=kCfy6DhrDE6sL7103ZV5C208hdewu5bM5kKs6efrxAxY0EiWpMMiF4GNfAOA1LtNNb8dl+Ookgx5fH/0BpQZxbwnWry7yWWQiIE8YvddIm6BVww/oOa+Lz1b2hOtSh5aSh9rVIgKumPO2KE5z7h0587Vap8PJpNnJaZR8QprgQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706907621; c=relaxed/simple;
-	bh=OQ5nbFiEtivjhJxUZSfz9gQDcLZLItn5nCWd8cF0eD4=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=UpU1+q92dd5cY9KB2CtW5U38Wr9myhz6D3lDf6ywsryTuzyXA6NxNUL8IGzdn1WInF9sM3O8dwtmnVwHOvxUbZrfhr9OBUBnchpn2ETCvZIUOBGTX8gP/Soaxd7T52P3CvX+0H+5hyWykaXkwu07SX2imzdx6WFvreUz0Od6iUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KrH23P0m; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 42E54C43394;
-	Fri,  2 Feb 2024 21:00:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706907621;
-	bh=OQ5nbFiEtivjhJxUZSfz9gQDcLZLItn5nCWd8cF0eD4=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=KrH23P0mKqLVgIzZYi1tBCO3+1LuzgOAiUl1pk0kIp+6KusMk/bUp2rAsqnEG0vhY
-	 ZW9ChkNI97h5fK1hLJuElAe+Q5Hb9/ZDU+gkbBgIsfchs/Wd0yk/Jw336jnv20kqUC
-	 ihbNZqjkQZL7wAjuSG7Yij95w+jl24+/vsCdetMbN1gw238HPWkxsx/YugXe5ZFl+3
-	 1TmAj5Ag2zY8c0tUhdl8F9/gR71eXBmC69XbUyYu7TfyVDHjQBYqJ3PMLC8l5mjTGq
-	 GTETkdKZART4MqaUQPcS7D/Xj6nMJ/5F7s/eJFJICBpwAXPrtnF11HmDUmd2vu6syo
-	 /KB5GRmLq16tQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2D103C04E27;
-	Fri,  2 Feb 2024 21:00:21 +0000 (UTC)
-Subject: Re: [GIT PULL] sound fixes for 6.8-rc3
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <875xz7e0fs.wl-tiwai@suse.de>
-References: <875xz7e0fs.wl-tiwai@suse.de>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <875xz7e0fs.wl-tiwai@suse.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.8-rc3
-X-PR-Tracked-Commit-Id: d4ea2bd1bb502c54380cc44a4130660494679bb8
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 01370ceb2ae66ffc1b35dd4907bf1f6009bac200
-Message-Id: <170690762117.8980.12652723445190810749.pr-tracker-bot@kernel.org>
-Date: Fri, 02 Feb 2024 21:00:21 +0000
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux Sound Mailing List <linux-sound@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+	s=arc-20240116; t=1706907634; c=relaxed/simple;
+	bh=6kaHeiBxh7tXa+wyC1kCcD7MhkDErN5w3UH4NjBdGts=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=QVhBZC4ZgoipqJykJPDCfOoZphtyCY68nkQfPJV8zUWALC00H59vmB07+EqkoJvKAPD7m8dr4ajV0Ww00uWTA4av0RfaTzfDHOaDKsujLAxf/vD4K2jGFP90pH7amPVlakRIaX+z7cGgt/KeY0rXbfuzwcN0aLQbqK8vhunAflM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=fQOdZGB8; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1706907629;
+	bh=6kaHeiBxh7tXa+wyC1kCcD7MhkDErN5w3UH4NjBdGts=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=fQOdZGB8ZoM+ot4BpfHpDhS3UZ/Xl9kL6L2cCK/HSOO89KLHleVlUen3Hvy7uouoA
+	 jkSg4Ou1+kepWAwhWgSZKXNNm6LCEyBCdPkykABCJgThUTXtmOtFcZ6bxqN2ifCI+o
+	 96d3GrsSllptt4Mc0jotzKMhB/znC1tQydRK48oH5ngXTQVmKOtZrOhOG0WfGwKx6w
+	 kfMewMuk+6MGuzHxK4hWcgzNa+KJTaQFp4kakLGUOhyCRsSciU6S8CX33ScaDEGVFa
+	 qlecryD5H6JRb2MG0sirVt1fMHpExeBDP5sB+exAwyLtxDtvgAdLPLFw2aSkquU6rq
+	 T/tHs8uC3lE8Q==
+Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TRSph5pS4zX4T;
+	Fri,  2 Feb 2024 16:00:28 -0500 (EST)
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To: Dan Williams <dan.j.williams@intel.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Dave Chinner <david@fromorbit.com>
+Cc: linux-kernel@vger.kernel.org,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Russell King <linux@armlinux.org.uk>,
+	linux-arch@vger.kernel.org,
+	linux-cxl@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-xfs@vger.kernel.org,
+	dm-devel@lists.linux.dev,
+	nvdimm@lists.linux.dev,
+	linux-s390@vger.kernel.org,
+	Alasdair Kergon <agk@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Mikulas Patocka <mpatocka@redhat.com>
+Subject: [RFC PATCH v4 05/12] virtio: Treat alloc_dax() -EOPNOTSUPP failure as non-fatal
+Date: Fri,  2 Feb 2024 16:00:12 -0500
+Message-Id: <20240202210019.88022-6-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240202210019.88022-1-mathieu.desnoyers@efficios.com>
+References: <20240202210019.88022-1-mathieu.desnoyers@efficios.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-The pull request you sent on Fri, 02 Feb 2024 09:26:47 +0100:
+In preparation for checking whether the architecture has data cache
+aliasing within alloc_dax(), modify the error handling of virtio
+virtio_fs_setup_dax() to treat alloc_dax() -EOPNOTSUPP failure as
+non-fatal.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.8-rc3
+For the transition, consider that alloc_dax() returning NULL is the
+same as returning -EOPNOTSUPP.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/01370ceb2ae66ffc1b35dd4907bf1f6009bac200
+Co-developed-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Fixes: d92576f1167c ("dax: does not work correctly with virtual aliasing caches")
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Alasdair Kergon <agk@redhat.com>
+Cc: Mike Snitzer <snitzer@kernel.org>
+Cc: Mikulas Patocka <mpatocka@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: linux-arch@vger.kernel.org
+Cc: linux-cxl@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-xfs@vger.kernel.org
+Cc: dm-devel@lists.linux.dev
+Cc: nvdimm@lists.linux.dev
+---
+ fs/fuse/virtio_fs.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-Thank you!
-
+diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+index 5f1be1da92ce..621b1bca2d55 100644
+--- a/fs/fuse/virtio_fs.c
++++ b/fs/fuse/virtio_fs.c
+@@ -16,6 +16,7 @@
+ #include <linux/fs_context.h>
+ #include <linux/fs_parser.h>
+ #include <linux/highmem.h>
++#include <linux/cleanup.h>
+ #include <linux/uio.h>
+ #include "fuse_i.h"
+ 
+@@ -795,8 +796,11 @@ static void virtio_fs_cleanup_dax(void *data)
+ 	put_dax(dax_dev);
+ }
+ 
++DEFINE_FREE(cleanup_dax, struct dax_dev *, if (!IS_ERR_OR_NULL(_T)) virtio_fs_cleanup_dax(_T))
++
+ static int virtio_fs_setup_dax(struct virtio_device *vdev, struct virtio_fs *fs)
+ {
++	struct dax_device *dax_dev __free(cleanup_dax) = NULL;
+ 	struct virtio_shm_region cache_reg;
+ 	struct dev_pagemap *pgmap;
+ 	bool have_cache;
+@@ -804,6 +808,12 @@ static int virtio_fs_setup_dax(struct virtio_device *vdev, struct virtio_fs *fs)
+ 	if (!IS_ENABLED(CONFIG_FUSE_DAX))
+ 		return 0;
+ 
++	dax_dev = alloc_dax(fs, &virtio_fs_dax_ops);
++	if (IS_ERR_OR_NULL(dax_dev)) {
++		int rc = IS_ERR(dax_dev) ? PTR_ERR(dax_dev) : -EOPNOTSUPP;
++		return rc == -EOPNOTSUPP ? 0 : rc;
++	}
++
+ 	/* Get cache region */
+ 	have_cache = virtio_get_shm_region(vdev, &cache_reg,
+ 					   (u8)VIRTIO_FS_SHMCAP_ID_CACHE);
+@@ -849,10 +859,7 @@ static int virtio_fs_setup_dax(struct virtio_device *vdev, struct virtio_fs *fs)
+ 	dev_dbg(&vdev->dev, "%s: window kaddr 0x%px phys_addr 0x%llx len 0x%llx\n",
+ 		__func__, fs->window_kaddr, cache_reg.addr, cache_reg.len);
+ 
+-	fs->dax_dev = alloc_dax(fs, &virtio_fs_dax_ops);
+-	if (IS_ERR(fs->dax_dev))
+-		return PTR_ERR(fs->dax_dev);
+-
++	fs->dax_dev = no_free_ptr(dax_dev);
+ 	return devm_add_action_or_reset(&vdev->dev, virtio_fs_cleanup_dax,
+ 					fs->dax_dev);
+ }
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.39.2
+
 
