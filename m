@@ -1,205 +1,151 @@
-Return-Path: <linux-kernel+bounces-49471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49472-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99B12846ABF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 19AA3846AC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:33:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F9841F27188
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:29:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E6DA1F25D9D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:33:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE04182A3;
-	Fri,  2 Feb 2024 08:29:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b="OMEc6HZI"
-Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2107.outbound.protection.outlook.com [40.107.113.107])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98054182CC;
+	Fri,  2 Feb 2024 08:33:22 +0000 (UTC)
+Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4019118C1A;
-	Fri,  2 Feb 2024 08:29:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.113.107
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706862550; cv=fail; b=bPKnvTqgqDafWnAYyL+CRhWIAyhmJBnTxSfPUJAfutMn6IomV199EsU0JeZT1TM0sF5tagHYCa0bI2vF7AvR+29i76mUN/dmuZ++Npt09zQHzgozjIO95VNgh1ssUsw3L4a/u0EbTkiZwSf3V84eIUxyTSF5xwzvNMzCRx9Ovkc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706862550; c=relaxed/simple;
-	bh=ySnEmOQdrjMyVMcXhhvqKPXKWeCVrQP/5LlQVNYqoXQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=XvGg5IEFz8JRSsldC0qiAu/Ib9K/tqaoWeB9enaQnfPl/w9hKKoRGpqa8FFUFcoCcvqrJxau6amcTKX2fLBTBpWTyB11X3BU/AsBtefbQT6lM9QhAuef/X3zdaa30R0KbzDF0b9E1VXovJZbFl/B2iQSZPrHoEWq+apQRjJO6zs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b=OMEc6HZI; arc=fail smtp.client-ip=40.107.113.107
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CX3x20/tgOZwNG9uMhwO5FRalBzswKVJnNro914pAEteRjDYWpkPstsX0S8XF2fxcKHZ93RuCb+lAVs/q6jrISD2RR74pnLSURwJLMrbWJ5Y27LySZuhSsKOTCtkHPsPuddrNnd0t1opdm6/MOB7AibuiRN1XYjaGefP/yitsYleBKWljnWrDtEcZKminvAzZjaLOZaYWeTdm/Jd5DP5g7GXblBA9nCGN38aPURwxllG1XXETQIdCKmE7/nNRIZkooKyzJZ1Dad45ie4dC289K+OuzbgfRM4hJGtkG6DwED+XeZp3Kmwm6lubICPprM9JR4/k9cR0nHBEE+rMApNCg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FlsUIyhBf5K/YHxwwAXvp6VVn7XgSKdWL6N+qBi1Opw=;
- b=Jl9D2weUYaLBUL2lA/9Gh1d7bKLjKo0j1FxdQkK3/+2a2LEz6ohIx+X/jpcD07LBkY0IGJGyvHxx8xakVIyqi1/uR2JstHeuwjCSWslCmoYCmCCel4XHuVWVYgZhjB/DBHdIdh4dI/sd9wd2iAULU6s+9tk5NPGTc1j9y4gfew35KYZrmcP2DlyU9yy/UHDSJMTDBocWia5zMv7e05s7CY+rLKEBzGDEM04//6CCIzIAB8vRhWjfTL5F+qOtf2VhOS8Tdc/yw6rM4yv7VqjdqogOzCZQg7EJfTHjJRFcMeB31SY0Hs+poIZ6cS4GZBW+pGsh0FwA9dKmmyemv37tVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FlsUIyhBf5K/YHxwwAXvp6VVn7XgSKdWL6N+qBi1Opw=;
- b=OMEc6HZImyrXryWyNTh++6+cmz711Ov8fUyMBtsbhLlkHeiYXMWHVA+NuI6GYGUAJUQvr+sYEv+YiEVtuF1OB45b2FARJCuScgYqiwC8smXd/h8akw4zcJj14MpDYWZAYZkSprIQqqCWmSZ5D1TIXrL/kaKcCtKo0DDklm5lF6s=
-Received: from TYCPR01MB11269.jpnprd01.prod.outlook.com
- (2603:1096:400:3c0::10) by OS3PR01MB8044.jpnprd01.prod.outlook.com
- (2603:1096:604:177::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.30; Fri, 2 Feb
- 2024 08:29:05 +0000
-Received: from TYCPR01MB11269.jpnprd01.prod.outlook.com
- ([fe80::6719:535a:7217:9f0]) by TYCPR01MB11269.jpnprd01.prod.outlook.com
- ([fe80::6719:535a:7217:9f0%3]) with mapi id 15.20.7249.027; Fri, 2 Feb 2024
- 08:29:05 +0000
-From: Biju Das <biju.das.jz@bp.renesas.com>
-To: Biju Das <biju.das.jz@bp.renesas.com>, Claudiu.Beznea
-	<claudiu.beznea@tuxon.dev>, "wim@linux-watchdog.org"
-	<wim@linux-watchdog.org>, "linux@roeck-us.net" <linux@roeck-us.net>,
-	"robh@kernel.org" <robh@kernel.org>, "krzysztof.kozlowski+dt@linaro.org"
-	<krzysztof.kozlowski+dt@linaro.org>, "conor+dt@kernel.org"
-	<conor+dt@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-	"geert+renesas@glider.be" <geert+renesas@glider.be>, "magnus.damm@gmail.com"
-	<magnus.damm@gmail.com>
-CC: "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
-	Claudiu.Beznea <claudiu.beznea@tuxon.dev>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-Subject: RE: [PATCH v3 1/8] watchdog: rzg2l_wdt: Select PM
-Thread-Topic: [PATCH v3 1/8] watchdog: rzg2l_wdt: Select PM
-Thread-Index: AQHaVa2xeucsotW+XUyR5O7FIAVIxLD2sMaAgAADP+CAAANJEA==
-Date: Fri, 2 Feb 2024 08:29:05 +0000
-Message-ID:
- <TYCPR01MB11269FECF0067E0DC7D7CA0C986422@TYCPR01MB11269.jpnprd01.prod.outlook.com>
-References: <20240202075849.3422380-1-claudiu.beznea.uj@bp.renesas.com>
- <20240202075849.3422380-2-claudiu.beznea.uj@bp.renesas.com>
- <TYCPR01MB112694BA3A47579AE8BC1752B86422@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <TYCPR01MB11269B343C70AA99CBDB3BD8586422@TYCPR01MB11269.jpnprd01.prod.outlook.com>
-In-Reply-To:
- <TYCPR01MB11269B343C70AA99CBDB3BD8586422@TYCPR01MB11269.jpnprd01.prod.outlook.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYCPR01MB11269:EE_|OS3PR01MB8044:EE_
-x-ms-office365-filtering-correlation-id: 099f7555-c050-4cb3-8846-08dc23c90493
-x-ld-processed: 53d82571-da19-47e4-9cb4-625a166a4a2a,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 2rboNst+2pD2GenGkspa+260SqpvZIgkfzjOuFpDsDUcui3xrtD7eiiuMzlVTxPIAMhk9mSsHlcoeOu7M3KQ1a6b3mWfq/otIHMQ7b5rJ9ADVRSvdWGSYxvN4rubBOtBaoJ4nBxdvbhrMEabTQ4N6VS+NEUQ8JHndR3L6/IrDRpzCc9/Znmva537ZQO5vMkSUPZywlSBvCpiTugjfDx7nC5Q6U/3PNTrON3eBptTE45NixhWLFJJ96Q3YDINwJdhxHdLs++wvx88sIGTKaLgjYCANVx6crTFdhFWYwCSKgzZhthl93hI6dyit7k8dK+kyVZqzIqNc0FPt9UMEkl/qNNer/Zl1SDp4TQNCn0nZb6+iH3ssTOu/Bro8iD137qlTfzakQmS0JCjNLODnGjDOn9vwxZCGZ75lC+15BmixzHPmfLEHUpD7IXIvz+FAvDl8WN3TmHEPJpYb+mW8VJ3VaQeHAgD3ZAONWsFvcSMJtx+mL5hdCg/MF8Kk30kLsP+Wkj03SCAi3jZpQdq9/Uv1pPfYLRGwKKMcE6OOqr9559nfJMnvhr785Ozk/DhKibnT1kbw63sL88C3Ubdm6xhHyFAGw+4LE+1tDy6LP35VpGJlqabC8SUJSr+lISdtuXL1ARnLHqUXJxy8mdwUfrz6A==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB11269.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(376002)(346002)(396003)(366004)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(921011)(33656002)(55016003)(2940100002)(478600001)(53546011)(38070700009)(86362001)(9686003)(83380400001)(107886003)(26005)(41300700001)(6506007)(7696005)(316002)(71200400001)(2906002)(66476007)(5660300002)(54906003)(64756008)(66446008)(52536014)(7416002)(38100700002)(8936002)(122000001)(4326008)(76116006)(66946007)(66556008)(110136005)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?yx8eQfMlve+fKE6IcMKwCZUvgjnkIvV7QYaCYDDx29XvoyAUefQftheevfw6?=
- =?us-ascii?Q?WX5EKjjTuCAYuWIMLBJHuvaYJaEzWSJAG/YcgoUyK6GK5YoPiOdA5cicuSay?=
- =?us-ascii?Q?EPx613Uli50yWou1IC9rBNTyeP7up5g3t38K6QWfKyWuk/yvEKB/ty9AgqOL?=
- =?us-ascii?Q?8CyBVfr5njNofSLdhUIBmjDDNg7YT8R9visEhO7Gi0tiLb+W4fNARHeFELdB?=
- =?us-ascii?Q?TfalYcMISieddsnL66e26zanZsoFJUgAmTpbc8fN276AjBK945ReCjwgnvkj?=
- =?us-ascii?Q?MRKI8xWK2GaRllRfOzRQYCXBXSdlATyl5uNsRlCEFVot4zp458nhu9z8Y3nN?=
- =?us-ascii?Q?nKo7x73y5zXb1stYmiVKv+jwIbllszC9S0JW4MqJi5JAOHe2e93dyht8AFeG?=
- =?us-ascii?Q?pkrdgZ/UGAs4n2wIZmMzS+/UwHCqsAuQ5SWSD5Z58gfO8PDQx8GCHFn5mMDP?=
- =?us-ascii?Q?1sbNeWzvs8VBhq/hGmfoNsnoV11hIoOXJC5Jvyf13icXAi0E6ahXjH+lSO7y?=
- =?us-ascii?Q?XauYRv0XcdNhU0pdmC5hd72ZoZHy+7ap/UMIl8dDN/pD6C/+oseBP54g1KsJ?=
- =?us-ascii?Q?SdTHAjcZq4zscmtP8d4/g77fN5WMtTWRUjtNfu/6S59qhIEM9HIXYj/UQipZ?=
- =?us-ascii?Q?TN4BO9Fml4786I5+QxrPo14B+nQg3mimhrr3j36CjBbSQAC2ZEqeR0UGIZny?=
- =?us-ascii?Q?GbB53UYyymnCC94tnhoFd6IJw1xriJ5WMH9OV5fet0FHc69v+38qqfFG2UAJ?=
- =?us-ascii?Q?Hbv7OVYug8yKslQHX+ujKJeE4Nq3+Z5kY2FcFaHZ2TTB3wO9f9/EFOnPHyzm?=
- =?us-ascii?Q?2ouB/otxZMrL7niMNHaBjVFemM8uZbDA0P+V2i0q3Ymnb/WGxcVgWDC7/H8/?=
- =?us-ascii?Q?6C7gLNhNQlmfAQbCkNjBGbcjbbANQ/KuiKX4BIkfXYi1lUmJEZpNaWd1ZHR2?=
- =?us-ascii?Q?rmIlXhvOMVvOYdNKrhYCHnrGE08DZQSKK4nS5S790r2gS817SyM+go8WigIY?=
- =?us-ascii?Q?EdI4skL1r18LZRPQLyAPRuDAHWyv1Wf8pk1deY7x+6gJ9ZBIajP07wb61ltX?=
- =?us-ascii?Q?PiogTtt8oQbhjOfr8JS1ndgkl91CS9m78d1WBJCFTP9KFRltHinPBPQ/XmzS?=
- =?us-ascii?Q?xB8pSTMwp5uO6CZzXB5dQeSDhilE9yU1Hs6yiGPqbJLzKxJBXLnlVTFMqwsD?=
- =?us-ascii?Q?gniiWES6STatHm4KHzJaQZMAGPM0yTOBIRN8FMaAClXmqkrFaoq1F3sI4bxT?=
- =?us-ascii?Q?yHPRqyiE79QkWrgqvD2hQwoSERaUXYvq4hW3l71QevEPMl6pI4VNE39plBwZ?=
- =?us-ascii?Q?c30eGIEcPp4EjhEGqP5576LlxyN3LZkXFbNQ9ahNtEDHv/IGDe8X2fCQ+fQL?=
- =?us-ascii?Q?izroQOGl+Nz0unnDmXnz8IEAnwmTAkOAo5NUkSt8FWsSsH/OSAe5pr5JHXEp?=
- =?us-ascii?Q?nNP0OneynowmxESPu/mmxmsjpErohZQFJ1Lp7aMqz+VGD2ttRmRHjW0Ot/x/?=
- =?us-ascii?Q?WilwDFnNLtyJfMYoPOVhmh1M+lSKidkNeXDOSUw4/WP9BBaCMwGwvUpWci3U?=
- =?us-ascii?Q?qhgxxoMJS4QbU6II76F++wHuCv34R08YzIR7PMnMRLeHpEed0Zf52DqAmQp3?=
- =?us-ascii?Q?Rg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE59917564
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 08:33:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.0.225.12
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706862802; cv=none; b=VKqm/ThrqoXEj9sHffmvMns+DpBZEOR4aiPr8FjKFWbVj/IfZ+R7ldIDpo7SmqvQX0hRgTWNbq2saoIg6SOhjPjBKbv611lAOqjGWZoff4kkq9+s2/trlSyy/fateHyqkz/SaqTTzyYPJBauq3IwkWljwwDG/KCgyp51LPcoz5M=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706862802; c=relaxed/simple;
+	bh=c4FYUfO7T9Q8NYNTmKDNK4N92kYCMcdhDtYA4Ckjdwc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LSOGxRqtB7q9mmdjzVEWyPo3K6TcgvqXTwx6SRqFwA05vvhUdl/OOaawAuivgl5TfxDURUHJrXwpbtNj76ugWqh5qbQ9EOgwRHcjvve9mllp1va2+xigNFxPTiv/kua5jlVFl4ABFtL26n4H2QyWzQi0asL+jIGefY320W9J3t0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=210.0.225.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
+X-ASG-Debug-ID: 1706862786-086e230f28364a0001-xx1T2L
+Received: from ZXSHMBX2.zhaoxin.com (ZXSHMBX2.zhaoxin.com [10.28.252.164]) by mx1.zhaoxin.com with ESMTP id Rvp5G7CRSOGeSGAx (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Fri, 02 Feb 2024 16:33:06 +0800 (CST)
+X-Barracuda-Envelope-From: JonasZhou-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
+Received: from ZXBJMBX02.zhaoxin.com (10.29.252.6) by ZXSHMBX2.zhaoxin.com
+ (10.28.252.164) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 2 Feb
+ 2024 16:33:05 +0800
+Received: from zjh-VirtualBox.zhaoxin.com (10.28.66.66) by
+ ZXBJMBX02.zhaoxin.com (10.29.252.6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 2 Feb 2024 16:33:04 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
+From: JonasZhou-oc <JonasZhou-oc@zhaoxin.com>
+X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.6
+To: <viro@zeniv.linux.org.uk>, <brauner@kernel.org>
+CC: <jack@suse.cz>, <linux-fsdevel@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <CobeChen@zhaoxin.com>,
+	<LouisQi@zhaoxin.com>, <JonasZhou@zhaoxin.com>
+Subject: [PATCH] fs/address_space: move i_mmap_rwsem to mitigate a false sharing with i_mmap.
+Date: Fri, 2 Feb 2024 16:33:04 +0800
+X-ASG-Orig-Subj: [PATCH] fs/address_space: move i_mmap_rwsem to mitigate a false sharing with i_mmap.
+Message-ID: <20240202083304.10995-1-JonasZhou-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB11269.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 099f7555-c050-4cb3-8846-08dc23c90493
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Feb 2024 08:29:05.1442
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5a3ekIq30UQVn1u0VB1s0AmY+3G6DKj8qAE6GhaGkJF14RFimthiF/hF0YPiJmuQG+1Xv4yPjOdgqntmo+xgvjOLvUmoHNvq8owRYPUKVnk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB8044
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
+ ZXBJMBX02.zhaoxin.com (10.29.252.6)
+X-Barracuda-Connect: ZXSHMBX2.zhaoxin.com[10.28.252.164]
+X-Barracuda-Start-Time: 1706862786
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.35:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 6746
+X-Barracuda-BRTS-Status: 0
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0027 1.0000 -2.0033
+X-Barracuda-Spam-Score: -2.00
+X-Barracuda-Spam-Status: No, SCORE=-2.00 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.120274
+	Rule breakdown below
+	 pts rule name              description
+	---- ---------------------- --------------------------------------------------
 
-> > -----Original Message-----
-> > From: Biju Das
-> > Sent: Friday, February 2, 2024 8:03 AM
-> > Subject: RE: [PATCH v3 1/8] watchdog: rzg2l_wdt: Select PM
-> >
-> > Hi Claudiu Beznea,
-> >
-> > > -----Original Message-----
-> > > From: Claudiu <claudiu.beznea@tuxon.dev>
-> > > Sent: Friday, February 2, 2024 7:59 AM
-> > > Subject: [PATCH v3 1/8] watchdog: rzg2l_wdt: Select PM
-> > >
-> > > From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> > >
-> > > The rzg2l_wdt watchdog driver cannot work w/o CONFIG_PM=3Dy (e.g. the
-> > > clocks are enabled though pm_runtime_* specific APIs). To avoid
-> > > building a driver that doesn't work make it depend on CONFIG_PM.
-> > >
-> > > Suggested-by: Guenter Roeck <linux@roeck-us.net>
-> > > Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> > > ---
-> > >
-> > > Changes in v3:
-> > > - make driver depend on PM; with that the "unmet direct dependency"
-> > >   Reported-by: kernel test robot <lkp@intel.com>
-> > >   was also fixed
-> > > - adapt commit message
-> > >
-> > > Changes in v2:
-> > > - this patch is new
-> > >
-> > >  drivers/watchdog/Kconfig | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-> > > index 7d22051b15a2..c9abe8f307bb 100644
-> > > --- a/drivers/watchdog/Kconfig
-> > > +++ b/drivers/watchdog/Kconfig
-> > > @@ -910,7 +910,7 @@ config RENESAS_RZN1WDT
-> > >
-> > >  config RENESAS_RZG2LWDT
-> > >  	tristate "Renesas RZ/G2L WDT Watchdog"
-> > > -	depends on ARCH_RENESAS || COMPILE_TEST
-> > > +	depends on (ARCH_RENESAS && PM) || COMPILE_TEST
-> >
-> > Since you are touching here, maybe ARCH_RZG2L?? like other RZ/G2L
-> drivers.
->=20
-> Also RZ/V2M "ARCH_R9A09G011" as both these families using same driver.
+From: JonasZhou <JonasZhou@zhaoxin.com>
 
-Also commit header it is "Depend on" not "Select"?
+In the struct address_space, there is a 32-byte gap between i_mmap
+and i_mmap_rwsem. Due to the alignment of struct address_space
+variables to 8 bytes, in certain situations, i_mmap and i_mmap_rwsem
+may end up in the same CACHE line.
 
-Cheers,
-Biju
+While running Unixbench/execl, we observe high false sharing issues
+when accessing i_mmap against i_mmap_rwsem. We move i_mmap_rwsem
+after i_private_list, ensuring a 64-byte gap between i_mmap and
+i_mmap_rwsem.
+
+For Intel Silver machines (2 sockets) using kernel v6.8 rc-2, the score
+of Unixbench/execl improves by ~3.94%, and the score of Unixbench/shell
+improves by ~3.26%.
+
+Baseline:
+-------------------------------------------------------------
+  162      546      748    11374       21  0xffff92e266af90c0
+-------------------------------------------------------------
+        46.89%   44.65%    0.00%    0.00%                 0x0     1       1  0xffffffff86d5fb96       460       258       271     1069        32  [k] __handle_mm_fault          [kernel.vmlinux]  memory.c:2940            0  1
+         4.21%    4.41%    0.00%    0.00%                 0x4     1       1  0xffffffff86d0ed54       473       311       288       95        28  [k] filemap_read               [kernel.vmlinux]  atomic.h:23              0  1
+         0.00%    0.00%    0.04%    4.76%                 0x8     1       1  0xffffffff86d4bcf1         0         0         0        5         4  [k] vma_interval_tree_remove   [kernel.vmlinux]  rbtree_augmented.h:204   0  1
+         6.41%    6.02%    0.00%    0.00%                 0x8     1       1  0xffffffff86d4ba85       411       271       339      210        32  [k] vma_interval_tree_insert   [kernel.vmlinux]  interval_tree.c:23       0  1
+         0.00%    0.00%    0.47%   95.24%                0x10     1       1  0xffffffff86d4bd34         0         0         0       74        32  [k] vma_interval_tree_remove   [kernel.vmlinux]  rbtree_augmented.h:339   0  1
+         0.37%    0.13%    0.00%    0.00%                0x10     1       1  0xffffffff86d4bb4f       328       212       380        7         5  [k] vma_interval_tree_remove   [kernel.vmlinux]  rbtree_augmented.h:338   0  1
+         5.13%    5.08%    0.00%    0.00%                0x10     1       1  0xffffffff86d4bb4b       416       255       357      197        32  [k] vma_interval_tree_remove   [kernel.vmlinux]  rbtree_augmented.h:338   0  1
+         1.10%    0.53%    0.00%    0.00%                0x28     1       1  0xffffffff86e06eb8       395       228       351       24        14  [k] do_dentry_open             [kernel.vmlinux]  open.c:966               0  1
+         1.10%    2.14%   57.07%    0.00%                0x38     1       1  0xffffffff878c9225      1364       792       462     7003        32  [k] down_write                 [kernel.vmlinux]  atomic64_64.h:109        0  1
+         0.00%    0.00%    0.01%    0.00%                0x38     1       1  0xffffffff878c8e75         0         0       252        3         2  [k] rwsem_down_write_slowpath  [kernel.vmlinux]  atomic64_64.h:109        0  1
+         0.00%    0.13%    0.00%    0.00%                0x38     1       1  0xffffffff878c8e23         0       596        63        2         2  [k] rwsem_down_write_slowpath  [kernel.vmlinux]  atomic64_64.h:15         0  1
+         2.38%    2.94%    6.53%    0.00%                0x38     1       1  0xffffffff878c8ccb      1150       818       570     1197        32  [k] rwsem_down_write_slowpath  [kernel.vmlinux]  atomic64_64.h:109        0  1
+        30.59%   32.22%    0.00%    0.00%                0x38     1       1  0xffffffff878c8cb4       423       251       380      648        32  [k] rwsem_down_write_slowpath  [kernel.vmlinux]  atomic64_64.h:15         0  1
+         1.83%    1.74%   35.88%    0.00%                0x38     1       1  0xffffffff86b4f833      1217      1112       565     4586        32  [k] up_write                   [kernel.vmlinux]  atomic64_64.h:91         0  1
+
+with this change:
+-------------------------------------------------------------
+  360       12      300       57       35  0xffff982cdae76400
+-------------------------------------------------------------
+        50.00%   59.67%    0.00%    0.00%                 0x0     1       1  0xffffffff8215fb86       352       200       191      558        32  [k] __handle_mm_fault         [kernel.vmlinux]  memory.c:2940            0  1
+         8.33%    5.00%    0.00%    0.00%                 0x4     1       1  0xffffffff8210ed44       370       284       263       42        24  [k] filemap_read              [kernel.vmlinux]  atomic.h:23              0  1
+         0.00%    0.00%    5.26%    2.86%                 0x8     1       1  0xffffffff8214bce1         0         0         0        4         4  [k] vma_interval_tree_remove  [kernel.vmlinux]  rbtree_augmented.h:204   0  1
+        33.33%   14.33%    0.00%    0.00%                 0x8     1       1  0xffffffff8214ba75       344       186       219      140        32  [k] vma_interval_tree_insert  [kernel.vmlinux]  interval_tree.c:23       0  1
+         0.00%    0.00%   94.74%   97.14%                0x10     1       1  0xffffffff8214bd24         0         0         0       88        29  [k] vma_interval_tree_remove  [kernel.vmlinux]  rbtree_augmented.h:339   0  1
+         8.33%   20.00%    0.00%    0.00%                0x10     1       1  0xffffffff8214bb3b       296       209       226      167        31  [k] vma_interval_tree_remove  [kernel.vmlinux]  rbtree_augmented.h:338   0  1
+         0.00%    0.67%    0.00%    0.00%                0x28     1       1  0xffffffff82206f45         0       140       334        4         3  [k] do_dentry_open            [kernel.vmlinux]  open.c:966               0  1
+         0.00%    0.33%    0.00%    0.00%                0x38     1       1  0xffffffff8250a6c4         0       286       126        5         5  [k] errseq_sample             [kernel.vmlinux]  errseq.c:125             0
+
+Signed-off-by: JonasZhou <JonasZhou@zhaoxin.com>
+---
+ include/linux/fs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index ed5966a70495..2d6ccde5d1be 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -482,10 +482,10 @@ struct address_space {
+ 	pgoff_t			writeback_index;
+ 	const struct address_space_operations *a_ops;
+ 	unsigned long		flags;
+-	struct rw_semaphore	i_mmap_rwsem;
+ 	errseq_t		wb_err;
+ 	spinlock_t		i_private_lock;
+ 	struct list_head	i_private_list;
++	struct rw_semaphore	i_mmap_rwsem;
+ 	void *			i_private_data;
+ } __attribute__((aligned(sizeof(long)))) __randomize_layout;
+ 	/*
+-- 
+2.25.1
+
 
