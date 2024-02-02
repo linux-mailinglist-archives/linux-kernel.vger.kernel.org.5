@@ -1,169 +1,130 @@
-Return-Path: <linux-kernel+bounces-49806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0BF5846F9C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:57:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E35B2846F9D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:57:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D2531F233B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:57:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 714C328CCAC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:57:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1FA913E202;
-	Fri,  2 Feb 2024 11:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E7AD13E212;
+	Fri,  2 Feb 2024 11:57:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="X8rgu6I2"
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ozg1bor9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C05A913DB9E
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 11:57:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 960CF13DBA8
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 11:57:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706875044; cv=none; b=pHWQTTpyQ62HjTIFL1zMgDWo7oHCemli9QI6vxFE6ACTRMUTTRmuRGUYemdSSB0m4Nx9nunFuMsOuRgmGDMAEhJvNAdWdNPx26M9CVOHS79qiwoKebtL+mSnjUCf4ZS6Yfx6JdKRyFXOcsIy9piG/hCBRAdGTgqdnF1dzxaaHR0=
+	t=1706875068; cv=none; b=iFrrYus9Kg0M3k+YnNxENlVRxQPtoUlGSDxvB4xVM9Vc+9EjikTwpMV8bDkVS42yD7JSQ8ENJWJo6ew+OpHtMAm06ak4qj5G8UND9MC/h5syUAmNRLVQtQCxRPbfAzxQsak3nuDv1uUxacmdD10xRvVU9YKKYmDlSlT+SgIqEF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706875044; c=relaxed/simple;
-	bh=A0ZTZ5Fv5G06cPe13glChI/Tnu7WN5JP9QQMn76pliI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bRWk8aXicphwuIJIRMVdh2/WAEuh0zIqM0FcSG4irPDXRMNxgKVmF4pXBj6hi71OUOmUcJEPIz4Vld1GUEuk8juI4Wydh/QeqcHaoW8yugL+eM0IbMuea+1eNMO5NtTt4S8rXwUoJiyhX+JGSNg1sLlhP7fu1NhrKsIm7DXTfnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com; spf=pass smtp.mailfrom=9elements.com; dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b=X8rgu6I2; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-29631796acdso686565a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 03:57:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1706875041; x=1707479841; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6q90R/XkiuMdf0PYdVgoTLd07p+VuylRmuCDSu77XgU=;
-        b=X8rgu6I2x+TiCDHjsmIjWzvCziOj/zvYdCb3MXYsBSK+l4mW0w2SJAZflb9u+yZMz9
-         b3BFO+4e9L4DlWacrOzpWtUWcQBlDCsHf7yJYIaOP/Uk2KS32k5irlFYQvBl9IyLIylJ
-         KHRj5wm31U57fiQje6GuFVWCz4MW4d9CD8IoviKZcF/vs/gu3YzUWZxfmNMub3SR54fD
-         xRcN/NU8EDPAImOpuAmHq7c5W3Yhkx/ZuRn1ljiY5Lb522YYs1JOh1cwLFdjvu6X8Jcz
-         +BvQlTtt4lChJHiDFL/d82eQD+jD0YtTclg9yMXY7WOoPikVWXNXkUuu0geC28pEj7Fv
-         VgZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706875041; x=1707479841;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6q90R/XkiuMdf0PYdVgoTLd07p+VuylRmuCDSu77XgU=;
-        b=RHsS2fS++e6jYQz1Y4UZ+1r9GTVexWDTFWLrCS5LNJhbeHKr3QQaohwvA/ITHs/nA5
-         ztChqFZ5zRNxMM5NpfPQowWRrBPWQuXyiPt1iP1cJtceGUofv2yJJ0Y8CRYzJN0dTqYN
-         mKdPeF6KyT23XKb443po3pVkwoSYY6OrkRHLpjDKG0gz3j0riFn1IrKdcSmL1vZCdPhh
-         cOXLfsMzV+pNo8cSi95xT0X1jyfClSSR1GngkWg2AUGc2IBfOiW4qIKLeX4ajT2LGvn6
-         RyItuASoMzPKTpsiCAPYG0Ti2O1+WMct928lb91iIE64+FiGInbu0sfEmH7fjRnKbqRm
-         XKsw==
-X-Gm-Message-State: AOJu0YzPsP2ZhMwA7wdNYghgnTdy8XsijvsfdPTzzDfI/y2SrmGV0yeh
-	rl5tOAG/Ibf7VsY0KR++Aq8tIuE49XyYlWnLH8qXh9e+BfJeJVnvr7P7zVsZ9fQ25fZwIwHI8un
-	ZW/eQ+eezM6GlYzstkUmzhgXmeCquqf4mEGQqPQ==
-X-Google-Smtp-Source: AGHT+IEbDrDTf5KsggBbKRPlPzzC4UhkmWtVLLNeKmwNZxMrMKnrQRKTVpvRk9YlsXq8IW+uCo6xqsYixuoSOu9NnxQ=
-X-Received: by 2002:a17:90a:c250:b0:296:1cb5:c26a with SMTP id
- d16-20020a17090ac25000b002961cb5c26amr4366751pjx.6.1706875040985; Fri, 02 Feb
- 2024 03:57:20 -0800 (PST)
+	s=arc-20240116; t=1706875068; c=relaxed/simple;
+	bh=rYvumnDSMWSCXcjlFfDUjse2yjBUSHNWfG3QaEAz+hs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T4siu4J7iHu1PjBfYr+RRFOni2qOh1UifcIolSUkYxiGKWmpCuhLxQYADEYrXeFIJFfZHChLb2PjQfSgQbaKwJ5js46c0MecUfOI64dClIroAddRVCoiZbS4JciMu6sSgI3vewqeDyY3LYVFn6qmpIELPSGlLAsXhBxV6DOcsbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ozg1bor9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70AF1C433F1;
+	Fri,  2 Feb 2024 11:57:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706875068;
+	bh=rYvumnDSMWSCXcjlFfDUjse2yjBUSHNWfG3QaEAz+hs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ozg1bor9R/Exbfah1bTIQkQBVs3+kTsw76FfouDk7nJlhwfDjBjpMbknwiUo+VYuz
+	 d/1/KdHPBLtVGELDJ4/mCeNRdPxUKGHsKkVw4/pQRUAYKzgcqNbh74xE+IJQe+g5/h
+	 iZ/KVBTTeYEz0ZPvTcJ06hY5+9kqGWGi2daf/+fenJXftSsEdGU9JoAQBTZne5ppNi
+	 fDXBvINtLIn6lDfDTu+Co1xVkkLOXpwJhPlijqDeVFqHhZDOAycDKTyPWgPudnUS9R
+	 fvVb7mi764oYDEfwyvM+2sxedW2Qlkwpcy7mK95FT7Y17l/x9lRzvAaWp2kEZL47lu
+	 XXnWFECqfHCjQ==
+Date: Fri, 2 Feb 2024 12:57:44 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Eric Dumazet <edumazet@google.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	Arjan van de Ven <arjan@infradead.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Rik van Riel <riel@surriel.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sebastian Siewior <bigeasy@linutronix.de>,
+	Giovanni Gherdovich <ggherdovich@suse.cz>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Richard Cochran <richardcochran@gmail.com>
+Subject: Re: [PATCH v10 20/20] timers: Always queue timers on the local CPU
+Message-ID: <ZbzYuKUd2F37nnnB@lothringen>
+References: <20240115143743.27827-1-anna-maria@linutronix.de>
+ <20240115143743.27827-21-anna-maria@linutronix.de>
+ <ZbvWhOOblt3YPaSV@localhost.localdomain>
+ <87plxflx4x.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126114614.1424592-1-naresh.solanki@9elements.com> <20240126-deflate-ashy-158a91efb25a@spud>
-In-Reply-To: <20240126-deflate-ashy-158a91efb25a@spud>
-From: Naresh Solanki <naresh.solanki@9elements.com>
-Date: Fri, 2 Feb 2024 17:27:10 +0530
-Message-ID: <CABqG17g+wQ5brngLDYObV+t2y+CEf+85rzqTSYTcmS5jckWZRg@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: mfd: Add regulator-compatible property
-To: Conor Dooley <conor@kernel.org>
-Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Patrick Rudolph <patrick.rudolph@9elements.com>, mazziesaccount@gmail.com, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87plxflx4x.fsf@somnus>
 
-Hi Conor,
-
-
-On Fri, 26 Jan 2024 at 21:50, Conor Dooley <conor@kernel.org> wrote:
->
-> On Fri, Jan 26, 2024 at 05:16:14PM +0530, Naresh Solanki wrote:
-> > Add regulator-compatible property.
->
-> Why? I can see that this is what you did, but there's no justification
-> for it.
->
-> grepping for this property, the first thing I see is:
-> rg "regulator-compatible"
-> drivers/regulator/of_regulator.c
-> 389: * based on either the deprecated property regulator-compatible if present,
-> 428:                                    "regulator-compatible", NULL);
-> 486:            name = of_get_property(child, "regulator-compatible", NULL);
->
->
-> The property is deprecated, so you'll need twice as good a justification
-> for adding it!
-Yes this is deprecated property. I missed noticing that earlier.
-Will remove this dependency. Thanks for pointing that out.
-
-Regards,
-Naresh
->
-> > Also update example.
+On Thu, Feb 01, 2024 at 09:58:38PM +0100, Anna-Maria Behnsen wrote:
+> Frederic Weisbecker <frederic@kernel.org> writes:
+> 
+> > Le Mon, Jan 15, 2024 at 03:37:43PM +0100, Anna-Maria Behnsen a écrit :
+> >> The timer pull model is in place so we can remove the heuristics which try
+> >> to guess the best target CPU at enqueue/modification time.
+> >> 
+> >> All non pinned timers are queued on the local CPU in the separate storage
+> >> and eventually pulled at expiry time to a remote CPU.
+> >> 
+> >> Originally-by: Richard Cochran (linutronix GmbH) <richardcochran@gmail.com>
+> >> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
 > >
-> > TEST=Run below command & make sure there is no error
-> > make DT_CHECKER_FLAGS=-m dt_binding_check
->
-> Same comment here as my other mail.
->
+> > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> >
+> > Just one detail below:
+> >
+> >> @@ -590,10 +590,13 @@ trigger_dyntick_cpu(struct timer_base *base, struct timer_list *timer)
+> >>  
+> >>  	/*
+> >>  	 * We might have to IPI the remote CPU if the base is idle and the
+> >> -	 * timer is not deferrable. If the other CPU is on the way to idle
+> >> -	 * then it can't set base->is_idle as we hold the base lock:
+> >> +	 * timer is pinned. If it is a non pinned timer, it is only queued
+> >> +	 * on the remote CPU, when timer was running during queueing. Then
+> >> +	 * everything is handled by remote CPU anyway. If the other CPU is
+> >> +	 * on the way to idle then it can't set base->is_idle as we hold
+> >> +	 * the base lock:
+> >>  	 */
+> >> -	if (base->is_idle)
+> >> +	if (base->is_idle && timer->flags & TIMER_PINNED)
+> >
+> > Is the TIMER_PINNED test necessary? If base->is_idle, then the timer
+> > is now guaranteed to be TIMER_PINNED, right?
+> >
+> 
+> Yes, you are right. Should I drop it? To clarify it, I could add a
+> 
+>   WARN_ON_ONCE(!timer->flags & TIMER_PINNED)
+
+Yep, that looks good!
+
+Thanks.
+
+> 
+> instead.
+> 
 > Thanks,
-> Conor.
->
-> >
-> > Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
-> > ---
-> >  Documentation/devicetree/bindings/mfd/maxim,max5970.yaml | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml b/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml
-> > index 0da5cae3852e..75175098cbc2 100644
-> > --- a/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml
-> > +++ b/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml
-> > @@ -74,6 +74,9 @@ properties:
-> >              description: |
-> >                The value of current sense resistor in microohms.
-> >
-> > +          regulator-compatible:
-> > +            pattern: "^SW[0-1]$"
-> > +
-> >          required:
-> >            - shunt-resistor-micro-ohms
-> >
-> > @@ -111,6 +114,8 @@ examples:
-> >
-> >              regulators {
-> >                  sw0_ref_0: sw0 {
-> > +                    regulator-compatible = "SW0";
-> > +                    regulator-name = "p5v";
-> >                      shunt-resistor-micro-ohms = <12000>;
-> >                  };
-> >              };
-> > @@ -145,9 +150,13 @@ examples:
-> >
-> >              regulators {
-> >                  sw0_ref_1: sw0 {
-> > +                    regulator-compatible = "SW0";
-> > +                    regulator-name = "p5v_aux";
-> >                      shunt-resistor-micro-ohms = <12000>;
-> >                  };
-> >                  sw1_ref_1: sw1 {
-> > +                    regulator-compatible = "SW1";
-> > +                    regulator-name = "p3v3_aux";
-> >                      shunt-resistor-micro-ohms = <10000>;
-> >                  };
-> >              };
-> >
-> > base-commit: ecb1b8288dc7ccbdcb3b9df005fa1c0e0c0388a7
-> > --
-> > 2.42.0
-> >
+> 
+> 	Anna-Maria
+> 
 
