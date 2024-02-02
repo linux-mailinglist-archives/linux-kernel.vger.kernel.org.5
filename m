@@ -1,51 +1,70 @@
-Return-Path: <linux-kernel+bounces-50182-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50183-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D024484756B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:54:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15A7B84756F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:55:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BC31283230
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:54:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7CC71F2CB5F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:55:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE19A1487F1;
-	Fri,  2 Feb 2024 16:54:38 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D883A5B66F
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 16:54:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FE151487F0;
+	Fri,  2 Feb 2024 16:55:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="hKtBENps"
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 735BB5B66F;
+	Fri,  2 Feb 2024 16:55:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706892878; cv=none; b=abtfRS7dhn0elm33Tphib0zxpJPTwjHQHHO4nGYTIVRhPWAg1ecGJ0VpeQp+7oy4nRR67r6ShLj6CdrpIZRGpWi6ipnD1txO9UWcRg3G4ycxQidophFCesud+ScGdHmFwHQAiE+EMrF7Y1uDkC/50T67SpTYPoARUOkhSsdcemk=
+	t=1706892934; cv=none; b=FYHi3V3OkJLBbQJ+OXmlXEmAFVFQHiOR9Ia6vB9ayfCGzLCu/2t5K/c28M/Cy8tW6Q9LvEOTMR2q6graJpnzTN1SCTwrtQ57JdywGCkw/AiwIt3fnuS9r482r5TWBIueXdz/5+DT3VCeAQL5Go2CU7zYWsAdCZ+nS+W4tfsmx6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706892878; c=relaxed/simple;
-	bh=spmM1QubFGEZoJZh8hihiLNYHhNUX0gbSoAYY3JQT9I=;
+	s=arc-20240116; t=1706892934; c=relaxed/simple;
+	bh=QJe5R5tTH2/JFcGMvO8Mw//dgwI6/P8hRqPs93IrLPk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XF6DgKosJY0O3TmhDjhDsIPMjmeFfOu32TOjnfZMjVNr3f1UH0Ne7g4VWrL5Gp+E2iNbFmrrGYGgcHwLatplBwzezWQABFuI2dTY0YP/jF2xBNdB+b5nDULFnhl+Exnhshm8o3DhOTG9eF1fMDQ/SxzRUZRs6ntsPphURcGDpgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D6188DA7;
-	Fri,  2 Feb 2024 08:55:16 -0800 (PST)
-Received: from e133380.arm.com (e133380.arm.com [10.1.197.58])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2CB093F762;
-	Fri,  2 Feb 2024 08:54:33 -0800 (PST)
-Date: Fri, 2 Feb 2024 16:54:30 +0000
-From: Dave Martin <Dave.Martin@arm.com>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: Fangrui Song <maskray@google.com>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=AFVg8hcS9aMBB8AIr+ZPXhnYr8MwB8X0Wu0ZFrnMk9F72pL6vuDX9hI5u37wXT97WBKL+2dDN3DsGoy2MLQBbz4tqrsAya+FZipW/eNs4E0r80rz4qsvApASSy6Q8HwE90LZQwSMAloG9B2MfiolGrUxKKTLkyG5LG2ueHDBFzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=hKtBENps; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=lSJi26KMQtWNTXdO5n2y84QWyqfEb23C7fuvP06Fx8s=; b=hKtBENpsrGynNte5dX952n+ZuY
+	aRo940bIAb2jQgA9ZxKeu+UqAKuufrXVtdmrDf4gkJmMBS2TJ2+qCsUN3L1HV9/G170PxklkQgSCP
+	Toh9yNZsP8GXC0z8AMim/QG21kPhSIs82WkNsvrZbWxcjDuQBibkhYhbXnsqZA9o8fqlu6oOjQOgM
+	E77m2Ll91RDdeA61/Cfd+pJqbtpQ/mX2QvTvs8CkCZVi+nONaRXVeuOGp4+PrsrPBT38sBEZC30Zi
+	fw1t0oUUvRGvmylFARPv4b6DQL3bNXfdG++uJQOBVRt2NzJ+QPh0VqS+5s87o2qtOVJIVhqnNT/69
+	dmdneH3w==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rVwp2-0048AR-0P;
+	Fri, 02 Feb 2024 16:55:24 +0000
+Date: Fri, 2 Feb 2024 16:55:24 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Doug Anderson <dianders@chromium.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Eric Biederman <ebiederm@xmission.com>, Jan Kara <jack@suse.cz>,
+	Kees Cook <keescook@chromium.org>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	Oleg Nesterov <oleg@redhat.com>,
 	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
-	Jisheng Zhang <jszhang@kernel.org>,
-	Peter Smith <peter.smith@arm.com>, llvm@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: jump_label: use constraints "Si" instead of "i"
-Message-ID: <Zb0eRogn3rjkeDAs@e133380.arm.com>
-References: <20240201223545.728028-1-maskray@google.com>
- <Zb0Qu5lR0iZUqImb@e133380.arm.com>
- <CAMj1kXGSQ4Xq68Cmq6BH37FPJ+R+N5cOfrdC+aVML4sGaNDopg@mail.gmail.com>
+	Will Deacon <will@kernel.org>,
+	Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] regset: use vmalloc() for regset_get_alloc()
+Message-ID: <20240202165524.GD2087318@ZenIV>
+References: <20240201171159.1.Id9ad163b60d21c9e56c2d686b0cc9083a8ba7924@changeid>
+ <20240202012249.GU2087318@ZenIV>
+ <CAD=FV=X5dpMyCGg4Xn+ApRwmiLB5zB0LTMCoSfW_X6eAsfQy8w@mail.gmail.com>
+ <20240202030438.GV2087318@ZenIV>
+ <CAD=FV=Wbq7R9AirvxnW1aWoEnp2fWQrwBsxsDB46xbfTLHCZ4w@mail.gmail.com>
+ <20240202034925.GW2087318@ZenIV>
+ <20240202040503.GX2087318@ZenIV>
+ <CAD=FV=X93KNMF4NwQY8uh-L=1J8PrDFQYu-cqSd+KnY5+Pq+_w@mail.gmail.com>
+ <20240202164947.GC2087318@ZenIV>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,109 +73,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXGSQ4Xq68Cmq6BH37FPJ+R+N5cOfrdC+aVML4sGaNDopg@mail.gmail.com>
+In-Reply-To: <20240202164947.GC2087318@ZenIV>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Fri, Feb 02, 2024 at 05:32:33PM +0100, Ard Biesheuvel wrote:
-> On Fri, 2 Feb 2024 at 16:56, Dave Martin <Dave.Martin@arm.com> wrote:
-> >
-> > On Thu, Feb 01, 2024 at 02:35:45PM -0800, Fangrui Song wrote:
-> > > The generic constraint "i" seems to be copied from x86 or arm (and with
-> > > a redundant generic operand modifier "c"). It works with -fno-PIE but
-> > > not with -fPIE/-fPIC in GCC's aarch64 port.
-> > >
-> > > The machine constraint "S", which denotes a symbol or label reference
-> > > with a constant offset, supports PIC and has been available in GCC since
-> > > 2012 and in Clang since 7.0. However, Clang before 19 does not support
-> > > "S" on a symbol with a constant offset [1] (e.g.
-> > > `static_key_false(&nf_hooks_needed[pf][hook])` in
-> > > include/linux/netfilter.h), so we use "i" as a fallback.
-> > >
-> > > Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-> > > Signed-off-by: Fangrui Song <maskray@google.com>
-> > > Link: https://github.com/llvm/llvm-project/pull/80255 [1]
-> > >
-> > > ---
-> > > Changes from
-> > > arm64: jump_label: use constraint "S" instead of "i" (https://lore.kernel.org/all/20240131065322.1126831-1-maskray@google.com/)
-> > >
-> > > * Use "Si" as Ard suggested to support Clang<19
-> > > * Make branch a separate operand
-> > > ---
-> > >  arch/arm64/include/asm/jump_label.h | 12 ++++++++----
-> > >  1 file changed, 8 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/arch/arm64/include/asm/jump_label.h b/arch/arm64/include/asm/jump_label.h
-> > > index 48ddc0f45d22..1f7d529be608 100644
-> > > --- a/arch/arm64/include/asm/jump_label.h
-> > > +++ b/arch/arm64/include/asm/jump_label.h
-> > > @@ -15,6 +15,10 @@
-> > >
-> > >  #define JUMP_LABEL_NOP_SIZE          AARCH64_INSN_SIZE
-> > >
-> > > +/*
-> > > + * Prefer the constraint "S" to support PIC with GCC. Clang before 19 does not
-> > > + * support "S" on a symbol with a constant offset, so we use "i" as a fallback.
-> > > + */
-> > >  static __always_inline bool arch_static_branch(struct static_key * const key,
-> > >                                              const bool branch)
-> > >  {
-> > > @@ -23,9 +27,9 @@ static __always_inline bool arch_static_branch(struct static_key * const key,
-> > >                "      .pushsection    __jump_table, \"aw\"    \n\t"
-> > >                "      .align          3                       \n\t"
-> > >                "      .long           1b - ., %l[l_yes] - .   \n\t"
-> > > -              "      .quad           %c0 - .                 \n\t"
-> > > +              "      .quad           %0 + %1 - .             \n\t"
-> > >                "      .popsection                             \n\t"
-> > > -              :  :  "i"(&((char *)key)[branch]) :  : l_yes);
-> > > +              :  :  "Si"(key), "i"(branch) :  : l_yes);
-> >
-> > Is the meaning of multi-alternatives well defined if different arguments
-> > specify different numbers of alternatives?  The GCC documentation says:
-> >
-> > https://gcc.gnu.org/onlinedocs/gcc/Multi-Alternative.html:
-> >
-> > -8<-
-> >
-> > [...] All operands for a single instruction must have the same number of
-> > alternatives.
-> >
-> > ->8-
-> >
+On Fri, Feb 02, 2024 at 04:49:47PM +0000, Al Viro wrote:
+> > +folks from `./scripts/get_maintainer.pl -f arch/arm64/kernel/ptrace.c`
+> > 
+> > Trying to follow the macros to see where "n" comes from is a maze of
+> > twisty little passages, all alike. Hopefully someone from the ARM
+> > world can help tell if the value of 17474 for n here is correct or if
+> > something is wonky.
 > 
-> AIUI that does not apply here. That reasons about multiple arguments
-> having more than one constraint, where not all combinations of those
-> constraints are supported by the instruction.
-
-Ah, scratch that: I'm confusing multi-alternatives with simple
-constraints: all arguments must have the same number of comma-separated
-lists of constraint letters, but each list can contain as many or as few
-letters as are needed to match the operand.
-
-So "Si"(), "i"() is fine.
-
-> > Also, I still think it may be redundant to move the addition inside the
-> > asm, so long as Clang is happy with the symbol having an offset.
-> >
+> It might be interesting to have it print the return value of __regset_get()
+> in those cases; if *that* is huge, we really have a problem.  If it ends up
+> small enough to fit into few pages, OTOH...
 > 
-> Older Clang is not happy with the symbol having an offset.
+> SVE_VQ_MAX is defined as 255; is that really in units of 128 bits?  IOW,
+> do we really expect to support 32Kbit registers?  That would drive the
+> size into that range, all right, but it would really suck on context
+> switches.
 > 
-> And given that the key pointer and the 'branch' boolean are two
-> distinct inputs to this function, I struggle to understand why you
-> feel it is better to combine them in the argument. 'branch' is used to
-> decide whether or not to set bit 0, independently of the value of key.
-> Using array indexing to combine those values together to avoid an
-> addition in the asm obfuscates the code.
+> I could be misreading it, though - the macros in there are not easy to
+> follow and I've never dealt with SVE before, so take the above with
+> a cartload of salt.
 
-This was more about not making changes that don't need to be made,
-unless it clearly makes the code better.
-
-But if some verions of Clang accept "S" but choke if there's an offset,
-then moving the addition into the asm seems the way to go.
-
-(I may have misread the commit message on this point.)
-
-[...]
-
-Cheers
----Dave
+Worse - it's SVE_VQ_MAX is 512; sorry about the confusion.  OK, that would
+certainly explain the size (header + 32 registers, each up to 512 * 16 bytes),
+but... ouch.
 
