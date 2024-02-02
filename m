@@ -1,207 +1,126 @@
-Return-Path: <linux-kernel+bounces-50198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71E918475AC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:05:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 843418475C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:08:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29FC628A949
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:05:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C3BFB2B5D8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:06:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A392148FFE;
-	Fri,  2 Feb 2024 17:04:22 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1675B14C5A7;
+	Fri,  2 Feb 2024 17:04:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="NtuLNXu5"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FA8E148FF0;
-	Fri,  2 Feb 2024 17:04:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53B5C14AD3B;
+	Fri,  2 Feb 2024 17:04:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706893461; cv=none; b=VsdUsCftPhVRBYsewDY7aKRD2pBliwUZFx/brhk6kU9uwbslADsXTbwXFTUkt2mYH6a22gaDEhGTMSc19/M+bFw5KOAmjk11xBzVI2nBW2Om11aR3vKEdDE1aFWkIx08QNF99p2yrxE0ACUXOMhj0+x3MHSEEIqCSc2rRnermE8=
+	t=1706893480; cv=none; b=bTOotnaPtZOfepWcZvpVIdcY2iJpDsplbcAcneZg9ZAZEVz9iy2q24xU1FoB0iYDgMdfEuMxxOlWXgILZpEXV7uvj7E3roXfH9Sps7ndPxgt1uPZwHQymOzgVbGEqDUSCVF/BD0DomZgnSyg2/Ui0XsFkin6bHo+u8qTFcPE/3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706893461; c=relaxed/simple;
-	bh=+6PX3jMjQrHTOGNXA5nPZT3qkryf5lBqoyw4ViAwdas=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qMJNc3ggIgSTtivM/VQGoBlUKanWt+y3otX2f/FbG6Vx839/D/GcS5nSZh4f0hTniBFw8FAzs0qnwhMmsDcQOUN7sH1qKP/WndVtA6GkcD9VSk1+cZsSxzt5OaBDP34Waib2aoN8Vvhjnx8pUvvkDoBvJ/TJJZGGYmrdHO7nZ6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TRMV93hsYz6J9h8;
-	Sat,  3 Feb 2024 01:00:49 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 69A141400CD;
-	Sat,  3 Feb 2024 01:04:15 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 2 Feb
- 2024 17:04:14 +0000
-Date: Fri, 2 Feb 2024 17:04:13 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
-	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
-	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse
-	<james.morse@arm.com>, "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH RFC v4 14/15] arm64: document virtual CPU hotplug's
- expectations
-Message-ID: <20240202170413.0000154e@Huawei.com>
-In-Reply-To: <E1rVDnU-0027Zf-GF@rmk-PC.armlinux.org.uk>
-References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk>
-	<E1rVDnU-0027Zf-GF@rmk-PC.armlinux.org.uk>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1706893480; c=relaxed/simple;
+	bh=lvs9fHcrGg2OPMpdrPeH/OkjYfW05zd3QXvR1LMSlQQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jfGiXj90p4hEWclnT0DnZmRegJ7/pJZicEFVxLFNwlzZjAYDgAAzKYiijbQ9TeRW+zVJ1/qygLf0NSEIVX0TpUNrWuePx+Wrd2ll5bNMDYKRTl9r4Sngufn2r+4H52sHUZt8+/BlsRzemLGrGRu/BVvqL/2j7IGuAVrHt/pdilA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=NtuLNXu5; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=gP1Igi6tDOQ8064ZzeRS81oPRpXVLjhChGAEqcyWoFQ=; b=NtuLNXu5uyZVZexMYXOA7cgX/A
+	IMbBwyXMxpvArMnzStfNdQPbZ2YMp/LPgTd9hCmdVdPm9cQrz43RPGn45CsqAZcWda7x+IwIXv8tQ
+	ITyeHi1X2gWpzwvAaUu5nsGEgbqo1jDc1JlPC3xH8lh9dVtEBJIwKeft6OL2BM6y1vufeLTDdwsm5
+	DuF+w2pt00feJa3O3Fm5H8kBC3wRrxw1OEGj70M9HcSJzc10KZsD6/HxUbJOEESHLX+VtcrreEU3X
+	BsInpboJ9HaD1GIzgitauMThDXLlpIkoJUIwbS2nJJksnSOKeCbCwdA7jb4/V2lr/PpV4imMvPko2
+	8aj4TaEQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45998)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rVwxm-0006FD-1e;
+	Fri, 02 Feb 2024 17:04:26 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rVwxj-0008T0-4x; Fri, 02 Feb 2024 17:04:23 +0000
+Date: Fri, 2 Feb 2024 17:04:23 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [net-next PATCH v5 9/9] net: phy: qca807x: add support for
+ configurable LED
+Message-ID: <Zb0glzoHmgN5iHl7@shell.armlinux.org.uk>
+References: <20240201151747.7524-1-ansuelsmth@gmail.com>
+ <20240201151747.7524-10-ansuelsmth@gmail.com>
+ <46085abf-8e82-4fd9-95b8-95cbfde6e5c2@lunn.ch>
+ <65bd1af9.df0a0220.c0618.9f8d@mx.google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <65bd1af9.df0a0220.c0618.9f8d@mx.google.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Wed, 31 Jan 2024 16:50:48 +0000
-Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
-
-> From: James Morse <james.morse@arm.com>
+On Fri, Feb 02, 2024 at 05:40:21PM +0100, Christian Marangi wrote:
+> On Fri, Feb 02, 2024 at 02:43:37AM +0100, Andrew Lunn wrote:
+> > > +
+> > > +			phydev->drv->led_brightness_set = NULL;
+> > > +			phydev->drv->led_blink_set = NULL;
+> > > +			phydev->drv->led_hw_is_supported = NULL;
+> > > +			phydev->drv->led_hw_control_set = NULL;
+> > > +			phydev->drv->led_hw_control_get = NULL;
+> > 
+> > I don't see how that works. You have multiple PHYs using this
+> > driver. Some might have LEDs, some might have GPOs. But if you modify
+> > the driver structure like this, you prevent all PHYs from having LEDs,
+> > and maybe cause a Opps if a PHY device has already registered its
+> > LEDs?
+> >
 > 
-> Add a description of physical and virtual CPU hotplug, explain the
-> differences and elaborate on what is required in ACPI for a working
-> virtual hotplug system.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> ---
-> Outstanding comment:
->  https://lore.kernel.org/r/20230914174137.00000a62@Huawei.com
+> God you are right! Off-topic but given the effects this may cause, why
+> the thing is not const? I assume it wouldn't make sense to add OPS based
+> on the detected feature since it would have side effect on other PHYs
+> that use the same driver.
 
-Outstanding but an ACPI Spec question rather than one about this description.
-I've finally regained access to Mantis etc so can follow that up at some point.
+Maybe phydev->drv should be const to avoid this kind of thing. It
+doesn't look like it would be hard to do, and importantly doesn't
+require casting away the const-ness anywhere. PHY drivers themselves
+can't be const because the driver model needs to be able to modify
+the embedded device_driver struct (e.g. see bus_add_driver().)
 
-If we get clarify on how to tell that CPUs that are present and enabled at boot
-can be removed later we can relax this text to allow for that.
+ drivers/net/phy/phy.c               | 3 +--
+ drivers/net/phy/phy_device.c        | 4 ++--
+ drivers/net/phy/xilinx_gmii2rgmii.c | 2 +-
+ include/linux/phy.h                 | 2 +-
+ 4 files changed, 5 insertions(+), 6 deletions(-)
 
+Just build-testing it.
 
->  https://lore.kernel.org/r/20231215170428.00000d81@Huawei.com
-That's a comment on the above comment to say I'm fine with it as is :)
-
-This @Huawei guy is really annoying ;)
-
-Jonathan
-
-> ---
->  Documentation/arch/arm64/cpu-hotplug.rst | 79 ++++++++++++++++++++++++
->  Documentation/arch/arm64/index.rst       |  1 +
->  2 files changed, 80 insertions(+)
->  create mode 100644 Documentation/arch/arm64/cpu-hotplug.rst
-> 
-> diff --git a/Documentation/arch/arm64/cpu-hotplug.rst b/Documentation/arch/arm64/cpu-hotplug.rst
-> new file mode 100644
-> index 000000000000..76ba8d932c72
-> --- /dev/null
-> +++ b/Documentation/arch/arm64/cpu-hotplug.rst
-> @@ -0,0 +1,79 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +.. _cpuhp_index:
-> +
-> +====================
-> +CPU Hotplug and ACPI
-> +====================
-> +
-> +CPU hotplug in the arm64 world is commonly used to describe the kernel taking
-> +CPUs online/offline using PSCI. This document is about ACPI firmware allowing
-> +CPUs that were not available during boot to be added to the system later.
-> +
-> +``possible`` and ``present`` refer to the state of the CPU as seen by linux.
-> +
-> +
-> +CPU Hotplug on physical systems - CPUs not present at boot
-> +----------------------------------------------------------
-> +
-> +Physical systems need to mark a CPU that is ``possible`` but not ``present`` as
-> +being ``present``. An example would be a dual socket machine, where the package
-> +in one of the sockets can be replaced while the system is running.
-> +
-> +This is not supported.
-> +
-> +In the arm64 world CPUs are not a single device but a slice of the system.
-> +There are no systems that support the physical addition (or removal) of CPUs
-> +while the system is running, and ACPI is not able to sufficiently describe
-> +them.
-> +
-> +e.g. New CPUs come with new caches, but the platform's cache toplogy is
-> +described in a static table, the PPTT. How caches are shared between CPUs is
-> +not discoverable, and must be described by firmware.
-> +
-> +e.g. The GIC redistributor for each CPU must be accessed by the driver during
-> +boot to discover the system wide supported features. ACPI's MADT GICC
-> +structures can describe a redistributor associated with a disabled CPU, but
-> +can't describe whether the redistributor is accessible, only that it is not
-> +'always on'.
-> +
-> +arm64's ACPI tables assume that everything described is ``present``.
-> +
-> +
-> +CPU Hotplug on virtual systems - CPUs not enabled at boot
-> +---------------------------------------------------------
-> +
-> +Virtual systems have the advantage that all the properties the system will
-> +ever have can be described at boot. There are no power-domain considerations
-> +as such devices are emulated.
-> +
-> +CPU Hotplug on virtual systems is supported. It is distinct from physical
-> +CPU Hotplug as all resources are described as ``present``, but CPUs may be
-> +marked as disabled by firmware. Only the CPU's online/offline behaviour is
-> +influenced by firmware. An example is where a virtual machine boots with a
-> +single CPU, and additional CPUs are added once a cloud orchestrator deploys
-> +the workload.
-> +
-> +For a virtual machine, the VMM (e.g. Qemu) plays the part of firmware.
-> +
-> +Virtual hotplug is implemented as a firmware policy affecting which CPUs can be
-> +brought online. Firmware can enforce its policy via PSCI's return codes. e.g.
-> +``DENIED``.
-> +
-> +The ACPI tables must describe all the resources of the virtual machine. CPUs
-> +that firmware wishes to disable either from boot (or later) should not be
-> +``enabled`` in the MADT GICC structures, but should have the ``online capable``
-> +bit set, to indicate they can be enabled later. The boot CPU must be marked as
-> +``enabled``.  The 'always on' GICR structure must be used to describe the
-> +redistributors.
-> +
-> +CPUs described as ``online capable`` but not ``enabled`` can be set to enabled
-> +by the DSDT's Processor object's _STA method. On virtual systems the _STA method
-> +must always report the CPU as ``present``. Changes to the firmware policy can
-> +be notified to the OS via device-check or eject-request.
-> +
-> +CPUs described as ``enabled`` in the static table, should not have their _STA
-> +modified dynamically by firmware. Soft-restart features such as kexec will
-> +re-read the static properties of the system from these static tables, and
-> +may malfunction if these no longer describe the running system. Linux will
-> +re-discover the dynamic properties of the system from the _STA method later
-> +during boot.
-> diff --git a/Documentation/arch/arm64/index.rst b/Documentation/arch/arm64/index.rst
-> index d08e924204bf..78544de0a8a9 100644
-> --- a/Documentation/arch/arm64/index.rst
-> +++ b/Documentation/arch/arm64/index.rst
-> @@ -13,6 +13,7 @@ ARM64 Architecture
->      asymmetric-32bit
->      booting
->      cpu-feature-registers
-> +    cpu-hotplug
->      elf_hwcaps
->      hugetlbpage
->      kdump
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
