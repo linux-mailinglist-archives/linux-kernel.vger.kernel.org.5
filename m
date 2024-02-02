@@ -1,134 +1,217 @@
-Return-Path: <linux-kernel+bounces-50171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5659847548
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:47:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F04284754D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:48:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 535C61F271BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:47:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D601B25F51
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:48:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53E9614900C;
-	Fri,  2 Feb 2024 16:47:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A620E1487E4;
+	Fri,  2 Feb 2024 16:47:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qNCqFUzT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MAM6fhUA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BB671487DB;
-	Fri,  2 Feb 2024 16:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3E9713E228;
+	Fri,  2 Feb 2024 16:47:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706892444; cv=none; b=EIo8PNCK+fyTWscE6BXtqlDUNC0q+NldArI/01XOmeh+jgQQMZFT22VI5OMvZvemBZsbgCsPCdNlYXH4laP8iD/ysso6CH54zE6Y0DUmiRpSmmF9e4FANiFc5WWvk2/lgtKEI7V0GSkB6dGw/LZhhUiFTd9qLokfVGiUtCwDwiM=
+	t=1706892453; cv=none; b=kHON6Ct+maUcSIwM/dKQN0ZZHER8GrLLEpJry69C+s5Y0HUnpzfkosvGvgs58GhjNaI9hHMMPHAL63+DJIv4xzDRTP/yu8qkUDkZsa4Smf7biP3Pld1KIozbK9wtXadA4oNpzn5BT0EARH9cqLZqJ6GylmQ8s22k52yd+42Kp1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706892444; c=relaxed/simple;
-	bh=qVGQPqaAKKe4rQPmvSxnfJxycvP91+EBvnjm6km00sU=;
+	s=arc-20240116; t=1706892453; c=relaxed/simple;
+	bh=aPP8zdITaRAZSTngrnQUULuGDL50v7spoqetUBvyE1Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pDiWhonAYmRYEpYa3/Eu7fCigT+6r2on+Lt3WkSCiATFGW4eBhNLNG+oY8ckSqNMbVjVaWHXkafkxTbCD9Pgor6Ka9L2lzVZsSQFRy3p2NuvuIqG+Px42HF5ITCt3p0LJ1d0jBV/xQbPMSokwCVJtFLX4xLw8EGP8IwzjTVoFQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qNCqFUzT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 221D2C433C7;
-	Fri,  2 Feb 2024 16:47:19 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=EF6dqxf2SCVj4aedwO9y+r4iD+p0EE7wXez7lEne+1PwyYMfFg7wRKP577HrD4k8YiYKBjCwOswPui7+mDr2aTa3tnC2j+luvywvaSclxdwEa7jxADSZlC9p0gF2CJg/oa3PsmpGOID+4heIJ2LZSkqz/IJ0/1fb3TU8Txph1Qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MAM6fhUA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA379C433F1;
+	Fri,  2 Feb 2024 16:47:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706892442;
-	bh=qVGQPqaAKKe4rQPmvSxnfJxycvP91+EBvnjm6km00sU=;
+	s=k20201202; t=1706892453;
+	bh=aPP8zdITaRAZSTngrnQUULuGDL50v7spoqetUBvyE1Q=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qNCqFUzTNiblKPnDQEd8pje0NXH4Zy3nqDPZrHBJIwDuSZulOTSYJkzEPpxXJpnY8
-	 Fgqdae3dL6Vcw/z+hwVavA4mh7DTV7iDwNFjErVaF1pN5BFxrVOC5bvF9VCrcHulQO
-	 mGICncO3/J/ZBtMCbf7tX9MuYMP3folEPxo3ga2eyR2wmKnUWd3xmxZ3Kq5H5ydOaO
-	 1X35NC29UpyzTygfL5wyXagjVz73WuiNWiYduyyCwvHEW6tb2CLuOAb5Chrc8ccBCA
-	 Sw+BrWqr4Jwm1F1zRshfaSk5DhZwfl9Yt1Iqx+ylGW6cxMPwFlqONy6GjGFXPaFaRO
-	 tl1d0paIiPePw==
-Date: Fri, 2 Feb 2024 16:47:17 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Changhuang Liang <changhuang.liang@starfivetech.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Emil Renner Berthing <kernel@esmil.dk>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Jack Zhu <jack.zhu@starfivetech.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: =?utf-8?B?5Zue5aSNOiDlm57lpI06IFt2Mg==?= =?utf-8?Q?=5D?= riscv:
- dts: starfive: jh7110: Add camera subsystem nodes
-Message-ID: <20240202-spoiler-deceit-0e9ac720fd2c@spud>
-References: <20240130082509.217683-1-changhuang.liang@starfivetech.com>
- <20240131-recycling-entering-b742e0e835eb@spud>
- <SH0PR01MB06675EF7ACD1452C4DEBE45FF243A@SH0PR01MB0667.CHNPR01.prod.partner.outlook.cn>
- <20240201-handiwork-excretion-36aa2eea0709@spud>
- <SHXPR01MB0671975B6B2455E43A5C7D86F242A@SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn>
+	b=MAM6fhUAoxso/2VI8dzxVfOIaKPWWXeoBw3V1+MWLiIMaxJ77fMBxgxSEVhPksnyQ
+	 GZqAdczhIWpkRMNOTqnjPmsJnUWTdNHnI6HKn7C+stsTb7KDTsTfbbaz6W903+1Tsn
+	 BHU7gWEIRqomnI1YQZXRPJ1xy0GyAYZ+AO9HwGT60xUsxjYp1gxnMbgrFtGtt7Radd
+	 +GfD6kiv6UywsOBvqho/+jDNSkISh621Zk6HQWOZUxjFtIEAavmI3xRRsOp04LQdy3
+	 /n0KXeg7bdyxP0fQUNp3TdfviLTdYvf/qeLR4zPYdivQP5xp4ZAU7W0B+kJVDpGKsA
+	 4lZCG5q93GrbA==
+Date: Fri, 2 Feb 2024 10:47:29 -0600
+From: Bjorn Andersson <andersson@kernel.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Abel Vesa <abel.vesa@linaro.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
+	linux-pci@vger.kernel.org, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [RFC 2/9] arm64: dts: qcom: qrb5165-rb5: model the PMU of the
+ QCA6391
+Message-ID: <zyiimnkpifo3mb54e2oyqmw6xcjtzkwodxuq5y7vac3slizfkm@mtiijlxeahuk>
+References: <20240201155532.49707-1-brgl@bgdev.pl>
+ <20240201155532.49707-3-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="BCDHEep2tdoQkpJp"
-Content-Disposition: inline
-In-Reply-To: <SHXPR01MB0671975B6B2455E43A5C7D86F242A@SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn>
-
-
---BCDHEep2tdoQkpJp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240201155532.49707-3-brgl@bgdev.pl>
 
-On Fri, Feb 02, 2024 at 02:29:16AM +0000, Changhuang Liang wrote:
->=20
-> Hi, Conor,
->=20
-> [...]
-> > > > > +	imx219_clk: imx219-clock {
-> > > > > +		compatible =3D "fixed-clock";
-> > > > > +		clock-output-names =3D "imx219_clk";
-> > > > > +		clock-frequency =3D <24000000>;
-> > > > > +		#clock-cells =3D <0>;
-> > > > > +	};
-> > > >
-> > > > Why do you need an output name here?
-> > >
-> > > The output name can be unnecessary.
-> > >
-> > > > Also, where does this clock come from? Is it an oscillator on the b=
-oard?
-> > > >
-> > >
-> > > This clock come from imx219, not the VisionFive 2 board.
-> >=20
-> > If the camera is not on the visionfive 2 board, why are you adding this=
- to
-> > visionfive-2.dtsi?
->=20
-> It seems that I need to use dtso. Right?
+On Thu, Feb 01, 2024 at 04:55:25PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> Add a node for the PMU module of the QCA6391 present on the RB5 board.
+> Assign its LDO power outputs to the existing Bluetooth module. Add a
+> node for the PCIe port to sm8250.dtsi and define the WLAN node on it in
+> the board's .dts and also make it consume the power outputs of the PMU.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 128 +++++++++++++++++++++--
+>  arch/arm64/boot/dts/qcom/sm8250.dtsi     |  10 ++
+>  2 files changed, 127 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> index cd0db4f31d4a..fab5bebafbad 100644
+> --- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> +++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> @@ -108,6 +108,87 @@ lt9611_3v3: lt9611-3v3 {
+>  		regulator-always-on;
+>  	};
+>  
+> +	qca6390_pmu: pmu@0 {
 
-Yes. FWIW, the same comments as applied for the sound card Walker tried
-to add applies here too, unless this ships with the boards:
-| I'm not against allowing in-tree overlays for hats/capes/daughter-boards
-| that come bundled with a board, but accepting ones for a hat that
-| someone decided to use theoretically has no limit! The "someone" in this
-| case might be a StarFive developer, but it could be any random one of
-| your customers next!
-https://lore.kernel.org/linux-riscv/20230510-riveter-ridden-3f056251e623@sp=
-ud/
+The node doesn't have an address, so why does it have a unit address?
+Also, the node isn't referenced, so please skip the label.
 
-I figure this is a similar case as that?
+> +		compatible = "qcom,qca6390-pmu";
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&bt_en_state>, <&wlan_en_state>;
+> +
+> +		vddaon-supply = <&vreg_s6a_0p95>;
+> +		vddpmu-supply = <&vreg_s2f_0p95>;
+> +		vddrfa1-supply = <&vreg_s2f_0p95>;
+> +		vddrfa2-supply = <&vreg_s8c_1p3>;
+> +		vddrfa3-supply = <&vreg_s5a_1p9>;
+> +		vddpcie1-supply = <&vreg_s8c_1p3>;
+> +		vddpcie2-supply = <&vreg_s5a_1p9>;
+> +		vddio-supply = <&vreg_s4a_1p8>;
 
---BCDHEep2tdoQkpJp
-Content-Type: application/pgp-signature; name="signature.asc"
+So, after studying the datasheet for this. The names of the pins seems
+to come from the existing binding(s). As you're introducing a new
+binding (and driver) for qcom,qca6390-pmu, please use the pad names from
+qca6390.
 
------BEGIN PGP SIGNATURE-----
+> +
+> +		wlan-enable-gpios = <&tlmm 20 GPIO_ACTIVE_HIGH>;
+> +		bt-enable-gpios = <&tlmm 21 GPIO_ACTIVE_HIGH>;
+> +
+> +		regulators {
+> +			vreg_pmu_rfa_cmn: ldo0 {
+> +				regulator-name = "vreg_pmu_rfa_cmn";
+> +				regulator-min-microvolt = <760000>;
+> +				regulator-max-microvolt = <840000>;
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZb0clQAKCRB4tDGHoIJi
-0s6AAP9L5qiPX0VFQUsozcIGbJ6jTWsVE9WjcORf+MEOv8bBLwD/eAwDIKs2E/3d
-hREM5pnSpQkMLMCQ+cIoxbBnsRfWGgY=
-=bMIQ
------END PGP SIGNATURE-----
+The min/max operating range of the regulator is something we provide in
+the implementation, in DeviceTree you should specify the expected
+operating voltage. Based on the TYP value this should be
+regulator-min-microvolt = regulator-max-microvolt = 0.8V.
 
---BCDHEep2tdoQkpJp--
+> +			};
+> +
+> +			vreg_pmu_aon_0p59: ldo1 {
+> +				regulator-name = "vreg_pmu_aon_0p59";
+> +				regulator-min-microvolt = <540000>;
+> +				regulator-max-microvolt = <840000>;
+> +			};
+[..]
+> @@ -1303,6 +1402,14 @@ sdc2_card_det_n: sd-card-det-n-state {
+>  		function = "gpio";
+>  		bias-pull-up;
+>  	};
+> +
+> +	wlan_en_state: wlan-default-state {
+> +		pins = "gpio20";
+> +		function = "gpio";
+> +		drive-strength = <16>;
+> +		output-low;
+
+Please omit output-low here.
+
+> +		bias-pull-up;
+
+Why do you drive it low and pull it high? bias-disable sounds more
+appropriate.
+
+Regards,
+Bjorn
+
+> +	};
+>  };
+>  
+>  &uart6 {
+> @@ -1311,17 +1418,16 @@ &uart6 {
+>  	bluetooth {
+>  		compatible = "qcom,qca6390-bt";
+>  
+> -		pinctrl-names = "default";
+> -		pinctrl-0 = <&bt_en_state>;
+> -
+> -		enable-gpios = <&tlmm 21 GPIO_ACTIVE_HIGH>;
+> -
+> -		vddio-supply = <&vreg_s4a_1p8>;
+> -		vddpmu-supply = <&vreg_s2f_0p95>;
+> -		vddaon-supply = <&vreg_s6a_0p95>;
+> -		vddrfa0p9-supply = <&vreg_s2f_0p95>;
+> -		vddrfa1p3-supply = <&vreg_s8c_1p3>;
+> -		vddrfa1p9-supply = <&vreg_s5a_1p9>;
+> +		vddrfacmn-supply = <&vreg_pmu_rfa_cmn>;
+> +		vddaon-supply = <&vreg_pmu_aon_0p59>;
+> +		vddwlcx-supply = <&vreg_pmu_wlcx_0p8>;
+> +		vddwlmx-supply = <&vreg_pmu_wlmx_0p85>;
+> +		vddbtcmx-supply = <&vreg_pmu_btcmx_0p85>;
+> +		vddrfa0-supply = <&vreg_pmu_rfa_0p8>;
+> +		vddrfa1-supply = <&vreg_pmu_rfa_1p2>;
+> +		vddrfa2-supply = <&vreg_pmu_rfa_1p7>;
+> +		vddpcie0-supply = <&vreg_pmu_pcie_0p9>;
+> +		vddpcie1-supply = <&vreg_pmu_pcie_1p8>;
+>  	};
+>  };
+>  
+> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> index 4d849e98bf9b..7cd21d4e7278 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> @@ -2203,6 +2203,16 @@ pcie0: pcie@1c00000 {
+>  			dma-coherent;
+>  
+>  			status = "disabled";
+> +
+> +			pcieport0: pcie@0 {
+> +				device_type = "pci";
+> +				reg = <0x0 0x0 0x0 0x0 0x0>;
+> +				#address-cells = <3>;
+> +				#size-cells = <2>;
+> +				ranges;
+> +
+> +				bus-range = <0x01 0xff>;
+> +			};
+>  		};
+>  
+>  		pcie0_phy: phy@1c06000 {
+> -- 
+> 2.40.1
+> 
 
