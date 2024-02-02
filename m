@@ -1,187 +1,228 @@
-Return-Path: <linux-kernel+bounces-50668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50669-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBF81847C53
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:29:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63370847C55
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:30:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23E62B262FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:29:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88A531C21D1B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:30:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B14E78595E;
-	Fri,  2 Feb 2024 22:29:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28CE812C7E4;
+	Fri,  2 Feb 2024 22:30:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ObyChgnL"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LEshHdlO"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F4685952
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 22:29:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B841185953
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 22:30:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706912971; cv=none; b=GjVwSF6pd1uEz5ZxR3w/SqET4B1P8ZE6ZE26i7bg7IeBv22kyLmTs2YKl+qMi5dx3OKoCqvsiumYyqMnW3/BVIJbo6fC1JLonttFYJLnZl1IsDuB8hz3xHXSr6+a+Db8Bh73195KoNoww/VqlVHoSEGEnDgnRGiN9w9JFSjK7l4=
+	t=1706913014; cv=none; b=pXowMwGeENeylmtGJo1k7uVDvOl5Xe14H1UEz8uZfeu6oIzITdXwYW4XFSWCiYyydAq+pT5t2IR+oG8z3OrkGL+HQUa5l3ZbYPHwC9CHHWUqN3lk1cpgfOtU2jMTY0TlnOzJMGZmRIe620uCLq55nBBotgcIHg3nhu3id/0C3LU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706912971; c=relaxed/simple;
-	bh=gGYdrmSY27L3UMwdCd7M/7PkJCyNNxq/d8aVNPYJujs=;
+	s=arc-20240116; t=1706913014; c=relaxed/simple;
+	bh=OKtyV3UcUMJMPvy1ECKXZVqMjFEDtE8zKK3U8e5aNc4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qh05Hw4WAWSrI4TPya3myF8Io5V8zFx2uO0xk6i8qoDdmsgwJEz1H6Trq1B3q54tNMq+74DpN+omPNttml5DED7L84ObC5ezvjieFmDUXrc1LoSm26h9v4qvwS/0XJM8uketLpKt/UnqqYNUmNtjU1UJXxuL9yVukVy47IkNI04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ObyChgnL; arc=none smtp.client-ip=209.85.219.172
+	 To:Cc:Content-Type; b=KlLad0NNA7lXD2K4TtWQanx8Ur+a2VK00STPSdbbvkVTbiIKjEmYfLc9bZzB86wrlTgboOXnvPNEtEw1rHZjzKr97y3encY0uUrqngrJay9D7VWRfOH5ksO+5PDbCyYNeVQJbJulsKv0ntyaee1tiuwyKywXJxcJUrCDYMuLlKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LEshHdlO; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc6d9a8815fso2398897276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 14:29:29 -0800 (PST)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d89f0ab02bso13685ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 14:30:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706912969; x=1707517769; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706913012; x=1707517812; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BOziTImG/ai1TC8yybGKYzwUPfzkDvlxfAgJr9HGCcs=;
-        b=ObyChgnLIT1fomKZUNFzQ5t87f7KnySvn4628AAkakN7JWIbhou1uFodPprdhdulKH
-         YXNCpzDO1VO3EglWOJnir+bKqZcqscvTVocXAMWdlsxVWGDwI2uwWDNZoktRYdOJCrwN
-         TicznRKWtlf0Rp2nQY8XVX09VCEwBEfWKfquJJQ8ZM6iQ5+hQ/eJDN/dIJI8xq59yYv8
-         X0pzVp8uaVrhoXCUtpVF9naVXgtzc4z0d88Ds6tKKeKOvkFfDgo2Yb0D31BhAGG1EGCy
-         hIECLaE9fC+N68q+yRF+5Xkv2dsCwiGXvEmf73qdmHyF7kbqDLpC9uP/AmJV/v1HAohJ
-         rI9A==
+        bh=4gHfXsDd1+NPNrp7/zCgopLQIxA18bpbncOGieuL0yc=;
+        b=LEshHdlOppSpzoGJr8WruYK1DTNCt03hKGKI8sXlRdlXppWl4kSGtqrrZIHPL8AdgZ
+         yPAvHazvbYeP3UW10EuIS7/gfckqo//sFstRHgRNjY5QeZxqdpuBoOgVsFZyBRJfYfvm
+         QObiDtuZG5KFqWvrELcd5o+HSoNo3yPtOsgKz6NmKbd7moG56psGseipQeyHlMtGVVEa
+         ajtwZzlTbO3hkxPC30dn5gvEua/9cmXp2gJLpLSRAnd21tHC4cTCBNvl20ePBFTg90if
+         C3K+uIkPoptT6yZurR6Ezt+52XOd6VF4OGxtz3RacOZxirHfUmF7HjS6m1MvMXR2NUQr
+         bfoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706912969; x=1707517769;
+        d=1e100.net; s=20230601; t=1706913012; x=1707517812;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BOziTImG/ai1TC8yybGKYzwUPfzkDvlxfAgJr9HGCcs=;
-        b=ejuy3lcyXY0ZUV96cONWIwVaBXjapn/XqLvkNo5CnScZVskuHHRK2xO6aTBhbqUn/p
-         FqXbpf4W8NZSeZ+IMKXlVCsEmKZ4FEvCUEzZmo+EbFa7EA5xAscpJmtmYFz7L+UGstt9
-         6bAJyTW4CD1n7zdM6K3tcR1UGwefwukEVttd8I54lCe9Jcnd9oXY4S0QNfMYy8aDhWZR
-         QM1zJuZlwGrQatGkuYyZlTGFX2a9lHQwvgmmDR5iYH166y5CPTZyIjngHOqYPQOIg+Y0
-         nv07H8S6lNH2oKbZx/mBYkfRLzNYlcNd6pp2+gKyR3qmKWSClb/E1d6gyZfqXhnhBS3t
-         gLVA==
-X-Gm-Message-State: AOJu0Yy7xJdcD04tD/PtLfoLLoxrIZL4LQlmQbQ9FKbdkx2NHqa0aeGc
-	F7Q2PDJy8b60o/qa/qEpZayjsZLBEDmbuM+ANcoOH9khz7q1+24jxGokO2+2w7I0rKuREw21axf
-	v1C/v9xVznyJZyUBnMP+Dc/qFGY2KXjiUsKeZ
-X-Google-Smtp-Source: AGHT+IHm1T1hxvOrmJW4bWTmfAkGpLs9hkfM+xa0FRzsB9jyyZq8NjorSKfDZQnnpX2iQAQV2Mm3Gq+2/oj1qjuwi+E=
-X-Received: by 2002:a25:81cc:0:b0:dc6:e72b:99b4 with SMTP id
- n12-20020a2581cc000000b00dc6e72b99b4mr5279741ybm.29.1706912968819; Fri, 02
- Feb 2024 14:29:28 -0800 (PST)
+        bh=4gHfXsDd1+NPNrp7/zCgopLQIxA18bpbncOGieuL0yc=;
+        b=lnFr/7N6ruCARHSeXHDPPa5qZ3CEKJo4Uc9fZvkizQg4m/+QW89Ys+bYlzP22LHrmL
+         garAJmicxrtPWnvYnTh+yf8z+6J4Y0rQQdql9d83F1zUPppGxS3yCEAJmev+Y31WlGt9
+         sONMrRdcZ9OUda/83ffAI3Z0nmEXbkjYnzNJORCQyQE1k4uIXUXmZUb/rWwzQkk2lH2l
+         rBU71wG58mFofwbS2xVuiA44q53ilUAQOsB+9w+8Eg6R/gtKLp6Fg5RGm2nH/Dt10QTb
+         hB1DtF1GYc6HMzNrHiXarGVjfF0rbPqSJTwqGiRGru2qXPzDp4cyOVELbhgSaFLHjgA1
+         VFNA==
+X-Gm-Message-State: AOJu0Yz20JNObXgWJWE+/HH1T/ILObEunM0NzPby+UTJj8F8rhXtwXb0
+	UfP1KJ7tpiLlyJ1xHRjUj84eJNRJwcNZH73HlLzUjpe7XS4dio/dsXIjZg01zPkNUxGFKJbalEn
+	cKhsjYDHyX104pPNFDPOvLmmaqV8V1HBf9oeQ
+X-Google-Smtp-Source: AGHT+IGYPtzOWKJUHpZOUv3WD2/u8xqCH2po02LT82xgQd99fQsVzRN06AKewo08mu5evakZqsXkrrjcw9wBJU3p9vw=
+X-Received: by 2002:a17:903:2349:b0:1d8:aada:a7e3 with SMTP id
+ c9-20020a170903234900b001d8aadaa7e3mr26544plh.3.1706913011645; Fri, 02 Feb
+ 2024 14:30:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202221026.1055122-1-tjmercier@google.com> <CAJD7tkZh=M58Avfwx_D+UEXy6mm18Zx_hVKn8Gb8-+8-JQQfWw@mail.gmail.com>
-In-Reply-To: <CAJD7tkZh=M58Avfwx_D+UEXy6mm18Zx_hVKn8Gb8-+8-JQQfWw@mail.gmail.com>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Fri, 2 Feb 2024 14:29:17 -0800
-Message-ID: <CABdmKX3_jCjZdOQeinKCKBS3m4XS8heE9WMDU-z1oFpCcPc5fg@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: memcg: Use larger batches for proactive reclaim
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	Efly Young <yangyifei03@kuaishou.com>, android-mm@google.com, yuzhao@google.com, 
-	mkoutny@suse.com, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
+References: <20240125164256.4147-1-alexandru.elisei@arm.com> <20240125164256.4147-23-alexandru.elisei@arm.com>
+In-Reply-To: <20240125164256.4147-23-alexandru.elisei@arm.com>
+From: Evgenii Stepanov <eugenis@google.com>
+Date: Fri, 2 Feb 2024 14:30:00 -0800
+Message-ID: <CAFKCwrhNE5PR7cu7tN8qMmSEUhdJ7ensGGrB-oodh-J_fdoRcw@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 22/35] arm64: mte: Enable tag storage if CMA areas
+ have been activated
+To: Alexandru Elisei <alexandru.elisei@arm.com>
+Cc: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, 
+	maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com, 
+	yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org, 
+	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
+	mhiramat@kernel.org, rppt@kernel.org, hughd@google.com, pcc@google.com, 
+	steven.price@arm.com, anshuman.khandual@arm.com, vincenzo.frascino@arm.com, 
+	david@redhat.com, kcc@google.com, hyesoo.yu@samsung.com, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-mm@kvack.org, 
+	linux-trace-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 2, 2024 at 2:14=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com> =
-wrote:
+On Thu, Jan 25, 2024 at 8:44=E2=80=AFAM Alexandru Elisei
+<alexandru.elisei@arm.com> wrote:
 >
-> On Fri, Feb 2, 2024 at 2:10=E2=80=AFPM T.J. Mercier <tjmercier@google.com=
-> wrote:
-> >
-> > Before 388536ac291 ("mm:vmscan: fix inaccurate reclaim during proactive
-> > reclaim") we passed the number of pages for the reclaim request directl=
-y
-> > to try_to_free_mem_cgroup_pages, which could lead to significant
-> > overreclaim. After 0388536ac291 the number of pages was limited to a
-> > maximum 32 (SWAP_CLUSTER_MAX) to reduce the amount of overreclaim.
-> > However such a small batch size caused a regression in reclaim
-> > performance due to many more reclaim start/stop cycles inside
-> > memory_reclaim.
-> >
-> > Reclaim tries to balance nr_to_reclaim fidelity with fairness across
-> > nodes and cgroups over which the pages are spread. As such, the bigger
-> > the request, the bigger the absolute overreclaim error. Historic
-> > in-kernel users of reclaim have used fixed, small sized requests to
-> > approach an appropriate reclaim rate over time. When we reclaim a user
-> > request of arbitrary size, use decaying batch sizes to manage error whi=
-le
-> > maintaining reasonable throughput.
-> >
-> > root - full reclaim       pages/sec   time (sec)
-> > pre-0388536ac291      :    68047        10.46
-> > post-0388536ac291     :    13742        inf
-> > (reclaim-reclaimed)/4 :    67352        10.51
-> >
-> > /uid_0 - 1G reclaim       pages/sec   time (sec)  overreclaim (MiB)
-> > pre-0388536ac291      :    258822       1.12            107.8
-> > post-0388536ac291     :    105174       2.49            3.5
-> > (reclaim-reclaimed)/4 :    233396       1.12            -7.4
-> >
-> > /uid_0 - full reclaim     pages/sec   time (sec)
-> > pre-0388536ac291      :    72334        7.09
-> > post-0388536ac291     :    38105        14.45
-> > (reclaim-reclaimed)/4 :    72914        6.96
-> >
-> > Fixes: 0388536ac291 ("mm:vmscan: fix inaccurate reclaim during proactiv=
-e reclaim")
-> > Signed-off-by: T.J. Mercier <tjmercier@google.com>
+> Before enabling MTE tag storage management, make sure that the CMA areas
+> have been successfully activated. If a CMA area fails activation, the pag=
+es
+> are kept as reserved. Reserved pages are never used by the page allocator=
+.
 >
-> LGTM with a nit below:
-> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
-
-Thanks
-
-> >
-> > ---
-> > v2: Simplify the request size calculation per Johannes Weiner and Micha=
-l Koutn=C3=BD
-> >
-> >  mm/memcontrol.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 46d8d02114cf..e6f921555e07 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -6965,6 +6965,9 @@ static ssize_t memory_reclaim(struct kernfs_open_=
-file *of, char *buf,
-> >         while (nr_reclaimed < nr_to_reclaim) {
-> >                 unsigned long reclaimed;
-> >
-> > +               /* Will converge on zero, but reclaim enforces a minimu=
-m */
-> > +               unsigned long batch_size =3D (nr_to_reclaim - nr_reclai=
-med) / 4;
-> > +
-> >                 if (signal_pending(current))
-> >                         return -EINTR;
-> >
-> > @@ -6977,7 +6980,7 @@ static ssize_t memory_reclaim(struct kernfs_open_=
-file *of, char *buf,
-> >                         lru_add_drain_all();
-> >
-> >                 reclaimed =3D try_to_free_mem_cgroup_pages(memcg,
-> > -                                       min(nr_to_reclaim - nr_reclaime=
-d, SWAP_CLUSTER_MAX),
-> > +                                       batch_size,
-> >                                         GFP_KERNEL, reclaim_options);
+> If this happens, the kernel would have to manage tag storage only for som=
+e
+> of the memory, but not for all memory, and that would make the code
+> unreasonably complicated.
 >
-> I think the above two lines should now fit into one.
+> Choose to disable tag storage management altogether if a CMA area fails t=
+o
+> be activated.
+>
+> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> ---
+>
+> Changes since v2:
+>
+> * New patch.
+>
+>  arch/arm64/include/asm/mte_tag_storage.h | 12 ++++++
+>  arch/arm64/kernel/mte_tag_storage.c      | 50 ++++++++++++++++++++++++
+>  2 files changed, 62 insertions(+)
+>
+> diff --git a/arch/arm64/include/asm/mte_tag_storage.h b/arch/arm64/includ=
+e/asm/mte_tag_storage.h
+> index 3c2cd29e053e..7b3f6bff8e6f 100644
+> --- a/arch/arm64/include/asm/mte_tag_storage.h
+> +++ b/arch/arm64/include/asm/mte_tag_storage.h
+> @@ -6,8 +6,20 @@
+>  #define __ASM_MTE_TAG_STORAGE_H
+>
+>  #ifdef CONFIG_ARM64_MTE_TAG_STORAGE
+> +
+> +DECLARE_STATIC_KEY_FALSE(tag_storage_enabled_key);
+> +
+> +static inline bool tag_storage_enabled(void)
+> +{
+> +       return static_branch_likely(&tag_storage_enabled_key);
+> +}
+> +
+>  void mte_init_tag_storage(void);
+>  #else
+> +static inline bool tag_storage_enabled(void)
+> +{
+> +       return false;
+> +}
+>  static inline void mte_init_tag_storage(void)
+>  {
+>  }
+> diff --git a/arch/arm64/kernel/mte_tag_storage.c b/arch/arm64/kernel/mte_=
+tag_storage.c
+> index 9a1a8a45171e..d58c68b4a849 100644
+> --- a/arch/arm64/kernel/mte_tag_storage.c
+> +++ b/arch/arm64/kernel/mte_tag_storage.c
+> @@ -19,6 +19,8 @@
+>
+>  #include <asm/mte_tag_storage.h>
+>
+> +__ro_after_init DEFINE_STATIC_KEY_FALSE(tag_storage_enabled_key);
+> +
+>  struct tag_region {
+>         struct range mem_range; /* Memory associated with the tag storage=
+, in PFNs. */
+>         struct range tag_range; /* Tag storage memory, in PFNs. */
+> @@ -314,3 +316,51 @@ void __init mte_init_tag_storage(void)
+>         num_tag_regions =3D 0;
+>         pr_info("MTE tag storage region management disabled");
+>  }
+> +
+> +static int __init mte_enable_tag_storage(void)
+> +{
+> +       struct range *tag_range;
+> +       struct cma *cma;
+> +       int i, ret;
+> +
+> +       if (num_tag_regions =3D=3D 0)
+> +               return 0;
+> +
+> +       for (i =3D 0; i < num_tag_regions; i++) {
+> +               tag_range =3D &tag_regions[i].tag_range;
+> +               cma =3D tag_regions[i].cma;
+> +               /*
+> +                * CMA will keep the pages as reserved when the region fa=
+ils
+> +                * activation.
+> +                */
+> +               if (PageReserved(pfn_to_page(tag_range->start)))
+> +                       goto out_disabled;
+> +       }
+> +
+> +       static_branch_enable(&tag_storage_enabled_key);
+> +       pr_info("MTE tag storage region management enabled");
+> +
+> +       return 0;
+> +
+> +out_disabled:
+> +       for (i =3D 0; i < num_tag_regions; i++) {
+> +               tag_range =3D &tag_regions[i].tag_range;
+> +               cma =3D tag_regions[i].cma;
+> +
+> +               if (PageReserved(pfn_to_page(tag_range->start)))
+> +                       continue;
+> +
+> +               /* Try really hard to reserve the tag storage. */
+> +               ret =3D cma_alloc(cma, range_len(tag_range), 8, true);
+> +               /*
+> +                * Tag storage is still in use for data, memory and/or ta=
+g
+> +                * corruption will ensue.
+> +                */
+> +               WARN_ON_ONCE(ret);
 
-It goes out to 81 characters. I wasn't brave enough, even though the
-80 char limit is no more. :)
+cma_alloc returns (page *), so this condition needs to be inverted,
+and the type of `ret` changed.
+Not sure how it slipped through, this is a compile error with clang.
 
-This takes it out to 100 but gets rid of batch_size if folks are ok with it=
-:
-
-                reclaimed =3D try_to_free_mem_cgroup_pages(memcg,
--                                       min(nr_to_reclaim -
-nr_reclaimed, SWAP_CLUSTER_MAX),
-+                                       /* Will converge on zero, but
-reclaim enforces a minimum */
-+                                       (nr_to_reclaim - nr_reclaimed) / 4,
-                                        GFP_KERNEL, reclaim_options);
+> +       }
+> +       num_tag_regions =3D 0;
+> +       pr_info("MTE tag storage region management disabled");
+> +
+> +       return -EINVAL;
+> +}
+> +arch_initcall(mte_enable_tag_storage);
+> --
+> 2.43.0
+>
 
