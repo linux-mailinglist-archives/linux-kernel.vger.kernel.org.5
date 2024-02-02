@@ -1,106 +1,184 @@
-Return-Path: <linux-kernel+bounces-49050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26EA9846549
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:11:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D3BA84654B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:13:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC9C628B620
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:11:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 130BCB219C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:13:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BF2263CB;
-	Fri,  2 Feb 2024 01:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E517B6ABB;
+	Fri,  2 Feb 2024 01:12:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jAADPaSb"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DGhBmI0/"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FA0763AA
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 01:11:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A4B9610E
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 01:12:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706836307; cv=none; b=hBr0JgmHqTtzImC5nVEBV+JQPP+T1zWGksSnjFR6dcLYQ3J8JMPfS/iQvlfEqxRArWyY2uTzG48h2Qf7ph5DEHPbymMxTM2CL7uLKVaUJxDDYRYEl6rfEkigUu/fM4v0+RZniRyyseScxi3Tv5dlvnT9qNHB9nNsKwj9s9mbh5Q=
+	t=1706836377; cv=none; b=fFuNS6VRYconTmkrximWRIqHGGSMN5LnHhEFwCeHTVK+6i4sQN2HwqcK/AyHL1SzTyoW3qXtO53sM8MPXkDys68+1aS4OmS9bQi24cwkTc0GcfgiSk0ZX2QV/n+1EFGsFfkaeCadw1oq59ev53bxLjXafOrAMgWZ/W5z7+19ADw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706836307; c=relaxed/simple;
-	bh=QyaMTcp16hH0iJqwNBS4cciHIkIu8+v3VnPUlVNCZUE=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=lRj5myHcuLZQgR7sw0EZyWTP4ltbCHJdQzUUIvv+YG8DZkm0LOyQPYFZJLTEi7NQ7cPLwurGpzhiy9e2tFNbuK57zZPzV1eJOpaw0a7XCywOjgtgXYhXNUe+JrFVCHHCWs5imjqM2CjmG+q9/te71DUMl0oEcv/YuG9DihDG36Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jAADPaSb; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-603c0e020a6so23114097b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 17:11:45 -0800 (PST)
+	s=arc-20240116; t=1706836377; c=relaxed/simple;
+	bh=p/rKfqSNYUjMIZEFvvBdSXGCTq8YJYgTxVTzw7HPMFw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=c8MY+NRG7Sidarg4oS7Ph0+q/ZWJm21wHBg7LhLkq/GJSoe6m8SqWtjQqutCzeAali5XPz3pQPrbSsPIrHGgiP16VT6ROkgcEUd5YUTWUnTfUTod/BVBPMTfTqUS2LczURyvG6U8zbAkuJpbAIftdpO7b+FD1pbD/UPvHfnNdAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DGhBmI0/; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6ddd1fc67d2so1212975b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 17:12:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706836305; x=1707441105; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5wTI5por6UkHgJmYtmcJhLkhPMr6uJPPJ6ylUKRgo0M=;
-        b=jAADPaSbCZRkXjJvRi4rjKo3ZADxsTtMn7DavXWrQrZC12HWv5wzKCvEQ7diIcldwH
-         VWUDW/LKoRrn3ur1Q20HBUluRaOmp6bnZvWDx2kVVehB4csjcDvLZFkAyzNffUHbd/Gh
-         Ndm5D0jF6HhVJx7vYGX0cua8XLgnnZDLSwsMmuFsjYWiveT1X2A6U+RmAOcPdPR3Y5bl
-         jU9KX+kdy0knXxY7CB8DTUwgIHe2zeRS9bHvDx0oMiCfaFD4WdIUrcTH+3oKcZTjOgt7
-         ssB2gU5ghapRG4vVdFnOmoBmXuJbU/VrvjhISThTl9BiAc+Qd4NSDts2qzxAfVn909Ad
-         pl+w==
+        d=chromium.org; s=google; t=1706836375; x=1707441175; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ivmfb83FwDkP3x6pfBlSqzRjLeN2tS1ZFLqnXqOH+KQ=;
+        b=DGhBmI0/JFSWTisKcg4Rt5zPyfNNHJe2TG5NYwEEPhyoLLhAli25bC9snvkRx65evL
+         rOjdwB9Ec3DuwrDZI8ZDL4wKqrswMu77inWh4Ee7gfw7e1QrbE+ygSDPbOuZCN6Pev6V
+         H4UVwrC/DZH42lHr9S0Ry5uZNsE6qA/H8IjG0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706836305; x=1707441105;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5wTI5por6UkHgJmYtmcJhLkhPMr6uJPPJ6ylUKRgo0M=;
-        b=vduiHBFueTHUWWcdtgOZT9fxjIdF4GisTkhF0u8iCwQdVtJBB0BKY7IXXsyvfcIcBP
-         q5o98i6tjS26aUS7siaBXktJtSVNGanxiFf5Vq6EwEjHqrh1RFPeQhNaDmRZjE3QCJkv
-         x9MxF0se4Ylspwa32b3zLotTYZ/tdlQg9hQzf+vYrqdGazYEHFG60EZn87ygz3dkJ/7X
-         Wzi7NDekOffsu6zlmvCl6estSRvWJiGpmb4YpeVfPt7n0JArc/GEMaQtY6IapOPeq1YU
-         cmN924a2rmpbT890JNP8LrzCLbfPEOyZzfWrrVB3CIAdh4NoB7WqhFTnJertWbCdZ3NY
-         0OiQ==
-X-Gm-Message-State: AOJu0YxNF2q4hMv3M18EAzfrWo/1p8iJVBywKOKlvkjGOioimd60Qi/t
-	Ip0DVUbJgXZLDKItcqdAf8MLnbD7uiIkyNN9P+KZvAGa3yZzpVG2ugMvVmp/9wCYlU9VhaaGaL2
-	N4VIR7GNyYnm4ZitBIQ==
-X-Google-Smtp-Source: AGHT+IGdNK+C7pghP6+H+HztU3yyWwYdjHBtYqFFAZm7I9D1rud4Li3ClrDAMeIUq4i6P+9+h3i93CnqrW6Ix6Pj
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a81:4c14:0:b0:5ff:a885:65b with SMTP id
- z20-20020a814c14000000b005ffa885065bmr665836ywa.10.1706836305085; Thu, 01 Feb
- 2024 17:11:45 -0800 (PST)
-Date: Fri, 2 Feb 2024 01:11:43 +0000
-In-Reply-To: <20240201-b4-zswap-invalidate-entry-v1-6-56ed496b6e55@bytedance.com>
+        d=1e100.net; s=20230601; t=1706836375; x=1707441175;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ivmfb83FwDkP3x6pfBlSqzRjLeN2tS1ZFLqnXqOH+KQ=;
+        b=wEtz9GGolhGl0kvY4ZfaOoQ6+kJF5n3EfCK/xSIraZvzhSffiAQBhXdYEJQiadwVY/
+         tWHlJiA2/vU1/eh+ZFArHYTqpFfp7xWikKz79P+OnBmNrmiU8Dfwl6CQD+vFeA8OdnVR
+         51AWsE/eld/NUvYFUEtg8P+af4KdGiomO0IAIcX5Clf0O3b1E5M6/1PkpMvrpSZ4cxKW
+         BXR3gPtfBwz7b1L7i7qiEDGqs2RWz5phMh0reD+I0+Hj3fYcLH0z76oWIrEAEOHNYsrd
+         WuI9RE/FyBvAOKBOnPKtlM9hYB7EBgV0Mc7ADRNRGbEv0+a6qQiIqsHbKH0CPDtxKgk2
+         cX2w==
+X-Gm-Message-State: AOJu0YxnLzCsU8VssNdsdFHDN/r03Y7k0wvNyGh1G1CWM6WAR4GNp0t1
+	wgtMD2LE99fhMxKxNfYfqg6caTgbDACSojuWjI0JgsAwiiJNfU3srEJQ3phagg==
+X-Google-Smtp-Source: AGHT+IFDLmhjSiFVUREChNi1Tz0JkUPOtT5xeLTdp3wsTuUWxF0qy+TElN2h3bus8LcjLTvkFWgsLQ==
+X-Received: by 2002:a05:6a20:1e4a:b0:19e:34e4:818e with SMTP id cy10-20020a056a201e4a00b0019e34e4818emr5927684pzb.8.1706836374922;
+        Thu, 01 Feb 2024 17:12:54 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCX9Lpj6ULXgFZCsNzmvUHNd4fR20Uvm9EzQKaw5VFE+b9uGRRAZZuOix2g7mfo4/n8QpkXkGuL1XMuZdly9WCJXCWwjPKeEFq/8SurjdII7TyEl8ua0KJ7y0AQqocJE06RcJsDLN0DF1pMlTPAAKalV3CU0zxysbTjG9k9PtzkoTmv0VvzG/j5AdyuHpZVgOvcxVNC7hXvpt4Ngug7f+fnFmYBgfM6E3Yygw5+cFkqpGtmCdBbPSERktQE/WgcdP8m57ZzzpHHi48/PT9J2t0I=
+Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:4039:2bf1:e8b6:32e6])
+        by smtp.gmail.com with ESMTPSA id kt5-20020a170903088500b001d70af5be17sm423057plb.229.2024.02.01.17.12.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 17:12:54 -0800 (PST)
+From: Douglas Anderson <dianders@chromium.org>
+To: Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>
+Cc: Douglas Anderson <dianders@chromium.org>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Jan Kara <jack@suse.cz>,
+	Kees Cook <keescook@chromium.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: [PATCH] regset: use vmalloc() for regset_get_alloc()
+Date: Thu,  1 Feb 2024 17:12:03 -0800
+Message-ID: <20240201171159.1.Id9ad163b60d21c9e56c2d686b0cc9083a8ba7924@changeid>
+X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240201-b4-zswap-invalidate-entry-v1-0-56ed496b6e55@bytedance.com>
- <20240201-b4-zswap-invalidate-entry-v1-6-56ed496b6e55@bytedance.com>
-Message-ID: <ZbxBT98Ctjvd0XPG@google.com>
-Subject: Re: [PATCH 6/6] mm/zswap: zswap entry doesn't need refcount anymore
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 01, 2024 at 03:49:06PM +0000, Chengming Zhou wrote:
-> Since we don't need to leave zswap entry on the zswap tree anymore,
-> we should remove it from tree once we find it from the tree.
-> 
-> Then after using it, we can directly free it, no concurrent path
-> can find it from tree. Only the shrinker can see it from lru list,
-> which will also double check under tree lock, so no race problem.
-> 
-> So we don't need refcount in zswap entry anymore and don't need to
-> take the spinlock for the second time to invalidate it.
-> 
-> The side effect is that zswap_entry_free() maybe not happen in tree
-> spinlock, but it's ok since nothing need to be protected by the lock.
-> 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+While browsing through ChromeOS crash reports, I found one with an
+allocation failure that looked like this:
 
-This looks like a great simplification, and a good motivation to only
-support exclusive loads. Everything is more straightforward because
-every tree lookup implies a removal and exclusive ownership.
+  chrome: page allocation failure: order:7,
+          mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO),
+	  nodemask=(null),cpuset=urgent,mems_allowed=0
+  CPU: 7 PID: 3295 Comm: chrome Not tainted
+          5.15.133-20574-g8044615ac35c #1 (HASH:1162 1)
+  Hardware name: Google Lazor (rev3 - 8) with KB Backlight (DT)
+  Call trace:
+  dump_backtrace+0x0/0x1ec
+  show_stack+0x20/0x2c
+  dump_stack_lvl+0x60/0x78
+  dump_stack+0x18/0x38
+  warn_alloc+0x104/0x174
+  __alloc_pages+0x5f0/0x6e4
+  kmalloc_order+0x44/0x98
+  kmalloc_order_trace+0x34/0x124
+  __kmalloc+0x228/0x36c
+  __regset_get+0x68/0xcc
+  regset_get_alloc+0x1c/0x28
+  elf_core_dump+0x3d8/0xd8c
+  do_coredump+0xeb8/0x1378
+  get_signal+0x14c/0x804
+  ...
 
-Let's see if removing support for non-exclusive loads is agreeable first
-though :)
+An order 7 allocation is (1 << 7) contiguous pages, or 512K. It's not
+a surprise that this allocation failed on a system that's been running
+for a while.
+
+In this case we're just generating a core dump and there's no reason
+we need contiguous memory. Change the allocation to vmalloc(). We'll
+change the free in binfmt_elf to kvfree() which works regardless of
+how the memory was allocated.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+I don't know this code at all, but I _think_ I've identified the
+places where the memory is freed correctly. Please double-check that I
+didn't miss anything obvious, though!
+
+ fs/binfmt_elf.c | 2 +-
+ kernel/regset.c | 7 ++++---
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index 5397b552fbeb..ac178ad38823 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -1928,7 +1928,7 @@ static void free_note_info(struct elf_note_info *info)
+ 		threads = t->next;
+ 		WARN_ON(t->notes[0].data && t->notes[0].data != &t->prstatus);
+ 		for (i = 1; i < info->thread_notes; ++i)
+-			kfree(t->notes[i].data);
++			kvfree(t->notes[i].data);
+ 		kfree(t);
+ 	}
+ 	kfree(info->psinfo.data);
+diff --git a/kernel/regset.c b/kernel/regset.c
+index 586823786f39..ed8d8cf3a22c 100644
+--- a/kernel/regset.c
++++ b/kernel/regset.c
+@@ -2,6 +2,7 @@
+ #include <linux/export.h>
+ #include <linux/slab.h>
+ #include <linux/regset.h>
++#include <linux/vmalloc.h>
+ 
+ static int __regset_get(struct task_struct *target,
+ 			const struct user_regset *regset,
+@@ -16,14 +17,14 @@ static int __regset_get(struct task_struct *target,
+ 	if (size > regset->n * regset->size)
+ 		size = regset->n * regset->size;
+ 	if (!p) {
+-		to_free = p = kzalloc(size, GFP_KERNEL);
++		to_free = p = vmalloc(size);
+ 		if (!p)
+ 			return -ENOMEM;
+ 	}
+ 	res = regset->regset_get(target, regset,
+ 			   (struct membuf){.p = p, .left = size});
+ 	if (res < 0) {
+-		kfree(to_free);
++		vfree(to_free);
+ 		return res;
+ 	}
+ 	*data = p;
+@@ -71,6 +72,6 @@ int copy_regset_to_user(struct task_struct *target,
+ 	ret = regset_get_alloc(target, regset, size, &buf);
+ 	if (ret > 0)
+ 		ret = copy_to_user(data, buf, ret) ? -EFAULT : 0;
+-	kfree(buf);
++	vfree(buf);
+ 	return ret;
+ }
+-- 
+2.43.0.594.gd9cf4e227d-goog
+
 
