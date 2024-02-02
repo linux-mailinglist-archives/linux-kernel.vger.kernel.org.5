@@ -1,144 +1,152 @@
-Return-Path: <linux-kernel+bounces-50281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A978B8476DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:59:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67E568476F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:02:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBF481C265C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:59:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B6E61F2639E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:02:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4F0214C596;
-	Fri,  2 Feb 2024 17:59:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B5D214D44D;
+	Fri,  2 Feb 2024 18:01:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YYPLBzsL"
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="JbwzFcza"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA3114A4DD
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 17:59:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CADDE14C5AC;
+	Fri,  2 Feb 2024 18:01:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706896786; cv=none; b=FSVQP8Yh3UiDDwpf56JGR9N8/+1uICjlAzZlJywr1361W7iOeS6r6TFvmjNbOuHcvq2Ok/rKq00MYMRU85nfYnL2Q7Y3IO3vpSnDo4itODtD5D1pTKFWKaVNdchDZKBEG/NylnCu9EkLnD/+ZfsbOhC/pVNCSzr8Yt6nmHlwhNA=
+	t=1706896901; cv=none; b=pf4sxoPVCcl6KZoMQ3giGWSPWZOz1bA2mZ5V5qk+ekRH8jSrPj2fRo+fFWhTj00oTInpKbe5Nu/ZEH0k+g9sjgumlNjRh21Q/NbPOWuX9pJTvHU7ApeNAUO3s9aSVfK8UAoZv4WGfQU9KhyuxEfEe75RhQ9gqMwdcAEeG11kak8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706896786; c=relaxed/simple;
-	bh=PbsGV+LRfbFclR41vL+iMrFaR+sc6SmvwNXGlLB70Xo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ACZblruj1zW3HUrwiXdRvRq8ztcO72Hpt9Xko+yEMw8hqtSJMeQTqWoLnPeCvTFUjv5FSuVD2AzItq1U8yxbpSKWQhal/z5wEr7J0RcZOwVEdbQPpNtBdm8CsKzmb1UZfTriO6Zo2+wF4buKhisa/Rn4QvfGMJ7nGizm23UvPjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YYPLBzsL; arc=none smtp.client-ip=209.85.219.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-68c3ac1fdb9so10702526d6.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 09:59:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706896782; x=1707501582; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OEmXtPEVMO3oHchObaEeNLlugLVri5Npjz+Khhebm7g=;
-        b=YYPLBzsL1r5Jej00eSNA+2x76YPfjfGMz/iUhshPTOP8Io8RxFdQuNUhZQFJiO+/6M
-         dK2CAobNiey7ViP1BJFs3rvQyf9SyTg719z1xdU6zkC8lY6rQcK0UB5SebXKODa2WRtn
-         OezM8Vc7N9dx22iitxv7fIsCJZCkL90K2X9EJvh5LscO1Et+oWZ8bnNQ68aLvd5aOa8r
-         ebnxZV8fV1KiKjVULog33sCwgWrtTORpnLitkxVzwI0zxL5zPxn5/avtQtPpL/ekDAXb
-         Hjz/CH+HjTtat9sZm7pbrff1PtTZm5hC6HZ3EzFnjW8blTcrhFfvlqNHIY1q6Q9xzaq3
-         6DiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706896782; x=1707501582;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OEmXtPEVMO3oHchObaEeNLlugLVri5Npjz+Khhebm7g=;
-        b=vIQHUcujMDqFm2K+xWcwqlyWdjbGds81z52c0ejci0jZ5egeQcK5HfS9e119DyXoGh
-         /OOdgCe/2+1wp7qSMNhSAyZ4oCt4RPlOLrKuSDrq5VAVpCzwHPVskrGNv7qBqxGnIUG3
-         R/cbSZP+4q2UzSiRYiON62kHrYsGTRTko+THbbEcfAyfjScsryyOUDrAaTDbqpdSuO2h
-         jb7zE8UHcCnwlAUXxbEUVV2DMjwkgrSoadllC8Ldz21FKS0pE1UmitUaHG/0pHnWjZyA
-         luX2eXE9lyt77+DSpiI3p2U3scAlWwETP7ckUtltf2xhZmTCqrIIS+AXDBv5mmfA0uHH
-         1s0w==
-X-Gm-Message-State: AOJu0Yw7/XTp/f9PHkp5UT86ateZnSHsAI+B/9NYTbhWJjKVhgAhrTGS
-	JqjXm5JxC707qNYHLJLUxnCDNd1Wqc1HX+26z5jsDI8tJAmki5xF37/lDH2a7rfp/atD269qFUz
-	yDXogg0ts/viYTt+Jx0VqWJTi2/I/wJPfGQMK
-X-Google-Smtp-Source: AGHT+IFHffLQtTMSTo5MUK3Dg8CqXbPyFRi0wqCfcGRuk9MxRoFa7PZm9cOEbEUY9T1OOExuntVHNL+xSqTF5WAgEvM=
-X-Received: by 2002:a05:6214:1c0d:b0:681:9c10:e33c with SMTP id
- u13-20020a0562141c0d00b006819c10e33cmr11755584qvc.53.1706896781885; Fri, 02
- Feb 2024 09:59:41 -0800 (PST)
+	s=arc-20240116; t=1706896901; c=relaxed/simple;
+	bh=dDn+aWUuoRcqfpCGw1CQxwbYqg/MHvauHFd77pkNr7g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lWTTln5f8qojWajYSexdcXCcE9hco2c1ByeqCyqBKW4zlColFwN7h7qLTYQrRPr0qL/k8n6zMeyZbVpBHykvuNh7EyngmkfwDVljjqndvusiVw6P25OCukrD73HckLEBs0LsKqZezfyPlug0Sqi6RYH4y/rDfvE2cGASoijKvok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=JbwzFcza; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=jaqvolM8hY9hqGHXJM+uBNaupLSVthfennwbKzMgO38=; b=JbwzFczaQ8Wg99MTa5hUteskkn
+	iuI4EcKW3f5S+u664dlKPBlNJkYLgXNyL6cKcD9raQKCwDyJD898k+S8S23S8N3kZ2jLce8VQVkZH
+	j/843N8Gu7BARrQdReyDMCrJgOcxyQ5J8m2ZaebL9zXJrhs4PMEa2vRicvbC+m+s1UTlJM1rdlXY2
+	diYXyKThAvcDESCJ2rtYlS3BHzAx+wyGfDBc4YeTOWUvb7CZOQ6o3wMDTZWzI18zzEJ0tTSNHMIPr
+	/q8qQBIbxamhzuan1rg7dzX6BuuJonTbhefaGgQZJaqLI0W1+rnH6UI4MxX6NBs0VsokvrxuQK5sx
+	KwuBW/Kg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35212)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rVxr4-0006K5-04;
+	Fri, 02 Feb 2024 18:01:34 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rVxr1-0008V4-HX; Fri, 02 Feb 2024 18:01:31 +0000
+Date: Fri, 2 Feb 2024 18:01:31 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Sergio Palumbo <palumbo.ser@outlook.it>
+Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: sfp: add quirk for OEM DFP-34X-2C2 GPON
+ ONU SFP
+Message-ID: <Zb0t+zKHx+0wTXH5@shell.armlinux.org.uk>
+References: <AS1PR03MB8189AD85CEB6E139F27307D3827F2@AS1PR03MB8189.eurprd03.prod.outlook.com>
+ <ZbZn8oCiyc1aNPuW@shell.armlinux.org.uk>
+ <AS1PR03MB8189B99C360FB403B8A0DD6882422@AS1PR03MB8189.eurprd03.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129202741.3424902-1-aahila@google.com> <ZbvFEtQskK3xzi6y@nanopsycho>
- <CAGfWUPzeWeF-XPGem=VqxG=DaOEMRWnjCcueD+ODsEKLczDEMA@mail.gmail.com> <ZbyXJu0ZO4sZfrV2@nanopsycho>
-In-Reply-To: <ZbyXJu0ZO4sZfrV2@nanopsycho>
-From: Aahil Awatramani <aahila@google.com>
-Date: Fri, 2 Feb 2024 09:59:30 -0800
-Message-ID: <CAGfWUPyaSrmWG9eY+TgBwmzP4eHoLf4S8L1HVCGr9p+Akkh5Rg@mail.gmail.com>
-Subject: Re: [PATCH net-next v6] bonding: Add independent control state machine
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: David Dillow <dave@thedillows.org>, Mahesh Bandewar <maheshb@google.com>, 
-	Jay Vosburgh <j.vosburgh@gmail.com>, Hangbin Liu <liuhangbin@gmail.com>, 
-	Andy Gospodarek <andy@greyhouse.net>, "David S . Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AS1PR03MB8189B99C360FB403B8A0DD6882422@AS1PR03MB8189.eurprd03.prod.outlook.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-> Don't touch procfs here.
+On Fri, Feb 02, 2024 at 06:41:51PM +0100, Sergio Palumbo wrote:
+> Dear Russell,
+> sorry for the indenting. I will no longer use indenting in future postings.
+> As explained in the description setting up the module via telnet with
+> LAN_SDS_MODE=6 puts the module in 2500X autonegotiating mode.
 
-OK removing procfs changes.
+Okay, so this requires manual configuration to switch the module into
+2500base-X.
 
+> Without applying the patch the module shows up to linux at 1000X
+> because the EEPROM is not correctly reporting the 2500X speeds.
 
-On Thu, Feb 1, 2024 at 11:18=E2=80=AFPM Jiri Pirko <jiri@resnulli.us> wrote=
-:
->
-> Thu, Feb 01, 2024 at 07:45:23PM CET, aahila@google.com wrote:
-> >> Any chance we can have some coverage via self-tests?
-> >
-> >I plan to work on these self-tests decoupled from the current patch.
-> >
-> >> Hmm, I wonder how it makes sense to add new features here. This should
-> >> rot.
-> >
-> >Could you clarify what you are suggesting here?
->
-> Don't touch procfs here.
->
-> >
-> >
-> >On Thu, Feb 1, 2024 at 8:28=E2=80=AFAM Jiri Pirko <jiri@resnulli.us> wro=
-te:
-> >>
-> >> Mon, Jan 29, 2024 at 09:27:41PM CET, aahila@google.com wrote:
-> >>
-> >> [...]
-> >>
-> >>
-> >> >diff --git a/drivers/net/bonding/bond_procfs.c b/drivers/net/bonding/=
-bond_procfs.c
-> >> >index 43be458422b3..95d88df94756 100644
-> >> >--- a/drivers/net/bonding/bond_procfs.c
-> >> >+++ b/drivers/net/bonding/bond_procfs.c
-> >> >@@ -154,6 +154,8 @@ static void bond_info_show_master(struct seq_file=
- *seq)
-> >> >                          (bond->params.lacp_active) ? "on" : "off");
-> >> >               seq_printf(seq, "LACP rate: %s\n",
-> >> >                          (bond->params.lacp_fast) ? "fast" : "slow")=
-;
-> >> >+              seq_printf(seq, "LACP coupled_control: %s\n",
-> >> >+                         (bond->params.coupled_control) ? "on" : "of=
-f");
-> >>
-> >> Hmm, I wonder how it makes sense to add new features here. This should
-> >> rot.
-> >>
-> >>
-> >> >               seq_printf(seq, "Min links: %d\n", bond->params.min_li=
-nks);
-> >> >               optval =3D bond_opt_get_val(BOND_OPT_AD_SELECT,
-> >> >                                         bond->params.ad_select);
-> >>
-> >> [...]
+Okay, so in its default as-new state without reconfiguring the module,
+it reports 1000base-X and Linux drives it as such. This sounds fine.
+
+> Ethtool lines in the description repporting only 1000X and host
+> connecting only at 1000X.
+
+That would be expected.
+
+> After the quirk as you can see from the ethtool lines I put in the
+> description the module shows up to linux with both speeds 1000X and 2500X.
+
+Yes, adding the quirk will have that effect, but it will also have the
+effect that we will choose 2500base-X for host interfaces that support
+it, whether or not the module has been reconfigured to operate at
+2500base-X. This will result in a mismatch between the module and the
+host, and the link will not come up.
+
+> According to the above if the host has the ability to connect at 2500X
+> the module is connecting at 2500X, if the host has the ability to connect
+> at 1000X only it will connect at 1000X.
+
+The current situation:
+
+Host supports		Module		Mode		Functional
+1000base-X		default		1000base-X	Yes
+1000base-X		LAN_SDS_MODE=6	1000base-X	No
+1000base-X + 2500base-X	default		1000base-X	Yes	***
+1000base-X + 2500base-X	LAN_SDS_MODE=6	1000base-X	No
+
+With the quirk:
+Host supports		Module		Mode		Functional
+1000base-X		default		1000base-X	Yes
+1000base-X		LAN_SDS_MODE=6	1000base-X	No
+1000base-X + 2500base-X	default		2500base-X	No	***
+1000base-X + 2500base-X	LAN_SDS_MODE=6	2500base-X	Yes
+
+The lines marked "***" are what I'm concerned about - by adding this
+quirk, it has the effect of trading one working configuration (the
+one where the module is in its default factory configuration) for one
+which requires special configuration of the module _and_ which breaks
+the factory configuration.
+
+On the plus side, ethtool _can_ be used to switch the interface mode
+back to 1000base-X, but given that this was working it seems backwards
+to need manual intervention.
+
+> On the other side after the quirk and the module set to LAN_SDS_MODE=1
+> 1000X mode. Linux host is connecting at 1000X only.
+
+No it won't. The module will still be detected, the quirk will be used,
+which will indicate to the kernel that the module supports both
+1000base-X and 2500base-X. With a host interface that supports both,
+the kernel will choose 2500base-X, but the module will be using
+1000base-X - and the link will not come up.
+
+At the very least, this needs to be mentioned in the commit message,
+so that the implications of this can be properly considered.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
