@@ -1,193 +1,211 @@
-Return-Path: <linux-kernel+bounces-50531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02434847A50
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:14:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 39EC1847A54
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:15:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B0E51F2724C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:14:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AC251F27733
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:15:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90B7D81739;
-	Fri,  2 Feb 2024 20:14:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76EBF8063B;
+	Fri,  2 Feb 2024 20:14:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TPw9uIQX"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="N74BO7gP"
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D53AC80628;
-	Fri,  2 Feb 2024 20:14:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.20
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706904866; cv=fail; b=TGhyZ9oNYeEQthamDZEKDBYGp6b1k+EjNQ2lvI2kpCcGgSGAFDlMSYes5fxwoPkoMQiEKEBUuOKZaijt9MPJST3eTw7ooSK2xLcJ3v1A1Xhit42x7g0gwv8gzuFGL3jwBpxRBIJW4a0Znl8I99dcxjI2257xPj2ZGJOMfA0uSV0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706904866; c=relaxed/simple;
-	bh=a4VnuHqgE9CJb5JjJQr7kvDXE4waKiNZHlOeufKhZZ0=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Vij4RAzZUV0AG7wVaOxoX/F4iaBne5ERwZI5uqicK6gbbgdd+wCXPVBk5hPNfsiPgoJsvnlTju0V+dfrCHv6Ff5W/TRteOK/QIEd1Jww5ndNEkJrnEn8xQSRq8WEWI3vBCthP0wuoDOx1r/W2KZw3Ez13SD2QyibU7mSJDnbRh0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TPw9uIQX; arc=fail smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706904865; x=1738440865;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=a4VnuHqgE9CJb5JjJQr7kvDXE4waKiNZHlOeufKhZZ0=;
-  b=TPw9uIQXWPF2vmoYBP5zBE1d8koRQ13SNxk0+cTPg7gwbLUrMvsq9a+t
-   CqWt96mBc4nwmuXGgPz+Eu0/w3XKXodDYabiWDqfnCRIFWSO4U13uixN7
-   O79te1/pJtdGUIgTsZWAFTkmYQzZ57+uB2xJzvuupbE+zP9BrKGsHLPbo
-   8tOZnUkQso/6yJGPKocV9C8HGbSuQzm03ooB1L4CB5vAiy7+y7x3D89k4
-   7obPc36u9Jvu4msAuydSfF3AiqZPDyq+8U4HGI2cJMjNaE0pcrHtkWaNg
-   Rh3c+0TuGuaTuZuxvsjlFsJ6EnjO2MY/T2sCUKn4pQV+LN8cIBaMhwL/B
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="147747"
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="147747"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 12:14:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="4769692"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 02 Feb 2024 12:14:23 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 2 Feb 2024 12:14:22 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 2 Feb 2024 12:14:22 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 2 Feb 2024 12:14:22 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UwE7xuIsOWYDZEihnrAaB9aHHlFVt62yCr0A1brhvr+CjKClHLz+dK6+NZIjqvro4wjH38bBRdlpHgjk3KVR4K6VcQqL7Ws5binW3N9WbtzMvpCejCc+hXXVZqxcVDoXfyWosaoz+0WON8mvaruRcDIE4I0BVqiSFJZjqbgLcPij4Fiqm5KhmvYr/R/BtWNRmzGcE48BsOsJ6dNlBAlxY8TsdYCAZbOG9Lyw9yXL1nvfva5ZOskxgVoIsv+lN5CJdx93ph2G+wV7nl3u9ag7ySIdYLVqDo8064OOun0zwtWoPmes9HsJ0HXVZKKSR9TZjmk0jK2aXmdEuzT164405w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lpb6CMXUfwxwEegI6jnJDbXSVHw8Qcp+uVT7Kg25m7U=;
- b=M+c7W1E2pI5xgJHbULhC/SVairJ5BtfHJSNN+yN2S0bdKljoq1GbcKZYqU4J8Xy8pPjqF3GNboblJaKTAWN5pw00aHUT9V4qbSh73x+3Rf6kZwwRGIc6WsNJFgRy9O7g0ogFVvxKETCZQyBaOJSY54a/08t9UA0w6tLEedZMrAwkgaOSMY/XI8VzYcZft9rmC4uiKtnMfGG//1rFemrizwNgaO1N6ub9tmeYQOEGR0mKpUAjLa1C5AaH5JSnlJoolIDVXkSj/XSanv9KfywZ9ULs44k5L+E5dHOnAvYvdwOg2lXxLiqR1dqvYYNGyH7wG5LZ4B5hrpUjrLfW4Vjvtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by SA3PR11MB7583.namprd11.prod.outlook.com (2603:10b6:806:306::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.30; Fri, 2 Feb
- 2024 20:14:20 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6257:f90:c7dd:f0b2]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6257:f90:c7dd:f0b2%4]) with mapi id 15.20.7249.027; Fri, 2 Feb 2024
- 20:14:20 +0000
-Date: Fri, 2 Feb 2024 12:14:16 -0800
-From: Dan Williams <dan.j.williams@intel.com>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Dan Williams
-	<dan.j.williams@intel.com>, Arnd Bergmann <arnd@arndb.de>, Dave Chinner
-	<david@fromorbit.com>
-CC: <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>, <linux-mm@kvack.org>,
-	<linux-arch@vger.kernel.org>, Vishal Verma <vishal.l.verma@intel.com>, "Dave
- Jiang" <dave.jiang@intel.com>, Matthew Wilcox <willy@infradead.org>, "Russell
- King" <linux@armlinux.org.uk>, <nvdimm@lists.linux.dev>,
-	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<dm-devel@lists.linux.dev>
-Subject: Re: [RFC PATCH v3 2/4] dax: Check for data cache aliasing at runtime
-Message-ID: <65bd4d18cab98_7193229421@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-References: <20240131162533.247710-1-mathieu.desnoyers@efficios.com>
- <20240131162533.247710-3-mathieu.desnoyers@efficios.com>
- <65bab567665f3_37ad2943c@dwillia2-xfh.jf.intel.com.notmuch>
- <0a38176b-c453-4be0-be83-f3e1bb897973@efficios.com>
- <65bac71a9659b_37ad29428@dwillia2-xfh.jf.intel.com.notmuch>
- <f1d14941-2d22-452a-99e6-42db806b6d7f@efficios.com>
- <65bd284165177_2d43c29443@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <6bdf6085-101d-47ef-86f4-87936622345a@efficios.com>
- <65bd457460fb1_719322942@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <5e838147-524c-40e5-b106-e388bf4e549b@efficios.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <5e838147-524c-40e5-b106-e388bf4e549b@efficios.com>
-X-ClientProxiedBy: MW4PR04CA0101.namprd04.prod.outlook.com
- (2603:10b6:303:83::16) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DADAC80634
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 20:14:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706904885; cv=none; b=SPefF/qUpoRqhVNrEhguXlyWcht4W9OkzASfSC/M5SFsFZ1EEHVBjL2IpqigUUYPXNNa6tQoN6jNVGMM65YEvERZ0XJuSqwBoVjGqL4nyQlhbDsso9KSkudl+ilqLKsuUOJgn1YA/8LNG54o4d0UQLo7Iv6ab0BN7V+Zbh11PF8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706904885; c=relaxed/simple;
+	bh=sx4sFIFIHZ82OGYD+khz42RvuPih8T9qNkm0UgLfxCg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=MT6Jl2ZbTPEcOS0tGtaG+ki4z9VVvdrM5SXfu/F2k7+Dirv1i6jmz6r3eRyVs2aUb9FyKx69QzPmXwHZHqSeH+zRP5KeNJKyOIaU12hyh5Jmvd3m+vxXQOiZmAmHgrRWfpQ9kPe/KNKRBUZOrBbBK8NDEXmfXFvQPWcoSlfk35A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=N74BO7gP; arc=none smtp.client-ip=209.85.160.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-216f774c827so1299793fac.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 12:14:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706904883; x=1707509683; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xqTNsAxhlA2YuESAciCqyaWHxO/Ad9sPBhytH5Lgwoo=;
+        b=N74BO7gP4Bl8t1oytthp3F2tkb0+NRqXG7rMXDT6f7aY42IDLRji+2z50dHq13e5qe
+         516tctlhfcdTosZ7XxqvPBwd8KIQXLBTFdFJnGkP1ZJ6NyHH2xV4caKp2tnuxUyh9Z0E
+         K6XK2MTfJy31FyuIqyxJN9l40nntzCKjxY5UE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706904883; x=1707509683;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xqTNsAxhlA2YuESAciCqyaWHxO/Ad9sPBhytH5Lgwoo=;
+        b=BVy5vwjZHsltVAlVlxQ/pd0pvUu3CFwUKUjKwO7ZNDFdOkNJNc2tJypY/D3MffQR6Y
+         xNDk7UCdTORIWJ+o1ATcEMTxRnzz5DiOcV792EnghQ99p4JpO4nTYixTgVSwCLubVe+C
+         rlpD+SsayINinfz5u5uB0dO5dfvfn3UQx3IxRe4sSfwCiS0EMI4ComXnvLJEiKCXpSAu
+         savbDN/wAUt3smGvrPj8gXBYVnde5h06yxP+EayfjcWN0h2haSxVex6jh8ClOngI7+AF
+         Yg90oRS2GkSMQP76gYwkbxQpQkJwGKWYrrp1cm+MrHKs99wkW/iw2H6mw4MPQNDt/6h3
+         uOkQ==
+X-Gm-Message-State: AOJu0Yzjpz3hMRAnCvGRUutHrdm7u8W2inv00z7K4qypbmXqPjRdD0Fb
+	CyRujUK+TsIHb/Vjd9df7j+6z+10UWN4pRYvDtob/YsLsaXBRotbMuijRKRONTV2VHiVUxzZWko
+	bZN9IDef2I/T1jUmdDj9GSZ67jtr44b00IRYE
+X-Google-Smtp-Source: AGHT+IFXZk9NEru0SMUk4ua6BbcA0uxSwiHUSIrvMKOjEmnDZTutfkU8uby9d0bZyeAELY8c6gc2tX4NnGWiDQ1x4nA=
+X-Received: by 2002:a05:6870:3920:b0:219:3d70:97c4 with SMTP id
+ b32-20020a056870392000b002193d7097c4mr863481oap.20.1706904882945; Fri, 02 Feb
+ 2024 12:14:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|SA3PR11MB7583:EE_
-X-MS-Office365-Filtering-Correlation-Id: bdab67eb-234c-460b-a795-08dc242b8a74
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ub7YIUU6ob9pLWm+2OmqQ99j4Adw40b5rUPhFmSsmIxkNXoFIvuUxZYgHES8hyk4tnpEkR0jtiZHl0kMOd3+nNH7wTfKZniorciocG8RpYLg4DG6g9Ke/6/XhFrI42KwcIHX8VseR25QDn9QugN9AS9VVGjbeVTmrDIMGLeZDhMW7RRPFrmF/6eYU5bcH0dg2StjcsWIfzAI2qjNx+fXXQWuJ3KwCkjIZwg6yms6qJqlFU9GoAYvDarRaX27eEYAKep1Q0zesMl0xONuhGSuGHdlEKroYwod2j66ZuXBvq6e9bjdbX8Ps5UAF1Rz6FSpBSA4R8392s7WbSqWkIo1Evg2QqvFtKkUnDRortQWxNaytDIBevrHyWxtG9A4XrUnuhwP4gr8DXwH8wLELcGZp6RD4kV0ZraUpte31j4OQgs7MbC3jLMzmHB8dapxPm3UG4fchuavz+FyhEL1Ee/xXC2KqBf++87NJAGBg7OdHPqpGV5aRlBA1hOiRtAEvcaqVaT4e98sdG0181pfRwMJ06EeUmGdsNnB2EFu/GqB5oo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(366004)(346002)(396003)(39860400002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(41300700001)(83380400001)(26005)(478600001)(82960400001)(8936002)(8676002)(66946007)(110136005)(5660300002)(66476007)(7416002)(4744005)(54906003)(66556008)(2906002)(4326008)(38100700002)(6666004)(316002)(6506007)(6512007)(9686003)(86362001)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gzKzF6ApSErPESjn2czsZRdmVAQsdgxswhTXAdmWE2TbYQIqI55GUO/IaOec?=
- =?us-ascii?Q?rNl3QIO/mN2hw/aEm50XcV/odi0pH7d9vksu8wt+fWw5rRHiPOa2A9sVKr8J?=
- =?us-ascii?Q?QY5wueIR3OlnKwtKfdjcBChjopBor2q6t9X8OIDX132BzmCAei9MdJtC1afF?=
- =?us-ascii?Q?lgZ3V/ziEYg0y8/coI/BbEAp668uTbZWodPvXSSze6DGLTFAo+cyhcjJ2+bu?=
- =?us-ascii?Q?HSIGbLUbNO/kWKOWHarI1dG4OioVQdjWVuCQmLryKxU45LoMA0uBLEU4Ub+E?=
- =?us-ascii?Q?RT3dDAdDeTpiwpDIvqlq6vvSHWVMCCWrbNFJlIrWEq2kVpP+Kx2s6wPLrKnC?=
- =?us-ascii?Q?spmpZTNCIOsbIfeb5boKQ13QKXB2A6zV6IG2DMWf6ccphf6eTr0EWMQ2rQXt?=
- =?us-ascii?Q?VD17QkGMQbzX8HhgiKH+vJ5XxrDj1rVN4bwtR+ZA4PAf+VMwJ6DkgvSDRba0?=
- =?us-ascii?Q?I/C7kTzwSZQhgc1MvWvqgePtJkUJC7aQQREjk+4zk2yPfN9K3w3LGqo0rHo+?=
- =?us-ascii?Q?qqEfI8kPUs6Q9YoLskQCFkSYiOiWi21Kuxf9a80eMuhCZYP9g2f7VGLsW+Gl?=
- =?us-ascii?Q?4zk2xYeytw0W/rfK2Gafq/4LMvQLiNWIpyUXBjeyyzqDdS6BRiiDq0daLgu6?=
- =?us-ascii?Q?UtfM0rwUT8GhsvIxoe5cpXO1p2fYGmTvZZ2+Fw4op7KXeifXhEt50tft4uPG?=
- =?us-ascii?Q?iSyeYTu+65ISqtGW62zQIH2TQOrY6mimq0bxNtRqqooAgPqNZ18Tt9l9QdGu?=
- =?us-ascii?Q?93y83n6gjqO85/vLPJ7rB8CIpxw42w77cgMc/ZOHxS6MDrdWQ9i7W/jU8VFf?=
- =?us-ascii?Q?q+0xV+AKDdRARakbW7wfeMO8NbuPHn/PTHr2e11eTe8IKM762PdpkutOh4SC?=
- =?us-ascii?Q?eSezgGn6XtqpgMClM5V7Acd+TzwzXSnFSbOqKdsfU7hSj290n4dkb+NOtV2M?=
- =?us-ascii?Q?IRdvw/WspHuEgb/U0YOqoLm4gkoydWN3e3F0ykcRWfgAEgzLh8ckvs55tyxK?=
- =?us-ascii?Q?VGaHf9+hcxunXvZ9FyL+18CmvpmWVBZxIUNf1eIlQim+DJQFxsxssd+Ae0eK?=
- =?us-ascii?Q?BLuA3RXnUidOhDp8OCiMTPoJEm0StKZ7A5j6Xw0LUeJuiaRiWypFLBqyB0of?=
- =?us-ascii?Q?XhShCE7KdXl2BC5FDq7B6bRV8NKJ1LxpubyBXS22hZ8vc0Ue4IlO/FNIe2HS?=
- =?us-ascii?Q?ZRqyEkaC5RhaBTAsmNd+kTQj+VbWrvBGz42PP14meM6ENjEECcKpa+6QMXaM?=
- =?us-ascii?Q?B+GmB4Ij0+TRXNYGQggQiYVBGEEYDwM8PDNH9SxfQU8ya2xzUorttFRmifc6?=
- =?us-ascii?Q?HakqgEgt56ccrS3uolc0ke3N+s0GBZyCXhdgnk62BGBcMVKQ+wFDbp3PgT/U?=
- =?us-ascii?Q?tFeXBnGjQ8L73jqwfJDikvdljTjCYYa4h91vFzMIxFsLv1HeR6NuA8Gej+2c?=
- =?us-ascii?Q?0UBMmCqSoqwZMKvBfKIqVG/itHulGMTJrB0xnpWjqhc2HeNoVuWjnqDOoLWU?=
- =?us-ascii?Q?mF3CHu10PLh+fMShdLS3lHEvrebvGdvSByZ5iNQI+D7HIUPqcj1OM55pkGBO?=
- =?us-ascii?Q?GG79ZnoCpjXgPydb+4mbs9cQFXJwrPG68SvN2A3IdSpt4MYNp6DkvNqtRv7a?=
- =?us-ascii?Q?+Q=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bdab67eb-234c-460b-a795-08dc242b8a74
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2024 20:14:20.6075
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SSAIMMAXN6Ghc2YbALKdnBKtcyIFLdO+3FnJMpiK4V/vujCdTq/Zu02aQtW3b90ETDN02JAWENhLZmFT6Fg0xxwB+tkcyZ2VvE4JR6hbWZM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB7583
-X-OriginatorOrg: intel.com
+References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver>
+ <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
+ <20240201204512.ht3e33yj77kkxi4q@revolver> <CALmYWFupdK_wc6jaamjbrZf-PzHwJ_4=b69yCtAik_7uu3hZug@mail.gmail.com>
+ <20240202151345.kj4nhb5uog4aknsp@revolver> <CABi2SkUSWLHM5KD=eK9bJrt3bBsEaB3gEpvJgr0LSTAE2G00Tg@mail.gmail.com>
+ <20240202192137.6lupguvhtdt72rbr@revolver>
+In-Reply-To: <20240202192137.6lupguvhtdt72rbr@revolver>
+From: Jeff Xu <jeffxu@chromium.org>
+Date: Fri, 2 Feb 2024 12:14:30 -0800
+Message-ID: <CABi2SkV+DaHHOwpVsbYbgkQNZ=Ynjx1vXWkPuz4J3O2vspTNLA@mail.gmail.com>
+Subject: Re: [PATCH v8 0/4] Introduce mseal
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Jeff Xu <jeffxu@chromium.org>, 
+	Jeff Xu <jeffxu@google.com>, Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org, 
+	keescook@chromium.org, jannh@google.com, sroettger@google.com, 
+	willy@infradead.org, gregkh@linuxfoundation.org, 
+	torvalds@linux-foundation.org, usama.anjum@collabora.com, 
+	rdunlap@infradead.org, jorgelo@chromium.org, groeck@chromium.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com, 
+	linux-hardening@vger.kernel.org, deraadt@openbsd.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Mathieu Desnoyers wrote:
-[..]
-> > Thanks for that. All of those need to be done before the fs goes live
-> > later in virtio_device_ready(), but before that point nothing should be
-> > calling into virtio_fs_dax_ops, so as far as I can see it is safe to
-> > change the order.
-> 
-> Sounds good, I'll do that.
-> 
-> I will soon be ready to send out a RFC v4, which is still only
-> compiled-tested. Do you happen to have some kind of test suite
-> you can use to automate some of the runtime testing ?
+On Fri, Feb 2, 2024 at 11:21=E2=80=AFAM Liam R. Howlett <Liam.Howlett@oracl=
+e.com> wrote:
+>
+> * Jeff Xu <jeffxu@chromium.org> [240202 12:24]:
+>
+> ...
+>
+> > > Provide code that uses this feature.
+>
+> Please do this too :)
+>
+Yes. Will do.
 
-There is a test suite for the pmem, dm, and dax changes
-(https://github.com/pmem/ndctl?tab=readme-ov-file#unit-tests), but not
-automated unfortunately. The NVDIMM maintainer team will run that before
-pushing patches out to the fixes branch if you just want to lean on
-that. For the rest I think we will need to depend on tested-by's from
-s390 + virtio_fs folks, and / or sufficient soak time in linux-next.
+
+> > >
+> > > Provide benchmark results where you apply mseal to 1, 2, 4, 8, 16, an=
+d
+> > > 32 VMAs.
+> > >
+> > I will prepare for the benchmark tests.
+>
+> Thank you, please also include runs of calls that you are modifying for
+> checking for mseal() as we are adding loops there.
+>
+It will includes mmap/mremap/mprotect/munmap
+
+> >
+> > > Provide code that tests and checks the failure paths.  Failures at th=
+e
+> > > start, middle, and end of the modifications.
+> > >
+> > Regarding, "Failures at the start, middle, and end of the modifications=
+"
+> >
+> > With the current implementation, e.g. it checks if the sealing is
+> > applied before actual modification of VMAs, so partial modifications
+> > are avoided in mprotect, mremap, munmap.
+> >
+> > There are test cases in the selftests to cover the failure path,
+> > including the beginning, middle and end of VMAs.
+> > test_seal_unmapped_start
+> > test_seal_unmapped_middle
+> > test_seal_unmapped_end
+> > test_seal_invalid_input
+> > test_seal_start_mprotect
+> > test_seal_end_mprotect
+> > etc.
+> >
+> > Are those what you are looking for ?
+>
+> Those are certainly good, but we need more checking in there.  You have
+> a seal_split test that splits the vma by mseal but you don't check the
+> flags on the VMAs.
+>
+I can add the flag check.
+
+> What I'm more concerned about is what happens if you call mseal() on a
+> range and it can mseal a portion.  Like, what happens to the first vma
+> in your test_seal_unmapped_middle case?  I see it returns an error, but
+> is the first VMA mseal()'ed? (no it's not, but test that)
+>
+The first VMA is not sealed.
+That was covered by test_seal_mprotect_two_vma_with_gap.
+
+> What about the other system calls that will be denied on an mseal() VMA?
+The other system call's behavior is kept as is, if the memory is not sealed=
+.
+
+> Do they still behave the same?  do_mprotect_pkey() will break out of the
+> loop on the first error it sees - but it has modified some VMAs up to
+> that point, I believe?
+Yes. The description about do_mprotect_pkey() is correct.
+
+> You have changed this to abort before anything
+> is modified.  This is probably acceptable because it won't affect
+> existing applications unless they start using mseal(), but that's just
+> my opinion.
+>
+To make sure this, the test was written with sealing=3Dfalse, those
+tests are passed in the main (before applying my patch) to make sure
+the test is correct.
+
+> It would be good to state the change in behaviour because it is changing
+> the fundamental model of changing mprotect/madvise until an issue is
+> hit.  I think you are covering this by "it blocks X" but it's doing more
+> than, say, a flag verification.  One could reasonably assume this is
+> just another flag verification.
+>
+Will add more in documentation.
+
+> >
+> > > Document what happens in those failure paths.
+>
+> I'd like to know how this affects other system calls in the partial
+> success cases/return error cases.  Some will now return new error codes
+> and some may change the behaviour.
+>
+For the mapping that is not sealed, all remain unchanged, including
+the error handling path.
+For the mapping that is sealed, EPREM is returned if the sealing check
+fails, and all of VMAs remain unchanged.
+
+> It may even be okay to allow munmap() to split VMAs at the start/end of
+> the region and fail to munmap because some VMA in the middle is
+> mseal()'ed - but maybe not?  I haven't put a whole lot of thought into
+> it.
+If you are referring to something like below
+[unmapped][map1][unmapped][map2][unmapped][map3][unmapped]
+and map2 is sealed.
+
+unmap(start of map1,end of map3) will fail.
+mmap/mremap/unmap/mprotect on an address range that includes map2 will
+fail with EPERM, with map1/map2/map3 unchanged.
+
+Thanks
+-Jeff
+
+>
+> Thanks,
+> Liam
 
