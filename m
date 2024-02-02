@@ -1,106 +1,117 @@
-Return-Path: <linux-kernel+bounces-49866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49867-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDBE18470A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:53:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D0668470AC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:53:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5ECA8B28583
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:53:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46C9C1F26456
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:53:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D845253;
-	Fri,  2 Feb 2024 12:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70A6340BF2;
+	Fri,  2 Feb 2024 12:53:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y7d74Z6e"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="FaSRF19T"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F5E4428
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 12:53:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1462C187F;
+	Fri,  2 Feb 2024 12:53:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706878384; cv=none; b=lhk0ilWbnYudkzN66LhvVKGxQTWU082vePGMlvtCaUkP2fEQw7SgBp79H/pVkZnZloR2V+FJKPhiPp/05T7IMxM60BFaJq8zrUJRYbi6nLddoxVHjAwVLYsdMguJGfn0pk9tN1MkJpz6XnwYH9ypirv/azWs9+rJfcgbxyvSG2E=
+	t=1706878388; cv=none; b=m4VVdhRaK6vf31vYPYVW0ci/iKiPSWFOUBoTo94kPie4jBCt6CaWpoBZhIdACvvfYUf85peYYX1DE562ZrqdDRpyA53mNsmX/xJzoyF7pwN4mzwX+fnGl3KCXfm0ZhGHtVicYQezMFu4F45IBEUUsen0z/WVTgfICfgxjt129mg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706878384; c=relaxed/simple;
-	bh=uRWwHyoDqw4F+LcubyhbFy0WTRbHEZvIDfkqsptYoKs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SA6j8G2MmOCc3qK4zRfN/+8l5d4aTwUYd5gnQheFjZAJ76ivysEZr5YxOOynPrW8ImzskOvu8vMjuxkQvSIY85mY3vEKVTxMKenocdKYDX/7r98dzselyzX1/gGyon+Uhk1m5TanaWJ2ZNrruLf/RuEFZjNSRUP9M237mRTEeA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y7d74Z6e; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc6d5206f18so2016986276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 04:53:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706878382; x=1707483182; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uRWwHyoDqw4F+LcubyhbFy0WTRbHEZvIDfkqsptYoKs=;
-        b=Y7d74Z6e9SEJUVQ4XfwbTLTHcer6sTnrYjh1S30fQgVP3ayr8HLkbfVM57+sKQQPrf
-         9fJcFibgrSOWnWmqAykCXQNeO7C7Hrh6xcP+Iq4+3jXk8HDylQExMD2ajwCRnSVNudD8
-         aLPnO5uDv2BXbmp652tPSTMwa9CbL6pslRC26jN4geFwg2qswS7TwxXl5EnB05zJP2Me
-         xvE5IMQE6ZejATK07rOi+KrzDIha8rgDQA4wWRtn+yYnYqe99IFOkfkkG+pAGt2T1c78
-         w4AZXVAYM6IeANRrduj3Fy7GxI360UL5FJwLtpRoBzmugQKk6ofxpMgkDt+/k83LJhNV
-         nmhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706878382; x=1707483182;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uRWwHyoDqw4F+LcubyhbFy0WTRbHEZvIDfkqsptYoKs=;
-        b=Bgrwg6xjg9vtSsmaIhQWoPwZrbsD+XrwV/w27ds6neVOWOh9gN0710OgS32yiegq4J
-         7i0MCwrfy4u3OpQ3O4mjrF/dt4yUEoLuoJE9BhvTRyg0CTTZ81XGUeV0k3TywHmju4fH
-         U9FujtHZGNrmR/hqZDUFqz+nAIfC2OgI8cEJXT1HBt5qNH+3Mn3uh3qtQRquCQnWykoo
-         oyUm9hSTnoaV2DgCXK89yPO08rBe4BWzk5rbL9t4nNx/pe5YlIEFDOz6gUvB2WCIs9/W
-         sIFRdECgSELdCa7Hv1cx5JqTfhpdVQ+LQSvrE+D5iijbrbyPeOTwjje0I4mpf/xCFIl2
-         CdOg==
-X-Gm-Message-State: AOJu0YxMA/UpbYs/nwOiEmiTDiTZ1CWcR6STMg7NR0NvBa/oy7tqCyaI
-	8rgAtWEqY3gnFKrgLEuJ55bl8FpIT843IzJQ+uf2ES6ejaPrk9bB515nvVE7Jv6UTlPW0WDTIgO
-	CHOG0ii/0ZUsrHRcLCa44Ht9+J+g=
-X-Google-Smtp-Source: AGHT+IEVwsS41bhKowc+2g3IteSOCMf7c4xkXbS8bpePW360AFCPZR0/4nOiOmtp7Z3g1CTElPcncPZKBKRacQ9mLMA=
-X-Received: by 2002:a25:d3d1:0:b0:dc2:470b:8883 with SMTP id
- e200-20020a25d3d1000000b00dc2470b8883mr8155620ybf.11.1706878382468; Fri, 02
- Feb 2024 04:53:02 -0800 (PST)
+	s=arc-20240116; t=1706878388; c=relaxed/simple;
+	bh=aI6tdoMPLKlxeu03PJwY+6PTUmy8/t1n/2qpRcDuYbY=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rhs8lQzpvaDoQzYfdiyOohHZaTeO9/yg7/0x+nNoo8kBA4utz1SMvpIwRDUclUx39pXnW6LOLkBs2AGWB+5H/UF9wpHtLeOKp6t8yVmiGOI2eOnD3Pu+RJhnCFZ8r3CSA0rLqf0khQPNuevHmHq8bI6pG7XPWq26lj5DsaW3h4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=FaSRF19T; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 412CqwUO085110;
+	Fri, 2 Feb 2024 06:52:58 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706878378;
+	bh=NT2KkZYcchRC7YCcmd8jd30rJ0gLMf93hNnBIQa0it4=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=FaSRF19TRdwnHT6XWwPncK4IBMLtU3SNUZk4gAsvTl576KBa25FrQGIFT7ebY5uaS
+	 vgD2gZ34pfBZcU+GAxht+hdAACl/6FBVDP5gzoOHOfXpLNl9UWaJlYAjhDVN7BOtaw
+	 00MbkdNGc1MeMUdKq1nFElywhz5h8UFgfA7nHJk4=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 412CqwvE047001
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 2 Feb 2024 06:52:58 -0600
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 2
+ Feb 2024 06:52:57 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 2 Feb 2024 06:52:57 -0600
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 412CqvPA009693;
+	Fri, 2 Feb 2024 06:52:57 -0600
+Date: Fri, 2 Feb 2024 06:52:57 -0600
+From: Nishanth Menon <nm@ti.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC: Brandon Brnich <b-brnich@ti.com>, Nas Chung <nas.chung@chipsnmedia.com>,
+        Jackson Lee <jackson.lee@chipsnmedia.com>,
+        Mauro Carvalho Chehab
+	<mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Darren
+ Etheridge <detheridge@ti.com>
+Subject: Re: [PATCH v2] dt-bindings: media: Add sram-size Property for Wave5
+Message-ID: <20240202125257.p4astjuxpzr5ltjs@dragster>
+References: <20240201184238.2542695-1-b-brnich@ti.com>
+ <1209b7cf-5be2-4107-aa6b-d67a32ea3737@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201125226.28372-1-ioworker0@gmail.com> <Zby-sHLDlmTRaUcd@tiehlicka>
- <CAK1f24=7sy_Bczpt5YeDbkhfriYUc1=zreSFdGCxfF3R0D6sRQ@mail.gmail.com> <ZbzfxNn4AYnTVFLh@tiehlicka>
-In-Reply-To: <ZbzfxNn4AYnTVFLh@tiehlicka>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Fri, 2 Feb 2024 20:52:48 +0800
-Message-ID: <CAK1f24mvBkc2c=fHL6UxMhL2mgLHVrSwZfE5516bOR0yVdfZpQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm/khugepaged: skip copying lazyfree pages on collapse
-To: Michal Hocko <mhocko@suse.com>
-Cc: akpm@linux-foundation.org, zokeefe@google.com, david@redhat.com, 
-	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com, 
-	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1209b7cf-5be2-4107-aa6b-d67a32ea3737@linaro.org>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Fri, Feb 2, 2024 at 8:27=E2=80=AFPM Michal Hocko <mhocko@suse.com> wrote=
-:
->
-> On Fri 02-02-24 19:18:31, Lance Yang wrote:
-> > IMO, since it's treated the same as pte_none,
-> > perhaps lazyfree pages shouldn't be copied to
-> > the new huge page.
->
-> Why? The content of MADV_FREE page is valid until it is reclaimed.
+On 11:47-20240202, Krzysztof Kozlowski wrote:
+> On 01/02/2024 19:42, Brandon Brnich wrote:
+> > Wave521c has capability to use SRAM carveout to store reference data with
+> > purpose of reducing memory bandwidth. To properly use this pool, the driver
+> > expects to have an sram and sram-size node. Without sram-size node, driver
+> > will default value to zero, making sram node irrelevant.
+> 
+> I am sorry, but what driver expects should not be rationale for new
+> property. This justification suggests clearly it is not a property for DT.
+> 
 
-IMO, if MADV_FREE pages are considered valid until
-reclaimed, treating them the same as pte_none might
-pose a conflict.
+Yup, the argumentation in the commit message is from the wrong
+perspective. bindings are OS agnostic hardware description, and what
+driver does with the description is driver's problem.
 
-Thanks,
-Lance
+I will at least paraphrase my understanding:
+In this case, however, the hardware block will limp along with
+the usage of DDR (as is the current description), due to the
+latencies involved for DDR accesses. However, the hardware block
+has capability to use a substantially lower latency SRAM to provide
+proper performance and hence for example, deal with higher resolution
+data streams. This SRAM is instantiated at SoC level rather than
+embedded within the hardware block itself.
 
-> --
-> Michal Hocko
-> SUSE Labs
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
