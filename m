@@ -1,117 +1,111 @@
-Return-Path: <linux-kernel+bounces-49899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFB1784712A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:29:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5612B84712F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:30:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A538A1F24C2F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:29:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2E0F1F233D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:30:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F2794654B;
-	Fri,  2 Feb 2024 13:29:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94BCD46551;
+	Fri,  2 Feb 2024 13:30:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IezIkzd0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A06cgDmQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7ED54643A;
-	Fri,  2 Feb 2024 13:29:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1DCE46448;
+	Fri,  2 Feb 2024 13:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706880586; cv=none; b=BwvgTz6z/D7vNGC8NjoGcH9u91PyKCxoTU9BMlgLohDkBu4TJKBckwmDJQWZNjmcHdkzWBG29IDZs89Ir+IA60vyHD6NaBlR98DB5mrRV3u2MEl81Uz3FHpt39V3GWTs7VQlyU23/O7P1h5rZATYu7qSCAtcI/UhjGjZ53JpU+Y=
+	t=1706880632; cv=none; b=DfZhxaDqNbldsUuwOPWEmmtwSf166PtMt2zUMJTKZCeBMqX3Rrk0fLPK1i8gDD/43vpGvYTom8Ov7AjagYk6AsLHVxAPvICjBYTyrvoeme3BzuZAZofULn5f/YdjcNe3Fa9BszzXrdANY2xqgzGz/1EJm2vsUPOsWNeBz3DC1Ew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706880586; c=relaxed/simple;
-	bh=emWHbtbKmHt44W1EEZpZpoNIQ47i7QfIYpdTdG9/FUA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mNs1m1BhFO2AyGYbfE6ZARxI2K7b8yXitZaDgaOUmJCivnVAV92p3qndFckbcfRvihSNaoBTR9taV2I4L1JILFQ6AnmDg+4v9PmAfcLWQ90fjjGxiGUpvRMgsyao46d5Df184LFv89/+Va8FEH5I5tFz3tXkNtDrjIaaj6LcbbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IezIkzd0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13CEEC433F1;
-	Fri,  2 Feb 2024 13:29:42 +0000 (UTC)
+	s=arc-20240116; t=1706880632; c=relaxed/simple;
+	bh=Up+XWB/zKXHCgm15f7dpGbvm8vMJ0y4JyEQDRIXfhYk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=G4rdLhxHnGbCacvDMiuB5GxNQ5jj2J3zWlUygT9f5n13sk8jEl5kjRvsTxG+0c1NWkrd8i0vcJ/KiKlSVq4BJGzn11B7HgUjiRdF3SM3kzyYFN38yIhbN6wCJtE05ILCRDW61wIFcP0HXOtuvWv58nn/IAnRLt3icxw6ZiTjPYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A06cgDmQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 038C7C433F1;
+	Fri,  2 Feb 2024 13:30:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706880585;
-	bh=emWHbtbKmHt44W1EEZpZpoNIQ47i7QfIYpdTdG9/FUA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IezIkzd0Uc+tG7hy/lyHyY7q+70ph0LArTYnWrdSZB/soOCU74p82GOqyzzZ3IspI
-	 P9kuaKt8RC9Pmg8Ga9ETLt8LtAXwxTp8lvwbQPVD15lHJp20ymArkNM3epDmSVwG5P
-	 D8xnQLyCodAAy5pXpS8pLk8Rh4IZw9yydGpfDQ00ot6PbMwatR7pccRGdEUiYYeoHV
-	 XbN7wXgQyj1tc4eejDh7ZHC4KRQEbT21umWIvKAmMqBnjm07DU7hjTGh2E+rtIJ+yl
-	 PRQTsvj264iIPI0o4IWVce/N3prRs8Hw5dSaYZZ2NldH24jwjFpzhjKVQIDupQU8RD
-	 rgwg88YkFkmmg==
-Date: Fri, 2 Feb 2024 13:29:40 +0000
-From: Lee Jones <lee@kernel.org>
-To: Karel Balej <karelb@gimli.ms.mff.cuni.cz>,
-	Linus Walleij <linus.walleij@linaro.org>
-Cc: Karel Balej <balejk@matfyz.cz>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-input@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/5] mfd: add 88pm88x driver
-Message-ID: <20240202132940.GG1379817@google.com>
-References: <20231217131838.7569-1-karelb@gimli.ms.mff.cuni.cz>
- <20231217131838.7569-3-karelb@gimli.ms.mff.cuni.cz>
- <20240125122634.GE74950@google.com>
- <CYQ8MEQRJELE.2GB9316NZA998@gimli.ms.mff.cuni.cz>
- <20240131110311.GI8551@google.com>
- <CYTURHOW0WMR.2UMOT0D1GFZ2W@gimli.ms.mff.cuni.cz>
- <20240202124550.GE1379817@google.com>
- <CYULY1BYVCYK.1EGSBSVNRSTLQ@gimli.ms.mff.cuni.cz>
+	s=k20201202; t=1706880632;
+	bh=Up+XWB/zKXHCgm15f7dpGbvm8vMJ0y4JyEQDRIXfhYk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=A06cgDmQ7djvvPlJx4PMgdYm/JURfxYGRcmQ9WJkAmcnyTjmidvA9ZmxIH9Z+S/xc
+	 4atlDQNGJvLQnMIDSYsiciEfC1cMdes3bQc66f7zKbC2ivh+xHpQOKrZmIQoTqQ394
+	 CQlJAt3A/jcRbpZnVS3aozv1KIiR1boXTo4WmYmmJPXyZ6jkyIwD7DVrnMNUzssHKy
+	 2kjAJ79hkWXLsl7Eln2410KwwXUQnylp50ic544POdsbvibJyRkTRZvgDgefvFZFnZ
+	 QQQKWHOHIGsmNij40PKNIM7HpioViNaKQMtxGDxP7bY09Wt637hqlIj+AyxN+LDcun
+	 c5mDsxBRLNYAw==
+Date: Fri, 2 Feb 2024 14:30:27 +0100
+From: Mauro Carvalho Chehab <mchehab@kernel.org>
+To: Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: linux-media@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+ linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
+Subject: Re: [PATCH 1/1] media: v4l: Fix link frequency helper's kernel-doc
+Message-ID: <20240202143027.21fe3f5b@coco.lan>
+In-Reply-To: <20240202064007.50545-1-sakari.ailus@linux.intel.com>
+References: <20240202145412.336db5b2@canb.auug.org.au>
+	<20240202064007.50545-1-sakari.ailus@linux.intel.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CYULY1BYVCYK.1EGSBSVNRSTLQ@gimli.ms.mff.cuni.cz>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Linus,
+Em Fri,  2 Feb 2024 08:40:07 +0200
+Sakari Ailus <sakari.ailus@linux.intel.com> escreveu:
 
-On Fri, 02 Feb 2024, Karel Balej wrote:
-
-> Lee Jones, 2024-02-02T12:45:50+00:00:
-> > On Thu, 01 Feb 2024, Karel Balej wrote:
-> >
-> > > Lee Jones, 2024-01-31T11:03:11+00:00:
-> > > > On Sun, 28 Jan 2024, Karel Balej wrote:
-> > > > > > > +	/* GPIO1: DVC, GPIO0: input */
-> > > > > > > +	REG_SEQ0(PM88X_REG_GPIO_CTRL1, 0x40),
-
-Do we have a precedent for drivers setting up their own pins like this?
-
-> > > > > > Shouldn't you set these up using Pintrl?
-> > > > > 
-> > > > > You mean to add a new MFD cell for the pins and write the respective
-> > > > > driver? The downstream implementation has no such thing so I'm not sure
-> > > > > if I would be able to do that from scratch.
-> > > >
-> > > > This is not a Pinctrl driver.
-> > > >
-> > > > Isn't there a generic API you can use?
-> > > 
-> > > I'm sorry, I don't think I understand what you mean.
-> >
-> > Perhaps I misunderstand the code.  It looks like this regmap patch hack
-> > is configuring pins and a bunch of other things.  Would that be a
-> > correct assessment?
+> Fix kernel-doc indentation for v4l2_link_freq_to_bitmap().
 > 
-> Yes, that sounds correct.
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Fixes: a68e88e2cf9e ("media: v4l: Add a helper for setting up link-frequencies control")
+> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> ---
+> Thanks for reporting this, Stephen.
 > 
-> > If so, where do we draw the line here?  Do we accept a 1000 line driver
-> > which configures a large SoC with a bunch of bespoke register writes?
+>  include/media/v4l2-common.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> I understand, I just don't know what you mean by "a generic API". I'm
-> also not clear on whether what you have in mind is simply adding a
-> dedicated driver for the pins as a new subdevice of this MFD.
+> diff --git a/include/media/v4l2-common.h b/include/media/v4l2-common.h
+> index cd2163f24f8a..602738f7741e 100644
+> --- a/include/media/v4l2-common.h
+> +++ b/include/media/v4l2-common.h
+> @@ -563,7 +563,7 @@ u32 v4l2_fraction_to_interval(u32 numerator, u32 denominator);
+>   * Return values:
+>   *	0: Success
+>   *	-ENOENT: No match found between driver-supported link frequencies and
+> - *		 those available in firmware.
+> + *	those available in firmware.
+>   *	-ENODATA: No link frequencies were specified in firmware.
+>   */
+>  int v4l2_link_freq_to_bitmap(struct device *dev, const u64 *fw_link_freqs,
 
--- 
-Lee Jones [李琼斯]
+This won't do what's expected at documentation, as Sphinx will just
+fold everything into a single paragraph, like:
+
+	"0: Success -ENOENT: No match found between driver-supported link frequencies and those available in firmware. -ENODATA: No link frequencies were specified in firmware."
+
+Maybe you could try using (untested):
+
+
+	* Return values:
+        *
+	* * 0: success
+	* * -ENOENT: No match found between driver-supported link frequencies and
+	*     those available in firmware.
+        * * - ENODATA: No link frequencies were specified in firmware.
+
+Please test it and see if the "make htmldocs" output will be what it would
+be expected.
+
+Regards,
+Mauro
 
