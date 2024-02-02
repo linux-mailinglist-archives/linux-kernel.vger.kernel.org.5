@@ -1,133 +1,144 @@
-Return-Path: <linux-kernel+bounces-50208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98AFA8475D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:11:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 979208475C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:08:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54144B2E724
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:09:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 527E828CE38
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:08:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA4D14D45B;
-	Fri,  2 Feb 2024 17:07:23 +0000 (UTC)
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 304A414D422;
+	Fri,  2 Feb 2024 17:07:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IUjnD8Sb"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B53314C5A7
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 17:07:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA7F314A4F8
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 17:07:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706893643; cv=none; b=a6BDWbosFvJgqqE4VPlcEZLLfhhZQ4fNuKQgLS+qW48DFQxGi2gopwaGMZ7yb6cokt3GWAI6Edbj8GdOBXbzr8eRxBm93lNrciSu+VZ2x5DME7sZ4NXX6RMuU2p0ucBsQrDTLGaTJu+4Qur+MYHslASyVToRaRtVO4E5cTijGDU=
+	t=1706893637; cv=none; b=fsMrOxuZO4SEav7G66kVlXzblm6O1urg5iOn6I+IVt0LLEflMjgm/wxvS/vPlbWhkkyohHtvZDXoY0mqRJt4hd5U6+3SWrFcXlACd6MFIFXNYly81aodyzhiFWWhj5C8njeLp57PSopu28iToPY4+pXP7/NQUygXxhTwsy3gPqA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706893643; c=relaxed/simple;
-	bh=y+gAPT68yktKEC3SZi/PBBCLmq/Ebt4n1T1gRSBSaXU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U0zo/8voeseIm1EJU6Aq2Q13WbfquYtsWrt4Vx5O10DfVmL6h77VF4jsI5Zf/0h0uol2nzUhNl3xGTyT1ma5bQEcbns3YT/dlX8+RZpxlA/1JQosIYF6C1xWYiMnrxKISkM+5HSn/VvO4kMRQOqqDnbFvi9ZLjP8KpWrqdkmZvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-68c794970d5so15254556d6.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 09:07:17 -0800 (PST)
+	s=arc-20240116; t=1706893637; c=relaxed/simple;
+	bh=ZxYwtQl6gwkvn4vNBtszF0Bkjvg2DtSi0J2BX7wpt0I=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=fbzeyBLZ6wUdRsSMdYrFNwhESk8iIN3Cw+qa/7AOF5Qc2GX01bxNU0XWk6TBTCNMBUTvj7GNOi00sWyQG+B4CtqR1BTURZuRraNY6FFHeAUf+graQD2HWQkzMko2STRnrQ6MSqCsSagAIPnHcOkLTSHWU2lVxAjR/kptdryk02Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IUjnD8Sb; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6041bb56dbfso33971017b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 09:07:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706893635; x=1707498435; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=52hREpEdz1wY5YQcf323vOpsz5jH6pb2sFOoSjdgNLo=;
+        b=IUjnD8SbUswvKgPrQdKkOr6oQcGZRuLtv1WIzQgie9KMEz2kTg7czQExQriW6rTUB5
+         3kzAdeIL6KTVIy2Pu3E8tAVFjO1B8JlrYDkgiLpInp5FHo0dQRswHSOAI1dAIQFYBHz9
+         6gf/Jn4K7dDzOpNnt1wfXfPtonlxXvBaBhQVqhaSXTIRYLcTopeuPkLZpKVhUneFKc2Q
+         A21Nt2LtrW7gYZ5hVgXSDg6tQZWcgJblYqX4Z9iTV1D8JY7emZ1C3ARUHoFbZUvQ/r0N
+         50qOFApM98meSeXwi61tFfVF8G3eb0AO5TD+qo6AnCW6wo2ZU20KxH5oS6cdocUOZb1e
+         1enA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706893636; x=1707498436;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y+gAPT68yktKEC3SZi/PBBCLmq/Ebt4n1T1gRSBSaXU=;
-        b=lXSPZ8f6QMAiPzMaF9ru1wjnhcXMPqrS8VQ9PXGPydYlGf4+E7LElId8OI7xthdZ8C
-         ipl2LSu366BUlmClIlZU35pZk7mfcMhrLpawL03I155x0I0TqDP5SjhPR/04QojQou+v
-         hN519lxJvXNq9OgDtRVD55pbpJtiiy92JQKy1yKkh2ak44bfuuaN+rDI8jPkmrMcSlcE
-         g10i5AKAtewp1S+GROKa5/1pLeFlpuV9fqw83gAb1KOLbfoK+a1fGNGJ1X/NrXNiCPr1
-         Q2Oy+kMqd8ZHIvG5DQA695SLXmEhm5LphUFw4ICbMGHc6LycQf6kxlPJSX3MSgfNVmIa
-         77hA==
-X-Gm-Message-State: AOJu0Yzh1v5DXCtagQiVL5oDs5wLmpbH87vKoSIT7YbRB6znemS5S5Qx
-	BLRCGJafq5zFS8AGrCUqWFpHJStchvO399s5xNlXHHBi0CATbzsO
-X-Google-Smtp-Source: AGHT+IFgMn7G49IMgaFPDtinjH2Oc1djCOjdrS3AUmkMFaaJ19AFcapU2qK6Ndxp3bk/XyGVZNuYAQ==
-X-Received: by 2002:a05:6214:2527:b0:68c:7302:8974 with SMTP id gg7-20020a056214252700b0068c73028974mr4680152qvb.30.1706893636113;
-        Fri, 02 Feb 2024 09:07:16 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVzE9W/xHwkhE7x6DjMoApkSYNkXT+2USzaZmjbS3sbgrF3DuuvI/47O2BvF8T08qBw49dxUuhmo9mZIxB1R1AxE4SDiNufQPx9s3iaL6qXyXjpVAe2Y95NnjECfXFS2WA6RIj1XgpClJ30LS65jR3Qo5GlDtlZb5Mk6g2qD1nm33uLFV8d2OytNhHfS0VrXysm0MD5skLE89Da8kxRkxTj/85Es2in21h4yaesgvHX/zuE6yZytjMDD7t4F1H+cw54nL1Jxi9eXUV3zEEAf4uWp869RVSbUr9m1na6vIBBbkDXp5uFVQffYvbizP/7nj8OakHwc8LKkpt2Mbi5hqnMGME7H3dNBA==
-Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id mf5-20020a0562145d8500b0068c749df8f2sm969308qvb.20.2024.02.02.09.07.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 09:07:15 -0800 (PST)
-Date: Fri, 2 Feb 2024 11:07:12 -0600
-From: David Vernet <void@manifault.com>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
-	juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	mgorman@suse.de, bristot@redhat.com, kernel-team@meta.com
-Subject: Re: [PATCH] sched/fair: Simplify some logic in
- update_sd_pick_busiest()
-Message-ID: <20240202170712.GC2238525@maniforge>
-References: <20240202070216.2238392-1-void@manifault.com>
- <xhsmhwmrmhkbh.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+        d=1e100.net; s=20230601; t=1706893635; x=1707498435;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=52hREpEdz1wY5YQcf323vOpsz5jH6pb2sFOoSjdgNLo=;
+        b=NIMdxp8lSJCnh+4ue1L2rirPSD49d3tymaoVZr3QYwN9YcivpbThhPWojbbKaSsPPw
+         lMAyPoqDrB7yVN/Sei932HNmdTBg0dxLxahKihLfDPME405dqw/VZ1U/b7/LmMD16mrk
+         Srh7RNqniEXPPWmpxG5qrZKcER9MNCeRX1sUivET5X3FNNlRVVPUYIpBfKeRzGdvb0Vk
+         5WEy9svo4mvfHSpBquaE6ZazFj11pcQ8ZmDGzu+4gZe/C5zQ0GBpMBsEaEHNWPIU6LXz
+         +S7vBlkyH6Jz94VxrW9EUV7rljJV75DD58SIx8YrkP0iygFcPM9pP5KvPAHWeqVF3t4x
+         kuSQ==
+X-Gm-Message-State: AOJu0YwDDgkz+03wZH9OHjGxrPqGkjAyxpk3YJSkLKghZk1ulfEnD+XW
+	OLqfxhIlE4Aj2YxwHoZie5ANvKqRY2UBNXsxNka9/oYCnp70v9c72JQtHma6lEmtdCK6AggVHvj
+	gIw==
+X-Google-Smtp-Source: AGHT+IGW368ALVFacBMp4luOZOtgF9xdwUNWVenx3J/2DBP1Gf1M9X6P48vkhXsEFewVeUm8CzD7lSb87CA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:9805:0:b0:602:d545:a3bb with SMTP id
+ p5-20020a819805000000b00602d545a3bbmr990910ywg.1.1706893634791; Fri, 02 Feb
+ 2024 09:07:14 -0800 (PST)
+Date: Fri, 2 Feb 2024 09:07:13 -0800
+In-Reply-To: <9098e8bb-cbe4-432c-98d6-ce96a4f7094f@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="aaczLianmhiTpaH6"
-Content-Disposition: inline
-In-Reply-To: <xhsmhwmrmhkbh.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-User-Agent: Mutt/2.2.12 (2023-09-09)
+Mime-Version: 1.0
+References: <20240123221220.3911317-1-mizhang@google.com> <ZbpqoU49k44xR4zB@google.com>
+ <368248d0-d379-23c8-dedf-af7e1e8d23c7@oracle.com> <CAL715WJDesggP0S0M0SWX2QaFfjBNdqD1j1tDU10Qxk6h7O0pA@mail.gmail.com>
+ <ZbvUyaEypRmb2s73@google.com> <ZbvjKtsVjpuQmKE2@google.com>
+ <ZbvyrvvZM-Tocza2@google.com> <9098e8bb-cbe4-432c-98d6-ce96a4f7094f@linux.intel.com>
+Message-ID: <Zb0hQfZX89gJOtRX@google.com>
+Subject: Re: [PATCH] KVM: x86/pmu: Fix type length error when reading pmu->fixed_ctr_ctrl
+From: Sean Christopherson <seanjc@google.com>
+To: Xiong Y Zhang <xiong.y.zhang@linux.intel.com>
+Cc: Mingwei Zhang <mizhang@google.com>, Dongli Zhang <dongli.zhang@oracle.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
+On Fri, Feb 02, 2024, Xiong Y Zhang wrote:
+> 
+> 
+> On 2/2/2024 3:36 AM, Sean Christopherson wrote:
+> > On Thu, Feb 01, 2024, Mingwei Zhang wrote:
+> >> On Thu, Feb 01, 2024, Sean Christopherson wrote:
+> >>> On Wed, Jan 31, 2024, Mingwei Zhang wrote:
+> >>>>> The PMC is still active while the VM side handle_pmi_common() is not going to handle it?
+> >>>>
+> >>>> hmm, so the new value is '0', but the old value is non-zero, KVM is
+> >>>> supposed to zero out (stop) the fix counter), but it skips it. This
+> >>>> leads to the counter continuously increasing until it overflows, but
+> >>>> guest PMU thought it had disabled it. That's why you got this warning?
+> >>>
+> >>> No, that can't happen, and KVM would have a massive bug if that were the case.
+> >>> The truncation can _only_ cause bits to disappear, it can't magically make bits
+> >>> appear, i.e. the _only_ way this can cause a problem is for KVM to incorrectly
+> >>> think a PMC is being disabled.
+> >>
+> >> The reason why the bug does not happen is because there is global
+> >> control. So disabling a counter will be effectively done in the global
+> >> disable part, ie., when guest PMU writes to MSR 0x38f.
+> > 
+> > 
+> >>> fixed PMC is disabled. KVM will pause the counter in reprogram_counter(), and
+> >>> then leave the perf event paused counter as pmc_event_is_allowed() will return
+> >>> %false due to the PMC being locally disabled.
+> >>>
+> >>> But in this case, _if_ the counter is actually enabled, KVM will simply reprogram
+> >>> the PMC.  Reprogramming is unnecessary and wasteful, but it's not broken.
+> >>
+> >> no, if the counter is actually enabled, but then it is assigned to
+> >> old_fixed_ctr_ctrl, the value is truncated. When control goes to the
+> >> check at the time of disabling the counter, KVM thinks it is disabled,
+> >> since the value is already truncated to 0. So KVM will skip by saying
+> >> "oh, the counter is already disabled, why reprogram? No need!".
+> > 
+> > Ooh, I had them backwards.  KVM can miss 1=>0, but not 0=>1.  I'll apply this
+> > for 6.8; does this changelog work for you?
+> > 
+> >   Use a u64 instead of a u8 when taking a snapshot of pmu->fixed_ctr_ctrl
+> >   when reprogramming fixed counters, as truncating the value results in KVM
+> >   thinking all fixed counters, except counter 0, 
+> each counter has four bits in fixed_ctr_ctrl, here u8 could cover counter 0
+> and counter 1, so "except counter 0" can be modified to "except counter 0 and
+> 1" 
 
---aaczLianmhiTpaH6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ugh, math.  I'll adjust it to:
 
-On Fri, Feb 02, 2024 at 06:01:22PM +0100, Valentin Schneider wrote:
-> On 02/02/24 01:02, David Vernet wrote:
-> > When comparing the current struct sched_group with the yet-busiest
-> > domain in update_sd_pick_busiest(), if the two groups have the same
-> > group type, we're currently doing a bit of unnecessary work for any
-> > group >=3D group_misfit_task. We're comparing the two groups, and then
-> > returning only if false (the group in question is not the busiest).
-> > Othewise, we break, do an extra unnecessary conditional check that's
-> > vacuously false for any group type > group_fully_busy, and then always
-> > return true.
-> >
-> > Let's just return directly in the switch statement instead. This doesn't
-> > change the size of vmlinux with llvm 17 (not surprising given that all
-> > of this is inlined in load_balance()), but it does shrink load_balance()
-> > by 88 bytes on x86. Given that it also improves readability, this seems
-> > worth doing.
-> >
-> > As a bonus, remove an unnecessary goto in update_sd_lb_stats().
-> >
->=20
-> Given that's a different scope than what the rest of the patch touches, I=
-'d
-> rather see this as a separate patch.
->=20
-> Other than that:
-> Reviewed-by: Valentin Schneider <vschneid@redhat.com>
+  Use a u64 instead of a u8 when taking a snapshot of pmu->fixed_ctr_ctrl
+  when reprogramming fixed counters, as truncating the value results in KVM
+  thinking fixed counter 2 is already disabled (the bug also affects fixed
+  counters 3+, but KVM doesn't yet support those).  As a result, if the
+  guest disables fixed counter 2, KVM will get a false negative and fail to
+  reprogram/disable emulation of the counter, which can leads to incorrect
+  counts and spurious PMIs in the guest.
 
-Thanks, would you like me to send a follow-on series split into two with
-your tag on both? Or were you just letting me know for next time?
-
-We could also update this check to only do a strict greater than to
-avoid unnecessary writes, but I figured it was preferable to have no
-logical changes for this iteration:
-
-return sgs->group_misfit_task_load >=3D busiest->group_misfit_task_load;
-
---aaczLianmhiTpaH6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZb0hQAAKCRBZ5LhpZcTz
-ZCd1APsHJ+HAuY/9jG+onEyWQ4qCDcfvGlESj1ixqg+mDd2ZpgEA1Q0HN0+A5vXi
-LLt53N1JFUeN7fCOj+uzuP5Rh5G/9ws=
-=fzh1
------END PGP SIGNATURE-----
-
---aaczLianmhiTpaH6--
+Thanks!
 
