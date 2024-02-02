@@ -1,103 +1,61 @@
-Return-Path: <linux-kernel+bounces-49374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2281E8469A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:36:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2503E8469AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:36:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBF9C1F22038
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:36:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0CD428D4D2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:36:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E076518032;
-	Fri,  2 Feb 2024 07:33:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A84517BDA;
+	Fri,  2 Feb 2024 07:36:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="c1zUQMxM"
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ky1+34J6"
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEDFD18030
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 07:33:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD98017566
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 07:36:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706859220; cv=none; b=HznopzkSsV9tHF4q0mJy0MgJnSVo0inVEcvArv34fYBK76qbKl8m6+jig/JfRByfkg3IzlZ7XmKOkDO3BHfviNvUOdIZ/KwpXNN4Puf9mg+GITSPiaZrVfjmqK35gPA9bSu2o47Q5fcLyw6KqVSiUdPFsHHzYYfNU1Sb89U6fWQ=
+	t=1706859381; cv=none; b=lJWZLhs2x23mDJALD6jZoOP0zom3Fifv+r8oa89ffuGdoh9Mu22LWCi7JZ6eiGToalDxEfUpCHCeIrjXUobNBfiHHc/cHK8w56H9BzngDHhU1WeSrlss5/6yYxrVf8FHvMfVAFlukOsKUMwiwkIFJ9t5chGKLelADCUBS/RpoZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706859220; c=relaxed/simple;
-	bh=buSlzPF3S7GF6/asWRPzk7En8b/VyabJNUGslh49XMk=;
+	s=arc-20240116; t=1706859381; c=relaxed/simple;
+	bh=F8Vf9MHjreYyw+SWVq3L3jo/ghauMjcPIlV1loK3X1M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VySlgsq+R5vm3GpP3x0dWfgJnNHD/hiCVHou/q0lf+BUmU09u4Jfbda9GmJVazc+wOyVJUEmP3Hf8sdT3iu/sP9QVelRSBewB0es0L0HKynraw2T2uihIgVsC6asKoQToVYFoEsfo7BL4grTeRdiMLPcU22ggtIasnEzeqgA70Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=c1zUQMxM; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5cddc5455aeso1576982a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 23:33:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706859218; x=1707464018; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CbAUsmTqXR+rCV57/fxKH34/7KVfGYMZtfpdiEYGAlk=;
-        b=c1zUQMxMb4kv5kMHCYKqPLxQqPCiUnJtKdSa7h1X/Ren/1hnkt60sPrGuWy893MKhV
-         fMSXaPMfD2OzmPMPBeAM8izbarqISlcxh2oGOMGnLOVWzD9977wEKiW0bToiT3DCBDjs
-         VHhfrOf4eEFSAV9oiouZofzwcOPIgWNeQ46fQp5iZEAKtqnUhUTpWuD3CBz767awDqLB
-         a4RLO4b3fREnfgY1OrqmKTEYmaHDqvtR5KDDINWzft1Zl9Uvy+EhTAuai2lC/KJZM8Jy
-         9ABiCEicvHk+wAv4rAcNOuT8SCILWj0L9wh8mNhcnZPZqyrke6RwnghOELfS0AnptTUj
-         FnAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706859218; x=1707464018;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CbAUsmTqXR+rCV57/fxKH34/7KVfGYMZtfpdiEYGAlk=;
-        b=F0b/2PTryhLLV4w7ggvfO36rD5eCMKXJ6YR5vYj2J01nH23nnyTmXlm3znpSQB7bzf
-         jxgKZ8JTcmHSMJwc103XkaDMzkYch5EzSfBzrTe5/liybUOU1W9+DNKXMm6r5BojXVQs
-         uNhvi4yPpEIGlxg7l5e19LYieFy5mSa6LVZBRQ/aNI25wtHc8O2pQY99espPc5PbKIuJ
-         42GJO8kn4cT4goQXV2PcfkTIbyq6qFSKIv215gGoVIVXsvvhUmNhebAEiTeJjLlz6bu6
-         IeJTpZ5tJPeb/IYzKkC1fmIOwxPdkpcx+1pjqxbfFHBK/NaCRYvSl9U1i8z/APOd4A1r
-         Zxbg==
-X-Gm-Message-State: AOJu0Yy/mv/n3fgQp/zugAlYYv4IbiG2reM3pGr87h23P1gEXp5nx7T6
-	WF3axV9Vt8lcsmkDMLpFYEcY4k9JGRl7pks8U82VmtsVYb4T+gmyKoj/2mK57QU=
-X-Google-Smtp-Source: AGHT+IHyxVpCIG7ld9OaKKn76hJqzpGW8PV0pmtR2wY0jO9bVq7U7xdwvv/Ae6hMN3OMZ/5W2zb77w==
-X-Received: by 2002:a05:6a20:c703:b0:19a:43b9:d460 with SMTP id hi3-20020a056a20c70300b0019a43b9d460mr1053337pzb.62.1706859217888;
-        Thu, 01 Feb 2024 23:33:37 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXLY1tE9uTYjK3K75lkULWBd84lW8OvIo2uKxkmo67jChE2rMbmx3fj6Y75YiV6rADRdLBLszo3ohIzQQipKm3czdSADMDY58sB56vKAlqzIb8CE+Kj4O1TmGSN7Y2ekfHp3C4x/cWHv6Ki7woU+mRC/RlfmM/PxTVzoPCSEEeVGeVk/bWoEwgMA0uwD7x3/PDs/zc98edtlyl36bqfijsJFedM9KX2J+w6L1sT8u0ILRqoGfXofnb9qWds7C2XTQRHc8ShjEz9lb5NBHlGEFL34cwLj6/zjr/oouBuJlonUcYQMv5W+FJfnE2QPpJ9qC6uS8ejTyupXrk+xxp02bqTCdwj9VLcrysLeBzi9ldanuViR7ka8eRbUOODp2OJoQSnhjdLik5tey1z4H9XOShV/pNsdmogYAjS8oUce3RZAFaPU7wnKV0VeJUh/d8fVr0ThMC+yr8LFihjdRIpavdSTEN3KciUL8/EMMZ8Piv7Ch6pYmCXfx7zSrVC88obzZdUpxd+1NMZxlx/pCOmtFVtmdnolvxgK3O/IP2Zws1mGpp+jeTkbNkLJC2xsjvWvwmsMuUfPhbhcrnu61mhH2UDmi36+v7tqVB/Pi5sr7QfWfaT4iZKFFKaJAAE1OYKtzFX/aGyWENmmwtFq3U8oaFwM055xkLKAVsfVAOa6nZ6PW7kFDPIovBxvGN3hlwFVB3D7a2pMqcAVj7nX30IaDYa/YiOGPoWBA==
-Received: from localhost ([122.172.83.95])
-        by smtp.gmail.com with ESMTPSA id nd14-20020a17090b4cce00b00295fdf538e1sm1115322pjb.12.2024.02.01.23.33.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 23:33:36 -0800 (PST)
-Date: Fri, 2 Feb 2024 13:03:34 +0530
-From: Viresh Kumar <viresh.kumar@linaro.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Manivannan Sadhasivam <mani@kernel.org>,
-	Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Brian Masney <bmasney@redhat.com>,
-	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
-	vireshk@kernel.org, quic_vbadigan@quicinc.com,
-	quic_skananth@quicinc.com, quic_nitegupt@quicinc.com,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 5/6] arm64: dts: qcom: sm8450: Add opp table support
- to PCIe
-Message-ID: <20240202073334.mkabgezwxn3qe7iy@vireshk-i7>
-References: <20240112-opp_support-v6-5-77bbf7d0cc37@quicinc.com>
- <20240129160420.GA27739@thinkpad>
- <20240130061111.eeo2fzaltpbh35sj@vireshk-i7>
- <20240130071449.GG32821@thinkpad>
- <20240130083619.lqbj47fl7aa5j3k5@vireshk-i7>
- <20240130094804.GD83288@thinkpad>
- <20240130095508.zgufudflizrpxqhy@vireshk-i7>
- <20240130131625.GA2554@thinkpad>
- <20240131052335.6nqpmccgr64voque@vireshk-i7>
- <610d5d7c-ec8d-42f1-81a2-1376b8a1a43f@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hdt3eTsfoOkSh+SCpiVRDstetptomp91Y+ZNFtzIJAXXjlzgbTV1tmzbjCrjqoEQUL/71pO+3udQFufmAqeM6lfty+C5NrRe2QUWpiKYAif3WPodTUM3hxiL+XsE6E2P19JjCcrpDy0SF7ZY6AOSumyEl4ars3jK+EUYjPwIVRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Ky1+34J6; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Fri, 2 Feb 2024 07:36:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706859375;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5EWZhYkrDt/8XKpyBqmfzBglkyRPBzsB9XpFbePCy6s=;
+	b=Ky1+34J6vLyruougguTgN/oJcFJWeF+YLyxaTsnQ9gIwRuQsHNtyO1eFPA58P6H3pOO0tx
+	7EuHIa7HF/yJjY14d7KjLmsw4C0A5wKd3POh4hbUg68SxT5aSTr6mugk2tEcm/R5sY8hD8
+	/dqY+kyYgEts8oY6uBbwKYoFe+aM5no=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Oliver Upton <oliver.upton@linux.dev>
+To: Shaoqin Huang <shahuang@redhat.com>
+Cc: Marc Zyngier <maz@kernel.org>, kvmarm@lists.linux.dev,
+	Eric Auger <eauger@redhat.com>, Eric Auger <eric.auger@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>, linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 1/5] KVM: selftests: aarch64: Make the
+ [create|destroy]_vpmu_vm() public
+Message-ID: <ZbybaH2t7Yp9NJOK@linux.dev>
+References: <20240202025659.5065-1-shahuang@redhat.com>
+ <20240202025659.5065-2-shahuang@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -106,21 +64,99 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <610d5d7c-ec8d-42f1-81a2-1376b8a1a43f@linaro.org>
+In-Reply-To: <20240202025659.5065-2-shahuang@redhat.com>
+X-Migadu-Flow: FLOW_OUT
 
-On 01-02-24, 15:45, Konrad Dybcio wrote:
-> I'm lukewarm on this.
-> 
-> A *lot* of hardware has more complex requirements than "x MBps at y MHz",
-> especially when performance counters come into the picture for dynamic
-> bw management.
-> 
-> OPP tables can't really handle this properly.
+On Thu, Feb 01, 2024 at 09:56:50PM -0500, Shaoqin Huang wrote:
 
-There was a similar concern for voltages earlier on and we added the capability
-of adjusting the voltage for OPPs in the OPP core. Maybe something similar can
-be done here ?
+[...]
+
+> diff --git a/tools/testing/selftests/kvm/include/aarch64/vpmu.h b/tools/testing/selftests/kvm/include/aarch64/vpmu.h
+> new file mode 100644
+> index 000000000000..0a56183644ee
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/include/aarch64/vpmu.h
+> @@ -0,0 +1,16 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#include <kvm_util.h>
+> +
+> +#define GICD_BASE_GPA	0x8000000ULL
+> +#define GICR_BASE_GPA	0x80A0000ULL
+
+Shouldn't a standardized layout of the GIC frames go with the rest of
+the GIC stuff?
+
+> +/* Create a VM that has one vCPU with PMUv3 configured. */
+> +struct vpmu_vm *create_vpmu_vm(void *guest_code)
+> +{
+> +	struct kvm_vcpu_init init;
+> +	uint8_t pmuver;
+> +	uint64_t dfr0, irq = 23;
+> +	struct kvm_device_attr irq_attr = {
+> +		.group = KVM_ARM_VCPU_PMU_V3_CTRL,
+> +		.attr = KVM_ARM_VCPU_PMU_V3_IRQ,
+> +		.addr = (uint64_t)&irq,
+> +	};
+> +	struct kvm_device_attr init_attr = {
+> +		.group = KVM_ARM_VCPU_PMU_V3_CTRL,
+> +		.attr = KVM_ARM_VCPU_PMU_V3_INIT,
+> +	};
+> +	struct vpmu_vm *vpmu_vm;
+> +
+> +	vpmu_vm = calloc(1, sizeof(*vpmu_vm));
+> +	TEST_ASSERT(vpmu_vm != NULL, "Insufficient Memory");
+
+!vpmu_vm would be the normal way to test if a pointer is NULL.
+
+> +	memset(vpmu_vm, 0, sizeof(vpmu_vm));
+
+What? man calloc would tell you that the returned object is already
+zero-initalized.
+
+> +	vpmu_vm->vm = vm_create(1);
+> +	vm_init_descriptor_tables(vpmu_vm->vm);
+> +
+> +	/* Create vCPU with PMUv3 */
+> +	vm_ioctl(vpmu_vm->vm, KVM_ARM_PREFERRED_TARGET, &init);
+> +	init.features[0] |= (1 << KVM_ARM_VCPU_PMU_V3);
+> +	vpmu_vm->vcpu = aarch64_vcpu_add(vpmu_vm->vm, 0, &init, guest_code);
+> +	vcpu_init_descriptor_tables(vpmu_vm->vcpu);
+
+I extremely dislike that the VM is semi-configured by this helper.
+You're still expecting the caller to actually install the exception
+handler.
+
+> +	vpmu_vm->gic_fd = vgic_v3_setup(vpmu_vm->vm, 1, 64,
+> +					GICD_BASE_GPA, GICR_BASE_GPA);
+> +	__TEST_REQUIRE(vpmu_vm->gic_fd >= 0,
+> +		       "Failed to create vgic-v3, skipping");
+> +
+> +	/* Make sure that PMUv3 support is indicated in the ID register */
+> +	vcpu_get_reg(vpmu_vm->vcpu,
+> +		     KVM_ARM64_SYS_REG(SYS_ID_AA64DFR0_EL1), &dfr0);
+> +	pmuver = FIELD_GET(ARM64_FEATURE_MASK(ID_AA64DFR0_EL1_PMUVer), dfr0);
+> +	TEST_ASSERT(pmuver != ID_AA64DFR0_EL1_PMUVer_IMP_DEF &&
+> +		    pmuver >= ID_AA64DFR0_EL1_PMUVer_IMP,
+> +		    "Unexpected PMUVER (0x%x) on the vCPU with PMUv3", pmuver);
+
+Not your code, but this assertion is meaningless. KVM does not advertise
+an IMP_DEF PMU to guests.
+
+> +	/* Initialize vPMU */
+> +	vcpu_ioctl(vpmu_vm->vcpu, KVM_SET_DEVICE_ATTR, &irq_attr);
+> +	vcpu_ioctl(vpmu_vm->vcpu, KVM_SET_DEVICE_ATTR, &init_attr);
+
+Not your code, but these should be converted to kvm_device_attr_set()
+calls.
+
+Overall I'm somewhat tepid on the idea of the library being so
+coarse-grained. It is usually more helpful to expose finer-grained
+controls, like a helper that initializes the vPMU state for a
+preexisting VM. That way the PMU code can more easily be composed with
+other helpers in different tests.
 
 -- 
-viresh
+Thanks,
+Oliver
 
