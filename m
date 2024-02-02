@@ -1,185 +1,204 @@
-Return-Path: <linux-kernel+bounces-50088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 075E3847410
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:06:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4599F847413
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:06:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A2661C24D6E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:06:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF3E01F2723D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:06:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C84DC1482FA;
-	Fri,  2 Feb 2024 15:59:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HTDaz0RY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D90021487C8;
+	Fri,  2 Feb 2024 15:59:48 +0000 (UTC)
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E51E41474AD;
-	Fri,  2 Feb 2024 15:59:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5E09148308;
+	Fri,  2 Feb 2024 15:59:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706889577; cv=none; b=eXRGJe5v2/XBl7vkDStdCQKbsgCBw5A8rk887zbR4vSA5vcimpXigH9M/80ywLD/8j/zMluTfGTL7TsKfuA3Faw2zYsZmjX9Or8mFKG5Vp4H583lXCRSzlgU6b++txEWT56ZNvplKH8fBNaAXMPmrV7bdRasvMlvxv2RIR60/yY=
+	t=1706889588; cv=none; b=u1LRu2bQjeFOtKyYX9+oCK5edlM5rw6URML3Rhy/EY244xfJqBQUj59/UMvG4RNI4jHPIqj3QH5ddaxcUjMDn1H+9tLJn2iChakBu9EugAJQBRlVxjy7UV8rbUC9FyfwrszlQ0dgdEMZy7C+secH6ljlaDJJwrqeeEAiR7daCP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706889577; c=relaxed/simple;
-	bh=NeFFADYXbSKDmrGxCWJn52cB3UzPfQUhTWEHOnSrQZo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZlDr+aiTLvKXtJ/yZS8jmbXAn/XHuYgN2GAKfjvkt9A9HAna/o+hvFfAhvnUr1woG6l+FfhRKtXN68niQWOfE76vV7FZt3LlbWFfh+tUIUE8F0owwq6pP90iBh5ZKEJgTYkUaZLjZok6rsFJdlobFQzCPeVarcsjRKZa1l6MIyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HTDaz0RY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF4B4C433F1;
-	Fri,  2 Feb 2024 15:59:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706889576;
-	bh=NeFFADYXbSKDmrGxCWJn52cB3UzPfQUhTWEHOnSrQZo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HTDaz0RYlhUret3nyLqzvt6R8k6VsimfwHqO1yl3uS9kIgBDturoT/SzAOrkJmL0D
-	 gby8DoOSYxkckwhawpNZGiKhJZAA/FYdwsgnDQqfvz3dMDCU/HO5WY8xz2FHu9Kr8L
-	 daPvZmGo4bFFcHgIrkr2mcbFtdg9New0ZyzGfphKcNJO3eDiwJkoGdhHoc6hntlGeH
-	 lerkU+3sB1Fb0yguYyLd2yDxiGP4NzJ3nhUkBgGk+/hfGOKRyXS6Ek/g7K6aW5+Ln+
-	 wxu2+c68gmL0w0uwr/TJaeDRR3RtaEQeDvUyu6v/v1+AmIcFFDLpsTN9Vxh4MaHkrk
-	 8PWHWdcqKrMlQ==
-Date: Fri, 2 Feb 2024 16:59:30 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc: Sebastian Wick <sebastian.wick@redhat.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>, 
-	Jonathan Corbet <corbet@lwn.net>, Sandy Huang <hjc@rock-chips.com>, 
-	Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	Hans Verkuil <hverkuil@xs4all.nl>, linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-Subject: Re: Re: Re: [PATCH v5 08/44] drm/connector: hdmi: Add Broadcast RGB
- property
-Message-ID: <hez2m57ogqx3yyqk45tzdkvxvhrbdepgm244i4m2aty2xhf5b5@acqgvmxhmmvr>
-References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
- <20231207-kms-hdmi-connector-state-v5-8-6538e19d634d@kernel.org>
- <20240115143308.GA159345@toolbox>
- <20240115143720.GA160656@toolbox>
- <73peztbeeikb3fg6coxu3punxllgtyrmgco34tnxkojtsjbr3s@26bud3sjbcez>
- <Zb0M_2093UwPXK8y@intel.com>
+	s=arc-20240116; t=1706889588; c=relaxed/simple;
+	bh=7yi/zjSsxVNqTRQbhdO51Oqbn2B4A00QYjxdFqIJ0x0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=r+hbrwY8ksCo7roGfNISy/6HCiCS5jmK/eS/3ZsLYAsXAWd1LlCZ0NVbG2G5t3b47gfls73CO9Aaq81bIn+FNi0Pdct8hxY+wnjKJc2k7f8yRwS7dS6dxFWYX88p4gZPyMYRBMlYdPCd2HZgIxxJglXy6yfoJWCdjd6fp1357pM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3bc21303a35so676500b6e.0;
+        Fri, 02 Feb 2024 07:59:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706889586; x=1707494386;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=auL16LpvoDkFJLLhh00PkECn/QrUMlvnY9JxMZw7mDc=;
+        b=owXCVQa2Ta9GiK6FIIUSXT5dM9/wuYkNoZT3jZ7wp3f8+3S+UR0eDUixDNqvkvZTN9
+         pZVraxhd36/hsqt6XraBjp+ixNrj80EDtLgI6CCyW77Kgei6oxOpZLOddLDOHax/4+Oa
+         Fuq6Tz3JuCoPcZjWlq9T+s6S1kANttPJYqcc2aodFuQEHanAclRus5WUgQgPd4uyxIVY
+         PJGgXFskPn1JiBu9OPZniYcUE/Wb0CD+CxQgULV+OOyCuswS9FghxdJwwa7uNRsAgQvy
+         BqNEnbieMiSBvPuu7EHrnf/hY3JL8I+jg2qh39Rz44U0WghPqTRmvSIWoSlfF66bYjzd
+         Mj5A==
+X-Forwarded-Encrypted: i=0; AJvYcCVCxldZTDy2HG8/RxPzZ69VKJ8srbKatCchwIaANgvEK4+vUJaxamlmmGWC/UiKCenawN2NnNQ+TV/V77pXe0AG8GRhu9gBqV9RgGBvlzJh1+8TTDxEwvCAbS8aZJmj63n4cz+030JxJUNle0iky9CybvezNT0BO+UGUZtI2x/p1Pawtl8=
+X-Gm-Message-State: AOJu0YwjKVlZILGGjupI7c2k9njzmtGzgOzbr72XUL7t70inYE9Xb6KA
+	Vf/KGVSDEl409d9WrqZtMm3tuG3dMP3Cj8UilIQTXZdJxVUvdJM5S4mlVvXU8ip88QDMR80x1jO
+	RO5EupMggJ2SQ3h54ERfMh73l17s=
+X-Google-Smtp-Source: AGHT+IFa9hpjb88gx1bG9zjhuo/116xDCr2ZTPA35bmFzYzkmqNVdEhrrS4FotLAIFnYwWojff5VFDJL+3bCvZI8CPU=
+X-Received: by 2002:a05:6808:2191:b0:3be:1b04:ee82 with SMTP id
+ be17-20020a056808219100b003be1b04ee82mr9871977oib.0.1706889585756; Fri, 02
+ Feb 2024 07:59:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="nkbwqjl5lzj6skqt"
-Content-Disposition: inline
-In-Reply-To: <Zb0M_2093UwPXK8y@intel.com>
-
-
---nkbwqjl5lzj6skqt
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+References: <20240202-fix-device-links-overlays-v1-0-f9fd1404c8e2@analog.com> <20240202-fix-device-links-overlays-v1-1-f9fd1404c8e2@analog.com>
+In-Reply-To: <20240202-fix-device-links-overlays-v1-1-f9fd1404c8e2@analog.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 2 Feb 2024 16:59:33 +0100
+Message-ID: <CAJZ5v0g5JbstLhCaXcY1kawP8etB5Z4TBuGXHz8_wsrXm3CaQA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] driver: core: add dedicated workqueue for devlink removal
+To: nuno.sa@analog.com
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Frank Rowand <frowand.list@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Daniel Scally <djrscally@gmail.com>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+	Sakari Ailus <sakari.ailus@linux.intel.com>, Len Brown <lenb@kernel.org>, 
+	linux-acpi@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 02, 2024 at 05:40:47PM +0200, Ville Syrj=E4l=E4 wrote:
-> On Fri, Feb 02, 2024 at 02:01:39PM +0100, Maxime Ripard wrote:
-> > Hi,
-> >=20
-> > On Mon, Jan 15, 2024 at 03:37:20PM +0100, Sebastian Wick wrote:
-> > > > >  /**
-> > > > >   * DOC: HDMI connector properties
-> > > > >   *
-> > > > > + * Broadcast RGB
-> > > > > + *      Indicates the RGB Quantization Range (Full vs Limited) u=
-sed.
-> > > > > + *      Infoframes will be generated according to that value.
-> > > > > + *
-> > > > > + *      The value of this property can be one of the following:
-> > > > > + *
-> > > > > + *      Automatic:
-> > > > > + *              RGB Range is selected automatically based on the=
- mode
-> > > > > + *              according to the HDMI specifications.
-> > > > > + *
-> > > > > + *      Full:
-> > > > > + *              Full RGB Range is forced.
-> > > > > + *
-> > > > > + *      Limited 16:235:
-> > > > > + *              Limited RGB Range is forced. Unlike the name sug=
-gests,
-> > > > > + *              this works for any number of bits-per-component.
-> > > > > + *
-> > > > > + *      Drivers can set up this property by calling
-> > > > > + *      drm_connector_attach_broadcast_rgb_property().
-> > > > > + *
-> > > >=20
-> > > > This is a good time to document this in more detail. There might be=
- two
-> > > > different things being affected:
-> > > >=20
-> > > > 1. The signalling (InfoFrame/SDP/...)
-> > > > 2. The color pipeline processing
-> > > >=20
-> > > > All values of Broadcast RGB always affect the color pipeline proces=
-sing
-> > > > such that a full-range input to the CRTC is converted to either ful=
-l- or
-> > > > limited-range, depending on what the monitor is supposed to accept.
-> > > >=20
-> > > > When automatic is selected, does that mean that there is no signall=
-ing,
-> > > > or that the signalling matches what the monitor is supposed to acce=
-pt
-> > > > according to the spec? Also, is this really HDMI specific?
-> > > >=20
-> > > > When full or limited is selected and the monitor doesn't support the
-> > > > signalling, what happens?
-> > >=20
-> > > Forgot to mention: user-space still has no control over RGB vs YCbCr =
-on
-> > > the cable, so is this only affecting RGB? If not, how does it affect
-> > > YCbCr?
-> >=20
-> > So I dug a bit into both the i915 and vc4 drivers, and it looks like if
-> > we're using a YCbCr format, i915 will always use a limited range while
-> > vc4 will follow the value of the property.
->=20
-> The property is literally called "Broadcast *RGB*".
-> That should explain why it's only affecting RGB.
+On Fri, Feb 2, 2024 at 1:18=E2=80=AFPM Nuno Sa via B4 Relay
+<devnull+nuno.sa.analog.com@kernel.org> wrote:
+>
+> From: Nuno Sa <nuno.sa@analog.com>
+>
+> Let's use a dedicated queue for devlinks since releasing a link happens
+> asynchronously but some code paths, like DT overlays, have some
+> expectations regarding the of_node when being removed (the refcount must
+> be 1). Given how devlinks are released that cannot be assured. Hence, add=
+ a
+> dedicated queue so that it's easy to sync against devlinks removal.
 
-Right. And the limited range option is called "Limited 16:235" despite
-being usable on bpc > 8 bits. Naming errors occurs, and history happens
-to make names inconsistent too, that's fine and not an argument in
-itself.
+Thanks for following my suggestion!
 
-> Full range YCbCr is a much rarer beast so we've never bothered
-> to enable it.
+> While at it, make sure to explicitly include <linux/workqueue.h>.
+>
+> Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+> ---
+>  drivers/base/core.c    | 33 +++++++++++++++++++++++++++++----
+>  include/linux/fwnode.h |  1 +
+>  2 files changed, 30 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 14d46af40f9a..06e7766b5227 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -31,6 +31,7 @@
+>  #include <linux/swiotlb.h>
+>  #include <linux/sysfs.h>
+>  #include <linux/dma-map-ops.h> /* for dma_default_coherent */
+> +#include <linux/workqueue.h>
+>
+>  #include "base.h"
+>  #include "physical_location.h"
+> @@ -44,6 +45,7 @@ static bool fw_devlink_is_permissive(void);
+>  static void __fw_devlink_link_to_consumers(struct device *dev);
+>  static bool fw_devlink_drv_reg_done;
+>  static bool fw_devlink_best_effort;
+> +static struct workqueue_struct *devlink_release_queue __ro_after_init;
+>
+>  /**
+>   * __fwnode_link_add - Create a link between two fwnode_handles.
+> @@ -235,6 +237,11 @@ static void __fw_devlink_pickup_dangling_consumers(s=
+truct fwnode_handle *fwnode,
+>                 __fw_devlink_pickup_dangling_consumers(child, new_sup);
+>  }
+>
+> +void fwnode_links_flush_queue(void)
+> +{
+> +       flush_workqueue(devlink_release_queue);
+> +}
+> +
+>  static DEFINE_MUTEX(device_links_lock);
+>  DEFINE_STATIC_SRCU(device_links_srcu);
+>
+> @@ -531,9 +538,10 @@ static void devlink_dev_release(struct device *dev)
+>          * It may take a while to complete this work because of the SRCU
+>          * synchronization in device_link_release_fn() and if the consume=
+r or
+>          * supplier devices get deleted when it runs, so put it into the =
+"long"
+> -        * workqueue.
+> +        * devlink workqueue.
+> +        *
+>          */
+> -       queue_work(system_long_wq, &link->rm_work);
+> +       queue_work(devlink_release_queue, &link->rm_work);
+>  }
+>
+>  static struct class devlink_class =3D {
+> @@ -636,10 +644,27 @@ static int __init devlink_class_init(void)
+>                 return ret;
+>
+>         ret =3D class_interface_register(&devlink_class_intf);
+> -       if (ret)
+> +       if (ret) {
+> +               class_unregister(&devlink_class);
+> +               return ret;
+> +       }
+> +
+> +       /*
+> +        * Using a dedicated queue for devlinks since releasing a link ha=
+ppens
+> +        * asynchronously but some code paths, like DT overlays, have som=
+e
+> +        * expectations regarding the of_node when being removed (the ref=
+count
+> +        * must be 1). Given how devlinks are released that cannot be ass=
+ured.
+> +        * Hence, add a dedicated queue so that it's easy to sync against
+> +        * devlinks removal.
+> +        */
+> +       devlink_release_queue =3D alloc_workqueue("devlink_release", 0, 0=
+);
+> +       if (!devlink_release_queue) {
+> +               class_interface_unregister(&devlink_class_intf);
+>                 class_unregister(&devlink_class);
 
-vc4 supports it.
+This is a bit drastic.
 
-> Eg. with DP it only became possible with the introduction of the VSC
-> SDP (and I don't recall if there's additional capability checks that
-> are also required). With DP MSA signalling full range YCbCr is not
-> possible at all.
+I think that device links can still work if devlink_release_queue is
+NULL, just devlink_dev_release() needs to check it and release
+synchronously if it is NULL.
 
-This is for HDMI only.
+Apart from this LGTM.
 
-> I don't recall right now what the HDMI requirements are.
-
-HDMI has supported it for a while, and it's defined (for example) in the
-HDMI 1.4 spec in Section 6.6 - Video Quantization Ranges. It supports
-limited and full range on both RGB and YCbCr, as long as the EDIDs state
-so and the Infoframes signal it.
-
-Maxime
-
---nkbwqjl5lzj6skqt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZb0RYgAKCRDj7w1vZxhR
-xaFMAPwPX00aGuZMcwT8+4307ZfdO5OyFc7WAkZEWUBovapBWAD/d9+niBWsPvl3
-otXPVDwd1PFHbq4/qGvzqn443KiCiQA=
-=rMjR
------END PGP SIGNATURE-----
-
---nkbwqjl5lzj6skqt--
+> +               return -ENODEV;
+> +       }
+>
+> -       return ret;
+> +       return 0;
+>  }
+>  postcore_initcall(devlink_class_init);
+>
+> diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
+> index 2a72f55d26eb..017b170e9903 100644
+> --- a/include/linux/fwnode.h
+> +++ b/include/linux/fwnode.h
+> @@ -213,5 +213,6 @@ extern bool fw_devlink_is_strict(void);
+>  int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup=
+);
+>  void fwnode_links_purge(struct fwnode_handle *fwnode);
+>  void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode);
+> +void fwnode_links_flush_queue(void);
+>
+>  #endif
+>
+> --
 
