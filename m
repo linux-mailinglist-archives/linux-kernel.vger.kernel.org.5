@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-49133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A51B884664D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:06:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DD29846662
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:08:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6095F28B78B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:06:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7E131F27851
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:08:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40A23CA7A;
-	Fri,  2 Feb 2024 03:06:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCE4FE54E;
+	Fri,  2 Feb 2024 03:07:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iJpo4bFC"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BYE8S6Lj"
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13946DDCE;
-	Fri,  2 Feb 2024 03:06:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B1F0D289;
+	Fri,  2 Feb 2024 03:07:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706843172; cv=none; b=TLS3wNunLICxT3MkCQS6OoNoj1vy3aihsJp9LLZbXrhwn9+as6yiVqivrpGqsR/8+uMvaHPoPfaLaoCPsP6zMtc+RkkUxQLeWvIhxP8pj2UDq/r86Rdvl9Bugye6Hh+pY8P/f9vk4/qzuEv5bUFXwmcr9BIB5nOuZpe0q3utFWE=
+	t=1706843274; cv=none; b=P3iA9J1B5XlKWwW4BvPsbcDxe+7jtLfYLlkUyYhwyW+pvL4P+CSkc7WrVrXMGhtMabdktq6d8S5Gea9S3LJqTCAEz1csERHSE5JmIoKXW0hKDV0w9n+8tGvaxw9ItFAZciLTwywIEbP7jw9Eh//7gQ3f+6D/jWnSPpe0dZRp6uQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706843172; c=relaxed/simple;
-	bh=tGLiGtD2ffb0omsWaMaWz1meXi7Me/QbXHDdjQQbe+c=;
+	s=arc-20240116; t=1706843274; c=relaxed/simple;
+	bh=obWK63Zy5XJ19imquZEyMwnqRVC/TkO3K+PmbgWqdY0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rMWcJ/rZqe3A0EWIG509HTosLTbiG+QDth6od3zQO8upOTk2A6renaxvks4WF+YOKdmZhgREjMZWlD6gDLdT0FVO2JY51LZBrqRpsijDHmS5fSKl/WwuL330HvpxICG7ghFABgm73H43Spn7FKnIugx088WCjdjxi5gK+tLDacM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iJpo4bFC; arc=none smtp.client-ip=134.134.136.31
+	 In-Reply-To:Content-Type; b=TW6DWRBdIabzMYSI3bNPy1E1esgij+m/vyZuMi054omi05GxbYLx0EK9FPxP4o9Jyo26Buuo0lBmM61+X7b1P0vjRqtJhZ18IC4TrzpjjYJpKFJed0DtssA4vR9skB/qZbVbe8+Xhqpruqdm0kRb0QQUfbk3c40hw28+7c6EM0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BYE8S6Lj; arc=none smtp.client-ip=134.134.136.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706843171; x=1738379171;
+  t=1706843272; x=1738379272;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=tGLiGtD2ffb0omsWaMaWz1meXi7Me/QbXHDdjQQbe+c=;
-  b=iJpo4bFChC9X7kZ6k8wND0L+OrzpKOpDgb1FBvCr+MpJwJ3AjBAiFeUf
-   /aoGNXy24ESQPoJQvWjrTbvAOJKqemsOp4IXdhiWH1uRkNUVTHozPRPOq
-   CmHBkfs0g5EHyy39wn52hRjm8ElLT7Nn4jx637IYVkIPNt3+SAODdkK2m
-   pdijyzWATzyM9lsRybBMFlsSvQC0PN4PeJALTdNOF9K7IvUtsEoZTF3g5
-   3q356Z/SmaDoF6PjVdCCGh+xUV6MA38wuq8841lqrCSyFJjQ+9uQZ5ZLD
-   +ub2KiBcnj4b/wWmA5BTyfTAgiAkjKmp35Ew6RWIfDq2391u8eL0lrwbp
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="468283919"
+  bh=obWK63Zy5XJ19imquZEyMwnqRVC/TkO3K+PmbgWqdY0=;
+  b=BYE8S6LjLkHyCNhk2dGBKMYvEP879uDHxCSlYWrNWH3umFf2yXbSj5oB
+   7PW3ug5fIZmpGuRNnWPYkfIcg6AkYAbPErFSUNuch1QDE6QsUsgZs7jiW
+   o8WKRxXX2OV3w8CJ6pkmf8oPzvXv6c90VXSuHgTvUE1raIJqVJzH/vQXC
+   R8R2FdLqA/G613qqfh2woRidkwDXF3Oi85pkVVQuFXevMZC+ZdOEqisXe
+   Kw3dJI6xnMIYcLuDdOMFb8jKbtqgZx+v1civhhvVkVKQSiH2VbRkhwmrl
+   aKnkb+e9yT3YG2jjgnAAqPQwPOqZuDlwac28lxtzmysOpHEtJmGCwJrVH
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="468284161"
 X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="468283919"
+   d="scan'208";a="468284161"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 19:06:10 -0800
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 19:07:51 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="859304194"
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="859304289"
 X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="859304194"
+   d="scan'208";a="859304289"
 Received: from choongyo-mobl.gar.corp.intel.com (HELO [10.247.22.55]) ([10.247.22.55])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 19:06:01 -0800
-Message-ID: <c0a87401-9f8b-4b60-b47d-31232873bba9@linux.intel.com>
-Date: Fri, 2 Feb 2024 11:06:01 +0800
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 19:07:40 -0800
+Message-ID: <46d14e3e-a334-447f-a25c-17ed58170741@linux.intel.com>
+Date: Fri, 2 Feb 2024 11:07:40 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,87 +63,69 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4 08/11] stmmac: intel: configure SerDes
- according to the interface mode
+Subject: Re: [PATCH net-next v3 4/5] net: stmmac: enable Intel mGbE 1G/2.5G
+ auto-negotiation support
 Content-Language: en-US
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Serge Semin <fancer.lancer@gmail.com>,
+ Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
  David E Box <david.e.box@linux.intel.com>,
  Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
+ Jose Abreu <Jose.Abreu@synopsys.com>, Heiner Kallweit
+ <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, =?UTF-8?Q?Marek_Beh=C3=BAn?=
+ <kabel@kernel.org>, Jean Delvare <jdelvare@suse.com>,
+ Guenter Roeck <linux@roeck-us.net>,
+ Giuseppe Cavallaro <peppe.cavallaro@st.com>,
  Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <Jose.Abreu@synopsys.com>, "David S . Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Jose Abreu <joabreu@synopsys.com>,
  Maxime Coquelin <mcoquelin.stm32@gmail.com>,
  Richard Cochran <richardcochran@gmail.com>,
- Russell King <linux@armlinux.org.uk>, Alexei Starovoitov <ast@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Alexei Starovoitov <ast@kernel.org>,
  Daniel Borkmann <daniel@iogearbox.net>,
  Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
- Heiner Kallweit <hkallweit1@gmail.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, Andrew Halaney
- <ahalaney@redhat.com>, Simon Horman <simon.horman@corigine.com>,
- Serge Semin <fancer.lancer@gmail.com>, Netdev <netdev@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Wong Vee Khee
+ <veekhee@apple.com>, Jon Hunter <jonathanh@nvidia.com>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Revanth Kumar Uppala <ruppala@nvidia.com>,
+ Shenwei Wang <shenwei.wang@nxp.com>,
+ Andrey Konovalov <andrey.konovalov@linaro.org>,
+ Jochen Henneberg <jh@henneberg-systemdesign.com>,
+ David E Box <david.e.box@intel.com>, Andrew Halaney <ahalaney@redhat.com>,
+ Simon Horman <simon.horman@corigine.com>,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-stm32@st-md-mailman.stormreply.com,
  linux-arm-kernel@lists.infradead.org, platform-driver-x86@vger.kernel.org,
  linux-hwmon@vger.kernel.org, bpf@vger.kernel.org,
  Voon Wei Feng <weifeng.voon@intel.com>,
+ Tan Tee Min <tee.min.tan@linux.intel.com>,
  Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
- Lai Peter Jun Ann <jun.ann.lai@intel.com>,
- Abdul Rahim Faizal <faizal.abdul.rahim@intel.com>
-References: <20240129130253.1400707-1-yong.liang.choong@linux.intel.com>
- <20240129130253.1400707-9-yong.liang.choong@linux.intel.com>
- <99d78f25-dd2a-4a52-4c2a-b0e29505a776@linux.intel.com>
+ Lai Peter Jun Ann <jun.ann.lai@intel.com>
+References: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
+ <20230921121946.3025771-5-yong.liang.choong@linux.intel.com>
+ <jmq54bskx4zd75ay4kf5pcdo6wnz72pxzfo5ivevleef4scucr@uw4fkfs64f3c>
+ <26568944-563d-4911-8f6f-14c0162db6e9@linux.intel.com>
+ <07a4aa8e-800c-4564-81c8-7cfcdddf1379@lunn.ch>
 From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
-In-Reply-To: <99d78f25-dd2a-4a52-4c2a-b0e29505a776@linux.intel.com>
+In-Reply-To: <07a4aa8e-800c-4564-81c8-7cfcdddf1379@lunn.ch>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
 
 
-On 31/1/2024 6:58 pm, Ilpo Järvinen wrote:
-> On Mon, 29 Jan 2024, Choong Yong Liang wrote:
+On 29/1/2024 9:41 pm, Andrew Lunn wrote:
+> Hi Choong
 > 
->> From: "Tan, Tee Min" <tee.min.tan@linux.intel.com>
->>
->> Intel platform will configure the SerDes through PMC api based on the
->> provided interface mode.
->>
->> This patch adds several new functions below:-
->> - intel_tsn_interface_is_available(): This new function reads FIA lane
->>    ownership registers and common lane registers through IPC commands
->>    to know which lane the mGbE port is assigned to.
->> - intel_config_serdes(): To configure the SerDes based on the assigned
->>    lane and latest interface mode, it sends IPC command to the PMC through
->>    PMC driver/API. The PMC acts as a proxy for R/W on behalf of the driver.
->> - intel_set_reg_access(): Set the register access to the available TSN
->>    interface.
->>
->> Signed-off-by: Tan, Tee Min <tee.min.tan@linux.intel.com>
->> Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
->> ---
->>   drivers/net/ethernet/stmicro/stmmac/Kconfig   |   1 +
->>   .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 113 +++++++++++++++++-
->>   .../net/ethernet/stmicro/stmmac/dwmac-intel.h |  75 ++++++++++++
->>   3 files changed, 188 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
->> index 85dcda51df05..be423fb2b46c 100644
->> --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
->> +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
->> @@ -273,6 +273,7 @@ config DWMAC_INTEL
->>   	default X86
->>   	depends on X86 && STMMAC_ETH && PCI
->>   	depends on COMMON_CLK
->> +	select INTEL_PMC_IPC
+> Please trim the text when replying. It can be hard to find actually
+> replies when having to do lots and lots of page downs. Just give the
+> context needed to understand your reply.
 > 
-> INTEL_PMC_IPC has depends on ACPI but selecting INTEL_PMC_IPC won't
-> enforce it AFAIK.
-> 
-Hi Ilpo,
+> 	Andrew
+Hi Andrew,
 
-Thank you for pointing this out.
-I will check on my side too.
-Will fix it in the new patch series.
+Thank you for the feedback.
+I will trim the message next time.
 
