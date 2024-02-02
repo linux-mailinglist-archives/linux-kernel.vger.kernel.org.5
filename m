@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-49563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4B04846BDF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:25:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CE82846BE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:25:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 844CA1F298F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:25:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 087E5298B0E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:25:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E5887E570;
-	Fri,  2 Feb 2024 09:22:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9FE57E767;
+	Fri,  2 Feb 2024 09:22:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BNt2R9Kg"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gJHykm0l"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1704677656;
-	Fri,  2 Feb 2024 09:22:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 825F677F06;
+	Fri,  2 Feb 2024 09:22:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706865742; cv=none; b=k91K90IZrsYSX01tQG16Bt9IhaCc4759AHaWayAbiT6hJLcjUc+g+bHFaK3kl2Qmo7JCvFLQR5BcdXAJM1XhZAo2XEyCI7RuK/blnHayT+5fPQ4cN3uE3ZMuWW18/fiZeK2597HkU7XtXAROZ9kmBB9oQm82tzS5K/7rmxdNzl8=
+	t=1706865745; cv=none; b=BwfV5N+pTkaKH9Q5VrwU7lek2drPLNNnBd3nMwGF9K58jMF4v/XePEWbAzZvInBchNVVxmAJD4F8V+BTvtegnqI1JIt8Quy1cJNnGmKP08nTcePTVr/e6z1x9VBZWnd2zsceT8SLdwlZiLs3+eqM25jLsxB01/bh6MpO9An9H78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706865742; c=relaxed/simple;
-	bh=csZ3KHduA/9OB+PJyC6HR1VDQadqpILw6QFQkvTj3wY=;
+	s=arc-20240116; t=1706865745; c=relaxed/simple;
+	bh=lCx6WOgbhUs1ZUj/emefnBwJYwMVwVQYh3bpqoSEs1U=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pTVNYFVc/T9FIT6CHOlrrHTSnAbsrUIwfLFsWV2XbS41H1cub+1h3+9joKCvE6yOG6Lx5LqEUjGp5l/bo0EoR9SJge3Hx1nmg/dXou+YiiNrx8ywkSeJauhiMcmSRnq6N+5OiErx+nid7cXWBHmKd3UToyBEV7Ztmhcg0qPajZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BNt2R9Kg; arc=none smtp.client-ip=198.175.65.12
+	 MIME-Version; b=JMmGhOg5/6adr16aAmlTmBeEZJEqKHAQwEJEXNfyMBk08KaI8Gp8YjrquUb3wA6FMS3ovlDLTN51Ao7K8CfgtBZPZBzFe2D+A5AhauIqAeD1gD8pdMYnPx3W8bYnQO3eiiab4EivpbpcA7+jTIFzq2D0KSMzUCSJNG6ZlvBOBAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gJHykm0l; arc=none smtp.client-ip=198.175.65.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706865742; x=1738401742;
+  t=1706865744; x=1738401744;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=csZ3KHduA/9OB+PJyC6HR1VDQadqpILw6QFQkvTj3wY=;
-  b=BNt2R9Kg+BKEvduWJ5vUAGTnrd7S0ZDw3jBAj9vFy0RUeprsdeRL+oE4
-   TOgFfLLEhOclT8+fHUMScH/dQ95tQvmbCvCYaYoPkWbNXW7zrHjxT/7lu
-   kM6R7oYtHS2J6XfATRYgYkfXMPr5HgRS7+XDKWXRXFWdWHOOdDKqbhiVt
-   MYibqx7BTHTz9lRXxAyFrZC9eJAcNnSV8wbQId0h73BOv4bMOCT8NPZYK
-   hYNxXLN5Jj5GKro6LKyXpo5nqQbvbwms3UIykihdoMs6a+L8AkXfi7JZm
-   /8LPNhG8DmnftC9W2tTw2SOQad9RRHdNs+cWAXAtE0y3oaWNdfSE4Mj1b
+  bh=lCx6WOgbhUs1ZUj/emefnBwJYwMVwVQYh3bpqoSEs1U=;
+  b=gJHykm0lC8CgGZUDf6simcWAuH65M5WNuSXJUIwMYr2ftiHD1FFJbju7
+   pV9QCul7vZZLXh4/0A9f8BnvRGrh1a1yI9+HuREXjNavsvYBZqFhJtbti
+   JBsmb0WCR8rL0qR79idbXEpO/pPAY9wzhqD1wqNpBAQCLCKsUbLhkgy8f
+   dyC6ApTFOc345j4t3wMKhei0Szd8soaEOeCoqHuHBMUhdklSRFa43ANyt
+   12GTZsPYY6Pk5inQ0nnfl4w7sh8TIk1HA0husWBaRvilT2nMKGihJdA8b
+   5kQ054sCM5B5hSRk+/XtVucfbREM+mN8Waygqr2kYyohVGDHaX1E+yuTv
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="11483126"
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="11483147"
 X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="11483126"
+   d="scan'208";a="11483147"
 Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 01:22:21 -0800
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 01:22:23 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="4639776"
+   d="scan'208";a="4639785"
 Received: from wangnin3-mobl.ccr.corp.intel.com (HELO rzhang1-mobl7.ccr.corp.intel.com) ([10.254.214.177])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 01:22:19 -0800
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 01:22:21 -0800
 From: Zhang Rui <rui.zhang@intel.com>
 To: linux@roeck-us.net,
 	jdelvare@suse.com
 Cc: fenghua.yu@intel.com,
 	linux-hwmon@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH V2 10/11] hwmon: (coretemp) Remove redundant temp_data->is_pkg_data
-Date: Fri,  2 Feb 2024 17:21:43 +0800
-Message-Id: <20240202092144.71180-11-rui.zhang@intel.com>
+Subject: [PATCH V2 11/11] hwmon: (coretemp) Use dynamic allocated memory for core temp_data
+Date: Fri,  2 Feb 2024 17:21:44 +0800
+Message-Id: <20240202092144.71180-12-rui.zhang@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240202092144.71180-1-rui.zhang@intel.com>
 References: <20240202092144.71180-1-rui.zhang@intel.com>
@@ -73,100 +73,87 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-temp_data->index saves the index in pdata->core_data[]. It is not used
-by package temp_data.
+The total memory needed for saving per core temperature data depends on
+the number of cores in a package. Using static allocated memory wastes
+memories on systems with low per package core count.
 
-Use temp_data->index as the indicator of package temp_data and remove
-redundant temp_data->is_pkg_data.
+Improve the code to use dynamic allocated memory so that it can be
+improved further when per package core count information becomes
+available.
 
-No functional change.
+No functional change intended.
 
 Signed-off-by: Zhang Rui <rui.zhang@intel.com>
 ---
- drivers/hwmon/coretemp.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ drivers/hwmon/coretemp.c | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/hwmon/coretemp.c b/drivers/hwmon/coretemp.c
-index 1a3b5ae0baca..e548f2145449 100644
+index e548f2145449..27c98c7faf32 100644
 --- a/drivers/hwmon/coretemp.c
 +++ b/drivers/hwmon/coretemp.c
-@@ -70,19 +70,16 @@ enum coretemp_attr_index {
-  * @status_reg: One of IA32_THERM_STATUS or IA32_PACKAGE_THERM_STATUS,
-  *		from where the temperature values should be read.
-  * @attr_size:  Total number of pre-core attrs displayed in the sysfs.
-- * @is_pkg_data: If this is 1, the temp_data holds pkgtemp data.
-- *		Otherwise, temp_data holds coretemp data.
-  */
- struct temp_data {
- 	int temp;
- 	int tjmax;
- 	unsigned long last_updated;
- 	unsigned int cpu;
--	unsigned int index;
-+	int index;
- 	u32 cpu_core_id;
- 	u32 status_reg;
- 	int attr_size;
--	bool is_pkg_data;
- 	struct device_attribute sd_attrs[TOTAL_ATTRS];
- 	char attr_name[TOTAL_ATTRS][CORETEMP_NAME_LENGTH];
- 	struct attribute *attrs[TOTAL_ATTRS + 1];
-@@ -149,6 +146,11 @@ static const struct tjmax_model tjmax_model_table[] = {
- 				 */
+@@ -91,10 +91,11 @@ struct temp_data {
+ struct platform_data {
+ 	struct device		*hwmon_dev;
+ 	u16			pkg_id;
++	int			nr_cores;
+ 	struct ida		ida;
+ 	struct cpumask		cpumask;
+ 	struct temp_data	*pkg_data;
+-	struct temp_data	*core_data[NUM_REAL_CORES];
++	struct temp_data	**core_data;
+ 	struct device_attribute name_attr;
  };
  
-+static bool is_pkg_temp_data(struct temp_data *tdata)
-+{
-+	return tdata->index < 0;
-+}
+@@ -480,6 +481,20 @@ init_temp_data(struct platform_data *pdata, unsigned int cpu, int pkg_flag)
+ {
+ 	struct temp_data *tdata;
+ 
++	if (!pdata->core_data) {
++		/*
++		 * TODO:
++		 * The information of actual possible cores in a package is broken for now.
++		 * Will replace hardcoded NUM_REAL_CORES with actual per package core count
++		 * when this information becomes available.
++		 */
++		pdata->nr_cores = NUM_REAL_CORES;
++		pdata->core_data = kcalloc(pdata->nr_cores, sizeof(struct temp_data *),
++						GFP_KERNEL);
++		if (!pdata->core_data)
++			return NULL;
++	}
 +
- static int adjust_tjmax(struct cpuinfo_x86 *c, u32 id, struct device *dev)
- {
- 	/* The 100C is default for both mobile and non mobile CPUs */
-@@ -341,7 +343,7 @@ static ssize_t show_label(struct device *dev,
- 	struct platform_data *pdata = dev_get_drvdata(dev);
- 	struct temp_data *tdata = container_of(devattr, struct temp_data, sd_attrs[ATTR_LABEL]);
- 
--	if (tdata->is_pkg_data)
-+	if (is_pkg_temp_data(tdata))
- 		return sprintf(buf, "Package id %u\n", pdata->pkg_id);
- 
- 	return sprintf(buf, "Core %u\n", tdata->cpu_core_id);
-@@ -433,7 +435,7 @@ static int create_core_attrs(struct temp_data *tdata, struct device *dev)
- 		 * The attr number is always core id + 2
- 		 * The Pkgtemp will always show up as temp1_*, if available
- 		 */
--		int attr_no = tdata->is_pkg_data ? 1 : tdata->cpu_core_id + 2;
-+		int attr_no = is_pkg_temp_data(tdata) ? 1 : tdata->cpu_core_id + 2;
- 
- 		snprintf(tdata->attr_name[i], CORETEMP_NAME_LENGTH,
- 			 "temp%d_%s", attr_no, suffixes[i]);
-@@ -484,6 +486,8 @@ init_temp_data(struct platform_data *pdata, unsigned int cpu, int pkg_flag)
- 
- 	if (pkg_flag) {
- 		pdata->pkg_data = tdata;
-+		/* Use tdata->index as indicator of package temp data */
-+		tdata->index = -1;
+ 	tdata = kzalloc(sizeof(struct temp_data), GFP_KERNEL);
+ 	if (!tdata)
+ 		return NULL;
+@@ -489,7 +504,7 @@ init_temp_data(struct platform_data *pdata, unsigned int cpu, int pkg_flag)
+ 		/* Use tdata->index as indicator of package temp data */
+ 		tdata->index = -1;
  	} else {
- 		tdata->index = ida_alloc_max(&pdata->ida, NUM_REAL_CORES - 1, GFP_KERNEL);
+-		tdata->index = ida_alloc_max(&pdata->ida, NUM_REAL_CORES - 1, GFP_KERNEL);
++		tdata->index = ida_alloc_max(&pdata->ida, pdata->nr_cores - 1, GFP_KERNEL);
  		if (tdata->index < 0) {
-@@ -495,7 +499,6 @@ init_temp_data(struct platform_data *pdata, unsigned int cpu, int pkg_flag)
- 
- 	tdata->status_reg = pkg_flag ? MSR_IA32_PACKAGE_THERM_STATUS :
- 							MSR_IA32_THERM_STATUS;
--	tdata->is_pkg_data = pkg_flag;
- 	tdata->cpu = cpu;
- 	tdata->cpu_core_id = topology_core_id(cpu);
- 	tdata->attr_size = MAX_CORE_ATTRS;
-@@ -505,7 +508,7 @@ init_temp_data(struct platform_data *pdata, unsigned int cpu, int pkg_flag)
- 
- static void destroy_temp_data(struct platform_data *pdata, struct temp_data *tdata)
+ 			kfree(tdata);
+ 			return NULL;
+@@ -510,6 +525,9 @@ static void destroy_temp_data(struct platform_data *pdata, struct temp_data *tda
  {
--	if (tdata->is_pkg_data) {
-+	if (is_pkg_temp_data(tdata)) {
+ 	if (is_pkg_temp_data(tdata)) {
  		pdata->pkg_data = NULL;
++		kfree(pdata->core_data);
++		pdata->core_data = NULL;
++		pdata->nr_cores = 0;
  	} else {
  		pdata->core_data[tdata->index] = NULL;
+ 		ida_free(&pdata->ida, tdata->index);
+@@ -525,7 +543,7 @@ static struct temp_data *get_temp_data(struct platform_data *pdata, int cpu)
+ 	if (cpu < 0)
+ 		return pdata->pkg_data;
+ 
+-	for (i = 0; i < NUM_REAL_CORES; i++) {
++	for (i = 0; i < pdata->nr_cores; i++) {
+ 		if (pdata->core_data[i] &&
+ 		    pdata->core_data[i]->cpu_core_id == topology_core_id(cpu))
+ 			return pdata->core_data[i];
 -- 
 2.34.1
 
