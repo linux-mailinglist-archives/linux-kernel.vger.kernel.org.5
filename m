@@ -1,108 +1,152 @@
-Return-Path: <linux-kernel+bounces-49947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49949-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0F8D8471E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:26:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AB3C8471E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:27:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 707CAB2AE35
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:26:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8FB1287928
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:27:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9EA813EFED;
-	Fri,  2 Feb 2024 14:26:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3ADF13EFEA;
+	Fri,  2 Feb 2024 14:27:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="iHvft8L4"
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ivxg97nG"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 355F01854;
-	Fri,  2 Feb 2024 14:26:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=157.90.84.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57950185B
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 14:27:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706883992; cv=none; b=layv9/Kx7lkj9FOBrREzcFgO9pwx+K5UoYYYjA6Wg/iP87pddzFx6UBuXaS0KCJP0PEfZm2NpYrTbjiO3ox2QBYZhcF9V6U1Vr7vy4W85F7Cy98XpfgUcgd1IA1VNEkIAX0V1DfBWLhYsfRf6SL98FXeJPLY+MBjIaqWM9KEZ4k=
+	t=1706884058; cv=none; b=Es45pRKiYAdC7Y9igsoLveenDyLG0Q2OBA/8ZwNhBrSBKu2UFbUz+J1sLmdZ0DocQ7A4+XVx/S48UufpvDMrW7tH0QGhfl56Swgd6y3EiwYqqEp9o+4ZOUlKmnhpymjBxiMIyFHjX6Li5sNXOy1H/j4OS6GoYwxYX3ya7Xkv3WQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706883992; c=relaxed/simple;
-	bh=Hek7OsUPTK/+2iL5vxjRI0TRniJiNEvzpxxb70WqieY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hDuT/VDmvGTRxUSiEF8nsGzZORsKTFEsE9+cxVjGnEun+5QEXRI+bbMnBiNjrydhIIqRjy0pEoVZ8q5eI0ED7fuWqZ3uJoDf2FXr0EIEiVBe98bTmyWBZK4cKtuzQFBgCnBb74IdeXinulzWy71/bAfOnTiZIZ6mFPGkfkSrzaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com; spf=pass smtp.mailfrom=tuxedocomputers.com; dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b=iHvft8L4; arc=none smtp.client-ip=157.90.84.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
-Received: from [192.168.42.20] (p5de453e7.dip0.t-ipconnect.de [93.228.83.231])
-	(Authenticated sender: wse@tuxedocomputers.com)
-	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id D1CF22FC0055;
-	Fri,  2 Feb 2024 15:26:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-	s=default; t=1706883980;
+	s=arc-20240116; t=1706884058; c=relaxed/simple;
+	bh=RzkeTVJAPZ5UeUS0i8ASAlXVNONascUvWW6yqCnA87c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=DdLwBYvVYy3XjTGKhe3diAeW/jJFpLlXO+GV1moPuaZzw26s5gYYqD1zfc6fudtrb3wd9ekXfHyQRgpspL1pd7XDRzVLB7SAPDh21pGUFdf128Si4C7nzn/l7CpW8qMipHzQbss7Cp+zAyRCkYI4+Fxjmb7iD75ek5OP4GMaWrk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ivxg97nG; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706884055;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rjb1X9/opxrO69KIAP8GbmQxkKMjdNz9fFqZgIlfaFo=;
-	b=iHvft8L4Q/QKjbUsU6dGjcf9ASdUNkAWJjCWZ9XpweIkg3TWZIgzbS6msRf325wL1JuRYC
-	zRhwp9dJJbbDCM8nbPN3UlDu4RiDQ63Iu1SgOfZafAeoZxN0DJw5tDC9JQeqy+BP9coPSA
-	yBw1hrh6D+Wd+ZwVZ9Hajt82HB9My5k=
-Authentication-Results: mail.tuxedocomputers.com;
-	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-Message-ID: <029a0d30-c68a-4e12-80a6-db3203ff3907@tuxedocomputers.com>
-Date: Fri, 2 Feb 2024 15:26:20 +0100
+	bh=mWxjXKpTPExhRJhA5TVTwzLtj+lqSzikS80hkJerkB4=;
+	b=ivxg97nGyjtPaLA2sn9DpuaURIeEuguP+6T4YO65gqo0Kisgw/FUKpE0CKUqbtooxWAGYQ
+	KbLEhTXieg85TANE9CHLuo1a13R2riAweSymoprUhXaUEJ7wqixWh0a+zpPDKvFVPcXx/i
+	Lt9HL+qdLOPgREF5TURkbrALrRSvY9g=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-398-eF4zarJEN8-cLo-cSwsLRw-1; Fri, 02 Feb 2024 09:27:33 -0500
+X-MC-Unique: eF4zarJEN8-cLo-cSwsLRw-1
+Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6e12d22c2e3so2265442a34.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 06:27:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706884049; x=1707488849;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mWxjXKpTPExhRJhA5TVTwzLtj+lqSzikS80hkJerkB4=;
+        b=O/flIfdbzhYp2tKEhVMR3Upi/ItBtlSdWngOlgupspOabcivl8F1bAnp9g8KCoN+5l
+         K1sJaHt4CDaRyai8voiyiAYzO1jYJBNmK6yEJzp5IZhc2T4YksTNUZ0ROOM/EuN/+THn
+         nMPq5n3MG0MZUtrJXoptHHX9pfYmWfcVNok8gSYG5Q7czGhFCSbM34WYjBdMTa0eRGC+
+         +kfU4LiivCL2ZX9+s6dXfbX4gIFivRMjULTCzrDiYrIbXu56Ae0yNV0N13Ei+1G91PF8
+         RJ/b6PFZVH2nqgR2grR0eIlqCQEtVslCZhhIDkreKnnA1hDACuPtp/kYXmUCQGTx9RID
+         r/bw==
+X-Gm-Message-State: AOJu0YzX55XNChDOIaaF8sLnWKmz+W/9VC7vfaRCoQnLCWYHAsMpOtBj
+	ISIaT7o6x0Ve0T1In7iP2SK0MwgjFLvekG/tcewcq9GhTLFpAr989P2zrn1J95/An9uiCC5t7QM
+	7nuJP5XimNt3C/c+hq9+h+QimvgLF8eqML8DIXzOO1bD8JET6ucluI7GXkw6c9IXhPZEPHg==
+X-Received: by 2002:a05:6830:1295:b0:6e1:1236:987c with SMTP id z21-20020a056830129500b006e11236987cmr8499153otp.20.1706884049223;
+        Fri, 02 Feb 2024 06:27:29 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEvrwRb1UXyhXSuiFy5Thk9pVxjt68fQDcdXXW7DA8IOypQnFL934Ulny7vBS1aeePLFL4iqg==
+X-Received: by 2002:a05:6830:1295:b0:6e1:1236:987c with SMTP id z21-20020a056830129500b006e11236987cmr8499139otp.20.1706884048964;
+        Fri, 02 Feb 2024 06:27:28 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXYLBd9q2TZ0zA1K5ogSDjceVV8BSn2IZAROqFnNca5r9ynkTGamrJrrY32qMvkg/vqWSDu2mIra6o6I3B3tAeFSeKvbL338wjItOkQngPYFpLF9nmIVB+WAdDu2LmNVZ48k2tUEwiYcO03eAJ1bC5oU3p9plbtzD3fSFmgu0sA8EzjPjDXsWajbzYQNfvFCtZAVneu22Molr8iag1lQnm/Q2iShjOKcoadgLXy3QwTstk4g4UUi1LP+egQVwFjcilFzsyCU4lPRERP6HDFAoZZFue8lCbkZyD0Znh8qqPeQfTL6O7qAcIuM4WT/lqUPRF5jYT5dShAPBdknTqLNQnIq2EHiz5gzVjqLRR1u/phsEqzY3BqbAmyVMsXcJ4pUauet/OGNnr9z9LMqhOX6b8pQq+FkylvJLT0SMRA
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id j13-20020ac84f8d000000b0042ab59ccd6csm862250qtw.4.2024.02.02.06.27.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 06:27:27 -0800 (PST)
+From: Valentin Schneider <vschneid@redhat.com>
+To: alexs@kernel.org, Ingo Molnar <mingo@redhat.com>, Peter Zijlstra
+ <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent
+ Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
+ <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
+ Segall <bsegall@google.com>, Daniel Bristot de Oliveira
+ <bristot@redhat.com>, linux-kernel@vger.kernel.org,
+ ricardo.neri-calderon@linux.intel.com, sshegde@linux.ibm.com
+Cc: Alex Shi <alexs@kernel.org>
+Subject: Re: [PATCH v3 2/4] sched/fair: remove unused parameters
+In-Reply-To: <20240201115447.522627-2-alexs@kernel.org>
+References: <20240201115447.522627-1-alexs@kernel.org>
+ <20240201115447.522627-2-alexs@kernel.org>
+Date: Fri, 02 Feb 2024 15:27:24 +0100
+Message-ID: <xhsmh1q9vhrg3.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] Fix strange behavior of touchpad on Clevo NS70PU
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231205163602.16106-1-wse@tuxedocomputers.com>
-Content-Language: en-US
-From: Werner Sembach <wse@tuxedocomputers.com>
-In-Reply-To: <20231205163602.16106-1-wse@tuxedocomputers.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-gentle bump
+On 01/02/24 19:54, alexs@kernel.org wrote:
+> From: Alex Shi <alexs@kernel.org>
+>
+> sds isn't used in function sched_asym(), so remove it to cleanup code.
+>
+> Signed-off-by: Alex Shi <alexs@kernel.org>
+> Reviewed-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 
-Am 05.12.23 um 17:36 schrieb Werner Sembach:
-> When closing the laptop lid with an external screen connected, the mouse
-> pointer has a constant movement to the lower right corner. Opening the
-> lid again stops this movement, but after that the touchpad does no longer
-> register clicks.
->
-> The touchpad is connected both via i2c-hid and PS/2, the predecessor of
-> this device (NS70MU) has the same layout in this regard and also strange
-> behaviour caused by the psmouse and the i2c-hid driver fighting over
-> touchpad control. This fix is reusing the same workaround by just
-> disabling the PS/2 aux port, that is only used by the touchpad, to give the
-> i2c-hid driver the lone control over the touchpad.
->
-> v2: Rebased on current master
->
-> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> Cc: stable@vger.kernel.org
+AFAICT this is unsused as of:
+  c9ca07886aaa ("sched/fair: Do not even the number of busy CPUs via asym_packing")
+
+Reviewed-by: Valentin Schneider <vschneid@redhat.com>
+
+> To: Valentin Schneider <vschneid@redhat.com>
+> To: Vincent Guittot <vincent.guittot@linaro.org>
+> To: Juri Lelli <juri.lelli@redhat.com>
+> To: Peter Zijlstra <peterz@infradead.org>
+> To: Ingo Molnar <mingo@redhat.com>
 > ---
->   drivers/input/serio/i8042-acpipnpio.h | 6 ++++++
->   1 file changed, 6 insertions(+)
+>  kernel/sched/fair.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 >
-> diff --git a/drivers/input/serio/i8042-acpipnpio.h b/drivers/input/serio/i8042-acpipnpio.h
-> index 9c39553d30fa2..b31d3285bea69 100644
-> --- a/drivers/input/serio/i8042-acpipnpio.h
-> +++ b/drivers/input/serio/i8042-acpipnpio.h
-> @@ -1200,6 +1200,12 @@ static const struct dmi_system_id i8042_dmi_quirk_table[] __initconst = {
->   					SERIO_QUIRK_RESET_ALWAYS | SERIO_QUIRK_NOLOOP |
->   					SERIO_QUIRK_NOPNP)
->   	},
-> +	{
-> +		.matches = {
-> +			DMI_MATCH(DMI_BOARD_NAME, "NS5x_7xPU"),
-> +		},
-> +		.driver_data = (void *)(SERIO_QUIRK_NOAUX)
-> +	},
->   	{
->   		.matches = {
->   			DMI_MATCH(DMI_BOARD_NAME, "NJ50_70CU"),
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 46ba8329b10a..8d70417f5125 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -9750,7 +9750,6 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
+>  /**
+>   * sched_asym - Check if the destination CPU can do asym_packing load balance
+>   * @env:	The load balancing environment
+> - * @sds:	Load-balancing data with statistics of the local group
+>   * @sgs:	Load-balancing statistics of the candidate busiest group
+>   * @group:	The candidate busiest group
+>   *
+> @@ -9769,8 +9768,7 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
+>   * otherwise.
+>   */
+>  static inline bool
+> -sched_asym(struct lb_env *env, struct sd_lb_stats *sds,  struct sg_lb_stats *sgs,
+> -	   struct sched_group *group)
+> +sched_asym(struct lb_env *env, struct sg_lb_stats *sgs, struct sched_group *group)
+>  {
+>       /* Ensure that the whole local core is idle, if applicable. */
+>       if (!sched_use_asym_prio(env->sd, env->dst_cpu))
+> @@ -9941,7 +9939,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
+>       /* Check if dst CPU is idle and preferred to this group */
+>       if (!local_group && env->sd->flags & SD_ASYM_PACKING &&
+>           env->idle != CPU_NOT_IDLE && sgs->sum_h_nr_running &&
+> -	    sched_asym(env, sds, sgs, group)) {
+> +	    sched_asym(env, sgs, group)) {
+>               sgs->group_asym_packing = 1;
+>       }
+>
+> --
+> 2.43.0
+
 
