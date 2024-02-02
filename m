@@ -1,122 +1,164 @@
-Return-Path: <linux-kernel+bounces-49738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8654846EC8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:18:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7B40846ED2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:20:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 540AA1F286D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:18:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 731531F28F85
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:20:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 814C813D515;
-	Fri,  2 Feb 2024 11:18:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B4913D50A;
+	Fri,  2 Feb 2024 11:20:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZQKo6UUV"
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="m6GsUc01";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ajEqIUc3"
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA7B13D4F8
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 11:18:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D47513D505
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 11:20:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706872726; cv=none; b=gF8zNT2AzF2Eozj1zUXwgfVvnoX4DkP658ZwbqYmbIs8QLrlfGNPrbcPStc56MC0ChwRI+ttO24mT2At/eZS4xAaIUnkT6Iv41hE3gliuoa/YOyS3gOfCjWqVsubw024B+68pDxNY/p2/aodtJ5aOH95yXPN9JqgpZvrLzWpaeY=
+	t=1706872843; cv=none; b=T+SyD7y31LQnz37Fch+ISnwzKYgL5lY7CMkKb2MwxxKo78mZ1ELtbo/aVs+8DyDfpQ/7/5Vo4C1k8APgzMzZ/RKKWtub9enbVvbewNnGMZPLqzEOqXi0NPq4mmemHwAu3s40jJ8qXEWeEK6EmCOyllGP5sDosQwlYaOTX2cdQl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706872726; c=relaxed/simple;
-	bh=rzVH+2O/yXCF23MPinpXV17zNzphyyEZe/7tL4XX3X4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dGXmoz+uicO6WzOMdge9MEUGC7DHjcLzizb+qLto1EDsfWKaTHBrpcd+KV7hbXHwBxAWOJtaOz6pquw1UcB/SxyXOkF1uE4uQl9Qdp7VzuhSbawwsJhAq9WmXKfMrBTCUmLApmZIEWehqjDTjlkcJgaXKF4ZyfEvDH/vReM1s2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZQKo6UUV; arc=none smtp.client-ip=209.85.219.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dc6d24737d7so1898644276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 03:18:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706872724; x=1707477524; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rzVH+2O/yXCF23MPinpXV17zNzphyyEZe/7tL4XX3X4=;
-        b=ZQKo6UUVXK8kI0VibuTzmn9hW3fsSDTrG+gN8mdF5hfZ0p+3ua7lKUifGzx981/KSz
-         c6ps3p6ktb/tRCLXF4bmu0VVyWxh4FwHWbJS8D8oL66RmVmMtVKbM6KkDwDoHH+x82jD
-         2kqFy15PI2kqltvKSe72fqxl0ELKLEvS6cAnvExASKtLFiqI3HMmAZfh1gLTIxV2cP4u
-         iNHh9loI0CboiEk2Iiqan4HcPnljBDRTOrpxwFGvulWhSWkv0bO68FwksgsBci8MLiPF
-         Dy4Js6OscE2jKvnEA02X0kwtvFqCRQ8r2TFxG+JHbOiPSN/S+8IKWdjz1JieHlAnQwdE
-         QCuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706872724; x=1707477524;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rzVH+2O/yXCF23MPinpXV17zNzphyyEZe/7tL4XX3X4=;
-        b=ajFfQ+AmE8IYCtG2O5jNelTtOvEvkiNNnmeo0a4RLxhlTOIJx9+5v3zeuEi47n7UbP
-         KSJpyVPmS5hDoIZz8mY0EWVF2OcQ0E3q7vCK05ooHvhsX5dgIpkcK2Z0Aub9shMbbQk3
-         9TnjSW3gqqshei9H46XyklepeuH0ll1YLXKP7FGAgIXTS7wxhXZi9o3hJgn8VMWWbeXg
-         t1P3oLOUgrMFCBuOenzwe/HledGrIt/pDSeejxkO2xHwnO2RM+LQhtCuNzz7EcKFMbRM
-         VK/d3H19ibhT1db3H63372eqg1sHEJPJFMHXWJxD8e8f6UELip4/k6E8kb/QcSNR5Hd6
-         jwWw==
-X-Gm-Message-State: AOJu0YzZZyZuaRY5bLOG6HzfkgZUMUrk1P8rcPdvhxsKm7jNXy6mZYMu
-	ZXlk4qqpRCmmze7+Be6eViZUmo5P00eer5ichS+UDoTmw+JfzPywvzZUZH6vtPUKZcLKR/I7BSD
-	rbOuw4l1CLneEeSLEBc4KAEsP/IA=
-X-Google-Smtp-Source: AGHT+IEsj0cjiaNuNnw4dFqioHzPuHEuUlcbg/MpTMg1paPWYBzrxOVoAylzR+eBC3pzZMECv0Dm23dSJNjpdkKfhvw=
-X-Received: by 2002:a25:aacb:0:b0:dc2:4e83:e6be with SMTP id
- t69-20020a25aacb000000b00dc24e83e6bemr7841907ybi.46.1706872724255; Fri, 02
- Feb 2024 03:18:44 -0800 (PST)
+	s=arc-20240116; t=1706872843; c=relaxed/simple;
+	bh=ZRlR5bK4g1KoBRuVLx8hi2H5DNjuSx/IKHzhpfVu0ZI=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=Wap1WhxNnZKlTannACdOSimUmDJQoG2xqYDBrDasfPxwYqjyAW5WsVmqN1tiHlOivm/pR76fOxmZ/phAkX3LijkpIylXvB22GKJj5x5zUeQ0RV01QuoUzqIJheGlflVPqZLz9RflD/iSGb+v83l6AcxfGFCytz+teqvo6RZ+uZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=m6GsUc01; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ajEqIUc3; arc=none smtp.client-ip=66.111.4.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id 21E555C012E;
+	Fri,  2 Feb 2024 06:20:40 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 02 Feb 2024 06:20:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1706872840;
+	 x=1706959240; bh=pp95Alah+MaXEWfGhGkN/3RO+Gp93mL6PvidT9UVU+8=; b=
+	m6GsUc01cCOikIG1qWo/D1HZ88MAECXHJb/Tc8RvS6pTM/JeW4YAqvaQcIkjG2nF
+	GTidOWWcanjQESfKC1uK20OWByiCPuhWo64uSKZSd1nnAPmwFNCZKv1uUbzgchvC
+	kl8ygko70U2ji5Z577BHEagXSUg3iMToeQanbqiksSwpHiX8Pamu3uopqZqm+/jX
+	gpDKQX0XSZQAFglHyt53Kk3JKj9KSg9ovOBqFPQOeFHe0QA/Y0E46HiF0f7Yu0IP
+	jbGozR0/wFeoy4i2wSz/h8cJSYOoVHS90CJqWICqlAQIaTXEs6+6DwDyjQiMO/4H
+	pN4Y4F4ZrHdUb//9D5kLTg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706872840; x=
+	1706959240; bh=pp95Alah+MaXEWfGhGkN/3RO+Gp93mL6PvidT9UVU+8=; b=a
+	jEqIUc3JtiXd7PLK0ZHIUpsi8vPTWWKcyQlUF8jLjQlj/C6N7UH5r1djOxAVMHlw
+	dTh2WLzZQMYq/CnrR2ysHLEF17XoFsylJljKDBIXcyR+SFsgxbwCRIUMKe43fD74
+	e9MTZnNiv+NzvbIegoAzSSkKPmQBHi3FVzp7dLQmDvyJN0JatUV4+yw/E+6fdPjM
+	01+96GcEA194C+G3f0jHV4sGOfU5AUvNtLZBZnctcecZ/d20SrnHR4A7YgbxH2yz
+	+HUYPJZlIi3GUOpUj/7mnW7mGH/pWLuXFDj5zhY3IKyDPbnFc3l+cTzWpkJfNj03
+	uyYdUFrY6mzxUK6G3QSfw==
+X-ME-Sender: <xms:B9C8ZfKSUGv55RP7tEPFqJqwLTyaoUDCk308GAmNknC47HkX3oS2rw>
+    <xme:B9C8ZTIZYrDQcV6JKQuzuChdMwmhG5YsuyS0yUWqv6WXmLkvVTCQFNgfjlddz2jo8
+    EXRsOdtfOKn7KBEmlw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedugedgvdeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
+    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:B9C8ZXv-38leow7NGlaV9d8uGW2A3ByBKlY7gF4a6pfWq-bzGeaZ5g>
+    <xmx:B9C8ZYZISbuQIA8dyii_cuoMVJNl0mWxO-99h6AEd0WYhly61VzLGQ>
+    <xmx:B9C8ZWYJKOGhWX-wCezeDUuWbbtqBgWCpnLm_ExCtAgNpkwn_zRDxA>
+    <xmx:CNC8ZepP6dBu09wHOoKw4KyNQq0M8OuYTbPM0BOZJabqZGTActG0zA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 8E525B6008D; Fri,  2 Feb 2024 06:20:39 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201125226.28372-1-ioworker0@gmail.com> <Zby-sHLDlmTRaUcd@tiehlicka>
-In-Reply-To: <Zby-sHLDlmTRaUcd@tiehlicka>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Fri, 2 Feb 2024 19:18:31 +0800
-Message-ID: <CAK1f24=7sy_Bczpt5YeDbkhfriYUc1=zreSFdGCxfF3R0D6sRQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm/khugepaged: skip copying lazyfree pages on collapse
-To: Michal Hocko <mhocko@suse.com>
-Cc: akpm@linux-foundation.org, zokeefe@google.com, david@redhat.com, 
-	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com, 
-	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <ebab6070-5f3c-4706-9fe8-11f530bb1054@app.fastmail.com>
+In-Reply-To: 
+ <CAMuHMdVk0YOUFKy-ZjMHWCGkNMeBGU5Zs6VxtNH38emBnAR9xA@mail.gmail.com>
+References: 
+ <CGME20240202095104eucas1p2df4522cc4a7ee29540db1fb61d8e19fc@eucas1p2.samsung.com>
+ <20240202095044.1980696-1-m.szyprowski@samsung.com>
+ <CAMuHMdVk0YOUFKy-ZjMHWCGkNMeBGU5Zs6VxtNH38emBnAR9xA@mail.gmail.com>
+Date: Fri, 02 Feb 2024 11:20:19 +0000
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Geert Uytterhoeven" <geert@linux-m68k.org>,
+ "Marek Szyprowski" <m.szyprowski@samsung.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, "Russell King" <linux@armlinux.org.uk>,
+ "Geert Uytterhoeven" <geert+renesas@glider.be>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
+ "Alexandre Torgue" <alexandre.torgue@foss.st.com>,
+ "Andrew Davis" <afd@ti.com>, "Mark Brown" <broonie@kernel.org>,
+ "Lee Jones" <lee@kernel.org>, "Daniel Thompson" <daniel.thompson@linaro.org>,
+ "Jingoo Han" <jingoohan1@gmail.com>, "Dave Airlie" <airlied@gmail.com>,
+ "Daniel Vetter" <daniel@ffwll.ch>
+Subject: Re: [PATCH] ARM: multi_v7_defconfig: Enable BACKLIGHT_CLASS_DEVICE
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 2, 2024 at 6:06=E2=80=AFPM Michal Hocko <mhocko@suse.com> wrote=
-:
+On Fri, Feb 2, 2024, at 11:07, Geert Uytterhoeven wrote:
+> On Fri, Feb 2, 2024 at 10:51=E2=80=AFAM Marek Szyprowski <m.szyprowski=
+@samsung.com> wrote:
+>> core, because the DRM core is set to be compiled-in in this defconfig.
+>> This leaves all DRM display panels without integrated backlight contr=
+ol,
+>> even if the needed modules have been properly loaded and probed.
 >
-> On Thu 01-02-24 20:52:26, Lance Yang wrote:
-> > The collapsing behavior of khugepaged with pages
-> > marked using MADV_FREE might cause confusion
-> > among users.
-> >
-> > For instance, allocate a 2MB chunk using mmap and
-> > later release it by MADV_FREE. Khugepaged will not
-> > collapse this chunk. From the user's perspective,
-> > it treats lazyfree pages as pte_none. However,
-> > for some pages marked as lazyfree with MADV_FREE,
-> > khugepaged might collapse this chunk and copy
-> > these pages to a new huge page. This inconsistency
-> > in behavior could be confusing for users.
+> Hmm, that's bad.
 >
-> Is that any more confusing than collapsing pte_none
-> pages?
+> Is there any way to fix this in DRM?
+> A quick grep shows that DRM is using the full monty of
+> IS_{BUILTIN,ENABLED,MODULE,REACHABLE}(CONFIG_BACKLIGHT_CLASS_DEVICE).
+> Probably not all of them are in perfect sync?
+
+The IS_REACHABLE() ones are almost certainly bugs, as are the
+'select BACKLIGHT_CLASS_DEVICE' ones we have in drivers/gpu.
+
+> Several DRM drivers do select BACKLIGHT_CLASS_DEVICE, but if that
+> does not work in the modular case, it should be fixed.
+
+The select should do the right thing in principle, but mixing
+it with depends is what causes circular dependencies. Unfortunately
+trying to fix it likely also causes those, but I think it's worth
+revisiting.
+
+It should be possible to change it like this:
+
+- change all DRM drivers that require the class to 'depends on
+  BACKLIGHT_CLASS_DEVICE'
+
+- change all those drivers that can optionally use it to
+  'depends on BACKLIGHT_CLASS_DEVICE || !BACKLIGHT_CLASS_DEVICE'
+  to avoid the dependency on a loadable module
+
+- Make BACKLIGHT_CLASS_DEVICE itself default to 'DRM' in order
+  to avoid regressions in defconfig files but still make it
+  possible to turn it off.
+
+>> Fix this by selecting BACKLIGHT_CLASS_DEVICE to be compiled-in in
+>> multi_v7_defconfig.
+>>
+>> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
 >
-> TBH I do not really see why this is a problem. MADV_FREE
-> are correctly recognized same as pte_none so the user
-> defined trashold applies.
+> Sounds like a good interim solution.
+>
+> Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Sorry, I might not have expressed it clearly.
-MADV_FREE is correctly recognized, just like
-pte_none. This is also reasonable and not an issue.
+Thanks, I've applied it to the soc/defconfig branch now.
 
-IMO, since it's treated the same as pte_none,
-perhaps lazyfree pages shouldn't be copied to
-the new huge page.
-
-Thanks,
-Lance
-> --
-> Michal Hocko
-> SUSE Labs
+     Arnd
 
