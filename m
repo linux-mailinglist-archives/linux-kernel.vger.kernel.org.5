@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-50337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52A1884779C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:36:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AE888477A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:36:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B47828A564
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:36:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF9F728A582
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:36:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF3C1154452;
-	Fri,  2 Feb 2024 18:35:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 621E8154C03;
+	Fri,  2 Feb 2024 18:35:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wf1bQJCD"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DPu9JW/Z"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFBD1152E0B
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 18:35:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EF22153BEA
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 18:35:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706898907; cv=none; b=LHsskvKuAMh5bX8vTUbFVemuW0BTxVVbxqcAR7Lh9Ec14RjNWNIzDbimM6P8qUXxxnZNUuM6Kd8O2CzLFdgwy+XPDxsYbs6PqLXzXrWnpK2F5eh6QvvD/ZtUAgUaIn6Zahw10nOjd5KytQB9QBKhGF7d06i6Gvttw3fYl1eOd+U=
+	t=1706898909; cv=none; b=i6ZF+OYBDwlEfX8x8H1Csa7+YjMxDNWRLEAyigKKIX8SsM9ABKibs02OTP4AsW21gVYeLY11ghc88ykAjKoOg6/zix4Wa4OQRS0dJ60EO6lq3ss+CK/77ANMjOGsVO5XYf6BAujhASXhhy2/HuwDWVDtvPNmcKqsuxQj+ne8uk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706898907; c=relaxed/simple;
-	bh=5o9rPc9rPhaIIYD3Qv1YS+E1/PQUOBaulRbsW2qNMng=;
+	s=arc-20240116; t=1706898909; c=relaxed/simple;
+	bh=wOwjixvOBb57O21H6kXdK09tVckX+ysQRvWYlwrvOP4=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=bi283oMHul3ZrfsCUdyWWVhHri8hFnFBdh9QJj6P2JyPF5xz43i5VIAs7LO7pL+zZ1DW//VGpuRrWZZhfYn9JjzbYmvH8gpdxjSaQIUe4T3i9pXXihCKYrKBD9/bzghHnvQPflzHf60kmZ+BgME6vumO9PnhTYnITsIsQJRQ3uQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wf1bQJCD; arc=none smtp.client-ip=209.85.218.46
+	 In-Reply-To:To:Cc; b=bx1SFFHvAQ4kH7UVevNNOHXM6/GyMMNr0dpsNnOaRWWcfmso6KsTtLWg5jO6YeOO7L+pBiMaWJo+fX0NOPDU1/fzCTPunEUum1gyjbKYkqOlF3ktyNrBE/6MQPoOecMbilf8MZvDAZmFknbCFoO7ULvMJmTHYRzLWFLO/bUq2sg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DPu9JW/Z; arc=none smtp.client-ip=209.85.218.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3510d79ae9so315095866b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 10:35:05 -0800 (PST)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a370e63835cso116679166b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 10:35:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706898904; x=1707503704; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706898905; x=1707503705; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=SqvowzPBNes54tkE+QmrMP2CFzr9rwDQb7eM4POy6yQ=;
-        b=wf1bQJCDQLarKuG9oNOwLNbpls8sJnjzUbxzz1IJzTdHoMkEjEcSFaoHW9/RSzbB76
-         j6mAtsl9/m0QCIKnAUZzek3IiRDyNaI7NNW0qncxSyxHdOwVpUhF0WGdyTHqzGjN32/B
-         lTHdTwKAjcl8DYaTEtJsdhHOtaWBzNBM38b1pggeeKcnYTJFbfHZdJhX6BuAlWDlsmtY
-         KlnBnNTagoUJp21+R7gWG4szfYEJrWhXd07G4eO7zgqut6oVTU6yHyRGPU6VTLux+tkQ
-         Ng65fCZDwq/j00i8QjpNg01YNwbJv2BjhHPREzMp5DWEyY0PODCC1pSgGuEgGyOC/gTu
-         zAiw==
+        bh=eB0k4Rx8lLFU8UGZ+hmhNdX5P8zfKAzC8GL/lRneZus=;
+        b=DPu9JW/ZdTfiKuw2h6Ee3R1cQmIfvD8CaFmuoNczfpt6DW4cYCHVigPnRWDuwuNO9h
+         6OAQbEetakM4GCoOJ44xbg08VLyqLq0GqbJYwI9RyyjzUy2RiP6PpdJJvAcLj188Iuu0
+         OxL8fXiCtcIgdcQ+VQVQIVDiYh9k8xRolOWjnKZdKu4Wki/f9mHReYm6auiyISe3Cgx0
+         +IYM8+kp98mraFwAAhbsSbo3PQVf6EfWs8oYi3KQMYpaKHxTwrlp2fNff/OIkK1C1KwA
+         MlxLMeNr/VJ+QPpjLYRKkdffSaCp3qEtfxEM9Fvvh0qYU9OR9eILOl20YPK/PhB0UxmE
+         NlGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706898904; x=1707503704;
+        d=1e100.net; s=20230601; t=1706898905; x=1707503705;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SqvowzPBNes54tkE+QmrMP2CFzr9rwDQb7eM4POy6yQ=;
-        b=FZxTRWbzZgUdeKurOWBs8sBhO7kZPKL2Imut11vsMmNmoPTw9YzEAUknv5+EIaV2xB
-         V4uF/bQbrb9I+V856UeSZqIVOfROLmuiEec28o/H54pq2++rDUGFRw7oEGNey9jrljDI
-         qcZG0Gldej4cb6cnRPNtl1B/X+GQEexl2p/cIRAbbd6e+5x7He7aBMCgbugiqdRh2cNh
-         xOjV2oJZRTbkLDuFL6yTtFKJpCUakqftFPj4zDhUwgPDDNu2SU2LtcKpgu4RCcAYkyfp
-         Mtan0xWindUEQ9zuGrnnLVFwQTG8NK4z81p7cnjhMAy+/QUUihpws/cfOOdX30dR1hdg
-         GczA==
-X-Gm-Message-State: AOJu0YzRxLotexvsd7eHBo9w4yjyN0Kefd2/mcNz8+5Y40BO78rKCbZ6
-	eioktMfGRTdr/c1wl9eGK64iIgUw6RwDWAGn3DKwQ/jXSblIOWTHL+gw6Vovb8c=
-X-Google-Smtp-Source: AGHT+IEYXIRbeof76XJrq/TdKwvgjQBoDChGYGEO2/0bdC3eogIDuPhxfc3uwCqNWOhRoQjIgenUqg==
-X-Received: by 2002:a17:906:f890:b0:a30:be5e:c8e7 with SMTP id lg16-20020a170906f89000b00a30be5ec8e7mr6032102ejb.44.1706898903859;
-        Fri, 02 Feb 2024 10:35:03 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU27UBwtprRk5Z7qnWqhge4q8luRZzOEn5iIx+/1ppetdHPphEEfwZAbqDcwfL4YU+p2jQBxl4B/dRXd3S4p6yP3S0aqjPYj661ShRBbiWM35+1XKsNak7L+qhJL3cWLFJL36cInkNouni3QsOMq91wm8yMTAn3MwfRmVwxeCzTi9ib+ajtvAz8LFhxxkwQnQGapSAsOWIXZuRf+3eo4IC3PRbEgEFkOl9Huc+qLH9StYhH3sV43qVFAivtiPT3nYDsIWGvhWdDqUqr7UA0/RPCouqSNQcwRUa3t/7mPf8Bq3bjDvL9gzN29FFkJTvi8PPTIhTBPkdw5h+sXPg8B3OZo7gi9dSkTjyqxaCFGZDGzSOTEVsfdu1VigEbCtq6v5vtmKerpv79llMamO/5/2m0EEoAMmxGLxqqDHBFGT7ID+uf/PFwZbElcRkOobe39FIsq35IsMJ2yyxZVts8sycWDlmq/s/CalZNlGsqf1J/GCbjtE2N3N8p8OVTVnhBnjcMGuwF1ObTjE5rGca820iDSKKRoGTJke4O0/nJhPOeNGqFW45L7WudAngl7Ealk8brNo9YakDH6D5fzbaaPXTpz/s7c7/cSeG5fSPvQ9KrutpmXRQr0ccqHb8zgJoO69FacqlaVV0Xgf3Cqy5ddrUHt6UNm8b453Vdh5I=
+        bh=eB0k4Rx8lLFU8UGZ+hmhNdX5P8zfKAzC8GL/lRneZus=;
+        b=jWaGo4Hu7U5KJZqgZNuCHopcwGabSKap+2rIjEAhgY0WPo9whOUJTLSd4AGm5GdGtN
+         lJ/+I2kv0P619SYIHi1KonfZL6pQqCNLF4xWgFCVgQt0seC49SIB5My4vP+FWHxhjGMo
+         8xT/ZSNiySCvrSp8Vh+9NjyRv8j704xrYlOAbfcgSqrJKUvcbxmw2UGvqKYakjA0tQI+
+         kYRTi0MNTvllwhfkdyG+4alaCj1MTnrNopN2KTjBzufUQy09yiKHO7gAMhQAgm2AXw/n
+         w+ihbJwySZkd4tv/6jlHVNfdvcixKoEr5LjDxQbixwBaeRBli7d5+hA7CKcXOiS0VbYe
+         oklw==
+X-Gm-Message-State: AOJu0YzVV16eLElNyAR8GzHh6xGmmEJVRxgKnCxuGLH6uyaw4EjGA6eL
+	X0CZe9HvY9jnkqIkGWES+AmqCCsJL+P2DirgMVsoYr86n3nujyRecvCMbM9466g=
+X-Google-Smtp-Source: AGHT+IE6jm5HGAIN0rCjyREM4vt4m7D/T1QTDIObDIhTrtpN5IiKIoG5/m2UiAj4iLfdh3zKTb1aUQ==
+X-Received: by 2002:a17:906:f8cd:b0:a35:a71d:81fe with SMTP id lh13-20020a170906f8cd00b00a35a71d81femr4241009ejb.43.1706898905610;
+        Fri, 02 Feb 2024 10:35:05 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCW/TIVnyczqsRyg640QYg6iDNs9mHz3kkLq0C9UtRkwBIU8TXVenbOt4Lpb0zPjFUNw16w3q9bgTtA8DNk1eiUW9FS2WtQBjQkl4dQ+qo+WaUc34iJcqT2YQOHAgMMLwe7JJuvVEjWv9yMoeUPEs1XmyTvDqctZQhEPXttjRL8Kex5N8Qa8MplVfviwIdp9ofTSKn8xSVsgNuzmBYkV7866ZBcbFHcjSvSLoIGJQXWYdPU8BVy65VtjtVYuyMk8BOb/6hYSmWwGzaNfdlcSfsEeKaHgpE2FvZ+ZCZvYigYTpYvFL0Vlc9h9A53ZugzRR9BfdO9/XOQ1Ab1N5X83NfoxeC+CgEQwuZ2pHe3hAB3u9Dxl4q3WL4S/wAp/o515L0DtvX2pJUeRQMf5Ci8KMd2VZelg3wmDBuGZu+th5u+W+Y7LxIRhypow5hxH8Cj5DJlm5ZraHyf3BubIQJl1TCdxVULnWZcB4tHxOA4Ch1jtzZwe6cNvgZF9ziYqdWC17pcsocJggo4iL4b9NEzaniK9/8xtxX5F9WIWbYHUHnxERKKJZvB5ZGXpZ06F6U8hoQqnVqobNTsln4471/uDHQQe5XutAC3EDa0lsTd/EhOSwF1hOPH+h1uWzAlz
 Received: from [127.0.1.1] ([62.231.97.49])
-        by smtp.gmail.com with ESMTPSA id vh10-20020a170907d38a00b00a36fa497a65sm1051328ejc.110.2024.02.02.10.35.02
+        by smtp.gmail.com with ESMTPSA id vh10-20020a170907d38a00b00a36fa497a65sm1051328ejc.110.2024.02.02.10.35.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 10:35:03 -0800 (PST)
+        Fri, 02 Feb 2024 10:35:05 -0800 (PST)
 From: Abel Vesa <abel.vesa@linaro.org>
-Date: Fri, 02 Feb 2024 20:34:40 +0200
-Subject: [PATCH v4 05/10] dt-bindings: clock: qcom: Document the X1E80100
- Camera Clock Controller
+Date: Fri, 02 Feb 2024 20:34:41 +0200
+Subject: [PATCH v4 06/10] clk: qcom: clk-alpha-pll: Add support for zonda
+ ole pll configure
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,7 +78,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240202-x1e80100-clock-controllers-v4-5-7fb08c861c7c@linaro.org>
+Message-Id: <20240202-x1e80100-clock-controllers-v4-6-7fb08c861c7c@linaro.org>
 References: <20240202-x1e80100-clock-controllers-v4-0-7fb08c861c7c@linaro.org>
 In-Reply-To: <20240202-x1e80100-clock-controllers-v4-0-7fb08c861c7c@linaro.org>
 To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
@@ -93,199 +93,107 @@ To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
  Rob Herring <robh@kernel.org>
 Cc: linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
  linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
- Abel Vesa <abel.vesa@linaro.org>, Rajendra Nayak <quic_rjendra@quicinc.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+ Abel Vesa <abel.vesa@linaro.org>, Rajendra Nayak <quic_rjendra@quicinc.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6323; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=58HK41X2RwoVKAc3y1UdEE+FwgqR6qC/7J65pR95bFk=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlvTXHmvzFPPQCCK7dNqdInIXWlVjfvxF+Se4SL
- KgKR7O1+SaJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZb01xwAKCRAbX0TJAJUV
- Vt7SD/99ldtJBppmvH7rWo8MgRDNex4VDNQE10VBpo0FeFvRtXwy2sa3szPTZ+mUms1lvjzHOdO
- qxoTLouOEQK1q+LYBxUjbbaTZ9Esv+L1CzGiFOsvt7WtW/YABPTAMxQrxvEySV67FD5G+0BV+5Z
- o6OMZoAXufYWu+1hA6SQ+0lzF9d6VrdD8ecj0orjf8ccKjNxZSCWIWN4sURgQuR+Y47J+0oWOJh
- w/V85cV8VlEWE53uIWVi2pFMBUJe970RDcoANiRULJ44vrbp/I+ql2JHtlssON+kukxr1zTLQg2
- j1bg18Pi1fPC3Pe5oGW0U4uimoERxEABKEFoNki/sEsrOXJR7tKXef7wPUKdvaAxDPxUZppwZEQ
- b0VZUK6Dv5Tt0Byme4tW1J8RX+9rdODzxkWUid23Pxf6O8uSt8afZeRy22srdV+UbTbwUNuNNcC
- tI1XgsOX8LJqro8hnYdsC7VkkfDddHDaZ1tJ92ciF7BpHYyidayXTgR3y+tonG7RnXvaHPRJSBm
- JQlzSQhseViOmQrdTCiEo1EZOiUvUjwVW7Pt3ePF/MwCTtDU20NzlG0IxtHCbmf2m/jx8J0IJ76
- 92XzXaLHCYrDAxaQG1WsTeM+x5dQQfo13jmuerM1YOdUsGk3qEw4+gmstkyBP7NcvMQP0LxkROX
- VVQ/lzr0mQ6fuAw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3073; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=7hMtsutwFIJfkcmivoNWL+5dN+rIPkFX5C/YyW3SaEk=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlvTXIa20qHwErMw3cFeQti7L2hs3BduXyx1x9v
+ OmDzj0C+kKJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZb01yAAKCRAbX0TJAJUV
+ Vq0AD/9O/V+FbPyQakIOdOVxaLa8VTnjOO4hFFO8kuJ5oxEpbFFEXmPvfOYkUoaBhxxWrx9GmK0
+ BtRaDY6SA36bNgLNcabThLnIeVk1ydRKIMAtzNi0FGNd9Sgi4UAnNt1rI8Dw30Ql4vvy+msisv0
+ ipw/js7oOI+CANkgeAQevTHPcFnbY2HN9uNX17IvhvRnt09wBVj5LCXwwXV4ZLVvnC7GdM/Yssb
+ lgt+HjeCEj+qA+9E+eRQQhgCfgdUVjPs7LCDY4yi3A0OyycaTdw7vrIUws5dl5/uey1afwqwH1f
+ JQogRacdJY3ouv/EzaxVCBLzkbyXviB5OF6DixH8T0BhknhqY/oUE7VhCISLBsvDk2HPRLpSvUI
+ B+xwMTtVMG+/fJwuWErXVEm2QaLlP6ex05ygSSAEaKplsVvewDWsdsJcE5Xm69H0Didw4CB57lT
+ KCDZRm7c3riZO4m8uYQN63NSgCTGjlJgHat0qBRHJTyfB2/FyDTnn9mrgnNp3ELR1jzeZZR3Qbm
+ D9YUrpNB8TdFaEtOD4ux1Qnt6r110z61FctnGn/FTPPQk155ixFOCYGK8U3yTdPTB3DXsCeGLR+
+ CF4yHEq/zKiydBZ39lx2cqGQjFVtTYXtqSbgav9iCiiK1QIY/3CPzTw0TkoKVB/5yrSeBj2ej2l
+ ybkEbtVjZMwU00g==
 X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
  fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
 From: Rajendra Nayak <quic_rjendra@quicinc.com>
 
-Add bindings documentation for the X1E80100 Camera Clock Controller.
+Zonda ole pll has as extra PLL_OFF_CONFIG_CTL_U2 register, hence add
+support for it.
 
 Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 ---
- .../bindings/clock/qcom,sm8450-camcc.yaml          |   2 +
- include/dt-bindings/clock/qcom,x1e80100-camcc.h    | 135 +++++++++++++++++++++
- 2 files changed, 137 insertions(+)
+ drivers/clk/qcom/clk-alpha-pll.c | 16 ++++++++++++++++
+ drivers/clk/qcom/clk-alpha-pll.h |  4 ++++
+ 2 files changed, 20 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/clock/qcom,sm8450-camcc.yaml b/Documentation/devicetree/bindings/clock/qcom,sm8450-camcc.yaml
-index 48986460f994..fa0e5b6b02b8 100644
---- a/Documentation/devicetree/bindings/clock/qcom,sm8450-camcc.yaml
-+++ b/Documentation/devicetree/bindings/clock/qcom,sm8450-camcc.yaml
-@@ -17,6 +17,7 @@ description: |
-     include/dt-bindings/clock/qcom,sm8450-camcc.h
-     include/dt-bindings/clock/qcom,sm8550-camcc.h
-     include/dt-bindings/clock/qcom,sc8280xp-camcc.h
-+    include/dt-bindings/clock/qcom,x1e80100-camcc.h
+diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
+index 05898d2a8b22..8a412ef47e16 100644
+--- a/drivers/clk/qcom/clk-alpha-pll.c
++++ b/drivers/clk/qcom/clk-alpha-pll.c
+@@ -52,6 +52,7 @@
+ #define PLL_CONFIG_CTL(p)	((p)->offset + (p)->regs[PLL_OFF_CONFIG_CTL])
+ #define PLL_CONFIG_CTL_U(p)	((p)->offset + (p)->regs[PLL_OFF_CONFIG_CTL_U])
+ #define PLL_CONFIG_CTL_U1(p)	((p)->offset + (p)->regs[PLL_OFF_CONFIG_CTL_U1])
++#define PLL_CONFIG_CTL_U2(p)	((p)->offset + (p)->regs[PLL_OFF_CONFIG_CTL_U2])
+ #define PLL_TEST_CTL(p)		((p)->offset + (p)->regs[PLL_OFF_TEST_CTL])
+ #define PLL_TEST_CTL_U(p)	((p)->offset + (p)->regs[PLL_OFF_TEST_CTL_U])
+ #define PLL_TEST_CTL_U1(p)     ((p)->offset + (p)->regs[PLL_OFF_TEST_CTL_U1])
+@@ -228,6 +229,21 @@ const u8 clk_alpha_pll_regs[][PLL_OFF_MAX_REGS] = {
+ 		[PLL_OFF_ALPHA_VAL] = 0x24,
+ 		[PLL_OFF_ALPHA_VAL_U] = 0x28,
+ 	},
++	[CLK_ALPHA_PLL_TYPE_ZONDA_OLE] =  {
++		[PLL_OFF_L_VAL] = 0x04,
++		[PLL_OFF_ALPHA_VAL] = 0x08,
++		[PLL_OFF_USER_CTL] = 0x0c,
++		[PLL_OFF_USER_CTL_U] = 0x10,
++		[PLL_OFF_CONFIG_CTL] = 0x14,
++		[PLL_OFF_CONFIG_CTL_U] = 0x18,
++		[PLL_OFF_CONFIG_CTL_U1] = 0x1c,
++		[PLL_OFF_CONFIG_CTL_U2] = 0x20,
++		[PLL_OFF_TEST_CTL] = 0x24,
++		[PLL_OFF_TEST_CTL_U] = 0x28,
++		[PLL_OFF_TEST_CTL_U1] = 0x2c,
++		[PLL_OFF_OPMODE] = 0x30,
++		[PLL_OFF_STATUS] = 0x3c,
++	},
+ };
+ EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
  
- allOf:
-   - $ref: qcom,gcc.yaml#
-@@ -27,6 +28,7 @@ properties:
-       - qcom,sc8280xp-camcc
-       - qcom,sm8450-camcc
-       - qcom,sm8550-camcc
-+      - qcom,x1e80100-camcc
+diff --git a/drivers/clk/qcom/clk-alpha-pll.h b/drivers/clk/qcom/clk-alpha-pll.h
+index a1a75bb12fe8..fb6d50263bb9 100644
+--- a/drivers/clk/qcom/clk-alpha-pll.h
++++ b/drivers/clk/qcom/clk-alpha-pll.h
+@@ -21,6 +21,7 @@ enum {
+ 	CLK_ALPHA_PLL_TYPE_LUCID = CLK_ALPHA_PLL_TYPE_TRION,
+ 	CLK_ALPHA_PLL_TYPE_AGERA,
+ 	CLK_ALPHA_PLL_TYPE_ZONDA,
++	CLK_ALPHA_PLL_TYPE_ZONDA_OLE,
+ 	CLK_ALPHA_PLL_TYPE_LUCID_EVO,
+ 	CLK_ALPHA_PLL_TYPE_LUCID_OLE,
+ 	CLK_ALPHA_PLL_TYPE_RIVIAN_EVO,
+@@ -42,6 +43,7 @@ enum {
+ 	PLL_OFF_CONFIG_CTL,
+ 	PLL_OFF_CONFIG_CTL_U,
+ 	PLL_OFF_CONFIG_CTL_U1,
++	PLL_OFF_CONFIG_CTL_U2,
+ 	PLL_OFF_TEST_CTL,
+ 	PLL_OFF_TEST_CTL_U,
+ 	PLL_OFF_TEST_CTL_U1,
+@@ -119,6 +121,7 @@ struct alpha_pll_config {
+ 	u32 config_ctl_val;
+ 	u32 config_ctl_hi_val;
+ 	u32 config_ctl_hi1_val;
++	u32 config_ctl_hi2_val;
+ 	u32 user_ctl_val;
+ 	u32 user_ctl_hi_val;
+ 	u32 user_ctl_hi1_val;
+@@ -173,6 +176,7 @@ extern const struct clk_ops clk_alpha_pll_postdiv_lucid_5lpe_ops;
  
-   clocks:
-     items:
-diff --git a/include/dt-bindings/clock/qcom,x1e80100-camcc.h b/include/dt-bindings/clock/qcom,x1e80100-camcc.h
-new file mode 100644
-index 000000000000..d72fdfb06a7c
---- /dev/null
-+++ b/include/dt-bindings/clock/qcom,x1e80100-camcc.h
-@@ -0,0 +1,135 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-+/*
-+ * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#ifndef _DT_BINDINGS_CLK_QCOM_CAM_CC_X1E80100_H
-+#define _DT_BINDINGS_CLK_QCOM_CAM_CC_X1E80100_H
-+
-+/* CAM_CC clocks */
-+#define CAM_CC_BPS_AHB_CLK					0
-+#define CAM_CC_BPS_CLK						1
-+#define CAM_CC_BPS_CLK_SRC					2
-+#define CAM_CC_BPS_FAST_AHB_CLK					3
-+#define CAM_CC_CAMNOC_AXI_NRT_CLK				4
-+#define CAM_CC_CAMNOC_AXI_RT_CLK				5
-+#define CAM_CC_CAMNOC_AXI_RT_CLK_SRC				6
-+#define CAM_CC_CAMNOC_DCD_XO_CLK				7
-+#define CAM_CC_CAMNOC_XO_CLK					8
-+#define CAM_CC_CCI_0_CLK					9
-+#define CAM_CC_CCI_0_CLK_SRC					10
-+#define CAM_CC_CCI_1_CLK					11
-+#define CAM_CC_CCI_1_CLK_SRC					12
-+#define CAM_CC_CORE_AHB_CLK					13
-+#define CAM_CC_CPAS_AHB_CLK					14
-+#define CAM_CC_CPAS_BPS_CLK					15
-+#define CAM_CC_CPAS_FAST_AHB_CLK				16
-+#define CAM_CC_CPAS_IFE_0_CLK					17
-+#define CAM_CC_CPAS_IFE_1_CLK					18
-+#define CAM_CC_CPAS_IFE_LITE_CLK				19
-+#define CAM_CC_CPAS_IPE_NPS_CLK					20
-+#define CAM_CC_CPAS_SFE_0_CLK					21
-+#define CAM_CC_CPHY_RX_CLK_SRC					22
-+#define CAM_CC_CSI0PHYTIMER_CLK					23
-+#define CAM_CC_CSI0PHYTIMER_CLK_SRC				24
-+#define CAM_CC_CSI1PHYTIMER_CLK					25
-+#define CAM_CC_CSI1PHYTIMER_CLK_SRC				26
-+#define CAM_CC_CSI2PHYTIMER_CLK					27
-+#define CAM_CC_CSI2PHYTIMER_CLK_SRC				28
-+#define CAM_CC_CSI3PHYTIMER_CLK					29
-+#define CAM_CC_CSI3PHYTIMER_CLK_SRC				30
-+#define CAM_CC_CSI4PHYTIMER_CLK					31
-+#define CAM_CC_CSI4PHYTIMER_CLK_SRC				32
-+#define CAM_CC_CSI5PHYTIMER_CLK					33
-+#define CAM_CC_CSI5PHYTIMER_CLK_SRC				34
-+#define CAM_CC_CSID_CLK						35
-+#define CAM_CC_CSID_CLK_SRC					36
-+#define CAM_CC_CSID_CSIPHY_RX_CLK				37
-+#define CAM_CC_CSIPHY0_CLK					38
-+#define CAM_CC_CSIPHY1_CLK					39
-+#define CAM_CC_CSIPHY2_CLK					40
-+#define CAM_CC_CSIPHY3_CLK					41
-+#define CAM_CC_CSIPHY4_CLK					42
-+#define CAM_CC_CSIPHY5_CLK					43
-+#define CAM_CC_FAST_AHB_CLK_SRC					44
-+#define CAM_CC_GDSC_CLK						45
-+#define CAM_CC_ICP_AHB_CLK					46
-+#define CAM_CC_ICP_CLK						47
-+#define CAM_CC_ICP_CLK_SRC					48
-+#define CAM_CC_IFE_0_CLK					49
-+#define CAM_CC_IFE_0_CLK_SRC					50
-+#define CAM_CC_IFE_0_DSP_CLK					51
-+#define CAM_CC_IFE_0_FAST_AHB_CLK				52
-+#define CAM_CC_IFE_1_CLK					53
-+#define CAM_CC_IFE_1_CLK_SRC					54
-+#define CAM_CC_IFE_1_DSP_CLK					55
-+#define CAM_CC_IFE_1_FAST_AHB_CLK				56
-+#define CAM_CC_IFE_LITE_AHB_CLK					57
-+#define CAM_CC_IFE_LITE_CLK					58
-+#define CAM_CC_IFE_LITE_CLK_SRC					59
-+#define CAM_CC_IFE_LITE_CPHY_RX_CLK				60
-+#define CAM_CC_IFE_LITE_CSID_CLK				61
-+#define CAM_CC_IFE_LITE_CSID_CLK_SRC				62
-+#define CAM_CC_IPE_NPS_AHB_CLK					63
-+#define CAM_CC_IPE_NPS_CLK					64
-+#define CAM_CC_IPE_NPS_CLK_SRC					65
-+#define CAM_CC_IPE_NPS_FAST_AHB_CLK				66
-+#define CAM_CC_IPE_PPS_CLK					67
-+#define CAM_CC_IPE_PPS_FAST_AHB_CLK				68
-+#define CAM_CC_JPEG_CLK						69
-+#define CAM_CC_JPEG_CLK_SRC					70
-+#define CAM_CC_MCLK0_CLK					71
-+#define CAM_CC_MCLK0_CLK_SRC					72
-+#define CAM_CC_MCLK1_CLK					73
-+#define CAM_CC_MCLK1_CLK_SRC					74
-+#define CAM_CC_MCLK2_CLK					75
-+#define CAM_CC_MCLK2_CLK_SRC					76
-+#define CAM_CC_MCLK3_CLK					77
-+#define CAM_CC_MCLK3_CLK_SRC					78
-+#define CAM_CC_MCLK4_CLK					79
-+#define CAM_CC_MCLK4_CLK_SRC					80
-+#define CAM_CC_MCLK5_CLK					81
-+#define CAM_CC_MCLK5_CLK_SRC					82
-+#define CAM_CC_MCLK6_CLK					83
-+#define CAM_CC_MCLK6_CLK_SRC					84
-+#define CAM_CC_MCLK7_CLK					85
-+#define CAM_CC_MCLK7_CLK_SRC					86
-+#define CAM_CC_PLL0						87
-+#define CAM_CC_PLL0_OUT_EVEN					88
-+#define CAM_CC_PLL0_OUT_ODD					89
-+#define CAM_CC_PLL1						90
-+#define CAM_CC_PLL1_OUT_EVEN					91
-+#define CAM_CC_PLL2						92
-+#define CAM_CC_PLL3						93
-+#define CAM_CC_PLL3_OUT_EVEN					94
-+#define CAM_CC_PLL4						95
-+#define CAM_CC_PLL4_OUT_EVEN					96
-+#define CAM_CC_PLL6						97
-+#define CAM_CC_PLL6_OUT_EVEN					98
-+#define CAM_CC_PLL8						99
-+#define CAM_CC_PLL8_OUT_EVEN					100
-+#define CAM_CC_SFE_0_CLK					101
-+#define CAM_CC_SFE_0_CLK_SRC					102
-+#define CAM_CC_SFE_0_FAST_AHB_CLK				103
-+#define CAM_CC_SLEEP_CLK					104
-+#define CAM_CC_SLEEP_CLK_SRC					105
-+#define CAM_CC_SLOW_AHB_CLK_SRC					106
-+#define CAM_CC_XO_CLK_SRC					107
-+
-+/* CAM_CC power domains */
-+#define CAM_CC_BPS_GDSC						0
-+#define CAM_CC_IFE_0_GDSC					1
-+#define CAM_CC_IFE_1_GDSC					2
-+#define CAM_CC_IPE_0_GDSC					3
-+#define CAM_CC_SFE_0_GDSC					4
-+#define CAM_CC_TITAN_TOP_GDSC					5
-+
-+/* CAM_CC resets */
-+#define CAM_CC_BPS_BCR						0
-+#define CAM_CC_ICP_BCR						1
-+#define CAM_CC_IFE_0_BCR					2
-+#define CAM_CC_IFE_1_BCR					3
-+#define CAM_CC_IPE_0_BCR					4
-+#define CAM_CC_SFE_0_BCR					5
-+
-+#endif
+ extern const struct clk_ops clk_alpha_pll_zonda_ops;
+ #define clk_alpha_pll_postdiv_zonda_ops clk_alpha_pll_postdiv_fabia_ops
++#define clk_alpha_pll_zonda_ole_ops clk_alpha_pll_zonda_ops
+ 
+ extern const struct clk_ops clk_alpha_pll_lucid_evo_ops;
+ extern const struct clk_ops clk_alpha_pll_reset_lucid_evo_ops;
 
 -- 
 2.34.1
