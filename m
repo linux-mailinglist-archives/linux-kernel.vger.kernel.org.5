@@ -1,363 +1,579 @@
-Return-Path: <linux-kernel+bounces-49918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17950847164
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:49:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F289F847166
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:50:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BFBB1C276BD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:49:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15880B244C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:50:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B48547A4C;
-	Fri,  2 Feb 2024 13:49:28 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA1947774;
-	Fri,  2 Feb 2024 13:49:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706881767; cv=none; b=X1Vtb3zXAeiZ4+mPNGKMHQR6wYGnszhU4eZh6DqyqXl0ybX6uYw++gnyZVFpIiZxKhkatQ0/wC++owllhhDKF2ARZlIbxeL7zg67LjW595hzpA2US1X70W/5Gz0pFtUhaWaDHFHDzxEDPUTK7p1qSdmUO87lf8aLlJfV96Jw5aw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706881767; c=relaxed/simple;
-	bh=EG3mKw18FHxPGpG443CTpL+zpFpTxlaoEeOLLtJfmFY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dTHjq6v5ktrVlXR63Zv4sWeToM3g+7fTLvPNQyuGu7R93K0Hj50cswNFgpLoI8VpA1m3TrArn5HaV0oxZDy1glKcfhBGQjwKTZG64C1zKIq3gTlz3atfPt7u5BbUkXcc/H+u/XYz8JVLkwB2xDq1prF0/9G9vboNE+iYjmFARsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CB82ADA7;
-	Fri,  2 Feb 2024 05:50:06 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D2783F5A1;
-	Fri,  2 Feb 2024 05:49:22 -0800 (PST)
-Message-ID: <697da9bd-cfad-4219-905d-37cb770832cf@arm.com>
-Date: Fri, 2 Feb 2024 13:49:20 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F29A4776E;
+	Fri,  2 Feb 2024 13:49:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="K+SmtxQr"
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2059.outbound.protection.outlook.com [40.107.8.59])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5A1547773
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 13:49:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706881793; cv=fail; b=Epx+zBl1Z595jlFdCUG5U4BLZHnKcRBcCISyqdEttmpwl4pw4uB2m99z00VqAkLpxU9dCdaMLHudxpBLU3VMj1g6VUCk85HdHE6yfg+nrvh5qQqGWDqSR3nrHvrbvX5lQrLOg8MUhRVWzA14fX67bvDe8HslhZlYgkme06CWm3Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706881793; c=relaxed/simple;
+	bh=rrWh5Qmy1ELqDDHSZgJQJ7sZkSJ5zoFJtaMYgY4wPRc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=qeN2/9/gQ2ZaX/yjd0iZyGQmaDi6OyWt8QGXbdTchU7ctpi6pkfNFLvpwwxYspChStQDN7hxWiPxgzr+VuFdzk5GoR5U9QZdoOawNFJQPsNpzrSLfIJI+yxK6J1oILp1QIIHL3zJL4JFPysMaV1jeLNBE0cht/2U1tbFcdPOgiE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=K+SmtxQr; arc=fail smtp.client-ip=40.107.8.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BlIoY9nqBC4HvV2crTgAQdwDzGBdgWFl0xZNdK4t+hwLL6bch9KbEP4VUrnXBqpVGsRtJ5MLKwDIxNXW0vDxTnHTGw4O0m+WrygMNEnUyeAMOGHwRtnE5YeDkHwx3pgkXt9arsD2Csve0WpZ0Kbs1R8PNmaOj1JWzrPLCiDQXhwpo6HGlIlH9XmqxzFpnCwG+0Zu3cshfLBC0kmDOdIupPnJG6WeZ2OM8m8qjGZCOPIKYmGJHyEh7beSj6NYhGbYhLY2BMRHb0AjchTb8MOZjIeFLs1e5v6lti4+IZXAkfP/qbw67fqi92fMR8WZm8DHNXkQ3Zdqy8nZLwVOabo6bA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HrHnFJlfRkjLwcGwJfuUAwucRXKQUo+BZRl3Hsc4Ljg=;
+ b=LKFIXMrcd1Zujh4HkjBviJ7w4/kAedPCggbR/jmYOGlQL/7fZ4TnKnJjY0muzt9Brr6EuUiHvv8I0lXe9iA8EanyihnINzGsGo3LcHvMEPF8HP9UI+XshDpkCyNAgPjXnv/+l/20oLQm+vmUAyg8yRkMiSf+zOkLK9dBsK6+JbSr+qwNuln7sT+mnJDsdadzsK8fWMvn8vYpjKGh5CptLdAMJSKjheSLZLUlgzDgI53IwobmQ+f5ZkuvVGysBZhE7VPO+AB6pthz4QRVGSPlJCMYOfxcpuzX4iyWDIEDmJqZwJ+tbZRA6VK27U19hclPxwNBSPDMdzCFPW4FHOg8mg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HrHnFJlfRkjLwcGwJfuUAwucRXKQUo+BZRl3Hsc4Ljg=;
+ b=K+SmtxQrrfhQrJIdgliX1K+altDX4cBJanryHxIHNdnKKtAp8BizQoFvRGeL53xAEz4haE+MlH5jwLBNiGAKJquUDCmL3H/YpP18aFhxWWxM5kxc6+dA4B/lo3BKi3dzHgS8cJrMIFiq++bnK0opMprN1sZDilh0YAxkIaAxurQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM6PR04MB5333.eurprd04.prod.outlook.com (2603:10a6:209:4a::22)
+ by DBAPR04MB7430.eurprd04.prod.outlook.com (2603:10a6:10:1aa::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.30; Fri, 2 Feb
+ 2024 13:49:46 +0000
+Received: from AM6PR04MB5333.eurprd04.prod.outlook.com
+ ([fe80::6598:2fde:a297:aaee]) by AM6PR04MB5333.eurprd04.prod.outlook.com
+ ([fe80::6598:2fde:a297:aaee%7]) with mapi id 15.20.7249.023; Fri, 2 Feb 2024
+ 13:49:46 +0000
+Date: Fri, 2 Feb 2024 15:49:43 +0200
+From: Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
+To: Philipp Stanner <pstanner@redhat.com>
+Cc: Lucas Stach <l.stach@pengutronix.de>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>, dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] drm/imx/dcss: have all init functions use devres
+Message-ID: <20240202134943.gl5q6464ibpxvfh6@fsr-ub1664-121.ea.freescale.net>
+References: <20240124111904.18261-2-pstanner@redhat.com>
+ <20240124111904.18261-4-pstanner@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240124111904.18261-4-pstanner@redhat.com>
+X-ClientProxiedBy: AS4PR10CA0019.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5d8::19) To AM6PR04MB5333.eurprd04.prod.outlook.com
+ (2603:10a6:209:4a::22)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [mainline] [linux-next] [6.8-rc1] [FC] [DLPAR] OOps kernel crash
- after performing dlpar remove test
-Content-Language: en-GB
-To: Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
- "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- iommu@lists.linux.dev
-Cc: will@kernel.org, joro@8bytes.org,
- "sachinp@linux.vnet.com" <sachinp@linux.vnet.com>,
- "abdhalee@linux.vnet.ibm.com" <abdhalee@linux.vnet.ibm.com>,
- "mputtash@linux.vnet.com" <mputtash@linux.vnet.com>,
- rafael.j.wysocki@intel.com, hch@lst.de, gregkh@linuxfoundation.org,
- baolu.lu@linux.intel.com, Jason Gunthorpe <jgg@nvidia.com>,
- jsnitsel@redhat.com
-References: <b7e18415-c04d-412e-8129-22a144d736b9@linux.vnet.ibm.com>
- <01234ac0-f96d-4a18-8dfa-557020818215@arm.com>
- <37666b87-0065-4717-b825-387a2bb96d82@linux.vnet.ibm.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <37666b87-0065-4717-b825-387a2bb96d82@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB5333:EE_|DBAPR04MB7430:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1661f66a-33ba-4a5b-597b-08dc23f5d141
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	pKn7RjW9FjU4JIWuFN9t8/gDvNfB4KFJMxd33bDttSolCAPOjpr58j9UGkqWq9tvEeA8xEkYQHayJKcosWQLqpN1Uno0n2wqWMER5Zg3iOsxn+wZBTN2dmumVI6tDdpdrFLhYVLIX3UZNKwCgxWyzkxOGvB71bPr9orObHovvHXyVafbjQL+XM1nMpVYuTUp2xHyJ/lxulFDRaRpSiKLEIJ1dbzD2SX/RGVEe33hYXbNY/kxiC+CpVGcLwh+rlacnWlN6dzh6E8U0DCfPqPxkva887sKlAeropMqHP2dyJX73WMtoN6psIry5mYCV47yd06MQXB8TN4xXFpmrzfM9WENzT6ljVy4C15mxjneQZYQO4lwxhrzjzN1kHHWfrmsEdBDWrjc8N6nag1hlNpmG8OtpBxrF/GeX3DWwS1l4LAPJqsfnXg65F+idisXzaJySVzQT+G74F1MaWO5BahQvspVJt47DAzNNn/SD7fGQR9Cqnspj0YOUlUpi2JRHC9al4XxqcfN+aL9S+l6jlpyWELZ+EhclAlIu4h/7GrXL03+Zz4xc10ChNETKb9ph3+t
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5333.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(136003)(346002)(366004)(396003)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(26005)(1076003)(41300700001)(6916009)(66476007)(316002)(54906003)(6486002)(478600001)(6666004)(9686003)(6506007)(6512007)(66556008)(83380400001)(38100700002)(66946007)(7416002)(30864003)(5660300002)(2906002)(86362001)(8936002)(4326008)(8676002)(44832011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?KZh18bJYS6bq7jMZ2pPPSylwhzxl4o3b2/uBS8NlrAE3QCXsA5moAJu4kova?=
+ =?us-ascii?Q?kucpi7bcrlH6vcbDjUlYMy3AQwYp+ZsvRABH4yIJYxHrlFxoTHHbSg19fF9K?=
+ =?us-ascii?Q?8+uxC5fR82HJuG+vxmAnt36Q/ZOsBjEqLytl6BLxDjceLBwYUEecSk0iXUz+?=
+ =?us-ascii?Q?hEEH1z3fbB43OvGmaF+b8thXjpSJqbupLYPLE2sq81057Fv61rX96ApkkDKx?=
+ =?us-ascii?Q?Tt8VQ5f5ZRZ1KJVs0ttaXdHTCmDmqzUpYHW1yQVIYRX2XSsWcbaiDuOOoioT?=
+ =?us-ascii?Q?UpPJD1aou+dknLmmPajvgFdAgT5oPwFiKJwdTciJ5yeLW2EFAJRoAWx2geM1?=
+ =?us-ascii?Q?qGwMucGpFubj/UDbvprBfaDM6tdjSr7KPLvpiv5iC2mSfSk4B2MGvifUEvWz?=
+ =?us-ascii?Q?/EAz+zZaMGdX1K5JK1UHAb+ohT2m4NbQRqBhoYPg1CoEjnxp6E2T8UEIoCQz?=
+ =?us-ascii?Q?Cvtwh85mtYHxgOum/2+2K891o1q7mATIMeyqFYA76Eedu/YpfHuHzxm9fjRR?=
+ =?us-ascii?Q?jzte7Cg2v8QN18oAmvD/yI71nV35c3jZKfRRs/ws0JnBAV/1u+urPYrxNcus?=
+ =?us-ascii?Q?j0SxuhI5PKVer++i3yXPS4MK1rkPRznHiS8/5Kcs6Y6eobr3HMUo+uicGOpi?=
+ =?us-ascii?Q?8bti0NwZrZzeaa4zRx2VC1CaDt4ktK4ucZpH5AOPbKlO7NKAx+iBYVcATq0I?=
+ =?us-ascii?Q?TVQLL9ANmYsAj2rUzSR0tEVSjYl4PLHFHoPcDlud5ZFp7ui17y75pOGR7dCX?=
+ =?us-ascii?Q?fF2VqRgnfibW3BRAKByZWPdIj5fIsUg5IXK8tRQF+2OT4B1YvvSb9ukMLNtp?=
+ =?us-ascii?Q?qNkJ5Da8jILj/1r9QbZY5sS9SplilRdZVqN3IIjgcMQLdUXIB+C+d4CFWxXj?=
+ =?us-ascii?Q?VyhR0F6VY6O1b4zscLncZE8gIX4PdcJyqr3SLyWScmvuAYBMMjbb6yw0Ct21?=
+ =?us-ascii?Q?yJ4JYNy/u2xh3xu9t2/0NUjz1CLtHEI6Oab8cNRETxvT/7kPRdx3nEjCs19q?=
+ =?us-ascii?Q?7a9U3O9ISzSSUwJWfajDTm8Yz/SbQoVlyk3M1H6pJgnOknaksLnIEO5CLi4q?=
+ =?us-ascii?Q?MfuXAIvcUR6Yw9g8Xh6esqWz9zKZ4XvSy6EusyvjhR3JykTpRU1gTYIUgJY7?=
+ =?us-ascii?Q?9ZIeK2qtWgAjWv2nEIXQX1/SZQ0w65baNLIfWy476a8Pte9hqHlmrptzGloe?=
+ =?us-ascii?Q?g6aat8W9PTmBktS5i3q3CW7WE+QiLlH07+o4K98L+RKxttFdoGIjctW6H7Y3?=
+ =?us-ascii?Q?4NagXzpFr1q41kreHWk6kELrtwRAT7hY5FO4TVMdeDfuDMWWUISHdCCLy60n?=
+ =?us-ascii?Q?80Kyh/rPM0KuR7mOG1NEIfVkK4rromDIz7Q7uWaAamT9FCiIT9GILhAyx+Y5?=
+ =?us-ascii?Q?x/Jp6pG8WZDAXJOrpq6s7KDl0T763gQblmptQZd5AsZH/skZb47JhjKA3Q0i?=
+ =?us-ascii?Q?cZHj04e5yse13MnhenuXLpOZNygDgLBEb9yZqU3REf5eBvNZde3Ipj4TA99J?=
+ =?us-ascii?Q?isbrm+kV1mO5r1Kgzd2geKhzf2jrOsj6W7x1cgnf+7N683I/YhMGQmhhBoWj?=
+ =?us-ascii?Q?UfI1xOLoHd23BGYUaOGp/Ro3Tb9qAh1D9YuHIP+P0Ni544Mprst6MMbDg8T6?=
+ =?us-ascii?Q?kQ=3D=3D?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1661f66a-33ba-4a5b-597b-08dc23f5d141
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5333.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2024 13:49:46.7550
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +S9oqhMOU4UYSQWqPNu6Xjr/XOCT9lQpJst/41n6G4HRtYOY42yyrYnSZ6q4sSshQzsGVDP4mMG7FdFiEPGbNg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7430
 
-On 02/02/2024 7:11 am, Tasmiya Nalatwad wrote:
-> Greetings,
-> 
-> I have tried reverting some latest commits and tested the issue. I see
-> reverting below commit hits to some other problem which was reported
-> earlier and the patch for fixing that issue is under review
-> 
-> 1. Reverted commit :
-> 
->       commit 17de3f5fdd35676b0e3d41c7c9bf4e3032eb3673
->       iommu: Retire bus ops
-> 
-> 2. Below are the traces of other issue that was seen after reverting
-> above commit, And below is the patch which fixes this issue is that is 
-> under review
-> 
-> Patch :
-> https://www.mail-archive.com/linuxppc-dev@lists.ozlabs.org/msg225210.html
+Hi Philipp,
 
-Yes, it's the same fundamental issue (failing to manage the IOMMU state 
-for dynamic addition/removal) that's been present since the commit cited 
-in the fix patch; the bus ops change just makes us more sensitive to the 
-lack of unregistration on remove, vs. the lack of registration on add. 
-The fix should solve both aspects (although I'd be inlined to agree with 
-factoring out the registration between both paths).
+On Wed, Jan 24, 2024 at 12:19:05PM +0100, Philipp Stanner wrote:
+> dcss currently allocates and ioremaps quite a few resources in its probe
+> function's call graph. Devres now provides convenient functions which
+> perform the same task but do the cleanup automatically.
+> 
+> Port all memory allocations and ioremap() calls to the devres
+> counterparts.
+> 
+> Signed-off-by: Philipp Stanner <pstanner@redhat.com>
+
+Reviewed-by: Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
 
 Thanks,
-Robin.
-
-> --- Traces ---
+Laurentiu
+> ---
+>  drivers/gpu/drm/imx/dcss/dcss-blkctl.c | 13 ++-----------
+>  drivers/gpu/drm/imx/dcss/dcss-ctxld.c  | 14 +++-----------
+>  drivers/gpu/drm/imx/dcss/dcss-dev.c    | 12 ++----------
+>  drivers/gpu/drm/imx/dcss/dcss-dev.h    |  1 -
+>  drivers/gpu/drm/imx/dcss/dcss-dpr.c    | 21 +++------------------
+>  drivers/gpu/drm/imx/dcss/dcss-drv.c    | 12 +++---------
+>  drivers/gpu/drm/imx/dcss/dcss-dtg.c    | 26 +++++---------------------
+>  drivers/gpu/drm/imx/dcss/dcss-scaler.c | 21 +++------------------
+>  drivers/gpu/drm/imx/dcss/dcss-ss.c     | 12 +++---------
+>  9 files changed, 24 insertions(+), 108 deletions(-)
 > 
-> [  981.124047] Kernel attempted to read user page (30) - exploit
-> attempt? (uid: 0)
-> [  981.124053] BUG: Kernel NULL pointer dereference on read at 0x00000030
-> [  981.124056] Faulting instruction address: 0xc000000000689864
-> [  981.124060] Oops: Kernel access of bad area, sig: 11 [#1]
-> [  981.124063] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=8192 NUMA pSeries
-> [  981.124067] Modules linked in: sit tunnel4 ip_tunnel rpadlpar_io
-> rpaphp xsk_diag nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib
-> nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct
-> nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 bonding
-> tls ip_set rfkill nf_tables libcrc32c nfnetlink pseries_rng vmx_crypto
-> binfmt_misc ext4 mbcache jbd2 dm_service_time sd_mod t10_pi
-> crc64_rocksoft crc64 sg ibmvfc scsi_transport_fc ibmveth mlx5_core mlxfw
-> psample dm_multipath dm_mirror dm_region_hash dm_log dm_mod fuse
-> [  981.124111] CPU: 24 PID: 78294 Comm: drmgr Kdump: loaded Not tainted
-> 6.5.0-rc6-next-20230817-auto #1
-> [  981.124115] Hardware name: IBM,9080-HEX POWER10 (raw) 0x800200
-> 0xf000006 of:IBM,FW1030.30 (NH1030_062) hv:phyp pSeries
-> [  981.124118] NIP:  c000000000689864 LR: c0000000009bd05c CTR:
-> c00000000005fb90
-> [  981.124121] REGS: c0000000a878b1e0 TRAP: 0300   Not tainted
-> (6.5.0-rc6-next-20230817-auto)
-> [  981.124125] MSR:  8000000000009033 <SF,EE,ME,IR,DR,RI,LE>  CR:
-> 44822422  XER: 20040006
-> [  981.124132] CFAR: c0000000009bd058 DAR: 0000000000000030 DSISR:
-> 40000000 IRQMASK: 0
-> [  981.124132] GPR00: c0000000009bd05c c0000000a878b480 c000000001451400
-> 0000000000000000
-> [  981.124132] GPR04: c00000000128d510 0000000000000000 c00000000eeccf50
-> c0000000a878b420
-> [  981.124132] GPR08: 0000000000000001 c00000000eed76e0 c000000002c24c28
-> 0000000000000220
-> [  981.124132] GPR12: c00000000005fb90 c000001837969300 0000000000000000
-> 0000000000000000
-> [  981.124132] GPR16: 0000000000000000 0000000000000000 0000000000000000
-> 0000000000000000
-> [  981.124132] GPR20: c00000000125cef0 0000000000000000 c00000000125cf08
-> c000000002bce500
-> [  981.124132] GPR24: c0000000573e90c0 fffffffffffff000 c0000000573e93c0
-> c0000000a877d2a0
-> [  981.124132] GPR28: c00000000128d510 c00000000eeccf50 c0000000a877d2a0
-> c0000000573e90c0
-> [  981.124171] NIP [c000000000689864] sysfs_add_link_to_group+0x34/0x90
-> [  981.124178] LR [c0000000009bd05c] iommu_device_link+0x5c/0x110
-> [  981.124184] Call Trace:
-> [  981.124186] [c0000000a878b480] [c00000000048d630]
-> kmalloc_trace+0x50/0x140 (unreliable)
-> [  981.124193] [c0000000a878b4c0] [c0000000009bd05c]
-> iommu_device_link+0x5c/0x110
-> [  981.124198] [c0000000a878b500] [c0000000009ba050]
-> __iommu_probe_device+0x250/0x5c0
-> [  981.124203] [c0000000a878b570] [c0000000009ba9e0]
-> iommu_probe_device_locked+0x30/0x90
-> [  981.124207] [c0000000a878b5a0] [c0000000009baa80]
-> iommu_probe_device+0x40/0x70
-> [  981.124212] [c0000000a878b5d0] [c0000000009baaf0]
-> iommu_bus_notifier+0x40/0x80
-> [  981.124217] [c0000000a878b5f0] [c00000000019aad0]
-> notifier_call_chain+0xc0/0x1b0
-> [  981.124221] [c0000000a878b650] [c00000000019b604]
-> blocking_notifier_call_chain+0x64/0xa0
-> [  981.124226] [c0000000a878b690] [c0000000009cd870] bus_notify+0x50/0x80
-> [  981.124230] [c0000000a878b6d0] [c0000000009c8f04] device_add+0x744/0x9b0
-> [  981.124235] [c0000000a878b790] [c00000000089f2ec]
-> pci_device_add+0x2fc/0x880
-> [  981.124240] [c0000000a878b840] [c00000000007ef90]
-> of_create_pci_dev+0x390/0xa10
-> [  981.124245] [c0000000a878b920] [c00000000007f858]
-> __of_scan_bus+0x248/0x320
-> [  981.124249] [c0000000a878ba00] [c00000000007c1f0]
-> pcibios_scan_phb+0x2d0/0x3c0
-> [  981.124254] [c0000000a878bad0] [c000000000107f08]
-> init_phb_dynamic+0xb8/0x110
-> [  981.124259] [c0000000a878bb40] [c008000002cc03b4]
-> dlpar_add_slot+0x18c/0x380 [rpadlpar_io]
-> [  981.124265] [c0000000a878bbe0] [c008000002cc0bec]
-> add_slot_store+0xa4/0x150 [rpadlpar_io]
-> [  981.124270] [c0000000a878bc70] [c000000000f2f800]
-> kobj_attr_store+0x30/0x50
-> [  981.124274] [c0000000a878bc90] [c000000000687368]
-> sysfs_kf_write+0x68/0x80
-> [  981.124278] [c0000000a878bcb0] [c000000000685d3c]
-> kernfs_fop_write_iter+0x1cc/0x280
-> [  981.124283] [c0000000a878bd00] [c0000000005909c8] vfs_write+0x358/0x4b0
-> [  981.124288] [c0000000a878bdc0] [c000000000590cfc] ksys_write+0x7c/0x140
-> [  981.124293] [c0000000a878be10] [c000000000036554]
-> system_call_exception+0x134/0x330
-> [  981.124298] [c0000000a878be50] [c00000000000d6a0]
-> system_call_common+0x160/0x2e4
-> [  981.124303] --- interrupt: c00 at 0x200013f21594
-> [  981.124306] NIP:  0000200013f21594 LR: 0000200013e97bf4 CTR:
-> 0000000000000000
-> [  981.124309] REGS: c0000000a878be80 TRAP: 0c00   Not tainted
-> (6.5.0-rc6-next-20230817-auto)
-> [  981.124312] MSR:  800000000280f033
-> <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 22000282  XER: 00000000
-> [  981.124321] IRQMASK: 0
-> [  981.124321] GPR00: 0000000000000004 00007ffff3a55c70 0000200014007300
-> 0000000000000007
-> [  981.124321] GPR04: 000000013aff5750 0000000000000008 fffffffffbad2c80
-> 000000013afd02a0
-> [  981.124321] GPR08: 0000000000000001 0000000000000000 0000000000000000
-> 0000000000000000
-> [  981.124321] GPR12: 0000000000000000 0000200013b7bc30 0000000000000000
-> 0000000000000000
-> [  981.124321] GPR16: 0000000000000000 0000000000000000 0000000000000000
-> 0000000000000000
-> [  981.124321] GPR20: 0000000000000000 0000000000000000 0000000000000000
-> 0000000000000000
-> [  981.124321] GPR24: 000000010ef61668 0000000000000000 0000000000000008
-> 000000013aff5750
-> [  981.124321] GPR28: 0000000000000008 000000013afd02a0 000000013aff5750
-> 0000000000000008
-> [  981.124356] NIP [0000200013f21594] 0x200013f21594
-> [  981.124358] LR [0000200013e97bf4] 0x200013e97bf4
-> [  981.124361] --- interrupt: c00
-> [  981.124362] Code: 38427bd0 7c0802a6 60000000 7c0802a6 fba1ffe8
-> fbc1fff0 fbe1fff8 7cbf2b78 38a00000 7cdd3378 f8010010 f821ffc1
-> <e8630030> 4bff95d1 60000000 7c7e1b79
-> [  981.124374] ---[ end trace 0000000000000000 ]---
+> diff --git a/drivers/gpu/drm/imx/dcss/dcss-blkctl.c b/drivers/gpu/drm/imx/dcss/dcss-blkctl.c
+> index c9b54bb2692d..803e3fcdb50f 100644
+> --- a/drivers/gpu/drm/imx/dcss/dcss-blkctl.c
+> +++ b/drivers/gpu/drm/imx/dcss/dcss-blkctl.c
+> @@ -42,14 +42,13 @@ int dcss_blkctl_init(struct dcss_dev *dcss, unsigned long blkctl_base)
+>  {
+>  	struct dcss_blkctl *blkctl;
+>  
+> -	blkctl = kzalloc(sizeof(*blkctl), GFP_KERNEL);
+> +	blkctl = devm_kzalloc(dcss->dev, sizeof(*blkctl), GFP_KERNEL);
+>  	if (!blkctl)
+>  		return -ENOMEM;
+>  
+> -	blkctl->base_reg = ioremap(blkctl_base, SZ_4K);
+> +	blkctl->base_reg = devm_ioremap(dcss->dev, blkctl_base, SZ_4K);
+>  	if (!blkctl->base_reg) {
+>  		dev_err(dcss->dev, "unable to remap BLK CTRL base\n");
+> -		kfree(blkctl);
+>  		return -ENOMEM;
+>  	}
+>  
+> @@ -60,11 +59,3 @@ int dcss_blkctl_init(struct dcss_dev *dcss, unsigned long blkctl_base)
+>  
+>  	return 0;
+>  }
+> -
+> -void dcss_blkctl_exit(struct dcss_blkctl *blkctl)
+> -{
+> -	if (blkctl->base_reg)
+> -		iounmap(blkctl->base_reg);
+> -
+> -	kfree(blkctl);
+> -}
+> diff --git a/drivers/gpu/drm/imx/dcss/dcss-ctxld.c b/drivers/gpu/drm/imx/dcss/dcss-ctxld.c
+> index 3a84cb3209c4..e41d5c2a3ea4 100644
+> --- a/drivers/gpu/drm/imx/dcss/dcss-ctxld.c
+> +++ b/drivers/gpu/drm/imx/dcss/dcss-ctxld.c
+> @@ -202,7 +202,7 @@ int dcss_ctxld_init(struct dcss_dev *dcss, unsigned long ctxld_base)
+>  	struct dcss_ctxld *ctxld;
+>  	int ret;
+>  
+> -	ctxld = kzalloc(sizeof(*ctxld), GFP_KERNEL);
+> +	ctxld = devm_kzalloc(dcss->dev, sizeof(*ctxld), GFP_KERNEL);
+>  	if (!ctxld)
+>  		return -ENOMEM;
+>  
+> @@ -217,7 +217,7 @@ int dcss_ctxld_init(struct dcss_dev *dcss, unsigned long ctxld_base)
+>  		goto err;
+>  	}
+>  
+> -	ctxld->ctxld_reg = ioremap(ctxld_base, SZ_4K);
+> +	ctxld->ctxld_reg = devm_ioremap(dcss->dev, ctxld_base, SZ_4K);
+>  	if (!ctxld->ctxld_reg) {
+>  		dev_err(dcss->dev, "ctxld: unable to remap ctxld base\n");
+>  		ret = -ENOMEM;
+> @@ -226,18 +226,14 @@ int dcss_ctxld_init(struct dcss_dev *dcss, unsigned long ctxld_base)
+>  
+>  	ret = dcss_ctxld_irq_config(ctxld, to_platform_device(dcss->dev));
+>  	if (ret)
+> -		goto err_irq;
+> +		goto err;
+>  
+>  	dcss_ctxld_hw_cfg(ctxld);
+>  
+>  	return 0;
+>  
+> -err_irq:
+> -	iounmap(ctxld->ctxld_reg);
+> -
+>  err:
+>  	dcss_ctxld_free_ctx(ctxld);
+> -	kfree(ctxld);
+>  
+>  	return ret;
+>  }
+> @@ -246,11 +242,7 @@ void dcss_ctxld_exit(struct dcss_ctxld *ctxld)
+>  {
+>  	free_irq(ctxld->irq, ctxld);
+>  
+> -	if (ctxld->ctxld_reg)
+> -		iounmap(ctxld->ctxld_reg);
+> -
+>  	dcss_ctxld_free_ctx(ctxld);
+> -	kfree(ctxld);
+>  }
+>  
+>  static int dcss_ctxld_enable_locked(struct dcss_ctxld *ctxld)
+> diff --git a/drivers/gpu/drm/imx/dcss/dcss-dev.c b/drivers/gpu/drm/imx/dcss/dcss-dev.c
+> index d448bf1c205e..597e9b7bd4bf 100644
+> --- a/drivers/gpu/drm/imx/dcss/dcss-dev.c
+> +++ b/drivers/gpu/drm/imx/dcss/dcss-dev.c
+> @@ -109,8 +109,6 @@ static int dcss_submodules_init(struct dcss_dev *dcss)
+>  	dcss_ctxld_exit(dcss->ctxld);
+>  
+>  ctxld_err:
+> -	dcss_blkctl_exit(dcss->blkctl);
+> -
+>  	dcss_clocks_disable(dcss);
+>  
+>  	return ret;
+> @@ -124,7 +122,6 @@ static void dcss_submodules_stop(struct dcss_dev *dcss)
+>  	dcss_ss_exit(dcss->ss);
+>  	dcss_dtg_exit(dcss->dtg);
+>  	dcss_ctxld_exit(dcss->ctxld);
+> -	dcss_blkctl_exit(dcss->blkctl);
+>  	dcss_clocks_disable(dcss);
+>  }
+>  
+> @@ -190,7 +187,7 @@ struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
+>  		return ERR_PTR(-EBUSY);
+>  	}
+>  
+> -	dcss = kzalloc(sizeof(*dcss), GFP_KERNEL);
+> +	dcss = devm_kzalloc(dev, sizeof(*dcss), GFP_KERNEL);
+>  	if (!dcss)
+>  		return ERR_PTR(-ENOMEM);
+>  
+> @@ -201,7 +198,7 @@ struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
+>  	ret = dcss_clks_init(dcss);
+>  	if (ret) {
+>  		dev_err(dev, "clocks initialization failed\n");
+> -		goto err;
+> +		return ERR_PTR(ret);
+>  	}
+>  
+>  	dcss->of_port = of_graph_get_port_by_id(dev->of_node, 0);
+> @@ -233,9 +230,6 @@ struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
+>  clks_err:
+>  	dcss_clks_release(dcss);
+>  
+> -err:
+> -	kfree(dcss);
+> -
+>  	return ERR_PTR(ret);
+>  }
+>  
+> @@ -253,8 +247,6 @@ void dcss_dev_destroy(struct dcss_dev *dcss)
+>  	dcss_submodules_stop(dcss);
+>  
+>  	dcss_clks_release(dcss);
+> -
+> -	kfree(dcss);
+>  }
+>  
+>  static int dcss_dev_suspend(struct device *dev)
+> diff --git a/drivers/gpu/drm/imx/dcss/dcss-dev.h b/drivers/gpu/drm/imx/dcss/dcss-dev.h
+> index f27b87c09599..b032e873d227 100644
+> --- a/drivers/gpu/drm/imx/dcss/dcss-dev.h
+> +++ b/drivers/gpu/drm/imx/dcss/dcss-dev.h
+> @@ -104,7 +104,6 @@ extern const struct dev_pm_ops dcss_dev_pm_ops;
+>  /* BLKCTL */
+>  int dcss_blkctl_init(struct dcss_dev *dcss, unsigned long blkctl_base);
+>  void dcss_blkctl_cfg(struct dcss_blkctl *blkctl);
+> -void dcss_blkctl_exit(struct dcss_blkctl *blkctl);
+>  
+>  /* CTXLD */
+>  int dcss_ctxld_init(struct dcss_dev *dcss, unsigned long ctxld_base);
+> diff --git a/drivers/gpu/drm/imx/dcss/dcss-dpr.c b/drivers/gpu/drm/imx/dcss/dcss-dpr.c
+> index df9dab949bf2..072eb209249f 100644
+> --- a/drivers/gpu/drm/imx/dcss/dcss-dpr.c
+> +++ b/drivers/gpu/drm/imx/dcss/dcss-dpr.c
+> @@ -135,7 +135,7 @@ static int dcss_dpr_ch_init_all(struct dcss_dpr *dpr, unsigned long dpr_base)
+>  
+>  		ch->base_ofs = dpr_base + i * 0x1000;
+>  
+> -		ch->base_reg = ioremap(ch->base_ofs, SZ_4K);
+> +		ch->base_reg = devm_ioremap(dpr->dev, ch->base_ofs, SZ_4K);
+>  		if (!ch->base_reg) {
+>  			dev_err(dpr->dev, "dpr: unable to remap ch %d base\n",
+>  				i);
+> @@ -155,7 +155,7 @@ int dcss_dpr_init(struct dcss_dev *dcss, unsigned long dpr_base)
+>  {
+>  	struct dcss_dpr *dpr;
+>  
+> -	dpr = kzalloc(sizeof(*dpr), GFP_KERNEL);
+> +	dpr = devm_kzalloc(dcss->dev, sizeof(*dpr), GFP_KERNEL);
+>  	if (!dpr)
+>  		return -ENOMEM;
+>  
+> @@ -164,18 +164,8 @@ int dcss_dpr_init(struct dcss_dev *dcss, unsigned long dpr_base)
+>  	dpr->ctxld = dcss->ctxld;
+>  	dpr->ctx_id = CTX_SB_HP;
+>  
+> -	if (dcss_dpr_ch_init_all(dpr, dpr_base)) {
+> -		int i;
+> -
+> -		for (i = 0; i < 3; i++) {
+> -			if (dpr->ch[i].base_reg)
+> -				iounmap(dpr->ch[i].base_reg);
+> -		}
+> -
+> -		kfree(dpr);
+> -
+> +	if (dcss_dpr_ch_init_all(dpr, dpr_base))
+>  		return -ENOMEM;
+> -	}
+>  
+>  	return 0;
+>  }
+> @@ -189,12 +179,7 @@ void dcss_dpr_exit(struct dcss_dpr *dpr)
+>  		struct dcss_dpr_ch *ch = &dpr->ch[ch_no];
+>  
+>  		dcss_writel(0, ch->base_reg + DCSS_DPR_SYSTEM_CTRL0);
+> -
+> -		if (ch->base_reg)
+> -			iounmap(ch->base_reg);
+>  	}
+> -
+> -	kfree(dpr);
+>  }
+>  
+>  static u32 dcss_dpr_x_pix_wide_adjust(struct dcss_dpr_ch *ch, u32 pix_wide,
+> diff --git a/drivers/gpu/drm/imx/dcss/dcss-drv.c b/drivers/gpu/drm/imx/dcss/dcss-drv.c
+> index ad5f29ea8f6a..d881f5a34760 100644
+> --- a/drivers/gpu/drm/imx/dcss/dcss-drv.c
+> +++ b/drivers/gpu/drm/imx/dcss/dcss-drv.c
+> @@ -51,15 +51,13 @@ static int dcss_drv_platform_probe(struct platform_device *pdev)
+>  
+>  	of_node_put(remote);
+>  
+> -	mdrv = kzalloc(sizeof(*mdrv), GFP_KERNEL);
+> +	mdrv = devm_kzalloc(dev, sizeof(*mdrv), GFP_KERNEL);
+>  	if (!mdrv)
+>  		return -ENOMEM;
+>  
+>  	mdrv->dcss = dcss_dev_create(dev, hdmi_output);
+> -	if (IS_ERR(mdrv->dcss)) {
+> -		err = PTR_ERR(mdrv->dcss);
+> -		goto err;
+> -	}
+> +	if (IS_ERR(mdrv->dcss))
+> +		return PTR_ERR(mdrv->dcss);
+>  
+>  	dev_set_drvdata(dev, mdrv);
+>  
+> @@ -75,8 +73,6 @@ static int dcss_drv_platform_probe(struct platform_device *pdev)
+>  dcss_shutoff:
+>  	dcss_dev_destroy(mdrv->dcss);
+>  
+> -err:
+> -	kfree(mdrv);
+>  	return err;
+>  }
+>  
+> @@ -86,8 +82,6 @@ static void dcss_drv_platform_remove(struct platform_device *pdev)
+>  
+>  	dcss_kms_detach(mdrv->kms);
+>  	dcss_dev_destroy(mdrv->dcss);
+> -
+> -	kfree(mdrv);
+>  }
+>  
+>  static void dcss_drv_platform_shutdown(struct platform_device *pdev)
+> diff --git a/drivers/gpu/drm/imx/dcss/dcss-dtg.c b/drivers/gpu/drm/imx/dcss/dcss-dtg.c
+> index 30de00540f63..2968f5d5bd41 100644
+> --- a/drivers/gpu/drm/imx/dcss/dcss-dtg.c
+> +++ b/drivers/gpu/drm/imx/dcss/dcss-dtg.c
+> @@ -152,7 +152,7 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
+>  	int ret = 0;
+>  	struct dcss_dtg *dtg;
+>  
+> -	dtg = kzalloc(sizeof(*dtg), GFP_KERNEL);
+> +	dtg = devm_kzalloc(dcss->dev, sizeof(*dtg), GFP_KERNEL);
+>  	if (!dtg)
+>  		return -ENOMEM;
+>  
+> @@ -160,11 +160,10 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
+>  	dtg->dev = dcss->dev;
+>  	dtg->ctxld = dcss->ctxld;
+>  
+> -	dtg->base_reg = ioremap(dtg_base, SZ_4K);
+> +	dtg->base_reg = devm_ioremap(dtg->dev, dtg_base, SZ_4K);
+>  	if (!dtg->base_reg) {
+> -		dev_err(dcss->dev, "dtg: unable to remap dtg base\n");
+> -		ret = -ENOMEM;
+> -		goto err_ioremap;
+> +		dev_err(dtg->dev, "dtg: unable to remap dtg base\n");
+> +		return -ENOMEM;
+>  	}
+>  
+>  	dtg->base_ofs = dtg_base;
+> @@ -175,17 +174,7 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
+>  	dtg->control_status |= OVL_DATA_MODE | BLENDER_VIDEO_ALPHA_SEL |
+>  		((dtg->alpha << DEFAULT_FG_ALPHA_POS) & DEFAULT_FG_ALPHA_MASK);
+>  
+> -	ret = dcss_dtg_irq_config(dtg, to_platform_device(dcss->dev));
+> -	if (ret)
+> -		goto err_irq;
+> -
+> -	return 0;
+> -
+> -err_irq:
+> -	iounmap(dtg->base_reg);
+> -
+> -err_ioremap:
+> -	kfree(dtg);
+> +	ret = dcss_dtg_irq_config(dtg, to_platform_device(dtg->dev));
+>  
+>  	return ret;
+>  }
+> @@ -193,11 +182,6 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
+>  void dcss_dtg_exit(struct dcss_dtg *dtg)
+>  {
+>  	free_irq(dtg->ctxld_kick_irq, dtg);
+> -
+> -	if (dtg->base_reg)
+> -		iounmap(dtg->base_reg);
+> -
+> -	kfree(dtg);
+>  }
+>  
+>  void dcss_dtg_sync_set(struct dcss_dtg *dtg, struct videomode *vm)
+> diff --git a/drivers/gpu/drm/imx/dcss/dcss-scaler.c b/drivers/gpu/drm/imx/dcss/dcss-scaler.c
+> index 47852b9dd5ea..825728c356ff 100644
+> --- a/drivers/gpu/drm/imx/dcss/dcss-scaler.c
+> +++ b/drivers/gpu/drm/imx/dcss/dcss-scaler.c
+> @@ -302,7 +302,7 @@ static int dcss_scaler_ch_init_all(struct dcss_scaler *scl,
+>  
+>  		ch->base_ofs = scaler_base + i * 0x400;
+>  
+> -		ch->base_reg = ioremap(ch->base_ofs, SZ_4K);
+> +		ch->base_reg = devm_ioremap(scl->dev, ch->base_ofs, SZ_4K);
+>  		if (!ch->base_reg) {
+>  			dev_err(scl->dev, "scaler: unable to remap ch base\n");
+>  			return -ENOMEM;
+> @@ -318,7 +318,7 @@ int dcss_scaler_init(struct dcss_dev *dcss, unsigned long scaler_base)
+>  {
+>  	struct dcss_scaler *scaler;
+>  
+> -	scaler = kzalloc(sizeof(*scaler), GFP_KERNEL);
+> +	scaler = devm_kzalloc(dcss->dev, sizeof(*scaler), GFP_KERNEL);
+>  	if (!scaler)
+>  		return -ENOMEM;
+>  
+> @@ -327,18 +327,8 @@ int dcss_scaler_init(struct dcss_dev *dcss, unsigned long scaler_base)
+>  	scaler->ctxld = dcss->ctxld;
+>  	scaler->ctx_id = CTX_SB_HP;
+>  
+> -	if (dcss_scaler_ch_init_all(scaler, scaler_base)) {
+> -		int i;
+> -
+> -		for (i = 0; i < 3; i++) {
+> -			if (scaler->ch[i].base_reg)
+> -				iounmap(scaler->ch[i].base_reg);
+> -		}
+> -
+> -		kfree(scaler);
+> -
+> +	if (dcss_scaler_ch_init_all(scaler, scaler_base))
+>  		return -ENOMEM;
+> -	}
+>  
+>  	return 0;
+>  }
+> @@ -351,12 +341,7 @@ void dcss_scaler_exit(struct dcss_scaler *scl)
+>  		struct dcss_scaler_ch *ch = &scl->ch[ch_no];
+>  
+>  		dcss_writel(0, ch->base_reg + DCSS_SCALER_CTRL);
+> -
+> -		if (ch->base_reg)
+> -			iounmap(ch->base_reg);
+>  	}
+> -
+> -	kfree(scl);
+>  }
+>  
+>  void dcss_scaler_ch_enable(struct dcss_scaler *scl, int ch_num, bool en)
+> diff --git a/drivers/gpu/drm/imx/dcss/dcss-ss.c b/drivers/gpu/drm/imx/dcss/dcss-ss.c
+> index 8ddf08da911b..0df81866fb7b 100644
+> --- a/drivers/gpu/drm/imx/dcss/dcss-ss.c
+> +++ b/drivers/gpu/drm/imx/dcss/dcss-ss.c
+> @@ -83,7 +83,7 @@ int dcss_ss_init(struct dcss_dev *dcss, unsigned long ss_base)
+>  {
+>  	struct dcss_ss *ss;
+>  
+> -	ss = kzalloc(sizeof(*ss), GFP_KERNEL);
+> +	ss = devm_kzalloc(dcss->dev, sizeof(*ss), GFP_KERNEL);
+>  	if (!ss)
+>  		return -ENOMEM;
+>  
+> @@ -91,10 +91,9 @@ int dcss_ss_init(struct dcss_dev *dcss, unsigned long ss_base)
+>  	ss->dev = dcss->dev;
+>  	ss->ctxld = dcss->ctxld;
+>  
+> -	ss->base_reg = ioremap(ss_base, SZ_4K);
+> +	ss->base_reg = devm_ioremap(ss->dev, ss_base, SZ_4K);
+>  	if (!ss->base_reg) {
+> -		dev_err(dcss->dev, "ss: unable to remap ss base\n");
+> -		kfree(ss);
+> +		dev_err(ss->dev, "ss: unable to remap ss base\n");
+>  		return -ENOMEM;
+>  	}
+>  
+> @@ -108,11 +107,6 @@ void dcss_ss_exit(struct dcss_ss *ss)
+>  {
+>  	/* stop SS */
+>  	dcss_writel(0, ss->base_reg + DCSS_SS_SYS_CTRL);
+> -
+> -	if (ss->base_reg)
+> -		iounmap(ss->base_reg);
+> -
+> -	kfree(ss);
+>  }
+>  
+>  void dcss_ss_subsam_set(struct dcss_ss *ss)
+> -- 
+> 2.43.0
 > 
-> 
-> Thanks and Regards
-> 
-> On 1/31/24 16:18, Robin Murphy wrote:
->> On 2024-01-31 9:19 am, Tasmiya Nalatwad wrote:
->>> Greetings,
->>>
->>> [mainline] [linux-next] [6.8-rc1] [DLPAR] OOps kernel crash after 
->>> performing dlpar remove test
->>>
->>> --- Traces ---
->>>
->>> [58563.146236] BUG: Unable to handle kernel data access at 
->>> 0x6b6b6b6b6b6b6b83
->>> [58563.146242] Faulting instruction address: 0xc0000000009c0e60
->>> [58563.146248] Oops: Kernel access of bad area, sig: 11 [#1]
->>> [58563.146252] LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=8192 NUMA pSeries
->>> [58563.146258] Modules linked in: isofs cdrom dm_snapshot dm_bufio 
->>> dm_round_robin dm_queue_length exfat vfat fat btrfs blake2b_generic 
->>> xor raid6_pq zstd_compress loop xfs libcrc32c raid0 nvram rpadlpar_io 
->>> rpaphp nfnetlink xsk_diag bonding tls rfkill sunrpc dm_service_time 
->>> dm_multipath dm_mod pseries_rng vmx_crypto binfmt_misc ext4 mbcache 
->>> jbd2 sd_mod sg ibmvscsi scsi_transport_srp ibmveth lpfc nvmet_fc 
->>> nvmet nvme_fc nvme_fabrics nvme_core t10_pi crc64_rocksoft crc64 
->>> scsi_transport_fc fuse
->>> [58563.146326] CPU: 0 PID: 1071247 Comm: drmgr Kdump: loaded Not 
->>> tainted 6.8.0-rc1-auto-gecb1b8288dc7 #1
->>> [58563.146332] Hardware name: IBM,9009-42A POWER9 (raw) 0x4e0202 
->>> 0xf000005 of:IBM,FW950.A0 (VL950_141) hv:phyp pSeries
->>> [58563.146337] NIP:  c0000000009c0e60 LR: c0000000009c0e28 CTR: 
->>> c0000000009c1584
->>> [58563.146342] REGS: c00000007960f260 TRAP: 0380   Not tainted 
->>> (6.8.0-rc1-auto-gecb1b8288dc7)
->>> [58563.146347] MSR:  8000000000009033 <SF,EE,ME,IR,DR,RI,LE>  CR: 
->>> 24822424  XER: 20040006
->>> [58563.146360] CFAR: c0000000009c0e74 IRQMASK: 0
->>> [58563.146360] GPR00: c0000000009c0e28 c00000007960f500 
->>> c000000001482600 c000000003050540
->>> [58563.146360] GPR04: 0000000000000000 c00000089a6870c0 
->>> 0000000000000001 fffffffffffe0000
->>> [58563.146360] GPR08: c000000002bac020 6b6b6b6b6b6b6b6b 
->>> 6b6b6b6b6b6b6b6b 0000000000000220
->>> [58563.146360] GPR12: 0000000000002000 c000000003080000 
->>> 0000000000000000 0000000000000000
->>> [58563.146360] GPR16: 0000000000000000 0000000000000000 
->>> 0000000000000000 0000000000000001
->>> [58563.146360] GPR20: c000000001281478 0000000000000000 
->>> c000000001281490 c000000002bfed80
->>> [58563.146360] GPR24: c00000089a6870c0 0000000000000000 
->>> 0000000000000000 c000000002b9ffb8
->>> [58563.146360] GPR28: 0000000000000000 c000000002bac0e8 
->>> 0000000000000000 0000000000000000
->>> [58563.146421] NIP [c0000000009c0e60] iommu_ops_from_fwnode+0x68/0x118
->>> [58563.146430] LR [c0000000009c0e28] iommu_ops_from_fwnode+0x30/0x118
->>
->> This implies that iommu_device_list has become corrupted. Looks like 
->> spapr_tce_setup_phb_iommus_initcall() registers an iommu_device which 
->> pcibios_free_controller() could free if a PCI controller is removed, 
->> but there's no path anywhere to ever unregister any of those IOMMUs. 
->> Presumably this also means that is a PCI controller is dynamically 
->> added after init, its IOMMU won't be set up properly either.
->>
->> Thanks,
->> Robin.
->>
->>> [58563.146437] Call Trace:
->>> [58563.146439] [c00000007960f500] [c00000007960f560] 
->>> 0xc00000007960f560 (unreliable)
->>> [58563.146446] [c00000007960f530] [c0000000009c0fd0] 
->>> __iommu_probe_device+0xc0/0x5c0
->>> [58563.146454] [c00000007960f5a0] [c0000000009c151c] 
->>> iommu_probe_device+0x4c/0xb4
->>> [58563.146462] [c00000007960f5e0] [c0000000009c15d0] 
->>> iommu_bus_notifier+0x4c/0x8c
->>> [58563.146469] [c00000007960f600] [c00000000019e3d0] 
->>> notifier_call_chain+0xb8/0x1a0
->>> [58563.146476] [c00000007960f660] [c00000000019eea0] 
->>> blocking_notifier_call_chain+0x64/0x94
->>> [58563.146483] [c00000007960f6a0] [c0000000009d3c5c] 
->>> bus_notify+0x50/0x7c
->>> [58563.146491] [c00000007960f6e0] [c0000000009cfba4] 
->>> device_add+0x774/0x9bc
->>> [58563.146498] [c00000007960f7a0] [c0000000008abe9c] 
->>> pci_device_add+0x2f4/0x864
->>> [58563.146506] [c00000007960f850] [c00000000007d5a0] 
->>> of_create_pci_dev+0x390/0xa08
->>> [58563.146514] [c00000007960f930] [c00000000007de68] 
->>> __of_scan_bus+0x250/0x328
->>> [58563.146520] [c00000007960fa10] [c00000000007a680] 
->>> pcibios_scan_phb+0x274/0x3c0
->>> [58563.146527] [c00000007960fae0] [c000000000105d58] 
->>> init_phb_dynamic+0xb8/0x110
->>> [58563.146535] [c00000007960fb50] [c0080000217b0380] 
->>> dlpar_add_slot+0x170/0x3b4 [rpadlpar_io]
->>> [58563.146544] [c00000007960fbf0] [c0080000217b0ca0] 
->>> add_slot_store+0xa4/0x140 [rpadlpar_io]
->>> [58563.146551] [c00000007960fc80] [c000000000f3dbec] 
->>> kobj_attr_store+0x30/0x4c
->>> [58563.146559] [c00000007960fca0] [c0000000006931fc] 
->>> sysfs_kf_write+0x68/0x7c
->>> [58563.146566] [c00000007960fcc0] [c000000000691b2c] 
->>> kernfs_fop_write_iter+0x1c8/0x278
->>> [58563.146573] [c00000007960fd10] [c000000000599f54] 
->>> vfs_write+0x340/0x4cc
->>> [58563.146580] [c00000007960fdc0] [c00000000059a2bc] 
->>> ksys_write+0x7c/0x140
->>> [58563.146587] [c00000007960fe10] [c000000000035d74] 
->>> system_call_exception+0x134/0x330
->>> [58563.146595] [c00000007960fe50] [c00000000000d6a0] 
->>> system_call_common+0x160/0x2e4
->>> [58563.146602] --- interrupt: c00 at 0x200004470cb4
->>> [58563.146606] NIP:  0000200004470cb4 LR: 00002000043e7d04 CTR: 
->>> 0000000000000000
->>> [58563.146611] REGS: c00000007960fe80 TRAP: 0c00   Not tainted 
->>> (6.8.0-rc1-auto-gecb1b8288dc7)
->>> [58563.146616] MSR:  800000000280f033 
->>> <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 24000282  XER: 00000000
->>> [58563.146632] IRQMASK: 0
->>> [58563.146632] GPR00: 0000000000000004 00007fffd3993420 
->>> 0000200004557300 0000000000000007
->>> [58563.146632] GPR04: 000001000d8a5270 0000000000000006 
->>> fffffffffbad2c80 000001000d8a02a0
->>> [58563.146632] GPR08: 0000000000000001 0000000000000000 
->>> 0000000000000000 0000000000000000
->>> [58563.146632] GPR12: 0000000000000000 000020000422bb50 
->>> 0000000000000000 0000000000000000
->>> [58563.146632] GPR16: 0000000000000000 0000000000000000 
->>> 0000000000000000 0000000000000000
->>> [58563.146632] GPR20: 0000000000000000 0000000000000000 
->>> 0000000000000000 0000000000000000
->>> [58563.146632] GPR24: 0000000106b41668 0000000000000000 
->>> 0000000000000006 000001000d8a5270
->>> [58563.146632] GPR28: 0000000000000006 000001000d8a02a0 
->>> 000001000d8a5270 0000000000000006
->>> [58563.146690] NIP [0000200004470cb4] 0x200004470cb4
->>> [58563.146694] LR [00002000043e7d04] 0x2000043e7d04
->>> [58563.146698] --- interrupt: c00
->>> [58563.146701] Code: e9299a20 3d020173 39089a20 7fa94000 419e0038 
->>> e9490018 7fbf5000 409e0020 48000070 60000000 60000000 60000000 
->>> <e9490018> 7faaf840 419e0058 e9290000
->>> [58563.146722] ---[ end trace 0000000000000000 ]---
->>>
->>
 
