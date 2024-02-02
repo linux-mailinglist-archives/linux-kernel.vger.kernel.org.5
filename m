@@ -1,129 +1,173 @@
-Return-Path: <linux-kernel+bounces-49085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8B088465BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:21:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2079B8465C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:25:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 807C11F25E76
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:21:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91A461F278B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:25:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CCE4AD4F;
-	Fri,  2 Feb 2024 02:21:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DFD9BA2C;
+	Fri,  2 Feb 2024 02:25:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="oasoUsml"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="frbL0wz1"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8086BBA4C;
-	Fri,  2 Feb 2024 02:21:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F89FBE5A
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 02:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706840464; cv=none; b=gM52u69wq8cvDAwlCbmSHuGxENNL9KRsmNxpJA0aF7CDvZOt32RNAIn31faTXJcF6Q+sOge4+V6E0+1f29RQUBG8ju3zCN682LhhfDW9+duDjNd0oE8jhp27hLnxpzItR67JVn+tGo1mB8JZuKx407DZeWqEJwY4dV2CdGH6dXc=
+	t=1706840712; cv=none; b=pc6u/laYbcMr/vnIccc9ixB3gYOpkEdK0vEZP0WPwcV8Sp2vqBjBioF4v9yMBkUvUeD5t+ciJfRcRIm4h5/W9USaHKlj9A0CzNFe2leZh5RXpBAI5Dk40gvXE1VDsYAw/qtCYpxyiIOGAaosRfkUIDFbOY5a+3NHIVtkpj/oyig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706840464; c=relaxed/simple;
-	bh=caSt1K8X7wTfsDubxjLdVYfUEcr45wgSDgC/mtyZAUE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cAyobS7BugA/kn/n6kX8sSErbTo5Orr1xghiplxyZZTV3ME4e52FbEZD+vpPtFX7QbE/NJT9+UUW2LTGDCzfKKGdcBJtkbEGVUVijPKIwZa6umbyYC1WTZcG/E9fl+eNjrzL5/Q0lzisJCbaOVTKS72hOvF7pCn0mym+lN88wlY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=oasoUsml; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BDFEC433F1;
-	Fri,  2 Feb 2024 02:21:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706840464;
-	bh=caSt1K8X7wTfsDubxjLdVYfUEcr45wgSDgC/mtyZAUE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oasoUsml1+uLAFVUGaQaKVrDvLeAA4/u3sJZm5Xz/4sTaHALvPZdO7EBtOrR7EXLG
-	 hEYO1rPOjmVEpMfSXOpWQKsKKw8AZNbkKTu/2eVeKy8CJCt5vlZSKWrh/4XbZuSnEX
-	 iMnsZNOgmlr2vZV5PPxlHgO1PInXuK3tTQvc5/Vw=
-Date: Thu, 1 Feb 2024 18:21:03 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado <nfraprado@collabora.com>
-Cc: Brian Norris <briannorris@chromium.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Tzung-Bi Shih <tzungbi@kernel.org>, kernel@collabora.com,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	chrome-platform@lists.linux.dev,
-	Abhijit Gangurde <abhijit.gangurde@amd.com>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Nipun Gupta <nipun.gupta@amd.com>,
-	Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>,
-	Umang Jain <umang.jain@ideasonboard.com>,
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] firmware: coreboot: Generate aliases for coreboot
- modules
-Message-ID: <2024020105-dash-antiquity-a56b@gregkh>
-References: <20240112131857.900734-1-nfraprado@collabora.com>
- <20240112131857.900734-3-nfraprado@collabora.com>
- <ZaQVScQ2AYquG-Zr@smile.fi.intel.com>
- <ZbA4VthTMPT7BSRo@google.com>
- <2024013059-poison-equation-81d1@gregkh>
- <CA+ASDXM-m6U+JFvBSSHMxAf8Ct-T-pL8tmcHxHQjepdRFR-s1w@mail.gmail.com>
- <2024013012-gully-goofy-2a55@gregkh>
- <679fa364-28d0-4faa-b46e-805faf56ae53@notapiano>
+	s=arc-20240116; t=1706840712; c=relaxed/simple;
+	bh=9N2iU88+gARQNe6fozJMjFI5OkOXZkUyFALlpWKir8s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=i65sC8422FfelaE2IUBr9xEfEVeDb2UVbnK9k6il7DbAaO6D6AtHz6AvtJuJXKVtVhbM3Y51SgmsMZK4CjGRdh6zxA1NU4q6dkVbquvf/2jNpWSiw3UR+i7PTc1j83Iip3RH0vTe80KT4TGJmoJ7OJQXq+Ruk6fFtw6AuaDbhCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com; spf=pass smtp.mailfrom=arista.com; dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b=frbL0wz1; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40e76626170so13385765e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 18:25:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1706840709; x=1707445509; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5+MYOUdkffZklmJiRyDcBSvfexdw+Ug/dwNFb912Mic=;
+        b=frbL0wz1UmxnOBA5ovKX05Ts7a3K0TlLlKRG2bDTohnp8LoLAnyt56C6UR9d+CH0Yc
+         FuJiapWXxscrm/qaCPYqWvhvTweU063XysN6at25XE6NmtxeRmm5K8ypX5mWUC3auhXt
+         dgzc9eq5HhlNkRwW3iJgHaXRlZvhjEPTfJKn3qf6v6GURY3/eRYzhcMlB40l+kHQ2uEU
+         k22Hg7Xpz/8bG7MvkS5UUpmZXpYhnJFM5p1zgiDXDKqjazCZDVRgBzkmJM25+HCcYxj8
+         28XrBWPNGxCUPSl5EtJGRLIYIi2ST8IThJuaa01tg/EvBrMq4sF6ND6oe6P4U4ZEkxqZ
+         9Ekw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706840709; x=1707445509;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5+MYOUdkffZklmJiRyDcBSvfexdw+Ug/dwNFb912Mic=;
+        b=mpwCudIGDE8NIJWk1CT5qVqDAU8+B4Qs7WlLA62auzu6mwUCUCYNPXPCxwa042j1nB
+         iHgZCGMSqtC8vHvT3f84sGjBEqcKMpanlcdGSXJWd2tP77KY0v0VwbWp6FkFMBkhZQVu
+         Gy5/RMHMO6ivwTZoO0dYUe0dofyT2xwc+Diolpv++7Tpv7MKf3LW89Efyrs6Bp+5cYeo
+         1DeouyCnG0ucdcJ4q0PjZXAzd5kuFdLnGakUONGDSapGmGSUN0zZMtcjZdO9ONtdZ5oa
+         Zc6Q0iss/VuAP0osH7rghM4zhgsitUs2lg9te8wa9cq4EXnLr5KNDoff6WPHslNYODMs
+         QYow==
+X-Gm-Message-State: AOJu0Yz1z7dr+VMW7CNcFYGEdVSPGZs4o7zxeeu66FaoP8sFUyD1aA72
+	TS2jVu+vo+Up8QZCcnY5/sKqVX1saX6sThtXNP4t1OUejifC0qF7UbTMMAa8Cg==
+X-Google-Smtp-Source: AGHT+IHKoqvqHwrBIymRLXaN8QWWHiRU1Hnh5rwpivU3OiIucqg0XN5yHdkFYRxlifcErpSpJBiHsA==
+X-Received: by 2002:a05:600c:1e09:b0:40e:e839:82d3 with SMTP id ay9-20020a05600c1e0900b0040ee83982d3mr558787wmb.20.1706840708752;
+        Thu, 01 Feb 2024 18:25:08 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVxrAidf68sKuOnQRo82PhZxVEETGD8gQt1wMzSdK5oZVhC3f7C4bCzGBZPilM1QM3clRcjoHMVeBfNy8z6CipHoaMrSIKBWu9MT3MjibepjVJZTx9N7qj6AIKxw5eW21ot8gfK1Ldw9uDRUN/fmuQzcNR+7HZMsRJztUONVQTZ0DZ33/idL/7sWEdICOhwKDn7pOv0Ai3dSgG2oQp1kCmtax51lFGdszk4WMAzBzDBk2Oke5mintYVzQ6fTaMDIeWo0wNpXY2/qg24Qnbra4bGeFFwNCOfQLI44y1fEFKU7aEdtwbuI/20aq2dyt8tw4b+6MgNEu/bEG5f8ccXOFhfIskTTSmo8V0NASEp
+Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id f8-20020a05600c4e8800b0040f22171921sm1201476wmq.3.2024.02.01.18.25.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 18:25:07 -0800 (PST)
+From: Dmitry Safonov <dima@arista.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Dmitry Safonov <dima@arista.com>,
+	Dmitry Safonov <0x7f454c46@gmail.com>,
+	Simon Horman <horms@kernel.org>,
+	Mohammad Nassiri <mnassiri@ciena.com>,
+	netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests/net: Amend per-netns counter checks
+Date: Fri,  2 Feb 2024 02:24:59 +0000
+Message-ID: <20240202-unsigned-md5-netns-counters-v1-1-8b90c37c0566@arista.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+X-Mailer: b4 0.13-dev-b6b4b
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706840700; l=2805; i=dima@arista.com; s=20231212; h=from:subject:message-id; bh=9N2iU88+gARQNe6fozJMjFI5OkOXZkUyFALlpWKir8s=; b=Puw0xgLo615QE2e5RmlZ8jpNiFzXn/gxginyxBI+5ARAFf3Yf/fwt1KlR7ELKNDr5xs5BwLnh Vt+269xSIvFDDBwXaQR/uQqRY+N8HWQp2YYJrQKGvZFm1ELDkbYIv2F
+X-Developer-Key: i=dima@arista.com; a=ed25519; pk=hXINUhX25b0D/zWBKvd6zkvH7W2rcwh/CH6cjEa3OTk=
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <679fa364-28d0-4faa-b46e-805faf56ae53@notapiano>
 
-On Thu, Feb 01, 2024 at 05:45:19PM -0500, Nícolas F. R. A. Prado wrote:
-> On Tue, Jan 30, 2024 at 04:23:02PM -0800, Greg Kroah-Hartman wrote:
-> > On Tue, Jan 30, 2024 at 04:01:57PM -0800, Brian Norris wrote:
-> > > On Tue, Jan 30, 2024 at 3:51 PM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > > On Tue, Jan 23, 2024 at 02:06:14PM -0800, Brian Norris wrote:
-> > > > > "Don't you want to have a driver data or so associated with this?"
-> > > ...
-> > > > But why limit yourself to 32bits now?  Why not make it 64?  It is going
-> > > > to be sent to userspace, so you have to be very careful about it.
-> > > 
-> > > Is that question related to the question I pasted/replied to, about
-> > > driver data? Or a new topic? Sorry if I'm misunderstanding.
-> > 
-> > Same question, driver data, you make it 32 bits.
-> > 
-> > > Anyway, for the size of the tag field: I don't have a strong opinion.
-> > > But FWIW, they're coming from this project:
-> > > 
-> > > https://review.coreboot.org/plugins/gitiles/coreboot/+/269b23280f928510bcadd23182294e5b9dad11ec/payloads/libpayload/include/coreboot_tables.h#36
-> > > 
-> > > As you can see there, we're extremely far from exhausting 16 bits, let alone 32.
-> > 
-> > We've run into running out of bits in other subsystems before, it's
-> > "free" now, just be safe and make it 64 like I think Andy is suggesting.
-> 
-> Either you and Andy are suggesting different things, or I still don't quite get
-> what you mean.
-> 
-> Andy was suggesting we added a driver_data field, that is:
-> 
-> struct coreboot_device_id {
-> 	__u32 tag;
-> 	kernel_ulong_t driver_data;
-> };
-> 
-> You're suggesting we make the tag 64 bits long:
-> 
-> struct coreboot_device_id {
-> 	__u64 tag;
-> };
+Selftests here check not only that connect()/accept() for
+TCP-AO/TCP-MD5/non-signed-TCP combinations do/don't establish
+connections, but also counters: those are per-AO-key, per-socket and
+per-netns.
 
-Yeah, I'm confused, sorry.
+The counters are checked on the server's side, as the server listener
+has TCP-AO/TCP-MD5/no keys for different peers. All tests run in
+the same namespaces with the same veth pair, created in test_init().
 
-Yes, add some driver_data, and if you are SURE your tag will NEVER be
-larger than 32 bits, stick with that, but really, you are using the
-space in empty padding anyway, so just make it 64bits please.
+After close() in both client and server, the sides go through
+the regular FIN/ACK + FIN/ACK sequence, which goes in the background.
+If the selftest has already started a new testing scenario, read
+per-netns counters - it may fail in the end iff it doesn't expect
+the TCPAOGood per-netns counters go up during the test.
 
-thanks,
+Let's just kill both TCP-AO sides - that will avoid any asynchronous
+background TCP-AO segments going to either sides.
 
-greg k-h
+Reported-by: Jakub Kicinski <kuba@kernel.org>
+Closes: https://lore.kernel.org/all/20240201132153.4d68f45e@kernel.org/T/#u
+Fixes: 6f0c472a6815 ("selftests/net: Add TCP-AO + TCP-MD5 + no sign listen socket tests")
+Signed-off-by: Dmitry Safonov <dima@arista.com>
+---
+ tools/testing/selftests/net/tcp_ao/unsigned-md5.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/tools/testing/selftests/net/tcp_ao/unsigned-md5.c b/tools/testing/selftests/net/tcp_ao/unsigned-md5.c
+index c5b568cd7d90..6b59a652159f 100644
+--- a/tools/testing/selftests/net/tcp_ao/unsigned-md5.c
++++ b/tools/testing/selftests/net/tcp_ao/unsigned-md5.c
+@@ -110,9 +110,9 @@ static void try_accept(const char *tst_name, unsigned int port,
+ 		test_tcp_ao_counters_cmp(tst_name, &ao_cnt1, &ao_cnt2, cnt_expected);
+ 
+ out:
+-	synchronize_threads(); /* close() */
++	synchronize_threads(); /* test_kill_sk() */
+ 	if (sk > 0)
+-		close(sk);
++		test_kill_sk(sk);
+ }
+ 
+ static void server_add_routes(void)
+@@ -302,10 +302,10 @@ static void try_connect(const char *tst_name, unsigned int port,
+ 		test_ok("%s: connected", tst_name);
+ 
+ out:
+-	synchronize_threads(); /* close() */
++	synchronize_threads(); /* test_kill_sk() */
+ 	/* _test_connect_socket() cleans up on failure */
+ 	if (ret > 0)
+-		close(sk);
++		test_kill_sk(sk);
+ }
+ 
+ #define PREINSTALL_MD5_FIRST	BIT(0)
+@@ -486,10 +486,10 @@ static void try_to_add(const char *tst_name, unsigned int port,
+ 	}
+ 
+ out:
+-	synchronize_threads(); /* close() */
++	synchronize_threads(); /* test_kill_sk() */
+ 	/* _test_connect_socket() cleans up on failure */
+ 	if (ret > 0)
+-		close(sk);
++		test_kill_sk(sk);
+ }
+ 
+ static void client_add_ip(union tcp_addr *client, const char *ip)
+
+---
+base-commit: 021533194476035883300d60fbb3136426ac8ea5
+change-id: 20240202-unsigned-md5-netns-counters-35134409362a
+
+Best regards,
+-- 
+Dmitry Safonov <dima@arista.com>
+
 
