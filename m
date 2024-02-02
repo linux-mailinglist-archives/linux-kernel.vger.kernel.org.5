@@ -1,158 +1,227 @@
-Return-Path: <linux-kernel+bounces-50050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 526B48473B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DA2F8473B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:54:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 079F91F2942F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:52:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C7DB1F27022
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:54:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 320C1146918;
-	Fri,  2 Feb 2024 15:51:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4738A1474A4;
+	Fri,  2 Feb 2024 15:53:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OyUR9OT4"
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aAhdO6qU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0149C144612;
-	Fri,  2 Feb 2024 15:51:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F4F9179A5;
+	Fri,  2 Feb 2024 15:53:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706889114; cv=none; b=Y8SEhgHrj1UrG+QlKQPsWMkOiBV4/ocAuQNiOgSti97ynJUAu7Btpk6MAehpJLw8PERvbBsVmQWIvQFpeTv3o2BZZF+vaUG2UqsEOB5gDwain9hwhT6XZj8mZqijHOUvCNr8LFC9VSwygZZC54z82lxgEa+qDEqMd6AdqKdG3Wc=
+	t=1706889235; cv=none; b=sm7JQWjw4usPDb07hdhAgWzWpvGwFB6h4Xy5UetiqJKlS9UYABmn7w6xd7r1Bt5mgGh+Kde6lSBqPkcWwfBuJLsR79FV+NPfD3Ya9xDDf7+7TY4JEMPSFBXr6HI94cTkcoqcrf0OsEEscENIJIcYYFZJP8Co5GkxSPHx7c8F4+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706889114; c=relaxed/simple;
-	bh=u62/JTjk2+l4AbxTmlSugZv8zdrDij9jIcMxmTQ3Cs0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=s2Q6guC8vIEkYqeMEyWut46sbPFT9eSx9eRsQHf4VO0RxHym8d2d3c5/0/L+FwVAdpr3RBobOoQtBfLRP2LOBA+t88B7xiQgRE9GX4gWc1DxRge7tOOrMGZ5qKEiphm4oivIZXY8lnahJw465wTVusnIBb18KvDsZW2F4ZvUPfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OyUR9OT4; arc=none smtp.client-ip=209.85.219.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-68c2f4c3282so10906286d6.3;
-        Fri, 02 Feb 2024 07:51:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706889112; x=1707493912; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kjFTQhfyX4OpZ75eLCQsarAtUBHRYbyc/PAd9P4Y7CI=;
-        b=OyUR9OT4w/TuRR1vUjSDfsYrkjacCh4Ud6K0piDSkhqBNlFzC9/C305eNPm2L74WFr
-         6SlIXyp4t3psK6lvgUXsyY1JMpG64+cnQ+3Nct72E3dnNIcD8vl7ruLdG/Y245kjXIJQ
-         yx6DtRAxGrZqzA9KYgbkIHrPKyXTO5K5vpr8S1D7a1MXAKxGFnSkdFOlVQTuuJG0cuGP
-         08ftPKmUj7YzQbbi+vOIlQYVTn0MdWvSwnfvIFqIDA+st/2LXLsh//LyetxCcIxGFFBo
-         YmIt9Rd0kJf0emsuARKy+yXAB6Ny5LlLmJgpTOxZ3JFR2EwFVufVKl6USPkc9qBM+JEy
-         MZjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706889112; x=1707493912;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kjFTQhfyX4OpZ75eLCQsarAtUBHRYbyc/PAd9P4Y7CI=;
-        b=oJsYihtzb7pXIOmtByWhk9KbWnlVwtdX163r66UXoaxvHYw9zd0xhL12EdZ9tPvTVN
-         NtlQK/7emL5r6g2gpKCP1/SB0bSfdvx/cEi5ENyhlzCISMROxcyn5kuXWT4YYUQkg/gd
-         HMz/8uK8JRKHlVwn0tPUouzI4Y8M4arlOwMf1XFaY+RR2qzU+IS/Cp85jAtTzfohdmD0
-         ExYCWJnFUvlzqozIqT1k1TYKlJzENA5XcEp2HGLx5/9dlHcK4R345h7HJGRS7TdbWiso
-         wslbMvc/pz8poUAXu7tQgsXdcYgMkj7OzV3fCvbIn6POE2K6sfptJiOiP3zDCS34uoDY
-         gylw==
-X-Gm-Message-State: AOJu0YxhnIYk07XkjbQWBS7kRpvyE4LI/Jrg9s8iWxXzW6qGw9uT9P6N
-	dXQE4rVqa31UUYaWt3AlIt9WNTc+FZUewqAzPwEin4VagMiymCtq1sAMFxRwb4vqxtAuRSHrHJw
-	4ZGbRGYq8wlY/4WifnPA+63C5jolWskOeT4Y=
-X-Google-Smtp-Source: AGHT+IFUNcvFrtEeCkHxcUTQW9b1GdgYlbqRIehUQEHcaweXXXIXkS8cwExw7eL3LP5nnH+WGue4GtsNcAbNqRGPja0=
-X-Received: by 2002:a0c:f1cd:0:b0:68c:8ac3:2acb with SMTP id
- u13-20020a0cf1cd000000b0068c8ac32acbmr842609qvl.41.1706889111860; Fri, 02 Feb
- 2024 07:51:51 -0800 (PST)
+	s=arc-20240116; t=1706889235; c=relaxed/simple;
+	bh=6osE97Z/z7Gxj8LhqCXUtj2ISkcMALTMSddp/DORlGM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZsT1AVRgAKSc3kGFEiGd8We6xgA0hqv0Gibh5goM0AxnGMp4jg+dMWuipsljKEHybcq6L6WZISMBiE/ozrN3VqJrsILIHeWVn5ta/ONoAB6yMU8I3ecdltrOvBH46j+GC5xW2Wli68nOcabe08GkNKaLKcTcWuZ3m3L09sHdoyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aAhdO6qU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81DA1C433F1;
+	Fri,  2 Feb 2024 15:53:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706889234;
+	bh=6osE97Z/z7Gxj8LhqCXUtj2ISkcMALTMSddp/DORlGM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aAhdO6qU7hLC6/QErPRe5GWcBngQlTYqestPgbXwlhvqi8JwjWnFCpRicyQLVyU7j
+	 yvU2Z2Ty7TRTzopTOUyy1cffcelgQM26ZZ29UR9/fvmY8/sVUXp+NJcAgnW5pKY1dn
+	 CUp+EHJ53lYZX7Ut3KMHftuoCTf6xIriz6Nl4NdF24POCP/0Tvg+zF3Cl5xs144JIg
+	 mFh83P1kKmjEzayOt2SOA5Iqz/zR2uS0kobXw90p1UOT8PhsVEsDEw4fwau39Hsk/q
+	 HdcKyEhWLWHPDZ5lCv0Kv0DVdnx2RhL7MRo6MQ5u2V/1YUr4LZW6uNmedeFxgKwzq6
+	 ajtbuX0d1AZYA==
+Date: Fri, 2 Feb 2024 09:53:52 -0600
+From: Rob Herring <robh@kernel.org>
+To: Saravana Kannan <saravanak@google.com>
+Cc: David Dai <davidai@google.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Quentin Perret <qperret@google.com>,
+	Masami Hiramatsu <mhiramat@google.com>,
+	Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Pavan Kondeti <quic_pkondeti@quicinc.com>,
+	Gupta Pankaj <pankaj.gupta@amd.com>, Mel Gorman <mgorman@suse.de>,
+	kernel-team@android.com, linux-pm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/2] dt-bindings: cpufreq: add virtual cpufreq device
+Message-ID: <20240202155352.GA37864-robh@kernel.org>
+References: <20240127004321.1902477-1-davidai@google.com>
+ <20240127004321.1902477-2-davidai@google.com>
+ <20240131170608.GA1441369-robh@kernel.org>
+ <CAGETcx8S0oS67oMZsPKk6_MGAtygoHEf_LN1gbcNDEBqRJ4PPg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130214620.3155380-1-stefanb@linux.ibm.com>
- <20240130214620.3155380-5-stefanb@linux.ibm.com> <38230b4c-54ae-45ed-a6fb-34e63501e5b1@linux.ibm.com>
- <CAOQ4uxiYARZBSgzb4_W-RKvB1XLSF3GUBqeLw2kH+eVeZ_8ARQ@mail.gmail.com>
- <c018b014-9ba8-4395-86dc-b61346ab20a8@linux.ibm.com> <CAOQ4uxi6Te8izWpXROthknRaXrVA9jho5nbc+mkuQDrcTLY44Q@mail.gmail.com>
- <CAOQ4uxigdNeE+2nfr4VxS9piQf5hez=ryT0a-jzW+tW0BT-zuw@mail.gmail.com>
- <492ea12a-d79d-47da-9bbe-a7f33051bd3f@linux.ibm.com> <CAOQ4uxgiO1RbsmqOu4F4Foy-MBPecnEXO7BvgDGz-Lzb1Eysog@mail.gmail.com>
- <4c584bfb-d282-4584-bb20-18c26b1033c0@linux.ibm.com> <CAOQ4uxjftr7GGx6tuW_yB_MTaVB57m6p_d=UHhN3Z23YVXY0QQ@mail.gmail.com>
- <11abffea-15c5-4d13-9d0f-edbc54b09bf3@linux.ibm.com> <CAOQ4uxjZ6p9+H54G0LNTUnU56WRaoLtWOUj2nOaKJ4JvBGqLVg@mail.gmail.com>
- <427ce381-73fa-48f9-8e18-77e23813b918@linux.ibm.com>
-In-Reply-To: <427ce381-73fa-48f9-8e18-77e23813b918@linux.ibm.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 2 Feb 2024 17:51:40 +0200
-Message-ID: <CAOQ4uxggqa7j0NS1MN3KSvF_qG1FMVmFxacEYSTx+LuvuosJ5g@mail.gmail.com>
-Subject: Re: [PATCH 4/5] evm: Use the real inode's metadata to calculate
- metadata hash
-To: Stefan Berger <stefanb@linux.ibm.com>
-Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
-	roberto.sassu@huawei.com, miklos@szeredi.hu
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGETcx8S0oS67oMZsPKk6_MGAtygoHEf_LN1gbcNDEBqRJ4PPg@mail.gmail.com>
 
-On Fri, Feb 2, 2024 at 4:59=E2=80=AFPM Stefan Berger <stefanb@linux.ibm.com=
-> wrote:
->
->
->
-> On 2/2/24 04:24, Amir Goldstein wrote:
-> > On Thu, Feb 1, 2024 at 10:35=E2=80=AFPM Stefan Berger <stefanb@linux.ib=
-m.com> wrote:
->
+On Wed, Jan 31, 2024 at 10:23:03AM -0800, Saravana Kannan wrote:
+> On Wed, Jan 31, 2024 at 9:06 AM Rob Herring <robh@kernel.org> wrote:
 > >
-> >>
-> >> and your suggested change to this patch :
-> >>
-> >> -       struct inode *inode =3D d_real_inode(dentry);
-> >> +       struct inode *inode =3D d_inode(d_real(dentry, false));;
-> >>
+> > On Fri, Jan 26, 2024 at 04:43:15PM -0800, David Dai wrote:
+> > > Adding bindings to represent a virtual cpufreq device.
+> > >
+> > > Virtual machines may expose MMIO regions for a virtual cpufreq device
+> > > for guests to read frequency information or to request frequency
+> > > selection. The virtual cpufreq device has an individual controller for
+> > > each frequency domain. Performance points for a given domain can be
+> > > normalized across all domains for ease of allowing for virtual machines
+> > > to migrate between hosts.
+> > >
+> > > Co-developed-by: Saravana Kannan <saravanak@google.com>
+> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > Signed-off-by: David Dai <davidai@google.com>
+> > > ---
+> > >  .../cpufreq/qemu,cpufreq-virtual.yaml         | 110 ++++++++++++++++++
 > >
-> > In the new version I change the API to use an enum instead of bool, e.g=
-:
+> > > +    const: qemu,virtual-cpufreq
 > >
-> >         struct inode *inode =3D d_inode(d_real(dentry, D_REAL_METADATA)=
-);
->
-> Thanks. I will use it.
->
+> > Well, the filename almost matches the compatible.
 > >
-> > This catches in build time and in run time, callers that were not conve=
-rted
-> > to the new API.
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +    description:
+> > > +      Address and size of region containing frequency controls for each of the
+> > > +      frequency domains. Regions for each frequency domain is placed
+> > > +      contiguously and contain registers for controlling DVFS(Dynamic Frequency
+> > > +      and Voltage) characteristics. The size of the region is proportional to
+> > > +      total number of frequency domains. This device also needs the CPUs to
+> > > +      list their OPPs using operating-points-v2 tables. The OPP tables for the
+> > > +      CPUs should use normalized "frequency" values where the OPP with the
+> > > +      highest performance among all the vCPUs is listed as 1024 KHz. The rest
+> > > +      of the frequencies of all the vCPUs should be normalized based on their
+> > > +      performance relative to that 1024 KHz OPP. This makes it much easier to
+> > > +      migrate the VM across systems which might have different physical CPU
+> > > +      OPPs.
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    // This example shows a two CPU configuration with a frequency domain
+> > > +    // for each CPU showing normalized performance points.
+> > > +    cpus {
+> > > +      #address-cells = <1>;
+> > > +      #size-cells = <0>;
+> > > +
+> > > +      cpu@0 {
+> > > +        compatible = "arm,armv8";
+> > > +        device_type = "cpu";
+> > > +        reg = <0x0>;
+> > > +        operating-points-v2 = <&opp_table0>;
+> > > +      };
+> > > +
+> > > +      cpu@1 {
+> > > +        compatible = "arm,armv8";
+> > > +        device_type = "cpu";
+> > > +        reg = <0x0>;
+> > > +        operating-points-v2 = <&opp_table1>;
+> > > +      };
+> > > +    };
+> > > +
+> > > +    opp_table0: opp-table-0 {
+> > > +      compatible = "operating-points-v2";
+> > > +
+> > > +      opp64000 { opp-hz = /bits/ 64 <64000>; };
 > >
-> >> The test cases are now passing with and without metacopy enabled. Yay!
+> > opp-64000 is the preferred form.
 > >
-> > Too soon to be happy.
-> > I guess you are missing a test for the following case:
-> > 1. file was meta copied up (change is detected)
-> > 2. the lower file that contains the data is being changed (change is
-> > not detected)
->
-> Right. Though it seems there's something wrong with overlayfs as well
-> after appending a byte to the file on the lower.
->
-> -rwxr-xr-x    1 0        0               25 Feb  2 14:55
-> /ext4.mount/lower/test_rsa_portable2
-> -rwxr-xr-x    1 0        0               24 Feb  2 14:55
-> /ext4.mount/overlay/test_rsa_portable2
-> bb16aa5350bcc8863da1a873c846fec9281842d9
-> /ext4.mount/lower/test_rsa_portable2
-> bb16aa5350bcc8863da1a873c846fec9281842d9
-> /ext4.mount/overlay/test_rsa_portable2
->
-> We have a hash collision on a file with 24 bytes and the underlying one
-> with 25 byte. (-;  :-)
+> > > +      opp128000 { opp-hz = /bits/ 64 <128000>; };
+> > > +      opp192000 { opp-hz = /bits/ 64 <192000>; };
+> > > +      opp256000 { opp-hz = /bits/ 64 <256000>; };
+> > > +      opp320000 { opp-hz = /bits/ 64 <320000>; };
+> > > +      opp384000 { opp-hz = /bits/ 64 <384000>; };
+> > > +      opp425000 { opp-hz = /bits/ 64 <425000>; };
+> > > +    };
+> > > +
+> > > +    opp_table1: opp-table-1 {
+> > > +      compatible = "operating-points-v2";
+> > > +
+> > > +      opp64000 { opp-hz = /bits/ 64 <64000>; };
+> > > +      opp128000 { opp-hz = /bits/ 64 <128000>; };
+> > > +      opp192000 { opp-hz = /bits/ 64 <192000>; };
+> > > +      opp256000 { opp-hz = /bits/ 64 <256000>; };
+> > > +      opp320000 { opp-hz = /bits/ 64 <320000>; };
+> > > +      opp384000 { opp-hz = /bits/ 64 <384000>; };
+> > > +      opp448000 { opp-hz = /bits/ 64 <448000>; };
+> > > +      opp512000 { opp-hz = /bits/ 64 <512000>; };
+> > > +      opp576000 { opp-hz = /bits/ 64 <576000>; };
+> > > +      opp640000 { opp-hz = /bits/ 64 <640000>; };
+> > > +      opp704000 { opp-hz = /bits/ 64 <704000>; };
+> > > +      opp768000 { opp-hz = /bits/ 64 <768000>; };
+> > > +      opp832000 { opp-hz = /bits/ 64 <832000>; };
+> > > +      opp896000 { opp-hz = /bits/ 64 <896000>; };
+> > > +      opp960000 { opp-hz = /bits/ 64 <960000>; };
+> > > +      opp1024000 { opp-hz = /bits/ 64 <1024000>; };
+> > > +
+> > > +    };
+> >
+> > I don't recall your prior versions having an OPP table. Maybe it was
+> > incomplete. You are designing the "h/w" interface. Why don't you make it
+> > discoverable or implicit (fixed for the h/w)?
+> 
+> We also need the OPP tables to indicate which CPUs are part of the
+> same cluster, etc. Don't want to invent a new "protocol" and just use
+> existing DT bindings.
 
-https://docs.kernel.org/filesystems/overlayfs.html#changes-to-underlying-fi=
-lesystems
+Topology binding is for that.
 
-If you modify the lower file underneath overlayfs, you get no
-guarantee from overlayfs about expected results.
+What about when x86 and other ACPI systems need to do this too? You 
+define a discoverable interface, then it works regardless of firmware. 
+KVM, Virtio, VFIO, etc. are all their own protocols.
 
-This makes your work more challenging.
+> > Do you really need it if the frequency is normalized?
+> 
+> Yeah, we can have little and big CPUs and want to emulate different
+> performance levels. So while the Fmax on big is 1024, we still want to
+> be able to say little is 425. So we definitely need frequency tables.
 
-Thanks,
-Amir.
+You need per CPU Fmax, sure. But all the frequencies? I don't follow why 
+you don't just have a max available capacity and then request the 
+desired capacity. Then the host maps that to an underlying OPP. Why have 
+an intermediate set of fake frequencies?
+
+As these are normalized, I guess you are normalizing for capacity as 
+well? Or you are using "capacity-dmips-mhz"? 
+
+I'm also lost how this would work when you migrate and the underlying 
+CPU changes. The DT is fixed.
+
+> > Also, we have "opp-level" for opaque values that aren't Hz.
+> 
+> Still want to keep it Hz to be compatible with arch_freq_scale and
+> when virtualized CPU perf counters are available.
+
+Seems like no one would want "opp-level" then. Shrug.
+
+Anyway, if Viresh and Marc are fine with all this, I'll shut up.
+
+Rob
 
