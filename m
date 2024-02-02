@@ -1,118 +1,158 @@
-Return-Path: <linux-kernel+bounces-50724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2C38847D50
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:42:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A997847D58
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:45:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 219FE1C21A34
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:42:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CF9C1C21A2A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:45:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4223C12D752;
-	Fri,  2 Feb 2024 23:41:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61DA312D744;
+	Fri,  2 Feb 2024 23:45:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="zZaZBQti"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hoKzzng0"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F7F5132480;
-	Fri,  2 Feb 2024 23:41:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F24712C809;
+	Fri,  2 Feb 2024 23:45:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706917284; cv=none; b=cyo6352daf3vZkL682RqS/dVtjGbHgw9ahPN46c1B7W0bIq8XFi9vpQ87j1MiQv+EX1cT5w3aeRCDSAUmYyIeJAbdpuNUTq6AVpAkjPHUwF09lZvJAbZ7NUBJS8bd3bBDEVw7VB/j/x15jyNsh97dkahsnIG3kVRy828+LxVxeA=
+	t=1706917508; cv=none; b=UFWKh4y6Ho+w+ah6nDD5l8CifIZ+9HyXt2cKKMReaZc+T7uiMVcn6JU+qlC0RV+a9w0E6EgLbnUuNKZZF9mQftfcCJwe/hKnbT5Rhp0CYX+XLwNrGjPQI2pZ5Ly4WbDUntqyCDZ/Lj+9JbpvxzgqvX/m5Eo2lCp1s6XK5iQA/YM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706917284; c=relaxed/simple;
-	bh=gX+4EF1aa8LAyzPJib2hQOtkg0CUXK5HquVqw1n55so=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZFs8gdxcj8N9Airq5RhY43wj5OxueDzIVq7WOGncvu/lLEplgE4mLi4Y/xYqVMfiR2MVeIa0TlCgqlCZRFGb00g6vUDecAQjUt8zwNWxJlP3CFkvzGS/KEGPCetirt+/vyhtMjJMMbippS6H7UzRxeUTdCEJDgaaLIKUlVoUFfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=zZaZBQti; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC7DDC433A6;
-	Fri,  2 Feb 2024 23:41:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706917283;
-	bh=gX+4EF1aa8LAyzPJib2hQOtkg0CUXK5HquVqw1n55so=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=zZaZBQtipCcf5XBGD66l7h1yJKY1ffHOnvxlbMtnRWA3xh9aONF4zzKTO6U6oVTZG
-	 j4ftTBoZkLHG6gZyYjjrMLkVh+1o6h3+gq5c0PQg91mWkhiEgE6ngXzTGsBf+39xK8
-	 S0wo69WpngQm/A6CTieAkB6+8kZG8WR58yEq4TGw=
-Date: Fri, 2 Feb 2024 15:41:23 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Hamza Mahfooz <hamza.mahfooz@amd.com>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Lijo Lazar <lijo.lazar@amd.com>,
-	Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-	Le Ma <le.ma@amd.com>,
-	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-	James Zhu <James.Zhu@amd.com>,
-	Aurabindo Pillai <aurabindo.pillai@amd.com>,
-	Alex Shi <alexs@kernel.org>, Jerry Snitselaar <jsnitsel@redhat.com>,
-	Wei Liu <wei.liu@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-pci@vger.kernel.org
-Subject: Re: [PATCH 3/3] drm/amdgpu: wire up the can_remove() callback
-Message-ID: <2024020216-letdown-uproar-718d@gregkh>
-References: <20240202222603.141240-1-hamza.mahfooz@amd.com>
- <20240202222603.141240-3-hamza.mahfooz@amd.com>
+	s=arc-20240116; t=1706917508; c=relaxed/simple;
+	bh=u14JJUaOwUjTknw9OXMt8TK1fGhG5qE9VIX/LCcSv1I=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=FSCfDnMa1Cb4jvrUsUtH6+KAfWfm8jw4EEdAAzFXH4Hhsj/TqAvhJuuyneqXxhNo3590tfnqd0S1aXAzxprffdnLrc4JJRgZpl/p9l/g6cvhFZ5eUKg4q15M8wHmF7IoHZwCjHEDNpxeaJ8cTPHmlYzajh3Qr6lCVWF5Ba0P9cI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hoKzzng0; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706917507; x=1738453507;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=u14JJUaOwUjTknw9OXMt8TK1fGhG5qE9VIX/LCcSv1I=;
+  b=hoKzzng0WtxrKW6Tm4tPaS/EZvwyJ1uVpk8XWwQ7hjrwZCpG8kR1Aa4q
+   ECcCTehLssJ8RzpuNNyZfgslaCo6CDdYFNG3c4wzjAip0aQ0hJtNhqFva
+   snzM8sDL52uOhhwDQokHHnL+8Zx1ZOsAfnAl67aveqwGmJKLN2uXxdKk5
+   4urs01ECLVYfzgWEitR5b0wb79lxy32PRVQnWnCRUWeEtznOBhNAQ/d5Y
+   Hf+MRKJP46MHBV7GFkbwAd4DD1EEGbMOwEIpPdVqfcnuMw0eTOw8kI/nB
+   /Ul1IJiBPOT1iPS5V3YY/fc3DHWyDHZzBPJRnfn0vXowbtt+NgSvUeRHx
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="11629193"
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="11629193"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 15:45:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="4798202"
+Received: from mkuchla-mobl1.amr.corp.intel.com (HELO [10.209.72.111]) ([10.209.72.111])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 15:45:06 -0800
+Message-ID: <ca25d3462944dcea553665d7c85903cdd6a846bc.camel@linux.intel.com>
+Subject: Re: [PATCH v7 09/15] x86/sgx: Charge mem_cgroup for per-cgroup
+ reclamation
+From: Tim Chen <tim.c.chen@linux.intel.com>
+To: Haitao Huang <haitao.huang@linux.intel.com>, jarkko@kernel.org, 
+ dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com, 
+ linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org, 
+ cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de,  hpa@zytor.com, sohil.mehta@intel.com
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com, 
+	zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com, 
+	yangjie@microsoft.com
+Date: Fri, 02 Feb 2024 15:45:05 -0800
+In-Reply-To: <20240122172048.11953-10-haitao.huang@linux.intel.com>
+References: <20240122172048.11953-1-haitao.huang@linux.intel.com>
+	 <20240122172048.11953-10-haitao.huang@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240202222603.141240-3-hamza.mahfooz@amd.com>
 
-On Fri, Feb 02, 2024 at 05:25:56PM -0500, Hamza Mahfooz wrote:
-> Removing an amdgpu device that still has user space references allocated
-> to it causes undefined behaviour. So, implement amdgpu_pci_can_remove()
-> and disallow devices that still have files allocated to them from being
-> unbound.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-> index cc69005f5b46..cfa64f3c5be5 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-> @@ -2323,6 +2323,22 @@ static int amdgpu_pci_probe(struct pci_dev *pdev,
->  	return ret;
->  }
->  
-> +static bool amdgpu_pci_can_remove(struct pci_dev *pdev)
-> +{
-> +	struct drm_device *dev = pci_get_drvdata(pdev);
-> +
-> +	mutex_lock(&dev->filelist_mutex);
-> +
-> +	if (!list_empty(&dev->filelist)) {
-> +		mutex_unlock(&dev->filelist_mutex);
-> +		return false;
+On Mon, 2024-01-22 at 09:20 -0800, Haitao Huang wrote:
+>=20
+> @@ -1047,29 +1037,38 @@ static struct mem_cgroup *sgx_encl_get_mem_cgroup=
+(struct sgx_encl *encl)
+>   * @encl:	an enclave pointer
+>   * @page_index:	enclave page index
+>   * @backing:	data for accessing backing storage for the page
+> + * @indirect:	in ksgxd or EPC cgroup work queue context
+> + *
+> + * Create a backing page for loading data back into an EPC page with ELD=
+U. This function takes
+> + * a reference on a new backing page which must be dropped with a corres=
+ponding call to
+> + * sgx_encl_put_backing().
+>   *
+> - * When called from ksgxd, sets the active memcg from one of the
+> - * mms in the enclave's mm_list prior to any backing page allocation,
+> - * in order to ensure that shmem page allocations are charged to the
+> - * enclave.  Create a backing page for loading data back into an EPC pag=
+e with
+> - * ELDU.  This function takes a reference on a new backing page which
+> - * must be dropped with a corresponding call to sgx_encl_put_backing().
+> + * When @indirect is true, sets the active memcg from one of the mms in =
+the enclave's mm_list
+> + * prior to any backing page allocation, in order to ensure that shmem p=
+age allocations are
+> + * charged to the enclave.
+>   *
+>   * Return:
+>   *   0 on success,
+>   *   -errno otherwise.
+>   */
+>  int sgx_encl_alloc_backing(struct sgx_encl *encl, unsigned long page_ind=
+ex,
+> -			   struct sgx_backing *backing)
+> +			   struct sgx_backing *backing, bool indirect)
+>  {
+> -	struct mem_cgroup *encl_memcg =3D sgx_encl_get_mem_cgroup(encl);
+> -	struct mem_cgroup *memcg =3D set_active_memcg(encl_memcg);
+> +	struct mem_cgroup *encl_memcg;
+> +	struct mem_cgroup *memcg;
+>  	int ret;
+> =20
+> +	if (indirect) {
+> +		encl_memcg =3D sgx_encl_get_mem_cgroup(encl);
+> +		memcg =3D set_active_memcg(encl_memcg);
 > +	}
 > +
-> +	mutex_unlock(&dev->filelist_mutex);
-> +
-> +	return true;
+>  	ret =3D __sgx_encl_get_backing(encl, page_index, backing);
+> =20
+> -	set_active_memcg(memcg);
+> -	mem_cgroup_put(encl_memcg);
+> +	if (indirect) {
+> +		set_active_memcg(memcg);
+> +		mem_cgroup_put(encl_memcg);
+> +	}
+> =20
 
-Also, to be pedantic, this will not work as right after you returned
-"true" here, userspace could open a file, causing the same issue you are
-trying to prevent to have happen, happen.
 
-So even if we wanted to do this, which again, we do not, this isn't even
-a solution for it because it will still cause you problems.
+You can reduce the number of if statements to make the logic
+simpler.  Something like
 
-greg k-h
+	if (!indirect)
+		return __sgx_encl_get_backing(encl, page_index, backing);
+
+	encl_memcg =3D sgx_encl_get_mem_cgroup(encl);
+	memcg =3D set_active_memcg(encl_memcg);
+	ret =3D __sgx_encl_get_backing(encl, page_index, backing);
+	set_active_memcg(memcg);
+	mem_cgroup_put(encl_memcg);
+
+>  	return ret;
+
+Tim
+
+
 
