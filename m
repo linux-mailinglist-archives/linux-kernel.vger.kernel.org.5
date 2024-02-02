@@ -1,158 +1,176 @@
-Return-Path: <linux-kernel+bounces-49883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 259918470E5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:14:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F285F8470E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:12:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDF9A1F2A718
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:14:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 909A81F2568C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:12:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D1C7210FE;
-	Fri,  2 Feb 2024 13:14:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KX1NJ3mP"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9268717C67;
+	Fri,  2 Feb 2024 13:12:52 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F022772A
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 13:14:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7131E523F
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 13:12:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706879649; cv=none; b=P2h2dCcHNbnlH7q+pdjZX3I6ypO5OIgq8T3GzhT68lPq1CMM6RjKaRqQsevcCLm3k7mnJ+PRZJD976UvRRtXAJkarIitK/GfK4cTmalDzNFrXXA1z88yrF3T02VkTViyv00V0sb0m1neBNYt2HwlnExVz519ZeS3+1a69zqm6bQ=
+	t=1706879572; cv=none; b=ue0vyU/8OTSfyiiiVdkO6yIiAki/kT+wa79xhHxAZI0DMuus6wHX1f7GTmnFbPuXU9kSJ0Jt6nCGg8PW9OhmOwFjKh64BLEcNME2bsnifXZnZaXXH+kNT7yvtWvxJ0+x4wpkCo13DFxdXtC0NLMKhpUM/ch5piZrJ+6Euy+rq7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706879649; c=relaxed/simple;
-	bh=Ll/s1Mpq1wn0WVe7lBWJ6vbuD1ND6xPjIS/Y+odacrw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=P4mz6sCsu7yyYPy/13DcIdYO22B8CAlwrLZU8XEOT0rc4ttclCOh5swlsQXIyZ1q4omP6ceyZOstD8uecDJX4SpQdrnaQ9QtERfFlN4V+hLVQzevnISxHtHxPDKxG1JKyVUR6fpH1ESKrqhlmGrNGXBF451rTsLM7aQfswDQhlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KX1NJ3mP; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706879647;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to; bh=hcrUB/TxGDQzkVWVzEEPdidIHt7V/i+DGLB/TQZqAG4=;
-	b=KX1NJ3mPuL8X4OjuyxctE5FOG+qiczWYN/Vo1H5g6BTzhB7FrzzRCMWeewOrNYmj/vV/E7
-	Ia5MOBDu5418XVNnOSvF5Tw0KeHLp6XHu/wKxwx06Ujc99cZs7Tx/3OQ/u+PxO3TGSRgJh
-	6X1BY0MSQDbCtdTVWstnxt2c1hVfhuQ=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-639-UFkX2USqOH-HlUQt27oB7w-1; Fri,
- 02 Feb 2024 08:14:03 -0500
-X-MC-Unique: UFkX2USqOH-HlUQt27oB7w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 614F529AC00E;
-	Fri,  2 Feb 2024 13:14:03 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.76])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 0F4B4400D783;
-	Fri,  2 Feb 2024 13:14:01 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Fri,  2 Feb 2024 14:12:48 +0100 (CET)
-Date: Fri, 2 Feb 2024 14:12:26 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Andy Lutomirski <luto@amacapital.net>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] pidfd_poll: report POLLHUP when pid_task() == NULL
-Message-ID: <20240202131226.GA26018@redhat.com>
+	s=arc-20240116; t=1706879572; c=relaxed/simple;
+	bh=2chKkVNyv+a25tr2l19cV9NQvnf2nRozHkVqSiQZ+jo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ChpYTambjPk6wKck+9eWeFpRZjCkr/gOCsKl8zS7xtR9bEKq0IRONbA3b7A/dJaORqt45LN4spJG3wWJ3rugB0vIZkTpFqWtrm/HCMdxv7zLMQEzWgwJIjRVXr/BpFDkFUol+xDrOZEUN7kSTeAt/20/M647CHOsSDNMzMf5NGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
+	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
+	(envelope-from <a.fatoum@pengutronix.de>)
+	id 1rVtLY-0003u8-4f; Fri, 02 Feb 2024 14:12:44 +0100
+Message-ID: <0db9ff92-c643-4559-929b-fb375efab514@pengutronix.de>
+Date: Fri, 2 Feb 2024 14:12:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240202131147.GA25988@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+User-Agent: Mozilla Thunderbird
+Subject: Re: Boot-time dumping of ftrace fuctiongraph buffer
+Content-Language: en-US
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>
+References: <d33e5271-219d-4b8e-be5a-8903219d7fd6@pengutronix.de>
+ <20240202150403.7ccc4126dbeaad8bdf77c384@kernel.org>
+From: Ahmad Fatoum <a.fatoum@pengutronix.de>
+In-Reply-To: <20240202150403.7ccc4126dbeaad8bdf77c384@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Add another wake_up_all(wait_pidfd) into __change_pid() and change
-pidfd_poll() to include EPOLLHUP if task == NULL.
+Hello Masami-san,
 
-This allows to wait until the target process/thread is reaped.
+On 02.02.24 07:04, Masami Hiramatsu (Google) wrote:
+> On Thu, 1 Feb 2024 13:21:37 +0100
+> Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>> For drivers that don't call dev_err_probe, I find myself sometimes doing printf
+>> debugging inside the probe function.
 
-TODO: change do_notify_pidfd() to use the keyed wakeups.
+[snip]
 
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- kernel/fork.c | 22 +++++++---------------
- kernel/pid.c  |  5 +++++
- 2 files changed, 12 insertions(+), 15 deletions(-)
+>> I would like to replace this with the function graph tracer:
+>>
+>>   - record the probe function, configured over kernel command line
+>>     (The device indefinitely deferring probe is printed to the console,
+>>      so I know what I am looking for on the next boot)
+>>
+>>   - Dump the function graph trace
+>>
+>>   - See if the last call before (non-devm) cleanup is getting a clock, a GPIO,
+>>     a regulator or w/e.
+> 
+> What kind of information you prints by the printk()?
 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index b8c6ec9a08dd..8d08a2d1b095 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2071,20 +2071,6 @@ static void pidfd_show_fdinfo(struct seq_file *m, struct file *f)
- }
- #endif
- 
--static bool pidfd_task_exited(struct pid *pid, bool thread)
--{
--	struct task_struct *task;
--	bool exited;
--
--	rcu_read_lock();
--	task = pid_task(pid, PIDTYPE_PID);
--	exited = !task ||
--		(READ_ONCE(task->exit_state) && (thread || thread_group_empty(task)));
--	rcu_read_unlock();
--
--	return exited;
--}
--
- /*
-  * Poll support for process exit notification.
-  */
-@@ -2092,6 +2078,7 @@ static __poll_t pidfd_poll(struct file *file, struct poll_table_struct *pts)
- {
- 	struct pid *pid = file->private_data;
- 	bool thread = file->f_flags & PIDFD_THREAD;
-+	struct task_struct *task;
- 	__poll_t poll_flags = 0;
- 
- 	poll_wait(file, &pid->wait_pidfd, pts);
-@@ -2099,8 +2086,13 @@ static __poll_t pidfd_poll(struct file *file, struct poll_table_struct *pts)
- 	 * Depending on PIDFD_THREAD, inform pollers when the thread
- 	 * or the whole thread-group exits.
- 	 */
--	if (pidfd_task_exited(pid, thread))
-+	rcu_read_lock();
-+	task = pid_task(pid, PIDTYPE_PID);
-+	if (!task)
-+		poll_flags = EPOLLIN | EPOLLRDNORM | EPOLLHUP;
-+	else if (task->exit_state && (thread || thread_group_empty(task)))
- 		poll_flags = EPOLLIN | EPOLLRDNORM;
-+	rcu_read_unlock();
- 
- 	return poll_flags;
- }
-diff --git a/kernel/pid.c b/kernel/pid.c
-index e11144466828..62461c7c82b8 100644
---- a/kernel/pid.c
-+++ b/kernel/pid.c
-@@ -349,6 +349,11 @@ static void __change_pid(struct task_struct *task, enum pid_type type,
- 	hlist_del_rcu(&task->pid_links[type]);
- 	*pid_ptr = new;
- 
-+	if (type == PIDTYPE_PID) {
-+		WARN_ON_ONCE(pid_has_task(pid, PIDTYPE_PID));
-+		wake_up_all(&pid->wait_pidfd);
-+	}
-+
- 	for (tmp = PIDTYPE_MAX; --tmp >= 0; )
- 		if (pid_has_task(pid, tmp))
- 			return;
+Just littering around some:
+
+  pr_notice("%s:%d\n", __func__, __LINE__);
+
+to find where the probe function exits.
+
+> If the target (suspicious driver probe function) is obvious, you can use kprobe
+> event and tp_printk. Or, even if you don't know, if you are sure which function
+> is the starting/ending point, you can use bootconfig to record the specific part
+> of execution in the ring buffer, and dump it as Steve said.
+> 
+> In Documentation/trace/boottime-trace.rst, there is an example.
+> -----
+> With the trigger action and kprobes, you can trace function-graph while
+> a function is called. For example, this will trace all function calls in
+> the pci_proc_init()::
+> 
+>   ftrace {
+>         tracing_on = 0
+>         tracer = function_graph
+>         event.kprobes {
+>                 start_event {
+>                         probes = "pci_proc_init"
+>                         actions = "traceon"
+>                 }
+>                 end_event {
+>                         probes = "pci_proc_init%return"
+>                         actions = "traceoff"
+>                 }
+>         }
+>   }
+
+I get comparable tracing with the kernel command line, but lacked a way to dump
+it at boot-time. Sorry should have been clearer.
+
+Grepping the kernel source for `ftrace_func_command' lets me think that
+what I am after might be:
+
+  end_event {
+    actions = "traceoff", "dump"
+  }
+
+I need to try it out. Do you happen to know if the equivalent is possible
+without bootconfig?
+
+Thank you!
+Ahmad
+
+
+> -----
+> 
+> Thank you,
+> 
+>>
+>> For this to be maximally useful, I need to configure this not only at boot-time,
+>> but also dump the ftrace buffer at boot time. Probe deferral can hinder the kernel from
+>> calling init and providing a shell, where I could read /sys/kernel/tracing/trace.
+>>
+>> I found following two mechanisms that looked relevant, but seem not to
+>> do exactly what I want:
+>>
+>>   - tp_printk: seems to be related to trace points only and not usable
+>>     for the function graph output
+>>
+>>   - dump_on_oops: I don't get an Oops if probe deferral times out, but maybe
+>>     one could patch the kernel to check a oops_on_probe_deferral or dump_on_probe_deferral
+>>     kernel command line parameter in deferred_probe_timeout_work_func()?
+>>
+>>
+>> Is there existing support that I am missing? Any input on whether this
+>> would be a welcome feature to have?
+>>
+>> Thanks!
+>>
+>> Cheers,
+>> Ahmad
+>>     
+>> -- 
+>> Pengutronix e.K.                           |                             |
+>> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+>> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+>> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+>>  
+> 
+> 
+
 -- 
-2.25.1.362.g51ebf55
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 
