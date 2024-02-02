@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-50382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E97E847845
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 18C0D847848
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:49:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 038CE1F2F73F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:49:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0F8F1F2F851
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:49:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EC87134CCF;
-	Fri,  2 Feb 2024 18:40:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43B81134CF5;
+	Fri,  2 Feb 2024 18:40:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g1rBH88i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oRaBO2mb"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3302F13249D;
-	Fri,  2 Feb 2024 18:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73840134CD9;
+	Fri,  2 Feb 2024 18:40:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706899238; cv=none; b=R/eFA2th3EyG4sXwSE8JRZp0XfdzZ4qAs710ZNhlNRW1AREh+CTuNkeWhLu+sVSFO54ILwgNd8Hr90j6cLQZa3tAI9Mu1W6hOmnMhYvsFX5BNjm374SZCLLmc1ct5tiBatnKx5h4Wr+qLuRPdXKWWMQfBf3X+xbh22sDRHYeR58=
+	t=1706899239; cv=none; b=i+UrBTY3QgDqoNflMolmEeR2DW0iIgPDPjBCXtATNPVkwCRxM6/h7xL1M1jdo64Hun4AR1d1xxtUy6OTQrxvlNbZBFaMHFKX/3HEWVY3x3/Ep+daD6vp7ok3jRj/wCUPNo7LIpQDquLJ/jxIqi+h+gNWBKEqzO9znIgH0iOcakk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706899238; c=relaxed/simple;
-	bh=+DqmJrtQ5ijipvQMftzNqfUlSkyApmqR3NlAhKuNcfY=;
+	s=arc-20240116; t=1706899239; c=relaxed/simple;
+	bh=eZMy0rsC1O2myoC9DEfCEzi+FKFhOhwY9HAwgwyPxHA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XQw7qNBEpKTmmRKVEPdTGksZnV2yZJ2PPRbjM8eJa8ExwhnTMi0LHbu83V9ji8itsPMpjFo4XdZSfK/TZ4ueeCrCnFU+F9Pc9BeuDV2Xa7y78luCrRSNDtIbQv5wWbKzF0Ip47Yacsl3BNARu6PuOU74E+Y/mNxbDByu2oE9ViQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g1rBH88i; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26098C43394;
-	Fri,  2 Feb 2024 18:40:37 +0000 (UTC)
+	 MIME-Version; b=WKACk4P78sfPl3gvg33cVUUxhYTjlQ7+6Ry5gJ45WfYZrfqtGeenBY6TjQl6dh2H8hV0SQXZYg5XAIBJkL8y0UP33qduXQ+j+YXmC9X2RujJmCavSU6oa9wuL+x27OJ4o/ZyglqBsv13hk9jqKKi291GCvtNsnfdJr7at0Pbz10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oRaBO2mb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 667BCC433C7;
+	Fri,  2 Feb 2024 18:40:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706899238;
-	bh=+DqmJrtQ5ijipvQMftzNqfUlSkyApmqR3NlAhKuNcfY=;
+	s=k20201202; t=1706899239;
+	bh=eZMy0rsC1O2myoC9DEfCEzi+FKFhOhwY9HAwgwyPxHA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=g1rBH88iHB180OIhFyQ2Zco13UVPpPJ/+umEA6/BzXDptW/M+y83uggmYidJ7toDy
-	 2GXv8asyaVb7ywOr0F3dY3H4wr5Og3Wtstsl/RfAi3d6M+Il9c7zL9IFXB6vdCF2Qd
-	 8FsXzKnhTitTwSmGAodBRNQQUDMjAbY7vwOcVT9ffalK/il+hxI1FKpVUroBx8WK+S
-	 3KSpROGRzb0A+8fV4+24MpO6PDgKj3qiQhDXh8cpgtucVypYNBpfUlFmwVAOP0f1Sy
-	 8mbViX5Q8lI9fDITqvoy9srEeJSOUqcJwyvnkkbIvZS0QoQHsziJ2GjWPYb0zrpRIX
-	 AgrlJaJGkCM6Q==
+	b=oRaBO2mb9Q3flbCINhKaYt3prpJ5bFzYA/wzNdkfNHmWcTVTcVO5PZKNv6Nf74ze/
+	 EMtsnSnDSe/T6uNJjZ0i9jfUPfXy6tAKagnvQZgq22n2i8hAQpQrKg6g4GK/zHuOW7
+	 S796TBjdde7W6IFB8ioMSWwm2PBJ++v84uxcjS9xzsVEC6yDhWKaUxq8UJBnsZmsp2
+	 8nNVXvs5B9Mq7sjgUcqkxKOcaX3A/7C6RhaVnLS4VYR6MCniVFqAbO0HLH4TdKy3O7
+	 nijFTRgTbnBJHlnPVSfJIRiZUAsV/BYS3NizQBuuE2It3isnJWrgJCyelBAMlczO4J
+	 g5oSixiS0ZV0Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Conrad Kostecki <conikost@gentoo.org>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Niklas Cassel <cassel@kernel.org>,
+Cc: Maksim Kiselev <bigunclemax@gmail.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Jens Axboe <axboe@kernel.dk>,
 	Sasha Levin <sashal@kernel.org>,
-	dlemoal@kernel.org,
-	linux-ide@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 14/21] ahci: asm1166: correct count of reported ports
-Date: Fri,  2 Feb 2024 13:40:01 -0500
-Message-ID: <20240202184015.540966-14-sashal@kernel.org>
+	justin@coraid.com,
+	linux-block@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 15/21] aoe: avoid potential deadlock at set_capacity
+Date: Fri,  2 Feb 2024 13:40:02 -0500
+Message-ID: <20240202184015.540966-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240202184015.540966-1-sashal@kernel.org>
 References: <20240202184015.540966-1-sashal@kernel.org>
@@ -66,50 +66,73 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.15
 Content-Transfer-Encoding: 8bit
 
-From: Conrad Kostecki <conikost@gentoo.org>
+From: Maksim Kiselev <bigunclemax@gmail.com>
 
-[ Upstream commit 0077a504e1a4468669fd2e011108db49133db56e ]
+[ Upstream commit e169bd4fb2b36c4b2bee63c35c740c85daeb2e86 ]
 
-The ASM1166 SATA host controller always reports wrongly,
-that it has 32 ports. But in reality, it only has six ports.
+Move set_capacity() outside of the section procected by (&d->lock).
+To avoid possible interrupt unsafe locking scenario:
 
-This seems to be a hardware issue, as all tested ASM1166
-SATA host controllers reports such high count of ports.
+        CPU0                    CPU1
+        ----                    ----
+[1] lock(&bdev->bd_size_lock);
+                                local_irq_disable();
+                            [2] lock(&d->lock);
+                            [3] lock(&bdev->bd_size_lock);
+   <Interrupt>
+[4]  lock(&d->lock);
 
-Example output: ahci 0000:09:00.0: AHCI 0001.0301
-32 slots 32 ports 6 Gbps 0xffffff3f impl SATA mode.
+  *** DEADLOCK ***
 
-By adjusting the port_map, the count is limited to six ports.
+Where [1](&bdev->bd_size_lock) hold by zram_add()->set_capacity().
+[2]lock(&d->lock) hold by aoeblk_gdalloc(). And aoeblk_gdalloc()
+is trying to acquire [3](&bdev->bd_size_lock) at set_capacity() call.
+In this situation an attempt to acquire [4]lock(&d->lock) from
+aoecmd_cfg_rsp() will lead to deadlock.
 
-New output: ahci 0000:09:00.0: AHCI 0001.0301
-32 slots 32 ports 6 Gbps 0x3f impl SATA mode.
+So the simplest solution is breaking lock dependency
+[2](&d->lock) -> [3](&bdev->bd_size_lock) by moving set_capacity()
+outside.
 
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=211873
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218346
-Signed-off-by: Conrad Kostecki <conikost@gentoo.org>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Niklas Cassel <cassel@kernel.org>
+Signed-off-by: Maksim Kiselev <bigunclemax@gmail.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20240124072436.3745720-2-bigunclemax@gmail.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/ahci.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/block/aoe/aoeblk.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
-index 08745e7db820..2b8f0c3c3879 100644
---- a/drivers/ata/ahci.c
-+++ b/drivers/ata/ahci.c
-@@ -657,6 +657,11 @@ MODULE_PARM_DESC(mobile_lpm_policy, "Default LPM policy for mobile chipsets");
- static void ahci_pci_save_initial_config(struct pci_dev *pdev,
- 					 struct ahci_host_priv *hpriv)
- {
-+	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA && pdev->device == 0x1166) {
-+		dev_info(&pdev->dev, "ASM1166 has only six ports\n");
-+		hpriv->saved_port_map = 0x3f;
-+	}
+diff --git a/drivers/block/aoe/aoeblk.c b/drivers/block/aoe/aoeblk.c
+index cf6883756155..37eff1c97451 100644
+--- a/drivers/block/aoe/aoeblk.c
++++ b/drivers/block/aoe/aoeblk.c
+@@ -333,6 +333,7 @@ aoeblk_gdalloc(void *vp)
+ 	struct gendisk *gd;
+ 	mempool_t *mp;
+ 	struct blk_mq_tag_set *set;
++	sector_t ssize;
+ 	ulong flags;
+ 	int late = 0;
+ 	int err;
+@@ -395,7 +396,7 @@ aoeblk_gdalloc(void *vp)
+ 	gd->minors = AOE_PARTITIONS;
+ 	gd->fops = &aoe_bdops;
+ 	gd->private_data = d;
+-	set_capacity(gd, d->ssize);
++	ssize = d->ssize;
+ 	snprintf(gd->disk_name, sizeof gd->disk_name, "etherd/e%ld.%d",
+ 		d->aoemajor, d->aoeminor);
+ 
+@@ -404,6 +405,8 @@ aoeblk_gdalloc(void *vp)
+ 
+ 	spin_unlock_irqrestore(&d->lock, flags);
+ 
++	set_capacity(gd, ssize);
 +
- 	if (pdev->vendor == PCI_VENDOR_ID_JMICRON && pdev->device == 0x2361) {
- 		dev_info(&pdev->dev, "JMB361 has only one port\n");
- 		hpriv->saved_port_map = 1;
+ 	err = device_add_disk(NULL, gd, aoe_attr_groups);
+ 	if (err)
+ 		goto out_disk_cleanup;
 -- 
 2.43.0
 
