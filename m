@@ -1,115 +1,251 @@
-Return-Path: <linux-kernel+bounces-50105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 065D984744E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:12:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 72C41847454
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:12:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2326C1C25484
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:12:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 972441C253B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:12:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB4FB1474A5;
-	Fri,  2 Feb 2024 16:09:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7542C14AD04;
+	Fri,  2 Feb 2024 16:09:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P4aG5jaD"
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G7YvTGd6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BB281474A0;
-	Fri,  2 Feb 2024 16:09:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F3071474A1;
+	Fri,  2 Feb 2024 16:09:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706890142; cv=none; b=smyy5SyUPmls1IIplr5ikKksAZ0scmx7pc1CJ4sr2VjoODOc1UCOs4oRsdE997MPu921b6gcXBRoPfCtdD28v2fSLaKBg1lZSbPOG0jtsKAD4k/8T11MpxvQTbFvrJz5moTQr8YBdAojHQMMjOEtpniGxo5jftMXIGDzU/HXDEw=
+	t=1706890169; cv=none; b=R2wU+0c9w8JiE89whoLDVEZ87XVxNlNEksb09wpxz7wE43d9DYVCt0FEVTg/FP0TQnYWpf2qMI6Fq10m5lnS4enwXqpLVSq4zl1OYJlq4ofwRThX7SaMl1eYnLGT4/wNyYqED5loEMd4vRqUrtRGVSSJm86w1WtXNnm6+gpsCRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706890142; c=relaxed/simple;
-	bh=ObobwIusGY63NE/2MOWR+NbMWvgKu/d9ZjBL9g2lKRM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EOpYeOqPh6GQVZ3zgCPgFQwWaqB5Rtj39VqE78tyv4nsq9z8fJ6KfGPuezpDdCB/Pmy8LKKhcBoeK6kYFiFn0NgobP9njxaa+xcfaQIMnYx0d+SXbJCYR/11ACLJ2NY/dwkeuJjzExu3FQXK9y7u/HSU0Jycx7HFl9nJHV80lRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P4aG5jaD; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6041779e75eso24009227b3.3;
-        Fri, 02 Feb 2024 08:09:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706890139; x=1707494939; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ObobwIusGY63NE/2MOWR+NbMWvgKu/d9ZjBL9g2lKRM=;
-        b=P4aG5jaDyDYRpT+eVdAhqKTboEYgxtCcSFqFddMsR/tA4OfDmGLY5vqhusq0s5DLC9
-         Cg+jgJKUN25AAgBN9xRQp7uvSQiPR4dj1RGfaxL5Qybhh9g9+VEHl8E/9ZijgqZ60wF5
-         I+kWnwOqW9S3X62MeKqXQgJkY25bnnDCTfPUAYT0W/JFkZ1RDLUuq2UZWGtLckdZIT9a
-         gwB+ps0VwjoclkuWq6lGjjH0ghpUsNG9EGQ8YPFVIfk89OzuX1QnFWcUJkHYCVE6+RGU
-         FmdUggw8Ygjmdij6T/amKgnTpH+uoBGKKw2Usx05xbOhEgXHgG1kJZuojuNKtI86i7mU
-         1W3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706890139; x=1707494939;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ObobwIusGY63NE/2MOWR+NbMWvgKu/d9ZjBL9g2lKRM=;
-        b=qbD9G/Gt6DkkCUln5hyv8yKoKL++fXlOOf/djTNWE6YBWO+myS2Go1VoSLWhmC0Xm4
-         ZQbHxHm7mKk0E58FGrfPpkPJaaCj1z2FzxClNFc2G0uFhI6fy011GE1nXmCrQO0i0ONr
-         3TSCKjtQmX69r9GxQ/kvFkhUSvVPGXxhWlrK9Otyg/JMefzdy/yssnvYEAeb5R3QpOQz
-         L2oCBsmylfFtzA5hkv7iOMcEFqUpodvUCuHwMUzCWWTL9jVlRLXGF62R5aUlzK3BEoEY
-         JMucZ2SD73t43dhC0sgmC5j1dPZ2i9cfq6mevdCG6VIfs6ujIJWSyo/IXq61bLTbmY9W
-         T5OA==
-X-Gm-Message-State: AOJu0Yw7nq4Lbg++wqBtxDKPgsQDyU6QGLU+7LmL7WEiiyKK2ehtIMjj
-	Ibd4NOKJCXWOcNbkyVaKw4y5bAhEmlToN/2eeSkO3K/zAKKZvgSEsXWmvDFfBbOT6Lk6EFFmU1A
-	1ggu1a3P23H/fYtclu/VkU+8YtRc=
-X-Google-Smtp-Source: AGHT+IGMWWJJIsEQaIGhd3HotQ+QkJuC6kkshmtHK3UG+EVQsNgMHpDuOqo3DccHZuJCzl1gJq/ilLs/vZ/Z4MzkmfU=
-X-Received: by 2002:a81:441c:0:b0:5e8:92f9:46e8 with SMTP id
- r28-20020a81441c000000b005e892f946e8mr2730296ywa.30.1706890139331; Fri, 02
- Feb 2024 08:08:59 -0800 (PST)
+	s=arc-20240116; t=1706890169; c=relaxed/simple;
+	bh=JKjik19irTKxH29Yeweq9zfMl6xdzxEg/mcUMqTql/s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GKyFF+Mg7vUQTLzggEEE6HMcS+F2OOsqAZIAMqTi41StXh5tm5/aiQ4NHpFV7WYf3LOcd53ysqpxJK7wVXLZ0xd3q16HRtdSXc+k7mjptRrHsixkE8AYYz/m21jKOWLPR3Fq8OoHPRsEcsMMpShg4OfyVJvJXsKNQM7kjJjx5m4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G7YvTGd6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28503C43390;
+	Fri,  2 Feb 2024 16:09:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706890168;
+	bh=JKjik19irTKxH29Yeweq9zfMl6xdzxEg/mcUMqTql/s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=G7YvTGd6PqeZiR/6qwBVmTm6pnRj4NRc0t7Fe3yBdyiZueJYfHWnjr/WF33qsQ3NM
+	 9BkYwn4HAtLckhN4p+XA5NePJpResF+HzXgsnwJf6gnOIMUu7LTOypFH6JbL53mXJZ
+	 SSD5BOtTIJgyjm0c56PUA0Ayk/lu9aggST3FmdNxx7J5eEputg3mPURGBbkT0tQAPZ
+	 4CaU2c3foqmWduaXLmEuFxDK0Vif8gqBw0M23ydFLgO6qgSQmMP0iEZTtomVzA8nog
+	 fIun+LiASDvAXFh9yGnQxorH8bK4L9bDiZs+r6Xlgcvcm7nPX9rHVEQjXPwua2SvW2
+	 +mclvUQYrBzNA==
+Date: Fri, 2 Feb 2024 10:09:25 -0600
+From: Bjorn Andersson <andersson@kernel.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Alex Elder <elder@linaro.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>, Abel Vesa <abel.vesa@linaro.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
+	linux-pci@vger.kernel.org, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: Re: [RFC 2/9] arm64: dts: qcom: qrb5165-rb5: model the PMU of
+ the QCA6391
+Message-ID: <sdxnybvszlcfrjexc2fuqkozormhsrx6guauvnlozuh5c6poec@kj2wlb4tnbnz>
+References: <20240201155532.49707-1-brgl@bgdev.pl>
+ <20240201155532.49707-3-brgl@bgdev.pl>
+ <5lirm5mnf7yqbripue5nyqu6ej54sx4rtmgmyqjrqanabsriyp@2pjiv5xbmxpk>
+ <CAA8EJpp=gYhx6XKHNzyR5n8i7vg-MJXN5XJp4CPKZMYS5GBHvw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202101311.it.893-kees@kernel.org> <20240202101642.156588-2-keescook@chromium.org>
- <CANpmjNPPbTNPJfM5MNE6tW-jCse+u_RB8bqGLT3cTxgCsL+x-A@mail.gmail.com> <202402020405.7E0B5B3784@keescook>
-In-Reply-To: <202402020405.7E0B5B3784@keescook>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Fri, 2 Feb 2024 17:08:48 +0100
-Message-ID: <CANiq72ku9wsHtnPAh5G71Y_pbsftrPPyV5wmDCcZRM+WB6KVjA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/6] ubsan: Reintroduce signed and unsigned overflow sanitizers
-To: Kees Cook <keescook@chromium.org>
-Cc: Marco Elver <elver@google.com>, linux-hardening@vger.kernel.org, 
-	Justin Stitt <justinstitt@google.com>, Miguel Ojeda <ojeda@kernel.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Hao Luo <haoluo@google.com>, 
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Fangrui Song <maskray@google.com>, 
-	Masahiro Yamada <masahiroy@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
-	Bill Wendling <morbo@google.com>, Andrey Konovalov <andreyknvl@gmail.com>, 
-	Jonathan Corbet <corbet@lwn.net>, x86@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kbuild@vger.kernel.org, llvm@lists.linux.dev, linux-doc@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	kasan-dev@googlegroups.com, linux-acpi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA8EJpp=gYhx6XKHNzyR5n8i7vg-MJXN5XJp4CPKZMYS5GBHvw@mail.gmail.com>
 
-On Fri, Feb 2, 2024 at 1:17=E2=80=AFPM Kees Cook <keescook@chromium.org> wr=
-ote:
->
-> Perhaps I should hold off on bringing the unsigned sanitizer back? I was
-> hoping to work in parallel with the signed sanitizer, but maybe this
-> isn't the right approach?
+On Fri, Feb 02, 2024 at 06:59:48AM +0200, Dmitry Baryshkov wrote:
+> On Fri, 2 Feb 2024 at 06:34, Bjorn Andersson <andersson@kernel.org> wrote:
+> >
+> > On Thu, Feb 01, 2024 at 04:55:25PM +0100, Bartosz Golaszewski wrote:
+> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > >
+> > > Add a node for the PMU module of the QCA6391 present on the RB5 board.
+> > > Assign its LDO power outputs to the existing Bluetooth module. Add a
+> > > node for the PCIe port to sm8250.dtsi and define the WLAN node on it in
+> > > the board's .dts and also make it consume the power outputs of the PMU.
+> > >
+> > > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > > ---
+> > >  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 128 +++++++++++++++++++++--
+> > >  arch/arm64/boot/dts/qcom/sm8250.dtsi     |  10 ++
+> > >  2 files changed, 127 insertions(+), 11 deletions(-)
+> > >
+> > > diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> > > index cd0db4f31d4a..fab5bebafbad 100644
+> > > --- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> > > +++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> > > @@ -108,6 +108,87 @@ lt9611_3v3: lt9611-3v3 {
+> > >               regulator-always-on;
+> > >       };
+> > >
+> > > +     qca6390_pmu: pmu@0 {
+> > > +             compatible = "qcom,qca6390-pmu";
+> > > +
+> > > +             pinctrl-names = "default";
+> > > +             pinctrl-0 = <&bt_en_state>, <&wlan_en_state>;
+> > > +
+> > > +             vddaon-supply = <&vreg_s6a_0p95>;
+> > > +             vddpmu-supply = <&vreg_s2f_0p95>;
+> > > +             vddrfa1-supply = <&vreg_s2f_0p95>;
+> > > +             vddrfa2-supply = <&vreg_s8c_1p3>;
+> > > +             vddrfa3-supply = <&vreg_s5a_1p9>;
+> > > +             vddpcie1-supply = <&vreg_s8c_1p3>;
+> > > +             vddpcie2-supply = <&vreg_s5a_1p9>;
+> > > +             vddio-supply = <&vreg_s4a_1p8>;
+> > > +
+> > > +             wlan-enable-gpios = <&tlmm 20 GPIO_ACTIVE_HIGH>;
+> > > +             bt-enable-gpios = <&tlmm 21 GPIO_ACTIVE_HIGH>;
+> > > +
+> > > +             regulators {
+> > > +                     vreg_pmu_rfa_cmn: ldo0 {
+> > > +                             regulator-name = "vreg_pmu_rfa_cmn";
+> > > +                             regulator-min-microvolt = <760000>;
+> > > +                             regulator-max-microvolt = <840000>;
+> >
+> > I'm still not convinced that the PMU has a set of LDOs, and looking at
+> > your implementation you neither register these with the regulator
+> > framework, nor provide any means of controlling the state or voltage of
+> > these "regulators".
+> 
+> Please take a look at the description of VDD08_PMU_RFA_CMN and
+> VDD_PMU_AON_I pins in the spec (80-WL522-1, page 25). I'm not sure if
+> I'm allowed to quote it, so I won't. But the spec clearly describes
+> VDD_PMU_AON_I as 0.95V LDO input and VDD08_PMU_RFA_CMN as 0.8 LDO
+> output generated using that input. I think this proves that the
+> on-chip PMU has actual LDOs.
+> 
 
-If you can do anything to keep it in-tree, I think it would be nice so
-that others can easily use it to test the tooling and to start to
-clean up cases. A per-subsystem opt-in like Marco says could be a way,
-and you could perhaps do one very small subsystem or similar to see
-how it would look like.
+You're correct, thank you for the pointer and clarification. I now agree
+with you, the PMU consumes what I saw as the chip input supplies, and
+based on WL_EN and BT_EN will provide power on pads, which are then
+externally routed to respective block.
 
-Something that could also help would be to split the cases even
-further (say, only overflows and not underflows), but is that a
-possibility with the current tooling?
+> I must admit, I find this representation very verbose, but on the
+> other hand Bartosz is right, it represents actual hardware.
 
-Thanks for working on this, Kees!
+I agree, this is actual hardware.
 
-Cheers,
-Miguel
+> Maybe we
+> can drop some of the properties of corresponding regulator blocks, as
+> we don't actually need them and they are internal properties of the
+> hardware.
+> 
+
+To me this really looks like a fancy "regulator-fixed" with multiple
+inputs, two gpios and multiple outputs.
+
+This would also imply that we don't need to invent the power sequence
+framework to tie WiFi and BT to the PMU's state.
+
+The PMU is a thing, so we can represent that in DeviceTree, it consumes
+M input power rails, and two gpios, it provides N WiFi supplies and O BT
+supplies (with some overlap between N and O). The WiFi node consumes its
+N supplies, the BT node consumes its O supplies.
+
+If any of the N regulators are requested enabled the qca6390-pmu driver
+enables all M input rails, then enables WL_EN. If any of the O BT
+regulators are requested enabled, the driver enables all M input rails,
+then enables BT_EN.
+
+> >
+> > [..]
+> > >
+> > >  &uart6 {
+> > > @@ -1311,17 +1418,16 @@ &uart6 {
+> > >       bluetooth {
+> > >               compatible = "qcom,qca6390-bt";
+> > >
+> > > -             pinctrl-names = "default";
+> > > -             pinctrl-0 = <&bt_en_state>;
+> > > -
+> > > -             enable-gpios = <&tlmm 21 GPIO_ACTIVE_HIGH>;
+> > > -
+> > > -             vddio-supply = <&vreg_s4a_1p8>;
+> > > -             vddpmu-supply = <&vreg_s2f_0p95>;
+> > > -             vddaon-supply = <&vreg_s6a_0p95>;
+> > > -             vddrfa0p9-supply = <&vreg_s2f_0p95>;
+> > > -             vddrfa1p3-supply = <&vreg_s8c_1p3>;
+> > > -             vddrfa1p9-supply = <&vreg_s5a_1p9>;
+> > > +             vddrfacmn-supply = <&vreg_pmu_rfa_cmn>;
+> > > +             vddaon-supply = <&vreg_pmu_aon_0p59>;
+> > > +             vddwlcx-supply = <&vreg_pmu_wlcx_0p8>;
+> > > +             vddwlmx-supply = <&vreg_pmu_wlmx_0p85>;
+> > > +             vddbtcmx-supply = <&vreg_pmu_btcmx_0p85>;
+> > > +             vddrfa0-supply = <&vreg_pmu_rfa_0p8>;
+> > > +             vddrfa1-supply = <&vreg_pmu_rfa_1p2>;
+> > > +             vddrfa2-supply = <&vreg_pmu_rfa_1p7>;
+> > > +             vddpcie0-supply = <&vreg_pmu_pcie_0p9>;
+> > > +             vddpcie1-supply = <&vreg_pmu_pcie_1p8>;
+> >
+> > As I asked before, why does bluetooth suddenly care about PCIe supplies?
+> 
+> Power sequencing in the same spec describes that PCIe voltages should
+> be up even if only BT is being brought up. PMU itself handles
+> distributing voltages according to the actual load needs.
+> 
+
+You're right, the power sequence diagram in the docs do indicate that
+VDD13_PMU_PCIE_I and VDD19_PMU_PCIE_I should be enabled before either
+WL_EN or BT_EN are driven high.
+
+But I don't see anything stating that the output from the PMU
+(VDD09_PMU_PCIE) in turn is fed to the bluetooth block.
+
+Regards,
+Bjorn
+
+> >
+> > Regards,
+> > Bjorn
+> >
+> > >       };
+> > >  };
+> > >
+> > > diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> > > index 4d849e98bf9b..7cd21d4e7278 100644
+> > > --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> > > +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> > > @@ -2203,6 +2203,16 @@ pcie0: pcie@1c00000 {
+> > >                       dma-coherent;
+> > >
+> > >                       status = "disabled";
+> > > +
+> > > +                     pcieport0: pcie@0 {
+> > > +                             device_type = "pci";
+> > > +                             reg = <0x0 0x0 0x0 0x0 0x0>;
+> > > +                             #address-cells = <3>;
+> > > +                             #size-cells = <2>;
+> > > +                             ranges;
+> > > +
+> > > +                             bus-range = <0x01 0xff>;
+> > > +                     };
+> > >               };
+> > >
+> > >               pcie0_phy: phy@1c06000 {
+> > > --
+> > > 2.40.1
+> > >
+> >
+> 
+> 
+> -- 
+> With best wishes
+> Dmitry
 
