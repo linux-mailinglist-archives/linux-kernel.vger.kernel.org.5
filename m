@@ -1,167 +1,107 @@
-Return-Path: <linux-kernel+bounces-49606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A402846CFB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:53:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C66A846D1C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:58:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDB1DB2A3C3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:46:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11178B2F442
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:47:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 563D078695;
-	Fri,  2 Feb 2024 09:43:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="Jt1vo41j"
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA7C47C087;
+	Fri,  2 Feb 2024 09:44:17 +0000 (UTC)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDEFD7867F
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:43:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6607A730;
+	Fri,  2 Feb 2024 09:44:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706866997; cv=none; b=AzzP7YUDg02KaRaQ0VGI9QZ+GpUr7F1VRvQCVA3DDhSdnlR1uWsEoJ3i5lKjYevHEurtzaD2ThIWXW60T3Fkni4rS4vRMo59uvaiG1lF2s6JUhBIhYqEh7qh87wRVy054ALJs9KuHOHP+qM19t+iErrxkkPG01EtyJok9BFD64Q=
+	t=1706867057; cv=none; b=E9lOrGqqoik4OlmrdpnGoIQLZr/hY3jp8HqNPAJX4fbDMpZmT4QYxC4+uSFdL4olSBrifWhv9vjJqrgjWhbEMk8vzmeD4NUDrdOa7PqvdeVXVj8Owy20ovf0naRBbJqLclh2xNalgHJYwG2ZureMoCE/0jPskmeaK3mYfyFcCFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706866997; c=relaxed/simple;
-	bh=h0+hTxbC3i/e2mNDlG8OP8hBEcIbgKN2p3ReU8m6Jq4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type:
-	 References; b=lEA0U3nCNqEAhC2iCmSecLd4nOrZCzOPmLPeCZi8L5xLXWSgn5xKG6NPBeuM5AM+DxT2nOAI0qORFAYmJmtSxultYizsPlIzUBIqRVmSBqPVvoYNb7dhBv/LZrEa2y8obIBVgDQ/wPCJc+6gc7yJFePSjJcpvEmKKjO5wkS/VTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=Jt1vo41j; arc=none smtp.client-ip=210.118.77.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240202094307euoutp01a9c1aa49515a07ee26466784aaef8845~wAntE_Ejt0690106901euoutp017
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:43:07 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240202094307euoutp01a9c1aa49515a07ee26466784aaef8845~wAntE_Ejt0690106901euoutp017
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1706866987;
-	bh=axH9rp1XzowN5Ts+jZdt6sEzxE9S8CWrn90hD1cZ2PY=;
-	h=From:To:Cc:Subject:Date:References:From;
-	b=Jt1vo41jRaAF58swLBeO3SoekqCTRSK9vT/tVCYqIL+6P0Gblpm5X2O4+AdD9VbPQ
-	 VosrBFCXEq8aERUCkQAGa5N3EmXfQ7IREzSX5T0PaPEja5f/eDpc3AqrhcrblT87mW
-	 jUzH7NGcVYklgslDoSlyWOSO0T77PhpkZk5JbIMI=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-	20240202094306eucas1p2bbdf8cad9ce00432599a9c4fdbc4a1be~wAnsqImw_2034520345eucas1p21;
-	Fri,  2 Feb 2024 09:43:06 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-	eusmges2new.samsung.com (EUCPMTA) with SMTP id AF.F4.09814.A29BCB56; Fri,  2
-	Feb 2024 09:43:06 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240202094306eucas1p2232e5a440da112a5864d7bea83ac2e25~wAnsLoBgR0333603336eucas1p2j;
-	Fri,  2 Feb 2024 09:43:06 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240202094306eusmtrp2c678e2ef96f6fc4c3e1a5ce19d8d7770~wAnsKgGQe1936519365eusmtrp2K;
-	Fri,  2 Feb 2024 09:43:06 +0000 (GMT)
-X-AuditID: cbfec7f4-727ff70000002656-d3-65bcb92a00c7
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id 49.61.09146.A29BCB56; Fri,  2
-	Feb 2024 09:43:06 +0000 (GMT)
-Received: from AMDC4653.digital.local (unknown [106.120.51.32]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240202094305eusmtip148afa28ecd6a7bc0c47560a47a43221a~wAnrRJxTY1680716807eusmtip1i;
-	Fri,  2 Feb 2024 09:43:05 +0000 (GMT)
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>, Russell King
-	<linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven
-	<geert+renesas@glider.be>, Krzysztof Kozlowski
-	<krzysztof.kozlowski@linaro.org>, Alexandre Torgue
-	<alexandre.torgue@foss.st.com>, Andrew Davis <afd@ti.com>, Mark Brown
-	<broonie@kernel.org>, Lee Jones <lee@kernel.org>, Daniel Thompson
-	<daniel.thompson@linaro.org>, Jingoo Han <jingoohan1@gmail.com>, David
-	Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Subject: 
-Date: Fri,  2 Feb 2024 10:43:00 +0100
-Message-Id: <20240202094300.1875944-1-m.szyprowski@samsung.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706867057; c=relaxed/simple;
+	bh=Bf+4ZbsD/KaLOEcg0A2at4EAsFDvJn42PNtErzLoa6s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h8/yu/V7ll8IPnHmdXbN2s/rttYGsKJGjuna7GRjM/lYST0rHP/slHcHy7ufh7TlpBiSlafN+fbPAWCq064H+WpWdVq2783Y9ZdLWk49aoSoIfWjkVGunqsGGssanNl6L6WbgQIXimSgKPABCu7prwYc1e9iES8k+kWFI3toRZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1rVq5W-0092Ed-PT; Fri, 02 Feb 2024 17:43:59 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 02 Feb 2024 17:44:12 +0800
+Date: Fri, 2 Feb 2024 17:44:12 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Akhil R <akhilrajeev@nvidia.com>
+Cc: davem@davemloft.net, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	thierry.reding@gmail.com, jonathanh@nvidia.com,
+	catalin.marinas@arm.com, will@kernel.org, mperttunen@nvidia.com,
+	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+	krzk@kernel.org
+Subject: Re: [PATCH v4 3/5] crypto: tegra: Add Tegra Security Engine driver
+Message-ID: <Zby5bLEgz/UktarE@gondor.apana.org.au>
+References: <20240124083846.46487-1-akhilrajeev@nvidia.com>
+ <20240124083846.46487-4-akhilrajeev@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKKsWRmVeSWpSXmKPExsWy7djPc7paO/ekGux5oG3x/tREdosT1xcx
-	Wfx8OY3R4u+kY+wWUx8+YbM48+Yuu8X/bROZLa58fc9mMXf2JEaLFV9mslvsfb2V3WJH20IW
-	i02Pr7FaXN41h83i0NS9jBZrj9xldxDwuHztIrPH71+TGD32flvA4vG0fyu7x8Szuh47Z91l
-	99i0qpPN4861PWwe97uPM3lsXlLv0bdlFaPH8RvbmTw+b5IL4I3isklJzcksSy3St0vgyrhy
-	ZwJjwTuuipXz3zA2MK7h7GLk5JAQMJF4vuAHYxcjF4eQwApGidenvkM5Xxgl7j+8ywRSJSTw
-	mVFiZ3cATMeth2/ZIIqWM0r82bqCDa5j/Zxr7CBVbAKGEl1vu9hAbBGBTIntS86wgBQxCzSz
-	SPw9N5cZJCEswCmxqfs8WAOLgKrE3xnvWEBsXgF7icnPj7FArJOX2H/wLDNEXFDi5MwnYHFm
-	oHjz1tnMIEMlBGZzSuy8v4K1i5EDyHGRWLRDGaJXWOLV8S3sELaMxP+d85kg6tsZJRb8vg/l
-	TGCUaHh+ixGiylrizrlfbCCDmAU0Jdbv0ocIO0psfvyQHWI+n8SNt4IQN/BJTNo2nRkizCvR
-	0SYEUa0mMev4Ori1By9cYoawPSTav3+FhmisxNS1ixknMCrMQvLZLCSfzUK4YQEj8ypG8dTS
-	4tz01GKjvNRyveLE3OLSvHS95PzcTYzAlHj63/EvOxiXv/qod4iRiYPxEKMEB7OSCO9KuZ2p
-	QrwpiZVVqUX58UWlOanFhxilOViUxHlVU+RThQTSE0tSs1NTC1KLYLJMHJxSDUyRC23vrcgJ
-	3+iwi2P+SvbvcuvXdT82+yi25UnS1ifcf9hvmv3udtVflrJJLfOShEbaAsdl/L1mkXufsczi
-	Eaw93ut26/8ypZYksW/VUf3SjUJxlfoZNd86G+J+HHmkYPy/fnLkSkdv63kv3zBZPY//2VV2
-	s29nf9PVna6GVbxb9qpYX3wpkbvpRvy5fwb73sQcLt3iqC1h9ntP2M6JsbkfXs0RXRK+tMLz
-	07+HR9X3J7lnf3jza2PCYW73N+LlR3oM7oslvJ/StO2Vqs4isyXmMf+y1CP/BE9+7N+RH/yo
-	1vv9rLB/gve+s6gteRE8b/+FGb13zCM/l59lOu3W8FVT7BJ7TfeFe4u7vDcyVvYrsRRnJBpq
-	MRcVJwIAs7F7UPgDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDIsWRmVeSWpSXmKPExsVy+t/xu7paO/ekGlx7zGXx/tREdosT1xcx
-	Wfx8OY3R4u+kY+wWUx8+YbM48+Yuu8X/bROZLa58fc9mMXf2JEaLFV9mslvsfb2V3WJH20IW
-	i02Pr7FaXN41h83i0NS9jBZrj9xldxDwuHztIrPH71+TGD32flvA4vG0fyu7x8Szuh47Z91l
-	99i0qpPN4861PWwe97uPM3lsXlLv0bdlFaPH8RvbmTw+b5IL4I3SsynKLy1JVcjILy6xVYo2
-	tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcksSy3St0vQy7hyZwJjwTuuipXz3zA2MK7h7GLk
-	5JAQMJG49fAtWxcjF4eQwFJGib/ru1kgEjISJ6c1sELYwhJ/rnVBFX1ilPiw6SwbSIJNwFCi
-	620XmC0ikC3xZ+MVFpAiZoFeFokTj5YwgySEBTglNnWfZwexWQRUJf7OeAe2gVfAXmLy82NQ
-	2+Ql9h88ywwRF5Q4OfMJWJwZKN68dTbzBEa+WUhSs5CkFjAyrWIUSS0tzk3PLTbUK07MLS7N
-	S9dLzs/dxAiMxm3Hfm7ewTjv1Ue9Q4xMHIyHGCU4mJVEeFfK7UwV4k1JrKxKLcqPLyrNSS0+
-	xGgKdN9EZinR5HxgOsgriTc0MzA1NDGzNDC1NDNWEuf1LOhIFBJITyxJzU5NLUgtgulj4uCU
-	amASnXLFYbPTZt4nE9bbsMyZtrcvgN0kd7Vvyb3JQrbJjIEf5tvMiTb7uCqST3vudc5bk6r7
-	/vrkp4XxiJ2LeSJ1Q8jl9v4qNeEn76IFuo/b1H5ttn4s9yVzn/Qcbx0uZvnHvN+cl8lsvPpm
-	3q4/rxO3TFD95dWfw3hGV27jje6gmcdfRh+e0rlt7a9We4HnDr96tnNphf8oKLYQEZ7bdnLL
-	XzkOyTSfuhnPdZXUOw9F9lb9iJEpbgtTmjHDz/L/LjfpjqxfpzTnrMtsq+/o3affsugzq3aU
-	71GPL1elOcNlTiet8tvBcbs23rH234YoIYep759dquKY+0DeXGNSd6pd5LS7Bqmn75hstXRO
-	f6bEUpyRaKjFXFScCAChw1KETwMAAA==
-X-CMS-MailID: 20240202094306eucas1p2232e5a440da112a5864d7bea83ac2e25
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20240202094306eucas1p2232e5a440da112a5864d7bea83ac2e25
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240202094306eucas1p2232e5a440da112a5864d7bea83ac2e25
-References: <CGME20240202094306eucas1p2232e5a440da112a5864d7bea83ac2e25@eucas1p2.samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240124083846.46487-4-akhilrajeev@nvidia.com>
 
-Subject: [PATCH] ARM: multi_v7_defconfig: Enable BACKLIGHT_CLASS_DEVICE
+On Wed, Jan 24, 2024 at 02:08:44PM +0530, Akhil R wrote:
+>
+> +static void tegra_sha_init_fallback(struct tegra_sha_ctx *ctx, const char *algname)
+> +{
+> +	ctx->fallback_tfm = crypto_alloc_ahash(algname, 0, CRYPTO_ALG_ASYNC |
+> +						CRYPTO_ALG_NEED_FALLBACK);
+> +
+> +	if (IS_ERR(ctx->fallback_tfm)) {
+> +		dev_warn(ctx->se->dev, "failed to allocate fallback for %s %ld\n",
+> +			 algname, PTR_ERR(ctx->fallback_tfm));
+> +		ctx->fallback_tfm = NULL;
+> +	}
+> +}
 
-Commit 72fee6b0a3a4 ("fbdev: Restrict FB_SH_MOBILE_LCDC to SuperH")
-disabled availablity of the SH_MOBILE_LCDC driver on the RENESAS arch.
-This innocent change has a significant side-effect on the ARM's
-multi_v7_defconfig, because FB_BACKLIGHT symbol is no longer selected,
-what in turn leaves BACKLIGHT_CLASS_DEVICE symbol selected only as
-a module. The latter disables some backlight related code in the DRM
-core, because the DRM core is set to be compiled-in in this defconfig.
-This leaves all DRM display panels without integrated backlight control,
-even if the needed modules have been properly loaded and probed.
+This should check that the fallback state size is smaller than
+that of tegra.  As otherwise the fallback export/import will break.
 
-Fix this by selecting BACKLIGHT_CLASS_DEVICE to be compiled-in in
-multi_v7_defconfig.
+> +static int tegra_sha_import(struct ahash_request *req, const void *in)
+> +{
+> +	struct tegra_sha_reqctx *rctx = ahash_request_ctx(req);
+> +	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
+> +	struct tegra_sha_ctx *ctx = crypto_ahash_ctx(tfm);
+> +	int i;
+> +
+> +	if (ctx->fallback)
+> +		return tegra_sha_fallback_import(req, in);
+> +
+> +	memcpy(rctx, in, sizeof(*rctx));
+> +
+> +	/* Paste all intermediate results */
+> +	for (i = 0; i < HASH_RESULT_REG_COUNT; i++)
+> +		writel(rctx->result[i],
+> +		       ctx->se->base + ctx->se->hw->regs->result + (i * 4));
 
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
----
- arch/arm/configs/multi_v7_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+What happens when multiple requests of the same tfm import at
+the same time?  Normally we don't actually touch the hardware
+in the import function.  Instead, all the hard work happens at
+the end of the update function, which moves hardware state into
+the request object.
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index 8f7445729cd0..b2955dcb5a53 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -777,6 +777,7 @@ CONFIG_FB_EFI=y
- CONFIG_FB_WM8505=y
- CONFIG_FB_SH_MOBILE_LCDC=y
- CONFIG_FB_SIMPLE=y
-+CONFIG_BACKLIGHT_CLASS_DEVICE=y
- CONFIG_BACKLIGHT_PWM=y
- CONFIG_BACKLIGHT_AS3711=y
- CONFIG_BACKLIGHT_GPIO=y
+The import/export function then simply copies the request object
+state to the in/out buffer.
+
+Cheers,
 -- 
-2.34.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
