@@ -1,129 +1,143 @@
-Return-Path: <linux-kernel+bounces-49913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A78A84714F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:39:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4D0084714D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:39:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25FB52843EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:39:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 151341C2758E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:39:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAD4B47781;
-	Fri,  2 Feb 2024 13:39:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 922394778B;
+	Fri,  2 Feb 2024 13:39:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="KiiExzXL"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EkPKUEK/"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B48A46B9A;
-	Fri,  2 Feb 2024 13:39:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 885E4210FE;
+	Fri,  2 Feb 2024 13:39:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706881182; cv=none; b=tOS/1Nvdo9as0jjh+gCHLqQ6VSnb8RkIuMiOOMLcIlv1gS/B/jR62DGOFznioGaxDpX1miQEStpVFMORz4sWg7wcWaPQocKcX1MzheX96A511n1a1uaA2iNVEraMXQFCYT2CuBvFVKlPMQzyjO3Vk0QJ5VhNkvLhd7sOmYHLPos=
+	t=1706881160; cv=none; b=o1wEbZwoGI0TQmiUjrJ83iIf7iZ6nF9E51Rbs0Zcd19oRx1YTzMQwaEeOZ2gDwckvSnChJ8T+i2sLbWvWuOQ2yM2C6gX/CV9UQimaWmEpGj/ey18mpgpgCy4u0HKuJ/n+rk2DQjixsUL0iUuKFU3gkiRYks8sf6nYS0GS/MmIrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706881182; c=relaxed/simple;
-	bh=miDAUqH++egcoxWAD5wW30DmvWxqjaeshiXLXeM5glY=;
+	s=arc-20240116; t=1706881160; c=relaxed/simple;
+	bh=jAZS6kQqC7iWRNRHd05hlbPihlq3lcnIBzvwAd+MfLk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TzR32TAD+ogAImLtdzEbmFY3l+tYEpciqreUG29Gf6DKDLZcvq+gxgzY2zyIVxgBvrlhChooCWNB9q1lMBluko1p34rAJB2GHd7P77dwH4F3qMVk0H1NhdXa1Vji+ufEc3Bt7gq2wZbZLfy7blgniqfKCdUCpEp7KOXCxVv2pBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=KiiExzXL; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B7DF740E01A2;
-	Fri,  2 Feb 2024 13:39:36 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id uci-jhhF5SNC; Fri,  2 Feb 2024 13:39:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706881173; bh=i41MKt90HCy/J6mZcV7OB0Wu4vTJEn+w5XEKHKNjBAM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KiiExzXLJY4+AspZZQa0Av26b2H8HFzHlmtkPc/0vs3Q33lr2CivSmBLYVAwvoTN2
-	 rxdQq9xq/zktgGVr7XpYMFHB+zptXlm7E+L/Sw8ToT7duFQCmALMqZLhP4Beokw4uO
-	 Jg97HZ0IDCzAIw4j8MkrHx2o1iaVpRQufanVh/ia0J3IBa9RxqdMK74Xd1NtDIl54N
-	 jvIWUxk5sxX6IwGs4+PhEHuwFbWbFt9n383ROsRBuLk70IZssOk1JHYK8tmCyoWIlR
-	 xtMLpRxJP2hNFD5m3I+iyvWuZlsdnPz+Hs5jC+o/Z58TM05iEZnzRGMt7NH352O7UZ
-	 uDcgei3r65O9ZwTTNSTT3ETGmaXktkUT+vwFVbgZdVPMAYyJwp03ZSTMTU8g3AULB5
-	 ZQw/Zk1Pq09G2gdhTTJDe/d5Eqb9DNtbVAspzxIlQYDA2klONS9fssRqLCigoRBiug
-	 xadCEFvVJ2XegD11ZH3/M4Di+8/kCmwnJjx+gh/jB5E3D7xacBNYMriVUs/ZvG1xDo
-	 pBRblQhKOCN7Ds7hK4mHVt6hK1dY2UU5eZeH7hn19sjBqRs7LI3pwhIwgp+e086Mp/
-	 0g3MWRpmI3iGTue+P8O6/aXow+C0F4F7LTVeaXQeYUakyI0AXak8Y4XmRlVQl3g3aB
-	 Zr69JeKncVzcY6dm/LXlM0Yw=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AC6BE40E016C;
-	Fri,  2 Feb 2024 13:39:17 +0000 (UTC)
-Date: Fri, 2 Feb 2024 14:39:11 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Tong Tiangen <tongtiangen@huawei.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	wangkefeng.wang@huawei.com,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Naoya Horiguchi <naoya.horiguchi@nec.com>,
-	linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-	linux-mm@kvack.org, Guohanjun <guohanjun@huawei.com>
-Subject: Re: [PATCH -next v4 2/3] x86/mce: rename MCE_IN_KERNEL_COPYIN to
- MCE_IN_KERNEL_COPY_MC
-Message-ID: <20240202133911.GBZbzwf-M37M-J3EJX@fat_crate.local>
-References: <20240111135548.3207437-1-tongtiangen@huawei.com>
- <20240111135548.3207437-3-tongtiangen@huawei.com>
- <20240131070258.GGZbnwov0g918F-FGz@fat_crate.local>
- <3009aadd-69d6-c797-20b4-95cf926b6dd9@huawei.com>
- <20240201142016.GFZbuooG9CRoK90U2C@fat_crate.local>
- <39c1e4d2-b1d0-91ae-595e-1add4698dd7f@huawei.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=aP884BZ/8R3qSFPpZLwHuBpnA2lii3jnIfHTSNAQkGIujJIvoT3d9jEIohswNWLi4VHJm4s/1lGyi0nHvU2RB2qSw4mrMVfZdnytp3dX8YFOHcZDNCjUbu8CQ5YJAV+rvNTaWmfsGhxyDX/XD9o/JGF77k5CPzPGRWt/rUvFJPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EkPKUEK/; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d7354ba334so18008945ad.1;
+        Fri, 02 Feb 2024 05:39:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706881159; x=1707485959; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YBhDobq9w/DAQfNUSCc6FsdphQ197GjWcooXtvaTzM0=;
+        b=EkPKUEK/Am3QxorhJDHGhkzQkhqJ/nXjSORQU+6w74LA8Odgs52cFjilyCAVHmUH0B
+         IwQaQwHhTyDRLOChmYWCQBHUuSs5KLrC7AVr6NaRsuYZxZ9gWqnFpyMl+T6tU/RoPjZm
+         vWXpqIY6BxMs+jnkvmBhiiifUTaaNRMOWOVLPf7sRwMcx2q1buBat/G5HZmx6d9/Y2zB
+         X0T5090bFxOnAt57rbTryeeUVtk+ATHyW0MvtD3qDgKpAcWwBRYv+olwRZyoVZiGFuZf
+         ENgDC9NvehYbDECPXJAC8/a2WxKxAC+45mat5PdOdUvCYT4UYgvs4v5z1iggQm0tFd6Z
+         7Xww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706881159; x=1707485959;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YBhDobq9w/DAQfNUSCc6FsdphQ197GjWcooXtvaTzM0=;
+        b=Zg5JId6SgJ8Ah5HjnV8m/5PBxsezw7jbE4Y2OMdiDrN29EYaqEd9MgqN/dI7s9NdkI
+         bZm/IyhZPH0/jkYY/s954b1G/YjyBqjReNNLUsUCXejQVLJtStiL56WmjKLWTg/iMRtL
+         AxEIzjGepbRSwjHP1HGOtEy97XlSs/itXe9FACNOAGRDECDhDPYuCvOGrQF38c/8D32/
+         AbRfgZin7tL9CQilfkgcKv9guEFER84M377DkjFnDQep39+uSEW9JshMqubz89cCyu69
+         5btJY+xbHEKlHlmY9cPPD5EXLP9pUjr3onWOUA4uLe5ZRlH9YZuwxY0m11kZeg4gTyeW
+         8nbw==
+X-Gm-Message-State: AOJu0YynaO1h3JAMJILFRY3w72Dw9a/96o7PaTYGl5WW5iDP20HBn6qa
+	P92NWdE0VevqMLh1r5fGG3f+Ph0p0Xw20RhLs/blHRES2FV69Yie
+X-Google-Smtp-Source: AGHT+IFVLX293B7sI5qgfo1DA7afu/pZSCek1vgU1NT6b+uUAZ4XDMVBNMCyipcfSN/NHGqidzcOsQ==
+X-Received: by 2002:a17:902:e548:b0:1d8:d56e:5dee with SMTP id n8-20020a170902e54800b001d8d56e5deemr11059423plf.1.1706881158766;
+        Fri, 02 Feb 2024 05:39:18 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUh9yCMNH0gDFH9awgcYOWNYBe8pMhV21EndijaIectbLofwMp4+h8gAr7Ktd+qxv2HYRJhLIUEhnyNzJGGP9BYRu+ivJHdoGfcHt/bGBbFvy1jf7so1Al5rcIxiz/RuSJkpTY0wflHUXuTBPHbcirLIHNwCrm4PjS4fEv8vmRVWqY7jmfF5EUIMf8Pp8pS0TIsXqd8PcZh83sUMpjED/QxwAdF9ge5USB7HrXr5Tto76V6zH13mflLcf7PQT/KwAG/dm2t3B4mtPwJl4foVmtzTayCKFat+l+/nK9rHYkz1IdZT79tU2zQ400=
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id ji17-20020a170903325100b001d70c6d40f3sm1589059plb.237.2024.02.02.05.39.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 05:39:17 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id 72512180F4986; Fri,  2 Feb 2024 20:39:14 +0700 (WIB)
+Date: Fri, 2 Feb 2024 20:39:14 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: =?utf-8?Q?Micha=C5=82?= Jakubowski <kajanos@gmail.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Networking <netdev@vger.kernel.org>,
+	Linux RDMA <linux-rdma@vger.kernel.org>, shravankr@nvidia.com
+Subject: Re: Kernel - 6.7.3 - failed to compile the module
+Message-ID: <ZbzwgtGUHK2Dj5eo@archie.me>
+References: <CAHOGJipx37tUoiSp87Np4b0qzREj60+FEkdi_0X0_JoQW8cYeA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="2H0O5bwuegTRqnJ6"
+Content-Disposition: inline
+In-Reply-To: <CAHOGJipx37tUoiSp87Np4b0qzREj60+FEkdi_0X0_JoQW8cYeA@mail.gmail.com>
+
+
+--2H0O5bwuegTRqnJ6
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <39c1e4d2-b1d0-91ae-595e-1add4698dd7f@huawei.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 02, 2024 at 03:51:12PM +0800, Tong Tiangen wrote:
-> Currently, there are some kernel memory copy scenarios is also mc safe
-> which use copy_mc_to_kernel() or copy_mc_user_highpage(), these kernel-
-> to-kernel copy use fixup_type EX_TYPE_DEFAULT_MCE_SAFE. In these
-> scenarios, posion pages need to be isolated too and the current
+[also Cc: mellanox maintainers]
 
-So you have, for example:
+On Fri, Feb 02, 2024 at 08:55:47AM +0100, Micha=C5=82 Jakubowski wrote:
+> Regarding: https://bugzilla.kernel.org/show_bug.cgi?id=3D218445
+>=20
+>   CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp1_execut=
+ion.o
+>   CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp1_transi=
+tion.o
+>   CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp2_execut=
+ion.o
+>   CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp2_transi=
+tion.o
+>   LD [M]  drivers/gpu/drm/amd/amdgpu/amdgpu.o
+>   MODPOST Module.symvers
+> ERROR: modpost: "sched_numa_hop_mask"
+> [drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko] undefined!
+> make[2]: *** [scripts/Makefile.modpost:145: Module.symvers] Error 1
+> make[1]: *** [/usr/src/linux-6.7.3-gentoo/Makefile:1863: modpost] Error 2
+> make: *** [Makefile:234: __sub-make] Error 2
 
-  unsigned long __must_check copy_mc_to_kernel(void *dst, const void *src, unsigned len)
+Do you have above build failure on vanilla v6.7.3? Can you also check curre=
+nt
+mainline (v6.8-rc2)?
 
-Now imagine you get a MCE for *dst which is some kernel page which
-cannot be poisoned: direct map, kernel text, and so on.
+Thanks.
 
-Attempting to poison such a page would not work, to put it mildly.
+--=20
+An old man doll... just what I always wanted! - Clara
 
-So, again, what *exactly* are you "fixing" here?
+--2H0O5bwuegTRqnJ6
+Content-Type: application/pgp-signature; name="signature.asc"
 
-When I read "Currently, there are some kernel memory copy scenarios" and
-there's nothing more explaining what those scenarios are, I'm tempted to
-ignore this completely until you give a detailed and concrete example
-what the problem is:
+-----BEGIN PGP SIGNATURE-----
 
-What exactly are you doing, what goes wrong, why does this need to be
-fixed and so on...
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZbzwfQAKCRD2uYlJVVFO
+o3D4AP9Wwb4ESi2Hud4/VUMqMIWi4ansSXjFCnt3x3PPkFnELQD/c2QSp3GXg/rp
+92nKuhBsW+IcC76ebRltiEJYlORgwg4=
+=No5w
+-----END PGP SIGNATURE-----
 
-If there isn't such a real-life use case you're encountering, then this
-all is waste of time.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--2H0O5bwuegTRqnJ6--
 
