@@ -1,179 +1,94 @@
-Return-Path: <linux-kernel+bounces-49691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D201846E2D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:45:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B07F846E2F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:45:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9C442968DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:44:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3861D1C23EBB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:45:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70F7113BEBC;
-	Fri,  2 Feb 2024 10:44:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B67D13BEBA;
+	Fri,  2 Feb 2024 10:45:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="carNmVjG"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g0ND5eKy"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15C1C2E851;
-	Fri,  2 Feb 2024 10:44:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CBB41426A;
+	Fri,  2 Feb 2024 10:45:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706870691; cv=none; b=kphuL0jx0FbXbV0mCRssneWGGFfAeeNQ5k4G8bmFUXnjLF06w/2ZYiBGTbvxEMF4R+P8vX0iH+udOz9jDkHTEG7fL+I8C8sczdLnfUsXtyOeBH6dLM2ESEndqHsEcDSMWDX8i8jlS7GWYO78YsgT0HEcVuGq2HPaYjjPcUZ9RGE=
+	t=1706870741; cv=none; b=c+syU6htV6UmfWaiFotls6tb7vmCf+JM6HQs6huR1a0+zf6A7NSXCt8xtRdwRtWHHFE2fOLCdQwT4hm8pBQodBMG1/ldqm80x0g6bwK1LAQ26KQBc60+MhWAOrVJKJu+T6IYEjDAxT+WSWrYCmOXgdBd3klyFBGp9/TuetA3IBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706870691; c=relaxed/simple;
-	bh=GHnwCHwJQbMRAPZ29WpLtl5i6EFmMObvZ9Us3Ngztxw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=iiHmAI/Z6pKI2VidH3k+yzWbIzPAmcRybzj0pollrqPPO2b8wYO234o1M7PMZTmXWACcm2Nmk997qlnpIzYDc/v9/Gq769fYZWTZQrMYL3KSc4lABU5ayCfR0lUbOEiobUb61neirRxEkv3U9Isk8SHKpS3BH6z/8W9XPLfDWpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=carNmVjG; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4127UFDG021846;
-	Fri, 2 Feb 2024 10:44:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=yLwbVAKqMou6+Mz6mKl7Cjfqk5tcCVRsLZSJ+MzzKIQ=; b=ca
-	rNmVjGcbAS5kkB6QHcxG3CdPRnUJUcDRMhpZ7O4TrAIJBVvvPH5y/dCl8TFAgcTn
-	VUubDAU71tHpNJ2xBlcwjJkxEswWhMGToIX/gZNw/2CuhNRD+Wxqlqog3sV+vJK9
-	7dh60mur8xw5bZWsuGLcz3jNCT+nbP2gLUD4Gk9ZB6t0LaIsaJ5BN/Py/LWB+LqE
-	qe6bwkoO/3RuA3PySTP5hDbTaGjS/FUWCdxkgRdl+WLqJ9fZiwgMqavQMZGvdDpg
-	p+W7hlsSXFP5GZxTESBRZIeT3j4Ahmq5gYBd/cYGSBWP4mFC+S0aatgcqimHa3Jg
-	gjr6BcYTnbYPGhekDzig==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0pwjh4dn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Feb 2024 10:44:39 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 412AicLV001826
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 2 Feb 2024 10:44:38 GMT
-Received: from [10.216.22.4] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 2 Feb
- 2024 02:44:34 -0800
-Message-ID: <70e7b48c-4bec-460c-8b48-f022b1728e63@quicinc.com>
-Date: Fri, 2 Feb 2024 16:14:34 +0530
+	s=arc-20240116; t=1706870741; c=relaxed/simple;
+	bh=hMlT+02qZo3h68LxyJIVLv2jA0reVr/0LdCJMMpMQws=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=tPwBuV2h9acvcyjDadGM576zcTmo9tuPvirSX3IxarYIuVi7uuvCkZEcHFA3LNNLU/SL5inCCbKdaHcvZs5FuaZcwyDSDPwV/S2EBSn+aTLSvpsicF0/W0K3msy7dj6Fktl7153Yo3T5n6rSHje4wPF0XPRtXzflWh7TFI9Efz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g0ND5eKy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6DD0C433F1;
+	Fri,  2 Feb 2024 10:45:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706870741;
+	bh=hMlT+02qZo3h68LxyJIVLv2jA0reVr/0LdCJMMpMQws=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=g0ND5eKyoeUCL4Zow/tg6k1k3/rj74cPXAa1Do+CgYzgeios52dhC+h6l0NWxZPxp
+	 MoD+TZ6kwiYQvacc/RgaxILcVaYFEDfPu+phujkXFmjiW/UrYAYq6R6OL3NykEh5bL
+	 b/IOHEujhJJDMBlCcZ/eswyPGXah+l9JvMLOhTYnbHO5NgObj1JqBbOgCBlq+NIzQR
+	 5eKTpZbq2MTWlvC0BGFybwDgiDMzvn5Fuyvnoc43p4lYThHJPwnAmSrvJhGqz9hLYi
+	 0vwwqjcCCNrzurNLCZNNTdugN358+5T7Nvu5PijTh7L4goGdhKCMQCFqS32C9MnLE6
+	 w7LahMRkeVznw==
+From: Kalle Valo <kvalo@kernel.org>
+To: Thorsten Leemhuis <regressions@leemhuis.info>
+Cc: ath11k@lists.infradead.org,  Linux regressions mailing list
+ <regressions@lists.linux.dev>,  linux-wireless@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [regression] ath11k broken in v6.7
+References: <874jfjiolh.fsf@kernel.org> <87frytg7b8.fsf@kernel.org>
+	<878r4lg3t8.fsf@kernel.org> <87jzo13jmf.fsf@kernel.org>
+	<94150b26-bdd9-49c2-82a1-26ff46c9d32a@leemhuis.info>
+	<87fryp3he0.fsf@kernel.org>
+	<0253854a-e5f9-4316-bec3-61aaf3ebfd1a@leemhuis.info>
+	<871qa0xtk6.fsf@kernel.org>
+	<ccbb3aeb-daa1-49ba-b729-964bd97748bc@leemhuis.info>
+Date: Fri, 02 Feb 2024 12:45:37 +0200
+In-Reply-To: <ccbb3aeb-daa1-49ba-b729-964bd97748bc@leemhuis.info> (Thorsten
+	Leemhuis's message of "Fri, 2 Feb 2024 09:14:55 +0100")
+Message-ID: <87r0hvta9a.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [V3] i2c: i2c-qcom-geni: Correct I2C TRE sequence
-Content-Language: en-US
-To: Andi Shyti <andi.shyti@kernel.org>
-CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <vkoul@kernel.org>,
-        <quic_bjorande@quicinc.com>, <manivannan.sadhasivam@linaro.org>,
-        <bryan.odonoghue@linaro.org>, <quic_msavaliy@quicinc.com>,
-        <quic_vtanuku@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-References: <20240201101323.13676-1-quic_vdadhani@quicinc.com>
- <dt2uwtff5yacr7ci7xbezbe7bpwxsvspimceat7cozhzgazszx@6cjp5r7abfqd>
-From: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-In-Reply-To: <dt2uwtff5yacr7ci7xbezbe7bpwxsvspimceat7cozhzgazszx@6cjp5r7abfqd>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: fNpm7OFmVr4QU3Jtkg5NYWajfURvK5he
-X-Proofpoint-ORIG-GUID: fNpm7OFmVr4QU3Jtkg5NYWajfURvK5he
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-02_04,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 clxscore=1015 mlxscore=0 phishscore=0 mlxlogscore=999
- malwarescore=0 suspectscore=0 adultscore=0 priorityscore=1501 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402020078
+Content-Type: text/plain
 
-Hi Andi,
+Thorsten Leemhuis <regressions@leemhuis.info> writes:
 
-Thanks for review and taking care of patch.
-We have responded to dmitry to describe more about GPI operation and 
-tried to explain flow in general.
-We shall keep updating over email for commit log.
+>> So, in the new interface, how should I handle a situation that a
+>> regression is first reported on the mailing list, added to regzbot and
+>> later there's also a bug report opened for the issue?
+>
+> You will have to options: reply to the first report with a "#regzbot
+> duplicate https://bugzilla.kernel.org/show_bug.cgi?id=325423423423542"
+> or add a comment to the bugzilla ticket pointing to a report already
+> tracked by regzbot, e.g. "#regzbot duplicate
+> https://lore.kernel.org/not_relevant/msgid-423423423423423423/"
 
-Please help amend below tags in commit log since we are taking it over 
-email:
+Oh, regzbot also follows bugzilla comments? Didn't know that, very nice.
 
-Fixes: d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org> # qrb5165-rb5
-Co-developed-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+One more question, I promise it's the last one :) When using the Closes
+tag in patches does it matter which URL is used, either the original or
+the duplicate? For example, do these both tags close the issue:
 
-On 2/1/2024 7:52 PM, Andi Shyti wrote:
-> Hi Viken,
-> 
-> On Thu, Feb 01, 2024 at 03:43:23PM +0530, Viken Dadhaniya wrote:
->> For i2c read operation in GSI mode, we are getting timeout
->> due to malformed TRE basically incorrect TRE sequence
->> in gpi(drivers/dma/qcom/gpi.c) driver.
->>
->> TRE stands for Transfer Ring Element - which is basically an element with
->> size of 4 words. It contains all information like slave address,
->> clk divider, dma address value data size etc).
->>
->> Mainly we have 3 TREs(Config, GO and DMA tre).
->> - CONFIG TRE : consists of internal register configuration which is
->>                 required before start of the transfer.
->> - DMA TRE :    contains DDR/Memory address, called as DMA descriptor.
->> - GO TRE :     contains Transfer directions, slave ID, Delay flags, Length
->>                 of the transfer.
->>
->> Driver calls GPI driver API to config each TRE depending on the protocol.
->> If we see GPI driver, for RX operation we are configuring DMA tre and
->> for TX operation we are configuring GO tre.
->>
->> For read operation tre sequence will be as below which is not aligned
->> to hardware programming guide.
->>
->> - CONFIG tre
->> - DMA tre
->> - GO tre
->>
->> As per Qualcomm's internal Hardware Programming Guide, we should configure
->> TREs in below sequence for any RX only transfer.
->>
->> - CONFIG tre
->> - GO tre
->> - DMA tre
->>
->> In summary, for RX only transfers, we are reordering DMA and GO TREs.
->> Tested covering i2c read/write transfer on QCM6490 RB3 board.
->>
->> Fixes: d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
->> Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-> 
-> as Dmitry has written, please, next time don't forget the tags:
-> 
-> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org> # qrb5165-rb5
-> 
-> You can also add mine:
-> 
-> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-> 
-> Please make sure to Cc Dmitry who is raising his concerns and
-> check on his comments.
-> 
-> Andi
-> 
-> PS just as a reminder, if Dmitry's concerns remain related only
-> to the commit log, I gave you the option to agree with him in the
-> e-mail thread without necessarily sending a v4. I can then update
-> the commit log before pushing.
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=325423423423542
+Closes: https://lore.kernel.org/not_relevant/msgid-423423423423423423/
 
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
