@@ -1,73 +1,63 @@
-Return-Path: <linux-kernel+bounces-49164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EEA88466B2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:02:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA01D8466BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:03:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E597289794
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:02:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A657289ADD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:03:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E080AE57A;
-	Fri,  2 Feb 2024 04:02:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FC42EAF2;
+	Fri,  2 Feb 2024 04:03:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jjvPAcHA"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qqNVn6Q5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE8F9E549;
-	Fri,  2 Feb 2024 04:02:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC1CE54E;
+	Fri,  2 Feb 2024 04:03:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706846569; cv=none; b=ajVtwGfhpTUpDWl5uOr0pT7KnvD00pPY62vQg015Ql6JFVI22Hlm9gfc3j2HeLtQwoGKHEakn9nftv1JW1/ZZZHZPKdRBmIRyfjsOlIZijcINQx2YTW1NQUkNRtquogH5op/1Qg7RGE93RxkcJnh8QVVgbWFgLghgWn4CarFdPk=
+	t=1706846617; cv=none; b=BvUpZbWGCiKZBnEfir9WsGqaGv7S3mGedyxpMtRlsv3+TBRMOQZ9pYvM40cfftGaKCJ7+bKK9rtwuUZLZExQQsum/6je/s/RaTIXdtaKpfY5yvHh2n9k+GaSWsBEuuA0YEgn/YDpO+RcKgvPsb0i7mXsg1LoXIFmnPSBnHDdh6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706846569; c=relaxed/simple;
-	bh=ztSIav3KcBwz0bNVUufr2e/T3sJdFopKr7MY53JdyKE=;
+	s=arc-20240116; t=1706846617; c=relaxed/simple;
+	bh=+MM0R6bVOvD7EKq9CIbszzVHDXHuZzK4c+gZTtd5NV0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mEOxmSwJnt/B807cMpja7ZmZgfMxycZfLEEAuOcMFBf81qkKJeStZ6eL82jVJJftBpOCPunav5t9KqHjqO9VbxRlyabLzQduWrW7Q1cOwqLhoBGPFXTkcfnRAOX0qlroWs0azvGZKJJPRN06FTnVOWJi2qa6ZCROPT1OExM8A3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jjvPAcHA; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706846567; x=1738382567;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ztSIav3KcBwz0bNVUufr2e/T3sJdFopKr7MY53JdyKE=;
-  b=jjvPAcHAnWCJULGMkVjmxcv8wgnvpyrHB5x70QDoN6aoy9E56DzvrSeo
-   h0sM9RESs5BSExdOENo5d+pwDSsF4HxfVB/DR+WhHU7VpvlfyEV9R/AqC
-   8usiYi4NH/YcVZk55Kv5l7/hBJXcxGHsjZ/qJzJ6fFrWkmKMZxN8VwCf/
-   8efAY07NwXRoDruKz+8Anb8pHhQifGO+RKlAktjnrBICenNBP8irAGli6
-   8riAEH0AFfeGUP69KQt4nbemPFZ67ITU/UHO6+gcFxAprOMOKH+SSW+b0
-   bhdsb3d5ejOjQjdtrt0+LMz6R9EtQ96agMevKjvj15L6ci3kBAPCjIxtx
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="22570508"
-X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="22570508"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 20:02:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="823119684"
-X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="823119684"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 20:02:44 -0800
-Date: Fri, 2 Feb 2024 06:02:40 +0200
-From: Raag Jadav <raag.jadav@intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: u.kleine-koenig@pengutronix.de, jarkko.nikula@linux.intel.com,
-	mika.westerberg@linux.intel.com, lakshmi.sowjanya.d@intel.com,
-	linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/3] pwm: dwc: Add 16 channel support for Intel
- Elkhart Lake
-Message-ID: <Zbxo2b_TuCoSyhav@black.fi.intel.com>
-References: <20240122030238.29437-1-raag.jadav@intel.com>
- <20240122030238.29437-2-raag.jadav@intel.com>
- <ZbZqZDvdw-_D3hyb@smile.fi.intel.com>
- <ZbjPv_-S-6CQsaja@black.fi.intel.com>
- <Zbt__WmU74vmLpPR@smile.fi.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=cb3QXYqlhROPea5hCuBi2kh8Zqx4a3dib6GuNDzL6kCxcB5j6A4OWCDklr2If6I8UffiXTjnRQ/5vi9k8Wc3/qWADi6FTd8TwHyBx1Eo54LVNTsQzrNTZ7jeU9cl8iJwPDujzUDmUhd+68cMeZhFl/H2rCuJKZsXkcsYTXFE4B0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qqNVn6Q5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59117C433F1;
+	Fri,  2 Feb 2024 04:03:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706846617;
+	bh=+MM0R6bVOvD7EKq9CIbszzVHDXHuZzK4c+gZTtd5NV0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qqNVn6Q5OpakF1FEiX+4PR7WJkRyWcexOY4NyKGTviSk1AJBxfTsQa7OxI1RnEvhH
+	 Fe85v0phzPji57h6ftfiFcd8eQfzJQ2ks1XwvFm1TtuNpx6+ZWirSwrog1vZVeTDqz
+	 f02Ov9yYQKsEFAXVLZ6PIpilOUAch/prN/vPY9SH2tXr6lKkUx2HVeLZ2HZfSS2JgT
+	 gT2lZ0+1A+LPwGnqywc7dpQPOBSz3nfzWywakp6Vau0gRE0T9IXz0VnHpNNopaEiTU
+	 Pq00Nt/Ec9+OHK47jQ/9z/wPd2aKMd5NiFOHprT/q35gstcY1hMEAqr0j9MdFQ6GTG
+	 CJwcl8/jfCvJg==
+Date: Thu, 1 Feb 2024 22:03:33 -0600
+From: Bjorn Andersson <andersson@kernel.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Abel Vesa <abel.vesa@linaro.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
+	linux-pci@vger.kernel.org, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [RFC 9/9] PCI/pwrctl: add a PCI power control driver for power
+ sequenced devices
+Message-ID: <jb4hzijjxjv4kiy3cn2fuc5ox4x5uutredbxiwo2fvnkh2xudf@5w65qtp35ase>
+References: <20240201155532.49707-1-brgl@bgdev.pl>
+ <20240201155532.49707-10-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,28 +66,162 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zbt__WmU74vmLpPR@smile.fi.intel.com>
+In-Reply-To: <20240201155532.49707-10-brgl@bgdev.pl>
 
-On Thu, Feb 01, 2024 at 01:26:53PM +0200, Andy Shevchenko wrote:
-> On Tue, Jan 30, 2024 at 12:30:23PM +0200, Raag Jadav wrote:
-> > On Sun, Jan 28, 2024 at 04:53:24PM +0200, Andy Shevchenko wrote:
-> > > On Mon, Jan 22, 2024 at 08:32:36AM +0530, Raag Jadav wrote:
-> > > > Intel Elkhart Lake PSE includes two instances of PWM as a single PCI
-> > > > function with 8 channels each. Add support for the remaining channels.
+On Thu, Feb 01, 2024 at 04:55:32PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> ...
+> Add a PCI power control driver that's capable of correctly powering up
+> devices using the power sequencing subsystem. For now we support the
+> ath11k module on QCA6390.
 > 
-> > > First option: Always provide driver data (info is never NULL).
-> > 
-> > Allowing empty driver_data would save us from adding dummy info
-> > for single instance devices in the future.
-> 
-> Which may be too premature "optimisation". Why? Because if we ever have
-> something like pci_dev_get_match_data(), the empty will mean NULL, and
-> we may not get difference between empty and missing one.
 
-Not sure if I'm able to find such a helper as of now, but fair.
-I can change it in v2 if Jarkko is okay with it.
+For a PCI device which doesn't share resources with something on another
+bus, the whole power sequencing would be implemented in a driver like
+this - without the involvement of the power sequence framework.
 
-Raag
+I think it would be nice to see this series introduce a simple
+pci_pwrctl driver, and then (in the same series) introduce the power
+sequence framework and your PMU driver.
+
+One case where such model would be appropriate is the XHCI controller
+(uPD720201) on db845c. Today we describe vddpe-3p3-supply as a supply on
+the PCI controller, but it should have been vdd33-supply, vdd10-supply,
+avdd33-supply on the PCI device.
+
+That would provide an example for how a simple PCI power control driver
+can/should look like, and we can discuss the PCI pieces separate from
+the introduction of the new power sequence framework (which is unrelated
+to PCI).
+
+Regards,
+Bjorn
+
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>  drivers/pci/pwrctl/Kconfig             |  9 +++
+>  drivers/pci/pwrctl/Makefile            |  1 +
+>  drivers/pci/pwrctl/pci-pwrctl-pwrseq.c | 83 ++++++++++++++++++++++++++
+>  3 files changed, 93 insertions(+)
+>  create mode 100644 drivers/pci/pwrctl/pci-pwrctl-pwrseq.c
+> 
+> diff --git a/drivers/pci/pwrctl/Kconfig b/drivers/pci/pwrctl/Kconfig
+> index e2dc5e5d2af1..bca72dc08e79 100644
+> --- a/drivers/pci/pwrctl/Kconfig
+> +++ b/drivers/pci/pwrctl/Kconfig
+> @@ -5,4 +5,13 @@ menu "PCI Power control drivers"
+>  config PCI_PWRCTL
+>  	bool
+>  
+> +config PCI_PWRCTL_PWRSEQ
+> +	tristate "PCI Power Control driver using the Power Sequencing subsystem"
+> +	select POWER_SEQUENCING
+> +	select PCI_PWRCTL
+> +	default m if (ATH11K_PCI && ARCH_QCOM)
+> +	help
+> +	  Enable support for the PCI power control driver for device
+> +	  drivers using the Power Sequencing subsystem.
+> +
+>  endmenu
+> diff --git a/drivers/pci/pwrctl/Makefile b/drivers/pci/pwrctl/Makefile
+> index 4381cfbf3f21..919c0f704ee9 100644
+> --- a/drivers/pci/pwrctl/Makefile
+> +++ b/drivers/pci/pwrctl/Makefile
+> @@ -1,3 +1,4 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+>  obj-$(CONFIG_PCI_PWRCTL)		+= core.o
+> +obj-$(CONFIG_PCI_PWRCTL_PWRSEQ)		+= pci-pwrctl-pwrseq.o
+> diff --git a/drivers/pci/pwrctl/pci-pwrctl-pwrseq.c b/drivers/pci/pwrctl/pci-pwrctl-pwrseq.c
+> new file mode 100644
+> index 000000000000..510598c4edc4
+> --- /dev/null
+> +++ b/drivers/pci/pwrctl/pci-pwrctl-pwrseq.c
+> @@ -0,0 +1,83 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2023-2024 Linaro Ltd.
+> + */
+> +
+> +#include <linux/device.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/pci-pwrctl.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pwrseq/consumer.h>
+> +#include <linux/slab.h>
+> +#include <linux/types.h>
+> +
+> +struct pci_pwrctl_pwrseq_data {
+> +	struct pci_pwrctl ctx;
+> +	struct pwrseq_desc *pwrseq;
+> +};
+> +
+> +static void devm_pci_pwrctl_pwrseq_power_off(void *data)
+> +{
+> +	struct pwrseq_desc *pwrseq = data;
+> +
+> +	pwrseq_power_off(pwrseq);
+> +}
+> +
+> +static int pci_pwrctl_pwrseq_probe(struct platform_device *pdev)
+> +{
+> +	struct pci_pwrctl_pwrseq_data *data;
+> +	struct device *dev = &pdev->dev;
+> +	int ret;
+> +
+> +	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	data->pwrseq = devm_pwrseq_get(dev);
+> +	if (IS_ERR(data->pwrseq))
+> +		return dev_err_probe(dev, PTR_ERR(data->pwrseq),
+> +				     "Failed to get the power sequencer\n");
+> +
+> +	ret = pwrseq_power_on(data->pwrseq);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret,
+> +				     "Failed to power-on the device\n");
+> +
+> +	ret = devm_add_action_or_reset(dev, devm_pci_pwrctl_pwrseq_power_off,
+> +				       data->pwrseq);
+> +	if (ret)
+> +		return ret;
+> +
+> +	data->ctx.dev = dev;
+> +
+> +	ret = devm_pci_pwrctl_device_enable(dev, &data->ctx);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret,
+> +				     "Failed to register the pwrctl wrapper\n");
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id pci_pwrctl_pwrseq_of_match[] = {
+> +	{
+> +		/* ATH11K in QCA6390 package. */
+> +		.compatible = "pci17cb,1101",
+> +	},
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, pci_pwrctl_pwrseq_of_match);
+> +
+> +static struct platform_driver pci_pwrctl_pwrseq_driver = {
+> +	.driver = {
+> +		.name = "pci-pwrctl-pwrseq",
+> +		.of_match_table = pci_pwrctl_pwrseq_of_match,
+> +	},
+> +	.probe = pci_pwrctl_pwrseq_probe,
+> +};
+> +module_platform_driver(pci_pwrctl_pwrseq_driver);
+> +
+> +MODULE_AUTHOR("Bartosz Golaszewski <bartosz.golaszewski@linaro.org>");
+> +MODULE_DESCRIPTION("Generic PCI Power Control module for power sequenced devices");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.40.1
+> 
 
