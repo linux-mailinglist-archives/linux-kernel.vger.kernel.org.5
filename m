@@ -1,208 +1,188 @@
-Return-Path: <linux-kernel+bounces-50446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D0F6847919
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:08:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A259A847965
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:14:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 961A8B2FEAE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:06:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A269FB301B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:07:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18328126F2E;
-	Fri,  2 Feb 2024 18:50:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4303A12D74C;
+	Fri,  2 Feb 2024 18:52:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="Tm8e2N9X"
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z3rm69JN"
+Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DA07126F22;
-	Fri,  2 Feb 2024 18:49:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE8D712D744;
+	Fri,  2 Feb 2024 18:52:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706899800; cv=none; b=e98GFNyPJhJmoBkuHkfjZt8wwVVpbU8yPl4P6zy+xaeUtR2WIN07GokWdCxfagK1wPhn3FQEb6JDJttnmOb5JvZNcdJEK/8TelgqWP1IvtYQmyqtsWtIVVuZhSdOHEExcQl0+oXRtnEGlV0c0FiQAllU1zbjpi/79K4hWx2OJvg=
+	t=1706899927; cv=none; b=aRXlnxn+sfnWNqh4vFSPYZsfX8f5VeHuZUl8Z7aeSc7W574pIAaNwO8UJZf7Sh4L40Vfw6SvvYc8Ll3CWLtuZgutgy66JUJ9rKeRGmwXZqIwLcW07oAGmlbtdoXC3gOaS4X4zbVPCqcB2O5hCdFrQjEez3+fBUcXoBSv95mS1zA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706899800; c=relaxed/simple;
-	bh=kIDXrZYa7YvbjaZ39Y/wNvsjQTgKItJ4WaLfAWeaQPI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ZlrU2aO16qMpUlPFC7OdTjafe0N93c25P7ROQPOlqQx0ADFkEzKwhG5RJnkejFOnZMaWPqiIJOvjnF4Te/pPJYefOlaioas/srOODpcIfQMR5cIpUcpWHSCWtBvmZVww/9sOqHugSSkaOw7EMHeGvbHV/otXU0kE343vCEWQA1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=Tm8e2N9X; arc=none smtp.client-ip=198.252.153.129
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4TRPvz3Q6YzDqLd;
-	Fri,  2 Feb 2024 18:49:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1706899792; bh=kIDXrZYa7YvbjaZ39Y/wNvsjQTgKItJ4WaLfAWeaQPI=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=Tm8e2N9XN3xz9TmD5FX7b4LVl5iIr00IBtn9r5OZJw8ap/zye9W8JhG6znpAFNB1N
-	 D8/kgV4xjxF1g0GANtPUuYYMISjzuSI6RJvxPiFZmW0C7ZZi3CPkNyZuT1s9ukVDCr
-	 U0WBRuhcAG7DMF9/Ze/jkubhajMs145nVL0eP1vQ=
-X-Riseup-User-ID: AC796D553161309225802F4533227B3C3B461BDFDF791A0A23FAFA2986536A4A
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4TRPvs38wyzFvGP;
-	Fri,  2 Feb 2024 18:49:45 +0000 (UTC)
-Message-ID: <034aed14-6eb7-4758-86b9-cc294614f045@riseup.net>
-Date: Fri, 2 Feb 2024 15:49:42 -0300
+	s=arc-20240116; t=1706899927; c=relaxed/simple;
+	bh=Ok/UFu+vBcGlIKfmY4fxnPlqCPaUfQSbFxyVIYms/hs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oL1Fjp450RJ+Klk5A2CMzsbJFfgOhupb6HEyfTESvreRcFez6CnLNST5vpWurpyie5PlkpDT2imRPWgoKaoVocyZdOI0fRkgCWfaR+f5CkCINxW7lobuCpjwC/o2fcEOHeHw4ZLotpmghLB14oVeTE0/dutGNFoB7SVht99yyao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z3rm69JN; arc=none smtp.client-ip=209.85.217.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-467ed334c40so1048137137.0;
+        Fri, 02 Feb 2024 10:52:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706899925; x=1707504725; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OzAQr1ap8fenb+jIdc4mT63hDIxdhoa2yYpMaLdZczw=;
+        b=Z3rm69JNKI/vsFysVXxvaH6YC92YCjN7ssaKocJ/cIRTIvhORQaw5drCCZrGQWyGAF
+         n46d2JKonXj3hQod/ZFwnUgS0GJ2Jau5wtzl0M5F5xO99h1hL5UkDwkuWswObyCTMLHE
+         r/mkhjUY/FJny8mLweRH5Zi3hkaUqm0ZJfupoSx+7V3wMuzMKT8Beax3Dxycx91w4o1m
+         KlGYIc8sClwHGpV7W81OEuYwD3uaXnoOMAGYYw4jP977br8eiV4ggCuIER/yEp0uXDYq
+         tFHFg+kANvSf2ZgVh2ah1iJqmE28OZRU4DLoE73Mc6vnvNsbnn2mFoYQQUfKGQLoTsqn
+         +NSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706899925; x=1707504725;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OzAQr1ap8fenb+jIdc4mT63hDIxdhoa2yYpMaLdZczw=;
+        b=dUnU3gADMyPYjL86KvUO2X2N2/ZvE7MJ7qNUGsY58+npP/J+XsSdfhEBSFYOU3xx0o
+         o1vaQ/YiP6ccYqqh58csKTIi1YZxbt5+QB2BhTo32KX7PcwkL+allyLsixZlauNZ09bb
+         uEbc4QoFrFIAtMMKP/DEo85QuW6gkzawSdeY0mL/qgTgROE+QbtIuNQQFVhY5rAeNqVv
+         4E9H8yQ1qcKM/XcpRjmxrXFEOFi33sxaVsV+joomn2g6dg/HDrPLlLNhw+cLl5Mi0zU/
+         Etqw8XQgdRtBxD+0nuj/Ga3/M40yi/bSQaGGEnFZomp59/gVGzhRs/pDxEnIm7s7OeNS
+         pV4w==
+X-Gm-Message-State: AOJu0Yyf4rncxW0VtjQWQ89/BxAiztTZtEn2P3ovTLydbVCPgdR7B7Yw
+	XFTnYWb4rU1Ey4QnRGahnUm1l7vaPL4otunbzX5z9s9DOQJdg/dkzPJalt9q0o3WLHamhnQAprf
+	JAixE6zhcpa8eYHh/9LlNYKozCyw=
+X-Google-Smtp-Source: AGHT+IHpATLtM6UhFbndhKBf6EqvX2JU7kTp41znPx/PGymZrFwm9VYWH5L8GWXzPE4x5Ra7T6WPp/G2KIs4iBjH3LM=
+X-Received: by 2002:a05:6102:3167:b0:46d:647:67da with SMTP id
+ l7-20020a056102316700b0046d064767damr2063513vsm.13.1706899924579; Fri, 02 Feb
+ 2024 10:52:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 2/7] drm/vkms: Add support for multy-planar
- framebuffers
-To: Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
- Haneen Mohammed <hamohammed.sa@gmail.com>,
- Harry Wentland <harry.wentland@amd.com>, Jonathan Corbet <corbet@lwn.net>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mairacanal@riseup.net>, Melissa Wen <melissa.srw@gmail.com>,
- Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org,
- miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com,
- seanpaul@google.com, nicolejadeyee@google.com, marcheu@google.com
-References: <20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net>
- <20240110-vkms-yuv-v2-2-952fcaa5a193@riseup.net>
- <ZbvXHECSBmH0NDZn@localhost.localdomain>
-Content-Language: en-US
-From: Arthur Grillo <arthurgrillo@riseup.net>
-In-Reply-To: <ZbvXHECSBmH0NDZn@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver>
+ <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
+ <20240201204512.ht3e33yj77kkxi4q@revolver> <CABi2SkWB2eV24LBJtgJ73zEwaAWuFhAwrfqx3Rs=tqnpcJ0qRw@mail.gmail.com>
+ <58408.1706828083@cvs.openbsd.org> <CAHk-=wjqozic6JuRimXD=RamnJmD6FoaQki7RtNYrezzx_OfOg@mail.gmail.com>
+ <CALmYWFtqcixi3p3Ab44wENJr+n2k2SNaCJEofNm_awnNdJZnDQ@mail.gmail.com>
+ <8744.1706846710@cvs.openbsd.org> <CABi2SkWSt=UMFWe9n916ZH16wCzaipKXmEJ5VasQHMr1AxerxQ@mail.gmail.com>
+ <29248.1706850035@cvs.openbsd.org> <CABi2SkXPNPKgqheuFuQ9iZApQkJm8o6bypNn0B-QDz_W9b0JBQ@mail.gmail.com>
+In-Reply-To: <CABi2SkXPNPKgqheuFuQ9iZApQkJm8o6bypNn0B-QDz_W9b0JBQ@mail.gmail.com>
+From: Pedro Falcato <pedro.falcato@gmail.com>
+Date: Fri, 2 Feb 2024 18:51:53 +0000
+Message-ID: <CAKbZUD1EsAVupRotYV-ed4PQ3sL5wM4M=f4n-6rF+QNp7C1m4g@mail.gmail.com>
+Subject: Re: [PATCH v8 0/4] Introduce mseal
+To: Jeff Xu <jeffxu@chromium.org>
+Cc: Theo de Raadt <deraadt@openbsd.org>, Jeff Xu <jeffxu@google.com>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+	Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org, keescook@chromium.org, 
+	jannh@google.com, sroettger@google.com, willy@infradead.org, 
+	gregkh@linuxfoundation.org, usama.anjum@collabora.com, rdunlap@infradead.org, 
+	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, dave.hansen@intel.com, 
+	linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Feb 2, 2024 at 5:59=E2=80=AFPM Jeff Xu <jeffxu@chromium.org> wrote:
+>
+> On Thu, Feb 1, 2024 at 9:00=E2=80=AFPM Theo de Raadt <deraadt@openbsd.org=
+> wrote:
+> >
+> > Jeff Xu <jeffxu@chromium.org> wrote:
+> >
+> > > Even without free.
+> > > I personally do not like the heap getting sealed like that.
+> > >
+> > > Component A.
+> > > p=3Dmalloc(4096);
+> > > writing something to p.
+> > >
+> > > Compohave nent B:
+> > > mprotect(p,4096, RO)
+> > > mseal(p,4096)
+> > >
+> > > This will split the heap VMA, and prevent the heap from shrinking, if
+> > > this is in a frequent code path, then it might hurt the process's
+> > > memory usage.
+> > >
+> > > The existing code is more likely to use malloc than mmap(), so it is
+> > > easier for dev to seal a piece of data belonging to another component=
+.
+> > > I hope this pattern is not wide-spreading.
+> > >
+> > > The ideal way will be just changing the library A to use mmap.
+> >
+> > I think you are lacking some test programs to see how it actually
+> > behaves; the effect is worse than you think, and the impact is immediat=
+ely
+> > visible to the programmer, and the lesson is clear:
+> >
+> >         you can only seal objects which you gaurantee never get recycle=
+d.
+> >
+> >         Pushing a sealed object back into reuse is a disasterous bug.
+> >
+> >         Noone should call this interface, unless they understand that.
+> >
+> > I'll say again, you don't have a test program for various allocators to
+> > understand how it behaves.  The failure modes described in your docuemn=
+ts
+> > are not correct.
+> >
+> I understand what you mean: I will add that part to the document:
+> Try to recycle a sealed memory is disastrous, e.g.
+> p=3Dmalloc(4096);
+> mprotect(p,4096,RO)
+> mseal(p,4096)
+> free(p);
+>
+> My point is:
+> I think sealing an object from the heap is a bad pattern in general,
+> even dev doesn't free it. That was one of the reasons for the sealable
+> flag, I hope saying this doesn't be perceived as looking for excuses.
 
+The point you're missing is that adding MAP_SEALABLE reduces
+composability. With MAP_SEALABLE, everything that mmaps some part of
+the address space that may ever be sealed will need to be modified to
+know about MAP_SEALABLE.
 
-On 01/02/24 14:38, Louis Chauvet wrote:
->>  
->>  /*
->> @@ -23,27 +23,25 @@ static size_t pixel_offset(const struct vkms_frame_info *frame_info, int x, int
->>   * @frame_info: Buffer metadata
->>   * @x: The x(width) coordinate of the 2D buffer
->>   * @y: The y(Heigth) coordinate of the 2D buffer
->> + * @index: The index of the plane on the 2D buffer
->>   *
->>   * Takes the information stored in the frame_info, a pair of coordinates, and
->> - * returns the address of the first color channel.
->> - * This function assumes the channels are packed together, i.e. a color channel
->> - * comes immediately after another in the memory. And therefore, this function
->> - * doesn't work for YUV with chroma subsampling (e.g. YUV420 and NV21).
->> + * returns the address of the first color channel on the desired index.
->>   */
->>  static void *packed_pixels_addr(const struct vkms_frame_info *frame_info,
->> -				int x, int y)
->> +				int x, int y, size_t index)
->>  {
->> -	size_t offset = pixel_offset(frame_info, x, y);
->> +	size_t offset = pixel_offset(frame_info, x, y, index);
->>  
->>  	return (u8 *)frame_info->map[0].vaddr + offset;
->>  }
-> 
-> This implementation of packed_pixels_addr will only work with
-> block_w == block_h == 1. For packed or tiled formats we will need to use
-> x/y information to extract the correct address, and this address will not 
-> be a single pixel. See below my explanation.
+Say you did the same thing for mprotect. MAP_PROTECT would control the
+mprotectability of the map. You'd stop:
 
-You're right, currently, VKMS only supports non-packed/tiled formats. As
-all the formats I plan to add are too not packed or tiled, I haven't
-added support to it. But if you want to add it, please do :).
+p =3D malloc(4096);
+mprotect(p, 4096, PROT_READ);
+free(p);
 
->> @@ -130,17 +128,28 @@ void vkms_compose_row(struct line_buffer *stage_buffer, struct vkms_plane_state
->>  {
->>  	struct pixel_argb_u16 *out_pixels = stage_buffer->pixels;
->>  	struct vkms_frame_info *frame_info = plane->frame_info;
->> -	u8 *src_pixels = get_packed_src_addr(frame_info, y);
->> +	const struct drm_format_info *frame_format = frame_info->fb->format;
->>  	int limit = min_t(size_t, drm_rect_width(&frame_info->dst), stage_buffer->n_pixels);
->> +	u8 *src_pixels[DRM_FORMAT_MAX_PLANES];
->>  
->> -	for (size_t x = 0; x < limit; x++, src_pixels += frame_info->fb->format->cpp[0]) {
->> +	for (size_t i = 0; i < frame_format->num_planes; i++)
->> +		src_pixels[i] = get_packed_src_addr(frame_info, y, i);
->> +
->> +	for (size_t x = 0; x < limit; x++) {
->>  		int x_pos = get_x_position(frame_info, limit, x);
->>  
->> -		if (drm_rotation_90_or_270(frame_info->rotation))
->> -			src_pixels = get_packed_src_addr(frame_info, x + frame_info->rotated.y1)
->> -				+ frame_info->fb->format->cpp[0] * y;
->> +		if (drm_rotation_90_or_270(frame_info->rotation)) {
->> +			for (size_t i = 0; i < frame_format->num_planes; i++) {
->> +				src_pixels[i] = get_packed_src_addr(frame_info,
->> +								    x + frame_info->rotated.y1, i);
->> +				src_pixels[i] += frame_format->cpp[i] * y;
-> 
-> I find the current rotation management a bit complex to understand. This 
-> is not related to your patch, but as I had to understand this to create my 
-> second patch, I think this could be significanlty simplified.
+! But you'd need to change every spot that mmap()'s something to know
+about and use MAP_PROTECT: all "producers" of mmap memory would need
+to know about the consumers doing mprotect(). So now either all mmap()
+callers mindlessly add MAP_PROTECT out of fear the consumers do
+mprotect (and you gain nothing from MAP_PROTECT), or the mmap()
+callers need to know the consumers call mprotect(), and thus you
+introduce a huge layering violation (and you actually lose from having
+MAP_PROTECT).
 
-I also found the rotation logic complex when implementing this. I would
-appreciate it if it were simplified.
+Hopefully you can map the above to MAP_SEALABLE. Or to any other m*()
+operation. For example, if chrome runs on an older glibc that does not
+know about MAP_SEALABLE, it will not be able to mseal() its own shared
+libraries' .text (even if, yes, that should ideally be left to ld.so).
 
-> 
-> Please see the below comment about frame_format->cpp, it applies here too. 
-> I think the "easy" way here is simply to reuse the method 
-> get_packed_src_addr every time you need a new pixel.
-> 
->> +			}
->> +		}
->>  
->> 		plane->pixel_read(src_pixels, &out_pixels[x_pos]);
->> +
-> 
-> The usage of cpp and pointer to specific pixel only work for non-packed 
-> and non-blocked pixels, but for example NV30 or Y0L0 need more 
-> informations about the exact location of the pixel to convert and write 
-> the correct pixel value (each pixel can't be referenced directly by a 
-> pointer). For example NV30 uses 5 bytes to store 3 pixels (10 bits each), 
-> so to access the "middle" one you need to read the 5 bytes and do a small 
-> computation to extract it's value.
+IMO, UNIX API design has historically mostly been "play stupid games,
+win stupid prizes", which is e.g: why things like close(STDOUT_FILENO)
+work. If you close stdout (and don't dup/reopen something to stdout)
+and printf(), things will break, and you get to keep both pieces.
+There's no O_CLOSEABLE, just as there's no O_DUPABLE.
 
-Great explanation, I can see what is the problem here.
-
-> 
-> I think a simple solution to handle most cases would be to profide two 
-> more parameters: the x and y positions of the pixel to copy, using 
-> "absolute coordinates" (i.e x=0,y=0 means the first byte of the src 
-> buffer, not the first pixel in the `drm_rect src`, this way the method 
-> `pixel_read` can extract the correct value).
-> 
-> This way it become easy to manage "complex" pixel representations in this 
-> loop: simply increment x/y and let the pixel_read method handle 
-> everything.
-> 
-> The second patch I will send is doing this. And as explained before, it 
-> will also simplify a lot the code related to rotation and translation (no 
-> more switch case everywhere to add offset to x/y, it simply use drm_rect_* 
-> helpers).
-
-I like this, expect my review soon :).
-
-> 
-> It's not optimal in term of performance (in some situation it will read 
-> the same block multiple time to generate different pixels), but I 
-> believe it still is an intersting trade-off.
-> 
-> In the future, if performance is actally critical, the whole composition 
-> loop will have to be specialized for each pixel formats: some can be 
-> treated line by line (as it's done today), but with blocks or packed 
-> pixels it's more complex.
-> 
->> +		for (size_t i = 0; i < frame_format->num_planes; i++)
->> +			src_pixels[i] += frame_format->cpp[i];
-> 
-> This is likely working with format with block_w != 1, see explanation 
-> above.
-
-I think you meant that is _not_ working. Yeah, as I already explained,
-it was never my plan to add support for packed or tiled formats.
-
-Best Regards,
-~Arthur Grillo
+--=20
+Pedro
 
