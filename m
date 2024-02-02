@@ -1,75 +1,51 @@
-Return-Path: <linux-kernel+bounces-50302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A0AF847732
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:15:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8176E847735
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:16:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3AFA1F258A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:15:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 368781F24BB7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:16:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE60514D422;
-	Fri,  2 Feb 2024 18:15:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6AB614D43E;
+	Fri,  2 Feb 2024 18:16:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RMpK2hu+"
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="KSYCbLwL"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9317414A4DC;
-	Fri,  2 Feb 2024 18:15:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 477CA14A4DB;
+	Fri,  2 Feb 2024 18:16:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706897749; cv=none; b=rvI/00c0jrk6GMaSamX9JZA7fjvcM3Vakv0NzQyZLRpbMNgeqaWRnveVaNzdf8i3wfww0ux4cFTsTucOkku9y1BEZxM+/Hj8+Acgf0mT2RnAOyEE0gAoTwfqtQ3IgiMGBmxGYn3pavqLKasGjZYaCz19X8NluO4w0kLf5hoSUH4=
+	t=1706897774; cv=none; b=QBOR8+w2MynFKnY/FIY1R0exq6EK5DI9hy6t3uZiRIdrOggQytVnCBw8GlUPO23yEaPKLdwsAKpNi5ZZzaRVaXtEJyVUtBVjS5yw2AwpOVUzmaE4n6xiiEI4svKJ8Y2w6aOQlopDQ2Kpm1Moq5io/Ztc9J1vYAmQnXwaQ5h65fo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706897749; c=relaxed/simple;
-	bh=LXwJ1i8MjSeCXb3V12RVsNU9NsdtnSXZZ9D/5oAonzs=;
+	s=arc-20240116; t=1706897774; c=relaxed/simple;
+	bh=NjO4eKATb1ZVzlEJYvDOvITgk+VfeuI9bh96oQ6EXhw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TeIbXTQNdSTsO1BqE41lTxv9ADsed46y4R7NYAKQhmjbRnkWcuaH9jUNskoDbT+E5YS77rFwZpB9Y2U3smNCkXnMhUG5XSXWOW3XZCovjbCVIgfmdS5cNbadpr6TlX9ePK/Ymbjv+jBMaH7c6TNpkPH52+PQM23h8N1aq41Ezkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RMpK2hu+; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so2344618a12.1;
-        Fri, 02 Feb 2024 10:15:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706897747; x=1707502547; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=RHoYzRFMU0rjqwDESRoUa3ulysl1cQUrOv2TSobXayA=;
-        b=RMpK2hu+X+00QlOmUp2la8EEiZ0pEpDjo+8Tz7UJElC7ns0aAcYsSFIU2vissTDKXp
-         VZR1z7rUveE/C+UHNS64y1fV93q2nhve9xMvdRvatcHzkW70vgsyBwiY7msAewxibsyB
-         xQkXJDIp7MjBIBSsv/woaKm+xWnNUAdsUn9G6Ny+pMvdFYUOowz5GFu4O/zUC42gBb3b
-         A4vrail/V5G0dQNkSQFNd9pahjttMxsGU+1nP3Gd0tcnVGBrTcmzFcS31qn/447fwjbF
-         M5FcMI6EEzQS+Fjzs34VVVEgbLvIwFQuhjazanjtjTSCgkiB9F9mSTBSEJjHecbcFxrC
-         6gmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706897747; x=1707502547;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RHoYzRFMU0rjqwDESRoUa3ulysl1cQUrOv2TSobXayA=;
-        b=IlCSFPq1/DbL8j0tVtM6gVbHq1aOkosXvX7857+pY9vMkaITuNFZmBhrODCOJSjefi
-         K989gVxzrJlpzvxJElPcfVjPr4lEWXECFqUQokckjW0bcbapbaQYpHPRSLXv1x5uo+no
-         RTLZUYraYc5VkCI/dlhmSFuDwQOCl/Sp0ASJX+k3qhF0K5bV+4avCHGGriUus/cxi9XT
-         uRmI++S789Djzb6S0RwemmhM9B1NH6yl+mxq1+KvQqQguenZ/q+OTfNjVt2VL8pVDXcV
-         cXSSd7XMBAFAU9dLHI08anMTfUi/twnJL4S6wrTBEjtrjHthdz9PboUxkktNC59DiEIw
-         EyaA==
-X-Gm-Message-State: AOJu0YxeXRrzcYhEMnZSKpulIm0lAaxn/OGnBeKFG1ofEHY3IZ4xPeIv
-	uY028YTfc8uoG4sSZ+ZBPgK1bqeIJhl73yQMhnuswfxKgkwi43PflipT8f3u
-X-Google-Smtp-Source: AGHT+IHYhl5GvP/oLiGLT7ph7hSgEZoO9KsFLLSlbgb0hISoq6uA0g1h1wtbwuwMSOMbcmiVFlohVQ==
-X-Received: by 2002:a05:6a20:d045:b0:19c:6ce1:d62b with SMTP id hv5-20020a056a20d04500b0019c6ce1d62bmr3743395pzb.9.1706897746668;
-        Fri, 02 Feb 2024 10:15:46 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXlas4VQvq2OUr7cxkKl506TEywH9PPzMICX5JgMqIepdaVrUAXE/Oxx7fMKRaK6CNcPiY2H+5knD41uBbvpAMDDIbYyIQNaBv6l7p6ENFiUpUWP/N1O0yd8lfogzB+3GXCyQ+7R4YOLd2cTREe/vzLsCYZMw/5yFVE05A/
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s14-20020a65690e000000b005d65cdc02acsm1808790pgq.16.2024.02.02.10.15.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Feb 2024 10:15:46 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <d52049ee-81f3-4338-af7a-85aadc028c31@roeck-us.net>
-Date: Fri, 2 Feb 2024 10:15:44 -0800
+	 In-Reply-To:Content-Type; b=QInhMb6M08AoeMg3bFrhmKsTso+jjaBVNsITDIcg7QynErh6Htu3HveTDeBS+2afk/R2ZcWIBeo8bpwMMllXZ5+ebsWOXPBs/WQ+2VXxeeRMyy1cQnedeDoQEZRh3mycnKusqYGbUEo2uAlRmgFCQ43SUr0+6XzO4Uzrxz/Rmz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=KSYCbLwL; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 9A90240006;
+	Fri,  2 Feb 2024 18:16:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1706897769;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wtiYOXFMPoLKKMTHGF2JB2BrNN/qXiq/VP/qdA5HoGY=;
+	b=KSYCbLwLFuzIuoUaJtpjQGUzO1il4uWXGQ0IExPOpAKFe7gDSiBo3Zdbi+kNccBwAl2Yec
+	RB4VAVK7NrOrl2YBoFuidSJZRkL57a+WmQ7lxqCmdkMTKSimnimlSsAPH7WhtbnHjbmMcf
+	Brarti0Ozcpa7hCbnOYI4yB13yrzhLSjSpAK46Pa9PfMOyQvZ6mFY4LCTUz7gg2v+t58AH
+	FQ/pnWSOQKp8/Tk0nqzBxPiQrbKbulmAa9H0zHfhFbRZcJpiGj9EBCWqfWD83X5GtIW303
+	dVMZ7x0vg+AKUWJCm1WjaDAps1zeUQIli0oh+MpNDLKQ9OWItA/vUi6aa1Nujw==
+Message-ID: <5b744f7f-2f63-4219-a0e9-8f08267b1fdd@arinc9.com>
+Date: Fri, 2 Feb 2024 21:16:02 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,105 +53,55 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 00/11] hwmon: (coretemp) Fixes, improvements and
- support for large core count
+Subject: Re: [PATCH net-next v3 4/7] net: dsa: mt7530: move XTAL check to
+ mt7530_setup()
 Content-Language: en-US
-To: Zhang Rui <rui.zhang@intel.com>, jdelvare@suse.com
-Cc: fenghua.yu@intel.com, linux-hwmon@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240202092144.71180-1-rui.zhang@intel.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20240202092144.71180-1-rui.zhang@intel.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+ Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean
+ <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+ Bartel Eerdekens <bartel.eerdekens@constell8.be>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240202-for-netnext-mt7530-improvements-2-v3-0-63d5adae99ca@arinc9.com>
+ <20240202-for-netnext-mt7530-improvements-2-v3-4-63d5adae99ca@arinc9.com>
+ <ZbzWpmZrukknMsYf@shell.armlinux.org.uk>
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <ZbzWpmZrukknMsYf@shell.armlinux.org.uk>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 
-On 2/2/24 01:21, Zhang Rui wrote:
-> Patch 1/11 is a bug fix that should be considered as stable material.
-> Patch 2/11 fixes a user visible sysfs attribute name change.
-> Patch 3/11 is a quick fix to allow coretemp driver to probe more than
->             128 cores.
-> Patch 4/11 - 10/11 are a series of improvements aim to simplify the
->             code logic and remove unnecessary macros, variables and
->             structure fields, and make it easier for patch 11/11.
-> Patch 11/11 converts coretemp driver to use dynamic memory allocation
->             for core temp_data, so that it is easy to remove the
->             hardcoded core count limitation when _num_cores_per_package
->             become available and reliable, which is WIP in
->             https://lore.kernel.org/all/20240118123127.055361964@linutronix.de/
+On 2.02.2024 14:48, Russell King (Oracle) wrote:
+> On Fri, Feb 02, 2024 at 12:19:10PM +0300, Arınç ÜNAL via B4 Relay wrote:
+>> From: Arınç ÜNAL <arinc.unal@arinc9.com>
+>>
+>> The crystal frequency concerns the switch core. The frequency should be
+>> checked when the switch is being set up so the driver can reject the
+>> unsupported hardware earlier and without requiring port 6 to be used.
+>>
+>> Move it to mt7530_setup(). Drop the unnecessary function printing.
+>>
+>> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+>> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+>> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 > 
-> I can split the first three patches into a separate patch set if needed.
-> 
-> Patch seris V1 has been posted at
-> https://lore.kernel.org/all/20231127131651.476795-1-rui.zhang@intel.com/
-> 
+> I would prefer this to be earlier in the series, before patch 2 which
+> moves mt7530_setup_port6() to be called from mac_config(). mac_config()
+> is supposed to be configuration error-free - in other words, all state
+> should have been checked before hand.
 
-Change log ?
+I agree but mt7530_mac_config() is not a void function yet. The
+mac_port_config member of the mt753x_info structure points to this
+function. My next patch series gets rid of all useless error returns on the
+phylink path and change mac_port_config to void. So I don't think working
+on this patch series further will worth the effort. I'd rather have this
+version applied as is.
 
-Guenter
-
-> thanks,
-> rui
-> 
-> ----------------------------------------------------------------
-> Zhang Rui (11):
->        hwmon: (coretemp) Fix out-of-bounds memory access in create_core_data()
->        hwmon: (coretemp) Fix bogus core to attr mapping
->        hwmon: (coretemp) Enlarge per package core count limit
->        hwmon: (coretemp) Introduce enum for attr index
->        hwmon: (coretemp) Remove unnecessary dependency of array index
->        hwmon: (coretemp) Replace sensor_device_attribute with device_attribute
->        hwmon: (coretemp) Remove redundant pdata->cpu_map[]
->        hwmon: (coretemp) Abstract core_temp helpers
->        hwmon: (coretemp) Split package temp_data and core temp_data
->        hwmon: (coretemp) Remove redundant temp_data->is_pkg_data
->        hwmon: (coretemp) Use dynamic allocated memory for core temp_data
-> 
->   drivers/hwmon/coretemp.c | 219 ++++++++++++++++++++++++++---------------------
->   1 file changed, 120 insertions(+), 99 deletions(-)
-> 
-> 
-
+Arınç
 
