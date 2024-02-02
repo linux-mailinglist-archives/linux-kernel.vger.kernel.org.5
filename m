@@ -1,131 +1,114 @@
-Return-Path: <linux-kernel+bounces-50168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41183847538
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:45:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7762384753A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:46:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1E3B294BB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:45:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E786DB27173
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:45:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 646591487CD;
-	Fri,  2 Feb 2024 16:45:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90E151487EB;
+	Fri,  2 Feb 2024 16:45:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UHuUiP/i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lF8+cc/3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4BB814534E;
-	Fri,  2 Feb 2024 16:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD991148314;
+	Fri,  2 Feb 2024 16:45:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706892334; cv=none; b=bK5meP3lUNwiWZQWdvK5fRdJdd67AE0zTfj699n48TSGSQrGvC0oKPQuamU5/RE6B5C0tlsjk5svYU2Drbf9g4hpc7sxwjPCEsvejVjirSTC9E9dOaFxuBEjIaB7+OnHXzW+nKGRlmuqxO29YlrElGS49ThRY/spTNmdhHW05wQ=
+	t=1706892348; cv=none; b=i66mOe4rKoLOJYpbVhurdAcUnmV/F0aEtUrk4WBEsc5EuiIjFPLzd4kzZ92E3llA4hvqJkf5uWzyhviLa24hyGWbHP2Y4xYoGOTs5HFkx55IOknGCJ7zJ/VC7OT7OKzukjrdvrqsC+2lU5pq6/Fw+sxZgSZEAoUrGpj+QHfX9+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706892334; c=relaxed/simple;
-	bh=1NpeW/jx9i/TLtkjQru7LCt3fwDMOgyS6dS+4BVnKEE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uywMeru0Z9wf8mYsWhYpRY8ddJCN+qFzdlQByuFWkhEz8ZWjv1ursUtTWshkt+4YgE2chvAmcOiF3To+75jwqPTUgTlkWz3FZTBlfKX7fCanF7gpLA0wXj12jI2980Sge2CkW1TT/VJm4JqoJ1K2ItkedEMwgF5snj9fwCy1yAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UHuUiP/i; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27BB6C433C7;
-	Fri,  2 Feb 2024 16:45:34 +0000 (UTC)
+	s=arc-20240116; t=1706892348; c=relaxed/simple;
+	bh=gCXtpaaFuGj/Sfv2J/qgI4C+ehnvqwEiWJQgGM4NB5E=;
+	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
+	 Cc:Message-ID:Date; b=Bhst7Re+cg5dwwwf/6ElmOeXdPp0gfzQbMYTawcl1gZa8gsHZDRx4DlSPk0U3FYrnYNkWDkauzDqBx/RuOLwVTjEQdUusl3hsdyD1S5m/SAPD1CWctYEA4pSk0BrxRRokEU3q4MCgjvDnR9RccMQEX9Mfuf5IvJfNLHjcoQEqP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lF8+cc/3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 691F3C433F1;
+	Fri,  2 Feb 2024 16:45:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706892334;
-	bh=1NpeW/jx9i/TLtkjQru7LCt3fwDMOgyS6dS+4BVnKEE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=UHuUiP/iWk5Fb53S92nVygIFatSs9skq2hMoXmumjli8E4rpyHXmCRTuhNPx/CUyS
-	 WInbGMMiFUC5zSs9pHr8PxwCyqpB5wuc7JKCuxeUpN0kRgXoZGxqvfQa7V4g1vy5rx
-	 ZH65cC0egk0Ci+3m6DC56kCOdrLuHafHqcTZryqxissLpfpqvBfJV2ic3TC07vc162
-	 RfROEBIkvPkuXXvgAKSwnD/mFfgGAvEt56tgRD5v+f4HO83hOB4WBd+PYhwq8qpcDy
-	 i72DKP36jvL0uRRmzITZ3Mi5v9M9T+T4Ofb3IqJI/SG7uD3ukIYC5fBX5+UwK2D10t
-	 CdTwZpt9Q6Sag==
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d07b400bb8so21160871fa.2;
-        Fri, 02 Feb 2024 08:45:34 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUj1kZAeWoXLMvCXfOu2t6fvVDEo//bRokvfTSLpvBsMzg7brLUde90oSd5P/jmOEZLPyM0T4KM102EZzbFpoCTC32BaPWuZKYMHxDWjziqLBaHPgKgwuMaJYEU4cuM8u4LY1HA4zvF
-X-Gm-Message-State: AOJu0Yymm66AvbUJXJqnu2P/PkzTBVbrnE/r3C9tF0xKIq0pOf0Qmtm9
-	VCbAeu6XGlyx8nKn5BJUq8pD/EV1V7NQiAtRS1OIA6uxlfTgo594b3Epm5ZCUSdFwwDevhBR47y
-	geAixtBVt+aduxIcR1MDanJ6huWE=
-X-Google-Smtp-Source: AGHT+IEVsLTITAJ2OrzaTZdhtTYlPVrCreRMlehrq0ps5B01+fszECj/LB2WI4jZuRlSw3VuVUVh8K42fS/pgildxQw=
-X-Received: by 2002:a05:651c:1249:b0:2d0:87ea:a132 with SMTP id
- h9-20020a05651c124900b002d087eaa132mr1347084ljh.27.1706892332395; Fri, 02 Feb
- 2024 08:45:32 -0800 (PST)
+	s=k20201202; t=1706892348;
+	bh=gCXtpaaFuGj/Sfv2J/qgI4C+ehnvqwEiWJQgGM4NB5E=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=lF8+cc/3GjCeNb/K2Y2/jTpo6vZYOAxO4wsHdUXD731NoAlK5/WtgIHIDumR6KnTf
+	 CmJwcmBUkmP6BwcfHG8RxV2C0kzpVwirz4iTukokWbuasbdPt51Er5Q1gZ4w82E/7D
+	 5iYiZwhCoh9iwgWLzOhW5ki5siBeQzxVvX7dxev+zvOXdpGnrLPAVvye2FmeuWEm3Q
+	 9VzxEn+u561Z8heuvD0IwmWe2mi+r0FKED1GxpXx6BRRtasDbC8e7AGizIVvPEra8y
+	 rk0D98GTJm6RD0K1FFjPFzJPLFFAbNwOSlGeSZBJ1hQt0XmC0sLgyFnx5BOzbIccio
+	 i67hwtIH6pSAg==
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202163433.786581-1-abrestic@rivosinc.com> <20240202163433.786581-3-abrestic@rivosinc.com>
-In-Reply-To: <20240202163433.786581-3-abrestic@rivosinc.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Fri, 2 Feb 2024 17:45:21 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXH7=9-Ww_z6a4Z5K8MrbH8x17Y3EzYk9Qf-3PL-JgMcww@mail.gmail.com>
-Message-ID: <CAMj1kXH7=9-Ww_z6a4Z5K8MrbH8x17Y3EzYk9Qf-3PL-JgMcww@mail.gmail.com>
-Subject: Re: [PATCH 2/2] efi: Don't add memblocks for unusable memory
-To: Andrew Bresticker <abrestic@rivosinc.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, linux-efi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] wifi: brcmfmac: Adjust n_channels usage for __counted_by
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20240126223150.work.548-kees@kernel.org>
+References: <20240126223150.work.548-kees@kernel.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: Arend van Spriel <aspriel@gmail.com>, Kees Cook <keescook@chromium.org>,
+ Franky Lin <franky.lin@broadcom.com>,
+ Hante Meuleman <hante.meuleman@broadcom.com>,
+ Chi-hsien Lin <chi-hsien.lin@infineon.com>, Ian Lin <ian.lin@infineon.com>,
+ Johannes Berg <johannes.berg@intel.com>,
+ Wright Feng <wright.feng@cypress.com>, Hector Martin <marcan@marcan.st>,
+ linux-wireless@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Jisoo Jang <jisoo.jang@yonsei.ac.kr>, Hans de Goede <hdegoede@redhat.com>,
+ Aloka Dixit <quic_alokad@quicinc.com>, John Keeping <john@keeping.me.uk>,
+ Jeff Johnson <quic_jjohnson@quicinc.com>, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <170689233342.3493863.10294472294618285046.kvalo@kernel.org>
+Date: Fri,  2 Feb 2024 16:45:37 +0000 (UTC)
 
-On Fri, 2 Feb 2024 at 17:34, Andrew Bresticker <abrestic@rivosinc.com> wrote:
->
-> Adding memblocks (even if nomap) for such regions unnecessarily consumes
-> resources by creating struct pages for memory that may never be used or,
-> in the case of soft-reserved regions, prevents the memory from later
-> being hotplugged in by dax_kmem. This is also consistent with how x86
-> handles unusable memory found in the EFI memory map.
->
+Kees Cook <keescook@chromium.org> wrote:
 
-x86 doesn't care as much about memory vs device semantics as ARM does.
+> After commit e3eac9f32ec0 ("wifi: cfg80211: Annotate struct
+> cfg80211_scan_request with __counted_by"), the compiler may enforce
+> dynamic array indexing of req->channels to stay below n_channels. As a
+> result, n_channels needs to be increased _before_ accessing the newly
+> added array index. Increment it first, then use "i" for the prior index.
+> Solves this warning in the coming GCC that has __counted_by support:
+> 
+> ../drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c: In function 'brcmf_internal_escan_add_info':
+> ../drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c:3783:46: warning: operation on 'req->
+> n_channels' may be undefined [-Wsequence-point]
+>  3783 |                 req->channels[req->n_channels++] = chan;
+>       |                               ~~~~~~~~~~~~~~~^~
+> 
+> Fixes: e3eac9f32ec0 ("wifi: cfg80211: Annotate struct cfg80211_scan_request with __counted_by")
+> Cc: Arend van Spriel <aspriel@gmail.com>
+> Cc: Franky Lin <franky.lin@broadcom.com>
+> Cc: Hante Meuleman <hante.meuleman@broadcom.com>
+> Cc: Kalle Valo <kvalo@kernel.org>
+> Cc: Chi-hsien Lin <chi-hsien.lin@infineon.com>
+> Cc: Ian Lin <ian.lin@infineon.com>
+> Cc: Johannes Berg <johannes.berg@intel.com>
+> Cc: Wright Feng <wright.feng@cypress.com>
+> Cc: Hector Martin <marcan@marcan.st>
+> Cc: linux-wireless@vger.kernel.org
+> Cc: brcm80211-dev-list.pdl@broadcom.com
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-This affects the output of memblock_is_[region_]memory(), so we'd have
-to double check that none of those uses get broken by this.
+Patch applied to wireless.git, thanks.
 
-If the soft reserved regions need to be omitted from memblock, we can
-deal with that separately perhaps, but changing it at this level seems
-inappropriate to me.
+5bdda0048c8d wifi: brcmfmac: Adjust n_channels usage for __counted_by
 
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20240126223150.work.548-kees@kernel.org/
 
-> Signed-off-by: Andrew Bresticker <abrestic@rivosinc.com>
-> ---
->  drivers/firmware/efi/efi-init.c | 12 +-----------
->  1 file changed, 1 insertion(+), 11 deletions(-)
->
-> diff --git a/drivers/firmware/efi/efi-init.c b/drivers/firmware/efi/efi-init.c
-> index d4987d013080..f05bacac89b7 100644
-> --- a/drivers/firmware/efi/efi-init.c
-> +++ b/drivers/firmware/efi/efi-init.c
-> @@ -24,13 +24,6 @@
->
->  unsigned long __initdata screen_info_table = EFI_INVALID_TABLE_ADDR;
->
-> -static int __init is_memory(efi_memory_desc_t *md)
-> -{
-> -       if (md->attribute & (EFI_MEMORY_WB|EFI_MEMORY_WT|EFI_MEMORY_WC))
-> -               return 1;
-> -       return 0;
-> -}
-> -
->  /*
->   * Translate a EFI virtual address into a physical address: this is necessary,
->   * as some data members of the EFI system table are virtually remapped after
-> @@ -195,12 +188,9 @@ static __init void reserve_regions(void)
->                 memrange_efi_to_native(&paddr, &npages);
->                 size = npages << PAGE_SHIFT;
->
-> -               if (is_memory(md)) {
-> +               if (is_usable_memory(md)) {
->                         early_init_dt_add_memory_arch(paddr, size);
->
-> -                       if (!is_usable_memory(md))
-> -                               memblock_mark_nomap(paddr, size);
-> -
->                         /* keep ACPI reclaim memory intact for kexec etc. */
->                         if (md->type == EFI_ACPI_RECLAIM_MEMORY)
->                                 memblock_reserve(paddr, size);
-> --
-> 2.34.1
->
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
