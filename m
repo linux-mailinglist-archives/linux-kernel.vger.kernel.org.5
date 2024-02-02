@@ -1,148 +1,121 @@
-Return-Path: <linux-kernel+bounces-49599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81555846C3D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:39:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EF99846D11
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:56:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A63D01C25966
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:39:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD750B21746
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:39:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B486E6E2A9;
-	Fri,  2 Feb 2024 09:38:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 878FB77646;
+	Fri,  2 Feb 2024 09:39:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="DwSRLa8f"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SPRpDt2b"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9AEB7763B
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:38:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B7C277642;
+	Fri,  2 Feb 2024 09:39:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706866736; cv=none; b=f9ZeyvLzWq1/etGqLYHwZABrLzu6ZRPmoimDpQyvex5Zlbk2/02RRpEqg0OBN39BhWAoWevIo/JZhW4nBXgnr/GKwqAlmC1umU3fPXnb+NV57whjwE0HpDaGiPR+22g5YJfa8IhjaJ8gBVQ8xPrRoZEqGAcAnuavlWepm2dFjg8=
+	t=1706866765; cv=none; b=mYKdlIh6EQvOnh48vUO8HR4lkdaa/5TgT1MJb3j4tDiYH/KMhXfQfoHEPVeG7PvqMswV3UuLdepRBnvRB5E13O2Q+WiSpqtswNNH1wBYPbuL0N5b61xNrpSKvVj8giiKDzwrFxku70Qy4nSpXa2quQPNAzUz1NJOAV0H25qFIhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706866736; c=relaxed/simple;
-	bh=3xDROl8J6UtI/TB7+PuBboI2rEm/Unhehxp7GPeMs30=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aymh7wExbExLCamamcWOwzW41fpuExP2sMoEdx1mR2t/DVpBwaH1uwJodaschJ8VgaMOI8YbvEXimP/sCukQu0g7WfMP1YfcXviZ4Q+I3M04n2JyqvdU5wkzlyeb++i423dJMWCQEjbn1D56zvfLPaoDl5uJ0KQ/umB0jEw8P9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=DwSRLa8f; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56003c97d98so80136a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 01:38:52 -0800 (PST)
+	s=arc-20240116; t=1706866765; c=relaxed/simple;
+	bh=i6VzPQcmaHZz+lcT8P1hT/YUY2f63rXFfOJiBuDetT4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=c6dIWIThCqO0hPEimP2g0j6E3KWnUY1yxsPuPsqOnz+IrmFBceT8LfjvtHI7NODghXjpaeqhNE2bEbJfKlBDgoP+pi8nusjfYW9HgALiQ6H+wQ08ZBy1nR1Z6V15jVPyg5HA2l3B9TN7Ic3SwMGSDI6an1J1eOaDU+A7qDyA6Dw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SPRpDt2b; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40fc654a56dso3737405e9.3;
+        Fri, 02 Feb 2024 01:39:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1706866731; x=1707471531; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LeKdhCjMRsjFWo91Ezk149/GSutxOULRZwKH5QpErwI=;
-        b=DwSRLa8f6vVzm2Rzr//00AzpQCN1esfTCO+lF9Pifv6rlmx5F73M0W0u79THUDunAa
-         Pqjyj4B8wqp41D8Xd1VVKSZmVLf2hjC9vPJdqqK4YB86uWIXCgyLDo0n/jBtRTL7N45e
-         0wADTQIBxj8ECTMflKaTTnM3h2DFO+Vb3aSG5XIeMAjf3Y+f2zY/ymLz1xicLmbHN9nN
-         m5uTIXjuw1GIwmhkPTQBGBtmZb9xipxRiLH2H76ErZpnKhS6vgseifzAPr3/uu2MdR+V
-         qqiKXeIDQ0HAdPac5FMpVRYwn8tKkWxhqMFBLC+heFBKcg9Fc3CdxvlFHoZ61eUs1RMH
-         IiEA==
+        d=gmail.com; s=20230601; t=1706866762; x=1707471562; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q4GGWELPS9iWSYGrtv1b7XMN4fN8IDBU9iRWYuxavx4=;
+        b=SPRpDt2b0GiYd1qFajfvYEgDxgThrt+9sn/DoWWu45VjK0wLJdXIWxfSHZeYI4H+g4
+         fUjEUThmkkNfsW7lsiCUFtwFBo3tqgx2NqJQckKzfLzXBw1pOVTWq5z26cnwDV69BwrM
+         f/+1AF+VcygwAG7RrvWXnq6JPrHfy4k+5OcD6pobQqOUsQ8ugTvbf8WzBXW0VTWDdkG4
+         Ch5bvEHDQJ2GDGEz4fd3GCVubCrAFW71IPRnPhorDZexIrkfFCxv3JO1YYmVDUi0R+Bs
+         OTXSEFnolNyZ4gw69MYra5HgpgiQW1EA2bHZv6fc7tbuatJTl+P2quTvb4+ukJw6VqXO
+         ZNMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706866731; x=1707471531;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LeKdhCjMRsjFWo91Ezk149/GSutxOULRZwKH5QpErwI=;
-        b=lGADT6oonzkFsqp+3+jgsW7ggPdnYTetNP4pblvd+lC0jQCzuE8TlfFWoitHxOxanb
-         lav+6QV6dIdDj0F53zmxNM/oSwywMoKxHQ/CrKqlSMyl64zDp+JnmHNKfJehn257jsXs
-         PmC6MTK510IxuKWjLXZYXJoRk/Bm1R7fcYe8SVqMpMvf2aX77ypzPz/gisQYCEr7fp6v
-         WoO4KHRdE0ev1eMOWukDnLz3U5tXCZJx0+nqmX+fNoVFcI29Z6G3gwYLSKfYgvGct943
-         VLng2iTCRutZm4/37Ps/258UfQPJAaGUlaOVLAtIsIwGxQZED/+14q+90jyA7L7ODVPZ
-         Rw1g==
-X-Gm-Message-State: AOJu0YxZeJ2YIS59e593fdKEpqVbr4mKQu795ynIz7ZCPfApDDTannni
-	zOyoEvL/1ZUDiJxaXNrLuzoEV+aKZ8YzbF586mGQRmTXEJY64cY9t6ITsEN6/HY=
-X-Google-Smtp-Source: AGHT+IHXiwyKIRALIJ2SCq1vSMTLrEErtd6l9Z71z0r1zG+PeuTFxWBAltuaEReehtitiCkohmul6Q==
-X-Received: by 2002:a17:906:2796:b0:a36:601d:18cb with SMTP id j22-20020a170906279600b00a36601d18cbmr6170826ejc.62.1706866730855;
-        Fri, 02 Feb 2024 01:38:50 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU05zM+SLmpRncuDkB5z531kOG29qxnO0d3IfsxvmWQ5tM9HFuKlDNXfSfVxuuwbh0ZBixzVYdrgwcQULkyaoXO0xJ/p92fCOGxK4ymEJEy0Ut5zCHZ/tvcM8KD3CDECRlTXT2IVJqeOf4XMtfdy0fIT0k0uN/NF1S7SGqTc/Ehb9spi3nHPHkqVIUNsDh8w2aBFDxGRzrg4nJZqPW1U2N8GI3vK90SpAJbDbQfNtdhobZ40VMiA/kLawHCDsC03e6pYAjRBfH+OaZtOc84aXSIVHOtvGj4mJtXhJeN5P97HiGjxaSLxroyx1ZQ9jRi9CdxAawluwJOGCmQuiP3hYx7uUuAI4PNLeMkLSduhLt6AY0Ol4KqoPwehnGdACyKbDo9xvAfGv+8NNZNpLhO3kwkvnCj0ClnygJ4tembCHrSEaIvmFz5YzgY68dxp0f38Q==
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id pw8-20020a17090720a800b00a349d05c837sm686854ejb.154.2024.02.02.01.38.50
+        d=1e100.net; s=20230601; t=1706866762; x=1707471562;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Q4GGWELPS9iWSYGrtv1b7XMN4fN8IDBU9iRWYuxavx4=;
+        b=J1Z78RTg2UdsnM5qR6PvONOvUqYcQ4YGVCQSoOb4oAbOdMToH6epBGnsME10dqUkeQ
+         78R/yu3Bn4lFgFkm+maaNtGAvQwXvYcS1ewHqYOrahMemias+oJBfR+nnueyDmBSgtTs
+         cRkpdJGxFsLrNnC+A64zs0QT+5ZsnpwRYNgzDf+VrfsSqPsvAWhYPXkMRzIQcK7Xrwca
+         RHTuI9giPGTJC42yXD7H/Ny+rFena5+5lWhXr1DY/eG88HQwf4Nbt9NrCy7O03/rpXL9
+         SVftysLmU0C3yz4fBcH4cKHf50MdvjTQRMmW1X/YQkFQ2t5ltj8tEuxdc2npviTh7C4r
+         8OIg==
+X-Gm-Message-State: AOJu0Yx3uZAhHL1p76ls9hXlymQP2wrOXvIRUScYQM8qaXqclLzslwEg
+	byrryXe2XpIcp9JCo/13fHIp8Gm8HHPmEECcJz5fQPfwVNAAOrwt
+X-Google-Smtp-Source: AGHT+IHNr2h/8blidDKe6nUWzOdZhzdSWxNhMSkJDWY2u3jEMaBPIAO2blmRLKGvxbpg9FeldoKfaw==
+X-Received: by 2002:a05:600c:511e:b0:40e:b93c:940f with SMTP id o30-20020a05600c511e00b0040eb93c940fmr1071810wms.28.1706866762070;
+        Fri, 02 Feb 2024 01:39:22 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUUDg5EKFQ6lKeH9tifuLilUYhCj+nfQEiF++RwxrqZX1gmgZ3PdfwsfFlXLyW/qT66RfC1faoHZr5iti+ILaEnAdwZqkcBRuwcAQulhGelTDo8gDkcAiKNLLBzxtIvR7O0yvQmg8YMGQIBE7LHkYOMX/Kp5HgfZSlvm/8760AC2vo67DHZHfwL/wOIA/6cjyxnkirnXb9cQlQinMzIvS+S52+Z1j0oMGDyCpS4zHNni1qDziqtv1oicd5FoleHyTHoV39sG2E/waRq4k2PohF69lYzR0/wfNlSNg5L0FUFuKiRxeTahzx1QckDULcSRwxBBVdfftPZTlbEt3h++AwsaSqIzQPjYHsg/zKvQgaZjMkOt69K2BF/GhFxnt5Zl0KQVyIV/zgDMtHdrptrwzEfR2A8maw69+EKGxGiY42hTyYsuRZ4oL8tqXLLKXg/bAJ8WXNeswlezOJBvJ+0EqV1JAKWCtyBsK+IoiA6k+M=
+Received: from prasmi.home ([2a00:23c8:2500:a01:a994:230a:9969:dbf7])
+        by smtp.gmail.com with ESMTPSA id bg10-20020a05600c3c8a00b0040fbdf77ca3sm3827530wmb.42.2024.02.02.01.39.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 01:38:50 -0800 (PST)
-Date: Fri, 2 Feb 2024 10:38:48 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	Mukesh Ojha <quic_mojha@quicinc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	Kees Cook <keescook@chromium.org>, Uros Bizjak <ubizjak@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH printk v3 00/14] fix console flushing
-Message-ID: <Zby4KO9SjbC_pzEQ@alley>
-References: <20231214214201.499426-1-john.ogness@linutronix.de>
+        Fri, 02 Feb 2024 01:39:21 -0800 (PST)
+From: Prabhakar <prabhakar.csengg@gmail.com>
+X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To: Thomas Gleixner <tglx@linutronix.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Magnus Damm <magnus.damm@gmail.com>
+Cc: devicetree@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Prabhakar <prabhakar.csengg@gmail.com>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH 0/3] Renesas RZ/G2L family and RZ/G3S add missing IRQC interrupts
+Date: Fri,  2 Feb 2024 09:39:04 +0000
+Message-Id: <20240202093907.9465-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214214201.499426-1-john.ogness@linutronix.de>
+Content-Transfer-Encoding: 8bit
 
-On Thu 2023-12-14 22:47:47, John Ogness wrote:
-> Hi,
-> 
-> While testing various flushing scenarios, I stumbled on a few
-> issues that cause console flushing to fail. While at LPC2023 in
-> Richmond, I sat down with Petr Mladek and we reviewed the
-> v2 [0] series. This v3 series is the result of that offline
-> discussion.
-> 
-> This series addresses the following issues:
-> 
-> 1. The prb_next_seq() optimization caused inconsistent return
->    values. Fix prb_next_seq() to the originally intended
->    behavior but keep an optimization.
-> 
-> 2. pr_flush() might not wait until the most recently stored
->    printk() message if non-finalized records precede it. Fix
->    pr_flush() to wait for all records to print that are at
->    least reserved at the time of the call.
-> 
-> 3. In panic, the panic messages will not print if non-finalized
->    records precede them. Add a special condition so that
->    readers on the panic CPU will drop records that are not in
->    a consistent state.
-> 
-> 4. It is possible (and easy to reproduce) a scenario where the
->    console on the panic CPU hands over to a waiter of a stopped
->    CPU. Do not use the handover feature in panic.
-> 
-> 5. If messages are being dropped during panic, non-panic CPUs
->    are silenced. But by then it is already too late and most
->    likely the panic messages have been dropped. Change the
->    non-panic CPU silencing logic to _immediately_ silence
->    non-panic CPUs during panic. This also leads to clean panic
->    output when many CPUs are blasting the kernel log.
-> 
-> 6. If a panic occurs in a context where printk() calls defer
->    printing (NMI or printk_safe section), the printing of the
->    final panic messages rely on irq_work. If that mechanism is
->    not available, the final panic messages are not seen (even
->    though they are finalized in the ringbuffer). Add one last
->    explicit flush after all printk() calls are finished to
->    ensure all available messages in the kernel log are printed.
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-I hope that I reviewed all patches. Some already had my tag.
-Sigh, it took much longer than I have hoped because I was
-overloaded and on a sick-leave.
+Hi All,
 
-Anyway, please let me know if I missed some patch or reply.
+This patch series aims to add the missing bus-error and eccram error
+interrupts for RZ/G2L family and RZ/G3S SoC.
 
-Best Regards,
-Petr
+Cheers,
+Prabhakar
+
+Lad Prabhakar (3):
+  dt-bindings: interrupt-controller: renesas,rzg2l-irqc: Update
+    interrupts
+  arm64: dts: renesas: rz-g2l-family: Add missing interrupts from IRQC
+    IP block
+  arm64: dts: renesas: r9a08g045: Add missing interrupts of IRQC node
+
+ .../renesas,rzg2l-irqc.yaml                   | 44 +++++++++++++++----
+ arch/arm64/boot/dts/renesas/r9a07g043u.dtsi   | 12 ++++-
+ arch/arm64/boot/dts/renesas/r9a07g044.dtsi    | 22 +++++++++-
+ arch/arm64/boot/dts/renesas/r9a07g054.dtsi    | 22 +++++++++-
+ arch/arm64/boot/dts/renesas/r9a08g045.dtsi    |  8 +++-
+ 5 files changed, 93 insertions(+), 15 deletions(-)
+
+-- 
+2.34.1
+
 
