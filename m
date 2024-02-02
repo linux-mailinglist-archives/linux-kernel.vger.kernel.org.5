@@ -1,131 +1,153 @@
-Return-Path: <linux-kernel+bounces-49888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49890-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 320358470F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:17:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B3A98470F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:18:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E9751F2A774
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:17:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E2601C24271
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:18:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 855DB46450;
-	Fri,  2 Feb 2024 13:17:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2994845C07;
+	Fri,  2 Feb 2024 13:18:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HbXuRMrs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dubeyko-com.20230601.gappssmtp.com header.i=@dubeyko-com.20230601.gappssmtp.com header.b="X9zvSy8U"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFDE920F7;
-	Fri,  2 Feb 2024 13:17:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A6541755A
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 13:18:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706879821; cv=none; b=K4d9BiwD2dv5sxH9R/bhGi6Uvkca1XJBDs5hz5EJayZRPrn8McOv4Sh6ZpCYE6RFQzmcUsZOXT8+yEJeqIQAV2XEBKKxh1jBrk0yy7jdxeGXZVVx8YZFfrY44NdejhWieWYQGOjNmzD0tMALW5VuhxfI0Ve98XMVqvgPi9Xk/pk=
+	t=1706879890; cv=none; b=YcpEaRO4a/hwyTpeYn0U0gn8GhWinXNtcSEIgdQ1bNRsCgKK0LS6fHsgFMOHvqm47r5R10K7fBdBPsM9a6WEdJEzfcwTUCYVNu68gLfbZTM3ikYc03Hi3QKvoaTIXLHq0Y8VRKvNf1vL98NBqUCXbcqpW/120F2T2FKC3Mk6zDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706879821; c=relaxed/simple;
-	bh=7/Uy18fGzKFm8Z+4xRV0UmfKaJZhCd1LBnAYDNOzf2k=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=u8b8ENUOIUE/JWTGl/jBbruGy/AzxC0sHT2VtmbFNDI5e4F5YPyMSdmYVozQ59mhFYZWDoUu7srkMmDTOBkyIxOMt6B5NnU8sPC8m0lTkZw88RV38Kb0a+pmujiK9YhP3xYpC+zM/VUG3B9SnwG/dv1T4e/rsOQ5Ad9QeqlPgDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HbXuRMrs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AE29C433F1;
-	Fri,  2 Feb 2024 13:17:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706879821;
-	bh=7/Uy18fGzKFm8Z+4xRV0UmfKaJZhCd1LBnAYDNOzf2k=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HbXuRMrs5aoqSlAZUuE08hlT967dJwDR/x7mcXFs8qh14W9o4PrtZmc+eusPkC9EL
-	 VDdmZ9TPKyvdEj3D8mKNjjptdOBkVjIGtayV15sm3rnXeGtDUek1P0EoQm71QFbaXc
-	 NOxcEP84YRyOOA0T1PPCtByDkEuBang/TiVl/FrL74IEQZVsNdQnvAlZnbo1mz8d+7
-	 VwLMRzFUklWrgZASit+ItnZtxxn/JVb4PLPDoO+l2ia/tb40H40vc8XIuY9FOvvGqJ
-	 YNv+q1ib+GVYQlMWu3fkqjHhrTOvO07iVoQY66CsF1Sf0vkkaFwPmYqN4iFV8gCTIt
-	 S3hiccgG8Og7Q==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan+linaro@kernel.org>)
-	id 1rVtPk-000000002yO-3Jds;
-	Fri, 02 Feb 2024 14:17:04 +0100
-From: Johan Hovold <johan+linaro@kernel.org>
-To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Rajat Jain <rajatja@google.com>,
-	linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>
-Subject: [PATCH 2/2] PCI/AER: Clean up version indentation in ABI docs
-Date: Fri,  2 Feb 2024 14:16:35 +0100
-Message-ID: <20240202131635.11405-3-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240202131635.11405-1-johan+linaro@kernel.org>
-References: <20240202131635.11405-1-johan+linaro@kernel.org>
+	s=arc-20240116; t=1706879890; c=relaxed/simple;
+	bh=TVEt2jHtHb61K1i6et+msFxYPgYsZ2I/trn8BkT7X2E=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=BfW8iXCyO8fseHmLiNFXT1W5j8UnG+p9hE29B3gjY8opEtEWh18hyanUlPCjgZLphsTZegIJknlFglL2PAVgmNJfo8TT6qU7R/FfFQXWtxZxQGMxsWcsNITLWuUAojZRYR0xviyjqQSTFHy/6tEmCdHKT0fo1hQ6TMc5R8UV7xE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubeyko.com; spf=pass smtp.mailfrom=dubeyko.com; dkim=pass (2048-bit key) header.d=dubeyko-com.20230601.gappssmtp.com header.i=@dubeyko-com.20230601.gappssmtp.com header.b=X9zvSy8U; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubeyko.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dubeyko.com
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5113abf9981so228165e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 05:18:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dubeyko-com.20230601.gappssmtp.com; s=20230601; t=1706879885; x=1707484685; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TVEt2jHtHb61K1i6et+msFxYPgYsZ2I/trn8BkT7X2E=;
+        b=X9zvSy8UrCadnt6n/JB/nDhTibJk0Ij3LkTZZkIXE7ombbI/X/iIWo258XPS0nFy2R
+         qc2kAqzBVlZNyIvhIRvUDZmlP/S1YyYmIBVFB3+PjG5qWjfsg4gv3eDF8mtd2lTkurwB
+         huDmp0SwFUvrE9GXcvmfWMF99pBVYifgWQNAGvXkD66ed8kWgdg7Kv8Nu6jqKuEpzFlg
+         vvOvRQ9jaBAU9vAXBH5jr/liiPkFWs/drJHeoaU5E+jbr6CIBHCpUIZauJ4a1QkUr7Mu
+         pN8UcZJOPEOcQFZb2bfjMNn/Fe5cQGJIeY8k4/lvEmc1rTjRXTh1/aT7X0VTUVu3l1JF
+         nS8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706879885; x=1707484685;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TVEt2jHtHb61K1i6et+msFxYPgYsZ2I/trn8BkT7X2E=;
+        b=m2a67tgWjWuaCVd4OxSU6dfTakc8f7s6tQJcl6BnXDejYH63rqdHbGoyon6I56i2EP
+         8cbyMBoVCnr4cxUPfgIU0QmXAHncUgMpFOOqAYMWBhf77ykvzcV4LbSBMS8oGZzo1f4L
+         05IJ6HLBTHGZqdP1vzZ9aSXxPyPlQxD35pss7YUvul2r+sq9AEM1oxQjIBNbJDYrV0+P
+         nqaGdh399vUnKnXGHijEXvdw2DeGrPIJ/oWANr8LYqOKJ2trE71vIYvWaiGROGUn85cn
+         RubkCA33RiysMSVUoF/zJnfOQvqFnOao6ygsAFj1OHHzKA/LVxMs2JHA/+HSOXT0N5J9
+         3x9Q==
+X-Gm-Message-State: AOJu0Yw67z0x968nQYfQuN3mOWXfFjxavjk+vpAfO2y2ZcWYnmCdhu8k
+	kgz7LzrfYq9nHIqFDaccsd3TPUctrDHGCH9nEnoeLY33jLLzKFN9i3UKWuIbuR4=
+X-Google-Smtp-Source: AGHT+IE0lIO4yK60ZwridvY2MEnGVTaem9HWFCVDtVBepwgBkCdD8VOr2e2X2NFfruuUafQSbGl9UA==
+X-Received: by 2002:a05:6512:3b90:b0:511:3b5c:c923 with SMTP id g16-20020a0565123b9000b005113b5cc923mr349188lfv.0.1706879885003;
+        Fri, 02 Feb 2024 05:18:05 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUN7FYSXAnWO/n8VrUy/afhCK2ZUXPFxIE80ljlumLt8xuxRlW8wXI0ENzbmNyKKoXdUmChhC1hAzoLpNVsIieoKQyHNGtvEymERFG8deVN5uNQf05U7TxZvt8hSoaa9SJ+d0Y8iFXFtoqD83JXtzcRCt1/5m3tlxJqwCuDFejT9C/QfN1kng==
+Received: from smtpclient.apple ([84.252.147.250])
+        by smtp.gmail.com with ESMTPSA id c18-20020a056512325200b00510133ea456sm302476lfr.277.2024.02.02.05.18.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 02 Feb 2024 05:18:04 -0800 (PST)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
+Subject: Re: [PATCH] [v2] hfs: fix a memleak in hfs_find_init
+From: Viacheslav Dubeyko <slava@dubeyko.com>
+In-Reply-To: <20240201130027.3058006-1-alexious@zju.edu.cn>
+Date: Fri, 2 Feb 2024 16:17:49 +0300
+Cc: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <464B735B-EE9E-4AAC-8AA5-B746D707D69B@dubeyko.com>
+References: <20240201130027.3058006-1-alexious@zju.edu.cn>
+To: Zhipeng Lu <alexious@zju.edu.cn>
+X-Mailer: Apple Mail (2.3774.400.31)
 
-The 'KernelVersion' lines use a single space as separator instead of a
-tab so the values are not aligned with the other AER attribute fields.
 
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- .../ABI/testing/sysfs-bus-pci-devices-aer_stats      | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats b/Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats
-index 24087d5fd417..d1f67bb81d5d 100644
---- a/Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats
-+++ b/Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats
-@@ -11,7 +11,7 @@ saw any problems).
- 
- What:		/sys/bus/pci/devices/<dev>/aer_dev_correctable
- Date:		July 2018
--KernelVersion: 4.19.0
-+KernelVersion:	4.19.0
- Contact:	linux-pci@vger.kernel.org, rajatja@google.com
- Description:	List of correctable errors seen and reported by this
- 		PCI device using ERR_COR. Note that since multiple errors may
-@@ -32,7 +32,7 @@ Description:	List of correctable errors seen and reported by this
- 
- What:		/sys/bus/pci/devices/<dev>/aer_dev_fatal
- Date:		July 2018
--KernelVersion: 4.19.0
-+KernelVersion:	4.19.0
- Contact:	linux-pci@vger.kernel.org, rajatja@google.com
- Description:	List of uncorrectable fatal errors seen and reported by this
- 		PCI device using ERR_FATAL. Note that since multiple errors may
-@@ -62,7 +62,7 @@ Description:	List of uncorrectable fatal errors seen and reported by this
- 
- What:		/sys/bus/pci/devices/<dev>/aer_dev_nonfatal
- Date:		July 2018
--KernelVersion: 4.19.0
-+KernelVersion:	4.19.0
- Contact:	linux-pci@vger.kernel.org, rajatja@google.com
- Description:	List of uncorrectable nonfatal errors seen and reported by this
- 		PCI device using ERR_NONFATAL. Note that since multiple errors
-@@ -102,18 +102,18 @@ messages on the PCI hierarchy originating at that root port.
- 
- What:		/sys/bus/pci/devices/<dev>/aer_rootport_total_err_cor
- Date:		July 2018
--KernelVersion: 4.19.0
-+KernelVersion:	4.19.0
- Contact:	linux-pci@vger.kernel.org, rajatja@google.com
- Description:	Total number of ERR_COR messages reported to rootport.
- 
- What:		/sys/bus/pci/devices/<dev>/aer_rootport_total_err_fatal
- Date:		July 2018
--KernelVersion: 4.19.0
-+KernelVersion:	4.19.0
- Contact:	linux-pci@vger.kernel.org, rajatja@google.com
- Description:	Total number of ERR_FATAL messages reported to rootport.
- 
- What:		/sys/bus/pci/devices/<dev>/aer_rootport_total_err_nonfatal
- Date:		July 2018
--KernelVersion: 4.19.0
-+KernelVersion:	4.19.0
- Contact:	linux-pci@vger.kernel.org, rajatja@google.com
- Description:	Total number of ERR_NONFATAL messages reported to rootport.
--- 
-2.43.0
+> On 1 Feb 2024, at 16:00, Zhipeng Lu <alexious@zju.edu.cn> wrote:
+>=20
+> In every caller of hfs_find_init, `ptr` won't be freed when =
+hfs_find_init
+> fails, but will be freed when somewhere after hfs_find_init fails.
+
+Current statement sounds confusing for my taste. I don=E2=80=99t follow =
+it.
+What do you mean here?
+
+> This suggests that hfs_find_init should proberly free `ptr` in its own
+> error-handling to prevent `ptr` from leaking.
+
+I assume you meant properly here?
+
+>=20
+> In particular, When the switch statment goes to default and return an =
+error,
+> `ptr` should be freed.
+
+I assume you meant statement here?
+
+Also, you mentioning `ptr` but we freed fd->search_key here. It sounds =
+confusing too.
+
+>=20
+> Fixes: b3b2177a2d79 ("hfs: add lock nesting notation to =
+hfs_find_init")
+> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+> ---
+> Changelog:
+>=20
+> v2: Improve commit message to be more clear.
+
+Currently, it sounds slightly more confusing. :)
+
+Thanks,
+Slava.
+
+> ---
+> fs/hfs/bfind.c | 1 +
+> 1 file changed, 1 insertion(+)
+>=20
+> diff --git a/fs/hfs/bfind.c b/fs/hfs/bfind.c
+> index ef9498a6e88a..7aa3b9aba4d1 100644
+> --- a/fs/hfs/bfind.c
+> +++ b/fs/hfs/bfind.c
+> @@ -36,6 +36,7 @@ int hfs_find_init(struct hfs_btree *tree, struct =
+hfs_find_data *fd)
+> mutex_lock_nested(&tree->tree_lock, ATTR_BTREE_MUTEX);
+> break;
+> default:
+> + kfree(fd->search_key);
+> return -EINVAL;
+> }
+> return 0;
+> --=20
+> 2.34.1
+>=20
 
 
