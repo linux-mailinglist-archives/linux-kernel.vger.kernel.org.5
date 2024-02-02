@@ -1,86 +1,90 @@
-Return-Path: <linux-kernel+bounces-49390-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83FD98469DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C46C28469E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:56:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B74B71C25A67
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:56:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 029C81C24E31
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:56:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B06417C6E;
-	Fri,  2 Feb 2024 07:55:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6F0B1802E;
+	Fri,  2 Feb 2024 07:56:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="nYYKAISt"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dq44r7Ny"
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7A8E17BA4;
-	Fri,  2 Feb 2024 07:55:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB2918029
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 07:56:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706860555; cv=none; b=Pe/v7OCl4RS/uuTDq4yKjWOSn58t2yMFmlyRzgfTfHCnMCxPbxq15wQWj3Ruf3Xp/AZ67yL2LfY6Vlyds2evLa3a0wt/uG4Ztn58AFpDH4Lb1KHZygfC0zMn8R9OUGqYw0E5JSHle+cgbDMd4vWv85dCQVjVnluzP7wLFx1qj6w=
+	t=1706860587; cv=none; b=pGO3yrvp2VS4T1lCGvvlgyeROpwMT7ydrt5mHJBs6CzX4qeK/UGfnY7h5GzEfJ3GVqrz6y4L24HntfWpvm/+XcmI0Lx0oAKVHZh2G5//QOwVL0GyImhaVtL2lVpD0Je0/T0u/3xIqDndVRcV65/3KskBgAfstMRi0pTsGbLcb2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706860555; c=relaxed/simple;
-	bh=68hL+FZLLcrrCGOYzkanDw/JbY5cOul8cp+uyDfPMTY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QLS1WlDXJbdSKXIEJ0VBriMJkf5+xPZk4Bc/iW/LJkPs+JTpGFInQE+gs62EtYDV0PCiM1iFopDG2MDCp2NThm/ShesBTl7hrJDzO1gr5+8X8mMwqeJjTUpkK90QouA0r7rhlUUaRKFkSs4Pt9K3q8HzDZFng/9XseQnUriRHjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=nYYKAISt; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E5CDD1C0007;
-	Fri,  2 Feb 2024 07:55:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1706860549;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=68hL+FZLLcrrCGOYzkanDw/JbY5cOul8cp+uyDfPMTY=;
-	b=nYYKAIStwHLyok/90gVQUFipyrI5YTOPkDuMKsKZ6iZU4RCiPkvWu2iiOmX9O+5I1v1zss
-	tbBKziub+xr6Xg6lIMCdA330UzueJNF2KyZfD1DNKcyh3N9SkN+KesMvgETxfb0m5Fdhr2
-	Q4ZSRQ/LvGHV6fs4wiNe5HtG6OzJVAKVm2hYcabkrIAd8jTzWdCtclIzjqHcEAOEUn3EYV
-	Mtdmr0Gfe9Nb1YdP2ZZW9Vk6BoL5mQExjs0m1n5UKNwqGil2nussRjtsJudP7ekEQgSkwA
-	9ICpSqtpNWUUUzgpLyObGH93FcSHrWV4Kuo7mEKiZ2SgMtUk30wxome9qPJedQ==
-Date: Fri, 2 Feb 2024 08:55:47 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Bo Liu <liubo03@inspur.com>
-Cc: <alex.aring@gmail.com>, <stefan@datenfreihafen.org>,
- <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
- <pabeni@redhat.com>, <linux-wpan@vger.kernel.org>,
- <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] net: ieee802154: at86rf230: convert to use maple tree
- register cache
-Message-ID: <20240202085547.46c81c96@xps-13>
-In-Reply-To: <20240202064512.39259-1-liubo03@inspur.com>
-References: <20240202064512.39259-1-liubo03@inspur.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706860587; c=relaxed/simple;
+	bh=XxRpLa/IOE75cRWpu6fpKAMFysBjwggTfJU7a6h0y1A=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=okW4zpDlCyOJb7fAtE+Zi4nWd/30zpUqNvYaV6jTcjDDIRABEyJMe7K+p1FWEwEf4FqdrkEMow2kBCQBQTzlH5GlBP4WrMGu3gxQ4F2tWBGOxmSgJcr2VQn/mCglNntNN77KE6PJ0YkofSGWgTJleRDng0e1vKcTUA4p3ulUa6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dq44r7Ny; arc=none smtp.client-ip=209.85.217.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-46caa53a65eso234875137.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 23:56:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706860584; x=1707465384; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=D8E2Jbl6TudHLXjI1L3R9CJRxDNzy0rQRKMEEkmPbao=;
+        b=Dq44r7Ny5XISOIqgOrLwhhnS5cmXCx3ypprM7cY9Ka9DGnIsZBa/9VWA9XgdmrZyAW
+         mWpCR/kRpNqHpJIW+Ye4zE9EuyWG3r1iDXMMI8OLdZ0NUeLjs3pFQLdSs5WtDfj0s8dq
+         TRzh8v3YSXNikKMNLGt1obaNaYx7HNnvGlIjWsHhrrlrxC4eQal57a7KJGd7ME53RJDv
+         VgVUM3i/rw2fx2i7XiJxIYvVMaDHLXBc7zooZYzOTuwOMm/C0EzvdlR5MAnINAu2YX38
+         vHDhpKvsHztm2UVFrDRQpMq4YSK9zOOHeV3au0JJU6CXr2Ng+0g5xATBvCpFNFOhqkuV
+         YBEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706860584; x=1707465384;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=D8E2Jbl6TudHLXjI1L3R9CJRxDNzy0rQRKMEEkmPbao=;
+        b=Pm4PQ1FgipRi7KJNp/xbUELoIzSatj00ta3qfbzQ5FfbEQnd+Vv9/St9fYgm+wTmJJ
+         NErnMEhZDOcSM8I43wbwxF9ObNm9m1VFfmxG5EZiC5KEKBbrbeXrzvbeo67+0TIQNmyX
+         WJf/PUtKXBE+iV/9uFM7P19yVppaEATJtAXHVXzu6CPJANeHgpsssbeTXJqZSHmQltia
+         17g+ibAsbF507rEgj6VOaRLahTsDAc1PC9O1yKH1xroOb+e4S6wBCS+OqW221K/8J5b9
+         8w0EW84CGjNzG2NKaorvwMKMgvbe3m+nHuEGI1toZQ9/QfFIKSX3oFhgqt4O+bIzs6Qa
+         E5eg==
+X-Gm-Message-State: AOJu0Yw8zfp3MXbWJ9Ek7z3xq7BB4TMSgyEeQhBmQDlirBMclRNmMTbW
+	ifuuxIjtHCKAouTvO2xMueFGLGkovm6HWhKIwIdzWsNiM4dVhWmFT+k+GK/OOYIZnJfI1ReYeaE
+	olczcZvUjDxFLbEyTLo6Zwr15SAG6y+1I8uY=
+X-Google-Smtp-Source: AGHT+IEXCpA+3mSoecvSgXGs45X6HFuOicSGoBKswRqYkxgfmQ5rQ4JUOhuBxwI48V4xCrljGUSYernpTUTuOSlC01Y=
+X-Received: by 2002:a67:ecd3:0:b0:46b:3eff:9b5e with SMTP id
+ i19-20020a67ecd3000000b0046b3eff9b5emr5092139vsp.2.1706860584067; Thu, 01 Feb
+ 2024 23:56:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+From: =?UTF-8?Q?Micha=C5=82_Jakubowski?= <kajanos@gmail.com>
+Date: Fri, 2 Feb 2024 08:55:47 +0100
+Message-ID: <CAHOGJipx37tUoiSp87Np4b0qzREj60+FEkdi_0X0_JoQW8cYeA@mail.gmail.com>
+Subject: Kernel - 6.7.3 - failed to compile the module
+To: linux-kernel@vger.kernel.org
+Cc: shravankr@nvidia.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Bo,
+Regarding: https://bugzilla.kernel.org/show_bug.cgi?id=218445
 
-liubo03@inspur.com wrote on Fri, 2 Feb 2024 01:45:12 -0500:
-
-> The maple tree register cache is based on a much more modern data structu=
-re
-> than the rbtree cache and makes optimisation choices which are probably
-> more appropriate for modern systems than those made by the rbtree cache.
-
-What are the real intended benefits? Shall we expect any drawbacks?
-
-> Signed-off-by: Bo Liu <liubo03@inspur.com>
-
-Thanks,
-Miqu=C3=A8l
+  CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp1_execution.o
+  CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp1_transition.o
+  CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp2_execution.o
+  CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp2_transition.o
+  LD [M]  drivers/gpu/drm/amd/amdgpu/amdgpu.o
+  MODPOST Module.symvers
+ERROR: modpost: "sched_numa_hop_mask"
+[drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko] undefined!
+make[2]: *** [scripts/Makefile.modpost:145: Module.symvers] Error 1
+make[1]: *** [/usr/src/linux-6.7.3-gentoo/Makefile:1863: modpost] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
 
