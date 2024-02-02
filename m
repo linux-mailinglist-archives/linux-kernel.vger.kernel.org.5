@@ -1,260 +1,404 @@
-Return-Path: <linux-kernel+bounces-49117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C62D084660C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:53:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EBF7846613
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:55:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3FA4BB24515
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:53:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB369B21F12
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:55:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7BAFC8E1;
-	Fri,  2 Feb 2024 02:52:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 212EFC2CF;
+	Fri,  2 Feb 2024 02:55:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="0OAi9XV8"
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="XNksMmYm"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06B9CE549
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 02:52:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCDFA12FB30
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 02:55:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706842373; cv=none; b=MvEUXKVDBcyngfnBRzh+RQOpfvBNitH5Sihp3nrAA4nb4QnU6uT643Yo6jSbiDEbKjoE7uYwy1iG4B4YUm3TbgGvo1bN6cdOo6ymefhU/sCQgedFRsQoa0SqVNuaVhyysZjAILcmakcUlM4iGFm7zTw+ANN7GsU1f/pthH0BVEU=
+	t=1706842514; cv=none; b=sn6gYmOAEVGuC8kG46MCplJCAOBBDC7UdIMgWFktdn5t0bdYx6waC6dj+j8mv053sjxW8dS2Gxj03vlk+bWcjGzbo61VPLsKs1ySBTM0ZVYlOqmFTpAAcgOs8zRQaK76Izt0U2cMcQMLJGbNCWJjjYr7AXpswWYF16mSjd8N8nc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706842373; c=relaxed/simple;
-	bh=QqjuENTdk7eOyEsK4MLG1kNiU0NEVI5RtJWR5DtykL4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U3O62rpimURauExv69eXGbpStls7S3nTqBXslsYS7P9oNs6F7SA/s/kECVUJE1J84cLLTXba1TRPhGXK/nLvuJZ/AAqdPvxhFfzOmlb+QTgM1k/GIK70ts5s1XDbeQm1eXDKnp8AW/IALivpg5tyBeWH0JtGPE4N6fySb43//TE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=0OAi9XV8; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id AFE1D2C05EE;
-	Fri,  2 Feb 2024 15:52:48 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1706842368;
-	bh=jigWZVExlHT68HTKXoH+elk5GMoflcfVL+zYx+L5+Uc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=0OAi9XV8WJ8GqQ5q3kPCGC8YNJLnPcCfP1iaa4hrQKoX+8nw4jp+xoO+uLa9vgyef
-	 i7CesjfqWjXcV+RAWkr+dH42M8eQp9H4rZupP+PjRcHEdwqJS97giSo0hcKEzjNrwo
-	 y9CABIoqsBJN60SkcO9taDLIudn3WBRBmnY+tpflp1XvBhBPnSjW5BJ1pgFARj4eG4
-	 MbtSm6Wrl3933mCjpks3KAKGlkgbb+nj+WqOnREgKsir2y2Zk1QW6BRP1m2PJbKbKu
-	 LWO4K4EtWXVMkKtbXFtfks8LyN6tJP6DWZKTfW3Sl4nvSR+cFtYcHOqlz4SrRoXTCz
-	 gVjbAV2OBsRJw==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B65bc59000002>; Fri, 02 Feb 2024 15:52:48 +1300
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-	by pat.atlnz.lc (Postfix) with ESMTP id 697AB13EDA9;
-	Fri,  2 Feb 2024 15:52:48 +1300 (NZDT)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-	id 5F37A280EB7; Fri,  2 Feb 2024 15:52:48 +1300 (NZDT)
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: alexandre.belloni@bootlin.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	jdelvare@suse.com,
-	linux@roeck-us.net,
-	antoniu.miclaus@analog.com,
-	noname.nuno@gmail.com
-Cc: linux-rtc@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hwmon@vger.kernel.org,
-	Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-	Zeynep Arslanbenzer <Zeynep.Arslanbenzer@analog.com>,
-	Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v6 2/2] dt-bindings: rtc: add max313xx RTCs
-Date: Fri,  2 Feb 2024 15:52:41 +1300
-Message-ID: <20240202025241.834283-3-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240202025241.834283-1-chris.packham@alliedtelesis.co.nz>
-References: <20240202025241.834283-1-chris.packham@alliedtelesis.co.nz>
+	s=arc-20240116; t=1706842514; c=relaxed/simple;
+	bh=jX8V4J6he01iMdXztscH3gL+ZiT2xGSlH7VO2b3YRA4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=r9QREwsismB2K6S5xUuVnUCWiraSyO0MSDKKXOuJmHikQGU44rzq7FRiR28udMH+m5ZG8ywqTkwbbTs/6hddWSvVrDCJjbqDwmsn0lwEJwFAvRTFiDj5c2CBbEi+p9B7LNI0jSiiOcyAFqcnpT5sGFVCetm8NEkUjvJ0QUX2HlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=XNksMmYm; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55f15762840so1960826a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 18:55:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706842510; x=1707447310; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z13JQPf9sQwxso1j5bT0m3SolbFlWDJreVTqe//zgDY=;
+        b=XNksMmYmERlcareKCqGrL/t2gqbdt7572KXZvtbZJ6mZH3KpDzekHrk5pzSyfEPKh6
+         xfiL8FUcE8qeyHP+WWKUKDYkaatphnSrDFgE64fFCQwsJoCwC0qfI8gJjf+Z0lmg8bQo
+         0bnkNUxnZxnJySHWWL7iYlnrzxWKjWTyWEgxc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706842510; x=1707447310;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z13JQPf9sQwxso1j5bT0m3SolbFlWDJreVTqe//zgDY=;
+        b=RoW8DanlB/99zNLM82h9UAiFwCHDxDIfLVMC5R2ppUyPO/B/KPlbBnaQOvMuwdeosL
+         2gir/0m391s7/hkJwTYdS8AS7kQGYfM8EykxfXHJJFlUElpBF/Frg3ytde30kE7w5JSm
+         ByPYoaSbXW/hiJBT6U54z6eihHLB0bRDKkR998FUtZ3vEGweK62KUIbr/oWK0smJqlP4
+         IfpUVNCCuZ9mqsDUSanwwnh01WPx5TJ7emFrfy2+pO6z9O+1UGcdFFe6IRQlXyzi6Sny
+         b5EF42iS6q4GyhJsVmC6peZb0t2C58qx57tt5YuSuxDV4V+cuqvK6dWp3z29qmwy5vCa
+         9HgA==
+X-Gm-Message-State: AOJu0YxKwD1KuPUmNwTqV0stcji0NhVQ9+XtABR1Q1ARA+UJk+Kssp4t
+	MKGzcVBJJhiZj6j5AxUTtFZ+WFYMRVMuerV2GXmdMZGVYFF7XHbX3h/dowo/jP3Y74jX1bTocg8
+	bpA==
+X-Google-Smtp-Source: AGHT+IG2a2M/iKSWlO2BSSAQaR8LMa8wrZ7bMP+W4M31zx1sv6amvMnURrDcF4pm7xienZXkN99IrA==
+X-Received: by 2002:a17:906:cf85:b0:a36:7b45:1304 with SMTP id um5-20020a170906cf8500b00a367b451304mr4242521ejb.77.1706842509456;
+        Thu, 01 Feb 2024 18:55:09 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXUwAvs1N6c7DCS0yTTqT0ETXsBx2042XF3eTanB2IGM1nxQ9Nw6sRi9onPFhUyH6UB/KexGon2BEekfEhJsB5X2Y47fFwh+o/DuMtH
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
+        by smtp.gmail.com with ESMTPSA id vv9-20020a170907a68900b00a35ec7eddfesm382025ejc.50.2024.02.01.18.55.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Feb 2024 18:55:08 -0800 (PST)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40f00adacfeso15715e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 18:55:08 -0800 (PST)
+X-Received: by 2002:a05:600c:500c:b0:40f:c537:9d5 with SMTP id
+ n12-20020a05600c500c00b0040fc53709d5mr30164wmr.5.1706842508094; Thu, 01 Feb
+ 2024 18:55:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240201171159.1.Id9ad163b60d21c9e56c2d686b0cc9083a8ba7924@changeid>
+ <20240202012249.GU2087318@ZenIV>
+In-Reply-To: <20240202012249.GU2087318@ZenIV>
+From: Doug Anderson <dianders@chromium.org>
+Date: Thu, 1 Feb 2024 18:54:51 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=X5dpMyCGg4Xn+ApRwmiLB5zB0LTMCoSfW_X6eAsfQy8w@mail.gmail.com>
+Message-ID: <CAD=FV=X5dpMyCGg4Xn+ApRwmiLB5zB0LTMCoSfW_X6eAsfQy8w@mail.gmail.com>
+Subject: Re: [PATCH] regset: use vmalloc() for regset_get_alloc()
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Christian Brauner <brauner@kernel.org>, Eric Biederman <ebiederm@xmission.com>, Jan Kara <jack@suse.cz>, 
+	Kees Cook <keescook@chromium.org>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=LZFCFQXi c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=k7vzHIieQBIA:10 a=gAnH3GRIAAAA:8 a=gEfo2CItAAAA:8 a=8-29ehldHqSqZt1QG5QA:9 a=oVHKYsEdi7-vN-J5QA_j:22 a=sptkURWiP4Gy88Gu7hUp:22
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
 
-From: Ibrahim Tilki <Ibrahim.Tilki@analog.com>
+Hi,
 
-Devicetree binding documentation for Analog Devices MAX313XX RTCs
+On Thu, Feb 1, 2024 at 5:22=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> wr=
+ote:
+>
+> On Thu, Feb 01, 2024 at 05:12:03PM -0800, Douglas Anderson wrote:
+> > While browsing through ChromeOS crash reports, I found one with an
+> > allocation failure that looked like this:
+>
+> > An order 7 allocation is (1 << 7) contiguous pages, or 512K. It's not
+> > a surprise that this allocation failed on a system that's been running
+> > for a while.
+>
+> >       if (size > regset->n * regset->size)
+> >               size =3D regset->n * regset->size;
+> >       if (!p) {
+> > -             to_free =3D p =3D kzalloc(size, GFP_KERNEL);
+> > +             to_free =3D p =3D vmalloc(size);
+>
+>         What the hell?  Which regset could have lead to that?
+> It would need to have the total size of register in excess of
+> 256K.  Seriously, which regset is that about?  Note that we
+> have just made sure that size is not greater than that product.
+> size is unsigned int, so it's not as if a negative value passed
+> to function could get through that test only to be interpreted
+> as large positive later...
+>
+>         Details, please.
 
-Signed-off-by: Ibrahim Tilki <Ibrahim.Tilki@analog.com>
-Signed-off-by: Zeynep Arslanbenzer <Zeynep.Arslanbenzer@analog.com>
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
- .../devicetree/bindings/rtc/adi,max313xx.yaml | 145 ++++++++++++++++++
- 1 file changed, 145 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/rtc/adi,max313xx.ya=
-ml
+I can continue to dig more, but it is easy for me to reproduce this.
+On the stack is elf_core_dump() and it seems like we're getting a core
+dump of the chrome process. So I just arbitrarily look for the chrome
+GPU process:
 
-diff --git a/Documentation/devicetree/bindings/rtc/adi,max313xx.yaml b/Do=
-cumentation/devicetree/bindings/rtc/adi,max313xx.yaml
-new file mode 100644
-index 000000000000..ccfb0cbfb045
---- /dev/null
-+++ b/Documentation/devicetree/bindings/rtc/adi,max313xx.yaml
-@@ -0,0 +1,145 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2022 Analog Devices Inc.
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/rtc/adi,max313xx.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Analog Devices MAX313XX series I2C RTCs
-+
-+maintainers:
-+  - Chris Packham <chris.packham@alliedtelesis.co.nz>
-+
-+description: Analog Devices MAX313XX series I2C RTCs.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,max31328
-+      - adi,max31329
-+      - adi,max31331
-+      - adi,max31334
-+      - adi,max31341
-+      - adi,max31342
-+      - adi,max31343
-+
-+  reg:
-+    description: I2C address of the RTC
-+    items:
-+      - enum: [0x68, 0x69]
-+
-+  interrupts:
-+    description:
-+      Alarm1 interrupt line of the RTC. Some of the RTCs have two interr=
-upt
-+      lines and alarm1 interrupt muxing depends on the clockin/clockout
-+      configuration.
-+    maxItems: 1
-+
-+  "#clock-cells":
-+    description:
-+      RTC can be used as a clock source through its clock output pin whe=
-n
-+      supplied.
-+    const: 0
-+
-+  clocks:
-+    description:
-+      RTC uses this clock for clock input when supplied. Clock has to pr=
-ovide
-+      one of these four frequencies - 1Hz, 50Hz, 60Hz or 32.768kHz.
-+    maxItems: 1
-+
-+  adi,tc-diode:
-+    description:
-+      Select the diode configuration for the trickle charger.
-+      schottky - Schottky diode in series.
-+      standard+schottky - standard diode + Schottky diode in series.
-+    enum: [schottky, standard+schottky]
-+
-+  trickle-resistor-ohms:
-+    description: Selected resistor for trickle charger.
-+    enum: [3000, 6000, 11000]
-+
-+required:
-+  - compatible
-+  - reg
-+
-+allOf:
-+  - $ref: rtc.yaml#
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - adi,max31328
-+              - adi,max31342
-+
-+    then:
-+      properties:
-+        aux-voltage-chargeable: false
-+        trickle-resistor-ohms: false
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - adi,max31328
-+              - adi,max31331
-+              - adi,max31334
-+              - adi,max31343
-+
-+    then:
-+      properties:
-+        clocks: false
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - adi,max31341
-+              - adi,max31342
-+
-+    then:
-+      properties:
-+        reg:
-+          items:
-+            - const: 0x69
-+
-+    else:
-+      properties:
-+        reg:
-+          items:
-+            - const: 0x68
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    i2c {
-+        #address-cells =3D <1>;
-+        #size-cells =3D <0>;
-+
-+        rtc@68 {
-+            reg =3D <0x68>;
-+            compatible =3D "adi,max31329";
-+            clocks =3D <&clkin>;
-+            interrupt-parent =3D <&gpio>;
-+            interrupts =3D <26 IRQ_TYPE_EDGE_FALLING>;
-+            aux-voltage-chargeable =3D <1>;
-+            trickle-resistor-ohms =3D <6000>;
-+            adi,tc-diode =3D "schottky";
-+        };
-+    };
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    i2c {
-+        #address-cells =3D <1>;
-+        #size-cells =3D <0>;
-+
-+        rtc@68 {
-+            reg =3D <0x68>;
-+            compatible =3D "adi,max31331";
-+            #clock-cells =3D <0>;
-+        };
-+    };
---=20
-2.43.0
+$ ps aux | grep gpu-process
+chronos   2075  3.0  1.1 34075552 95372 ?      S<l  18:44   0:01
+/opt/google/chrome/chrome --type=3Dgpu-process ...
 
+Then I send it a quit:
+
+$ kill -quit 2075
+
+I added some printouts for this allocation and there are a ton. Here's
+all of them, some of which are over 256K:
+
+[   66.677393] DOUG: Allocating 272 bytes
+[   66.688994] DOUG: Allocating 272 bytes
+[   66.692921] DOUG: Allocating 528 bytes
+[   66.696799] DOUG: Allocating 8 bytes
+[   66.701058] DOUG: Allocating 272 bytes
+[   66.704988] DOUG: Allocating 528 bytes
+[   66.708875] DOUG: Allocating 8 bytes
+[   66.712929] DOUG: Allocating 272 bytes
+[   66.716845] DOUG: Allocating 528 bytes
+[   66.720721] DOUG: Allocating 8 bytes
+[   66.724752] DOUG: Allocating 272 bytes
+[   66.728719] DOUG: Allocating 528 bytes
+[   66.732621] DOUG: Allocating 8 bytes
+[   66.736615] DOUG: Allocating 272 bytes
+[   66.740584] DOUG: Allocating 528 bytes
+[   66.744483] DOUG: Allocating 8 bytes
+[   66.748507] DOUG: Allocating 272 bytes
+[   66.752412] DOUG: Allocating 528 bytes
+[   66.756328] DOUG: Allocating 8 bytes
+[   66.760382] DOUG: Allocating 272 bytes
+[   66.764356] DOUG: Allocating 528 bytes
+[   66.768275] DOUG: Allocating 8 bytes
+[   66.772236] DOUG: Allocating 272 bytes
+[   66.776135] DOUG: Allocating 528 bytes
+[   66.780013] DOUG: Allocating 8 bytes
+[   66.787244] DOUG: Allocating 272 bytes
+[   66.791175] DOUG: Allocating 528 bytes
+[   66.795056] DOUG: Allocating 8 bytes
+[   66.799101] DOUG: Allocating 272 bytes
+[   66.803007] DOUG: Allocating 528 bytes
+[   66.806930] DOUG: Allocating 8 bytes
+[   66.810775] DOUG: Allocating 272 bytes
+[   66.814668] DOUG: Allocating 528 bytes
+[   66.818544] DOUG: Allocating 8 bytes
+[   66.822409] DOUG: Allocating 272 bytes
+[   66.826328] DOUG: Allocating 528 bytes
+[   66.830258] DOUG: Allocating 8 bytes
+[   66.834331] DOUG: Allocating 272 bytes
+[   66.838510] DOUG: Allocating 528 bytes
+[   66.842399] DOUG: Allocating 8 bytes
+[   66.846301] DOUG: Allocating 272 bytes
+[   66.850181] DOUG: Allocating 528 bytes
+[   66.854051] DOUG: Allocating 8 bytes
+[   66.857864] DOUG: Allocating 272 bytes
+[   66.861745] DOUG: Allocating 528 bytes
+[   66.865621] DOUG: Allocating 8 bytes
+[   66.869495] DOUG: Allocating 272 bytes
+[   66.873384] DOUG: Allocating 528 bytes
+[   66.877261] DOUG: Allocating 8 bytes
+[   66.892077] DOUG: Allocating 528 bytes
+[   66.895978] DOUG: Allocating 16 bytes
+[   66.899760] DOUG: Allocating 264 bytes
+[   66.903624] DOUG: Allocating 264 bytes
+[   66.907489] DOUG: Allocating 4 bytes
+[   66.911184] DOUG: Allocating 279584 bytes
+[   66.915392] DOUG: Allocating 8768 bytes
+[   66.919354] DOUG: Allocating 65552 bytes
+[   66.923415] DOUG: Allocating 64 bytes
+[   66.927190] DOUG: Allocating 16 bytes
+[   66.930968] DOUG: Allocating 8 bytes
+[   66.934649] DOUG: Allocating 8 bytes
+[   66.938332] DOUG: Allocating 528 bytes
+[   66.942199] DOUG: Allocating 16 bytes
+[   66.945970] DOUG: Allocating 264 bytes
+[   66.949832] DOUG: Allocating 264 bytes
+[   66.953702] DOUG: Allocating 4 bytes
+[   66.957385] DOUG: Allocating 279584 bytes
+[   66.961605] DOUG: Allocating 8768 bytes
+[   66.965574] DOUG: Allocating 65552 bytes
+[   66.969632] DOUG: Allocating 64 bytes
+[   66.973405] DOUG: Allocating 16 bytes
+[   66.977179] DOUG: Allocating 8 bytes
+[   66.980862] DOUG: Allocating 8 bytes
+[   66.984553] DOUG: Allocating 528 bytes
+[   66.988416] DOUG: Allocating 16 bytes
+[   66.992191] DOUG: Allocating 264 bytes
+[   66.996046] DOUG: Allocating 264 bytes
+[   66.999907] DOUG: Allocating 4 bytes
+[   67.003590] DOUG: Allocating 279584 bytes
+[   67.007773] DOUG: Allocating 8768 bytes
+[   67.011732] DOUG: Allocating 65552 bytes
+[   67.015789] DOUG: Allocating 64 bytes
+[   67.019576] DOUG: Allocating 16 bytes
+[   67.023366] DOUG: Allocating 8 bytes
+[   67.027059] DOUG: Allocating 8 bytes
+[   67.030753] DOUG: Allocating 528 bytes
+[   67.034620] DOUG: Allocating 16 bytes
+[   67.038402] DOUG: Allocating 264 bytes
+[   67.042266] DOUG: Allocating 264 bytes
+[   67.046144] DOUG: Allocating 4 bytes
+[   67.049827] DOUG: Allocating 279584 bytes
+[   67.054026] DOUG: Allocating 8768 bytes
+[   67.057990] DOUG: Allocating 65552 bytes
+[   67.062050] DOUG: Allocating 64 bytes
+[   67.065826] DOUG: Allocating 16 bytes
+[   67.069603] DOUG: Allocating 8 bytes
+[   67.073285] DOUG: Allocating 8 bytes
+[   67.076977] DOUG: Allocating 528 bytes
+[   67.080836] DOUG: Allocating 16 bytes
+[   67.084605] DOUG: Allocating 264 bytes
+[   67.088461] DOUG: Allocating 264 bytes
+[   67.092328] DOUG: Allocating 4 bytes
+[   67.096015] DOUG: Allocating 279584 bytes
+[   67.100214] DOUG: Allocating 8768 bytes
+[   67.104182] DOUG: Allocating 65552 bytes
+[   67.108245] DOUG: Allocating 64 bytes
+[   67.112028] DOUG: Allocating 16 bytes
+[   67.115804] DOUG: Allocating 8 bytes
+[   67.119487] DOUG: Allocating 8 bytes
+[   67.123168] DOUG: Allocating 528 bytes
+[   67.127027] DOUG: Allocating 16 bytes
+[   67.130806] DOUG: Allocating 264 bytes
+[   67.134662] DOUG: Allocating 264 bytes
+[   67.138527] DOUG: Allocating 4 bytes
+[   67.142213] DOUG: Allocating 279584 bytes
+[   67.146402] DOUG: Allocating 8768 bytes
+[   67.150378] DOUG: Allocating 65552 bytes
+[   67.154434] DOUG: Allocating 64 bytes
+[   67.158209] DOUG: Allocating 16 bytes
+[   67.161980] DOUG: Allocating 8 bytes
+[   67.165665] DOUG: Allocating 8 bytes
+[   67.169355] DOUG: Allocating 528 bytes
+[   67.173219] DOUG: Allocating 16 bytes
+[   67.176989] DOUG: Allocating 264 bytes
+[   67.180847] DOUG: Allocating 264 bytes
+[   67.184710] DOUG: Allocating 4 bytes
+[   67.188385] DOUG: Allocating 279584 bytes
+[   67.192569] DOUG: Allocating 8768 bytes
+[   67.196522] DOUG: Allocating 65552 bytes
+[   67.200570] DOUG: Allocating 64 bytes
+[   67.204340] DOUG: Allocating 16 bytes
+[   67.208109] DOUG: Allocating 8 bytes
+[   67.211788] DOUG: Allocating 8 bytes
+[   67.215468] DOUG: Allocating 528 bytes
+[   67.219332] DOUG: Allocating 16 bytes
+[   67.223108] DOUG: Allocating 264 bytes
+[   67.226968] DOUG: Allocating 264 bytes
+[   67.230834] DOUG: Allocating 4 bytes
+[   67.234510] DOUG: Allocating 279584 bytes
+[   67.238697] DOUG: Allocating 8768 bytes
+[   67.242660] DOUG: Allocating 65552 bytes
+[   67.246716] DOUG: Allocating 64 bytes
+[   67.250487] DOUG: Allocating 16 bytes
+[   67.254261] DOUG: Allocating 8 bytes
+[   67.257955] DOUG: Allocating 8 bytes
+[   67.261640] DOUG: Allocating 528 bytes
+[   67.265497] DOUG: Allocating 16 bytes
+[   67.269267] DOUG: Allocating 264 bytes
+[   67.273131] DOUG: Allocating 264 bytes
+[   67.277026] DOUG: Allocating 4 bytes
+[   67.280721] DOUG: Allocating 279584 bytes
+[   67.284914] DOUG: Allocating 8768 bytes
+[   67.288868] DOUG: Allocating 65552 bytes
+[   67.292927] DOUG: Allocating 64 bytes
+[   67.296699] DOUG: Allocating 16 bytes
+[   67.300479] DOUG: Allocating 8 bytes
+[   67.304158] DOUG: Allocating 8 bytes
+[   67.307848] DOUG: Allocating 528 bytes
+[   67.311702] DOUG: Allocating 16 bytes
+[   67.315469] DOUG: Allocating 264 bytes
+[   67.319331] DOUG: Allocating 264 bytes
+[   67.323196] DOUG: Allocating 4 bytes
+[   67.326879] DOUG: Allocating 279584 bytes
+[   67.331067] DOUG: Allocating 8768 bytes
+[   67.335033] DOUG: Allocating 65552 bytes
+[   67.339089] DOUG: Allocating 64 bytes
+[   67.342866] DOUG: Allocating 16 bytes
+[   67.346641] DOUG: Allocating 8 bytes
+[   67.350323] DOUG: Allocating 8 bytes
+[   67.354005] DOUG: Allocating 528 bytes
+[   67.357869] DOUG: Allocating 16 bytes
+[   67.361636] DOUG: Allocating 264 bytes
+[   67.365492] DOUG: Allocating 264 bytes
+[   67.369355] DOUG: Allocating 4 bytes
+[   67.373040] DOUG: Allocating 279584 bytes
+[   67.377218] DOUG: Allocating 8768 bytes
+[   67.381179] DOUG: Allocating 65552 bytes
+[   67.385228] DOUG: Allocating 64 bytes
+[   67.389005] DOUG: Allocating 16 bytes
+[   67.392784] DOUG: Allocating 8 bytes
+[   67.396461] DOUG: Allocating 8 bytes
+[   67.400150] DOUG: Allocating 528 bytes
+[   67.404011] DOUG: Allocating 16 bytes
+[   67.407792] DOUG: Allocating 264 bytes
+[   67.411649] DOUG: Allocating 264 bytes
+[   67.415506] DOUG: Allocating 4 bytes
+[   67.419184] DOUG: Allocating 279584 bytes
+[   67.423364] DOUG: Allocating 8768 bytes
+[   67.427320] DOUG: Allocating 65552 bytes
+[   67.431367] DOUG: Allocating 64 bytes
+[   67.435146] DOUG: Allocating 16 bytes
+[   67.438923] DOUG: Allocating 8 bytes
+[   67.442602] DOUG: Allocating 8 bytes
+[   67.446286] DOUG: Allocating 528 bytes
+[   67.450143] DOUG: Allocating 16 bytes
+[   67.453913] DOUG: Allocating 264 bytes
+[   67.457775] DOUG: Allocating 264 bytes
+[   67.461637] DOUG: Allocating 4 bytes
+[   67.465323] DOUG: Allocating 279584 bytes
+[   67.469501] DOUG: Allocating 8768 bytes
+[   67.473463] DOUG: Allocating 65552 bytes
+[   67.477511] DOUG: Allocating 64 bytes
+[   67.481283] DOUG: Allocating 16 bytes
+[   67.485056] DOUG: Allocating 8 bytes
+[   67.488735] DOUG: Allocating 8 bytes
+[   67.492428] DOUG: Allocating 528 bytes
+[   67.496298] DOUG: Allocating 16 bytes
+[   67.500072] DOUG: Allocating 264 bytes
+[   67.503932] DOUG: Allocating 264 bytes
+[   67.507803] DOUG: Allocating 4 bytes
+[   67.511484] DOUG: Allocating 279584 bytes
+[   67.515667] DOUG: Allocating 8768 bytes
+[   67.519624] DOUG: Allocating 65552 bytes
+[   67.523679] DOUG: Allocating 64 bytes
+[   67.527447] DOUG: Allocating 16 bytes
+[   67.531222] DOUG: Allocating 8 bytes
+[   67.534907] DOUG: Allocating 8 bytes
+[   67.538593] DOUG: Allocating 528 bytes
+[   67.542458] DOUG: Allocating 16 bytes
+[   67.546225] DOUG: Allocating 264 bytes
+[   67.550090] DOUG: Allocating 264 bytes
+[   67.553956] DOUG: Allocating 4 bytes
+[   67.557634] DOUG: Allocating 279584 bytes
+[   67.561818] DOUG: Allocating 8768 bytes
+[   67.565775] DOUG: Allocating 65552 bytes
+[   67.569823] DOUG: Allocating 64 bytes
+[   67.573602] DOUG: Allocating 16 bytes
+[   67.577380] DOUG: Allocating 8 bytes
+[   67.581060] DOUG: Allocating 8 bytes
+[   67.584748] DOUG: Allocating 528 bytes
+[   67.588607] DOUG: Allocating 16 bytes
+[   67.592384] DOUG: Allocating 264 bytes
+[   67.596240] DOUG: Allocating 264 bytes
+[   67.600105] DOUG: Allocating 4 bytes
+[   67.603786] DOUG: Allocating 279584 bytes
+[   67.607968] DOUG: Allocating 8768 bytes
+[   67.611927] DOUG: Allocating 65552 bytes
+[   67.615979] DOUG: Allocating 64 bytes
+[   67.619757] DOUG: Allocating 16 bytes
+[   67.623529] DOUG: Allocating 8 bytes
+[   67.627216] DOUG: Allocating 8 bytes
+
+The above printouts were taken on a sc7180-trogdor-lazor device
+running mainline (roughly "Linux localhost 6.8.0-rc2") booted w/
+ChromeOS userspace.
+
+If you need me to dig more into how coredumps work then I can see if I
+can track down exactly what part of the coredump is causing it to need
+the big allocation. "chrome" is a bit of a beast of an application,
+though. I'd also note that chrome makes extensive use of address space
+randomization which uses up huge amounts of virtual address space, so
+a shot in the dark is that maybe that has something to do with it?
+Looking at the virtual address space of Chrome in "top" shows stuff
+like:
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+
+COMMAND
+ 2012 chronos   12  -8   32.7g 230520 160504 S   1.0   2.9   0:12.49
+chrome
+ 6044 chronos   12  -8   32.5g  95204  61888 S   1.0   1.2   0:05.90
+chrome
+ 2191 chronos   12  -8  107.0g  72200  51264 S   0.0   0.9   0:00.08
+chrome
+
+-Doug
 
