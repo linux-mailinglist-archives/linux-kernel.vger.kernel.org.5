@@ -1,153 +1,211 @@
-Return-Path: <linux-kernel+bounces-49064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61C15846570
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:34:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2646A846574
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:35:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E958D28734D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:34:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FAABB259EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:35:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7071463B7;
-	Fri,  2 Feb 2024 01:34:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EAE26FBB;
+	Fri,  2 Feb 2024 01:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="J02tDG6t"
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="c0kNUhLc"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C73F933FD
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 01:34:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C47A563AD;
+	Fri,  2 Feb 2024 01:35:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706837666; cv=none; b=slPHl7hlYvOmaxwSaALChRNe1Y8CATZ17Jkvhdc787tCoOUdRXh2U/hDPvLpxUOnYsC4155wuLPkJ+/qqiCBARs/9WwV815hPgzHTetGz32Hxh4CkBo+HjMlcn/VL15abPdpS471r6r1v2Tn4WEaHHTCUKz8LEd232nifKcigvc=
+	t=1706837724; cv=none; b=ueV6xPjUBtp5mynErLLzU5xUQ8DZrwTf6te2RJfMGuz5FEEc34ogFoLl+mdLBsHci1uPtRWbPiuK2qIYoOGQ10cwxjo0OQVnVtvRqC/NZKNVG4igecOdHHuQZtzzDB89poyrUD0sYcP4eL649c9DJADBZi6ePjpWoid5x6vShsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706837666; c=relaxed/simple;
-	bh=7ihXqqZLoq0FoRue8iQkfFrTtELwLrJz4KU3OQJCe80=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type:
-	 References; b=KdKNxMPvNoqzSAO1Mav2/CrTHPfGoX1fO3boIQu08aSABhgTE/REyQ9kOIdnO2HrtZI6RwY99iuqvm+d7t/qAUu3j6X/1vvFhgGjjlRez6ZRQ4+C45BnkHsO61etYr1oP3rWayUeRppwwBgPuGf8lRH+cfWNesV+x1H4n24iLwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=J02tDG6t; arc=none smtp.client-ip=203.254.224.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20240202013415epoutp01ab45040117f2fb619ce0c77f770e8655~v583xmuhg3120731207epoutp01a
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 01:34:15 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20240202013415epoutp01ab45040117f2fb619ce0c77f770e8655~v583xmuhg3120731207epoutp01a
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1706837655;
-	bh=8GM3DMWIehaIuX6fmNbvXTvKHtAEeQ9Hv6/OgIbhMMo=;
-	h=From:To:Cc:Subject:Date:References:From;
-	b=J02tDG6tfz2FkiYaINn6ubQOyNS3ZrRrIYz+nLGmiQv8Le/fpLvibqy7m2v0n8g/n
-	 5/JFv4YanwzvQUJH0jKXHZVRoy2qLI0vadEDBSayhv7perONc+Hqso1bVtz2rfR9KL
-	 PD2QU/xnY83yh/FHcWFHSDIl5rb76H1StJHFZUK0=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-	epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-	20240202013415epcas1p22951ef1e68aed7d3df507e3c2b5f166e~v583Upl7m0486804868epcas1p2y;
-	Fri,  2 Feb 2024 01:34:15 +0000 (GMT)
-Received: from epsmgec1p1.samsung.com (unknown [182.195.36.226]) by
-	epsnrtp1.localdomain (Postfix) with ESMTP id 4TQyx26ZKmz4x9Q2; Fri,  2 Feb
-	2024 01:34:14 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-	epsmgec1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-	B6.DB.09731.6964CB56; Fri,  2 Feb 2024 10:34:14 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240202013414epcas1p28ce117bb1e5e7f03b68365ec0d3a9c89~v5827Ksav0510905109epcas1p2p;
-	Fri,  2 Feb 2024 01:34:14 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240202013414epsmtrp181332c4fdbca611578c43d154ba5646f~v5826ZQ1r2668826688epsmtrp1d;
-	Fri,  2 Feb 2024 01:34:14 +0000 (GMT)
-X-AuditID: b6c32a36-cebfd70000002603-d1-65bc4696dbd7
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	21.BC.07368.6964CB56; Fri,  2 Feb 2024 10:34:14 +0900 (KST)
-Received: from parkseongsu-desktop.. (unknown [10.252.69.73]) by
-	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240202013414epsmtip12c9d966537b12e277ad53582da875ee6~v582n_4is1032810328epsmtip15;
-	Fri,  2 Feb 2024 01:34:14 +0000 (GMT)
-From: Seongsu Park <sgsu.park@samsung.com>
-To: catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
-	broonie@kernel.org, oliver.upton@linux.dev, suzuki.poulose@arm.com,
-	maz@kernel.org, ryan.roberts@arm.com
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Seongsu Park <sgsu.park@samsung.com>
-Subject: [PATCH] arm64: fix typo in comments
-Date: Fri,  2 Feb 2024 10:33:06 +0900
-Message-Id: <20240202013306.883777-1-sgsu.park@samsung.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706837724; c=relaxed/simple;
+	bh=byn2POXh2oOuWy72oilG/vfGimtqV+4BabC/M/lIcF8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iB18LSRTj0sMKRUZfglAPFzx1kYd0b7XruvS8YdalYWtQBFDtZBwE47RzM1K4tiafImtTzDyfuVtrJxSDPUAEBAz8u/j8eG3o1Gk8WjgIbNDZ3Mpa185+wMIdFkEDQl+HNKkdGeAwm06IAKvJt4YS9+41pxp8uxNyCdA8333SCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=c0kNUhLc; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=D1Zk9eHb/+VoL10gbkI+Wk7ITnBQURZGS/tiJLappS4=; b=c0kNUhLcPT6EjXrjJCWLtufBdz
+	DyfPuatxs06fFMN9zRmii+2p/tgmnS0nqfKXaE5LBI5uVaJOjmM3yPmtUCeWgZPV8EENHRM+D8CcX
+	Y2AZ3NJTzcRKuAfuOWihWMvKPuF9KYsNGVYE0uOaWJTVcK3CsL4oTSYufzqrSDQgIQ4Q=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rViSV-006jj6-Ss; Fri, 02 Feb 2024 02:35:11 +0100
+Date: Fri, 2 Feb 2024 02:35:11 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [net-next PATCH v5 7/9] net: phy: qcom: add support for QCA807x
+ PHY Family
+Message-ID: <a530f40c-b8fd-4da1-b4df-f80ab05f0394@lunn.ch>
+References: <20240201151747.7524-1-ansuelsmth@gmail.com>
+ <20240201151747.7524-8-ansuelsmth@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupkk+LIzCtJLcpLzFFi42LZdlhTV3ea255UgzX/TSymPnzCZvF+WQ+j
-	xabH11gtLu+aw2ax9PpFJoudc06yWkz9+YbNomf3VEaL9w1drBYzb99mtGi5Y+rA7bFm3hpG
-	j02rOtk8FjZMZfbYvKTeo2/LKkaPz5vkAtiism0yUhNTUosUUvOS81My89JtlbyD453jTc0M
-	DHUNLS3MlRTyEnNTbZVcfAJ03TJzgK5TUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gqpRak
-	5BSYFegVJ+YWl+al6+WlllgZGhgYmQIVJmRnPP50j6Wgg61i14VLTA2Mv1m6GDk5JARMJNrf
-	bWTuYuTiEBLYwSjx6cAXJgjnE6PEh/8z2EGqhAS+MUp8OV0B03Htww6ojr2MEg8bNyJ0HJvU
-	yQhSxSagJbH6Xy87SEJEYAOjxLy7V9lAEswCeRJXbr5kBbGFBXQkGlZNA7NZBFQl3lzZwwxi
-	8wpYS/w6e4oJYp28xP6DZ6HighInZz5hgZgjL9G8dTbYGRICX9klPnZ/gmpwkTjScokNwhaW
-	eHV8CzuELSXxsr8Nyi6W2PdlDTOEXSPxYN4eKNteouNZG9ACDqAFmhLrd+lD7OKTePe1hxUk
-	LCHAK9HRJgRhKkuc2+oIYUpK/FmgBzHDQ2Lnr3XMkHCLlVh++i/zBEa5WUjun4Xk/lkIqxYw
-	Mq9iFEstKM5NTy02LDCCx2Nyfu4mRnCa1DLbwTjp7Qe9Q4xMHIyHGCU4mJVEeFfK7UwV4k1J
-	rKxKLcqPLyrNSS0+xGgKDNGJzFKiyfnARJ1XEm9oYmlgYmZkYmFsaWymJM575kpZqpBAemJJ
-	anZqakFqEUwfEwenVANT3iwe999+y2bliK5Q/jyDNS578W/FuiNznxy/mXqt7Rpbq/6d21lv
-	fy75Zit+PJ/HlPeIpuRCdmt93+XS7Ac8vmx6F7Ly0g2X2W6/VqddV/G90e4nviXu+vekvU+W
-	7I/NELu4Y5/A0YmuOle4hTmsj3+/l9EeX7+i55NqyfnTIRJx1yuM9ntJ1Gqt3/m2zX7ypenL
-	eb7uvCQdXiPyPvnTq6VtP+VFVtw49T1qfhfLoZzrH5R+8xyQf8+a2MJU0ZsvFcMyQ//kiow5
-	J7mDOk+ePyH+cWOLxqrKw2+YphXe73fm9tz+NOH1nEXmyqGXmrnL5TezLwiw1RUvNYmaPelU
-	w1Vn/+uJohPnCx5m8H4rqcRSnJFoqMVcVJwIAFmgPFMcBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGLMWRmVeSWpSXmKPExsWy7bCSnO40tz2pBk/PS1pMffiEzeL9sh5G
-	i02Pr7FaXN41h81i6fWLTBY755xktZj68w2bRc/uqYwW7xu6WC1m3r7NaNFyx9SB22PNvDWM
-	HptWdbJ5LGyYyuyxeUm9R9+WVYwenzfJBbBFcdmkpOZklqUW6dslcGU8/nSPpaCDrWLXhUtM
-	DYy/WboYOTkkBEwkrn3YwdzFyMUhJLCbUeLVv1tQCUmJ9neXgWwOIFtY4vDhYoiaD4wSr7/O
-	ZAepYRPQklj9r5cdJCEisItR4u6BRkaQBLNAgcT5f1vABgkL6Eg0rJrGCmKzCKhKvLmyhxnE
-	5hWwlvh19hQTxDJ5if0Hz0LFBSVOznzCAjFHXqJ562zmCYx8s5CkZiFJLWBkWsUomVpQnJue
-	m2xYYJiXWq5XnJhbXJqXrpecn7uJERzUWho7GO/N/6d3iJGJg/EQowQHs5II70q5nalCvCmJ
-	lVWpRfnxRaU5qcWHGKU5WJTEeQ1nzE4REkhPLEnNTk0tSC2CyTJxcEo1MJUcuhF16oH6/TTB
-	SOW/T4XulWr7WdXOT37NuKTD5dqWFaLPvfv3RE37n8mXHCqab/+514h/cu3vsKcXdfeezRIM
-	iUtfuML4dOTD3Z80Ux6ueL9OZsa662k8vRO45mYfVt70u5xTtjgliCc9+O4nJ7FLPxa217Yt
-	7D8cdot5/cc7dZODedP0KmWVq9698y6Ps1Oas+H8zJ3X/x7+u1szYyOn+gPO9+Wnp7SWbGLx
-	Tlyl5/35G4ta/9sFd1nqwyT6HerrU08dPdd22b1gQ5C/D/P8hJDFTu9nnz04V+NE+inuyOkC
-	ojpxza5v1lqe8WN+uG/Pltfll4s3xzfeeytybF2zlOx67jSGx1UXLM12flBiKc5INNRiLipO
-	BAAmCnUh2QIAAA==
-X-CMS-MailID: 20240202013414epcas1p28ce117bb1e5e7f03b68365ec0d3a9c89
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240202013414epcas1p28ce117bb1e5e7f03b68365ec0d3a9c89
-References: <CGME20240202013414epcas1p28ce117bb1e5e7f03b68365ec0d3a9c89@epcas1p2.samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201151747.7524-8-ansuelsmth@gmail.com>
 
-fix typo in comments
+> +static int qca807x_read_fiber_status(struct phy_device *phydev)
+> +{
+> +	int ss, err, lpa, old_link = phydev->link;
+> +
+> +	/* Update the link, but return if there was an error */
+> +	err = genphy_update_link(phydev);
+> +	if (err)
+> +		return err;
+> +
+> +	/* why bother the PHY if nothing can have changed */
+> +	if (phydev->autoneg == AUTONEG_ENABLE && old_link && phydev->link)
+> +		return 0;
+> +
+> +	phydev->speed = SPEED_UNKNOWN;
+> +	phydev->duplex = DUPLEX_UNKNOWN;
+> +	phydev->pause = 0;
+> +	phydev->asym_pause = 0;
+> +
+> +	if (phydev->autoneg == AUTONEG_ENABLE && phydev->autoneg_complete) {
+> +		lpa = phy_read(phydev, MII_LPA);
+> +		if (lpa < 0)
+> +			return lpa;
+> +
+> +		linkmode_mod_bit(ETHTOOL_LINK_MODE_Autoneg_BIT,
+> +				 phydev->lp_advertising, lpa & LPA_LPACK);
+> +		linkmode_mod_bit(ETHTOOL_LINK_MODE_1000baseX_Full_BIT,
+> +				 phydev->lp_advertising, lpa & LPA_1000XFULL);
+> +		linkmode_mod_bit(ETHTOOL_LINK_MODE_Pause_BIT,
+> +				 phydev->lp_advertising, lpa & LPA_1000XPAUSE);
+> +		linkmode_mod_bit(ETHTOOL_LINK_MODE_Asym_Pause_BIT,
+> +				 phydev->lp_advertising,
+> +				 lpa & LPA_1000XPAUSE_ASYM);
+> +
+> +		phy_resolve_aneg_linkmode(phydev);
+> +	}
 
-thath -> that
+This looks a lot like genphy_c37_read_status(). Can it be used?
 
-Signed-off-by: Seongsu Park <sgsu.park@samsung.com>
----
- arch/arm64/include/asm/cpufeature.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +
+> +	/* Read the QCA807x PHY-Specific Status register fiber page,
+> +	 * which indicates the speed and duplex that the PHY is actually
+> +	 * using, irrespective of whether we are in autoneg mode or not.
+> +	 */
+> +	ss = phy_read(phydev, AT803X_SPECIFIC_STATUS);
+> +	if (ss < 0)
+> +		return ss;
+> +
+> +	if (ss & AT803X_SS_SPEED_DUPLEX_RESOLVED) {
+> +		switch (FIELD_GET(AT803X_SS_SPEED_MASK, ss)) {
+> +		case AT803X_SS_SPEED_100:
+> +			phydev->speed = SPEED_100;
+> +			break;
+> +		case AT803X_SS_SPEED_1000:
+> +			phydev->speed = SPEED_1000;
+> +			break;
+> +		}
+> +
+> +		if (ss & AT803X_SS_DUPLEX)
+> +			phydev->duplex = DUPLEX_FULL;
+> +		else
+> +			phydev->duplex = DUPLEX_HALF;
+> +	}
+> +
+> +	return 0;
+> +}
 
-diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index 21c824edf8ce..bd8d4ca81a48 100644
---- a/arch/arm64/include/asm/cpufeature.h
-+++ b/arch/arm64/include/asm/cpufeature.h
-@@ -83,7 +83,7 @@ struct arm64_ftr_bits {
-  * to full-0 denotes that this field has no override
-  *
-  * A @mask field set to full-0 with the corresponding @val field set
-- * to full-1 denotes thath this field has an invalid override.
-+ * to full-1 denotes that this field has an invalid override.
-  */
- struct arm64_ftr_override {
- 	u64		val;
--- 
-2.34.1
 
+> +static int qca807x_phy_package_probe_once(struct phy_device *phydev)
+> +{
+> +	struct phy_package_shared *shared = phydev->shared;
+> +	struct qca807x_shared_priv *priv = shared->priv;
+> +	unsigned int tx_driver_strength = 0;
+> +	const char *package_mode_name;
+> +
+> +	of_property_read_u32(shared->np, "qcom,tx-driver-strength",
+> +			     &tx_driver_strength);
+> +	switch (tx_driver_strength) {
+> +	case 140:
+> +		priv->tx_driver_strength = PQSGMII_TX_DRIVER_140MV;
+> +		break;
+> +	case 160:
+> +		priv->tx_driver_strength = PQSGMII_TX_DRIVER_160MV;
+> +		break;
+> +	case 180:
+> +		priv->tx_driver_strength = PQSGMII_TX_DRIVER_180MV;
+> +		break;
+> +	case 200:
+
+..
+
+> +	case 500:
+> +		priv->tx_driver_strength = PQSGMII_TX_DRIVER_500MV;
+> +		break;
+> +	case 600:
+> +	default:
+
+If its missing default to 600. But if its an invalid value, return
+-EINVAL.
+
+> +		priv->tx_driver_strength = PQSGMII_TX_DRIVER_600MV;
+> +	}
+> +
+> +	priv->package_mode = PHY_INTERFACE_MODE_NA;
+> +	if (!of_property_read_string(shared->np, "qcom,package-mode",
+> +				     &package_mode_name)) {
+> +		if (!strcasecmp(package_mode_name,
+> +				phy_modes(PHY_INTERFACE_MODE_PSGMII)))
+> +			priv->package_mode = PHY_INTERFACE_MODE_PSGMII;
+> +
+> +		if (!strcasecmp(package_mode_name,
+> +				phy_modes(PHY_INTERFACE_MODE_QSGMII)))
+> +			priv->package_mode = PHY_INTERFACE_MODE_QSGMII;
+
+Again, return -EINVAL if it is neither.
+
+> +static int qca807x_phy_package_config_init_once(struct phy_device *phydev)
+> +{
+> +	struct phy_package_shared *shared = phydev->shared;
+> +	struct qca807x_shared_priv *priv = shared->priv;
+> +	int val, ret;
+> +
+> +	phy_lock_mdio_bus(phydev);
+> +
+> +	/* Set correct PHY package mode */
+> +	val = __phy_package_read(phydev, QCA807X_COMBO_ADDR,
+> +				 QCA807X_CHIP_CONFIGURATION);
+> +	val &= ~QCA807X_CHIP_CONFIGURATION_MODE_CFG_MASK;
+> +	if (priv->package_mode == PHY_INTERFACE_MODE_QSGMII)
+> +		val |= QCA807X_CHIP_CONFIGURATION_MODE_QSGMII_SGMII;
+> +	else
+> +		val |= QCA807X_CHIP_CONFIGURATION_MODE_PSGMII_ALL_COPPER;
+
+What about priv->package_mode == PHY_INTERFACE_MODE_NA;
+
+     Andrew
 
