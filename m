@@ -1,188 +1,132 @@
-Return-Path: <linux-kernel+bounces-50448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A259A847965
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:14:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2D0984790E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:06:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A269FB301B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:07:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C593A1C2825C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:06:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4303A12D74C;
-	Fri,  2 Feb 2024 18:52:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z3rm69JN"
-Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D75012C80A;
+	Fri,  2 Feb 2024 18:52:00 +0000 (UTC)
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE8D712D744;
-	Fri,  2 Feb 2024 18:52:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E5168061C
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 18:51:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706899927; cv=none; b=aRXlnxn+sfnWNqh4vFSPYZsfX8f5VeHuZUl8Z7aeSc7W574pIAaNwO8UJZf7Sh4L40Vfw6SvvYc8Ll3CWLtuZgutgy66JUJ9rKeRGmwXZqIwLcW07oAGmlbtdoXC3gOaS4X4zbVPCqcB2O5hCdFrQjEez3+fBUcXoBSv95mS1zA=
+	t=1706899920; cv=none; b=Sgwy1p4V1nhHuntLM9h7ckJEfWX1LXor6QnCz4daxBz9ikAFq/VvUBE+ZEjfsAHYPCAL/lEiF3NoHDd7KlfSBmA9jIKbdOfeiYnMOKj00GRCqf16SibiFOiV66D7nk9BsgoXEq/nAIMPMhX5KlPv7i0B5y52Eh24TXac/fRoROw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706899927; c=relaxed/simple;
-	bh=Ok/UFu+vBcGlIKfmY4fxnPlqCPaUfQSbFxyVIYms/hs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oL1Fjp450RJ+Klk5A2CMzsbJFfgOhupb6HEyfTESvreRcFez6CnLNST5vpWurpyie5PlkpDT2imRPWgoKaoVocyZdOI0fRkgCWfaR+f5CkCINxW7lobuCpjwC/o2fcEOHeHw4ZLotpmghLB14oVeTE0/dutGNFoB7SVht99yyao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z3rm69JN; arc=none smtp.client-ip=209.85.217.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-467ed334c40so1048137137.0;
-        Fri, 02 Feb 2024 10:52:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706899925; x=1707504725; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OzAQr1ap8fenb+jIdc4mT63hDIxdhoa2yYpMaLdZczw=;
-        b=Z3rm69JNKI/vsFysVXxvaH6YC92YCjN7ssaKocJ/cIRTIvhORQaw5drCCZrGQWyGAF
-         n46d2JKonXj3hQod/ZFwnUgS0GJ2Jau5wtzl0M5F5xO99h1hL5UkDwkuWswObyCTMLHE
-         r/mkhjUY/FJny8mLweRH5Zi3hkaUqm0ZJfupoSx+7V3wMuzMKT8Beax3Dxycx91w4o1m
-         KlGYIc8sClwHGpV7W81OEuYwD3uaXnoOMAGYYw4jP977br8eiV4ggCuIER/yEp0uXDYq
-         tFHFg+kANvSf2ZgVh2ah1iJqmE28OZRU4DLoE73Mc6vnvNsbnn2mFoYQQUfKGQLoTsqn
-         +NSg==
+	s=arc-20240116; t=1706899920; c=relaxed/simple;
+	bh=AW0oiHNRWLwkj7DtXqlQs47sAiZxxTl/D0PavmFNNso=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I1U9meQzT8hVZFGJAvbgQ0xJwWS9ly7k58meP6lSj/rPM+NZL79Qt5UEctsybn3U3SoECi5NDHzal7HSnof+8mXcaGDUnlsCT0GY6CmDw+AJH9zCKv9+2T2dUztvIVWswxl04tWViw4VdBCdoDVM8/VRhXPNtjlxhGYMbVd2Z40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-5edfcba97e3so24475847b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 10:51:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706899925; x=1707504725;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OzAQr1ap8fenb+jIdc4mT63hDIxdhoa2yYpMaLdZczw=;
-        b=dUnU3gADMyPYjL86KvUO2X2N2/ZvE7MJ7qNUGsY58+npP/J+XsSdfhEBSFYOU3xx0o
-         o1vaQ/YiP6ccYqqh58csKTIi1YZxbt5+QB2BhTo32KX7PcwkL+allyLsixZlauNZ09bb
-         uEbc4QoFrFIAtMMKP/DEo85QuW6gkzawSdeY0mL/qgTgROE+QbtIuNQQFVhY5rAeNqVv
-         4E9H8yQ1qcKM/XcpRjmxrXFEOFi33sxaVsV+joomn2g6dg/HDrPLlLNhw+cLl5Mi0zU/
-         Etqw8XQgdRtBxD+0nuj/Ga3/M40yi/bSQaGGEnFZomp59/gVGzhRs/pDxEnIm7s7OeNS
-         pV4w==
-X-Gm-Message-State: AOJu0Yyf4rncxW0VtjQWQ89/BxAiztTZtEn2P3ovTLydbVCPgdR7B7Yw
-	XFTnYWb4rU1Ey4QnRGahnUm1l7vaPL4otunbzX5z9s9DOQJdg/dkzPJalt9q0o3WLHamhnQAprf
-	JAixE6zhcpa8eYHh/9LlNYKozCyw=
-X-Google-Smtp-Source: AGHT+IHpATLtM6UhFbndhKBf6EqvX2JU7kTp41znPx/PGymZrFwm9VYWH5L8GWXzPE4x5Ra7T6WPp/G2KIs4iBjH3LM=
-X-Received: by 2002:a05:6102:3167:b0:46d:647:67da with SMTP id
- l7-20020a056102316700b0046d064767damr2063513vsm.13.1706899924579; Fri, 02 Feb
- 2024 10:52:04 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706899917; x=1707504717;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ph1IYkDrzTvpiJ6XKsi8PGQTmUGSqWuwAi9y4521vtI=;
+        b=JX1VDm4wwTkuWff8nCsUEr/4hcboRnvnPpjdGaHQUig16dUYBdcTvLQh7bftO4kG/i
+         z44wrfhcMnAwlS5y+SqNSE3kAR3v7rFv5MMMg1w0Asss/QtStl3aIudPejtkXKABsMs4
+         jz8ezdLWAFQTe8M5whh2I+rWhfAKc2YBNPBOp+HpiG4kAVCZnwdG3QAApUpcWZoSs0mB
+         2kMQRz8JWPBkvLLkAnnXyfhvj7axqyUL0eXv/vgcZMkajVfAu5ChV80a7PT1w3cg2B9V
+         ndQtrkorX57lXfvHgr9pQYSS8JaaG8BleunOtzmHlmhDu2xO3mjfpArQJ6D0O09JDOtG
+         JUAg==
+X-Gm-Message-State: AOJu0Yz66aUPxgi7xSoRgsb6d64sfpwegN3LhjYWSNik1hkP2hgcKFHS
+	npZBq8PM62PxphwvyXBCJlwkoLrJuqYpGxeV3loRnFVkN5OSNNTt4X9FvhmidQ==
+X-Google-Smtp-Source: AGHT+IHzSoy9sIqCe1trQy3sTBHypeAjU5TzDYa4rgE3LRbYzokk0H0wQROhLE8FkkUDyWBrdMh9UA==
+X-Received: by 2002:a81:ac67:0:b0:5ff:76c5:f638 with SMTP id z39-20020a81ac67000000b005ff76c5f638mr3220501ywj.21.1706899917047;
+        Fri, 02 Feb 2024 10:51:57 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU5x0xesXnhPy9m+vbgtSeOvE2jww0i9Tjwtxsc+mWeiLpLHghmb3RgoPY4YlidsLDnh9x3De8P3Dt9d1SJ7zGdzjLP/BsqZYFGfpX1puybWRRjrAAqPrg6Ktc8pax+N869iCi2gOcJbZZaWcQSktZSCeyT40FCSqnrcPP3UwjwDlVFLZoMx8qVs2n3M7YiWUkTgPNrsW2NRUz+4Zo6ugS/86mC8XQAAWeTDT30JbBuV1XpdNX6nasJOGugz/oIEXSbcc560klHxu8kvj/237+hpVYVAeZAK9DwJZWTY0Tjhca9jtDd8n/nQxV302xWv0NqEu1BA4vMtf6AnIObINSGPRgeKt4GPfSHZxE4BMcZr6ONdXo9a2X1LVp17xYh7WlvWMXkIoRv7dYsAL3mW1QhG7rG1PVX33RFouQqbcgRQGIZ3FOUR0iO+rJU1ytJnDXNxfAEgAJfYvyWTd/N/s5vToYaZSWrWvg8t0HVG3/vcmIwTys+Rw7VuwvRAkdhSN2dhSyqk54dvFfYaKBoy2VbmNiA9bbraj9ohjRfLOxXqCPhCU7j6S9XCfmrOZOScFaQLApOiuY/h1xNV0lnsal7Tv+3
+Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
+        by smtp.gmail.com with ESMTPSA id gd19-20020a05622a5c1300b0042992b06012sm1080669qtb.2.2024.02.02.10.51.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 10:51:56 -0800 (PST)
+Date: Fri, 2 Feb 2024 13:51:55 -0500
+From: Mike Snitzer <snitzer@kernel.org>
+To: Fan Wu <wufan@linux.microsoft.com>
+Cc: corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+	serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
+	axboe@kernel.dk, agk@redhat.com, eparis@redhat.com,
+	paul@paul-moore.com, linux-doc@vger.kernel.org,
+	linux-integrity@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+	dm-devel@lists.linux.dev, audit@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v12 12/20] dm verity: set DM_TARGET_SINGLETON feature
+ flag
+Message-ID: <Zb05y2cl3T9rxRJZ@redhat.com>
+References: <1706654228-17180-1-git-send-email-wufan@linux.microsoft.com>
+ <1706654228-17180-13-git-send-email-wufan@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver>
- <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
- <20240201204512.ht3e33yj77kkxi4q@revolver> <CABi2SkWB2eV24LBJtgJ73zEwaAWuFhAwrfqx3Rs=tqnpcJ0qRw@mail.gmail.com>
- <58408.1706828083@cvs.openbsd.org> <CAHk-=wjqozic6JuRimXD=RamnJmD6FoaQki7RtNYrezzx_OfOg@mail.gmail.com>
- <CALmYWFtqcixi3p3Ab44wENJr+n2k2SNaCJEofNm_awnNdJZnDQ@mail.gmail.com>
- <8744.1706846710@cvs.openbsd.org> <CABi2SkWSt=UMFWe9n916ZH16wCzaipKXmEJ5VasQHMr1AxerxQ@mail.gmail.com>
- <29248.1706850035@cvs.openbsd.org> <CABi2SkXPNPKgqheuFuQ9iZApQkJm8o6bypNn0B-QDz_W9b0JBQ@mail.gmail.com>
-In-Reply-To: <CABi2SkXPNPKgqheuFuQ9iZApQkJm8o6bypNn0B-QDz_W9b0JBQ@mail.gmail.com>
-From: Pedro Falcato <pedro.falcato@gmail.com>
-Date: Fri, 2 Feb 2024 18:51:53 +0000
-Message-ID: <CAKbZUD1EsAVupRotYV-ed4PQ3sL5wM4M=f4n-6rF+QNp7C1m4g@mail.gmail.com>
-Subject: Re: [PATCH v8 0/4] Introduce mseal
-To: Jeff Xu <jeffxu@chromium.org>
-Cc: Theo de Raadt <deraadt@openbsd.org>, Jeff Xu <jeffxu@google.com>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org, keescook@chromium.org, 
-	jannh@google.com, sroettger@google.com, willy@infradead.org, 
-	gregkh@linuxfoundation.org, usama.anjum@collabora.com, rdunlap@infradead.org, 
-	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, dave.hansen@intel.com, 
-	linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1706654228-17180-13-git-send-email-wufan@linux.microsoft.com>
 
-On Fri, Feb 2, 2024 at 5:59=E2=80=AFPM Jeff Xu <jeffxu@chromium.org> wrote:
->
-> On Thu, Feb 1, 2024 at 9:00=E2=80=AFPM Theo de Raadt <deraadt@openbsd.org=
-> wrote:
-> >
-> > Jeff Xu <jeffxu@chromium.org> wrote:
-> >
-> > > Even without free.
-> > > I personally do not like the heap getting sealed like that.
-> > >
-> > > Component A.
-> > > p=3Dmalloc(4096);
-> > > writing something to p.
-> > >
-> > > Compohave nent B:
-> > > mprotect(p,4096, RO)
-> > > mseal(p,4096)
-> > >
-> > > This will split the heap VMA, and prevent the heap from shrinking, if
-> > > this is in a frequent code path, then it might hurt the process's
-> > > memory usage.
-> > >
-> > > The existing code is more likely to use malloc than mmap(), so it is
-> > > easier for dev to seal a piece of data belonging to another component=
-.
-> > > I hope this pattern is not wide-spreading.
-> > >
-> > > The ideal way will be just changing the library A to use mmap.
-> >
-> > I think you are lacking some test programs to see how it actually
-> > behaves; the effect is worse than you think, and the impact is immediat=
-ely
-> > visible to the programmer, and the lesson is clear:
-> >
-> >         you can only seal objects which you gaurantee never get recycle=
-d.
-> >
-> >         Pushing a sealed object back into reuse is a disasterous bug.
-> >
-> >         Noone should call this interface, unless they understand that.
-> >
-> > I'll say again, you don't have a test program for various allocators to
-> > understand how it behaves.  The failure modes described in your docuemn=
-ts
-> > are not correct.
-> >
-> I understand what you mean: I will add that part to the document:
-> Try to recycle a sealed memory is disastrous, e.g.
-> p=3Dmalloc(4096);
-> mprotect(p,4096,RO)
-> mseal(p,4096)
-> free(p);
->
-> My point is:
-> I think sealing an object from the heap is a bad pattern in general,
-> even dev doesn't free it. That was one of the reasons for the sealable
-> flag, I hope saying this doesn't be perceived as looking for excuses.
+On Tue, Jan 30 2024 at  5:37P -0500,
+Fan Wu <wufan@linux.microsoft.com> wrote:
 
-The point you're missing is that adding MAP_SEALABLE reduces
-composability. With MAP_SEALABLE, everything that mmaps some part of
-the address space that may ever be sealed will need to be modified to
-know about MAP_SEALABLE.
+> The device-mapper has a flag to mark targets as singleton, which is a
+> required flag for immutable targets. Without this flag, multiple
+> dm-verity targets can be added to a mapped device, which has no
+> practical use cases and will let dm_table_get_immutable_target return
+> NULL. This patch adds the missing flag, restricting only one
+> dm-verity target per mapped device.
+> 
+> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+> 
+> ---
+> v1-v10:
+>   + Not present
+> 
+> v11:
+>   + Introduced
+> 
+> v12:
+>   + No changes
+> ---
+>  drivers/md/dm-verity-target.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
+> index 14e58ae70521..66a850c02be4 100644
+> --- a/drivers/md/dm-verity-target.c
+> +++ b/drivers/md/dm-verity-target.c
+> @@ -1507,7 +1507,7 @@ int dm_verity_get_root_digest(struct dm_target *ti, u8 **root_digest, unsigned i
+>  
+>  static struct target_type verity_target = {
+>  	.name		= "verity",
+> -	.features	= DM_TARGET_IMMUTABLE,
+> +	.features	= DM_TARGET_SINGLETON | DM_TARGET_IMMUTABLE,
+>  	.version	= {1, 9, 0},
+>  	.module		= THIS_MODULE,
+>  	.ctr		= verity_ctr,
+> -- 
+> 2.43.0
+> 
+> 
 
-Say you did the same thing for mprotect. MAP_PROTECT would control the
-mprotectability of the map. You'd stop:
+It is true this change will cause dm_table_get_immutable_target() to
+not return NULL, but: I'm curious how that is meaningful in the
+context of dm-verity? (given the only caller of
+dm_table_get_immutable_target() is request-based DM code in DM core.)
 
-p =3D malloc(4096);
-mprotect(p, 4096, PROT_READ);
-free(p);
-
-! But you'd need to change every spot that mmap()'s something to know
-about and use MAP_PROTECT: all "producers" of mmap memory would need
-to know about the consumers doing mprotect(). So now either all mmap()
-callers mindlessly add MAP_PROTECT out of fear the consumers do
-mprotect (and you gain nothing from MAP_PROTECT), or the mmap()
-callers need to know the consumers call mprotect(), and thus you
-introduce a huge layering violation (and you actually lose from having
-MAP_PROTECT).
-
-Hopefully you can map the above to MAP_SEALABLE. Or to any other m*()
-operation. For example, if chrome runs on an older glibc that does not
-know about MAP_SEALABLE, it will not be able to mseal() its own shared
-libraries' .text (even if, yes, that should ideally be left to ld.so).
-
-IMO, UNIX API design has historically mostly been "play stupid games,
-win stupid prizes", which is e.g: why things like close(STDOUT_FILENO)
-work. If you close stdout (and don't dup/reopen something to stdout)
-and printf(), things will break, and you get to keep both pieces.
-There's no O_CLOSEABLE, just as there's no O_DUPABLE.
-
---=20
-Pedro
+Thanks,
+Mike
 
