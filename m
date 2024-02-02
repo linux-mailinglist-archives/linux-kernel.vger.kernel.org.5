@@ -1,126 +1,128 @@
-Return-Path: <linux-kernel+bounces-49540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4342D846BA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:14:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8C19846BA8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:15:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECECB282550
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:14:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 181361C271A6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:15:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 186FD7763A;
-	Fri,  2 Feb 2024 09:14:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CesPhn6o"
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED3D05FDCA;
-	Fri,  2 Feb 2024 09:14:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFF107763B;
+	Fri,  2 Feb 2024 09:15:33 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36B0CF50D;
+	Fri,  2 Feb 2024 09:15:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706865250; cv=none; b=u3JzoM0CWDOobeovI//Iwp9aVAoaenI0NR/bbFApG4y4kpUgTvClDfqJhc3q514p9L/jzXFa5uVncoaAw2S8lR7vyK8/DOJ+sZ3PXunrNJElbsdWmnlq15mwkgiuOou8Lj3KeNgXAbMfwosrFh1RVQ/0SO0nPFq/j/GcjqZbRjI=
+	t=1706865333; cv=none; b=OhiT/jWZRszckjY/DgIgbhPdk6AJgBlK/SuhOcw7eXx/Z7VMl2DcnMOr7106m/uLsyKsjUCMiwkfxI20ZBO8V2fzbgLQ17QJfBO8RhYVoBhGrs4ukOYHip4PutubXN/uixB2imEi+ZJLZQuDqKgTpSijJ5h4RqV7KUXjusdeKaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706865250; c=relaxed/simple;
-	bh=kBYTNwS6Us4GwZnCPZJooUBVvwncpX0u33cfM3dFqGI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hk/xd7Yo9oQPAu4g3wLhgx0Sg23TRaf3/lI3ai1w+TaWsl+Mt5vKouhoSCuwC2FCg81ERrnwevtLJ3w++XRZQG7nV6WTZGKi/SWVfKSDN4HbeI3Aw7Jx8jy1l7j0CDBJr7VcrzwqriFwQWECW09vzweIWB7Qxi+/cT8oYgACDW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CesPhn6o; arc=none smtp.client-ip=209.85.219.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-686a92a8661so10131326d6.0;
-        Fri, 02 Feb 2024 01:14:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706865248; x=1707470048; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IbAAumpPfIt/JaTeqaHTjOEYGyvHU1h2sRc7QPBrzJg=;
-        b=CesPhn6oKXwzsMtkSUIVncY8vUSkgTmZWHiNhhGLrmbAYOtPWltgxubYX82vefP8hj
-         /GY3b6Lv0jkVJiCIhlCVYsqVm2duOl4TOfnJXjJr3Zm4l+YJH7at2febunwBSwVNtCD9
-         L44crv6f9cQiJNdKMOIVBi1agAaMnlTkbSIctjrHpxnbRK0HeBnFLBpOqS9mYCIv7kCi
-         eIy1FZXsYYD8hiWplD4wLRvaCyA18n+OhIFJu5uOwmJmLrRtCQs58ae8Q6zCaHMN9oJ9
-         xNJswBUfQhYlFTRgBhOEX63ctz298ay3UCFvnLHNHvY6GQlGHyyAPiImDuPznIxzedg9
-         ymCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706865248; x=1707470048;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IbAAumpPfIt/JaTeqaHTjOEYGyvHU1h2sRc7QPBrzJg=;
-        b=rCX2bDFUVevx8bVFFwkrxp9deMJi7jy1MaHVgdC9Rkoxongl4Kt3vSEtCEQd7EHKQT
-         iD2pPHXVOkNqFKluNOGgVXW0/kPhX5Y/vp+Stssi/TkTy0uBLo7v9H2RBd9nhTDaTuR8
-         lhL1Yyx6HR9pouIg59gWk20VGdqgS9AHIeLVYIIDcNZIgoUfcpSuMFj1u1h0YKl0OMEl
-         5H+cUItkv7FQFcFhzpENBTmpCvg/uznDGEukXrRw3V3twgWKA64zJGxsHfcGkMUWaFl5
-         NspxHZDReg9fGNwE6SPlZyv3XDOw3BRYQ92Pv7d4XSRnAKVsc8ve1hUNeBjVgkt2FkyI
-         9ikQ==
-X-Gm-Message-State: AOJu0YzhF2Og0uKuPJRqNdCdAM3U9EAFK2zxX5zDEirtichPrZDgmfnm
-	rcvBCSgyM/RJYZe8VhVF0v5xyJly8oaOy/sVhOKZuEP0imDaB0YeExu0jaLIr5pW9RaHZ15ipo2
-	5T3SJYFwN9FVKzGhF2d537IvoAkM=
-X-Google-Smtp-Source: AGHT+IEA6Ff4lcXRh07SyKhXAs07igcF4REEo54H7o8fp0nV88H0+Q3BYm+9VXx6KrD6j55EIuIdaID2z7TnHzCt2R4=
-X-Received: by 2002:a0c:a99b:0:b0:686:ad1a:ecb7 with SMTP id
- a27-20020a0ca99b000000b00686ad1aecb7mr1009057qvb.42.1706865247858; Fri, 02
- Feb 2024 01:14:07 -0800 (PST)
+	s=arc-20240116; t=1706865333; c=relaxed/simple;
+	bh=nOB2zNCHmxLdT4OymTGgdgqRYFwfwOcpl02fc6ZMVZ4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vq/kqRvOHzGUxM+hmuCPp9lzwemkdhE++jYvASkQIJ+5CiQVd/1y8Zovn22LEZKmP7l2WhbW/jF/VtOM05dAJM7JLlYwfcKUACiXIT1XDKDB4lWUVyVUSkg7C4z6OOYEjZbaJi2jS3LufJ9egRNscaXxoSpjp/JZbz+tE0IEUIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9170FDA7;
+	Fri,  2 Feb 2024 01:16:11 -0800 (PST)
+Received: from e129154.nice.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF38F3F5A1;
+	Fri,  2 Feb 2024 01:15:24 -0800 (PST)
+Date: Fri, 2 Feb 2024 10:14:47 +0100
+From: Beata Michalska <beata.michalska@arm.com>
+To: Ionela Voinescu <ionela.voinescu@arm.com>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-pm@vger.kernel.org, sumitg@nvidia.com, sudeep.holla@arm.covm,
+	will@kernel.org, catalin.marinas@arm.com, viresh.kumar@linaro.org,
+	rafael@kernel.org, yang@os.amperecomputing.com,
+	linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] cpufreq: Wire-up arch-flavored freq info into
+ cpufreq_verify_current_freq
+Message-ID: <ZbyyhxYACe07vocu@e129154.nice.arm.com>
+References: <20231127160838.1403404-1-beata.michalska@arm.com>
+ <20231127160838.1403404-3-beata.michalska@arm.com>
+ <ZWXy0h/fFfQh+Rhy@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202401312229.eddeb9a6-oliver.sang@intel.com> <CAOQ4uxiwCGxBBbz3Edsu-aeJbNzh5b-+gvTHwtBFnCvbto2v-g@mail.gmail.com>
-In-Reply-To: <CAOQ4uxiwCGxBBbz3Edsu-aeJbNzh5b-+gvTHwtBFnCvbto2v-g@mail.gmail.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 2 Feb 2024 11:13:56 +0200
-Message-ID: <CAOQ4uxgAaApTVxxPLKH69PMP-5My=1vS_c6TGqvV5MizMKoaiw@mail.gmail.com>
-Subject: Re: [linus:master] [remap_range] dfad37051a: stress-ng.file-ioctl.ops_per_sec
- -11.2% regression
-To: kenel test robot <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org, 
-	Christian Brauner <brauner@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
-	Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org, 
-	ying.huang@intel.com, feng.tang@intel.com, fengwei.yin@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWXy0h/fFfQh+Rhy@arm.com>
 
-On Wed, Jan 31, 2024 at 5:47=E2=80=AFPM Amir Goldstein <amir73il@gmail.com>=
- wrote:
->
-> On Wed, Jan 31, 2024 at 4:13=E2=80=AFPM kenel test robot <oliver.sang@int=
-el.com> wrote:
-> >
-> >
-> >
-> > Hello,
-> >
-> > kernel test robot noticed a -11.2% regression of stress-ng.file-ioctl.o=
-ps_per_sec on:
-> >
-> >
-> > commit: dfad37051ade6ac0d404ef4913f3bd01954ee51c ("remap_range: move pe=
-rmission hooks out of do_clone_file_range()")
-> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> >
->
-> Can you please try this fix:
->
->  7d4213664bda remap_range: move sanity checks out of do_clone_file_range(=
-)
->
-> from:
->
-> https://github.com/amir73il/linux ovl-fixes
->
+Hi Ionela,
 
-Sorry, Oliver, this was a buggy commit.
-I pushed this fixes version to ovl-fixes branch:
+So sorry for relpying so late, lost if from my rader for a while ...
+On Tue, Nov 28, 2023 at 02:01:54PM +0000, Ionela Voinescu wrote:
+> Hi Beata, Sumit,
+> 
+> On Monday 27 Nov 2023 at 16:08:38 (+0000), Beata Michalska wrote:
+> > From: Sumit Gupta <sumitg@nvidia.com>
+> > 
+> > When available, use arch_freq_get_on_cpu to obtain current frequency
+> > (usually an average reported over given period of time)
+> > to better align the cpufreq's view on the current state of affairs.
+> > This also automatically pulls in the update for cpuinfo_cur_freq sysfs
+> > attribute, aligning it with the scaling_cur_freq one, and thus providing
+> > consistent view on relevant platforms.
+> > 
+> > Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> > [BM: Subject & commit msg]
+> > Signed-off-by: Beata Michalska <beata.michalska@arm.com>
+> > ---
+> >  drivers/cpufreq/cpufreq.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> > index 8c4f9c2f9c44..109559438f45 100644
+> > --- a/drivers/cpufreq/cpufreq.c
+> > +++ b/drivers/cpufreq/cpufreq.c
+> > @@ -1756,7 +1756,8 @@ static unsigned int cpufreq_verify_current_freq(struct cpufreq_policy *policy, b
+> >  {
+> >  	unsigned int new_freq;
+> >  
+> > -	new_freq = cpufreq_driver->get(policy->cpu);
+> > +	new_freq = arch_freq_get_on_cpu(policy->cpu);
+> > +	new_freq = new_freq ?: cpufreq_driver->get(policy->cpu);
+> 
+> Given that arch_freq_get_on_cpu() is an average frequency, it does not
+> seem right to me to trigger the sync & update process of
+> cpufreq_verify_current_freq() based on it.
+> 
+> cpufreq_verify_current_freq() will at least modify the internal state of
+> the policy and send PRE and POST notifications, if not do a full frequency
+> update, based on this average frequency, which is likely different from
+> the current frequency, even beyond the 1MHz threshold.
+> 
+Noted, will drop this change.
 
- 1c5e7db8e1b2 remap_range: merge do_clone_file_range() into
-vfs_clone_file_range()
+---
+BR
+Beata
+> While I believe it's okay to return this average frequency in
+> cpuinfo_cur_freq, I don't think it should be used as an indication of
+> an accurate current frequency, which is what
+> cpufreq_verify_current_freq() expects.
+> 
 
-Can you please test.
-
-Thanks,
-Amir.
+> Sumit, can you give more details on the issue at [1] and why this change
+> fixes it?
+> 
+> [1] https://lore.kernel.org/lkml/6a5710f6-bfbb-5dfd-11cd-0cd02220cee7@nvidia.com/
+> 
+> Thank you,
+> Ionela.
+	> 
+> >  	if (!new_freq)
+> >  		return 0;
+> >  
+> > -- 
+> > 2.25.1
+> > 
 
