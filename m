@@ -1,171 +1,148 @@
-Return-Path: <linux-kernel+bounces-49618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59C81846D44
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:03:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA07F846D1A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:58:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C930DB2A1ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:54:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F35EB240F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:53:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EC8C77F1C;
-	Fri,  2 Feb 2024 09:54:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 344BF77F10;
+	Fri,  2 Feb 2024 09:53:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="bmDGsdPX"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JVHC9lQt"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0776B487A7;
-	Fri,  2 Feb 2024 09:54:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AF5463099
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:53:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706867682; cv=none; b=m/jY02O53l2VENSwxUT6dopU+n7dlMz1IbBV8kCX7RdhEH/WdxTeh2vOxClo8qplyuRpHS2rTMocXFlYyOkXUpPldfHPOBG84kKwCUXPZnN+Qgu21YwJ+D0yYOdhTzb7nZK/dNhp4PeqIYvPKQ3bQg7JwOq0a+lOjuCmvCaUsos=
+	t=1706867620; cv=none; b=hwruN5ERo2Ue71MYyG3hwF+2hS2vcf0Nix7bVCqgFqnTpsSKMmPKA5+nqY3rJBlQ8XMnNYhs9XBIcDDHAVsAspUuXZSW6Ssu5vhheRleMQNMbDSLVBQLtgoE0PiN8o8e+E1kVTjNweRnNNlG6xgsY/xoxhHlsTCu8WSlwJbA7vc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706867682; c=relaxed/simple;
-	bh=HLdAtsTxbl4fEyp+8gS0jl/pp8gu2Z4JAGbawefcu48=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tN+7dOqhgeqB3m9GQ9AOB3JSv6VGQkrpuU3QC0iZPTgtuERQAMYNiP/HiGmUg00SK6AFXlSZZ94SKipslMYJ/VmFDkXBqv6xXxxIJnMYzwY85N9NFG8dvjO8vokeJrqkf49zuBSpsHnP8zMgYhe3Clw+imxPDcIOrvQIwIRo4ZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=bmDGsdPX; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1706867679; x=1738403679;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HLdAtsTxbl4fEyp+8gS0jl/pp8gu2Z4JAGbawefcu48=;
-  b=bmDGsdPXg2fPqrLj4hWG/CxXMVVgrXyuinAJRbviU6RFsjD+IKPtTtYL
-   b9v8JZAU8faDTdcZDEhZryqhZmFrErXLIRcnaTEnycw85Zj/5YkTQyU7Q
-   mO91E8twisvshiv4UuIvA/xSl+w+jWI5lS0c8/VBxW2PrQjLB4rrhxqQa
-   GioXgsA+bSVayH5TPV+Fx97di1VuW3mYvHf8rmBHq51Vx3hGAbX4dJqj4
-   1yBVPyEmZLh4QEhVZoRuo5e9wlV+IORVQ/4yv4/dBMwec1W9hsN1QUFLC
-   4Yk1OPUAWL1gi6PztfT7a90w1XU1OEgCO9SNDSj8583qvSnibLwv8nCse
-   A==;
-X-CSE-ConnectionGUID: /ifdK88ERii550o6UWvHNg==
-X-CSE-MsgGUID: aAm2nhaDT8m6OZg3lj+5xw==
-X-IronPort-AV: E=Sophos;i="6.05,237,1701154800"; 
-   d="asc'?scan'208";a="182925598"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 02 Feb 2024 02:54:32 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 2 Feb 2024 02:53:52 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Fri, 2 Feb 2024 02:53:49 -0700
-Date: Fri, 2 Feb 2024 09:53:11 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Roger Quadros <rogerq@kernel.org>
-CC: Conor Dooley <conor@kernel.org>, Bin Liu <b-liu@ti.com>, <nm@ti.com>,
-	<vigneshr@ti.com>, <afd@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>, <srk@ti.com>,
-	<r-gunasekaran@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 4/5] dt-bindings: usb/ti,am62-usb.yaml: Add PHY2
- register space
-Message-ID: <20240202-unzip-whacky-bb2f151c618b@wendy>
-References: <20240201120332.4811-1-rogerq@kernel.org>
- <20240201120332.4811-5-rogerq@kernel.org>
- <20240201-viewpoint-upload-fb714f650ff5@spud>
- <20240201-violet-chalice-51a73f113e7b@spud>
- <20240201183522.ssj553rwefr2wuqi@iaqt7>
- <20240201-clad-unopposed-ccfdfe53b770@spud>
- <bc3ab60f-539b-41d0-8595-6e0b55f2763d@kernel.org>
+	s=arc-20240116; t=1706867620; c=relaxed/simple;
+	bh=Bfd/GkSJgdo+XNvnX3vfrEM+2s3tKVMNSvNG435RkV0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k3/MHxy4k8UK+fkZ1KvY3vL16V5EzFIozb4JF/91dZP0NF3fj8+EA9dRVZ+/ptn/eoLY/o4+Q15dzMcjEzaf8cf+X9VmQuI+4vMJKd/Gp7QjU3T5vUYHl7v0ZK46U31An+puukPlZcomYZycUuGQrMr9mDoCfI6ZR+aiFzm51vM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JVHC9lQt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3A2DC433C7;
+	Fri,  2 Feb 2024 09:53:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706867620;
+	bh=Bfd/GkSJgdo+XNvnX3vfrEM+2s3tKVMNSvNG435RkV0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JVHC9lQt9mU1obANrSeVdamsYY76q01QCeJgmuj4Op4N5qEpIs91Ylf59bTt/H0pV
+	 keXz4Up2QyG6pKjjkx0q6lyABhoXp/zvH1lXdEmPsyb852qA0dhDKCjUuPr71nSVTs
+	 +zwWYobiAkhZlPsC85fw5wS5UtVdD6qFT77P0FIYMNfvHrAzTHOKrkbL0d1fcLuKRd
+	 r08sTsdJB7RwfkrAUMROx1ARM785L4Vzcr957zldDzYN7xgxbUr1dLdYvxFuZ29rN6
+	 P6tePJ7EB7HNDokdhssmSpDldoyxfqxkhB6L3dKtXvOK4Ic6sky3bG+0KD2aHjPoH9
+	 PKZBj9AtDgpcg==
+Date: Fri, 2 Feb 2024 10:53:37 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Pekka Paalanen <pekka.paalanen@haloniitty.fi>, 
+	Louis Chauvet <louis.chauvet@bootlin.com>, Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, 
+	Melissa Wen <melissa.srw@gmail.com>, =?utf-8?B?TWHDrXJh?= Canal <mairacanal@riseup.net>, 
+	Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, marcheu@google.com, seanpaul@google.com, 
+	nicolejadeyee@google.com, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	thomas.petazzoni@bootlin.com
+Subject: Re: Re: [PATCH 2/2] drm/vkms: Use a simpler composition function
+Message-ID: <3nofkwzgnf4yva2wfogdbii47ohpi2wm5vp6aijtg3emxyoowt@twyreqz7ai3g>
+References: <20240201-yuv-v1-0-3ca376f27632@bootlin.com>
+ <20240201-yuv-v1-2-3ca376f27632@bootlin.com>
+ <20240202105522.43128e19@eldfell>
+ <20240202102601.70b6d49c@xps-13>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="09bQoPjxvThdjUNR"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="zt2zjtvam7zfj272"
 Content-Disposition: inline
-In-Reply-To: <bc3ab60f-539b-41d0-8595-6e0b55f2763d@kernel.org>
+In-Reply-To: <20240202102601.70b6d49c@xps-13>
 
---09bQoPjxvThdjUNR
+
+--zt2zjtvam7zfj272
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 02, 2024 at 11:36:55AM +0200, Roger Quadros wrote:
+Hi Miquel,
+
+On Fri, Feb 02, 2024 at 10:26:01AM +0100, Miquel Raynal wrote:
+> pekka.paalanen@haloniitty.fi wrote on Fri, 2 Feb 2024 10:55:22 +0200:
 >=20
->=20
-> On 01/02/2024 21:13, Conor Dooley wrote:
-> > On Thu, Feb 01, 2024 at 12:35:22PM -0600, Bin Liu wrote:
-> >> On Thu, Feb 01, 2024 at 06:18:05PM +0000, Conor Dooley wrote:
-> >>> On Thu, Feb 01, 2024 at 06:15:20PM +0000, Conor Dooley wrote:
-> >>>> On Thu, Feb 01, 2024 at 02:03:31PM +0200, Roger Quadros wrote:
-> >>>>> So far this was not required but due to the newly identified
-> >>>>> Errata i2409 [1] we need to poke this register space.
-> >>>>>
-> >>>>> [1] https://www.ti.com/lit/er/sprz487d/sprz487d.pdf
-> >>>>>
-> >>>>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> >>>>
-> >>>> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> >>>
-> >>> Actually, where is the user for this that actually pokes the register
-> >>> space?
->=20
-> https://lore.kernel.org/all/20240201121220.5523-5-rogerq@kernel.org/
->=20
-> >>> You're adding another register region, so I went to check how you were
-> >>> handling that in drivers, but there's no driver patch.
-> >>
-> >> See Roger's another patch set 'Add workaround for Errata i2409' posted
-> >> on 16th.
+> > On Thu, 01 Feb 2024 18:31:32 +0100
+> > Louis Chauvet <louis.chauvet@bootlin.com> wrote:
 > >=20
-> > This patch should be with that series, not with these dts patches.
+> > > Change the composition algorithm to iterate over pixels instead of li=
+nes.
+> > > It allows a simpler management of rotation and pixel access for compl=
+ex formats.
+> > >=20
+> > > This new algorithm allows read_pixel function to have access to x/y
+> > > coordinates and make it possible to read the correct thing in a block
+> > > when block_w and block_h are not 1.
+> > > The iteration pixel-by-pixel in the same method also allows a simpler
+> > > management of rotation with drm_rect_* helpers. This way it's not nee=
+ded
+> > > anymore to have misterious switch-case distributed in multiple places=
+=2E =20
 > >=20
+> > Hi,
+> >=20
+> > there was a very good reason to write this code using lines:
+> > performance. Before lines, it was indeed operating on individual pixels.
+> >=20
+> > Please, include performance measurements before and after this series
+> > to quantify the impact on the previously already supported pixel
+> > formats, particularly the 32-bit-per-pixel RGB variants.
+> >=20
+> > VKMS will be used more and more in CI for userspace projects, and
+> > performance actually matters there.
+> >=20
+> > I'm worrying that this performance degradation here is significant. I
+> > believe it is possible to keep blending with lines, if you add new line
+> > getters for reading from rotated, sub-sampled etc. images. That way you
+> > don't have to regress the most common formats' performance.
 >=20
-> Why not? There should be no dependency between DTS and driver implementat=
-ion.
->=20
-> As DTS and driver will be merged by separate maintainers I thought it
-> would be easier for maintainers this way.
+> While I understand performance is important and should be taken into
+> account seriously, I cannot understand how broken testing could be
+> considered better. Fast but inaccurate will always be significantly
+> less attractive to my eyes.
 
-dts and driver might be merged by different people, but dt-bindings and
-drivers are merged by the same people. This is a bindings patch, not a
-dts patch. Look at what get_maintainer says for this file:
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org> (supporter:USB SUBSYSTEM)
-	Rob Herring <robh+dt@kernel.org> (maintainer:OPEN FIRMWARE AND FLATTENED D=
-EVICE TREE BINDINGS)
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org> (maintainer:OPEN F=
-IRMWARE AND FLATTENED DEVICE TREE BINDINGS)
-	Conor Dooley <conor+dt@kernel.org> (maintainer:OPEN FIRMWARE AND FLATTENED=
- DEVICE TREE BINDINGS)
-	Aswath Govindraju <a-govindraju@ti.com> (in file)
-	linux-usb@vger.kernel.org (open list:USB SUBSYSTEM)
-	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE T=
-REE BINDINGS)
-	linux-kernel@vger.kernel.org (open list)
-Greg and linux-usb are on there, but you have not CCed them.
+AFAIK, neither the cover letter nor the commit log claimed it was fixing
+something broken, just that it was "better" (according to what
+criteria?).
 
-Being with the driver also allows bindings maintainers to check that you
-don't break backwards compatibility. It also prevents me having to ask
-for the driver patch, then be given just a subject line that I have to
-go and look up myself!
+If something is truly broken, it must be stated what exactly is so we
+can all come up with a solution that will satisfy everyone.
 
-Thanks,
-Conor.
+> I am in favor of making this working first, and then improving the code
+> for faster results. Maybe the line-driven approach can be dedicated to
+> "simpler" formats where more complex corner cases do not happen.
 
+Which ones?
 
---09bQoPjxvThdjUNR
+Maxime
+
+--zt2zjtvam7zfj272
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZby7hgAKCRB4tDGHoIJi
-0lZNAQDfnUDAjmRAZ9RFirPTEdFAI3fOleBFWcr1Z3YYeNtPUwEA9Zdsa1/GJnq1
-Vr1bHu3HSNYVpAUxksp5F4oVbySSUgM=
-=eVOE
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZby7oAAKCRDj7w1vZxhR
+xXwxAPsFVsJYK4xWIWUhq8+84+oxR2kLDVawImhl/tLFMgP18wD+Kf7nPl9alhHN
+QaVk2lv/sl2IZKrDqGyRJ0lq8HVPXQE=
+=qz9+
 -----END PGP SIGNATURE-----
 
---09bQoPjxvThdjUNR--
+--zt2zjtvam7zfj272--
 
