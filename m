@@ -1,108 +1,81 @@
-Return-Path: <linux-kernel+bounces-50022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F23884732E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:31:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA2DC847354
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:37:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91E991C22136
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:31:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49D081F26B4D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:37:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B28011468F8;
-	Fri,  2 Feb 2024 15:31:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="eErp11Hu"
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5473E1468FB;
+	Fri,  2 Feb 2024 15:37:44 +0000 (UTC)
+Received: from ciao.gmane.io (ciao.gmane.io [116.202.254.214])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B540145B3B
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 15:31:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 684001468E8
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 15:37:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.202.254.214
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706887910; cv=none; b=BKhkjWI2RiH5D+OeoaJX+08y8lOOHlhu/e3dAmZ7LY6bmLs0pNNB0iwakIfAL7Rgvapc8I+aVlOag9dFnxxCe60+akPa42LwT25of48BOTG8cBPRmxhxQ9Wu0ArrgzuDJ3ELjj/45uekA484ziLSGNaPNoK+cycJsPy4JnRjicY=
+	t=1706888263; cv=none; b=RjZzpJJTfwfubR0FSNXLFn1kLTuxP5+pwxnx4/bssV25M3+1v4mI4o9foxFP0GO35rwy4fVkFgnTw9OkmlMoJNQlT0AiCFufxzpw+HrbDgIPh0maiP5PawxbVd944o/rNnwX+xOVrO+YHvIQ4tysYSdPaz0BdjVl3gDE9BIh8XQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706887910; c=relaxed/simple;
-	bh=X7CHp42Qev89FZqIAikgLbDlNbexH9c5Zo5LqW50PQk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I7m4E72z2LKvd8jeBISbRPloPnZm17U7licMsd+0DxLea3RKhk8rDluWdebQHcuGgXdPpk0SC8zSa9/WT7DjXnzmf7HpXcqij9v1mXy2TeE0atsZGmbEBvp6ri+86Y0jIV5x1S1smz0Jco6+cLVp7x+bu2m9s6clooFht/X7GuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=eErp11Hu; arc=none smtp.client-ip=209.85.219.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc6d24737d7so2128091276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 07:31:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1706887908; x=1707492708; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uyvOAzMFIzsSlq2kiKta6LgOvAhbSJpfLskxvPgpInU=;
-        b=eErp11HujsPY4cWoXSjHHOZ7vPmZED3O/U8ftVzZuTZ9g8qtb1trzvxG56JUjAaxMe
-         RYQwlFbhMdnu52+jdMDjo+xHKRRUCrDwB98PFLqVAyWEsuG9nYI/1bWr1/WZOM6GR7PM
-         mDqgxLlkDkuKH2n5zT7fADQz6mAC+zklOOkx+B8YzO7FhSG76XI6cXN+GrD0tZyXOpWL
-         /i2EbwUNkBn8XW1MaKndDq0v+JxbYX7Qh91kOTTym5JUIT3CA2kn+df1ZilHYqBBUqgs
-         mZuCQUU7pJXm9KOFOp8RiJajcoHhpoxEVR3UUobSDWfHKC7DEv+J1y+X95C6sSgQmRFi
-         DEBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706887908; x=1707492708;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uyvOAzMFIzsSlq2kiKta6LgOvAhbSJpfLskxvPgpInU=;
-        b=a6qqiAqAYGdOpLfVJxMGqZ4S9xwf4OtQK9FkuDIy1xPR7HVaJkOWBLQBOzS+nab10e
-         o9XryreBHDZOIqF9VtRfVyaQubYG0pWFlkfupQGDVcW6T47rnmj9vdwN4GCAYL6298Qe
-         4HLwHC4rQivEXT5CwCLKsOV87XuwN5VP6V2drbyJ4GTePa3X55WGQjQVdAtM0hIEaqoL
-         YuKvBDcSHTxMT0opOKrz89e1YH3YXNhPPVWVLl5rvJUsmiKRLtj7aPhwgsuSUT090sp7
-         wyXz+raPYPPz6wHB6j0LqFXtMlQ+k9ar+erYYZsRG279VPSLJI7vDSAlfTUl5ji9v24L
-         w2/A==
-X-Gm-Message-State: AOJu0YxiFuWO7rb00KAv8IOPmH9oLDJ1j2gF+qfofn9YVu1alF1su60d
-	P2+mLoxYDGLtPBYUhS/B6gH+GUIdMM+AIYzV++lxMyrHOyaMDcX3l2WW4C6JX7OnQTlgwiLlHTd
-	gjGcnXLfwpWFQ4MJOQSE5U1K4e/RrRs1LvMXj
-X-Google-Smtp-Source: AGHT+IF23FJH1CrfkAGumfzPLOg3qie8GMPsuoo1BWOC2z8criLcQmZEuP8ymTXXNdxx7AdItEawlzLieCj8emW2AW4=
-X-Received: by 2002:a25:df91:0:b0:dbc:c56f:465e with SMTP id
- w139-20020a25df91000000b00dbcc56f465emr8987242ybg.3.1706887907968; Fri, 02
- Feb 2024 07:31:47 -0800 (PST)
+	s=arc-20240116; t=1706888263; c=relaxed/simple;
+	bh=amxXWOA8shkwZCqq409xMVqZnLPj+Od52yEZEeelVY0=;
+	h=To:From:Subject:Date:Message-ID:References:Mime-Version:
+	 Content-Type:Cc; b=gqUAeSjypYvlIBwT30ARKvQwBYdHd14Gc15cEzFmfFZMMVfnEQd26LZgb5g9tYB+2A8qf6d2hWx36r+4MRCu2BFrKnASKssNveZAr4TG7uH64gIsGCoEAuC8/C2JLvrWqAyri26DqFOttfA2bL6g5NyQ/bGd133+/hPXihGKoQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=applied-asynchrony.com; spf=pass smtp.mailfrom=m.gmane-mx.org; arc=none smtp.client-ip=116.202.254.214
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=applied-asynchrony.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=m.gmane-mx.org
+Received: from list by ciao.gmane.io with local (Exim 4.92)
+	(envelope-from <glk-linux-kernel-4@m.gmane-mx.org>)
+	id 1rVvWp-0006F8-6z
+	for linux-kernel@vger.kernel.org; Fri, 02 Feb 2024 16:32:31 +0100
+X-Injected-Via-Gmane: http://gmane.org/
+To: linux-kernel@vger.kernel.org
+From: Holger =?iso-8859-1?q?Hoffst=E4tte?= <holger@applied-asynchrony.com>
+Subject: Re: Kernel - 6.7.3 - failed to compile the module
+Date: Fri, 2 Feb 2024 15:32:24 -0000 (UTC)
+Message-ID: <pan$2ed7c$db97fd26$2ea3b30f$fdd2e024@applied-asynchrony.com>
+References: <CAHOGJipx37tUoiSp87Np4b0qzREj60+FEkdi_0X0_JoQW8cYeA@mail.gmail.com>
+	<ZbzwgtGUHK2Dj5eo@archie.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240202034448.717589-1-dongtai.guo@linux.dev>
-In-Reply-To: <20240202034448.717589-1-dongtai.guo@linux.dev>
-From: Paul Moore <paul@paul-moore.com>
-Date: Fri, 2 Feb 2024 10:31:37 -0500
-Message-ID: <CAHC9VhS2F8LkjRNQv7=x1DyRqDjatpuHJL5QNjqz7ru8-0Y1_A@mail.gmail.com>
-Subject: Re: [PATCH 1/1] Modify macro NETLBL_CATMAP_MAPTYPE to define a type
- using typedef
-To: George Guo <dongtai.guo@linux.dev>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, George Guo <guodongtai@kylinos.cn>, 
-	netdev@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+User-Agent: Pan/0.151 (Butcha; a6f63273)
+Cc: linux-rdma@vger.kernel.org,netdev@vger.kernel.org
 
-On Thu, Feb 1, 2024 at 10:45=E2=80=AFPM George Guo <dongtai.guo@linux.dev> =
-wrote:
->
-> From: George Guo <guodongtai@kylinos.cn>
->
-> Modify NETLBL_CATMAP_MAPTYPE to netlbl_catmap_map_t, which is more
-> readable.
->
-> Signed-off-by: George Guo <guodongtai@kylinos.cn>
-> ---
->  include/net/netlabel.h       | 8 ++++----
->  net/netlabel/netlabel_kapi.c | 8 ++++----
->  2 files changed, 8 insertions(+), 8 deletions(-)
+On Fri, 2 Feb 2024 20:39:14 +0700, Bagas Sanjaya wrote:
 
-I'm generally not in favor of minor rename patches like this unless
-they are part of a larger effort (code churn with little benefit).
-I'm not going to block it if the netdev folks want to merge this, but
-I can't say I really support it either.
+> [also Cc: mellanox maintainers]
+> 
+> On Fri, Feb 02, 2024 at 08:55:47AM +0100, Michał Jakubowski wrote:
+>> Regarding: https://bugzilla.kernel.org/show_bug.cgi?id=218445
+>> 
+>>   CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp1_execution.o
+>>   CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp1_transition.o
+>>   CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp2_execution.o
+>>   CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp2_transition.o
+>>   LD [M]  drivers/gpu/drm/amd/amdgpu/amdgpu.o
+>>   MODPOST Module.symvers
+>> ERROR: modpost: "sched_numa_hop_mask"
+>> [drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko] undefined!
+>> make[2]: *** [scripts/Makefile.modpost:145: Module.symvers] Error 1
+>> make[1]: *** [/usr/src/linux-6.7.3-gentoo/Makefile:1863: modpost] Error 2
+>> make: *** [Makefile:234: __sub-make] Error 2
+> 
+> Do you have above build failure on vanilla v6.7.3? Can you also check current
+> mainline (v6.8-rc2)?
 
---
-paul-moore.com
+No need to investigate further, this is caused by an additional non-mainline
+patch that has nothing to do with the mellanox driver.
+
+-h
+
 
