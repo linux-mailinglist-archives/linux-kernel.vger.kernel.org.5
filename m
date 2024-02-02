@@ -1,176 +1,185 @@
-Return-Path: <linux-kernel+bounces-50139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F7428474C9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:32:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D2E68474D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:33:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE2F11F238B2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:32:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 245882917D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:33:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB0CE14831D;
-	Fri,  2 Feb 2024 16:32:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08F98148311;
+	Fri,  2 Feb 2024 16:32:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="jU5wubxj"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mem3Tp58"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF992E3E1;
-	Fri,  2 Feb 2024 16:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3697117748
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 16:32:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706891523; cv=none; b=Co3cJlzmd+RTVYVfTB6wiAIP7aXfPmajB5QYyuMvh1B1KDtui+VlvxoHnHZwcid+nSqGqNH8GRbeCrEmNCzVEdDIMRWgcH0C85RMv54Q4hDs+JHl7Vj+CAAdSm4aSzXhQ/jUtokeeSy8wBrVJq0Bg5dRVizeNMv9FzEauUd0PPQ=
+	t=1706891570; cv=none; b=aIRtf2qk4Jx3pw/L9w73QFWIcC1u7wlDNzzqF/nCZ6AY7Ii2z+k7ebIJpbfVACmG6RknNXUVXU7a5wKIVnIKbBwLp/vRW3/137Eegc8UW+QHESgCIhvzoq51IoUoAt5GiWhb4hMbzGUszfmgT37gjTgqjDygwHpaHQj2SfeeRkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706891523; c=relaxed/simple;
-	bh=yma4nylgOoLjTOHrYgozp3WCHDCZs0kwIUYe+i7FJY8=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=XqaD8fldPUquXzFupiu5ohZsX1xAt5iejh+/6lyBanVhJ/44HIoH0vZO6+EUZDymuZZCFEBOqIkQeK6tLMqlIGtg1A/giLsAEeUUId9ZZ4H2TkypQnGQMS6E5pxDHoVhgLQinPzCAo6urW+NQInBaphmzc6ecYn22q1QTCa99cY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=jU5wubxj; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1706891519;
-	bh=yma4nylgOoLjTOHrYgozp3WCHDCZs0kwIUYe+i7FJY8=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=jU5wubxjeRgWqLh+oXgXkt9L6ToIU6aLtIv74J33D94Z1bAuwUkYMDh43wTpgdlwk
-	 ircon1WeA8O1VoQha723YG13bkUh50GNf7CmEu+/24b34xifpcw4D1fgeDOPHgVIIJ
-	 jElb/7siEE49WZijpvj972viuZFA8YKRa2ImjRcEa53ZNXFUb4t5y6qyaTIWAWbO4X
-	 uVKOqJy5aChedzSPk82AaYiwsp/3O6f8Uzr6Sw72XEkemnVbTSFWoCR24mWLF/NetX
-	 lXurcKAzwiKzhXJX6flQLy6YgSDzTBoEnGPBZNJVJqHrjIA0JXKpYY22SQ9Si5VeJT
-	 mK+yKNhrX75og==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TRLrt5bFczX6S;
-	Fri,  2 Feb 2024 11:31:58 -0500 (EST)
-Message-ID: <da4c7c2c-0400-40d7-8263-22d284ecca8c@efficios.com>
-Date: Fri, 2 Feb 2024 11:32:00 -0500
+	s=arc-20240116; t=1706891570; c=relaxed/simple;
+	bh=Qpb5LUigig6Dqx7YeBJx99fFSoRjufIv2sfY5c54TcA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=C4S+K/pUZ6CgGUGdwuwROB8CHW2H3r6lMzgFjQm4OQddine7aMJuDe4sFhHOtjPLHFA9M48QF8ksxhVlSGKI/SY9HucFpUuQD5DGWDit1xBVxdMGznTlOvWb7nmJJc+zRweZbzbuGTl4lE766yvv0yr6HSoX7jA+VKqiI4DMAuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mem3Tp58; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D53D5C43394
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 16:32:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706891569;
+	bh=Qpb5LUigig6Dqx7YeBJx99fFSoRjufIv2sfY5c54TcA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=mem3Tp58NpcFQ0LCjVi+qHZmEofguxdqViS+xfa/O9TwPCT+YavztC0VYGRrJAo2F
+	 MOc4qWjz2JC2DYwY4cH8MBG0yoNCij/SBrBepnca+zMQvzhEX/eUxDNS2qx4okTMg4
+	 9KY8Mz3rpuB4avwGc8SaUB25A4WkYLB09AFQpPFEE9aEmRqeJ08o8wCq25UE7cyN2Y
+	 RPs06vgZQqBEiTtUL3kcP3xIudaTx4nbZSuF3Fwtc6chrERB6ipRMNHiwEKmRaG3vO
+	 xF7VoBi9F0t55NqFnezyNuev930Ybgdf61MsoF5kEdUEp/RoLXdjX4MeqbOxC6puDI
+	 LaU472fwvFfTA==
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-511206d1c89so3141271e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 08:32:49 -0800 (PST)
+X-Gm-Message-State: AOJu0YyuNUSbWVkfGaAyW1PONK70VYZFrQp55ra8M+FegK1tGgkOoReJ
+	mzWOV5gwl0OFyCab3TkrRml85B7kRIn4mAb7oXrOdpg5hSf5klZ9Pu6KiXj1gY/KlP54/aNMAlc
+	OyPwb07Xn+crQpD84uHZ/w/8rag0=
+X-Google-Smtp-Source: AGHT+IEWLhbVs8xPM5ZHqYIC3bGqYr/Na6IRl5mzGprwFRjkIBF/d+yOPoevyQzFUG+e5PJjazHjN3gdlwnY4DyiqJY=
+X-Received: by 2002:a19:644a:0:b0:50e:95cf:e7b1 with SMTP id
+ b10-20020a19644a000000b0050e95cfe7b1mr1968484lfj.9.1706891567985; Fri, 02 Feb
+ 2024 08:32:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 2/4] dax: Check for data cache aliasing at runtime
-Content-Language: en-US
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: Dan Williams <dan.j.williams@intel.com>, Arnd Bergmann <arnd@arndb.de>,
- Dave Chinner <david@fromorbit.com>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
- linux-arch@vger.kernel.org, Vishal Verma <vishal.l.verma@intel.com>,
- Dave Jiang <dave.jiang@intel.com>, Matthew Wilcox <willy@infradead.org>,
- Russell King <linux@armlinux.org.uk>, nvdimm@lists.linux.dev,
- linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- dm-devel@lists.linux.dev
-References: <20240131162533.247710-1-mathieu.desnoyers@efficios.com>
- <20240131162533.247710-3-mathieu.desnoyers@efficios.com>
- <65bab567665f3_37ad2943c@dwillia2-xfh.jf.intel.com.notmuch>
- <0a38176b-c453-4be0-be83-f3e1bb897973@efficios.com>
- <65bac71a9659b_37ad29428@dwillia2-xfh.jf.intel.com.notmuch>
- <f1d14941-2d22-452a-99e6-42db806b6d7f@efficios.com>
-In-Reply-To: <f1d14941-2d22-452a-99e6-42db806b6d7f@efficios.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240201223545.728028-1-maskray@google.com> <Zb0Qu5lR0iZUqImb@e133380.arm.com>
+In-Reply-To: <Zb0Qu5lR0iZUqImb@e133380.arm.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Fri, 2 Feb 2024 17:32:33 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGSQ4Xq68Cmq6BH37FPJ+R+N5cOfrdC+aVML4sGaNDopg@mail.gmail.com>
+Message-ID: <CAMj1kXGSQ4Xq68Cmq6BH37FPJ+R+N5cOfrdC+aVML4sGaNDopg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: jump_label: use constraints "Si" instead of "i"
+To: Dave Martin <Dave.Martin@arm.com>
+Cc: Fangrui Song <maskray@google.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org, 
+	Jisheng Zhang <jszhang@kernel.org>, Peter Smith <peter.smith@arm.com>, llvm@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 2024-02-01 10:44, Mathieu Desnoyers wrote:
-> On 2024-01-31 17:18, Dan Williams wrote:
+On Fri, 2 Feb 2024 at 16:56, Dave Martin <Dave.Martin@arm.com> wrote:
+>
+> On Thu, Feb 01, 2024 at 02:35:45PM -0800, Fangrui Song wrote:
+> > The generic constraint "i" seems to be copied from x86 or arm (and with
+> > a redundant generic operand modifier "c"). It works with -fno-PIE but
+> > not with -fPIE/-fPIC in GCC's aarch64 port.
+> >
+> > The machine constraint "S", which denotes a symbol or label reference
+> > with a constant offset, supports PIC and has been available in GCC since
+> > 2012 and in Clang since 7.0. However, Clang before 19 does not support
+> > "S" on a symbol with a constant offset [1] (e.g.
+> > `static_key_false(&nf_hooks_needed[pf][hook])` in
+> > include/linux/netfilter.h), so we use "i" as a fallback.
+> >
+> > Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> > Signed-off-by: Fangrui Song <maskray@google.com>
+> > Link: https://github.com/llvm/llvm-project/pull/80255 [1]
+> >
+> > ---
+> > Changes from
+> > arm64: jump_label: use constraint "S" instead of "i" (https://lore.kernel.org/all/20240131065322.1126831-1-maskray@google.com/)
+> >
+> > * Use "Si" as Ard suggested to support Clang<19
+> > * Make branch a separate operand
+> > ---
+> >  arch/arm64/include/asm/jump_label.h | 12 ++++++++----
+> >  1 file changed, 8 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/arch/arm64/include/asm/jump_label.h b/arch/arm64/include/asm/jump_label.h
+> > index 48ddc0f45d22..1f7d529be608 100644
+> > --- a/arch/arm64/include/asm/jump_label.h
+> > +++ b/arch/arm64/include/asm/jump_label.h
+> > @@ -15,6 +15,10 @@
+> >
+> >  #define JUMP_LABEL_NOP_SIZE          AARCH64_INSN_SIZE
+> >
+> > +/*
+> > + * Prefer the constraint "S" to support PIC with GCC. Clang before 19 does not
+> > + * support "S" on a symbol with a constant offset, so we use "i" as a fallback.
+> > + */
+> >  static __always_inline bool arch_static_branch(struct static_key * const key,
+> >                                              const bool branch)
+> >  {
+> > @@ -23,9 +27,9 @@ static __always_inline bool arch_static_branch(struct static_key * const key,
+> >                "      .pushsection    __jump_table, \"aw\"    \n\t"
+> >                "      .align          3                       \n\t"
+> >                "      .long           1b - ., %l[l_yes] - .   \n\t"
+> > -              "      .quad           %c0 - .                 \n\t"
+> > +              "      .quad           %0 + %1 - .             \n\t"
+> >                "      .popsection                             \n\t"
+> > -              :  :  "i"(&((char *)key)[branch]) :  : l_yes);
+> > +              :  :  "Si"(key), "i"(branch) :  : l_yes);
+>
+> Is the meaning of multi-alternatives well defined if different arguments
+> specify different numbers of alternatives?  The GCC documentation says:
+>
+> https://gcc.gnu.org/onlinedocs/gcc/Multi-Alternative.html:
+>
+> -8<-
+>
+> [...] All operands for a single instruction must have the same number of
+> alternatives.
+>
+> ->8-
+>
 
-[...]
+AIUI that does not apply here. That reasons about multiple arguments
+having more than one constraint, where not all combinations of those
+constraints are supported by the instruction.
 
+> Also, I still think it may be redundant to move the addition inside the
+> asm, so long as Clang is happy with the symbol having an offset.
+>
 
->> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
->> index 5f1be1da92ce..11053a70f5ab 100644
->> --- a/fs/fuse/virtio_fs.c
->> +++ b/fs/fuse/virtio_fs.c
->> @@ -16,6 +16,7 @@
->>   #include <linux/fs_context.h>
->>   #include <linux/fs_parser.h>
->>   #include <linux/highmem.h>
->> +#include <linux/cleanup.h>
->>   #include <linux/uio.h>
->>   #include "fuse_i.h"
->> @@ -795,8 +796,11 @@ static void virtio_fs_cleanup_dax(void *data)
->>       put_dax(dax_dev);
->>   }
->> +DEFINE_FREE(cleanup_dax, struct dax_dev *, if (!IS_ERR_OR_NULL(_T)) 
->> virtio_fs_cleanup_dax(_T))
->> +
->>   static int virtio_fs_setup_dax(struct virtio_device *vdev, struct 
->> virtio_fs *fs)
-> 
-> So either I'm completely missing how ownership works in this function, or
-> we should be really concerned about the fact that it does no actual
-> cleanup of anything on any error.
-[...]
-> 
-> Here what I'm seeing so far:
-> 
-> - devm_release_mem_region() is never called after 
-> devm_request_mem_region(). Not
->    on error, neither on teardown,
-> - pgmap is never freed on error after devm_kzalloc.
+Older Clang is not happy with the symbol having an offset.
 
-I was indeed missing something: the devm_ family of functions
-keeps ownership at the device level, so we would not need explicit
-teardown.
-
-> 
->>   {
->> +    struct dax_device *dax_dev __free(cleanup_dax) = NULL;
->>       struct virtio_shm_region cache_reg;
->>       struct dev_pagemap *pgmap;
->>       bool have_cache;
->> @@ -804,6 +808,15 @@ static int virtio_fs_setup_dax(struct 
->> virtio_device *vdev, struct virtio_fs *fs)
->>       if (!IS_ENABLED(CONFIG_FUSE_DAX))
->>           return 0;
->> +    dax_dev = alloc_dax(fs, &virtio_fs_dax_ops);
->> +    if (IS_ERR(dax_dev)) {
->> +        int rc = PTR_ERR(dax_dev);
->> +
->> +        if (rc == -EOPNOTSUPP)
->> +            return 0;
->> +        return rc;
->> +    }
-> 
-> What is gained by moving this allocation here ?
-
-I'm still concerned about moving the call to alloc_dax() before
-the setup of the memory region it will use. Are those completely
-independent ?
-
-> 
->> +
->>       /* Get cache region */
->>       have_cache = virtio_get_shm_region(vdev, &cache_reg,
->>                          (u8)VIRTIO_FS_SHMCAP_ID_CACHE);
->> @@ -849,10 +862,7 @@ static int virtio_fs_setup_dax(struct 
->> virtio_device *vdev, struct virtio_fs *fs)
->>       dev_dbg(&vdev->dev, "%s: window kaddr 0x%px phys_addr 0x%llx len 
->> 0x%llx\n",
->>           __func__, fs->window_kaddr, cache_reg.addr, cache_reg.len);
->> -    fs->dax_dev = alloc_dax(fs, &virtio_fs_dax_ops);
->> -    if (IS_ERR(fs->dax_dev))
->> -        return PTR_ERR(fs->dax_dev);
->> -
->> +    fs->dax_dev = no_free_ptr(dax_dev);
->>       return devm_add_action_or_reset(&vdev->dev, virtio_fs_cleanup_dax,
->>                       fs->dax_dev);
->>   }
-> 
-
-[...]
-
-Thanks,
-
-Mathieu
+And given that the key pointer and the 'branch' boolean are two
+distinct inputs to this function, I struggle to understand why you
+feel it is better to combine them in the argument. 'branch' is used to
+decide whether or not to set bit 0, independently of the value of key.
+Using array indexing to combine those values together to avoid an
+addition in the asm obfuscates the code.
 
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+> I.e., leave the .quad the same and revert to the one-liner
+>
+> -                :  :  "i"(&((char *)key)[branch]) :  : l_yes);
+> +                :  :  "Si"(&((char *)key)[branch]) :  : l_yes);
+>
+> This remains a bit nasty, but splitting the arguments and adding them
+> inside the asm is not really any cleaner.  Changing the way this works
+> doesn't seem relevant to what this patch is fixing (and apologies if I
+> created confusion here...)
+>
+> >
+> >       return false;
+> >  l_yes:
+> > @@ -40,9 +44,9 @@ static __always_inline bool arch_static_branch_jump(struct static_key * const ke
+> >                "      .pushsection    __jump_table, \"aw\"    \n\t"
+> >                "      .align          3                       \n\t"
+> >                "      .long           1b - ., %l[l_yes] - .   \n\t"
+> > -              "      .quad           %c0 - .                 \n\t"
+> > +              "      .quad           %0 + %1 - .             \n\t"
+> >                "      .popsection                             \n\t"
+> > -              :  :  "i"(&((char *)key)[branch]) :  : l_yes);
+> > +              :  :  "Si"(key), "i"(branch) :  : l_yes);
+>
+> Ditto.
+>
+> [...]
+>
+> Cheers
+> ---Dave
 
