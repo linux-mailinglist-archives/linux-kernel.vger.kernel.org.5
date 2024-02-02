@@ -1,106 +1,96 @@
-Return-Path: <linux-kernel+bounces-49853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4D8E847084
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:43:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81F4F84708A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:43:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 034BA1C26C29
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:43:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24E28B240F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:43:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB0BC1874;
-	Fri,  2 Feb 2024 12:43:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5945B1FCA;
+	Fri,  2 Feb 2024 12:43:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ijhod+4a"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="exJwTRay"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17C7C15CE;
-	Fri,  2 Feb 2024 12:43:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C0AF17E1;
+	Fri,  2 Feb 2024 12:43:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706877790; cv=none; b=nWAS1179RH1tkmo3/le4y/xUZuUhD1k3P/IoYaQHdxPDfuD7N/5zErtII5OpenfyVx61Cii30M7g95b6bSzTKhozkUKaeVDk31KHyx39pwB2pPhHofh6i8sZ7yU/kKzNTn2AdmFMfWm76AemsHnZ+wNN/93yaLz5EUZ0jv+cT1Q=
+	t=1706877801; cv=none; b=TfXQYYF+ddcvj11f3LpiH205Ca33ZpOBRqTB7kKcLobbxN1TkRlvHaqjQEqJaOw45ypsJlgQpHizNkAHGrKNdp8vGjSBsGIxDcVZNSG/rh/PfKp4DIQ877fcqg3G4PwmDMMWJcxmlSut1zOx3DZB+eQ78COm0+m5EffF2yGoOcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706877790; c=relaxed/simple;
-	bh=PxfcsiEDIy9Qq5Fj9DyY2bRtJKhBqY6xM3ALRlMwdZ4=;
+	s=arc-20240116; t=1706877801; c=relaxed/simple;
+	bh=FxMD+SzcZbcxoJzxVHTVVUD+rGEixm5Ui8tDKJG2+PI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Jxi5TJETlZGuO/RWiWBMMjCQAzIGll2zfWjCT2k8RTxvAzKB0gzFk/rvMsieDQ59wZnoW2KCzajPwFXiMaq083SP7zbogrXpbKJOG/82wUOcdAwloGF2R6dElx0+9c6JP8/MDT1SrN3Mm2/jwBkQCRpaGqTtCoRZVyajOXSwboI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ijhod+4a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60B85C433C7;
-	Fri,  2 Feb 2024 12:43:06 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=SUsOiVSnGvvvwM6dGsA1SlyCNHt05x3k47O3Ot1buhB1EKy8OjlHRRNe/LlPV8FMRil2H3z2Csmh47L62kIKvcLLNZh0GDHZPukjWZN+2ygurNwMdoKkEXqbfW8PYmj2Ensc586t4TxTgGJ5RC+4abB4b77vmHiT6d+zJTyQkT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=exJwTRay; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FAD9C433C7;
+	Fri,  2 Feb 2024 12:43:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706877789;
-	bh=PxfcsiEDIy9Qq5Fj9DyY2bRtJKhBqY6xM3ALRlMwdZ4=;
+	s=k20201202; t=1706877801;
+	bh=FxMD+SzcZbcxoJzxVHTVVUD+rGEixm5Ui8tDKJG2+PI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ijhod+4a9Wm7Ak9rvxRN/3QoDdbZhfsYcuZEvIQQp9DPeaDFVc2+bazmthC1sBrbM
-	 nQfyFhyaMS/RgoPZULthADl2xhEe1YJ3RxJX4a5YqjKuEPuENcdEAogRCXjwhUKuig
-	 GxIFB7Wv5vCglxl2TmlUleC8CPFybvvHk4NO8y/kB9tVPTTPY2wWrWEA3QxOglNSZ3
-	 ea4u26WP5CCBU0MQY/6AwgqnUWGR52FaxnjeTSRqo5ASYMFvSRLeImalC+jWNtw4C2
-	 ZkCYwcsSqMy57sfl6NLDwjvyPQBdftP0vkYsiIugAl+osmKaF+xd8Q4GFnp4DvPRMf
-	 ZfMSQ4zS/mTEw==
-Date: Fri, 2 Feb 2024 13:43:04 +0100
-From: Simon Horman <horms@kernel.org>
-To: Ivan Vecera <ivecera@redhat.com>
-Cc: netdev@vger.kernel.org, Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-	Mitch Williams <mitch.a.williams@intel.com>,
-	Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>,
-	Mateusz Palczewski <mateusz.palczewski@intel.com>,
-	"moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net] i40e: Do not allow untrusted VF to remove
- administratively set MAC
-Message-ID: <20240202124304.GQ530335@kernel.org>
-References: <20240131131714.23497-1-ivecera@redhat.com>
+	b=exJwTRay0Nes53dtalL1y2sMLtxvzyhURVm6EmfwghTJH716UbskcT0OHWY0Ihp5n
+	 qS2jxO1phSrgmYkLNq9fMF1JJuYUheVyJsQywhD/VartAAt6U6dZLrfiXmPpJPnn+M
+	 lpbFThhZ0VopxB4tUU1L9vxSq6ZmsBeMgKJCMFZXspDWx+RZFepCwtjCo6q9FLSl4O
+	 QIjkFz/ibmltiLaGTzJJeD8G45egtVl9RJ6zzjpwXcB18WRBZ+bzRUlYZeL1RdDuOX
+	 4XPydusYae0rLw8XeFHPtem/JuAjVO4IBEF0PEDSjYg24WjVzGW2p2Zk2LLkpNj6dt
+	 fqWAcNbQeL50A==
+Date: Fri, 2 Feb 2024 12:43:14 +0000
+From: Lee Jones <lee@kernel.org>
+To: Bjorn Andersson <andersson@kernel.org>
+Cc: Anjelique Melendez <quic_amelende@quicinc.com>, pavel@ucw.cz,
+	thierry.reding@gmail.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	agross@kernel.org, luca.weiss@fairphone.com,
+	konrad.dybcio@linaro.org, u.kleine-koenig@pengutronix.de,
+	quic_subbaram@quicinc.com, quic_gurus@quicinc.com,
+	linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-pwm@vger.kernel.org
+Subject: Re: Re: [PATCH v8 3/7] soc: qcom: add QCOM PBS driver
+Message-ID: <20240202124314.GD1379817@google.com>
+References: <20231221185838.28440-1-quic_amelende@quicinc.com>
+ <20231221185838.28440-4-quic_amelende@quicinc.com>
+ <ut6jbawqqdgfyoxmt76hm67rbnv67x54eho3nae2dd2szbejfb@7joy57g4i3qt>
+ <20240131085842.GF8551@google.com>
+ <kfs2nkkrwsa2enz67vfb5nenv2obzuomekqjdzaksldd75lows@3mcfd2r55fc3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240131131714.23497-1-ivecera@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <kfs2nkkrwsa2enz67vfb5nenv2obzuomekqjdzaksldd75lows@3mcfd2r55fc3>
 
-On Wed, Jan 31, 2024 at 02:17:14PM +0100, Ivan Vecera wrote:
-> Currently when PF administratively sets VF's MAC address and the VF
-> is put down (VF tries to delete all MACs) then the MAC is removed
-> from MAC filters and primary VF MAC is zeroed.
-> 
-> Do not allow untrusted VF to remove primary MAC when it was set
-> administratively by PF.
-> 
-> Reproducer:
-> 1) Create VF
-> 2) Set VF interface up
-> 3) Administratively set the VF's MAC
-> 4) Put VF interface down
-> 
-> [root@host ~]# echo 1 > /sys/class/net/enp2s0f0/device/sriov_numvfs
-> [root@host ~]# ip link set enp2s0f0v0 up
-> [root@host ~]# ip link set enp2s0f0 vf 0 mac fe:6c:b5:da:c7:7d
-> [root@host ~]# ip link show enp2s0f0
-> 23: enp2s0f0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DEFAULT group default qlen 1000
->     link/ether 3c:ec:ef:b7:dd:04 brd ff:ff:ff:ff:ff:ff
->     vf 0     link/ether fe:6c:b5:da:c7:7d brd ff:ff:ff:ff:ff:ff, spoof checking on, link-state auto, trust off
-> [root@host ~]# ip link set enp2s0f0v0 down
-> [root@host ~]# ip link show enp2s0f0
-> 23: enp2s0f0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DEFAULT group default qlen 1000
->     link/ether 3c:ec:ef:b7:dd:04 brd ff:ff:ff:ff:ff:ff
->     vf 0     link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff, spoof checking on, link-state auto, trust off
-> 
-> Fixes: 700bbf6c1f9e ("i40e: allow VF to remove any MAC filter")
-> Fixes: ceb29474bbbc ("i40e: Add support for VF to specify its primary MAC address")
-> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+On Thu, 01 Feb 2024, Bjorn Andersson wrote:
 
-Thanks Ivan,
+> On Wed, Jan 31, 2024 at 08:58:42AM +0000, Lee Jones wrote:
+> > Intentional generic top-post reply.
+> > 
+> > Please work quickly to resolve Bjorn's comments.
+> > 
+> > I'm being hounded over a broken LEDs tree due to the missing headerfile.
+> > 
+> 
+> I've merged the updated patches into the qcom tree.
+> 
+> I presume though that you'd like to have this build issue resolved in
+> your tree as well. Please feel free to pull the branch:
+> 
+> 20240201204421.16992-2-quic_amelende@quicinc.com (5b2dd77be1d85ac3a8be3749f5605bf0830e2998)
+> 
+> from https://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux.git
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Great, thanks.
 
+-- 
+Lee Jones [李琼斯]
 
