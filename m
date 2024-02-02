@@ -1,453 +1,310 @@
-Return-Path: <linux-kernel+bounces-50014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B7B6847303
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:21:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A4DF88472FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:20:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6213283701
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:21:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56EE228BB24
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:20:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAD8D1474D3;
-	Fri,  2 Feb 2024 15:20:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9992D1468E6;
+	Fri,  2 Feb 2024 15:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Hopqm/Qk"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="c1vXd5vL"
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2047.outbound.protection.outlook.com [40.107.102.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57FC31474C8
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 15:20:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706887216; cv=none; b=dkZrQSSfwzc8OxhirE15nlgKT6s1atmqham4yViRwHP3f7AMV5cPKhW2pALOvMU0KFpBkpNe8Y4UfSMouKmqMkb9ZdpN5yPgyH4w9mvSNXa7r7yf6AOvAplCVXE0xlLC1MCtvZMACZQ+HwSqFcmLKAAVVAR96KXtf8naFtbNMNE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706887216; c=relaxed/simple;
-	bh=eqTBeIpWu5lKWrNdATCcP5WdzFUCQXCzbvpZ3tgiErE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kU6xNdhDNq6pRrTtWvHliwmjV819UXHT2B4ZaMsUFEGMfl3AuzjLzEVD3QB7XBr8CiTcnpSVc94VP1gd5yXM6nwPG5fIj32N382i31IfdGVEDAn4T/bUVM0iJ58PmOxHksFG0oP2SS6Bcl2JqO/v6yc/ujY/cAq2Ox9CHdT4Ioc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Hopqm/Qk; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706887213;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oZ5cG97dK26o/ijuUa+ep+TAnD2os0jmO31WuR2PRT8=;
-	b=Hopqm/QkmfYjqwC7ohAaNizjQQCScm6XiuIYU33hgnmxY1FU3lAlck7bICXXZS7UVZHF9O
-	Lo+tEPiULX9UnIyB2AvUsZ0ESUWlGMt35GRhuLaI45K4iBiwxgDv7OeV+n/NLb/rzvcwrO
-	1cIn6bR5e/q9RTnIUdMcDtTZNhsg5yM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-307-_EoJGurLMhye1Yh1ayqNng-1; Fri, 02 Feb 2024 10:20:12 -0500
-X-MC-Unique: _EoJGurLMhye1Yh1ayqNng-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6866E85A596;
-	Fri,  2 Feb 2024 15:20:11 +0000 (UTC)
-Received: from warthog.procyon.org.com (unknown [10.42.28.245])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 2F8EB1121306;
-	Fri,  2 Feb 2024 15:20:10 +0000 (UTC)
-From: David Howells <dhowells@redhat.com>
-To: netdev@vger.kernel.org
-Cc: David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	linux-afs@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net 4/4] rxrpc: Fix counting of new acks and nacks
-Date: Fri,  2 Feb 2024 15:19:16 +0000
-Message-ID: <20240202151920.2760446-5-dhowells@redhat.com>
-In-Reply-To: <20240202151920.2760446-1-dhowells@redhat.com>
-References: <20240202151920.2760446-1-dhowells@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C08871468F5;
+	Fri,  2 Feb 2024 15:19:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.47
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706887189; cv=fail; b=tD0/AEBGir8crVDGR06VhtN86sXN6UGzOhQCFNB7QoSZrHkvFFnFJKZbN/ZwvOVEnaaLIu09Sj+P+4wSCQXMrkMl0NDhQcMP8VhUWsaCNYsEFclF7NpldGx+dteatld42Y5Qc3ZiZaY2Dp0IxJd5Fq+H2UTsjollRFUkqdw8IlU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706887189; c=relaxed/simple;
+	bh=tShi1nC729ZBUiHdDsJohFL0EFIVvUd4XGpBfwxwd6s=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=mmvo5/oMib01rA9NJP0QFekZsyqVLyTz7RwlZV1T8qnPAYFMTAI+s0rgc9dl+xWk2VTCPXcxqK8PfHcTzZG1kJ8ogrHQ6Qy0gU499srbQ0ByGIW0qrLS8GTgpHRIBGREOWF15T+oUhBqd91DA0V+iVdndaIFnM083baY1rFaFzU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=c1vXd5vL; arc=fail smtp.client-ip=40.107.102.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dsFh8ojCNZZMjoqf44VOFegq5MCbAWvEmfbGlE34SWZFkWV49SM50XdDItIT1yJLLn/4vrP0Oi2n9SlrzorT4nG/JbQ4k2CNkEZ4kHtIEAoUYxwRUs7RHvpTv7zz+SXkarmsyOrULrCf35CwQxZoU+DSMWvDCgKTypMmPgcw8OnfTgZG8fmDCxwMDqCIeIrDU/JOj/84gsjPV80erk/COjFUDjYo49pXfo1zph25aK2H2v+qUaghG6I2zXZOgY5sh7a+2ap+ltiDeLNOEQzR3PIW2MPWCj3WTCUMlJYzhBKvaaiFvcTDsHBOkdfTxwHNP5GmhNd3Z6n0PpANRJPzOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yy4TrToG8GGBQO65TIpKzJ/FsW2r5wASM9SOVJIpODk=;
+ b=QBRqjWXzqZF43+X2iApbkLNbldAvhcOHQlgCPdjJBoOKMbA+x1/9avBhxUZLkmJfM7xfDXWVHSsDtNaXwKUsjFnrXVVLNCYb4Lh5cQCrHO7QgPP5HQfKByGMlxxRSw4+9KNHW99Wcmqu3IAo+/MvKNuKufRDnoRArlhDqzzjRE/1VCwYoBNtm/AMqUMgmSIsuGhhkWx8un/gcuk24U+zeyblFt1p5bHmFXJY0gMLG/AFpxEoeD7bLvbrRXcoVqNW/JzpMS+KeOFTLpEms/o7Xf6VfQzklMmuUGs24iSyjU4p2epGEF+rzOuvoR89oAoHwkI6w0gNzCKKFN6YFd2iTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yy4TrToG8GGBQO65TIpKzJ/FsW2r5wASM9SOVJIpODk=;
+ b=c1vXd5vLVKPZmmj21Nps//OwzwMHU8bZQurTCTkbyPvH29z4+qWCnRHnWsf9cgUFRnvUi50Yo6Gmj/jsy9ZFefecarzPgrR5QWEjWdwkNebKk6n7Qj2eA+bwqrh6Kaak1iuaWQD8WmqrJEUKnV0wv6IgGNLHmE/CB+CkJ55getg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by CY8PR12MB7612.namprd12.prod.outlook.com (2603:10b6:930:9c::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.22; Fri, 2 Feb
+ 2024 15:19:45 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::c30:614f:1cbd:3c64]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::c30:614f:1cbd:3c64%4]) with mapi id 15.20.7249.024; Fri, 2 Feb 2024
+ 15:19:45 +0000
+Message-ID: <2c72f42e-2170-4cd3-b471-c079a754f9d1@amd.com>
+Date: Fri, 2 Feb 2024 09:19:42 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/5] drm: Add drm_get_acpi_edid() helper
+Content-Language: en-US
+To: Jani Nikula <jani.nikula@linux.intel.com>, amd-gfx@lists.freedesktop.org,
+ Alex Deucher <alexander.deucher@amd.com>,
+ Harry Wentland <harry.wentland@amd.com>,
+ "Rafael J . Wysocki" <rafael@kernel.org>, Hans de Goede <hdegoede@redhat.com>
+Cc: "open list:ACPI" <linux-acpi@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+ Melissa Wen <mwen@igalia.com>, Mark Pearson <mpearson-lenovo@squebb.ca>
+References: <20240201221119.42564-1-mario.limonciello@amd.com>
+ <20240201221119.42564-3-mario.limonciello@amd.com> <878r43f9bd.fsf@intel.com>
+From: Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <878r43f9bd.fsf@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN7PR04CA0197.namprd04.prod.outlook.com
+ (2603:10b6:806:126::22) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|CY8PR12MB7612:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9429d2e9-c4f7-41cc-c1ca-08dc2402631a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	QLsYg1QH66oK0mTqX2+hqhC0VEG5E7ZuGDdABgU/5rkye4nuI3eK4HO4SbYM13J41FCdLXdjsBHozLabRllwMgej+Fgh4LA2BkRy/MOhzHg4rI3YqBRK/+NE14xBgLJ1TXkcxJ7stmox38e292JRfGWVtOV8DFQadHtRHLB0OrXUhztSliZuE+RH8m5zJbbHA5EenQS1wBRc6W3FLNEJ6jWY9Zd9U+JxHnYcMnZaB4t+kipkd53A8OpIT8q14f7+nd7ONau9uFvHPnjwhUHw4J0kUz24guK9RIZ+oVsc9kaf4tF9FJqkcqwASMs8KXzXZyHXzkpv1NlA3av+yQNtkXKG1XTLw9CswaDWOp4XQRxZNJ7zwV6vYApyP9c4n8OdmDoiZCVK0QdopMUfcGPkrhI9GhKFifruRAQy+w7qPTapoiK3+Nio8ZAxxkorye0KwLaMHV9U0qr/j9r+WaQ2MfkJz1JNvoBXlCQ8HqxiRF3NXb3zPGp+/Zo59Hw/wBSah3tfrKN8NDapSR1NvxVehfTP6y/Dxe53yPxzLSzAeybSMGMvj+iV3nihB9x+ZS2u+AOvusEKVTg4r8DxRAZ+jGCL4tjg+Dfycv34j6VjrgNppJ/Q6yFd+ynABXePGszNukEX3/w5CTyi5CA2of/yag==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(366004)(136003)(396003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(2616005)(26005)(83380400001)(6486002)(478600001)(6506007)(53546011)(41300700001)(6666004)(66899024)(6512007)(36756003)(8676002)(4326008)(8936002)(31686004)(66476007)(316002)(66946007)(44832011)(54906003)(2906002)(66556008)(5660300002)(38100700002)(86362001)(110136005)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?TlMycGl0eEZxN0h5ZDU3d2hGbTBjL1VkUGNjYkFaWUxYYXBTVDV0YTRNYU5O?=
+ =?utf-8?B?TU1kbFk2Uys0WHhsMlVjeFIwTXprVUJ0QjIrVkFEVzRHY0FnYmRyVTNLbXRi?=
+ =?utf-8?B?c3lIQ1BndHJBNkR6bEo3RktPRHlDOGRCdW9XZzZ6em04dldJTkJYbnVJK0dF?=
+ =?utf-8?B?TTFhNVdBb1ZPM3QySDN4ZkhUSDNRSkxvcUJ0alpSblJrM1BXajhXZVRPeTUx?=
+ =?utf-8?B?VjhQTW1iRGxTbnZKMTBoZUVEU2RyQ2R0c2lSSjhDL3ViMDh5SjZDaWRaQUt2?=
+ =?utf-8?B?bnBxNVU3c2VzSklwK0dya2JKSEpqb2FqWE5KbXQxcmVIV1kvTUpsZmdYb0pm?=
+ =?utf-8?B?YXN6T2hFVSt1THRLMUw1WDNJSUFUeG5iNTJkNkJJTXhzcTNzNzB6TnFZUFRv?=
+ =?utf-8?B?SllnTS8rMjFJRklTaWNjOEJrZEVnOTJENHRYRmMwcDBHU2xoakdsNGgzSm1G?=
+ =?utf-8?B?ZTl2SCsxNFJ2K2E0VEUvbndUR0UyTlBkNmxwYTNuRkFpb204dE9wWnJrZVlt?=
+ =?utf-8?B?ZE1rY0pUdWNUK2xRNWJFY3F5ZENpTTRJS1NBL0c1U2lFeUgvTFp0bW1iRENs?=
+ =?utf-8?B?VE9BV2w5ak9WcTZXZldVOFJLMzBoQmNnNEg5d3ZTQmZRdklyeEwzUGFlSGQ5?=
+ =?utf-8?B?cFVpYlA4bzJTVDRWb3NSMjRkSGdoZW5WTEcvQnk1RTVQQVBEemErSExueW1H?=
+ =?utf-8?B?UkQyVjV0dDdoU3lIcFFhaVhhT21Od0w3UTdDd0p3bTN4NmhZNm5qOE5hdmlq?=
+ =?utf-8?B?ay81YSt4Nm1uQTg0Z3lmL1lHRlhjS2pVSkdVQVIrWm5HaHdqODZwN1RwL0g0?=
+ =?utf-8?B?elNLdFE1MHppZkJpLy9EQ2pwSDFncTJhY083bWtzSG80ckcvaDEzc1FBSUJJ?=
+ =?utf-8?B?WVZYN3MvZ0lwRmkxYVdoelF6QnJOYzZndlM1YndyVm82YURqUytUMTN2V0d4?=
+ =?utf-8?B?WFBHSWNwUDl6Q1k1STF2UFEwWVNlYUQ1WkdsYUVwRjBnVWh0TmQ4eDJLd3hZ?=
+ =?utf-8?B?dHRiSmFrUFR6V0V5d0VIT0VBRW9WVGJod2RQNVBXTWJ2WWpXMUQvdjJWaERF?=
+ =?utf-8?B?NXBRVkdIdWQvVVdIUmpCTWU1SWE3dG10R0hkTEZZOXFyWis4WHZ2bHoyRDdu?=
+ =?utf-8?B?N0V0YVJJMUN3S0Y4TEpWZWJtSU9hVGY4ZXJFelZtb1dTUXlTOGNVMFlaYWtq?=
+ =?utf-8?B?aERYS3MwQzhEVVMvcm5wcnhiZ1d5YzdoaUZRRk9lVkxSOU5zK1d0YStITUVL?=
+ =?utf-8?B?RHZXMGRVUDJSaGI1RUVtRUJhK212K0xON0toZDBvay9CNlNicEV4ODVLRytR?=
+ =?utf-8?B?M0NyaUVyOGtQSXViY3dKWXphUDRZUG1ySHRON3Z2TEl0RmJwQ25VdFBSMnZL?=
+ =?utf-8?B?T0tGRUdKY3lnWTB6TitwTXlLMTVmcUNFNXFsRkVCb2YyNEs3RWR4NkVqbEdP?=
+ =?utf-8?B?b3VxVjFrcllPMndzSFhzb2NleVpHdGd0bUlWK2EwUHB6SlR3UkkzeXNtd2Mv?=
+ =?utf-8?B?UHd6VVc0MzRDQnZmQk5XVGRuRXVwT3RrN0hFWWFoWFJsYjVIL1hTV0hiMlVM?=
+ =?utf-8?B?aU84SkZsUFF3VXFkejlHTHBBeVlwYmkwL1VBanNBcUg5NUlQZEtRUUpIZkdy?=
+ =?utf-8?B?aHJBYkkremdONXhOZEV6d2prRjFGc0psM0JyYk1kR0FmWFloSTVPbEJNcTBS?=
+ =?utf-8?B?S0tLTVN4aE40ZWZwOTRjUExCVlBhRE1sL21qb3BzZ2xSTjdvTEZJQUFkeXpz?=
+ =?utf-8?B?UHNHRjJqLzVZUlVqdXFSNDRCY1FWbGxuT0dnODc2KzdKQ3hkUU5STlhWcHIx?=
+ =?utf-8?B?MGYwMGN1blV2UVE1aTZ5L2lXcklUV294QWlGRmhrVk52bFg5YjdZQi8wZjVO?=
+ =?utf-8?B?N2E5MWp6MEkzVVpsK3l0aTBGZHF6UmRWZVhnSEFXa1VPejBqclNqR3JaaWU0?=
+ =?utf-8?B?ZzN3cHlPM0p5QWg4eE9WTWx1S3RiZmNRa2d5RGlpSXoyVnRtUFBzSzV5ZURL?=
+ =?utf-8?B?UDEzK1RGWE8xZnVyU090dGZOT0YyZEg3Wjk5dDZzNWNqenpDVTZXQnBVdGZi?=
+ =?utf-8?B?YmVjNytyUXdrQ3lKV20xSHJzeFp2YVFWWktnSkQ1QWxKYTQ2MzhoQjlYY2pT?=
+ =?utf-8?Q?avrFZUinuHli1WgmHyECYG+0d?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9429d2e9-c4f7-41cc-c1ca-08dc2402631a
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2024 15:19:45.2269
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MwG3FiE6JzIIwjh/TRl55ugxEIo8xMrItdAta/xGuCrK6zL6VAF53gvePVQ++8mFBjDHaSTWmPMvPz32cE1FSg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7612
 
-Fix the counting of new acks and nacks when parsing a packet - something
-that is used in congestion control.
+On 2/2/2024 04:29, Jani Nikula wrote:
+> On Thu, 01 Feb 2024, Mario Limonciello <mario.limonciello@amd.com> wrote:
+>> Some manufacturers have intentionally put an EDID that differs from
+>> the EDID on the internal panel on laptops.  Drivers can call this
+>> helper to attempt to fetch the EDID from the BIOS's ACPI _DDC method.
+> 
+> I'm really not happy about adding new struct edid based APIs to
+> drm_edid.[ch]. Everything new should be struct drm_edid based. All
+> drivers should be converting towards struct drm_edid, instead of adding
+> more legacy to rip out later.
 
-As the code stands, it merely notes if there are any nacks whereas what we
-really should do is compare the previous SACK table to the new one,
-assuming we get two successive ACK packets with nacks in them.  However, we
-really don't want to do that if we can avoid it as the tables might not
-correspond directly as one may be shifted from the other - something that
-will only get harder to deal with once extended ACK tables come into full
-use (with a capacity of up to 8192).
+OK; I'll redo it with struct drm_edid.
 
-Instead, count the number of nacks shifted out of the old SACK, the number
-of nacks retained in the portion still active and the number of new acks
-and nacks in the new table then calculate what we need.
+The changeover for amdgpu to use drm_edid is going to be a pretty 
+involved effort so I'm going to use a get_raw in amdgpu for now so we 
+can unblock the issue this is fixing and let that part get removed when 
+the rest of the overhaul gets done there.
 
-Note this ends up a bit of an estimate as the Rx protocol allows acks to be
-withdrawn by the receiver and packets requested to be retransmitted.
-
-Fixes: d57a3a151660 ("rxrpc: Save last ACK's SACK table rather than marking txbufs")
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Marc Dionne <marc.dionne@auristor.com>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: linux-afs@lists.infradead.org
-cc: netdev@vger.kernel.org
----
- include/trace/events/rxrpc.h |   8 ++-
- net/rxrpc/ar-internal.h      |  20 ++++--
- net/rxrpc/call_event.c       |   6 +-
- net/rxrpc/call_object.c      |   1 +
- net/rxrpc/input.c            | 115 +++++++++++++++++++++++++++++------
- 5 files changed, 122 insertions(+), 28 deletions(-)
-
-diff --git a/include/trace/events/rxrpc.h b/include/trace/events/rxrpc.h
-index 4c1ef7b3705c..87b8de9b6c1c 100644
---- a/include/trace/events/rxrpc.h
-+++ b/include/trace/events/rxrpc.h
-@@ -128,6 +128,7 @@
- 	EM(rxrpc_skb_eaten_by_unshare_nomem,	"ETN unshar-nm") \
- 	EM(rxrpc_skb_get_conn_secured,		"GET conn-secd") \
- 	EM(rxrpc_skb_get_conn_work,		"GET conn-work") \
-+	EM(rxrpc_skb_get_last_nack,		"GET last-nack") \
- 	EM(rxrpc_skb_get_local_work,		"GET locl-work") \
- 	EM(rxrpc_skb_get_reject_work,		"GET rej-work ") \
- 	EM(rxrpc_skb_get_to_recvmsg,		"GET to-recv  ") \
-@@ -141,6 +142,7 @@
- 	EM(rxrpc_skb_put_error_report,		"PUT error-rep") \
- 	EM(rxrpc_skb_put_input,			"PUT input    ") \
- 	EM(rxrpc_skb_put_jumbo_subpacket,	"PUT jumbo-sub") \
-+	EM(rxrpc_skb_put_last_nack,		"PUT last-nack") \
- 	EM(rxrpc_skb_put_purge,			"PUT purge    ") \
- 	EM(rxrpc_skb_put_rotate,		"PUT rotate   ") \
- 	EM(rxrpc_skb_put_unknown,		"PUT unknown  ") \
-@@ -1552,7 +1554,7 @@ TRACE_EVENT(rxrpc_congest,
- 		    memcpy(&__entry->sum, summary, sizeof(__entry->sum));
- 			   ),
- 
--	    TP_printk("c=%08x r=%08x %s q=%08x %s cw=%u ss=%u nA=%u,%u+%u r=%u b=%u u=%u d=%u l=%x%s%s%s",
-+	    TP_printk("c=%08x r=%08x %s q=%08x %s cw=%u ss=%u nA=%u,%u+%u,%u b=%u u=%u d=%u l=%x%s%s%s",
- 		      __entry->call,
- 		      __entry->ack_serial,
- 		      __print_symbolic(__entry->sum.ack_reason, rxrpc_ack_names),
-@@ -1560,9 +1562,9 @@ TRACE_EVENT(rxrpc_congest,
- 		      __print_symbolic(__entry->sum.mode, rxrpc_congest_modes),
- 		      __entry->sum.cwnd,
- 		      __entry->sum.ssthresh,
--		      __entry->sum.nr_acks, __entry->sum.saw_nacks,
-+		      __entry->sum.nr_acks, __entry->sum.nr_retained_nacks,
- 		      __entry->sum.nr_new_acks,
--		      __entry->sum.nr_rot_new_acks,
-+		      __entry->sum.nr_new_nacks,
- 		      __entry->top - __entry->hard_ack,
- 		      __entry->sum.cumulative_acks,
- 		      __entry->sum.dup_acks,
-diff --git a/net/rxrpc/ar-internal.h b/net/rxrpc/ar-internal.h
-index b4ab26c3718a..7818aae1be8e 100644
---- a/net/rxrpc/ar-internal.h
-+++ b/net/rxrpc/ar-internal.h
-@@ -199,11 +199,19 @@ struct rxrpc_host_header {
-  */
- struct rxrpc_skb_priv {
- 	struct rxrpc_connection *conn;	/* Connection referred to (poke packet) */
--	u16		offset;		/* Offset of data */
--	u16		len;		/* Length of data */
--	u8		flags;
-+	union {
-+		struct {
-+			u16		offset;		/* Offset of data */
-+			u16		len;		/* Length of data */
-+			u8		flags;
- #define RXRPC_RX_VERIFIED	0x01
--
-+		};
-+		struct {
-+			rxrpc_seq_t	first_ack;	/* First packet in acks table */
-+			u8		nr_acks;	/* Number of acks+nacks */
-+			u8		nr_nacks;	/* Number of nacks */
-+		};
-+	};
- 	struct rxrpc_host_header hdr;	/* RxRPC packet header from this packet */
- };
- 
-@@ -692,6 +700,7 @@ struct rxrpc_call {
- 	u8			cong_dup_acks;	/* Count of ACKs showing missing packets */
- 	u8			cong_cumul_acks; /* Cumulative ACK count */
- 	ktime_t			cong_tstamp;	/* Last time cwnd was changed */
-+	struct sk_buff		*cong_last_nack; /* Last ACK with nacks received */
- 
- 	/* Receive-phase ACK management (ACKs we send). */
- 	u8			ackr_reason;	/* reason to ACK */
-@@ -729,7 +738,8 @@ struct rxrpc_call {
- struct rxrpc_ack_summary {
- 	u16			nr_acks;		/* Number of ACKs in packet */
- 	u16			nr_new_acks;		/* Number of new ACKs in packet */
--	u16			nr_rot_new_acks;	/* Number of rotated new ACKs */
-+	u16			nr_new_nacks;		/* Number of new nacks in packet */
-+	u16			nr_retained_nacks;	/* Number of nacks retained between ACKs */
- 	u8			ack_reason;
- 	bool			saw_nacks;		/* Saw NACKs in packet */
- 	bool			new_low_nack;		/* T if new low NACK found */
-diff --git a/net/rxrpc/call_event.c b/net/rxrpc/call_event.c
-index c61efe08695d..0f78544d043b 100644
---- a/net/rxrpc/call_event.c
-+++ b/net/rxrpc/call_event.c
-@@ -112,6 +112,7 @@ static void rxrpc_congestion_timeout(struct rxrpc_call *call)
- void rxrpc_resend(struct rxrpc_call *call, struct sk_buff *ack_skb)
- {
- 	struct rxrpc_ackpacket *ack = NULL;
-+	struct rxrpc_skb_priv *sp;
- 	struct rxrpc_txbuf *txb;
- 	unsigned long resend_at;
- 	rxrpc_seq_t transmitted = READ_ONCE(call->tx_transmitted);
-@@ -139,14 +140,15 @@ void rxrpc_resend(struct rxrpc_call *call, struct sk_buff *ack_skb)
- 	 * explicitly NAK'd packets.
- 	 */
- 	if (ack_skb) {
-+		sp = rxrpc_skb(ack_skb);
- 		ack = (void *)ack_skb->data + sizeof(struct rxrpc_wire_header);
- 
--		for (i = 0; i < ack->nAcks; i++) {
-+		for (i = 0; i < sp->nr_acks; i++) {
- 			rxrpc_seq_t seq;
- 
- 			if (ack->acks[i] & 1)
- 				continue;
--			seq = ntohl(ack->firstPacket) + i;
-+			seq = sp->first_ack + i;
- 			if (after(txb->seq, transmitted))
- 				break;
- 			if (after(txb->seq, seq))
-diff --git a/net/rxrpc/call_object.c b/net/rxrpc/call_object.c
-index 0943e54370ba..9fc9a6c3f685 100644
---- a/net/rxrpc/call_object.c
-+++ b/net/rxrpc/call_object.c
-@@ -686,6 +686,7 @@ static void rxrpc_destroy_call(struct work_struct *work)
- 
- 	del_timer_sync(&call->timer);
- 
-+	rxrpc_free_skb(call->cong_last_nack, rxrpc_skb_put_last_nack);
- 	rxrpc_cleanup_ring(call);
- 	while ((txb = list_first_entry_or_null(&call->tx_sendmsg,
- 					       struct rxrpc_txbuf, call_link))) {
-diff --git a/net/rxrpc/input.c b/net/rxrpc/input.c
-index 92495e73b869..9691de00ade7 100644
---- a/net/rxrpc/input.c
-+++ b/net/rxrpc/input.c
-@@ -45,11 +45,9 @@ static void rxrpc_congestion_management(struct rxrpc_call *call,
- 	}
- 
- 	cumulative_acks += summary->nr_new_acks;
--	cumulative_acks += summary->nr_rot_new_acks;
- 	if (cumulative_acks > 255)
- 		cumulative_acks = 255;
- 
--	summary->mode = call->cong_mode;
- 	summary->cwnd = call->cong_cwnd;
- 	summary->ssthresh = call->cong_ssthresh;
- 	summary->cumulative_acks = cumulative_acks;
-@@ -151,6 +149,7 @@ static void rxrpc_congestion_management(struct rxrpc_call *call,
- 		cwnd = RXRPC_TX_MAX_WINDOW;
- 	call->cong_cwnd = cwnd;
- 	call->cong_cumul_acks = cumulative_acks;
-+	summary->mode = call->cong_mode;
- 	trace_rxrpc_congest(call, summary, acked_serial, change);
- 	if (resend)
- 		rxrpc_resend(call, skb);
-@@ -213,7 +212,6 @@ static bool rxrpc_rotate_tx_window(struct rxrpc_call *call, rxrpc_seq_t to,
- 	list_for_each_entry_rcu(txb, &call->tx_buffer, call_link, false) {
- 		if (before_eq(txb->seq, call->acks_hard_ack))
- 			continue;
--		summary->nr_rot_new_acks++;
- 		if (test_bit(RXRPC_TXBUF_LAST, &txb->flags)) {
- 			set_bit(RXRPC_CALL_TX_LAST, &call->flags);
- 			rot_last = true;
-@@ -254,6 +252,11 @@ static void rxrpc_end_tx_phase(struct rxrpc_call *call, bool reply_begun,
- {
- 	ASSERT(test_bit(RXRPC_CALL_TX_LAST, &call->flags));
- 
-+	if (unlikely(call->cong_last_nack)) {
-+		rxrpc_free_skb(call->cong_last_nack, rxrpc_skb_put_last_nack);
-+		call->cong_last_nack = NULL;
-+	}
-+
- 	switch (__rxrpc_call_state(call)) {
- 	case RXRPC_CALL_CLIENT_SEND_REQUEST:
- 	case RXRPC_CALL_CLIENT_AWAIT_REPLY:
-@@ -702,6 +705,43 @@ static void rxrpc_input_ackinfo(struct rxrpc_call *call, struct sk_buff *skb,
- 		wake_up(&call->waitq);
- }
- 
-+/*
-+ * Determine how many nacks from the previous ACK have now been satisfied.
-+ */
-+static rxrpc_seq_t rxrpc_input_check_prev_ack(struct rxrpc_call *call,
-+					      struct rxrpc_ack_summary *summary,
-+					      rxrpc_seq_t seq)
-+{
-+	struct sk_buff *skb = call->cong_last_nack;
-+	struct rxrpc_ackpacket ack;
-+	struct rxrpc_skb_priv *sp = rxrpc_skb(skb);
-+	unsigned int i, new_acks = 0, retained_nacks = 0;
-+	rxrpc_seq_t old_seq = sp->first_ack;
-+	u8 *acks = skb->data + sizeof(struct rxrpc_wire_header) + sizeof(ack);
-+
-+	if (after_eq(seq, old_seq + sp->nr_acks)) {
-+		summary->nr_new_acks += sp->nr_nacks;
-+		summary->nr_new_acks += seq - (old_seq + sp->nr_acks);
-+		summary->nr_retained_nacks = 0;
-+	} else if (seq == old_seq) {
-+		summary->nr_retained_nacks = sp->nr_nacks;
-+	} else {
-+		for (i = 0; i < sp->nr_acks; i++) {
-+			if (acks[i] == RXRPC_ACK_TYPE_NACK) {
-+				if (before(old_seq + i, seq))
-+					new_acks++;
-+				else
-+					retained_nacks++;
-+			}
-+		}
-+
-+		summary->nr_new_acks += new_acks;
-+		summary->nr_retained_nacks = retained_nacks;
-+	}
-+
-+	return old_seq + sp->nr_acks;
-+}
-+
- /*
-  * Process individual soft ACKs.
-  *
-@@ -711,25 +751,51 @@ static void rxrpc_input_ackinfo(struct rxrpc_call *call, struct sk_buff *skb,
-  * the timer on the basis that the peer might just not have processed them at
-  * the time the ACK was sent.
-  */
--static void rxrpc_input_soft_acks(struct rxrpc_call *call, u8 *acks,
--				  rxrpc_seq_t seq, int nr_acks,
--				  struct rxrpc_ack_summary *summary)
-+static void rxrpc_input_soft_acks(struct rxrpc_call *call,
-+				  struct rxrpc_ack_summary *summary,
-+				  struct sk_buff *skb,
-+				  rxrpc_seq_t seq,
-+				  rxrpc_seq_t since)
- {
--	unsigned int i;
-+	struct rxrpc_skb_priv *sp = rxrpc_skb(skb);
-+	unsigned int i, old_nacks = 0;
-+	rxrpc_seq_t lowest_nak = seq + sp->nr_acks;
-+	u8 *acks = skb->data + sizeof(struct rxrpc_wire_header) + sizeof(struct rxrpc_ackpacket);
- 
--	for (i = 0; i < nr_acks; i++) {
-+	for (i = 0; i < sp->nr_acks; i++) {
- 		if (acks[i] == RXRPC_ACK_TYPE_ACK) {
- 			summary->nr_acks++;
--			summary->nr_new_acks++;
-+			if (after_eq(seq, since))
-+				summary->nr_new_acks++;
- 		} else {
--			if (!summary->saw_nacks &&
--			    call->acks_lowest_nak != seq + i) {
--				call->acks_lowest_nak = seq + i;
--				summary->new_low_nack = true;
--			}
- 			summary->saw_nacks = true;
-+			if (before(seq, since)) {
-+				/* Overlap with previous ACK */
-+				old_nacks++;
-+			} else {
-+				summary->nr_new_nacks++;
-+				sp->nr_nacks++;
-+			}
-+
-+			if (before(seq, lowest_nak))
-+				lowest_nak = seq;
- 		}
-+		seq++;
-+	}
-+
-+	if (lowest_nak != call->acks_lowest_nak) {
-+		call->acks_lowest_nak = lowest_nak;
-+		summary->new_low_nack = true;
- 	}
-+
-+	/* We *can* have more nacks than we did - the peer is permitted to drop
-+	 * packets it has soft-acked and re-request them.  Further, it is
-+	 * possible for the nack distribution to change whilst the number of
-+	 * nacks stays the same or goes down.
-+	 */
-+	if (old_nacks < summary->nr_retained_nacks)
-+		summary->nr_new_acks += summary->nr_retained_nacks - old_nacks;
-+	summary->nr_retained_nacks = old_nacks;
- }
- 
- /*
-@@ -773,7 +839,7 @@ static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb)
- 	struct rxrpc_skb_priv *sp = rxrpc_skb(skb);
- 	struct rxrpc_ackinfo info;
- 	rxrpc_serial_t ack_serial, acked_serial;
--	rxrpc_seq_t first_soft_ack, hard_ack, prev_pkt;
-+	rxrpc_seq_t first_soft_ack, hard_ack, prev_pkt, since;
- 	int nr_acks, offset, ioffset;
- 
- 	_enter("");
-@@ -789,6 +855,8 @@ static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb)
- 	prev_pkt = ntohl(ack.previousPacket);
- 	hard_ack = first_soft_ack - 1;
- 	nr_acks = ack.nAcks;
-+	sp->first_ack = first_soft_ack;
-+	sp->nr_acks = nr_acks;
- 	summary.ack_reason = (ack.reason < RXRPC_ACK__INVALID ?
- 			      ack.reason : RXRPC_ACK__INVALID);
- 
-@@ -858,6 +926,16 @@ static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb)
- 	if (nr_acks > 0)
- 		skb_condense(skb);
- 
-+	if (call->cong_last_nack) {
-+		since = rxrpc_input_check_prev_ack(call, &summary, first_soft_ack);
-+		rxrpc_free_skb(call->cong_last_nack, rxrpc_skb_put_last_nack);
-+		call->cong_last_nack = NULL;
-+	} else {
-+		summary.nr_new_acks = first_soft_ack - call->acks_first_seq;
-+		call->acks_lowest_nak = first_soft_ack + nr_acks;
-+		since = first_soft_ack;
-+	}
-+
- 	call->acks_latest_ts = skb->tstamp;
- 	call->acks_first_seq = first_soft_ack;
- 	call->acks_prev_seq = prev_pkt;
-@@ -866,7 +944,7 @@ static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb)
- 	case RXRPC_ACK_PING:
- 		break;
- 	default:
--		if (after(acked_serial, call->acks_highest_serial))
-+		if (acked_serial && after(acked_serial, call->acks_highest_serial))
- 			call->acks_highest_serial = acked_serial;
- 		break;
- 	}
-@@ -905,8 +983,9 @@ static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb)
- 	if (nr_acks > 0) {
- 		if (offset > (int)skb->len - nr_acks)
- 			return rxrpc_proto_abort(call, 0, rxrpc_eproto_ackr_short_sack);
--		rxrpc_input_soft_acks(call, skb->data + offset, first_soft_ack,
--				      nr_acks, &summary);
-+		rxrpc_input_soft_acks(call, &summary, skb, first_soft_ack, since);
-+		rxrpc_get_skb(skb, rxrpc_skb_get_last_nack);
-+		call->cong_last_nack = skb;
- 	}
- 
- 	if (test_bit(RXRPC_CALL_TX_LAST, &call->flags) &&
+> 
+> BR,
+> Jani.
+> 
+>>
+>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+>> ---
+>> v1->v2:
+>>   * Split code from previous amdgpu specific helper to generic drm helper.
+>> v2->v3:
+>>   * Add an extra select to fix a variety of randconfig errors found from
+>>     LKP robot.
+>> ---
+>>   drivers/gpu/drm/Kconfig    |  5 +++
+>>   drivers/gpu/drm/drm_edid.c | 73 ++++++++++++++++++++++++++++++++++++++
+>>   include/drm/drm_edid.h     |  1 +
+>>   3 files changed, 79 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+>> index 2520db0b776e..14df907c96c8 100644
+>> --- a/drivers/gpu/drm/Kconfig
+>> +++ b/drivers/gpu/drm/Kconfig
+>> @@ -21,6 +21,11 @@ menuconfig DRM
+>>   	select KCMP
+>>   	select VIDEO_CMDLINE
+>>   	select VIDEO_NOMODESET
+>> +	select ACPI_VIDEO if ACPI
+>> +	select BACKLIGHT_CLASS_DEVICE if ACPI
+>> +	select INPUT if ACPI
+>> +	select X86_PLATFORM_DEVICES if ACPI && X86
+>> +	select ACPI_WMI if ACPI && X86
+>>   	help
+>>   	  Kernel-level support for the Direct Rendering Infrastructure (DRI)
+>>   	  introduced in XFree86 4.0. If you say Y here, you need to select
+>> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+>> index 69c68804023f..1fbbeaa664b2 100644
+>> --- a/drivers/gpu/drm/drm_edid.c
+>> +++ b/drivers/gpu/drm/drm_edid.c
+>> @@ -28,6 +28,7 @@
+>>    * DEALINGS IN THE SOFTWARE.
+>>    */
+>>   
+>> +#include <acpi/video.h>
+>>   #include <linux/bitfield.h>
+>>   #include <linux/cec.h>
+>>   #include <linux/hdmi.h>
+>> @@ -2188,6 +2189,47 @@ drm_do_probe_ddc_edid(void *data, u8 *buf, unsigned int block, size_t len)
+>>   	return ret == xfers ? 0 : -1;
+>>   }
+>>   
+>> +/**
+>> + * drm_do_probe_acpi_edid() - get EDID information via ACPI _DDC
+>> + * @data: struct drm_device
+>> + * @buf: EDID data buffer to be filled
+>> + * @block: 128 byte EDID block to start fetching from
+>> + * @len: EDID data buffer length to fetch
+>> + *
+>> + * Try to fetch EDID information by calling acpi_video_get_edid() function.
+>> + *
+>> + * Return: 0 on success or error code on failure.
+>> + */
+>> +static int
+>> +drm_do_probe_acpi_edid(void *data, u8 *buf, unsigned int block, size_t len)
+>> +{
+>> +	struct drm_device *ddev = data;
+>> +	struct acpi_device *acpidev = ACPI_COMPANION(ddev->dev);
+>> +	unsigned char start = block * EDID_LENGTH;
+>> +	void *edid;
+>> +	int r;
+>> +
+>> +	if (!acpidev)
+>> +		return -ENODEV;
+>> +
+>> +	/* fetch the entire edid from BIOS */
+>> +	r = acpi_video_get_edid(acpidev, ACPI_VIDEO_DISPLAY_LCD, -1, &edid);
+>> +	if (r < 0) {
+>> +		DRM_DEBUG_KMS("Failed to get EDID from ACPI: %d\n", r);
+>> +		return -EINVAL;
+>> +	}
+>> +	if (len > r || start > r || start + len > r) {
+>> +		r = EINVAL;
+>> +		goto cleanup;
+>> +	}
+>> +
+>> +	memcpy(buf, edid + start, len);
+>> +	r = 0;
+>> +cleanup:
+>> +	kfree(edid);
+>> +	return r;
+>> +}
+>> +
+>>   static void connector_bad_edid(struct drm_connector *connector,
+>>   			       const struct edid *edid, int num_blocks)
+>>   {
+>> @@ -2643,6 +2685,37 @@ struct edid *drm_get_edid(struct drm_connector *connector,
+>>   }
+>>   EXPORT_SYMBOL(drm_get_edid);
+>>   
+>> +/**
+>> + * drm_get_acpi_edid - get EDID data, if available
+>> + * @connector: connector we're probing
+>> + *
+>> + * Use the BIOS to attempt to grab EDID data if possible.  If found,
+>> + * attach it to the connector.
+>> + *
+>> + * Return: Pointer to valid EDID or NULL if we couldn't find any.
+>> + */
+>> +struct edid *drm_get_acpi_edid(struct drm_connector *connector)
+>> +{
+>> +	struct edid *edid = NULL;
+>> +
+>> +	switch (connector->connector_type) {
+>> +	case DRM_MODE_CONNECTOR_LVDS:
+>> +	case DRM_MODE_CONNECTOR_eDP:
+>> +		break;
+>> +	default:
+>> +		return NULL;
+>> +	}
+>> +
+>> +	if (connector->force == DRM_FORCE_OFF)
+>> +		return NULL;
+>> +
+>> +	edid = _drm_do_get_edid(connector, drm_do_probe_acpi_edid, connector->dev, NULL);
+>> +
+>> +	drm_connector_update_edid_property(connector, edid);
+>> +	return edid;
+>> +}
+>> +EXPORT_SYMBOL(drm_get_acpi_edid);
+>> +
+>>   /**
+>>    * drm_edid_read_custom - Read EDID data using given EDID block read function
+>>    * @connector: Connector to use
+>> diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
+>> index 518d1b8106c7..60fbdc06badc 100644
+>> --- a/include/drm/drm_edid.h
+>> +++ b/include/drm/drm_edid.h
+>> @@ -412,6 +412,7 @@ struct edid *drm_do_get_edid(struct drm_connector *connector,
+>>   	void *data);
+>>   struct edid *drm_get_edid(struct drm_connector *connector,
+>>   			  struct i2c_adapter *adapter);
+>> +struct edid *drm_get_acpi_edid(struct drm_connector *connector);
+>>   u32 drm_edid_get_panel_id(struct i2c_adapter *adapter);
+>>   struct edid *drm_get_edid_switcheroo(struct drm_connector *connector,
+>>   				     struct i2c_adapter *adapter);
+> 
 
 
