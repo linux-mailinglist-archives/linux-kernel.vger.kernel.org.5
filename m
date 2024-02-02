@@ -1,49 +1,51 @@
-Return-Path: <linux-kernel+bounces-49101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60D698465DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:31:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 852108465E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:31:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8B7428A938
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:31:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A4901F272B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C6E171A3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0351171BA;
 	Fri,  2 Feb 2024 02:30:07 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9551D2599;
-	Fri,  2 Feb 2024 02:30:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3719EAFB
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 02:30:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706841005; cv=none; b=I6NBXadiUv9EkGn94qORUiebrQq6l+UajJELkUSmA5yEJlMALeILpQ21JSMXvy2W9j51c+ubTtECFk4DsF5WqkRyDtGZ0/8zKA0tIFS+oVHRoTylr5yu+0S9WcdEScHeM4t8yb2MD/H88kFAy41IPBN+nUjblnjBSIGrq6C659U=
+	t=1706841005; cv=none; b=bhgowyBESenmgL4XlXCD+Jbea/pnTBTQDjwbalAqlIVN6XIJWmO99gVD8tS9f5sq5tl/Wa/HhHntwXK53VzK8AhnKTot8cqDuaZwANvEjCLD5h8vO7CLisvdNQuIHuXWbWXMFJ6KuOnvdjELJtQDeiutqO+L4Tz73zKVtv4w9j4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706841005; c=relaxed/simple;
-	bh=AXWG6y5U0W8Wo2DTNY5xeIpEyvIS3wzuGoqbGY9WvtY=;
+	bh=bzFVFZX6ZxTI6abHrIBPqY91OKE0skzJprX6xWIWAm4=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=M7xmdHdF++BZC/Citr6UsYqvDHnMJxCJVuQVumwmgl5gwYjpg2Wj2ltNAZMoZY7CjE8L45KYWGEVw+J4H+K3BjRFTuR/Qn5m7wtSqsjHgwV5fIbJD+XVqAq2w84TYoYapY2lV+/GASxNUvCOe7KjaF+wsHbmxG13h03lfNIa5Kc=
+	 Content-Type; b=UE5OrY9dgpRb9mdx61g19Y/NjqWQJRXz2iIMItkhdj4qU9DRouqEx7SdUYqSsT/URFOAE/1jf59N0xObuIiwAhqbkEja6U2uurUEiHg3jSn8qf1bCmAkap4RDGLBjBO+NaisYwv95dELm7Mi9Clv3A/Jh1VaoB0vx8dB4bRnWLo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69ED2C32787;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84E8DC43601;
 	Fri,  2 Feb 2024 02:30:05 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1rVjJv-00000005kA4-244J;
+	id 1rVjJv-00000005kAa-2jFi;
 	Thu, 01 Feb 2024 21:30:23 -0500
-Message-ID: <20240202023023.351711432@goodmis.org>
+Message-ID: <20240202023023.512233945@goodmis.org>
 User-Agent: quilt/0.67
-Date: Thu, 01 Feb 2024 21:30:08 -0500
+Date: Thu, 01 Feb 2024 21:30:09 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Mark Rutland <mark.rutland@arm.com>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
  Andrew Morton <akpm@linux-foundation.org>,
- stable@vger.kernel.org,
- Daniel Bristot de Oliveira <bristot@kernel.org>
-Subject: [for-linus][PATCH 09/13] tracing/timerlat: Move hrtimer_init to timerlat_fd open()
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Christian Brauner <brauner@kernel.org>,
+ Al Viro <viro@ZenIV.linux.org.uk>,
+ Ajay Kaher <ajay.kaher@broadcom.com>
+Subject: [for-linus][PATCH 10/13] eventfs: Warn if an eventfs_inode is freed without is_freed being set
 References: <20240202022959.515961549@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -53,123 +55,84 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 
-From: Daniel Bristot de Oliveira <bristot@kernel.org>
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Currently, the timerlat's hrtimer is initialized at the first read of
-timerlat_fd, and destroyed at close(). It works, but it causes an error
-if the user program open() and close() the file without reading.
+There should never be a case where an evenfs_inode is being freed without
+is_freed being set. Add a WARN_ON_ONCE() if it ever happens. That would
+mean there was one too many put_ei()s.
 
-Here's an example:
+Link: https://lore.kernel.org/linux-trace-kernel/20240201161616.843551963@goodmis.org
 
- # echo NO_OSNOISE_WORKLOAD > /sys/kernel/debug/tracing/osnoise/options
- # echo timerlat > /sys/kernel/debug/tracing/current_tracer
-
- # cat <<EOF > ./timerlat_load.py
- # !/usr/bin/env python3
-
- timerlat_fd = open("/sys/kernel/tracing/osnoise/per_cpu/cpu0/timerlat_fd", 'r')
- timerlat_fd.close();
- EOF
-
- # ./taskset -c 0 ./timerlat_load.py
-<BOOM>
-
- BUG: kernel NULL pointer dereference, address: 0000000000000010
- #PF: supervisor read access in kernel mode
- #PF: error_code(0x0000) - not-present page
- PGD 0 P4D 0
- Oops: 0000 [#1] PREEMPT SMP NOPTI
- CPU: 1 PID: 2673 Comm: python3 Not tainted 6.6.13-200.fc39.x86_64 #1
- Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-1.fc39 04/01/2014
- RIP: 0010:hrtimer_active+0xd/0x50
- Code: 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 0f 1f 44 00 00 48 8b 57 30 <8b> 42 10 a8 01 74 09 f3 90 8b 42 10 a8 01 75 f7 80 7f 38 00 75 1d
- RSP: 0018:ffffb031009b7e10 EFLAGS: 00010286
- RAX: 000000000002db00 RBX: ffff9118f786db08 RCX: 0000000000000000
- RDX: 0000000000000000 RSI: ffff9117a0e64400 RDI: ffff9118f786db08
- RBP: ffff9118f786db80 R08: ffff9117a0ddd420 R09: ffff9117804d4f70
- R10: 0000000000000000 R11: 0000000000000000 R12: ffff9118f786db08
- R13: ffff91178fdd5e20 R14: ffff9117840978c0 R15: 0000000000000000
- FS:  00007f2ffbab1740(0000) GS:ffff9118f7840000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000010 CR3: 00000001b402e000 CR4: 0000000000750ee0
- PKRU: 55555554
- Call Trace:
-  <TASK>
-  ? __die+0x23/0x70
-  ? page_fault_oops+0x171/0x4e0
-  ? srso_alias_return_thunk+0x5/0x7f
-  ? avc_has_extended_perms+0x237/0x520
-  ? exc_page_fault+0x7f/0x180
-  ? asm_exc_page_fault+0x26/0x30
-  ? hrtimer_active+0xd/0x50
-  hrtimer_cancel+0x15/0x40
-  timerlat_fd_release+0x48/0xe0
-  __fput+0xf5/0x290
-  __x64_sys_close+0x3d/0x80
-  do_syscall_64+0x60/0x90
-  ? srso_alias_return_thunk+0x5/0x7f
-  ? __x64_sys_ioctl+0x72/0xd0
-  ? srso_alias_return_thunk+0x5/0x7f
-  ? syscall_exit_to_user_mode+0x2b/0x40
-  ? srso_alias_return_thunk+0x5/0x7f
-  ? do_syscall_64+0x6c/0x90
-  ? srso_alias_return_thunk+0x5/0x7f
-  ? exit_to_user_mode_prepare+0x142/0x1f0
-  ? srso_alias_return_thunk+0x5/0x7f
-  ? syscall_exit_to_user_mode+0x2b/0x40
-  ? srso_alias_return_thunk+0x5/0x7f
-  ? do_syscall_64+0x6c/0x90
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
- RIP: 0033:0x7f2ffb321594
- Code: 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 80 3d d5 cd 0d 00 00 74 13 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 3c c3 0f 1f 00 55 48 89 e5 48 83 ec 10 89 7d
- RSP: 002b:00007ffe8d8eef18 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
- RAX: ffffffffffffffda RBX: 00007f2ffba4e668 RCX: 00007f2ffb321594
- RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
- RBP: 00007ffe8d8eef40 R08: 0000000000000000 R09: 0000000000000000
- R10: 55c926e3167eae79 R11: 0000000000000202 R12: 0000000000000003
- R13: 00007ffe8d8ef030 R14: 0000000000000000 R15: 00007f2ffba4e668
-  </TASK>
- CR2: 0000000000000010
- ---[ end trace 0000000000000000 ]---
-
-Move hrtimer_init to timerlat_fd open() to avoid this problem.
-
-Link: https://lore.kernel.org/linux-trace-kernel/7324dd3fc0035658c99b825204a66049389c56e3.1706798888.git.bristot@kernel.org
-
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: stable@vger.kernel.org
-Fixes: e88ed227f639 ("tracing/timerlat: Add user-space interface")
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Al Viro <viro@ZenIV.linux.org.uk>
+Cc: Ajay Kaher <ajay.kaher@broadcom.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/trace_osnoise.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/tracefs/event_inode.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index bd0d01d00fb9..a8e28f9b9271 100644
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -2444,6 +2444,9 @@ static int timerlat_fd_open(struct inode *inode, struct file *file)
- 	tlat = this_cpu_tmr_var();
- 	tlat->count = 0;
- 
-+	hrtimer_init(&tlat->timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_PINNED_HARD);
-+	tlat->timer.function = timerlat_irq;
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index 515fdace1eea..ca7daee7c811 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -73,6 +73,9 @@ enum {
+ static void release_ei(struct kref *ref)
+ {
+ 	struct eventfs_inode *ei = container_of(ref, struct eventfs_inode, kref);
 +
- 	migrate_enable();
- 	return 0;
- };
-@@ -2526,9 +2529,6 @@ timerlat_fd_read(struct file *file, char __user *ubuf, size_t count,
- 		tlat->tracing_thread = false;
- 		tlat->kthread = current;
++	WARN_ON_ONCE(!ei->is_freed);
++
+ 	kfree(ei->entry_attrs);
+ 	kfree_const(ei->name);
+ 	kfree_rcu(ei, rcu);
+@@ -84,6 +87,14 @@ static inline void put_ei(struct eventfs_inode *ei)
+ 		kref_put(&ei->kref, release_ei);
+ }
  
--		hrtimer_init(&tlat->timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_PINNED_HARD);
--		tlat->timer.function = timerlat_irq;
--
- 		/* Annotate now to drift new period */
- 		tlat->abs_period = hrtimer_cb_get_time(&tlat->timer);
++static inline void free_ei(struct eventfs_inode *ei)
++{
++	if (ei) {
++		ei->is_freed = 1;
++		put_ei(ei);
++	}
++}
++
+ static inline struct eventfs_inode *get_ei(struct eventfs_inode *ei)
+ {
+ 	if (ei)
+@@ -679,7 +690,7 @@ struct eventfs_inode *eventfs_create_dir(const char *name, struct eventfs_inode
  
+ 	/* Was the parent freed? */
+ 	if (list_empty(&ei->list)) {
+-		put_ei(ei);
++		free_ei(ei);
+ 		ei = NULL;
+ 	}
+ 	return ei;
+@@ -770,7 +781,7 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
+ 	return ei;
+ 
+  fail:
+-	put_ei(ei);
++	free_ei(ei);
+ 	tracefs_failed_creating(dentry);
+ 	return ERR_PTR(-ENOMEM);
+ }
+@@ -801,9 +812,8 @@ static void eventfs_remove_rec(struct eventfs_inode *ei, int level)
+ 	list_for_each_entry(ei_child, &ei->children, list)
+ 		eventfs_remove_rec(ei_child, level + 1);
+ 
+-	ei->is_freed = 1;
+ 	list_del(&ei->list);
+-	put_ei(ei);
++	free_ei(ei);
+ }
+ 
+ /**
 -- 
 2.43.0
 
