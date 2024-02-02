@@ -1,190 +1,148 @@
-Return-Path: <linux-kernel+bounces-50158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39ED3847508
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:38:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60619847510
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:39:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C73871F2B7E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:38:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CB59282E16
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:39:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6512E1487FF;
-	Fri,  2 Feb 2024 16:38:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD99C1487D2;
+	Fri,  2 Feb 2024 16:39:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HLDMYY3q"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FF0hXx/O"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 125BD14830B;
-	Fri,  2 Feb 2024 16:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 179A6148303;
+	Fri,  2 Feb 2024 16:39:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706891882; cv=none; b=oK8JSf1qr1ASWciFHRp0hTk8qXSDzHrKxFkqegzUr1myfF6KLV4qQR+7RxzMXzVTO2KMfusOd5WJ9Bft+ioUNgCrJW6Th3LsM51P1F7tKJWDrwjKho1iu33wtshNwuNdqWvgP2kV7dmWQR/MHXwfsfWKlSNGEj7/H1NW4Flbxfw=
+	t=1706891962; cv=none; b=Om+Br2yAHzuT2AxVBxKkdbO1J8RAkLhA0/wtU691FSaB/kxgn7o0Ce/ZUWfpGFg7ggItu6xtXi0ITRX3+Lx4SZ/TckBIhSKOVzjwbYa/qeKb6cnpgSfQb4EF65evDJLGRIm2stwaWeFHz+bK8fr7xOw5Cpx+leQIf0bmJH9PGtU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706891882; c=relaxed/simple;
-	bh=DI+vowAp6HxEMoicKFi0dBorFyKWjCm9wzepkmTNs34=;
+	s=arc-20240116; t=1706891962; c=relaxed/simple;
+	bh=C93aK6BQwczn2Qf4d1EaU4y+6e3vbrVFjIg108ozk1I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pYTrOVQ+0B5ukyzMsUBdXn3MNleMK0e+V09t72LLKYvg+eYUCXNPLL6Dke9pdhX2sR8bB3vK2sdlxy1WZwP3OODujWav3QgiZgNeJK+AACcdqx9+5AyPoH/eZgAJNDe7jf3sWTN6dImF+TvNlvLD7oziUtaKyFylSQYN86aCnD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HLDMYY3q; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706891882; x=1738427882;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=DI+vowAp6HxEMoicKFi0dBorFyKWjCm9wzepkmTNs34=;
-  b=HLDMYY3qW9KfFYTZxPLMbqIFj+jvdrbRnmE5dZrYcgpAqc7ZAuOL2cm+
-   LYMJ37m8JQlaRbr1CX2fdQKWy9OdkG57G+N8W3Ig9WEEdhsrl8TMb7dkd
-   apPEVCQKpPQuzcxoR+m/1lxgzq8o/n15m0RggQBmMHDN2psDgKeNVevHZ
-   8IveClGH4QyZfi8p5HdlBU/yhFOYt19GJq6fwwyWC/GWOlHHEJeF56/Oy
-   WyOhE9KIFEo8XtCm4ggCyswY0CRTXC/Mt13ck1XZas9g2no4PqGHIxEcU
-   rUvvRef4Ldmgs+5qxTBS84fJSd7GpVSZEyCpxp1Bxhfoyap5QLfB0Clkb
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="354999"
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="354999"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 08:38:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="823251802"
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="823251802"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
-  by orsmga001.jf.intel.com with SMTP; 02 Feb 2024 08:37:53 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Fri, 02 Feb 2024 18:37:52 +0200
-Date: Fri, 2 Feb 2024 18:37:52 +0200
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Sebastian Wick <sebastian.wick@redhat.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Emma Anholt <emma@anholt.net>, Jonathan Corbet <corbet@lwn.net>,
-	Sandy Huang <hjc@rock-chips.com>,
-	Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-Subject: Re: Re: Re: [PATCH v5 08/44] drm/connector: hdmi: Add Broadcast RGB
- property
-Message-ID: <Zb0aYAapkxQ2kopt@intel.com>
-References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
- <20231207-kms-hdmi-connector-state-v5-8-6538e19d634d@kernel.org>
- <20240115143308.GA159345@toolbox>
- <20240115143720.GA160656@toolbox>
- <73peztbeeikb3fg6coxu3punxllgtyrmgco34tnxkojtsjbr3s@26bud3sjbcez>
- <Zb0M_2093UwPXK8y@intel.com>
- <hez2m57ogqx3yyqk45tzdkvxvhrbdepgm244i4m2aty2xhf5b5@acqgvmxhmmvr>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SUJ5xyKl0cky+gRV0cUUSFsHwPYaPLnnxizxl01Gqk1ea44+16x9UgD+kqomQkc8A/z+Z7RLFY+EVSVI4WKb3za7D8RHDBihq2l4aK+CUgLGHFacTxaxIBBaz8GQo9GmgpZwvjNI/4Mz4Ffz22Nfqmfyny+RxJFKyc43a1HR9B0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FF0hXx/O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACEBDC433C7;
+	Fri,  2 Feb 2024 16:39:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706891961;
+	bh=C93aK6BQwczn2Qf4d1EaU4y+6e3vbrVFjIg108ozk1I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FF0hXx/OF2XOg4bls2j9LIIkMD7T7StzYycyRMzWJFzy6j4LsVnG3RtNfmaGDd/sT
+	 f/O0g8tOFs5lJUv0y7g9aAV8qHoCvOU+kx/9KmQvCls17yBOpopouuTvJzLwyoXtga
+	 pClNPBh9LV9Ug6DQ3i2y3DL8CHS1DlMy/m7u6uiw3ANYKY2Ti17eaN9ijXIy+IBP+Z
+	 4owhpO25cTp+Yq83hc9wixId0OGpXDCDKvtwKVxd88PDHPCNKnznJgXO/xh4nWWoJ4
+	 87VxY8fw2w6T2XHGne70xH8dRXVkfZEQT442hoGrnhc3ueBVlAefELNj0uczSKiEKJ
+	 v8AfJI4j13tkQ==
+Date: Fri, 2 Feb 2024 16:39:16 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Roger Quadros <rogerq@kernel.org>
+Cc: Conor Dooley <conor.dooley@microchip.com>, Bin Liu <b-liu@ti.com>,
+	nm@ti.com, vigneshr@ti.com, afd@ti.com, kristo@kernel.org,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, srk@ti.com, r-gunasekaran@ti.com,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/5] dt-bindings: usb/ti,am62-usb.yaml: Add PHY2
+ register space
+Message-ID: <20240202-hunchback-tapestry-16b1bcf16452@spud>
+References: <20240201120332.4811-1-rogerq@kernel.org>
+ <20240201120332.4811-5-rogerq@kernel.org>
+ <20240201-viewpoint-upload-fb714f650ff5@spud>
+ <20240201-violet-chalice-51a73f113e7b@spud>
+ <20240201183522.ssj553rwefr2wuqi@iaqt7>
+ <20240201-clad-unopposed-ccfdfe53b770@spud>
+ <bc3ab60f-539b-41d0-8595-6e0b55f2763d@kernel.org>
+ <20240202-unzip-whacky-bb2f151c618b@wendy>
+ <dc3c93dc-74d9-4b1c-a771-3ee6f67b5dcc@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="nAiiSYjdnr/gaelo"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <hez2m57ogqx3yyqk45tzdkvxvhrbdepgm244i4m2aty2xhf5b5@acqgvmxhmmvr>
-X-Patchwork-Hint: comment
+In-Reply-To: <dc3c93dc-74d9-4b1c-a771-3ee6f67b5dcc@kernel.org>
 
-On Fri, Feb 02, 2024 at 04:59:30PM +0100, Maxime Ripard wrote:
-> On Fri, Feb 02, 2024 at 05:40:47PM +0200, Ville Syrjälä wrote:
-> > On Fri, Feb 02, 2024 at 02:01:39PM +0100, Maxime Ripard wrote:
-> > > Hi,
-> > > 
-> > > On Mon, Jan 15, 2024 at 03:37:20PM +0100, Sebastian Wick wrote:
-> > > > > >  /**
-> > > > > >   * DOC: HDMI connector properties
-> > > > > >   *
-> > > > > > + * Broadcast RGB
-> > > > > > + *      Indicates the RGB Quantization Range (Full vs Limited) used.
-> > > > > > + *      Infoframes will be generated according to that value.
-> > > > > > + *
-> > > > > > + *      The value of this property can be one of the following:
-> > > > > > + *
-> > > > > > + *      Automatic:
-> > > > > > + *              RGB Range is selected automatically based on the mode
-> > > > > > + *              according to the HDMI specifications.
-> > > > > > + *
-> > > > > > + *      Full:
-> > > > > > + *              Full RGB Range is forced.
-> > > > > > + *
-> > > > > > + *      Limited 16:235:
-> > > > > > + *              Limited RGB Range is forced. Unlike the name suggests,
-> > > > > > + *              this works for any number of bits-per-component.
-> > > > > > + *
-> > > > > > + *      Drivers can set up this property by calling
-> > > > > > + *      drm_connector_attach_broadcast_rgb_property().
-> > > > > > + *
-> > > > > 
-> > > > > This is a good time to document this in more detail. There might be two
-> > > > > different things being affected:
-> > > > > 
-> > > > > 1. The signalling (InfoFrame/SDP/...)
-> > > > > 2. The color pipeline processing
-> > > > > 
-> > > > > All values of Broadcast RGB always affect the color pipeline processing
-> > > > > such that a full-range input to the CRTC is converted to either full- or
-> > > > > limited-range, depending on what the monitor is supposed to accept.
-> > > > > 
-> > > > > When automatic is selected, does that mean that there is no signalling,
-> > > > > or that the signalling matches what the monitor is supposed to accept
-> > > > > according to the spec? Also, is this really HDMI specific?
-> > > > > 
-> > > > > When full or limited is selected and the monitor doesn't support the
-> > > > > signalling, what happens?
-> > > > 
-> > > > Forgot to mention: user-space still has no control over RGB vs YCbCr on
-> > > > the cable, so is this only affecting RGB? If not, how does it affect
-> > > > YCbCr?
-> > > 
-> > > So I dug a bit into both the i915 and vc4 drivers, and it looks like if
-> > > we're using a YCbCr format, i915 will always use a limited range while
-> > > vc4 will follow the value of the property.
-> > 
-> > The property is literally called "Broadcast *RGB*".
-> > That should explain why it's only affecting RGB.
-> 
-> Right. And the limited range option is called "Limited 16:235" despite
-> being usable on bpc > 8 bits. Naming errors occurs, and history happens
-> to make names inconsistent too, that's fine and not an argument in
-> itself.
-> 
-> > Full range YCbCr is a much rarer beast so we've never bothered
-> > to enable it.
-> 
-> vc4 supports it.
 
-Someone implemented it incorrectly then.
+--nAiiSYjdnr/gaelo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> > Eg. with DP it only became possible with the introduction of the VSC
-> > SDP (and I don't recall if there's additional capability checks that
-> > are also required). With DP MSA signalling full range YCbCr is not
-> > possible at all.
-> 
-> This is for HDMI only.
-> 
-> > I don't recall right now what the HDMI requirements are.
-> 
-> HDMI has supported it for a while, and it's defined (for example) in the
-> HDMI 1.4 spec in Section 6.6 - Video Quantization Ranges. It supports
-> limited and full range on both RGB and YCbCr, as long as the EDIDs state
-> so and the Infoframes signal it.
+On Fri, Feb 02, 2024 at 12:13:22PM +0200, Roger Quadros wrote:
+>=20
+>=20
+> On 02/02/2024 11:53, Conor Dooley wrote:
+> > On Fri, Feb 02, 2024 at 11:36:55AM +0200, Roger Quadros wrote:
+> >>
+> >>
+> >> On 01/02/2024 21:13, Conor Dooley wrote:
+> >>> On Thu, Feb 01, 2024 at 12:35:22PM -0600, Bin Liu wrote:
+> >>>> On Thu, Feb 01, 2024 at 06:18:05PM +0000, Conor Dooley wrote:
+> >>>>> On Thu, Feb 01, 2024 at 06:15:20PM +0000, Conor Dooley wrote:
+> >>>>>> On Thu, Feb 01, 2024 at 02:03:31PM +0200, Roger Quadros wrote:
+> >>>>>>> So far this was not required but due to the newly identified
+> >>>>>>> Errata i2409 [1] we need to poke this register space.
+> >>>>>>>
+> >>>>>>> [1] https://www.ti.com/lit/er/sprz487d/sprz487d.pdf
+> >>>>>>>
+> >>>>>>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> >>>>>>
+> >>>>>> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> >>>>>
+> >>>>> Actually, where is the user for this that actually pokes the regist=
+er
+> >>>>> space?
+> >>
+> >> https://lore.kernel.org/all/20240201121220.5523-5-rogerq@kernel.org/
+> >>
+> >>>>> You're adding another register region, so I went to check how you w=
+ere
+> >>>>> handling that in drivers, but there's no driver patch.
+> >>>>
+> >>>> See Roger's another patch set 'Add workaround for Errata i2409' post=
+ed
+> >>>> on 16th.
+> >>>
+> >>> This patch should be with that series, not with these dts patches.
+> >>>
+> >>
+> >> Why not? There should be no dependency between DTS and driver implemen=
+tation.
+> >>
+> >> As DTS and driver will be merged by separate maintainers I thought it
+> >> would be easier for maintainers this way.
+> >=20
+> > dts and driver might be merged by different people, but dt-bindings and
+> > drivers are merged by the same people. This is a bindings patch, not a
+>=20
+> If we do that then I get a bunch of dtbs_check warnings
+>=20
+> dwc3-usb@f900000: reg: [[0, 261095424, 0, 2048], [0, 261128192, 0, 1024]]=
+ is too long
 
-I think a good reason for not using a simple boolean like this 
-YCbCr is that it doesn't cover the color encoding part at all,
-which is probably more important than the quantization range.
-So we need a new property anyway.
+I don't know what your platform maintainers view is, but to me it is fine
+as long as linux-next is clean.
 
--- 
-Ville Syrjälä
-Intel
+--nAiiSYjdnr/gaelo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZb0atAAKCRB4tDGHoIJi
+0nBQAQCicJ91INCex20f2549WHuW6zf1gYNYwN/ECqpQDaEkigD/e+eqROf+RPcx
+loBomq/me8ZT/g8POwlA++gvut3+4w0=
+=wkAY
+-----END PGP SIGNATURE-----
+
+--nAiiSYjdnr/gaelo--
 
