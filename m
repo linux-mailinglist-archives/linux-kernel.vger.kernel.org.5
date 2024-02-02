@@ -1,166 +1,146 @@
-Return-Path: <linux-kernel+bounces-49654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ED83846D81
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:14:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84D1E846D79
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:13:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D04E7296EE3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:14:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7F291C220C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:13:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA7F77E57D;
-	Fri,  2 Feb 2024 10:13:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50DA57A70B;
+	Fri,  2 Feb 2024 10:13:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AO8NURvj"
-Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com [209.85.222.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fPW3WRRK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6351A7D414
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 10:13:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C5CB5B688;
+	Fri,  2 Feb 2024 10:13:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706868818; cv=none; b=SjGzL/AtDttwNbp2heGBdHZmmcNBqoz+AZHsahzcXjfqO5k1a3n6rDh0fKR0y1WNaB6sFtx64TdGheoSp3yZX6aSBTUFa8VIR1bSq28c27Q7G5NNkKKYsuhHcJtVY7AV/pUytPGtUg9hEeopbUVsVhzoOQiYEHCzEC9GAWCs9kQ=
+	t=1706868809; cv=none; b=Ur8UKAIHrFK05JIQQ9afdjFvjIUymEiiSwojlz2c+6l47znk0UNPRt0AgvMdpw1O+I9R6qqcM+kg+lGvXlA/3O6IyfExfLnUNKc/QfNC2uqXiaQH7pRwWqz5ldwkJ1QvG5544wapYR01L5LOb+nOjeoQyoNScz5xNgfCx9PUEF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706868818; c=relaxed/simple;
-	bh=itc1lWSzDl2ak1k3l4KGvZCc9ZWdvBnL0W7Kq6iSLm8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ugMDAl4fSyB7X+N5H4enQRZBbQabuxJu3feHfqFN0h3QKWFj+bmmEPw6uyee4wfyFI+xL4P0Xh2AIAQVbdgL7s9YsTyef8HmgPKEgcMpgR+dC+MCP515uOJBTO2xURIpceew5sdMcuYPo6/8rjDvytdb6YLZ8whxNxXE89DeW/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AO8NURvj; arc=none smtp.client-ip=209.85.222.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f53.google.com with SMTP id a1e0cc1a2514c-7d5c257452dso796192241.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 02:13:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706868815; x=1707473615; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=itc1lWSzDl2ak1k3l4KGvZCc9ZWdvBnL0W7Kq6iSLm8=;
-        b=AO8NURvj2gK7QOie9bG3BbMKMSvQrtQvvIjzCDrLqg/LhRonfOA4lMcD1ppKGnQjeW
-         T5tTAbwgYXrMvfKyJcEih+PN9tpQxNUIW6kx1ocx5r6TxD04DFa71/XEC2xfkr1SMNX4
-         16WVZE0ygJIYw4jziSF5bgf6i14Z2goZxgjrFWnFiAyfogDoJmxg36ohDs8W7UyJAxwS
-         L6Gnc8AqE22+0vjFjtdpHI9mCwaekalox8zlwa+SzTW8AFv9YiWzBl6UbAEPSvAGI4eC
-         I3A9J+YvD9dIXKqmn0QZmhObfkjRMyXj9sDU8QGBBLACnXuQ7OX0Emhst2SxS+ciYljr
-         x4Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706868815; x=1707473615;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=itc1lWSzDl2ak1k3l4KGvZCc9ZWdvBnL0W7Kq6iSLm8=;
-        b=c3TKl4LYQJi7sc1xMbFfAfFhACl5BkEugnHpZn+LdI4veDnk3kGB6+LtL/vpTdG3bc
-         BMz/cUekrz9SvTt4qiEvxnCvaAMDUUSLGe6xQ0yCPDeGdtTWZIbHDm96ttYY9GCqCclN
-         oCDeQy+R9WJmSDc/6W+KpopbJ4QPFbru9bnMNIlAvcK/zeQUDcokRuX9TT9RZFitDuUu
-         Bo3yDP77h6mdfuCC0ZfLDLY8qxzBhpmCCcB/DkXHRqmlnnJ3i+HXNjsUkn9xylBgV46W
-         S2b31kz+imNXauD3ODKGbqgmwHODkVbJCYP08MqqF6PjZAQQZ89b6V4/7OKg8xPLKkWa
-         pzTQ==
-X-Gm-Message-State: AOJu0YzcRTAIjlkGgAC/W0ECUjqM/oawGKwZJaH33JtyOo6JxlaciJZy
-	DGDmS0ZCw4Ks7cUIs1wpakEAjmZ8swgpf2sIeDVp2OYM9kocLm/bC0fIpY1ND0dtVC0nZx1G/N3
-	Mj0G+dN89FiEzulKzGQCX9l6/QyLC8eyaxK1b
-X-Google-Smtp-Source: AGHT+IEzBgLYEciVPVcpCXSuKNO5sRz/LDpHNGxnl1X6HRseV3PVdmUe7idbfSkvOlrk/qYs+fmMOUdq2h2uHAW10r8=
-X-Received: by 2002:a05:6122:13a:b0:4bd:789a:64dd with SMTP id
- a26-20020a056122013a00b004bd789a64ddmr6184191vko.2.1706868814944; Fri, 02 Feb
- 2024 02:13:34 -0800 (PST)
+	s=arc-20240116; t=1706868809; c=relaxed/simple;
+	bh=CGbUJZWnQ+T87B7ahoNtsvaLKfL68r5YfknAmE8rR+g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dvOUsyD3kDfcaM0+Q193QiRyPKTPljXw6UUW9uxeseecdjgETZpr8vu2NVvSfyp/QWcz4AGpwYMCe+vxwBH5H4hL9M8xXHRfdcQlbj8fT5uS3uwv5+V+i7MOQaAcjFoRq8UDKKvZnrpvM7qSPvfDqriVbKrov2o5LZIkFHiPMyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fPW3WRRK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5D2EC433F1;
+	Fri,  2 Feb 2024 10:13:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706868809;
+	bh=CGbUJZWnQ+T87B7ahoNtsvaLKfL68r5YfknAmE8rR+g=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=fPW3WRRKbohdbgUijGU9q9wIU5k5Ls6pi4PVqWZH0Rj/xvZRzxuw2cXz2G00MehkD
+	 BkwkRxho+yQg2ppcrx6PxVegT7A/UemJ0vNXU3AhlppqfSZcD8DFMoW6IBXqExKmdQ
+	 s0QljsxXtZcnh1x+zgPbvJhvdU9IcuUeqv0NXDViZsQPrlIINAA0kgn/eKgC5+Y54z
+	 sybtxGkC0ZEVJhqvZgvVXL+XcEDRRuNq0CCjVZaQOQ3VXxzfZ1B/9TrtWqaIghW4He
+	 zmKg53vHMW7C9FDL56mkkNQg+4ZlbH5Du6L0rWymRmjzyT2VmrUlc8ruvCNdiJZDD1
+	 NE2B0Ip0PpUSg==
+Message-ID: <dc3c93dc-74d9-4b1c-a771-3ee6f67b5dcc@kernel.org>
+Date: Fri, 2 Feb 2024 12:13:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131210041.686657-1-paul.heidekrueger@tum.de>
- <CANpmjNPvQ16mrQOTzecN6ZpYe+N8dBw8V+Mci53CBgC2sx84Ew@mail.gmail.com> <nrknx5hi3nw7t4kitfweifcwyb436udyxldcclwwyf4cyyhvh5@upebu24mfibo>
-In-Reply-To: <nrknx5hi3nw7t4kitfweifcwyb436udyxldcclwwyf4cyyhvh5@upebu24mfibo>
-From: Marco Elver <elver@google.com>
-Date: Fri, 2 Feb 2024 11:12:56 +0100
-Message-ID: <CANpmjNP033FCJUb_nzTMJZnvXQj8esFBv_tg5-rtNtVUsGLB_A@mail.gmail.com>
-Subject: Re: Re: [PATCH RFC v2] kasan: add atomic tests
-To: =?UTF-8?Q?Paul_Heidekr=C3=BCger?= <paul.heidekrueger@tum.de>
-Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>, Alexander Potapenko <glider@google.com>, 
-	Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>, 
-	Vincenzo Frascino <vincenzo.frascino@arm.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	kasan-dev@googlegroups.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/5] dt-bindings: usb/ti,am62-usb.yaml: Add PHY2
+ register space
+Content-Language: en-US
+To: Conor Dooley <conor.dooley@microchip.com>
+Cc: Conor Dooley <conor@kernel.org>, Bin Liu <b-liu@ti.com>, nm@ti.com,
+ vigneshr@ti.com, afd@ti.com, kristo@kernel.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, srk@ti.com,
+ r-gunasekaran@ti.com, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240201120332.4811-1-rogerq@kernel.org>
+ <20240201120332.4811-5-rogerq@kernel.org>
+ <20240201-viewpoint-upload-fb714f650ff5@spud>
+ <20240201-violet-chalice-51a73f113e7b@spud>
+ <20240201183522.ssj553rwefr2wuqi@iaqt7>
+ <20240201-clad-unopposed-ccfdfe53b770@spud>
+ <bc3ab60f-539b-41d0-8595-6e0b55f2763d@kernel.org>
+ <20240202-unzip-whacky-bb2f151c618b@wendy>
+From: Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <20240202-unzip-whacky-bb2f151c618b@wendy>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, 2 Feb 2024 at 11:03, Paul Heidekr=C3=BCger <paul.heidekrueger@tum.d=
-e> wrote:
->
-> On 01.02.2024 10:38, Marco Elver wrote:
-> > On Wed, 31 Jan 2024 at 22:01, Paul Heidekr=C3=BCger <paul.heidekrueger@=
-tum.de> wrote:
-> > >
-> > > Hi!
-> > >
-> > > This RFC patch adds tests that detect whether KASan is able to catch
-> > > unsafe atomic accesses.
-> > >
-> > > Since v1, which can be found on Bugzilla (see "Closes:" tag), I've ma=
-de
-> > > the following suggested changes:
-> > >
-> > > * Adjust size of allocations to make kasan_atomics() work with all KA=
-San modes
-> > > * Remove comments and move tests closer to the bitops tests
-> > > * For functions taking two addresses as an input, test each address i=
-n a separate function call.
-> > > * Rename variables for clarity
-> > > * Add tests for READ_ONCE(), WRITE_ONCE(), smp_load_acquire() and smp=
-_store_release()
-> > >
-> > > I'm still uncelar on which kinds of atomic accesses we should be test=
-ing
-> > > though. The patch below only covers a subset, and I don't know if it
-> > > would be feasible to just manually add all atomics of interest. Which
-> > > ones would those be exactly?
-> >
-> > The atomics wrappers are generated by a script. An exhaustive test
-> > case would, if generated by hand, be difficult to keep in sync if some
-> > variants are removed or renamed (although that's probably a relatively
-> > rare occurrence).
-> >
-> > I would probably just cover some of the most common ones that all
-> > architectures (that support KASAN) provide. I think you are already
-> > covering some of the most important ones, and I'd just say it's good
-> > enough for the test.
-> >
-> > > As Andrey pointed out on Bugzilla, if we
-> > > were to include all of the atomic64_* ones, that would make a lot of
-> > > function calls.
-> >
-> > Just include a few atomic64_ cases, similar to the ones you already
-> > include for atomic_. Although beware that the atomic64_t helpers are
-> > likely not available on 32-bit architectures, so you need an #ifdef
-> > CONFIG_64BIT.
-> >
-> > Alternatively, there is also atomic_long_t, which (on 64-bit
-> > architectures) just wraps atomic64_t helpers, and on 32-bit the
-> > atomic_t ones. I'd probably opt for the atomic_long_t variants, just
-> > to keep it simpler and get some additional coverage on 32-bit
-> > architectures.
->
-> If I were to add some atomic_long_* cases, e.g. atomic_long_read() or
-> atomic_long_write(), in addition to the test cases I already have, wouldn=
-'t that
-> mean that on 32-bit architectures we would have the same test case twice =
-because
-> atomic_read() and long_atomic_read() both boil down to raw_atomic_read() =
-and
-> raw_atomic_write() respectively? Or did I misunderstand and I should only=
- be
-> covering long_atomic_* functions whose atomic_* counterpart doesn't exist=
- in the
-> test cases already?
 
-Sure, on 32-bit this would be a little redundant, but we don't care so
-much about what underlying atomic is actually executed, but more about
-the instrumentation being correct.
 
-From a KASAN point of view, I can't really tell that if atomic_read()
-works that atomic_long_read() also works.
+On 02/02/2024 11:53, Conor Dooley wrote:
+> On Fri, Feb 02, 2024 at 11:36:55AM +0200, Roger Quadros wrote:
+>>
+>>
+>> On 01/02/2024 21:13, Conor Dooley wrote:
+>>> On Thu, Feb 01, 2024 at 12:35:22PM -0600, Bin Liu wrote:
+>>>> On Thu, Feb 01, 2024 at 06:18:05PM +0000, Conor Dooley wrote:
+>>>>> On Thu, Feb 01, 2024 at 06:15:20PM +0000, Conor Dooley wrote:
+>>>>>> On Thu, Feb 01, 2024 at 02:03:31PM +0200, Roger Quadros wrote:
+>>>>>>> So far this was not required but due to the newly identified
+>>>>>>> Errata i2409 [1] we need to poke this register space.
+>>>>>>>
+>>>>>>> [1] https://www.ti.com/lit/er/sprz487d/sprz487d.pdf
+>>>>>>>
+>>>>>>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+>>>>>>
+>>>>>> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>>>>>
+>>>>> Actually, where is the user for this that actually pokes the register
+>>>>> space?
+>>
+>> https://lore.kernel.org/all/20240201121220.5523-5-rogerq@kernel.org/
+>>
+>>>>> You're adding another register region, so I went to check how you were
+>>>>> handling that in drivers, but there's no driver patch.
+>>>>
+>>>> See Roger's another patch set 'Add workaround for Errata i2409' posted
+>>>> on 16th.
+>>>
+>>> This patch should be with that series, not with these dts patches.
+>>>
+>>
+>> Why not? There should be no dependency between DTS and driver implementation.
+>>
+>> As DTS and driver will be merged by separate maintainers I thought it
+>> would be easier for maintainers this way.
+> 
+> dts and driver might be merged by different people, but dt-bindings and
+> drivers are merged by the same people. This is a bindings patch, not a
 
-On top of that, we don't care all that much about 32-bit architectures
-anymore (I think KASAN should work on some 32-bit architectures, but I
-haven't tested that in a long time). ;-)
+If we do that then I get a bunch of dtbs_check warnings
+
+dwc3-usb@f900000: reg: [[0, 261095424, 0, 2048], [0, 261128192, 0, 1024]] is too long
+
+> dts patch. Look at what get_maintainer says for this file:
+> 	Greg Kroah-Hartman <gregkh@linuxfoundation.org> (supporter:USB SUBSYSTEM)
+> 	Rob Herring <robh+dt@kernel.org> (maintainer:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS)
+> 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org> (maintainer:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS)
+> 	Conor Dooley <conor+dt@kernel.org> (maintainer:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS)
+> 	Aswath Govindraju <a-govindraju@ti.com> (in file)
+> 	linux-usb@vger.kernel.org (open list:USB SUBSYSTEM)
+> 	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS)
+> 	linux-kernel@vger.kernel.org (open list)
+> Greg and linux-usb are on there, but you have not CCed them.
+
+My bad. Will be more careful next time.
+
+> 
+> Being with the driver also allows bindings maintainers to check that you
+> don't break backwards compatibility. It also prevents me having to ask
+> for the driver patch, then be given just a subject line that I have to
+> go and look up myself!
+> 
+
+Sorry about that. It took a bit longer but I did point you directly to the
+patch on lore.kernel.org.
+
+-- 
+cheers,
+-roger
 
