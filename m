@@ -1,105 +1,130 @@
-Return-Path: <linux-kernel+bounces-50176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFFED847556
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:49:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9221847559
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:50:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D99F4B21D38
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:49:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80BE428452C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:50:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97CE7148FFE;
-	Fri,  2 Feb 2024 16:49:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C074114900F;
+	Fri,  2 Feb 2024 16:49:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="mwJEOoIp"
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="DVkgZZfi"
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D48251487C1;
-	Fri,  2 Feb 2024 16:49:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B701487C1;
+	Fri,  2 Feb 2024 16:49:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706892571; cv=none; b=W4Kq+eFSECZT3nlZj+NA5F1FsTdewYM+VDRf+HJZWhykFnNjfBAQuUNG6ufulAkRs9vYuMxy5qUUbctcxAcQnP8yA7xjA9d5b5MbGE3VHFyy5NDxKSsVogAePpnzRPOnWrJbrOWcwgziB1UUgBNYVvq9vEK5T+taQ3ieeVoBRM8=
+	t=1706892599; cv=none; b=nzctPdyB2boCj3TFGe8aisqH3kkcZwQfu9+wjQzJAZ/02PaIDpBBgCIcjiAdUAoA+qYZIeJcfdTneo1wYNzFy7Jtsjy4ooTCBCSKb0+AlXeUfsuWLCmGBH1EcHG82CZmIYlxrLw0zmVBaV9jX7IO1Dfi82AlIU7GbziwCZRHf1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706892571; c=relaxed/simple;
-	bh=+im1RKMjzZ4h3VkkKdLOvJQjbpmu5h9lZoheruaIOSo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=OoMNfSVZdeWZPpVybyvNqTObT1nzbL0ts5VxVEjT8vbLiiqzn12WnksZ/C95uA9+Az8OgWdrXeyUSYcTRe2Wpd5IyDmHOHwx41rB1CX7LWrDS19+eRQ6j9O1JDoBZPYaVDfgZWwZBgmnJutFiNvXg8i1WENZARGp+9FbFApcUQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=mwJEOoIp; arc=none smtp.client-ip=67.231.152.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 412G7Mcq013162;
-	Fri, 2 Feb 2024 10:49:08 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	PODMain02222019; bh=U8WQG/27RFVW0T/lszOLDs3q2p3WIe4SF89sGIgigVI=; b=
-	mwJEOoIpTHTDlrg6DfTlGWj1YlyXozpO2dWPs/4lAIaCxX4ADSv9xgsnFKk5P0Mm
-	6E/FLh4w6EpBrodBUhgDociv1xy1juZHJyiOKbQo0Ln+O26I+UsWyzdnhPWSplF/
-	orKwXlHM11LVeQEKnTaJdP5ccRPGPyjBOwc0M0Z5AoVYJxhc4XMNmgpH7/DxtlU4
-	80CysspmRbMYv9YpJREQYAgUhf2pudnky0rru8yPbURhAvjkVuycgy+4DnR8Xcca
-	SprHUylSvm54INyyzLVExYZaHnk+reSgSqW98C+21mRWy8u32QVnpj5HlfkrlSVI
-	ZTCSlEFxC+as4xg5+pA85Q==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3w0pwx0rnk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Feb 2024 10:49:08 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 2 Feb
- 2024 16:49:07 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Fri, 2 Feb 2024 16:49:06 +0000
-Received: from [198.90.238.164] (LONN2DGDQ73.ad.cirrus.com [198.90.238.164])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id B0A01820246;
-	Fri,  2 Feb 2024 16:49:06 +0000 (UTC)
-Message-ID: <5792f9bc-b77d-4a90-be61-a09797295a8b@opensource.cirrus.com>
-Date: Fri, 2 Feb 2024 16:49:06 +0000
+	s=arc-20240116; t=1706892599; c=relaxed/simple;
+	bh=gnFe0Frak2hFCx8RZtBOH/vB3WQDtpNqAaGgzrVnBdM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k4W7dCPnF/0wt8v1cyJvWAlDo0+xBRmyfzKqL9amQPnteIzYmy1m4dej2IvjY6HP+mTTasKV/4TMKkh4WiovCqQXg9f2KCGr5XI2W2PwULDCLaOznzMPPXCys3tIcYuDlSSQhscqPvH8r9i/DWnqw/5sCHbnz5w8GE0gc0QCBZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=DVkgZZfi; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
+	bh=s9JPuMGns8g3lIGXW/Eg6QZhxZ7uPg73+hdVmq5mOgM=; b=DVkgZZfi2r2C6r6Wp9n1fbDZkc
+	DDthIagMB72CZNj3c6Nd+qnHEjDJhCtk+e7YNlPIhSqbXDIlapav868Tf9f0/nGKw/U7L571XMIo/
+	5Eae+fjojVYAmCBw2LZrYx1fVhXpXagV6YrjFm31MBr9ITLM++fJ32peBWHWA/YkQKCYl0OHDrwfr
+	Zo6hElXlTyGl43i2hChpfarFNlP0vWwH0XO6sSiqypqKfPoqU8FWG0fOULIEZ6sfvBQCwB6nr3glw
+	R6Cs4T7oJSHCS1ujs+1XRpag4wm5e76zFGg+MKHKGHA1W+YALv8TKXFVZ+RVTsApAkdeSQt7lm75k
+	BJ9uapJg==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rVwjb-0047ud-1N;
+	Fri, 02 Feb 2024 16:49:47 +0000
+Date: Fri, 2 Feb 2024 16:49:47 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Doug Anderson <dianders@chromium.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Eric Biederman <ebiederm@xmission.com>, Jan Kara <jack@suse.cz>,
+	Kees Cook <keescook@chromium.org>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	Oleg Nesterov <oleg@redhat.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] regset: use vmalloc() for regset_get_alloc()
+Message-ID: <20240202164947.GC2087318@ZenIV>
+References: <20240201171159.1.Id9ad163b60d21c9e56c2d686b0cc9083a8ba7924@changeid>
+ <20240202012249.GU2087318@ZenIV>
+ <CAD=FV=X5dpMyCGg4Xn+ApRwmiLB5zB0LTMCoSfW_X6eAsfQy8w@mail.gmail.com>
+ <20240202030438.GV2087318@ZenIV>
+ <CAD=FV=Wbq7R9AirvxnW1aWoEnp2fWQrwBsxsDB46xbfTLHCZ4w@mail.gmail.com>
+ <20240202034925.GW2087318@ZenIV>
+ <20240202040503.GX2087318@ZenIV>
+ <CAD=FV=X93KNMF4NwQY8uh-L=1J8PrDFQYu-cqSd+KnY5+Pq+_w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] ALSA: hda/realtek: Remove two HP Laptops using CS35L41
-To: Takashi Iwai <tiwai@suse.de>
-CC: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-References: <20240202161727.321373-1-sbinding@opensource.cirrus.com>
- <87v876bz6b.wl-tiwai@suse.de>
-Content-Language: en-GB
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-In-Reply-To: <87v876bz6b.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: 7hVQcVNpn4yaQ_qZEnDXAyxZuy54POCT
-X-Proofpoint-ORIG-GUID: 7hVQcVNpn4yaQ_qZEnDXAyxZuy54POCT
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=X93KNMF4NwQY8uh-L=1J8PrDFQYu-cqSd+KnY5+Pq+_w@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-Hi Takashi,
+On Fri, Feb 02, 2024 at 08:24:17AM -0800, Doug Anderson wrote:
+> Hi,
+> 
+> On Thu, Feb 1, 2024 at 8:05 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> >
+> > On Fri, Feb 02, 2024 at 03:49:25AM +0000, Al Viro wrote:
+> > > On Thu, Feb 01, 2024 at 07:15:48PM -0800, Doug Anderson wrote:
+> > > > >
+> > > > > Well, the next step would be to see which regset it is - if you
+> > > > > see that kind of allocation, print regset->n, regset->size and
+> > > > > regset->core_note_type.
+> > > >
+> > > > Of course! Here are the big ones:
+> > > >
+> > > > [   45.875574] DOUG: Allocating 279584 bytes, n=17474, size=16,
+> > > > core_note_type=1029
+> > >
+> > > 0x405, NT_ARM_SVE
+> > >         [REGSET_SVE] = { /* Scalable Vector Extension */
+> > >                 .core_note_type = NT_ARM_SVE,
+> > >                 .n = DIV_ROUND_UP(SVE_PT_SIZE(SVE_VQ_MAX, SVE_PT_REGS_SVE),
+> > >                                   SVE_VQ_BYTES),
+> > >                 .size = SVE_VQ_BYTES,
+> > >
+> > > IDGI.  Wasn't SVE up to 32 * 2Kbit, i.e. 8Kbyte max?  Any ARM folks around?
+> > > Sure, I understand that it's variable-sized and we want to allocate enough
+> > > for the worst case, but can we really get about 280Kb there?  Context switches
+> > > would be really unpleasant on such boxen...
+> >
+> > FWIW, this apparently intends to be "variable, up to SVE_PT_SIZE(...) bytes";
+> > no idea if SVE_PT_SIZE is the right thing to use here.
+> 
+> +folks from `./scripts/get_maintainer.pl -f arch/arm64/kernel/ptrace.c`
+> 
+> Trying to follow the macros to see where "n" comes from is a maze of
+> twisty little passages, all alike. Hopefully someone from the ARM
+> world can help tell if the value of 17474 for n here is correct or if
+> something is wonky.
 
-On 02/02/2024 16:37, Takashi Iwai wrote:
-> On Fri, 02 Feb 2024 17:17:27 +0100,
-> Stefan Binding wrote:
->> These two HP laptops are changing configurations.
-> What exactly does this mean?  The PCI SSIDs are no longer valid, or
-> the quirk became wrong, or what?
->
->
-> thanks,
->
-> Takashi
+It might be interesting to have it print the return value of __regset_get()
+in those cases; if *that* is huge, we really have a problem.  If it ends up
+small enough to fit into few pages, OTOH...
 
-The SKUs, and associated SSIDs, are no longer going to include the CS35L41.
-They may come back, but will need a different quirk.Sorry for the churn.
+SVE_VQ_MAX is defined as 255; is that really in units of 128 bits?  IOW,
+do we really expect to support 32Kbit registers?  That would drive the
+size into that range, all right, but it would really suck on context
+switches.
 
-Thanks,
-Stefan
-
+I could be misreading it, though - the macros in there are not easy to
+follow and I've never dealt with SVE before, so take the above with
+a cartload of salt.
 
