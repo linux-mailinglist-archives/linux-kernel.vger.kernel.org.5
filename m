@@ -1,59 +1,71 @@
-Return-Path: <linux-kernel+bounces-50223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D81038475E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:14:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AFA68475FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:20:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9305A2864E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:14:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6214EB274C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:19:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1506C14AD07;
-	Fri,  2 Feb 2024 17:14:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 173A214A4DD;
+	Fri,  2 Feb 2024 17:19:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bmzz4TUu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="G+/MD08j"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52FA47E0E5;
-	Fri,  2 Feb 2024 17:14:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E93DB1420A4;
+	Fri,  2 Feb 2024 17:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706894045; cv=none; b=a16BPKrKuimdhALrVzJn2sTgcsjp/rQeVI4/0ykAeyXaE6MnuvFwJwbHyBmD2htAfsb1aGHWPqXwVKAfhh9eKM2ZmH9VA4M4asrDtUUcB4QxRCkadxYaaRcHT0grIQaaZ2WKN37gSvJ7X7FjJEP7g9EP+vLgmSGi3F6lFLe+NAA=
+	t=1706894381; cv=none; b=qfyh48QD3RMG9B0MS+myps8hx0Z0r07c+B9G92zcQx/Gvzifm8pkng1hOPlVqvghY1BKJQMT73EsBTySATsHepCLO9UWx7w5KGS/ckqFW1rKUuMxuVzzEKW87/L4UwcxM5ft2s56xDYo7ZCXlKv8bZdMQG9GFopasmnMYpp2c6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706894045; c=relaxed/simple;
-	bh=CTr3UEtOevAFgGCu3DO+L25topN4UXf5ROEo1UZIWNQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YYdM9zpbjqoUhh5px18eR9LiDFEPsL7Ulz5R5WDqjQ01q/YH/9eR+HRMO0zvRziKedb6k657Hkinee4t/7X6GYFX85rSqeBgY37z98pwbnQfG5VDFNbL70D+rrbYPT6WtquUqSy8idrIbgxgDE9DFBNn1RJH7aQ5leOnVwgo6EE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bmzz4TUu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CB76C433F1;
-	Fri,  2 Feb 2024 17:14:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706894044;
-	bh=CTr3UEtOevAFgGCu3DO+L25topN4UXf5ROEo1UZIWNQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bmzz4TUuhznYAD4P+RMLOFk6Ifhy1aPXO6AwFnJXtKIyEtdN6GlkWLPbUoYrcoZBV
-	 dl216lb/hYo6ygy79ydOG6uhoLAO1w7gAakvrOql0CrbwpwLLIf4ty6mqeAx9MpSQA
-	 wvwtj7hMnWMRYeLArSRFRfHsvGzO5xtWJuVZz/5N8jkAv8obOe2FgVOiZlJVu02CRv
-	 dIr1xLUNMNTVaFAFiaJbcpsCSf6Tn9o7xfAoazABzpMGakcJnu7zxiKgRKZeni6qqT
-	 AZu59nK9qaksPT7JdvcH5f3RQZapuzYFSqIi8+hOsX6FOtLBYcI7ZHKzvQ4IS+mO63
-	 dO6U8LAybDl6w==
-From: SeongJae Park <sj@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: SeongJae Park <sj@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	damon@lists.linux.dev,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/damon/dbgfs: fix bogus string length
-Date: Fri,  2 Feb 2024 09:14:02 -0800
-Message-Id: <20240202171402.46340-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240202124339.892862-1-arnd@kernel.org>
-References: 
+	s=arc-20240116; t=1706894381; c=relaxed/simple;
+	bh=tc/H3cE6aOg2akGtqlufzRlVEUi7dZgg0jTn47lX3Zc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HHwysGQlCt1zBdGv2lNSepMQ4UqwmcxIAuQc5zStai/wsWcYdaEG/SO9pXtr2pONvNjKeLRCJ5jnhM/zuOTZVlCLjR9pPBpCfl5WeAiuhWPFDKWdLqnWfMm9uF24AYKMAMBzpeqLD4TqoGethp9/lxN26/h5uJ1Y1mw8LTiBN8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=G+/MD08j; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 412HEAXX020339;
+	Fri, 2 Feb 2024 17:19:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=15c9nbq
+	JheROjqA7qKcVMJWn/7rwUepjgl9U7MZxvjU=; b=G+/MD08j4UGU7bcgur3GPZt
+	82VyhA1TfjYaB3qFAZooEXyFmY6uuPbDpZ2I3C61wB252XW9XWA6Bx2RhPztD7hK
+	0GPLA7dMz4uofoQkjvRoWrwAkkHTE2rZOIclnA9SSABJ2KU1qKn5notJK+ovP3np
+	0kOAf7Ae1k/B9vXkrBHtTSH8XVFyB604KMTaLBpPwFIjQHIh3AGDgPru3jhOVmCQ
+	5RTISmD40NWYF4fdbxAdYtURY7iZ3Dod9zV2OkDS6yIh12Z/+0t30yuw7tadTiP/
+	lbvkgjL2PURuiMFtSfdPnAirDEAAOa6GuTPq3RL+n/vyCLJQvcHTOzaM0mFNA9g=
+	=
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0pwc1xa4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 17:19:35 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 412HJYMs005638
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 2 Feb 2024 17:19:34 GMT
+Received: from jhugo-lnx.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 2 Feb 2024 09:19:33 -0800
+From: Jeffrey Hugo <quic_jhugo@quicinc.com>
+To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Jeffrey Hugo
+	<quic_jhugo@quicinc.com>
+Subject: [PATCH] dt-bindings: clock: qcom: Fix @codeaurora email in Q6SSTOP
+Date: Fri, 2 Feb 2024 10:19:15 -0700
+Message-ID: <20240202171915.4101842-1-quic_jhugo@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,41 +73,48 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: tLd5zrOf45gRUkyhEWyLLzfEYwn_xy1c
+X-Proofpoint-ORIG-GUID: tLd5zrOf45gRUkyhEWyLLzfEYwn_xy1c
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-02_10,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=807 clxscore=1011
+ phishscore=0 bulkscore=0 mlxscore=0 suspectscore=0 adultscore=0
+ priorityscore=1501 malwarescore=0 impostorscore=0 lowpriorityscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402020124
 
-Hi Arnd,
+The servers for the @codeaurora domain are long retired and any messages
+addressed there will bounce.  Govind Singh has left the company which
+appears to leave the Q6SSTOP clock controller binding unmaintained.
 
-On Fri,  2 Feb 2024 13:43:26 +0100 Arnd Bergmann <arnd@kernel.org> wrote:
+Move maintenance of the binding to the Qualcomm Clock Drivers maintainer
+as suggested by Bjorn Andersson.
 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> gcc correctly points out that using strnlen() on a fixed size array
-> is nonsense with an overlong limit:
-> 
-> mm/damon/dbgfs.c: In function 'damon_dbgfs_deprecated_read':
-> mm/damon/dbgfs.c:814:19: error: 'strnlen' specified bound 1024 exceeds source size 512 [-Werror=stringop-overread]
->   814 |         int len = strnlen(kbuf, 1024);
->       |                   ^~~~~~~~~~~~~~~~~~~
-> mm/damon/dbgfs.c:813:14: note: source object allocated here
->   813 |         char kbuf[512] = DAMON_DBGFS_DEPRECATION_NOTICE;
->       |              ^~~~
-> 
-> In fact, neither of the arbitrary limits are needed here: The first
-> one can just be a static const string and avoid wasting any more
-> space then necessary, and the strnlen() can be either strlen() or
-> sizeof(kbuf)-1, both of which the compiler turns into the same
-> constant here.
+Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+---
+ Documentation/devicetree/bindings/clock/qcom,q6sstopcc.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you for this fix!
+diff --git a/Documentation/devicetree/bindings/clock/qcom,q6sstopcc.yaml b/Documentation/devicetree/bindings/clock/qcom,q6sstopcc.yaml
+index 03fa30fe9253..e0f4d692728c 100644
+--- a/Documentation/devicetree/bindings/clock/qcom,q6sstopcc.yaml
++++ b/Documentation/devicetree/bindings/clock/qcom,q6sstopcc.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: Q6SSTOP clock Controller
+ 
+ maintainers:
+-  - Govind Singh <govinds@codeaurora.org>
++  - Bjorn Andersson <andersson@kernel.org>
+ 
+ properties:
+   compatible:
+-- 
+2.34.1
 
-> 
-> Fixes: adf9047adfff ("mm/damon/dbgfs: implement deprecation notice file")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-Reviewed-by: SeongJae Park <sj@kernel.org>
-
-
-Thanks,
-SJ
-
-[...]
 
