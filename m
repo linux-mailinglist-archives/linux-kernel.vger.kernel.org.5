@@ -1,211 +1,114 @@
-Return-Path: <linux-kernel+bounces-49065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2646A846574
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:35:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1177846575
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:35:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FAABB259EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:35:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8151B28C7F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:35:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EAE26FBB;
-	Fri,  2 Feb 2024 01:35:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03095BE7C;
+	Fri,  2 Feb 2024 01:35:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="c0kNUhLc"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ur2X3BqM"
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C47A563AD;
-	Fri,  2 Feb 2024 01:35:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BAFABE5A
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 01:35:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706837724; cv=none; b=ueV6xPjUBtp5mynErLLzU5xUQ8DZrwTf6te2RJfMGuz5FEEc34ogFoLl+mdLBsHci1uPtRWbPiuK2qIYoOGQ10cwxjo0OQVnVtvRqC/NZKNVG4igecOdHHuQZtzzDB89poyrUD0sYcP4eL649c9DJADBZi6ePjpWoid5x6vShsw=
+	t=1706837751; cv=none; b=qE6pIugqodabZAzkGX3cFFeuYJSWnR0V4vqCRbRUKeCS8IQ6O7FA4exI+bpoy7guyV9qMBpizhEHktH9rtJSf98nRMvKJvhPUr+SHuurKyH/ip0H/JbUAIBYqgHwe9QV7TUmYxJogulQTfXl1jzSkLOqfu4u1iDl6uNxShTRhBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706837724; c=relaxed/simple;
-	bh=byn2POXh2oOuWy72oilG/vfGimtqV+4BabC/M/lIcF8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iB18LSRTj0sMKRUZfglAPFzx1kYd0b7XruvS8YdalYWtQBFDtZBwE47RzM1K4tiafImtTzDyfuVtrJxSDPUAEBAz8u/j8eG3o1Gk8WjgIbNDZ3Mpa185+wMIdFkEDQl+HNKkdGeAwm06IAKvJt4YS9+41pxp8uxNyCdA8333SCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=c0kNUhLc; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=D1Zk9eHb/+VoL10gbkI+Wk7ITnBQURZGS/tiJLappS4=; b=c0kNUhLcPT6EjXrjJCWLtufBdz
-	DyfPuatxs06fFMN9zRmii+2p/tgmnS0nqfKXaE5LBI5uVaJOjmM3yPmtUCeWgZPV8EENHRM+D8CcX
-	Y2AZ3NJTzcRKuAfuOWihWMvKPuF9KYsNGVYE0uOaWJTVcK3CsL4oTSYufzqrSDQgIQ4Q=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rViSV-006jj6-Ss; Fri, 02 Feb 2024 02:35:11 +0100
-Date: Fri, 2 Feb 2024 02:35:11 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org
-Subject: Re: [net-next PATCH v5 7/9] net: phy: qcom: add support for QCA807x
- PHY Family
-Message-ID: <a530f40c-b8fd-4da1-b4df-f80ab05f0394@lunn.ch>
-References: <20240201151747.7524-1-ansuelsmth@gmail.com>
- <20240201151747.7524-8-ansuelsmth@gmail.com>
+	s=arc-20240116; t=1706837751; c=relaxed/simple;
+	bh=F9ZNWMC1priDn66Isq/cwxCImYuia0oBTmu0GO7YjOc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=X2zN7EBTm1dkrZu3NJ4yEkQsZwVI3pUEQtIvFLOl1j0LdwsMj234a+7vI9EBcESFS/rZIRYM8VWpoiJSCJeQKJXODc/EmCvS6CHPv5/wNV08hNovoboTismg2VONtRudTFZWpRSip1Die3h4IiMv1bzsQAhRZIfO330qlyL/AZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ur2X3BqM; arc=none smtp.client-ip=115.124.30.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706837740; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=K/ZwJLmczXG17maGF/I5cgBZNRxSQmwfPe60uv2e8mY=;
+	b=ur2X3BqM89C+m/pVM0arfF46SljowHYDNN7TTNt/aKlZUSEUlTEVMyUq7zQeG7pvCr8NLvsLVOaB++PVTjVQeP2tcI/SmQHXWuOup/mXL3FOZepCZysIFYSCDCGrXqWFZtVdHbDC4jm9svtvslBXpH1qh0k9C5ttdtkPSe4pyKs=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W.v4q.H_1706837738;
+Received: from 30.97.56.44(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W.v4q.H_1706837738)
+          by smtp.aliyun-inc.com;
+          Fri, 02 Feb 2024 09:35:39 +0800
+Message-ID: <3f31cd89-f349-4f9e-bc29-35f29f489633@linux.alibaba.com>
+Date: Fri, 2 Feb 2024 09:35:58 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240201151747.7524-8-ansuelsmth@gmail.com>
-
-> +static int qca807x_read_fiber_status(struct phy_device *phydev)
-> +{
-> +	int ss, err, lpa, old_link = phydev->link;
-> +
-> +	/* Update the link, but return if there was an error */
-> +	err = genphy_update_link(phydev);
-> +	if (err)
-> +		return err;
-> +
-> +	/* why bother the PHY if nothing can have changed */
-> +	if (phydev->autoneg == AUTONEG_ENABLE && old_link && phydev->link)
-> +		return 0;
-> +
-> +	phydev->speed = SPEED_UNKNOWN;
-> +	phydev->duplex = DUPLEX_UNKNOWN;
-> +	phydev->pause = 0;
-> +	phydev->asym_pause = 0;
-> +
-> +	if (phydev->autoneg == AUTONEG_ENABLE && phydev->autoneg_complete) {
-> +		lpa = phy_read(phydev, MII_LPA);
-> +		if (lpa < 0)
-> +			return lpa;
-> +
-> +		linkmode_mod_bit(ETHTOOL_LINK_MODE_Autoneg_BIT,
-> +				 phydev->lp_advertising, lpa & LPA_LPACK);
-> +		linkmode_mod_bit(ETHTOOL_LINK_MODE_1000baseX_Full_BIT,
-> +				 phydev->lp_advertising, lpa & LPA_1000XFULL);
-> +		linkmode_mod_bit(ETHTOOL_LINK_MODE_Pause_BIT,
-> +				 phydev->lp_advertising, lpa & LPA_1000XPAUSE);
-> +		linkmode_mod_bit(ETHTOOL_LINK_MODE_Asym_Pause_BIT,
-> +				 phydev->lp_advertising,
-> +				 lpa & LPA_1000XPAUSE_ASYM);
-> +
-> +		phy_resolve_aneg_linkmode(phydev);
-> +	}
-
-This looks a lot like genphy_c37_read_status(). Can it be used?
-
-> +
-> +	/* Read the QCA807x PHY-Specific Status register fiber page,
-> +	 * which indicates the speed and duplex that the PHY is actually
-> +	 * using, irrespective of whether we are in autoneg mode or not.
-> +	 */
-> +	ss = phy_read(phydev, AT803X_SPECIFIC_STATUS);
-> +	if (ss < 0)
-> +		return ss;
-> +
-> +	if (ss & AT803X_SS_SPEED_DUPLEX_RESOLVED) {
-> +		switch (FIELD_GET(AT803X_SS_SPEED_MASK, ss)) {
-> +		case AT803X_SS_SPEED_100:
-> +			phydev->speed = SPEED_100;
-> +			break;
-> +		case AT803X_SS_SPEED_1000:
-> +			phydev->speed = SPEED_1000;
-> +			break;
-> +		}
-> +
-> +		if (ss & AT803X_SS_DUPLEX)
-> +			phydev->duplex = DUPLEX_FULL;
-> +		else
-> +			phydev->duplex = DUPLEX_HALF;
-> +	}
-> +
-> +	return 0;
-> +}
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] mm: hugetlb: remove __GFP_THISNODE flag when
+ dissolving the old hugetlb
+To: Michal Hocko <mhocko@suse.com>
+Cc: akpm@linux-foundation.org, muchun.song@linux.dev, osalvador@suse.de,
+ david@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <6f26ce22d2fcd523418a085f2c588fe0776d46e7.1706794035.git.baolin.wang@linux.alibaba.com>
+ <Zbu4cD1XLFLfKan8@tiehlicka>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <Zbu4cD1XLFLfKan8@tiehlicka>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
-> +static int qca807x_phy_package_probe_once(struct phy_device *phydev)
-> +{
-> +	struct phy_package_shared *shared = phydev->shared;
-> +	struct qca807x_shared_priv *priv = shared->priv;
-> +	unsigned int tx_driver_strength = 0;
-> +	const char *package_mode_name;
-> +
-> +	of_property_read_u32(shared->np, "qcom,tx-driver-strength",
-> +			     &tx_driver_strength);
-> +	switch (tx_driver_strength) {
-> +	case 140:
-> +		priv->tx_driver_strength = PQSGMII_TX_DRIVER_140MV;
-> +		break;
-> +	case 160:
-> +		priv->tx_driver_strength = PQSGMII_TX_DRIVER_160MV;
-> +		break;
-> +	case 180:
-> +		priv->tx_driver_strength = PQSGMII_TX_DRIVER_180MV;
-> +		break;
-> +	case 200:
 
-..
+On 2/1/2024 11:27 PM, Michal Hocko wrote:
+> On Thu 01-02-24 21:31:13, Baolin Wang wrote:
+>> Since commit 369fa227c219 ("mm: make alloc_contig_range handle free
+>> hugetlb pages"), the alloc_contig_range() can handle free hugetlb pages
+>> by allocating a new fresh hugepage, and replacing the old one in the
+>> free hugepage pool.
+>>
+>> However, our customers can still see the failure of alloc_contig_range()
+>> when seeing a free hugetlb page. The reason is that, there are few memory
+>> on the old hugetlb page's node, and it can not allocate a fresh hugetlb
+>> page on the old hugetlb page's node in isolate_or_dissolve_huge_page() with
+>> setting __GFP_THISNODE flag. This makes sense to some degree.
+>>
+>> Later, the commit ae37c7ff79f1 (" mm: make alloc_contig_range handle
+>> in-use hugetlb pages") handles the in-use hugetlb pages by isolating it
+>> and doing migration in __alloc_contig_migrate_range(), but it can allow
+>> fallbacking to other numa node when allocating a new hugetlb in
+>> alloc_migration_target().
+>>
+>> This introduces inconsistency to handling free and in-use hugetlb.
+>> Considering the CMA allocation and memory hotplug relying on the
+>> alloc_contig_range() are important in some scenarios, as well as keeping
+>> the consistent hugetlb handling, we should remove the __GFP_THISNODE flag
+>> in isolate_or_dissolve_huge_page() to allow fallbacking to other numa node,
+>> which can solve the failure of alloc_contig_range() in our case.
+> 
+> I do agree that the inconsistency is not really good but I am not sure
+> dropping __GFP_THISNODE is the right way forward. Breaking pre-allocated
+> per-node pools might result in unexpected failures when node bound
+> workloads doesn't get what is asssumed available. Keep in mind that our
+> user APIs allow to pre-allocate per-node pools separately.
 
-> +	case 500:
-> +		priv->tx_driver_strength = PQSGMII_TX_DRIVER_500MV;
-> +		break;
-> +	case 600:
-> +	default:
+Yes, I agree, that is also what I concered. But sometimes users don't 
+care about the distribution of per-node hugetlb, instead they are more 
+concerned about the success of cma allocation or memory hotplug.
 
-If its missing default to 600. But if its an invalid value, return
--EINVAL.
+> The in-use hugetlb is a very similar case. While having a temporarily
+> misplaced page doesn't really look terrible once that hugetlb page is
+> released back into the pool we are back to the case above. Either we
+> make sure that the node affinity is restored later on or it shouldn't be
+> migrated to a different node at all.
 
-> +		priv->tx_driver_strength = PQSGMII_TX_DRIVER_600MV;
-> +	}
-> +
-> +	priv->package_mode = PHY_INTERFACE_MODE_NA;
-> +	if (!of_property_read_string(shared->np, "qcom,package-mode",
-> +				     &package_mode_name)) {
-> +		if (!strcasecmp(package_mode_name,
-> +				phy_modes(PHY_INTERFACE_MODE_PSGMII)))
-> +			priv->package_mode = PHY_INTERFACE_MODE_PSGMII;
-> +
-> +		if (!strcasecmp(package_mode_name,
-> +				phy_modes(PHY_INTERFACE_MODE_QSGMII)))
-> +			priv->package_mode = PHY_INTERFACE_MODE_QSGMII;
-
-Again, return -EINVAL if it is neither.
-
-> +static int qca807x_phy_package_config_init_once(struct phy_device *phydev)
-> +{
-> +	struct phy_package_shared *shared = phydev->shared;
-> +	struct qca807x_shared_priv *priv = shared->priv;
-> +	int val, ret;
-> +
-> +	phy_lock_mdio_bus(phydev);
-> +
-> +	/* Set correct PHY package mode */
-> +	val = __phy_package_read(phydev, QCA807X_COMBO_ADDR,
-> +				 QCA807X_CHIP_CONFIGURATION);
-> +	val &= ~QCA807X_CHIP_CONFIGURATION_MODE_CFG_MASK;
-> +	if (priv->package_mode == PHY_INTERFACE_MODE_QSGMII)
-> +		val |= QCA807X_CHIP_CONFIGURATION_MODE_QSGMII_SGMII;
-> +	else
-> +		val |= QCA807X_CHIP_CONFIGURATION_MODE_PSGMII_ALL_COPPER;
-
-What about priv->package_mode == PHY_INTERFACE_MODE_NA;
-
-     Andrew
+Agree. So how about below changing?
+(1) disallow fallbacking to other nodes when handing in-use hugetlb, 
+which can ensure consistent behavior in handling hugetlb.
+(2) introduce a new sysctl (may be named as 
+"hugetlb_allow_fallback_nodes") for users to control to allow 
+fallbacking, that can solve the CMA or memory hotplug failures that 
+users are more concerned about.
 
