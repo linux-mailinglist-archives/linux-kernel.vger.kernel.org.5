@@ -1,144 +1,140 @@
-Return-Path: <linux-kernel+bounces-49043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AAF084653B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:04:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF55F84653C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:04:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE80F1F260CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:04:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D21DA1C23885
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:04:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EC6D63A8;
-	Fri,  2 Feb 2024 01:03:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 166EEBA25;
+	Fri,  2 Feb 2024 01:04:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Vb+sH+tb"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KNn8rv00"
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76B595666;
-	Fri,  2 Feb 2024 01:03:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB6FEAD47
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 01:04:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706835832; cv=none; b=DDY7xSA0pvFEoNlPrRZtFeq3ahed1t0S/Pi8ulvvBk1PE29uqeSrABK/01vXJOrq310korYOI+l2Go8Z6MsTh9Joq41szh/BUPU9cUKuIlZLZIDWmr8+F585N1k2W87btMbw3A0dbsifHk2fpNY26biKl6vFXV4c4VOLXTGQ17M=
+	t=1706835845; cv=none; b=pyICJCFwWVuKsaPFxphveqK8Xvwr/izDSUnRPpyImJMHiHpAygwroa277WfdWov8/N890+Xc0woGmwGG5+Bxl696381xNGaBtqS3/RlsNasyNKCxtNsKWOlzi17ZSBPftXHNOwxG9J2aB5Y0u4zLFyXPKhCeSmokUbE3s5Ojmy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706835832; c=relaxed/simple;
-	bh=C76J7VnYrHbxDAtavB76M49Hhhhr517HYZ3UN1nxrBw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=bUhlbWpIK28htnb3mFVyzCqTAD0lTAJMFnCOSycS002V/9bh/+oU9QVp7zfmP736GMZNC9/TOkuQ5O0nmJT37p7Hu51jZWtxWMRazSNHHKpvMAj+LBS97RdK+d1d3j8hnn5RXwEdIt7t6E3p4TbgG8Y9b3r6HIa0CJv5P2vkGqA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=Vb+sH+tb; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1706835827;
-	bh=+9oIBTPwFPPTq6RPogiDs9fLnmSouioIt56H2oSIXsc=;
-	h=Date:From:To:Cc:Subject:From;
-	b=Vb+sH+tb3qoSTA0RSw0tISle7LB+BeLGae8vVYJul3sIFooJq14lTuDKeAQ1J6eP6
-	 Xo+FwjcZSZO2tfG8muEkStxOEveVA1fQL++32/N7/CSDZljNmRe1WS7Sw8ajkzLnem
-	 3F3AdSOW5ielZxDUsJZnBB2PoffWaRH9yJ/6hpKRG8Z0bsRaNgD9hfFk3G3lyUjrFe
-	 CTK9LIM5kM3H2l2ZQfa5yuc7jik952RRWoMLG4yQZg25VzO0dbfUgrByZU7xLkOeK/
-	 RgBka42MghysW8a4e5HswfK8Fc/Rl0V1V35NeFS9WZm2pTn6yjbs/SlhILFu/fBkak
-	 l0rJ2MyUWwXPA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TQyFv4Mcwz4wcT;
-	Fri,  2 Feb 2024 12:03:47 +1100 (AEDT)
-Date: Fri, 2 Feb 2024 12:03:46 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the modules tree
-Message-ID: <20240202120346.06e88db3@canb.auug.org.au>
+	s=arc-20240116; t=1706835845; c=relaxed/simple;
+	bh=a5Nlr4RQBP77XBehSgB40yGoPgT0XBNvTDdGKSSmOJU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=ThR9Ex9lMhBW0XT0QfPnCC8VEZxdlIv4NBRSg+TcflZneBCfiefE2T+L2hVwoR3RGWTKGS2WQNDVCIHvLJS5uehymv7ci+tqV58ned/YBJuPhNDsl+aRGrNlwyLu8wzLNqP6Gc2gasQDr6Kh6eOsxV15Q2RzCxPmimUqXTUvGoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KNn8rv00; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6de2116e7c2so1491312b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 17:04:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706835843; x=1707440643; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XbgnQJwz1vgU0uxdyyb22RvKZPgmTtLqOjZGD/vUXYI=;
+        b=KNn8rv00/YbCPMQYf8pXkiqgTRPKcza1JQrgViry+AqE6ir1VNJdZjqufV1wbQr8c4
+         ZQ8lrw5u9fWcVvfoNVKXPO7dsQS3OADXZBrh1N4Umnx+xC1A3f6C2SMC5YLbghWxRfi0
+         1C5Tzp8U6i5+BcZZbm8hgarbMUe2ALhi4zKkZjtYTvuxnKJpB6zPfYiKMgHHaeoqzcww
+         6HOL/KT8fahJOg3DtXCYbXs71C1XRcxrclPCKw86ArlZn8YirrLT3dUBApylAlEZSqGf
+         lEzVbjMoHW3Y5bvUPYYZfd9MKTRieqmn9AAUBI1Dj122uVJzXo6RbfGjFtMhY7zkEFgJ
+         knvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706835843; x=1707440643;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XbgnQJwz1vgU0uxdyyb22RvKZPgmTtLqOjZGD/vUXYI=;
+        b=CLqkaTBT3eL2LcqZ2HjmqylV+YFoNewIss/8NWz6D+n3S4ZZauT1C0QzttPiBbZKCZ
+         1helowLJhmLJZ9D2Z3VdCrvFGAxqDDysijSZDfQyNBFM/Gd2GS+Ghh1D8lSvw+jEUxdD
+         p3ppxUBI8j1pAefL3FU26Sz0jLmybEMSckOysZnqHLV9IWFBQedzbi9W86YWkygGFOwT
+         BirwB9i6xJu7ikH806cBfqVDmrSAkzsbZUV6Kd4OeBpgH6+ZhX+Ekr4lFCLq1EMYIYw9
+         csEMqKhivJD0V0O6OfEXkG0Q3Grxg530LzymeleaZNDKlQoy9eHdJTy0GhFXsImk7KeZ
+         kN4Q==
+X-Gm-Message-State: AOJu0YzFbiaTS1Q2eeaXYkgd2s0Pg6ZMs30xZLe/td1uwqpPCe9AOE9U
+	72da16COGQsDQtlI78NCTJuglZ7f94N4lk6ttbOU3rMlrut99bdK6xMCS5CLrIUxSS+0oZV8pcb
+	dkZdgeo5twl/SuV2T+g==
+X-Google-Smtp-Source: AGHT+IE/JxLkSou/VDo5U1rx0tT391GDl15vJuyWnddaQq63I5wd1sjbiRacqQYzWmPRXa7XRZALYt4dElsYU/6X
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:6a00:1c9b:b0:6df:e31e:e995 with
+ SMTP id y27-20020a056a001c9b00b006dfe31ee995mr274511pfw.6.1706835842950; Thu,
+ 01 Feb 2024 17:04:02 -0800 (PST)
+Date: Fri, 2 Feb 2024 01:04:01 +0000
+In-Reply-To: <20240201181240.GE321148@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/I+/Cyk47OiCzuBaDtllxRGL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0
+References: <20240201-b4-zswap-invalidate-entry-v1-0-56ed496b6e55@bytedance.com>
+ <20240201-b4-zswap-invalidate-entry-v1-5-56ed496b6e55@bytedance.com> <20240201181240.GE321148@cmpxchg.org>
+Message-ID: <Zbw_gZIyEHquaxho@google.com>
+Subject: Re: [PATCH 5/6] mm/zswap: only support zswap_exclusive_loads_enabled
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Chengming Zhou <zhouchengming@bytedance.com>, Nhat Pham <nphamcs@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org
+Content-Type: text/plain; charset="us-ascii"
 
---Sig_/I+/Cyk47OiCzuBaDtllxRGL
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Feb 01, 2024 at 01:12:40PM -0500, Johannes Weiner wrote:
+> On Thu, Feb 01, 2024 at 03:49:05PM +0000, Chengming Zhou wrote:
+> > The !zswap_exclusive_loads_enabled mode will leave compressed copy in
+> > the zswap tree and lru list after the folio swapin.
+> > 
+> > There are some disadvantages in this mode:
+> > 1. It's a waste of memory since there are two copies of data, one is
+> >    folio, the other one is compressed data in zswap. And it's unlikely
+> >    the compressed data is useful in the near future.
+> > 
+> > 2. If that folio is dirtied, the compressed data must be not useful,
+> >    but we don't know and don't invalidate the trashy memory in zswap.
+> > 
+> > 3. It's not reclaimable from zswap shrinker since zswap_writeback_entry()
+> >    will always return -EEXIST and terminate the shrinking process.
+> > 
+> > On the other hand, the only downside of zswap_exclusive_loads_enabled
+> > is a little more cpu usage/latency when compression, and the same if
+> > the folio is removed from swapcache or dirtied.
+> > 
+> > Not sure if we should accept the above disadvantages in the case of
+> > !zswap_exclusive_loads_enabled, so send this out for disscusion.
+> > 
+> > Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> 
+> This is interesting.
+> 
+> First, I will say that I never liked this config option, because it's
+> nearly impossible for a user to answer this question. Much better to
+> just pick a reasonable default.
+> 
+> What should the default be?
+> 
+> Caching "swapout work" is helpful when the system is thrashing. Then
+> recently swapped in pages might get swapped out again very soon. It
+> certainly makes sense with conventional swap, because keeping a clean
+> copy on the disk saves IO work and doesn't cost any additional memory.
+> 
+> But with zswap, it's different. It saves some compression work on a
+> thrashing page. But the act of keeping compressed memory contributes
+> to a higher rate of thrashing. And that can cause IO in other places
+> like zswap writeback and file memory.
 
-Hi all,
+Agreed.
 
-After merging the modules tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+At Google, we have been using exclusive loads for a very long time in
+production, so I have no objections to this. The user interface is also
+relatively new, so I don't think it will have accumulated users.
 
-Segmentation fault
-make[3]: *** [/home/sfr/next/next/scripts/Makefile.modfinal:56: lib/tests/m=
-odule/test_kallsyms_d.ko] Error 139
-make[3]: *** Deleting file 'lib/tests/module/test_kallsyms_d.ko'
+> 
+> It would be useful to have an A/B test to confirm that not caching is
+> better. Can you run your test with and without keeping the cache, and
+> in addition to the timings also compare the deltas for pgscan_anon,
+> pgscan_file, workingset_refault_anon, workingset_refault_file?
 
-Caused by commit
-
-  6336b7d9a520 ("selftests: add new kallsyms selftests")
-
-These new tests spend a long time just linking the modules (especially
-test_kallsyms_c.ko and test_kallsyms_d.ko) and then the linker segfaults
-before finishing test_kallsyms_d.ko.  Maybe your stress tests need to be a =
-little less stressful :-)
-
-The build machine does not run out of memory (it has 30-40GB free).
-
-$ x86_64-linux-gnu-gcc --version
-x86_64-linux-gnu-gcc (Debian 13.2.0-7) 13.2.0
-$ x86_64-linux-gnu-ld --version
-GNU ld (GNU Binutils for Debian) 2.41
-
-I have applied the following patch for today.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 2 Feb 2024 11:57:59 +1100
-Subject: [PATCH] selftests: disable TEST_KALLSYMS_D for now
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- lib/Kconfig.debug | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index dcb1bd7c6d9d..152128d63d8d 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2853,7 +2853,7 @@ config TEST_KALLSYMS
- 	select TEST_KALLSYMS_A
- 	select TEST_KALLSYMS_B
- 	select TEST_KALLSYMS_C
--	select TEST_KALLSYMS_D
-+#	select TEST_KALLSYMS_D
- 	help
- 	  This allows us to stress test find_symbol() through the kallsyms
- 	  used to place symbols on the kernel ELF kallsyms and modules kallsyms
---=20
-2.43.0
-
-
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/I+/Cyk47OiCzuBaDtllxRGL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmW8P3IACgkQAVBC80lX
-0Gy2MAf+O/P367kS9yacuSz2Fp7/iYxJpH+9U6B24+Q9l1Nj2UEMjR6kwyvnLsoy
-Y3/udOyvGJlK6it7M2/b48EB3dOosSynzJ/EYMBJlsE1ssr8gdgzUXIAGAJLkC7h
-iUSJyul2C0+mRkg/b07sGhq2hDHLr3YTMPvBw+29J2etz2Jsx6BQStvfHeW+Sqn6
-Dije4Ol0/0DDUU6daunOakl03VPo9AmI7hn4J5jId+Ucqmj34veg5Tp8tKzg6a4u
-usTlkVYClBXdk8DB5QQHwRv8ApK6sfp+4GIaZoaQ/xvu1M/tlMcIvTM8q4+/ZBNh
-4NEDGbVYVFLfGYGQrtYkCp/4tWXAhQ==
-=+cN4
------END PGP SIGNATURE-----
-
---Sig_/I+/Cyk47OiCzuBaDtllxRGL--
+That would be interesting :)
 
