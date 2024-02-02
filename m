@@ -1,99 +1,149 @@
-Return-Path: <linux-kernel+bounces-49132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBA5D846646
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:05:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A51B884664D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:06:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65A08B25009
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:05:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6095F28B78B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:06:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E0BFC03;
-	Fri,  2 Feb 2024 03:04:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40A23CA7A;
+	Fri,  2 Feb 2024 03:06:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="b/aMu8Jo"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iJpo4bFC"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E88F9EB;
-	Fri,  2 Feb 2024 03:04:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13946DDCE;
+	Fri,  2 Feb 2024 03:06:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706843090; cv=none; b=Sq+aneq3nR7abwyqx6T35uRnq19fNOOCOwiDM3mGRfeHn5PpQmCJT23+tyVAIPYMbczm8skFbVhpTczSHqNfOokk4rAsPk0+p0UGWztBrolI7r/9Y0DoAGak4I7EsfYxGfpzObxor6y5tyPXjkctJJsZHp4Y5fejOp3v03atMVA=
+	t=1706843172; cv=none; b=TLS3wNunLICxT3MkCQS6OoNoj1vy3aihsJp9LLZbXrhwn9+as6yiVqivrpGqsR/8+uMvaHPoPfaLaoCPsP6zMtc+RkkUxQLeWvIhxP8pj2UDq/r86Rdvl9Bugye6Hh+pY8P/f9vk4/qzuEv5bUFXwmcr9BIB5nOuZpe0q3utFWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706843090; c=relaxed/simple;
-	bh=8fHK8o8jc9om6S6NsTKmiBFNLkn6v1fUilTyI9/jVVA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZSVc3SZGXxHQrTUnt6HIaUGw8QF9rZI6UqAWqV63jrwmvJ7ZegP+iilFuYkXwTly1tmFRNjOh0XyWXuI97ATieNxaPNRFiGbOKgl0LjA/DzzXh8MVnyDxlXfPmg1MS9QNMUnWcah0W/c6kH50T96axGVHaVmb5H9LqUN7xqUeGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=b/aMu8Jo; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=skwCDGnLP4ByDSOBblEedQL0pq1fFuzhc2BhN7e3aHY=; b=b/aMu8JoyIi6pJYBgWcGXN8/UL
-	ZV4PD80UgkfKr6pNS8JG1V4UccwxSlYwrgseJJPFEZpuLwVa38MCxyhgHRo5KdncYIge1WN+dpbqS
-	B/1lOpLFqm2CKapZ6zJ4X5rP0E9ppzecAfULowIMwbcSNmIT80kFFjW7GDT8mdZxu2xyQ6l1D7XGF
-	q3PGSLF044jinUnnTJjlThb6VV31oS8mUd7z1EJSenxFA0Nq06FvNXOzOSdMQeFNFZPGacvJ9byOz
-	qyKNcOnAu5QzJoxF27mka7u/ZWgwVBgWf1BJ7vQL6+knhEqc/KZTEmNMsvHBDB7ucfRKXsAyn6ihr
-	8MIH4/Rg==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rVjr4-003cIj-1h;
-	Fri, 02 Feb 2024 03:04:38 +0000
-Date: Fri, 2 Feb 2024 03:04:38 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Doug Anderson <dianders@chromium.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Eric Biederman <ebiederm@xmission.com>, Jan Kara <jack@suse.cz>,
-	Kees Cook <keescook@chromium.org>, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] regset: use vmalloc() for regset_get_alloc()
-Message-ID: <20240202030438.GV2087318@ZenIV>
-References: <20240201171159.1.Id9ad163b60d21c9e56c2d686b0cc9083a8ba7924@changeid>
- <20240202012249.GU2087318@ZenIV>
- <CAD=FV=X5dpMyCGg4Xn+ApRwmiLB5zB0LTMCoSfW_X6eAsfQy8w@mail.gmail.com>
+	s=arc-20240116; t=1706843172; c=relaxed/simple;
+	bh=tGLiGtD2ffb0omsWaMaWz1meXi7Me/QbXHDdjQQbe+c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rMWcJ/rZqe3A0EWIG509HTosLTbiG+QDth6od3zQO8upOTk2A6renaxvks4WF+YOKdmZhgREjMZWlD6gDLdT0FVO2JY51LZBrqRpsijDHmS5fSKl/WwuL330HvpxICG7ghFABgm73H43Spn7FKnIugx088WCjdjxi5gK+tLDacM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iJpo4bFC; arc=none smtp.client-ip=134.134.136.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706843171; x=1738379171;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=tGLiGtD2ffb0omsWaMaWz1meXi7Me/QbXHDdjQQbe+c=;
+  b=iJpo4bFChC9X7kZ6k8wND0L+OrzpKOpDgb1FBvCr+MpJwJ3AjBAiFeUf
+   /aoGNXy24ESQPoJQvWjrTbvAOJKqemsOp4IXdhiWH1uRkNUVTHozPRPOq
+   CmHBkfs0g5EHyy39wn52hRjm8ElLT7Nn4jx637IYVkIPNt3+SAODdkK2m
+   pdijyzWATzyM9lsRybBMFlsSvQC0PN4PeJALTdNOF9K7IvUtsEoZTF3g5
+   3q356Z/SmaDoF6PjVdCCGh+xUV6MA38wuq8841lqrCSyFJjQ+9uQZ5ZLD
+   +ub2KiBcnj4b/wWmA5BTyfTAgiAkjKmp35Ew6RWIfDq2391u8eL0lrwbp
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="468283919"
+X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
+   d="scan'208";a="468283919"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 19:06:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="859304194"
+X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
+   d="scan'208";a="859304194"
+Received: from choongyo-mobl.gar.corp.intel.com (HELO [10.247.22.55]) ([10.247.22.55])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 19:06:01 -0800
+Message-ID: <c0a87401-9f8b-4b60-b47d-31232873bba9@linux.intel.com>
+Date: Fri, 2 Feb 2024 11:06:01 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=X5dpMyCGg4Xn+ApRwmiLB5zB0LTMCoSfW_X6eAsfQy8w@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v4 08/11] stmmac: intel: configure SerDes
+ according to the interface mode
+Content-Language: en-US
+To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+ David E Box <david.e.box@linux.intel.com>,
+ Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <Jose.Abreu@synopsys.com>, "David S . Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Russell King <linux@armlinux.org.uk>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+ Heiner Kallweit <hkallweit1@gmail.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Andrew Halaney
+ <ahalaney@redhat.com>, Simon Horman <simon.horman@corigine.com>,
+ Serge Semin <fancer.lancer@gmail.com>, Netdev <netdev@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, platform-driver-x86@vger.kernel.org,
+ linux-hwmon@vger.kernel.org, bpf@vger.kernel.org,
+ Voon Wei Feng <weifeng.voon@intel.com>,
+ Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+ Lai Peter Jun Ann <jun.ann.lai@intel.com>,
+ Abdul Rahim Faizal <faizal.abdul.rahim@intel.com>
+References: <20240129130253.1400707-1-yong.liang.choong@linux.intel.com>
+ <20240129130253.1400707-9-yong.liang.choong@linux.intel.com>
+ <99d78f25-dd2a-4a52-4c2a-b0e29505a776@linux.intel.com>
+From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+In-Reply-To: <99d78f25-dd2a-4a52-4c2a-b0e29505a776@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 01, 2024 at 06:54:51PM -0800, Doug Anderson wrote:
-> >         What the hell?  Which regset could have lead to that?
-> > It would need to have the total size of register in excess of
-> > 256K.  Seriously, which regset is that about?  Note that we
-> > have just made sure that size is not greater than that product.
-> > size is unsigned int, so it's not as if a negative value passed
-> > to function could get through that test only to be interpreted
-> > as large positive later...
-> >
-> >         Details, please.
-> 
-> I can continue to dig more, but it is easy for me to reproduce this.
-> On the stack is elf_core_dump() and it seems like we're getting a core
-> dump of the chrome process. So I just arbitrarily look for the chrome
-> GPU process:
-> 
-> $ ps aux | grep gpu-process
-> chronos   2075  3.0  1.1 34075552 95372 ?      S<l  18:44   0:01
-> /opt/google/chrome/chrome --type=gpu-process ...
-> 
-> Then I send it a quit:
-> 
-> $ kill -quit 2075
-> 
-> I added some printouts for this allocation and there are a ton. Here's
-> all of them, some of which are over 256K:
 
-Well, the next step would be to see which regset it is - if you
-see that kind of allocation, print regset->n, regset->size and
-regset->core_note_type.
+
+On 31/1/2024 6:58 pm, Ilpo Järvinen wrote:
+> On Mon, 29 Jan 2024, Choong Yong Liang wrote:
+> 
+>> From: "Tan, Tee Min" <tee.min.tan@linux.intel.com>
+>>
+>> Intel platform will configure the SerDes through PMC api based on the
+>> provided interface mode.
+>>
+>> This patch adds several new functions below:-
+>> - intel_tsn_interface_is_available(): This new function reads FIA lane
+>>    ownership registers and common lane registers through IPC commands
+>>    to know which lane the mGbE port is assigned to.
+>> - intel_config_serdes(): To configure the SerDes based on the assigned
+>>    lane and latest interface mode, it sends IPC command to the PMC through
+>>    PMC driver/API. The PMC acts as a proxy for R/W on behalf of the driver.
+>> - intel_set_reg_access(): Set the register access to the available TSN
+>>    interface.
+>>
+>> Signed-off-by: Tan, Tee Min <tee.min.tan@linux.intel.com>
+>> Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+>> ---
+>>   drivers/net/ethernet/stmicro/stmmac/Kconfig   |   1 +
+>>   .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 113 +++++++++++++++++-
+>>   .../net/ethernet/stmicro/stmmac/dwmac-intel.h |  75 ++++++++++++
+>>   3 files changed, 188 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+>> index 85dcda51df05..be423fb2b46c 100644
+>> --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
+>> +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+>> @@ -273,6 +273,7 @@ config DWMAC_INTEL
+>>   	default X86
+>>   	depends on X86 && STMMAC_ETH && PCI
+>>   	depends on COMMON_CLK
+>> +	select INTEL_PMC_IPC
+> 
+> INTEL_PMC_IPC has depends on ACPI but selecting INTEL_PMC_IPC won't
+> enforce it AFAIK.
+> 
+Hi Ilpo,
+
+Thank you for pointing this out.
+I will check on my side too.
+Will fix it in the new patch series.
 
