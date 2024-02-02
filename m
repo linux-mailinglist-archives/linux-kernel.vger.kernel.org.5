@@ -1,404 +1,136 @@
-Return-Path: <linux-kernel+bounces-49120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EBF7846613
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:55:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD22D846616
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:57:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB369B21F12
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:55:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86DFC28CD51
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:57:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 212EFC2CF;
-	Fri,  2 Feb 2024 02:55:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E91C2D2;
+	Fri,  2 Feb 2024 02:57:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="XNksMmYm"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RtzBrCyg"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCDFA12FB30
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 02:55:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0A23BE7E
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 02:57:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706842514; cv=none; b=sn6gYmOAEVGuC8kG46MCplJCAOBBDC7UdIMgWFktdn5t0bdYx6waC6dj+j8mv053sjxW8dS2Gxj03vlk+bWcjGzbo61VPLsKs1ySBTM0ZVYlOqmFTpAAcgOs8zRQaK76Izt0U2cMcQMLJGbNCWJjjYr7AXpswWYF16mSjd8N8nc=
+	t=1706842630; cv=none; b=dkF9TLAru1qADR+B1dFNOVV8iqlDEnzRqrEzJOxshj+hYeBI0/Sg99T8PE+SnOvTKVqHofkrRkfRbsg5NegaodflQE2d88kQpfswrofSkKzqSrpSKXm6v1JELR8+HTYcCxBSTWCRl7sfVKx8ElmpLE6ClkvPp/oEH6faUIfD+0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706842514; c=relaxed/simple;
-	bh=jX8V4J6he01iMdXztscH3gL+ZiT2xGSlH7VO2b3YRA4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=r9QREwsismB2K6S5xUuVnUCWiraSyO0MSDKKXOuJmHikQGU44rzq7FRiR28udMH+m5ZG8ywqTkwbbTs/6hddWSvVrDCJjbqDwmsn0lwEJwFAvRTFiDj5c2CBbEi+p9B7LNI0jSiiOcyAFqcnpT5sGFVCetm8NEkUjvJ0QUX2HlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=XNksMmYm; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55f15762840so1960826a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 18:55:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706842510; x=1707447310; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z13JQPf9sQwxso1j5bT0m3SolbFlWDJreVTqe//zgDY=;
-        b=XNksMmYmERlcareKCqGrL/t2gqbdt7572KXZvtbZJ6mZH3KpDzekHrk5pzSyfEPKh6
-         xfiL8FUcE8qeyHP+WWKUKDYkaatphnSrDFgE64fFCQwsJoCwC0qfI8gJjf+Z0lmg8bQo
-         0bnkNUxnZxnJySHWWL7iYlnrzxWKjWTyWEgxc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706842510; x=1707447310;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z13JQPf9sQwxso1j5bT0m3SolbFlWDJreVTqe//zgDY=;
-        b=RoW8DanlB/99zNLM82h9UAiFwCHDxDIfLVMC5R2ppUyPO/B/KPlbBnaQOvMuwdeosL
-         2gir/0m391s7/hkJwTYdS8AS7kQGYfM8EykxfXHJJFlUElpBF/Frg3ytde30kE7w5JSm
-         ByPYoaSbXW/hiJBT6U54z6eihHLB0bRDKkR998FUtZ3vEGweK62KUIbr/oWK0smJqlP4
-         IfpUVNCCuZ9mqsDUSanwwnh01WPx5TJ7emFrfy2+pO6z9O+1UGcdFFe6IRQlXyzi6Sny
-         b5EF42iS6q4GyhJsVmC6peZb0t2C58qx57tt5YuSuxDV4V+cuqvK6dWp3z29qmwy5vCa
-         9HgA==
-X-Gm-Message-State: AOJu0YxKwD1KuPUmNwTqV0stcji0NhVQ9+XtABR1Q1ARA+UJk+Kssp4t
-	MKGzcVBJJhiZj6j5AxUTtFZ+WFYMRVMuerV2GXmdMZGVYFF7XHbX3h/dowo/jP3Y74jX1bTocg8
-	bpA==
-X-Google-Smtp-Source: AGHT+IG2a2M/iKSWlO2BSSAQaR8LMa8wrZ7bMP+W4M31zx1sv6amvMnURrDcF4pm7xienZXkN99IrA==
-X-Received: by 2002:a17:906:cf85:b0:a36:7b45:1304 with SMTP id um5-20020a170906cf8500b00a367b451304mr4242521ejb.77.1706842509456;
-        Thu, 01 Feb 2024 18:55:09 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXUwAvs1N6c7DCS0yTTqT0ETXsBx2042XF3eTanB2IGM1nxQ9Nw6sRi9onPFhUyH6UB/KexGon2BEekfEhJsB5X2Y47fFwh+o/DuMtH
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
-        by smtp.gmail.com with ESMTPSA id vv9-20020a170907a68900b00a35ec7eddfesm382025ejc.50.2024.02.01.18.55.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 18:55:08 -0800 (PST)
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40f00adacfeso15715e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 18:55:08 -0800 (PST)
-X-Received: by 2002:a05:600c:500c:b0:40f:c537:9d5 with SMTP id
- n12-20020a05600c500c00b0040fc53709d5mr30164wmr.5.1706842508094; Thu, 01 Feb
- 2024 18:55:08 -0800 (PST)
+	s=arc-20240116; t=1706842630; c=relaxed/simple;
+	bh=m9FZO3q9smB7cSYDW0f7Awe436TxHdLzwmgKLOV6UpY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pHViAq0teGuvAnM/znmFQ6B0YbCczP3dgfBpxTg/83ZyP5L3glhc8n2BSywAGFCAEA7g/AXXjQqjrKrneMIdUTF1xokuolzgsBmLmtMGblWhdBg6rh1K69I/13pn6/VmC4+DAhQU8SToZ9ngvhUTM1o0Q8XCIRGuj3m/qvx6bhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RtzBrCyg; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706842627;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=alz1bWzkdlVdcD3J1YSOwuXprTmyNWB0NW6vFsZRqwo=;
+	b=RtzBrCygpv9TkMbCRHGXXiH8zATHPyvmGojl862MHljwWomOmr4nGNisGEQ67lZPlutTZ7
+	2UkOgXFj7aYkQOdw+yQTHulrnkZ0lB22GPnLjDXC+GewbbJ+kJApd5O34QI8y+M2BjMOvN
+	6oNmrCWbpnGr/7+uOiwD+fADJEnykIU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-186-1EBHbB8BPyqnm_YXc-oHSA-1; Thu, 01 Feb 2024 21:57:03 -0500
+X-MC-Unique: 1EBHbB8BPyqnm_YXc-oHSA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9D75883514A;
+	Fri,  2 Feb 2024 02:57:02 +0000 (UTC)
+Received: from virt-mtcollins-01.lab.eng.rdu2.redhat.com (virt-mtcollins-01.lab.eng.rdu2.redhat.com [10.8.1.196])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 58548C15E61;
+	Fri,  2 Feb 2024 02:57:02 +0000 (UTC)
+From: Shaoqin Huang <shahuang@redhat.com>
+To: Oliver Upton <oliver.upton@linux.dev>,
+	Marc Zyngier <maz@kernel.org>,
+	kvmarm@lists.linux.dev
+Cc: Eric Auger <eauger@redhat.com>,
+	Shaoqin Huang <shahuang@redhat.com>,
+	James Morse <james.morse@arm.com>,
+	kvm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>
+Subject: [PATCH v4 0/5] KVM: selftests: aarch64: Introduce pmu_event_filter_test
+Date: Thu,  1 Feb 2024 21:56:49 -0500
+Message-Id: <20240202025659.5065-1-shahuang@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201171159.1.Id9ad163b60d21c9e56c2d686b0cc9083a8ba7924@changeid>
- <20240202012249.GU2087318@ZenIV>
-In-Reply-To: <20240202012249.GU2087318@ZenIV>
-From: Doug Anderson <dianders@chromium.org>
-Date: Thu, 1 Feb 2024 18:54:51 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=X5dpMyCGg4Xn+ApRwmiLB5zB0LTMCoSfW_X6eAsfQy8w@mail.gmail.com>
-Message-ID: <CAD=FV=X5dpMyCGg4Xn+ApRwmiLB5zB0LTMCoSfW_X6eAsfQy8w@mail.gmail.com>
-Subject: Re: [PATCH] regset: use vmalloc() for regset_get_alloc()
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Christian Brauner <brauner@kernel.org>, Eric Biederman <ebiederm@xmission.com>, Jan Kara <jack@suse.cz>, 
-	Kees Cook <keescook@chromium.org>, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-Hi,
+The test is inspired by the pmu_event_filter_test which implemented by x86. On
+the arm64 platform, there is the same ability to set the pmu_event_filter
+through the KVM_ARM_VCPU_PMU_V3_FILTER attribute. So add the test for arm64.
 
-On Thu, Feb 1, 2024 at 5:22=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> wr=
-ote:
->
-> On Thu, Feb 01, 2024 at 05:12:03PM -0800, Douglas Anderson wrote:
-> > While browsing through ChromeOS crash reports, I found one with an
-> > allocation failure that looked like this:
->
-> > An order 7 allocation is (1 << 7) contiguous pages, or 512K. It's not
-> > a surprise that this allocation failed on a system that's been running
-> > for a while.
->
-> >       if (size > regset->n * regset->size)
-> >               size =3D regset->n * regset->size;
-> >       if (!p) {
-> > -             to_free =3D p =3D kzalloc(size, GFP_KERNEL);
-> > +             to_free =3D p =3D vmalloc(size);
->
->         What the hell?  Which regset could have lead to that?
-> It would need to have the total size of register in excess of
-> 256K.  Seriously, which regset is that about?  Note that we
-> have just made sure that size is not greater than that product.
-> size is unsigned int, so it's not as if a negative value passed
-> to function could get through that test only to be interpreted
-> as large positive later...
->
->         Details, please.
+The series first move some pmu common code from vpmu_counter_access to
+lib/aarch64/vpmu.c and include/aarch64/vpmu.h, which can be used by
+pmu_event_filter_test. Then fix a bug related to the [enable|disable]_counter,
+and at last, implement the test itself.
 
-I can continue to dig more, but it is easy for me to reproduce this.
-On the stack is elf_core_dump() and it seems like we're getting a core
-dump of the chrome process. So I just arbitrarily look for the chrome
-GPU process:
+Changelog:
+----------
+v3->v4:
+  - Rebased to the v6.8-rc2.
 
-$ ps aux | grep gpu-process
-chronos   2075  3.0  1.1 34075552 95372 ?      S<l  18:44   0:01
-/opt/google/chrome/chrome --type=3Dgpu-process ...
+v2->v3:
+  - Check the pmceid in guest code instead of pmu event count since different
+  hardware may have different event count result, check pmceid makes it stable
+  on different platform.                        [Eric]
+  - Some typo fixed and commit message improved.
 
-Then I send it a quit:
+v1->v2:
+  - Improve the commit message.                 [Eric]
+  - Fix the bug in [enable|disable]_counter.    [Raghavendra & Marc]
+  - Add the check if kvm has attr KVM_ARM_VCPU_PMU_V3_FILTER.
+  - Add if host pmu support the test event throught pmceid0.
+  - Split the test_invalid_filter() to another patch. [Eric]
 
-$ kill -quit 2075
+v1: https://lore.kernel.org/all/20231123063750.2176250-1-shahuang@redhat.com/
+v2: https://lore.kernel.org/all/20231129072712.2667337-1-shahuang@redhat.com/
+v3: https://lore.kernel.org/all/20240116060129.55473-1-shahuang@redhat.com/
 
-I added some printouts for this allocation and there are a ton. Here's
-all of them, some of which are over 256K:
+Shaoqin Huang (5):
+  KVM: selftests: aarch64: Make the [create|destroy]_vpmu_vm() public
+  KVM: selftests: aarch64: Move pmu helper functions into vpmu.h
+  KVM: selftests: aarch64: Fix the buggy [enable|disable]_counter
+  KVM: selftests: aarch64: Introduce pmu_event_filter_test
+  KVM: selftests: aarch64: Add invalid filter test in
+    pmu_event_filter_test
 
-[   66.677393] DOUG: Allocating 272 bytes
-[   66.688994] DOUG: Allocating 272 bytes
-[   66.692921] DOUG: Allocating 528 bytes
-[   66.696799] DOUG: Allocating 8 bytes
-[   66.701058] DOUG: Allocating 272 bytes
-[   66.704988] DOUG: Allocating 528 bytes
-[   66.708875] DOUG: Allocating 8 bytes
-[   66.712929] DOUG: Allocating 272 bytes
-[   66.716845] DOUG: Allocating 528 bytes
-[   66.720721] DOUG: Allocating 8 bytes
-[   66.724752] DOUG: Allocating 272 bytes
-[   66.728719] DOUG: Allocating 528 bytes
-[   66.732621] DOUG: Allocating 8 bytes
-[   66.736615] DOUG: Allocating 272 bytes
-[   66.740584] DOUG: Allocating 528 bytes
-[   66.744483] DOUG: Allocating 8 bytes
-[   66.748507] DOUG: Allocating 272 bytes
-[   66.752412] DOUG: Allocating 528 bytes
-[   66.756328] DOUG: Allocating 8 bytes
-[   66.760382] DOUG: Allocating 272 bytes
-[   66.764356] DOUG: Allocating 528 bytes
-[   66.768275] DOUG: Allocating 8 bytes
-[   66.772236] DOUG: Allocating 272 bytes
-[   66.776135] DOUG: Allocating 528 bytes
-[   66.780013] DOUG: Allocating 8 bytes
-[   66.787244] DOUG: Allocating 272 bytes
-[   66.791175] DOUG: Allocating 528 bytes
-[   66.795056] DOUG: Allocating 8 bytes
-[   66.799101] DOUG: Allocating 272 bytes
-[   66.803007] DOUG: Allocating 528 bytes
-[   66.806930] DOUG: Allocating 8 bytes
-[   66.810775] DOUG: Allocating 272 bytes
-[   66.814668] DOUG: Allocating 528 bytes
-[   66.818544] DOUG: Allocating 8 bytes
-[   66.822409] DOUG: Allocating 272 bytes
-[   66.826328] DOUG: Allocating 528 bytes
-[   66.830258] DOUG: Allocating 8 bytes
-[   66.834331] DOUG: Allocating 272 bytes
-[   66.838510] DOUG: Allocating 528 bytes
-[   66.842399] DOUG: Allocating 8 bytes
-[   66.846301] DOUG: Allocating 272 bytes
-[   66.850181] DOUG: Allocating 528 bytes
-[   66.854051] DOUG: Allocating 8 bytes
-[   66.857864] DOUG: Allocating 272 bytes
-[   66.861745] DOUG: Allocating 528 bytes
-[   66.865621] DOUG: Allocating 8 bytes
-[   66.869495] DOUG: Allocating 272 bytes
-[   66.873384] DOUG: Allocating 528 bytes
-[   66.877261] DOUG: Allocating 8 bytes
-[   66.892077] DOUG: Allocating 528 bytes
-[   66.895978] DOUG: Allocating 16 bytes
-[   66.899760] DOUG: Allocating 264 bytes
-[   66.903624] DOUG: Allocating 264 bytes
-[   66.907489] DOUG: Allocating 4 bytes
-[   66.911184] DOUG: Allocating 279584 bytes
-[   66.915392] DOUG: Allocating 8768 bytes
-[   66.919354] DOUG: Allocating 65552 bytes
-[   66.923415] DOUG: Allocating 64 bytes
-[   66.927190] DOUG: Allocating 16 bytes
-[   66.930968] DOUG: Allocating 8 bytes
-[   66.934649] DOUG: Allocating 8 bytes
-[   66.938332] DOUG: Allocating 528 bytes
-[   66.942199] DOUG: Allocating 16 bytes
-[   66.945970] DOUG: Allocating 264 bytes
-[   66.949832] DOUG: Allocating 264 bytes
-[   66.953702] DOUG: Allocating 4 bytes
-[   66.957385] DOUG: Allocating 279584 bytes
-[   66.961605] DOUG: Allocating 8768 bytes
-[   66.965574] DOUG: Allocating 65552 bytes
-[   66.969632] DOUG: Allocating 64 bytes
-[   66.973405] DOUG: Allocating 16 bytes
-[   66.977179] DOUG: Allocating 8 bytes
-[   66.980862] DOUG: Allocating 8 bytes
-[   66.984553] DOUG: Allocating 528 bytes
-[   66.988416] DOUG: Allocating 16 bytes
-[   66.992191] DOUG: Allocating 264 bytes
-[   66.996046] DOUG: Allocating 264 bytes
-[   66.999907] DOUG: Allocating 4 bytes
-[   67.003590] DOUG: Allocating 279584 bytes
-[   67.007773] DOUG: Allocating 8768 bytes
-[   67.011732] DOUG: Allocating 65552 bytes
-[   67.015789] DOUG: Allocating 64 bytes
-[   67.019576] DOUG: Allocating 16 bytes
-[   67.023366] DOUG: Allocating 8 bytes
-[   67.027059] DOUG: Allocating 8 bytes
-[   67.030753] DOUG: Allocating 528 bytes
-[   67.034620] DOUG: Allocating 16 bytes
-[   67.038402] DOUG: Allocating 264 bytes
-[   67.042266] DOUG: Allocating 264 bytes
-[   67.046144] DOUG: Allocating 4 bytes
-[   67.049827] DOUG: Allocating 279584 bytes
-[   67.054026] DOUG: Allocating 8768 bytes
-[   67.057990] DOUG: Allocating 65552 bytes
-[   67.062050] DOUG: Allocating 64 bytes
-[   67.065826] DOUG: Allocating 16 bytes
-[   67.069603] DOUG: Allocating 8 bytes
-[   67.073285] DOUG: Allocating 8 bytes
-[   67.076977] DOUG: Allocating 528 bytes
-[   67.080836] DOUG: Allocating 16 bytes
-[   67.084605] DOUG: Allocating 264 bytes
-[   67.088461] DOUG: Allocating 264 bytes
-[   67.092328] DOUG: Allocating 4 bytes
-[   67.096015] DOUG: Allocating 279584 bytes
-[   67.100214] DOUG: Allocating 8768 bytes
-[   67.104182] DOUG: Allocating 65552 bytes
-[   67.108245] DOUG: Allocating 64 bytes
-[   67.112028] DOUG: Allocating 16 bytes
-[   67.115804] DOUG: Allocating 8 bytes
-[   67.119487] DOUG: Allocating 8 bytes
-[   67.123168] DOUG: Allocating 528 bytes
-[   67.127027] DOUG: Allocating 16 bytes
-[   67.130806] DOUG: Allocating 264 bytes
-[   67.134662] DOUG: Allocating 264 bytes
-[   67.138527] DOUG: Allocating 4 bytes
-[   67.142213] DOUG: Allocating 279584 bytes
-[   67.146402] DOUG: Allocating 8768 bytes
-[   67.150378] DOUG: Allocating 65552 bytes
-[   67.154434] DOUG: Allocating 64 bytes
-[   67.158209] DOUG: Allocating 16 bytes
-[   67.161980] DOUG: Allocating 8 bytes
-[   67.165665] DOUG: Allocating 8 bytes
-[   67.169355] DOUG: Allocating 528 bytes
-[   67.173219] DOUG: Allocating 16 bytes
-[   67.176989] DOUG: Allocating 264 bytes
-[   67.180847] DOUG: Allocating 264 bytes
-[   67.184710] DOUG: Allocating 4 bytes
-[   67.188385] DOUG: Allocating 279584 bytes
-[   67.192569] DOUG: Allocating 8768 bytes
-[   67.196522] DOUG: Allocating 65552 bytes
-[   67.200570] DOUG: Allocating 64 bytes
-[   67.204340] DOUG: Allocating 16 bytes
-[   67.208109] DOUG: Allocating 8 bytes
-[   67.211788] DOUG: Allocating 8 bytes
-[   67.215468] DOUG: Allocating 528 bytes
-[   67.219332] DOUG: Allocating 16 bytes
-[   67.223108] DOUG: Allocating 264 bytes
-[   67.226968] DOUG: Allocating 264 bytes
-[   67.230834] DOUG: Allocating 4 bytes
-[   67.234510] DOUG: Allocating 279584 bytes
-[   67.238697] DOUG: Allocating 8768 bytes
-[   67.242660] DOUG: Allocating 65552 bytes
-[   67.246716] DOUG: Allocating 64 bytes
-[   67.250487] DOUG: Allocating 16 bytes
-[   67.254261] DOUG: Allocating 8 bytes
-[   67.257955] DOUG: Allocating 8 bytes
-[   67.261640] DOUG: Allocating 528 bytes
-[   67.265497] DOUG: Allocating 16 bytes
-[   67.269267] DOUG: Allocating 264 bytes
-[   67.273131] DOUG: Allocating 264 bytes
-[   67.277026] DOUG: Allocating 4 bytes
-[   67.280721] DOUG: Allocating 279584 bytes
-[   67.284914] DOUG: Allocating 8768 bytes
-[   67.288868] DOUG: Allocating 65552 bytes
-[   67.292927] DOUG: Allocating 64 bytes
-[   67.296699] DOUG: Allocating 16 bytes
-[   67.300479] DOUG: Allocating 8 bytes
-[   67.304158] DOUG: Allocating 8 bytes
-[   67.307848] DOUG: Allocating 528 bytes
-[   67.311702] DOUG: Allocating 16 bytes
-[   67.315469] DOUG: Allocating 264 bytes
-[   67.319331] DOUG: Allocating 264 bytes
-[   67.323196] DOUG: Allocating 4 bytes
-[   67.326879] DOUG: Allocating 279584 bytes
-[   67.331067] DOUG: Allocating 8768 bytes
-[   67.335033] DOUG: Allocating 65552 bytes
-[   67.339089] DOUG: Allocating 64 bytes
-[   67.342866] DOUG: Allocating 16 bytes
-[   67.346641] DOUG: Allocating 8 bytes
-[   67.350323] DOUG: Allocating 8 bytes
-[   67.354005] DOUG: Allocating 528 bytes
-[   67.357869] DOUG: Allocating 16 bytes
-[   67.361636] DOUG: Allocating 264 bytes
-[   67.365492] DOUG: Allocating 264 bytes
-[   67.369355] DOUG: Allocating 4 bytes
-[   67.373040] DOUG: Allocating 279584 bytes
-[   67.377218] DOUG: Allocating 8768 bytes
-[   67.381179] DOUG: Allocating 65552 bytes
-[   67.385228] DOUG: Allocating 64 bytes
-[   67.389005] DOUG: Allocating 16 bytes
-[   67.392784] DOUG: Allocating 8 bytes
-[   67.396461] DOUG: Allocating 8 bytes
-[   67.400150] DOUG: Allocating 528 bytes
-[   67.404011] DOUG: Allocating 16 bytes
-[   67.407792] DOUG: Allocating 264 bytes
-[   67.411649] DOUG: Allocating 264 bytes
-[   67.415506] DOUG: Allocating 4 bytes
-[   67.419184] DOUG: Allocating 279584 bytes
-[   67.423364] DOUG: Allocating 8768 bytes
-[   67.427320] DOUG: Allocating 65552 bytes
-[   67.431367] DOUG: Allocating 64 bytes
-[   67.435146] DOUG: Allocating 16 bytes
-[   67.438923] DOUG: Allocating 8 bytes
-[   67.442602] DOUG: Allocating 8 bytes
-[   67.446286] DOUG: Allocating 528 bytes
-[   67.450143] DOUG: Allocating 16 bytes
-[   67.453913] DOUG: Allocating 264 bytes
-[   67.457775] DOUG: Allocating 264 bytes
-[   67.461637] DOUG: Allocating 4 bytes
-[   67.465323] DOUG: Allocating 279584 bytes
-[   67.469501] DOUG: Allocating 8768 bytes
-[   67.473463] DOUG: Allocating 65552 bytes
-[   67.477511] DOUG: Allocating 64 bytes
-[   67.481283] DOUG: Allocating 16 bytes
-[   67.485056] DOUG: Allocating 8 bytes
-[   67.488735] DOUG: Allocating 8 bytes
-[   67.492428] DOUG: Allocating 528 bytes
-[   67.496298] DOUG: Allocating 16 bytes
-[   67.500072] DOUG: Allocating 264 bytes
-[   67.503932] DOUG: Allocating 264 bytes
-[   67.507803] DOUG: Allocating 4 bytes
-[   67.511484] DOUG: Allocating 279584 bytes
-[   67.515667] DOUG: Allocating 8768 bytes
-[   67.519624] DOUG: Allocating 65552 bytes
-[   67.523679] DOUG: Allocating 64 bytes
-[   67.527447] DOUG: Allocating 16 bytes
-[   67.531222] DOUG: Allocating 8 bytes
-[   67.534907] DOUG: Allocating 8 bytes
-[   67.538593] DOUG: Allocating 528 bytes
-[   67.542458] DOUG: Allocating 16 bytes
-[   67.546225] DOUG: Allocating 264 bytes
-[   67.550090] DOUG: Allocating 264 bytes
-[   67.553956] DOUG: Allocating 4 bytes
-[   67.557634] DOUG: Allocating 279584 bytes
-[   67.561818] DOUG: Allocating 8768 bytes
-[   67.565775] DOUG: Allocating 65552 bytes
-[   67.569823] DOUG: Allocating 64 bytes
-[   67.573602] DOUG: Allocating 16 bytes
-[   67.577380] DOUG: Allocating 8 bytes
-[   67.581060] DOUG: Allocating 8 bytes
-[   67.584748] DOUG: Allocating 528 bytes
-[   67.588607] DOUG: Allocating 16 bytes
-[   67.592384] DOUG: Allocating 264 bytes
-[   67.596240] DOUG: Allocating 264 bytes
-[   67.600105] DOUG: Allocating 4 bytes
-[   67.603786] DOUG: Allocating 279584 bytes
-[   67.607968] DOUG: Allocating 8768 bytes
-[   67.611927] DOUG: Allocating 65552 bytes
-[   67.615979] DOUG: Allocating 64 bytes
-[   67.619757] DOUG: Allocating 16 bytes
-[   67.623529] DOUG: Allocating 8 bytes
-[   67.627216] DOUG: Allocating 8 bytes
+ tools/testing/selftests/kvm/Makefile          |   2 +
+ .../kvm/aarch64/pmu_event_filter_test.c       | 255 ++++++++++++++++++
+ .../kvm/aarch64/vpmu_counter_access.c         | 217 ++-------------
+ .../selftests/kvm/include/aarch64/vpmu.h      | 134 +++++++++
+ .../testing/selftests/kvm/lib/aarch64/vpmu.c  |  74 +++++
+ 5 files changed, 489 insertions(+), 193 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+ create mode 100644 tools/testing/selftests/kvm/include/aarch64/vpmu.h
+ create mode 100644 tools/testing/selftests/kvm/lib/aarch64/vpmu.c
 
-The above printouts were taken on a sc7180-trogdor-lazor device
-running mainline (roughly "Linux localhost 6.8.0-rc2") booted w/
-ChromeOS userspace.
 
-If you need me to dig more into how coredumps work then I can see if I
-can track down exactly what part of the coredump is causing it to need
-the big allocation. "chrome" is a bit of a beast of an application,
-though. I'd also note that chrome makes extensive use of address space
-randomization which uses up huge amounts of virtual address space, so
-a shot in the dark is that maybe that has something to do with it?
-Looking at the virtual address space of Chrome in "top" shows stuff
-like:
+base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
+-- 
+2.40.1
 
-  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+
-COMMAND
- 2012 chronos   12  -8   32.7g 230520 160504 S   1.0   2.9   0:12.49
-chrome
- 6044 chronos   12  -8   32.5g  95204  61888 S   1.0   1.2   0:05.90
-chrome
- 2191 chronos   12  -8  107.0g  72200  51264 S   0.0   0.9   0:00.08
-chrome
-
--Doug
 
