@@ -1,152 +1,202 @@
-Return-Path: <linux-kernel+bounces-50616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72CB7847BA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:37:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0226847BB6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:38:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 278B61F235A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:37:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BC54B24E8F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:38:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 892298529C;
-	Fri,  2 Feb 2024 21:36:56 +0000 (UTC)
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5998483A03;
+	Fri,  2 Feb 2024 21:38:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="J9HscVfo"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DBF47CF3F;
-	Fri,  2 Feb 2024 21:36:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA3B839E5;
+	Fri,  2 Feb 2024 21:38:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706909816; cv=none; b=iOlnJYuX9V/jRDbKpSQDlbVknX2qnA/n2OzoZZLRckPGt0ePLAxcm08ZRPHLoRAL6Q7SXsLjtRU0LxQ8qJ5oAenDm9YQ+bgHQC/Hs11vlFzIPJOw2SvUxXqhPpKjiTlEGPud0HYUc4R6QlZP2f6KdXtd2WdPh5gxUhhH+/UOWQg=
+	t=1706909909; cv=none; b=oby+88b7QC4TUPwqNhbochdRlvrRTGQ8OWkL2WgTfSYsQPSdv5cdtL/r+kS0KKZIzYAQbUaNk1b7DFsXHzmdtYrwVfgRJZPdcFjCV9hGSvNljcwSrKDnb1ldWVZyCfPY83hxvKcW2RRzuOfOEoFO44D7ZPyvEbfTSzwZNPCdSoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706909816; c=relaxed/simple;
-	bh=wcRhIvGHA+J82UxiABTG/8xiyiXgUs/xHOEBcQ1zOC0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pU7b5aZECH06uXXbwJcfh5VvXTq2cAcgpm5S1HUcU9d2zjJ7v5nt2x6qSYO+59fbje7TELorpUm6Nel9nUmz55iiH5zdFINl0WztmhLXE/LbYcAznnS/FIWW+S56jGgsO4cluuNG6hhX0rxc7FqSs1M/lCALmTrdFAOt6H10RdY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.96.2)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1rW1DG-0003VB-38;
-	Fri, 02 Feb 2024 21:36:43 +0000
-Date: Fri, 2 Feb 2024 21:36:39 +0000
-From: Daniel Golle <daniel@makrotopia.org>
-To: Rob Herring <robh@kernel.org>
-Cc: Bc-bocun Chen <bc-bocun.chen@mediatek.com>,
-	Steven Liu <steven.liu@mediatek.com>,
-	John Crispin <john@phrozen.org>,
-	Chunfeng Yun <chunfeng.yun@mediatek.com>,
-	Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Qingfang Deng <dqfext@gmail.com>,
-	SkyLake Huang <SkyLake.Huang@mediatek.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: phy: mediatek,xfi-tphy: add new bindings
-Message-ID: <Zb1gZ7BjJlGCw13Z@makrotopia.org>
-References: <702afb0c1246d95c90b22e57105304028bdd3083.1706823233.git.daniel@makrotopia.org>
- <20240202212420.GA1561174-robh@kernel.org>
+	s=arc-20240116; t=1706909909; c=relaxed/simple;
+	bh=lqCpQsXVTy+dSJVBp3WfGbAzEvkjwDZvUChqW8CkS9k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=MvzDNUWHqO4ER+kl2uFqiMuydOkhNhxu+b18XDRUwaV2y5OeJOU7Yi6ofzbOSxtXxDco4PIL3dy4NlbHBB9d8zksyTu4eqN9gJMN3KMC7kueL5++IPYOcWoAnQcjNF8B0UywDp2qYU8vXNQxxIQtZpdewjJwHH4TAKuXFTAMKIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=J9HscVfo; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 412Jwwg1021603;
+	Fri, 2 Feb 2024 21:38:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=ldFHZ0O8cBXpgd6zgNxpsJBeusJDBKoGQUskWZPAlbg=; b=J9
+	HscVfoeIg7tDcfDd1V6Fz5rZdddFJw9+bk6G9r/8sa7pNOJP/F5LycM438m9M8uw
+	KGHyvRBQPkSehsSFES02OU5tkcASAef8EMBhHBzlxKS8IKWh5IZ6y7Sp+bp5XDHi
+	rBthvJ6TCr85XjViA9C+F/FcvRslEANPzJCovSgtj39SXRMDaxLvRJ/i0M+UQFez
+	l1hGB5reDm17+Lsm8dT10YxqJxeTuaP+HwG7H3skeDLpoUtbwNfk8dCjyzBrkjxt
+	xR+NhlcUhDDCwLMJOdt32If+DJSHIAJjFxRYgU5eiYT5xlVQv+zonIawUDynZt/W
+	MGSY8m9y1XbM4L6pl5/w==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0pu1tfwu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 21:38:00 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 412LbxU0028229
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 2 Feb 2024 21:37:59 GMT
+Received: from [10.110.44.7] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 2 Feb
+ 2024 13:37:58 -0800
+Message-ID: <073bcb5c-6718-4a64-8d14-281a589d2205@quicinc.com>
+Date: Fri, 2 Feb 2024 13:37:58 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240202212420.GA1561174-robh@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6/9] remoteproc: qcom_q6v5_wcss: Use devm_rproc_alloc()
+ helper
+Content-Language: en-US
+To: Andrew Davis <afd@ti.com>, Bjorn Andersson <andersson@kernel.org>,
+        Mathieu
+ Poirier <mathieu.poirier@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha
+ Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team
+	<kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team
+	<linux-imx@nxp.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Patrice
+ Chotard <patrice.chotard@foss.st.com>,
+        Maxime Coquelin
+	<mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC: <linux-remoteproc@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
+References: <20240123184632.725054-1-afd@ti.com>
+ <20240123184632.725054-6-afd@ti.com>
+ <256072b3-c1d0-4e11-9456-bbd50b84a310@quicinc.com>
+ <60d46d58-ad77-47e8-8ff6-bc05db7cf1be@ti.com>
+From: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
+In-Reply-To: <60d46d58-ad77-47e8-8ff6-bc05db7cf1be@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 34GYM_9AIe1L18E8Zn0iret852KAD9m2
+X-Proofpoint-ORIG-GUID: 34GYM_9AIe1L18E8Zn0iret852KAD9m2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-02_14,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ impostorscore=0 clxscore=1015 mlxlogscore=999 malwarescore=0
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 adultscore=0
+ spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402020159
 
-On Fri, Feb 02, 2024 at 03:24:20PM -0600, Rob Herring wrote:
-> On Thu, Feb 01, 2024 at 09:52:20PM +0000, Daniel Golle wrote:
-> > Add bindings for the MediaTek XFI T-PHY Ethernet SerDes PHY found in the
-> > MediaTek MT7988 SoC which can operate at various interfaces modes:
+On 2/2/2024 1:14 PM, Andrew Davis wrote:
+> On 2/2/24 2:51 PM, Unnathi Chalicheemala wrote:
+>>
+>>
+>> On 1/23/2024 10:46 AM, Andrew Davis wrote:
+>>> Use the device lifecycle managed allocation function. This helps prevent
+>>> mistakes like freeing out of order in cleanup functions and forgetting to
+>>> free on error paths.
+>>>
+>>> Signed-off-by: Andrew Davis <afd@ti.com>
+>>> ---
+>>>   drivers/remoteproc/qcom_q6v5_wcss.c | 24 +++++++++---------------
+>>>   1 file changed, 9 insertions(+), 15 deletions(-)
+>>>
+>>> diff --git a/drivers/remoteproc/qcom_q6v5_wcss.c b/drivers/remoteproc/qcom_q6v5_wcss.c
+>>> index cff1fa07d1def..94f68c919ee62 100644
+>>> --- a/drivers/remoteproc/qcom_q6v5_wcss.c
+>>> +++ b/drivers/remoteproc/qcom_q6v5_wcss.c
+>>> @@ -1011,8 +1011,8 @@ static int q6v5_wcss_probe(struct platform_device *pdev)
+>>>       if (!desc)
+>>>           return -EINVAL;
+>>>   -    rproc = rproc_alloc(&pdev->dev, pdev->name, desc->ops,
+>>> -                desc->firmware_name, sizeof(*wcss));
+>>> +    rproc = devm_rproc_alloc(&pdev->dev, pdev->name, desc->ops,
+>>> +                 desc->firmware_name, sizeof(*wcss));
+>>>       if (!rproc) {
+>>>           dev_err(&pdev->dev, "failed to allocate rproc\n");
+>>>           return -ENOMEM;
+>>> @@ -1027,29 +1027,29 @@ static int q6v5_wcss_probe(struct platform_device *pdev)
+>>>         ret = q6v5_wcss_init_mmio(wcss, pdev);
+>>>       if (ret)
+>>> -        goto free_rproc;
+>>> +        return ret;
+>>>         ret = q6v5_alloc_memory_region(wcss);
+>>>       if (ret)
+>>> -        goto free_rproc;
+>>> +        return ret;
+>>>         if (wcss->version == WCSS_QCS404) {
+>>>           ret = q6v5_wcss_init_clock(wcss);
+>>>           if (ret)
+>>> -            goto free_rproc;
+>>> +            return ret;
+>>>             ret = q6v5_wcss_init_regulator(wcss);
+>>>           if (ret)
+>>> -            goto free_rproc;
+>>> +            return ret;
+>>>       }
+>>>         ret = q6v5_wcss_init_reset(wcss, desc);
+>>>       if (ret)
+>>> -        goto free_rproc;
+>>> +        return ret;
+>>>         ret = qcom_q6v5_init(&wcss->q6v5, pdev, rproc, desc->crash_reason_smem, NULL, NULL);
+>>>       if (ret)
+>>> -        goto free_rproc;
+>>> +        return ret;
+>>>         qcom_add_glink_subdev(rproc, &wcss->glink_subdev, "q6wcss");
+>>>       qcom_add_ssr_subdev(rproc, &wcss->ssr_subdev, "q6wcss");
+>>> @@ -1061,16 +1061,11 @@ static int q6v5_wcss_probe(struct platform_device *pdev)
+>>>         ret = rproc_add(rproc);
+>>>       if (ret)
+>>> -        goto free_rproc;
+>>> +        return ret;
+>>>         platform_set_drvdata(pdev, rproc);
+>>>         return 0;
+>>> -
+>>> -free_rproc:
+>>> -    rproc_free(rproc);
+>>> -
+>>> -    return ret;
+>>
+>> This return statement should stay, right?
+>>
 > 
-> This is v4 unless I'm confused[1]. Where's the revision history?
+> No path goes to "free_rproc" anymore, so we always do the "return 0;"
+> above on non-error paths.
+> 
+> Andrew
+> 
 
-It's a new series only covering the XFI T-PHY driver.
-However, I should have written a cover letter referencing the previous
-series to netdev. Sorry for that and thank you for pointing it out.
 
-> 
-> Rob
-> 
-> [1] https://lore.kernel.org/all/b875f693f6d4367a610a12ef324584f3bf3a1c1c.1702352117.git.daniel@makrotopia.org/
-> 
-> > 
-> > via USXGMII PCS:
-> >  * USXGMII
-> >  * 10GBase-R
-> >  * 5GBase-R
-> > 
-> > via LynxI SGMII PCS:
-> >  * 2500Base-X
-> >  * 1000Base-X
-> >  * Cisco SGMII (MAC side)
-> > 
-> > Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> > ---
-> >  .../bindings/phy/mediatek,xfi-tphy.yaml       | 80 +++++++++++++++++++
-> >  1 file changed, 80 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/phy/mediatek,xfi-tphy.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/phy/mediatek,xfi-tphy.yaml b/Documentation/devicetree/bindings/phy/mediatek,xfi-tphy.yaml
-> > new file mode 100644
-> > index 0000000000000..e897118dcf7e6
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/phy/mediatek,xfi-tphy.yaml
-> > @@ -0,0 +1,80 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/phy/mediatek,xfi-tphy.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: MediaTek XFI T-PHY
-> > +
-> > +maintainers:
-> > +  - Daniel Golle <daniel@makrotopia.org>
-> > +
-> > +description:
-> > +  The MediaTek XFI SerDes T-PHY provides the physical SerDes lanes
-> > +  used by the (10G/5G) USXGMII PCS and (1G/2.5G) LynxI PCS found in
-> > +  MediaTek's 10G-capabale SoCs.
-> > +
-> > +properties:
-> > +  $nodename:
-> > +    pattern: "^phy@[0-9a-f]+$"
-> > +
-> > +  compatible:
-> > +    const: mediatek,mt7988-xfi-tphy
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    items:
-> > +      - description: XFI PHY clock
-> > +      - description: XFI register clock
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: xfipll
-> > +      - const: topxtal
-> > +
-> > +  resets:
-> > +    items:
-> > +      - description: PEXTP reset
-> 
-> What is PEXTP?
-> 
+You're right, thanks all QCOM peripheral patches LGTM.
+
+>>>   }
+>>>     static void q6v5_wcss_remove(struct platform_device *pdev)
+>>> @@ -1080,7 +1075,6 @@ static void q6v5_wcss_remove(struct platform_device *pdev)
+>>>         qcom_q6v5_deinit(&wcss->q6v5);
+>>>       rproc_del(rproc);
+>>> -    rproc_free(rproc);
+>>>   }
+>>>     static const struct wcss_data wcss_ipq8074_res_init = {
 
