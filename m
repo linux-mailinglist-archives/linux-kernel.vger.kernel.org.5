@@ -1,335 +1,410 @@
-Return-Path: <linux-kernel+bounces-49473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49474-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1EC5846AC4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:34:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17C6A846AC7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:34:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 894C928A656
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:34:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68D9AB22354
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:34:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90470182B3;
-	Fri,  2 Feb 2024 08:33:58 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8282D182BE;
-	Fri,  2 Feb 2024 08:33:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDDDD182CF;
+	Fri,  2 Feb 2024 08:34:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VST3IWA3"
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C937B18625
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 08:34:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706862838; cv=none; b=US64pWeKM0u4Y6LdvYBw+Y1GjjNYtGCQvn7KxA4eT6Ac4sKSpu8aoA10t2xgpPa0q6V0G65nl1laILDmx+pVj6Vhi3olUeqAzCOdqlP30YpSz7O6BwUGadEhFw0s1HCl4dzCoxMMbAlTXGjgnnPXlQVPD1fbp+6mDgNSDdV7juA=
+	t=1706862858; cv=none; b=M46i9WB08Wn7gBJ0Es8kwLC/ECojATVc/rHp9nvmmoJJp0k4tSkzSWHNqH8O1Przd9vwhoxkDYnCvLJqc05u9fWFQYoZWcsAOCrGyB4W7IzD4fDFcUIBOVGbGk2ZyRqAhJkhLDK+D/RrKV7eATVGZN30EPEWRZBiA+DS188iQNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706862838; c=relaxed/simple;
-	bh=72FVsJAWi+qWl0gmnOlAP2lrOTNvG7aAybhPev5uBKc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oNC15LZ6sQmz3qbHRaI8gshEoJ4UKxmNiGqOVUT/1uL1Q+9WBF0/APvDMShsqygj6ZeljqFek2N2vbNp1o/A6YVVmwwJHhzaf/K4dAkq0S3CenbNIQi19UB7X2r27JgOvzCJV9Lp001kfxKfuwKcLMP1c1ZQWWhCTjAiPgcRfWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 17A18DA7;
-	Fri,  2 Feb 2024 00:34:32 -0800 (PST)
-Received: from e132833.arm.com (unknown [10.57.7.95])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 443423F5A1;
-	Fri,  2 Feb 2024 00:33:46 -0800 (PST)
-From: Metin Kaya <metin.kaya@arm.com>
-To: linux-kernel@vger.kernel.org
-Cc: John Stultz <jstultz@google.com>,
-	Joel Fernandes <joelaf@google.com>,
-	Qais Yousef <qyousef@google.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Ben Segall <bsegall@google.com>,
-	Zimuzo Ezeozue <zezeozue@google.com>,
-	Youssef Esmat <youssefesmat@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Xuewen Yan <xuewen.yan94@gmail.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	kernel-team@android.com,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH] sched: Add trace events for Proxy Execution (PE)
-Date: Fri,  2 Feb 2024 08:33:38 +0000
-Message-Id: <20240202083338.1328060-1-metin.kaya@arm.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706862858; c=relaxed/simple;
+	bh=UG/Eg2KNFEypP8SbxOTMPXJKuFQl4CYNnNyoaMhrLP0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mWVrkgQkqAzqPdXWbrsrFW/xGwO6mNN+bw4/8bQiEXoBukpehNiuvGMDr9kjSWTjFymuChVkJQDFr2O1SFJqh684aum2+oBIOTj8nzqBzhtm2PyNX+/gJ220y/d9tcw1oZomkwpt60oFL59/Ztk8nVRTKQ9wHhY4OJRH2v6u8gk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VST3IWA3; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Fri, 2 Feb 2024 08:34:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706862853;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=u/kyJRNE++srYfi1Xk96zVfKuuYgRgfbW3SWtrqXmKA=;
+	b=VST3IWA3E/x9VszHqTKNa7OFua4Qq6KbI2kgO6Sn4mu7PDugFyCKpKsSU7weu/rSwcjcKp
+	AJ4im9obGLkt7SQfqNuFx6EJw/IBwkDncDQxeZDvA6r5SX3jWcl7zlPSgg/DCG4yesQW0t
+	0HkTey1MpWqLutQyzgHU2h8Z2kIlGQo=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Oliver Upton <oliver.upton@linux.dev>
+To: Shaoqin Huang <shahuang@redhat.com>
+Cc: Marc Zyngier <maz@kernel.org>, kvmarm@lists.linux.dev,
+	Eric Auger <eauger@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>,
+	Shuah Khan <shuah@kernel.org>, James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>, linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 4/5] KVM: selftests: aarch64: Introduce
+ pmu_event_filter_test
+Message-ID: <ZbypAAFEHweTDUJK@linux.dev>
+References: <20240202025659.5065-1-shahuang@redhat.com>
+ <20240202025659.5065-5-shahuang@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240202025659.5065-5-shahuang@redhat.com>
+X-Migadu-Flow: FLOW_OUT
 
-Add sched_[start, finish]_task_selection trace events to measure the
-latency of PE patches in task selection.
+On Thu, Feb 01, 2024 at 09:56:53PM -0500, Shaoqin Huang wrote:
+> Introduce pmu_event_filter_test for arm64 platforms. The test configures
+> PMUv3 for a vCPU, and sets different pmu event filters for the vCPU, and
+> check if the guest can see those events which user allow and can't use
+> those events which use deny.
+> 
+> This test refactor the create_vpmu_vm() and make it a wrapper for
+> __create_vpmu_vm(), which allows some extra init code before
+> KVM_ARM_VCPU_PMU_V3_INIT.
+> 
+> And this test use the KVM_ARM_VCPU_PMU_V3_FILTER attribute to set the
+> pmu event filter in KVM. And choose to filter two common event
+> branches_retired and instructions_retired, and let the guest to check if
+> it see the right pmceid register.
+> 
+> Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
+> ---
+>  tools/testing/selftests/kvm/Makefile          |   1 +
+>  .../kvm/aarch64/pmu_event_filter_test.c       | 219 ++++++++++++++++++
+>  .../selftests/kvm/include/aarch64/vpmu.h      |   4 +
+>  .../testing/selftests/kvm/lib/aarch64/vpmu.c  |  14 +-
+>  4 files changed, 236 insertions(+), 2 deletions(-)
+>  create mode 100644 tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+> 
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index 709a70b31ca2..733ec86a3385 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -148,6 +148,7 @@ TEST_GEN_PROGS_aarch64 += aarch64/arch_timer
+>  TEST_GEN_PROGS_aarch64 += aarch64/debug-exceptions
+>  TEST_GEN_PROGS_aarch64 += aarch64/hypercalls
+>  TEST_GEN_PROGS_aarch64 += aarch64/page_fault_test
+> +TEST_GEN_PROGS_aarch64 += aarch64/pmu_event_filter_test
+>  TEST_GEN_PROGS_aarch64 += aarch64/psci_test
+>  TEST_GEN_PROGS_aarch64 += aarch64/set_id_regs
+>  TEST_GEN_PROGS_aarch64 += aarch64/smccc_filter
+> diff --git a/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+> new file mode 100644
+> index 000000000000..d280382f362f
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+> @@ -0,0 +1,219 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * pmu_event_filter_test - Test user limit pmu event for guest.
+> + *
+> + * Copyright (c) 2023 Red Hat, Inc.
+> + *
+> + * This test checks if the guest only see the limited pmu event that userspace
+> + * sets, if the guest can use those events which user allow, and if the guest
+> + * can't use those events which user deny.
+> + * This test runs only when KVM_CAP_ARM_PMU_V3, KVM_ARM_VCPU_PMU_V3_FILTER
+> + * is supported on the host.
+> + */
+> +#include <kvm_util.h>
+> +#include <processor.h>
+> +#include <vgic.h>
+> +#include <vpmu.h>
+> +#include <test_util.h>
+> +#include <perf/arm_pmuv3.h>
+> +
+> +struct pmce{
 
-Moreover, introduce trace events for interesting events in PE:
-1. sched_pe_enqueue_sleeping_task: a task gets enqueued on wait queue of
-   a sleeping task (mutex owner).
-2. sched_pe_cross_remote_cpu: dependency chain crosses remote CPU.
-3. sched_pe_task_is_migrating: mutex owner task migrates.
+Missing whitespace before curly brace.
 
-New trace events can be tested via this command:
-$ perf trace \
-  -e sched:sched_start_task_selection \
-  -e sched:sched_finish_task_selection \
-  -e sched:sched_pe_enqueue_sleeping_task \
-  -e sched:sched_pe_cross_remote_cpu \
-  -e sched:sched_pe_task_is_migrating
+Also -- pmce is an odd name. Maybe common_event_ids or pmu_id_regs.
 
-Notes:
-1. These trace events are not intended to merge upstream. Instead, they
-   are only for making PE tests easier and will be converted to trace
-   points once PE patches hit upstream.
-2. This patch is based on John's Proxy Execution v7 patch series (see
-   the link below) which is also available at
-   https://github.com/johnstultz-work/linux-dev/commits/proxy-exec-v7-6.7-rc6/.
+> +	uint64_t pmceid0;
+> +	uint64_t pmceid1;
+> +} supported_pmce, guest_pmce;
 
-Link: https://lore.kernel.org/linux-kernel/CANDhNCrHd+5twWVNqBAhVLfhMhkiO0KjxXBmwVgaCD4kAyFyWw@mail.gmail.com/
+maybe "max_*" and "expected_*". It took me a bit to understand that
+guest_pmce feeds in your expected PMCEID values.
 
-Signed-off-by: Metin Kaya <metin.kaya@arm.com>
-CC: John Stultz <jstultz@google.com>
-CC: Joel Fernandes <joelaf@google.com>
-CC: Qais Yousef <qyousef@google.com>
-CC: Ingo Molnar <mingo@redhat.com>
-CC: Peter Zijlstra <peterz@infradead.org>
-CC: Juri Lelli <juri.lelli@redhat.com>
-CC: Vincent Guittot <vincent.guittot@linaro.org>
-CC: Dietmar Eggemann <dietmar.eggemann@arm.com>
-CC: Valentin Schneider <vschneid@redhat.com>
-CC: Steven Rostedt <rostedt@goodmis.org>
-CC: Masami Hiramatsu <mhiramat@kernel.org>
-CC: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-CC: Ben Segall <bsegall@google.com>
-CC: Zimuzo Ezeozue <zezeozue@google.com>
-CC: Youssef Esmat <youssefesmat@google.com>
-CC: Mel Gorman <mgorman@suse.de>
-CC: Daniel Bristot de Oliveira <bristot@redhat.com>
-CC: Will Deacon <will@kernel.org>
-CC: Waiman Long <longman@redhat.com>
-CC: Boqun Feng <boqun.feng@gmail.com>
-CC: "Paul E. McKenney" <paulmck@kernel.org>
-CC: Xuewen Yan <xuewen.yan94@gmail.com>
-CC: K Prateek Nayak <kprateek.nayak@amd.com>
-CC: Thomas Gleixner <tglx@linutronix.de>
-CC: kernel-team@android.com
-CC: linux-trace-kernel@vger.kernel.org
----
- include/trace/events/sched.h | 138 +++++++++++++++++++++++++++++++++++
- kernel/sched/core.c          |  11 +++
- 2 files changed, 149 insertions(+)
+> +static struct vpmu_vm *vpmu_vm;
+> +
+> +#define FILTER_NR 10
+> +
+> +struct test_desc {
+> +	const char *name;
+> +	struct kvm_pmu_event_filter filter[FILTER_NR];
+> +};
+> +
+> +#define __DEFINE_FILTER(base, num, act)		\
+> +	((struct kvm_pmu_event_filter) {	\
+> +		.base_event	= base,		\
+> +		.nevents	= num,		\
+> +		.action		= act,		\
+> +	})
+> +
+> +#define DEFINE_FILTER(base, act) __DEFINE_FILTER(base, 1, act)
+> +
+> +#define EMPTY_FILTER	{ 0 }
+> +
+> +#define SW_INCR		0x0
+> +#define INST_RETIRED	0x8
+> +#define BR_RETIRED	0x21
 
-diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
-index 6188ad0d9e0d..2b08509f3088 100644
---- a/include/trace/events/sched.h
-+++ b/include/trace/events/sched.h
-@@ -737,6 +737,144 @@ TRACE_EVENT(sched_wake_idle_without_ipi,
- 	TP_printk("cpu=%d", __entry->cpu)
- );
- 
-+#ifdef CONFIG_SCHED_PROXY_EXEC
-+/**
-+ * sched_pe_enqueue_sleeping_task - called when a task is enqueued on wait
-+ *				    queue of a sleeping task (mutex owner).
-+ * @mutex_owner: pointer to struct task_struct
-+ * @blocked:     pointer to struct task_struct
-+ */
-+TRACE_EVENT(sched_pe_enqueue_sleeping_task,
-+
-+	TP_PROTO(struct task_struct *mutex_owner, struct task_struct *blocked),
-+
-+	TP_ARGS(mutex_owner, blocked),
-+
-+	TP_STRUCT__entry(
-+		__array(char,	owner_comm,	TASK_COMM_LEN	)
-+		__field(pid_t,	owner_pid			)
-+		__field(int,	owner_prio			)
-+		__field(int,	owner_cpu			)
-+		__array(char,	blocked_comm,	TASK_COMM_LEN	)
-+		__field(pid_t,	blocked_pid			)
-+		__field(int,	blocked_prio			)
-+		__field(int,	blocked_cpu			)
-+	),
-+
-+	TP_fast_assign(
-+		strscpy(__entry->owner_comm, mutex_owner->comm, TASK_COMM_LEN);
-+		__entry->owner_pid	= mutex_owner->pid;
-+		__entry->owner_prio	= mutex_owner->prio; /* XXX SCHED_DEADLINE */
-+		__entry->owner_cpu	= task_cpu(mutex_owner);
-+
-+		strscpy(__entry->blocked_comm, blocked->comm, TASK_COMM_LEN);
-+		__entry->blocked_pid	= blocked->pid;
-+		__entry->blocked_prio	= blocked->prio; /* XXX SCHED_DEADLINE */
-+		__entry->blocked_cpu	= task_cpu(blocked);
-+	),
-+
-+	TP_printk("task=%s pid=%d prio=%d cpu=%d blocked_on owner_task=%s owner_pid=%d owner_prio=%d owner_cpu=%d",
-+		  __entry->blocked_comm, __entry->blocked_pid,
-+		  __entry->blocked_prio, __entry->blocked_cpu,
-+		  __entry->owner_comm, __entry->owner_pid,
-+		  __entry->owner_prio, __entry->owner_cpu)
-+);
-+
-+/**
-+ * sched_pe_cross_remote_cpu - called when dependency chain crosses remote CPU
-+ * @p: pointer to struct task_struct
-+ */
-+TRACE_EVENT(sched_pe_cross_remote_cpu,
-+
-+	TP_PROTO(struct task_struct *p),
-+
-+	TP_ARGS(p),
-+
-+	TP_STRUCT__entry(
-+		__array(char,	comm,	TASK_COMM_LEN	)
-+		__field(pid_t,	pid			)
-+		__field(int,	prio			)
-+		__field(int,	cpu			)
-+	),
-+
-+	TP_fast_assign(
-+		strscpy(__entry->comm, p->comm, TASK_COMM_LEN);
-+		__entry->pid	= p->pid;
-+		__entry->prio	= p->prio; /* XXX SCHED_DEADLINE */
-+		__entry->cpu	= task_cpu(p);
-+	),
-+
-+	TP_printk("comm=%s pid=%d prio=%d cpu=%d",
-+		  __entry->comm, __entry->pid, __entry->prio, __entry->cpu)
-+);
-+
-+/**
-+ * sched_pe_task_is_migrating - called when mutex owner is in migrating state
-+ * @p: pointer to struct task_struct
-+ */
-+TRACE_EVENT(sched_pe_task_is_migrating,
-+
-+	TP_PROTO(struct task_struct *p),
-+
-+	TP_ARGS(p),
-+
-+	TP_STRUCT__entry(
-+		__array(char,	comm,	TASK_COMM_LEN	)
-+		__field(pid_t,	pid			)
-+		__field(int,	prio			)
-+	),
-+
-+	TP_fast_assign(
-+		strscpy(__entry->comm, p->comm, TASK_COMM_LEN);
-+		__entry->pid		= p->pid;
-+		__entry->prio		= p->prio; /* XXX SCHED_DEADLINE */
-+	),
-+
-+	TP_printk("comm=%s pid=%d prio=%d",
-+		  __entry->comm, __entry->pid, __entry->prio)
-+);
-+#endif /* CONFIG_SCHED_PROXY_EXEC */
-+
-+DECLARE_EVENT_CLASS(sched_task_selection_template,
-+
-+	TP_PROTO(int cpu),
-+
-+	TP_ARGS(cpu),
-+
-+	TP_STRUCT__entry(
-+		__field(int,	cpu)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->cpu	= cpu;
-+	),
-+
-+	TP_printk("cpu=%d",
-+		  __entry->cpu)
-+);
-+
-+/**
-+ * sched_start_task_selection - called before selecting next task in
-+ *				__schedule()
-+ * @cpu: The CPU which will run task selection operation.
-+ */
-+DEFINE_EVENT(sched_task_selection_template, sched_start_task_selection,
-+
-+	TP_PROTO(int cpu),
-+
-+	TP_ARGS(cpu));
-+
-+/**
-+ * sched_finish_task_selection - called after selecting next task in
-+ *				 __schedule()
-+ * @cpu: The CPU which ran task selection operation.
-+ */
-+DEFINE_EVENT(sched_task_selection_template, sched_finish_task_selection,
-+
-+	TP_PROTO(int cpu),
-+
-+	TP_ARGS(cpu));
-+
- /*
-  * Following tracepoints are not exported in tracefs and provide hooking
-  * mechanisms only for testing and debugging purposes.
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 30dfb6f14f2b..866809e52971 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7006,6 +7006,9 @@ static void proxy_enqueue_on_owner(struct rq *rq, struct task_struct *owner,
- 	 */
- 	if (!owner->on_rq) {
- 		BUG_ON(!next->on_rq);
-+
-+		trace_sched_pe_enqueue_sleeping_task(owner, next);
-+
- 		deactivate_task(rq, next, DEQUEUE_SLEEP);
- 		if (task_current_selected(rq, next)) {
- 			put_prev_task(rq, next);
-@@ -7100,6 +7103,9 @@ find_proxy_task(struct rq *rq, struct task_struct *next, struct rq_flags *rf)
- 
- 		if (task_cpu(owner) != cur_cpu) {
- 			target_cpu = task_cpu(owner);
-+
-+			trace_sched_pe_cross_remote_cpu(owner);
-+
- 			/*
- 			 * @owner can disappear, simply migrate to @target_cpu and leave that CPU
- 			 * to sort things out.
-@@ -7113,6 +7119,8 @@ find_proxy_task(struct rq *rq, struct task_struct *next, struct rq_flags *rf)
- 		}
- 
- 		if (task_on_rq_migrating(owner)) {
-+			trace_sched_pe_task_is_migrating(owner);
-+
- 			/*
- 			 * One of the chain of mutex owners is currently migrating to this
- 			 * CPU, but has not yet been enqueued because we are holding the
-@@ -7335,6 +7343,8 @@ static void __sched notrace __schedule(unsigned int sched_mode)
- 	}
- 
- 	prev_not_proxied = !prev->blocked_donor;
-+
-+	trace_sched_start_task_selection(cpu);
- pick_again:
- 	next = pick_next_task(rq, rq_selected(rq), &rf);
- 	rq_set_selected(rq, next);
-@@ -7350,6 +7360,7 @@ static void __sched notrace __schedule(unsigned int sched_mode)
- 		if (next == rq->idle && prev == rq->idle)
- 			preserve_need_resched = true;
- 	}
-+	trace_sched_finish_task_selection(cpu);
- 
- 	if (!preserve_need_resched)
- 		clear_tsk_need_resched(prev);
+These event numbers are already defined in tools/include/perf/arm_pmuv3.h,
+use those instead.
+
+> +static void guest_code(void)
+> +{
+> +	uint64_t pmceid0 = read_sysreg(pmceid0_el0);
+> +	uint64_t pmceid1 = read_sysreg(pmceid1_el0);
+> +
+> +	GUEST_ASSERT_EQ(guest_pmce.pmceid0, pmceid0);
+> +	GUEST_ASSERT_EQ(guest_pmce.pmceid1, pmceid1);
+> +
+> +	GUEST_DONE();
+> +}
+> +
+> +static void guest_get_pmceid(void)
+> +{
+> +	supported_pmce.pmceid0 = read_sysreg(pmceid0_el0);
+> +	supported_pmce.pmceid1 = read_sysreg(pmceid1_el0);
+> +
+> +	GUEST_DONE();
+> +}
+> +
+> +static void pmu_event_filter_init(struct vpmu_vm *vm, void *arg)
+
+Why are you obfuscating the pointer to the filter array?
+
+> +{
+> +	struct kvm_device_attr attr = {
+> +		.group	= KVM_ARM_VCPU_PMU_V3_CTRL,
+> +		.attr	= KVM_ARM_VCPU_PMU_V3_FILTER,
+> +	};
+> +	struct kvm_pmu_event_filter *filter = (struct kvm_pmu_event_filter *)arg;
+> +
+> +	while (filter && filter->nevents != 0) {
+> +		attr.addr = (uint64_t)filter;
+> +		vcpu_ioctl(vm->vcpu, KVM_SET_DEVICE_ATTR, &attr);
+
+Again, kvm_device_attr_set() the right helper to use.
+
+> +static void set_pmce(struct pmce *pmce, int action, int event)
+> +{
+> +	int base = 0;
+> +	uint64_t *pmceid = NULL;
+> +
+> +	if (event >= 0x4000) {
+> +		event -= 0x4000;
+> +		base = 32;
+> +	}
+> +
+> +	if (event >= 0 && event <= 0x1F) {
+> +		pmceid = &pmce->pmceid0;
+> +	} else if (event >= 0x20 && event <= 0x3F) {
+> +		event -= 0x20;
+> +		pmceid = &pmce->pmceid1;
+> +	} else {
+> +		return;
+> +	}
+> +
+> +	event += base;
+> +	if (action == KVM_PMU_EVENT_ALLOW)
+> +		*pmceid |= BIT(event);
+> +	else
+> +		*pmceid &= ~BIT(event);
+> +}
+> +
+> +static void prepare_guest_pmce(struct kvm_pmu_event_filter *filter)
+> +{
+> +	struct pmce pmce_mask = { ~0, ~0 };
+> +	bool first_filter = true;
+> +
+> +	while (filter && filter->nevents != 0) {
+> +		if (first_filter) {
+> +			if (filter->action == KVM_PMU_EVENT_ALLOW)
+> +				memset(&pmce_mask, 0, sizeof(pmce_mask));
+> +			first_filter = false;
+> +		}
+> +
+> +		set_pmce(&pmce_mask, filter->action, filter->base_event);
+> +		filter++;
+> +	}
+> +
+> +	guest_pmce.pmceid0 = supported_pmce.pmceid0 & pmce_mask.pmceid0;
+> +	guest_pmce.pmceid1 = supported_pmce.pmceid1 & pmce_mask.pmceid1;
+> +}
+
+Why do you need to do this? Can't you tell the guests what events to
+expect and have it make sense of the PMCEID values it sees?
+
+You could, for example, pass in a pointer to the test descriptor as an
+argument.
+
+> +static void run_test(struct test_desc *t)
+> +{
+> +	pr_debug("Test: %s\n", t->name);
+
+You may as well just pr_info() this thing.
+
+> +	create_vpmu_vm_with_filter(guest_code, t->filter);
+> +	prepare_guest_pmce(t->filter);
+> +	sync_global_to_guest(vpmu_vm->vm, guest_pmce);
+> +
+> +	run_vcpu(vpmu_vm->vcpu);
+> +
+> +	destroy_vpmu_vm(vpmu_vm);
+> +}
+> +
+> +static struct test_desc tests[] = {
+> +	{"without_filter", { EMPTY_FILTER }},
+> +	{"member_allow_filter",
+> +	 {DEFINE_FILTER(SW_INCR, 0), DEFINE_FILTER(INST_RETIRED, 0),
+> +	  DEFINE_FILTER(BR_RETIRED, 0), EMPTY_FILTER}},
+> +	{"member_deny_filter",
+> +	 {DEFINE_FILTER(SW_INCR, 1), DEFINE_FILTER(INST_RETIRED, 1),
+> +	  DEFINE_FILTER(BR_RETIRED, 1), EMPTY_FILTER}},
+> +	{"not_member_deny_filter",
+> +	 {DEFINE_FILTER(SW_INCR, 1), EMPTY_FILTER}},
+> +	{"not_member_allow_filter",
+> +	 {DEFINE_FILTER(SW_INCR, 0), EMPTY_FILTER}},
+
+Why is the filter array special enough to get its own sentinel macro
+but...
+
+> +	{ 0 }
+
+.. the test descriptor array is okay to use a 'raw' initialization. My
+vote is to drop the macro, zero-initializing a struct in an array is an
+extremely common pattern in the kernel.
+
+Also, these descriptors are dense and hard to read. Working with an
+example:
+
+	{
+		.name = "member_allow_filter",
+		.filter = {
+			DEFINE_FILTER(SW_INCR, 0),
+			DEFINE_FILTER(INST_RETIRED, 0),
+			DEFINE_FILTER(BR_RETIRED, 0),
+			{ 0 }
+		},
+	}
+
+See how much more readable that is?
+
+> +};
+> +
+> +static void for_each_test(void)
+> +{
+> +	struct test_desc *t;
+> +
+> +	for (t = &tests[0]; t->name; t++)
+> +		run_test(t);
+> +}
+
+for_each_test() sounds like an iterator, but this is not. Call it
+run_tests()
+
+> +static bool kvm_supports_pmu_event_filter(void)
+> +{
+> +	int r;
+> +
+> +	vpmu_vm = create_vpmu_vm(guest_code);
+> +
+> +	r = __kvm_has_device_attr(vpmu_vm->vcpu->fd, KVM_ARM_VCPU_PMU_V3_CTRL,
+> +				  KVM_ARM_VCPU_PMU_V3_FILTER);
+> +
+> +	destroy_vpmu_vm(vpmu_vm);
+> +	return !r;
+> +}
+
+TBH, I don't really care much about the test probing for the event
+filter UAPI. It has been upstream for a while, and if folks are trying
+to run selftests at HEAD on an old kernel then that's their business.
+
+The other prerequisites make more sense since they actually check if HW
+features are present.
+
+> +static bool host_pmu_supports_events(void)
+> +{
+> +	vpmu_vm = create_vpmu_vm(guest_get_pmceid);
+> +
+> +	memset(&supported_pmce, 0, sizeof(supported_pmce));
+> +	sync_global_to_guest(vpmu_vm->vm, supported_pmce);
+> +	run_vcpu(vpmu_vm->vcpu);
+> +	sync_global_from_guest(vpmu_vm->vm, supported_pmce);
+> +	destroy_vpmu_vm(vpmu_vm);
+> +
+> +	return supported_pmce.pmceid0 & (BR_RETIRED | INST_RETIRED);
+> +}
+
+This helper says its probing the host PMU, but you're actually firing up a
+VM to do it.
+
+The events supported by a particular PMU instance are readily available
+in sysfs. Furthermore, you can tell KVM to select the exact host PMU
+instance you probe.
+
+> diff --git a/tools/testing/selftests/kvm/lib/aarch64/vpmu.c b/tools/testing/selftests/kvm/lib/aarch64/vpmu.c
+> index b3de8fdc555e..76ea03d607f1 100644
+> --- a/tools/testing/selftests/kvm/lib/aarch64/vpmu.c
+> +++ b/tools/testing/selftests/kvm/lib/aarch64/vpmu.c
+> @@ -7,8 +7,9 @@
+>  #include <vpmu.h>
+>  #include <perf/arm_pmuv3.h>
+>  
+> -/* Create a VM that has one vCPU with PMUv3 configured. */
+> -struct vpmu_vm *create_vpmu_vm(void *guest_code)
+> +struct vpmu_vm *__create_vpmu_vm(void *guest_code,
+> +				 void (*init_pmu)(struct vpmu_vm *vm, void *arg),
+> +				 void *arg)
+>  {
+>  	struct kvm_vcpu_init init;
+>  	uint8_t pmuver;
+> @@ -50,12 +51,21 @@ struct vpmu_vm *create_vpmu_vm(void *guest_code)
+>  		    "Unexpected PMUVER (0x%x) on the vCPU with PMUv3", pmuver);
+>  
+>  	/* Initialize vPMU */
+> +	if (init_pmu)
+> +		init_pmu(vpmu_vm, arg);
+> +
+>  	vcpu_ioctl(vpmu_vm->vcpu, KVM_SET_DEVICE_ATTR, &irq_attr);
+>  	vcpu_ioctl(vpmu_vm->vcpu, KVM_SET_DEVICE_ATTR, &init_attr);
+>  
+>  	return vpmu_vm;
+>  }
+>  
+> +/* Create a VM that has one vCPU with PMUv3 configured. */
+> +struct vpmu_vm *create_vpmu_vm(void *guest_code)
+> +{
+> +	return __create_vpmu_vm(guest_code, NULL, NULL);
+> +}
+> +
+
+Ok. This completely proves my point in the other patch. You already need
+to refactor this helper to cram in what you're trying to do. Think of
+ways to move the code that is actually common into libraries and leave
+the rest to the tests themselves.
+
+Some slight code duplication isn't the end of the world if it avoids
+churning libraries every time someone wants to add a widget.
+
 -- 
-2.34.1
-
+Thanks,
+Oliver
 
