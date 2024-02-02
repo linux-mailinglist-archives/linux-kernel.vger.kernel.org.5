@@ -1,191 +1,144 @@
-Return-Path: <linux-kernel+bounces-50290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BE3F847706
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:05:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BB3C84770D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:06:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C22AD1C26F17
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:05:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FBBB1F233D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:06:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEF0314C5B0;
-	Fri,  2 Feb 2024 18:05:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3929114C5B1;
+	Fri,  2 Feb 2024 18:06:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BZgcd9zP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="ObLXNAjP"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 134491474C5;
-	Fri,  2 Feb 2024 18:05:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE5014C583;
+	Fri,  2 Feb 2024 18:06:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706897118; cv=none; b=T4rw9m7mIPR+hgKmdhccmlSNqI5lhOCJmYIipWK6qUM436Askd/TzHvlnE5LHce73GLHHKa2ywDQqCA6ajjJfWW+phzGMAQvhDHD46HSxeeOSs0A7dGlRrKRDN7GFLvtBnskgktREG1Qv6YAnSvvkhmQIvl/jyqmkMDy9Vbledw=
+	t=1706897164; cv=none; b=hNeKMDcs8m0I5YvlWD3R/FZmIPcbVJ1U7intaFYXt8Q09RdgcDg5WnI0gviODlthEON8dHmOdTQ9R6toKnM06dduzT8tLo7+gsgu8LBevXgyvlon3Tb30faTHWbFXgCwjddm/UdmvQfIXn9fTIRH2FBa6YOpt+RWveKiqLW1rlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706897118; c=relaxed/simple;
-	bh=olo2S86ZYQ/eGQSOM1XFs9GP1TojuSirmzniy3SSRwI=;
+	s=arc-20240116; t=1706897164; c=relaxed/simple;
+	bh=0+zBy9BxMtmgrUapuuE00XzrLUjsL9pi4V6VkVRtgQc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RRDNJl31PFcuoYIubnecG810e7j/fba92yKDUijRNkyyLsvEN+Pp7obQvLy2j5UL8R9VO0tNbEK5a6QLb6E3eHkfGNY0junFz76q/gxfpw9gUNGVjRmqexlTBa/qfJmYCac5RcpUT7KNvkdo6EKtuQXZSA1c7MiOHS7Hg4GOK5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BZgcd9zP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D04C0C433F1;
-	Fri,  2 Feb 2024 18:05:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706897117;
-	bh=olo2S86ZYQ/eGQSOM1XFs9GP1TojuSirmzniy3SSRwI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BZgcd9zPA3O/QuDNLFlQ9JscwJzCtLhDmmPswtCc1dYYJHOSkyksL1ZzPuN3W0IAt
-	 x4OFrgQbC0KnEfSCY4lDfDby76KV0w+JEWSJMfyS1jt8n6ytRx81ZfdvhqR63vTanv
-	 JaS0looi220Et9Xf9Lot83//FNqb1RHIO/JfTpx1JckTXN24Nryl6C4t1C2acXKsne
-	 nCHepnmLgjrL2CyKsoX5pzbUL7NYxQC+m09quZGKLaQFhkLTr2puYGdtHgMTRqpk4t
-	 +zZiIEsRaNFvbOvSgXCKagvpkhbKzB0tceUOXOKZAB0G0b58iumOdpo7PW9yhpiGgX
-	 OTMhkSDbysRXQ==
-Date: Fri, 2 Feb 2024 10:05:17 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: hch@lst.de, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com,
-	martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	tytso@mit.edu, jbongio@google.com, ojaswin@linux.ibm.com
-Subject: Re: [PATCH 4/6] fs: xfs: Support atomic write for statx
-Message-ID: <20240202180517.GJ6184@frogsfrogsfrogs>
-References: <20240124142645.9334-1-john.g.garry@oracle.com>
- <20240124142645.9334-5-john.g.garry@oracle.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PXaG4UKtNVueO/ezoYbf9TniHFspnIhvoQInFK0mlQBtUkzMveXJnqoNFe8L9tl88KUMDyJNYvTh89a6VwzbRbqbUud4QVA1+0b1z/6ZbZL1snuPHwLFag0/TWMA/pBd7R8W0LQQvU9WrCylT0NK6ABRyrDsRxbNUyEjy4X5Qmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=ObLXNAjP; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=h2ATmObSzV4eeYzY6CoQyZq/5jRI5DOKZsLmwWQtw3M=; b=ObLXNAjPuveYNFk2FxXGhxn30h
+	0eMSF4JCx6nTaY5ps/qixLTdCG9nttzdB4vmXGfi1dhc0Lm+mlwVLIWjISDlCqhO22LkaLGM8bRh/
+	ZgYJoAqIqdCU+b140Zls+zIInP9AYeteqn0e438kukRymDf+y9BygXSO56Ns6K0YplJGZTdhFXtIC
+	BS/gtnnwuIyYzoiBscjrIpTLWBj2/+4QkfR240j+qXMWhfZQ70gc8xr6EOfY1JO9UwgV5e8J0pJSu
+	2qjd4ciq2AFp+ipZLyExm5XZlqn4LncSrUUE+8wnVh/el1JEDBepA1dxdRX4ycLyI1kQ/W8q0qDBu
+	MhuO8W/A==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:59614)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rVxv3-0006Kg-2u;
+	Fri, 02 Feb 2024 18:05:42 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rVxuy-0008VK-P4; Fri, 02 Feb 2024 18:05:36 +0000
+Date: Fri, 2 Feb 2024 18:05:36 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v3 1/7] net: dsa: mt7530: empty default case on
+ mt7530_setup_port5()
+Message-ID: <Zb0u8NY0q6ay17j5@shell.armlinux.org.uk>
+References: <20240202-for-netnext-mt7530-improvements-2-v3-0-63d5adae99ca@arinc9.com>
+ <20240202-for-netnext-mt7530-improvements-2-v3-1-63d5adae99ca@arinc9.com>
+ <ZbzUotyQm/FyKK7G@shell.armlinux.org.uk>
+ <e3b4add6-425c-46ca-9da5-8713055fc422@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240124142645.9334-5-john.g.garry@oracle.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e3b4add6-425c-46ca-9da5-8713055fc422@arinc9.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Wed, Jan 24, 2024 at 02:26:43PM +0000, John Garry wrote:
-> Support providing info on atomic write unit min and max for an inode.
+On Fri, Feb 02, 2024 at 08:44:39PM +0300, Arınç ÜNAL wrote:
+> On 2.02.2024 14:40, Russell King (Oracle) wrote:
+> > While reviewing this change, but not related to it, I notice that this
+> > function sets the TX delay based on the RGMII interface mode. This isn't
+> > correct. I've explained why this is this many times in the past, but
+> > essentially it comes down to the model:
+> > 
+> > 
+> > phy-mode in NIC node	Network driver	PCB		PHY
+> > rgmii			no delays	delays		no delays
+> > rgmii-id		no delays	no delays	tx/rx delays
+> > rgmii-txid		no delays	no delays	tx delays
+> > rgmii-rxid		no delays	no delays	rx delays
+> > 
+> > Then we have rx-internal-delay-ps and tx-internal-delay-ps in the NIC
+> > node which define the RGMII delays at the local end and similar
+> > properties for the PHY node.
+> > 
+> > 
+> > So, if we take the view that, when a switch is connected to a NIC in
+> > RGMII mode, then the phy-mode specified delays still should not impact
+> > the local NIC.
+> > 
+> > Now, for the switch, we specify the phy-mode in the port node as well.
+> > Consider the case of a switch port connected to a RGMII PHY. This has
+> > to operate in exactly the same way as a normal NIC - that is, the
+> > RGMII delays at the port should be ignored as it's the responsibility
+> > of a PHY.
+> > 
+> > The final scenario to examine is the case of a RGMII switch port
+> > connected to a NIC. The NIC's phy-mode has no way to be communicated
+> > to DSA or vice versa, so neither phy-mode can impact the other side
+> > of the RGMII link, but should only place the link into RGMII mode.
+> > Given everything I've said above, the only way to configure RGMII
+> > delays is via the rx-internal-delay-ps and tx-internal-delay-ps
+> > properties. So, DSA drivers should _not_ be configuring their ports
+> > with RGMII delays based on the RGMII phy interface mode.
+> > 
+> > The above is my purely logically reasoned point of view on this
+> > subject. Others may have other (to me completely illogical)
+> > interpretations that can only lead to interoperability issues.
 > 
-> For simplicity, currently we limit the min at the FS block size, but a
-> lower limit could be supported in future.
-> 
-> The atomic write unit min and max is limited by the guaranteed extent
-> alignment for the inode.
-> 
-> Signed-off-by: John Garry <john.g.garry@oracle.com>
-> ---
->  fs/xfs/xfs_iops.c | 45 +++++++++++++++++++++++++++++++++++++++++++++
->  fs/xfs/xfs_iops.h |  4 ++++
->  2 files changed, 49 insertions(+)
-> 
-> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> index a0d77f5f512e..0890d2f70f4d 100644
-> --- a/fs/xfs/xfs_iops.c
-> +++ b/fs/xfs/xfs_iops.c
-> @@ -546,6 +546,44 @@ xfs_stat_blksize(
->  	return PAGE_SIZE;
->  }
->  
-> +void xfs_get_atomic_write_attr(
+> I will address this with the next patch series. Thank you for explaining it
+> in detail.
 
-static void?
+This is a good time to point out not to rush with the next patch
+series, as my email will _likely_ provoke some additional discussion
+from Andrew and/or Vladimir. So please give it a few days (maybe
+around the middle of next week) to give them time to consider my
+email and respond.
 
-> +	struct xfs_inode *ip,
-> +	unsigned int *unit_min,
-> +	unsigned int *unit_max)
-
-Weird indenting here.
-
-> +{
-> +	xfs_extlen_t		extsz = xfs_get_extsz(ip);
-> +	struct xfs_buftarg	*target = xfs_inode_buftarg(ip);
-> +	struct block_device	*bdev = target->bt_bdev;
-> +	unsigned int		awu_min, awu_max, align;
-> +	struct request_queue	*q = bdev->bd_queue;
-> +	struct xfs_mount	*mp = ip->i_mount;
-> +
-> +	/*
-> +	 * Convert to multiples of the BLOCKSIZE (as we support a minimum
-> +	 * atomic write unit of BLOCKSIZE).
-> +	 */
-> +	awu_min = queue_atomic_write_unit_min_bytes(q);
-> +	awu_max = queue_atomic_write_unit_max_bytes(q);
-> +
-> +	awu_min &= ~mp->m_blockmask;
-
-Why do you round /down/ the awu_min value here?
-
-> +	awu_max &= ~mp->m_blockmask;
-
-Actually -- since the atomic write units have to be powers of 2, why is
-rounding needed here at all?
-
-> +
-> +	align = XFS_FSB_TO_B(mp, extsz);
-> +
-> +	if (!awu_max || !xfs_inode_atomicwrites(ip) || !align ||
-> +	    !is_power_of_2(align)) {
-
-..and if you take my suggestion to make a common helper to validate the
-atomic write unit parameters, this can collapse into:
-
-	alloc_unit_bytes = xfs_inode_alloc_unitsize(ip);
-	if (!xfs_inode_has_atomicwrites(ip) ||
-	    !bdev_validate_atomic_write(bdev, alloc_unit_bytes)) {
-		/* not supported, return zeroes */
-		*unit_min = 0;
-		*unit_max = 0;
-		return;
-	}
-
-	*unit_min = max(alloc_unit_bytes, awu_min);
-	*unit_max = min(alloc_unit_bytes, awu_max);
-
---D
-
-> +		*unit_min = 0;
-> +		*unit_max = 0;
-> +	} else {
-> +		if (awu_min)
-> +			*unit_min = min(awu_min, align);
-> +		else
-> +			*unit_min = mp->m_sb.sb_blocksize;
-> +
-> +		*unit_max = min(awu_max, align);
-> +	}
-> +}
-> +
->  STATIC int
->  xfs_vn_getattr(
->  	struct mnt_idmap	*idmap,
-> @@ -619,6 +657,13 @@ xfs_vn_getattr(
->  			stat->dio_mem_align = bdev_dma_alignment(bdev) + 1;
->  			stat->dio_offset_align = bdev_logical_block_size(bdev);
->  		}
-> +		if (request_mask & STATX_WRITE_ATOMIC) {
-> +			unsigned int unit_min, unit_max;
-> +
-> +			xfs_get_atomic_write_attr(ip, &unit_min, &unit_max);
-> +			generic_fill_statx_atomic_writes(stat,
-> +				unit_min, unit_max);
-> +		}
->  		fallthrough;
->  	default:
->  		stat->blksize = xfs_stat_blksize(ip);
-> diff --git a/fs/xfs/xfs_iops.h b/fs/xfs/xfs_iops.h
-> index 7f84a0843b24..76dd4c3687aa 100644
-> --- a/fs/xfs/xfs_iops.h
-> +++ b/fs/xfs/xfs_iops.h
-> @@ -19,4 +19,8 @@ int xfs_vn_setattr_size(struct mnt_idmap *idmap,
->  int xfs_inode_init_security(struct inode *inode, struct inode *dir,
->  		const struct qstr *qstr);
->  
-> +void xfs_get_atomic_write_attr(struct xfs_inode *ip,
-> +		unsigned int *unit_min,
-> +		unsigned int *unit_max);
-> +
->  #endif /* __XFS_IOPS_H__ */
-> -- 
-> 2.31.1
-> 
-> 
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
