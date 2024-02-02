@@ -1,181 +1,149 @@
-Return-Path: <linux-kernel+bounces-50230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20A0084760D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DB70847607
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:24:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9642C1F24A38
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:25:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29B391F253B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:24:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5A6914A4FB;
-	Fri,  2 Feb 2024 17:24:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7112E14A4FB;
+	Fri,  2 Feb 2024 17:24:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="INDx6Ldv"
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dz87J7uG"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A423514AD2F
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 17:24:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 283201799A
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 17:24:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706894673; cv=none; b=LECnUpivNtTAGTDSqOV3ShmecKy2sWDUghWtCJZBezLm70MNw9F0bm/3TD1I4+onfhbXJJKfP/jyWtYuEtC2FkP7RHv5/EtCguEwnbKMcT2G6O0A8rhCxm7LuILaVziec7SD6psu7uEPvsFazNoNqx2zTjPenvYLAISRyQu7sQE=
+	t=1706894658; cv=none; b=VhXV0fWnYYHm3boHrq1DmoBsW7G7yARcHbEslzzQk/Z/1ou37RkU38a4C9ycaznTIGpKv0I3QBsBBVpuDjNktKwLCTDOVV+IMVbC65D//a98nH4QeGSLmQCnCdyzw42HLG6M8g2RrcuYI4drcZkixROofXbpcWeYKhYOGp8JxXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706894673; c=relaxed/simple;
-	bh=nAy2e/D2iJVgHXwJF6yNdb54Y1630LnSzKiRJLCWPWU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=NM85QudwZgupJB2jSm6ZuJCVTXCLOoSatRDPuGRNRw9PLLOcZt6HzUfMMOjUpQEEaMBayPdei6WWxemwCFymiayrj8KRNd0hwE9I5EQ7oyCuGSI0l7C6tHlWaaF9hrvvqmWhWsj46RpNSPktLs/o1cV4kx6h53qjE/r1woQG5mI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=INDx6Ldv; arc=none smtp.client-ip=209.85.210.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6e11cda9f6fso1317627a34.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 09:24:29 -0800 (PST)
+	s=arc-20240116; t=1706894658; c=relaxed/simple;
+	bh=f4w3yfckQ6AIGjZw7uQb+qgVSH6aBp1dXcAlQ6VCmsU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=Z4RGdanf5CmTtK7ygHuveVn6aQ8fJcOTB3wqJUD3n/m6TDI1hbEggX85rQUK1wZnQaa1qEpBvX7kEkJuh/KU+fPDlcruLB0vqsIbSTJosnCzUYDMMcVUUsSYlaU1IPKcJ/D72bZz5VPpCntgnpcHnSkX6Ggye/vx3kcxplN/e7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dz87J7uG; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6c47cf679so4101460276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 09:24:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706894666; x=1707499466; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q6UPWR6ndOUYDUMRqQVrkQUUePvtAQ0pg58MMEcJMl8=;
-        b=INDx6LdvntKdUHzRcErb3HcFuugGJGUt4xFBSv2A4JXsvyETCmibL3MyHRrLlHXcqA
-         +tr39CljSBrhdGosLlq9BmaAZufIouoT2LmQGIBNQEtjQAYAxMnYTWkM89reRjRiTap2
-         qT6LCoZRBZW/n8P0bNd9KvA1fveQxW63XEOPk=
+        d=google.com; s=20230601; t=1706894655; x=1707499455; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jh8tPI6zDKBJW5XNFKGiR3+xJf/t/qaa3P1NxbupNfc=;
+        b=dz87J7uGkmnmxHC2AnQ3HtNip0UaCBr7GjH6znlI+p7a9KTR1/Wpc4yqszeMlVUMXy
+         Wg/l+g/iYttu3F38uZJAqxsx4UHMeu8Tilan6pfa8yYUB5j2SUapdP4gzrWQI2nPcenr
+         +NB5yzxv6sz17S5hrlrASkwhtXrl8v6PRPWhuBkF+vDzoHl54tkiQztiVIEeVZwO9fPb
+         7C/FMVoeKM2DJZuwSXws/kwxMUdLrYIYHRshb9GKdXPAOXxuPRHi94a9IycFjBCmPQjp
+         YGPuxcShR+RD2DlXDpx5POg2NJxbpzO6jfImbkZZiDozv0VeFNtRhQBg8SR24CGgJqyu
+         46Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706894666; x=1707499466;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q6UPWR6ndOUYDUMRqQVrkQUUePvtAQ0pg58MMEcJMl8=;
-        b=jnF6s8szDJA3V3bzCOXiGVr2TjP7eegiSZwYvLv2WeCVUrwgoUfrXQAhQNCKV5W/Gd
-         PVELDRy1w930rfNI6P9JoNO3ghLMlMQsUbV02XPeB38oFpw2rz38OoIG3tfyQfAuTNLr
-         HnF0/OWrOFxzhmJtZA7pfnoIVgkY14lQVrJUU2jECVRtoa2/o/KOvXyWC1nCGEiF1ndZ
-         SMWbtwXgTFH+rq+xb8JlZ8FEQBC0d//b7aHMU+SOdRVxx6mQAbInEyvuffDkL1ab8M2Y
-         uuidGLAR893BU+B8A3gQtt3zgHJjWQq4oPETrz+sc16LSjTEeDc7Vh5PCIpO9ZET7URZ
-         569w==
-X-Gm-Message-State: AOJu0YwrhWy983vcRfpgCreo6Iz9pIcW/gK1HorHo0ahAxfWRE36k4fx
-	3YhDhZoYNRQyTK0PuPqa6ayx8xddrw/S8//RbRzaQj8vKEWvheRtIJx2Ccl2nSKDbftt3cRg03R
-	vypsfay2LEaBMANyAuaHVbjjKJ0ChgFN7FimG
-X-Google-Smtp-Source: AGHT+IFcpltYRj5g1jySgZ/6GoPjgsQ0yDI/CttpZ6v/mpIaX0DPVPHCVu9NXF6WDXyu3zKUp5cLGz4fA9D1UNwgF/M=
-X-Received: by 2002:a05:6871:68b:b0:210:a495:ba1f with SMTP id
- l11-20020a056871068b00b00210a495ba1fmr395060oao.15.1706894665224; Fri, 02 Feb
- 2024 09:24:25 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706894655; x=1707499455;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jh8tPI6zDKBJW5XNFKGiR3+xJf/t/qaa3P1NxbupNfc=;
+        b=c+5rD5N60S2lAUrBgDQYwSsUZutkyux1PhNxhCDMgSkTDU67GrMac31fWcWhpyLPmf
+         dXqRaJZ7Eg/0SjX6vkqrI8R9OH3Ocn2DtsqHXIrCf0oc3MSTbazYsE861ZaPM3U4nE06
+         4MK3Y7lMEMRLitckkOuv8jgVfSVV6MOXr1XwF1cnv/96t/lhuGgFqzGjZ4cab26INQza
+         PZitqtD/3oC1MqXk1jEMYd0LAAl/+SeryzhQG05fnTxm+eyYgqUvWH4PxeUzt1V317t4
+         +MojtaTlCVYA7UtmOZM/qgj4KWi0Y1rqPYoJ/89NNOUHjCJGN3AqSiLVPtf+bab/+0md
+         AOiA==
+X-Gm-Message-State: AOJu0Yy8zZZqsmzvWpA/DN/66IUjJORm8AAQx5DAKyh8Y9t8sB39ey7E
+	YJa+ctX12tKGOKGv2q+MRJdI0TqeyVP1OSixwwEN28wHtXcrkNYoYimG9AkLCg+SuYPJt/2murQ
+	I4A==
+X-Google-Smtp-Source: AGHT+IFYznk7JpLxuRok8AtJlpZ2llmKQpQE42vIimTuUoL3PWXT0NTUQQ7owcgwAoNNjSDys4Q9Eh7vX8A=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:200a:b0:dc2:3441:897f with SMTP id
+ dh10-20020a056902200a00b00dc23441897fmr748244ybb.6.1706894655216; Fri, 02 Feb
+ 2024 09:24:15 -0800 (PST)
+Date: Fri, 2 Feb 2024 09:24:13 -0800
+In-Reply-To: <95c3dc22-2d40-46fc-bc4d-8206b002e0a1@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver>
- <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
- <20240201204512.ht3e33yj77kkxi4q@revolver> <CALmYWFupdK_wc6jaamjbrZf-PzHwJ_4=b69yCtAik_7uu3hZug@mail.gmail.com>
- <20240202151345.kj4nhb5uog4aknsp@revolver>
-In-Reply-To: <20240202151345.kj4nhb5uog4aknsp@revolver>
-From: Jeff Xu <jeffxu@chromium.org>
-Date: Fri, 2 Feb 2024 09:24:13 -0800
-Message-ID: <CABi2SkUSWLHM5KD=eK9bJrt3bBsEaB3gEpvJgr0LSTAE2G00Tg@mail.gmail.com>
-Subject: Re: [PATCH v8 0/4] Introduce mseal
-To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Jeff Xu <jeffxu@google.com>, 
-	Jeff Xu <jeffxu@chromium.org>, Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org, 
-	keescook@chromium.org, jannh@google.com, sroettger@google.com, 
-	willy@infradead.org, gregkh@linuxfoundation.org, 
-	torvalds@linux-foundation.org, usama.anjum@collabora.com, 
-	rdunlap@infradead.org, jorgelo@chromium.org, groeck@chromium.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com, 
-	linux-hardening@vger.kernel.org, deraadt@openbsd.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <20240201061505.2027804-1-dapeng1.mi@linux.intel.com>
+ <Zbvcx0A-Ln2sP6XA@google.com> <95c3dc22-2d40-46fc-bc4d-8206b002e0a1@linux.intel.com>
+Message-ID: <Zb0lPSBI_GFGuVex@google.com>
+Subject: Re: [PATCH] KVM: selftests: Test top-down slots event
+From: Sean Christopherson <seanjc@google.com>
+To: Dapeng Mi <dapeng1.mi@linux.intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Kan Liang <kan.liang@linux.intel.com>, Jim Mattson <jmattson@google.com>, 
+	Jinrong Liang <cloudliang@tencent.com>, Aaron Lewis <aaronlewis@google.com>, 
+	Dapeng Mi <dapeng1.mi@intel.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Fri, Feb 2, 2024 at 7:13=E2=80=AFAM Liam R. Howlett <Liam.Howlett@oracle=
-com> wrote:
->
-> * Jeff Xu <jeffxu@google.com> [240201 22:15]:
-> > On Thu, Feb 1, 2024 at 12:45=E2=80=AFPM Liam R. Howlett <Liam.Howlett@o=
-racle.com> wrote:
-> > >
-> > > * Jeff Xu <jeffxu@chromium.org> [240131 20:27]:
-> > > > On Wed, Jan 31, 2024 at 11:34=E2=80=AFAM Liam R. Howlett
-> > > > <Liam.Howlett@oracle.com> wrote:
-> > > > >
-> > >
-> > > Having to opt-in to allowing mseal will probably not work well.
-> > I'm leaving the opt-in discussion in Linus's thread.
-> >
-> > > Initial library mappings happen in one huge chunk then it's cut up in=
-to
-> > > smaller VMAs, at least that's what I see with my maple tree tracing. =
- If
-> > > you opt-in, then the entire library will have to opt-in and so the
-> > > 'discourage inadvertent sealing' argument is not very strong.
-> > >
-> > Regarding "The initial library mappings happen in one huge chunk then
-> > it is cut up into smaller VMAS", this is not a problem.
-> >
-> > As example of elf loading (fs/binfmt_elf.c), there is just a few
-> > places to pass in what type of memory to be allocated, e.g.
-> > MAP_PRIVATE, MAP_FIXED_NOREPLACE, we can  add MAP_SEALABLE at those
-> > places.
-> > If glic does additional splitting on the memory range, by using
-> > mprotect(), then the MAP_SEALABLE is automatically applied after
-> > splitting.
-> > If glic uses mmap(MAP_FIXED), then it should use mmap(MAP_FIXED|MAP_SEA=
-LABLE).
->
-> You are adding a flag that requires a new glibc.  When I try to point
-> out how this is unnecessary and excessive, you tell me it's fine and
-> probably not a whole lot of work.
->
-> This isn't working with developers, you are dismissing the developers
-> who are trying to help you.
->
-> Can you please:
->
-> Provide code that uses this feature.
->
-> Provide benchmark results where you apply mseal to 1, 2, 4, 8, 16, and
-> 32 VMAs.
->
-I will prepare for the benchmark tests.
+On Fri, Feb 02, 2024, Dapeng Mi wrote:
+> 
+> On 2/2/2024 2:02 AM, Sean Christopherson wrote:
+> > On Thu, Feb 01, 2024, Dapeng Mi wrote:
+> > > Although the fixed counter 3 and the exclusive pseudo slots events is
+> > > not supported by KVM yet, the architectural slots event is supported by
+> > > KVM and can be programed on any GP counter. Thus add validation for this
+> > > architectural slots event.
+> > > 
+> > > Top-down slots event "counts the total number of available slots for an
+> > > unhalted logical processor, and increments by machine-width of the
+> > > narrowest pipeline as employed by the Top-down Microarchitecture
+> > > Analysis method." So suppose the measured count of slots event would be
+> > > always larger than 0.
+> > Please translate that into something non-perf folks can understand.  I know what
+> > a pipeline slot is, and I know a dictionary's definition of "available" is, but I
+> > still have no idea what this event actually counts.  In other words, I want a
+> > precise definition of exactly what constitutes an "available slot", in verbiage
+> > that anyone with basic understanding of x86 architectures can follow after reading
+> > the whitepaper[*], which is helpful for understanding the concepts, but doesn't
+> > crisply explain what this event counts.
+> > 
+> > Examples of when a slot is available vs. unavailable would be extremely helpful.
+> > 
+> > [*] https://www.intel.com/content/www/us/en/docs/vtune-profiler/cookbook/2023-0/top-down-microarchitecture-analysis-method.html
+> 
+> Yeah, indeed, 'slots' is not easily understood from its literal meaning. I
+> also took some time to understand it when I look at this event for the first
+> time. Simply speaking, slots is an abstract concept which indicates how many
+> uops (decoded from instructions) can be processed simultaneously (per cycle)
+> on HW. we assume there is a classic 5-stage pipeline, fetch, decode,
+> execute, memory access and register writeback. In topdown
+> micro-architectural analysis method, the former two stages (fetch/decode) is
+> called front-end and the last three stages are called back-end.
+> 
+> In modern Intel processors, a complicated instruction could be decoded into
+> several uops (micro-operations) and so these uops can be processed
+> simultaneously and then improve the performance. Thus, assume a processor
+> can decode and dispatch 4 uops in front-end and execute 4 uops in back-end
+> simultaneously (per-cycle), so we would say this processor has 4 topdown
+> slots per-cycle. If a slot is spare and can be used to process new uop, we
+> say it's available, but if a slot is occupied by a uop for several cycles
+> and not retired (maybe blocked by memory access), we say this slot is stall
+> and unavailable.
 
-> Provide code that tests and checks the failure paths.  Failures at the
-> start, middle, and end of the modifications.
->
-Regarding, "Failures at the start, middle, and end of the modifications."
+In that case, can't the test assert that the count is at least NUM_INSNS_RETIRED?
+AFAIK, none of the sequences in the measured code can be fused, i.e. the test can
+assert that every instruction requires at least one uop, and IIUC, actually
+executing a uop requires an available slot at _some_ time.
 
-With the current implementation, e.g. it checks if the sealing is
-applied before actual modification of VMAs, so partial modifications
-are avoided in mprotect, mremap, munmap.
-
-There are test cases in the selftests to cover the failure path,
-including the beginning, middle and end of VMAs.
-test_seal_unmapped_start
-test_seal_unmapped_middle
-test_seal_unmapped_end
-test_seal_invalid_input
-test_seal_start_mprotect
-test_seal_end_mprotect
-etc.
-
-Are those what you are looking for ?
-
-> Document what happens in those failure paths.
->
-> And, most importantly: keep an open mind and allow your opinion to
-> change when presented with new information.
->
-> All of these things are to help you.  We need to know what needs fixing
-> so you can be successful.
->
-Thanks for those feedbacks.
-
-I sincerely wish for more of those help so this syscall can be useful.
-
-Thanks.
-Best Regards,
--Jeff
-
->
-> Thanks,
-> Liam
+diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
+index ae5f6042f1e8..29609b52f8fa 100644
+--- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
++++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
+@@ -119,6 +119,9 @@ static void guest_assert_event_count(uint8_t idx,
+        case INTEL_ARCH_REFERENCE_CYCLES_INDEX:
+                GUEST_ASSERT_NE(count, 0);
+                break;
++       case INTEL_ARCH_TOPDOWN_SLOTS_INDEX:
++               GUEST_ASSERT(count >= NUM_INSNS_RETIRED);
++               break;
+        default:
+                break;
+        }
 
