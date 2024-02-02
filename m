@@ -1,142 +1,97 @@
-Return-Path: <linux-kernel+bounces-50474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8559A84798D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:21:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8E6C847984
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:17:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C526A1F25EAC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:21:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6CEE28851E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:17:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47C3415E5B5;
-	Fri,  2 Feb 2024 19:21:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 320168175B;
+	Fri,  2 Feb 2024 19:15:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ERFw2f+7"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=soleen.com header.i=@soleen.com header.b="B+zXFQma"
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F87815E5A6
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 19:21:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1601281732
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 19:15:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706901667; cv=none; b=U01ntkE+QDUS61I9OyPQaIqbuqEc0E69rP0xCtg0LRoGItTDOugPovAhfMqOYM7kdHczhNDYegvc+jW4Z6kmrR0ExTdqKhs6pErVGdH0sedIpqWr1rcIGACDAlZ92kEbhr79sdUxDqTFLA0iASV19Sp0Xk8S8HGoYJIeiKuX9Ps=
+	t=1706901314; cv=none; b=WM/K6ejnJqVtCO+URHrmryM+9Ohgj+BAf7o4Y78fQAxNjO3rFsrWpduA3a5x244d53LiLf/m1iZHOMM404d9RkGcLmyxbX+q6UROG+SWqk81AULlD91ToutpUM9lO635nMOg55WlbZQ3ekomg/9gL2uupNl0iJ5mnZXk7HDhr+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706901667; c=relaxed/simple;
-	bh=SX/1kOEJ3Ax/hWf0xgUvpBYNBAwAbB0XQf4SpCcsEO8=;
+	s=arc-20240116; t=1706901314; c=relaxed/simple;
+	bh=Qkg5eFUSCl733X8fpmEZ2SfBmPh8Cs0pCAFSoIGM7XM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ws2hj3Cb8Db+LGBSEHRTCjfiTlqEuJenbU9ZNJixRRNIVew+NyJbpEA698QtHGPPYdouaRKuXNZMt0bz/Y9S4zoCn2VEvUyKPfq4MAmMiLg7Mpi8zoVzsPTu3Om76+YoVAz9XOcGH9T8AAxx2008isjnr37PADC1DrG3jrYR2eo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ERFw2f+7; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d040a62a76so26473421fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 11:21:04 -0800 (PST)
+	 To:Cc:Content-Type; b=u8pEQTpMAamtcPY9wpnvchvcM7m+ccePN95k88nKK1E/GftMC5jGY0hGDCEWLWZGjhnbuHzzBtXY4BQscDZOHCqLie2xCykWAfR/PF5lmfWdneLM6Izy2Tl+3NjHuz9EawUrQgpy6A7P0xeGt2UHkRyCXXSnv1y6w2FiULN0Z6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com; spf=none smtp.mailfrom=soleen.com; dkim=fail (0-bit key) header.d=soleen.com header.i=@soleen.com header.b=B+zXFQma reason="key not found in DNS"; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=soleen.com
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-42a4516ec46so11095751cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 11:15:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706901663; x=1707506463; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AzRl/p/zBM55V3qi6ZzeQftf/q51vbL6S+/zvQ3KD1E=;
-        b=ERFw2f+7iPRhhZJmxJgvdF4FkggcG8ZCPJew47O5IaW4Z3UoejdaJJLVm7t4IHr9Zp
-         i27NjxcSydlFGcrc/DHpQwtWiDGr8THWTG5pIGqMn8KOYo3hAuKlz02YbiJak+f/49Th
-         KryKnsQ50kg5sl85FLeuo+tp9Eh8E545I3aqU=
+        d=soleen.com; s=google; t=1706901312; x=1707506112; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qkg5eFUSCl733X8fpmEZ2SfBmPh8Cs0pCAFSoIGM7XM=;
+        b=B+zXFQma58Eaurq1lGtPMKYnAsFFSt8lixgg2rr3UzdzuMFvjfHm0qntzY9e8r+qZ5
+         gSETG0QwmgFdrABZMEXXorhDJdMnVJbcL4yxy3LIOJmy8posW4gbd1X1pQftuz+5bZMz
+         HENl2PDDgj8GjDu7xwtEB7+UASkh6yI+Yqg6Dz9/MDNzsxWWOzPMiMHOClNcuRIm/QpX
+         1x2CbXvALFFmYXfL6K7t0kDdYd0xO8EpfTrnHPQ2xZ6gS1BQsCznD45KFBWhBsneuT/0
+         iJMNdnGE6oboyWOUWJ6ob1x3wrztTQI65duMkWzvCU7GSkQtmmoSkPNGvcwnyTHGPNgw
+         JZww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706901663; x=1707506463;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AzRl/p/zBM55V3qi6ZzeQftf/q51vbL6S+/zvQ3KD1E=;
-        b=AuA8lcL8P6olVGA2meU0d7B7NJ9t7Ar6cKcfxuecDxrdPyTMgU22/PWQyUsa19dojV
-         KX1QZWgDaBvlvlWB7NwsSZ4h2j+ttI3iIHCSJdCX4+tbipYV5B7EGku9wkQFoa5d3moO
-         BVE9Gvq1jM8Xx0zAXr7Ypnu7fhsnQPLyDF0F9gMPV8pIO0W/eNWnYfVIu4GNZNSRwugu
-         uRwxCzZYzMK/3qUjtxvvQDCMZ0FO2qHkUT/Tbtf29t/BYpISCte1JVGl/ElF5E7gJCP1
-         RxLXZFlMZajM/XpqVH96hSMDgVMCJC5khKtCezQRTJ/5z5l2hlVOHYrUAK4zzO7BG+eA
-         bFMA==
-X-Gm-Message-State: AOJu0YykpQeEgtfNm0lOg3EvbMkEb3UGkfAoUSbjV0haBusNsPN4ppiW
-	ma3mOwUv/Wdau3DFw89LK2kJGmONcpDk4aHnD6AhlxS97naLU5fICVqzBkCqQ6EXC76ewsWQZiG
-	IR1cH
-X-Google-Smtp-Source: AGHT+IEQ5mhB6dbpe0NShtpSWGfiOalkn/spXOWnfpwh58Q6baioYnxNBDBJrtNqDBo2gArQrw3E0A==
-X-Received: by 2002:a05:651c:220f:b0:2d0:97e9:99c with SMTP id y15-20020a05651c220f00b002d097e9099cmr295168ljq.19.1706901662883;
-        Fri, 02 Feb 2024 11:21:02 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCV7TqzGjzhe9taiOrrlCPzEfEJIxH0HS7xRVpTIGnypWgUwwpiMnYP6FJeeZTzjeyRtioE9Lj5dweSwSPc47iwzNfnHHA0iQCjRUsjM
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com. [209.85.128.53])
-        by smtp.gmail.com with ESMTPSA id fe9-20020a056402390900b0055d312732dbsm1057600edb.5.2024.02.02.11.21.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Feb 2024 11:21:02 -0800 (PST)
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40f00adacfeso6995e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 11:21:02 -0800 (PST)
-X-Received: by 2002:a05:600c:6016:b0:40f:cb0d:4dd1 with SMTP id
- az22-20020a05600c601600b0040fcb0d4dd1mr54895wmb.6.1706901204019; Fri, 02 Feb
- 2024 11:13:24 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706901312; x=1707506112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Qkg5eFUSCl733X8fpmEZ2SfBmPh8Cs0pCAFSoIGM7XM=;
+        b=hMwH8rpTbxAqRx/gojzuUT59punyDWTpktBESbEdXQoSgrGHEBZZ5ExEgGDph5Y5e1
+         5ymmrFcrdOm7l7pUGNidiYdLx+JaaagH7Fob+wxoukacKok1npDX5jX6zm9C9aGa6ZD1
+         a1xz5QsIrCifbZgXGU24/m0ts54P3r6CWeQCbAdUl+X3P/niIv5XOxoneoJ+v6DM7mib
+         d8UtIcZwhe3qT77ow67eRHhR0ExXDx2Uq6h7PSluoRSEZFNd3a4fAe0x5u6H4dldGClE
+         QjtT67n//UH/bjChEY59gUdy1y7Q45np6Lf6Dd9QyFxyQdTyLk1oYqBwqEtCh6xrBgnG
+         mXBw==
+X-Gm-Message-State: AOJu0Yx3U5Dq43uPORy11MPe+s5NdH9mJWnm41n8s4BNyEvsJCOugQga
+	b5tjetsfl+hqhpKolMNSsT7/KyDze799W+XvF9i05Y7IXcCF9qWMIvIOj85v79Hx03yr1PeaghI
+	9Fp4FqggvCS9GVEPRVDU9yo/6rIxxvG3clf05nQ==
+X-Google-Smtp-Source: AGHT+IGRYLsM+jFPG/+OQ6YbfxNeymzH6TMB4pT268OsL/EM4HwUGWuXnrdcfT7i3XzApUte4yWs+G5NVXUrdrCl+P4=
+X-Received: by 2002:a05:622a:ce:b0:42a:9d1f:d0e5 with SMTP id
+ p14-20020a05622a00ce00b0042a9d1fd0e5mr123854qtw.11.1706901312011; Fri, 02 Feb
+ 2024 11:15:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201171159.1.Id9ad163b60d21c9e56c2d686b0cc9083a8ba7924@changeid>
- <20240202012249.GU2087318@ZenIV> <CAD=FV=X5dpMyCGg4Xn+ApRwmiLB5zB0LTMCoSfW_X6eAsfQy8w@mail.gmail.com>
- <20240202030438.GV2087318@ZenIV> <CAD=FV=Wbq7R9AirvxnW1aWoEnp2fWQrwBsxsDB46xbfTLHCZ4w@mail.gmail.com>
- <20240202034925.GW2087318@ZenIV> <20240202040503.GX2087318@ZenIV>
- <CAD=FV=X93KNMF4NwQY8uh-L=1J8PrDFQYu-cqSd+KnY5+Pq+_w@mail.gmail.com>
- <20240202164947.GC2087318@ZenIV> <20240202165524.GD2087318@ZenIV> <Zb0vem7KC28gmT5U@e133380.arm.com>
-In-Reply-To: <Zb0vem7KC28gmT5U@e133380.arm.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Fri, 2 Feb 2024 11:13:08 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=XDg2Q2Gkv0pnngfUMJUOctXhe7f_33DW4TpLxTdG7KBw@mail.gmail.com>
-Message-ID: <CAD=FV=XDg2Q2Gkv0pnngfUMJUOctXhe7f_33DW4TpLxTdG7KBw@mail.gmail.com>
-Subject: Re: [PATCH] regset: use vmalloc() for regset_get_alloc()
-To: Dave Martin <Dave.Martin@arm.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, 
-	Eric Biederman <ebiederm@xmission.com>, Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, Oleg Nesterov <oleg@redhat.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Mark Brown <broonie@kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20240201193014.2785570-1-tatashin@google.com> <02610629-05ef-4956-a122-36b6ac98fbc2@arm.com>
+ <CA+CK2bD_q3pnThtLVSzFCjyevBEaG6Ad+1o2=1tVZsYg35UMmg@mail.gmail.com>
+ <84c7e816-f749-48d8-a429-8b0ef799cdbb@arm.com> <CA+CK2bCFbeRHT172KUci5+8WJNUeo-2A1M=UXsSqqOy64w1LJw@mail.gmail.com>
+ <bcddef81-3979-4ad0-b3f6-771871a44433@arm.com>
+In-Reply-To: <bcddef81-3979-4ad0-b3f6-771871a44433@arm.com>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Fri, 2 Feb 2024 14:14:35 -0500
+Message-ID: <CA+CK2bD=h+rp4M8+vf3pjzrGAw3QE_LjxK0c-8YCNT=D+wYknQ@mail.gmail.com>
+Subject: Re: [PATCH] iommu/iova: use named kmem_cache for iova magazines
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: joro@8bytes.org, will@kernel.org, iommu@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, rientjes@google.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+> Yikes, so it really does just have that many IOMMU groups? OK, fair
+> enough, call me convinced :)
+>
+> On balance though, I think I'd prefer to just stick the lifecycle
+> management into iova_cache_{get,put} for simplicity - spending ~256
+> bytes on another kmem_cache we might not use can hardly be significantly
+> more than the extra code and static data necessary to track its usage
+> separately anyway.
 
-On Fri, Feb 2, 2024 at 10:08=E2=80=AFAM Dave Martin <Dave.Martin@arm.com> w=
-rote:
->
-> So, if the only reason for trying to migrate to vmalloc() is to cope
-> with an insanely sized regset on arm64, I think somehow or other we can
-> avoid that.
+Sure, I will send a v2 soon.
 
-Right. The only reason for the patch to switch to vmalloc() was in
-reaction to seeing the order 7 memory allocation. If we can decrease
-that to something sensible then I'm happy enough keeping the
-allocation as kmalloc().
-
-
-> Options:
->
->  a) bring back ->get_size() so that we can allocate the correct size
-> before generating the regset data;
->
->  b) make aarch64_regsets[] __ro_after_init and set
-> aarch64_regsets[REGSET_SVE].n based on the boot-time probed maximum size
-> (which will be sane); or
->
->  c) allow membufs to grow if needed (sounds fragile though, and may be
-> hard to justify just for one arch?).
->
->
-> Thoughts?
->
-> If people don't want to bring back get_size(), then (b) doesn't look
-> too bad.
-
-Either a) or b) sounds fine to me, but I'm just a visitor to this code
-so maybe I'll let the adults in the room chime in with their opinions.
-;-) Also: if you think it's fruitful for me to try to write a patch to
-do either of those then I can, but I also wouldn't object at all to
-someone else writing a patch to fix this and I can just provide a
-Tested-by and/or Reviewed-by. Let me know.
-
--Doug
+Pasha
 
