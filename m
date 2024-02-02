@@ -1,115 +1,114 @@
-Return-Path: <linux-kernel+bounces-49027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5DD08464F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:16:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B4328464FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:18:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E90691C23A7F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:16:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BED911F26424
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:18:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86DA10F2;
-	Fri,  2 Feb 2024 00:16:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B51211374;
+	Fri,  2 Feb 2024 00:18:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="sgZdeGqb"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="KkQWEYMw"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4978B1FAB;
-	Fri,  2 Feb 2024 00:16:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EAC97E9;
+	Fri,  2 Feb 2024 00:18:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706832978; cv=none; b=EgTp9TADhzzqjru7Fbc+wtlEJtLRGMizu1CGShhFAVB9K8ZSD5qu9srwtwbmuXU+aj4nghto567nzAuvzi6KjJZib5SDdi2AmPbI8N1ZDVSHkPT1wcCkOs+ESuFK+YwCOE9vz0pscwTVc3/loTLn87HXzkRhV+ro2KzhMJD1FLE=
+	t=1706833101; cv=none; b=ZhsUhMrjtizB/fBxMoSb/czm1PEZcBkSE8OthbdjZhaI/l52FJydDI5ZLE2fUVOKTcnu86Fk0BqAsBp96qbPUQPiEKH5/JEKH8sYKFpvx0geC9fp9UdwAH7aGfXzKieQd3dBar9eNtcCb12shSRdEjNGWdZo1DipGCu73Piluuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706832978; c=relaxed/simple;
-	bh=lmS+wybu4wNF3e0wk8RHIylcCeGGWVaehkVC2nWRkf0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=DyGg0RTF1k8+NkraReH1Jv51p3DFXLhKa2aU903dndSU/1eNyvn65wk4OZyvsIY2Yn/ypQ5061ctXGyX+k3nvGNXVmWMGkuCYYGSmom8qoRNhm3MUUJ/L7X3j9drTP9jDjSXhPts+Lu0yyTMeMmEd8ZOHmGXiXubuay3c9AAvEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=sgZdeGqb; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1706832965;
-	bh=whV8rHXMnKnvSUUF5lisiusEi1Tlql1PLJCW4XCJG50=;
-	h=Date:From:To:Cc:Subject:From;
-	b=sgZdeGqbPq8xWriM/a5OuSWY6tflpWDmvn1V35VqNZLcPf1B+ZMBc1ytfWukr1rpf
-	 Z0ZmGJ07ofdUJX2Eo4owwnIM/ZRP8M6UtKdw4M8iZRQj/q1BDLOQjAku4Kqc/XVbsd
-	 xz0KAdxPMY/64VkMoKvg2vSE/HWsK867MsAKPeIc+l8bOYho0zYHSVRP1tEGcSpwxE
-	 PPDiAjbRTusaMK012ZLaQYhUE3y1SCh/AjPIFcnC3vq8r6CH0FZsNFvWJX3SY8czsP
-	 fuY5BmtUDemF1xTivTAaMBy6iFynBDstvCwLjJX5M2KSvgac1SS6hIziviyQCLCLPk
-	 a/dCaRvqFtMlw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TQxBs1hdBz4wcH;
-	Fri,  2 Feb 2024 11:16:04 +1100 (AEDT)
-Date: Fri, 2 Feb 2024 11:16:02 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: Li Zhijian <lizhijian@fujitsu.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the ieee1394 tree
-Message-ID: <20240202111602.6f6e2c1a@canb.auug.org.au>
+	s=arc-20240116; t=1706833101; c=relaxed/simple;
+	bh=6lCpe1JWBv0gIutmOVn15+H+ejUjuih0/bmRqdymfH0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=h2sCnjKAYOoMSnmIJt2dqj1HWFNTxYsmDtzZ/CautBDmxMU40cPXmKJJFI6uBOYaUXbjEnPq92HEqrGijnrMU4cMXyraztd2qDWVc5dLbeS4e9GGSuthk6OtZSPDOsJi0mSdWG9Ps7tXEMKQQUVvfr45iOEeL84kRO8GRdph238=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=KkQWEYMw; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1706833099; x=1738369099;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=6lCpe1JWBv0gIutmOVn15+H+ejUjuih0/bmRqdymfH0=;
+  b=KkQWEYMwJZTDr8dc/K+oE0lrlSLa2x22T49eBxn/3roWFr9+SUB99qok
+   5ne2eQeIbm2yL2WQXP6lieMWIoTbVr8IONhNMjPZdSlhJMFkNlxyQK9iJ
+   uYOwOcTDBvlAPfaFPdhfSz+WzOhyJgQUIIbWU/o+QqfdOHLoJjLH9aKBf
+   urQODbmxIGmTrCLDAw9+5cNpzs7V2woe33eM/liVEW23C+XIppy61ebKs
+   APsWdpVAXKEKse9WyX2NNU8VjZkAhyOFzhHLpTmgdj7YOPvf6hHsuFISF
+   cOAZ5T1DCPaT687J0dwy6XsDQH8tZwEkCqMFn52912LNEDhdducdX0YbY
+   Q==;
+X-CSE-ConnectionGUID: q2aqr2bnSse6ZnRLstrm9A==
+X-CSE-MsgGUID: ZMDnp1A7QAq47c0BW+chNg==
+X-IronPort-AV: E=Sophos;i="6.05,236,1701154800"; 
+   d="scan'208";a="15650200"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 01 Feb 2024 17:18:18 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 1 Feb 2024 17:17:45 -0700
+Received: from che-lt-i70843lx.amer.actel.com (10.10.85.11) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Thu, 1 Feb 2024 17:17:37 -0700
+From: Dharma Balasubiramani <dharma.b@microchip.com>
+To: <sam@ravnborg.org>, <bbrezillon@kernel.org>,
+	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+	<tzimmermann@suse.de>, <airlied@gmail.com>, <daniel@ffwll.ch>,
+	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+	<conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
+	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
+	<dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<lee@kernel.org>, <thierry.reding@gmail.com>,
+	<u.kleine-koenig@pengutronix.de>, <linux-pwm@vger.kernel.org>
+CC: <hari.prasathge@microchip.com>, <manikandan.m@microchip.com>, "Dharma
+ Balasubiramani" <dharma.b@microchip.com>
+Subject: [linux][PATCH v6 0/3] Convert Microchip's HLCDC Text based DT bindings to JSON schema
+Date: Fri, 2 Feb 2024 05:47:30 +0530
+Message-ID: <20240202001733.91455-1-dharma.b@microchip.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/L/qgCPZa.WV=QodD/8mQd3b";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
---Sig_/L/qgCPZa.WV=QodD/8mQd3b
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Converted the text bindings to YAML and validated them individually using following commands
 
-Hi all,
+$ make dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/
+$ make dtbs_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/
 
-After merging the ieee1394 tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+changelogs are available in respective patches.
 
-drivers/firewire/core-device.c: In function 'show_text_leaf':
-drivers/firewire/core-device.c:369:48: error: 'bufsize' undeclared (first u=
-se in this function); did you mean 'ksize'?
-  369 |                                                bufsize);
-      |                                                ^~~~~~~
-      |                                                ksize
+Dharma Balasubiramani (3):
+  dt-bindings: display: convert Atmel's HLCDC to DT schema
+  dt-bindings: atmel,hlcdc: convert pwm bindings to json-schema
+  dt-bindings: mfd: atmel,hlcdc: Convert to DT schema format
 
-Caused by commit
+ .../atmel/atmel,hlcdc-display-controller.yaml | 63 ++++++++++++
+ .../bindings/display/atmel/hlcdc-dc.txt       | 75 --------------
+ .../devicetree/bindings/mfd/atmel,hlcdc.yaml  | 99 +++++++++++++++++++
+ .../devicetree/bindings/mfd/atmel-hlcdc.txt   | 56 -----------
+ .../bindings/pwm/atmel,hlcdc-pwm.yaml         | 35 +++++++
+ .../bindings/pwm/atmel-hlcdc-pwm.txt          | 29 ------
+ 6 files changed, 197 insertions(+), 160 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/atmel/atmel,hlcdc-display-controller.yaml
+ delete mode 100644 Documentation/devicetree/bindings/display/atmel/hlcdc-dc.txt
+ create mode 100644 Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mfd/atmel-hlcdc.txt
+ create mode 100644 Documentation/devicetree/bindings/pwm/atmel,hlcdc-pwm.yaml
+ delete mode 100644 Documentation/devicetree/bindings/pwm/atmel-hlcdc-pwm.txt
 
-  67a5a58c0443 ("firewire: Kill unnecessary buf check in device_attribute.s=
-how")
+-- 
+2.25.1
 
-interacting with commit
-
-  47dc55181dcb ("firewire: core: search descriptor leaf just after vendor d=
-irectory entry in root directory")
-
-from Linus' tree (v6.8-rc2 - that the ieee1394 tree has just been rebased on
-top of).  I have dropped the ieee1394 tree for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/L/qgCPZa.WV=QodD/8mQd3b
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmW8NEIACgkQAVBC80lX
-0GxSUAf/U/ngAUGGo2hybcp883UHGqxIdp20byOpoqFJf7az1LeYEx3OUvn+IfRJ
-tEEVQEW57rhTgFJbueNvJnNTRW5wbNEhWmvIlMNsAaLj5x8NzzQgzjReCyHGwBAX
-HNgIid+4WmRXAEfkH2EB2RPNkXxLeqzmamyNmtbui3s6AliX3O+Etz2z457YPOnN
-vn9BRR+L/0Z6fSu/V6UXKrHuLdMZotxcy9wRQwgLmAsgSjfiCGVOqz0V5mEw+Rvf
-2jo+nn6FysZVxEU3fnWlNzxcC++8z6CO7yyVe6l0C8edYUxcgILypIzDEjVDvY3p
-exVvbSd6bePDDzGbp7Nn+8llT8wtvQ==
-=yLAp
------END PGP SIGNATURE-----
-
---Sig_/L/qgCPZa.WV=QodD/8mQd3b--
 
