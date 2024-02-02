@@ -1,127 +1,162 @@
-Return-Path: <linux-kernel+bounces-50267-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CAD7847695
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:49:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C8B2847692
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:48:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3E6B1F2889B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:49:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A83D51F25FF0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:48:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 602AD14C593;
-	Fri,  2 Feb 2024 17:48:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B6E214A4F0;
+	Fri,  2 Feb 2024 17:48:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b="JSdtw7GO"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AWj0HPXm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46474168B9;
-	Fri,  2 Feb 2024 17:48:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B35C0148FFF;
+	Fri,  2 Feb 2024 17:48:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706896121; cv=none; b=nqWiYXpmHw3AxSmhVvBbJK6vhc4uAxZ5m3vDMZSY3sB0rzau1uHS21gEddhilgkwIHieRGs3O+U9pYudCpklM5yTB9BqJhGgUclBp8fs66/WW6TGAF0wfZniGPPkM6h7bBA5XKSP6tcCwaHd/RoE6BnLVqbqYzrTXUSqFMELA3c=
+	t=1706896112; cv=none; b=JuAKHHYy2bIbLdOJHSUgFmhUyNH5uXlU6elMUn8vdY1AAHN0eg1TljaO8MJ9p4dveqJTSP3qvU2/t9/tpIowjq/aTzxXjlf/KZK8nAwSqgRVVHBBFVDhckcY+KA+W6DrwiJMBx6h3e6IzYxWqCejdiaVE0WSLcd3og7P7Er2ozM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706896121; c=relaxed/simple;
-	bh=fRArofEFyV+mEzuCwxl1rFk1RSKjZ9nhZus4D76DbVU=;
+	s=arc-20240116; t=1706896112; c=relaxed/simple;
+	bh=QpwSwu16ZmhG3hCvCC9uXld1IgQWhFd5Z10yeUzElMA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A90irFKYX4PbUTBqW5zPEBHSnLQdqCsNhNXiItp+t1wMaXBDgqpMzcfGN/6ejbXQB2DXq+L3zx2zJ9ox4HjN8Q/uX0VobfQPcCs50T7nBeimC46Yyd0a0Ok9h/FqUk9VZhtAoQ/BF7NNzsx9PRjCOJ35WqloCv7oCXnj7A+6II8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b=JSdtw7GO; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1706896108; x=1707500908; i=erick.archer@gmx.com;
-	bh=fRArofEFyV+mEzuCwxl1rFk1RSKjZ9nhZus4D76DbVU=;
-	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:
-	 In-Reply-To;
-	b=JSdtw7GO816RZ2gkiccH1dMv+q9KOxYDOnVTZAAkZ8wzTWgEJTJsATWrdSRwHyOe
-	 bE3bUxc/JFIaGxH9s3bRar99ojTntA8WGfaQOOF2pJBeO1bxXIU0UV+pZTGvA+nMI
-	 sf2qfSOlpkPkmihGU6kdKjlUjsqdmDsaEG4FkiLCu5NzB/2BJyq/6IA9XHba2Mkly
-	 /RIA2RMTrOmfQd/DqGDSid3zFXvpCexhoMd9gGSYGFDbQocath2r8HxNKgjPxeRD4
-	 uA0m337egDT4n6z6kQ8pBqvT7igHsXE/D6NpDm81mx69IxltA26pFwturas46O8By
-	 MncHri29v2NTFvDDHQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from titan ([79.157.194.183]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MO9zH-1rglPB2gqf-00OXq7; Fri, 02
- Feb 2024 18:48:28 +0100
-Date: Fri, 2 Feb 2024 18:48:17 +0100
-From: Erick Archer <erick.archer@gmx.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Erick Archer <erick.archer@gmx.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Jeffrey Hugo <quic_jhugo@quicinc.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] bus: mhi: ep: Use kcalloc() instead of kzalloc()
-Message-ID: <20240202174817.GA4528@titan>
-References: <20240120152518.13006-1-erick.archer@gmx.com>
- <43614a09-d520-4111-873a-b352bd93ea07@moroto.mountain>
- <20240128102933.GA2800@titan>
- <3b175cb6-fcbe-4521-b6ac-442c8a11c297@moroto.mountain>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LOpRxsXIZCgcdT30HW3NQSdrksGxRv2tIt1W1yPpU5rxNlddqGjymYfR+VmPp0ROSveFlEWpZ+w/Gr1mpS7TTNMmN+iZoG/9AYnjN+tCn7z/stfFWqIpo01g26cTDP9tRqWjTHIxtaUrH3dqy14/5fjVcyOg2MaJAtdO8mNYRV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AWj0HPXm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73EBFC433F1;
+	Fri,  2 Feb 2024 17:48:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706896112;
+	bh=QpwSwu16ZmhG3hCvCC9uXld1IgQWhFd5Z10yeUzElMA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AWj0HPXmrt/RfP3e/bBCyi/CwoT2sLMwh1t9Mwp7mYWQLG6QbL6QR2pZkPpN/OTPj
+	 GM+KJvEkmbKM4Yg5Ne/xLIyIAXO+CUdJUQum19+cd8DIdgLMOWnjawLCx7xxZXMO/X
+	 lBlYDXXYQNyz/1ZhyeJX7Btkh/XRLnEX2xQLNLTCtu6JuvVp8uZN97SHbCkltZ3qoi
+	 QRZW1SyH/2LcN3wqS6Kjh7TEfnz5pDGew+k5F5AZXIq2dZ/2wh1E0wY5KdMGufjbg/
+	 c0G7+IzzLWZ58BIBZqadSATnFZpe6FiV0ampe6uSl7bEBei1Xdr15xf29fjR9m+8RP
+	 jqgCYp1pX2Erw==
+Date: Fri, 2 Feb 2024 17:48:25 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Doug Anderson <dianders@chromium.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Eric Biederman <ebiederm@xmission.com>, Jan Kara <jack@suse.cz>,
+	Kees Cook <keescook@chromium.org>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] regset: use vmalloc() for regset_get_alloc()
+Message-ID: <79f9ede9-4af0-48e2-9145-67796031420d@sirena.org.uk>
+References: <20240201171159.1.Id9ad163b60d21c9e56c2d686b0cc9083a8ba7924@changeid>
+ <20240202012249.GU2087318@ZenIV>
+ <CAD=FV=X5dpMyCGg4Xn+ApRwmiLB5zB0LTMCoSfW_X6eAsfQy8w@mail.gmail.com>
+ <20240202030438.GV2087318@ZenIV>
+ <CAD=FV=Wbq7R9AirvxnW1aWoEnp2fWQrwBsxsDB46xbfTLHCZ4w@mail.gmail.com>
+ <20240202034925.GW2087318@ZenIV>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="N65f3aqAGEWc/mks"
+Content-Disposition: inline
+In-Reply-To: <20240202034925.GW2087318@ZenIV>
+X-Cookie: I'm shaving!!  I'M SHAVING!!
+
+
+--N65f3aqAGEWc/mks
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3b175cb6-fcbe-4521-b6ac-442c8a11c297@moroto.mountain>
-X-Provags-ID: V03:K1:rtIgJn7pmL5lL6vGpRvFEKAofZVjZhyCaB9E/9VDne1F3q25qZ8
- 7G/Jh4Acg9rS4kW0Md/PW4nR2rJapbUfT6DV3UoEGDPd0lwe+ROTKVYEfiA2Q0h5r92hDA3
- Iw7WmbsTIA6YJKBLuluiTHjTAGkak36yvgoPaanEeUMGF1C33OO8VGYeNhotWBGOZ69ptKq
- TmgcMjFokJe3bsDo8Lx5A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:29H8hio1c6g=;TkzoBl8a9dsfCi8c6fPJThbbKJ4
- UVjlCR6g1UL7r/risxhYylpG3698ZTtztzwMTHuN5F1GHp4VKq9PIVZzeOjWq1Fe5hoOam/jQ
- CnqOhCcggSfaTbXYSspkYKjWYc/vmP0icaJh7e96kJ6f4sss0HS+sqr7UXNisvzGQ8mLWNnhj
- W1jRAY9xHmFieakEpVMryKE/rAoj9TkUNfxCYDizoTIkVxL9BSIpcB5yJtWzRHUhKJAb98ck4
- 6lvkza/97frSU482Zlw6vOAkG10RYMPUepO2o5m4D0mqgtV/TogiP92Gz4yvsLR3xmC779mpP
- /nn4nqIaK3m0mlCy2AAeZ2twv/WCRwsCcWBlhHc/J8royGPd/O3kFsQY2kvHTgGTj394JWbIc
- EbWqV0nhCJiNSempCGmhQBick/PGN/4Gx77BtzP/qbpLRkeHbbKugRPp7IY/5SP0JEnZydopW
- ukREJq3gf2y9AmZqp4z9U4qR9hEiuqHroXC3fC0ogylpMk7nfi91Zf+nNdyOuDnYMRMLGHzeu
- j4U9L10frSQj9pxULAWpBLP2dII/jCF4rW4kMWDalqLVRDRcNX5xy/ATQ3zzv/fZTIgT7mDkv
- 8M+dj7HJ/+c/YgZ0a/p52tdFEK5UrTqxpSnbmLDZI27EFPucXv72fM7v3CMc1mLjEcbf/PcAq
- bYbQ5Lsu7e+hNy7KGsDBcfAmQsVQsu0HfGONlbuK7nKVuskpPMAhGixWE9jTjEwXylT82UQOM
- NcqsPHPkPzIfXNI7L/TSqEqeqwSSpaHWWCqlMHr8qP6sDd/QKOlZJ36yKQRuUuhyo/aF/KuU0
- AMC3XUFR6mDrcUD5/tzNS5m7WV05sWniUjHx7t6femOac=
 Content-Transfer-Encoding: quoted-printable
 
-Hi Dan,
+On Fri, Feb 02, 2024 at 03:49:25AM +0000, Al Viro wrote:
+> On Thu, Feb 01, 2024 at 07:15:48PM -0800, Doug Anderson wrote:
 
-On Mon, Jan 29, 2024 at 08:20:26AM +0300, Dan Carpenter wrote:
-> On Sun, Jan 28, 2024 at 11:29:33AM +0100, Erick Archer wrote:
-> > > It's a bit concerning that ->event_rings is set multiple times, but =
-only
-> > > allocated one time.  It's either unnecessary or there is a potential
-> > > memory corruption bug.  If it's really necessary then there should b=
-e a
-> > > check that the new size is <=3D the size of the original buffer that=
- we
-> > > allocated.
-> >
-> > The ->event_rings is set twice. In the mhi_ep_mmio_init function and i=
-n
-> > the mhi_ep_mmio_update_ner function.
-> >
->
-> It's not about the type.
->
-> The event_rings struct member is the number of elements in the
-> mhi_cntrl->mhi_event array.  However, we ->event_rings without
-> re-allocating mhi_cntrl->mhi_event so those are not in sync any more.
-> So since we don't know the number of elements in the mhi_cntrl->mhi_even=
-t
-> array leading to memory corruption.
+> > [   45.875574] DOUG: Allocating 279584 bytes, n=3D17474, size=3D16,
+> > core_note_type=3D1029
 
-Thanks for this clarification. Now I understand what you are explaining
-to me.
+> 0x405, NT_ARM_SVE
+>         [REGSET_SVE] =3D { /* Scalable Vector Extension */
+>                 .core_note_type =3D NT_ARM_SVE,
+>                 .n =3D DIV_ROUND_UP(SVE_PT_SIZE(SVE_VQ_MAX, SVE_PT_REGS_S=
+VE),
+>                                   SVE_VQ_BYTES),
+>                 .size =3D SVE_VQ_BYTES,
 
-Regards,
-Erick
+> IDGI.  Wasn't SVE up to 32 * 2Kbit, i.e. 8Kbyte max?  Any ARM folks aroun=
+d?
+> Sure, I understand that it's variable-sized and we want to allocate enough
+> for the worst case, but can we really get about 280Kb there?  Context swi=
+tches
+> would be really unpleasant on such boxen...
 
+The architecture itself is limited to 2048 bit vector lengths, and
+practical implementations have thus far not exceeded 512 bits with the
+overwhelming majority of systems being 128 bit.  2048 is commonly seen
+in emulation though.  As well as the 32 Z registers we have 16 P
+registers of VQ*2 bytes plus one more register FFR the same size as the
+P registers and a header describing the VL and specific format of the
+data, all in this regset.
+
+The Linux ABI defines the maximum vector length much larger than the
+architecture allows and that define does flow into the kernel code, I
+believe this was based on consideration of bits 8:4 of ZCR_ELx[1] which
+look like they're earmarked for potential future expansion should 2048
+bits ever prove to be insufficient.  We should really do something like
+what we did for SME and define down what ptrace uses to the actual
+architectural maximum since no system will ever see any more than that,
+that'd still result in large allocations but less impressively and
+wastefully so.  I'll go and look at doing a patch for that just now.
+
+Unfortunately SVE_VQ_MAX is in the uapi headers, we've already stopped
+using it in the test programs due to the overallocation.
+
+[1] https://developer.arm.com/documentation/ddi0601/2023-12/AArch64-Registe=
+rs/ZCR-EL1--SVE-Control-Register--EL1-?lang=3Den
+
+> > [   45.884809] DOUG: Allocating 8768 bytes, n=3D548, size=3D16, core_no=
+te_type=3D1035
+> > [   45.893958] DOUG: Allocating 65552 bytes, n=3D4097, size=3D16,
+> > core_note_type=3D1036
+
+> 0x40c, NT_ARM_ZA.
+>                 /*
+>                  * ZA is a single register but it's variably sized and
+>                  * the ptrace core requires that the size of any data
+>                  * be an exact multiple of the configured register
+>                  * size so report as though we had SVE_VQ_BYTES
+>                  * registers. These values aren't exposed to
+>                  * userspace.
+>                  */
+>                 .n =3D DIV_ROUND_UP(ZA_PT_SIZE(SME_VQ_MAX), SVE_VQ_BYTES),
+>                 .size =3D SVE_VQ_BYTES,
+
+Yup, and SME_VQ_MAX is defined to the actual architectural maximum of
+2048 largely due to issues with the size of the allocation for ptrace.
+There are not yet any physical implementations of SME so I can't comment
+on the actual vector lengths we'll observe in the immediate future. =20
+
+I see there's a comment update needed there for s/SVE/SME/ too.
+
+--N65f3aqAGEWc/mks
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmW9KugACgkQJNaLcl1U
+h9CjxQf/UQKcjZqgFzxfc+v+5GPIfo/ob9NZKDjsECvRqxpjjCxPSJ/H5+UwwL/k
+SPCFe8qPbJ634EiLguRLFPZU9Fiww9TOjGWtEZM3idw8sa1CodifoxeXqpbBJrub
+kcL/9WZzb8b4vPY9/R0Xidhgdno4oe1ydjMUVtkW0hO2nhcMOh6ngQpFTbnkK9BY
+4FnukNzD7HS1yc70NsEuhFtpxdYgDLF1i/mT8eprrczGsJl7wv725uPrMehkokjL
+XDvCTLne3fMviZnc4ZOlyv3amgW2j7RNIs37Mg58pdg9vnii4qR2WARj9AivdQ7I
+OEuGvjf/5YuC5eJ00EppTA6MDv/wfg==
+=yRim
+-----END PGP SIGNATURE-----
+
+--N65f3aqAGEWc/mks--
 
