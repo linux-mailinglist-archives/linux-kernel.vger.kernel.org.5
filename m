@@ -1,129 +1,104 @@
-Return-Path: <linux-kernel+bounces-49169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA40B8466BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:05:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DADA48466C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:08:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8617E28E0B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:05:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C362B23838
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:08:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87B0BEAF2;
-	Fri,  2 Feb 2024 04:05:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAF2AE57A;
+	Fri,  2 Feb 2024 04:08:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b="rRkd3Y9t"
-Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="IZLkoUir"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBFB6E55E;
-	Fri,  2 Feb 2024 04:05:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.185.137.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25C48DF4C;
+	Fri,  2 Feb 2024 04:08:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706846712; cv=none; b=A7eE2M3aQz977k4dYrkxGKxrTPSoznpyN3top40U25ya9MB8ixYs2epy+QQ4agVM4YomR9XFWllJ9SULufBUgM3XNeQY1zKq5KbXGdLvU4nutpq1eEnALrvmohLYbZBR6ieMpywJ8jPYQ/BJTB29bSIsVg8PF/roKeDL8JjYceE=
+	t=1706846916; cv=none; b=XKJQPoDETOUa9HOq8OA4sq+G53pwnSslXQJUvQeQW/QBpMaZ8v88z3Pfl7h3y2ZVEwp0elYWbGJC/+rAX9/3j5wuwmN3LmLkiZVkB/MDiaBXFRFCDxBT1qw8IgYsZeEnPbKr0qO/ymkCicZE8mqcr/YaD2bZ8rHIxiHbxki7nQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706846712; c=relaxed/simple;
-	bh=NNLcYCuc4BF/659D3HxJb+VQHj1+QX8RRAYRfMCjV08=;
-	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
-	 Content-Type:Date:Message-ID; b=Sxx8xBxLAcOvLwnx85/nNcXtYfJWwQwNQGUPQyMA5QedmJGYMvEfevVNxodLs0Nj3woRoIk6M1IckDSzMmfK5SNgD+P+Xmmt+s4bBXhJlhRNRj4L9WCZDiWPgwsJt1Fp7AVbbCyLynn6bXGY69qTG1UH11uDrU+JaMw1seMdTD0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org; spf=pass smtp.mailfrom=openbsd.org; dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b=rRkd3Y9t; arc=none smtp.client-ip=199.185.137.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openbsd.org
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=NNLcYCuc4B
-	F/659D3HxJb+VQHj1+QX8RRAYRfMCjV08=; h=date:references:in-reply-to:
-	subject:cc:to:from; d=openbsd.org; b=rRkd3Y9tCaT99HAOzulVgYIo663rTR0TJ
-	HOrCKvy1wvCo9kQ+VIuoYTuLARxRSwx0FNcS834C5NKE6XhczFPzhxJWbYtiCCCK4o44xQ
-	WYENp4Ro9L5NOlkFoBwFe/MNm6LMRxaQuf9ds27DuUGE6knsEcFGCgb/ZbA60s6scfYD5u
-	b9YJpdlnmv3LxZGFuio1O8F9hp+cqkUZhslMryt1sfmvGhC2OJEd2vwpiZJAycQexyJcvo
-	yw4t24gxBgj2ZJDaZ6Q1JsNnReiVPFff1skgGdcz105x8f3SyERpwV7kjrBqb+velzGYDI
-	tdBDE/yrWOidAHQk5Kqz3YmL3UFAQ==
-Received: from cvs.openbsd.org (localhost [127.0.0.1])
-	by cvs.openbsd.org (OpenSMTPD) with ESMTP id 92cf0eba;
-	Thu, 1 Feb 2024 21:05:10 -0700 (MST)
-From: "Theo de Raadt" <deraadt@openbsd.org>
-To: Jeff Xu <jeffxu@google.com>
-cc: Linus Torvalds <torvalds@linux-foundation.org>,
-    Jeff Xu <jeffxu@chromium.org>,
-    "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-    Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org,
-    keescook@chromium.org, jannh@google.com, sroettger@google.com,
-    willy@infradead.org, gregkh@linuxfoundation.org,
-    usama.anjum@collabora.com, rdunlap@infradead.org,
-    jorgelo@chromium.org, groeck@chromium.org,
-    linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-    linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
-    linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v8 0/4] Introduce mseal
-In-reply-to: <CALmYWFtqcixi3p3Ab44wENJr+n2k2SNaCJEofNm_awnNdJZnDQ@mail.gmail.com>
-References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver> <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com> <20240201204512.ht3e33yj77kkxi4q@revolver> <CABi2SkWB2eV24LBJtgJ73zEwaAWuFhAwrfqx3Rs=tqnpcJ0qRw@mail.gmail.com> <58408.1706828083@cvs.openbsd.org> <CAHk-=wjqozic6JuRimXD=RamnJmD6FoaQki7RtNYrezzx_OfOg@mail.gmail.com> <CALmYWFtqcixi3p3Ab44wENJr+n2k2SNaCJEofNm_awnNdJZnDQ@mail.gmail.com>
-Comments: In-reply-to Jeff Xu <jeffxu@google.com>
-   message dated "Thu, 01 Feb 2024 19:20:08 -0800."
+	s=arc-20240116; t=1706846916; c=relaxed/simple;
+	bh=hnCqnMLbqTjgA3kzNKZYIDfPIzSBOakneymBT4d5+lw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=o8pvWfdZi1oRhfSgPadjB4GIW1So8fnS0iusbfvu77iXoP5AglILpHOybpBQvXVSusIbMnSfiNAkWZB2YMotJqjl1yFqmynGpeiENMrDmkBOPVIe3xjz1m1ZoBwmVrGmrfR/2aCCINLYcapZqhJh4+FFDddAPj5yNfpTfJ1B2S0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=IZLkoUir; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1706846912;
+	bh=WK+WQvIabrXOJxdOo+ANXO7ipDuidcSlXNRYXHPQ5U8=;
+	h=Date:From:To:Cc:Subject:From;
+	b=IZLkoUiryVLuEm97G4HJNK6b01UZJ3JxGl5GCZPL1971I4vPf5L8Txq6tHtB6YB66
+	 sjKVAfpmLr38otPZR+wS6P4DUhWcAmbhZkOLrkega9NNRfyne6mjXZXCxKtCBWs7wA
+	 SxozZXFyQyVXDHaOPuB+9LjAU6zN21KFMRI348jtEv2STFTlCriBn9otGJVvlYG1c0
+	 Jj0K2VwNjAD75HNp6cgu0yMw92dmmnDa8YvJ1X/Tn+/dNCSxtJApf44o8C4YSR0PXv
+	 dB8bbpBle8A0B89X28JUiyOzJ86B54pGVilygKuPO3m0v/M6HyJAJpNnnWTcWQSJjF
+	 zIdTu/riUHYgA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TR2M432pbz4wbh;
+	Fri,  2 Feb 2024 15:08:32 +1100 (AEDT)
+Date: Fri, 2 Feb 2024 15:08:30 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the v4l-dvb-next tree
+Message-ID: <20240202150830.628660c8@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <64877.1706846710.1@cvs.openbsd.org>
-Date: Thu, 01 Feb 2024 21:05:10 -0700
-Message-ID: <8744.1706846710@cvs.openbsd.org>
+Content-Type: multipart/signed; boundary="Sig_/oi9IdmXH=C3EU0XTPUp1aqs";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Jeff Xu <jeffxu@google.com> wrote:
+--Sig_/oi9IdmXH=C3EU0XTPUp1aqs
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> To me, the most important thing is to deliver a feature that's easy to
-> use and works well. I don't want users to mess things up, so if I'm
-> the one giving them the tools, I'm going to make sure they have all
-> the information they need and that there are safeguards in place.
-> 
-> e.g. considering the following user case:
-> 1> a security sensitive data is allocated from heap, using malloc,
-> from the software component A, and filled with information.
-> 2> software component B then uses mprotect to change it to RO, and
-> seal it using mseal().
+Hi all,
 
-  p = malloc(80);
-  mprotect(p & ~4095, 4096, PROT_NONE);
-  free(p);
+The following commit is also in v4l-dvb-fixes tree as a different commit
+(but the same patch):
 
-Will you save such a developer also?  No.
+  592bb51d048c ("media: atomisp: Adjust for v4l2_subdev_state handling chan=
+ges in 6.8")
 
-Since the same problem you describe already exists with mprotect() what
-does mseal() even have to do with your proposal?
+This is commit
 
-What about this?
+  f66556c1333b ("media: atomisp: Adjust for v4l2_subdev_state handling chan=
+ges in 6.8")
 
-  p = malloc(80);
-  munmap(p & ~4095, 4096);
-  free(p);
+in the v4l-dvb-fixes tree.
 
-And since it is not sealed, how about madvise operations on a proper
-non-malloc memory allocation?  Well, the process smashes it's own
-memory.  And why is it not sealed?  You make it harder to seal memory!
+--=20
+Cheers,
+Stephen Rothwell
 
-How about this?
+--Sig_/oi9IdmXH=C3EU0XTPUp1aqs
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-  p = malloc(80);
-  bzero(p, 100000;
+-----BEGIN PGP SIGNATURE-----
 
-Yes it is a buffer overflow.  But this is all the same class of software
-problem:
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmW8ar4ACgkQAVBC80lX
+0GwkfQf+NCYeEeae3ywRjcbryIwFT050K/QaqV4NwHGncWbsjpuDQ64TCgB3R/wD
+fvacdc0cLXWX+NfO6AdwU/IbRfiC3WrIouhqV85fLP/TaGZ9bLrxlhQTOKBxA2Gz
+a9P19xIIMHGU56JHr0TmVXhq7jY8wTHwUbbXZW0WMVzeBLbKNEnGc2E3EBqEiyp+
+pjPjYmOHqz5KZd1gM29vcpzrwPY3uaOQKeoUwWoAIj1Q+1e6EsIyiqt3mzLDa8CY
+PbooPW8IkZE/tTljWCqmX+33IDNsYctke+DzA9G2cSCmElvynTKl5pjknK2+5Sva
+x5j7Nnf6e/MOZKwE8YUoSvmRDsahbQ==
+=KJ1k
+-----END PGP SIGNATURE-----
 
-Memory belongs to processes, which belongs to the program, which is coded
-by the programmer, who has to learn to be careful and handle the memory correctly.
-
-mseal() / mimmutable() add *no new expectation* to a careful programmer,
-because they expected to only use it on memory that they *promise will never
-be de-allocated or re-permissioned*.
-
-What you are proposing is not a "mitigation", it entirely cripples the
-proposed subsystem because you are afraid of it; because you have cloned a
-memory subsystem primitive you don't fully understand; and this is because
-you've not seen a complete operating system using it.
-
-When was the last time you developed outside of Chrome?
-
-This is systems programming.  The kernel supports all the programs, not
-just the one holy program from god.
+--Sig_/oi9IdmXH=C3EU0XTPUp1aqs--
 
