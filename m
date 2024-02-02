@@ -1,153 +1,229 @@
-Return-Path: <linux-kernel+bounces-49238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49239-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C3488467CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:04:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D89A8467D2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:15:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87F2D28BC3D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:04:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C55C1C24323
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:15:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5948017555;
-	Fri,  2 Feb 2024 06:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8AE71755E;
+	Fri,  2 Feb 2024 06:15:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a4ZaMBDv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LwF5HFzu"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9287717547;
-	Fri,  2 Feb 2024 06:04:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56FE51754C
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 06:15:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706853847; cv=none; b=BzcPslsGV9Lk/EoZZ2dmODDIeiL/NGH+E1apj3xxqx6CZ6b4yAfjKnZvenNq1YSL6uyEkPul/moO5ueRhniAhiSMwzS+QVh/GR62wBXXF+bzZM6RMYdsK6dHXBTBykY7okFRF8dIFEFAb49Uq8kJSPSJqk69ht38W+zX2n2VQnE=
+	t=1706854549; cv=none; b=kw/7uUJ22UmPF7vez6Fz63TWv701SNURU37wyDtulZbHBtp63cy9eD5T83PVjEyZuwlAcXDPCUyPnA9aP62uzvxnJ+5eYzWrUehExnEByceO6thEsq12j7e8wA7kPL41YhszGnvlLg6WTor4vnJn3WOBbMKuIZODdsVvhAZ1N30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706853847; c=relaxed/simple;
-	bh=q9Ziz4l7b3bEIEH2wHez2bI0i2FEn3bnuA8lIONGyvA=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=kMNqw5WR9I71iuk6t2SD29YqhMGjLsV8N4KP/+UrsnKNHExjAXNonyJooATFd+UtGcGwr/z0eVi4UQH8SHjhG9DR1s3AEk12cbwYjBPNKFXHBDMjuxh5k7YG2//viP5BzoUd1UZyMGoEtPaVipr6pE7xW+RIv4ou2+3BSLk5ptk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a4ZaMBDv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2A38C433C7;
-	Fri,  2 Feb 2024 06:04:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706853847;
-	bh=q9Ziz4l7b3bEIEH2wHez2bI0i2FEn3bnuA8lIONGyvA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=a4ZaMBDvUSerM5Vsg0MLGQqLfVm7VrWxHu/cuTIkI/Y/HWB2zGeRkFAyPN76RgEIK
-	 DQs/AGTT99td7gh0zKLzNhKTLL1ht592bqDmGZUg3VNYkRaepuHBylB2Qo2974pVA1
-	 rffwxp0mjeU1BWOuxiOMKi5i8zOdIhIWcWxP/RrUZfvFmDC28rDpTA539Ph6RnFt/p
-	 ala226m6eC5JE3ItjRET3a0vzp8B9/CwWLjZN9uodGj9H072Osn6BkIrr/ZfpRmU/9
-	 uoRGZ8O3XDoGQ6+/nrHvX4yVbiG02t3H/IHCjX1CfDx8tbd1+jPJ/Gla8t5yH6Q8MA
-	 uNrZDK5NX/xLw==
-Date: Fri, 2 Feb 2024 15:04:03 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc: linux-trace-kernel@vger.kernel.org, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Pengutronix Kernel Team
- <kernel@pengutronix.de>
-Subject: Re: Boot-time dumping of ftrace fuctiongraph buffer
-Message-Id: <20240202150403.7ccc4126dbeaad8bdf77c384@kernel.org>
-In-Reply-To: <d33e5271-219d-4b8e-be5a-8903219d7fd6@pengutronix.de>
-References: <d33e5271-219d-4b8e-be5a-8903219d7fd6@pengutronix.de>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706854549; c=relaxed/simple;
+	bh=OCQzyEernErTiBbOinzinjqKGcvOczIkmmI+fHqcj4M=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=fnuWHSPEF0M/ZCIEmWlAPfnPew26oeSWkb8y/JpFchLlUHXE55qrfV3sGdadKfjMjXH2pF28oK6jeArZX8vEZhpFrYqk24dHi6F3+M6FZpv2Ls92GCwk861pU+QC50b2QYOh8C8l1J5YUAjfnVC9yp7YZq8rrRPPdKFHm4c6fxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LwF5HFzu; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b267bf11so2151553276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 22:15:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706854546; x=1707459346; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ToMQh9MBYwlmTbfVjgqllQD0+5gjP+gk6l8SI0jON1k=;
+        b=LwF5HFzuP1u+49UNK//0LwDWo3Kz+5UoDwQ5ByVF42OwYFyszfOtEBwYUuGZeMCKEb
+         VkmHG1mbaFfSiKdTkFi9lrjuvDw+ghlk03FpYg5MS8ogGz+61FjiKJ8mdKoomHVq2QI3
+         XHTNQtUaq9XooDhfLRe7GKg7/TdHnjAsLUYuhAQzocZSdl4Lqciv7EpdZjDKNw+wgzbJ
+         +hKSyVkYOFv2BwUPMrwIr0l1I9FlUrdQ+yBM/9Qh+7h/MJjopJZzrlUFNVdW8IO/9FuO
+         xaVAXlwvo7simVD3xrohdQbBgsvdsWVcwhgSCRQDsYK33P6XAUARKs0S+PnzsspzWOJh
+         HBuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706854546; x=1707459346;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ToMQh9MBYwlmTbfVjgqllQD0+5gjP+gk6l8SI0jON1k=;
+        b=XSW1NHRNY9ZY+vVhcT4l6sDgGi1ZAczNLSpkDYFfOHArX10WTUpQkovs3LQlvezWmg
+         9MUcDz9hXpOYbk4z8nlTWTvsOuKE0sw4QPrDm4YvK/AlSFLldXB0N+AHstb8YfbqZpYB
+         pQbxNDgTGbZ+UgqPTa9d0At6bZ84nMLeKQ8Thveb20QIe8GdKmzp2qx+9CGhnACdEgou
+         Uz2SI03elkUHw/ME4GPqQmUUIAWcXWRKeqzWD+B3oFjaqw6s93cHu/ue4DYj4an7yOC/
+         maW6c0K/+vHDIr02///IFtXvmjAb1R8SDOuJikroeTGZ+uqhnPUBHE/UyF/lOgF3EZQV
+         96aA==
+X-Gm-Message-State: AOJu0Yw4yqIh6ZpVzPwAbj2leiYRZFMjm6I9B/iV9AZRtSJD28sk+Swv
+	Er8rs2+j4jxB8FCSlH9xSDEfahxZovdT8s3JwWu9WUYxEVF5v7OCSS7BgeWcnx+jQQvKjSHX6C9
+	yzNuUzw==
+X-Google-Smtp-Source: AGHT+IEGuUtuz4V+hJTjTG5ndRXX1/JkjFWcK4HLGjCODrcsINQMSzqIEv6DOD9ZaJ0v+SXcY224B/wiqwfs
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:a85f:db1d:a66b:7f53])
+ (user=irogers job=sendgmr) by 2002:a05:6902:11ce:b0:dc6:b982:cfa2 with SMTP
+ id n14-20020a05690211ce00b00dc6b982cfa2mr156881ybu.8.1706854546285; Thu, 01
+ Feb 2024 22:15:46 -0800 (PST)
+Date: Thu,  1 Feb 2024 22:15:07 -0800
+Message-Id: <20240202061532.1939474-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
+Subject: [PATCH v8 00/25] maps/threads/dsos memory improvements and fixes
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Nick Terrell <terrelln@fb.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Andi Kleen <ak@linux.intel.com>, 
+	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Huacai Chen <chenhuacai@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	"Steinar H. Gunderson" <sesse@google.com>, Liam Howlett <liam.howlett@oracle.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, Colin Ian King <colin.i.king@gmail.com>, 
+	Dmitrii Dolgov <9erthalion6@gmail.com>, Yang Jihong <yangjihong1@huawei.com>, 
+	Ming Wang <wangming01@loongson.cn>, James Clark <james.clark@arm.com>, 
+	K Prateek Nayak <kprateek.nayak@amd.com>, Sean Christopherson <seanjc@google.com>, Leo Yan <leo.yan@linaro.org>, 
+	Ravi Bangoria <ravi.bangoria@amd.com>, German Gomez <german.gomez@arm.com>, 
+	Changbin Du <changbin.du@huawei.com>, Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>, 
+	Sandipan Das <sandipan.das@amd.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, Guilherme Amadio <amadio@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Ahmad,
+Modify the implementation of maps to not use an rbtree as the
+container for maps, instead use a sorted array. Improve locking and
+reference counting issues.
 
-On Thu, 1 Feb 2024 13:21:37 +0100
-Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+Similar to maps separate out and reimplement threads to use a hashmap
+for lower memory consumption and faster look up. The fixes a
+regression in memory usage where reference count checking switched to
+using non-invasive tree nodes.  Reduce its default size by 32 times
+and improve locking discipline. Also, fix regressions where tids had
+become unordered to make `perf report --tasks` and
+`perf trace --summary` output easier to read.
 
-> Hello,
-> 
-> I semi-regularly debug probe failures. For drivers that use dev_err_probe
-> rigorously, this is a quick matter: The probe function records a deferral reason
-> and if the deferral persists, deferred_probe_timeout_work_func() will print
-> the collected reasons, even if PID 1 is never started.
-> 
-> For drivers that don't call dev_err_probe, I find myself sometimes doing printf
-> debugging inside the probe function.
-> 
-> I would like to replace this with the function graph tracer:
-> 
->   - record the probe function, configured over kernel command line
->     (The device indefinitely deferring probe is printed to the console,
->      so I know what I am looking for on the next boot)
-> 
->   - Dump the function graph trace
-> 
->   - See if the last call before (non-devm) cleanup is getting a clock, a GPIO,
->     a regulator or w/e.
+Better encapsulate the dsos abstraction. Remove the linked list and
+rbtree used for faster iteration and log(n) lookup to a sorted array
+for similar performance but half the memory usage per dso. Improve
+reference counting and locking discipline, adding reference count
+checking to dso.
 
-What kind of information you prints by the printk()?
-If the target (suspicious driver probe function) is obvious, you can use kprobe
-event and tp_printk. Or, even if you don't know, if you are sure which function
-is the starting/ending point, you can use bootconfig to record the specific part
-of execution in the ring buffer, and dump it as Steve said.
+v8:
+ - in "perf maps: Switch from rbtree to lazily sorted array for
+   addresses" use accessors and remove some duplicative invariant checks as
+   requested by Namhyung.
 
-In Documentation/trace/boottime-trace.rst, there is an example.
------
-With the trigger action and kprobes, you can trace function-graph while
-a function is called. For example, this will trace all function calls in
-the pci_proc_init()::
+v7:
+ - rebase to latest perf-tools-next where 22 patches were applied by Arnaldo.
+ - resolve merge conflicts, in particular with fc044c53b99f ("perf
+   annotate-data: Add dso->data_types tree") that required more dso
+   accessor functions.
 
-  ftrace {
-        tracing_on = 0
-        tracer = function_graph
-        event.kprobes {
-                start_event {
-                        probes = "pci_proc_init"
-                        actions = "traceon"
-                }
-                end_event {
-                        probes = "pci_proc_init%return"
-                        actions = "traceoff"
-                }
-        }
-  }
------
+v6 series is here:
+https://lore.kernel.org/lkml/20231207011722.1220634-1-irogers@google.com/
 
-Thank you,
+Ian Rogers (25):
+  perf maps: Switch from rbtree to lazily sorted array for addresses
+  perf maps: Get map before returning in maps__find
+  perf maps: Get map before returning in maps__find_by_name
+  perf maps: Get map before returning in maps__find_next_entry
+  perf maps: Hide maps internals
+  perf maps: Locking tidy up of nr_maps
+  perf dso: Reorder variables to save space in struct dso
+  perf report: Sort child tasks by tid
+  perf trace: Ignore thread hashing in summary
+  perf machine: Move fprintf to for_each loop and a callback
+  perf threads: Move threads to its own files
+  perf threads: Switch from rbtree to hashmap
+  perf threads: Reduce table size from 256 to 8
+  perf dsos: Attempt to better abstract dsos internals
+  perf dsos: Tidy reference counting and locking
+  perf dsos: Add dsos__for_each_dso
+  perf dso: Move dso functions out of dsos
+  perf dsos: Switch more loops to dsos__for_each_dso
+  perf dsos: Switch backing storage to array from rbtree/list
+  perf dsos: Remove __dsos__addnew
+  perf dsos: Remove __dsos__findnew_link_by_longname_id
+  perf dsos: Switch hand code to bsearch
+  perf dso: Add reference count checking and accessor functions
+  perf dso: Reference counting related fixes
+  perf dso: Use container_of to avoid a pointer in dso_data
 
-> 
-> For this to be maximally useful, I need to configure this not only at boot-time,
-> but also dump the ftrace buffer at boot time. Probe deferral can hinder the kernel from
-> calling init and providing a shell, where I could read /sys/kernel/tracing/trace.
-> 
-> I found following two mechanisms that looked relevant, but seem not to
-> do exactly what I want:
-> 
->   - tp_printk: seems to be related to trace points only and not usable
->     for the function graph output
-> 
->   - dump_on_oops: I don't get an Oops if probe deferral times out, but maybe
->     one could patch the kernel to check a oops_on_probe_deferral or dump_on_probe_deferral
->     kernel command line parameter in deferred_probe_timeout_work_func()?
-> 
-> 
-> Is there existing support that I am missing? Any input on whether this
-> would be a welcome feature to have?
-> 
-> Thanks!
-> 
-> Cheers,
-> Ahmad
->     
-> -- 
-> Pengutronix e.K.                           |                             |
-> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
->  
-
+ tools/perf/arch/x86/tests/dwarf-unwind.c      |    1 +
+ tools/perf/builtin-annotate.c                 |    8 +-
+ tools/perf/builtin-buildid-cache.c            |    2 +-
+ tools/perf/builtin-buildid-list.c             |   18 +-
+ tools/perf/builtin-inject.c                   |   96 +-
+ tools/perf/builtin-kallsyms.c                 |    2 +-
+ tools/perf/builtin-mem.c                      |    4 +-
+ tools/perf/builtin-record.c                   |    2 +-
+ tools/perf/builtin-report.c                   |  209 +--
+ tools/perf/builtin-script.c                   |    8 +-
+ tools/perf/builtin-top.c                      |    4 +-
+ tools/perf/builtin-trace.c                    |   43 +-
+ tools/perf/tests/code-reading.c               |    8 +-
+ tools/perf/tests/dso-data.c                   |   67 +-
+ tools/perf/tests/hists_common.c               |    6 +-
+ tools/perf/tests/hists_cumulate.c             |    4 +-
+ tools/perf/tests/hists_output.c               |    2 +-
+ tools/perf/tests/maps.c                       |    7 +-
+ tools/perf/tests/symbols.c                    |    2 +-
+ tools/perf/tests/thread-maps-share.c          |    8 +-
+ tools/perf/tests/vmlinux-kallsyms.c           |   16 +-
+ tools/perf/ui/browsers/annotate.c             |    6 +-
+ tools/perf/ui/browsers/hists.c                |    8 +-
+ tools/perf/ui/browsers/map.c                  |    4 +-
+ tools/perf/util/Build                         |    1 +
+ tools/perf/util/annotate-data.c               |    6 +-
+ tools/perf/util/annotate.c                    |   45 +-
+ tools/perf/util/auxtrace.c                    |    2 +-
+ tools/perf/util/block-info.c                  |    2 +-
+ tools/perf/util/bpf-event.c                   |    9 +-
+ tools/perf/util/bpf_lock_contention.c         |    8 +-
+ tools/perf/util/build-id.c                    |  136 +-
+ tools/perf/util/build-id.h                    |    2 -
+ tools/perf/util/callchain.c                   |    4 +-
+ tools/perf/util/data-convert-json.c           |    2 +-
+ tools/perf/util/db-export.c                   |    6 +-
+ tools/perf/util/dlfilter.c                    |   12 +-
+ tools/perf/util/dso.c                         |  469 +++---
+ tools/perf/util/dso.h                         |  549 ++++++-
+ tools/perf/util/dsos.c                        |  529 ++++---
+ tools/perf/util/dsos.h                        |   40 +-
+ tools/perf/util/event.c                       |   12 +-
+ tools/perf/util/header.c                      |    8 +-
+ tools/perf/util/hist.c                        |    4 +-
+ tools/perf/util/intel-pt.c                    |   22 +-
+ tools/perf/util/machine.c                     |  570 +++-----
+ tools/perf/util/machine.h                     |   32 +-
+ tools/perf/util/map.c                         |   73 +-
+ tools/perf/util/maps.c                        | 1298 +++++++++++------
+ tools/perf/util/maps.h                        |   65 +-
+ tools/perf/util/probe-event.c                 |   26 +-
+ tools/perf/util/rb_resort.h                   |    5 -
+ .../util/scripting-engines/trace-event-perl.c |    6 +-
+ .../scripting-engines/trace-event-python.c    |   21 +-
+ tools/perf/util/session.c                     |   21 +
+ tools/perf/util/session.h                     |    2 +
+ tools/perf/util/sort.c                        |   19 +-
+ tools/perf/util/srcline.c                     |   65 +-
+ tools/perf/util/symbol-elf.c                  |  132 +-
+ tools/perf/util/symbol.c                      |  217 +--
+ tools/perf/util/symbol_fprintf.c              |    4 +-
+ tools/perf/util/synthetic-events.c            |   24 +-
+ tools/perf/util/thread.c                      |    8 +-
+ tools/perf/util/thread.h                      |    6 -
+ tools/perf/util/threads.c                     |  186 +++
+ tools/perf/util/threads.h                     |   35 +
+ tools/perf/util/unwind-libunwind-local.c      |   20 +-
+ tools/perf/util/unwind-libunwind.c            |    9 +-
+ tools/perf/util/vdso.c                        |   56 +-
+ 69 files changed, 3143 insertions(+), 2160 deletions(-)
+ create mode 100644 tools/perf/util/threads.c
+ create mode 100644 tools/perf/util/threads.h
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.43.0.594.gd9cf4e227d-goog
+
 
