@@ -1,295 +1,151 @@
-Return-Path: <linux-kernel+bounces-49160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A55E78466A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:53:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 521888466AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:54:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71FA9B26C95
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:53:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 856A61C24517
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:54:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6692BE573;
-	Fri,  2 Feb 2024 03:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80994E541;
+	Fri,  2 Feb 2024 03:54:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BWkmgNvs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b="srWsV+Hn"
+Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DBE8E549;
-	Fri,  2 Feb 2024 03:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C147AE54E;
+	Fri,  2 Feb 2024 03:54:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.185.137.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706846000; cv=none; b=Ckw3xe6E3LymYaBCmkaTJ9EV7ZJDpNgf9F6FKoYxONZmJRBz2AGApRQqlHz7j3ADnreik3v+/jxCidtNMPATfThQKP+bemYzwfgdcjyDlhGvkAvEtsTAQYanxkqU4tfsG/axuOP7RoProwO3YwbGrRpX6hJftVdTvnFpv0QBGtc=
+	t=1706846058; cv=none; b=LPI4dzk38iDnUpy6v6h0sUsNs2VuPFdr2wv7/MtjinynnZMqEuNgpzz9ntXfmSIDPKnvNNFiYJV+K0MlAYhvR/AGNBR0JbhcZgZM3w3RcO9rAG0oJCsPrABw0wE2A5hiT5epUSnxxQTqKnEeDoJ4SVHW+xnMGoS9BKMI+2FMxbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706846000; c=relaxed/simple;
-	bh=3WcD8DCEvMEUv+2oQxxbFJxN/+ZqIL/ovqG9CcxSabs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I9waz9hRbg7KhCYLDDM7bby3X6rika0y3co9jpm1TUivYo3j8Ai+bqtM6gAXuBxwgTdKlRZlSasSGoIqW5a05eAoyrQNFe3UrYcF8R3DUlGToHUit+pffAPWC5VP4eQqsjEtoePKE7Xyc6Rq7MhgWz1foWs4QI5MtdRPR//jMRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BWkmgNvs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A96CC433C7;
-	Fri,  2 Feb 2024 03:53:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706846000;
-	bh=3WcD8DCEvMEUv+2oQxxbFJxN/+ZqIL/ovqG9CcxSabs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BWkmgNvsGxEWEs9AH7uUpf63vgbNfsgtO4uYq/9bGC12cqwH3Yjz3IXY4dbjzI5ds
-	 5X1VrnigyrIEHjPXYWyWQit1F/13JIIfSrBHtlm/Whqu683EglPnHR8c6w8Mev48rB
-	 wtT8dV9EoOuLjREBE4RGT4xoyTPzthuUYYIb5jILX2ik4eyva7KY7rYkg6h2f890D4
-	 uYxbBgNNoCnS/p4t5nqyvy3U5Fk6Gwl1ZziGuSuPIa3MoLfxeXLgIYvOPN6YVn+brc
-	 2pRYiHQiFNMS1JD2WuTkCYDdsoxy8bNYsLZ00dV+t125EDchQaUTR8DKARlGr+IJrO
-	 duEdcKDF0pZDg==
-Date: Thu, 1 Feb 2024 21:53:16 -0600
-From: Bjorn Andersson <andersson@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Abel Vesa <abel.vesa@linaro.org>, 
-	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
-	linux-pci@vger.kernel.org, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [RFC 8/9] PCI/pwrctl: add PCI power control core code
-Message-ID: <7tbhdkqpl4iuaxmc73pje2nbbkarxxpgmabc7j4q26d2rhzrv5@ltu6niel5eb4>
-References: <20240201155532.49707-1-brgl@bgdev.pl>
- <20240201155532.49707-9-brgl@bgdev.pl>
+	s=arc-20240116; t=1706846058; c=relaxed/simple;
+	bh=WjNo16b/STfHvXt9OMjgk8r1gC4Z6JZKxMLw9N2xD3U=;
+	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
+	 Content-Type:Date:Message-ID; b=KS4r+KEIY7jJtRJyPg+URImPzMoRnHGiMMzgLwEdRVZPzf3BQVfTpGWcniCtlL5p5xJ+Vs/IhfvY+Re6GKAsgDNe1Aka1//CyQazu02+mn43zDwVl8rX4KMWkqzVb634nVikXea2Qm22fep3+muNdZmzLnp61Pi+eWUsnDbseBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org; spf=pass smtp.mailfrom=openbsd.org; dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b=srWsV+Hn; arc=none smtp.client-ip=199.185.137.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openbsd.org
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=WjNo16b/ST
+	fHvXt9OMjgk8r1gC4Z6JZKxMLw9N2xD3U=; h=date:references:in-reply-to:
+	subject:cc:to:from; d=openbsd.org; b=srWsV+HnLtpvB+QfkypXALDhe89gSURfj
+	9QsjUCoNIba8rQtIspUA96OUAxdwBAkIRZW3xRJBmvkFIdyXb1Rm5FEnEIWdincqLmS8zd
+	U4uZo6sPDlyjwokrCJCtXMAq156XjvV8oSCpUKiPlEfKNz1EPrLzi091RLzpAhvQ40CTbc
+	wL5ce3EhNX90O/708OLsIBaXjKZBbiq+O4dzoWvORnKo41Fv+hhrc6gNanQKMAURq6RKL7
+	90593115uptjPwfy8yjnN47tHvh5AriEgZk3NBK7Dwmyb82tU03ZqR5pKbHd1heLe4TiDZ
+	uIkHLQsUEg3nccHocwq/E40g/EcgA==
+Received: from cvs.openbsd.org (localhost [127.0.0.1])
+	by cvs.openbsd.org (OpenSMTPD) with ESMTP id 3f963060;
+	Thu, 1 Feb 2024 20:54:10 -0700 (MST)
+From: "Theo de Raadt" <deraadt@openbsd.org>
+To: Jeff Xu <jeffxu@chromium.org>
+cc: Eric Biggers <ebiggers@kernel.org>, akpm@linux-foundation.org,
+    keescook@chromium.org, jannh@google.com, sroettger@google.com,
+    willy@infradead.org, gregkh@linuxfoundation.org,
+    torvalds@linux-foundation.org, usama.anjum@collabora.com,
+    rdunlap@infradead.org, jeffxu@google.com, jorgelo@chromium.org,
+    groeck@chromium.org, linux-kernel@vger.kernel.org,
+    linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+    pedro.falcato@gmail.com, dave.hansen@intel.com,
+    linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v8 2/4] mseal: add mseal syscall
+In-reply-to: <CABi2SkWW78n3PK3Qk5cCzpjb57ZCoLmybA1ds3=rHrGMams7sw@mail.gmail.com>
+References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131175027.3287009-3-jeffxu@chromium.org> <20240201231151.GA41472@sol.localdomain> <CABi2SkWW78n3PK3Qk5cCzpjb57ZCoLmybA1ds3=rHrGMams7sw@mail.gmail.com>
+Comments: In-reply-to Jeff Xu <jeffxu@chromium.org>
+   message dated "Thu, 01 Feb 2024 19:30:29 -0800."
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240201155532.49707-9-brgl@bgdev.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 01 Feb 2024 20:54:10 -0700
+Message-ID: <96087.1706846050@cvs.openbsd.org>
 
-On Thu, Feb 01, 2024 at 04:55:31PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> Some PCI devices must be powered-on before they can be detected on the
-> bus. Introduce a simple framework reusing the existing PCI OF
-> infrastructure.
-> 
-> The way this works is: a DT node representing a PCI device connected to
-> the port can be matched against its power control platform driver. If
-> the match succeeds, the driver is responsible for powering-up the device
-> and calling pcie_pwrctl_device_enable() which will trigger a PCI bus
-> rescan as well as subscribe to PCI bus notifications.
-> 
-> When the device is detected and created, we'll make it consume the same
-> DT node that the platform device did. When the device is bound, we'll
-> create a device link between it and the parent power control device.
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
->  drivers/pci/Kconfig         |  1 +
->  drivers/pci/Makefile        |  1 +
->  drivers/pci/pwrctl/Kconfig  |  8 ++++
->  drivers/pci/pwrctl/Makefile |  3 ++
->  drivers/pci/pwrctl/core.c   | 82 +++++++++++++++++++++++++++++++++++++
->  include/linux/pci-pwrctl.h  | 24 +++++++++++
->  6 files changed, 119 insertions(+)
->  create mode 100644 drivers/pci/pwrctl/Kconfig
->  create mode 100644 drivers/pci/pwrctl/Makefile
->  create mode 100644 drivers/pci/pwrctl/core.c
->  create mode 100644 include/linux/pci-pwrctl.h
-> 
-> diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
-> index 74147262625b..5b9b84f8774f 100644
-> --- a/drivers/pci/Kconfig
-> +++ b/drivers/pci/Kconfig
-> @@ -291,5 +291,6 @@ source "drivers/pci/hotplug/Kconfig"
->  source "drivers/pci/controller/Kconfig"
->  source "drivers/pci/endpoint/Kconfig"
->  source "drivers/pci/switch/Kconfig"
-> +source "drivers/pci/pwrctl/Kconfig"
->  
->  endif
-> diff --git a/drivers/pci/Makefile b/drivers/pci/Makefile
-> index cc8b4e01e29d..6ae202d950f8 100644
-> --- a/drivers/pci/Makefile
-> +++ b/drivers/pci/Makefile
-> @@ -9,6 +9,7 @@ obj-$(CONFIG_PCI)		+= access.o bus.o probe.o host-bridge.o \
->  
->  obj-$(CONFIG_PCI)		+= msi/
->  obj-$(CONFIG_PCI)		+= pcie/
-> +obj-$(CONFIG_PCI)		+= pwrctl/
->  
->  ifdef CONFIG_PCI
->  obj-$(CONFIG_PROC_FS)		+= proc.o
-> diff --git a/drivers/pci/pwrctl/Kconfig b/drivers/pci/pwrctl/Kconfig
-> new file mode 100644
-> index 000000000000..e2dc5e5d2af1
-> --- /dev/null
-> +++ b/drivers/pci/pwrctl/Kconfig
-> @@ -0,0 +1,8 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +menu "PCI Power control drivers"
-> +
-> +config PCI_PWRCTL
-> +	bool
-> +
-> +endmenu
-> diff --git a/drivers/pci/pwrctl/Makefile b/drivers/pci/pwrctl/Makefile
-> new file mode 100644
-> index 000000000000..4381cfbf3f21
-> --- /dev/null
-> +++ b/drivers/pci/pwrctl/Makefile
-> @@ -0,0 +1,3 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +obj-$(CONFIG_PCI_PWRCTL)		+= core.o
-> diff --git a/drivers/pci/pwrctl/core.c b/drivers/pci/pwrctl/core.c
-> new file mode 100644
-> index 000000000000..312e6fe95c31
-> --- /dev/null
-> +++ b/drivers/pci/pwrctl/core.c
-> @@ -0,0 +1,82 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2024 Linaro Ltd.
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/export.h>
-> +#include <linux/kernel.h>
-> +#include <linux/pci.h>
-> +#include <linux/pci-pwrctl.h>
-> +#include <linux/property.h>
-> +#include <linux/slab.h>
-> +
-> +static int pci_pwrctl_notify(struct notifier_block *nb, unsigned long action,
-> +			     void *data)
-> +{
-> +	struct pci_pwrctl *pwrctl = container_of(nb, struct pci_pwrctl, nb);
-> +	struct device *dev = data;
-> +
-> +	if (dev_fwnode(dev) != dev_fwnode(pwrctl->dev))
-> +		return NOTIFY_DONE;
-> +
-> +	switch (action) {
-> +	case BUS_NOTIFY_ADD_DEVICE:
-> +		device_set_of_node_from_dev(dev, pwrctl->dev);
+Jeff Xu <jeffxu@chromium.org> wrote:
 
-What happens if the bootloader left the power on, and the
-of_platform_populate() got probe deferred because the pwrseq wasn't
-ready, so this happens after pci_set_of_node() has been called?
+> On Thu, Feb 1, 2024 at 3:11=E2=80=AFPM Eric Biggers <ebiggers@kernel.org>=
+ wrote:
+> >
+> > On Wed, Jan 31, 2024 at 05:50:24PM +0000, jeffxu@chromium.org wrote:
+> > > [PATCH v8 2/4] mseal: add mseal syscall
+> > [...]
+> > > +/*
+> > > + * The PROT_SEAL defines memory sealing in the prot argument of mmap=
+().
+> > > + */
+> > > +#define PROT_SEAL    0x04000000      /* _BITUL(26) */
+> > > +
+> > >  /* 0x01 - 0x03 are defined in linux/mman.h */
+> > >  #define MAP_TYPE     0x0f            /* Mask for type of mapping */
+> > >  #define MAP_FIXED    0x10            /* Interpret addr exactly */
+> > > @@ -33,6 +38,9 @@
+> > >  #define MAP_UNINITIALIZED 0x4000000  /* For anonymous mmap, memory c=
+ould be
+> > >                                        * uninitialized */
+> > >
+> > > +/* map is sealable */
+> > > +#define MAP_SEALABLE 0x8000000       /* _BITUL(27) */
+> >
+> > IMO this patch is misleading, as it claims to just be adding a new sysc=
+all, but
+> > it actually adds three new UAPIs, only one of which is the new syscall.=
+  The
+> > other two new UAPIs are new flags to the mmap syscall.
+> >
+> The description does include all three. I could update the patch title.
+>=20
+> > Based on recent discussions, it seems the usefulness of the new mmap fl=
+ags has
+> > not yet been established.  Note also that there are only a limited numb=
+er of
+> > mmap flags remaining, so we should be careful about allocating them.
+> >
+> > Therefore, why not start by just adding the mseal syscall, without the =
+new mmap
+> > flags alongside it?
+> >
+> > I'll also note that the existing PROT_* flags seem to be conventionally=
+ used for
+> > the CPU page protections, as opposed to kernel-specific properties of t=
+he VMA
+> > object.  As such, PROT_SEAL feels a bit out of place anyway.  If it's a=
+dded at
+> > all it perhaps should be a MAP_* flag, not PROT_*.  I'm not sure this a=
+spect has
+> > been properly discussed yet, seeing as the patchset is presented as jus=
+t adding
+> > sys_mseal().  Some reviewers may not have noticed or considered the new=
+ flags.
+> >
+> MAP_ flags is more used for type of mapping, such as MAP_FIXED_NOREPLACE.
+>=20
+> The PROT_SEAL might make more sense because sealing the protection bit
+> is the main functionality of the sealing at this moment.
 
-(I think dev->of_node will be put, then get and then node_reused
-assigned...but I'm not entirely sure)
+Jeff, please show a piece of software that needs to do PROT_SEAL as
+mprotect() or mmap() argument.
 
-> +		break;
-> +	case BUS_NOTIFY_BOUND_DRIVER:
-> +		pwrctl->link = device_link_add(dev, pwrctl->dev,
-> +					       DL_FLAG_AUTOREMOVE_CONSUMER);
-> +		if (!pwrctl->link)
-> +			dev_err(pwrctl->dev, "Failed to add device link\n");
-> +		break;
-> +	case BUS_NOTIFY_UNBOUND_DRIVER:
-> +		device_link_del(pwrctl->link);
+Please don't write it as a vague essay.
 
-This might however become a NULL-pointer dereference, if dev was bound
-to its driver before the pci_pwrctl_notify() was registered for the
-pwrctl and then the PCI device is unbound.
+Instead, take a piece of existing code, write a diff, and show your work.
 
-This would also happen if device_link_add() failed when the PCI device
-was bound...
+Then explain that diff, justify why doing the PROT_SEAL as an argument
+of mprotect() or mmap() is a required improvement, and show your Linux
+developer peers that you can do computer science.
 
-> +		break;
-> +	}
-> +
-> +	return NOTIFY_DONE;
-> +}
-> +
-> +int pci_pwrctl_device_enable(struct pci_pwrctl *pwrctl)
+I did the same work in OpenBSD, at least 25% time over 2 years, and I
+had to prove my work inside my development community.  I had to prove
+that it worked system wide, not in 1 program, with hand-waving for the
+rest.  If I had said "Looks, it works in ssh, trust me it works in other
+programs", it would not have gone further.
 
-This function doesn't really "enable the device", looking at the example
-driver it's rather "device_enabled" than "device_enable"...
-
-> +{
-> +	if (!pwrctl->dev)
-> +		return -ENODEV;
-> +
-> +	pwrctl->nb.notifier_call = pci_pwrctl_notify;
-> +	bus_register_notifier(&pci_bus_type, &pwrctl->nb);
-> +
-> +	pci_lock_rescan_remove();
-> +	pci_rescan_bus(to_pci_dev(pwrctl->dev->parent)->bus);
-> +	pci_unlock_rescan_remove();
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(pci_pwrctl_device_enable);
-> +
-> +void pci_pwrctl_device_disable(struct pci_pwrctl *pwrctl)
-
-Similarly this doesn't disable the device, the code calling this is
-doing so...
-
-Regards,
-Bjorn
-
-> +{
-> +	bus_unregister_notifier(&pci_bus_type, &pwrctl->nb);
-> +}
-> +EXPORT_SYMBOL_GPL(pci_pwrctl_device_disable);
-> +
-> +static void devm_pci_pwrctl_device_disable(void *data)
-> +{
-> +	struct pci_pwrctl *pwrctl = data;
-> +
-> +	pci_pwrctl_device_disable(pwrctl);
-> +}
-> +
-> +int devm_pci_pwrctl_device_enable(struct device *dev,
-> +				  struct pci_pwrctl *pwrctl)
-> +{
-> +	int ret;
-> +
-> +	ret = pci_pwrctl_device_enable(pwrctl);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return devm_add_action_or_reset(dev, devm_pci_pwrctl_device_disable,
-> +					pwrctl);
-> +}
-> +EXPORT_SYMBOL_GPL(devm_pci_pwrctl_device_enable);
-> diff --git a/include/linux/pci-pwrctl.h b/include/linux/pci-pwrctl.h
-> new file mode 100644
-> index 000000000000..8d16d27cbfeb
-> --- /dev/null
-> +++ b/include/linux/pci-pwrctl.h
-> @@ -0,0 +1,24 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + * Copyright (C) 2024 Linaro Ltd.
-> + */
-> +
-> +#ifndef __PCI_PWRCTL_H__
-> +#define __PCI_PWRCTL_H__
-> +
-> +#include <linux/notifier.h>
-> +
-> +struct device;
-> +
-> +struct pci_pwrctl {
-> +	struct notifier_block nb;
-> +	struct device *dev;
-> +	struct device_link *link;
-> +};
-> +
-> +int pci_pwrctl_device_enable(struct pci_pwrctl *pwrctl);
-> +void pci_pwrctl_device_disable(struct pci_pwrctl *pwrctl);
-> +int devm_pci_pwrctl_device_enable(struct device *dev,
-> +				  struct pci_pwrctl *pwrctl);
-> +
-> +#endif /* __PCI_PWRCTL_H__ */
-> -- 
-> 2.40.1
-> 
+glibc is the best example to demonstrate, but smaller examples might
+convince.
 
