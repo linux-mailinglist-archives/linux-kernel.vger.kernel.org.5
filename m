@@ -1,99 +1,120 @@
-Return-Path: <linux-kernel+bounces-50537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41220847A5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:17:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DEC2847A66
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:18:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1E7F28E621
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:16:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21F8D1F25734
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:18:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BB6B8172E;
-	Fri,  2 Feb 2024 20:16:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC5E881748;
+	Fri,  2 Feb 2024 20:18:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lCWRCC2A"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="j0YbsdI3"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B83DB80606;
-	Fri,  2 Feb 2024 20:16:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EB578062E;
+	Fri,  2 Feb 2024 20:18:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706905009; cv=none; b=i27tqPZnfQwnA/BiG3ImV9sGLQpcPTLdgV7bKlSxIUgpfmpEFbGdD9bs7FMn4kMtNEnRHDfMyuiasJJwi7K+CBDMU5vJWzD4rd9tK6hTLJ7kUK7YOV0y0gR+og57H6XIuhCTRlIJHscO/xM1ZhlveiWLRHeuQZq4WEzPNQVWVtA=
+	t=1706905119; cv=none; b=d49LNG+8uzbVwouRZSquhxnfRxL6+Ghqyme4OJwoeqcAM2Y5BoBbEtS5ErchDTSpdI7NcBzeSsaP6SexgKdOgSWp2yR3OUkEaJwILPaRCqQor/wkrQMbFxY0WWgyLeEmxXjHDtAn/H5sngKSd190gNidxnNCB9Zf2iDA+q3IuzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706905009; c=relaxed/simple;
-	bh=u9yn+Xn2jWuc4HFEotKuyuzAo4KRtUgUurWyo7k1u0A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Uh9X15pz/SG61YDstahevd2Nxs9DA1bszLj1LC9ueJCjgyrqR9M5RtbeI2+tYRCrj4W2cgORDOEhWu5qdS8KNJagBJshk48QRLppLg7L38VKp/rJJsEF91/NY/1RbKFe+ojDQt1GQ7/dJ2mTnLBTaH0K23UIYyys2cojbKYbuwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lCWRCC2A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2836C433F1;
-	Fri,  2 Feb 2024 20:16:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706905009;
-	bh=u9yn+Xn2jWuc4HFEotKuyuzAo4KRtUgUurWyo7k1u0A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lCWRCC2Afb5/YYmBRFKSo9rzO9PfIGnr4WMvy6VFi2vXgiPB+LYnxMFFJ0LM3DAsn
-	 3k/jCXH2SChtKAG/l1naSQzFldPPVMx0PaFoCu8tCPBO0NNjCwLK8r92Z9BSHPfXmr
-	 5KO8iQd0hFPyYt1rZXZZnVrrjaE0uS8EeE0g9eaaFaS44LVXz2CX2p72JerW3rp96y
-	 LTn1ZygkoD5Y5OXYXP8b3SyDvP2b2b40/PoDBub8IaGKkYoPSidXBDXDx4SdHZ4m0q
-	 iHKI7sylOIsGnsJ+Jl7MLaDIPsYHEGWA629V6qhkVJaEWdOOhNr5pe6od9/LW/WWPZ
-	 lNcszgErg44Jg==
-Date: Fri, 2 Feb 2024 14:16:46 -0600
-From: Rob Herring <robh@kernel.org>
-To: Charles Perry <charles.perry@savoirfairelinux.com>
-Cc: mdf@kernel.org, avandiver@markem-imaje.com, bcody@markem-imaje.com,
-	Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
-	Tom Rix <trix@redhat.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Michal Simek <michal.simek@amd.com>, linux-fpga@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/3] fpga: xilinx-selectmap: add new driver
-Message-ID: <20240202201646.GA903809-robh@kernel.org>
-References: <20240129225602.3832449-1-charles.perry@savoirfairelinux.com>
- <20240131230542.3993409-1-charles.perry@savoirfairelinux.com>
+	s=arc-20240116; t=1706905119; c=relaxed/simple;
+	bh=mh+mo38fsEQgb9l3Kuwv1eN4wevPn1ndoe/G9f1R3Wg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uHn5/lGzD9U37WtlaMGvwzelWDLRrcQIDnJCfepOltQ5rDb4MJuMAFXwkM6HC1hBrW3/ilGHEthFcS5qF3tjFjMM2i3q5Q6q4gwR3kQ3qWEjDdyGhmKdu8UdXe2mmHMRIMExcx3ve0dHOyWy0idtQje/U2h/bfGF1aDqWggLwwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=j0YbsdI3; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1706905115;
+	bh=mh+mo38fsEQgb9l3Kuwv1eN4wevPn1ndoe/G9f1R3Wg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=j0YbsdI3y6vCPgWvcLlBfSENnF1fM18wQKlrQ47Z6vS/Lu+5uXdTUXoJtf3p1E10p
+	 20YTd4Yysds9Fc8+0b6V+OsfbT17mhbkv37sH0RogmtvLcyJvkNXvcbLGe74TWbrhS
+	 HUx5JRvOie7xZ1Qqhc3oXMoE8WJJLhi/VkVjuI8CQ7qNhPK+No8OaIzt+DQfEKdgYt
+	 woV0Cd/riDC8CadDDjBDCpwxlRatUyiNLEwFXzLL03k+hlFBnEBK1c1gytA7iBfe3e
+	 AMPZTBIMrqrQGCYQEWxcSx259uC6FjHPECXXrtL/pbBU/8IJthIyCDSvplBrQc2OEO
+	 hD2B6tCO0gM5A==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TRRtM1f6yzXBq;
+	Fri,  2 Feb 2024 15:18:35 -0500 (EST)
+Message-ID: <f3ec50a5-ff5e-41ae-ab2f-7319a18381e2@efficios.com>
+Date: Fri, 2 Feb 2024 15:18:36 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131230542.3993409-1-charles.perry@savoirfairelinux.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 2/4] dax: Check for data cache aliasing at runtime
+Content-Language: en-US
+To: Dan Williams <dan.j.williams@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+ Dave Chinner <david@fromorbit.com>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
+ linux-arch@vger.kernel.org, Vishal Verma <vishal.l.verma@intel.com>,
+ Dave Jiang <dave.jiang@intel.com>, Matthew Wilcox <willy@infradead.org>,
+ Russell King <linux@armlinux.org.uk>, nvdimm@lists.linux.dev,
+ linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ dm-devel@lists.linux.dev
+References: <20240131162533.247710-1-mathieu.desnoyers@efficios.com>
+ <20240131162533.247710-3-mathieu.desnoyers@efficios.com>
+ <65bab567665f3_37ad2943c@dwillia2-xfh.jf.intel.com.notmuch>
+ <0a38176b-c453-4be0-be83-f3e1bb897973@efficios.com>
+ <65bac71a9659b_37ad29428@dwillia2-xfh.jf.intel.com.notmuch>
+ <f1d14941-2d22-452a-99e6-42db806b6d7f@efficios.com>
+ <65bd284165177_2d43c29443@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <6bdf6085-101d-47ef-86f4-87936622345a@efficios.com>
+ <65bd457460fb1_719322942@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <5e838147-524c-40e5-b106-e388bf4e549b@efficios.com>
+ <65bd4d18cab98_7193229421@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <65bd4d18cab98_7193229421@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 31, 2024 at 06:05:30PM -0500, Charles Perry wrote:
-> Hello,
+On 2024-02-02 15:14, Dan Williams wrote:
+> Mathieu Desnoyers wrote:
+> [..]
+>>> Thanks for that. All of those need to be done before the fs goes live
+>>> later in virtio_device_ready(), but before that point nothing should be
+>>> calling into virtio_fs_dax_ops, so as far as I can see it is safe to
+>>> change the order.
+>>
+>> Sounds good, I'll do that.
+>>
+>> I will soon be ready to send out a RFC v4, which is still only
+>> compiled-tested. Do you happen to have some kind of test suite
+>> you can use to automate some of the runtime testing ?
 > 
-> This patchset adds a new driver for the 7 series FPGA's SelectMAP
-> interface.
-> 
-> The SelectMAP interface shares a common GPIO protocol with the SPI
-> interface which is already in the kernel (drivers/fpga/xilinx-spi.c).
-> The approach proposed in this patchset is to refactor xilinx-spi.c into
-> xilinx-core.c which would handle the common GPIO protocol. This is then
-> used to build two drivers, the already existing xilinx-spi.c driver and
-> a newly added xilinx-selectmap.c driver.
-> 
-> The SelectMAP driver proposed only supports 8 bit mode. This is because
-> the 16 and 32 bits mode have limitations with regards to compressed
-> bitstream support as well as introducing endianness considerations.
-> 
-> I'm testing xilinx-selectmap.c on a custom i.MX6 board connected to an
-> Artix 7 FPGA. Flashing a 913K bitstream takes 0.44 seconds.
-> 
-> v2: From Krzysztof Kozlowski review's:
->   * Use more conventional names for gpio DT bindings
->   * fix example in DT bindings
->   * add mc-peripheral-props.yaml to DT bindings
->   * fix various formatting mistakes
->   * Remove all occurences of the "slave" word.
+> There is a test suite for the pmem, dm, and dax changes
+> (https://github.com/pmem/ndctl?tab=readme-ov-file#unit-tests), but not
+> automated unfortunately. The NVDIMM maintainer team will run that before
+> pushing patches out to the fixes branch if you just want to lean on
+> that. For the rest I think we will need to depend on tested-by's from
+> s390 + virtio_fs folks, and / or sufficient soak time in linux-next.
 
-Please label the series with the version number and don't send new 
-versions as replies to the previous version.
+I suspect this will be necessary. There are just so many combinations
+of architectures, drivers and filesystems involved here that I don't
+think it is realistic to try to do all this testing manually on my own.
 
-Rob
+I prefer to voice this up front, so there are no misplaced expectations
+about testing.
+
+Thanks,
+
+Mathieu
+
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
 
