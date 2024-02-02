@@ -1,108 +1,122 @@
-Return-Path: <linux-kernel+bounces-50202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0A538475BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:08:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B857E8475B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:07:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11B74B2B1A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:07:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAFE31C218CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:07:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B41414AD03;
-	Fri,  2 Feb 2024 17:05:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DD5A14AD24;
+	Fri,  2 Feb 2024 17:06:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b="3zgv7TD/"
-Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="j43xr1XA"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C26A21420B3;
-	Fri,  2 Feb 2024 17:05:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.185.137.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC704148FFE;
+	Fri,  2 Feb 2024 17:06:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706893547; cv=none; b=mriKGij5w24zX+l2n5jjpDFp4H93Pq5OhX0GjFdQI5DbYRGHe4t35Egd31+pLE7++3TagzCHPBaAPSp3gNi6hZRH7t94qsVEbZwewe2lnJDC/Sux4hG3qcTHxTHfq/30VmTuhGKK7X0kpjjM5f9y6wIN+/2ZllrLH4JCaLzIfLs=
+	t=1706893597; cv=none; b=sIbzLD35EZGXcxYiD9+uiMh7meOvjo8C47PL7dK5Ae4TiXmZv/G0KgYnKm+aD195YI3Wojs9c0xc4vgXG13mgnHK6qbvGhc/GWPQcUU57AcuYjIvcI/AQQmxsfsDIyxWXkEW7dxQapElgHbEMMEvRCbSNE7oV7RuHV74BB5fo/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706893547; c=relaxed/simple;
-	bh=BAwvHs1egQiGyh3Tep3tXQoRaot7EO9KKStazGkphj8=;
-	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
-	 Content-Type:Date:Message-ID; b=uRzfieG6tTHAlX5GpfEM/1EsQ+a2fi7MLGxQbMElnxQVEZRJ9B1MujCN5+gkWzZ3s4xY3I8sKdjrus6UIoIJE/T6MZdkCVU1iidH9EPYYfox5OQgIlF7PkVQO+uUQTcYkiRrv+26IpAouJc+QsdRDVsR6PYmmSCogmb9qfEm33k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org; spf=pass smtp.mailfrom=openbsd.org; dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b=3zgv7TD/; arc=none smtp.client-ip=199.185.137.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openbsd.org
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=BAwvHs1egQ
-	iGyh3Tep3tXQoRaot7EO9KKStazGkphj8=; h=date:references:in-reply-to:
-	subject:cc:to:from; d=openbsd.org; b=3zgv7TD/ZhY+aUl0O7cUsE/W4VVRIWxeD
-	MKVJaQwalupXyQ9cd/mhDSVOFEJmr7qpl+Dj4k1x8hh61Ao1qVQdaBTm2vFYSCo+nd0cdN
-	jgIAK6z+F94bc6MtyRqcZN9tRbz6V5BzwE4RYcZapApJhS0SQeTS4tTXp9ZDsZkdd1Qwcz
-	3K+WKRIiTh/kD/gPXvdQd5CyGmHAjZvja4JxoKYC1Zc7gMu6ztpnhCj1b+gZQ/86FWI2vR
-	SKNXSYcY1E0uG8XGN3T8ayov7q1ihEb3QY9kh5GfwMsAP3mS1BQMy4G6bZLcUFNz5mCAM5
-	3i29NM/koL7kJT9x3vSOva+ioeorg==
-Received: from cvs.openbsd.org (localhost [127.0.0.1])
-	by cvs.openbsd.org (OpenSMTPD) with ESMTP id e09d1d9f;
-	Fri, 2 Feb 2024 10:05:43 -0700 (MST)
-From: "Theo de Raadt" <deraadt@openbsd.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-cc: Jeff Xu <jeffxu@chromium.org>,
-    "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-    Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org,
-    keescook@chromium.org, jannh@google.com, sroettger@google.com,
-    willy@infradead.org, gregkh@linuxfoundation.org,
-    usama.anjum@collabora.com, rdunlap@infradead.org, jeffxu@google.com,
-    jorgelo@chromium.org, groeck@chromium.org,
-    linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-    linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
-    linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v8 0/4] Introduce mseal
-In-reply-to: <CAHk-=wjqozic6JuRimXD=RamnJmD6FoaQki7RtNYrezzx_OfOg@mail.gmail.com>
-References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver> <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com> <20240201204512.ht3e33yj77kkxi4q@revolver> <CABi2SkWB2eV24LBJtgJ73zEwaAWuFhAwrfqx3Rs=tqnpcJ0qRw@mail.gmail.com> <58408.1706828083@cvs.openbsd.org> <CAHk-=wjqozic6JuRimXD=RamnJmD6FoaQki7RtNYrezzx_OfOg@mail.gmail.com>
-Comments: In-reply-to Linus Torvalds <torvalds@linux-foundation.org>
-   message dated "Thu, 01 Feb 2024 15:15:27 -0800."
+	s=arc-20240116; t=1706893597; c=relaxed/simple;
+	bh=fXYcVQeS1rnoov7pNUybIB+0ltad7FRtsKISdkiMkms=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=tUW2WIIJyoKNlmZuHhYkEzPK0T0LVr3gxa1n2wApKmDEmVy3q8QNpztz1YMcGWtx/NqxoEb0IVDsiyVouAgRCYEEgCdL1acqqfpZnw8FptvseHwcSnY32dt9NVUsdtw07zwNsWL0tK93wOoG4QFhvJFJ3nck4dUPFqcKlVJry90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=j43xr1XA; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 412FZrFt008756;
+	Fri, 2 Feb 2024 17:06:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=RCAsEbay9473oUiUhfGKQgYpSlUN+6hO6gJH1qP/hb8=; b=j4
+	3xr1XAY38rAHXhQV7n9Eren5GYY+sjmR2p/l/6xLJJS5KuD0p9OYOSnT1LGlnUIy
+	nblqLBVWYpWkDP5pOuZWyxoCW2PmDErB+EisG0d8fN7ct2l4AirpoCD/N0e9BFfg
+	bmRnsF89ebP8JCM/9Zan/5Z/fjTj3jC2gs1zYEwcupaW96NaJfBZAfW256fRwMiM
+	0usxEwDB0SGFmEf52VatwtwAYgv9JrnOKEX38fxER35x/zvbO/cHcHHpJ9Ct91W3
+	/zjonCcVxKGv5qBtrrxt9GZnFzXnOBIFSZxjW9JmjiQNQXVjUn/KfpNAJbbQxwkj
+	Z8QRkCtfvDPiip+m0LxA==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0ptv1xxm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 17:06:22 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 412H6Lj9015815
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 2 Feb 2024 17:06:21 GMT
+Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 2 Feb
+ 2024 09:06:20 -0800
+Message-ID: <66c4830d-8756-3ade-c8ec-af2b334b24e3@quicinc.com>
+Date: Fri, 2 Feb 2024 10:06:20 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <95708.1706893543.1@cvs.openbsd.org>
-Date: Fri, 02 Feb 2024 10:05:43 -0700
-Message-ID: <66496.1706893543@cvs.openbsd.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH] Documentation: embargoed-hardware-issues.rst: Fix
+ Trilok's email
+Content-Language: en-US
+To: Greg KH <gregkh@linuxfoundation.org>
+CC: <corbet@lwn.net>, <carlos.bilbao@amd.com>, <avadhut.naik@amd.com>,
+        <alexs@kernel.org>, <iyanteng@loongson.cn>,
+        <2023002089@link.tyut.edu.cn>, <quic_bjorande@quicinc.com>,
+        <quic_tsoni@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <workflows@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240202164119.4090703-1-quic_jhugo@quicinc.com>
+ <2024020223-eskimo-armoire-a517@gregkh>
+From: Jeffrey Hugo <quic_jhugo@quicinc.com>
+In-Reply-To: <2024020223-eskimo-armoire-a517@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: pwsWqSHmhUhzy7kUdblznhzZ29PxIBSI
+X-Proofpoint-GUID: pwsWqSHmhUhzy7kUdblznhzZ29PxIBSI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-02_10,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 impostorscore=0 bulkscore=0 suspectscore=0
+ priorityscore=1501 clxscore=1011 spamscore=0 phishscore=0 adultscore=0
+ mlxscore=0 mlxlogscore=720 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402020122
 
-Another interaction to consider is sigaltstack().
+On 2/2/2024 9:48 AM, Greg KH wrote:
+> On Fri, Feb 02, 2024 at 09:41:19AM -0700, Jeffrey Hugo wrote:
+>> The servers for the @codeaurora domain have long been retired and any
+>> messages addressed to @codeaurora will bounce.
+>>
+>> Trilok has an entry in .mailmap, but the raw documentation files still
+>> list an old @codeaurora address.  Update the address in the
+>> documentation files for anyone reading them.
+>>
+>> Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+>> ---
+>>   Documentation/process/embargoed-hardware-issues.rst             | 2 +-
+>>   .../translations/sp_SP/process/embargoed-hardware-issues.rst    | 2 +-
+>>   .../translations/zh_CN/process/embargoed-hardware-issues.rst    | 2 +-
+>>   .../translations/zh_TW/process/embargoed-hardware-issues.rst    | 2 +-
+>>   4 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> I think we need an ack from Trilok for this :)
 
-In OpenBSD, sigaltstack() forces MAP_STACK onto the specified
-(pre-allocated) region, because on kernel-entry we require the "sp"
-register to point to a MAP_STACK region (this severely damages ROP pivot
-methods).  Linux does not have MAP_STACK enforcement (yet), but one day
-someone may try to do that work.
+That is fair.  I expect Trilok will see this in the next day or so, and 
+respond.
 
-This interacted poorly with mimmutable() because some applications
-allocate the memory being provided poorly.  I won't get into the details
-unless pushed, because what we found makes me upset.  Over the years,
-we've upstreamed diffs to applications to resolve all the nasty
-allocation patterns.  I think the software ecosystem is now mostly
-clean.
-
-I suggest someone in Linux look into whether sigaltstack() is a mseal()
-bypass, perhaps somewhat similar to madvise MADV_FREE, and consider the
-correct strategy.
-
-This is our documented strategy:
-
-     On OpenBSD some additional restrictions prevent dangerous address space
-     modifications.  The proposed space at ss_sp is verified to be
-     contiguously mapped for read-write permissions (no execute) and incapable
-     of syscall entry (see msyscall(2)).  If those conditions are met, a page-
-     aligned inner region will be freshly mapped (all zero) with MAP_STACK
-     (see mmap(2)), destroying the pre-existing data in the region.  Once the
-     sigaltstack is disabled, the MAP_STACK attribute remains on the memory,
-     so it is best to deallocate the memory via a method that results in
-     munmap(2).
-
-OK, I better provide the details of what people were doing.
-sigaltstacks() in .data, in .bss, using malloc(), on a buffer on the
-stack, we even found one creating a sigaltstack inside a buffer on a
-pthread stack.  We told everyone to use mmap() and munmap(), with MAP_STACK
-if #ifdef MAP_STACK finds a definition.
+-Jeff
 
