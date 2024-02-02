@@ -1,121 +1,286 @@
-Return-Path: <linux-kernel+bounces-50121-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5661E847487
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:17:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B2D1847490
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:20:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 881F11C266B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:17:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51784289254
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:20:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 839201474CB;
-	Fri,  2 Feb 2024 16:17:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 450951482E1;
+	Fri,  2 Feb 2024 16:20:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dfKmQUq5"
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CokDGYnF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A132F146910;
-	Fri,  2 Feb 2024 16:17:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FF9A145B07;
+	Fri,  2 Feb 2024 16:20:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706890670; cv=none; b=QTvFd0k1NZ8pfxA/FAVml9jAL8uFyZ0b/s9Abp5bvGtv+rdssfvXclVK77OpJBJ+eIFQGWHyILNiFgo5J2jE9/RynAzYSxYGXhAnyWqFCyYAD3bSfeSIHJjY9maosyEN5hjvwq16Te8TR7VoBuS6Dj0sBvJ+pbwWunGn0on6GV4=
+	t=1706890802; cv=none; b=M0fKKrk+0VlAZaxcdy/hTtxZFXn++n26hPJutAInDsfltMnpP1jDvWUo24PO9MuuCgruNbDgxOGJ/8qv0ifJ5Qsz8EXdC+bIfVElYB3HUgIn4rI3kz8gUUqKZRrQziu6QjlM+6uKgVOeqaXA/OKcPbFSPdVsjPl8tDkAM7/VEHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706890670; c=relaxed/simple;
-	bh=usSbcGb3RaqV2RSxPABIImzxqQW1/1sLUrrVWBoBbA4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ClC0MV9cteTl84Ugcgc3GzGdeRxhglujelQsXKtTtyAgj4eCztydQCLhxRHH+l+H6lXAtQxRXaOXoIb/FYXsmplN04Mj1KiZSUby2Sub8oq4zN8DwaVmOQj6gxj4vduWBdTd30HNJG0bxLGJ8D2o/vo+FyOGEKubjQSmfuN9LvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dfKmQUq5; arc=none smtp.client-ip=209.85.219.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-68c2f4c3282so11054556d6.3;
-        Fri, 02 Feb 2024 08:17:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706890664; x=1707495464; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=usSbcGb3RaqV2RSxPABIImzxqQW1/1sLUrrVWBoBbA4=;
-        b=dfKmQUq5W4Jbji25529djB8EKLpQgzwsweRjVIDp4BNXKQ7CjoO6Z04eJz4cPbZ6Pa
-         5QzosVnCOLSzjfvvPqDB4GshMcT5uTTlSnYNW1mnvcGFtjaHNaodkhmZjFDEbm5ydNwH
-         xJwJzWAsxFL3oUzDWiaFFKtMRis+25Ft979VpxEWgwKS9CNKh6N+hiJ1uTR3l0xM5D5v
-         ZoauHgO1H9Zo/tPZyIk2yskTGcU/FS0nLJLDzZDfyPt8yhcrEgMPOd/A0megjIuIFwHJ
-         Z/CKbfjIchNj3J6wnz5wL4wSKPVZ0EdEJdCSAn6IJtnxj+r/hzg44cwme+t+G2oDm8MT
-         +/LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706890664; x=1707495464;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=usSbcGb3RaqV2RSxPABIImzxqQW1/1sLUrrVWBoBbA4=;
-        b=QEKdTnhtst/7BA7QvA28F1AkMo2ysNDcMzIccOfHAAFWocBVVcHL6YW0uq+I7jlWVk
-         QyIwMQBBGk9JNMsMLTOk+XslV/70NGVv6S6rOixi/WKNdd3Zk6FhsAmAMpT32Ia8SzJP
-         h6mrYds4Jky6w7YhLdt8oB6h4+eEHAneZOLW0ga7JQUPs0x+FfdLUAZPQ6Lcz6WNbJHm
-         lKg7InTgyRBLuuRoE4gF0t2F2/7YRTuIkF8xKWYWaWAXgcZt24QItxD/8t4WEWvZ27QL
-         Yugq8xNS4c11N5EXY4dX85eq+AgcRtq7J+/PXUWs2jhLdCdE0dIA5l8L5wp0yVZZEPAg
-         YPNw==
-X-Gm-Message-State: AOJu0YyLm3vWh0RIo0Bqre6FnVFztwGOMrr6+As+4JQ9QVmqFpNE+piT
-	wNPCFHTYAE8Z0egpJwMtzOTZllFo6nyBflE6WGUvpUL+AoDf7i67b4IzyuS0ZSXPIxVxhrGCWB0
-	8Ch3NlDjWW48hQwMOpDLuxuzcE3M=
-X-Google-Smtp-Source: AGHT+IGPE48giiqSuCufFbQaL0qfEqgGzTrzgurzMKsBxGt3N8VOVH62E0SDm+BFgqdR0ISODr6eTnmOFy6VvHTqFeU=
-X-Received: by 2002:a0c:cc94:0:b0:68c:8904:69ed with SMTP id
- f20-20020a0ccc94000000b0068c890469edmr1434169qvl.39.1706890664563; Fri, 02
- Feb 2024 08:17:44 -0800 (PST)
+	s=arc-20240116; t=1706890802; c=relaxed/simple;
+	bh=09S8wVn66zHG3dl7N/0ch+SY16b9ZyM41FyxhbeQ7R0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Qm8x3WJpigQjp+O5rSVkGQmvsDooyJ6u9VV8w2rDHwABc/uewwdmUMPy+Sre4kb7wzy5ys5itJ2XTpZCy7DW8Xqr/QHZCVQUUF89HYtmoXSDuOahp0LiJ3vEqefYjpG1zVkQ4I7SBTGuEp1y3Lj/VRoeCwuHGh230dRKOEfb0/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CokDGYnF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBAF5C433C7;
+	Fri,  2 Feb 2024 16:19:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706890801;
+	bh=09S8wVn66zHG3dl7N/0ch+SY16b9ZyM41FyxhbeQ7R0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=CokDGYnFq/Z1i4dEL5f32q5+omtz1oW0U77EN0EaVqk3Pz1uctporEPG3h4xcM5lj
+	 mvGglHzgrNwnzr81qzB7LAUREehxAwQLwIFc7o1Irvgm3/+A9f7WPkC6mC2qOmMMV6
+	 lgBxQS/ZXjd1ko34KXV7VwNpwvf1fUoMKaX412ubTT8g6ZVyCuY3eocid+LE/ydRgA
+	 0BeVlHlIzks1cZok8UolOlOc+qIkP5dsJqwljP/VHMBHjtsIsQQmEbldOiMt59taTq
+	 q8q8OoZrmq9xVbIdYAUMNGXKpR3ZdP2fr3RcNWAWOQBkVmGosakgWD+2jiSoaVSjLn
+	 dt5MTu+QSAQYw==
+Message-ID: <c8d59e75-d0bb-4a03-9ef4-d6de65fa9356@kernel.org>
+Date: Fri, 2 Feb 2024 17:19:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130214620.3155380-1-stefanb@linux.ibm.com>
- <20240130214620.3155380-5-stefanb@linux.ibm.com> <38230b4c-54ae-45ed-a6fb-34e63501e5b1@linux.ibm.com>
- <CAOQ4uxiYARZBSgzb4_W-RKvB1XLSF3GUBqeLw2kH+eVeZ_8ARQ@mail.gmail.com>
- <c018b014-9ba8-4395-86dc-b61346ab20a8@linux.ibm.com> <CAOQ4uxi6Te8izWpXROthknRaXrVA9jho5nbc+mkuQDrcTLY44Q@mail.gmail.com>
- <CAOQ4uxigdNeE+2nfr4VxS9piQf5hez=ryT0a-jzW+tW0BT-zuw@mail.gmail.com>
- <492ea12a-d79d-47da-9bbe-a7f33051bd3f@linux.ibm.com> <CAOQ4uxgiO1RbsmqOu4F4Foy-MBPecnEXO7BvgDGz-Lzb1Eysog@mail.gmail.com>
- <4c584bfb-d282-4584-bb20-18c26b1033c0@linux.ibm.com> <CAOQ4uxjftr7GGx6tuW_yB_MTaVB57m6p_d=UHhN3Z23YVXY0QQ@mail.gmail.com>
- <11abffea-15c5-4d13-9d0f-edbc54b09bf3@linux.ibm.com> <CAOQ4uxjZ6p9+H54G0LNTUnU56WRaoLtWOUj2nOaKJ4JvBGqLVg@mail.gmail.com>
- <427ce381-73fa-48f9-8e18-77e23813b918@linux.ibm.com> <CAOQ4uxggqa7j0NS1MN3KSvF_qG1FMVmFxacEYSTx+LuvuosJ5g@mail.gmail.com>
- <4ce0e20d-ed14-490d-9446-a6cfbd532bca@linux.ibm.com>
-In-Reply-To: <4ce0e20d-ed14-490d-9446-a6cfbd532bca@linux.ibm.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 2 Feb 2024 18:17:32 +0200
-Message-ID: <CAOQ4uxhkyh19rMXnZ+Ou-Z0DgraBJAvL53K_PK9zRUB2O-Lsqw@mail.gmail.com>
-Subject: Re: [PATCH 4/5] evm: Use the real inode's metadata to calculate
- metadata hash
-To: Stefan Berger <stefanb@linux.ibm.com>
-Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
-	roberto.sassu@huawei.com, miklos@szeredi.hu
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v5] virtio_net: Support RX hash XDP hint
+Content-Language: en-US
+To: Liang Chen <liangchen.linux@gmail.com>, mst@redhat.com,
+ jasowang@redhat.com, xuanzhuo@linux.alibaba.com, hengqi@linux.alibaba.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc: netdev@vger.kernel.org, virtualization@lists.linux.dev,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org, john.fastabend@gmail.com,
+ daniel@iogearbox.net, ast@kernel.org
+References: <20240202121151.65710-1-liangchen.linux@gmail.com>
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20240202121151.65710-1-liangchen.linux@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> The odd thing is my updated test case '2' seems to indicate that
-> everything already works as expected with CONFIG_OVERLAY_FS_METACOPY=y.
-> After causing copy-up of metadata changes to the file content on the
-> lower layer still cause permission error to file execution on the
-> overlay layer and after restoring the file content on the lower the file
-> on the overlay again runs as expected. The file content change + copy-up
-> of file content also has completely decoupled the lower file from the
-> file on the overlay and changes to the file on the lower cause no more
-> file execution rejections on the overlay.
->
 
-Sorry, you lost me.
-The combination of IMA+EVM+OVL must be too complicated to
-explain in plain language without an explicit test spelled out...
 
-When you write "The file content change + copy-up of file content also
-has completely decoupled the lower file from the file on the overlay",
-what do you mean by "copy up of the file content"?
-Why was the file content copied up?
-I was asking about use case that only metadata was copied up but
-lower file content, which is still the content of the ovl file was changed
-underneath ovl - this case does not cause data content to be copied up.
+On 02/02/2024 13.11, Liang Chen wrote:
+> The RSS hash report is a feature that's part of the virtio specification.
+> Currently, virtio backends like qemu, vdpa (mlx5), and potentially vhost
+> (still a work in progress as per [1]) support this feature. While the
+> capability to obtain the RSS hash has been enabled in the normal path,
+> it's currently missing in the XDP path. Therefore, we are introducing
+> XDP hints through kfuncs to allow XDP programs to access the RSS hash.
+> 
+> 1.
+> https://lore.kernel.org/all/20231015141644.260646-1-akihiko.odaki@daynix.com/#r
+> 
+> Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
+> Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Acked-by: Jason Wang <jasowang@redhat.com>
+> ---
+>    Changes from v4:
+> - cc complete list of maintainers
+> ---
+>   drivers/net/virtio_net.c | 98 +++++++++++++++++++++++++++++++++++-----
+>   1 file changed, 86 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index d7ce4a1011ea..7ce666c86ee0 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -349,6 +349,12 @@ struct virtio_net_common_hdr {
+>   	};
+>   };
+>   
+> +struct virtnet_xdp_buff {
+> +	struct xdp_buff xdp;
+> +	__le32 hash_value;
+> +	__le16 hash_report;
+> +};
+> +
+>   static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf);
+>   
+>   static bool is_xdp_frame(void *ptr)
+> @@ -1033,6 +1039,16 @@ static void put_xdp_frags(struct xdp_buff *xdp)
+>   	}
+>   }
+>   
+> +static void virtnet_xdp_save_rx_hash(struct virtnet_xdp_buff *virtnet_xdp,
+> +				     struct net_device *dev,
+> +				     struct virtio_net_hdr_v1_hash *hdr_hash)
+> +{
+> +	if (dev->features & NETIF_F_RXHASH) {
+> +		virtnet_xdp->hash_value = hdr_hash->hash_value;
+> +		virtnet_xdp->hash_report = hdr_hash->hash_report;
+> +	}
+> +}
+> +
 
-I don't think we understand each other.
+Would it be possible to store a pointer to hdr_hash in virtnet_xdp_buff,
+with the purpose of delaying extracting this, until and only if XDP
+bpf_prog calls the kfunc?
 
-Thanks,
-Amir.
+
+
+>   static int virtnet_xdp_handler(struct bpf_prog *xdp_prog, struct xdp_buff *xdp,
+>   			       struct net_device *dev,
+>   			       unsigned int *xdp_xmit,
+> @@ -1199,9 +1215,10 @@ static struct sk_buff *receive_small_xdp(struct net_device *dev,
+>   	unsigned int headroom = vi->hdr_len + header_offset;
+>   	struct virtio_net_hdr_mrg_rxbuf *hdr = buf + header_offset;
+>   	struct page *page = virt_to_head_page(buf);
+> +	struct virtnet_xdp_buff virtnet_xdp;
+>   	struct page *xdp_page;
+> +	struct xdp_buff *xdp;
+>   	unsigned int buflen;
+> -	struct xdp_buff xdp;
+>   	struct sk_buff *skb;
+>   	unsigned int metasize = 0;
+>   	u32 act;
+> @@ -1233,17 +1250,20 @@ static struct sk_buff *receive_small_xdp(struct net_device *dev,
+>   		page = xdp_page;
+>   	}
+>   
+> -	xdp_init_buff(&xdp, buflen, &rq->xdp_rxq);
+> -	xdp_prepare_buff(&xdp, buf + VIRTNET_RX_PAD + vi->hdr_len,
+> +	xdp = &virtnet_xdp.xdp;
+> +	xdp_init_buff(xdp, buflen, &rq->xdp_rxq);
+> +	xdp_prepare_buff(xdp, buf + VIRTNET_RX_PAD + vi->hdr_len,
+>   			 xdp_headroom, len, true);
+>   
+> -	act = virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit, stats);
+> +	virtnet_xdp_save_rx_hash(&virtnet_xdp, dev, (void *)hdr);
+> +
+> +	act = virtnet_xdp_handler(xdp_prog, xdp, dev, xdp_xmit, stats);
+>   
+>   	switch (act) {
+>   	case XDP_PASS:
+>   		/* Recalculate length in case bpf program changed it */
+> -		len = xdp.data_end - xdp.data;
+> -		metasize = xdp.data - xdp.data_meta;
+> +		len = xdp->data_end - xdp->data;
+> +		metasize = xdp->data - xdp->data_meta;
+>   		break;
+>   
+>   	case XDP_TX:
+> @@ -1254,7 +1274,7 @@ static struct sk_buff *receive_small_xdp(struct net_device *dev,
+>   		goto err_xdp;
+>   	}
+>   
+> -	skb = virtnet_build_skb(buf, buflen, xdp.data - buf, len);
+> +	skb = virtnet_build_skb(buf, buflen, xdp->data - buf, len);
+>   	if (unlikely(!skb))
+>   		goto err;
+>   
+> @@ -1591,10 +1611,11 @@ static struct sk_buff *receive_mergeable_xdp(struct net_device *dev,
+>   	int num_buf = virtio16_to_cpu(vi->vdev, hdr->num_buffers);
+>   	struct page *page = virt_to_head_page(buf);
+>   	int offset = buf - page_address(page);
+> +	struct virtnet_xdp_buff virtnet_xdp;
+>   	unsigned int xdp_frags_truesz = 0;
+>   	struct sk_buff *head_skb;
+>   	unsigned int frame_sz;
+> -	struct xdp_buff xdp;
+> +	struct xdp_buff *xdp;
+>   	void *data;
+>   	u32 act;
+>   	int err;
+> @@ -1604,16 +1625,19 @@ static struct sk_buff *receive_mergeable_xdp(struct net_device *dev,
+>   	if (unlikely(!data))
+>   		goto err_xdp;
+>   
+> -	err = virtnet_build_xdp_buff_mrg(dev, vi, rq, &xdp, data, len, frame_sz,
+> +	xdp = &virtnet_xdp.xdp;
+> +	err = virtnet_build_xdp_buff_mrg(dev, vi, rq, xdp, data, len, frame_sz,
+>   					 &num_buf, &xdp_frags_truesz, stats);
+>   	if (unlikely(err))
+>   		goto err_xdp;
+>   
+> -	act = virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit, stats);
+> +	virtnet_xdp_save_rx_hash(&virtnet_xdp, dev, (void *)hdr);
+> +
+> +	act = virtnet_xdp_handler(xdp_prog, xdp, dev, xdp_xmit, stats);
+>   
+>   	switch (act) {
+>   	case XDP_PASS:
+> -		head_skb = build_skb_from_xdp_buff(dev, vi, &xdp, xdp_frags_truesz);
+> +		head_skb = build_skb_from_xdp_buff(dev, vi, xdp, xdp_frags_truesz);
+>   		if (unlikely(!head_skb))
+>   			break;
+>   		return head_skb;
+> @@ -1626,7 +1650,7 @@ static struct sk_buff *receive_mergeable_xdp(struct net_device *dev,
+>   		break;
+>   	}
+>   
+> -	put_xdp_frags(&xdp);
+> +	put_xdp_frags(xdp);
+>   
+>   err_xdp:
+>   	put_page(page);
+> @@ -4579,6 +4603,55 @@ static void virtnet_set_big_packets(struct virtnet_info *vi, const int mtu)
+>   	}
+>   }
+>   
+> +static int virtnet_xdp_rx_hash(const struct xdp_md *_ctx, u32 *hash,
+> +			       enum xdp_rss_hash_type *rss_type)
+> +{
+> +	const struct virtnet_xdp_buff *virtnet_xdp = (void *)_ctx;
+> +
+> +	if (!(virtnet_xdp->xdp.rxq->dev->features & NETIF_F_RXHASH))
+> +		return -ENODATA;
+> +
+> +	switch (__le16_to_cpu(virtnet_xdp->hash_report)) {
+> +	case VIRTIO_NET_HASH_REPORT_TCPv4:
+> +		*rss_type = XDP_RSS_TYPE_L4_IPV4_TCP;
+> +		break;
+> +	case VIRTIO_NET_HASH_REPORT_UDPv4:
+> +		*rss_type = XDP_RSS_TYPE_L4_IPV4_UDP;
+> +		break;
+> +	case VIRTIO_NET_HASH_REPORT_TCPv6:
+> +		*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP;
+> +		break;
+> +	case VIRTIO_NET_HASH_REPORT_UDPv6:
+> +		*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP;
+> +		break;
+> +	case VIRTIO_NET_HASH_REPORT_TCPv6_EX:
+> +		*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP_EX;
+> +		break;
+> +	case VIRTIO_NET_HASH_REPORT_UDPv6_EX:
+> +		*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP_EX;
+> +		break;
+> +	case VIRTIO_NET_HASH_REPORT_IPv4:
+> +		*rss_type = XDP_RSS_TYPE_L3_IPV4;
+> +		break;
+> +	case VIRTIO_NET_HASH_REPORT_IPv6:
+> +		*rss_type = XDP_RSS_TYPE_L3_IPV6;
+> +		break;
+> +	case VIRTIO_NET_HASH_REPORT_IPv6_EX:
+> +		*rss_type = XDP_RSS_TYPE_L3_IPV6_EX;
+> +		break;
+> +	case VIRTIO_NET_HASH_REPORT_NONE:
+> +	default:
+> +		*rss_type = XDP_RSS_TYPE_NONE;
+> +	}
+> +
+> +	*hash = __le32_to_cpu(virtnet_xdp->hash_value);
+> +	return 0;
+> +}
+> +
+> +static const struct xdp_metadata_ops virtnet_xdp_metadata_ops = {
+> +	.xmo_rx_hash			= virtnet_xdp_rx_hash,
+> +};
+> +
+>   static int virtnet_probe(struct virtio_device *vdev)
+>   {
+>   	int i, err = -ENOMEM;
+> @@ -4704,6 +4777,7 @@ static int virtnet_probe(struct virtio_device *vdev)
+>   				  VIRTIO_NET_RSS_HASH_TYPE_UDP_EX);
+>   
+>   		dev->hw_features |= NETIF_F_RXHASH;
+> +		dev->xdp_metadata_ops = &virtnet_xdp_metadata_ops;
+>   	}
+>   
+>   	if (vi->has_rss_hash_report)
 
