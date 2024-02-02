@@ -1,134 +1,149 @@
-Return-Path: <linux-kernel+bounces-49369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93B8C846946
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:28:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE9FD84694B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:29:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C73EA1C245E2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:28:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95E0A1C246B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:29:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2EE917BAD;
-	Fri,  2 Feb 2024 07:28:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D15E317BB6;
+	Fri,  2 Feb 2024 07:29:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="eprMJ04E";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="tx2jpuRx"
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kpwZg7pn"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3552B1799B;
-	Fri,  2 Feb 2024 07:28:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BED1417998
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 07:29:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706858889; cv=none; b=VB5bRquuv2Xpxqey2aoqvA7qXLnBiQ3db9WhbBkEIfaw58evbocgOcLyc3QlQJL1u6FcpRz5lNIi90QSPR3kbqURwICRvpVy16HoLYGKij9j/Vk+KMz0zczBb98WxO9SkRYC0YkFUX2Yj4cbMsWl6q5Eg0xPEcd7tjVhzeBfRsg=
+	t=1706858958; cv=none; b=uhy5BMZZtvkf5ipwuTvaiiENE5hBgdQzxLu9xwszrmflmB29pzFZIsIJ2wLIrV9mH0PLIw5cbIMwErOQorSgzm6NBuSqdAdRKeyrGLjmUwTCH/7uuTlg+y6HsIN8YEvbvPQLrwH+X+0PWQUzgz/ruJ4ISrEOHfvTtahrvwChZ1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706858889; c=relaxed/simple;
-	bh=qzWs7s2cjCDmOtXG5wsxz7DfTUlVvOtF6j0Zrjbgr1c=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=QEudhAQ3RaUVAUmh5+Z28GuwPZQ6vlv8QD4QQsM/6OJd8+rXXnitLyBFERH4rJGKsyeDxApPBrzCL1aY+zm3z809tgwTDbmPQYg9nDKQqjBa4GJAPi9n0pdstpjzOI6FeTxRQDK+pHvfucp5P7iGY6cNtaKjCundq9lpo/yS0pM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=eprMJ04E; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=tx2jpuRx; arc=none smtp.client-ip=66.111.4.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id B2F3E5C015B;
-	Fri,  2 Feb 2024 02:28:05 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 02 Feb 2024 02:28:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1706858885;
-	 x=1706945285; bh=IBhqBcxYgArhRS7kDjbkPgkUVZMe8vXWLNsnaVY75NY=; b=
-	eprMJ04EiYCWlFcEeNIqGZhp0qteiNOVp5xwxMRhruh13A+1lHAv14LGC0mgYfzQ
-	DNoKWiZlvG1DpONyKEAeXwbYZGC7gahiGm6RryFrS2/OBT4GvOfea8xVSmJetlDU
-	oCM5FoDhTnIcn9xx2sw8EPkQAuiZf1Gy1s6rKGHTxPLd0q3YUGu8A6maWGfzlPr/
-	Ar6N2/yBu9G0pJybx16suvWI/7En9wkR36rOhvYFZwEM2ImIrmOg1+XT0M8nR9Cq
-	AhaFZW5Rrl8AQYxHZgpjs90T/1s7i+nhHQvMjqyg5WnGHE7o6EwxBvgSl9ow/Ydh
-	IYkI0t9epQnLiW696GDpWA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706858885; x=
-	1706945285; bh=IBhqBcxYgArhRS7kDjbkPgkUVZMe8vXWLNsnaVY75NY=; b=t
-	x2jpuRxZFTXsR+uLz6RFaAik9Xok8AF/8AFgu+VBnBy3I6BdakGBCKoz54E3plrn
-	wMkr++6acBGqXmZAFGwGjo4TKsfdb8yHAI95XcgUrVAWIp83eYeu/LK0i4iBemaU
-	PnAF6Xn4RgUnGCavBwbeFAie31CWTN+GT21PBmFxj1kgnYi9sWPzam2UR15N3D9u
-	A21tl7DW6JA4ITC6mrEfnMs2kEmxQ9RX/II0S2i7qH9QI1oEI3kUghAmfz+0+NtJ
-	XiTd08wRwcDJlVYzJnVtEchE3W4i4Ab91pXUurS49WMkwS4hKeiGN1fmQJKMMCMQ
-	C7eDadqSNO4RpTqhlVSsQ==
-X-ME-Sender: <xms:hZm8ZXvvbRMfzy7svCN_sNXsMryR7yOUCKvADPtNBiNpwJTqNJ9gUQ>
-    <xme:hZm8ZYeVUcLy6HrRYn2WaHFtmUqRcPuCJBXPKO5OkSfjQMPruhFi5HK7EnEZfSUTH
-    DDs3C9FgpVM3F4BMWE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedufedgvdejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeeghefggeduuedvvdfgiefgffehfedtffdvvddutefhvddvtdfhgfetveet
-    ueevheenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:hZm8ZaxM6OoRWhGpL46GEYaSFCgq_sk_6uSNzNWdPyfhmGmo5ezeSQ>
-    <xmx:hZm8ZWOZPtWitIYGcNKjrQDCCto_K7L_mm0vgtGwIOx_tOpqWoZxGQ>
-    <xmx:hZm8ZX8F_oaT9NFnhztJSzuwMFsM0pTfXiP2eh6CE_zukT4WrI8n_A>
-    <xmx:hZm8ZY31fPDy9VGPiAfoXQadB8awDZtcoPBLELb-3nXF9sqEvCBZQg>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 18AA0B6008D; Fri,  2 Feb 2024 02:28:05 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
+	s=arc-20240116; t=1706858958; c=relaxed/simple;
+	bh=XkazKXRUenQO5J7STXT9Fr6bXUUP6LXUQi6Ou5A9ZJM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=A2UxTmrkOugId53JzxJbRmuKFnBflhj+G/TMGY7KhRzf42B+PVIihNfx2xr2OwdyCx6KBydqCHMlv60CZyb6xEXJPXuINXlwmMTQzZL4c5YMrUhDGrmpYQAQxQrPps6RVCa9SK8CSl+/w5jIiI8iI615HhycnfSkd7v5NblYp/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kpwZg7pn; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so247355466b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 23:29:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706858954; x=1707463754; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aRF5sYo98ckV+7UPDrqZ1AZRgxQhiNObXXT7etMsNTM=;
+        b=kpwZg7pnJf5FAWAmvQoVe1O05vW9m7pxgSSqwJngj6BKibA1IBS6mnmwDnKLtuaiyT
+         MyAucAVdEDui0q8oF69bJxnFh6rWzwcirh9gFKGjSRCCWqaoc8fk4SXiGumlNHkRvfeE
+         bzsaeQCZX4cXF/H+I37DGW8faQWFOkOju7tu5bN6CcWj6axLD7MePpPwAG8ctBo3jXs4
+         RgiXFfj69Ywg7WABJ9vsY47JZ2Hw7TgugMSSGZsiAFx7sDM37tBRbSS5YN+mKSADA7cF
+         WNB5+VXLM7tySsywSRKHH2v5/JbWf+wxJc9L8dygAQJQE8dkhCXMoQAqTu4e9p1Q41Aw
+         55EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706858954; x=1707463754;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aRF5sYo98ckV+7UPDrqZ1AZRgxQhiNObXXT7etMsNTM=;
+        b=Rq0QNsgyJA0/t+kIWAvCeSJWew6pb0qBEkO5uX1z9pdd9fO5g+GgKOC00pvSe3Go7z
+         f4FY87MD96DlCRAOmZOsxTzqexZOwwsqMExNSUNhwbsAWGCwrpIGdUd7S0NfaihP3ZGD
+         VZykr4HDBi+ltEdy3uzuFZCtS3Uap/n/aRXsfn8y0fuagBdLqnSIrIh5veq7nvQSh1O4
+         6ZTFwVt/IbFwxqJtgMFldiztpS0LZ6TkbfamBTRCFNjCFC5z80ReZQwNR/GZs00Xc6G6
+         ++s/IP/86dbrpkEaZK+9O4Ye0kdJvdjHos1BTATlT7tG4MaiidCWBqBcu7nYOHpIhNBX
+         2JUw==
+X-Gm-Message-State: AOJu0YzMbbsQqTJ4bim64O2HcPgfPjxcRTY30a4txb4DzQxi4H0tCwXf
+	OLeNUGdtPmFJNG0GlEjRh6pFDSOXvseaYYCO2XwnIvDbCete2pnq6GQ9bkx80cE=
+X-Google-Smtp-Source: AGHT+IF/wNBdQLqxY064yFgektHzMrB0pEXF6QjzPgSdPG0f3CS+TftaT1Wp4/KUKKiH3KgoCWQeew==
+X-Received: by 2002:a17:906:1b57:b0:a31:2119:90d7 with SMTP id p23-20020a1709061b5700b00a31211990d7mr4864362ejg.38.1706858953894;
+        Thu, 01 Feb 2024 23:29:13 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXcauxxc/lkGwZOCA05VcEim4gUL40lXkyYLFfBCxP1wvZqwA0Da8CTkcr7TgM56RTuiNmr/eFebHcklcI7zAGDiqmNbfOW12UZHgC7veHCKLSznsm5apBGtKowq1oiXgr7bSQtN0tv4oQxdWbienLZQgiIzo6ffKMRk6w6qBBDL7SJGNeOQwPt6yTaOcnSM4+CrIlwikwXbOD1AvxGPwdbfS4Cy9KoLP/DlkYb0OpJtzR3kH3sg1Q0wq8jF5GFMr595Xz7ktGNryzNZDlOXZgym97HbfNJ+SovavE1Q6mAhhmZY8COGkOzMLvDH0PbfzCUwVZvTn/vmBoSfs1IYM25OeSXOl4SkmaPVXYqmZ7Fh16SJZXA2KPSgF2A1Tsvj2OyUttwr9zxEMDlku9tHbxk2qFdNQkGAaiI9kLNayKUw8BcsQ==
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id tl6-20020a170907c30600b00a370f877b5csm236627ejc.152.2024.02.01.23.29.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Feb 2024 23:29:13 -0800 (PST)
+Message-ID: <1de7cfbc-3507-459f-842e-c9349b2f05ac@linaro.org>
+Date: Fri, 2 Feb 2024 08:29:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <38ad9807-a298-44f6-88eb-4fb8047eafbe@app.fastmail.com>
-In-Reply-To: 
- <CAMuHMdWPToeXdcBWv2LJuu2Z6td-JYz3GGf5fD1+ScqVD+Wurg@mail.gmail.com>
-References: <20240131055159.2506-1-yan.y.zhao@intel.com>
- <5e55b5c0-6c8d-45b4-ac04-cf694bcb08d3@app.fastmail.com>
- <ZbrfcTaiuu2gaa2A@yzhao56-desk.sh.intel.com>
- <9f27c23b-ea8b-443c-b09c-03ecaa210cd5@app.fastmail.com>
- <CAMuHMdWPToeXdcBWv2LJuu2Z6td-JYz3GGf5fD1+ScqVD+Wurg@mail.gmail.com>
-Date: Fri, 02 Feb 2024 08:27:44 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Geert Uytterhoeven" <geert@linux-m68k.org>
-Cc: "Yan Zhao" <yan.y.zhao@intel.com>,
- "Linus Walleij" <linus.walleij@linaro.org>, guoren <guoren@kernel.org>,
- "Brian Cain" <bcain@quicinc.com>, "Jonas Bonn" <jonas@southpole.se>,
- "Stefan Kristiansson" <stefan.kristiansson@saunalahti.fi>,
- "Stafford Horne" <shorne@gmail.com>, Linux-Arch <linux-arch@vger.kernel.org>,
- linux-kernel@vger.kernel.org,
- "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
- linux-hexagon@vger.kernel.org,
- "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>
-Subject: Re: [PATCH 0/4] apply page shift to PFN instead of VA in pfn_to_virt
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: soc: qcom: Add qcom,pbs bindings
+Content-Language: en-US
+To: Anjelique Melendez <quic_amelende@quicinc.com>, lee@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ agross@kernel.org, andersson@kernel.org
+Cc: konrad.dybcio@linaro.org, linux-leds@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-pwm@vger.kernel.org
+References: <20240201204421.16992-2-quic_amelende@quicinc.com>
+ <20240201204421.16992-4-quic_amelende@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240201204421.16992-4-quic_amelende@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 1, 2024, at 11:46, Geert Uytterhoeven wrote:
-> Hi Arnd,
->
-> On Thu, Feb 1, 2024 at 11:11=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> =
-wrote:
->> I think it's fair to assume we won't need asm-generic/page.h any
->> more, as we likely won't be adding new NOMMU architectures.
->
-> So you think riscv-nommu (k210) was the last one we will ever see?
+On 01/02/2024 21:44, Anjelique Melendez wrote:
+> Add binding for the Qualcomm Programmable Boot Sequencer device.
+> 
+> Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Yes. We've already removed half of the nommu architectures
-(blackfin, avr32, h8300, m32r, microblaze-nommu)  over
-the past couple of years, and the remaining ones are pretty
-much only there to support existing users.
+How is it possible? This is v1, not a resend, and I never give review
+tags not in public.
 
-The only platform one that I see getting real work is
-esp32 [1], but that is not a new architecture.
+Best regards,
+Krzysztof
 
-     Arnd
-
-[1] https://github.com/jcmvbkbc/linux-xtensa/tree/xtensa-6.8-rc2-esp32
 
