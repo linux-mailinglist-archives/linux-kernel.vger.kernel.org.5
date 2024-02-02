@@ -1,158 +1,132 @@
-Return-Path: <linux-kernel+bounces-50728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A997847D58
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:45:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2939F847D5A
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:46:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CF9C1C21A2A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:45:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C4171C224D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:46:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61DA312D744;
-	Fri,  2 Feb 2024 23:45:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D68A512D74E;
+	Fri,  2 Feb 2024 23:45:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hoKzzng0"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="TSwS8A+P"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F24712C809;
-	Fri,  2 Feb 2024 23:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BD2B12C809;
+	Fri,  2 Feb 2024 23:45:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706917508; cv=none; b=UFWKh4y6Ho+w+ah6nDD5l8CifIZ+9HyXt2cKKMReaZc+T7uiMVcn6JU+qlC0RV+a9w0E6EgLbnUuNKZZF9mQftfcCJwe/hKnbT5Rhp0CYX+XLwNrGjPQI2pZ5Ly4WbDUntqyCDZ/Lj+9JbpvxzgqvX/m5Eo2lCp1s6XK5iQA/YM=
+	t=1706917558; cv=none; b=GIRJ3OLBi5KtUbQxezKnxL3hNGtF64b4HM2W4Fcuvy0RvsAOW3sR+O4n6Qsn5AA6eOvvORmXlKOMDhKWmLtk3z39Uk6MQxBHgUGwS0mYngFS+iBxdb9gmP7R1Fbd/pCcBRv+x8cYXaK6JtK93iOr/c9lWR01eaZnIhZAwhCYc9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706917508; c=relaxed/simple;
-	bh=u14JJUaOwUjTknw9OXMt8TK1fGhG5qE9VIX/LCcSv1I=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=FSCfDnMa1Cb4jvrUsUtH6+KAfWfm8jw4EEdAAzFXH4Hhsj/TqAvhJuuyneqXxhNo3590tfnqd0S1aXAzxprffdnLrc4JJRgZpl/p9l/g6cvhFZ5eUKg4q15M8wHmF7IoHZwCjHEDNpxeaJ8cTPHmlYzajh3Qr6lCVWF5Ba0P9cI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hoKzzng0; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706917507; x=1738453507;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=u14JJUaOwUjTknw9OXMt8TK1fGhG5qE9VIX/LCcSv1I=;
-  b=hoKzzng0WtxrKW6Tm4tPaS/EZvwyJ1uVpk8XWwQ7hjrwZCpG8kR1Aa4q
-   ECcCTehLssJ8RzpuNNyZfgslaCo6CDdYFNG3c4wzjAip0aQ0hJtNhqFva
-   snzM8sDL52uOhhwDQokHHnL+8Zx1ZOsAfnAl67aveqwGmJKLN2uXxdKk5
-   4urs01ECLVYfzgWEitR5b0wb79lxy32PRVQnWnCRUWeEtznOBhNAQ/d5Y
-   Hf+MRKJP46MHBV7GFkbwAd4DD1EEGbMOwEIpPdVqfcnuMw0eTOw8kI/nB
-   /Ul1IJiBPOT1iPS5V3YY/fc3DHWyDHZzBPJRnfn0vXowbtt+NgSvUeRHx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="11629193"
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="11629193"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 15:45:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="4798202"
-Received: from mkuchla-mobl1.amr.corp.intel.com (HELO [10.209.72.111]) ([10.209.72.111])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 15:45:06 -0800
-Message-ID: <ca25d3462944dcea553665d7c85903cdd6a846bc.camel@linux.intel.com>
-Subject: Re: [PATCH v7 09/15] x86/sgx: Charge mem_cgroup for per-cgroup
- reclamation
-From: Tim Chen <tim.c.chen@linux.intel.com>
-To: Haitao Huang <haitao.huang@linux.intel.com>, jarkko@kernel.org, 
- dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com, 
- linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org, 
- cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de,  hpa@zytor.com, sohil.mehta@intel.com
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com, 
-	zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com, 
-	yangjie@microsoft.com
-Date: Fri, 02 Feb 2024 15:45:05 -0800
-In-Reply-To: <20240122172048.11953-10-haitao.huang@linux.intel.com>
-References: <20240122172048.11953-1-haitao.huang@linux.intel.com>
-	 <20240122172048.11953-10-haitao.huang@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+	s=arc-20240116; t=1706917558; c=relaxed/simple;
+	bh=9buRC9ldDrXvuxhVyglMKfULnlaqWnKfqa2YfBgUcF4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FvKDhBtqISMO7olw/okdXNaGrORlvVPIgUNqmHizvGMiAaZUlngzzj4QDYPupF+HH9aA6DYAivZiUayBThbE7Iatbj++9wMU4gukPfTLwyE4oCYkGZMh/jMHsrKe7AWu5q1wJDBg+PfAPd2s8R6NdNTRx2G5Z01EzPO/ovME3RQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=TSwS8A+P; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=g7Pb1IkcGK23Tspia9tCXFn6ISE+4JEdP8pHgIzbMhI=; b=TSwS8A+P0NONYf5Ve437zOz15B
+	2x4wAoLnf+lx9yQ6BBSzVMaP1SMYKdgO7pEXYARLm1UYI+8fjWOFegAsoPtracPlNiDkhVV3DtVLv
+	c+DDRMCUJb82/v7UJrirV0ykaWIWlM6Z3x6nOrd5SWiPdj5SAXVcAKBEVhyuOPlbh18HPsMqv6GPz
+	BzyBXqYesvczbD9MZjhnV2V3fXiMPBEwC91IUFb/lFr9UruwOmOHlk3k6oD7/qzcmsdVr4dZWvbax
+	dD4safKmHqwMQzOcv77cM1pevGflv38tYDC/fYfVR4+Kfd+g+5tL6eqk1Ri9Vqova9S52jNZLic9+
+	mB1FRCxA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43142)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rW3EB-0006bw-02;
+	Fri, 02 Feb 2024 23:45:47 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rW3E8-0000GD-0Z; Fri, 02 Feb 2024 23:45:44 +0000
+Date: Fri, 2 Feb 2024 23:45:43 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Sergio Palumbo <palumbo.ser@outlook.it>
+Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: sfp: add quirk for OEM DFP-34X-2C2 GPON
+ ONU SFP
+Message-ID: <Zb1+p6FiJwUF53xc@shell.armlinux.org.uk>
+References: <AS1PR03MB8189AD85CEB6E139F27307D3827F2@AS1PR03MB8189.eurprd03.prod.outlook.com>
+ <ZbZn8oCiyc1aNPuW@shell.armlinux.org.uk>
+ <AS1PR03MB8189B99C360FB403B8A0DD6882422@AS1PR03MB8189.eurprd03.prod.outlook.com>
+ <Zb0t+zKHx+0wTXH5@shell.armlinux.org.uk>
+ <AS1PR03MB8189D48114A559B080AF5BEA82422@AS1PR03MB8189.eurprd03.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <AS1PR03MB8189D48114A559B080AF5BEA82422@AS1PR03MB8189.eurprd03.prod.outlook.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Mon, 2024-01-22 at 09:20 -0800, Haitao Huang wrote:
->=20
-> @@ -1047,29 +1037,38 @@ static struct mem_cgroup *sgx_encl_get_mem_cgroup=
-(struct sgx_encl *encl)
->   * @encl:	an enclave pointer
->   * @page_index:	enclave page index
->   * @backing:	data for accessing backing storage for the page
-> + * @indirect:	in ksgxd or EPC cgroup work queue context
-> + *
-> + * Create a backing page for loading data back into an EPC page with ELD=
-U. This function takes
-> + * a reference on a new backing page which must be dropped with a corres=
-ponding call to
-> + * sgx_encl_put_backing().
->   *
-> - * When called from ksgxd, sets the active memcg from one of the
-> - * mms in the enclave's mm_list prior to any backing page allocation,
-> - * in order to ensure that shmem page allocations are charged to the
-> - * enclave.  Create a backing page for loading data back into an EPC pag=
-e with
-> - * ELDU.  This function takes a reference on a new backing page which
-> - * must be dropped with a corresponding call to sgx_encl_put_backing().
-> + * When @indirect is true, sets the active memcg from one of the mms in =
-the enclave's mm_list
-> + * prior to any backing page allocation, in order to ensure that shmem p=
-age allocations are
-> + * charged to the enclave.
->   *
->   * Return:
->   *   0 on success,
->   *   -errno otherwise.
->   */
->  int sgx_encl_alloc_backing(struct sgx_encl *encl, unsigned long page_ind=
-ex,
-> -			   struct sgx_backing *backing)
-> +			   struct sgx_backing *backing, bool indirect)
->  {
-> -	struct mem_cgroup *encl_memcg =3D sgx_encl_get_mem_cgroup(encl);
-> -	struct mem_cgroup *memcg =3D set_active_memcg(encl_memcg);
-> +	struct mem_cgroup *encl_memcg;
-> +	struct mem_cgroup *memcg;
->  	int ret;
-> =20
-> +	if (indirect) {
-> +		encl_memcg =3D sgx_encl_get_mem_cgroup(encl);
-> +		memcg =3D set_active_memcg(encl_memcg);
-> +	}
-> +
->  	ret =3D __sgx_encl_get_backing(encl, page_index, backing);
-> =20
-> -	set_active_memcg(memcg);
-> -	mem_cgroup_put(encl_memcg);
-> +	if (indirect) {
-> +		set_active_memcg(memcg);
-> +		mem_cgroup_put(encl_memcg);
-> +	}
-> =20
+On Sat, Feb 03, 2024 at 12:18:13AM +0100, Sergio Palumbo wrote:
+> Hello Russell,
+> thanks for your  explanation. I have to say that:
+> Module default is LAN_SDS_MODE=1
+> Host banana PI R3 supporting 1000base-X + 2500base-X
+> I would update the table as follows:
+> 
+> The current situation:
+> Host supports		Module		Mode		Functional
+> 1000base-X		LAN_SDS_MODE=1	1000base-X	Not tested, but expect to work as 1000base-X + 2500base-X
+> 1000base-X		LAN_SDS_MODE=6	1000base-X	Not tested, but expect to work as 1000base-X + 2500base-X
+> 1000base-X + 2500base-X	LAN_SDS_MODE=1	1000base-X	Yes
+> 1000base-X + 2500base-X	LAN_SDS_MODE=6	1000base-X	Yes (host forcing module at 1000base-X)
+> 
+> I suppose that Banana PI R3 host is forced by linux drivers
+> at 1000base-X so first two cases should be same as second two cases.
+> 
+> 
+> With the quirk:
+> Host supports		Module		Mode		Functional
+> 1000base-X		LAN_SDS_MODE=1	1000base-X	Not tested, but expect to work as 1000base-X + 2500base-X host
+> 1000base-X		LAN_SDS_MODE=6	1000base-X	Not tested, but expect to work as 1000base-X + 2500base-X host
+> 1000base-X + 2500base-X	LAN_SDS_MODE=1	1000base-X	Yes (module forcing host at 1000base-X)
+> 1000base-X + 2500base-X	LAN_SDS_MODE=6	2500base-X	Yes
 
+Your third line is just wrong. Given the capabilities of the host
+_and_ the capabilities of the module adjusted by your quirk, phylink
+_will_ choose 2500base-X _not_ 1000base-X for that. With your quirk,
+there is no way for Linux to know what LAN_SDS_MODE has been set
+in the module. Even without your quirk, _unless_ the module updates
+the EEPROM contents which is unlikely, there isn't a way to know.
 
-You can reduce the number of if statements to make the logic
-simpler.  Something like
+Add #define DEBUG in phylink.c, rebuild and run that kernel. Try
+that exact configuration. Report to me the kernel messages.
 
-	if (!indirect)
-		return __sgx_encl_get_backing(encl, page_index, backing);
+Adding a quirk that makes it not work in its default state is
+technically a regression. We can't know whether people are already
+using this module with Linux in this state. Adding this change
+potentially breaks users setups.
 
-	encl_memcg =3D sgx_encl_get_mem_cgroup(encl);
-	memcg =3D set_active_memcg(encl_memcg);
-	ret =3D __sgx_encl_get_backing(encl, page_index, backing);
-	set_active_memcg(memcg);
-	mem_cgroup_put(encl_memcg);
+> I suppose Banana PI R3 forcing Linux drivers at 1000-X when
+> module in LAN_SDS_MODE=1 and expect it should work alpso with
+> hosts at 1000base-X only in LAN_SDS_MODE=1 and LAN_SDS_MODE=6
 
->  	return ret;
+There is no way for Linux to know what LAN_SDS_MODE the module is
+in.
 
-Tim
-
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
