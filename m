@@ -1,209 +1,154 @@
-Return-Path: <linux-kernel+bounces-49934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 362498471BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:19:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C434A8471C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:21:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA38F1F29E68
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:19:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E36628EFEF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:21:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E227F14198A;
-	Fri,  2 Feb 2024 14:19:17 +0000 (UTC)
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9068214198A;
+	Fri,  2 Feb 2024 14:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fFqci3Tl"
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9178113E214
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 14:19:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DF41185A
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 14:20:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706883557; cv=none; b=q5+zTM0Tp5O9km1n+si/HzouMF3Rd5pONAZSDhyCubax/DA+93WnbDOHPHYgOjemHRWIn0mUpOPZBJ0eqXPImKM73wSs8yRl9DEHDgq7vce7rXGtroKcVrJ0apvWNgdzwZxjsP30v4tGjArGEYTdW/IkOQbQNvK4iKjBxpjsBCg=
+	t=1706883657; cv=none; b=OaTxpf8/Y6+tA+JiaHUXhT6f3Agrg+Freq6o4SeJaJ/51yqBY2U/oh8kFQ9UyYgL3iKI8mDlQnMmXuWmJ5jOYKqOdiusxG4JbFzuAG9hBUvQN6Ktk3DEdTMMkqTFf7Mrvik+bxGgwO9wP/UT+mqpdQk/vJwvB1NDsv8Zfw9j3hQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706883557; c=relaxed/simple;
-	bh=WaF05etmv6xtJTE48JVQIk8cC0oCi0ltt4j8nJKOOE4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pu4BTFVnXYfVB5etjPzULXqj9kiIke3D+nfTPAsb6r61tzMAR4DBnY/nPL1M6z8WAneAcsjlgBUg5o6e17paCiOxDHjk6x4kGMlUfBB/1uXD/LbjYf8u+YLTaIPTX9PGZ2SFUXcVPtPJfhuBZCyBBXOIyRmySasexB/ts3betIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.160.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-42a4516ec46so8171751cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 06:19:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706883554; x=1707488354;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1706883657; c=relaxed/simple;
+	bh=G2uxDw3rJ90QUP0VxxcGcpNUOmy7xFkn/uZBFq7Dat0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GUd7BV+SzRicRxqo1GmJLOZbafE4J1jz4F0noxgQpgfAJhnNEiVGcfSgRahsW+uQdPSmM+LmdcMlbywTaPNW686ynShhE380KNG0pZoEnKbdTIkhb0FmeKljful7bRhOtMeIx3IaN58SJro7cq539q0EXXEDYJKL6YJrbjQjydY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fFqci3Tl; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60410da20a2so21436507b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 06:20:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706883655; x=1707488455; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PVCU/QdR6yOLyX27bti1riO+pE3pl8L1u9F5qqx6Qkg=;
-        b=cwOpXfI45Uopw+vVvDXUX51Gsg2gXGD5LqB/d2P/+mHwWO1bxtsOrhXl028LvnBsFB
-         NmqrQpJXOXhu0g3/b9OCumfkSPGX5UTwggMWIaTKgJU2KDIkoEbjYwyR5tVoEMWQK6ei
-         icZItpatKSg3900VB/jm1R+k1UoqOYE3NxQYDGWU9mu2aDuiQsWzXCEJ1pWXcWs0Go40
-         o6JBH/nmc7NdbMAw0HGYdQOXjvfccskaWG/i64yFQmLzul/wQ2808x/XVETBN/5LaXvy
-         56zZuI921/tYwCaLQNkmggRPpBnrW/V9ma4y8VA8BKlxMnyDBR7XBKNLAGbS3xmNXSfQ
-         2aZA==
-X-Gm-Message-State: AOJu0YzWsp1+6JpWaSpDpkFxcrrbi9ugF5Nes5gvQ377lMVEqRXmXCHy
-	YUO0a+A19mewIi5Ytlf++wZV6XY9a8SR5w190zXewiHtZEQYMqYzW1EZpZCnqA==
-X-Google-Smtp-Source: AGHT+IEhQHanL60HiGDGS5wktHODuGtgnxpWhUHgFtWvSjOpTOhppcIFgAcuMhigP/FHcai4EZhJqw==
-X-Received: by 2002:a05:622a:1748:b0:42b:f6a6:4058 with SMTP id l8-20020a05622a174800b0042bf6a64058mr3632398qtk.15.1706883554394;
-        Fri, 02 Feb 2024 06:19:14 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCW5ywsfSWxoOXCneHQ193arCv1HiGofCXP9MquEQ/empUbTJttjRivFKD+KnwEX2OLj+A5f1aEr9yLYUa5qZ8AjkA8ZvXZpTKFJQS3dsrO1C30IU+HPlrVB1cjjZmcvyv/AMHE3CvAY/rEYfQBU7wZBv1M8VW+VuJA2ex8qh2Tootn+uaTgnTyf0ZjdSZSztAEe2WvzWJIu6J3TanTtKlobuVMRO8kzofHOpoPGwdv+hSk6SxHREzEqsgUmJn08eE/wOkPXdPwGzSBGaxYiBtNU3APPVYeEV5DsX3JXi59bCFDMOvWJbbOXwf5/2vmHmxX9Eg6VkKsXzntKtE6YpfvxvcTKRzq8ah30mL/Vs572aA==
-Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
-        by smtp.gmail.com with ESMTPSA id ey22-20020a05622a4c1600b0042bed7dc558sm860739qtb.6.2024.02.02.06.19.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 06:19:14 -0800 (PST)
-Date: Fri, 2 Feb 2024 09:19:13 -0500
-From: Mike Snitzer <snitzer@kernel.org>
-To: Ming Lei <ming.lei@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	David Hildenbrand <david@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Don Dutile <ddutile@redhat.com>, Rafael Aquini <raquini@redhat.com>,
-	Dave Chinner <david@fromorbit.com>
-Subject: Re: mm/madvise: set ra_pages as device max request size during
- ADV_POPULATE_READ
-Message-ID: <Zbz54MUZ2kZLTQQx@redhat.com>
-References: <20240202022029.1903629-1-ming.lei@redhat.com>
- <Zbxy30POPE8rN_YN@redhat.com>
- <ZbzJZji95a1qmhcj@fedora>
+        bh=G2uxDw3rJ90QUP0VxxcGcpNUOmy7xFkn/uZBFq7Dat0=;
+        b=fFqci3TlcxVdIhoOvZM+cSFg6Uo1jCdy5yadnXq20KxT98ibf1ncUXxLDFhmmZN2PT
+         T3+GIDy0HjiHkBtJKuP6PmZAyvaZIwESgtqDfgC395Z15inifznfzJn5p0ECx6GTxGmA
+         aTasrtuuN/fXk/W/6pP4gAUxIzOnVqaWnM7UM4sFBx9x/ABnhD3UMAn4FSfQm91eDOWT
+         aFytj6TyFe1/KmbmMlVrC9NJ45955RZtrGWgWd/ZFt+tX7JwrybL5B6dl76mVeemlqpH
+         p3MsZId8MQG/6Hqk2tR344zluXhPJmDN/M2mv/ptvgAIrIQVkfgm6WNt1m6/lTPjaLmM
+         YUJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706883655; x=1707488455;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G2uxDw3rJ90QUP0VxxcGcpNUOmy7xFkn/uZBFq7Dat0=;
+        b=Pz5Pzbf4ZYMOhZGHvt4S/t3nXAqV2jefLXgNUR00tH+fGKhfLSJM6Duhk/WettUolh
+         4VYhMCmIRKWdxTk4C5VIh2Q8cL/afvc/GOLREf2wFLQxo6XV9fo+1QhdZn9/C0k77dMZ
+         A5zNHGYuDseBe+Y+ZpkgMvTTfggxDkpFf8Od9+ED2o1h7wJiM7xDU3Tk8LQMxaA22uzO
+         FhE1f1XAjkzaFD5mFzCHDB3Ux+H+um87edgsmkGqAsXO0id9AAKd7HwvyaT5QQDx18yO
+         y+FrfbBp4CkDPIBdSdugXsaUcHXUJqJO6QUYX21xm1xv8A0yS/w6x4iMAgewteX+j7Nb
+         M62Q==
+X-Gm-Message-State: AOJu0YyX0MAyfzbGv6gNL99zfaKEnsQsu1bKJRQVaDEFc0J/lrx1TYEt
+	srhqncYIW3N+sN8oH4xYE0fS3W765BKwR2TPUNgJTU0T2v23SPTKGAuQw5Zn1/NTHLuGrwKxjmH
+	ygTXSTHrOIM9W3gYI5dzZIDmPHhk=
+X-Google-Smtp-Source: AGHT+IEqf50LUjBPwdqZ6TbQazL+K8tUNpZi9E1X57Kcl7GuX7fVtf0lcgQoMT07e0dTsdejuuiLqXiT8bdHYXwZ2mQ=
+X-Received: by 2002:a25:ce43:0:b0:dc2:3c31:8f85 with SMTP id
+ x64-20020a25ce43000000b00dc23c318f85mr8010365ybe.47.1706883655275; Fri, 02
+ Feb 2024 06:20:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbzJZji95a1qmhcj@fedora>
+References: <20240201125226.28372-1-ioworker0@gmail.com> <Zby-sHLDlmTRaUcd@tiehlicka>
+ <CAK1f24=7sy_Bczpt5YeDbkhfriYUc1=zreSFdGCxfF3R0D6sRQ@mail.gmail.com>
+ <ZbzfxNn4AYnTVFLh@tiehlicka> <CAK1f24mvBkc2c=fHL6UxMhL2mgLHVrSwZfE5516bOR0yVdfZpQ@mail.gmail.com>
+ <ZbzmvwyTGeW18nJy@tiehlicka> <CAK1f24kdyOnUjcpnrk6j4cF6bSFXQwwzFk9tM+jD4RsO_Hc4hA@mail.gmail.com>
+In-Reply-To: <CAK1f24kdyOnUjcpnrk6j4cF6bSFXQwwzFk9tM+jD4RsO_Hc4hA@mail.gmail.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Fri, 2 Feb 2024 22:20:40 +0800
+Message-ID: <CAK1f24kak95cmYvhr=OeEPr2w2EzrM_xVW09BTguUfNnAe8LSg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm/khugepaged: skip copying lazyfree pages on collapse
+To: Michal Hocko <mhocko@suse.com>
+Cc: akpm@linux-foundation.org, zokeefe@google.com, david@redhat.com, 
+	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com, 
+	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 02 2024 at  5:52P -0500,
-Ming Lei <ming.lei@redhat.com> wrote:
+I'd like to add one more point.
 
-> On Thu, Feb 01, 2024 at 11:43:11PM -0500, Mike Snitzer wrote:
-> > On Thu, Feb 01 2024 at  9:20P -0500,
-> > Ming Lei <ming.lei@redhat.com> wrote:
-> > 
-> > > madvise(MADV_POPULATE_READ) tries to populate all page tables in the
-> > > specific range, so it is usually sequential IO if VMA is backed by
-> > > file.
-> > > 
-> > > Set ra_pages as device max request size for the involved readahead in
-> > > the ADV_POPULATE_READ, this way reduces latency of madvise(MADV_POPULATE_READ)
-> > > to 1/10 when running madvise(MADV_POPULATE_READ) over one 1GB file with
-> > > usual(default) 128KB of read_ahead_kb.
-> > > 
-> > > Cc: David Hildenbrand <david@redhat.com>
-> > > Cc: Matthew Wilcox <willy@infradead.org>
-> > > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> > > Cc: Christian Brauner <brauner@kernel.org>
-> > > Cc: Don Dutile <ddutile@redhat.com>
-> > > Cc: Rafael Aquini <raquini@redhat.com>
-> > > Cc: Dave Chinner <david@fromorbit.com>
-> > > Cc: Mike Snitzer <snitzer@kernel.org>
-> > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > Signed-off-by: Ming Lei <ming.lei@redhat.com>
-> > > ---
-> > >  mm/madvise.c | 52 +++++++++++++++++++++++++++++++++++++++++++++++++++-
-> > >  1 file changed, 51 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/mm/madvise.c b/mm/madvise.c
-> > > index 912155a94ed5..db5452c8abdd 100644
-> > > --- a/mm/madvise.c
-> > > +++ b/mm/madvise.c
-> > > @@ -900,6 +900,37 @@ static long madvise_dontneed_free(struct vm_area_struct *vma,
-> > >  		return -EINVAL;
-> > >  }
-> > >  
-> > > +static void madvise_restore_ra_win(struct file **file, unsigned int ra_pages)
-> > > +{
-> > > +	if (*file) {
-> > > +		struct file *f = *file;
-> > > +
-> > > +		f->f_ra.ra_pages = ra_pages;
-> > > +		fput(f);
-> > > +		*file = NULL;
-> > > +	}
-> > > +}
-> > > +
-> > > +static struct file *madvise_override_ra_win(struct file *f,
-> > > +		unsigned long start, unsigned long end,
-> > > +		unsigned int *old_ra_pages)
-> > > +{
-> > > +	unsigned int io_pages;
-> > > +
-> > > +	if (!f || !f->f_mapping || !f->f_mapping->host)
-> > > +		return NULL;
-> > > +
-> > > +	io_pages = inode_to_bdi(f->f_mapping->host)->io_pages;
-> > > +	if (((end - start) >> PAGE_SHIFT) < io_pages)
-> > > +		return NULL;
-> > > +
-> > > +	f = get_file(f);
-> > > +	*old_ra_pages = f->f_ra.ra_pages;
-> > > +	f->f_ra.ra_pages = io_pages;
-> > > +
-> > > +	return f;
-> > > +}
-> > > +
-> > 
-> > Does this override imply that madvise_populate resorts to calling
-> > filemap_fault() and here you're just arming it to use the larger
-> > ->io_pages for the duration of all associated faulting?
-> 
-> Yes.
-> 
-> > 
-> > Wouldn't it be better to avoid faulting and build up larger page
-> 
-> How can we avoid the fault handling? which is needed to build VA->PA mapping.
+Users mark pages as lazyfree with MADV_FREE,
+expecting these pages to be reclaimed until memory
+pressure occurs. Currently, khugepaged treats lazyfree
+pages the same as pte_none, which seems reasonable.
+IMO, avoiding the copying of these pages to the new huge
+page during khugepaged collapse can better keep the
+semantics of MADV_FREE. It appears that lazyfree
+pages are reclaimed before khugepaged collapses them.
 
-I was wondering if it made sense to add fadvise_populate -- but given
-my lack of experience with MM I then get handwavvy quick -- I have
-more work ahead to round out my MM understanding so that I'm more
-informed.
- 
-> > vectors that get sent down to the block layer in one go and let the
-> 
-> filemap_fault() already tries to allocate folio in big size(max order
-> is MAX_PAGECACHE_ORDER), see page_cache_ra_order() and ra_alloc_folio().
-> 
-> > block layer split using the device's limits? (like happens with
-> > force_page_cache_ra)
-> 
-> Here filemap code won't deal with block directly because there is VFS &
-> FS and io mapping is required, and it just calls aops->readahead() or
-> aops->read_folio(), but block plug & readahead_control are applied for
-> handling everything in batch.
-> 
-> > 
-> > I'm concerned that madvise_populate isn't so efficient with filemap
-> 
-> That is why this patch increases readahead window, then
-> madvise_populate() performance can be improved by X10 in big file-backed
-> popluate read.
+Thanks,
+Lance
 
-Right, as you know I've tested your patch, the larger readahead window
-certainly did provide the much more desirable performance.  I'll reply
-to your v2 (with reduced negative checks) with my Reviewed-by and
-Tested-by.
-
-I was just wondering if there an opportunity to plumb in more a
-specific (and potentially better) fadvise_populate for dealing with
-file backed pages.
-
-> > due to excessive faulting (*BUT* I haven't traced to know, I'm just
-> > inferring that is why twiddling f->f_ra.ra_pages helps improve
-> > madvise_populate by having it issue larger IO. Apologies if I'm way
-> > off base)
-> 
-> As mentioned, fault handling can't be avoided, but we can improve
-> involved readahead IO perf.
-
-Thanks, and sorry for asking such a naive question (put more pressure
-on you to educate than I should have).
-
-Mike
+On Fri, Feb 2, 2024 at 9:46=E2=80=AFPM Lance Yang <ioworker0@gmail.com> wro=
+te:
+>
+> Here is a part from the man page explaining
+> the MADV_FREE semantics:
+>
+> The kernel can thus free thesepages, but the
+> freeing could be delayed until memory pressure
+> occurs. For each of the pages that has been
+> marked to be freed but has not yet been freed,
+> the free operation will be canceled if the caller
+> writes into the page. If there is no subsequent
+> write, the kernel can free the pages at any time.
+>
+> IIUC, if there is no subsequent write, lazyfree
+> pages will eventually be reclaimed. khugepaged
+> treats lazyfree pages the same as pte_none,
+> avoiding copying them to the new huge page
+> during collapse. It seems that lazyfree pages
+> are reclaimed before khugepaged collapses them.
+> This aligns with user expectations.
+>
+> However, IMO, if the content of MADV_FREE pages
+> remains valid during collapse, then khugepaged
+> treating lazyfree pages the same as pte_none
+> might not be suitable.
+>
+> Thanks,
+> Lance
+>
+> On Fri, Feb 2, 2024 at 8:57=E2=80=AFPM Michal Hocko <mhocko@suse.com> wro=
+te:
+> >
+> > On Fri 02-02-24 20:52:48, Lance Yang wrote:
+> > > On Fri, Feb 2, 2024 at 8:27=E2=80=AFPM Michal Hocko <mhocko@suse.com>=
+ wrote:
+> > > >
+> > > > On Fri 02-02-24 19:18:31, Lance Yang wrote:
+> > > > > IMO, since it's treated the same as pte_none,
+> > > > > perhaps lazyfree pages shouldn't be copied to
+> > > > > the new huge page.
+> > > >
+> > > > Why? The content of MADV_FREE page is valid until it is reclaimed.
+> > >
+> > > IMO, if MADV_FREE pages are considered valid until
+> > > reclaimed, treating them the same as pte_none might
+> > > pose a conflict.
+> >
+> > What kind of conflict?
+> > --
+> > Michal Hocko
+> > SUSE Labs
 
