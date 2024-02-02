@@ -1,130 +1,163 @@
-Return-Path: <linux-kernel+bounces-50678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13CC0847C6A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:41:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72689847C79
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:44:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 462721C22F06
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:41:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C685FB2265D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:44:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72EC4126F1C;
-	Fri,  2 Feb 2024 22:41:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DFF0126F18;
+	Fri,  2 Feb 2024 22:44:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="KWtg7Ex0"
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NgwG4Fxq"
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4213B67A15
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 22:41:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A6655FF01
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 22:44:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706913686; cv=none; b=vFotUajoLaNdyLSaGHMmIaVdwzna9ymX3MGzTl72QZsHFGdVBFaiSawpowuivpyd6FVqkNgaTarEu0jaklMy294pHCP3YVuEudR4Gwf57Q0E4oDUDw5sHf0SLSRnIuhwh96YBbOcdODc0Yk+cKi9c2o/xPy0PRBwP+2awQ8xMpY=
+	t=1706913864; cv=none; b=KOzomzdfVqwhOJS7TArc0bNrf8OMwugXE9YqOqvZx5SDA7ZZph28JRirECUd9R8yWhzSnA6izR9MHSpgbsvuuaZsxnNRlXleqeMDIezUQmM0WyTailLxHceBaoic/JY28MvSA1DQYzF2GoqbkfWbNXMjORE8xmsNB3u98b+KI9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706913686; c=relaxed/simple;
-	bh=IEZ+Nc8EucSRu9Eu3hl0AOl89SOH+36zLs8bdUcKiKs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HswE02Ng9qiLb8vsqUbZKxTSt9awralE23UnjhXB+5q5qdN4L+mrUTthBLpkXLmUbjeTTahVPsD1bQ43R/zXl9igDLZUJ1rAUTzH7sCA2POKjHf75tTdoBPjaKC7TggP6LLHj4aTGNIKqMjOBtNyikZoHfY1eO4N6wLW6Mcy3fI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=KWtg7Ex0; arc=none smtp.client-ip=209.85.219.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-680b1335af6so32356696d6.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 14:41:23 -0800 (PST)
+	s=arc-20240116; t=1706913864; c=relaxed/simple;
+	bh=jAaatw/UAMbdWbxWsYH0t0EUUgMT1D8A4PC94zqa3lQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=i8u1XWcnmHUnzw4LE9RkZGXcf+rByWLmRGOwQ35rxkBFFNvHTy+RqC3i1yDwnZx1I5XsTzFcZrrRtDhwrQWBgbmB26r/03soFHUhIr5K/PWm7+uJrctEDhAzOTPWRDjQIynRYTxuXL5BxlXSsu4H5p6+qT5ZdPTLCT4J+5+PUgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NgwG4Fxq; arc=none smtp.client-ip=209.85.166.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7beda2e6794so46133539f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 14:44:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706913683; x=1707518483; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=TN/MFntii2sGtHOWJtEU34VYQvygXApI1VfgAn1sM3I=;
-        b=KWtg7Ex0KNWBMTATm4G/Bd3AV4lTTI2ZoTA09vyMhEhPvRBjTOSjiETZO7AfDgmead
-         GLud/GxGXX7vlLnz2iGxmaTaSpyoW8nVPPqYC1kmr0Nxq3oygamZPr8a2BAKKFZRigHh
-         uTF82ITept6/XWybPs99vFj0s3wz+8adazM5xze9wb3B07BKG1EuempT5q0/RRBcLAHT
-         Wa1Wgu0mx+asd1qOP/EkKFMo3FmUQ16N2hC+h1mVmziATXGPe5+0WmSGfVUYCzrZBW8k
-         lavxZGZlZAAQBkAVLPyaWgPlZpgmrdMgVwl0Jf+PvX8jnG9aXuBa6JEmAt53G5epNGjP
-         tDCw==
+        d=gmail.com; s=20230601; t=1706913862; x=1707518662; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AMLY6NdQnT1U9X32xfuv+CMyZtVAhapgA0VssdBsgis=;
+        b=NgwG4FxqeKgAg52pHb2fMo1Z9Vk4KFPnTiLTThyUtaAyXgu10Ux9ugfhXhvX1hscMh
+         Y0cOyqPoe4K4ctuzroIxyGFhzXUzMFtkesN93k2hWxEDITvrYY6mcgB6McD8CgClyFRL
+         tBjcbVyz6gNJ1to78yvQTDbzMFXU6xU/tip4d9I+MC9+8XFQKWW426cwXyYUrQZbohJy
+         AFW1AcROecbFGFiNB6kKiRRiGsXJVUT/aB07vDT/28i6EelGGl1qep/WXJk78xwpJp32
+         UuyGRw5qrMhMHXizNoVGi/kIXcU1dpW+3i3AKF5KAVUebl7CkDPYnY02MNmRcJHitmac
+         3vjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706913683; x=1707518483;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TN/MFntii2sGtHOWJtEU34VYQvygXApI1VfgAn1sM3I=;
-        b=hmE7Nb6FriH/3/+o1T+4cZQScWBwC4vBgQJGqksemGoix/hSQkkyeQcLJruOpiUvv9
-         lSSoOkOlX9AHzFfGI54SRTdhvIEeAIKFoiIqNZOI3DCogjnMEg6WS7gmVuTbSprMZ60g
-         n6zntsGO392n0BGp0gz/gAGOJZUKuNEWvAMGoelMMjgvrbHlh06ry5bsYTF0hpoz7Ixt
-         kSTGGAOrTkgc89OWSJKG+3OY/reCsB2WW347huxQTlj8LZ+xMO6KxLzyzpWemx4zoHT3
-         aQQnnszEW0z4MHaVmrmZ9bvxTJToRF/USIl0qabMSjPBRBJ9JJXxcnlbOu0DVyOUUW2O
-         eN2g==
-X-Gm-Message-State: AOJu0YyY8/Pfx7p9890X/gZ0sF3XrHIR+S/GBhy4kaDCe3gWxin/jcZq
-	HzY8OZxYFY67WstQxfEzluze3f/KCtlHbj4YQBNgFK+WLdsmRmvNEsYk8g96nqQ=
-X-Google-Smtp-Source: AGHT+IFLtRQYT2Z/5m6+iLpanPS2x7zIBRaj9Bd9wy7efYS0sCiA8TlEtuF7MnxBC+vxylljcXB5wA==
-X-Received: by 2002:a05:6214:7f0:b0:68c:8266:32e6 with SMTP id bp16-20020a05621407f000b0068c826632e6mr36083qvb.22.1706913682992;
-        Fri, 02 Feb 2024 14:41:22 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCX4bWvYAwUQZC6rHbZggqmXwNlF8A8uqOOd7ksYY2NMdBx0z09rVQSuT2l9M1pmbaeyFfYGVf3rG81eK51QwwlptZAV59nVNqYjWn5Vab9Eu7phEt3j5kkc5EhwoJ0zJ3YUUxb0iK4141MzksdO3SdDx31lCIy/Z7weoTBOhLzujWgKuvLBmzG1VOUYm0avgbZblW9FgN5Qg0qgtZVCgpSOEuKzWEKxPnTrSR0+iRjZnMIGzVt4co+4pH9IRVc6P6GHtwTb7CB+hLi5ZRCx3vfikIgF1FryOMXH7bRjBl8rlaP5pLNi24AkCOKoJNuMcOSJWU+Z+ceA1RSJAsUio19r/UwAkf1xlE09OGkAsHHPjLRVJbBFCDHK89PVIgf/K1FjHz0zfthh3M9jtoYqIz9mj5r8yCFBbJlq8g+i3HuJdslKhg==
-Received: from localhost ([2600:380:8c43:7b07:78d7:9d13:1945:dc14])
-        by smtp.gmail.com with ESMTPSA id qm18-20020a056214569200b0068c67e305edsm1207270qvb.49.2024.02.02.14.41.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 14:41:22 -0800 (PST)
-Date: Fri, 2 Feb 2024 17:41:17 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: "T.J. Mercier" <tjmercier@google.com>, Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Efly Young <yangyifei03@kuaishou.com>, android-mm@google.com,
-	yuzhao@google.com, mkoutny@suse.com, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm: memcg: Use larger batches for proactive reclaim
-Message-ID: <20240202224117.GA341862@cmpxchg.org>
-References: <20240202221026.1055122-1-tjmercier@google.com>
- <CAJD7tkZh=M58Avfwx_D+UEXy6mm18Zx_hVKn8Gb8-+8-JQQfWw@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1706913862; x=1707518662;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AMLY6NdQnT1U9X32xfuv+CMyZtVAhapgA0VssdBsgis=;
+        b=ZUnP4+YhRuKhZxOL5bqUBDXdW3EYOUvBFfQ4WKLEIl58NsxA8/Yg0DbDFewlSCO0V0
+         Npu7ue6q/MdSTMymkUiHegihmuJOBm1WI8UC7VcKWUuy7h8rcK3gV2LEtg7QVOGKLvFv
+         Hy5r6vYwWVzJ1Ig+VzjCS6/FAdTZYwF32YrM0c8Uq0RlaUH34rsfnVUmpHg7X9ipM8zP
+         Jr3zokvBqD4uIkIIqxmbm+Lpl8YtEgVuVjGWiXmi/JYv53yaHpbFT+/nG7sHwLBVJNwK
+         8TFkg1ptS8Z50zJG8ttc79MkXiV552jKGwhioRLaLLnow9RB4HmgTqyQbX2AaQ+dDzdq
+         rqPw==
+X-Gm-Message-State: AOJu0YwAepzqzySaazVcDCr8kln+DGwnfBH/cPFLfiF1dQMBihFmv3tE
+	LxPFX4vjsZ2jt1C2KO0ZCexGapJXA3OnOrTAbIXHUaeIPsXgosX8dNQfrWOekXn0oDe3l49oqWx
+	eFP0DqEsUAUZn8q1sF9Uoz7bw9DE=
+X-Google-Smtp-Source: AGHT+IH54dv2c1Flty4eD/sScEZfqMpxLZ6chyRV6g+BFX++dzAEJMKXa73YnYMK5a1fG1HHs3k/dBXMaLLB2dgmljo=
+X-Received: by 2002:a05:6602:3f88:b0:7bf:f7d1:ad10 with SMTP id
+ fb8-20020a0566023f8800b007bff7d1ad10mr9531iob.4.1706913862350; Fri, 02 Feb
+ 2024 14:44:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkZh=M58Avfwx_D+UEXy6mm18Zx_hVKn8Gb8-+8-JQQfWw@mail.gmail.com>
+References: <20240201-b4-zswap-invalidate-entry-v1-0-56ed496b6e55@bytedance.com>
+ <20240201-b4-zswap-invalidate-entry-v1-6-56ed496b6e55@bytedance.com>
+ <CAKEwX=MOcmUjtrYOJCwh3unRT7OKdrvtR-FFdSevNf5i7z=Q=A@mail.gmail.com> <CAJD7tkb9q5FQqwUTH3kJtEcWB57Kua_RJ7zmDdq9KXgVegs=XQ@mail.gmail.com>
+In-Reply-To: <CAJD7tkb9q5FQqwUTH3kJtEcWB57Kua_RJ7zmDdq9KXgVegs=XQ@mail.gmail.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Fri, 2 Feb 2024 14:44:11 -0800
+Message-ID: <CAKEwX=P0Mov3Aqazy8eLkC23wxpocVDf5oyQ6gJA1sK-Zv-BMw@mail.gmail.com>
+Subject: Re: [PATCH 6/6] mm/zswap: zswap entry doesn't need refcount anymore
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Chengming Zhou <zhouchengming@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 02, 2024 at 02:13:20PM -0800, Yosry Ahmed wrote:
-> On Fri, Feb 2, 2024 at 2:10 PM T.J. Mercier <tjmercier@google.com> wrote:
-> > @@ -6965,6 +6965,9 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
-> >         while (nr_reclaimed < nr_to_reclaim) {
-> >                 unsigned long reclaimed;
+On Fri, Feb 2, 2024 at 2:37=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com> =
+wrote:
+>
+> On Fri, Feb 2, 2024 at 2:33=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrot=
+e:
 > >
-> > +               /* Will converge on zero, but reclaim enforces a minimum */
-> > +               unsigned long batch_size = (nr_to_reclaim - nr_reclaimed) / 4;
-> > +
-> >                 if (signal_pending(current))
-> >                         return -EINTR;
+> > On Thu, Feb 1, 2024 at 7:50=E2=80=AFAM Chengming Zhou
+> > <zhouchengming@bytedance.com> wrote:
+> > >
+> > > Since we don't need to leave zswap entry on the zswap tree anymore,
+> > > we should remove it from tree once we find it from the tree.
+> > >
+> > > Then after using it, we can directly free it, no concurrent path
+> > > can find it from tree. Only the shrinker can see it from lru list,
+> > > which will also double check under tree lock, so no race problem.
+> > >
+> > > So we don't need refcount in zswap entry anymore and don't need to
+> > > take the spinlock for the second time to invalidate it.
+> > >
+> > > The side effect is that zswap_entry_free() maybe not happen in tree
+> > > spinlock, but it's ok since nothing need to be protected by the lock.
+> > >
+> > > Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 > >
-> > @@ -6977,7 +6980,7 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
-> >                         lru_add_drain_all();
+> > Oh this is sweet! Fewer things to keep in mind.
+> > Reviewed-by: Nhat Pham <nphamcs@gmail.com>
 > >
-> >                 reclaimed = try_to_free_mem_cgroup_pages(memcg,
-> > -                                       min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
-> > +                                       batch_size,
-> >                                         GFP_KERNEL, reclaim_options);
-> 
-> I think the above two lines should now fit into one.
+> > > ---
+> > >  mm/zswap.c | 63 +++++++++++-----------------------------------------=
+----------
+> > >  1 file changed, 11 insertions(+), 52 deletions(-)
+> > >
+> > > diff --git a/mm/zswap.c b/mm/zswap.c
+> > > index cbf379abb6c7..cd67f7f6b302 100644
+> > > --- a/mm/zswap.c
+> > > +++ b/mm/zswap.c
+> > > @@ -193,12 +193,6 @@ struct zswap_pool {
+> > >   *
+> > >   * rbnode - links the entry into red-black tree for the appropriate =
+swap type
+> > >   * swpentry - associated swap entry, the offset indexes into the red=
+-black tree
+> > > - * refcount - the number of outstanding reference to the entry. This=
+ is needed
+> > > - *            to protect against premature freeing of the entry by c=
+ode
+> > > - *            concurrent calls to load, invalidate, and writeback.  =
+The lock
+> > > - *            for the zswap_tree structure that contains the entry m=
+ust
+> > > - *            be held while changing the refcount.  Since the lock m=
+ust
+> > > - *            be held, there is no reason to also make refcount atom=
+ic.
+> > >   * length - the length in bytes of the compressed page data.  Needed=
+ during
+> > >   *          decompression. For a same value filled page length is 0,=
+ and both
+> > >   *          pool and lru are invalid and must be ignored.
+> > > @@ -211,7 +205,6 @@ struct zswap_pool {
+> > >  struct zswap_entry {
+> > >         struct rb_node rbnode;
+> > >         swp_entry_t swpentry;
+> > > -       int refcount;
+> >
+> > Hah this should even make zswap a bit more space-efficient. IIRC Yosry
+> > has some analysis regarding how much less efficient zswap will be
+> > every time we add a new field to zswap entry - this should go in the
+> > opposite direction :)
+>
+> Unfortunately in this specific case I think it won't change the size
+> of the allocation for struct zswap_entry anyway, but it is a step
+> nonetheless :)
 
-Yeah might as well compact that again. The newline in the declarations
-is a bit unusual for this codebase as well, and puts the comment sort
-of away from the "reclaim" it refers to. This?
-
-		/* Will converge on zero, but reclaim enforces a minimum */
-		batch_size = (nr_to_reclaim - nr_reclaimed) / 4;
-
-		reclaimed = try_to_free_mem_cgroup_pages(memcg, batch_size,
-					GFP_KERNEL, reclaim_options);
-
-But agreed, it's all just nitpickety nickpicking. :)
-
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Ah, is it because of the field alignment requirement? But yeah, one
+day we will remove enough of them :)
 
