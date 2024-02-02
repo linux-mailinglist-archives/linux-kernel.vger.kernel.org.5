@@ -1,65 +1,65 @@
-Return-Path: <linux-kernel+bounces-49280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90FCD846829
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:41:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A568584682D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:42:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C5821F2449C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:41:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B2361F228F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:42:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6463F17C69;
-	Fri,  2 Feb 2024 06:41:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF351755A;
+	Fri,  2 Feb 2024 06:41:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BIT0YhsY"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="lgnjqB8u"
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C3E41799E;
-	Fri,  2 Feb 2024 06:40:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87FD917BC4;
+	Fri,  2 Feb 2024 06:41:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706856061; cv=none; b=cOa9e1YLYHWGS3FaIX2+sbSS6iwoN+iE+88CkSKPLzNZJyUlmdCBjBtpIQuh4RXSSL9bVoeotGqJGbYv0AG5SBE0P0CvQzFZfCYvHn8SXRSOH9ZXCUcq6GQnhsGeM700XLcddt9dRS+h6GnIQAFE4uxdOw72xrrNw2PGOArYtmM=
+	t=1706856063; cv=none; b=f0VxZs0klDxXGkBDD3t0cfN5WdeKueicLenArp8vmP6c+nSR9Uv1dkm/rlbG0H9+c/j4rx7/tMojz5OL0YUfV/lZN8tEQYrtSJbi/Y3vTLqCO/8KMhC0sTIFa3dnoJHj95Maevdy9eHwr2lF5rxJxAbi6j8RZrqkpUj12onAl6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706856061; c=relaxed/simple;
-	bh=wv0RdXaPzOQFI/dSNphF2oKnr0c/b6g6w8ucASw1vZY=;
+	s=arc-20240116; t=1706856063; c=relaxed/simple;
+	bh=z8Hl4Row7jHBjKpjUgB/iPmEhZlIT54bqwO6dLRmvnA=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Y4kLbasWFwufU2OtyMRrKvqn7d2C12W1hRm6ROSta4yqAjcUX7RToeMSLVqF+N5PaiyuLxLFsb6xwxv0dlpPfWsgakQrjkx0fiouTOqbvBFqcgPCfFCEg85GX4hCsabPCOwAz/h7NmjwIw/6MXw/v7P/Ph34mP3N+Id65M70xFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=BIT0YhsY; arc=none smtp.client-ip=205.220.180.131
+	 MIME-Version:Content-Type; b=IKriK/XirGgt6ijgm9JvfqhJpBckguAvyKzWU0y8GjWASKHCQsRuy7ACJ9OU7v/MUPJ4hloKNKzXy+WvK+BDXEbZun+ltbwSK0euUJuS+5BkjeBxOuy1MgvM24GWRisVEahWdX+fIgRa7kyXLsAw/Xp2O8XoePws6MWRZsBCXqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=lgnjqB8u; arc=none smtp.client-ip=205.220.180.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4121dIhb017196;
-	Fri, 2 Feb 2024 06:40:57 GMT
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4121WpWI016165;
+	Fri, 2 Feb 2024 06:40:59 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=yEjPmzOUm8KJS57P/SFd
-	BTDisFXia25b4e5x+Agt1WY=; b=BIT0YhsY85iAvC7uonHNaIT4rrS9nURHI8hu
-	ZefTtkJZR75rcLFcqfE13G1v1AmJtg7mvc4LJ1tv7ec8oQgxt/cGx+2irgJz3aEl
-	9hL4FhivZK6Ls8N38zAJ36/7F6AEz0Duz3mQbzmNGupv6TVbMRphMs0afGre8saM
-	v1hZRg1YeAJ5wfFBg2hmDn62GVxA3o7gtGmu4vtGq+dVQqGxUd7fq5/3ytG29tsI
-	EqJv8tTayAy9+WmSQGcXhtED7zLFdHtwZDkkWc5ctPtFlkdszCA4i87ntva/Hunc
-	TbAAr+8bzQrgWhmml7vjS1J6HxRjJl12CcrOWqigusWzsWxuFA==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0pwm0mr4-1
+	:mime-version:content-type; s=qcppdkim1; bh=Sl3W08GaQhaM1wUGx42U
+	K2YbK6VW2S43yYXRozc45pc=; b=lgnjqB8ugRoegAcwKB0xxljzbK3TB3aFVJO3
+	frYTTRdR8fmW536i6WK6Q+zKOmfBmoXd0wmzoa6QQ6oenvJNlhtzWoRkPqF7Jyft
+	Tkzrgqsn110nspJyz/DTLnIGObWV+RtiCd0Y2A49lJl4T2RVFvFZaGon3E8dWapn
+	c45DQKuubIuHZ2HMEUWUlpsZ9irAw9Zc5ouCMt7ExhBFTANZbVMOKgJXQ/KR6rs7
+	+p9X6pJtoPS8EmPJjET2LfNY2APAAH2dnbgPtYZHKDC218VWd00BdbecpQujBc1W
+	nWnUbrwtAVoYbJlDL0mHYibHG2yGC/ewwIS8XdRXMZYUQ8V4cw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0pu00n2p-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Feb 2024 06:40:57 +0000 (GMT)
+	Fri, 02 Feb 2024 06:40:59 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4126eu54004518
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4126ewgP014145
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 2 Feb 2024 06:40:56 GMT
+	Fri, 2 Feb 2024 06:40:58 GMT
 Received: from hu-ekangupt-hyd.qualcomm.com (10.80.80.8) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 1 Feb 2024 22:40:54 -0800
+ 15.2.1118.40; Thu, 1 Feb 2024 22:40:56 -0800
 From: Ekansh Gupta <quic_ekangupt@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>
 CC: <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1 03/16] misc: fastrpc: Add static PD restart support
-Date: Fri, 2 Feb 2024 12:10:26 +0530
-Message-ID: <20240202064039.15505-4-quic_ekangupt@quicinc.com>
+Subject: [PATCH v1 04/16] misc: fastrpc: Add fastrpc multimode invoke request support
+Date: Fri, 2 Feb 2024 12:10:27 +0530
+Message-ID: <20240202064039.15505-5-quic_ekangupt@quicinc.com>
 X-Mailer: git-send-email 2.17.0
 In-Reply-To: <20240202064039.15505-1-quic_ekangupt@quicinc.com>
 References: <20240202064039.15505-1-quic_ekangupt@quicinc.com>
@@ -74,348 +74,503 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01b.na.qualcomm.com (10.47.209.197)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: V9sUXhK_gNHwGwXlLO0Xri5NkyzAcH_A
-X-Proofpoint-ORIG-GUID: V9sUXhK_gNHwGwXlLO0Xri5NkyzAcH_A
+X-Proofpoint-GUID: ekeOz-716vevabMD4LsO6s20ESLzsJUV
+X-Proofpoint-ORIG-GUID: ekeOz-716vevabMD4LsO6s20ESLzsJUV
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-01_10,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 phishscore=0 priorityscore=1501 malwarescore=0
- clxscore=1015 bulkscore=0 adultscore=0 mlxscore=0 mlxlogscore=999
- impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2401310000 definitions=main-2402020047
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ mlxlogscore=999 suspectscore=0 lowpriorityscore=0 impostorscore=0
+ bulkscore=0 clxscore=1015 adultscore=0 spamscore=0 priorityscore=1501
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402020047
 
-Static PDs on the audio and sensor domains are expected to support
-PD restart. The kernel resource handling for the PDs are expected
-to be handled by fastrpc driver. For this, there is a requirement
-of PD service locator to get the event notifications for static PD
-services. Also when events are received, the driver needs to handle
-based on PD states. Added changes to add service locator for audio
-and sensor domain static PDs and handle the PD restart sequence.
+Multimode invocation request is intended to support multiple
+different type of requests. This will include enhanced invoke
+request to support CRC check and performance counter enablement.
+This will also support few driver level user controllable
+mechanisms like usage of shared context banks, wakelock support,
+etc. This IOCTL is also added with the aim to support few
+new fastrpc features like DSP PD notification framework,
+DSP Signalling mechanism etc.
 
 Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
 ---
- drivers/misc/fastrpc.c | 216 ++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 204 insertions(+), 12 deletions(-)
+ drivers/misc/fastrpc.c      | 176 ++++++++++++++++++++++++++----------
+ include/uapi/misc/fastrpc.h |  26 ++++++
+ 2 files changed, 154 insertions(+), 48 deletions(-)
 
 diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index bdce5469de19..e9b3b3b00aed 100644
+index e9b3b3b00aed..a7e959beabd4 100644
 --- a/drivers/misc/fastrpc.c
 +++ b/drivers/misc/fastrpc.c
-@@ -22,6 +22,7 @@
- #include <linux/firmware/qcom/qcom_scm.h>
- #include <uapi/misc/fastrpc.h>
- #include <linux/of_reserved_mem.h>
-+#include <linux/soc/qcom/pdr.h>
+@@ -601,7 +601,7 @@ static void fastrpc_get_buff_overlaps(struct fastrpc_invoke_ctx *ctx)
  
- #define ADSP_DOMAIN_ID (0)
- #define MDSP_DOMAIN_ID (1)
-@@ -29,6 +30,7 @@
- #define CDSP_DOMAIN_ID (3)
- #define FASTRPC_DEV_MAX		4 /* adsp, mdsp, slpi, cdsp*/
- #define FASTRPC_MAX_SESSIONS	14
-+#define FASTRPC_MAX_SPD		4
- #define FASTRPC_MAX_VMIDS	16
- #define FASTRPC_ALIGN		128
- #define FASTRPC_MAX_FDLIST	16
-@@ -105,6 +107,18 @@
- 
- #define miscdev_to_fdevice(d) container_of(d, struct fastrpc_device, miscdev)
- 
-+#define AUDIO_PDR_SERVICE_LOCATION_CLIENT_NAME   "audio_pdr_adsp"
-+#define AUDIO_PDR_ADSP_SERVICE_NAME              "avs/audio"
-+#define ADSP_AUDIOPD_NAME                        "msm/adsp/audio_pd"
-+
-+#define SENSORS_PDR_ADSP_SERVICE_LOCATION_CLIENT_NAME   "sensors_pdr_adsp"
-+#define SENSORS_PDR_ADSP_SERVICE_NAME              "tms/servreg"
-+#define ADSP_SENSORPD_NAME                       "msm/adsp/sensor_pd"
-+
-+#define SENSORS_PDR_SLPI_SERVICE_LOCATION_CLIENT_NAME "sensors_pdr_slpi"
-+#define SENSORS_PDR_SLPI_SERVICE_NAME            SENSORS_PDR_ADSP_SERVICE_NAME
-+#define SLPI_SENSORPD_NAME                       "msm/slpi/sensor_pd"
-+
- static const char *domains[FASTRPC_DEV_MAX] = { "adsp", "mdsp",
- 						"sdsp", "cdsp"};
- struct fastrpc_phy_page {
-@@ -260,6 +274,16 @@ struct fastrpc_session_ctx {
- 	bool valid;
- };
- 
-+struct fastrpc_static_pd {
-+	char *servloc_name;
-+	char *spdname;
-+	void *pdrhandle;
-+	u64 pdrcount;
-+	u64 prevpdrcount;
-+	atomic_t ispdup;
-+	struct fastrpc_channel_ctx *cctx;
-+};
-+
- struct fastrpc_channel_ctx {
- 	int domain_id;
- 	int sesscount;
-@@ -268,6 +292,7 @@ struct fastrpc_channel_ctx {
- 	struct qcom_scm_vmperm vmperms[FASTRPC_MAX_VMIDS];
- 	struct rpmsg_device *rpdev;
- 	struct fastrpc_session_ctx session[FASTRPC_MAX_SESSIONS];
-+	struct fastrpc_static_pd spd[FASTRPC_MAX_SPD];
- 	spinlock_t lock;
- 	struct idr ctx_idr;
- 	struct list_head users;
-@@ -304,6 +329,7 @@ struct fastrpc_user {
- 	int pd;
- 	bool is_secure_dev;
- 	bool is_unsigned_pd;
-+	char *servloc_name;
- 	/* Lock for lists */
- 	spinlock_t lock;
- 	/* lock for allocations */
-@@ -1256,6 +1282,41 @@ static int fastrpc_mmap_remove_ssr(struct fastrpc_channel_ctx *cctx)
- 	return 0;
- }
- 
-+static int fastrpc_mmap_remove_pdr(struct fastrpc_user *fl)
-+{
-+	int i, err = 0, session = -1;
-+
-+	if (!fl)
-+		return -EBADF;
-+
-+	for (i = 0; i < FASTRPC_MAX_SPD ; i++) {
-+		if (!fl->cctx->spd[i].servloc_name)
-+			continue;
-+		if (!strcmp(fl->servloc_name, fl->cctx->spd[i].servloc_name)) {
-+			session = i;
-+			break;
-+		}
-+	}
-+
-+	if (i >= FASTRPC_MAX_SPD)
-+		return -EUSERS;
-+
-+	if (atomic_read(&fl->cctx->spd[session].ispdup) == 0)
-+		return -ENOTCONN;
-+
-+	if (fl->cctx->spd[session].pdrcount !=
-+		fl->cctx->spd[session].prevpdrcount) {
-+		err = fastrpc_mmap_remove_ssr(fl->cctx);
-+		if (err)
-+			dev_info(&fl->cctx->rpdev->dev,
-+				"failed to unmap remote heap (err %d)\n", err);
-+		fl->cctx->spd[session].prevpdrcount =
-+				fl->cctx->spd[session].pdrcount;
-+	}
-+
-+	return err;
-+}
-+
- static int fastrpc_init_create_static_process(struct fastrpc_user *fl,
- 					      char __user *argp)
+ static struct fastrpc_invoke_ctx *fastrpc_context_alloc(
+ 			struct fastrpc_user *user, u32 kernel, u32 sc,
+-			struct fastrpc_invoke_args *args)
++			struct fastrpc_enhanced_invoke *invoke)
  {
-@@ -1299,6 +1360,18 @@ static int fastrpc_init_create_static_process(struct fastrpc_user *fl,
- 		goto err_name;
+ 	struct fastrpc_channel_ctx *cctx = user->cctx;
+ 	struct fastrpc_invoke_ctx *ctx = NULL;
+@@ -632,7 +632,7 @@ static struct fastrpc_invoke_ctx *fastrpc_context_alloc(
+ 			kfree(ctx);
+ 			return ERR_PTR(-ENOMEM);
+ 		}
+-		ctx->args = args;
++		ctx->args = (struct fastrpc_invoke_args *)invoke->inv.args;
+ 		fastrpc_get_buff_overlaps(ctx);
  	}
  
-+	fl->servloc_name = AUDIO_PDR_SERVICE_LOCATION_CLIENT_NAME;
-+
-+	if (!strcmp(name, "audiopd")) {
-+		/*
-+		 * Remove any previous mappings in case process is trying
-+		 * to reconnect after a PD restart on remote subsystem.
-+		 */
-+		err = fastrpc_mmap_remove_pdr(fl);
-+		if (err)
-+			goto err_name;
-+	}
-+
- 	if (!fl->cctx->staticpd_status) {
- 		err = fastrpc_remote_heap_alloc(fl, fl->sctx->dev, init.memlen, &buf);
- 		if (err)
-@@ -1688,6 +1761,12 @@ static int fastrpc_init_attach(struct fastrpc_user *fl, int pd)
- 	args[0].fd = -1;
- 	sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_ATTACH, 1, 0);
- 	fl->pd = pd;
-+	if (pd == SENSORS_PD) {
-+		if (fl->cctx->domain_id == ADSP_DOMAIN_ID)
-+			fl->servloc_name = SENSORS_PDR_ADSP_SERVICE_LOCATION_CLIENT_NAME;
-+		else if (fl->cctx->domain_id == SDSP_DOMAIN_ID)
-+			fl->servloc_name = SENSORS_PDR_SLPI_SERVICE_LOCATION_CLIENT_NAME;
-+	}
+@@ -1163,11 +1163,11 @@ static int fastrpc_invoke_send(struct fastrpc_session_ctx *sctx,
+ }
  
- 	return fastrpc_internal_invoke(fl, true, FASTRPC_INIT_HANDLE,
- 				       sc, &args[0]);
-@@ -2281,6 +2360,72 @@ static long fastrpc_device_ioctl(struct file *file, unsigned int cmd,
+ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
+-				   u32 handle, u32 sc,
+-				   struct fastrpc_invoke_args *args)
++				   struct fastrpc_enhanced_invoke *invoke)
+ {
+ 	struct fastrpc_invoke_ctx *ctx = NULL;
+-
++	struct fastrpc_invoke *inv = &invoke->inv;
++	u32 handle, sc;
+ 	int err = 0;
+ 
+ 	if (!fl->sctx)
+@@ -1176,12 +1176,14 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
+ 	if (!fl->cctx->rpdev)
+ 		return -EPIPE;
+ 
++	handle = inv->handle;
++	sc = inv->sc;
+ 	if (handle == FASTRPC_INIT_HANDLE && !kernel) {
+ 		dev_warn_ratelimited(fl->sctx->dev, "user app trying to send a kernel RPC message (%d)\n",  handle);
+ 		return -EPERM;
+ 	}
+ 
+-	ctx = fastrpc_context_alloc(fl, kernel, sc, args);
++	ctx = fastrpc_context_alloc(fl, kernel, sc, invoke);
+ 	if (IS_ERR(ctx))
+ 		return PTR_ERR(ctx);
+ 
+@@ -1322,6 +1324,7 @@ static int fastrpc_init_create_static_process(struct fastrpc_user *fl,
+ {
+ 	struct fastrpc_init_create_static init;
+ 	struct fastrpc_invoke_args *args;
++	struct fastrpc_enhanced_invoke ioctl;
+ 	struct fastrpc_phy_page pages[1];
+ 	struct fastrpc_buf *buf = NULL;
+ 	u64 phys = 0, size = 0;
+@@ -1333,7 +1336,6 @@ static int fastrpc_init_create_static_process(struct fastrpc_user *fl,
+ 		u32 namelen;
+ 		u32 pageslen;
+ 	} inbuf;
+-	u32 sc;
+ 
+ 	args = kcalloc(FASTRPC_CREATE_STATIC_PROCESS_NARGS, sizeof(*args), GFP_KERNEL);
+ 	if (!args)
+@@ -1417,10 +1419,11 @@ static int fastrpc_init_create_static_process(struct fastrpc_user *fl,
+ 	args[2].length = sizeof(*pages);
+ 	args[2].fd = -1;
+ 
+-	sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_CREATE_STATIC, 3, 0);
++	ioctl.inv.handle = FASTRPC_INIT_HANDLE;
++	ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_CREATE_STATIC, 3, 0);
++	ioctl.inv.args = (u64)args;
+ 
+-	err = fastrpc_internal_invoke(fl, true, FASTRPC_INIT_HANDLE,
+-				      sc, args);
++	err = fastrpc_internal_invoke(fl, true, &ioctl);
+ 	if (err)
+ 		goto err_invoke;
+ 
+@@ -1463,6 +1466,7 @@ static int fastrpc_init_create_process(struct fastrpc_user *fl,
+ {
+ 	struct fastrpc_init_create init;
+ 	struct fastrpc_invoke_args *args;
++	struct fastrpc_enhanced_invoke ioctl;
+ 	struct fastrpc_phy_page pages[1];
+ 	struct fastrpc_map *map = NULL;
+ 	struct fastrpc_buf *imem = NULL;
+@@ -1476,7 +1480,6 @@ static int fastrpc_init_create_process(struct fastrpc_user *fl,
+ 		u32 attrs;
+ 		u32 siglen;
+ 	} inbuf;
+-	u32 sc;
+ 
+ 	args = kcalloc(FASTRPC_CREATE_PROCESS_NARGS, sizeof(*args), GFP_KERNEL);
+ 	if (!args)
+@@ -1549,12 +1552,13 @@ static int fastrpc_init_create_process(struct fastrpc_user *fl,
+ 	args[5].length = sizeof(inbuf.siglen);
+ 	args[5].fd = -1;
+ 
+-	sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_CREATE, 4, 0);
++	ioctl.inv.handle = FASTRPC_INIT_HANDLE;
++	ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_CREATE, 4, 0);
+ 	if (init.attrs)
+-		sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_CREATE_ATTR, 4, 0);
++		ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_CREATE_ATTR, 4, 0);
++	ioctl.inv.args = (u64)args;
+ 
+-	err = fastrpc_internal_invoke(fl, true, FASTRPC_INIT_HANDLE,
+-				      sc, args);
++	err = fastrpc_internal_invoke(fl, true, &ioctl);
+ 	if (err)
+ 		goto err_invoke;
+ 
+@@ -1607,17 +1611,19 @@ static void fastrpc_session_free(struct fastrpc_channel_ctx *cctx,
+ static int fastrpc_release_current_dsp_process(struct fastrpc_user *fl)
+ {
+ 	struct fastrpc_invoke_args args[1];
++	struct fastrpc_enhanced_invoke ioctl;
+ 	int tgid = 0;
+-	u32 sc;
+ 
+ 	tgid = fl->tgid;
+ 	args[0].ptr = (u64)(uintptr_t) &tgid;
+ 	args[0].length = sizeof(tgid);
+ 	args[0].fd = -1;
+-	sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_RELEASE, 1, 0);
+ 
+-	return fastrpc_internal_invoke(fl, true, FASTRPC_INIT_HANDLE,
+-				       sc, &args[0]);
++	ioctl.inv.handle = FASTRPC_INIT_HANDLE;
++	ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_RELEASE, 1, 0);
++	ioctl.inv.args = (u64)args;
++
++	return fastrpc_internal_invoke(fl, true, &ioctl);
+ }
+ 
+ static int fastrpc_device_release(struct inode *inode, struct file *file)
+@@ -1753,13 +1759,12 @@ static int fastrpc_dmabuf_alloc(struct fastrpc_user *fl, char __user *argp)
+ static int fastrpc_init_attach(struct fastrpc_user *fl, int pd)
+ {
+ 	struct fastrpc_invoke_args args[1];
++	struct fastrpc_enhanced_invoke ioctl;
+ 	int tgid = fl->tgid;
+-	u32 sc;
+ 
+ 	args[0].ptr = (u64)(uintptr_t) &tgid;
+ 	args[0].length = sizeof(tgid);
+ 	args[0].fd = -1;
+-	sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_ATTACH, 1, 0);
+ 	fl->pd = pd;
+ 	if (pd == SENSORS_PD) {
+ 		if (fl->cctx->domain_id == ADSP_DOMAIN_ID)
+@@ -1768,13 +1773,17 @@ static int fastrpc_init_attach(struct fastrpc_user *fl, int pd)
+ 			fl->servloc_name = SENSORS_PDR_SLPI_SERVICE_LOCATION_CLIENT_NAME;
+ 	}
+ 
+-	return fastrpc_internal_invoke(fl, true, FASTRPC_INIT_HANDLE,
+-				       sc, &args[0]);
++	ioctl.inv.handle = FASTRPC_INIT_HANDLE;
++	ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_ATTACH, 1, 0);
++	ioctl.inv.args = (u64)args;
++
++	return fastrpc_internal_invoke(fl, true, &ioctl);
+ }
+ 
+ static int fastrpc_invoke(struct fastrpc_user *fl, char __user *argp)
+ {
+ 	struct fastrpc_invoke_args *args = NULL;
++	struct fastrpc_enhanced_invoke ioctl;
+ 	struct fastrpc_invoke inv;
+ 	u32 nscalars;
+ 	int err;
+@@ -1796,16 +1805,70 @@ static int fastrpc_invoke(struct fastrpc_user *fl, char __user *argp)
+ 		}
+ 	}
+ 
+-	err = fastrpc_internal_invoke(fl, false, inv.handle, inv.sc, args);
++	ioctl.inv = inv;
++	ioctl.inv.args = (u64)args;
++
++	err = fastrpc_internal_invoke(fl, false, &ioctl);
+ 	kfree(args);
+ 
  	return err;
  }
  
-+static void fastrpc_notify_users(struct fastrpc_user *user)
++static int fastrpc_multimode_invoke(struct fastrpc_user *fl, char __user *argp)
 +{
-+	struct fastrpc_invoke_ctx *ctx;
++	struct fastrpc_enhanced_invoke einv;
++	struct fastrpc_invoke_args *args = NULL;
++	struct fastrpc_ioctl_multimode_invoke invoke;
++	u32 nscalars;
++	int err, i;
 +
-+	spin_lock(&user->lock);
-+	list_for_each_entry(ctx, &user->pending, node) {
-+		ctx->retval = -EPIPE;
-+		complete(&ctx->work);
++	if (copy_from_user(&invoke, argp, sizeof(invoke)))
++		return -EFAULT;
++
++	for (i = 0; i < 8; i++) {
++		if (invoke.reserved[i] != 0)
++			return -EINVAL;
 +	}
-+	spin_unlock(&user->lock);
-+}
++	if (invoke.rsvd != 0)
++		return -EINVAL;
 +
-+static void fastrpc_notify_pdr_drivers(struct fastrpc_channel_ctx *cctx,
-+		char *servloc_name)
-+{
-+	struct fastrpc_user *fl;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&cctx->lock, flags);
-+	list_for_each_entry(fl, &cctx->users, user) {
-+		if (fl->servloc_name && !strcmp(servloc_name, fl->servloc_name))
-+			fastrpc_notify_users(fl);
-+	}
-+	spin_unlock_irqrestore(&cctx->lock, flags);
-+}
-+
-+static void fastrpc_pdr_cb(int state, char *service_path, void *priv)
-+{
-+	struct fastrpc_static_pd *spd = (struct fastrpc_static_pd *)priv;
-+	struct fastrpc_channel_ctx *cctx;
-+	unsigned long flags;
-+
-+	if (!spd)
-+		return;
-+
-+	cctx = spd->cctx;
-+	switch (state) {
-+	case SERVREG_SERVICE_STATE_DOWN:
-+		dev_info(&cctx->rpdev->dev,
-+			"%s: %s (%s) is down for PDR on %s\n",
-+			__func__, spd->spdname,
-+			spd->servloc_name,
-+			domains[cctx->domain_id]);
-+		spin_lock_irqsave(&cctx->lock, flags);
-+		spd->pdrcount++;
-+		atomic_set(&spd->ispdup, 0);
-+		spin_unlock_irqrestore(&cctx->lock, flags);
-+		if (!strcmp(spd->servloc_name,
-+				AUDIO_PDR_SERVICE_LOCATION_CLIENT_NAME))
-+			cctx->staticpd_status = false;
-+
-+		fastrpc_notify_pdr_drivers(cctx, spd->servloc_name);
-+		break;
-+	case SERVREG_SERVICE_STATE_UP:
-+		dev_info(&cctx->rpdev->dev,
-+			"%s: %s (%s) is up for PDR on %s\n",
-+			__func__, spd->spdname,
-+			spd->servloc_name,
-+			domains[cctx->domain_id]);
-+		atomic_set(&spd->ispdup, 1);
++	switch (invoke.req) {
++	case FASTRPC_INVOKE:
++		/* nscalars is truncated here to max supported value */
++		if (copy_from_user(&einv, (void __user *)(uintptr_t)invoke.invparam,
++				   invoke.size))
++			return -EFAULT;
++		for (i = 0; i < 8; i++) {
++			if (einv.reserved[i] != 0)
++				return -EINVAL;
++		}
++		nscalars = REMOTE_SCALARS_LENGTH(einv.inv.sc);
++		if (nscalars) {
++			args = kcalloc(nscalars, sizeof(*args), GFP_KERNEL);
++			if (!args)
++				return -ENOMEM;
++			if (copy_from_user(args, (void __user *)(uintptr_t)einv.inv.args,
++					   nscalars * sizeof(*args))) {
++				kfree(args);
++				return -EFAULT;
++			}
++		}
++		einv.inv.args = (u64)args;
++		err = fastrpc_internal_invoke(fl, false, &einv);
++		kfree(args);
 +		break;
 +	default:
++		err = -ENOTTY;
 +		break;
-+	}
-+}
-+
- static const struct file_operations fastrpc_fops = {
- 	.open = fastrpc_device_open,
- 	.release = fastrpc_device_release,
-@@ -2402,6 +2547,39 @@ static int fastrpc_device_register(struct device *dev, struct fastrpc_channel_ct
- 	return err;
- }
- 
-+static int fastrpc_setup_service_locator(struct fastrpc_channel_ctx *cctx, char *client_name,
-+			char *service_name, char *service_path, int domain, int spd_session)
-+{
-+	int err = 0;
-+	struct pdr_handle *handle = NULL;
-+	struct pdr_service *service = NULL;
-+
-+	/* Register the service locator's callback function */
-+	handle = pdr_handle_alloc(fastrpc_pdr_cb, &cctx->spd[spd_session]);
-+	if (IS_ERR(handle)) {
-+		err = PTR_ERR(handle);
-+		goto bail;
-+	}
-+	cctx->spd[spd_session].pdrhandle = handle;
-+	cctx->spd[spd_session].servloc_name = client_name;
-+	cctx->spd[spd_session].spdname = service_path;
-+	cctx->spd[spd_session].cctx = cctx;
-+	service = pdr_add_lookup(handle, service_name, service_path);
-+	if (IS_ERR(service)) {
-+		err = PTR_ERR(service);
-+		goto bail;
-+	}
-+	pr_info("fastrpc: %s: pdr_add_lookup enabled for %s (%s, %s)\n",
-+		__func__, service_name, client_name, service_path);
-+
-+bail:
-+	if (err) {
-+		pr_warn("fastrpc: %s: failed for %s (%s, %s)with err %d\n",
-+				__func__, service_name, client_name, service_path, err);
 +	}
 +	return err;
 +}
 +
- static int fastrpc_rpmsg_probe(struct rpmsg_device *rpdev)
+ static int fastrpc_get_info_from_dsp(struct fastrpc_user *fl, uint32_t *dsp_attr_buf,
+ 				     uint32_t dsp_attr_buf_len)
  {
- 	struct device *rdev = &rpdev->dev;
-@@ -2481,6 +2659,25 @@ static int fastrpc_rpmsg_probe(struct rpmsg_device *rpdev)
- 		goto fdev_error;
- 	}
+ 	struct fastrpc_invoke_args args[2] = { 0 };
++	struct fastrpc_enhanced_invoke ioctl;
  
-+	if (domain_id == ADSP_DOMAIN_ID) {
-+		err = fastrpc_setup_service_locator(data, AUDIO_PDR_SERVICE_LOCATION_CLIENT_NAME,
-+			AUDIO_PDR_ADSP_SERVICE_NAME, ADSP_AUDIOPD_NAME, domain_id, 0);
-+		if (err)
-+			goto populate_error;
-+
-+		err = fastrpc_setup_service_locator(data,
-+			SENSORS_PDR_ADSP_SERVICE_LOCATION_CLIENT_NAME,
-+			SENSORS_PDR_ADSP_SERVICE_NAME, ADSP_SENSORPD_NAME, domain_id, 1);
-+		if (err)
-+			goto populate_error;
-+	} else if (domain_id == SDSP_DOMAIN_ID) {
-+		err = fastrpc_setup_service_locator(data,
-+			SENSORS_PDR_SLPI_SERVICE_LOCATION_CLIENT_NAME,
-+			SENSORS_PDR_SLPI_SERVICE_NAME, SLPI_SENSORPD_NAME, domain_id, 0);
-+		if (err)
-+			goto populate_error;
-+	}
-+
- 	kref_init(&data->refcount);
+ 	/* Capability filled in userspace */
+ 	dsp_attr_buf[0] = 0;
+@@ -1818,8 +1881,11 @@ static int fastrpc_get_info_from_dsp(struct fastrpc_user *fl, uint32_t *dsp_attr
+ 	args[1].fd = -1;
+ 	fl->pd = USER_PD;
  
- 	dev_set_drvdata(&rpdev->dev, data);
-@@ -2510,18 +2707,6 @@ static int fastrpc_rpmsg_probe(struct rpmsg_device *rpdev)
- 	return err;
+-	return fastrpc_internal_invoke(fl, true, FASTRPC_DSP_UTILITIES_HANDLE,
+-				       FASTRPC_SCALARS(0, 1, 1), args);
++	ioctl.inv.handle = FASTRPC_DSP_UTILITIES_HANDLE;
++	ioctl.inv.sc = FASTRPC_SCALARS(0, 1, 1);
++	ioctl.inv.args = (u64)args;
++
++	return fastrpc_internal_invoke(fl, true, &ioctl);
  }
  
--static void fastrpc_notify_users(struct fastrpc_user *user)
--{
--	struct fastrpc_invoke_ctx *ctx;
--
--	spin_lock(&user->lock);
--	list_for_each_entry(ctx, &user->pending, node) {
--		ctx->retval = -EPIPE;
--		complete(&ctx->work);
--	}
--	spin_unlock(&user->lock);
--}
--
- static void fastrpc_rpmsg_remove(struct rpmsg_device *rpdev)
+ static int fastrpc_get_info_from_kernel(struct fastrpc_ioctl_capability *cap,
+@@ -1906,10 +1972,10 @@ static int fastrpc_get_dsp_info(struct fastrpc_user *fl, char __user *argp)
+ static int fastrpc_req_munmap_impl(struct fastrpc_user *fl, struct fastrpc_buf *buf)
  {
- 	struct fastrpc_channel_ctx *cctx = dev_get_drvdata(&rpdev->dev);
-@@ -2537,6 +2722,13 @@ static void fastrpc_rpmsg_remove(struct rpmsg_device *rpdev)
- 		fastrpc_notify_users(user);
- 	spin_unlock_irqrestore(&cctx->lock, flags);
+ 	struct fastrpc_invoke_args args[1] = { [0] = { 0 } };
++	struct fastrpc_enhanced_invoke ioctl;
+ 	struct fastrpc_munmap_req_msg req_msg;
+ 	struct device *dev = fl->sctx->dev;
+ 	int err;
+-	u32 sc;
  
-+	if (cctx->domain_id == ADSP_DOMAIN_ID) {
-+		pdr_handle_release(cctx->spd[0].pdrhandle);
-+		pdr_handle_release(cctx->spd[1].pdrhandle);
-+	} else if (cctx->domain_id == SDSP_DOMAIN_ID) {
-+		pdr_handle_release(cctx->spd[0].pdrhandle);
-+	}
+ 	req_msg.pgid = fl->tgid;
+ 	req_msg.size = buf->size;
+@@ -1918,9 +1984,11 @@ static int fastrpc_req_munmap_impl(struct fastrpc_user *fl, struct fastrpc_buf *
+ 	args[0].ptr = (u64) (uintptr_t) &req_msg;
+ 	args[0].length = sizeof(req_msg);
+ 
+-	sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_MUNMAP, 1, 0);
+-	err = fastrpc_internal_invoke(fl, true, FASTRPC_INIT_HANDLE, sc,
+-				      &args[0]);
++	ioctl.inv.handle = FASTRPC_INIT_HANDLE;
++	ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_MUNMAP, 1, 0);
++	ioctl.inv.args = (u64)args;
 +
- 	if (cctx->fdevice)
- 		misc_deregister(&cctx->fdevice->miscdev);
++	err = fastrpc_internal_invoke(fl, true, &ioctl);
+ 	if (!err) {
+ 		if (buf->flag == ADSP_MMAP_REMOTE_HEAP_ADDR) {
+ 			if (fl->cctx->vmcount) {
+@@ -1962,8 +2030,8 @@ static int fastrpc_req_munmap(struct fastrpc_user *fl, char __user *argp)
+ 	struct fastrpc_map *map = NULL, *iterm, *m;
+ 	struct device *dev = fl->sctx->dev;
+ 	struct fastrpc_invoke_args args[1] = { [0] = { 0 } };
++	struct fastrpc_enhanced_invoke ioctl;
+ 	int err = 0;
+-	u32 sc;
  
+ 	if (copy_from_user(&req, argp, sizeof(req)))
+ 		return -EFAULT;
+@@ -2014,9 +2082,10 @@ static int fastrpc_req_munmap(struct fastrpc_user *fl, char __user *argp)
+ 	args[0].ptr = (u64) (uintptr_t) &req_msg;
+ 	args[0].length = sizeof(req_msg);
+ 
+-	sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_MUNMAP, 1, 0);
+-	err = fastrpc_internal_invoke(fl, true, FASTRPC_INIT_HANDLE, sc,
+-				      &args[0]);
++	ioctl.inv.handle = FASTRPC_INIT_HANDLE;
++	ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_MUNMAP, 1, 0);
++	ioctl.inv.args = (u64)args;
++	err = fastrpc_internal_invoke(fl, true, &ioctl);
+ 	if (err)
+ 		dev_err(dev, "unmmap\tpt fd = %d, 0x%09llx error\n",  map->fd, map->raddr);
+ 	else
+@@ -2028,6 +2097,7 @@ static int fastrpc_req_munmap(struct fastrpc_user *fl, char __user *argp)
+ static int fastrpc_req_mmap(struct fastrpc_user *fl, char __user *argp)
+ {
+ 	struct fastrpc_invoke_args args[3] = { [0 ... 2] = { 0 } };
++	struct fastrpc_enhanced_invoke ioctl;
+ 	struct fastrpc_buf *buf = NULL;
+ 	struct fastrpc_mmap_req_msg req_msg;
+ 	struct fastrpc_mmap_rsp_msg rsp_msg;
+@@ -2036,7 +2106,6 @@ static int fastrpc_req_mmap(struct fastrpc_user *fl, char __user *argp)
+ 	struct fastrpc_map *map = NULL;
+ 	struct device *dev = fl->sctx->dev;
+ 	int err;
+-	u32 sc;
+ 	unsigned long flags;
+ 
+ 	if (copy_from_user(&req, argp, sizeof(req)))
+@@ -2079,9 +2148,11 @@ static int fastrpc_req_mmap(struct fastrpc_user *fl, char __user *argp)
+ 		args[2].ptr = (u64) (uintptr_t) &rsp_msg;
+ 		args[2].length = sizeof(rsp_msg);
+ 
+-		sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_MMAP, 2, 1);
+-		err = fastrpc_internal_invoke(fl, true, FASTRPC_INIT_HANDLE, sc,
+-					      &args[0]);
++		ioctl.inv.handle = FASTRPC_INIT_HANDLE;
++		ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_MMAP, 2, 1);
++		ioctl.inv.args = (u64)args;
++
++		err = fastrpc_internal_invoke(fl, true, &ioctl);
+ 		if (err) {
+ 			dev_err(dev, "mmap error (len 0x%08llx)\n", buf->size);
+ 			goto err_invoke;
+@@ -2143,10 +2214,11 @@ static int fastrpc_req_mmap(struct fastrpc_user *fl, char __user *argp)
+ 		args[2].ptr = (u64) (uintptr_t) &rsp_msg;
+ 		args[2].length = sizeof(rsp_msg);
+ 
+-		sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_MMAP, 2, 1);
++		ioctl.inv.handle = FASTRPC_INIT_HANDLE;
++		ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_MMAP, 2, 1);
++		ioctl.inv.args = (u64)args;
+ 
+-		err = fastrpc_internal_invoke(fl, true, FASTRPC_INIT_HANDLE, sc,
+-					      &args[0]);
++		err = fastrpc_internal_invoke(fl, true, &ioctl);
+ 		if (err) {
+ 			dev_err(dev, "mmap error (len 0x%08llx)\n", map->size);
+ 			goto err_invoke;
+@@ -2183,10 +2255,10 @@ static int fastrpc_req_mmap(struct fastrpc_user *fl, char __user *argp)
+ static int fastrpc_req_mem_unmap_impl(struct fastrpc_user *fl, struct fastrpc_mem_unmap *req)
+ {
+ 	struct fastrpc_invoke_args args[1] = { [0] = { 0 } };
++	struct fastrpc_enhanced_invoke ioctl;
+ 	struct fastrpc_map *map = NULL, *iter, *m;
+ 	struct fastrpc_mem_unmap_req_msg req_msg = { 0 };
+ 	int err = 0;
+-	u32 sc;
+ 	struct device *dev = fl->sctx->dev;
+ 
+ 	spin_lock(&fl->lock);
+@@ -2212,9 +2284,11 @@ static int fastrpc_req_mem_unmap_impl(struct fastrpc_user *fl, struct fastrpc_me
+ 	args[0].ptr = (u64) (uintptr_t) &req_msg;
+ 	args[0].length = sizeof(req_msg);
+ 
+-	sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_MEM_UNMAP, 1, 0);
+-	err = fastrpc_internal_invoke(fl, true, FASTRPC_INIT_HANDLE, sc,
+-				      &args[0]);
++	ioctl.inv.handle = FASTRPC_INIT_HANDLE;
++	ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_MEM_UNMAP, 1, 0);
++	ioctl.inv.args = (u64)args;
++
++	err = fastrpc_internal_invoke(fl, true, &ioctl);
+ 	if (err) {
+ 		dev_err(dev, "unmmap\tpt fd = %d, 0x%09llx error\n",  map->fd, map->raddr);
+ 		return err;
+@@ -2237,6 +2311,7 @@ static int fastrpc_req_mem_unmap(struct fastrpc_user *fl, char __user *argp)
+ static int fastrpc_req_mem_map(struct fastrpc_user *fl, char __user *argp)
+ {
+ 	struct fastrpc_invoke_args args[4] = { [0 ... 3] = { 0 } };
++	struct fastrpc_enhanced_invoke ioctl;
+ 	struct fastrpc_mem_map_req_msg req_msg = { 0 };
+ 	struct fastrpc_mmap_rsp_msg rsp_msg = { 0 };
+ 	struct fastrpc_mem_unmap req_unmap = { 0 };
+@@ -2245,7 +2320,6 @@ static int fastrpc_req_mem_map(struct fastrpc_user *fl, char __user *argp)
+ 	struct device *dev = fl->sctx->dev;
+ 	struct fastrpc_map *map = NULL;
+ 	int err;
+-	u32 sc;
+ 
+ 	if (copy_from_user(&req, argp, sizeof(req)))
+ 		return -EFAULT;
+@@ -2281,8 +2355,11 @@ static int fastrpc_req_mem_map(struct fastrpc_user *fl, char __user *argp)
+ 	args[3].ptr = (u64) (uintptr_t) &rsp_msg;
+ 	args[3].length = sizeof(rsp_msg);
+ 
+-	sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_MEM_MAP, 3, 1);
+-	err = fastrpc_internal_invoke(fl, true, FASTRPC_INIT_HANDLE, sc, &args[0]);
++	ioctl.inv.handle = FASTRPC_INIT_HANDLE;
++	ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_MEM_MAP, 3, 1);
++	ioctl.inv.args = (u64)args;
++
++	err = fastrpc_internal_invoke(fl, true, &ioctl);
+ 	if (err) {
+ 		dev_err(dev, "mem mmap error, fd %d, vaddr %llx, size %lld\n",
+ 			req.fd, req.vaddrin, map->size);
+@@ -2322,6 +2399,9 @@ static long fastrpc_device_ioctl(struct file *file, unsigned int cmd,
+ 	case FASTRPC_IOCTL_INVOKE:
+ 		err = fastrpc_invoke(fl, argp);
+ 		break;
++	case FASTRPC_IOCTL_MULTIMODE_INVOKE:
++		err = fastrpc_multimode_invoke(fl, argp);
++		break;
+ 	case FASTRPC_IOCTL_INIT_ATTACH:
+ 		err = fastrpc_init_attach(fl, ROOT_PD);
+ 		break;
+diff --git a/include/uapi/misc/fastrpc.h b/include/uapi/misc/fastrpc.h
+index f33d914d8f46..45c15be1de58 100644
+--- a/include/uapi/misc/fastrpc.h
++++ b/include/uapi/misc/fastrpc.h
+@@ -16,6 +16,7 @@
+ #define FASTRPC_IOCTL_INIT_CREATE_STATIC _IOWR('R', 9, struct fastrpc_init_create_static)
+ #define FASTRPC_IOCTL_MEM_MAP		_IOWR('R', 10, struct fastrpc_mem_map)
+ #define FASTRPC_IOCTL_MEM_UNMAP		_IOWR('R', 11, struct fastrpc_mem_unmap)
++#define FASTRPC_IOCTL_MULTIMODE_INVOKE	_IOWR('R', 12, struct fastrpc_ioctl_multimode_invoke)
+ #define FASTRPC_IOCTL_GET_DSP_INFO	_IOWR('R', 13, struct fastrpc_ioctl_capability)
+ 
+ /**
+@@ -80,6 +81,31 @@ struct fastrpc_invoke {
+ 	__u64 args;
+ };
+ 
++struct fastrpc_enhanced_invoke {
++	struct fastrpc_invoke inv;
++	__u64 crc;
++	__u64 perf_kernel;
++	__u64 perf_dsp;
++	__u32 reserved[8];	/* keeping reserved bits for new requirements */
++};
++
++struct fastrpc_ioctl_multimode_invoke {
++	__u32 req;
++	__u32 rsvd;		/* padding field */
++	__u64 invparam;
++	__u64 size;
++	__u32 reserved[8];	/* keeping reserved bits for new requirements */
++};
++
++enum fastrpc_multimode_invoke_type {
++	FASTRPC_INVOKE			= 1,
++	FASTRPC_INVOKE_ENHANCED	= 2,
++	FASTRPC_INVOKE_CONTROL = 3,
++	FASTRPC_INVOKE_DSPSIGNAL = 4,
++	FASTRPC_INVOKE_NOTIF = 5,
++	FASTRPC_INVOKE_MULTISESSION = 6,
++};
++
+ struct fastrpc_init_create {
+ 	__u32 filelen;	/* elf file length */
+ 	__s32 filefd;	/* fd for the file */
 -- 
 2.17.0
 
