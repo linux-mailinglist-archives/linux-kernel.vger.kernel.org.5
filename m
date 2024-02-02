@@ -1,48 +1,49 @@
-Return-Path: <linux-kernel+bounces-49774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61EAA846F48
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:44:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF9E4846F3B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:43:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD632B2BA8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:42:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32ED01F20EF4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:43:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EEC313F019;
-	Fri,  2 Feb 2024 11:40:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9013014462C;
+	Fri,  2 Feb 2024 11:40:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oKBHgSzg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NHx07HdA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FECD13EFF7;
-	Fri,  2 Feb 2024 11:40:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E1B144618;
+	Fri,  2 Feb 2024 11:40:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706874020; cv=none; b=ubjq9rNsoybodQq/IXmzCtZrLFJcQbN5tOE8T+TSaDOctK98L3ujBy2ZVtwSPhLG+k6vE0p389FFmi797P/myQFZJYEID7vsQu8LJ1APQSRTDW0QRQL9xq7k/nc62DkEje6R1SNrlJxttBpjL3ATlVElHIMWXAIdSsGcZXSib5c=
+	t=1706874022; cv=none; b=HwB9GWf+HAfFiXQ3DcSre06Ob/gHE9TjWx5MEVHPYQvCk+wbPpQcQIsf+jVHEeMy/+1og24TKyK8XhOlzzvsVqmPVbeCWXwQ7vOO/ZvE+11ucAKkkm5sVrx8q5764zrsn84c6EoUNz5cO/9VQM4i2LeciCU829cjvJMJ/TRumy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706874020; c=relaxed/simple;
-	bh=5yc+86w3yyKe04H5iWLy/uFSmTiMA2lqTHZoCkfPUCU=;
+	s=arc-20240116; t=1706874022; c=relaxed/simple;
+	bh=jbBx8q1vG4VmSQFPNppoUAvomZ9X9DzfrEVGbLhs1RE=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=N994CICy0d3e3TbHE438XoUTwV0KkCohpGSeG4ivX5ueyi+W+sozp7yN4H9674OCK+g3mttShyD/sEkLmCxLK/nBKfCekh7KXcBbw/S1GJU+l3sMtit8NFJcYpg6pGwSLHboaGKJJd2HgcJaO+L0y8Wz6+lJ/KAMtBeHBxJIXfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oKBHgSzg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5922C43390;
-	Fri,  2 Feb 2024 11:40:17 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=IxxKGwH8e8utSoVcNl7dwEyZw22OiOyrVJWvt2zwhja7UGBSvDfhd9C35/Ev/Ytn6GuB0AwEzeeu73SVt6LzbHvnWDVS0LwPLP01A+5cXsdTeaL4sf2lJCMOH2FwAIs+3O+7M+qTwB+x07JicIoosT/j7las/DvEqRsnyC+1GKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NHx07HdA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B01DC433C7;
+	Fri,  2 Feb 2024 11:40:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706874020;
-	bh=5yc+86w3yyKe04H5iWLy/uFSmTiMA2lqTHZoCkfPUCU=;
+	s=k20201202; t=1706874022;
+	bh=jbBx8q1vG4VmSQFPNppoUAvomZ9X9DzfrEVGbLhs1RE=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=oKBHgSzgToOEaPb7eGUdUc89q9lOc3ljyY4AmNcHzLGpkghl/p3DZyThZ0VBdclyg
-	 y6Towp76lYE7rY6yb8JmF0n9cwYQlIAlDRHT6lUAtQ8sbZSzJlNENqy2SP/eGvI1gH
-	 UDq87w1cCevNlVI4ibvzQUT7rgW+2nJamNlvBJwGnFg6olaKRf7TIRkq5s/5NBVRVC
-	 dFhD65oy6cZVusDR+NKPj39+y2gYBRtRcFB4zp67+vEbPIhk9cDQS/z+4GKxE9C6fP
-	 6sUeDVjMig67fVvbhlmRtK+6cwoNPm9V7mVpFCoeIFzNX9WR+ShS7b9WgcrgdJMZhr
-	 ql6/2lVJ1h+AA==
+	b=NHx07HdA0txkz6Kg4jcglbOKmsnMJQ58xdfY9vQ097HoD2lqfWhNU++A6LQ9hvPDr
+	 PmgKyEkHh1COawu82I/+1FfMoQcLTXslltY6yU9BEiuFjq9iSw8pCgPEeBXj9/y2g9
+	 aAybpsJy3SlwTCCTEkH8sJwhSDIu9RVgdQ20H/YCddHdiz6zFgqU/sMGFKcXuQhaic
+	 9TkHtwER4oQf5GoGDRPaRVP9B03kpfgMhwT56jyYZ282TJQzU9YVNfzUbtwzZwJ4/b
+	 p56c3GeDu0lydQH6LdOIt7tL5Kr+GkYscYbEenA/P7OX22/biLGCqvOEW772fha6wA
+	 2HzjsbtrPD0yA==
 From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
-Date: Fri, 02 Feb 2024 12:40:07 +0100
-Subject: [PATCH net-next 1/5] mptcp: annotate access for msk keys
+Date: Fri, 02 Feb 2024 12:40:08 +0100
+Subject: [PATCH net-next 2/5] mptcp: annotate lockless access for the tx
+ path
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,7 +52,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240202-upstream-net-next-20240202-mptcp-annotate-lockless-access-v1-1-031d6680afdc@kernel.org>
+Message-Id: <20240202-upstream-net-next-20240202-mptcp-annotate-lockless-access-v1-2-031d6680afdc@kernel.org>
 References: <20240202-upstream-net-next-20240202-mptcp-annotate-lockless-access-v1-0-031d6680afdc@kernel.org>
 In-Reply-To: <20240202-upstream-net-next-20240202-mptcp-annotate-lockless-access-v1-0-031d6680afdc@kernel.org>
 To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
@@ -61,147 +62,123 @@ To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
 Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
  "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4822; i=matttbe@kernel.org;
- h=from:subject:message-id; bh=96HWwfDzSrjT/wYUKZiVvF6RaRUdJdTbmitFuA8YVr4=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBlvNSeT6koPoNWOPabIN9mKiAw/EcaIERSBZoZ/
- /nhmOYhhz2JAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZbzUngAKCRD2t4JPQmmg
- czaKEADS+YXwH4jzDmGv2L3+5H/uS0oZWbZ8jjEHdWwXxUenyXHbDGBJ550y/EgvdfNIjSt82Eg
- /NinqEmTQNm32OMumcQ2ZnzUnr7o3n6sZd3iHsc+YUp5dYNskjVOLeo7xdIr6juDed4gTowIacC
- NaJjZRSeU1bByIm7gar9Gded4/m567WLtHsnq7S7RaDFy3gYVOWpcVstq7aOQtdKB3TibnjHhoQ
- EFWKbxsztiuQeLPOsKtH7o0U8OcFcpQvwbpDOXgdYRdDQBIudaHAawmFpuMiE9IO5H2GU1x4YPE
- J7AuPDcQUBdHLOtG7czM3gykGLhaFkb89MaU4+9UzDp3z1Y+UCnhbvMAxk1JB08+SURWnhrhYt7
- qjFVkIHZvi4rhFPZQblkS9bBs/E6Pa8gW6Yu2RFYCE13G6rz4+RK4zgTtfkjtysA6nKOqJ9b488
- ECTZi7YyManvuzRzSNfVqh6iXAIHMEt6YrsnLv8ncH3VJIFLidlaXKzKnAkJOW9WA3/a1VNjxaS
- zhPRztHSPDf+hdz/Wtl18NGCXot4Fps5NG50s6v5uLimfWKFFZ4gD8DF1AG+nlqIjTywsucXyim
- uxGaesC5g+n+9Dx5kmw8/ix9FhBaOz8G4wLwsCJxOSn9Kdfb1uIBcIAzu3RVhNbYBF/1VcE74/o
- ylz59Htow+Ix3eA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3573; i=matttbe@kernel.org;
+ h=from:subject:message-id; bh=7J0ps97A16g4/waL3hRAHqtfG/mCa7C1N2tO1Q3wljs=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBlvNSeEHAGjdHYf9+bhXUw0e25/bnvtwTgQPzCO
+ hD8NwuWSW+JAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZbzUngAKCRD2t4JPQmmg
+ c2nrD/4rw4BSU4iHidYCavNrIGDXx87gVG23+vvfoUKu8HzUhssJai6lFM7HKzLL6nBbp0P/AYf
+ Kk9XjZ/I9jq+gq3SmH3Unbdbb2a4CcQC1UmWy6Zm0tmmsj9tx/wWSSxCLAMxYYqJC1ay8rnb53N
+ a2x/7hr6aoND1O/tqqskqXA50X/flbmCSUAneFYNAN4X1YENXB3pkIB/guybBgS2uE4fN9kdXON
+ lP2zfKajD75+Oy2PXA2YM4Icswx7skiaaTPlv02ipfRoX7Uu3wRqDxuCm0DKsU+sIXHBOfDr2wc
+ gRZcxRo7jE46xw3152JW6kjwVPf+D+pxjOas4PThmZoXwzo7QCmDCdVsk/1KC0u0AdCDJEMb/9A
+ QvrkvvlCtek1dw2G/ywdxq2ZhoYf9YUO7IYyLZnFl/OzlBdwNLq3jPlZQ5Ew4AR/xJLXVNmNj6A
+ ainP8gh97rpFenzS7OFAbkb1TyTne5KI9GhuO8YAbQ1TQgfDTXrTBsbx589TPeI03imb0Ycsh6f
+ TtoYh6cjsdEK1vhkeL5bSrebmIv/J9joQ2xT0aharoSYV8wbIsfJ//TCbokpZh7t+aph70LuSqU
+ OOOwywjBp3QGFl73cCGinUkAzWJ5qf1udzZW/XZseXb2D9JVRWqsLkjrrDH4LzF0aGeHdd3zIOk
+ IG/KyuQMKV9qCjQ==
 X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
  fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 
 From: Paolo Abeni <pabeni@redhat.com>
 
-Both the local and the remote key follow the same locking
-schema, put in place the proper ONCE accessors.
+The mptcp-level TX path info (write_seq, bytes_sent, snd_nxt) are under
+the msk socket lock protection, and are accessed lockless in a few spots.
+
+Always mark the write operations with WRITE_ONCE, read operations
+outside the lock with READ_ONCE and drop the annotation for read
+under such lock.
+
+To simplify the annotations move mptcp_pending_data_fin_ack() from
+__mptcp_data_acked() to __mptcp_clean_una(), under the msk socket
+lock, where such call would belong.
 
 Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Reviewed-by: Mat Martineau <martineau@kernel.org>
 Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
 ---
- net/mptcp/options.c  | 12 ++++++------
- net/mptcp/protocol.c |  2 +-
- net/mptcp/protocol.h |  6 ++++--
- net/mptcp/subflow.c  | 10 ++++++----
- 4 files changed, 17 insertions(+), 13 deletions(-)
+ net/mptcp/options.c  |  2 +-
+ net/mptcp/protocol.c | 15 +++++++--------
+ net/mptcp/protocol.h |  2 +-
+ 3 files changed, 9 insertions(+), 10 deletions(-)
 
 diff --git a/net/mptcp/options.c b/net/mptcp/options.c
-index d2527d189a79..5e2b130d8680 100644
+index 5e2b130d8680..9b31a0a06265 100644
 --- a/net/mptcp/options.c
 +++ b/net/mptcp/options.c
-@@ -689,8 +689,8 @@ static bool mptcp_established_options_add_addr(struct sock *sk, struct sk_buff *
- 	opts->suboptions |= OPTION_MPTCP_ADD_ADDR;
- 	if (!echo) {
- 		MPTCP_INC_STATS(sock_net(sk), MPTCP_MIB_ADDADDRTX);
--		opts->ahmac = add_addr_generate_hmac(msk->local_key,
--						     msk->remote_key,
-+		opts->ahmac = add_addr_generate_hmac(READ_ONCE(msk->local_key),
-+						     READ_ONCE(msk->remote_key),
- 						     &opts->addr);
- 	} else {
- 		MPTCP_INC_STATS(sock_net(sk), MPTCP_MIB_ECHOADDTX);
-@@ -792,7 +792,7 @@ static bool mptcp_established_options_fastclose(struct sock *sk,
+@@ -1060,7 +1060,7 @@ static void ack_update_msk(struct mptcp_sock *msk,
+ 		msk->wnd_end = new_wnd_end;
  
- 	*size = TCPOLEN_MPTCP_FASTCLOSE;
- 	opts->suboptions |= OPTION_MPTCP_FASTCLOSE;
--	opts->rcvr_key = msk->remote_key;
-+	opts->rcvr_key = READ_ONCE(msk->remote_key);
+ 	/* this assumes mptcp_incoming_options() is invoked after tcp_ack() */
+-	if (after64(msk->wnd_end, READ_ONCE(msk->snd_nxt)))
++	if (after64(msk->wnd_end, snd_nxt))
+ 		__mptcp_check_push(sk, ssk);
  
- 	pr_debug("FASTCLOSE key=%llu", opts->rcvr_key);
- 	MPTCP_INC_STATS(sock_net(sk), MPTCP_MIB_MPFASTCLOSETX);
-@@ -1099,8 +1099,8 @@ static bool add_addr_hmac_valid(struct mptcp_sock *msk,
- 	if (mp_opt->echo)
- 		return true;
- 
--	hmac = add_addr_generate_hmac(msk->remote_key,
--				      msk->local_key,
-+	hmac = add_addr_generate_hmac(READ_ONCE(msk->remote_key),
-+				      READ_ONCE(msk->local_key),
- 				      &mp_opt->addr);
- 
- 	pr_debug("msk=%p, ahmac=%llu, mp_opt->ahmac=%llu\n",
-@@ -1147,7 +1147,7 @@ bool mptcp_incoming_options(struct sock *sk, struct sk_buff *skb)
- 
- 	if (unlikely(mp_opt.suboptions != OPTION_MPTCP_DSS)) {
- 		if ((mp_opt.suboptions & OPTION_MPTCP_FASTCLOSE) &&
--		    msk->local_key == mp_opt.rcvr_key) {
-+		    READ_ONCE(msk->local_key) == mp_opt.rcvr_key) {
- 			WRITE_ONCE(msk->rcv_fastclose, true);
- 			mptcp_schedule_work((struct sock *)msk);
- 			MPTCP_INC_STATS(sock_net(sk), MPTCP_MIB_MPFASTCLOSERX);
+ 	if (after64(new_snd_una, old_snd_una)) {
 diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
-index 028e8b473626..874f019c5093 100644
+index 874f019c5093..b1c24ac3630f 100644
 --- a/net/mptcp/protocol.c
 +++ b/net/mptcp/protocol.c
-@@ -3193,7 +3193,7 @@ struct sock *mptcp_sk_clone_init(const struct sock *sk,
- 	__mptcp_init_sock(nsk);
+@@ -1033,13 +1033,15 @@ static void __mptcp_clean_una(struct sock *sk)
+ 		msk->recovery = false;
  
- 	msk = mptcp_sk(nsk);
--	msk->local_key = subflow_req->local_key;
-+	WRITE_ONCE(msk->local_key, subflow_req->local_key);
- 	msk->token = subflow_req->token;
- 	msk->in_accept_queue = 1;
- 	WRITE_ONCE(msk->fully_established, false);
+ out:
+-	if (snd_una == READ_ONCE(msk->snd_nxt) &&
+-	    snd_una == READ_ONCE(msk->write_seq)) {
++	if (snd_una == msk->snd_nxt && snd_una == msk->write_seq) {
+ 		if (mptcp_rtx_timer_pending(sk) && !mptcp_data_fin_enabled(msk))
+ 			mptcp_stop_rtx_timer(sk);
+ 	} else {
+ 		mptcp_reset_rtx_timer(sk);
+ 	}
++
++	if (mptcp_pending_data_fin_ack(sk))
++		mptcp_schedule_work(sk);
+ }
+ 
+ static void __mptcp_clean_una_wakeup(struct sock *sk)
+@@ -1499,7 +1501,7 @@ static void mptcp_update_post_push(struct mptcp_sock *msk,
+ 	 */
+ 	if (likely(after64(snd_nxt_new, msk->snd_nxt))) {
+ 		msk->bytes_sent += snd_nxt_new - msk->snd_nxt;
+-		msk->snd_nxt = snd_nxt_new;
++		WRITE_ONCE(msk->snd_nxt, snd_nxt_new);
+ 	}
+ }
+ 
+@@ -3200,8 +3202,8 @@ struct sock *mptcp_sk_clone_init(const struct sock *sk,
+ 	if (mp_opt->suboptions & OPTION_MPTCP_CSUMREQD)
+ 		WRITE_ONCE(msk->csum_enabled, true);
+ 
+-	msk->write_seq = subflow_req->idsn + 1;
+-	msk->snd_nxt = msk->write_seq;
++	WRITE_ONCE(msk->write_seq, subflow_req->idsn + 1);
++	WRITE_ONCE(msk->snd_nxt, msk->write_seq);
+ 	msk->snd_una = msk->write_seq;
+ 	msk->wnd_end = msk->snd_nxt + req->rsk_rcv_wnd;
+ 	msk->setsockopt_seq = mptcp_sk(sk)->setsockopt_seq;
+@@ -3303,9 +3305,6 @@ void __mptcp_data_acked(struct sock *sk)
+ 		__mptcp_clean_una(sk);
+ 	else
+ 		__set_bit(MPTCP_CLEAN_UNA, &mptcp_sk(sk)->cb_flags);
+-
+-	if (mptcp_pending_data_fin_ack(sk))
+-		mptcp_schedule_work(sk);
+ }
+ 
+ void __mptcp_check_push(struct sock *sk, struct sock *ssk)
 diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
-index 3517f2d24a22..13b8cf8ec704 100644
+index 13b8cf8ec704..421dede93e2b 100644
 --- a/net/mptcp/protocol.h
 +++ b/net/mptcp/protocol.h
-@@ -260,8 +260,10 @@ struct mptcp_data_frag {
- struct mptcp_sock {
- 	/* inet_connection_sock must be the first member */
- 	struct inet_connection_sock sk;
--	u64		local_key;
--	u64		remote_key;
-+	u64		local_key;		/* protected by the first subflow socket lock
-+						 * lockless access read
-+						 */
-+	u64		remote_key;		/* same as above */
- 	u64		write_seq;
- 	u64		bytes_sent;
- 	u64		snd_nxt;
-diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
-index 0dcb721c89d1..d60b83511302 100644
---- a/net/mptcp/subflow.c
-+++ b/net/mptcp/subflow.c
-@@ -75,7 +75,8 @@ static void subflow_req_create_thmac(struct mptcp_subflow_request_sock *subflow_
+@@ -402,7 +402,7 @@ static inline struct mptcp_data_frag *mptcp_rtx_head(struct sock *sk)
+ {
+ 	struct mptcp_sock *msk = mptcp_sk(sk);
  
- 	get_random_bytes(&subflow_req->local_nonce, sizeof(u32));
+-	if (msk->snd_una == READ_ONCE(msk->snd_nxt))
++	if (msk->snd_una == msk->snd_nxt)
+ 		return NULL;
  
--	subflow_generate_hmac(msk->local_key, msk->remote_key,
-+	subflow_generate_hmac(READ_ONCE(msk->local_key),
-+			      READ_ONCE(msk->remote_key),
- 			      subflow_req->local_nonce,
- 			      subflow_req->remote_nonce, hmac);
- 
-@@ -694,7 +695,8 @@ static bool subflow_hmac_valid(const struct request_sock *req,
- 	if (!msk)
- 		return false;
- 
--	subflow_generate_hmac(msk->remote_key, msk->local_key,
-+	subflow_generate_hmac(READ_ONCE(msk->remote_key),
-+			      READ_ONCE(msk->local_key),
- 			      subflow_req->remote_nonce,
- 			      subflow_req->local_nonce, hmac);
- 
-@@ -1530,8 +1532,8 @@ int __mptcp_subflow_connect(struct sock *sk, const struct mptcp_addr_info *loc,
- 	mptcp_pm_get_flags_and_ifindex_by_id(msk, local_id,
- 					     &flags, &ifindex);
- 	subflow->remote_key_valid = 1;
--	subflow->remote_key = msk->remote_key;
--	subflow->local_key = msk->local_key;
-+	subflow->remote_key = READ_ONCE(msk->remote_key);
-+	subflow->local_key = READ_ONCE(msk->local_key);
- 	subflow->token = msk->token;
- 	mptcp_info2sockaddr(loc, &addr, ssk->sk_family);
- 
+ 	return list_first_entry_or_null(&msk->rtx_queue, struct mptcp_data_frag, list);
 
 -- 
 2.43.0
