@@ -1,93 +1,77 @@
-Return-Path: <linux-kernel+bounces-50482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B5228479B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:32:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B14B28479B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:33:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EFA028B597
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:32:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E30FC1C25B37
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:33:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C22A1F188;
-	Fri,  2 Feb 2024 19:32:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39B4080603;
+	Fri,  2 Feb 2024 19:33:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="tU6DypZY"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fSwZfUaY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BAC415E5C6;
-	Fri,  2 Feb 2024 19:32:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76F953D3BC;
+	Fri,  2 Feb 2024 19:33:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706902365; cv=none; b=aeysKa605/Cm9BENq5W5Os2vYAqHb2AxiUSoEphDLjJN8MgUyGB6/xZyqweXksOw3VTfqWR6qXmuivQr57FNLvcoiigvUg2JdTltY9ounRgBMYIulr5LC9kqxHx1/8L7IeETzluDu4wdox9EzRH4VwpkBhexMI0sumEwZmWKW8A=
+	t=1706902395; cv=none; b=hizcPO5sD2eBk3D/49qq5xhZiwCUNipnMOeEXVtNo53IsZ1ekhMVFLP6gYCuEb4yQfCWPCBrVdoKvKJTAibMwlA8tHXz+1DGf6bQ1bQW8FuTcRtQBroHQWbLv2SIiiHZiRu37o+qHph3plnvQVb2/l0xZWDhXWkVpBeu9+q0oGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706902365; c=relaxed/simple;
-	bh=HYz6/hJ3oOA9kZreAOM5bZVw9xL3BPQoAckmdbalIFg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Eyw8N8PKBpvXUM2EuUGP6NNrA5Q/Q6wYKnlM9CI6/ESe1yewGL0iyCD1iLx4lYBmUM/zJImoZeSEMdCk97lYzFrCBMIYnRiwWJ5PtubtlRcZ3YLLmSIFVibdQUN3tSP2QHYW1B0zhLcKmABFW9gY2wDCqBk0uiTMn/oFqI0bmMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=tU6DypZY; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=SpRGWjsjOgKS2iXgevZZ/0uJ3SDShG6QHurdZ8ks1JM=; b=tU6DypZYqDQ4nNWUx28WBq+zCK
-	veUNIQtjIgWRYe3kxZXlqPpdWqTeVdLSLyc8JRtkx8K05tKREYS/6TlvuVw+xeitWHLEfh93ihpjc
-	l9ihXf7j5rafYtGokZvpiwuMXRadvGP7kL5VCWRgMmsmV+IBhCxx+bpBAl081oEzkP+o8itHamZx9
-	f5LUJOtZLevrDtQrOqN6z+X4q86GwiOJeC2yjXje48Kk1OdWKXZZ8X+W6RxWkq6BDVLtp9OQbYyRH
-	OL9Tn6FOWpBJub8ibAew3KYVIBxEOjnhx3gOcmJfeecgrKJ9Ij4W5iqaQjTC4NODbN+DesWPfqLwI
-	uRWcVsqQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVzHA-00000001tem-2lt6;
-	Fri, 02 Feb 2024 19:32:36 +0000
-Date: Fri, 2 Feb 2024 19:32:36 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: JonasZhou-oc <JonasZhou-oc@zhaoxin.com>
-Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	CobeChen@zhaoxin.com, LouisQi@zhaoxin.com, JonasZhou@zhaoxin.com
-Subject: Re: [PATCH] fs/address_space: move i_mmap_rwsem to mitigate a false
- sharing with i_mmap.
-Message-ID: <Zb1DVNGaorZCDS7R@casper.infradead.org>
-References: <20240202093407.12536-1-JonasZhou-oc@zhaoxin.com>
- <Zb0EV8rTpfJVNAJA@casper.infradead.org>
+	s=arc-20240116; t=1706902395; c=relaxed/simple;
+	bh=5fX28k3jBg8AF6wuBErGgmwNBI5qB8oapTjKGw2klLY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XZMh5TLxEWKiFFpfRqkgiCO75larLY7F9DT4zj52/8MfDjZaKyvGYA/sjd63UsEP2hyj14eTfpYSjdYgBfgVjDEHYvxeoxpkslx3H4faxa2GZHYi2rYT4Spfj8IjGz/7bCLQy2g2+e2pCstHqIpnirTxDCNYLVnECrgYftw0RIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fSwZfUaY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3FE8C433C7;
+	Fri,  2 Feb 2024 19:33:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706902395;
+	bh=5fX28k3jBg8AF6wuBErGgmwNBI5qB8oapTjKGw2klLY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=fSwZfUaYriZSw2g/i0aVBoJi+X28rETNBt7iN9Qv/JADxiikJNxTzbFABqcklfsJe
+	 Q1+tSI7YPPGRAUPS3xrzIrQPpoknlXh93bFiFP8YtfCvALE8k9gtvAE6ZInmvoYFEG
+	 BMOSXx2/isYuYYTySvQXnEs6aznflCfMOMTvlCKrUNLmqIY72xxgeoR6SXtdDtMcpK
+	 UeqsgzPKpUdiIYgFzJefEBWW6j1KaNtbXjjAZSFC2g0kN8AX+1BFEqkUpXDYCIhDxV
+	 vvKi1HXBB9mbkKn1poycMz4ZLp2rRGSr9W+g7mpwRMzfAR4BPmEZ+wfEfyBJvFAACP
+	 mHuArwCM2/F0A==
+Date: Fri, 2 Feb 2024 11:33:14 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH RESEND] nfc: hci: Save a few bytes of memory when
+ registering a 'nfc_llc' engine
+Message-ID: <20240202113314.4c5f09ce@kernel.org>
+In-Reply-To: <30e5c9c2-b13a-4b7e-a266-1e03e654f1d3@wanadoo.fr>
+References: <6d2b8c390907dcac2e4dc6e71f1b2db2ef8abef1.1705744530.git.christophe.jaillet@wanadoo.fr>
+	<20240131150803.2fec5a5c@kernel.org>
+	<30e5c9c2-b13a-4b7e-a266-1e03e654f1d3@wanadoo.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zb0EV8rTpfJVNAJA@casper.infradead.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 02, 2024 at 03:03:51PM +0000, Matthew Wilcox wrote:
-> On Fri, Feb 02, 2024 at 05:34:07PM +0800, JonasZhou-oc wrote:
-> > In the struct address_space, there is a 32-byte gap between i_mmap
-> > and i_mmap_rwsem. Due to the alignment of struct address_space
-> > variables to 8 bytes, in certain situations, i_mmap and
-> > i_mmap_rwsem may end up in the same CACHE line.
-> > 
-> > While running Unixbench/execl, we observe high false sharing issues
-> > when accessing i_mmap against i_mmap_rwsem. We move i_mmap_rwsem
-> > after i_private_list, ensuring a 64-byte gap between i_mmap and
-> > i_mmap_rwsem.
+On Fri, 2 Feb 2024 20:11:56 +0100 Christophe JAILLET wrote:
+> It would be slower, but it would reduce code duplication as well.
+> This is just an _exit() function, so it shouldn't be called that often 
+> anyway, if called at all.
 > 
-> I'm confused.  i_mmap_rwsem protects i_mmap.  Usually you want the lock
-> and the thing it's protecting in the same cacheline.  Why is that not
-> the case here?
+> Or, add another function with the list_del()+kfree_const()+kfree(), that 
+> would be called from nfc_llc_exit() and nfc_llc_unregister(), to have 
+> the best of the 2 worlds?
 
-We actually had this seven months ago:
-
-https://lore.kernel.org/all/20230628105624.150352-1-lipeng.zhu@intel.com/
-
-Unfortunately, no argumentation was forthcoming about *why* this was
-the right approach.  All we got was a different patch and an assertion
-that it still improved performance.
-
-We need to understand what's going on!  Please don't do the same thing
-as the other submitter and just assert that it does.
+My vote is the latter - factor out the 3 calls into a new helper, call
+it where appropriate.
 
