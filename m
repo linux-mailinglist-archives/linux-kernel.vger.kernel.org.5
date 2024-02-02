@@ -1,107 +1,127 @@
-Return-Path: <linux-kernel+bounces-50179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51E83847565
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:52:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3068684756A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:54:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B0A6283275
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:52:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03B4BB2D8BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:52:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9C2F14A4C3;
-	Fri,  2 Feb 2024 16:52:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A50114A4E2;
+	Fri,  2 Feb 2024 16:52:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f2D9EslL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LQCciCfU"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DDB6148FFA;
-	Fri,  2 Feb 2024 16:52:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C969814A4EC;
+	Fri,  2 Feb 2024 16:52:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706892736; cv=none; b=msi8S+hEbvxEt3m6/f87l00AbL7gQdvMu/cZjDzUMqlj8LoUYYIxpW0mXxU2PFWzcDOxmJ9i9ij1JaZsJbWgbRLkHrkgYdz+SRLGjlQ+Jq1gMdRGAbDVWQjb4taRStSvnFpKD9aVzhZ0DdMBITp97486PwLac1x9HHizBAEICTk=
+	t=1706892746; cv=none; b=o/NaY5058QPilt+ofBL4I7E2wEu96fKwMhjtldgiQEpm7xWDMm++EjZ4rGkFL8a0UJJna9JHPxahaB8g7CsR+SVjKuVnyQ7bI1gtH1IX5MvqN8mMVItTEh6tZHeT7PVg5tOlqvQWlvbgIAj/it1zyAy0fOsoiGGalOFIatl17ME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706892736; c=relaxed/simple;
-	bh=o6Wk5X1+6XzuAVSiW3qXZI3/x4eFqjgXnq87Cvd29GI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RtCb91fRUVqajnrpaQ8mpoiCY35U8T8pPscEXWaDjmmgRE5Keg5lzI8TOmU61kHf37d9HRYGdVfS5TVy4gKZ+04/lomprZhrd9RQGNsie80i0E0IQEpuCX9LmZkyWwbjevTADjaOfNLx0/caBBi4q0vJQrbQuxYNfI7EtxVzt9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f2D9EslL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E628FC433F1;
-	Fri,  2 Feb 2024 16:52:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706892735;
-	bh=o6Wk5X1+6XzuAVSiW3qXZI3/x4eFqjgXnq87Cvd29GI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=f2D9EslL+3JfRKRa4YVOQ6d3cpGJBLXuXVPoK7d3gweqK5VgBTvQvTMm2uTxWg6AF
-	 FsjPVQ23903rAzgBgl5LC+dLx7E8JI8a0il9LUcp5exeLA6UXPHIaTwBOcZXr3Wk0H
-	 661iqFLChJGxHaRXPSNiTN6dEtPMs4YFlogPE7ooBrt6vw/g0iv9J50tlIBW0sNAlH
-	 QG6wEOudTpX/y3Ilp/dsZYX1XCfdEdR0GJxfyR4yrtOZMJColGW8gdbvr41Nnebooa
-	 BK8OadhTp8LBEa3R1tzpgx4xwZ2KXER3c2SW6NHaAaBia9jiZq6JjEGIsZ9rEfLmQE
-	 5RZOmsYJmtOJw==
-Date: Fri, 2 Feb 2024 10:52:11 -0600
-From: Bjorn Andersson <andersson@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Abel Vesa <abel.vesa@linaro.org>, 
-	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
-	linux-pci@vger.kernel.org, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: Re: [RFC 8/9] PCI/pwrctl: add PCI power control core code
-Message-ID: <2q5vwm7tgmpgbrm4dxfhypbs5pdggprxouvzfcherqeevpjhrj@6wtkv4za2gg5>
-References: <20240201155532.49707-1-brgl@bgdev.pl>
- <20240201155532.49707-9-brgl@bgdev.pl>
- <7tbhdkqpl4iuaxmc73pje2nbbkarxxpgmabc7j4q26d2rhzrv5@ltu6niel5eb4>
- <CAMRc=Md1oTrVMjZRH+Ux3JJKYeficKMYh+8V7ZA=Xz_X1hNd1g@mail.gmail.com>
+	s=arc-20240116; t=1706892746; c=relaxed/simple;
+	bh=HzgDzI/Ge9eFvWVgikaxYZfFSROrOdcCMT23siR2Q6o=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=qiYSeYdsG7NMeAWcp7YGSFJtBdqDc+r4/NaLh4U3A+CAyzp9BQ4tdLIjEvdnmecbUss25/n6DYH+ZAJzD/HlA9dbXo5Uc3iePCfPH+c5dbKtld4K3vD7Rhpt388FY3j6Hw3jxGbP4dHkzf2Rbh1GLLthd6a3RfCCYDAN+dYabPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LQCciCfU; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706892741; x=1738428741;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=HzgDzI/Ge9eFvWVgikaxYZfFSROrOdcCMT23siR2Q6o=;
+  b=LQCciCfUe7id/mI1xZw4oEdn51ZVVKlNNI29SfutAVYE83VXu+DI8eEb
+   +e9gHAiZpOcssBeugERBY9KqzSKhnwm9sM2o5JewkhR9Vz/2tpvepMN5L
+   WH9GF9Lrv+bmkFVZmNz0n6KUgKSYpUSftW2rmdRLPwr2uEKi4xn9Gk7nY
+   TUGukvG6CbRiQY3bb6UJBErXn+gZV4QdkP7HoZJ4MHmu9W2AOdflmhEcC
+   YynHR0pyrX59sce/RQjnTNrhfFHYo7hrRInKVBeB8ehsoNy9AfNMmdQeH
+   CegEs7jQLjQmaftmGtnjhyppqjwAjlnBVsrgezmynSGJwVZIel/zV6kFJ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="102604"
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="102604"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 08:52:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="435399"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 02 Feb 2024 08:52:15 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
+ linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
+ cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ hpa@zytor.com, sohil.mehta@intel.com, "Jarkko Sakkinen" <jarkko@kernel.org>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+Subject: Re: [PATCH v8 05/15] x86/sgx: Add sgx_epc_lru_list to encapsulate LRU
+ list
+References: <20240130020938.10025-1-haitao.huang@linux.intel.com>
+ <20240130020938.10025-6-haitao.huang@linux.intel.com>
+ <CYU4S0Y9SVZ2.2G9RM5Y3K28XI@suppilovahvero>
+Date: Fri, 02 Feb 2024 10:52:12 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=Md1oTrVMjZRH+Ux3JJKYeficKMYh+8V7ZA=Xz_X1hNd1g@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2iiw5ajmwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <CYU4S0Y9SVZ2.2G9RM5Y3K28XI@suppilovahvero>
+User-Agent: Opera Mail/1.0 (Win32)
 
-On Fri, Feb 02, 2024 at 10:11:42AM +0100, Bartosz Golaszewski wrote:
-> On Fri, Feb 2, 2024 at 4:53 AM Bjorn Andersson <andersson@kernel.org> wrote:
-[..]
-> > > +             break;
-> > > +     }
-> > > +
-> > > +     return NOTIFY_DONE;
-> > > +}
-> > > +
-> > > +int pci_pwrctl_device_enable(struct pci_pwrctl *pwrctl)
-> >
-> > This function doesn't really "enable the device", looking at the example
-> > driver it's rather "device_enabled" than "device_enable"...
-> >
-> 
-> I was also thinking about pci_pwrctl_device_ready() or
-> pci_pwrctl_device_prepared().
+On Thu, 01 Feb 2024 17:28:32 -0600, Jarkko Sakkinen <jarkko@kernel.org>  
+wrote:
 
-I like both of these.
+> On Tue Jan 30, 2024 at 4:09 AM EET, Haitao Huang wrote:
+>> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>>
+>> Introduce a data structure to wrap the existing reclaimable list and its
+>> spinlock. Each cgroup later will have one instance of this structure to
+>> track EPC pages allocated for processes associated with the same cgroup.
+>> Just like the global SGX reclaimer (ksgxd), an EPC cgroup reclaims pages
+>> from the reclaimable list in this structure when its usage reaches near
+>> its limit.
+>>
+>> Use this structure to encapsulate the LRU list and its lock used by the
+>> global reclaimer.
+>>
+>> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Co-developed-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+>> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+>> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>
+> I'd put author as last sob but that said I'm not sure if there is rigid
+> rule to do so. Thus not saying must here.
+>
 
-I guess the bigger question is how the flow would look like in the event
-that we need to power-cycle the attached PCIe device, e.g. because
-firmware has gotten into a really bad state.
+The documentation says "the ordering of Signed-off-by: tags should reflect  
+the chronological history of the patch insofar as possible, regardless of  
+whether the author is attributed via From: or Co-developed-by:. Notably,  
+the last Signed-off-by: must always be that of the developer submitting  
+the patch."
 
-Will we need an operation that removes the device first, and then cut
-the power, or do we cut the power and then call unprepared()?
-
-Regards,
-Bjorn
-
-> 
-> Bart
-> 
-> [snip!]
+So this should be OK.
+[...]
+>>  struct sgx_epc_page *__sgx_alloc_epc_page(void);
+>>  void sgx_free_epc_page(struct sgx_epc_page *page);
+>>
+>
+> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+>
+> BR, Jarkko
+>
+Thank you!
+Haitao
 
