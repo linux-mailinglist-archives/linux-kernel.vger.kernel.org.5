@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-49326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EED18468B2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:59:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F6008468B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:59:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7BCE1F24385
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:59:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AC3C292579
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:59:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55BB82943D;
-	Fri,  2 Feb 2024 06:56:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D13143B786;
+	Fri,  2 Feb 2024 06:56:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u2Gxc7Vw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cIadmm3N"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94B41282E9;
-	Fri,  2 Feb 2024 06:56:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20FC539AD5;
+	Fri,  2 Feb 2024 06:56:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706856987; cv=none; b=bBkZiune8khOsk22QTEs0vRQJ+2zDbLwBVfb0iy8NASVVgDuuMUR2XWUkUijNSs122vJ94jmPknHwjDwFi1JqNtdqWBov6P0eG1JyxR+eCntOGpI/VK5WuNlTOZ6Aw6SHVFha5XF5OOwKA1rPtN1OZQGkv1AZY2qC5j4whb5Uj8=
+	t=1706856989; cv=none; b=IRA3erbRAZX2XSvS+ngaKrdPLsFiwKH/ppiPEGzxWcRVe2AYoWd45+KMfxcgRh3hke1Lrez+rgBtvRBUiUQXENnrR8U5Zb6paIyWuUKkZDRirJUvsCsmegp9qirD/nUhKl2yXY6Lg2Qpo1+ZokF3cHrbCyguId6ulFl7Qmm2epI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706856987; c=relaxed/simple;
-	bh=UbOFvmxMCfDnw/gmoV7JLKUwxcacwjOcrfiF+WJiOpA=;
+	s=arc-20240116; t=1706856989; c=relaxed/simple;
+	bh=jqH2OL/S99n3SsvoefaaNMtSDFKpEggQ4kdfbyZSD9E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Qh1Di9RA2MyL3HdpKZnCpRJryFI6HF4yoSvIUWeeiQKBoIvNik0k9aFzQI8RVbEtuRCDcaUNp4ikc1CvkRJOtq2Dqcm2Jcj3f1D9H6TSMR9lhnjFyf2Ee3s9aq6Cl6BA6uAqSz3dd3f4v4oJHCWwsoe6viUruRrUV0XC7JTzXrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u2Gxc7Vw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 043D3C433C7;
-	Fri,  2 Feb 2024 06:56:25 +0000 (UTC)
+	 MIME-Version; b=W2iZ9RbardKLoS6/npTHk5lkGoDOEwp7MHTXZQe0qoaVOXrA/wH/8w/nMbTG2tTLYCqY/61bi5zvk1ar/mxxmzaJG5/CF8eOykG5APyipTbN4sicOglmZBcIaV0ciLuRLI7vVIPEIAcbqDqpXS9Oj7dU5136IKo42SMfqPPUjW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cIadmm3N; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EB43C433F1;
+	Fri,  2 Feb 2024 06:56:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706856987;
-	bh=UbOFvmxMCfDnw/gmoV7JLKUwxcacwjOcrfiF+WJiOpA=;
+	s=k20201202; t=1706856988;
+	bh=jqH2OL/S99n3SsvoefaaNMtSDFKpEggQ4kdfbyZSD9E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=u2Gxc7VwSJBG7CcwBfKs9oPAEVwykMwexruSoEhi8oUL0csvCt+2CF0WkHFYMaIWE
-	 X3PWCJKXlhMvIS2zvFaENLuA6DQ32HEeAjQr/j44j3egVRA490bidTep3YqB7d0M6d
-	 J80MmCN58phB0hL1EoULMno8ykxGoAwHCchWlHF7LnE2dN0qHfqhaYXaCqN34lnn9R
-	 Bjtsnw4FHQgoo/WqjqFSg7F8E8R4+4yTVMfUM1Q5MQq6/9rZ+3tsUNiVVPgCgPC0LR
-	 /D/kZehfDHaaZhZ7B7uktgYV0OeviVaQoM4ljNCDT0Fg3/tctWP23hdpLKox3eKYzx
-	 e4e7SQhG3fnUQ==
+	b=cIadmm3N1wg15B4yH/C2pNXeJG3c/5pfwMefBRntw6Noq+gR75j7qUqafLLaBcqxX
+	 JmwfTIPPD5rTkCfngAwWDKaR1htYYgvz7QisqbrSPqY7iiWlosySh+SNbzHY3elMbh
+	 iWFlBe0m6E7MbuFtWi0wAsEqUYM0J1du3/RNb7w+gJpqeVR+q4KMX+IvvdowEUTGQL
+	 /zOQy8Rr/vM5JRJzYzID8iz7PxAhmcfrw1+frEIVB8tfpILGAbirZmawfONAPIjviP
+	 C0xTJ16GId0eFnxVfmyX6CsROsdseS9vOmS0kgz+NB/zSe+fQ5JI+1b5sUDA0vZ4D+
+	 gLE69DNNJr4Dg==
 From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To: gregkh@linuxfoundation.org
 Cc: linux-serial@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Subject: [PATCH 10/22] tty: vt: accept u8 in do_con_trol() and vc_setGx()
-Date: Fri,  2 Feb 2024 07:55:56 +0100
-Message-ID: <20240202065608.14019-11-jirislaby@kernel.org>
+Subject: [PATCH 11/22] tty: vt: extract ascii handling to handle_ascii()
+Date: Fri,  2 Feb 2024 07:55:57 +0100
+Message-ID: <20240202065608.14019-12-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240202065608.14019-1-jirislaby@kernel.org>
 References: <20240202065608.14019-1-jirislaby@kernel.org>
@@ -59,46 +59,128 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-These functions expect u8 as the control character. Switch the type from
-'int' appropriately. The caller passing the value (do_con_write()) is
-fixed as well.
+To make the do_con_trol() a bit more understandable, extract the ASCII
+handling (the switch-case) to a separate function.
+
+Other nested switch-cases will follow in the next patches.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 ---
- drivers/tty/vt/vt.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/tty/vt/vt.c | 58 +++++++++++++++++++++++++++++----------------
+ 1 file changed, 37 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 42bc0957a654..451a852ed234 100644
+index 451a852ed234..7cda1a958c5e 100644
 --- a/drivers/tty/vt/vt.c
 +++ b/drivers/tty/vt/vt.c
-@@ -2144,7 +2144,7 @@ static void reset_terminal(struct vc_data *vc, int do_clear)
- 	    csi_J(vc, CSI_J_VISIBLE);
- }
- 
--static void vc_setGx(struct vc_data *vc, unsigned int which, int c)
-+static void vc_setGx(struct vc_data *vc, unsigned int which, u8 c)
- {
- 	unsigned char *charset = &vc->state.Gx_charset[which];
- 
-@@ -2198,7 +2198,7 @@ enum {
+@@ -2197,28 +2197,26 @@ enum {
+ 	ASCII_EXT_CSI		= 128 + ASCII_ESCAPE,
  };
  
- /* console_lock is held */
--static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
-+static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, u8 c)
+-/* console_lock is held */
+-static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, u8 c)
++/*
++ * Handle ascii characters in control sequences and change states accordingly.
++ * E.g. ESC sets the state of vc to ESesc.
++ *
++ * Returns: true if @c handled.
++ */
++static bool handle_ascii(struct tty_struct *tty, struct vc_data *vc, u8 c)
  {
- 	/*
- 	 *  Control characters can be used in the _middle_
-@@ -2963,7 +2963,7 @@ static int do_con_write(struct tty_struct *tty, const u8 *buf, int count)
- 	param.vc = vc;
+-	/*
+-	 *  Control characters can be used in the _middle_
+-	 *  of an escape sequence, aside from ANSI control strings.
+-	 */
+-	if (ansi_control_string(vc->vc_state) && c >= ASCII_IGNORE_FIRST &&
+-	    c <= ASCII_IGNORE_LAST)
+-		return;
+ 	switch (c) {
+ 	case ASCII_NULL:
+-		return;
++		return true;
+ 	case ASCII_BELL:
+ 		if (ansi_control_string(vc->vc_state))
+ 			vc->vc_state = ESnormal;
+ 		else if (vc->vc_bell_duration)
+ 			kd_mksound(vc->vc_bell_pitch, vc->vc_bell_duration);
+-		return;
++		return true;
+ 	case ASCII_BACKSPACE:
+ 		bs(vc);
+-		return;
++		return true;
+ 	case ASCII_HTAB:
+ 		vc->vc_pos -= (vc->state.x << 1);
  
- 	while (!tty->flow.stopped && count) {
--		int orig = *buf;
-+		u8 orig = *buf;
- 		buf++;
- 		n++;
- 		count--;
+@@ -2230,41 +2228,59 @@ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, u8 c)
+ 
+ 		vc->vc_pos += (vc->state.x << 1);
+ 		notify_write(vc, '\t');
+-		return;
++		return true;
+ 	case ASCII_LINEFEED:
+ 	case ASCII_VTAB:
+ 	case ASCII_FORMFEED:
+ 		lf(vc);
+ 		if (!is_kbd(vc, lnm))
+-			return;
++			return true;
+ 		fallthrough;
+ 	case ASCII_CAR_RET:
+ 		cr(vc);
+-		return;
++		return true;
+ 	case ASCII_SHIFTOUT:
+ 		vc->state.charset = 1;
+ 		vc->vc_translate = set_translate(vc->state.Gx_charset[1], vc);
+ 		vc->vc_disp_ctrl = 1;
+-		return;
++		return true;
+ 	case ASCII_SHIFTIN:
+ 		vc->state.charset = 0;
+ 		vc->vc_translate = set_translate(vc->state.Gx_charset[0], vc);
+ 		vc->vc_disp_ctrl = 0;
+-		return;
++		return true;
+ 	case ASCII_CANCEL:
+ 	case ASCII_SUBSTITUTE:
+ 		vc->vc_state = ESnormal;
+-		return;
++		return true;
+ 	case ASCII_ESCAPE:
+ 		vc->vc_state = ESesc;
+-		return;
++		return true;
+ 	case ASCII_DEL:
+ 		del(vc);
+-		return;
++		return true;
+ 	case ASCII_EXT_CSI:
+ 		vc->vc_state = ESsquare;
+-		return;
++		return true;
+ 	}
++
++	return false;
++}
++
++/* console_lock is held */
++static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, u8 c)
++{
++	/*
++	 *  Control characters can be used in the _middle_
++	 *  of an escape sequence, aside from ANSI control strings.
++	 */
++	if (ansi_control_string(vc->vc_state) && c >= ASCII_IGNORE_FIRST &&
++	    c <= ASCII_IGNORE_LAST)
++		return;
++
++	if (handle_ascii(tty, vc, c))
++		return;
++
+ 	switch(vc->vc_state) {
+ 	case ESesc:
+ 		vc->vc_state = ESnormal;
 -- 
 2.43.0
 
