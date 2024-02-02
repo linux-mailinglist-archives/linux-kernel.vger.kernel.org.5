@@ -1,162 +1,121 @@
-Return-Path: <linux-kernel+bounces-50299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E30184771F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:11:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0F2284772D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:14:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FA0F2838B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:11:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9407B2E147
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:12:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A38B214C5B5;
-	Fri,  2 Feb 2024 18:10:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C22F14D43D;
+	Fri,  2 Feb 2024 18:11:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fqPonD6F"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hY/ca1PQ"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26DDF14AD35
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 18:10:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53664171A5;
+	Fri,  2 Feb 2024 18:11:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706897453; cv=none; b=HUxl2xyOqDICybSde5mPqaSdirKzHEhjJb+f7cFCqHfFOE3DrvPU/4Y+Uo/VQCxTMTojs0GwNW7IjWlc2dNqc9EbmGIarWQbfyEh1GCc7qxxFoH9/J9T/9cZ8IvZvK8B6rAICt3N2GR3iHMQYN2RlAkZ41kAv3mKWWPNfBnbkDU=
+	t=1706897516; cv=none; b=YfHbtVlRSEtmrWcTZxdULvaLPKADJi9PC9JiKWpdeQUD5ZW3PeGAO4tGbMp5GxcpRJvvdXXmqiUCpeBO0N/wZHR9D3ov4CW891Ai6+PO6C25ibvs/Bvk01GukE6RZE2K63+ON6dJ8q1HaSPtoPVIlFQOMwBr6XipqrpAqfz2/9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706897453; c=relaxed/simple;
-	bh=Bz5RLrDSI2lz3eGrZ1BaBArmjYUlb+b6xEsdTMAn6jo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DmLMloo3WUQGp6xMbuQ8eMwpCeZQKVglVeKTbzwL2F50oiwPd0retBA/PizqpEKmzkVG1lYyYCQm9xBwZXWlViLtv7p4D/vWWtRw6sF9p+bcfhs5szmMTAIOFqWUgUjgmK4cmJy7GTjKFzmBXOVpmRtDJgQ9fxdH+bbdn+lhjOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fqPonD6F; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6041c6333cdso20540087b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 10:10:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706897451; x=1707502251; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=T9UGts6nGQS3RkEfXeXcR2v8wnlBQKwVVYdgj9qNjJg=;
-        b=fqPonD6FmllUQ7g232VwCt3C9y8aURPBGfnJN51oHqJceQvbdcQZdGGerEDS/nynta
-         Rl/xb0eWQ/eMXKctZdSZGJrk0gahVdehSsBfcoiiqIZ9GOclOs/gzQbCHtht7f/SFGPQ
-         d0BCY8Cwv4Rto3+FOuYMGS/MIiiHUsv+VaZ6TWFLqRgi6ZyZyrI45nb/dmsfQxsHfXGn
-         w142I4nvqxDrHSJ5l5q4yBCRfe+fXxnXZhUn532xnPwVU3NeDDLm0DnCz4NqjF763iqi
-         9Dq3EIbw0Ry81YjMtnKQxFYlpQ/yWRQ8P0KDTs3Sjj6rbWu7UQdW3z8zqXwGI9G4krAe
-         mY6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706897451; x=1707502251;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T9UGts6nGQS3RkEfXeXcR2v8wnlBQKwVVYdgj9qNjJg=;
-        b=CqWmbxuWfT97E2AUNgvJucfi/NgHMw6ZIkQJaGaOYM9vwKx5tu+2H6p1qmOpcFZ57L
-         Hn9o1Ds/mCj6x8NvGj5kUbWENfVJMYLNCbHyL269a7+XQjx1TtZaEB/++KGTbuIaiD8z
-         XctrDy3qZvcbABo5Qr4pFjyrelqcLw39i8ZMedU+GHgnWaK/ztRqU7erfXwROtW8eUZ7
-         tVNXyLTomsIb5TOwm2OiOJgMwU1dCr5nL80VLOQaCQLkADuKiyfHQA8jdVwuaDVLahq1
-         raqWu+c2Rt3Q/OGK9SjNPOEQ6AtUZerFRHUbUrdf8osBWiMDKVHKeJwVR0+GEQOGNeSp
-         A9Nw==
-X-Gm-Message-State: AOJu0YwO3ttOf0sLbGiU++hihcJXqL2L+CnJFDBVwyJOAQNE6t3x0kMd
-	S1+atMzU9acnkb+HpG05TA+Wc877IxdcOD3ytvOmR/q0RqNbUw38CHYO4olj2D7NZqJ01YexJvH
-	EMSTjAGQZpTnw65hj9qStkBpZ7brcnWgZh5wUvA==
-X-Google-Smtp-Source: AGHT+IEaGvHddmuizMRHJVxE6vTh6Fz0RMNu2HTzUn5QTT2/OptTAJOP+s9PzIaIo7n/qn5MsZwbga2DCIchY7JwDtA=
-X-Received: by 2002:a81:b613:0:b0:604:ea3:6525 with SMTP id
- u19-20020a81b613000000b006040ea36525mr6745858ywh.0.1706897449670; Fri, 02 Feb
- 2024 10:10:49 -0800 (PST)
+	s=arc-20240116; t=1706897516; c=relaxed/simple;
+	bh=DOQo6PG8tdHWNw9j/HZXDNtATHbN0Fw0rHO+quU72Ec=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dWxkMguCj7dnCYZSWR0e44CnKAPxc1nyBia1pQdl4s/yGt8xxpukJXkJ10/xqDjosm1ULl04ORCD1wuLCMVbON7BgCQ68MSLjTAiUS25nVAH+T7giNqSWU11FvEPfmyF3yAbtJdvSDUYGVqGPLZhnqIOAvxWX0kBm7+SUyvLWOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=hY/ca1PQ; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 412Hntcq009634;
+	Fri, 2 Feb 2024 18:11:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=cqOAfti
+	ykg7lWOyB0qfM6AnnhzSlRRQXEIGuedibGKo=; b=hY/ca1PQ6DtRcovSEm7P7l2
+	m+M34pQi2NC0ci8HLeGM1U1GwRRU+ihuGZtrBulOXIAbo+ibTmmwzxRXd1YbxPyg
+	3jl7mLAqqz8qBJSDxNB5Q4AAsh4F1ZJGOj7LJUpVzqxBZ4eNK+zGEbV2E8TXwUQg
+	xWj+Wwwrxue/ygAz7zX+Hr8xrQZTFEXx3PnP3sAPBKnb/SIZRmHnFowb3B5hJ6Al
+	6DoKkqmvvt08+Hy0Y+Iw3f8zYuubgHWMgOC/VfHXrMYAU9C93E5G8Mim5Ok5fqZ8
+	HeZ7aDJZJt92yBnSTeLWeZJArikviaVf5njL2URzgxtprCbQzhbOFoQ9sC7A4EQ=
+	=
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w154w81dn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 18:11:44 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 412IBhCK027527
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 2 Feb 2024 18:11:43 GMT
+Received: from jhugo-lnx.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 2 Feb 2024 10:11:42 -0800
+From: Jeffrey Hugo <quic_jhugo@quicinc.com>
+To: <quic_bjorande@quicinc.com>, <marcel@holtmann.org>, <luiz.dentz@gmail.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <quic_bgodavar@quicinc.com>, <quic_rjliao@quicinc.com>
+CC: <linux-bluetooth@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Jeffrey Hugo <quic_jhugo@quicinc.com>
+Subject: [PATCH] dt-bindings: net: bluetooth: qualcomm: Fix bouncing @codeaurora
+Date: Fri, 2 Feb 2024 11:11:22 -0700
+Message-ID: <20240202181122.4118105-1-quic_jhugo@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122102157.22761-3-brgl@bgdev.pl> <202402030101.nxmgLcAB-lkp@intel.com>
-In-Reply-To: <202402030101.nxmgLcAB-lkp@intel.com>
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Date: Fri, 2 Feb 2024 19:10:38 +0100
-Message-ID: <CACMJSetk29BXrb2ywuWPCsvkDn9k6+0gTbcxmZBUyJteJG2=hA@mail.gmail.com>
-Subject: Re: [RESEND PATCH v6 02/12] firmware: qcom: scm: enable the TZ mem allocator
-To: kernel test robot <lkp@intel.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Andy Gross <agross@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Elliot Berman <quic_eberman@quicinc.com>, Krzysztof Kozlowski <krzk@kernel.org>, 
-	Guru Das Srinagesh <quic_gurus@quicinc.com>, Andrew Halaney <ahalaney@redhat.com>, 
-	Maximilian Luz <luzmaximilian@gmail.com>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>, llvm@lists.linux.dev, 
-	oe-kbuild-all@lists.linux.dev, linux-arm-msm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	kernel@quicinc.com, Deepti Jaggi <quic_djaggi@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: y5vSqHzEUAJyL94BjJMxtxKqTy1X5dpy
+X-Proofpoint-ORIG-GUID: y5vSqHzEUAJyL94BjJMxtxKqTy1X5dpy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-02_12,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
+ impostorscore=0 priorityscore=1501 lowpriorityscore=0 suspectscore=0
+ mlxlogscore=692 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402020131
 
-On Fri, 2 Feb 2024 at 19:02, kernel test robot <lkp@intel.com> wrote:
->
-> Hi Bartosz,
->
-> kernel test robot noticed the following build errors:
->
-> [auto build test ERROR on linus/master]
-> [also build test ERROR on krzk-dt/for-next v6.8-rc2 next-20240202]
-> [cannot apply to arm64/for-next/core]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Bartosz-Golaszewski/firmware-qcom-add-a-dedicated-TrustZone-buffer-allocator/20240122-182633
-> base:   linus/master
-> patch link:    https://lore.kernel.org/r/20240122102157.22761-3-brgl%40bgdev.pl
-> patch subject: [RESEND PATCH v6 02/12] firmware: qcom: scm: enable the TZ mem allocator
-> config: i386-buildonly-randconfig-004-20240202 (https://download.01.org/0day-ci/archive/20240203/202402030101.nxmgLcAB-lkp@intel.com/config)
-> compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240203/202402030101.nxmgLcAB-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202402030101.nxmgLcAB-lkp@intel.com/
->
-> All errors (new ones prefixed by >>):
->
-> >> ld.lld: error: undefined symbol: gen_pool_create
->    >>> referenced by qcom_tzmem.c
->    >>>               drivers/firmware/qcom/qcom_tzmem.o:(qcom_tzmem_pool_new) in archive vmlinux.a
-> --
-> >> ld.lld: error: undefined symbol: gen_pool_best_fit
->    >>> referenced by qcom_tzmem.c
->    >>>               drivers/firmware/qcom/qcom_tzmem.o:(qcom_tzmem_pool_new) in archive vmlinux.a
-> --
-> >> ld.lld: error: undefined symbol: gen_pool_set_algo
->    >>> referenced by qcom_tzmem.c
->    >>>               drivers/firmware/qcom/qcom_tzmem.o:(qcom_tzmem_pool_new) in archive vmlinux.a
-> --
-> >> ld.lld: error: undefined symbol: gen_pool_add_owner
->    >>> referenced by qcom_tzmem.c
->    >>>               drivers/firmware/qcom/qcom_tzmem.o:(qcom_tzmem_pool_new) in archive vmlinux.a
-> --
-> >> ld.lld: error: undefined symbol: gen_pool_destroy
->    >>> referenced by qcom_tzmem.c
->    >>>               drivers/firmware/qcom/qcom_tzmem.o:(qcom_tzmem_pool_new) in archive vmlinux.a
->    >>> referenced by qcom_tzmem.c
->    >>>               drivers/firmware/qcom/qcom_tzmem.o:(qcom_tzmem_pool_free) in archive vmlinux.a
-> --
-> >> ld.lld: error: undefined symbol: gen_pool_alloc_algo_owner
->    >>> referenced by qcom_tzmem.c
->    >>>               drivers/firmware/qcom/qcom_tzmem.o:(qcom_tzmem_alloc) in archive vmlinux.a
-> --
-> >> ld.lld: error: undefined symbol: gen_pool_virt_to_phys
->    >>> referenced by qcom_tzmem.c
->    >>>               drivers/firmware/qcom/qcom_tzmem.o:(qcom_tzmem_alloc) in archive vmlinux.a
-> --
-> >> ld.lld: error: undefined symbol: gen_pool_free_owner
->    >>> referenced by qcom_tzmem.c
->    >>>               drivers/firmware/qcom/qcom_tzmem.o:(qcom_tzmem_alloc) in archive vmlinux.a
->    >>> referenced by qcom_tzmem.c
->    >>>               drivers/firmware/qcom/qcom_tzmem.o:(qcom_tzmem_free) in archive vmlinux.a
->
-> --
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+The servers for the @codeaurora domain are long retired and any messages
+sent there will bounce.  Update the maintainer addresses for this
+binding to match the entries in .mailmap so that anyone looking in the
+file for a contact will see a correct address.
 
-Huh, strange that it took so long to report it. Seems like QCOM_TZMEM
-needs to select GENERIC_ALLOCATOR in Kconfig.
+Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+---
+ .../devicetree/bindings/net/bluetooth/qualcomm-bluetooth.yaml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Bart
+diff --git a/Documentation/devicetree/bindings/net/bluetooth/qualcomm-bluetooth.yaml b/Documentation/devicetree/bindings/net/bluetooth/qualcomm-bluetooth.yaml
+index eba2f3026ab0..528ef3572b62 100644
+--- a/Documentation/devicetree/bindings/net/bluetooth/qualcomm-bluetooth.yaml
++++ b/Documentation/devicetree/bindings/net/bluetooth/qualcomm-bluetooth.yaml
+@@ -7,8 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: Qualcomm Bluetooth Chips
+ 
+ maintainers:
+-  - Balakrishna Godavarthi <bgodavar@codeaurora.org>
+-  - Rocky Liao <rjliao@codeaurora.org>
++  - Balakrishna Godavarthi <quic_bgodavar@quicinc.com>
++  - Rocky Liao <quic_rjliao@quicinc.com>
+ 
+ description:
+   This binding describes Qualcomm UART-attached bluetooth chips.
+-- 
+2.34.1
+
 
