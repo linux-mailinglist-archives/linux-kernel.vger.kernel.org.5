@@ -1,169 +1,119 @@
-Return-Path: <linux-kernel+bounces-50046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F292D8473A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:49:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F23C8473AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:49:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20DE91C23E88
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:49:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B4C92901EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:49:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7623146915;
-	Fri,  2 Feb 2024 15:49:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FEB11474CC;
+	Fri,  2 Feb 2024 15:49:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s+5ynE/E"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OxOHYcNB"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEABA12FB10;
-	Fri,  2 Feb 2024 15:49:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57E2F1474C4;
+	Fri,  2 Feb 2024 15:49:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706888948; cv=none; b=oiy8WEQWZicm/OQIf+U95XybEC50hgPj111gzPskH0ZYaafVi/RGyUEu777A3A3IcMl8+nsZcmTpaZ6V94xA/h74PdIV+9mtYZlIjT2KlQZJtAGE+Re2TcaEiTPV+FBCGo3u7KCcjSbHOVDvkDKFQIzyZpiL/1OR+zaI394BGDI=
+	t=1706888953; cv=none; b=FEu3+829/4o0kF6ccQzVr+e3eTMf3FHPdeTAjBUWMWOtg2dZu3Pf03N0SjcsfqSUaw3eyeD+NdSnpk2JdIZP/UrP3iQEYwMW8PCxOr6BvCObDfo8xUjA/awDqqa+20MV52AWUhVfOkIibzAK58ow3TjvB3Y7nSWS9ltyJSarG/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706888948; c=relaxed/simple;
-	bh=xkn6mlA1ZU5+5715BkWojnUpqAm40lhMBurX+5VqgEU=;
+	s=arc-20240116; t=1706888953; c=relaxed/simple;
+	bh=LGMeKnVMuKT0hJfwlj8v3NusBylUlfzamfAZ3dCBxtE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YfohJqE01Dop1v2Z4ck5j4cTk1l1Y7iEtUO+2+iFx7AtGdcKS8U1NGWF8WNFOa/MXaF5CU5whLNZ/2Hc7+nSU8unFQRbd7UBq1DiFBzb4qVq/MUPOx9WUOD8tAaqp/mQphuKtXWW6WWdWjA5r/tIU+HopVrrs+PpwDqJUqAE+BM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s+5ynE/E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09B84C433F1;
-	Fri,  2 Feb 2024 15:49:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706888947;
-	bh=xkn6mlA1ZU5+5715BkWojnUpqAm40lhMBurX+5VqgEU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=s+5ynE/EC/KZE38XXLZPwn5/KHTmk/dVCUznzAwHklwsYlBroDBRUGX6QkuQoIB0V
-	 yKy332GCm8YxMYnhjMLfcgUYSHys5dJ4AeYucDgSiYfKBGsK+VF56oPgoeFnibpEsT
-	 YrgOisPWZbhK59iLlrcMWi908IicQxiZX0+NhlLHj+goXufPPB4vlGBpO6WjMkgOUc
-	 QpubeQRxu1SfH9fop2FOtU5dlcf1q1d8tqBCuEKaDTik4e3dD6AlCCqFK6fwzA9Y2a
-	 /VMLAU3IoGOsiNu5UNnbyrBVIZjpzdeO+xdPcYUyWdWeJJ80/ry8j4WF5JT+fROFEe
-	 TimKGs6ZQfwJw==
-Date: Fri, 2 Feb 2024 16:49:04 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Sebastian Wick <sebastian.wick@redhat.com>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>, Jonathan Corbet <corbet@lwn.net>, 
-	Sandy Huang <hjc@rock-chips.com>, Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, 
-	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Hans Verkuil <hverkuil@xs4all.nl>, 
-	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-Subject: Re: Re: [PATCH v5 08/44] drm/connector: hdmi: Add Broadcast RGB
- property
-Message-ID: <niqn7eql5neyfp5ficdfisdpmlwrprovqn5g7lgcfwoe74ds23@7fr4yv2miqe7>
-References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
- <20231207-kms-hdmi-connector-state-v5-8-6538e19d634d@kernel.org>
- <20240115143308.GA159345@toolbox>
+	 Content-Type:Content-Disposition:In-Reply-To; b=So27J/jjKYC1sX5x7w43EyO47uxp09JB8v91NsNPavVl8ywObi1oqrXBCtdKRfnKHBJU0E8eWFwtcU6qHMlpKCsArb21hmRYwFuZU+gD7IGRnyr4lxto/Elfb73vQDjEERgUisK2PrEDPF1Rujz20Nso+pRWzM/xGsQT9OXzSMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OxOHYcNB; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706888952; x=1738424952;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=LGMeKnVMuKT0hJfwlj8v3NusBylUlfzamfAZ3dCBxtE=;
+  b=OxOHYcNBWZAJPbv/8cr1+4qoBKOVk2qBwodnzdQYtdb77gV/lYGPlQRw
+   HQPjz3gi1CCQN3PCauAsbnJZJ52mX/uBlOkddWiGS1M0wKfbO4Ba0xLj/
+   dArEp4z+tt+RCc2uSWaDzVEhzSVAgLQi6z8Hy31z8aJgAa5ZnIxQdg122
+   svVFJg+wh5Jhpa71/5u7gikNdo3E7cOZAX64QKseqU6wtuRBBMnPDHROS
+   m0lA5JsvoTXd/3Ql59dSUcOP6LcKPtDllAdey68rlfL2OHrkY23wE51nz
+   9E7xzOKwOINBlBgKXwAgjs0MchDtB3HqFvjxtoZ51fW89dMuB3sLrJl75
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="11544407"
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="11544407"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 07:49:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="932497916"
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="932497916"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 07:49:09 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rVvms-00000001JDq-3RG1;
+	Fri, 02 Feb 2024 17:49:06 +0200
+Date: Fri, 2 Feb 2024 17:49:06 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Dan Williams <dan.j.williams@intel.com>,
+	Michal Wilczynski <michal.wilczynski@intel.com>,
+	nvdimm@lists.linux.dev, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>,
+	Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH v1 1/1] ACPI: NFIT: Switch to use
+ acpi_evaluate_dsm_typed()
+Message-ID: <Zb0O8o-REzAjLhzl@smile.fi.intel.com>
+References: <20231002135458.2603293-1-andriy.shevchenko@linux.intel.com>
+ <6531d1e01d0e1_7258329440@dwillia2-xfh.jf.intel.com.notmuch>
+ <ZVt1J_14iJjnSln9@smile.fi.intel.com>
+ <CAJZ5v0hk2ygfjU7WtgTBhwXhqDc8+xoBb+-gs6Ym9tOJtSoZ4A@mail.gmail.com>
+ <ZVuVMNlfumQ4p6oM@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="pmc24qettt5ad2pq"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240115143308.GA159345@toolbox>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZVuVMNlfumQ4p6oM@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+
+On Mon, Nov 20, 2023 at 07:19:44PM +0200, Andy Shevchenko wrote:
+> On Mon, Nov 20, 2023 at 04:11:54PM +0100, Rafael J. Wysocki wrote:
+> > On Mon, Nov 20, 2023 at 4:03 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Thu, Oct 19, 2023 at 06:03:28PM -0700, Dan Williams wrote:
+> > > > Andy Shevchenko wrote:
+> > > > > The acpi_evaluate_dsm_typed() provides a way to check the type of the
+> > > > > object evaluated by _DSM call. Use it instead of open coded variant.
+> > > >
+> > > > Looks good to me.
+> > > >
+> > > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > >
+> > > Thank you!
+> > >
+> > > Who is taking care of this? Rafael?
+> > 
+> > I can apply it.
+> 
+> Would be nice, thank you!
+
+Any news on this?
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
---pmc24qettt5ad2pq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Sebastian,
-
-On Mon, Jan 15, 2024 at 03:33:08PM +0100, Sebastian Wick wrote:
-> >  /**
-> >   * DOC: HDMI connector properties
-> >   *
-> > + * Broadcast RGB
-> > + *      Indicates the RGB Quantization Range (Full vs Limited) used.
-> > + *      Infoframes will be generated according to that value.
-> > + *
-> > + *      The value of this property can be one of the following:
-> > + *
-> > + *      Automatic:
-> > + *              RGB Range is selected automatically based on the mode
-> > + *              according to the HDMI specifications.
-> > + *
-> > + *      Full:
-> > + *              Full RGB Range is forced.
-> > + *
-> > + *      Limited 16:235:
-> > + *              Limited RGB Range is forced. Unlike the name suggests,
-> > + *              this works for any number of bits-per-component.
-> > + *
-> > + *      Drivers can set up this property by calling
-> > + *      drm_connector_attach_broadcast_rgb_property().
-> > + *
->=20
-> This is a good time to document this in more detail. There might be two
-> different things being affected:
->=20
-> 1. The signalling (InfoFrame/SDP/...)
-> 2. The color pipeline processing
->=20
-> All values of Broadcast RGB always affect the color pipeline processing
-> such that a full-range input to the CRTC is converted to either full- or
-> limited-range, depending on what the monitor is supposed to accept.
->=20
-> When automatic is selected, does that mean that there is no signalling,
-> or that the signalling matches what the monitor is supposed to accept
-> according to the spec? Also, is this really HDMI specific?
->=20
-> When full or limited is selected and the monitor doesn't support the
-> signalling, what happens?
-
-Leaving the YCbCr vs RGB discussion aside, would this be better ?
-
- * Broadcast RGB (HDMI specific)
- *      Indicates the Quantization Range (Full vs Limited) used. The color
- *      processing pipeline will be adjusted to match the value of the
- *      property, and the Infoframes will be generated and sent accordingly.
- *
- *      The value of this property can be one of the following:
- *
- *      Automatic:
- *              The quantization range is selected automatically based on t=
-he
- *              mode according to the HDMI specifications (HDMI 1.4b - Sect=
-ion
- *              6.6 - Video Quantization Ranges).
- *
- *      Full:
- *              Full quantization range is forced.
- *
- *      Limited 16:235:
- *              Limited quantization range is forced. Unlike the name sugge=
-sts,
- *              this works for any number of bits-per-component.
- *
- *      Property values other than Automatic can result in colors being off=
- (if
- *      limited is selected but the display expects full), or a black screen
- *      (if full is selected but the display expects limited).
- *
- *      Drivers can set up this property by calling
- *      drm_connector_attach_broadcast_rgb_property().
-
-Thanks!
-Maxime
-
---pmc24qettt5ad2pq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZb0O8AAKCRDj7w1vZxhR
-xZ36AQCNK31NPILvOExPXTtQmvsilMXK8R/AVHsg6P4vcpksegEAg+oha+xD8C+d
-UP6Lt6MNk9CpDL7eulXygAjWYKyLuAs=
-=QPry
------END PGP SIGNATURE-----
-
---pmc24qettt5ad2pq--
 
