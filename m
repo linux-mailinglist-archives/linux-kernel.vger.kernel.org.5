@@ -1,148 +1,153 @@
-Return-Path: <linux-kernel+bounces-49062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5096284656A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:26:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61C15846570
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:34:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E5C028C802
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:26:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E958D28734D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:34:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E184563B7;
-	Fri,  2 Feb 2024 01:26:36 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7071463B7;
+	Fri,  2 Feb 2024 01:34:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="J02tDG6t"
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 574F65666;
-	Fri,  2 Feb 2024 01:26:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C73F933FD
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 01:34:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706837196; cv=none; b=D8Fwnd6i+Hl+uEeoj7ntTh9NE+rd6yJDTsRe/Z/oAS9YxQ8We1pgANC7bVfqZy99c3H3AuOdKtex9cYn3huMCfYsi0wCn/uyGH/2qtcWUnxRVazZQAJZ4ShTMTBuq1AP0CQPbhERWZyRccnlUlm+FmycHcB4k319lW0B5aG0PnY=
+	t=1706837666; cv=none; b=slPHl7hlYvOmaxwSaALChRNe1Y8CATZ17Jkvhdc787tCoOUdRXh2U/hDPvLpxUOnYsC4155wuLPkJ+/qqiCBARs/9WwV815hPgzHTetGz32Hxh4CkBo+HjMlcn/VL15abPdpS471r6r1v2Tn4WEaHHTCUKz8LEd232nifKcigvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706837196; c=relaxed/simple;
-	bh=DvYXBDf4sN5DWZ90nPNkb85I8Wchwj0FHfdLWKicX4I=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=UAdg4IeseOhitEAJKgZcOAyrdqb/Ecc//8Vcab9Bil4TTqQ37Y3sfR7E31gewa/+i2WO7sT4NVR5zIqn5xRi1fRpD8EGMXVJee2W97ayJ0uXCopW6nxXbKEP67co5zoiF0m41ZcvbT6qXAv7kz9xzWAozm1l41PM+C+MPZHZlx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TQym26Q7jz4f3jR6;
-	Fri,  2 Feb 2024 09:26:26 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 23C961A0232;
-	Fri,  2 Feb 2024 09:26:31 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgAX5g7GRLxlDYDOCg--.8923S3;
-	Fri, 02 Feb 2024 09:26:30 +0800 (CST)
-Subject: Re: [PATCH v5 5/8] md: Don't clear MD_CLOSING when the raid is about
- to stop
-To: linan666@huaweicloud.com, song@kernel.org, neilb@suse.com,
- mariusz.tkaczyk@linux.intel.com, shli@fb.com
-Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
- yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20240201063404.772797-1-linan666@huaweicloud.com>
- <20240201063404.772797-6-linan666@huaweicloud.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <c97337c6-4234-68d5-3352-bd61d5c00459@huaweicloud.com>
-Date: Fri, 2 Feb 2024 09:26:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1706837666; c=relaxed/simple;
+	bh=7ihXqqZLoq0FoRue8iQkfFrTtELwLrJz4KU3OQJCe80=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type:
+	 References; b=KdKNxMPvNoqzSAO1Mav2/CrTHPfGoX1fO3boIQu08aSABhgTE/REyQ9kOIdnO2HrtZI6RwY99iuqvm+d7t/qAUu3j6X/1vvFhgGjjlRez6ZRQ4+C45BnkHsO61etYr1oP3rWayUeRppwwBgPuGf8lRH+cfWNesV+x1H4n24iLwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=J02tDG6t; arc=none smtp.client-ip=203.254.224.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20240202013415epoutp01ab45040117f2fb619ce0c77f770e8655~v583xmuhg3120731207epoutp01a
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 01:34:15 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20240202013415epoutp01ab45040117f2fb619ce0c77f770e8655~v583xmuhg3120731207epoutp01a
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1706837655;
+	bh=8GM3DMWIehaIuX6fmNbvXTvKHtAEeQ9Hv6/OgIbhMMo=;
+	h=From:To:Cc:Subject:Date:References:From;
+	b=J02tDG6tfz2FkiYaINn6ubQOyNS3ZrRrIYz+nLGmiQv8Le/fpLvibqy7m2v0n8g/n
+	 5/JFv4YanwzvQUJH0jKXHZVRoy2qLI0vadEDBSayhv7perONc+Hqso1bVtz2rfR9KL
+	 PD2QU/xnY83yh/FHcWFHSDIl5rb76H1StJHFZUK0=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+	epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+	20240202013415epcas1p22951ef1e68aed7d3df507e3c2b5f166e~v583Upl7m0486804868epcas1p2y;
+	Fri,  2 Feb 2024 01:34:15 +0000 (GMT)
+Received: from epsmgec1p1.samsung.com (unknown [182.195.36.226]) by
+	epsnrtp1.localdomain (Postfix) with ESMTP id 4TQyx26ZKmz4x9Q2; Fri,  2 Feb
+	2024 01:34:14 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+	epsmgec1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+	B6.DB.09731.6964CB56; Fri,  2 Feb 2024 10:34:14 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+	epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240202013414epcas1p28ce117bb1e5e7f03b68365ec0d3a9c89~v5827Ksav0510905109epcas1p2p;
+	Fri,  2 Feb 2024 01:34:14 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240202013414epsmtrp181332c4fdbca611578c43d154ba5646f~v5826ZQ1r2668826688epsmtrp1d;
+	Fri,  2 Feb 2024 01:34:14 +0000 (GMT)
+X-AuditID: b6c32a36-cebfd70000002603-d1-65bc4696dbd7
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	21.BC.07368.6964CB56; Fri,  2 Feb 2024 10:34:14 +0900 (KST)
+Received: from parkseongsu-desktop.. (unknown [10.252.69.73]) by
+	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240202013414epsmtip12c9d966537b12e277ad53582da875ee6~v582n_4is1032810328epsmtip15;
+	Fri,  2 Feb 2024 01:34:14 +0000 (GMT)
+From: Seongsu Park <sgsu.park@samsung.com>
+To: catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
+	broonie@kernel.org, oliver.upton@linux.dev, suzuki.poulose@arm.com,
+	maz@kernel.org, ryan.roberts@arm.com
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Seongsu Park <sgsu.park@samsung.com>
+Subject: [PATCH] arm64: fix typo in comments
+Date: Fri,  2 Feb 2024 10:33:06 +0900
+Message-Id: <20240202013306.883777-1-sgsu.park@samsung.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240201063404.772797-6-linan666@huaweicloud.com>
-Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAX5g7GRLxlDYDOCg--.8923S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7tF1xCw13Jw4xCF4DuFy3Jwb_yoW8urWUpa
-	1xKFy5KrWUJ3sxuw47tw1Dua4Fv34SqrWqyry2va4rXa4DAr9rGrZa93yDWF1kGrWrAFs0
-	q3W7Wa1Uuw1Ig3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWr
-	Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-	sGvfC2KfnxnUUI43ZEXa7VUbKsjUUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupkk+LIzCtJLcpLzFFi42LZdlhTV3ea255UgzX/TSymPnzCZvF+WQ+j
+	xabH11gtLu+aw2ax9PpFJoudc06yWkz9+YbNomf3VEaL9w1drBYzb99mtGi5Y+rA7bFm3hpG
+	j02rOtk8FjZMZfbYvKTeo2/LKkaPz5vkAtiism0yUhNTUosUUvOS81My89JtlbyD453jTc0M
+	DHUNLS3MlRTyEnNTbZVcfAJ03TJzgK5TUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gqpRak
+	5BSYFegVJ+YWl+al6+WlllgZGhgYmQIVJmRnPP50j6Wgg61i14VLTA2Mv1m6GDk5JARMJNrf
+	bWTuYuTiEBLYwSjx6cAXJgjnE6PEh/8z2EGqhAS+MUp8OV0B03Htww6ojr2MEg8bNyJ0HJvU
+	yQhSxSagJbH6Xy87SEJEYAOjxLy7V9lAEswCeRJXbr5kBbGFBXQkGlZNA7NZBFQl3lzZwwxi
+	8wpYS/w6e4oJYp28xP6DZ6HighInZz5hgZgjL9G8dTbYGRICX9klPnZ/gmpwkTjScokNwhaW
+	eHV8CzuELSXxsr8Nyi6W2PdlDTOEXSPxYN4eKNteouNZG9ACDqAFmhLrd+lD7OKTePe1hxUk
+	LCHAK9HRJgRhKkuc2+oIYUpK/FmgBzHDQ2Lnr3XMkHCLlVh++i/zBEa5WUjun4Xk/lkIqxYw
+	Mq9iFEstKM5NTy02LDCCx2Nyfu4mRnCa1DLbwTjp7Qe9Q4xMHIyHGCU4mJVEeFfK7UwV4k1J
+	rKxKLcqPLyrNSS0+xGgKDNGJzFKiyfnARJ1XEm9oYmlgYmZkYmFsaWymJM575kpZqpBAemJJ
+	anZqakFqEUwfEwenVANT3iwe999+y2bliK5Q/jyDNS578W/FuiNznxy/mXqt7Rpbq/6d21lv
+	fy75Zit+PJ/HlPeIpuRCdmt93+XS7Ac8vmx6F7Ly0g2X2W6/VqddV/G90e4nviXu+vekvU+W
+	7I/NELu4Y5/A0YmuOle4hTmsj3+/l9EeX7+i55NqyfnTIRJx1yuM9ntJ1Gqt3/m2zX7ypenL
+	eb7uvCQdXiPyPvnTq6VtP+VFVtw49T1qfhfLoZzrH5R+8xyQf8+a2MJU0ZsvFcMyQ//kiow5
+	J7mDOk+ePyH+cWOLxqrKw2+YphXe73fm9tz+NOH1nEXmyqGXmrnL5TezLwiw1RUvNYmaPelU
+	w1Vn/+uJohPnCx5m8H4rqcRSnJFoqMVcVJwIAFmgPFMcBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGLMWRmVeSWpSXmKPExsWy7bCSnO40tz2pBk/PS1pMffiEzeL9sh5G
+	i02Pr7FaXN41h81i6fWLTBY755xktZj68w2bRc/uqYwW7xu6WC1m3r7NaNFyx9SB22PNvDWM
+	HptWdbJ5LGyYyuyxeUm9R9+WVYwenzfJBbBFcdmkpOZklqUW6dslcGU8/nSPpaCDrWLXhUtM
+	DYy/WboYOTkkBEwkrn3YwdzFyMUhJLCbUeLVv1tQCUmJ9neXgWwOIFtY4vDhYoiaD4wSr7/O
+	ZAepYRPQklj9r5cdJCEisItR4u6BRkaQBLNAgcT5f1vABgkL6Eg0rJrGCmKzCKhKvLmyhxnE
+	5hWwlvh19hQTxDJ5if0Hz0LFBSVOznzCAjFHXqJ562zmCYx8s5CkZiFJLWBkWsUomVpQnJue
+	m2xYYJiXWq5XnJhbXJqXrpecn7uJERzUWho7GO/N/6d3iJGJg/EQowQHs5II70q5nalCvCmJ
+	lVWpRfnxRaU5qcWHGKU5WJTEeQ1nzE4REkhPLEnNTk0tSC2CyTJxcEo1MJUcuhF16oH6/TTB
+	SOW/T4XulWr7WdXOT37NuKTD5dqWFaLPvfv3RE37n8mXHCqab/+514h/cu3vsKcXdfeezRIM
+	iUtfuML4dOTD3Z80Ux6ueL9OZsa662k8vRO45mYfVt70u5xTtjgliCc9+O4nJ7FLPxa217Yt
+	7D8cdot5/cc7dZODedP0KmWVq9698y6Ps1Oas+H8zJ3X/x7+u1szYyOn+gPO9+Wnp7SWbGLx
+	Tlyl5/35G4ta/9sFd1nqwyT6HerrU08dPdd22b1gQ5C/D/P8hJDFTu9nnz04V+NE+inuyOkC
+	ojpxza5v1lqe8WN+uG/Pltfll4s3xzfeeytybF2zlOx67jSGx1UXLM12flBiKc5INNRiLipO
+	BAAmCnUh2QIAAA==
+X-CMS-MailID: 20240202013414epcas1p28ce117bb1e5e7f03b68365ec0d3a9c89
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240202013414epcas1p28ce117bb1e5e7f03b68365ec0d3a9c89
+References: <CGME20240202013414epcas1p28ce117bb1e5e7f03b68365ec0d3a9c89@epcas1p2.samsung.com>
 
-ÔÚ 2024/02/01 14:34, linan666@huaweicloud.com Ð´µÀ:
-> From: Li Nan <linan122@huawei.com>
-> 
-> The raid should not be opened anymore when it is about to be stopped.
-> However, other processes can open it again if the flag MD_CLOSING is
-> cleared before exiting. From now on, this flag will not be cleared when
-> the raid will be stopped.
-> 
-> Fixes: 065e519e71b2 ("md: MD_CLOSING needs to be cleared after called md_set_readonly or do_md_stop")
-> Signed-off-by: Li Nan <linan122@huawei.com>
+fix typo in comments
 
-LGTM
-Reviewed-by: Yu Kuai <yukuai3@huawei.com>
+thath -> that
 
-> ---
->   drivers/md/md.c | 14 ++++++++++----
->   1 file changed, 10 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index 5442e8e3c161..deee004b8f22 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -6247,7 +6247,15 @@ static void md_clean(struct mddev *mddev)
->   	mddev->persistent = 0;
->   	mddev->level = LEVEL_NONE;
->   	mddev->clevel[0] = 0;
-> -	mddev->flags = 0;
-> +	/*
-> +	 * Don't clear MD_CLOSING, or mddev can be opened again.
-> +	 * 'hold_active != 0' means mddev is still in the creation
-> +	 * process and will be used later.
-> +	 */
-> +	if (mddev->hold_active)
-> +		mddev->flags = 0;
-> +	else
-> +		mddev->flags &= BIT_ULL_MASK(MD_CLOSING);
->   	mddev->sb_flags = 0;
->   	mddev->ro = MD_RDWR;
->   	mddev->metadata_type[0] = 0;
-> @@ -7626,7 +7634,6 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
->   	int err = 0;
->   	void __user *argp = (void __user *)arg;
->   	struct mddev *mddev = NULL;
-> -	bool did_set_md_closing = false;
->   
->   	err = md_ioctl_valid(cmd);
->   	if (err)
-> @@ -7687,7 +7694,6 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
->   			mutex_unlock(&mddev->open_mutex);
->   			return -EBUSY;
->   		}
-> -		did_set_md_closing = true;
->   		mutex_unlock(&mddev->open_mutex);
->   		sync_blockdev(bdev);
->   	}
-> @@ -7829,7 +7835,7 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
->   				     mddev_unlock(mddev);
->   
->   out:
-> -	if(did_set_md_closing)
-> +	if (cmd == STOP_ARRAY_RO || (err && cmd == STOP_ARRAY))
->   		clear_bit(MD_CLOSING, &mddev->flags);
->   	return err;
->   }
-> 
+Signed-off-by: Seongsu Park <sgsu.park@samsung.com>
+---
+ arch/arm64/include/asm/cpufeature.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+index 21c824edf8ce..bd8d4ca81a48 100644
+--- a/arch/arm64/include/asm/cpufeature.h
++++ b/arch/arm64/include/asm/cpufeature.h
+@@ -83,7 +83,7 @@ struct arm64_ftr_bits {
+  * to full-0 denotes that this field has no override
+  *
+  * A @mask field set to full-0 with the corresponding @val field set
+- * to full-1 denotes thath this field has an invalid override.
++ * to full-1 denotes that this field has an invalid override.
+  */
+ struct arm64_ftr_override {
+ 	u64		val;
+-- 
+2.34.1
 
 
