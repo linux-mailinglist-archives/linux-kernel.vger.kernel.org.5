@@ -1,61 +1,57 @@
-Return-Path: <linux-kernel+bounces-50345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D7038477C5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:40:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C37D8477CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:40:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DD15283432
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:40:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFABC1C26BA7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:40:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E346151CE5;
-	Fri,  2 Feb 2024 18:39:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9908C14E2E8;
+	Fri,  2 Feb 2024 18:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dwJYjqbX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OW8Afam5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 415DA15147F;
-	Fri,  2 Feb 2024 18:39:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1DCD152DE3;
+	Fri,  2 Feb 2024 18:39:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706899171; cv=none; b=nWrEzWqZ3JS7j766Z/DwpCgw4w7BWnY5U9BbdtjxNs5p0wi2RDe7AUsoI2oVF7VUBgqUvFhScCUEYzyj2DMBaa/kUfJJ6Y/F+1aT7P4O0VxnMOmJzr+UndeGhkeogXttTcwyeWoX2lUp14P/3vAxbJSAJGyfgsl+op5FoN7+dm8=
+	t=1706899172; cv=none; b=nsrBfA36HqWK1Uut83DfJoD7SGoaAtd7jOALebchjPm1jUGODNzxgHMVVpIlH7UzEGypeNf74ajfMbZ8SOZJijA3lQ7vvHH+Xmm3RF6tzW5Jsn8OAri4rWqSSSqNsEoqSj0hGDt9Rtutq+FtFHIXZV1NIuUlGX4IpLXtT8zcK6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706899171; c=relaxed/simple;
-	bh=rTiMzZumFkAMwgLLb/3XmyG868+z7oI8xdqdDsyYiqI=;
+	s=arc-20240116; t=1706899172; c=relaxed/simple;
+	bh=+I78WAJjV2mXXrvpFXbawPuTz8P4TcngqBjgiVV9yU8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p5XPxmMpdtZD2zEuSiicVx73jHTNZ90AUwZ9hyqscor4DrGjJJmaftreYyzxFDQHt9DVZdX6iSjQgRUOM7IbwwkT9rwMeAgl9S5abHOT02XzdH7waRNY8Sfad6nl6qdE/OKqZfMIHMruGqvGIoQk6cIoFIb7wpauB3VgnQN5x5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dwJYjqbX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC1BCC43390;
-	Fri,  2 Feb 2024 18:39:29 +0000 (UTC)
+	 MIME-Version; b=SKHy6VI2lv8RCGIsRAbNjBdPtBSqQa+Be2VAlx6GcU+K5A6drYn7yEfMbKz6sHUX9stVYSRlmeJGQiFhbfpdFClfK3CIb3tFP0g9Vc3PcLbGrnhWfU5Y1eTQnxw3D3vnuaurNb5575QBalFpTSNlBCDtcgHkMmk4lRjfNpmoHVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OW8Afam5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D2C6C433A6;
+	Fri,  2 Feb 2024 18:39:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706899171;
-	bh=rTiMzZumFkAMwgLLb/3XmyG868+z7oI8xdqdDsyYiqI=;
+	s=k20201202; t=1706899172;
+	bh=+I78WAJjV2mXXrvpFXbawPuTz8P4TcngqBjgiVV9yU8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dwJYjqbXF/ym1WXtUmtQT9U6yUqHq0mEcL403Qk7zCuK602cDkfM004TFQAAfIL5S
-	 ZG84rhzE0cRo8t+lEZNvgatpmW+b3NCorr23nlOMbWmejkK72J38yPhTJDaedrta6N
-	 HC09L4rn074eCxzU5YVHXdrvmq2YopyxqB0YDgHqnyxSJloajH/Wp2RscYi2ZvPkKo
-	 lW4zGDFsaLws/ymifjHPOy24ZXrZ2B4mM7Ef47Jk69ENcJeGktuSOSuZ5g+w5EtUvk
-	 TMu4CG4YW45pjuu3jAGl0OHbucIDthruJnnhy3LBG5QInr+tC4nm5ZQlZlDvKYw/Cw
-	 x0RiGO/HIaCFg==
+	b=OW8Afam5jtsHT1tsBudJ8TyHMuiXcHckjhau6Tz43/JAq5BC1UMTJxrjT+h/6VJS8
+	 /6ZEZDeORCIPjagzSwbeL8bkktghFC7HqouOELil+f4UVQo4LWAh/zZlUYqLKeOX1l
+	 w6Sdr/nEHD1gy3R6PG/4yi2/7z1MMLSFTIC5K9WqytWeTiAW+bku7yGLuqe0qZVVhM
+	 sIbeX1aSPKMJzCx5XlfiiqQMGrkgMUFKr4uqVPZ2JD0p0cCjRTdaKT57yKyy4NDCjD
+	 VRrjlSbSWAfMIS32kDZnGfELxeFpodVfWQAecfKtI2WM61i8asaE9gg4DPllEigHTB
+	 0V0jqVP8OH5DA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Felix Fietkau <nbd@nbd.name>,
-	Johannes Berg <johannes.berg@intel.com>,
+Cc: Fullway Wang <fullwaywang@outlook.com>,
+	Helge Deller <deller@gmx.de>,
 	Sasha Levin <sashal@kernel.org>,
-	johannes@sipsolutions.net,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 02/23] wifi: mac80211: fix race condition on enabling fast-xmit
-Date: Fri,  2 Feb 2024 13:38:58 -0500
-Message-ID: <20240202183926.540467-2-sashal@kernel.org>
+	adaplas@gmail.com,
+	linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.7 03/23] fbdev: savage: Error out if pixclock equals zero
+Date: Fri,  2 Feb 2024 13:38:59 -0500
+Message-ID: <20240202183926.540467-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240202183926.540467-1-sashal@kernel.org>
 References: <20240202183926.540467-1-sashal@kernel.org>
@@ -70,51 +66,43 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.3
 Content-Transfer-Encoding: 8bit
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Fullway Wang <fullwaywang@outlook.com>
 
-[ Upstream commit bcbc84af1183c8cf3d1ca9b78540c2185cd85e7f ]
+[ Upstream commit 04e5eac8f3ab2ff52fa191c187a46d4fdbc1e288 ]
 
-fast-xmit must only be enabled after the sta has been uploaded to the driver,
-otherwise it could end up passing the not-yet-uploaded sta via drv_tx calls
-to the driver, leading to potential crashes because of uninitialized drv_priv
-data.
-Add a missing sta->uploaded check and re-check fast xmit after inserting a sta.
+The userspace program could pass any values to the driver through
+ioctl() interface. If the driver doesn't check the value of pixclock,
+it may cause divide-by-zero error.
 
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Link: https://msgid.link/20240104181059.84032-1-nbd@nbd.name
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Although pixclock is checked in savagefb_decode_var(), but it is not
+checked properly in savagefb_probe(). Fix this by checking whether
+pixclock is zero in the function savagefb_check_var() before
+info->var.pixclock is used as the divisor.
+
+This is similar to CVE-2022-3061 in i740fb which was fixed by
+commit 15cf0b8.
+
+Signed-off-by: Fullway Wang <fullwaywang@outlook.com>
+Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/sta_info.c | 2 ++
- net/mac80211/tx.c       | 2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/video/fbdev/savage/savagefb_driver.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/mac80211/sta_info.c b/net/mac80211/sta_info.c
-index 0ba613dd1cc4..b62b21749f52 100644
---- a/net/mac80211/sta_info.c
-+++ b/net/mac80211/sta_info.c
-@@ -910,6 +910,8 @@ static int sta_info_insert_finish(struct sta_info *sta) __acquires(RCU)
- 	if (ieee80211_vif_is_mesh(&sdata->vif))
- 		mesh_accept_plinks_update(sdata);
+diff --git a/drivers/video/fbdev/savage/savagefb_driver.c b/drivers/video/fbdev/savage/savagefb_driver.c
+index dddd6afcb972..ebc9aeffdde7 100644
+--- a/drivers/video/fbdev/savage/savagefb_driver.c
++++ b/drivers/video/fbdev/savage/savagefb_driver.c
+@@ -869,6 +869,9 @@ static int savagefb_check_var(struct fb_var_screeninfo   *var,
  
-+	ieee80211_check_fast_xmit(sta);
+ 	DBG("savagefb_check_var");
+ 
++	if (!var->pixclock)
++		return -EINVAL;
 +
- 	return 0;
-  out_remove:
- 	if (sta->sta.valid_links)
-diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
-index ed4fdf655343..4b2823e36a37 100644
---- a/net/mac80211/tx.c
-+++ b/net/mac80211/tx.c
-@@ -3048,7 +3048,7 @@ void ieee80211_check_fast_xmit(struct sta_info *sta)
- 	    sdata->vif.type == NL80211_IFTYPE_STATION)
- 		goto out;
- 
--	if (!test_sta_flag(sta, WLAN_STA_AUTHORIZED))
-+	if (!test_sta_flag(sta, WLAN_STA_AUTHORIZED) || !sta->uploaded)
- 		goto out;
- 
- 	if (test_sta_flag(sta, WLAN_STA_PS_STA) ||
+ 	var->transp.offset = 0;
+ 	var->transp.length = 0;
+ 	switch (var->bits_per_pixel) {
 -- 
 2.43.0
 
