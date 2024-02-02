@@ -1,231 +1,211 @@
-Return-Path: <linux-kernel+bounces-50150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3278C8474F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:36:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D21E08474F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:36:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC97D29188A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:36:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E36401C26C34
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:36:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AD3F1474BD;
-	Fri,  2 Feb 2024 16:35:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA259148FEB;
+	Fri,  2 Feb 2024 16:35:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K/+VXkQL"
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ivRJUm1s"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B07148FF7
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 16:35:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E73B1474BD;
+	Fri,  2 Feb 2024 16:35:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706891719; cv=none; b=Sx5urjzBfqwb2EP/9LDtlpO+piGCD8vNLoHaIQAWRB6wYusPPD1GiABraYpfCiyoHmSUnE8XeXMRTwJlybj3NdbT5oJ9bdlSNtzwT0qOokXMO21BxM0pbol8ocvafHtPMXBgx/QQ7y2LmEnopHQ4vOoNRkmMzy0m3Q7Ez1sTijc=
+	t=1706891716; cv=none; b=intWkq4yAcDScWWcX5vBBep/OJgVxV+yZuh6Ro6HoSdWGiBhQeicNrz0oCLJbpORctMYlIRnlIKE1ZSVFyJ4YsiLeTBB0f+qeW5FJgkHq523vZP469ERZULBudqZVWXX8y5bpJN8eBxuy2u6VJ+bOHoH+h1FOZ3qEVDQgg3Vjvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706891719; c=relaxed/simple;
-	bh=kwpElfF3ofIfsAZmHuoQRAHBjk2EW3k5g726E+VJsDY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JIc/jGcGpIV94lgtI7eIXf9DnRjhUIEm9SM8IPZrrf92dx/IyS6nazjkIKEDsbUzZD2J9veknA+j6DbeuS0KevPCnsgrubscdc1gxh/vqXY7Eah6qDPHIsOSZUeh3B26JdoOg8L/0SVKcTOkM8DOUFBZUzinf99eE7ntXWLPyPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K/+VXkQL; arc=none smtp.client-ip=209.85.161.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-59584f41f1eso683572eaf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 08:35:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706891716; x=1707496516; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q1b7WFP4fLnEs1xL56WMoxp/TFOgr4QRcoCxeMPjVlo=;
-        b=K/+VXkQLr8mNda3V4NtFBmXRbs5nH83HRO9Nz5Iv2Sej5I4n9wae0bYbALcDd55xgH
-         JN3WTDa2lMeMld+ip2UAawVQobEy2aGpcrOV0yUrgn7ni86X1sgjNqHnex5DwBsndxr5
-         v6gJ8es23/fB8rdWhIc3GuaCwYZARs3jsupMttDecsXJUxcx6TqxwD/GYe+9uvA1/gVG
-         Dx30BhJwhjkT/zANW/j4vfBip4R9qbsTHcp3NoBWG9FcNPw4CSEci0p3FA9cvjMs2vtK
-         erlxsebM46gd/K9LLNwfu0YKn9fICTV1U0vj5t7aRN2/wz5BnldvDW1R8DOsKKnlOOik
-         kHIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706891716; x=1707496516;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q1b7WFP4fLnEs1xL56WMoxp/TFOgr4QRcoCxeMPjVlo=;
-        b=PSw49RW92y1BriEbhsyWHHksQBIoakQiVoAC9csC0/Z7JBLvf75UsVxav/GoJatFAC
-         Gd4UL3Yjq1DsNkRP/OqRNuBjTCif7kT/d9zCVi5nHwhBATA7QXkWKrVpqSu2R9ceWjri
-         K3y7iBHwzQAvcvs7Zi/0ZWPc3pBvXcUvSPAfuJ34TI/w/SIbHjlV173WFaGxsMWYiQte
-         zD6Ehx6FZDqLmA6wGlPmlwcD7hTZ199lNjOAdNvRaD/Jz2/Ahwc0elx8MHU/QM4a2pMW
-         +QmvBnioW9yWLBtbzU5kRAdq8qvBTcvxuoD/zGNrIFFccmwCSU/PswHe2p1d6VTa+epR
-         X7ag==
-X-Forwarded-Encrypted: i=0; AJvYcCUGDTEBm4yhOzFtnk1UNxSEjYXz2kD1hPCNbRxkc4ry+glZ9LRc1UOM1tUjV1opynsh9fpovOS1sonYKdSmQwpPs1OD8gnv0y4Lwoqw
-X-Gm-Message-State: AOJu0YygqZG5/7Ca9lRXDG1KNYjSrKmyOGFpxsST1/uMxzNZxuUawIPj
-	XbjGH5cHsD5ZAfSapoZXNc9Tl84KgFNI4E2v7Hx2StTikUged1TtmDD0g208gw2AKkqtztoMQTi
-	BBHHmdpXNiTfgospr1K1Bv7wgSps=
-X-Google-Smtp-Source: AGHT+IErnTQmqrpMqoIYTqabnL481xBFUNOvS9QOYdaktWUqC2PEVKx1ai1Cf+/xhKYohW6eUcfmFUF8BtDo2ZNL9hg=
-X-Received: by 2002:a05:6820:2224:b0:59a:127c:bdfe with SMTP id
- cj36-20020a056820222400b0059a127cbdfemr7159032oob.1.1706891716497; Fri, 02
- Feb 2024 08:35:16 -0800 (PST)
+	s=arc-20240116; t=1706891716; c=relaxed/simple;
+	bh=1lLd48O5ySvz7PNZFF6ltqKVz+fi3YrSX8Kst1Luccw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hL++vFH28dS46QXf8GHE/2yQl/6Ag4w/+SvW3kU4EC2OL+n2j8BRsZKIbQe2jLDf39pq8A4UBkOwuGUdkgE7ahsRQqkV6ejX9e4gRn+loe6czw/LoEPhirQPfKipv3BPLxWW6XOcrZ2LRNEdfQa1gi+hOpgb15ABSub+Lwfg0pY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ivRJUm1s; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706891715; x=1738427715;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=1lLd48O5ySvz7PNZFF6ltqKVz+fi3YrSX8Kst1Luccw=;
+  b=ivRJUm1sVTVzYilHwwtUQlpnCtQx5B6h0JIMuvuK+X+B3qKdu1nTle4B
+   9oF8RfB2g4Q1wH6hwG0kMvtoCxx2qhvCXkGiVySFVIrgjMrNy9T4aNnDu
+   8wJMFKQ/O90LsJSIBpp6Aa/48goxFZbtyTDNDj5/Gd7e8D5b+Te6f2bzW
+   SKubOlplqe6xf1yH1pNrKehwTdLVbCvngmlyMWgHqIyh580ytDzRfLjkf
+   gFFN4b0GCWtD18eq+IuMXPKFfvPld+XOV4ICmDwNiGvB94/rI50QPBaCt
+   FhgXT4lStAmmAlPusJQKOfNObILY5Ssqwju0f4aWnAkMQhh7TqgWDylLv
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="354667"
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="354667"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 08:35:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="823251099"
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="823251099"
+Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
+  by orsmga001.jf.intel.com with SMTP; 02 Feb 2024 08:35:07 -0800
+Received: by stinkbox (sSMTP sendmail emulation); Fri, 02 Feb 2024 18:35:06 +0200
+Date: Fri, 2 Feb 2024 18:35:06 +0200
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>,
+	Sebastian Wick <sebastian.wick@redhat.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Emma Anholt <emma@anholt.net>, Jonathan Corbet <corbet@lwn.net>,
+	linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
+	Sandy Huang <hjc@rock-chips.com>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	linux-doc@vger.kernel.org, linux-rockchip@lists.infradead.org,
+	Chen-Yu Tsai <wens@csie.org>, dri-devel@lists.freedesktop.org,
+	linux-media@vger.kernel.org, David Airlie <airlied@gmail.com>,
+	linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 08/44] drm/connector: hdmi: Add Broadcast RGB property
+Message-ID: <Zb0ZujO9E_WH8Pm3@intel.com>
+References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
+ <20231207-kms-hdmi-connector-state-v5-8-6538e19d634d@kernel.org>
+ <20240115143308.GA159345@toolbox>
+ <874jerf7ot.fsf@intel.com>
+ <c37e9225-3890-4f4d-b45c-919b907b184b@xs4all.nl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABXGCsOzpRPZGg23QqJAzKnqkZPKzvieeg=W7sgjgi3q0pBo0g@mail.gmail.com>
- <CANpmjNN-5PpSQ1A_9aM3u4ei74HuvCoThiLAHi=reXXQwer67A@mail.gmail.com>
- <CANpmjNM=92PcmODNPB4DrAhfLY=0mePCbyG9=8BGrQ4MC0xZ6w@mail.gmail.com>
- <CABXGCsM+9TxxY-bOUw6MyRV7CSZsyQpfDgvwgaBBKk9UONJkBw@mail.gmail.com>
- <CABXGCsOp3Djn5uQYb3f=4k1m9rY9y3Ext9SMavWAFRTcKwtNMA@mail.gmail.com>
- <CA+fCnZeNsUV4_92A9DMg=yqyS_y_JTABguyQyNMpm6JPKVxruw@mail.gmail.com>
- <CABXGCsPerqj=zXJ0pUCnZ29JGmZFSvH6DB22r2uKio61c1bVkw@mail.gmail.com> <CANpmjNMn+ULqbSGQ6uOa0JDhw=2my5TtBK4Y+xyBES_iaG_SEA@mail.gmail.com>
-In-Reply-To: <CANpmjNMn+ULqbSGQ6uOa0JDhw=2my5TtBK4Y+xyBES_iaG_SEA@mail.gmail.com>
-From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date: Fri, 2 Feb 2024 21:35:05 +0500
-Message-ID: <CABXGCsM9BSD+SYFkvkYxmcrZL+aUfUb_M-rjNJhzb2cYHQr5ww@mail.gmail.com>
-Subject: Re: regression/bisected commit 773688a6cb24b0b3c2ba40354d883348a2befa38
- make my system completely unusable under high load
-To: Marco Elver <elver@google.com>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>, glider@google.com, dvyukov@google.com, 
-	eugenis@google.com, Oscar Salvador <osalvador@suse.de>, Vlastimil Babka <vbabka@suse.cz>, 
-	Andrew Morton <akpm@linux-foundation.org>, 
-	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
-	Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c37e9225-3890-4f4d-b45c-919b907b184b@xs4all.nl>
+X-Patchwork-Hint: comment
 
-On Fri, Feb 2, 2024 at 2:00=E2=80=AFPM Marco Elver <elver@google.com> wrote=
-:
->
-> > Maybe we can try something else?
->
-> That's strange - the patches at [1] definitely revert the change you
-> bisected to. It's possible there is some other strange side-effect. (I
-> assume that you are still running all this with a KASAN kernel.)
+On Fri, Feb 02, 2024 at 12:20:21PM +0100, Hans Verkuil wrote:
+> On 02/02/2024 12:04, Jani Nikula wrote:
+> > On Mon, 15 Jan 2024, Sebastian Wick <sebastian.wick@redhat.com> wrote:
+> >> On Thu, Dec 07, 2023 at 04:49:31PM +0100, Maxime Ripard wrote:
+> >>> The i915 driver has a property to force the RGB range of an HDMI output.
+> >>> The vc4 driver then implemented the same property with the same
+> >>> semantics. KWin has support for it, and a PR for mutter is also there to
+> >>> support it.
+> >>>
+> >>> Both drivers implementing the same property with the same semantics,
+> >>> plus the userspace having support for it, is proof enough that it's
+> >>> pretty much a de-facto standard now and we can provide helpers for it.
+> >>>
+> >>> Let's plumb it into the newly created HDMI connector.
+> >>>
+> >>> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> > 
+> > [snip]
+> > 
+> >>> @@ -1655,6 +1678,26 @@ EXPORT_SYMBOL(drm_connector_attach_dp_subconnector_property);
+> >>>  /**
+> >>>   * DOC: HDMI connector properties
+> >>>   *
+> >>> + * Broadcast RGB
+> >>> + *      Indicates the RGB Quantization Range (Full vs Limited) used.
+> >>> + *      Infoframes will be generated according to that value.
+> >>> + *
+> >>> + *      The value of this property can be one of the following:
+> >>> + *
+> >>> + *      Automatic:
+> >>> + *              RGB Range is selected automatically based on the mode
+> >>> + *              according to the HDMI specifications.
+> >>> + *
+> >>> + *      Full:
+> >>> + *              Full RGB Range is forced.
+> >>> + *
+> >>> + *      Limited 16:235:
+> >>> + *              Limited RGB Range is forced. Unlike the name suggests,
+> >>> + *              this works for any number of bits-per-component.
+> >>> + *
+> >>> + *      Drivers can set up this property by calling
+> >>> + *      drm_connector_attach_broadcast_rgb_property().
+> >>> + *
+> >>
+> >> This is a good time to document this in more detail. There might be two
+> >> different things being affected:
+> >>
+> >> 1. The signalling (InfoFrame/SDP/...)
+> >> 2. The color pipeline processing
+> >>
+> >> All values of Broadcast RGB always affect the color pipeline processing
+> >> such that a full-range input to the CRTC is converted to either full- or
+> >> limited-range, depending on what the monitor is supposed to accept.
+> >>
+> >> When automatic is selected, does that mean that there is no signalling,
+> >> or that the signalling matches what the monitor is supposed to accept
+> >> according to the spec? Also, is this really HDMI specific?
+> > 
+> > Automatic is based on the mode as described in the specs
+> > below. Basically certain modes are expected to be broadcast range, and
+> > others full range.
+> > 
+> > I don't remember why we don't use the full range if the display
+> > indicates it supports selectable quantization range in Video
+> > Capabilities Data Block. It's quite possible there are displays that
+> > declare support but don't. Cc: Ville.
+> 
+> I have not seen such displays. Enabling RGB Selectable Quantization Range
+> is something that a vendor has to do explicitly, so it is reasonable to
+> expect that it works, otherwise there would be no point to that flag!
+> 
+> Transmitting full range if possible gives a better picture quality and
+> so is recommended.
+> 
+> > 
+> > - HDMI 1.4b section 6.6 Video Quantization Ranges
+> > 
+> > - HDMI 2.1 section 7.3 Video Quantization Ranges
+> > 
+> > - DP 2.1 (and earlier) section 5.1.1.1 Video Colorimetry
+> > 
+> > - CTA-861-H (and earlier) section 5.1 Default Encoding Parameters and
+> >   section 6.4.3 Quantization Range
+> 
+> Note that CTA-861-H deprecated the use of Default Range in the AVI
+> InfoFrame, instead the source should always signal limited or full range
+> in the Q field.
 
-Yes. build .config not changed between kernel builds.
+Only because the QS=1 is now mandatory IIRC.
+We do always set Q bit explicitly when QS==1.
 
-> Just so I understand it right:
-> You say before commit cc478e0b6bdffd20561e1a07941a65f6c8962cab the
-> game's FPS were good. But that is strange, because at that point we're
-> already doing stackdepot refcounting, i.e. after commit
-> 773688a6cb24b0b3c2ba40354d883348a2befa38 which you reported as the
-> initial performance regression. The patches at [2] fixed that problem.
->
-> So now it's unclear to me how the simple change in
-> cc478e0b6bdffd20561e1a07941a65f6c8962cab causes the performance
-> problem, when in fact this is already with KASAN stackdepot
-> refcounting enabled but without the performance fixes from [1] and
-> [2].
->
-> [2] https://lore.kernel.org/all/20240118110216.2539519-2-elver@google.com=
-/
->
-> My questions now would be:
-> - What was the game's FPS in the last stable kernel (v6.7)?
+But yeah, I guess we could always go for full range
+by default when QS==1. Or maybe we even did that at
+some point in the past and it broke some things?
+Can't recall anymore.
 
-[6.7] - 83 FPS - 13060 frames during benchmark.
+Anyways, QS=1 being mandatory is a clear improvement
+in CTA-861, but some other CTA-861 rule updates are
+more or less pointless as you can't in general detect
+which version of the spec the sink claims to implement.
 
-> - Can you collect another set of performance profiles between good and
-> bad? Maybe it would show where the time in the kernel is spent.
+Eg. we already had cases where following the new CTA-861-F
+rules for the YQ bit when transmitting RGB broke some
+displays. And we are now forced to use the presence of
+HDMI 2.0+ capabilities as a heuristic to detect CTA-851-F+.
+(see drm_hdmi_avi_infoframe_quant_range()). It's pretty
+nasty.
 
-Yes,
-please look at [aaa2c9a97c22 perf] and [cc478e0b6bdf perf]
+And I think there is some other infoframe related issue
+(something to do with VICs IIRC) where we'd need to derive
+the CTA-861 version eg. from the set of advertised VICs
+in the EDID. I might have even written some code for that
+at some point but never finished it. So it's still
+broken in the current code. Can't recall the specific
+details right now unfortunately.
 
-> perf diff perf-git-aaa2c9a97c22af5bf011f6dd8e0538219b45af88.data perf-git=
--cc478e0b6bdffd20561e1a07941a65f6c8962cab.data
-No kallsyms or vmlinux with build-id
-de2a040f828394c5ce34802389239c2a0668fcc7 was found
-No kallsyms or vmlinux with build-id
-33ab1cd545f96f5ffc2a402a4c4cfa647fd727a0 was found
-# Event 'cycles:P'
-#
-# Baseline  Delta Abs  Shared Object
-Symbol
-# ........  .........  ..............................................
-..........................................................................=
-..........................................................................=
-..............................
-#
-    48.48%    +21.75%  [kernel.kallsyms]
-[k] 0xffffffff860065c0
-    36.13%    -16.49%  ShadowOfTheTombRaider
-[.] 0x00000000001d7f5e
-     4.43%     -2.10%  libvulkan_radeon.so
-[.] 0x000000000006b870
-     3.28%     -0.63%  libcef.so
-[.] 0x00000000021720e0
-     1.11%     -0.53%  libc.so.6
-[.] syscall
-     0.65%     -0.24%  libc.so.6
-[.] __memmove_avx512_unaligned_erms
-     0.31%     -0.14%  libc.so.6
-[.] __memset_avx512_unaligned_erms
-     0.26%     -0.13%  libm.so.6
-[.] __powf_fma
-     0.20%     -0.10%  [amdgpu]
-[k] amdgpu_bo_placement_from_domain
-     0.22%     -0.09%  [amdgpu]
-[k] amdgpu_vram_mgr_compatible
-     0.67%     -0.09%  armada-drm_dri.so
-[.] 0x00000000000192b4
-     0.15%     -0.08%  libc.so.6
-[.] sem_post@GLIBC_2.2.5
-     0.16%     -0.07%  [amdgpu]
-[k] amdgpu_vm_bo_update
-     0.14%     -0.07%  [amdgpu]
-[k] amdgpu_bo_list_entry_cmp
-     0.13%     -0.06%  libm.so.6
-[.] powf@GLIBC_2.2.5
-     0.14%     -0.06%  libMangoHud.so
-[.] 0x000000000001c4c0
-     0.10%     -0.06%  libc.so.6
-[.] __futex_abstimed_wait_common
-     0.19%     -0.05%  libGLESv2.so
-[.] 0x0000000000160a11
-     0.07%     -0.04%  libc.so.6
-[.] __new_sem_wait_slow64.constprop.0
-     0.10%     -0.04%  radeonsi_dri.so
-[.] 0x0000000000019454
-     0.05%     -0.03%  [amdgpu]
-[k] optc1_get_position
-     0.05%     -0.03%  libc.so.6
-[.] sem_wait@@GLIBC_2.34
-     0.22%     -0.02%  [vdso]
-[.] 0x00000000000005a0
-     0.10%     -0.02%  libc.so.6
-[.] __memcmp_evex_movbe
-               +0.02%  [JIT] tid 8383
-[.] 0x00007f2de0052823
-
-
-> - Could it be an inconclusive bisection?
-
-I checked twice:
-[6.7] - 83 FPS
-[aaa2c9a97c22] - 111 FPS
-[cc478e0b6bdf] - 64 FPS
-[6.8-rc2 with patches] - 82 FPS
-
-
-[6.7] https://i.postimg.cc/15yyzZBr/v6-7.png
-[6.7 perf] https://mega.nz/file/QwJ3hbob#RslLFVYgz1SWMcPR3eF9uEpFuqxdgkwXSa=
-tWts-1wVA
-
-[aaa2c9a97c22] https://i.postimg.cc/Sxv4VYhg/git-aaa2c9a97c22af5bf011f6dd8e=
-0538219b45af88.png
-[aaa2c9a97c22 perf]
-https://mega.nz/file/dwQxha4J#2_nBF6uNzY11VX-T-Lr_-60WIMrbl1YEvPgY4CuXqEc
-
-[cc478e0b6bdf] https://i.postimg.cc/W3cQfMfw/git-cc478e0b6bdffd20561e1a0794=
-1a65f6c8962cab.png
-[cc478e0b6bdf perf]
-https://mega.nz/file/hl5kwLTC#_4Fg1KBXCnQ-8OElY7EYmPOoDG6ZeZYnKFjamWpklWw
-
-[6.8-rc2 with patches] https://i.postimg.cc/26dPpVsR/v6-8-rc2-with-patches.=
-png
-[6.8-rc2 with patches perf]
-https://mega.nz/file/NxgTAb4L#0KO_WU-svpDw60Y3148RZhELPcUtFg3_VCDzJqSyz34
-
---=20
-Best Regards,
-Mike Gavrilov.
+-- 
+Ville Syrjälä
+Intel
 
