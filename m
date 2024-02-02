@@ -1,118 +1,177 @@
-Return-Path: <linux-kernel+bounces-49819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D287F846FF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:17:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DF5E847001
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:17:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D2FD1F23BBB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:17:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18C041F24E9F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:17:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD0D714077D;
-	Fri,  2 Feb 2024 12:16:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31FC8140765;
+	Fri,  2 Feb 2024 12:17:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="WCVxY8Vi"
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LpzTI4ob"
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3F497E76D;
-	Fri,  2 Feb 2024 12:16:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.166.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D3FA140764
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 12:17:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706876215; cv=none; b=PeJiuAg72LgCjfK6bEYbUR3NPhrVCpIFZhhfKIvK9YouAJhAQYDXhtjTdYGIoleuroXniFvj/KVlevABBue14Sytf9khI+7LAcgVVyH0jmrqxookcKz4qyOmNF4s0h8UD6kuS44MPdnrQkROuhlHXrB+6QP/GYELzAGg7D7kC18=
+	t=1706876226; cv=none; b=HteXaYPIxHztR0hob2hTmg25VBW51pptCsuuyZAvuXiWRkNIqAljT7jnNFI30ZQcLf2Rawc8rWAmHi+hJBWpPH/6L1jvgNqsgy55ZfA1+2dGvcUshEn8XuIE6yVd9yTZl+N5J4UBIP9ZaHIf7OmuU185Pdr1GDLuhqbtaXLSLWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706876215; c=relaxed/simple;
-	bh=l/aopIMOwoJ7HIS7T+cRzAwMN/3xy7HCXK2/ibsdft4=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GMKyJI6hQS/MPTQEdtx8UHT8AztXv+q6QP+rLmcsSV5sGUixTQJyGnmVWte9cAV3vAf8fNM1IDh0lwaBRlLQxBmBxJSWVeWpNp/RRJvcUMNmH3uw0zvnQEcVNEUoLX7Q1KYzk5hVTKEvEss9EnJ6tweJM9wwwx8/QbtkLObpVng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b=WCVxY8Vi; arc=none smtp.client-ip=205.220.166.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 412BQoac017730;
-	Fri, 2 Feb 2024 04:15:35 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-	 h=from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PPS06212021; bh=UYcTMeXPca+N73s96cgEXe+7bZsHSgkXHU5oK5Zc7aU=; b=
-	WCVxY8VinqwuwawmN5DF+AGfiuAh90rRLXOR+wjLtLmpSdHoVCi0pDsKX7J6IVWf
-	Q/oBTNzvgxR2xNc6ExsXuCUXlmjtiVXNeTa35z4TBuX8DeQalh9LbykqsnvWWAUQ
-	0VVCLjf5li+K0OlJbHFqSQY/n3/PCkbPdFcaQMZRIIwB4GfrLp4Jy8/3Wnyefuga
-	S3jVRC3SONfcWGKj7vCkmreaL5+kt5DxrehB+Q4EVlxTZVedTfPTgDGE6drJ/VaH
-	LkVvwLWySOta2yvp2nxdQm03T1RHvTyiDUSawWlVlOrDqUPklCMusNsha8A9ek5W
-	724xz/iA7/RfpEZd1IuSoQ==
-Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3w0puv0dvd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Fri, 02 Feb 2024 04:15:35 -0800 (PST)
-Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 2 Feb 2024 04:15:34 -0800
-Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Fri, 2 Feb 2024 04:15:32 -0800
-From: Lizhi Xu <lizhi.xu@windriver.com>
-To: <syzbot+7a3d75905ea1a830dbe5@syzkaller.appspotmail.com>
-CC: <asmadeus@codewreck.org>, <ericvh@kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux_oss@crudebyte.com>, <lucho@ionkov.net>,
-        <syzkaller-bugs@googlegroups.com>, <v9fs@lists.linux.dev>
-Subject: [PATCH next] fs/9p: fix uaf in in v9fs_stat2inode_dotl
-Date: Fri, 2 Feb 2024 20:15:31 +0800
-Message-ID: <20240202121531.2550018-1-lizhi.xu@windriver.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <00000000000055ecb906105ed669@google.com>
-References: <00000000000055ecb906105ed669@google.com>
+	s=arc-20240116; t=1706876226; c=relaxed/simple;
+	bh=6WMlixFsMD3YXZFA7X0TiodSA2ARpqznFCPL+NJ64J0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tI2sahJu98sKqdUWUXcSbmQGMCrGjFdlyEL/0trwl4/LWGCLF0PbTuVfk90bw7GVHOyegp/rC3FIVY2NFDsAeuvVs45gHm2Ba2s2YAgLcrPb0A3U2D2zazpk8Hvh74OjYb3igiwiVGnq/KJEsphivyV73LrJoXfrtVENTTCgwKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LpzTI4ob; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-29041136f73so1509850a91.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 04:17:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706876224; x=1707481024; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UQ0esveh//cg9XCkiI/7xWePudzmiIjItwxrOruHVwk=;
+        b=LpzTI4obYAxHG+Gkig1OmPJWjP1D7uCoxw6UBg4vbSrdCkGBoxM0DmUc7l0biBlLHO
+         5WmQINucpkAfAX0/VONbedxa2YvfDqR8UPCIidaEWy5PTELhJMPbvyRbk1UctJFjqf5N
+         KWD9EtZB5AjPgIhMX1zUwQFe8JOb42Vh8WwsM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706876224; x=1707481024;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UQ0esveh//cg9XCkiI/7xWePudzmiIjItwxrOruHVwk=;
+        b=SVELkBssHEYethpe5TTvFXbDxPkA3ow2YvwXK7/lQPByToTaz+bnlvMI3qiGMDtWfw
+         bF6Y8dW2plBt5uqKP5KOS416WxbaBMhg22esO122WgIMtfbF6nxyhIpn6mFALGyQftZx
+         WQVyARVu0PPIq0XKG8D/sM6OR2vYJ0BleQwDnoAbmNOhbrqZq2Cc4ztmsLPqLXjV2uEE
+         VldRutLNqqnAEg2UXpCcSlkyP0VkuONmQaM7R0V/iEmn2dawYqPBhCf6F8skQYfO3igd
+         MEa/YxaHxLaqN4LC5l0DN5ZfeC7OOoP0HO57yCyESPrFgZw6clQaoZm3u5i/nMxDw1NW
+         4vDA==
+X-Gm-Message-State: AOJu0Yy2nAjIGgpYZhMNHbrr5yGUVbWDVN034Kx6e4Y4sMARTHqbiL2t
+	CWd16vbKIqG+VCERcXyAhO2HnkYSpqzl4QYPnWJbKIJyFpvDi/LMAGhVyrd7XQ==
+X-Google-Smtp-Source: AGHT+IGg88zNLC34obB5/fOW4+rC0GoCG14stcT3rLU6L9HZrzANdbP1B4KMEzwmTO1dY9t5epZ2BQ==
+X-Received: by 2002:a17:90b:1298:b0:296:1dcf:c296 with SMTP id fw24-20020a17090b129800b002961dcfc296mr1876188pjb.18.1706876223734;
+        Fri, 02 Feb 2024 04:17:03 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUGVn+0c2h4HxapCQwK+CBO5gK3KOvlzIatkL3Eg+0hshg2pC4xRmXdAPGwrPO866Nj9YF+U6s6nJkm+zEO0B/JBsHbpfqLIrHUgGxhmDm7PR7dJOIlSKekZQeCfpS4kk6gdUCRy8AKy1koQcYXJUoBqPtoXthgUI8I+/eaEfrPbo4kflZwbchOOzcwU5swL0S6WdMTIJa+mw55to+6uV3nDPQwGmi8fzDIZ1/ceDsJxByCfPOeO0l/S81b9BgnbLDHSPgD7FlGPHvtp8Z/FomG1NkHrVilLrlukHP1pAw9wYKJnI22iJxJmSjYHmQniMGlZYsc/cdM58fBdkhFMawZoGvAvkTYiXvNll9VJlnJ8j/FX+IAuDXHo43itnq+OGQQdsBiGyQPYcczK3z4vcpWYVXqya3O7moVN8gWmQjkhvZgr8SZOqWDhbrhJgPiVmYM7CkU25sPa9I0PqKXD5aa7cvoHKmNkLXZ4/epetFyeC0sd5jBRU3IEcz8/3lo1E3SteGrn+6+Y/KEkJjGEjE/TlV+t7ZzrhslvL+T17oohFYN0g54YBk1TJzsBIkJwnqakFKkOfMS15bofbWnqaCKkx+rJlTObTtkF5AePTEEUWmqLLwa3jLiNLz4lnivpuzOGcGhWnPJl5a421rYycnirgqxJHh/cGTKPA8EmcYWycgZa67VxpoBN5oGlmkdby+KZtTF2BuWlV1VWF5HfxIzOVdG8qZz4Q257WM=
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id su13-20020a17090b534d00b002927a36b7a0sm1671429pjb.23.2024.02.02.04.17.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 04:17:03 -0800 (PST)
+Date: Fri, 2 Feb 2024 04:17:02 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Marco Elver <elver@google.com>
+Cc: linux-hardening@vger.kernel.org, Justin Stitt <justinstitt@google.com>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Peter Zijlstra <peterz@infradead.org>, Hao Luo <haoluo@google.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Fangrui Song <maskray@google.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Bill Wendling <morbo@google.com>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Jonathan Corbet <corbet@lwn.net>, x86@kernel.org,
+	linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+	llvm@lists.linux.dev, linux-doc@vger.kernel.org,
+	netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
+	kasan-dev@googlegroups.com, linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] ubsan: Reintroduce signed and unsigned overflow
+ sanitizers
+Message-ID: <202402020405.7E0B5B3784@keescook>
+References: <20240202101311.it.893-kees@kernel.org>
+ <20240202101642.156588-2-keescook@chromium.org>
+ <CANpmjNPPbTNPJfM5MNE6tW-jCse+u_RB8bqGLT3cTxgCsL+x-A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: F0ZlN-hNRdusUqWNtk5stVihewg4qzWd
-X-Proofpoint-ORIG-GUID: F0ZlN-hNRdusUqWNtk5stVihewg4qzWd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-02_06,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 adultscore=0 suspectscore=0 impostorscore=0 clxscore=1011
- lowpriorityscore=0 spamscore=0 mlxlogscore=753 phishscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402020090
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNPPbTNPJfM5MNE6tW-jCse+u_RB8bqGLT3cTxgCsL+x-A@mail.gmail.com>
 
-The incorrect logical order of accessing the st object code in v9fs_fid_iget_dotl
-is causing this uaf.
+On Fri, Feb 02, 2024 at 12:01:55PM +0100, Marco Elver wrote:
+> On Fri, 2 Feb 2024 at 11:16, Kees Cook <keescook@chromium.org> wrote:
+> > [...]
+> > +config UBSAN_UNSIGNED_WRAP
+> > +       bool "Perform checking for unsigned arithmetic wrap-around"
+> > +       depends on $(cc-option,-fsanitize=unsigned-integer-overflow)
+> > +       depends on !X86_32 # avoid excessive stack usage on x86-32/clang
+> > +       depends on !COMPILE_TEST
+> > +       help
+> > +         This option enables -fsanitize=unsigned-integer-overflow which checks
+> > +         for wrap-around of any arithmetic operations with unsigned integers. This
+> > +         currently causes x86 to fail to boot.
+> 
+> My hypothesis is that these options will quickly be enabled by various
+> test and fuzzing setups, to the detriment of kernel developers. While
+> the commit message states that these are for experimentation, I do not
+> think it is at all clear from the Kconfig options.
 
-Fixes: 724a08450f74 ("fs/9p: simplify iget to remove unnecessary paths")
-Reported-and-tested-by: syzbot+7a3d75905ea1a830dbe5@syzkaller.appspotmail.com
-Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
----
- fs/9p/vfs_inode_dotl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I can certainly rephrase it more strongly. I would hope that anyone
+enabling the unsigned sanitizer would quickly realize how extremely
+noisy it is.
 
-diff --git a/fs/9p/vfs_inode_dotl.c b/fs/9p/vfs_inode_dotl.c
-index ef9db3e03506..2b313fe7003e 100644
---- a/fs/9p/vfs_inode_dotl.c
-+++ b/fs/9p/vfs_inode_dotl.c
-@@ -78,11 +78,11 @@ struct inode *v9fs_fid_iget_dotl(struct super_block *sb, struct p9_fid *fid)
- 
- 	retval = v9fs_init_inode(v9ses, inode, &fid->qid,
- 				 st->st_mode, new_decode_dev(st->st_rdev));
-+	v9fs_stat2inode_dotl(st, inode, 0);
- 	kfree(st);
- 	if (retval)
- 		goto error;
- 
--	v9fs_stat2inode_dotl(st, inode, 0);
- 	v9fs_set_netfs_context(inode);
- 	v9fs_cache_inode_get_cookie(inode);
- 	retval = v9fs_get_acl(inode, fid);
+> Unsigned integer wrap-around is relatively common (it is _not_ UB
+> after all). While I can appreciate that in some cases wrap around is a
+> genuine semantic bug, and that's what we want to find with these
+> changes, ultimately marking all semantically valid wrap arounds to
+> catch the unmarked ones. Given these patterns are so common, and C
+> programmers are used to them, it will take a lot of effort to mark all
+> the intentional cases. But I fear that even if we get to that place,
+> _unmarked_  but semantically valid unsigned wrap around will keep
+> popping up again and again.
+
+I agree -- it's going to be quite a challenge. My short-term goal is to
+see how far the sanitizer itself can get with identifying intentional
+uses. For example, I found two more extremely common code patterns that
+trip it now:
+
+	unsigned int i = ...;
+	...
+	while (i--) { ... }
+
+This trips the sanitizer at loop exit. :P It seems like churn to
+refactor all of these into "for (; i; i--)". The compiler should be able
+to identify this by looking for later uses of "i", etc.
+
+The other is negative constants: -1UL, -3ULL, etc. These are all over
+the place and very very obviously intentional and should be ignored by
+the compiler.
+
+> What is the long-term vision to minimize the additional churn this may
+> introduce?
+
+My hope is that we can evolve the coverage over time. Solving it all at
+once won't be possible, but I think we can get pretty far with the
+signed overflow sanitizer, which runs relatively cleanly already.
+
+If we can't make meaningful progress in unsigned annotations, I think
+we'll have to work on gaining type-based operator overloading so we can
+grow type-aware arithmetic. That will serve as a much cleaner
+annotation. E.g. introduce jiffie_t, which wraps.
+
+> I think the problem reminds me a little of the data race problem,
+> although I suspect unsigned integer wraparound is much more common
+> than data races (which unlike unsigned wrap around is actually UB) -
+> so chasing all intentional unsigned integer wrap arounds and marking
+> will take even more effort than marking all intentional data races
+> (which we're still slowly, but steadily, making progress towards).
+> 
+> At the very least, these options should 'depends on EXPERT' or even
+> 'depends on BROKEN' while the story is still being worked out.
+
+Perhaps I should hold off on bringing the unsigned sanitizer back? I was
+hoping to work in parallel with the signed sanitizer, but maybe this
+isn't the right approach?
+
 -- 
-2.43.0
-
+Kees Cook
 
