@@ -1,124 +1,150 @@
-Return-Path: <linux-kernel+bounces-50602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AAD5847B76
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:23:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46784847B7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:24:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B82251F26A7A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:23:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A4A51C23948
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:24:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DA0981752;
-	Fri,  2 Feb 2024 21:23:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B066839E1;
+	Fri,  2 Feb 2024 21:24:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="YgoAR4A5"
-Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="teO9xkwH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFE518175D;
-	Fri,  2 Feb 2024 21:23:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 478C081723;
+	Fri,  2 Feb 2024 21:24:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706909016; cv=none; b=A5ieWwspg45mNM5PFWnjlo03uMX6c36v0JFN56KVK+Tr2k1MPUzDRqzCvLHtpTmhkXsr1vizVaGmUCINMFcMlSQ80PTmRxQiGTmNa/NPlD64nLIQknCFlk1LjLdv8CE5ulHc+ykjNqf0yNmBL01Uppw50kjCRWIgvKPEMV6Y9jY=
+	t=1706909063; cv=none; b=Xl/H97OixZJI+XjGBdIDj/1rYQNf4KvKLOZY0BZoAvcXfOalCbqb6Jd9kUQhSAbvfSofpJOFQ5sy/+0p0//zGgXADcSUrlqTBtejHCP7tqzXGAFmQ+66oTfVfM9Kp8UY3c+DkTSU4NUd05dL6fejfqnt7JVxfs88mJv7czkjJxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706909016; c=relaxed/simple;
-	bh=PN0rt/SrGrPLEv+QxTAiD8tWU7CCMMQCJvdKyV+MpKo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QVq4oWPga+sqJ+6K0vZZ4Nyhdtq0lzKfqJZbMLGT52NaFJCn3N+jMBA/6/lljQcHtOAsiIYS+T1VIg8CF/dadwGqLx25uPYkjIBUOpRMHvr8d+OEnziKXnIYIVCDeYetN+3ieOhPPrCOiBpzbTin0AUYAa2l6oLogg80Hf8l1G8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=YgoAR4A5; arc=none smtp.client-ip=80.12.242.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from fedora.home ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id W10NrnAvE0k1mW10Ornqsa; Fri, 02 Feb 2024 22:23:24 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1706909004;
-	bh=gknkBxJEzqhmHTYPDuPbdM6rcQN2TQdAIGaoD5ZyO4w=;
-	h=From:To:Cc:Subject:Date;
-	b=YgoAR4A5THvusTgAiNg8KwY8Etnc1ncfqrO25s6RTtGo6epSz+oLTQA7rbUYQZsFt
-	 m6fXmOTJwj70w8j3JZ2dj3nCgtr2stskPQFrmZ+esPcZjx1ppIiGbNT+lI174WX6IL
-	 41tlYVyiI2pTIpBcA4SRyVk9NH4xMjMowq8rfQ9QiRYhyhLt6UUgxYEdtgACe0Xy5X
-	 98cCkSIaTp6eeItapQpmpFbawDyDQuTsg8LiKDwr58u/TTpm5Yq4eUJ0AubvZKU87t
-	 6D48uWyMpkJEDGnByXqPCInHuOIkmLvTXrodOQhxnw3jSlhXIB8e6Z5VOGM96Zmxy8
-	 ibym9c28XQnqQ==
-X-ME-Helo: fedora.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 02 Feb 2024 22:23:24 +0100
-X-ME-IP: 92.140.202.140
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: akpm@linux-foundation.org
-Cc: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] mm: Reduce dependencies on <linux/kernel.h>
-Date: Fri,  2 Feb 2024 22:23:18 +0100
-Message-ID: <adfdbe21c4d06400d7bd802868762deb85cae8b6.1706908921.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706909063; c=relaxed/simple;
+	bh=UZ+yJRgsFPGKwSTDFBg0r03EZWgLZlspYa2WkFy5MiA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=goq9bPtHpSphbJUcmyaffnWXk3ljf+3AEMMY5yS/NFlZTLq3rgkR1gY8IF6P8tmM/qKrM8b7ByynHMQxfWyBvUiHA6zcK/U3634HngYj1x3DEakuaNTWAImWW1HHLeIjYd7JiV4V5klkCJvv/oH3qFghWHC/QD9NAdRRkPG+UHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=teO9xkwH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72D71C433C7;
+	Fri,  2 Feb 2024 21:24:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706909062;
+	bh=UZ+yJRgsFPGKwSTDFBg0r03EZWgLZlspYa2WkFy5MiA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=teO9xkwHltv0T0lPtU2+7uxbSRQZXu6/REzvx0bSQvNw23ajHvQTtRrzcbKgqgcto
+	 Qz5I/ZL8Yae+1FbTMmiWOORN+yWt+6zMVotV2Omv2qFLh02dsTev+gZjT+02Xoj1Pa
+	 55RKD0O1gA/FcygEaO3shOHwz1wmfjact06vT2h7azz/dnW0UEq87+/ijVeqPz8sWU
+	 J1hcDtKIs0hN1bamIt4it/ivIsZN6b5KRfDv4eSuL89IMxiDOg45sxDHcZP8OyQG7M
+	 VB6q6WyV8NOavbjqr1LVh4oqfoz3W5hMd8t5KwIAtsdrnAhkvrW5+H4RC+e+uSeed+
+	 jX/JQcBYko2Xg==
+Date: Fri, 2 Feb 2024 15:24:20 -0600
+From: Rob Herring <robh@kernel.org>
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: Bc-bocun Chen <bc-bocun.chen@mediatek.com>,
+	Steven Liu <steven.liu@mediatek.com>,
+	John Crispin <john@phrozen.org>,
+	Chunfeng Yun <chunfeng.yun@mediatek.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Qingfang Deng <dqfext@gmail.com>,
+	SkyLake Huang <SkyLake.Huang@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: phy: mediatek,xfi-tphy: add new bindings
+Message-ID: <20240202212420.GA1561174-robh@kernel.org>
+References: <702afb0c1246d95c90b22e57105304028bdd3083.1706823233.git.daniel@makrotopia.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <702afb0c1246d95c90b22e57105304028bdd3083.1706823233.git.daniel@makrotopia.org>
 
-"page_counter.h" does not need <linux/kernel.h>. <linux/limits.h> is enough
-to get LONG_MAX.
+On Thu, Feb 01, 2024 at 09:52:20PM +0000, Daniel Golle wrote:
+> Add bindings for the MediaTek XFI T-PHY Ethernet SerDes PHY found in the
+> MediaTek MT7988 SoC which can operate at various interfaces modes:
 
-Files that include page_counter.h are limited. They have been compile
-tested or checked.
+This is v4 unless I'm confused[1]. Where's the revision history?
 
-$ git grep page_counter\.h
-include/linux/hugetlb_cgroup.h: struct page_counter hugepage[HUGE_MAX_HSTATE];
-	--> all files that include it have been compile tested
+Rob
 
-include/linux/memcontrol.h:#include <linux/page_counter.h>
-	--> <linux/kernel.h> has been added, to be safe
+[1] https://lore.kernel.org/all/b875f693f6d4367a610a12ef324584f3bf3a1c1c.1702352117.git.daniel@makrotopia.org/
 
-include/net/sock.h:#include <linux/page_counter.h>
-	--> already include <linux/kernel.h>
+> 
+> via USXGMII PCS:
+>  * USXGMII
+>  * 10GBase-R
+>  * 5GBase-R
+> 
+> via LynxI SGMII PCS:
+>  * 2500Base-X
+>  * 1000Base-X
+>  * Cisco SGMII (MAC side)
+> 
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+>  .../bindings/phy/mediatek,xfi-tphy.yaml       | 80 +++++++++++++++++++
+>  1 file changed, 80 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/mediatek,xfi-tphy.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/mediatek,xfi-tphy.yaml b/Documentation/devicetree/bindings/phy/mediatek,xfi-tphy.yaml
+> new file mode 100644
+> index 0000000000000..e897118dcf7e6
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/phy/mediatek,xfi-tphy.yaml
+> @@ -0,0 +1,80 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/phy/mediatek,xfi-tphy.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek XFI T-PHY
+> +
+> +maintainers:
+> +  - Daniel Golle <daniel@makrotopia.org>
+> +
+> +description:
+> +  The MediaTek XFI SerDes T-PHY provides the physical SerDes lanes
+> +  used by the (10G/5G) USXGMII PCS and (1G/2.5G) LynxI PCS found in
+> +  MediaTek's 10G-capabale SoCs.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^phy@[0-9a-f]+$"
+> +
+> +  compatible:
+> +    const: mediatek,mt7988-xfi-tphy
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: XFI PHY clock
+> +      - description: XFI register clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: xfipll
+> +      - const: topxtal
+> +
+> +  resets:
+> +    items:
+> +      - description: PEXTP reset
 
-mm/hugetlb_cgroup.c:#include <linux/page_counter.h>
-mm/memcontrol.c:#include <linux/page_counter.h>
-mm/page_counter.c:#include <linux/page_counter.h>
-	--> compile tested
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-Let see if build-bots agree with me.
----
- include/linux/memcontrol.h   | 1 +
- include/linux/page_counter.h | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 20ff87f8e001..4e4caeaea404 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -14,6 +14,7 @@
- #include <linux/vm_event_item.h>
- #include <linux/hardirq.h>
- #include <linux/jump_label.h>
-+#include <linux/kernel.h>
- #include <linux/page_counter.h>
- #include <linux/vmpressure.h>
- #include <linux/eventfd.h>
-diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
-index c141ea9a95ef..8cd858d912c4 100644
---- a/include/linux/page_counter.h
-+++ b/include/linux/page_counter.h
-@@ -4,7 +4,7 @@
- 
- #include <linux/atomic.h>
- #include <linux/cache.h>
--#include <linux/kernel.h>
-+#include <linux/limits.h>
- #include <asm/page.h>
- 
- struct page_counter {
--- 
-2.43.0
-
+What is PEXTP?
 
