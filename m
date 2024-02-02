@@ -1,298 +1,162 @@
-Return-Path: <linux-kernel+bounces-49381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A62E18469C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:48:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BD8F8469C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:49:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB5821C22100
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:48:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FDF51C22ADF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:49:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CFF717BA0;
-	Fri,  2 Feb 2024 07:48:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DC5A17BBE;
+	Fri,  2 Feb 2024 07:49:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hwAZMPm1"
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Nx5wUTdO"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0216F9C2
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 07:48:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9842317BB5
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 07:49:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706860109; cv=none; b=b2l8sjepXk6yGWpOPXStvB+EapvrbgJXZ3lo6ef5J7jRV0S7GAkdka7oUEnYvZMsQ2LJBFU+fj+z7/V8JnCzBQCo8Ocx1g3oG/0XByRE+V7Iua9rXNOUc+5AVOu9wdhhSfQ7YeXLkrME8wx7gUkjQgs9XTgPyHVxplw9s2hcfv8=
+	t=1706860189; cv=none; b=EBZbdvos6ZI8ZtQWn9rfqoV3gJfXQagfQ0lg4mPZToeKVpOEZ99NHqc4Q21cwM085ePgCbL+8ZZnCKG1qDtSf7riSBv1U+1SXgj6nvos7iMb+bLkeDcabJ77YxOSJjfzeugON6TSSgIBlalAZVvTWKUoyJGDiUIwc+2MBmjUlDE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706860109; c=relaxed/simple;
-	bh=PWfp4xkBJdGUzS52EvSOFxQNL6CO/bBPbQGZzX+mIMU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FWwVotI/6Z7vFnm4ayTBYa3mfA6zMwh7+o+VIlBoi+8ychFbL8NktSRBAFN2m2lM9IX5TGH8RdCcrJJCfGGOYU1LGlcmXh8pc7xlCgbKuN1fOTHAPqtiC7u/UCBs6YdknWKWduX7rE5gIibxL3oFYKyFalzJdfd4S4BYGbpFeSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hwAZMPm1; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-60403c28ff6so20835747b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 23:48:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706860107; x=1707464907; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TJQgiKqrOb3r+YKxG9h8sT6Vjw46idLsAfVWVv8gpGs=;
-        b=hwAZMPm1li//uTQXfPtksvcSzl3walHxNTZTxD1Uw3KGlJSKB5QIe9XCop18bBYScI
-         35xxwdO3yv6D7dd9K2xVMKtQYZgL3brDmVXGwLxD+5MiXZau+oG6jnWwNLukEEOJ0gw4
-         mAub88xlD8r/aXlsxS4BIKKkkSC9H8HOuki9GVGRdkP0AKE6n8G3NIxJSlhnldybRpRI
-         D3wmrY/vq0c7RX7TWa/nhQ4Hfi07tPwcCmVul9JlmVBPgfYs6Cm6l/TF8LFMMjqkwQkL
-         wTtwO4WpNTfWJCacFlL+d29GFjx6DQCvMHsqyXLhiXm/2ijatFl5ydWEUcyA3+MhwxJB
-         WP9w==
+	s=arc-20240116; t=1706860189; c=relaxed/simple;
+	bh=Rosjw/fWeROwK1eHPmgkBfxRsS3OHEYIAC+fl12Rqyo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NhMThFNFuS0KJuMy/mBSqGMk/q6ek/g8qoa1fKfT5tTRvhd7036JBjTDOwbhK/+l5uBHHTvc++Rap7ANOcE9DNXSZrLgbdXM7PEV9poE7cjURhZ848QIztnUa3fMjm/uvdXziGsO9wEaAkZN2YIT6T4M2kv0fLCnvp14M0X77Kk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Nx5wUTdO; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706860186;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E2y0v+j5Jdi4S0j/7TIDS4/wQS3UjlRfpUREHEJdYNg=;
+	b=Nx5wUTdOKkgnZ8AfEXbUCACNoInY6sA+6Jz7sCbhFPxfoUYLtEgFihZsiLDObN+tOqqm0i
+	yrRVaFc7NRM6m18Q7RpIQlHVTvMqvI5Euj7U7QJ3unr8Un5DzyBROJbg7mC/ZQPmOmBy3t
+	jiX/jJWFLsETRONsIgyzvh9tr2ynxqg=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-460-e5kWamVXP2Cl9x8PgsEwwg-1; Fri, 02 Feb 2024 02:49:43 -0500
+X-MC-Unique: e5kWamVXP2Cl9x8PgsEwwg-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a31ffe314c5so91163366b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 23:49:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706860107; x=1707464907;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TJQgiKqrOb3r+YKxG9h8sT6Vjw46idLsAfVWVv8gpGs=;
-        b=KG7Ati7NyTZJHJ6qdLd+q+UkuM0f5s+XiLahInoHvXNfMCvweuQPz4OG0UnGZqrY+G
-         awzyeHfQNkrQz0L+z6TaRkIq1TfULbC3Wozoy2Uz0YLAuKN2bg8Ni58uD3nwV9rOtPYu
-         ir2iYFdL7/qmqou65q5MIoAz6PP/MpS6af3K7hbjq4/PyDwdPuIEbvRmG5EJ6zv0nTPq
-         yAhZjvLphwpryRzr3tTWnhrLtFamAdAc31WR3TwcSEp2snVzE9tE3/Lc+wlahdD8NtKV
-         b5mG3EXSpZ1ia3yyumz6h9RLa2jRHMNMnaXW5repvzHpUeWBQXe7GwTC7IhQyGqA5kOO
-         q4Eg==
-X-Gm-Message-State: AOJu0YxaMh8QzEzqmCCnMGJkZoLCHWk53rS3pGwL7Hetm3LzZvqvD5Xh
-	lrh6l7JNBBzqUZSZaFaAklsFcjI+bnqwNSp5Qc+Lcmd1YoxQi0cud/fOn+TUfvIgd//xVtKFCmx
-	VaHZsr/AIcAABOT5I7fDWPCLfsEV7nHU7E6ujyA==
-X-Google-Smtp-Source: AGHT+IGrHs4qazO/HCg2YmtckOBIA8NBN4PLysf9FGMWXDeQbOEqVv/3wfdQjEIv9Nuq8rCj4i25/qhBTj14wOfgWgc=
-X-Received: by 2002:a05:690c:24b:b0:602:b7d3:9314 with SMTP id
- ba11-20020a05690c024b00b00602b7d39314mr6621473ywb.35.1706860106739; Thu, 01
- Feb 2024 23:48:26 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706860182; x=1707464982;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E2y0v+j5Jdi4S0j/7TIDS4/wQS3UjlRfpUREHEJdYNg=;
+        b=vdIOEKAKQz6KCVyBid6Zhiiz7GpaLAhNvr61DsZnPzShc+HyCdEVlMgsA76bW0nRd4
+         5Q+6J6HMP23l8PHKNq9LbOkanj/x7jiyRFj7HHkKihxUL1+Mw0mT7B9fdfPhPrbVz+Qr
+         EWgiPx4oOoFzXMDdhypx4AAGLMLUpaib7qQCORBDCq6tGWI9g+kPqa9UtbOguEtC9k3W
+         TnoqnDcBT0z1iEHS4Y2Z/HWbc26JisR9GISot/T2IgTGO2zePy0vzOe99gmudIekuCSW
+         aUGPuHnVw+iYHhUgzJ03rtD8c7CCRW+nR4tnWw+gal0m3No7pofRk7gCHFaXiq8GjZbl
+         2Hhg==
+X-Gm-Message-State: AOJu0YxRj+GVHCFyEMG4b+twvSzr9M89Fgk2RVuf8NEzGrOn+ScUD2XY
+	LLz4sngTj+pgynU5nmFqcJA61gZtefJv6MdQ/0jlkRTxnDxdhbgPqxXqWtmvHxUEqAQHuwHJb5I
+	k+BMX41vcXJ60CddOC0qilYa4puZ5rS6sh1OdUswgNu/6X8XHjbtuaXCNqj180A==
+X-Received: by 2002:a17:906:80cd:b0:a36:c327:e60d with SMTP id a13-20020a17090680cd00b00a36c327e60dmr862108ejx.48.1706860182767;
+        Thu, 01 Feb 2024 23:49:42 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEjHnGJIlgrFXDqYi0ZgjzbriJnGOniMRwC25RLoaRxDd4REYDUT00BMXe1znbrb+VqNKNE4Q==
+X-Received: by 2002:a17:906:80cd:b0:a36:c327:e60d with SMTP id a13-20020a17090680cd00b00a36c327e60dmr862097ejx.48.1706860182430;
+        Thu, 01 Feb 2024 23:49:42 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVPkyNmTst3UetfCrPr+kbRZff0uSPLuK9Vj/NrzeAxSlLczVI9+bY97Wx6mXcL+7s+Du0GVnLhjRjZ2q+djdSou/hNId6EBT4WRK8+N5X9q6r7NbPLkkHdwPlU3fTL7XINhDFS84DkWdCdWt8g+gX0Gj6qtnoD3jRs9jKHF2Kih8jQ2/oxvhMJ//D7xHc7mqE8E5T4Zse2tiQJcTSVFUwA26cvSaWJXzA1rA==
+Received: from [192.168.43.127] ([109.36.129.188])
+        by smtp.gmail.com with ESMTPSA id r26-20020a170906365a00b00a2bf9b00508sm602212ejb.141.2024.02.01.23.49.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Feb 2024 23:49:42 -0800 (PST)
+Message-ID: <07010c54-2e44-463b-9a9b-95697fd30ffd@redhat.com>
+Date: Fri, 2 Feb 2024 08:49:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201155532.49707-1-brgl@bgdev.pl> <20240201155532.49707-5-brgl@bgdev.pl>
- <ys45p7mdiur4liwzlexqm3aji7iz5panpb73ixg34wcio2qbvz@wkjcyazbzb4p>
-In-Reply-To: <ys45p7mdiur4liwzlexqm3aji7iz5panpb73ixg34wcio2qbvz@wkjcyazbzb4p>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 2 Feb 2024 09:48:15 +0200
-Message-ID: <CAA8EJpo7LwG2Kt0JSPc=MazWUme3YVmKHa9Fr6jc=NrZirEYUg@mail.gmail.com>
-Subject: Re: [RFC 4/9] power: pwrseq: add a driver for the QCA6390 PMU module
-To: Bjorn Andersson <andersson@kernel.org>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Abel Vesa <abel.vesa@linaro.org>, Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
-	linux-pci@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] platform/x86/amd/hsmp: switch to use
+ device_add_groups()
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ naveenkrishna.chatradhi@amd.com
+Cc: linux-kernel@vger.kernel.org, Carlos Bilbao <carlos.bilbao@amd.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ platform-driver-x86@vger.kernel.org
+References: <2024020145-junior-outnumber-3e76@gregkh>
+Content-Language: en-US
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <2024020145-junior-outnumber-3e76@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, 2 Feb 2024 at 06:54, Bjorn Andersson <andersson@kernel.org> wrote:
->
-> On Thu, Feb 01, 2024 at 04:55:27PM +0100, Bartosz Golaszewski wrote:
-> > diff --git a/drivers/power/sequencing/pwrseq-qca6390.c b/drivers/power/sequencing/pwrseq-qca6390.c
-> [..]
-> > +static int pwrseq_qca6390_power_on(struct pwrseq_device *pwrseq)
-> > +{
-> > +     struct pwrseq_qca6390_ctx *ctx = pwrseq_device_get_data(pwrseq);
-> > +     int ret;
-> > +
-> > +     ret = regulator_bulk_enable(ctx->pdata->num_vregs, ctx->regs);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     gpiod_set_value_cansleep(ctx->bt_gpio, 1);
-> > +     gpiod_set_value_cansleep(ctx->wlan_gpio, 1);
->
-> So it's no longer possible to power these independently?
+Hi Greg,
 
-I'd second this, there must be a way to power them on and off
-separately. In the end, this provides a good way to restart the BT
-core if it gets sick.
+On 2/2/24 03:44, Greg Kroah-Hartman wrote:
+> The use of devm_*() functions works properly for when the device
+> structure itself is dynamic, but the hsmp driver is attempting to have a
+> local, static, struct device and then calls devm_() functions attaching
+> memory to the device that will never be freed.
 
->
-> > +
-> > +     if (ctx->pdata->pwup_delay_msec)
-> > +             msleep(ctx->pdata->pwup_delay_msec);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int pwrseq_qca6390_power_off(struct pwrseq_device *pwrseq)
-> > +{
-> > +     struct pwrseq_qca6390_ctx *ctx = pwrseq_device_get_data(pwrseq);
-> > +
-> > +     gpiod_set_value_cansleep(ctx->bt_gpio, 0);
-> > +     gpiod_set_value_cansleep(ctx->wlan_gpio, 0);
-> > +
->
-> The answer that was provided recently was that the WiFi and BT modules
-> absolutely must be modelled together, because there must be a 100ms
-> delay between bt_gpio going low and wlan_gpio going high.
+As I mentioned in my reply to v1, this is not correct.
 
-For the reference, it was for the QCA6490 (not QCA6390, next
-revision), which maps to WCN6855.
+There is a global data struct, but that holds a struct device
+pointer, not the device struct.
+
+The device itself is created with platform_device_alloc() +
+platform_device_add() from module-init and it is removed
+on module-exit by calling platform_device_unregister()
+
+So AFAICT this should keep using the devm_ variant to properly
+cleanup the sysfs attributes.
+
+But what this really needs is to be converted to using
+amd_hsmp_driver.driver.dev_groups rather then manually
+calling devm_device_add_groups() I have already asked
+Suma Hegde (AMD) to take a look at this.
+
+Regards,
+
+Hans
 
 
->
-> If you're not going to address that concern, then I fail to see the
-> reason for adding the power sequence framework - just let the BT and
-> PCI power control (WiFi) do their thing independently.
->
-> > +     return regulator_bulk_disable(ctx->pdata->num_vregs, ctx->regs);
-> > +}
-> > +
-> > +static int pwrseq_qca6390_match(struct pwrseq_device *pwrseq,
-> > +                             struct device *dev)
-> > +{
-> > +     struct pwrseq_qca6390_ctx *ctx = pwrseq_device_get_data(pwrseq);
-> > +     struct device_node *dev_node = dev->of_node;
-> > +
-> > +     /*
-> > +      * The PMU supplies power to the Bluetooth and WLAN modules. both
-> > +      * consume the PMU AON output so check the presence of the
-> > +      * 'vddaon-supply' property and whether it leads us to the right
-> > +      * device.
-> > +      */
-> > +     if (!of_property_present(dev_node, "vddaon-supply"))
-> > +             return 0;
-> > +
-> > +     struct device_node *reg_node __free(of_node) =
-> > +                     of_parse_phandle(dev_node, "vddaon-supply", 0);
-> > +     if (!reg_node)
-> > +             return 0;
-> > +
-> > +     /*
-> > +      * `reg_node` is the PMU AON regulator, its parent is the `regulators`
-> > +      * node and finally its grandparent is the PMU device node that we're
-> > +      * looking for.
-> > +      */
-> > +     if (!reg_node->parent || !reg_node->parent->parent ||
-> > +         reg_node->parent->parent != ctx->of_node)
-> > +             return 0;
->
-> Your DeviceTree example gives a sense that a set of supplies feeds the
-> PMU, which then supplies power to the BT and WiFi nodes through some
-> entity that can switch power on and off, and adjust the voltage level.
->
-> Then comes this function, which indicates that the DeviceTree model was
-> just for show.
->
-> > +
-> > +     return 1;
-> > +}
-> > +
-> > +static int pwrseq_qca6390_probe(struct platform_device *pdev)
-> > +{
-> > +     struct device *dev = &pdev->dev;
-> > +     struct pwrseq_qca6390_ctx *ctx;
-> > +     struct pwrseq_config config;
-> > +     int ret, i;
-> > +
-> > +     ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
-> > +     if (!ctx)
-> > +             return -ENOMEM;
-> > +
-> > +     ctx->of_node = dev->of_node;
-> > +
-> > +     ctx->pdata = of_device_get_match_data(dev);
-> > +     if (!ctx->pdata)
-> > +             return dev_err_probe(dev, -ENODEV,
-> > +                                  "Failed to obtain platform data\n");
-> > +
-> > +     if (ctx->pdata->vregs) {
-> > +             ctx->regs = devm_kcalloc(dev, ctx->pdata->num_vregs,
-> > +                                      sizeof(*ctx->regs), GFP_KERNEL);
-> > +             if (!ctx->regs)
-> > +                     return -ENOMEM;
-> > +
-> > +             for (i = 0; i < ctx->pdata->num_vregs; i++)
-> > +                     ctx->regs[i].supply = ctx->pdata->vregs[i].name;
-> > +
-> > +             ret = devm_regulator_bulk_get(dev, ctx->pdata->num_vregs,
-> > +                                           ctx->regs);
-> > +             if (ret < 0)
-> > +                     return dev_err_probe(dev, ret,
-> > +                                          "Failed to get all regulators\n");
-> > +
-> > +             for (i = 0; i < ctx->pdata->num_vregs; i++) {
-> > +                     if (!ctx->pdata->vregs[1].load_uA)
-> > +                             continue;
-> > +
-> > +                     ret = regulator_set_load(ctx->regs[i].consumer,
-> > +                                              ctx->pdata->vregs[i].load_uA);
-> > +                     if (ret)
-> > +                             return dev_err_probe(dev, ret,
-> > +                                                  "Failed to set vreg load\n");
-> > +             }
-> > +     }
-> > +
-> > +     ctx->bt_gpio = devm_gpiod_get_optional(dev, "bt-enable", GPIOD_OUT_LOW);
->
-> Why are these optional? Does it make sense to have a qca6390 without
-> both of these gpios connected?
->
-> Regards,
-> Bjorn
->
-> > +     if (IS_ERR(ctx->bt_gpio))
-> > +             return dev_err_probe(dev, PTR_ERR(ctx->bt_gpio),
-> > +                                  "Failed to get the Bluetooth enable GPIO\n");
-> > +
-> > +     ctx->wlan_gpio = devm_gpiod_get_optional(dev, "wlan-enable",
-> > +                                              GPIOD_OUT_LOW);
-> > +     if (IS_ERR(ctx->wlan_gpio))
-> > +             return dev_err_probe(dev, PTR_ERR(ctx->wlan_gpio),
-> > +                                  "Failed to get the WLAN enable GPIO\n");
-> > +
-> > +     memset(&config, 0, sizeof(config));
-> > +
-> > +     config.parent = dev;
-> > +     config.owner = THIS_MODULE;
-> > +     config.drvdata = ctx;
-> > +     config.match = pwrseq_qca6390_match;
-> > +     config.power_on = pwrseq_qca6390_power_on;
-> > +     config.power_off = pwrseq_qca6390_power_off;
-> > +
-> > +     ctx->pwrseq = devm_pwrseq_device_register(dev, &config);
-> > +     if (IS_ERR(ctx->pwrseq))
-> > +             return dev_err_probe(dev, PTR_ERR(ctx->pwrseq),
-> > +                                  "Failed to register the power sequencer\n");
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct of_device_id pwrseq_qca6390_of_match[] = {
-> > +     {
-> > +             .compatible = "qcom,qca6390-pmu",
-> > +             .data = &pwrseq_qca6390_of_data,
-> > +     },
-> > +     { }
-> > +};
-> > +MODULE_DEVICE_TABLE(of, pwrseq_qca6390_of_match);
-> > +
-> > +static struct platform_driver pwrseq_qca6390_driver = {
-> > +     .driver = {
-> > +             .name = "pwrseq-qca6390",
-> > +             .of_match_table = pwrseq_qca6390_of_match,
-> > +     },
-> > +     .probe = pwrseq_qca6390_probe,
-> > +};
-> > +module_platform_driver(pwrseq_qca6390_driver);
-> > +
-> > +MODULE_AUTHOR("Bartosz Golaszewski <bartosz.golaszewski@linaro.org>");
-> > +MODULE_DESCRIPTION("QCA6390 PMU power sequencing driver");
-> > +MODULE_LICENSE("GPL");
-> > --
-> > 2.40.1
-> >
->
 
 
---
-With best wishes
-Dmitry
+
+> 
+> The logic of having a static struct device is almost never a wise
+> choice, but for now, just remove the use of devm_device_add_groups() in
+> this driver as it obviously is not needed.
+> 
+> Cc: Naveen Krishna Chatradhi <naveenkrishna.chatradhi@amd.com>
+> Cc: Carlos Bilbao <carlos.bilbao@amd.com>
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Cc: "Ilpo Järvinen" <ilpo.jarvinen@linux.intel.com>
+> Cc: platform-driver-x86@vger.kernel.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+> v2: rebased against platform/for-next
+> 
+>  drivers/platform/x86/amd/hsmp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/platform/x86/amd/hsmp.c b/drivers/platform/x86/amd/hsmp.c
+> index 1927be901108..d84ea66eecc6 100644
+> --- a/drivers/platform/x86/amd/hsmp.c
+> +++ b/drivers/platform/x86/amd/hsmp.c
+> @@ -693,7 +693,7 @@ static int hsmp_create_non_acpi_sysfs_if(struct device *dev)
+>  		hsmp_create_attr_list(attr_grp, dev, i);
+>  	}
+>  
+> -	return devm_device_add_groups(dev, hsmp_attr_grps);
+> +	return device_add_groups(dev, hsmp_attr_grps);
+>  }
+>  
+>  static int hsmp_create_acpi_sysfs_if(struct device *dev)
+
 
