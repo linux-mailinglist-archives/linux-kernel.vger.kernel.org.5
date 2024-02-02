@@ -1,178 +1,119 @@
-Return-Path: <linux-kernel+bounces-49965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3390847224
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:44:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38B7284722F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:49:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F0E5286144
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:44:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E18EA1F2AAC6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:49:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 280FA137C41;
-	Fri,  2 Feb 2024 14:44:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F04F514532B;
+	Fri,  2 Feb 2024 14:49:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f9zBbYfc"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gxGIDKUy"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 606E718036;
-	Fri,  2 Feb 2024 14:44:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 553473C0E;
+	Fri,  2 Feb 2024 14:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706885090; cv=none; b=Thvr9AUVk2apHcpujnEuDiIPlddaZckD3+DyLZCfdG7yz0Opd/KgmliJyHCFYvtXT5J0ioHoy3RBnli+aoiXBSyNXOzv5jh6+FuF6cX5FvQd22RtmKHceO8venwdAb9mO/axMecarYAk3V1PtbDlXBCcWPnaUpA0z8KrwbQ8LtE=
+	t=1706885379; cv=none; b=jNQJ1y/2ikZvlNk7dhxTkKddymWScRSaCM1vfXjCPJECFwkdennfbpba4maudM+an5K2JQioeEIcdgQf4dR9XmUjQvvHOe5wQGFaGI2AeGdW3GSHr02gXDWRNt80JZdXZYo3cXWsRJdh2+V8MP4lLUP5lpBY3lHmWQJcIphcnjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706885090; c=relaxed/simple;
-	bh=+ymyXuB8pyInpfneV0fMDu69g0i2TTU3GG5qclVvWnA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XHorWRs69VvJyxbR1H3hSNtPxeQCL7eABVr6Mhge0OPsesjc33bFJt8VzkRmCPGiM1QQzZYCsWG4xTFrfQM+XLCQCYMW44rzWbpVMqVaMuKlKP04ickryD6rF9Aq5kFYm6Ee3hRRZY6jKM5zeyxL9+8I8W8tjKDAAySiu8oKvNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f9zBbYfc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F1AAC433C7;
-	Fri,  2 Feb 2024 14:44:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706885089;
-	bh=+ymyXuB8pyInpfneV0fMDu69g0i2TTU3GG5qclVvWnA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=f9zBbYfcat+/5u+2ddP092SQgRPWJnVrd+xC0h4p5B1wSDbwJOO+XYYD2D0pWd7Hp
-	 /9X1BibnKlIN4eS//ULFMCI3Jo9TuWqMDThU3LiGJnTyOYL+N2kpQ2UCJIyKAWyl/6
-	 xK/6uuXjLamXCJimLl09lyF1hiAVsHg9mFaCTgmYahzqMhZf6jj2rQZyiKmxwTz3Nd
-	 QfdywYAbBxQ1Nw1AazVi7wWAJt0oJ08eWqSBpr6DoYMcliC8enFarFUTfEw6qMsbtw
-	 A6GnfW0AxzQhPCE5SKR7k9Cnjqlmr6Cs7bPcSFDtOb2Ej0/FzTkaIdwX70y7GAffWa
-	 MXfvEddue9OKA==
-Date: Fri, 2 Feb 2024 15:44:45 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Andy Lutomirski <luto@amacapital.net>, 
-	"Eric W. Biederman" <ebiederm@xmission.com>, Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] pidfd_poll: report POLLHUP when pid_task() == NULL
-Message-ID: <20240202-arbeit-fruchtig-26880564a21a@brauner>
-References: <20240202131147.GA25988@redhat.com>
- <20240202131226.GA26018@redhat.com>
+	s=arc-20240116; t=1706885379; c=relaxed/simple;
+	bh=GLWVv2wG1W5Docrd2ffJlZ62lITTa59KuRjNqA7Jq/Q=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:From:Subject:
+	 In-Reply-To:Content-Type; b=nHWr1fFFu28CkJafcvUnkXmxWZDoIbKtOzdUQCbue3qiOpRMYnTdLZVn3rpfcOw5BR8UiNyrlfL5VTQqqP+OafbNtqYq3ZYMVFqwWUnarVt5hW4A/gfkEeAlaMzklDxk+hC21bcd6I/o/tGIywozImSjlQMwPZvq+1nYdMXJ3hI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gxGIDKUy; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706885377; x=1738421377;
+  h=message-id:date:mime-version:to:cc:references:from:
+   subject:in-reply-to:content-transfer-encoding;
+  bh=GLWVv2wG1W5Docrd2ffJlZ62lITTa59KuRjNqA7Jq/Q=;
+  b=gxGIDKUy9IFQ6Z2iPyDi30ZpFLwxRk6tTjf0BIXWsL8Tu3A9pOff6smS
+   9mR7VoRE3IYUyvI1tcJNLbiI9m5pLsADGzyO/bB7dGz0+9SECTtUDb4YM
+   D8i0qMW696TbggIXqv4vLYfBBmLBjY56ujwIDHC0nJXgHyMOsDGSAVODP
+   h36V0NLog3pbpE0nBu4jEqZKNgIbRIPL0MNWDcI6bf0r5dJv5R7mZm101
+   UBjTbhcAmKhF89pr5svhvlHDzRpAsULTQI6XO214sQdRL1OwW73DV5Vkb
+   4fG5o2+uanzSpcArTQdvIBBhdEYEsjripa6t/K767wVM6exaUyEhmaseR
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="355827"
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="355827"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 06:49:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="823227502"
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="823227502"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by orsmga001.jf.intel.com with ESMTP; 02 Feb 2024 06:49:31 -0800
+Message-ID: <70412f57-b59a-3a46-6853-4312991c19e5@linux.intel.com>
+Date: Fri, 2 Feb 2024 16:51:06 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="qtcprolcuit77q76"
-Content-Disposition: inline
-In-Reply-To: <20240202131226.GA26018@redhat.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Content-Language: en-US
+To: Guan-Yu Lin <guanyulin@google.com>, gregkh@linuxfoundation.org,
+ mathias.nyman@intel.com, stern@rowland.harvard.edu, royluo@google.com,
+ benjamin.tissoires@redhat.com, hadess@hadess.net,
+ heikki.krogerus@linux.intel.com, grundler@chromium.org, oneukum@suse.com,
+ dianders@chromium.org, yajun.deng@linux.dev
+Cc: linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+ USB <linux-usb@vger.kernel.org>, Linux PM list <linux-pm@vger.kernel.org>,
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+References: <20240202084815.3064391-1-guanyulin@google.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: [PATCH] usb: host: enable suspend-to-RAM control in userspace
+In-Reply-To: <20240202084815.3064391-1-guanyulin@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 2.2.2024 10.42, Guan-Yu Lin wrote:
+> In systems with both a main processor and a co-processor, asynchronous
+> controller management can lead to conflicts. For example, the main
+> processor might attempt to suspend a USB device while the co-processor
+> is actively transferring data. To address this, we introduce a new
+> sysfs entry, "disable_suspend2ram", which allows userspace to control
+> the suspend-to-RAM functionality of devices on a specific USB bus.
+> Since the userspace has visibility into the activities of both
+> processors, it can resolve potential conflicts.
+> 
+> Signed-off-by: Guan-Yu Lin <guanyulin@google.com>
+> ---
 
---qtcprolcuit77q76
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Doesn't setting this new disable_suspend2ram break system suspend on all
+other systems except this one?
 
-> TODO: change do_notify_pidfd() to use the keyed wakeups.
+On any system with a PCI xHC we end up trying to suddenly stop the xHC
+host with all connected usb devices still fully up and running.
 
-How does the following appended patch look?
+In the xhci platform device case again nothing will be stopped or suspended,
+but PM framework assumes everything is suspended correctly.
 
---qtcprolcuit77q76
-Content-Type: text/x-diff; charset=utf-8
-Content-Disposition: attachment;
-	filename="0001-pidfd-convert-to-wake_up_poll.patch"
+So then xHC either continues running and generates interrupts, or it might
+be abruptly powered off if the bus above it suspends.
+(For example if the xhci platform device is created by a PCI DWC3, and it
+goes to D3 state)
 
-From d8ef35f3f151a758cb2503a51dfaf7263480cfbd Mon Sep 17 00:00:00 2001
-From: Christian Brauner <brauner@kernel.org>
-Date: Fri, 2 Feb 2024 15:18:16 +0100
-Subject: [PATCH] pidfd: convert to wake_up_poll()
+EHCI and other hosts face similar issues with trying to suspend the
+controller when the devices connected to it are fully up and running.
 
-* Rename do_notify_pidfd() pidfd_wake_up_poll()
-* Pass in a poll mask to enable epoll to avoid spurious wakeups
-* Use poll_table typedef
-* Warn if caller doesn't pass in appropriate poll mask
+To me it looks like this whole co-processor case needs to be developed and
+designed into the pm framework
 
-Suggested-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Christian Brauner <brauner@kernel.org>
----
- include/linux/pid.h |  2 +-
- kernel/exit.c       |  2 +-
- kernel/fork.c       |  4 ++--
- kernel/signal.c     | 10 ++++------
- 4 files changed, 8 insertions(+), 10 deletions(-)
+Thanks
+Mathias
 
-diff --git a/include/linux/pid.h b/include/linux/pid.h
-index 8124d57752b9..a3666b2ae877 100644
---- a/include/linux/pid.h
-+++ b/include/linux/pid.h
-@@ -74,7 +74,7 @@ struct pid *pidfd_pid(const struct file *file);
- struct pid *pidfd_get_pid(unsigned int fd, unsigned int *flags);
- struct task_struct *pidfd_get_task(int pidfd, unsigned int *flags);
- int pidfd_prepare(struct pid *pid, unsigned int flags, struct file **ret);
--void do_notify_pidfd(struct task_struct *task);
-+void pidfd_wake_up_poll(struct task_struct *task, __poll_t mask);
- 
- static inline struct pid *get_pid(struct pid *pid)
- {
-diff --git a/kernel/exit.c b/kernel/exit.c
-index c038d10dfb38..b4b39709b046 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -744,7 +744,7 @@ static void exit_notify(struct task_struct *tsk, int group_dead)
- 	 * PIDFD_THREAD waiters.
- 	 */
- 	if (!thread_group_empty(tsk))
--		do_notify_pidfd(tsk);
-+		pidfd_wake_up_poll(tsk, EPOLLIN | EPOLLRDNORM | EPOLLHUP);
- 
- 	if (unlikely(tsk->ptrace)) {
- 		int sig = thread_group_leader(tsk) &&
-diff --git a/kernel/fork.c b/kernel/fork.c
-index aa08193d124f..7b882e66448b 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2074,14 +2074,14 @@ static void pidfd_show_fdinfo(struct seq_file *m, struct file *f)
- /*
-  * Poll support for process exit notification.
-  */
--static __poll_t pidfd_poll(struct file *file, struct poll_table_struct *pts)
-+static __poll_t pidfd_poll(struct file *file, poll_table *wait)
- {
- 	struct pid *pid = file->private_data;
- 	bool thread = file->f_flags & PIDFD_THREAD;
- 	struct task_struct *task;
- 	__poll_t poll_flags = 0;
- 
--	poll_wait(file, &pid->wait_pidfd, pts);
-+	poll_wait(file, &pid->wait_pidfd, wait);
- 	/*
- 	 * Depending on PIDFD_THREAD, inform pollers when the thread
- 	 * or the whole thread-group exits.
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 9b40109f0c56..ef330a7f1b51 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2019,13 +2019,11 @@ int send_sigqueue(struct sigqueue *q, struct pid *pid, enum pid_type type)
- 	return ret;
- }
- 
--void do_notify_pidfd(struct task_struct *task)
-+void pidfd_wake_up_poll(struct task_struct *task, __poll_t mask)
- {
--	struct pid *pid;
--
- 	WARN_ON(task->exit_state == 0);
--	pid = task_pid(task);
--	wake_up_all(&pid->wait_pidfd);
-+	WARN_ON(mask == 0);
-+	wake_up_poll(&task_pid(task)->wait_pidfd, mask);
- }
- 
- /*
-@@ -2055,7 +2053,7 @@ bool do_notify_parent(struct task_struct *tsk, int sig)
- 	 * non-PIDFD_THREAD waiters.
- 	 */
- 	if (thread_group_empty(tsk))
--		do_notify_pidfd(tsk);
-+		pidfd_wake_up_poll(tsk, EPOLLIN | EPOLLRDNORM);
- 
- 	if (sig != SIGCHLD) {
- 		/*
--- 
-2.43.0
-
-
---qtcprolcuit77q76--
 
