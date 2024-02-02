@@ -1,162 +1,106 @@
-Return-Path: <linux-kernel+bounces-49816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F763846FEF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:13:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A44C846FF3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:13:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B108228D781
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:13:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19B331F299D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:13:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EED613F018;
-	Fri,  2 Feb 2024 12:12:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E46B9140760;
+	Fri,  2 Feb 2024 12:13:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zg2XxAik"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="Lxb87qz2"
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 722DF13E233;
-	Fri,  2 Feb 2024 12:12:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E41914199F
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 12:13:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706875969; cv=none; b=pKuV1Js+XwokNojqzbr2pjARVDjjedPZCnpWgnU/2RQX5KNiMxQN+cjcrq9cQg/baDElNbMOUCPw1g8NwABW+HGNid2/XnISlKiTZCfLiArioKmyrT0T9ckl1dYNwWNUitKjcddMdTuayPow2GVNg8gCO/OfXorkp4rBbda0nFU=
+	t=1706876021; cv=none; b=FKhUbuw5r+AvOCIxin7PD3Z+pXo64dGusul+c5mBxh5lSMSrJVyVuR7FND6L8OynUcuBO9zx2zimqsExW0jrTzXACzKhFUqMtxzjC1SmLir43+u6aIh5wYPDJ7J4x97spfXt+e+NMfJNmUr/NB0GKQLpw5GNDFds4hM1+/cH8aI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706875969; c=relaxed/simple;
-	bh=oBl1UUByToZvedSOfHD5+3blOO9P8Zfy2wDweeCcE6w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ol9rx5vs6oCNiquJwonapivsbCQVaZKemGhkqnpzzpjGHS9cj1H0FwkWT6LkAvkvZFxfahdaXsrYVmgej6fmBDe/YDMavPDVdYQOo72Z8yx+9Qi8Abts0lFo3JkJyVDxyNSS5S1TXE+QWxEsLpivsihbCLFEsnrqXxRFLvZ1v20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zg2XxAik; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39283C433C7;
-	Fri,  2 Feb 2024 12:12:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706875969;
-	bh=oBl1UUByToZvedSOfHD5+3blOO9P8Zfy2wDweeCcE6w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Zg2XxAikieEuRmr7UqhoU1xvBkC/IXu5I2XpZhA8Otveb340BCQGdiQgakxTCMgGV
-	 V/PIYfoGCGjbVHi9S1mUT2HKfdOBjl3YhRI5f80Pe2J60bglkmBq7EKtEmC+0wylUH
-	 z4HeMwCUSjcrgmyXPRXTc+ac0Nyf00X4+cfAtlO2eycDw4+WYA7XLjsRc2wPdF+11B
-	 I8JWkACTO/PBLi4aVdQOuX3XVXcLVy1w/p4anoB7CSwh8GmeMH9Jb1NOvFTb+qAtvO
-	 F/yg8sXh7DohmRYv5B1YmCvB/ot/7A4O+CNmszvIjkRCkK/KRaU3AWICvmWxR4t1kY
-	 mbFViCGKqql6g==
-Date: Fri, 2 Feb 2024 13:12:41 +0100
-From: Lorenzo Pieralisi <lpieralisi@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: manivannan.sadhasivam@linaro.org, bhelgaas@google.com,
-	conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com,
-	helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev,
-	kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
-	krzysztof.kozlowski@linaro.org, kw@linux.com,
-	l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org,
-	linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
-	shawnguo@kernel.org
-Subject: Re: [PATCH v9 05/16] PCI: imx6: Using "linux,pci-domain" as slot ID
-Message-ID: <ZbzcOarorCS1MPRc@lpieralisi>
-References: <20240119171122.3057511-1-Frank.Li@nxp.com>
- <20240119171122.3057511-6-Frank.Li@nxp.com>
+	s=arc-20240116; t=1706876021; c=relaxed/simple;
+	bh=/MYz96hTgmyfUKN8lIz6Wn2kXH/W5xiuldsDugYBDUE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gO9rb3nXrQhYs+WrLACGRHyOwMuffPkvV6DQyXN9Z56hmFqGuA3W1/8nvJqWjlGYJK6DE3lkGXRi9io9DFscKQaPI8DeC78y14d0GkMmFlfU10xRfOqSCOvNpGev9lZPpx5BzS7kiVelPxLZO/vFFTfKLcbdaeuYSIPoAryDnbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=Lxb87qz2; arc=none smtp.client-ip=83.149.199.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
+Received: from localhost.ispras.ru (unknown [10.10.165.19])
+	by mail.ispras.ru (Postfix) with ESMTPSA id 96CEF40F1DFF;
+	Fri,  2 Feb 2024 12:13:34 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 96CEF40F1DFF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1706876014;
+	bh=eA0x4JCi+JyPKsZLcRH52SdlMvZD8FLMA9pRbfG8Ano=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Lxb87qz2ETojmszILfllYWsjKulf2HoQQ2pH6pW1jgMjUGenElWZsVzl45cgVNr0A
+	 sKxOtGaCxs/8+lsr8G8Fwr5zE+9VuX8VECkEA73KVIdeY8bzX/DR467QNniwXGxZpO
+	 /gAcpDzTDCP4pBUQGJNaZfLK9QUckjgxYFbVLh9A=
+From: Fedor Pchelkin <pchelkin@ispras.ru>
+To: Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>
+Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Venkateswararao Jujjuri <jvrao@linux.vnet.ibm.com>,
+	"Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+	v9fs@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Alexey Khoroshilov <khoroshilov@ispras.ru>,
+	lvc-project@linuxtesting.org,
+	syzbot+56fdf7f6291d819b9b19@syzkaller.appspotmail.com,
+	syzbot+a83dc51a78f0f4cf20da@syzkaller.appspotmail.com,
+	Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH] fs: 9p: avoid warning during xattr allocation
+Date: Fri,  2 Feb 2024 15:13:17 +0300
+Message-ID: <20240202121319.21743-1-pchelkin@ispras.ru>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240119171122.3057511-6-Frank.Li@nxp.com>
+Content-Transfer-Encoding: 8bit
 
-"PCI: imx6: Use "linux,pci-domain" as slot ID"
+An invalid server may reply with an xattr size which still fits into
+ssize_t but is large enough to cause splat during kzalloc().
 
-On Fri, Jan 19, 2024 at 12:11:11PM -0500, Frank Li wrote:
-> Avoid use get slot id by compared with register physical address. If there
-> are more than 2 slots, compared logic will become complex.
-> 
-> "linux,pci-domain" already exist at dts since commit:
-> 	commit (c0b70f05c87f3b arm64: dts: imx8mq: use_dt_domains for pci node).
-> 
-> So it is safe to remove compare basic address code:
-> 	...
-> 	if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
-> 		imx6_pcie->controller_id = 1;
+Add __GFP_NOWARN flag for the allocation. It seems client side can't do
+much more about sanity checking here so it's better to return ENOMEM
+silently.
 
-No it is not unless you magically update all firmware out
-there in the field.
+Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
 
-> 	...
-> 
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
-> 
-> Notes:
->     Change from v7 to v8
->     - fixed comments
->     - Added Manivannan Sadhasivam's review tag
->     Change from v5 to v7
->     - none
->     Change from v3 to v4
->     - remove compare basic address logic
->     Change from v2 to v3
->     - none
->     Change from v1 to v2
->     - fix of_get_pci_domain_nr return value check logic
-> 
->  drivers/pci/controller/dwc/pci-imx6.c | 20 ++++++++++++--------
->  1 file changed, 12 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index eda6bc6ef80ee..773411d20329f 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -33,6 +33,7 @@
->  #include <linux/pm_domain.h>
->  #include <linux/pm_runtime.h>
->  
-> +#include "../../pci.h"
->  #include "pcie-designware.h"
->  
->  #define IMX8MQ_GPR_PCIE_REF_USE_PAD		BIT(9)
-> @@ -40,7 +41,6 @@
->  #define IMX8MQ_GPR_PCIE_CLK_REQ_OVERRIDE	BIT(11)
->  #define IMX8MQ_GPR_PCIE_VREG_BYPASS		BIT(12)
->  #define IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE	GENMASK(11, 8)
-> -#define IMX8MQ_PCIE2_BASE_ADDR			0x33c00000
->  
->  #define to_imx6_pcie(x)	dev_get_drvdata((x)->dev)
->  
-> @@ -1279,13 +1279,17 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  					     "Failed to get PCIEPHY reset control\n");
->  	}
->  
-> -	switch (imx6_pcie->drvdata->variant) {
-> -	case IMX7D:
-> -		if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
-> -			imx6_pcie->controller_id = 1;
-> -	default:
-> -		break;
-> -	}
-> +	/* Using linux,pci-domain as PCI slot id */
-> +	imx6_pcie->controller_id = of_get_pci_domain_nr(node);
-> +	/*
-> +	 * If there are no "linux,pci-domain" property specified in DT, then assume only one
-> +	 * controller is available.
-> +	 */
-> +	if (imx6_pcie->controller_id == -EINVAL)
-> +		imx6_pcie->controller_id = 0;
+Fixes: 85ff872d3f4a ("fs/9p: Implement POSIX ACL permission checking function")
+Reported-by: syzbot+56fdf7f6291d819b9b19@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/lkml/000000000000789bcd05c9aa3d5d@google.com/
+Reported-by: syzbot+a83dc51a78f0f4cf20da@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/lkml/00000000000086a03405eec3a706@google.com/
+Suggested-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+---
+ fs/9p/acl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-See above, this breaks compatibility with old DTs (and -EINVAL is not
-the only error code you should handle).
+diff --git a/fs/9p/acl.c b/fs/9p/acl.c
+index eed551d8555f..e19a46192d2e 100644
+--- a/fs/9p/acl.c
++++ b/fs/9p/acl.c
+@@ -29,7 +29,7 @@ static struct posix_acl *v9fs_fid_get_acl(struct p9_fid *fid, const char *name)
+ 	if (size == 0)
+ 		return ERR_PTR(-ENODATA);
+ 
+-	value = kzalloc(size, GFP_NOFS);
++	value = kzalloc(size, GFP_NOFS | __GFP_NOWARN);
+ 	if (!value)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-- 
+2.43.0
 
-Lorenzo
-
-> +	else if (imx6_pcie->controller_id < 0)
-> +		return dev_err_probe(dev, imx6_pcie->controller_id,
-> +				     "linux,pci-domain have wrong value\n");
->  
->  	/* Grab turnoff reset */
->  	imx6_pcie->turnoff_reset = devm_reset_control_get_optional_exclusive(dev, "turnoff");
-> -- 
-> 2.34.1
-> 
 
