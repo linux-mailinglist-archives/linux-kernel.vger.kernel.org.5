@@ -1,58 +1,56 @@
-Return-Path: <linux-kernel+bounces-50411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 408BA8478A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:56:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 157DB8478A6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:57:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA7ED290759
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:56:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B163B27843
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:56:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83315150463;
-	Fri,  2 Feb 2024 18:41:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30092150992;
+	Fri,  2 Feb 2024 18:41:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E+60b7os"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XyO7sfYi"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C777D15044D;
-	Fri,  2 Feb 2024 18:41:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B9F7150474;
+	Fri,  2 Feb 2024 18:41:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706899300; cv=none; b=Vojum8r8tQOVAilA/rVEQ6pMoqv5St+fi4srzL47B/NbCei+hzOQ/ewGi17i09sDbt2JpFYfrnXC6qGrQTljac0elILgyeE0LIwhSwmG/94Pp2uNyNLHA/7Z71+Sa7O7EHTWKWl6vPYTwsyqirHsDy9v1Im1t8+Y3NnftZ7sQi8=
+	t=1706899302; cv=none; b=D4qmxConJ1T2poxejSPfNsCNp8FYLhNHW9vyUM5JXrwpBH78OhyxSAnVKG2E6hG6tHNnsqaOoXtFsKM8S/tf0eTjbqJGGLGGBxNsGiywtqviOw+M24ft5Q53xK56ogI434sYD8cQxB31gpBAx2WCFF1NxTIEis5ifAD5LDBNemc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706899300; c=relaxed/simple;
-	bh=Df7cO0dyj8M9NjBa2lGjAHf2hVRhGVQ64biRaupcjmo=;
+	s=arc-20240116; t=1706899302; c=relaxed/simple;
+	bh=8xd+HaBx8HFhxNoJoDn2ZaWc9Aydn6hKsS84wUq5FCI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EtHHfv2kJ6Vdwf11B4rzHOH5J6rnn9AKjgxyG/OLDwx8qf4UyAacfui5HUy5gIfvxg3DjfZ1Uq1dGrk6hyIc7e8vPVoIxEt1rkmtcX6/B16N7noJ2fy5ZmjtYosovhswE654I4Jatj0cCRy26rWu2G8BLvH/PEA97juJQPCgsYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E+60b7os; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A13F8C433A6;
-	Fri,  2 Feb 2024 18:41:39 +0000 (UTC)
+	 MIME-Version; b=bS7she0sj6R9VOvsTZp6LF+CHDuSuN5duvh7ddJ3IwXQVsVt9gg7J7MG0bIriG0QV3F4tDcsIe4e7OLneqflSVSJLNGN9YcuGrVojOtkDvn9r01fNr3dE5cL29GwVPaZ1tPyUF3fbHEt/ImPZGsxzmFD+6PC8qQf3TwmtpUpEoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XyO7sfYi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 142C7C433F1;
+	Fri,  2 Feb 2024 18:41:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706899300;
-	bh=Df7cO0dyj8M9NjBa2lGjAHf2hVRhGVQ64biRaupcjmo=;
+	s=k20201202; t=1706899301;
+	bh=8xd+HaBx8HFhxNoJoDn2ZaWc9Aydn6hKsS84wUq5FCI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=E+60b7osLka4q2Ym8fUoAdt68DCFMU5T8SQ6QVTb68cNN3og/13Y/OyuNlFQEez+g
-	 rPJZs6fawjAtHBPb3FUltIf4iNq/qnjjCjDhG/lvwFe1kbaaDPzQOR6EarPrBNERnP
-	 XNypLqEQshxCIwgQlOurLCaw8qM3GpX2UDdvvXN/DLzPRQaNI0rkUvrXS01hJTt+xu
-	 Znmm1L8V2pW+miM43evCFQKDdVdWVWjqw2GZp/gJCUqUiQX3ttlpJKdqAEOKDBEGlI
-	 COj8ESs/zKtWQ1FH34sVKGdkOCNWfeiqp0DhlXlPIoq5/VzsG5phDpxpb+RPJbl5RT
-	 6V/VY4QrfnofQ==
+	b=XyO7sfYiLbDbeOks/Qokr620J9FSF79oI+XZ+22FJPeAWkiKP1CLjhWTFTox/UyH8
+	 hT7jC1MSLRXaRllZdX4h2NQhgJAp+881I5GRrRb51YjENXkSnKGNSh197KOUmSSF6R
+	 jSKJZxk4EJoJfCaciOIPs0HTM6sfGN63d4Dupx6DMe79M5y1zUJs66GuD42TZ3/Y6k
+	 g122RcQy+CzjOb154hyEcV6NC4YMsXjteofCgXq9ghVwGinbgvREzJ3/dj5AJ6LYG/
+	 kjDvEygzPYCSdKU3MOxiVbo18uR0j2NLPt0EpCdOHawSbX4Q4fkRPLmIDdMvwVR/h2
+	 g9oJBCQ4Rv5tQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tony Luck <tony.luck@intel.com>,
-	Borislav Petkov <bp@alien8.de>,
+Cc: Devyn Liu <liudingyuan@huawei.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	x86@kernel.org,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	dave.hansen@linux.intel.com
-Subject: [PATCH AUTOSEL 5.15 05/11] x86/cpu: Add model number for Intel Clearwater Forest processor
-Date: Fri,  2 Feb 2024 13:41:19 -0500
-Message-ID: <20240202184130.541736-5-sashal@kernel.org>
+	f.fangjian@huawei.com,
+	linux-spi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 06/11] spi: hisi-sfc-v3xx: Return IRQ_NONE if no interrupts were detected
+Date: Fri,  2 Feb 2024 13:41:20 -0500
+Message-ID: <20240202184130.541736-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240202184130.541736-1-sashal@kernel.org>
 References: <20240202184130.541736-1-sashal@kernel.org>
@@ -67,33 +65,45 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.148
 Content-Transfer-Encoding: 8bit
 
-From: Tony Luck <tony.luck@intel.com>
+From: Devyn Liu <liudingyuan@huawei.com>
 
-[ Upstream commit 090e3bec01763e415bccae445f5bfe3d0c61b629 ]
+[ Upstream commit de8b6e1c231a95abf95ad097b993d34b31458ec9 ]
 
-Server product based on the Atom Darkmont core.
+Return IRQ_NONE from the interrupt handler when no interrupt was
+detected. Because an empty interrupt will cause a null pointer error:
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20240117191844.56180-1-tony.luck@intel.com
+    Unable to handle kernel NULL pointer dereference at virtual
+  address 0000000000000008
+    Call trace:
+        complete+0x54/0x100
+        hisi_sfc_v3xx_isr+0x2c/0x40 [spi_hisi_sfc_v3xx]
+        __handle_irq_event_percpu+0x64/0x1e0
+        handle_irq_event+0x7c/0x1cc
+
+Signed-off-by: Devyn Liu <liudingyuan@huawei.com>
+Link: https://msgid.link/r/20240123071149.917678-1-liudingyuan@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/intel-family.h | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/spi/spi-hisi-sfc-v3xx.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/x86/include/asm/intel-family.h b/arch/x86/include/asm/intel-family.h
-index d975c60f863a..7ce43b47ab84 100644
---- a/arch/x86/include/asm/intel-family.h
-+++ b/arch/x86/include/asm/intel-family.h
-@@ -153,6 +153,8 @@
- 
- #define INTEL_FAM6_GRANDRIDGE		0xB6
- 
-+#define INTEL_FAM6_ATOM_DARKMONT_X	0xDD /* Clearwater Forest */
+diff --git a/drivers/spi/spi-hisi-sfc-v3xx.c b/drivers/spi/spi-hisi-sfc-v3xx.c
+index d3a23b1c2a4c..61bf00dfe9c3 100644
+--- a/drivers/spi/spi-hisi-sfc-v3xx.c
++++ b/drivers/spi/spi-hisi-sfc-v3xx.c
+@@ -377,6 +377,11 @@ static const struct spi_controller_mem_ops hisi_sfc_v3xx_mem_ops = {
+ static irqreturn_t hisi_sfc_v3xx_isr(int irq, void *data)
+ {
+ 	struct hisi_sfc_v3xx_host *host = data;
++	u32 reg;
 +
- /* Xeon Phi */
++	reg = readl(host->regbase + HISI_SFC_V3XX_INT_STAT);
++	if (!reg)
++		return IRQ_NONE;
  
- #define INTEL_FAM6_XEON_PHI_KNL		0x57 /* Knights Landing */
+ 	hisi_sfc_v3xx_disable_int(host);
+ 
 -- 
 2.43.0
 
