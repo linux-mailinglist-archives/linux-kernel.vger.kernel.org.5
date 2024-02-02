@@ -1,56 +1,68 @@
-Return-Path: <linux-kernel+bounces-49472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19AA3846AC3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:33:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1EC5846AC4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:34:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E6DA1F25D9D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:33:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 894C928A656
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:34:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98054182CC;
-	Fri,  2 Feb 2024 08:33:22 +0000 (UTC)
-Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE59917564
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 08:33:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.0.225.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90470182B3;
+	Fri,  2 Feb 2024 08:33:58 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8282D182BE;
+	Fri,  2 Feb 2024 08:33:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706862802; cv=none; b=VKqm/ThrqoXEj9sHffmvMns+DpBZEOR4aiPr8FjKFWbVj/IfZ+R7ldIDpo7SmqvQX0hRgTWNbq2saoIg6SOhjPjBKbv611lAOqjGWZoff4kkq9+s2/trlSyy/fateHyqkz/SaqTTzyYPJBauq3IwkWljwwDG/KCgyp51LPcoz5M=
+	t=1706862838; cv=none; b=US64pWeKM0u4Y6LdvYBw+Y1GjjNYtGCQvn7KxA4eT6Ac4sKSpu8aoA10t2xgpPa0q6V0G65nl1laILDmx+pVj6Vhi3olUeqAzCOdqlP30YpSz7O6BwUGadEhFw0s1HCl4dzCoxMMbAlTXGjgnnPXlQVPD1fbp+6mDgNSDdV7juA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706862802; c=relaxed/simple;
-	bh=c4FYUfO7T9Q8NYNTmKDNK4N92kYCMcdhDtYA4Ckjdwc=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LSOGxRqtB7q9mmdjzVEWyPo3K6TcgvqXTwx6SRqFwA05vvhUdl/OOaawAuivgl5TfxDURUHJrXwpbtNj76ugWqh5qbQ9EOgwRHcjvve9mllp1va2+xigNFxPTiv/kua5jlVFl4ABFtL26n4H2QyWzQi0asL+jIGefY320W9J3t0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=210.0.225.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
-X-ASG-Debug-ID: 1706862786-086e230f28364a0001-xx1T2L
-Received: from ZXSHMBX2.zhaoxin.com (ZXSHMBX2.zhaoxin.com [10.28.252.164]) by mx1.zhaoxin.com with ESMTP id Rvp5G7CRSOGeSGAx (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Fri, 02 Feb 2024 16:33:06 +0800 (CST)
-X-Barracuda-Envelope-From: JonasZhou-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
-Received: from ZXBJMBX02.zhaoxin.com (10.29.252.6) by ZXSHMBX2.zhaoxin.com
- (10.28.252.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 2 Feb
- 2024 16:33:05 +0800
-Received: from zjh-VirtualBox.zhaoxin.com (10.28.66.66) by
- ZXBJMBX02.zhaoxin.com (10.29.252.6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 2 Feb 2024 16:33:04 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
-From: JonasZhou-oc <JonasZhou-oc@zhaoxin.com>
-X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.6
-To: <viro@zeniv.linux.org.uk>, <brauner@kernel.org>
-CC: <jack@suse.cz>, <linux-fsdevel@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <CobeChen@zhaoxin.com>,
-	<LouisQi@zhaoxin.com>, <JonasZhou@zhaoxin.com>
-Subject: [PATCH] fs/address_space: move i_mmap_rwsem to mitigate a false sharing with i_mmap.
-Date: Fri, 2 Feb 2024 16:33:04 +0800
-X-ASG-Orig-Subj: [PATCH] fs/address_space: move i_mmap_rwsem to mitigate a false sharing with i_mmap.
-Message-ID: <20240202083304.10995-1-JonasZhou-oc@zhaoxin.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1706862838; c=relaxed/simple;
+	bh=72FVsJAWi+qWl0gmnOlAP2lrOTNvG7aAybhPev5uBKc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oNC15LZ6sQmz3qbHRaI8gshEoJ4UKxmNiGqOVUT/1uL1Q+9WBF0/APvDMShsqygj6ZeljqFek2N2vbNp1o/A6YVVmwwJHhzaf/K4dAkq0S3CenbNIQi19UB7X2r27JgOvzCJV9Lp001kfxKfuwKcLMP1c1ZQWWhCTjAiPgcRfWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 17A18DA7;
+	Fri,  2 Feb 2024 00:34:32 -0800 (PST)
+Received: from e132833.arm.com (unknown [10.57.7.95])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 443423F5A1;
+	Fri,  2 Feb 2024 00:33:46 -0800 (PST)
+From: Metin Kaya <metin.kaya@arm.com>
+To: linux-kernel@vger.kernel.org
+Cc: John Stultz <jstultz@google.com>,
+	Joel Fernandes <joelaf@google.com>,
+	Qais Yousef <qyousef@google.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Ben Segall <bsegall@google.com>,
+	Zimuzo Ezeozue <zezeozue@google.com>,
+	Youssef Esmat <youssefesmat@google.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Xuewen Yan <xuewen.yan94@gmail.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	kernel-team@android.com,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH] sched: Add trace events for Proxy Execution (PE)
+Date: Fri,  2 Feb 2024 08:33:38 +0000
+Message-Id: <20240202083338.1328060-1-metin.kaya@arm.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,94 +70,266 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
- ZXBJMBX02.zhaoxin.com (10.29.252.6)
-X-Barracuda-Connect: ZXSHMBX2.zhaoxin.com[10.28.252.164]
-X-Barracuda-Start-Time: 1706862786
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.35:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 6746
-X-Barracuda-BRTS-Status: 0
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0027 1.0000 -2.0033
-X-Barracuda-Spam-Score: -2.00
-X-Barracuda-Spam-Status: No, SCORE=-2.00 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.120274
-	Rule breakdown below
-	 pts rule name              description
-	---- ---------------------- --------------------------------------------------
 
-From: JonasZhou <JonasZhou@zhaoxin.com>
+Add sched_[start, finish]_task_selection trace events to measure the
+latency of PE patches in task selection.
 
-In the struct address_space, there is a 32-byte gap between i_mmap
-and i_mmap_rwsem. Due to the alignment of struct address_space
-variables to 8 bytes, in certain situations, i_mmap and i_mmap_rwsem
-may end up in the same CACHE line.
+Moreover, introduce trace events for interesting events in PE:
+1. sched_pe_enqueue_sleeping_task: a task gets enqueued on wait queue of
+   a sleeping task (mutex owner).
+2. sched_pe_cross_remote_cpu: dependency chain crosses remote CPU.
+3. sched_pe_task_is_migrating: mutex owner task migrates.
 
-While running Unixbench/execl, we observe high false sharing issues
-when accessing i_mmap against i_mmap_rwsem. We move i_mmap_rwsem
-after i_private_list, ensuring a 64-byte gap between i_mmap and
-i_mmap_rwsem.
+New trace events can be tested via this command:
+$ perf trace \
+  -e sched:sched_start_task_selection \
+  -e sched:sched_finish_task_selection \
+  -e sched:sched_pe_enqueue_sleeping_task \
+  -e sched:sched_pe_cross_remote_cpu \
+  -e sched:sched_pe_task_is_migrating
 
-For Intel Silver machines (2 sockets) using kernel v6.8 rc-2, the score
-of Unixbench/execl improves by ~3.94%, and the score of Unixbench/shell
-improves by ~3.26%.
+Notes:
+1. These trace events are not intended to merge upstream. Instead, they
+   are only for making PE tests easier and will be converted to trace
+   points once PE patches hit upstream.
+2. This patch is based on John's Proxy Execution v7 patch series (see
+   the link below) which is also available at
+   https://github.com/johnstultz-work/linux-dev/commits/proxy-exec-v7-6.7-rc6/.
 
-Baseline:
--------------------------------------------------------------
-  162      546      748    11374       21  0xffff92e266af90c0
--------------------------------------------------------------
-        46.89%   44.65%    0.00%    0.00%                 0x0     1       1  0xffffffff86d5fb96       460       258       271     1069        32  [k] __handle_mm_fault          [kernel.vmlinux]  memory.c:2940            0  1
-         4.21%    4.41%    0.00%    0.00%                 0x4     1       1  0xffffffff86d0ed54       473       311       288       95        28  [k] filemap_read               [kernel.vmlinux]  atomic.h:23              0  1
-         0.00%    0.00%    0.04%    4.76%                 0x8     1       1  0xffffffff86d4bcf1         0         0         0        5         4  [k] vma_interval_tree_remove   [kernel.vmlinux]  rbtree_augmented.h:204   0  1
-         6.41%    6.02%    0.00%    0.00%                 0x8     1       1  0xffffffff86d4ba85       411       271       339      210        32  [k] vma_interval_tree_insert   [kernel.vmlinux]  interval_tree.c:23       0  1
-         0.00%    0.00%    0.47%   95.24%                0x10     1       1  0xffffffff86d4bd34         0         0         0       74        32  [k] vma_interval_tree_remove   [kernel.vmlinux]  rbtree_augmented.h:339   0  1
-         0.37%    0.13%    0.00%    0.00%                0x10     1       1  0xffffffff86d4bb4f       328       212       380        7         5  [k] vma_interval_tree_remove   [kernel.vmlinux]  rbtree_augmented.h:338   0  1
-         5.13%    5.08%    0.00%    0.00%                0x10     1       1  0xffffffff86d4bb4b       416       255       357      197        32  [k] vma_interval_tree_remove   [kernel.vmlinux]  rbtree_augmented.h:338   0  1
-         1.10%    0.53%    0.00%    0.00%                0x28     1       1  0xffffffff86e06eb8       395       228       351       24        14  [k] do_dentry_open             [kernel.vmlinux]  open.c:966               0  1
-         1.10%    2.14%   57.07%    0.00%                0x38     1       1  0xffffffff878c9225      1364       792       462     7003        32  [k] down_write                 [kernel.vmlinux]  atomic64_64.h:109        0  1
-         0.00%    0.00%    0.01%    0.00%                0x38     1       1  0xffffffff878c8e75         0         0       252        3         2  [k] rwsem_down_write_slowpath  [kernel.vmlinux]  atomic64_64.h:109        0  1
-         0.00%    0.13%    0.00%    0.00%                0x38     1       1  0xffffffff878c8e23         0       596        63        2         2  [k] rwsem_down_write_slowpath  [kernel.vmlinux]  atomic64_64.h:15         0  1
-         2.38%    2.94%    6.53%    0.00%                0x38     1       1  0xffffffff878c8ccb      1150       818       570     1197        32  [k] rwsem_down_write_slowpath  [kernel.vmlinux]  atomic64_64.h:109        0  1
-        30.59%   32.22%    0.00%    0.00%                0x38     1       1  0xffffffff878c8cb4       423       251       380      648        32  [k] rwsem_down_write_slowpath  [kernel.vmlinux]  atomic64_64.h:15         0  1
-         1.83%    1.74%   35.88%    0.00%                0x38     1       1  0xffffffff86b4f833      1217      1112       565     4586        32  [k] up_write                   [kernel.vmlinux]  atomic64_64.h:91         0  1
+Link: https://lore.kernel.org/linux-kernel/CANDhNCrHd+5twWVNqBAhVLfhMhkiO0KjxXBmwVgaCD4kAyFyWw@mail.gmail.com/
 
-with this change:
--------------------------------------------------------------
-  360       12      300       57       35  0xffff982cdae76400
--------------------------------------------------------------
-        50.00%   59.67%    0.00%    0.00%                 0x0     1       1  0xffffffff8215fb86       352       200       191      558        32  [k] __handle_mm_fault         [kernel.vmlinux]  memory.c:2940            0  1
-         8.33%    5.00%    0.00%    0.00%                 0x4     1       1  0xffffffff8210ed44       370       284       263       42        24  [k] filemap_read              [kernel.vmlinux]  atomic.h:23              0  1
-         0.00%    0.00%    5.26%    2.86%                 0x8     1       1  0xffffffff8214bce1         0         0         0        4         4  [k] vma_interval_tree_remove  [kernel.vmlinux]  rbtree_augmented.h:204   0  1
-        33.33%   14.33%    0.00%    0.00%                 0x8     1       1  0xffffffff8214ba75       344       186       219      140        32  [k] vma_interval_tree_insert  [kernel.vmlinux]  interval_tree.c:23       0  1
-         0.00%    0.00%   94.74%   97.14%                0x10     1       1  0xffffffff8214bd24         0         0         0       88        29  [k] vma_interval_tree_remove  [kernel.vmlinux]  rbtree_augmented.h:339   0  1
-         8.33%   20.00%    0.00%    0.00%                0x10     1       1  0xffffffff8214bb3b       296       209       226      167        31  [k] vma_interval_tree_remove  [kernel.vmlinux]  rbtree_augmented.h:338   0  1
-         0.00%    0.67%    0.00%    0.00%                0x28     1       1  0xffffffff82206f45         0       140       334        4         3  [k] do_dentry_open            [kernel.vmlinux]  open.c:966               0  1
-         0.00%    0.33%    0.00%    0.00%                0x38     1       1  0xffffffff8250a6c4         0       286       126        5         5  [k] errseq_sample             [kernel.vmlinux]  errseq.c:125             0
-
-Signed-off-by: JonasZhou <JonasZhou@zhaoxin.com>
+Signed-off-by: Metin Kaya <metin.kaya@arm.com>
+CC: John Stultz <jstultz@google.com>
+CC: Joel Fernandes <joelaf@google.com>
+CC: Qais Yousef <qyousef@google.com>
+CC: Ingo Molnar <mingo@redhat.com>
+CC: Peter Zijlstra <peterz@infradead.org>
+CC: Juri Lelli <juri.lelli@redhat.com>
+CC: Vincent Guittot <vincent.guittot@linaro.org>
+CC: Dietmar Eggemann <dietmar.eggemann@arm.com>
+CC: Valentin Schneider <vschneid@redhat.com>
+CC: Steven Rostedt <rostedt@goodmis.org>
+CC: Masami Hiramatsu <mhiramat@kernel.org>
+CC: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+CC: Ben Segall <bsegall@google.com>
+CC: Zimuzo Ezeozue <zezeozue@google.com>
+CC: Youssef Esmat <youssefesmat@google.com>
+CC: Mel Gorman <mgorman@suse.de>
+CC: Daniel Bristot de Oliveira <bristot@redhat.com>
+CC: Will Deacon <will@kernel.org>
+CC: Waiman Long <longman@redhat.com>
+CC: Boqun Feng <boqun.feng@gmail.com>
+CC: "Paul E. McKenney" <paulmck@kernel.org>
+CC: Xuewen Yan <xuewen.yan94@gmail.com>
+CC: K Prateek Nayak <kprateek.nayak@amd.com>
+CC: Thomas Gleixner <tglx@linutronix.de>
+CC: kernel-team@android.com
+CC: linux-trace-kernel@vger.kernel.org
 ---
- include/linux/fs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/trace/events/sched.h | 138 +++++++++++++++++++++++++++++++++++
+ kernel/sched/core.c          |  11 +++
+ 2 files changed, 149 insertions(+)
 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index ed5966a70495..2d6ccde5d1be 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -482,10 +482,10 @@ struct address_space {
- 	pgoff_t			writeback_index;
- 	const struct address_space_operations *a_ops;
- 	unsigned long		flags;
--	struct rw_semaphore	i_mmap_rwsem;
- 	errseq_t		wb_err;
- 	spinlock_t		i_private_lock;
- 	struct list_head	i_private_list;
-+	struct rw_semaphore	i_mmap_rwsem;
- 	void *			i_private_data;
- } __attribute__((aligned(sizeof(long)))) __randomize_layout;
- 	/*
+diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+index 6188ad0d9e0d..2b08509f3088 100644
+--- a/include/trace/events/sched.h
++++ b/include/trace/events/sched.h
+@@ -737,6 +737,144 @@ TRACE_EVENT(sched_wake_idle_without_ipi,
+ 	TP_printk("cpu=%d", __entry->cpu)
+ );
+ 
++#ifdef CONFIG_SCHED_PROXY_EXEC
++/**
++ * sched_pe_enqueue_sleeping_task - called when a task is enqueued on wait
++ *				    queue of a sleeping task (mutex owner).
++ * @mutex_owner: pointer to struct task_struct
++ * @blocked:     pointer to struct task_struct
++ */
++TRACE_EVENT(sched_pe_enqueue_sleeping_task,
++
++	TP_PROTO(struct task_struct *mutex_owner, struct task_struct *blocked),
++
++	TP_ARGS(mutex_owner, blocked),
++
++	TP_STRUCT__entry(
++		__array(char,	owner_comm,	TASK_COMM_LEN	)
++		__field(pid_t,	owner_pid			)
++		__field(int,	owner_prio			)
++		__field(int,	owner_cpu			)
++		__array(char,	blocked_comm,	TASK_COMM_LEN	)
++		__field(pid_t,	blocked_pid			)
++		__field(int,	blocked_prio			)
++		__field(int,	blocked_cpu			)
++	),
++
++	TP_fast_assign(
++		strscpy(__entry->owner_comm, mutex_owner->comm, TASK_COMM_LEN);
++		__entry->owner_pid	= mutex_owner->pid;
++		__entry->owner_prio	= mutex_owner->prio; /* XXX SCHED_DEADLINE */
++		__entry->owner_cpu	= task_cpu(mutex_owner);
++
++		strscpy(__entry->blocked_comm, blocked->comm, TASK_COMM_LEN);
++		__entry->blocked_pid	= blocked->pid;
++		__entry->blocked_prio	= blocked->prio; /* XXX SCHED_DEADLINE */
++		__entry->blocked_cpu	= task_cpu(blocked);
++	),
++
++	TP_printk("task=%s pid=%d prio=%d cpu=%d blocked_on owner_task=%s owner_pid=%d owner_prio=%d owner_cpu=%d",
++		  __entry->blocked_comm, __entry->blocked_pid,
++		  __entry->blocked_prio, __entry->blocked_cpu,
++		  __entry->owner_comm, __entry->owner_pid,
++		  __entry->owner_prio, __entry->owner_cpu)
++);
++
++/**
++ * sched_pe_cross_remote_cpu - called when dependency chain crosses remote CPU
++ * @p: pointer to struct task_struct
++ */
++TRACE_EVENT(sched_pe_cross_remote_cpu,
++
++	TP_PROTO(struct task_struct *p),
++
++	TP_ARGS(p),
++
++	TP_STRUCT__entry(
++		__array(char,	comm,	TASK_COMM_LEN	)
++		__field(pid_t,	pid			)
++		__field(int,	prio			)
++		__field(int,	cpu			)
++	),
++
++	TP_fast_assign(
++		strscpy(__entry->comm, p->comm, TASK_COMM_LEN);
++		__entry->pid	= p->pid;
++		__entry->prio	= p->prio; /* XXX SCHED_DEADLINE */
++		__entry->cpu	= task_cpu(p);
++	),
++
++	TP_printk("comm=%s pid=%d prio=%d cpu=%d",
++		  __entry->comm, __entry->pid, __entry->prio, __entry->cpu)
++);
++
++/**
++ * sched_pe_task_is_migrating - called when mutex owner is in migrating state
++ * @p: pointer to struct task_struct
++ */
++TRACE_EVENT(sched_pe_task_is_migrating,
++
++	TP_PROTO(struct task_struct *p),
++
++	TP_ARGS(p),
++
++	TP_STRUCT__entry(
++		__array(char,	comm,	TASK_COMM_LEN	)
++		__field(pid_t,	pid			)
++		__field(int,	prio			)
++	),
++
++	TP_fast_assign(
++		strscpy(__entry->comm, p->comm, TASK_COMM_LEN);
++		__entry->pid		= p->pid;
++		__entry->prio		= p->prio; /* XXX SCHED_DEADLINE */
++	),
++
++	TP_printk("comm=%s pid=%d prio=%d",
++		  __entry->comm, __entry->pid, __entry->prio)
++);
++#endif /* CONFIG_SCHED_PROXY_EXEC */
++
++DECLARE_EVENT_CLASS(sched_task_selection_template,
++
++	TP_PROTO(int cpu),
++
++	TP_ARGS(cpu),
++
++	TP_STRUCT__entry(
++		__field(int,	cpu)
++	),
++
++	TP_fast_assign(
++		__entry->cpu	= cpu;
++	),
++
++	TP_printk("cpu=%d",
++		  __entry->cpu)
++);
++
++/**
++ * sched_start_task_selection - called before selecting next task in
++ *				__schedule()
++ * @cpu: The CPU which will run task selection operation.
++ */
++DEFINE_EVENT(sched_task_selection_template, sched_start_task_selection,
++
++	TP_PROTO(int cpu),
++
++	TP_ARGS(cpu));
++
++/**
++ * sched_finish_task_selection - called after selecting next task in
++ *				 __schedule()
++ * @cpu: The CPU which ran task selection operation.
++ */
++DEFINE_EVENT(sched_task_selection_template, sched_finish_task_selection,
++
++	TP_PROTO(int cpu),
++
++	TP_ARGS(cpu));
++
+ /*
+  * Following tracepoints are not exported in tracefs and provide hooking
+  * mechanisms only for testing and debugging purposes.
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 30dfb6f14f2b..866809e52971 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -7006,6 +7006,9 @@ static void proxy_enqueue_on_owner(struct rq *rq, struct task_struct *owner,
+ 	 */
+ 	if (!owner->on_rq) {
+ 		BUG_ON(!next->on_rq);
++
++		trace_sched_pe_enqueue_sleeping_task(owner, next);
++
+ 		deactivate_task(rq, next, DEQUEUE_SLEEP);
+ 		if (task_current_selected(rq, next)) {
+ 			put_prev_task(rq, next);
+@@ -7100,6 +7103,9 @@ find_proxy_task(struct rq *rq, struct task_struct *next, struct rq_flags *rf)
+ 
+ 		if (task_cpu(owner) != cur_cpu) {
+ 			target_cpu = task_cpu(owner);
++
++			trace_sched_pe_cross_remote_cpu(owner);
++
+ 			/*
+ 			 * @owner can disappear, simply migrate to @target_cpu and leave that CPU
+ 			 * to sort things out.
+@@ -7113,6 +7119,8 @@ find_proxy_task(struct rq *rq, struct task_struct *next, struct rq_flags *rf)
+ 		}
+ 
+ 		if (task_on_rq_migrating(owner)) {
++			trace_sched_pe_task_is_migrating(owner);
++
+ 			/*
+ 			 * One of the chain of mutex owners is currently migrating to this
+ 			 * CPU, but has not yet been enqueued because we are holding the
+@@ -7335,6 +7343,8 @@ static void __sched notrace __schedule(unsigned int sched_mode)
+ 	}
+ 
+ 	prev_not_proxied = !prev->blocked_donor;
++
++	trace_sched_start_task_selection(cpu);
+ pick_again:
+ 	next = pick_next_task(rq, rq_selected(rq), &rf);
+ 	rq_set_selected(rq, next);
+@@ -7350,6 +7360,7 @@ static void __sched notrace __schedule(unsigned int sched_mode)
+ 		if (next == rq->idle && prev == rq->idle)
+ 			preserve_need_resched = true;
+ 	}
++	trace_sched_finish_task_selection(cpu);
+ 
+ 	if (!preserve_need_resched)
+ 		clear_tsk_need_resched(prev);
 -- 
-2.25.1
+2.34.1
 
 
