@@ -1,175 +1,208 @@
-Return-Path: <linux-kernel+bounces-50445-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F75A847904
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:05:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D0F6847919
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:08:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD7A81C284F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:05:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 961A8B2FEAE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:06:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C5E1126F07;
-	Fri,  2 Feb 2024 18:48:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18328126F2E;
+	Fri,  2 Feb 2024 18:50:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h2eUvkkE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="Tm8e2N9X"
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 766A885945;
-	Fri,  2 Feb 2024 18:47:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DA07126F22;
+	Fri,  2 Feb 2024 18:49:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706899679; cv=none; b=WMY/MG4Snk8SgFF7RpQ02eUNf5qD0UK/9Y9B1AJeByQrZmp5WpKkRbAffZ6VOc903mUFggoA86SbX/k54anavMHhAbF/Lq4ZMuu3x+i6Izk/Wyc9rwIDUIZwCbsu1j+CH3I+t1VmOYeKeVkeKYWZ4a1EDWPr3ZYl110W/ZUjBNk=
+	t=1706899800; cv=none; b=e98GFNyPJhJmoBkuHkfjZt8wwVVpbU8yPl4P6zy+xaeUtR2WIN07GokWdCxfagK1wPhn3FQEb6JDJttnmOb5JvZNcdJEK/8TelgqWP1IvtYQmyqtsWtIVVuZhSdOHEExcQl0+oXRtnEGlV0c0FiQAllU1zbjpi/79K4hWx2OJvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706899679; c=relaxed/simple;
-	bh=QcaaP/4jBnJB46G9guIEmeObnt6+/Id6kQQiWLBmNbo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gzFpA4diBcFU1C98tslUBn770mWB7hKYTlMywMjKj8snsYtT6EBChLdMD9ArmJRe7xepdi94CoRUgmXuk+aNHYuWRLYaQ2SpcHfGwr7Hzk4z/FF3Ob932+HHJh0HKwWQZ91KNbvsOLC/T3nvUA85U5scwPTCw2C/5HULglhQTMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h2eUvkkE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB23CC43390;
-	Fri,  2 Feb 2024 18:47:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706899679;
-	bh=QcaaP/4jBnJB46G9guIEmeObnt6+/Id6kQQiWLBmNbo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=h2eUvkkEYHLCPDhfZVJ9aTeddxb6PdiJfiGQGBpuuxwaq+iEzg3P9l4OQo75Wjszq
-	 Mw0zSz/rcx9tbV36HcT3iISdYMxMgjvpIE4xRiWYi9AAcSTw+nD1EJQ5nc/GioU+A6
-	 8pjcuvz3TJj7fiAybhyT96Xvqxfn/3+3vXnNi7q1jXEKSyfjuQeWbdF6tDF7O0UQvL
-	 XomMzk1c6OHzcqA6TaTDPYp+IPPAX5mTNY+qpf5vxzuwahugA7tSc7RVU+tZxemNdh
-	 Bq2BEmbL9mu0E9GFBynBEwhj25IOzqK5Bi2aTk4SCl769dRXEFD7nSmHIDa1GgCk/Q
-	 ToB1eS/xzzvPw==
-Date: Fri, 2 Feb 2024 10:47:58 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: hch@lst.de, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com,
-	martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	tytso@mit.edu, jbongio@google.com, ojaswin@linux.ibm.com
-Subject: Re: [PATCH RFC 5/6] fs: xfs: iomap atomic write support
-Message-ID: <20240202184758.GA6226@frogsfrogsfrogs>
-References: <20240124142645.9334-1-john.g.garry@oracle.com>
- <20240124142645.9334-6-john.g.garry@oracle.com>
+	s=arc-20240116; t=1706899800; c=relaxed/simple;
+	bh=kIDXrZYa7YvbjaZ39Y/wNvsjQTgKItJ4WaLfAWeaQPI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ZlrU2aO16qMpUlPFC7OdTjafe0N93c25P7ROQPOlqQx0ADFkEzKwhG5RJnkejFOnZMaWPqiIJOvjnF4Te/pPJYefOlaioas/srOODpcIfQMR5cIpUcpWHSCWtBvmZVww/9sOqHugSSkaOw7EMHeGvbHV/otXU0kE343vCEWQA1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=Tm8e2N9X; arc=none smtp.client-ip=198.252.153.129
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx1.riseup.net (Postfix) with ESMTPS id 4TRPvz3Q6YzDqLd;
+	Fri,  2 Feb 2024 18:49:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1706899792; bh=kIDXrZYa7YvbjaZ39Y/wNvsjQTgKItJ4WaLfAWeaQPI=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=Tm8e2N9XN3xz9TmD5FX7b4LVl5iIr00IBtn9r5OZJw8ap/zye9W8JhG6znpAFNB1N
+	 D8/kgV4xjxF1g0GANtPUuYYMISjzuSI6RJvxPiFZmW0C7ZZi3CPkNyZuT1s9ukVDCr
+	 U0WBRuhcAG7DMF9/Ze/jkubhajMs145nVL0eP1vQ=
+X-Riseup-User-ID: AC796D553161309225802F4533227B3C3B461BDFDF791A0A23FAFA2986536A4A
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4TRPvs38wyzFvGP;
+	Fri,  2 Feb 2024 18:49:45 +0000 (UTC)
+Message-ID: <034aed14-6eb7-4758-86b9-cc294614f045@riseup.net>
+Date: Fri, 2 Feb 2024 15:49:42 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124142645.9334-6-john.g.garry@oracle.com>
+Subject: Re: [PATCH v2 2/7] drm/vkms: Add support for multy-planar
+ framebuffers
+To: Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+ Haneen Mohammed <hamohammed.sa@gmail.com>,
+ Harry Wentland <harry.wentland@amd.com>, Jonathan Corbet <corbet@lwn.net>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
+ <mairacanal@riseup.net>, Melissa Wen <melissa.srw@gmail.com>,
+ Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org,
+ miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com,
+ seanpaul@google.com, nicolejadeyee@google.com, marcheu@google.com
+References: <20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net>
+ <20240110-vkms-yuv-v2-2-952fcaa5a193@riseup.net>
+ <ZbvXHECSBmH0NDZn@localhost.localdomain>
+Content-Language: en-US
+From: Arthur Grillo <arthurgrillo@riseup.net>
+In-Reply-To: <ZbvXHECSBmH0NDZn@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 24, 2024 at 02:26:44PM +0000, John Garry wrote:
-> Ensure that when creating a mapping that we adhere to all the atomic
-> write rules.
+
+
+On 01/02/24 14:38, Louis Chauvet wrote:
+>>  
+>>  /*
+>> @@ -23,27 +23,25 @@ static size_t pixel_offset(const struct vkms_frame_info *frame_info, int x, int
+>>   * @frame_info: Buffer metadata
+>>   * @x: The x(width) coordinate of the 2D buffer
+>>   * @y: The y(Heigth) coordinate of the 2D buffer
+>> + * @index: The index of the plane on the 2D buffer
+>>   *
+>>   * Takes the information stored in the frame_info, a pair of coordinates, and
+>> - * returns the address of the first color channel.
+>> - * This function assumes the channels are packed together, i.e. a color channel
+>> - * comes immediately after another in the memory. And therefore, this function
+>> - * doesn't work for YUV with chroma subsampling (e.g. YUV420 and NV21).
+>> + * returns the address of the first color channel on the desired index.
+>>   */
+>>  static void *packed_pixels_addr(const struct vkms_frame_info *frame_info,
+>> -				int x, int y)
+>> +				int x, int y, size_t index)
+>>  {
+>> -	size_t offset = pixel_offset(frame_info, x, y);
+>> +	size_t offset = pixel_offset(frame_info, x, y, index);
+>>  
+>>  	return (u8 *)frame_info->map[0].vaddr + offset;
+>>  }
 > 
-> We check that the mapping covers the complete range of the write to ensure
-> that we'll be just creating a single mapping.
+> This implementation of packed_pixels_addr will only work with
+> block_w == block_h == 1. For packed or tiled formats we will need to use
+> x/y information to extract the correct address, and this address will not 
+> be a single pixel. See below my explanation.
+
+You're right, currently, VKMS only supports non-packed/tiled formats. As
+all the formats I plan to add are too not packed or tiled, I haven't
+added support to it. But if you want to add it, please do :).
+
+>> @@ -130,17 +128,28 @@ void vkms_compose_row(struct line_buffer *stage_buffer, struct vkms_plane_state
+>>  {
+>>  	struct pixel_argb_u16 *out_pixels = stage_buffer->pixels;
+>>  	struct vkms_frame_info *frame_info = plane->frame_info;
+>> -	u8 *src_pixels = get_packed_src_addr(frame_info, y);
+>> +	const struct drm_format_info *frame_format = frame_info->fb->format;
+>>  	int limit = min_t(size_t, drm_rect_width(&frame_info->dst), stage_buffer->n_pixels);
+>> +	u8 *src_pixels[DRM_FORMAT_MAX_PLANES];
+>>  
+>> -	for (size_t x = 0; x < limit; x++, src_pixels += frame_info->fb->format->cpp[0]) {
+>> +	for (size_t i = 0; i < frame_format->num_planes; i++)
+>> +		src_pixels[i] = get_packed_src_addr(frame_info, y, i);
+>> +
+>> +	for (size_t x = 0; x < limit; x++) {
+>>  		int x_pos = get_x_position(frame_info, limit, x);
+>>  
+>> -		if (drm_rotation_90_or_270(frame_info->rotation))
+>> -			src_pixels = get_packed_src_addr(frame_info, x + frame_info->rotated.y1)
+>> -				+ frame_info->fb->format->cpp[0] * y;
+>> +		if (drm_rotation_90_or_270(frame_info->rotation)) {
+>> +			for (size_t i = 0; i < frame_format->num_planes; i++) {
+>> +				src_pixels[i] = get_packed_src_addr(frame_info,
+>> +								    x + frame_info->rotated.y1, i);
+>> +				src_pixels[i] += frame_format->cpp[i] * y;
 > 
-> Currently minimum granularity is the FS block size, but it should be
-> possibly to support lower in future.
+> I find the current rotation management a bit complex to understand. This 
+> is not related to your patch, but as I had to understand this to create my 
+> second patch, I think this could be significanlty simplified.
+
+I also found the rotation logic complex when implementing this. I would
+appreciate it if it were simplified.
+
 > 
-> Signed-off-by: John Garry <john.g.garry@oracle.com>
-> ---
-> I am setting this as an RFC as I am not sure on the change in
-> xfs_iomap_write_direct() - it gives the desired result AFAICS.
+> Please see the below comment about frame_format->cpp, it applies here too. 
+> I think the "easy" way here is simply to reuse the method 
+> get_packed_src_addr every time you need a new pixel.
 > 
->  fs/xfs/xfs_iomap.c | 41 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
+>> +			}
+>> +		}
+>>  
+>> 		plane->pixel_read(src_pixels, &out_pixels[x_pos]);
+>> +
 > 
-> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-> index 18c8f168b153..758dc1c90a42 100644
-> --- a/fs/xfs/xfs_iomap.c
-> +++ b/fs/xfs/xfs_iomap.c
-> @@ -289,6 +289,9 @@ xfs_iomap_write_direct(
->  		}
->  	}
->  
-> +	if (xfs_inode_atomicwrites(ip))
-> +		bmapi_flags = XFS_BMAPI_ZERO;
+> The usage of cpp and pointer to specific pixel only work for non-packed 
+> and non-blocked pixels, but for example NV30 or Y0L0 need more 
+> informations about the exact location of the pixel to convert and write 
+> the correct pixel value (each pixel can't be referenced directly by a 
+> pointer). For example NV30 uses 5 bytes to store 3 pixels (10 bits each), 
+> so to access the "middle" one you need to read the 5 bytes and do a small 
+> computation to extract it's value.
 
-Why do we want to write zeroes to the disk if we're allocating space
-even if we're not sending an atomic write?
+Great explanation, I can see what is the problem here.
 
-(This might want an explanation for why we're doing this at all -- it's
-to avoid unwritten extent conversion, which defeats hardware untorn
-writes.)
-
-I think we should support IOCB_ATOMIC when the mapping is unwritten --
-the data will land on disk in an untorn fashion, the unwritten extent
-conversion on IO completion is itself atomic, and callers still have to
-set O_DSYNC to persist anything.  Then we can avoid the cost of
-BMAPI_ZERO, because double-writes aren't free.
-
-> +
->  	error = xfs_trans_alloc_inode(ip, &M_RES(mp)->tr_write, dblocks,
->  			rblocks, force, &tp);
->  	if (error)
-> @@ -812,6 +815,44 @@ xfs_direct_write_iomap_begin(
->  	if (error)
->  		goto out_unlock;
->  
-> +	if (flags & IOMAP_ATOMIC) {
-> +		xfs_filblks_t unit_min_fsb, unit_max_fsb;
-> +		unsigned int unit_min, unit_max;
-> +
-> +		xfs_get_atomic_write_attr(ip, &unit_min, &unit_max);
-> +		unit_min_fsb = XFS_B_TO_FSBT(mp, unit_min);
-> +		unit_max_fsb = XFS_B_TO_FSBT(mp, unit_max);
-> +
-> +		if (!imap_spans_range(&imap, offset_fsb, end_fsb)) {
-> +			error = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +
-> +		if ((offset & mp->m_blockmask) ||
-> +		    (length & mp->m_blockmask)) {
-> +			error = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +
-> +		if (imap.br_blockcount == unit_min_fsb ||
-> +		    imap.br_blockcount == unit_max_fsb) {
-> +			/* ok if exactly min or max */
-> +		} else if (imap.br_blockcount < unit_min_fsb ||
-> +			   imap.br_blockcount > unit_max_fsb) {
-> +			error = -EINVAL;
-> +			goto out_unlock;
-> +		} else if (!is_power_of_2(imap.br_blockcount)) {
-> +			error = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +
-> +		if (imap.br_startoff &&
-> +		    imap.br_startoff & (imap.br_blockcount - 1)) {
-
-Not sure why we care about the file position, it's br_startblock that
-gets passed into the bio, not br_startoff.
-
-I'm also still not convinced that any of this validation is useful here.
-The block device stack underneath the filesystem can change at any time
-without any particular notice to the fs, so the only way to find out if
-the proposed IO would meet the alignment constraints is to submit_bio
-and see what happens.
-
-(The "one bio per untorn write request" thing in the direct-io.c patch
-sound sane to me though.)
-
---D
-
-> +			error = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +	}
-> +
->  	if (imap_needs_cow(ip, flags, &imap, nimaps)) {
->  		error = -EAGAIN;
->  		if (flags & IOMAP_NOWAIT)
-> -- 
-> 2.31.1
 > 
+> I think a simple solution to handle most cases would be to profide two 
+> more parameters: the x and y positions of the pixel to copy, using 
+> "absolute coordinates" (i.e x=0,y=0 means the first byte of the src 
+> buffer, not the first pixel in the `drm_rect src`, this way the method 
+> `pixel_read` can extract the correct value).
 > 
+> This way it become easy to manage "complex" pixel representations in this 
+> loop: simply increment x/y and let the pixel_read method handle 
+> everything.
+> 
+> The second patch I will send is doing this. And as explained before, it 
+> will also simplify a lot the code related to rotation and translation (no 
+> more switch case everywhere to add offset to x/y, it simply use drm_rect_* 
+> helpers).
+
+I like this, expect my review soon :).
+
+> 
+> It's not optimal in term of performance (in some situation it will read 
+> the same block multiple time to generate different pixels), but I 
+> believe it still is an intersting trade-off.
+> 
+> In the future, if performance is actally critical, the whole composition 
+> loop will have to be specialized for each pixel formats: some can be 
+> treated line by line (as it's done today), but with blocks or packed 
+> pixels it's more complex.
+> 
+>> +		for (size_t i = 0; i < frame_format->num_planes; i++)
+>> +			src_pixels[i] += frame_format->cpp[i];
+> 
+> This is likely working with format with block_w != 1, see explanation 
+> above.
+
+I think you meant that is _not_ working. Yeah, as I already explained,
+it was never my plan to add support for packed or tiled formats.
+
+Best Regards,
+~Arthur Grillo
 
