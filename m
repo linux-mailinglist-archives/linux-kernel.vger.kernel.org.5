@@ -1,150 +1,256 @@
-Return-Path: <linux-kernel+bounces-49090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74F308465C5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:26:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31B798465CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:28:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A18A51C225F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:26:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBCA8289B74
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:28:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7909DDD0;
-	Fri,  2 Feb 2024 02:25:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B125320D;
+	Fri,  2 Feb 2024 02:28:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ezlwYCE9"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="BJzDeN4w"
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68155C2D9
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 02:25:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1CCEBA25
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 02:28:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706840731; cv=none; b=R7OiwtAEY8+IeE07aOZM3FhEnUhqW7oN5K2SBCvLooSbBLWi4iHO9eaBTT7sTE66fo6dcohbFghnC/c2rY1c11jkEjdch8alpL+VJ+1ZxVuzp9AcqEQZoUlkw1Eo3pc91huIumdg8t8Qm3Jnxj86Vz4wHi1sQPg2hKAHdjMYmb0=
+	t=1706840892; cv=none; b=Vm80P3tM8u96Mt6DP46opPcXUH9UdwYqzyOWnlfawRoaLH+q3ghB9axgOwtK0rN5vbfE899FToIRaJuKvzE+zaB7fG4p7RkfcityZkhZ5g4nyotnHYyg/zQggGYTUWMGYz2kSi1uDwaFQ4ZJhavcq4PJOVIeC0+ozm5AlsvRs/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706840731; c=relaxed/simple;
-	bh=+dGqQcOQIiIKm4nZa/D+qKz6TWrGgBGYDyGjniDUOCI=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Cc:Content-Type; b=X1c4W2FxnNSeGM84e5lg4LezbVeQOdO/xLdagakfKV0n+Bv+5zMmf85Z4BTXfNwKyns42fx0Ld8QfRbJG1pW2irKxUhhS/9tMgVVYOH1v1oYvrH9TK/xHVRmzDp8n9XzzCGQyHdvPZ4/hPt0MNYfMuoHgofSrUqRtvzgrdlIBtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ezlwYCE9; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60424617790so14621387b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 18:25:29 -0800 (PST)
+	s=arc-20240116; t=1706840892; c=relaxed/simple;
+	bh=rpDe5b+V/4D+ojZKAKLnU3kGC0FGFddkWQWVw2UB06A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Bfx1fu7CBUKLiidF2n4fG8Jsz50DIadDcCcpeyOyx1D+4n0xWgB8TvQ7+6dhrifPETJYfGxBNHryr/gMw6iibJ08HI8PxLXO4UT3f52QBUSh/DSHM5lWEYWPcbmpnK3yMSli5RQTQpz+kvhTXPGlILQk1pKVd/bIUKEihDHCd2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=BJzDeN4w; arc=none smtp.client-ip=209.85.210.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6e11cda9f6fso940944a34.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 18:28:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706840728; x=1707445528; darn=vger.kernel.org;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eE8QPd1iYx3LHUzisH1HrCND1yAXDK1EtvXVhual9UM=;
-        b=ezlwYCE9t6t1TrxsZ0UaWrChQKObdDSkzmUaS4H1JVsE2pBMW/diNYMo9xkG1/SMDS
-         Fe4QUBKxQDLN6AMgR5q1NjsaNJ91zJjhZbK6uLHKkDc8ObUp7ozBKbvd/msiHW0Euyxw
-         frf8woe9Q5Vz1CDla1eZK32VOfIa/06lxgDuFLmAFwG7FJ8eCZtuAysR+Vxwygvo1V2f
-         MmbjndJ9uFLxF+TiXr+vpEv7u0L0rdl+CinBKmMMJnErfvHPaOAOE7LYi30a6qVGpu/r
-         cSJrFiYtowgimvReBmTHPz9HwPahUhPjTvAyoODHJJ60vfKdQN0Sq9dBJPe7iIihieAG
-         5Xtg==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706840889; x=1707445689; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=nH6kvi7IzHM1HjT9d3ebo606kaCmtup5eOU1YOyCeeQ=;
+        b=BJzDeN4wHlZUpyJsHUvQuvMd93OWPeQhvpwM8dvkW2/Pu0WCqhedjZOoIwWkZesuL0
+         fmrbQEnLB2GY1EX9lfdRpQM/ZfrMDyzumGFjHheU3Hf8PnawGCM5/9gkgYGJLmrWIqlp
+         7KrTXNDMOmssAkXyDr7PPA9zMcndgrLjfxqLLxAx1lyaUnZzvjeoKsGc0dP9VykxiKl8
+         5Kf8fWr99v92MCWVRIeoyhM/hIWZSiHe8Uw81CVGhb2ZR2IGAnaMIddd/ziYPbBWu0ms
+         4iAhd3ZnredVIXW3FwJr4QDtx8gXCfBMKiPiKCeFK02ITbKlwhdIDoKic3nKSjDMEay6
+         RkMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706840728; x=1707445528;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eE8QPd1iYx3LHUzisH1HrCND1yAXDK1EtvXVhual9UM=;
-        b=sWMRF0TYvatnluJ5axFwnYl5BK73JxiXhz1qdMPT53gxAOzbWpCip4fanwexkRUlT7
-         IqXYZAuLR3rQNnQA8z1q62VFhesZCqCUk3huWMD5o1yoQxcCSpoIeN5xuvNBqpquQd1B
-         xJRGmGIFaPq/nQ3cOTrrv/RX3rE1Y0W+WWZaJx126SzXKnWN98Zf1WtWtyPF9xdN23uc
-         6fkDVbwaET/XkYY5FVZP8GQ0/nSSeo9kEzm8nZ7Sx29wCnJ6pnRhDsTBivCEaY7T0ovY
-         snfGM+4h0vmYq8JFtDSOGWHRTXAuyMq89K3w6PSYhFpGXMJDIoK69oyUuXL5x8c9OEGu
-         3j1A==
-X-Gm-Message-State: AOJu0YzMXJtRvGMn1MFPux5PE4lEXONQ/RGAwEa8goTn1aO3s0NR854j
-	VYILyFw03XuGL8jNTseJaeIfV/rITt2BfqCI/NfluGLRjmCall5guuSRh/767O3bAIzJOsavz+2
-	kMa4KhA==
-X-Google-Smtp-Source: AGHT+IFyaEF/ETiRB987VcTkusZgZC8UkNBJPlVfzM/7ddIeVtovnYsKOR8cUeLzW5k2gM7M7l+i/9HBjC2G
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:a85f:db1d:a66b:7f53])
- (user=irogers job=sendgmr) by 2002:a05:690c:f8d:b0:604:1eea:a39e with SMTP id
- df13-20020a05690c0f8d00b006041eeaa39emr554346ywb.3.1706840728429; Thu, 01 Feb
- 2024 18:25:28 -0800 (PST)
-Date: Thu,  1 Feb 2024 18:25:12 -0800
-In-Reply-To: <20240202022512.467636-1-irogers@google.com>
-Message-Id: <20240202022512.467636-3-irogers@google.com>
+        d=1e100.net; s=20230601; t=1706840889; x=1707445689;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nH6kvi7IzHM1HjT9d3ebo606kaCmtup5eOU1YOyCeeQ=;
+        b=MOUQJzxI9UKwjup6I+i2ijvxfhtx8/na4M2mxNPUMPe+tp9yG2M469itSMl3YtWZbV
+         6v/nVNXIXLA/MenNW7Ux5KxGJRPV9ga3OQo2FmqjZTO9ykgo/UCJVqUISMRn5sckbmmw
+         9GMLpYv60uu1Fh73/lShEC8NoJzH6tMeAK2fNryLHU6gdIUP9zt5WwHvNWEwPoGxCnk7
+         JGZlAeQRg4j3nmnh4aFhtKbGMyl7mjDhUnNC+AeJ/JRJs0YEHE+X19izUeJnz6QUEFr1
+         GeOYzcsKL2YEprVEsyhPB+D/lfiAhEnSBUcL/F9CqVxID91onfJ0F+j21rTyT7BQvQMt
+         tbSg==
+X-Gm-Message-State: AOJu0YyXarKX5wSM2ZJ+5MnUhvcBvHn6q2hQUS2huLkFudGGZPHvElNG
+	vnGvlRRzK3DyMY84w7LL55bYqbTbQftEF6UqTmib8350lq/5yfQ84mMZ+ivXZmk=
+X-Google-Smtp-Source: AGHT+IFp062ooy/IHYTf+Z1OQbUuwLGyLVscZ2fxBHLPNsW3kl1YytnGZuKwPGTv6LdCdXItOvcJDA==
+X-Received: by 2002:a05:6358:6f9e:b0:175:f9b8:89bf with SMTP id s30-20020a0563586f9e00b00175f9b889bfmr754264rwn.22.1706840888844;
+        Thu, 01 Feb 2024 18:28:08 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXzW8HfzfBFndPbvvprCc2R3w70/c3RF57w2kO5sNhkjXiUc1+iJh25RmbGSpHdo5iPTXeHAnAB7skw2x1KEoPntxLdqUFcfINGL9DWhTDZaEPfW02nxrhVVq93LOqGqNgq0r2qw1V7QZ4yQQb9qzK9vG4gCQm+HEhoLTBwLMa67+YJOLZ31OGsXEicpDP0DEqDcubfynAm/g8XPvNWtIf9b3BlmflK4EEeYcg2uN/vMC9b1V1V3JenxQ0f8Fdb7boDEqhfd/fOEWa8BjnidQ1VNbmJzh8ygiJqy/NzNF8GnnxzaQLPE/xjCNrGBSeDM8QyHJD2o/RIpcqCU7zdkZSx+UdVKZjT1sw6QR6wH8bkgpWrrk+HXWDd54eS+Qerhkl4EURj
+Received: from ghost ([12.44.203.122])
+        by smtp.gmail.com with ESMTPSA id f8-20020a63de08000000b005d8aef12380sm524464pgg.73.2024.02.01.18.28.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 18:28:08 -0800 (PST)
+Date: Thu, 1 Feb 2024 18:28:06 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Yangyu Chen <cyy@cyyself.name>
+Cc: Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Shuah Khan <shuah@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-mm@kvack.org,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] riscv: mm: Use hint address in mmap if available
+Message-ID: <ZbxTNjQPFKBatMq+@ghost>
+References: <20240130-use_mmap_hint_address-v3-0-8a655cfa8bcb@rivosinc.com>
+ <20240130-use_mmap_hint_address-v3-1-8a655cfa8bcb@rivosinc.com>
+ <tencent_83E0AB36A9A3032E5A4C4AC864A311DF9406@qq.com>
+ <tencent_068B3B7AE01AC67885E4369AF14109CE6A0A@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240202022512.467636-1-irogers@google.com>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-Subject: [PATCH v1 3/3] perf stat: Fix metric-only aggregation index
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Kajol Jain <kjain@linux.ibm.com>, 
-	John Garry <john.g.garry@oracle.com>, Kaige Ye <ye@kaige.org>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Cc: Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <tencent_068B3B7AE01AC67885E4369AF14109CE6A0A@qq.com>
 
-Aggregation index was being computed using the evsel's cpumap which
-may have a different (typically the same or fewer) entries.
+On Wed, Jan 31, 2024 at 11:59:43PM +0800, Yangyu Chen wrote:
+> On Wed, 2024-01-31 at 22:41 +0800, Yangyu Chen wrote:
+> > On Tue, 2024-01-30 at 17:07 -0800, Charlie Jenkins wrote:
+> > > On riscv it is guaranteed that the address returned by mmap is less
+> > > than
+> > > the hint address. Allow mmap to return an address all the way up to
+> > > addr, if provided, rather than just up to the lower address space.
+> > > 
+> > > This provides a performance benefit as well, allowing mmap to exit
+> > > after
+> > > checking that the address is in range rather than searching for a
+> > > valid
+> > > address.
+> > > 
+> > > It is possible to provide an address that uses at most the same
+> > > number
+> > > of bits, however it is significantly more computationally expensive
+> > > to
+> > > provide that number rather than setting the max to be the hint
+> > > address.
+> > > There is the instruction clz/clzw in Zbb that returns the highest
+> > > set
+> > > bit
+> > > which could be used to performantly implement this, but it would
+> > > still
+> > > be slower than the current implementation. At worst case, half of
+> > > the
+> > > address would not be able to be allocated when a hint address is
+> > > provided.
+> > > 
+> > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > > ---
+> > >  arch/riscv/include/asm/processor.h | 27 +++++++++++---------------
+> > > -
+> > >  1 file changed, 11 insertions(+), 16 deletions(-)
+> > > 
+> > > diff --git a/arch/riscv/include/asm/processor.h
+> > > b/arch/riscv/include/asm/processor.h
+> > > index f19f861cda54..8ece7a8f0e18 100644
+> > > --- a/arch/riscv/include/asm/processor.h
+> > > +++ b/arch/riscv/include/asm/processor.h
+> > > @@ -14,22 +14,16 @@
+> > >  
+> > >  #include <asm/ptrace.h>
+> > >  
+> > > -#ifdef CONFIG_64BIT
+> > > -#define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
+> > > -#define STACK_TOP_MAX		TASK_SIZE_64
+> > > -
+> > >  #define arch_get_mmap_end(addr, len, flags)			\
+> > >  ({								\
+> > >  	unsigned long
+> > > mmap_end;					\
+> > >  	typeof(addr) _addr = (addr);				\
+> > > -	if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) &&
+> > > is_compat_task())) \
+> > > +	if ((_addr) == 0 ||					\
+> > > +	    (IS_ENABLED(CONFIG_COMPAT) && is_compat_task()) ||	\
+> > > +	    ((_addr + len) > BIT(VA_BITS -
+> > > 1)))			\
+> > >  		mmap_end = STACK_TOP_MAX;			\
+> > > -	else if ((_addr) >= VA_USER_SV57)			\
+> > > -		mmap_end = STACK_TOP_MAX;			\
+> > > -	else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >=
+> > > VA_BITS_SV48)) \
+> > > -		mmap_end = VA_USER_SV48;			\
+> > >  	else							\
+> > > -		mmap_end = VA_USER_SV39;			\
+> > > +		mmap_end = (_addr + len);			\
+> > >  	mmap_end;						\
+> > >  })
+> > >  
+> > > @@ -39,17 +33,18 @@
+> > >  	typeof(addr) _addr = (addr);				\
+> > >  	typeof(base) _base = (base);				\
+> > >  	unsigned long rnd_gap = DEFAULT_MAP_WINDOW - (_base);	\
+> > > -	if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) &&
+> > > is_compat_task())) \
+> > > +	if ((_addr) == 0 ||					\
+> > > +	    (IS_ENABLED(CONFIG_COMPAT) && is_compat_task()) ||	\
+> > > +	    ((_addr + len) > BIT(VA_BITS -
+> > > 1)))			\
+> > >  		mmap_base = (_base);				\
+> > > -	else if (((_addr) >= VA_USER_SV57) && (VA_BITS >=
+> > > VA_BITS_SV57)) \
+> > > -		mmap_base = VA_USER_SV57 - rnd_gap;		\
+> > > -	else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >=
+> > > VA_BITS_SV48)) \
+> > > -		mmap_base = VA_USER_SV48 - rnd_gap;		\
+> > >  	else							\
+> > > -		mmap_base = VA_USER_SV39 - rnd_gap;		\
+> > > +		mmap_base = (_addr + len) - rnd_gap;		\
+> > >  	mmap_base;						\
+> > >  })
+> > >  
+> > > +#ifdef CONFIG_64BIT
+> > > +#define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
+> > > +#define STACK_TOP_MAX		TASK_SIZE_64
+> > >  #else
+> > >  #define DEFAULT_MAP_WINDOW	TASK_SIZE
+> > >  #define STACK_TOP_MAX		TASK_SIZE
+> > > 
+> > 
+> > I have carefully tested your patch on qemu with sv57. A bug that
+> > needs
+> > to be solved is that mmap with the same hint address without
+> > MAP_FIXED
+> > set will fail the second time.
+> > 
+> > Userspace code to reproduce the bug:
+> > 
+> > #include <sys/mman.h>
+> > #include <stdio.h>
+> > #include <stdint.h>
+> > 
+> > void test(char *addr) {
+> >     char *res = mmap(addr, 4096, PROT_READ | PROT_WRITE,
+> > MAP_ANONYMOUS
+> > > MAP_PRIVATE, -1, 0);
+> >     printf("hint %p got %p.\n", addr, res);
+> > }
+> > 
+> > int main (void) {
+> >     test(1<<30);
+> >     test(1<<30);
+> >     test(1<<30);
+> >     return 0;
+> > }
+> > 
+> > output:
+> > 
+> > hint 0x40000000 got 0x40000000.
+> > hint 0x40000000 got 0xffffffffffffffff.
+> > hint 0x40000000 got 0xffffffffffffffff.
+> > 
+> > output on x86:
+> > 
+> > hint 0x40000000 got 0x40000000.
+> > hint 0x40000000 got 0x7f9171363000.
+> > hint 0x40000000 got 0x7f9171362000.
+> > 
+> > It may need to implement a special arch_get_unmapped_area and
+> > arch_get_unmapped_area_topdown function.
+> > 
+> 
+> This is because hint address < rnd_gap. I have tried to let mmap_base =
+> min((_addr + len), (base) + TASK_SIZE - DEFAULT_MAP_WINDOW). However it
+> does not work for bottom-up while ulimit -s is unlimited. You said this
+> behavior is expected from patch v2 review. However it brings a new
+> regression even on sv39 systems.
+> 
+> I still don't know the reason why use addr+len as the upper-bound. I
+> think solution like x86/arm64/powerpc provide two address space switch
+> based on whether hint address above the default map window is enough.
+> 
 
-Before:
-```
-$ perf stat --metric-only -A -M memory_bandwidth_total -a sleep 1
+Yep this is expected. It is up to the maintainers to decide.
 
- Performance counter stats for 'system wide':
-
-       MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total
-CPU0                            12.8                           0.0                          12.9                          12.7                           0.0                          12.6
-CPU1
-
-       1.007806367 seconds time elapsed
-```
-
-After:
-```
-$ perf stat --metric-only -A -M memory_bandwidth_total -a sleep 1
-
- Performance counter stats for 'system wide':
-
-       MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total
-CPU0                            15.4                           0.0                          15.3                          15.0                           0.0                          14.9
-CPU18                            0.0                           0.0                          13.5                           5.2                           0.0                          11.9
-
-       1.007858736 seconds time elapsed
-```
-
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/stat-display.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index 8c61f8627ebc..ce830c6afdf2 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -1126,11 +1126,16 @@ static void print_no_aggr_metric(struct perf_stat_config *config,
- 			u64 ena, run, val;
- 			double uval;
- 			struct perf_stat_evsel *ps = counter->stats;
--			int aggr_idx = perf_cpu_map__idx(evsel__cpus(counter), cpu);
-+			int aggr_idx = 0;
- 
--			if (aggr_idx < 0)
-+			if (!perf_cpu_map__has(evsel__cpus(counter), cpu))
- 				continue;
- 
-+			cpu_aggr_map__for_each_idx(aggr_idx, config->aggr_map) {
-+				if (config->aggr_map->map[aggr_idx].cpu.cpu == cpu.cpu)
-+					break;
-+			}
-+
- 			os->evsel = counter;
- 			os->id = aggr_cpu_id__cpu(cpu, /*data=*/NULL);
- 			if (first) {
--- 
-2.43.0.594.gd9cf4e227d-goog
+- Charlie
 
 
