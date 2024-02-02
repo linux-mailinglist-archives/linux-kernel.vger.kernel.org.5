@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-49417-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC9E9846A2E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:10:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD74D846A30
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:10:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B08A1F2AEB9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:10:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C31B1C25391
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:10:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8611328373;
-	Fri,  2 Feb 2024 08:08:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1869E3A1CF;
+	Fri,  2 Feb 2024 08:08:42 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F260117C67
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 08:08:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E07A017C6F
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 08:08:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706861318; cv=none; b=jk4ZG+G4l5Db4daKidxwuwlraxrCermAPzNfCDmR7+zfmqRZOdpGJ4zm9VUp+1ZSVFEcN+q1SenxNfrPSi0Sob20rfiBS/vFCCkTK6yUbyLWO0uyw24Bk2jF55GsazgPMmWP7yO6Em3tzM3+BLC/289CYBTr3sH3cEmaVSNQfto=
+	t=1706861321; cv=none; b=gvubq1Iqu4A6cvR9lCO/ax6KwVNmBL/ui9NBeYlaGRibf5j/C2skHKmsjtddraj2OfMvPkGGSRcZjIICRLAgSUGRpD+Pf48f+gLqNBauYndd0q5OsB0EMPInKqGI8h1gu1MZcKaZU15nAl6+XujclV/0JvW8UldcwV1dbI6T9t4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706861318; c=relaxed/simple;
-	bh=ANhmHka+h9ajCDCxtSgwGVd7uqj0IoMiS8o8hWXf4cM=;
+	s=arc-20240116; t=1706861321; c=relaxed/simple;
+	bh=G4QEC3AJOHW95nVtaRI4iF4ZvUTMkYQdtSKQEs0NfH0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QCzeWXJvoaZn9HVSCeaZFSAez6HKZZ90ID7P+Pon8r7pHCxAR8Kcu3pC/R4kBjgvg20PvztbnHdA1IDSnWRDa03LJk52f8bqkUFV7UJV7S1PIFfeZ/fJn5OXd+kNqtQXc5ufT2XOhtFKRNpSdRe+Zdo4YZPIiQIaaNwCAJa9lX8=
+	 MIME-Version; b=R3u4ST4ur5bPiA3kFq3EBFIzWO9ib0loz3yL6H87NcUSPkNZqFmdAVjvtrsFTd4CTP1XL0wyo2MoeQ4dW7jqOW/dOW/MVY5aZYxx85f0AGGLoVW8+8KGSiseT/a0uxSHLAOlvE8HDJ4NeWr9pKLi8qvs7e7/7n/RoxZzP/5hqNs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BF9921764;
-	Fri,  2 Feb 2024 00:09:17 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 911E2176A;
+	Fri,  2 Feb 2024 00:09:21 -0800 (PST)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D3F633F5A1;
-	Fri,  2 Feb 2024 00:08:31 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A536F3F5A1;
+	Fri,  2 Feb 2024 00:08:35 -0800 (PST)
 From: Ryan Roberts <ryan.roberts@arm.com>
 To: Catalin Marinas <catalin.marinas@arm.com>,
 	Will Deacon <will@kernel.org>,
@@ -64,9 +64,9 @@ Cc: Ryan Roberts <ryan.roberts@arm.com>,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 05/25] arm64/mm: Convert pte_next_pfn() to pte_advance_pfn()
-Date: Fri,  2 Feb 2024 08:07:36 +0000
-Message-Id: <20240202080756.1453939-6-ryan.roberts@arm.com>
+Subject: [PATCH v5 06/25] powerpc/mm: Convert pte_next_pfn() to pte_advance_pfn()
+Date: Fri,  2 Feb 2024 08:07:37 +0000
+Message-Id: <20240202080756.1453939-7-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240202080756.1453939-1-ryan.roberts@arm.com>
 References: <20240202080756.1453939-1-ryan.roberts@arm.com>
@@ -83,36 +83,22 @@ improve the API to do so and change the name.
 
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- arch/arm64/include/asm/pgtable.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/powerpc/mm/pgtable.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 9428801c1040..6a6cc78cf879 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -351,10 +351,10 @@ static inline pgprot_t pte_pgprot(pte_t pte)
- 	return __pgprot(pte_val(pfn_pte(pfn, __pgprot(0))) ^ pte_val(pte));
- }
- 
--#define pte_next_pfn pte_next_pfn
--static inline pte_t pte_next_pfn(pte_t pte)
-+#define pte_advance_pfn pte_advance_pfn
-+static inline pte_t pte_advance_pfn(pte_t pte, unsigned long nr)
- {
--	return pfn_pte(pte_pfn(pte) + 1, pte_pgprot(pte));
-+	return pfn_pte(pte_pfn(pte) + nr, pte_pgprot(pte));
- }
- 
- static inline void set_ptes(struct mm_struct *mm,
-@@ -370,7 +370,7 @@ static inline void set_ptes(struct mm_struct *mm,
- 		if (--nr == 0)
+diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
+index 549a440ed7f6..6853cdb1290d 100644
+--- a/arch/powerpc/mm/pgtable.c
++++ b/arch/powerpc/mm/pgtable.c
+@@ -220,7 +220,7 @@ void set_ptes(struct mm_struct *mm, unsigned long addr, pte_t *ptep,
  			break;
  		ptep++;
+ 		addr += PAGE_SIZE;
 -		pte = pte_next_pfn(pte);
 +		pte = pte_advance_pfn(pte, 1);
  	}
  }
- #define set_ptes set_ptes
+ 
 -- 
 2.25.1
 
