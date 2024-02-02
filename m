@@ -1,102 +1,106 @@
-Return-Path: <linux-kernel+bounces-49865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67F2A8470A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:51:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDBE18470A9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:53:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25A102871AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:51:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5ECA8B28583
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:53:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39A3717C67;
-	Fri,  2 Feb 2024 12:51:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D845253;
+	Fri,  2 Feb 2024 12:53:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jgCPUre4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y7d74Z6e"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AA5B46A1;
-	Fri,  2 Feb 2024 12:51:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F5E4428
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 12:53:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706878267; cv=none; b=vBMwd+4J7ud77E9uPmGp2uGB/btHRNCpHwb5qVUisd3gW2QKU6m48l4ro3gakI29MKOyXsBogy18TV+qg9Op7vpF4Y2VmyXVLdU3KmldNXaUBlonIl4FFkg9VqzeKSRYf3f5ZRpLlDU6qp6apnB86ELOGmxIFtI/wBxFHZBm8Y0=
+	t=1706878384; cv=none; b=lhk0ilWbnYudkzN66LhvVKGxQTWU082vePGMlvtCaUkP2fEQw7SgBp79H/pVkZnZloR2V+FJKPhiPp/05T7IMxM60BFaJq8zrUJRYbi6nLddoxVHjAwVLYsdMguJGfn0pk9tN1MkJpz6XnwYH9ypirv/azWs9+rJfcgbxyvSG2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706878267; c=relaxed/simple;
-	bh=bohs+MfRQtoEvlbrdoNXCxU86/PjKr+jUrCw8c/Vbak=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=f71cPalTzj17nAwPHOCFsPxfOF4NEHb3Qa4fzG/zofhnWm9+oVWHi1UkamZNa8bTigA2GXZRiz4NAe7Utv6aaxDe0VrUDZZt3FtdQtQGTIRLSvmnNhpwnVqqDKmMljVYa0uqaeDRFRxYiBKEV0whHgDboXpcT7GyLzxnzaByt5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jgCPUre4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B5DCC43390;
-	Fri,  2 Feb 2024 12:51:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706878266;
-	bh=bohs+MfRQtoEvlbrdoNXCxU86/PjKr+jUrCw8c/Vbak=;
-	h=From:To:Cc:Subject:Date:From;
-	b=jgCPUre4x8M4zBJWCaJb4zOgOhqI0TLLjGDrWbZBmG+RHHh5dkzO7D8EpwaWU0jcv
-	 sQ3qIa/mLGTPGceZucN8231CoKtoPMgnggFHnxgYAQWYNJ3xEC9hSlHgy669XbaotB
-	 a66B3kI9Sdes77idWssZiYHA1+Q2WnXBkp6Yfy2opQaCyh4sQMd/lL7GCpc5i98V7j
-	 Y5/hFCDrdA0U5th+9eDblPZv9eJsSFibGRhG2EGD8lO4FBIZl9lSiyrpt2Y0deBIXI
-	 g0mso1YO0bfAK1GLd7F3IIRA/BNetGiSrXCpWFqLj948v3vPfpYHCBUrmxASYzaOHn
-	 KnHZqrng12pNw==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Christian Brauner <brauner@kernel.org>,
-	Jeff Layton <jlayton@kernel.org>,
-	Jia-Ju Bai <baijiaju1990@gmail.com>,
-	Edward Lo <loyuantsung@gmail.com>,
-	Abdun Nihaal <abdun.nihaal@gmail.com>,
-	ntfs3@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ntfs3: avoid an unused variable warning
-Date: Fri,  2 Feb 2024 13:50:56 +0100
-Message-Id: <20240202125101.986302-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706878384; c=relaxed/simple;
+	bh=uRWwHyoDqw4F+LcubyhbFy0WTRbHEZvIDfkqsptYoKs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SA6j8G2MmOCc3qK4zRfN/+8l5d4aTwUYd5gnQheFjZAJ76ivysEZr5YxOOynPrW8ImzskOvu8vMjuxkQvSIY85mY3vEKVTxMKenocdKYDX/7r98dzselyzX1/gGyon+Uhk1m5TanaWJ2ZNrruLf/RuEFZjNSRUP9M237mRTEeA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y7d74Z6e; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc6d5206f18so2016986276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 04:53:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706878382; x=1707483182; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uRWwHyoDqw4F+LcubyhbFy0WTRbHEZvIDfkqsptYoKs=;
+        b=Y7d74Z6e9SEJUVQ4XfwbTLTHcer6sTnrYjh1S30fQgVP3ayr8HLkbfVM57+sKQQPrf
+         9fJcFibgrSOWnWmqAykCXQNeO7C7Hrh6xcP+Iq4+3jXk8HDylQExMD2ajwCRnSVNudD8
+         aLPnO5uDv2BXbmp652tPSTMwa9CbL6pslRC26jN4geFwg2qswS7TwxXl5EnB05zJP2Me
+         xvE5IMQE6ZejATK07rOi+KrzDIha8rgDQA4wWRtn+yYnYqe99IFOkfkkG+pAGt2T1c78
+         w4AZXVAYM6IeANRrduj3Fy7GxI360UL5FJwLtpRoBzmugQKk6ofxpMgkDt+/k83LJhNV
+         nmhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706878382; x=1707483182;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uRWwHyoDqw4F+LcubyhbFy0WTRbHEZvIDfkqsptYoKs=;
+        b=Bgrwg6xjg9vtSsmaIhQWoPwZrbsD+XrwV/w27ds6neVOWOh9gN0710OgS32yiegq4J
+         7i0MCwrfy4u3OpQ3O4mjrF/dt4yUEoLuoJE9BhvTRyg0CTTZ81XGUeV0k3TywHmju4fH
+         U9FujtHZGNrmR/hqZDUFqz+nAIfC2OgI8cEJXT1HBt5qNH+3Mn3uh3qtQRquCQnWykoo
+         oyUm9hSTnoaV2DgCXK89yPO08rBe4BWzk5rbL9t4nNx/pe5YlIEFDOz6gUvB2WCIs9/W
+         sIFRdECgSELdCa7Hv1cx5JqTfhpdVQ+LQSvrE+D5iijbrbyPeOTwjje0I4mpf/xCFIl2
+         CdOg==
+X-Gm-Message-State: AOJu0YxMA/UpbYs/nwOiEmiTDiTZ1CWcR6STMg7NR0NvBa/oy7tqCyaI
+	8rgAtWEqY3gnFKrgLEuJ55bl8FpIT843IzJQ+uf2ES6ejaPrk9bB515nvVE7Jv6UTlPW0WDTIgO
+	CHOG0ii/0ZUsrHRcLCa44Ht9+J+g=
+X-Google-Smtp-Source: AGHT+IEVwsS41bhKowc+2g3IteSOCMf7c4xkXbS8bpePW360AFCPZR0/4nOiOmtp7Z3g1CTElPcncPZKBKRacQ9mLMA=
+X-Received: by 2002:a25:d3d1:0:b0:dc2:470b:8883 with SMTP id
+ e200-20020a25d3d1000000b00dc2470b8883mr8155620ybf.11.1706878382468; Fri, 02
+ Feb 2024 04:53:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240201125226.28372-1-ioworker0@gmail.com> <Zby-sHLDlmTRaUcd@tiehlicka>
+ <CAK1f24=7sy_Bczpt5YeDbkhfriYUc1=zreSFdGCxfF3R0D6sRQ@mail.gmail.com> <ZbzfxNn4AYnTVFLh@tiehlicka>
+In-Reply-To: <ZbzfxNn4AYnTVFLh@tiehlicka>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Fri, 2 Feb 2024 20:52:48 +0800
+Message-ID: <CAK1f24mvBkc2c=fHL6UxMhL2mgLHVrSwZfE5516bOR0yVdfZpQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm/khugepaged: skip copying lazyfree pages on collapse
+To: Michal Hocko <mhocko@suse.com>
+Cc: akpm@linux-foundation.org, zokeefe@google.com, david@redhat.com, 
+	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com, 
+	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, Feb 2, 2024 at 8:27=E2=80=AFPM Michal Hocko <mhocko@suse.com> wrote=
+:
+>
+> On Fri 02-02-24 19:18:31, Lance Yang wrote:
+> > IMO, since it's treated the same as pte_none,
+> > perhaps lazyfree pages shouldn't be copied to
+> > the new huge page.
+>
+> Why? The content of MADV_FREE page is valid until it is reclaimed.
 
-A newly introduced variable is only referenced in an #ifdef:
+IMO, if MADV_FREE pages are considered valid until
+reclaimed, treating them the same as pte_none might
+pose a conflict.
 
-fs/ntfs3/frecord.c: In function 'ni_read_frame':
-fs/ntfs3/frecord.c:2460:16: error: unused variable 'i_size' [-Werror=unused-variable]
+Thanks,
+Lance
 
-Move it into the same conditional block.
-
-Fixes: 4fd6c08a16d7 ("fs/ntfs3: Use i_size_read and i_size_write")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- fs/ntfs3/frecord.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
-index 3b42938a9d3b..7f27382e0ce2 100644
---- a/fs/ntfs3/frecord.c
-+++ b/fs/ntfs3/frecord.c
-@@ -2457,7 +2457,6 @@ int ni_read_frame(struct ntfs_inode *ni, u64 frame_vbo, struct page **pages,
- 	struct ATTR_LIST_ENTRY *le = NULL;
- 	struct runs_tree *run = &ni->file.run;
- 	u64 valid_size = ni->i_valid;
--	loff_t i_size = i_size_read(&ni->vfs_inode);
- 	u64 vbo_disk;
- 	size_t unc_size;
- 	u32 frame_size, i, npages_disk, ondisk_size;
-@@ -2509,6 +2508,7 @@ int ni_read_frame(struct ntfs_inode *ni, u64 frame_vbo, struct page **pages,
- 		err = -EOPNOTSUPP;
- 		goto out1;
- #else
-+		loff_t i_size = i_size_read(&ni->vfs_inode);
- 		u32 frame_bits = ni_ext_compress_bits(ni);
- 		u64 frame64 = frame_vbo >> frame_bits;
- 		u64 frames, vbo_data;
--- 
-2.39.2
-
+> --
+> Michal Hocko
+> SUSE Labs
 
