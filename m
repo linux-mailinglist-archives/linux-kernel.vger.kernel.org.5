@@ -1,67 +1,68 @@
-Return-Path: <linux-kernel+bounces-50653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50654-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85D31847C1F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:16:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36964847C22
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:17:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C2B3B22B17
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:16:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2027288D84
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:17:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87FB885928;
-	Fri,  2 Feb 2024 22:16:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F9185923;
+	Fri,  2 Feb 2024 22:17:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MZnUZhRh"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="I0QVDQ4N"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 363F6839FA
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 22:15:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F4095839FA
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 22:17:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706912161; cv=none; b=e4f00l3GrSRNCHbrdegsid4JnM9i/hNl6xUg0st68Q6XzlDDREeuED9mgIL20U8ONv6AMD3uDeW2jjaj5DvCsL9Sr1DfNWSW37WFlK0QLhj/uFMNv+IoHq/hwiMhyykFyS96ESzi7zoBZPUduAx+lBpSkPBz0kZ+HIl3cLcRGKg=
+	t=1706912260; cv=none; b=e0u7i1LzCrurjZ16X2x9r9b+1dvor2zPFDtzOYx7OWGhuV+qJuvYTTviDZ4S5SEKGxMZuwXiyCKRueAFLdwfkcfpFxxH9ZfZFDOwfMu/GQ70kSt0njeZjtOZsdNUm4whwyiMklpseES5ttlVN2WqteicINMMb3VqDu+CztwDsdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706912161; c=relaxed/simple;
-	bh=8pw1Cnd6ggE/qSWHGj+1Pwn5+jqq1Ywaxo6TYUiW/5w=;
+	s=arc-20240116; t=1706912260; c=relaxed/simple;
+	bh=OmEmEuiItDGu8nZORsgc/8IQGeLxhZ0WgQHbE2mMm0U=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qVF0Nr1uS951/e6JC//YincsQFy0Fva8KoBjdWvUFExgbvVfC3A78hJL1OinxuzaTRf1GQ9mY2+JjPBFdVjJZuH7wY7SliSXjGYxD2FlZa4Zl8KFS7hM3FCm/adLdwI7DmtQ7A68pe83VHi8JsDeXNM7ILM/qzcPD660eqqwOg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MZnUZhRh; arc=none smtp.client-ip=209.85.218.42
+	 To:Cc:Content-Type; b=Z6LY69wNOSdS0MUy2TMlm4zVtiISR8SEup5ixfn/ylSUPD/UanADYqm8VM3F0IW/AvbBSiiKqDf5g67eOiqo0AxsG1Wvh0X/e+2BlKtO/ggBbItFnhdS/WGOaHD0dYrjI3E9PWxmLJxq8yHtsxg39p/PJtsepst3d+/KsNjfQT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=I0QVDQ4N; arc=none smtp.client-ip=209.85.218.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a3122b70439so356009166b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 14:15:59 -0800 (PST)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a37296534c5so69136766b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 14:17:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706912157; x=1707516957; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=PCVD0Cf1Do5W0DWqD5HKqZh07wW2qlZPmybdlhb8yiw=;
-        b=MZnUZhRhJDwVpztZIMo7kw3fZ36GO4Z6WLLmt5nMBmlwo8zdQxeRvTPq+QlJd3XqGr
-         WR74YzFR4nroGsGsoMYiQMXOw3hJA25si0rTiN/PSZPiAdYn8fAYZNfFz33w7MV6Vx9g
-         9LCcdZp/3IIwEj6OiZ2c2d7iYEHGdTE0H7NFoLu3w0/S25/vqJLg7zA9k4k3uhrUmnlt
-         5BEek3dl3QVJAAqifIeAlJul5oXq9uxBwRucE1BPpaNvZQpmRh+BVTaaU8kj0T0K6bnU
-         JI+lXKw5GrNkH/JIqGREPxBrk9zLbkNRYStN3onK/1C8MS91LNNjUI6lIM5kz0yHjTXu
-         aT+w==
+        d=google.com; s=20230601; t=1706912257; x=1707517057; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OmEmEuiItDGu8nZORsgc/8IQGeLxhZ0WgQHbE2mMm0U=;
+        b=I0QVDQ4N6tW1/MdoZlDw6MhYuTg6J7m0S4mHKDyl977CD6gZ+BZkmxwQPw1e2sPe8D
+         j7captiGjz9WSsjZsn17KcFy9IVI8v3mI2c+GboBO1l/d4hZfZ4Wc9KSSbQPYR5ucxhM
+         6xHH1D6YBR/p571pd9coXS0SiJrcnpxJXYsM6Yh1Zm56qj+Rk4vLbgjWxLdiHEg/K2ub
+         hNs8AoROOsnVwvoC+EKrIJTGeKB9NFlp844PDKEjmO4vR7goVtj51kfmewHyetkZbJjh
+         pGHzefPSpVuppnSHioV5IMNpoz7y8FpSKXzaXMjQFrSM9mxvDH2A057WsbBTwE9rXo5N
+         VBaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706912157; x=1707516957;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PCVD0Cf1Do5W0DWqD5HKqZh07wW2qlZPmybdlhb8yiw=;
-        b=gPUFKx+rxbDn5EAmxXNLDSXTWA1+wFBb92O3iMB8/zk1DmlFNHEIuicLVBTd6OE1+9
-         8JqstttWhjLL/VfB5tB5XS7DTrB0Apyd6z9eDM7xGHOY8sYrw7wm4iNHxkNA4ms6KXJE
-         k101r5xefAu5PRivdLCMG3gXxOUbPuaJnBSrsuD/SWAzmf+7XdGc4iDwPIOdMyVcl0St
-         sLRvrjl3CNZiNDlnhNKX/yJdxQFG91u3Ytfo/5WNpw0OcR5+c5Uw5+3vKDNPwqwVuDIN
-         MbKp6KD1Lq09oRKCUyHON9pi3tebf4iTF0XzwD+zUZcrEXypLIdc6cy7dn9/U8E2D8gS
-         PK2A==
-X-Gm-Message-State: AOJu0Yy+UbVhTYwNbF23v8MyHLb4eVtXO8mmZTxuI/VucUfW0dm2tKE1
-	+FH4vPNfrLlbJNWtcbfNQJZMdkwa9E78q5nf5uMuwUe36YK/tjzSqYVJpe8ubkBOhc0pRSfxQwI
-	A+FhsGBAPRqDlvN4i3CPgksgidz2RjBeFZnia
-X-Google-Smtp-Source: AGHT+IHhCwYQ0fHFpy+88NTrFV9TFaUez9IFTRwHY18XPpRICXORb+lu/PENlfo69PtNBocvU6jZtVXQ7bV16MWte7g=
-X-Received: by 2002:a17:906:3bdb:b0:a28:c5dc:4802 with SMTP id
- v27-20020a1709063bdb00b00a28c5dc4802mr6921315ejf.31.1706912157344; Fri, 02
- Feb 2024 14:15:57 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706912257; x=1707517057;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OmEmEuiItDGu8nZORsgc/8IQGeLxhZ0WgQHbE2mMm0U=;
+        b=l+2h/N7noiXPfuwlhHQpkQPYPd/mQ1QFbUMtiUDxhDguTR/G1L+pJGpwHYwpCb2/sP
+         +9eluvkfv2U+dbgpPL33PzHxHlGyUkTzR/KlSB/F1/gwt0yfTSPndQEPXD1aYjl/z9/e
+         qOAkFhTl5ap/mNqYLu3Q83YTER8BGaqqSF9iLayXe7Ct9XkYB4pwkjaBMtDwBPpq+vZ+
+         /qvEPp+A54rpw2WhQKrJMZeAhl5kDsAtYOkYAm983RXZ2ryOudLK+T24vybG0r5Lk4zJ
+         NqaipYpPru+qdSX3nRuL+xRe25j04ZtWyAJjbmjyAZFUPaWgYloWa6Dz6Cgx2ArQyyQj
+         i4Aw==
+X-Gm-Message-State: AOJu0YyCs4HipP0i83Iw5MREC7H4IFTEgCA0GjRJqRHIkJg5bdHy7WCX
+	apLX4e3rt6B+GzlY0SvH0PWi5VBLt47Xb812ZUs1sSzcX9eHZPmuZGBH941vD+4leAYaXLkqtw0
+	JIpQs8VClkAV1JZz2mIQK6SJ0Xt5yJndcsVMF
+X-Google-Smtp-Source: AGHT+IHuvbdxW0zAoKnULFmiDvyu5U4kV1ShscDlooT/WDYlEtrlBifsJY9Ywptb+Nc17yR5AkZm4GMeAlGgTpQWL28=
+X-Received: by 2002:a17:906:e0b:b0:a36:73c0:d204 with SMTP id
+ l11-20020a1709060e0b00b00a3673c0d204mr4889840eji.50.1706912256992; Fri, 02
+ Feb 2024 14:17:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,43 +70,40 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240201-b4-zswap-invalidate-entry-v1-0-56ed496b6e55@bytedance.com>
- <20240201-b4-zswap-invalidate-entry-v1-5-56ed496b6e55@bytedance.com>
- <20240201181240.GE321148@cmpxchg.org> <d5455b43-aa22-4931-a6b3-062128f4d30f@bytedance.com>
-In-Reply-To: <d5455b43-aa22-4931-a6b3-062128f4d30f@bytedance.com>
+ <20240201-b4-zswap-invalidate-entry-v1-4-56ed496b6e55@bytedance.com>
+In-Reply-To: <20240201-b4-zswap-invalidate-entry-v1-4-56ed496b6e55@bytedance.com>
 From: Yosry Ahmed <yosryahmed@google.com>
-Date: Fri, 2 Feb 2024 14:15:19 -0800
-Message-ID: <CAJD7tkb-GZriP6+HdgbkvcGTAAO=YZmGtQ1=AAhJkQJj_CmoYQ@mail.gmail.com>
-Subject: Re: [PATCH 5/6] mm/zswap: only support zswap_exclusive_loads_enabled
+Date: Fri, 2 Feb 2024 14:17:00 -0800
+Message-ID: <CAJD7tkZ-h4Hu0Lq8YBx_0jpoG=d9s8M_V0DUnk930o5iCMbbJg@mail.gmail.com>
+Subject: Re: [PATCH 4/6] mm/zswap: remove duplicate_entry debug value
 To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>, 
+Cc: Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
 	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
 	linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> I just A/B test kernel building in tmpfs directory, memory.max=2GB.
-> (zswap writeback enabled and shrinker_enabled, one 50GB swapfile)
+On Thu, Feb 1, 2024 at 7:50=E2=80=AFAM Chengming Zhou
+<zhouchengming@bytedance.com> wrote:
 >
-> From the below results, exclusive mode has fewer scan and refault.
+> cat /sys/kernel/debug/zswap/duplicate_entry
+> 2086447
 >
->                               zswap-invalidate-entry        zswap-invalidate-entry-exclusive
-> real                          63.80                         63.01
-> user                          1063.83                       1061.32
-> sys                           290.31                        266.15
->                               zswap-invalidate-entry        zswap-invalidate-entry-exclusive
-> workingset_refault_anon       2383084.40                    1976397.40
-> workingset_refault_file       44134.00                      45689.40
-> workingset_activate_anon      837878.00                     728441.20
-> workingset_activate_file      4710.00                       4085.20
-> workingset_restore_anon       732622.60                     639428.40
-> workingset_restore_file       1007.00                       926.80
-> workingset_nodereclaim        0.00                          0.00
-> pgscan                        14343003.40                   12409570.20
-> pgscan_kswapd                 0.00                          0.00
-> pgscan_direct                 14343003.40                   12409570.20
-> pgscan_khugepaged             0.00                          0.00
-
-I think the numbers look really good, and as I mentioned, we have been
-doing this in production for many years now, so:
+> When testing, the duplicate_entry value is very high, but no warning
+> message in the kernel log. From the comment of duplicate_entry
+> "Duplicate store was encountered (rare)", it seems something goes wrong.
+>
+> Actually it's incremented in the beginning of zswap_store(), which found
+> its zswap entry has already on the tree. And this is a normal case,
+> since the folio could leave zswap entry on the tree after swapin,
+> later it's dirtied and swapout/zswap_store again, found its original
+> zswap entry. (Maybe we can reuse it instead of invalidating it?)
+>
+> So duplicate_entry should be only incremented in the real bug case,
+> which already have "WARN_ON(1)", it looks redundant to count bug case,
+> so this patch just remove it.
+>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 
 Acked-by: Yosry Ahmed <yosryahmed@google.com>
 
