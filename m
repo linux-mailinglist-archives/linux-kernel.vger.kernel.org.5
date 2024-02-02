@@ -1,121 +1,204 @@
-Return-Path: <linux-kernel+bounces-49015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA6018464D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:05:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AFFF8464E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:07:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08EE61C2382E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:05:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA37A1F22BFF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:07:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B05E7185A;
-	Fri,  2 Feb 2024 00:05:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B694315BE;
+	Fri,  2 Feb 2024 00:06:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JPf2IaaP"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="fWSSMaSK"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D8E210EF;
-	Fri,  2 Feb 2024 00:05:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15986C8D2;
+	Fri,  2 Feb 2024 00:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706832335; cv=none; b=rbezv6p2c6NtRCTYrwI0AtaE4x2rGAKJ0DJ4Y7eKeXTiHfRU+u7j6t3Efr3vata5EN0FlMq1oo5U9AfGE9JBnT4MphMbyeuuV0R57/rF2YbJJoYwUMp1zGxA2ZGfpZYrrVVTUsOJ6/j21QxmdbXHJigAKiW8DKOq5Yex+O7sN2Y=
+	t=1706832377; cv=none; b=ZVRXw1xPZZjI6/zj3zqUbXhfJokMhvbyvvTS1KvkbHsajIRjmf6CqlrPoYKqxV2JN7fHlvqhvi2+pqtukt7B7LCTvw6vKy7eZWuyAgVTF0Xxu2vref2+3wKH/2ipKp4GE8sOOsogAPBrl1+tR16wuYdb0gViZKGd0kID6781Ges=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706832335; c=relaxed/simple;
-	bh=+De4TUxIX9GGQpXLWuAEcB7P/wKiFnoQrmglfp/o8ow=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ud7ZfndJSNqOQitJgPJYGNy3QjI00elf8Dn1NV15wIngemyTdeEd2c46lsSiLoayYNIg5B5/7awGVuztJAPYTbUbqQLkXipuqjx+tPH/h8jgWEoy2TWgtEjFb/LN23NM10DUKQeou6xTliDmh2BOcDTiQ6sTByJwMcBUE6PtFM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JPf2IaaP; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a370315191dso11824066b.2;
-        Thu, 01 Feb 2024 16:05:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706832331; x=1707437131; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Kw5yCa7B5h6E5tqNELeCv4fqCVbEaQWT1fjUMOqoUrY=;
-        b=JPf2IaaPh9AU644zkZ+yh9sft/wJNiJF1gajdC+XRDd/9HR73XeMpd/AtsJdP5G7Kd
-         AVcnjLOGT8R6HBDOYxnmmNPVJK+Rdbi7ed61UxRVMyU+9TXSuVexIXv9RRNoQ1nSQf95
-         /+jCunekEmUS0Ao52PVUzeggldpCvjgGO9hpegjGN2g8PvyNuUG/oEqhOglepSBJ90yG
-         6OgPH7izCS1fqCLxzvNzHLpE5fYoUlTf0LtTAoxKwMK4WOlTctW4e3DQa/OeLL8Ah0od
-         ihJPb9lPXfZXhB9dIEg7d45qxg7OLqM9Saf3CK9WZdPQeNyzpz5BGN+wg3fQB7SOTeAL
-         t9og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706832331; x=1707437131;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kw5yCa7B5h6E5tqNELeCv4fqCVbEaQWT1fjUMOqoUrY=;
-        b=UfpcyTfFzNLyCllYe24xmEJ3pX2vdjp2rgB1QmKlp8imjmxH9ZcTc2mMrWP4KpJkTG
-         5XumSZmfYcIXIV/+pUxcF3BPHRr08hHI1NI2MDVhIb9wgxHbbqUFZYnxhTCHkf66HryM
-         aIij0BqRU325NESsH49i4yCB+e0kG9/5tjSMqHPxqWThZVfnlDRXcPD2NRi3wOV3mI4u
-         wZ5iIQmVIvCj7xOT01ubynQwS+VCD6wpVTUDcsKxQ6B4SiSwJMEVvNcVBTZsmIFZuIXp
-         fhw2f6cNtoyBFiUg0QvkohnBFCtg/R912RJ0/Az0BwFf//wJhUI8Pdyakcb4Mhprbhyy
-         sX2A==
-X-Gm-Message-State: AOJu0Yw6v0PqT8aOk6x5rxInOm4XUB9Zog0/iSBZbwGkB4SwvTBoQXTD
-	ONzg17uRBionvHy8nML2VI1Tu01z4er1m/nYDZhszv5S4rwKUk+t
-X-Google-Smtp-Source: AGHT+IG3Oc+QVcDW1imSv28f6Wfd18UPkfs0THsoQFFMSm7GDFwNpyXEsoyc6JUAhBc82NDm4akIqQ==
-X-Received: by 2002:a17:906:6c8b:b0:a31:7aca:a429 with SMTP id s11-20020a1709066c8b00b00a317acaa429mr2525716ejr.4.1706832331143;
-        Thu, 01 Feb 2024 16:05:31 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVqP+Ej+Py+JOKNXrBkFKszG2TQ5BitJp54lFM/ULnJrFAc1ThEwV37zImCs1V0f0eDefU0plz4nmA8YW3GvEpfgesqzJ8LlKKoG/cQTSLKgFdp4GlDVA7fbbENVVpIiX5Rglz9ADw69SHHTh8o8pghR4qkBmabwOP09SIfqUNUa8ziP3ewAGr/dVYf+2fuGLm0L3c0CWqnc4aV1+buL5BfYCzCDgyjKrqV783V7L21RduwjXpzinMDUJ+LzzD6P91YNrz88t0BrW2Homhh7ViZCsm+/NMsiFKs02EaAmqcDK99b02kw/c706SVeTz7P5E4LkNfp6eH0jUnieHOs9pHpLY8Mz3X3chY/UdnntiLMpAf/YRQMyMh1827YqyvR8fnU4n91AaOyZbXbV9QJWn02buVYKPHSno5klsYAemlYzsY8T87xFkGhfpNWQqgORiRY2+nBDIGQsGMzWqg7Rq1/X2g4A8WVFsaMmxp6mIE7O0z7+jKh3aSBpAjiYR3vbRqNBRr8Nta93M/1hAB9bog5PYudd/t6ezBNGXqJT3sCH12ovbVkKaAxftXTgekJMH97R6TbP+NFraj7y/peJ1wuakTP3fOXpvCtb4+ohGLj3+K38Jw/JNL7D0ns6yNLuV+l3K5DvAV3Wqho8pA7oSJ47CuZzI2
-Received: from skbuf ([188.25.173.195])
-        by smtp.gmail.com with ESMTPSA id cx7-20020a170907168700b00a3161adb239sm279824ejd.158.2024.02.01.16.05.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 16:05:30 -0800 (PST)
-Date: Fri, 2 Feb 2024 02:05:28 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: arinc.unal@arinc9.com
-Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Russell King <linux@armlinux.org.uk>, mithat.guner@xeront.com,
-	erkin.bozoglu@xeront.com,
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next v2 6/7] net: dsa: mt7530: correct port
- capabilities of MT7988
-Message-ID: <20240202000528.efgly2bpfhqxu332@skbuf>
-References: <20240130-for-netnext-mt7530-improvements-2-v2-0-ba06f5dd9eb0@arinc9.com>
- <20240130-for-netnext-mt7530-improvements-2-v2-0-ba06f5dd9eb0@arinc9.com>
- <20240130-for-netnext-mt7530-improvements-2-v2-6-ba06f5dd9eb0@arinc9.com>
- <20240130-for-netnext-mt7530-improvements-2-v2-6-ba06f5dd9eb0@arinc9.com>
+	s=arc-20240116; t=1706832377; c=relaxed/simple;
+	bh=N5ytPMI8CcBmVCIRgJRyHCtLc2INmcdE0bUH/E1B1pA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:Mime-Version; b=N5+QxxJ0CKGZxycwK9m0dvouzJXwJ1gWotMOxbRqtz90eE/7mXg7DcUf+1lq8subY/Ia8VEWQOns/cwKrV2qd7ICZKnX5lRr3e5lmvvi97leI88wQfaQjtwT7xb9kAAHMlJ8Us7gYPH2hjnvP1l3Lf4kEjPS3LJLE2jLOmSL8mQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=fWSSMaSK; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 411Nbr7x020563;
+	Fri, 2 Feb 2024 00:05:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=344H4x8Ad8z8mLylBhJTlrMcVRy2QejlkXWVgJvg15c=;
+ b=fWSSMaSKXCTh1Gs99inTLNtCPiCtwuibOItyo1C4K4zgA4enOyUXk1rVRITHSzV/kdsL
+ vrwMYNUOaUIZBba4PnyY/BGQM05MutP0HoYPHHenVsTbU2VSWc9IuNY3jBvdIcmmaR+7
+ EaphozfCgcDiwqdr3XT1HgyYJum8REE5KkHi37ChllKbq7w9eb739DIShztOQpDQbHmR
+ qQhQMB6lzrUl+waCRB/Af7Ov+VFhjr0n2b63fqwIvXzM86npCRwa6bIwQuHBM/CiZHP7
+ BJtNhd8+QhUy1ZUhur/rvCN/8Cs5hon0E4HTuK5tG2pmatkWWcFkEe7DRAFuIm/6Gth5 aQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w0n518n4a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 00:05:55 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 411NcwFo023109;
+	Fri, 2 Feb 2024 00:05:54 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w0n518n3u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 00:05:54 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 411MgJYi007189;
+	Fri, 2 Feb 2024 00:05:53 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vwev2qbxx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 00:05:53 +0000
+Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
+	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41205qxA48562502
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 2 Feb 2024 00:05:52 GMT
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B54105805E;
+	Fri,  2 Feb 2024 00:05:52 +0000 (GMT)
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2119858059;
+	Fri,  2 Feb 2024 00:05:51 +0000 (GMT)
+Received: from li-5cd3c5cc-21f9-11b2-a85c-a4381f30c2f3.ibm.com (unknown [9.61.60.157])
+	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  2 Feb 2024 00:05:51 +0000 (GMT)
+Message-ID: <d0ccd2f19ed1adccc8f3dfe677c30bc44feb3d36.camel@linux.ibm.com>
+Subject: Re: [PATCH] KEYS: encrypted: Add check for strsep
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Jarkko Sakkinen <jarkko@kernel.org>,
+        Dan Williams
+ <dan.j.williams@intel.com>,
+        "Verma, Vishal L" <vishal.l.verma@intel.com>,
+        "paul@paul-moore.com" <paul@paul-moore.com>,
+        "dhowells@redhat.com"
+ <dhowells@redhat.com>,
+        "yaelt@google.com" <yaelt@google.com>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "nichen@iscas.ac.cn"
+ <nichen@iscas.ac.cn>,
+        "sumit.garg@linaro.org" <sumit.garg@linaro.org>,
+        "jmorris@namei.org" <jmorris@namei.org>
+Cc: "Jiang, Dave" <dave.jiang@intel.com>,
+        "linux-integrity@vger.kernel.org"
+	 <linux-integrity@vger.kernel.org>,
+        "linux-cxl@vger.kernel.org"
+	 <linux-cxl@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org"
+	 <linux-kernel@vger.kernel.org>,
+        "keyrings@vger.kernel.org"
+	 <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org"
+	 <linux-security-module@vger.kernel.org>,
+        "nvdimm@lists.linux.dev"
+	 <nvdimm@lists.linux.dev>
+Date: Thu, 01 Feb 2024 19:05:50 -0500
+In-Reply-To: <CYU2JV57VXA9.3C5QTG4LX50TD@suppilovahvero>
+References: <20231108073627.1063464-1-nichen@iscas.ac.cn>
+	 <4d3465b48b9c5a87deb385b15bf5125fc1704019.camel@intel.com>
+	 <e3275c0cfe21d75e0d71ea3fc24a31252efc9ad6.camel@linux.ibm.com>
+	 <e3b1a5e532ed86e674385abc4812c5a774f851d4.camel@intel.com>
+	 <49c48e3e96bf0f5ebef14e7328cc8a6ca6380e08.camel@linux.ibm.com>
+	 <50c2fa781e3266ee8151afdef5a8659d63ca952e.camel@intel.com>
+	 <CYS7QMYS8XAJ.2QPI3MS5KXK8E@suppilovahvero>
+	 <CYS7WMFLXNE1.35OBTKTONKNX3@suppilovahvero>
+	 <65b93f2b3099b_5cc6f29453@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+	 <CYU2JV57VXA9.3C5QTG4LX50TD@suppilovahvero>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240130-for-netnext-mt7530-improvements-2-v2-6-ba06f5dd9eb0@arinc9.com>
- <20240130-for-netnext-mt7530-improvements-2-v2-6-ba06f5dd9eb0@arinc9.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: oLsn3Vd9Pcs0Fl12p7OhnGd4O-iUA5CF
+X-Proofpoint-ORIG-GUID: GJlw1TEeGH8bzKJubicc8sFAJerRWBn3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-01_08,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ mlxscore=0 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
+ suspectscore=0 impostorscore=0 priorityscore=1501 spamscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402010185
 
-On Tue, Jan 30, 2024 at 06:20:52PM +0300, Arınç ÜNAL via B4 Relay wrote:
-> From: Arınç ÜNAL <arinc.unal@arinc9.com>
+On Thu, 2024-02-01 at 23:43 +0200, Jarkko Sakkinen wrote:
+> On Tue Jan 30, 2024 at 8:25 PM EET, Dan Williams wrote:
+> > Jarkko Sakkinen wrote:
+> > > On Tue Jan 30, 2024 at 7:22 PM EET, Jarkko Sakkinen wrote:
+> > > > On Wed Jan 24, 2024 at 11:10 PM EET, Verma, Vishal L wrote:
+> > > > > On Wed, 2024-01-24 at 15:40 -0500, Mimi Zohar wrote:
+> > > > > > On Wed, 2024-01-24 at 20:10 +0000, Verma, Vishal L wrote:
+> > > > > > > Ah, thanks for confirming! Would you like me to send a
+> > > > > > > revert patch or
+> > > > > > > will you do it?
+> > > > > > 
+> > > > > > Revert "KEYS: encrypted: Add check for strsep"
+> > > > > >     
+> > > > > > This reverts commit
+> > > > > > b4af096b5df5dd131ab796c79cedc7069d8f4882.
+> > > > > >     
+> > > > > > New encrypted keys are created either from kernel-generated 
+> > > > > > random
+> > > > > > numbers or user-provided decrypted data.  Revert the change
+> > > > > > requiring
+> > > > > > user-provided decrypted data.
+> > > > > > 
+> > > > > > 
+> > > > > > Can I add your Reported-by?
+> > > > > 
+> > > > > Yes that works, Thank you.
+> > > > 
+> > > > This went totally wrong IMHO.
+> > > > 
+> > > > Priority should be to locate and fix the bug not revert useful
+> > > > stuff
+> > > > when a bug is found that has limited scope.
+> > > 
+> > > By guidelines here the commit is also a bug fix and reverting
+> > > such commit means seeding a bug to the mainline. Also the klog
+> > > message alone is a bug fix here. So also by book it really has
+> > > to come back as it was already commit because we cannot
+> > > knowingly mount bugs to the mainline, right?
+> > 
+> > No, the commit broke userspace. The rule is do not cause
+> > regressions
+> > even if userspace is abusing the ABI in an undesirable way. Even
+> > the
+> > new pr_info() is a log spamming behavior change, a pr_debug() might
+> > be
+> > suitable, but otherwise a logic change here needs a clear
+> > description
+> > about what is broken about the old userspace behavior and why the
+> > kernel
+> > can not possibly safely handle it.
 > 
-> On the switch on the MT7988 SoC, as shown in Block Diagram 8.1.1.3 on page
-> 125 of "MT7988A Wi-Fi 7 Generation Router Platform: Datasheet (Open
-> Version) v0.1", there are only 4 PHYs. That's port 0 to 3. Set the case for
-> ports which connect to switch PHYs to '0 ... 3'.
+> The rationale literally gives empirical proof that the log message
+> is useful by measure. It would be useless if log level is decreased
+> to debug, as then sysadmin's won't take notice. I don't really know
+> what is the definition of "spam" here but at least for me actually
+> useful log message are not in that category.
 > 
-> Port 4 and 5 are not used at all in this design.
-> 
-> Link: https://wiki.banana-pi.org/Banana_Pi_BPI-R4#Documents [1]
-> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-> Acked-by: Daniel Golle <daniel@makrotopia.org>
-> ---
+> Issue was legit but git revert is objectively an incorrect way to
+> address the bug.
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+No, I made a mistake in upstreaming the patch in the first place.  It
+broke the original "encrypted" keys usage.  Reverting it was the
+correct solution.
+
+Mimi
+
 
