@@ -1,155 +1,120 @@
-Return-Path: <linux-kernel+bounces-49454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CA5B846A8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:21:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBF82846A8D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:22:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3160B27332
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:21:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 179701C25849
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:22:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4934C4C617;
-	Fri,  2 Feb 2024 08:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2D191863B;
+	Fri,  2 Feb 2024 08:16:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="nbkCFvYx"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="SieaC4nr"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0BE04C3B3
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 08:15:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A90618628;
+	Fri,  2 Feb 2024 08:16:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706861721; cv=none; b=s6mLHRAxkaoMRAlxbb9Ix0GHTIGQk/2u8zbtMzseUvxUzb+RqKvqYQ1sVUr9RHH+FZ4PPOO8QvJnDLSAr9vxvYmpSBleZibuAAPctrXwHXKbQF/Hi8JfNXkIDmT6u6OxNlrzCpOWNnW+zVEiPTCGP59aA2evLJCtz1vpEqp6a8k=
+	t=1706861793; cv=none; b=DrarRMzYj95efsZJehtwUSqzJ5DJiNklx9eaMXNjeA4z9aBpBJLT1iTS9xGl3ptHR27wlEGlgrbaWCYdJ4Gd/GK9itFOwcGXTrgm5ajAfayYLu49Tojlt/tDqd/iJ/EHHcFyEoQNSd7uta2c2u3F0j2MYz1KN5QoDa9hrk3a5Vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706861721; c=relaxed/simple;
-	bh=22KrYw6AGbOORrKGF2dfcOeS42CZyhRN03F+KeITbCc=;
+	s=arc-20240116; t=1706861793; c=relaxed/simple;
+	bh=FXuZCdbTnTvt3fLOxA1iEZtu+D4augzBlua9BOnW8gA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m3vh69XY3HkrFd/SngadkEuDxPQzxy1Hr1vtkpnJDMw1EPjNG+FJdox8TwEBiNKF2+2mXG8SV9SKN4wBynlCwpyFmWo53VgQR0FoE6EsMXGjAn+iRkDesrbK5FYw4DTmQEn8bKI5jkeRXBws9BFKaOWPfrfNt/Z3d+N5vxEyU40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=nbkCFvYx; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 10238C000C;
-	Fri,  2 Feb 2024 08:15:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1706861711;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IELpse5tL7jxLQ50n/erAXQJmF3PhIHOp+iVjw6RjuA=;
-	b=nbkCFvYx/0abOwR4f/l/xf/UAj+v47faf2e5yKK6aMe6eNo8sAKnNA6wOuL1e+J68SjOHx
-	VT3eAHbcH7rG34TCFkZfpeizDKFXzU9k5T3PoWaltYntFjU0gTVTgNGpxmln5Gy+sMlRf/
-	3Xg9uBkPZkmftuenYCmNSyiDB6ajEXIPGhYb8CpQugEU4klP6io8HmlJfLR0cNB03ZrRKL
-	IpNIrDSEQw6DihD0PesQ9VBWI0r6w77qUybXlSWYp9FrCjj/1+zPH9zi0V6CmZF1hVDsw4
-	QYX6paApyTwAwt1W1e325ML5/geNrxOqzVrjTsDPfADU1KVrmwYId3E9V0WLrg==
-Date: Fri, 2 Feb 2024 09:15:07 +0100
-From: Louis Chauvet <louis.chauvet@bootlin.com>
-To: Maira Canal <mcanal@igalia.com>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-	Melissa Wen <melissa.srw@gmail.com>,
-	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
-	Haneen Mohammed <hamohammed.sa@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, marcheu@google.com,
-	seanpaul@google.com, nicolejadeyee@google.com,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	thomas.petazzoni@bootlin.com, miquel.raynal@bootlin.com
-Subject: Re: [PATCH 0/2] Better support for complex pixel formats
-Message-ID: <Zbyki1szIFvotn71@localhost.localdomain>
-Mail-Followup-To: Maira Canal <mcanal@igalia.com>,
-	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-	Melissa Wen <melissa.srw@gmail.com>,
-	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
-	Haneen Mohammed <hamohammed.sa@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, marcheu@google.com,
-	seanpaul@google.com, nicolejadeyee@google.com,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	thomas.petazzoni@bootlin.com, miquel.raynal@bootlin.com
-References: <20240201-yuv-v1-0-3ca376f27632@bootlin.com>
- <d7959499-c0cf-4454-b9f9-8436d8818095@igalia.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=alHofRInZ2g1xjAGjKfVEOoeO+qF73VnAGIwNo/7TBfIna11fyZUZ1uJ9xM/ZcUeIwywfANU9Bf4S2GA+oLx5brKhrp6dl/tzZj1ZUW97kZGs1KFDBDAnolambsUvBS4onwhnfW8YyV3qC8bUyUSVHHQiK5LXYSnQygs5Zeb+p8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=SieaC4nr; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706861789;
+	bh=FXuZCdbTnTvt3fLOxA1iEZtu+D4augzBlua9BOnW8gA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SieaC4nr1uBh/9hdSqc2QKcCejdq0LofEo4CFU7ZWAGfHk01G4F9DQGV5huEiGk3Q
+	 7A/0Ui1fXdhsTWOIeqyIm3M/8WI5+UK/U9t7ZdOF4UXhTWOa3K1AUnq5GBJ/cRf58T
+	 k6vptQaOFLqpIXAWh++DAjkMvv1MAeYniuZtfYs1UuWFHLcx4kk49odkUgFYyP2mJW
+	 922kaBWSmPxrvILn3Genr0kIrdbgr4ctcJgrEP80XfIhZ1O6fxjUcwuC+/zj+azhpD
+	 dVs7rtuy3Uxzrx6S5iYN/iMlDVSXOE0pl/R1Vdp82GoJ3P7swzMjUYCEYrd/sw0wgR
+	 KVGNguNCCSfyw==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sebastianfricke)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 59B9C3782078;
+	Fri,  2 Feb 2024 08:16:29 +0000 (UTC)
+Date: Fri, 2 Feb 2024 09:16:28 +0100
+From: Sebastian Fricke <sebastian.fricke@collabora.com>
+To: "jackson.lee" <jackson.lee@chipsnmedia.com>
+Cc: mchehab@kernel.org, linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org, lafley.kim@chipsnmedia.com,
+	b-brnich@ti.com, hverkuil@xs4all.nl, nas.chung@chipsnmedia.com
+Subject: Re: [PATCH v1 0/5] wave5 codec driver
+Message-ID: <20240202081628.bgadpzrgnl3cku3p@basti-XPS-13-9310>
+References: <20240202070352.14307-1-jackson.lee@chipsnmedia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d7959499-c0cf-4454-b9f9-8436d8818095@igalia.com>
-X-GND-Sasl: louis.chauvet@bootlin.com
+In-Reply-To: <20240202070352.14307-1-jackson.lee@chipsnmedia.com>
 
-Le 01/02/24 - 19:07, Maira Canal a écrit :
-> Hi Louis,
-> 
-> Thanks for your patches! Could you please rebase them on top of
-> drm-misc-next? It would make it easier for me to review and test the
-> patches.
-> 
-> Best Regards,
-> - Maíra
+Hey Jackson,
 
-Hi Maíra,
+thanks for sending the patches!
 
-Do you want me to rebase the whole YUV [1] series or should I extract and 
-make my two patches independent?
+I would advise to not send the next version of a patch series with
+multiple patches too quickly. So far the patches only got a single very
+minor review comment and others might already work on a deeper review
+and test. There is no hard rule but I would say give such a series at
+least a week or two to gather some review comments before sending the
+next version, as it is always a bit of hassle to adjust to a new
+version and you don't want to spam the mailing list.
+Should you not receive any more review comments, then please go ahead
+and ping some relevant people (Hans Verkuil, people from Collabora that
+developed the patches, etc.) to review, either per mail or per IRC on
+the OFTC server on the channel #linux-media.
 
-[1]: https://lore.kernel.org/dri-devel/20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net/
+Greetings,
+Sebastian
 
-Best regards,
-Louis Chauvet
- 
-> On 2/1/24 14:31, Louis Chauvet wrote:
-> > This patchset aims to solve issues I found in [1], and at the same time
-> > simplify the composition algorithm.
-> > 
-> > I sent more igt-gpu-tools test [2] to cover more things and detect the
-> > issues in [1].
-> > 
-> > This patchset is based on [1].
-> > 
-> > Patch 1/2: This patch is a no-op, but make the code more readable
-> > regarding the pixel_read functions.
-> > 
-> > Patch 2/2: This patch is more complex. My main target was to solve issues
-> > I found in [1], but as it was very complex to do it "in place", I choose
-> > to rework the composition function.
-> > The main two advantages are:
-> > - It's now possible to create conversion function for packed & grouped
-> > pixels. Some pixel formats need absolute x/y position and not only an
-> > offset in the buffer to extract the correct value. This part also solve
-> > the issues I found in [1].
-> > - The rotation management is now way easier to understand, there is no
-> > more switch case in different places and instead of copy/pasting rotation
-> > formula I used drm_rect_* helpers.
-> > 
-> > [1]: https://lore.kernel.org/dri-devel/20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net/
-> > [2]: https://lore.kernel.org/igt-dev/20240201-kms_tests-v1-0-bc34c5d28b3f@bootlin.com/T/#t
-> > 
-> > Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> > ---
-> > Louis Chauvet (2):
-> >        drm/vkms: Create a type to check a function pointer validity
-> >        drm/vkms: Use a simpler composition function
-> > 
-> >   drivers/gpu/drm/vkms/vkms_composer.c |  97 ++++++++-----
-> >   drivers/gpu/drm/vkms/vkms_drv.h      |  32 ++++-
-> >   drivers/gpu/drm/vkms/vkms_formats.c  | 254 ++++++++++++++++++-----------------
-> >   drivers/gpu/drm/vkms/vkms_formats.h  |   2 +-
-> >   drivers/gpu/drm/vkms/vkms_plane.c    |  13 +-
-> >   5 files changed, 236 insertions(+), 162 deletions(-)
-> > ---
-> > base-commit: 5d189d57bb335a87ec38ea26fe43a5f3ed31ced7
-> > change-id: 20240201-yuv-1337d90d9576
-> > 
-> > Best regards,
+On 02.02.2024 16:03, jackson.lee wrote:
+>The wave5 codec driver is a stateful encoder/decoder.
+>The following patches is for supporting yuv422 inpuy format, supporting
+>runtime suspend/resume feature and extra things.
+>
+>Change since v0:
+>=================
+>The DEFAULT_SRC_SIZE macro was defined using multiple lines,
+>To make a simple define, tab and multiple lines has been removed,
+>The macro is defined using one line.
+>
+>
+>jackson.lee (5):
+>  wave5 : Support yuv422 input format for encoder.
+>  wave5: Support to prepend sps/pps to IDR frame.
+>  wave5 : Support runtime suspend/resume.
+>  wave5: Use the bitstream buffer size from host.
+>  wave5 : Fixed the wrong buffer size formula.
+>
+> .../platform/chips-media/wave5/wave5-hw.c     |  11 +-
+> .../chips-media/wave5/wave5-vpu-dec.c         |  86 +++++-----
+> .../chips-media/wave5/wave5-vpu-enc.c         | 157 +++++++++++++++---
+> .../platform/chips-media/wave5/wave5-vpu.c    |  68 ++++++++
+> .../platform/chips-media/wave5/wave5-vpuapi.c |   7 +
+> .../platform/chips-media/wave5/wave5-vpuapi.h |   1 +
+> .../media/platform/chips-media/wave5/wave5.h  |   3 +
+> 7 files changed, 253 insertions(+), 80 deletions(-)
+>
+>-- 
+>2.43.0
+>
+>
 
