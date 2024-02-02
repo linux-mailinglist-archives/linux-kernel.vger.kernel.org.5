@@ -1,122 +1,179 @@
-Return-Path: <linux-kernel+bounces-49690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D91A0846E2A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:44:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D201846E2D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:45:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 641A71F2AD40
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:44:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9C442968DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:44:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8ED513BEB6;
-	Fri,  2 Feb 2024 10:44:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70F7113BEBC;
+	Fri,  2 Feb 2024 10:44:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DubXinFC"
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="carNmVjG"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87652E851
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 10:44:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15C1C2E851;
+	Fri,  2 Feb 2024 10:44:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706870642; cv=none; b=sbABiXJfUfcHmNU+D6AApFwzo2wo+PBHFr9AdTwFGsZMIY3ugGrLVrohSNJS7p+eyXUdQAwxqZ7PsNuach9e6gVJlokXI34esd1eVnqmIO8bdpycYtL37m9y2bc3XjM9M6UkIEeISLjnx20zWqVD4IFH1HvNet3W1Zj8KhIpzD0=
+	t=1706870691; cv=none; b=kphuL0jx0FbXbV0mCRssneWGGFfAeeNQ5k4G8bmFUXnjLF06w/2ZYiBGTbvxEMF4R+P8vX0iH+udOz9jDkHTEG7fL+I8C8sczdLnfUsXtyOeBH6dLM2ESEndqHsEcDSMWDX8i8jlS7GWYO78YsgT0HEcVuGq2HPaYjjPcUZ9RGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706870642; c=relaxed/simple;
-	bh=P1JikgoFSh/cNJqd+o9eE/ocoCgKnYWQsWdsIWt9SkE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h9SCdxX602E//mUKckndhO/uAuegJZQGBhQaNukCJan7V9zojK+cboy89+wY73awzj1XrcsOjVxCWMT/7DJmOJ0SjVzae4G/pzafj7cVwPUJhaoMKlS2/iZRRX8mFENoE83sa3liRsjjzTHqvlSsnTjDcMPlAd1BnTTxU23AULM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DubXinFC; arc=none smtp.client-ip=209.85.222.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-7d5bfdd2366so768827241.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 02:44:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706870639; x=1707475439; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gJhpSyluzHV/EGytkpmOhmA4e78r9ibVURsi5TUtta0=;
-        b=DubXinFCzT9sRrPghE0CHMHL3R751AcaLXskUFIsWxbOFYhL44J6xgVeQ7a5eDH2ms
-         QR5U0c1DRo/WnWmOJ5wVdLIKwyDNniT69gqEzcCgpecda6x8BPefuQH7GNcVvp80ZCsq
-         iWq2iqB0Gu6VRHzaZx/1Ot7bJHM68P0ajbbbvKNfxIV3el8XNNnTSIKaw1tYWWckGpdh
-         9/fhpJS7z8FdPZdABcWX/Plbc9JIeNLGixZwTFlN0DdgpBzcWVwlzR2iIKep5/bZmUZP
-         gS87s/Z/jqeWfVjwiox+mKFZ76hD3Nc1TKPCE39fYKBjfA3dpiteAVqpAo3ieiQzqosx
-         YnvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706870639; x=1707475439;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gJhpSyluzHV/EGytkpmOhmA4e78r9ibVURsi5TUtta0=;
-        b=EbtvyV2Hn65FMutx7aqDSIyfZc7JEln46Jz6hnvDwTexAGFrsKkt8GbcoN8G2nxBqC
-         vLPkcb+sKH3eGGvrgIYIZGto+NKM0CD0Olq5slC6RP3RMj4N3Q2i4x9YO1xdJf9X3V9o
-         eascby1uciLC3+5ivOeKiQAcLouuOKQU2WnHtWHM5ljwFisUUjEGfbYHDXmBdhWlxPEi
-         y04K82cB0w3507dQ+q+9n8LuxjPmTApPw2Jl4lQr8HICLlxg6GQ5rY5CvOwwBB62wPU7
-         MpnQj46Ox+dy+hskzX/Saj4YuhEV2sxnwskI1Jf4Q9fH3MjUm6ADE4KPM486gIi+QZEK
-         AuLg==
-X-Gm-Message-State: AOJu0Ywk6F6rSt6kbfDlINBTwQC7APebDs3PdN9oMRaEaXlJ2w/Bq3QD
-	V52rj10lEsbwZXSpmjDHX57GfU8hI6CnEzo2yYL1O4h2+5ZxDeim21BGrKSj4iICheBgl4ju54u
-	xAKAbYMLt47NuHpBmNL3tTXLSdRfsrKu8Ilky
-X-Google-Smtp-Source: AGHT+IGj9BfBKOsJeaDuSYFBz0YFIEl6Vwrr3vgPyIPrJpYX8NAf5a1tebSHXQtFpjfcVHCwUKn13lWiFbfkF6T+T6Y=
-X-Received: by 2002:a05:6102:3654:b0:46c:f7ca:e293 with SMTP id
- s20-20020a056102365400b0046cf7cae293mr1674149vsu.8.1706870639490; Fri, 02 Feb
- 2024 02:43:59 -0800 (PST)
+	s=arc-20240116; t=1706870691; c=relaxed/simple;
+	bh=GHnwCHwJQbMRAPZ29WpLtl5i6EFmMObvZ9Us3Ngztxw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=iiHmAI/Z6pKI2VidH3k+yzWbIzPAmcRybzj0pollrqPPO2b8wYO234o1M7PMZTmXWACcm2Nmk997qlnpIzYDc/v9/Gq769fYZWTZQrMYL3KSc4lABU5ayCfR0lUbOEiobUb61neirRxEkv3U9Isk8SHKpS3BH6z/8W9XPLfDWpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=carNmVjG; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4127UFDG021846;
+	Fri, 2 Feb 2024 10:44:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=yLwbVAKqMou6+Mz6mKl7Cjfqk5tcCVRsLZSJ+MzzKIQ=; b=ca
+	rNmVjGcbAS5kkB6QHcxG3CdPRnUJUcDRMhpZ7O4TrAIJBVvvPH5y/dCl8TFAgcTn
+	VUubDAU71tHpNJ2xBlcwjJkxEswWhMGToIX/gZNw/2CuhNRD+Wxqlqog3sV+vJK9
+	7dh60mur8xw5bZWsuGLcz3jNCT+nbP2gLUD4Gk9ZB6t0LaIsaJ5BN/Py/LWB+LqE
+	qe6bwkoO/3RuA3PySTP5hDbTaGjS/FUWCdxkgRdl+WLqJ9fZiwgMqavQMZGvdDpg
+	p+W7hlsSXFP5GZxTESBRZIeT3j4Ahmq5gYBd/cYGSBWP4mFC+S0aatgcqimHa3Jg
+	gjr6BcYTnbYPGhekDzig==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0pwjh4dn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 10:44:39 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 412AicLV001826
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 2 Feb 2024 10:44:38 GMT
+Received: from [10.216.22.4] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 2 Feb
+ 2024 02:44:34 -0800
+Message-ID: <70e7b48c-4bec-460c-8b48-f022b1728e63@quicinc.com>
+Date: Fri, 2 Feb 2024 16:14:34 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202094550.work.205-kees@kernel.org> <CANpmjNMCBvdM7Ni+vWCQwtJbbVskOdjSA+gjhgh6R3dKRqjXnA@mail.gmail.com>
- <202402020239.1EEA467@keescook>
-In-Reply-To: <202402020239.1EEA467@keescook>
-From: Marco Elver <elver@google.com>
-Date: Fri, 2 Feb 2024 11:43:21 +0100
-Message-ID: <CANpmjNO6W2qDLYuwNRJs2SUCD_wquwPRWG53s65HfKfOiHztdQ@mail.gmail.com>
-Subject: Re: [PATCH] ubsan: Silence W=1 warnings in self-test
-To: Kees Cook <keescook@chromium.org>
-Cc: kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [V3] i2c: i2c-qcom-geni: Correct I2C TRE sequence
+Content-Language: en-US
+To: Andi Shyti <andi.shyti@kernel.org>
+CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <vkoul@kernel.org>,
+        <quic_bjorande@quicinc.com>, <manivannan.sadhasivam@linaro.org>,
+        <bryan.odonoghue@linaro.org>, <quic_msavaliy@quicinc.com>,
+        <quic_vtanuku@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+References: <20240201101323.13676-1-quic_vdadhani@quicinc.com>
+ <dt2uwtff5yacr7ci7xbezbe7bpwxsvspimceat7cozhzgazszx@6cjp5r7abfqd>
+From: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+In-Reply-To: <dt2uwtff5yacr7ci7xbezbe7bpwxsvspimceat7cozhzgazszx@6cjp5r7abfqd>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: fNpm7OFmVr4QU3Jtkg5NYWajfURvK5he
+X-Proofpoint-ORIG-GUID: fNpm7OFmVr4QU3Jtkg5NYWajfURvK5he
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-02_04,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 clxscore=1015 mlxscore=0 phishscore=0 mlxlogscore=999
+ malwarescore=0 suspectscore=0 adultscore=0 priorityscore=1501 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402020078
 
-On Fri, 2 Feb 2024 at 11:41, Kees Cook <keescook@chromium.org> wrote:
->
-> On Fri, Feb 02, 2024 at 10:57:11AM +0100, Marco Elver wrote:
-> > On Fri, 2 Feb 2024 at 10:46, Kees Cook <keescook@chromium.org> wrote:
-> > >
-> > > Silence a handful of W=1 warnings in the UBSan selftest, which set
-> > > variables without using them. For example:
-> > >
-> > >    lib/test_ubsan.c:101:6: warning: variable 'val1' set but not used [-Wunused-but-set-variable]
-> > >      101 |         int val1 = 10;
-> > >          |             ^
-> >
-> > This is the shift_out_of_bounds test? It looks like the neg and wrap
-> > variables are volatile but the written-to variables aren't.
-> > Technically the compiler just has to emit the reads to neg and wrap,
-> > and can entirely omit the writes to val1 and val2.
-> >
-> > Does making it volatile fix the warning?
->
-> It does for some, but not all:
->
-> ../lib/test_ubsan.c: In function 'test_ubsan_out_of_bounds':
-> ../lib/test_ubsan.c:115:22: warning: variable 'arr' set but not used [-Wunused-but-set-variable]
->   115 |         volatile int arr[4];
->       |                      ^~~
-> ../lib/test_ubsan.c:114:23: warning: variable 'above' set but not used [-Wunused-but-set-variable]
->   114 |         volatile char above[4] = { }; /* Protect surrounding memory. */
->       |                       ^~~~~
-> ../lib/test_ubsan.c: In function 'test_ubsan_load_invalid_value':
-> ../lib/test_ubsan.c:137:44: warning: variable 'eptr' set but not used [-Wunused-but-set-variable]
->   137 |         enum ubsan_test_enum eval, eval2, *eptr;
->       |                                            ^~~~
-> ../lib/test_ubsan.c:136:26: warning: variable 'ptr' set but not used [-Wunused-but-set-variable]
->   136 |         bool val, val2, *ptr;
->       |                          ^~~
+Hi Andi,
 
-Then I'd just combine the compiler flag with switching most of these
-variables to volatile so the tests keep working if the compiler
-decides to optimize too much.
+Thanks for review and taking care of patch.
+We have responded to dmitry to describe more about GPI operation and 
+tried to explain flow in general.
+We shall keep updating over email for commit log.
+
+Please help amend below tags in commit log since we are taking it over 
+email:
+
+Fixes: d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org> # qrb5165-rb5
+Co-developed-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+
+On 2/1/2024 7:52 PM, Andi Shyti wrote:
+> Hi Viken,
+> 
+> On Thu, Feb 01, 2024 at 03:43:23PM +0530, Viken Dadhaniya wrote:
+>> For i2c read operation in GSI mode, we are getting timeout
+>> due to malformed TRE basically incorrect TRE sequence
+>> in gpi(drivers/dma/qcom/gpi.c) driver.
+>>
+>> TRE stands for Transfer Ring Element - which is basically an element with
+>> size of 4 words. It contains all information like slave address,
+>> clk divider, dma address value data size etc).
+>>
+>> Mainly we have 3 TREs(Config, GO and DMA tre).
+>> - CONFIG TRE : consists of internal register configuration which is
+>>                 required before start of the transfer.
+>> - DMA TRE :    contains DDR/Memory address, called as DMA descriptor.
+>> - GO TRE :     contains Transfer directions, slave ID, Delay flags, Length
+>>                 of the transfer.
+>>
+>> Driver calls GPI driver API to config each TRE depending on the protocol.
+>> If we see GPI driver, for RX operation we are configuring DMA tre and
+>> for TX operation we are configuring GO tre.
+>>
+>> For read operation tre sequence will be as below which is not aligned
+>> to hardware programming guide.
+>>
+>> - CONFIG tre
+>> - DMA tre
+>> - GO tre
+>>
+>> As per Qualcomm's internal Hardware Programming Guide, we should configure
+>> TREs in below sequence for any RX only transfer.
+>>
+>> - CONFIG tre
+>> - GO tre
+>> - DMA tre
+>>
+>> In summary, for RX only transfers, we are reordering DMA and GO TREs.
+>> Tested covering i2c read/write transfer on QCM6490 RB3 board.
+>>
+>> Fixes: d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
+>> Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+> 
+> as Dmitry has written, please, next time don't forget the tags:
+> 
+> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org> # qrb5165-rb5
+> 
+> You can also add mine:
+> 
+> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+> 
+> Please make sure to Cc Dmitry who is raising his concerns and
+> check on his comments.
+> 
+> Andi
+> 
+> PS just as a reminder, if Dmitry's concerns remain related only
+> to the commit log, I gave you the option to agree with him in the
+> e-mail thread without necessarily sending a v4. I can then update
+> the commit log before pushing.
+
+
+
 
