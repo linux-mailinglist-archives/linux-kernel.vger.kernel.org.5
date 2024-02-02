@@ -1,125 +1,136 @@
-Return-Path: <linux-kernel+bounces-49792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E651C846F71
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:51:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6CC0846F75
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:52:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36044B23ED1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:51:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EBD41C24457
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:52:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94FAE13E216;
-	Fri,  2 Feb 2024 11:51:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8319313EFF7;
+	Fri,  2 Feb 2024 11:52:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="OqmD8m/c"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="piMwGDYf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0107613E211;
-	Fri,  2 Feb 2024 11:51:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CFCD13E22B;
+	Fri,  2 Feb 2024 11:52:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706874687; cv=none; b=BGw0e54IV+4NxA45xHNtLJIIYj/9yESUC9EHW1wNzJjoyHaWFoEYqHYE46iPjvF0jmdOQi+OFqSWtNClympZV9We0gnQS3WV54cf5BjhnTYQDvOkLQbIsCMU4GAenvXMRHSpUtxZnyd75LcNTY9bvU+t663MVCqv3K6vues7x8U=
+	t=1706874725; cv=none; b=D0SwyceiLLVztUvGRZ560LvvW/KsoqRF2VBO+n0AxZTdXT+IMkyoi9RXLsWgLm51wjclFz+wOyR/gz2l2SF5k37fjaz6CSlY3SUFRszfw+NiYScZAY8DLtlAoYE22Xfdq/Ha7N/xVp4R+ixC3jaFlZL7jJyFuLvNGrIbNw68T8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706874687; c=relaxed/simple;
-	bh=tmseyaSoz8Telz9bqfnPz+Tc5gw75RGbX7OtTxriO0k=;
+	s=arc-20240116; t=1706874725; c=relaxed/simple;
+	bh=rfyC29dgn3AiLpQ41hkAc/jedTFSLQEOT9DvwX/eNqQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HThbLcAksj/mDxDOQLEYI5uTmnZkSA3rmyJoiLEGRBJzd2b3DgqxrtTcN7BGDBTDiHdTDI6IhZ4Cbx7mYFxauMr6TvDpGDbOAGx03wfyIn76j07zQG3eu2WZdgpVsA+QDMWpERI2bHjiRx6fARiwr/Vqbzbu8NGO4CdgYgt5dD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=OqmD8m/c; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=cIlxsvGg83BWYVggTT3nBjbFOe8N4Nii5E4TFnZPDZU=; b=OqmD8m/c5B7vFICq5Ev33gkvCd
-	zn9HpBZjkLeFSbjTmF0+KV3kDCfrtUU8q2XpEmCsVIdKN1fLofI4H7osUKPxlvhaGw/YYoOO/yavh
-	0RxLKv9NKCsePeKLqJfl/stdpXKdZL8yV0CsvpCq/mESPDQRb8djrtVtflee4WUJPzsAnsO5KPQ0n
-	9HgJKZefg40oAb2w5pp7GSbtniF/orPv5hKa3eyVd+ENdChW1vvuw308QnoJOEgX+IsSReMZzV4Dv
-	zEmQUn3RTgdm8vOvqYSuZyZ6yQP17vWW25KqcDIKHOVwh8JlFkcWO43yEhsyqLjD1Tii8peERhv7C
-	l8MCJAQg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:56268)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rVs4f-0005vW-10;
-	Fri, 02 Feb 2024 11:51:13 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rVs4b-0008IK-DO; Fri, 02 Feb 2024 11:51:09 +0000
-Date: Fri, 2 Feb 2024 11:51:09 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: arinc.unal@arinc9.com
-Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=QxFs3jzPBRa+8V+i5i8AJJewk/aA/gnBA1sj9aiDFWeGW+ApsSHdDLkEsq24016Q2J/nVEPmDUhCQ+9Jlsp7ck2mjAHajReRqfmlRbZi3+tuW97RCYKaZhfcAnMeDvYJjM5EBe/yEMdKZpRGNgh+HLok/iFfWaNW9KU14gvMRd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=piMwGDYf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48BEFC433F1;
+	Fri,  2 Feb 2024 11:52:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706874724;
+	bh=rfyC29dgn3AiLpQ41hkAc/jedTFSLQEOT9DvwX/eNqQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=piMwGDYfY8riUgZvSlUZHlFnPQhiCq3/y1vxq6ljys8VCbR/su/RVtW3XTn3Eji5x
+	 njG/qNNi0jHeciTV8VRKowmKRPDprAUXpT2YhbQ6srgi3csNfD9mVs3Jg3f/01WEMg
+	 qgGBs9eFwGPixk3SdGKlKEJnV+toWBTL52QwAxTggzX0FlfdqgZFfGBMenHi49ofEj
+	 4BKCjYem3Ino1QtJpkr3ev9sIAxU1/Z80o6k0gLRKxklRjXQb/LBHX8OUKVH+9pvcK
+	 tuhl24r6hMDFnSuVNu475MxbGHJ3DwhvL66TA0LqtEKUbit5QSMS3CdgEmdvTu9hWQ
+	 vlbO3AjdTkHjQ==
+Date: Fri, 2 Feb 2024 12:51:51 +0100
+From: Simon Horman <horms@kernel.org>
+To: Matthew Wood <thepacketgeek@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next v3 5/7] net: dsa: mt7530: simplify
- mt7530_setup_port6() and change to void
-Message-ID: <ZbzXLZ4ZyPSbqkdg@shell.armlinux.org.uk>
-References: <20240202-for-netnext-mt7530-improvements-2-v3-0-63d5adae99ca@arinc9.com>
- <20240202-for-netnext-mt7530-improvements-2-v3-5-63d5adae99ca@arinc9.com>
+	leitao@debian.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 5/8] net: netconsole: add a userdata
+ config_group member to netconsole_target
+Message-ID: <20240202115151.GL530335@kernel.org>
+References: <20240126231348.281600-1-thepacketgeek@gmail.com>
+ <20240126231348.281600-6-thepacketgeek@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240202-for-netnext-mt7530-improvements-2-v3-5-63d5adae99ca@arinc9.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20240126231348.281600-6-thepacketgeek@gmail.com>
 
-On Fri, Feb 02, 2024 at 12:19:11PM +0300, Arınç ÜNAL via B4 Relay wrote:
-> From: Arınç ÜNAL <arinc.unal@arinc9.com>
+On Fri, Jan 26, 2024 at 03:13:40PM -0800, Matthew Wood wrote:
+> Create configfs machinery for netconsole userdata appending, which depends
+> on CONFIG_NETCONSOLE_DYNAMIC (for configfs interface). Add a userdata
+> config_group to netconsole_target for managing userdata entries as a tree
+> under the netconsole configfs subsystem. Directory names created under the
+> userdata directory become userdatum keys; the userdatum value is the
+> content of the value file.
 > 
-> This code is from before this driver was converted to phylink API. Phylink
-> deals with the unsupported interface cases before mt7530_setup_port6() is
-> run. Therefore, the default case would never run. However, it must be
-> defined nonetheless to handle all the remaining enumeration values, the
-> phy-modes.
+> Include the minimum-viable-changes for userdata configfs config_group.
+> init_target_config_group() ties in the complete configfs machinery to
+> avoid unused func/variable errors during build. Initializing the
+> netconsole_target->group is moved to init_target_config_group, which
+> will also init and add the userdata config_group.
 > 
-> Switch to if statement for RGMII and return which simplifies the code and
-> saves an indent.
+> Each userdatum entry has a limit of 256 bytes (54 for
+> the key/directory, 200 for the value, and 2 for '=' and '\n'
+> characters), which is enforced by the configfs functions for updating
+> the userdata config_group.
 > 
-> Set P6_INTF_MODE, which is the the three least significant bits of the
-> MT7530_P6ECR register, to 0 for RGMII even though it will already be 0
-> after reset. This is to keep supporting dynamic reconfiguration of the port
-> in the case the interface changes from TRGMII to RGMII.
+> When a new netconsole_target is created, initialize the userdata
+> config_group and add it as a default group for netconsole_target
+> config_group, allowing the userdata configfs sub-tree to be presented
+> in the netconsole configfs tree under the userdata directory.
 > 
-> Disable the TRGMII clocks for all cases. They will be enabled if TRGMII is
-> being used.
-> 
-> Read XTAL after checking for RGMII as it's only needed for the TRGMII
-> interface mode.
-> 
-> Change mt7530_setup_port6() to void now that there're no error cases left.
-> 
-> Reviewed-by: Daniel Golle <daniel@makrotopia.org>
-> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> Co-developed-by: Breno Leitao <leitao@debian.org>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
+> Signed-off-by: Matthew Wood <thepacketgeek@gmail.com>
 
-Yay. Less possible errors in mac_config()!
+Hi Matthew,
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+some minor feedback from my side, as it looks like there will be another
+revision of this patchset anyway.
 
-Thanks!
+> ---
+>  drivers/net/netconsole.c | 143 +++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 139 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+..
+
+> @@ -596,6 +606,123 @@ static ssize_t remote_mac_store(struct config_item *item, const char *buf,
+>  	return -EINVAL;
+>  }
+>  
+> +struct userdatum {
+> +	struct config_item item;
+> +	char value[MAX_USERDATA_VALUE_LENGTH];
+> +};
+> +
+> +static inline struct userdatum *to_userdatum(struct config_item *item)
+> +{
+> +	return container_of(item, struct userdatum, item);
+> +}
+
+Please don't use the inline keyword in C files,
+unless there is a demonstrable reason to do so.
+Rather, please let the compiler inline code as is sees fit.
+
+..
+
+> @@ -640,6 +767,14 @@ static const struct config_item_type netconsole_target_type = {
+>  	.ct_owner		= THIS_MODULE,
+>  };
+>  
+> +static void init_target_config_group(struct netconsole_target *nt, const char *name)
+
+nit: Networking still prefers code to be 80 columns wide or less.
+
+..
 
