@@ -1,106 +1,148 @@
-Return-Path: <linux-kernel+bounces-49061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13F15846568
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:25:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5096284656A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:26:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4725E1C24B84
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:25:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E5C028C802
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:26:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88C68C155;
-	Fri,  2 Feb 2024 01:25:21 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E184563B7;
+	Fri,  2 Feb 2024 01:26:36 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02F69BE59;
-	Fri,  2 Feb 2024 01:25:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 574F65666;
+	Fri,  2 Feb 2024 01:26:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706837121; cv=none; b=YOY1CZ6ScwokZFqICPM/T5HIJoCItIoEpQ0GUpEsC7VMZi664ITB5SkylID3NLG55nQB1aCjKPUYkFG3HfgcBSf4bdUxYeofVPzfRn3y0Mb4E7nQoGBzkwhISvm7uLPgyeUZMLVg/FDcrhyzGadbpc/GY6pMARfTlFmPNN3EX8w=
+	t=1706837196; cv=none; b=D8Fwnd6i+Hl+uEeoj7ntTh9NE+rd6yJDTsRe/Z/oAS9YxQ8We1pgANC7bVfqZy99c3H3AuOdKtex9cYn3huMCfYsi0wCn/uyGH/2qtcWUnxRVazZQAJZ4ShTMTBuq1AP0CQPbhERWZyRccnlUlm+FmycHcB4k319lW0B5aG0PnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706837121; c=relaxed/simple;
-	bh=9pXzTZRahveJlD2529M3LyLuJv0HB2sVEZBmB7s4/Xk=;
-	h=Subject:To:References:CC:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=MZFJDWfTexA3wjoJnAy+zPr5GqmYPve8fkcZH5F6/ANK+QjwBk9j247hw5297QVLoLdinzlXQykNNSpljfNZvRAP+UbHotlYqm5IG4piIcdnTA9Shb4OxNzDiATjU/9/kCJ0IYypGXcIjSt0+l3xYo4eWdOqwIaj6dwe9tWqyEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TQyjV0rxwz1xn6M;
-	Fri,  2 Feb 2024 09:24:14 +0800 (CST)
-Received: from dggpemd200004.china.huawei.com (unknown [7.185.36.141])
-	by mail.maildlp.com (Postfix) with ESMTPS id CC7AC140384;
-	Fri,  2 Feb 2024 09:25:15 +0800 (CST)
-Received: from [10.174.179.24] (10.174.179.24) by
- dggpemd200004.china.huawei.com (7.185.36.141) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.28; Fri, 2 Feb 2024 09:25:15 +0800
-Subject: Re: [PATCH 2/2] mm/readahead: limit sync readahead while too many
- active refault
-To: Jan Kara <jack@suse.cz>
-References: <20240201100835.1626685-1-liushixin2@huawei.com>
- <20240201100835.1626685-3-liushixin2@huawei.com>
- <20240201093749.ll7uzgt7ixy7kkhw@quack3>
- <c768cab9-4ccb-9618-24a8-b51d3f141340@huawei.com>
- <20240201173130.frpaqpy7iyzias5j@quack3>
-CC: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner
-	<brauner@kernel.org>, Matthew Wilcox <willy@infradead.org>, Andrew Morton
-	<akpm@linux-foundation.org>, <linux-fsdevel@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-From: Liu Shixin <liushixin2@huawei.com>
-Message-ID: <b9e9ddc7-6e12-b9af-e08b-8e85b8372607@huawei.com>
-Date: Fri, 2 Feb 2024 09:25:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+	s=arc-20240116; t=1706837196; c=relaxed/simple;
+	bh=DvYXBDf4sN5DWZ90nPNkb85I8Wchwj0FHfdLWKicX4I=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=UAdg4IeseOhitEAJKgZcOAyrdqb/Ecc//8Vcab9Bil4TTqQ37Y3sfR7E31gewa/+i2WO7sT4NVR5zIqn5xRi1fRpD8EGMXVJee2W97ayJ0uXCopW6nxXbKEP67co5zoiF0m41ZcvbT6qXAv7kz9xzWAozm1l41PM+C+MPZHZlx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TQym26Q7jz4f3jR6;
+	Fri,  2 Feb 2024 09:26:26 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 23C961A0232;
+	Fri,  2 Feb 2024 09:26:31 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgAX5g7GRLxlDYDOCg--.8923S3;
+	Fri, 02 Feb 2024 09:26:30 +0800 (CST)
+Subject: Re: [PATCH v5 5/8] md: Don't clear MD_CLOSING when the raid is about
+ to stop
+To: linan666@huaweicloud.com, song@kernel.org, neilb@suse.com,
+ mariusz.tkaczyk@linux.intel.com, shli@fb.com
+Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+ yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <20240201063404.772797-1-linan666@huaweicloud.com>
+ <20240201063404.772797-6-linan666@huaweicloud.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <c97337c6-4234-68d5-3352-bd61d5c00459@huaweicloud.com>
+Date: Fri, 2 Feb 2024 09:26:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240201173130.frpaqpy7iyzias5j@quack3>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemd200004.china.huawei.com (7.185.36.141)
+In-Reply-To: <20240201063404.772797-6-linan666@huaweicloud.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAX5g7GRLxlDYDOCg--.8923S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tF1xCw13Jw4xCF4DuFy3Jwb_yoW8urWUpa
+	1xKFy5KrWUJ3sxuw47tw1Dua4Fv34SqrWqyry2va4rXa4DAr9rGrZa93yDWF1kGrWrAFs0
+	q3W7Wa1Uuw1Ig3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWr
+	Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+	sGvfC2KfnxnUUI43ZEXa7VUbKsjUUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
+ÔÚ 2024/02/01 14:34, linan666@huaweicloud.com Ð´µÀ:
+> From: Li Nan <linan122@huawei.com>
+> 
+> The raid should not be opened anymore when it is about to be stopped.
+> However, other processes can open it again if the flag MD_CLOSING is
+> cleared before exiting. From now on, this flag will not be cleared when
+> the raid will be stopped.
+> 
+> Fixes: 065e519e71b2 ("md: MD_CLOSING needs to be cleared after called md_set_readonly or do_md_stop")
+> Signed-off-by: Li Nan <linan122@huawei.com>
 
-On 2024/2/2 1:31, Jan Kara wrote:
-> On Thu 01-02-24 18:41:30, Liu Shixin wrote:
->> On 2024/2/1 17:37, Jan Kara wrote:
->>> On Thu 01-02-24 18:08:35, Liu Shixin wrote:
->>>> When the pagefault is not for write and the refault distance is close,
->>>> the page will be activated directly. If there are too many such pages in
->>>> a file, that means the pages may be reclaimed immediately.
->>>> In such situation, there is no positive effect to read-ahead since it will
->>>> only waste IO. So collect the number of such pages and when the number is
->>>> too large, stop bothering with read-ahead for a while until it decreased
->>>> automatically.
->>>>
->>>> Define 'too large' as 10000 experientially, which can solves the problem
->>>> and does not affect by the occasional active refault.
->>>>
->>>> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
->>> So I'm not convinced this new logic is needed. We already have
->>> ra->mmap_miss which gets incremented when a page fault has to read the page
->>> (and decremented when a page fault found the page already in cache). This
->>> should already work to detect trashing as well, shouldn't it? If it does
->>> not, why?
->>>
->>> 								Honza
->> ra->mmap_miss doesn't help, it increased only one in do_sync_mmap_readahead()
->> and then decreased one for every page in filemap_map_pages(). So in this scenario,
->> it can't exceed MMAP_LOTSAMISS.
-> I see, OK. But that's a (longstanding) bug in how mmap_miss is handled. Can
-> you please test whether attached patches fix the trashing for you? At least
-> now I can see mmap_miss properly increments when we are hitting uncached
-> pages...  Thanks!
->
-> 								Honza
-Thanks for the patch, I will test it.
->
+LGTM
+Reviewed-by: Yu Kuai <yukuai3@huawei.com>
+
+> ---
+>   drivers/md/md.c | 14 ++++++++++----
+>   1 file changed, 10 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 5442e8e3c161..deee004b8f22 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -6247,7 +6247,15 @@ static void md_clean(struct mddev *mddev)
+>   	mddev->persistent = 0;
+>   	mddev->level = LEVEL_NONE;
+>   	mddev->clevel[0] = 0;
+> -	mddev->flags = 0;
+> +	/*
+> +	 * Don't clear MD_CLOSING, or mddev can be opened again.
+> +	 * 'hold_active != 0' means mddev is still in the creation
+> +	 * process and will be used later.
+> +	 */
+> +	if (mddev->hold_active)
+> +		mddev->flags = 0;
+> +	else
+> +		mddev->flags &= BIT_ULL_MASK(MD_CLOSING);
+>   	mddev->sb_flags = 0;
+>   	mddev->ro = MD_RDWR;
+>   	mddev->metadata_type[0] = 0;
+> @@ -7626,7 +7634,6 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
+>   	int err = 0;
+>   	void __user *argp = (void __user *)arg;
+>   	struct mddev *mddev = NULL;
+> -	bool did_set_md_closing = false;
+>   
+>   	err = md_ioctl_valid(cmd);
+>   	if (err)
+> @@ -7687,7 +7694,6 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
+>   			mutex_unlock(&mddev->open_mutex);
+>   			return -EBUSY;
+>   		}
+> -		did_set_md_closing = true;
+>   		mutex_unlock(&mddev->open_mutex);
+>   		sync_blockdev(bdev);
+>   	}
+> @@ -7829,7 +7835,7 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
+>   				     mddev_unlock(mddev);
+>   
+>   out:
+> -	if(did_set_md_closing)
+> +	if (cmd == STOP_ARRAY_RO || (err && cmd == STOP_ARRAY))
+>   		clear_bit(MD_CLOSING, &mddev->flags);
+>   	return err;
+>   }
+> 
 
 
