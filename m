@@ -1,263 +1,171 @@
-Return-Path: <linux-kernel+bounces-49619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BCE5846D48
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:03:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0164846D0B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:55:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9969BB2B67F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:55:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B7BB284981
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:55:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A11D778B78;
-	Fri,  2 Feb 2024 09:54:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EC0F7C096;
+	Fri,  2 Feb 2024 09:55:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CQQe/mrQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GwFtaS+x";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GwFtaS+x"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC9B6487A7;
-	Fri,  2 Feb 2024 09:54:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D34F17764D
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:55:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706867691; cv=none; b=YIC8885s62yG4lvC+gkmzYScdpQ13LCq0DnzOyQjwoENicyn2B84vgpDFb7Eb2rjhA4m+FHdlvPHsy7RjomuTTCaN0COlFsSAvzfcBrPvpzQsEZq+CHJrnBJMq7rRqcRAKCQe5Lcy+2amQYxf+GGptbI/Te/K/7rhCctMQpi/N0=
+	t=1706867713; cv=none; b=Pet3osu5sQsEt3LGdbQIYnOozwOnX78gOefiD8cbAt0qH3Edd8p7PpZIqWJLTN+RZ4JU4LVnRNbVo6v8nQmIzA7Ywveswou/FmLjfUSVUGiBnFBSiB8FKZUoR+jxThXqeVF1yLyHoEgl2VPjn3JFJRpG7Hlggoq01BEHMcB84rw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706867691; c=relaxed/simple;
-	bh=Wp6H4kX1lKHyIutWo3Ze/1OUO6DOsMZfBQQlx0oszbU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GLjJ+YuGLrZL4Vq6wfEyvphACZtCv+hVzIr6B9GCCbLq0x1Q433MbLw0fmjelUHJQM8Au4CVAw9EKaO01BM0YGFdg5niMRFe5oQkXk1tKP0XyOfUawaXPcgwPwXo9+NHpzjyLeFlGOjTqLaE2A0eWnlZoDza6crxCzZAHsDY+tA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CQQe/mrQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA7D4C433C7;
-	Fri,  2 Feb 2024 09:54:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706867691;
-	bh=Wp6H4kX1lKHyIutWo3Ze/1OUO6DOsMZfBQQlx0oszbU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=CQQe/mrQpxV6NU8EfEV2i0f5+F4mG4EE9YbFprtwRFZUxzud0ouYvBc0Eor9fOsR5
-	 S+Zqmunx9hHksCkAeEvt6oOXySfLSUs+4DV5iF2GxJUGJsd3goP7ZdLbx7BI94AV5y
-	 ou1XSyiSm0TBd61DcGEKCFm+Q/SclZgek9Rm6tGEg2srosk3BHkCaGTuo2KLhw3T5R
-	 1kMXuh44XEHfgrLJqwioOdRs7afKykqvzLdOSADp9FWCPow+RCIXtj7+j8bw6OP/DJ
-	 +Cc6niIVMhqVbRJ41wu3Eeh7uppvXWpdbBqaUuS1DL74EqgEwnRfhigNaxK/XFfwS0
-	 6bQ290loxcnXg==
-Message-ID: <9c78f4b5-8580-4679-ae65-60878221e00b@kernel.org>
-Date: Fri, 2 Feb 2024 11:54:45 +0200
+	s=arc-20240116; t=1706867713; c=relaxed/simple;
+	bh=QLRB0PaAmnEX3W8FypagsmNAUsegkBLeZ5VlOg6SBmE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S+jQNyRCdVch2yLxqxHVKSrPV5hoVIx+nnss3GhVw19h0Fsi1Xb53+wFvfsvycB1BZv656/BiLt17LvJ899hOvqOkslAVhfofESaOe2sWOtKthKRJlA3yoM8FHIv+xDGcsp8r+b8RrS3SeChen+SsVOcjZRw2y01vXwybkS9elc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GwFtaS+x; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GwFtaS+x; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 24F771F461;
+	Fri,  2 Feb 2024 09:55:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706867710; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s5p422fiooc4HHA5bCEKx8N+v4UtxVyax3SvdbSiWfE=;
+	b=GwFtaS+xtSIK/VzRoDiKVLKHt54EWngxyEg2tyTVUVDIo1CAhGQ27AT/HgX3MSkv0RAAIc
+	vqR1SmmCwWR9hp8kuzOaF3qfLAu8/77iKUNuUsuPeZt0uFNZDXLQF409p3bu+eq5x4w4Bp
+	wvf2b45/lw6qwWd3pDAB3uv270x9ZkA=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706867710; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s5p422fiooc4HHA5bCEKx8N+v4UtxVyax3SvdbSiWfE=;
+	b=GwFtaS+xtSIK/VzRoDiKVLKHt54EWngxyEg2tyTVUVDIo1CAhGQ27AT/HgX3MSkv0RAAIc
+	vqR1SmmCwWR9hp8kuzOaF3qfLAu8/77iKUNuUsuPeZt0uFNZDXLQF409p3bu+eq5x4w4Bp
+	wvf2b45/lw6qwWd3pDAB3uv270x9ZkA=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0CDB8139AB;
+	Fri,  2 Feb 2024 09:55:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id +76rAP67vGWkVQAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Fri, 02 Feb 2024 09:55:10 +0000
+Date: Fri, 2 Feb 2024 10:55:05 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: akpm@linux-foundation.org, muchun.song@linux.dev, osalvador@suse.de,
+	david@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mm: hugetlb: remove __GFP_THISNODE flag when
+ dissolving the old hugetlb
+Message-ID: <Zby7-dTtPIy2k5pj@tiehlicka>
+References: <6f26ce22d2fcd523418a085f2c588fe0776d46e7.1706794035.git.baolin.wang@linux.alibaba.com>
+ <Zbu4cD1XLFLfKan8@tiehlicka>
+ <3f31cd89-f349-4f9e-bc29-35f29f489633@linux.alibaba.com>
+ <ZbylJr_bbWCUMjMl@tiehlicka>
+ <f1606912-5bcc-46be-b4f4-666149eab7bd@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 13/13] arm64: dts: ti: k3-am6*: Reorganize MMC
- properties
-Content-Language: en-US
-To: Judith Mendez <jm@ti.com>, Ulf Hansson <ulf.hansson@linaro.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Adrian Hunter <adrian.hunter@intel.com>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Nishanth Menon <nm@ti.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Andrew Davis <afd@ti.com>,
- Udit Kumar <u-kumar1@ti.com>, devicetree@vger.kernel.org,
- Randolph Sapp <rs@ti.com>
-References: <20240131003714.2779593-1-jm@ti.com>
- <20240131003714.2779593-14-jm@ti.com>
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20240131003714.2779593-14-jm@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f1606912-5bcc-46be-b4f4-666149eab7bd@linux.alibaba.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-
-
-On 31/01/2024 02:37, Judith Mendez wrote:
-> Reorganize various MMC properties for MMC nodes to be
-> more uniform across devices.
+On Fri 02-02-24 17:29:02, Baolin Wang wrote:
+> On 2/2/2024 4:17 PM, Michal Hocko wrote:
+[...]
+> > > Agree. So how about below changing?
+> > > (1) disallow fallbacking to other nodes when handing in-use hugetlb, which
+> > > can ensure consistent behavior in handling hugetlb.
+> > 
+> > I can see two cases here. alloc_contig_range which is an internal kernel
+> > user and then we have memory offlining. The former shouldn't break the
+> > per-node hugetlb pool reservations, the latter might not have any other
+> > choice (the whole node could get offline and that resembles breaking cpu
+> > affininty if the cpu is gone).
 > 
-> Add ti,clkbuf-sel to MMC nodes that are missing this property.
+> IMO, not always true for memory offlining, when handling a free hugetlb, it
+> disallows fallbacking, which is inconsistent.
+
+It's been some time I've looked into that code so I am not 100% sure how
+the free pool is currently handled. The above is the way I _think_ it
+should work from the usability POV.
+
+> Not only memory offlining, but also the longterm pinning (in
+> migrate_longterm_unpinnable_pages()) and memory failure (in
+> soft_offline_in_use_page()) can also break the per-node hugetlb pool
+> reservations.
+
+Bad
+
+> > Now I can see how a hugetlb page sitting inside a CMA region breaks CMA
+> > users expectations but hugetlb migration already tries hard to allocate
+> > a replacement hugetlb so the system must be under a heavy memory
+> > pressure if that fails, right? Is it possible that the hugetlb
+> > reservation is just overshooted here? Maybe the memory is just terribly
+> > fragmented though?
+> > 
+> > Could you be more specific about numbers in your failure case?
 > 
-> Signed-off-by: Judith Mendez <jm@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-am62-main.dtsi       | 5 +++--
->  arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts | 2 --
->  arch/arm64/boot/dts/ti/k3-am62a-main.dtsi      | 4 ++--
->  arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi | 2 ++
->  arch/arm64/boot/dts/ti/k3-am64-main.dtsi       | 7 +++++--
->  arch/arm64/boot/dts/ti/k3-am642-evm.dts        | 3 +--
->  arch/arm64/boot/dts/ti/k3-am642-sk.dts         | 1 -
->  7 files changed, 13 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> index ca825088970f..32a8a68f1311 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> @@ -559,9 +559,9 @@ sdhci0: mmc@fa10000 {
->  		clock-names = "clk_ahb", "clk_xin";
->  		assigned-clocks = <&k3_clks 57 6>;
->  		assigned-clock-parents = <&k3_clks 57 8>;
-> +		bus-width = <8>;
+> Sure. Our customer's machine contains serveral numa nodes, and the system
+> reserves a large number of CMA memory occupied 50% of the total memory which
+> is used for the virtual machine, meanwhile it also reserves lots of hugetlb
+> which can occupy 50% of the CMA. So before starting the virtual machine, the
+> hugetlb can use 50% of the CMA, but when starting the virtual machine, the
+> CMA will be used by the virtual machine and the hugetlb should be migrated
+> from CMA.
 
-Is bus-width fix for this instance? If not then we don't really know here what
-bus-width is used by the board implementation. And it should come in the
-board DTS file.
+Would it make more sense for hugetlb pages to _not_ use CMA in this
+case? I mean would be better off overall if the hugetlb pool was
+preallocated before the CMA is reserved? I do realize this is just
+working around the current limitations but it could be better than
+nothing.
 
->  		mmc-ddr-1_8v;
->  		mmc-hs200-1_8v;
-> -		bus-width = <8>;
->  		ti,clkbuf-sel = <0x7>;
->  		ti,otap-del-sel-legacy = <0x0>;
->  		ti,otap-del-sel-mmc-hs = <0x0>;
-> @@ -576,8 +576,8 @@ sdhci1: mmc@fa00000 {
->  		power-domains = <&k3_pds 58 TI_SCI_PD_EXCLUSIVE>;
->  		clocks = <&k3_clks 58 5>, <&k3_clks 58 6>;
->  		clock-names = "clk_ahb", "clk_xin";
-> -		ti,clkbuf-sel = <0x7>;
->  		bus-width = <4>;
-> +		ti,clkbuf-sel = <0x7>;
->  		ti,otap-del-sel-legacy = <0x0>;
->  		ti,otap-del-sel-sd-hs = <0x0>;
->  		ti,otap-del-sel-sdr12 = <0xf>;
-> @@ -599,6 +599,7 @@ sdhci2: mmc@fa20000 {
->  		power-domains = <&k3_pds 184 TI_SCI_PD_EXCLUSIVE>;
->  		clocks = <&k3_clks 184 5>, <&k3_clks 184 6>;
->  		clock-names = "clk_ahb", "clk_xin";
-> +		bus-width = <4>;
->  		ti,clkbuf-sel = <0x7>;
->  		ti,otap-del-sel-legacy = <0x0>;
->  		ti,otap-del-sel-sd-hs = <0x0>;
-> diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-> index f69dbf9b8406..0422615e4d98 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-> @@ -836,7 +836,6 @@ &sdhci1 {
->  	bootph-all;
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&sd_pins_default>;
-> -
->  	vmmc-supply = <&vdd_3v3_sd>;
->  	vqmmc-supply = <&vdd_sd_dv>;
->  	disable-wp;
-> @@ -850,7 +849,6 @@ &sdhci2 {
->  	vmmc-supply = <&wlan_en>;
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&wifi_pins_default>, <&wifi_32k_clk>;
-> -	bus-width = <4>;
+> Due to several nodes in the system, one node's memory can be exhausted,
+> which will fail the hugetlb migration with __GFP_THISNODE flag.
 
-I wouldn't remove this from here if bus-width is variable for this
-instance of MMC controller.
-
->  	non-removable;
->  	ti,fails-without-test-cd;
->  	cap-power-off-card;
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-> index db5a7746c82e..88b112e657c8 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-> @@ -561,6 +561,8 @@ sdhci1: mmc@fa00000 {
->  		power-domains = <&k3_pds 58 TI_SCI_PD_EXCLUSIVE>;
->  		clocks = <&k3_clks 58 5>, <&k3_clks 58 6>;
->  		clock-names = "clk_ahb", "clk_xin";
-> +		bus-width = <4>;
-> +		ti,clkbuf-sel = <0x7>;
->  		ti,otap-del-sel-legacy = <0x0>;
->  		ti,otap-del-sel-sd-hs = <0x0>;
->  		ti,otap-del-sel-sdr12 = <0xf>;
-> @@ -572,8 +574,6 @@ sdhci1: mmc@fa00000 {
->  		ti,itap-del-sel-sd-hs = <0x0>;
->  		ti,itap-del-sel-sdr12 = <0x0>;
->  		ti,itap-del-sel-sdr25 = <0x0>;
-> -		ti,clkbuf-sel = <0x7>;
-> -		bus-width = <4>;
->  		no-1-8-v;
->  		status = "disabled";
->  	};
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
-> index 6dd48c826f74..2b4c10b35db1 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
-> @@ -407,10 +407,12 @@ &main_i2c2 {
->  };
->  
->  &sdhci0 {
-> +	/* eMMC */
->  	bootph-all;
->  	status = "okay";
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&main_mmc0_pins_default>;
-> +	non-removable;
->  	disable-wp;
->  };
->  
-> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> index 1842f05ac351..34706ab9f5fb 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> @@ -626,9 +626,11 @@ sdhci0: mmc@fa10000 {
->  		power-domains = <&k3_pds 57 TI_SCI_PD_EXCLUSIVE>;
->  		clocks = <&k3_clks 57 0>, <&k3_clks 57 1>;
->  		clock-names = "clk_ahb", "clk_xin";
-> +		bus-width = <8>;
->  		mmc-ddr-1_8v;
->  		mmc-hs200-1_8v;
-> -		ti,trm-icp = <0x2>;
-> +		ti,clkbuf-sel = <0x7>;
-> +		ti,trm-icp = <0x8>;
->  		ti,otap-del-sel-legacy = <0x0>;
->  		ti,otap-del-sel-mmc-hs = <0x0>;
->  		ti,otap-del-sel-ddr52 = <0x6>;
-> @@ -646,6 +648,8 @@ sdhci1: mmc@fa00000 {
->  		power-domains = <&k3_pds 58 TI_SCI_PD_EXCLUSIVE>;
->  		clocks = <&k3_clks 58 3>, <&k3_clks 58 4>;
->  		clock-names = "clk_ahb", "clk_xin";
-> +		bus-width = <4>;
-> +		ti,clkbuf-sel = <0x7>;
->  		ti,otap-del-sel-legacy = <0x0>;
->  		ti,otap-del-sel-sd-hs = <0x0>;
->  		ti,otap-del-sel-sdr12 = <0xf>;
-> @@ -653,7 +657,6 @@ sdhci1: mmc@fa00000 {
->  		ti,otap-del-sel-sdr50 = <0xc>;
->  		ti,otap-del-sel-sdr104 = <0x6>;
->  		ti,otap-del-sel-ddr50 = <0x9>;
-> -		ti,clkbuf-sel = <0x7>;
->  		ti,itap-del-sel-legacy = <0x0>;
->  		ti,itap-del-sel-sd-hs = <0x0>;
->  		ti,itap-del-sel-sdr12 = <0x0>;
-> diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-> index 0583ec3a9b52..572b98a217a6 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-> @@ -493,8 +493,8 @@ eeprom@0 {
->  
->  /* eMMC */
->  &sdhci0 {
-> +	bootph-all;
->  	status = "okay";
-> -	bus-width = <8>;
->  	non-removable;
->  	ti,driver-strength-ohm = <50>;
->  	disable-wp;
-> @@ -506,7 +506,6 @@ &sdhci1 {
->  	status = "okay";
->  	vmmc-supply = <&vdd_mmc1>;
->  	pinctrl-names = "default";
-> -	bus-width = <4>;
->  	pinctrl-0 = <&main_mmc1_pins_default>;
->  	disable-wp;
->  };
-> diff --git a/arch/arm64/boot/dts/ti/k3-am642-sk.dts b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-> index c3a77f6282cb..600056105874 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-> @@ -469,7 +469,6 @@ &sdhci1 {
->  	status = "okay";
->  	vmmc-supply = <&vdd_mmc1>;
->  	pinctrl-names = "default";
-> -	bus-width = <4>;
->  	pinctrl-0 = <&main_mmc1_pins_default>;
->  	disable-wp;
->  };
+Is the workload NUMA aware? I.e. do you bind virtual machines to
+specific nodes?
 
 -- 
-cheers,
--roger
+Michal Hocko
+SUSE Labs
 
