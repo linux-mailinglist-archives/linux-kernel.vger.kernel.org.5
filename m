@@ -1,63 +1,88 @@
-Return-Path: <linux-kernel+bounces-50449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 770DC847962
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:14:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21ADE847918
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:07:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70429B22504
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:07:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52CA21C272B0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:07:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B277C83A05;
-	Fri,  2 Feb 2024 18:53:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B912C12F385;
+	Fri,  2 Feb 2024 18:54:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AxF3wj8I"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ro6UE5jt"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E08D483A0C;
-	Fri,  2 Feb 2024 18:53:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 872DF12F374;
+	Fri,  2 Feb 2024 18:54:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706900012; cv=none; b=gKuL/QY5vkWpAixYzx2HnYOCU5v5GKCmHbW0paXAv1Bil8EBaHABmUVbB1r0isS0fu8ffVTZhKSOeZAMgVeHSpgWzZO0ixeiAVr9ghtMGTh9HCCqq6yqYJhl6qZWpE16LrIIvcSeHLkiiqVTEWOPQylQiKJlb0Zonl2za0FFpWY=
+	t=1706900074; cv=none; b=dZve1ufkEvUfPXrXN/ZyeEigN/pMO9K9IvhpjkJX4Ei1lTN4kwwwTesmw5Tm9P2E704iRzy3txetyfGcemYArG1d6BiDHm0MRMJKvx47dQfTq8yKI9DLJCj3rjcCyidofOh1hTliGGHYk7BicCG4TZkSCuW0BafNNjqz6v5Zias=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706900012; c=relaxed/simple;
-	bh=BfPWVLXVjqnU3vmc0U9hEmE5mio5hV7S7WnYSfm85Rc=;
+	s=arc-20240116; t=1706900074; c=relaxed/simple;
+	bh=jo+FWGe+oR7bSCoGGVbo+SEtmwAqP81B6x0dU3BHZRM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VSFd0JxNrN7BLan8/QFA7H5RQxRBr3J50ibtvzM45IY071YrU+VKwKeNuHD+RyD+3ZdWGtl45cnjHWApfuGTDzYmbA1V6QQPtGGsfbIkA4cVQN0jNUgu7l4j3E6wnZjyWPD3TWnZBxLMluXgusEnLurvOxO7Oq32w+414vbXIvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AxF3wj8I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6FF8C433F1;
-	Fri,  2 Feb 2024 18:53:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706900011;
-	bh=BfPWVLXVjqnU3vmc0U9hEmE5mio5hV7S7WnYSfm85Rc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AxF3wj8I2VxPoq8egSbA5R0YteSmSNgyQVUNHdbT2JAAEHtxLynsEzCHnJUjzV9UN
-	 FN6LOFbvl84FcQ69c0N4TaRgEMuxF/iEC7x76G5G3vAS5Nat7z9f/qi07x6VqVrio/
-	 wxilcN3kCwrlPQNUI21rirBkMMxpTUx2WyZ+wUESqWHEU1NKrf00Z66OA41SUSQxx7
-	 OPQ4sMFzMT80Aj/Y+Xrt7g2Uk2Yo7BKe+PFvqiAve8zuM/Igaka5F3uF9Iia5Z3cd0
-	 rDMkw4UJ6kHvbjAfT/tBHU7qOdqbx33zxFwyQC1vZz8IhTqXQMXK81pSH0crRkVjTL
-	 0TL/s5Z5AlQCQ==
-Date: Fri, 2 Feb 2024 19:53:24 +0100
-From: Lorenzo Pieralisi <lpieralisi@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: manivannan.sadhasivam@linaro.org, bhelgaas@google.com,
-	conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com,
-	helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev,
-	kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
-	krzysztof.kozlowski@linaro.org, kw@linux.com,
-	l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org,
-	linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
-	shawnguo@kernel.org
-Subject: Re: [PATCH v9 05/16] PCI: imx6: Using "linux,pci-domain" as slot ID
-Message-ID: <Zb06JL5X8EiHEyFD@lpieralisi>
-References: <20240119171122.3057511-1-Frank.Li@nxp.com>
- <20240119171122.3057511-6-Frank.Li@nxp.com>
- <ZbzcOarorCS1MPRc@lpieralisi>
- <ZbztZkNQ+wydticD@lizhi-Precision-Tower-5810>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gTCkqtkFqbfo5tF8FojhI4v1u4/QkheBN/wP8bguUby8WjMUMVY9hQBzpVbhehJUyBGAlSjP2pmkHC1NbsbQtnxR0DaHGVnRTaihDSf/tVVzk+Lx0fHGJJJk+z5w0t08pySTYbmEjIaAqQmckYZtSozM9Lw9EbFV4aQUD91nN0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ro6UE5jt; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d71cb97937so22832955ad.3;
+        Fri, 02 Feb 2024 10:54:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706900072; x=1707504872; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aeSCHAy3VJzuhlqFkWOWdVVAJVTWx5SZIKFlnniBmYk=;
+        b=Ro6UE5jt152SSIvbOSzdfB4jX5QHbJdcpcj6WvhwaaypLec558pcHRyZeoDFEhEsym
+         SbQztnz76PD23hBrD2JFeGClB6FD5EZ40Lew69flxH06H/DBI388qVXqcaEMTFdjp21p
+         PJqcKfyV1Ka1QzVL60cyOK3TE0pCbQJTKrORmBct8QmrcglKv/klvpjvYdfbbf3hwCgf
+         5qROH3K5v6X0FlYQmgdvUGqHpgrpOj2+naDPdOeECDa75LtqTLswq00vZA826q3FvIxE
+         HDaCN6hLDvIuibUigW6b1mjKQchZ6IeozhDDawMFZN/eUIaKT80mnQCQFkdy/BAMw6el
+         f1Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706900072; x=1707504872;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aeSCHAy3VJzuhlqFkWOWdVVAJVTWx5SZIKFlnniBmYk=;
+        b=WD8uD+RbSUZgnZkryNYQiR0vfVYXqeSPIpRkjyngNi47Gpbp2wH2teFi5sr65w+IbJ
+         79ibFgW1qxWO/iLmwOKMU1Y9jmQXHrQq3hez5ROyx9ry2Vsmi/qlb8LKK6FaX7Q9YA6c
+         LTTCPymJM3tNYOATYkolTqvb1dt7lU4+o+t86j279HrAIc0Yppu2Wk5Ca4CWk3c6MNSZ
+         u/buM9jzfZ4ueMvpfz92lO/9aiBb+Km2hQ1McnQCZs2DngdgdECw6nhErS8dxyTw8Qcu
+         hv+4wQppaf38+j3UEqegSiwdd0JIyYiae2rvzGLlnnHUiHB7MJrEy3RZEnzYtuX2nWGo
+         HAGQ==
+X-Gm-Message-State: AOJu0YwViKhrfSGfIt9mwK2a2Th5JQlHWUgkPIdhWREWPG1dwLcy/kSC
+	wYdQAA/YXHqh8R7PD+TSRW7Wd+/XZgftHdE7oC+24h2KV8CihSuQHHlm37up
+X-Google-Smtp-Source: AGHT+IFcZQemFSdmcEK9i4IsX7bisc15TiKjCHoB4bg5gBSwHBOW06rHkGoT8HX+PDKFtcYYd5XT3Q==
+X-Received: by 2002:a17:903:943:b0:1d9:8832:f800 with SMTP id ma3-20020a170903094300b001d98832f800mr215664plb.8.1706900071874;
+        Fri, 02 Feb 2024 10:54:31 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXhtYm5bifoXUxUvTc+M2Vo5X4YrXPoXCmMK1UlWBscbUoGwho5tCSKPqWmg2v0D5vuQnzUsa7UlaN8MRrRTRNgF4LclPFVjub2NIflv1YziPg9KdhUYS6R3jbE1Wq96LMdZuyngHnaSLu6JB09Y0dkejvAm4PxDJ5ZT5MSYa6xc03VBhOzxdJoZoPeRMYkDugOUcfcdbrWDOt5pbfMUhdYHAR4Wa/Q0UqEttxBo3YCdBm0KNn++Ud13FoW6VFyJFmSqtSUJTrplxYj9F6IXXhJBmkD2DaNHAbEzh66J+OcTv+m/mTl0lR3j1weYAZJN5yJUX0cQuJqpva/XjawxIzyc9jAzKxKDxbeotPSz3OUDrzaT3zQ4E9VE7NhSxakiHcHGtc+wvEpF0wAPmMGfNaT/Y25JOiRdvmZ0KFrInDxiAcYWa4=
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id iz5-20020a170902ef8500b001d8f111804asm1929010plb.113.2024.02.02.10.54.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 10:54:31 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Fri, 2 Feb 2024 10:54:29 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v6 1/5] dt-bindings: vendor-prefixes: add Amphenol
+Message-ID: <fa215ab8-0b0a-462e-b205-7b2288df263a@roeck-us.net>
+References: <20240130-topic-chipcap2-v6-0-260bea05cf9b@gmail.com>
+ <20240130-topic-chipcap2-v6-1-260bea05cf9b@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,43 +91,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZbztZkNQ+wydticD@lizhi-Precision-Tower-5810>
+In-Reply-To: <20240130-topic-chipcap2-v6-1-260bea05cf9b@gmail.com>
 
-On Fri, Feb 02, 2024 at 08:25:58AM -0500, Frank Li wrote:
-> On Fri, Feb 02, 2024 at 01:12:41PM +0100, Lorenzo Pieralisi wrote:
-> > "PCI: imx6: Use "linux,pci-domain" as slot ID"
-> > 
-> > On Fri, Jan 19, 2024 at 12:11:11PM -0500, Frank Li wrote:
-> > > Avoid use get slot id by compared with register physical address. If there
-> > > are more than 2 slots, compared logic will become complex.
-> > > 
-> > > "linux,pci-domain" already exist at dts since commit:
-> > > 	commit (c0b70f05c87f3b arm64: dts: imx8mq: use_dt_domains for pci node).
-> > > 
-> > > So it is safe to remove compare basic address code:
-> > > 	...
-> > > 	if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
-> > > 		imx6_pcie->controller_id = 1;
-> > 
-> > No it is not unless you magically update all firmware out
-> > there in the field.
+On Tue, Jan 30, 2024 at 10:06:44PM +0100, Javier Carrasco wrote:
+> Add vendor prefix for Amphenol (https://www.amphenol-sensors.com)
 > 
-> commit c0b70f05c87f3b09b391027c6f056d0facf331ef
-> Author:     Peng Fan <peng.fan@nxp.com>
-> AuthorDate: Fri Jan 15 11:26:57 2021 +0800
-> Commit:     Shawn Guo <shawnguo@kernel.org>
-> CommitDate: Fri Jan 29 14:46:28 2021 +0800
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+
+Applied.
+
+Thanks,
+Guenter
+
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> I am not sure if it is neccesary to compatible with 2 years ago's dts.
-> I think it may not boot at all with using 2 year agao dtb file directly.
-> 
-> Do you have other comments? I can remove it from this big patch series,
-
-I will have a look at the full series first we can decide whether
-to drop it later.
-
-I am travelling so I am not sure I can review it before February
-12th, FYI.
-
-Lorenzo
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index 1a0dc04f1db4..25158559471c 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -107,6 +107,8 @@ patternProperties:
+>      description: Amlogic, Inc.
+>    "^ampere,.*":
+>      description: Ampere Computing LLC
+> +  "^amphenol,.*":
+> +    description: Amphenol Advanced Sensors
+>    "^ampire,.*":
+>      description: Ampire Co., Ltd.
+>    "^ams,.*":
 
