@@ -1,268 +1,128 @@
-Return-Path: <linux-kernel+bounces-49685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1161C846E1C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:39:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AACB3846E1F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:40:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7C142903B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:39:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D5E1293844
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6239A13DBAF;
-	Fri,  2 Feb 2024 10:38:53 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC27C13BE92;
+	Fri,  2 Feb 2024 10:40:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fOeCWLTy"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C11C413D4F2;
-	Fri,  2 Feb 2024 10:38:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B8112628B;
+	Fri,  2 Feb 2024 10:40:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706870332; cv=none; b=X0W1WxjE8kyydI22JjM1mFyalikY+6mmQ+JWP2AJNTL0ASaH1A/548ziIxd7HBQ9Rmah1c4PnAZxpw0MhN3oJtQDY5HcWgop45u3rC/5celAGQymcpRY4cEoelf/QLDjPIaO0Emt+ygchij1lYRzW04jF/KiPSsQNNZuaLBOUBo=
+	t=1706870430; cv=none; b=XJh9D5LSmqx2Dnqr470Nx/4IhIAZu1SEeUt/xratEel49upENg9yZCQOYYsSq2hT/YNrt+Xe65xugk73Dd5XAoZutP5a5zLkhTKS8EoyUhUhfqgVHzkht+8NcTEGLPKg9BKKF2/rMtv4KB9egxjfUfYXj7np8UMkFXQvAaWCGRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706870332; c=relaxed/simple;
-	bh=i4g0Lfb6g2tpJwkokQhYVE4ghi2KaLf5G9sekfaZ5Xw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nzBA+nNFGdpyDuYP8mgYl2Osq+BM9zpdxnwI3Q75psrE1jK9SRII8uEl4ParBAl4VDtC37NMay4ujHeS4K5rTElnPLqkMSgyHyb1yZs0OBOqjbC2YN8WU2MSBsZJ3AWaQVeuCXFFHG2g4xvf15M8RVApsOInHHNXf4zM4t25wtI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TRC1H224Lz4f3l7R;
-	Fri,  2 Feb 2024 18:38:43 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 84D3F1A0175;
-	Fri,  2 Feb 2024 18:38:47 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgAn+REwxrxl46r1Cg--.15879S7;
-	Fri, 02 Feb 2024 18:38:45 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: x86@kernel.org,
-	bpf@vger.kernel.org
-Cc: Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	linux-kernel@vger.kernel.org,
-	xingwei lee <xrivendell7@gmail.com>,
-	Jann Horn <jannh@google.com>,
-	Sohil Mehta <sohil.mehta@intel.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	houtao1@huawei.com
-Subject: [PATCH bpf v3 3/3] selftest/bpf: Test the read of vsyscall page under x86-64
-Date: Fri,  2 Feb 2024 18:39:35 +0800
-Message-Id: <20240202103935.3154011-4-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20240202103935.3154011-1-houtao@huaweicloud.com>
-References: <20240202103935.3154011-1-houtao@huaweicloud.com>
+	s=arc-20240116; t=1706870430; c=relaxed/simple;
+	bh=TLymezzE5+r0wlZC85xmYHZmI6YZpMuucXlhRm0pcTY=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=F/JINvj5hcjfS1gAdAwv6di4xGoPc/MfjcniGTMzG1iKuQ8YQ+yGez8/S+DsWWe2fcCDzr/8mKIMPhDQmQPor3kAUexnVbmzA5j0o+TbxJB2sPrRIuPjTwpPh4y7eqxFoA8sS+cx6XqQS74Cn2DjbLjGMKkzqcIF5j/cN94KcMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fOeCWLTy; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a359446b57dso248794266b.3;
+        Fri, 02 Feb 2024 02:40:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706870426; x=1707475226; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=yr18VgKkUR0Z6xA+Bp01IdzSAv15CAC3JbNxjaal7xE=;
+        b=fOeCWLTytEfYLS5v1YJWd+ZVymGQ7FW08cJ1DffK/09AUn34WOfFnfgVGHJ4fHLpJN
+         ZcjoyTviGQdtB9/Q9RDIieFscRJQnxI1zBKK8Yj94DtPWMfK7ziCK4LdsRmCc800b54V
+         dNtAhbVVF3fAAIQRMDEdBz2aot5+aXFMOrGozNC/MmUonL6KIBpqfIaMsjKmm5s4qgni
+         Y7u0mnvhA01IjC6nJ3qllbLf4gJPZ4Vum0G4uYn//lce39vduxPYBoyW6v3E9t5E5iGm
+         m8gjI7ZzahUgrkPT6Mupu8gUMOYdaIFcnqU/ffBjqoXUBe8pyARp4NvpjkOs6Nrg9xZp
+         Zo8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706870426; x=1707475226;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yr18VgKkUR0Z6xA+Bp01IdzSAv15CAC3JbNxjaal7xE=;
+        b=G2iSR5aZ5qk/LHnx/nmv2fiSN5ah581D61FsirSC7JhNFPsCeeqqIlg8eNZWypyus2
+         8pvpyL64D1Zl0WyrlC+baHS+2YMnFVKpmSyghmnKkNFRv2B2grjq03tv//k4Xz8rUzF2
+         vs0gkN1bodD3wEpJC29b1Wcx9XExbju7ts6OMEYpU2AS6Z+KljjZiJkPjJqDXZuAkB9j
+         ayUICwcI7ACWIiurAWmO3c+aaQlXnmjY0f0mxMABnHtVbwmGh6OVCJudZG9l8g1at94q
+         1qz5nhaIzMEjlsHzIA4D1YJWWSV7QwSQqnPHj01HfUH/B//tSY9WtTPO3QOzSEEEw6eF
+         O50A==
+X-Gm-Message-State: AOJu0YyYNJn656ESNoB0YsJBWgi0FWrt0OFmIezj8wn9UcRt6BcXqgNV
+	vqLew3AuuBHL1zzHhpb2au+KZ+DbGhrPpQ10/DSlC1qNOfZiXoBL
+X-Google-Smtp-Source: AGHT+IES3tCk3jxs0f3dtCVujdQihB3Cb/dce9FqfXLgDJYCUO6WQa6kZawzBG6V58Qd4NgHObwTrQ==
+X-Received: by 2002:a17:906:3b8e:b0:a35:9cf0:56d4 with SMTP id u14-20020a1709063b8e00b00a359cf056d4mr3995076ejf.30.1706870426176;
+        Fri, 02 Feb 2024 02:40:26 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUrmf6/v+Xa22VMbRqu6wSX1b6ijQWy9+2d8Xa5a3K+X3iJVkwzB+5zIAQXNGGuZ5E5UFGMJ7Q1Dh/QNeQ63qRHwfiyw9jwMY8OHcYK/R6yOn7wvrXzLCFKoqsAZj2UoJDqKeVG6hvyjB6Ws0ZZv53cl+fY0ZdLXYsqVfdShBFmcVxWbrqeUMfyZ6p+E9WceIHEd4pgUbCiGmQe34PuiWOWwW64RXGNxxk3GfZCCCA9PvFcZLkR0QrVXDNQoYYoMFuk4Edo59wnJ4JOGHfRwS7bBtcE7evMek8oNdgBY0ILQ1ugKAtK856CGhw5iuPhbluweg==
+Received: from [192.168.3.110] ([86.38.153.11])
+        by smtp.gmail.com with ESMTPSA id vk7-20020a170907cbc700b00a371a1b40c1sm256385ejc.23.2024.02.02.02.40.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Feb 2024 02:40:25 -0800 (PST)
+Message-ID: <cc1572a4-f2e4-4f26-a505-09db5dcdfdfa@gmail.com>
+Date: Fri, 2 Feb 2024 12:40:23 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAn+REwxrxl46r1Cg--.15879S7
-X-Coremail-Antispam: 1UD129KBjvJXoW3GryrAw18Gr45KF4DGw15Arb_yoW7Zw43p3
-	Z5Aa4akr4fJw12yr47Xws8uFWrZrn7XF45Jrn7X3W3ur47Zr95try2ga4qqF15GrsIgrW5
-	Za97Ka95Kr4UJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
-	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+User-Agent: Mozilla Thunderbird
+From: Arturas Moskvinas <arturas.moskvinas@gmail.com>
+Subject: Re: [PATCH v2] pinctrl: mcp23s08: Check only GPIOs which have
+ interrupts enabled
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linus.walleij@linaro.org, biju.das.jz@bp.renesas.com,
+ akaessens@gmail.com, thomas.preston@codethink.co.uk,
+ preid@electromag.com.au, u.kleine-koenig@pengutronix.de,
+ linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240201141406.32484-2-arturas.moskvinas@gmail.com>
+ <ZburBq7ZJhK_X_t0@smile.fi.intel.com>
+Content-Language: en-US
+In-Reply-To: <ZburBq7ZJhK_X_t0@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Hou Tao <houtao1@huawei.com>
 
-Under x86-64, when using bpf_probe_read_kernel{_str}() or
-bpf_probe_read{_str}() to read vsyscall page, the read may trigger oops,
-so add one test case to ensure that the problem is fixed. Beside those
-four bpf helpers mentioned above, testing the read of vsyscall page by
-using bpf_probe_read_user{_str} and bpf_copy_from_user{_task}() as well.
+On 2/1/24 16:30, Andy Shevchenko wrote:
+> On Thu, Feb 01, 2024 at 04:14:07PM +0200, Arturas Moskvinas wrote:
+>> GPINTEN register contains information about GPIOs with enabled
+>> interrupts no need to check other GPIOs for changes.
+>>
+>> Signed-off-by: Arturas Moskvinas<arturas.moskvinas@gmail.com>
+>> ---
+> You forgot to add a changelog here, but no need to resend, just you can respond
+> to the email since it's not a big issue in this case.
+Ack.
+>> +	if (mcp_read(mcp, MCP_GPINTEN, &gpinten))
+>> +		goto unlock;
+> Do all hw variants have this register available?
+> Esp. I2C part, wouldn't it be problematic (exception with NACK on the bus)?
+According to specification sheets MCP(s0)17 [1] page 19, MCP(s0)18 [2] 
+page 19, MCP(s0)08 [3] page 11 - all supported expanders have that 
+register also that register needs to be used [4] to mask/unmask 
+interrupts on given GPIO, without it - expander won't even fire an 
+interrupt. I tested on MCP23018 I2C expander though but module itself is 
+not treating that expander differently for interrupt handling purposes.
 
-The test case passes the address of vsyscall page to these six helpers
-and checks whether the returned values are expected:
+Do you want that information to be added as part of commit message or 
+information in the mailing thread will be enough?
 
-1) For bpf_probe_read_kernel{_str}()/bpf_probe_read{_str}(), the
-   expected return value is -ERANGE as shown below:
+[1] 
+https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MCP23017-Data-Sheet-DS20001952.pdf
+[2] 
+https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MCP23018-Data-Sheet-DS20002103.pdf
+[3] 
+https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MCP23008-MCP23S08-Data-Sheet-DS20001919.pdf
+[4] 
+https://elixir.bootlin.com/linux/v6.7/source/drivers/pinctrl/pinctrl-mcp23s08.c#L473
 
-bpf_probe_read_kernel_common
-  copy_from_kernel_nofault
-    // false, return -ERANGE
-    copy_from_kernel_nofault_allowed
-
-2) For bpf_probe_read_user{_str}(), the expected return value is -EFAULT
-   as show below:
-
-bpf_probe_read_user_common
-  copy_from_user_nofault
-    // false, return -EFAULT
-    __access_ok
-
-3) For bpf_copy_from_user(), the expected return value is -EFAULT:
-
-// return -EFAULT
-bpf_copy_from_user
-  copy_from_user
-    _copy_from_user
-      // return false
-      access_ok
-
-4) For bpf_copy_from_user_task(), the expected return value is -EFAULT:
-
-// return -EFAULT
-bpf_copy_from_user_task
-  access_process_vm
-    // return 0
-    vma_lookup()
-    // return 0
-    expand_stack()
-
-The occurrence of oops depends on the availability of CPU SMAP [1]
-feature and there are three possible configurations of vsyscall page in
-the boot cmd-line: vsyscall={xonly|none|emulate}, so there are a total
-of six possible combinations. Under all these combinations, the test
-case runs successfully.
-
-[1]: https://en.wikipedia.org/wiki/Supervisor_Mode_Access_Prevention
-
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/prog_tests/read_vsyscall.c  | 57 +++++++++++++++++++
- .../selftests/bpf/progs/read_vsyscall.c       | 45 +++++++++++++++
- 2 files changed, 102 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
- create mode 100644 tools/testing/selftests/bpf/progs/read_vsyscall.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-new file mode 100644
-index 0000000000000..3405923fe4e65
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2024. Huawei Technologies Co., Ltd */
-+#include "test_progs.h"
-+#include "read_vsyscall.skel.h"
-+
-+#if defined(__x86_64__)
-+/* For VSYSCALL_ADDR */
-+#include <asm/vsyscall.h>
-+#else
-+/* To prevent build failure on non-x86 arch */
-+#define VSYSCALL_ADDR 0UL
-+#endif
-+
-+struct read_ret_desc {
-+	const char *name;
-+	int ret;
-+} all_read[] = {
-+	{ .name = "probe_read_kernel", .ret = -ERANGE },
-+	{ .name = "probe_read_kernel_str", .ret = -ERANGE },
-+	{ .name = "probe_read", .ret = -ERANGE },
-+	{ .name = "probe_read_str", .ret = -ERANGE },
-+	{ .name = "probe_read_user", .ret = -EFAULT },
-+	{ .name = "probe_read_user_str", .ret = -EFAULT },
-+	{ .name = "copy_from_user", .ret = -EFAULT },
-+	{ .name = "copy_from_user_task", .ret = -EFAULT },
-+};
-+
-+void test_read_vsyscall(void)
-+{
-+	struct read_vsyscall *skel;
-+	unsigned int i;
-+	int err;
-+
-+#if !defined(__x86_64__)
-+	test__skip();
-+	return;
-+#endif
-+	skel = read_vsyscall__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "read_vsyscall open_load"))
-+		return;
-+
-+	skel->bss->target_pid = getpid();
-+	err = read_vsyscall__attach(skel);
-+	if (!ASSERT_EQ(err, 0, "read_vsyscall attach"))
-+		goto out;
-+
-+	/* userspace may don't have vsyscall page due to LEGACY_VSYSCALL_NONE,
-+	 * but it doesn't affect the returned error codes.
-+	 */
-+	skel->bss->user_ptr = (void *)VSYSCALL_ADDR;
-+	usleep(1);
-+
-+	for (i = 0; i < ARRAY_SIZE(all_read); i++)
-+		ASSERT_EQ(skel->bss->read_ret[i], all_read[i].ret, all_read[i].name);
-+out:
-+	read_vsyscall__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/read_vsyscall.c b/tools/testing/selftests/bpf/progs/read_vsyscall.c
-new file mode 100644
-index 0000000000000..986f96687ae15
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/read_vsyscall.c
-@@ -0,0 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2024. Huawei Technologies Co., Ltd */
-+#include <linux/types.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#include "bpf_misc.h"
-+
-+int target_pid = 0;
-+void *user_ptr = 0;
-+int read_ret[8];
-+
-+char _license[] SEC("license") = "GPL";
-+
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int do_probe_read(void *ctx)
-+{
-+	char buf[8];
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-+		return 0;
-+
-+	read_ret[0] = bpf_probe_read_kernel(buf, sizeof(buf), user_ptr);
-+	read_ret[1] = bpf_probe_read_kernel_str(buf, sizeof(buf), user_ptr);
-+	read_ret[2] = bpf_probe_read(buf, sizeof(buf), user_ptr);
-+	read_ret[3] = bpf_probe_read_str(buf, sizeof(buf), user_ptr);
-+	read_ret[4] = bpf_probe_read_user(buf, sizeof(buf), user_ptr);
-+	read_ret[5] = bpf_probe_read_user_str(buf, sizeof(buf), user_ptr);
-+
-+	return 0;
-+}
-+
-+SEC("fentry.s/" SYS_PREFIX "sys_nanosleep")
-+int do_copy_from_user(void *ctx)
-+{
-+	char buf[8];
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-+		return 0;
-+
-+	read_ret[6] = bpf_copy_from_user(buf, sizeof(buf), user_ptr);
-+	read_ret[7] = bpf_copy_from_user_task(buf, sizeof(buf), user_ptr,
-+					      bpf_get_current_task_btf(), 0);
-+
-+	return 0;
-+}
--- 
-2.29.2
-
+Arturas Moskvinas
 
