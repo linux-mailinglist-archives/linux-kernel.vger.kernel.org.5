@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-49420-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49421-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EAAE846A35
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:10:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0DE3846A37
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:11:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51E6A1C2A670
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:10:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6502B1F2AE8A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:11:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7E1842AB7;
-	Fri,  2 Feb 2024 08:08:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F60447F79;
+	Fri,  2 Feb 2024 08:08:54 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B99842076
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 08:08:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C8EB47F71
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 08:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706861329; cv=none; b=k5BOLssjAnXy4Po5Z0vnr/DLm0qQMNc+siXEIKxZdGIQ/KkGtiOx6YvxGh6db83uDmQQ9NfR++xWGFeaJqKjjcMPIeAQfG55DvCr9OiL8ym1EUy6XNIhulStX1C24d6bmFxdxXsMm+Q3ssTyBOmiFDJNwV7DTSVHvI8Y30D4vO4=
+	t=1706861333; cv=none; b=eHxuSEBV/y8abPT3t9YpGRm43LACfsDUu4KedrjfhRrtJoZlOZEjsc3OSSwigZXbmjGAsb/VCifldkui3yGkn/52jQbFMYDzvdiiTHiRIosj1isjQFWtXPhaPz6HEy1emZUWU7gaGz6i5/XHlDMFkRVK0Raa+eV9yRzyDFanZ+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706861329; c=relaxed/simple;
-	bh=0dZnm+y0Nq9XiO0L7V9+trEQJFUMFZWy0iSlr4woyIM=;
+	s=arc-20240116; t=1706861333; c=relaxed/simple;
+	bh=P0/ZqAie7Zh0LvBfqNokH3cxCICpnRF0kcbfhw0l8yo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XjVWvRlWZ/SbyHDSIJVdCqh57AifcFBdwxcro740hF12f/AuLIyInb1Gny1qKsA+/CGxYjCL0xLComnaunuPd/FXNJsqAoUrouiMGgGATk849T7LdOfLhF+cDGVNoFSrj3N9cpIeIQ19fx3M/w8A/5VReUKSZxMDmqcbny8xJ2E=
+	 MIME-Version; b=h3x3IBWMQroY+WqOIqXRWRran4kBBaeuxg8Wd46y+OEmPpZ3mk538Nht5XFE1r/T5YiaHCSpdsYOnIdvsqqtU/VAnSfg0+BNBTqsdPy6lQKwWZziDY6BYHXOys8qGC8zc6hzEdCGnMdcuO8Vijss6Nzbt/8U7Q1fp4gSkjGbPyA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 34710176C;
-	Fri,  2 Feb 2024 00:09:29 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0665D19F0;
+	Fri,  2 Feb 2024 00:09:33 -0800 (PST)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 489F23F5A1;
-	Fri,  2 Feb 2024 00:08:43 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1AC463F5A1;
+	Fri,  2 Feb 2024 00:08:47 -0800 (PST)
 From: Ryan Roberts <ryan.roberts@arm.com>
 To: Catalin Marinas <catalin.marinas@arm.com>,
 	Will Deacon <will@kernel.org>,
@@ -64,9 +64,9 @@ Cc: Ryan Roberts <ryan.roberts@arm.com>,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 08/25] mm: Remove pte_next_pfn() and replace with pte_advance_pfn()
-Date: Fri,  2 Feb 2024 08:07:39 +0000
-Message-Id: <20240202080756.1453939-9-ryan.roberts@arm.com>
+Subject: [PATCH v5 09/25] arm64/mm: set_pte(): New layer to manage contig bit
+Date: Fri,  2 Feb 2024 08:07:40 +0000
+Message-Id: <20240202080756.1453939-10-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240202080756.1453939-1-ryan.roberts@arm.com>
 References: <20240202080756.1453939-1-ryan.roberts@arm.com>
@@ -78,70 +78,175 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Now that the architectures are converted over to pte_advance_pfn(), we
-can remove the pte_next_pfn() wrapper and convert the callers to call
-pte_advance_pfn().
+Create a new layer for the in-table PTE manipulation APIs. For now, The
+existing API is prefixed with double underscore to become the
+arch-private API and the public API is just a simple wrapper that calls
+the private API.
 
+The public API implementation will subsequently be used to transparently
+manipulate the contiguous bit where appropriate. But since there are
+already some contig-aware users (e.g. hugetlb, kernel mapper), we must
+first ensure those users use the private API directly so that the future
+contig-bit manipulations in the public API do not interfere with those
+existing uses.
+
+Tested-by: John Hubbard <jhubbard@nvidia.com>
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- include/linux/pgtable.h | 9 +--------
- mm/memory.c             | 4 ++--
- 2 files changed, 3 insertions(+), 10 deletions(-)
+ arch/arm64/include/asm/pgtable.h | 11 +++++++----
+ arch/arm64/kernel/efi.c          |  2 +-
+ arch/arm64/mm/fixmap.c           |  2 +-
+ arch/arm64/mm/kasan_init.c       |  4 ++--
+ arch/arm64/mm/mmu.c              |  2 +-
+ arch/arm64/mm/pageattr.c         |  2 +-
+ arch/arm64/mm/trans_pgd.c        |  4 ++--
+ 7 files changed, 15 insertions(+), 12 deletions(-)
 
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 815d92dcb96b..50f32cccbd92 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -212,19 +212,12 @@ static inline int pmd_dirty(pmd_t pmd)
- #define arch_flush_lazy_mmu_mode()	do {} while (0)
- #endif
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index 6a6cc78cf879..3cb45e8dbb52 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -93,7 +93,8 @@ static inline pteval_t __phys_to_pte_val(phys_addr_t phys)
+ 	__pte(__phys_to_pte_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
  
--
--#ifndef pte_next_pfn
- #ifndef pte_advance_pfn
- static inline pte_t pte_advance_pfn(pte_t pte, unsigned long nr)
- {
- 	return __pte(pte_val(pte) + (nr << PFN_PTE_SHIFT));
+ #define pte_none(pte)		(!pte_val(pte))
+-#define pte_clear(mm,addr,ptep)	set_pte(ptep, __pte(0))
++#define pte_clear(mm, addr, ptep) \
++				__set_pte(ptep, __pte(0))
+ #define pte_page(pte)		(pfn_to_page(pte_pfn(pte)))
+ 
+ /*
+@@ -261,7 +262,7 @@ static inline pte_t pte_mkdevmap(pte_t pte)
+ 	return set_pte_bit(pte, __pgprot(PTE_DEVMAP | PTE_SPECIAL));
  }
- #endif
--static inline pte_t pte_next_pfn(pte_t pte)
--{
--	return pte_advance_pfn(pte, 1);
--}
--#endif
  
- #ifndef set_ptes
- /**
-@@ -256,7 +249,7 @@ static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
+-static inline void set_pte(pte_t *ptep, pte_t pte)
++static inline void __set_pte(pte_t *ptep, pte_t pte)
+ {
+ 	WRITE_ONCE(*ptep, pte);
+ 
+@@ -366,7 +367,7 @@ static inline void set_ptes(struct mm_struct *mm,
+ 
+ 	for (;;) {
+ 		__check_safe_pte_update(mm, ptep, pte);
+-		set_pte(ptep, pte);
++		__set_pte(ptep, pte);
  		if (--nr == 0)
  			break;
  		ptep++;
--		pte = pte_next_pfn(pte);
-+		pte = pte_advance_pfn(pte, 1);
- 	}
- 	arch_leave_lazy_mmu_mode();
- }
-diff --git a/mm/memory.c b/mm/memory.c
-index 38a010c4d04d..65fbe4f886c1 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -988,7 +988,7 @@ static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
+@@ -540,7 +541,7 @@ static inline void __set_pte_at(struct mm_struct *mm,
  {
- 	unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
- 	const pte_t *end_ptep = start_ptep + max_nr;
--	pte_t expected_pte = __pte_batch_clear_ignored(pte_next_pfn(pte), flags);
-+	pte_t expected_pte = __pte_batch_clear_ignored(pte_advance_pfn(pte, 1), flags);
- 	pte_t *ptep = start_ptep + 1;
- 	bool writable;
+ 	__sync_cache_and_tags(pte, nr);
+ 	__check_safe_pte_update(mm, ptep, pte);
+-	set_pte(ptep, pte);
++	__set_pte(ptep, pte);
+ }
  
-@@ -1017,7 +1017,7 @@ static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
- 		if (any_writable)
- 			*any_writable |= writable;
+ static inline void set_pmd_at(struct mm_struct *mm, unsigned long addr,
+@@ -1138,6 +1139,8 @@ void vmemmap_update_pte(unsigned long addr, pte_t *ptep, pte_t pte);
+ #define vmemmap_update_pte vmemmap_update_pte
+ #endif
  
--		expected_pte = pte_next_pfn(expected_pte);
-+		expected_pte = pte_advance_pfn(expected_pte, 1);
- 		ptep++;
++#define set_pte					__set_pte
++
+ #endif /* !__ASSEMBLY__ */
+ 
+ #endif /* __ASM_PGTABLE_H */
+diff --git a/arch/arm64/kernel/efi.c b/arch/arm64/kernel/efi.c
+index 0228001347be..44288a12fc6c 100644
+--- a/arch/arm64/kernel/efi.c
++++ b/arch/arm64/kernel/efi.c
+@@ -111,7 +111,7 @@ static int __init set_permissions(pte_t *ptep, unsigned long addr, void *data)
+ 		pte = set_pte_bit(pte, __pgprot(PTE_PXN));
+ 	else if (system_supports_bti_kernel() && spd->has_bti)
+ 		pte = set_pte_bit(pte, __pgprot(PTE_GP));
+-	set_pte(ptep, pte);
++	__set_pte(ptep, pte);
+ 	return 0;
+ }
+ 
+diff --git a/arch/arm64/mm/fixmap.c b/arch/arm64/mm/fixmap.c
+index c0a3301203bd..51cd4501816d 100644
+--- a/arch/arm64/mm/fixmap.c
++++ b/arch/arm64/mm/fixmap.c
+@@ -121,7 +121,7 @@ void __set_fixmap(enum fixed_addresses idx,
+ 	ptep = fixmap_pte(addr);
+ 
+ 	if (pgprot_val(flags)) {
+-		set_pte(ptep, pfn_pte(phys >> PAGE_SHIFT, flags));
++		__set_pte(ptep, pfn_pte(phys >> PAGE_SHIFT, flags));
+ 	} else {
+ 		pte_clear(&init_mm, addr, ptep);
+ 		flush_tlb_kernel_range(addr, addr+PAGE_SIZE);
+diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
+index 4c7ad574b946..f659bd98c63f 100644
+--- a/arch/arm64/mm/kasan_init.c
++++ b/arch/arm64/mm/kasan_init.c
+@@ -112,7 +112,7 @@ static void __init kasan_pte_populate(pmd_t *pmdp, unsigned long addr,
+ 		if (!early)
+ 			memset(__va(page_phys), KASAN_SHADOW_INIT, PAGE_SIZE);
+ 		next = addr + PAGE_SIZE;
+-		set_pte(ptep, pfn_pte(__phys_to_pfn(page_phys), PAGE_KERNEL));
++		__set_pte(ptep, pfn_pte(__phys_to_pfn(page_phys), PAGE_KERNEL));
+ 	} while (ptep++, addr = next, addr != end && pte_none(READ_ONCE(*ptep)));
+ }
+ 
+@@ -271,7 +271,7 @@ static void __init kasan_init_shadow(void)
+ 	 * so we should make sure that it maps the zero page read-only.
+ 	 */
+ 	for (i = 0; i < PTRS_PER_PTE; i++)
+-		set_pte(&kasan_early_shadow_pte[i],
++		__set_pte(&kasan_early_shadow_pte[i],
+ 			pfn_pte(sym_to_pfn(kasan_early_shadow_page),
+ 				PAGE_KERNEL_RO));
+ 
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index d794b2f4b5a3..7cc1930f0e10 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -175,7 +175,7 @@ static void init_pte(pmd_t *pmdp, unsigned long addr, unsigned long end,
+ 	do {
+ 		pte_t old_pte = READ_ONCE(*ptep);
+ 
+-		set_pte(ptep, pfn_pte(__phys_to_pfn(phys), prot));
++		__set_pte(ptep, pfn_pte(__phys_to_pfn(phys), prot));
+ 
+ 		/*
+ 		 * After the PTE entry has been populated once, we
+diff --git a/arch/arm64/mm/pageattr.c b/arch/arm64/mm/pageattr.c
+index 924843f1f661..a7996d8edf0a 100644
+--- a/arch/arm64/mm/pageattr.c
++++ b/arch/arm64/mm/pageattr.c
+@@ -41,7 +41,7 @@ static int change_page_range(pte_t *ptep, unsigned long addr, void *data)
+ 	pte = clear_pte_bit(pte, cdata->clear_mask);
+ 	pte = set_pte_bit(pte, cdata->set_mask);
+ 
+-	set_pte(ptep, pte);
++	__set_pte(ptep, pte);
+ 	return 0;
+ }
+ 
+diff --git a/arch/arm64/mm/trans_pgd.c b/arch/arm64/mm/trans_pgd.c
+index 7b14df3c6477..230b607cf881 100644
+--- a/arch/arm64/mm/trans_pgd.c
++++ b/arch/arm64/mm/trans_pgd.c
+@@ -41,7 +41,7 @@ static void _copy_pte(pte_t *dst_ptep, pte_t *src_ptep, unsigned long addr)
+ 		 * read only (code, rodata). Clear the RDONLY bit from
+ 		 * the temporary mappings we use during restore.
+ 		 */
+-		set_pte(dst_ptep, pte_mkwrite_novma(pte));
++		__set_pte(dst_ptep, pte_mkwrite_novma(pte));
+ 	} else if ((debug_pagealloc_enabled() ||
+ 		   is_kfence_address((void *)addr)) && !pte_none(pte)) {
+ 		/*
+@@ -55,7 +55,7 @@ static void _copy_pte(pte_t *dst_ptep, pte_t *src_ptep, unsigned long addr)
+ 		 */
+ 		BUG_ON(!pfn_valid(pte_pfn(pte)));
+ 
+-		set_pte(dst_ptep, pte_mkpresent(pte_mkwrite_novma(pte)));
++		__set_pte(dst_ptep, pte_mkpresent(pte_mkwrite_novma(pte)));
  	}
+ }
  
 -- 
 2.25.1
