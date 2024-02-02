@@ -1,135 +1,140 @@
-Return-Path: <linux-kernel+bounces-50546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A963847A8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:37:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF602847A8C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:37:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AC341C257D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:37:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76B48285B5D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:37:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08D9D17BC1;
-	Fri,  2 Feb 2024 20:37:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43BAF182AE;
+	Fri,  2 Feb 2024 20:37:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="AdRDldI6"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="aFG4K6G8"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90FE51803D
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 20:37:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F6ED18050
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 20:37:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706906223; cv=none; b=se5/C1kEtmcgQSjZ6tRhhmHWF3lA6c+ttPPHmjTCPcjcyi8UfGLQfDTAKkgxEQPjfpLhSRXta9nRuhqTAN9mA2JYwD+xHs7sx7JGWi+GoYhNocsOdrkW1ngzrWeRWG1L/umTxuINcw/tiQNRvXA8Y1liICg+hhXmpNYfA60dTNU=
+	t=1706906236; cv=none; b=Nd3o94hKqZoQ2c+oAo0k+0A4cGD2J/WU3sj4s0kPKDr+uiFDqEko5L9xpSwS48YjzDgMe1mYK3at1YTUxJk4tR5nAQltwGTfO0ZJ3y94/Z8depSswFDqRoCJQgrplhEfpGGaSUV1bCMPdGvh/2wvxQfiaGjltqWo4OQfGbGY+FM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706906223; c=relaxed/simple;
-	bh=53lrrcAwsOReEPvUCjLVaJtxk7JP82CHsTgE15pO0as=;
+	s=arc-20240116; t=1706906236; c=relaxed/simple;
+	bh=7Mvu1Qvmq1BUG1gJYlb4UcjxOFlgOR8rt+Lqx6uTvnk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FG4asIGy+YXfnPHl4yAf4HJdgu6sMbVgIKQNbCkzkq/WGtokmnwymdQJ5TkNCrKYUeFRh1XoIUw7J76HO8pOmzDpgLkD+H+SENgzSJh02epmcPLcWUED+cQolMRjMDsuYZD9PqiIFExrf2vKD1cm4apZ/B2D1Rf447w9R7mwNs4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=AdRDldI6; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55ff5f6a610so1134678a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 12:37:01 -0800 (PST)
+	 To:Content-Type; b=iJ3um2e06lMU8mWJxrWfgImZg606pz4kplEk3dROzpt7y5yn7rBday5nW2tSFBgmWqWwoZPfza/EGM4WTnZkh1UIpRAuYsMIsL8BMajf33Sjdn1jC+v4+EqYGDSHHG1WmOED5nnZn/zcTqvCEeX9mhiCBYoBWH6Z0xIwtrrubCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=aFG4K6G8; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d061f1e2feso29738011fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 12:37:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706906219; x=1707511019; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0h1IIKH0viGaA3orHuy1hmOvR0Hle+LrWHOWH3Kx7Iw=;
-        b=AdRDldI6kbgDQkN8r07POl0MgA5ekz6Be9bJih8f9S4ZaCEedtCPBgJpsFVuFbZn1w
-         fadMvQKESc8Cue14gWHK4oEesN3T8aVdvDW/xwy3ZKemwfbVWmgIdqiIDZZ9PPpOChnW
-         izl1xoXkYbE+rDSbIktCnyM4TapuRW/g8dnXQ=
+        d=linux-foundation.org; s=google; t=1706906232; x=1707511032; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/+Lf+IboQG1dTAVnxNBjsFez85NCfDl/n19nRqwUon8=;
+        b=aFG4K6G8LcqNRYTrWhlGHYSgWWcFi+gMBdQJyUy0WDu67HodFz0nNogSSUgLlcJ7nA
+         4Z6dQlcbjM5hXGnWMQ/iQG8eHjY2PbGrFQszPvjuBq1V7dnF6aOwHWUsngAER1+Qvq/W
+         WENmVedkobibziQAlOo6LPTaQK1KEWQ+RdPyk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706906219; x=1707511019;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0h1IIKH0viGaA3orHuy1hmOvR0Hle+LrWHOWH3Kx7Iw=;
-        b=FZNtoEV9LUxIzEP3DRtkjCrZR4k+vMiw6JtLTPfogCjsiinCn1vMTknI82sOE+co82
-         ezLeqXqB1+5Hb9KAZpoPk5I7Rn770G7BaX/V3qIZcEwiBrnpv1JXlJyTHltcgIcITwKB
-         tkkjGvixNiAHCUXbNnkEaMfOcnnR4lgxQfs60ITq7qTZzVxYQK1d463xW3NkGw8GW1dp
-         Rissm69JWPs+jl6Hy71NQh2gQAsSMt0/sh9CdE1EwdBz8S9sOjowNno7xJHXo+aXTr4X
-         I26TXHVz1AIspEPM02GG9ggWHQ2F9ziwXCI6eI4g0J982WkilQQGAt5upWhPFDU+pg20
-         ocaQ==
-X-Gm-Message-State: AOJu0YyUw+rKIyJqaiTYAe97XBhgVA2zaeMmYS1QZOBs7A8Hx8QLo4R2
-	OGvpgWRzzZfF5dP5xN0Gn8FztLZDqDy/aWNrdZiNx9VPuWofomhr26P+NS+pFmcbNz+f4vcYS0v
-	s1Q7m
-X-Google-Smtp-Source: AGHT+IEcLQ0icpmNoy+J+kDMq54/4FuTbAdxRRN7Ob0FvPAi70bsan/AGhaq32V/bhYEYG8GiHJZYg==
-X-Received: by 2002:a17:906:f844:b0:a36:bc20:9a30 with SMTP id ks4-20020a170906f84400b00a36bc209a30mr4590802ejb.54.1706906219424;
-        Fri, 02 Feb 2024 12:36:59 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVghUENIoO47m2PJfqJHBKuP25jbNJTNRXaGyoFMoLTrrpxg0JGyMr1hRYcJ2ggz9Va986E30100ICsAzJUnQL4Eq88Qbwt4UAh+bYO
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
-        by smtp.gmail.com with ESMTPSA id d13-20020a170906640d00b00a35d7b6cb63sm1216220ejm.28.2024.02.02.12.36.59
+        d=1e100.net; s=20230601; t=1706906232; x=1707511032;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/+Lf+IboQG1dTAVnxNBjsFez85NCfDl/n19nRqwUon8=;
+        b=hjNJoGOdwytQFWlswd7WcwIzuqahTuEMpuhj7RPorvgwI70hHzBq+LmVKgjzhJKBFk
+         qctuHs+Z7trjFsYI/RnnNBZWFQ7T8j09c+y6h8NJZkexOiCkvqnCrEJV6Gzz+jNYX0nk
+         tFKvOYSZHLlSnQNai1HKZGlF6v5nsJC52Nls0+T4TyTWKtkATm2f7jwpZ1M+MH8w0wNT
+         yK0EIAwwSgy4okZBss9Hj7EJA9sFJ/D5SPfsRaPx8cvZ6Q92r5WA/fv3Pd6siGUinCsK
+         N4PZ5uEPUVv59sSLDOwgxpzZ1g3aVTHKqb0mA6SpWBWgurFAB5JE7GucsaD/Vwbu/bq4
+         vxYQ==
+X-Gm-Message-State: AOJu0YzN8C2hVOGg0fUFmji85bDWpvYY2uf1l8vcDe8QdW4gpyCoRqNj
+	qNGyYXZ1oa6/qAamk/W9Ga4Z2bvBJkdEmfyeM0X2CzlT1V1D1JrrG27ve6itpSK4WLuXe6OGQ8j
+	TvsvWtA==
+X-Google-Smtp-Source: AGHT+IE6gYdqdh77ZqzXW17FksZhx8uBEkyTRcOLg5I/d2c0S/fGaZ33J/HqWWm0qq8UO5FS8sxopA==
+X-Received: by 2002:a05:6512:2030:b0:510:1b77:62d8 with SMTP id s16-20020a056512203000b005101b7762d8mr1962895lfs.23.1706906232263;
+        Fri, 02 Feb 2024 12:37:12 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUDzENwG5Neqf3yFG51fs7ReA2/F0oM1SiIreXAn3SUVDwrGUSYMuDKA2RyTzvsQAG3gCvWQPibE6RKAn/6mtUWLOk9cc5cgp0zlg+Q
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id x21-20020a19f615000000b00510213a6afesm398891lfe.253.2024.02.02.12.37.11
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Feb 2024 12:36:59 -0800 (PST)
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55fff7a874fso13a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 12:36:59 -0800 (PST)
-X-Received: by 2002:a50:8d15:0:b0:55f:a1af:bade with SMTP id
- s21-20020a508d15000000b0055fa1afbademr6757eds.4.1706905905770; Fri, 02 Feb
- 2024 12:31:45 -0800 (PST)
+        Fri, 02 Feb 2024 12:37:11 -0800 (PST)
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d066b82658so34777511fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 12:37:11 -0800 (PST)
+X-Received: by 2002:a2e:9081:0:b0:2d0:643c:c2aa with SMTP id
+ l1-20020a2e9081000000b002d0643cc2aamr2137336ljg.20.1706906231031; Fri, 02 Feb
+ 2024 12:37:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202202329.4172917-1-quic_jhugo@quicinc.com>
-In-Reply-To: <20240202202329.4172917-1-quic_jhugo@quicinc.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Fri, 2 Feb 2024 12:31:30 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=WkNKFiRKyadVnAMmtcDH=PVv6vk2CvMbME9FZ5UHNxuw@mail.gmail.com>
-Message-ID: <CAD=FV=WkNKFiRKyadVnAMmtcDH=PVv6vk2CvMbME9FZ5UHNxuw@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: drm/bridge: ti-sn65dsi86: Fix bouncing
- @codeaurora address
-To: Jeffrey Hugo <quic_jhugo@quicinc.com>
-Cc: andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org, 
-	Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se, jernej.skrabec@gmail.com, 
-	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	quic_bjorande@quicinc.com, airlied@gmail.com, daniel@ffwll.ch, 
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de, 
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver>
+ <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
+ <20240201204512.ht3e33yj77kkxi4q@revolver> <CALmYWFupdK_wc6jaamjbrZf-PzHwJ_4=b69yCtAik_7uu3hZug@mail.gmail.com>
+ <20240202151345.kj4nhb5uog4aknsp@revolver> <CABi2SkUSWLHM5KD=eK9bJrt3bBsEaB3gEpvJgr0LSTAE2G00Tg@mail.gmail.com>
+ <20240202192137.6lupguvhtdt72rbr@revolver> <85714.1706902336@cvs.openbsd.org>
+In-Reply-To: <85714.1706902336@cvs.openbsd.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 2 Feb 2024 12:36:52 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjNXcqDVxDBJW8hEVpHHAE0odJEf63+oigabtpU6GoCBg@mail.gmail.com>
+Message-ID: <CAHk-=wjNXcqDVxDBJW8hEVpHHAE0odJEf63+oigabtpU6GoCBg@mail.gmail.com>
+Subject: Re: [PATCH v8 0/4] Introduce mseal
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Jeff Xu <jeffxu@chromium.org>, 
+	Jeff Xu <jeffxu@google.com>, Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org, 
+	keescook@chromium.org, jannh@google.com, sroettger@google.com, 
+	willy@infradead.org, gregkh@linuxfoundation.org, 
+	torvalds@linux-foundation.org, usama.anjum@collabora.com, 
+	rdunlap@infradead.org, jorgelo@chromium.org, groeck@chromium.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com, 
+	linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Fri, 2 Feb 2024 at 11:32, Theo de Raadt <deraadt@openbsd.org> wrote:
+>
+> Unix system calls must be atomic.
+>
+> They either return an error, and that is a promise they made no changes.
 
-On Fri, Feb 2, 2024 at 12:25=E2=80=AFPM Jeffrey Hugo <quic_jhugo@quicinc.co=
-m> wrote:
->
-> The servers for the @codeaurora domain are long retired and any messages
-> sent there bounce.  Sandeep Panda's email address is no longer valid and
-> should be repleaced.  However Sandeep has left the company and has not
-> been active sice, therefore it looks like this binding is orphaned.
->
-> Doug is listed as the reviewer for this file in MAINTAINERS and has
-> volunteered to be listed within the file as the binding maintainer.
-> Therefore replace Sandeep with Doug to make the documentation current.
->
-> Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-> ---
->  .../devicetree/bindings/display/bridge/ti,sn65dsi86.yaml        | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi8=
-6.yaml b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> index 6ec6d287bff4..c93878b6d718 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> +++ b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> @@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
->  title: SN65DSI86 DSI to eDP bridge chip
->
->  maintainers:
-> -  - Sandeep Panda <spanda@codeaurora.org>
-> +  - Douglas Anderson <dianders@chromium.org>
+That's actually not true, and never has been.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+It's a good thing to aim for, but several errors means "some or all
+may have been done".
 
-Unless there are comments, I'll let this stew over the weekend and
-then land it through drm-misc next week.
+EFAULT (for various system calls), ENOMEM and other errors are all
+things that can happen after some of the system call has already been
+done, and the rest failed.
 
--Doug
+There are lots of examples, but to pick one obvious VM example,
+something like mlock() may well return an error after the area has
+been successfully locked, but then the population of said pages failed
+for some reason.
+
+Of course, implementations can differ, and POSIX sometimes has insane
+language that is actively incorrect.
+
+Furthermore, the definition of "atomic" is unclear. For example, POSIX
+claims that a "write()" system call is one atomic thing for regular
+files, and some people think that means that you see all or nothing.
+That's simply not true, and you'll see the write progress in various
+indirect ways (look at intermediate file size with 'stat', look at
+intermediate contents with 'mmap' etc etc).
+
+So I agree that atomicity is something that people should always
+*strive* for, but it's not some kind of final truth or absolute
+requirement.
+
+In the specific case of mseal(), I suspect there are very few reasons
+ever *not* to be atomic, so in this particular context atomicity is
+likely always something that should be guaranteed. But I just wanted
+to point out that it's most definitely not a black-and-white issue in
+the general case.
+
+             Linus
 
