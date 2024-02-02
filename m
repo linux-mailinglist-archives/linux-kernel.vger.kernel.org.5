@@ -1,134 +1,75 @@
-Return-Path: <linux-kernel+bounces-49367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61022846939
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:26:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B24F846941
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:27:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 169451F25C41
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:26:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58BC81C21A7E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:27:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C178D17BB5;
-	Fri,  2 Feb 2024 07:26:10 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37EA0179AE;
+	Fri,  2 Feb 2024 07:27:16 +0000 (UTC)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFF681799D;
-	Fri,  2 Feb 2024 07:26:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4377617998;
+	Fri,  2 Feb 2024 07:27:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706858770; cv=none; b=UQ9c570wBrBD9xTnZGK6QzlgUxc+bbZBwAxeH1/o2cjdJruryvWb3dxJg1dnk5xDYoEqHYLZzj/MJmi1ZlxuWcw6DE6ZWxc7QviDdZsNo/+ieeUeOWyXuv//ylAihJiUhG64u/T3dB5nrDni2iAei/TBzCla8269bksoIacrqfE=
+	t=1706858835; cv=none; b=TdvEa8nxtcVZX3gX0CJlhhpeSE8WD8TZo+cHokw1/bDCkDVVZc55H8lub2bcVtj12qwnPoepGCaSiEtb3M0sl5jgTRBGFufHvgPP04Zlf1sYTOJWBjHvimGaMtB+tAhHuD9caK2kJYMeWP/4jIPbu/Gpq0vqhekFkYsZBNikg9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706858770; c=relaxed/simple;
-	bh=lm9LwpnwHVLkoxdrAp2M03hn2nsbyzgQA6y9JS58UnU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=PwvzKvw41oWUlaLdWr68CCIZINr8vSTinoxf1vhF5gGbZKMh/o6ma8vkRgPWPhmqyMJzfyLVpVQKZop6j3dWU23kWg27hk/KpBJujaQdHY89dFfzLcvoKcbN6Sk+QuhtuCg/hJBkW3cXn8q5xWyuL3ksqJrIMhVSICFvU2vFLzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TR6kP4Bthz1vssv;
-	Fri,  2 Feb 2024 15:25:33 +0800 (CST)
-Received: from dggpemm500008.china.huawei.com (unknown [7.185.36.136])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0CC081400CC;
-	Fri,  2 Feb 2024 15:25:57 +0800 (CST)
-Received: from localhost (10.174.242.157) by dggpemm500008.china.huawei.com
- (7.185.36.136) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 2 Feb
- 2024 15:25:56 +0800
-From: Yunjian Wang <wangyunjian@huawei.com>
-To: <willemdebruijn.kernel@gmail.com>, <jasowang@redhat.com>,
-	<kuba@kernel.org>, <davem@davemloft.net>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<xudingke@huawei.com>, Yunjian Wang <wangyunjian@huawei.com>
-Subject: [PATCH net-next v2] tun: Fix code style issues in <linux/if_tun.h>
-Date: Fri, 2 Feb 2024 15:25:55 +0800
-Message-ID: <1706858755-47204-1-git-send-email-wangyunjian@huawei.com>
-X-Mailer: git-send-email 1.9.5.msysgit.1
+	s=arc-20240116; t=1706858835; c=relaxed/simple;
+	bh=dZ82q8E1RIK1gXQuQuhfhP/EeXFpgRPT6dVb7CflZRU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UkgwHBQu5gbnolGCJ55opYUYga9eBRc+cj1ifIpFFS4sUHjuIwBFsD1jyQdfVlvm/cCOoVLhFFbvKP1eLSeUoTScx9n/schej1xlrQQHyUwlqYLPl964WPwtWKC+kj3OX9PncqijPUs0D0ZHtTIklTmHbQR12/ida38+Ccz6vf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 4DE13227A88; Fri,  2 Feb 2024 08:27:09 +0100 (CET)
+Date: Fri, 2 Feb 2024 08:27:09 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Andrew Kanner <andrew.kanner@gmail.com>
+Cc: Christoph Hellwig <hch@lst.de>, mcgrof@kernel.org,
+	linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
+	mchehab@kernel.org
+Subject: Re: [PATCH v1] module.h: define __symbol_get_gpl() as a regular
+ __symbol_get()
+Message-ID: <20240202072709.GA5403@lst.de>
+References: <20240131190251.4668-1-andrew.kanner@gmail.com> <20240201052958.GA14943@lst.de> <65bb648c.190a0220.d431d.4f63@mx.google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500008.china.huawei.com (7.185.36.136)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <65bb648c.190a0220.d431d.4f63@mx.google.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-This fixes the following code style problem:
-- WARNING: please, no spaces at the start of a line
-- CHECK: Please use a blank line after
-         function/struct/union/enum declarations
+On Thu, Feb 01, 2024 at 12:29:46PM +0300, Andrew Kanner wrote:
+> Of course not, no new users needed.
+> 
+> I haven't discussed it directly. I found the unused __symbol_get_gpl()
+> myself, but during investigation of wether it was ever used somewhere
+> found the old patch series suggested by Mauro Carvalho Chehab (in Cc).
 
-Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
----
- include/linux/if_tun.h | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+Ah, ok.
 
-diff --git a/include/linux/if_tun.h b/include/linux/if_tun.h
-index 2a7660843444..043d442994b0 100644
---- a/include/linux/if_tun.h
-+++ b/include/linux/if_tun.h
-@@ -27,44 +27,54 @@ struct tun_xdp_hdr {
- #if defined(CONFIG_TUN) || defined(CONFIG_TUN_MODULE)
- struct socket *tun_get_socket(struct file *);
- struct ptr_ring *tun_get_tx_ring(struct file *file);
-+
- static inline bool tun_is_xdp_frame(void *ptr)
- {
--       return (unsigned long)ptr & TUN_XDP_FLAG;
-+	return (unsigned long)ptr & TUN_XDP_FLAG;
- }
-+
- static inline void *tun_xdp_to_ptr(struct xdp_frame *xdp)
- {
--       return (void *)((unsigned long)xdp | TUN_XDP_FLAG);
-+	return (void *)((unsigned long)xdp | TUN_XDP_FLAG);
- }
-+
- static inline struct xdp_frame *tun_ptr_to_xdp(void *ptr)
- {
--       return (void *)((unsigned long)ptr & ~TUN_XDP_FLAG);
-+	return (void *)((unsigned long)ptr & ~TUN_XDP_FLAG);
- }
-+
- void tun_ptr_free(void *ptr);
- #else
- #include <linux/err.h>
- #include <linux/errno.h>
- struct file;
- struct socket;
-+
- static inline struct socket *tun_get_socket(struct file *f)
- {
- 	return ERR_PTR(-EINVAL);
- }
-+
- static inline struct ptr_ring *tun_get_tx_ring(struct file *f)
- {
- 	return ERR_PTR(-EINVAL);
- }
-+
- static inline bool tun_is_xdp_frame(void *ptr)
- {
- 	return false;
- }
-+
- static inline void *tun_xdp_to_ptr(struct xdp_frame *xdp)
- {
- 	return NULL;
- }
-+
- static inline struct xdp_frame *tun_ptr_to_xdp(void *ptr)
- {
- 	return NULL;
- }
-+
- static inline void tun_ptr_free(void *ptr)
- {
- }
--- 
-2.33.0
+> 
+> Link: https://lore.kernel.org/lkml/5f001015990a76c0da35a4c3cf08e457ec353ab2.1652113087.git.mchehab@kernel.org/
+> 
+> The patch series is from 2022 and not merged. You can take [PATCH v6
+> 1/4] which removes the unused symbol from the link.
+> 
+> Or I can resend v2 with my commit msg. But not sure about how it works
+> in such a case - will adding Suggested-by tag (if no objections from
+> Mauro) with the Link be ok?
 
+Either is fine.  I actually have a patch removing it somewhere in an
+unused tree as well :)
 
