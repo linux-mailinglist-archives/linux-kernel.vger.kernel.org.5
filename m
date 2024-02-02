@@ -1,110 +1,181 @@
-Return-Path: <linux-kernel+bounces-49079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D90A684659D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:03:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B09438465A6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:10:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60E12B2235B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:03:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 683A828B500
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B90DB8824;
-	Fri,  2 Feb 2024 02:03:19 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7DF9B66D;
+	Fri,  2 Feb 2024 02:10:14 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7E658BE1;
-	Fri,  2 Feb 2024 02:03:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2881EBE55;
+	Fri,  2 Feb 2024 02:10:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706839399; cv=none; b=etbZL//NVoBePHmcOKpP1I5UoeVDRTApiMznHC0yDblf1o0rsxdPfYSz+fOwYsD6Wwk3vIy2yztKspuLRAYTTEfRiA83A/6KQ73/WZE45ZoqTYq3hoSeRhFfTlCq2+S0nciDa1Bm5JaZ5UNOxr8wkQPWaacRYme65RTrbpeXhfo=
+	t=1706839814; cv=none; b=POEC7NIP6jDK5EDB5/dJjURccWEeuSCkss4/7AvACzd8gmI8vsvi+9pFTvsCsT2jifn1qB3rCyg6vNWzTeg7E3bilcW6OpfIDc4gZ5pVDT1RGLhUKkvzgZvGfG13qvTRqgiDuykXGL9IfqZNVLg7T2UEQ4Gb7/gXQDfH24AOn9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706839399; c=relaxed/simple;
-	bh=ItYWq6QxmvvUtDMVmlQ0TWqNO6QqpjeFMchh79E+LbU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=bcNWy9RO9klbXadkuHBQJG8tXUiv4zYxdIzdk6DvqWZpYjQoINDM0BZBsMjQEYL1b9hymp/w5FdTPncDS+yHYT5DJ5JG9X9dD72rMhXtq5o0zWMS/4La9MiGRwXpyfrCG9Jn7kewRmeudrmMk/CraJQNADUOHTUmbH7zIDbbzyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+	s=arc-20240116; t=1706839814; c=relaxed/simple;
+	bh=S1wJ8O2c3yy8xDXZK3UXs+325LgwXfZxjnn5v0hTV8w=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Ji95BbYBQiYG/bxFPkHu5yoLoCIKG1Ai4zDJJcS8b7g69tSZKLDBOmjdD/DbYP06Uu5KIGmrLdcaG4ktbyX/46Fn6pc4UwNiyFjNAydeQPPr1wXDowxdYY9ArHj635I33frxQOVLQTzLHkzRQqU/xE+0fhlCkEV/rlxviJhe3lQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4TQzY93CxMzNlgQ;
-	Fri,  2 Feb 2024 10:02:05 +0800 (CST)
-Received: from kwepemd500002.china.huawei.com (unknown [7.221.188.104])
-	by mail.maildlp.com (Postfix) with ESMTPS id 965D7140499;
-	Fri,  2 Feb 2024 10:03:07 +0800 (CST)
-Received: from dggpemm500008.china.huawei.com (7.185.36.136) by
- kwepemd500002.china.huawei.com (7.221.188.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.28; Fri, 2 Feb 2024 10:03:07 +0800
-Received: from dggpemm500008.china.huawei.com ([7.185.36.136]) by
- dggpemm500008.china.huawei.com ([7.185.36.136]) with mapi id 15.01.2507.035;
- Fri, 2 Feb 2024 10:03:06 +0800
-From: wangyunjian <wangyunjian@huawei.com>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, "jasowang@redhat.com"
-	<jasowang@redhat.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	"davem@davemloft.net" <davem@davemloft.net>
-CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, xudingke
-	<xudingke@huawei.com>
-Subject: RE: [PATCH net-next] tun: Implement ethtool's get_channels() callback
-Thread-Topic: [PATCH net-next] tun: Implement ethtool's get_channels()
- callback
-Thread-Index: AQHaVQbwnpDx30SF00Gz0GBhWRLXerD1Gp6AgAEizYA=
-Date: Fri, 2 Feb 2024 02:03:06 +0000
-Message-ID: <e8c1b2ab2dd346d2886eb5b010313974@huawei.com>
-References: <1706789109-36556-1-git-send-email-wangyunjian@huawei.com>
- <65bbbc1d2e236_222699294f4@willemb.c.googlers.com.notmuch>
-In-Reply-To: <65bbbc1d2e236_222699294f4@willemb.c.googlers.com.notmuch>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TQzhj4yq1zXgvp;
+	Fri,  2 Feb 2024 10:08:37 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0296B18007A;
+	Fri,  2 Feb 2024 10:10:03 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 2 Feb
+ 2024 10:10:02 +0800
+Subject: Re: [PATCH net-next v4 2/5] page_frag: unify gfp bits for order 3
+ page allocation
+To: Paolo Abeni <pabeni@redhat.com>, <davem@davemloft.net>, <kuba@kernel.org>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Alexander Duyck
+	<alexanderduyck@fb.com>, Alexander Duyck <alexander.duyck@gmail.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>, Eric Dumazet
+	<edumazet@google.com>, <kvm@vger.kernel.org>,
+	<virtualization@lists.linux.dev>, <linux-mm@kvack.org>
+References: <20240130113710.34511-1-linyunsheng@huawei.com>
+ <20240130113710.34511-3-linyunsheng@huawei.com>
+ <81c37127dda0f2f69a019d67d4420f62c995ee7f.camel@redhat.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <2e8606b1-81c2-6f3f-622c-607db5e90253@huawei.com>
+Date: Fri, 2 Feb 2024 10:10:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <81c37127dda0f2f69a019d67d4420f62c995ee7f.camel@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBXaWxsZW0gZGUgQnJ1aWpuIFtt
-YWlsdG86d2lsbGVtZGVicnVpam4ua2VybmVsQGdtYWlsLmNvbV0NCj4gU2VudDogVGh1cnNkYXks
-IEZlYnJ1YXJ5IDEsIDIwMjQgMTE6NDMgUE0NCj4gVG86IHdhbmd5dW5qaWFuIDx3YW5neXVuamlh
-bkBodWF3ZWkuY29tPjsNCj4gd2lsbGVtZGVicnVpam4ua2VybmVsQGdtYWlsLmNvbTsgamFzb3dh
-bmdAcmVkaGF0LmNvbTsga3ViYUBrZXJuZWwub3JnOw0KPiBkYXZlbUBkYXZlbWxvZnQubmV0DQo+
-IENjOiBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3Jn
-OyB4dWRpbmdrZQ0KPiA8eHVkaW5na2VAaHVhd2VpLmNvbT47IHdhbmd5dW5qaWFuIDx3YW5neXVu
-amlhbkBodWF3ZWkuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIG5ldC1uZXh0XSB0dW46IElt
-cGxlbWVudCBldGh0b29sJ3MgZ2V0X2NoYW5uZWxzKCkgY2FsbGJhY2sNCj4gDQo+IFl1bmppYW4g
-V2FuZyB3cm90ZToNCj4gPiBJbXBsZW1lbnQgdGhlIHR1biAuZ2V0X2NoYW5uZWxzIGZ1bmN0aW9u
-YWxpdHkuIFRoaXMgZmVhdHVyZSBpcw0KPiA+IG5lY2Vzc2FyeSBmb3Igc29tZSB0b29scywgc3Vj
-aCBhcyBsaWJ4ZHAsIHdoaWNoIG5lZWQgdG8gcmV0cmlldmUgdGhlIHF1ZXVlDQo+IGNvdW50Lg0K
-PiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogWXVuamlhbiBXYW5nIDx3YW5neXVuamlhbkBodWF3ZWku
-Y29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL25ldC90dW4uYyB8IDEwICsrKysrKysrKysNCj4g
-PiAgMSBmaWxlIGNoYW5nZWQsIDEwIGluc2VydGlvbnMoKykNCj4gPg0KPiA+IGRpZmYgLS1naXQg
-YS9kcml2ZXJzL25ldC90dW4uYyBiL2RyaXZlcnMvbmV0L3R1bi5jIGluZGV4DQo+ID4gYWZhNTQ5
-N2Y3YzM1Li43Y2Y0NDhmZjkzZWUgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9uZXQvdHVuLmMN
-Cj4gPiArKysgYi9kcml2ZXJzL25ldC90dW4uYw0KPiA+IEBAIC0zNjM4LDEyICszNjM4LDIyIEBA
-IHN0YXRpYyBpbnQgdHVuX3NldF9jb2FsZXNjZShzdHJ1Y3QgbmV0X2RldmljZQ0KPiAqZGV2LA0K
-PiA+ICAJcmV0dXJuIDA7DQo+ID4gIH0NCj4gPg0KPiA+ICtzdGF0aWMgdm9pZCB0dW5fZ2V0X2No
-YW5uZWxzKHN0cnVjdCBuZXRfZGV2aWNlICpkZXYsDQo+ID4gKwkJCSAgICAgc3RydWN0IGV0aHRv
-b2xfY2hhbm5lbHMgKmNoYW5uZWxzKSB7DQo+ID4gKwlzdHJ1Y3QgdHVuX3N0cnVjdCAqdHVuID0g
-bmV0ZGV2X3ByaXYoZGV2KTsNCj4gPiArDQo+ID4gKwljaGFubmVscy0+Y29tYmluZWRfY291bnQg
-PSB0dW4tPm51bXF1ZXVlczsNCj4gPiArCWNoYW5uZWxzLT5tYXhfY29tYmluZWQgPSBNQVhfVEFQ
-X1FVRVVFUzsNCj4gDQo+IENvbmRpdGlvbmFsIG9uIElGRl9NVUxUSV9RVUVVRT8NCg0KT0ssIGxp
-a2UgdGhpcz8NCiAgIGNoYW5uZWxzLT5jb21iaW5lZF9jb3VudCA9IHR1bi0+bnVtcXVldWVzOw0K
-ICAgY2hhbm5lbHMtPm1heF9jb21iaW5lZCA9IHR1bi0+ZmxhZ3MgJiBJRkZfTVVMVElfUVVFVUUg
-PyBNQVhfVEFQX1FVRVVFUyA6IDE7DQoNClRoYW5rcw0KDQo+IA0KPiA+ICt9DQo+ID4gKw0KPiA+
-ICBzdGF0aWMgY29uc3Qgc3RydWN0IGV0aHRvb2xfb3BzIHR1bl9ldGh0b29sX29wcyA9IHsNCj4g
-PiAgCS5zdXBwb3J0ZWRfY29hbGVzY2VfcGFyYW1zID0gRVRIVE9PTF9DT0FMRVNDRV9SWF9NQVhf
-RlJBTUVTLA0KPiA+ICAJLmdldF9kcnZpbmZvCT0gdHVuX2dldF9kcnZpbmZvLA0KPiA+ICAJLmdl
-dF9tc2dsZXZlbAk9IHR1bl9nZXRfbXNnbGV2ZWwsDQo+ID4gIAkuc2V0X21zZ2xldmVsCT0gdHVu
-X3NldF9tc2dsZXZlbCwNCj4gPiAgCS5nZXRfbGluawk9IGV0aHRvb2xfb3BfZ2V0X2xpbmssDQo+
-ID4gKwkuZ2V0X2NoYW5uZWxzICAgPSB0dW5fZ2V0X2NoYW5uZWxzLA0KPiA+ICAJLmdldF90c19p
-bmZvCT0gZXRodG9vbF9vcF9nZXRfdHNfaW5mbywNCj4gPiAgCS5nZXRfY29hbGVzY2UgICA9IHR1
-bl9nZXRfY29hbGVzY2UsDQo+ID4gIAkuc2V0X2NvYWxlc2NlICAgPSB0dW5fc2V0X2NvYWxlc2Nl
-LA0KPiA+IC0tDQo+ID4gMi4zMy4wDQo+ID4NCj4gDQoNCg==
+On 2024/2/1 21:16, Paolo Abeni wrote:
+> On Tue, 2024-01-30 at 19:37 +0800, Yunsheng Lin wrote:
+>> Currently there seems to be three page frag implementions
+>> which all try to allocate order 3 page, if that fails, it
+>> then fail back to allocate order 0 page, and each of them
+>> all allow order 3 page allocation to fail under certain
+>> condition by using specific gfp bits.
+>>
+>> The gfp bits for order 3 page allocation are different
+>> between different implementation, __GFP_NOMEMALLOC is
+>> or'd to forbid access to emergency reserves memory for
+>> __page_frag_cache_refill(), but it is not or'd in other
+>> implementions, __GFP_DIRECT_RECLAIM is masked off to avoid
+>> direct reclaim in skb_page_frag_refill(), but it is not
+>> masked off in __page_frag_cache_refill().
+>>
+>> This patch unifies the gfp bits used between different
+>> implementions by or'ing __GFP_NOMEMALLOC and masking off
+>> __GFP_DIRECT_RECLAIM for order 3 page allocation to avoid
+>> possible pressure for mm.
+>>
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>> Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+>> CC: Alexander Duyck <alexander.duyck@gmail.com>
+>> ---
+>>  drivers/vhost/net.c | 2 +-
+>>  mm/page_alloc.c     | 4 ++--
+>>  net/core/sock.c     | 2 +-
+>>  3 files changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+>> index f2ed7167c848..e574e21cc0ca 100644
+>> --- a/drivers/vhost/net.c
+>> +++ b/drivers/vhost/net.c
+>> @@ -670,7 +670,7 @@ static bool vhost_net_page_frag_refill(struct vhost_net *net, unsigned int sz,
+>>  		/* Avoid direct reclaim but allow kswapd to wake */
+>>  		pfrag->page = alloc_pages((gfp & ~__GFP_DIRECT_RECLAIM) |
+>>  					  __GFP_COMP | __GFP_NOWARN |
+>> -					  __GFP_NORETRY,
+>> +					  __GFP_NORETRY | __GFP_NOMEMALLOC,
+>>  					  SKB_FRAG_PAGE_ORDER);
+> 
+>>  		if (likely(pfrag->page)) {
+>>  			pfrag->size = PAGE_SIZE << SKB_FRAG_PAGE_ORDER;
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index c0f7e67c4250..636145c29f70 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -4685,8 +4685,8 @@ static struct page *__page_frag_cache_refill(struct page_frag_cache *nc,
+>>  	gfp_t gfp = gfp_mask;
+>>  
+>>  #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
+>> -	gfp_mask |= __GFP_COMP | __GFP_NOWARN | __GFP_NORETRY |
+>> -		    __GFP_NOMEMALLOC;
+>> +	gfp_mask = (gfp_mask & ~__GFP_DIRECT_RECLAIM) |  __GFP_COMP |
+>> +		   __GFP_NOWARN | __GFP_NORETRY | __GFP_NOMEMALLOC;
+>>  	page = alloc_pages_node(NUMA_NO_NODE, gfp_mask,
+>>  				PAGE_FRAG_CACHE_MAX_ORDER);
+>>  	nc->size = page ? PAGE_FRAG_CACHE_MAX_SIZE : PAGE_SIZE;
+>> diff --git a/net/core/sock.c b/net/core/sock.c
+>> index 88bf810394a5..8289a3d8c375 100644
+>> --- a/net/core/sock.c
+>> +++ b/net/core/sock.c
+>> @@ -2919,7 +2919,7 @@ bool skb_page_frag_refill(unsigned int sz, struct page_frag *pfrag, gfp_t gfp)
+>>  		/* Avoid direct reclaim but allow kswapd to wake */
+>>  		pfrag->page = alloc_pages((gfp & ~__GFP_DIRECT_RECLAIM) |
+>>  					  __GFP_COMP | __GFP_NOWARN |
+>> -					  __GFP_NORETRY,
+>> +					  __GFP_NORETRY | __GFP_NOMEMALLOC,
+>>  					  SKB_FRAG_PAGE_ORDER);
+> 
+> This will prevent memory reserve usage when allocating order 3 pages,
+> but not when allocating a single page as a fallback. Still different
+
+More accurately, the above ensures memory reserve is always not used
+for order 3 pages, whether memory reserve is used for order 0 pages
+depending on original 'gfp' flags, if 'gfp' does not have __GFP_NOMEMALLOC
+bit set, memory reserve may still be used  for order 0 pages.
+
+> from the __page_frag_cache_refill() allocator - which never accesses
+> the memory reserves.
+
+I am not really sure I understand the above commemt.
+The semantic is the same as skb_page_frag_refill() as explained above
+as my understanding. Note that __page_frag_cache_refill() use 'gfp_mask'
+for allocating order 3 pages and use the original 'gfp' for allocating
+order 0 pages.
+
+> 
+> I'm unsure we want to propagate the __page_frag_cache_refill behavior
+> here, the current behavior could be required by some systems.
+> 
+> It looks like this series still leave the skb_page_frag_refill()
+> allocator alone, what about dropping this chunk, too? 
+
+As explained above, I would prefer to keep it as it is as it seems
+to be quite obvious that we can avoid possible pressure for mm by
+not using memory reserve for order 3 pages as we have the fallback
+for order 0 pages.
+
+Please let me know if there is anything obvious I missed.
+
+> 
+> Thanks!
+> 
+> Paolo
+> 
+> 
+> .
+> 
 
