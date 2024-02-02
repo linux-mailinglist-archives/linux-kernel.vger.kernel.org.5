@@ -1,257 +1,175 @@
-Return-Path: <linux-kernel+bounces-49201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2928A846726
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:54:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02FD5846728
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:55:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CB7DB21FA9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:54:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD381290044
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:55:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6D47F9F8;
-	Fri,  2 Feb 2024 04:54:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895FCF9CA;
+	Fri,  2 Feb 2024 04:54:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sfZckKXs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="O5oZtABQ"
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3D1F50D;
-	Fri,  2 Feb 2024 04:54:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C637F9C1
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 04:54:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706849669; cv=none; b=qYBW+DL38Ga+oOFqRnDGj+6PK4a5apTE7SdYETCrPBtYNlx3AiB0mtrCmFMwaHP9nRPSjA+DnLKOdY+m+eP42PwZEQeyyY7mXTzZp8xfNfbOPhM6+sElwt3yeI1giLopKt5PpbfsfaRpcMKeijCzqWvEwsxaRMxZNyKyabC82AY=
+	t=1706849683; cv=none; b=ICoqpQqTqCX6oqlhSM7FRr6P8AKgkUpr5E+RJUl6MUF32QIK+AFwCc841CNoFUHprBWdume5TACe4w5s9sm+ztBd81uhDaIrQwV5zOZ0EYPVzUXnr/i+gFpSY1396IqIm1ClDq+fVe2qoUcumNup8539RkbGlfyk7UjuABr96Yc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706849669; c=relaxed/simple;
-	bh=P45zUVKxLg0GSRAnp51QUGRathjmDQ8/gBq5BPY2h30=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cf/v+7U1fS6hMJd+2IOPQI1olBLLFunOKiMkONPracNRonZ7o5wZ5OvpujuaUYWH6JDr/+8bO1Rsrxu6Vm3bQwk+6kAb9BgbkwBXANdFS4dFyy8PF1rEti1XU+Xf7hoON4dsBl/tGEdg8v6uHEhNDaPRWYXoJ0TmuWY7kQTvfHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sfZckKXs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 973B9C433F1;
-	Fri,  2 Feb 2024 04:54:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706849669;
-	bh=P45zUVKxLg0GSRAnp51QUGRathjmDQ8/gBq5BPY2h30=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sfZckKXscAq5mFX9knlISzDoHtWKyeI/fCPzumtqoUod5qmScWjfEFVmIHjbefVYw
-	 J5crSez6FZwpAav12eKufVKVnrgVN1hnGtKQk7Nvq5XUZWKHAS7jP/Y4semINTRKxQ
-	 qiotrsEoX0klAnsDuT8bVNcIUkvLuRGH5GtmjDKei5sw8SZtqkq/MGLxcmumx7bi8C
-	 fy5g8fBfbE3j3K+FsNaOkhWRb0ZGaLmbLCLwnyhXncdyYF0SQQ/7QuCTorix4au7Rf
-	 kKtJcf0oyetln1vmsxnXOJSYToIZwsFuog2u8RoH82f8y1SGDbl/uh/UWbO4t48EQl
-	 Y1n36sdkt5uEQ==
-Date: Thu, 1 Feb 2024 22:54:25 -0600
-From: Bjorn Andersson <andersson@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Abel Vesa <abel.vesa@linaro.org>, 
-	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
-	linux-pci@vger.kernel.org, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [RFC 4/9] power: pwrseq: add a driver for the QCA6390 PMU module
-Message-ID: <ys45p7mdiur4liwzlexqm3aji7iz5panpb73ixg34wcio2qbvz@wkjcyazbzb4p>
-References: <20240201155532.49707-1-brgl@bgdev.pl>
- <20240201155532.49707-5-brgl@bgdev.pl>
+	s=arc-20240116; t=1706849683; c=relaxed/simple;
+	bh=x8IkhLJ044kI8YEAW8C7T9nLAz6NPq0zHq4wb5YSigc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=doC2hgIQMY9zOi4URSqJAukq5wM4jPJGpQb7H2Nl5Wsb0PsDdaVbdb7ejMGlDiKxeS+q+2o+JvDaWl+RF8PgNafvTRM1Oohvxgc+Ff3uYLyVZSMu4PZQsnf6/14M1UA7QG51/lPexECgRApZQSn7PSV/gH5CE+tHH3HfMUJAV+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=O5oZtABQ; arc=none smtp.client-ip=209.85.160.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-218eea4f1a7so674892fac.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 20:54:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706849681; x=1707454481; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1jPypSiuNIqXZVdy7vjTfUkB5jafh5E5WelADJcP20Y=;
+        b=O5oZtABQLzKq+IzQGIlzxeW+avLxaCK1hcDQO8g/uPKeX5LvYqh7WGZPBMYwB+PEXY
+         QFRIvqIfLrjnrYksvWaJE4eb8N1wcymvOrZGqB789atRPi9H53o7LP2DSuHCMLOy3f4q
+         1iH2z6ctqfCwdLTwvNGZEUm93sxDnQz93cq/o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706849681; x=1707454481;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1jPypSiuNIqXZVdy7vjTfUkB5jafh5E5WelADJcP20Y=;
+        b=Up2hEBgvvYLlcuj/3iYeZuG/yBfe1Q7X3MlTq7SXQYQ/d7pL7+lolVbf1wzGKhkZ6m
+         vdxnUFT/LI6jA4eNMm1uHkzawduNYrhq7Z/tWcoQfevAXzJFOHc0zz6jI106bOJS2HSE
+         QtaJ227NUmayYDb1OXLBYbhGH8WGysHTV7gmkfpov6For3gZZ+vxYflhyF/aliJnG0FZ
+         zV51RWwjHJjeJEaAs/YtVlHNfEEp5ILk43M2aWcBO+N9ISOVUto7PDo9EHPCWtGx9bDl
+         aIypZEUutSW2yZk263gh+TEKK6WD8VYwawgJQ0rxs60ad53Od90a8nbuGHLmxDJ+ihya
+         lhsg==
+X-Gm-Message-State: AOJu0Yy9MKbofAbSYUmojoGxjSWaN/nPWOUooztSYPEkEM5LQoD95DfU
+	ZHf0kClnn9rtnAAiCPl3/vntaur+q1WydLwO2KBMYPUC/YtFuuvzOWqyP8E5AdFcvqt8oE1HQnN
+	ll4OIPoE/q69ShKlyemS9Lkz0wracxuwHJVZI
+X-Google-Smtp-Source: AGHT+IETMLjCNrTRYoa0VeDG6wd6AFck2DJoBNuvFjOIwCUuNl9PVphg7/W5mrUeXG09syiT5/uFJ0c6tpug37IVmNo=
+X-Received: by 2002:a05:6870:82a9:b0:219:1a50:2973 with SMTP id
+ q41-20020a05687082a900b002191a502973mr663108oae.27.1706849681226; Thu, 01 Feb
+ 2024 20:54:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240201155532.49707-5-brgl@bgdev.pl>
+References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver>
+ <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
+ <20240201204512.ht3e33yj77kkxi4q@revolver> <CABi2SkWB2eV24LBJtgJ73zEwaAWuFhAwrfqx3Rs=tqnpcJ0qRw@mail.gmail.com>
+ <58408.1706828083@cvs.openbsd.org> <CAHk-=wjqozic6JuRimXD=RamnJmD6FoaQki7RtNYrezzx_OfOg@mail.gmail.com>
+ <CALmYWFtqcixi3p3Ab44wENJr+n2k2SNaCJEofNm_awnNdJZnDQ@mail.gmail.com> <8744.1706846710@cvs.openbsd.org>
+In-Reply-To: <8744.1706846710@cvs.openbsd.org>
+From: Jeff Xu <jeffxu@chromium.org>
+Date: Thu, 1 Feb 2024 20:54:28 -0800
+Message-ID: <CABi2SkWSt=UMFWe9n916ZH16wCzaipKXmEJ5VasQHMr1AxerxQ@mail.gmail.com>
+Subject: Re: [PATCH v8 0/4] Introduce mseal
+To: Theo de Raadt <deraadt@openbsd.org>
+Cc: Jeff Xu <jeffxu@google.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org, 
+	keescook@chromium.org, jannh@google.com, sroettger@google.com, 
+	willy@infradead.org, gregkh@linuxfoundation.org, usama.anjum@collabora.com, 
+	rdunlap@infradead.org, jorgelo@chromium.org, groeck@chromium.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com, 
+	linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 01, 2024 at 04:55:27PM +0100, Bartosz Golaszewski wrote:
-> diff --git a/drivers/power/sequencing/pwrseq-qca6390.c b/drivers/power/sequencing/pwrseq-qca6390.c
-[..]
-> +static int pwrseq_qca6390_power_on(struct pwrseq_device *pwrseq)
-> +{
-> +	struct pwrseq_qca6390_ctx *ctx = pwrseq_device_get_data(pwrseq);
-> +	int ret;
-> +
-> +	ret = regulator_bulk_enable(ctx->pdata->num_vregs, ctx->regs);
-> +	if (ret)
-> +		return ret;
-> +
-> +	gpiod_set_value_cansleep(ctx->bt_gpio, 1);
-> +	gpiod_set_value_cansleep(ctx->wlan_gpio, 1);
+On Thu, Feb 1, 2024 at 8:05=E2=80=AFPM Theo de Raadt <deraadt@openbsd.org> =
+wrote:
+>
+> Jeff Xu <jeffxu@google.com> wrote:
+>
+> > To me, the most important thing is to deliver a feature that's easy to
+> > use and works well. I don't want users to mess things up, so if I'm
+> > the one giving them the tools, I'm going to make sure they have all
+> > the information they need and that there are safeguards in place.
+> >
+> > e.g. considering the following user case:
+> > 1> a security sensitive data is allocated from heap, using malloc,
+> > from the software component A, and filled with information.
+> > 2> software component B then uses mprotect to change it to RO, and
+> > seal it using mseal().
+>
+>   p =3D malloc(80);
+>   mprotect(p & ~4095, 4096, PROT_NONE);
+>   free(p);
+>
+> Will you save such a developer also?  No.
+>
+> Since the same problem you describe already exists with mprotect() what
+> does mseal() even have to do with your proposal?
+>
+> What about this?
+>
+>   p =3D malloc(80);
+>   munmap(p & ~4095, 4096);
+>   free(p);
+>
+> And since it is not sealed, how about madvise operations on a proper
+> non-malloc memory allocation?  Well, the process smashes it's own
+> memory.  And why is it not sealed?  You make it harder to seal memory!
+>
+> How about this?
+>
+>   p =3D malloc(80);
+>   bzero(p, 100000;
+>
+> Yes it is a buffer overflow.  But this is all the same class of software
+> problem:
+>
+> Memory belongs to processes, which belongs to the program, which is coded
+> by the programmer, who has to learn to be careful and handle the memory c=
+orrectly.
+>
+> mseal() / mimmutable() add *no new expectation* to a careful programmer,
+> because they expected to only use it on memory that they *promise will ne=
+ver
+> be de-allocated or re-permissioned*.
+>
+> What you are proposing is not a "mitigation", it entirely cripples the
+> proposed subsystem because you are afraid of it; because you have cloned =
+a
+> memory subsystem primitive you don't fully understand; and this is becaus=
+e
+> you've not seen a complete operating system using it.
+>
+> When was the last time you developed outside of Chrome?
+>
+> This is systems programming.  The kernel supports all the programs, not
+> just the one holy program from god.
+>
+Even without free.
+I personally do not like the heap getting sealed like that.
 
-So it's no longer possible to power these independently?
+Component A.
+p=3Dmalloc(4096);
+writing something to p.
 
-> +
-> +	if (ctx->pdata->pwup_delay_msec)
-> +		msleep(ctx->pdata->pwup_delay_msec);
-> +
-> +	return 0;
-> +}
-> +
-> +static int pwrseq_qca6390_power_off(struct pwrseq_device *pwrseq)
-> +{
-> +	struct pwrseq_qca6390_ctx *ctx = pwrseq_device_get_data(pwrseq);
-> +
-> +	gpiod_set_value_cansleep(ctx->bt_gpio, 0);
-> +	gpiod_set_value_cansleep(ctx->wlan_gpio, 0);
-> +
+Component B:
+mprotect(p,4096, RO)
+mseal(p,4096)
 
-The answer that was provided recently was that the WiFi and BT modules
-absolutely must be modelled together, because there must be a 100ms
-delay between bt_gpio going low and wlan_gpio going high.
+This will split the heap VMA, and prevent the heap from shrinking, if
+this is in a frequent code path, then it might hurt the process's
+memory usage.
 
-If you're not going to address that concern, then I fail to see the
-reason for adding the power sequence framework - just let the BT and
-PCI power control (WiFi) do their thing independently.
+The existing code is more likely to use malloc than mmap(), so it is
+easier for dev to seal a piece of data belonging to another component.
+I hope this pattern is not wide-spreading.
 
-> +	return regulator_bulk_disable(ctx->pdata->num_vregs, ctx->regs);
-> +}
-> +
-> +static int pwrseq_qca6390_match(struct pwrseq_device *pwrseq,
-> +				struct device *dev)
-> +{
-> +	struct pwrseq_qca6390_ctx *ctx = pwrseq_device_get_data(pwrseq);
-> +	struct device_node *dev_node = dev->of_node;
-> +
-> +	/*
-> +	 * The PMU supplies power to the Bluetooth and WLAN modules. both
-> +	 * consume the PMU AON output so check the presence of the
-> +	 * 'vddaon-supply' property and whether it leads us to the right
-> +	 * device.
-> +	 */
-> +	if (!of_property_present(dev_node, "vddaon-supply"))
-> +		return 0;
-> +
-> +	struct device_node *reg_node __free(of_node) =
-> +			of_parse_phandle(dev_node, "vddaon-supply", 0);
-> +	if (!reg_node)
-> +		return 0;
-> +
-> +	/*
-> +	 * `reg_node` is the PMU AON regulator, its parent is the `regulators`
-> +	 * node and finally its grandparent is the PMU device node that we're
-> +	 * looking for.
-> +	 */
-> +	if (!reg_node->parent || !reg_node->parent->parent ||
-> +	    reg_node->parent->parent != ctx->of_node)
-> +		return 0;
-
-Your DeviceTree example gives a sense that a set of supplies feeds the
-PMU, which then supplies power to the BT and WiFi nodes through some
-entity that can switch power on and off, and adjust the voltage level.
-
-Then comes this function, which indicates that the DeviceTree model was
-just for show.
-
-> +
-> +	return 1;
-> +}
-> +
-> +static int pwrseq_qca6390_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct pwrseq_qca6390_ctx *ctx;
-> +	struct pwrseq_config config;
-> +	int ret, i;
-> +
-> +	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
-> +	if (!ctx)
-> +		return -ENOMEM;
-> +
-> +	ctx->of_node = dev->of_node;
-> +
-> +	ctx->pdata = of_device_get_match_data(dev);
-> +	if (!ctx->pdata)
-> +		return dev_err_probe(dev, -ENODEV,
-> +				     "Failed to obtain platform data\n");
-> +
-> +	if (ctx->pdata->vregs) {
-> +		ctx->regs = devm_kcalloc(dev, ctx->pdata->num_vregs,
-> +					 sizeof(*ctx->regs), GFP_KERNEL);
-> +		if (!ctx->regs)
-> +			return -ENOMEM;
-> +
-> +		for (i = 0; i < ctx->pdata->num_vregs; i++)
-> +			ctx->regs[i].supply = ctx->pdata->vregs[i].name;
-> +
-> +		ret = devm_regulator_bulk_get(dev, ctx->pdata->num_vregs,
-> +					      ctx->regs);
-> +		if (ret < 0)
-> +			return dev_err_probe(dev, ret,
-> +					     "Failed to get all regulators\n");
-> +
-> +		for (i = 0; i < ctx->pdata->num_vregs; i++) {
-> +			if (!ctx->pdata->vregs[1].load_uA)
-> +				continue;
-> +
-> +			ret = regulator_set_load(ctx->regs[i].consumer,
-> +						 ctx->pdata->vregs[i].load_uA);
-> +			if (ret)
-> +				return dev_err_probe(dev, ret,
-> +						     "Failed to set vreg load\n");
-> +		}
-> +	}
-> +
-> +	ctx->bt_gpio = devm_gpiod_get_optional(dev, "bt-enable", GPIOD_OUT_LOW);
-
-Why are these optional? Does it make sense to have a qca6390 without
-both of these gpios connected?
-
-Regards,
-Bjorn
-
-> +	if (IS_ERR(ctx->bt_gpio))
-> +		return dev_err_probe(dev, PTR_ERR(ctx->bt_gpio),
-> +				     "Failed to get the Bluetooth enable GPIO\n");
-> +
-> +	ctx->wlan_gpio = devm_gpiod_get_optional(dev, "wlan-enable",
-> +						 GPIOD_OUT_LOW);
-> +	if (IS_ERR(ctx->wlan_gpio))
-> +		return dev_err_probe(dev, PTR_ERR(ctx->wlan_gpio),
-> +				     "Failed to get the WLAN enable GPIO\n");
-> +
-> +	memset(&config, 0, sizeof(config));
-> +
-> +	config.parent = dev;
-> +	config.owner = THIS_MODULE;
-> +	config.drvdata = ctx;
-> +	config.match = pwrseq_qca6390_match;
-> +	config.power_on = pwrseq_qca6390_power_on;
-> +	config.power_off = pwrseq_qca6390_power_off;
-> +
-> +	ctx->pwrseq = devm_pwrseq_device_register(dev, &config);
-> +	if (IS_ERR(ctx->pwrseq))
-> +		return dev_err_probe(dev, PTR_ERR(ctx->pwrseq),
-> +				     "Failed to register the power sequencer\n");
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id pwrseq_qca6390_of_match[] = {
-> +	{
-> +		.compatible = "qcom,qca6390-pmu",
-> +		.data = &pwrseq_qca6390_of_data,
-> +	},
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, pwrseq_qca6390_of_match);
-> +
-> +static struct platform_driver pwrseq_qca6390_driver = {
-> +	.driver = {
-> +		.name = "pwrseq-qca6390",
-> +		.of_match_table = pwrseq_qca6390_of_match,
-> +	},
-> +	.probe = pwrseq_qca6390_probe,
-> +};
-> +module_platform_driver(pwrseq_qca6390_driver);
-> +
-> +MODULE_AUTHOR("Bartosz Golaszewski <bartosz.golaszewski@linaro.org>");
-> +MODULE_DESCRIPTION("QCA6390 PMU power sequencing driver");
-> +MODULE_LICENSE("GPL");
-> -- 
-> 2.40.1
-> 
+The ideal way will be just changing the library A to use mmap.
 
