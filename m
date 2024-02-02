@@ -1,135 +1,151 @@
-Return-Path: <linux-kernel+bounces-49967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29947847235
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:51:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D35A847239
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:53:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE2C2B24705
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:51:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 819A11C21A86
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:53:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C80C1419B0;
-	Fri,  2 Feb 2024 14:51:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 929FA13E200;
+	Fri,  2 Feb 2024 14:53:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AhnnXlwx"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NcPGU/cl"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55B3814198F
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 14:51:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76B0B2B9A1
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 14:53:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706885500; cv=none; b=chIPjtifYNydVAkmK39Vs+THZbtwRr8BQ34w2DlS1kWCuytT6w2DzofIcGFzexevuswZH/0hNR450HpfnhpuFxoyzIx96wRXjkYlR2hiD90+ReNrUq448jMIzRMHBug2CFVAUGuCrrEtr4FEfRhWv0jzMLMelejnfVG+DA+nD+k=
+	t=1706885586; cv=none; b=amTkBFNWMmhD9kMrAXBoGAfdnzV2F7xMqQ2Z1+ksVylEvCUSquyyx9XARzbWdv/3wBcc9Ppk4ArwZefdho2Ag+ikZvF0ijKYhjaso4AvOs5rpQTKwp/ZhU0s/CeEJ3hysPo1rgu3yRp0djeuFKYnd4UKH0yAnXu9HQpDxE0z86s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706885500; c=relaxed/simple;
-	bh=pi5rb7Tmyn/7tYX8PooVljl6kCdTTto2zjA8GuBlpAY=;
+	s=arc-20240116; t=1706885586; c=relaxed/simple;
+	bh=p7uCEIue/vRXtk5xoPvtw6k0UBZtBQleKzh1H1rbml0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LExCTdzo2ZTRrIOcIn/VWER7R+B8hRcrYfj0G9YnF4jpHDmGtSGUPauauWgTZOEMm/y8WQM5VKXJUmmVo7FpWKifp8LiD63/QZlyjlIc+c37+LLDlGOmCQMkB3QjVs4D0mU4dlW7+dB7NPPzZX6tszANej1QBH6WmsuCHodm4h8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AhnnXlwx; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc6de8a699dso1664455276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 06:51:39 -0800 (PST)
+	 To:Cc:Content-Type; b=PtsFkVbudzgp0VbhBmmctO2N0jJ6AgtNfXC5dZEaxHhgAdnFZgrpOXHwIDoOmIPKT8/VZqeH/u0f69019GI4cH/IEO+ujPBCu532BLQM6BLNg6eumqkjpaBtOSQ6jO5nla2e1C9pU+nlJoj3TVo96WFgyQeLjsMugSuQSkiSHLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NcPGU/cl; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc6dcd91364so1592659276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 06:53:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706885498; x=1707490298; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5ilE578MCSWuARlueVH7UntettuBsn2jGRybz77noas=;
-        b=AhnnXlwxIZOs19Mv3JIjQFABk3L2h0YBoug9D4lQdOsMdGSAFeEnooAGf89g8Q9jm3
-         qhmngmocgRaMRbkpL0Hixa69ENOM6CAufNcRzRe2ZjpmJY7NGKblf4dIowT3qT2liRAd
-         ggmvyIEJMob9r1eBdr9q3ixebl3go4ln2iIO/tR04+agLLIZZLw+1/UvsqPvx02ZLUTs
-         9/ZvWoEQ+aqQv5SnrRM57epENLo1fNsvR2Mp58bDLb2w51QdlNMibVSTsCIkrt1u9dKv
-         NeZQBZYWtRf1Bihn/WdAbvEZVf/JfS90cNQBGcpLKPvqATpItU6UmbzGgP/YXaaIvvMT
-         IIZw==
+        d=gmail.com; s=20230601; t=1706885584; x=1707490384; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p7uCEIue/vRXtk5xoPvtw6k0UBZtBQleKzh1H1rbml0=;
+        b=NcPGU/cl2diu7eqMQOOaGr2spdcVeDZ2ATRY5q9QZwWR0Kr8iiEYBk+v279qUgy747
+         /4FOtLQm8yCj1EWk9BEIi72AOTYW9LyejHAFwWY7Vb+DI83vAHLHVKtbn9Xhbse8Ftue
+         42Li8AAu7muVerX32H3fd8K2dHMpqPkG8UaWtleOH/Kb3VxTMHF2dA4aiRa630kL3WL8
+         G1b1/eE9UQH488Cgtx8zh/E9qZwU6hKno+LL70jEAsAQL26GWAjmX0vxYFmhXiWbaHHH
+         il8qI2JCJhBcwb4WpGAckcBLpSQ9Q/AzDjzEakfJK3rKPaXoCjSZhIwiziDTLeL8GAVs
+         cncQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706885498; x=1707490298;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5ilE578MCSWuARlueVH7UntettuBsn2jGRybz77noas=;
-        b=tL2zVDcDOMQslPXiZoIEPFrNMm2BmGvywGiLdP5AdIUrnQEftazQFFD2T07p7vqyrC
-         LhVoOa6EdYxfsREuG9qiolhOgb5DJqeZtwHa+KzkiR2LBCpLI8tXYiZKWPzo2uXrV5cC
-         cEMycffJKWs7iWm4HACY3Tm0kgO35xV2xtL6DbZ235oU416OdTQNRvyp0xk6ro5eAop+
-         Kq9b1QGT2W5thHLEZaeZ2aQuHOA//fuho6SSuUAvv6MhN4IDJmlD4rHkiyeU+yCaKwTG
-         AB8oalZHvBaTXA635AjEZvGWt2dxJVFtFkCmt9mvqt4ZBRZahB0aYZPo38YpPAWPhX5W
-         l39Q==
-X-Gm-Message-State: AOJu0YyTXp8BY//JB0adqh740i0aN8X5VuaBtIavEPY28qujeNbwu6tC
-	n40/L9AtmbIyv2NctrVwCSq5+4ZdPQoTFvqWYBcmdtOQmccb3hspbomg1RPM7Stf9UIo214+56R
-	AOL86Xu7JWxlh3vosZhU+T7eoMn/0m8Auldf8+w==
-X-Google-Smtp-Source: AGHT+IGAu6APLA2kU8DipKtx/vB6ojLEggEiEM1eRwpgZew+E0GgfuIW0deCZUiuf3ZHZKYpE++k4dcdLQJ7ztG9oM4=
-X-Received: by 2002:a81:52c4:0:b0:5ff:569c:d349 with SMTP id
- g187-20020a8152c4000000b005ff569cd349mr8284638ywb.19.1706885498324; Fri, 02
- Feb 2024 06:51:38 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706885584; x=1707490384;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p7uCEIue/vRXtk5xoPvtw6k0UBZtBQleKzh1H1rbml0=;
+        b=RbRLHPq53vZfKKPHxfR5lNo4E2k2idlOB57hwHzsbokLzQpVPCfa3z7tIwqNIJyvzP
+         XrNBHG6vmgKF2dLUc04ctvYiBkqNN3NJrCAgG8oQjSnhQNXvIeF5pKhU/N3J4iZNAmxz
+         TOJh+0RZOW5Gn/ik0VxmZoEkyKlNWFuQepfWDETVzWuAOwIjF6SSwt5XBOrx5sz8i6u4
+         Weq4Z3P08VarJrJwtYqS9e7HE5ixHfrBo8xyoHi3i9uX0tsb4kTNFfb1cV7/rwM8Q4lt
+         7ZBzck8MWEs37BFYvVh4AEAW8fdGrShp/PcCpWDzQ3jAUmhyroCW3yKTQlzk4kYLLEes
+         3Jgg==
+X-Gm-Message-State: AOJu0YzEj5KexRVu290hOvBZtxmvVLLiu3UcQ4f/7HwqCOWLKmfBlsil
+	7+QZACys3hjgIdL406H2oY8V7m0Qzscclbfpr/Le1VwERt0nFMjR95TsPCzVcpUEUuQrTRlcUXR
+	n2NG4IV4j7Sw/ZhEmbpBUhc6OX9c=
+X-Google-Smtp-Source: AGHT+IGxRWU1t838GRLlDK4UGgYqjiicH6Z9Fpk+v5YhZjb/sQilVodpYHxZGTSvCWxUyGMDLU9A+g8HXqpK6cR5TOI=
+X-Received: by 2002:a25:2f56:0:b0:dc6:9ea:3d5d with SMTP id
+ v83-20020a252f56000000b00dc609ea3d5dmr8113368ybv.34.1706885584427; Fri, 02
+ Feb 2024 06:53:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202133638.4720-1-quic_wasimn@quicinc.com> <20240202133638.4720-2-quic_wasimn@quicinc.com>
-In-Reply-To: <20240202133638.4720-2-quic_wasimn@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 2 Feb 2024 16:51:27 +0200
-Message-ID: <CAA8EJpqARMwKhybgsFDKNZ=-uSAY=j4ocdZ=ax5U1KVPNXBTCg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: arm: qcom: Document rb5gen2-hdk board
-To: Wasim Nazir <quic_wasimn@quicinc.com>
-Cc: andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel@quicinc.com
+References: <20240201125226.28372-1-ioworker0@gmail.com> <Zby-sHLDlmTRaUcd@tiehlicka>
+ <CAK1f24=7sy_Bczpt5YeDbkhfriYUc1=zreSFdGCxfF3R0D6sRQ@mail.gmail.com>
+ <ZbzfxNn4AYnTVFLh@tiehlicka> <CAK1f24mvBkc2c=fHL6UxMhL2mgLHVrSwZfE5516bOR0yVdfZpQ@mail.gmail.com>
+ <ZbzmvwyTGeW18nJy@tiehlicka> <CAK1f24kdyOnUjcpnrk6j4cF6bSFXQwwzFk9tM+jD4RsO_Hc4hA@mail.gmail.com>
+ <Zbz_ao0uBKabzKB1@tiehlicka>
+In-Reply-To: <Zbz_ao0uBKabzKB1@tiehlicka>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Fri, 2 Feb 2024 22:52:49 +0800
+Message-ID: <CAK1f24nHmvqm1XD_UkWUB7DmNdH0NEOKzpLgKDJ=UuPWO=rEHw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm/khugepaged: skip copying lazyfree pages on collapse
+To: Michal Hocko <mhocko@suse.com>
+Cc: akpm@linux-foundation.org, zokeefe@google.com, david@redhat.com, 
+	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com, 
+	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2 Feb 2024 at 15:37, Wasim Nazir <quic_wasimn@quicinc.com> wrote:
->
-> Document board bindings for Rb5 gen2 hardware development kit.
-> Rb5gen2-HDK is using Rb5 gen2 SOM which is based on QCS8550 SoC.
-> RB5gen2-HDK is development kit used for IOT solutions.
+How about blocking khugepaged from
+collapsing lazyfree pages? This way,
+is it not better to keep the semantics
+of MADV_FREE?
 
-What is the actual marketing name for the SoM and the carrier board?
-The RB5gen2-HDK doesn't follow the previous example of the RB* boards
-and doesn't sound in tune with the RB3gen2 submission.
-Could you please sync up internally and come up with two similar names
-for the platforms with similar purpose?
+What do you think?
 
+Thanks,
+Lance
+
+On Fri, Feb 2, 2024 at 10:42=E2=80=AFPM Michal Hocko <mhocko@suse.com> wrot=
+e:
 >
-> Signed-off-by: Wasim Nazir <quic_wasimn@quicinc.com>
+> On Fri 02-02-24 21:46:45, Lance Yang wrote:
+> > Here is a part from the man page explaining
+> > the MADV_FREE semantics:
+> >
+> > The kernel can thus free thesepages, but the
+> > freeing could be delayed until memory pressure
+> > occurs. For each of the pages that has been
+> > marked to be freed but has not yet been freed,
+> > the free operation will be canceled if the caller
+> > writes into the page. If there is no subsequent
+> > write, the kernel can free the pages at any time.
+> >
+> > IIUC, if there is no subsequent write, lazyfree
+> > pages will eventually be reclaimed.
 >
-> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
-> index 9cee874a8eae..ce5b5dfe0e46 100644
-> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
-> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
-> @@ -104,6 +104,7 @@ description: |
->          qcp
->          qrd
->          rb2
-> +        rb5gen2-hdk
->          ride
->          sbc
->          x100
-> @@ -915,6 +916,14 @@ properties:
->            - const: qcom,qcm8550
->            - const: qcom,sm8550
+> If there is no memory pressure then this might not
+> ever happen. User cannot make any assumption about
+> their content once madvise call has been done. The
+> content has to be considered lost. Sure the userspace
+> might have means to tell those pages from zero pages
+> and recheck after the write but that is about it.
 >
-> +      - items:
-> +          - enum:
-> +              - qcom,qcs8550-rb5gen2-hdk
-> +          - const: qcom,qcs8550-rb5gen2
-> +          - const: qcom,qcs8550
-> +          - const: qcom,qcm8550
-> +          - const: qcom,sm8550
-> +
->        - items:
->            - enum:
->                - qcom,sa8155p-adp
+> > khugepaged
+> > treats lazyfree pages the same as pte_none,
+> > avoiding copying them to the new huge page
+> > during collapse. It seems that lazyfree pages
+> > are reclaimed before khugepaged collapses them.
+> > This aligns with user expectations.
+> >
+> > However, IMO, if the content of MADV_FREE pages
+> > remains valid during collapse, then khugepaged
+> > treating lazyfree pages the same as pte_none
+> > might not be suitable.
+>
+> Why?
+>
+> Unless I am missing something (which is possible of
+> course) I do not really see why dropping the content
+> of those pages and replacing them with a THP is any
+> difference from reclaiming those pages and then faulting
+> in a non-THP zero page.
+>
+> Now, if khugepaged reused the original content of MADV_FREE
+> pages that would be a slightly different story. I can
+> see why users would expect zero pages to back madvised
+> area.
 > --
-> 2.43.0
->
->
-
-
--- 
-With best wishes
-Dmitry
+> Michal Hocko
+> SUSE Labs
 
