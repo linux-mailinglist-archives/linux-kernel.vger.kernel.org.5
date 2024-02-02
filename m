@@ -1,268 +1,252 @@
-Return-Path: <linux-kernel+bounces-50553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50554-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C3AB847AB0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:47:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C373847ABA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:51:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAB6128969F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:47:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C28A61F24384
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:51:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 288CF7C096;
-	Fri,  2 Feb 2024 20:47:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4588C8063F;
+	Fri,  2 Feb 2024 20:51:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EmnExZ6s"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c186vFLb"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AAE215E5DE;
-	Fri,  2 Feb 2024 20:47:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706906865; cv=none; b=oVFqmcl6RyyegnRjPi0P70mbQFsIH4je3ZxM5ML6iBeiR488CRrexwT2CKEEF1Iu+bA5YAtB8jTVHjX06LKbv7WvUewjdMcFIixwdfqQWh9BD8rK+4WZY+yuUhI1WvnCHnOErMuhhbpWZ1DoqKLRtrRCmAjUOOCmxZgcjbrHfr4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706906865; c=relaxed/simple;
-	bh=bPUm4KkQeJeGtmyhW+KgtpEzD3kiXXwTCq3KNoloiuU=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j9N11/C6zoeh72UraanRhTaEKFIvhuGVWM/FgMl9aLWHY6C4X2kKC2u6n1gw0H+R1IIsKeGjOEX/hM6IIpxs8imUywR5s2nD1diqL+MZJcIf1tEW4YroznVpE7mKDe+1L+Y2/4331a2FzonX+tq8anzJYFtLl1v68/JrPbF5Zy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EmnExZ6s; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40fccd09082so2410315e9.2;
-        Fri, 02 Feb 2024 12:47:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706906861; x=1707511661; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=4EoiGjmq+s73vrhMXdcv2bqEbqZEZKuUJt5n77/LCWc=;
-        b=EmnExZ6sgrSEZcDpcjzg2o4eecaTzZ9GY7qQNb8UPKYNFTm1Jfm/YsyuvXRE4zlMdo
-         Xi2tXxXfTdyUbLc51ql0aQpWKjQLH7IbdNCcySj+DMvdwW/lSvTGJpI2xkKgxiTFJRbo
-         efEWHx8SooqJDSPA32FG7yDpDMs6+PaZUlzE3UuscI51/XsAQr7nzvnWnoRit6+GLdef
-         HTHlcW3ltCpAjrMjOLmRODkY0qvwxsd+r19IkvcIRh6oVqRQ3fxbGrlnAZAVNi4BFwm9
-         MEQrJBxGko6NVcS4wQOoltXlmmCXl5t603ebpAr1iQu+VuzgHAchaQd5NId/j+u6OI2z
-         ktOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706906861; x=1707511661;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4EoiGjmq+s73vrhMXdcv2bqEbqZEZKuUJt5n77/LCWc=;
-        b=bg40hrBF5dFzjt6jq4XfUawkiekeYcdEMcikAhlSmkiVp9JLSQ/I4ZjcFexfqA2Pw2
-         yQO9u0vpO9LvPTqDeEbkiWxNhWZ5MXwA8c86SCuc2iyWsxY127hPk30M0sQdyUgMLW/n
-         rEniCMDPGPfJRPMgO2emv1UXi33QjLSJoLmndYScatMEXCiipjxJLeLBmhllkWMunvvO
-         BjQx/JMrXtJ5KiyMgrQ8xojUkRO44hBWp41mVYW2Qws4M2rLqTzlYXjpJ1ffPUYOP7QI
-         aKsP6He06mnsxq/0RnIgNmDU0RqLkXFhyVmEImfro6S6VhDh+Wp2OqsAaD1NilT+/Uxn
-         Wlwg==
-X-Gm-Message-State: AOJu0Yz+4SEv3BLOBOwiTjh7NT7jCJ4Sq4rFUKRWqDUCitr4x8jGS+/J
-	RtbQaoO/oq0eeH1SlTqZ77sOUJM5Nr/157Gmd/uzaaxHcsYYJ0ql
-X-Google-Smtp-Source: AGHT+IF4iJJCpDkH02ochsAoODLguy8pwV8GfJmo2pzc4HBPpQziLtpi//y3jOEeiukd7IYaA9hhSw==
-X-Received: by 2002:a05:600c:a384:b0:40e:d176:1c98 with SMTP id hn4-20020a05600ca38400b0040ed1761c98mr2424500wmb.18.1706906861178;
-        Fri, 02 Feb 2024 12:47:41 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUV/aOCGT9iGBtP6QmPpT7PVum52bOjUAAdDhaMbrBtbXB0aLR5Kp4P3w8Za1iuEGtuQ1Pv5eC/siQBM0Xw4V/S8AvSQAbU/kmeBIZPfJNe74wVCeR7rxMWmqQb8Cy2AWxPVAAZkQf6wslT3CkApGPz8orGxYIffxDiyO/iaoMFnRP8YD0uc179DoX58tYAxt3k7N+mY7+Rs05j+XCyZbkfWnsRtZZ/e+1D+rk+DD3zU/RvtBnCnXELIKUXFslDzKzySXSCwSnyb7ZHzZwtjY82UatmmTO5l8O5RJKV2AAt9kAR9/7WvEiuLBrTjFOCsEC44GNWAv8QZouvo20PjU+ysW2ZLRtk0E4krJtcbDuBAqLDsRHlK4OvWZLa6yr2fuaJBOsgLncl+lx8w/tRjnxLoUzKjyUtxgZVGNhT0pLHp5TjUdCYY7bMRJFKSZNBtjAbBS9q8zh8q19NSr8CGyBbKJW0rlPeSZzFiXb/g0O/KB7+w1hzB2K0Ll3hEVsU0+TBoLOJ7rdhkbfbRjzO7arHL/fqk1LQYh+D8BjaeFKcEQ==
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id r2-20020a05600c35c200b0040efbdd2376sm887626wmq.41.2024.02.02.12.47.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 12:47:40 -0800 (PST)
-Message-ID: <65bd54ec.050a0220.39d07.545c@mx.google.com>
-X-Google-Original-Message-ID: <Zb1U6WUYgaNpt9Bs@Ansuel-xps.>
-Date: Fri, 2 Feb 2024 21:47:37 +0100
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org
-Subject: Re: [net-next PATCH v5 6/9] dt-bindings: net: Document Qcom QCA807x
- PHY package
-References: <20240201151747.7524-1-ansuelsmth@gmail.com>
- <20240201151747.7524-7-ansuelsmth@gmail.com>
- <94dfc4c4-5fe6-438d-bcda-4f818eafd2f0@linaro.org>
- <65bd0678.050a0220.bf9e4.9bd2@mx.google.com>
- <20240202203915.GA1075521-robh@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF5CC6310E;
+	Fri,  2 Feb 2024 20:51:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.7
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706907078; cv=fail; b=l6YRIW0Z27wQzPdWNCN4P4eC8PW55uf7LpJnCCKsuNuyttxtYJPzIse2YgtVIsJL8aVZOx4wa/FeLR7t8qN0EP1Gs57sw/n1eU2ML0Obw+0sp68U+Gh9HZNn+5c1G0bItuhVswgC0BLfYZNYdcfhA9k6xilA6jjM3pL4lM2j4hU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706907078; c=relaxed/simple;
+	bh=KyFkk7BZqBsjtIsr/LnXlgJkg121uJMZvLfXbI4gs4Y=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=bDxeiGgZe9I7/6MPGAUE6GC9wbwAcLw0M1GBQKPpt9PX/nPO1VYYpTtsxDvzLgw6BwvjXpawpuf71FqOlc4QiGciZNN04lM/FlE5ObP9teun4/N2KVFid+0cifLQVNZYzvwy7WlvDRA/yRVPYkYlV1vrbwdwRFH5Bs3dzLXw85Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c186vFLb; arc=fail smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706907076; x=1738443076;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=KyFkk7BZqBsjtIsr/LnXlgJkg121uJMZvLfXbI4gs4Y=;
+  b=c186vFLb6s6g+gm2uTjqA4QlIMhveGMDH8jSnUE0QLcpyBEocwtLYeBl
+   OD1XrKh0VTXx50/8YiPuipg3HOOuQHTzHv/X3gh2KIwXik77pf142FtnC
+   7PcLyEEHVhewFIndGoiplU6LTz3/RaISPOux53aAvpzaj9nN2kO/I/wBw
+   nvxcu0r30CE5nhpge5XnbEtl6s84iYn1nLYTZ7QBxqKtKvXTzPVkH9DIS
+   FRsO06c+BV1MFGEmVxUn19GHKkPMxJUqDA7jGsTMqG9z4yBGLd7MGAuX9
+   d2Ml9a71l/uTf0B64E55p7pV6mdzkAzBNXZRCNkj6Ynce/Bg7/j87I7Ih
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="25696345"
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="25696345"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 12:51:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="37583581"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 02 Feb 2024 12:51:07 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 2 Feb 2024 12:51:05 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 2 Feb 2024 12:51:04 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 2 Feb 2024 12:51:04 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 2 Feb 2024 12:51:04 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GxLrc5o0MgYi2ok/FH4VdylUQGnDDI7VLMq9w71CSn1Eag0PbdZL5U0Xrg7WXfzgOgCOs2TEUxuPs355KP+7tXzcdV10THXThiDhcjhmmWvg9GAxveQgVT7TBRxZTHLPqokzHHHUryBmG2YSj3Iy05WtSA5E//c/jyl8eMKJMoVRoiG4vFNxUc7aCZ8gwozV7WTsZBk0lovavjTmaaac2Lh/PiBnWD3EQ1fZAdJ4CFdgOBu154fHr3WH6NsYSMarWWEq145rjGIpaDZlAg7G6vDEtcWSD5s208nscnvmvIEw6te2ce/LBTZ7v8eX2p9evI307F6KDiwCLc6Rkz0p3Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=heDtTeRh73H1TgLNcAOS55NauZMVyNR+qJaaty6Vzxo=;
+ b=VClQDV80d+gP9K409bl7SJrDA5b3FaNn/OsWJxaKPjYBgh+z5kfefhrwQXu8VhIr5HlzNIiBLlX7Th+VWfnylJXTvd5JIYz2oxa2L9wVhDLUVxxQ4osylQ/iZCYQ8USOHHH2yzR82f9QVLOTT4x/nUrkMFqKgJ1hLTfyzq/QOsEMtcHkg/dGch82o+I3aurbNsp1oEpY2S1O809si1X0bDCPmmh7r0hSV1BYY5o5YSwGRdvdLrAU5XyMCVYPm5lfJqRXjcICDRjrAxtuxO8CdOEgMiGmM8tuEQSpNfk8akar9MfXARwB768jzY0c3BTXjBKGGCIf7HaY593OUUwCgg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ0PR11MB4893.namprd11.prod.outlook.com (2603:10b6:a03:2ac::17)
+ by LV2PR11MB5976.namprd11.prod.outlook.com (2603:10b6:408:17c::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.24; Fri, 2 Feb
+ 2024 20:51:01 +0000
+Received: from SJ0PR11MB4893.namprd11.prod.outlook.com
+ ([fe80::ad31:79ae:4d1:80b4]) by SJ0PR11MB4893.namprd11.prod.outlook.com
+ ([fe80::ad31:79ae:4d1:80b4%5]) with mapi id 15.20.7249.024; Fri, 2 Feb 2024
+ 20:51:01 +0000
+Message-ID: <0d030b68-0371-4460-8d76-cad129888496@intel.com>
+Date: Fri, 2 Feb 2024 14:50:58 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [net-next 0/3] Per epoll context busy poll support
+Content-Language: en-US
+To: Joe Damato <jdamato@fastly.com>, Jakub Kicinski <kuba@kernel.org>
+CC: Eric Dumazet <edumazet@google.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <chuck.lever@oracle.com>,
+	<jlayton@kernel.org>, <linux-api@vger.kernel.org>, <brauner@kernel.org>,
+	<davem@davemloft.net>, <alexander.duyck@gmail.com>, Wei Wang
+	<weiwan@google.com>, Amritha Nambiar <amritha.nambiar@intel.com>
+References: <20240124025359.11419-1-jdamato@fastly.com>
+ <CANn89i+YKwrgpt8VnHrw4eeVpqRamLkTSr4u+g1mRDMZa6b+7Q@mail.gmail.com>
+ <5faf88de-5063-421f-ad78-ad24d931fd17@intel.com>
+ <20240202032806.GA8708@fastly.com>
+ <f0b4d813-d7cb-428b-9c41-a2d86684f3f1@intel.com>
+ <20240202102239.274ca9bb@kernel.org> <20240202193332.GA8932@fastly.com>
+ <20240202115828.6fd125bf@kernel.org> <20240202202344.GA9283@fastly.com>
+From: "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
+In-Reply-To: <20240202202344.GA9283@fastly.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ2PR07CA0009.namprd07.prod.outlook.com
+ (2603:10b6:a03:505::6) To SJ0PR11MB4893.namprd11.prod.outlook.com
+ (2603:10b6:a03:2ac::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240202203915.GA1075521-robh@kernel.org>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR11MB4893:EE_|LV2PR11MB5976:EE_
+X-MS-Office365-Filtering-Correlation-Id: 274ede71-7348-4e13-2057-08dc2430aa5d
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gHaMcxvneq3jhGDKplqujWp7xPJwsD1x+3FHsGJVlo0K6VkoO1YWVpz7xxE6/yaVWuJBTbIUp8y6MEAHNahiIREq/EUMHmTihFRDFJTKwNJ5Dc602AodDScqg15mp7xOnjibu4PMkZ1BvZBDYkEzG7MrxUMjeWRx2tmXExd1RwMNtpmqs6VcIUxQqzsIJz8/1vU6pva4C/tCi51HdWMKDlCrhp2jaJYf0qyEDY8BOy8wiN5qD7951lXaRSvYp9xcTUQU/FIu7OZjjZKB68ns6QHGrDGxW7y68was3srlW2lL1kBmEvDeKcOZZKNU3wrFTcWsdDj1+sard8PYQdnIGkgHjRRHFqUw90ikB3LqfS5ryCNJZjdd/1D5bDrbJbFGydfW6eQP83EAt9rw0znK9Ljm6kadyBsQsWuUmFFjpR3UUiJDE9mXIVO7L1v/dRGlYI+dFDWRZLHdvj9C11fK2+/cWNVXly9ynUjTN8+daL6FWktihQZQaKtp9nkrPxBWBy/+mt4OHOT8snc6ARwprs+ym9reezdKIUF+xXxra6KWikzkPszR0qppfOeLkmLgbptFfmfewomz7StBWXNjiYmmpbSAlgiW7kg/R6hfGYIukY/HfRlp9hzE5qhDs0QieXrebCOlsOZTPOQt98z5tA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB4893.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(376002)(396003)(136003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(31686004)(26005)(2616005)(107886003)(41300700001)(66476007)(38100700002)(66556008)(54906003)(316002)(6486002)(36756003)(82960400001)(6506007)(53546011)(6512007)(6666004)(83380400001)(966005)(8936002)(86362001)(5660300002)(478600001)(31696002)(2906002)(4326008)(7416002)(110136005)(66946007)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L1pxV2hjTHV5NFhjRnc5QTZBQ0hET200VERMVElUWkxiRUJTdWFoMjJ3bEYy?=
+ =?utf-8?B?VzF5QjJhSG5yMFRTTHRyRFZTTy9RdSs2RTg5UzU5R3lxTXBiU2NjbXhsOUg2?=
+ =?utf-8?B?dGJTalBJU1NmZ1VGcFYzWVQzWXUxd3BzRmR5bWxqckNOYWlSZGdVNzBsbmpC?=
+ =?utf-8?B?VFdxZzZUd3U5dGFXSnIxUWZ4ZHdQSW1aQkNRbk9HaS9iVURXWVJvZ1owTklx?=
+ =?utf-8?B?SXJ1Vy85czRicHRkSUozNm9Pb2xsSnlQZmZWNlJOeC9USlRhOU5tcDVRRHg5?=
+ =?utf-8?B?M3JEY2d3cU9lRlROVUZpS3ZZaVpCMFpMUHkzMUhUT2JxdXhMcWMra1JrU2pL?=
+ =?utf-8?B?YWtiaEt4ck11L0gyNk5MZUVjaVY1Z2lpMGZ3bnE5NzNQSnYrRVpMZlZyRitt?=
+ =?utf-8?B?c3NocG9lQU51WjJaK1RzR3JEdE4wNHFxbVpSRmFvQ2ttNUNMNlNDYlBrZExB?=
+ =?utf-8?B?REYrZFdRbDVVZEdpZWR4U3JTaE95eHovbHBlTTJvVk5DbDlmclg2cEJmblpa?=
+ =?utf-8?B?RzBJcS90SW9QNlJ6VkNDQlBhVlEwNDB4KzYrbno5SUFjbGJrVEpRYTN2RmdY?=
+ =?utf-8?B?ci9UeEUvRlhIaWZidE9NdkVpMTNrZFNRWVJJQzhIeUVlR3hUekxMSXY0TFVu?=
+ =?utf-8?B?S0FneDAwUTU0Y2ZvbjlMMDJrOW52Vk9MRFV6NUFlSjU2YjJBbTVVQjY0cVBM?=
+ =?utf-8?B?b3UzWkNSbnYxUER4WXVqb3UrSEVWc2FsMVpwM04wbVJZVkdSdGVPSkt6cWRX?=
+ =?utf-8?B?dEtrWFVvT20wZkpEVWRTS3hqVTRsUXdkOWkzeVhtcFV4OGh4TVdDaFc0a2tz?=
+ =?utf-8?B?WnFRK1U4WGtGZFRZcnUzVDZqT1loZE8rSUp1emh1bEVsd3pEN296WnJBTGh4?=
+ =?utf-8?B?V0VlRmJQOS9aaGlZZDZZZVVQelE1emhaaFB5eEI5N09aSFA0WDJQYmNkbDhK?=
+ =?utf-8?B?YlI4bHB3aWhxMDhxZkhPK1FROUdxTExGTjhRMlhkSlhKWmRjS0x0bE0vR3p6?=
+ =?utf-8?B?dmtGS2tLLzNDbHdNeDV3amMyZ1lDL21WblNNOVRIZ1BLcHNLNGtzUHVOaTd0?=
+ =?utf-8?B?UWx5bjFRZ3UxREpSZ1pHMlBVV2RPc0g1d2Zzck1kQ2xOSUxyeTNNSUJTaVZB?=
+ =?utf-8?B?aHVVcGNXYzB1ejBrQS9Sem9MelpJMVJWdTd5ei9WMmsxNU1nVUdnV0Y5eU5Y?=
+ =?utf-8?B?cEZmUy81S2FxUXROSlIvUElFc3l2QWZUS29oTmtuR0NNMGRFMnRGM3hNdjd3?=
+ =?utf-8?B?MlZtRkdqK2EyT01oV3BMR1hBN0tIeDRkb2tTUXRvb041TTJsdEtJYTlJc3VP?=
+ =?utf-8?B?TVFJek9Cb3V0anlpMnAvTEF1am1GNjBiTTNJODc1NHZMSU0yMHBCQXd4NzJ5?=
+ =?utf-8?B?OHFtUHhyNzM5TjNUU2lBelYxRnE1cXIycFloRG1GVEpuOVY2Smc3WWlrdlB3?=
+ =?utf-8?B?amFCWFM4cWNFTzA4cmJFMnd5VWpuQkxDRDljcVdsYzJJSDZWUVk0cnVkd3p4?=
+ =?utf-8?B?SWpXVGdldjhGZG5EVlpFZTFiLzZiTDd3Zm5KTjVTRFp3Q3F3cmh0MWVqQnVy?=
+ =?utf-8?B?UDFGWXhOVDNSTktKeER2cndMRU00UjlKOTg1MkdmMUV5VjBkcVNPaFFGRGJJ?=
+ =?utf-8?B?SWJ6NGVySVlDcnJPTmVNdHBjaGg3NlkrazlrQW95V1JHcW1xMzdQVmRIOFB1?=
+ =?utf-8?B?OXU0NWhrSzZhckltdnMzd3hYMkVLdE5LekhPNWR0V2FGWDE5K2kwcC9hWTFy?=
+ =?utf-8?B?NXhZS2RhMUxnS1NjVlhuUkdIS0ZUWEttMzVGNjloeEFWOW5BRjZIbk9VeSsx?=
+ =?utf-8?B?UjMxaDhLTTFLNkdwN2MxY3FEZlhJay9yK2dmUVB0bHYyTkQ0ZEFvQm12RTMy?=
+ =?utf-8?B?bjFMSWpIUVA3b1ZiU2RibDQvbWNBd1hkZlBqMmpacGtNdHlQUXJ4bXNsTEFt?=
+ =?utf-8?B?MjdRYi8xMnpVSXV0YnRpRUt6Q2QxSnRTNUQ5RVNSa1BKTkNpdnhYREJyYjAr?=
+ =?utf-8?B?RlAram9TU0NFeDBVb0pERnlnS3VWUU40SE9sL0lOVk9nKy9UMjhHTUlCcTBx?=
+ =?utf-8?B?OGUyQkthY0swL2RRMXdDTndpckhORHNYK3dON1FNWTdrZDJiVFBxVndsRjRH?=
+ =?utf-8?B?ZUhUMDNhNnpRRWxSeXFKaDk1eU1KNzQ4U0QwVXVPOHNyNHpNYzE5K1BnYjBP?=
+ =?utf-8?B?WWc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 274ede71-7348-4e13-2057-08dc2430aa5d
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB4893.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2024 20:51:01.6568
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Fja3dE733G3hxHyt6emRKOK8KGKWThIw64SMk4FA8uutFBMWapphcAioyCLuajVU5lGbJ8CNxKC1sseXazqoIo10Un1BhrlDs8H3S0MYa4I=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR11MB5976
+X-OriginatorOrg: intel.com
 
-On Fri, Feb 02, 2024 at 02:39:15PM -0600, Rob Herring wrote:
-> On Fri, Feb 02, 2024 at 04:12:53PM +0100, Christian Marangi wrote:
-> > On Fri, Feb 02, 2024 at 08:45:52AM +0100, Krzysztof Kozlowski wrote:
-> > > On 01/02/2024 16:17, Christian Marangi wrote:
-> > > > Document Qcom QCA807x PHY package.
-> > > > 
-> > > > Qualcomm QCA807X Ethernet PHY is PHY package of 2 or 5
-> > > > IEEE 802.3 clause 22 compliant 10BASE-Te, 100BASE-TX and
-> > > > 1000BASE-T PHY-s.
-> > > > 
-> > > > Document the required property to make the PHY package correctly
-> > > > configure and work.
-> > > > 
-> > > > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > > > ---
-> > > >  .../devicetree/bindings/net/qcom,qca807x.yaml | 142 ++++++++++++++++++
-> > > 
-> > > Your bindings header must be squashed here. Headers are not separate
-> > > thing from the bindings.
-> > > 
-> > > >  1 file changed, 142 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/net/qcom,qca807x.yaml
-> > > > 
-> > > > diff --git a/Documentation/devicetree/bindings/net/qcom,qca807x.yaml b/Documentation/devicetree/bindings/net/qcom,qca807x.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..1c3692897b02
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/net/qcom,qca807x.yaml
-> > > > @@ -0,0 +1,142 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/net/qcom,qca807x.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Qualcomm QCA807X Ethernet PHY
-> > > 
-> > > What is "X"? Wildcards are usually not expected.
-> > >
-> > 
-> > It's to identify the Ethrnet PHY family. Looks wrong to declare qca8072
-> > or qca8074 since they would refer to a more generic Family of devices.
-> 
-> Declare them all or provide some justification such as the exact model 
-> is discoverable (and better be sure power on is the same in order to do 
-> discovery).
-> 
-> > What would be the correct way? We have many other case on net with
-> > schema called qca8k that refer to the family of Ethernet Switch but in
-> > it refer to qca8327 qca8337 qca8334...
-> > 
-> > > > +
-> > > > +maintainers:
-> > > > +  - Christian Marangi <ansuelsmth@gmail.com>
-> > > > +  - Robert Marko <robert.marko@sartura.hr>
-> > > > +
-> > > > +description: |
-> > > > +  Qualcomm QCA807X Ethernet PHY is PHY package of 2 or 5
-> > > > +  IEEE 802.3 clause 22 compliant 10BASE-Te, 100BASE-TX and
-> > > > +  1000BASE-T PHY-s.
-> > > > +
-> > > > +  They feature 2 SerDes, one for PSGMII or QSGMII connection with
-> > > > +  MAC, while second one is SGMII for connection to MAC or fiber.
-> > > > +
-> > > > +  Both models have a combo port that supports 1000BASE-X and
-> > > > +  100BASE-FX fiber.
-> > > > +
-> > > > +  Each PHY inside of QCA807x series has 4 digitally controlled
-> > > > +  output only pins that natively drive LED-s for up to 2 attached
-> > > > +  LEDs. Some vendor also use these 4 output for GPIO usage without
-> > > > +  attaching LEDs.
-> > > > +
-> > > > +  Note that output pins can be set to drive LEDs OR GPIO, mixed
-> > > > +  definition are not accepted.
-> > > > +
-> > > > +  PHY package can be configured in 3 mode following this table:
-> > > > +
-> > > > +                First Serdes mode       Second Serdes mode
-> > > > +  Option 1      PSGMII for copper       Disabled
-> > > > +                ports 0-4
-> > > > +  Option 2      PSGMII for copper       1000BASE-X / 100BASE-FX
-> > > > +                ports 0-4
-> > > > +  Option 3      QSGMII for copper       SGMII for
-> > > > +                ports 0-3               copper port 4
-> > > > +
-> > > > +$ref: ethernet-phy-package.yaml#
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    const: qcom,qca807x-package
-> > > > +
-> > > > +  qcom,package-mode:
-> > > 
-> > > Where is definition of this property with type and description?
-> > > 
-> > > > +    enum:
-> > > > +      - qsgmii
-> > > > +      - psgmii
-> > > > +
-> > > > +  qcom,tx-driver-strength:
-> > > 
-> > > Use proper unit suffix.
-> > > 
-> > > https://github.com/devicetree-org/dt-schema/blob/main/dtschema/schemas/property-units.yaml
-> > > 
-> > > > +    description: set the TX Amplifier value in mv.
-> > > > +      If not defined, 600mw is set by default.
-> > > > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > > > +    enum: [140, 160, 180, 200, 220,
-> > > > +           240, 260, 280, 300, 320,
-> > > > +           400, 500, 600]
-> > > > +
-> > > > +patternProperties:
-> > > > +  ^ethernet-phy(@[a-f0-9]+)?$:
-> > > > +    $ref: ethernet-phy.yaml#
-> > > > +
-> > > > +    properties:
-> > > > +      gpio-controller:
-> > > > +        description: set the output lines as GPIO instead of LEDs
-> > > > +        type: boolean
-> 
-> You only need 'gpio-controller: true'. The core already defines the 
-> type.
-> 
-> > > > +
-> > > > +      '#gpio-cells':
-> > > > +        description: number of GPIO cells for the PHY
-> 
-> Not a useful description. Normally, you'd describe what's in the cells, 
-> but GPIO is standardized so no need (unless you are deviating from the 
-> norm).
-> 
-> > > > +        const: 2
-> > > > +
-> > > > +    dependencies:
-> > > > +      gpio-controller: ['#gpio-cells']
-> > > 
-> > > Why do you need it? None of gpio-controllers do it, I think.
-> > > 
-> > 
-> > Well gpio-controller property is optional and having that declared and
-> > #gpio-cells skipped will result in an error on probe. I think it should
-> > be the opposite with other schema having to declare this.
-> 
-> If you think everything else is wrong, then please fix them. :)
-> 
-> > 
-> > In usual way for gpio-controller both property are defined as required
-> > but you can see some (to-be-converted) txt files whith comments where
-> > they say:
-> > 
-> > ./mux/adi,adgs1408.txt:10:- gpio-controller : if present, #gpio-cells is required.
-> > 
-> > Should I instead add this condition in the if right below?
-> 
-> The core schema enforces this dependency, so you don't need to.
->
 
-Oh! No idea the dependency was already enforced, guess I don't have to
-fix everything ahahahha
 
--- 
-	Ansuel
+On 2/2/2024 2:23 PM, Joe Damato wrote:
+> On Fri, Feb 02, 2024 at 11:58:28AM -0800, Jakub Kicinski wrote:
+>> On Fri, 2 Feb 2024 11:33:33 -0800 Joe Damato wrote:
+>>> On Fri, Feb 02, 2024 at 10:22:39AM -0800, Jakub Kicinski wrote:
+>>>> On Fri, 2 Feb 2024 11:23:28 -0600 Samudrala, Sridhar wrote:
+>>>>> I think you should be able to get this functionality via the netdev-genl
+>>>>> API to get napi parameters. It returns ifindex as one of the parameters
+>>>>> and you should able to get the name from ifindex.
+>>>>>
+>>>>> $ ./cli.py --spec netdev.yaml --do napi-get --json='{"id": 593}'
+>>>>> {'id': 593, 'ifindex': 12, 'irq': 291, 'pid': 3727}
+>>>>
+>>>> FWIW we also have a C library to access those. Out of curiosity what's
+>>>> the programming language you'd use in user space, Joe?
+>>>
+>>> I am using C from user space.
+>>
+>> Ah, great! Here comes the advert.. :)
+>>
+>>    make -C tools/net/ynl/
+>>
+>> will generate the C lib for you. tools/net/ynl/generated/netdev-user.h
+>> will have the full API. There are some samples in
+>> tools/net/ynl/samples/. And basic info also here:
+>> https://docs.kernel.org/next/userspace-api/netlink/intro-specs.html#ynl-lib
+>>
+>> You should be able to convert Sridhar's cli.py into an equivalent
+>> in C in ~10 LoC.
+>>
+>>> Curious what you think about
+>>> SIOCGIFNAME_BY_NAPI_ID, Jakub? I think it would be very useful, but not
+>>> sure if such an extension would be accepted. I can send an RFC, if you'd
+>>> like to take a look and consider it. I know you are busy and I don't want
+>>> to add too much noise to the list if I can help it :)
+>>
+>> Nothing wrong with it in particular, but we went with the netlink API
+>> because all the objects are related. There are interrupts, NAPI
+>> instances, queues, page pools etc. and we need to show all sort of
+>> attributes, capabilities, stats as well as the linking. So getsockopts
+>> may not scale, or we'd need to create a monster mux getsockopt?
+>> Plus with some luck the netlink API will send you notifications of
+>> things changing.
+> 
+> Yes this all makes sense. The notification on changes would be excellent,
+> especially if NAPI IDs get changed for some reason  (e.g. the queue count
+> is adjusted or the queues are rebuilt by the driver for some reason like a
+> timeout, etc).
+> 
+> I think the issue I'm solving with SIOCGIFNAME_BY_NAPI_ID is related, but
+> different.
+> 
+> In my case, SIOCGIFNAME_BY_NAPI_ID identifies which NIC a specific fd from
+> accept arrived from.
+> 
+> AFAICT, the netlink API wouldn't be able to help me answer that question. I
+> could use SIOCGIFNAME_BY_NAPI_ID to tell me which NIC the fd is from and
+> then use netlink to figure out which CPU to bind to (for example), but I
+> think SIOCGIFNAME_BY_NAPI_ID is still needed.
+
+The napi-get netlink api takes napi_id and returns ifindex, irq and pid 
+associated with the napi id. You can then pass ifindex to the 
+SIOCGIFNAME ioctl to get the interface name. So it is definitely 
+possible without the need for the new SIOCGIFNAME_BY_NAPI_ID
+
+> 
+> I'll send an RFC about for that shortly, hope that's OK.
+> 
 
