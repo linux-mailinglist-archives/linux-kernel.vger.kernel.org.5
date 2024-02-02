@@ -1,86 +1,77 @@
-Return-Path: <linux-kernel+bounces-50528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50527-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2E90847A41
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:07:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 773B6847A3E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:07:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 212941C25351
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:07:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DB9828459A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:07:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4CA781741;
-	Fri,  2 Feb 2024 20:07:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R9VXw181"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD88A81723;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0959180609;
 	Fri,  2 Feb 2024 20:07:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF7B15E5B8
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 20:07:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706904432; cv=none; b=nrFQQ3A10lOCPmd/uBgcMZBgmlWZXtcydw3m4iUCVvOIiJtgPEMXQ5/DxV3JT7BzDGu4BKZBKy0bC+feCFWwsODq1/R/ggm9LxBJb1YLbeStDKh01AbFYMD8ZMg7ZjVJdZtNV9ZDAWpO0E66iBLRqvhIOA/MbQzULd5xnYlFa9E=
+	t=1706904430; cv=none; b=JCWpHUAMQvWN82ti2Ha19mJCBNQOAxoNA4yFddWiAFW5udRhygQV34dd/7eEloCjUv5Kdp3JuAfqCgpbdYDLPFDtKSJra0Gkg65MNPaCQsHPU9rk0t+RsCt2mUR8LSFvET97ez30UkqhsMc6mAKpjr0JyWEcmNLf56mN4MzYByM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706904432; c=relaxed/simple;
-	bh=epRb1MXVvtkeSkxaalwuj7pybwm+/tm5dEiJdFjbC5w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PoBI8sm+OLGVFAipAGwFW2wO40rjhDCMOA99kvwCxfTlyymDSZ9vg03Gdtr6jT5Iv+Trpr+qIXkbrIAgOWV8y9JwTyKaOqiHOKjJDuwFw3iLHsOC50qxkl3+uW6O/xfFBamM5HUjFs5eD1Zn68+gelJc74cg5UiLlDNalhc8S9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R9VXw181; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CDA9C43399;
-	Fri,  2 Feb 2024 20:07:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706904431;
-	bh=epRb1MXVvtkeSkxaalwuj7pybwm+/tm5dEiJdFjbC5w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=R9VXw181nWECi+yklbcny4r++cmzpBqLtH3m+T+iThwJnV0rLEyAjjcxDHUzPMdw3
-	 kKvoG9YI87XUFDZSPt6XkssCLwffqmY+k5YahvkW1UVq6gOBOAVx6do6yisSp2uYcN
-	 t8ZsL4dMMngIHXi8JRTGwjGK7cuobjlEIVl/JxrTNjwcBHbefUJPKfHC5KUTg0otFi
-	 hKfY0Cja8PY+V7Y9nMcUzMIxnsSWxR4yb44q8E6ikuvXuJ9Wp6Ti88TUpi7NOWUZzl
-	 dJ/U79BXe2h6jSMPWrCUrWm0rPfwn7I5YGQFBhdyd+jPI02m7hXX0POLknmQzYjx00
-	 MHaPXwq+8aBtA==
-Date: Fri, 2 Feb 2024 14:07:08 -0600
-From: Rob Herring <robh@kernel.org>
-To: Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc: dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	Lubomir Rintel <lkundrak@v3.sk>, Vinod Koul <vkoul@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] dt-bindings: mmp-dma: convert to YAML
-Message-ID: <170690442812.903220.16045094080463776332.robh@kernel.org>
-References: <20240131-pxa-dma-yaml-v2-0-9611d0af0edc@skole.hr>
- <20240131-pxa-dma-yaml-v2-2-9611d0af0edc@skole.hr>
+	s=arc-20240116; t=1706904430; c=relaxed/simple;
+	bh=Te5zVoY4lGAuebG0OZci+Zfj6mpoDeO64xLwy1nbzu4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=sfUZRyL7qcAK2wOoU3hX47nRY6ONPJAEZv4kqum6HVHnbikFdGaE4hY/PvKKItyakWxpIeMNSJUnxP9uass+a4Y4e4xxNVL0SvyOH6H3M7fZfa32XMRXiaUX43+6ya+j/nmac6qivMofgjVAHWR4pLTBrTymsjrYvQqbGNO+APc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bad62322f0so265511039f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 12:07:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706904428; x=1707509228;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Te5zVoY4lGAuebG0OZci+Zfj6mpoDeO64xLwy1nbzu4=;
+        b=CZp1j42A+q1Z4Z5YMGKTQqx4q8nSGqRInh87eA+1rLh9B61N5p1UT3MDnoXsmmkO74
+         dStSQ2ntafpuuj3rcxuc2m8gOnyqU7u3+i9QSbg+0fFcs7hEQHf9gaME+w6ptA1/ti7e
+         GXilNbQR8UBbczsfEctOu8gCnfv/8eZuAA/a91VYmCMFOXPbnpKujKFPQiKi+NxZtSmw
+         LOvfBi9iNlAeHAMwVdicoccYGfS5hCoHwxY7h5wNFwZMDdos8hzqn2v1YGTyes/5nPVp
+         45z/RqcuEduN/TfgO8k7Xmy9/2wNiz7kAuZKt2T1GpPNj/HJmTYmJ8Cp0QO6BVvULAIU
+         dDQA==
+X-Gm-Message-State: AOJu0YzGHxAlQh0Cy+NmQ4RD2wlrsoqPjTnpRW3wFQVhUJQbCufYoM8/
+	dF2189XCYgPbLh89Bme3SLv7pfsVbdnvQB10A5UwmhVXZl5En5epBzXGcQ/NOljf9RtI97qKN2Q
+	SluS/YLHN1+KD6utQjup6/ijNRndyV+/abqiOGiEiWRi3PBc6ZlIhIN4EAw==
+X-Google-Smtp-Source: AGHT+IEWzOl2OyHdEbF9n1McQox1dJfLFfHLAgV4JDrOBh74rX68utrXZVU3qwpqCGTzSRFLd3BBc39qb1Hcac6SYGD6t/uzV+A+
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240131-pxa-dma-yaml-v2-2-9611d0af0edc@skole.hr>
+X-Received: by 2002:a05:6e02:20e5:b0:363:812d:d6a8 with SMTP id
+ q5-20020a056e0220e500b00363812dd6a8mr485309ilv.0.1706904428342; Fri, 02 Feb
+ 2024 12:07:08 -0800 (PST)
+Date: Fri, 02 Feb 2024 12:07:08 -0800
+In-Reply-To: <0000000000009d3fa2060a3575ad@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001df5bd06106ba8b0@google.com>
+Subject: Re: [syzbot] Re: possible deadlock in hci_error_reset
+From: syzbot <syzbot+47d22a47f6bd21399c93@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com.
 
-On Wed, 31 Jan 2024 22:26:03 +0100, Duje Mihanović wrote:
-> Convert the Marvell MMP DMA binding to YAML.
-> 
-> The TXT binding mentions that the controller may have one IRQ per DMA
-> channel. Examples of this were dropped in the YAML binding because of
-> dt_binding_check complaints (either too many interrupt cells or
-> interrupts) and the fact that this is not used in any of the in-tree
-> device trees.
-> 
-> Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
-> ---
->  .../devicetree/bindings/dma/marvell,mmp-dma.yaml   | 72 +++++++++++++++++++
->  Documentation/devicetree/bindings/dma/mmp-dma.txt  | 81 ----------------------
->  2 files changed, 72 insertions(+), 81 deletions(-)
-> 
+***
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Subject: Re: possible deadlock in hci_error_reset
+Author: pchelkin@ispras.ru
+
+#syz dup: possible deadlock in hci_rfkill_set_block
 
 
