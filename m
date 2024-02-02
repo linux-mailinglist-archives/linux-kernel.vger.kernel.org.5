@@ -1,101 +1,85 @@
-Return-Path: <linux-kernel+bounces-49532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EF0D846B8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:07:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B161E846B8B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:08:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0031CB25F9A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:07:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2E541C2537B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:08:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EABE15FDA3;
-	Fri,  2 Feb 2024 09:07:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Me6pgBMe"
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FFE86A002;
+	Fri,  2 Feb 2024 09:08:06 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B49E960DF4;
-	Fri,  2 Feb 2024 09:07:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DCE45FDA3
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:08:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706864838; cv=none; b=qeShg8sQb9b+L4utho8yUxYaKOrGMYb9yf325dOTTzU8CoPJlZoGxCtBB7PpJrdsOxpV+sFuXXjuAZa+DncerY4SirfQtjA26iSx74DEbqUmmPgry35aAVtaV+8d2U4mHa29zN4NZeBZpH3jlZ/ECG5kiqXCaOx4m5jUXnmCED8=
+	t=1706864886; cv=none; b=qHHa2j3Yf/0CyaHLhU5+qQrRiYZRWUiUhdBnS7fLhxXCuFbm2hrHp8LsccGr0HDtlI2M858Ceqm/fveBYFr0caNerYfEsjkjq+3AiKhv+s34+rmudpuQc7wFRRo9KOiU04k7DUhj6B2eM/D1ich4hA7n00FKL5aBJ5e67PVy478=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706864838; c=relaxed/simple;
-	bh=9n+bxoffzFzRxugdTlBIiUi8qOo9YOUTTBTv4D1ra04=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CObEs5SV/Xej/qjd+lqJcTiBsWGgSQYfjh0XpXRRloNgjr31j6le0xh82z8NZgziiFSVErkKRxdNk7Azq51zYRLzxfnXClUMUefjOci0O4Fp+ak9URX9SCD33g9YZMwWRKZWXfH1WVby5I7IdVxKjujVz9t/J9tN/lFlMn6F2h4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Me6pgBMe; arc=none smtp.client-ip=115.124.30.118
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1706864828; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=UXNrR1zI5WqRxkxoq440HbXJgM3mez+A/tGzovy1VjU=;
-	b=Me6pgBMePPLBtznQZiZyfnZPzdbd0uJ8EaI/cuaK8bqjEIsfVFqyRtj76AglIUwzN1k070PYeqddPMqm0rrX5pVU7qYEbslh4nczRXxuc/D3FEj1MjMIaqtIHrYHZDwjwoYToQbzwH/8bG/XryiBTHYKup8pD1TzIf/SRloLVEI=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R971e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0W.waoAc_1706864813;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0W.waoAc_1706864813)
-          by smtp.aliyun-inc.com;
-          Fri, 02 Feb 2024 17:07:07 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: andrii@kernel.org
-Cc: eddyz87@gmail.com,
-	mykolal@fb.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] selftests/bpf: Use ARRAY_SIZE for array length
-Date: Fri,  2 Feb 2024 17:06:52 +0800
-Message-Id: <20240202090652.11294-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+	s=arc-20240116; t=1706864886; c=relaxed/simple;
+	bh=XY0wgWCyBdKF2c9DVyjRU/KDnI870BxzE/LOzXqWTu0=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=WGjJU7GPHGSVz6artGm61NJgrWdFa4vuPqz2vwFT0oG1N5t1MYogimqf1TpsAdpZzSnEzw54DF5w1mvDMJ2ZtKmfu530WM79YEj4yaWvK6E+DNTWsx/Bq1WT2+fx2yowsUa2hlvj2PfwXxlQFnwF9JJRXGVFxqGYn9MUZFVNcFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-363b161279aso4586555ab.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 01:08:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706864883; x=1707469683;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XeDyEjCvb8uDBw570BFodqh+gAPdP68pZyBdqJtXcM0=;
+        b=ZkCDEIXeeauw+t81sveXc9DkZ3yYRWf+rZ+9IHT8NHDugWzd/ktAnfVLEmC99JA/c2
+         6nFeTht0Y+uWMn2mO/cdp8ON27QsVF+j9Ii4pkXX6ODIQgt9sM20Neegb/X58+YtlXA2
+         6KgrhQd1zQTI+H/pwTDCL0ZHkD1IkGTD66fQn/mKSdzFB2HiI67LefRsUqOlIGjkiqnB
+         wNH653f193UYVlUTe9kjBZzFxiEEZnOFgGUFRocLSilYPRgL9oMv9JMs2cxy2AA7RqX/
+         m0CPP64sYf5b//Uhk8YqsQ4CPObftKknoP7IHuwU3fJIWqihKS2DJB8BkJTvdH2JfpHU
+         QHFw==
+X-Gm-Message-State: AOJu0YxWVdzObtjWtgGxFKmjp0TrQS9Vogq7awtg8UEFKSlDRJp/Ya9l
+	2Yv/NW58V1j1s4oeXeJOz2jLFEMDz3uBM5ABxigwRJo7CYP1vMaZbjY2HeyyQcpoL2jljqWj7cY
+	r9J6EhvoT63XQJEBQvvLjesZ4HCZ8CtrP23wW7hWOKCjhgJalWLLcMX1tPA==
+X-Google-Smtp-Source: AGHT+IGwzbGXZSuQ8ya3zWymx/ZS2tMJ7Gxk15Q7LsFjWFECcoZ0SYcn98NhnI6ntgYiJky7awMmzXGg9AivbgpEKkBRkORmXuuj
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1b06:b0:363:7aed:f073 with SMTP id
+ i6-20020a056e021b0600b003637aedf073mr95989ilv.0.1706864883646; Fri, 02 Feb
+ 2024 01:08:03 -0800 (PST)
+Date: Fri, 02 Feb 2024 01:08:03 -0800
+In-Reply-To: <20240202083546.2409378-1-lizhi.xu@windriver.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000011d1ee0610627308@google.com>
+Subject: Re: [syzbot] [v9fs?] KASAN: slab-use-after-free Read in v9fs_stat2inode_dotl
+From: syzbot <syzbot+7a3d75905ea1a830dbe5@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, lizhi.xu@windriver.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Use of macro ARRAY_SIZE to calculate array size minimizes
-the redundant code and improves code reusability.
+Hello,
 
-/tools/testing/selftests/bpf/progs/syscall.c:122:26-27: WARNING: Use ARRAY_SIZE.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8170
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- tools/testing/selftests/bpf/progs/syscall.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reported-and-tested-by: syzbot+7a3d75905ea1a830dbe5@syzkaller.appspotmail.com
 
-diff --git a/tools/testing/selftests/bpf/progs/syscall.c b/tools/testing/selftests/bpf/progs/syscall.c
-index 3d3cafdebe72..297a34f224c3 100644
---- a/tools/testing/selftests/bpf/progs/syscall.c
-+++ b/tools/testing/selftests/bpf/progs/syscall.c
-@@ -119,7 +119,7 @@ int load_prog(struct args *ctx)
- 	static __u64 value = 34;
- 	static union bpf_attr prog_load_attr = {
- 		.prog_type = BPF_PROG_TYPE_XDP,
--		.insn_cnt = sizeof(insns) / sizeof(insns[0]),
-+		.insn_cnt = ARRAY_SIZE(insns)
- 	};
- 	int ret;
- 
--- 
-2.20.1.7.g153144c
+Tested on:
 
+commit:         076d56d7 Add linux-next specific files for 20240202
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=14811f1fe80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4eccd90d3ac887b2
+dashboard link: https://syzkaller.appspot.com/bug?extid=7a3d75905ea1a830dbe5
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=15f20a38180000
+
+Note: testing is done by a robot and is best-effort only.
 
