@@ -1,141 +1,169 @@
-Return-Path: <linux-kernel+bounces-49805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39415846F9A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:56:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0BF5846F9C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:57:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E61A429B368
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:56:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D2531F233B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:57:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7559513E214;
-	Fri,  2 Feb 2024 11:56:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1FA913E202;
+	Fri,  2 Feb 2024 11:57:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MnZw4JfQ"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="X8rgu6I2"
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25591101CA;
-	Fri,  2 Feb 2024 11:56:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C05A913DB9E
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 11:57:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706875007; cv=none; b=p7ZhpyJJFYufX8VerWv5nTBfuhhmnXT0GEhbfrvuy7qh3WwlfqbcwWR2X37TRgQ5/LUA5Wr/cdiCCQUYCdyf16jFOxbaV4n1Lzap9/UK18vTfbmpS7A0MK7ZvcGJqWQqu/OnnNmeVnnkF6/oqgYfeJMbh2Lo8b5bK4mQ5Qzmp6A=
+	t=1706875044; cv=none; b=pHWQTTpyQ62HjTIFL1zMgDWo7oHCemli9QI6vxFE6ACTRMUTTRmuRGUYemdSSB0m4Nx9nunFuMsOuRgmGDMAEhJvNAdWdNPx26M9CVOHS79qiwoKebtL+mSnjUCf4ZS6Yfx6JdKRyFXOcsIy9piG/hCBRAdGTgqdnF1dzxaaHR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706875007; c=relaxed/simple;
-	bh=HPpXztDKtPpvbFK4baO9rz9dfeoqWBJWdIhwAkDd88c=;
-	h=Content-Type:Mime-Version:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=iFdrFxQfWbNFwtd5oScnzy+Bw+wgaCM7gTxaiUP7BIk/l+mLvVrinjOs96X8TCulyTnC5xCf00gdtRAWV8OiDOTj8agG/YGJaSGwR00GZaPAYwgsiC5YHzxF5/JNIsX6Y0FsjLmxvkBcK7jCIe6oSeIMXTEy8MOs3ccDeetaQt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MnZw4JfQ; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55fbbfbc0f5so2796913a12.0;
-        Fri, 02 Feb 2024 03:56:45 -0800 (PST)
+	s=arc-20240116; t=1706875044; c=relaxed/simple;
+	bh=A0ZTZ5Fv5G06cPe13glChI/Tnu7WN5JP9QQMn76pliI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bRWk8aXicphwuIJIRMVdh2/WAEuh0zIqM0FcSG4irPDXRMNxgKVmF4pXBj6hi71OUOmUcJEPIz4Vld1GUEuk8juI4Wydh/QeqcHaoW8yugL+eM0IbMuea+1eNMO5NtTt4S8rXwUoJiyhX+JGSNg1sLlhP7fu1NhrKsIm7DXTfnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com; spf=pass smtp.mailfrom=9elements.com; dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b=X8rgu6I2; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-29631796acdso686565a91.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 03:57:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706875004; x=1707479804; darn=vger.kernel.org;
-        h=in-reply-to:references:from:subject:cc:to:message-id:date
+        d=9elements.com; s=google; t=1706875041; x=1707479841; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GG+S5GHLjupx6ER5keZYLTe4IHoqCrNyuoTCVzg0jo0=;
-        b=MnZw4JfQWV7R3btwobtAUZmJL1huPWqDHRrinoLjL5qxn4HAgX7rvQtR2il4HfiFyH
-         +fkSxzKZT+Fx8cmrksT493Jk73L8JD4mN3zQDEAH7HSG0oVi31hGOkqDM97eR9Vjs5Wy
-         ki9xo36PDhEK9uQYnKyG+0zYvOuHyV+WXOVM4x7dxrTASZxmTFjBkaHpaPSmuXzDusI/
-         zCsZiXc8iAYPPJEPoAhxkzeCPRN2AuGI6sTSOx5rrJdgO0EFjN8FQpnsZntcnqFUkx26
-         MptqPsoelNiy1l4LSg4k1KD5qKhVyZJ3pS450NOKFiDVW2/HREwueFsgKl5OcGPS4NmI
-         s+SA==
+        bh=6q90R/XkiuMdf0PYdVgoTLd07p+VuylRmuCDSu77XgU=;
+        b=X8rgu6I2x+TiCDHjsmIjWzvCziOj/zvYdCb3MXYsBSK+l4mW0w2SJAZflb9u+yZMz9
+         b3BFO+4e9L4DlWacrOzpWtUWcQBlDCsHf7yJYIaOP/Uk2KS32k5irlFYQvBl9IyLIylJ
+         KHRj5wm31U57fiQje6GuFVWCz4MW4d9CD8IoviKZcF/vs/gu3YzUWZxfmNMub3SR54fD
+         xRcN/NU8EDPAImOpuAmHq7c5W3Yhkx/ZuRn1ljiY5Lb522YYs1JOh1cwLFdjvu6X8Jcz
+         +BvQlTtt4lChJHiDFL/d82eQD+jD0YtTclg9yMXY7WOoPikVWXNXkUuu0geC28pEj7Fv
+         VgZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706875004; x=1707479804;
-        h=in-reply-to:references:from:subject:cc:to:message-id:date
+        d=1e100.net; s=20230601; t=1706875041; x=1707479841;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=GG+S5GHLjupx6ER5keZYLTe4IHoqCrNyuoTCVzg0jo0=;
-        b=QGz8c19k9+Q0DYCRXYtxGQ7JL3yes1lAop8vRnWec84JrDAJrY8bgv00QINqEYgVub
-         VSjVeuvWsl3yZSGLXMffzqfZwzGWIAALDwn4hG0FfVVEO00zQP52AWiXWj9rqdu9Wjlc
-         Mkj5hMfjR4Z5W5DbtI5uC4EjZxF4KPctOlp4vOIIyLwpRZB2w/3lRSVByfTnfY1zRL9M
-         aZLw2kyIhTge62TmaSgi/WsiHsTxcpU4vlgsOFygGVY14xLX4rqKLjnL8qj9CXM0vxx6
-         wOmgKe4MbcKM9RqbTPMKd//UKD+WYsQ3YEN9tc1h1o5V0zNdLdvx3d4gF53Wqkek1Vw6
-         1QMQ==
-X-Gm-Message-State: AOJu0YybQkHhTkW/M0nchEtOBfRqSuhmB3Khp/RT0SGC9tksuC5oksqS
-	59d36w4nUgpwXNehKX/zAKsVu4I3K3X3NuMIli6t2/9JB7ScxLoH1L1a3cYh
-X-Google-Smtp-Source: AGHT+IFVhaTCP6oR6YqmOW2BRG8uTZ9wmXSTxUarlqKneiLmehcQMO5JzmUscfkCox5rMbEmuO50EA==
-X-Received: by 2002:a17:906:5789:b0:a36:6c98:a506 with SMTP id k9-20020a170906578900b00a366c98a506mr1625202ejq.18.1706875003912;
-        Fri, 02 Feb 2024 03:56:43 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCW5dI5nuJyVEmffMPO+6v4Jj4YjyRyStV61K5coisKkUpFZwVttW+iKe9Vpaqf6dAA3OP3sKD55cFsjMNfame5Bt1LkIO29kFRRRDzowvWVJEQtFBNiCN43aQr4xkLtBSQGH58iei2pLm3Tt28mnhp7PIjLtPfG5oJjyHoME4QuWDCU7y0y6t9bm7jown07s8XNBc7zz0yuCCEbkFY3S23TcPwjIFP0TX0JBanMMkObXjRUqNw5vc0B38HhFyt04RlKtrFBYV8n4B6/VdJq4aZYFE4Vn8fq3D47UtJwUaZlq3Wf/nV3Zw055a7eyNclkKp8uZxOHc8vTVEtO5mzGhs43e6Dli7LdJZMJahSQ742V23J4V5s1rIMphueZTDty+1Y7ytB1S44anJY8ufcvcOGg7JcU2zzogWS9PASM2BcJiPd8DkvCYojLhsJVGZ67w==
-Received: from localhost (p200300e41f147f00f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f14:7f00:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id o8-20020a17090611c800b00a36efbc8a0csm810284eja.142.2024.02.02.03.56.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Feb 2024 03:56:43 -0800 (PST)
-Content-Type: multipart/signed;
- boundary=e24b41a4f26a8b9a10d9406ab403ef394b90d058a9a15d50ac8b9824a485;
- micalg=pgp-sha256; protocol="application/pgp-signature"
+        bh=6q90R/XkiuMdf0PYdVgoTLd07p+VuylRmuCDSu77XgU=;
+        b=RHsS2fS++e6jYQz1Y4UZ+1r9GTVexWDTFWLrCS5LNJhbeHKr3QQaohwvA/ITHs/nA5
+         ztChqFZ5zRNxMM5NpfPQowWRrBPWQuXyiPt1iP1cJtceGUofv2yJJ0Y8CRYzJN0dTqYN
+         mKdPeF6KyT23XKb443po3pVkwoSYY6OrkRHLpjDKG0gz3j0riFn1IrKdcSmL1vZCdPhh
+         cOXLfsMzV+pNo8cSi95xT0X1jyfClSSR1GngkWg2AUGc2IBfOiW4qIKLeX4ajT2LGvn6
+         RyItuASoMzPKTpsiCAPYG0Ti2O1+WMct928lb91iIE64+FiGInbu0sfEmH7fjRnKbqRm
+         XKsw==
+X-Gm-Message-State: AOJu0YzPsP2ZhMwA7wdNYghgnTdy8XsijvsfdPTzzDfI/y2SrmGV0yeh
+	rl5tOAG/Ibf7VsY0KR++Aq8tIuE49XyYlWnLH8qXh9e+BfJeJVnvr7P7zVsZ9fQ25fZwIwHI8un
+	ZW/eQ+eezM6GlYzstkUmzhgXmeCquqf4mEGQqPQ==
+X-Google-Smtp-Source: AGHT+IEbDrDTf5KsggBbKRPlPzzC4UhkmWtVLLNeKmwNZxMrMKnrQRKTVpvRk9YlsXq8IW+uCo6xqsYixuoSOu9NnxQ=
+X-Received: by 2002:a17:90a:c250:b0:296:1cb5:c26a with SMTP id
+ d16-20020a17090ac25000b002961cb5c26amr4366751pjx.6.1706875040985; Fri, 02 Feb
+ 2024 03:57:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Fri, 02 Feb 2024 12:56:42 +0100
-Message-Id: <CYUKOVAO5YVL.3TA1O4LH0488B@gmail.com>
-To: "Thierry Reding" <thierry.reding@gmail.com>, "Alexandre Torgue"
- <alexandre.torgue@foss.st.com>, "Jose Abreu" <joabreu@synopsys.com>, "David
- S. Miller" <davem@davemloft.net>, "Eric Dumazet" <edumazet@google.com>,
- "Jakub Kicinski" <kuba@kernel.org>, "Paolo Abeni" <pabeni@redhat.com>
-Cc: <netdev@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-tegra@vger.kernel.org>, "Thierry Reding" <treding@nvidia.com>
-Subject: Re: [PATCH net-next 1/3] net: stmmac: Pass resources to DT parsing
- code
-From: "Thierry Reding" <thierry.reding@gmail.com>
-X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
-References: <20240201-stmmac-axi-config-v1-0-822e97b2d26e@nvidia.com>
- <20240201-stmmac-axi-config-v1-1-822e97b2d26e@nvidia.com>
-In-Reply-To: <20240201-stmmac-axi-config-v1-1-822e97b2d26e@nvidia.com>
+MIME-Version: 1.0
+References: <20240126114614.1424592-1-naresh.solanki@9elements.com> <20240126-deflate-ashy-158a91efb25a@spud>
+In-Reply-To: <20240126-deflate-ashy-158a91efb25a@spud>
+From: Naresh Solanki <naresh.solanki@9elements.com>
+Date: Fri, 2 Feb 2024 17:27:10 +0530
+Message-ID: <CABqG17g+wQ5brngLDYObV+t2y+CEf+85rzqTSYTcmS5jckWZRg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: mfd: Add regulator-compatible property
+To: Conor Dooley <conor@kernel.org>
+Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Patrick Rudolph <patrick.rudolph@9elements.com>, mazziesaccount@gmail.com, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
---e24b41a4f26a8b9a10d9406ab403ef394b90d058a9a15d50ac8b9824a485
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+Hi Conor,
 
-On Thu Feb 1, 2024 at 7:49 PM CET, Thierry Reding wrote:
-[...]
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/driv=
-ers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-[...]
-> @@ -605,7 +606,7 @@ stmmac_probe_config_dt(struct platform_device *pdev, =
-u8 *mac)
-> =20
->  	of_property_read_u32(np, "snps,ps-speed", &plat->mac_port_sel_speed);
-> =20
-> -	plat->axi =3D stmmac_axi_setup(pdev);
-> +	plat->axi =3D stmmac_axi_setup(pdev, res);
 
-Looks like I messed up splitting these changes, so this will actually
-fail to build before patch 2. I've sent out an updated v2 that I've
-explicitly tested for bisectability.
+On Fri, 26 Jan 2024 at 21:50, Conor Dooley <conor@kernel.org> wrote:
+>
+> On Fri, Jan 26, 2024 at 05:16:14PM +0530, Naresh Solanki wrote:
+> > Add regulator-compatible property.
+>
+> Why? I can see that this is what you did, but there's no justification
+> for it.
+>
+> grepping for this property, the first thing I see is:
+> rg "regulator-compatible"
+> drivers/regulator/of_regulator.c
+> 389: * based on either the deprecated property regulator-compatible if present,
+> 428:                                    "regulator-compatible", NULL);
+> 486:            name = of_get_property(child, "regulator-compatible", NULL);
+>
+>
+> The property is deprecated, so you'll need twice as good a justification
+> for adding it!
+Yes this is deprecated property. I missed noticing that earlier.
+Will remove this dependency. Thanks for pointing that out.
 
-Sorry for not catching this earlier.
-
-Thierry
-
---e24b41a4f26a8b9a10d9406ab403ef394b90d058a9a15d50ac8b9824a485
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmW82HsACgkQ3SOs138+
-s6HByA//T7KnD4H8sVbYiDUKxEteI4BxxUWpTFvQCch43SAhItvc5yB+OqDK13y9
-ZlxwjJOht8LZZPUHMNP3u0sZSP8A+SzkOdMaFayTTWi0rep+SxwroYkbftIyXc+1
-+h7nUVp6YitkAFl7wYWpx4G9aDawDc5+qH0WPgxA+g877bE5iyY8RdssTVqj+2BK
-OSomWN5F6tjK7ZzEVPa1d7otssjzmrsRWOq+e0EAkFShWELfPnbFaDpUtwNPfrmM
-tRLzbuuvqxVDhUvS+ciFYFEq11mG7fp3FiiNFgFKlr2S4Iup5Tv+fyETk9W+rJ7T
-7diy09G2yzxDFYbFdlA+2gUYZONuK+S1G1qbEHefgT5ea2iBUnSxk+xeiEkawQU6
-1hetSvJYKgPZcS7H9ulZi1igX9+3gGSg/O6OnIq19Ka02/dOHbu6/XVHMQ4jftmK
-f4TSeZJOEQ+X2MWRMyXz2jbdNIrC4l/21A+J/7uetVbEc+PC2LyAbuAzNIvwsmt0
-wG+FFS4KyN6vNvsOsIy0si/e7WVgxdEughzkerOgXk83ha0XYC5/J41nN02qGxg6
-//P16mJOVi/LBpwFiSEkndRJxw+YsTgl32NRCAdoSv49IB6aWlz3FPHENKBx8fBc
-3govTWDRwfkaF14qTuzuCpNZzyRomHDie1T7Uc4g0AsbxYXjLRY=
-=pstN
------END PGP SIGNATURE-----
-
---e24b41a4f26a8b9a10d9406ab403ef394b90d058a9a15d50ac8b9824a485--
+Regards,
+Naresh
+>
+> > Also update example.
+> >
+> > TEST=Run below command & make sure there is no error
+> > make DT_CHECKER_FLAGS=-m dt_binding_check
+>
+> Same comment here as my other mail.
+>
+> Thanks,
+> Conor.
+>
+> >
+> > Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+> > ---
+> >  Documentation/devicetree/bindings/mfd/maxim,max5970.yaml | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml b/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml
+> > index 0da5cae3852e..75175098cbc2 100644
+> > --- a/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml
+> > +++ b/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml
+> > @@ -74,6 +74,9 @@ properties:
+> >              description: |
+> >                The value of current sense resistor in microohms.
+> >
+> > +          regulator-compatible:
+> > +            pattern: "^SW[0-1]$"
+> > +
+> >          required:
+> >            - shunt-resistor-micro-ohms
+> >
+> > @@ -111,6 +114,8 @@ examples:
+> >
+> >              regulators {
+> >                  sw0_ref_0: sw0 {
+> > +                    regulator-compatible = "SW0";
+> > +                    regulator-name = "p5v";
+> >                      shunt-resistor-micro-ohms = <12000>;
+> >                  };
+> >              };
+> > @@ -145,9 +150,13 @@ examples:
+> >
+> >              regulators {
+> >                  sw0_ref_1: sw0 {
+> > +                    regulator-compatible = "SW0";
+> > +                    regulator-name = "p5v_aux";
+> >                      shunt-resistor-micro-ohms = <12000>;
+> >                  };
+> >                  sw1_ref_1: sw1 {
+> > +                    regulator-compatible = "SW1";
+> > +                    regulator-name = "p3v3_aux";
+> >                      shunt-resistor-micro-ohms = <10000>;
+> >                  };
+> >              };
+> >
+> > base-commit: ecb1b8288dc7ccbdcb3b9df005fa1c0e0c0388a7
+> > --
+> > 2.42.0
+> >
 
