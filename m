@@ -1,136 +1,96 @@
-Return-Path: <linux-kernel+bounces-49046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A57DF846541
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:05:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E326846543
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:06:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 439EB1F26149
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:05:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2FD21F221DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:06:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E5105689;
-	Fri,  2 Feb 2024 01:05:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCD4C5690;
+	Fri,  2 Feb 2024 01:06:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uzsU+wtY"
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="esiuD9iU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 095BAEAEA
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 01:05:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D73F753A1;
+	Fri,  2 Feb 2024 01:06:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706835911; cv=none; b=Eg8NiqTiXfqacd+5OOFTueDH6nuHF1JPDtFtd01F/3hvHOVugr7Zvb4bQP7VuI4pAYKuUYM0zb8IGI2LiEPUI6YTSKx/GLB9PiKSfRqUV6W8I1Whc+OGgQLaf+YWikBEJgwHIhbyKmf5MC4fP0ZQeXqUzt2qb4cJkOK5C9AlddU=
+	t=1706835965; cv=none; b=SrHntAGg4NUv1TsQVbXFfWU+WFYaOvABqca/IAhHb+2udVWjljag6sCzMx4DJ2+pw1kTPaZtIyuMtiJH9g+epTIKj64bKfbKzJoxqCO//Xuai7PgcXu/1/1cCAMK4d4Kzy5TDcM1B4BORVi9Fn579maVcEGjiI2gPuKuIfQcWOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706835911; c=relaxed/simple;
-	bh=7PGtiOLQjanCi8F2lUfCU2lTtZMSLUVGqrAhBRM1FOQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=janiQmRb3ewJRKkCBt/P10CfJmXaPVJcLQNQjfWI7kX8WmsFDB/AGN9Dint+oKAgFXmV/VVgMVFGousRbt3YS5qwaH+teniMHpyS88xAyfCDup7VySTDkmDBVssZfoOJ7iB2ToEfpSypd0O5RQ7DU12yg5hjc4eVk0RkSKi9YTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uzsU+wtY; arc=none smtp.client-ip=209.85.160.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-2184133da88so883402fac.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 17:05:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706835908; x=1707440708; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1SwapE9xLdXkr+1FZM2yZImYM8kfTZEX3iqcU3VUeD0=;
-        b=uzsU+wtYDGGXhPKLI28SmCscN92VLwtCyhPKDVcPbgtFAROQ7WqnLTi6fxqwg6PXTq
-         rCJEAvF2g9H8Oq7gPJv5LMBw/xMvW6yPijLZU3XyQtswkpSslrPefqd5o6nXMCVxA6iv
-         m+u/gfVw2R7mpp2CQCnvgoLBMA+SWDo2WkuP1mFBhrsT9qN4phiHfy/UvjNU7v5aei22
-         EdqT0jXYE73cRQYka9uCbyBo9Ucb0PbB9aPOI0RqxwiTjW5kH5ag5xdb1VqcFRQ/d4DS
-         zRXOp6ZYUxRkqBcLalmilnbmuGPu1zVkNPq5E4dmX9LqBgvpGp1fAauxU6pQ0S5R8iIh
-         wN/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706835908; x=1707440708;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1SwapE9xLdXkr+1FZM2yZImYM8kfTZEX3iqcU3VUeD0=;
-        b=uzj/oJnb1Fa3BEgh+3HtqECoE1LfgQ99l6IJadI+SZSX/sXzQKPz6OvkpQ40jSy6FU
-         3Uz6SgOMyj9au7zEm3cnKUfjamX5Y9X3SPyHSeQ4/FynuIR7Zi+J3cSCO3vDrOdm4eSR
-         RL09Upv3J2K2AGXcri4UkuB34N7+FHIDkmHzcZU6LV53l6J2RCzFYOY9j9ArwdBEM2Wk
-         jpzYKP2yABg3hx4aeHypLmggi3C09gFVGad3fKTESn/NyaZdj16vyxOajRPb9IHJZUi3
-         cVJMpX+hOCJvmTtnhOv+wIytxfoZ8w3vLRueCoKWPwNc1AqPuRU6wZKQCMhv46q500vK
-         8iqw==
-X-Gm-Message-State: AOJu0YzpKrTf/muiC2o+xaR0+idjNvywz4r1Z/l8N2smGSHmFrLB9ruG
-	kpY5MsmSeukOVCKVISSxkqwNA8hsdIOju54w/TQ3TezfAvteg4Nz5fYI8t7l/RQ=
-X-Google-Smtp-Source: AGHT+IHHssTzP7MXolDOLkfQGC5ALneKZAZicvelx4/ifGxiL8zBzKn0w2ESMFFxOFjxQIO76cQMOQ==
-X-Received: by 2002:a05:6871:4502:b0:206:c520:2811 with SMTP id nj2-20020a056871450200b00206c5202811mr4865347oab.2.1706835908098;
-        Thu, 01 Feb 2024 17:05:08 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUQDuJuCrbniDvpUfQ6lL+8xFL7Q3VSs/I+mnU+pKKO5ifo8TpBvmZ3Tk05LFi+zq4+CoiHahvPWhMb/h72W/xpxRAwgN7eEArtvHJeEwuveMGeV+dQ5oOgNNN0dn3DxT8qSvFXMduAHdj/hzWkjmPsVFw758tdJzK/PHu+hTArsZhhsvN20QmcVJo2KKHHpjA85Ky/sVVobTLcIhxlUh4v+5m16G3zfAKGl7GjUNcegid5qHpct07cIiS8i8uvVMg/b24ZzqMJz0JMqbjoxsI0liL/zUHJwYDfwZK/96pvkyZOPDiS
-Received: from localhost ([136.62.192.75])
-        by smtp.gmail.com with ESMTPSA id ds43-20020a0568705b2b00b00218e9960187sm229534oab.13.2024.02.01.17.05.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 17:05:07 -0800 (PST)
-From: Sam Protsenko <semen.protsenko@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Alim Akhtar <alim.akhtar@samsung.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Subject: [PATCH] tty: serial: samsung: Remove superfluous braces in macro
-Date: Thu,  1 Feb 2024 19:05:07 -0600
-Message-Id: <20240202010507.22638-1-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706835965; c=relaxed/simple;
+	bh=FCd8HoHZrcX63bQlMAlSTqIPH/4qdHcUl1FKM5j5vsA=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X8Qbln+6a/z1mPYAH8dLl2zPXnc0H9btqasYeZFcreWlLjYFYq1vzSrufpg2L2JFVykN70YQdb9zNuWlwONTjpU+cpSPsKX5cEp01olS3iFz3Bmymsfj1DCeGjHF6UzC6nle1fitj20Q0cQfmaHpkFZs2uKI7NJ61sPHsg2kxA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=esiuD9iU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FC09C433C7;
+	Fri,  2 Feb 2024 01:06:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1706835964;
+	bh=FCd8HoHZrcX63bQlMAlSTqIPH/4qdHcUl1FKM5j5vsA=;
+	h=Date:From:To:Subject:References:In-Reply-To:From;
+	b=esiuD9iU7YeWm66qZS9sotr0oscjl9KHVUZ0JvRlbyJyTgwZ2DAHvReTGSJj8Exwk
+	 QsMvI06Zan9QzIH7ULW++Jl5sWbQROYd2EqWQtOwbm7OmDIp7qWO3e04fRioc4jaFG
+	 n2kFJpJUOY92viQr7+kBMQwQD7oBQXt6boqi7cEc=
+Date: Thu, 1 Feb 2024 17:06:03 -0800
+From: Greg KH <gregkh@linuxfoundation.org>
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Jeff Xu <jeffxu@chromium.org>, Jonathan Corbet <corbet@lwn.net>,
+	akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com,
+	sroettger@google.com, willy@infradead.org,
+	torvalds@linux-foundation.org, usama.anjum@collabora.com,
+	rdunlap@infradead.org, jeffxu@google.com, jorgelo@chromium.org,
+	groeck@chromium.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+	pedro.falcato@gmail.com, dave.hansen@intel.com,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v8 0/4] Introduce mseal
+Message-ID: <2024020137-hacking-tightwad-a485@gregkh>
+References: <20240131175027.3287009-1-jeffxu@chromium.org>
+ <20240131193411.opisg5yoyxkwoyil@revolver>
+ <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
+ <20240201204512.ht3e33yj77kkxi4q@revolver>
+ <60731.1706826280@cvs.openbsd.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <60731.1706826280@cvs.openbsd.org>
 
-Commit 59f37b7370ef ("tty: serial: samsung: Remove USI initialization")
-removes parameters from EXYNOS_COMMON_SERIAL_DRV_DATA() macro, but
-leaves unnecessary empty braces. Remove those to fix the style. No
-functional change.
+On Thu, Feb 01, 2024 at 03:24:40PM -0700, Theo de Raadt wrote:
+> As an outsider, Linux development is really strange:
+> 
+> Two sub-features are being pushed very hard, and the primary developer
+> doesn't have code which uses either of them.  And once it goes in, it
+> cannot be changed.
+> 
+> It's very different from my world, where the absolutely minimal
+> interface was written to apply to a whole operating system plus 10,000+
+> applications, and then took months of testing before it was approved for
+> inclusion.  And if it was subtly wrong, we would be able to change it.
 
-Fixes: 59f37b7370ef ("tty: serial: samsung: Remove USI initialization")
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
----
- drivers/tty/serial/samsung_tty.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+No, it's this "feature" submission that is strange to think that we
+don't need that.  We do need, and will require, an actual working
+userspace something to use it, otherwise as you say, there's no way to
+actually know if it works properly or not and we can't change it once we
+accept it.
 
-diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-index fcc675603b14..23cabdab44ff 100644
---- a/drivers/tty/serial/samsung_tty.c
-+++ b/drivers/tty/serial/samsung_tty.c
-@@ -2452,7 +2452,7 @@ static const struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
- #endif
- 
- #if defined(CONFIG_ARCH_EXYNOS)
--#define EXYNOS_COMMON_SERIAL_DRV_DATA()				\
-+#define EXYNOS_COMMON_SERIAL_DRV_DATA				\
- 	.info = {						\
- 		.name		= "Samsung Exynos UART",	\
- 		.type		= TYPE_S3C6400,			\
-@@ -2477,17 +2477,17 @@ static const struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
- 	}							\
- 
- static const struct s3c24xx_serial_drv_data exynos4210_serial_drv_data = {
--	EXYNOS_COMMON_SERIAL_DRV_DATA(),
-+	EXYNOS_COMMON_SERIAL_DRV_DATA,
- 	.fifosize = { 256, 64, 16, 16 },
- };
- 
- static const struct s3c24xx_serial_drv_data exynos5433_serial_drv_data = {
--	EXYNOS_COMMON_SERIAL_DRV_DATA(),
-+	EXYNOS_COMMON_SERIAL_DRV_DATA,
- 	.fifosize = { 64, 256, 16, 256 },
- };
- 
- static const struct s3c24xx_serial_drv_data exynos850_serial_drv_data = {
--	EXYNOS_COMMON_SERIAL_DRV_DATA(),
-+	EXYNOS_COMMON_SERIAL_DRV_DATA,
- 	.fifosize = { 256, 64, 64, 64 },
- };
- 
--- 
-2.39.2
+So along those lines, Jeff, do you have a pointer to the Chrome patches,
+or glibc patches, that use this new interface that proves that it
+actually works?  Those would be great to see to at least verify it's
+been tested in a real-world situation and actually works for your use
+case.
 
+thanks,
+
+greg k-h
 
