@@ -1,160 +1,185 @@
-Return-Path: <linux-kernel+bounces-49715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C5A0846E77
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:59:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E93A846E7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:00:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB99F1F27789
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:59:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A50651F27742
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:00:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 129146214D;
-	Fri,  2 Feb 2024 10:56:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73F8780040;
+	Fri,  2 Feb 2024 10:58:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="MezYQCha"
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2061.outbound.protection.outlook.com [40.107.20.61])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BWP0PyfI"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19294171C2
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 10:56:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.61
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706871399; cv=fail; b=nXgVIKy4jBChq+UMqHFd3wwi+Nl2Upu+GY1Iu5MAG8eIxjHoi9K2WmMTJVYzMu+SoJfR+rx4TowybyqVkh2dAHNv2eUXV8a8WmSaRhmYEiPDZHi0RifwuHHE4x0/op0Opp42GbhFmS4pI5xD0ITKDNzFZKsQBYVH2/XjJ0uuPw8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706871399; c=relaxed/simple;
-	bh=6IOLJwHXk9mOrfIMWqqa4jCq24JpLd+Z0S9NljOgMSg=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=EX8shSnfcutozVMFZCIfWSfQ+XyX3WekUqmyq8K3qzxhSZYZ+sx12lXx3O99TegAZ2cEj5dxWpDlKoUTh+S1Q1HXN0wUjNSonvjBiQlgn1rHNPoSlcV7SmiQSIbg32t5KJ4Hgfj+wrrOxK1YUVKUM0mKu2UhWDkfsM8T5NOppe4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=MezYQCha; arc=fail smtp.client-ip=40.107.20.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fZrqDI5UpVDawyHinNhWFpWLbHefsxJmIxyWWaMWoH9zC1bOukC0I4mjeSsjKzjZloHEtG4+Zuyqd0ocquPbjbpIc7ZU3rdRluf9nf1WkbjYk+478oRWp+YfG+zSpzwgz4pEUZSjVcCcDGTo9rzqTDo4YBq481HpD0UFF93Le7qANezpBa5yNkxr9B91Snped7+fPWpszRk0sXRxN0cH6EY+dryMtlMerg7uXF0jZZCvOASwmVHDihiZp2rqx5biPO2ONjMD+YQrEqvL05IukelreFy6L+nv11e/rycr5LC7CQpC+6trolJnQ5jg/3V0N8aFELctzKJpTb82nFHNlw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6IOLJwHXk9mOrfIMWqqa4jCq24JpLd+Z0S9NljOgMSg=;
- b=mrD7qpbgZOkguDcfujAyMbDaxqtJdt/DQSqPhz1ifsaJkpj3pf3hZTHer7OcHeBxtOVxwn6vgniiMkri24/XqovDmm7EvqTh7ikh/DhmCChg1RNjh+6GtIZDCndsBYXgA3au1Ny6//1evb+YYk/LlJixYtOY4mVRjse0xYdJkQk3xOHHI2kgTLPl0ClENbAGEPkmej6PSlU0KoIQpcGpXp0Zhs6GUHelgNTQeNjSTWB6Ztj0Ed84M28HUxxqlknnupBAVI9+xN1F54m4i3A0QEhe5Ts44LbFmLp61+JcJZN3SHsJTrDcQw/r+AYTHh8llYTvNH4hV98Nvl3QJzEaFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6IOLJwHXk9mOrfIMWqqa4jCq24JpLd+Z0S9NljOgMSg=;
- b=MezYQChao300E6kxOODip/gFRZh6tU9+bvA7G11BHtGZ14wuuKAYOdBZZ2obXZGB6QvPim6KVpnwdG7H0Jo+nmjtlwZ8s7oW5Dfmdufk+JpO8UeJ7Et9CJVIOYhMIDVfwng1rzlrx5+aMqaXXnXlEHneRpog7xo6BEw9r/k+E/A=
-Received: from DU2PR04MB8822.eurprd04.prod.outlook.com (2603:10a6:10:2e1::11)
- by PAXPR04MB8528.eurprd04.prod.outlook.com (2603:10a6:102:213::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.30; Fri, 2 Feb
- 2024 10:56:34 +0000
-Received: from DU2PR04MB8822.eurprd04.prod.outlook.com
- ([fe80::d45f:4483:c11:68b0]) by DU2PR04MB8822.eurprd04.prod.outlook.com
- ([fe80::d45f:4483:c11:68b0%7]) with mapi id 15.20.7249.027; Fri, 2 Feb 2024
- 10:56:34 +0000
-From: Xu Yang <xu.yang_2@nxp.com>
-To: Saravana Kannan <saravanak@google.com>, Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>
-CC: "kernel-team@android.com" <kernel-team@android.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [EXT] [PATCH v2 0/3] fw_devlink overlapping cycles fix
-Thread-Topic: [EXT] [PATCH v2 0/3] fw_devlink overlapping cycles fix
-Thread-Index: AQHaVb4gBFvYiJORz0SPF3se+VrlObD237LA
-Date: Fri, 2 Feb 2024 10:56:34 +0000
-Message-ID:
- <DU2PR04MB88222DD29340CDD9FDC66DDA8C422@DU2PR04MB8822.eurprd04.prod.outlook.com>
-References: <20240202095636.868578-1-saravanak@google.com>
-In-Reply-To: <20240202095636.868578-1-saravanak@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU2PR04MB8822:EE_|PAXPR04MB8528:EE_
-x-ms-office365-filtering-correlation-id: d9674f86-3482-4870-9395-08dc23dd9f08
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- tRnPQd5PxPMYGSKDv5jczhu6kjkQZVnAbWjo4u8lviUDb9A1FXe51UC8DuThg0zg41py3Z6fhYS/WFspwRbvLVjRcago3076wxCZ9IVlurnxOiwMNVU1Bp1eTzqFHHTEpEOBlcplQ2ovwUKMHZgEnH3lIHfpocynP5NrWHeiGyYiEjmqHTg3jaNSx/jPvlYt6KHd3f8Yn0dbxFPKH52EjaF/Uzs5YXhlmofp3W0oqV4tXmYqabqMZYVfPZzkLsyYK1h7TnLGlCldH+kaVDwGzauU+rnp1MHakBp4D/m/HxcMPjPYR65Ntgwa6euTM9gcwZkSpz5oifSxUoujxfkTnhVL2nmijJz4j7hAFUNUD9v3a/NrN8XbR/E261gWyvOSrTbNbblo4Odm4vgU4mutYdrIEm293M3f0YfSc3U2CrHqkWNKVk8eobOBU2qL6nb9HsFCeFU/omlDnlah4bOR/J9qPLULAGOYczNFPjcTgmsXY33ZY6LzEyl9/8HJk+kc8UzI6YNE9UEhATX3xp8F4rq7+YscE+ko6JUqKpxrX6amAmjXfSCCY0JkmU+sNGIehYIaAjSb5M8rDBzT06MFhwEvLb6UxptQ/Sn3W+Ktq4M=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8822.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(396003)(346002)(39860400002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(122000001)(38100700002)(4744005)(5660300002)(33656002)(2906002)(38070700009)(71200400001)(6506007)(7696005)(9686003)(478600001)(83380400001)(26005)(4326008)(8936002)(8676002)(52536014)(316002)(66446008)(54906003)(66476007)(66556008)(64756008)(86362001)(76116006)(110136005)(66946007)(41300700001)(55016003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?MWRNYXc3SGp5ZUpUbEZTYmxLN0x1VVJoTHYrTHVyZXZuZ3lHTzhwYzBxS3pR?=
- =?utf-8?B?azN2Sm5RMEcvVG1oY1hhWWZobEpaWWV6SEdhL0tPUVdSaG5QL1NpS1hFOUsv?=
- =?utf-8?B?YjZha2wxSlhSWDNiUEF2UzJZZkUvRTV1aytmZ3lkbmJwY2tnUHhwNjNyWjZQ?=
- =?utf-8?B?a1drWnVXZDZlNGNrWC90SVR0MlNhS3dHbzVWMnVmb1hrdVV3U2I5Z2xsNXU5?=
- =?utf-8?B?cFVZSHBWYlJId2w2RXJMeFMyR1drL3ROczR5LzRsSkpMK2NlWjdJU29LdHNh?=
- =?utf-8?B?MklsNWpmYXFpaU1MT0RQbHQvSlJ0eldPdS9IRlhGVHBKdzhaOVNIZkZ1NW5r?=
- =?utf-8?B?dmZ2UmZGcnMweTR3WGpBc1ZSUEtvK2xSOWtabXovQWpOTFJBcVdIUFRpUkQ4?=
- =?utf-8?B?NGxoN2N2Um8rZ0FTb0ZrMkpUN3ovcGVPV0gyL2xRVFlBZThwTjdXaFcvaWpt?=
- =?utf-8?B?MG9DM09TWStWWkhsNmxZVnY4eXlzV2cyVS9MZGE0dmtUWndkRlB0MGtzR0Rm?=
- =?utf-8?B?ZVVObS9ZR2QzVnZ0NndpQlJ0VVpUMXdabGFKTy96VGdtb21CNjl3RitscjZR?=
- =?utf-8?B?QjY2RTBJZFF1eFZqVVpCK2ZJUTdBTUVRYVRWV1l4R1pzV1hRUDAvMkVES0R4?=
- =?utf-8?B?dmwxWGVjVEJaMmVtUGNHZFl3ZW9mSGVCeVMyc0MxMU1oNjVJaElLRUIwVG84?=
- =?utf-8?B?cVdObFN2anZmNmFUNW9rZTUxNnBWRG5QSjBMZ0lJYmd5ZnJKTmtrSC9HZzlY?=
- =?utf-8?B?WW9mTVpCTVZMTWEyaGhZV293MCtFS0pyNC8ydmtEUFYyUW1OVHNhMjdDcVY3?=
- =?utf-8?B?THVISEw5elQzVlJVWEQvcDJqK1hEYXJxZWw4WmNyck8zNytMa3dDZWJ0TWVS?=
- =?utf-8?B?c1hzZlJKWXVQZnpXTWUzRFdyanVEQmFleFdyMkREZzFoZXlXY3BjMDJEclpQ?=
- =?utf-8?B?TE55cStadnN3N2V6R2piYTVvNlZ2RnhpbU1XdWpzWW9DaDEySkNlRjkxNGpW?=
- =?utf-8?B?VkJLWXBFeFNnbFdieVpQY3RhMjk2R21aUE9tVmcvTjZiZjhMK2prVkpuR2g0?=
- =?utf-8?B?ZlhsZTBJOHRxSEpWTmU3RmpyRE9hdE9sajZMbkJRY0I0NnlnY1ovVmVRY3ZH?=
- =?utf-8?B?Zkcya3BoTXZLVjVMT1MySE9GWmdLMWhIbnNTSnhMV0UvZFBYODhidmRZQ004?=
- =?utf-8?B?ME1GMEEyZlF0K0VlR1F0MVpYclhyUVV0Um12eTNHUWlSS3lEZy95SWFZZm95?=
- =?utf-8?B?b3RlaFdldkk5aE1YS1VVZkpzclhhdlBaUGZYc2dPaVJHMks1SE9wU2cvb0J4?=
- =?utf-8?B?NE1NdnBhRHRtK3RUVytabEhlQnp6Um1NN1pnTFY3Yk9IelcvSis0T2NVdFBj?=
- =?utf-8?B?RjkvWWVwdVRWaTU0ZFdZZjZkNG9CSXJwcHpkTmJ1TFZPand0ZUxOaE9rUWZN?=
- =?utf-8?B?a3Jxc2hvamU5NjZ2V3ozZ2ZjSzMvbFJqak9jR2lqTG0zd0NVdlpJTkwvTHhw?=
- =?utf-8?B?dmpHTjViNG43NzRMYjIyQzY2UTBWZmd6aGdTM1FsTTM1bDlrZG5ObmZHS2lV?=
- =?utf-8?B?R3dGSkVVZ0FpdEtjYWF5a0NBT0gzZlR3NTlDSkZVSm1OVDQwZS9oc2ZOcGdm?=
- =?utf-8?B?THdLaFJES0lrRkFSSWlnblM4bWhsN09nM0JjKzJrNmtTTHYyOS9FNld6MklO?=
- =?utf-8?B?Z0dUM09wRVJYbWs1VkxKcmROMGNSL0JSM1V3WW1id0hXYXM1Sk9oUDZQaG5q?=
- =?utf-8?B?RVdGMDRKZjZlWkhEL0lHOThjT2hvRi8zM1R1QXcyNk16TTNoc3g3ak9wYlVk?=
- =?utf-8?B?TjJKVURXMHpzSFA3ZmFhaExIWWRQNDFBaEpNaU9ZKy85eW9mcEtTOVM1QThR?=
- =?utf-8?B?U2cyWC95aDB3Q3JvMVZsQVJ1MXJrQW5KTHA3RSt5NXNVYXdscTdWZHZickdR?=
- =?utf-8?B?REpGZlMyejc1RCtDL05kNmJ2dWJmRksyMUtqcFBZeHpIdmFNNWxLSXFVSW9h?=
- =?utf-8?B?OFU4Y0dYR1JMK2RKOFBWSnU5aWtCeEp4VWNnYVZ5Q0pNaWpNak9WQjlraGEv?=
- =?utf-8?B?aXdNYXBVV1A4YzlERjErekhDaGJRUmV3ZlphOUphSi9FcGJHVGFSOEh3U1g1?=
- =?utf-8?Q?0/z4=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D61657A732
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 10:58:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706871535; cv=none; b=i6p+1JOSLfS3EbPdVFtRPK5iuLkikvpXJt80LtW9cG4Kdl8rlrqgkw39Rqe//Yh8Cvb1/t9IrNZ7YTBRiEjMTK2qc88DN87dNH8eAWYiCLgA5hm7jL1HhVr8CPN1h1HMy0CVKihLyGBTAM0nP0J3apaoTpHUlnSOex+9yGFVU28=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706871535; c=relaxed/simple;
+	bh=KKLOo2UMVr4G+/v1i5f0jDik+0v3nO4WaF3+RQvnxgk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=W4pvAXKiL/4Jn0k1OaW7lfjE1QvJq0g7DnKDQxuejWp+xd8sq/+ngeCXAxbZ88gSyHJh1kE4VK7fby6jK+nxITAvzp4H/cSKUgoZZWQYbPdCDh9IhR9v0ujx9cQ+hsnY9MlAdSbKQHw3qP4koqtY1aWIqtX1VxH2yHUDu0fizKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BWP0PyfI; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55fc9a581f8so1752242a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 02:58:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706871532; x=1707476332; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3mZJtsuUhpLgRm6K29/sbH1fz9ZV/gafRus3vx/CI0U=;
+        b=BWP0PyfIMlupmMUxIQkE83AV5euIbKhmplZOt/PLH21iiDWDg6gjE+KXxpO9ZPEVip
+         DrRZFpUChYPFCLSe+3/fLgMv+LjWgBlrVOtcSZ/9Hua0n+CueSxtCqR40w0lmHOgyEOl
+         r/4kTUE76fiTFwcuW/NaD7BJIIfbUDwCCed6F3WBEdUIGYHAAbXqdKWcEHnpm2j2TdZD
+         cXDn4NJ+XfmByPz7WFnzgdT+FYvksL9MD2jkytfL2kS+sLa4GUIzj/Q/aNm6XE05oiDT
+         KGdU26nKJoMSUIT5Lnkw+3ITHI8fkKcS/7WlAiCDUImANVupvY0uRztfGSyoNMdwSrbK
+         ekGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706871532; x=1707476332;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3mZJtsuUhpLgRm6K29/sbH1fz9ZV/gafRus3vx/CI0U=;
+        b=oIxxeh9u2+MHO3hBZO+5lKdLmZD4vhu47yALjnhrS07m8/GeUBJqEmMAHKC4Lw58RY
+         iaITSY2V7/i6ahE9bkepOtQFFkN7dUyeRIOmD5rW0n35H/Q5elPvig9Rv5vLgI8GLZpW
+         oxnNPInmsTJ75nYjEVVpyVi8MfVk16nhSWPypCw60hhFXOqugXEWt752Pd7JKuqZvRJx
+         CFBMQM6bBhwZt5Jjbk89AqQ52sRDAivxKdiedVvuM4JlSAYMX4u0k2jo72TcLCPEl3g0
+         0Kqi2PQswp4RE7aRkhqf91Zx7o6P4fHfoqCPrM5MdeZ0YZwdaK9BoeKeI724eE/T//SB
+         jSow==
+X-Gm-Message-State: AOJu0YxwUe5g2j7exkZKip69wDc50F8pxs6+mgDAAVo5j0osqVl1ho0Z
+	ahZODfe0KjW2PDjuQbr9pqJ46HRFPkH0NvMZ1dishyxxfe8yng5ULsdhucpxbtg=
+X-Google-Smtp-Source: AGHT+IGevUIZrZ67IIM3v0mt+LvqP19kVFsU543KbhAyc9CyE5vhvyCpmw1xg7ldWGRg72KeGDUEyQ==
+X-Received: by 2002:a17:906:13d0:b0:a36:7c26:b6f with SMTP id g16-20020a17090613d000b00a367c260b6fmr1207765ejc.52.1706871532058;
+        Fri, 02 Feb 2024 02:58:52 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVt2KyYQUcxu5hGuL8mAgnHpyBZ4Ykp6sd9qwUmLz+wUZLMMlAQbdCzsDqdz1ATkmTx1IEEr4ogDnUneUc0BGq4RyhSWyrgqQWz7id4dzDkmUcLf3A5nSvMNa3W7GMDdJFb0ouuoTa+Ib59CesR6S85idpzru6SJooTTqTicY9E
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id vo3-20020a170907a80300b00a36fee1350dsm610865ejc.130.2024.02.02.02.58.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Feb 2024 02:58:51 -0800 (PST)
+Message-ID: <e337bfdb-34dd-428f-b0c5-defd93b24822@linaro.org>
+Date: Fri, 2 Feb 2024 11:58:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8822.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d9674f86-3482-4870-9395-08dc23dd9f08
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Feb 2024 10:56:34.2633
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ihwOjnW+fFPipq2SEzEF0HbTNmKX5RGhdY0/B4RjXRWvbrrLXrD/Eotoe/3JUOyDlwFxck42PMvs91zihMvPUw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8528
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND] arm: topology: Fix missing clock-frequency
+ property warning
+Content-Language: en-US
+To: Stefan Wiehler <stefan.wiehler@nokia.com>,
+ Russell King <linux@armlinux.org.uk>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20240201123605.3037829-2-stefan.wiehler@nokia.com>
+ <dfccb849-67b6-489b-8e83-3df1f9b29877@linaro.org>
+ <9da01fb1-9bab-436b-af49-783e44821b26@nokia.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <9da01fb1-9bab-436b-af49-783e44821b26@nokia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-SGkgU2FyYXZhbmEsDQoNCj4gU3ViamVjdDogW0VYVF0gW1BBVENIIHYyIDAvM10gZndfZGV2bGlu
-ayBvdmVybGFwcGluZyBjeWNsZXMgZml4DQo+DQo+IFRoaXMgaXMgbWFpbmx5IGEgYnVnIGZpeCB3
-aXRoIGEgYWRkaXRpb25hbCBsb2dnaW5nIGltcHJvdmVtZW50LiBMb3RzIG9mDQo+IGRldGFpbHMg
-aW4gUGF0Y2ggMi8zLg0KPiANCj4gR3JlZywNCj4gDQo+IENhbiB5b3UgcGxlYXNlIHB1bGwgdGhl
-c2UgaW50byA2LjgtcmNYIGFmdGVyIFh1IGdpdmVzIHRoZSBUZXN0ZWQtYnk/DQo+IA0KPiBYdSwN
-Cj4gDQo+IENhbiB5b3UgcGxlYXNlIHRlc3QgdGhpcyB3aG9sZSBzZXJpZXMgYW5kIGdpdmUgeW91
-ciBUZXN0ZWQtYnkgaWYgaXQNCj4gZml4ZXMgeW91ciBpc3N1ZT8gQWxzbywgZnJvbSBub3cgb24s
-IHRvIGRlYnVnIGN5Y2xlcyB5b3UganVzdCBuZWVkIHRvDQo+IHNlYXJjaCBmb3IgZGVidWcgbGV2
-ZWwgbG9ncyB3aXRoICJjeWNsZToiIGluIHRoZSBtZXNzYWdlIGFuZCBjb252ZXJ0DQo+IHRoZW0g
-YWxsIHRvIGluZm8gbGV2ZWwgbG9ncy4NCg0KT2theS4gSSBzZWUuDQoNCj4gDQo+IHYxIC0+IHYy
-Og0KPiBQYXRjaCAzOiBUd2Vha2VkIHRoZSBsb2cgbWVzc2FnZXMgYW5kIHRoZSBjb21taXQgdGV4
-dC4NCj4gDQo+IFNhcmF2YW5hIEthbm5hbiAoMyk6DQo+ICAgZHJpdmVyIGNvcmU6IEZpeCBkZXZp
-Y2VfbGlua19mbGFnX2lzX3N5bmNfc3RhdGVfb25seSgpDQo+ICAgZHJpdmVyIGNvcmU6IGZ3X2Rl
-dmxpbms6IEltcHJvdmUgZGV0ZWN0aW9uIG9mIG92ZXJsYXBwaW5nIGN5Y2xlcw0KPiAgIGRyaXZl
-ciBjb3JlOiBmd19kZXZsaW5rOiBJbXByb3ZlIGxvZ3MgZm9yIGN5Y2xlIGRldGVjdGlvbg0KDQpG
-b3IgdGhpcyBzZXJpZXM6DQoNClRlc3RlZC1ieTogWHUgWWFuZyA8eHUueWFuZ18yQG54cC5jb20+
-DQoNClRoYW5rcywNClh1IFlhbmcNCg0K
+On 01/02/2024 16:03, Stefan Wiehler wrote:
+>> Does this mean the /cpus property is like a default for when a CPU node
+>> doesn't specify the clock frequency, or does it mean that the /cpus
+>> property should only exist when all the values for each CPU are
+>> identical and thus the individual CPU node clock frequency should
+>> not be specified.
+> 
+> Good question, the device tree specification in Section 3.7 [1] says:
+> 
+>  > The /cpus node may contain properties that are common across cpu
+> nodes. See Section 3.8 for details.
+> 
+> And in Section 3.8 [2]:
+> 
+>  > Properties that have identical values across cpu nodes may be placed
+>  > in the /cpus node instead. A client program must first examine a
+>  > specific cpu node, but if an expected property is not found then it
+>  > should look at the parent /cpus node. This results in a less verbose
+>  > representation of properties which are identical across all CPUs.
+> 
+> So I think it is pretty clear that it should only be used for 
+> common/identical values.
+> 
+>> Aren't you adding new property? Is it already documented in the
+>> bindings? After a quick look I think this is not documented.
+> 
+> You are right, clock-frequency is not mentioned neither in arm/cpus.yaml 
+> nor in any other <arch>/cpus.yaml binding, but the DT spec has it as a 
+> required property [3]. Should I add clock-frequency to all 
+> <arch>/cpus.yaml bindings? Only the ARM one explicitly mentions 
+> following the DT spec.
+
+It should go to dtschema. dtschema cpu.yaml has it, so you need to
+propose such to cpus.yaml, probably you could experiment with:
+not:
+  - required:
+      - clock-frequency
+  - patternProperties:
+      cpu@....
+        - required:
+            - clock-frequency
+
+Anyway, you cannot just keep adding some OF properties to the code
+without documenting them.
+
+Best regards,
+Krzysztof
+
 
