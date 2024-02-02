@@ -1,201 +1,157 @@
-Return-Path: <linux-kernel+bounces-49405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F547846A12
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:03:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45AC9846A15
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:03:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C92F1284F4E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:03:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A06B1C29D7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:03:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3223417C6E;
-	Fri,  2 Feb 2024 08:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4DCF182AB;
+	Fri,  2 Feb 2024 08:03:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b="Xa2oA6Yg"
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2119.outbound.protection.outlook.com [40.107.114.119])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CmN4zUCg"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91AC318622;
-	Fri,  2 Feb 2024 08:03:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.114.119
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706860994; cv=fail; b=f4YrftCIqiy8SbryxUJE9ipBrPLmuFZsjFUciE81oTwS2EOkZP2K2Oun4rXDSquqmm2lkxCinTZ7N9xV0uHZ9jzaatDfA5LwMcYkJCJx9TY+ochYl2kKo7kTG8Jl37PFPlmmea6OQj/iu+4TDZpPzn7N82kFCKDYX5AkvbFxRwU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706860994; c=relaxed/simple;
-	bh=UIy3qcadSz+rn2DhJqBd8oZr4DzKRE5GgLrfJqR8wJw=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=GfENE3hdijwLc7U8rLjG8w/oMsPSdLzqB0iDjOv2xFU+KCmsmysxWURtPZZQ2HoS9iB//UwqPJDil9NgIHbRAqZXJAaZXvJKKpKTzAawvYM8wyBAWgAsKD6KJnYxAjZ58w6UbF2WjnnpqAlU66Cj/fQM/XsdN3G4dbWjsz2frKo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b=Xa2oA6Yg; arc=fail smtp.client-ip=40.107.114.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XS1m1wrxo8jw+Tb1PsIKAlwZZf4/KME0SwZ1xgWeEeVhMkQ2h3QjZ0NEoHwPXNKbAS61sXdVAdE7LH+Z+lDyeByRF2njVGcFMSqMESoPKU9CgppaqQ9QT3KHynIu6lINwCro/Rg8Z6SOoVdxG23oIGgdYa9OS5niaQ89eIBeoTfksGVqTeJqg6iZG3OMS0+V+/Mowx7giyQDpTkmfQp9az1aEgmY3DnJbjRgaE7bNXF/ZQYI6JSCKFCgfv17YfkOen+qoWPlOmdO+Tus8rOEiWJiwwX3JxjvQpoDuoK7DtusTgGiDZegzjj7POwmoC/zbkBMi0QU6zdoLW0AahxZyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YMCeIj/IHlVTfmof3vhI5FDazG9+bH9HJE8cDf/n+HU=;
- b=J2oxliAG25PX5j7BnJb8fylrYv8pY43hNvuQtsyBoBV6iey94JgzAuT2xUt9/S70b83WxzpEMUQu9b204KdulgEW6ghHQlSp1XDUpjZ0kEk34eOV4wGhQISqVg6fXRNmGTQdRjJMDk5KjbJYwe5WKwRAnpgxxXmxQ6FcQGZOfDovglT9RAciw0kXfVM5CVCYsS6chSijQKDSWIShTgP183boS1lB48cV4IzZKG0egz2OPRRd5xiSAlsTPMEOb76gHgH9LY9h6qfomuhG19fXBAhUFGJtXcjQEMQYJV1HTRFfhbhgGU8i7j12B4AStYhjsnzCiFCHNwr6h5VKwdUBUg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YMCeIj/IHlVTfmof3vhI5FDazG9+bH9HJE8cDf/n+HU=;
- b=Xa2oA6YgGQtdt4G4AqH40brKC17Mvi4OSrpL9gcTUUkv5krQ2md2jBSas7JxEhIdIIj/CrU6Ywor3MxCM1YXnSZGdm6Teu953o5Su8X8Go2yCNbzv2xSf2lSW4JSpfE1cUTUrSJJzDyYpUmL0uQwDykNpOC8LRlyv/xGcSldBvc=
-Received: from TYCPR01MB11269.jpnprd01.prod.outlook.com
- (2603:1096:400:3c0::10) by TYWPR01MB11274.jpnprd01.prod.outlook.com
- (2603:1096:400:3f5::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.30; Fri, 2 Feb
- 2024 08:03:06 +0000
-Received: from TYCPR01MB11269.jpnprd01.prod.outlook.com
- ([fe80::6719:535a:7217:9f0]) by TYCPR01MB11269.jpnprd01.prod.outlook.com
- ([fe80::6719:535a:7217:9f0%3]) with mapi id 15.20.7249.027; Fri, 2 Feb 2024
- 08:03:06 +0000
-From: Biju Das <biju.das.jz@bp.renesas.com>
-To: Claudiu.Beznea <claudiu.beznea@tuxon.dev>, "wim@linux-watchdog.org"
-	<wim@linux-watchdog.org>, "linux@roeck-us.net" <linux@roeck-us.net>,
-	"robh@kernel.org" <robh@kernel.org>, "krzysztof.kozlowski+dt@linaro.org"
-	<krzysztof.kozlowski+dt@linaro.org>, "conor+dt@kernel.org"
-	<conor+dt@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-	"geert+renesas@glider.be" <geert+renesas@glider.be>, "magnus.damm@gmail.com"
-	<magnus.damm@gmail.com>
-CC: "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
-	Claudiu.Beznea <claudiu.beznea@tuxon.dev>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-Subject: RE: [PATCH v3 1/8] watchdog: rzg2l_wdt: Select PM
-Thread-Topic: [PATCH v3 1/8] watchdog: rzg2l_wdt: Select PM
-Thread-Index: AQHaVa2xeucsotW+XUyR5O7FIAVIxLD2sMaA
-Date: Fri, 2 Feb 2024 08:03:06 +0000
-Message-ID:
- <TYCPR01MB112694BA3A47579AE8BC1752B86422@TYCPR01MB11269.jpnprd01.prod.outlook.com>
-References: <20240202075849.3422380-1-claudiu.beznea.uj@bp.renesas.com>
- <20240202075849.3422380-2-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240202075849.3422380-2-claudiu.beznea.uj@bp.renesas.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYCPR01MB11269:EE_|TYWPR01MB11274:EE_
-x-ms-office365-filtering-correlation-id: 980c6869-fa32-413d-0f8f-08dc23c56350
-x-ld-processed: 53d82571-da19-47e4-9cb4-625a166a4a2a,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- bMPhhMNHgpG33teSlu9suBXdHOb0bxyb6QvCo/InPwe9M3ILgy4+oof5WC9JYjdBA46S8g15lhGpxqk+GBAIxxugjATNPDuZ8DoVKpEbhiwRkwlmm7r1ZRH0WsKJnVvHL+yAlQ8iNFLLtnzCnGmLt7qQFgS2OWuICU47ikZ0l9+23wBEUrQeUZPGFaNPnwLvlYB0v9gFgsXScLRMZqVhxzGBQR0kZI3dx81w8fzTEqqjKiX2K9asbGQJriEj421dql9bFBhF0PckeBPGBSVUlq1rST+mQnShe9pTIazNWRh1KuNHxcoDUMtCpWBAEmFVIV6g7DteKGVNib9VsZ165aUPR1HPXaF7HB9lYCtbCxgwZRepyO0q+jlNZ9sH7fI89XfhBIPw+98Nqcq0ipU1qOIhfDHPgSJ6vOt/YacN1YWSjqrtkinyiEQtBg19U676V2QBlTFx9u/fFhOCL2o/qoVBlQINIazTuNjKUeISTqjFrfWiwWfwIHPMGNV3LVF7HNIGuYcIdxZma92LXqOvC1JP9sMLLStU9dKtUdy1g9D40OVw9wRLwX9AVo3kjgMmKDJb9h2IWQv+IsSGImmb0WOnMibuUsCXjmQ3po8N37yvYY9i/PVg1dWnyjZ2W20H
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB11269.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(376002)(366004)(346002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(5660300002)(71200400001)(33656002)(7416002)(83380400001)(2906002)(7696005)(6506007)(53546011)(41300700001)(38100700002)(316002)(54906003)(66446008)(66476007)(122000001)(66946007)(76116006)(64756008)(66556008)(86362001)(55016003)(26005)(110136005)(52536014)(38070700009)(478600001)(107886003)(8936002)(8676002)(4326008)(9686003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?GEMGXhwxYr5Co+PTUUg1A/WWGkxC617VqtB+wqJXE+PnCOLYdE0BfqYAxjeb?=
- =?us-ascii?Q?TyHjJ1LrVN33+Cy1/JGKh0ESohwPS+QTQPKQLnwgYvXjztztfLyAGhvoSS6x?=
- =?us-ascii?Q?7a+opEeA5G1nvDKjw0n/VAwoXc4Zg/9pVoaSfgaDRQNQecFoXvs2cuAtVWst?=
- =?us-ascii?Q?ZBMpEKxEyafSVVsEFm2wvgcCzf6ewO/nCoXe2dRwPHfUFuHGE3924HzO9FOz?=
- =?us-ascii?Q?Y4FI3udDKhPT+8l2VOhgfSBwr6pH1v7rDxjVRGjB1aHsL+vF0ZI8S1JlAm2j?=
- =?us-ascii?Q?ndXieNw9GKHgFeX8hHdbrL375Rp42JGYWm6RbAen3WXlVtLryw233qmxZ1DI?=
- =?us-ascii?Q?/H557b5XeeHlemwYXsc0a3Om6VSw64LGXnIeIifmHf5/y3jYt8vvDpHQJIOL?=
- =?us-ascii?Q?Isvoazuf5eo7Xib/BhWTIL32mf8LK8BbfxzlCrZ5eez4expE2O4LyNhGl+BF?=
- =?us-ascii?Q?OfbN7MOlWKm7xEW3oUDKrcJtRKUmCIFo3E4k7q0/GNo0OAG0UosxAGM7NY17?=
- =?us-ascii?Q?6ZFzdMFgOHPlMZRLoTd/S3I8ewaKF4iGvE2XPVREoKWT3eh3DyWLh6kMywWP?=
- =?us-ascii?Q?rBkhcphVkXYZsbn4ppsz/pF8dZdtA3Jjbsdj4GrCndc4yowFq4oRFBU6TKFn?=
- =?us-ascii?Q?PsVzPC9H9xReebG2N5ohkFthyR5p3p1x/8KXGAV7mBzoKYZ/DguTmKRcv4Y0?=
- =?us-ascii?Q?pX6Wx68W6sYnwFBxT9LrqQuJfbpLRsp+l0Gyj3qK69lQb+U/5R5tRRRhEZNv?=
- =?us-ascii?Q?2o4EF2K3gVnm2jDiGWhNC6g16t4ZxtFZX7nDYe0d9ywbTF6mDrT9Jh0DWN2M?=
- =?us-ascii?Q?xuobO9/U6lz0Rhw4sFFn1WZpjTge0ePGlX9Dp9kspw8Z9kpjvpZtEpsmTXM5?=
- =?us-ascii?Q?apyeMkYLJJ3kG2RIiuwvvZ4PnPZBpmWi7sCp8bgQHKwCv8sKa+zbPvZUhC/R?=
- =?us-ascii?Q?+iGdmUkJtsF9UGwZaNFeNrYWWi2PO24L+dFrvpFgXbLI5usoqee9ctjQ7eRm?=
- =?us-ascii?Q?9jv3StcWD3VxhUryC8+wWr4PTQrfWVFFHBcLSz56rwddIXRcxxfsyCrCLbD9?=
- =?us-ascii?Q?jBqaWx27zbUyPnocbR3ytjdT9tp5VjA3wS9/4plrw1v9MtIChlK/9d8E2gVv?=
- =?us-ascii?Q?z6vbRqpbyKBihUqVqdJTT5V0sD6GFIC42MP1Zxguggkn/Tu+CEjwd5Tel6YI?=
- =?us-ascii?Q?WKO42b+RJx4QSCfoAul5fHu/SNpjNCvVaBZBsTtORFljcd7xQ1RcH4v/ty+L?=
- =?us-ascii?Q?FYm2JZxU64raknFxnSKhNXiKUNlg6RlZsYQhSLwG4gQ7CemjFt5zNpQssxPi?=
- =?us-ascii?Q?Y2FdiKquQLgdT1pblimcirpu7WV/2Cmgrv7ppAw0si/HDCIb2Aa/r1CsUQyi?=
- =?us-ascii?Q?Mp/oEgAMGKDSRcLqcE18AIVhubFa5zJqY4OT6Q1nmrANv0y+3fokX4XZrC5o?=
- =?us-ascii?Q?ld4hGj7odFVW7dKuaeiIaTkiYcNenwsG6HoW9MV5gJyH688hzlgza6OA4lkJ?=
- =?us-ascii?Q?c7QY+EaELXg4xkVpBIKSaYycdkwMqb4uCg1ek+or7PDJXc9IK5g9WHP+biZy?=
- =?us-ascii?Q?noQ6NnUkPHO8bjkdARLUpAvGwgU+K/wWt9gFr50kKcF2FjPGn8RcrcCj9Usl?=
- =?us-ascii?Q?vw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62E8417C91
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 08:03:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706860998; cv=none; b=ERrxO9J80OjPi6AnEWffq//De8p8NpDMxmYFq44NDgvxdqIJFWND1oZi/1eVNawPNskx3SN9BYwTxpLwz+4bIrA9dOuS+IiFj5JqdPXG9K94WQ74fgX47SRVI/97ofEBUtCP2ZqY3YXikw3UGQIYFamEGr18RS+0R/4tfmmPAUM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706860998; c=relaxed/simple;
+	bh=u1j/FQG3r7UnfjaAFghDYZBL8vZoKi0GU5L7uMw+bew=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ak9kx/8oPZbyx+eFEVKPTEnMN3vAFBsVcVXKzqCb+mG+7Z3F7EXsDRSVmKVx4MoHALCgJN9gs+uyR6cJ/beBSeMFdS6mJdioYUdG4CiD6HtIP/bCghgTc0p8tAz+02FBCZ8qF1R2oYckH0r1isWJqp9nYRHbIEunHhwPw/m7mBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CmN4zUCg; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51117bfd452so3049721e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 00:03:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706860994; x=1707465794; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KB4XVOF8NhiViTXxA6Zl1yFXZ6IHetiibAxn6ek+TKk=;
+        b=CmN4zUCgK3o7elWFEoi0dxGHXbgJiaoTdANsDTw9xvpfjvEX//RZDrNfEIWR/QblbN
+         wOGhvmq+yRsZmWbFRnlQXwdi9IBrjG2nwEjYKT0kIrDeC8A+YDLz3xE6n9rx1URTkhgI
+         BJQYnN+Elb4UvSKJUHRwU5bQ6sPVNNNkPl+rycinr3EWPubnDzR4NS241Wzcs2QZ5agE
+         ZnfK3mppuWxOtlXs7gqiFJ2V7ILBSJMUzIVMxf1EHIYyrGJt8ABXkikSXlg7IB9wqFEd
+         Cu45t3edi5D4EaYdGgsm6r4moF7sg+AGVUAzZI2EzIqz8RsVzYOIpC83CMpDFw6H4teO
+         fM6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706860994; x=1707465794;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=KB4XVOF8NhiViTXxA6Zl1yFXZ6IHetiibAxn6ek+TKk=;
+        b=RtKaqXPEAupgUp2ZvsDr/arGME+vf1dBbQ5fX9erEKtgkfFH9zhYR6+nK6dlwiSVLI
+         x+4cK6JrlnhHERuE+SeemCG3Q+q+JTJ4J8M4VMYtESZ5Iph6JEThKSpTbeDUn5Ua+BMR
+         pjZa3i9ImeeOJddZo6D0iKMezMS68BAzo+283OOVuMyfWTee41hIicHGYRBxO92eNqKH
+         0sA804ei7ztpOIfIcG2rgUqn1kkGOniPXxvhguYUd8JtGMm8P+QZyGSU6RQCMeVrtYIY
+         FEaK1l7nENOBWx8tfhSexWWCEwML72OoLKOdUMFys09xKvkiqKAnIvlVkT9yWYkN2bkC
+         wDAA==
+X-Gm-Message-State: AOJu0YzlmBCj2Rv+cMdUsBS5SOee/aDYt00JXfOJr8fOFGE2RFqf4xLI
+	9c4WuY5ObIU5GjSTLkJVf+13TFQD80Dw5UloO5OUMYpMm7a7ycA9z0yTuaje7Cw=
+X-Google-Smtp-Source: AGHT+IFB6mce1oI/LW8EsnQI5aFAYQIU3ugIJ/la2J1AO+yeZB2NnZvwehyFGNprWrWK9PoqB0i5PQ==
+X-Received: by 2002:a05:6512:3c90:b0:511:e7f:3ae8 with SMTP id h16-20020a0565123c9000b005110e7f3ae8mr4373685lfv.48.1706860994134;
+        Fri, 02 Feb 2024 00:03:14 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCX3IJUnmoWf05B7dBJebuIeWUyfOgVD5AP05f1K1Dd2L0TxvxqkwUXGSWOBIdhiPm5wCFeWnrz8TDeggLN2+OHAaY+qlhTDsY/4qR3AGvL0Efim75BItajmUrdHZX4aK7bgi6sVF6RuPREhy9JA7bdeKLyWB4rU+KJdBZDGS/MfvtdKpN35YDvtc36SvcHenFHV6gCFodF8kyg4BiIDCeQSs/KZj6MQKHKBHkNtGBsVRFLwZRo7/W4Kv9bCI1GbG64p2Ldlb2d4NluM
+Received: from ?IPV6:2a01:e0a:982:cbb0:560a:f70f:7627:2c48? ([2a01:e0a:982:cbb0:560a:f70f:7627:2c48])
+        by smtp.gmail.com with ESMTPSA id w13-20020a05600c474d00b0040ec66021a7sm1870497wmo.1.2024.02.02.00.03.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Feb 2024 00:03:13 -0800 (PST)
+Message-ID: <6f89dd4f-aae5-4221-9a0a-bebbef862229@linaro.org>
+Date: Fri, 2 Feb 2024 09:03:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB11269.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 980c6869-fa32-413d-0f8f-08dc23c56350
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Feb 2024 08:03:06.1152
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: C0LrGxqCKBebluOmlrkcTF57QXcC2LBnBc5WrnWN6jfwaDFiRfG5/muwK9F8ihi4pf0AmhLq14Q6VPiayDjjonMFO8hyrADNgMa7Og5L2oo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWPR01MB11274
+User-Agent: Mozilla Thunderbird
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH] arm64: dts: qcom: sm8650: Use GIC-ITS for PCIe0 and PCIe1
+Content-Language: en-US, fr
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240125-topic-sm8650-upstream-pcie-its-v1-1-cb506deeb43e@linaro.org>
+ <0cf69024-a3e6-4be2-89ce-017ae521721d@linaro.org>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <0cf69024-a3e6-4be2-89ce-017ae521721d@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Claudiu Beznea,
+On 01/02/2024 20:59, Konrad Dybcio wrote:
+> On 25.01.2024 17:55, Neil Armstrong wrote:
+>> Both PCIe0 and PCIe1 controllers are capable of signalling the MSIs
+>> received from endpoint devices to the CPU using GIC-ITS MSI controller.
+>> Add support for it.
+>>
+>> The GIC-ITS MSI implementation provides an advantage over internal MSI
+>> implementation using Locality-specific Peripheral Interrupts (LPI) that
+>> would allow MSIs to be targeted for each CPU core.
+>>
+>> Like SM8450 & SM8550, the IDs are swapped, but works fine on PCIe0 and PCIe1.
+>>
+>> WiFi PCIe Device on SM8650-QRD using GIC-ITS:
+>> 159:          0          0          0          0          0          0          0          0   ITS-MSI   0 Edge      PCIe PME, aerdrv
+>> 167:          0          4          0          0          0          0          0          0   ITS-MSI 524288 Edge      bhi
+>> 168:          0          0          4          0          0          0          0          0   ITS-MSI 524289 Edge      mhi
+>> 169:          0          0          0         34          0          0          0          0   ITS-MSI 524290 Edge      mhi
+>> 170:          0          0          0          0          3          0          0          0   ITS-MSI 524291 Edge      ce0
+>> 171:          0          0          0          0          0          2          0          0   ITS-MSI 524292 Edge      ce1
+>> 172:          0          0          0          0          0          0        806          0   ITS-MSI 524293 Edge      ce2
+>> 173:          0          0          0          0          0          0          0         76   ITS-MSI 524294 Edge      ce3
+>> 174:          0          0          0          0          0          0          0          0   ITS-MSI 524295 Edge      ce5
+>> 175:          0         13          0          0          0          0          0          0   ITS-MSI 524296 Edge      DP_EXT_IRQ
+>> 176:          0          0          0          0          0          0          0          0   ITS-MSI 524297 Edge      DP_EXT_IRQ
+> 
+> Is it by chance that this one never fired?
 
-> -----Original Message-----
-> From: Claudiu <claudiu.beznea@tuxon.dev>
-> Sent: Friday, February 2, 2024 7:59 AM
-> Subject: [PATCH v3 1/8] watchdog: rzg2l_wdt: Select PM
->=20
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->=20
-> The rzg2l_wdt watchdog driver cannot work w/o CONFIG_PM=3Dy (e.g. the clo=
-cks
-> are enabled though pm_runtime_* specific APIs). To avoid building a drive=
-r
-> that doesn't work make it depend on CONFIG_PM.
->=20
-> Suggested-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
->=20
-> Changes in v3:
-> - make driver depend on PM; with that the "unmet direct dependency"
->   Reported-by: kernel test robot <lkp@intel.com>
->   was also fixed
-> - adapt commit message
->=20
-> Changes in v2:
-> - this patch is new
->=20
->  drivers/watchdog/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig index
-> 7d22051b15a2..c9abe8f307bb 100644
-> --- a/drivers/watchdog/Kconfig
-> +++ b/drivers/watchdog/Kconfig
-> @@ -910,7 +910,7 @@ config RENESAS_RZN1WDT
->=20
->  config RENESAS_RZG2LWDT
->  	tristate "Renesas RZ/G2L WDT Watchdog"
-> -	depends on ARCH_RENESAS || COMPILE_TEST
-> +	depends on (ARCH_RENESAS && PM) || COMPILE_TEST
+Yeah I only associated to an SSID and did a simple iperf, not enough to trigger all MSIs
 
-Since you are touching here, maybe ARCH_RZG2L?? like other RZ/G2L drivers.
+Neil
 
-Cheers,
-BIju
-
->  	select WATCHDOG_CORE
->  	help
->  	  This driver adds watchdog support for the integrated watchdogs in
-> the
-> --
-> 2.39.2
+> 
+> (lgtm otherwise)
+> 
+> Konrad
 
 
