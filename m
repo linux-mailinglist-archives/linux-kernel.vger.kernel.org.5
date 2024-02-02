@@ -1,284 +1,297 @@
-Return-Path: <linux-kernel+bounces-49941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF3C48471D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:23:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FC138471D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:23:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 355731F27C79
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:23:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43C401C24F2B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:23:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28DCC145B3B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 667AC1468E6;
 	Fri,  2 Feb 2024 14:22:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b="iyoOfk27"
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2094.outbound.protection.outlook.com [40.107.6.94])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="BA3I5Nrg"
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07018145358;
-	Fri,  2 Feb 2024 14:22:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.94
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706883750; cv=fail; b=pi5GW/NttnMRKw5guNT6G+Gb/CXBNvzNaGUW5dOfuaWNyc1k/X/qqzt6r2d0q4cALAnlFtPgBZWm3/0q3HCSvLefBWXy2xJn5Mu2Q7KnoNF4GovJwpwlGhjGw/4O1dXmQ+7EMu6Z8gcmyy9+x937wms5ccchDmsdph4cfUoclRQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 680E147A4D
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 14:22:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706883750; cv=none; b=EuKfcWbPog544xonChuTohDZRNLCAUowD0HNooPEZDpHkyP43/cA3Kd4PeNFrBTnsHSi87Uh89XWzYbG5pSFevdizB5GcRLZM8UbiuMFyaqycPsR2rfLpiue9SizN6obolNeM105dN0z80/6OKDl27/44M2obURBi7X2IqNtjp8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706883750; c=relaxed/simple;
-	bh=92ZVXW4YC6ZPcqYAGAxQaXNVAjywr2YsXrwp1M2QIBQ=;
-	h=From:Date:Subject:Content-Type:Message-Id:References:In-Reply-To:
-	 To:Cc:MIME-Version; b=W/AFz5LnULpiq4zFrBQbPOMB6BArFGx1C/uylN6L+7xBu4tJugsDu0AeDB3Do2XKWSlgglgVQxc4nLO2NmH7xcMcg69h8Gj0i/QeAyQAYnqiZiUbqJ7zpZSfqIJbrK5D0pvqyFk0NRFz3MMoK9dVjgEZcXKAenEDKFzTx/2iScs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=solid-run.com; spf=pass smtp.mailfrom=solid-run.com; dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b=iyoOfk27; arc=fail smtp.client-ip=40.107.6.94
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=solid-run.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=solid-run.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zfebksbi+JfZvReZhlG4wEJ3knvZ2S3CZvHYXYAIE2Q13nmgDrBbnurnbYQBeY0B+6SNahDARs+xetixXPuv9hdmXWMg5rkNbZFTaowYi2yQ51+llRnLyKeXr8TBNWG7ALTtGzBty7XADs71Eg/7+pHeXikDqnbcI7TRw8PHoeNWhMM2ESjuIqgE6oPg1AYjyX3X9QJk1E4Lw1/USL5t+C1CuYGqhSCEV4zF6rKjvGx8tgB7RUWNzw9HsP7paDs7l0T+bCsK6URMi7V6e3FYyryMPrHhQiDBEWIUju63J6/8ZXP9T2Bm5SapDLEc9+J3Ss8G7YzqHBRzjMcQ2O9wUA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EAVYcajPH+cQj7PkDwcqf/iS4zG1WdQUnJL/lsNg9N0=;
- b=GWSrvFye7SxzqmjPGa7sR9yXipSN06kB+NEz/ZEJmcZugL0QMd7gE8ie7nwtS6gKhTT94VsrNongsYRsDYQ+dI89MQ4nWXF2ZcgmrG+NJuRTMA09OI+7hE2+Ofv7thPtLRgtAyirE3XAGQUtB5NPMsDCigwIiWjx51Mdak+oojdTN9dgNiTu1JDe4q2W3ccm63S65MzGoHnSDgW5Ovjpaov87Edb/JLox1rbB4Mkb4L7FL39c3drhCt7LQgcX1An1sRAcf58kPxWwNlNpyOPVf4VPxQClUTPkOUtQT/45SUualmvOFUPyQk8FeZEWEwdSRpqAPkhD+T4VHQQ5JnmpA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=solid-run.com; dmarc=pass action=none
- header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EAVYcajPH+cQj7PkDwcqf/iS4zG1WdQUnJL/lsNg9N0=;
- b=iyoOfk275Nc06DIwvieCgK8WqlFlYlFJOLn0eZTXpWRm8DQHlvDS76kPbYd/9QDO1qJ7Lif5qmTLq4h+OyYpYAkEBJfldVc+ZjpUr2EwU1D5nnY1TKUirOHc7vIe7Lgkr8UlmusrHIr3PjzfvOi7FLr4iF58T3y2xzBz4WJ2uQ8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=solid-run.com;
-Received: from AM9PR04MB7586.eurprd04.prod.outlook.com (2603:10a6:20b:2d5::17)
- by DUZPR04MB10063.eurprd04.prod.outlook.com (2603:10a6:10:4af::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.30; Fri, 2 Feb
- 2024 14:22:25 +0000
-Received: from AM9PR04MB7586.eurprd04.prod.outlook.com
- ([fe80::3b94:f607:ebe1:7d6c]) by AM9PR04MB7586.eurprd04.prod.outlook.com
- ([fe80::3b94:f607:ebe1:7d6c%7]) with mapi id 15.20.7249.027; Fri, 2 Feb 2024
- 14:22:25 +0000
-From: Josua Mayer <josua@solid-run.com>
-Date: Fri, 02 Feb 2024 15:22:21 +0100
-Subject: [PATCH v3 5/5] arm64: dts: ti: hummingboard-t: add overlays for
- m.2 pci-e and usb-3
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240202-add-am64-som-v3-5-2f44023d50e9@solid-run.com>
-References: <20240202-add-am64-som-v3-0-2f44023d50e9@solid-run.com>
-In-Reply-To: <20240202-add-am64-som-v3-0-2f44023d50e9@solid-run.com>
-To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Alessandro Zummo <a.zummo@towertech.it>, 
- Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Yazan Shhady <yazan.shhady@solid-run.com>, 
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org, 
- Josua Mayer <josua@solid-run.com>
-X-Mailer: b4 0.12.4
-X-ClientProxiedBy: FR0P281CA0174.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:b4::7) To AM9PR04MB7586.eurprd04.prod.outlook.com
- (2603:10a6:20b:2d5::17)
+	bh=xwzklGrj7vVdUby+djemFWfj6zc/kYrnyKrVzBZRX1I=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=DPl7EW7VniF/I3uFqHYv72BcP6F8MXYc4uPuuhuVu2XpfnUq7HgjXfPmeq0Fst5Ca6Yyflk4OYhJ8NRviaVzRF+NzVzaalEdR9JadV6XjnsvTaUA26WKP4sUtBMd1zpn5HM9Bj3Bl1yA+UmPOGKmXrOl5327zYKWWy2EQifet70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=BA3I5Nrg; arc=none smtp.client-ip=115.124.30.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706883744; h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type;
+	bh=d4OqDX/cQzt1bcoYyaseDnrGw+jftOLJeybPAxyiH/c=;
+	b=BA3I5NrgPrLwcLGgIRV2tY6uH2zizCOQqd2SvDuAoqDdAGcENyDp0Tmreod/po7MXPsXl2U2ysfPXPAmwZEiXujQlfh3clupGyDAClAHjT/zoKKgSc24QPOqkTbRK2bb9Fq55G5aECEnbGapM+0/3niD89AWOPTjtxbRHXwdhYw=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W.xEuF7_1706883735;
+Received: from 192.168.0.104(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W.xEuF7_1706883735)
+          by smtp.aliyun-inc.com;
+          Fri, 02 Feb 2024 22:22:24 +0800
+Message-ID: <673881a4-3060-40ab-b1d2-72115f9df5f7@linux.alibaba.com>
+Date: Fri, 2 Feb 2024 22:22:23 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM9PR04MB7586:EE_|DUZPR04MB10063:EE_
-X-MS-Office365-Filtering-Correlation-Id: 04499e16-1d1c-48c8-c440-08dc23fa609d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	G83ePnLPmBRVOdgEa3tPjI06NxrnCcDUMy5oCSuchDPwzTwC4/0vazHfIMaZqeNOgAP7ttoAxpuSSBP5uahf8FeDpBedyzAXOx4B2zy0O61lRyje4p2jF2xE28+uJV3G60MwEiI/JaPd4RfRzkanGpOugz+W7wNSokCG3hfxfTLsdlz2TsVRbQo+nDpW6S6rNQxxRqy5gPgZe6RcK1XXYRRhiJTWMQfRZR5PYiu6c224mNq03BZwVzYv5Rd73JyEPFZS2eKSkRo+GHWwzitZFpyGlaIFlglQRoVI7o/4ybYEcDOfQtP5hmXm3O31Vw+B7D6fTBLpn+7iuOUFbpjldMecw4YsHBOPbaUjIw51YAGfd3jgYMYazc476B6rlgaw06+tJI3r1mms24xDr2y+TUWMNpn4+NJUtbJI2mkFpjk/wZuyYCU7EVrk5z32xMZ5tJRikPn8KsGlNzgrImHyFPK5qaV5DXmlTbN55+YsDMgGPU4sQDRymAQJxBcpr3Z75HtlVzAzhJoPGB2UiW6lp4lK8lcL+R6HY2ptc9UzpNTiijYPPck7/tfPzLrNiFMFI8WxNy3mZCb/kSl5pR8Ah9SgAYjkpiBevKJjIPcBnSfsNLPw1FGnjvsPix8vk6ku
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB7586.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39840400004)(376002)(136003)(346002)(366004)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(38100700002)(52116002)(6506007)(83380400001)(2616005)(6512007)(4326008)(8676002)(2906002)(7416002)(54906003)(86362001)(5660300002)(38350700005)(36756003)(316002)(8936002)(6666004)(110136005)(66556008)(66476007)(66946007)(6486002)(41300700001)(107886003)(26005)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?S3lidkRIczJqdllCYUNlay9IZlZZeWtUY25WT0hkZlFVeTlYWWNGUVZ5aHJu?=
- =?utf-8?B?QTV2SFRPVDkvLzdJUmVWOEVaZG1BWVVXVVRrV3p4Tnc0QVpjNTM2bGZUVTdt?=
- =?utf-8?B?NHRkRTYzR1ozcVVVYUc3dURmQ2dzNk1kd2Zjc3RTbVJKbEZjY1pyNnU3YlV6?=
- =?utf-8?B?WU9HVWEzaGlrajBCczMzbWVicGd0SVFkK3B2SUR5dEZYQzF1MVJZZjhmRkEy?=
- =?utf-8?B?YWliWXloZnZ3YndJbVpKcVAxT3VMcTVyUisvY3Q1NitZandMOE9FNUNMRHRO?=
- =?utf-8?B?aDcwV085a2RrdmFuQ1RadmxhVzRFVXVCZUtSSFdxVEdMWm5Mby9COHRTb0Nr?=
- =?utf-8?B?WDdDdkdRNjh3c01WdTgvdTROdUg0K2V6cW4raUtwejluWXp0NnB5RkNKd0ZZ?=
- =?utf-8?B?V1pGVWc0aU90UlRmT3VnaFdDK2lrdW5IK3NBMG1DZ1NRQVROV3JXSG9nOVhN?=
- =?utf-8?B?OE93TEVCanZ6M1FFMmlNU1FTRnJFelhjeDlzOEdBVjlKZEdxNEcwUE8xK1NH?=
- =?utf-8?B?UCtsVEp3N09MZkQ3d25FSlN6V21hUmRLVTEzMlVsR0pCaE8zNnN3WHI2a2lG?=
- =?utf-8?B?cUJiTWY1eWJDTVpBbi9jRFZ6MFZwV2syVzZvZmVzNVZJVFBKU1dTRXdjbzNF?=
- =?utf-8?B?dlVRK2RocnA4VkUvRGtYcFZpU2RTYU0xN0hPNkxkT0dxVW9iQVM5WFFyU0w5?=
- =?utf-8?B?eFlWc0Q0NGIzZkRKeUFXd0YySkl2Qjdrc09VZE1JdVNzcDFGRHpPWThvQmtz?=
- =?utf-8?B?WldKQWo3aXdUUUNabEsvRGhJQ0xVcEFiVTh6UTB1Zk9mamdHZnkvRllrMHJY?=
- =?utf-8?B?b25idXlScTZ4dzREbVdybk5lMUZ6cUxZeTB0dm4zOWJVQ3VTbG04OVF2WlJO?=
- =?utf-8?B?SUhPbXVGdklFNU54UG5GUnhJK3ZoMUt5OWwyazJwdWl6M1ZVT0dDRWd3WUlP?=
- =?utf-8?B?V2RwMUNvSEJORGdjdmZhaXJrektZZk5xUjBDQmF3cURPUCtvbDc1N3hab3I4?=
- =?utf-8?B?bVpCRUtXREtlbElMNFdneTFLSzVIc1ROV3dBcmxrcGRzWmJ1TlZUbVFyQk9T?=
- =?utf-8?B?L3JGbVRqeGt1OUZBblJTZlc0K2pFTVNObUxhc0VCc1BPQyttdHhVTC9XZzFP?=
- =?utf-8?B?VUMvaG1MUlhCQW5RY1hoUVlndmN0OVZ3SjdFcnY0VmtLVUREdkFyRGx0WkdP?=
- =?utf-8?B?dnV2bVlrdmhVa1RTRkIrZVVEWWZydUExTHgvUmFzd0NNQjVUcGd0VmNRaGNQ?=
- =?utf-8?B?cnBDQjZ1eTd3TmRRT1N2SHhjbDZGbVNvQ2JhQWdVREZJZWRSYWdxdkVIQUVm?=
- =?utf-8?B?S25wYjlUWGRTSm9vWmg3a0hPSk9QNEk2WXhnYStVNDE4bmF4ZTRyQkk5NFlk?=
- =?utf-8?B?c0g5c2I0Qzd2YXZjaGZRRkNpT2FmeWVNZjkyZDlScm5yTHF3NldyR2JVT0Rr?=
- =?utf-8?B?aHord0dtdWhZaEpQQS9kZmV1ZVFONlg1WjdkeU9zZmxiMUIrRTJXT1FZenJs?=
- =?utf-8?B?NzdkbzlZb2ptbmVyVXVVb0dsSm9uZDdOYjUwV0lnaVVKd0M1WTIrdDVZc3Nw?=
- =?utf-8?B?MHNlWjBpeEJmRm1WZGFZbDBLdmg4d1JVZXFMTTVkYW1BeFBZaHNUelhkUWJK?=
- =?utf-8?B?VFE2RXNNUGprSHE3SHRrdm1sU2ZCNTNUbTAwbG9jbG9yVjZiclp5TzFaUW4x?=
- =?utf-8?B?RG0zQVNMaUdvSk1SY3J5Rml4T0EvZGJmWDIwQTgyeFcyVU00YUliUThsbzFG?=
- =?utf-8?B?Y3ZKeXZiSUFYTUl4NmxESjdiMWxtQkJpWTdWM3IzSE12cDVqTWdFT0d3RndO?=
- =?utf-8?B?VE9SLzU3aUcyblBka1JXVmM1dnJMc2ViTGg4UjhUeTNDbXFBanQyRTFSYlBs?=
- =?utf-8?B?OVp6ZndFZEt2UjlWL25TMGxFVEZLdXh0TDJVYzV3SXg1UGRjTlR2RWErMklM?=
- =?utf-8?B?NXp6aDdhNEJKTFRnQk5QL2NwVnRVek4zM1FWcDRQNGZtUmVrTURwQ2xDVjEx?=
- =?utf-8?B?bWtXSUdhM3RJN293T2E3eG8wZlNtenluQmpPbktTYUk3VzBOcVRMa2UzK1Nk?=
- =?utf-8?B?MG9UV0dFcFBIYWZyS3AvcVpFMHhXVVdTUUpPa1lCUU5FNzRaQ011MWwzekRq?=
- =?utf-8?Q?Uz9Ojfa0iwSG1V8koW1t5WiLe?=
-X-OriginatorOrg: solid-run.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 04499e16-1d1c-48c8-c440-08dc23fa609d
-X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB7586.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2024 14:22:25.0368
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EBPGeb/vcKcQzp8MWG83jqw4DUzABxOMhTshKo50UHz2LoCZyauajULhiD2IeilYJmc3dcSO9SCJxOLw3UskOg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DUZPR04MB10063
+User-Agent: Mozilla Thunderbird
+From: Bitao Hu <yaoma@linux.alibaba.com>
+Subject: Re: [PATCHv3 1/2] watchdog/softlockup: low-overhead detection of
+ interrupt storm
+To: Doug Anderson <dianders@chromium.org>
+Cc: akpm@linux-foundation.org, pmladek@suse.com, kernelfans@gmail.com,
+ liusong@linux.alibaba.com, linux-kernel@vger.kernel.org,
+ yaoma@linux.alibaba.com
+References: <20240131171738.35496-1-yaoma@linux.alibaba.com>
+ <20240131171738.35496-2-yaoma@linux.alibaba.com>
+ <CAD=FV=VOYo-OsjKwPQFuBHgB6Uk9E-nb3CiwKjj_yLtPDa7sYQ@mail.gmail.com>
+Content-Language: en-US
+In-Reply-To: <CAD=FV=VOYo-OsjKwPQFuBHgB6Uk9E-nb3CiwKjj_yLtPDa7sYQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-HummingBoard-T features two M.2 connectors labeled "M1" and "M2".
-The single SerDes lane of the SoC can be routed to either M1 pci-e
-signals, or M2 usb-3 signals by a gpio-controlled mux.
 
-Add overlays for each configuration.
 
-Signed-off-by: Josua Mayer <josua@solid-run.com>
----
- arch/arm64/boot/dts/ti/Makefile                    |  6 +++
- .../boot/dts/ti/k3-am642-hummingboard-t-pcie.dtso  | 45 ++++++++++++++++++++++
- .../boot/dts/ti/k3-am642-hummingboard-t-usb3.dtso  | 44 +++++++++++++++++++++
- 3 files changed, 95 insertions(+)
+On 2024/2/1 10:22, Doug Anderson wrote:
+> Hi,
+> 
+> On Wed, Jan 31, 2024 at 9:17 AM Bitao Hu <yaoma@linux.alibaba.com> wrote:
+>>
+>> The following softlockup is caused by interrupt storm, but it cannot be
+>> identified from the call tree. Because the call tree is just a snapshot
+>> and doesn't fully capture the behavior of the CPU during the soft lockup.
+>>    watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
+>>    ...
+>>    Call trace:
+>>      __do_softirq+0xa0/0x37c
+>>      __irq_exit_rcu+0x108/0x140
+>>      irq_exit+0x14/0x20
+>>      __handle_domain_irq+0x84/0xe0
+>>      gic_handle_irq+0x80/0x108
+>>      el0_irq_naked+0x50/0x58
+>>
+>> Therefore，I think it is necessary to report CPU utilization during the
+>> softlockup_thresh period (report once every sample_period, for a total
+>> of 5 reportings), like this:
+>>    watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
+>>    CPU#28 Utilization every 4s during lockup:
+>>      #1: 0% system, 0% softirq, 100% hardirq, 0% idle
+>>      #2: 0% system, 0% softirq, 100% hardirq, 0% idle
+>>      #3: 0% system, 0% softirq, 100% hardirq, 0% idle
+>>      #4: 0% system, 0% softirq, 100% hardirq, 0% idle
+>>      #5: 0% system, 0% softirq, 100% hardirq, 0% idle
+>>    ...
+>>
+>> This would be helpful in determining whether an interrupt storm has
+>> occurred or in identifying the cause of the softlockup. The criteria for
+>> determination are as follows:
+>>    a. If the hardirq utilization is high, then interrupt storm should be
+>>    considered and the root cause cannot be determined from the call tree.
+>>    b. If the softirq utilization is high, then we could analyze the call
+>>    tree but it may cannot reflect the root cause.
+>>    c. If the system utilization is high, then we could analyze the root
+>>    cause from the call tree.
+>>
+>> Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
+>> ---
+>>   kernel/watchdog.c | 84 +++++++++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 84 insertions(+)
+> 
+> Random high-level question: I'm trying to figure out exactly when your
+> code will trigger. The only way it will trigger is if the timer
+> interrupt is a higher priority than the storming interrupt. By this I
+> don't mean that the timer will interrupt the storming one (it's not a
+> nested interrupt), but that if both interrupts are currently asserted
+> we'll service the timer first.
+> 
+> If the storming interrupt is always serviced before the timer
+> interrupt then the softlockup code won't trigger at all. In that case
+> we should detect a hard lockup and hopefully you've got the buddy
+> detector enabled and pseudo-NMI turned on. Then hopefully we'll have
+> actually interrupted the storming interrupt and it'll be on the
+> callstack.
+> 
+> I just wanted to make sure I was understanding correctly. This is why
+> you don't print the stats from watchdog_hardlockup_check() because
+> they're not useful there, right?
+Yes, you are right. The scenario I'm considering matches your
+description. If the storming interrupt lead to a soft lockup, then it
+will not be on the callstack. In this case, we need the stats.
+> 
+> 
+>> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+>> index 81a8862295d6..046507be4eb5 100644
+>> --- a/kernel/watchdog.c
+>> +++ b/kernel/watchdog.c
+>> @@ -23,6 +23,8 @@
+>>   #include <linux/sched/debug.h>
+>>   #include <linux/sched/isolation.h>
+>>   #include <linux/stop_machine.h>
+>> +#include <linux/kernel_stat.h>
+>> +#include <linux/math64.h>
+> 
+> nit: instead of adding to the end, add these in sorted order. The
+> includes we have now are _almost_ in sorted order. I'd add these
+> between "init.h" and "module.h"
+Sure, I will standardize the code.
+> 
+> 
+>>   #include <asm/irq_regs.h>
+>>   #include <linux/kvm_para.h>
+>> @@ -441,6 +443,85 @@ static int is_softlockup(unsigned long touch_ts,
+>>          return 0;
+>>   }
+>>
+>> +#ifdef CONFIG_IRQ_TIME_ACCOUNTING
+> 
+> In v1 I think I suggested adding a new config. Even with your
+> optimizations you've quoted this as taking up "237,568 bytes" of
+> global storage when things are configured for the max number of CPUs.
+> It feels like someone might not want that. Adding a new Kconfig knob
+> shouldn't be a huge problem. Maybe you can have it default to "yes" if
+> the max number of CPUs is <= 64 or 128 or something?
+Sure, I will add a new config.
+> 
+> 
+>> +#define NUM_STATS_GROUPS       5
+>> +enum stats_per_group {
+>> +       STATS_SYSTEM,
+>> +       STATS_SOFTIRQ,
+>> +       STATS_HARDIRQ,
+>> +       STATS_IDLE,
+>> +       NUM_STATS_PER_GROUP,
+>> +};
+>> +static enum cpu_usage_stat stats[NUM_STATS_PER_GROUP] = {
+> 
+> "static const", not just "static"
+OK.
+> 
+> nit: maybe call this "tracked_stats" since "stats" is a bit of a
+> generic name for a global.
+Agree, it is clearer.
+> 
+> 
+>> +       CPUTIME_SYSTEM,
+>> +       CPUTIME_SOFTIRQ,
+>> +       CPUTIME_IRQ,
+>> +       CPUTIME_IDLE,
+>> +};
+>> +static DEFINE_PER_CPU(u16, cpustat_old[NUM_STATS_PER_GROUP]);
+>> +static DEFINE_PER_CPU(u8, cpustat_utilization[NUM_STATS_GROUPS][NUM_STATS_PER_GROUP]);
+>> +static DEFINE_PER_CPU(u8, cpustat_tail);
+>> +
+>> +/*
+>> + * We don't need nanosecond resolution. A granularity of 16ms is
+>> + * sufficient for our precision, allowing us to use u16 to store
+>> + * cpustats, which will roll over roughly every ~1000 seconds.
+>> + * 2^24 ~= 16 * 10^6
+>> + */
+>> +static u16 get_16bit_precision(u64 data)
+> 
+> nit: instead of "data", call it "data_ns"
+OK.
+> 
+> 
+>> +{
+>> +       return data >> 24LL; /* 2^24ns ~= 16.8ms */
+>> +}
+>> +
+>> +static void update_cpustat(void)
+>> +{
+>> +       u8 i;
+> 
+> FWIW, Andrew Morton (who will likely be the one landing this patch)
+> was quoted in LWN [1] the other week saying that "i" should be an
+> integer. :-P Making it an "int" won't make the code any less
+> efficient.
+> 
+> [1] https://lwn.net/Articles/958417/
+OK, I will use "int" here.
+> 
+> 
+>> +       u16 old;
+>> +       u8 utilization;
+>> +       u8 tail = __this_cpu_read(cpustat_tail);
+>> +       struct kernel_cpustat kcpustat;
+>> +       u64 *cpustat = kcpustat.cpustat;
+>> +       u16 sample_period_ms = get_16bit_precision(sample_period);
+> 
+> It's not really milliseconds, right? Maybe "sample_period_16"?
+Agree, it is clearer.
+> 
+> 
+>> +       kcpustat_cpu_fetch(&kcpustat, smp_processor_id());
+>> +       for (i = STATS_SYSTEM; i < NUM_STATS_PER_GROUP; i++) {
+> 
+> nit: start i as 0 instead of assuming that STATS_SYSTEM is 0.
+OK.
+> 
+> 
+>> +               old = __this_cpu_read(cpustat_old[i]);
+>> +               cpustat[stats[i]] = get_16bit_precision(cpustat[stats[i]]);
+> 
+> IMO make a local called "new" and store the 16-bit precision there.
+> That's easier to read, gets rid of the cast below, and is probably
+> more efficient (the compiler doesn't need to upcast the 16-bit value
+> and store it in a 64-bit memory location).
+Oh, that's interesting, I hadn't thought of that.
+  ...oh, or maybe "new" is a
+> reserved keyword? You could call them "old_stat_16" and "new_stat_16".
+> 
+> 
+>> +               utilization = 100 * (u16)(cpustat[stats[i]] - old) / sample_period_ms;
+> 
+> Maybe slightly better to round, with:
+> 
+> utilization = DIV_ROUND_UP(100 * (new - old), sample_period_ms);
+> 
+> What do you think?
+Agree, I will use your method.
+> 
+> 
+>> +               __this_cpu_write(cpustat_utilization[tail][i], utilization);
+>> +               __this_cpu_write(cpustat_old[i], cpustat[stats[i]]);
+>> +       }
+>> +       __this_cpu_write(cpustat_tail, (tail + 1) % NUM_STATS_GROUPS);
+>> +}
+>> +
+>> +static void print_cpustat(void)
+>> +{
+>> +       u8 i, j;
+>> +       u8 tail = __this_cpu_read(cpustat_tail);
+>> +       u64 sample_period_second = sample_period;
+>> +
+>> +       do_div(sample_period_second, NSEC_PER_SEC);
+>> +       /*
+>> +        * We do not want the "watchdog: " prefix on every line,
+>> +        * hence we use "printk" instead of "pr_crit".
+>> +        */
+>> +       printk(KERN_CRIT "CPU#%d Utilization every %llus during lockup:\n",
+>> +               smp_processor_id(), sample_period_second);
+>> +       for (j = STATS_SYSTEM, i = tail; j < NUM_STATS_GROUPS;
+> 
+> Here initting "j" to STATS_SYSTEM definitely doesn't make sense. Init to 0.
+> 
+> You could also make your loop easier to understand with just:
+> 
+> for (i = 0; i < NUM_STATS_GROUPS; i++) {
+>    unsigned int group = (tail + i) % NUM_STATS_GROUPS;
+>
+Agree, it is easier to read.
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 041c3b71155e..ace72b4b85b0 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -31,8 +31,14 @@ dtb-$(CONFIG_ARCH_K3) += k3-am62a7-sk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am62p5-sk.dtb
- 
- # Boards with AM64x SoC
-+k3-am642-hummingboard-t-pcie-dtbs := \
-+	k3-am642-hummingboard-t.dtb k3-am642-hummingboard-t-pcie.dtbo
-+k3-am642-hummingboard-t-usb3-dtbs := \
-+	k3-am642-hummingboard-t.dtb k3-am642-hummingboard-t-usb3.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-am642-evm.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t-pcie.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t-usb3.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-rdk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl.dtb
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-hummingboard-t-pcie.dtso b/arch/arm64/boot/dts/ti/k3-am642-hummingboard-t-pcie.dtso
-new file mode 100644
-index 000000000000..fd3f8d00c56a
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am642-hummingboard-t-pcie.dtso
-@@ -0,0 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright (C) 2023 Josua Mayer <josua@solid-run.com>
-+ *
-+ * Overlay for SolidRun AM642 HummingBoard-T to enable PCI-E.
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/phy/phy.h>
-+
-+#include "k3-serdes.h"
-+
-+&pcie0_rc {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pcie0_pins_default>;
-+	reset-gpios = <&main_gpio1 15 GPIO_ACTIVE_HIGH>;
-+	phys = <&serdes0_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <1>;
-+	status = "okay";
-+};
-+
-+&serdes0 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	serdes0_link: phy@0 {
-+		reg = <0>;
-+		cdns,num-lanes = <1>;
-+		cdns,phy-type = <PHY_TYPE_PCIE>;
-+		#phy-cells = <0>;
-+		resets = <&serdes_wiz0 1>;
-+	};
-+};
-+
-+&serdes_ln_ctrl {
-+	idle-states = <AM64_SERDES0_LANE0_PCIE0>;
-+};
-+
-+&serdes_mux {
-+	idle-state = <1>;
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-hummingboard-t-usb3.dtso b/arch/arm64/boot/dts/ti/k3-am642-hummingboard-t-usb3.dtso
-new file mode 100644
-index 000000000000..ffcc3bd3c7bc
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am642-hummingboard-t-usb3.dtso
-@@ -0,0 +1,44 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright (C) 2023 Josua Mayer <josua@solid-run.com>
-+ *
-+ * Overlay for SolidRun AM642 HummingBoard-T to enable USB-3.1.
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+
-+#include <dt-bindings/phy/phy.h>
-+
-+#include "k3-serdes.h"
-+
-+&serdes0 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	serdes0_link: phy@0 {
-+		reg = <0>;
-+		cdns,num-lanes = <1>;
-+		cdns,phy-type = <PHY_TYPE_USB3>;
-+		#phy-cells = <0>;
-+		resets = <&serdes_wiz0 1>;
-+	};
-+};
-+
-+&serdes_ln_ctrl {
-+	idle-states = <AM64_SERDES0_LANE0_USB>;
-+};
-+
-+&serdes_mux {
-+	idle-state = <0>;
-+};
-+
-+&usbss0 {
-+	/delete-property/ ti,usb2-only;
-+};
-+
-+&usb0 {
-+	maximum-speed = "super-speed";
-+	phys = <&serdes0_link>;
-+	phy-names = "cdns3,usb3-phy";
-+};
-
--- 
-2.35.3
-
+> 
+> -Doug
 
