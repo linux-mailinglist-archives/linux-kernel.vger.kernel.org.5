@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-50274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D557B8476C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:56:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB35F8476B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:56:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 458AB1F28BD7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:56:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7E791C22794
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:56:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41A7D14D443;
-	Fri,  2 Feb 2024 17:56:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 603E514C598;
+	Fri,  2 Feb 2024 17:56:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="IGbgpaYc"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="VBIAlt/a"
 Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE8C5145B19;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE88D168B9;
 	Fri,  2 Feb 2024 17:56:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706896563; cv=none; b=ByXyjp912ZAmEVKOxbUEmW8Ny1Lls4tVKYQKH0zyIARvS8aXt9KjaFLuVS9VFhjdh5N8DKuvc/LNcWRiIS7ALf0HHbitWiXmNFmTar3tkEyhoMyusz3oQ4KmqOuABrwB0gJbls2+oSYRXniRQasEuCtCAF+KQvzTuepuScQyOp8=
+	t=1706896562; cv=none; b=tCXy8SHlV10Lqzz4Fh4LE30AqaxfILU8VrTYme6Ph7p4iABxmQ7ihgH6zc5df/+3DAFVzEQ1iU5DsIIP0MezbYO3nNmq/pibf03s2db0ysny/OOuPAxlV3of6vTFpusl7zUZmhED17cSR+z1g0LirlqJk1xoQLfMsoxSGhWt/QI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706896563; c=relaxed/simple;
-	bh=RdI8iokrsD3Pm7caxWCLaUB7/je5wbX7pIF1itVVWDE=;
+	s=arc-20240116; t=1706896562; c=relaxed/simple;
+	bh=xQo4AQIC5WwFf8Ub/CQgxJHP4s1Ke10LxeBuhX7e5oo=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nDK9PJhMTaHeHfwwV/Fj9HW6w/++gGYeHCYhCJOXf7xThbcJJFd13tftsnuwlk4uUyiwuZJRkwCsDtbqI80v+nUJWjNL6a6o48bpTD0MrkYKgzR/6O3UcB/VLSB/3Qyvymx1gYomK7JT7RiZeawjXjqxD9Vjcpu7C7Ilzspfq0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=IGbgpaYc; arc=none smtp.client-ip=198.47.19.142
+	 MIME-Version:Content-Type; b=osc4if+KSweYFqDtpkfmp2pf+r5r8kBQIP7io85nrWnAscGDb/FIkyXrh6nd7iqtJDyNUXKGHmUGwjx35HKYkz1TsMfqCM5JtIOOoU2llP9AzfSFR2+x0a5KXLh158lRIU2ZytiQluZxNW0PpxA1ACaRtKL2HBYMVp15oVSdm3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=VBIAlt/a; arc=none smtp.client-ip=198.47.19.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 412HtipK030384;
-	Fri, 2 Feb 2024 11:55:44 -0600
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 412HtjXG030389;
+	Fri, 2 Feb 2024 11:55:45 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706896544;
-	bh=NzOXcUMbp0Zu5Ja9c3oA6AtFcDCoM3wQ8BYmDpapLp8=;
+	s=ti-com-17Q1; t=1706896545;
+	bh=kX+utj8gCPZ9NGrtLHOhFLW+FqXZX5d0Rk2tli01ct4=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=IGbgpaYcZp+I2WbS/GShIl+jE3JNqnFHHwk8M4TM8f3KX8YSCNUFgNbTQQ544sEGl
-	 CIEgwIj9sM98nTnKm4vLlV9bB8FMqfaxyVplTGxSY54Duis9t3fABIqtdQ8ewamsrx
-	 XAnZ7jpqz9Dhp5O+9NPQesgLocvnYkgFULONBC+w=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 412Hti0M125809
+	b=VBIAlt/acDngjaVp5Wy3OaPBuOs0hagxD8KdQOuN3DiAhIY64o42dVzv4rch93DEl
+	 vHJLibmMZXyNKZvyrGgg4xemMhnWVfZouqJEMYo30KrwwICCbF/zQQIgM5j65yM763
+	 rRf8vJvrij3AXofkCfz1mZYOve6yJ/MNM9BwHgVU=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 412HtjJC110348
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 2 Feb 2024 11:55:44 -0600
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+	Fri, 2 Feb 2024 11:55:45 -0600
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 2
- Feb 2024 11:55:44 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ Feb 2024 11:55:45 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 2 Feb 2024 11:55:44 -0600
+ Frontend Transport; Fri, 2 Feb 2024 11:55:45 -0600
 Received: from localhost ([10.249.48.175])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 412Htite114607;
-	Fri, 2 Feb 2024 11:55:44 -0600
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 412Htj4V061002;
+	Fri, 2 Feb 2024 11:55:45 -0600
 From: Hari Nagalla <hnagalla@ti.com>
 To: <andersson@kernel.org>, <mathieu.poirier@linaro.org>,
         <p.zabel@pengutronix.de>, <martyn.welch@collabora.com>, <nm@ti.com>,
@@ -62,9 +62,9 @@ To: <andersson@kernel.org>, <mathieu.poirier@linaro.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
 CC: <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>
-Subject: [PATCH v7 1/5] dt-bindings: remoteproc: k3-m4f: Add K3 AM64x SoCs
-Date: Fri, 2 Feb 2024 11:55:34 -0600
-Message-ID: <20240202175538.1705-2-hnagalla@ti.com>
+Subject: [PATCH v7 2/5] remoteproc: k3: Move out data structures common with M4 driver
+Date: Fri, 2 Feb 2024 11:55:35 -0600
+Message-ID: <20240202175538.1705-3-hnagalla@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240202175538.1705-1-hnagalla@ti.com>
 References: <20240202175538.1705-1-hnagalla@ti.com>
@@ -77,192 +77,141 @@ MIME-Version: 1.0
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-K3 AM64x SoC has a Cortex M4F subsystem in the MCU voltage domain.
-The remote processor's life cycle management and IPC mechanisms are
-similar across the R5F and M4F cores from remote processor driver
-point of view. However, there are subtle differences in image loading
-and starting the M4F subsystems.
+From: Martyn Welch <martyn.welch@collabora.com>
 
-The YAML binding document provides the various node properties to be
-configured by the consumers of the M4F subsystem.
+We will be adding the M4F driver which shares a lot of commonality
+with the DSP driver. Common data structures are introduced here.
 
 Signed-off-by: Martyn Welch <martyn.welch@collabora.com>
 Signed-off-by: Hari Nagalla <hnagalla@ti.com>
 ---
-Changes since v1:
- - Spelling corrections
- - Corrected to pass DT checks
-
-Changes since v2:
- - Missed spelling correction to commit message
-
-Changes since v3:
- - Removed unnecessary descriptions and used generic memory region names
- - Made mboxes and memory-region optional
- - Removed unrelated items from examples
-
-Changes since v4:
- - Rebased to the latest kernel-next tree
- - Added optional sram memory region for m4f device node
-
 Changes since v5:
- - None
+ - Created a separate patch for data structures to ease review
 
 Changes since v6:
- - Removed blank line, fixed type for firm-ware property and binding check
-   errors.
+ - Reworded 'split' to 'move' as the common data structures between
+   DSP and M4 remote rpoc drivers are moved into common driver.
 
 link to v6:
-  https://lore.kernel.org/all/20230913111644.29889-2-hnagalla@ti.com/
+https://lore.kernel.org/all/20230913111644.29889-3-hnagalla@ti.com/
 
- .../bindings/remoteproc/ti,k3-m4f-rproc.yaml  | 138 ++++++++++++++++++
- 1 file changed, 138 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml
+ drivers/remoteproc/ti_k3_common.h | 107 ++++++++++++++++++++++++++++++
+ 1 file changed, 107 insertions(+)
+ create mode 100644 drivers/remoteproc/ti_k3_common.h
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml
+diff --git a/drivers/remoteproc/ti_k3_common.h b/drivers/remoteproc/ti_k3_common.h
 new file mode 100644
-index 000000000000..645dbce3773b
+index 000000000000..f1bab83dd0fc
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml
-@@ -0,0 +1,138 @@
-+# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/remoteproc/ti,k3-m4f-rproc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/drivers/remoteproc/ti_k3_common.h
+@@ -0,0 +1,107 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * TI K3 Remote Processor(s) driver common code
++ *
++ * Refactored from ti_k3_dsp_remoteproc.c.
++ *
++ * ti_k3_dsp_remoteproc.c:
++ * Copyright (C) 2018-2022 Texas Instruments Incorporated - https://www.ti.com/
++ *	Suman Anna <s-anna@ti.com>
++ */
 +
-+title: TI K3 M4F processor subsystems
++#ifndef REMOTEPROC_TI_K3_COMMON_H
++#define REMOTEPROC_TI_K3_COMMON_H
 +
-+maintainers:
-+  - Hari Nagalla <hnagalla@ti.com>
-+  - Mathieu Poirier <mathieu.poirier@linaro.org>
++#define KEYSTONE_RPROC_LOCAL_ADDRESS_MASK	(SZ_16M - 1)
 +
-+description: |
-+  Some K3 family SoCs have Arm Cortex M4F cores. AM64x is a SoC in K3
-+  family with a M4F core. Typically safety oriented applications may use
-+  the M4F core in isolation without an IPC. Where as some industrial and
-+  home automation applications, may use the M4F core as a remote processor
-+  with IPC communications.
++/**
++ * struct k3_rproc_mem - internal memory structure
++ * @cpu_addr: MPU virtual address of the memory region
++ * @bus_addr: Bus address used to access the memory region
++ * @dev_addr: Device address of the memory region from remote processor view
++ * @size: Size of the memory region
++ */
++struct k3_rproc_mem {
++	void __iomem *cpu_addr;
++	phys_addr_t bus_addr;
++	u32 dev_addr;
++	size_t size;
++};
 +
-+$ref: /schemas/arm/keystone/ti,k3-sci-common.yaml#
++/**
++ * struct k3_rproc_mem_data - memory definitions for a remote processor
++ * @name: name for this memory entry
++ * @dev_addr: device address for the memory entry
++ */
++struct k3_rproc_mem_data {
++	const char *name;
++	const u32 dev_addr;
++};
 +
-+properties:
-+  compatible:
-+    enum:
-+      - ti,am64-m4fss
++/**
++ * struct k3_rproc_dev_data - device data structure for a remote processor
++ * @mems: pointer to memory definitions for a remote processor
++ * @num_mems: number of memory regions in @mems
++ * @boot_align_addr: boot vector address alignment granularity
++ * @uses_lreset: flag to denote the need for local reset management
++ */
++struct k3_rproc_dev_data {
++	const struct k3_rproc_mem_data *mems;
++	u32 num_mems;
++	u32 boot_align_addr;
++	bool uses_lreset;
++};
 +
-+  power-domains:
-+    maxItems: 1
++/**
++ * struct k3_rproc - k3 remote processor driver structure
++ * @dev: cached device pointer
++ * @rproc: remoteproc device handle
++ * @mem: internal memory regions data
++ * @num_mems: number of internal memory regions
++ * @rmem: reserved memory regions data
++ * @num_rmems: number of reserved memory regions
++ * @reset: reset control handle
++ * @data: pointer to device data
++ * @tsp: TI-SCI processor control handle
++ * @ti_sci: TI-SCI handle
++ * @ti_sci_id: TI-SCI device identifier
++ * @mbox: mailbox channel handle
++ * @client: mailbox client to request the mailbox channel
++ */
++struct k3_rproc {
++	struct device *dev;
++	struct rproc *rproc;
++	struct k3_rproc_mem *mem;
++	int num_mems;
++	struct k3_rproc_mem *sram;
++	int num_sram;
++	struct k3_rproc_mem *rmem;
++	int num_rmems;
++	struct reset_control *reset;
++	const struct k3_rproc_dev_data *data;
++	struct ti_sci_proc *tsp;
++	const struct ti_sci_handle *ti_sci;
++	u32 ti_sci_id;
++	struct mbox_chan *mbox;
++	struct mbox_client client;
++};
 +
-+  "#address-cells":
-+    const: 2
-+
-+  "#size-cells":
-+    const: 2
-+
-+  reg:
-+    items:
-+      - description: IRAM internal memory region
-+      - description: DRAM internal memory region
-+
-+  reg-names:
-+    items:
-+      - const: iram
-+      - const: dram
-+
-+  resets:
-+    maxItems: 1
-+
-+  firmware-name:
-+    maxItems: 1
-+    description: Name of firmware to load for the M4F core
-+
-+  mboxes:
-+    description: |
-+      OMAP Mailbox specifier denoting the sub-mailbox, to be used for
-+      communication with the remote processor. This property should match
-+      with the sub-mailbox node used in the firmware image.
-+    maxItems: 1
-+
-+  memory-region:
-+    description: |
-+      phandle to the reserved memory nodes to be associated with the
-+      remoteproc device. The reserved memory nodes should be carveout nodes,
-+      and should be defined with a "no-map" property as per the bindings in
-+      Documentation/devicetree/bindings/reserved-memory/reserved-memory.yaml
-+      Optional memory regions available for firmware specific purposes.
-+    maxItems: 8
-+    items:
-+      - description: regions used for DMA allocations like vrings, vring buffers
-+                     and memory dedicated to firmware's specific purposes.
-+    additionalItems: true
-+
-+  sram:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    maxItems: 4
-+    items:
-+      maxItems: 1
-+    description: |
-+      phandles to reserved on-chip SRAM regions. The regions should be
-+      defined as child nodes of the respective SRAM node, and
-+      should be defined as per the generic bindings in,
-+      Documentation/devicetree/bindings/sram/sram.yaml
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - ti,sci
-+  - ti,sci-dev-id
-+  - ti,sci-proc-ids
-+  - resets
-+  - firmware-name
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    reserved-memory {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+
-+        mcu_m4fss_dma_memory_region: m4f-dma-memory@9cb00000 {
-+            compatible = "shared-dma-pool";
-+            reg = <0x00 0x9cb00000 0x00 0x100000>;
-+            no-map;
-+        };
-+
-+        mcu_m4fss_memory_region: m4f-memory@9cc00000 {
-+            compatible = "shared-dma-pool";
-+            reg = <0x00 0x9cc00000 0x00 0xe00000>;
-+            no-map;
-+        };
-+    };
-+
-+    soc {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+
-+        mailbox0_cluster0: mailbox-0 {
-+            #mbox-cells = <1>;
-+        };
-+
-+        remoteproc@5000000 {
-+            compatible = "ti,am64-m4fss";
-+            reg = <0x00 0x5000000 0x00 0x30000>,
-+                  <0x00 0x5040000 0x00 0x10000>;
-+            reg-names = "iram", "dram";
-+            ti,sci = <&dmsc>;
-+            ti,sci-dev-id = <9>;
-+            ti,sci-proc-ids = <0x18 0xff>;
-+            resets = <&k3_reset 9 1>;
-+            firmware-name = "am62-mcu-m4f0_0-fw";
-+            mboxes = <&mailbox0_cluster0>, <&mbox_m4_0>;
-+            memory-region = <&mcu_m4fss_dma_memory_region>,
-+                            <&mcu_m4fss_memory_region>;
-+            sram = <&oc_sram>;
-+         };
-+    };
++void k3_rproc_kick(struct rproc *rproc, int vqid);
++int k3_rproc_reset(struct k3_rproc *kproc);
++int k3_rproc_release(struct k3_rproc *kproc);
++int k3_rproc_request_mbox(struct rproc *rproc);
++int k3_rproc_prepare(struct rproc *rproc);
++int k3_rproc_unprepare(struct rproc *rproc);
++struct resource_table *k3_get_loaded_rsc_table(struct rproc *rproc,
++					       size_t *rsc_table_sz);
++void *k3_rproc_da_to_va(struct rproc *rproc, u64 da, size_t len,
++			bool *is_iomem);
++int k3_rproc_of_get_memories(struct platform_device *pdev,
++			     struct k3_rproc *kproc);
++int k3_rproc_of_get_sram_memories(struct platform_device *pdev,
++			     struct k3_rproc *kproc);
++int k3_reserved_mem_init(struct k3_rproc *kproc);
++void k3_reserved_mem_exit(struct k3_rproc *kproc);
++struct ti_sci_proc *k3_rproc_of_get_tsp(struct device *dev,
++					const struct ti_sci_handle *sci);
++#endif /* REMOTEPROC_TI_K3_COMMON_H */
 -- 
 2.34.1
 
