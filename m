@@ -1,135 +1,141 @@
-Return-Path: <linux-kernel+bounces-49804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A824D846F96
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:56:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39415846F9A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:56:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA3D6B2652D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:56:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E61A429B368
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:56:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 162E813E22A;
-	Fri,  2 Feb 2024 11:55:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7559513E214;
+	Fri,  2 Feb 2024 11:56:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DgA7bZ9+"
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MnZw4JfQ"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6052C13DB9E
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 11:55:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25591101CA;
+	Fri,  2 Feb 2024 11:56:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706874957; cv=none; b=CTWUW8JWmm6H/DUzc0zSM4cCg1c0ZrS7cPdfhOATX56Unj28B65u9Ljy1LT9u06VKAvwVipmZz4z7+TDsU8eXSV1MyCZkS5U/yfW8zQfjIRqhGgLEu60eldN+iAOlx2loXIGdAbuElUZMpArv7KQhCq8IrDlkE+93l5+uIQm6hQ=
+	t=1706875007; cv=none; b=p7ZhpyJJFYufX8VerWv5nTBfuhhmnXT0GEhbfrvuy7qh3WwlfqbcwWR2X37TRgQ5/LUA5Wr/cdiCCQUYCdyf16jFOxbaV4n1Lzap9/UK18vTfbmpS7A0MK7ZvcGJqWQqu/OnnNmeVnnkF6/oqgYfeJMbh2Lo8b5bK4mQ5Qzmp6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706874957; c=relaxed/simple;
-	bh=g91Q0ZpDjmQ4/6xXzFZi11gjzFbr5zR/z5qLZgpaD6g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lF1Lm3FkN3MYWyS7Vzf86KdqQZm2EHZtIQTjG1l48rXjTX9C9q/eH2x/xp1JOPGnIQbkP+spOl8nrGCYfZ4O6V1sBhOsWCN5XZqiqqRz2SOfdb7MKMTGcKg3/wi2KIYuklytxZOdDL9r3LMwItpBjclCgDt9uIXlpvMi6e2KofA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DgA7bZ9+; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-6002317a427so18133007b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 03:55:54 -0800 (PST)
+	s=arc-20240116; t=1706875007; c=relaxed/simple;
+	bh=HPpXztDKtPpvbFK4baO9rz9dfeoqWBJWdIhwAkDd88c=;
+	h=Content-Type:Mime-Version:Date:Message-Id:To:Cc:Subject:From:
+	 References:In-Reply-To; b=iFdrFxQfWbNFwtd5oScnzy+Bw+wgaCM7gTxaiUP7BIk/l+mLvVrinjOs96X8TCulyTnC5xCf00gdtRAWV8OiDOTj8agG/YGJaSGwR00GZaPAYwgsiC5YHzxF5/JNIsX6Y0FsjLmxvkBcK7jCIe6oSeIMXTEy8MOs3ccDeetaQt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MnZw4JfQ; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55fbbfbc0f5so2796913a12.0;
+        Fri, 02 Feb 2024 03:56:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706874953; x=1707479753; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bLJvGiCen2KRi2n5m7Ep7wuSVWa623lasZLXabxFxdA=;
-        b=DgA7bZ9+xyW61kBeWa6Nwpx0WwrcLY0tt9doj6GydTZvVPFLZ7ZhxtUAe3FCyI4HuW
-         2QGmFJdDZ8owu9KkoIuRQ63bNU4aLIuzQfo6dcnBRJ0xapyt4guRIh/Skve99IRNCAPG
-         xohzdeYWNIapan4q7Pu6c3cDAGV6tDxSq0iWHXbGn0U7ci4EWv/d39BWZr39S0VMYZWO
-         rnRqGMH40tGH1c2aeYBd/tougpYfIH/DYdvSnbQIEXqZ2vaL5dTSbNsYMf+33OdKwGIK
-         yf40pKqKCPmjZe1UwET5MZSFCq8TKdl8H7WuhKwh3OZWmClFVeu+NZ7ob1FCvAdVGUk3
-         Z+cQ==
+        d=gmail.com; s=20230601; t=1706875004; x=1707479804; darn=vger.kernel.org;
+        h=in-reply-to:references:from:subject:cc:to:message-id:date
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GG+S5GHLjupx6ER5keZYLTe4IHoqCrNyuoTCVzg0jo0=;
+        b=MnZw4JfQWV7R3btwobtAUZmJL1huPWqDHRrinoLjL5qxn4HAgX7rvQtR2il4HfiFyH
+         +fkSxzKZT+Fx8cmrksT493Jk73L8JD4mN3zQDEAH7HSG0oVi31hGOkqDM97eR9Vjs5Wy
+         ki9xo36PDhEK9uQYnKyG+0zYvOuHyV+WXOVM4x7dxrTASZxmTFjBkaHpaPSmuXzDusI/
+         zCsZiXc8iAYPPJEPoAhxkzeCPRN2AuGI6sTSOx5rrJdgO0EFjN8FQpnsZntcnqFUkx26
+         MptqPsoelNiy1l4LSg4k1KD5qKhVyZJ3pS450NOKFiDVW2/HREwueFsgKl5OcGPS4NmI
+         s+SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706874953; x=1707479753;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bLJvGiCen2KRi2n5m7Ep7wuSVWa623lasZLXabxFxdA=;
-        b=ZHJRHU5FqPA27n3WkjibJOAkRHBbbPh1CwZo/FG5FyKWetVx3Nl8yTab84NxemW0/Z
-         P0HfT0He9sM1HAOVw2AmhE3oj+TcfpOmesbfN/IEO+twj0cmCxEGWf/WIbB20GB7m9GV
-         RyKGbhgGnirtk25UROuwMqz0m0TK/xptVUIc05Vlv87ufihIH11ftC2ohPf+fI0SiiKL
-         +72xCSqLVmjijPA7BixbzD1FecuN8X5KoM3IOZ4ONdEzGgDA3tuh56k8uNlGS8oiObRW
-         HRUI4NBZytDkpRxG5mMBZNBaAnwp89Riwr/FfdeZZz0/LrrJHLsIXtiA9sC7X8kR7FXE
-         SB2g==
-X-Gm-Message-State: AOJu0YzegL73hCN1BnNZIkGgN6m2uows2svIe6nY5tZNqM5X5Uknfvnl
-	63vwAhU7bbYvbn8hjKS2eZjV6uaoBxBJ3eY2v53XQKEVUcD2NAfL6gjoekWh9jkooVMeG2UUBfG
-	JfK9H5Jcmrs20mBKLTQEL958tGxds79V5FUh6zg==
-X-Google-Smtp-Source: AGHT+IGuG87J1tpRztpBCjH78cb2e+f8F3ZKLbi/Mfd0sjd5znLbq3M8sHVCtkIXi/YM1R2Qz/IsLAZiyThdiNwKfqU=
-X-Received: by 2002:a0d:db93:0:b0:5fc:1349:87b8 with SMTP id
- d141-20020a0ddb93000000b005fc134987b8mr8758213ywe.43.1706874953312; Fri, 02
- Feb 2024 03:55:53 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706875004; x=1707479804;
+        h=in-reply-to:references:from:subject:cc:to:message-id:date
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GG+S5GHLjupx6ER5keZYLTe4IHoqCrNyuoTCVzg0jo0=;
+        b=QGz8c19k9+Q0DYCRXYtxGQ7JL3yes1lAop8vRnWec84JrDAJrY8bgv00QINqEYgVub
+         VSjVeuvWsl3yZSGLXMffzqfZwzGWIAALDwn4hG0FfVVEO00zQP52AWiXWj9rqdu9Wjlc
+         Mkj5hMfjR4Z5W5DbtI5uC4EjZxF4KPctOlp4vOIIyLwpRZB2w/3lRSVByfTnfY1zRL9M
+         aZLw2kyIhTge62TmaSgi/WsiHsTxcpU4vlgsOFygGVY14xLX4rqKLjnL8qj9CXM0vxx6
+         wOmgKe4MbcKM9RqbTPMKd//UKD+WYsQ3YEN9tc1h1o5V0zNdLdvx3d4gF53Wqkek1Vw6
+         1QMQ==
+X-Gm-Message-State: AOJu0YybQkHhTkW/M0nchEtOBfRqSuhmB3Khp/RT0SGC9tksuC5oksqS
+	59d36w4nUgpwXNehKX/zAKsVu4I3K3X3NuMIli6t2/9JB7ScxLoH1L1a3cYh
+X-Google-Smtp-Source: AGHT+IFVhaTCP6oR6YqmOW2BRG8uTZ9wmXSTxUarlqKneiLmehcQMO5JzmUscfkCox5rMbEmuO50EA==
+X-Received: by 2002:a17:906:5789:b0:a36:6c98:a506 with SMTP id k9-20020a170906578900b00a366c98a506mr1625202ejq.18.1706875003912;
+        Fri, 02 Feb 2024 03:56:43 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCW5dI5nuJyVEmffMPO+6v4Jj4YjyRyStV61K5coisKkUpFZwVttW+iKe9Vpaqf6dAA3OP3sKD55cFsjMNfame5Bt1LkIO29kFRRRDzowvWVJEQtFBNiCN43aQr4xkLtBSQGH58iei2pLm3Tt28mnhp7PIjLtPfG5oJjyHoME4QuWDCU7y0y6t9bm7jown07s8XNBc7zz0yuCCEbkFY3S23TcPwjIFP0TX0JBanMMkObXjRUqNw5vc0B38HhFyt04RlKtrFBYV8n4B6/VdJq4aZYFE4Vn8fq3D47UtJwUaZlq3Wf/nV3Zw055a7eyNclkKp8uZxOHc8vTVEtO5mzGhs43e6Dli7LdJZMJahSQ742V23J4V5s1rIMphueZTDty+1Y7ytB1S44anJY8ufcvcOGg7JcU2zzogWS9PASM2BcJiPd8DkvCYojLhsJVGZ67w==
+Received: from localhost (p200300e41f147f00f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f14:7f00:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id o8-20020a17090611c800b00a36efbc8a0csm810284eja.142.2024.02.02.03.56.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Feb 2024 03:56:43 -0800 (PST)
+Content-Type: multipart/signed;
+ boundary=e24b41a4f26a8b9a10d9406ab403ef394b90d058a9a15d50ac8b9824a485;
+ micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240106223951.387067-1-aford173@gmail.com> <20240106223951.387067-2-aford173@gmail.com>
- <CAPDyKFpx_Xo6Y5yGfuMiV8w3kR2hL6f8t31pKC=91-wEperqjA@mail.gmail.com> <CAHCN7xLqKTAcVpsBYXmzdvSefOnXdXzzrGie7mxkzeJLFKu+Rw@mail.gmail.com>
-In-Reply-To: <CAHCN7xLqKTAcVpsBYXmzdvSefOnXdXzzrGie7mxkzeJLFKu+Rw@mail.gmail.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Fri, 2 Feb 2024 12:55:17 +0100
-Message-ID: <CAPDyKFr9q4mio8cVsZ66PQuvLC_zpxTT_E-QUDRy1Df09DcdtA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] pmdomain: imx8mp-blk-ctrl: imx8mp_blk: Add fdcc clock
- to hdmimix domain
-To: Adam Ford <aford173@gmail.com>
-Cc: linux-pm@vger.kernel.org, Sandor Yu <Sandor.yu@nxp.com>, 
-	Jacky Bai <ping.bai@nxp.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
-	NXP Linux Team <linux-imx@nxp.com>, Lucas Stach <l.stach@pengutronix.de>, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Date: Fri, 02 Feb 2024 12:56:42 +0100
+Message-Id: <CYUKOVAO5YVL.3TA1O4LH0488B@gmail.com>
+To: "Thierry Reding" <thierry.reding@gmail.com>, "Alexandre Torgue"
+ <alexandre.torgue@foss.st.com>, "Jose Abreu" <joabreu@synopsys.com>, "David
+ S. Miller" <davem@davemloft.net>, "Eric Dumazet" <edumazet@google.com>,
+ "Jakub Kicinski" <kuba@kernel.org>, "Paolo Abeni" <pabeni@redhat.com>
+Cc: <netdev@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-tegra@vger.kernel.org>, "Thierry Reding" <treding@nvidia.com>
+Subject: Re: [PATCH net-next 1/3] net: stmmac: Pass resources to DT parsing
+ code
+From: "Thierry Reding" <thierry.reding@gmail.com>
+X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
+References: <20240201-stmmac-axi-config-v1-0-822e97b2d26e@nvidia.com>
+ <20240201-stmmac-axi-config-v1-1-822e97b2d26e@nvidia.com>
+In-Reply-To: <20240201-stmmac-axi-config-v1-1-822e97b2d26e@nvidia.com>
+
+--e24b41a4f26a8b9a10d9406ab403ef394b90d058a9a15d50ac8b9824a485
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-On Fri, 2 Feb 2024 at 01:17, Adam Ford <aford173@gmail.com> wrote:
->
-> On Thu, Feb 1, 2024 at 4:33=E2=80=AFPM Ulf Hansson <ulf.hansson@linaro.or=
-g> wrote:
-> >
-> > On Sat, 6 Jan 2024 at 23:40, Adam Ford <aford173@gmail.com> wrote:
-> > >
-> > > According to i.MX8MP RM and HDMI ADD, the fdcc clock is part of
-> > > hdmi rx verification IP that should not enable for HDMI TX.
-> > > But actually if the clock is disabled before HDMI/LCDIF probe,
-> > > LCDIF will not get pixel clock from HDMI PHY and print the error
-> > > logs:
-> > >
-> > > [CRTC:39:crtc-2] vblank wait timed out
-> > > WARNING: CPU: 2 PID: 9 at drivers/gpu/drm/drm_atomic_helper.c:1634 dr=
-m_atomic_helper_wait_for_vblanks.part.0+0x23c/0x260
-> > >
-> > > Add fdcc clock to LCDIF and HDMI TX power domains to fix the issue.
-> > >
-> > > Signed-off-by: Sandor Yu <Sandor.yu@nxp.com>
-> > > Reviewed-by: Jacky Bai <ping.bai@nxp.com>
-> > > Signed-off-by: Adam Ford <aford173@gmail.com>
-> >
-> > Just to let you know, this looks good to me and it seems like the NXP
-> > people like this too. What I am waiting for is an ack on the DT patch,
-> > then I am ready to queue this up.
->
-> What about the bindings?  I'm assuming that Shawn would take the DT
-> through his IMX tree, but I am not sure if I need to resubmit the
-> bindings with a different commit message.
-
-I am usually trying to help with patch1 and patch2 for pmdomain
-related changes - and I am sharing new/updated DT bindings on an
-immutable "dt" branch. Then Shawn can pull in that branch and apply
-patch3 to his tree.
-
-So, I need an ack on patch1 from some of the DT maintainers to go
-ahead. Unless you want to manage this entirely through Shawn's tree,
-that works too. Just let me know.
-
+On Thu Feb 1, 2024 at 7:49 PM CET, Thierry Reding wrote:
 [...]
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/driv=
+ers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+[...]
+> @@ -605,7 +606,7 @@ stmmac_probe_config_dt(struct platform_device *pdev, =
+u8 *mac)
+> =20
+>  	of_property_read_u32(np, "snps,ps-speed", &plat->mac_port_sel_speed);
+> =20
+> -	plat->axi =3D stmmac_axi_setup(pdev);
+> +	plat->axi =3D stmmac_axi_setup(pdev, res);
 
-Kind regards
-Uffe
+Looks like I messed up splitting these changes, so this will actually
+fail to build before patch 2. I've sent out an updated v2 that I've
+explicitly tested for bisectability.
+
+Sorry for not catching this earlier.
+
+Thierry
+
+--e24b41a4f26a8b9a10d9406ab403ef394b90d058a9a15d50ac8b9824a485
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmW82HsACgkQ3SOs138+
+s6HByA//T7KnD4H8sVbYiDUKxEteI4BxxUWpTFvQCch43SAhItvc5yB+OqDK13y9
+ZlxwjJOht8LZZPUHMNP3u0sZSP8A+SzkOdMaFayTTWi0rep+SxwroYkbftIyXc+1
++h7nUVp6YitkAFl7wYWpx4G9aDawDc5+qH0WPgxA+g877bE5iyY8RdssTVqj+2BK
+OSomWN5F6tjK7ZzEVPa1d7otssjzmrsRWOq+e0EAkFShWELfPnbFaDpUtwNPfrmM
+tRLzbuuvqxVDhUvS+ciFYFEq11mG7fp3FiiNFgFKlr2S4Iup5Tv+fyETk9W+rJ7T
+7diy09G2yzxDFYbFdlA+2gUYZONuK+S1G1qbEHefgT5ea2iBUnSxk+xeiEkawQU6
+1hetSvJYKgPZcS7H9ulZi1igX9+3gGSg/O6OnIq19Ka02/dOHbu6/XVHMQ4jftmK
+f4TSeZJOEQ+X2MWRMyXz2jbdNIrC4l/21A+J/7uetVbEc+PC2LyAbuAzNIvwsmt0
+wG+FFS4KyN6vNvsOsIy0si/e7WVgxdEughzkerOgXk83ha0XYC5/J41nN02qGxg6
+//P16mJOVi/LBpwFiSEkndRJxw+YsTgl32NRCAdoSv49IB6aWlz3FPHENKBx8fBc
+3govTWDRwfkaF14qTuzuCpNZzyRomHDie1T7Uc4g0AsbxYXjLRY=
+=pstN
+-----END PGP SIGNATURE-----
+
+--e24b41a4f26a8b9a10d9406ab403ef394b90d058a9a15d50ac8b9824a485--
 
