@@ -1,78 +1,100 @@
-Return-Path: <linux-kernel+bounces-50713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF617847D29
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:37:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 591BB847D2C
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:38:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6D05B27609
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:37:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C1D01C216CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:38:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE39512C81A;
-	Fri,  2 Feb 2024 23:37:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DE7A12C81D;
+	Fri,  2 Feb 2024 23:38:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qGpBwyDD"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="yB/e/tJf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDA1112C812
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 23:37:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EA7C5B697;
+	Fri,  2 Feb 2024 23:38:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706917055; cv=none; b=jK2opMAqGgg8Gx5hpTpMXnaWmJyXdAIYKGiWMm+stZ+AXnr8+zrWlOzkRN02rW1jZoyO40FHI8B6V/+ALrXOaJcQc6BGMBOSfW7JfMUnAEb7C8tXo2kKETebcF/Mwv4ZGBUr5hWHwhwz7dq6IIWm5M3YInXzi3VZk9jEkDRaaiQ=
+	t=1706917088; cv=none; b=bOeBO75rWJFqYS5C0zbgmWTbaxznpT0DlFgKxOfM6RAwUfvufr1u+Ac/HPhk/9gfHhOa6ZZ7cb03Ra6nMFBJUfKEmKmK2+AdH1u8uVyrxU+OxWqZQedbNt7XptXEUBeoZH1O7t8Q22dbJT32uRY17bpNkqoBIlloLGm4hkPqx0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706917055; c=relaxed/simple;
-	bh=0xM83qA5gSBmYQJJ51KBdnNu1e4DUh1raPgYy7TTdns=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=qikKMGVOv2wVVy6EJOlViSA8t9Eg8TSadHUnjrEyoPsYqywW1OS3lPhzZOOIctN60RrZj1O1lm5fGcUWFSK9SoHrktQ8iLIt/QkCnp/aLeOzqR0G96cNb5Ki11KIUiTf5pQiRPj4x1i3qUychNT6SOaUPdRSTgm1KCbWRIzX+JY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qGpBwyDD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BD424C433F1;
-	Fri,  2 Feb 2024 23:37:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706917054;
-	bh=0xM83qA5gSBmYQJJ51KBdnNu1e4DUh1raPgYy7TTdns=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=qGpBwyDDITlY181dvWIC+Z97wTOx5D+ZDUPHxSPAm9bP1Rby5zF5bD0hdwwrlZbzh
-	 rkvEoBi0D70LTR5oPXMH9lWnKQG3MGtxugOWfPtNrXsDbLT1TAb71FIcISRfkSLEaI
-	 JFJup6cam+jQgrqYhExk6zKZWgdBlT4L0xq1y+s7dMvPFd4gmnagk7JyoXU71TnUDh
-	 ZN/0olvprbmV4RsKVcmYRi1xOCeMFvP+c9F2XV5tfi0rruUvl/L07jhiFCWWxubW14
-	 0aV71uvFaYr3IWMnHfQqhbyNZ/5QJNYUZbNMf5+pqXmnR899iNE+CkS3+WnRyRoRbu
-	 dtxWk46uHXcFg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A9DAFC04E27;
-	Fri,  2 Feb 2024 23:37:34 +0000 (UTC)
-Subject: Re: [GIT PULL] tracing/eventfs: Fixes for 6.8
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240202170446.005f8b01@gandalf.local.home>
-References: <20240202170446.005f8b01@gandalf.local.home>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20240202170446.005f8b01@gandalf.local.home>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git trace-v6.8-rc2
-X-PR-Tracked-Commit-Id: ca185770db914869ff9fe773bac5e0e5e4165b83
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 56897d51886fa7e9f034ff26128eb09f1b811594
-Message-Id: <170691705468.22657.6567895122445146376.pr-tracker-bot@kernel.org>
-Date: Fri, 02 Feb 2024 23:37:34 +0000
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Al Viro <viro@ZenIV.linux.org.uk>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Mark Rutland <mark.rutland@arm.com>, Daniel Bristot de Oliveira <bristot@kernel.org>, Vincent Donnefort <vdonnefort@google.com>
+	s=arc-20240116; t=1706917088; c=relaxed/simple;
+	bh=aGafW+AuanYuQZedcyvo9CsIkWE3LqB3BWtfCaod+iA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ukc2+DrZEj9BJzs4ZBfxA2iNLH8m+4M++/Yt8Od9TozOeryGhfScOKQjhddKyGjL/W5VuxhYRYZ3smICHEYf/3MSciJpx0J8Q/A05s6IJOlvoKT+TYjV8QAVLHxE46TlmpBl3edRDCp7nPM59oICx33FZpbH940D7UQC8viOKOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=yB/e/tJf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E89AC433C7;
+	Fri,  2 Feb 2024 23:38:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1706917087;
+	bh=aGafW+AuanYuQZedcyvo9CsIkWE3LqB3BWtfCaod+iA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=yB/e/tJfVi4GSFcStZoVf6gdrzwDzzBD/18SbsHCvLff+CA24l2sk2KGeTooU2Aov
+	 pf0f3eJC7DiBXU/4wBBUxNaTgEpZg0PMy4e+2BUnwTfsM6oN+Z/rIKzcuehkwjLNuz
+	 FsBBYxoj0PWvI3k4Pzocj0rHAD8140unw5fPmQ90=
+Date: Fri, 2 Feb 2024 15:38:06 -0800
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Hamza Mahfooz <hamza.mahfooz@amd.com>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Lijo Lazar <lijo.lazar@amd.com>,
+	Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+	Le Ma <le.ma@amd.com>,
+	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+	James Zhu <James.Zhu@amd.com>,
+	Aurabindo Pillai <aurabindo.pillai@amd.com>,
+	Joerg Roedel <jroedel@suse.de>,
+	Iwona Winiarska <iwona.winiarska@intel.com>,
+	Robin Murphy <robin.murphy@arm.com>, amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 1/3] driver core: bus: introduce can_remove()
+Message-ID: <2024020224-unsoiled-velcro-86af@gregkh>
+References: <20240202222603.141240-1-hamza.mahfooz@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240202222603.141240-1-hamza.mahfooz@amd.com>
 
-The pull request you sent on Fri, 2 Feb 2024 17:04:46 -0500:
+On Fri, Feb 02, 2024 at 05:25:54PM -0500, Hamza Mahfooz wrote:
+> Currently, drivers have no mechanism to block requests to unbind
+> devices.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git trace-v6.8-rc2
+And that is by design.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/56897d51886fa7e9f034ff26128eb09f1b811594
+> However, this can cause resource leaks and leave the device in
+> an inconsistent state, such that rebinding the device may cause a hang
+> or otherwise prevent the device from being rebound.
 
-Thank you!
+That is a driver bug, please fix your driver.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> So, introduce the can_remove() callback to allow drivers to indicate
+> if it isn't appropriate to remove a device at the given time.
+
+Nope, sorry, the driver needs to be fixed.
+
+What broken driver are you needing this for?
+
+Also realize, only root can unbind drivers (and it can also unload
+modules), so if the root user really wants to do this, it can, and
+should be possible to.
+
+sorry,
+
+greg k-h
 
