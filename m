@@ -1,186 +1,184 @@
-Return-Path: <linux-kernel+bounces-50606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BF54847B81
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:28:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AEE6847B87
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:31:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 405C11C24225
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:28:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B11BB27DB0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:31:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1CB58175F;
-	Fri,  2 Feb 2024 21:28:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7624B839EE;
+	Fri,  2 Feb 2024 21:31:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="X65ntk3Y"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="kJYzCHo6";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KsqblSve"
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9560A210E0
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 21:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 472DD7CF3F;
+	Fri,  2 Feb 2024 21:31:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706909320; cv=none; b=YTtpos7cCJigccx7bd3Up+dhqhn2Xhg5ZKUXayvwik9rEjxbUGUDxcVhF3K42JbrUX5UTd2mKNDTXbpwHHYUWZLaGc+7qtQp4plo/CR0YxJWzX+WJkFvl4KR5CGKi09rNPs677FyXC+1t3Lnz5WkXgwESBq6OnrDzjIDbNxVwYk=
+	t=1706909490; cv=none; b=s6QGXtodnyuUIO+jZF/rDaMAXN1osLgR2lDfoTqYdav5rxLhLo3FK4G9ILFz73u2wPTLtQGMMI2UsBipG7fTslCO8NHPNn6LLQS6x9671bIRaeCnWrI2k1/JXOrm5kIkEfEF/zNct1j9k1jdDM/akgOI0bYIiFOAoO/yjc4Kwgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706909320; c=relaxed/simple;
-	bh=XyjPHGndI+MoNCSsW1aIE1c7E7oe1Y7s3NJJa14+lOU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=FAA9ZVZOq4XVA9viWmYvrwFIq/lcALh6cmwfLeM91Qfrf9ZVLZewOtGiT5CQo2HBV/k6IKjAUoc+8JEUOvYknAdpLwH7ISwM2qIKLSjcyH+8+H5ENv6JV/oqHJGfItaCPNwOHLzMxW7oHAw0pfAKzy0hfamtRlvGD7ai+N9HWfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=X65ntk3Y; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 412LMQDx006438;
-	Fri, 2 Feb 2024 21:28:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=upT5E8WhMh+NpFZBlCi3M+42Wgyud0gZF/cyZtkROsc=;
- b=X65ntk3YyV3vO98fo2eZRKHuwpceBC24S7RxLYGdouicoFNtw/ug4Ud93XHhgH3mpIWa
- i4OmhblNWT2ckGAkaDMwcAz/6NYTpgVRP7GyFCvsplz9A5ibi7IAx2sjUhShPqJPgOFE
- xLzTxzCIu/c6ZtRd9R46v/gYUeC/eB2OxlnP1m/zok6IHUVDjNgqyg2nHqg8X8nC6XyA
- 8jFx6FEG7tYsTadWfFOqfXuVsV4wYZ1sWKCZD56yMpNyjyYH+bANrrE+LsIAOI3zZyzQ
- xKHFD+BUTCBv2CAuBi2JHoQ+j1MkHX0IcL21YMm6qIjg+pkCpFwgWz0TanJIEfcbedqs VQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w188br3by-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Feb 2024 21:28:10 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 412LMS21006461;
-	Fri, 2 Feb 2024 21:28:10 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w188br3b8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Feb 2024 21:28:10 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 412KXu0k007168;
-	Fri, 2 Feb 2024 21:28:09 GMT
-Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vwev2wgup-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Feb 2024 21:28:09 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 412LS8bq20120294
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 2 Feb 2024 21:28:08 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8A14058058;
-	Fri,  2 Feb 2024 21:28:08 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B440958057;
-	Fri,  2 Feb 2024 21:28:03 +0000 (GMT)
-Received: from [172.22.1.223] (unknown [9.67.185.238])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  2 Feb 2024 21:28:03 +0000 (GMT)
-Message-ID: <6ccd8c7998542f1ac68514700fb9e31049a3a3c7.camel@linux.ibm.com>
-Subject: Re: [PATCH 1/2] x86/random: Retry on RDSEED failure
-From: James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Reshetova, Elena"
- <elena.reshetova@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov
- <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
-        "x86@kernel.org"
- <x86@kernel.org>,
-        Kuppuswamy Sathyanarayanan
- <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Nakajima, Jun"
- <jun.nakajima@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Kalra,
- Ashish" <ashish.kalra@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date: Fri, 02 Feb 2024 22:28:01 +0100
-In-Reply-To: <20240202160515.GC119530@mit.edu>
-References: 
-	<DM8PR11MB5750B861F7A105886AA5FCE4E77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
-	 <CAHmME9oJvbZgT4yT9Vydc2ZQVSo3Ea65G5aVK7gFxphkV00BnQ@mail.gmail.com>
-	 <20240131140756.GB2356784@mit.edu> <Zbpc8tppxuKr-hnN@zx2c4.com>
-	 <20240131171042.GA2371371@mit.edu>
-	 <DM8PR11MB5750C7D16DC566CD1329D5A5E77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
-	 <CAHmME9q-eUXnXnpaDu0VOQemOYysst7SaJ-=b8-vCFP9h50Szg@mail.gmail.com>
-	 <20240201045710.GD2356784@mit.edu>
-	 <CAHmME9oqM2a766dBK22-yKr8=2-icg=UkQzmBOF8G5Zh_Y9E9w@mail.gmail.com>
-	 <ad1a131a006bf98a506e767a01f5022358b3e291.camel@linux.ibm.com>
-	 <20240202160515.GC119530@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	s=arc-20240116; t=1706909490; c=relaxed/simple;
+	bh=GZn2RPQk6SbEn/s/Sbfuic93/awRSAyfMfvV1+Vrw1w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LSoMHAPq/i83gj1bVtANQnVnXHt0wjg2TrcZ8XB2bV1DuA+n2BEV6rp+r0gYMir4Humaqu7WNRuWeUkovwR2IILm558b5dO1qZTOeyGC7WyeAUa/5G/o5fwoUOYV9wpSSXw2FNBIOcDCQQG75IUMH8dhPK6WUNlJwr2p4VZ6MZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=kJYzCHo6; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KsqblSve; arc=none smtp.client-ip=64.147.123.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.west.internal (Postfix) with ESMTP id 3DC403200A48;
+	Fri,  2 Feb 2024 16:31:26 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Fri, 02 Feb 2024 16:31:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1706909485;
+	 x=1706995885; bh=DYDb62ASAO+7468yzkEHNBIMHhgVPwqNfMHXZN7z5uY=; b=
+	kJYzCHo67NJQ+tGmByKa44EmqkmF2dI+rInMf7dUKlALkvfBwObk5SJ8JimFrvA3
+	aryt9i0hqElHcNR9A2RVfqU+H9VYSGbEJgcQyq+gzVSGAtX/x/OwEBXkUHHwSkWP
+	lXeZvBYZUo49eURQ5ZSDTJ81MpE55L/N+fJgYWErxyfMSaKnydVYqzeRk1X9lFYF
+	EXAdQ5l0Qkm4/qVVs6qu1DFGcM2vF6fQxgX8kbbwKbrvoqHg4OQ27V0TqlkR/9/+
+	KXvNSZmfgLpCja0wxebxTh9lQv1USNEiO1xVdSyecr3T24pnp2xxSa7oUMWaST8p
+	v0IzkXIvBCzKQmEdMPuf2g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706909485; x=
+	1706995885; bh=DYDb62ASAO+7468yzkEHNBIMHhgVPwqNfMHXZN7z5uY=; b=K
+	sqblSve46eltPJrilQStnN11oNRppN3TF9Taba6gsmyPCf2t3Ojlo8qA8Gy7jVDJ
+	RFNmdhN/Lr70NAL0KZMROL0EGugO0A5h39guVya5JYU2WUDYY1AllwQIPg7i2ek9
+	IuZ9fZJh45t6LEJWhNWMPPlVCXoIl3JTEAEblqpqCDqlZNxDm2RTzUup82rxIsxa
+	xLAXxXTrE7a1SL8GbKQVZPAvG5n843MUrAC7R0CaoE+hD3mQDFjrV+EJBceq2aMO
+	tW6iRHX0nKJT1be3EFEk2xKQnCCIUKVm7EXakV+dH5zxT9vhX4efGoAAGoiFdxlR
+	5Ck6Oe0AyUlUt++C2ulQw==
+X-ME-Sender: <xms:LV-9ZVx48v-V-bwZB-wqFFpqrY6Ny-Mg4RoCswEqwytVJofBZWoTdw>
+    <xme:LV-9ZVQDJtfcF3FJav-8dOT4SX7Cf4k-HIirPYrOU4RKb30LjFlBSutKVqKPjy1-g
+    xB_X4DSy-PlM0rjMQ8>
+X-ME-Received: <xmr:LV-9ZfU6_aIZTRY3uhYQlrci08XJNR_VYarpk-kQz_2-1syiLWgNtoL_xVItA11STS_f_FKRZC_1HN5-UPjrKZAtsiP-H-Mhv9ySPJs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedugedgudegjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefkffggfgfuvfevfhfhjggtgfesthekredttddvjeenucfhrhhomheplfhi
+    rgiguhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqe
+    enucggtffrrghtthgvrhhnpeelueffheehgeeluedvlefghfeukeejteeuveeuhffftdfg
+    uefhgefgueekffeftdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:LV-9ZXikif2PPF1vsmVBQ84PS5-rwOLZ--KwPBsSWDDEb3wZ8wHd2g>
+    <xmx:LV-9ZXCbQog9GHS81eQOYt3k07P96ecJ_6Z9TnELCXbMBeYTn1y7Mg>
+    <xmx:LV-9ZQJrKcjlsNDaEsPY6qYi4j6QeLlAP9TMOwPMlIdmHcURX2xH4g>
+    <xmx:LV-9Zb3KdCuyAXjjmzigjrPisMcR-k3h27zTUZBKTf6UeeK7UCw1gA>
+Feedback-ID: ifd894703:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 2 Feb 2024 16:31:23 -0500 (EST)
+Message-ID: <21ed604c-8607-43b7-853a-9bd1623bd918@flygoat.com>
+Date: Fri, 2 Feb 2024 21:31:22 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/3] Handle delay slot for extable lookup
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Oleg Nesterov <oleg@redhat.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Ben Hutchings <ben@decadent.org.uk>,
+ linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-mm@kvack.org,
+ Xi Ruoyao <xry111@xry111.site>
+References: <20240202-exception_ip-v2-0-e6894d5ce705@flygoat.com>
+ <CAHk-=wiaSjYApqmUYCdCyYfr_bRsfVKDkwU6r6FMmoZzrxHrKQ@mail.gmail.com>
+Content-Language: en-US
+From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Autocrypt: addr=jiaxun.yang@flygoat.com;
+ keydata= xsFNBFnp/kwBEADEHKlSYJNLpFE1HPHfvsxjggAIK3ZtHTj5iLuRkEHDPiyyiLtmIgimmD3+
+ XN/uu2k1FFbrYiYgMjpGCXeRtdCLqkd+g9V4kYMlgi4MPHLt3XEuHcoKD1Yd2qYPT/OiQeGM
+ 6bPtGUZlgfOpze1XuqHQ2VMWATL+kLYzk6FUUL715t8J5J9TgZBvSy8zc6gvpp3awsCwjFSv
+ X3fiPMTC2dIiiMh4rKQKGboI1c7svgu6blHpy/Q5pXlEVqfLc7tFTGnvUp95jsK639GD8Ht3
+ 0fSBxHGrTslrT775Aqi+1IsbJKBOmxIuU9eUGBUaZ00beGE09ovxiz2n2JKXKKZklNqhzifb
+ 6uyVCOKdckR8uGqzRuohxDS7vlDZfFD5Z5OhplFY/9q+2IjCrWMmbHGSWYs9VV52XGM+wiEG
+ sM5bup03N2q1kDXUWJ+zNNYowuOJKN9uxF3jBjdXSDi3uJu/ZUL/mBqI58SkHq5NTaHypRoE
+ 5BxVmgDMCGQe93adKHUNmt4HK28R506S7019+umg1bq5vA/ncmh/J2k8MFGPXqO8t1xVI2O5
+ qrRheRKu1oST46ZJ7vKET1UwgcXTZ1iwqFlA26/iKxXoL7R7/AqWrapokEsUzRblGcutGZ/b
+ 4lJVOxxAWaRcajpWvwqscI2mUF++O7DxYbhOJ/EFY2rv0i6+/QARAQABzSVKaWF4dW4gWWFu
+ ZyA8amlheHVuLnlhbmdAZmx5Z29hdC5jb20+wsGRBBMBCAA7AhsjAh4BAheABQsJCAcCBhUK
+ CQgLAgQWAgMBFiEEmAN5vv6/v0d+oE75wRGUkHP8D2cFAmKcjj8CGQEACgkQwRGUkHP8D2fx
+ LxAAuNjknjfMBXIwEDpY+L2KMMU4V5rvTBATQ0dHZZzTlmTJuEduj/YdlVo0uTClRr9qkfEr
+ Nfdr/YIS6BN6Am1x6nF2PAqHu/MkTNNFSAFiABh35hcm032jhrZVqLgAPLeydwQguIR8KXQB
+ pP6S/jL3c7mUvVkoYy2g5PE1eH1MPeBwkg/r/ib9qNJSTuJH3SXnfZ4zoynvf3ipqnHsn2Sa
+ 90Ta0Bux6ZgXIVlTL+LRDU88LISTpjBITyzn5F6fNEArxNDQFm4yrbPNbpWJXml50AWqsywp
+ q9jRpu9Ly4qX2szkruJ/EnnAuS/FbEd4Agx2KZFb6LxxGAr4useXn6vab9p1bwRVBzfiXzqR
+ WeTRAqwmJtdvzyo3tpkLmNC/jC3UsjqgfyBtiDSQzq0pSu7baOjvCGiRgeDCRSWq/T3HGZug
+ 02QAi0Wwt/k5DX7jJS4Z5AAkfimXG3gq2nhiA6R995bYRyO8nIa+jmkMlYRFkwWdead3i/a0
+ zrtUyfZnIyWxUOsqHrfsN45rF2b0wHGpnFUfnR3Paa4my1uuwfp4BI6ZDVSVjz0oFBJ5y39A
+ DCvFSpJkiJM/q71Erhyqn6c1weRnMok3hmG0rZ8RCSh5t7HllmyUUWe4OT97d5dhI7K/rnhc
+ ze8vkrTNT6/fOvyPFqpSgYRDXGz2qboX/P6MG3zOOARlnqgjEgorBgEEAZdVAQUBAQdAUBqi
+ bYcf0EGVya3wlwRABMwYsMimlsLEzvE4cKwoZzEDAQgHwsF2BBgBCAAgFiEEmAN5vv6/v0d+
+ oE75wRGUkHP8D2cFAmWeqCMCGwwACgkQwRGUkHP8D2dXlw/8CGKNXDloh1d7v/jDgcPPmlXd
+ lQ4hssICgi6D+9aj3qYChIyuaNncRsUEOYvTmZoCHgQ6ymUUUBDuuog1KpuP3Ap8Pa3r5Tr6
+ TXtOl6Zi23ZWsrmthuYtJ8Yn5brxs6KQ5k4vCTkbF8ukue4Xl4O0RVlaIgJihJHZTfd9rUZy
+ QugM8X98iLuUqYHCq2bAXHOq9h+mTLrhdy09dUalFyhOVejWMftULGfoXnRVz6OaHSBjTz5P
+ HwZDAFChOUUR6vh31Lac2exTqtY/g+TjiUbXUPDEzN4mENACF/Aw+783v5CSEkSNYNxrCdt8
+ 5+MRdhcj7y1wGfnSsKubHTOkBQJSanNr0cZZlPsJK0gxB2YTG6Nin13oX8mV7sAa3vBqqwfj
+ ZtjNA+Up9IJY4Iz5upykUDAtCcvm82UnJoe5bMuoiyVccuqd5K/058AAxWv8fIvB4bSgmGMM
+ aAN9l7GLyi4NhsKCCcAGSc2YAsxFrH6whVqY6JIF+08n1kur5ULrEKHpTTeffwajCgZPWpFc
+ 7Mg2PDpoOwdpKLKlmIpyDexGVH0Lj/ycBL8ujDYZ2tA9HhEaO4dW6zsQyt1v6mZffpWK+ZXb
+ Cs8oFeACbrtNFF0nhNI6LUPH3oaVOkUoRQUYDuX6mIc4VTwMA8EoZlueKEHfZIKrRf2QYbOZ
+ HVO98ZmbMeg=
+In-Reply-To: <CAHk-=wiaSjYApqmUYCdCyYfr_bRsfVKDkwU6r6FMmoZzrxHrKQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: aE7ZWHsxFs8wPydSK9e4wmzWrzuxXahb
-X-Proofpoint-ORIG-GUID: qTUk9b7EiQk_odhnwMryDIq1QGThG6DZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-02_14,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 malwarescore=0 phishscore=0 mlxlogscore=999 spamscore=0
- clxscore=1015 impostorscore=0 mlxscore=0 adultscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402020158
-
-On Fri, 2024-02-02 at 11:05 -0500, Theodore Ts'o wrote:
-> On Fri, Feb 02, 2024 at 04:47:11PM +0100, James Bottomley wrote:
-> > 
-> > It's a lot to quote, so I cut it, but all of your solutions assume
-> > a rdseed/rdrand failure equates to a system one but it really
-> > doesn't: in most systems there are other entropy sources.  In
-> > confidential computing it is an issue because we have no other
-> > trusted sources. The problem with picking on rdseed/rdrand is that
-> > there are bound to be older CP s somewhere that have rng generation
-> > bugs that this will
-> > expose.
-> 
-> I'm not sure what you're concerned about.  As far as I know, all of
-> the CPU's have some variant of Confidential Compute have some kind of
-> RDRAND-like command.  And while we're using the term RDRAND, I'd
-> extend this to any CPU architecture-level RNG instruction which can
-> return failure if it is subject to exhaustion attacks.
-
-My big concern is older cpus where rdrand/rdseed don't produce useful
-entropy.  Exhaustion attacks are going to be largely against VMs not
-physical systems, so I worry about physical systems with older CPUs
-that might have rdrand issues which then trip our Confidential
-Computing checks.
 
 
-> > How about making the failure contingent on the entropy pool
-> > not having any entropy when the first random number is requested?
-> 
-> We have tried to avoid characterizing entropy sources as "valid" or
-> "invalid".  First of all, it's rarely quite so black-and-white.
-> Something which is vulnerable to someone who can spy on inter-packet
-> arrival times by having a hardware tap between the CPU and the
-> network switch, or a wireless radio right next to the device being
-> attacked, might not be easily carried out by someone who doesn't have
-> local physical access.
-> 
-> So we may be measuring various things that might or might not have
-> "entropy".  In the case of Confidential Compute, we have declared
-> that none of those other sources constitute "entropy".  But that's
-> not a decision that can be made by the computer, or at least until
-> we've tracked the AGI problem.  (At which point, we might have other
-> problems --- "I'm sorry, I'm afraid I can't do that.")
 
-The signal for rdseed failing is fairly clear, so if the node has other
-entropy sources, it should continue otherwise it should signal failure.
-Figuring out how a confidential computing environment signals that
-failure is TBD.
+在 2024/2/2 18:39, Linus Torvalds 写道:
+> On Fri, 2 Feb 2024 at 04:30, Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+>>        ptrace: Introduce exception_ip arch hook
+>>        MIPS: Clear Cause.BD in instruction_pointer_set
+>>        mm/memory: Use exception ip to search exception tables
+> Just to clarify: does that second patch fix the problem that
+> __isa_exception_epc() does a __get_user()?
 
-James
+No it only covers an obvious case when I was playing around exception_ip 
+with kgdb.
+There are still potential cases __isa_exception_epc may touch user space.
+
+> Because that mm/memory.c use of "exception_ip()" most definitely
+> cannot take a page fault.
+>
+> So if MIPS cannot do that whole exception IP thing without potentially
+> touching user space, I do worry that we might just have to add a
+>
+>     #ifndef __MIPS__
+>
+> around this all.
+
+It is possible to perform exception_ip() without touching user space by 
+saving "BadInstr" in pt_regs
+at exception entries. For newer hardware it's as simple as saving an 
+extra CP0 register, on older hardware
+we may have to read it from user space.
+
++ Thomas (MIPS maintainer), what's your opinion?
+
+Thanks
+>
+> Possibly somehow limited to just the microMIPS/MIPS16e case in Kconfig instead?
+>
+>              Linus
+
+-- 
+---
+Jiaxun Yang
 
 
