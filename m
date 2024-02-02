@@ -1,166 +1,108 @@
-Return-Path: <linux-kernel+bounces-49041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB3B1846533
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:02:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66964846538
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:03:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28C501C22FD1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:02:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E959DB23ADF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:03:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AFF9610E;
-	Fri,  2 Feb 2024 01:02:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C850863BA;
+	Fri,  2 Feb 2024 01:02:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YrXFGgoe"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="dGjiB7bY"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE92353BA;
-	Fri,  2 Feb 2024 01:02:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6397EAD4F;
+	Fri,  2 Feb 2024 01:02:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706835757; cv=none; b=aesriCBhk/6TOufXr66rzy0L5ZBJrZLB4igff4iv8HNZeTi/c08uZ4qn/L+D/eJLHUZnLoADvZwrhjUhVzJUk14SdxxQVESsyn+LgmG+l5DHrx7Sw7e9j93A5YpPY60mkpNZtRNEPoRvZt6mvY7iFDLiNw/TWL7k7LmCmPFtl54=
+	t=1706835775; cv=none; b=JVO2MNZxPPiXCDSAJzdN3CQQwP81sI1mBwsT6BJe/uvnypom6zZuxWYdDF78VD6T3skHu8oAr0wumz7H+/IKXxXbTdGOOstwuwIOenu9VSgIsgY1Zyxv+OvsHMUsZ+ScnBgOQUz6A/9kZ1Tf6tBAsnZWHOjf/p96Ihkq7VnhyZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706835757; c=relaxed/simple;
-	bh=zes1QjIgFX8iTfNqPGsOdXG8Tg4Fxj/wCEPnLquZkdQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Jxkf17uZhTYOchVlC7uf93poTfqNN7g2IruUrpzkgJXFf4dK4r/GixpAJSmBol6r/LQ55wMODgvAYwah1czYeU4e3mFKA7BDSlSdbEEyfGzTh5KX9PgtzqNquTk26KZF8iBtRc2D2MnSZpkl/Gqv+xb45FM8p64xFJ27ILaxxIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YrXFGgoe; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706835756; x=1738371756;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=zes1QjIgFX8iTfNqPGsOdXG8Tg4Fxj/wCEPnLquZkdQ=;
-  b=YrXFGgoeQFmSy65mfLhYxndweRQIPK2Ujqv7PraM2yx3HKS22cY+ezZL
-   /NjLBe2k/fG1mc76y6VBaUm9wq3489FGzFjf3GMsZnSs7ItEXwo1zAEkP
-   B2ZBDpSI9QdQjgOhwG5Ed+ZZIgUKujbLCfUN8ltbCNHg8TSGN5XFgnBiK
-   Px26BN/u6KM5aN+8MU9m1oZ6Vf5wGLYA81eRVeVpCt83PmB2EI7FnXHid
-   q/FFs2JOVPG29yxDIz//HIUI5kbmHSaTGoxNkNW6TLgW8QXeumQQ3yZA8
-   iinnqx/kPXHK1qzkGaLML2IhN9mq0whilp6q2w4QNL+ruCwPCPlFBSQpK
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="2980024"
-X-IronPort-AV: E=Sophos;i="6.05,236,1701158400"; 
-   d="scan'208";a="2980024"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 17:02:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,236,1701158400"; 
-   d="scan'208";a="30759782"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.33.17]) ([10.93.33.17])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 17:02:31 -0800
-Message-ID: <e5387c7c-9df8-4e39-bbe9-23e8bb09e527@intel.com>
-Date: Fri, 2 Feb 2024 09:02:27 +0800
+	s=arc-20240116; t=1706835775; c=relaxed/simple;
+	bh=t7fqNukb58DPR2uH9r6sePm8zu2FpuOah650ZPEwo7c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=a6AOXqrfYgTt/L4T4xlopJ9sJVNdaTGHo2hb6IpdoF6cFuGRp+C2n8bAf+mXkzj5G1jm2yhvysWCC1FJuCpfxDU4c+PVzLuxCYvl5l8I/Nir1Z780DXqlh8tEwWJXHnf6z96gez0b9j5HaKjo/56N5DGCZL+Yf5CuXViVQPzxXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=dGjiB7bY; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=SRwLFjr2kgHxYJ1y6JChlTLnAQdKVct1/aWOL5U9V1E=; b=dGjiB7bYGz73GOemZdRIpMdldZ
+	fjwWY0MERslapOKspJ8e7S3E+cKy0xPZ8YR5/KAbl+E3TlvK80b9Oy5wiGXajZDDh7tY6U8mnzJGO
+	QtpI7PeFasregV25OhbVn5v29t2nA8HqVbCHXusiGm201hkk/yRBTAzs6Pw170EHBSmE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rVhx3-006jdz-Ce; Fri, 02 Feb 2024 02:02:41 +0100
+Date: Fri, 2 Feb 2024 02:02:41 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Antoine Tenart <atenart@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+	Robert Marko <robert.marko@sartura.hr>,
+	Russell King <linux@armlinux.org.uk>, devicetree@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [net-next PATCH v5 2/9] net: phy: add support for scanning PHY
+ in PHY packages nodes
+Message-ID: <2bba44dc-b5df-46ef-b5f3-eabbd34aa7db@lunn.ch>
+References: <20240201151747.7524-1-ansuelsmth@gmail.com>
+ <20240201151747.7524-3-ansuelsmth@gmail.com>
+ <170680473689.4979.1991415008659281513@kwain>
+ <65bbd2ce.050a0220.5ff09.69d5@mx.google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v18 012/121] KVM: TDX: Define TDX architectural
- definitions
-Content-Language: en-US
-To: isaku.yamahata@intel.com, kvm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
- Sean Christopherson <sean.j.christopherson@intel.com>
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <958dfa60e2570a38b4c4e997be2a72b294e6d91b.1705965634.git.isaku.yamahata@intel.com>
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <958dfa60e2570a38b4c4e997be2a72b294e6d91b.1705965634.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <65bbd2ce.050a0220.5ff09.69d5@mx.google.com>
 
-On 1/23/2024 7:52 AM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
+On Thu, Feb 01, 2024 at 06:20:10PM +0100, Christian Marangi wrote:
+> On Thu, Feb 01, 2024 at 05:25:36PM +0100, Antoine Tenart wrote:
+> > Quoting Christian Marangi (2024-02-01 16:17:28)
+> > > 
+> > > +static int __of_mdiobus_parse_phys(struct mii_bus *mdio, struct device_node *np,
+> > > +                                  int base_addr, bool *scanphys)
+> > > +{
+> > > +       struct device_node *child;
+> > > +       int addr, rc = 0;
+> > > +
+> > > +       /* Loop over the child nodes and register a phy_device for each phy */
+> > > +       for_each_available_child_of_node(np, child) {
+> > > +               if (of_node_name_eq(child, "ethernet-phy-package")) {
+> > > +                       rc = of_property_read_u32(child, "reg", &addr);
+> > > +                       if (rc)
+> > > +                               goto exit;
+> > 
+> > This means a PHY package node w/o a reg property will prevent all other
+> > PHYs in the same parent node to be found?
+> >
 > 
-> Define architectural definitions for KVM to issue the TDX SEAMCALLs.
-> 
-> Structures and values that are architecturally defined in the TDX module
-> specifications the chapter of ABI Reference.
-> 
-> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
-> v18:
-> - Add metadata field id
-> ---
->   arch/x86/kvm/vmx/tdx_arch.h | 269 ++++++++++++++++++++++++++++++++++++
->   1 file changed, 269 insertions(+)
->   create mode 100644 arch/x86/kvm/vmx/tdx_arch.h
-> 
-> diff --git a/arch/x86/kvm/vmx/tdx_arch.h b/arch/x86/kvm/vmx/tdx_arch.h
-> new file mode 100644
-> index 000000000000..569d59c55229
-> --- /dev/null
-> +++ b/arch/x86/kvm/vmx/tdx_arch.h
-> @@ -0,0 +1,269 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/* architectural constants/data definitions for TDX SEAMCALLs */
-> +
-> +#ifndef __KVM_X86_TDX_ARCH_H
-> +#define __KVM_X86_TDX_ARCH_H
-> +
-> +#include <linux/types.h>
-> +
-> +/*
-> + * TDX SEAMCALL API function leaves
-> + */
-> +#define TDH_VP_ENTER			0
-> +#define TDH_MNG_ADDCX			1
-> +#define TDH_MEM_PAGE_ADD		2
-> +#define TDH_MEM_SEPT_ADD		3
-> +#define TDH_VP_ADDCX			4
-> +#define TDH_MEM_PAGE_RELOCATE		5
-> +#define TDH_MEM_PAGE_AUG		6
-> +#define TDH_MEM_RANGE_BLOCK		7
-> +#define TDH_MNG_KEY_CONFIG		8
-> +#define TDH_MNG_CREATE			9
-> +#define TDH_VP_CREATE			10
-> +#define TDH_MNG_RD			11
-> +#define TDH_MR_EXTEND			16
-> +#define TDH_MR_FINALIZE			17
-> +#define TDH_VP_FLUSH			18
-> +#define TDH_MNG_VPFLUSHDONE		19
-> +#define TDH_MNG_KEY_FREEID		20
-> +#define TDH_MNG_INIT			21
-> +#define TDH_VP_INIT			22
-> +#define TDH_MEM_SEPT_RD			25
-> +#define TDH_VP_RD			26
-> +#define TDH_MNG_KEY_RECLAIMID		27
-> +#define TDH_PHYMEM_PAGE_RECLAIM		28
-> +#define TDH_MEM_PAGE_REMOVE		29
-> +#define TDH_MEM_SEPT_REMOVE		30
-> +#define TDH_SYS_RD			34
-> +#define TDH_MEM_TRACK			38
-> +#define TDH_MEM_RANGE_UNBLOCK		39
-> +#define TDH_PHYMEM_CACHE_WB		40
-> +#define TDH_PHYMEM_PAGE_WBINVD		41
-> +#define TDH_VP_WR			43
-> +#define TDH_SYS_LP_SHUTDOWN		44
-> +
-> +#define TDG_VP_VMCALL_GET_TD_VM_CALL_INFO		0x10000
-> +#define TDG_VP_VMCALL_MAP_GPA				0x10001
-> +#define TDG_VP_VMCALL_GET_QUOTE				0x10002
-> +#define TDG_VP_VMCALL_REPORT_FATAL_ERROR		0x10003
-> +#define TDG_VP_VMCALL_SETUP_EVENT_NOTIFY_INTERRUPT	0x10004
-> +
+> Since this is something new, would it be a problem to make it mandatory
+> to define a reg? (And return error if we find something? Or print a
+> warn?)
 
-these are definitions shared with TDX guest codes, and already defined 
-in arch/x86/include/asm/shared/tdx.h. Please drop it.
+Making reg mandatory within a package is reasonable. Please indicate
+this in the DT schema.
 
-Other than above,
-
-Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
-
+     Andrew
 
