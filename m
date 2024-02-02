@@ -1,120 +1,141 @@
-Return-Path: <linux-kernel+bounces-49152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14953846692
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:34:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87BFE846693
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:36:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46FC21C22465
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:34:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BD351C2682D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C46DCEAF8;
-	Fri,  2 Feb 2024 03:33:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7679DD526;
+	Fri,  2 Feb 2024 03:36:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="Gulj+Tu+"
-Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C99DBE54E;
-	Fri,  2 Feb 2024 03:33:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="qc+xK9II"
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DB37D285;
+	Fri,  2 Feb 2024 03:36:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706844839; cv=none; b=KNJZA9lo3ajFf2IMDSOLcArd0PxNYN9l8/gunVDByVs1Eg/w6EBzDl1cOrZhsq2CwI7zcI7GqlOFu4Zl9rFTmCnKZhb+5g5mbkMysgqKX+iTmxJdFVW3hK+4ZspAJmLgDdMQhEaKV8U2Kl3eLR+fJHD9VPSXoWCqMMPrD+pK6vU=
+	t=1706845008; cv=none; b=FV9tX0OoX8v4W9q6+eSEvGSB/UGOhLcAwPw+pIEKGHuwGmDj0DKdkA4ZM58pXiKAwha0ZSTQ5lO0zd2why+sPr9mmGHhwoAVNwYh4tmhzgruXl2XfLGCLB98aWJ76ZY2IvAFr/i/ksdqXhCQ12astKCGUnae3nT9cUbcjsrN8H0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706844839; c=relaxed/simple;
-	bh=OyxBJ+A0yGlHECRXeVfAbJEuoSWpFLSlFOQ48riM33o=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=i4sSGl/U8dp8p6aswXslzMU4LJU9ZDraxfh2qWqI2U1ReF8xkusyuqOi8aoD3tEInb+cjsIoUJmyJCvga1T++t+xRIq8DL00DKv/7taexMCj5/haVe1LXZC7uN+K+YQOu+CdkVqO1FHvIRWi754ZwxM+uYrqjjeENIoNfuugJaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b=Gulj+Tu+; arc=none smtp.client-ip=205.220.178.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4121b31T011765;
-	Fri, 2 Feb 2024 03:33:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-	 h=from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PPS06212021; bh=ZB6EemBjg4kqn54hPi694lZL5cl9eBwRNQ7kuQcXWig=; b=
-	Gulj+Tu+3crXaFoBEGXPli3BzPOFtQ0HZxb/51R5LRhLop95qlGv2fEQRsFSZKhb
-	fsaOaieQDWOx1q6tlCRC11ZwoaADhez6zTlMsMfvwMTjG6gGj+Bb6pijCcVUNM2Z
-	IkGJQ18zpO2QlQa+kxCxqXr8knJv4bQcN3Q8S+If+5CGdK0TYVeFrlon9h7LlQq3
-	3gXNWYNKDCTTKqCMsyI3Uj46r1lnCHjgbYrGsXGSPhg82MaPuvUNAWZWRKPMhG6g
-	iNje9YaYkf/zvHoP866ZE4kqR/nzQPcfpnFsW1efHL0Woa44Xnvobgxg/K2P9Omg
-	eVxkjPyhvlmAbKXcPxsGKQ==
-Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3w0pvcr28v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Fri, 02 Feb 2024 03:33:38 +0000 (GMT)
-Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 1 Feb 2024 19:33:34 -0800
-Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Thu, 1 Feb 2024 19:33:32 -0800
-From: Lizhi Xu <lizhi.xu@windriver.com>
-To: <syzbot+a426cde6dee8c2884b0b@syzkaller.appspotmail.com>
-CC: <almaz.alexandrovich@paragon-software.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <ntfs3@lists.linux.dev>, <syzkaller-bugs@googlegroups.com>
-Subject: [PATCH] fs/ntfs3: fix oob in mi_enum_attr
-Date: Fri, 2 Feb 2024 11:33:34 +0800
-Message-ID: <20240202033334.1784409-1-lizhi.xu@windriver.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <00000000000012d4ed0610537e34@google.com>
-References: <00000000000012d4ed0610537e34@google.com>
+	s=arc-20240116; t=1706845008; c=relaxed/simple;
+	bh=AynEEPuPpWIs7ScQwoOZ45YXBohERhFmG9PyoFEcG0Q=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID; b=CyZJfXTjCO1z47ukbtNUF+UBWP7oj6EhMaNmbZf4Y1KKreRUHJ2IbkKpMWPKdCHkca5MvVYdrze3BUUeeF4OgiBDHwOyKkVcjiRe3a1tKOUo7j6Fn6ts6cxhLrEE9kcyM5AqzlmyPJP2pS4ptZ2AUVb9ClTm+JGw1+9CuJI18pc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=qc+xK9II reason="signature verification failed"; arc=none smtp.client-ip=220.197.31.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+	Message-ID; bh=tFXvmuxxXw0sz7U0iBAjQnQzBTOPkv2MU+eoltxFfmw=; b=q
+	c+xK9II9VBKevNLO333M1VJ/3NsWpMpIP6SsO5FWvEJYDQbE24LT/+6ZHAMM0jdQ
+	Pvak1lFq5DSL+zyedh48fKWuTcRd++7Y74v4LreiAgy2nVkQCqIoSe0C4eTFLem1
+	JxAFUhFOvBFYTv6o0Qvqi2D+dF3dAyzU1+1v9Y6rXo=
+Received: from xingtong_wu$163.com ( [36.112.108.23] ) by
+ ajax-webmail-wmsvr-40-124 (Coremail) ; Fri, 2 Feb 2024 11:35:53 +0800 (CST)
+Date: Fri, 2 Feb 2024 11:35:53 +0800 (CST)
+From: "xingtong.wu" <xingtong_wu@163.com>
+To: hdegoede@redhat.com, linux-leds@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, pavel@ucw.cz, lee@kernel.org
+Cc: xingtong.wu@siemens.com, tobias.schaffner@siemens.com, 
+	gerd.haeussler.ext@siemens.com, henning@hennsch.de
+Subject: Re:[PATCH 2/3] leds: simatic-ipc-leds-gpio: add support for module
+ BX-59A
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
+ Copyright (c) 2002-2024 www.mailtech.cn 163com
+In-Reply-To: <20230731071833.4725-1-xingtong_wu@163.com>
+References: <20230731071424.4663-1-xingtong_wu@163.com>
+ <20230731071833.4725-1-xingtong_wu@163.com>
+X-NTES-SC: AL_Qu2bBPSfu0Eu5SKdYekfm0sRheY+XMGwvvgv34ZUN5t8jAvp1QALRXlFAXzE++KWMBijkh6RahRv6OlTZI1XZYAJe/ie1V+vr+xJUBz5x0KtMQ==
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: jK86FqcCVEdZqEKrJxt2Cghy_RGh0MBu
-X-Proofpoint-ORIG-GUID: jK86FqcCVEdZqEKrJxt2Cghy_RGh0MBu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-01_10,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- bulkscore=0 clxscore=1011 mlxscore=0 spamscore=0 phishscore=0
- mlxlogscore=574 suspectscore=0 priorityscore=1501 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402020023
+Message-ID: <58d93fe1.336d.18d67e31aaa.Coremail.xingtong_wu@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:_____wD3_5AZY7xlIIFCAA--.39350W
+X-CM-SenderInfo: p0lqw35rqjs4rx6rljoofrz/1tbiqAJt0GVOB3DEewAGsy
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 
-When the value of attr->size is too large, it can cause overflow when taking
-the next attr. Here, off is used to determine the offset first to avoid problems.
-
-Reported-and-tested-by: syzbot+a426cde6dee8c2884b0b@syzkaller.appspotmail.com
-Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
----
- fs/ntfs3/record.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ntfs3/record.c b/fs/ntfs3/record.c
-index 53629b1f65e9..a435df98c2b1 100644
---- a/fs/ntfs3/record.c
-+++ b/fs/ntfs3/record.c
-@@ -243,14 +243,14 @@ struct ATTRIB *mi_enum_attr(struct mft_inode *mi, struct ATTRIB *attr)
- 		off += asize;
- 	}
- 
--	asize = le32_to_cpu(attr->size);
--
- 	/* Can we use the first field (attr->type). */
- 	if (off + 8 > used) {
- 		static_assert(ALIGN(sizeof(enum ATTR_TYPE), 8) == 8);
- 		return NULL;
- 	}
- 
-+	asize = le32_to_cpu(attr->size);
-+
- 	if (attr->type == ATTR_END) {
- 		/* End of enumeration. */
- 		return NULL;
--- 
-2.43.0
-
+QXQgMjAyMy0wNy0zMSAxNToxODozMywgeGluZ3Rvbmdfd3VAMTYzLmNvbSB3cm90ZToKPkZyb206
+ICJ4aW5ndG9uZy53dSIgPHhpbmd0b25nLnd1QHNpZW1lbnMuY29tPgo+Cj5UaGlzIGlzIHVzZWQg
+Zm9yIHRoZSBTaWVtZW5zIFNpbWF0aWMgSVBDIEJYLTU5QSwgd2hpY2ggaGFzIGl0cyBMRURzCj5j
+b25uZWN0ZWQgdG8gR1BJT3MgcHJvdmlkZWQgYnkgdGhlIE51dm90b24gTkNUNjEyNkQKPgo+U2ln
+bmVkLW9mZi1ieTogeGluZ3Rvbmcud3UgPHhpbmd0b25nLnd1QHNpZW1lbnMuY29tPgo+LS0tCj4g
+Li4uL2xlZHMvc2ltcGxlL3NpbWF0aWMtaXBjLWxlZHMtZ3Bpby1jb3JlLmMgIHwgIDEgKwo+IC4u
+Li9zaW1wbGUvc2ltYXRpYy1pcGMtbGVkcy1ncGlvLWY3MTg4eC5jICAgICB8IDQyICsrKysrKysr
+KysrKysrKystLS0KPiAyIGZpbGVzIGNoYW5nZWQsIDM3IGluc2VydGlvbnMoKyksIDYgZGVsZXRp
+b25zKC0pCj4KPmRpZmYgLS1naXQgYS9kcml2ZXJzL2xlZHMvc2ltcGxlL3NpbWF0aWMtaXBjLWxl
+ZHMtZ3Bpby1jb3JlLmMgYi9kcml2ZXJzL2xlZHMvc2ltcGxlL3NpbWF0aWMtaXBjLWxlZHMtZ3Bp
+by1jb3JlLmMKPmluZGV4IGM1NTJlYTczZWQ5ZC4uMTBkY2EyMDhkOGNjIDEwMDY0NAo+LS0tIGEv
+ZHJpdmVycy9sZWRzL3NpbXBsZS9zaW1hdGljLWlwYy1sZWRzLWdwaW8tY29yZS5jCj4rKysgYi9k
+cml2ZXJzL2xlZHMvc2ltcGxlL3NpbWF0aWMtaXBjLWxlZHMtZ3Bpby1jb3JlLmMKPkBAIC01OCw2
+ICs1OCw3IEBAIGludCBzaW1hdGljX2lwY19sZWRzX2dwaW9fcHJvYmUoc3RydWN0IHBsYXRmb3Jt
+X2RldmljZSAqcGRldiwKPiAJY2FzZSBTSU1BVElDX0lQQ19ERVZJQ0VfMTI3RToKPiAJY2FzZSBT
+SU1BVElDX0lQQ19ERVZJQ0VfMjI3RzoKPiAJY2FzZSBTSU1BVElDX0lQQ19ERVZJQ0VfQlhfMjFB
+Ogo+KwljYXNlIFNJTUFUSUNfSVBDX0RFVklDRV9CWF81OUE6Cj4gCQlicmVhazsKPiAJZGVmYXVs
+dDoKPiAJCXJldHVybiAtRU5PREVWOwo+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbGVkcy9zaW1wbGUv
+c2ltYXRpYy1pcGMtbGVkcy1ncGlvLWY3MTg4eC5jIGIvZHJpdmVycy9sZWRzL3NpbXBsZS9zaW1h
+dGljLWlwYy1sZWRzLWdwaW8tZjcxODh4LmMKPmluZGV4IDU4M2E2YjZjN2MyMi4uYTViNTQ0YjIw
+ODU3IDEwMDY0NAo+LS0tIGEvZHJpdmVycy9sZWRzL3NpbXBsZS9zaW1hdGljLWlwYy1sZWRzLWdw
+aW8tZjcxODh4LmMKPisrKyBiL2RyaXZlcnMvbGVkcy9zaW1wbGUvc2ltYXRpYy1pcGMtbGVkcy1n
+cGlvLWY3MTg4eC5jCj5AQCAtMTcsNyArMTcsMTAgQEAKPiAKPiAjaW5jbHVkZSAic2ltYXRpYy1p
+cGMtbGVkcy1ncGlvLmgiCj4gCj4tc3RhdGljIHN0cnVjdCBncGlvZF9sb29rdXBfdGFibGUgc2lt
+YXRpY19pcGNfbGVkX2dwaW9fdGFibGUgPSB7Cj4rc3RhdGljIHN0cnVjdCBncGlvZF9sb29rdXBf
+dGFibGUgKmxlZF9sb29rdXBfdGFibGU7Cj4rc3RhdGljIHN0cnVjdCBncGlvZF9sb29rdXBfdGFi
+bGUgKmxlZF9sb29rdXBfdGFibGVfZXh0cmE7Cj4rCj4rc3RhdGljIHN0cnVjdCBncGlvZF9sb29r
+dXBfdGFibGUgc2ltYXRpY19pcGNfbGVkX2dwaW9fdGFibGVfMjI3ZyA9IHsKPiAJLmRldl9pZCA9
+ICJsZWRzLWdwaW8iLAo+IAkudGFibGUgPSB7Cj4gCQlHUElPX0xPT0tVUF9JRFgoImdwaW8tZjcx
+ODh4LTIiLCAwLCBOVUxMLCAwLCBHUElPX0FDVElWRV9MT1cpLAo+QEAgLTMwLDcgKzMzLDcgQEAg
+c3RhdGljIHN0cnVjdCBncGlvZF9sb29rdXBfdGFibGUgc2ltYXRpY19pcGNfbGVkX2dwaW9fdGFi
+bGUgPSB7Cj4gCX0sCj4gfTsKPiAKPi1zdGF0aWMgc3RydWN0IGdwaW9kX2xvb2t1cF90YWJsZSBz
+aW1hdGljX2lwY19sZWRfZ3Bpb190YWJsZV9leHRyYSA9IHsKPitzdGF0aWMgc3RydWN0IGdwaW9k
+X2xvb2t1cF90YWJsZSBzaW1hdGljX2lwY19sZWRfZ3Bpb190YWJsZV9leHRyYV8yMjdnID0gewo+
+IAkuZGV2X2lkID0gTlVMTCwgLyogRmlsbGVkIGR1cmluZyBpbml0aWFsaXphdGlvbiAqLwo+IAku
+dGFibGUgPSB7Cj4gCQlHUElPX0xPT0tVUF9JRFgoImdwaW8tZjcxODh4LTMiLCA2LCBOVUxMLCA2
+LCBHUElPX0FDVElWRV9ISUdIKSwKPkBAIC0zOSwxNiArNDIsNDMgQEAgc3RhdGljIHN0cnVjdCBn
+cGlvZF9sb29rdXBfdGFibGUgc2ltYXRpY19pcGNfbGVkX2dwaW9fdGFibGVfZXh0cmEgPSB7Cj4g
+CX0sCj4gfTsKPiAKPitzdGF0aWMgc3RydWN0IGdwaW9kX2xvb2t1cF90YWJsZSBzaW1hdGljX2lw
+Y19sZWRfZ3Bpb190YWJsZV9ieF81OWEgPSB7Cj4rCS5kZXZfaWQgPSAibGVkcy1ncGlvIiwKPisJ
+LnRhYmxlID0gewo+KwkJR1BJT19MT09LVVBfSURYKCJncGlvLWY3MTg4eC0yIiwgMCwgTlVMTCwg
+MCwgR1BJT19BQ1RJVkVfTE9XKSwKPisJCUdQSU9fTE9PS1VQX0lEWCgiZ3Bpby1mNzE4OHgtMiIs
+IDMsIE5VTEwsIDEsIEdQSU9fQUNUSVZFX0xPVyksCj4rCQlHUElPX0xPT0tVUF9JRFgoImdwaW8t
+ZjcxODh4LTUiLCAzLCBOVUxMLCAyLCBHUElPX0FDVElWRV9MT1cpLAo+KwkJR1BJT19MT09LVVBf
+SURYKCJncGlvLWY3MTg4eC01IiwgMiwgTlVMTCwgMywgR1BJT19BQ1RJVkVfTE9XKSwKPisJCUdQ
+SU9fTE9PS1VQX0lEWCgiZ3Bpby1mNzE4OHgtNyIsIDcsIE5VTEwsIDQsIEdQSU9fQUNUSVZFX0xP
+VyksCj4rCQlHUElPX0xPT0tVUF9JRFgoImdwaW8tZjcxODh4LTciLCA0LCBOVUxMLCA1LCBHUElP
+X0FDVElWRV9MT1cpLAo+KwkJe30gLyogVGVybWluYXRpbmcgZW50cnkgKi8KPisJfQo+K307Cj4r
+Cj4gc3RhdGljIGludCBzaW1hdGljX2lwY19sZWRzX2dwaW9fZjcxODh4X3Byb2JlKHN0cnVjdCBw
+bGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gewo+LQlyZXR1cm4gc2ltYXRpY19pcGNfbGVkc19ncGlv
+X3Byb2JlKHBkZXYsICZzaW1hdGljX2lwY19sZWRfZ3Bpb190YWJsZSwKPi0JCQkJCSAgICZzaW1h
+dGljX2lwY19sZWRfZ3Bpb190YWJsZV9leHRyYSk7Cj4rCWNvbnN0IHN0cnVjdCBzaW1hdGljX2lw
+Y19wbGF0Zm9ybSAqcGxhdCA9IHBkZXYtPmRldi5wbGF0Zm9ybV9kYXRhOwo+Kwo+Kwlzd2l0Y2gg
+KHBsYXQtPmRldm1vZGUpIHsKPisJY2FzZSBTSU1BVElDX0lQQ19ERVZJQ0VfMjI3RzoKPisJCWxl
+ZF9sb29rdXBfdGFibGUgPSAmc2ltYXRpY19pcGNfbGVkX2dwaW9fdGFibGVfMjI3ZzsKPisJCWxl
+ZF9sb29rdXBfdGFibGVfZXh0cmEgPSAmc2ltYXRpY19pcGNfbGVkX2dwaW9fdGFibGVfZXh0cmFf
+MjI3ZzsKPisJCWJyZWFrOwo+KwljYXNlIFNJTUFUSUNfSVBDX0RFVklDRV9CWF81OUE6Cj4rCQls
+ZWRfbG9va3VwX3RhYmxlID0gJnNpbWF0aWNfaXBjX2xlZF9ncGlvX3RhYmxlX2J4XzU5YTsKPisJ
+CWJyZWFrOwo+KwlkZWZhdWx0Ogo+KwkJcmV0dXJuIC1FTk9ERVY7Cj4rCX0KPisKPisJcmV0dXJu
+IHNpbWF0aWNfaXBjX2xlZHNfZ3Bpb19wcm9iZShwZGV2LCBsZWRfbG9va3VwX3RhYmxlLAo+KwkJ
+CQkJICAgbGVkX2xvb2t1cF90YWJsZV9leHRyYSk7Cj4gfQo+IAo+IHN0YXRpYyBpbnQgc2ltYXRp
+Y19pcGNfbGVkc19ncGlvX2Y3MTg4eF9yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRl
+dikKPiB7Cj4tCXJldHVybiBzaW1hdGljX2lwY19sZWRzX2dwaW9fcmVtb3ZlKHBkZXYsICZzaW1h
+dGljX2lwY19sZWRfZ3Bpb190YWJsZSwKPi0JCQkJCSAgICAmc2ltYXRpY19pcGNfbGVkX2dwaW9f
+dGFibGVfZXh0cmEpOwo+KwlyZXR1cm4gc2ltYXRpY19pcGNfbGVkc19ncGlvX3JlbW92ZShwZGV2
+LCBsZWRfbG9va3VwX3RhYmxlLAo+KwkJCQkJICAgIGxlZF9sb29rdXBfdGFibGVfZXh0cmEpOwo+
+IH0KPiAKPiBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBzaW1hdGljX2lwY19sZWRfZ3Bp
+b19kcml2ZXIgPSB7Cj4tLSAKPjIuMjUuMQoKSGkKCkFmdGVyIGVuZ2FnaW5nIGluIGEgdGhvcm91
+Z2ggZGlzY3Vzc2lvbiwgaXQgYXBwZWFycyB0aGF0IHdlIGhhdmUKcmVhY2hlZCBhIGNvbnNlbnN1
+cyB0byBtZXJnZSB0aGlzIHBhdGNoLiBDb25zaWRlcmluZyB0aGUgY29uc2lkZXJhYmxlCmR1cmF0
+aW9uIHRoYXQgaGFzIHBhc3NlZCwgSSBhbSBzZW5kaW5nIHRoaXMgZW1haWwgYXMgYSBnZW50bGUg
+cmVtaW5kZXIsCmluIGNhc2UgdGhlcmUgaXMgYSBwb3NzaWJpbGl0eSB0aGF0IGl0IG1heSBoYXZl
+IHNsaXBwZWQgeW91ciBtaW5kLgoKWGluZ1RvbmcK
 
