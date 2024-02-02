@@ -1,179 +1,118 @@
-Return-Path: <linux-kernel+bounces-49727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38AD2846EBE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:15:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FD88846EA1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:05:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6528CB2CB97
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:05:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B8481C270B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:05:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E775013D506;
-	Fri,  2 Feb 2024 11:05:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22CB313D4E4;
+	Fri,  2 Feb 2024 11:05:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i7sqhytb"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Tj4cFTjR"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E3C513BEA9;
-	Fri,  2 Feb 2024 11:04:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7D4267A15;
+	Fri,  2 Feb 2024 11:05:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706871901; cv=none; b=q8D+9WM8NUZgxZWKNL8SE0CCE1DsRcR951kA1wvVpqx1wP8rtUm+hzFzajWlJaUrBh3iib/T8P+buXv7kV4chthTMh5sFZxNQhIr3uWiQUk87Xca/JDbdWD0PwRhPAE285WMG1Ty1CJVD0GJjiaPt2I++jvqpYl97LIL2adT19M=
+	t=1706871942; cv=none; b=FxWC/qZtvbB97/FX0ULpqlsddHsDmeWHdptUpV9zthbTlRwZIdrM5UpTHQqGr6YWw7npJDbB9WXEZFU5DzcQNdYD/TwRvQli2ZmBDeNx7a5BVdWYILLnUhOJ1VmLtNv8vRBWBnJ6XBy32ILyY7NbRVitok1Z1S6F5Uo8whGylf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706871901; c=relaxed/simple;
-	bh=q7IX5Ck7p9ObclPnEIIJjPrssh+zna2B8YOn9nxa6vk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=S5BvZF7AeoMC/vXH4+ulzZ1NNi++ufWTXg5BPlNWKlVOmvK4WxSuKY4I16haQtxL5OJ/j4qOdUie054YBGfaTjp8cWCirg8rSXOi/pc1AAFafK0Mk7V6pTxLQAxek93Xcq2UdcLXi+iVIH4POD85o6ofsXsfxRIuFBMRVCoJP74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i7sqhytb; arc=none smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706871899; x=1738407899;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=q7IX5Ck7p9ObclPnEIIJjPrssh+zna2B8YOn9nxa6vk=;
-  b=i7sqhytb0tVRUwQ48QDH2veY4jkL57GZxTvtpr/A0/RVIvX+WrcAz0WG
-   2FhulqkGn84J1BIL238wAeAK7NysYyQvNMa98aH8jOCQLHo1l6xWM0mh5
-   IHpMQG/K9xzaDSRK6Gx7+6UD+Zo7mxTQpRHnMaRTOuQKXNod+4lK0Exjk
-   t76BP11X56TG/jJIAufPVPj2eUJGPrX84tX1djZw6+lVdYH7TP5ZueTVp
-   1gaEzVuG3e9VxAPPdsFq+zHeSvyD1b62WZGa9lKd1aX4e6ZutWXFR48R2
-   +oNlDiWpT0qRy9svPB/ZVNnDe4qbSz5t313CarxByPJD85RB7oCo0fT8U
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="435276041"
-X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="435276041"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 03:04:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="908542172"
-X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="908542172"
-Received: from mmermeza-mobl3.ger.corp.intel.com (HELO localhost) ([10.252.59.198])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 03:04:53 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Sebastian Wick <sebastian.wick@redhat.com>, Maxime Ripard
- <mripard@kernel.org>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>, Emma Anholt <emma@anholt.net>,
- Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org, Samuel
- Holland <samuel@sholland.org>, Sandy Huang <hjc@rock-chips.com>, Jernej
- Skrabec <jernej.skrabec@gmail.com>, linux-doc@vger.kernel.org, Hans
- Verkuil <hverkuil@xs4all.nl>, linux-rockchip@lists.infradead.org, Chen-Yu
- Tsai <wens@csie.org>, dri-devel@lists.freedesktop.org,
- linux-media@vger.kernel.org, David Airlie <airlied@gmail.com>,
- linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org, Ville
- =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Subject: Re: [PATCH v5 08/44] drm/connector: hdmi: Add Broadcast RGB property
-In-Reply-To: <20240115143308.GA159345@toolbox>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
- <20231207-kms-hdmi-connector-state-v5-8-6538e19d634d@kernel.org>
- <20240115143308.GA159345@toolbox>
-Date: Fri, 02 Feb 2024 13:04:50 +0200
-Message-ID: <874jerf7ot.fsf@intel.com>
+	s=arc-20240116; t=1706871942; c=relaxed/simple;
+	bh=zSXA+iPCtIXHysA/656JrfpWk3Pmc54FYLHJuA9VxEA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=eUqykXiE1Z/wu0PFI6oddCW0UxBpxbylbX9G1uOvkzr6u3z+l21XxsxRoXQcTrxCnZZo+HD0/BIHjFacwo91qZcwffpX3u5cPo3gE9pQJLTAQWiUBZtagWBIkV4MB0Q/YYtKRza/iHO1+u6cjDhDrVyIEXnXK4XsvehrQyWi/lI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Tj4cFTjR; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4126UMDO005707;
+	Fri, 2 Feb 2024 11:05:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=hs7wvNkO8/AEv7pfPPTccUb/jzx3va4zybhw+pXcMGc=; b=Tj
+	4cFTjRtH22LE3E/dl9fLN3Cx36wYo5lteOWgXgXI7aH4foioBSqHh3qiYtrHVOLr
+	DCLnQU0lhMUsWGavx88HJwU1/L8yn7IEud1woJZdUD4hrh956XKAzRfee11ZENEu
+	Zhqblw4ngYvJkQqEXVeNcxeDRSngyHSgaktj/QVwR2tf0WaPBLQtuKw2n31iPgzr
+	jhH6G//M6MCLNfJ2XCZj5wKQSwmVIzR276+HYP8xGEESyUZ26W93zOP835La2yna
+	6JBWdQrWnPwQOI6mJ8QS8y8AUZfV9dsJL5i7cXbR0YmWUaUbAOKxTbM29Aox40ks
+	4hfY/hGL/oBDHFUu2EYQ==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0pu1s65j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 11:05:36 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 412B5ZkQ012056
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 2 Feb 2024 11:05:35 GMT
+Received: from [10.239.132.150] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 2 Feb
+ 2024 03:05:30 -0800
+Message-ID: <613ee374-6e63-40ab-b5d7-3aee3474bb14@quicinc.com>
+Date: Fri, 2 Feb 2024 19:05:28 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-
-On Mon, 15 Jan 2024, Sebastian Wick <sebastian.wick@redhat.com> wrote:
-> On Thu, Dec 07, 2023 at 04:49:31PM +0100, Maxime Ripard wrote:
->> The i915 driver has a property to force the RGB range of an HDMI output.
->> The vc4 driver then implemented the same property with the same
->> semantics. KWin has support for it, and a PR for mutter is also there to
->> support it.
->> 
->> Both drivers implementing the same property with the same semantics,
->> plus the userspace having support for it, is proof enough that it's
->> pretty much a de-facto standard now and we can provide helpers for it.
->> 
->> Let's plumb it into the newly created HDMI connector.
->> 
->> Signed-off-by: Maxime Ripard <mripard@kernel.org>
-
-[snip]
-
->> @@ -1655,6 +1678,26 @@ EXPORT_SYMBOL(drm_connector_attach_dp_subconnector_property);
->>  /**
->>   * DOC: HDMI connector properties
->>   *
->> + * Broadcast RGB
->> + *      Indicates the RGB Quantization Range (Full vs Limited) used.
->> + *      Infoframes will be generated according to that value.
->> + *
->> + *      The value of this property can be one of the following:
->> + *
->> + *      Automatic:
->> + *              RGB Range is selected automatically based on the mode
->> + *              according to the HDMI specifications.
->> + *
->> + *      Full:
->> + *              Full RGB Range is forced.
->> + *
->> + *      Limited 16:235:
->> + *              Limited RGB Range is forced. Unlike the name suggests,
->> + *              this works for any number of bits-per-component.
->> + *
->> + *      Drivers can set up this property by calling
->> + *      drm_connector_attach_broadcast_rgb_property().
->> + *
->
-> This is a good time to document this in more detail. There might be two
-> different things being affected:
->
-> 1. The signalling (InfoFrame/SDP/...)
-> 2. The color pipeline processing
->
-> All values of Broadcast RGB always affect the color pipeline processing
-> such that a full-range input to the CRTC is converted to either full- or
-> limited-range, depending on what the monitor is supposed to accept.
->
-> When automatic is selected, does that mean that there is no signalling,
-> or that the signalling matches what the monitor is supposed to accept
-> according to the spec? Also, is this really HDMI specific?
-
-Automatic is based on the mode as described in the specs
-below. Basically certain modes are expected to be broadcast range, and
-others full range.
-
-I don't remember why we don't use the full range if the display
-indicates it supports selectable quantization range in Video
-Capabilities Data Block. It's quite possible there are displays that
-declare support but don't. Cc: Ville.
-
-- HDMI 1.4b section 6.6 Video Quantization Ranges
-
-- HDMI 2.1 section 7.3 Video Quantization Ranges
-
-- DP 2.1 (and earlier) section 5.1.1.1 Video Colorimetry
-
-- CTA-861-H (and earlier) section 5.1 Default Encoding Parameters and
-  section 6.4.3 Quantization Range
-
-> When full or limited is selected and the monitor doesn't support the
-> signalling, what happens?
-
-1) Limited selected, display expects full, colors seem washed out.
-
-2) Full selected, display expects limited, black screen possible.
-
-We receive the occasional bug report for 1, because there are displays
-that incorrectly expect full when spec says it should be limited. We
-reject the bug reports, because erring the other way can lead to black
-screens.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] pinctrl: Add lock to ensure the state atomization
+Content-Language: en-US
+To: Linus Walleij <linus.walleij@linaro.org>
+CC: <andersson@kernel.org>, <kernel@quicinc.com>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
+References: <20231225082305.12343-1-quic_aiquny@quicinc.com>
+ <CACRpkdYM5=55m2ywC981VXVzbCg64Opbh4yEw2TLja998cES-w@mail.gmail.com>
+From: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>
+In-Reply-To: <CACRpkdYM5=55m2ywC981VXVzbCg64Opbh4yEw2TLja998cES-w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: SXc3On6AMLgRdynIfUSwFvlKWTLk3_Sb
+X-Proofpoint-ORIG-GUID: SXc3On6AMLgRdynIfUSwFvlKWTLk3_Sb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-02_05,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ impostorscore=0 clxscore=1015 mlxlogscore=441 malwarescore=0
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 adultscore=0
+ spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402020081
 
 
-BR,
-Jani.
 
+On 1/28/2024 6:43 AM, Linus Walleij wrote:
+> Hi Maria,
+> 
+> I wanted to apply this v3 patch, but I can't figure out what it is based on?
+> 
+> Could you rebase the patch on v6.8-rc1 and resend?
+Hi Linus,
 
+Here you go:
+https://lore.kernel.org/all/20240202105854.26446-1-quic_aiquny@quicinc.com/T/#u
+
+When I rebase to v6.8-rc1, there is little conflict about header file, 
+so the cleanup.h is already added from other commits.
+So I just mark it as v4 instead of Resend.
+
+Hope this information is clear to you.
+> 
+> Yours,
+> Linus Walleij
 
 -- 
-Jani Nikula, Intel
+Thx and BRs,
+Aiqun(Maria) Yu
 
