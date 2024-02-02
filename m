@@ -1,164 +1,183 @@
-Return-Path: <linux-kernel+bounces-49948-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E2E88471E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:27:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57EAD84721B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:42:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D28B3B2996F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:27:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D08D286A28
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:42:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9147B13EFEA;
-	Fri,  2 Feb 2024 14:27:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="tv1lOjPn"
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD7254779F;
+	Fri,  2 Feb 2024 14:42:36 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7BF31854;
-	Fri,  2 Feb 2024 14:27:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B3620DFA;
+	Fri,  2 Feb 2024 14:42:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706884031; cv=none; b=ZVi1el5BYsDo00rW8sLH5XgYOCHrVHhYZ5/95RlCk6+bv+I6MGff/c7WxLByogp8baDY1vbBnPqxBY3xfOEztsTFblPMGJ1n88OB+XkTmjoGn0YZbzbFM2SVhixqZ/Ln1FrD0ArBKKVXz9ascgm933qrOqIkGrgqoJf+XHbHRSk=
+	t=1706884956; cv=none; b=deF2gvgEj1j8ivZh+GnKZZiOK8ne5+M7M+eF8IFugRs8ATykRtQnh+8FAJw7DK0ah4S0HBwrPVfBSrizBypc50cg50qIWgukyOF9aRqTicMNcvdcqurLS2e6kMBiNaWMBn0tnMgakfBICao8UI9a35pXrqkM0fiPTrE+c5WnYSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706884031; c=relaxed/simple;
-	bh=CHL4VTwATVPlntAxMS+V97knUqQfUioN/hnMfpChPiY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DOvTpdWYHhCym8NMXGfHzssHmIIpsjncNx8iGyg/1mYmeRCuo4D9DDEFnms/zQWabHP1AbTTkK44vmkO/4HKrscYlZjfg2Hdwok+/TRN5xY5zZ/vkYKIrsxY1uswalZb9n8QNugViYGEbIaGO11pSmENLhKl+mo3kc2ZugpUugE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=tv1lOjPn; arc=none smtp.client-ip=37.18.73.165
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 856F8100009;
-	Fri,  2 Feb 2024 17:27:03 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 856F8100009
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1706884023;
-	bh=JeqPP36z4pnlbw1sLnjMU+SnvqzYB8B7+7WjQdUZT4c=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=tv1lOjPnlavwyjm3XqtQCuyI0jQIgx8BjwD5J7mtuY+0ASihXhtcUwGqBSlJOpxF0
-	 4VcsGPlJbYKLmhw4lYFAHsYtbmjiRh6elHhYTXK16Txt+RykRNbsbloux+baHiiROX
-	 O37p8jA5N1pIMokgEMIfVIHfHW8aiWYuyJ5Jt0y3likxUqK0Y4+Q3N5+TD23MQyNmh
-	 JL1FlWWuJiMA4sWq+EBP80SCK6Ckxspn9FxGmMxjpacDIaBY4YL2T4SdV6rqW26I4N
-	 UBwHr9zyHt7iTS+fJ2xhaDLfRz5V6XQbSr4acJqiKHuO/pqPndy8yaPV2POm8jBRTd
-	 hCSgBs0aA0r9Q==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri,  2 Feb 2024 17:27:03 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 2 Feb 2024 17:27:03 +0300
-From: Igor Prusov <ivprusov@salutedevices.com>
-To: <jbrunet@baylibre.com>, <neil.armstrong@linaro.org>
-CC: <kernel@salutedevices.com>, <prusovigor@gmail.com>, Igor Prusov
-	<ivprusov@salutedevices.com>, Kevin Hilman <khilman@baylibre.com>, Martin
- Blumenstingl <martin.blumenstingl@googlemail.com>, Michael Turquette
-	<mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
-	<linux-amlogic@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] clk: meson: Add missing clocks to axg_clk_regmaps
-Date: Fri, 2 Feb 2024 17:25:48 +0300
-Message-ID: <20240202172537.1.I64656c75d84284bc91e6126b50b33c502be7c42a@changeid>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706884956; c=relaxed/simple;
+	bh=2P+ZNughbw18nF0XEj47/8gcO7qDHTuHeliWPvBKGcE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Fv66hovJgcF2JO/Fi4S78QjqZVUx3MlWyq5yIRYJj+6gioxBcQblAvKoRcFy9xTOROf3bIDgVIDWj74mNoJb3e393PKuuh4IPBp0P7C+y59csntCdOSBnbmeHY3VTN/3cxaaGhO4qSQgKiUNl923LZYf9cYQ1NjRQHrx87WvLDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TRHkl5ZTlz9xqpg;
+	Fri,  2 Feb 2024 22:11:27 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id B75331405F9;
+	Fri,  2 Feb 2024 22:26:28 +0800 (CST)
+Received: from [10.81.209.159] (unknown [10.81.209.159])
+	by APP1 (Coremail) with SMTP id LxC2BwBHPxiM+7xl22O9AQ--.55539S2;
+	Fri, 02 Feb 2024 15:26:28 +0100 (CET)
+Message-ID: <c6ce8816-c4ff-4668-8cbb-88285330057d@huaweicloud.com>
+Date: Fri, 2 Feb 2024 15:26:14 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 183159 [Feb 02 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: ivprusov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;salutedevices.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/02 11:00:00 #23326006
-X-KSMG-AntiVirus-Status: Clean, skipped
+User-Agent: Mozilla Thunderbird
+Subject: Re: [BUG] workqueues and printk not playing nice since next-20240130
+To: paulmck@kernel.org, Tejun Heo <tj@kernel.org>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Petr Mladek <pmladek@suse.com>,
+ Steven Rostedt <rostedt@goodmis.org>, John Ogness
+ <john.ogness@linutronix.de>, Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-kernel@vger.kernel.org,
+ rcu@vger.kernel.org
+References: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
+From: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+In-Reply-To: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:LxC2BwBHPxiM+7xl22O9AQ--.55539S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCr1UAF1xXry8uF45CFyDWrg_yoWrtryfpr
+	W5Gr4UWr4kG347ZF1kAw15Xa4Yy3Z0yay3JasxGr98Xw15KF1ayF1ftFW7ua4qvr4rCF1a
+	qF90v3y2qw1UAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
+	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY
+	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6x
+	AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+	6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: 5mrqt2oorev25kdx2v3u6k3tpzhluzxrxghudrp/
 
-Some clocks were missing from axg_clk_regmaps, which caused kernel panic
-during cat /sys/kernel/debug/clk/clk_summary
 
-[   57.349402] Unable to handle kernel NULL pointer dereference at virtual address 00000000000001fc
-..
-[   57.430002] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[   57.436900] pc : regmap_read+0x1c/0x88
-[   57.440608] lr : clk_regmap_gate_is_enabled+0x3c/0xb0
-[   57.445611] sp : ffff800082f1b690
-[   57.448888] x29: ffff800082f1b690 x28: 0000000000000000 x27: ffff800080eb9a70
-[   57.455961] x26: 0000000000000007 x25: 0000000000000016 x24: 0000000000000000
-[   57.463033] x23: ffff800080e8b488 x22: 0000000000000015 x21: ffff00000e7e7000
-[   57.470106] x20: ffff00000400ec00 x19: 0000000000000000 x18: ffffffffffffffff
-[   57.477178] x17: 0000000000000000 x16: 0000000000000000 x15: ffff0000042a3000
-[   57.484251] x14: 0000000000000000 x13: ffff0000042a2fec x12: 0000000005f5e100
-[   57.491323] x11: abcc77118461cefd x10: 0000000000000020 x9 : ffff8000805e4b24
-[   57.498396] x8 : ffff0000028063c0 x7 : ffff800082f1b710 x6 : ffff800082f1b710
-[   57.505468] x5 : 00000000ffffffd0 x4 : ffff800082f1b6e0 x3 : 0000000000001000
-[   57.512541] x2 : ffff800082f1b6e4 x1 : 000000000000012c x0 : 0000000000000000
-[   57.519615] Call trace:
-[   57.522030]  regmap_read+0x1c/0x88
-[   57.525393]  clk_regmap_gate_is_enabled+0x3c/0xb0
-[   57.530050]  clk_core_is_enabled+0x44/0x120
-[   57.534190]  clk_summary_show_subtree+0x154/0x2f0
-[   57.538847]  clk_summary_show_subtree+0x220/0x2f0
-[   57.543505]  clk_summary_show_subtree+0x220/0x2f0
-[   57.548162]  clk_summary_show_subtree+0x220/0x2f0
-[   57.552820]  clk_summary_show_subtree+0x220/0x2f0
-[   57.557477]  clk_summary_show_subtree+0x220/0x2f0
-[   57.562135]  clk_summary_show_subtree+0x220/0x2f0
-[   57.566792]  clk_summary_show_subtree+0x220/0x2f0
-[   57.571450]  clk_summary_show+0x84/0xb8
-[   57.575245]  seq_read_iter+0x1bc/0x4b8
-[   57.578954]  seq_read+0x8c/0xd0
-[   57.582059]  full_proxy_read+0x68/0xc8
-[   57.585767]  vfs_read+0xb0/0x268
-[   57.588959]  ksys_read+0x70/0x108
-[   57.592236]  __arm64_sys_read+0x24/0x38
-[   57.596031]  invoke_syscall+0x50/0x128
-[   57.599740]  el0_svc_common.constprop.0+0x48/0xf8
-[   57.604397]  do_el0_svc+0x28/0x40
-[   57.607675]  el0_svc+0x34/0xb8
-[   57.610694]  el0t_64_sync_handler+0x13c/0x158
-[   57.615006]  el0t_64_sync+0x190/0x198
-[   57.618635] Code: a9bd7bfd 910003fd a90153f3 aa0003f3 (b941fc00)
-[   57.624668] ---[ end trace 0000000000000000 ]---
+Am 2/2/2024 um 2:04 PM schrieb Paul E. McKenney:
+> Hello!
+>
+> Starting with next-20240130 (and perhaps a bit earlier), rcutorture gets
+> what initially looked like early-boot hangs, but only when running on
+> dual-socket x86 systems [1], as it it works just fine on my x86 laptop [2].
+> But when running on dual-socket systems, this happens all the time,
+> perhaps because rcutorture works hard to split each guest OS across a
+> socket boundary.
+>
+> This is the reproducer:
+>
+> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 1m --configs "10*TREE01" --trust-make
+>
+> By "looked like early-boot hangs" I mean that qemu was quite happy,
+> but there was absolutely no console output.
+>
+> Bisection identified this commit:
+>
+> 5797b1c18919 ("workqueue: Implement system-wide nr_active enforcement for unbound workqueues")
+>
+> Reverting this commit made the problem go away.  Except that it is really
+> hard to imagine this commit having any effect whatsoever on early boot
+> execution.  Of course, this might be a failure of imagination on my part,
+> so I enlisted the aid of gdb:
+>
+> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 1m --configs "TREE01" --trust-make --gdb
+>
+> After following the resulting gdb startup instructions and waiting for
+> about ten seconds, I hit control-C on the gdb window and then:
+>
+> 	(gdb) bt
+> 	#0  default_idle () at arch/x86/kernel/process.c:743
+> 	#1  0xffffffff81e94d34 in default_idle_call () at kernel/sched/idle.c:97
+> 	#2  0xffffffff810d746d in cpuidle_idle_call () at kernel/sched/idle.c:170
+> 	#3  do_idle () at kernel/sched/idle.c:312
+> 	#4  0xffffffff810d76a4 in cpu_startup_entry (state=state@entry=CPUHP_ONLINE)
+> 	    at kernel/sched/idle.c:410
+> 	#5  0xffffffff81e95417 in rest_init () at init/main.c:730
+> 	#6  0xffffffff8329adf2 in start_kernel () at init/main.c:1067
+> 	#7  0xffffffff832a5038 in x86_64_start_reservations (
+> 	    real_mode_data=real_mode_data@entry=0x13d50 <exception_stacks+32080> <error: Cannot access memory at address 0x13d50>) at arch/x86/kernel/head64.c:555
+> 	#8  0xffffffff832a513c in x86_64_start_kernel (
+> 	    real_mode_data=0x13d50 <exception_stacks+32080> <error: Cannot access memory at address 0x13d50>) at arch/x86/kernel/head64.c:536
+> 	#9  0xffffffff810001d2 in secondary_startup_64 ()
+> 	    at arch/x86/kernel/head_64.S:461
+> 	#10 0x0000000000000000 in ?? ()
+> 	(gdb) print jiffies
+> 	$1 = 4294676330
+> 	(gdb) print system_state
+> 	$2 = SYSTEM_RUNNING
+>
+> In other words, the system really has booted, and at least one CPU is
+> happily idling in the idle loop.  And another CPU is (maybe not quite
+> so happily) running rcutorture:
+>
+> 	(gdb) thread 6
+> 	[Switching to thread 6 (Thread 1.6)]
+> 	#0  0xffffffff8111160b in rcu_torture_one_read (
+> 	    trsp=trsp@entry=0xffffc900004abe90, myid=myid@entry=4)
+> 	    at kernel/rcu/rcutorture.c:2003
+> 	2003            completed = cur_ops->get_gp_seq();
+> 	(gdb) bt
+> 	#0  0xffffffff8111160b in rcu_torture_one_read (
+> 	    trsp=trsp@entry=0xffffc900004abe90, myid=myid@entry=4)
+> 	    at kernel/rcu/rcutorture.c:2003
+> 	#1  0xffffffff81111bef in rcu_torture_reader (arg=0x4 <fixed_percpu_data+4>)
+> 	    at kernel/rcu/rcutorture.c:2097
+> 	#2  0xffffffff810af3e0 in kthread (_create=0xffff8880047aa480)
+> 	    at kernel/kthread.c:388
+> 	#3  0xffffffff8103af1f in ret_from_fork (prev=<optimized out>,
+> 	    regs=0xffffc900004abf58, fn=0xffffffff810af300 <kthread>,
+> 	    fn_arg=0xffff8880047aa480) at arch/x86/kernel/process.c:147
+> 	#4  0xffffffff8100247a in ret_from_fork_asm () at arch/x86/entry/entry_64.S:242
+> 	#5  0x0000000000000000 in ?? ()
+>
+> So the system really did boot and is running just fine.  It is just that
+> there is no console output.  Details, details!
+>
+> Is there anything I can do to some combination of workqueues and printk
+> to help debug this?  Or that I can do to anything else, as I am not
+> feeling all that picky.  ;-)
 
-Signed-off-by: Igor Prusov <ivprusov@salutedevices.com>
----
 
- drivers/clk/meson/axg.c | 2 ++
- 1 file changed, 2 insertions(+)
+Just to exclude one source of troubles, have you tried turning all 
+atomics into full barriers and seen if the issue still reproduces?
 
-diff --git a/drivers/clk/meson/axg.c b/drivers/clk/meson/axg.c
-index c12f81dfa674..5f60f2bcca59 100644
---- a/drivers/clk/meson/axg.c
-+++ b/drivers/clk/meson/axg.c
-@@ -2142,7 +2142,9 @@ static struct clk_regmap *const axg_clk_regmaps[] = {
- 	&axg_vclk_input,
- 	&axg_vclk2_input,
- 	&axg_vclk_div,
-+	&axg_vclk_div1,
- 	&axg_vclk2_div,
-+	&axg_vclk2_div1,
- 	&axg_vclk_div2_en,
- 	&axg_vclk_div4_en,
- 	&axg_vclk_div6_en,
--- 
-2.34.1
+jonas
+
+
+>
+> 							Thanx, Paul
+>
+> [1] The dual-socket system is an 80-hardware-thread (20 cores per socket)
+>      system with model name Intel(R) Xeon(R) Gold 6138 CPU @ 2.00GHz.
+>      I get the same results when using either of these compilers:
+>      gcc version 8.5.0 20210514 (Red Hat 8.5.0-21) (GCC)
+>      gcc version 11.4.1 20230605 (Red Hat 11.4.1-2) (GCC)
+>
+> [2] My laptop is a 16-hardware-thread (8 cores) single-socket system with
+>      model name "Intel(R) Core(TM) i9-10885H CPU @ 2.40GHz" and
+>      gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04).
 
 
