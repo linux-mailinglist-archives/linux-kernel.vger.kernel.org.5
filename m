@@ -1,206 +1,124 @@
-Return-Path: <linux-kernel+bounces-50601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E85A847B72
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:20:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AAD5847B76
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:23:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 935871C238E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:20:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B82251F26A7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:23:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDEB281751;
-	Fri,  2 Feb 2024 21:20:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DA0981752;
+	Fri,  2 Feb 2024 21:23:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gs399+XR"
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="YgoAR4A5"
+Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7507EE56D
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 21:20:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFE518175D;
+	Fri,  2 Feb 2024 21:23:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706908842; cv=none; b=U62YBNf7OSwv/DdIpiy32f80uTI38m15DcX2L0jYKSChi9QxnRt5DULOQFUN4XhTX7lXMcLzHrHvGaK4w1EorR6YNiaKsbfg69K7zD306ehFh62c0HttIA3Rim9OfjN4PCvGI5tH55vM7t+bfaCUZxN7jnOwQHN7iHOfedNz4UM=
+	t=1706909016; cv=none; b=A5ieWwspg45mNM5PFWnjlo03uMX6c36v0JFN56KVK+Tr2k1MPUzDRqzCvLHtpTmhkXsr1vizVaGmUCINMFcMlSQ80PTmRxQiGTmNa/NPlD64nLIQknCFlk1LjLdv8CE5ulHc+ykjNqf0yNmBL01Uppw50kjCRWIgvKPEMV6Y9jY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706908842; c=relaxed/simple;
-	bh=jUs3FOiHURQSbndNpw9eAyjunPGYP6jiGaFCC4A3PYw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oeuAjPueSbpH/+JJUrdrhaDuCjZ6azjAPTJMY5WouppqfYDDdykNdBUqGnrnFS+I6af2ZHx39pRP25CHRhKgmFAXbgL72Cg2cr+BxmVxGMwrtoWrPjwB0w2jDZaL7sA31oHNSHSZfNwPsEF6r5fXOTDXSpKm9WpVRwyMnKzYVqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=gs399+XR; arc=none smtp.client-ip=209.85.160.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-2191dc7079aso516613fac.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 13:20:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706908839; x=1707513639; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=92wvK0QB22DZGV3tUKA8OrcYGB+w2iD/0d4E9vYXy90=;
-        b=gs399+XRn/XEHp3VeqU9F0bZepjNpgScajG42mi9KKlHfLQYJHWJbw9bQF8gZCyPgu
-         uar9/rjfPaaX6rFIBJISVFSUXQAghjut/sFem3P8J1chBk9dea7cKYTQ1vP9zAIRFk6V
-         Bf7YzZlQLTA1UCLMhvrREH+4k6Wc5OQsd1UyM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706908839; x=1707513639;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=92wvK0QB22DZGV3tUKA8OrcYGB+w2iD/0d4E9vYXy90=;
-        b=s78d62BGvAcUhv2TfPeSo2Oued2Aacz6GqhaVuumHyvg7tQ4gr+DsWbsltW0j/8O3e
-         GQ+FAwRXXVhTjfFV6D0JqnFjDMPGQERsX7t8BWpJZ29uL0VDtbFFalWuH13AgJ3Q9Obj
-         /2UshAShM/xTqKqPAep3odQ/lN6646WJ4514vG5Rz4lQyTBtusDOxRSurMHgKOte68/6
-         44e/uyGy+OrjeAVujMDIQvpnY7jUxWz0tZ5XbMeJtk6jgP9mSCgt6F8LmSvV6RFtPzR9
-         3PCk46bmcGqNI5TW2QDtIJfDOl7UdFJWFgOrhlQN5ZFQ10srIM1QDQN6Yi2kqmok3h8r
-         cvXA==
-X-Gm-Message-State: AOJu0YyXvJN9gelci7UwogzzOCA3fbwcibdkyQPt6qVqJqd6wm1YAr1R
-	5bQVgd9xZ488h5RBqyF9pLDS8PwtWM8ATkUEQrJwk+ha25naE5Fs0JKOEwBtkMoxa4UMDFtuAGl
-	VT70N55Pxw0cVb0w0eURfTaB7ia6lvHEYY95A
-X-Google-Smtp-Source: AGHT+IEHFQyrtYpxn0tuAlfC9rwX/+nRhQdpjBGjKESQj1UnpUByy5Y6kofBq7OGl00pybgPooaYvuinpoC8QXzQhJg=
-X-Received: by 2002:a05:6870:7024:b0:214:9ecd:56e8 with SMTP id
- u36-20020a056870702400b002149ecd56e8mr932493oae.33.1706908839487; Fri, 02 Feb
- 2024 13:20:39 -0800 (PST)
+	s=arc-20240116; t=1706909016; c=relaxed/simple;
+	bh=PN0rt/SrGrPLEv+QxTAiD8tWU7CCMMQCJvdKyV+MpKo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QVq4oWPga+sqJ+6K0vZZ4Nyhdtq0lzKfqJZbMLGT52NaFJCn3N+jMBA/6/lljQcHtOAsiIYS+T1VIg8CF/dadwGqLx25uPYkjIBUOpRMHvr8d+OEnziKXnIYIVCDeYetN+3ieOhPPrCOiBpzbTin0AUYAa2l6oLogg80Hf8l1G8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=YgoAR4A5; arc=none smtp.client-ip=80.12.242.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from fedora.home ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id W10NrnAvE0k1mW10Ornqsa; Fri, 02 Feb 2024 22:23:24 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1706909004;
+	bh=gknkBxJEzqhmHTYPDuPbdM6rcQN2TQdAIGaoD5ZyO4w=;
+	h=From:To:Cc:Subject:Date;
+	b=YgoAR4A5THvusTgAiNg8KwY8Etnc1ncfqrO25s6RTtGo6epSz+oLTQA7rbUYQZsFt
+	 m6fXmOTJwj70w8j3JZ2dj3nCgtr2stskPQFrmZ+esPcZjx1ppIiGbNT+lI174WX6IL
+	 41tlYVyiI2pTIpBcA4SRyVk9NH4xMjMowq8rfQ9QiRYhyhLt6UUgxYEdtgACe0Xy5X
+	 98cCkSIaTp6eeItapQpmpFbawDyDQuTsg8LiKDwr58u/TTpm5Yq4eUJ0AubvZKU87t
+	 6D48uWyMpkJEDGnByXqPCInHuOIkmLvTXrodOQhxnw3jSlhXIB8e6Z5VOGM96Zmxy8
+	 ibym9c28XQnqQ==
+X-ME-Helo: fedora.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 02 Feb 2024 22:23:24 +0100
+X-ME-IP: 92.140.202.140
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: akpm@linux-foundation.org
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] mm: Reduce dependencies on <linux/kernel.h>
+Date: Fri,  2 Feb 2024 22:23:18 +0100
+Message-ID: <adfdbe21c4d06400d7bd802868762deb85cae8b6.1706908921.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver>
- <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
- <20240201204512.ht3e33yj77kkxi4q@revolver> <CABi2SkWB2eV24LBJtgJ73zEwaAWuFhAwrfqx3Rs=tqnpcJ0qRw@mail.gmail.com>
- <58408.1706828083@cvs.openbsd.org> <CAHk-=wjqozic6JuRimXD=RamnJmD6FoaQki7RtNYrezzx_OfOg@mail.gmail.com>
- <CALmYWFtqcixi3p3Ab44wENJr+n2k2SNaCJEofNm_awnNdJZnDQ@mail.gmail.com>
- <8744.1706846710@cvs.openbsd.org> <CABi2SkWSt=UMFWe9n916ZH16wCzaipKXmEJ5VasQHMr1AxerxQ@mail.gmail.com>
- <29248.1706850035@cvs.openbsd.org> <CABi2SkXPNPKgqheuFuQ9iZApQkJm8o6bypNn0B-QDz_W9b0JBQ@mail.gmail.com>
- <CAKbZUD1EsAVupRotYV-ed4PQ3sL5wM4M=f4n-6rF+QNp7C1m4g@mail.gmail.com>
-In-Reply-To: <CAKbZUD1EsAVupRotYV-ed4PQ3sL5wM4M=f4n-6rF+QNp7C1m4g@mail.gmail.com>
-From: Jeff Xu <jeffxu@chromium.org>
-Date: Fri, 2 Feb 2024 13:20:27 -0800
-Message-ID: <CABi2SkXB8A-k6ZxgL79irHQDAxMXvVKnUzu3xpH7SJsmhBCfQQ@mail.gmail.com>
-Subject: Re: [PATCH v8 0/4] Introduce mseal
-To: Pedro Falcato <pedro.falcato@gmail.com>
-Cc: Theo de Raadt <deraadt@openbsd.org>, Jeff Xu <jeffxu@google.com>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org, keescook@chromium.org, 
-	jannh@google.com, sroettger@google.com, willy@infradead.org, 
-	gregkh@linuxfoundation.org, usama.anjum@collabora.com, rdunlap@infradead.org, 
-	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, dave.hansen@intel.com, 
-	linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 2, 2024 at 10:52=E2=80=AFAM Pedro Falcato <pedro.falcato@gmail.=
-com> wrote:
->
-> On Fri, Feb 2, 2024 at 5:59=E2=80=AFPM Jeff Xu <jeffxu@chromium.org> wrot=
-e:
-> >
-> > On Thu, Feb 1, 2024 at 9:00=E2=80=AFPM Theo de Raadt <deraadt@openbsd.o=
-rg> wrote:
-> > >
-> > > Jeff Xu <jeffxu@chromium.org> wrote:
-> > >
-> > > > Even without free.
-> > > > I personally do not like the heap getting sealed like that.
-> > > >
-> > > > Component A.
-> > > > p=3Dmalloc(4096);
-> > > > writing something to p.
-> > > >
-> > > > Compohave nent B:
-> > > > mprotect(p,4096, RO)
-> > > > mseal(p,4096)
-> > > >
-> > > > This will split the heap VMA, and prevent the heap from shrinking, =
-if
-> > > > this is in a frequent code path, then it might hurt the process's
-> > > > memory usage.
-> > > >
-> > > > The existing code is more likely to use malloc than mmap(), so it i=
-s
-> > > > easier for dev to seal a piece of data belonging to another compone=
-nt.
-> > > > I hope this pattern is not wide-spreading.
-> > > >
-> > > > The ideal way will be just changing the library A to use mmap.
-> > >
-> > > I think you are lacking some test programs to see how it actually
-> > > behaves; the effect is worse than you think, and the impact is immedi=
-ately
-> > > visible to the programmer, and the lesson is clear:
-> > >
-> > >         you can only seal objects which you gaurantee never get recyc=
-led.
-> > >
-> > >         Pushing a sealed object back into reuse is a disasterous bug.
-> > >
-> > >         Noone should call this interface, unless they understand that=
-.
-> > >
-> > > I'll say again, you don't have a test program for various allocators =
-to
-> > > understand how it behaves.  The failure modes described in your docue=
-mnts
-> > > are not correct.
-> > >
-> > I understand what you mean: I will add that part to the document:
-> > Try to recycle a sealed memory is disastrous, e.g.
-> > p=3Dmalloc(4096);
-> > mprotect(p,4096,RO)
-> > mseal(p,4096)
-> > free(p);
-> >
-> > My point is:
-> > I think sealing an object from the heap is a bad pattern in general,
-> > even dev doesn't free it. That was one of the reasons for the sealable
-> > flag, I hope saying this doesn't be perceived as looking for excuses.
->
-> The point you're missing is that adding MAP_SEALABLE reduces
-> composability. With MAP_SEALABLE, everything that mmaps some part of
-> the address space that may ever be sealed will need to be modified to
-> know about MAP_SEALABLE.
->
-> Say you did the same thing for mprotect. MAP_PROTECT would control the
-> mprotectability of the map. You'd stop:
->
-> p =3D malloc(4096);
-> mprotect(p, 4096, PROT_READ);
-> free(p);
->
-> ! But you'd need to change every spot that mmap()'s something to know
-> about and use MAP_PROTECT: all "producers" of mmap memory would need
-> to know about the consumers doing mprotect(). So now either all mmap()
-> callers mindlessly add MAP_PROTECT out of fear the consumers do
-> mprotect (and you gain nothing from MAP_PROTECT), or the mmap()
-> callers need to know the consumers call mprotect(), and thus you
-> introduce a huge layering violation (and you actually lose from having
-> MAP_PROTECT).
->
-> Hopefully you can map the above to MAP_SEALABLE. Or to any other m*()
-> operation. For example, if chrome runs on an older glibc that does not
-> know about MAP_SEALABLE, it will not be able to mseal() its own shared
-> libraries' .text (even if, yes, that should ideally be left to ld.so).
->
-I think I have heard enough complaints about MAP_SEALABLE from Linux
-developers and Linus in the last two days to convince myself that it
-is a bad idea :)
+"page_counter.h" does not need <linux/kernel.h>. <linux/limits.h> is enough
+to get LONG_MAX.
 
-For the last time, I was trying to limit the scope of mseal() limited
-to two known cases. And MAP_SEALABLE is a reversible decision, a
-system ctrl can turn it off, or we can obsolete it in future. (this
-was mentioned in the document of V8).
+Files that include page_counter.h are limited. They have been compile
+tested or checked.
 
-I will rest my case. Obviously from the feedback,  it is loud and
-clear that we want to be able to seal all the memory.
+$ git grep page_counter\.h
+include/linux/hugetlb_cgroup.h: struct page_counter hugepage[HUGE_MAX_HSTATE];
+	--> all files that include it have been compile tested
 
-> IMO, UNIX API design has historically mostly been "play stupid games,
-> win stupid prizes", which is e.g: why things like close(STDOUT_FILENO)
-> work. If you close stdout (and don't dup/reopen something to stdout)
-> and printf(), things will break, and you get to keep both pieces.
-> There's no O_CLOSEABLE, just as there's no O_DUPABLE.
->
-> --
-> Pedro
+include/linux/memcontrol.h:#include <linux/page_counter.h>
+	--> <linux/kernel.h> has been added, to be safe
+
+include/net/sock.h:#include <linux/page_counter.h>
+	--> already include <linux/kernel.h>
+
+mm/hugetlb_cgroup.c:#include <linux/page_counter.h>
+mm/memcontrol.c:#include <linux/page_counter.h>
+mm/page_counter.c:#include <linux/page_counter.h>
+	--> compile tested
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Let see if build-bots agree with me.
+---
+ include/linux/memcontrol.h   | 1 +
+ include/linux/page_counter.h | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 20ff87f8e001..4e4caeaea404 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -14,6 +14,7 @@
+ #include <linux/vm_event_item.h>
+ #include <linux/hardirq.h>
+ #include <linux/jump_label.h>
++#include <linux/kernel.h>
+ #include <linux/page_counter.h>
+ #include <linux/vmpressure.h>
+ #include <linux/eventfd.h>
+diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
+index c141ea9a95ef..8cd858d912c4 100644
+--- a/include/linux/page_counter.h
++++ b/include/linux/page_counter.h
+@@ -4,7 +4,7 @@
+ 
+ #include <linux/atomic.h>
+ #include <linux/cache.h>
+-#include <linux/kernel.h>
++#include <linux/limits.h>
+ #include <asm/page.h>
+ 
+ struct page_counter {
+-- 
+2.43.0
+
 
