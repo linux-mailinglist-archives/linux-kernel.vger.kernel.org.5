@@ -1,158 +1,109 @@
-Return-Path: <linux-kernel+bounces-50487-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F59C8479C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:38:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D26A58479CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:41:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D899F1F24D72
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:38:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8508D1F21E14
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:41:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FF8315E5C8;
-	Fri,  2 Feb 2024 19:38:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43C4680607;
+	Fri,  2 Feb 2024 19:41:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ovi+0ekJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="gZ6u0hYq"
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5046E15E5D8;
-	Fri,  2 Feb 2024 19:38:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE24615E5AE;
+	Fri,  2 Feb 2024 19:41:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706902691; cv=none; b=PIr1JrFHq6opl77RcLlrskmFl7z0zHB94S8+NTN7oh9e4akS9bjd0m7yTfxHL/ZtxM7OfOYMSczNHxWSWt00QIaNW7BUcq/ka1kYDH9fa8ffWBYMd1l4Iw/vUYkh4TPLNgyMQNWeyrI8miBkFK4+xrJJlwOCAyT0BqQQr2E9HCw=
+	t=1706902895; cv=none; b=bX7aSQwfAiUYNjldwaPC0OG6T8pbsn+UkF2YY42nK45qvFD9z1bXSf7fZCCHCO7HGvKIY82W545/SNPzsqCUu2PqrDJ/w93cpMYfSTVxcnCBtjngyvEZOot+JVt6kwhFufN2kLj0JWhu6o5STkbFBvTy3zsNakb9SXe2YZFE70g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706902691; c=relaxed/simple;
-	bh=cXSewaIhyGydS5Gw01kUhO+TK9P0kL9oR3wsJgkpSXw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c2+cUy4K12Ry734F4Kqv6SgyGf6pjLe86z8/VXXi9TBps6mBqYYp3HX9Dxz0hk4UMCdLzX1pqDWFd9XnvE2SV/eFZNBRvQuFXffJ7G/bJ8ISo847rG0PgoeDHYCBhX5lBYa+lbZa+98QQWQPKg8Qpx3erxH5bLhX21P7qaUaESs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ovi+0ekJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B896C433C7;
-	Fri,  2 Feb 2024 19:38:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706902690;
-	bh=cXSewaIhyGydS5Gw01kUhO+TK9P0kL9oR3wsJgkpSXw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ovi+0ekJPZurgLg8k360G3rdBWysmMIochoK+bC4Dcn43HvlSf4ueyyed1iL/BIKp
-	 pxEKuGpZMJgyE5VB2iyakVKzVkI2z27TLziSvsZ4MBVpP8XEWYFAY5S0rSaNa7I0UG
-	 SKlElFrz4Z9VulT1xnl556sxrDbnc+j8TwwhaKH4uSReLWdLMGT2fi1fd8C7dP5jrO
-	 rM+V/ev1Bil/ScnFXez9obyL29t300jIRIfkQUgX4ZB9faRUULT7KshaFJKNwYCoHV
-	 JObzf2YabL/I7Jf8mWG8M//XHvb2ipLKSxgKCp88Y6Q7G7+p85bTJwyv93zIvOThvZ
-	 bwDBvEtB+tMRg==
-Date: Fri, 2 Feb 2024 13:38:08 -0600
-From: Rob Herring <robh@kernel.org>
-To: Mao Jinlong <quic_jinlmao@quicinc.com>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	James Clark <james.clark@arm.com>, Leo Yan <leo.yan@linaro.org>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-msm@vger.kernel.org,
-	Tingwei Zhang <quic_tingweiz@quicinc.com>,
-	Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-	Tao Zhang <quic_taozha@quicinc.com>
-Subject: Re: [PATCH v3 2/2] dt-bindings: arm: Add device-name in the
- coresight components
-Message-ID: <20240202193808.GA581322-robh@kernel.org>
-References: <20240131082628.6288-1-quic_jinlmao@quicinc.com>
- <20240131082628.6288-3-quic_jinlmao@quicinc.com>
+	s=arc-20240116; t=1706902895; c=relaxed/simple;
+	bh=PA6V8qrjOEmRUGi+eQ/RS4oAQjuEZxBHWI8Xka+E70s=;
+	h=Message-ID:Date:MIME-Version:In-Reply-To:To:Cc:From:Subject:
+	 Content-Type; b=NTirCzr1zhK2zFq3a9n8ICk2Tc9NXv/cWjJeqwgjMkz8NlVS1XpA5u7/6foewbJPZZ9atpKoJCqseIBsxpvRt481maRYEpwbhkYTidaqN4jz7K2xYlHQ6YU5i7ZTpGquFKm3jWjXs4c/J6uuwmJBbJ2yRfkBEV8vNfp0Qrd7mYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=gZ6u0hYq; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:Subject:From:Cc:To:
+	In-Reply-To:MIME-Version:Date:Message-ID:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=PA6V8qrjOEmRUGi+eQ/RS4oAQjuEZxBHWI8Xka+E70s=; b=gZ6u0hYqRPUgVhYJbVeGYB/L9g
+	/Ea5eM3HWDDp2WL/dJ/L2qUe77Z/CuO0U0bqKFNk9R167WtRmTjiWOCRuUarhFKJOL5lhb51L6NYI
+	EpMlao2gZByFMHhpXgRbf6n8RspviwcY/LO6pQRwYfDRWvhCu24FkCG1TgZoTqG+pHMGlqW2Ce4KG
+	wh2Bis9xuVCJYZulzEejI0c9KYjEF94ULju972kxSHVdFOSJ7KiNH8npvewGwr1F2l9KRtcC3qWit
+	kdeaSO1LLofZUqQYqb3Hh+oLtti6W6CDhsHKM0FKi1TNLS3QGY9OCRmatKpL3d8h3mQKKku/YA/uE
+	WXyhqkfQ==;
+Received: from [187.90.178.235] (helo=[192.168.1.60])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1rVzPE-00D4dK-2z; Fri, 02 Feb 2024 20:40:56 +0100
+Message-ID: <66cb411b-557a-6a70-57c9-457c969fec24@igalia.com>
+Date: Fri, 2 Feb 2024 16:40:46 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131082628.6288-3-quic_jinlmao@quicinc.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+In-Reply-To: <000000000000d08921060fe27342@google.com>
+To: syzbot+239f12e20785af44332c@syzkaller.appspotmail.com,
+ Thomas Gleixner <tglx@linutronix.de>, jannh@google.com
+Cc: akpm@linux-foundation.org, Borislav Petkov <bp@alien8.de>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, linux-kernel
+ <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+ "luto@kernel.org" <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, syzkaller-bugs@googlegroups.com,
+ "x86@kernel.org" <x86@kernel.org>, gpiccoli@igalia.com,
+ "Guilherme G. Piccoli" <kernel@gpiccoli.net>, houtao1@huawei.com
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in
+ bpf_probe_read_compat_str
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 31, 2024 at 12:26:26AM -0800, Mao Jinlong wrote:
-> Current name of coresight component's folder consists of prefix of
-> the device and the id in the device list. When run 'ls' command,
-> we can get the register address of the device. Take CTI for example,
-> if we want to set the config for modem CTI, but we can't know which
-> CTI is modem CTI from all current information.
-> 
-> cti_sys0 -> ../../../devices/platform/soc@0/138f0000.cti/cti_sys0
-> cti_sys1 -> ../../../devices/platform/soc@0/13900000.cti/cti_sys1
-> 
-> Add device-name in device tree which can provide a better description
-> of the coresight device. It can provide the info like the system or
-> HW it belongs to.
-> 
-> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
-> ---
->  .../devicetree/bindings/arm/arm,coresight-catu.yaml         | 6 ++++++
->  .../devicetree/bindings/arm/arm,coresight-cpu-debug.yaml    | 6 ++++++
->  .../devicetree/bindings/arm/arm,coresight-cti.yaml          | 6 ++++++
->  .../devicetree/bindings/arm/arm,coresight-dummy-sink.yaml   | 6 ++++++
->  .../devicetree/bindings/arm/arm,coresight-dummy-source.yaml | 6 ++++++
->  .../bindings/arm/arm,coresight-dynamic-funnel.yaml          | 6 ++++++
->  .../bindings/arm/arm,coresight-dynamic-replicator.yaml      | 6 ++++++
->  .../devicetree/bindings/arm/arm,coresight-etb10.yaml        | 6 ++++++
->  .../devicetree/bindings/arm/arm,coresight-etm.yaml          | 6 ++++++
->  .../bindings/arm/arm,coresight-static-funnel.yaml           | 6 ++++++
->  .../bindings/arm/arm,coresight-static-replicator.yaml       | 6 ++++++
->  .../devicetree/bindings/arm/arm,coresight-stm.yaml          | 6 ++++++
->  .../devicetree/bindings/arm/arm,coresight-tmc.yaml          | 6 ++++++
->  .../devicetree/bindings/arm/arm,coresight-tpiu.yaml         | 6 ++++++
->  .../devicetree/bindings/arm/qcom,coresight-tpda.yaml        | 6 ++++++
->  .../devicetree/bindings/arm/qcom,coresight-tpdm.yaml        | 6 ++++++
+Hi folks, I've been trying to play with this report and was able to
+reproduce on v6.8-rc2, in a simple qemu VM.
 
-Why do you need a name on everything? Funnels and replicators, for 
-example, aren't a source of data, but just connected to things that are. 
-ETM is tightly coupled to a CPU and you have a link to it. You have 
-graph links to show connections. Limit this to where you actually need 
-it. 
+But the thing is: after looking similar reports in MLs, this seems quite
+the same report as [0], so a dup. And we even have a candidate fix for
+it, in the form of Thomas's patch
+(https://lore.kernel.org/all/87r0jwquhv.ffs@tglx/). I've tested this
+patch and it works, preventing the crash.
 
->  16 files changed, 96 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/arm,coresight-catu.yaml b/Documentation/devicetree/bindings/arm/arm,coresight-catu.yaml
-> index 2bae06eed693..a4d20aad0c70 100644
-> --- a/Documentation/devicetree/bindings/arm/arm,coresight-catu.yaml
-> +++ b/Documentation/devicetree/bindings/arm/arm,coresight-catu.yaml
-> @@ -44,6 +44,12 @@ properties:
->        - const: arm,coresight-catu
->        - const: arm,primecell
->  
-> +  device-name:
+So...
 
-This is too generic of a name. Make is something closer to how it is 
-used or what it is for. Naming sysfs devices is not how it is used. 
-That's just an intermediate step.
+Jann: could you help me confirm the reproducer here is the same of the
+other report, in which you nailed it to accessing the VSYSCALL region?
+For me it's quite similar, but I'm not experienced in reading this kind
+of BPF program...
 
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description:
-> +      Define the name which can describe what kind of HW or system the
-> +      device is for.
-> +
->    reg:
->      maxItems: 1
->  
-> diff --git a/Documentation/devicetree/bindings/arm/arm,coresight-cpu-debug.yaml b/Documentation/devicetree/bindings/arm/arm,coresight-cpu-debug.yaml
-> index 0a6bc03ebe00..6094cc9cb834 100644
-> --- a/Documentation/devicetree/bindings/arm/arm,coresight-cpu-debug.yaml
-> +++ b/Documentation/devicetree/bindings/arm/arm,coresight-cpu-debug.yaml
-> @@ -39,6 +39,12 @@ properties:
->        - const: arm,coresight-cpu-debug
->        - const: arm,primecell
->  
-> +  device-name:
-> +    $ref: /schemas/types.yaml#/definitions/string
+Thomas: could you maybe re-submit/merge this patch, if you still agree
+this is the proper fix? There's a Tested-by from Hou Tao in that thread,
+and feel free to add mine as well!
 
-If you are redefining the type multiple times, there's a problem in the 
-structure of the schemas. Really, that's true for anything duplicated in 
-the kernel.
+Thanks in advance and let me know if I can test more stuff / provide
+more data, etc - I'm glad to help here.
+Cheers,
 
-Rob
+
+Guilherme
+
+
+[0] https://lore.kernel.org/all/000000000000c84343060a850bd0@google.com/
+("[syzbot] [mm?] BUG: unable to handle kernel paging request in
+copy_from_kernel_nofault")
 
