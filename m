@@ -1,230 +1,138 @@
-Return-Path: <linux-kernel+bounces-49840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9579847053
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:30:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 993B0847062
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:32:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDBF61C213E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:30:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55397296F38
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:32:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8A8278689;
-	Fri,  2 Feb 2024 12:30:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B3CD15AB;
+	Fri,  2 Feb 2024 12:30:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="j3P3q7PM"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="D56drevp"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B73EA14460C
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 12:30:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFEAC4206C
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 12:30:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706877025; cv=none; b=E8oSsDRS0nXbt/CbfR+Wbi363otMaYxWAy0cEmZHvIl2eBXEWRoeJW0UDrwVC329bcD2C/+O2chYHbReZiKj0u14/XhIuFMEJQVnblV+7UR2ufQwVNOsv+yysLnaCzW4knjgPZUZ+ZYXK87oLDA73RRtohTdHnvvZANJvQ+rd/E=
+	t=1706877046; cv=none; b=gfyqMDE/o+dy9sfxZym30trNSBRkESN/XM4ZiNrsVvVgOjb6Iiw3+0L0TmH/V/vau2F/+ylMPAT4tiYXukZGCB2Vq1WZs776SYA14icOa1rD2rzUaPw3XswsexaFr0gk+3Q2bsRy7aKPBBKbw4bz6x+NdBUiXZuKe8TPewrtrzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706877025; c=relaxed/simple;
-	bh=IGI9/dQV3qGBVH5j2vJp9yftTikrYa+t8RlZXVoJbpk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Xt+NnNInO+InDxze7FfZAPpgIWH0G14mEusibB8qe2i31kNae/E7edC9gbB6FPKf4bQ1DL+udeXfbnzZaWP7duZF1GSbATNLwWxsZmd6kUxJBNVrFoxn8MAlOIiOf3n8Gap7o0vOUuTMI0BfvAmass1QajfOJPXorz6EsgouuWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=j3P3q7PM; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-60406da718aso20809817b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 04:30:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706877020; x=1707481820; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=v8oOpYwr9iTQslYutTkqU0qxshC1/W4QlmLIOUl40bM=;
-        b=j3P3q7PMRtEF//DUJSJAzp+q30tS7/3EAyFxKYJoBQ6DJBoU3f3y4Ox3fOvvMxEPps
-         o+OAQWjgGd8FDMiNhHIIVHaifSCi5+KmGXoVVELn72zmCcbD0b0UKo1BWEkokh7cB2tY
-         sepVIuuXtzUDR18Zmk8pCsQw7ATmexdkQfrD7eY0tx3WpXGNnHQfXN+IQOqn1vvVxlv7
-         V439fOeRn9wP+beqbNmfsLHq8hKEbCd8FKcYYn9eYknBPCIL7/Z63TNfCk4RpTOjBTyo
-         jPUOTAHYvZPUPgXB+Oj8ja57B1E3WhMgfvVtIRnn5zaFyo5IlbkcA9CjetF7DMsP38HJ
-         PusA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706877020; x=1707481820;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=v8oOpYwr9iTQslYutTkqU0qxshC1/W4QlmLIOUl40bM=;
-        b=HIzDOkfUfQmQWC48efA42/iTt3/4vemKlkF5KbgL68yRhfFHnW0rarrGmHdScwwSuS
-         R4+0dCufQ/Oc7/9eSehNEgCp9SlPN9ZCdYbJBbT/B4v5Qcb+oCpceAMC2Oye41lPrx5v
-         lQQxtf+wNPfW7cRy7eJt5frMgRrmNkY/nSG8aW89C/niodiPFLZL35+v6VOe4z+K0vi7
-         JNV3Q7apelCziwCQkkvgbbgWHp6yn34cBTgBUyCkSfln9G22lmOLpZwRJ9H++ZPkslyR
-         5E9hXRDvgk8NwKvHwP38rpSype6IGjLiElLaKgmmQd5nef90/GmmIM2zURzNZb/nv9FP
-         Ajzg==
-X-Gm-Message-State: AOJu0YwYUHUFaniy6lK8kOtwD8kRFlk2ORQ7BpBYTwj1ftnEQ5AOpFQe
-	t0NCVh4MUFcaCHe1s5W9UlbrLXv3hsYCgs2HiQ3nuth1fujiYy2hO6/XnwIrzgVv7S3HeCkBqms
-	Utj2y2i0NTkwbSNTar/rL9ksWhRf000ir5G5diA==
-X-Google-Smtp-Source: AGHT+IETPsoeVpj0fMEFsGC6sNVxTsee80Br4NXMlKwi1BUq1xFrUlkgkaLYgBcbwbf7U/G9cwauAMTlt8UuJHRtKp0=
-X-Received: by 2002:a0d:ddcc:0:b0:5ff:58f1:9944 with SMTP id
- g195-20020a0dddcc000000b005ff58f19944mr2068910ywe.30.1706877020693; Fri, 02
- Feb 2024 04:30:20 -0800 (PST)
+	s=arc-20240116; t=1706877046; c=relaxed/simple;
+	bh=6kSFMQfQ6yQnGE0Dw7Q4P+dZOQf+sdUi8tqFp7CM+Mw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=njT5JaWsfPHx7X3KKJW2nlD0aHWKewM6WJ8LZIp7vP7tQfFF5xaSJE+6ctFBZq7q/nRPKDF0P6SBKzd38IK4XNuOU2dFz8HeDbjgFfINL/g2sn2Uwsf+Rky/mvyJ7RWM86tlXijkL7UDg6ggRLvDtrytAViuJYTVXmizolbgyT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=fail (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=D56drevp reason="signature verification failed"; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D5C2540E01A9;
+	Fri,  2 Feb 2024 12:30:39 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
+	reason="fail (body has been altered)" header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id q8sUyCQ-xDJ6; Fri,  2 Feb 2024 12:30:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706877037; bh=LAnMzrZs6f7RGntop7h3m0eQMyoneTWjdlZan+jFKfU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=D56drevpdtRq1XgIpZlwYvi7WxSfT7P6hUTd5mxlwFf+YMxwsgFr1B2ChDX/7qC67
+	 vfF6XZtUv0oGpQ+6nJrqClUMS8xyif5OmupiwwCewgp/xy4ydsBEkN4GePx8yxK4Ml
+	 ORaG3FEYvcgG9fgRS7CkL7lSUqdJngE9pPXXLeCyNXjJejWg2hBXY0BT+OsnPoxgn+
+	 LLtWc9GCyfQmm1ZTDYiRM6tLrOJavaA64LmmxicGmSRtiGAJHYG51mcun9SebwrWPk
+	 P1WVZ2LtuulUtUy2vDkUO85/Meq62eu99IdT8BJvsPta463pywenL4OcRh+ESFJohU
+	 NSm0H6uuAZAB0CM9VD3xEfZWLsz7AZt/f9gKUP5dy8XhZi+eaRezdOjpdIsKlgrjxv
+	 a3s60Q3sB8cye6iXhApC3rch3Q0QU45oirO1Mq2IAG5wCFcACAVATTX4caDkZayEok
+	 F10xPx0q5qKH3wTSOvYONs3J+S7+u9nSLxqYdVZx56Ihf+KwKvkau6BbPsrdNR1p++
+	 aAfSIvQcS+Ha6Cim3hd6cB5fxwD56f0im2A/eFcuCKRsladiXvHXeQjuqFkkdnwOJX
+	 cEY+m13WBaAZDlNJzraQDIbstj+LLxHgw+mRPAs7ZlRcXzdEUj+n9ZyxtB9X0+c97O
+	 FJpeDDS8khy322bT1X/c0qz8=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E80B340E01A2;
+	Fri,  2 Feb 2024 12:30:18 +0000 (UTC)
+Date: Fri, 2 Feb 2024 13:30:11 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Andrew Cooper <andrew.cooper3@citrix.com>,
+	Arjan van de Ven <arjan@linux.intel.com>,
+	Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+	Sohil Mehta <sohil.mehta@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Zhang Rui <rui.zhang@intel.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Feng Tang <feng.tang@intel.com>,
+	Andy Shevchenko <andy@infradead.org>,
+	Michael Kelley <mhklinux@outlook.com>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: [patch v5 09/19] x86/cpu: Provide an AMD/HYGON specific topology
+ parser
+Message-ID: <20240202123011.GAZbzgU8jqAYiTe8bH@fat_crate.local>
+References: <20240117115752.863482697@linutronix.de>
+ <20240117115908.880472059@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122-gdsc-hwctrl-v4-0-9061e8a7aa07@linaro.org>
- <20240122-gdsc-hwctrl-v4-1-9061e8a7aa07@linaro.org> <tax3c6o5qjegy6tv3zbgrd5rencfvypr3zg7twxfrmdngscp74@n44ei3q63g64>
- <CAPDyKFpdtrWbzNksLoY++aOY7Ltyt1HhtLZo8bj8sQ05-4Sq0g@mail.gmail.com> <l7icfezpajren25545n4cjtqehhividt5b2dxnxgetdsshc3k3@tdws423qdblk>
-In-Reply-To: <l7icfezpajren25545n4cjtqehhividt5b2dxnxgetdsshc3k3@tdws423qdblk>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Fri, 2 Feb 2024 13:29:44 +0100
-Message-ID: <CAPDyKFp1vg2+-pHJ_idkdhb_zZUMpq7W17DnCCGj0eTwd4jFbQ@mail.gmail.com>
-Subject: Re: Re: [PATCH v4 1/5] PM: domains: Allow devices attached to genpd
- to be managed by HW
-To: Bjorn Andersson <andersson@kernel.org>, Abel Vesa <abel.vesa@linaro.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>, 
-	Len Brown <len.brown@intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Andy Gross <agross@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Stanimir Varbanov <stanimir.k.varbanov@gmail.com>, Vikash Garodia <quic_vgarodia@quicinc.com>, 
-	"Bryan O'Donoghue" <bryan.odonoghue@linaro.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
-	Taniya Das <quic_tdas@quicinc.com>, Jagadeesh Kona <quic_jkona@quicinc.com>, 
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, linux-pm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-clk@vger.kernel.org, linux-media@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240117115908.880472059@linutronix.de>
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2 Feb 2024 at 00:51, Bjorn Andersson <andersson@kernel.org> wrote:
->
-> On Wed, Jan 31, 2024 at 01:12:00PM +0100, Ulf Hansson wrote:
-> > On Wed, 31 Jan 2024 at 02:09, Bjorn Andersson <andersson@kernel.org> wrote:
-> > >
-> > > On Mon, Jan 22, 2024 at 10:47:01AM +0200, Abel Vesa wrote:
-> > > > From: Ulf Hansson <ulf.hansson@linaro.org>
-> > > >
-> > > > Some power-domains may be capable of relying on the HW to control the power
-> > > > for a device that's hooked up to it. Typically, for these kinds of
-> > > > configurations the consumer driver should be able to change the behavior of
-> > > > power domain at runtime, control the power domain in SW mode for certain
-> > > > configurations and handover the control to HW mode for other usecases.
-> > > >
-> > > > To allow a consumer driver to change the behaviour of the PM domain for its
-> > > > device, let's provide a new function, dev_pm_genpd_set_hwmode(). Moreover,
-> > > > let's add a corresponding optional genpd callback, ->set_hwmode_dev(),
-> > > > which the genpd provider should implement if it can support switching
-> > > > between HW controlled mode and SW controlled mode. Similarly, add the
-> > > > dev_pm_genpd_get_hwmode() to allow consumers to read the current mode and
-> > > > its corresponding optional genpd callback, ->get_hwmode_dev(), which the
-> > > > genpd provider can also implement for reading back the mode from the
-> > > > hardware.
-> > > >
-> > > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > > > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> > > > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > > > ---
-> > > >  drivers/pmdomain/core.c   | 69 +++++++++++++++++++++++++++++++++++++++++++++++
-> > > >  include/linux/pm_domain.h | 17 ++++++++++++
-> > > >  2 files changed, 86 insertions(+)
-> > > >
-> > > > diff --git a/drivers/pmdomain/core.c b/drivers/pmdomain/core.c
-> > > > index a1f6cba3ae6c..41b6411d0ef5 100644
-> > > > --- a/drivers/pmdomain/core.c
-> > > > +++ b/drivers/pmdomain/core.c
-> > > > @@ -548,6 +548,75 @@ void dev_pm_genpd_synced_poweroff(struct device *dev)
-> > > >  }
-> > > >  EXPORT_SYMBOL_GPL(dev_pm_genpd_synced_poweroff);
-> > > >
-> > > > +/**
-> > > > + * dev_pm_genpd_set_hwmode - Set the HW mode for the device and its PM domain.
-> > >
-> > > This isn't proper kernel-doc
-> >
-> > Sorry, I didn't quite get that. What is wrong?
-> >
->
-> https://docs.kernel.org/doc-guide/kernel-doc.html#function-documentation
-> says that there should be () after the function name, and below there
-> should be a Return:
+On Tue, Jan 23, 2024 at 01:53:43PM +0100, Thomas Gleixner wrote:
+> +static bool parse_8000_0008(struct topo_scan *tscan)
+> +{
+> +	struct {
+> +		u32	ncores		:  8,
 
-Thanks for the pointers!
+Yeah, so there was some confusion what this field actually means. It is
+documented correctly in the latest APM:
 
->
-> > >
-> > > > + *
-> > > > + * @dev: Device for which the HW-mode should be changed.
-> > > > + * @enable: Value to set or unset the HW-mode.
-> > > > + *
-> > > > + * Some PM domains can rely on HW signals to control the power for a device. To
-> > > > + * allow a consumer driver to switch the behaviour for its device in runtime,
-> > > > + * which may be beneficial from a latency or energy point of view, this function
-> > > > + * may be called.
-> > > > + *
-> > > > + * It is assumed that the users guarantee that the genpd wouldn't be detached
-> > > > + * while this routine is getting called.
-> > > > + *
-> > > > + * Returns 0 on success and negative error values on failures.
-> > > > + */
-> > > > +int dev_pm_genpd_set_hwmode(struct device *dev, bool enable)
-> > > > +{
-> > > > +     struct generic_pm_domain *genpd;
-> > > > +     int ret = 0;
-> > > > +
-> > > > +     genpd = dev_to_genpd_safe(dev);
-> > > > +     if (!genpd)
-> > > > +             return -ENODEV;
-> > > > +
-> > > > +     if (!genpd->set_hwmode_dev)
-> > > > +             return -EOPNOTSUPP;
-> > > > +
-> > > > +     genpd_lock(genpd);
-> > > > +
-> > > > +     if (dev_gpd_data(dev)->hw_mode == enable)
-> > >
-> > > Between this and the gdsc patch, the hw_mode state might not match the
-> > > hardware state at boot.
-> > >
-> > > With hw_mode defaulting to false, your first dev_pm_genpd_set_hwmode(,
-> > > false) will not bring control to SW - which might be fatal.
-> >
-> > Right, good point.
-> >
-> > I think we have two ways to deal with this:
-> > 1) If the provider is supporting ->get_hwmode_dev(), we can let
-> > genpd_add_device() invoke it to synchronize the state.
->
-> I'd suggest that we skip the optimization for now and just let the
-> update hit the driver on each call.
+"NT: number of physical threads - 1. The number of threads in the
+processor is NT+1 (e.g., if NT =3D 0, then there is one thread). See
+=E2=80=9CLegacy Method=E2=80=9D on page 645."
 
-Okay.
+> +			__rsvd0		:  4,
+> +			apicidsize	:  4,
+> +			perftscsize	:  2,
+> +			__rsvd1		: 14;
+> +	} ecx;
+> +	unsigned int sft;
+> +
+> +	if (tscan->c->extended_cpuid_level < 0x80000008)
+> +		return false;
+> +
+> +	cpuid_leaf_reg(0x80000008, CPUID_ECX, &ecx);
+> +
+> +	/* If the APIC ID size is 0, then get the shift value from ecx.ncores=
+ */
+> +	sft =3D ecx.apicidsize;
+> +	if (!sft)
+> +		sft =3D get_count_order(ecx.ncores + 1);
+> +
+> +	topology_set_dom(tscan, TOPO_CORE_DOMAIN, sft, ecx.ncores + 1);
 
->
-> > 2) If the provider doesn't support ->get_hwmode_dev() we need to call
-> > ->set_hwmode_dev() to allow an initial state to be set.
-> >
-> > The question is then, if we need to allow ->get_hwmode_dev() to be
-> > optional, if the ->set_hwmode_dev() is supported - or if we can
-> > require it. What's your thoughts around this?
-> >
->
-> Iiuc this resource can be shared between multiple clients, and we're
-> in either case returning the shared state. That would mean a client
-> acting upon the returned value, is subject to races.
+So yeah, this should be TOPO_SMT_DOMAIN.
 
-Not sure I understand this, but I also don't have in-depth knowledge
-of how the HW works.
+Thx.
 
-Isn't the HW mode set on a per device basis?
+--=20
+Regards/Gruss,
+    Boris.
 
->
-> I'm therefore inclined to say that we shouldn't have a getter, other
-> than for debugging purposes, in which case reading the HW-state or
-> failing would be reasonable outcomes.
-
-If you only want this for debug purposes, it seems better to keep it
-closer to the rpmh code, rather than adding generic callbacks to the
-genpd interface.
-
-So to conclude, you think having a ->set_hwmode_dev() callback should
-be sufficient and no caching of the current state?
-
-Abel, what's your thoughts around this?
-
-Kind regards
-Uffe
+https://people.kernel.org/tglx/notes-about-netiquette
 
