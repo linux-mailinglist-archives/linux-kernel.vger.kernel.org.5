@@ -1,136 +1,183 @@
-Return-Path: <linux-kernel+bounces-49190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4266C8466FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:31:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F31C846702
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:34:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F8C0B21D6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:31:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A9FB28B9CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:34:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F1EBF4F0;
-	Fri,  2 Feb 2024 04:31:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E317F9C2;
+	Fri,  2 Feb 2024 04:34:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="R7cTLFr9"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mvkWrecU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF063EAEA
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 04:31:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4711BEAF2;
+	Fri,  2 Feb 2024 04:34:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706848286; cv=none; b=TCX3DqFP+I2TgFwoL8jhY8G2w2JakacCMbMuFJKGk6HyZe2yXP7PtPQbHr8IeN3DkzQMJ3qqNEODtDWTsnSM7BW5k+8X9/2ULpZBPeU5TK7Kc4e8Bi8TI38p0KGcAoQ6scfWrg1mC6aAOoZmLlIah+QB/yIpEL3xnxn6B4R+f0k=
+	t=1706848475; cv=none; b=jDivbTPgzA/TjRldERgvIVjf0qeU/2oY84IEKyMBPmHKHlGz0/rFnYG/PQ8ktxVd1K9EM+aUEM0L43Vq8dHOm11hhe6TyXcRyTw7MRADe37zc4ThJardCjP6oMrg4m4FfejWjabUOIeKNlS39546X1gfwQ8Ewb7Olp9HbNwV9Ko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706848286; c=relaxed/simple;
-	bh=a4ZT8Enf9oORWssJ1Oet3WSbt7cX2HHKa3Hg+JyTcLw=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b9K4rfzEE2BtInIqmNecVv9rdWUHeYfwobCTnn7N+43LmsEyujPz8F+GeidP3ZDq09uaxXfxcoOsJgOQba8H/T8GE6NdMvx3M3aizMUO3wBWtAV4RXcGg6YuzAS8Ks6tVr02GI+XpW91Pu/1UcXtVO5VXAKRuBWulzTm6HIS1Kw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=R7cTLFr9; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4124SFLW030429;
-	Fri, 2 Feb 2024 04:31:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=E5Ngqz/WRMMBBG6e8j2A7
-	UyxUwTajWJF3P086kGxK0s=; b=R7cTLFr9GbUWJpMaqT+M6lyfmG0QDt4CHtRCp
-	QtVxkzB4XD6oDGoqHAJAKokox4v7ARG8tzmQgFMttLpVTR79Ku+vpSerewbWniFf
-	SCIWau1Pf69tgyTEXnDxGNp5bDKrpPK9Ki8vtyDdp9VB0JMSknRu6aODje0J2f1X
-	R8j6T7M2IyzA94mf4/suTiNWM8ABfp0CyGTTF+NAaRB8rg5LIuuWJBpBVnkFTQao
-	FbBNYpebs3qxvifqmwJY/qnJ5O8bojdk+SmRLZjfOUG/KkN/pMXoEf646ugu7JAS
-	ck6WWtk+YyLPSn6PrEpq4IMlG4ipyMm0UgpemtzJdvYBhnlDg==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0pu009rb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Feb 2024 04:31:12 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4124VBgQ001830
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 2 Feb 2024 04:31:11 GMT
-Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 1 Feb 2024 20:31:11 -0800
-Date: Thu, 1 Feb 2024 20:31:10 -0800
-From: Elliot Berman <quic_eberman@quicinc.com>
-To: Charlie Jenkins <charlie@rivosinc.com>
-CC: Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt
-	<palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Jisheng Zhang
-	<jszhang@kernel.org>,
-        Evan Green <evan@rivosinc.com>,
-        =?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] riscv: Disable misaligned access probe when
- CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-Message-ID: <gtwet3x2fokbne5642vleyp5u7pqjl2lbtbngjjfavmgvvytzg@z2gx6xoa3hvl>
-Mail-Followup-To: Charlie Jenkins <charlie@rivosinc.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Jisheng Zhang <jszhang@kernel.org>, 
-	Evan Green <evan@rivosinc.com>, =?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240201-disable_misaligned_probe_config-v2-0-77c368bed7b2@rivosinc.com>
- <20240201-disable_misaligned_probe_config-v2-2-77c368bed7b2@rivosinc.com>
+	s=arc-20240116; t=1706848475; c=relaxed/simple;
+	bh=satbLNeZz+QWwEIu5LrwtxRMwFvB1z9KyJTB07xtAgw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KTCMZNF4g/GW1mL/ViQaPu3bwKsJYUPPIPJSdVxALRAQbwLal8fWcMMi0FcloT8k8mhDr7QNljzJqK7S8fXQRVY/l8iqsJJ5qAYkIxqcu5vvURcwawEaQoTSGK7f9KKRJ7WGdd0j1uHniRzrE8rIuLc+p3fILr5b9soZYE/cJ1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mvkWrecU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAECDC433F1;
+	Fri,  2 Feb 2024 04:34:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706848474;
+	bh=satbLNeZz+QWwEIu5LrwtxRMwFvB1z9KyJTB07xtAgw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mvkWrecULFI83GjFioZwqm5vQ1TbPIlFqnepDB4YbeJudyH6HH4//FFf42DN2DhqN
+	 E16V9EUtLRMVBl8NOkxZ81MzljTO1myTN++gHrA1u/ncJQrrsTYai2Z0yN6loVzx8R
+	 YzaOEtjrFjoeKvD3Rod1kVYDB42d8hn/qXdHKcxiLjZMIxYFvBl9PrvvUTdKgKX3yS
+	 F/R/Vm0ED29YaHpwNvHFN6YmiDuZZkzg4e5SmbaTR/6JhSB25QiEmCuzGLbJXjl+1b
+	 3mZeuzrQYKvxGZJ+kxcMOGSdaDud/tKKepoSxycP+b+IEMVxgwfjZThKoOxSCOdE3V
+	 OLmt+gdb4LgNQ==
+Date: Thu, 1 Feb 2024 22:34:30 -0600
+From: Bjorn Andersson <andersson@kernel.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Abel Vesa <abel.vesa@linaro.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
+	linux-pci@vger.kernel.org, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [RFC 2/9] arm64: dts: qcom: qrb5165-rb5: model the PMU of the
+ QCA6391
+Message-ID: <5lirm5mnf7yqbripue5nyqu6ej54sx4rtmgmyqjrqanabsriyp@2pjiv5xbmxpk>
+References: <20240201155532.49707-1-brgl@bgdev.pl>
+ <20240201155532.49707-3-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240201-disable_misaligned_probe_config-v2-2-77c368bed7b2@rivosinc.com>
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: v2zNNbLEzggt0GdOtik2j8HK7sQEwjcC
-X-Proofpoint-ORIG-GUID: v2zNNbLEzggt0GdOtik2j8HK7sQEwjcC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-01_10,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- mlxlogscore=631 suspectscore=0 lowpriorityscore=0 impostorscore=0
- bulkscore=0 clxscore=1011 adultscore=0 spamscore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402020030
+In-Reply-To: <20240201155532.49707-3-brgl@bgdev.pl>
 
-Hi Charlie,
-
-On Thu, Feb 01, 2024 at 03:30:46PM -0800, Charlie Jenkins wrote:
-> When CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS is selected, the cpus can be
-> set to have fast misaligned access without needing to probe.
+On Thu, Feb 01, 2024 at 04:55:25PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> Add a node for the PMU module of the QCA6391 present on the RB5 board.
+> Assign its LDO power outputs to the existing Bluetooth module. Add a
+> node for the PCIe port to sm8250.dtsi and define the WLAN node on it in
+> the board's .dts and also make it consume the power outputs of the PMU.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > ---
->  arch/riscv/Kconfig                               |   1 +
->  arch/riscv/include/asm/cpufeature.h              |   7 +
->  arch/riscv/include/asm/misaligned_access_speed.h |  29 +++
->  arch/riscv/kernel/Makefile                       |   3 +
->  arch/riscv/kernel/cpufeature.c                   | 255 ----------------------
->  arch/riscv/kernel/misaligned_access_speed.c      | 265 +++++++++++++++++++++++
->  arch/riscv/kernel/sys_hwprobe.c                  |   4 +
->  7 files changed, 309 insertions(+), 255 deletions(-)
+>  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 128 +++++++++++++++++++++--
+>  arch/arm64/boot/dts/qcom/sm8250.dtsi     |  10 ++
+>  2 files changed, 127 insertions(+), 11 deletions(-)
 > 
-> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-> index f71910718053..8be7f17da9ab 100644
-> --- a/arch/riscv/kernel/Makefile
-> +++ b/arch/riscv/kernel/Makefile
-> @@ -62,6 +62,9 @@ obj-y	+= tests/
->  obj-$(CONFIG_MMU) += vdso.o vdso/
+> diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> index cd0db4f31d4a..fab5bebafbad 100644
+> --- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> +++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> @@ -108,6 +108,87 @@ lt9611_3v3: lt9611-3v3 {
+>  		regulator-always-on;
+>  	};
 >  
->  obj-$(CONFIG_RISCV_MISALIGNED)	+= traps_misaligned.o
-> +ifneq ($(RISCV_EFFICIENT_UNALIGNED_ACCESS), y)
+> +	qca6390_pmu: pmu@0 {
+> +		compatible = "qcom,qca6390-pmu";
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&bt_en_state>, <&wlan_en_state>;
+> +
+> +		vddaon-supply = <&vreg_s6a_0p95>;
+> +		vddpmu-supply = <&vreg_s2f_0p95>;
+> +		vddrfa1-supply = <&vreg_s2f_0p95>;
+> +		vddrfa2-supply = <&vreg_s8c_1p3>;
+> +		vddrfa3-supply = <&vreg_s5a_1p9>;
+> +		vddpcie1-supply = <&vreg_s8c_1p3>;
+> +		vddpcie2-supply = <&vreg_s5a_1p9>;
+> +		vddio-supply = <&vreg_s4a_1p8>;
+> +
+> +		wlan-enable-gpios = <&tlmm 20 GPIO_ACTIVE_HIGH>;
+> +		bt-enable-gpios = <&tlmm 21 GPIO_ACTIVE_HIGH>;
+> +
+> +		regulators {
+> +			vreg_pmu_rfa_cmn: ldo0 {
+> +				regulator-name = "vreg_pmu_rfa_cmn";
+> +				regulator-min-microvolt = <760000>;
+> +				regulator-max-microvolt = <840000>;
 
-Should this be CONFIG_RISCV_EFFICIENT_UNALIGNED_ACCESS ?
+I'm still not convinced that the PMU has a set of LDOs, and looking at
+your implementation you neither register these with the regulator
+framework, nor provide any means of controlling the state or voltage of
+these "regulators".
 
-> +obj-y	+= misaligned_access_speed.o
-> +endif
->  obj-$(CONFIG_FPU)		+= fpu.o
->  obj-$(CONFIG_RISCV_ISA_V)	+= vector.o
->  obj-$(CONFIG_RISCV_ISA_V)	+= kernel_mode_vector.o
+[..]
+>  
+>  &uart6 {
+> @@ -1311,17 +1418,16 @@ &uart6 {
+>  	bluetooth {
+>  		compatible = "qcom,qca6390-bt";
+>  
+> -		pinctrl-names = "default";
+> -		pinctrl-0 = <&bt_en_state>;
+> -
+> -		enable-gpios = <&tlmm 21 GPIO_ACTIVE_HIGH>;
+> -
+> -		vddio-supply = <&vreg_s4a_1p8>;
+> -		vddpmu-supply = <&vreg_s2f_0p95>;
+> -		vddaon-supply = <&vreg_s6a_0p95>;
+> -		vddrfa0p9-supply = <&vreg_s2f_0p95>;
+> -		vddrfa1p3-supply = <&vreg_s8c_1p3>;
+> -		vddrfa1p9-supply = <&vreg_s5a_1p9>;
+> +		vddrfacmn-supply = <&vreg_pmu_rfa_cmn>;
+> +		vddaon-supply = <&vreg_pmu_aon_0p59>;
+> +		vddwlcx-supply = <&vreg_pmu_wlcx_0p8>;
+> +		vddwlmx-supply = <&vreg_pmu_wlmx_0p85>;
+> +		vddbtcmx-supply = <&vreg_pmu_btcmx_0p85>;
+> +		vddrfa0-supply = <&vreg_pmu_rfa_0p8>;
+> +		vddrfa1-supply = <&vreg_pmu_rfa_1p2>;
+> +		vddrfa2-supply = <&vreg_pmu_rfa_1p7>;
+> +		vddpcie0-supply = <&vreg_pmu_pcie_0p9>;
+> +		vddpcie1-supply = <&vreg_pmu_pcie_1p8>;
+
+As I asked before, why does bluetooth suddenly care about PCIe supplies?
+
+Regards,
+Bjorn
+
+>  	};
+>  };
+>  
+> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> index 4d849e98bf9b..7cd21d4e7278 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> @@ -2203,6 +2203,16 @@ pcie0: pcie@1c00000 {
+>  			dma-coherent;
+>  
+>  			status = "disabled";
+> +
+> +			pcieport0: pcie@0 {
+> +				device_type = "pci";
+> +				reg = <0x0 0x0 0x0 0x0 0x0>;
+> +				#address-cells = <3>;
+> +				#size-cells = <2>;
+> +				ranges;
+> +
+> +				bus-range = <0x01 0xff>;
+> +			};
+>  		};
+>  
+>  		pcie0_phy: phy@1c06000 {
+> -- 
+> 2.40.1
+> 
 
