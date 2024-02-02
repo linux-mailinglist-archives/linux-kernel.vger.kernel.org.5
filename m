@@ -1,113 +1,135 @@
-Return-Path: <linux-kernel+bounces-50621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14AFE847BC4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:43:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1FE3847BD2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:51:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6ECEA286E21
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:43:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA3F81C237C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:51:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F35C8175F;
-	Fri,  2 Feb 2024 21:43:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72D2839FE;
+	Fri,  2 Feb 2024 21:50:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="b+2bvFHM"
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="SaGn4WU/"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61A3A8173E
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 21:42:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A77D8594A
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 21:50:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706910180; cv=none; b=UMfqEu8518J2P1DCH7W7ddkEupJTWHJpCDxm0Q7dHMEMEIHAY/x1S1bNnOIqt1GnsRFB3t0ebbkcELn9X4g7olLCkDNd4tE1SW5OyJsA5RH63SEk9I0wIYKJ77MtfLvATJDCxcyD9B6ndMaFntQkAkOUX0R/2844hpWAU79eGWQ=
+	t=1706910652; cv=none; b=cXW8OZZxCzSwWN5e7zccSETjNvLD3aAS2bmIjTypOP1PdAhwXNV0Qox6n0y8KfEVrLMfaUNGwwMprTr+BvK/CM6VmH9FhR0AMZ65IM1M89KUnWeFQ+0D/jfSYcM44HxbUfxL4n0Wa+Gx+0NnGjXilLhrU/fRvlndg8ZFBNcuNAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706910180; c=relaxed/simple;
-	bh=JMTAKCnlm+qRofrbzQT0twQWPmdB7rbVAIRwYv4C2eY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sfb6XSGvy1Uf0wISC1uH2s53AGDjh6xpRqpJChFJoF1TkZGrSoARyjW8H0vIOzNELV+E6sfj8dIq9LeC+jIJ5DcvJnsEP1RiUYXZmIQ3JSmev+EJ9PDjqN2Md+pM5/1L2XQck2zRDoNvIxt3pz3GsrSVji3UA26wtzjw0qCoGpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=b+2bvFHM; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-604255f581cso15923357b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 13:42:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706910178; x=1707514978; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JMTAKCnlm+qRofrbzQT0twQWPmdB7rbVAIRwYv4C2eY=;
-        b=b+2bvFHMt/shTzmoWL5DDZZanZduRvwtWMeUbrg14JSv2o7g1pnYM/zyRPFdH4qh3D
-         HiUgbmp9tKe76sIoeliVx0cT69mQufXj7x4YxQaFUI2BFtzjQ6eXRaNsheSgxgN6n2rT
-         VXLZX1KMWi9Lf0lQgHfxgg2p7pyIS1DUIw9yq0/SWbpibBx+PtLG1J2V0/xNaCz7JoXj
-         3QDoos5dwjaz1f0YE5obz3nOji7n44OFf7yNeOawOPLQdsgR7PufauTBjYU7r03UCb4I
-         Y0mcstiM0mAf4an21kVUtTTcQT2VpeqyGA0txzucY74JjbMPZB0q41tFanQisdRsr+2I
-         sFRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706910178; x=1707514978;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JMTAKCnlm+qRofrbzQT0twQWPmdB7rbVAIRwYv4C2eY=;
-        b=l5mPQNNyCmrcFcbaFDdOr3B7za8bXHfgPoZaVYZB7c8FkMKemkVcO/bTA+WciBn1Hx
-         5tVp5L1aXSruf/mVWiHG2Z/vM4PwI8NteuKkeM7F0+6Frypl3Vh3i9DPn4zXyoNcG9Li
-         QjJE3Smnt+RZIxUz072sSsEUCTAV9OHXglNB+x8JWj9e3PcnQyY2dMZPoIaDmRvoCXvu
-         cMmuzwD3ZT6sCMI/3LPXLoiVsRJYVZ6wZtup0fbfMvtRxIRHB8Xx7XxtjL0rnwuguVfj
-         Q6XESq2Z2btSvV8VIaEGaZzFnUUXAf8TFi48xnySVjzcykOl5DOxdG3wlttIcHjNsHCL
-         kXfg==
-X-Gm-Message-State: AOJu0YzghbgrwIf0TC7FSZPGSWH67pvA0xmuamRuKg3kB0Cr0PGpBqGw
-	Lo6W/dp0kKNG6tI79+iNruv09KVRrIny1NpF2HMI5ydfk8+punraGCYTkXFCPq1iIZl1H+Cc+QT
-	ul5o3/X4AqGZwnoYZAVPtKqFA9elNfTXS3DdD
-X-Google-Smtp-Source: AGHT+IHCXjtFXHPMmcjKAuZloPxLqvRZDzLRsio77BcVGOg3RTtHzUSiPVrgFhG7UEsNkzW/caKJn5/hzaqDvapj1VY=
-X-Received: by 2002:a0d:d495:0:b0:5eb:3851:2bba with SMTP id
- w143-20020a0dd495000000b005eb38512bbamr9522889ywd.41.1706910178189; Fri, 02
- Feb 2024 13:42:58 -0800 (PST)
+	s=arc-20240116; t=1706910652; c=relaxed/simple;
+	bh=j1+6smkjmxO2TPfR0I7+fbIujkXeFYIF+x2HwXzQ4SY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=QpG1hGmOgA/JW8n8TaMukCvhYDvqn3h/RvYPcrRdDNXXc4H9pkGcelYJKn5N7Q0yVcHwhMpuu7etq/hvxsuIJsFH9ZiVmqV21kHr2m1RA5p3+m00ag1OvQzHLbqj1wPDbBexwwLaujHS8W5a0ycV+V2i5Ehv0rE7TFuwFZns92A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=SaGn4WU/; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 412Lkb4Z000581;
+	Fri, 2 Feb 2024 21:50:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:date:subject:mime-version:content-type
+	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=SVl
+	N3fADnRzFhsjCTs1uFxfAX8KThaSYQyGegUws1dI=; b=SaGn4WU/6EnI4uRJa3L
+	KhPdZHJ55LTV/V4GJrw2+zP7V8ZhSCS+n/7aIhn45hhuVWgshwwp/SsQ+r5Zi6Zj
+	W0EA0VjjkDJN8TAwjwgRUfDP8necTq3y/1pWD/f3X5plC0yemlKqTErG2q9wqB9l
+	6pMYCztFarGh2Y0IiBAF5B9uUcw5e827SyYfAtYVLm4qb4lL5/ywplSVZUzX8aLf
+	blDCjEbFon2HSv7XD38k0d2dY8MypHaGk+3lQ2OFSJaizmaBINrA6Q4AinTbN7OX
+	4leOX7OZg1c6PxxJ2LypVusInfGcoJRVhN7WgfbBdqTlAuGMhLno8djTX66mMOqC
+	7Kw==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0ptxjfcd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 21:50:35 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 412LoYEo014779
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 2 Feb 2024 21:50:35 GMT
+Received: from jesszhan-linux.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 2 Feb 2024 13:50:34 -0800
+From: Jessica Zhang <quic_jesszhan@quicinc.com>
+Date: Fri, 2 Feb 2024 13:50:21 -0800
+Subject: [PATCH] drm/panel: visionox-r66451: Set prepare_prev_first flag
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201153428.GA307226@cmpxchg.org> <20240202050247.45167-1-yangyifei03@kuaishou.com>
- <vofidz4pzybyxoozjrmuqhycm2aji6inp6lkgd3fakyv5jqsjr@pleoj7ljsxhi>
- <CABdmKX2KsxVExVWzysc_fQagGkYWhqRF00KxNxjpVWovHHip+Q@mail.gmail.com> <bycpbzvo2fpd2qrrl7ipnzrsyun7hg5tjlqouafuosxxlxfml5@vpbl6kl74hx5>
-In-Reply-To: <bycpbzvo2fpd2qrrl7ipnzrsyun7hg5tjlqouafuosxxlxfml5@vpbl6kl74hx5>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Fri, 2 Feb 2024 13:42:46 -0800
-Message-ID: <CABdmKX3Be=AHSvHOa7NQVapb5pdL9pk-oW_yyxG3NuC4D9aCAQ@mail.gmail.com>
-Subject: Re: Re: Re: [PATCH] mm: memcg: Use larger chunks for proactive reclaim
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Efly Young <yangyifei03@kuaishou.com>, hannes@cmpxchg.org, akpm@linux-foundation.org, 
-	android-mm@google.com, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, 
-	roman.gushchin@linux.dev, shakeelb@google.com, yuzhao@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240202-visionox-r66451-prev-first-v1-1-c267dc889284@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAJxjvWUC/yWMSwqAMAwFryJZG+hHU/Aq4sJP1GxUWpGCeHeDL
+ of3Zm5IHIUTNMUNkS9Jsm8KtixgXPttYZRJGZxx3gQb8L/sGSNRVVs81MJZYjqRwmA8WTLsHWh
+ Ap1nyF2+753kBtzhPXmwAAAA=
+To: Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg
+	<sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter
+	<daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+CC: <quic_abhinavk@quicinc.com>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>
+X-Mailer: b4 0.13-dev-2d940
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706910634; l=1137;
+ i=quic_jesszhan@quicinc.com; s=20230329; h=from:subject:message-id;
+ bh=j1+6smkjmxO2TPfR0I7+fbIujkXeFYIF+x2HwXzQ4SY=;
+ b=a5m4w+x7U6gunqaLxXXorLqcSL4H44MRB2xTmI3wMhsVhLlYvjppnXehX45YL181M7iKIHwQ9
+ vfA1I1m9l8nA8rtE+vAze9Fv9qN8bQqkukppk4CkY/J5fQrWXWTveTo
+X-Developer-Key: i=quic_jesszhan@quicinc.com; a=ed25519;
+ pk=gAUCgHZ6wTJOzQa3U0GfeCDH7iZLlqIEPo4rrjfDpWE=
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: NKhIfIUk_Z7tzlG538Iy_nmDTYgJw3ov
+X-Proofpoint-GUID: NKhIfIUk_Z7tzlG538Iy_nmDTYgJw3ov
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-02_14,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 adultscore=0 impostorscore=0 priorityscore=1501 malwarescore=0
+ spamscore=0 suspectscore=0 mlxlogscore=923 mlxscore=0 phishscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402020161
 
-On Fri, Feb 2, 2024 at 11:46=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
-m> wrote:
->
-> On Fri, Feb 02, 2024 at 10:22:34AM -0800, "T.J. Mercier" <tjmercier@googl=
-e.com> wrote:
-> > So all of these should be more or less equivalent:
-> > delta <=3D SWAP_CLUSTER_MAX ? delta : (delta + 3*SWAP_CLUSTER_MAX) / 4
-> > max((nr_to_reclaim - nr_reclaimed) / 4, (nr_to_reclaim - nr_reclaimed) =
-% 4)
-> > (nr_to_reclaim - nr_reclaimed) / 4 + 4
-> > (nr_to_reclaim - nr_reclaimed) / 4
-> >
-> > I was just trying to avoid putting in a 0 for the request size with the=
- mod.
->
-> The third variant would be simpler then. Modulo looks weird.
->
-> Oh, and I just realized that try_to_free_mem_cgroup_pages() does
-> max(nr_pages, SWAP_CLUSTER_MAX). Then I'd vote for the fourth variant +
-> possible comment about harmless 0.
-> (I'm sorry if this was discussed before.)
->
-> Michal
+The DSI host needs to be enabled for the panel to be initialized in
+prepare(). Ensure this happens by setting prepare_prev_first.
 
-Ok great, let's do that. Thanks for your input.
+Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+---
+ drivers/gpu/drm/panel/panel-visionox-r66451.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/gpu/drm/panel/panel-visionox-r66451.c b/drivers/gpu/drm/panel/panel-visionox-r66451.c
+index fbb73464de332..493f2a6076f8d 100644
+--- a/drivers/gpu/drm/panel/panel-visionox-r66451.c
++++ b/drivers/gpu/drm/panel/panel-visionox-r66451.c
+@@ -322,6 +322,7 @@ static int visionox_r66451_probe(struct mipi_dsi_device *dsi)
+ 	dsi->lanes = 4;
+ 	dsi->format = MIPI_DSI_FMT_RGB888;
+ 	dsi->mode_flags = MIPI_DSI_MODE_LPM | MIPI_DSI_CLOCK_NON_CONTINUOUS;
++	ctx->panel.prepare_prev_first = true;
+ 
+ 	drm_panel_init(&ctx->panel, dev, &visionox_r66451_funcs, DRM_MODE_CONNECTOR_DSI);
+ 	ctx->panel.backlight = visionox_r66451_create_backlight(dsi);
+
+---
+base-commit: 51b70ff55ed88edd19b080a524063446bcc34b62
+change-id: 20230717-visionox-r66451-prev-first-67b036160e32
+
+Best regards,
+-- 
+Jessica Zhang <quic_jesszhan@quicinc.com>
+
 
