@@ -1,379 +1,307 @@
-Return-Path: <linux-kernel+bounces-49662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72923846DC1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:19:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DAFE8846DC5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:20:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 972941C263D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:19:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B2E01C24EDF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:20:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 512377FBB2;
-	Fri,  2 Feb 2024 10:16:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DC7A7CF20;
+	Fri,  2 Feb 2024 10:18:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="djL/8cFR"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MwZ/ti89"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E90747E56A
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 10:16:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706869012; cv=none; b=P6tHVWzfGO4Y/1iz9PxT+yTxLUjjne3uq8/hDXh7y0dep/yjLR48oRJ5daiKnXWas+oBUONtIVNtlXWuhhC+SpwaDeaBDfrPFdr1TWO1TPLpJWwxJFX5bU4qkZvKHTIdSI52YLiYRLs0JwiezKQJZjb3xEfTA5Fhw2RzHK5OKG8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706869012; c=relaxed/simple;
-	bh=TzLGN/wZFrYl4sz0T0jyTqFgT2Lvj1xSfjBLlzj7afo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qT/kYlp2EolWzW6dtg1yGnKhouM8xHV46slrNwtGGRL4jhOwrnHrL5wjvet2gr+jebuQChW3CI9E9rjrdYymjLrDlSSp81nwFdqXL9fuhZnEpfVKfUIs96BL5ICoMBcd/0eOl2s8hYxCpgkPUD7s8Xsdoo7sFbKUUlvnN7DDzVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=djL/8cFR; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d93ddd76adso14813215ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 02:16:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706869007; x=1707473807; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9lpkhLqd7OEtlpbaedS5vxnqsFfxpeZmJYnh9HQNf48=;
-        b=djL/8cFRC9zO6rWMD2YznvUp1nDRYdrcTU583ltjz/WTBfo0jbZDSDpUl351SckjO6
-         qVr56IyBW0bYbRyCv1fiUfSYAkDs9m6wEAn88jx6cGrkKCXe/9tIsnQuT1FYgZQM6/9S
-         f7uVssqshwnJGRyl3alz+AxL3qeLYgCF0H7D0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706869007; x=1707473807;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9lpkhLqd7OEtlpbaedS5vxnqsFfxpeZmJYnh9HQNf48=;
-        b=JcldJ2LRWkHnhUGenOpavT07RhfUhvoGqC22Q9WPQPGJQshW1xPVesHyq5FkZvgN5S
-         8pi+3+zZe0U+Q7OPAvr8S44HZO06DwPuQCE1jYQRBl4RSelb8QYuqO04sutDl3l7/9v0
-         4dTjLYGyiJJmz95XAaKL6ui1F99k/J/WKL2K8E9k3qyXUaeJUWE4M6+NdYI0qFQSUygr
-         f8yuWihfPKXXTeTntH7nuyZs3MmOX/dsHHbji4/ynOvNA79owqN5ypGlyglSm4RjJsad
-         ds1xkAIMI6LAYHlv6zT4LP/DPITryFSCxoSrjkiW9ak0Hnuyfo5mDsGm8JxZCkgLUoTA
-         NjGQ==
-X-Gm-Message-State: AOJu0Yys1zIJ1/q+msxG4shozTkU5jHKCT3F2WByh9V5DP2IpoBg18ZZ
-	bCBzcPlbIx6D/YTuF8Ui0syCBIkarNUkFjRolVuCEwyzE81uyhoXNdU2n48BNA==
-X-Google-Smtp-Source: AGHT+IFhi06VOysbc5l+dFsXz7CKYAApKFvSoqKKtDFGPoyCY30ZTFRktNB+0SQzSsHBbZB1Unn1Bw==
-X-Received: by 2002:a17:902:ec8f:b0:1d9:7ebe:431f with SMTP id x15-20020a170902ec8f00b001d97ebe431fmr75634plg.25.1706869007422;
-        Fri, 02 Feb 2024 02:16:47 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXs4G8MUacPDVffkkW3YIupLvo7fOKngXgP+Sk6+29gQMVKJs08J0+3IxTwtNEEkiZ8eGAIttWEaHeXH6T6+fNfWQ+QDHgR8QFndX1YkdshPqcHnC8ZhMEw8Y205GGD/hXZeKG9lZA4KiQhE6/y0ZGb14IngWwfwvlekaGRRjUjWt0j5zMxr8icCHSkAzObwyJrh/jcvniTLARTNzCtWdffpO6cA+p9dquKTDehLQT1ImPrwzjg6dOQIOgvEOrnwmSgHcXAhPPG9s3ww8WwNDHHhWbYEbihBm1UxI5VGCz8gxJG/LPhjIEbOa50AtDgdzpicwFKl+d/veprf2CxavchMKcf1ZFpZMPnpeQdl7uabrqw/JibLaG0sc11Qk3+f1aw2VTEFjODk3/Auveeqk+wydW8nC0nhD/Yf0OmhO3pWVWzu8PP4+241P4he/xwQLRUGB3XgKIMTvlu1GPBSADeZq15+ug6D0fQt+Rd9xziIqyoAcned2NH8sAF9kIoBbad4ycXB8VLaDO4+Flm53lBdv1eUkmjzOR9OnaWoBqBFI5sNi2Q0JvocsOdwnb+1cJGO+I34RT7e4Uv35WZCcQjH4km59aPOS+QQP0=
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 4-20020a170902e9c400b001d94e6a7685sm1242824plk.234.2024.02.02.02.16.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 02:16:46 -0800 (PST)
-From: Kees Cook <keescook@chromium.org>
-To: linux-hardening@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>,
-	x86@kernel.org,
-	netdev@vger.kernel.org,
-	linux-crypto@vger.kernel.org,
-	Fangrui Song <maskray@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Bill Wendling <morbo@google.com>,
-	Marco Elver <elver@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	linux-kernel@vger.kernel.org,
-	linux-kbuild@vger.kernel.org,
-	llvm@lists.linux.dev,
-	linux-doc@vger.kernel.org,
-	kasan-dev@googlegroups.com,
-	linux-acpi@vger.kernel.org
-Subject: [PATCH v2 6/6] ubsan: Get x86_64 booting with unsigned wrap-around sanitizer
-Date: Fri,  2 Feb 2024 02:16:39 -0800
-Message-Id: <20240202101642.156588-6-keescook@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240202101311.it.893-kees@kernel.org>
-References: <20240202101311.it.893-kees@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FE347CF17;
+	Fri,  2 Feb 2024 10:18:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.13
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706869095; cv=fail; b=IKtIMVINBBVEIbBHCM38lxwdSaHgTE8n9xMr7J417Nxatr2R5dphluXpa4Ody/mEsvgu/FkaBsM3pK+dSiECcm/zAxyAoumnJNZ9MY7M0LEJh3vKijrM7WBGEn58xSmMZBr+Y00uwxtWXbX4GIiU8hGI2cxIHhE2nCOvBEnAXgk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706869095; c=relaxed/simple;
+	bh=ioRFD6sIwS/fqtSPK2figSJC7SgphB44LaxwUEJDto0=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Aj1I2VyMmNR22xAAFNjIbhtglQ83nHtlt/oCqf90A2TIpf5qY86eJLXKdICWMQ3ijY/88uYioi5/9D64mXvyKKOrsL7iioj4NLwtFeKWXh4h/89cw7Y9O0qvrJ0steN5NsMHp/qEynMow50TUE4Jad8m8qYrOh+B0bnFJ1kAaCM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MwZ/ti89; arc=fail smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706869094; x=1738405094;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=ioRFD6sIwS/fqtSPK2figSJC7SgphB44LaxwUEJDto0=;
+  b=MwZ/ti89KCRmg2IVYXtbRg9qD/2GWBrbsyHmOvap0m464xNrV1SVxnxn
+   2Nh9drvh2LGBouPBbmVnAKg6fgSIgQ5vUXGEst1FLlV2kgiJKp5v5AaSC
+   IHwJRRiiHZ7Knpf03lu3rH1c75ND7DUrQiksPtr99hSXEeyIRnv+k2ohC
+   aaFHuBUgSlH90h+oM7UVKdFkXDNEvbkVOITV5SVFpPzfYXrknBDgVXUgL
+   9f1lQGSqxDJJPmkXEG0V0phmCAbdLULz4nlmN6XzEYrDrIT2odbQVi/3C
+   LPS+wYmGw/cgX1ACSUJIiGXFDD4nCF8wbfTKkG3Fqbml5bLLzz7exYQBD
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="11228896"
+X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
+   d="scan'208";a="11228896"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 02:18:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
+   d="scan'208";a="328998"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 02 Feb 2024 02:18:12 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 2 Feb 2024 02:18:11 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 2 Feb 2024 02:18:10 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 2 Feb 2024 02:18:10 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 2 Feb 2024 02:18:10 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ko3oGOx3/DsT/F87Z+k7ranGSs+pIVrJrMbswp2nnJOGCdm+e5MS35n4SJjtqCnY2uURSWS+9HnLIaT/9twe8PBj7itdFlTQ9t+W3VAo0EoLHnPXrqdP5wypwxCCLUpZTxFjYNNrdf9mdJJrEjjLfk9BV4CvlmZhnLjY4RWe1Rdo7JeYm00AJx9PrzPP6cOCxvKaHO879Q/+IFM7cPhQuixXk4oHjCCH3pTK/NROcQ236At2KKH4KP9U5YzYwgvl6XdH24KrwHlIUDWjcjW7B5jO3L4AMHlDbnv7ywGOntk/7vGJs+xMVG5qJEMUUo9989Z/Jq4Jfikf4NUN/MlWLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=80Xz9NcsG4Np1lwlJgzwasbW+S3xEC66PI97PCCho4s=;
+ b=b32eKSSi+gvJzD4ir63OndpLgZl1brSAa4f7QoRbR6AATqnCjeuCCcvhyJi79e9lEz0UHpdgNoVAxeBczsPkNdNiCPtKnT6U5f81XZuh1BAah5tHUzZpUSzXSpzGo218N9UcSAnH2c8kOezzU93SQ07P92ynpubrDdXzVOgFnHea9EJ/Cgz+l8KXMoTzECYsduLsXrjjGQ0mt/tjMNAjMSYad6QU/CAxtECvZffFnm0HRHIm0RZ3yJ1MN8efOj54YWe7ZF/G7n/rDz5XH/6lRaDkrsXErxVWr08Igu9GUnuzJAt3FuaL5DvQGhk6h7WQvWqRYpk7vP2e+b5BCcaDWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6231.namprd11.prod.outlook.com (2603:10b6:208:3c4::15)
+ by SJ0PR11MB5007.namprd11.prod.outlook.com (2603:10b6:a03:2d2::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.26; Fri, 2 Feb
+ 2024 10:18:06 +0000
+Received: from MN0PR11MB6231.namprd11.prod.outlook.com
+ ([fe80::c554:bc40:8b5c:9530]) by MN0PR11MB6231.namprd11.prod.outlook.com
+ ([fe80::c554:bc40:8b5c:9530%4]) with mapi id 15.20.7249.027; Fri, 2 Feb 2024
+ 10:18:06 +0000
+Date: Fri, 2 Feb 2024 11:17:57 +0100
+From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+To: Reinette Chatre <reinette.chatre@intel.com>
+CC: <fenghua.yu@intel.com>, <shuah@kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+	<ilpo.jarvinen@linux.intel.com>
+Subject: Re: [PATCH v3 5/5] selftests/resctrl: Add non-contiguous CBMs CAT
+ test
+Message-ID: <icdfnbyc7kvt7llxc5qq5i7icmuev5us3i4pqapyreqfmkkztk@iqsthvhf2uem>
+References: <cover.1706180726.git.maciej.wieczor-retman@intel.com>
+ <647fbfd449f8b0e0ad6cfe58bb280ff44ee162b8.1706180726.git.maciej.wieczor-retman@intel.com>
+ <db08ba56-ae73-4c70-87fb-aae59e524238@intel.com>
+ <jbgkiwfkotntcdzhwf27dceit4w3j37sumkayixmyuee6zyaqg@un22a2iljgmr>
+ <6a7b14a7-966d-4953-9b9b-0c847c83ddbb@intel.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6a7b14a7-966d-4953-9b9b-0c847c83ddbb@intel.com>
+X-ClientProxiedBy: FR3P281CA0176.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a0::11) To DM4PR11MB6239.namprd11.prod.outlook.com
+ (2603:10b6:8:a7::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9025; i=keescook@chromium.org;
- h=from:subject; bh=TzLGN/wZFrYl4sz0T0jyTqFgT2Lvj1xSfjBLlzj7afo=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlvMEHyPK5ViviPn9azIBFUIYrlBFvd0kw+bqbP
- wVlizzw8PGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZbzBBwAKCRCJcvTf3G3A
- Jj10EACxZp8csm9ZCk+xJiU3zMmobNiVh75p7eiqjwSp/+F5YknBmFn1AlM7gImi5vPAMhF+uJK
- S7tEGvBu0z8HJAYyprAsz8MTPA3XkwZaBvDh9ooyUaCGG4dQYhzZEamHqjAeDnajhy5ZftZymg1
- B+ufjH0oJ0ni6WwN8v+6NA2qQLUNSrjnKtiribhsUUvNU+RIbBsci8ifkfB+R/+u+pEbCf6P88A
- 7+XDsZKTZQdFahZfTiTeUE/SXyL4N3tj6bSoRpsihC/55AJZVXSoatefKR16VpdBCKZKwTNweW6
- S0vj+nz1PDLZHYxiOQVF9JH1HUjMv4EXIi6sJ1rayPbtQpTapfFyPHsS/42+1og+ZkbBjhrPtgx
- V22ba3CXArD1r3+innlUCwo1gznduzvlxVifjuGsBnPTOKM9JeBPNWu75tm1vMoR65PHo4qxOG+
- O/tg1yEg6gja2mNPYPKJXZUW2S29A0iPG+8XuUSExGdu9BudGeVw18IasDUmfthZyPLWNROQGpN
- 9JyUUkTnApR92NAMUzHLj3ne7upYSQJ31Ab+MogRw6at1STgZvaWFIE5e5a/XQYbuNQmITc7hVq
- 6o5PuItNU7vlLrYD2InHp+9VTFqpLrw3s1toSBj+qbAQByyz+QyYIdE324S1o0WW6EeKf4cuLVm DqWvp1fbl88HqTQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6231:EE_|SJ0PR11MB5007:EE_
+X-MS-Office365-Filtering-Correlation-Id: db964d2c-32a2-4a8b-b235-08dc23d83f21
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5VlMbqpHH4w1pUO5obQQprLyBwHIcBG/gi/9k4sWFynhh0Taa05mqPl+MB1ihiir5URbBwY//g8ubPCXNomwzcZq1zVhe5mA+2F1kILN+T6n2rWCP5evGRIUrr8sBDKx6nT3S1vhKsAHpWQCyt9/XnjawAO5J4sB3D78uPzMan+eYgKydmhGuYcPJv5tmxJoG6g4pRIHPMb2oWwrHjTZW/EAjoCUTftUbm6B3HbiyVcaUrbn2WPw+gxvsVcJU04wgIYInqVdMJu+UlnTkD8+2RELn93mkgf+7BAsV6ssAvxkYtu1xh4Efjg/kFz52uQd3hzAEAHZ8whj+BDKJz5KR4eLAgCrDB0eaUaBYxPBRDSG2ChxCYkFVIndQVKq2gxvwg+fhM18ur3Tbr39CbaCb3WtUsTG9Uw1MoL2V/2x1QVpTO7fX92sVvB2/1cYBgtWEB3i56v603V+hy+a4vhOICMVTBaB3c0036yULLBs92hqr4U0lGFYX4r5Qi13C/36fVU5T5bjegiiYlpYINXYDt6Gb7AMI+j2ERjmCMRdkuxW7T8NWZhq59FIu3F52WAN
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6231.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(346002)(136003)(396003)(366004)(376002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(41300700001)(83380400001)(9686003)(38100700002)(6512007)(66574015)(33716001)(26005)(6636002)(5660300002)(6862004)(4326008)(8676002)(8936002)(6666004)(478600001)(6506007)(66476007)(66556008)(2906002)(53546011)(6486002)(66946007)(316002)(82960400001)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?pQ3su7gUGzccgoMXwQ097PXhwxIsiOUycQYTbAqhMFp9ghh84vdVHyKMGn?=
+ =?iso-8859-1?Q?znOb2KrGNb5qtdNG3NeArm78cHtW02NwwSjaMjvv1TIJLsUER5k/3wtKDM?=
+ =?iso-8859-1?Q?lhLEqBq+dsfsM42apT7nNj//yRjfe6xWxbYWh1Jt6yL1iWI1Lu9alWCorM?=
+ =?iso-8859-1?Q?zEzKis2X/U39GsC/uqOB60Y1Bplp8awb3LaTw8dqMdHB/TDK84aHC2H0PA?=
+ =?iso-8859-1?Q?DHNDTHcFitPTZAKzYMV1qBAfR8xy4mZVxORBcU00bYlZvoOcOqAP60OR5e?=
+ =?iso-8859-1?Q?oexIEjr1xf8cQSiG6dkPOz/smJ16jd2DVB7ZyaggZrBLvgvA/CYR9IGcmu?=
+ =?iso-8859-1?Q?ZLTnxknyEeqnh2kKR1quefZJ1f5haOClAwEExrbMBBV7QL5LgX9FAysRq4?=
+ =?iso-8859-1?Q?mVEwROf4xJLpSRY6KDJMsWT96TBlnmXE5Vw4EgTuZgGJoEVprmjpw2UuR2?=
+ =?iso-8859-1?Q?MgMF31bqjxViYrTRmNDVNHzFXYtk3+4B3AwvW/7lHGt8t0ByWLBMcz/g3o?=
+ =?iso-8859-1?Q?yRlPe8WzsMpa6NQWB2AxIZOJ7DNcqozv1ALt296yYxWnzlNbOsrKxauUFG?=
+ =?iso-8859-1?Q?WAdnmiXfMOnIpY623eG257jmI1XBVeUBqDb6508jf2SHTBGYVvsZ8Tt/dS?=
+ =?iso-8859-1?Q?P/6DnOljl9ppJ1c+ca7ykdNnmKrDDxiHIaOutbvpuA1ntDtNK343kS9NdG?=
+ =?iso-8859-1?Q?09d9p4HywqHXQkdk+Jiyjjm8U4hm/ra7FDQTwmcHmZhVhUBYqRkzwyouW2?=
+ =?iso-8859-1?Q?fnOYaFkUVeRyUz3V/8qtvBdD1UDfP54BjCc6/ieg/hnYuxMxzQvfDwdkBZ?=
+ =?iso-8859-1?Q?XkSP/SyCE38CuGDHMjzAh420YVoeznrnd7HNryHmdW1PMKPHAZ1lOQbYBH?=
+ =?iso-8859-1?Q?4iYrmfu/NGgtWzzHomkP3GEEKum5X88SQsbCkTSoBwlTh9GuHr5yHAq1Pa?=
+ =?iso-8859-1?Q?QtPjOyvsXjPgyII+r1J/ku/Ku9+mXV88A5QrFcvssWA6ZlKlGHi0ERfwIA?=
+ =?iso-8859-1?Q?vd9nTdqy+yEQMGCjgWliFA/S42QNyvYcM1IYK52fe/yAJ2/R4lxLQzOidy?=
+ =?iso-8859-1?Q?h2x2WkijCGr3GxI2Lr6ptGrKAnwRlPc4yuLneqGapw4zRYzEJIGR1efnkk?=
+ =?iso-8859-1?Q?ELzQS6VGts6mA71dHPR4Nm47nbx6QPHg+R53+tAl34LSZ7du71DmM/olVG?=
+ =?iso-8859-1?Q?lbH2X0IW+YQttsOiq97v8SvHI9Jgm/zNZyoXw/eQL2jdMv9hva6ZXjrsNU?=
+ =?iso-8859-1?Q?MEhkJoMd5uCi7B6YbpaEwoMBUNZex6w5P51Ha1cV8PA7GOpmjxg14/cv+H?=
+ =?iso-8859-1?Q?JJHsPNAdL4uTfikNHdOfhQg2wdXXuRBc/N795JoeVSe8l8pYzDu+IRxvJo?=
+ =?iso-8859-1?Q?ENKHt/v/sqxPu7PywuF1TchpwOno7H8ICnq1FOxffw/L68gWQn9KJcj7bI?=
+ =?iso-8859-1?Q?CaobLZ3yIC/eeIWtjwa2Bbuudo4tZH2BRj9kHPgHuHc54iKbHx07pJedA+?=
+ =?iso-8859-1?Q?msxYjBR0kR5VNpxOTaQNtFctFX4dng6qMTJTb8bJJa7D1LkYwxkmm26U80?=
+ =?iso-8859-1?Q?HBpp/wR7bHAbvSG4p6vjjhO3bt2vHs5RkeIeb8v38NCOfBBG4LG2Cz9acr?=
+ =?iso-8859-1?Q?R7xjb+qYeO6/Nsyw9Qwj/fxdgZU1OI+/9HmyCr25Q6bW0eT//hCSVVQHEx?=
+ =?iso-8859-1?Q?Coh6wsVVlhjFhNcSGXE=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: db964d2c-32a2-4a8b-b235-08dc23d83f21
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6239.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2024 10:18:06.8286
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xGA6htMmsD01en+NxmI/Vh6gEvOHpQH2qCJhChm0R5jxpCN5lEkKbZxPcjRItjmpAW++YL5kQIPz9b/mFDoY+RlkfkV8cZRII0aVWm8CPPw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5007
+X-OriginatorOrg: intel.com
 
-In order to get x86_64 booting at all with the unsigned wrap-around
-sanitizer, instrumentation needs to be disabled entirely for several
-kernel areas that depend heavily on unsigned wrap-around. As we fine-tune
-the sanitizer, we can revisit these and perform finer grain annotations.
-The boot is still extremely noisy, but gets us to a common point where
-we can continue experimenting with the sanitizer.
+Hello!
 
-Cc: x86@kernel.org
-Cc: netdev@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- arch/x86/kernel/Makefile      | 1 +
- arch/x86/kernel/apic/Makefile | 1 +
- arch/x86/mm/Makefile          | 1 +
- arch/x86/mm/pat/Makefile      | 1 +
- crypto/Makefile               | 1 +
- drivers/acpi/Makefile         | 1 +
- kernel/Makefile               | 1 +
- kernel/locking/Makefile       | 1 +
- kernel/rcu/Makefile           | 1 +
- kernel/sched/Makefile         | 1 +
- lib/Kconfig.ubsan             | 5 +++--
- lib/Makefile                  | 1 +
- lib/crypto/Makefile           | 1 +
- lib/crypto/mpi/Makefile       | 1 +
- lib/zlib_deflate/Makefile     | 1 +
- lib/zstd/Makefile             | 2 ++
- mm/Makefile                   | 1 +
- net/core/Makefile             | 1 +
- net/ipv4/Makefile             | 1 +
- 19 files changed, 22 insertions(+), 2 deletions(-)
+On 2024-02-01 at 11:47:44 -0800, Reinette Chatre wrote:
+>Hi Maciej,
+>
+>On 1/31/2024 4:55 AM, Maciej Wieczor-Retman wrote:
+>> On 2024-01-26 at 13:10:18 -0800, Reinette Chatre wrote:
+>>> On 1/25/2024 3:13 AM, Maciej Wieczor-Retman wrote:
+>>>> +	if (sparse_masks != ((ecx >> 3) & 1)) {
+>>>> +		ksft_print_msg("CPUID output doesn't match 'sparse_masks' file content!\n");
+>>>> +		return -1;
+>>>
+>>> If I understand correctly this falls into the "test failure" [1] category
+>>> and should return 1? ...
+>>>
+>>>> +	}
+>>>> +
+>>>> +	/* Write checks initialization. */
+>>>> +	ret = get_full_cbm(test->resource, &full_cache_mask);
+>>>> +	if (ret < 0)
+>>>> +		return ret;
+>>>> +	bit_center = count_bits(full_cache_mask) / 2;
+>>>> +	cont_mask = full_cache_mask >> bit_center;
+>>>> +
+>>>> +	/* Contiguous mask write check. */
+>>>> +	snprintf(schemata, sizeof(schemata), "%lx", cont_mask);
+>>>> +	ret = write_schemata("", schemata, uparams->cpu, test->resource);
+>>>> +	if (ret) {
+>>>> +		ksft_print_msg("Write of contiguous CBM failed\n");
+>>>> +		return ret;
+>>>
+>>> ... although here I think the goal to distinguish between test error and test failure
+>>> falls apart since it is not possible to tell within the test if the failure is
+>>> because of error in the test or if test failed.
+>> 
+>> Is there even a distinction between test error and failure in resctrl selftest?
+>
+>There is such a distinction in the current tests (and from what I understand the reason
+>behind the logical XOR used in this test) . In existing tests the running of
+>the test precedes and is clearly separate from determining of the test pass/fail.
+>All the current tests have a clear "run the test" phase where data is collected to
+>a file, followed by an analysis (aka "check results") phase that looks at collected
+>data to determine if the test passes or fails.
+>Note how all the "check results" return either 0 or 1 to indicate test pass
+>or fail respectively. Specifically, you can refer to:
+>mbm_test.c->check_results()
+>mba_test.c->check_results()
+>cmt_test.c->check_results()
+>cat_test.c->check_results()
+>
+>> I've been looking at it for a while and can't find any instances where
+>> ksft_test_result_error() would be used. Everywhere I look it's either pass or
+>> fail. By grep-ing over all selftests I found only five tests that use
+>> ksft_test_result_error().
+>
+>Yes, from the user perspective there is no such distinction. This seems to
+>be entirely internal to the resctrl selftests (but I do not think that this
+>should or can be a hard requirement).
 
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 0000325ab98f..de93f8b8a149 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -30,6 +30,7 @@ KASAN_SANITIZE_sev.o					:= n
- 
- # With some compiler versions the generated code results in boot hangs, caused
- # by several compilation units. To be safe, disable all instrumentation.
-+UBSAN_WRAP_UNSIGNED := n
- KCSAN_SANITIZE := n
- KMSAN_SANITIZE_head$(BITS).o				:= n
- KMSAN_SANITIZE_nmi.o					:= n
-diff --git a/arch/x86/kernel/apic/Makefile b/arch/x86/kernel/apic/Makefile
-index 3bf0487cf3b7..aa97b5830b64 100644
---- a/arch/x86/kernel/apic/Makefile
-+++ b/arch/x86/kernel/apic/Makefile
-@@ -6,6 +6,7 @@
- # Leads to non-deterministic coverage that is not a function of syscall inputs.
- # In particular, smp_apic_timer_interrupt() is called in random places.
- KCOV_INSTRUMENT		:= n
-+UBSAN_WRAP_UNSIGNED	:= n
- 
- obj-$(CONFIG_X86_LOCAL_APIC)	+= apic.o apic_common.o apic_noop.o ipi.o vector.o init.o
- obj-y				+= hw_nmi.o
-diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
-index c80febc44cd2..7a43466d4581 100644
---- a/arch/x86/mm/Makefile
-+++ b/arch/x86/mm/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- # Kernel does not boot with instrumentation of tlb.c and mem_encrypt*.c
-+UBSAN_WRAP_UNSIGNED := n
- KCOV_INSTRUMENT_tlb.o			:= n
- KCOV_INSTRUMENT_mem_encrypt.o		:= n
- KCOV_INSTRUMENT_mem_encrypt_amd.o	:= n
-diff --git a/arch/x86/mm/pat/Makefile b/arch/x86/mm/pat/Makefile
-index ea464c995161..281a5786c5ea 100644
---- a/arch/x86/mm/pat/Makefile
-+++ b/arch/x86/mm/pat/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
-+UBSAN_WRAP_UNSIGNED := n
- 
- obj-y				:= set_memory.o memtype.o
- 
-diff --git a/crypto/Makefile b/crypto/Makefile
-index 408f0a1f9ab9..c7b23d99e715 100644
---- a/crypto/Makefile
-+++ b/crypto/Makefile
-@@ -2,6 +2,7 @@
- #
- # Cryptographic API
- #
-+UBSAN_WRAP_UNSIGNED := n
- 
- obj-$(CONFIG_CRYPTO) += crypto.o
- crypto-y := api.o cipher.o compress.o
-diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
-index 12ef8180d272..92a8e8563b1b 100644
---- a/drivers/acpi/Makefile
-+++ b/drivers/acpi/Makefile
-@@ -2,6 +2,7 @@
- #
- # Makefile for the Linux ACPI interpreter
- #
-+UBSAN_WRAP_UNSIGNED := n
- 
- ccflags-$(CONFIG_ACPI_DEBUG)	+= -DACPI_DEBUG_OUTPUT
- 
-diff --git a/kernel/Makefile b/kernel/Makefile
-index ce105a5558fc..1b31aa19b4fb 100644
---- a/kernel/Makefile
-+++ b/kernel/Makefile
-@@ -2,6 +2,7 @@
- #
- # Makefile for the linux kernel.
- #
-+UBSAN_WRAP_UNSIGNED := n
- 
- obj-y     = fork.o exec_domain.o panic.o \
- 	    cpu.o exit.o softirq.o resource.o \
-diff --git a/kernel/locking/Makefile b/kernel/locking/Makefile
-index 0db4093d17b8..dd6492509596 100644
---- a/kernel/locking/Makefile
-+++ b/kernel/locking/Makefile
-@@ -2,6 +2,7 @@
- # Any varying coverage in these files is non-deterministic
- # and is generally not a function of system call inputs.
- KCOV_INSTRUMENT		:= n
-+UBSAN_WRAP_UNSIGNED	:= n
- 
- obj-y += mutex.o semaphore.o rwsem.o percpu-rwsem.o
- 
-diff --git a/kernel/rcu/Makefile b/kernel/rcu/Makefile
-index 0cfb009a99b9..305c13042633 100644
---- a/kernel/rcu/Makefile
-+++ b/kernel/rcu/Makefile
-@@ -2,6 +2,7 @@
- # Any varying coverage in these files is non-deterministic
- # and is generally not a function of system call inputs.
- KCOV_INSTRUMENT := n
-+UBSAN_WRAP_UNSIGNED := n
- 
- ifeq ($(CONFIG_KCSAN),y)
- KBUILD_CFLAGS += -g -fno-omit-frame-pointer
-diff --git a/kernel/sched/Makefile b/kernel/sched/Makefile
-index 976092b7bd45..e487b0e86c2e 100644
---- a/kernel/sched/Makefile
-+++ b/kernel/sched/Makefile
-@@ -7,6 +7,7 @@ ccflags-y += $(call cc-disable-warning, unused-but-set-variable)
- # These files are disabled because they produce non-interesting flaky coverage
- # that is not a function of syscall inputs. E.g. involuntary context switches.
- KCOV_INSTRUMENT := n
-+UBSAN_WRAP_UNSIGNED := n
- 
- # Disable KCSAN to avoid excessive noise and performance degradation. To avoid
- # false positives ensure barriers implied by sched functions are instrumented.
-diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
-index 0611120036eb..54981e717355 100644
---- a/lib/Kconfig.ubsan
-+++ b/lib/Kconfig.ubsan
-@@ -132,8 +132,9 @@ config UBSAN_UNSIGNED_WRAP
- 	depends on !COMPILE_TEST
- 	help
- 	  This option enables -fsanitize=unsigned-integer-overflow which checks
--	  for wrap-around of any arithmetic operations with unsigned integers. This
--	  currently causes x86 to fail to boot.
-+	  for wrap-around of any arithmetic operations with unsigned integers.
-+	  Given the history of C and the many common code patterns involving
-+	  unsigned wrap-around, this is a very noisy option right now.
- 
- config UBSAN_POINTER_WRAP
- 	bool "Perform checking for pointer arithmetic wrap-around"
-diff --git a/lib/Makefile b/lib/Makefile
-index bc36a5c167db..f68385b69247 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -2,6 +2,7 @@
- #
- # Makefile for some libs needed in the kernel.
- #
-+UBSAN_WRAP_UNSIGNED := n
- 
- ccflags-remove-$(CONFIG_FUNCTION_TRACER) += $(CC_FLAGS_FTRACE)
- 
-diff --git a/lib/crypto/Makefile b/lib/crypto/Makefile
-index 8d1446c2be71..fce88a337a53 100644
---- a/lib/crypto/Makefile
-+++ b/lib/crypto/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
-+UBSAN_WRAP_UNSIGNED := n
- 
- obj-$(CONFIG_CRYPTO_LIB_UTILS)			+= libcryptoutils.o
- libcryptoutils-y				:= memneq.o utils.o
-diff --git a/lib/crypto/mpi/Makefile b/lib/crypto/mpi/Makefile
-index 6e6ef9a34fe1..ce95653915b1 100644
---- a/lib/crypto/mpi/Makefile
-+++ b/lib/crypto/mpi/Makefile
-@@ -2,6 +2,7 @@
- #
- # MPI multiprecision maths library (from gpg)
- #
-+UBSAN_WRAP_UNSIGNED := n
- 
- obj-$(CONFIG_MPILIB) = mpi.o
- 
-diff --git a/lib/zlib_deflate/Makefile b/lib/zlib_deflate/Makefile
-index 2622e03c0b94..5d71690554bb 100644
---- a/lib/zlib_deflate/Makefile
-+++ b/lib/zlib_deflate/Makefile
-@@ -6,6 +6,7 @@
- # This is the compression code, see zlib_inflate for the
- # decompression code.
- #
-+UBSAN_WRAP_UNSIGNED := n
- 
- obj-$(CONFIG_ZLIB_DEFLATE) += zlib_deflate.o
- 
-diff --git a/lib/zstd/Makefile b/lib/zstd/Makefile
-index 20f08c644b71..7a187cb08c1f 100644
---- a/lib/zstd/Makefile
-+++ b/lib/zstd/Makefile
-@@ -8,6 +8,8 @@
- # in the COPYING file in the root directory of this source tree).
- # You may select, at your option, one of the above-listed licenses.
- # ################################################################
-+UBSAN_WRAP_UNSIGNED := n
-+
- obj-$(CONFIG_ZSTD_COMPRESS) += zstd_compress.o
- obj-$(CONFIG_ZSTD_DECOMPRESS) += zstd_decompress.o
- obj-$(CONFIG_ZSTD_COMMON) += zstd_common.o
-diff --git a/mm/Makefile b/mm/Makefile
-index e4b5b75aaec9..cacbdd1a2d40 100644
---- a/mm/Makefile
-+++ b/mm/Makefile
-@@ -2,6 +2,7 @@
- #
- # Makefile for the linux memory manager.
- #
-+UBSAN_WRAP_UNSIGNED := n
- 
- KASAN_SANITIZE_slab_common.o := n
- KASAN_SANITIZE_slub.o := n
-diff --git a/net/core/Makefile b/net/core/Makefile
-index 821aec06abf1..501d7300da83 100644
---- a/net/core/Makefile
-+++ b/net/core/Makefile
-@@ -2,6 +2,7 @@
- #
- # Makefile for the Linux networking core.
- #
-+UBSAN_WRAP_UNSIGNED := n
- 
- obj-y := sock.o request_sock.o skbuff.o datagram.o stream.o scm.o \
- 	 gen_stats.o gen_estimator.o net_namespace.o secure_seq.o \
-diff --git a/net/ipv4/Makefile b/net/ipv4/Makefile
-index ec36d2ec059e..c738d463bb7e 100644
---- a/net/ipv4/Makefile
-+++ b/net/ipv4/Makefile
-@@ -2,6 +2,7 @@
- #
- # Makefile for the Linux TCP/IP (INET) layer.
- #
-+UBSAN_WRAP_UNSIGNED := n
- 
- obj-y     := route.o inetpeer.o protocol.o \
- 	     ip_input.o ip_fragment.o ip_forward.o ip_options.o \
+Okay, thank you, that's what I wanted to know.
+
+>
+>> 
+>> Furthermore there is this one "TODO" in kselftests.h:
+>> 
+>> 	/* TODO: how does "error" differ from "fail" or "skip"? */
+>> 
+>> If you meant the distintion less literally then I'd say the sparse_masks
+>> comparison to CPUID would be a failure. What I had in mind is that it tries to
+>> validate a resctrl interface relevant to non-contiguous CBMs. If it fails
+>> there is probably something wrong with the code concerning non-contiguous CBMs.
+>
+>Wrong with which code? As I understand this particular check compares the
+>resctrl view of the world to the hardware realities. If this check fails
+>then I do not think this is an issue with the test code (which would make it a test
+>error) but instead a resctrl bug and thus a test failure.
+
+I also meant a resctrl bug. I was thinking about the kernel resctrl code that
+handles taking the CPUID information about non-contiguous CBMs and putting it in
+the sparse_masks file.
+
+If there was a hardware problem and CPUID returned wrong information, then the
+check wouldn't fail as sparse_masks relies on CPUID too and both values would
+match. So in view of this I thought that this check could make sure that the
+resctrl kernel code handles CPUID returned information properly.
+
+So should this check be moved from the "run the test" phase to the end of the
+function ("check results" phase) to signify that it's not an error but a
+failure?
+
+>
+>> On the other hand writing contiguous CBMs shouldn't fail as far as the
+>> non-contiguous CBMs in CAT test is concerned. So if that fails there might be
+>> something wrong on a higher level and I'd say that can be more of an error than
+>> a failure.
+>
+>I think that the write_schemata() can fail for a variety of reasons, some may
+>indicate an issue with the test while some may indicate an issue with resctrl.
+>It is not possible for the caller of write_schemata() to distinguish.
+>
+>> But I'm just saying how I undestood it so far. If there is some clear
+>> distinction between error and failure definitions I could try to separate it
+>> more explicitly.
+>
+>I do not think it is possible to clearly distinguish between error and failure.
+>These are already lumped together as a ksft_test_result_fail() anyway so no
+>risk of confusion to folks just running the tests.
+>I think the final test result may be confusing to folks parsing the
+>resctrl selftest internals:
+>
+>	run_single_test()
+>	{
+>		...
+>		ret = test->run_test(test, uparams);
+>		ksft_test_result(!ret, "%s: test\n", test->name);
+>		...
+>	}
+>
+>above means that a test returning negative or greater than zero value is
+>considered a test failure and resctrl tests may return either in the case of
+>an actual test failure ... but from user perspective there is no difference
+>so I do not think it is an issue, just lack of consistency in the resctrl
+>test internals in cases like write_schemata() failure where a possible
+>test fail is captured as a test error. 
+>
+>I do not think it is required to be strict here. Keeping "test returns
+>negative or greater than zero on test failure" seems reasonable to me.
+
+Okay, so the approach I applied in noncont_cat_run_test() with write_schemata()
+is acceptable?
+
+>
+>Reinette
+
 -- 
-2.34.1
-
+Kind regards
+Maciej Wieczór-Retman
 
