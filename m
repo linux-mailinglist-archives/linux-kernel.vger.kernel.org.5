@@ -1,236 +1,200 @@
-Return-Path: <linux-kernel+bounces-50523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4ECA847A32
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:03:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83FC8847A37
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:04:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51BFAB2A7B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:03:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A991D1C2549F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:04:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4367A80636;
-	Fri,  2 Feb 2024 20:02:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FB63839F2;
+	Fri,  2 Feb 2024 20:02:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="cI/JFAFg"
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="CmeX23S7"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E18D80625
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 20:02:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EBA18063D;
+	Fri,  2 Feb 2024 20:02:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706904153; cv=none; b=BVJAbOn74p+M2x33Z8G/5v7b8OzpLW4mlL7vWCjPc3uYLHJTjxjYeO0slBtmv3tvZk9ZFFgV5LK8Bmpqvs2DnMKTOyhyhn2nU4tR+HvT2hTaqU2WNOVsi1evfI6b3WeO9A+PnVl8ofQtCOdOtD1pte1XhSPGPiqzmfDOK9UvxM8=
+	t=1706904173; cv=none; b=JU14UIVwl/G439CznFolw6zaD538QPlAJtsyY8gHUR/TaK7pm56nmpH0vMZ645c5x+vcJC/t8dKck28rhGClZ/O1ViGJIO4JIRrqtKyAtrSAieP6Wu33O4kntCkBtdc3gLwoc6s5/HWGUeCg7XhQIgwLHb1YONm1C47vovnUT14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706904153; c=relaxed/simple;
-	bh=EayggpD20ZVxvOuBUHp6GQDJdR4ntp9uMY9cbHbb30I=;
+	s=arc-20240116; t=1706904173; c=relaxed/simple;
+	bh=U8Zpp8rzADjQWv8sp6Upen6MRmo/xdz9mIdCpg1d5d0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UC2lqFOU2Khec8ITiaMCSfDE0LyOsgWsx02+bD8VJetjEunQgVvT86ffksFNF44c3exP1s3IAdPguqn1Y0124W/nhIcNCqzjeVZcIUUKqAAwl5f520+bEhfcwh4Iv18woURR8d7z8ZXotdbyON8P5pApwU8oqWZUdKC3dLyYMbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=cI/JFAFg; arc=none smtp.client-ip=198.252.153.129
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4TRRWn6dTrzDq8D;
-	Fri,  2 Feb 2024 20:02:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1706904150; bh=EayggpD20ZVxvOuBUHp6GQDJdR4ntp9uMY9cbHbb30I=;
+	 In-Reply-To:Content-Type; b=csWED/iUkVLgKMo3dkaS6gzbbj8Oy81z5jKrH+/JrtVPrljiQPlZ+argUlXJFUNFCRKoHUNwVCrY65xTIsIZhKCeNKRQrStc5T0RgomzZslmDL0Cu9oJoa2vXPDIgu7vlvngfhhztr/hj1mgHdMBW6mGzjirJngOnGoy4Q3ngI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=CmeX23S7; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1706904169;
+	bh=U8Zpp8rzADjQWv8sp6Upen6MRmo/xdz9mIdCpg1d5d0=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=cI/JFAFg1rFMS70ZTBUTRo6ymeh73P7sSijXzXmSUjn/8PwDYCykzIIeFnWjzcwd3
-	 kgmpV8gQuWK0UMyeLlJFUYGcBRVtpHrmB2VdEZNbKDhacfBfI6cN4k0CQsIQANPrka
-	 7IigYT89fPdC8G1IHGZD7rjdSBhF+IbiCKStwX1c=
-X-Riseup-User-ID: 918AF2773BAFBA0FA6A8F54866A4FC8F79B59C8D58DAD5DE7946EB67FE979219
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4TRRWh0lHnzFpvw;
-	Fri,  2 Feb 2024 20:02:23 +0000 (UTC)
-Message-ID: <14ac793c-6660-434f-998d-af1f51b3b1d2@riseup.net>
-Date: Fri, 2 Feb 2024 17:02:20 -0300
+	b=CmeX23S7NWtLpK+eiIZsvdsXqvq9a2C5GT5UEfoNFmLT74sYFVEQYiZUHTkWR1s/m
+	 gE82fXfKp38/4XUPZ133OnCLiaZxfY/nGJ6r0uws4ITe4unBEgeis7VnRH87RkvfNS
+	 CcXWaHj/JViXRsjCr9gB0Kbmj/OOP3ohi6cBPEyDlOEOgnW+3JyO9rjllrj3yXQGPc
+	 f0IHPPF5Zw5Vp2HS8EdN/Ls7v6O3dLmXNVMB4dlwr35GzKBiARWFnFxE8DWOSwJZyn
+	 zCFGR0OSgygAMI3MXZqpWjLzzYzG+W4swDPmIV6cDvsnrXfRR85+F+SRNfRKdnRGZT
+	 ypkpPgzZlqG2A==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TRRX86Fj7zWgY;
+	Fri,  2 Feb 2024 15:02:48 -0500 (EST)
+Message-ID: <5e838147-524c-40e5-b106-e388bf4e549b@efficios.com>
+Date: Fri, 2 Feb 2024 15:02:50 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] drm/vkms: Use a simpler composition function
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 2/4] dax: Check for data cache aliasing at runtime
 Content-Language: en-US
-To: Pekka Paalanen <pekka.paalanen@haloniitty.fi>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Maxime Ripard <mripard@kernel.org>,
- Louis Chauvet <louis.chauvet@bootlin.com>,
- Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- marcheu@google.com, seanpaul@google.com, nicolejadeyee@google.com,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- thomas.petazzoni@bootlin.com
-References: <20240201-yuv-v1-0-3ca376f27632@bootlin.com>
- <20240201-yuv-v1-2-3ca376f27632@bootlin.com>
- <20240202105522.43128e19@eldfell> <20240202102601.70b6d49c@xps-13>
- <3nofkwzgnf4yva2wfogdbii47ohpi2wm5vp6aijtg3emxyoowt@twyreqz7ai3g>
- <20240202131322.5471e184@xps-13> <20240202174913.789a9db9@eldfell>
-From: Arthur Grillo <arthurgrillo@riseup.net>
-In-Reply-To: <20240202174913.789a9db9@eldfell>
-Content-Type: text/plain; charset=UTF-8
+To: Dan Williams <dan.j.williams@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+ Dave Chinner <david@fromorbit.com>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
+ linux-arch@vger.kernel.org, Vishal Verma <vishal.l.verma@intel.com>,
+ Dave Jiang <dave.jiang@intel.com>, Matthew Wilcox <willy@infradead.org>,
+ Russell King <linux@armlinux.org.uk>, nvdimm@lists.linux.dev,
+ linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ dm-devel@lists.linux.dev
+References: <20240131162533.247710-1-mathieu.desnoyers@efficios.com>
+ <20240131162533.247710-3-mathieu.desnoyers@efficios.com>
+ <65bab567665f3_37ad2943c@dwillia2-xfh.jf.intel.com.notmuch>
+ <0a38176b-c453-4be0-be83-f3e1bb897973@efficios.com>
+ <65bac71a9659b_37ad29428@dwillia2-xfh.jf.intel.com.notmuch>
+ <f1d14941-2d22-452a-99e6-42db806b6d7f@efficios.com>
+ <65bd284165177_2d43c29443@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <6bdf6085-101d-47ef-86f4-87936622345a@efficios.com>
+ <65bd457460fb1_719322942@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <65bd457460fb1_719322942@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-
-
-On 02/02/24 12:49, Pekka Paalanen wrote:
-> On Fri, 2 Feb 2024 13:13:22 +0100
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> 
->> Hello Maxime,
->>
->> + Arthur
->>
->> mripard@kernel.org wrote on Fri, 2 Feb 2024 10:53:37 +0100:
->>
->>> Hi Miquel,
->>>
->>> On Fri, Feb 02, 2024 at 10:26:01AM +0100, Miquel Raynal wrote:  
->>>> pekka.paalanen@haloniitty.fi wrote on Fri, 2 Feb 2024 10:55:22 +0200:
->>>>     
->>>>> On Thu, 01 Feb 2024 18:31:32 +0100
->>>>> Louis Chauvet <louis.chauvet@bootlin.com> wrote:
->>>>>     
->>>>>> Change the composition algorithm to iterate over pixels instead of lines.
->>>>>> It allows a simpler management of rotation and pixel access for complex formats.
->>>>>>
->>>>>> This new algorithm allows read_pixel function to have access to x/y
->>>>>> coordinates and make it possible to read the correct thing in a block
->>>>>> when block_w and block_h are not 1.
->>>>>> The iteration pixel-by-pixel in the same method also allows a simpler
->>>>>> management of rotation with drm_rect_* helpers. This way it's not needed
->>>>>> anymore to have misterious switch-case distributed in multiple places.      
->>>>>
->>>>> Hi,
->>>>>
->>>>> there was a very good reason to write this code using lines:
->>>>> performance. Before lines, it was indeed operating on individual pixels.
->>>>>
->>>>> Please, include performance measurements before and after this series
->>>>> to quantify the impact on the previously already supported pixel
->>>>> formats, particularly the 32-bit-per-pixel RGB variants.
->>>>>
->>>>> VKMS will be used more and more in CI for userspace projects, and
->>>>> performance actually matters there.
->>>>>
->>>>> I'm worrying that this performance degradation here is significant. I
->>>>> believe it is possible to keep blending with lines, if you add new line
->>>>> getters for reading from rotated, sub-sampled etc. images. That way you
->>>>> don't have to regress the most common formats' performance.    
+On 2024-02-02 14:41, Dan Williams wrote:
+> Mathieu Desnoyers wrote:
+>> On 2024-02-02 12:37, Dan Williams wrote:
+>>> Mathieu Desnoyers wrote:
+>> [...]
 >>>>
->>>> While I understand performance is important and should be taken into
->>>> account seriously, I cannot understand how broken testing could be
->>>> considered better. Fast but inaccurate will always be significantly
->>>> less attractive to my eyes.    
 >>>
->>> AFAIK, neither the cover letter nor the commit log claimed it was fixing
->>> something broken, just that it was "better" (according to what
->>> criteria?).  
+>>>> The alternative route I intend to take is to audit all callers
+>>>> of alloc_dax() and make sure they all save the alloc_dax() return
+>>>> value in a struct dax_device * local variable first for the sake
+>>>> of checking for IS_ERR(). This will leave the xyz->dax_dev pointer
+>>>> initialized to NULL in the error case and simplify the rest of
+>>>> error checking.
+>>>
+>>> I could maybe get on board with that, but it needs a comment somewhere
+>>> about the asymmetric subtlety.
 >>
->> Better is probably too vague and I agree the "fixing" part is not
->> clearly explained in the commit log. The cover-letter however states:
->>
->>> Patch 2/2: This patch is more complex. My main target was to solve issues
->>> I found in [1], but as it was very complex to do it "in place", I choose
->>> to rework the composition function.  
->> ...
->>> [1]: https://lore.kernel.org/dri-devel/20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net/  
->>
->> If you follow this link you will find all the feedback and especially
->> the "broken" parts. Just to be clear, writing bugs is totally expected
->> and review/testing is supposed to help on this regard. I am not blaming
->> the author in any way, just focusing on getting this code in a more
->> readable shape and hopefully reinforce the testing procedure.
->>
->>> If something is truly broken, it must be stated what exactly is so we
->>> can all come up with a solution that will satisfy everyone.  
->>
->> Maybe going through the series pointed above will give more context
->> but AFAIU: the YUV composition is not totally right (and the tests used
->> to validate it need to be more complex as well in order to fail).
->>
->> Here is a proposal.
->>
->> Today's RGB implementation is only optimized in the line-by-line case
->> when there is no rotation. The logic is bit convoluted and may possibly
->> be slightly clarified with a per-format read_line() implementation,
->> at a very light performance cost. Such an improvement would definitely
->> benefit to the clarity of the code, especially when transformations
->> (especially the rotations) come into play because they would be clearly
->> handled differently instead of being "hidden" in the optimized logic.
->> Performances would not change much as this path is not optimized today
->> anyway (the pixel-oriented logic is already used in the rotation case).
->>
->> Arthur's YUV implementation is indeed well optimized but the added
->> complexity probably lead to small mistakes in the logic. The
->> per-format read_line() implementation mentioned above could be
->> extended to the YUV format as well, which would leverage Arthur's
->> proposal by re-using his optimized version. Louis will help on this
->> regard. However, for more complex cases such as when there is a
->> rotation, it will be easier (and not sub-optimized compared to the RGB
->> case) to also fallback to a pixel-oriented processing.
->>
->> Would this approach make sense?
+>> Is this "somewhere" at every alloc_dax() call site, or do you have
+>> something else in mind ?
 > 
-> Hi,
-> 
-> I think it would, if I understand what you mean. Ever since I proposed
-> a line-by-line algorithm to improve the performance, I was thinking of
-> per-format read_line() functions that would be selected outside of any
-> loops. Extending that to support YUV is only natural. I can imagine
-> rotation complicates things, and I won't oppose that resulting in a
-> much heavier read_line() implementation used in those cases. They might
-> perhaps call the original read_line() implementations pixel-by-pixel or
-> plane-by-plane (i.e. YUV planes) per pixel. Chroma-siting complicates
-> things even further. That way one could compose any
-> rotation-format-siting combination by chaining function pointers.
-> 
-> I haven't looked at VKMS in a long time, and I am disappointed to find
-> that vkms_compose_row() is calling plane->pixel_read() pixel-by-pixel.
-> The reading vfunc should be called with many pixels at a time when the
-> source FB layout allows it. The whole point of the line-based functions
-> was that they repeat the innermost loop in every function body to make
-> the per-pixel overhead as small as possible. The VKMS implementations
-> benchmarked before and after the original line-based algorithm showed
-> that calling a function pointer per-pixel is relatively very expensive.
-> Or maybe it was a switch-case.
+> At least kill_dax() should mention the asymmetry I think.
 
-Hi,
+Here is what I intend to add:
 
-I think I'm the culprit for that, as stated on [1]. My intention with
-the suggestion was to remove some code repetition and too facilitate the
-rotation support implementation. Going back, I think I was to high on
-DRY at the time and didn't worry about optimization, which was a
-mistake.
-
-But, I agree with Miquel that the rotation logic is easier to implement
-in a pixel-based way. So going pixel-by-pixel only when rotation occurs
-would be great.
-
-Best Regards,
-~Arthur Grillo
-
-[1]: https://lore.kernel.org/dri-devel/20230418130525.128733-2-mcanal@igalia.com/
+  * Note, because alloc_dax() returns an ERR_PTR() on error, callers
+  * typically store its result into a local variable in order to check
+  * the result. Therefore, care must be taken to populate the struct
+  * device dax_dev field make sure the dax_dev is not leaked.
 
 > 
-> Sorry, I didn't realize the optimization had already been lost.
+>>> The real question is what to do about device-dax. I *think* it is not
+>>> affected by cpu_dcache aliasing because it never accesses user mappings
+>>> through a kernel alias. I doubt device-dax is in use on these platforms,
+>>> but we might need another fixup for that if someone screams about the
+>>> alloc_dax() behavior change making them lose device-dax access.
+>>
+>> By "device-dax", I understand you mean drivers/dax/Kconfig:DEV_DAX.
+>>
+>> Based on your analysis, is alloc_dax() still the right spot where
+>> to place this runtime check ? Which call sites are responsible
+>> for invoking alloc_dax() for device-dax ?
 > 
-> Btw. I'd suggest renaming vkms_compose_row() to vkms_fetch_row() since
-> it's not composing anything and the name mislead me.
+> That is in devm_create_dev_dax().
 > 
-> I think if you inspect the compositing code as of revision
-> 8356b97906503a02125c8d03c9b88a61ea46a05a you'll get a better feeling of
-> what it was supposed to be.
+>> If we know which call sites do not intend to use the kernel linear
+>> mapping, we could introduce a flag (or a new variant of the alloc_dax()
+>> API) that would either enforce or skip the check.
 > 
+> Hmmm, it looks like there is already a natural flag for that. If
+> alloc_dax() is passed a NULL operations pointer it means there are no
+> kernel usages of the aliased mapping. That actually fits rather nicely.
+
+Good, I was reaching the same conclusion when I received your reply.
+I'll do that. It ends up being:
+
+         /*
+          * Unavailable on architectures with virtually aliased data caches,
+          * except for device-dax (NULL operations pointer), which does
+          * not use aliased mappings from the kernel.
+          */
+         if (ops && cpu_dcache_is_aliasing())
+                 return ERR_PTR(-EOPNOTSUPP);
+
 > 
-> Thanks,
-> pq
+> [..]
+>>>>> @@ -804,6 +808,15 @@ static int virtio_fs_setup_dax(struct virtio_device *vdev, struct virtio_fs *fs)
+>>>>>     	if (!IS_ENABLED(CONFIG_FUSE_DAX))
+>>>>>     		return 0;
+>>>>>     
+>>>>> +	dax_dev = alloc_dax(fs, &virtio_fs_dax_ops);
+>>>>> +	if (IS_ERR(dax_dev)) {
+>>>>> +		int rc = PTR_ERR(dax_dev);
+>>>>> +
+>>>>> +		if (rc == -EOPNOTSUPP)
+>>>>> +			return 0;
+>>>>> +		return rc;
+>>>>> +	}
+>>>>
+>>>> What is gained by moving this allocation here ?
+>>>
+>>> The gain is to fail early in virtio_fs_setup_dax() since the fundamental
+>>> dependency of alloc_dax() success is not met. For example why let the
+>>> setup progress to devm_memremap_pages() when alloc_dax() is going to
+>>> return ERR_PTR(-EOPNOTSUPP).
+>>
+>> What I don't know is whether there is a dependency requiring to do
+>> devm_request_mem_region(), devm_kzalloc(), devm_memremap_pages()
+>> before calling alloc_dax() ?
+>>
+>> Those 3 calls are used to populate:
+>>
+>>           fs->window_phys_addr = (phys_addr_t) cache_reg.addr;
+>>           fs->window_len = (phys_addr_t) cache_reg.len;
+>>
+>> and then alloc_dax() takes "fs" as private data parameter. So it's
+>> unclear to me whether we can swap the invocation order. I suspect
+>> that it is not an issue because it is only used to populate
+>> dax_dev->private, but I prefer to confirm this with you just to be
+>> on the safe side.
+> 
+> Thanks for that. All of those need to be done before the fs goes live
+> later in virtio_device_ready(), but before that point nothing should be
+> calling into virtio_fs_dax_ops, so as far as I can see it is safe to
+> change the order.
+
+Sounds good, I'll do that.
+
+I will soon be ready to send out a RFC v4, which is still only
+compiled-tested. Do you happen to have some kind of test suite
+you can use to automate some of the runtime testing ?
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
 
