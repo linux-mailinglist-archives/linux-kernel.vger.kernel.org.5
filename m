@@ -1,77 +1,74 @@
-Return-Path: <linux-kernel+bounces-49933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49934-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF6868471BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:18:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 362498471BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:19:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1320FB265FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:18:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA38F1F29E68
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:19:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DFB114077C;
-	Fri,  2 Feb 2024 14:18:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ef1CH6qH"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E227F14198A;
+	Fri,  2 Feb 2024 14:19:17 +0000 (UTC)
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26E4147A4D;
-	Fri,  2 Feb 2024 14:18:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9178113E214
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 14:19:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706883496; cv=none; b=PS3ifwbFBuPDL+IpV3Z/1y9zUQRnUAkKRCf8leXSzYCmAuO881B+8ZN2rf/k3+FrJe/3q6xhdDwyVbMBFfG/jZWGTFN68f696S7dxDpKMrxmUIoFufW9UIdVqUHO1D2Pp5iB3TZe7j+hnNhhEq07hrXvCwU7Tqn/Cq3OD6cIX8I=
+	t=1706883557; cv=none; b=q5+zTM0Tp5O9km1n+si/HzouMF3Rd5pONAZSDhyCubax/DA+93WnbDOHPHYgOjemHRWIn0mUpOPZBJ0eqXPImKM73wSs8yRl9DEHDgq7vce7rXGtroKcVrJ0apvWNgdzwZxjsP30v4tGjArGEYTdW/IkOQbQNvK4iKjBxpjsBCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706883496; c=relaxed/simple;
-	bh=HzNWvLqFNq5/KR4E32uIR72ZaR/BALczY1b4w4LjKGI=;
+	s=arc-20240116; t=1706883557; c=relaxed/simple;
+	bh=WaF05etmv6xtJTE48JVQIk8cC0oCi0ltt4j8nJKOOE4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZCVRY6/24DEMKsT/hmyOM8pOsKEH70hdu222pBpAfkdumHe2aZ47s0GLQiAk6Q1cgVTkOuIb4i8a9ZWUdhXFkA0sfwkaav7Y7XTqUAFrKAg7QTscypj41zIjbQaot8/NjEy01J0+gylvfaBI23YcBelPLulrBEM81lbWihlNhqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ef1CH6qH; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706883495; x=1738419495;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HzNWvLqFNq5/KR4E32uIR72ZaR/BALczY1b4w4LjKGI=;
-  b=Ef1CH6qH2VeRv3cLhcnCaoT0nfPH+V7I4OmwcN2Ve36J/cd29GHyfmHP
-   ua2Hiq6iqaQfBWPOIHHhwgUVP7nZV8Na+kevw7t/cPsscsl2bFmUT3Vh/
-   j2jkPGBHaMCaziWTHSLM7WmKp4WWxWHU0iD6CDaeRWTenM1iCIJ0305GN
-   0y+0ysxREyXddVeIg3xNGxy7o/TPU3vqhWZafwZYH1ip92qhrsPIuDmnL
-   V2WDmn2fo2Zw0YRbZkJPQKsjiAah1vJ3Wi/R0Kiny9bGy05NqFGnO8GnD
-   ETDebdncoF0neQMkSBdw3uYPLMrayS3aavF4FP3j4PMwxV5s1TZJ3emj+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="351097"
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="351097"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 06:18:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="908584636"
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="908584636"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 06:18:12 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rVuMr-00000001I5f-0dcD;
-	Fri, 02 Feb 2024 16:18:09 +0200
-Date: Fri, 2 Feb 2024 16:18:08 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Flavio Suligoi <f.suligoi@asem.it>
-Cc: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Lee Jones <lee@kernel.org>,
-	Daniel Thompson <daniel.thompson@linaro.org>,
-	Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH v2 0/3] backlight: mp3309c: Allow to use on non-OF
- platforms
-Message-ID: <Zbz5oPKS4ZdeMOaP@smile.fi.intel.com>
-References: <20240201151537.367218-1-andriy.shevchenko@linux.intel.com>
- <DU2PR01MB80349345B0C1757C6958107FF9422@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pu4BTFVnXYfVB5etjPzULXqj9kiIke3D+nfTPAsb6r61tzMAR4DBnY/nPL1M6z8WAneAcsjlgBUg5o6e17paCiOxDHjk6x4kGMlUfBB/1uXD/LbjYf8u+YLTaIPTX9PGZ2SFUXcVPtPJfhuBZCyBBXOIyRmySasexB/ts3betIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.160.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-42a4516ec46so8171751cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 06:19:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706883554; x=1707488354;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PVCU/QdR6yOLyX27bti1riO+pE3pl8L1u9F5qqx6Qkg=;
+        b=cwOpXfI45Uopw+vVvDXUX51Gsg2gXGD5LqB/d2P/+mHwWO1bxtsOrhXl028LvnBsFB
+         NmqrQpJXOXhu0g3/b9OCumfkSPGX5UTwggMWIaTKgJU2KDIkoEbjYwyR5tVoEMWQK6ei
+         icZItpatKSg3900VB/jm1R+k1UoqOYE3NxQYDGWU9mu2aDuiQsWzXCEJ1pWXcWs0Go40
+         o6JBH/nmc7NdbMAw0HGYdQOXjvfccskaWG/i64yFQmLzul/wQ2808x/XVETBN/5LaXvy
+         56zZuI921/tYwCaLQNkmggRPpBnrW/V9ma4y8VA8BKlxMnyDBR7XBKNLAGbS3xmNXSfQ
+         2aZA==
+X-Gm-Message-State: AOJu0YzWsp1+6JpWaSpDpkFxcrrbi9ugF5Nes5gvQ377lMVEqRXmXCHy
+	YUO0a+A19mewIi5Ytlf++wZV6XY9a8SR5w190zXewiHtZEQYMqYzW1EZpZCnqA==
+X-Google-Smtp-Source: AGHT+IEhQHanL60HiGDGS5wktHODuGtgnxpWhUHgFtWvSjOpTOhppcIFgAcuMhigP/FHcai4EZhJqw==
+X-Received: by 2002:a05:622a:1748:b0:42b:f6a6:4058 with SMTP id l8-20020a05622a174800b0042bf6a64058mr3632398qtk.15.1706883554394;
+        Fri, 02 Feb 2024 06:19:14 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCW5ywsfSWxoOXCneHQ193arCv1HiGofCXP9MquEQ/empUbTJttjRivFKD+KnwEX2OLj+A5f1aEr9yLYUa5qZ8AjkA8ZvXZpTKFJQS3dsrO1C30IU+HPlrVB1cjjZmcvyv/AMHE3CvAY/rEYfQBU7wZBv1M8VW+VuJA2ex8qh2Tootn+uaTgnTyf0ZjdSZSztAEe2WvzWJIu6J3TanTtKlobuVMRO8kzofHOpoPGwdv+hSk6SxHREzEqsgUmJn08eE/wOkPXdPwGzSBGaxYiBtNU3APPVYeEV5DsX3JXi59bCFDMOvWJbbOXwf5/2vmHmxX9Eg6VkKsXzntKtE6YpfvxvcTKRzq8ah30mL/Vs572aA==
+Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
+        by smtp.gmail.com with ESMTPSA id ey22-20020a05622a4c1600b0042bed7dc558sm860739qtb.6.2024.02.02.06.19.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 06:19:14 -0800 (PST)
+Date: Fri, 2 Feb 2024 09:19:13 -0500
+From: Mike Snitzer <snitzer@kernel.org>
+To: Ming Lei <ming.lei@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	David Hildenbrand <david@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Don Dutile <ddutile@redhat.com>, Rafael Aquini <raquini@redhat.com>,
+	Dave Chinner <david@fromorbit.com>
+Subject: Re: mm/madvise: set ra_pages as device max request size during
+ ADV_POPULATE_READ
+Message-ID: <Zbz54MUZ2kZLTQQx@redhat.com>
+References: <20240202022029.1903629-1-ming.lei@redhat.com>
+ <Zbxy30POPE8rN_YN@redhat.com>
+ <ZbzJZji95a1qmhcj@fedora>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,24 +77,133 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DU2PR01MB80349345B0C1757C6958107FF9422@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <ZbzJZji95a1qmhcj@fedora>
 
-On Fri, Feb 02, 2024 at 10:52:32AM +0000, Flavio Suligoi wrote:
+On Fri, Feb 02 2024 at  5:52P -0500,
+Ming Lei <ming.lei@redhat.com> wrote:
 
-> > Andy Shevchenko (3):
-> >   backlight: mp3309c: Make use of device properties
-> >   backlight: mp3309c: use dev_err_probe() instead of dev_err()
-> >   backlight: mp3309c: Utilise temporary variable for struct device
+> On Thu, Feb 01, 2024 at 11:43:11PM -0500, Mike Snitzer wrote:
+> > On Thu, Feb 01 2024 at  9:20P -0500,
+> > Ming Lei <ming.lei@redhat.com> wrote:
+> > 
+> > > madvise(MADV_POPULATE_READ) tries to populate all page tables in the
+> > > specific range, so it is usually sequential IO if VMA is backed by
+> > > file.
+> > > 
+> > > Set ra_pages as device max request size for the involved readahead in
+> > > the ADV_POPULATE_READ, this way reduces latency of madvise(MADV_POPULATE_READ)
+> > > to 1/10 when running madvise(MADV_POPULATE_READ) over one 1GB file with
+> > > usual(default) 128KB of read_ahead_kb.
+> > > 
+> > > Cc: David Hildenbrand <david@redhat.com>
+> > > Cc: Matthew Wilcox <willy@infradead.org>
+> > > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> > > Cc: Christian Brauner <brauner@kernel.org>
+> > > Cc: Don Dutile <ddutile@redhat.com>
+> > > Cc: Rafael Aquini <raquini@redhat.com>
+> > > Cc: Dave Chinner <david@fromorbit.com>
+> > > Cc: Mike Snitzer <snitzer@kernel.org>
+> > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > Signed-off-by: Ming Lei <ming.lei@redhat.com>
+> > > ---
+> > >  mm/madvise.c | 52 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+> > >  1 file changed, 51 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/mm/madvise.c b/mm/madvise.c
+> > > index 912155a94ed5..db5452c8abdd 100644
+> > > --- a/mm/madvise.c
+> > > +++ b/mm/madvise.c
+> > > @@ -900,6 +900,37 @@ static long madvise_dontneed_free(struct vm_area_struct *vma,
+> > >  		return -EINVAL;
+> > >  }
+> > >  
+> > > +static void madvise_restore_ra_win(struct file **file, unsigned int ra_pages)
+> > > +{
+> > > +	if (*file) {
+> > > +		struct file *f = *file;
+> > > +
+> > > +		f->f_ra.ra_pages = ra_pages;
+> > > +		fput(f);
+> > > +		*file = NULL;
+> > > +	}
+> > > +}
+> > > +
+> > > +static struct file *madvise_override_ra_win(struct file *f,
+> > > +		unsigned long start, unsigned long end,
+> > > +		unsigned int *old_ra_pages)
+> > > +{
+> > > +	unsigned int io_pages;
+> > > +
+> > > +	if (!f || !f->f_mapping || !f->f_mapping->host)
+> > > +		return NULL;
+> > > +
+> > > +	io_pages = inode_to_bdi(f->f_mapping->host)->io_pages;
+> > > +	if (((end - start) >> PAGE_SHIFT) < io_pages)
+> > > +		return NULL;
+> > > +
+> > > +	f = get_file(f);
+> > > +	*old_ra_pages = f->f_ra.ra_pages;
+> > > +	f->f_ra.ra_pages = io_pages;
+> > > +
+> > > +	return f;
+> > > +}
+> > > +
+> > 
+> > Does this override imply that madvise_populate resorts to calling
+> > filemap_fault() and here you're just arming it to use the larger
+> > ->io_pages for the duration of all associated faulting?
+> 
+> Yes.
+> 
+> > 
+> > Wouldn't it be better to avoid faulting and build up larger page
+> 
+> How can we avoid the fault handling? which is needed to build VA->PA mapping.
 
-> I've just tested again all your three patches (using the last 8.8.0-rc1
-> for-backlight-next )  on my board and all is ok.
+I was wondering if it made sense to add fadvise_populate -- but given
+my lack of experience with MM I then get handwavvy quick -- I have
+more work ahead to round out my MM understanding so that I'm more
+informed.
+ 
+> > vectors that get sent down to the block layer in one go and let the
+> 
+> filemap_fault() already tries to allocate folio in big size(max order
+> is MAX_PAGECACHE_ORDER), see page_cache_ra_order() and ra_alloc_folio().
+> 
+> > block layer split using the device's limits? (like happens with
+> > force_page_cache_ra)
+> 
+> Here filemap code won't deal with block directly because there is VFS &
+> FS and io mapping is required, and it just calls aops->readahead() or
+> aops->read_folio(), but block plug & readahead_control are applied for
+> handling everything in batch.
+> 
+> > 
+> > I'm concerned that madvise_populate isn't so efficient with filemap
+> 
+> That is why this patch increases readahead window, then
+> madvise_populate() performance can be improved by X10 in big file-backed
+> popluate read.
 
-Thank you!
+Right, as you know I've tested your patch, the larger readahead window
+certainly did provide the much more desirable performance.  I'll reply
+to your v2 (with reduced negative checks) with my Reviewed-by and
+Tested-by.
 
--- 
-With Best Regards,
-Andy Shevchenko
+I was just wondering if there an opportunity to plumb in more a
+specific (and potentially better) fadvise_populate for dealing with
+file backed pages.
 
+> > due to excessive faulting (*BUT* I haven't traced to know, I'm just
+> > inferring that is why twiddling f->f_ra.ra_pages helps improve
+> > madvise_populate by having it issue larger IO. Apologies if I'm way
+> > off base)
+> 
+> As mentioned, fault handling can't be avoided, but we can improve
+> involved readahead IO perf.
 
+Thanks, and sorry for asking such a naive question (put more pressure
+on you to educate than I should have).
+
+Mike
 
