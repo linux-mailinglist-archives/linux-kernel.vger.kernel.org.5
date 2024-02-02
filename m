@@ -1,241 +1,133 @@
-Return-Path: <linux-kernel+bounces-50206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E68B8475C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:08:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98AFA8475D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:11:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F4E528C673
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:08:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54144B2E724
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:09:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27E3A14AD03;
-	Fri,  2 Feb 2024 17:07:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fdZQO27T"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA4D14D45B;
+	Fri,  2 Feb 2024 17:07:23 +0000 (UTC)
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E78B1487C7;
-	Fri,  2 Feb 2024 17:07:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B53314C5A7
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 17:07:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706893635; cv=none; b=pob6UzDd+tNnlyU7ZPyoQLtWe2Z/S85ROFKZtV0hSnGRdNvBDLKgs/wUMT/giC34Wpw5TDFX2D9Ohn/rs5dIYCP2/mJbZr32D9BxJJWnWcB7QU39ZoKXdUTp8pOIGy8soI1hPnt7hHQ4rnG+7UsNfh7H+XW1ZmMnDRpStJF52ks=
+	t=1706893643; cv=none; b=a6BDWbosFvJgqqE4VPlcEZLLfhhZQ4fNuKQgLS+qW48DFQxGi2gopwaGMZ7yb6cokt3GWAI6Edbj8GdOBXbzr8eRxBm93lNrciSu+VZ2x5DME7sZ4NXX6RMuU2p0ucBsQrDTLGaTJu+4Qur+MYHslASyVToRaRtVO4E5cTijGDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706893635; c=relaxed/simple;
-	bh=DXSZf1yhUvstE8TjzG+rogtSnmOsbLXU/2W/hD+3UFo=;
+	s=arc-20240116; t=1706893643; c=relaxed/simple;
+	bh=y+gAPT68yktKEC3SZi/PBBCLmq/Ebt4n1T1gRSBSaXU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bm6tlLOIc8noztSC3SSkWTCmNuEPfhMLSp9a68Vp3QqshLo8+a8oAIJqAlixhh8LCCATDTWUMYgfJhkT9uLIZnUJ7bo/GwKeKoOJkVNi7zPfecUJlPcqZzafu6dRajR5CWJ+mjYBdZvgiNOC3qJuHpAJsXX91Frrdzx+4qo9XtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fdZQO27T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28A93C433C7;
-	Fri,  2 Feb 2024 17:07:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706893634;
-	bh=DXSZf1yhUvstE8TjzG+rogtSnmOsbLXU/2W/hD+3UFo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fdZQO27T+VWAk1wOysOiE4Dve716JUGmFm3rPW9as/+/bRaR+LJF9BFsZ8DhjG9iS
-	 266gqd2ljIWinw/tTXtQG+WxhqALkBqV1Mtd9uljrI414GVb0g/9kndbH0+dOvSNPq
-	 XzTZ4TeRwlwvdglPIcFPBqLQcop5itnya3gx6Ky/UhVBNYSh+M45SDqy9I+qiWRlb4
-	 +1vA5UxjUhcxYi1Zgzu873WAzyz/43q8cNhxIzFsSimA+KQleqEcKdwVZxspJ5txot
-	 yGrrQHKEC9SiDYNArkq2VHBKIt+8ZBkx5s//NyKGqt+g49FYxod//5dXPkAAQBHWx5
-	 UK1fE8sRqJxcA==
-Date: Fri, 2 Feb 2024 17:07:09 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>, devicetree@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Biju Das <biju.das.jz@bp.renesas.com>,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: Re: [PATCH 1/3] dt-bindings: interrupt-controller:
- renesas,rzg2l-irqc: Update interrupts
-Message-ID: <20240202-explain-harsh-b5d81cb5f59a@spud>
-References: <20240202093907.9465-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240202093907.9465-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=U0zo/8voeseIm1EJU6Aq2Q13WbfquYtsWrt4Vx5O10DfVmL6h77VF4jsI5Zf/0h0uol2nzUhNl3xGTyT1ma5bQEcbns3YT/dlX8+RZpxlA/1JQosIYF6C1xWYiMnrxKISkM+5HSn/VvO4kMRQOqqDnbFvi9ZLjP8KpWrqdkmZvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-68c794970d5so15254556d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 09:07:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706893636; x=1707498436;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y+gAPT68yktKEC3SZi/PBBCLmq/Ebt4n1T1gRSBSaXU=;
+        b=lXSPZ8f6QMAiPzMaF9ru1wjnhcXMPqrS8VQ9PXGPydYlGf4+E7LElId8OI7xthdZ8C
+         ipl2LSu366BUlmClIlZU35pZk7mfcMhrLpawL03I155x0I0TqDP5SjhPR/04QojQou+v
+         hN519lxJvXNq9OgDtRVD55pbpJtiiy92JQKy1yKkh2ak44bfuuaN+rDI8jPkmrMcSlcE
+         g10i5AKAtewp1S+GROKa5/1pLeFlpuV9fqw83gAb1KOLbfoK+a1fGNGJ1X/NrXNiCPr1
+         Q2Oy+kMqd8ZHIvG5DQA695SLXmEhm5LphUFw4ICbMGHc6LycQf6kxlPJSX3MSgfNVmIa
+         77hA==
+X-Gm-Message-State: AOJu0Yzh1v5DXCtagQiVL5oDs5wLmpbH87vKoSIT7YbRB6znemS5S5Qx
+	BLRCGJafq5zFS8AGrCUqWFpHJStchvO399s5xNlXHHBi0CATbzsO
+X-Google-Smtp-Source: AGHT+IFgMn7G49IMgaFPDtinjH2Oc1djCOjdrS3AUmkMFaaJ19AFcapU2qK6Ndxp3bk/XyGVZNuYAQ==
+X-Received: by 2002:a05:6214:2527:b0:68c:7302:8974 with SMTP id gg7-20020a056214252700b0068c73028974mr4680152qvb.30.1706893636113;
+        Fri, 02 Feb 2024 09:07:16 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVzE9W/xHwkhE7x6DjMoApkSYNkXT+2USzaZmjbS3sbgrF3DuuvI/47O2BvF8T08qBw49dxUuhmo9mZIxB1R1AxE4SDiNufQPx9s3iaL6qXyXjpVAe2Y95NnjECfXFS2WA6RIj1XgpClJ30LS65jR3Qo5GlDtlZb5Mk6g2qD1nm33uLFV8d2OytNhHfS0VrXysm0MD5skLE89Da8kxRkxTj/85Es2in21h4yaesgvHX/zuE6yZytjMDD7t4F1H+cw54nL1Jxi9eXUV3zEEAf4uWp869RVSbUr9m1na6vIBBbkDXp5uFVQffYvbizP/7nj8OakHwc8LKkpt2Mbi5hqnMGME7H3dNBA==
+Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id mf5-20020a0562145d8500b0068c749df8f2sm969308qvb.20.2024.02.02.09.07.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 09:07:15 -0800 (PST)
+Date: Fri, 2 Feb 2024 11:07:12 -0600
+From: David Vernet <void@manifault.com>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, bristot@redhat.com, kernel-team@meta.com
+Subject: Re: [PATCH] sched/fair: Simplify some logic in
+ update_sd_pick_busiest()
+Message-ID: <20240202170712.GC2238525@maniforge>
+References: <20240202070216.2238392-1-void@manifault.com>
+ <xhsmhwmrmhkbh.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="IJALSXVusKs4DC57"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="aaczLianmhiTpaH6"
 Content-Disposition: inline
-In-Reply-To: <20240202093907.9465-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <xhsmhwmrmhkbh.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
 
---IJALSXVusKs4DC57
+--aaczLianmhiTpaH6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 02, 2024 at 09:39:05AM +0000, Prabhakar wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Fri, Feb 02, 2024 at 06:01:22PM +0100, Valentin Schneider wrote:
+> On 02/02/24 01:02, David Vernet wrote:
+> > When comparing the current struct sched_group with the yet-busiest
+> > domain in update_sd_pick_busiest(), if the two groups have the same
+> > group type, we're currently doing a bit of unnecessary work for any
+> > group >=3D group_misfit_task. We're comparing the two groups, and then
+> > returning only if false (the group in question is not the busiest).
+> > Othewise, we break, do an extra unnecessary conditional check that's
+> > vacuously false for any group type > group_fully_busy, and then always
+> > return true.
+> >
+> > Let's just return directly in the switch statement instead. This doesn't
+> > change the size of vmlinux with llvm 17 (not surprising given that all
+> > of this is inlined in load_balance()), but it does shrink load_balance()
+> > by 88 bytes on x86. Given that it also improves readability, this seems
+> > worth doing.
+> >
+> > As a bonus, remove an unnecessary goto in update_sd_lb_stats().
+> >
 >=20
-> RZ/{G2L, G2LC}, RZ/G2UL, RZ/V2L and RZ/G3S SoCs have ECCRAM0/1 interrupts,
-> reflect the same in the DT binding doc.
-
-Renesas' naming scheme really does not help here, but using the
-shorthands in the commit message when the diff uses the long form names
-is not the easiest thing to follow. (:
-
+> Given that's a different scope than what the rest of the patch touches, I=
+'d
+> rather see this as a separate patch.
 >=20
-> RZ/G3S SoC has ECCRAM0/1 interrupts combined into single interrupts so
-> we just use the below to represent them:
-> - ec7tie1-0
-> - ec7tie2-0
-> - ec7tiovf-0
+> Other than that:
+> Reviewed-by: Valentin Schneider <vschneid@redhat.com>
 
-I think this information would be good in the itemised description,
-since that claims these interrupt are only for ECCRAM0.
+Thanks, would you like me to send a follow-on series split into two with
+your tag on both? Or were you just letting me know for next time?
 
+We could also update this check to only do a strict greater than to
+avoid unnecessary writes, but I figured it was preferable to have no
+logical changes for this iteration:
 
-> Additionally mark 'interrupt-names' property as required for all the SoCs
-> and update the example node in the binding doc.
+return sgs->group_misfit_task_load >=3D busiest->group_misfit_task_load;
 
-Why? You've not given a reason for doing this, so it just seems
-gratuitous.
-
-Thanks,
-Conor.
-
->=20
-> Fixes: 96fed779d3d4 ("dt-bindings: interrupt-controller: Add Renesas RZ/G=
-2L Interrupt Controller")
-> Fixes: 1cf0697a24ef ("dt-bindings: interrupt-controller: renesas,rzg2l-ir=
-qc: Document RZ/G3S")
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
->  .../renesas,rzg2l-irqc.yaml                   | 44 +++++++++++++++----
->  1 file changed, 35 insertions(+), 9 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/renes=
-as,rzg2l-irqc.yaml b/Documentation/devicetree/bindings/interrupt-controller=
-/renesas,rzg2l-irqc.yaml
-> index d3b5aec0a3f7..0bc9c604a2d7 100644
-> --- a/Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2=
-l-irqc.yaml
-> +++ b/Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2=
-l-irqc.yaml
-> @@ -44,7 +44,7 @@ properties:
->      maxItems: 1
-> =20
->    interrupts:
-> -    minItems: 41
-> +    minItems: 45
->      items:
->        - description: NMI interrupt
->        - description: IRQ0 interrupt
-> @@ -88,9 +88,15 @@ properties:
->        - description: GPIO interrupt, TINT30
->        - description: GPIO interrupt, TINT31
->        - description: Bus error interrupt
-> +      - description: ECCRAM0 1bit error interrupt
-> +      - description: ECCRAM0 2bit error interrupt
-> +      - description: ECCRAM0 error overflow interrupt
-> +      - description: ECCRAM1 1bit error interrupt
-> +      - description: ECCRAM1 2bit error interrupt
-> +      - description: ECCRAM1 error overflow interrupt
-> =20
->    interrupt-names:
-> -    minItems: 41
-> +    minItems: 45
->      items:
->        - const: nmi
->        - const: irq0
-> @@ -134,6 +140,12 @@ properties:
->        - const: tint30
->        - const: tint31
->        - const: bus-err
-> +      - const: ec7tie1-0
-> +      - const: ec7tie2-0
-> +      - const: ec7tiovf-0
-> +      - const: ec7tie1-1
-> +      - const: ec7tie2-1
-> +      - const: ec7tiovf-1
-> =20
->    clocks:
->      maxItems: 2
-> @@ -156,6 +168,7 @@ required:
->    - interrupt-controller
->    - reg
->    - interrupts
-> +  - interrupt-names
->    - clocks
->    - clock-names
->    - power-domains
-> @@ -169,16 +182,19 @@ allOf:
->          compatible:
->            contains:
->              enum:
-> -              - renesas,r9a07g043u-irqc
->                - renesas,r9a08g045-irqc
->      then:
->        properties:
->          interrupts:
-> -          minItems: 42
-> +          maxItems: 45
->          interrupt-names:
-> -          minItems: 42
-> -      required:
-> -        - interrupt-names
-> +          maxItems: 45
-> +    else:
-> +      properties:
-> +        interrupts:
-> +          minItems: 48
-> +        interrupt-names:
-> +          minItems: 48
-> =20
->  unevaluatedProperties: false
-> =20
-> @@ -233,7 +249,14 @@ examples:
->                       <GIC_SPI 472 IRQ_TYPE_LEVEL_HIGH>,
->                       <GIC_SPI 473 IRQ_TYPE_LEVEL_HIGH>,
->                       <GIC_SPI 474 IRQ_TYPE_LEVEL_HIGH>,
-> -                     <GIC_SPI 475 IRQ_TYPE_LEVEL_HIGH>;
-> +                     <GIC_SPI 475 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 25 IRQ_TYPE_EDGE_RISING>,
-> +                     <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>,
-> +                     <GIC_SPI 35 IRQ_TYPE_EDGE_RISING>,
-> +                     <GIC_SPI 36 IRQ_TYPE_EDGE_RISING>,
-> +                     <GIC_SPI 37 IRQ_TYPE_EDGE_RISING>,
-> +                     <GIC_SPI 38 IRQ_TYPE_EDGE_RISING>,
-> +                     <GIC_SPI 39 IRQ_TYPE_EDGE_RISING>;
->          interrupt-names =3D "nmi",
->                            "irq0", "irq1", "irq2", "irq3",
->                            "irq4", "irq5", "irq6", "irq7",
-> @@ -244,7 +267,10 @@ examples:
->                            "tint16", "tint17", "tint18", "tint19",
->                            "tint20", "tint21", "tint22", "tint23",
->                            "tint24", "tint25", "tint26", "tint27",
-> -                          "tint28", "tint29", "tint30", "tint31";
-> +                          "tint28", "tint29", "tint30", "tint31",
-> +                          "bus-err", "ec7tie1-0", "ec7tie2-0",
-> +                          "ec7tiovf-0", "ec7tie1-1", "ec7tie2-1",
-> +                          "ec7tiovf-1";
->          clocks =3D <&cpg CPG_MOD R9A07G044_IA55_CLK>,
->                   <&cpg CPG_MOD R9A07G044_IA55_PCLK>;
->          clock-names =3D "clk", "pclk";
-> --=20
-> 2.34.1
->=20
-
---IJALSXVusKs4DC57
+--aaczLianmhiTpaH6
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZb0hPQAKCRB4tDGHoIJi
-0rAOAQDurAEgL927nhnnWJlJb2F2czsqKJfYyND013ASE8RxiwD9Fw/tXnrqathm
-0dbNZcVCER+Lr5urADUxslomMupcbwY=
-=ixSf
+iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZb0hQAAKCRBZ5LhpZcTz
+ZCd1APsHJ+HAuY/9jG+onEyWQ4qCDcfvGlESj1ixqg+mDd2ZpgEA1Q0HN0+A5vXi
+LLt53N1JFUeN7fCOj+uzuP5Rh5G/9ws=
+=fzh1
 -----END PGP SIGNATURE-----
 
---IJALSXVusKs4DC57--
+--aaczLianmhiTpaH6--
 
