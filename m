@@ -1,145 +1,130 @@
-Return-Path: <linux-kernel+bounces-49577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2287D846BF2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:29:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59F4D846BF3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:29:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 557251C273E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:29:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14855290EE9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:29:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EA5D78B76;
-	Fri,  2 Feb 2024 09:26:48 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 552C578B7D;
+	Fri,  2 Feb 2024 09:27:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="c7Vtdbmp"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4114A78695;
-	Fri,  2 Feb 2024 09:26:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB227869A
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:27:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706866007; cv=none; b=LEkuq/imxzPKhCrBkXuYMmSQcynrgyofiSYSm6eMRcAJo6WuCPD5vQp525aDi7egd/1pFuJ/R0XahbAY78N07uL/iqmBFNyLlPL7k5rvPZPrPda51164qcG8Re6ly5yXI8Kx1hoOdWnv42sctK+NkjO7nkGTGgPuCZfHY1J/GCI=
+	t=1706866026; cv=none; b=swly50KXzBqjQ85LYjy0rsxknyb+jQJ4RrunR/w1T7bH7WmNPEjVV9pHvCzOyM7Bishla3pX9uj6BMJA3mkayqUQi/4Obk6gJsnIe0ugmE1RHRLsUhjPfq0zGLGXkLFq3PHJlZCAoLJDCFBxNsrznbeArH5zQ6/XxNI2yYdFLBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706866007; c=relaxed/simple;
-	bh=OOM8fEsZue+jykrDPVZl0c5ujgpHE/2kRMLlWDClr1w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=p+Z0TKwVCLOzlp+BpBr7WH+1ei5wH3U7grF8nkca24Ev5leo69UwC/BYDpQaFpQt6MC6LqUH+PAr0HOS2R2FDTYBKmNgYtDANczoOtD1dfyuHXyl8qDbpLAitLmt4vqYOf2Y8UQ5mQ5N3YPqU9FHF4uA1R56sxehxEd7IjVJLSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TR9Q15QSFz4f3mHK;
-	Fri,  2 Feb 2024 17:26:33 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 52E0F1A038B;
-	Fri,  2 Feb 2024 17:26:40 +0800 (CST)
-Received: from [10.174.179.247] (unknown [10.174.179.247])
-	by APP2 (Coremail) with SMTP id Syh0CgBXfA9MtbxlzzQZCw--.59821S3;
-	Fri, 02 Feb 2024 17:26:40 +0800 (CST)
-Message-ID: <c73fc514-78c1-20c6-b543-d8e7cd16f200@huaweicloud.com>
-Date: Fri, 2 Feb 2024 17:26:36 +0800
+	s=arc-20240116; t=1706866026; c=relaxed/simple;
+	bh=x5u1nz+Cg3nU/mZVDA54R7aNvx66CQZrP0sVG6CHmU0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c2Z6DWzz1Km2ONwddSl0q8sbdnM/4NQokpA1bhSwr0/MzNZfqkUO1wWFHR5cQCv1b7sIazwRSyqRZFMwAWvKqSCDcC6U5AjrMaf9ANSWl/PSS/SE3MMkYpil945ECveEa6M1LYgkrIs/ZxgFjQxJczV3EvXbdwB7VP+0yT4TTME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=c7Vtdbmp; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a271a28aeb4so277387866b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 01:27:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1706866022; x=1707470822; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=D55dCjTjZ3OFIaN3mYYht0ubpj5TCCakCn4hIxqLFNw=;
+        b=c7Vtdbmp5MoE8pAXbAAbv23PpOudl5QS0reUVi91vXLwewNCDtpjIjz62Z1znAKBDi
+         VRIJBPTT8V6tIcZ3xTP5TQzMs/C/FWwLR+wTy3z2x2UYZqNtTCNS+8AXbtN3M7Vd0nfg
+         P8q7YUv1G6S5JsWOFxJEBQQXj4UDJm8ioeyW4lPRynOAq268dunhXpDJ37VcCFqIWQSv
+         ehoGowsd2QPeXvAtRXBUgLXZAS42PmP1KH9+Tj+zT0Begjatsp2+oiYDJThx6mru5v7v
+         bxSs765uYXZmwElU2iBqrfmu1XgVpipA72KoeavjySVZphfood6YBq48dIRlJvJKiWij
+         RCSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706866022; x=1707470822;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D55dCjTjZ3OFIaN3mYYht0ubpj5TCCakCn4hIxqLFNw=;
+        b=CTF6SjYwqh3d89s3BFM9iT5GQD5UDmchbW0RFQOSR4US1Z/HQ5CDoPRgcfVf8//S12
+         a0BVc+xAaoeS7UYDWZ5+mn4EIY+IhSdC49aiZDBng1iNhdtj0wdSx1Ve30TCVkv7pWbq
+         N27devKNgeVeDnl+r1FZGYcx6MrK2WX2FwrnFr8ieTg5wSkVciEIwTHFUhQ+2I8vrrIv
+         FURsyAvfrpepLeNHM83OB5tfisDLmIZSBZmOS4ozKeU7GPH9cuIdHvDqqhpdNzpIWjIQ
+         /gSJj+Y7lCgXicRvvQILmuZUTDDaQ89/PAkqNbpn98ZWW8xtuyZ6/d5F1r+n08HNPFYi
+         36sQ==
+X-Gm-Message-State: AOJu0YyntyfEV+UhVl2fsJMcHBP9TzMitx4xPEC94KE8KkZZ5nFBuLAJ
+	l7WDjxiw9+oaJ76fWQl2yD5728i39353EfyvmBulcHgpSn2Us4adsZTaq/iD1EsiwqzHVI5M3sj
+	i
+X-Google-Smtp-Source: AGHT+IFdkljpvc5ASuaHT2pmfN5i+dFMx81fPkDQ6sc0wl0TnNQfmao+hKqUbJPP7SBCkkJawTqh0w==
+X-Received: by 2002:a17:907:88d:b0:a36:2d2f:3385 with SMTP id zt13-20020a170907088d00b00a362d2f3385mr924181ejb.9.1706866021810;
+        Fri, 02 Feb 2024 01:27:01 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWUsgiVQpP0TdEAs6lB8oVReF6KRGy2gU+BjLMpBPWx8XUucjp14Rcaxqlbq9u8llHKQU9rmwoC/Twj8g5S9k/3TxMaC5cVWfrw9zC2NNYTnLd0XiR6s380RhQD+eV6HzI5z83j86c/4+bpOVrV+MJQjpofdW4=
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id b17-20020a170906039100b00a35b4edb266sm690819eja.87.2024.02.02.01.27.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 01:27:01 -0800 (PST)
+Date: Fri, 2 Feb 2024 10:26:59 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v3 13/14] printk: Avoid non-panic CPUs writing to
+ ringbuffer
+Message-ID: <Zby1Y7eqCOPYa3Vw@alley>
+References: <20231214214201.499426-1-john.ogness@linutronix.de>
+ <20231214214201.499426-14-john.ogness@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH v5 7/8] md: sync blockdev before stopping raid or setting
- readonly
-To: Yu Kuai <yukuai1@huaweicloud.com>, linan666@huaweicloud.com,
- song@kernel.org, neilb@suse.com, mariusz.tkaczyk@linux.intel.com, shli@fb.com
-Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
- yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20240201063404.772797-1-linan666@huaweicloud.com>
- <20240201063404.772797-8-linan666@huaweicloud.com>
- <8f6a305f-75ed-f103-4a52-9e88699d9289@huaweicloud.com>
-From: Li Nan <linan666@huaweicloud.com>
-In-Reply-To: <8f6a305f-75ed-f103-4a52-9e88699d9289@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgBXfA9MtbxlzzQZCw--.59821S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ww4DWFWftry5tw1xCr43trb_yoW8CFyfpF
-	Z7JFy5uryjq3savw17JF18Ga4rXw1xtayUKryava48ZFy5ArnFgrWrWrn0gryDKrWxJF4j
-	qw1UJasxuFy7tF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBI14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-	F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-	4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v
-	4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x
-	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
-	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
-	04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
-	CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbHa0DUUUUU==
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214214201.499426-14-john.ogness@linutronix.de>
 
-
-
-在 2024/2/2 10:12, Yu Kuai 写道:
-> Hi,
+On Thu 2023-12-14 22:48:00, John Ogness wrote:
+> Commit 13fb0f74d702 ("printk: Avoid livelock with heavy printk
+> during panic") introduced a mechanism to silence non-panic CPUs
+> if too many messages are being dropped. Aside from trying to
+> workaround the livelock bugs of legacy consoles, it was also
+> intended to avoid losing panic messages. However, if non-panic
+> CPUs are writing to the ringbuffer, then reacting to dropped
+> messages is too late.
 > 
-> 在 2024/02/01 14:34, linan666@huaweicloud.com 写道:
->> From: Li Nan <linan122@huawei.com>
->>
->> Commit a05b7ea03d72 ("md: avoid crash when stopping md array races
->> with closing other open fds.") added sync_block before stopping raid and
->> setting readonly. Later in commit 260fa034ef7a ("md: avoid deadlock when
->> dirty buffers during md_stop.") it is moved to ioctl. array_state_store()
->> was ignored. Add sync blockdev to array_state_store() now.
+> To avoid losing panic CPU messages, silence non-panic CPUs
+> immediately on panic.
 > 
-> You're not just adding sync_blockdev() here. Please rewrite the tittle
-> and commit message.
-> 
->>
->> Signed-off-by: Li Nan <linan122@huawei.com>
->> ---
->>   drivers/md/md.c | 16 ++++++++++++++++
->>   1 file changed, 16 insertions(+)
->>
->> diff --git a/drivers/md/md.c b/drivers/md/md.c
->> index 4c7a0225f77d..86becf0015f5 100644
->> --- a/drivers/md/md.c
->> +++ b/drivers/md/md.c
->> @@ -4493,6 +4493,16 @@ array_state_store(struct mddev *mddev, const char 
->> *buf, size_t len)
->>       case broken:        /* cannot be set */
->>       case bad_word:
->>           return -EINVAL;
->> +    case clear:
->> +    case readonly:
->> +    case inactive:
->> +    case read_auto:
->> +        if (!mddev->pers || !md_is_rdwr(mddev))
->> +            break;
->> +        err = mddev_set_closing_and_sync_blockdev(mddev);
-> 
-> In this context, mddev->openers should be zero, and such check is in
-> do_md_stop() and md_set_readonly():
-> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-Yeah, the checks in do_md_stop() and md_set_readonly() can be removed after
-this patch. However, 'mddev->open_metux' is used to protect MD_CLOSING and
-'mddev->openers', it can be removed in these functions, too.
+I am slightly nervous about this change because it looks
+too agresive ;-)
 
-I will fix it later. Thanks for your review.
+But it makes perfect sense. And it nicely complements the 10th
+patch, see
+https://lore.kernel.org/r/20231214214201.499426-11-john.ogness@linutronix.de
+The 10th patch allows to skip messages in reserved state. It might
+cause skipping random messages from other CPUs. So it really
+looks better to skip/ignore them completely.
 
-> if (atomic_read(&mddev->openers) > !!bdev).
-> 
-> Thanks,
-> Kuai
-> 
+It would be nice to mention the relation to the 10th patch
+in the commit message. Something like:
 
+<proposal>
+Another motivation is that non-finalized messages already might be
+skipped in panic(). By other words, random messages from non-panic
+CPUs might already get lost. It is better to ignore all to avoid
+confusion.
+</proposal>
 
+With the updated commit message:
 
--- 
-Thanks,
-Nan
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
+Best Regards,
+Petr
 
