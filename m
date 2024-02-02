@@ -1,55 +1,58 @@
-Return-Path: <linux-kernel+bounces-50351-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92E47847823
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:46:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F26898477E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:42:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 783C7B2BC9D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:41:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 316101C2282C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:42:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59C90157E64;
-	Fri,  2 Feb 2024 18:39:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B06E15A48F;
+	Fri,  2 Feb 2024 18:39:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TZaFZonZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jJm4HYkq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 924D3155A32;
-	Fri,  2 Feb 2024 18:39:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ABC51586E0;
+	Fri,  2 Feb 2024 18:39:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706899178; cv=none; b=kgJFkGiRC1Dbwpory6zx38knu+of8y0LAZIbE2MH2jYaIH+JrcCkD2wlLnPjQUklyDYU7z1qHA/TzAgDeZ8ZBcPAa8DsWGA4y4UQTcJ4khfqHHxF9KxuoJqOWYOIVBIgzUUxp+IB+q3fPS+/R/WYbzvLsGuHfYukZZC2l5zLDwM=
+	t=1706899180; cv=none; b=YA+rORI2O05Vrn6p8BrFSFBkoR+tTm+wXbBTzu5Xj/hwFDt9fQThNgvB33RQOJglku+bOcENQYZj73TVO5F7M18IKKeGxlv2jYJvPuESImtKlKzv24aotVcHBn2Zq7gavgn7mEsXlcopK/oZ1Cgnq7jyh/ISlHxxJcM4uO8duyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706899178; c=relaxed/simple;
-	bh=8uI8rUl6OzeKUVKQZTFuUDL/6XSmSsjGbKds+GGPXcQ=;
+	s=arc-20240116; t=1706899180; c=relaxed/simple;
+	bh=tChvbH3WJ4jv5ceSmRADst+lV4Lko4l57ZYmO3gq8Cg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HsJbbBMjX2JkkFgeMsKQeUQq3zk+uRa2eDiI6S8Ehl5kkOUqs3idqTf+JZS61CWsAKmkSiXUBTtxouxblc8apo/ExcStmTaXJqsmMKl+tXTABtWrI91k979fapXIsIu8elJHNG1VW/p2d9MCduBmw0COZJGOheoC/EfQ9/s02k4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TZaFZonZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7789C43394;
-	Fri,  2 Feb 2024 18:39:37 +0000 (UTC)
+	 MIME-Version; b=LPcjL0TZxAQU4ksQL3UiGJig2dpDpsIZg9NFzkAy3nUzRblemnLyQMKp8Jvac59lYqf6A9clxiQvI+xTZk5EvReLHIgiy9DOCZwLNqOrSHaiE7zyh+UOJOArWzr+I2uKHkRX+GBCsz5h9NPDDzWl5w+DGyh/J+ryXWsP78MAoHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jJm4HYkq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFC1FC433C7;
+	Fri,  2 Feb 2024 18:39:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706899178;
-	bh=8uI8rUl6OzeKUVKQZTFuUDL/6XSmSsjGbKds+GGPXcQ=;
+	s=k20201202; t=1706899179;
+	bh=tChvbH3WJ4jv5ceSmRADst+lV4Lko4l57ZYmO3gq8Cg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TZaFZonZ0YIe39DYb+wmcho0rIeTR+Y0cYJOH23bfFx/PTLeA2EK1h6qfaR8pdXE9
-	 DZ+QeC28rxY5ORRJzmqA6VUgv8S1PpgFvJktHOqXZxE2rl3SmEC1xfLR26X7vMK2Ky
-	 01eld+mjtbhWEWgz1P/yeOvIVt0eXvq7nHhUVxnpbv3LDzFju1jHNNayFYxv5ZpRw0
-	 hB2qWF+m1N/D5kp0ITzR46/pTiYM3L5SZskMzwTrLxwXR/FY6f0Bw6gja9Qc8wdstw
-	 56DFe1NFpN2ATmg1mf+IiObcGbXxoWCRrZIQeRyIz0K8KU8bdHu9WA/+kYU0drQk97
-	 wFCz/taGiEjjw==
+	b=jJm4HYkqSD0iMCvByI94kHjBk+LI7+EZHUM+PX6p1NQDw2gxLtcMG7nUGClkyxI1/
+	 TsuxHDwA7+Ihp/X7HPbV7MTB5KeDW7HZieJUqu5lSsC+t443yKIbUx4nRA4jTabgMg
+	 wAWg05CH9SX3p3rWdt0PZ5V4sI05HjYhwD8m+Kj2JeA6ejh7GZoIxnn8Cd6ZILHAOs
+	 LnW2HNdgW9q2eAn14F34mpwKn9kKGOuBUtW5ABsiuGwnbEXOTspobhRwni2plN4VSn
+	 rEddpYgqIaFsiwc6KQNw7mH1+/0c4EoS33gdfZIc9xN+J3h6CYRhOVCT8NeD3XsUrg
+	 131/03KFYJ7BQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Tony Luck <tony.luck@intel.com>,
+	Borislav Petkov <bp@alien8.de>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-spi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 07/23] spi: intel-pci: Add support for Arrow Lake SPI serial flash
-Date: Fri,  2 Feb 2024 13:39:03 -0500
-Message-ID: <20240202183926.540467-7-sashal@kernel.org>
+	x86@kernel.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	dave.hansen@linux.intel.com
+Subject: [PATCH AUTOSEL 6.7 08/23] x86/cpu: Add model number for Intel Clearwater Forest processor
+Date: Fri,  2 Feb 2024 13:39:04 -0500
+Message-ID: <20240202183926.540467-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240202183926.540467-1-sashal@kernel.org>
 References: <20240202183926.540467-1-sashal@kernel.org>
@@ -64,34 +67,33 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.3
 Content-Transfer-Encoding: 8bit
 
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
+From: Tony Luck <tony.luck@intel.com>
 
-[ Upstream commit 8afe3c7fcaf72fca1e7d3dab16a5b7f4201ece17 ]
+[ Upstream commit 090e3bec01763e415bccae445f5bfe3d0c61b629 ]
 
-This adds the PCI ID of the Arrow Lake and Meteor Lake-S PCH SPI serial
-flash controller. This one supports all the necessary commands Linux
-SPI-NOR stack requires.
+Server product based on the Atom Darkmont core.
 
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Link: https://msgid.link/r/20240122120034.2664812-3-mika.westerberg@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20240117191844.56180-1-tony.luck@intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-intel-pci.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/include/asm/intel-family.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/spi/spi-intel-pci.c b/drivers/spi/spi-intel-pci.c
-index 57d767a68e7b..f547f1297375 100644
---- a/drivers/spi/spi-intel-pci.c
-+++ b/drivers/spi/spi-intel-pci.c
-@@ -76,6 +76,7 @@ static const struct pci_device_id intel_spi_pci_ids[] = {
- 	{ PCI_VDEVICE(INTEL, 0x7a24), (unsigned long)&cnl_info },
- 	{ PCI_VDEVICE(INTEL, 0x7aa4), (unsigned long)&cnl_info },
- 	{ PCI_VDEVICE(INTEL, 0x7e23), (unsigned long)&cnl_info },
-+	{ PCI_VDEVICE(INTEL, 0x7f24), (unsigned long)&cnl_info },
- 	{ PCI_VDEVICE(INTEL, 0x9d24), (unsigned long)&cnl_info },
- 	{ PCI_VDEVICE(INTEL, 0x9da4), (unsigned long)&cnl_info },
- 	{ PCI_VDEVICE(INTEL, 0xa0a4), (unsigned long)&cnl_info },
+diff --git a/arch/x86/include/asm/intel-family.h b/arch/x86/include/asm/intel-family.h
+index 197316121f04..b65e9c46b922 100644
+--- a/arch/x86/include/asm/intel-family.h
++++ b/arch/x86/include/asm/intel-family.h
+@@ -162,6 +162,8 @@
+ #define INTEL_FAM6_ATOM_CRESTMONT_X	0xAF /* Sierra Forest */
+ #define INTEL_FAM6_ATOM_CRESTMONT	0xB6 /* Grand Ridge */
+ 
++#define INTEL_FAM6_ATOM_DARKMONT_X	0xDD /* Clearwater Forest */
++
+ /* Xeon Phi */
+ 
+ #define INTEL_FAM6_XEON_PHI_KNL		0x57 /* Knights Landing */
 -- 
 2.43.0
 
