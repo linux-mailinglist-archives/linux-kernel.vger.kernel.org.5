@@ -1,96 +1,113 @@
-Return-Path: <linux-kernel+bounces-49148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FE89846687
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:29:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7750C84668A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:30:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A08451F28105
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:29:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15F741F26D63
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:30:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34801E57C;
-	Fri,  2 Feb 2024 03:29:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB280D289;
+	Fri,  2 Feb 2024 03:29:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n7lP3i+S"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="GYF6HEZy"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73320DF5D;
-	Fri,  2 Feb 2024 03:29:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 167FEDDC8
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 03:29:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706844552; cv=none; b=jkKZkXg29zPdph6Dx8v/sC/xYAQ8Sm5Ddud/tf8C3EaajZMgIElUE8V6DyfR5ZrKcw+nofSefGzRcRxZYf2tHkupVBFGshwIfmgKAuyAtrY+Tt6TXeVt+S/fDcNgwlyVByEZfv+3kjQFMb4OnDGoL+ayP4pUuMASL48GrG0Y+O8=
+	t=1706844595; cv=none; b=TsqeByE+mvsThLSDgzda2G4ACuCm59fy3rOLEsmKHZLw094nT8Knq/2XZq4qsEKCAIttMxmb6+D59dYbbj0nTZ13gEwXX4BxIT1BTK9X+QqPpa9bt9ZqqHB2B2XsZ1ovC/2Av6Y2X4MR9se/Hzi5QsWnxHd6uoXfgAhMVqU63yc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706844552; c=relaxed/simple;
-	bh=hrszDQjg1r99rOZvRO+CbHKbrtAj33R5nUJ/aP8OlAo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xe40JYJirtlWmH7LvWLH0XWD81VhkNT2V3UUeU8iM4P0F9nKqwCCZkADQr71nLJqugsyvHIixHBqMZfT9o01tQ/zz127tQrSRtUeZSZRlaaUKoqgx+1wqPJtivESGgB8VQNCK2GeftiPSb8sgTjp19ROuAbk7+cL5sfyCTlqCx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n7lP3i+S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02E11C433C7;
-	Fri,  2 Feb 2024 03:29:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706844551;
-	bh=hrszDQjg1r99rOZvRO+CbHKbrtAj33R5nUJ/aP8OlAo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n7lP3i+S1HK19Szbki1gpNcjT56ZAc3eU1c3GK3xyLzWt5U7eFMUedktdxBnEFo35
-	 qrCEVhbm5rO0QS38JimDBYic0HvMzS+XnXrMQuGfrWWFSeV/w2Zw7o3um3rCxDLmYx
-	 EhrFnvUlOuHn79KhfqxaS3Y/dRsC36NFEkihtW+LBME0hvO/5N+3LpUIP1720keN6Q
-	 EAwb+x8qyAef49fQ5fZWb67Bv6l+vEmJ+tjeDW+RPBBnCuOWcRHvp28cPkoG4MjuGs
-	 +a/JN/1x9h8wY0IdiardxibIeTrtfu1FUJhfTiKsihgyiX7cBMIYxNI6uHSoKhy/UW
-	 9hi/sHprptC8Q==
-Date: Thu, 1 Feb 2024 19:29:09 -0800
-From: Josh Poimboeuf <jpoimboe@kernel.org>
-To: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andy Lutomirski <luto@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-	ak@linux.intel.com, tim.c.chen@linux.intel.com,
-	Andrew Cooper <andrew.cooper3@citrix.com>,
-	Nikolay Borisov <nik.borisov@suse.com>,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	kvm@vger.kernel.org,
-	Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	antonio.gomez.iglesias@linux.intel.com,
-	Alyssa Milburn <alyssa.milburn@intel.com>
-Subject: Re: [PATCH  v6 1/6] x86/bugs: Add asm helpers for executing VERW
-Message-ID: <20240202032909.exegdxpgyndlkn2n@treble>
-References: <20240123-delay-verw-v6-0-a8206baca7d3@linux.intel.com>
- <20240123-delay-verw-v6-1-a8206baca7d3@linux.intel.com>
+	s=arc-20240116; t=1706844595; c=relaxed/simple;
+	bh=FQPEDa1ZpskrfIY7Nl1IZ8DX+tkOt+NBh/6iZYeP0oM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cgSEE5ejVgZ9ci6QxGzaU+y5lH8VM2/77O3R1WqI3VrcaQx+QG9+ywVAJ9fJoXi6nIMH+pSSZIXFX82vUlf3NU3xW3M8KlYDa6D52V5YvQGN9WP9hR+65X/5ihgA/ThFmMAJMCdbdAAzrZAqQ40IdIfUPj9aYnYJRsVh+MnzPR0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=GYF6HEZy; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2cf595d5b4aso21989101fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 19:29:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1706844591; x=1707449391; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qJx1hqlSbD14E0hZKRTCOkIDna5e/202U5M9wYP7Mg8=;
+        b=GYF6HEZyywWHVD/NrHcSgXe2eP7YL3/Mk+MWgzmCPxb+uJqvcLmwXWazeguLwP64zX
+         LxCYJxcENb+nVIZLU/3WlzkLJD7wNpp1NM3YMCpa0itovzhmt38yTvCp1ODkJzaX1qWL
+         yaiJDf5UZxhPvB0E7xLcG649oG49FrLlKJtms=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706844591; x=1707449391;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qJx1hqlSbD14E0hZKRTCOkIDna5e/202U5M9wYP7Mg8=;
+        b=AjqUpb4w6pu1BVlwK09qK/6b7gGkJX7JJosL/Dk5+bEIj27tqskS52AH/tthH9vuG5
+         sj4Ch6Y4RiXI6azu/7PGr6FWLlMJDRetTw92pXe5SI+oLGQq5rChkEMhsvMiDbxV3XdZ
+         P9p2YGjHVLw6dKPOYAqW9543tXPhcB/CDHYPrDDLMBz4lfDL9C0HgtnsgQV0j8YNt/Tu
+         +/9uvEz3+PjWs9B0MzCsc9kBx5mrGWEXudnnqTgWE3vTPuhjv8rIoKO0CP/1FzWu5dYH
+         D70+78quNGccxi5nEywuUKOrpJLChe8NO3KVjcpJkRRpxJmJKiTeCnCx65zai8fuZ5au
+         LsSg==
+X-Gm-Message-State: AOJu0Yz42FYHGQ1KKVFbx4CMCKGxP5s02SjADs4HgOQDXptwrIUw7Ssn
+	2uq7xuex8pZrxARt2OkoJ8Hi1aV7gKLz0I84KsTZOR0t8fq5QtgbH6vWSGbNBmLkbd7yyWqwfD4
+	b9gZPOA==
+X-Google-Smtp-Source: AGHT+IFW7CcFLQYa9FJPG4+pK7PunaJR+kj2+S1YkLke8SJlGbfSlcx42ktAwHMpUVX+ZGGhe5uDEg==
+X-Received: by 2002:a2e:a682:0:b0:2cf:1b96:5af5 with SMTP id q2-20020a2ea682000000b002cf1b965af5mr2237891lje.17.1706844591615;
+        Thu, 01 Feb 2024 19:29:51 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCW6J9+MW9ZZ34UFxxd8RLZVbampODEcj+JGMYwyQh6nAAuhF0DuVB23eaUq+SojrvBTIUsBe7x6xoNIOPeudNRh8t9t8jPYZPSH/+a+
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id u19-20020a2e8553000000b002d07f393530sm127842ljj.12.2024.02.01.19.29.51
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Feb 2024 19:29:51 -0800 (PST)
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2cf595d5b4aso21988971fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 19:29:51 -0800 (PST)
+X-Received: by 2002:a05:651c:1249:b0:2d0:87ea:a132 with SMTP id
+ h9-20020a05651c124900b002d087eaa132mr159099ljh.27.1706844590714; Thu, 01 Feb
+ 2024 19:29:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240123-delay-verw-v6-1-a8206baca7d3@linux.intel.com>
+References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver>
+ <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
+ <20240201204512.ht3e33yj77kkxi4q@revolver> <60731.1706826280@cvs.openbsd.org>
+ <2024020137-hacking-tightwad-a485@gregkh> <CABi2SkVb1goM95FT5v2K18NHbaLitLpK6fL+wE6Y47z8yvW0Nw@mail.gmail.com>
+In-Reply-To: <CABi2SkVb1goM95FT5v2K18NHbaLitLpK6fL+wE6Y47z8yvW0Nw@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 1 Feb 2024 19:29:33 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjGGgfAoiEdPqLdib7VvQgG7uVXpTPzJ9jTW0HesRpPwQ@mail.gmail.com>
+Message-ID: <CAHk-=wjGGgfAoiEdPqLdib7VvQgG7uVXpTPzJ9jTW0HesRpPwQ@mail.gmail.com>
+Subject: Re: [PATCH v8 0/4] Introduce mseal
+To: Jeff Xu <jeffxu@chromium.org>
+Cc: Greg KH <gregkh@linuxfoundation.org>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+	Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org, keescook@chromium.org, 
+	jannh@google.com, sroettger@google.com, willy@infradead.org, 
+	usama.anjum@collabora.com, rdunlap@infradead.org, jeffxu@google.com, 
+	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
+	dave.hansen@intel.com, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Jan 23, 2024 at 11:41:01PM -0800, Pawan Gupta wrote:
-> index 4af140cf5719..79a7e81b9458 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -308,10 +308,10 @@
->  #define X86_FEATURE_SMBA		(11*32+21) /* "" Slow Memory Bandwidth Allocation */
->  #define X86_FEATURE_BMEC		(11*32+22) /* "" Bandwidth Monitoring Event Configuration */
->  #define X86_FEATURE_USER_SHSTK		(11*32+23) /* Shadow stack support for user mode applications */
-> -
->  #define X86_FEATURE_SRSO		(11*32+24) /* "" AMD BTB untrain RETs */
->  #define X86_FEATURE_SRSO_ALIAS		(11*32+25) /* "" AMD BTB untrain RETs through aliasing */
->  #define X86_FEATURE_IBPB_ON_VMEXIT	(11*32+26) /* "" Issue an IBPB only on VMEXIT */
-> +#define X86_FEATURE_CLEAR_CPU_BUF	(11*32+27) /* "" Clear CPU buffers using VERW */
+On Thu, 1 Feb 2024 at 19:24, Jeff Xu <jeffxu@chromium.org> wrote:
+>
+> The patch Stephan developed was based on V1 of the patch, IIRC, which
+> is really ancient, and it is not based on MAP_SEALABLE, which is a
+> more recent development entirely from me.
 
-This will need to be rebased.  And the "11*32" level is now full in
-Linus' tree, so this will presumably need to go to a different "level".
+So the problem with this whole patch series from the very beginning
+was that it was very specialized, and COMPLETELY OVER-ENGINEERED.
 
--- 
-Josh
+It got simpler at one point. And then you started adding these
+features that have absolutely no reason for them. Again.
+
+It's frustrating. And it's not making it more likely to be ever merged.
+
+               Linus
 
