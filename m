@@ -1,57 +1,61 @@
-Return-Path: <linux-kernel+bounces-50361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9993A847806
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:44:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E25FF84780A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:44:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBB821C248BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:44:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F0AA28A916
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:44:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB8DF150993;
-	Fri,  2 Feb 2024 18:39:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72774151CD0;
+	Fri,  2 Feb 2024 18:40:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sPCKj1Tg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dmwWr8lS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF828592C;
-	Fri,  2 Feb 2024 18:39:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 896768592A;
+	Fri,  2 Feb 2024 18:39:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706899192; cv=none; b=TS7YT5X9W36JWjf6+yQLCr3XWgv1xH2CHBQffQRpfnVcvEYVlcTUf89xhk1BoERTGpWI2Aphwhfm0mdmsSfzGTKS5qvVfEJUunSUQtr5q0xQ9sMeYdLWeB6RtNPCpwsmI3uK8xuXlxRIPta41BOXTgPmG5X0biIRXBQsGKznnqY=
+	t=1706899193; cv=none; b=XB6wjaTrzQ4smnCKo6folRtB74A69zsfxNjUlpw8QZtSNU9qg3aC224vXkXQkDE9AeQw0/DInDOdmctoY7GIUaR/EoQP0yzq2/vKu3szuVScaCi/pr6UoS1Qcz9N6z5xvPhEc0eHvK2ryhRobS19dmvBXshVsMQdJOIZu7brfdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706899192; c=relaxed/simple;
-	bh=eZMy0rsC1O2myoC9DEfCEzi+FKFhOhwY9HAwgwyPxHA=;
+	s=arc-20240116; t=1706899193; c=relaxed/simple;
+	bh=MAtB2ChwFF1exhEfUKrF79D5jxW1fp8BGXZSzKt5ZVE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gAd9bFDpJDpfhLZ2Y4cSs7fNfoyhUJU9UNMGPjf99f5DLvfTMTxp6tQw+5lTgxk9Ov9Upt7Zrz2kXhsAOHPvMU0nupSPufedyu5L89mKYr5pRAKH3V18WxxVbkNrv1/TTLWvbBDyIICbYVgXk7MWVQDTrj6qA/57ao8eyo8Uzzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sPCKj1Tg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C03AC43399;
-	Fri,  2 Feb 2024 18:39:50 +0000 (UTC)
+	 MIME-Version; b=uvkCkRXL+akje/PSwdORurUGfylySpCusnw2583qH7PAVfYVdgDrWdimfJRWsU0yhzo7f54Bv1hHDqDo9EhC7eky3uJBYUbbihiEdAOgctZtR/ViQBY0OC30zkTpAXWbnjM3IyJhcKURpUSGEDlSAwetMI7gRfCI6w0LuYI3Zsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dmwWr8lS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A9A4C433C7;
+	Fri,  2 Feb 2024 18:39:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706899191;
-	bh=eZMy0rsC1O2myoC9DEfCEzi+FKFhOhwY9HAwgwyPxHA=;
+	s=k20201202; t=1706899192;
+	bh=MAtB2ChwFF1exhEfUKrF79D5jxW1fp8BGXZSzKt5ZVE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sPCKj1Tgd8f9vg8F5m9YXxyeYkqXRoqbVSgDMXUoZeg2qw4ICpcaMnnsNY4QDS7wv
-	 frcvW9aFut2pIKLiC9oYIW53oHOMmJ0owe10vLpjjzcDY88ho36op1sPIqow+G4JNd
-	 7E6yuiWOoLI+TToE3DDqC5hUjEsslynZQHBbdzKK2VXBo/L1e13hkrBCccCeuRZaNj
-	 T6FCHJoIRtpl01S/PnwmSEkOfynpT5RRtoR21GN+uEs6AcMfoy9fLwfYwimXgkZjgh
-	 wMV9I/s+aiS71ewZHhWfPNZXDYFFF9BUo3I6oAvGpkzDyswGIKkChiRjZsCr+Ox3IN
-	 LvZ2tOHhrxCMg==
+	b=dmwWr8lS5qXnv/HIncGxsoRRi0lNkX5NvSRT07ylB1KllAe6T3wiyR7QQWSuzxpxH
+	 kCT1tWEb449EpNr9KGBavyvS3A2/jWLevMGbtcmEjc+RYNhTNC/K0NyNL2Y5I4pCD1
+	 hNAnJ2LzVzo5YIAHl0W+Sghw+lbZFHBAU+tgt1ojekQJ8bIflVzR0kJPcIJpuazGnj
+	 MtNYJz6+wuzitC6KEfFeq9Tho0n2TGqN8d2/euYLr5Ryom0L56hPWIGvyBNJnmPJA0
+	 98V9RJnkDqwmYWGXQfLI6YqHbuJWWbTCI1XwTvS5UCVU6/r0kMd2B6fRKfDTV9a1Ps
+	 WbLexpMJxMlAg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Maksim Kiselev <bigunclemax@gmail.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Jens Axboe <axboe@kernel.dk>,
+Cc: Charles Keepax <ckeepax@opensource.cirrus.com>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	justin@coraid.com,
-	linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 16/23] aoe: avoid potential deadlock at set_capacity
-Date: Fri,  2 Feb 2024 13:39:12 -0500
-Message-ID: <20240202183926.540467-16-sashal@kernel.org>
+	james.schulman@cirrus.com,
+	david.rhodes@cirrus.com,
+	rf@opensource.cirrus.com,
+	alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com,
+	linux-spi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 17/23] spi: cs42l43: Handle error from devm_pm_runtime_enable
+Date: Fri,  2 Feb 2024 13:39:13 -0500
+Message-ID: <20240202183926.540467-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240202183926.540467-1-sashal@kernel.org>
 References: <20240202183926.540467-1-sashal@kernel.org>
@@ -66,73 +70,38 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.3
 Content-Transfer-Encoding: 8bit
 
-From: Maksim Kiselev <bigunclemax@gmail.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-[ Upstream commit e169bd4fb2b36c4b2bee63c35c740c85daeb2e86 ]
+[ Upstream commit f9f4b0c6425eb9ffd9bf62b8b8143e786b6ba695 ]
 
-Move set_capacity() outside of the section procected by (&d->lock).
-To avoid possible interrupt unsafe locking scenario:
+As it devm_pm_runtime_enable can fail due to memory allocations, it is
+best to handle the error.
 
-        CPU0                    CPU1
-        ----                    ----
-[1] lock(&bdev->bd_size_lock);
-                                local_irq_disable();
-                            [2] lock(&d->lock);
-                            [3] lock(&bdev->bd_size_lock);
-   <Interrupt>
-[4]  lock(&d->lock);
-
-  *** DEADLOCK ***
-
-Where [1](&bdev->bd_size_lock) hold by zram_add()->set_capacity().
-[2]lock(&d->lock) hold by aoeblk_gdalloc(). And aoeblk_gdalloc()
-is trying to acquire [3](&bdev->bd_size_lock) at set_capacity() call.
-In this situation an attempt to acquire [4]lock(&d->lock) from
-aoecmd_cfg_rsp() will lead to deadlock.
-
-So the simplest solution is breaking lock dependency
-[2](&d->lock) -> [3](&bdev->bd_size_lock) by moving set_capacity()
-outside.
-
-Signed-off-by: Maksim Kiselev <bigunclemax@gmail.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Link: https://lore.kernel.org/r/20240124072436.3745720-2-bigunclemax@gmail.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://msgid.link/r/20240124174101.2270249-1-ckeepax@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/aoe/aoeblk.c | 5 ++++-
+ drivers/spi/spi-cs42l43.c | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/block/aoe/aoeblk.c b/drivers/block/aoe/aoeblk.c
-index cf6883756155..37eff1c97451 100644
---- a/drivers/block/aoe/aoeblk.c
-+++ b/drivers/block/aoe/aoeblk.c
-@@ -333,6 +333,7 @@ aoeblk_gdalloc(void *vp)
- 	struct gendisk *gd;
- 	mempool_t *mp;
- 	struct blk_mq_tag_set *set;
-+	sector_t ssize;
- 	ulong flags;
- 	int late = 0;
- 	int err;
-@@ -395,7 +396,7 @@ aoeblk_gdalloc(void *vp)
- 	gd->minors = AOE_PARTITIONS;
- 	gd->fops = &aoe_bdops;
- 	gd->private_data = d;
--	set_capacity(gd, d->ssize);
-+	ssize = d->ssize;
- 	snprintf(gd->disk_name, sizeof gd->disk_name, "etherd/e%ld.%d",
- 		d->aoemajor, d->aoeminor);
+diff --git a/drivers/spi/spi-cs42l43.c b/drivers/spi/spi-cs42l43.c
+index d239fc5a49cc..c1556b652909 100644
+--- a/drivers/spi/spi-cs42l43.c
++++ b/drivers/spi/spi-cs42l43.c
+@@ -244,7 +244,10 @@ static int cs42l43_spi_probe(struct platform_device *pdev)
+ 	priv->ctlr->use_gpio_descriptors = true;
+ 	priv->ctlr->auto_runtime_pm = true;
  
-@@ -404,6 +405,8 @@ aoeblk_gdalloc(void *vp)
- 
- 	spin_unlock_irqrestore(&d->lock, flags);
- 
-+	set_capacity(gd, ssize);
+-	devm_pm_runtime_enable(priv->dev);
++	ret = devm_pm_runtime_enable(priv->dev);
++	if (ret)
++		return ret;
 +
- 	err = device_add_disk(NULL, gd, aoe_attr_groups);
- 	if (err)
- 		goto out_disk_cleanup;
+ 	pm_runtime_idle(priv->dev);
+ 
+ 	regmap_write(priv->regmap, CS42L43_TRAN_CONFIG6, CS42L43_FIFO_SIZE - 1);
 -- 
 2.43.0
 
