@@ -1,168 +1,273 @@
-Return-Path: <linux-kernel+bounces-50018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2FAC84731F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:27:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B199847322
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:27:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 934361F24AB0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:27:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA52F286FB5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:27:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D599A145B29;
-	Fri,  2 Feb 2024 15:26:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCC871468E6;
+	Fri,  2 Feb 2024 15:27:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ji/VnUbL"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fp1UGuaX"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0A2E145B1D
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 15:26:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2563522085;
+	Fri,  2 Feb 2024 15:27:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706887614; cv=none; b=COdbqyLaRk2XTbD5/ObNBrXe8JyXCcGpi/G3Ih24kJPZrzSok/ICZv/EcPZaNXo2CRv1j3kiBhLH6LvGQRBViA+u9/c3jb14weL54UJomaJH9b6Y66ULbDAmiBxCLN84HULAPUhj4AVS5A+2FIMbtgq7YX4GG1AK20RU3Uukqwk=
+	t=1706887663; cv=none; b=knv4iTU8+T3cEmmZSFJZZ5U8uXsmwKrQpCoOoYpf0KGIlJyOjWIUWh2GXv4muOipaJd1l0cQCWjcUDkaU5NYam933t9D1Yb1kf0IMDfPheDfuW1duwXYJ0EU3/HfjVlBMxzENiFJsr5AK8+JjMxakW4d8zD24hWwe9qFH47K0Kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706887614; c=relaxed/simple;
-	bh=frEghVvtOcqRHxqvaJFaT8xusvbZLMxwXFTsRAh2TJ8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gIHgspXCoA6+gO0Ck84ubK/0VuqjLJjtEDExhl2unO4hwYD8JXD/vw15MloAwOlLQEc2MK5qCUqXwQV08D+0pHKPdtW82x6IzTDoMFkunn/xbiN0BSgj98AFJ1C/genlwbA1wS22Yj2/5S2gruGUGFLaNjZROKFZRlAYTp4seQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ji/VnUbL; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706887611;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=qxRm5m6KJDjNeDVlu/jjjkp6g7evJhqJY6iswQP8IY0=;
-	b=Ji/VnUbLTPerlBWJBhBUE1uy3u3hhbcP8ZzwHyFJipDBRaoauOFSfLizNIVbaj8JuuzHC7
-	QUP6G8HGr+pG9+BwjF23cCFHgARlWF+TMEugoDIc5UoTIKsJhNFImrcN38SgWjJM0SAJwe
-	8m3XQ09IdaCjhY2aoBJCJri4iVieP2s=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-549-TAEIqI03OmWGq1t4nNbxyg-1; Fri, 02 Feb 2024 10:26:50 -0500
-X-MC-Unique: TAEIqI03OmWGq1t4nNbxyg-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-337bf78ef28so681974f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 07:26:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706887609; x=1707492409;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qxRm5m6KJDjNeDVlu/jjjkp6g7evJhqJY6iswQP8IY0=;
-        b=cUDf5ncN5Q/K2/a+lOi9/6uD5GMIcY24fW6zDebb44Kud9wMPZtcVvDN4Dlk2JXQaE
-         QZLLdW+0Yim8SFkQiidHpK+aDeOofBRFUEnHXw6Fz8CD5JGWFGitNAxD233R8Tpo5MUL
-         TNKsl9c8vfruXS08PKrSx+/ojPMk4XgAs8T6jCAhv8mNPLUDTHVmbptQE2RKhF7A1kNW
-         YCmLXuyvzuV9swdC7VjhPaop7EEGEVfMdL0GQCERgGVF1i0IysHZZy2BBXGlsVAxRTvd
-         OKDqp9Gq6sDtCekEA6evqrzRx46/taoCgjgvvYtjcBfZYoxQs4cve9HKFDPZ6UJPq/3z
-         5HAw==
-X-Gm-Message-State: AOJu0YzNOVkRTgGoi2Narb/ckvdX2158LgCLALc7x54lREWGlKHGlBlf
-	pm6o8iToycA2T0bxU2gIakBJecgpZcMyK7KsySpLDfsHKPvn2VYGrpMEN9k0Id28cwYNj5bWMhN
-	IcZ7YyPOk61iVe2wDdffPOYgJQywES4uyJ8PuYorKOXN3ieD9T8ZDQxi5Gy3xZQ==
-X-Received: by 2002:adf:fd45:0:b0:33b:d78:35f4 with SMTP id h5-20020adffd45000000b0033b0d7835f4mr1807652wrs.60.1706887608935;
-        Fri, 02 Feb 2024 07:26:48 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE+Nt3k+rITHPyM7Rq6az7HHf+AUDvB2Fe2k0X+HJrdG3q7UuLDPSGYT7jqX2YU83DN3u60tw==
-X-Received: by 2002:adf:fd45:0:b0:33b:d78:35f4 with SMTP id h5-20020adffd45000000b0033b0d7835f4mr1807633wrs.60.1706887608460;
-        Fri, 02 Feb 2024 07:26:48 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXfK1MuTXHAn2gomZ94ThB8mz+ivWEY8uE8UzsJ6pvnTTMG0VwxwnLiRPseJbP+DJIXQVQDYFM2hU4YUHBXNbXPR8ayZ6TE20HIbFe4NWjMfvoDDxGllaGLKOFkW0CnZfNp7ju0guYw4Go73u+irOPjO43IyBmjvvI/vpQ1L7r9uJvEjYRiGoAV0wTG6iAnFEcwt05qcsGQ3ZE+p9du3LTBQco0Dr8+gCORdlEkjDmFLzcJzXw86ZyFOv/0rD6elT92j/Z5HrNj4P1E5aMGTRm66/jG+FcxbThQz9o=
-Received: from ?IPV6:2003:cb:c710:f400:4580:64b5:8bf5:4809? (p200300cbc710f400458064b58bf54809.dip0.t-ipconnect.de. [2003:cb:c710:f400:4580:64b5:8bf5:4809])
-        by smtp.gmail.com with ESMTPSA id n21-20020adf8b15000000b0033924b4d1f9sm2155636wra.94.2024.02.02.07.26.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Feb 2024 07:26:48 -0800 (PST)
-Message-ID: <330729ec-cee3-4804-b8b2-eeb1548a1643@redhat.com>
-Date: Fri, 2 Feb 2024 16:26:47 +0100
+	s=arc-20240116; t=1706887663; c=relaxed/simple;
+	bh=RhCaan2xTl8pGQjWVw71sQan87Rb8PlWXG6TrDgynRg=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=PJIw5WLBEs3KFfcVUomraKljLAMgHxOTaCp03Stl10sCr2LXkjZFYhJFQJ8GWEPsKK4ZZpyYBWhr50Yj0Qyl/2x8K248E/krRae9jzKpj79Z3BgrmQqCqEVhinqAfYnzMpsPIazHwKYQkY+9daKd4EYV+OWzn0H3MXOFkNYfwR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fp1UGuaX; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706887662; x=1738423662;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=RhCaan2xTl8pGQjWVw71sQan87Rb8PlWXG6TrDgynRg=;
+  b=fp1UGuaXrClAb6fC5wlH2lsdisU2HNcGvL0ZZOFOAlJ8Fmc4/NSTl3Wj
+   zOT2KmeX7W0jwDhDGTQUF1Vqf77YIeAttpbtd7YZqQdn1SwVw3SV/8P/A
+   x6UI/BSsr+9AmQTq18SbpgctFc9J0AaM7oj5mcchlzJf/7pM7FhAcytlY
+   RDmpGp0Gy9FeFllT5kCjk5EC7OhhF26WiT7pi5JvbfLkDAShJvr+xEAxd
+   NknwtplfhO1v2Nzbily3n8BImnR5nHW8a9k0PpDlXBwk+0/LQIt1KfAOj
+   N8MtdvFUZqi+tPWdRQeWsy6Ov8OhWMSrDgUK4LAOFvihfsKG0J+iCPhmU
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="338877"
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="338877"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 07:27:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="376364"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.50.66])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 07:27:39 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Fri, 2 Feb 2024 17:27:34 +0200 (EET)
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+cc: Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>, 
+    Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH 1/2] PCI: Clear LBMS on resume to avoid Target Speed
+ quirk
+In-Reply-To: <alpine.DEB.2.21.2402011800320.15781@angie.orcam.me.uk>
+Message-ID: <d9f6efe3-3e99-0e4b-0d1c-5dc3442c2419@linux.intel.com>
+References: <20240129184354.GA470131@bhelgaas> <aa2d1c4e-9961-d54a-00c7-ddf8e858a9b0@linux.intel.com> <alpine.DEB.2.21.2401301537070.15781@angie.orcam.me.uk> <a7ff7695-77c5-cf5a-812a-e24b716c3842@linux.intel.com> <d5f14b8f-f935-5d5e-e098-f2e78a2766c6@linux.intel.com>
+ <alpine.DEB.2.21.2402011800320.15781@angie.orcam.me.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] mm/khugepaged: skip copying lazyfree pages on
- collapse
-To: Lance Yang <ioworker0@gmail.com>, Michal Hocko <mhocko@suse.com>
-Cc: akpm@linux-foundation.org, zokeefe@google.com, songmuchun@bytedance.com,
- shy828301@gmail.com, peterx@redhat.com, minchan@kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240201125226.28372-1-ioworker0@gmail.com>
- <Zby-sHLDlmTRaUcd@tiehlicka>
- <CAK1f24=7sy_Bczpt5YeDbkhfriYUc1=zreSFdGCxfF3R0D6sRQ@mail.gmail.com>
- <ZbzfxNn4AYnTVFLh@tiehlicka>
- <CAK1f24mvBkc2c=fHL6UxMhL2mgLHVrSwZfE5516bOR0yVdfZpQ@mail.gmail.com>
- <ZbzmvwyTGeW18nJy@tiehlicka>
- <CAK1f24kdyOnUjcpnrk6j4cF6bSFXQwwzFk9tM+jD4RsO_Hc4hA@mail.gmail.com>
- <Zbz_ao0uBKabzKB1@tiehlicka>
- <CAK1f24nHmvqm1XD_UkWUB7DmNdH0NEOKzpLgKDJ=UuPWO=rEHw@mail.gmail.com>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <CAK1f24nHmvqm1XD_UkWUB7DmNdH0NEOKzpLgKDJ=UuPWO=rEHw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; BOUNDARY="8323328-987821708-1706879739=:1020"
+Content-ID: <9428fc1c-220f-94a7-802d-c45a846ed36f@linux.intel.com>
 
-On 02.02.24 15:52, Lance Yang wrote:
-> How about blocking khugepaged from
-> collapsing lazyfree pages? This way,
-> is it not better to keep the semantics
-> of MADV_FREE?
-> 
-> What do you think?
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Why do we even want to change any behavior here? A lot of things "might 
-cause confusion among users". Even worse, a lot of things do cause 
-confusion ;)
+--8323328-987821708-1706879739=:1020
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <66007069-bb7d-66e7-d4f6-94c027dc9ebb@linux.intel.com>
 
--- 
-Cheers,
+On Thu, 1 Feb 2024, Maciej W. Rozycki wrote:
 
-David / dhildenb
+> On Thu, 1 Feb 2024, Ilpo J=E4rvinen wrote:
 
+> > > >  This can be problematic AFAICT however.  While I am not able to ve=
+rify=20
+> > > > suspend/resume operation with my devices, I expect the behaviour to=
+ be=20
+> > > > exactly the same after resume as after a bus reset: the link will f=
+ail to=20
+> > > > negotiate and the LBMS and DLLLA bits will be respectively set and =
+clear. =20
+> > > > Consequently if you clear LBMS at resume, then the workaround won't=
+=20
+> > > > trigger and the link will remain inoperational in its limbo state.
+> > >=20
+> > > How do you get the LBMS set in the first place? Isn't that because th=
+e=20
+> > > link tries to come up so shouldn't it reassert that bit again before =
+the=20
+> > > code ends up into the target speed quirk? That is, I assumed you actu=
+ally=20
+> > > wanted to detect LBMS getting set during pcie_wait_for_link_status() =
+call=20
+> > > preceeding pcie_failed_link_retrain() call?
+>=20
+>  It is a good question what the sequence of events exactly is that sets=
+=20
+> the LBMS bit.  I don't know the answer offhand.
+>
+> > > In any case and unrelated to this patch, the way this quirk monopoliz=
+es=20
+> > > LBMS bit is going to have to be changed because it won't be reliable =
+with=20
+> > > the PCIe BW controller that sets up and irq for LBMS (and clears the =
+bit).
+> > > In bwctrl v5 (yet to be posted) I'll add LBMS counter into bwctrl to =
+allow=20
+> > > this quirk to keep working (which will need to be confirmed).
+>=20
+>  If there's an interrupt handler for LBMS events, then it may be the best=
+=20
+> approach if the quirk is triggered by the handler instead, possibly as a=
+=20
+> softirq.
+
+Okay, I'll look into changing the code towards that direction. The small=20
+trouble there is that soon I've very little that can be configured away=20
+from the bandwidth controller because this quirk already relates to the=20
+target speed changing code and the LBMS will require the other side to be=
+=20
+always compiled too...
+
+> > > >  What kind of scenario does the LBMS bit get set in that you have a=
+=20
+> > > > trouble with?  You write that in your case the downstream device ha=
+s been=20
+> > > > disconnected while the bug hierarchy was suspended and it is not pr=
+esent=20
+> > > > anymore at resume, is that correct?
+> > > >
+> > > >  But in that case no link negotiation could have been possible and=
+=20
+> > > > consequently the LBMS bit mustn't have been set by hardware (accord=
+ing to=20
+> > > > my understanding of PCIe), because (for compliant, non-broken devic=
+es=20
+> > > > anyway) it is only specified to be set for ports that can communica=
+te with=20
+> > > > the other link end (the spec explicitly says there mustn't have bee=
+n a=20
+> > > > transition through the DL_Down status for the port).
+> > > >
+> > > >  Am I missing something?
+> > >=20
+> > > Yes, when resuming the device is already gone but the bridge still ha=
+s=20
+> > > LBMS set. My understanding is that it was set because it was there
+> > > from pre-suspend time but I've not really taken a deep look into it=
+=20
+> > > because the problem and fix seemed obvious.
+>=20
+>  I've always been confused with the suspend/resume terminology: I'd have=
+=20
+> assumed this would have gone through a power cycle, in which case the LBM=
+S=20
+> bit would have necessarily been cleared in the transition, because its=20
+> required state at power-up/reset is 0, so the value of 1 observed would b=
+e=20
+> a result of what has happened solely through the resume stage.  Otherwise=
+=20
+> it may make sense to clear the bit in the course of the suspend stage,=20
+> though it wouldn't be race-free I'm afraid.
+
+I also thought suspend as one possibility but yes, it racy. Mika also=20
+suggested clearing LBMS after each successful retrain but that wouldn't=20
+cover all possible ways to get LBMS set as devices can set it=20
+independently of OS. Keeping it cleared constantly is pretty much what=20
+will happen with the bandwidth controller anyway.
+
+> > > I read that "without the Port transitioning through DL_Down status"=
+=20
+> > > differently than you, I only interpret that it relates to the two=20
+> > > bullets following it. ...So if retrain bit is set, and link then goes=
+=20
+> > > down, the bullet no longer applies and LBMS should not be set because=
+=20
+> > > there was transition through DL_Down. But I could well be wrong...
+>=20
+> What I refer to is that if you suspend your system, remove the device=20
+> that originally caused the quirk to trigger and then resume your system=
+=20
+> with the device absent,
+
+A small correction here, the quirk didn't trigger initially for the=20
+device, it does that only after resume. And even then quirk is called=20
+only because the link doesn't come up.
+
+On longer term, I'd actually want to have hotplug resumed earlier so the=20
+disconnect could be detected before/while all this waiting related to link=
+=20
+up is done. But that's very complicated to realize in practice because=20
+hotplug lurks behind portdrv so resuming it earlier isn't going to be=20
+about just moving a few lines around.
+
+> then LBMS couldn't have been set in the course of=20
+> resume, because the port couldn't have come out of the DL_Down status in=
+=20
+> the absence of the downstream device.  Do you interpret it differently?
+
+That's a good question and I don't have an answer to this yet, that is,
+I don't fully understand what happens to those device during runtime=20
+suspend/resume cycle and what is the exact mechanism that preserves the=20
+LBMS bit, I'll look more into it.
+
+But I agree that if the device goes cold enough and downstream is=20
+disconnected, the port should no longer have a way to reassert LBMS.
+
+> Of course once set the bit isn't self-clearing except at power-up/reset.
+
+Okay, I misunderstood you meant it would be self-clearing whenever=20
+DL_Down happens. I can see that could have been one possible=20
+interpretation of the text fragment in the spec.
+
+> > So I would be really curious now to know how you get the LBMS on the=20
+> > device that needs the Target Speed quirk? Is this true (from the commit=
+=20
+> > a89c82249c37 ("PCI: Work around PCIe link training failures")):
+> >=20
+> > "Instead the link continues oscillating between the two speeds, at the=
+=20
+> > rate of 34-35 times per second, with link training reported repeatedly=
+=20
+> > active ~84% of the time."
+> >=20
+> > ?
+>=20
+>  That is what I have observed.  It was so long ago I don't remember how I=
+=20
+> calculated the figures anymore, it may have been with a U-Boot debug patc=
+h=20
+> made to collect samples (because with U-Boot you can just poll the LT bit=
+=20
+> while busy-looping).  I'd have to try and dig out the old stuff.
+
+I'd guess it probably sets the bit on each try, or perhaps only on the=20
+subset of tries which were "successful" before the link almost immediately=
+=20
+runs into another error (that 16% of the time).
+
+> > Because if it is constantly picking another speed, it would mean you ge=
+t=20
+> > LBMS set over and over again, no? If that happens 34-35 times per secon=
+d,=20
+> > it should be set already again when we get into that quirk because ther=
+e=20
+> > was some wait before it gets called.
+>=20
+>  I'll see if I can experiment with the hardware over the next couple of=
+=20
+> days and come back with my findings.
+
+Okay thanks.
+
+
+--=20
+ i.
+--8323328-987821708-1706879739=:1020--
 
