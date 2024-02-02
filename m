@@ -1,222 +1,234 @@
-Return-Path: <linux-kernel+bounces-49697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0630E846E3F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:49:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E99C9846E43
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:50:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A7D61C220CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:49:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0DB7298FEC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:50:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43BD77C0A2;
-	Fri,  2 Feb 2024 10:49:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B3667A73D;
+	Fri,  2 Feb 2024 10:49:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lJ0YEdnH"
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JDH3qyaX"
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1001122067
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 10:49:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD917A732
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 10:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706870954; cv=none; b=Y127Hy3wKZSc47ezjfaQ2uUljaQYch13bTLpoAVj+X9QdSiq+HBWXemx9JHUzCtudlerFqBZ4FbowaGYSFbBzghWn+grBgGq+2HpjLWHgfb7R6JDdf6HeKSDu+f6300bRgp4dfeIqpfihyqjLN6pdkZRAjfWeatXP4bMx0LVvv0=
+	t=1706870994; cv=none; b=lTv3MOfPRTqo05ZhWhkjQHb0D9hlvt0+lVQm3OxCB2qknKIXIc3LKnnmhQO7MRdVBv+DMUpUrJaXef/EHBqPUrChgIh0Dybz23XmmsNrfZ/+uc9MY15U2X+PfpfRYZ/9k2D0/ws9YC0VInDfmRz8RznQ9Q212uveLCUloqLYAOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706870954; c=relaxed/simple;
-	bh=TUNEWgwCE7TF4s1setZFQ7vqa+aUgx+J5Hk6cLFenSs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=u/Lf1CwsK4folo9F5lxAwUmotR69eXr9FjVfABA61nuMs2nq/LobBCLUSEJh6P9S/c6h2P8OHgW/23lxuxAeK6KAiDeQDmdJdvTUy7Ro9BZDVmt4Zchd56SINFh4L3rJ5zTfa1lr420eMF6bVmMuGvaGthlAXW9jgxYX+3lx+vA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lJ0YEdnH; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-295f3bf41d5so489483a91.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 02:49:12 -0800 (PST)
+	s=arc-20240116; t=1706870994; c=relaxed/simple;
+	bh=Tq53S3XqSKmPixpG2mO8PRxXSYePRUKdTcAhAwTD1ic=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tcqBn6cm9M88E8eVGWitok90nwKPEfY0ie1j6FIEQ6Yema67NteVbHX4vgajxjTwag0aAMAtOUAv4uDvWs/PNWEYunH6+WXSQBptMJ8QiZj2Ja/UzW/ws96nAGwpwhYq8/V9VFbknS3ySN8Ghy7qrAUc8NBwgir2aZaxJqHPYr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JDH3qyaX; arc=none smtp.client-ip=209.85.222.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-783045e88a6so129616085a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 02:49:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706870952; x=1707475752; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UvX7fSziumDbXdZjiUHHfgTgPg/Ff9yAzyog8/e7MMo=;
-        b=lJ0YEdnHIBhlunGlOGpZszmyU3cNLDaDHzExGUQHsEpGGT9YKxOu/8P3ZYmVhbIK4p
-         54vjgHagq9CLFbBKpCjmq0t+++Ni4hvzzu6hB0Z6FRjiKyhP1b8XeCjRttzkX0nTsjIT
-         lG/IuAI+uJQwM4sESY7St/ImdbSjqKv8niUy+8bbC981lhLCvNe4trOdMdqD2cszMViH
-         x5APeYZe46QA5K3mlGCqYOYGrvZh9x5Zr36Qn0xuHctVLMCDpLoRjaYqnBRqkrFI2356
-         PktwFfL78xCChafvrMz8MNTuUsAz2TemCWkXXdIhMj14fHd0xd5tAc3vgq4h+aZ8ruz5
-         hyIg==
+        d=linaro.org; s=google; t=1706870990; x=1707475790; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=O3b844T5139R4eYbNAZElUdeiuPv3v5NVMBih9lh2J4=;
+        b=JDH3qyaXH+NWHHAlcglcVeRQSQzoOX3exS+Ogx0n7KHZkKv3MEa6EeeGoUMXDchG9F
+         gOEb0P34Ea6SujbPyve6GXQ7bBoe0HIkE+CbjGUDAzyLcAH32rVBMqZVtRLxp7jNGbe1
+         0RNO8jHLFETsUvVE/fqsl2qFOJmoWskr0vDeTvBDa9BBH00WEvEPy5HOekl0r6UnlPj5
+         peLW2+aaeAVu/3xfXUngyvVcfM0QEAzaoUTQ2LmLGEd3yKG2cP43HLWhalbZIaYu0mlb
+         GeBMtp1N64ZKcUglJayZbUgPk9wmckiP5EidT7EijcwPTli7XYa9eAicn1jChjyLMBM5
+         owSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706870952; x=1707475752;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UvX7fSziumDbXdZjiUHHfgTgPg/Ff9yAzyog8/e7MMo=;
-        b=siz3CvritzmrmkI/fEjNaZsAT6qzGLW98lK9LVFFjeMo4k5AkQH791nM3KlY6pnosA
-         1v8wnHQJ1ADBvTjorZ6NhRJjpMxHn3GNz+ZmJVzhraocdSHwoQu6G93Wi3CyWRPhS0j3
-         D8lAV0ruAUxQehQNF+fykQ3RMAtE+rOWXDt/Vkrpnv2uGfufsfhHu7jjYWHlN7K8UPvJ
-         2j0KxqWi+nud7UTCAsIK4ZJnasvnWlcpaxUH2iquiDNQx6/qSDsz2qJCeB0VgteRaI4q
-         WdoBkMnZQp3JQM0bzWtjKHs3vHTA48yTAmIP/1CsFOqyYpLB7mB4gVRcRIvkIB0reOMG
-         t3sw==
-X-Gm-Message-State: AOJu0Yxr0bTSzk67sIWubEBDvbq9+jOyRKPP6zJy4o9RGe4wV9FtN69L
-	fy75fttMUr0KDrPwaqZtD42QwDDfGUCDTcGwc0AmhzLRRRR9vH/i
-X-Google-Smtp-Source: AGHT+IGt0gdW6mrDcUmC1w0BRk/KHj5akXujwsZq3qhU+VxISakWquy43yOwlo5jvZp/B3KSXo11SQ==
-X-Received: by 2002:a17:90a:d98b:b0:296:1dcf:c297 with SMTP id d11-20020a17090ad98b00b002961dcfc297mr2954867pjv.7.1706870951431;
-        Fri, 02 Feb 2024 02:49:11 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVT4GTjep3haOrCyEzDu4yCllXlJiDYd3HSnRss2NjFhnD7dw0zgX3JWqiZqfHdLb7/b5jJEFVxbNtmy5LK5RSa+MZ5Cc6qaETDwJF8fTGJQr9LSs7YIoc2UojKBRkJrmvk8F0cJRHnqORH
-Received: from localhost.localdomain ([143.92.64.20])
-        by smtp.gmail.com with ESMTPSA id d18-20020a170903209200b001d8cde39e8bsm1314497plc.194.2024.02.02.02.49.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 02:49:11 -0800 (PST)
-From: "brookxu.cn" <brookxu.cn@gmail.com>
-To: longman@redhat.com,
-	lizefan.x@bytedance.com,
-	tj@kernel.org,
-	hannes@cmpxchg.org
-Cc: linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] cpuset: remove /proc/PID/cpuset
-Date: Fri,  2 Feb 2024 18:49:11 +0800
-Message-Id: <20240202104911.125894-1-brookxu.cn@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20230601; t=1706870990; x=1707475790;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O3b844T5139R4eYbNAZElUdeiuPv3v5NVMBih9lh2J4=;
+        b=livs0vM2ieub8oMCFYK591My7uJSkDSGVIkviLFccmONzyf9Z4AyQNZeIeoH/bBFKb
+         L5WjCzJgQbdC/JchKbggGdckh20oXKxrS53cZdbAArCT2JuokVU3huigdSWvYhtGmm+R
+         nww/54aCc2u51MB/ToTvAXnPk3tfEURTo79+VLCGqwMDOriui9ZqGeq7CAFYYPFIw4ev
+         RhQaOjW4RsxNBKtHXEEK2EUP8YIhb9jYvURs3w/cCKBuAx3a5t3acqQoUKlVfml8zgYN
+         MQZNXyYidgBhUeNgJE5+90L2BDG5Hr5eqVcBhOttugxQ8nj/kRSHLDYw1gLI3iAY938M
+         xXMw==
+X-Gm-Message-State: AOJu0YzjgJKMUVt/1wZAKofyIi6sR9D3SlkbzuPbxu+6l2LE8knkjp0S
+	Ycq5Di3GFtZ2B75/St9rZF3Hak7qMO4Et/irGFHPYbooPGEEmf/h7AGyH3cTDyw=
+X-Google-Smtp-Source: AGHT+IHGvmnPYn4hEtreD5PLVWgcslKwmjYXnHDMnbZ9bJ0+WZTv3GPFXl3bRegFhGELu1XZw0MkiA==
+X-Received: by 2002:a05:620a:5613:b0:785:443b:b430 with SMTP id vu19-20020a05620a561300b00785443bb430mr1707849qkn.14.1706870990017;
+        Fri, 02 Feb 2024 02:49:50 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXa/IY8ncMkHr4op3aIGWr4vIhlog9YIH9P1fanfg6Q5rKA1ZuOtPNPKV3HmY0VEsalE5SK6KGQDfOuWR26oE5Fd6d6Fsrdd097rvaLR3FF0Iwa0906MV9v1t2zih+Hq6p0BDRDKS0kM+PnGctxKlWzvRnLuADPFn9c9IyNgcgtABcHYsIVPb7APTd1Doqq3KHK/1Hl0lGt7YO1+2SGblN2LxnTwBGz9xBemFn3w56DO2ao/k8/mLDsSi+KfWKwnbfgISsMlEu91oXGJaCRuB95rM27PovKpGANB5QgIMvLV4jNAUuev/zKUcf33ekmkKKPNZGxL3VuF5Vq1VQwXdi6y/I4S2/kKoTcdTnoR1CfAcXqwdEUHyUgZSmEl4pc2mf2qXQECBGeKkGKmRxTvwtNNztzrnSQ6anvJN1/c0MVAFBE6FQDzoh2rAa55Vcp/heXGF3BHp77jfwRRuNJx8d8QNV/o4XZ/vj2YNbR96xH5M+L8vb3M0E=
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id br41-20020a05620a462900b00783f82a9386sm580458qkb.23.2024.02.02.02.49.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Feb 2024 02:49:49 -0800 (PST)
+Message-ID: <4e9360cf-2952-45e9-8c85-caa4c0d92175@linaro.org>
+Date: Fri, 2 Feb 2024 11:49:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] dt-bindings: fpga: xlnx,fpga-slave-selectmap: add DT
+ schema
+Content-Language: en-US
+To: Charles Perry <charles.perry@savoirfairelinux.com>
+Cc: mdf <mdf@kernel.org>, Allen VANDIVER <avandiver@markem-imaje.com>,
+ Brian CODY <bcody@markem-imaje.com>, hao wu <hao.wu@intel.com>,
+ yilun xu <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ krzysztof kozlowski+dt <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Michal Simek <michal.simek@amd.com>,
+ linux-fpga <linux-fpga@vger.kernel.org>,
+ devicetree <devicetree@vger.kernel.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ linux-arm-kernel@lists.infradead.org
+References: <20240129225602.3832449-1-charles.perry@savoirfairelinux.com>
+ <20240131230542.3993409-1-charles.perry@savoirfairelinux.com>
+ <20240131230542.3993409-3-charles.perry@savoirfairelinux.com>
+ <d5fe1ec2-b647-4902-a599-fb866e96e9cf@linaro.org>
+ <1391244934.434321.1706811892834.JavaMail.zimbra@savoirfairelinux.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <1391244934.434321.1706811892834.JavaMail.zimbra@savoirfairelinux.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Chunguang Xu <chunguang.xu@shopee.com>
+On 01/02/2024 19:24, Charles Perry wrote:
+> 
+> 
+> ----- On Feb 1, 2024, at 3:07 AM, Krzysztof Kozlowski krzysztof.kozlowski@linaro.org wrote:
+> 
+>> On 01/02/2024 00:05, Charles Perry wrote:
+>>> Document the slave SelectMAP interface of Xilinx 7 series FPGA.
+>>>
+>>> Signed-off-by: Charles Perry <charles.perry@savoirfairelinux.com>
+>>> ---
+>>>  .../bindings/fpga/xlnx,fpga-selectmap.yaml    | 83 +++++++++++++++++++
+>>>  1 file changed, 83 insertions(+)
+>>>  create mode 100644
+>>>  Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
+>>> b/Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
+>>> new file mode 100644
+>>> index 0000000000000..c9a446b43cdd9
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
+>>> @@ -0,0 +1,83 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/fpga/xlnx,fpga-selectmap.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Xilinx SelectMAP FPGA interface
+>>> +
+>>> +maintainers:
+>>> +  - Charles Perry <charles.perry@savoirfairelinux.com>
+>>> +
+>>> +description: |
+>>> +  Xilinx 7 Series FPGAs support a method of loading the bitstream over a
+>>> +  parallel port named the SelectMAP interface in the documentation. Only
+>>> +  the x8 mode is supported where data is loaded at one byte per rising edge of
+>>> +  the clock, with the MSB of each byte presented to the D0 pin.
+>>> +
+>>> +  Datasheets:
+>>> +
+>>> https://www.xilinx.com/support/documentation/user_guides/ug470_7Series_Config.pdf
+>>> +
+>>> +allOf:
+>>> +  - $ref: /schemas/memory-controllers/mc-peripheral-props.yaml#
+>>> +
+>>> +properties:
+>>> +  compatible:
+>>> +    enum:
+>>> +      - xlnx,fpga-selectmap
+>>
+>> Your description mentions "7 Series" which is not present in compatible
+>> and title. What is exactly the product here? Interface usually is not
+>> the final binding, so is this specific to some particular FPGA or SoC?
+>>
+>>
+>> Best regards,
+>> Krzysztof
+> 
+> This is specific to the FPGA, the 7 series encompass the following part
+> family:
+>  * Spartan-7 (XC7S6, XC7S15, ... XC7S100)
+>  * Artix-7 (XC7A12T, XC7A15T, ... XC7A200T)
+>  * Kintex-7 (XC7K70T, XC7K160T, ... XC7K480T)
+>  * Virtex-7 (XC7V585T, XC7V2000T, 
+>              XC7VX330T, XC7VX415T, ... XC7VX1140T,
+>              XC7VH580T, XC7VH870T)
+> 
+> 
+> The configuration guide of Xilinx [1] tells us that all those devices
+> share a common programming scheme.
+> 
+> I do agree that having a mention of "7 series" in the compatible name
+> would be beneficial as Xilinx has more FPGA than just the 7 series.
+> The name was inspired from "xlnx,fpga-slave-serial" which is the compatible
+> for the serial interface.
+> 
+> What about "xlnx,fpga-xc7-selectmap" ?
+> 
 
-Now we can get all cgroup paths from /proc/PID/cgroup for
-a long time, so it maybe useless to keep /proc/PID/cpuset,
-besides the path get from /proc/PID/cpuset is not consistent
-with /proc/PID/cgroup in default hierarchy, so now we may
-can safely remove /proc/PID/cpuset to avoid the mismatch.
+I am not sure what xc7 is and how Xilinx numbers it products, but
+compatibles are supposed to be device specific, not family. Common
+programming model could be denoted with generic fallback, but then the
+fallback could be device-specific as well, which usually we recommend.
 
-root@test:~# cat /proc/1186/cgroup
-0::/system.slice/lmeter.service
-
-root@test:~# cat /proc/1186/cpuset
-/system.slice
-
-Signed-off-by: Chunguang Xu <chunguang.xu@shopee.com>
----
- arch/mips/configs/sb1250_swarm_defconfig |  1 -
- arch/sh/configs/sdk7786_defconfig        |  1 -
- arch/sh/configs/urquell_defconfig        |  1 -
- fs/proc/base.c                           |  6 ----
- kernel/cgroup/cpuset.c                   | 40 ------------------------
- 5 files changed, 49 deletions(-)
-
-diff --git a/arch/mips/configs/sb1250_swarm_defconfig b/arch/mips/configs/sb1250_swarm_defconfig
-index ce855b644bb0..2fbea9c604df 100644
---- a/arch/mips/configs/sb1250_swarm_defconfig
-+++ b/arch/mips/configs/sb1250_swarm_defconfig
-@@ -3,7 +3,6 @@ CONFIG_HIGH_RES_TIMERS=y
- CONFIG_LOG_BUF_SHIFT=15
- CONFIG_CGROUPS=y
- CONFIG_CPUSETS=y
--# CONFIG_PROC_PID_CPUSET is not set
- CONFIG_CGROUP_CPUACCT=y
- CONFIG_NAMESPACES=y
- CONFIG_RELAY=y
-diff --git a/arch/sh/configs/sdk7786_defconfig b/arch/sh/configs/sdk7786_defconfig
-index 7b427c17fbfe..6fe340d4860c 100644
---- a/arch/sh/configs/sdk7786_defconfig
-+++ b/arch/sh/configs/sdk7786_defconfig
-@@ -13,7 +13,6 @@ CONFIG_CGROUP_DEBUG=y
- CONFIG_CGROUP_FREEZER=y
- CONFIG_CGROUP_DEVICE=y
- CONFIG_CPUSETS=y
--# CONFIG_PROC_PID_CPUSET is not set
- CONFIG_CGROUP_CPUACCT=y
- CONFIG_CGROUP_MEMCG=y
- CONFIG_CGROUP_SCHED=y
-diff --git a/arch/sh/configs/urquell_defconfig b/arch/sh/configs/urquell_defconfig
-index 445bb451a5ec..c960221a0549 100644
---- a/arch/sh/configs/urquell_defconfig
-+++ b/arch/sh/configs/urquell_defconfig
-@@ -11,7 +11,6 @@ CONFIG_CGROUP_DEBUG=y
- CONFIG_CGROUP_FREEZER=y
- CONFIG_CGROUP_DEVICE=y
- CONFIG_CPUSETS=y
--# CONFIG_PROC_PID_CPUSET is not set
- CONFIG_CGROUP_CPUACCT=y
- CONFIG_CGROUP_MEMCG=y
- CONFIG_CGROUP_SCHED=y
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 98a031ac2648..8dcd23b9212a 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -3309,9 +3309,6 @@ static const struct pid_entry tgid_base_stuff[] = {
- #ifdef CONFIG_LATENCYTOP
- 	REG("latency",  S_IRUGO, proc_lstats_operations),
- #endif
--#ifdef CONFIG_PROC_PID_CPUSET
--	ONE("cpuset",     S_IRUGO, proc_cpuset_show),
--#endif
- #ifdef CONFIG_CGROUPS
- 	ONE("cgroup",  S_IRUGO, proc_cgroup_show),
- #endif
-@@ -3658,9 +3655,6 @@ static const struct pid_entry tid_base_stuff[] = {
- #ifdef CONFIG_LATENCYTOP
- 	REG("latency",  S_IRUGO, proc_lstats_operations),
- #endif
--#ifdef CONFIG_PROC_PID_CPUSET
--	ONE("cpuset",    S_IRUGO, proc_cpuset_show),
--#endif
- #ifdef CONFIG_CGROUPS
- 	ONE("cgroup",  S_IRUGO, proc_cgroup_show),
- #endif
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index ba36c073304a..908cd7e6efa8 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -5066,46 +5066,6 @@ void __cpuset_memory_pressure_bump(void)
- 	rcu_read_unlock();
- }
- 
--#ifdef CONFIG_PROC_PID_CPUSET
--/*
-- * proc_cpuset_show()
-- *  - Print tasks cpuset path into seq_file.
-- *  - Used for /proc/<pid>/cpuset.
-- *  - No need to task_lock(tsk) on this tsk->cpuset reference, as it
-- *    doesn't really matter if tsk->cpuset changes after we read it,
-- *    and we take cpuset_mutex, keeping cpuset_attach() from changing it
-- *    anyway.
-- */
--int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
--		     struct pid *pid, struct task_struct *tsk)
--{
--	char *buf;
--	struct cgroup_subsys_state *css;
--	int retval;
--
--	retval = -ENOMEM;
--	buf = kmalloc(PATH_MAX, GFP_KERNEL);
--	if (!buf)
--		goto out;
--
--	css = task_get_css(tsk, cpuset_cgrp_id);
--	retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
--				current->nsproxy->cgroup_ns);
--	css_put(css);
--	if (retval == -E2BIG)
--		retval = -ENAMETOOLONG;
--	if (retval < 0)
--		goto out_free;
--	seq_puts(m, buf);
--	seq_putc(m, '\n');
--	retval = 0;
--out_free:
--	kfree(buf);
--out:
--	return retval;
--}
--#endif /* CONFIG_PROC_PID_CPUSET */
--
- /* Display task mems_allowed in /proc/<pid>/status file. */
- void cpuset_task_status_allowed(struct seq_file *m, struct task_struct *task)
- {
--- 
-2.25.1
+Best regards,
+Krzysztof
 
 
