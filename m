@@ -1,104 +1,131 @@
-Return-Path: <linux-kernel+bounces-50167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50168-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 809E9847536
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:44:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41183847538
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:45:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D7812946A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:44:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1E3B294BB4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:45:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E4121487F1;
-	Fri,  2 Feb 2024 16:44:42 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 646591487CD;
+	Fri,  2 Feb 2024 16:45:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UHuUiP/i"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CD92146919;
-	Fri,  2 Feb 2024 16:44:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4BB814534E;
+	Fri,  2 Feb 2024 16:45:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706892282; cv=none; b=WVQf4pqvlTeEa7eOx6FNUcDp42PZwMMkGwmJdbBobd2XUu7vMftwrFzo9ytw+yvFkFvRiZvmOPAZGPlrVP8sZTGgzOLQVwy6kNtcxsWxwTVxgNZcPyi09B4tls+7ic4bxnA64v3bfRMf3oISzRbAjEUsRNyMQd0E9DtX/D6QN4A=
+	t=1706892334; cv=none; b=bK5meP3lUNwiWZQWdvK5fRdJdd67AE0zTfj699n48TSGSQrGvC0oKPQuamU5/RE6B5C0tlsjk5svYU2Drbf9g4hpc7sxwjPCEsvejVjirSTC9E9dOaFxuBEjIaB7+OnHXzW+nKGRlmuqxO29YlrElGS49ThRY/spTNmdhHW05wQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706892282; c=relaxed/simple;
-	bh=91dKtYL6nn7sT6XBkJUZhgPHoMOoFPhDfSgFduym7O0=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=a5hwDqkYT4xHCGbX3Gvrl6KLCEDoZkpPwUz4GZn0uTgA4Iim9n9LRiE8NWPHwAaqp5LQdm+7VsF65FRaDNFsVKsTsWKiyguQA2fDCDGFvVTvJlxE0ZEXvY5Hn8+/GAcYamzJaWVN6EqXalT55L6Vl6tOLjshg518uyEDMz0VrN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TRM3Q6Gpcz67pnj;
-	Sat,  3 Feb 2024 00:41:06 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id B846A1400D4;
-	Sat,  3 Feb 2024 00:44:32 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 2 Feb
- 2024 16:44:31 +0000
-Date: Fri, 2 Feb 2024 16:44:31 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
-	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
-	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse
-	<james.morse@arm.com>, "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH RFC v4 10/15] irqchip/gic-v3: Don't return errors from
- gic_acpi_match_gicc()
-Message-ID: <20240202164431.00006f09@Huawei.com>
-In-Reply-To: <E1rVDn9-0027ZB-QN@rmk-PC.armlinux.org.uk>
-References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk>
-	<E1rVDn9-0027ZB-QN@rmk-PC.armlinux.org.uk>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1706892334; c=relaxed/simple;
+	bh=1NpeW/jx9i/TLtkjQru7LCt3fwDMOgyS6dS+4BVnKEE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uywMeru0Z9wf8mYsWhYpRY8ddJCN+qFzdlQByuFWkhEz8ZWjv1ursUtTWshkt+4YgE2chvAmcOiF3To+75jwqPTUgTlkWz3FZTBlfKX7fCanF7gpLA0wXj12jI2980Sge2CkW1TT/VJm4JqoJ1K2ItkedEMwgF5snj9fwCy1yAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UHuUiP/i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27BB6C433C7;
+	Fri,  2 Feb 2024 16:45:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706892334;
+	bh=1NpeW/jx9i/TLtkjQru7LCt3fwDMOgyS6dS+4BVnKEE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=UHuUiP/iWk5Fb53S92nVygIFatSs9skq2hMoXmumjli8E4rpyHXmCRTuhNPx/CUyS
+	 WInbGMMiFUC5zSs9pHr8PxwCyqpB5wuc7JKCuxeUpN0kRgXoZGxqvfQa7V4g1vy5rx
+	 ZH65cC0egk0Ci+3m6DC56kCOdrLuHafHqcTZryqxissLpfpqvBfJV2ic3TC07vc162
+	 RfROEBIkvPkuXXvgAKSwnD/mFfgGAvEt56tgRD5v+f4HO83hOB4WBd+PYhwq8qpcDy
+	 i72DKP36jvL0uRRmzITZ3Mi5v9M9T+T4Ofb3IqJI/SG7uD3ukIYC5fBX5+UwK2D10t
+	 CdTwZpt9Q6Sag==
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d07b400bb8so21160871fa.2;
+        Fri, 02 Feb 2024 08:45:34 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUj1kZAeWoXLMvCXfOu2t6fvVDEo//bRokvfTSLpvBsMzg7brLUde90oSd5P/jmOEZLPyM0T4KM102EZzbFpoCTC32BaPWuZKYMHxDWjziqLBaHPgKgwuMaJYEU4cuM8u4LY1HA4zvF
+X-Gm-Message-State: AOJu0Yymm66AvbUJXJqnu2P/PkzTBVbrnE/r3C9tF0xKIq0pOf0Qmtm9
+	VCbAeu6XGlyx8nKn5BJUq8pD/EV1V7NQiAtRS1OIA6uxlfTgo594b3Epm5ZCUSdFwwDevhBR47y
+	geAixtBVt+aduxIcR1MDanJ6huWE=
+X-Google-Smtp-Source: AGHT+IEVsLTITAJ2OrzaTZdhtTYlPVrCreRMlehrq0ps5B01+fszECj/LB2WI4jZuRlSw3VuVUVh8K42fS/pgildxQw=
+X-Received: by 2002:a05:651c:1249:b0:2d0:87ea:a132 with SMTP id
+ h9-20020a05651c124900b002d087eaa132mr1347084ljh.27.1706892332395; Fri, 02 Feb
+ 2024 08:45:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+References: <20240202163433.786581-1-abrestic@rivosinc.com> <20240202163433.786581-3-abrestic@rivosinc.com>
+In-Reply-To: <20240202163433.786581-3-abrestic@rivosinc.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Fri, 2 Feb 2024 17:45:21 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXH7=9-Ww_z6a4Z5K8MrbH8x17Y3EzYk9Qf-3PL-JgMcww@mail.gmail.com>
+Message-ID: <CAMj1kXH7=9-Ww_z6a4Z5K8MrbH8x17Y3EzYk9Qf-3PL-JgMcww@mail.gmail.com>
+Subject: Re: [PATCH 2/2] efi: Don't add memblocks for unusable memory
+To: Andrew Bresticker <abrestic@rivosinc.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, linux-efi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 31 Jan 2024 16:50:27 +0000
-Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
+On Fri, 2 Feb 2024 at 17:34, Andrew Bresticker <abrestic@rivosinc.com> wrote:
+>
+> Adding memblocks (even if nomap) for such regions unnecessarily consumes
+> resources by creating struct pages for memory that may never be used or,
+> in the case of soft-reserved regions, prevents the memory from later
+> being hotplugged in by dax_kmem. This is also consistent with how x86
+> handles unusable memory found in the EFI memory map.
+>
 
-> From: James Morse <james.morse@arm.com>
-> 
-> gic_acpi_match_gicc() is only called via gic_acpi_count_gicr_regions().
-> It should only count the number of enabled redistributors, but it
-> also tries to sanity check the GICC entry, currently returning an
-> error if the Enabled bit is set, but the gicr_base_address is zero.
-> 
-> Adding support for the online-capable bit to the sanity check will
-> complicate it, for no benefit. The existing check implicitly depends on
-> gic_acpi_count_gicr_regions() previous failing to find any GICR regions
-> (as it is valid to have gicr_base_address of zero if the redistributors
-> are described via a GICR entry).
-> 
-> Instead of complicating the check, remove it. Failures that happen at
-> this point cause the irqchip not to register, meaning no irqs can be
-> requested. The kernel grinds to a panic() pretty quickly.
-> 
-> Without the check, MADT tables that exhibit this problem are still
-> caught by gic_populate_rdist(), which helpfully also prints what went
-> wrong:
-> | CPU4: mpidr 100 has no re-distributor!
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Reviewed-by: Gavin Shan <gshan@redhat.com>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Does what it says on the tin.
+x86 doesn't care as much about memory vs device semantics as ARM does.
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+This affects the output of memblock_is_[region_]memory(), so we'd have
+to double check that none of those uses get broken by this.
+
+If the soft reserved regions need to be omitted from memblock, we can
+deal with that separately perhaps, but changing it at this level seems
+inappropriate to me.
+
+
+> Signed-off-by: Andrew Bresticker <abrestic@rivosinc.com>
+> ---
+>  drivers/firmware/efi/efi-init.c | 12 +-----------
+>  1 file changed, 1 insertion(+), 11 deletions(-)
+>
+> diff --git a/drivers/firmware/efi/efi-init.c b/drivers/firmware/efi/efi-init.c
+> index d4987d013080..f05bacac89b7 100644
+> --- a/drivers/firmware/efi/efi-init.c
+> +++ b/drivers/firmware/efi/efi-init.c
+> @@ -24,13 +24,6 @@
+>
+>  unsigned long __initdata screen_info_table = EFI_INVALID_TABLE_ADDR;
+>
+> -static int __init is_memory(efi_memory_desc_t *md)
+> -{
+> -       if (md->attribute & (EFI_MEMORY_WB|EFI_MEMORY_WT|EFI_MEMORY_WC))
+> -               return 1;
+> -       return 0;
+> -}
+> -
+>  /*
+>   * Translate a EFI virtual address into a physical address: this is necessary,
+>   * as some data members of the EFI system table are virtually remapped after
+> @@ -195,12 +188,9 @@ static __init void reserve_regions(void)
+>                 memrange_efi_to_native(&paddr, &npages);
+>                 size = npages << PAGE_SHIFT;
+>
+> -               if (is_memory(md)) {
+> +               if (is_usable_memory(md)) {
+>                         early_init_dt_add_memory_arch(paddr, size);
+>
+> -                       if (!is_usable_memory(md))
+> -                               memblock_mark_nomap(paddr, size);
+> -
+>                         /* keep ACPI reclaim memory intact for kexec etc. */
+>                         if (md->type == EFI_ACPI_RECLAIM_MEMORY)
+>                                 memblock_reserve(paddr, size);
+> --
+> 2.34.1
+>
 
