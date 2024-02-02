@@ -1,169 +1,132 @@
-Return-Path: <linux-kernel+bounces-49107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C76B58465E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:33:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C8BF8465EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:33:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DC0128BCE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:33:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B4CC1F2350E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3430AC2CE;
-	Fri,  2 Feb 2024 02:30:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA1BEAEA;
+	Fri,  2 Feb 2024 02:31:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="NsFwKzt3"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ck5Q2M/k"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76C36D275
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 02:30:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95625E56B;
+	Fri,  2 Feb 2024 02:31:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706841058; cv=none; b=NNcRUo6jKLZiUgaDxGjIbxEtidCwvq8piKipeAxwPuQdeP/SN9ujMBtvdp2MZcalsyfGCp2i+UxusdYu6RhXDpo1cb88tNXFij8aYyEush1F/C+ewu9fReJaQDwwHvobmldDVoz9BrdYsl/WSqElsnA/Eq5egFPJU6gm4XEmiDs=
+	t=1706841071; cv=none; b=Yhd2FsLjbl067W8R5JuoVKDDUF/35UxzIeSXvoxn3IZNgCqLygf9f4Vp2n+yKC0nnUtZzcIBIOeykiacgeWdwjbTCtBNKBH0QRKnpjNOIop8ySTJL7l2K0m4fO6IcKKkKLdZsjwPVh8Q2EY3QRNUz/bwJbkmzCQpARWOYTYkR/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706841058; c=relaxed/simple;
-	bh=KpL5m4Y25ECKAWZYe1aKcE9e3nSH9gZtcs480pi8j/0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KsrjfFhTwb9d3OJS+DHg+kVWwL2XHPQGNz+h4rDfMBsq96MXvFKacNq1Cgg+zy2DK7j1l2cTdmgR1fxavKIIO0Gm5pxoByWpsFg1hCUl7705ewWdqw1f9qLb5zf3oXY4vThEtSM0CBaX5Qv1ii2j2ytrYt+k35nBKfkQWvSZICw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com; spf=pass smtp.mailfrom=arista.com; dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b=NsFwKzt3; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40fc6578423so1658585e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 18:30:56 -0800 (PST)
+	s=arc-20240116; t=1706841071; c=relaxed/simple;
+	bh=+yWBFgqsLJb+DfB4+lohr/565RIudwuQoPMSMCPgiEQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KTvFX9R7VmIslUbYdDModzoBzAV0zzlmkLemq6HP28Xz/Xxy/Ix8rEy7ZBBY+RC/7H/Ugug8xGcb3zZNbdLyXCdJJA9QT6bK+WivSVt9ntRQYVLaffsdWEwz7xJNcumITgnyivEI8CtFRzh1L04H4NNNK44/z+k8BaF/H8fGH94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ck5Q2M/k; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5113191f3c3so410672e87.0;
+        Thu, 01 Feb 2024 18:31:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1706841055; x=1707445855; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fQCgprpOyHEK0e/SRQUIuIzVOt3Yj59dY0F+3ICLlFA=;
-        b=NsFwKzt3xv/NuA3z+nr/1kapbnl3rjpf3Bum1Bdl2IROeokoly/89mxyzDlhcsavdQ
-         oODberjOQW6fmyKDt2c/SROUXMf2FfkDadsg795JOQJkbOAzCek36U2WLbbSl2OidOk7
-         wo5sRmWPtmrJlyFhucC/6yspSVtD4/nCzJVz5doe+68j8yZfGJBk3cDqWEYSfkT+32mK
-         BBQKO8rm/ECgMoN788xzHJxcJtR9Y7TNVl8H5whmyBStBxYvYWL3LDGWXcELR/ohqArc
-         G/yURMaN27uKDQkBdSJh3KaOjmtE4Vo26oitrfV7XHl68A13sD/a90y2cdQlSy1o6J7F
-         bk/g==
+        d=gmail.com; s=20230601; t=1706841067; x=1707445867; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l99B5IUgp/QyIWazijcr0QOYcEJaWP5wOJ89lKkwdd8=;
+        b=ck5Q2M/kU9x0oU1sWLTmJ9Rehhuct+k+yhcoqxZ890e1KVgwoZldycD7TCSoN2oQGv
+         Bckbf6od2MsLcF9crr6nqFZ4UA30KoqMIYk2cWPWxv/Lun8tSuK5yqLPEDvHlSwS2E0n
+         7aAdxc/Dp/Kl7ovnpK5eZ3ZeGtiPu1KiiKxK0S3aUNNC+zlI0rTZF3K7OFylzWb1tZKl
+         fGrFLmxM3bxxMvxuhdQWUp88sIaxv2RcgwXb1+qoOhCrV/3lfs52zzInIvieIRZN3omD
+         mXDX6vhFsU/QydmylEVLJqBNJPp/6NvK+KnduiaFZvgcOFiAenuf5U/uWHGagMy8SPkS
+         c8lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706841055; x=1707445855;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fQCgprpOyHEK0e/SRQUIuIzVOt3Yj59dY0F+3ICLlFA=;
-        b=P7j4B0vgafMgKriNHzyB+7fsSVt8Vn8F7jNoGJCW+axjjCcovTNH76FWpU1aPBxVeh
-         rFnUVd4ZmB8cWAXDKReoQB86JlXhGuTKy4AwUKV30NLLM3jN+NHSCnsik7ninHvQqSbk
-         zmMiUpufms08v8vTbXYaLgNuR4wkdQ70uvgI6In78+ypd87J1BJEjFGFpV+0KvXM5o2e
-         PV21vRM7HzHeO1zHZLZNQU0m3AXbqwGOpMIKP78suMsIJ9SIm6Bh5MUJsxFnNIXUtRzZ
-         6BUSEZs7VgTMAMWYKZPFeXQUuRiNUTmVRhOYGMJ2X+A/cX4gN5HksEAZUYnBVe/f2VS5
-         Ishw==
-X-Gm-Message-State: AOJu0YzwOGMh96ByPHKV9HtRlaJ9vryKlFI/dBZFFUaCQnV3rXCpbo3k
-	pepd+33yxdTCIdfxcvTvuDaoL6kQdYwmMGSVZyVG0Va+su1ZP8M4IfZknzEGRg==
-X-Google-Smtp-Source: AGHT+IGU+GNRD1OLnjZW2xraXAipdX2qEh4m6QD8hspwdTG5tlbNntKBNpIfpaOO7GxNnbApF+8FZw==
-X-Received: by 2002:a5d:66cd:0:b0:33b:10ca:d190 with SMTP id k13-20020a5d66cd000000b0033b10cad190mr3331333wrw.24.1706841054408;
-        Thu, 01 Feb 2024 18:30:54 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWfUw5cmK7XCnawjH0IsiCOqFeJ/0vUC36eFm/aog4HwweheKPvb2eUx9wEsDMnVdBu3HcMnFprFTvj5Ao/kd/QLz/Z/gQk/mNCCMO1FwvRfb+tV+XMJV8RW/hseoTjrWN3PNp2avJGBhDN/ZmeXkcWU2YgQZ8v2OVYQxVVjAH4ts9cjmAtXr5iAiDyLv8CtxgiIYrc1pom5hpuXCm5XuBI8Rxi7Nbw2+7tk94o5jZnI++/Ww67wZQiletmfXpCFbU8zjCu3doswKNVZ/yCTqfu28GNeRC2HR+vnNqwRoyb+PuoGaTXGf3q+CRtAQFppt2FkICJuILPQj2DEQpkEi9ga4+PFdXO8xCvj93M
-Received: from [10.83.37.178] ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id h10-20020adff18a000000b0033ae4df3cf4sm775276wro.40.2024.02.01.18.30.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 18:30:53 -0800 (PST)
-Message-ID: <6104436c-4c71-4427-a569-cf98174d0c20@arista.com>
-Date: Fri, 2 Feb 2024 02:30:52 +0000
+        d=1e100.net; s=20230601; t=1706841067; x=1707445867;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l99B5IUgp/QyIWazijcr0QOYcEJaWP5wOJ89lKkwdd8=;
+        b=f7gpagqfQNWPH+DQVorVJV4IuSZEZTuRn84bmGG8zXwhBiVasgCotSe5MXGgrrL5eP
+         6QHKP8Vfiz3V7hq3qXpHmLmOWu/ySI7xpt2+UM+nxAOyEAYUFWQL21GPBZPwueUKylaX
+         zeLxNl8XyJQ8sVAWJZ3HB89h2QI128M+hC0ccmoXXoz90reFkpoEM4lIFANu0aYGch2O
+         cG00JHS7Cgx9vilNx/mzP8vY1t2LnZxxCV5nigjleCpC8j65dASV4jeYaQE3WGwu+KEE
+         3M0yzsNC+XRadc4l+ea4q6aOhJSzYEPOqkPOgZwSh7gVhPS65FUHawNJ9ql1yO82k5GO
+         Or2g==
+X-Forwarded-Encrypted: i=0; AJvYcCUpOQexrkII5UqD3Ys9tH7bTdClZOsipxxXylOXkZW4SSWfRraT18t6vmCHIzacBLbhf3dG/xVYfbqq5oKw0lsegIJnU/O3WqdkslWyGfAaWUBbN+I19+vnD7SlhA4W5i4oahVAedjupls=
+X-Gm-Message-State: AOJu0YyWfTKLcN5vOCJkIxcG/BPJkC8Zt3TgI0FDZFnQ5E4oJ8IXSGrs
+	PqLvSSxXsb8PZpv4M85ZQvYDu+A1StQnVyR8b2UNuFy2C3xbmKTLAy6+3aPsrm0limKBAv7GPAt
+	uFZlztZcAIRY9X5GKScKEVP56f3+Zxf6YUaP9rA==
+X-Google-Smtp-Source: AGHT+IH/WCkGkOlIZ5RVRugk5Caf3wHPCOQZPMfFpuCqEQlRXSSVK1vGqUq2hkqY2MElIL55i6YENWOpqCdWfS79Wmo=
+X-Received: by 2002:a2e:7d10:0:b0:2d0:727e:79a6 with SMTP id
+ y16-20020a2e7d10000000b002d0727e79a6mr2707828ljc.1.1706841067128; Thu, 01 Feb
+ 2024 18:31:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/3] selftests/net: A couple of typos fixes in
- key-management/rst tests
-Content-Language: en-US
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Shuah Khan <shuah@kernel.org>, Dmitry Safonov <0x7f454c46@gmail.com>,
- Mohammad Nassiri <mnassiri@ciena.com>, Simon Horman <horms@kernel.org>,
- netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240130-tcp-ao-test-key-mgmt-v2-0-d190430a6c60@arista.com>
- <20240131163630.31309ee0@kernel.org>
- <e88d5133-94a9-42e7-af7f-3086a6a3da7c@arista.com>
- <20240201132153.4d68f45e@kernel.org>
- <44d893b4-10b0-4876-bbf7-f6a81940b300@arista.com>
- <a1ac7a6e-4447-4476-8fb7-fb5f0d7ec979@arista.com>
-From: Dmitry Safonov <dima@arista.com>
-In-Reply-To: <a1ac7a6e-4447-4476-8fb7-fb5f0d7ec979@arista.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240201115320.684-1-jirislaby@kernel.org> <20240201115320.684-3-jirislaby@kernel.org>
+In-Reply-To: <20240201115320.684-3-jirislaby@kernel.org>
+From: Ping Cheng <pinglinux@gmail.com>
+Date: Thu, 1 Feb 2024 18:30:54 -0800
+Message-ID: <CAF8JNhK+LSxg+wj3Ms46HhmETj3ymtEThnDBNHaWHbAZiGqsqA@mail.gmail.com>
+Subject: Re: [PATCH 2/7] HID: wacom: remove unused hid_data::pressure
+To: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+Cc: jikos@kernel.org, linux-input@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Ping Cheng <ping.cheng@wacom.com>, 
+	Jason Gerecke <jason.gerecke@wacom.com>, 
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/1/24 23:37, Dmitry Safonov wrote:
-> On 2/1/24 22:25, Dmitry Safonov wrote:
->> Hi Jakub,
->>
->> On 2/1/24 21:21, Jakub Kicinski wrote:
->>> On Thu, 1 Feb 2024 00:50:46 +0000 Dmitry Safonov wrote:
->>>> Please, let me know if there will be other issues with tcp-ao tests :)
->>>>
->>>> Going to work on tracepoints and some other TCP-AO stuff for net-next.
->>>
->>> Since you're being nice and helpful I figured I'll try testing TCP-AO
->>> with debug options enabled :) (kernel/configs/debug.config and
->>> kernel/configs/x86_debug.config included),
->>
->> Haha :)
->>
->>> that slows things down 
->>> and causes a bit of flakiness in unsigned-md5-* tests:
->>>
->>> https://netdev.bots.linux.dev/flakes.html?br-cnt=75&tn-needle=tcp-ao
->>>
->>> This has links to outputs:
->>> https://netdev.bots.linux.dev/contest.html?executor=vmksft-tcp-ao-dbg&pass=0
->>>
->>> If it's a timing thing - FWIW we started exporting
->>> KSFT_MACHINE_SLOW=yes on the slow runners.
->>
->> I think, I know what happens here:
->>
->> # ok 8 AO server (AO_REQUIRED): AO client: counter TCPAOGood increased 4
->> => 6
->> # ok 9 AO server (AO_REQUIRED): unsigned client
->> # ok 10 AO server (AO_REQUIRED): unsigned client: counter TCPAORequired
->> increased 1 => 2
->> # not ok 11 AO server (AO_REQUIRED): unsigned client: Counter
->> netns_ao_good was not expected to increase 7 => 8
->>
->> for each of tests the server listens at a new port, but re-uses the same
->> namespaces+veth. If the node/machine is quite slow, I guess a segment
->> might have been retransmitted and the test that initiated it had already
->> finished.
->> And as result, the per-namespace counters are incremented, which makes
->> the test fail (IOW, the test expects all segments in ns being dropped).
->>
->> So, I should do one of the options:
->>
->> 1. relax per-namespace checks (the per-socket and per-key counters are
->>    checked)
->> 2. unshare(net) + veth setup for each test
->> 3. split the selftest on smaller ones (as they create new net-ns in
->>    initialization)
-> 
-> Actually, I think there may be an easier fix:
-> 
-> 4. Make sure that client close()s TCP-AO first, making it twsk.
->    And also make sure that net-ns counters read post server's close().
-> 
-> Will do this, let's see if this fixes the flakiness on the netdev bot :)
+On Thu, Feb 1, 2024 at 3:53=E2=80=AFAM Jiri Slaby (SUSE) <jirislaby@kernel.=
+org> wrote:
+>
+> The pressure member in struct hid_data is unused. It was
+> added in commit 5ae6e89f7409 (HID: wacom: implement the finger part of
+> the HID generic handling), but never used.
+>
+> As this is not a struct to communicate with the HW, remove that member.
+>
+> Found by https://github.com/jirislaby/clang-struct.
+>
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 
-FWIW, I ended up with this:
-https://lore.kernel.org/all/20240202-unsigned-md5-netns-counters-v1-1-8b90c37c0566@arista.com/
+Wacom current touch devices do not support pressure. We could add pressure
+back when it is necessary in the future. Thank you Jiri.
 
-I reproduced the issue once, running unsigned-md5* in a loop, while in
-another terminal building linux-next with all cores.
-With the patch above, it survived 77 iterations of both ipv4/ipv6 tests
-so far. So, there is a chance it fixes the issue :)
+Acked-by: Ping Cheng <ping.cheng@wacom.com>
 
-Thanks,
-           Dmitry
+Cheers,
+Ping
 
+> Cc: Ping Cheng <ping.cheng@wacom.com>
+> Cc: Jason Gerecke <jason.gerecke@wacom.com>
+> Cc: Jiri Kosina <jikos@kernel.org>
+> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> ---
+>  drivers/hid/wacom_wac.h | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/hid/wacom_wac.h b/drivers/hid/wacom_wac.h
+> index e63b1e806e34..6ec499841f70 100644
+> --- a/drivers/hid/wacom_wac.h
+> +++ b/drivers/hid/wacom_wac.h
+> @@ -309,7 +309,6 @@ struct hid_data {
+>         bool confidence;
+>         int x;
+>         int y;
+> -       int pressure;
+>         int width;
+>         int height;
+>         int id;
+> --
+> 2.43.0
+>
+>
 
