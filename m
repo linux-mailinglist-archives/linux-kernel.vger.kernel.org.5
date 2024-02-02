@@ -1,107 +1,157 @@
-Return-Path: <linux-kernel+bounces-50303-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50304-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8176E847735
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:16:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0F03847737
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:16:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 368781F24BB7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:16:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 293DAB275F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:16:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6AB614D43E;
-	Fri,  2 Feb 2024 18:16:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA2C514D434;
+	Fri,  2 Feb 2024 18:16:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="KSYCbLwL"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GKy92vuR"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 477CA14A4DB;
-	Fri,  2 Feb 2024 18:16:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72D9E14AD10;
+	Fri,  2 Feb 2024 18:16:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706897774; cv=none; b=QBOR8+w2MynFKnY/FIY1R0exq6EK5DI9hy6t3uZiRIdrOggQytVnCBw8GlUPO23yEaPKLdwsAKpNi5ZZzaRVaXtEJyVUtBVjS5yw2AwpOVUzmaE4n6xiiEI4svKJ8Y2w6aOQlopDQ2Kpm1Moq5io/Ztc9J1vYAmQnXwaQ5h65fo=
+	t=1706897782; cv=none; b=Fzh0HrUKLMDzbRcPkSv3HY+JC6baF5GjgD0HZBlpl3KJfTdki+BbcGpD3QqTwZfENJtzdiIY1PZqqIT+FbKrc9+5O67a8SL3svCZ8ldX42HQP/Rdek88J/Wca5lbQBtZ6fPTj+FB16z7cO5ZW2A8NOcFc/zz5mD+5Eonmkhj8nE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706897774; c=relaxed/simple;
-	bh=NjO4eKATb1ZVzlEJYvDOvITgk+VfeuI9bh96oQ6EXhw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QInhMb6M08AoeMg3bFrhmKsTso+jjaBVNsITDIcg7QynErh6Htu3HveTDeBS+2afk/R2ZcWIBeo8bpwMMllXZ5+ebsWOXPBs/WQ+2VXxeeRMyy1cQnedeDoQEZRh3mycnKusqYGbUEo2uAlRmgFCQ43SUr0+6XzO4Uzrxz/Rmz4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=KSYCbLwL; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9A90240006;
-	Fri,  2 Feb 2024 18:16:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1706897769;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wtiYOXFMPoLKKMTHGF2JB2BrNN/qXiq/VP/qdA5HoGY=;
-	b=KSYCbLwLFuzIuoUaJtpjQGUzO1il4uWXGQ0IExPOpAKFe7gDSiBo3Zdbi+kNccBwAl2Yec
-	RB4VAVK7NrOrl2YBoFuidSJZRkL57a+WmQ7lxqCmdkMTKSimnimlSsAPH7WhtbnHjbmMcf
-	Brarti0Ozcpa7hCbnOYI4yB13yrzhLSjSpAK46Pa9PfMOyQvZ6mFY4LCTUz7gg2v+t58AH
-	FQ/pnWSOQKp8/Tk0nqzBxPiQrbKbulmAa9H0zHfhFbRZcJpiGj9EBCWqfWD83X5GtIW303
-	dVMZ7x0vg+AKUWJCm1WjaDAps1zeUQIli0oh+MpNDLKQ9OWItA/vUi6aa1Nujw==
-Message-ID: <5b744f7f-2f63-4219-a0e9-8f08267b1fdd@arinc9.com>
-Date: Fri, 2 Feb 2024 21:16:02 +0300
+	s=arc-20240116; t=1706897782; c=relaxed/simple;
+	bh=nzaDdjcfPayXh4qIG8StvPK20F+fr27KrMWe3tHTVYc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=djbz7W3F/M8RMCIZ9uJDfIsmTcLAjwO9ZnMEfeZU86tW4A+ZDIVKjpyXVKlLCJd4rZ5rnHdBef1uczFOWCZuO7usnR3g6QnIhjWAHk0BLmozogvxiwtcZaMflvc//qL4h4Ab+rg+ex8DVDv6bLKhfoHzqLDZBBn1SzZ9dPmqg3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GKy92vuR; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706897781; x=1738433781;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:to:cc;
+  bh=nzaDdjcfPayXh4qIG8StvPK20F+fr27KrMWe3tHTVYc=;
+  b=GKy92vuRH7cZgi04sr30nvhMdDkwfqD/JLB+Skq/YCLNKid/Q/9XPAYv
+   yBEdKp3tfqiqv7hFHYlgXnFhuACkTB4tby40PTR0u3vtHgs5dpV7WmoBp
+   dhLDypqJcfRMJTzMNVYnhZ202LaFl7+DwSx4ayQcqSfUgIUhd3l9RiOg2
+   to84bIlMlGcT6wmjiotP2ufHWOQT+PQJ/bcm4URTDNDk9LdbX39aghq70
+   cyPVLXbby0BMuTQO3DMmgRmTafLcozelgq9ODBN/Ss/KGDpSHmFYp2ZMt
+   A1Xsil6ZZVN2PV+0gfXIJ9IrRGB30aUkI9bXby0MuSYOwZa9xFBoLUMmw
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="17623706"
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="17623706"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 10:16:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="4747421"
+Received: from iweiny-desk3.amr.corp.intel.com (HELO localhost) ([10.213.160.232])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 10:16:19 -0800
+From: Ira Weiny <ira.weiny@intel.com>
+Date: Fri, 02 Feb 2024 10:16:19 -0800
+Subject: [PATCH] acpi/ghes: Prevent sleeping with spinlock held
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 4/7] net: dsa: mt7530: move XTAL check to
- mt7530_setup()
-Content-Language: en-US
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
- Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean
- <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
- Bartel Eerdekens <bartel.eerdekens@constell8.be>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20240202-for-netnext-mt7530-improvements-2-v3-0-63d5adae99ca@arinc9.com>
- <20240202-for-netnext-mt7530-improvements-2-v3-4-63d5adae99ca@arinc9.com>
- <ZbzWpmZrukknMsYf@shell.armlinux.org.uk>
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <ZbzWpmZrukknMsYf@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240202-cxl-cper-smatch-v1-1-7a4103c7f5a0@intel.com>
+X-B4-Tracking: v=1; b=H4sIAHIxvWUC/x2MQQqAIBAAvyJ7bkEXD9VXooPZlgtlohFB9Pckm
+ MscZh4onIUL9OqBzJcUOWIV0yjwwcWVUebqQJqsJm3Q3xv6xBnL7k4fsKXJUGe7tgK1SpkXuf/
+ jML7vBztUPm5hAAAA
+To: "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Dan Williams <dan.j.williams@intel.com>, 
+ Jonathan Cameron <jonathan.cameron@Huawei.com>
+Cc: linux-acpi@vger.kernel.org, linux-cxl@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Dan Carpenter <dan.carpenter@linaro.org>, 
+ Ira Weiny <ira.weiny@intel.com>
+X-Mailer: b4 0.13-dev-2d940
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706897778; l=2362;
+ i=ira.weiny@intel.com; s=20221222; h=from:subject:message-id;
+ bh=nzaDdjcfPayXh4qIG8StvPK20F+fr27KrMWe3tHTVYc=;
+ b=F9rjbrfKk6RcbUwsD27CBnFnQJvDp/y0gj0O2zXp9+uSl5dLtFILK6JSrVFraw2H71usgPOqa
+ l9v/bIJngtgAECJAr/BuZYQebcbX3btEztGxiIW4oA1EpXYxT7ZCNeu
+X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
+ pk=brwqReAJklzu/xZ9FpSsMPSQ/qkSalbg6scP3w809Ec=
 
-On 2.02.2024 14:48, Russell King (Oracle) wrote:
-> On Fri, Feb 02, 2024 at 12:19:10PM +0300, Arınç ÜNAL via B4 Relay wrote:
->> From: Arınç ÜNAL <arinc.unal@arinc9.com>
->>
->> The crystal frequency concerns the switch core. The frequency should be
->> checked when the switch is being set up so the driver can reject the
->> unsupported hardware earlier and without requiring port 6 to be used.
->>
->> Move it to mt7530_setup(). Drop the unnecessary function printing.
->>
->> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
->> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
->> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-> 
-> I would prefer this to be earlier in the series, before patch 2 which
-> moves mt7530_setup_port6() to be called from mac_config(). mac_config()
-> is supposed to be configuration error-free - in other words, all state
-> should have been checked before hand.
+Smatch caught that cxl_cper_post_event() is called with a spinlock held
+or preemption disabled.[1]  There is no need for the callback to sleep.
 
-I agree but mt7530_mac_config() is not a void function yet. The
-mac_port_config member of the mt753x_info structure points to this
-function. My next patch series gets rid of all useless error returns on the
-phylink path and change mac_port_config to void. So I don't think working
-on this patch series further will worth the effort. I'd rather have this
-version applied as is.
+Replace the RW semaphore with a RW lock.
 
-Arınç
+A static call was considered but ARM does not select HAVE_STATIC_CALL
+and in that case setting the function pointer uses a RW semaphore.
+
+[1] https://lore.kernel.org/all/b963c490-2c13-4b79-bbe7-34c6568423c7@moroto.mountain/
+
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+---
+ drivers/acpi/apei/ghes.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+index 7b7c605166e0..bdc0ec2813a3 100644
+--- a/drivers/acpi/apei/ghes.c
++++ b/drivers/acpi/apei/ghes.c
+@@ -39,6 +39,7 @@
+ #include <linux/aer.h>
+ #include <linux/nmi.h>
+ #include <linux/sched/clock.h>
++#include <linux/spinlock.h>
+ #include <linux/uuid.h>
+ #include <linux/ras.h>
+ #include <linux/task_work.h>
+@@ -677,7 +678,7 @@ static void ghes_defer_non_standard_event(struct acpi_hest_generic_data *gdata,
+ /*
+  * Only a single callback can be registered for CXL CPER events.
+  */
+-static DECLARE_RWSEM(cxl_cper_rw_sem);
++static DEFINE_RWLOCK(cxl_callback_lock);
+ static cxl_cper_callback cper_callback;
+ 
+ /* CXL Event record UUIDs are formatted as GUIDs and reported in section type */
+@@ -721,14 +722,14 @@ static void cxl_cper_post_event(enum cxl_event_type event_type,
+ 		return;
+ 	}
+ 
+-	guard(rwsem_read)(&cxl_cper_rw_sem);
++	guard(read_lock_irqsave)(&cxl_callback_lock);
+ 	if (cper_callback)
+ 		cper_callback(event_type, rec);
+ }
+ 
+ int cxl_cper_register_callback(cxl_cper_callback callback)
+ {
+-	guard(rwsem_write)(&cxl_cper_rw_sem);
++	guard(write_lock_irq)(&cxl_callback_lock);
+ 	if (cper_callback)
+ 		return -EINVAL;
+ 	cper_callback = callback;
+@@ -738,7 +739,7 @@ EXPORT_SYMBOL_NS_GPL(cxl_cper_register_callback, CXL);
+ 
+ int cxl_cper_unregister_callback(cxl_cper_callback callback)
+ {
+-	guard(rwsem_write)(&cxl_cper_rw_sem);
++	guard(write_lock_irq)(&cxl_callback_lock);
+ 	if (callback != cper_callback)
+ 		return -EINVAL;
+ 	cper_callback = NULL;
+
+---
+base-commit: 861c0981648f5b64c86fd028ee622096eb7af05a
+change-id: 20240201-cxl-cper-smatch-82b129498498
+
+Best regards,
+-- 
+Ira Weiny <ira.weiny@intel.com>
+
 
