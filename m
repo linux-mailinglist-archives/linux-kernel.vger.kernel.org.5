@@ -1,295 +1,241 @@
-Return-Path: <linux-kernel+bounces-50692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A8EA847CEF
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:09:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9FC0847CF2
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:09:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F7AF289DA4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:09:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 446E51F2752B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:09:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8090212D742;
-	Fri,  2 Feb 2024 23:09:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA2CD12C7EF;
+	Fri,  2 Feb 2024 23:09:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Oti5Grmb"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="XhTErwsY"
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2069.outbound.protection.outlook.com [40.107.105.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F1D1126F2E;
-	Fri,  2 Feb 2024 23:09:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706915351; cv=none; b=RY/cVo60Sf2Y2iHg0xmQHW/6f4QxcvXdC7JlWs2htcRikVL4Y1mU2j3jP95bnPBjDi3P2Ru1yW6nIvpzX0/mpsXJ8KFUfc3bVHdPtxOrppLSCDYtUjtzQ1RfSb8qBfOiciJ/+BJdrCC38pI2PmyEYkt3W4LNQ88WZj2ZYaVKKpA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706915351; c=relaxed/simple;
-	bh=Wo7+jDfk5sZHf8MlrGXUXrmEpHHugcRqmAit0yROqao=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SAk5EXHev6d39bB0XVN6DpaLApfwzIgpZk4fKpGuQhiAWLmGQqgNCUlr0MlKDKv9/AZaZPwvIo8/S1/2u3aq+QKykL91aZAiWKe3X7EeRvJj3KX8PLzJSIUOHKwzt6EfJwZdRPyulMbiLx8WqUN9gvXgWwAmxnx7w4VhAq6YOtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Oti5Grmb; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d73066880eso22707665ad.3;
-        Fri, 02 Feb 2024 15:09:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706915349; x=1707520149; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ns/bvPkKWqK4cT5hwWAJS7KQis8SRbW6Visd6BLTiUI=;
-        b=Oti5Grmb+FX3pffdtZQhqx/Tdi7NzpBBggod79wgb9rLNDFh/ZhoWUKAX6bKD/InbI
-         VtrsuECkASUfC7nwkKwB6DTR5f2CKqYw3iN44mSfTjY8UYOX3lXqtRY/ZQw2yoSC4CzH
-         znsNzQC+unksr8nEFMtHPGAbOAcU/ogQ3eE8OupkZn3f8VIU1HlX5UjsM1akkKVyUCF9
-         M2HpPPq0LYRwRXQ/7MrX812nQkLH6moptx+83fn8OGnaSuM4eSprJsKhXkFvWKyVdkU8
-         xG14TBQah2G/jpSTx2whi0E/qrWb9hChs09fE8RxEdtm1UxtoPa144Ur9RnGqe0RJpa3
-         UdzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706915349; x=1707520149;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ns/bvPkKWqK4cT5hwWAJS7KQis8SRbW6Visd6BLTiUI=;
-        b=IIyZAwUD6hrnLwWowj7TCQj3ka+HjAeIK1BCcIjbDWYspeqktsVDEAFXmDtKa5uFJC
-         BfCMMUNp9HdM4McEsB5CkNelkz/C89/ev3psbiNZmjBmVON8cgKZvxT4Gg0GPoLkXpu4
-         q3fdlkZ33B9IXd/joT4SWZ42hihXJfwmgpODzps5KIKgy4JkCeHxtcZrGbmdm716A5G3
-         4/T13wrMQOdlnV7BkQmiaegKNCZysGdtw+OQCa5PozphDv1jivUj4LibfsV5I7A5BLDG
-         lCx9KmjTT0Zr5MdSNYA2FTWE2cfb9FgLMDZTw/tcpt+0IFmhosbklTJfIlV0edZ7ra6L
-         c71g==
-X-Gm-Message-State: AOJu0YyzvhhN1H8eWGv1JoHVz9PSFJXNLlGu0t8lOJJgLWVS1nIwJi+E
-	3QncgSz2tyI8x2uCv2P+Wah4qxyUHacPmBwCxwTFws+SznUIcKbC
-X-Google-Smtp-Source: AGHT+IFxxTOrsdYhKRWr9e6jHbv8TCklGcEQIE8BSnW/BV4FuD23/hWYjE901pv5pKGyJLGFlLZjBQ==
-X-Received: by 2002:a17:902:b194:b0:1d5:c08e:52eb with SMTP id s20-20020a170902b19400b001d5c08e52ebmr8168069plr.65.1706915348583;
-        Fri, 02 Feb 2024 15:09:08 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXh8AopKfi/YqWmfKiAwlQ/PCijITod0oFhPh7EZgbe4IqqVCTYplEzVZLk725jsEN7/jjrF3+q6jwqjZIAWgtFJwhn9qmdKmzSh1WTQWyzKIR3Vu1RR9VOQ/mVdMEOrdQtYnhjryw1mdCQexA9JgKi6G6x/jm8n0qLhDny1Uyh9vw8IV8OyRb46UVpGGduitQ9ram54QIx/Q4+QDflTEF+IDMbGP6LDutZoBqdGyGeIDaHWDuGJjeQGgpi3kWxY6Mxokz3ztlOAqOGqeQDd+PFxUQapdW8eUtWM9krlaYdDID3UIGv6Ao+xrLQWDCxkdxkdWrDdbxlfq5IiqlrLk7HA0UnJpJ4jkFfgWd75iHDEi8ZdxAD0XE06DRBlvejpEon3X1Owg03SqEYrAL6rJdyOqiuNnhveN6rok4raRhfJSFqktdoCqF5aru6yMErGbiCNxd0+0aDnqt1T1XYbEGqcirlu5DKCtQ6o6ulW7Vylya1gXBRqZMMo8UuNV9ealWnc8Uf9Vfw1XOhHZ4j41gYSibJO6X/qQ9m3wUuH/DVujlBkGxKAkVqWMc+Wc4KsIxm/EtloqOHI0LTPMMffFTsW5xMa5t9igm/5IU1NvJ0UaL1KXIbvnzxQdLod4WO3cP7eM+SLAzmpsRCYZ37BA3OS0HH2DSw/vYCAqccICCfyklhIqIq0wBZrEXbqubqWvBOtecAaQ==
-Received: from surya ([70.134.61.176])
-        by smtp.gmail.com with ESMTPSA id c9-20020a170902d48900b001d9557f6c04sm2086428plg.267.2024.02.02.15.09.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 15:09:08 -0800 (PST)
-Date: Fri, 2 Feb 2024 15:09:05 -0800
-From: Manu Bretelle <chantr4@gmail.com>
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: linux-trace-kernel@vger.kernel.org, coreteam@netfilter.org,
-	bpf@vger.kernel.org, linux-input@vger.kernel.org,
-	cgroups@vger.kernel.org, netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
-	fsverity@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	netfilter-devel@vger.kernel.org, alexei.starovoitov@gmail.com,
-	olsajiri@gmail.com, quentin@isovalent.com, alan.maguire@oracle.com,
-	memxor@gmail.com, vmalik@redhat.com
-Subject: Re: [PATCH bpf-next v4 0/3] Annotate kfuncs in .BTF_ids section
-Message-ID: <Zb12EZt0BAKOPBk/@surya>
-References: <cover.1706491398.git.dxu@dxuuu.xyz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9692212C7E6;
+	Fri,  2 Feb 2024 23:09:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.105.69
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706915388; cv=fail; b=UsSK4qN13hs4kF+9x0HVLCOeqgg+xh6ypLLI7WehFOnTYezHCOc03SqTCx34AT298f1Mw1bzMLpugw24aunIg8yu4uxeYfmaJrTRp1KNQdp890SI/lfoZrxDTGKXA84mP0rSmYDIMZpp7bOmLuAYiUcn9DLrPvIf/HNcL2JrTh8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706915388; c=relaxed/simple;
+	bh=lpo5yoDxEjAMAATeuR+ObkAv5g4Z/DAVD2hkbmgALyw=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=l11OwP4//ITVr01rbYGa3jtSOXtiSF2TUYoJh6xQ/Jkb/+A2a+LrTL1odC+Hmf7r1+Tszfdk/E3WAFIRSUnLOdgOibRRIaLA1qF/kpjWL7tOKXVxsUjUrUeNXtyAf3MOzHQS7MO5jJ+vIwcK0XYsH+Aun54NnxIr4vvhuCjgZfM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=XhTErwsY; arc=fail smtp.client-ip=40.107.105.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ci1CkSiZdn6/ONSYeiJg1Qu30MC6vLgMLE1CLgsrtdyBY+6AIx+o8E99GJH5HO4mAbhvZ6HFSn8O19ZdxYqdoHcjfEsaFOIpCCrxpGlMwZ8X5IvUtIWm/N17tFO2holabYGGIg59L/WlgpraBuUIr75yA4EChQEUjKTWYSRwdd+RPzVUul1KiXXPfP0UIGyhxfYlVlFPJZYJ//CGzGUl2mAnW1IeOiN5+6IKd/h7lYlghxNbIjt9JCyKq4VECGjeSbZdxocLOy+VHA3fsREJr3SmJSisZ12fclHHg8dBgiCeVUbGsdL3KyohYP2dcqPg49FRFucuFSJg22/gozFLBQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=byDnXsXx+ABdHA0brvZRkAWtWoHaTwoTe+9Xa1hY668=;
+ b=dbzhQz46SAMvtlv8EiIRJeCM3g2goo7g8rhTe1nHIQxO1UMJFa9qtuMm98RnEG01lzfnjEmWW4S094gbEi/FxFObsSGiAnpjY3m3YlcByQMioJj0yr2WvPePfOFlmebicfYDugavvUR1aTTdxa0Bh4xNl+Jhac6ZH+QoU+JYBbGJNet/OUkPvORiJmEQlbusbYS4Zut9Za3Vk1lGVCKWYjwtVpYH0FGnWkfzElWKK6c8ru8rTmcH5dUuYO+G6U0sWtxIDdJU56hnEVVetqyy3NvZk06dx9z16xDOMVjgBnExAVssZhtNevt79vKtMu8np3CQRxkuRDZs99l3hxrM/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=byDnXsXx+ABdHA0brvZRkAWtWoHaTwoTe+9Xa1hY668=;
+ b=XhTErwsYryB7L7uHHUjlmlxEd4GermKrjUONuRts0CaDCzq2A9mukE8XGGEiDRsNl0SJO7GF+Z3w0S5a18VcOxReWOfAO7RGbhnGlpD4lA57gmAc7DEEN6cbg02TQXWstBvWeI14OE7mb9IBsUUpitxD6DIFk/UVY0KgtgtV9pM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AS5PR04MB9997.eurprd04.prod.outlook.com (2603:10a6:20b:67c::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.26; Fri, 2 Feb
+ 2024 23:09:43 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7249.027; Fri, 2 Feb 2024
+ 23:09:43 +0000
+From: Frank Li <Frank.Li@nxp.com>
+To: frank.li@nxp.com
+Cc: alexandre.belloni@bootlin.com,
+	conor.culhane@silvaco.com,
+	devicetree@vger.kernel.org,
+	gregkh@linuxfoundation.org,
+	ilpo.jarvinen@linux.intel.com,
+	imx@lists.linux.dev,
+	jirislaby@kernel.org,
+	joe@perches.com,
+	krzysztof.kozlowski+dt@linaro.org,
+	krzysztof.kozlowski@linaro.org,
+	linux-i3c@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	miquel.raynal@bootlin.com,
+	robh@kernel.org,
+	zbigniew.lukwinski@linux.intel.com
+Subject: [PATCH v6 0/8] I3C target mode support
+Date: Fri,  2 Feb 2024 18:09:17 -0500
+Message-Id: <20240202230925.1000659-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR08CA0030.namprd08.prod.outlook.com
+ (2603:10b6:a03:100::43) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1706491398.git.dxu@dxuuu.xyz>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS5PR04MB9997:EE_
+X-MS-Office365-Filtering-Correlation-Id: fb06fc0f-3d3c-4527-35b3-08dc24440a85
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	waJv7ypB2BvpRoQXCOLL1t6lc1z03UQK6pHJ+IV8HlOYyhj75BOsHGs8jmwXcN5QIvypTXg7C1eij/fCA9hlAnM+Q4KoLNUx786J4u+KL1Du7dle5MpBTa6/CTCCGtoYrV5I27eEjWDQsKu/D27WiujDXVi56jqew3pbJnEPjQ9iQNmy9iSigANnIbjuKgScE2xuAwJUJoHLdxy87xYNcNcDHFm7dqyzk6UycVnRHYCoJXm4ieYbbZp74UinGCUPjwQir3fEzFnQqwGkydpz/1h8fXBibMjqbmI33jdDyc1DxXCF6klZ0g/FaXf11ych5vkXSquCJIvz1Bu1WUR+aUXiqiKp+FLJcNigS92y1wj+rQ9O52VZT3oWH9DVg95diWstX60svmVfVucgLV98v9V2/iF3PqRFN3CeG0cpr8GrwZ2jPGc7XDSWU2dFecGRqEjuUxzKJD6dmGHhls7G9KKpl2m3AjU+YXgs01wS0bmgluZ6JKtEZ6W5xYiTepoQC8Pce+aqkhYkofzyc/Ht1p0HkdHSU8eY/rvCRuWigJGryr1EYqHaFpFJeB/8C/C1a7Bk4Bwl8xplOA78i758m+OS2rIu4rJ7PLiLLMPf2u6mNmOiszwU1d2TZFCAC6tz
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(39860400002)(136003)(346002)(376002)(230922051799003)(230273577357003)(1800799012)(451199024)(64100799003)(186009)(2616005)(1076003)(41300700001)(26005)(38350700005)(52116002)(7416002)(6512007)(316002)(36756003)(37006003)(6506007)(83380400001)(6666004)(478600001)(66556008)(38100700002)(66476007)(4326008)(6486002)(2906002)(86362001)(66946007)(8936002)(8676002)(34206002)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?9hQumafEq0tIQ50AZ1zOsgLvyfHrpCm3imAV3WyiyMjxIBNaBpso3w1T5xkI?=
+ =?us-ascii?Q?RaOjQxZcdDwOClaqOx3J4sj/9nQBGgx0hfiCp2CQg9BwuaFsvCfh8fzyFxrc?=
+ =?us-ascii?Q?TCWNb2Ae4zNyZJpkdbVVnHVV5Ri3M6q6Dxx5X40GhWD1MankdBpXdnXWi9/y?=
+ =?us-ascii?Q?TgBg/XbryBlPJYJdRd0I6EZwHRNEMxsrCc6bDGX89zZUQ3lqEzpIChVnn+9k?=
+ =?us-ascii?Q?3z7RxdMbLAAu+xWexD0S16zFWwsc1O7vU3wAjzhAwt3YfFlVfOYTMJ1QHQJ9?=
+ =?us-ascii?Q?oaL7TrqSzuriDEswDkQsHuhKeM0KlPdsY6kwi4GwRxDA3YWw6080wmFSsSai?=
+ =?us-ascii?Q?dditZOqWop8wKaWXFaU3olvgcuQKu/bc0ZTw48rOm0Ajfd73MRlOvmfMXiK3?=
+ =?us-ascii?Q?PaYxQVjUyBUjD6ktIKMSsDB82tSMBS50Ar+JytwkwewgA1ABGslaQ/cHqTMk?=
+ =?us-ascii?Q?PQpZA4FVjX9tpt28ms5lH1Qa6CHJaWDoirtmKzajH29GIA5mTDtdm50AY0Xa?=
+ =?us-ascii?Q?Z4XK2KdICBsQEJEC2ILyU3UNUT3rMR4TOaDyaUuYdWCQkrQWPgmhPGL7YhoY?=
+ =?us-ascii?Q?ox8c5aDyh7OVi+UlgCjLIgbIA0YbELwA7+cCL96eHyAIqBmD9Cr23IEN95Bb?=
+ =?us-ascii?Q?6kxPElXL5ex210V2jsAnPAtdzUhsdgkojZcERtLWPPgSRjEhIEyfcB+zUql/?=
+ =?us-ascii?Q?9cC1Q0cAGXq2WQSbPP/8bKhh7J6nGUYVhDVDLX9bx0YENo222DaqdKYAEEru?=
+ =?us-ascii?Q?uF9ZXXsc8HsvWY5oGmwbeAvxsXLSSPuqNVYphXK4bid+pBrrL02ArUJvzI30?=
+ =?us-ascii?Q?Qyw2BVuKN6X+Rg9U6YIG+L66unVovh645zI8vIOYAnnHy9dDu26I/fYGtrbr?=
+ =?us-ascii?Q?C4kgXKHpy0XnFOosoaNcK7/K4ImWxWMvu+uibY6RRnHDCqPDaDrDWFe53/pK?=
+ =?us-ascii?Q?X5CnBWduovXzexY80D+Li8xRtq70zlj5D865JZ8ptdWMhXziARe7OHt8Emyk?=
+ =?us-ascii?Q?F5+StrVXryV4aJA22omaEpxMsyd1whM4fucbAgyB1ePdGg44QaC5c5gf+Kav?=
+ =?us-ascii?Q?X0cJpD3lWpdNGRBUi2h36ojbc1VZLe0vvN4o+2C7a3luy1My/LOdWidzIDRI?=
+ =?us-ascii?Q?DjPS4w4dAfstTFcQqEvNtgcK+VQsawLW1lgg53ZKvMVOJjAqKY0/LLcGiNSF?=
+ =?us-ascii?Q?Kz6ZJ8iowRfb15RVCsOFjDQfy/4lbQ2tniBrfpcKChXjO6zQr3L81gjQoZXk?=
+ =?us-ascii?Q?D8B3zZpBLuqBIspqFgV3VXct6rwSyPLpg6kS4weKZojpR5Y614xcliPc+Z9z?=
+ =?us-ascii?Q?g8meh+M6fxjWJQnizgsIJPXoH1lLrkMUFDXNtlCiUkHarLHlIXOKJU7jQrUw?=
+ =?us-ascii?Q?NvlhssgmUTAvrPo8kqiIIu8vT4d/CcFKQJSZxKi7rIn0Q9hILQoHs7rd9Uyl?=
+ =?us-ascii?Q?VIYlh8jFe91sYA4rJysYFn+5GGtwP41gLAoce/cAh0l2fPutIaLoXqUfS5MY?=
+ =?us-ascii?Q?qfeNzJ+Z75PECrGatBjzedBZD1kDM1wzthogCz0M07HG/PSpJFzH5zOj+8SM?=
+ =?us-ascii?Q?d9oru1Uh/wnAfK7P8t7LFgu7wOMv7tzjNT2XRzQT?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fb06fc0f-3d3c-4527-35b3-08dc24440a85
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2024 23:09:43.3860
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nyMip/sdnqp4kG12Cp4GuxWAPtPHAiGkcCJDGcAvPQqSg2kwdZW7G1lAG+lJPchsOVKkI1STSNM7NIHtIOzfJw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS5PR04MB9997
 
-On Sun, Jan 28, 2024 at 06:24:05PM -0700, Daniel Xu wrote:
-> === Description ===
-> 
-> This is a bpf-treewide change that annotates all kfuncs as such inside
-> .BTF_ids. This annotation eventually allows us to automatically generate
-> kfunc prototypes from bpftool.
-> 
-> We store this metadata inside a yet-unused flags field inside struct
-> btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
-> 
-> More details about the full chain of events are available in commit 3's
-> description.
-> 
-> The accompanying pahole and bpftool changes can be viewed
-> here on these "frozen" branches [0][1].
-> 
-> [0]: https://github.com/danobi/pahole/tree/kfunc_btf-v3-mailed
-> [1]: https://github.com/danobi/linux/tree/kfunc_bpftool-mailed
+This  patch introduces support for I3C target mode, which is referenced
+with a PCIe Endpoint system. It also establishes a configuration framework
+(configfs) for the I3C target controller driver and the I3C target function
+driver
 
+Typic usage as
 
-I hit a similar issue to [0] on master
-943b043aeecc ("selftests/bpf: Fix bench runner SIGSEGV")
- when cross-compiling on x86_64 (LE) to s390x (BE).
-I do have CONFIG_DEBUG_INFO_BTF enable and the issue would not trigger if
-I disabled CONFIG_DEBUG_INFO_BTF (and with the fix mentioned in [0]).
+The user can configure the i3c-target-tty device using configfs entry. In
+order to change the vendorid, the following commands can be used
 
-What seems to happen is that `tools/resolve_btfids` is ran in the context of the
-host endianess and if I printk before the WARN_ON:
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index ef380e546952..a9ed7a1a4936 100644
-  --- a/kernel/bpf/btf.c
-  +++ b/kernel/bpf/btf.c
-  @@ -8128,6 +8128,7 @@ int register_btf_kfunc_id_set(enum bpf_prog_type prog_type,
-           * WARN() for initcall registrations that do not check errors.
-           */
-          if (!(kset->set->flags & BTF_SET8_KFUNCS)) {
-  +        printk("Flag 0x%08X, expected 0x%08X\n", kset->set->flags, BTF_SET8_KFUNCS);
-                  WARN_ON(!kset->owner);
-                  return -EINVAL;
-          }
+        # echo 0x011b > functions/tty/func1/vendor_id
+        # echo 0x1000 > functions/tty/func1/part_id
+        # echo 0x6 > functions/tty/t/bcr
 
-the boot logs would show:
-  Flag 0x01000000, expected 0x00000001
+Binding i3c-target-tty Device to target Controller
+------------------------------------------------
 
-The issue did not happen prior to
-6f3189f38a3e ("bpf: treewide: Annotate BPF kfuncs in BTF")
-has only 0 was written before.
+In order for the target function device to be useful, it has to be bound to
+a I3C target controller driver. Use the configfs to bind the function
+device to one of the controller driver present in the system::
 
-It seems [1] will be addressing cross-compilation, but it did not fix it as is
-by just applying on top of master, so probably some of the changes will also need
-to be ported to `tools/include/linux/btf_ids.h`?
+        # ln -s functions/pci_epf_test/func1 controllers/44330000.i3c-target/
 
-A hacky workaround to cross-compilation I have is to apply:
+Host side:
+        cat /dev/ttyI3C0
+Taret side:
+        echo abc >/dev/ttyI3C0
 
-  diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-  index 4b8079f294f6..b706e7ab066f 100644
-  --- a/tools/bpf/resolve_btfids/Makefile
-  +++ b/tools/bpf/resolve_btfids/Makefile
-  @@ -22,10 +22,10 @@ HOST_OVERRIDES := AR="$(HOSTAR)" CC="$(HOSTCC)" LD="$(HOSTLD)" ARCH="$(HOSTARCH)
-                    CROSS_COMPILE="" EXTRA_CFLAGS="$(HOSTCFLAGS)"
-   RM      ?= rm
-  -HOSTCC  ?= gcc
-  -HOSTLD  ?= ld
-  -HOSTAR  ?= ar
-  -CROSS_COMPILE =
-  +HOSTCC  = $(CC)
-  +HOSTLD  = $(LD)
-  +HOSTAR  = $(AR)
-  +#CROSS_COMPILE =
-   OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
-  @@ -56,16 +56,16 @@ $(OUTPUT) $(OUTPUT)/libsubcmd $(LIBBPF_OUT):
-   $(SUBCMDOBJ): fixdep FORCE | $(OUTPUT)/libsubcmd
-          $(Q)$(MAKE) -C $(SUBCMD_SRC) OUTPUT=$(SUBCMD_OUT) \
-  -                   DESTDIR=$(SUBCMD_DESTDIR) $(HOST_OVERRIDES) prefix= subdir= \
-  +                   DESTDIR=$(SUBCMD_DESTDIR) prefix= subdir= \
-                      $(abspath $@) install_headers
-   $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OUT)
-          $(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC) OUTPUT=$(LIBBPF_OUT)    \
-  -                   DESTDIR=$(LIBBPF_DESTDIR) $(HOST_OVERRIDES) prefix= subdir= \
-  +                   DESTDIR=$(LIBBPF_DESTDIR) prefix= subdir= \
-                      $(abspath $@) install_headers
-  -LIBELF_FLAGS := $(shell $(HOSTPKG_CONFIG) libelf --cflags 2>/dev/null)
-  -LIBELF_LIBS  := $(shell $(HOSTPKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
-  +LIBELF_FLAGS := $(shell $(PKG_CONFIG) libelf --cflags 2>/dev/null)
-  +LIBELF_LIBS  := $(shell $(PKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
-   HOSTCFLAGS_resolve_btfids += -g \
-             -I$(srctree)/tools/include \
-  @@ -84,7 +84,7 @@ $(BINARY_IN): fixdep FORCE prepare | $(OUTPUT)
-   $(BINARY): $(BPFOBJ) $(SUBCMDOBJ) $(BINARY_IN)
-          $(call msg,LINK,$@)
-  -       $(Q)$(HOSTCC) $(BINARY_IN) $(KBUILD_HOSTLDFLAGS) -o $@ $(BPFOBJ) $(SUBCMDOBJ) $(LIBS)
-  +       $(Q)$(CC) $(BINARY_IN) $(KBUILD_HOSTLDFLAGS) -o $@ $(BPFOBJ) $(SUBCMDOBJ) $(LIBS)
-   clean_objects := $(wildcard $(OUTPUT)/*.o                \
-                               $(OUTPUT)/.*.o.cmd           \
-  diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-  index a38a3001527c..5cd193c04448 100644
-  --- a/tools/testing/selftests/bpf/Makefile
-  +++ b/tools/testing/selftests/bpf/Makefile
-  @@ -171,7 +171,7 @@ INCLUDE_DIR := $(SCRATCH_DIR)/include
-   BPFOBJ := $(BUILD_DIR)/libbpf/libbpf.a
-   ifneq ($(CROSS_COMPILE),)
-   HOST_BUILD_DIR         := $(BUILD_DIR)/host
-  -HOST_SCRATCH_DIR       := $(OUTPUT)/host-tools
-  +HOST_SCRATCH_DIR       := $(SCRATCH_DIR)
-   HOST_INCLUDE_DIR       := $(HOST_SCRATCH_DIR)/include
-   else
-   HOST_BUILD_DIR         := $(BUILD_DIR)
+Chagne from v2 to v3
+- using 'mode' distingiush master and target.
+- move svc-i3c-target.c to under master,
+- built together with svc-i3c-master.c
 
-This causes `resolve_btfids` to be compiled in the target endianess and gets
-magically run provided that the hosts has `qemu-s390x-static` and a functional
-binfmt_misc [2] on the host, but having this using host architecture per [1]
-is likely better.
+Change from v1 to v2
+- change "slave" to "target"
+- include master side tty patch
+- fixed dtbcheck problem
+- fixed kerne-doc check warning
 
-Here are steps to reproduce the issue on Ubuntu 23.10 and assuming
-danobi/vmtest [3] is installed:
+Some review comment may be lost since it is quite long time since v1. Now
+master side dependent patches already in linux-next. So sent target side
+patches with tty support again.
 
-  XPLATFORM="s390x"
-  XARCH="s390"
-  # Set up repo for s390x
-  cat <<EOF >> /etc/apt/sources.list.d/s390x.list
-  deb [arch=s390x] http://ports.ubuntu.com/ubuntu-ports  mantic main restricted
-  deb [arch=s390x] http://ports.ubuntu.com/ubuntu-ports  mantic-updates main restricted
-  EOF
-  sudo dpkg --add-architecture s390x
-  
-  apt install qemu-system-s390x qemu-user-static g{cc,++}-"${XARCH}-linux-gnu" {libelf-dev,libssl-dev,pkgconf}:s390x
-  
-  KBUILD_OUTPUT_DIR="/tmp/kbuild-${XPLATFORM}"
-  mkdir "${KBUILD_OUTPUT_DIR}"
-  cat tools/testing/selftests/bpf/config{,.vm,.${XPLATFORM}} > ${KBUILD_OUTPUT_DIR}/.config
-  
-  make ARCH="${XARCH}" CROSS_COMPILE="${XPLATFORM}-linux-gnu-" O="${KBUILD_OUTPUT_DIR}"  -j$((4 * $(nproc))) olddefconfig
-  make ARCH="${XARCH}" CROSS_COMPILE="${XPLATFORM}-linux-gnu-" O="${KBUILD_OUTPUT_DIR}"  -j$((4 * $(nproc))) all
-  
-  # No need for a s390x ubuntu 23.10 rootfs, we only care about booting the kernel
-  vmtest -k "${KBUILD_OUTPUT_DIR}/arch/s390/boot/bzImage" -a s390x "uname -m" | cat
+No sure why an additional "\r\n" appended.
 
+Frank Li (8):
+  i3c: add target mode support
+  dt-bindings: i3c: svc: add proptery mode
+  Documentation: i3c: Add I3C target mode controller and function
+  i3c: svc: Add svc-i3c-main.c and svc-i3c.h
+  i3c: target: add svc target controller support
+  i3c: target: func: add tty driver
+  i3c: add API i3c_dev_gettstatus_format1() to get target device status
+  tty: i3c: add TTY over I3C master support
 
-For the chroot route, see [4].
+ .../bindings/i3c/silvaco,i3c-master.yaml      |  11 +-
+ Documentation/driver-api/i3c/index.rst        |   1 +
+ .../driver-api/i3c/target/i3c-target-cfs.rst  | 109 +++
+ .../driver-api/i3c/target/i3c-target.rst      | 189 +++++
+ .../driver-api/i3c/target/i3c-tty-howto.rst   | 109 +++
+ Documentation/driver-api/i3c/target/index.rst |  13 +
+ drivers/i3c/Kconfig                           |  31 +-
+ drivers/i3c/Makefile                          |   3 +
+ drivers/i3c/device.c                          |  24 +
+ drivers/i3c/func/Kconfig                      |   9 +
+ drivers/i3c/func/Makefile                     |   3 +
+ drivers/i3c/func/tty.c                        | 474 +++++++++++
+ drivers/i3c/i3c-cfs.c                         | 389 +++++++++
+ drivers/i3c/internals.h                       |   1 +
+ drivers/i3c/master.c                          |  26 +
+ drivers/i3c/master/Makefile                   |   3 +-
+ drivers/i3c/master/svc-i3c-main.c             |  80 ++
+ drivers/i3c/master/svc-i3c-master.c           |  34 +-
+ drivers/i3c/master/svc-i3c-target.c           | 776 ++++++++++++++++++
+ drivers/i3c/master/svc-i3c.h                  |  15 +
+ drivers/i3c/target.c                          | 453 ++++++++++
+ drivers/tty/Kconfig                           |  13 +
+ drivers/tty/Makefile                          |   1 +
+ drivers/tty/i3c_tty.c                         | 427 ++++++++++
+ include/linux/i3c/device.h                    |   1 +
+ include/linux/i3c/target.h                    | 548 +++++++++++++
+ 26 files changed, 3712 insertions(+), 31 deletions(-)
+ create mode 100644 Documentation/driver-api/i3c/target/i3c-target-cfs.rst
+ create mode 100644 Documentation/driver-api/i3c/target/i3c-target.rst
+ create mode 100644 Documentation/driver-api/i3c/target/i3c-tty-howto.rst
+ create mode 100644 Documentation/driver-api/i3c/target/index.rst
+ create mode 100644 drivers/i3c/func/Kconfig
+ create mode 100644 drivers/i3c/func/Makefile
+ create mode 100644 drivers/i3c/func/tty.c
+ create mode 100644 drivers/i3c/i3c-cfs.c
+ create mode 100644 drivers/i3c/master/svc-i3c-main.c
+ create mode 100644 drivers/i3c/master/svc-i3c-target.c
+ create mode 100644 drivers/i3c/master/svc-i3c.h
+ create mode 100644 drivers/i3c/target.c
+ create mode 100644 drivers/tty/i3c_tty.c
+ create mode 100644 include/linux/i3c/target.h
 
-[0] https://lore.kernel.org/linux-kernel/20240201155339.2b5936be@canb.auug.org.au/T/
-[1] https://lore.kernel.org/bpf/cover.1706717857.git.vmalik@redhat.com/
-[2] https://en.wikipedia.org/wiki/Binfmt_misc
-[3] https://github.com/danobi/vmtest
-[4] https://chantra.github.io/bpfcitools/bpf-cross-compile.html
+-- 
+2.34.1
 
-Manu
-
-> 
-> === Changelog ===
-> 
-> Changes from v3:
-> * Rebase to bpf-next and add missing annotation on new kfunc
-> 
-> Changes from v2:
-> * Only WARN() for vmlinux kfuncs
-> 
-> Changes from v1:
-> * Move WARN_ON() up a call level
-> * Also return error when kfunc set is not properly tagged
-> * Use BTF_KFUNCS_START/END instead of flags
-> * Rename BTF_SET8_KFUNC to BTF_SET8_KFUNCS
-> 
-> Daniel Xu (3):
->   bpf: btf: Support flags for BTF_SET8 sets
->   bpf: btf: Add BTF_KFUNCS_START/END macro pair
->   bpf: treewide: Annotate BPF kfuncs in BTF
-> 
->  Documentation/bpf/kfuncs.rst                  |  8 +++----
->  drivers/hid/bpf/hid_bpf_dispatch.c            |  8 +++----
->  fs/verity/measure.c                           |  4 ++--
->  include/linux/btf_ids.h                       | 21 +++++++++++++++----
->  kernel/bpf/btf.c                              |  8 +++++++
->  kernel/bpf/cpumask.c                          |  4 ++--
->  kernel/bpf/helpers.c                          |  8 +++----
->  kernel/bpf/map_iter.c                         |  4 ++--
->  kernel/cgroup/rstat.c                         |  4 ++--
->  kernel/trace/bpf_trace.c                      |  8 +++----
->  net/bpf/test_run.c                            |  8 +++----
->  net/core/filter.c                             | 20 +++++++++---------
->  net/core/xdp.c                                |  4 ++--
->  net/ipv4/bpf_tcp_ca.c                         |  4 ++--
->  net/ipv4/fou_bpf.c                            |  4 ++--
->  net/ipv4/tcp_bbr.c                            |  4 ++--
->  net/ipv4/tcp_cubic.c                          |  4 ++--
->  net/ipv4/tcp_dctcp.c                          |  4 ++--
->  net/netfilter/nf_conntrack_bpf.c              |  4 ++--
->  net/netfilter/nf_nat_bpf.c                    |  4 ++--
->  net/xfrm/xfrm_interface_bpf.c                 |  4 ++--
->  net/xfrm/xfrm_state_bpf.c                     |  4 ++--
->  .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  8 +++----
->  23 files changed, 87 insertions(+), 66 deletions(-)
-> 
-> -- 
-> 2.42.1
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
