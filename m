@@ -1,211 +1,120 @@
-Return-Path: <linux-kernel+bounces-49076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CD48846592
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 219AC846593
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:52:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BCF0B246AB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:51:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9BBFFB25A34
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:52:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03F8A8464;
-	Fri,  2 Feb 2024 01:51:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4D7CB66D;
+	Fri,  2 Feb 2024 01:52:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="bAGuPj6m"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UV9saPzE"
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DBFC63B2
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 01:51:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B54238BE1
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 01:52:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706838669; cv=none; b=os4eQmCGWEv5YOhcFuubGvWzJAtDjndjYEXl1znQzokG87bGFu2TxpE+Hgd0ig2Z3P8eG7TIRo3jOSNN/36nsGR7TQEQhEZRySaf6TA4UrjwphLfFoIOzOjWINVQuCLOp6MXzO3UuADkIZl4oS+srWvnocVjE3mmC1CxY+DbaIM=
+	t=1706838743; cv=none; b=eSx6Sg1eKl02F1zZkAm29wyxmFD08Ii/pQeX9HraC7DmQW8QD893RgD7JZQfGGI00tEOOXuM5RS+JGzZCqWBnsrATOt6wDwGhnWELsDRJZWktlkboc2I45kVzsi+Z3esLewAgYyFoslNR2T4xbmeQcztiRky89GZueq2Ic26XqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706838669; c=relaxed/simple;
-	bh=5aXAcO10d+v2K1pDhHz/8i7fc2PjMJeMhkobGt2H+IE=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=mknlloXMBuEOyzdadbW7/2dPTILHUz2h0KQqdWdgj4Aq84H6j1z9hCa1TumNoIlaWCriyhMkok85TYG8ZEAAIuniEn3PV03mRsJ/zTU4aMVZg5Bk0iaCY2vXGOYuK5Ao+eA8jDyi3LXaYahXHLowXeDxu7EKekXMHdqaUx9oweU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=bAGuPj6m; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d934c8f8f7so14655875ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 17:51:07 -0800 (PST)
+	s=arc-20240116; t=1706838743; c=relaxed/simple;
+	bh=rVOVnlumYp/3STCVKisehnEgpvGJhl5drLJ2AAZFYqM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hpp6KDxTY5GTIzuyCdylHZrgTbIR8lOAxVfmDDBVTmh6xA6PB5lizkFnEAuSs42jBBGYjD/PKsJS63JBaA0mi6bbQgxTtRMs1nI/pa3SCQ+SJLPuQOsMUcddZI+xzPisyqjXqSjefD0HSXIKrjGKtNQTcCTyicIupYIzEt0eRLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UV9saPzE; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-295a7fd8eecso1188259a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 17:52:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1706838667; x=1707443467; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FqnBWephPOcgF/3nIZPD08BTGD/kLDACiy8VJStmDfE=;
-        b=bAGuPj6mL3oug4WloNiLxRjycl5bA+ZDUzk3HL0g8i8y9QLWjkqFrKyR8pNAqdYgqC
-         N5Lhe/CMB+6t8JnT0vKXvFn8Km2H6wUDtfmVvkAIjkNRltHgTuQuY+5lqVP8FmjIN82N
-         l0+ca6uHGvrl18n1zfsBCRflM8k4443IKudV22fDin+INq7FM5heOUgqwV1YAADs0PhQ
-         tpDRS5JMlBb9mhjU4SbullVFSL8d3rbd4upzhI1VL3I86j/XE7Jen4vTb09k9/YkIgKW
-         DtFNc57gL84rriQlItQpkgEOMOMqq1jb7xOW90s+tuTF5AjGI/0yRlVA/GlHfv4zGDkO
-         aCIA==
+        d=gmail.com; s=20230601; t=1706838741; x=1707443541; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rqAlHSzLXfxM7Llsu2Lt69aK1q3yICrHShao44M1Ozg=;
+        b=UV9saPzEemUulTvk4wVn51D04qaaBH+u8e/nCtjNqnBxl2aSgGY9rvJOPBf9c8Hc8y
+         omA6Nvc5akoIdlQm4nQLJQovKUdfKEaWJ4SkVQ2ivgb2GLQPvi5jtRYar+KBbLLSYd45
+         jL7s1v6vYRlGg8GiUpoIdsEY38pSblgK2VswatlS0alFdYAusWAoQAh922tVMk2fAWnr
+         IlUAqVvRVQZkxeK6MoZyl1MPpXMh+hsewfkfHieGZ8AtbQR8eeLNNu0XheRN8kLYfCHK
+         4IVq0MzZsbq3xIlnW4m4gofoux6fq87pwxhf9LhIa9BHEZRpOKDAluEqz7eNfEU2/YWc
+         zTOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706838667; x=1707443467;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1706838741; x=1707443541;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FqnBWephPOcgF/3nIZPD08BTGD/kLDACiy8VJStmDfE=;
-        b=bWU9HNIgamq4xJaZFLzkl8fVKpUOrUmYr9qL0STnw3F2TLLfv8DzHIULCURZFqOk5S
-         jO46ZyeCaCVSS8hYrd6DoHzRCnHegb25Ep8b9z9lVIGWgKyuKchwkMdAFQNyiCdPbxJd
-         kuhL/E5xLrpNkbbtWZgFOTtSxce4W7Lh7ObHzQ3QzWzu2dsg7J8zx+UHnlS7rJJTu+1x
-         X3UBvqqOA1LLv/Z0k2QvcMBhjc1GvW4sXQT3wjpob9GQbcV0J0yCPYywX35r0dveamHa
-         DkDViViBTCf3KM9Wsn2qcPcpPb0yBShkKZuqvD6iYhKUVeeuUwB4ppr4i86UupJ97Wbp
-         BwPg==
-X-Gm-Message-State: AOJu0YwJ31YKR8s08HjOvW6UBRXCeOiIoj2qQK1RTrp/15zS9gJJG8aE
-	LySq1r96KzurC9yt+xkjwl+fpq8XyukaL9/YjVLNg0pVsP/u51Nrw9IdDXL9l6c=
-X-Google-Smtp-Source: AGHT+IF0hgUIiqQv3IMQGxaY4gG9YCv70qDehVMvnAPPjJhJIshAJENzxmEZrv2yMnFGnznuXnUHpQ==
-X-Received: by 2002:a17:902:f7c7:b0:1d9:462f:99cf with SMTP id h7-20020a170902f7c700b001d9462f99cfmr4197681plw.5.1706838666756;
-        Thu, 01 Feb 2024 17:51:06 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCW2tLiKX2SsmbgjyRMapiCWW7+97h8aLu+T1/miad738PGaLCuwhtm3/M6PXCOA097w6DlUV6uwoqZc7Vj/xnu2tbji5GnRXX+6PwNznw+JFiZorxWm9nmkVO/4Cc4fsbCJ2tmrdQtubSNfWr7c0kwibhUWTak8SCtkGvma4ZvmoxXc2rhmuI9NvGyJpm/ODMfA0BuSE9CTm8v1S1bIVziQjI/i5YDlpeP1lTBGfR5hAjYBNK2Tn60YGOwxfWSwD1mU8nvPI1wclWc=
-Received: from hsinchu26.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id d5-20020a170902ef0500b001d8ee46170dsm475070plx.84.2024.02.01.17.51.05
+        bh=rqAlHSzLXfxM7Llsu2Lt69aK1q3yICrHShao44M1Ozg=;
+        b=qWRJKX6WKL3hjx9hi23jF4pEEvvU2hOVVKbOiV1GwFI9m+ifvnC7xGVCyO9GUgKaHz
+         mojLGkyqHqW0V202ma1l4Z6/z1HyKca+ydk1l5lGrlgB9hcPaK8VF6ydUrgdlDwm9j1h
+         hfUpVinXGgDpXuZmub8PM5lQ41N+FXc26/8bbrabNjuGvat3ZJ/uef0tlsv739QCMXlj
+         wHSv8LKJhAXaCvk37wvrxyxNIyeOhLUYF0qqrGVn4EnwNrBMlF54jlfEF9YoMp2jfF/l
+         S/PRfM+a4IHU7S9dG20hOHvzUaWnIx+AHyWssqcPQvCSj5QO6KJWD395bhMjwbV5vVol
+         flxA==
+X-Gm-Message-State: AOJu0Yz5TwsOFhuUyC5a3UAM5Zr/PYpeS5RwDMT/YhIWqEtKaWfaTB81
+	1EbVFwgSrH7ZAtumBxtpQ5OrVpm75xaI4tVBPYJGYUl6ouAnOAE5
+X-Google-Smtp-Source: AGHT+IE9sSiBOt6HT7IRvNebSDELY+FoUf/UiMDuCyBgb/EcC0M1zQUsyY7jwZTsFrztDSey/Fctlg==
+X-Received: by 2002:a17:90b:2341:b0:296:3846:fb43 with SMTP id ms1-20020a17090b234100b002963846fb43mr982112pjb.33.1706838740863;
+        Thu, 01 Feb 2024 17:52:20 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWUFb2gx3pFrvchKZ8bpw4QHIrIU1ySysczr6fDH5aI4lEmLJ5alB/r9GZF1gDbvLgwJori43u2TuRMP1fKEep7DCZ3REdibjOBsY2dk6J+F06oHQVuGIIPZQ4mSRy5E8YcFoG2MwnazK9ESjrzsVe3s/j9jYA0Y5TndVltTfAaeP/J
+Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
+        by smtp.gmail.com with ESMTPSA id sl3-20020a17090b2e0300b00293d173ccbasm484675pjb.52.2024.02.01.17.52.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 17:51:06 -0800 (PST)
-From: Zong Li <zong.li@sifive.com>
-To: palmer@dabbelt.com,
-	paul.walmsley@sifive.com,
-	alex@ghiti.fr,
-	conor.dooley@microchip.com,
-	aou@eecs.berkeley.edu,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Zong Li <zong.li@sifive.com>
-Subject: [PATCH v2] riscv: add CALLER_ADDRx support
-Date: Fri,  2 Feb 2024 01:51:02 +0000
-Message-Id: <20240202015102.26251-1-zong.li@sifive.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 01 Feb 2024 17:52:20 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 1 Feb 2024 15:52:19 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Konrad Dybcio <konradybcio@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Naohiro.Aota@wdc.com,
+	kernel-team@meta.com, Bjorn Andersson <andersson@kernel.org>
+Subject: Re: Workqueue regression
+Message-ID: <ZbxK01xuA_FFWaE6@slm.duckdns.org>
+References: <b3d08cd8-d77f-45dd-a2c3-4a4db5a98dfa@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b3d08cd8-d77f-45dd-a2c3-4a4db5a98dfa@kernel.org>
 
-CALLER_ADDRx returns caller's address at specified level, they are used
-for several tracers. These macros eventually use
-__builtin_return_address(n) to get the caller's address if arch doesn't
-define their own implementation.
+Hello,
 
-In RISC-V, __builtin_return_address(n) only works when n == 0, we need
-to walk the stack frame to get the caller's address at specified level.
+On Thu, Feb 01, 2024 at 09:57:59PM +0100, Konrad Dybcio wrote:
+> So, commit "Implement system-wide nr_active enforcement for unbound workqueues"
+> broke *something* and now performing a suspend-wakeup cycle on a Qualcomm
+> SC8280XP-based (arm64) platform hangs when performing the resume tasks,
+> presumably somewhere near PCIe reinitialization (but that may be a red herring).
+> 
+> Reverting the commit (and the ones on top of it due to conflicts) fixes
+> the issue on next-20240130 and later (plus some out-of-tree patches that
+> are largely unrelated).
+> 
+> Not sure where to start looking.
 
-data.level started from 'level + 3' due to the call flow of getting
-caller's address in RISC-V implementation. If we don't have additional
-three iteration, the level is corresponding to follows:
+Hmm... sorry about that. Can you please boot with `console_no_suspend` and
+retry? Once the system gets stuck, you can wait for several minutes till the
+workqueue watchdog triggers and dumps the state or, if you can, trigger
+`sysrq-t` which has workqueue state dump at the end.
 
-callsite -> return_address -> arch_stack_walk -> walk_stackframe
-|           |                 |                  |
-level 3     level 2           level 1            level 0
+If the system doesn't become live enough after suspend/resume cycle to get
+more info, the following might help:
 
-Fixes: 10626c32e382 ("riscv/ftrace: Add basic support")
+$ echo test_resume > /sys/power/disk
+$ echo disk > /sys/power/state
 
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-Signed-off-by: Zong Li <zong.li@sifive.com>
----
+That should walk most of the hibernation/wakeup path which is pretty simliar
+to suspend/resume path without touching system power state.
 
-Changed in v2:
-- Rebase to v6.8-rc2
-- Add noinline attribute for return_address()
-- Add a fixes tag
+Thanks.
 
- arch/riscv/include/asm/ftrace.h    |  5 ++++
- arch/riscv/kernel/Makefile         |  2 ++
- arch/riscv/kernel/return_address.c | 48 ++++++++++++++++++++++++++++++
- 3 files changed, 55 insertions(+)
- create mode 100644 arch/riscv/kernel/return_address.c
-
-diff --git a/arch/riscv/include/asm/ftrace.h b/arch/riscv/include/asm/ftrace.h
-index 329172122952..15055f9df4da 100644
---- a/arch/riscv/include/asm/ftrace.h
-+++ b/arch/riscv/include/asm/ftrace.h
-@@ -25,6 +25,11 @@
- 
- #define ARCH_SUPPORTS_FTRACE_OPS 1
- #ifndef __ASSEMBLY__
-+
-+extern void *return_address(unsigned int level);
-+
-+#define ftrace_return_address(n) return_address(n)
-+
- void MCOUNT_NAME(void);
- static inline unsigned long ftrace_call_adjust(unsigned long addr)
- {
-diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-index f71910718053..604d6bf7e476 100644
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -7,6 +7,7 @@ ifdef CONFIG_FTRACE
- CFLAGS_REMOVE_ftrace.o	= $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_patch.o	= $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_sbi.o	= $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_return_address.o	= $(CC_FLAGS_FTRACE)
- endif
- CFLAGS_syscall_table.o	+= $(call cc-option,-Wno-override-init,)
- CFLAGS_compat_syscall_table.o += $(call cc-option,-Wno-override-init,)
-@@ -46,6 +47,7 @@ obj-y	+= irq.o
- obj-y	+= process.o
- obj-y	+= ptrace.o
- obj-y	+= reset.o
-+obj-y	+= return_address.o
- obj-y	+= setup.o
- obj-y	+= signal.o
- obj-y	+= syscall_table.o
-diff --git a/arch/riscv/kernel/return_address.c b/arch/riscv/kernel/return_address.c
-new file mode 100644
-index 000000000000..c8115ec8fb30
---- /dev/null
-+++ b/arch/riscv/kernel/return_address.c
-@@ -0,0 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * This code come from arch/arm64/kernel/return_address.c
-+ *
-+ * Copyright (C) 2023 SiFive.
-+ */
-+
-+#include <linux/export.h>
-+#include <linux/kprobes.h>
-+#include <linux/stacktrace.h>
-+
-+struct return_address_data {
-+	unsigned int level;
-+	void *addr;
-+};
-+
-+static bool save_return_addr(void *d, unsigned long pc)
-+{
-+	struct return_address_data *data = d;
-+
-+	if (!data->level) {
-+		data->addr = (void *)pc;
-+		return false;
-+	}
-+
-+	--data->level;
-+
-+	return true;
-+}
-+NOKPROBE_SYMBOL(save_return_addr);
-+
-+noinline void *return_address(unsigned int level)
-+{
-+	struct return_address_data data;
-+
-+	data.level = level + 3;
-+	data.addr = NULL;
-+
-+	arch_stack_walk(save_return_addr, &data, current, NULL);
-+
-+	if (!data.level)
-+		return data.addr;
-+	else
-+		return NULL;
-+
-+}
-+EXPORT_SYMBOL_GPL(return_address);
-+NOKPROBE_SYMBOL(return_address);
 -- 
-2.17.1
-
+tejun
 
