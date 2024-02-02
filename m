@@ -1,160 +1,189 @@
-Return-Path: <linux-kernel+bounces-49564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CE82846BE1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:25:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 093F4846BE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:25:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 087E5298B0E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:25:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84DAF1F2B739
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:25:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9FE57E767;
-	Fri,  2 Feb 2024 09:22:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9578277F17;
+	Fri,  2 Feb 2024 09:22:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gJHykm0l"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GSTBiw+I"
+Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com [209.85.221.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 825F677F06;
-	Fri,  2 Feb 2024 09:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3674C62A1E;
+	Fri,  2 Feb 2024 09:22:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706865745; cv=none; b=BwfV5N+pTkaKH9Q5VrwU7lek2drPLNNnBd3nMwGF9K58jMF4v/XePEWbAzZvInBchNVVxmAJD4F8V+BTvtegnqI1JIt8Quy1cJNnGmKP08nTcePTVr/e6z1x9VBZWnd2zsceT8SLdwlZiLs3+eqM25jLsxB01/bh6MpO9An9H78=
+	t=1706865765; cv=none; b=Va283zABr7fEJOkYk29UNuvK/B6QQP5EIEyVsbgmqhZfDq2WcVEWuvsiUb7uGxh/MCpAVDf8l4g81x0cPzNaMbPTXhZtB+shM3rSf6UqJVxPYjOZW39C1d5a9fvRNvj0PXIfs9a05zKq5vvJs7N7fPIa7rTVGiikiU8EtlIvEZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706865745; c=relaxed/simple;
-	bh=lCx6WOgbhUs1ZUj/emefnBwJYwMVwVQYh3bpqoSEs1U=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JMmGhOg5/6adr16aAmlTmBeEZJEqKHAQwEJEXNfyMBk08KaI8Gp8YjrquUb3wA6FMS3ovlDLTN51Ao7K8CfgtBZPZBzFe2D+A5AhauIqAeD1gD8pdMYnPx3W8bYnQO3eiiab4EivpbpcA7+jTIFzq2D0KSMzUCSJNG6ZlvBOBAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gJHykm0l; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706865744; x=1738401744;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=lCx6WOgbhUs1ZUj/emefnBwJYwMVwVQYh3bpqoSEs1U=;
-  b=gJHykm0lC8CgGZUDf6simcWAuH65M5WNuSXJUIwMYr2ftiHD1FFJbju7
-   pV9QCul7vZZLXh4/0A9f8BnvRGrh1a1yI9+HuREXjNavsvYBZqFhJtbti
-   JBsmb0WCR8rL0qR79idbXEpO/pPAY9wzhqD1wqNpBAQCLCKsUbLhkgy8f
-   dyC6ApTFOc345j4t3wMKhei0Szd8soaEOeCoqHuHBMUhdklSRFa43ANyt
-   12GTZsPYY6Pk5inQ0nnfl4w7sh8TIk1HA0husWBaRvilT2nMKGihJdA8b
-   5kQ054sCM5B5hSRk+/XtVucfbREM+mN8Waygqr2kYyohVGDHaX1E+yuTv
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="11483147"
-X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="11483147"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 01:22:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="4639785"
-Received: from wangnin3-mobl.ccr.corp.intel.com (HELO rzhang1-mobl7.ccr.corp.intel.com) ([10.254.214.177])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 01:22:21 -0800
-From: Zhang Rui <rui.zhang@intel.com>
-To: linux@roeck-us.net,
-	jdelvare@suse.com
-Cc: fenghua.yu@intel.com,
-	linux-hwmon@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH V2 11/11] hwmon: (coretemp) Use dynamic allocated memory for core temp_data
-Date: Fri,  2 Feb 2024 17:21:44 +0800
-Message-Id: <20240202092144.71180-12-rui.zhang@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240202092144.71180-1-rui.zhang@intel.com>
-References: <20240202092144.71180-1-rui.zhang@intel.com>
+	s=arc-20240116; t=1706865765; c=relaxed/simple;
+	bh=S2a9qNEwS7sTsIZ0RAYlZnP0NXuNasUwurvY1xgsoI8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NmP025qSbIHLG04hjlFUd++F0Qd2VhrO46n/G5WkIGBfHwuRVHLkdvSpuI02SAXN3fMAq8ylarvC0Auc6VQ3/60cZYbdgBMsdbzbnX7aSh3Tvkzl9lMaDHMLPj6v4qEsTEhyj5cnKiQjFQ2zdhsitHFeNQ5vrvFd82DhnKb57BI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GSTBiw+I; arc=none smtp.client-ip=209.85.221.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f180.google.com with SMTP id 71dfb90a1353d-4c0100e2d58so99342e0c.1;
+        Fri, 02 Feb 2024 01:22:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706865763; x=1707470563; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HTowy/uYen+bsPWi2mCFz7Xlk53z/GMzvNwuHivQ8rg=;
+        b=GSTBiw+IIQ0ZOB5UWQaqCmjn52hGr1vcJjNn+vqdeJfF8aZALvyCldJD8Vyl3FYxqQ
+         LPOvNk63fiiyCkwKdRMQR1escE7gbUj7RxMIvTbCYhUZvc4Q8RgemSCWlgo8qEQ5YitJ
+         m3K1mf57dwYyohHwtNJYG45TucHgsdfSMjdjOm4mlKvWPqr5EKi7VEPm9yQ1iH4ezFaU
+         BIxBokODYvBuiOjm8kZ/dDyAIiFk/oDq440lOjLAbHY0hNbkoTlcE13I7KLiRZblxXNa
+         S2/1R9dlLoGstSJvpjGOK7f4s5T98cQcOK8Syzb7hp3dAy1fwvVWDnCQuRp24ABkYbjL
+         WRvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706865763; x=1707470563;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HTowy/uYen+bsPWi2mCFz7Xlk53z/GMzvNwuHivQ8rg=;
+        b=txDIMsPCLoV3sExNKlACPe1f4+OIgbJ4PEoD1KrX5Y9XeyIk9KDusWugvi1PpjkNGr
+         dl+GfLeKbzyFRWPyJ+4Q2J203M2QlmA3k7/XgjPHJqO+IKnmAK8WP+4PTX5n2ZhaOcrp
+         77aMYaAZ1iUB6pbRDtLf0vUm+inAuBhyaIP2QFyYm2mH5CjUOJbMXxHovzjsuI6R0aZZ
+         i+MSiKRrOUFxxUeNpJnQNozbdqyG7Jn5OQ03nR30Tp3QtNCNkyHqRZwgYSgyI4wNpx4f
+         dHXW2/0zJhwPuOA+p+uv/899wjBOgL2sok6FEf7CkVXDq79HXkj9o/c6G6MU9YnhuPGw
+         OemA==
+X-Gm-Message-State: AOJu0Yw/aeMLcPCw7Qj5Lh8Uk7EpyzgcgCMH6lATtRd5sG5hPi1yltSk
+	AbdyKjyGWCQRzu2ZCPEO9+P3BWeh0xA3iEbWMQywEYBF02H0pQTfFiV+9eYZXM1ND4U9lmWbaPK
+	J18nPN8KiEowq6npCyBfpcwFX7nlBfbRkyhU=
+X-Google-Smtp-Source: AGHT+IGJy4900r9IV66NBG3FMIrVGWh/BXiOJfbjfVz+Rjqi+YFKJ7X+ayy4EkCTsjxxktkPNaYZZiUrMvEslj1kFmw=
+X-Received: by 2002:a05:6122:720:b0:4c0:d8c:66d7 with SMTP id
+ 32-20020a056122072000b004c00d8c66d7mr1064101vki.4.1706865762938; Fri, 02 Feb
+ 2024 01:22:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240129151618.90922-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240129151618.90922-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240129-magical-unclaimed-e725e2491ccb@spud>
+In-Reply-To: <20240129-magical-unclaimed-e725e2491ccb@spud>
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date: Fri, 2 Feb 2024 09:22:06 +0000
+Message-ID: <CA+V-a8vQdT+Rav9SNUTE7iFP2xWh+dJ=ZnQRhBpXaQDHOfVEdQ@mail.gmail.com>
+Subject: Re: [PATCH 1/5] dt-bindings: interrupt-controller:
+ renesas,rzg2l-irqc: Document RZ/Five SoC
+To: Conor Dooley <conor@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, linux-renesas-soc@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The total memory needed for saving per core temperature data depends on
-the number of cores in a package. Using static allocated memory wastes
-memories on systems with low per package core count.
+Hi Conor,
 
-Improve the code to use dynamic allocated memory so that it can be
-improved further when per package core count information becomes
-available.
+Thank you for the review.
 
-No functional change intended.
+On Mon, Jan 29, 2024 at 5:30=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
+te:
+>
+> On Mon, Jan 29, 2024 at 03:16:14PM +0000, Prabhakar wrote:
+> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> >
+> > Document RZ/Five (R9A07G043F) IRQC bindings. The IRQC block on RZ/Five =
+SoC
+> > is almost identical to one found on the RZ/G2L SoC with below differenc=
+es,
+> > * Additional BUS error interrupt
+> > * Additional ECCRAM error interrupt
+> > * Has additional mask control registers for NMI/IRQ/TINT
+> >
+> > Hence new compatible string "renesas,r9a07g043f-irqc" is added for RZ/F=
+ive
+> > SoC.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > ---
+> >  .../renesas,rzg2l-irqc.yaml                   | 27 +++++++++++++++++++
+> >  1 file changed, 27 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/interrupt-controller/ren=
+esas,rzg2l-irqc.yaml b/Documentation/devicetree/bindings/interrupt-controll=
+er/renesas,rzg2l-irqc.yaml
+> > index d3b5aec0a3f7..3abc01e48934 100644
+> > --- a/Documentation/devicetree/bindings/interrupt-controller/renesas,rz=
+g2l-irqc.yaml
+> > +++ b/Documentation/devicetree/bindings/interrupt-controller/renesas,rz=
+g2l-irqc.yaml
+> > @@ -23,6 +23,7 @@ properties:
+> >    compatible:
+> >      items:
+> >        - enum:
+> > +          - renesas,r9a07g043f-irqc   # RZ/Five
+> >            - renesas,r9a07g043u-irqc   # RZ/G2UL
+> >            - renesas,r9a07g044-irqc    # RZ/G2{L,LC}
+> >            - renesas,r9a07g054-irqc    # RZ/V2L
+> > @@ -88,6 +89,12 @@ properties:
+> >        - description: GPIO interrupt, TINT30
+> >        - description: GPIO interrupt, TINT31
+> >        - description: Bus error interrupt
+> > +      - description: ECCRAM0 TIE1 interrupt
+> > +      - description: ECCRAM0 TIE2 interrupt
+> > +      - description: ECCRAM0 overflow interrupt
+> > +      - description: ECCRAM1 TIE1 interrupt
+> > +      - description: ECCRAM1 TIE2 interrupt
+> > +      - description: ECCRAM1 overflow interrupt
+> >
+> >    interrupt-names:
+> >      minItems: 41
+> > @@ -134,6 +141,12 @@ properties:
+> >        - const: tint30
+> >        - const: tint31
+> >        - const: bus-err
+> > +      - const: eccram0-tie1
+> > +      - const: eccram0-tie2
+> > +      - const: eccram0-ovf
+> > +      - const: eccram1-tie1
+> > +      - const: eccram1-tie2
+> > +      - const: eccram1-ovf
+>
+> I think the restrictions already in the file become incorrect with this
+> patch:
+>   - if:
+>       properties:
+>         compatible:
+>           contains:
+>             enum:
+>               - renesas,r9a07g043u-irqc
+>               - renesas,r9a08g045-irqc
+>     then:
+>       properties:
+>         interrupts:
+>           minItems: 42
+>         interrupt-names:
+>           minItems: 42
+>       required:
+>         - interrupt-names
+>
+> This used to require all 42 interrupts for the two compatibles here
+> and at least the first 41 otherwise. Now you've increased the number of
+> interrupts to 48 thereby removing the upper limits on the existing
+> devices.
+>
+> Given the commit message, I figure that providing 48 interrupts for
+> (at least some of) those devices would be incorrect?
+>
+Agreed, I will fix this in the next version.
 
-Signed-off-by: Zhang Rui <rui.zhang@intel.com>
----
- drivers/hwmon/coretemp.c | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/hwmon/coretemp.c b/drivers/hwmon/coretemp.c
-index e548f2145449..27c98c7faf32 100644
---- a/drivers/hwmon/coretemp.c
-+++ b/drivers/hwmon/coretemp.c
-@@ -91,10 +91,11 @@ struct temp_data {
- struct platform_data {
- 	struct device		*hwmon_dev;
- 	u16			pkg_id;
-+	int			nr_cores;
- 	struct ida		ida;
- 	struct cpumask		cpumask;
- 	struct temp_data	*pkg_data;
--	struct temp_data	*core_data[NUM_REAL_CORES];
-+	struct temp_data	**core_data;
- 	struct device_attribute name_attr;
- };
- 
-@@ -480,6 +481,20 @@ init_temp_data(struct platform_data *pdata, unsigned int cpu, int pkg_flag)
- {
- 	struct temp_data *tdata;
- 
-+	if (!pdata->core_data) {
-+		/*
-+		 * TODO:
-+		 * The information of actual possible cores in a package is broken for now.
-+		 * Will replace hardcoded NUM_REAL_CORES with actual per package core count
-+		 * when this information becomes available.
-+		 */
-+		pdata->nr_cores = NUM_REAL_CORES;
-+		pdata->core_data = kcalloc(pdata->nr_cores, sizeof(struct temp_data *),
-+						GFP_KERNEL);
-+		if (!pdata->core_data)
-+			return NULL;
-+	}
-+
- 	tdata = kzalloc(sizeof(struct temp_data), GFP_KERNEL);
- 	if (!tdata)
- 		return NULL;
-@@ -489,7 +504,7 @@ init_temp_data(struct platform_data *pdata, unsigned int cpu, int pkg_flag)
- 		/* Use tdata->index as indicator of package temp data */
- 		tdata->index = -1;
- 	} else {
--		tdata->index = ida_alloc_max(&pdata->ida, NUM_REAL_CORES - 1, GFP_KERNEL);
-+		tdata->index = ida_alloc_max(&pdata->ida, pdata->nr_cores - 1, GFP_KERNEL);
- 		if (tdata->index < 0) {
- 			kfree(tdata);
- 			return NULL;
-@@ -510,6 +525,9 @@ static void destroy_temp_data(struct platform_data *pdata, struct temp_data *tda
- {
- 	if (is_pkg_temp_data(tdata)) {
- 		pdata->pkg_data = NULL;
-+		kfree(pdata->core_data);
-+		pdata->core_data = NULL;
-+		pdata->nr_cores = 0;
- 	} else {
- 		pdata->core_data[tdata->index] = NULL;
- 		ida_free(&pdata->ida, tdata->index);
-@@ -525,7 +543,7 @@ static struct temp_data *get_temp_data(struct platform_data *pdata, int cpu)
- 	if (cpu < 0)
- 		return pdata->pkg_data;
- 
--	for (i = 0; i < NUM_REAL_CORES; i++) {
-+	for (i = 0; i < pdata->nr_cores; i++) {
- 		if (pdata->core_data[i] &&
- 		    pdata->core_data[i]->cpu_core_id == topology_core_id(cpu))
- 			return pdata->core_data[i];
--- 
-2.34.1
-
+Cheers,
+Prabhakar
 
