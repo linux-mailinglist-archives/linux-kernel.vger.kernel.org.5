@@ -1,153 +1,280 @@
-Return-Path: <linux-kernel+bounces-49150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1629184668D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:30:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCEF184668F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:32:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46CCE1C26111
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:30:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E7181F28106
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:32:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0809D313;
-	Fri,  2 Feb 2024 03:30:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="BLXf0gDh"
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2522C2D7;
+	Fri,  2 Feb 2024 03:32:09 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26505C8C3
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 03:30:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC3BFD27F
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 03:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706844644; cv=none; b=JNVzckXodm+OttQl7UpFv1QSNnKRplsUNpuPtLYaPsq4Cx+Dm5S9EZaIRLl4mUOyzPL89CV6bn1/q6UTE0Ndu2kHpEK3pqVPeRJmKw53BkN5yH/wJO/PrcYkjMCAec+RrhcUdZfqkGa35k03DCRQX32pNMLXX9FpWiXHiithU4g=
+	t=1706844729; cv=none; b=NckkNKeWaTHsFT6y5Cq5cQfL1P3ZTnDtklgsBWQWeK4ckcRhba+sGZ1UmDP0E2ES1wUN2IJnCbUhNRw0udq6fPtkhScsTShNPZ3j9QOIR6HdnMW4JSQL8sZ0bIdrqfywosHvhBjxUSRyfcYsFqte6d7YnLDQbOlMszOFqNk3JBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706844644; c=relaxed/simple;
-	bh=EmKjmDmXRKrnBxWdzwix5j1O1b1nVwMXkAT/mk3vi8I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F7hEyevsGl3HDc5WbGtllETpQpfaNXpEP1jTyVXSqTKe7UVKVQETM2cIPCB25IyUaS71s3Rv04NagJo4GSRpxd+qDeg64whydZVwzK5qXMyLUdKGvMEe04Z6lq7cW6jDxPTNOqg3iSa1gePrkTIzm9k0zieJodTIkpSVKx/KTXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=BLXf0gDh; arc=none smtp.client-ip=209.85.160.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-2184133da88so924646fac.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 19:30:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706844641; x=1707449441; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NDdYwb6bms529iTi0p0xaIF4DMRKf1eH479RkB5tVc0=;
-        b=BLXf0gDhlqX9CQNr1kZBBPk/qOrFd1ie1yZdE/gDvKCIoYg4Z2ZEmW2M3skB/VFAVI
-         FQ+eJf1E5khc761ns7yKe0S4bNLloXYqXShf0h+WEybB7uIM7KpXDHs+hqTxFW+LYCoj
-         HzdKnS0Cz0WwpRUkLFm1VZpDP0yImt2kRj/BI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706844641; x=1707449441;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NDdYwb6bms529iTi0p0xaIF4DMRKf1eH479RkB5tVc0=;
-        b=IvyLxloKg3tOHj/+tTTN9sL8zc/pYoxl2RiEcDMEF9iQ658l8qaCbRY4z15iS2/GiC
-         llCi9lJ0hPjQaPQkskt+icGn9tUj4yU/GlXmQgw9BO91F2GIJkdoINxr7dy0QexwD/YO
-         Dnkx9lq+Gpeyyy2crQytAbf3HYxwuichRrRtlQGKJyqk4yULkL932wF7vNueM9dD3mqA
-         VPqV5yIqb6y+GzeAv3KRAbGmfiMokI3fa+cA+IrC8VRa4Jx5xLpEt2RPtI+VlzoYSEWA
-         U7BtWtQFzizUIWk7W5CWgTq09ZxEMhPk7vTYYctjuxiyw6MZ+68p/rqcMA0exz7r7KMQ
-         j+sg==
-X-Gm-Message-State: AOJu0YzQ2MC9Loy4wr7YqFnUzanrtukqAmV77UnVcT/Ie2NfixkNXSZ1
-	l3mSib9pC4E0A+rBR9qh57cis+uvd4nUng+QDgR/oPipXeFOvO2jXg5j8R3zwa9Lo7htegzUtOU
-	s1sdji+RlVDi96ozOp+8UNeLHr9KYNTAwpa0Z
-X-Google-Smtp-Source: AGHT+IF/r05G9r4pqnUYufTxyrklaLY34VPoujkR9dH8bcGKq2ZHmLdBhM1/R7dkd0o8lqJL0U36sbeOMj+cQAyiOs0=
-X-Received: by 2002:a05:6871:7584:b0:219:2219:29d7 with SMTP id
- nz4-20020a056871758400b00219221929d7mr203072oac.48.1706844641233; Thu, 01 Feb
- 2024 19:30:41 -0800 (PST)
+	s=arc-20240116; t=1706844729; c=relaxed/simple;
+	bh=IWTc9V2JGx5tanjhQVkr7NOfpw1Zv8yZFxxICy/SBKU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=aRlYmbHDUE7anQXVgykU9BMqo7xtXtsjvtVvXYb6r/GHGmoRkNjlTxLFa4WJuds1ToADHcF8OwnzrAsyD6Xi8NOMp5X/Qe86j2YzZI8r6PplxUBOMIPxja8hqximADmf7lTu5hKBibKx6ITMOK5jgKodNSfJJPdBm000e707+go=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TR1Rj4FQrz1FK9l;
+	Fri,  2 Feb 2024 11:27:29 +0800 (CST)
+Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
+	by mail.maildlp.com (Postfix) with ESMTPS id 742BB140499;
+	Fri,  2 Feb 2024 11:32:00 +0800 (CST)
+Received: from [10.174.179.160] (10.174.179.160) by
+ kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 2 Feb 2024 11:31:59 +0800
+Message-ID: <9737f3ad-e190-b082-f50b-bece4b321a86@huawei.com>
+Date: Fri, 2 Feb 2024 11:31:58 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131175027.3287009-3-jeffxu@chromium.org>
- <20240201231151.GA41472@sol.localdomain>
-In-Reply-To: <20240201231151.GA41472@sol.localdomain>
-From: Jeff Xu <jeffxu@chromium.org>
-Date: Thu, 1 Feb 2024 19:30:29 -0800
-Message-ID: <CABi2SkWW78n3PK3Qk5cCzpjb57ZCoLmybA1ds3=rHrGMams7sw@mail.gmail.com>
-Subject: Re: [PATCH v8 2/4] mseal: add mseal syscall
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com, 
-	sroettger@google.com, willy@infradead.org, gregkh@linuxfoundation.org, 
-	torvalds@linux-foundation.org, usama.anjum@collabora.com, 
-	rdunlap@infradead.org, jeffxu@google.com, jorgelo@chromium.org, 
-	groeck@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
-	dave.hansen@intel.com, linux-hardening@vger.kernel.org, deraadt@openbsd.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [RFC PATCH] mm: filemap: avoid unnecessary major faults in
+ filemap_fault()
+Content-Language: en-US
+To: "Huang, Ying" <ying.huang@intel.com>
+CC: Yin Fengwei <fengwei.yin@intel.com>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
+	<willy@infradead.org>, <aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>,
+	<hughd@google.com>, <david@redhat.com>, <wangkefeng.wang@huawei.com>,
+	<sunnanyong@huawei.com>
+References: <20231122140052.4092083-1-zhangpeng362@huawei.com>
+ <f4dba5b5-2e6e-4c5a-a269-4abe8fe2bcd8@intel.com>
+ <b0d869e4-108b-8ffe-e9f7-65c4d98f2bf8@huawei.com>
+ <801bd0c9-7d0c-4231-93e5-7532e8231756@intel.com>
+ <48235d73-3dc6-263d-7822-6d479b753d46@huawei.com>
+ <87y1en7pq3.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <87ttpb7p4z.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <a4b53c04-681c-4cc0-07f1-db3fc702f8d1@huawei.com>
+ <87lean7f2c.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ab5cf58f-f7bd-73a8-5b71-4ffe90d811c1@huawei.com>
+ <87plzt464d.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <4da573ec-a2f9-84f4-f729-540492192957@huawei.com>
+ <87wmrnbsxg.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
+In-Reply-To: <87wmrnbsxg.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600020.china.huawei.com (7.193.23.147)
 
-On Thu, Feb 1, 2024 at 3:11=E2=80=AFPM Eric Biggers <ebiggers@kernel.org> w=
-rote:
+On 2024/2/2 8:39, Huang, Ying wrote:
+
+> "zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
 >
-> On Wed, Jan 31, 2024 at 05:50:24PM +0000, jeffxu@chromium.org wrote:
-> > [PATCH v8 2/4] mseal: add mseal syscall
-> [...]
-> > +/*
-> > + * The PROT_SEAL defines memory sealing in the prot argument of mmap()=
-.
-> > + */
-> > +#define PROT_SEAL    0x04000000      /* _BITUL(26) */
-> > +
-> >  /* 0x01 - 0x03 are defined in linux/mman.h */
-> >  #define MAP_TYPE     0x0f            /* Mask for type of mapping */
-> >  #define MAP_FIXED    0x10            /* Interpret addr exactly */
-> > @@ -33,6 +38,9 @@
-> >  #define MAP_UNINITIALIZED 0x4000000  /* For anonymous mmap, memory cou=
-ld be
-> >                                        * uninitialized */
-> >
-> > +/* map is sealable */
-> > +#define MAP_SEALABLE 0x8000000       /* _BITUL(27) */
+>> On 2023/11/29 10:59, Huang, Ying wrote:
+>>
+>>> "zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
+>>>
+>>>> On 2023/11/24 16:04, Huang, Ying wrote:
+>>>>
+>>>>> "zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
+>>>>>
+>>>>>> On 2023/11/24 12:26, Huang, Ying wrote:
+>>>>>>
+>>>>>>> "Huang, Ying" <ying.huang@intel.com> writes:
+>>>>>>>
+>>>>>>>> "zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
+>>>>>>>>
+>>>>>>>>> On 2023/11/23 13:26, Yin Fengwei wrote:
+>>>>>>>>>
+>>>>>>>>>> On 11/23/23 12:12, zhangpeng (AS) wrote:
+>>>>>>>>>>> On 2023/11/23 9:09, Yin Fengwei wrote:
+>>>>>>>>>>>
+>>>>>>>>>>>> Hi Peng,
+>>>>>>>>>>>>
+>>>>>>>>>>>> On 11/22/23 22:00, Peng Zhang wrote:
+>>>>>>>>>>>>> From: ZhangPeng <zhangpeng362@huawei.com>
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
+>>>>>>>>>>>>> in application, which leading to an unexpected performance issue[1].
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> This caused by temporarily cleared pte during a read/modify/write update
+>>>>>>>>>>>>> of the pte, eg, do_numa_page()/change_pte_range().
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> For the data segment of the user-mode program, the global variable area
+>>>>>>>>>>>>> is a private mapping. After the pagecache is loaded, the private anonymous
+>>>>>>>>>>>>> page is generated after the COW is triggered. Mlockall can lock COW pages
+>>>>>>>>>>>>> (anonymous pages), but the original file pages cannot be locked and may
+>>>>>>>>>>>>> be reclaimed. If the global variable (private anon page) is accessed when
+>>>>>>>>>>>>> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> At this time, the original private file page may have been reclaimed.
+>>>>>>>>>>>>> If the page cache is not available at this time, a major fault will be
+>>>>>>>>>>>>> triggered and the file will be read, causing additional overhead.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> Fix this by rechecking the pte by holding ptl in filemap_fault() before
+>>>>>>>>>>>>> triggering a major fault.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+>>>>>>>>>>>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>>>>>>>>>>>>> ---
+>>>>>>>>>>>>>        mm/filemap.c | 14 ++++++++++++++
+>>>>>>>>>>>>>        1 file changed, 14 insertions(+)
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> diff --git a/mm/filemap.c b/mm/filemap.c
+>>>>>>>>>>>>> index 71f00539ac00..bb5e6a2790dc 100644
+>>>>>>>>>>>>> --- a/mm/filemap.c
+>>>>>>>>>>>>> +++ b/mm/filemap.c
+>>>>>>>>>>>>> @@ -3226,6 +3226,20 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+>>>>>>>>>>>>>                    mapping_locked = true;
+>>>>>>>>>>>>>                }
+>>>>>>>>>>>>>            } else {
+>>>>>>>>>>>>> +        pte_t *ptep = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd,
+>>>>>>>>>>>>> +                          vmf->address, &vmf->ptl);
+>>>>>>>>>>>>> +        if (ptep) {
+>>>>>>>>>>>>> +            /*
+>>>>>>>>>>>>> +             * Recheck pte with ptl locked as the pte can be cleared
+>>>>>>>>>>>>> +             * temporarily during a read/modify/write update.
+>>>>>>>>>>>>> +             */
+>>>>>>>>>>>>> +            if (unlikely(!pte_none(ptep_get(ptep))))
+>>>>>>>>>>>>> +                ret = VM_FAULT_NOPAGE;
+>>>>>>>>>>>>> +            pte_unmap_unlock(ptep, vmf->ptl);
+>>>>>>>>>>>>> +            if (unlikely(ret))
+>>>>>>>>>>>>> +                return ret;
+>>>>>>>>>>>>> +        }
+>>>>>>>>>>>> I am curious. Did you try not to take PTL here and just check whether PTE is not NONE?
+>>>>>>>>>>> Thank you for your reply.
+>>>>>>>>>>>
+>>>>>>>>>>> If we don't take PTL, the current use case won't trigger this issue either.
+>>>>>>>>>> Is this verified by testing or just in theory?
+>>>>>>>>> If we add a delay between ptep_modify_prot_start() and ptep_modify_prot_commit(),
+>>>>>>>>> this issue will also trigger. Without delay, we haven't reproduced this problem
+>>>>>>>>> so far.
+>>>>>>>>>
+>>>>>>>>>>> In most cases, if we don't take PTL, this issue won't be triggered. However,
+>>>>>>>>>>> there is still a possibility of triggering this issue. The corner case is that
+>>>>>>>>>>> task 2 triggers a page fault when task 1 is between ptep_modify_prot_start()
+>>>>>>>>>>> and ptep_modify_prot_commit() in do_numa_page(). Furthermore,task 2 passes the
+>>>>>>>>>>> check whether the PTE is not NONE before task 1 updates PTE in
+>>>>>>>>>>> ptep_modify_prot_commit() without taking PTL.
+>>>>>>>>>> There is very limited operations between ptep_modify_prot_start() and
+>>>>>>>>>> ptep_modify_prot_commit(). While the code path from page fault to this check is
+>>>>>>>>>> long. My understanding is it's very likely the PTE is not NONE when do PTE check
+>>>>>>>>>> here without hold PTL (This is my theory. :)).
+>>>>>>>>> Yes, there is a high probability that this issue won't occur without taking PTL.
+>>>>>>>>>
+>>>>>>>>>> In the other side, acquiring/releasing PTL may bring performance impaction. It may
+>>>>>>>>>> not be big deal because the IO operations in this code path. But it's better to
+>>>>>>>>>> collect some performance data IMHO.
+>>>>>>>>> We tested the performance of file private mapping page fault (page_fault2.c of
+>>>>>>>>> will-it-scale [1]) and file shared mapping page fault (page_fault3.c of will-it-scale).
+>>>>>>>>> The difference in performance (in operations per second) before and after patch
+>>>>>>>>> applied is about 0.7% on a x86 physical machine.
+>>>>>>>> Whether is it improvement or reduction?
+>>>>>>> And I think that you need to test ramdisk cases too to verify whether
+>>>>>>> this will cause performance regression and how much.
+>>>>>> Yes, I will.
+>>>>>> In addition, are there any ramdisk test cases recommended? 😁
+>>>>> I think that you can start with the will-it-scale test case you used
+>>>>> before.  And you can try some workload with large number of major fault,
+>>>>> like file read with mmap.
+>>>> I used will-it-scale to test the page faults of ext4 files and
+>>>> tmpfs files. The data is the average change compared with the
+>>>> mainline after the patch is applied. The test results are within
+>>>> the range of fluctuation, and there is no obvious difference.
+>>>> The test results are as follows:
+>>>>
+>>>>                             processes processes_idle threads threads_idle
+>>>> ext4  private file write: -0.51%    0.08%          -0.03%  -0.04%
+>>>> ext4  shared  file write:  0.135%  -0.531%          2.883% -0.772%
+>>>> tmpfs private file write: -0.344%  -0.110%          0.200%  0.145%
+>>>> tmpfs shared  file write:  0.958%   0.101%          2.781% -0.337%
+>>>> tmpfs private file read:  -0.16%    0.00%          -0.12%   0.41%
+>>> Thank you very much for test results!
+>>>
+>>> We shouldn't use tmpfs, because there will be no major faults.  Please
+>>> check your major faults number to verify that.  IIUC, ram disk + disk
+>>> file system should be used.
+>>>
+>>> And, please make sure that there's no heavy lock contention in the base
+>>> kernel.  Because if some heavy lock contention kills performance, there
+>>> will no performance difference between based and patched kernel.
+>> I'm so sorry I was so late to finish the test and reply.
+>>
+>> I used will-it-scale to test the page faults of ramdisk files. The
+>> data is the average change compared with the mainline after the patch
+>> is applied. The test results are as follows:
+>>
+>>                             processes processes_idle threads threads_idle
+>> ramdisk private file write: -0.48%   0.23%          -1.08%   0.27%
+>> ramdisk private file  read:  0.07%  -6.90%          -5.85%  -0.70%
+>                                                        ~~~~~~
 >
-> IMO this patch is misleading, as it claims to just be adding a new syscal=
-l, but
-> it actually adds three new UAPIs, only one of which is the new syscall.  =
-The
-> other two new UAPIs are new flags to the mmap syscall.
+> It appears that the patch will cause some visible performance regression
+> in this benchmark.  We can try to verify that via `perf profile`.  Or,
+> we can just try Fengwei's idea, that is, check pte_none() without
+> acquiring PTL.
+
+Maybe we should try Fengwei's idea, we can still avoid most of the
+scenarios without acquiring PTL.
+
+I'll send the new patch soon.
+
+Thank you for your review and comments!
+
 >
-The description does include all three. I could update the patch title.
-
-> Based on recent discussions, it seems the usefulness of the new mmap flag=
-s has
-> not yet been established.  Note also that there are only a limited number=
- of
-> mmap flags remaining, so we should be careful about allocating them.
+> --
+> Best Regards,
+> Huang, Ying
 >
-> Therefore, why not start by just adding the mseal syscall, without the ne=
-w mmap
-> flags alongside it?
->
-> I'll also note that the existing PROT_* flags seem to be conventionally u=
-sed for
-> the CPU page protections, as opposed to kernel-specific properties of the=
- VMA
-> object.  As such, PROT_SEAL feels a bit out of place anyway.  If it's add=
-ed at
-> all it perhaps should be a MAP_* flag, not PROT_*.  I'm not sure this asp=
-ect has
-> been properly discussed yet, seeing as the patchset is presented as just =
-adding
-> sys_mseal().  Some reviewers may not have noticed or considered the new f=
-lags.
->
-MAP_ flags is more used for type of mapping, such as MAP_FIXED_NOREPLACE.
+>> Applied patch:
+>>
+>> diff --git a/mm/filemap.c b/mm/filemap.c
+>> index 32eedf3afd45..2db9ccfbd5e3 100644
+>> --- a/mm/filemap.c
+>> +++ b/mm/filemap.c
+>> @@ -3226,6 +3226,22 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+>>                           mapping_locked = true;
+>>                   }
+>>           } else {
+>> +               if (!pmd_none(*vmf->pmd)) {
+>> +                       pte_t *ptep = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd,
+>> +                                                         vmf->address, &vmf->ptl);
+>> +                       if (unlikely(!ptep))
+>> +                               return VM_FAULT_NOPAGE;
+>> +                       /*
+>> +                        * Recheck pte with ptl locked as the pte can be cleared
+>> +                        * temporarily during a read/modify/write update.
+>> +                        */
+>> +                       if (unlikely(!pte_none(ptep_get(ptep))))
+>> +                               ret = VM_FAULT_NOPAGE;
+>> +                       pte_unmap_unlock(ptep, vmf->ptl);
+>> +                       if (unlikely(ret))
+>> +                               return ret;
+>> +               }
+>> +
+>>                   /* No page in the page cache at all */
+>>                   count_vm_event(PGMAJFAULT);
+>>                   count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
+>>
+>>> --
+>>> Best Regards,
+>>> Huang, Ying
 
-The PROT_SEAL might make more sense because sealing the protection bit
-is the main functionality of the sealing at this moment.
+-- 
+Best Regards,
+Peng
 
-Thanks
--Jeff
-
-
-
-
-> - Eric
 
