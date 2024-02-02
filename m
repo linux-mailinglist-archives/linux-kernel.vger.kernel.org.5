@@ -1,56 +1,67 @@
-Return-Path: <linux-kernel+bounces-50386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D721847852
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:50:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DE1E847864
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:51:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD7C41F2F85B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:50:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66B14B2D039
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:50:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1352F136989;
-	Fri,  2 Feb 2024 18:40:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA63813249D;
+	Fri,  2 Feb 2024 18:40:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QQOpnmLA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s+C+aGCr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25309134CD9;
-	Fri,  2 Feb 2024 18:40:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B43951369A2;
+	Fri,  2 Feb 2024 18:40:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706899246; cv=none; b=rF4Q87dXAxsDjuK2ARxxkOrwC4Qm8UV/5wZIKr4Gik1DXhGLgRsm2b/ouoKwSuNYYuEb6mlIw77B/XA4PqUvnZPytly9/MbO2JYUeVZqj6Y3p292YDZUNTzAqFfVyQ1fUo0xwLaArJTjtr3LRtoWf9GjFAb2HwKnV5ob1ooTTYI=
+	t=1706899248; cv=none; b=TTiXVZrSZ9gpg8b0MBNpwpG3ncMJXAL6BO9/cS0W0OTzr1KofphER1+mdjgHPFX59QzzplkfkXmh8ZIw0hit/tW/sW3WA6rUzLTtX7T3pxath4Nj6W33Wi1706ahqpip8Negh58uqQfU/sHKhwPz6LEBKxd4u4q67wMAeLysJuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706899246; c=relaxed/simple;
-	bh=XCTM5YShZa4xIIctJvmxroRS23j3adEVF/nKbOlAr7s=;
+	s=arc-20240116; t=1706899248; c=relaxed/simple;
+	bh=XDGChs3C5gdoEueI7oNpmXwNAkZhxRdlIIfIwPywzJI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TgaGGtVD87qyAn67gscOuCF4t7e8Xaugn2o9Mi26zBnN5ZXDFmZElVYefIbW/VGkvnINkO1ZT50bonvbHcda+FIUAUn42xDpC84hjeBBp7wNzIAm0G4htYkCc5ytVvd5/4Ff3r6/GauXW9Pv+t1xPsWbx+bxqHBMf3Yo1xS/Cmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QQOpnmLA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFD7BC43390;
-	Fri,  2 Feb 2024 18:40:44 +0000 (UTC)
+	 MIME-Version; b=LipE7YbRyH6sxItnYQk4d7qDzoWLxjOqEp4d/tS/PT5PJRdvPXcAzlhCn1Tly//2IXphxQqxih3iHtqk6Ui4F7CGolyK8+iA8FR1OqCBtCte0+s7xSu3WLaH3WT/VN/flCf3lA/G/xeq76gqdSicK92m2c0aXCcOczsJQ/8rltQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s+C+aGCr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58F07C433B1;
+	Fri,  2 Feb 2024 18:40:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706899245;
-	bh=XCTM5YShZa4xIIctJvmxroRS23j3adEVF/nKbOlAr7s=;
+	s=k20201202; t=1706899248;
+	bh=XDGChs3C5gdoEueI7oNpmXwNAkZhxRdlIIfIwPywzJI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QQOpnmLA38KbU0IeL42/BcmvMoD5b/nakpnnrIPhuzqWfxT8dLgemjVpWzgGuIdGV
-	 3/vnBhjeFLNTpcBiZ/zqFyZdqolLdvs98EXpWkacA/BYkre79/JqM5ZlVahAJ29CLb
-	 70P5qw3EhZCzu96RkEgkNAD3K6KP+XDFPE+7sPSQf4EhyUtWVKLL9waUgGTSMGzBOc
-	 e1zi6gUwGvQ1BxJ48IePcFmsEuFS185CFceMt5SbSDbuI5OnPbNfT1ZS1g9mYzhI6p
-	 nfEv8JnUUPhkPx7ocvG7tq/6bS3hWSPT40LP/bftsz7/jXEEvr4R7HAq9c1h/c0V72
-	 fG5cKYQjNFNzQ==
+	b=s+C+aGCrVGjp0yP+0eBsWgPUoa9PrpWUo1fF69o2Dicr8OoJ+s/7DqR77fZ2DXpzH
+	 5K5Hkl3lAU5hP1FpZxy3YpVuIznssWVl8k3TTAhHYdvl/UxN/n5EU3hYXsqA96T8il
+	 MtCuNWLruyq0Q8vpQYxagUmtO0h3mOgtZv1B6CpXnTOcU4299vYSpT9CJpq+RsBkDk
+	 vN6Co7Loac9Re1+VVUqpxDNQ/5kjMh3FVbbat6zLbGfGxneC7FXwMnIzAOI7Mu46Uk
+	 6IiB9ZCESH1y5okeK2sn4JyD1fYWsWJzxtNZ+CDWyGPU/uEzcYxbKguE9QrpoyUXWs
+	 Pq5D/0ijqTh8A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Lennert Buytenhek <kernel@wantstofly.org>,
-	Niklas Cassel <cassel@kernel.org>,
+Cc: Lukas Wunner <lukas@wunner.de>,
+	Patrick Williams <patrick@stwcx.xyz>,
+	Tao Ren <rentao.bupt@gmail.com>,
+	Bruno Thomsen <bruno.thomsen@gmail.com>,
 	Sasha Levin <sashal@kernel.org>,
-	dlemoal@kernel.org,
-	linux-ide@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 18/21] ahci: add 43-bit DMA address quirk for ASMedia ASM1061 controllers
-Date: Fri,  2 Feb 2024 13:40:05 -0500
-Message-ID: <20240202184015.540966-18-sashal@kernel.org>
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	joel@jms.id.au,
+	shawnguo@kernel.org,
+	bcousson@baylibre.com,
+	tony@atomide.com,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org,
+	linux-omap@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 19/21] ARM: dts: Fix TPM schema violations
+Date: Fri,  2 Feb 2024 13:40:06 -0500
+Message-ID: <20240202184015.540966-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240202184015.540966-1-sashal@kernel.org>
 References: <20240202184015.540966-1-sashal@kernel.org>
@@ -65,157 +76,155 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.15
 Content-Transfer-Encoding: 8bit
 
-From: Lennert Buytenhek <kernel@wantstofly.org>
+From: Lukas Wunner <lukas@wunner.de>
 
-[ Upstream commit 20730e9b277873deeb6637339edcba64468f3da3 ]
+[ Upstream commit 8412c47d68436b9f9a260039a4a773daa6824925 ]
 
-With one of the on-board ASM1061 AHCI controllers (1b21:0612) on an
-ASUSTeK Pro WS WRX80E-SAGE SE WIFI mainboard, a controller hang was
-observed that was immediately preceded by the following kernel
-messages:
+Since commit 26c9d152ebf3 ("dt-bindings: tpm: Consolidate TCG TIS
+bindings"), several issues are reported by "make dtbs_check" for ARM
+devicetrees:
 
-ahci 0000:28:00.0: Using 64-bit DMA addresses
-ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00000 flags=0x0000]
-ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00300 flags=0x0000]
-ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00380 flags=0x0000]
-ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00400 flags=0x0000]
-ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00680 flags=0x0000]
-ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00700 flags=0x0000]
+The nodename needs to be "tpm@0" rather than "tpmdev@0" and the
+compatible property needs to contain the chip's name in addition to the
+generic "tcg,tpm_tis-spi" or "tcg,tpm-tis-i2c":
 
-The first message is produced by code in drivers/iommu/dma-iommu.c
-which is accompanied by the following comment that seems to apply:
+  tpmdev@0: $nodename:0: 'tpmdev@0' does not match '^tpm(@[0-9a-f]+)?$'
+        from schema $id: http://devicetree.org/schemas/tpm/tcg,tpm_tis-spi.yaml#
 
-        /*
-         * Try to use all the 32-bit PCI addresses first. The original SAC vs.
-         * DAC reasoning loses relevance with PCIe, but enough hardware and
-         * firmware bugs are still lurking out there that it's safest not to
-         * venture into the 64-bit space until necessary.
-         *
-         * If your device goes wrong after seeing the notice then likely either
-         * its driver is not setting DMA masks accurately, the hardware has
-         * some inherent bug in handling >32-bit addresses, or not all the
-         * expected address bits are wired up between the device and the IOMMU.
-         */
+  tpm@2e: compatible: 'oneOf' conditional failed, one must be fixed:
+        ['tcg,tpm-tis-i2c'] is too short
+        from schema $id: http://devicetree.org/schemas/tpm/tcg,tpm-tis-i2c.yaml#
 
-Asking the ASM1061 on a discrete PCIe card to DMA from I/O virtual
-address 0xffffffff00000000 produces the following I/O page faults:
+Fix these schema violations.
 
-vfio-pci 0000:07:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0021 address=0x7ff00000000 flags=0x0010]
-vfio-pci 0000:07:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0021 address=0x7ff00000500 flags=0x0010]
+Aspeed Facebook BMCs use an Infineon SLB9670:
+https://lore.kernel.org/all/ZZSmMJ%2F%2Fl972Qbxu@fedora/
+https://lore.kernel.org/all/ZZT4%2Fw2eVzMhtsPx@fedora/
+https://lore.kernel.org/all/ZZTS0p1hdAchIbKp@heinlein.vulture-banana.ts.net/
 
-Note that the upper 21 bits of the logged DMA address are zero.  (When
-asking a different PCIe device in the same PCIe slot to DMA to the
-same I/O virtual address, we do see all the upper 32 bits of the DMA
-address as 1, so this is not an issue with the chipset or IOMMU
-configuration on the test system.)
+Aspeed Tacoma uses a Nuvoton NPCT75X per commit 39d8a73c53a2 ("ARM: dts:
+aspeed: tacoma: Add TPM").
 
-Also, hacking libahci to always set the upper 21 bits of all DMA
-addresses to 1 produces no discernible effect on the behavior of the
-ASM1061, and mkfs/mount/scrub/etc work as without this hack.
+phyGATE-Tauri uses an Infineon SLB9670:
+https://lore.kernel.org/all/ab45c82485fa272f74adf560cbb58ee60cc42689.camel@phytec.de/
 
-This all strongly suggests that the ASM1061 has a 43 bit DMA address
-limit, and this commit therefore adds a quirk to deal with this limit.
+A single schema violation remains in am335x-moxa-uc-2100-common.dtsi
+because it is unknown which chip is used on the board.  The devicetree's
+author has been asked for clarification but has not responded so far:
+https://lore.kernel.org/all/20231220090910.GA32182@wunner.de/
 
-This issue probably applies to (some of) the other supported ASMedia
-parts as well, but we limit it to the PCI IDs known to refer to
-ASM1061 parts, as that's the only part we know for sure to be affected
-by this issue at this point.
-
-Link: https://lore.kernel.org/linux-ide/ZaZ2PIpEId-rl6jv@wantstofly.org/
-Signed-off-by: Lennert Buytenhek <kernel@wantstofly.org>
-[cassel: drop date from error messages in commit log]
-Signed-off-by: Niklas Cassel <cassel@kernel.org>
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Reviewed-by: Patrick Williams <patrick@stwcx.xyz>
+Reviewed-by: Tao Ren <rentao.bupt@gmail.com>
+Reviewed-by: Bruno Thomsen <bruno.thomsen@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/ahci.c | 29 +++++++++++++++++++++++------
- drivers/ata/ahci.h |  1 +
- 2 files changed, 24 insertions(+), 6 deletions(-)
+ arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-bletchley.dts   | 4 ++--
+ arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge400.dts    | 4 ++--
+ arch/arm/boot/dts/aspeed/aspeed-bmc-opp-tacoma.dts           | 2 +-
+ arch/arm/boot/dts/aspeed/ast2600-facebook-netbmc-common.dtsi | 4 ++--
+ arch/arm/boot/dts/nxp/imx/imx6ull-phytec-tauri.dtsi          | 2 +-
+ arch/arm/boot/dts/nxp/imx/imx7d-flex-concentrator.dts        | 2 +-
+ arch/arm/boot/dts/ti/omap/am335x-moxa-uc-2100-common.dtsi    | 2 +-
+ 7 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
-index 2b8f0c3c3879..20761eeea410 100644
---- a/drivers/ata/ahci.c
-+++ b/drivers/ata/ahci.c
-@@ -48,6 +48,7 @@ enum {
- enum board_ids {
- 	/* board IDs by feature in alphabetical order */
- 	board_ahci,
-+	board_ahci_43bit_dma,
- 	board_ahci_ign_iferr,
- 	board_ahci_low_power,
- 	board_ahci_no_debounce_delay,
-@@ -128,6 +129,13 @@ static const struct ata_port_info ahci_port_info[] = {
- 		.udma_mask	= ATA_UDMA6,
- 		.port_ops	= &ahci_ops,
- 	},
-+	[board_ahci_43bit_dma] = {
-+		AHCI_HFLAGS	(AHCI_HFLAG_43BIT_ONLY),
-+		.flags		= AHCI_FLAG_COMMON,
-+		.pio_mask	= ATA_PIO4,
-+		.udma_mask	= ATA_UDMA6,
-+		.port_ops	= &ahci_ops,
-+	},
- 	[board_ahci_ign_iferr] = {
- 		AHCI_HFLAGS	(AHCI_HFLAG_IGN_IRQ_IF_ERR),
- 		.flags		= AHCI_FLAG_COMMON,
-@@ -596,11 +604,11 @@ static const struct pci_device_id ahci_pci_tbl[] = {
- 	{ PCI_VDEVICE(PROMISE, 0x3f20), board_ahci },	/* PDC42819 */
- 	{ PCI_VDEVICE(PROMISE, 0x3781), board_ahci },   /* FastTrak TX8660 ahci-mode */
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-bletchley.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-bletchley.dts
+index e899de681f47..5be0e8fd2633 100644
+--- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-bletchley.dts
++++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-bletchley.dts
+@@ -45,8 +45,8 @@ spi1_gpio: spi1-gpio {
+ 		num-chipselects = <1>;
+ 		cs-gpios = <&gpio0 ASPEED_GPIO(Z, 0) GPIO_ACTIVE_LOW>;
  
--	/* Asmedia */
-+	/* ASMedia */
- 	{ PCI_VDEVICE(ASMEDIA, 0x0601), board_ahci },	/* ASM1060 */
- 	{ PCI_VDEVICE(ASMEDIA, 0x0602), board_ahci },	/* ASM1060 */
--	{ PCI_VDEVICE(ASMEDIA, 0x0611), board_ahci },	/* ASM1061 */
--	{ PCI_VDEVICE(ASMEDIA, 0x0612), board_ahci },	/* ASM1062 */
-+	{ PCI_VDEVICE(ASMEDIA, 0x0611), board_ahci_43bit_dma },	/* ASM1061 */
-+	{ PCI_VDEVICE(ASMEDIA, 0x0612), board_ahci_43bit_dma },	/* ASM1061/1062 */
- 	{ PCI_VDEVICE(ASMEDIA, 0x0621), board_ahci },   /* ASM1061R */
- 	{ PCI_VDEVICE(ASMEDIA, 0x0622), board_ahci },   /* ASM1062R */
- 	{ PCI_VDEVICE(ASMEDIA, 0x0624), board_ahci },   /* ASM1062+JMB575 */
-@@ -948,11 +956,20 @@ static int ahci_pci_device_resume(struct device *dev)
+-		tpmdev@0 {
+-			compatible = "tcg,tpm_tis-spi";
++		tpm@0 {
++			compatible = "infineon,slb9670", "tcg,tpm_tis-spi";
+ 			spi-max-frequency = <33000000>;
+ 			reg = <0>;
+ 		};
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge400.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge400.dts
+index a677c827e758..5a8169bbda87 100644
+--- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge400.dts
++++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge400.dts
+@@ -80,8 +80,8 @@ spi_gpio: spi {
+ 		gpio-miso = <&gpio ASPEED_GPIO(R, 5) GPIO_ACTIVE_HIGH>;
+ 		num-chipselects = <1>;
  
- #endif /* CONFIG_PM */
+-		tpmdev@0 {
+-			compatible = "tcg,tpm_tis-spi";
++		tpm@0 {
++			compatible = "infineon,slb9670", "tcg,tpm_tis-spi";
+ 			spi-max-frequency = <33000000>;
+ 			reg = <0>;
+ 		};
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-opp-tacoma.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-opp-tacoma.dts
+index 3f6010ef2b86..213023bc5aec 100644
+--- a/arch/arm/boot/dts/aspeed/aspeed-bmc-opp-tacoma.dts
++++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-opp-tacoma.dts
+@@ -456,7 +456,7 @@ &i2c1 {
+ 	status = "okay";
  
--static int ahci_configure_dma_masks(struct pci_dev *pdev, int using_dac)
-+static int ahci_configure_dma_masks(struct pci_dev *pdev,
-+				    struct ahci_host_priv *hpriv)
- {
--	const int dma_bits = using_dac ? 64 : 32;
-+	int dma_bits;
- 	int rc;
+ 	tpm: tpm@2e {
+-		compatible = "tcg,tpm-tis-i2c";
++		compatible = "nuvoton,npct75x", "tcg,tpm-tis-i2c";
+ 		reg = <0x2e>;
+ 	};
+ };
+diff --git a/arch/arm/boot/dts/aspeed/ast2600-facebook-netbmc-common.dtsi b/arch/arm/boot/dts/aspeed/ast2600-facebook-netbmc-common.dtsi
+index 31590d3186a2..00e5887c926f 100644
+--- a/arch/arm/boot/dts/aspeed/ast2600-facebook-netbmc-common.dtsi
++++ b/arch/arm/boot/dts/aspeed/ast2600-facebook-netbmc-common.dtsi
+@@ -35,8 +35,8 @@ spi_gpio: spi {
+ 		gpio-mosi = <&gpio0 ASPEED_GPIO(X, 4) GPIO_ACTIVE_HIGH>;
+ 		gpio-miso = <&gpio0 ASPEED_GPIO(X, 5) GPIO_ACTIVE_HIGH>;
  
-+	if (hpriv->cap & HOST_CAP_64) {
-+		dma_bits = 64;
-+		if (hpriv->flags & AHCI_HFLAG_43BIT_ONLY)
-+			dma_bits = 43;
-+	} else {
-+		dma_bits = 32;
-+	}
-+
- 	/*
- 	 * If the device fixup already set the dma_mask to some non-standard
- 	 * value, don't extend it here. This happens on STA2X11, for example.
-@@ -1925,7 +1942,7 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	ahci_gtf_filter_workaround(host);
+-		tpmdev@0 {
+-			compatible = "tcg,tpm_tis-spi";
++		tpm@0 {
++			compatible = "infineon,slb9670", "tcg,tpm_tis-spi";
+ 			spi-max-frequency = <33000000>;
+ 			reg = <0>;
+ 		};
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ull-phytec-tauri.dtsi b/arch/arm/boot/dts/nxp/imx/imx6ull-phytec-tauri.dtsi
+index ea627638e40c..7dd1fe5a2fb7 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx6ull-phytec-tauri.dtsi
++++ b/arch/arm/boot/dts/nxp/imx/imx6ull-phytec-tauri.dtsi
+@@ -121,7 +121,7 @@ &ecspi1 {
+ 	tpm_tis: tpm@1 {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pinctrl_tpm>;
+-		compatible = "tcg,tpm_tis-spi";
++		compatible = "infineon,slb9670", "tcg,tpm_tis-spi";
+ 		reg = <1>;
+ 		spi-max-frequency = <20000000>;
+ 		interrupt-parent = <&gpio5>;
+diff --git a/arch/arm/boot/dts/nxp/imx/imx7d-flex-concentrator.dts b/arch/arm/boot/dts/nxp/imx/imx7d-flex-concentrator.dts
+index 3a723843d562..9984b343cdf0 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx7d-flex-concentrator.dts
++++ b/arch/arm/boot/dts/nxp/imx/imx7d-flex-concentrator.dts
+@@ -130,7 +130,7 @@ &ecspi4 {
+ 	 * TCG specification - Section 6.4.1 Clocking:
+ 	 * TPM shall support a SPI clock frequency range of 10-24 MHz.
+ 	 */
+-	st33htph: tpm-tis@0 {
++	st33htph: tpm@0 {
+ 		compatible = "st,st33htpm-spi", "tcg,tpm_tis-spi";
+ 		reg = <0>;
+ 		spi-max-frequency = <24000000>;
+diff --git a/arch/arm/boot/dts/ti/omap/am335x-moxa-uc-2100-common.dtsi b/arch/arm/boot/dts/ti/omap/am335x-moxa-uc-2100-common.dtsi
+index b8730aa52ce6..a59331aa58e5 100644
+--- a/arch/arm/boot/dts/ti/omap/am335x-moxa-uc-2100-common.dtsi
++++ b/arch/arm/boot/dts/ti/omap/am335x-moxa-uc-2100-common.dtsi
+@@ -217,7 +217,7 @@ &spi1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&spi1_pins>;
  
- 	/* initialize adapter */
--	rc = ahci_configure_dma_masks(pdev, hpriv->cap & HOST_CAP_64);
-+	rc = ahci_configure_dma_masks(pdev, hpriv);
- 	if (rc)
- 		return rc;
- 
-diff --git a/drivers/ata/ahci.h b/drivers/ata/ahci.h
-index 4bae95b06ae3..df8f8a1a3a34 100644
---- a/drivers/ata/ahci.h
-+++ b/drivers/ata/ahci.h
-@@ -247,6 +247,7 @@ enum {
- 	AHCI_HFLAG_SUSPEND_PHYS		= BIT(26), /* handle PHYs during
- 						      suspend/resume */
- 	AHCI_HFLAG_NO_SXS		= BIT(28), /* SXS not supported */
-+	AHCI_HFLAG_43BIT_ONLY		= BIT(29), /* 43bit DMA addr limit */
- 
- 	/* ap->flags bits */
- 
+-	tpm_spi_tis@0 {
++	tpm@0 {
+ 		compatible = "tcg,tpm_tis-spi";
+ 		reg = <0>;
+ 		spi-max-frequency = <500000>;
 -- 
 2.43.0
 
