@@ -1,209 +1,151 @@
-Return-Path: <linux-kernel+bounces-49958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CC4984720C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:35:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0917A847219
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:40:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6DA11F2C103
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:35:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C52A1C2163E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:40:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36EC814533A;
-	Fri,  2 Feb 2024 14:35:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07B3144632;
+	Fri,  2 Feb 2024 14:40:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UjO9/ecV"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="vygKGwH5"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02F072B9BB
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 14:35:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19D5E46B98;
+	Fri,  2 Feb 2024 14:40:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706884532; cv=none; b=RV9yfkVkeaY3S1oGU4CRvUwWV6DcAUjioW8racca2MuCr16yyIAlb8blsn5zchVtSjmKji+EIhGyfBE3U+NqHms4cyo+pDK7VCyJePUIsgVrGodajMuT+V0TIO0KCLdTJUOiiw/Dyn6qx3RZgEmn0oxFNE2FswGbgzkmNHkV1rY=
+	t=1706884833; cv=none; b=hAzaWlKZ3qMPOCjRGJkl98kDj6xIFNa0cZATuRHFpYjc+hof3t/P7rl43rdCBPiU2cEblUKsQjEBw9MHtyMhJSFszqlpgeuSo1hleMgzT7jOe27Iu0RSAcxa5efbr9Tuq5Caw+GOiulV07zYwDqdA6b+vvyRiPEPRCAIT2imn2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706884532; c=relaxed/simple;
-	bh=4HTPW99u3wqlNp6Rv9yUxE8nx6RD09MRp/DTp8XNPyo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HNeDvy9tV7GL/2oze+pYityGWFrot5DNhEJEzuilEn1aQKWd5a7R9sSG3hmC5FHkHf1YClMkr0cy7Zi7UlEmtnUPcRkTkj28lQoUku+LlZYwuW8rBSnamMg1u6T5m4we2FLdfFTHOjA/JoPI7IZb8TewVu2cBtMtYel3Pg52umo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UjO9/ecV; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a370e63835cso80723466b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 06:35:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1706884528; x=1707489328; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QTXW/IgMSjYbmMUv1HG2gfGoIaBkbzHe0l/jl6UZwLo=;
-        b=UjO9/ecVNR/RUm04u4QZKxgCHIA9a2v2SWleCJevZdtdE9voJWl1BHAMxwx+An0qaT
-         dQWWgU6dIJ8MQt2CgoWMJL+YRq0/jxRyTM+qgZ1Onf4wVLe31m6zvFFRUgYmQxwCv0YN
-         bPchINApGtEpAVoSEysAI6ZVB74NNKH1BqgU4tJsNRJugbBAVVfPIyqB0b/7h9w/FpPj
-         QZvn6rGBnWIkv9Bsvdpypz7F8S3La5f5SnYrUS4pflsRaNPApQB5uduf1YhgC69WtgCn
-         WQ2m4ngqgL1iakKye3WKhaBsopHA9vm+ZuA2GtlveOrDy1Wk5SMIvy1Dh9JiFAUVDeMz
-         7mfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706884528; x=1707489328;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QTXW/IgMSjYbmMUv1HG2gfGoIaBkbzHe0l/jl6UZwLo=;
-        b=ZdKhFPB2CFUzt+BYdD2r1MrqeQ4+gzIIPRAXuTwmv6uHjWOBWrEcoOnzamixUc/229
-         XSQTXazaUe/crj2lYYdGubZabkCSMFpYDzBqVKfoIy7Wr9MWol59xvd0tiaFCQg+P3sC
-         m429dzbFz79z/7wAckJjqQlXEs5n29tQOPlvDrb/2nAqUCp0jOjOhx6ES1mKKuyO4jG5
-         NPvLkw8u/cVKLmkct9fvoixQI0eGPd6bN5+JyJ+jKWeQ/wbvaXY8XyTOPXLa3Ik0sEF/
-         ra3CWWge9TuB2hwN4j06lzel0wrORkR8yzcbh0ohNhTT6Hvg6ep9ImepJYOzg6KRr/F9
-         O+gQ==
-X-Gm-Message-State: AOJu0YxyyvOpICugCrHgxP/EhsQpbwfGcEVsYpNrrbvrqFw1s5lXlHF2
-	2qpF+woukqgcmXSY619FX5tIuAtwBXniW1kDt2fpOOIiU9uZ1bPP52iX4P/eOrI=
-X-Google-Smtp-Source: AGHT+IFnvcF1Cgbp3auZh5Hvq7VVtHB9gdIUhyH3RjHaICfoQfPm9TKvtiW1TdbmnhPTjjxEN/xzcw==
-X-Received: by 2002:a17:906:5399:b0:a36:fc06:6f7b with SMTP id g25-20020a170906539900b00a36fc066f7bmr1294273ejo.44.1706884528064;
-        Fri, 02 Feb 2024 06:35:28 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCV3+2fQtHpjtsymH97+zaX2cVRDP0JvZtZ3prHAs/d0++TLMhL5qi+ITYLMFuhkLHeZ2QxJsvPpVrxMXdyNXt1U1yuU59BZkcijCPKsj1xAeB4j0NfUej06nU+S3NEO8ptT2KRNdG9s5v6/dkuRBKjLgjtZE0YGY5wC8eTwCeI77tedMJ7ndPZhX1sAnk/ro28jxc0KYcFbLI0NFy8wg2PlyhbDazwT+2j1+WJsctddRoip0+cNvcA5tnCgcdzZHNjTM9UkFNe2BUkfZfhzFveoD2kLh+CqjLbW
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id f14-20020a17090624ce00b00a3683b565fbsm924750ejb.187.2024.02.02.06.35.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 06:35:27 -0800 (PST)
-Date: Fri, 2 Feb 2024 15:35:26 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [BUG] workqueues and printk not playing nice since next-20240130
-Message-ID: <Zbz9rlGPbwBJMFLG@alley>
-References: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
+	s=arc-20240116; t=1706884833; c=relaxed/simple;
+	bh=75xRr+Hh8XvCcTnldScx3u7vNNKbiPCXSVT3faG9PZY=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=VPK0T3+Gd5cyQZlwQEs8mUtjFJL9nFysnAA4lnC7mdoZREpB3h0SypKfU3ktyr3JMpp52y8pPu3cpt0O5tZ6JYui67f8MzSNaKNC7cQBnLo16bbw7w8SdjUmEjXuWugpwO4EoVUYobWmAkiHHhbEDMrIehupt+UO1CJAL9UMU5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=vygKGwH5; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1706884819;
+	bh=75xRr+Hh8XvCcTnldScx3u7vNNKbiPCXSVT3faG9PZY=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=vygKGwH5Oj72Vz0Ai3eQ8qhTXUCVBw5yan0ZsVxgZNCeP0yq73w6MH+HpicWZy5+u
+	 BmL+qoc9jn/GD6Z+9V3g0sT5hZ4XR3tZG3tfcWPRfIiUKsDPGohjfGYtUZjUm+BIM9
+	 byIhaYQlDp21cpVnX/T3UJmO3PfQL20DCBolr0waUkft+ctCw4B1JBsJOv5hT0aaHF
+	 +ljaSkBLFUZu8Tl4qP7asELPgGvp3aoPRhBDBoNvOoxaTaOCu6bAzyIUHIZLbvCaiL
+	 vzxr77H44QWgZDV6ev2C9Y7tEQsIBZgUxnbWnfgiR4yCILQdkzipROCj16VedDYrbT
+	 +4YNXnsiyAjnw==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TRJN2717NzXBc;
+	Fri,  2 Feb 2024 09:40:18 -0500 (EST)
+Message-ID: <b28819f3-890f-4eac-befd-f9da1c77e34a@efficios.com>
+Date: Fri, 2 Feb 2024 09:40:20 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 2/4] dax: Check for data cache aliasing at runtime
+Content-Language: en-US
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To: Dan Williams <dan.j.williams@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+ Dave Chinner <david@fromorbit.com>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
+ linux-arch@vger.kernel.org, Vishal Verma <vishal.l.verma@intel.com>,
+ Dave Jiang <dave.jiang@intel.com>, Matthew Wilcox <willy@infradead.org>,
+ Russell King <linux@armlinux.org.uk>, nvdimm@lists.linux.dev,
+ linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ dm-devel@lists.linux.dev
+References: <20240131162533.247710-1-mathieu.desnoyers@efficios.com>
+ <20240131162533.247710-3-mathieu.desnoyers@efficios.com>
+ <65bab567665f3_37ad2943c@dwillia2-xfh.jf.intel.com.notmuch>
+ <0a38176b-c453-4be0-be83-f3e1bb897973@efficios.com>
+ <65bac71a9659b_37ad29428@dwillia2-xfh.jf.intel.com.notmuch>
+ <f1d14941-2d22-452a-99e6-42db806b6d7f@efficios.com>
+In-Reply-To: <f1d14941-2d22-452a-99e6-42db806b6d7f@efficios.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri 2024-02-02 05:04:45, Paul E. McKenney wrote:
-> Hello!
+On 2024-02-01 10:44, Mathieu Desnoyers wrote:
+[...]
+>> diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+>> index 4e8fdcb3f1c8..b69c9e442cf4 100644
+>> --- a/drivers/nvdimm/pmem.c
+>> +++ b/drivers/nvdimm/pmem.c
+>> @@ -560,17 +560,19 @@ static int pmem_attach_disk(struct device *dev,
+>>       dax_dev = alloc_dax(pmem, &pmem_dax_ops);
+>>       if (IS_ERR(dax_dev)) {
+>>           rc = PTR_ERR(dax_dev);
+>> -        goto out;
+>> +        if (rc != -EOPNOTSUPP)
+>> +            goto out;
 > 
-> Starting with next-20240130 (and perhaps a bit earlier), rcutorture gets
-> what initially looked like early-boot hangs, but only when running on
-> dual-socket x86 systems [1], as it it works just fine on my x86 laptop [2].
-> But when running on dual-socket systems, this happens all the time,
-> perhaps because rcutorture works hard to split each guest OS across a
-> socket boundary.
-> 
-> This is the reproducer:
-> 
-> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 1m --configs "10*TREE01" --trust-make
-> 
-> By "looked like early-boot hangs" I mean that qemu was quite happy,
-> but there was absolutely no console output.
-> 
-> Bisection identified this commit:
-> 
-> 5797b1c18919 ("workqueue: Implement system-wide nr_active enforcement for unbound workqueues")
-> 
-> Reverting this commit made the problem go away.  Except that it is really
-> hard to imagine this commit having any effect whatsoever on early boot
-> execution.  Of course, this might be a failure of imagination on my part,
-> so I enlisted the aid of gdb:
-> 
-> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 1m --configs "TREE01" --trust-make --gdb
-> 
-> After following the resulting gdb startup instructions and waiting for
-> about ten seconds, I hit control-C on the gdb window and then:
-> 
-> 	(gdb) bt
-> 	#0  default_idle () at arch/x86/kernel/process.c:743
-> 	#1  0xffffffff81e94d34 in default_idle_call () at kernel/sched/idle.c:97
-> 	#2  0xffffffff810d746d in cpuidle_idle_call () at kernel/sched/idle.c:170
-> 	#3  do_idle () at kernel/sched/idle.c:312
-> 	#4  0xffffffff810d76a4 in cpu_startup_entry (state=state@entry=CPUHP_ONLINE)
-> 	    at kernel/sched/idle.c:410
-> 	#5  0xffffffff81e95417 in rest_init () at init/main.c:730
-> 	#6  0xffffffff8329adf2 in start_kernel () at init/main.c:1067
-> 	#7  0xffffffff832a5038 in x86_64_start_reservations (
-> 	    real_mode_data=real_mode_data@entry=0x13d50 <exception_stacks+32080> <error: Cannot access memory at address 0x13d50>) at arch/x86/kernel/head64.c:555
-> 	#8  0xffffffff832a513c in x86_64_start_kernel (
-> 	    real_mode_data=0x13d50 <exception_stacks+32080> <error: Cannot access memory at address 0x13d50>) at arch/x86/kernel/head64.c:536
-> 	#9  0xffffffff810001d2 in secondary_startup_64 ()
-> 	    at arch/x86/kernel/head_64.S:461
-> 	#10 0x0000000000000000 in ?? ()
-> 	(gdb) print jiffies
-> 	$1 = 4294676330
-> 	(gdb) print system_state
-> 	$2 = SYSTEM_RUNNING
-> 
-> In other words, the system really has booted, and at least one CPU is
-> happily idling in the idle loop.  And another CPU is (maybe not quite
-> so happily) running rcutorture:
-> 
-> 	(gdb) thread 6
-> 	[Switching to thread 6 (Thread 1.6)]
-> 	#0  0xffffffff8111160b in rcu_torture_one_read (
-> 	    trsp=trsp@entry=0xffffc900004abe90, myid=myid@entry=4)
-> 	    at kernel/rcu/rcutorture.c:2003
-> 	2003            completed = cur_ops->get_gp_seq();
-> 	(gdb) bt
-> 	#0  0xffffffff8111160b in rcu_torture_one_read (
-> 	    trsp=trsp@entry=0xffffc900004abe90, myid=myid@entry=4)
-> 	    at kernel/rcu/rcutorture.c:2003
-> 	#1  0xffffffff81111bef in rcu_torture_reader (arg=0x4 <fixed_percpu_data+4>)
-> 	    at kernel/rcu/rcutorture.c:2097
-> 	#2  0xffffffff810af3e0 in kthread (_create=0xffff8880047aa480)
-> 	    at kernel/kthread.c:388
-> 	#3  0xffffffff8103af1f in ret_from_fork (prev=<optimized out>,
-> 	    regs=0xffffc900004abf58, fn=0xffffffff810af300 <kthread>,
-> 	    fn_arg=0xffff8880047aa480) at arch/x86/kernel/process.c:147
-> 	#4  0xffffffff8100247a in ret_from_fork_asm () at arch/x86/entry/entry_64.S:242
-> 	#5  0x0000000000000000 in ?? ()
-> 
-> So the system really did boot and is running just fine.  It is just that
-> there is no console output.  Details, details!
-> 
-> Is there anything I can do to some combination of workqueues and printk
-> to help debug this?  Or that I can do to anything else, as I am not
-> feeling all that picky.  ;-)
+> If I compare the before / after this change, if previously
+> pmem_attach_disk() was called in a configuration with FS_DAX=n, it would
+> result in a NULL pointer dereference.
 
-It really sounds strange. Console drivers should not use workqueues
-at least for console->write() callbacks. The main reason is that
-workqueues do not work in panic(). But it might bring many problems
-even when the system is running "normally"
+I was wrong. drivers/nvdimm/Kconfig has:
 
-You wrote above that there was absolutely no console output so the problem
-was from the very beginning.
+config BLK_DEV_PMEM
+         select DAX
 
-I looks like that the consoles get blocked either during registration
-of the first console or when trying to flush the first message.
+and
 
-Consoles, except for early consoles, are registered by
-console_initcall(). And init calls are proceed when the workqueues
-subsystem is already initialized. So, workqueues might
-somehow affect console driver initialization and registration.
+drivers/nvdimm/Makefile has:
 
-My first though was that the workqueues change might somehow
-block synchronize_srcu() which is used when updating console_list.
-But it not called during console registration. It is called only
-during suspend, resume, and console unregistration. So, it should
-not block the first boot messages.
+obj-$(CONFIG_BLK_DEV_PMEM) += nd_pmem.o
+nd_pmem-y := pmem.o
 
-My current theory is that the change in workqueues might somehow
-block a console driver initialization. I think that some console
-drivers might use workqueues for some tasks even though they
-could not use them in the write() callback.
+which means that anything in pmem.c can assume that alloc_dax() is
+implemented.
 
-Could you please provide console log when the problematic patch
-is disabled? I wonder what consoles drivers are registered and when.
+[...]
+>> diff --git a/drivers/s390/block/dcssblk.c b/drivers/s390/block/dcssblk.c
+>> index 4b7ecd4fd431..f911e58a24dd 100644
+>> --- a/drivers/s390/block/dcssblk.c
+>> +++ b/drivers/s390/block/dcssblk.c
+>> @@ -681,12 +681,14 @@ dcssblk_add_store(struct device *dev, struct 
+>> device_attribute *attr, const char
+>>       if (IS_ERR(dev_info->dax_dev)) {
+>>           rc = PTR_ERR(dev_info->dax_dev);
+>>           dev_info->dax_dev = NULL;
+>> -        goto put_dev;
+>> +        if (rc != -EOPNOTSUPP)
+>> +            goto put_dev;
+> 
+> config DCSSBLK selects FS_DAX_LIMITED and DAX.
+> 
+> I'm not sure what selecting DAX is trying to achieve here, because the
+> Kconfig option is "FS_DAX".
+> 
+> So depending on the real motivation behind this select, we may want to
+> consider failure rather than success in the -EOPNOTSUPP case.
+> 
 
-Just to be sure. Does the rcu torture configuration modify the
-behavior of srcu_read_lock_nmisafe() which is used by
-console_srcu_read_lock()?
+I missed that alloc_dax() is implemented as not supported based on
+CONFIG_DAX (not CONFIG_FS_DAX).
 
-Best Regards,
-Petr
+Therefore DCSSBLK Kconfig does the right thing and always selects DAX,
+and thus an implemented version of alloc_dax().
+
+This takes care of two of my open questions at least. :)
+
+Thanks,
+
+Mathieu
+
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
 
