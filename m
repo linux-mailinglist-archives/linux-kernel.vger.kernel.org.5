@@ -1,116 +1,139 @@
-Return-Path: <linux-kernel+bounces-50250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CEA0847654
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D89D847662
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:41:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFBEE1F26DEF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:40:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB15E1F2A6F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:41:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BCFC145B2D;
-	Fri,  2 Feb 2024 17:40:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFCF714D447;
+	Fri,  2 Feb 2024 17:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pQqL0XZC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DfXshpme"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E59A14AD0D;
-	Fri,  2 Feb 2024 17:40:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B5A14E2D4
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 17:40:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706895606; cv=none; b=P0Dm+jXz29WCS+eLKicJfKauHTKrXcnt/Zz1HH/rk8OkQzzgOgyabFuVgcoTvrdMQwhhQR9kc1PRRjwbMq+KeqlOV9uGiQ0xOzo4a9IVmK9uf/cd/L1DFnAsxFYfsvFKIhglAZiHMtM3NCIjmp7UUb6cRgjfq9GqyEqcEV/P0Jo=
+	t=1706895628; cv=none; b=Q25nPc0YxVC3WYX2mQAvZwZ+z3a2KcnPLPkfVPlBQrKlg4fIF0fpXXZMc1W+92CkuQ3aTZTOxkUsIb1l3kJw3hGyfMQa8Ag7Ehj859ppiANTf+zFjLvQduhjsuszr4vSMXef0y+pTEQGfZHhLrAJxB4xEuGz3vgJpH/uguEJc7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706895606; c=relaxed/simple;
-	bh=LWCXHnt0lI6HVMyiY0mIILlqRl10sJ4sbWNqFpBGrAY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jJvRicPMKUanuxQ4VHHPw0cZ+yZMe/d1PUu8408K5wxNLeL7yl7IW7d2pWLP8sop2LS8c6g/Jk6iNinr9uUEUhN9PzEV9asQcuaHHd/GS1hJojurJIYeoCcV38RmDxhtWVX9gu0zRu8sgFkwNfbDkl+OUnxqOn0LzROFZvBppaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pQqL0XZC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6CD7C433C7;
-	Fri,  2 Feb 2024 17:40:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706895605;
-	bh=LWCXHnt0lI6HVMyiY0mIILlqRl10sJ4sbWNqFpBGrAY=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=pQqL0XZC4AgnGCUAheM2US7kN8E2taVhPfq2xU1Td4ADM8+U7e58s9xamhw8em+eH
-	 CIvs/tw2mbO+vBHXzIvqtbGMT2GSasmvGRtTNOypaefvph7TJc3Vzs3fdq/bmscbUD
-	 ngreHIIXBbGkOwvhUNdGtWW5b4ocUXLNDBDBV5FwZaf0So+l4ggS2dM9RvO6cMow2A
-	 1InJBbLJtp4aAr8Psn6JgbozjyuGusl6a4MZAsoXy5poJm7cYLwGO0Q4YswrrdBWmw
-	 CY7dPmVt8N7JLs02cBhqk8F2ZTLTkUkilUmN1UM4iblnDjcvl4MuTqmr8U9ofWvEf8
-	 eddTFVShUG8oQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 662A9CE2250; Fri,  2 Feb 2024 09:40:05 -0800 (PST)
-Date: Fri, 2 Feb 2024 09:40:05 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Petr Mladek <pmladek@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [BUG] workqueues and printk not playing nice since next-20240130
-Message-ID: <c5d5ad66-da86-447b-8014-820d2c67382d@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
- <c6ce8816-c4ff-4668-8cbb-88285330057d@huaweicloud.com>
- <25fd8537-5a27-4b62-9bf9-1ee7ca59b5b8@paulmck-laptop>
- <Zb0evDquygkDI_8P@slm.duckdns.org>
+	s=arc-20240116; t=1706895628; c=relaxed/simple;
+	bh=BOiRCiODsdZC7Mu+DfUwlCyXYubllseXBa2Nka04gEc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=aMkx0JGbK6ozNO/1Ai8uOZ1o0U6VZhKfJVVMJFElwBr9nqxvF1LMJ/UsTcZUzUrO8IsYRI8hH19u0RsLgWI12PlK+ZwosbNE+/H52WBS6XWAGIPUTylqFh4olHSj3ChVkzFZBzofbm8brCMY/vm19oCoWz0VeBA5yUdGUWHu46k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DfXshpme; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706895625;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3uK//x0luqoWMvS8Z09aeMcer4hSE71ZysmanTsbvBo=;
+	b=DfXshpmeRwxTYBv5DcZyEd6n7L74fOxCZ16fI03H7+TdmVgddlyoAqwPaKYHm0fF0Mhna8
+	WtHcqZgF0WO7ZtD5pjeJa2F5I2AQ+60y18NGBen35AKRzUsaDhFzY1O0yq/ZrAvcymzkH/
+	/G2/cJfK81T8k4V9zrcVj1+Ie283O2M=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-18-0K6aCIxsNFuFTHC-RadW8g-1; Fri, 02 Feb 2024 12:40:23 -0500
+X-MC-Unique: 0K6aCIxsNFuFTHC-RadW8g-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33ae2cfa4c0so923612f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 09:40:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706895622; x=1707500422;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3uK//x0luqoWMvS8Z09aeMcer4hSE71ZysmanTsbvBo=;
+        b=FxXESRazZLEjAuSqOIc5eUewbDQCY5Rc8fjRefVdsM7QGYTHRTngVTjHZMognHqNkY
+         U5RrzwnavyFxTQ5xi5iw42MKO8AzuTP2zerYS1x8xVDZxmG5htSqvAvfVAcJLKy9nako
+         5/zStluDCvpmVmP0FgouKkhY5Lzfi2NtoJ/IqFwgsK55m+MRMsnlojvELyq1AP++Mpnx
+         ISvSVxvlOdt9UB+5SsHb6NVUk9tlXKegOEkJSId0pMDWclfmcrF3YUNu8KJ9pCNj8uum
+         g8A8fYD1K4VIcdgWC+qQSzLTnKBzX6PplXYzgXSwp/7qeE27XOtlN1CwBUz1oiEsIUjX
+         5kgA==
+X-Gm-Message-State: AOJu0YzTafQjbGtjoHkhmvYAcaYksBPV/FWU3I0uCdofgFwv7lnHZsPa
+	pDw7VTr2RjElXp6PcY6KmZgZdXYacHY6QggrR0ISaVnyZ27dobAYeVEqdYxjIBTaalLmOsFXj4j
+	Sl4QQs/0g8/MJs7NZz63kP9lo6uLJjXHh4GQDJZBqIYQVsqlD6+t0nUR0Co/0wA==
+X-Received: by 2002:a5d:4390:0:b0:337:c454:81a8 with SMTP id i16-20020a5d4390000000b00337c45481a8mr1754233wrq.55.1706895622621;
+        Fri, 02 Feb 2024 09:40:22 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEmdXc+jNyJXy3O9tNfrg+i+QMmkbhZq/CcDwIvvm7pW40AlB3qIPHUMZU/JM7QJm1W/ikngw==
+X-Received: by 2002:a5d:4390:0:b0:337:c454:81a8 with SMTP id i16-20020a5d4390000000b00337c45481a8mr1754220wrq.55.1706895622229;
+        Fri, 02 Feb 2024 09:40:22 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVAy6ie/I8NdAC0FEJNUwQw7Mgkds5YZnZirQ81+wr/v6i/+/6OrFVch2DRDVyVqzAKUHk0gzXpU9xqUIHPgnDvSK7wTB3Mbl4NvM3QgIWOwhRfAELlHDpPTOzzoCWE7cMAtXffh0DaTB8XY0Rw0kLFOecel//4Avk5gIvH1npeIJAAkUlKg6M/ALR79zDI0Bhp4HfkrUhXcn8TVtOCE4nFpV3LIzgQ2qI5rBTajVqHdLEK7pO7VPD0d0nZtfQPR2zFO+TyXZ+tVEdE/FV63KRnxcoZR1+jTPd8doRUQK6OpDcjAlLtcfo6An1WdDfGBXkHKB3GKq4lNwkXAEMu1LUGBkkKE3vMVw==
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id y18-20020adfe6d2000000b0033af81d6dc8sm2386439wrm.87.2024.02.02.09.40.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 09:40:21 -0800 (PST)
+From: Valentin Schneider <vschneid@redhat.com>
+To: David Vernet <void@manifault.com>
+Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
+ juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ mgorman@suse.de, bristot@redhat.com, kernel-team@meta.com
+Subject: Re: [PATCH] sched/fair: Simplify some logic in
+ update_sd_pick_busiest()
+In-Reply-To: <20240202170712.GC2238525@maniforge>
+References: <20240202070216.2238392-1-void@manifault.com>
+ <xhsmhwmrmhkbh.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <20240202170712.GC2238525@maniforge>
+Date: Fri, 02 Feb 2024 18:40:21 +0100
+Message-ID: <xhsmhplxehiii.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zb0evDquygkDI_8P@slm.duckdns.org>
+Content-Type: text/plain
 
-On Fri, Feb 02, 2024 at 06:56:28AM -1000, Tejun Heo wrote:
-> Hello,
-> 
-> On Fri, Feb 02, 2024 at 08:35:51AM -0800, Paul E. McKenney wrote:
-> > Good point, and if this sort of thing happens frequently, perhaps there
-> > should be an easy way of doing this.  One crude hack that might come
-> > pretty close would be to redefine the barrier() macro to be smp_mb().
-> > 
-> > But as noted earlier, -ENOREPRODUCE on today's -next.  I will try the
-> > next several -next releases.  But if they all get -ENOREPRODUCE, I owe
-> > everyone on CC an apology for having sent this report out before trying
-> > next-20240202.  :-/
-> 
-> I think I saw that problem too but could reproduce it with or without the
-> workqueue changes, so I did the lazy thing "oh well, somebody is gonna fix
-> that" and just tested as-is. It's a bit worrying that ppl don't seem to
-> already know what the culprit is. Hmm... I can't reproduce it anymore
-> either.
+On 02/02/24 11:07, David Vernet wrote:
+> On Fri, Feb 02, 2024 at 06:01:22PM +0100, Valentin Schneider wrote:
+>> On 02/02/24 01:02, David Vernet wrote:
+>> > When comparing the current struct sched_group with the yet-busiest
+>> > domain in update_sd_pick_busiest(), if the two groups have the same
+>> > group type, we're currently doing a bit of unnecessary work for any
+>> > group >= group_misfit_task. We're comparing the two groups, and then
+>> > returning only if false (the group in question is not the busiest).
+>> > Othewise, we break, do an extra unnecessary conditional check that's
+>> > vacuously false for any group type > group_fully_busy, and then always
+>> > return true.
+>> >
+>> > Let's just return directly in the switch statement instead. This doesn't
+>> > change the size of vmlinux with llvm 17 (not surprising given that all
+>> > of this is inlined in load_balance()), but it does shrink load_balance()
+>> > by 88 bytes on x86. Given that it also improves readability, this seems
+>> > worth doing.
+>> >
+>> > As a bonus, remove an unnecessary goto in update_sd_lb_stats().
+>> >
+>>
+>> Given that's a different scope than what the rest of the patch touches, I'd
+>> rather see this as a separate patch.
+>>
+>> Other than that:
+>> Reviewed-by: Valentin Schneider <vschneid@redhat.com>
+>
+> Thanks, would you like me to send a follow-on series split into two with
+> your tag on both? Or were you just letting me know for next time?
+>
 
-Glad that it is not just me!  I think...  ;-)
+Well, I'm not picking up any patches, just reviewing them :) So yes I'd say
+re-send with the split and feel free to apply the tag on both.
 
-> So, there is some chance that this may really be a subtle breakage. If you
-> ever see it happening again, triggering sysrq-t and capturing the dmesg
-> output (network should still work fine, so these shouldn't be too difficult)
-> may help. sysrq-t has workqueue state dump at the end which should clearly
-> indicate if anything is stalled in workqueue.
+> We could also update this check to only do a strict greater than to
+> avoid unnecessary writes, but I figured it was preferable to have no
+> logical changes for this iteration:
+>
+> return sgs->group_misfit_task_load >= busiest->group_misfit_task_load;
 
-Good point, if it does recur, I could try it on bare metal.
+That's a good point, I don't think there was a specific reason for going
+with a lower-than rather than a lower-or-equal back then:
+  cad68e552e77 ("sched/fair: Consider misfit tasks when load-balancing")
 
-> That said, another data point. In my test setup, I use the earlyprintk boot
-> option which enables console output way before than workqueue becomes
-> operational, so having on console output at all is highly unlikely to be
-> indicative of workqueue problem. My memory is hazy but it seems like I can
-> no longer reproduce the problem on the same git commit. Maybe it was a
-> problem on the qemu side?
-
-It might have been a qemu issue, but I am using the same qemu. 
-
-No idea!
-
-But I will try earlyprintk if this happens again.
-
-							Thanx, Paul
 
