@@ -1,78 +1,355 @@
-Return-Path: <linux-kernel+bounces-50493-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40A2E8479D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:43:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8F048479DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:45:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6A03B21FB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:43:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80983287BDC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:45:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14F2280628;
-	Fri,  2 Feb 2024 19:43:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFF9180608;
+	Fri,  2 Feb 2024 19:45:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h0cTufgc"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=haloniitty.fi header.i=@haloniitty.fi header.b="k5x5/+3a"
+Received: from whm50.louhi.net (whm50.louhi.net [77.240.19.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 509CD15E5AC;
-	Fri,  2 Feb 2024 19:43:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6E1D1F188
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 19:45:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.240.19.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706903016; cv=none; b=G3TQDRwXSDPRkr/V6/Ch/WcHH5EDEwzQ5mAz6dmW8gAcKVy1VjDdz5GhMBCYgHmD+c7Y3VYmPJ2eZYYHGhzWpMIxecF4iv2wCHetQ1jKKNBAyr3ApERpyQVWlaW5AvAhe/g6viLRiCVMuXMmjkKyFKmSbsgWy5Fjdw7w0gIfv/I=
+	t=1706903146; cv=none; b=Eoy/xXQQf18KJADF91PvYNjuE/8KFCXWHt7GAkmEriyEa+QSYeT9V94g6q67r80c7iab4p0ohqQHw5KZNPz4w4l9XwzW3+qRhkV0/5ytsm8H/cZib+fN816lhuaVcqoXCC4/jNPV7WhAr61RWSMhyo7lha11IGg6wvOtzxNedXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706903016; c=relaxed/simple;
-	bh=7AQ1NisE8h7M3azLdVTWRKwE+nDbvKHU5IfF9aqyy2E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E95wzpBsyH81/ZPZoiXYIXg3q8QS40ZfMbDsuTmcPYJ2s7OAFgGUYb1Al5RM9fgWhg21cSzk2dPjRiQ/yW4HEA2sB1zXWOUHvqypuSI/EAm00U2kSBxnMsNKtsNJgnw86INl8JKZzJ5aZ41kt2cBZemfQ7bgdh+8CakN2hWo7ic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h0cTufgc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEF40C43394;
-	Fri,  2 Feb 2024 19:43:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706903016;
-	bh=7AQ1NisE8h7M3azLdVTWRKwE+nDbvKHU5IfF9aqyy2E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=h0cTufgc0nQf3PkqeSzM+9KDN4/N94FCSqpmatbPHGn8Ti1SPnRFd1tsvnvaLeOAB
-	 jxVr9eLRkowT2lNhv52Lp5mYKdR/ABpBpZ9YN/ylDn9J134VH5/d284LIwdOy1kUgv
-	 SFyRXXOJJYcvquk2yUVM2hZZpgmMgKQGM+p02b3OBShuayLsFNCDXG97u/ejWf89c0
-	 jW1sPUO5Ji7e/HdkX91JpKmv6XFzDwRL+DIXh2Nahjx65eryoUwHd6D54eVph7pKuT
-	 psojOgGBMUgj7vQQT2pzEV++FxE28XzGZm/mYzvcUWVAypeH6WxUKC3DFRwQ7Th6sp
-	 XIiFp3QlyjeEw==
-Date: Fri, 2 Feb 2024 13:43:34 -0600
-From: Rob Herring <robh@kernel.org>
-To: Ravi Gunasekaran <r-gunasekaran@ti.com>
-Cc: devicetree@vger.kernel.org, vigneshr@ti.com, robh+dt@kernel.org,
-	nm@ti.com, krzysztof.kozlowski+dt@linaro.org, srk@ti.com,
-	conor+dt@kernel.org, brgl@bgdev.pl, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: arm: ti: Update maintainers list
-Message-ID: <170690301354.846180.4796168503995884734.robh@kernel.org>
-References: <20240131092043.28829-1-r-gunasekaran@ti.com>
+	s=arc-20240116; t=1706903146; c=relaxed/simple;
+	bh=+ilhHaKtBZsmxpmVWrrxjdouy8cui05uWHmUlPPY8j4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=HmbnS+8fUzgHxE4GT73ut4RgI53yE1dbTo1XkVPWM3vxAk2KvEJD3dido2JmZO7ErIgISCh4sulcBVYy5Og2sEoCrdu1gsSxHpVBze2LZ3ibIICx3ka5jdp0zbHDf6JqS8D5OMmepmFRtS0bQW7+mNx//Ay+tX6fmpxuRoDb/os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi; spf=pass smtp.mailfrom=haloniitty.fi; dkim=pass (2048-bit key) header.d=haloniitty.fi header.i=@haloniitty.fi header.b=k5x5/+3a; arc=none smtp.client-ip=77.240.19.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=haloniitty.fi
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=haloniitty.fi; s=default; h=Content-Type:MIME-Version:References:
+	In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=nDTsI+E5omRhoYSLC0kgi7Vk12lcSqJA3pQ19Ovkn/Y=; b=k5x5/+3aXpVveXGh34B3HHcTAb
+	ON+O2c8fVR2qSYSbMOVRAojg8P2L58og6oBgXxkflCTnufn5M3q4aBrFv16WSgotPDWkQEdqqP54m
+	jSkHo5oqTlT5kTJFsOgrwP0P8VcHQi77iTcu3eY37QbZQlfnKkNfxaYXEp9NZIVUHhr+HYXEl55WW
+	cx+I4Vy6MIFRzuQg7/j3vf3kU3RHb85H3C61dUSGygu47Vfg8cJkmGZmky2huSkzO/aTUpZw/Kq5L
+	3yQPcObXJJm2dhm/m0QCAMc5gfoG7GlAJo8lq5Q3LS3N5Lnx5XEiFeC81mD7d5VgIkTYOdC6mZO/i
+	GMn/GNzA==;
+Received: from 91-154-18-254.elisa-laajakaista.fi ([91.154.18.254]:51106 helo=ferris.localdomain)
+	by whm50.louhi.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <pekka.paalanen@haloniitty.fi>)
+	id 1rVzTn-0002HB-0p;
+	Fri, 02 Feb 2024 21:45:39 +0200
+Date: Fri, 2 Feb 2024 21:45:27 +0200
+From: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, =?ISO-8859-1?B?TWHtcmE=?=
+ Canal <mairacanal@riseup.net>
+Cc: Maxime Ripard <mripard@kernel.org>, Louis Chauvet
+ <louis.chauvet@bootlin.com>, Rodrigo Siqueira
+ <rodrigosiqueiramelo@gmail.com>, Melissa Wen <melissa.srw@gmail.com>,
+ Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
+ <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ marcheu@google.com, seanpaul@google.com, nicolejadeyee@google.com,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ thomas.petazzoni@bootlin.com, Arthur Grillo <arthurgrillo@riseup.net>
+Subject: Re: [PATCH 2/2] drm/vkms: Use a simpler composition function
+Message-ID: <20240202214527.1d97c881@ferris.localdomain>
+In-Reply-To: <20240202170734.3176dfe4@xps-13>
+References: <20240201-yuv-v1-0-3ca376f27632@bootlin.com>
+	<20240201-yuv-v1-2-3ca376f27632@bootlin.com>
+	<20240202105522.43128e19@eldfell>
+	<20240202102601.70b6d49c@xps-13>
+	<3nofkwzgnf4yva2wfogdbii47ohpi2wm5vp6aijtg3emxyoowt@twyreqz7ai3g>
+	<20240202131322.5471e184@xps-13>
+	<20240202174913.789a9db9@eldfell>
+	<20240202170734.3176dfe4@xps-13>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131092043.28829-1-r-gunasekaran@ti.com>
+Content-Type: multipart/signed; boundary="Sig_/6lY8dnw6e.9r7s98d5yNIXB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - whm50.louhi.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - haloniitty.fi
+X-Get-Message-Sender-Via: whm50.louhi.net: authenticated_id: pekka.paalanen@haloniitty.fi
+X-Authenticated-Sender: whm50.louhi.net: pekka.paalanen@haloniitty.fi
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+
+--Sig_/6lY8dnw6e.9r7s98d5yNIXB
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, 2 Feb 2024 17:07:34 +0100
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+
+> Hi Pekka,
+
+Hi Miquel,
+
+I'm happy to see no hard feelings below. I know I may be blunt at
+times.
+
+Another thing coming to my mind is that I suppose there is no
+agreed standard benchmark for VKMS performance, is there?
+
+I recall people running selected IGT tests in a loop in the past,
+and I worry that the IGT start-up overhead and small plane
+dimensions might skew the results.
+
+Would it be possible to have a standardised benchmark specifically
+for performance rather than correctness, in IGT or where-ever it
+would make sense? Then it would be simple to tell contributors to
+run this and report the numbers before and after.
+
+I would propose this kind of KMS layout:
+
+- CRTC size 3841 x 2161
+- primary plane, XRGB8888, 3639 x 2161 @ 101,0
+- overlay A, XBGR2101010, 3033 x 1777 @ 201,199
+- overlay B, ARGB8888, 1507 x 1400 @ 1800,250
+
+The sizes and positions are deliberately odd to try to avoid happy
+alignment accidents. The planes are big, which should let the pixel
+operations easily dominate performance measurement. There are
+different pixel formats, both opaque and semi-transparent. There is
+lots of plane overlap. The planes also do not cover the whole CRTC
+leaving the background visible a bit.
+
+There should be two FBs per each plane, flipped alternatingly each
+frame. Writeback should be active. Run this a number of frames, say,
+100, and measure the kernel CPU time taken. It's supposed to take at
+least several seconds in total.
+
+I think something like this should be the base benchmark. One can
+add more to it, like rotated planes, YUV planes, etc. or switch
+settings on the existing planes. Maybe even FB_DAMAGE_CLIPS. Maybe
+one more overlay that is very tall and thin.
+
+Just an idea, what do you all think?
 
 
-On Wed, 31 Jan 2024 14:50:43 +0530, Ravi Gunasekaran wrote:
-> Update the list with current maintainer of TI's davinci
-> platforms.
-> 
-> Signed-off-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
-> Acked-by: Bartosz Golaszewski <brgl@bgdev.pl>
-> ---
-> Added Acked-by after discussing with Bartosz over mail.
-> 
->  Documentation/devicetree/bindings/arm/ti/ti,davinci.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+Thanks,
+pq
 
-Acked-by: Rob Herring <robh@kernel.org>
+> pekka.paalanen@haloniitty.fi wrote on Fri, 2 Feb 2024 17:49:13 +0200:
+>=20
+> > On Fri, 2 Feb 2024 13:13:22 +0100
+> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> >  =20
+> > > Hello Maxime,
+> > >=20
+> > > + Arthur
+> > >=20
+> > > mripard@kernel.org wrote on Fri, 2 Feb 2024 10:53:37 +0100:
+> > >    =20
+> > > > Hi Miquel,
+> > > >=20
+> > > > On Fri, Feb 02, 2024 at 10:26:01AM +0100, Miquel Raynal wrote:     =
+=20
+> > > > > pekka.paalanen@haloniitty.fi wrote on Fri, 2 Feb 2024 10:55:22 +0=
+200:
+> > > > >        =20
+> > > > > > On Thu, 01 Feb 2024 18:31:32 +0100
+> > > > > > Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+> > > > > >        =20
+> > > > > > > Change the composition algorithm to iterate over pixels inste=
+ad of lines.
+> > > > > > > It allows a simpler management of rotation and pixel access f=
+or complex formats.
+> > > > > > >=20
+> > > > > > > This new algorithm allows read_pixel function to have access =
+to x/y
+> > > > > > > coordinates and make it possible to read the correct thing in=
+ a block
+> > > > > > > when block_w and block_h are not 1.
+> > > > > > > The iteration pixel-by-pixel in the same method also allows a=
+ simpler
+> > > > > > > management of rotation with drm_rect_* helpers. This way it's=
+ not needed
+> > > > > > > anymore to have misterious switch-case distributed in multipl=
+e places.         =20
+> > > > > >=20
+> > > > > > Hi,
+> > > > > >=20
+> > > > > > there was a very good reason to write this code using lines:
+> > > > > > performance. Before lines, it was indeed operating on individua=
+l pixels.
+> > > > > >=20
+> > > > > > Please, include performance measurements before and after this =
+series
+> > > > > > to quantify the impact on the previously already supported pixel
+> > > > > > formats, particularly the 32-bit-per-pixel RGB variants.
+> > > > > >=20
+> > > > > > VKMS will be used more and more in CI for userspace projects, a=
+nd
+> > > > > > performance actually matters there.
+> > > > > >=20
+> > > > > > I'm worrying that this performance degradation here is signific=
+ant. I
+> > > > > > believe it is possible to keep blending with lines, if you add =
+new line
+> > > > > > getters for reading from rotated, sub-sampled etc. images. That=
+ way you
+> > > > > > don't have to regress the most common formats' performance.    =
+   =20
+> > > > >=20
+> > > > > While I understand performance is important and should be taken i=
+nto
+> > > > > account seriously, I cannot understand how broken testing could be
+> > > > > considered better. Fast but inaccurate will always be significant=
+ly
+> > > > > less attractive to my eyes.       =20
+> > > >=20
+> > > > AFAIK, neither the cover letter nor the commit log claimed it was f=
+ixing
+> > > > something broken, just that it was "better" (according to what
+> > > > criteria?).     =20
+> > >=20
+> > > Better is probably too vague and I agree the "fixing" part is not
+> > > clearly explained in the commit log. The cover-letter however states:
+> > >    =20
+> > > > Patch 2/2: This patch is more complex. My main target was to solve =
+issues
+> > > > I found in [1], but as it was very complex to do it "in place", I c=
+hoose
+> > > > to rework the composition function.     =20
+> > > ...   =20
+> > > > [1]: https://lore.kernel.org/dri-devel/20240110-vkms-yuv-v2-0-952fc=
+aa5a193@riseup.net/     =20
+> > >=20
+> > > If you follow this link you will find all the feedback and especially
+> > > the "broken" parts. Just to be clear, writing bugs is totally expected
+> > > and review/testing is supposed to help on this regard. I am not blami=
+ng
+> > > the author in any way, just focusing on getting this code in a more
+> > > readable shape and hopefully reinforce the testing procedure.
+> > >    =20
+> > > > If something is truly broken, it must be stated what exactly is so =
+we
+> > > > can all come up with a solution that will satisfy everyone.     =20
+> > >=20
+> > > Maybe going through the series pointed above will give more context
+> > > but AFAIU: the YUV composition is not totally right (and the tests us=
+ed
+> > > to validate it need to be more complex as well in order to fail).
+> > >=20
+> > > Here is a proposal.
+> > >=20
+> > > Today's RGB implementation is only optimized in the line-by-line case
+> > > when there is no rotation. The logic is bit convoluted and may possib=
+ly
+> > > be slightly clarified with a per-format read_line() implementation,
+> > > at a very light performance cost. Such an improvement would definitely
+> > > benefit to the clarity of the code, especially when transformations
+> > > (especially the rotations) come into play because they would be clear=
+ly
+> > > handled differently instead of being "hidden" in the optimized logic.
+> > > Performances would not change much as this path is not optimized today
+> > > anyway (the pixel-oriented logic is already used in the rotation case=
+).
+> > >=20
+> > > Arthur's YUV implementation is indeed well optimized but the added
+> > > complexity probably lead to small mistakes in the logic. The
+> > > per-format read_line() implementation mentioned above could be
+> > > extended to the YUV format as well, which would leverage Arthur's
+> > > proposal by re-using his optimized version. Louis will help on this
+> > > regard. However, for more complex cases such as when there is a
+> > > rotation, it will be easier (and not sub-optimized compared to the RGB
+> > > case) to also fallback to a pixel-oriented processing.
+> > >=20
+> > > Would this approach make sense?   =20
+> >=20
+> > Hi,
+> >=20
+> > I think it would, if I understand what you mean. Ever since I proposed
+> > a line-by-line algorithm to improve the performance, I was thinking of
+> > per-format read_line() functions that would be selected outside of any
+> > loops. Extending that to support YUV is only natural. I can imagine
+> > rotation complicates things, and I won't oppose that resulting in a
+> > much heavier read_line() implementation used in those cases. They might
+> > perhaps call the original read_line() implementations pixel-by-pixel or
+> > plane-by-plane (i.e. YUV planes) per pixel. Chroma-siting complicates
+> > things even further. That way one could compose any
+> > rotation-format-siting combination by chaining function pointers. =20
+>=20
+> I'll let Louis also validate but on my side I feel like I totally
+> agree with your feedback.
+>=20
+> > I haven't looked at VKMS in a long time, and I am disappointed to find
+> > that vkms_compose_row() is calling plane->pixel_read() pixel-by-pixel.
+> > The reading vfunc should be called with many pixels at a time when the
+> > source FB layout allows it. The whole point of the line-based functions
+> > was that they repeat the innermost loop in every function body to make
+> > the per-pixel overhead as small as possible. The VKMS implementations
+> > benchmarked before and after the original line-based algorithm showed
+> > that calling a function pointer per-pixel is relatively very expensive.
+> > Or maybe it was a switch-case. =20
+>=20
+> Indeed, since your initial feedback Louis made a couple of comparisons
+> and the time penalty is between +5% and +60% depending on the case,
+> AFAIR.
+>=20
+> > Sorry, I didn't realize the optimization had already been lost. =20
+>=20
+> No problem, actually I also lost myself in my first answer as I
+> initially thought the (mainline) RGB logic was also broken in edge
+> cases, which it was not, only the YUV logic suffered from some
+> limitations.
+>=20
+> > Btw. I'd suggest renaming vkms_compose_row() to vkms_fetch_row() since
+> > it's not composing anything and the name mislead me. =20
+>=20
+> Makes sense.
+>=20
+> > I think if you inspect the compositing code as of revision
+> > 8356b97906503a02125c8d03c9b88a61ea46a05a you'll get a better feeling of
+> > what it was supposed to be. =20
+>=20
+> Excellent, thanks a lot!
+>=20
+> Miqu=E8l
 
+
+--=20
+Pekka Paalanen
+
+--Sig_/6lY8dnw6e.9r7s98d5yNIXB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmW9RlcACgkQI1/ltBGq
+qqc75Q//Ryst1Yc6uVwMBJ5b93LMXwiNy7NUzqI/G74TIJxuu5chdpBYeUjSwGxC
+9j4WBppaHQLCXsmB0Ay9UnaGLvlnqmHEtybXrAFFbkQhI4h83440KYXlsCXm71nL
+KQ1W1DSDkP46BZV0msfQw0+0BmZLoC+mg3ksr09uDscZmG4enreIrG4yQ38eukH/
+gY0Qu4GNGfAQ9RYrXhR12LGJ2ssC35rutc8DGgaP/S+KfHXsD+82OqCYsYilOoUO
+/PhxwlWnJ1yIjjgqbEJ7UXpF6SN4XXAmYwsUU0XEg/7fGXgbRtGttUtrHCnaNyvk
+18JVFDKbHyMHu0nBQdX05oUfZRvqzTJQe4o49rKswWAGZ6bfReFPWlE8WJPKkhfO
+cNqyUU8eoOAyw/s2YX2DORBJMmaQWeMlpeV0sFexl/RZZieCMgXDFBLUt7pXMD2t
+7TjfJNh7lC5ACf21W4G8ZNZk8Bq4e8pacQfyXYHbdyscp7NnnC/N9JGIt9B4G3kO
+H1Gfk1LDnSuKV8+KZTToVxyYBIWr+CPZUSh1Phm5phmv8LD9RfriAVtfzIJ5ltlO
+DeBhjGD3i3F6ekBiep8YeM7DZpf4JZE+2eF7Du8Qy0kJp304VsHuve3eY7tePddJ
+XmrUP1tO5F74BWOs/SUYgZhoR/y1WWWSVqOMxPgvS/hXRu9m9Ys=
+=I8BR
+-----END PGP SIGNATURE-----
+
+--Sig_/6lY8dnw6e.9r7s98d5yNIXB--
 
