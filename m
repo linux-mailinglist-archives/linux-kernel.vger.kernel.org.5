@@ -1,341 +1,109 @@
-Return-Path: <linux-kernel+bounces-49263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADEAE8467EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:21:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3BCA8467F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:22:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63AE3280E9D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:21:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 021011C24A85
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:22:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD3AE482FC;
-	Fri,  2 Feb 2024 06:16:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D423417596;
+	Fri,  2 Feb 2024 06:18:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B+NNC7IR"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="o15p/M4Z";
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="G092jmu9"
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D933E17BC4
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 06:16:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 092871758D;
+	Fri,  2 Feb 2024 06:18:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706854607; cv=none; b=PbA2p7NFq5IF8QODzfhI6bzhsJxBsu2B42B9dhXniDBv72BCGr28cwPmcyQTvj6DolPA6bUDtVaMh71aq8DyLGjdTUe1q/3FZPwQMxwy4tn+pjK16/VDeUcLBdQndsAgQ6toYdnV3wc1mPqc+rooIC5ED0tJ9ZiP5V8GQtlfGIE=
+	t=1706854729; cv=none; b=vEv8N4N+qrGMzagOw6Rjxz9rqa2alNHllrTk+8cZM4mPrMvaKFN07Wip2x2UHHgmqZOLg1gFA+tYRteohMUQLIJPYwBsuC0jfj60cXbxGZE4gK25Yro56/8grfwYAl4b95I5I7SeOBsi1VhPwgf1YZfVNQUXhVK8HnpDRr6tdnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706854607; c=relaxed/simple;
-	bh=xA5Ts8mXmjH0ByX7hN5Pia0888YuBQgn/eJu9XRxSZo=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=sA9g5ngg1yIbLdz4Fhh7tFksJfNI71P1qRXb1LBDG4Tpla0lQUto9xqYsDt5mdxDcJ4f7GTKu+8bMrLumvMU2ekZxdL74i+bfPNcrPMKn7FKeC98RXNqxlMgx4PtQiEYpWjvVN4aNtU1WC8X+48FjlSS1OP1hePO4BkKfOBo4e8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B+NNC7IR; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6c24a4ce1so2745778276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 22:16:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706854605; x=1707459405; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=O7s4uPo6a6IUX6P+LNwsbu+H+dBYWvGrbbrG302CchI=;
-        b=B+NNC7IRggfOAoQQn6QX+RtqILSsG3TRD9+yeuh6C+nF7PgUm066kctM9Y6cveXI6Z
-         D5yX/Iur8MGVQxBzYR/RNm9joUZiiLi2kMJe+a78k8hR9u4xLVBPw+x5gjS6nf99iPct
-         y9dsq8GFVrc8y9YxiC2+7v9vf13zz6nKt8T1oD8dIWACkQVqGNpA4GpmLE+Ef3nLsTcK
-         flCCoIqj0ROisNakwM2T1YcQ7ZTm10BtzccOJ1rhGNUAKE2PBn/FbDRU0paPPnEUHBB4
-         6z1HctWLDW7M9flrkBdeiWUb/DwNYwq2Az0mhNJPmlVM20pk+kltn3MVSMgjrCtas2lG
-         ShgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706854605; x=1707459405;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O7s4uPo6a6IUX6P+LNwsbu+H+dBYWvGrbbrG302CchI=;
-        b=BsvMJG7Fp9PTg6h4UJgP2poDQZUm9r+mRFI2B+F/s9mfgpGN+mMUpYmcPyFT93KkgB
-         GBgp+h7/e7OG4bRrLNFK0F8UMSCYQZIXJROYl3EZSDHS17KWDU+IqJvMmvnMQS6mVAQy
-         m/+mWRmimMhsCrQrwwIEfDGP5/289XB6pWKLa76+ZEzXzK5BfSw7Wu+gZ5zWuZ2zOyHT
-         2SEEADhJIFzr7oI2FiVht3bWpmFMAu2vU42GvHsK98UvLmkRDEFI0PZQUBpvaCmPDuGl
-         pszByKePn5a3H8STqXWDOsIj6f0MHgws/egeFNS3991d3JaBB8ore9MZMR7QeKSqxIi8
-         6HNA==
-X-Gm-Message-State: AOJu0Yzf5Fbfbq5AcMhWgoorXux/L65H+9J9Oll32f78If0S0OrM/IT1
-	n6hy5qQqtsJSCtb+GVYC/Bq0ut966qe9LtBth2lBaJ8trPX+U/Fdszm8qqr7JyBeya7W1h3Wycc
-	wsZ7rzA==
-X-Google-Smtp-Source: AGHT+IEj0AC3VzMDyLHIN9o558s3eH2dUxN/3ehAPc7J0iGOL9r5zcarudB/DbWLmH3X0dNbWuFjOUbSC10H
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:a85f:db1d:a66b:7f53])
- (user=irogers job=sendgmr) by 2002:a05:6902:240c:b0:dc2:4009:b35e with SMTP
- id dr12-20020a056902240c00b00dc24009b35emr1783465ybb.9.1706854604950; Thu, 01
- Feb 2024 22:16:44 -0800 (PST)
-Date: Thu,  1 Feb 2024 22:15:32 -0800
-In-Reply-To: <20240202061532.1939474-1-irogers@google.com>
-Message-Id: <20240202061532.1939474-26-irogers@google.com>
+	s=arc-20240116; t=1706854729; c=relaxed/simple;
+	bh=7aSFtMWxyruiW2XGYS9sj6ZEUHr9W1gcJK7SdJMgrQc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=JxEwA7DkCvWR1QQd6GZ+tGa/ENRZj0mJnxVWUUjxUH69bEg4s9J+sozr8he1KA8HGNU5ISJqUqkblz8aXgJXh9oRFgJ/bTkCKu/DWPhoae3xyAyWcFYkNdzedERYR2AijO4j2VZU8J73fbb2jirYW5erP2J7RhoEgrJf3pA80T4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=o15p/M4Z; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=G092jmu9; arc=none smtp.client-ip=96.44.175.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1706854726;
+	bh=7aSFtMWxyruiW2XGYS9sj6ZEUHr9W1gcJK7SdJMgrQc=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=o15p/M4ZGbNijUsuVCmGazuJgcdZ88LsR5H3/8XZI5QftvAWt0FPekWPOFyd6ToHa
+	 KYn3v3queevyDmuE2QgiMhZqTkZJlpnCuZGVao45brBP2PmdnQdLfZdLW3LujMau3D
+	 +Uet+IP0Vpoly2IFBiKUM472QbHzSacVwFi3dkGk=
+Received: from localhost (localhost [127.0.0.1])
+	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 1F0931280599;
+	Fri,  2 Feb 2024 01:18:46 -0500 (EST)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id neMQMEfg8vx4; Fri,  2 Feb 2024 01:18:45 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1706854725;
+	bh=7aSFtMWxyruiW2XGYS9sj6ZEUHr9W1gcJK7SdJMgrQc=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=G092jmu9zocnFxifE/41kZxZ7zu0Zfnz+5eXhGw2faFyNM/EJS0TN2KuidNi1GRj2
+	 mwA+UYynkOmJbq2zaRez4TXIJD56Hiq2ZNEQjTCjIdrnvIkB37AQJai63h/iK5QfRD
+	 Im1B4MEAklKAEXq222KRodq7U/C4faXfxWVqQoR4=
+Received: from [172.22.1.109] (66.224-78-194.adsl-static.isp.belgacom.be [194.78.224.66])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits))
+	(Client did not present a certificate)
+	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id B308C1280475;
+	Fri,  2 Feb 2024 01:18:43 -0500 (EST)
+Message-ID: <c291d11119295740b846a382ba6df4bd57bda03e.camel@HansenPartnership.com>
+Subject: Re: [RFC PATCH v2 3/4] tsm: Map RTMRs to TCG TPM PCRs
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+  Samuel Ortiz <sameo@rivosinc.com>, Dan Williams <dan.j.williams@intel.com>
+Cc: Qinkun Bao <qinkun@google.com>, "Yao, Jiewen" <jiewen.yao@intel.com>, 
+ "Xing, Cedric" <cedric.xing@intel.com>, Dionna Amalie Glaze
+ <dionnaglaze@google.com>, biao.lu@intel.com,  linux-coco@lists.linux.dev,
+ linux-integrity@vger.kernel.org,  linux-kernel@vger.kernel.org
+Date: Fri, 02 Feb 2024 07:18:40 +0100
+In-Reply-To: <0c396883-6eb7-4ee9-955b-42e365a737cf@linux.intel.com>
+References: <20240128212532.2754325-1-sameo@rivosinc.com>
+	 <20240128212532.2754325-4-sameo@rivosinc.com>
+	 <0c396883-6eb7-4ee9-955b-42e365a737cf@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240202061532.1939474-1-irogers@google.com>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-Subject: [PATCH v8 25/25] perf dso: Use container_of to avoid a pointer in dso_data
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Nick Terrell <terrelln@fb.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Andi Kleen <ak@linux.intel.com>, 
-	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Huacai Chen <chenhuacai@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	"Steinar H. Gunderson" <sesse@google.com>, Liam Howlett <liam.howlett@oracle.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, Colin Ian King <colin.i.king@gmail.com>, 
-	Dmitrii Dolgov <9erthalion6@gmail.com>, Yang Jihong <yangjihong1@huawei.com>, 
-	Ming Wang <wangming01@loongson.cn>, James Clark <james.clark@arm.com>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, Sean Christopherson <seanjc@google.com>, Leo Yan <leo.yan@linaro.org>, 
-	Ravi Bangoria <ravi.bangoria@amd.com>, German Gomez <german.gomez@arm.com>, 
-	Changbin Du <changbin.du@huawei.com>, Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>, 
-	Sandipan Das <sandipan.das@amd.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, Guilherme Amadio <amadio@gentoo.org>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
-The dso pointer in dso_data is necessary for reference count checking
-to account for the dso_data forming a global list of open dso's with
-references to the dso. The dso pointer also allows for the indirection
-that reference count checking needs. Outside of reference count
-checking the indirection isn't needed and container_of is more
-efficient and saves space.
+On Sun, 2024-01-28 at 14:44 -0800, Kuppuswamy Sathyanarayanan wrote:
+> 
+> On 1/28/24 1:25 PM, Samuel Ortiz wrote:
+> > Many user space and internal kernel subsystems (e.g. the Linux IMA)
+> > expect a Root of Trust for Storage (RTS) that allows for extending
+> > and reading measurement registers that are compatible with the TCG
+> > TPM PCRs layout, e.g. a TPM. In order to allow those components to
+> > alternatively use a platform TSM as their RTS, a TVM could map the
+> > available RTMRs to one or more TCG TPM PCRs. Once configured, those
+> > PCR to RTMR mappings give the kernel TSM layer all the necessary
+> > information to be a RTS for e.g. the Linux IMA or any other
+> > components that expects a TCG compliant TPM PCRs layout.
+> 
+> Why expose the mapping to user space? IMO, the goal should be
+> to let user space application work without any changes. So we should
+> try to hide this conversion in kernel and let userspace code to use
+> PCR as usual.
 
-The reference count won't be increased by placing items onto the
-global list, matching how things were before the reference count
-checking change, but we assert the dso is in dsos holding it live (and
-that the set of open dsos is a subset of all dsos for the
-machine). Update the DSO data tests so that they use a dsos struct to
-make the invariant true.
+There's also the question about use case: if we're going to measure
+into RTMRs as though they were PCRs, they will need to collect the
+kernel measurements as well, which means the mapping will have to be
+fixed in early boot when the first TPM measurement is done.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/tests/dso-data.c | 60 ++++++++++++++++++-------------------
- tools/perf/util/dso.c       | 16 +++++++++-
- tools/perf/util/dso.h       |  2 ++
- 3 files changed, 46 insertions(+), 32 deletions(-)
-
-diff --git a/tools/perf/tests/dso-data.c b/tools/perf/tests/dso-data.c
-index fde4eca84b6f..5286ae8bd2d7 100644
---- a/tools/perf/tests/dso-data.c
-+++ b/tools/perf/tests/dso-data.c
-@@ -10,6 +10,7 @@
- #include <sys/resource.h>
- #include <api/fs/fs.h>
- #include "dso.h"
-+#include "dsos.h"
- #include "machine.h"
- #include "symbol.h"
- #include "tests.h"
-@@ -123,9 +124,10 @@ static int test__dso_data(struct test_suite *test __maybe_unused, int subtest __
- 	TEST_ASSERT_VAL("No test file", file);
- 
- 	memset(&machine, 0, sizeof(machine));
-+	dsos__init(&machine.dsos);
- 
--	dso = dso__new((const char *)file);
--
-+	dso = dso__new(file);
-+	TEST_ASSERT_VAL("Failed to add dso", !dsos__add(&machine.dsos, dso));
- 	TEST_ASSERT_VAL("Failed to access to dso",
- 			dso__data_fd(dso, &machine) >= 0);
- 
-@@ -170,6 +172,7 @@ static int test__dso_data(struct test_suite *test __maybe_unused, int subtest __
- 	}
- 
- 	dso__put(dso);
-+	dsos__exit(&machine.dsos);
- 	unlink(file);
- 	return 0;
- }
-@@ -199,41 +202,35 @@ static long open_files_cnt(void)
- 	return nr - 1;
- }
- 
--static struct dso **dsos;
--
--static int dsos__create(int cnt, int size)
-+static int dsos__create(int cnt, int size, struct dsos *dsos)
- {
- 	int i;
- 
--	dsos = malloc(sizeof(*dsos) * cnt);
--	TEST_ASSERT_VAL("failed to alloc dsos array", dsos);
-+	dsos__init(dsos);
- 
- 	for (i = 0; i < cnt; i++) {
--		char *file;
-+		struct dso *dso;
-+		char *file = test_file(size);
- 
--		file = test_file(size);
- 		TEST_ASSERT_VAL("failed to get dso file", file);
--
--		dsos[i] = dso__new(file);
--		TEST_ASSERT_VAL("failed to get dso", dsos[i]);
-+		dso = dso__new(file);
-+		TEST_ASSERT_VAL("failed to get dso", dso);
-+		TEST_ASSERT_VAL("failed to add dso", !dsos__add(dsos, dso));
-+		dso__put(dso);
- 	}
- 
- 	return 0;
- }
- 
--static void dsos__delete(int cnt)
-+static void dsos__delete(struct dsos *dsos)
- {
--	int i;
--
--	for (i = 0; i < cnt; i++) {
--		struct dso *dso = dsos[i];
-+	for (unsigned int i = 0; i < dsos->cnt; i++) {
-+		struct dso *dso = dsos->dsos[i];
- 
- 		dso__data_close(dso);
- 		unlink(dso__name(dso));
--		dso__put(dso);
- 	}
--
--	free(dsos);
-+	dsos__exit(dsos);
- }
- 
- static int set_fd_limit(int n)
-@@ -267,10 +264,10 @@ static int test__dso_data_cache(struct test_suite *test __maybe_unused, int subt
- 	/* and this is now our dso open FDs limit */
- 	dso_cnt = limit / 2;
- 	TEST_ASSERT_VAL("failed to create dsos\n",
--		!dsos__create(dso_cnt, TEST_FILE_SIZE));
-+			!dsos__create(dso_cnt, TEST_FILE_SIZE, &machine.dsos));
- 
- 	for (i = 0; i < (dso_cnt - 1); i++) {
--		struct dso *dso = dsos[i];
-+		struct dso *dso = machine.dsos.dsos[i];
- 
- 		/*
- 		 * Open dsos via dso__data_fd(), it opens the data
-@@ -290,17 +287,17 @@ static int test__dso_data_cache(struct test_suite *test __maybe_unused, int subt
- 	}
- 
- 	/* verify the first one is already open */
--	TEST_ASSERT_VAL("dsos[0] is not open", dso__data(dsos[0])->fd != -1);
-+	TEST_ASSERT_VAL("dsos[0] is not open", dso__data(machine.dsos.dsos[0])->fd != -1);
- 
- 	/* open +1 dso to reach the allowed limit */
--	fd = dso__data_fd(dsos[i], &machine);
-+	fd = dso__data_fd(machine.dsos.dsos[i], &machine);
- 	TEST_ASSERT_VAL("failed to get fd", fd > 0);
- 
- 	/* should force the first one to be closed */
--	TEST_ASSERT_VAL("failed to close dsos[0]", dso__data(dsos[0])->fd == -1);
-+	TEST_ASSERT_VAL("failed to close dsos[0]", dso__data(machine.dsos.dsos[0])->fd == -1);
- 
- 	/* cleanup everything */
--	dsos__delete(dso_cnt);
-+	dsos__delete(&machine.dsos);
- 
- 	/* Make sure we did not leak any file descriptor. */
- 	nr_end = open_files_cnt();
-@@ -325,9 +322,9 @@ static int test__dso_data_reopen(struct test_suite *test __maybe_unused, int sub
- 	long nr_end, nr = open_files_cnt(), lim = new_limit(3);
- 	int fd, fd_extra;
- 
--#define dso_0 (dsos[0])
--#define dso_1 (dsos[1])
--#define dso_2 (dsos[2])
-+#define dso_0 (machine.dsos.dsos[0])
-+#define dso_1 (machine.dsos.dsos[1])
-+#define dso_2 (machine.dsos.dsos[2])
- 
- 	/* Rest the internal dso open counter limit. */
- 	reset_fd_limit();
-@@ -347,7 +344,8 @@ static int test__dso_data_reopen(struct test_suite *test __maybe_unused, int sub
- 	TEST_ASSERT_VAL("failed to set file limit",
- 			!set_fd_limit((lim)));
- 
--	TEST_ASSERT_VAL("failed to create dsos\n", !dsos__create(3, TEST_FILE_SIZE));
-+	TEST_ASSERT_VAL("failed to create dsos\n",
-+			!dsos__create(3, TEST_FILE_SIZE, &machine.dsos));
- 
- 	/* open dso_0 */
- 	fd = dso__data_fd(dso_0, &machine);
-@@ -386,7 +384,7 @@ static int test__dso_data_reopen(struct test_suite *test __maybe_unused, int sub
- 
- 	/* cleanup everything */
- 	close(fd_extra);
--	dsos__delete(3);
-+	dsos__delete(&machine.dsos);
- 
- 	/* Make sure we did not leak any file descriptor. */
- 	nr_end = open_files_cnt();
-diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
-index ddf58f594df0..83de99e52141 100644
---- a/tools/perf/util/dso.c
-+++ b/tools/perf/util/dso.c
-@@ -497,14 +497,20 @@ static pthread_mutex_t dso__data_open_lock = PTHREAD_MUTEX_INITIALIZER;
- static void dso__list_add(struct dso *dso)
- {
- 	list_add_tail(&dso__data(dso)->open_entry, &dso__data_open);
-+#ifdef REFCNT_CHECKING
- 	dso__data(dso)->dso = dso__get(dso);
-+#endif
-+	/* Assume the dso is part of dsos, hence the optional reference count above. */
-+	assert(dso__dsos(dso));
- 	dso__data_open_cnt++;
- }
- 
- static void dso__list_del(struct dso *dso)
- {
- 	list_del_init(&dso__data(dso)->open_entry);
-+#ifdef REFCNT_CHECKING
- 	dso__put(dso__data(dso)->dso);
-+#endif
- 	WARN_ONCE(dso__data_open_cnt <= 0,
- 		  "DSO data fd counter out of bounds.");
- 	dso__data_open_cnt--;
-@@ -654,9 +660,15 @@ static void close_dso(struct dso *dso)
- static void close_first_dso(void)
- {
- 	struct dso_data *dso_data;
-+	struct dso *dso;
- 
- 	dso_data = list_first_entry(&dso__data_open, struct dso_data, open_entry);
--	close_dso(dso_data->dso);
-+#ifdef REFCNT_CHECKING
-+	dso = dso_data->dso;
-+#else
-+	dso = container_of(dso_data, struct dso, data);
-+#endif
-+	close_dso(dso);
- }
- 
- static rlim_t get_fd_limit(void)
-@@ -1448,7 +1460,9 @@ struct dso *dso__new_id(const char *name, struct dso_id *id)
- 		data->fd = -1;
- 		data->status = DSO_DATA_STATUS_UNKNOWN;
- 		INIT_LIST_HEAD(&data->open_entry);
-+#ifdef REFCNT_CHECKING
- 		data->dso = NULL; /* Set when on the open_entry list. */
-+#endif
- 	}
- 	return res;
- }
-diff --git a/tools/perf/util/dso.h b/tools/perf/util/dso.h
-index 3e27f93898f2..3311c1740840 100644
---- a/tools/perf/util/dso.h
-+++ b/tools/perf/util/dso.h
-@@ -147,7 +147,9 @@ struct dso_cache {
- struct dso_data {
- 	struct rb_root	 cache;
- 	struct list_head open_entry;
-+#ifdef REFCNT_CHECKING
- 	struct dso	 *dso;
-+#endif
- 	int		 fd;
- 	int		 status;
- 	u32		 status_seen;
--- 
-2.43.0.594.gd9cf4e227d-goog
+James
 
 
