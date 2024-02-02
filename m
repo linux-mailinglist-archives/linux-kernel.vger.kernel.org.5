@@ -1,121 +1,108 @@
-Return-Path: <linux-kernel+bounces-49628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 562F4846D1B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:58:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBBE7846D47
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:03:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDCDB281B5B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:58:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 545B5B2E0EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:58:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADDB07A723;
-	Fri,  2 Feb 2024 09:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BB2E7C099;
+	Fri,  2 Feb 2024 09:58:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2WeNtsJI"
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="VtW2GsYk"
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7409865BDE
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:57:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81A4A60243
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:58:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706867871; cv=none; b=pGnrw/ZZEH1DQv2ravFQn1X5kwi6D1CDtgozdD/m6ATySuuN02a/306uGCgo+F+v1FQoyQYMFoXS0ybU0MUBwSrTUqfxkhw7D1/KB7TGGfO3WtAGAI6IpjU239IhZTS36VudnfyT27GdOZSoJuXaxyAJxyPizSAlVCN+716E1ls=
+	t=1706867890; cv=none; b=VKInrcO5+YGI1GUfpTE6fXc8vXLvkFQ9iaJ/bajo2cBabdBnCZIVDBUIbLMRFYUQxyf4U89zQIgw9+V8Hzzhn8mEfkqf5VLiuJ/hm0gCXmMpAETexuczVD7/LEJpWUhCt58f+pD3lkoaNbWDlqF5+gZUImR1KvPIup9lUi2DZkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706867871; c=relaxed/simple;
-	bh=RRNstcIluuEvvN5q92z4aRkcZ8MPGT3aLb5LKkuQEjk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=s+p8Kn8Tzmr9nmydRF2zcS7BgrTLkPMvElozzTzSz3IJOz/KcXYnVz7FBl1v2nGVhErEHnfinQ/ZpY/QuSOYMWMl5Jfj7j2XEiunnelSwL1lVpCnSlpESggCOiWbKuhFz5qsFP++iHwhpQUCUwGtKwPx4O4n5OLXzKDC+QBFbwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2WeNtsJI; arc=none smtp.client-ip=209.85.222.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-7d2e15193bbso947114241.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 01:57:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706867867; x=1707472667; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IQu4+TF2VOv8ovQWnIde7uGbT9lKBnDwIcv4xTfRr/U=;
-        b=2WeNtsJIOyhyRtf5xVM1M67GxVS4hIF2B5bi8WITGqbL5zCPMBaz4PPLe2VOuSWuad
-         Zxme6GUUjTB5ke3gmdDQrMIO/VuV/GUoZmoBKwebSa0TNxxyjJe1aTIct4JYlFArFuzb
-         aT1hI2VMFqIkoajjRXKAtwlJiNiUlXaYu+Bf2rpdBS2+NIQDWIuxRTlGqJncevPCilpQ
-         wb/E6pJLDX4KbuEuxoeZBnmSIR9na4WMKzicEuys7JZPBVJBFCxKKjht6LwW95SNqF0G
-         w+Io3CQ8tip6NpschL4AU59L2TQcYjF++d/RwgsWZUCreDo94ZxixhUIulsz7s+dSf+S
-         d5cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706867867; x=1707472667;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IQu4+TF2VOv8ovQWnIde7uGbT9lKBnDwIcv4xTfRr/U=;
-        b=JEjBNb8T6rza2g53uv/mquDhkFPPWWq662Nb+/uo3SujICKzTTnhqckD8C497OybU+
-         MaCvgeiC66NeCJyP747LtBztpQdCQ4IYHy3rRIcYvyGiEcOXU8vuzt29wMZUI9TZVDFq
-         LwT47sZxPnGPSbRsXsSPvFSoNLpwPwFB8f0l5nxRvzhzHafCvlfDW39PJ9qChDlhITHb
-         u2Wt76ovoQQrB/bDYqgzq2JBqifCyp2Q+TQmD2eypgEbyDvSiU3II3Bh84qSeCUo52im
-         0+8LP20AWSMzQjEobOeddQoSiPvKX44frfCmv8hBy12Lex0qHILIKjYzYrjJEwbyfXoU
-         j5hA==
-X-Gm-Message-State: AOJu0YwWG6bnvNeacnq9dzLA0YkedUroCiVuINzm6l9HzSCiIFpS8VLt
-	Tz0q6XS5PeAhFvfVpNosqsQ62gyzLOGyEsIpGelBJinzuKnH+Kg722PpO8BiUt5BJl6hfDoNy9j
-	jaBb3QqXDj9pQU51w6S7b84CVu1UGf8S2lMcjXHVW/qhsAZrpbQ==
-X-Google-Smtp-Source: AGHT+IHTiJLAxvje2qeRnYi2ylfwu0CGEMli5/Oc9gFFUCxF9OtJiu3BECSx1oy2M3xdLanJWbD1dRTko3CfBgGQbcE=
-X-Received: by 2002:a1f:f4c9:0:b0:4b6:bdba:8460 with SMTP id
- s192-20020a1ff4c9000000b004b6bdba8460mr1408577vkh.9.1706867867177; Fri, 02
- Feb 2024 01:57:47 -0800 (PST)
+	s=arc-20240116; t=1706867890; c=relaxed/simple;
+	bh=l6H1gbJcCr35vCqymXlCF/h8YZTcgy5+Gozii0AQ/Yc=;
+	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To:
+	 Content-Type; b=VXJGJ2kw4E+gF0Mq/+AKAhm6ztV7sSS1FGFuNewUFu8O2/rCeG56h6RotYM9EM2Z1L4QLIXMq2NqVpcczXrS7OVCr2HEVaclMMsST9drQUGT/oMhkBEg+VeCBSecLTC5qpp+8LFo7D7H8JNCN+KHW8OwOkt9U2KfyZLSQAVZTOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=VtW2GsYk; arc=none smtp.client-ip=115.124.30.97
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706867885; h=Message-ID:Subject:Date:From:To:Content-Type;
+	bh=l6H1gbJcCr35vCqymXlCF/h8YZTcgy5+Gozii0AQ/Yc=;
+	b=VtW2GsYk4mewzbmehG90uH16kg/G6HTAuXseg+1Fc+uK6A/6Nac4p3VSRt+n4EqdO/FeBeuEUsmZNMaRdYG4JPKHiconD6XTdCYf3+l0ga35tPkF+xd2y5XMvgXu/6ujfFkRBXwTryN3cqgdxS6Ki4ewmxEXehMlSsa8Zpjh/Pg=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W.wcDWh_1706867884;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W.wcDWh_1706867884)
+          by smtp.aliyun-inc.com;
+          Fri, 02 Feb 2024 17:58:05 +0800
+Message-ID: <1706867854.8480594-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v4] virtio_net: Support RX hash XDP hint
+Date: Fri, 2 Feb 2024 17:57:34 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Liang Chen <liangchen.linux@gmail.com>
+Cc: mst@redhat.com,
+ hengqi@linux.alibaba.com,
+ virtualization@lists.linux-foundation.org,
+ linux-kernel@vger.kernel.org,
+ Jason Wang <jasowang@redhat.com>
+References: <20240131035535.22258-1-liangchen.linux@gmail.com>
+ <CACGkMEuaGiH4H3pvjTK5rUh0DmL9ZMsLRaVQ3+5GOfnrj8OxPA@mail.gmail.com>
+ <CAKhg4tL3E_AfsEOyzUr13zcbjzzUY1v5VXdAGMLDYdy5om35NQ@mail.gmail.com>
+In-Reply-To: <CAKhg4tL3E_AfsEOyzUr13zcbjzzUY1v5VXdAGMLDYdy5om35NQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240202094550.work.205-kees@kernel.org>
-In-Reply-To: <20240202094550.work.205-kees@kernel.org>
-From: Marco Elver <elver@google.com>
-Date: Fri, 2 Feb 2024 10:57:11 +0100
-Message-ID: <CANpmjNMCBvdM7Ni+vWCQwtJbbVskOdjSA+gjhgh6R3dKRqjXnA@mail.gmail.com>
-Subject: Re: [PATCH] ubsan: Silence W=1 warnings in self-test
-To: Kees Cook <keescook@chromium.org>
-Cc: kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 2 Feb 2024 at 10:46, Kees Cook <keescook@chromium.org> wrote:
+On Fri, 2 Feb 2024 17:25:02 +0800, Liang Chen <liangchen.linux@gmail.com> w=
+rote:
+> On Thu, Feb 1, 2024 at 1:37=E2=80=AFPM Jason Wang <jasowang@redhat.com> w=
+rote:
+> >
+> > On Wed, Jan 31, 2024 at 11:55=E2=80=AFAM Liang Chen <liangchen.linux@gm=
+ail.com> wrote:
+> > >
+> > > The RSS hash report is a feature that's part of the virtio specificat=
+ion.
+> > > Currently, virtio backends like qemu, vdpa (mlx5), and potentially vh=
+ost
+> > > (still a work in progress as per [1]) support this feature. While the
+> > > capability to obtain the RSS hash has been enabled in the normal path,
+> > > it's currently missing in the XDP path. Therefore, we are introducing
+> > > XDP hints through kfuncs to allow XDP programs to access the RSS hash.
+> > >
+> > > 1.
+> > > https://lore.kernel.org/all/20231015141644.260646-1-akihiko.odaki@day=
+nix.com/#r
+> > >
+> > > Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
+> > > Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> >
+> > Acked-by: Jason Wang <jasowang@redhat.com>
+> >
+> > Thanks
 >
-> Silence a handful of W=1 warnings in the UBSan selftest, which set
-> variables without using them. For example:
->
->    lib/test_ubsan.c:101:6: warning: variable 'val1' set but not used [-Wunused-but-set-variable]
->      101 |         int val1 = 10;
->          |             ^
+> I've just realized that I forgot to include netdev@vger.kernel.org in
+> the cc list. Would it be advisable for me to resend the patch with
+> netdev@vger.kernel.org in the cc list to ensure it receives the
+> necessary attention for potential merging? Thanks!
 
-This is the shift_out_of_bounds test? It looks like the neg and wrap
-variables are volatile but the written-to variables aren't.
-Technically the compiler just has to emit the reads to neg and wrap,
-and can entirely omit the writes to val1 and val2.
+Did you use ./scripts/get_maintainer.pl?
 
-Does making it volatile fix the warning?
+Please resend it.
+
+Thanks.
+
 
 >
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202401310423.XpCIk6KO-lkp@intel.com/
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  lib/Makefile | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/lib/Makefile b/lib/Makefile
-> index 6b09731d8e61..bc36a5c167db 100644
-> --- a/lib/Makefile
-> +++ b/lib/Makefile
-> @@ -69,6 +69,7 @@ obj-$(CONFIG_HASH_KUNIT_TEST) += test_hash.o
->  obj-$(CONFIG_TEST_IDA) += test_ida.o
->  obj-$(CONFIG_TEST_UBSAN) += test_ubsan.o
->  CFLAGS_test_ubsan.o += $(call cc-disable-warning, vla)
-> +CFLAGS_test_ubsan.o += $(call cc-disable-warning, unused-but-set-variable)
->  UBSAN_SANITIZE_test_ubsan.o := y
->  obj-$(CONFIG_TEST_KSTRTOX) += test-kstrtox.o
->  obj-$(CONFIG_TEST_LIST_SORT) += test_list_sort.o
-> --
-> 2.34.1
->
+> Thanks,
+> Liang
+> >
 
