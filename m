@@ -1,104 +1,121 @@
-Return-Path: <linux-kernel+bounces-50122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0776847488
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:18:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5661E847487
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:17:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B3541F2CB78
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:18:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 881F11C266B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:17:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 446611474DE;
-	Fri,  2 Feb 2024 16:17:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="U2D7rWPe"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2254E1474CF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 839201474CB;
 	Fri,  2 Feb 2024 16:17:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dfKmQUq5"
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A132F146910;
+	Fri,  2 Feb 2024 16:17:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706890677; cv=none; b=eMkfjndmlSrnkR/EEaCsdqh7imxyfC6BlylcYc7BgHv/FUvgIL6IUuJAaXajQKyQVPro9AyPTBWZMI6YqAfNK+tDT67eDW70mtB6sPp/oXZZNbvA+UEWsy5KYg9EjBmlGuPzkcPpxF5DZOI4Ay5+CovFPUD689J/DP/XLIKE2Ys=
+	t=1706890670; cv=none; b=QTvFd0k1NZ8pfxA/FAVml9jAL8uFyZ0b/s9Abp5bvGtv+rdssfvXclVK77OpJBJ+eIFQGWHyILNiFgo5J2jE9/RynAzYSxYGXhAnyWqFCyYAD3bSfeSIHJjY9maosyEN5hjvwq16Te8TR7VoBuS6Dj0sBvJ+pbwWunGn0on6GV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706890677; c=relaxed/simple;
-	bh=AE0SEUj7Y/tfMu8o/0l1ilY4/oHuzQA8xZ6TeYOyFJU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Nxy4RoZ0ROAwPnQ/tQiuKdauco5zrBmRYq3Q9ZxKxkApB2otYRNMSf2nfnqCABLVvzhwKLlSCZL4ZmOvTbQO25tuEEuEDvUF0te4s0pzgynYEyeR8jt5PzVWLwyJZVWzxiF56xNcHHyOz2wxI5cXbJZlyoODzVc0ESfOn0/qdK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=U2D7rWPe; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 412G7T7N005383;
-	Fri, 2 Feb 2024 10:17:35 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=PODMain02222019; bh=d
-	ztUlVgM3uruxT9g6eLIIFQ6JObOYYRKqDfkXdE9Lv4=; b=U2D7rWPeo0Kwqh2Mq
-	qIqYSkGA2P9FvQOg8UODMnxUo/37N075UlLDm0Q6zn3erVVzSq+Zpr9FxfndCH1J
-	FUYa0pl8gfSxTVyZNEnpwZ57YPhv0kopDBurQ+7yJNFYBKTJqtEsdpjQKc++eYzl
-	V3fsUilNanUxqiDi+VU2KRZ1n6C7rd5ZDDjiGGPkBdb725t8dLKElgE91CQmGBcS
-	HPUvhfoXi8E3maV3zNejSyt/YwPvKkyM7r7+MZ5nxVqsakM25a6d7w40sMLh6K7z
-	oXGOePxSS441yRrlHFuV+BLu0OezMDfKyK/DEy06aMyfKcUsMByvqfB5vV0teZsG
-	sdsbA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3w0puwgqxn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Feb 2024 10:17:35 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 2 Feb
- 2024 16:17:33 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Fri, 2 Feb 2024 16:17:33 +0000
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.61.64.191])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id C43FD820246;
-	Fri,  2 Feb 2024 16:17:32 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Stefan
- Binding" <sbinding@opensource.cirrus.com>
-Subject: [PATCH v1] ALSA: hda/realtek: Remove two HP Laptops using CS35L41
-Date: Fri, 2 Feb 2024 16:17:27 +0000
-Message-ID: <20240202161727.321373-1-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706890670; c=relaxed/simple;
+	bh=usSbcGb3RaqV2RSxPABIImzxqQW1/1sLUrrVWBoBbA4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ClC0MV9cteTl84Ugcgc3GzGdeRxhglujelQsXKtTtyAgj4eCztydQCLhxRHH+l+H6lXAtQxRXaOXoIb/FYXsmplN04Mj1KiZSUby2Sub8oq4zN8DwaVmOQj6gxj4vduWBdTd30HNJG0bxLGJ8D2o/vo+FyOGEKubjQSmfuN9LvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dfKmQUq5; arc=none smtp.client-ip=209.85.219.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-68c2f4c3282so11054556d6.3;
+        Fri, 02 Feb 2024 08:17:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706890664; x=1707495464; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=usSbcGb3RaqV2RSxPABIImzxqQW1/1sLUrrVWBoBbA4=;
+        b=dfKmQUq5W4Jbji25529djB8EKLpQgzwsweRjVIDp4BNXKQ7CjoO6Z04eJz4cPbZ6Pa
+         5QzosVnCOLSzjfvvPqDB4GshMcT5uTTlSnYNW1mnvcGFtjaHNaodkhmZjFDEbm5ydNwH
+         xJwJzWAsxFL3oUzDWiaFFKtMRis+25Ft979VpxEWgwKS9CNKh6N+hiJ1uTR3l0xM5D5v
+         ZoauHgO1H9Zo/tPZyIk2yskTGcU/FS0nLJLDzZDfyPt8yhcrEgMPOd/A0megjIuIFwHJ
+         Z/CKbfjIchNj3J6wnz5wL4wSKPVZ0EdEJdCSAn6IJtnxj+r/hzg44cwme+t+G2oDm8MT
+         +/LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706890664; x=1707495464;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=usSbcGb3RaqV2RSxPABIImzxqQW1/1sLUrrVWBoBbA4=;
+        b=QEKdTnhtst/7BA7QvA28F1AkMo2ysNDcMzIccOfHAAFWocBVVcHL6YW0uq+I7jlWVk
+         QyIwMQBBGk9JNMsMLTOk+XslV/70NGVv6S6rOixi/WKNdd3Zk6FhsAmAMpT32Ia8SzJP
+         h6mrYds4Jky6w7YhLdt8oB6h4+eEHAneZOLW0ga7JQUPs0x+FfdLUAZPQ6Lcz6WNbJHm
+         lKg7InTgyRBLuuRoE4gF0t2F2/7YRTuIkF8xKWYWaWAXgcZt24QItxD/8t4WEWvZ27QL
+         Yugq8xNS4c11N5EXY4dX85eq+AgcRtq7J+/PXUWs2jhLdCdE0dIA5l8L5wp0yVZZEPAg
+         YPNw==
+X-Gm-Message-State: AOJu0YyLm3vWh0RIo0Bqre6FnVFztwGOMrr6+As+4JQ9QVmqFpNE+piT
+	wNPCFHTYAE8Z0egpJwMtzOTZllFo6nyBflE6WGUvpUL+AoDf7i67b4IzyuS0ZSXPIxVxhrGCWB0
+	8Ch3NlDjWW48hQwMOpDLuxuzcE3M=
+X-Google-Smtp-Source: AGHT+IGPE48giiqSuCufFbQaL0qfEqgGzTrzgurzMKsBxGt3N8VOVH62E0SDm+BFgqdR0ISODr6eTnmOFy6VvHTqFeU=
+X-Received: by 2002:a0c:cc94:0:b0:68c:8904:69ed with SMTP id
+ f20-20020a0ccc94000000b0068c890469edmr1434169qvl.39.1706890664563; Fri, 02
+ Feb 2024 08:17:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: Lh3Nk5urHu-PSPEdo_zb_V356sj0i91C
-X-Proofpoint-GUID: Lh3Nk5urHu-PSPEdo_zb_V356sj0i91C
-X-Proofpoint-Spam-Reason: safe
+References: <20240130214620.3155380-1-stefanb@linux.ibm.com>
+ <20240130214620.3155380-5-stefanb@linux.ibm.com> <38230b4c-54ae-45ed-a6fb-34e63501e5b1@linux.ibm.com>
+ <CAOQ4uxiYARZBSgzb4_W-RKvB1XLSF3GUBqeLw2kH+eVeZ_8ARQ@mail.gmail.com>
+ <c018b014-9ba8-4395-86dc-b61346ab20a8@linux.ibm.com> <CAOQ4uxi6Te8izWpXROthknRaXrVA9jho5nbc+mkuQDrcTLY44Q@mail.gmail.com>
+ <CAOQ4uxigdNeE+2nfr4VxS9piQf5hez=ryT0a-jzW+tW0BT-zuw@mail.gmail.com>
+ <492ea12a-d79d-47da-9bbe-a7f33051bd3f@linux.ibm.com> <CAOQ4uxgiO1RbsmqOu4F4Foy-MBPecnEXO7BvgDGz-Lzb1Eysog@mail.gmail.com>
+ <4c584bfb-d282-4584-bb20-18c26b1033c0@linux.ibm.com> <CAOQ4uxjftr7GGx6tuW_yB_MTaVB57m6p_d=UHhN3Z23YVXY0QQ@mail.gmail.com>
+ <11abffea-15c5-4d13-9d0f-edbc54b09bf3@linux.ibm.com> <CAOQ4uxjZ6p9+H54G0LNTUnU56WRaoLtWOUj2nOaKJ4JvBGqLVg@mail.gmail.com>
+ <427ce381-73fa-48f9-8e18-77e23813b918@linux.ibm.com> <CAOQ4uxggqa7j0NS1MN3KSvF_qG1FMVmFxacEYSTx+LuvuosJ5g@mail.gmail.com>
+ <4ce0e20d-ed14-490d-9446-a6cfbd532bca@linux.ibm.com>
+In-Reply-To: <4ce0e20d-ed14-490d-9446-a6cfbd532bca@linux.ibm.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Fri, 2 Feb 2024 18:17:32 +0200
+Message-ID: <CAOQ4uxhkyh19rMXnZ+Ou-Z0DgraBJAvL53K_PK9zRUB2O-Lsqw@mail.gmail.com>
+Subject: Re: [PATCH 4/5] evm: Use the real inode's metadata to calculate
+ metadata hash
+To: Stefan Berger <stefanb@linux.ibm.com>
+Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
+	roberto.sassu@huawei.com, miklos@szeredi.hu
+Content-Type: text/plain; charset="UTF-8"
 
-These two HP laptops are changing configurations.
+> The odd thing is my updated test case '2' seems to indicate that
+> everything already works as expected with CONFIG_OVERLAY_FS_METACOPY=y.
+> After causing copy-up of metadata changes to the file content on the
+> lower layer still cause permission error to file execution on the
+> overlay layer and after restoring the file content on the lower the file
+> on the overlay again runs as expected. The file content change + copy-up
+> of file content also has completely decoupled the lower file from the
+> file on the overlay and changes to the file on the lower cause no more
+> file execution rejections on the overlay.
+>
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/pci/hda/patch_realtek.c | 2 --
- 1 file changed, 2 deletions(-)
+Sorry, you lost me.
+The combination of IMA+EVM+OVL must be too complicated to
+explain in plain language without an explicit test spelled out...
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 348505edf063..3d7e7b32fcf4 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9855,8 +9855,6 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8cdd, "HP Spectre", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x103c, 0x8cde, "HP Spectre", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x103c, 0x8cf5, "HP ZBook Studio 16", ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED),
--	SND_PCI_QUIRK(0x103c, 0x8d01, "HP EliteBook G12", ALC287_FIXUP_CS35L41_I2C_4),
--	SND_PCI_QUIRK(0x103c, 0x8d08, "HP EliteBook 1045 G12", ALC287_FIXUP_CS35L41_I2C_4),
- 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
- 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
--- 
-2.34.1
+When you write "The file content change + copy-up of file content also
+has completely decoupled the lower file from the file on the overlay",
+what do you mean by "copy up of the file content"?
+Why was the file content copied up?
+I was asking about use case that only metadata was copied up but
+lower file content, which is still the content of the ovl file was changed
+underneath ovl - this case does not cause data content to be copied up.
 
+I don't think we understand each other.
+
+Thanks,
+Amir.
 
