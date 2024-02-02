@@ -1,58 +1,56 @@
-Return-Path: <linux-kernel+bounces-49796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FB55846F7D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:53:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3C33846F85
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:54:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2F582987D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:53:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2BFF8B2BD4D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:54:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C552913DBBC;
-	Fri,  2 Feb 2024 11:53:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jm5iO1F6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0453113DBA6;
+	Fri,  2 Feb 2024 11:53:43 +0000 (UTC)
+Received: from tux.runtux.com (tux.runtux.com [176.9.82.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11CB4137C41;
-	Fri,  2 Feb 2024 11:53:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B292113D4F7;
+	Fri,  2 Feb 2024 11:53:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=176.9.82.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706874812; cv=none; b=sR/C53dGBOmrscDWYh4jdk1/q/5mq9MRIJcjIAOqvHq5d3mJiT3RVGi8t4y4iDwOTO/5rtZ5ym7Q0Qyr0GMm3BwNo12Zk9S2Byl39AIT8EBp84XESOqp/6ZHdn7Znm0DTcII0WlLkqiAR2ClYjkpKbmA4SDkHLFkL+PzhEAS4x4=
+	t=1706874822; cv=none; b=fcgd2yR3Lrs1/62VcT9ccAuyS3B+JbP8NsRToNlGuroDgK6EJ2jP4nUtGzVAzpKstXw5utAW24wugp9is6zcZDUS20mmxE94cjGKxTVvZsS/KAyjV2yx9qgY9npE4/Ik8ryOakhNu8J9Hd2y6PUi9T6V5QigTuPTXVqIq2YiOkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706874812; c=relaxed/simple;
-	bh=8FJbvHMjVG6Z0qlBqASoN04RLMtzNMOz4IQDAfW493g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VfNd9JECnEYJN834j1EAxboQjpmzmPV+srUwZccFcPb329LKEDutF1yCjOSBcJkN/A6L2Xsmu6sE9c7pEifrtQUpkR/83w+gF2Wlt7AE2TkIfCyAc3h6yHrp6OkW+0fPvY97W98ucoFoBGqcwXfNhvYeQzrNN8R5NPPwXHNl8Hw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jm5iO1F6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF625C433F1;
-	Fri,  2 Feb 2024 11:53:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706874811;
-	bh=8FJbvHMjVG6Z0qlBqASoN04RLMtzNMOz4IQDAfW493g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jm5iO1F6vSsYjvJ8Y3s+qC0lwEYJFJQQx28mZ148oT9bqzKiYluVacP4wnrCLQ2O5
-	 cJXLiGUPsPpKVD+bohpi1eC0HIHZ/eUsxN3kWUiGkqZBnn8MHfpQncBKlXGEnHrP5R
-	 vI4MklfvOqDEtP4yOkYdGGGkhqYksMJsbwyHczJ3f8e65lSowF2gVM3aYORcd7/QzG
-	 gYm+njnqiGsVgEID+sYQGk8JcuaT9ofq0i0DAsFuCRZa+ePMS8zfwRC66ofs9MjA9b
-	 sUwcuwDA+9Er4YvBRGQ6BZ5TMeu7mbviyJ2vd2ilcFyBNx+1O+mDtNNFPV0KthVSKN
-	 jedyXT0etivvA==
-Date: Fri, 2 Feb 2024 12:53:19 +0100
-From: Simon Horman <horms@kernel.org>
-To: Matthew Wood <thepacketgeek@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	leitao@debian.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 6/8] net: netconsole: cache userdata
- formatted string in netconsole_target
-Message-ID: <20240202115319.GM530335@kernel.org>
-References: <20240126231348.281600-1-thepacketgeek@gmail.com>
- <20240126231348.281600-7-thepacketgeek@gmail.com>
+	s=arc-20240116; t=1706874822; c=relaxed/simple;
+	bh=jQIfwxFoKOkcBPKJK6tyu/de2q5LnbkqHpinptTj9HA=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=eyatf5t4omJs4fJUlqgImQNWXEG93TY+Lnao5OV7UO0UluhvssjmRlVYGUXSSu5+1G33xCYn9WdM0X4clHv3w1rCSd0aUfiJxFn1qn4LO3hNNKnXZzxhwLo6EDN7HY94OckiUuo5Lbnl9ZxsXWA2aBZxRDKtp/xpMivCS0Pa+Qk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=runtux.com; spf=pass smtp.mailfrom=runtux.com; arc=none smtp.client-ip=176.9.82.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=runtux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=runtux.com
+Received: from localhost (localhost [127.0.0.1])
+	by tux.runtux.com (Postfix) with ESMTP id 7AC3B6EF56;
+	Fri,  2 Feb 2024 12:53:32 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at tux.runtux.com
+Received: from tux.runtux.com ([127.0.0.1])
+	by localhost (tux2.runtux.com [127.0.0.1]) (amavisd-new, port 10026)
+	with LMTP id TqhPD8BT3CxP; Fri,  2 Feb 2024 12:53:31 +0100 (CET)
+Received: from bee.priv.zoo (62-99-217-90.static.upcbusiness.at [62.99.217.90])
+	(Authenticated sender: postmaster@runtux.com)
+	by tux.runtux.com (Postfix) with ESMTPSA id 453346EF4C;
+	Fri,  2 Feb 2024 12:53:31 +0100 (CET)
+Received: by bee.priv.zoo (Postfix, from userid 1002)
+	id BD3AD469; Fri,  2 Feb 2024 12:53:30 +0100 (CET)
+Date: Fri, 2 Feb 2024 12:53:30 +0100
+From: Ralf Schlatterbeck <rsc@runtux.com>
+To: Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>, linux-spi@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/1] spi-mxs: Fix chipselect glitch
+Message-ID: <20240202115330.wxkbfmvd76sy3a6a@runtux.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,43 +59,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240126231348.281600-7-thepacketgeek@gmail.com>
+X-ray: beware
+User-Agent: NeoMutt/20180716
 
-On Fri, Jan 26, 2024 at 03:13:41PM -0800, Matthew Wood wrote:
-> Store a formatted string for userdata that will be appended to netconsole
-> messages. The string has a capacity of 4KB, as calculated by the userdatum
-> entry length of 256 bytes and a max of 16 userdata entries.
-> 
-> Update the stored netconsole_target->userdata_complete string with the new
-> formatted userdata values when a userdatum is created, edited, or
-> removed. Each userdata entry contains a trailing newline, which will be
-> formatted as such in netconsole messages::
-> 
->     6.7.0-rc8-virtme,12,500,1646292204,-;test
->     release=foo
->     something=bar
->     6.7.0-rc8-virtme,12,500,1646292204,-;another test
->     release=foo
->     something=bar
-> 
-> Enforcement of MAX_USERDATA_ITEMS is done in userdatum_make_item;
-> update_userdata will not check for this case but will skip any userdata
-> children over the limit of MAX_USERDATA_ITEMs.
-> 
-> If a userdata entry/dir is created but no value is provided, that entry
-> will be skipped. This is in part because update_userdata() can't be
-> called in userdatum_make_item() since the item will not have been added
-> to the userdata config_group children yet. To preserve the experience of
-> adding an empty userdata that doesn't show up in the netconsole
-> messages, purposefully skip emtpy userdata items even when
+There was a change in the mxs-dma engine that uses a new custom flag.
+The change was not applied to the mxs spi driver.
+This results in chipselect being deasserted too early.
+This fixes the chipselect problem by using the new flag in the mxs-spi
+driver.
 
-nit: empty
+Fixes: ceeeb99cd821 ("dmaengine: mxs: rename custom flag")
+Signed-off-by: Ralf Schlatterbeck <rsc@runtux.com>
+---
+For oscilloscope screenshots and a verbose explanation see my blog post
+at https://blog.runtux.com/posts/2024/02/01/
+History:
+Omit the line break change from patch requested by Marc Kleine-Budde
+<mkl@pengutronix.de>
 
-> update_userdata() can be called.
-> 
-> Co-developed-by: Breno Leitao <leitao@debian.org>
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-> Signed-off-by: Matthew Wood <thepacketgeek@gmail.com>
+ drivers/spi/spi-mxs.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-..
+diff --git a/drivers/spi/spi-mxs.c b/drivers/spi/spi-mxs.c
+index 1bf080339b5a..88cbe4f00cc3 100644
+--- a/drivers/spi/spi-mxs.c
++++ b/drivers/spi/spi-mxs.c
+@@ -39,6 +39,7 @@
+ #include <linux/spi/spi.h>
+ #include <linux/spi/mxs-spi.h>
+ #include <trace/events/spi.h>
++#include <linux/dma/mxs-dma.h>
+ 
+ #define DRIVER_NAME		"mxs-spi"
+ 
+@@ -252,7 +253,7 @@ static int mxs_spi_txrx_dma(struct mxs_spi *spi,
+ 		desc = dmaengine_prep_slave_sg(ssp->dmach,
+ 				&dma_xfer[sg_count].sg, 1,
+ 				(flags & TXRX_WRITE) ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM,
+-				DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
++				DMA_PREP_INTERRUPT | MXS_DMA_CTRL_WAIT4END);
+ 
+ 		if (!desc) {
+ 			dev_err(ssp->dev,
+-- 
+2.20.1
+
+-- 
+Dr. Ralf Schlatterbeck                  Tel:   +43/2243/26465-16
+Open Source Consulting                  www:   www.runtux.com
+Reichergasse 131, A-3411 Weidling       email: office@runtux.com
 
