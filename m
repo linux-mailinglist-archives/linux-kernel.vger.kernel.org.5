@@ -1,100 +1,84 @@
-Return-Path: <linux-kernel+bounces-49112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C17428465FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:45:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE70D8465FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:48:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64DDEB24424
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:44:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42BEC288F14
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:48:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA625C155;
-	Fri,  2 Feb 2024 02:44:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 988CFBE79;
+	Fri,  2 Feb 2024 02:48:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="2goiYu98"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gCsC0g1f"
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D87C14E;
-	Fri,  2 Feb 2024 02:44:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5950CBA48
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 02:48:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706841890; cv=none; b=i0P/L1rpXZARq2RrZF26QQjZ4yWIZZLPDXK0cOQL3k1XxHNMTYfMHYSOg9/ZzEn0Ywf5CF9SWQh5PQc9PNUckIQwAdPidgn0izshXOIJrhbx2GOPGUZLgbHRkFlHJGAL8fHTtf6ZT5y06QUvRPI9H3Bph8ycFbfiYlVsEdmdzms=
+	t=1706842104; cv=none; b=cDXPy8J9ptQKjQkqlnmmv6tQ1VjZICwkJCgyP5cxllmw4Hz/UEEZXHoPGM6CowHF67cxh1zMVRxmB7mfYGyMak06BPWMRwmq9cD4p+yQrDV5hJ8Tn7tVBgGtSzNBXZk5hzic+/e0bwYtg2uTdKua57BtmvKleucnpDgK3r61M28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706841890; c=relaxed/simple;
-	bh=UxYhGOC3xGtEqwmfDbPKpEHtugDzcWDIdIzgloJyoj4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZXcv6NFhDlvUWEZ+rpgEgM3HwhSuZtINQcpjiRt615pOBBUU6G0nzbp6j7fMk3XNr0U7ENFW7z2zNvHGyYMC/Fjkl09XbJ8Kv+G6yru5L394X4K/WNC8LOrhq4LNRcgDFAkPtz0s1OaZLWZj+Y04py5/6VzuceWQ1wHibhFtAYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=2goiYu98; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FED2C433C7;
-	Fri,  2 Feb 2024 02:44:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706841889;
-	bh=UxYhGOC3xGtEqwmfDbPKpEHtugDzcWDIdIzgloJyoj4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=2goiYu98felbKd5KISw9FnvrmutZFoQa+GKyAQur7cZdCfbtDbhmseIPSY7YvxWWg
-	 5RM4+4kPghag+iU+Tp/U7gNXJbCMuV+/F0Bh0x+VVwgtp7T4V72Nde6BlHRIvgYH7L
-	 PS7TVsQs9jkwCKs9FfEa3r2kkuepqDILGA3KmIsM=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: naveenkrishna.chatradhi@amd.com
-Cc: linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Carlos Bilbao <carlos.bilbao@amd.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	platform-driver-x86@vger.kernel.org
-Subject: [PATCH v2] platform/x86/amd/hsmp: switch to use device_add_groups()
-Date: Thu,  1 Feb 2024 18:44:46 -0800
-Message-ID: <2024020145-junior-outnumber-3e76@gregkh>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706842104; c=relaxed/simple;
+	bh=zIIpUuEoGAvnfSEBReTZfSlHCEQaoLye+kascfFXjWc=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=RXuphnXFBYWGgq7oCdy7QQ0lZJUxJzQ6vn2yd6BjO2lmZ5mqpRBnBI4ihRrRufBZN6a2kJGDDZWSPfAJbwf9WpN8SQGqfdjXmc19cybDVF86dbwlwJYx6UhQxcc8QuDi0kJxj1FTFcKqyZLVxg9lDSvyS70iYq+99SMd+220wbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gCsC0g1f; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Content-Type: text/plain;
+	charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706842099;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mF7FTBqL1wruOvwY0oHy4r35LgNgIlPN2kq6tk9075c=;
+	b=gCsC0g1fiYWL4j1hVqwtCkt8EfpdQt6ijcnoO92PxSnEglzx7yCrIFc3n6eJN2tOuoke2G
+	U61IE+3Uy4EyKKfFTgPgLCOqUDMVJt4BMFyurzixOAJhSsqBBWYQ/5zFm/zKDFGSVecJ6d
+	r9FkbIzxCE5zhXf6+MDWztFcBMV9yR8=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Lines: 36
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1411; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=UxYhGOC3xGtEqwmfDbPKpEHtugDzcWDIdIzgloJyoj4=; b=owGbwMvMwCRo6H6F97bub03G02pJDKl7wmU91nxoz5Q+LvJuvuWflDex+1nj5i39HPA3Yrqyh pX3B4E9HbEsDIJMDLJiiixftvEc3V9xSNHL0PY0zBxWJpAhDFycAjCR0D0M89RDXZfPZrK/qf5/ /cOcpLl/w3g5Wxjmmey4deHWqopb7FecLy9tXNF+O/v4DwA=
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Subject: Re: [PATCH 1/2] mm: pgtable: add missing flag and statistics for
+ kernel PTE page
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <f023a6687b9f2109401e7522b727aa4708dc05f1.1706774109.git.zhengqi.arch@bytedance.com>
+Date: Fri, 2 Feb 2024 10:47:41 +0800
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Arnd Bergmann <arnd@arndb.de>,
+ david@redhat.com,
+ willy@infradead.org,
+ linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <A7CAA1CD-8BD2-4517-BC37-F13E4D9C00CF@linux.dev>
+References: <f023a6687b9f2109401e7522b727aa4708dc05f1.1706774109.git.zhengqi.arch@bytedance.com>
+To: Qi Zheng <zhengqi.arch@bytedance.com>
+X-Migadu-Flow: FLOW_OUT
 
-The use of devm_*() functions works properly for when the device
-structure itself is dynamic, but the hsmp driver is attempting to have a
-local, static, struct device and then calls devm_() functions attaching
-memory to the device that will never be freed.
 
-The logic of having a static struct device is almost never a wise
-choice, but for now, just remove the use of devm_device_add_groups() in
-this driver as it obviously is not needed.
 
-Cc: Naveen Krishna Chatradhi <naveenkrishna.chatradhi@amd.com>
-Cc: Carlos Bilbao <carlos.bilbao@amd.com>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: "Ilpo Järvinen" <ilpo.jarvinen@linux.intel.com>
-Cc: platform-driver-x86@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
-v2: rebased against platform/for-next
+> On Feb 1, 2024, at 16:05, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
+> 
+> For kernel PTE page, we do not need to allocate and initialize its split
+> ptlock, but as a page table page, it's still necessary to add PG_table
+> flag and NR_PAGETABLE statistics for it.
+> 
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 
- drivers/platform/x86/amd/hsmp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Muchun Song <muchun.song@linux.dev>
 
-diff --git a/drivers/platform/x86/amd/hsmp.c b/drivers/platform/x86/amd/hsmp.c
-index 1927be901108..d84ea66eecc6 100644
---- a/drivers/platform/x86/amd/hsmp.c
-+++ b/drivers/platform/x86/amd/hsmp.c
-@@ -693,7 +693,7 @@ static int hsmp_create_non_acpi_sysfs_if(struct device *dev)
- 		hsmp_create_attr_list(attr_grp, dev, i);
- 	}
- 
--	return devm_device_add_groups(dev, hsmp_attr_grps);
-+	return device_add_groups(dev, hsmp_attr_grps);
- }
- 
- static int hsmp_create_acpi_sysfs_if(struct device *dev)
--- 
-2.43.0
+Thanks.
 
 
