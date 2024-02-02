@@ -1,108 +1,111 @@
-Return-Path: <linux-kernel+bounces-49223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 054B784675E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:03:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BDC9846761
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:04:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2087D1C21B10
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:03:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8192728F86D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:04:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D645D168BD;
-	Fri,  2 Feb 2024 05:00:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4731817564;
+	Fri,  2 Feb 2024 05:00:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qgz9kIbb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b="sh1XyYJV"
+Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B333168B1;
-	Fri,  2 Feb 2024 05:00:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 660251754E;
+	Fri,  2 Feb 2024 05:00:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.185.137.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706850029; cv=none; b=dBxpWtahsflRQHsuPd7b21CI+q2uQOMFekzdIdl81MN8G2EjYw3DaC8YpzjX/ByADkEGyae/jOeiEqwpyvdgPsYb/d8lIjFHN+kgzbVLkemAAxA8TgniDv1K8sJOgv55E1+YC6xhQ3hWkNzVQ0PimRJRVpjcCUkZqyiY18Acqho=
+	t=1706850041; cv=none; b=AIfUvQios7BV0jkYqdix1Mckfdi+leimtWY3CC6TKsQajUloNU3PUrFSssG5ZxbpEXMtQMPFUt9qUWSIWPIyYeYE3zNAg0JL+t0nxjqt4GrHRE/xQdBeX74m2QSBjvvx3d/K8Owh/9sA/nuzq2GHRNAPI5lN+h+tnk9XyDW9lYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706850029; c=relaxed/simple;
-	bh=U0LzKhd1g2ziJuw01cyz9vzzbqAe66DMK2KOff1bl/Q=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=SrSOzWAzNY08CfgK/eMhtEwyVfcZPpsCVMlmgjX4K6nPgK3auX5aN2G3kxzQF0h9xENq+dZPJWeumRHi9YolIhV3H4Bf71Oj5WGofSRYZNlb+DxsVcrUKysMBdeguE65En03jxR389g4sFzVPgOq5dCdz+4RNBvQY74Sbm3OLIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qgz9kIbb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 725C4C433C7;
-	Fri,  2 Feb 2024 05:00:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706850028;
-	bh=U0LzKhd1g2ziJuw01cyz9vzzbqAe66DMK2KOff1bl/Q=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Qgz9kIbbrUIk68TQAiQqNqUPnT0lGDlUNO0BoVPQaYewTYT8kRT5w+cLwEtUcNZuu
-	 7XIa8VSlxzOCLnQ1CpFlPAbu8Yi2Vaj9d5gbuUdFLKNYEb+uPM/qooRDJcwDEav2WG
-	 2yuwD1djS+zXfzmUqMh42FNJD1MniieIJqBuycX1b80Z1Bdf52by5ntIbkKzH/fuFu
-	 lLsDTl0sRujjegxRKLQ+51q8mTe9meHUML3cQvtRBwjYfMohWNYTvLVZYkXDjegB9N
-	 wiFEiPlAl2dBnDs9JOajWqNWdIQqTk7N4btyFzccX4YeZhDhdajhZwDD4Njm8hjm4G
-	 kyQB3PwxChphA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 58351C04E32;
-	Fri,  2 Feb 2024 05:00:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1706850041; c=relaxed/simple;
+	bh=Al3s5n9XbYajMyMjy8quEUVmt9j6PNC6PhjL+sDVrak=;
+	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
+	 Content-Type:Date:Message-ID; b=PGOTImyz1wFwfZ9t20gApuf5zW8PHdj5W2O7mHeFDzhKW8HpDfsA07nvuQRb4mwBS2F7Bx7x3u4i4eFKMR4wnJEMGkFTpi82nog37jKTAVbTo7L1hPBZKLrHT8vsrY/vzhSZ5c4VIWMsKvyQPN0j9bQIRl8j/S5d8AwYXzHLSh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org; spf=pass smtp.mailfrom=openbsd.org; dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b=sh1XyYJV; arc=none smtp.client-ip=199.185.137.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openbsd.org
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=Al3s5n9XbY
+	ajMyMjy8quEUVmt9j6PNC6PhjL+sDVrak=; h=date:references:in-reply-to:
+	subject:cc:to:from; d=openbsd.org; b=sh1XyYJVZYspbYXNo5lPr6eTzSsPxlnzX
+	fUpQ+m0g7osvlXQvcV2G+BhKvz2pnkmgRy3sVTKxdare0Z+M7o58U4MMgKzbCRET9klZsc
+	oaoityDPeqv1qGDLleLPnYPYicdjJuag7OdSxzy341IzrDsWbdrRCEaTWYw12r5aZd3hyr
+	mcd8IEBO6yBRfN5Fz7z8ZIlyNrK9UAHgi3UX4zLwYtrzUPse+VNOk62UmZbSMl6Ep8Isxo
+	dY7bZ+afNtjp+jwl2P7FZeJp52muDmP09AelHIjXZ7q3df86FM2xZDjkxoVIfNiwglMPfI
+	RFfcaD4q2AxYDQzikS7LzNlMfZSRw==
+Received: from cvs.openbsd.org (localhost [127.0.0.1])
+	by cvs.openbsd.org (OpenSMTPD) with ESMTP id 96394933;
+	Thu, 1 Feb 2024 22:00:35 -0700 (MST)
+From: "Theo de Raadt" <deraadt@openbsd.org>
+To: Jeff Xu <jeffxu@chromium.org>
+cc: Jeff Xu <jeffxu@google.com>,
+    Linus Torvalds <torvalds@linux-foundation.org>,
+    "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+    Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org,
+    keescook@chromium.org, jannh@google.com, sroettger@google.com,
+    willy@infradead.org, gregkh@linuxfoundation.org,
+    usama.anjum@collabora.com, rdunlap@infradead.org,
+    jorgelo@chromium.org, groeck@chromium.org,
+    linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+    linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
+    linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v8 0/4] Introduce mseal
+In-reply-to: <CABi2SkWSt=UMFWe9n916ZH16wCzaipKXmEJ5VasQHMr1AxerxQ@mail.gmail.com>
+References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver> <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com> <20240201204512.ht3e33yj77kkxi4q@revolver> <CABi2SkWB2eV24LBJtgJ73zEwaAWuFhAwrfqx3Rs=tqnpcJ0qRw@mail.gmail.com> <58408.1706828083@cvs.openbsd.org> <CAHk-=wjqozic6JuRimXD=RamnJmD6FoaQki7RtNYrezzx_OfOg@mail.gmail.com> <CALmYWFtqcixi3p3Ab44wENJr+n2k2SNaCJEofNm_awnNdJZnDQ@mail.gmail.com> <8744.1706846710@cvs.openbsd.org> <CABi2SkWSt=UMFWe9n916ZH16wCzaipKXmEJ5VasQHMr1AxerxQ@mail.gmail.com>
+Comments: In-reply-to Jeff Xu <jeffxu@chromium.org>
+   message dated "Thu, 01 Feb 2024 20:54:28 -0800."
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/7] net: ipa: simplify TX power handling
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170685002835.2674.5013367139260704418.git-patchwork-notify@kernel.org>
-Date: Fri, 02 Feb 2024 05:00:28 +0000
-References: <20240130192305.250915-1-elder@linaro.org>
-In-Reply-To: <20240130192305.250915-1-elder@linaro.org>
-To: Alex Elder <elder@linaro.org>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, mka@chromium.org, andersson@kernel.org,
- quic_cpratapa@quicinc.com, quic_avuyyuru@quicinc.com,
- quic_jponduru@quicinc.com, quic_subashab@quicinc.com, elder@kernel.org,
- netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <60913.1706850035.1@cvs.openbsd.org>
+Date: Thu, 01 Feb 2024 22:00:35 -0700
+Message-ID: <29248.1706850035@cvs.openbsd.org>
 
-Hello:
+Jeff Xu <jeffxu@chromium.org> wrote:
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Tue, 30 Jan 2024 13:22:57 -0600 you wrote:
-> In order to deliver a packet to the IPA hardware, we must ensure
-> it is powered.  We request power by calling pm_runtime_get(), and
-> its return value tells us the power state.  We can't block in
-> ipa_start_xmit(), so if power isn't enabled we prevent further
-> transmit attempts by calling netif_stop_queue().  Power will
-> eventually become enabled, at which point we call netif_wake_queue()
-> to allow the transmit to be retried.  When it does, the power should
-> be enabled, so the packet delivery can proceed.
+> Even without free.
+> I personally do not like the heap getting sealed like that.
 > 
-> [...]
+> Component A.
+> p=malloc(4096);
+> writing something to p.
+> 
+> Component B:
+> mprotect(p,4096, RO)
+> mseal(p,4096)
+> 
+> This will split the heap VMA, and prevent the heap from shrinking, if
+> this is in a frequent code path, then it might hurt the process's
+> memory usage.
+> 
+> The existing code is more likely to use malloc than mmap(), so it is
+> easier for dev to seal a piece of data belonging to another component.
+> I hope this pattern is not wide-spreading.
+> 
+> The ideal way will be just changing the library A to use mmap.
 
-Here is the summary with links:
-  - [net-next,1/7] net: ipa: stash modem TX and RX endpoints
-    https://git.kernel.org/netdev/net-next/c/102c28b83ddf
-  - [net-next,2/7] net: ipa: begin simplifying TX queue stop
-    https://git.kernel.org/netdev/net-next/c/844ecc4aa78e
-  - [net-next,3/7] net: ipa: kill the STARTED IPA power flag
-    https://git.kernel.org/netdev/net-next/c/688de12f080f
-  - [net-next,4/7] net: ipa: kill the IPA power STOPPED flag
-    https://git.kernel.org/netdev/net-next/c/86c9a4929258
-  - [net-next,5/7] net: ipa: kill ipa_power_modem_queue_stop()
-    https://git.kernel.org/netdev/net-next/c/30cdaea23600
-  - [net-next,6/7] net: ipa: kill ipa_power_modem_queue_active()
-    https://git.kernel.org/netdev/net-next/c/2acf5fc8daba
-  - [net-next,7/7] net: ipa: kill ipa_power_modem_queue_wake()
-    https://git.kernel.org/netdev/net-next/c/e01bbdc9f851
+I think you are lacking some test programs to see how it actually
+behaves; the effect is worse than you think, and the impact is immediately
+visible to the programmer, and the lesson is clear:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+	you can only seal objects which you gaurantee never get recycled.
+
+	Pushing a sealed object back into reuse is a disasterous bug.
+
+	Noone should call this interface, unless they understand that.
+
+I'll say again, you don't have a test program for various allocators to
+understand how it behaves.  The failure modes described in your docuemnts
+are not correct.
 
 
 
