@@ -1,339 +1,173 @@
-Return-Path: <linux-kernel+bounces-49524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 625DB846B70
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:01:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B1A4846B74
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:02:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1708C2881DA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:01:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AFB4281719
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:02:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF04745F9;
-	Fri,  2 Feb 2024 09:01:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="ZiS8kvwk"
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C3196311C;
+	Fri,  2 Feb 2024 09:02:10 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C7627428C
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:01:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09DCA62162;
+	Fri,  2 Feb 2024 09:02:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706864504; cv=none; b=qiMaHRTKMr5rzftL+oF4bwkaBjaLVPKrBEQvgJ8ZsGz68S8qU0hM6+mvOEDj9vWVcnaBrXt8vWML7Dwh/3c0wVtrhtb6DPxgcHEq2/Fd3CGq+9pOpkYQ8r/RMb1org1zKcfINnpCCnFCOpjUEcuU0D2SBtW7LjGEySzQ5iS/eU0=
+	t=1706864529; cv=none; b=VUUWh2eb77VZzwCuH396apu01wlEqFk2IqT+p4uK1zBTmpsPwVzFjK2XDqBnvGyz8PdGVBAzBEhF8zeBotKryk3W3A6OjQc497WZwNFU++dMBHH9ytsbSGFXd7xEy/qH69DBD+tk7UH7J7uIdjnJ6iT7xxiO1xKH7SYQN9swHis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706864504; c=relaxed/simple;
-	bh=I2zQrzLcgpV7z4j3Ksfthr+Iax2qqYhf5dnO1IkBizM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DUNbIeF81d+5LHb2PDQviHKjKyIEaseJ9Vgeny+F9/9gSQx53LFyUUZRjoJRMV7SjUCQ4tLJYWQ7cLol00VCACK1JXcGQ7p+psrFmDlZ7cA4KshvjxbQbqGqBDrCn73F0TNzbY+ndwprZUYx2ZycOxZEdP8OK7jRtF71K60BjpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=ZiS8kvwk; arc=none smtp.client-ip=209.85.222.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7d5a6b1dd60so696329241.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 01:01:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706864501; x=1707469301; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SvF2xXBHFPm+BTDgleNyCm2Lv+WJH8Y5ccw3uGZn2Bg=;
-        b=ZiS8kvwkUbLdn54vXRerU1iY+/40zfY33XG6Ls437A0SqZ3yHrshFFiHFkiGPy+Eu4
-         iOWefC1uxFFg0J+vi95DIj6Y4bP2AV7xh/uQzI6ihuYiH0f6yi7kBEE3ppF2a9burL9L
-         WSnEskaxyJ19lualtJT8XjlRgwDVQznDFRvvXInkFkZWq6dTCpeQ8wR1wdidQr4DeuQl
-         UP4sKV6NdIZ2ZxibNTYGgwxN50lbZjukXbBYvVQm53QDQofLo1Tatv6qwfiV17a5LJ8O
-         C/aGxtO5SPBpsj7DvJ9q9RWVBC3olKx2kfoRfzhekPUfB7b56p35tf77lc9WMRKVunb2
-         toVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706864501; x=1707469301;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SvF2xXBHFPm+BTDgleNyCm2Lv+WJH8Y5ccw3uGZn2Bg=;
-        b=ojSD35vrTOPB5VQKbokebEYXCZyMop7u1JsUdRLv/icNKn+SRrgDSjEFEIf7HBdCR2
-         L9PArpgoGUfF/LfilL0T/M8s4dnuCfbB+3TdXgtDK3XwMf8kS+esC1AsF55z3wjDTPPZ
-         CpJ2fv4HwbtYErlj5w38LycmaSvG3gYFqOumHLTtcL8CPSL0VSTQJSsbVLIqx+Q68JrV
-         db7V6SBUBsxS/ScxfzdGV4U7wIwmeJr55IbI53REbaX4BSZrWnUDXKSOy14msR82Pjyn
-         IihLFUW6I50aOTColl8dPmLqS/64GwHXzuDVzbDfdOA/d3HJctxm2sVQrqdGl+mI/xAx
-         CKAA==
-X-Forwarded-Encrypted: i=0; AJvYcCXJLFWomsRYFHLlruUZnOYwUYM7MTLtZ9baCF3IU7fqx6hWlXxUIdKwVI5C8LVWrtYPcF461QvkjkjrURnERLELuBDOmyBWey9nulRj
-X-Gm-Message-State: AOJu0YzaUYQY4apzOaq0Kyol40eoz6vyw4LgekboNMo6QorMyqSksaoi
-	QNtw99otU5omkNvaHeXx//O3vmorC4aH6YEiORgfhNVlFOECH8C2abnedgrLcwcI+P4CJkl2WUN
-	kVnweFu1ZiAcqfpzFgnhLo/eqz/8hufmqpdbaPg==
-X-Google-Smtp-Source: AGHT+IHdRDYbTn45U1Gk7PQJ5Nplhs7Q8O/wm2k+RRnc7OXTW/JybdBa+Q6hLwd7fTBfycRkvqLHTJnU8kP4B/0auVo=
-X-Received: by 2002:a05:6122:2527:b0:4c0:ca9:9d7d with SMTP id
- cl39-20020a056122252700b004c00ca99d7dmr1578768vkb.11.1706864501127; Fri, 02
- Feb 2024 01:01:41 -0800 (PST)
+	s=arc-20240116; t=1706864529; c=relaxed/simple;
+	bh=aHzEmoPoxsCtAcAXqMLjI12v8AWic6XYoYlNqsGWalQ=;
+	h=Subject:To:References:CC:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=ciTAJwlAtgsQe4zonSSVlkWIrzrg3d8TkUt0BLjayZCaxSEEh9wQwQSRTFbbyyDkbKVSZUNqWAA34vL9crScXo0akCVdzi8rx24fW0oD04aeF7/1rkZQcifE4CXoOF/ZIXV5aHN2hhTWVtBrzQuRLMC/iCSqDbUTth21UOZrMCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TR8r34knvzXh7G;
+	Fri,  2 Feb 2024 17:00:35 +0800 (CST)
+Received: from dggpemd200004.china.huawei.com (unknown [7.185.36.141])
+	by mail.maildlp.com (Postfix) with ESMTPS id 688AD140114;
+	Fri,  2 Feb 2024 17:02:01 +0800 (CST)
+Received: from [10.174.179.24] (10.174.179.24) by
+ dggpemd200004.china.huawei.com (7.185.36.141) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.28; Fri, 2 Feb 2024 17:02:00 +0800
+Subject: Re: [PATCH 2/2] mm/readahead: limit sync readahead while too many
+ active refault
+To: Jan Kara <jack@suse.cz>
+References: <20240201100835.1626685-1-liushixin2@huawei.com>
+ <20240201100835.1626685-3-liushixin2@huawei.com>
+ <20240201093749.ll7uzgt7ixy7kkhw@quack3>
+ <c768cab9-4ccb-9618-24a8-b51d3f141340@huawei.com>
+ <20240201173130.frpaqpy7iyzias5j@quack3>
+CC: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner
+	<brauner@kernel.org>, Matthew Wilcox <willy@infradead.org>, Andrew Morton
+	<akpm@linux-foundation.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+From: Liu Shixin <liushixin2@huawei.com>
+Message-ID: <78ee0c12-e706-875d-2baf-cb51dea9cfc4@huawei.com>
+Date: Fri, 2 Feb 2024 17:02:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201155532.49707-1-brgl@bgdev.pl> <20240201155532.49707-5-brgl@bgdev.pl>
- <ys45p7mdiur4liwzlexqm3aji7iz5panpb73ixg34wcio2qbvz@wkjcyazbzb4p> <CAA8EJpo7LwG2Kt0JSPc=MazWUme3YVmKHa9Fr6jc=NrZirEYUg@mail.gmail.com>
-In-Reply-To: <CAA8EJpo7LwG2Kt0JSPc=MazWUme3YVmKHa9Fr6jc=NrZirEYUg@mail.gmail.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Fri, 2 Feb 2024 10:01:30 +0100
-Message-ID: <CAMRc=Md1xGma+=UzmtO4QLzF36xAe6HcRVF6WmPd6Zys=+j4YQ@mail.gmail.com>
-Subject: Re: [RFC 4/9] power: pwrseq: add a driver for the QCA6390 PMU module
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Abel Vesa <abel.vesa@linaro.org>, Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
-	linux-pci@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240201173130.frpaqpy7iyzias5j@quack3>
+Content-Type: multipart/mixed;
+	boundary="------------851C32ACB350EF2108EAD576"
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemd200004.china.huawei.com (7.185.36.141)
 
-On Fri, Feb 2, 2024 at 8:48=E2=80=AFAM Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
+--------------851C32ACB350EF2108EAD576
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+
+
+
+On 2024/2/2 1:31, Jan Kara wrote:
+> On Thu 01-02-24 18:41:30, Liu Shixin wrote:
+>> On 2024/2/1 17:37, Jan Kara wrote:
+>>> On Thu 01-02-24 18:08:35, Liu Shixin wrote:
+>>>> When the pagefault is not for write and the refault distance is close,
+>>>> the page will be activated directly. If there are too many such pages in
+>>>> a file, that means the pages may be reclaimed immediately.
+>>>> In such situation, there is no positive effect to read-ahead since it will
+>>>> only waste IO. So collect the number of such pages and when the number is
+>>>> too large, stop bothering with read-ahead for a while until it decreased
+>>>> automatically.
+>>>>
+>>>> Define 'too large' as 10000 experientially, which can solves the problem
+>>>> and does not affect by the occasional active refault.
+>>>>
+>>>> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+>>> So I'm not convinced this new logic is needed. We already have
+>>> ra->mmap_miss which gets incremented when a page fault has to read the page
+>>> (and decremented when a page fault found the page already in cache). This
+>>> should already work to detect trashing as well, shouldn't it? If it does
+>>> not, why?
+>>>
+>>> 								Honza
+>> ra->mmap_miss doesn't help, it increased only one in do_sync_mmap_readahead()
+>> and then decreased one for every page in filemap_map_pages(). So in this scenario,
+>> it can't exceed MMAP_LOTSAMISS.
+> I see, OK. But that's a (longstanding) bug in how mmap_miss is handled. Can
+> you please test whether attached patches fix the trashing for you? At least
+> now I can see mmap_miss properly increments when we are hitting uncached
+> pages...  Thanks!
 >
-> On Fri, 2 Feb 2024 at 06:54, Bjorn Andersson <andersson@kernel.org> wrote=
-:
-> >
-> > On Thu, Feb 01, 2024 at 04:55:27PM +0100, Bartosz Golaszewski wrote:
-> > > diff --git a/drivers/power/sequencing/pwrseq-qca6390.c b/drivers/powe=
-r/sequencing/pwrseq-qca6390.c
-> > [..]
-> > > +static int pwrseq_qca6390_power_on(struct pwrseq_device *pwrseq)
-> > > +{
-> > > +     struct pwrseq_qca6390_ctx *ctx =3D pwrseq_device_get_data(pwrse=
-q);
-> > > +     int ret;
-> > > +
-> > > +     ret =3D regulator_bulk_enable(ctx->pdata->num_vregs, ctx->regs)=
-;
-> > > +     if (ret)
-> > > +             return ret;
-> > > +
-> > > +     gpiod_set_value_cansleep(ctx->bt_gpio, 1);
-> > > +     gpiod_set_value_cansleep(ctx->wlan_gpio, 1);
-> >
-> > So it's no longer possible to power these independently?
->
-> I'd second this, there must be a way to power them on and off
-> separately. In the end, this provides a good way to restart the BT
-> core if it gets sick.
+> 								Honza
+The patch doesn't seem to have much effect. I will try to analyze why it doesn't work.
+The attached file is my testcase.
+
+Thanks,
 >
 
-Makes sense, I'll think about it. I'm thinking about adding a flags
-argument for this kind of switching.
 
-> >
-> > > +
-> > > +     if (ctx->pdata->pwup_delay_msec)
-> > > +             msleep(ctx->pdata->pwup_delay_msec);
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +static int pwrseq_qca6390_power_off(struct pwrseq_device *pwrseq)
-> > > +{
-> > > +     struct pwrseq_qca6390_ctx *ctx =3D pwrseq_device_get_data(pwrse=
-q);
-> > > +
-> > > +     gpiod_set_value_cansleep(ctx->bt_gpio, 0);
-> > > +     gpiod_set_value_cansleep(ctx->wlan_gpio, 0);
-> > > +
-> >
-> > The answer that was provided recently was that the WiFi and BT modules
-> > absolutely must be modelled together, because there must be a 100ms
-> > delay between bt_gpio going low and wlan_gpio going high.
->
-> For the reference, it was for the QCA6490 (not QCA6390, next
-> revision), which maps to WCN6855.
->
+--------------851C32ACB350EF2108EAD576
+Content-Type: text/plain; charset="UTF-8"; name="test.sh"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="test.sh"
 
-The docs for QCA6390 also mention the 100ms delay but it doesn't seem
-to be necessary. But yes, this was done after Dmitry raised concerns
-about the QCA6490.
+#!/bin/bash
+  
+while true; do
+    flag=$(ps -ef | grep -v grep | grep alloc_page| wc -l)
+    if [ "$flag" -eq 0 ]; then
+        /alloc_page &
+    fi
 
-Bart
+    sleep 30
 
->
-> >
-> > If you're not going to address that concern, then I fail to see the
-> > reason for adding the power sequence framework - just let the BT and
-> > PCI power control (WiFi) do their thing independently.
-> >
-> > > +     return regulator_bulk_disable(ctx->pdata->num_vregs, ctx->regs)=
-;
-> > > +}
-> > > +
-> > > +static int pwrseq_qca6390_match(struct pwrseq_device *pwrseq,
-> > > +                             struct device *dev)
-> > > +{
-> > > +     struct pwrseq_qca6390_ctx *ctx =3D pwrseq_device_get_data(pwrse=
-q);
-> > > +     struct device_node *dev_node =3D dev->of_node;
-> > > +
-> > > +     /*
-> > > +      * The PMU supplies power to the Bluetooth and WLAN modules. bo=
-th
-> > > +      * consume the PMU AON output so check the presence of the
-> > > +      * 'vddaon-supply' property and whether it leads us to the righ=
-t
-> > > +      * device.
-> > > +      */
-> > > +     if (!of_property_present(dev_node, "vddaon-supply"))
-> > > +             return 0;
-> > > +
-> > > +     struct device_node *reg_node __free(of_node) =3D
-> > > +                     of_parse_phandle(dev_node, "vddaon-supply", 0);
-> > > +     if (!reg_node)
-> > > +             return 0;
-> > > +
-> > > +     /*
-> > > +      * `reg_node` is the PMU AON regulator, its parent is the `regu=
-lators`
-> > > +      * node and finally its grandparent is the PMU device node that=
- we're
-> > > +      * looking for.
-> > > +      */
-> > > +     if (!reg_node->parent || !reg_node->parent->parent ||
-> > > +         reg_node->parent->parent !=3D ctx->of_node)
-> > > +             return 0;
-> >
-> > Your DeviceTree example gives a sense that a set of supplies feeds the
-> > PMU, which then supplies power to the BT and WiFi nodes through some
-> > entity that can switch power on and off, and adjust the voltage level.
-> >
-> > Then comes this function, which indicates that the DeviceTree model was
-> > just for show.
-> >
-> > > +
-> > > +     return 1;
-> > > +}
-> > > +
-> > > +static int pwrseq_qca6390_probe(struct platform_device *pdev)
-> > > +{
-> > > +     struct device *dev =3D &pdev->dev;
-> > > +     struct pwrseq_qca6390_ctx *ctx;
-> > > +     struct pwrseq_config config;
-> > > +     int ret, i;
-> > > +
-> > > +     ctx =3D devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
-> > > +     if (!ctx)
-> > > +             return -ENOMEM;
-> > > +
-> > > +     ctx->of_node =3D dev->of_node;
-> > > +
-> > > +     ctx->pdata =3D of_device_get_match_data(dev);
-> > > +     if (!ctx->pdata)
-> > > +             return dev_err_probe(dev, -ENODEV,
-> > > +                                  "Failed to obtain platform data\n"=
-);
-> > > +
-> > > +     if (ctx->pdata->vregs) {
-> > > +             ctx->regs =3D devm_kcalloc(dev, ctx->pdata->num_vregs,
-> > > +                                      sizeof(*ctx->regs), GFP_KERNEL=
-);
-> > > +             if (!ctx->regs)
-> > > +                     return -ENOMEM;
-> > > +
-> > > +             for (i =3D 0; i < ctx->pdata->num_vregs; i++)
-> > > +                     ctx->regs[i].supply =3D ctx->pdata->vregs[i].na=
-me;
-> > > +
-> > > +             ret =3D devm_regulator_bulk_get(dev, ctx->pdata->num_vr=
-egs,
-> > > +                                           ctx->regs);
-> > > +             if (ret < 0)
-> > > +                     return dev_err_probe(dev, ret,
-> > > +                                          "Failed to get all regulat=
-ors\n");
-> > > +
-> > > +             for (i =3D 0; i < ctx->pdata->num_vregs; i++) {
-> > > +                     if (!ctx->pdata->vregs[1].load_uA)
-> > > +                             continue;
-> > > +
-> > > +                     ret =3D regulator_set_load(ctx->regs[i].consume=
-r,
-> > > +                                              ctx->pdata->vregs[i].l=
-oad_uA);
-> > > +                     if (ret)
-> > > +                             return dev_err_probe(dev, ret,
-> > > +                                                  "Failed to set vre=
-g load\n");
-> > > +             }
-> > > +     }
-> > > +
-> > > +     ctx->bt_gpio =3D devm_gpiod_get_optional(dev, "bt-enable", GPIO=
-D_OUT_LOW);
-> >
-> > Why are these optional? Does it make sense to have a qca6390 without
-> > both of these gpios connected?
-> >
-> > Regards,
-> > Bjorn
-> >
-> > > +     if (IS_ERR(ctx->bt_gpio))
-> > > +             return dev_err_probe(dev, PTR_ERR(ctx->bt_gpio),
-> > > +                                  "Failed to get the Bluetooth enabl=
-e GPIO\n");
-> > > +
-> > > +     ctx->wlan_gpio =3D devm_gpiod_get_optional(dev, "wlan-enable",
-> > > +                                              GPIOD_OUT_LOW);
-> > > +     if (IS_ERR(ctx->wlan_gpio))
-> > > +             return dev_err_probe(dev, PTR_ERR(ctx->wlan_gpio),
-> > > +                                  "Failed to get the WLAN enable GPI=
-O\n");
-> > > +
-> > > +     memset(&config, 0, sizeof(config));
-> > > +
-> > > +     config.parent =3D dev;
-> > > +     config.owner =3D THIS_MODULE;
-> > > +     config.drvdata =3D ctx;
-> > > +     config.match =3D pwrseq_qca6390_match;
-> > > +     config.power_on =3D pwrseq_qca6390_power_on;
-> > > +     config.power_off =3D pwrseq_qca6390_power_off;
-> > > +
-> > > +     ctx->pwrseq =3D devm_pwrseq_device_register(dev, &config);
-> > > +     if (IS_ERR(ctx->pwrseq))
-> > > +             return dev_err_probe(dev, PTR_ERR(ctx->pwrseq),
-> > > +                                  "Failed to register the power sequ=
-encer\n");
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +static const struct of_device_id pwrseq_qca6390_of_match[] =3D {
-> > > +     {
-> > > +             .compatible =3D "qcom,qca6390-pmu",
-> > > +             .data =3D &pwrseq_qca6390_of_data,
-> > > +     },
-> > > +     { }
-> > > +};
-> > > +MODULE_DEVICE_TABLE(of, pwrseq_qca6390_of_match);
-> > > +
-> > > +static struct platform_driver pwrseq_qca6390_driver =3D {
-> > > +     .driver =3D {
-> > > +             .name =3D "pwrseq-qca6390",
-> > > +             .of_match_table =3D pwrseq_qca6390_of_match,
-> > > +     },
-> > > +     .probe =3D pwrseq_qca6390_probe,
-> > > +};
-> > > +module_platform_driver(pwrseq_qca6390_driver);
-> > > +
-> > > +MODULE_AUTHOR("Bartosz Golaszewski <bartosz.golaszewski@linaro.org>"=
-);
-> > > +MODULE_DESCRIPTION("QCA6390 PMU power sequencing driver");
-> > > +MODULE_LICENSE("GPL");
-> > > --
-> > > 2.40.1
-> > >
-> >
->
->
-> --
-> With best wishes
-> Dmitry
+    start_time=$(date +%s)
+    yum install -y expect > /dev/null 2>&1
+
+    end_time=$(date +%s)
+
+    elapsed_time=$((end_time - start_time))
+
+    echo "$elapsed_time seconds"
+    yum remove -y expect > /dev/null 2>&1
+done
+--------------851C32ACB350EF2108EAD576
+Content-Type: text/plain; charset="UTF-8"; name="alloc_page.c"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="alloc_page.c"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+
+#define SIZE 1*1024*1024 //1M
+
+int main()
+{
+    void *ptr = NULL;
+    int i;
+
+    for (i = 0; i < 1024 * 6 - 50;i++) {
+        ptr = (void *) malloc(SIZE);
+        if (ptr == NULL) {
+            printf("malloc err!");
+            return -1;
+        }
+
+        memset(ptr, 0, SIZE);
+    }
+
+    sleep(99999);
+
+    free(ptr);
+    return 0;
+}
+--------------851C32ACB350EF2108EAD576--
 
