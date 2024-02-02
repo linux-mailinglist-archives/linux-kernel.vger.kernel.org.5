@@ -1,122 +1,163 @@
-Return-Path: <linux-kernel+bounces-50204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B857E8475B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:07:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC1168475BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:07:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAFE31C218CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:07:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78A30288569
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:07:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DD5A14AD24;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3952814AD23;
 	Fri,  2 Feb 2024 17:06:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="j43xr1XA"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="gTZvNztB";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="rFJQ1ubs";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="gTZvNztB";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="rFJQ1ubs"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC704148FFE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABA811420B3;
 	Fri,  2 Feb 2024 17:06:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706893597; cv=none; b=sIbzLD35EZGXcxYiD9+uiMh7meOvjo8C47PL7dK5Ae4TiXmZv/G0KgYnKm+aD195YI3Wojs9c0xc4vgXG13mgnHK6qbvGhc/GWPQcUU57AcuYjIvcI/AQQmxsfsDIyxWXkEW7dxQapElgHbEMMEvRCbSNE7oV7RuHV74BB5fo/0=
+	t=1706893597; cv=none; b=FGQDUQukmuYKIsnpMNaXOp0NfQtIxX8NBXkX/aRScteS4oAJYksR9Ze4d4IUyBf0wffEq1QL1xzdZY6SucXqNB0AXtEcnI6m759D4JKwrmYbfpzb34Gqy59yRlTGds4vK6Ko4e7qRs8E9zW+FoQOCiKXRhbaqEqgftRITvzagfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706893597; c=relaxed/simple;
-	bh=fXYcVQeS1rnoov7pNUybIB+0ltad7FRtsKISdkiMkms=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=tUW2WIIJyoKNlmZuHhYkEzPK0T0LVr3gxa1n2wApKmDEmVy3q8QNpztz1YMcGWtx/NqxoEb0IVDsiyVouAgRCYEEgCdL1acqqfpZnw8FptvseHwcSnY32dt9NVUsdtw07zwNsWL0tK93wOoG4QFhvJFJ3nck4dUPFqcKlVJry90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=j43xr1XA; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 412FZrFt008756;
-	Fri, 2 Feb 2024 17:06:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=RCAsEbay9473oUiUhfGKQgYpSlUN+6hO6gJH1qP/hb8=; b=j4
-	3xr1XAY38rAHXhQV7n9Eren5GYY+sjmR2p/l/6xLJJS5KuD0p9OYOSnT1LGlnUIy
-	nblqLBVWYpWkDP5pOuZWyxoCW2PmDErB+EisG0d8fN7ct2l4AirpoCD/N0e9BFfg
-	bmRnsF89ebP8JCM/9Zan/5Z/fjTj3jC2gs1zYEwcupaW96NaJfBZAfW256fRwMiM
-	0usxEwDB0SGFmEf52VatwtwAYgv9JrnOKEX38fxER35x/zvbO/cHcHHpJ9Ct91W3
-	/zjonCcVxKGv5qBtrrxt9GZnFzXnOBIFSZxjW9JmjiQNQXVjUn/KfpNAJbbQxwkj
-	Z8QRkCtfvDPiip+m0LxA==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0ptv1xxm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Feb 2024 17:06:22 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 412H6Lj9015815
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 2 Feb 2024 17:06:21 GMT
-Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 2 Feb
- 2024 09:06:20 -0800
-Message-ID: <66c4830d-8756-3ade-c8ec-af2b334b24e3@quicinc.com>
-Date: Fri, 2 Feb 2024 10:06:20 -0700
+	bh=BpK08wDTcgdXavtNX448erqRPqnfLK+o8n6BTGSGMyE=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BYLFxi/G7IX2Gt2viJwNL6EdXjvOPCMbQAKF5sbZRlekPiKuM056aLnynhU8ptBrpCsfNz5FmB6OQjTX7GTPnUG6AoxVNXiuTIh5MmJsUMsYb9FrOdOF7qcFrG/KnHQFRZ4DSOL2+h8JPuXvoQu6sATVaDAJLion47mS+a3fIEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=gTZvNztB; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=rFJQ1ubs; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=gTZvNztB; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=rFJQ1ubs; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CF76521F6B;
+	Fri,  2 Feb 2024 17:06:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706893593; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ucgZQctdh62JeDhECOYgc2GaF1+IHkTyWVsFmEYdamI=;
+	b=gTZvNztB0rZBW487G2QczNcvV/R8jahxRBhPnCG5MJ3Y0JUpX/6Z0jWPd4bJ33I7G3XipV
+	CBdi95Wkt3HQ/J2/xW5Ofg/mjzGmaPjrBxTiENzfaiVs2pJKRWXB+OC3Q7plziAvky1qxo
+	CWjMDJk6cZPsKMC3Wcjy2CBgGY8Vmkc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706893593;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ucgZQctdh62JeDhECOYgc2GaF1+IHkTyWVsFmEYdamI=;
+	b=rFJQ1ubsRiLgO+GD5ZEu8xL4K74BI0EOl24TjqalmrN6+UFelDSe3sFDPxr7igSaDUUUZL
+	CwXew/YrkfxZPXCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706893593; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ucgZQctdh62JeDhECOYgc2GaF1+IHkTyWVsFmEYdamI=;
+	b=gTZvNztB0rZBW487G2QczNcvV/R8jahxRBhPnCG5MJ3Y0JUpX/6Z0jWPd4bJ33I7G3XipV
+	CBdi95Wkt3HQ/J2/xW5Ofg/mjzGmaPjrBxTiENzfaiVs2pJKRWXB+OC3Q7plziAvky1qxo
+	CWjMDJk6cZPsKMC3Wcjy2CBgGY8Vmkc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706893593;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ucgZQctdh62JeDhECOYgc2GaF1+IHkTyWVsFmEYdamI=;
+	b=rFJQ1ubsRiLgO+GD5ZEu8xL4K74BI0EOl24TjqalmrN6+UFelDSe3sFDPxr7igSaDUUUZL
+	CwXew/YrkfxZPXCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8FA11139AB;
+	Fri,  2 Feb 2024 17:06:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ha6uIRkhvWWvSQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 02 Feb 2024 17:06:33 +0000
+Date: Fri, 02 Feb 2024 18:06:33 +0100
+Message-ID: <87r0hubxt2.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Stefan Binding <sbinding@opensource.cirrus.com>
+Cc: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	<alsa-devel@alsa-project.org>,
+	<linux-sound@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>,
+	<patches@opensource.cirrus.com>
+Subject: Re: [PATCH v1] ALSA: hda/realtek: Remove two HP Laptops using CS35L41
+In-Reply-To: <5792f9bc-b77d-4a90-be61-a09797295a8b@opensource.cirrus.com>
+References: <20240202161727.321373-1-sbinding@opensource.cirrus.com>
+	<87v876bz6b.wl-tiwai@suse.de>
+	<5792f9bc-b77d-4a90-be61-a09797295a8b@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH] Documentation: embargoed-hardware-issues.rst: Fix
- Trilok's email
-Content-Language: en-US
-To: Greg KH <gregkh@linuxfoundation.org>
-CC: <corbet@lwn.net>, <carlos.bilbao@amd.com>, <avadhut.naik@amd.com>,
-        <alexs@kernel.org>, <iyanteng@loongson.cn>,
-        <2023002089@link.tyut.edu.cn>, <quic_bjorande@quicinc.com>,
-        <quic_tsoni@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <workflows@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240202164119.4090703-1-quic_jhugo@quicinc.com>
- <2024020223-eskimo-armoire-a517@gregkh>
-From: Jeffrey Hugo <quic_jhugo@quicinc.com>
-In-Reply-To: <2024020223-eskimo-armoire-a517@gregkh>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: pwsWqSHmhUhzy7kUdblznhzZ29PxIBSI
-X-Proofpoint-GUID: pwsWqSHmhUhzy7kUdblznhzZ29PxIBSI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-02_10,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 impostorscore=0 bulkscore=0 suspectscore=0
- priorityscore=1501 clxscore=1011 spamscore=0 phishscore=0 adultscore=0
- mlxscore=0 mlxlogscore=720 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402020122
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=gTZvNztB;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=rFJQ1ubs
+X-Spamd-Result: default: False [-2.37 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.06)[87.81%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: CF76521F6B
+X-Spam-Level: 
+X-Spam-Score: -2.37
+X-Spam-Flag: NO
 
-On 2/2/2024 9:48 AM, Greg KH wrote:
-> On Fri, Feb 02, 2024 at 09:41:19AM -0700, Jeffrey Hugo wrote:
->> The servers for the @codeaurora domain have long been retired and any
->> messages addressed to @codeaurora will bounce.
->>
->> Trilok has an entry in .mailmap, but the raw documentation files still
->> list an old @codeaurora address.  Update the address in the
->> documentation files for anyone reading them.
->>
->> Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
->> ---
->>   Documentation/process/embargoed-hardware-issues.rst             | 2 +-
->>   .../translations/sp_SP/process/embargoed-hardware-issues.rst    | 2 +-
->>   .../translations/zh_CN/process/embargoed-hardware-issues.rst    | 2 +-
->>   .../translations/zh_TW/process/embargoed-hardware-issues.rst    | 2 +-
->>   4 files changed, 4 insertions(+), 4 deletions(-)
+On Fri, 02 Feb 2024 17:49:06 +0100,
+Stefan Binding wrote:
 > 
-> I think we need an ack from Trilok for this :)
+> Hi Takashi,
+> 
+> On 02/02/2024 16:37, Takashi Iwai wrote:
+> > On Fri, 02 Feb 2024 17:17:27 +0100,
+> > Stefan Binding wrote:
+> >> These two HP laptops are changing configurations.
+> > What exactly does this mean?  The PCI SSIDs are no longer valid, or
+> > the quirk became wrong, or what?
+> > 
+> > 
+> > thanks,
+> > 
+> > Takashi
+> 
+> The SKUs, and associated SSIDs, are no longer going to include the CS35L41.
+> They may come back, but will need a different quirk.Sorry for the churn.
 
-That is fair.  I expect Trilok will see this in the next day or so, and 
-respond.
+OK, care to resubmit with those explanations?
 
--Jeff
+
+thanks,
+
+Takashi
 
