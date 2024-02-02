@@ -1,177 +1,191 @@
-Return-Path: <linux-kernel+bounces-49295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16D7F84684E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:46:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 548DA84684C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:45:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B8861C229A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:46:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 788F01C2137C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:45:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD6B6179BF;
-	Fri,  2 Feb 2024 06:42:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AB2717596;
+	Fri,  2 Feb 2024 06:41:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="DkxNFSg0"
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M5sW7cfD"
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5212C179A1
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 06:42:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 227CA48788;
+	Fri,  2 Feb 2024 06:41:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706856124; cv=none; b=s0KeZtxYq3k71nM9Vq9r8rKQWuvyWa5RTmZR0loVlx2DMr2e57Ml67AZmbc1zpb3hyno/vAZAfeUifz5X6eXV9MiAXqrXccdR8ZhcYurcQCBYTnrxAtJXKRPrCQzOnPS9zn/gKCmX24fPRxKxWWQvQT6QWIfI3tKKK7O3hEIATw=
+	t=1706856098; cv=none; b=N8vJFCH1WDN8afM39cjh6NDJ9wJEfV52dUbcQWgGBIteRIvndmnGEJpr+uOrSYIHx1d4fhePidtrMPTMmkvXvKZZgRGyOrMV8wMPxWu0JJugyXGnWdG0F+7swz2IsHt3vTizDykD3usv+yZJGhV+IrR42UZVwDpda2qqrZe7MoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706856124; c=relaxed/simple;
-	bh=EyPJ1v8uJ1verWOqJzXdRF7tA+iZhYTVX3CQiV6Wfbk=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=LDMAHcJsaHJHS0GAbHaGz2iz1Rg4xxetuJRCg5IBG/3qIsZKiqv5X4gTr1mnk5kf2epL59rItbXDqcuu6f0hyAWe0zA+RNaW2UMucscbi45ACiiWkSEFNuy/oHqTI/P+I7R3qqn1mo80tGL3cxB7Din8PdH7iqn2hWoWWbhh+S8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=DkxNFSg0; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5d8bc1caf00so1601090a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 22:42:02 -0800 (PST)
+	s=arc-20240116; t=1706856098; c=relaxed/simple;
+	bh=FnWjsjwj8800isp2bFvFIFMiFcnzRWHiCH41bnxfCwY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=DlGTxOfVcL1SH1ayq5ToceQ+sa2ClZIN4PRaAvjHnyvBTSJFXAicrQt55wsPXw9dtHe4YD3+wSR2ydXGLUV9UKkOo1DyvqkBxu0X6AT4YQnpqImqjtK0dRMxEbHTV0Sm1oNtqnv65DxczGfLxJkqxLjUPF6HjWsTrL3KPeqWopI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M5sW7cfD; arc=none smtp.client-ip=209.85.160.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-2144c37f3d3so989380fac.0;
+        Thu, 01 Feb 2024 22:41:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1706856121; x=1707460921; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1706856096; x=1707460896; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xeB3e/KJ2ArkcAJ7cDxBQCA+oTgv/CnKDnVoit5SrNw=;
-        b=DkxNFSg0UZjhOYNO9QomilU3VFGX9Oa0ddKOOE/qq8NOKjEi5oeh6AXR47Qq81lm77
-         PSb7glH0eOIC/NhkSo8hmsT+/B+e3bdBCJavw0o6imYrLYjLeAdT9NUmO9RY8HdYVIZm
-         XNXZ84WHDAQBSEkEufFjL8S1BwX5AuuUlSWHo=
+        bh=H/7Ihe4vPnqb+El0TxxOCHRxUyQil8HxVU+vhaaiIU4=;
+        b=M5sW7cfDuayE8gjf3PSbR6cgR9/Gge2XgASzvIjgQ/dt4SVRsj4NQC69bslN7NXzSc
+         La3dI+IqSwAg0rCJ8SUnmcUo9a8sOSszdZl4aH77jlBlDvQejQjOWVSTuj3ln8jGglZ8
+         2MDvVCJkwJ8aI1VYQ44oXoEpyMzNVVJOphER5zYgD+J+KhP0GhzOZE9FeXrqoyjqIvC8
+         nXLOOxHiZm9q9GptSw1O0wCNEl7M6iEkRzy0LTHeLL/s1mE514D1r9wXEP3sVMDcilYN
+         tjiZOihnQKOVprwID6Q/zkyrhi1o2EUVUvrpqN2nqbXknHM17L8fIcjM1sEJbAqAlLHS
+         L/WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706856121; x=1707460921;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1706856096; x=1707460896;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xeB3e/KJ2ArkcAJ7cDxBQCA+oTgv/CnKDnVoit5SrNw=;
-        b=jo+5Agpzkxin0mDGGOQxJfPZBHIeoNdfOcZk/Ckcmpsmdbppv8kMsMOnka2wNbSEVn
-         9F400zsuQMGWED6xwRPmPkbIm4/UKr55NRaVz2qEZu0s1hCBRgCckCZBuwO+ze5Ml0qT
-         3L9NhBQyScLmZ0o6iVvmIZZgiHagggDIIuAliIEsW0XP+IUtuE7GSdr8eUJA22HWiU4j
-         tiGIn2KqsaX6N5sb8XLDRrEBnrq4bfIi/R0Q8VDi5yWgvY9Z68shsEXfdKdBOKSawwI7
-         7Egxrri+L66sHBpX1WLI5qhHcB2ol3MRH6owl1bU582b3c02x6En2WEqEn1hgMBNdYKV
-         kRag==
-X-Gm-Message-State: AOJu0YwoGJEJOeeB/G0QPT63ltMI53vNirQZEIZIES4b6ma9yJT+oQRy
-	Yv0K4jOeaGZZdS6oG48J3L3qgaIjM9JKuL8yvfjDeJixl9P+hEjgBBXbifsOXw==
-X-Google-Smtp-Source: AGHT+IGkxoHrn5M23ZvqLsrcgWb9Dxe4chh56p5rjnQf81e2tLgOZlZAD6cC22pLx6DS6kx/4ch7Rg==
-X-Received: by 2002:a05:6a20:9326:b0:19e:399f:7bed with SMTP id r38-20020a056a20932600b0019e399f7bedmr4407693pzh.35.1706856121632;
-        Thu, 01 Feb 2024 22:42:01 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUSv8KyeVxLzlGyhyhJ6/k5Q8l3rOmZnebm5Ftte6euQTEIyGzkjD1oV8Cyqg6y2bKRShGnz/qsu+E5D9h1OLSVVnu84HPXx7PLd5AgFJfvfginU3vSbn1Jyi7RnXvVdEq+bFkO47Zwrq/rLX7o756g05VcM3Kko6+PIh5jDoU0gQgNF3OHccJnR0hZpbe1Y06qv4h8qSFrnEhsGOLrTQoKnGpXivVi4shl/FNK4m1L3o8+vSZqqsv0S3wMcmdERd8EJhTOaZ0PH7W2w6p1bfCEQaLzN/0/w6QZGBwzpqlN4EQOPhwQGxkfy8HJhsbkyUxzRysBfA1uG4CXq1egORvciiFbGJkVKpTYr2N2BpYLQdBSHlgHNrlyBIdB0O+Aoxt7l11Wa7GVWyoTdjg/cOmdceBMrnJ1QDGZsjz0Lz9u+bmbEWiRefNwhkPQQicN/vAkTnHZ8DuoIswbpmksZRumsxfA5YJcJRepZCixavqoYSVuYWECbbW/FXKzEYJZGmL3knKe6cS5u4qkdeaAO/uzJQR5HAA=
-Received: from akaher-virtual-machine.eng.vmware.com ([66.170.99.2])
-        by smtp.gmail.com with ESMTPSA id kc12-20020a17090333cc00b001d94a245f3fsm880583plb.16.2024.02.01.22.41.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 01 Feb 2024 22:42:00 -0800 (PST)
-From: Ajay Kaher <ajay.kaher@broadcom.com>
-To: stable@vger.kernel.org,
-	gregkh@linuxfoundation.org
-Cc: pablo@netfilter.org,
-	kadlec@netfilter.org,
-	fw@strlen.de,
-	davem@davemloft.net,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	netdev@vger.kernel.org,
+        bh=H/7Ihe4vPnqb+El0TxxOCHRxUyQil8HxVU+vhaaiIU4=;
+        b=KF0lTWdB0XgirbcQ22XjppLvEysKpOww/GSpj/WBD/cgL2g2mVA0GspD92I0XenOKT
+         mbGM9AZpZ77Ob4voMCbPFl8sMFsJgZDxjx+JGcqC374t/666iCdzCpWoEJy0isDKRfAJ
+         1gMD73Nw+2oFqmGHA1TqDKm4kufgUdAu5zW2Ih4tjhCIJR+S5JtROjK21LmDEkwBd9Lm
+         IUfaYIhc6l3TNBPZ/xKoqsjyMBYMeREx0oMzJZvElMCTATt9kvS+McTJX+5Hucj6TZCl
+         prDyts9btbZ/DVoXDSZyGxAGxcu3ydJuSyRej/NhISPsau9dcWar0dUUA6+16DxD4uFT
+         FOyg==
+X-Gm-Message-State: AOJu0YzcKx9JggTSHcUd3alHjrfcDS033Zv6I80WSWkhXOFecarlGrP6
+	jhMYXnH8rvBITrIVCO8Lt1jStfQ8NKQcbsY5MaFou06plDw4YnZZ
+X-Google-Smtp-Source: AGHT+IHSiFTmHke13wN1SxKcd66FM+K2StullT3LYnHJcbR7rpQ5ZFrlEClwc0zT0kIMT5IkxBOkrQ==
+X-Received: by 2002:a05:6870:a119:b0:218:dec1:8330 with SMTP id m25-20020a056870a11900b00218dec18330mr1063507oae.8.1706856096067;
+        Thu, 01 Feb 2024 22:41:36 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCX9fyP97T4LGPWcPjGEhvjLc+c58XmBo0/gXNEC1NZHfGLci4RzYqgMSvCkP8r6WWKeQ7rFoFtGpwnKpMbt0wCIrhZoIgV1ULFXJqV+EMaX9Xxbids+QPLJ90x0WP7Te/hJovSp9zxHKtUQwuz5Dfm8+98FhhJEJy09Rl8NfghF3w9XRO6mtxdq1Df1JXZ0UWkQtg1+2nCjVv0wIO2DFtGj53Fy9pi3TihN8uPmOGJadRFlUTavMeHu403+hY57YoDLcDbeqrSNXke3rUlt+GzxjjAGnYZ7O0mXmLdp6TG7Q/H7L5iVxUqaDWa0jDEBx18ac77BmzWKfbSDhCvo+rqVxeMOuvgh4mImSKrpVl7D9WcIQMePJDi5G/LYutDX6l/3yGSmrGLcZVxaouXDXVaXNmshRMLPsNZQCaYmw2Xpld5+UFbBThgBBXYqsVsAAtwKa04Nay28Vu9UYdoixkdkOLW3cQYoL+GGjVvhPMWyzSnJg9wx92qqCInTah3uPV5/uKnZ8aycVNNEyjNfuPSIVdvZuP566bNINTOQv07bBKymsvDHBTBQAE7gxqACz0WwDy/2wP3GykpZkXQkKSBMatCXahwyF5NNlgiBceV6ws1EElGHJi9GoF58aR50ERZWFtGyFdghkkBU/RBUSRqmFff7hSYS/0F/vmJ5XmOJxfw=
+Received: from localhost.localdomain ([122.8.183.87])
+        by smtp.gmail.com with ESMTPSA id sc23-20020a056871221700b00205d664c127sm335381oab.16.2024.02.01.22.41.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 22:41:35 -0800 (PST)
+From: Chen Wang <unicornxw@gmail.com>
+To: aou@eecs.berkeley.edu,
+	chao.wei@sophgo.com,
+	conor@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	mturquette@baylibre.com,
+	palmer@dabbelt.com,
+	paul.walmsley@sifive.com,
+	richardcochran@gmail.com,
+	robh+dt@kernel.org,
+	sboyd@kernel.org,
+	devicetree@vger.kernel.org,
+	linux-clk@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	alexey.makhalov@broadcom.com,
-	florian.fainelli@broadcom.com,
-	vasavi.sirnapalli@broadcom.com,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Sasha Levin <sashal@kernel.org>,
-	Ajay Kaher <ajay.kaher@broadcom.com>
-Subject: [PATCH v5.10.y] netfilter: nf_tables: fix pointer math issue in nft_byteorder_eval()
-Date: Fri,  2 Feb 2024 12:11:21 +0530
-Message-Id: <1706856081-37418-1-git-send-email-ajay.kaher@broadcom.com>
-X-Mailer: git-send-email 2.7.4
+	linux-riscv@lists.infradead.org,
+	haijiao.liu@sophgo.com,
+	xiaoguang.xing@sophgo.com,
+	guoren@kernel.org,
+	jszhang@kernel.org,
+	inochiama@outlook.com,
+	samuel.holland@sifive.com
+Cc: Chen Wang <unicorn_wang@outlook.com>
+Subject: [PATCH v9 1/5] dt-bindings: clock: sophgo: add pll clocks for SG2042
+Date: Fri,  2 Feb 2024 14:41:27 +0800
+Message-Id: <bf3b8178a013004f259cd9254b13279254505852.1706854074.git.unicorn_wang@outlook.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1706854074.git.unicorn_wang@outlook.com>
+References: <cover.1706854074.git.unicorn_wang@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-From: Dan Carpenter <dan.carpenter@linaro.org>
+From: Chen Wang <unicorn_wang@outlook.com>
 
-commit c301f0981fdd3fd1ffac6836b423c4d7a8e0eb63 upstream.
+Add bindings for the pll clocks for Sophgo SG2042.
 
-The problem is in nft_byteorder_eval() where we are iterating through a
-loop and writing to dst[0], dst[1], dst[2] and so on...  On each
-iteration we are writing 8 bytes.  But dst[] is an array of u32 so each
-element only has space for 4 bytes.  That means that every iteration
-overwrites part of the previous element.
-
-I spotted this bug while reviewing commit caf3ef7468f7 ("netfilter:
-nf_tables: prevent OOB access in nft_byteorder_eval") which is a related
-issue.  I think that the reason we have not detected this bug in testing
-is that most of time we only write one element.
-
-Fixes: ce1e7989d989 ("netfilter: nft_byteorder: provide 64bit le/be conversion")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-[Ajay: Modified to apply on v5.10.y]
-Signed-off-by: Ajay Kaher <ajay.kaher@broadcom.com>
+Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
 ---
- include/net/netfilter/nf_tables.h | 4 ++--
- net/netfilter/nft_byteorder.c     | 5 +++--
- net/netfilter/nft_meta.c          | 2 +-
- 3 files changed, 6 insertions(+), 5 deletions(-)
+ .../bindings/clock/sophgo,sg2042-pll.yaml     | 45 +++++++++++++++++++
+ include/dt-bindings/clock/sophgo,sg2042-pll.h | 14 ++++++
+ 2 files changed, 59 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/sophgo,sg2042-pll.yaml
+ create mode 100644 include/dt-bindings/clock/sophgo,sg2042-pll.h
 
-diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index 2237657..2da11d8 100644
---- a/include/net/netfilter/nf_tables.h
-+++ b/include/net/netfilter/nf_tables.h
-@@ -142,9 +142,9 @@ static inline u16 nft_reg_load16(const u32 *sreg)
- 	return *(u16 *)sreg;
- }
- 
--static inline void nft_reg_store64(u32 *dreg, u64 val)
-+static inline void nft_reg_store64(u64 *dreg, u64 val)
- {
--	put_unaligned(val, (u64 *)dreg);
-+	put_unaligned(val, dreg);
- }
- 
- static inline u64 nft_reg_load64(const u32 *sreg)
-diff --git a/net/netfilter/nft_byteorder.c b/net/netfilter/nft_byteorder.c
-index 7b0b8fe..9d250bd 100644
---- a/net/netfilter/nft_byteorder.c
-+++ b/net/netfilter/nft_byteorder.c
-@@ -38,20 +38,21 @@ void nft_byteorder_eval(const struct nft_expr *expr,
- 
- 	switch (priv->size) {
- 	case 8: {
-+		u64 *dst64 = (void *)dst;
- 		u64 src64;
- 
- 		switch (priv->op) {
- 		case NFT_BYTEORDER_NTOH:
- 			for (i = 0; i < priv->len / 8; i++) {
- 				src64 = nft_reg_load64(&src[i]);
--				nft_reg_store64(&dst[i], be64_to_cpu(src64));
-+				nft_reg_store64(&dst64[i], be64_to_cpu(src64));
- 			}
- 			break;
- 		case NFT_BYTEORDER_HTON:
- 			for (i = 0; i < priv->len / 8; i++) {
- 				src64 = (__force __u64)
- 					cpu_to_be64(nft_reg_load64(&src[i]));
--				nft_reg_store64(&dst[i], src64);
-+				nft_reg_store64(&dst64[i], src64);
- 			}
- 			break;
- 		}
-diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
-index 44d9b38..cb5bb0e 100644
---- a/net/netfilter/nft_meta.c
-+++ b/net/netfilter/nft_meta.c
-@@ -63,7 +63,7 @@ nft_meta_get_eval_time(enum nft_meta_keys key,
- {
- 	switch (key) {
- 	case NFT_META_TIME_NS:
--		nft_reg_store64(dest, ktime_get_real_ns());
-+		nft_reg_store64((u64 *)dest, ktime_get_real_ns());
- 		break;
- 	case NFT_META_TIME_DAY:
- 		nft_reg_store8(dest, nft_meta_weekday());
+diff --git a/Documentation/devicetree/bindings/clock/sophgo,sg2042-pll.yaml b/Documentation/devicetree/bindings/clock/sophgo,sg2042-pll.yaml
+new file mode 100644
+index 000000000000..b9af733e8a73
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/sophgo,sg2042-pll.yaml
+@@ -0,0 +1,45 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/sophgo,sg2042-pll.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Sophgo SG2042 PLL Clock Generator
++
++maintainers:
++  - Chen Wang <unicorn_wang@outlook.com>
++
++properties:
++  compatible:
++    const: sophgo,sg2042-pll
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: Oscillator(Clock Generation IC) for Main/Fixed PLL (25 MHz)
++      - description: Oscillator(Clock Generation IC) for DDR PLL 0 (25 MHz)
++      - description: Oscillator(Clock Generation IC) for DDR PLL 1 (25 MHz)
++
++  '#clock-cells':
++    const: 1
++    description:
++      See <dt-bindings/clock/sophgo,sg2042-pll.h> for valid indices.
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - '#clock-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    clock-controller@10000000 {
++      compatible = "sophgo,sg2042-pll";
++      reg = <0x10000000 0x10000>;
++      clocks = <&cgi_main>, <&cgi_dpll0>, <&cgi_dpll1>;
++      #clock-cells = <1>;
++    };
+diff --git a/include/dt-bindings/clock/sophgo,sg2042-pll.h b/include/dt-bindings/clock/sophgo,sg2042-pll.h
+new file mode 100644
+index 000000000000..2d519b3bf51c
+--- /dev/null
++++ b/include/dt-bindings/clock/sophgo,sg2042-pll.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
++/*
++ * Copyright (C) 2023 Sophgo Technology Inc. All rights reserved.
++ */
++
++#ifndef __DT_BINDINGS_SOPHGO_SG2042_PLL_H__
++#define __DT_BINDINGS_SOPHGO_SG2042_PLL_H__
++
++#define MPLL_CLK			0
++#define FPLL_CLK			1
++#define DPLL0_CLK			2
++#define DPLL1_CLK			3
++
++#endif /* __DT_BINDINGS_SOPHGO_SG2042_PLL_H__ */
 -- 
-2.7.4
+2.25.1
 
 
