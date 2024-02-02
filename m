@@ -1,301 +1,232 @@
-Return-Path: <linux-kernel+bounces-49221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49222-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72CA1846752
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:02:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8358C846757
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:03:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C331AB25407
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:02:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A82431C231FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:03:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A27347F69;
-	Fri,  2 Feb 2024 04:57:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEE1F10796;
+	Fri,  2 Feb 2024 05:00:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Iy8CILgn"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="opSWBFDt"
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23F3A1B299;
-	Fri,  2 Feb 2024 04:57:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D79EFFC11
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 05:00:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706849861; cv=none; b=cjYuL2NXN0qPIelN2C6Exxuk/ucP7aBFfjLnw608uYhCQTdWsz2ihTNQJi3y4CI7Un/6YndIW3ZtEBGsbdME+a8JziSIX9Xyd67Xs0v++a08/GWN2Zm3t9+fsgMji32F419Hn4w0V40+fTtwr9twngkt1q3gHpzoDYA86cnhqgo=
+	t=1706850002; cv=none; b=ed0oPAjNqcFnIX5iNdg1nf/RJ16YdXRHzvf5rxYK78KC06yD1Fejkyzp3RtrtkEIN92QbVSZk0ojhvent4xOhxfrTGbhIx+DhaEsmUE7j25M/YDDXQkMVLhvo+CnNkepIeAQ0pQ3o82mnQPtaKDV4tOBp7PhK8DIBcgA/TORRl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706849861; c=relaxed/simple;
-	bh=4QFGx+82iSOQD5Uy7w9iqIN8hz1HoOJM57vM7BEXPkc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oT/Ddg0Npb6DrhmZQqZVy/tuC3nvM9Sua9qjQxh9FiskNKVkhhf8vXqhcd7VjOVcXbnjwLThNmuklNM5s+3QdJBGE4+8wIvHmku/tlbJgo0KlJhPLjJFQoZMGdIfVXkPP8yze15lozziz1OIgFkKWKW2SpiH3XbHGXZmY2gaHG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Iy8CILgn; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706849859; x=1738385859;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=4QFGx+82iSOQD5Uy7w9iqIN8hz1HoOJM57vM7BEXPkc=;
-  b=Iy8CILgnJZ1cQcQ52vjAEEuKGn3rwbhWJG2pc9idgTpLbkNBO9K29kZG
-   4V89/Lf3zUJKw5XZMOLAdyWv1SsPOefjHKwt7Sz0RdatupE2N/eciA7Bz
-   ktJqopQUd0HGNneZVM2fDOEhMCsIRlmnKoCRS74MA8VTfzwcgVPbCNnRu
-   jYvZJZJSiYstvG0mkzrIr8k7WUXgmdUJTe0pl1qop3+P+rbnjJivsg+9E
-   dWsZVne9+65x/PbTl/WZtIjt5u7yQog5Za4iwoIV4jNkb7aQ/7AVo+Chy
-   KyZCDsa1+xx8T+elmMN0JOLxpnu/AZiMqAXNwzPbX1upNwaocDdSoCf7u
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="17615872"
-X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="17615872"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 20:57:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="912339806"
-X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="912339806"
-Received: from rchatre-ws.ostc.intel.com ([10.54.69.144])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 20:57:25 -0800
-From: Reinette Chatre <reinette.chatre@intel.com>
-To: jgg@nvidia.com,
-	yishaih@nvidia.com,
-	shameerali.kolothum.thodi@huawei.com,
-	kevin.tian@intel.com,
-	alex.williamson@redhat.com
-Cc: kvm@vger.kernel.org,
-	dave.jiang@intel.com,
-	ashok.raj@intel.com,
-	reinette.chatre@intel.com,
-	linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev
-Subject: [PATCH 17/17] vfio/pci: Remove duplicate interrupt management flow
-Date: Thu,  1 Feb 2024 20:57:11 -0800
-Message-Id: <6ec901daffab4170d9740c7d066becd079925d53.1706849424.git.reinette.chatre@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1706849424.git.reinette.chatre@intel.com>
-References: <cover.1706849424.git.reinette.chatre@intel.com>
+	s=arc-20240116; t=1706850002; c=relaxed/simple;
+	bh=T0vX24nqgl24t4u6EombPf+txX+ZVMgh8DtpD2yzVfQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Xos5YOveiDrLWFvfTKRr9V7I4oNORne6uuNw91OGPclW7lxLtdRo044NdBHk/+H1KtaFCMgNmOi0LJDDhBOMlyaAO1+wr6d/olICR1Y9m2kTmzhorE+z8TySNPkpEl6Bdt6UoVrjRvX0dGehPSqPTg+VVw81/dFkAdRDjtG76zI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=opSWBFDt; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-60417488f07so18767017b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 21:00:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706850000; x=1707454800; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=s6NYU5KnPvZkgWi9fKvh/OHPOr3orCLc/qXQ8woqnRk=;
+        b=opSWBFDtSH6ke68Zws2NIUBcKOgzlxWnDKtjilihxUUnh19L28eGu0RY6zSu3FxhX1
+         rItVQg9h4s/tmsX51e6I1runr4dBA6zgHYBGzyhb58sHv2ZLvqokJwdy9EglkCmDEZP9
+         5M8rN+M1OoVJKeX8Uo0MKOSyUiDn1w3MZfAqiPyuXpF0VloTk3xZkSdGqek7kMLcWebl
+         5ReacydB1gxlzufMDPi4ilbLQ3SYTbNTPb42iNGxdFRcgoqmj53zvwN1xYWMEwky8p0g
+         rk8tWyMFlB70r1oPAdjC4rbdAWwCjy/TQZo8F1lbNNRQoQ1dNc2zAHgGFC8kY7ygsjA5
+         u1iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706850000; x=1707454800;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s6NYU5KnPvZkgWi9fKvh/OHPOr3orCLc/qXQ8woqnRk=;
+        b=xMIbBos6+Bl0Q+kU/ckqYQzSZAOoiBf6h28pjUHKSGli8Zu3OAkGnSqTQwCXxB21Jf
+         3U47R6kTQzpBXdfhIMSgQVP+zWKZ8T/u/TBWsWbLaf0egQi4rpTn+yItuqKlZ6bo5okY
+         resScYvgLwhA3RkJ1IN9XhLXAqL2KZf9j1M8dhz7jvPAUQ8YHP0NNr+j8xYaJigTJVtW
+         Whp4OBLinsJghvhS94ZfLP8dH0L3oAbehyOtvNr7E8cBaGQgWe4rw6LQX4aVy0vkGOS5
+         BHQwh4wTXWatAWHOyyQU2j/L2jND0cs5nseiXLVDS/V1MB0uXtVY8L6m7PIGspW3n6Dv
+         l0tg==
+X-Gm-Message-State: AOJu0YwF5H3mahjaZ8aTKgNYqc2ubnTKA91XVTwrULpb4kHEi6v+4W92
+	58cVQKAfXjEuOy2O45j8aQ/aHKa56kD9VPLSnazkZ7KeLKc2yaZx5HWYLmT7AgcDrj0SO33xOQg
+	Ma2lheukvLP2XYFdu/F9sjFHMhKK/mxIbOrbjiQ==
+X-Google-Smtp-Source: AGHT+IGgcDBuCrhKdd/clnrw04i+udx8hzsr1sxGtEBgtlqYM3KgmrIxBa/QVvTKlH6vHlUbS+d50enNsyuWZMfn21k=
+X-Received: by 2002:a81:520e:0:b0:602:ce22:7079 with SMTP id
+ g14-20020a81520e000000b00602ce227079mr4382152ywb.41.1706849999780; Thu, 01
+ Feb 2024 20:59:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240201155532.49707-1-brgl@bgdev.pl> <20240201155532.49707-3-brgl@bgdev.pl>
+ <5lirm5mnf7yqbripue5nyqu6ej54sx4rtmgmyqjrqanabsriyp@2pjiv5xbmxpk>
+In-Reply-To: <5lirm5mnf7yqbripue5nyqu6ej54sx4rtmgmyqjrqanabsriyp@2pjiv5xbmxpk>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 2 Feb 2024 06:59:48 +0200
+Message-ID: <CAA8EJpp=gYhx6XKHNzyR5n8i7vg-MJXN5XJp4CPKZMYS5GBHvw@mail.gmail.com>
+Subject: Re: [RFC 2/9] arm64: dts: qcom: qrb5165-rb5: model the PMU of the QCA6391
+To: Bjorn Andersson <andersson@kernel.org>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Abel Vesa <abel.vesa@linaro.org>, Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
+	linux-pci@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-vfio_pci_set_intx_trigger() and vfio_pci_set_trigger() have the
-same flow that calls interrupt type (INTx, MSI, MSI-X) specific
-functions.
+On Fri, 2 Feb 2024 at 06:34, Bjorn Andersson <andersson@kernel.org> wrote:
+>
+> On Thu, Feb 01, 2024 at 04:55:25PM +0100, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > Add a node for the PMU module of the QCA6391 present on the RB5 board.
+> > Assign its LDO power outputs to the existing Bluetooth module. Add a
+> > node for the PCIe port to sm8250.dtsi and define the WLAN node on it in
+> > the board's .dts and also make it consume the power outputs of the PMU.
+> >
+> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > ---
+> >  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 128 +++++++++++++++++++++--
+> >  arch/arm64/boot/dts/qcom/sm8250.dtsi     |  10 ++
+> >  2 files changed, 127 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> > index cd0db4f31d4a..fab5bebafbad 100644
+> > --- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> > +++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> > @@ -108,6 +108,87 @@ lt9611_3v3: lt9611-3v3 {
+> >               regulator-always-on;
+> >       };
+> >
+> > +     qca6390_pmu: pmu@0 {
+> > +             compatible = "qcom,qca6390-pmu";
+> > +
+> > +             pinctrl-names = "default";
+> > +             pinctrl-0 = <&bt_en_state>, <&wlan_en_state>;
+> > +
+> > +             vddaon-supply = <&vreg_s6a_0p95>;
+> > +             vddpmu-supply = <&vreg_s2f_0p95>;
+> > +             vddrfa1-supply = <&vreg_s2f_0p95>;
+> > +             vddrfa2-supply = <&vreg_s8c_1p3>;
+> > +             vddrfa3-supply = <&vreg_s5a_1p9>;
+> > +             vddpcie1-supply = <&vreg_s8c_1p3>;
+> > +             vddpcie2-supply = <&vreg_s5a_1p9>;
+> > +             vddio-supply = <&vreg_s4a_1p8>;
+> > +
+> > +             wlan-enable-gpios = <&tlmm 20 GPIO_ACTIVE_HIGH>;
+> > +             bt-enable-gpios = <&tlmm 21 GPIO_ACTIVE_HIGH>;
+> > +
+> > +             regulators {
+> > +                     vreg_pmu_rfa_cmn: ldo0 {
+> > +                             regulator-name = "vreg_pmu_rfa_cmn";
+> > +                             regulator-min-microvolt = <760000>;
+> > +                             regulator-max-microvolt = <840000>;
+>
+> I'm still not convinced that the PMU has a set of LDOs, and looking at
+> your implementation you neither register these with the regulator
+> framework, nor provide any means of controlling the state or voltage of
+> these "regulators".
 
-Create callbacks for the interrupt type specific code that
-can be called by the shared code so that only one of these functions
-are needed. Rename the final generic function shared by all
-interrupt types vfio_pci_set_trigger().
+Please take a look at the description of VDD08_PMU_RFA_CMN and
+VDD_PMU_AON_I pins in the spec (80-WL522-1, page 25). I'm not sure if
+I'm allowed to quote it, so I won't. But the spec clearly describes
+VDD_PMU_AON_I as 0.95V LDO input and VDD08_PMU_RFA_CMN as 0.8 LDO
+output generated using that input. I think this proves that the
+on-chip PMU has actual LDOs.
 
-Relocate the "IOCTL support" marker to correctly mark the
-now generic code.
+I must admit, I find this representation very verbose, but on the
+other hand Bartosz is right, it represents actual hardware. Maybe we
+can drop some of the properties of corresponding regulator blocks, as
+we don't actually need them and they are internal properties of the
+hardware.
 
-Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
----
- drivers/vfio/pci/vfio_pci_intrs.c | 104 ++++++++++--------------------
- 1 file changed, 35 insertions(+), 69 deletions(-)
+>
+> [..]
+> >
+> >  &uart6 {
+> > @@ -1311,17 +1418,16 @@ &uart6 {
+> >       bluetooth {
+> >               compatible = "qcom,qca6390-bt";
+> >
+> > -             pinctrl-names = "default";
+> > -             pinctrl-0 = <&bt_en_state>;
+> > -
+> > -             enable-gpios = <&tlmm 21 GPIO_ACTIVE_HIGH>;
+> > -
+> > -             vddio-supply = <&vreg_s4a_1p8>;
+> > -             vddpmu-supply = <&vreg_s2f_0p95>;
+> > -             vddaon-supply = <&vreg_s6a_0p95>;
+> > -             vddrfa0p9-supply = <&vreg_s2f_0p95>;
+> > -             vddrfa1p3-supply = <&vreg_s8c_1p3>;
+> > -             vddrfa1p9-supply = <&vreg_s5a_1p9>;
+> > +             vddrfacmn-supply = <&vreg_pmu_rfa_cmn>;
+> > +             vddaon-supply = <&vreg_pmu_aon_0p59>;
+> > +             vddwlcx-supply = <&vreg_pmu_wlcx_0p8>;
+> > +             vddwlmx-supply = <&vreg_pmu_wlmx_0p85>;
+> > +             vddbtcmx-supply = <&vreg_pmu_btcmx_0p85>;
+> > +             vddrfa0-supply = <&vreg_pmu_rfa_0p8>;
+> > +             vddrfa1-supply = <&vreg_pmu_rfa_1p2>;
+> > +             vddrfa2-supply = <&vreg_pmu_rfa_1p7>;
+> > +             vddpcie0-supply = <&vreg_pmu_pcie_0p9>;
+> > +             vddpcie1-supply = <&vreg_pmu_pcie_1p8>;
+>
+> As I asked before, why does bluetooth suddenly care about PCIe supplies?
 
-diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
-index daa84a317f40..a5b337cfae60 100644
---- a/drivers/vfio/pci/vfio_pci_intrs.c
-+++ b/drivers/vfio/pci/vfio_pci_intrs.c
-@@ -32,6 +32,12 @@ struct vfio_pci_irq_ctx {
- };
- 
- struct vfio_pci_intr_ops {
-+	int (*enable)(struct vfio_pci_core_device *vdev, unsigned int start,
-+		      unsigned int count, unsigned int index);
-+	void (*disable)(struct vfio_pci_core_device *vdev,
-+			unsigned int index);
-+	void (*send_eventfd)(struct vfio_pci_core_device *vdev,
-+			     struct vfio_pci_irq_ctx *ctx);
- 	int (*request_interrupt)(struct vfio_pci_core_device *vdev,
- 				 struct vfio_pci_irq_ctx *ctx,
- 				 unsigned int vector, unsigned int index);
-@@ -356,6 +362,12 @@ static void vfio_intx_disable(struct vfio_pci_core_device *vdev,
- /*
-  * MSI/MSI-X
-  */
-+static void vfio_send_msi_eventfd(struct vfio_pci_core_device *vdev,
-+				  struct vfio_pci_irq_ctx *ctx)
-+{
-+	eventfd_signal(ctx->trigger);
-+}
-+
- static irqreturn_t vfio_msihandler(int irq, void *arg)
- {
- 	struct eventfd_ctx *trigger = arg;
-@@ -544,13 +556,22 @@ static void vfio_msi_unregister_producer(struct vfio_pci_irq_ctx *ctx)
- 	irq_bypass_unregister_producer(&ctx->producer);
- }
- 
-+/*
-+ * IOCTL support
-+ */
- static struct vfio_pci_intr_ops intr_ops[] = {
- 	[VFIO_PCI_INTX_IRQ_INDEX] = {
-+		.enable = vfio_intx_enable,
-+		.disable = vfio_intx_disable,
-+		.send_eventfd = vfio_send_intx_eventfd_ctx,
- 		.request_interrupt = vfio_intx_request_interrupt,
- 		.free_interrupt = vfio_intx_free_interrupt,
- 		.device_name = vfio_intx_device_name,
- 	},
- 	[VFIO_PCI_MSI_IRQ_INDEX] = {
-+		.enable = vfio_msi_enable,
-+		.disable = vfio_msi_disable,
-+		.send_eventfd = vfio_send_msi_eventfd,
- 		.request_interrupt = vfio_msi_request_interrupt,
- 		.free_interrupt = vfio_msi_free_interrupt,
- 		.device_name = vfio_msi_device_name,
-@@ -558,6 +579,9 @@ static struct vfio_pci_intr_ops intr_ops[] = {
- 		.unregister_producer = vfio_msi_unregister_producer,
- 	},
- 	[VFIO_PCI_MSIX_IRQ_INDEX] = {
-+		.enable = vfio_msi_enable,
-+		.disable = vfio_msi_disable,
-+		.send_eventfd = vfio_send_msi_eventfd,
- 		.request_interrupt = vfio_msi_request_interrupt,
- 		.free_interrupt = vfio_msi_free_interrupt,
- 		.device_name = vfio_msi_device_name,
-@@ -646,9 +670,6 @@ static int vfio_irq_set_block(struct vfio_pci_core_device *vdev,
- 	return ret;
- }
- 
--/*
-- * IOCTL support
-- */
- static int vfio_pci_set_intx_unmask(struct vfio_pci_core_device *vdev,
- 				    unsigned int index, unsigned int start,
- 				    unsigned int count, uint32_t flags,
-@@ -701,71 +722,16 @@ static int vfio_pci_set_intx_mask(struct vfio_pci_core_device *vdev,
- 	return 0;
- }
- 
--static int vfio_pci_set_intx_trigger(struct vfio_pci_core_device *vdev,
--				     unsigned int index, unsigned int start,
--				     unsigned int count, uint32_t flags,
--				     void *data)
--{
--	struct vfio_pci_irq_ctx *ctx;
--	unsigned int i;
--
--	if (is_intx(vdev) && !count && (flags & VFIO_IRQ_SET_DATA_NONE)) {
--		vfio_intx_disable(vdev, index);
--		return 0;
--	}
--
--	if (!(is_intx(vdev) || is_irq_none(vdev)))
--		return -EINVAL;
--
--	if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
--		int32_t *fds = data;
--		int ret;
--
--		if (is_intx(vdev))
--			return vfio_irq_set_block(vdev, start, count, fds, index);
--
--		ret = vfio_intx_enable(vdev, start, count, index);
--		if (ret)
--			return ret;
--
--		ret = vfio_irq_set_block(vdev, start, count, fds, index);
--		if (ret)
--			vfio_intx_disable(vdev, index);
--
--		return ret;
--	}
--
--	if (!is_intx(vdev))
--		return -EINVAL;
--
--	/* temporary */
--	for (i = start; i < start + count; i++) {
--		ctx = vfio_irq_ctx_get(vdev, i);
--		if (!ctx || !ctx->trigger)
--			continue;
--		if (flags & VFIO_IRQ_SET_DATA_NONE) {
--			vfio_send_intx_eventfd_ctx(vdev, ctx);
--		} else if (flags & VFIO_IRQ_SET_DATA_BOOL) {
--			uint8_t *bools = data;
--
--			if (bools[i - start])
--				vfio_send_intx_eventfd_ctx(vdev, ctx);
--		}
--	}
--
--	return 0;
--}
--
--static int vfio_pci_set_msi_trigger(struct vfio_pci_core_device *vdev,
--				    unsigned int index, unsigned int start,
--				    unsigned int count, uint32_t flags,
--				    void *data)
-+static int vfio_pci_set_trigger(struct vfio_pci_core_device *vdev,
-+				unsigned int index, unsigned int start,
-+				unsigned int count, uint32_t flags,
-+				void *data)
- {
- 	struct vfio_pci_irq_ctx *ctx;
- 	unsigned int i;
- 
- 	if (irq_is(vdev, index) && !count && (flags & VFIO_IRQ_SET_DATA_NONE)) {
--		vfio_msi_disable(vdev, index);
-+		intr_ops[index].disable(vdev, index);
- 		return 0;
- 	}
- 
-@@ -780,13 +746,13 @@ static int vfio_pci_set_msi_trigger(struct vfio_pci_core_device *vdev,
- 			return vfio_irq_set_block(vdev, start, count,
- 						  fds, index);
- 
--		ret = vfio_msi_enable(vdev, start, count, index);
-+		ret = intr_ops[index].enable(vdev, start, count, index);
- 		if (ret)
- 			return ret;
- 
- 		ret = vfio_irq_set_block(vdev, start, count, fds, index);
- 		if (ret)
--			vfio_msi_disable(vdev, index);
-+			intr_ops[index].disable(vdev, index);
- 
- 		return ret;
- 	}
-@@ -799,11 +765,11 @@ static int vfio_pci_set_msi_trigger(struct vfio_pci_core_device *vdev,
- 		if (!ctx || !ctx->trigger)
- 			continue;
- 		if (flags & VFIO_IRQ_SET_DATA_NONE) {
--			eventfd_signal(ctx->trigger);
-+			intr_ops[index].send_eventfd(vdev, ctx);
- 		} else if (flags & VFIO_IRQ_SET_DATA_BOOL) {
- 			uint8_t *bools = data;
- 			if (bools[i - start])
--				eventfd_signal(ctx->trigger);
-+				intr_ops[index].send_eventfd(vdev, ctx);
- 		}
- 	}
- 	return 0;
-@@ -912,7 +878,7 @@ int vfio_pci_set_irqs_ioctl(struct vfio_pci_core_device *vdev, uint32_t flags,
- 			func = vfio_pci_set_intx_unmask;
- 			break;
- 		case VFIO_IRQ_SET_ACTION_TRIGGER:
--			func = vfio_pci_set_intx_trigger;
-+			func = vfio_pci_set_trigger;
- 			break;
- 		}
- 		break;
-@@ -924,7 +890,7 @@ int vfio_pci_set_irqs_ioctl(struct vfio_pci_core_device *vdev, uint32_t flags,
- 			/* XXX Need masking support exported */
- 			break;
- 		case VFIO_IRQ_SET_ACTION_TRIGGER:
--			func = vfio_pci_set_msi_trigger;
-+			func = vfio_pci_set_trigger;
- 			break;
- 		}
- 		break;
+Power sequencing in the same spec describes that PCIe voltages should
+be up even if only BT is being brought up. PMU itself handles
+distributing voltages according to the actual load needs.
+
+>
+> Regards,
+> Bjorn
+>
+> >       };
+> >  };
+> >
+> > diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> > index 4d849e98bf9b..7cd21d4e7278 100644
+> > --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> > @@ -2203,6 +2203,16 @@ pcie0: pcie@1c00000 {
+> >                       dma-coherent;
+> >
+> >                       status = "disabled";
+> > +
+> > +                     pcieport0: pcie@0 {
+> > +                             device_type = "pci";
+> > +                             reg = <0x0 0x0 0x0 0x0 0x0>;
+> > +                             #address-cells = <3>;
+> > +                             #size-cells = <2>;
+> > +                             ranges;
+> > +
+> > +                             bus-range = <0x01 0xff>;
+> > +                     };
+> >               };
+> >
+> >               pcie0_phy: phy@1c06000 {
+> > --
+> > 2.40.1
+> >
+>
+
+
 -- 
-2.34.1
-
+With best wishes
+Dmitry
 
