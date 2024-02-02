@@ -1,161 +1,111 @@
-Return-Path: <linux-kernel+bounces-50035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F193847381
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:41:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72155847385
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:41:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FC001C22D71
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:41:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EBB228DB98
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:41:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96600146913;
-	Fri,  2 Feb 2024 15:40:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD55E1468FC;
+	Fri,  2 Feb 2024 15:41:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ABhSRxiy"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JRAQ/uqa"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40C2C1798F;
-	Fri,  2 Feb 2024 15:40:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9733914198F
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 15:41:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706888457; cv=none; b=FU9IDYRq/uE86eAGZruJ0L4Mby1zghccM7uNUYNrac78v78RebUloDj/Roe2V5b1ReBWxIAN6S0+swHSbqWneS9AQOoqHY3uzuTQ1y93PELAk5iXjOD4yYxAbLSp3yHznIaXf/2GZKKJp1Peg3NUmtLxyyLa7m4mr8xlu3fLw6M=
+	t=1706888501; cv=none; b=qIU/CnnwljgTwpsN4V1ZQeIqr5okVyQmWwsO8ldo9bGyOTfWkBaxjWnpPRzWPWGjHOhKLjnjWD+nOx4zLbyhCP2hN1Gyd++srxyzXqQ8k2iPYcKbHs2GMSTcOl6/ssgVnyFbrb3prQwbihvgcqZ8YALbf2ibZA1UH6op/0QBi2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706888457; c=relaxed/simple;
-	bh=Wzt2OKA98oRZpOPKfSYMaxS0U0E4dZGMDfd4SSadYFo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KHTolzLbzp2nwLpBOClcOH5A0Lrtez72tUtTKoaAdrTMqNjREyJdAuV1VDdHpLui9MYgkwsNnWeJcRpnE4CNV7T+BYmSk0gb1Umz9zJTeo679RarQctdt2jMIKtLFgBY3QaU7ABxipF/u2QSMvRkA/QoBcKJFST0oKhb1Gj6zCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ABhSRxiy; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706888457; x=1738424457;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=Wzt2OKA98oRZpOPKfSYMaxS0U0E4dZGMDfd4SSadYFo=;
-  b=ABhSRxiyJy8zTBa61YNqripqMeQNC2WejO5F4DjWpUM4wmERjFmDyeEG
-   +WnOUflOM+Y2QTfYKjoSfhVu2KedSe9sryc9IQmoXyLfFXTo7uwYdNUqa
-   vSj2grjgCZIbjFAxX+SSHq7cZ8pUoax/gdxwgztVak7lCnqH8Lz+9TjxF
-   oOtFAzz+bA6ly+hnraBu4lREf2/+5M917LiwgJzXFlbEZpFZkjYYnw7yL
-   lJ7+5Oi9JCnF/E5tytoGL4Z99op6j6VsuGvnUcBtkSrLuXEJjyl0X2Ah5
-   1l0xInrbgnsaW31qv8D6E8kv1WyicqIffyPkkv3zH9m62oWcUrF1v267t
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="356367"
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="356367"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 07:40:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="823240563"
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="823240563"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
-  by orsmga001.jf.intel.com with SMTP; 02 Feb 2024 07:40:48 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Fri, 02 Feb 2024 17:40:47 +0200
-Date: Fri, 2 Feb 2024 17:40:47 +0200
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Sebastian Wick <sebastian.wick@redhat.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Emma Anholt <emma@anholt.net>, Jonathan Corbet <corbet@lwn.net>,
-	Sandy Huang <hjc@rock-chips.com>,
-	Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-Subject: Re: Re: [PATCH v5 08/44] drm/connector: hdmi: Add Broadcast RGB
- property
-Message-ID: <Zb0M_2093UwPXK8y@intel.com>
-References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
- <20231207-kms-hdmi-connector-state-v5-8-6538e19d634d@kernel.org>
- <20240115143308.GA159345@toolbox>
- <20240115143720.GA160656@toolbox>
- <73peztbeeikb3fg6coxu3punxllgtyrmgco34tnxkojtsjbr3s@26bud3sjbcez>
+	s=arc-20240116; t=1706888501; c=relaxed/simple;
+	bh=eJrK77JbCOPtMQySye6xFo6DxvsSg0ZFdJ/9vChdHvk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ikf236lEzsCem6ldoJnDrutZZ5nWa6FsGL+EtfzkoI9wOaNiHYDmFoQ+VATk6yoJw0LbpmMjfp2wu4/V9Ck1GPHKpc8ABVZf3nUHaXnkKOdU6tTiQvTm3TwrKLZOn1veiNyMhiN3ha9tA2V1srVZhF8/wOlUEjjRLm36h5DvcLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JRAQ/uqa; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a34c5ca2537so321379666b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 07:41:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706888498; x=1707493298; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=U9GFyYMnxvYJ3CC02VMRtntZh2qFQxlE6u4r2ee4s6k=;
+        b=JRAQ/uqaOyz6yCxNY/yONnT2shr9LiBxALSyyjhv8pr3RwSv/COC5jrmXC3kmRWVMH
+         w34hIeIfIPKtvCoC4lG1N9YzJG0T+3dh7GhhvyuUw0jN53oXMC/Rgk8DxQc3bMXIjfhf
+         tD2e8N3njtADuFACOwLarHNtG8cp1W4SYMe3gUAPDwxHEgI0Vp9NFqD12UkQZJntbH6t
+         A3Xcq+K1GGB9M04keO2PJglxlVcM1EEG5fk6fZqMuOt2MBerebJb9QM6n/gTgzGOLb84
+         7G0lekGzhJ1tOrErIlTDz/j/LNlx+LC5ecWscnFwt5tH2PLuSPqAb7t5h59V0ZnRvpAi
+         pWNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706888498; x=1707493298;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U9GFyYMnxvYJ3CC02VMRtntZh2qFQxlE6u4r2ee4s6k=;
+        b=lNhVSmZGAPrecq5sWG9uC2RqXkrKa9L9cAJrYMZ4eGrBkT8TlVRNnikyhgIl6VCHMb
+         Lz/1HLKNfLDnK73JCa9BBKWqieQEXnpoq7xsEL7aWDwnPSpqIVxpVcLwF5eUOSOTC6pq
+         lwasKzlpwbRpJmsaPeys/DWnJD/SbK5m1NRTgbB/7geyMQXBda82vUeIAk6Xkkeibnmp
+         ZhNVFCcPVSeibbnRG9/Q2raKot4sV/iXFHSBugEYolbx0+oFwEvZeUwVqeb/Aft5mTPA
+         yxuTS6ewcqBfHG2N0Qwqb6f30v085PbRjP46eE64DQu7pZi9vTeUTj3Iis/Qv8HQbQlZ
+         Bdug==
+X-Gm-Message-State: AOJu0Yztkgvuji+7nyRfP2lmDaGTUzf8KoGd2FwC3k/OHXdMPICCNAvq
+	ID0qIvAO0cx2Qgsz0IuwGJ/tey8li1/IHfGC/24gLb2vCJAunj1jIJpc0Nb7dIk=
+X-Google-Smtp-Source: AGHT+IHOVJOP0VpQcVk25AB8u737nThh3XuWqp65dG0kE/mgS+wyNCIL1lVGJyBNR1Jm01ocDs/fKA==
+X-Received: by 2002:a17:906:31cd:b0:a37:1f87:33b0 with SMTP id f13-20020a17090631cd00b00a371f8733b0mr816000ejf.13.1706888497815;
+        Fri, 02 Feb 2024 07:41:37 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU54/Xv9yBYsJVhurd9b8NvezMMQWn48AVlvITIq4IowJg+essYYhY9hiRygevu1tYmpTvN6J5p5w7/cAg7LVWcZCDtugFmyoF1n6UDzO125nyA1CQN1VmSbLO0TVAYD9IM7m8qXMvg3qIei5z50ulwK/3Iz7aeDdzDsLneYjBosPAPSCorxZJVTOSv4ScFS89Bdme1nzsHwH+JLvPpSxkE8+yulMlt6qzMCab0LZofgF2k1Vq0Xx2rQ7t637l1Ni7UOD0BAUNFuvyFOnwcbRBlPe1hucyp/teLwGsWQkgwLe+8+5M4
+Received: from krzk-bin.. ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id cu9-20020a170906ba8900b00a37116e2885sm624819ejd.84.2024.02.02.07.41.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 07:41:37 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 0/3] ASoC: codecs: qcom: tx-macro: minor cleanups
+Date: Fri,  2 Feb 2024 16:41:31 +0100
+Message-Id: <20240202154134.66967-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <73peztbeeikb3fg6coxu3punxllgtyrmgco34tnxkojtsjbr3s@26bud3sjbcez>
-X-Patchwork-Hint: comment
 
-On Fri, Feb 02, 2024 at 02:01:39PM +0100, Maxime Ripard wrote:
-> Hi,
-> 
-> On Mon, Jan 15, 2024 at 03:37:20PM +0100, Sebastian Wick wrote:
-> > > >  /**
-> > > >   * DOC: HDMI connector properties
-> > > >   *
-> > > > + * Broadcast RGB
-> > > > + *      Indicates the RGB Quantization Range (Full vs Limited) used.
-> > > > + *      Infoframes will be generated according to that value.
-> > > > + *
-> > > > + *      The value of this property can be one of the following:
-> > > > + *
-> > > > + *      Automatic:
-> > > > + *              RGB Range is selected automatically based on the mode
-> > > > + *              according to the HDMI specifications.
-> > > > + *
-> > > > + *      Full:
-> > > > + *              Full RGB Range is forced.
-> > > > + *
-> > > > + *      Limited 16:235:
-> > > > + *              Limited RGB Range is forced. Unlike the name suggests,
-> > > > + *              this works for any number of bits-per-component.
-> > > > + *
-> > > > + *      Drivers can set up this property by calling
-> > > > + *      drm_connector_attach_broadcast_rgb_property().
-> > > > + *
-> > > 
-> > > This is a good time to document this in more detail. There might be two
-> > > different things being affected:
-> > > 
-> > > 1. The signalling (InfoFrame/SDP/...)
-> > > 2. The color pipeline processing
-> > > 
-> > > All values of Broadcast RGB always affect the color pipeline processing
-> > > such that a full-range input to the CRTC is converted to either full- or
-> > > limited-range, depending on what the monitor is supposed to accept.
-> > > 
-> > > When automatic is selected, does that mean that there is no signalling,
-> > > or that the signalling matches what the monitor is supposed to accept
-> > > according to the spec? Also, is this really HDMI specific?
-> > > 
-> > > When full or limited is selected and the monitor doesn't support the
-> > > signalling, what happens?
-> > 
-> > Forgot to mention: user-space still has no control over RGB vs YCbCr on
-> > the cable, so is this only affecting RGB? If not, how does it affect
-> > YCbCr?
-> 
-> So I dug a bit into both the i915 and vc4 drivers, and it looks like if
-> we're using a YCbCr format, i915 will always use a limited range while
-> vc4 will follow the value of the property.
+Hi,
 
-The property is literally called "Broadcast *RGB*".
-That should explain why it's only affecting RGB.
+Few minor cleanups.  The series will conflict with my series:
+https://lore.kernel.org/alsa-devel/20240129143534.109196-1-krzysztof.kozlowski@linaro.org/T/#t
 
-Full range YCbCr is a much rarer beast so we've never bothered
-to enable it. Eg. with DP it only became possible with the
-introduction of the VSC SDP (and I don't recall if there's
-additional capability checks that are also required). With
-DP MSA signalling full range YCbCr is not possible at all.
-I don't recall right now what the HDMI requirements are.
+Depending what will come in first, I will rebase the other patchset.
+
+Best regards,
+Krzysztof
+
+Krzysztof Kozlowski (3):
+  ASoC: codecs: tx-macro: Drop unimplemented DMIC clock divider
+  ASoC: codecs: tx-macro: Mark AMIC control registers as volatile
+  ASoC: codecs: tx-macro: Simplify setting AMIC control
+
+ sound/soc/codecs/lpass-tx-macro.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
 -- 
-Ville Syrjälä
-Intel
+2.34.1
+
 
