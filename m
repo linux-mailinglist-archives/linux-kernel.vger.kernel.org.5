@@ -1,119 +1,166 @@
-Return-Path: <linux-kernel+bounces-49538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16F04846BA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:12:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A116A846B9A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:12:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 189DF1C22DAB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:12:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 574C7290CC6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:12:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8C8577650;
-	Fri,  2 Feb 2024 09:12:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52BE17763C;
+	Fri,  2 Feb 2024 09:11:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="TxRDHImx"
-Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="qNRU3N07"
+Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED661768E6;
-	Fri,  2 Feb 2024 09:12:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0916160ECC
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:11:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706865141; cv=none; b=NG49GrUUca0qrYEG9e00DsHuCIgmN9FJijnmUSEJNskw0tjnd+BiZ4zfWGrO3Oc5zfMKAmAboFxKpRYnx+0tC1Y8QXYClGh5Se1IC1PDQIzm99tuUgd4HOzLapHFDpWm6ZXoIZWOH8yOp9Qn79ZjkLYBdGkIrTovhc2zhM6SmVk=
+	t=1706865116; cv=none; b=qaHdPmzN2ElNN8GNx5QZqmxm7NL/A9MjrFMwzw/NZs2bYH9Feo3+uF5VbWv20m+6PMlGcUNJf57iRPFIJ1kQnXDIVU4Uwxb9qVSH/F0A5uk+juR6I4KmJAINeCVzddRQGfOskjiLMr4O1N6S8nQElPtE/OYPEGOomLWOjNsex3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706865141; c=relaxed/simple;
-	bh=mKbj4nrp4DysHu5ieaVdYJT9MXIIya9/e61lxx3xm20=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=q3NqJO03e17sOCxNl8AIWGknb9Vq2gcH2HTjRsxQ2Bqib+BwRAOya03Fd4T2bw3L50YIU9I3GDcoCbT9rfRGGZjs8JZvHmxqW6j2wJ/z2FE4OIEaouBy5+Vtbmn0Tzd1w5vkIIhlxnI3n+Z9dA291rTQz0gQ/rw8FrmhsZsFa9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=TxRDHImx; arc=none smtp.client-ip=217.70.178.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: from relay7-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::227])
-	by mslow1.mail.gandi.net (Postfix) with ESMTP id 7CCF6C4EBC;
-	Fri,  2 Feb 2024 09:11:47 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6671420011;
-	Fri,  2 Feb 2024 09:11:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1706865105;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Y1NoW9zhjmqcQuUi6KkawAZpHX7sdUmwFKBiyO/7PKA=;
-	b=TxRDHImxBW1jNI5WVNtiHiElYu6N+plp8XivTZ6hMBaX315Na0NYYCaDzb66WoE7Cllpb4
-	ru8QC2pbYn+6vFyUANVu4eby5xhX3DrlOAzs3PJQy66gwpVnCp8pqMtI5RCYO83Bl9CPHM
-	7DlGNwhhEwwi5oBsuaGeqAtiAq0yPmOfeug6FBlujbTRFrzrs6j50z5TNOmVmdUH+BNATZ
-	DR6FygpLkPFRWJGxxLg0sTl2eJ4zUBjADblDxwLXOT4FR6bv+eR6P5Xt/ouJbQ5RmbKoez
-	/0K0bQ/uTyBgEZN/MO8qc4GnT6J+xg6AYPPOmr3HEMzU+rVvcSskEvG/+h/JXA==
-Message-ID: <1f0e67ba-edd7-4998-bc20-1de86bd53a68@arinc9.com>
-Date: Fri, 2 Feb 2024 12:11:37 +0300
+	s=arc-20240116; t=1706865116; c=relaxed/simple;
+	bh=qSQ+bNWGVvEkBLVF3tPN3A8E/f85Onwr28touQiCfuI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UyvUPu0+c+B3coUVIccDMYfA7/iRC8EKik725g3FbIt8OyMMt4Lsjn7vo6F2LqAlKMsN9qZNmtBTUWKHmUiIZMi/x52slLZAUO7vDLSzOF6xBsxHp+ZfV5iZYJtWCLktFdUWp2lgdAeyiwlnL49i1vtoNZ/QJCmVzc7E98RQ4jY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=qNRU3N07; arc=none smtp.client-ip=209.85.221.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4c00dd46cc6so154982e0c.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 01:11:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706865114; x=1707469914; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dROtYGaO3nv6BoiEV+4GwfEN1YhQwW+mG4GWEhZs0oA=;
+        b=qNRU3N076BYgXMqQkhQfddl/4NkZpFFDsaGGcK/ix+mUG4MmsVnU6ljd0/G1aU3QZV
+         vsUplKmLQoESXc7xnRItWYEhMCSABpYrV+8tocoaP69e+gu96Rxp16X8FTBDxB/N49/x
+         COQ5ubbFbPjplDIIMXuCsNFyzrClbvZTTDbIatKPAE7itYTM0Xq9jC8ar4BBmlPgbExy
+         AYxUvkafBj4fWrv0I/3pmhj2GIKvDaeIQD0YDdNT9DJD2qoaLAzQsX5If4Ra8rkhkUN8
+         Py0FpZWIJzIDK9hH87DzjFBuC9fX3mQGcPqARQ1YptqnGtLXRjEoWiOZpMtQC7tEoWzI
+         Y7gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706865114; x=1707469914;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dROtYGaO3nv6BoiEV+4GwfEN1YhQwW+mG4GWEhZs0oA=;
+        b=TtioFyZZ9QFNcu/0eOJG5gACAZbTnnUVC6VEzucfApaYn1xlM+4ZNaT6479di7l1YU
+         ozAxS9SDcp2Re/O0Sm94Qi5q7VE8V7MnNIZ3tcmPlff+Xmxij5TRy3suISn4HBiWlh+j
+         F9uwpIbZoh+RXtui2pYEHdhjP4A/skJIh4zZL6B4yIDrBJvN9sg/6ngdgIkeoitRn8eH
+         1oANVbTVbmi7AIusmiLQIls//tPG1D3Puehnm/xcKgjmpiC5Popz6MyhcxGtvunTWOKL
+         ixqw4idxTIvQ9P6dqDCP0sdov7seOpAG1/OYiY8BAPdQcW53jfVKB492uM+DJv2D1b2D
+         6LOw==
+X-Gm-Message-State: AOJu0YyVTn0bYsNEYQneQTU4xT+wnaPrVXuOeeGfy1eUgFxSuq+mJ81k
+	1X/vEKsfOP+ZlRMqrgjVkkqg8q8bv3mk8v2yXHFqfdeKENgLKRO1r013EusbT1JPHOjbBixCj90
+	1b/k3NqYEINh4lCoupq9bOJ/84IrRZncYW0Tp6A==
+X-Google-Smtp-Source: AGHT+IEggfox9TaYYkDnQjtRUkVx/JuLWurtpykmnrQAcWjFZM0K4sMwZm4WFlzv0kMWZ4fdz5ytS7lu2Zk7UijDVzk=
+X-Received: by 2002:a05:6122:4a06:b0:4c0:79e:6653 with SMTP id
+ ez6-20020a0561224a0600b004c0079e6653mr3051788vkb.0.1706865113872; Fri, 02 Feb
+ 2024 01:11:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net RFC] net: dsa: mt7530: fix link-local frames that
- ingress vlan filtering ports
-To: Vladimir Oltean <olteanv@gmail.com>,
- Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
- Florian Fainelli <f.fainelli@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- =?UTF-8?Q?Alvin_=C5=A0ipraga?= <ALSI@bang-olufsen.dk>,
- Frank Wunderlich <frank-w@public-files.de>,
- Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com,
- erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, tools@kernel.org
-References: <65bbf40d.170a0220.a87f4.becdSMTPIN_ADDED_BROKEN@mx.google.com>
- <20240201225943.abphuuavp7bkbrt6@skbuf>
-Content-Language: en-US
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <20240201225943.abphuuavp7bkbrt6@skbuf>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+References: <20240201155532.49707-1-brgl@bgdev.pl> <20240201155532.49707-9-brgl@bgdev.pl>
+ <7tbhdkqpl4iuaxmc73pje2nbbkarxxpgmabc7j4q26d2rhzrv5@ltu6niel5eb4>
+In-Reply-To: <7tbhdkqpl4iuaxmc73pje2nbbkarxxpgmabc7j4q26d2rhzrv5@ltu6niel5eb4>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Fri, 2 Feb 2024 10:11:42 +0100
+Message-ID: <CAMRc=Md1oTrVMjZRH+Ux3JJKYeficKMYh+8V7ZA=Xz_X1hNd1g@mail.gmail.com>
+Subject: Re: [RFC 8/9] PCI/pwrctl: add PCI power control core code
+To: Bjorn Andersson <andersson@kernel.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Alex Elder <elder@linaro.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Abel Vesa <abel.vesa@linaro.org>, Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
+	linux-pci@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2.02.2024 01:59, Vladimir Oltean wrote:
-> On Thu, Feb 01, 2024 at 10:13:39PM +0300, Arınç ÜNAL via B4 Relay wrote:
->> base-commit: 4e192be1a225b7b1c4e315a44754312347628859
->> change-id: 20240201-b4-for-net-mt7530-fix-link-local-that-ingress-vlan-filtering-ports-6a2099e7ffb3
->>
->> Best regards,
->> -- 
->> Arınç ÜNAL <arinc.unal@arinc9.com>
-> 
-> You sent this patch 3 times. What happened, b4 didn't work so well?
+On Fri, Feb 2, 2024 at 4:53=E2=80=AFAM Bjorn Andersson <andersson@kernel.or=
+g> wrote:
+>
 
-Odd, I've received only a single email of this patch.
+[snip]
 
-Looking at lore.kernel.org, it looks like the b4 web endpoint properly
-submitted the patch to the b4-sent mailing list but for some reason changed
-the Message-Id before submitting it to the netdev mailing list.
+> > +
+> > +static int pci_pwrctl_notify(struct notifier_block *nb, unsigned long =
+action,
+> > +                          void *data)
+> > +{
+> > +     struct pci_pwrctl *pwrctl =3D container_of(nb, struct pci_pwrctl,=
+ nb);
+> > +     struct device *dev =3D data;
+> > +
+> > +     if (dev_fwnode(dev) !=3D dev_fwnode(pwrctl->dev))
+> > +             return NOTIFY_DONE;
+> > +
+> > +     switch (action) {
+> > +     case BUS_NOTIFY_ADD_DEVICE:
+> > +             device_set_of_node_from_dev(dev, pwrctl->dev);
+>
+> What happens if the bootloader left the power on, and the
+> of_platform_populate() got probe deferred because the pwrseq wasn't
+> ready, so this happens after pci_set_of_node() has been called?
+>
+> (I think dev->of_node will be put, then get and then node_reused
+> assigned...but I'm not entirely sure)
 
-This is the email with what the Message-Id should be, which only exists on
-the b4-sent mailing list:
+That's exactly what will happen and the end result will be the same.
 
-https://lore.kernel.org/all/20240201-b4-for-net-mt7530-fix-link-local-that-ingress-vlan-filtering-ports-v1-1-881c1c96b27f@arinc9.com/
+>
+> > +             break;
+> > +     case BUS_NOTIFY_BOUND_DRIVER:
+> > +             pwrctl->link =3D device_link_add(dev, pwrctl->dev,
+> > +                                            DL_FLAG_AUTOREMOVE_CONSUME=
+R);
+> > +             if (!pwrctl->link)
+> > +                     dev_err(pwrctl->dev, "Failed to add device link\n=
+");
+> > +             break;
+> > +     case BUS_NOTIFY_UNBOUND_DRIVER:
+> > +             device_link_del(pwrctl->link);
+>
+> This might however become a NULL-pointer dereference, if dev was bound
+> to its driver before the pci_pwrctl_notify() was registered for the
+> pwrctl and then the PCI device is unbound.
+>
+> This would also happen if device_link_add() failed when the PCI device
+> was bound...
+>
 
-This is the email with changed Message-Id that was submitted to the netdev
-mailing list:
+Yes, I'll address it.
 
-https://lore.kernel.org/all/=%3Futf-8%3Fq%3F=3C20240201-b4-for-net-mt7530-fix-link-local-that-ingr%3F=%20=%3Futf-8%3Fq%3Fess-vlan-filtering-ports-v1-1-881c1c96b27f=40arinc9=2Ecom=3E%3F=/
+> > +             break;
+> > +     }
+> > +
+> > +     return NOTIFY_DONE;
+> > +}
+> > +
+> > +int pci_pwrctl_device_enable(struct pci_pwrctl *pwrctl)
+>
+> This function doesn't really "enable the device", looking at the example
+> driver it's rather "device_enabled" than "device_enable"...
+>
 
-There're no brackets enclosing the Message-Id. That must be why Gmail
-modified it with the SMTPIN_ADDED_BROKEN disclaimer added for you. I can't
-come up with a theory as to why you've received it thrice though.
+I was also thinking about pci_pwrctl_device_ready() or
+pci_pwrctl_device_prepared().
 
-Konstantin, could you take a look at what happened here?
+Bart
 
-Arınç
+[snip!]
 
