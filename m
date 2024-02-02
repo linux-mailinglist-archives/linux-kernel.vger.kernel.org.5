@@ -1,262 +1,206 @@
-Return-Path: <linux-kernel+bounces-49199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1052C846717
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:49:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3A4D84671F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:52:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B588A28EEDA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:49:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B14EB23D06
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:52:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 604C5F9C2;
-	Fri,  2 Feb 2024 04:49:32 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E24D3FBEE;
+	Fri,  2 Feb 2024 04:51:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="CTzz14Q+"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1091B101C8
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 04:49:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE8AF513;
+	Fri,  2 Feb 2024 04:51:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706849371; cv=none; b=DQzwJCto7pIfT8PLRyTc6QJfs5Ir7QSy6587jQ3yIiHJSjX4gNPU9tDWuWDYo1ehy6mVvrTEplmtD3VAuKZiXKU4b2uqY5vCSZyxgQUkEdInxa/K04BmHII5n/d+Zgg3vFiBGHj8+RxtQm+VMltGYvj3h14bl1anBMa3kZggtfg=
+	t=1706849517; cv=none; b=L9vP0whoB7r5Sn3ZoTctwfJWYmzOwrxpEn0s2CotvXg/o9lojzoKACHcTniM2VE/eqqFisEY/Mk4vaJjB8HRv1EMvw7AGALRHFBvyWFHp89NSGiZbnZDZR7JfmuMVHDJwqFtepXQGetWXhY8bmR72xoSgbYWGdMIiYdL6GwUpcg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706849371; c=relaxed/simple;
-	bh=Hl1RshuMx+02yuuVjIIZYxYd5g1+ii10CB95NuLkCJQ=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=sRIBMNhkpO/TGuu5Yld6F/LQKTaC0uTDG5emjYxBrPWFsSOuTleE7XCGmLby/EZncYho1m15vVESnpHqT2DYbg3OdZMokcz6Cd+GeErn2cbGEd0MEVu+BrIXxoYtlLoDEiC/6l0aBBJbxeinfJLF7IyEksJuLPlX4yrG1DtqXBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3637fbf4d1eso14388715ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 20:49:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706849369; x=1707454169;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yldXXvBQxXDqTydnus0ehNthfX5/keabFAHFyQe7ozw=;
-        b=aog7ptmv3Yf+He5E+O4YCUB+lGRS6DStnAY2j5lFdu/Kjw6EaT8ylfyktSQdNuneWF
-         JzPtWGVuHsuk/VlrwhjQHpGmqyJHEQO3Km8SA0RGRVVBcwfMsXkAAgW3Ra0sxct4K+zz
-         8OkYBCJ3HTeLy9NDXP251Eqfd14DbCqP4jPHb5qYJDjZLnuSIQrji2jawxBXHuNwinuY
-         VtaGS2OH0SWBKcaJqEcS7ovx10uyVeKTEZUWQ7cbg/Z2OI1/8uF858uFww3BrPoFg0TT
-         3ZYg2wnX9eqcm7+lkiE0jJt+7B5oYmc0YJF/I8SSana6EgmynCh4qxxzVQFU+XGUgost
-         /gPQ==
-X-Gm-Message-State: AOJu0YzKxnjAktEWaHWWi1y1BStpEr5QHLZEk0n1XesGRmQFccrZAu3W
-	Azg1iHE9kKdyy0g5HRk08S8K87bCNlalzLw1JGrXfPR83OqbkRxMZHC33Lg4UIZVpHBdtXA/wAm
-	yX9PvPipDWS6hxcWGEy8st8TJCBcXdAnu7/MPZ5UrQseoNNhfcZI4HnA=
-X-Google-Smtp-Source: AGHT+IG+ygqKezv89JfyLJkMW6K9WmKY9u5awuJVxvKiRmbmKvpq8PiKWIFLIR1BkIQUuBwbEilv2zQwlfFvfFJVBmry6eKVnuz7
+	s=arc-20240116; t=1706849517; c=relaxed/simple;
+	bh=MbeoFB9DxXuqtKa3HpPQkLWrTH55Z9XH6TqSAg7KCo4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=RNal+VaMaWuUDCyZY4n27ZE6LjZfmcBTJfGNcEkl9EberK92Gj6jb5g1ww19nFaInikw/ok1gYswdN+/Xk8PAJtHQIQsFDXDa4wXQ55iFlgS/FRNH/6lXnrBZST74XAEh5ag7oQ4IglYKjj+87KWBsfQDR8oGmQ4tue+HHbF+hM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=CTzz14Q+; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4123mJnQ012457;
+	Fri, 2 Feb 2024 04:51:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Kr40Gu7ZnkwDYNF2wB6/kUvqE4WqqMaeLDAq4SXbIiY=; b=CT
+	zz14Q+FsuEExXaXXl6pAjGMcYGU6ghZfwZWctR/EzKog6HJUfL6ZbSmpMLEtHiY6
+	ne/l//pIfsWgxRtEf8cv5dBxaJUcaSGRiLwBMBRXzWbAs9FhqCYX9CfJ0pER0yEh
+	sw3FD9bWifV3RyqUl+nf4Vwnh6Bx+1CNX0sVBr6yyN7UPWUUVSVF5TNX7qQUgydV
+	mAU3qHypyjbOYpz2a5qvij6/pUqLO+6imVQRN1/Jgyi7byFDl5Ub5+t0CsDXtASC
+	VG1IxTIMV86pJ319Hz81cjXQREGWDRcUWwWk4pOOILO5SKY/G469XpaD/Wucr37Q
+	urXXP0pBWX0AanFGQ8eA==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0ptvgd4a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 04:51:03 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4124p2Yf007983
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 2 Feb 2024 04:51:02 GMT
+Received: from [10.110.16.197] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 1 Feb
+ 2024 20:51:00 -0800
+Message-ID: <39779388-9aad-43fd-9ede-271ead40cbf7@quicinc.com>
+Date: Thu, 1 Feb 2024 20:50:59 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1cad:b0:361:a961:b31a with SMTP id
- x13-20020a056e021cad00b00361a961b31amr620828ill.5.1706849369187; Thu, 01 Feb
- 2024 20:49:29 -0800 (PST)
-Date: Thu, 01 Feb 2024 20:49:29 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000055ecb906105ed669@google.com>
-Subject: [syzbot] [v9fs?] KASAN: slab-use-after-free Read in v9fs_stat2inode_dotl
-From: syzbot <syzbot+7a3d75905ea1a830dbe5@syzkaller.appspotmail.com>
-To: asmadeus@codewreck.org, ericvh@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux_oss@crudebyte.com, lucho@ionkov.net, 
-	syzkaller-bugs@googlegroups.com, v9fs@lists.linux.dev
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/9] PCI: create platform devices for child OF nodes of
+ the port node
+Content-Language: en-US
+To: Bjorn Andersson <andersson@kernel.org>,
+        Bartosz Golaszewski
+	<brgl@bgdev.pl>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kalle Valo
+	<kvalo@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni
+	<pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Catalin Marinas
+	<catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Bjorn Helgaas
+	<bhelgaas@google.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jernej Skrabec
+	<jernej.skrabec@gmail.com>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Linus
+ Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven
+	<geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Neil Armstrong
+	<neil.armstrong@linaro.org>,
+        =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?=
+	<nfraprado@collabora.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peng
+ Fan <peng.fan@nxp.com>, Robert Richter <rrichter@amd.com>,
+        Dan Williams
+	<dan.j.williams@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Terry Bowman <terry.bowman@amd.com>, Lukas Wunner <lukas@wunner.de>,
+        Huacai
+ Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>,
+        Srini Kandagatla
+	<srinivas.kandagatla@linaro.org>,
+        Abel Vesa <abel.vesa@linaro.org>, <linux-wireless@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        Bartosz Golaszewski
+	<bartosz.golaszewski@linaro.org>
+References: <20240117160748.37682-1-brgl@bgdev.pl>
+ <20240117160748.37682-5-brgl@bgdev.pl>
+ <2024011707-alibi-pregnancy-a64b@gregkh>
+ <CAMRc=Mef7wxRccnfQ=EDLckpb1YN4DNLoC=AYL8v1LLJ=uFH2Q@mail.gmail.com>
+ <2024011836-wok-treadmill-c517@gregkh>
+ <d2he3ufg6m46zos4swww4t3peyq55blxhirsx37ou37rwqxmz2@5khumvic62je>
+ <CAMRc=MeXJjpJhDjyn_P-SGo4rDnEuT9kGN5jAbRcuM_c7_aDzQ@mail.gmail.com>
+ <oiwvcvu6wdmpvhss3t7uaqkl5q73mki5pz6liuv66bap4dr2mp@jtjjwzlvt6za>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <oiwvcvu6wdmpvhss3t7uaqkl5q73mki5pz6liuv66bap4dr2mp@jtjjwzlvt6za>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: lTFaTi9YnTkmqQ4bQa9bhYouASZn-t3K
+X-Proofpoint-ORIG-GUID: lTFaTi9YnTkmqQ4bQa9bhYouASZn-t3K
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-01_10,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 mlxlogscore=999 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 impostorscore=0
+ mlxscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402020032
 
-Hello,
+On 2/1/2024 4:03 PM, Bjorn Andersson wrote:
+> On Wed, Jan 31, 2024 at 12:04:14PM +0100, Bartosz Golaszewski wrote:
+>> On Tue, Jan 30, 2024 at 10:54 PM Bjorn Andersson <andersson@kernel.org> wrote:
+>>>
+>>> On Thu, Jan 18, 2024 at 12:15:27PM +0100, Greg Kroah-Hartman wrote:
+>>>> On Thu, Jan 18, 2024 at 11:58:50AM +0100, Bartosz Golaszewski wrote:
+>>>>> On Wed, Jan 17, 2024 at 5:45 PM Greg Kroah-Hartman
+>>>>> <gregkh@linuxfoundation.org> wrote:
+>>>>>>
+>>>>>> On Wed, Jan 17, 2024 at 05:07:43PM +0100, Bartosz Golaszewski wrote:
+>>>>>>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>>>>>>>
+>>>>>>> In order to introduce PCI power-sequencing, we need to create platform
+>>>>>>> devices for child nodes of the port node.
+>>>>>>
+>>>>>> Ick, why a platform device?  What is the parent of this device, a PCI
+>>>>>> device?  If so, then this can't be a platform device, as that's not what
+>>>>>> it is, it's something else so make it a device of that type,.
+>>>>>>
+>>>>>
+>>>>> Greg,
+>>>>>
+>>>>> This is literally what we agreed on at LPC. In fact: during one of the
+>>>>> hall track discussions I said that you typically NAK any attempts at
+>>>>> using the platform bus for "fake" devices but you responded that this
+>>>>> is what the USB on-board HUB does and while it's not pretty, this is
+>>>>> what we need to do.
+>>>>
+>>>> Ah, you need to remind me of these things, this changelog was pretty
+>>>> sparse :)
+>>>>
+>>>
+>>> I believe I missed this part of the discussion, why does this need to be
+>>> a platform_device? What does the platform_bus bring that can't be
+>>> provided by some other bus?
+>>>
+>>
+>> Does it need to be a platform_device? No, of course not. Does it make
+>> sense for it to be one? Yes, for two reasons:
+>>
+>> 1. The ATH11K WLAN module is represented on the device tree like a
+>> platform device, we know it's always there and it consumes regulators
+>> from another platform device. The fact it uses PCIe doesn't change the
+>> fact that it is logically a platform device.
+> 
+> Are you referring to the ath11k SNOC (firmware running on co-processor
+> in the SoC) variant?
+> 
+> Afaict the PCIe-attached ath11k is not represented as a platform_device
+> in DeviceTree.
 
-syzbot found the following issue on:
+Are you considering out-of-tree drivers? My understanding is that there
+are different PCIe modules, ones that don't have GPIO-control for x86
+and ones that do have GPIO-control for ARM. The out-of-tree cnss
+platform driver used for Android has a large amount of DT control
+<https://git.codelinaro.org/clo/la/platform/vendor/qcom-opensource/wlan/platform/-/blob/wlan-platform.lnx.1.0.r1-rel/cnss2/power.c?ref_type=heads>
 
-HEAD commit:    596764183be8 Add linux-next specific files for 20240129
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1612e22fe80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=584144ad19f381aa
-dashboard link: https://syzkaller.appspot.com/bug?extid=7a3d75905ea1a830dbe5
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12251228180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1641bcdfe80000
+(not sure off hand where the DT files themselves are)
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/b647c038857b/disk-59676418.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/729e26c3ac55/vmlinux-59676418.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/15aa5e287059/bzImage-59676418.xz
-
-The issue was bisected to:
-
-commit 724a08450f74b02bd89078a596fd24857827c012
-Author: Eric Van Hensbergen <ericvh@kernel.org>
-Date:   Fri Jan 5 22:25:39 2024 +0000
-
-    fs/9p: simplify iget to remove unnecessary paths
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=165c6d0fe80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=155c6d0fe80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=115c6d0fe80000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7a3d75905ea1a830dbe5@syzkaller.appspotmail.com
-Fixes: 724a08450f74 ("fs/9p: simplify iget to remove unnecessary paths")
-
-==================================================================
-BUG: KASAN: slab-use-after-free in v9fs_stat2inode_dotl+0xb3f/0xce0 fs/9p/vfs_inode_dotl.c:569
-Read of size 8 at addr ffff8880172d4bb0 by task syz-executor117/5063
-
-CPU: 1 PID: 5063 Comm: syz-executor117 Not tainted 6.8.0-rc1-next-20240129-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0xc3/0x620 mm/kasan/report.c:488
- kasan_report+0xd9/0x110 mm/kasan/report.c:601
- v9fs_stat2inode_dotl+0xb3f/0xce0 fs/9p/vfs_inode_dotl.c:569
- v9fs_fid_iget_dotl+0x1cb/0x260 fs/9p/vfs_inode_dotl.c:85
- v9fs_get_inode_from_fid fs/9p/v9fs.h:230 [inline]
- v9fs_mount+0x515/0xa90 fs/9p/vfs_super.c:142
- legacy_get_tree+0x109/0x220 fs/fs_context.c:662
- vfs_get_tree+0x8f/0x380 fs/super.c:1784
- do_new_mount fs/namespace.c:3352 [inline]
- path_mount+0x14e6/0x1f20 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount fs/namespace.c:3875 [inline]
- __x64_sys_mount+0x297/0x320 fs/namespace.c:3875
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7f88a76d7b69
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff734da2a8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f88a76d7b69
-RDX: 0000000020004500 RSI: 00000000200002c0 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000020000300 R09: 00007fff734da2e0
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fff734da2e0
-R13: 00007fff734da568 R14: 431bde82d7b634db R15: 00007f88a7720074
- </TASK>
-
-Allocated by task 5063:
- kasan_save_stack+0x33/0x60 mm/kasan/common.c:47
- kasan_save_track+0x14/0x30 mm/kasan/common.c:68
- poison_kmalloc_redzone mm/kasan/common.c:372 [inline]
- __kasan_kmalloc+0xaa/0xb0 mm/kasan/common.c:389
- kmalloc include/linux/slab.h:590 [inline]
- p9_client_getattr_dotl+0x4c/0x1e0 net/9p/client.c:1726
- v9fs_fid_iget_dotl+0xe7/0x260 fs/9p/vfs_inode_dotl.c:73
- v9fs_get_inode_from_fid fs/9p/v9fs.h:230 [inline]
- v9fs_mount+0x515/0xa90 fs/9p/vfs_super.c:142
- legacy_get_tree+0x109/0x220 fs/fs_context.c:662
- vfs_get_tree+0x8f/0x380 fs/super.c:1784
- do_new_mount fs/namespace.c:3352 [inline]
- path_mount+0x14e6/0x1f20 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount fs/namespace.c:3875 [inline]
- __x64_sys_mount+0x297/0x320 fs/namespace.c:3875
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-Freed by task 5063:
- kasan_save_stack+0x33/0x60 mm/kasan/common.c:47
- kasan_save_track+0x14/0x30 mm/kasan/common.c:68
- kasan_save_free_info+0x3f/0x60 mm/kasan/generic.c:640
- poison_slab_object mm/kasan/common.c:241 [inline]
- __kasan_slab_free+0x121/0x1c0 mm/kasan/common.c:257
- kasan_slab_free include/linux/kasan.h:184 [inline]
- slab_free_hook mm/slub.c:2122 [inline]
- slab_free mm/slub.c:4296 [inline]
- kfree+0x129/0x370 mm/slub.c:4406
- v9fs_fid_iget_dotl+0x195/0x260 fs/9p/vfs_inode_dotl.c:81
- v9fs_get_inode_from_fid fs/9p/v9fs.h:230 [inline]
- v9fs_mount+0x515/0xa90 fs/9p/vfs_super.c:142
- legacy_get_tree+0x109/0x220 fs/fs_context.c:662
- vfs_get_tree+0x8f/0x380 fs/super.c:1784
- do_new_mount fs/namespace.c:3352 [inline]
- path_mount+0x14e6/0x1f20 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount fs/namespace.c:3875 [inline]
- __x64_sys_mount+0x297/0x320 fs/namespace.c:3875
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-The buggy address belongs to the object at ffff8880172d4bb0
- which belongs to the cache kmalloc-192 of size 192
-The buggy address is located 0 bytes inside of
- freed 192-byte region [ffff8880172d4bb0, ffff8880172d4c70)
-
-The buggy address belongs to the physical page:
-page:ffffea00005cb500 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x172d4
-flags: 0xfff80000000800(slab|node=0|zone=1|lastcpupid=0xfff)
-page_type: 0xffffffff()
-raw: 00fff80000000800 ffff888014c41a00 ffffea00005fa5c0 dead000000000004
-raw: 0000000000000000 00000000800f000f 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 7, tgid 7 (kworker/0:0), ts 3076962571, free_ts 0
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2d4/0x350 mm/page_alloc.c:1539
- prep_new_page mm/page_alloc.c:1546 [inline]
- get_page_from_freelist+0xa19/0x3740 mm/page_alloc.c:3353
- __alloc_pages+0x22e/0x2420 mm/page_alloc.c:4609
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- alloc_slab_page mm/slub.c:2191 [inline]
- allocate_slab mm/slub.c:2354 [inline]
- new_slab+0xcc/0x3a0 mm/slub.c:2407
- ___slab_alloc+0x66d/0x17a0 mm/slub.c:3541
- __slab_alloc.constprop.0+0x56/0xb0 mm/slub.c:3626
- __slab_alloc_node mm/slub.c:3679 [inline]
- slab_alloc_node mm/slub.c:3851 [inline]
- kmalloc_node_trace+0x113/0x390 mm/slub.c:4021
- kmalloc_node include/linux/slab.h:606 [inline]
- kzalloc_node include/linux/slab.h:722 [inline]
- alloc_worker+0x40/0x1b0 kernel/workqueue.c:2078
- create_worker+0xf3/0x730 kernel/workqueue.c:2186
- maybe_create_worker kernel/workqueue.c:2468 [inline]
- manage_workers kernel/workqueue.c:2520 [inline]
- worker_thread+0xca1/0x1290 kernel/workqueue.c:2766
- kthread+0x2c1/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:242
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff8880172d4a80: fc fc fc fc fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8880172d4b00: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
->ffff8880172d4b80: fc fc fc fc fc fc fa fb fb fb fb fb fb fb fb fb
-                                     ^
- ffff8880172d4c00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fc fc
- ffff8880172d4c80: fc fc fc fc fc fc fc fc 00 00 00 00 00 00 00 00
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+/jeff
 
