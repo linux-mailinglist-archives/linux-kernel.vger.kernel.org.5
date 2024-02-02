@@ -1,183 +1,245 @@
-Return-Path: <linux-kernel+bounces-49191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F31C846702
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:34:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 56707846709
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:40:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A9FB28B9CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:34:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C71528BECF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:40:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E317F9C2;
-	Fri,  2 Feb 2024 04:34:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B083F51C;
+	Fri,  2 Feb 2024 04:40:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mvkWrecU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4711BEAF2;
-	Fri,  2 Feb 2024 04:34:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="QLwOyes5"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC761F4EA;
+	Fri,  2 Feb 2024 04:40:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706848475; cv=none; b=jDivbTPgzA/TjRldERgvIVjf0qeU/2oY84IEKyMBPmHKHlGz0/rFnYG/PQ8ktxVd1K9EM+aUEM0L43Vq8dHOm11hhe6TyXcRyTw7MRADe37zc4ThJardCjP6oMrg4m4FfejWjabUOIeKNlS39546X1gfwQ8Ewb7Olp9HbNwV9Ko=
+	t=1706848841; cv=none; b=N9qHawXh7UP5WJHekp6g7Xv7PL7kDyr84YNqhj3YQ0pOdRSCmtOjO/82/oj/iBgzJ4E+azgxZQCNhei6PvozhCJevyq7gor5xEsV/5PCtgEZbK6NLyu/v52nnWKw5BIZ5F4rQDk4D5fNqqA+iFXPTABv5U80w+yJR4PgRDyVDWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706848475; c=relaxed/simple;
-	bh=satbLNeZz+QWwEIu5LrwtxRMwFvB1z9KyJTB07xtAgw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KTCMZNF4g/GW1mL/ViQaPu3bwKsJYUPPIPJSdVxALRAQbwLal8fWcMMi0FcloT8k8mhDr7QNljzJqK7S8fXQRVY/l8iqsJJ5qAYkIxqcu5vvURcwawEaQoTSGK7f9KKRJ7WGdd0j1uHniRzrE8rIuLc+p3fILr5b9soZYE/cJ1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mvkWrecU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAECDC433F1;
-	Fri,  2 Feb 2024 04:34:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706848474;
-	bh=satbLNeZz+QWwEIu5LrwtxRMwFvB1z9KyJTB07xtAgw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mvkWrecULFI83GjFioZwqm5vQ1TbPIlFqnepDB4YbeJudyH6HH4//FFf42DN2DhqN
-	 E16V9EUtLRMVBl8NOkxZ81MzljTO1myTN++gHrA1u/ncJQrrsTYai2Z0yN6loVzx8R
-	 YzaOEtjrFjoeKvD3Rod1kVYDB42d8hn/qXdHKcxiLjZMIxYFvBl9PrvvUTdKgKX3yS
-	 F/R/Vm0ED29YaHpwNvHFN6YmiDuZZkzg4e5SmbaTR/6JhSB25QiEmCuzGLbJXjl+1b
-	 3mZeuzrQYKvxGZJ+kxcMOGSdaDud/tKKepoSxycP+b+IEMVxgwfjZThKoOxSCOdE3V
-	 OLmt+gdb4LgNQ==
-Date: Thu, 1 Feb 2024 22:34:30 -0600
-From: Bjorn Andersson <andersson@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Abel Vesa <abel.vesa@linaro.org>, 
-	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
-	linux-pci@vger.kernel.org, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [RFC 2/9] arm64: dts: qcom: qrb5165-rb5: model the PMU of the
- QCA6391
-Message-ID: <5lirm5mnf7yqbripue5nyqu6ej54sx4rtmgmyqjrqanabsriyp@2pjiv5xbmxpk>
-References: <20240201155532.49707-1-brgl@bgdev.pl>
- <20240201155532.49707-3-brgl@bgdev.pl>
+	s=arc-20240116; t=1706848841; c=relaxed/simple;
+	bh=KmlbEq3PO/srZBOCNisfz+EqGLgCMlx0Mf4zLb30HiI=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=GAy5bTWnreOYrYtGVXrc7vhytrNFosd5NVwxrtGq1SutXiHfzMAHkohji8pynaH5+3EMAVOdOYaGM8swrZ2+5Tb6oeUqAgeWSOBK/JSYapV9YSHaU/SjcDEXtxS0A2yfT1ND2bjjcNHulvrtr9nB8fFs76BlhQr+JKYsNWz3Qag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=QLwOyes5; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id 2957B206FCE0; Thu,  1 Feb 2024 20:40:39 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2957B206FCE0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1706848839;
+	bh=QySjbmai9GE4fttBeHnyPhjnPJbHO88dUi9nFOfGmao=;
+	h=From:To:Cc:Subject:Date:From;
+	b=QLwOyes55GeO8JttIh47g7AUqqiDlOaDt3TFG3gWC7Ts/DdkBrtQfh85o1++ecdYw
+	 tOJzZrcxNpCHPc3JzOGBHn4AiIHj+u2FXvv2aTIkOJuQlm2cgcJaCP3PeVFuaztpnx
+	 XDP0SGYgRT2/idBBfLtYgW+PYgimiRZ7m7kEybBM=
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: "K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Wojciech Drewek <wojciech.drewek@intel.com>,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	shradhagupta@microsoft.com,
+	stable@vger.kernel.org
+Subject: [PATCH net,v2] hv_netvsc: Register VF in netvsc_probe if NET_DEVICE_REGISTER missed
+Date: Thu,  1 Feb 2024 20:40:38 -0800
+Message-Id: <1706848838-24848-1-git-send-email-shradhagupta@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240201155532.49707-3-brgl@bgdev.pl>
 
-On Thu, Feb 01, 2024 at 04:55:25PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> Add a node for the PMU module of the QCA6391 present on the RB5 board.
-> Assign its LDO power outputs to the existing Bluetooth module. Add a
-> node for the PCIe port to sm8250.dtsi and define the WLAN node on it in
-> the board's .dts and also make it consume the power outputs of the PMU.
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 128 +++++++++++++++++++++--
->  arch/arm64/boot/dts/qcom/sm8250.dtsi     |  10 ++
->  2 files changed, 127 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-> index cd0db4f31d4a..fab5bebafbad 100644
-> --- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-> +++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-> @@ -108,6 +108,87 @@ lt9611_3v3: lt9611-3v3 {
->  		regulator-always-on;
->  	};
->  
-> +	qca6390_pmu: pmu@0 {
-> +		compatible = "qcom,qca6390-pmu";
-> +
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&bt_en_state>, <&wlan_en_state>;
-> +
-> +		vddaon-supply = <&vreg_s6a_0p95>;
-> +		vddpmu-supply = <&vreg_s2f_0p95>;
-> +		vddrfa1-supply = <&vreg_s2f_0p95>;
-> +		vddrfa2-supply = <&vreg_s8c_1p3>;
-> +		vddrfa3-supply = <&vreg_s5a_1p9>;
-> +		vddpcie1-supply = <&vreg_s8c_1p3>;
-> +		vddpcie2-supply = <&vreg_s5a_1p9>;
-> +		vddio-supply = <&vreg_s4a_1p8>;
-> +
-> +		wlan-enable-gpios = <&tlmm 20 GPIO_ACTIVE_HIGH>;
-> +		bt-enable-gpios = <&tlmm 21 GPIO_ACTIVE_HIGH>;
-> +
-> +		regulators {
-> +			vreg_pmu_rfa_cmn: ldo0 {
-> +				regulator-name = "vreg_pmu_rfa_cmn";
-> +				regulator-min-microvolt = <760000>;
-> +				regulator-max-microvolt = <840000>;
+If hv_netvsc driver is unloaded and reloaded, the NET_DEVICE_REGISTER
+handler cannot perform VF register successfully as the register call
+is received before netvsc_probe is finished. This is because we
+register register_netdevice_notifier() very early( even before
+vmbus_driver_register()).
+To fix this, we try to register each such matching VF( if it is visible
+as a netdevice) at the end of netvsc_probe.
 
-I'm still not convinced that the PMU has a set of LDOs, and looking at
-your implementation you neither register these with the regulator
-framework, nor provide any means of controlling the state or voltage of
-these "regulators".
+Cc: stable@vger.kernel.org
+Fixes: 85520856466e ("hv_netvsc: Fix race of register_netdevice_notifier and VF register")
+Suggested-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
 
-[..]
->  
->  &uart6 {
-> @@ -1311,17 +1418,16 @@ &uart6 {
->  	bluetooth {
->  		compatible = "qcom,qca6390-bt";
->  
-> -		pinctrl-names = "default";
-> -		pinctrl-0 = <&bt_en_state>;
-> -
-> -		enable-gpios = <&tlmm 21 GPIO_ACTIVE_HIGH>;
-> -
-> -		vddio-supply = <&vreg_s4a_1p8>;
-> -		vddpmu-supply = <&vreg_s2f_0p95>;
-> -		vddaon-supply = <&vreg_s6a_0p95>;
-> -		vddrfa0p9-supply = <&vreg_s2f_0p95>;
-> -		vddrfa1p3-supply = <&vreg_s8c_1p3>;
-> -		vddrfa1p9-supply = <&vreg_s5a_1p9>;
-> +		vddrfacmn-supply = <&vreg_pmu_rfa_cmn>;
-> +		vddaon-supply = <&vreg_pmu_aon_0p59>;
-> +		vddwlcx-supply = <&vreg_pmu_wlcx_0p8>;
-> +		vddwlmx-supply = <&vreg_pmu_wlmx_0p85>;
-> +		vddbtcmx-supply = <&vreg_pmu_btcmx_0p85>;
-> +		vddrfa0-supply = <&vreg_pmu_rfa_0p8>;
-> +		vddrfa1-supply = <&vreg_pmu_rfa_1p2>;
-> +		vddrfa2-supply = <&vreg_pmu_rfa_1p7>;
-> +		vddpcie0-supply = <&vreg_pmu_pcie_0p9>;
-> +		vddpcie1-supply = <&vreg_pmu_pcie_1p8>;
+---
+ Changes in v2:
+ * Fixed the subject line of patch with branch details(net)
+ * Added the logic to attach just the one right vf during register
+ * Corrected comment messages
+ * Renamed the context marco with a more appropriate name
+ * Created a new function to avoid code repetition.
+---
+ drivers/net/hyperv/netvsc_drv.c | 82 +++++++++++++++++++++++++--------
+ 1 file changed, 62 insertions(+), 20 deletions(-)
 
-As I asked before, why does bluetooth suddenly care about PCIe supplies?
+diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
+index 273bd8a20122..11831a1c9762 100644
+--- a/drivers/net/hyperv/netvsc_drv.c
++++ b/drivers/net/hyperv/netvsc_drv.c
+@@ -42,6 +42,10 @@
+ #define LINKCHANGE_INT (2 * HZ)
+ #define VF_TAKEOVER_INT (HZ / 10)
+ 
++/* Macros to define the context of vf registration */
++#define VF_REG_IN_PROBE		1
++#define VF_REG_IN_NOTIFIER	2
++
+ static unsigned int ring_size __ro_after_init = 128;
+ module_param(ring_size, uint, 0444);
+ MODULE_PARM_DESC(ring_size, "Ring buffer size (# of 4K pages)");
+@@ -2185,7 +2189,7 @@ static rx_handler_result_t netvsc_vf_handle_frame(struct sk_buff **pskb)
+ }
+ 
+ static int netvsc_vf_join(struct net_device *vf_netdev,
+-			  struct net_device *ndev)
++			  struct net_device *ndev, int context)
+ {
+ 	struct net_device_context *ndev_ctx = netdev_priv(ndev);
+ 	int ret;
+@@ -2208,7 +2212,11 @@ static int netvsc_vf_join(struct net_device *vf_netdev,
+ 		goto upper_link_failed;
+ 	}
+ 
+-	schedule_delayed_work(&ndev_ctx->vf_takeover, VF_TAKEOVER_INT);
++	/* If this registration is called from probe context vf_takeover
++	 * is taken care of later in probe itself.
++	 */
++	if (context == VF_REG_IN_NOTIFIER)
++		schedule_delayed_work(&ndev_ctx->vf_takeover, VF_TAKEOVER_INT);
+ 
+ 	call_netdevice_notifiers(NETDEV_JOIN, vf_netdev);
+ 
+@@ -2346,7 +2354,7 @@ static int netvsc_prepare_bonding(struct net_device *vf_netdev)
+ 	return NOTIFY_DONE;
+ }
+ 
+-static int netvsc_register_vf(struct net_device *vf_netdev)
++static int netvsc_register_vf(struct net_device *vf_netdev, int context)
+ {
+ 	struct net_device_context *net_device_ctx;
+ 	struct netvsc_device *netvsc_dev;
+@@ -2386,7 +2394,7 @@ static int netvsc_register_vf(struct net_device *vf_netdev)
+ 
+ 	netdev_info(ndev, "VF registering: %s\n", vf_netdev->name);
+ 
+-	if (netvsc_vf_join(vf_netdev, ndev) != 0)
++	if (netvsc_vf_join(vf_netdev, ndev, context) != 0)
+ 		return NOTIFY_DONE;
+ 
+ 	dev_hold(vf_netdev);
+@@ -2484,10 +2492,31 @@ static int netvsc_unregister_vf(struct net_device *vf_netdev)
+ 	return NOTIFY_OK;
+ }
+ 
++static int check_dev_is_matching_vf(struct net_device *event_ndev)
++{
++	/* Skip NetVSC interfaces */
++	if (event_ndev->netdev_ops == &device_ops)
++		return -ENODEV;
++
++	/* Avoid non-Ethernet type devices */
++	if (event_ndev->type != ARPHRD_ETHER)
++		return -ENODEV;
++
++	/* Avoid Vlan dev with same MAC registering as VF */
++	if (is_vlan_dev(event_ndev))
++		return -ENODEV;
++
++	/* Avoid Bonding master dev with same MAC registering as VF */
++	if (netif_is_bond_master(event_ndev))
++		return -ENODEV;
++
++	return 0;
++}
++
+ static int netvsc_probe(struct hv_device *dev,
+ 			const struct hv_vmbus_device_id *dev_id)
+ {
+-	struct net_device *net = NULL;
++	struct net_device *net = NULL, *vf_netdev;
+ 	struct net_device_context *net_device_ctx;
+ 	struct netvsc_device_info *device_info = NULL;
+ 	struct netvsc_device *nvdev;
+@@ -2599,6 +2628,30 @@ static int netvsc_probe(struct hv_device *dev,
+ 	}
+ 
+ 	list_add(&net_device_ctx->list, &netvsc_dev_list);
++
++	/* When the hv_netvsc driver is unloaded and reloaded, the
++	 * NET_DEVICE_REGISTER for the vf device is replayed before probe
++	 * is complete. This is because register_netdevice_notifier() gets
++	 * registered before vmbus_driver_register() so that callback func
++	 * is set before probe and we don't miss events like NETDEV_POST_INIT
++	 * So, in this section we try to register the matching vf device that
++	 * is present as a netdevice, knowing that its register call is not
++	 * processed in the netvsc_netdev_notifier(as probing is progress and
++	 * get_netvsc_byslot fails).
++	 */
++	for_each_netdev(dev_net(net), vf_netdev) {
++		ret = check_dev_is_matching_vf(vf_netdev);
++		if (ret != 0)
++			continue;
++
++		if (net != get_netvsc_byslot(vf_netdev))
++			continue;
++
++		netvsc_prepare_bonding(vf_netdev);
++		netvsc_register_vf(vf_netdev, VF_REG_IN_PROBE);
++		__netvsc_vf_setup(net, vf_netdev);
++		break;
++	}
+ 	rtnl_unlock();
+ 
+ 	netvsc_devinfo_put(device_info);
+@@ -2754,28 +2807,17 @@ static int netvsc_netdev_event(struct notifier_block *this,
+ 			       unsigned long event, void *ptr)
+ {
+ 	struct net_device *event_dev = netdev_notifier_info_to_dev(ptr);
++	int ret = 0;
+ 
+-	/* Skip our own events */
+-	if (event_dev->netdev_ops == &device_ops)
+-		return NOTIFY_DONE;
+-
+-	/* Avoid non-Ethernet type devices */
+-	if (event_dev->type != ARPHRD_ETHER)
+-		return NOTIFY_DONE;
+-
+-	/* Avoid Vlan dev with same MAC registering as VF */
+-	if (is_vlan_dev(event_dev))
+-		return NOTIFY_DONE;
+-
+-	/* Avoid Bonding master dev with same MAC registering as VF */
+-	if (netif_is_bond_master(event_dev))
++	ret = check_dev_is_matching_vf(event_dev);
++	if (ret != 0)
+ 		return NOTIFY_DONE;
+ 
+ 	switch (event) {
+ 	case NETDEV_POST_INIT:
+ 		return netvsc_prepare_bonding(event_dev);
+ 	case NETDEV_REGISTER:
+-		return netvsc_register_vf(event_dev);
++		return netvsc_register_vf(event_dev, VF_REG_IN_NOTIFIER);
+ 	case NETDEV_UNREGISTER:
+ 		return netvsc_unregister_vf(event_dev);
+ 	case NETDEV_UP:
+-- 
+2.34.1
 
-Regards,
-Bjorn
-
->  	};
->  };
->  
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> index 4d849e98bf9b..7cd21d4e7278 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> @@ -2203,6 +2203,16 @@ pcie0: pcie@1c00000 {
->  			dma-coherent;
->  
->  			status = "disabled";
-> +
-> +			pcieport0: pcie@0 {
-> +				device_type = "pci";
-> +				reg = <0x0 0x0 0x0 0x0 0x0>;
-> +				#address-cells = <3>;
-> +				#size-cells = <2>;
-> +				ranges;
-> +
-> +				bus-range = <0x01 0xff>;
-> +			};
->  		};
->  
->  		pcie0_phy: phy@1c06000 {
-> -- 
-> 2.40.1
-> 
 
