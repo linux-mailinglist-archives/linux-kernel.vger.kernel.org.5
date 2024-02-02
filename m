@@ -1,156 +1,140 @@
-Return-Path: <linux-kernel+bounces-50610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C460847B8F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:32:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7396847B9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:35:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73CDD1F2A899
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:32:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BA931F2A9AD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:35:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D767983A10;
-	Fri,  2 Feb 2024 21:32:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03CD6839EB;
+	Fri,  2 Feb 2024 21:35:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JiL6gOVa"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="T8ebzg23"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C8E839E5
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 21:32:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38C887CF3F;
+	Fri,  2 Feb 2024 21:35:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706909535; cv=none; b=UFertq7LmsNfRTy5E4wHEGw6Aa1Nx/ShTUURvklbiAGGWeCBnU/pP3mCpTOLNCP40zeI5PFoiD14tfYYfzwc7JIi3NjleNhk68miBszoM3IfU22AMsqKBoSGZHYlHZBnxMQjem2/U1zMOR6IgTGEl1L1HJSR5/PmeXcISbG2HbI=
+	t=1706909747; cv=none; b=tZMrht+blEH6tDPl48pbBDZeYMU0wd6E1WNaOUUkv5DZlRXTKb+P8thpdpj503r3aaZUxrVFCy/aMEPEOrPDKsPydwwr8H7FerNn202joGPCihx0akWUVTGD5B3s2T52SJgqwqxdxNWEGBwneAUtwu9eM16XOL5JNpqC7EkkhXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706909535; c=relaxed/simple;
-	bh=mGhUNxZMsWaoiJyj9PRjL1hNx8uB6yny+9h5RYXXVNc=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=QvpchIj4aBVtQ5YA7OQ1xuMoffPVAqiwYarZ5SkfvrtviGYzryqz9+aaYc2GwQcD5RNd4Pqy2C843QQxNtJprZayxs4+lSZbRSXj6+MjxuQP+spLHpK4/m+efvgAFr1EstiJ2GGA+vz/rVyrYdbJFvCd2TgqYp6FBePHuzpnI7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JiL6gOVa; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40fb63c40c0so21797445e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 13:32:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706909531; x=1707514331; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W5Hc9mSNGHRmqMuX3vLv6BjyMkdxw/6pVnK77OZ+Opw=;
-        b=JiL6gOVaALg26POSKiYizB0tEBx7NGFDpowE20wur2ACWY9QJRNsKpG+ntef5FOfuH
-         tOOMJg3NFu+m4O28fAz/HrskzBnOKnoivtDFeBChram+o2n2SJdY69eFE8Cm1WWGB1E2
-         1FAzoSv45h1g7+/hOp733KMnRxh6e4EEJZlPfE/r6L3Yq+NyR7W423CcwoY3IuUu7IQE
-         8IQlkAIcMSquwy/+qxxAhxj+ZkPtSsKmXoUx3hDxfYMSchuU4REt/bM5X0/RBvvLRnhH
-         lr7VMWinCpTBcU30n7F1P18paXTQtDwZl/4NPZj9+7kvEoXRhm6tG1/bBgmxdvHiaZyE
-         ETPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706909531; x=1707514331;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=W5Hc9mSNGHRmqMuX3vLv6BjyMkdxw/6pVnK77OZ+Opw=;
-        b=Yc+FnWxNZf2eYoiPRBAlGeXRR3xlg7Gpn/WTVzXWcH8gTJW/fq/CrNJLZ4Nmsq6NnS
-         Bl4P0BBCZDlmPclKNiCDrTFiv5iP8nq8ndWZEzGzEccvOfkY7L4z/Sy54E8EZO+rWIcO
-         q+pTccpZTC9qu8XPQd0iLWfzwWxvQu16Q5BoYUzzMXqxcflLx4M7AGgMCTRbdqxiP5LD
-         57SlxmTCuUeLWPNAr0bJvKKg4hoBqz4DPIfBH9cfrdkrv/bbx6H90oFKEmSJ16rcdlWX
-         h8QkLu0dVrYgmY2jaqGWrHwmq9pbjB4wk63SFaulLcieNa3GfY+nnN6s9lB7ug9GFf0h
-         IIuA==
-X-Gm-Message-State: AOJu0YwIt6ClXUVltt6naJFC4yQWCxsl2jB6nI004TqbHeuS6q5K4JEL
-	QKvU2uUw+3fr5qaHI3ci/mjCYC0BgGoJzSuiXc99e2IUScir36I1CV7bpytSaH+vBCfJ4r498qj
-	ZJ7y4UBaE
-X-Google-Smtp-Source: AGHT+IGyPixWYoi+L4/ukaGBHlcrE3M3qeKjP8naEQzcqadDPDsfbwSTPYGe0HluOek3vr3B35Am3w==
-X-Received: by 2002:a05:600c:1550:b0:40e:fb8f:76b2 with SMTP id f16-20020a05600c155000b0040efb8f76b2mr7592084wmg.12.1706909531281;
-        Fri, 02 Feb 2024 13:32:11 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVcz30ZwoH/5xCYeuEkyULtPjnugcNsrZooblZ7+o777yvjaEWQrcqbShcYM4dWmclsHEVB/1TNGAGbLTGQCCQX6Oz67KeLrqoMYb+dE37zKDXBA99J6ReiSRhz/Zhx27tbSpG5cCbraq3CbZ1ixBa7OrNl+p4VLRcJrmGHiD+qRbnOOU5ugn6RY/9JVf4M2TD3KZhWDNUIByvv7JwneXD2fYnSC4t1RxEGFgx2lEfu1Jg6xKiz6FGtZjYTLpMMzwFxzTrg9EN6kRNJ+JLUft1+Cd7E5w+OEXMl0x1J5xdofOSF3y5JTfj4Af6TMGe1JDafwvpEx1Ye+0OGQwZxmaxeAqzYxoiVI0AZD9MxAMtPvMaIUk6BJmrliqUv6Afqc5v0hBRGXxHtB7UqAQzmG2OmJnmMkK2UWRxBakzsOx1lqMOu01kDQSNGYd5IfbEH4s9obOyc7VP/6hz+HwqLNiMqjqdueeeG1XnKHEGhaSJzeh8xWY9WNRM0CyjBJQnSAtqIlONjlBbX4w7yVOGAbXV8FRLFH5pUBXUK5Us6xZv0nXCMFTpyzKkpryKTVIX8/i9ucNWekWlsh1oeczrLOcRf3dJqktVGTJtV4KXAGrXiyk+kUe2COFPTQ00Y6qn1N8rpCDEvS8qJewZqPNp7bVkRS9TmVApJrOwh
-Received: from [192.168.27.65] (home.beaume.starnux.net. [82.66.176.246])
-        by smtp.gmail.com with ESMTPSA id h6-20020a05600c314600b0040fb7695620sm1020943wmo.0.2024.02.02.13.32.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Feb 2024 13:32:10 -0800 (PST)
-Message-ID: <b8a5e5dd-e018-4305-9fb8-88f4ddc49a2f@linaro.org>
-Date: Fri, 2 Feb 2024 22:32:05 +0100
+	s=arc-20240116; t=1706909747; c=relaxed/simple;
+	bh=bygkwq3H5uz4EcL8134faBvbhDYNHUEoqi1fXOwtcSU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BOCXT7yXfrNfmgYQyIa3tVyusBNnB1Iay0FtuE/vRStN+2FGammwPq46AGXhoEnVQqJOSzvVXpJAb+D0xSLW/XIC/KoA04O4GOaddZq/0sJGKjZfg+bX+cKU0h0Ng8EEFJnO19TC14w+WRBHD88o8u4LiZCT30t3DchR8FgXPY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=T8ebzg23; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89F2DC433F1;
+	Fri,  2 Feb 2024 21:35:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1706909746;
+	bh=bygkwq3H5uz4EcL8134faBvbhDYNHUEoqi1fXOwtcSU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=T8ebzg239yZx11OVUqtKc43pZ50yggUfrA7hQoCBpoKaij0XzbsBZfy/xUVmLLg6S
+	 rW8cxQi03ZsoESqt4C0DOodXMIuDNnslKzlp5y2Uq1Nuy1e1lnXCRRQ82tio8JJY+b
+	 dAAojUn2Pm9HAlrlBWpWxh5Ydd8GCGz52szdWMw8=
+Date: Fri, 2 Feb 2024 13:35:45 -0800
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Carlos Llamas <cmllamas@google.com>
+Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, bvanassche@acm.org,
+	peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+	longman@redhat.com, boqun.feng@gmail.com,
+	linux-kernel@vger.kernel.org, niuzhiguo84@gmail.com,
+	ke.wang@unisoc.com, hongyu.jin@unisoc.com, stable@vger.kernel.org
+Subject: Re: [PATCH V3] lockdep: fix deadlock issue between lockdep and rcu
+Message-ID: <2024020233-wildland-blouse-2f2e@gregkh>
+References: <1706861676-26574-1-git-send-email-zhiguo.niu@unisoc.com>
+ <Zb1IxNd54z2Ib1N3@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH] dt-bindings: drm/bridge: ti-sn65dsi86: Fix bouncing
- @codeaurora address
-Content-Language: en-US, fr
-To: Jeffrey Hugo <quic_jhugo@quicinc.com>, dianders@chromium.org,
- andrzej.hajda@intel.com, rfoss@kernel.org,
- Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
- jernej.skrabec@gmail.com, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- quic_bjorande@quicinc.com
-Cc: airlied@gmail.com, daniel@ffwll.ch, maarten.lankhorst@linux.intel.com,
- mripard@kernel.org, tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org
-References: <20240202202329.4172917-1-quic_jhugo@quicinc.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20240202202329.4172917-1-quic_jhugo@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zb1IxNd54z2Ib1N3@google.com>
 
-On 02/02/2024 21:23, Jeffrey Hugo wrote:
-> The servers for the @codeaurora domain are long retired and any messages
-> sent there bounce.  Sandeep Panda's email address is no longer valid and
-> should be repleaced.  However Sandeep has left the company and has not
-> been active sice, therefore it looks like this binding is orphaned.
+On Fri, Feb 02, 2024 at 07:55:48PM +0000, Carlos Llamas wrote:
+> On Fri, Feb 02, 2024 at 04:14:36PM +0800, Zhiguo Niu wrote:
+> > There is a deadlock scenario between lockdep and rcu when
+> > rcu nocb feature is enabled, just as following call stack:
+> > 
+> >      rcuop/x
+> > -000|queued_spin_lock_slowpath(lock = 0xFFFFFF817F2A8A80, val = ?)
+> > -001|queued_spin_lock(inline) // try to hold nocb_gp_lock
+> > -001|do_raw_spin_lock(lock = 0xFFFFFF817F2A8A80)
+> > -002|__raw_spin_lock_irqsave(inline)
+> > -002|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F2A8A80)
+> > -003|wake_nocb_gp_defer(inline)
+> > -003|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F30B680)
+> > -004|__call_rcu_common(inline)
+> > -004|call_rcu(head = 0xFFFFFFC082EECC28, func = ?)
+> > -005|call_rcu_zapped(inline)
+> > -005|free_zapped_rcu(ch = ?)// hold graph lock
+> > -006|rcu_do_batch(rdp = 0xFFFFFF817F245680)
+> > -007|nocb_cb_wait(inline)
+> > -007|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F245680)
+> > -008|kthread(_create = 0xFFFFFF80803122C0)
+> > -009|ret_from_fork(asm)
+> > 
+> >      rcuop/y
+> > -000|queued_spin_lock_slowpath(lock = 0xFFFFFFC08291BBC8, val = 0)
+> > -001|queued_spin_lock()
+> > -001|lockdep_lock()
+> > -001|graph_lock() // try to hold graph lock
+> > -002|lookup_chain_cache_add()
+> > -002|validate_chain()
+> > -003|lock_acquire
+> > -004|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F211D80)
+> > -005|lock_timer_base(inline)
+> > -006|mod_timer(inline)
+> > -006|wake_nocb_gp_defer(inline)// hold nocb_gp_lock
+> > -006|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F2A8680)
+> > -007|__call_rcu_common(inline)
+> > -007|call_rcu(head = 0xFFFFFFC0822E0B58, func = ?)
+> > -008|call_rcu_hurry(inline)
+> > -008|rcu_sync_call(inline)
+> > -008|rcu_sync_func(rhp = 0xFFFFFFC0822E0B58)
+> > -009|rcu_do_batch(rdp = 0xFFFFFF817F266680)
+> > -010|nocb_cb_wait(inline)
+> > -010|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F266680)
+> > -011|kthread(_create = 0xFFFFFF8080363740)
+> > -012|ret_from_fork(asm)
+> > 
+> > rcuop/x and rcuop/y are rcu nocb threads with the same nocb gp thread.
+> > This patch release the graph lock before lockdep call_rcu.
+> > 
+> > Fixes: a0b0fd53e1e6 ("locking/lockdep: Free lock classes that are no longer in use")
+> > Cc: <stable@vger.kernel.org>
+> > Cc: Boqun Feng <boqun.feng@gmail.com>
+> > Cc: Waiman Long <longman@redhat.com>
+> > Cc: Carlos Llamas <cmllamas@google.com>
+> > Cc: Bart Van Assche <bvanassche@acm.org>
+> > Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> > Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+> > ---
+> > changes of v3: correct code comments and add Cc tag.
+> > changes of v2: update patch according to Boqun's suggestions.
+> > ---
 > 
-> Doug is listed as the reviewer for this file in MAINTAINERS and has
-> volunteered to be listed within the file as the binding maintainer.
-> Therefore replace Sandeep with Doug to make the documentation current.
+> It seems v3 should have collected the review tags from Boqun and Waiman.
+> Also, I'm actually Cc'ing stable here. I hope that is enough.
+> FWIW, this looks fine to me.
 > 
-> Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-> ---
->   .../devicetree/bindings/display/bridge/ti,sn65dsi86.yaml        | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> index 6ec6d287bff4..c93878b6d718 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> +++ b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> @@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
->   title: SN65DSI86 DSI to eDP bridge chip
->   
->   maintainers:
-> -  - Sandeep Panda <spanda@codeaurora.org>
-> +  - Douglas Anderson <dianders@chromium.org>
->   
->   description: |
->     The Texas Instruments SN65DSI86 bridge takes MIPI DSI in and outputs eDP.
+> Reviewed-by: Carlos Llamas <cmllamas@google.com>
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+
+<formletter>
+
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
+
+</formletter>
 
