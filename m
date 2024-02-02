@@ -1,85 +1,150 @@
-Return-Path: <linux-kernel+bounces-49716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B25F846EA2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F77D846EBD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:15:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 945EDB29A32
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:59:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69244B2B9EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:01:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3940B13DBAF;
-	Fri,  2 Feb 2024 10:56:58 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 594C7199C7
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 10:56:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D8E013D50F;
+	Fri,  2 Feb 2024 11:00:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KPIMzNqs";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KPIMzNqs"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABABF7D3FD;
+	Fri,  2 Feb 2024 11:00:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706871417; cv=none; b=OkUa3/AtYCewLj4vsIIwvKOKsVO5TWcGJD4a+xGTPjbHP+jgmQb1zB3vyKaRTG3q1n3wJkQArjG87/7OplkBdIXV3wZoFO4n3qYdnwAIspCPeKt45Xx4kuu2SkswWdbB5wAesE8mBB03y/3YyV3uDqsWjyVzpCDMf42aRzpoaQQ=
+	t=1706871608; cv=none; b=uovaAo9BFsgPPSEPBXUZtO6MRIxU1aC1zuVXCF1DFRpzA+0K4I5onK4djj+SnGkhF7rdAJYlYTofgxYC5zFvY00il6EILBbh6cK/S4reRgaXCyzCPt1Jo+sSswYE3e1CwLtLjPIerFe453g1gA/FgU5qYSKkFr68eVBZLuHIvsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706871417; c=relaxed/simple;
-	bh=UhmxrKkpaIwAPkg2ey4m3RwDio87j4qiq2Bw8ceoDqo=;
+	s=arc-20240116; t=1706871608; c=relaxed/simple;
+	bh=1J23AqGmkaUeA46ekT+PNdzzWKimIUQMttmnToQg6Jo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AxxRkoq+Ol1YzY/btvMBErS7WFqOURK8u2HyKARHphniFSUyuFgRRKqJos/doWnYZx2k94WRRxS7eAS2DYiAaplIWl3aVBOkVH9HzzjKz6cxtsWi21pXcicRfEys8BX05YHsOeVh9tV1jLa8+Hyee20xUyTeTlsbn+dLYMcaQag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E2B1EDA7;
-	Fri,  2 Feb 2024 02:57:36 -0800 (PST)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1895D3F738;
-	Fri,  2 Feb 2024 02:56:52 -0800 (PST)
-Date: Fri, 2 Feb 2024 10:56:50 +0000
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: Pin-Chuan Liu <flash.liu@mediatek.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	wsd_upstream@mediatek.com, cylen.yao@mediatek.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v2] firmware: arm_scmi: Avoid to call mbox_client_txdone
- on txdone_irq mode
-Message-ID: <ZbzKckIhn8HQv5pW@pluto>
-References: <20240201095754.25374-1-flash.liu@mediatek.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Bs1cmgdtzFzI72DKCjS+nIEFpflyPS4/c1A+2+A/oy6x5AhhQseJ4ahLP5GFAL5r1W1uXy9y5bn/kVM9Ncau5/OsJ7QB8r+QogKFKXPvLM1U6X4ETQY/JUEu5KGKS9uJMfgpSyfVionnxn/4be6FMmTMIHB2gOUJpT8jOocHWR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KPIMzNqs; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KPIMzNqs; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from blackpad (unknown [10.100.12.75])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 9308E1F745;
+	Fri,  2 Feb 2024 11:00:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706871604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1J23AqGmkaUeA46ekT+PNdzzWKimIUQMttmnToQg6Jo=;
+	b=KPIMzNqsrtTVT9Akj7NVZ7qdQWv3GIWzc0C7h17MLej9JI6OveIunt6kuE/Z+t5TTE8012
+	XaEaRrkS2G0QjquGrMig7I3/2uZqkBQrVqmyEZiSS+1dv49pgxNs/dOHoXLOqLGMgd+XWG
+	p00czaocOFmgGms+GGjTzP1X/R0evSo=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706871604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1J23AqGmkaUeA46ekT+PNdzzWKimIUQMttmnToQg6Jo=;
+	b=KPIMzNqsrtTVT9Akj7NVZ7qdQWv3GIWzc0C7h17MLej9JI6OveIunt6kuE/Z+t5TTE8012
+	XaEaRrkS2G0QjquGrMig7I3/2uZqkBQrVqmyEZiSS+1dv49pgxNs/dOHoXLOqLGMgd+XWG
+	p00czaocOFmgGms+GGjTzP1X/R0evSo=
+Date: Fri, 2 Feb 2024 12:00:03 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, cake@lists.bufferbloat.net, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>, Vinicius Costa Gomes <vinicius.gomes@intel.com>, 
+	Stephen Hemminger <stephen@networkplumber.org>, Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>, 
+	Martin Wilck <mwilck@suse.com>, Pedro Tammela <pctammela@mojatatu.com>
+Subject: Re: Re: [PATCH v4 0/4] net/sched: Load modules via alias
+Message-ID: <buiepqadcof3cz6c7dporffaffe4ueqjqg3utapvglxukho36x@oxnkxq4afdtk>
+References: <20240123135242.11430-1-mkoutny@suse.com>
+ <CAM0EoMkA1Hp61mp2n06P8aMdnteJZD5tvJPDOuAKi_PNrb+T9A@mail.gmail.com>
+ <mdosj4utmgvuaezdceoyde2d2q44amozbpdvzo3clljqaxh5ap@x5i22jkftljg>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ufj6mtxpebjbl2n4"
 Content-Disposition: inline
-In-Reply-To: <20240201095754.25374-1-flash.liu@mediatek.com>
+In-Reply-To: <mdosj4utmgvuaezdceoyde2d2q44amozbpdvzo3clljqaxh5ap@x5i22jkftljg>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -2.84
+X-Spamd-Result: default: False [-2.84 / 50.00];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-0.999];
+	 R_RATELIMIT(0.00)[to_ip_from(RLpoxqx1j9hfwga7qi6hxbzrpn)];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[29];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 SIGNED_PGP(-2.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_COUNT_ZERO(0.00)[0];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,lists.bufferbloat.net,davemloft.net,google.com,kernel.org,redhat.com,gmail.com,resnulli.us,iogearbox.net,linux.dev,toke.dk,intel.com,networkplumber.org,suse.cz,suse.com,mojatatu.com];
+	 BAYES_HAM(-1.44)[91.22%];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-On Thu, Feb 01, 2024 at 05:57:52PM +0800, Pin-Chuan Liu wrote:
-> On txdone_irq mode, tx_tick is done from mbox_chan_txdone.
-> Calling to mbox_client_txdone could get error message
-> and return directly, add a check to avoid this.
-> 
-> Signed-off-by: Pin-Chuan Liu <flash.liu@mediatek.com>
 
-Hi Pin-Chuan,
+--ufj6mtxpebjbl2n4
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thanks for this, it was indeed sort of on my todo-list too, to allow MHUs
-equipped with Tx-Ack IRQ to work with SCMI.
+On Wed, Jan 24, 2024 at 02:19:11PM +0100, Michal Koutn=FD <mkoutny@suse.com=
+> wrote:
+> On Wed, Jan 24, 2024 at 07:17:27AM -0500, Jamal Hadi Salim <jhs@mojatatu.=
+com> wrote:
+>...
+> > and i didnt see him say anything).
+>=20
+> Me neither. I may amend the patches more if I missed anything.
 
-Having said that, this looks good to me in general, my only pain points
-are: the fact that we have to peek into the controller structures to know
-how it is configured, BUT I wouldn't know how to do it in any other
-way in fact as pof now...; and the fact that there is a constant runtime
-conditional check for each message sent even though the tx_ack irq presence
-can be detected once for all at setup time, BUT even this is not easily
-solvable as of now in the SCMI stack.
+FTR, v5 is at [1], changes are summed in cover letter's end.
 
-So, after all of this babbling of mine, I would say that  your patch is fine
-as it is, also because it is easy to backport; next week when I am back I'll
-give it a go on a couple of platforms and get back to you with a proper
-review/test.
+Thanks,
+Michal
 
-Thanks again !
-Cristian
+[1] https://lore.kernel.org/r/20240201130943.19536-1-mkoutny@suse.com/
+
+--ufj6mtxpebjbl2n4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZbzLMQAKCRAGvrMr/1gc
+jt2QAQC7isul4PJyDsArmi2U77OYvcXSrHPrhZJ2uQY2LdTp8wEA+h/xTN5uDbYP
+R7MLvmOLa/RI4r3yv83cTkz8ylK+bA8=
+=RjAk
+-----END PGP SIGNATURE-----
+
+--ufj6mtxpebjbl2n4--
 
