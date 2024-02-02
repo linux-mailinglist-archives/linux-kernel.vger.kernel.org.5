@@ -1,94 +1,104 @@
-Return-Path: <linux-kernel+bounces-49526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B70D2846B76
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:03:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDE9E846B92
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:10:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8F5B1C264E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:03:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB58E283030
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:10:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EF7E5FDA3;
-	Fri,  2 Feb 2024 09:03:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="Obbk0Wwj"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9740876902;
+	Fri,  2 Feb 2024 09:10:17 +0000 (UTC)
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17E125FDBE
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A83960DF4;
+	Fri,  2 Feb 2024 09:10:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.78.240
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706864609; cv=none; b=MiiwRiWj233L3BV6gWE75M/Vv7xjL797GuPtWW4viHnCQ/ou25MLT0h0NDw0RcsrOASNgcZf8qtqtOSLXQUeI4ZKzoXqUupTKzOk3xNNb/Fhm2tcQKsI4ViPxkrMMX1Ler5oGQc4n+FGA4ruWPOPw8xpiLWN4NptIoZSGfWzt6k=
+	t=1706865017; cv=none; b=ndm4/GUjX3acTBrDbNq62raDIcG/jORlg44eBomtdN8krjrMa4cEVOXF//KVVL6qKYcR4XN6ZpL26feIYe8gG/+G07N5XG36HXAp9yppn5JxdATmjXQKVraxUjuUPDCxpworTcS7+Pd0yeWusESTA8720436EGZJI3rHVSJP75Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706864609; c=relaxed/simple;
-	bh=CDNDfApB9J/0Mo/v5bcYk9hHAjVgb50qdPNZKhoMavs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dVkLLcQARD1A/Qy1NVIlISZBBnhLaiDKto/yBRF9fuGpottZL5XcywIuZ5uHDSVVW+TjE7ySVofHCq1pQlfwGvadJvFv7HodocUyzm+FgocrXNcBaT/WgqYVYVl+LTBwYKP6k+ZKlPo8xp47P+lwr/DQ/m25XX4bBs7Kub0YE/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=Obbk0Wwj; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from terminus.zytor.com (terminus.zytor.com [IPv6:2607:7c80:54:3:0:0:0:136])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 41292Quf322558
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-	Fri, 2 Feb 2024 01:02:30 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 41292Quf322558
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024011201; t=1706864550;
-	bh=tgJVLIOaqTWEKblzYegcEPlggy9ZwJZR9Relq2fS08A=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Obbk0Wwj92zGl1WuVKYJihGs+dBMEkJwIBrBtDEpFNvIRwHbZZazIfhuD0ktbxmFv
-	 kzZsz2/jqpRlkZ9/eOtRegQxyYMPSdWEDDbtNk8yLsDK4TGTF2ZnomwhqL+JonEIkH
-	 92Nj4y8SsIdcG29xDd0mjoqPhg5MPC8MA76VELP6rpZyabYnX15YsD/clwMIQ8hIGG
-	 ubMyXRRCHyIoFFVG+xfEz9RQ+DX3ZzDzetEpTg51kDW3P0BPb081Pa3GfYNzFC+Jc/
-	 Lb3KYlHL7oCrnP2GlqFtM43EFMoA5WMh/sIbi3+vV5QT5fQIy9zFxQydpOevL0Xa5l
-	 xKiGBWAH/jmCA==
-From: "Xin Li (Intel)" <xin@zytor.com>
-To: linux-kernel@vger.kernel.org
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        sfr@canb.auug.org.au
-Subject: [PATCH v1 1/1] x86/fred: Fix a build warning with allmodconfig
-Date: Fri,  2 Feb 2024 01:02:24 -0800
-Message-ID: <20240202090225.322544-1-xin@zytor.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706865017; c=relaxed/simple;
+	bh=9Lw3yyGGfLfAKvtWSVgcJ3MOHZlqdZ5nHi2QTFG85R8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ek7OA4WoFSxRM2ZA5m5PqGMi1yhxUQlXgByeIVQQwK6vgsxR6bjTxdTjLdn4212N1q8+4fiZ+dk7xVBMnd06hGSQQtGQrhWzVV1O/UDIqJAlaDWmfqFrI/XyMoQjkXSrSrUX3sI58CiSZP2eE1ImRl1pPvWHtBe1i1z5Rjez55U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.78.240
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout2.hostsharing.net (Postfix) with ESMTPS id 99FF62800B3D2;
+	Fri,  2 Feb 2024 10:00:33 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 8C6CE2F6385; Fri,  2 Feb 2024 10:00:33 +0100 (CET)
+Date: Fri, 2 Feb 2024 10:00:33 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof Wilczy??ski <kw@linux.com>, Rob Herring <robh@kernel.org>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	quic_krichai@quicinc.com, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 0/2] Enable D3 support for Qualcomm bridges
+Message-ID: <20240202090033.GA9589@wunner.de>
+References: <20240202-pcie-qcom-bridge-v1-0-46d7789836c0@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240202-pcie-qcom-bridge-v1-0-46d7789836c0@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Change array_index_mask_nospec() to __always_inline because "inline" is
-broken as https://www.kernel.org/doc/local/inline.html.
+On Fri, Feb 02, 2024 at 12:24:16PM +0530, Manivannan Sadhasivam wrote:
+> This series enables D3 support for PCI bridges found in Qcom SoCs. Currently,
+> PCI core will enable D3 support for PCI bridges only when the following
+> conditions are met:
+> 
+> 1. Platform is ACPI based
+> 2. Thunderbolt controller is used
+> 3. pcie_port_pm=force passed in cmdline
+> 
+> While options 1 and 2 do not apply to Qcom SoCs, option 3 will make the life
+> harder for distro maintainers. Due to this, runtime PM is also not getting
+> enabled for the bridges.
+> 
+> Ideally, D3 support should be enabled by default for the recent PCI bridges,
+> but we do not have a sane way to detect them. So this series adds a new flag
+> "bridge_d3_capable" to "struct pci_dev" which could be set by the bridge
+> drivers for capable devices. This will allow the PCI core to enable D3
+> support for the bridges during enumeration.
 
-Fixes: 6786137bf8fd ("x86/fred: FRED entry/exit and dispatch code")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Link: https://lore.kernel.org/lkml/20240201111453.0ee3beff@canb.auug.org.au/
-Signed-off-by: Xin Li (Intel) <xin@zytor.com>
----
- arch/x86/include/asm/barrier.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think the right way to do this is to use the existing call to
+platform_pci_bridge_d3() in pci_bridge_d3_possible().
 
-diff --git a/arch/x86/include/asm/barrier.h b/arch/x86/include/asm/barrier.h
-index 0216f63a366b..fe1e7e3cc844 100644
---- a/arch/x86/include/asm/barrier.h
-+++ b/arch/x86/include/asm/barrier.h
-@@ -33,7 +33,7 @@
-  * Returns:
-  *     0 - (index < size)
-  */
--static inline unsigned long array_index_mask_nospec(unsigned long index,
-+static __always_inline unsigned long array_index_mask_nospec(unsigned long index,
- 		unsigned long size)
- {
- 	unsigned long mask;
+Please amend platform_pci_bridge_d3() to call a new of_pci_bridge_d3()
+function which determines whether D3 is supported by the platform.
 
-base-commit: 208d8c79fd0f155bce1b23d8d78926653f7603b7
--- 
-2.43.0
+E.g. of_pci_bridge_d3() could contain a whitelist of supported VID/DID
+tuples.  Or it could be defined as a __weak function which always
+returns false but can be overridden at link time by a function
+defined somewhere in arch/arm/, arch/arm64/ or in some driver
+whose Kconfig option is enabled in Qualcomm platforms.
 
+Adding a bit to struct pci_dev essentially duplicates the existing
+platform_pci_bridge_d3() functionality, which seems inelegant.
+It increases the size of struct pci_dev even on platforms which
+don't need it (e.g. ACPI).
+
+Thanks,
+
+Lukas
 
