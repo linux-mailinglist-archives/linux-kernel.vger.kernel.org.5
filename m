@@ -1,82 +1,147 @@
-Return-Path: <linux-kernel+bounces-49476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C390A846ACD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:36:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF8D0846AD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:37:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 784121F2797D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:36:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71437280C9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:37:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E85182DD;
-	Fri,  2 Feb 2024 08:36:44 +0000 (UTC)
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E3FC14F7A;
+	Fri,  2 Feb 2024 08:36:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MfR2fiOg"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAED5182BE;
-	Fri,  2 Feb 2024 08:36:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11E541863F
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 08:36:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706863004; cv=none; b=la+LJPXnI/QPGQfXzqT0wNx4F/OJoHjUEnkJ7SmfwnMa5BjBjAJ+lgew8Z+F7sF73ev7MoMK6JNiPAdWhpgw+uWcyhyTy3kgvtrGsgADrKgIdPhTYfxwViHkirehIyDaB8HAlkGvYeG0lgGElLNup1x8aI79Msq1q10ZbdF3v9E=
+	t=1706863006; cv=none; b=sYS7d+Pq7XmKhyMuDVl4zVCuYfm9MRqw6R1CMBo3n1c4sbW8rb9Ijf2tQxLOkkCZTCVN9KSzXllSqd9YCnmL7KuqcnUTQyR7nVWXS8U51JPJ6RiW+ubyHlpQ+23yYVP8tZGaCyrkojR+o2Ff+oXEsJ2P9tda0I5//x1Ucjf82ms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706863004; c=relaxed/simple;
-	bh=eolS9kucw4GS7qQgXMbsHb/gx9RBQSE7IndU+OJ5npg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CmUaUKJbChG4TZueqfN0Di1IheY6nqWqHr1PBbcTLMFt2J4MQVrsVakSJwn15/fcIj96vEesmmwfo/V6gIZUPQUFyA6dsEJUe0EpJkoBkOBeeRZ4SZe2OjF+pOa29LFrvueaSVIsTNdns9AFv94si5b0pCmHZgzcUoArfwo+kTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rVp22-0090Dp-VU; Fri, 02 Feb 2024 16:36:20 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 02 Feb 2024 16:36:32 +0800
-Date: Fri, 2 Feb 2024 16:36:32 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: JiaJie Ho <jiajie.ho@starfivetech.com>
-Cc: "'David S . Miller'" <davem@davemloft.net>,
-	'Rob Herring' <robh+dt@kernel.org>,
-	'Krzysztof Kozlowski' <krzysztof.kozlowski+dt@linaro.org>,
-	'Conor Dooley' <conor+dt@kernel.org>,
-	"'linux-crypto@vger.kernel.org'" <linux-crypto@vger.kernel.org>,
-	"'devicetree@vger.kernel.org'" <devicetree@vger.kernel.org>,
-	"'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 4/5] crypto: starfive: Add sm3 support for JH8100
-Message-ID: <ZbypkC/y1einkKmw@gondor.apana.org.au>
-References: <20240116090135.75737-1-jiajie.ho@starfivetech.com>
- <20240116090135.75737-5-jiajie.ho@starfivetech.com>
- <ZbNCKrTLXmPcsrSH@gondor.apana.org.au>
- <BJSPR01MB0659C3FE1262DF8CC7F7DA468A43A@BJSPR01MB0659.CHNPR01.prod.partner.outlook.cn>
- <Zbsu39gZn2cGrnew@gondor.apana.org.au>
- <SHXPR01MB0670720DD9EAB09EE8A1B13E8A43A@SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn>
- <Zbs1xy4DesZDkFC4@gondor.apana.org.au>
- <SHXPR01MB067059F064CD56ED58DE6F9A8A43A@SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn>
+	s=arc-20240116; t=1706863006; c=relaxed/simple;
+	bh=kLSRj3dY7enfEXLlfpsKMblPexWph2+9JD5884nsQPw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=hmd3B5mMFtebcwfzXNVPy/odteFuiaqUj1jveiV1fuYg9k8duwR/b7bh+nCri79W4uD8xLmtNOivcNbDwhKPHOvQ+m6Ma/+s5UyvbCLtAs0PsZr3DTxS/9q08+1uOshz3CSacHj5ngv5sUemNsOa96TMsMvvi5fdlIYkOnADas0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MfR2fiOg; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706863004;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=kLSRj3dY7enfEXLlfpsKMblPexWph2+9JD5884nsQPw=;
+	b=MfR2fiOg8kgZDS5g3c2lpuWAph2yrOsvp7gzP8h6W7vuDxs2apmsKjurpDzBQjlRJVpZsR
+	E+VAz9/LuQvdRUvZGhSVjRN+5zmc9oDoSD5ZFNcWmnidRpKfAosl5MIBImHsbOG+letIsL
+	OyUUfSpguuMp/mVbYqOMeFiXHJcLpM8=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-640-ws0KNvO6MmSLcaZlPjgQeA-1; Fri, 02 Feb 2024 03:36:42 -0500
+X-MC-Unique: ws0KNvO6MmSLcaZlPjgQeA-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33b187e6f96so19753f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 00:36:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706863001; x=1707467801;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kLSRj3dY7enfEXLlfpsKMblPexWph2+9JD5884nsQPw=;
+        b=MY8l7GqjGBParY6eMoe5SXSkZrcwxMSTHub5gaavMQKpuQ5CAa0UbNogqr8j4T+tHF
+         AuUdNBA88KphZoegTVIb/DBvVeBhNLhY9L5Ok0z92H5xDAhgG2PfsvnNrwJU70FXkWW2
+         I5f1C1RK0ZIa49KGk8n5/Ysw3gWZy3kKpADOV/wZipLu3cW+WOO353CV8VNkrwsMvHrN
+         +06pFYGcCVVQU3kSOM4vCGa22n3+nTNtFyFtRb3YVc85kYQksvNK/ZewnHb2OSG97kwh
+         YgeRqgO1DoPDbcJhtJnfH4x/MmD+PXBioQfYdCbVLTUTtLv9j82l7lBFOtpHLyTuexNk
+         kQAw==
+X-Forwarded-Encrypted: i=0; AJvYcCV7tFnT/Za04VBO3/XqidDxkpm8bwVh1Ad0Wdd10M9OpEKlK5MVLCROmhDmv0owGft1lgFA9vWiD/TS/iCTv6cjHTq2xd5SjLDDP6hu
+X-Gm-Message-State: AOJu0YyMFdzuALfui5SZSs0Gr+6LCJ6vz8wxWY85p1A1Ht3qrmHtqUvH
+	+hGCo+XKnJQSjAG9axYcTPQ830nXFwkwe0yVC6zVMzQnZZPIs8iJwQ8pJBbFO57EzNVDCDZtdYd
+	KK2Fxsyl8H9XnpnRpcZd8Omxw1HatYoghOcgOvIbaeWY9NVH+Y//hCmx3iaWiQg==
+X-Received: by 2002:a5d:69c1:0:b0:33b:1126:7326 with SMTP id s1-20020a5d69c1000000b0033b11267326mr3810484wrw.4.1706863001438;
+        Fri, 02 Feb 2024 00:36:41 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFY1S6pSccvpGarJL0l/Y2hkINSCPC2MzAQVlVlHMLvWXGRgWSZ6IQXHgMREO1GczDqwvTavA==
+X-Received: by 2002:a5d:69c1:0:b0:33b:1126:7326 with SMTP id s1-20020a5d69c1000000b0033b11267326mr3810470wrw.4.1706863001080;
+        Fri, 02 Feb 2024 00:36:41 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUig5eBFQa0SYflL1GBVpgYTsv01x7Rn6WIi+HrXPFMHdiRBX65TZHjuYpHgGvOF/fsZgEptPJx17+lb618UIuhu9o3vM8DXNtD6YV0+03tk7NMhfvkrtJmS4x7013euvor26JR+nTJdnHYfbj78/pMFgls9VOpEg06OUXj1OjNGX+5pQtBadcPxX4bpuoWRSK1mVaiO6Y5I+f6hABsYNl4oUU8r+sUe0pwAuv3R350KvcE0STy5x+RpNcfGVKdcgEXJM+sAqxBxlTl3e9cNCXlbR/7dS5SzuGWAnhUvMlJsdzpN5Uoy/xtj9S8LJz+q28iON25uYBQR0eZK4JnuaTsEtZy1rrR4mhFT0deEdNW+Cab4Ehsp29E9y0IlZFnk8c0D8tJvcZa7x257sIvOPmNKq9ApCoBg6uSuuwQJfZy4B+7
+Received: from gerbillo.redhat.com (146-241-232-21.dyn.eolo.it. [146.241.232.21])
+        by smtp.gmail.com with ESMTPSA id b11-20020a5d45cb000000b0033afd49cac7sm1404811wrs.43.2024.02.02.00.36.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 00:36:40 -0800 (PST)
+Message-ID: <868b806f0d6b365334ac79a11a3a1a8a1588cbdf.camel@redhat.com>
+Subject: Re: [PATCH net-next v4 2/5] page_frag: unify gfp bits for order 3
+ page allocation
+From: Paolo Abeni <pabeni@redhat.com>
+To: Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+ kuba@kernel.org
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Alexander Duyck
+	 <alexanderduyck@fb.com>, Alexander Duyck <alexander.duyck@gmail.com>, 
+	"Michael S. Tsirkin"
+	 <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, Andrew Morton
+	 <akpm@linux-foundation.org>, Eric Dumazet <edumazet@google.com>, 
+	kvm@vger.kernel.org, virtualization@lists.linux.dev, linux-mm@kvack.org
+Date: Fri, 02 Feb 2024 09:36:38 +0100
+In-Reply-To: <2e8606b1-81c2-6f3f-622c-607db5e90253@huawei.com>
+References: <20240130113710.34511-1-linyunsheng@huawei.com>
+	 <20240130113710.34511-3-linyunsheng@huawei.com>
+	 <81c37127dda0f2f69a019d67d4420f62c995ee7f.camel@redhat.com>
+	 <2e8606b1-81c2-6f3f-622c-607db5e90253@huawei.com>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SHXPR01MB067059F064CD56ED58DE6F9A8A43A@SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn>
 
-On Thu, Feb 01, 2024 at 06:40:09AM +0000, JiaJie Ho wrote:
->
-> The object files defining these functions aren't included for CRYPTO_DEV_JH7110 in the Makefile.
-> obj-$(CONFIG_CRYPTO_DEV_JH7110) += jh7110-crypto.o
-> jh7110-crypto-objs := jh7110-cryp.o jh7110-hash.o jh7110-rsa.o jh7110-aes.o
-> 
-> obj-$(CONFIG_CRYPTO_DEV_JH8100) += jh8100-crypto.o
-> jh8100-crypto-objs := jh7110-cryp.o jh7110-hash.o jh7110-rsa.o jh7110-aes.o jh8100-sm3.o jh8100-sm4.o
+On Fri, 2024-02-02 at 10:10 +0800, Yunsheng Lin wrote:
+> On 2024/2/1 21:16, Paolo Abeni wrote:
+>=20
+> > from the __page_frag_cache_refill() allocator - which never accesses
+> > the memory reserves.
+>=20
+> I am not really sure I understand the above commemt.
+> The semantic is the same as skb_page_frag_refill() as explained above
+> as my understanding. Note that __page_frag_cache_refill() use 'gfp_mask'
+> for allocating order 3 pages and use the original 'gfp' for allocating
+> order 0 pages.
 
-What happens if someone enables/loads both drivers? If you want
-to share code then that needs to be split out into a third module.
+You are right! I got fooled misreading 'gfp' as 'gfp_mask' in there.
 
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+> > I'm unsure we want to propagate the __page_frag_cache_refill behavior
+> > here, the current behavior could be required by some systems.
+> >=20
+> > It looks like this series still leave the skb_page_frag_refill()
+> > allocator alone, what about dropping this chunk, too?=20
+>=20
+> As explained above, I would prefer to keep it as it is as it seems
+> to be quite obvious that we can avoid possible pressure for mm by
+> not using memory reserve for order 3 pages as we have the fallback
+> for order 0 pages.
+>=20
+> Please let me know if there is anything obvious I missed.
+>=20
+
+I still think/fear=C2=A0that behaviours changes here could have
+subtle/negative side effects - even if I agree the change looks safe.
+
+I think the series without this patch would still achieve its goals and
+would be much more uncontroversial. What about move this patch as a
+standalone follow-up?
+
+Thanks!
+
+Paolo
+
 
