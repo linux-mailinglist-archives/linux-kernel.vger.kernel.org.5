@@ -1,144 +1,378 @@
-Return-Path: <linux-kernel+bounces-49972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F15384724F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:55:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAD0B847260
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:56:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 193C829231A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:55:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72AC12931E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:56:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F328C145B02;
-	Fri,  2 Feb 2024 14:55:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ghXb/fWY"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BAC847774
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 14:55:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B868B1419B0;
+	Fri,  2 Feb 2024 14:56:35 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49689144609;
+	Fri,  2 Feb 2024 14:56:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706885727; cv=none; b=VcFqshyyuyqPcZ/xKdfI43+J7B+THBv3fsfWjnTz2RvX+F33tFgvosyjc27aR+C495kVDfX//KYYDngtkvzJWOxD0vXici+gakvFTJxrUw7SrYGI1mpstTQ8Xt3eEIi36mkDGQRi/k/yn4fD0H92lZVbuYxVsUTIu0DhOBdA9jc=
+	t=1706885794; cv=none; b=lyyX3SWnNTZ9U598dq0yLSt4kPCqOYoErMAKkyc2uOgKWEFsrtj7VKINsZ9kgoe1Mc9qExiprCXpOP2YrKyrDkt8gLnB/Ck4kKcrEw8iwGn669CwDy24JrkFLU2DNFbN2OhRx71+VoYsHtPmcnYPTmpDiC3lVePZtUcoJdVgkN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706885727; c=relaxed/simple;
-	bh=FDmCfYcYrJAQN2FZ3hUO8CV1dIYQcj/nQnzfYq13GdQ=;
+	s=arc-20240116; t=1706885794; c=relaxed/simple;
+	bh=SJlQhmb5tC5daGZOVHcT81vuW/W+IrMxxcibXDyUhBs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X6cFYRY90Rmb3MxDskeNVlwXHwk42fJzDX7ZTqlAmPYdtVnvJRaBnffkAlbYXmfdMLXddS5Y4M0KzlpqYCYbi9K74zA8j0mFkX70Z67hpmyy/rg1xgF9dantoJjX/3nGKJKNRl1iTwGPN0HP7FP6Te4z2+z/9KTLmt8JniZpgZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ghXb/fWY; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706885723;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+jzHzjkx7wAlR4i0iiz1jxVoCpgPbIcw/3M8GzERXSo=;
-	b=ghXb/fWYWAiBilG/mFvkZltWiVazzhy+nWvRG5dZNxsEvFFCK++YVyugd1PeYDT/yDgV1R
-	5jmBsztfP1X0ztAchIW80RPfyzmvxCp52F3DlBDKwoehBkjah2o1uHxsRQLp1fSNXnIAuB
-	luzZb/wgcPZBpHW8WI0qKY1x01l04IQ=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-671-ywxebK-DNUqeHreVLX_8uw-1; Fri, 02 Feb 2024 09:55:21 -0500
-X-MC-Unique: ywxebK-DNUqeHreVLX_8uw-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-42beca944beso28271211cf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 06:55:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706885720; x=1707490520;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+jzHzjkx7wAlR4i0iiz1jxVoCpgPbIcw/3M8GzERXSo=;
-        b=mm4MyIMRvvbw74kqxHHDZ1NRom6KQAYsfkU7pFL64zlZuy2X7CKeHmcVIWEE1b3yKw
-         0vNpoNqh8qYDFoUz0pZgK4Y1MGwRhLX0pbpyv4UJHiw6tI7o0hr5SwiM7khBGyF7C9d7
-         jJgfYXs3y5IPKpjNX+M6CH6p78IJnV8baobSAWCxHEVTbRvRnFCp744+p8WPLoHIrd2z
-         JHr/b3HYfCBYReSdfkbQSFNwWhgrOpr3gddvko0j9ZCKXxCMejbEW8xgLxdfIlAMnSFZ
-         9UmgUQfJ5jLSalA1D5UY6VC7uyJSInSdox1CUKH7UOokRZ2hUbbM56cdr/PmAFqTiheE
-         xr/Q==
-X-Gm-Message-State: AOJu0YwTqltu8eHrk3vAxwJ6NjQDIbiNWHpBN05EH3JeQdixO66Pxc4H
-	0P66UZXO+ludU2r3E2gtYyJo0SGM+NxsZJ19VIocw45cMy14eEJc3FdnwiPd5zkCUwsJnIckXjt
-	6p0QiGQwG7QHm8BzfjXQoFm1zOvTri6+QKvkvK97vbKi9+VbDHFhkp07g7G35/w==
-X-Received: by 2002:a05:622a:5c7:b0:42c:a4e:e266 with SMTP id d7-20020a05622a05c700b0042c0a4ee266mr496617qtb.21.1706885720480;
-        Fri, 02 Feb 2024 06:55:20 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGdvzYW/mO/aHwG8d/fyOMPNgM5X6Ei7hEHaZPUJTTwoXEYk1hP5nHn7cYvumPCjk6kIiLYdQ==
-X-Received: by 2002:a05:622a:5c7:b0:42c:a4e:e266 with SMTP id d7-20020a05622a05c700b0042c0a4ee266mr496598qtb.21.1706885720172;
-        Fri, 02 Feb 2024 06:55:20 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXDZbI+ex6y0R4OHoxuBdIsJiyiRkEAuUMJRnR3Ui6AeVrsi9Lz3ME9NMOm1Iv1/XIoYBCew5rZ5QGm8YoyGgY5ujhEvl62F6jts63dACIGiTzQv65//0VhPMDyn8FLka7PhvV96CCOjgNZIBOF2s16afb1S5CVGp+7Bds3PP9BiAEosK1rCUNxRW0NVsc=
-Received: from localhost.localdomain ([151.29.75.172])
-        by smtp.gmail.com with ESMTPSA id cc22-20020a05622a411600b0042be0933c1csm886818qtb.15.2024.02.02.06.55.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 06:55:19 -0800 (PST)
-Date: Fri, 2 Feb 2024 15:55:15 +0100
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
-	linux-kernel@vger.kernel.org, Cestmir Kalina <ckalina@redhat.com>,
-	Alex Gladkov <agladkov@redhat.com>
-Subject: Re: [RFC PATCH 0/3] workqueue: Enable unbound cpumask update on
- ordered workqueues
-Message-ID: <Zb0CU2OrTCv457Wo@localhost.localdomain>
-References: <20240130183336.511948-1-longman@redhat.com>
- <ZbpElS5sQV_o9NG1@localhost.localdomain>
- <89927d84-279a-492e-83d3-6d3e20b722f7@redhat.com>
- <Zbtv4v2KCKshnCL2@localhost.localdomain>
- <ff2c0ce1-4d40-4661-8d74-c1d81ff505ec@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=QR8XL0ePbEt0kc9ktuETt/be4QtnQtjDU9ZOaz+kNX+JkG0qKLH8pp8EdeknFzQdx+D3/aLNttjhUOnetTeq5A0XQH5UErw/8rG3G//iq7EaarMZSbytyHdCIVxNJSfurkDSVVmFPhNXRHBrpdX0ZkolGJBfnVwNNhQpiyUv4js=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E78D3DA7;
+	Fri,  2 Feb 2024 06:57:13 -0800 (PST)
+Received: from raptor (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FB8B3F5A1;
+	Fri,  2 Feb 2024 06:56:26 -0800 (PST)
+Date: Fri, 2 Feb 2024 14:56:15 +0000
+From: Alexandru Elisei <alexandru.elisei@arm.com>
+To: Peter Collingbourne <pcc@google.com>
+Cc: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+	maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+	yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+	rppt@kernel.org, hughd@google.com, steven.price@arm.com,
+	anshuman.khandual@arm.com, vincenzo.frascino@arm.com,
+	david@redhat.com, eugenis@google.com, kcc@google.com,
+	hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC v3 28/35] arm64: mte: swap: Handle tag restoring when
+ missing tag storage
+Message-ID: <Zb0CRYSmQxJ_N4Sr@raptor>
+References: <20240125164256.4147-1-alexandru.elisei@arm.com>
+ <20240125164256.4147-29-alexandru.elisei@arm.com>
+ <CAMn1gO7M51QtxPxkRO3ogH1zasd2-vErWqoPTqGoPiEvr8Pvcw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ff2c0ce1-4d40-4661-8d74-c1d81ff505ec@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMn1gO7M51QtxPxkRO3ogH1zasd2-vErWqoPTqGoPiEvr8Pvcw@mail.gmail.com>
 
-On 01/02/24 09:28, Waiman Long wrote:
-> On 2/1/24 05:18, Juri Lelli wrote:
-> > On 31/01/24 10:31, Waiman Long wrote:
+Hi Peter,
 
-..
-
-> > My patch only uses the wq->unbound_attrs->cpumask to change the
-> > associated rescuer cpumask, but I don't think your series modifies the
-> > former?
+On Thu, Feb 01, 2024 at 08:02:40PM -0800, Peter Collingbourne wrote:
+> On Thu, Jan 25, 2024 at 8:45 AM Alexandru Elisei
+> <alexandru.elisei@arm.com> wrote:
+> >
+> > Linux restores tags when a page is swapped in and there are tags associated
+> > with the swap entry which the new page will replace. The saved tags are
+> > restored even if the page will not be mapped as tagged, to protect against
+> > cases where the page is shared between different VMAs, and is tagged in
+> > some, but untagged in others. By using this approach, the process can still
+> > access the correct tags following an mprotect(PROT_MTE) on the non-MTE
+> > enabled VMA.
+> >
+> > But this poses a challenge for managing tag storage: in the scenario above,
+> > when a new page is allocated to be swapped in for the process where it will
+> > be mapped as untagged, the corresponding tag storage block is not reserved.
+> > mte_restore_page_tags_by_swp_entry(), when it restores the saved tags, will
+> > overwrite data in the tag storage block associated with the new page,
+> > leading to data corruption if the block is in use by a process.
+> >
+> > Get around this issue by saving the tags in a new xarray, this time indexed
+> > by the page pfn, and then restoring them when tag storage is reserved for
+> > the page.
+> >
+> > Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> > ---
+> >
+> > Changes since rfc v2:
+> >
+> > * Restore saved tags **before** setting the PG_tag_storage_reserved bit to
+> > eliminate a brief window of opportunity where userspace can access uninitialized
+> > tags (Peter Collingbourne).
+> >
+> >  arch/arm64/include/asm/mte_tag_storage.h |   8 ++
+> >  arch/arm64/include/asm/pgtable.h         |  11 +++
+> >  arch/arm64/kernel/mte_tag_storage.c      |  12 ++-
+> >  arch/arm64/mm/mteswap.c                  | 110 +++++++++++++++++++++++
+> >  4 files changed, 140 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/arm64/include/asm/mte_tag_storage.h b/arch/arm64/include/asm/mte_tag_storage.h
+> > index 50bdae94cf71..40590a8c3748 100644
+> > --- a/arch/arm64/include/asm/mte_tag_storage.h
+> > +++ b/arch/arm64/include/asm/mte_tag_storage.h
+> > @@ -36,6 +36,14 @@ bool page_is_tag_storage(struct page *page);
+> >
+> >  vm_fault_t handle_folio_missing_tag_storage(struct folio *folio, struct vm_fault *vmf,
+> >                                             bool *map_pte);
+> > +vm_fault_t mte_try_transfer_swap_tags(swp_entry_t entry, struct page *page);
+> > +
+> > +void tags_by_pfn_lock(void);
+> > +void tags_by_pfn_unlock(void);
+> > +
+> > +void *mte_erase_tags_for_pfn(unsigned long pfn);
+> > +bool mte_save_tags_for_pfn(void *tags, unsigned long pfn);
+> > +void mte_restore_tags_for_pfn(unsigned long start_pfn, int order);
+> >  #else
+> >  static inline bool tag_storage_enabled(void)
+> >  {
+> > diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> > index 0174e292f890..87ae59436162 100644
+> > --- a/arch/arm64/include/asm/pgtable.h
+> > +++ b/arch/arm64/include/asm/pgtable.h
+> > @@ -1085,6 +1085,17 @@ static inline void arch_swap_invalidate_area(int type)
+> >                 mte_invalidate_tags_area_by_swp_entry(type);
+> >  }
+> >
+> > +#ifdef CONFIG_ARM64_MTE_TAG_STORAGE
+> > +#define __HAVE_ARCH_SWAP_PREPARE_TO_RESTORE
+> > +static inline vm_fault_t arch_swap_prepare_to_restore(swp_entry_t entry,
+> > +                                                     struct folio *folio)
+> > +{
+> > +       if (tag_storage_enabled())
+> > +               return mte_try_transfer_swap_tags(entry, &folio->page);
+> > +       return 0;
+> > +}
+> > +#endif
+> > +
+> >  #define __HAVE_ARCH_SWAP_RESTORE
+> >  static inline void arch_swap_restore(swp_entry_t entry, struct folio *folio)
+> >  {
+> > diff --git a/arch/arm64/kernel/mte_tag_storage.c b/arch/arm64/kernel/mte_tag_storage.c
+> > index afe2bb754879..ac7b9c9c585c 100644
+> > --- a/arch/arm64/kernel/mte_tag_storage.c
+> > +++ b/arch/arm64/kernel/mte_tag_storage.c
+> > @@ -567,6 +567,7 @@ int reserve_tag_storage(struct page *page, int order, gfp_t gfp)
+> >                 }
+> >         }
+> >
+> > +       mte_restore_tags_for_pfn(page_to_pfn(page), order);
+> >         page_set_tag_storage_reserved(page, order);
+> >  out_unlock:
+> >         mutex_unlock(&tag_blocks_lock);
+> > @@ -595,7 +596,8 @@ void free_tag_storage(struct page *page, int order)
+> >         struct tag_region *region;
+> >         unsigned long page_va;
+> >         unsigned long flags;
+> > -       int ret;
+> > +       void *tags;
+> > +       int i, ret;
+> >
+> >         ret = tag_storage_find_block(page, &start_block, &region);
+> >         if (WARN_ONCE(ret, "Missing tag storage block for pfn 0x%lx", page_to_pfn(page)))
+> > @@ -605,6 +607,14 @@ void free_tag_storage(struct page *page, int order)
+> >         /* Avoid writeback of dirty tag cache lines corrupting data. */
+> >         dcache_inval_tags_poc(page_va, page_va + (PAGE_SIZE << order));
+> >
+> > +       tags_by_pfn_lock();
+> > +       for (i = 0; i < (1 << order); i++) {
+> > +               tags = mte_erase_tags_for_pfn(page_to_pfn(page + i));
+> > +               if (unlikely(tags))
+> > +                       mte_free_tag_buf(tags);
+> > +       }
+> > +       tags_by_pfn_unlock();
+> > +
+> >         end_block = start_block + order_to_num_blocks(order, region->block_size_pages);
+> >
+> >         xa_lock_irqsave(&tag_blocks_reserved, flags);
+> > diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
+> > index 2a43746b803f..e11495fa3c18 100644
+> > --- a/arch/arm64/mm/mteswap.c
+> > +++ b/arch/arm64/mm/mteswap.c
+> > @@ -20,6 +20,112 @@ void mte_free_tag_buf(void *buf)
+> >         kfree(buf);
+> >  }
+> >
+> > +#ifdef CONFIG_ARM64_MTE_TAG_STORAGE
+> > +static DEFINE_XARRAY(tags_by_pfn);
+> > +
+> > +void tags_by_pfn_lock(void)
+> > +{
+> > +       xa_lock(&tags_by_pfn);
+> > +}
+> > +
+> > +void tags_by_pfn_unlock(void)
+> > +{
+> > +       xa_unlock(&tags_by_pfn);
+> > +}
+> > +
+> > +void *mte_erase_tags_for_pfn(unsigned long pfn)
+> > +{
+> > +       return __xa_erase(&tags_by_pfn, pfn);
+> > +}
+> > +
+> > +bool mte_save_tags_for_pfn(void *tags, unsigned long pfn)
+> > +{
+> > +       void *entry;
+> > +       int ret;
+> > +
+> > +       ret = xa_reserve(&tags_by_pfn, pfn, GFP_KERNEL);
 > 
-> I don't think so. The calling sequence of apply_wqattrs_prepare() and
-> apply_wqattrs_commit() will copy unbound_cpumask into ctx->attrs which is
-> copied into unbound_attrs. So unbound_attrs->cpumask should reflect the new
-> global unbound cpumask. This code is there all along.
+> copy_highpage can be called from an atomic context, so it isn't
+> currently valid to pass GFP_KERNEL here.
+> 
+> To give one example of a possible atomic context call, copy_pte_range
+> will take a PTE spinlock and can call copy_present_pte, which can call
+> copy_present_page, which will call copy_user_highpage.
+> 
+> To give another example, __buffer_migrate_folio can call
+> spin_lock(&mapping->private_lock), then call folio_migrate_copy, which
+> will call folio_copy.
 
-Indeed. I believe this is what my 3/4 [1] was trying to cure, though. I
-still think that with current code the new_attr->cpumask gets first
-correctly initialized considering unbound_cpumask
+That is very unfortunate from my part. I distinctly remember looking
+precisely at copy_page_range() to double check that it doesn't call
+copy_*highpage() from an atomic context, I can only assume that I missed
+that it's called with the ptl lock held.
 
-apply_wqattrs_prepare ->
-  copy_workqueue_attrs(new_attrs, attrs);
-  wqattrs_actualize_cpumask(new_attrs, unbound_cpumask);
+With your two examples, and the khugepaged case in patch #31 ("khugepaged:
+arm64: Don't collapse MTE enabled VMAs"), it's crystal clear that the
+convention for copy_*highpage() is that the function cannot sleep.
 
-but then overwritten further below using cpu_possible_mask
+There are two issues here: allocating the buffer in memory where the tags
+will be copied, and xarray allocating memory for a new entry.
 
-apply_wqattrs_prepare ->
-  copy_workqueue_attrs(new_attrs, attrs);
-  cpumask_and(new_attrs->cpumask, new_attrs->cpumask, cpu_possible_mask);
+One fix would be to allocate an entire page with __GFP_ATOMIC, and use that
+as a cache for tag buffers (storing the tags for a page uses 1/32th of a
+page). From what little I know about xarray, xarray stores would still have
+to be GFP_ATOMIC. This should fix the sleeping in atomic context bug. But
+the issue I see with this is that a memory allocation can fail, while
+copy_*highpage() cannot. Send a fatal signal to the process if memory
+allocation fails?
 
-operation that I honestly seem to still fail to grasp why we need to do.
-:)
+Another approach would be to preallocate memory in a preemptible context,
+something like copy_*highpage_prepare(), but that would mean a lot more
+work: finding all the places where copy_*highpage is used and add
+copy_*highpage_prepare() outside the critical section, releasing the memory
+in case of failure (like in the copy_pte_range() case - maybe
+copy_*highpage_end()?). That's a pretty big maintenance burden for the MM
+code. Although maybe other architectures can find a use for it?
 
-In the end we commit that last (overwritten) cpumask
+And yet another approach is reserve the needed memory (for the buffer and
+in the xarray) when the page is allocated, if it doesn't have tag storage
+reserved, regardless of the page being allocated as tagged or not. Then in
+set_pte_at() free this memory if it's unused. But this would mean reserving
+memory for possibly all memory allocations in the system (including for tag
+storage pages) if userspace doesn't use tags at all, though not all pages
+in the system will have this memory reserved at the same time. Pretty big
+downside.
 
-apply_wqattrs_commit ->
-  copy_workqueue_attrs(ctx->wq->unbound_attrs, ctx->attrs);
+Out of the three, I prefer the first, but it's definitely not perfect. I'll
+try to think of something else, maybe I can come up with something better.
 
-Now, my patch was wrong, as you pointed out, as it wasn't taking into
-consideration the ordering guarantee. I thought maybe your changes (plus
-and additional change to the above?) might fix the problem correctly.
+What are your thoughts?
 
-Best,
-Juri
+Thanks,
+Alex
 
-1 - https://lore.kernel.org/lkml/20240116161929.232885-4-juri.lelli@redhat.com/ 
-
+> 
+> Peter
+> 
+> > +       if (ret)
+> > +               return true;
+> > +
+> > +       tags_by_pfn_lock();
+> > +
+> > +       if (page_tag_storage_reserved(pfn_to_page(pfn))) {
+> > +               xa_release(&tags_by_pfn, pfn);
+> > +               tags_by_pfn_unlock();
+> > +               return false;
+> > +       }
+> > +
+> > +       entry = __xa_store(&tags_by_pfn, pfn, tags, GFP_ATOMIC);
+> > +       if (xa_is_err(entry)) {
+> > +               xa_release(&tags_by_pfn, pfn);
+> > +               goto out_unlock;
+> > +       } else if (entry) {
+> > +               mte_free_tag_buf(entry);
+> > +       }
+> > +
+> > +out_unlock:
+> > +       tags_by_pfn_unlock();
+> > +       return true;
+> > +}
+> > +
+> > +void mte_restore_tags_for_pfn(unsigned long start_pfn, int order)
+> > +{
+> > +       struct page *page = pfn_to_page(start_pfn);
+> > +       unsigned long pfn;
+> > +       void *tags;
+> > +
+> > +       tags_by_pfn_lock();
+> > +
+> > +       for (pfn = start_pfn; pfn < start_pfn + (1 << order); pfn++, page++) {
+> > +               tags = mte_erase_tags_for_pfn(pfn);
+> > +               if (unlikely(tags)) {
+> > +                       /*
+> > +                        * Mark the page as tagged so mte_sync_tags() doesn't
+> > +                        * clear the tags.
+> > +                        */
+> > +                       WARN_ON_ONCE(!try_page_mte_tagging(page));
+> > +                       mte_copy_page_tags_from_buf(page_address(page), tags);
+> > +                       set_page_mte_tagged(page);
+> > +                       mte_free_tag_buf(tags);
+> > +               }
+> > +       }
+> > +
+> > +       tags_by_pfn_unlock();
+> > +}
+> > +
+> > +/*
+> > + * Note on locking: swap in/out is done with the folio locked, which eliminates
+> > + * races with mte_save/restore_page_tags_by_swp_entry.
+> > + */
+> > +vm_fault_t mte_try_transfer_swap_tags(swp_entry_t entry, struct page *page)
+> > +{
+> > +       void *swap_tags, *pfn_tags;
+> > +       bool saved;
+> > +
+> > +       /*
+> > +        * mte_restore_page_tags_by_swp_entry() will take care of copying the
+> > +        * tags over.
+> > +        */
+> > +       if (likely(page_mte_tagged(page) || page_tag_storage_reserved(page)))
+> > +               return 0;
+> > +
+> > +       swap_tags = xa_load(&tags_by_swp_entry, entry.val);
+> > +       if (!swap_tags)
+> > +               return 0;
+> > +
+> > +       pfn_tags = mte_allocate_tag_buf();
+> > +       if (!pfn_tags)
+> > +               return VM_FAULT_OOM;
+> > +
+> > +       memcpy(pfn_tags, swap_tags, MTE_PAGE_TAG_STORAGE_SIZE);
+> > +       saved = mte_save_tags_for_pfn(pfn_tags, page_to_pfn(page));
+> > +       if (!saved)
+> > +               mte_free_tag_buf(pfn_tags);
+> > +
+> > +       return 0;
+> > +}
+> > +#endif
+> > +
+> >  int mte_save_page_tags_by_swp_entry(struct page *page)
+> >  {
+> >         void *tags, *ret;
+> > @@ -54,6 +160,10 @@ void mte_restore_page_tags_by_swp_entry(swp_entry_t entry, struct page *page)
+> >         if (!tags)
+> >                 return;
+> >
+> > +       /* Tags will be restored when tag storage is reserved. */
+> > +       if (tag_storage_enabled() && unlikely(!page_tag_storage_reserved(page)))
+> > +               return;
+> > +
+> >         if (try_page_mte_tagging(page)) {
+> >                 mte_copy_page_tags_from_buf(page_address(page), tags);
+> >                 set_page_mte_tagged(page);
+> > --
+> > 2.43.0
+> >
 
