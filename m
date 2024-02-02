@@ -1,130 +1,184 @@
-Return-Path: <linux-kernel+bounces-49578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59F4D846BF3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:29:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 516D2846BF4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:30:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14855290EE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:29:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F7561C21EF2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:30:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 552C578B7D;
-	Fri,  2 Feb 2024 09:27:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75B1477637;
+	Fri,  2 Feb 2024 09:28:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="c7Vtdbmp"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="igFZU13d"
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB227869A
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:27:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B40B95FF1C
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:28:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706866026; cv=none; b=swly50KXzBqjQ85LYjy0rsxknyb+jQJ4RrunR/w1T7bH7WmNPEjVV9pHvCzOyM7Bishla3pX9uj6BMJA3mkayqUQi/4Obk6gJsnIe0ugmE1RHRLsUhjPfq0zGLGXkLFq3PHJlZCAoLJDCFBxNsrznbeArH5zQ6/XxNI2yYdFLBM=
+	t=1706866129; cv=none; b=eChT+hkVaqoc49o7AhpAA+xepL1UCqTwWO61aUdJtKIXI5x+WGRksWGriTZd1zUav85OhFWBsWWAiaOwZLekLy7QKWhkY9OM78pNFZQIfGBvffJ0/GVVVEXR7TzpVwxAm4qXbp5Sz6krEDsV8ED7YTdalJayaB4XZFbCELHKykw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706866026; c=relaxed/simple;
-	bh=x5u1nz+Cg3nU/mZVDA54R7aNvx66CQZrP0sVG6CHmU0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c2Z6DWzz1Km2ONwddSl0q8sbdnM/4NQokpA1bhSwr0/MzNZfqkUO1wWFHR5cQCv1b7sIazwRSyqRZFMwAWvKqSCDcC6U5AjrMaf9ANSWl/PSS/SE3MMkYpil945ECveEa6M1LYgkrIs/ZxgFjQxJczV3EvXbdwB7VP+0yT4TTME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=c7Vtdbmp; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a271a28aeb4so277387866b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 01:27:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1706866022; x=1707470822; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=D55dCjTjZ3OFIaN3mYYht0ubpj5TCCakCn4hIxqLFNw=;
-        b=c7Vtdbmp5MoE8pAXbAAbv23PpOudl5QS0reUVi91vXLwewNCDtpjIjz62Z1znAKBDi
-         VRIJBPTT8V6tIcZ3xTP5TQzMs/C/FWwLR+wTy3z2x2UYZqNtTCNS+8AXbtN3M7Vd0nfg
-         P8q7YUv1G6S5JsWOFxJEBQQXj4UDJm8ioeyW4lPRynOAq268dunhXpDJ37VcCFqIWQSv
-         ehoGowsd2QPeXvAtRXBUgLXZAS42PmP1KH9+Tj+zT0Begjatsp2+oiYDJThx6mru5v7v
-         bxSs765uYXZmwElU2iBqrfmu1XgVpipA72KoeavjySVZphfood6YBq48dIRlJvJKiWij
-         RCSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706866022; x=1707470822;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D55dCjTjZ3OFIaN3mYYht0ubpj5TCCakCn4hIxqLFNw=;
-        b=CTF6SjYwqh3d89s3BFM9iT5GQD5UDmchbW0RFQOSR4US1Z/HQ5CDoPRgcfVf8//S12
-         a0BVc+xAaoeS7UYDWZ5+mn4EIY+IhSdC49aiZDBng1iNhdtj0wdSx1Ve30TCVkv7pWbq
-         N27devKNgeVeDnl+r1FZGYcx6MrK2WX2FwrnFr8ieTg5wSkVciEIwTHFUhQ+2I8vrrIv
-         FURsyAvfrpepLeNHM83OB5tfisDLmIZSBZmOS4ozKeU7GPH9cuIdHvDqqhpdNzpIWjIQ
-         /gSJj+Y7lCgXicRvvQILmuZUTDDaQ89/PAkqNbpn98ZWW8xtuyZ6/d5F1r+n08HNPFYi
-         36sQ==
-X-Gm-Message-State: AOJu0YyntyfEV+UhVl2fsJMcHBP9TzMitx4xPEC94KE8KkZZ5nFBuLAJ
-	l7WDjxiw9+oaJ76fWQl2yD5728i39353EfyvmBulcHgpSn2Us4adsZTaq/iD1EsiwqzHVI5M3sj
-	i
-X-Google-Smtp-Source: AGHT+IFdkljpvc5ASuaHT2pmfN5i+dFMx81fPkDQ6sc0wl0TnNQfmao+hKqUbJPP7SBCkkJawTqh0w==
-X-Received: by 2002:a17:907:88d:b0:a36:2d2f:3385 with SMTP id zt13-20020a170907088d00b00a362d2f3385mr924181ejb.9.1706866021810;
-        Fri, 02 Feb 2024 01:27:01 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWUsgiVQpP0TdEAs6lB8oVReF6KRGy2gU+BjLMpBPWx8XUucjp14Rcaxqlbq9u8llHKQU9rmwoC/Twj8g5S9k/3TxMaC5cVWfrw9zC2NNYTnLd0XiR6s380RhQD+eV6HzI5z83j86c/4+bpOVrV+MJQjpofdW4=
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id b17-20020a170906039100b00a35b4edb266sm690819eja.87.2024.02.02.01.27.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 01:27:01 -0800 (PST)
-Date: Fri, 2 Feb 2024 10:26:59 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v3 13/14] printk: Avoid non-panic CPUs writing to
- ringbuffer
-Message-ID: <Zby1Y7eqCOPYa3Vw@alley>
-References: <20231214214201.499426-1-john.ogness@linutronix.de>
- <20231214214201.499426-14-john.ogness@linutronix.de>
+	s=arc-20240116; t=1706866129; c=relaxed/simple;
+	bh=VJXC3t3pof0hM5QfLvLHKn+Dk+5+0wmcTobYwk/ekv8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DpmiJ73vMGNgMoNFgVJBDcw0TKhNicUOyim+BE0xPHmPmJs4sX+RFn2pKupmztSq3rGGgSqCQZttznbYO/oSQLz73c5yS+RNq4imscBQ2ntBSztbqSkhUl3kXwaPwBKWfL+wEJIPhpq6sZjnn3jCOHTt07O++9yKJMbP8FHQ5b8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=igFZU13d; arc=none smtp.client-ip=115.124.30.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706866124; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=Mq/Heb4h+f5RoC1ScHkmVU31bkVi/CnbkssDq0b9Pc4=;
+	b=igFZU13dpCj+8yvhf2Rvwb2jDyDcjJLCu13Z4l7DNRqZXDctNvZmMGVCAoUPy5ADIClF9ARzNLbAGyTk9k8Baslc96K/BG2b09fPyordWMkisLIkzTu52MWjJ72FRgEcWd3EAHxeN2h2pf+stCyKLg1DImW56FA5XAmJATdMuAM=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W.wc2fj_1706866122;
+Received: from 30.97.56.44(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W.wc2fj_1706866122)
+          by smtp.aliyun-inc.com;
+          Fri, 02 Feb 2024 17:28:43 +0800
+Message-ID: <f1606912-5bcc-46be-b4f4-666149eab7bd@linux.alibaba.com>
+Date: Fri, 2 Feb 2024 17:29:02 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214214201.499426-14-john.ogness@linutronix.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] mm: hugetlb: remove __GFP_THISNODE flag when
+ dissolving the old hugetlb
+To: Michal Hocko <mhocko@suse.com>
+Cc: akpm@linux-foundation.org, muchun.song@linux.dev, osalvador@suse.de,
+ david@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <6f26ce22d2fcd523418a085f2c588fe0776d46e7.1706794035.git.baolin.wang@linux.alibaba.com>
+ <Zbu4cD1XLFLfKan8@tiehlicka>
+ <3f31cd89-f349-4f9e-bc29-35f29f489633@linux.alibaba.com>
+ <ZbylJr_bbWCUMjMl@tiehlicka>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <ZbylJr_bbWCUMjMl@tiehlicka>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu 2023-12-14 22:48:00, John Ogness wrote:
-> Commit 13fb0f74d702 ("printk: Avoid livelock with heavy printk
-> during panic") introduced a mechanism to silence non-panic CPUs
-> if too many messages are being dropped. Aside from trying to
-> workaround the livelock bugs of legacy consoles, it was also
-> intended to avoid losing panic messages. However, if non-panic
-> CPUs are writing to the ringbuffer, then reacting to dropped
-> messages is too late.
+
+
+On 2/2/2024 4:17 PM, Michal Hocko wrote:
+> On Fri 02-02-24 09:35:58, Baolin Wang wrote:
+>>
+>>
+>> On 2/1/2024 11:27 PM, Michal Hocko wrote:
+>>> On Thu 01-02-24 21:31:13, Baolin Wang wrote:
+>>>> Since commit 369fa227c219 ("mm: make alloc_contig_range handle free
+>>>> hugetlb pages"), the alloc_contig_range() can handle free hugetlb pages
+>>>> by allocating a new fresh hugepage, and replacing the old one in the
+>>>> free hugepage pool.
+>>>>
+>>>> However, our customers can still see the failure of alloc_contig_range()
+>>>> when seeing a free hugetlb page. The reason is that, there are few memory
+>>>> on the old hugetlb page's node, and it can not allocate a fresh hugetlb
+>>>> page on the old hugetlb page's node in isolate_or_dissolve_huge_page() with
+>>>> setting __GFP_THISNODE flag. This makes sense to some degree.
+>>>>
+>>>> Later, the commit ae37c7ff79f1 (" mm: make alloc_contig_range handle
+>>>> in-use hugetlb pages") handles the in-use hugetlb pages by isolating it
+>>>> and doing migration in __alloc_contig_migrate_range(), but it can allow
+>>>> fallbacking to other numa node when allocating a new hugetlb in
+>>>> alloc_migration_target().
+>>>>
+>>>> This introduces inconsistency to handling free and in-use hugetlb.
+>>>> Considering the CMA allocation and memory hotplug relying on the
+>>>> alloc_contig_range() are important in some scenarios, as well as keeping
+>>>> the consistent hugetlb handling, we should remove the __GFP_THISNODE flag
+>>>> in isolate_or_dissolve_huge_page() to allow fallbacking to other numa node,
+>>>> which can solve the failure of alloc_contig_range() in our case.
+>>>
+>>> I do agree that the inconsistency is not really good but I am not sure
+>>> dropping __GFP_THISNODE is the right way forward. Breaking pre-allocated
+>>> per-node pools might result in unexpected failures when node bound
+>>> workloads doesn't get what is asssumed available. Keep in mind that our
+>>> user APIs allow to pre-allocate per-node pools separately.
+>>
+>> Yes, I agree, that is also what I concered. But sometimes users don't care
+>> about the distribution of per-node hugetlb, instead they are more concerned
+>> about the success of cma allocation or memory hotplug.
 > 
-> To avoid losing panic CPU messages, silence non-panic CPUs
-> immediately on panic.
+> Yes, sometimes the exact per-node distribution is not really important.
+> But the kernel has no way of knowing that right now. And we have to make
+> a conservative guess here.
+>   
+>>> The in-use hugetlb is a very similar case. While having a temporarily
+>>> misplaced page doesn't really look terrible once that hugetlb page is
+>>> released back into the pool we are back to the case above. Either we
+>>> make sure that the node affinity is restored later on or it shouldn't be
+>>> migrated to a different node at all.
+>>
+>> Agree. So how about below changing?
+>> (1) disallow fallbacking to other nodes when handing in-use hugetlb, which
+>> can ensure consistent behavior in handling hugetlb.
 > 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> I can see two cases here. alloc_contig_range which is an internal kernel
+> user and then we have memory offlining. The former shouldn't break the
+> per-node hugetlb pool reservations, the latter might not have any other
+> choice (the whole node could get offline and that resembles breaking cpu
+> affininty if the cpu is gone).
 
-I am slightly nervous about this change because it looks
-too agresive ;-)
+IMO, not always true for memory offlining, when handling a free hugetlb, 
+it disallows fallbacking, which is inconsistent.
 
-But it makes perfect sense. And it nicely complements the 10th
-patch, see
-https://lore.kernel.org/r/20231214214201.499426-11-john.ogness@linutronix.de
-The 10th patch allows to skip messages in reserved state. It might
-cause skipping random messages from other CPUs. So it really
-looks better to skip/ignore them completely.
+Not only memory offlining, but also the longterm pinning (in 
+migrate_longterm_unpinnable_pages()) and memory failure (in 
+soft_offline_in_use_page()) can also break the per-node hugetlb pool 
+reservations.
 
-It would be nice to mention the relation to the 10th patch
-in the commit message. Something like:
+> Now I can see how a hugetlb page sitting inside a CMA region breaks CMA
+> users expectations but hugetlb migration already tries hard to allocate
+> a replacement hugetlb so the system must be under a heavy memory
+> pressure if that fails, right? Is it possible that the hugetlb
+> reservation is just overshooted here? Maybe the memory is just terribly
+> fragmented though?
+> 
+> Could you be more specific about numbers in your failure case?
 
-<proposal>
-Another motivation is that non-finalized messages already might be
-skipped in panic(). By other words, random messages from non-panic
-CPUs might already get lost. It is better to ignore all to avoid
-confusion.
-</proposal>
+Sure. Our customer's machine contains serveral numa nodes, and the 
+system reserves a large number of CMA memory occupied 50% of the total 
+memory which is used for the virtual machine, meanwhile it also reserves 
+lots of hugetlb which can occupy 50% of the CMA. So before starting the 
+virtual machine, the hugetlb can use 50% of the CMA, but when starting 
+the virtual machine, the CMA will be used by the virtual machine and the 
+hugetlb should be migrated from CMA.
 
-With the updated commit message:
+Due to several nodes in the system, one node's memory can be exhausted, 
+which will fail the hugetlb migration with __GFP_THISNODE flag.
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+>> (2) introduce a new sysctl (may be named as "hugetlb_allow_fallback_nodes")
+>> for users to control to allow fallbacking, that can solve the CMA or memory
+>> hotplug failures that users are more concerned about.
+> 
+> I do not think this is a good idea. The policy might be different on
+> each node and this would get messy pretty quickly. If anything we could
+> try to detect a dedicated per node pool allocation instead. It is quite
+> likely that if admin preallocates pool without any memory policy then
+> the exact distribution of pages doesn't play a huge role.
 
-Best Regards,
-Petr
+I also agree. Now I think the policy is already messy when handing 
+hugetlb migration:
+
+1. CMA allocation: can or can not break the per-node hugetlb pool 
+reservations.
+   1.1 handling free hugetlb: can not break per-node hugetlb pool 
+reservations.
+   1.2 handling in-use hugetlb: can break per-node hugetlb pool 
+reservations.
+2. memory offlining: can or can not break per-node hugetlb pool 
+reservations.
+   2.1 handling free hugetlb: can not break
+   2.2 handling in-use hugetlb: can break
+3. longterm pinning: can break per-node hugetlb pool reservations.
+4. memory soft-offline: can break per-node hugetlb pool reservations.
+
+What a messy policy. And now we have no documentation to describe this 
+messy policy. So we need to make things more clear when handling hugetlb 
+migration with proper documantation.
 
