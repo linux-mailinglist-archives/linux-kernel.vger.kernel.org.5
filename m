@@ -1,59 +1,58 @@
-Return-Path: <linux-kernel+bounces-50347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65DFE8477CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:40:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E3858477D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:41:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AE9E1F2316D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:40:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD7431C26DD8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:41:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0531153BFF;
-	Fri,  2 Feb 2024 18:39:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D423154BEC;
+	Fri,  2 Feb 2024 18:39:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QfunN7eV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QYRvzNcd"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1320F152DF4;
-	Fri,  2 Feb 2024 18:39:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66D3F15444D;
+	Fri,  2 Feb 2024 18:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706899175; cv=none; b=Ih/yB/6rURG9uMD8ji6oaSaZ/YH6LZyXHWgrhi4sUufYH3J7kKtjmsvHIiwaDnNx5sjIlNVlAfFP1al1kZYM/ZI4hrroSUkfSbcUuPQUcrk9y3ZdvkbKlLGjtBqmow8UA+VHyPym8dqaRBAk2plJojeuXxpGukaagMUwV2uUtPU=
+	t=1706899176; cv=none; b=bMa89eyiEfdeqWbQZaqkOdjvQdisJBu9sgt29IZ7Ed+h7EQcibOF4pUXVnXaOGVCPQEoWXvBZ6nykpqEVjnfCTi0YQcTckhiuMac5gC7B78MiVE6m8m0/xjT4G245HPOKxNJOvnzPoqmHonJU1QJCbbjhn56u8BhkhLs9l6P5XY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706899175; c=relaxed/simple;
-	bh=94HCRGsnQQo8/820OUGWhKe+XapvGFDqMm0ejMc7aoU=;
+	s=arc-20240116; t=1706899176; c=relaxed/simple;
+	bh=N+iMXqBMlZrQ+J+4xgN6PKCTFmhrm6XrOnA1jsh8+Ps=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WN3apilRj8HuCoAK8EQB3SwODcT/YXE8iHSoArMPDt4qcmwGL0Y/gP/+7CJS3GGoXhnkPds2mEdfds59QmPV69hVvwqPixDED4Qlx1IuNoG2hnMq3Qs/laliNhUrFUanpkPf/O1RmQ470oQi5D+VlRQe6QuNbKhgf2XIL9VovHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QfunN7eV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EE57C43394;
-	Fri,  2 Feb 2024 18:39:33 +0000 (UTC)
+	 MIME-Version; b=WYDiMM7EAagmy0tbjsRmUgocUofosWo7M3GKGmv0LjMJM3FUGWrX5zx4EFhdUv7lzQGivk009nSqhKBoLjNkgTbL5VCLlOUXA/mlKEoKhWWSVbCjARBOw+9P9QHEKMTuO9Z36L1StBnSUn6xTvfXxJq/eEP4asLS/JXT1PJxaRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QYRvzNcd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7CBAC43390;
+	Fri,  2 Feb 2024 18:39:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706899174;
-	bh=94HCRGsnQQo8/820OUGWhKe+XapvGFDqMm0ejMc7aoU=;
+	s=k20201202; t=1706899175;
+	bh=N+iMXqBMlZrQ+J+4xgN6PKCTFmhrm6XrOnA1jsh8+Ps=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QfunN7eV6jTw1ekJnV7FWnm8Us1v6bjjr0SACuzMw1hC2LHLfcRZREMOKBXCYVge0
-	 uFAmyd7f2C0ZlaIfdrtJXYnqE9s7OnE9e/fJKC3cAEn2KX+skd2Do79ARBpx0Bp3oR
-	 ci62WGwpMztjs6/RxXJispjt2Y5ujTCIeoca0XEoPU7gqdab0MQX2U4GKLRN3aPF0v
-	 Xlwd0tg5xsJNmDLxPv6YPvtw7nJ32Ba0lgj3AxesR4s6U6jZDLetP1zwcE6qXWYt5F
-	 pks7kxkJl5RUsnT8aEwnhXrRqqczTilqafVtxgcJapjqiACX1fIDhn7doS7yU6Mh2R
-	 IWiKs8WHhqpHQ==
+	b=QYRvzNcdr8hc30kvL/TpCjshNW84mUGmJpkYjLxxswUiovN0VS6nwmeSL4nnHB42d
+	 ERNLZMtHwzNByg5IPwTajGRZ5Yqd/gvsiXNirsMQFiEEZHr3DVD2ar5oKuAdpxWmd8
+	 gvzLQ5X7HePL1Oki23rvnGXL29+HnhdqQHoxKDuhyQ5pUZK4KjPjK0wWb+XtqaL2yk
+	 5IkcAuwwRF4/hapUTS6FXXvPQY9NhOdd3kqWiOj0wUNKomBSW483H+MTc5i9JBRxAI
+	 sNhPJQ07ebA/kH/6PYeHsyFIYreMi4IeeTFVqUmdJPc7zbNVXDyBrTaT6T/uWafaUV
+	 tSMHmS8zb4ljg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Fullway Wang <fullwaywang@outlook.com>,
-	Helge Deller <deller@gmx.de>,
+Cc: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
+	Jiri Pirko <jiri@nvidia.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	tzimmermann@suse.de,
-	sam@ravnborg.org,
-	javierm@redhat.com,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.7 04/23] fbdev: sis: Error out if pixclock equals zero
-Date: Fri,  2 Feb 2024 13:39:00 -0500
-Message-ID: <20240202183926.540467-4-sashal@kernel.org>
+	vadim.fedorenko@linux.dev,
+	jiri@resnulli.us,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 05/23] dpll: fix broken error path in dpll_pin_alloc(..)
+Date: Fri,  2 Feb 2024 13:39:01 -0500
+Message-ID: <20240202183926.540467-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240202183926.540467-1-sashal@kernel.org>
 References: <20240202183926.540467-1-sashal@kernel.org>
@@ -68,41 +67,51 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.3
 Content-Transfer-Encoding: 8bit
 
-From: Fullway Wang <fullwaywang@outlook.com>
+From: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
 
-[ Upstream commit e421946be7d9bf545147bea8419ef8239cb7ca52 ]
+[ Upstream commit b6a11a7fc4d6337f7ea720b9287d1b9749c4eae0 ]
 
-The userspace program could pass any values to the driver through
-ioctl() interface. If the driver doesn't check the value of pixclock,
-it may cause divide-by-zero error.
+If pin type is not expected, or pin properities failed to allocate
+memory, the unwind error path shall not destroy pin's xarrays, which
+were not yet initialized.
+Add new goto label and use it to fix broken error path.
 
-In sisfb_check_var(), var->pixclock is used as a divisor to caculate
-drate before it is checked against zero. Fix this by checking it
-at the beginning.
-
-This is similar to CVE-2022-3061 in i740fb which was fixed by
-commit 15cf0b8.
-
-Signed-off-by: Fullway Wang <fullwaywang@outlook.com>
-Signed-off-by: Helge Deller <deller@gmx.de>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/sis/sis_main.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/dpll/dpll_core.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/video/fbdev/sis/sis_main.c b/drivers/video/fbdev/sis/sis_main.c
-index 6ad47b6b6004..431b1a138c11 100644
---- a/drivers/video/fbdev/sis/sis_main.c
-+++ b/drivers/video/fbdev/sis/sis_main.c
-@@ -1475,6 +1475,8 @@ sisfb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
- 
- 	vtotal = var->upper_margin + var->lower_margin + var->vsync_len;
- 
-+	if (!var->pixclock)
-+		return -EINVAL;
- 	pixclock = var->pixclock;
- 
- 	if((var->vmode & FB_VMODE_MASK) == FB_VMODE_NONINTERLACED) {
+diff --git a/drivers/dpll/dpll_core.c b/drivers/dpll/dpll_core.c
+index 3568149b9562..36f5c0eaf604 100644
+--- a/drivers/dpll/dpll_core.c
++++ b/drivers/dpll/dpll_core.c
+@@ -440,7 +440,7 @@ dpll_pin_alloc(u64 clock_id, u32 pin_idx, struct module *module,
+ 	if (WARN_ON(prop->type < DPLL_PIN_TYPE_MUX ||
+ 		    prop->type > DPLL_PIN_TYPE_MAX)) {
+ 		ret = -EINVAL;
+-		goto err;
++		goto err_pin_prop;
+ 	}
+ 	pin->prop = prop;
+ 	refcount_set(&pin->refcount, 1);
+@@ -448,11 +448,12 @@ dpll_pin_alloc(u64 clock_id, u32 pin_idx, struct module *module,
+ 	xa_init_flags(&pin->parent_refs, XA_FLAGS_ALLOC);
+ 	ret = xa_alloc(&dpll_pin_xa, &pin->id, pin, xa_limit_16b, GFP_KERNEL);
+ 	if (ret)
+-		goto err;
++		goto err_xa_alloc;
+ 	return pin;
+-err:
++err_xa_alloc:
+ 	xa_destroy(&pin->dpll_refs);
+ 	xa_destroy(&pin->parent_refs);
++err_pin_prop:
+ 	kfree(pin);
+ 	return ERR_PTR(ret);
+ }
 -- 
 2.43.0
 
