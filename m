@@ -1,130 +1,115 @@
-Return-Path: <linux-kernel+bounces-49823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B7BD84700F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:18:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAF69847012
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:19:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE8DC1F23789
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:18:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9538628BF2E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:19:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D5A11419A2;
-	Fri,  2 Feb 2024 12:18:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DDFF14078A;
+	Fri,  2 Feb 2024 12:18:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XS91VSIV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Qp0qpyyA"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 550BC140764;
-	Fri,  2 Feb 2024 12:18:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7CCF1420D0;
+	Fri,  2 Feb 2024 12:18:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706876302; cv=none; b=GEWkAn/ijUwfmfQeKl3ZP01nUIq7U96qToITqv+PiiAnHd0DiOXB2hXB9BglQ1HXorkayKVtYG12sfr/9InVjSE/6xvF4c4X8F+2lTGxjqMUOKRyKitId3V+zdUznUqxeqUhBfHuHPfJV6ohAQ9nbV4YK6FBVdT6n7XqHkUTkFE=
+	t=1706876320; cv=none; b=R+J2tJ8KTAGi/zBlmFWAjWvsnPY6CcD77K/8e4j+Nc/1vE2GiTN3g0MDE5iAXALr86Q+CdWGFRjNfkf43MV9LZyr4jV6rJ3EMhc+i0B9xXi3Mwh8e5r8enESt81NaHzKdsnNaQIYp22KhZJfRoUjQTTKgbvqfUcTvi/bJCO98BA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706876302; c=relaxed/simple;
-	bh=76bLnTFW8hOss6IF1pWTx33Eugtw/u1ls0YA9hmCWJA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=RaBj+9p5EhKXqYkWGDnfEaYTD/2+l3/BYtI1FZifJdXaJj1J1YYcKibATilsSWg/VHcr9xWsp0Kz7ltXxfMZTFVMSUbrdj5Yo9hEu5ecYHJlM/hkWqLfF4532Mw3XbpF9/ki9+bt98rXyOerQQ7RXtx4f5Ty+wg7D5PgLQ+NQKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XS91VSIV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id F3AF3C433B1;
-	Fri,  2 Feb 2024 12:18:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706876302;
-	bh=76bLnTFW8hOss6IF1pWTx33Eugtw/u1ls0YA9hmCWJA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=XS91VSIVxeAq9Ho4N5W/CiepsN+55y/voO+51FzBqNFFbP9eddOWk7W6ktq2lZ+5+
-	 Pp0SCqzYLiPKNdI7j8wf4UTAgc+S/J77Bf0hDS8RQUZIKOiGV42lZ/TSG/z3izPhiw
-	 uadBuCu+CYz0jxWTcNNaLyHahwT4fQIIZoa13E89CF0alxGxlDm9OnM8UNq7f9Rjek
-	 h9ijT1J7Plz98HwyqNFlcPgrk0NsBdGoyW7P+0lQVSU9Xd6UN/QjgprS0ogBFwSiIF
-	 B27mAYOf3/XH8EuxXnITW/F37jIQXjp2wa0gl7QQYfVGUG1/J2+hazmBU/m34qfYQr
-	 SilZ8SUdPBhVQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D61A8C47DB3;
-	Fri,  2 Feb 2024 12:18:21 +0000 (UTC)
-From: Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org>
-Date: Fri, 02 Feb 2024 13:18:17 +0100
-Subject: [PATCH 2/2] of: dynamic: flush devlinks workqueue before
- destroying the changeset
+	s=arc-20240116; t=1706876320; c=relaxed/simple;
+	bh=5J3N9yFdt0qyR+hC/ck9sRlxmz3Jz+XJfdzivrX1h6Q=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IZQbIsjA2Unjyt9bdi7O3qJW39d/Kvl4aXoix/a+S/0CjmQEKb68rr4T37W9ssbmVtkUi0NqyhIH0L7u4RQl2rXzimuJB0dzJVp9pWLF+Mk5a11Avdbonq1OZLPZUTC6M2EqnK3//rqaOR0kCnFN9VYIaeR8bJCPkkVDs1DmuxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Qp0qpyyA; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 412CITUO075863;
+	Fri, 2 Feb 2024 06:18:29 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706876309;
+	bh=2A3mvVnp1lDZyNg+9zBZp184JjKbFNbozap0vLCz1Zg=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=Qp0qpyyAQiJQ+bEbdd3G1z6IqHg0gabUCxCZI0IS5Bu9GXT2hPliYQCNVUAiXNssR
+	 1Eh3IYNilUAdlSNeEEkBIfUCkGqRqH89b0dwZx7UjUhdjY4ai1zALeQexyz6AGKy8Z
+	 /jRWO0H3jTnAXjHzczgnP0ZAJmTA41nQvKLM+Yxw=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 412CITHH026341
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 2 Feb 2024 06:18:29 -0600
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 2
+ Feb 2024 06:18:29 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 2 Feb 2024 06:18:28 -0600
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 412CISK7096797;
+	Fri, 2 Feb 2024 06:18:28 -0600
+Date: Fri, 2 Feb 2024 06:18:28 -0600
+From: Nishanth Menon <nm@ti.com>
+To: Roger Quadros <rogerq@kernel.org>
+CC: Conor Dooley <conor.dooley@microchip.com>,
+        Conor Dooley
+	<conor@kernel.org>, Bin Liu <b-liu@ti.com>,
+        <vigneshr@ti.com>, <afd@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/5] dt-bindings: usb/ti,am62-usb.yaml: Add PHY2
+ register space
+Message-ID: <20240202121828.oo7grngyh2heqdxn@disposal>
+References: <20240201120332.4811-1-rogerq@kernel.org>
+ <20240201120332.4811-5-rogerq@kernel.org>
+ <20240201-viewpoint-upload-fb714f650ff5@spud>
+ <20240201-violet-chalice-51a73f113e7b@spud>
+ <20240201183522.ssj553rwefr2wuqi@iaqt7>
+ <20240201-clad-unopposed-ccfdfe53b770@spud>
+ <bc3ab60f-539b-41d0-8595-6e0b55f2763d@kernel.org>
+ <20240202-unzip-whacky-bb2f151c618b@wendy>
+ <dc3c93dc-74d9-4b1c-a771-3ee6f67b5dcc@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240202-fix-device-links-overlays-v1-2-f9fd1404c8e2@analog.com>
-References: <20240202-fix-device-links-overlays-v1-0-f9fd1404c8e2@analog.com>
-In-Reply-To: <20240202-fix-device-links-overlays-v1-0-f9fd1404c8e2@analog.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Rafael J. Wysocki" <rafael@kernel.org>, 
- Frank Rowand <frowand.list@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
- Daniel Scally <djrscally@gmail.com>, 
- Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
- Sakari Ailus <sakari.ailus@linux.intel.com>, Len Brown <lenb@kernel.org>
-Cc: linux-acpi@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706876300; l=1506;
- i=nuno.sa@analog.com; s=20231116; h=from:subject:message-id;
- bh=YDuksPxVzpgUXsXtMiptrKAHNtqa9E4wT61h67KKExU=;
- b=ZZzDh6w2p09vAdpaA/tKnsT3Ui0/BIBnmAmI6LdOVcWud7O6pG7mMOAa9At/XeR3mGQi7zAsu
- 0e7xJAbQW2cCDWx1T2sT1C8IFd2yKgLf/WrOHH3wwaavzpt33PL6veD
-X-Developer-Key: i=nuno.sa@analog.com; a=ed25519;
- pk=3NQwYA013OUYZsmDFBf8rmyyr5iQlxV/9H4/Df83o1E=
-X-Endpoint-Received:
- by B4 Relay for nuno.sa@analog.com/20231116 with auth_id=100
-X-Original-From: Nuno Sa <nuno.sa@analog.com>
-Reply-To: <nuno.sa@analog.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <dc3c93dc-74d9-4b1c-a771-3ee6f67b5dcc@kernel.org>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-From: Nuno Sa <nuno.sa@analog.com>
+On 12:13-20240202, Roger Quadros wrote:
+[..]
+> >>
+> >> As DTS and driver will be merged by separate maintainers I thought it
+> >> would be easier for maintainers this way.
+> > 
+> > dts and driver might be merged by different people, but dt-bindings and
+> > drivers are merged by the same people. This is a bindings patch, not a
+> 
+> If we do that then I get a bunch of dtbs_check warnings
+> 
+> dwc3-usb@f900000: reg: [[0, 261095424, 0, 2048], [0, 261128192, 0, 1024]] is too long
 
-Device links will drop their supplier + consumer refcounts
-asynchronously. That means that the refcount of the of_node attached to
-these devices will also be dropped asynchronously and so we cannot
-guarantee the DT overlay assumption that the of_node refcount must be 1 in
-__of_changeset_entry_destroy().
-
-Given the above, call the new fwnode_links_flush_queue() helper to flush
-the devlink workqueue so we can be sure that all links are dropped before
-doing the proper checks.
-
-Signed-off-by: Nuno Sa <nuno.sa@analog.com>
----
- drivers/of/dynamic.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/of/dynamic.c b/drivers/of/dynamic.c
-index 3bf27052832f..b7153c72c9c9 100644
---- a/drivers/of/dynamic.c
-+++ b/drivers/of/dynamic.c
-@@ -14,6 +14,7 @@
- #include <linux/slab.h>
- #include <linux/string.h>
- #include <linux/proc_fs.h>
-+#include <linux/fwnode.h>
- 
- #include "of_private.h"
- 
-@@ -518,6 +519,13 @@ EXPORT_SYMBOL(of_changeset_create_node);
- 
- static void __of_changeset_entry_destroy(struct of_changeset_entry *ce)
- {
-+	/*
-+	 * device links drop their device references (and hence their of_node
-+	 * references) asynchronously on a dedicated workqueue. Hence we need
-+	 * to flush it to make sure everything is done before doing the below
-+	 * checks.
-+	 */
-+	fwnode_links_flush_queue();
- 	if (ce->action == OF_RECONFIG_ATTACH_NODE &&
- 	    of_node_check_flag(ce->np, OF_OVERLAY)) {
- 		if (kref_read(&ce->np->kobj.kref) > 1) {
+Just my 2 cents: If the binding (and driver) change was truly backward
+compatible (which it should be - for example: errata can only be
+applied if the second property is described), then you want to control
+that reg property to add minItems? - thatm I think will allow the dts
+change to come in at the next cycle once the binding has been merged.
 
 -- 
-2.43.0
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
