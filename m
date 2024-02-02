@@ -1,212 +1,175 @@
-Return-Path: <linux-kernel+bounces-49896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B65084711C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:26:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A652B847118
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:26:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5C991F2353F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:26:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C6901F2B30F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:26:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3237147A53;
-	Fri,  2 Feb 2024 13:26:31 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD29B46549;
+	Fri,  2 Feb 2024 13:26:30 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A41724776E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52C4F46BA0
 	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 13:26:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706880390; cv=none; b=H4xBkmSGwaMPWO+XolQqbEfnAOwgy9/PUOf+seJ1XgrgMYVbeJdQCmvHZk4FlBimqQOl1xCrxIUFhRVECwGnBd0u6+6Lk2o8Tx/Ftfepg1zXhPwgqeKYfFPEtIQDaTkCX5nZG2LBslxCIC2YwLrQ3PUOooA9911fV6aYb4ltshI=
+	t=1706880390; cv=none; b=ASzaZSrmkzzF6fhdUoIwLplMRvZSMiPP9aOWlms6QIoqirluDdUyKqXx8SqaumfQSywBc840e600+KIdxPQXdl+Q22eUM2j8v7AublVwiAnmsJYrDjPXd68AZ0IHap/AZro/YM9nMmIConhGLJH22nwZE+Z1ykoSlzMSpUVhP4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706880390; c=relaxed/simple;
-	bh=rZUItvUy42628+VUh8ZdC9wLv5M5dfSKVc3zge5/VKE=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=bjvrwOK80KNlX/RWawxa6MS4eYqOcQowcT1ru9xhxjaLUeNn8tfSLMGPO8CL97+XIiNG7k5XSseLBZJ0E9ONSRo1JpT99/GXbhxFZgBTL/9+GIZu6Gtg6Dq9H3gv6ZZJNI8rnbwbtUnR94xMhSdbgra9tiNm0gI4HcPHAAbWyYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+	bh=KLxDiPiyVQp8O7VrBW9nbcoJepaggI/il2KlGnI5r0c=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=jviGkD3ot3D+4SWuzITrZcow28nhcVxyiRmfqNnT1v0heDzkbO7XcxzuDUxXy2tCzLylPywF8QhCWcTZC0AS72NhhKUT68r9igQ+jbD9RgCjpxT9liRw6FW2MWpjWlxcA2gXZ0tK6WL0cltlq8WsVHjPkWVUtURQ7/5yvy9YG3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363b161279aso5913575ab.1
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7bfeb848712so142733339f.2
         for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 05:26:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706880388; x=1707485188;
+        d=1e100.net; s=20230601; t=1706880387; x=1707485187;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=aq3gE8L2F0+AWJlNCpBN/xvpjBEAx1qKhvkQOqtnNzQ=;
-        b=A9B7JGgO9J0RZ3WQu+pq8R9Q/i9/OHw3TVLnMQEKOd1tT8eHfhMxo+nxXoIuNuj76S
-         hvyiC2+fsN2b5CmzEVVMSB57PzX/LY/EtjJDmWEFJ9/YzChNDWvZU6TnD1On4W3Hwd7N
-         lmnyQHfLhM39J1yEqwm/dImUMAgvarSqyOb3bt3HFJvAHhatUHnD2/z9dHTx/kH5NQU7
-         JTFWefG5Dz9ACLeBcOnPUFxnMg3KBPNmUlJ/1rOeUbnaEeVvNtEPsZKVcp9ZwHoBVXhG
-         I4PAgpBu8KAzfi2coplqtPD3qlar7ZSLBIcAzpvom2uUmbomsX/WPZsmpoJLzhnaUwVX
-         DLBQ==
-X-Gm-Message-State: AOJu0YwuS9jlLfl11rbgp08r7e0j8NVyrk1NYEFTtttQvvE/8bfoAw4i
-	qtQrqGmq3YKtfP8nSSFUIq2U8TvQS1z/V6dbSKlukJEKav3nn+Ry7+VrE90LTi0C++2cuWX9F2C
-	iIfgqlMA1uN9BstgICvPtLoaNGXhNOq1HhvIvBvTfrGDuSupczo9zwsU=
-X-Google-Smtp-Source: AGHT+IFOZBjXi1sEWeED2C/wD/aODxFJ/2YPaIx+09DCJLd7+GfzFDtUtLm0DUEXof22VcewpQYg5y+NcJPJBIUokfs5pzCrmXit
+        bh=W2sCNcl4AqQHpmP9sWW84f5Es4bmxjLsfPGFyaTZ3lM=;
+        b=bH1kwnIHF1MjCDv7wOYztw3xlPN69NdD3opmkSdN04+yHKlKIHoSsUwC56PZzsR2Iz
+         3po6hrk6YlfHfCiA7fFIJ9DBeC1SmpVCxvi1mkGxuaoxChJ/efPcgeT1bN1RU7itIG+O
+         WjyhRKCG1c+jdKNS+DEX96gi3J5e03E4Cwhvl3N4XfYTbz0Sywa8yCQMCziv7PjNgo0K
+         1RzYLMPp806xU8Hp/3/ga5g09h07mJ9Dz7sYNO2AyNpdYnW8c3jVs/nUvlpJb7DstyDu
+         O8RfhlJPmBd3HyVr1sKShqyV0ByXWMTAZFYtt7FqFxeH0JttwAP08TOZ9uqiU5emh12w
+         +BXA==
+X-Gm-Message-State: AOJu0YzNpke5NWvObmst4K3NGBtq1QvdeV8IRRCEb/AIge7+1laSCg/e
+	PCNTq5wGfA7XsVjBaxibeJNvFrcmTLBFXTKCFzVXXcmSbDZppFddnh1IuINjmq4P9CNORoZEIgL
+	ZTOkS1yKkkhAxnVwZo7irlTtsVydP1FPlogTA+GsVTf/+jwOQ9Rfr14w=
+X-Google-Smtp-Source: AGHT+IFtLrYDJfROfbo1j0plwf+ObWUzjIzJM2G+LNOWxZuOFm5NYetxCdZpj2UrAJijq4pmczxdmmk0luPV1anlrifF285KB946
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:216a:b0:35f:eb20:3599 with SMTP id
- s10-20020a056e02216a00b0035feb203599mr134384ilv.2.1706880387890; Fri, 02 Feb
+X-Received: by 2002:a05:6e02:1c2d:b0:363:9d58:805b with SMTP id
+ m13-20020a056e021c2d00b003639d58805bmr235355ilh.3.1706880387574; Fri, 02 Feb
  2024 05:26:27 -0800 (PST)
 Date: Fri, 02 Feb 2024 05:26:27 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000031c6c50610660f17@google.com>
-Subject: [syzbot] [net?] [s390?] possible deadlock in smc_release
-From: syzbot <syzbot+621fd56ba002faba6392@syzkaller.appspotmail.com>
-To: agordeev@linux.ibm.com, alibuda@linux.alibaba.com, davem@davemloft.net, 
-	edumazet@google.com, guwen@linux.alibaba.com, jaka@linux.ibm.com, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, 
-	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com, 
-	tonylu@linux.alibaba.com, wenjia@linux.ibm.com
+Message-ID: <0000000000002cf4690610660f71@google.com>
+Subject: [syzbot] [net?] KMSAN: kernel-infoleak in __skb_datagram_iter (2)
+From: syzbot <syzbot+34ad5fab48f7bf510349@syzkaller.appspotmail.com>
+To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    41bccc98fb79 Linux 6.8-rc2
+HEAD commit:    5bd7ef53ffe5 Merge tag 'pull-fixes' of git://git.kernel.or..
 git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=16b3a953e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b168fa511db3ca08
-dashboard link: https://syzkaller.appspot.com/bug?extid=621fd56ba002faba6392
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=165642dfe80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1431092fe80000
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=13c1aee6e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f3f069371247b697
+dashboard link: https://syzkaller.appspot.com/bug?extid=34ad5fab48f7bf510349
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15555751e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10c93571e80000
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/00fc8ba1cd49/disk-41bccc98.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/15fd4e4ee5f8/vmlinux-41bccc98.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/13be3add2183/bzImage-41bccc98.xz
+disk image: https://storage.googleapis.com/syzbot-assets/cd1e7587b624/disk-5bd7ef53.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/62969c864f78/vmlinux-5bd7ef53.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/af66253a313c/bzImage-5bd7ef53.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+621fd56ba002faba6392@syzkaller.appspotmail.com
+Reported-by: syzbot+34ad5fab48f7bf510349@syzkaller.appspotmail.com
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.8.0-rc2-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor225/5062 is trying to acquire lock:
-ffff8880218893f8 ((work_completion)(&new_smc->smc_listen_work)){+.+.}-{0:0}, at: __flush_work+0xfa/0xa10 kernel/workqueue.c:3406
-
-but task is already holding lock:
-ffff888021888130 (sk_lock-AF_SMC/1){+.+.}-{0:0}, at: smc_release+0x3a3/0x640 net/smc/af_smc.c:336
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (sk_lock-AF_SMC/1){+.+.}-{0:0}:
-       lock_sock_nested+0x3a/0xf0 net/core/sock.c:3524
-       smc_listen_out+0x1e7/0x4b0 net/smc/af_smc.c:1914
-       smc_listen_out_connected net/smc/af_smc.c:1934 [inline]
-       smc_listen_work+0x56e/0x5190 net/smc/af_smc.c:2448
-       process_one_work+0x886/0x15d0 kernel/workqueue.c:2633
-       process_scheduled_works kernel/workqueue.c:2706 [inline]
-       worker_thread+0x8b9/0x1290 kernel/workqueue.c:2787
-       kthread+0x2c6/0x3a0 kernel/kthread.c:388
-       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-
--> #0 ((work_completion)(&new_smc->smc_listen_work)){+.+.}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain kernel/locking/lockdep.c:3869 [inline]
-       __lock_acquire+0x2445/0x3b30 kernel/locking/lockdep.c:5137
-       lock_acquire kernel/locking/lockdep.c:5754 [inline]
-       lock_acquire+0x1ae/0x520 kernel/locking/lockdep.c:5719
-       __flush_work+0x103/0xa10 kernel/workqueue.c:3406
-       __cancel_work_timer+0x3ef/0x590 kernel/workqueue.c:3497
-       smc_clcsock_release+0x5f/0xe0 net/smc/smc_close.c:29
-       __smc_release+0x5b9/0x890 net/smc/af_smc.c:301
-       smc_close_non_accepted+0xda/0x230 net/smc/af_smc.c:1846
-       smc_close_cleanup_listen net/smc/smc_close.c:45 [inline]
-       smc_close_active+0xc2d/0x1070 net/smc/smc_close.c:225
-       __smc_release+0x62b/0x890 net/smc/af_smc.c:277
-       smc_release+0x209/0x640 net/smc/af_smc.c:344
-       __sock_release+0xae/0x260 net/socket.c:659
-       sock_close+0x1c/0x20 net/socket.c:1421
-       __fput+0x270/0xb70 fs/file_table.c:376
-       task_work_run+0x14d/0x240 kernel/task_work.c:180
-       exit_task_work include/linux/task_work.h:38 [inline]
-       do_exit+0xa8a/0x2ad0 kernel/exit.c:871
-       do_group_exit+0xd4/0x2a0 kernel/exit.c:1020
-       __do_sys_exit_group kernel/exit.c:1031 [inline]
-       __se_sys_exit_group kernel/exit.c:1029 [inline]
-       __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1029
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(sk_lock-AF_SMC/1);
-                               lock((work_completion)(&new_smc->smc_listen_work));
-                               lock(sk_lock-AF_SMC/1);
-  lock((work_completion)(&new_smc->smc_listen_work));
-
- *** DEADLOCK ***
-
-2 locks held by syz-executor225/5062:
- #0: ffff8880791f6210 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:802 [inline]
- #0: ffff8880791f6210 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: __sock_release+0x86/0x260 net/socket.c:658
- #1: ffff888021888130 (sk_lock-AF_SMC/1){+.+.}-{0:0}, at: smc_release+0x3a3/0x640 net/smc/af_smc.c:336
-
-stack backtrace:
-CPU: 1 PID: 5062 Comm: syz-executor225 Not tainted 6.8.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- check_noncircular+0x317/0x400 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain kernel/locking/lockdep.c:3869 [inline]
- __lock_acquire+0x2445/0x3b30 kernel/locking/lockdep.c:5137
- lock_acquire kernel/locking/lockdep.c:5754 [inline]
- lock_acquire+0x1ae/0x520 kernel/locking/lockdep.c:5719
- __flush_work+0x103/0xa10 kernel/workqueue.c:3406
- __cancel_work_timer+0x3ef/0x590 kernel/workqueue.c:3497
- smc_clcsock_release+0x5f/0xe0 net/smc/smc_close.c:29
- __smc_release+0x5b9/0x890 net/smc/af_smc.c:301
- smc_close_non_accepted+0xda/0x230 net/smc/af_smc.c:1846
- smc_close_cleanup_listen net/smc/smc_close.c:45 [inline]
- smc_close_active+0xc2d/0x1070 net/smc/smc_close.c:225
- __smc_release+0x62b/0x890 net/smc/af_smc.c:277
- smc_release+0x209/0x640 net/smc/af_smc.c:344
- __sock_release+0xae/0x260 net/socket.c:659
- sock_close+0x1c/0x20 net/socket.c:1421
- __fput+0x270/0xb70 fs/file_table.c:376
- task_work_run+0x14d/0x240 kernel/task_work.c:180
- exit_task_work include/linux/task_work.h:38 [inline]
- do_exit+0xa8a/0x2ad0 kernel/exit.c:871
- do_group_exit+0xd4/0x2a0 kernel/exit.c:1020
- __do_sys_exit_group kernel/exit.c:1031 [inline]
- __se_sys_exit_group kernel/exit.c:1029 [inline]
- __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1029
+=====================================================
+BUG: KMSAN: kernel-infoleak-after-free in instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+BUG: KMSAN: kernel-infoleak-after-free in copy_to_user_iter lib/iov_iter.c:24 [inline]
+BUG: KMSAN: kernel-infoleak-after-free in iterate_ubuf include/linux/iov_iter.h:29 [inline]
+BUG: KMSAN: kernel-infoleak-after-free in iterate_and_advance2 include/linux/iov_iter.h:245 [inline]
+BUG: KMSAN: kernel-infoleak-after-free in iterate_and_advance include/linux/iov_iter.h:271 [inline]
+BUG: KMSAN: kernel-infoleak-after-free in _copy_to_iter+0x364/0x2520 lib/iov_iter.c:186
+ instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+ copy_to_user_iter lib/iov_iter.c:24 [inline]
+ iterate_ubuf include/linux/iov_iter.h:29 [inline]
+ iterate_and_advance2 include/linux/iov_iter.h:245 [inline]
+ iterate_and_advance include/linux/iov_iter.h:271 [inline]
+ _copy_to_iter+0x364/0x2520 lib/iov_iter.c:186
+ copy_to_iter include/linux/uio.h:197 [inline]
+ simple_copy_to_iter+0x68/0xa0 net/core/datagram.c:532
+ __skb_datagram_iter+0x123/0xdc0 net/core/datagram.c:420
+ skb_copy_datagram_iter+0x5c/0x200 net/core/datagram.c:546
+ skb_copy_datagram_msg include/linux/skbuff.h:3960 [inline]
+ packet_recvmsg+0xd9c/0x2000 net/packet/af_packet.c:3482
+ sock_recvmsg_nosec net/socket.c:1044 [inline]
+ sock_recvmsg net/socket.c:1066 [inline]
+ sock_read_iter+0x467/0x580 net/socket.c:1136
+ call_read_iter include/linux/fs.h:2014 [inline]
+ new_sync_read fs/read_write.c:389 [inline]
+ vfs_read+0x8f6/0xe00 fs/read_write.c:470
+ ksys_read+0x20f/0x4c0 fs/read_write.c:613
+ __do_sys_read fs/read_write.c:623 [inline]
+ __se_sys_read fs/read_write.c:621 [inline]
+ __x64_sys_read+0x93/0xd0 fs/read_write.c:621
  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f8804a8bc09
-Code: Unable to access opcode bytes at 0x7f8804a8bbdf.
-RSP: 002b:00007ffcbc267b78 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f8804a8bc09
-RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
-RBP: 00007f8804b062d0 R08: ffffffffffffffb8 R09: 0000000000000006
-R10: 0000000000000006 R11: 0000000000000246 R12: 00007f8804b062d0
-R13: 0000000000000000 R14: 00007f8804b06d20 R15: 00007f8804a5ce60
- </TASK>
+
+Uninit was stored to memory at:
+ skb_put_data include/linux/skbuff.h:2622 [inline]
+ netlink_to_full_skb net/netlink/af_netlink.c:181 [inline]
+ __netlink_deliver_tap_skb net/netlink/af_netlink.c:298 [inline]
+ __netlink_deliver_tap+0x5be/0xc90 net/netlink/af_netlink.c:325
+ netlink_deliver_tap net/netlink/af_netlink.c:338 [inline]
+ netlink_deliver_tap_kernel net/netlink/af_netlink.c:347 [inline]
+ netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
+ netlink_unicast+0x10f1/0x1250 net/netlink/af_netlink.c:1368
+ netlink_sendmsg+0x1238/0x13d0 net/netlink/af_netlink.c:1910
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2584
+ ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2638
+ __sys_sendmsg net/socket.c:2667 [inline]
+ __do_sys_sendmsg net/socket.c:2676 [inline]
+ __se_sys_sendmsg net/socket.c:2674 [inline]
+ __x64_sys_sendmsg+0x307/0x490 net/socket.c:2674
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Uninit was created at:
+ free_pages_prepare mm/page_alloc.c:1087 [inline]
+ free_unref_page_prepare+0xb0/0xa40 mm/page_alloc.c:2347
+ free_unref_page_list+0xeb/0x1100 mm/page_alloc.c:2533
+ release_pages+0x23d3/0x2410 mm/swap.c:1042
+ free_pages_and_swap_cache+0xd9/0xf0 mm/swap_state.c:316
+ tlb_batch_pages_flush mm/mmu_gather.c:98 [inline]
+ tlb_flush_mmu_free mm/mmu_gather.c:293 [inline]
+ tlb_flush_mmu+0x6f5/0x980 mm/mmu_gather.c:300
+ tlb_finish_mmu+0x101/0x260 mm/mmu_gather.c:392
+ exit_mmap+0x49e/0xd30 mm/mmap.c:3321
+ __mmput+0x13f/0x530 kernel/fork.c:1349
+ mmput+0x8a/0xa0 kernel/fork.c:1371
+ exit_mm+0x1b8/0x360 kernel/exit.c:567
+ do_exit+0xd57/0x4080 kernel/exit.c:858
+ do_group_exit+0x2fd/0x390 kernel/exit.c:1021
+ __do_sys_exit_group kernel/exit.c:1032 [inline]
+ __se_sys_exit_group kernel/exit.c:1030 [inline]
+ __x64_sys_exit_group+0x3c/0x50 kernel/exit.c:1030
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Bytes 3852-3903 of 3904 are uninitialized
+Memory access of size 3904 starts at ffff88812ea1e000
+Data copied to user address 0000000020003280
+
+CPU: 1 PID: 5043 Comm: syz-executor297 Not tainted 6.7.0-rc5-syzkaller-00047-g5bd7ef53ffe5 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+=====================================================
 
 
 ---
