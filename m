@@ -1,140 +1,95 @@
-Return-Path: <linux-kernel+bounces-50502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E2788479F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:53:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47EF38479F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:52:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 160D01F274CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:53:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0375728768D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:52:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 299F580635;
-	Fri,  2 Feb 2024 19:53:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE9E280632;
+	Fri,  2 Feb 2024 19:52:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nR/Rc+Nv"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WqgI7VGz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B9A58175F;
-	Fri,  2 Feb 2024 19:53:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16F9A8060B;
+	Fri,  2 Feb 2024 19:52:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706903607; cv=none; b=cjV7w2H7INHfjNL4u93SMDlSXQriMjC6ASIlQ9q0YRSmnI52MkU1HQofdft44VLhgbdRjN8HAGEUipSEVVCV9JHZiJwivmdy2+nATMULvZvIefOmrvKzItis0ITn5MkiN45ah0WDg1ma43DQ/EbFRKdMRYzly7Hd6V8+3/lbtPc=
+	t=1706903562; cv=none; b=QVVzyGe8wiy6POzIQtmkz7cJxqDuU106m1I77a5bHuKfy9FxJQs4Qsebu9InLi1awrbbG48lViXgM6Wacpjbg2skGcjrLgYH09SM2PLTJWpPgh0qVutYZLuSUxidIG4v4mR7KcDeQaeWot3IWQTs7SXOmyEAcLkG5weK9PULZKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706903607; c=relaxed/simple;
-	bh=y9CPof6+weJZ90idQr8vFZCmimYUO08YPbLC5Rk2XFM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=V2Dv8xcr5rLVMp9KZ3v0GE0tr95X/F+BOYsnlAv0jiHVT9KzXp8B8xQSwRr+yxi+y8AYKChfKVdWKMOjRCTQ/87ISXMB22qMGLAIXCRQSzygP5JKUxO/CwPPM+NQC6PmNd9ZExenRQQyUgMnKrl50L8zah35Uy/LDfC0zmWAkCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nR/Rc+Nv; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6de287449f1so1735648b3a.2;
-        Fri, 02 Feb 2024 11:53:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706903596; x=1707508396; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pEX04GHs2TY1yrUpMLFp489utbKDIJ1QmjpEDT80Li8=;
-        b=nR/Rc+NvdZYrQGhI/1VvjFNb21PceZmG8Q0cF3/tFGS1KQF5SsN6R/rhEmsC6e5v5E
-         kLZa9RuOkfhwy7pjztLx4LH6BQwB2Iv4J5kHDK8/sCaPXmaxvl+N10qndebXdbwvCT+e
-         MGsE9YVsuCErFAu1r4sSYjGSxllPjx5B7z7DvXfmds/Qk6ggBwbjg3JQBoEdNZbd5FE6
-         tNpXl/9V1FRnEvBe3+7ZTnGgOTGTjKyOidKDmyKl3zvALoEdjP5H7GhOesy/liBbsvXK
-         sjnlQJ6tr835XhrIuKHXlBMyWUQEh5lH5bWJ3xdV9A4vsCXncF6pJu58eJKre0WbTZJ8
-         HQLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706903596; x=1707508396;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pEX04GHs2TY1yrUpMLFp489utbKDIJ1QmjpEDT80Li8=;
-        b=AiH662mv04+K1ae1mmuckPEFtF4lJzvBVCo3mJkuIHxRExajQ5hBKFKXZCcgJh00Sl
-         gZdx+qUCywWmWMFQwVhAHwyPOh2RPfE4JWbwXfYrq5yy9upFOoILP5tXuRtjk7cK4YO4
-         wH4BAPTNpaJ3JaOFVtAy/jMOVk+krDplOfZ1VNPW9BLlBTR7s/KU4JtuBsyY89SGHqRs
-         g98gFQTWsplBvxYxog1ikqwlL37gDN40cmVtUs7lIpdyox1qo0vJYs3/uXV7+4mjV+cs
-         YS1dgAZhw1t7M0ozl+1R4FgWQrBl7pdlOgGVxXAQDW/YdwOwxnsbjrf4dOgNuX1XeO0M
-         zsWw==
-X-Gm-Message-State: AOJu0YzQxs2Zy3HP//OlsAKyVusmvQTsLDkn1FZlrlxW4WdlLtOG/pKK
-	nA98ZceL+xslB9ucXdJvEabieiBkPi2wvniHtqm2SbwiI9wpwVLi
-X-Google-Smtp-Source: AGHT+IFsrhQ86WJEX11iXZxHiEA7cKVixtXRAzDz5v8qGUQSJ1SAe6vH89vYUKa+vGhhNECIm4DW3Q==
-X-Received: by 2002:aa7:8c48:0:b0:6d9:b9b4:8ca with SMTP id e8-20020aa78c48000000b006d9b9b408camr8765723pfd.28.1706903596462;
-        Fri, 02 Feb 2024 11:53:16 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUcA24CxtkUNk1HKIW57bt2Yn8/sgrl3vr3/NEnFXZX3YNZHGoJ519CEhWXtYlVHDIkIAa2CjTGCs3E5SztkqCXa4rvUxN26y2OZ3Jf/g/3LmI7t+R44IxnWBL/Ep7tUdMyo1ni2gU=
-Received: from google.com ([2620:15c:9d:2:d093:a15e:90dc:f5f8])
-        by smtp.gmail.com with ESMTPSA id b23-20020aa78717000000b006dfed5251easm2010164pfo.76.2024.02.02.11.51.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 11:52:23 -0800 (PST)
-Date: Fri, 2 Feb 2024 11:51:32 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: [git pull] Input updates for v6.8-rc2
-Message-ID: <Zb1HxLM3Vs9p4MiG@google.com>
+	s=arc-20240116; t=1706903562; c=relaxed/simple;
+	bh=NAW4yo/gyTsP/aDVFL1AKzWX4VS5afMpBgisLsIzRkw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ARXiJ2HZnaP5LEP8ywhyyo4hQ4TnIbkLLGgWwLMTcduUjEBn4UwCxjnCGu+djn+uFLcVBF5wp+yiKhzgdv9/obzs1KlFnW2NaMYfMDRl4CPpVq5zGa9a8tYbNTp/Dhx2+wn1FQ0yjlbQcpaQW1fA6vMpgJcT8nt9hLnW7rpKA0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WqgI7VGz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A34A3C433C7;
+	Fri,  2 Feb 2024 19:52:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706903561;
+	bh=NAW4yo/gyTsP/aDVFL1AKzWX4VS5afMpBgisLsIzRkw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WqgI7VGzDc1EHE4RPDCHV/OyWZsm8JXYzPROSDrkLtkWdbei8RzMvhASvMJ6Cg24w
+	 sIZ3t0uoENEzkZJAIpDkQyLMQNbe2PL2B6OzyJ90Kn8ExWXHNoLstZ4hUXpi+nrg9y
+	 j8QgZtWw7l/h178yr/QF3WleoVL4rYWHuS0r6hfjLIVZDLgTNzWMAY9KtmEd8+bLty
+	 biIVmYXNOQSUQaxFSIUz/6bgPNeiCuhhjwPqfJoQ1I0Arp36eBpuc6olf2sjiognM4
+	 RSbiYipy+2z4k+exFBLvlZ1dmIVmZ3wnFVanQm4ke/dwOvwF7NyuSg0qVZIj/1wlPZ
+	 GBzZHDyZgbTxQ==
+Date: Fri, 2 Feb 2024 13:52:39 -0600
+From: Rob Herring <robh@kernel.org>
+To: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
+Cc: Gregory CLEMENT <gregory.clement@bootlin.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	linux-mips@vger.kernel.org, linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+	linux-gpio@vger.kernel.org
+Subject: Re: [PATCH v4 03/18] dt-bindings: pinctrl: allow pin controller
+ device without unit address
+Message-ID: <20240202195239.GA854204-robh@kernel.org>
+References: <20240131-mbly-clk-v4-0-bcd00510d6a0@bootlin.com>
+ <20240131-mbly-clk-v4-3-bcd00510d6a0@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240131-mbly-clk-v4-3-bcd00510d6a0@bootlin.com>
 
-Hi Linus,
+On Wed, Jan 31, 2024 at 05:26:16PM +0100, Théo Lebrun wrote:
+> Allow a pin controller device to have no address, therefore no unit
+> address.
+> 
+> The previous $nodename was enforcing a unit address, but
+> scripts/dtc/checks.c enforced that names with unit addresses have reg
+> or ranges:
+> 
+>    Warning (unit_address_vs_reg): .../pinctrl@0: node has a unit
+>    name, but no reg or ranges property
+> 
+> Fix pinctrl.yaml to adopt a (pinctrl|pinmux)(-[a-z]+)? node name when
+> neither reg nor ranges are required. Use [a-z]+ to avoid conflicts with
+> pinctrl-consumer.yaml.
 
-Please pull from:
+You can drop this patch now.
 
-	git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git tags/input-for-v6.8-rc2
- 
-to receive updates for the input subsystem. You will get:
-
-- a fix for the fix to deal with newer laptops which get confused by the
-  "GET ID" command when probing for PS/2 keyboards
-
-- a couple of tweaks to i8042 to handle Clevo NS70PU and Lifebook U728
-  laptops
-
-- a change to bcm5974 to validate that the device has appropriate
-  endpoints
-
-- an addition of new product ID to xpad driver to recognize Lenovo
-  Legion Go controllers
-
-- a quirk to Goodix controller to deal with extra GPIO described in ACPI
-  tables on some devices.
-
-Changelog:
----------
-
-Brenton Simpson (1):
-      Input: xpad - add Lenovo Legion Go controllers
-
-Hans de Goede (3):
-      Input: goodix - accept ACPI resources with gpio_count == 3 && gpio_int_idx == 0
-      Input: atkbd - skip ATKBD_CMD_SETLEDS when skipping ATKBD_CMD_GETID
-      Input: atkbd - do not skip atkbd_deactivate() when skipping ATKBD_CMD_GETID
-
-Javier Carrasco (1):
-      Input: bcm5974 - check endpoint type before starting traffic
-
-Szilard Fabian (1):
-      Input: i8042 - add Fujitsu Lifebook U728 to i8042 quirk table
-
-Werner Sembach (1):
-      Input: i8042 - fix strange behavior of touchpad on Clevo NS70PU
-
-Diffstat:
---------
-
- drivers/input/joystick/xpad.c         |  2 ++
- drivers/input/keyboard/atkbd.c        | 14 +++++++++-----
- drivers/input/mouse/bcm5974.c         | 20 ++++++++++++++++++++
- drivers/input/serio/i8042-acpipnpio.h | 14 ++++++++++++++
- drivers/input/touchscreen/goodix.c    |  3 ++-
- 5 files changed, 47 insertions(+), 6 deletions(-)
-
-Thanks.
-
-
--- 
-Dmitry
+Rob
 
