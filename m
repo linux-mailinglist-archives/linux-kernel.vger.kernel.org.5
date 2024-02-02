@@ -1,88 +1,74 @@
-Return-Path: <linux-kernel+bounces-49700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADA39846E4C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:51:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 861AF846E55
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:53:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64B66299043
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:51:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB0D21C26598
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:53:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E5513D4E1;
-	Fri,  2 Feb 2024 10:51:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD3C313BE8F;
+	Fri,  2 Feb 2024 10:52:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dvo8XzHi"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DOzrgy/W"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72C6C22067;
-	Fri,  2 Feb 2024 10:51:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6746913D50C
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 10:52:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706871077; cv=none; b=AcMcGPkfCJ86RSlKWZylAgl9xvqzKOq+W4tKI6wR+KrNE8BBbaKf+WNKxAnkU6RywGzdvF/d2Di1GF89UNbJERcSUR8ogYRyqqt06QNJH4DJBrtkyAzI3apUmXxHNaXMx4xxF0K3N3RCg+ivh7acvb676AQamyKL/xiyqlYMTF0=
+	t=1706871178; cv=none; b=R3pJLG87PgiwMeCvN+Hge3HX07G+6uju+gm8ssGythQCuSuYW7EJRcWc8VhPf96aFRwRiB8YSK9xCtA0KjMnhnb6ID4i7Na75jXhP/EVDiZW93bXT+0ZA40cBvfQnAH+tDFvTN65HqFt8eY6j07ZxYg8MiriHhop5c2VgAHnVZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706871077; c=relaxed/simple;
-	bh=IOY6464NxNU4brqTtjjX6NWMS6Lq4bFk/LCbg383F2A=;
+	s=arc-20240116; t=1706871178; c=relaxed/simple;
+	bh=dqUxwBZX2kfI3B+P5TtoZCK0zVV9VHWfEdhugIz7LIE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VUIKcJAaZQZwuLrrfYHEKbPgyd8c91jGfJZzC6YzNEkvyV219IuL78XJH4mNO9ZZGQcuiVLG1/GSC+gl+tqC/JbgrgkviNoBgFMCEln0rSZKNeAjp7DUXf8NlIRJYVMLF7l3+/AW8ANQ9S1PcBV/plnGnWJ325ZtP+hwAUtJ0pM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dvo8XzHi; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d05b06b5f9so22743181fa.3;
-        Fri, 02 Feb 2024 02:51:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706871073; x=1707475873; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kx4mIgU1jBfilctvZhlH5DYX3FWSs/9dFiVk8rkOVB0=;
-        b=Dvo8XzHiGKjF4p0kxiOA6W1fyeSj2rWZfQPo3i0fIUKa2vWaPtxWLQuSgjKFoqdIPP
-         p9tTYQ022FUr/9VRdxbWLnOs5CaTfvXPS8XgIZkqh5I9xQlddvJ9nuVMAj762UT4Hn13
-         nd2rfqDj7usjSCoPq0VcpqNAW7h96alzRGni2iFFkFT/43dkHLFsa1OuHgSPAY/49zqa
-         Yr+1KBcH12dcaRtsz7D8Fse+x/B8glXG1XjJ529UVwuMj6XqrGUq9nVlBouzYPQ/XyM6
-         LtJuCK0V0dXX80pBTzKGRjqUBZho2qizSjZhM7iK2P4VcnP5avwFUGkckoXa7lFwMfwP
-         GN/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706871073; x=1707475873;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kx4mIgU1jBfilctvZhlH5DYX3FWSs/9dFiVk8rkOVB0=;
-        b=UIkxNWPZV06r0AIWLXCi0Z1ZJ/M1OurysbNS9nOnFhK7X9SP4lInsKbfZR+ZYeN76n
-         /ABomRVV3t6/q+eM0YgNgXVQj/fS2QXqHa+AEx2FOc5R3sRDnp2VpHUIX6r96AbxzCQb
-         nuBBypfrwnsRieVlEAkzVHHd3pdhJavjsHJsr8/0H1gS/xd7efoVpEGXxN4y62cjNZov
-         KBir15Ui1IcHpEjHxUV9GocJJazP3q0olBPxiUHiKgC4vNUeWfZAw6IHsZxAkAgJBZzJ
-         plKBanJm5/ScTMvaYl8HeICYXkKlgqNE7fw19m3W1Ks4WllNmQNGjTrc5Di3pKzRCH2t
-         IheA==
-X-Gm-Message-State: AOJu0Yxu+/QGv3h9vSAtjFYQQRuvQ6PtV14Tw3XFfzXklbcxzWur78pu
-	MR2RXmR3+9N8/3QFdYz/chq/6pp0RSDplwekNoH5pS137Zlf43ox
-X-Google-Smtp-Source: AGHT+IFBBAv4djkjIr64uSUqBaRgzJgTXmTCYRnLptqsty5wsmiMjBqHWBJy6fRmQbvifnYBus9v4Q==
-X-Received: by 2002:a2e:3c0f:0:b0:2d0:54ac:35a with SMTP id j15-20020a2e3c0f000000b002d054ac035amr990510lja.4.1706871073157;
-        Fri, 02 Feb 2024 02:51:13 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVHq+TVXuo5qAsWn2M07nkxLeFNz1PodEBo1sRZRYCLFTYpE77y15gWwkSE+lEJSNnsEz8coRLdXJ0rsUXI23QOOGaSE7TstJYQEssCaZCzD7BUaNHwBb4ziHp0BAKjLFKcuaZrIri7O/HWr7uHzLPxiNanY44oaCb+y9oCorn/VH1KFT/8PUCL5mm5q7A4BZR7aF0iXlnwmKlGElSdpwA8IvZltIj/CmBwcraguqkv4JWvzLa7daY4pmn9Aa2tyTEudKY5CsuK3RFE0KMQQXYx6Kid0jBaNRi7hzgiy6M3eRT6CF5ib9cI6Nd9G4ho8CTIXZODz6dyyzn/wLecTxt9tAe1fhnufBaMta04dEWL3BNhLa+E85Svbx3INGbslJNrQWK+JkdW/YKDSN9Kw5tAEYaU3Z7cJE13TgF1+1OVYC3VKcnPePhSjFPin/4szTTFLOIEqLGn/WUqjefN3R84AzA3VKP25fb7xAoK8QvPdF734i6yKutr9d2zhNOo5w+gfomo8GmdD+DZGcpgM7OxMEEb1T0nKNdp537/YSVomy/mkXFj1bNSC/dL44l1ffnWfZIUvkm4WQEq5RQPtsesZYfoGgv8FN5ozrguaVWsT3KG5oe6hi9641BykkJcAAbtfzaLF6DiKChg7hKLQPT5nupdw60gZUvEIKJY+DfGXg4OdeZf/TZ+YLs9Nif/c1tlQ50O8wJRFldJMnHWzze8rSmRN2B/aAyUM+k/mkHKfbG3CfHbAv9UMjwe5ZK9rDlpx2HvvaFF5a+t86lv47WVGibUCy3eFcLeSLXygnj/dCBlnFKQVFKurWYC9XtWn9C2Yn8uurLdZc+3grv1HGMII4tjfEk7YTZ3mXjgmg86MOc14fxUNdFAdwzI7RwkooVuqVXkWE3lTAtu3V0lwWYz9mGwoXI+iLvx
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id bx30-20020a05651c199e00b002d0511e7420sm241007ljb.6.2024.02.02.02.51.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 02:51:12 -0800 (PST)
-Date: Fri, 2 Feb 2024 13:51:10 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-Cc: vkoul@kernel.org, jingoohan1@gmail.com, conor+dt@kernel.org, 
-	konrad.dybcio@linaro.org, manivannan.sadhasivam@linaro.org, robh+dt@kernel.org, 
-	quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com, quic_ramkri@quicinc.com, 
-	quic_nayiluri@quicinc.com, dmitry.baryshkov@linaro.org, quic_krichai@quicinc.com, 
-	quic_vbadigan@quicinc.com, quic_parass@quicinc.com, quic_schintav@quicinc.com, 
-	quic_shijjose@quicinc.com, Gustavo Pimentel <gustavo.pimentel@synopsys.com>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>, 
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Kishon Vijay Abraham I <kishon@kernel.org>, dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev
-Subject: Re: [PATCH v1 2/6] dmaengine: dw-edma: Introduce helpers for getting
- the eDMA/HDMA max channel count
-Message-ID: <yaf4wvjqy27whulyppep5qvw3cabfcvaoyxfn3p2i7khc3deyv@42pjna2sfmzr>
-References: <1705669223-5655-1-git-send-email-quic_msarkar@quicinc.com>
- <1705669223-5655-3-git-send-email-quic_msarkar@quicinc.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=af48uh/EI4Vxf//eRcno+vDAfCFqGHsYK9f4NHeO1yAZdx9V3xiZIHp3FVDjOCPI6XYPGuxoNYW9izvdiqk7POVlPkBT6nLYLmR8JebEYewkIWb8qPsjO7zn+ji4l+0DDJzG+cgmhm+zVFhEmSmJuGr1+2ApaW6AhfTSH/bIz90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DOzrgy/W; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706871175;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZClaqx53ZJJu0ie6KUCf9aABm/H96wl0onIl5m7Has8=;
+	b=DOzrgy/W08sf3mtiqa3OTy0qrOrN8lADr1U41ZRuGcRJUxE1bPxYVT/mcYK66VWYP7hBjz
+	hhT5MDffNkZdyUVk4Gj0oaafuF+Po1SetQW4B4kcca2+s+rgJwogS22ztlIf53l0a8THJ3
+	ou7aTa8hpvmRhre6EwqFRqP9aODhyXk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-659-iW2aeLZvPEy-2p72J5_cXA-1; Fri, 02 Feb 2024 05:52:52 -0500
+X-MC-Unique: iW2aeLZvPEy-2p72J5_cXA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 71E5385A588;
+	Fri,  2 Feb 2024 10:52:51 +0000 (UTC)
+Received: from fedora (unknown [10.72.116.16])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id D9E5640C95AD;
+	Fri,  2 Feb 2024 10:52:45 +0000 (UTC)
+Date: Fri, 2 Feb 2024 18:52:22 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Mike Snitzer <snitzer@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	David Hildenbrand <david@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Don Dutile <ddutile@redhat.com>, Rafael Aquini <raquini@redhat.com>,
+	Dave Chinner <david@fromorbit.com>
+Subject: Re: mm/madvise: set ra_pages as device max request size during
+ ADV_POPULATE_READ
+Message-ID: <ZbzJZji95a1qmhcj@fedora>
+References: <20240202022029.1903629-1-ming.lei@redhat.com>
+ <Zbxy30POPE8rN_YN@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,113 +77,118 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1705669223-5655-3-git-send-email-quic_msarkar@quicinc.com>
+In-Reply-To: <Zbxy30POPE8rN_YN@redhat.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On Fri, Jan 19, 2024 at 06:30:18PM +0530, Mrinmay Sarkar wrote:
-> From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+On Thu, Feb 01, 2024 at 11:43:11PM -0500, Mike Snitzer wrote:
+> On Thu, Feb 01 2024 at  9:20P -0500,
+> Ming Lei <ming.lei@redhat.com> wrote:
 > 
-> Add common helpers for getting the eDMA/HDMA max channel count.
+> > madvise(MADV_POPULATE_READ) tries to populate all page tables in the
+> > specific range, so it is usually sequential IO if VMA is backed by
+> > file.
+> > 
+> > Set ra_pages as device max request size for the involved readahead in
+> > the ADV_POPULATE_READ, this way reduces latency of madvise(MADV_POPULATE_READ)
+> > to 1/10 when running madvise(MADV_POPULATE_READ) over one 1GB file with
+> > usual(default) 128KB of read_ahead_kb.
+> > 
+> > Cc: David Hildenbrand <david@redhat.com>
+> > Cc: Matthew Wilcox <willy@infradead.org>
+> > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> > Cc: Christian Brauner <brauner@kernel.org>
+> > Cc: Don Dutile <ddutile@redhat.com>
+> > Cc: Rafael Aquini <raquini@redhat.com>
+> > Cc: Dave Chinner <david@fromorbit.com>
+> > Cc: Mike Snitzer <snitzer@kernel.org>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Signed-off-by: Ming Lei <ming.lei@redhat.com>
+> > ---
+> >  mm/madvise.c | 52 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+> >  1 file changed, 51 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/mm/madvise.c b/mm/madvise.c
+> > index 912155a94ed5..db5452c8abdd 100644
+> > --- a/mm/madvise.c
+> > +++ b/mm/madvise.c
+> > @@ -900,6 +900,37 @@ static long madvise_dontneed_free(struct vm_area_struct *vma,
+> >  		return -EINVAL;
+> >  }
+> >  
+> > +static void madvise_restore_ra_win(struct file **file, unsigned int ra_pages)
+> > +{
+> > +	if (*file) {
+> > +		struct file *f = *file;
+> > +
+> > +		f->f_ra.ra_pages = ra_pages;
+> > +		fput(f);
+> > +		*file = NULL;
+> > +	}
+> > +}
+> > +
+> > +static struct file *madvise_override_ra_win(struct file *f,
+> > +		unsigned long start, unsigned long end,
+> > +		unsigned int *old_ra_pages)
+> > +{
+> > +	unsigned int io_pages;
+> > +
+> > +	if (!f || !f->f_mapping || !f->f_mapping->host)
+> > +		return NULL;
+> > +
+> > +	io_pages = inode_to_bdi(f->f_mapping->host)->io_pages;
+> > +	if (((end - start) >> PAGE_SHIFT) < io_pages)
+> > +		return NULL;
+> > +
+> > +	f = get_file(f);
+> > +	*old_ra_pages = f->f_ra.ra_pages;
+> > +	f->f_ra.ra_pages = io_pages;
+> > +
+> > +	return f;
+> > +}
+> > +
+> 
+> Does this override imply that madvise_populate resorts to calling
+> filemap_fault() and here you're just arming it to use the larger
+> ->io_pages for the duration of all associated faulting?
 
-See my comment to the patch 4:
-https://lore.kernel.org/linux-pci/qfdsnz7louqdrs6mhz72o6mzjo66kw63vtlhgpz6hgqfyyzyhq@tge3r7mvwtw3/
-
--Serge(y)
+Yes.
 
 > 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-> ---
->  drivers/dma/dw-edma/dw-edma-core.c           | 18 ++++++++++++++++++
->  drivers/pci/controller/dwc/pcie-designware.c |  6 +++---
->  include/linux/dma/edma.h                     | 14 ++++++++++++++
->  3 files changed, 35 insertions(+), 3 deletions(-)
+> Wouldn't it be better to avoid faulting and build up larger page
+
+How can we avoid the fault handling? which is needed to build VA->PA mapping.
+
+> vectors that get sent down to the block layer in one go and let the
+
+filemap_fault() already tries to allocate folio in big size(max order
+is MAX_PAGECACHE_ORDER), see page_cache_ra_order() and ra_alloc_folio().
+
+> block layer split using the device's limits? (like happens with
+> force_page_cache_ra)
+
+Here filemap code won't deal with block directly because there is VFS &
+FS and io mapping is required, and it just calls aops->readahead() or
+aops->read_folio(), but block plug & readahead_control are applied for
+handling everything in batch.
+
 > 
-> diff --git a/drivers/dma/dw-edma/dw-edma-core.c b/drivers/dma/dw-edma/dw-edma-core.c
-> index 7fe1c19..2bd6e43 100644
-> --- a/drivers/dma/dw-edma/dw-edma-core.c
-> +++ b/drivers/dma/dw-edma/dw-edma-core.c
-> @@ -902,6 +902,24 @@ static int dw_edma_irq_request(struct dw_edma *dw,
->  	return err;
->  }
->  
-> +static u32 dw_edma_get_max_ch(enum dw_edma_map_format mf, enum dw_edma_dir dir)
-> +{
-> +	if (mf == EDMA_MF_HDMA_NATIVE)
-> +		return HDMA_MAX_NR_CH;
-> +
-> +	return dir == EDMA_DIR_WRITE ? EDMA_MAX_WR_CH : EDMA_MAX_RD_CH;
-> +}
-> +
-> +u32 dw_edma_get_max_rd_ch(enum dw_edma_map_format mf)
-> +{
-> +	return dw_edma_get_max_ch(mf, EDMA_DIR_READ);
-> +}
-> +
-> +u32 dw_edma_get_max_wr_ch(enum dw_edma_map_format mf)
-> +{
-> +	return dw_edma_get_max_ch(mf, EDMA_DIR_WRITE);
-> +}
-> +
->  int dw_edma_probe(struct dw_edma_chip *chip)
->  {
->  	struct device *dev;
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> index eca047a..96575b8 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> @@ -864,7 +864,7 @@ static int dw_pcie_edma_irq_vector(struct dw_edma_chip *edma, unsigned int nr)
->  	char name[6];
->  	int ret;
->  
-> -	if (nr >= EDMA_MAX_WR_CH + EDMA_MAX_RD_CH)
-> +	if (nr >= dw_edma_get_max_rd_ch(edma->mf) + dw_edma_get_max_wr_ch(edma->mf))
->  		return -EINVAL;
->  
->  	ret = platform_get_irq_byname_optional(pdev, "dma");
-> @@ -923,8 +923,8 @@ static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
->  	pci->edma.ll_rd_cnt = FIELD_GET(PCIE_DMA_NUM_RD_CHAN, val);
->  
->  	/* Sanity check the channels count if the mapping was incorrect */
-> -	if (!pci->edma.ll_wr_cnt || pci->edma.ll_wr_cnt > EDMA_MAX_WR_CH ||
-> -	    !pci->edma.ll_rd_cnt || pci->edma.ll_rd_cnt > EDMA_MAX_RD_CH)
-> +	if (!pci->edma.ll_wr_cnt || pci->edma.ll_wr_cnt > dw_edma_get_max_wr_ch(pci->edma.mf) ||
-> +	    !pci->edma.ll_rd_cnt || pci->edma.ll_rd_cnt > dw_edma_get_max_rd_ch(pci->edma.mf))
->  		return -EINVAL;
->  
->  	return 0;
-> diff --git a/include/linux/dma/edma.h b/include/linux/dma/edma.h
-> index 7197a58..550f6a4 100644
-> --- a/include/linux/dma/edma.h
-> +++ b/include/linux/dma/edma.h
-> @@ -106,6 +106,9 @@ struct dw_edma_chip {
->  #if IS_REACHABLE(CONFIG_DW_EDMA)
->  int dw_edma_probe(struct dw_edma_chip *chip);
->  int dw_edma_remove(struct dw_edma_chip *chip);
-> +
-> +u32 dw_edma_get_max_rd_ch(enum dw_edma_map_format mf);
-> +u32 dw_edma_get_max_wr_ch(enum dw_edma_map_format mf);
->  #else
->  static inline int dw_edma_probe(struct dw_edma_chip *chip)
->  {
-> @@ -116,6 +119,17 @@ static inline int dw_edma_remove(struct dw_edma_chip *chip)
->  {
->  	return 0;
->  }
-> +
-> +static inline u32 dw_edma_get_max_rd_ch(enum dw_edma_map_format mf)
-> +{
-> +	return 0;
-> +}
-> +
-> +static inline u32 dw_edma_get_max_wr_ch(enum dw_edma_map_format mf)
-> +{
-> +	return 0;
-> +}
-> +
->  #endif /* CONFIG_DW_EDMA */
->  
->  #endif /* _DW_EDMA_H */
-> -- 
-> 2.7.4
-> 
+> I'm concerned that madvise_populate isn't so efficient with filemap
+
+That is why this patch increases readahead window, then
+madvise_populate() performance can be improved by X10 in big file-backed
+popluate read.
+
+> due to excessive faulting (*BUT* I haven't traced to know, I'm just
+> inferring that is why twiddling f->f_ra.ra_pages helps improve
+> madvise_populate by having it issue larger IO. Apologies if I'm way
+> off base)
+
+As mentioned, fault handling can't be avoided, but we can improve
+involved readahead IO perf.
+
+
+
+Thanks,
+Ming
+
 
