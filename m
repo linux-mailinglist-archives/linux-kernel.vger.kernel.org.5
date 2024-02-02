@@ -1,88 +1,153 @@
-Return-Path: <linux-kernel+bounces-49237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97DCE8467BD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:58:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C3488467CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:04:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC6E028B1F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:58:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87F2D28BC3D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:04:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 803011754C;
-	Fri,  2 Feb 2024 05:58:08 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5948017555;
+	Fri,  2 Feb 2024 06:04:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a4ZaMBDv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBEC8F4FD
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 05:58:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9287717547;
+	Fri,  2 Feb 2024 06:04:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706853488; cv=none; b=us9wQWtcy7gEDLjvpFdiXtkkH8w2wj6pq1DN7lXbLtU244ci+OaYt6oE/K9QUSmGaZQ5RMnqC7+1Z2YD1ERmtjSJrIWvjv7EwZisU7Z+YQGNk/nRgJLhI6PUgLvwSyODbmqrHUQ0R0udXrbUxaK9C2BWKx+BjHI9YaV0a48u/kI=
+	t=1706853847; cv=none; b=BzcPslsGV9Lk/EoZZ2dmODDIeiL/NGH+E1apj3xxqx6CZ6b4yAfjKnZvenNq1YSL6uyEkPul/moO5ueRhniAhiSMwzS+QVh/GR62wBXXF+bzZM6RMYdsK6dHXBTBykY7okFRF8dIFEFAb49Uq8kJSPSJqk69ht38W+zX2n2VQnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706853488; c=relaxed/simple;
-	bh=BSbszJ5Y/AvllC/4xf/jfFA62CQHhAoN2ik1m5evc4M=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=HPzS4r7vYWoKQbys+C/G8ga0jVNqg5Pe5292PuGstjJWQ+GNzxtLO4bpEP/u9h16lykq57S06wT3XB576cigBAV2nsRRb3jCylRchp47qCeKpN0QnMnsVAyHoSC0j0IVcHiWl7FlB5ZDc48mTJTi1B5sBBq12kkQl2lXHU9cHvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3638c09d8d9so12373655ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 21:58:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706853486; x=1707458286;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nNS9efCs9xd6ENVLUcQazqKgHqMzi0P1Y5Gnxr/6LRI=;
-        b=Ox3r7I682Ugj4hAXPH/75ZFDRTau5DMyrpuhnCZJE+pnMFQ4YDyxUWYXuLyIfubLi6
-         vSDF48uDNigdSm99++toFkK1CM5WElcX8iq4/PRmnBHjo/lNM2gFq4Xxo63hTqnHsfMQ
-         X7Kgkw7wlMcrfy5pJH/+J2ZTOYQPCE5jjRMRNeYT+upf7a1xcox+LSq2cL3oi3GXBiyj
-         VLS7YO1kxr0LyqPpCMVKny0ukI9jASvPEJRY1LqvjzQ/9dhY2R4Hi3DXbnMnhrFdJGnU
-         gMAPwc1E2YfdOFc1R72ecZpfBDpeVwyGlucQG/4q+82M4bzOy0RlxU64b0n2KL1mhlaL
-         zWcg==
-X-Gm-Message-State: AOJu0YxIHXfNxonRTSWvFxrpDg5IYFo8YCgRAUHRVL7P3fzLabIB9Rhk
-	IZDlK1FwifIsOlDJUl7IPsyYjAvNm/DvfdVvy9VEy9f9CpRYxq9pqv4b1EglQiKmP5mwVvjWMjj
-	EnTjQ0X7KRuDoLFlcElF/q0NaGVuBPHqA/uLyFcDYsAXd3arC+H19oN4=
-X-Google-Smtp-Source: AGHT+IGjwrnS9D+vDzeyqgJXaM++uthEE9qa1/9iczo6r2Bw1MiHWgTHV2o0N5U46ye0bPVI8uAhhuVQ6V/OitNmIXioGwwJLjFR
+	s=arc-20240116; t=1706853847; c=relaxed/simple;
+	bh=q9Ziz4l7b3bEIEH2wHez2bI0i2FEn3bnuA8lIONGyvA=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=kMNqw5WR9I71iuk6t2SD29YqhMGjLsV8N4KP/+UrsnKNHExjAXNonyJooATFd+UtGcGwr/z0eVi4UQH8SHjhG9DR1s3AEk12cbwYjBPNKFXHBDMjuxh5k7YG2//viP5BzoUd1UZyMGoEtPaVipr6pE7xW+RIv4ou2+3BSLk5ptk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a4ZaMBDv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2A38C433C7;
+	Fri,  2 Feb 2024 06:04:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706853847;
+	bh=q9Ziz4l7b3bEIEH2wHez2bI0i2FEn3bnuA8lIONGyvA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=a4ZaMBDvUSerM5Vsg0MLGQqLfVm7VrWxHu/cuTIkI/Y/HWB2zGeRkFAyPN76RgEIK
+	 DQs/AGTT99td7gh0zKLzNhKTLL1ht592bqDmGZUg3VNYkRaepuHBylB2Qo2974pVA1
+	 rffwxp0mjeU1BWOuxiOMKi5i8zOdIhIWcWxP/RrUZfvFmDC28rDpTA539Ph6RnFt/p
+	 ala226m6eC5JE3ItjRET3a0vzp8B9/CwWLjZN9uodGj9H072Osn6BkIrr/ZfpRmU/9
+	 uoRGZ8O3XDoGQ6+/nrHvX4yVbiG02t3H/IHCjX1CfDx8tbd1+jPJ/Gla8t5yH6Q8MA
+	 uNrZDK5NX/xLw==
+Date: Fri, 2 Feb 2024 15:04:03 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc: linux-trace-kernel@vger.kernel.org, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Pengutronix Kernel Team
+ <kernel@pengutronix.de>
+Subject: Re: Boot-time dumping of ftrace fuctiongraph buffer
+Message-Id: <20240202150403.7ccc4126dbeaad8bdf77c384@kernel.org>
+In-Reply-To: <d33e5271-219d-4b8e-be5a-8903219d7fd6@pengutronix.de>
+References: <d33e5271-219d-4b8e-be5a-8903219d7fd6@pengutronix.de>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1e02:b0:361:a33f:36a4 with SMTP id
- g2-20020a056e021e0200b00361a33f36a4mr382116ila.2.1706853485942; Thu, 01 Feb
- 2024 21:58:05 -0800 (PST)
-Date: Thu, 01 Feb 2024 21:58:05 -0800
-In-Reply-To: <tencent_91554BB11BE325DDBA70BBD9331A9EBC1B08@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b6a56d06105fcb46@google.com>
-Subject: Re: [syzbot] [erofs?] KMSAN: uninit-value in z_erofs_lz4_decompress (3)
-From: syzbot <syzbot+88ad8b0517a9d3bb9dc8@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello,
+Hi Ahmad,
 
-syzbot tried to test the proposed patch but the build/boot failed:
+On Thu, 1 Feb 2024 13:21:37 +0100
+Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
 
-failed to apply patch:
-checking file fs/erofs/decompressor.c
-Hunk #1 FAILED at 252.
-1 out of 1 hunk FAILED
+> Hello,
+> 
+> I semi-regularly debug probe failures. For drivers that use dev_err_probe
+> rigorously, this is a quick matter: The probe function records a deferral reason
+> and if the deferral persists, deferred_probe_timeout_work_func() will print
+> the collected reasons, even if PID 1 is never started.
+> 
+> For drivers that don't call dev_err_probe, I find myself sometimes doing printf
+> debugging inside the probe function.
+> 
+> I would like to replace this with the function graph tracer:
+> 
+>   - record the probe function, configured over kernel command line
+>     (The device indefinitely deferring probe is printed to the console,
+>      so I know what I am looking for on the next boot)
+> 
+>   - Dump the function graph trace
+> 
+>   - See if the last call before (non-devm) cleanup is getting a clock, a GPIO,
+>     a regulator or w/e.
+
+What kind of information you prints by the printk()?
+If the target (suspicious driver probe function) is obvious, you can use kprobe
+event and tp_printk. Or, even if you don't know, if you are sure which function
+is the starting/ending point, you can use bootconfig to record the specific part
+of execution in the ring buffer, and dump it as Steve said.
+
+In Documentation/trace/boottime-trace.rst, there is an example.
+-----
+With the trigger action and kprobes, you can trace function-graph while
+a function is called. For example, this will trace all function calls in
+the pci_proc_init()::
+
+  ftrace {
+        tracing_on = 0
+        tracer = function_graph
+        event.kprobes {
+                start_event {
+                        probes = "pci_proc_init"
+                        actions = "traceon"
+                }
+                end_event {
+                        probes = "pci_proc_init%return"
+                        actions = "traceoff"
+                }
+        }
+  }
+-----
+
+Thank you,
+
+> 
+> For this to be maximally useful, I need to configure this not only at boot-time,
+> but also dump the ftrace buffer at boot time. Probe deferral can hinder the kernel from
+> calling init and providing a shell, where I could read /sys/kernel/tracing/trace.
+> 
+> I found following two mechanisms that looked relevant, but seem not to
+> do exactly what I want:
+> 
+>   - tp_printk: seems to be related to trace points only and not usable
+>     for the function graph output
+> 
+>   - dump_on_oops: I don't get an Oops if probe deferral times out, but maybe
+>     one could patch the kernel to check a oops_on_probe_deferral or dump_on_probe_deferral
+>     kernel command line parameter in deferred_probe_timeout_work_func()?
+> 
+> 
+> Is there existing support that I am missing? Any input on whether this
+> would be a welcome feature to have?
+> 
+> Thanks!
+> 
+> Cheers,
+> Ahmad
+>     
+> -- 
+> Pengutronix e.K.                           |                             |
+> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+>  
 
 
-
-Tested on:
-
-commit:         02153319 Kconfig: Disable -Wstringop-overflow for GCC ..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-kernel config:  https://syzkaller.appspot.com/x/.config?x=656820e61b758b15
-dashboard link: https://syzkaller.appspot.com/bug?extid=88ad8b0517a9d3bb9dc8
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=15eb0838180000
-
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
