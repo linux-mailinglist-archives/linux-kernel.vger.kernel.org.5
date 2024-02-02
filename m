@@ -1,85 +1,118 @@
-Return-Path: <linux-kernel+bounces-49533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49535-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B161E846B8B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:08:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02BA1846B96
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:10:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2E541C2537B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:08:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF00928CA88
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:10:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FFE86A002;
-	Fri,  2 Feb 2024 09:08:06 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8196D745F9;
+	Fri,  2 Feb 2024 09:10:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ik5xPRN4";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="9+50Y3iD"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DCE45FDA3
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:08:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FEE874297;
+	Fri,  2 Feb 2024 09:10:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706864886; cv=none; b=qHHa2j3Yf/0CyaHLhU5+qQrRiYZRWUiUhdBnS7fLhxXCuFbm2hrHp8LsccGr0HDtlI2M858Ceqm/fveBYFr0caNerYfEsjkjq+3AiKhv+s34+rmudpuQc7wFRRo9KOiU04k7DUhj6B2eM/D1ich4hA7n00FKL5aBJ5e67PVy478=
+	t=1706865047; cv=none; b=K+n/k4qXzQeMAmlzf6HFsH0a5BKoCHbi8FA9asnX2GwQ2N4YrHOPcFW6rMBIyH+SFE22q8x3Oovpu5UafsOD1DRx1v0gScbxvmf2e3n+9KIFTFGrMZHYGwLtkr0GuV1dd941doXx9CwoQePuaJc55FMrsXSWYnr4nyqLO/T2ecQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706864886; c=relaxed/simple;
-	bh=XY0wgWCyBdKF2c9DVyjRU/KDnI870BxzE/LOzXqWTu0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=WGjJU7GPHGSVz6artGm61NJgrWdFa4vuPqz2vwFT0oG1N5t1MYogimqf1TpsAdpZzSnEzw54DF5w1mvDMJ2ZtKmfu530WM79YEj4yaWvK6E+DNTWsx/Bq1WT2+fx2yowsUa2hlvj2PfwXxlQFnwF9JJRXGVFxqGYn9MUZFVNcFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-363b161279aso4586555ab.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 01:08:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706864883; x=1707469683;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XeDyEjCvb8uDBw570BFodqh+gAPdP68pZyBdqJtXcM0=;
-        b=ZkCDEIXeeauw+t81sveXc9DkZ3yYRWf+rZ+9IHT8NHDugWzd/ktAnfVLEmC99JA/c2
-         6nFeTht0Y+uWMn2mO/cdp8ON27QsVF+j9Ii4pkXX6ODIQgt9sM20Neegb/X58+YtlXA2
-         6KgrhQd1zQTI+H/pwTDCL0ZHkD1IkGTD66fQn/mKSdzFB2HiI67LefRsUqOlIGjkiqnB
-         wNH653f193UYVlUTe9kjBZzFxiEEZnOFgGUFRocLSilYPRgL9oMv9JMs2cxy2AA7RqX/
-         m0CPP64sYf5b//Uhk8YqsQ4CPObftKknoP7IHuwU3fJIWqihKS2DJB8BkJTvdH2JfpHU
-         QHFw==
-X-Gm-Message-State: AOJu0YxWVdzObtjWtgGxFKmjp0TrQS9Vogq7awtg8UEFKSlDRJp/Ya9l
-	2Yv/NW58V1j1s4oeXeJOz2jLFEMDz3uBM5ABxigwRJo7CYP1vMaZbjY2HeyyQcpoL2jljqWj7cY
-	r9J6EhvoT63XQJEBQvvLjesZ4HCZ8CtrP23wW7hWOKCjhgJalWLLcMX1tPA==
-X-Google-Smtp-Source: AGHT+IGwzbGXZSuQ8ya3zWymx/ZS2tMJ7Gxk15Q7LsFjWFECcoZ0SYcn98NhnI6ntgYiJky7awMmzXGg9AivbgpEKkBRkORmXuuj
+	s=arc-20240116; t=1706865047; c=relaxed/simple;
+	bh=Mj2eWb37LuM66Dj95CdWDSuDwe5WJYgKCJAiwOQErps=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=J9f5hiJCkaChY9ploAuzm51tTf6VUzFe+Jc6s8Dp4nCTbgNeOrcMhjXMK2TGqzCNjtMNhNH6qyWJ3knt6B3vtB2xi59tsZ0LhXURGm+Xs/0IUMf8hj+ip6o2MRE/tlmgSq579a6uKmqOeEMLtDcFZWzENdvtwt5tQjbjPEbQk4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ik5xPRN4; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=9+50Y3iD; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 02 Feb 2024 09:10:41 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706865043;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rFmzybAsJfE0cVsdsUehIbPmaxNb2tCDaeYPwTsVCSY=;
+	b=ik5xPRN4cmK7PvqdvkZ5D8hZzI2VgC8RDV/Cge/ovYrUNZg5XXJiEzZA19A2aEUq9BedMw
+	og2Af0Rbh2X1PnodNY5VeEKUMlvpgQNKq1N2MshEYvuGyq0RoFgFCsB6oNb4Sb8yVx/6lf
+	DVAdiEK7cSmTJe43i4plmTzXQLo9hdMIh8gpQjQS+VbyD9j+0PTl5acTRipopSw+yAmptO
+	BjJDAdgDzJbyOSrRigfW9FgpHeDDOL0gC4530s36DaqWhhSFmQWAMQ0qyiFxI4HfwScWFg
+	3QvXukOIm0Lh5Ln/CryHIQn+TUgbOPmWY1Ye241Rdc/OaFZ+lg6m/LOy6+SQVQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706865043;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rFmzybAsJfE0cVsdsUehIbPmaxNb2tCDaeYPwTsVCSY=;
+	b=9+50Y3iDRkpaRCUgs0TPws9H3gDLx9qcPbhV88ZFRndsozK3ZMwDPWeHkm6Q2sxOXk8V2o
+	pUVDEGxlu0nxLSAA==
+From: "tip-bot2 for Xin Li (Intel)" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/fred] x86/fred: Fix a build warning with allmodconfig due
+ to 'inline' failing to inline properly
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, "Xin Li (Intel)" <xin@zytor.com>,
+ Ingo Molnar <mingo@kernel.org>, x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240202090225.322544-1-xin@zytor.com>
+References: <20240202090225.322544-1-xin@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1b06:b0:363:7aed:f073 with SMTP id
- i6-20020a056e021b0600b003637aedf073mr95989ilv.0.1706864883646; Fri, 02 Feb
- 2024 01:08:03 -0800 (PST)
-Date: Fri, 02 Feb 2024 01:08:03 -0800
-In-Reply-To: <20240202083546.2409378-1-lizhi.xu@windriver.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000011d1ee0610627308@google.com>
-Subject: Re: [syzbot] [v9fs?] KASAN: slab-use-after-free Read in v9fs_stat2inode_dotl
-From: syzbot <syzbot+7a3d75905ea1a830dbe5@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, lizhi.xu@windriver.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <170686504193.398.15699527281623271387.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Hello,
+The following commit has been merged into the x86/fred branch of tip:
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Commit-ID:     cba9ff33451162a6aa9b1424b32503354d7ef20e
+Gitweb:        https://git.kernel.org/tip/cba9ff33451162a6aa9b1424b32503354d7ef20e
+Author:        Xin Li (Intel) <xin@zytor.com>
+AuthorDate:    Fri, 02 Feb 2024 01:02:24 -08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Fri, 02 Feb 2024 10:05:55 +01:00
 
-Reported-and-tested-by: syzbot+7a3d75905ea1a830dbe5@syzkaller.appspotmail.com
+x86/fred: Fix a build warning with allmodconfig due to 'inline' failing to inline properly
 
-Tested on:
+Change array_index_mask_nospec() to __always_inline because "inline" is
+broken as https://www.kernel.org/doc/local/inline.html.
 
-commit:         076d56d7 Add linux-next specific files for 20240202
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=14811f1fe80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4eccd90d3ac887b2
-dashboard link: https://syzkaller.appspot.com/bug?extid=7a3d75905ea1a830dbe5
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=15f20a38180000
+Fixes: 6786137bf8fd ("x86/fred: FRED entry/exit and dispatch code")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Xin Li (Intel) <xin@zytor.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20240202090225.322544-1-xin@zytor.com
+---
+ arch/x86/include/asm/barrier.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Note: testing is done by a robot and is best-effort only.
+diff --git a/arch/x86/include/asm/barrier.h b/arch/x86/include/asm/barrier.h
+index 0216f63..fe1e7e3 100644
+--- a/arch/x86/include/asm/barrier.h
++++ b/arch/x86/include/asm/barrier.h
+@@ -33,7 +33,7 @@
+  * Returns:
+  *     0 - (index < size)
+  */
+-static inline unsigned long array_index_mask_nospec(unsigned long index,
++static __always_inline unsigned long array_index_mask_nospec(unsigned long index,
+ 		unsigned long size)
+ {
+ 	unsigned long mask;
 
