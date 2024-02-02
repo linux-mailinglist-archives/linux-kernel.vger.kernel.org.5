@@ -1,238 +1,185 @@
-Return-Path: <linux-kernel+bounces-50151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34D738474F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:36:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3233B8474F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:36:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF8CD29184B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:36:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B18A1C26957
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:36:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A060148303;
-	Fri,  2 Feb 2024 16:35:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9972414A083;
+	Fri,  2 Feb 2024 16:35:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="DjWjJhKY"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PohF5F1y"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB991487E7;
-	Fri,  2 Feb 2024 16:35:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B359D149018;
+	Fri,  2 Feb 2024 16:35:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706891743; cv=none; b=WrxHHd2Ft3Uis8MtCsFVJ9P+4n8WJUyF30eLuY8hqHUFzT9q04OSyywknwKpzOe81Cg07ZNEOOLEVuA8gi6JExSQH//hekb7uywUKenn8bXtZg1R49KZgSPo0q5zGMTnwj/C97P584BVFzP+nxe/xQUz9Pmrptet0F6SvhVb2Y8=
+	t=1706891752; cv=none; b=ZNPjxcikeSvwtPT2phkw/cHIdueHnZyHS/PGLkBt7Rrev/aYlQYK9TIC3CJiGZVVZPlMxh46srNc7N2JXAdOjDSz6vhExB00v5R7gr4xXMgPGsW3WkW5kk/wUwBSi9q2SjHArZYBe+z8Nja8U5qltOMJakpEgMG+sHlvPu4jEOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706891743; c=relaxed/simple;
-	bh=jfP5FzF2iADTs+nsumSsf+1ytpdI2PwVjp67EKLfiAE=;
+	s=arc-20240116; t=1706891752; c=relaxed/simple;
+	bh=7KArxsc9KpfiNC0LkBPfiAPPOAllhFZSPijNu//MD1k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cXX0uCT+gnqPo6sUSa6aNfgo3Rt3xMniTwN53BaU6TINU366mvT6YJq/PxaFj2zKjigCyemJPC4i6G+E559pfw3eNKtDxtIhWb0r416/mj0qbu2wB3BsqB1pCNIWgdkzJqMdnfkvdY5PxJe8XQ8xmqOG6evuMLpM8xRlPnX7ecA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=DjWjJhKY; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D347240E01A2;
-	Fri,  2 Feb 2024 16:35:37 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id BDgLq2vi6VrF; Fri,  2 Feb 2024 16:35:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706891735; bh=owu4C5rP9Sd62pQo+ZZmYYXOi0xhUhCRq+QLaeQVQpk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DjWjJhKYuKNK0B335q79y2JbDvwkbghSEGXDReaL7Cg1RJtRKkXofVtq1nTBVZYFi
-	 NowRJnt6AZzjVGdQXfyoK3lTxR79KCU89p043iQp2G6OSDb5f1nfaTLW3z2H4RgZq2
-	 y9lrlWDxtzk8HVUP2YJ9wG0mhbKPb+0G0s0Mefn2qTxGLwkmbmyJYZfu0PoqABvXpt
-	 /8GfEiQDhzYMT695rw8G95eurTWucDepUJF1M6nIOMR4W4qp9eeZEj7Va1k5/hCl0b
-	 8Aq8IR9bgZjtCvxYrvcNFiUklU/dLr8+1+R48++a/I9ah0Ias/yQ3L5qKvu4CM28jG
-	 182l15VndVVs5pW2EmKozZh9+FWxpmJDtqdlidMwHmvrV+z19zjgp0aVcmqvsLjlQj
-	 EO1sEM9Ows2Mhs8BSraRTv6JfSrcqrtdn8mJDXFMY+vGq4ItmzIZhahm4T03KYvvgK
-	 tqoXR4Mxzz7of/FQGvXn3zaUDaPYWQQYkOReLU9tzWhw+0mIL1lbncx7JXbH0sXmay
-	 xwFfgNHMV0dBmFIWezmZLwFZNyhbY0XfGmjIhvbeyIl0H65UvzF8a+B6ElLl4M74yN
-	 Ee25ps5Kn2cvhQB2MRfVMeC9wlh9tvPRDKSGSZtUexgk9Vr8SgQd6whdz5pyTzBBBc
-	 jg42PO4t4LFSICDfcWKeKE14=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D894040E016C;
-	Fri,  2 Feb 2024 16:35:16 +0000 (UTC)
-Date: Fri, 2 Feb 2024 17:35:10 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>,
-	Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org,
-	Kevin Loughlin <kevinloughlin@google.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>,
-	linux-arch@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH] x86/Kconfig: Remove CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT
-Message-ID: <20240202163510.GDZb0Zvj8qOndvFOiZ@fat_crate.local>
-References: <20240129180502.4069817-21-ardb+git@google.com>
- <20240129180502.4069817-23-ardb+git@google.com>
- <20240131083511.GIZboGP8jPIrUZA8DF@fat_crate.local>
- <CAMj1kXG9W0XeEVR4tXDDg0Ai9XPsZGrTJaSRYUqgTV-xtFxjdQ@mail.gmail.com>
- <20240131092952.GCZboTECip8DbWtYtz@fat_crate.local>
- <8b38ef82-ec2b-4845-9732-15713a0e2a85@amd.com>
- <CAMj1kXH4U7X3_xgwhYUgbWqVfnzL5Dx0QaUhb_5TpZGQEh=_8g@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fGRizfq2dZJvYUUlqsI4wZFNz8hxJmrK5SVecGo2xvXPv/uUZ9KIjuasmvtiultwLa9JaWIXc6xl07K55Z6puBoRNttTp+xcakLO16q5DnomXrpDmAqyVxLcnCUcn9EuXDQaaySnmIhhcExzIjAQIg28cDqcmdcAWSMukKCMUUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PohF5F1y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AA5BC433C7;
+	Fri,  2 Feb 2024 16:35:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706891752;
+	bh=7KArxsc9KpfiNC0LkBPfiAPPOAllhFZSPijNu//MD1k=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=PohF5F1yUnx5iSP6WVf7/rbTb5HasfOyFrkznLJdJgo3LjarMmgyqQwq6qhIZKAa+
+	 W7mzQigO5Ly1glSlJAAuRORIikVK8VCKfrlz4XYd28tFs3lBRoQxepd+PRepZju4D0
+	 i9o9LAAisPZ0YvmuP2kcpbuPx22P4cV3e8F4ukAv+kqPH72Z3wUU/a+ZGibyRGJK7X
+	 2Vz+/LAseoaRFwc7ZCbkemKMCKxtpIZFHYF+SOxo7rbcrUU39EqCIj2gcxFiM54573
+	 FLpXKk3ZX3rZ8YgcYxFNFq1kwDuWomWFsamwrTUbsqL9PMaIiyc0AjzLn97XJAv/XY
+	 kgd0drF6JcIMA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id B1473CE2250; Fri,  2 Feb 2024 08:35:51 -0800 (PST)
+Date: Fri, 2 Feb 2024 08:35:51 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+Cc: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+	Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [BUG] workqueues and printk not playing nice since next-20240130
+Message-ID: <25fd8537-5a27-4b62-9bf9-1ee7ca59b5b8@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
+ <c6ce8816-c4ff-4668-8cbb-88285330057d@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXH4U7X3_xgwhYUgbWqVfnzL5Dx0QaUhb_5TpZGQEh=_8g@mail.gmail.com>
+In-Reply-To: <c6ce8816-c4ff-4668-8cbb-88285330057d@huaweicloud.com>
 
-On Thu, Feb 01, 2024 at 05:15:51PM +0100, Ard Biesheuvel wrote:
-> OK, I'll remove it in the next rev.
+On Fri, Feb 02, 2024 at 03:26:14PM +0100, Jonas Oberhauser wrote:
+> 
+> Am 2/2/2024 um 2:04 PM schrieb Paul E. McKenney:
+> > Hello!
+> > 
+> > Starting with next-20240130 (and perhaps a bit earlier), rcutorture gets
+> > what initially looked like early-boot hangs, but only when running on
+> > dual-socket x86 systems [1], as it it works just fine on my x86 laptop [2].
+> > But when running on dual-socket systems, this happens all the time,
+> > perhaps because rcutorture works hard to split each guest OS across a
+> > socket boundary.
+> > 
+> > This is the reproducer:
+> > 
+> > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 1m --configs "10*TREE01" --trust-make
+> > 
+> > By "looked like early-boot hangs" I mean that qemu was quite happy,
+> > but there was absolutely no console output.
+> > 
+> > Bisection identified this commit:
+> > 
+> > 5797b1c18919 ("workqueue: Implement system-wide nr_active enforcement for unbound workqueues")
+> > 
+> > Reverting this commit made the problem go away.  Except that it is really
+> > hard to imagine this commit having any effect whatsoever on early boot
+> > execution.  Of course, this might be a failure of imagination on my part,
+> > so I enlisted the aid of gdb:
+> > 
+> > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 1m --configs "TREE01" --trust-make --gdb
+> > 
+> > After following the resulting gdb startup instructions and waiting for
+> > about ten seconds, I hit control-C on the gdb window and then:
+> > 
+> > 	(gdb) bt
+> > 	#0  default_idle () at arch/x86/kernel/process.c:743
+> > 	#1  0xffffffff81e94d34 in default_idle_call () at kernel/sched/idle.c:97
+> > 	#2  0xffffffff810d746d in cpuidle_idle_call () at kernel/sched/idle.c:170
+> > 	#3  do_idle () at kernel/sched/idle.c:312
+> > 	#4  0xffffffff810d76a4 in cpu_startup_entry (state=state@entry=CPUHP_ONLINE)
+> > 	    at kernel/sched/idle.c:410
+> > 	#5  0xffffffff81e95417 in rest_init () at init/main.c:730
+> > 	#6  0xffffffff8329adf2 in start_kernel () at init/main.c:1067
+> > 	#7  0xffffffff832a5038 in x86_64_start_reservations (
+> > 	    real_mode_data=real_mode_data@entry=0x13d50 <exception_stacks+32080> <error: Cannot access memory at address 0x13d50>) at arch/x86/kernel/head64.c:555
+> > 	#8  0xffffffff832a513c in x86_64_start_kernel (
+> > 	    real_mode_data=0x13d50 <exception_stacks+32080> <error: Cannot access memory at address 0x13d50>) at arch/x86/kernel/head64.c:536
+> > 	#9  0xffffffff810001d2 in secondary_startup_64 ()
+> > 	    at arch/x86/kernel/head_64.S:461
+> > 	#10 0x0000000000000000 in ?? ()
+> > 	(gdb) print jiffies
+> > 	$1 = 4294676330
+> > 	(gdb) print system_state
+> > 	$2 = SYSTEM_RUNNING
+> > 
+> > In other words, the system really has booted, and at least one CPU is
+> > happily idling in the idle loop.  And another CPU is (maybe not quite
+> > so happily) running rcutorture:
+> > 
+> > 	(gdb) thread 6
+> > 	[Switching to thread 6 (Thread 1.6)]
+> > 	#0  0xffffffff8111160b in rcu_torture_one_read (
+> > 	    trsp=trsp@entry=0xffffc900004abe90, myid=myid@entry=4)
+> > 	    at kernel/rcu/rcutorture.c:2003
+> > 	2003            completed = cur_ops->get_gp_seq();
+> > 	(gdb) bt
+> > 	#0  0xffffffff8111160b in rcu_torture_one_read (
+> > 	    trsp=trsp@entry=0xffffc900004abe90, myid=myid@entry=4)
+> > 	    at kernel/rcu/rcutorture.c:2003
+> > 	#1  0xffffffff81111bef in rcu_torture_reader (arg=0x4 <fixed_percpu_data+4>)
+> > 	    at kernel/rcu/rcutorture.c:2097
+> > 	#2  0xffffffff810af3e0 in kthread (_create=0xffff8880047aa480)
+> > 	    at kernel/kthread.c:388
+> > 	#3  0xffffffff8103af1f in ret_from_fork (prev=<optimized out>,
+> > 	    regs=0xffffc900004abf58, fn=0xffffffff810af300 <kthread>,
+> > 	    fn_arg=0xffff8880047aa480) at arch/x86/kernel/process.c:147
+> > 	#4  0xffffffff8100247a in ret_from_fork_asm () at arch/x86/entry/entry_64.S:242
+> > 	#5  0x0000000000000000 in ?? ()
+> > 
+> > So the system really did boot and is running just fine.  It is just that
+> > there is no console output.  Details, details!
+> > 
+> > Is there anything I can do to some combination of workqueues and printk
+> > to help debug this?  Or that I can do to anything else, as I am not
+> > feeling all that picky.  ;-)
+> 
+> Just to exclude one source of troubles, have you tried turning all atomics
+> into full barriers and seen if the issue still reproduces?
 
-Considering how it simplifies sme_enable() even more, I'd like to
-expedite this one.
+Good point, and if this sort of thing happens frequently, perhaps there
+should be an easy way of doing this.  One crude hack that might come
+pretty close would be to redefine the barrier() macro to be smp_mb().
 
-Thx.
+But as noted earlier, -ENOREPRODUCE on today's -next.  I will try the
+next several -next releases.  But if they all get -ENOREPRODUCE, I owe
+everyone on CC an apology for having sent this report out before trying
+next-20240202.  :-/
 
----
-From: "Borislav Petkov (AMD)" <bp@alien8.de>
-Date: Fri, 2 Feb 2024 17:29:32 +0100
-Subject: [PATCH] x86/Kconfig: Remove CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT
+							Thanx, Paul
 
-It was meant well at the time but nothing's using it so get rid of it.
-
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
----
- Documentation/admin-guide/kernel-parameters.txt  |  4 +---
- Documentation/arch/x86/amd-memory-encryption.rst | 16 ++++++++--------
- arch/x86/Kconfig                                 | 13 -------------
- arch/x86/mm/mem_encrypt_identity.c               | 11 +----------
- 4 files changed, 10 insertions(+), 34 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 31b3a25680d0..2cb70a384af8 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3320,9 +3320,7 @@
- 
- 	mem_encrypt=	[X86-64] AMD Secure Memory Encryption (SME) control
- 			Valid arguments: on, off
--			Default (depends on kernel configuration option):
--			  on  (CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT=y)
--			  off (CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT=n)
-+			Default: off
- 			mem_encrypt=on:		Activate SME
- 			mem_encrypt=off:	Do not activate SME
- 
-diff --git a/Documentation/arch/x86/amd-memory-encryption.rst b/Documentation/arch/x86/amd-memory-encryption.rst
-index 07caa8fff852..414bc7402ae7 100644
---- a/Documentation/arch/x86/amd-memory-encryption.rst
-+++ b/Documentation/arch/x86/amd-memory-encryption.rst
-@@ -87,14 +87,14 @@ The state of SME in the Linux kernel can be documented as follows:
- 	  kernel is non-zero).
- 
- SME can also be enabled and activated in the BIOS. If SME is enabled and
--activated in the BIOS, then all memory accesses will be encrypted and it will
--not be necessary to activate the Linux memory encryption support.  If the BIOS
--merely enables SME (sets bit 23 of the MSR_AMD64_SYSCFG), then Linux can activate
--memory encryption by default (CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT=y) or
--by supplying mem_encrypt=on on the kernel command line.  However, if BIOS does
--not enable SME, then Linux will not be able to activate memory encryption, even
--if configured to do so by default or the mem_encrypt=on command line parameter
--is specified.
-+activated in the BIOS, then all memory accesses will be encrypted and it
-+will not be necessary to activate the Linux memory encryption support.
-+
-+If the BIOS merely enables SME (sets bit 23 of the MSR_AMD64_SYSCFG),
-+then memory encryption can be enabled by supplying mem_encrypt=on on the
-+kernel command line.  However, if BIOS does not enable SME, then Linux
-+will not be able to activate memory encryption, even if configured to do
-+so by default or the mem_encrypt=on command line parameter is specified.
- 
- Secure Nested Paging (SNP)
- ==========================
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 5edec175b9bf..58d3593bc4f2 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1539,19 +1539,6 @@ config AMD_MEM_ENCRYPT
- 	  This requires an AMD processor that supports Secure Memory
- 	  Encryption (SME).
- 
--config AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT
--	bool "Activate AMD Secure Memory Encryption (SME) by default"
--	depends on AMD_MEM_ENCRYPT
--	help
--	  Say yes to have system memory encrypted by default if running on
--	  an AMD processor that supports Secure Memory Encryption (SME).
--
--	  If set to Y, then the encryption of system memory can be
--	  deactivated with the mem_encrypt=off command line option.
--
--	  If set to N, then the encryption of system memory can be
--	  activated with the mem_encrypt=on command line option.
--
- # Common NUMA Features
- config NUMA
- 	bool "NUMA Memory Allocation and Scheduler Support"
-diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
-index 7f72472a34d6..efe9f217fcf9 100644
---- a/arch/x86/mm/mem_encrypt_identity.c
-+++ b/arch/x86/mm/mem_encrypt_identity.c
-@@ -97,7 +97,6 @@ static char sme_workarea[2 * PMD_SIZE] __section(".init.scratch");
- 
- static char sme_cmdline_arg[] __initdata = "mem_encrypt";
- static char sme_cmdline_on[]  __initdata = "on";
--static char sme_cmdline_off[] __initdata = "off";
- 
- static void __init sme_clear_pgd(struct sme_populate_pgd_data *ppd)
- {
-@@ -504,7 +503,7 @@ void __init sme_encrypt_kernel(struct boot_params *bp)
- 
- void __init sme_enable(struct boot_params *bp)
- {
--	const char *cmdline_ptr, *cmdline_arg, *cmdline_on, *cmdline_off;
-+	const char *cmdline_ptr, *cmdline_arg, *cmdline_on;
- 	unsigned int eax, ebx, ecx, edx;
- 	unsigned long feature_mask;
- 	unsigned long me_mask;
-@@ -587,12 +586,6 @@ void __init sme_enable(struct boot_params *bp)
- 	asm ("lea sme_cmdline_on(%%rip), %0"
- 	     : "=r" (cmdline_on)
- 	     : "p" (sme_cmdline_on));
--	asm ("lea sme_cmdline_off(%%rip), %0"
--	     : "=r" (cmdline_off)
--	     : "p" (sme_cmdline_off));
--
--	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT))
--		sme_me_mask = me_mask;
- 
- 	cmdline_ptr = (const char *)((u64)bp->hdr.cmd_line_ptr |
- 				     ((u64)bp->ext_cmd_line_ptr << 32));
-@@ -602,8 +595,6 @@ void __init sme_enable(struct boot_params *bp)
- 
- 	if (!strncmp(buffer, cmdline_on, sizeof(buffer)))
- 		sme_me_mask = me_mask;
--	else if (!strncmp(buffer, cmdline_off, sizeof(buffer)))
--		sme_me_mask = 0;
- 
- out:
- 	if (sme_me_mask) {
--- 
-2.43.0
-
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> jonas
+> 
+> 
+> > 
+> > 							Thanx, Paul
+> > 
+> > [1] The dual-socket system is an 80-hardware-thread (20 cores per socket)
+> >      system with model name Intel(R) Xeon(R) Gold 6138 CPU @ 2.00GHz.
+> >      I get the same results when using either of these compilers:
+> >      gcc version 8.5.0 20210514 (Red Hat 8.5.0-21) (GCC)
+> >      gcc version 11.4.1 20230605 (Red Hat 11.4.1-2) (GCC)
+> > 
+> > [2] My laptop is a 16-hardware-thread (8 cores) single-socket system with
+> >      model name "Intel(R) Core(TM) i9-10885H CPU @ 2.40GHz" and
+> >      gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04).
+> 
 
