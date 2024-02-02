@@ -1,135 +1,104 @@
-Return-Path: <linux-kernel+bounces-50054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AAAB8473C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:56:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 340AC8473C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:57:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DFFC1C22ADF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:56:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BAC9FB25AC9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:57:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E2461474A9;
-	Fri,  2 Feb 2024 15:56:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09A6D1474A5;
+	Fri,  2 Feb 2024 15:57:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vpJPjleQ"
-Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FK0DbzpH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00FBF14690D
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 15:56:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 421DB146916
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 15:57:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706889389; cv=none; b=k3IiELdfLAaqcF6xjoY8OV5u5zF5La+aWLm28jfCLMkNz5RHwize2Vgcdcxh+PpVKulAkJqj67aecQGBt05RaizkviuxHOVbrnYknUBqt2JqpLpbY4QuaSoqptOfTeEF0dfMy2HU5I1bk6TaqH+1HlPzj0EpESlX0iY88XtSdpE=
+	t=1706889421; cv=none; b=moFJozw3U6HZgI6ue04K1QO6k+dDTJ6HfQ+WRbsELlhjzeT2ZqnVsOnBXwkrMOZS/NMf9E0hItvw6ea3mi1nF0QqL+7whiaZv7+qGr5cFn9xSopvRAApgapbGDWud7ruPawvMCwbJ3DGi+bjuAqqR80rJpv+4B8IYHJedSVW4eg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706889389; c=relaxed/simple;
-	bh=FNDJQ9xh+RWwPD9Nki93GLkLV+DCmLpnpSZYdhe5EYk=;
+	s=arc-20240116; t=1706889421; c=relaxed/simple;
+	bh=MmO0Sers5UlYOvIhkdegHIwY3ye7rpzzr9dSXdHC/0E=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZK7OI5F8oHIfqAQNw9vGJqBNmWnw+UvNyyG2ROhNUA1iKJQPRWVyWd7jA5FaweANdlJxRR80Rf5dupnllMX+uK3zAlYwtbs639l+hHMS1uUCeF5NtQCI5mNHg9jdgkalHe6SE4eS5bLehtWVfAOWSeeFcGJGr7S/pb685fjL0OE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vpJPjleQ; arc=none smtp.client-ip=209.85.221.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-4b7fc7642fcso995577e0c.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 07:56:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706889387; x=1707494187; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lmJR7Ww8ojzofhT9CYA10sXCxDHSnn8Gqx6UiwVGV8g=;
-        b=vpJPjleQQtzxFs6XeeETAEBppD4dE7iPK/ZucSJdqHpC5yiYQcT8gXIaFBeQsA+EyW
-         HkI8BKy4Zb8WtX/LC/G98S0pjVR6EfE0/uesIwcw1U5AGhBk91awjtOhrku/uDyWxq5Q
-         QoBUhWnlQqp9Y/WdTTwEsL+iszr2if8jEgZyMyINv0aBKWaUkVg+VBOLpvf/1ANXjNW+
-         e9vsfAqQVr0z+NQYDLUn0zhNIsz6FfxenjFqOQLdkvXLqibn58H6BpCjYv8jYcZgsdjZ
-         r4U3DDjOE1OspcRn2jMHtwrno6UnrQtEHIHB+TZJlQbJx3gP5R0nhvUzamC6KeG5pktF
-         dOfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706889387; x=1707494187;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lmJR7Ww8ojzofhT9CYA10sXCxDHSnn8Gqx6UiwVGV8g=;
-        b=DLJ6gjSkro8qpZ0Whqmx1QXDkbnzGuegMlPRc06yXqqpOiVpxA/BDRkGg2YQwlJ83u
-         tcKi0bpx8KrRXT5WJAOnqzSRFplTXpMhjtdANInvHqdmsUgdKtlUe7Zh7rxpkCGuytVR
-         Ode8Q8T2BhRk8Kj4amZ4LJDeVpcGF0Z0cw7TJXKf8/0yqQD2mRH6qqA/zoZTu6bmQV6m
-         CrtwnIFe0LCcoyhvDbdqr3LI1ua+yCzsd6b3mxsiAVPcKmZhG2ajdkZ6LsRJ7ErRKxvQ
-         x+lPpxpz/7TIvlx5jExot76m5IIb6QL+/4kHlN52NsbOppvtLoTEB+XB7U6VfI8BjDj2
-         UKgA==
-X-Gm-Message-State: AOJu0YzlpdJvZrEc/csmAcH88HdzbpOLHbpHX/2qlVfSdHwVKCrTJgJo
-	PEAdqhWllHuES3l4oyULLPxyU8gxOJ/n/uATLs6MzYY7+CWmTHVhZhIQDRceXn8U3l9XnVcIAJ+
-	XAjNM2lHTUNP5FFDDDzv6MysnWQouQHzc58zI
-X-Google-Smtp-Source: AGHT+IH2Og0a7twSwhicsL764k2gi6eQEWtu6vNVhCfq/Nv88snUC2LLMaOgyqphlIrFstt/i2vCM6+wbYKlaJvFsdQ=
-X-Received: by 2002:a1f:7d05:0:b0:4b7:6c2f:fdb0 with SMTP id
- y5-20020a1f7d05000000b004b76c2ffdb0mr2486777vkc.0.1706889386687; Fri, 02 Feb
- 2024 07:56:26 -0800 (PST)
+	 To:Cc:Content-Type; b=HakGpoKQV8CKeY44vBeiWFjxunJ6vKMK7tIcafIJRowgvyF+Ae3Ft9Lj3+sbKdFQ1yYkeI0kKTkPo7zl6t6ZZUdIu3soStoU6sR3hEmBbkLiUUZEdDCxADcU/wJZMoctAuR0//TFAznlwCcLeBR3hBxfMmAAGLohMjKk3OHk0us=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FK0DbzpH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEFC3C43394
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 15:57:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706889420;
+	bh=MmO0Sers5UlYOvIhkdegHIwY3ye7rpzzr9dSXdHC/0E=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=FK0DbzpHUrAJYUPC+vn2IIX8xS6omoVzZBE8ov/RPcr2T7n27+ReQ1fNFaTKd1xYP
+	 54zlt4uAdtjO3ikHZ19YqYniazqlPYu1Nd1qx03scTR5WvgxWDZxA0RoGK5+aKrEnW
+	 we/wy45XOMGk+SGKbAtTv+32o57IPK6Cqg3iKM/Tj0fyG/vd17BcuwNHE9S2GImkd+
+	 mN7bzRMpfkJbFuYlWRnpz2B3Q5Uf8gXeCIxZYPf2lxhpxjFeXxaSiBPrESiONw86Cb
+	 DEBKiOX5k7UxsR/vsZwAKFjrsoPZj/qulPgpEGhyL+OyMaAE864FqsUwr0bKMQskMH
+	 5iPtiBKqytFmA==
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5112d5ab492so2958468e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 07:57:00 -0800 (PST)
+X-Gm-Message-State: AOJu0YxXUq+zRxrzQRZ2+osxjVF5BTw304OLbu+9s/wO7MbB7jxvWHAF
+	Af0QzJS46oCZNXHaCZ92aT2cYwIDKxe5BHo4UETckOifr4rfImXqNFBGR8L93K58BgKRJ4u2ocY
+	0CMROyusT9jzbHb6D6j2EXa46Szc=
+X-Google-Smtp-Source: AGHT+IHqNlvYafMk1+0b461FMWQjXcpspXWu5GnSpp2uz9lVucLsHstGODLsZdjvf2AnS0uXTizXtd6fZqq79gASNcg=
+X-Received: by 2002:ac2:420d:0:b0:510:17b1:cfdd with SMTP id
+ y13-20020ac2420d000000b0051017b1cfddmr3148277lfh.67.1706889419286; Fri, 02
+ Feb 2024 07:56:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202-alice-file-v4-0-fc9c2080663b@google.com>
- <20240202-alice-file-v4-7-fc9c2080663b@google.com> <2024020214-concierge-rework-2ac5@gregkh>
-In-Reply-To: <2024020214-concierge-rework-2ac5@gregkh>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Fri, 2 Feb 2024 16:56:15 +0100
-Message-ID: <CAH5fLgj=m78KdWaxzyy3YkDh3UkxczXsh_i7ekOZDjzuwe10bA@mail.gmail.com>
-Subject: Re: [PATCH v4 7/9] rust: file: add `Kuid` wrapper
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20231121235701.239606-1-masahiroy@kernel.org>
+In-Reply-To: <20231121235701.239606-1-masahiroy@kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 3 Feb 2024 00:56:22 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQXw8owCpehxnUQG7upkENMezazzHFsdu9kggcZQLgykg@mail.gmail.com>
+Message-ID: <CAK7LNAQXw8owCpehxnUQG7upkENMezazzHFsdu9kggcZQLgykg@mail.gmail.com>
+Subject: Re: [PATCH 0/4] x86: vdso: clean up vdso Makefile
+To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
+Cc: Andy Lutomirski <luto@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 2, 2024 at 4:36=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Hi x86 maintainers,
+
+
+Gentle ping.
+
+It has been more than 2 months since the submission.
+
+
+
+On Wed, Nov 22, 2023 at 8:57=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
 >
-> On Fri, Feb 02, 2024 at 10:55:41AM +0000, Alice Ryhl wrote:
-> > +    /// Returns the given task's pid in the current pid namespace.
-> > +    pub fn pid_in_current_ns(&self) -> Pid {
-> > +        let current =3D Task::current_raw();
-> > +        // SAFETY: Calling `task_active_pid_ns` with the current task =
-is always safe.
-> > +        let namespace =3D unsafe { bindings::task_active_pid_ns(curren=
-t) };
-> > +        // SAFETY: We know that `self.0.get()` is valid by the type in=
-variant, and the namespace
-> > +        // pointer is not dangling since it points at this task's name=
-space.
-> > +        unsafe { bindings::task_tgid_nr_ns(self.0.get(), namespace) }
-> > +    }
 >
-> pids are reference counted in the kernel, how does this deal with that?
-> Are they just ignored somehow?  Where is the reference count given back?
+>
+>
+> Masahiro Yamada (4):
+>   x86: vdso: consolidate targets and clean-files
+>   x86: vdso: simplify obj-y addition
+>   x86: vdso: use $(addprefix ) instead of $(foreach )
+>   x86: vdso: use CONFIG_COMPAT_32 to specify vdso32
+>
+>  arch/x86/Makefile            |  3 +--
+>  arch/x86/entry/vdso/Makefile | 28 +++++++---------------------
+>  2 files changed, 8 insertions(+), 23 deletions(-)
+>
+> --
+> 2.40.1
+>
 
-The intention is that it will be used to replicate the following line
-of code from C binder:
 
-trd->sender_pid =3D task_tgid_nr_ns(sender, task_active_pid_ns(current));
-
-The context of this is an ioctl where the `trd` struct contains what
-will be copied into userspace as the output of the ioctl. So, the pid
-here is just a number that is given to userspace immediately, and
-userspace can then do with it as it likes. It is true that the pid is
-stale immediately, as the remote process could die and the pid could
-get reused. But it is up to userspace to handle that properly. Binder
-has a different mechanism than pids that userspace can use for a
-trusted way of verifying credentials (see the 5th patch).
-
-If this implementation of pid_in_current_ns actually takes a refcount
-on the pid, then it is incorrect because it will leak the refcount in
-that case.
-
-Alice
+--=20
+Best Regards
+Masahiro Yamada
 
