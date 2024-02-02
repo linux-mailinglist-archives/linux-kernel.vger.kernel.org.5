@@ -1,255 +1,140 @@
-Return-Path: <linux-kernel+bounces-50496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 837FA8479DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:46:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F29858479E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:47:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFB261F28889
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:46:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3097F1C24122
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:47:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B26EF80637;
-	Fri,  2 Feb 2024 19:46:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC35880610;
+	Fri,  2 Feb 2024 19:47:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="GUduTmEN"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2073.outbound.protection.outlook.com [40.107.93.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KZhG4cPm";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KZhG4cPm"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E277B80623;
-	Fri,  2 Feb 2024 19:46:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.73
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706903181; cv=fail; b=ie1djCZwucvn7sRTDzZ8xDOpm4wymDnwr/l2QvNOaTUIQLltz6uHMd5GXGp/Rh7AMlafl3jSHQVZ/MlVu7KYeiR+ILVwkRPcO0jw9e96RL0BYOHTyrWIlP2pzFCxue+AepqM+V23tqc8/NP2pC3+/Ej9qUDXd2/kJo2oouH8J8o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706903181; c=relaxed/simple;
-	bh=itg4sBqq6R4VebL0EqAcqJJHqj0zZCIPgus9sddw51w=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=cKVcPXOp6cT5J/M8N3Fl7GDpupCaiXUCFafISoew9opABud7mz3LSeYzrJ0xB/9sEkBY2GCEEo74CLx6R4VUKNiO4QIiy4mTdWWtXWRnfMhzq4PUqGiDKdYW2w68xUDOc+RTseug0zGBFN379nFcgbOoGz29rTyoHikD0U3bTL4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=GUduTmEN; arc=fail smtp.client-ip=40.107.93.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A2Dg12hg6a3Q9e5krTvDIk2J2i8Echj4Q9DcgxgLQoPxNtKMYpM5Am4+ZlaYje3vFWrKJlKbDFo+lwebgXXTV+rfikbB2DLMuMBZ+ma6NN+TDZfX+YB5T5yPlvRiDy/n4UD9t/3LEFDPZnde2DK3grH0vbMkMyRNm2ZxSEABDZqH8KDMgWLVh0Q0buy8WWPv4zHb7Y3vu9FOw1RIkzu7ZRVVGUP/6J+yWO4aP/h9kZ+xsup+iP6C/oN5waQiQrbBQYiEWjflwIYZIX+qz2IcxlzAFaGPZeEDM8/G+ufzzSrHTgFtkhdYHP3LkaPe0GJg2yEQEKhMDshzVjpz1Q4lLg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PlOKPTCXeHyhDQx5BurYfSJ8yZxPgyi1FpKgvQLNcOk=;
- b=Eny5WL4cnWeEOhDErrG/TNxLTzWIHFtimREX3EiVNsFNuXTP6d+L6ZGh9a2jTZSvrV29DjD5ogjFeRCKWDPxz0/QNiyKk8/zei/hypoj6B3Z1JQ+m/qnzHDm9F5VTNOSlJ2D5+bdmNa65zhO5waP2Y5bRyW3aIV335YK4bctnsSFIfYGY3xDSvn4Z+kPEOV52llup6jMO8z8WMPgRdHZE7/EaQO9wPKjg7LoOBlLpkGtjwNeso92EehoKNtt0QwzfuD5Qm/dbFcMcKTs/lo3cZlFPS+8ctrpPPhj1dvzPSa+U4EOeWYND6Fg+FyN4OcnTt5O7BoD/WLnmG8iMXCVdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PlOKPTCXeHyhDQx5BurYfSJ8yZxPgyi1FpKgvQLNcOk=;
- b=GUduTmEN4NZN1kAnKuz2uFLTgkg5yZX0T6lFOnxyErymWNtZZiYiBwLag8urUYvap6AtCUWN3qLGv8IXTSq4Cu+PZosXUlBhD/eAWG0mShbzjoBMUuM8bvrk7k6ofvFkY0rIxjk2OYblCrG6jXSnjg73fuG4dTQyZGvMdmdZJaY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by MN0PR12MB5834.namprd12.prod.outlook.com (2603:10b6:208:379::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.22; Fri, 2 Feb
- 2024 19:46:16 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::c30:614f:1cbd:3c64]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::c30:614f:1cbd:3c64%4]) with mapi id 15.20.7249.024; Fri, 2 Feb 2024
- 19:46:16 +0000
-Message-ID: <f037df4a-8a97-4fcd-b196-43f484b63d8d@amd.com>
-Date: Fri, 2 Feb 2024 13:46:13 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] fbcon: Defer console takeover for splash screens to
- first switch
-Content-Language: en-US
-To: Daniel van Vugt <daniel.van.vugt@canonical.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>, Helge Deller <deller@gmx.de>,
- Jani Nikula <jani.nikula@intel.com>, Danilo Krummrich <dakr@redhat.com>,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240202085408.23251-1-daniel.van.vugt@canonical.com>
- <20240202085408.23251-2-daniel.van.vugt@canonical.com>
-From: Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <20240202085408.23251-2-daniel.van.vugt@canonical.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM6PR11CA0050.namprd11.prod.outlook.com
- (2603:10b6:5:14c::27) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F67980600;
+	Fri,  2 Feb 2024 19:46:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706903221; cv=none; b=ESxnsynj6Sm+W+OeU9K5p78afWpO0nyoecum/KUwbJb6R9pxR6MkxZyed00+PIosArmpDeZwRuZmW3C6PzZcJzPsTCRH19ztCJzi8nDiBxzRqpz/umiBsmFbsJx4JL8MzEvsSyFX03xyRhOyeRFvycvwjC+0VJzJ93YIXoJ+IFg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706903221; c=relaxed/simple;
+	bh=/K/q1pAHfeWX2TgaZYj9FVR8OkRJYUi+zBTaXcCAwak=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BMC0TaWvw72rD4t5iV7EcL520LcHDGADzGS0ZlZgUssi8fSiVdaaXM34W7lMDh0cGNwI5IAOyaHauzIwskc3dYOgiMr+Lm4c7uSlhKMZ8PpdoIxOYvWyrQRQnCXYzvBSl6N8yHLnuyUk/fxPiRIIibqZbPgoeNKQrSrTq5g2ILg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KZhG4cPm; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KZhG4cPm; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from blackpad (unknown [10.100.12.75])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 25C80220CA;
+	Fri,  2 Feb 2024 19:46:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706903217; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/K/q1pAHfeWX2TgaZYj9FVR8OkRJYUi+zBTaXcCAwak=;
+	b=KZhG4cPm+x8iqhu3SDSqCd1O8OkNf4/Y9/+dkIVjBoo62GL+dcYLip/E0uO21QVnf2GR3H
+	FiGOvWS20IQuzbXbQDUA4fVAKl0S4lWQh0IXWx2WpsTKiEBJjrbKJZW16ggJjWRASKc+NC
+	3R6Dp5uimqKb8VzZvtytrXR+B/OWCr0=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706903217; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/K/q1pAHfeWX2TgaZYj9FVR8OkRJYUi+zBTaXcCAwak=;
+	b=KZhG4cPm+x8iqhu3SDSqCd1O8OkNf4/Y9/+dkIVjBoo62GL+dcYLip/E0uO21QVnf2GR3H
+	FiGOvWS20IQuzbXbQDUA4fVAKl0S4lWQh0IXWx2WpsTKiEBJjrbKJZW16ggJjWRASKc+NC
+	3R6Dp5uimqKb8VzZvtytrXR+B/OWCr0=
+Date: Fri, 2 Feb 2024 20:46:56 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Efly Young <yangyifei03@kuaishou.com>, hannes@cmpxchg.org, 
+	akpm@linux-foundation.org, android-mm@google.com, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, 
+	roman.gushchin@linux.dev, shakeelb@google.com, yuzhao@google.com
+Subject: Re: Re: Re: [PATCH] mm: memcg: Use larger chunks for proactive
+ reclaim
+Message-ID: <bycpbzvo2fpd2qrrl7ipnzrsyun7hg5tjlqouafuosxxlxfml5@vpbl6kl74hx5>
+References: <20240201153428.GA307226@cmpxchg.org>
+ <20240202050247.45167-1-yangyifei03@kuaishou.com>
+ <vofidz4pzybyxoozjrmuqhycm2aji6inp6lkgd3fakyv5jqsjr@pleoj7ljsxhi>
+ <CABdmKX2KsxVExVWzysc_fQagGkYWhqRF00KxNxjpVWovHHip+Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|MN0PR12MB5834:EE_
-X-MS-Office365-Filtering-Correlation-Id: ea08c657-b8a5-44f4-e176-08dc24279e6d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	JIygyFZIM1ImBSFNGMjeRFycniRzzmv8LBZAm1/OOBER5mohEnfxoQ/Fn2j79wsKeJIIXCLxhkSh8gxvPw6nP/ceyhfE8KT+hU6MGvv0lpYmgyQeWt/+xr7BfrVsxwNitxgoF0ccMQAYnmq6HcKTgd/TzHre+HO7jwzQAszKlXVrcVTrxpJru+7hy9HtOhqB6kmAsEnz3Br9gzaUYoUz9Gy6QcIIGZUYZvV3FVTy7/8Q3ROtRsFJvIefVK1ISvHRUounttF9d7e918wGAJI+AjbIxKm+JipFjqAlBdbMaUz41yq/JxuD4SCDc9gWul7cSCOOzbLyFyHvoVXm6bPToqdqLntrcmZaO09jsFWTyStseRC+UV/kJlull40Aw9G6IDsvBGPyxnqvel2Edm5zuf8x+z1lA28mg/iTRlsxporAwpTQOrU4Kb3B0I4tXKzWn8t/HOIv283f9nWm9b6X0Dxs3zk0VrwvJ6XUweM75ujRllSf2T6yHNbaAreHSV3oQJCKuw7jyJ0J5MaHEWhO/TtwWtNqisZF4d637VukMlF+l+bl22YPHmj4ZSeSV8wZYMeCAevRxkNb3Y6261Qi102UVT2m2jlhWutaVcox84/Lh032gPC5mV+CIrI/sqAH6ZsDSrn7YO0g6E90ruxCwo+4/X0n5uRF3OpqlDLYTk0=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(376002)(39860400002)(136003)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(54906003)(966005)(8936002)(6486002)(66946007)(31686004)(8676002)(66476007)(316002)(44832011)(478600001)(6666004)(6506007)(4326008)(53546011)(2616005)(2906002)(38100700002)(66556008)(5660300002)(6916009)(26005)(31696002)(86362001)(41300700001)(36756003)(83380400001)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?REpUdkQzUGpCenBDZjU5dzlnOEQvdjUvNFZEdjdHWGl2UzdQelBpOEh4cWdm?=
- =?utf-8?B?U2tTN0FXUWpVUjMxZEl6QzFpUkY4Y1FNdVFtTUUrUjMzV1lVMnNpNWwyTzEy?=
- =?utf-8?B?SVFKRVdsdXdTdGhrbDAyQTJUNmRDaEdNMUl4QUVoOUl3RmtEVW9LRVg3WkJ3?=
- =?utf-8?B?NmVmSkN2b0crS3AzYjdPMVVtTVMwZzRaZ3FLRkZKRWxPWHErOUVQV1RmYmZB?=
- =?utf-8?B?My9MbXVSdlBuemhDVWJGZUxtZlF6SlRDVFVlUExSWlgrbFI1blN0c0lUcXpD?=
- =?utf-8?B?QzN1aTlJc1gvN3E3RGdhNEV2eW9xbHBRb3QybDRsZHI4RFNxZDVhWHZxRm1I?=
- =?utf-8?B?RUpVTTlyeElDUmROc1FhZFR2QXMwdDAyUm5pb0Y4L0NVNkNxdTRRRU1qYjVj?=
- =?utf-8?B?MXhuUHZFZTJiU29lcFYxdWpqeU10TDdZNFNqT1U5clEwK3hQSDZJdjZVQTA4?=
- =?utf-8?B?UnFHcGtGcXZhTzFtamJJOENLaCt4bUYzV1NyallUOUFZMlZRcyt6dUZUUEhM?=
- =?utf-8?B?ZGg1L3VlaTNWRWs0Yk5DWWdKNzdsT1k5UDNSc1NiMFUwSDlaWGdvRU1MZzJS?=
- =?utf-8?B?TE1Vdng3SHl5K3RYTG1uSDJNUk1FMmV1WGEwVmhxelJvSjBSM09pSWNMbmFD?=
- =?utf-8?B?RG5PU2ZlNWlaVzZJOFlZZlFZbTA3MUt6M2wrKzdaSUt0MmV3cTB4MCtDaEI4?=
- =?utf-8?B?aUkxK0dkUXdReUxhclV3WTNSR0hvYlpXNFpjL245U2pEWk1ROXpZVkhwYUxI?=
- =?utf-8?B?YmsxVlFOWmdBbDVaRFl5eGVJQVpHRWJ1TlNvaXR0SjJXWU82NzBVbmR1UGVj?=
- =?utf-8?B?eXU2eGQxVkt2ZUF1ek5VS0lRSXJOY2YrUmVybTZZRXgvME9FUm1NK1VUblFx?=
- =?utf-8?B?TXV4d3ErcXdTOUtkY2FEcTJVMVdzanVYRytQS3VrK3FNVXFqVHpOWWZxU00y?=
- =?utf-8?B?dUxIRStHcm5mcVNaa3dhb0JaZndNQmRLcnJsWnpyc3o4WFFVdS9ud09tSHlo?=
- =?utf-8?B?VHNJMU4wcGsweDE5Qjd4ZmVHTFU1R295bnZsQW9UcG51NUlVL0ZQSWxGQjU1?=
- =?utf-8?B?VTN2ZTNTZHdVKzRhbS9CanExNy9yRnI2MzZmWDAxVTBOa3EzOGpwbGNlcWYz?=
- =?utf-8?B?K2pGdGdwRjVmNjZ0QWdFNGsyZ1hUQ0dPSmRwWmtFWldocU1XU1lrQzN2V1hE?=
- =?utf-8?B?VUo5bjFwckdiYXZXV2w5RE9EQk9Fa2ZqSjN4cDZmNXNiaXVzM2s3c2tVU3pF?=
- =?utf-8?B?MFRjTGMrV1BGTmR5akdFOG9jZFdydGlOaC95bndCVklvWm9TZk5QdFlobndu?=
- =?utf-8?B?V20zaCtpZ3RvVHJkUUkrSzgzTXNtdTdua01GM3BoZmVlazhQWGJTZGpTcEhp?=
- =?utf-8?B?dnFMQWVwWjZmUUxxRU5PVFdiNFpwK0c0MkNsUEFHaVdWK3VRZXRtK1RlM1hU?=
- =?utf-8?B?akdyOGlVdm1zaFZtK0ZUVW43WDMvL1c1ck9PczdtZ0NiL0VGcjlkUkpBSEVJ?=
- =?utf-8?B?TE9tL2ZzQWxlQWtvUFNqMTRXVzEzeWxaWDhENGxlc2dZTVZTbjE4b2VNUjFT?=
- =?utf-8?B?SDluczJjN0lkY3o2WVhlcWNHa1U0Uk9QbzhjR1dnRFM5MHlEK0Z0VThkcW9F?=
- =?utf-8?B?MEZNQVhrWkJ2Rmp5cFhaM09yMzh1Rjd3MU10ZGtuOVl6cGNHWStvc1dKcmY0?=
- =?utf-8?B?cVFjT09odWFYbVRUbzFwaGh2YllPNFF3ekdFOUd3WDhHYXFTb0x2VkRYL2Z2?=
- =?utf-8?B?eXNYeklDVUdOUHpGZTZuTkpGNEtkV2dWQW82bEhFeFRtVDBkZ3BmVEVCTGFy?=
- =?utf-8?B?RHR2OU1TTFdIVFFDYUZ4ZlFSV1crNlJ5czNHV2xVUzhGM2VhaDRTODVyc0Vs?=
- =?utf-8?B?ZG5JRjFYaE93c0ZwWktuMG5BaXNPMEVqWjAxS1pNUlNwdkVXaDkxZEd4ZnhV?=
- =?utf-8?B?WFY0TTFBeUt6VjViMzhQUVlLaHVpYW02T1Njc2ROUTVYSDgzbHVqakQ3emUy?=
- =?utf-8?B?b2wrNmF3ZXVOdVBXcTFJMzhKc3BCZVdrS0hRYWxEUzJDWHZaMG9qSExGQUZR?=
- =?utf-8?B?VWxBY0tvL0owR2lyM0JJNTdRcjBScC95SDdtZGRRNUtuNytTVUdPWk5FTS9q?=
- =?utf-8?Q?7LRmzgj3VfZsZqDRCHUkSfIZu?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea08c657-b8a5-44f4-e176-08dc24279e6d
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2024 19:46:16.1741
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mBd4mXo7HPSm0ZL+6xnRpdJCf+sngAgLP/iQ2xsmSXJCI8uKdNPRFwbGRTffBVLAe+dVz2iLd6tCoDdmEFGybA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5834
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="gwdtcq3kwf5cetlv"
+Content-Disposition: inline
+In-Reply-To: <CABdmKX2KsxVExVWzysc_fQagGkYWhqRF00KxNxjpVWovHHip+Q@mail.gmail.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-1.88 / 50.00];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 SIGNED_PGP(-2.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_COUNT_ZERO(0.00)[0];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 BAYES_HAM(-0.18)[70.38%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -1.88
 
-On 2/2/2024 02:53, Daniel van Vugt wrote:
-> Until now, deferred console takeover only meant defer until there is
-> output. But that risks stepping on the toes of userspace splash screens,
-> as console messages may appear before the splash screen. So check for the
-> "splash" parameter (as used by Plymouth) and if present then extend the
-> deferral until the first switch.
-> 
-> Closes: https://bugs.launchpad.net/bugs/1970069
-> Cc: Mario Limonciello <mario.limonciello@amd.com>
-> Signed-off-by: Daniel van Vugt <daniel.van.vugt@canonical.com>
-> ---
->   drivers/video/fbdev/core/fbcon.c | 32 +++++++++++++++++++++++++++++---
->   1 file changed, 29 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-> index 63af6ab034..5b9f7635f7 100644
-> --- a/drivers/video/fbdev/core/fbcon.c
-> +++ b/drivers/video/fbdev/core/fbcon.c
-> @@ -76,6 +76,7 @@
->   #include <linux/crc32.h> /* For counting font checksums */
->   #include <linux/uaccess.h>
->   #include <asm/irq.h>
-> +#include <asm/cmdline.h>
->   
->   #include "fbcon.h"
->   #include "fb_internal.h"
-> @@ -146,6 +147,7 @@ static inline void fbcon_map_override(void)
->   
->   #ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
->   static bool deferred_takeover = true;
-> +static int initial_console = -1;
->   #else
->   #define deferred_takeover false
->   #endif
-> @@ -3341,7 +3343,7 @@ static void fbcon_register_existing_fbs(struct work_struct *work)
->   	console_unlock();
->   }
->   
-> -static struct notifier_block fbcon_output_nb;
-> +static struct notifier_block fbcon_output_nb, fbcon_switch_nb;
->   static DECLARE_WORK(fbcon_deferred_takeover_work, fbcon_register_existing_fbs);
->   
->   static int fbcon_output_notifier(struct notifier_block *nb,
-> @@ -3358,6 +3360,21 @@ static int fbcon_output_notifier(struct notifier_block *nb,
->   
->   	return NOTIFY_OK;
->   }
-> +
-> +static int fbcon_switch_notifier(struct notifier_block *nb,
-> +				 unsigned long action, void *data)
-> +{
-> +	struct vc_data *vc = data;
-> +
-> +	WARN_CONSOLE_UNLOCKED();
-> +
-> +	if (vc->vc_num != initial_console) {
-> +		dummycon_unregister_switch_notifier(&fbcon_switch_nb);
-> +		dummycon_register_output_notifier(&fbcon_output_nb);
-> +	}
-> +
-> +	return NOTIFY_OK;
-> +}
->   #endif
->   
->   static void fbcon_start(void)
-> @@ -3370,7 +3387,14 @@ static void fbcon_start(void)
->   
->   	if (deferred_takeover) {
->   		fbcon_output_nb.notifier_call = fbcon_output_notifier;
-> -		dummycon_register_output_notifier(&fbcon_output_nb);
-> +		fbcon_switch_nb.notifier_call = fbcon_switch_notifier;
-> +		initial_console = fg_console;
-> +
-> +		if (cmdline_find_option_bool(boot_command_line, "splash"))
-> +			dummycon_register_switch_notifier(&fbcon_switch_nb);
 
-So there is a problem here that this would only apply if the distro 
-happened to use "splash" which some distros use something different.
+--gwdtcq3kwf5cetlv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I looked at the matching plymouth code [1] and they have a bunch of 
-variations of what they accept and what it does.
+On Fri, Feb 02, 2024 at 10:22:34AM -0800, "T.J. Mercier" <tjmercier@google.=
+com> wrote:
+> So all of these should be more or less equivalent:
+> delta <=3D SWAP_CLUSTER_MAX ? delta : (delta + 3*SWAP_CLUSTER_MAX) / 4
+> max((nr_to_reclaim - nr_reclaimed) / 4, (nr_to_reclaim - nr_reclaimed) % =
+4)
+> (nr_to_reclaim - nr_reclaimed) / 4 + 4
+> (nr_to_reclaim - nr_reclaimed) / 4
+>=20
+> I was just trying to avoid putting in a 0 for the request size with the m=
+od.
 
-[1] 
-https://gitlab.freedesktop.org/plymouth/plymouth/-/blob/main/src/main.c?ref_type=heads#L888
+The third variant would be simpler then. Modulo looks weird.
 
-If from the kernel side we're going to have code that caters to the 
-userspace behavior of plymouth we probably need to match all those cases 
-they do too.
+Oh, and I just realized that try_to_free_mem_cgroup_pages() does
+max(nr_pages, SWAP_CLUSTER_MAX). Then I'd vote for the fourth variant +
+possible comment about harmless 0.
+(I'm sorry if this was discussed before.)
 
-Another alternative could be to make it a kernel configuration option 
-for which string to look for to activate this behavior.
+Michal
 
-> +		else
-> +			dummycon_register_output_notifier(&fbcon_output_nb);
-> +
->   		return;
->   	}
->   #endif
-> @@ -3417,8 +3441,10 @@ void __exit fb_console_exit(void)
->   {
->   #ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
->   	console_lock();
-> -	if (deferred_takeover)
-> +	if (deferred_takeover) {
->   		dummycon_unregister_output_notifier(&fbcon_output_nb);
-> +		dummycon_unregister_switch_notifier(&fbcon_switch_nb);
-> +	}
->   	console_unlock();
->   
->   	cancel_work_sync(&fbcon_deferred_takeover_work);
+--gwdtcq3kwf5cetlv
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZb1GrgAKCRAGvrMr/1gc
+jpaqAP9PQEKb5U00/7EvIWgO4mSe3xgJFzSEakWK6ZzZcedHxQD7Br+GIkc1yt7s
+uBEhvGPzYvygslFDhyZVTQXlOueoaAs=
+=ArmI
+-----END PGP SIGNATURE-----
+
+--gwdtcq3kwf5cetlv--
 
