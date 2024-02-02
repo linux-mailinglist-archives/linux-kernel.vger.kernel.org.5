@@ -1,336 +1,159 @@
-Return-Path: <linux-kernel+bounces-49925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 015B08471A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:07:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 868518470CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:04:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F80C2887BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:07:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 381971F23BBF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:04:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50BE413E226;
-	Fri,  2 Feb 2024 14:07:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E65F4684;
+	Fri,  2 Feb 2024 13:04:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="Y9YIZYgg"
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sKse/JN6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E00CE60249
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 14:07:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADA314C6A;
+	Fri,  2 Feb 2024 13:04:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706882866; cv=none; b=k1rbMhKBMuw/+L0VxOkkvuV9nKBL6byskxG0FGjO42MI5N+wcFddhx65Z/RnU0jOdCF2620Ev6ju1zORSMbByivmUreXr7Z2qaZuneIdUHGC5ijwVIVTQf0vBNXfodaOYfSp1RKbWALfKEnWOammCUqC+ajQOa5vjCyskcc/6uc=
+	t=1706879086; cv=none; b=TmBUmFJrumX42Gc5h0HEXtp3IgRiq329frOqxPuQfeyVJKsA512mitQmy1wbugbjKz8uZkRxGhXPrDt9mIomcZkgB/eQhlSy2ZfFlmv/MBeDWsEUBPTurVZ6hqvqSZ6GlWQXpFW8QDZ57xwcyVzv+IL/o66r9o5jBFgcBKA2WfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706882866; c=relaxed/simple;
-	bh=ANIJS9UzkOmFsPmPeZuENE1ZuoiAp/fMOA7MnKgVqIE=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:Message-ID:MIME-Version:
-	 Content-Type:References; b=ExDQfTFjSW5LU1efMJKL9EJLmCTir3AEMubmCVQGqAvOHu4RSPIIxAGddyXVpuZdiP1srVaZWAdJiDC3NLjCE8tUQpOu+lMNKu027Tiqx54pGn7zrVlJACruACx6zLTEcQwlzqmqmwoTPheY/++E32QPrYb882PblEqftCmGmjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=Y9YIZYgg; arc=none smtp.client-ip=203.254.224.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20240202135954epoutp02e9c2497205fc329cfe758488358a44a8~wEH5w0ipD1606816068epoutp02u
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 13:59:54 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20240202135954epoutp02e9c2497205fc329cfe758488358a44a8~wEH5w0ipD1606816068epoutp02u
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1706882394;
-	bh=uPljuUqcnvBKfoTySKkhA0+5apgmEsMGTJCKcyU/yGk=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-	b=Y9YIZYgg0UM/CDb7siYyh1EpHU+CwmZrspyKMd+PBWop6KQgudfOqKCmHWgANBUtg
-	 rEHe3CjXYZxJwsheX4pVvc0iobLihlKFsKQ4ny572K0NcvRJwDL8dpWBGkBUcTG9es
-	 j1M9pU78pNuj3pC6yMo8ZToCfJp9VW5s6AlfMNI4=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-	epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-	20240202135952epcas5p14a5f82d917b630160044cc0cab67da79~wEH4njU-I2501125011epcas5p1N;
-	Fri,  2 Feb 2024 13:59:52 +0000 (GMT)
-Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.174]) by
-	epsnrtp1.localdomain (Postfix) with ESMTP id 4TRHTM0l7hz4x9Ps; Fri,  2 Feb
-	2024 13:59:51 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-	epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	4B.4C.19369.655FCB56; Fri,  2 Feb 2024 22:59:50 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-	20240202115943epcas5p4ffd74eaf0571f61e3bac50be11a94632~wCe_eyBOS1710017100epcas5p4u;
-	Fri,  2 Feb 2024 11:59:43 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240202115943epsmtrp1f6562f1a4757eff343b41e8d1578699c~wCe_dpNxn1052510525epsmtrp1f;
-	Fri,  2 Feb 2024 11:59:43 +0000 (GMT)
-X-AuditID: b6c32a50-c99ff70000004ba9-e9-65bcf556438e
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	D7.27.07368.F29DCB56; Fri,  2 Feb 2024 20:59:43 +0900 (KST)
-Received: from FDSFTE462 (unknown [107.122.81.248]) by epsmtip1.samsung.com
-	(KnoxPortal) with ESMTPA id
-	20240202115940epsmtip103f90ce67606603a09560c7217533b83~wCe79AHbc2779527795epsmtip1y;
-	Fri,  2 Feb 2024 11:59:40 +0000 (GMT)
-From: "Shradha Todi" <shradha.t@samsung.com>
-To: "'Manivannan Sadhasivam'" <manivannan.sadhasivam@linaro.org>,
-	<m.szyprowski@samsung.com>, <sboyd@kernel.org>, <mturquette@baylibre.com>
-Cc: <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-pci@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-samsung-soc@vger.kernel.org>, <jingoohan1@gmail.com>,
-	<lpieralisi@kernel.org>, <kw@linux.com>, <robh@kernel.org>,
-	<bhelgaas@google.com>, <krzysztof.kozlowski@linaro.org>,
-	<alim.akhtar@samsung.com>, <linux@armlinux.org.uk>,
-	<pankaj.dubey@samsung.com>
-In-Reply-To: <20240129065448.GC2971@thinkpad>
-Subject: RE: [PATCH v4 1/2] clk: Provide managed helper to get and enable
- bulk clocks
-Date: Fri, 2 Feb 2024 17:29:30 +0530
-Message-ID: <08a901da55cf$4ee48000$ecad8000$@samsung.com>
+	s=arc-20240116; t=1706879086; c=relaxed/simple;
+	bh=VHNzo62n2veQT6kzrf61FzcveAg/Vc9QAoX36epjdhA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=pNpZsqbD44mE2y8MfikfjkEOiZ41Qla0fRLi0/RnCLLIWWeO/j76mIM2ojFEgPW9uy8nkfAnVfDsZpgQEJ3hEkhqciXIta3257Rz+r6S4yFFm3XC3hUF2ojrQ8w/T6UATns3ITmqOv/ek9KljsCjca8bKw45hIvmneJbv+no+YI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sKse/JN6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 228E8C43390;
+	Fri,  2 Feb 2024 13:04:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706879086;
+	bh=VHNzo62n2veQT6kzrf61FzcveAg/Vc9QAoX36epjdhA=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=sKse/JN676bA5NZide99+MztzoAngiNHaHBrJtFzRH62D1u5E6R+3FQklBkF++I5N
+	 PcOVGesJho5Ib34+3T8GBWTTBBfiklACb4v9B7L+N9g6yCkIlqVOl4i0oCiRGvavMs
+	 uQQ6a64uLWESdPN6R4VyWAFV1KR0eb4wrLWEZpGdtnZXtU4awDjuxnIrk6gjOiLUUV
+	 UZtvn/gLYaKxe9z8ta+dNODgkusDTGiAe+6EAyvirnEsF7NrPBwhkNWdsh/7lR/wuy
+	 Zx5h7wAmjcXz+yXW7Xcb5I+b/VmW6TFU3lIxbSiEhJVHDsIALhhG1OEdfatM0BiDk3
+	 77EQWuVd01vqA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id B3478CE1ECC; Fri,  2 Feb 2024 05:04:45 -0800 (PST)
+Date: Fri, 2 Feb 2024 05:04:45 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+	Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Subject: [BUG] workqueues and printk not playing nice since next-20240130
+Message-ID: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQIcpPks/WB953w72Rl3v8cfkz9jJgG3GiapAsOufW4BkcYK8bBB75tA
-Content-Language: en-in
-X-Brightmail-Tracker: H4sIAAAAAAAAA02TfUxTVxjGc3r7ydLlrkU5dKHBi1MR+agreFEYS2DsLriExTjnpmM3cNci
-	/UpvK27OjLiqgYH41SBFqiIBRWBSKAJr58K3ZBNZm06jqJtd6GSbHQM2BMooFzf++533vM95
-	8rznHD4i8nEl/HyNgdJrSBXGDWG390RHx7475aASiq3b8EfWdi5ee1iJX56s5OHOcTsPLyqd
-	5eC2xx4O/mfpAw7u6jrHxb+3DnDxs8PfsPBusxPgpjkTG2/qHeXho6ZiDj4y9AZeY5/k4QuO
-	Dh4e8LSwXxcRLs8IQjy9c4RHdFpGecQFm5GwNRRzifseB5fwuitYRGvt58TxtgZA/GWTZoe8
-	X5CipMg8Sh9JaXK1efkaRSqWtSMnPScxKUEWK0vGt2CRGlJNpWIZ27NjM/NVi5GwyP2kyrhY
-	yiZpGot/LUWvNRqoSKWWNqRilC5PpZPr4mhSTRs1ijgNZdgqS0jYnLjY+FGB0tXbw9X54w/8
-	dOMMUgSc60qAgA9ROfReq+GVgBC+CHUAaHd0IsxiAsDATQuLWUwDWDrZySkB/CXJvaZtTN0J
-	4B9zjezgUSLUB+BvTXSQuegm6HXPIUEORcsA7PIXBgUIegqB9X2zILghQGPhbb+JE2Qxugue
-	ni5jBZmNroWDPw4usRBNhjd8VQjDL8Gbld4lMwSNgXUXxxEmQySc+aWOw5hlwqo2G5fpCYN9
-	M6VLcSBaLoDHpqo4jCADfrnwA2BYDJ8MtPEYlsBfy48uswJeaT27bKCC0621LIbT4Lfuc+zg
-	JBA0Gn7VFc+UI6B5qJnF+L4Iy2a9y+1C2GF9zlFwct7BZjgcWvtdnBMAs6yIZlkRzbIiguV/
-	twuA3QAklI5WK6jcRJ0sVkMV/nfjuVq1DSw9+Y3ZHeDqtfm4bsDig24A+QgWKrwi7aREwjzy
-	k08pvTZHb1RRdDdIXBz4SUSyKle7+Gc0hhyZPDlBnpSUJE9+NUmGhQnHj1TniVAFaaAKKEpH
-	6Z/rWHyBpIgljvEJ/XX2OM+T/XdbHqetj7ofisR4Wpoa/+krd8vTn30Xte/Q3g3tt1ZpGmKm
-	9ogiXI/2kIrLBtRpCxdVrD5/Ujph/yzz2Bnz9dOEtPDtiJJdCrZZvHNd2VTgwzHBYH7DQ/vH
-	nuohgfbOm2rJWv+limHBzykzPVdHyIM7X9CJd/eEHbi3ufnB9Q/Ulpa0/vqMTv+mv+fGwmVF
-	t9dkheZKzvc3krKnvb8nNu09vrU7ekvNRLTyYav1vUPpRwONh794eQYUBr5Ok7SNiQcqrT4W
-	1Ruzen4N37yw3aQcHqqYCevPEtD1mbtPVG94S3p3yjTUjD07NWK79QpcMO94Z5/i0kE3xqaV
-	pGwjoqfJfwHDWPdIewQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIIsWRmVeSWpSXmKPExsWy7bCSnK7+zT2pBj2XRSwezNvGZrGkKcNi
-	xZeZ7BZ7X29lt2jo+c1qsenxNVaLjz33WC0u75rDZnF23nE2ixnn9zFZHJq6l9Gi5U8Li8Xa
-	I3fZLe62dLJaXDzlarFo6xd2i/97drBb/Lu2kcVByOPytYvMHu9vtLJ77Jx1l91jwaZSj02r
-	Otk87lzbw+bx5Mp0Jo/NS+o9+rasYvT4vEkugCuKyyYlNSezLLVI3y6BK+Ptjr9MBc/1Kv5M
-	nMzUwLhYtYuRg0NCwETi9lrrLkYuDiGB3YwSX46sYOti5ASKS0p8vriOCcIWllj57zk7RNEz
-	RomTT68wgiTYBHQknlz5wwySEBGYyCixfl4HK4jDLLCAWWL+pW/MEC13GCVaF71gAWnhFNCV
-	uPChhRXEFhYIldh9ZjM7iM0ioCJx4voJsH28ApYS+1/MZoawBSVOznwC1sssoC3x9OZTOHvZ
-	wtfMEPcpSPx8ugxspoiAm8TsLZvYIGrEJY7+7GGewCg8C8moWUhGzUIyahaSlgWMLKsYJVML
-	inPTc5MNCwzzUsv1ihNzi0vz0vWS83M3MYJjXUtjB+O9+f/0DjEycTAeYpTgYFYS4V0ptzNV
-	iDclsbIqtSg/vqg0J7X4EKM0B4uSOK/hjNkpQgLpiSWp2ampBalFMFkmDk6pBqatWysDRbm3
-	Brx7+sh3F3/+IncXe3a/iukzfTP/eNZce701VP5WinJG0WvuXWXuJ+euenLUaP+GI9dmsP7w
-	cMz903svS2fNf3nZQ+7/znU7XTv63OvWJVEPVcE3kwW+h+5kTdbOPCPV1fOvUDjxVrybTdeN
-	10ZNE9Sn7A+Kkcu01rP0Vwhjrm4qFjn44Nsij+WvZ0xXPH/ALW7ny/VRZz1bJx5uWWUVPP8V
-	+9Q4C837cTY6Nj8mM+7nVy6syZUVitaedOTkxW/JCw5/+v9h+4FTS+9M2Gpt/H9iwyXeNR0v
-	NrzYqfwqkUdPODtYNEzc2vTuB7EzZ77l6YqeOicp2sAkonDHpujZJv2VSiJTGf2VWIozEg21
-	mIuKEwFOiEzzZAMAAA==
-X-CMS-MailID: 20240202115943epcas5p4ffd74eaf0571f61e3bac50be11a94632
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240124103855epcas5p27400bd95df42f36b9547a4e28aa26f5d
-References: <20240124103838.32478-1-shradha.t@samsung.com>
-	<CGME20240124103855epcas5p27400bd95df42f36b9547a4e28aa26f5d@epcas5p2.samsung.com>
-	<20240124103838.32478-2-shradha.t@samsung.com>
-	<20240129065448.GC2971@thinkpad>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+Hello!
 
+Starting with next-20240130 (and perhaps a bit earlier), rcutorture gets
+what initially looked like early-boot hangs, but only when running on
+dual-socket x86 systems [1], as it it works just fine on my x86 laptop [2].
+But when running on dual-socket systems, this happens all the time,
+perhaps because rcutorture works hard to split each guest OS across a
+socket boundary.
 
-> -----Original Message-----
-> From: Manivannan Sadhasivam <manivannan.sadhasivam=40linaro.org>
-> Sent: 29 January 2024 12:25
-> To: Shradha Todi <shradha.t=40samsung.com>
-> Cc: linux-clk=40vger.kernel.org; linux-kernel=40vger.kernel.org; linux-
-> pci=40vger.kernel.org; linux-arm-kernel=40lists.infradead.org; linux-sams=
-ung-
-> soc=40vger.kernel.org; mturquette=40baylibre.com; sboyd=40kernel.org;
-> jingoohan1=40gmail.com; lpieralisi=40kernel.org; kw=40linux.com; robh=40k=
-ernel.org;
-> bhelgaas=40google.com; krzysztof.kozlowski=40linaro.org;
-> alim.akhtar=40samsung.com; linux=40armlinux.org.uk;
-> m.szyprowski=40samsung.com; pankaj.dubey=40samsung.com
-> Subject: Re: =5BPATCH v4 1/2=5D clk: Provide managed helper to get and en=
-able bulk
-> clocks
->=20
-> On Wed, Jan 24, 2024 at 04:08:37PM +0530, Shradha Todi wrote:
-> > Provide a managed devm_clk_bulk* wrapper to get and enable all bulk
-> > clocks in order to simplify drivers that keeps all clocks enabled for
-> > the time of driver operation.
-> >
-> > Suggested-by: Marek Szyprowski <m.szyprowski=40samsung.com>
-> > Signed-off-by: Shradha Todi <shradha.t=40samsung.com>
-> > ---
-> >  drivers/clk/clk-devres.c =7C 40
-> ++++++++++++++++++++++++++++++++++++++++
-> >  include/linux/clk.h      =7C 24 ++++++++++++++++++++++++
-> >  2 files changed, 64 insertions(+)
-> >
-> > diff --git a/drivers/clk/clk-devres.c b/drivers/clk/clk-devres.c index
-> > 4fb4fd4b06bd..cbbd2cc339c3 100644
-> > --- a/drivers/clk/clk-devres.c
-> > +++ b/drivers/clk/clk-devres.c
-> > =40=40 -182,6 +182,46 =40=40 int __must_check devm_clk_bulk_get_all(str=
-uct
-> > device *dev,  =7D  EXPORT_SYMBOL_GPL(devm_clk_bulk_get_all);
-> >
-> > +static void devm_clk_bulk_release_all_enable(struct device *dev, void
-> > +*res) =7B
-> > +	struct clk_bulk_devres *devres =3D res;
-> > +
-> > +	clk_bulk_disable_unprepare(devres->num_clks, devres->clks);
-> > +	clk_bulk_put_all(devres->num_clks, devres->clks); =7D
-> > +
-> > +int __must_check devm_clk_bulk_get_all_enable(struct device *dev,
-> > +					      struct clk_bulk_data **clks) =7B
-> > +	struct clk_bulk_devres *devres;
-> > +	int ret;
-> > +
-> > +	devres =3D devres_alloc(devm_clk_bulk_release_all_enable,
-> > +			      sizeof(*devres), GFP_KERNEL);
-> > +	if (=21devres)
-> > +		return -ENOMEM;
-> > +
-> > +	ret =3D clk_bulk_get_all(dev, &devres->clks);
-> > +	if (ret > 0) =7B
-> > +		*clks =3D devres->clks;
-> > +		devres->num_clks =3D ret;
-> > +	=7D else =7B
-> > +		devres_free(devres);
-> > +		return ret;
-> > +	=7D
->=20
-> How about:
->=20
-> 	ret =3D clk_bulk_get_all(dev, &devres->clks);
-> 	if (ret <=3D 0) =7B
-> 		devres_free(devres);
-> 		return ret;
-> 	=7D
->=20
-> 	*clks =3D devres->clks;
-> 	devres->num_clks =3D ret;
->=20
-> Even though this patch follows the pattern used by the rest of the APIs i=
-n the
-> driver, IMO above makes it more readable.
->=20
+This is the reproducer:
 
-Since I have usually seen that maintainers suggest to maintain the coding s=
-tyle of the file, I followed the same.
-If you have a stronger reason to change this, please let me know
-Marek, Michael, Stephen please let us know what do you think about this?
+tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 1m --configs "10*TREE01" --trust-make
 
-> > +
-> > +	ret =3D clk_bulk_prepare_enable(devres->num_clks, *clks);
-> > +	if (=21ret) =7B
-> > +		devres_add(dev, devres);
-> > +	=7D else =7B
-> > +		clk_bulk_put_all(devres->num_clks, devres->clks);
-> > +		devres_free(devres);
-> > +	=7D
-> > +
->=20
-> Same as above:
->=20
-> 	ret =3D clk_bulk_prepare_enable(devres->num_clks, *clks);
-> 	if (ret) =7B
-> 		clk_bulk_put_all(devres->num_clks, devres->clks);
-> 		devres_free(devres);
-> 		return ret;
-> 	=7D
->=20
-> 	devres_add(dev, devres);
->=20
-> > +	return ret;
->=20
-> 	return 0;
->=20
+By "looked like early-boot hangs" I mean that qemu was quite happy,
+but there was absolutely no console output.
 
-Same as above
+Bisection identified this commit:
 
-> > +=7D
-> > +EXPORT_SYMBOL_GPL(devm_clk_bulk_get_all_enable);
-> > +
-> >  static int devm_clk_match(struct device *dev, void *res, void *data)
-> > =7B
-> >  	struct clk **c =3D res;
-> > diff --git a/include/linux/clk.h b/include/linux/clk.h index
-> > 1ef013324237..a005e709b7bd 100644
-> > --- a/include/linux/clk.h
-> > +++ b/include/linux/clk.h
-> > =40=40 -438,6 +438,23 =40=40 int __must_check
-> > devm_clk_bulk_get_optional(struct device *dev, int num_clks,  int
-> __must_check devm_clk_bulk_get_all(struct device *dev,
-> >  				       struct clk_bulk_data **clks);
-> >
-> > +/**
-> > + * devm_clk_bulk_get_all_enable - managed get multiple clk consumers a=
-nd
-> > + *				  enable all clks
->=20
-> =22Get and enable all clocks of the consumer (managed)=22
->=20
+5797b1c18919 ("workqueue: Implement system-wide nr_active enforcement for unbound workqueues")
 
-Will take this up in the next patchset
+Reverting this commit made the problem go away.  Except that it is really
+hard to imagine this commit having any effect whatsoever on early boot
+execution.  Of course, this might be a failure of imagination on my part,
+so I enlisted the aid of gdb:
 
-> > + * =40dev: device for clock =22consumer=22
-> > + * =40clks: pointer to the clk_bulk_data table of consumer
-> > + *
-> > + * Returns success (0) or negative errno.
-> > + *
-> > + * This helper function allows drivers to get several clk
->=20
-> =22This helper function allows drivers to get all clocks of the consumer =
-and enables
-> them...=22
->=20
-> - Mani
->=20
+tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 1m --configs "TREE01" --trust-make --gdb
 
-Will take this up. Thanks for your review Mani=21
+After following the resulting gdb startup instructions and waiting for
+about ten seconds, I hit control-C on the gdb window and then:
 
-> > + * consumers and enable all of them in one operation with management.
-> > + * The clks will automatically be disabled and freed when the device
-> > + * is unbound.
-> > + */
-> > +
-> > +int __must_check devm_clk_bulk_get_all_enable(struct device *dev,
-> > +					      struct clk_bulk_data **clks);
-> > +
-> >  /**
-> >   * devm_clk_get - lookup and obtain a managed reference to a clock pro=
-ducer.
-> >   * =40dev: device for clock =22consumer=22
-> > =40=40 -960,6 +977,13 =40=40 static inline int __must_check
-> devm_clk_bulk_get_all(struct device *dev,
-> >  	return 0;
-> >  =7D
-> >
-> > +static inline int __must_check devm_clk_bulk_get_all_enable(struct dev=
-ice
-> *dev,
-> > +						struct clk_bulk_data **clks)
-> > +=7B
-> > +
-> > +	return 0;
-> > +=7D
-> > +
-> >  static inline struct clk *devm_get_clk_from_child(struct device *dev,
-> >  				struct device_node *np, const char *con_id)  =7B
-> > --
-> > 2.17.1
-> >
->=20
-> --
-> =E0=AE=AE=E0=AE=A3=E0=AE=BF=E0=AE=B5=E0=AE=A3=E0=AF=8D=E0=AE=A3=E0=AE=A9=
-=E0=AF=8D=20=E0=AE=9A=E0=AE=A4=E0=AE=BE=E0=AE=9A=E0=AE=BF=E0=AE=B5=E0=AE=AE=
-=E0=AF=8D=0D=0A=0D=0A
+	(gdb) bt
+	#0  default_idle () at arch/x86/kernel/process.c:743
+	#1  0xffffffff81e94d34 in default_idle_call () at kernel/sched/idle.c:97
+	#2  0xffffffff810d746d in cpuidle_idle_call () at kernel/sched/idle.c:170
+	#3  do_idle () at kernel/sched/idle.c:312
+	#4  0xffffffff810d76a4 in cpu_startup_entry (state=state@entry=CPUHP_ONLINE)
+	    at kernel/sched/idle.c:410
+	#5  0xffffffff81e95417 in rest_init () at init/main.c:730
+	#6  0xffffffff8329adf2 in start_kernel () at init/main.c:1067
+	#7  0xffffffff832a5038 in x86_64_start_reservations (
+	    real_mode_data=real_mode_data@entry=0x13d50 <exception_stacks+32080> <error: Cannot access memory at address 0x13d50>) at arch/x86/kernel/head64.c:555
+	#8  0xffffffff832a513c in x86_64_start_kernel (
+	    real_mode_data=0x13d50 <exception_stacks+32080> <error: Cannot access memory at address 0x13d50>) at arch/x86/kernel/head64.c:536
+	#9  0xffffffff810001d2 in secondary_startup_64 ()
+	    at arch/x86/kernel/head_64.S:461
+	#10 0x0000000000000000 in ?? ()
+	(gdb) print jiffies
+	$1 = 4294676330
+	(gdb) print system_state
+	$2 = SYSTEM_RUNNING
+
+In other words, the system really has booted, and at least one CPU is
+happily idling in the idle loop.  And another CPU is (maybe not quite
+so happily) running rcutorture:
+
+	(gdb) thread 6
+	[Switching to thread 6 (Thread 1.6)]
+	#0  0xffffffff8111160b in rcu_torture_one_read (
+	    trsp=trsp@entry=0xffffc900004abe90, myid=myid@entry=4)
+	    at kernel/rcu/rcutorture.c:2003
+	2003            completed = cur_ops->get_gp_seq();
+	(gdb) bt
+	#0  0xffffffff8111160b in rcu_torture_one_read (
+	    trsp=trsp@entry=0xffffc900004abe90, myid=myid@entry=4)
+	    at kernel/rcu/rcutorture.c:2003
+	#1  0xffffffff81111bef in rcu_torture_reader (arg=0x4 <fixed_percpu_data+4>)
+	    at kernel/rcu/rcutorture.c:2097
+	#2  0xffffffff810af3e0 in kthread (_create=0xffff8880047aa480)
+	    at kernel/kthread.c:388
+	#3  0xffffffff8103af1f in ret_from_fork (prev=<optimized out>,
+	    regs=0xffffc900004abf58, fn=0xffffffff810af300 <kthread>,
+	    fn_arg=0xffff8880047aa480) at arch/x86/kernel/process.c:147
+	#4  0xffffffff8100247a in ret_from_fork_asm () at arch/x86/entry/entry_64.S:242
+	#5  0x0000000000000000 in ?? ()
+
+So the system really did boot and is running just fine.  It is just that
+there is no console output.  Details, details!
+
+Is there anything I can do to some combination of workqueues and printk
+to help debug this?  Or that I can do to anything else, as I am not
+feeling all that picky.  ;-)
+
+							Thanx, Paul
+
+[1] The dual-socket system is an 80-hardware-thread (20 cores per socket)
+    system with model name Intel(R) Xeon(R) Gold 6138 CPU @ 2.00GHz.
+    I get the same results when using either of these compilers:
+    gcc version 8.5.0 20210514 (Red Hat 8.5.0-21) (GCC)
+    gcc version 11.4.1 20230605 (Red Hat 11.4.1-2) (GCC)
+
+[2] My laptop is a 16-hardware-thread (8 cores) single-socket system with
+    model name "Intel(R) Core(TM) i9-10885H CPU @ 2.40GHz" and
+    gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04).
 
