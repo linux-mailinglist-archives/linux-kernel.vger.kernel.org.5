@@ -1,141 +1,96 @@
-Return-Path: <linux-kernel+bounces-49350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAD10846911
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:13:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA60D846914
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:14:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6218B243B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:13:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 619731F27468
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:14:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C5D917C64;
-	Fri,  2 Feb 2024 07:12:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="eypSXRLh"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C82417BCD;
-	Fri,  2 Feb 2024 07:12:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 584521775F;
+	Fri,  2 Feb 2024 07:14:18 +0000 (UTC)
+Received: from ssh247.corpemail.net (ssh247.corpemail.net [210.51.61.247])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A515018021;
+	Fri,  2 Feb 2024 07:14:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.51.61.247
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706857971; cv=none; b=VRCv9YtnO1/IuW+o+Y1hMBVI6jOzQmsZHK0Uu0erQAn2gNiuwfUTY5lH9Grgm0l6SCiO1wPbyzIXJvaL3hXpoxMsDrb7j7KDnkukywsVJU7XxB2NzqfufZB9LrIjUqYBpIvV+3keOzDoSC4NaRuv/JtZnAdwqB42hpeGuOrdyAs=
+	t=1706858057; cv=none; b=gPi7wrUQn221RsfDjGlE+5LN2rvcdlvwh9pGQ+XMR2q3Gro0GCvL24bIw+I3ckh8O0nVd/uKw0gwPg2wf6lyCj87z3W4gD93wn/4eVZ5qKxz6RYxHScTFJLjoANVAFHmI254KHhFg1Z0h6mSxB1iCy5lp+Qn9E0rJ5i8tLCba9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706857971; c=relaxed/simple;
-	bh=OXJcTTtmB7mC8LGM63buUTanubcADvLhLibsbVoC900=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=UzQs8Z9oZSfTsD2MfU2+FWpfR+krN5vECbI/Z6lIhUqQD0NQIA0nAwciEA1AYthJ3ecY2t0NEN5znPynUebAWwA3h7BVne6sLbjAho7HsOIqKUF4GVZ4Iph1Qmxi1LqXgru0U5pqrjEIqcd3R0Vgtfncxhv+s6s2YJ7L0q22j0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=eypSXRLh; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 0B26020B2000;
-	Thu,  1 Feb 2024 23:12:50 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0B26020B2000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1706857970;
-	bh=R5u/o9X7wtbTC+FTLZo+7zWFnW6hVfTvEu5yxIcwaUM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=eypSXRLhHoOO3GKUNF+boHveRs81hoSKCuhIQoKJGEbt3UQIJH7fUL0nwBMhxkfx+
-	 5ByylJbQcVKI1ZB6XWu8YEKVpU3Z13sg/lFKf7Mcnxh/kwGIEk104ARK9QPh69Hm9x
-	 FEAU0H3Elx7GeZdWrvSjtKRccUdcvIO7yfhfAlRY=
-From: Saurabh Sengar <ssengar@linux.microsoft.com>
-To: kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com,
-	dwmw@amazon.co.uk,
-	peterz@infradead.org,
-	linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: ssengar@microsoft.com
-Subject: [PATCH v2] x86/hyperv: Use per cpu initial stack for vtl context
-Date: Thu,  1 Feb 2024 23:12:37 -0800
-Message-Id: <1706857957-13857-1-git-send-email-ssengar@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1706858057; c=relaxed/simple;
+	bh=uaMC5DdvRw4UG3agCRC/d9ndStoUMBwWCSOYLgyxsvU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Dc3u+YwJwJWKfLzLt1oJZ5sxG3UbAsn1Rwc4ptEbMFgDsfJP0IyjDV3elnDpBYkaZuVZ2o79JAqPOEThoV5+WCGhwEhkILqpgIGsRlHm8OwhT+bO1OzngUvd14wHBcGvYRsIqkrWQzcWX0aXWwpyW/V0dgOYWuAa/v9bgGxsWFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inspur.com; spf=pass smtp.mailfrom=inspur.com; arc=none smtp.client-ip=210.51.61.247
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inspur.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inspur.com
+Received: from ssh247.corpemail.net
+        by ssh247.corpemail.net ((D)) with ASMTP (SSL) id YZQ00012;
+        Fri, 02 Feb 2024 15:14:12 +0800
+Received: from localhost.localdomain.com (10.73.45.222) by
+ jtjnmail201605.home.langchao.com (10.100.2.5) with Microsoft SMTP Server id
+ 15.1.2507.34; Fri, 2 Feb 2024 15:14:11 +0800
+From: Bo Liu <liubo03@inspur.com>
+To: <jdelvare@suse.com>, <linux@roeck-us.net>
+CC: <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Bo Liu
+	<liubo03@inspur.com>
+Subject: [PATCH] hwmon: (adt7x10) convert to use maple tree register cache
+Date: Fri, 2 Feb 2024 02:13:55 -0500
+Message-ID: <20240202071355.40666-1-liubo03@inspur.com>
+X-Mailer: git-send-email 2.18.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain
+tUid: 2024202151412078439a468ebc70c40b5bd3f283a6154
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
 
-Currently, the secondary CPUs in Hyper-V VTL context lack support for
-parallel startup. Therefore, relying on the single initial_stack fetched
-from the current task structure suffices for all vCPUs.
+The maple tree register cache is based on a much more modern data structure
+than the rbtree cache and makes optimisation choices which are probably
+more appropriate for modern systems than those made by the rbtree cache.
 
-However, common initial_stack risks stack corruption when parallel startup
-is enabled. In order to facilitate parallel startup, use the initial_stack
-from the per CPU idle thread instead of the current task.
-
-Fixes: 18415f33e2ac ("cpu/hotplug: Allow "parallel" bringup up to CPUHP_BP_KICK_AP_STATE")
-Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+Signed-off-by: Bo Liu <liubo03@inspur.com>
 ---
- arch/x86/hyperv/hv_vtl.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ drivers/hwmon/adt7310.c | 2 +-
+ drivers/hwmon/adt7410.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/hyperv/hv_vtl.c b/arch/x86/hyperv/hv_vtl.c
-index 96e6c51515f5..b0ab724def17 100644
---- a/arch/x86/hyperv/hv_vtl.c
-+++ b/arch/x86/hyperv/hv_vtl.c
-@@ -12,6 +12,7 @@
- #include <asm/i8259.h>
- #include <asm/mshyperv.h>
- #include <asm/realmode.h>
-+#include <../kernel/smpboot.h>
- 
- extern struct boot_params boot_params;
- static struct real_mode_header hv_vtl_real_mode_header;
-@@ -57,7 +58,7 @@ static void hv_vtl_ap_entry(void)
- 	((secondary_startup_64_fn)secondary_startup_64)(&boot_params, &boot_params);
- }
- 
--static int hv_vtl_bringup_vcpu(u32 target_vp_index, u64 eip_ignored)
-+static int hv_vtl_bringup_vcpu(u32 target_vp_index, int cpu, u64 eip_ignored)
- {
- 	u64 status;
- 	int ret = 0;
-@@ -71,7 +72,8 @@ static int hv_vtl_bringup_vcpu(u32 target_vp_index, u64 eip_ignored)
- 	struct ldttss_desc *ldt;
- 	struct desc_struct *gdt;
- 
--	u64 rsp = current->thread.sp;
-+	struct task_struct *idle = idle_thread_get(cpu);
-+	u64 rsp = (unsigned long)idle->thread.sp;
- 	u64 rip = (u64)&hv_vtl_ap_entry;
- 
- 	native_store_gdt(&gdt_ptr);
-@@ -198,7 +200,15 @@ static int hv_vtl_apicid_to_vp_id(u32 apic_id)
- 
- static int hv_vtl_wakeup_secondary_cpu(u32 apicid, unsigned long start_eip)
- {
--	int vp_id;
-+	int vp_id, cpu;
-+
-+	/* Find the logical CPU for the APIC ID */
-+	for_each_present_cpu(cpu) {
-+		if (arch_match_cpu_phys_id(cpu, apicid))
-+			break;
-+	}
-+	if (cpu >= nr_cpu_ids)
-+		return -EINVAL;
- 
- 	pr_debug("Bringing up CPU with APIC ID %d in VTL2...\n", apicid);
- 	vp_id = hv_vtl_apicid_to_vp_id(apicid);
-@@ -212,7 +222,7 @@ static int hv_vtl_wakeup_secondary_cpu(u32 apicid, unsigned long start_eip)
- 		return -EINVAL;
- 	}
- 
--	return hv_vtl_bringup_vcpu(vp_id, start_eip);
-+	return hv_vtl_bringup_vcpu(vp_id, cpu, start_eip);
- }
- 
- int __init hv_vtl_early_init(void)
+diff --git a/drivers/hwmon/adt7310.c b/drivers/hwmon/adt7310.c
+index 067865f4887a..25281739aa3b 100644
+--- a/drivers/hwmon/adt7310.c
++++ b/drivers/hwmon/adt7310.c
+@@ -124,7 +124,7 @@ static int adt7310_reg_write(void *context, unsigned int reg, unsigned int val)
+ static const struct regmap_config adt7310_regmap_config = {
+ 	.reg_bits = 8,
+ 	.val_bits = 16,
+-	.cache_type = REGCACHE_RBTREE,
++	.cache_type = REGCACHE_MAPLE,
+ 	.volatile_reg = adt7310_regmap_is_volatile,
+ 	.reg_read = adt7310_reg_read,
+ 	.reg_write = adt7310_reg_write,
+diff --git a/drivers/hwmon/adt7410.c b/drivers/hwmon/adt7410.c
+index fd214d9b3a89..d15f64d4b6e7 100644
+--- a/drivers/hwmon/adt7410.c
++++ b/drivers/hwmon/adt7410.c
+@@ -69,7 +69,7 @@ static const struct regmap_config adt7410_regmap_config = {
+ 	.reg_bits = 8,
+ 	.val_bits = 16,
+ 	.max_register = ADT7X10_ID,
+-	.cache_type = REGCACHE_RBTREE,
++	.cache_type = REGCACHE_MAPLE,
+ 	.volatile_reg = adt7410_regmap_is_volatile,
+ 	.reg_read = adt7410_reg_read,
+ 	.reg_write = adt7410_reg_write,
 -- 
-2.34.1
+2.18.2
 
 
