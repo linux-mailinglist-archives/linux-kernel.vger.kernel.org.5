@@ -1,109 +1,147 @@
-Return-Path: <linux-kernel+bounces-50410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15FCE8478A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:56:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57E28847892
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:55:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E0271C23CDE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:56:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1385028A2A9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:55:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EDE315044B;
-	Fri,  2 Feb 2024 18:41:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDA0014F16A;
+	Fri,  2 Feb 2024 18:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cCat88zz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="s5XK9qvy"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DD5114F9F8;
-	Fri,  2 Feb 2024 18:41:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77DFA14E9B1
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 18:41:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706899299; cv=none; b=Owinvlo18vTQIJOCJNw4lS0IiS2rVsJtBwjpKKc2NDDxVJ00fgK+kH0CloPf1jmSdN52VLEHQVnDFnQoK59C45I9CaJ66qA13yzTVynm8p709DnIoJgtdTy4SIo6nMCoOWXOsX4uIvQ6FOTFv0ArmX/eM1PAh9DwaWRRzEcnKzY=
+	t=1706899286; cv=none; b=RdCBcuRrK43sKbf3gIWObNFGd2Jsn3EkJJ/HL25i//70xIdcL3rtzpwRn5gwqS6ObZRSQqcGc8yRRvi+ZsFf/rxItuXMvpy6HfZXzNOYmQxqk+teiFAXp52HnvEFElynP3+Diw6DVl6FMVPbAr+pjP0Mv0TohJQYFCQgBi7dP9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706899299; c=relaxed/simple;
-	bh=6BtX4sPr7on3EyLgivNTvKhnk2B/xsdLcflX7xhu3/k=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qkYib5wJ/zC0YrFaaYlJC4zxuaCy47rMdzRIgY90vHPX4+ipC09BtIsuKkr0bLqwlV7HkXGY7UHbrhzdnkxbUPXerQwHGWNhPvFD5WQB6c1IqD3NA7Cs2z/laXsfYxOgO19PEqN3oOJ0jQlGP86Gr/YsUlrIUe3Hcw3ILbhMgZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cCat88zz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E22FC433F1;
-	Fri,  2 Feb 2024 18:41:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706899299;
-	bh=6BtX4sPr7on3EyLgivNTvKhnk2B/xsdLcflX7xhu3/k=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cCat88zz4d+Ud37+OkQndOtDZhWyvdugVne/xecWKlQ/4OGeH4SbHphsgIcyUtY8Q
-	 GyZGC6FGR1WVQWUh+/aohw1njVxpvzspZnYW7arL72rZCkv5IxK8wWLTjRbgbepK44
-	 ucciGt3d736ZFp03sCwlQDsSegVq1x+dyupWMqQw+Ak79By7lGCKQQOfoTgWIOZxZ1
-	 ho5glhND8YHeh88Q+IaD6ZZHa7wNLjHVy4I+YIcQlGB7Tm1acd261SFgHPKnOSAjC2
-	 NMM58E8YYkPD7T6v7f1rMOwdwTPVRrXK081pRshw6dQ6K7oVrJVjWnrNnl5s2whoTS
-	 +clOjnBvGu0Qg==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Fullway Wang <fullwaywang@outlook.com>,
-	Helge Deller <deller@gmx.de>,
-	Sasha Levin <sashal@kernel.org>,
-	tzimmermann@suse.de,
-	sam@ravnborg.org,
-	javierm@redhat.com,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.15 04/11] fbdev: sis: Error out if pixclock equals zero
-Date: Fri,  2 Feb 2024 13:41:18 -0500
-Message-ID: <20240202184130.541736-4-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240202184130.541736-1-sashal@kernel.org>
-References: <20240202184130.541736-1-sashal@kernel.org>
+	s=arc-20240116; t=1706899286; c=relaxed/simple;
+	bh=HnwgYANLMXSW1DzPAZPPhrW8OspT0pU7wCK0oKbbwlM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LQgfr9C+EVR/yFSpdflKxol/Cv2NwUXwkbtvixxSMDng79O6J7540XN6kNZk9/5UL/4LclLkBDsGysDR4DN3XE9pgEZCtlj9gsP+41DxT6X5TgFQ5UlLzis14x8da6DBVaSx79izzyM5DN8My32sJoyIp4I5sENwEbUwwCmp+ug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=s5XK9qvy; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d751bc0c15so20868705ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 10:41:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706899284; x=1707504084; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RN5ILJgfYC5Krqk3IcaE4UZm9MGXLWaA34ihsM5Im/Q=;
+        b=s5XK9qvynqyaxDGma7tlhIQGYcqr+UifRNhsXSLW5j5tg5rG7wv9096OJaj0G16XSY
+         shsh6M/nEL5pRKBz7X5HSXNYdPyt5K0ZYtgnhM4c+FZQ8g0vtc+9YH0maWPit3xVzc9i
+         bhq6TkAT7EstkG553LeB271fwdcQfaN2ml7wH2tDwoSLR6f9NBLw5YbTNI110f5dsOwD
+         UXiLrSICgxUxe8dOAiuQ+CzBnX/RlPLDT684bVCWv9Jt+0GEs/DUvJvy3dsNKCMimc9u
+         RHYOdcrmlDwLzqjYRJA2hJp4cJxhTqdZZtWpnezklx2ABfhCUSKlgWeJOiLLsVb+vN3J
+         hFzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706899284; x=1707504084;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RN5ILJgfYC5Krqk3IcaE4UZm9MGXLWaA34ihsM5Im/Q=;
+        b=t/vvVOhdr1zCIGX5QsmEg1d1povs9QsvLFWuP1IKKE1DfYvUqZTGusj+2b2AHmMoaL
+         nkFjrACONHZ9DKNcyteU6Jb+4jhgNaZn2K2V3wGMfkAdnwsohEu0SO86XJ2dYpSh5iUa
+         z9FP6k9LQ3mWPIVMFy29Cvpud/qO+sT4r3SaEtrXIHVP/qG3l9AJEPgRA4vIqJn0oZPc
+         TerDk/oxjtzRUCRJj5UuMb5UdnR1tt63Wz+tsey1mHvY1vod6sT35b74rIbW4Oopz8vP
+         dE4LVpBNISCmlS49LPtg0WPzkTNeHJGuQIS3FLIZg1PbTvjTFj8wqXPAL6+TOGCjbf2s
+         EEoA==
+X-Gm-Message-State: AOJu0Yx1Fqhk2ykB1y3V/wy5wfKxkaqU0zFiC5ir+2p3F9hj2FjwTHPi
+	WGCB1NsiNiujS0KO8yHfzejwoVz5SNnEMANh4zHs0TrCKy21mQ9zJY4w0v/pz8cdg/eBcKoy4Kr
+	i
+X-Google-Smtp-Source: AGHT+IHI5+6GlfKqM/eae+kgC9KkWpCXw9/h0VW61qBwkA94b7R7Eqhzy6DQXTdDMRIc6K3dL9c31Q==
+X-Received: by 2002:a17:902:f68a:b0:1d8:fb17:a1f2 with SMTP id l10-20020a170902f68a00b001d8fb17a1f2mr12586111plg.34.1706899283798;
+        Fri, 02 Feb 2024 10:41:23 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUVnzEB2v7TbbKqpsgt/c7PICyiD/6Uwyu7EeUzAU9R5HwoFu9fPYvE5IW2uIB8M0v0SEuFwksh87A25N1krBxkWlT9zzLQD7tiLE0ZE976/bkLAUbFdl/0tprp4Pt2UF1lR+H9syCgOmtkFUNw2iF4AHjeles10LJMnFQnAkbAa8xbpQ/Q1BTzOC/Bnx35JHOiNS+liqYwF2w3FLEHpUZbDK4j1RbQJeiSIVIS/QRZUFBnOz3Wv+GP4OcI1byvNM8y5R1Ck3BpP1uBs8ElGgi6bCjlWfuXMAoDdxzgKECoGJ/jv2mFd6JmoQHRuiwEyyFeo7NjhjGzjJOH+4tkUPhBS4tNgHODfZ2s7SDlRiyMtrTCFm/mj0ROAa19sKf1DOLtW/zuiCGrwXXBqhQneTNyY7W6fd7n9qW84P9T2vngmuXvkGFTep469o0zyWuwBPrMJI7dU+cJ25JTGKBc59q/ohjeqayAzp3n+t+Xci91MT0mCIDrVDX1GFOf9/z/w7cf+zecrUq+b8IkqBhoFg==
+Received: from p14s ([2604:3d09:148c:c800:9462:f236:7267:e14e])
+        by smtp.gmail.com with ESMTPSA id jh21-20020a170903329500b001d936a7bd46sm1902639plb.271.2024.02.02.10.41.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 10:41:22 -0800 (PST)
+Date: Fri, 2 Feb 2024 11:41:19 -0700
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
+To: Andrew Davis <afd@ti.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Patrice Chotard <patrice.chotard@foss.st.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	linux-remoteproc@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 9/9] remoteproc: stm32: Use devm_rproc_alloc() helper
+Message-ID: <Zb03T2Ti2v70NUMu@p14s>
+References: <20240123184632.725054-1-afd@ti.com>
+ <20240123184632.725054-9-afd@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.148
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240123184632.725054-9-afd@ti.com>
 
-From: Fullway Wang <fullwaywang@outlook.com>
+On Tue, Jan 23, 2024 at 12:46:32PM -0600, Andrew Davis wrote:
+> Use the device lifecycle managed allocation function. This helps prevent
+> mistakes like freeing out of order in cleanup functions and forgetting to
+> free on error paths.
+> 
+> Signed-off-by: Andrew Davis <afd@ti.com>
+> ---
+>  drivers/remoteproc/stm32_rproc.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+> index 4f469f0bcf8b2..fed0866de1819 100644
+> --- a/drivers/remoteproc/stm32_rproc.c
+> +++ b/drivers/remoteproc/stm32_rproc.c
+> @@ -843,7 +843,7 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		return ret;
+>  
+> -	rproc = rproc_alloc(dev, np->name, &st_rproc_ops, NULL, sizeof(*ddata));
+> +	rproc = devm_rproc_alloc(dev, np->name, &st_rproc_ops, NULL, sizeof(*ddata));
+>  	if (!rproc)
+>  		return -ENOMEM;
+>  
+> @@ -897,7 +897,6 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+>  		dev_pm_clear_wake_irq(dev);
+>  		device_init_wakeup(dev, false);
+>  	}
+> -	rproc_free(rproc);
+>  	return ret;
+>  }
+>  
+> @@ -918,7 +917,6 @@ static void stm32_rproc_remove(struct platform_device *pdev)
+>  		dev_pm_clear_wake_irq(dev);
+>  		device_init_wakeup(dev, false);
+>  	}
+> -	rproc_free(rproc);
+>  }
 
-[ Upstream commit e421946be7d9bf545147bea8419ef8239cb7ca52 ]
+I have applied patches 1, 2, 8 and 9 of this set.  Bjorn handles the QCOM
+peripherals and will take care of the remaining ones.
 
-The userspace program could pass any values to the driver through
-ioctl() interface. If the driver doesn't check the value of pixclock,
-it may cause divide-by-zero error.
+Thanks,
+Mathieu
 
-In sisfb_check_var(), var->pixclock is used as a divisor to caculate
-drate before it is checked against zero. Fix this by checking it
-at the beginning.
-
-This is similar to CVE-2022-3061 in i740fb which was fixed by
-commit 15cf0b8.
-
-Signed-off-by: Fullway Wang <fullwaywang@outlook.com>
-Signed-off-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/video/fbdev/sis/sis_main.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/video/fbdev/sis/sis_main.c b/drivers/video/fbdev/sis/sis_main.c
-index 266a5582f94d..c6e21ba00895 100644
---- a/drivers/video/fbdev/sis/sis_main.c
-+++ b/drivers/video/fbdev/sis/sis_main.c
-@@ -1474,6 +1474,8 @@ sisfb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
- 
- 	vtotal = var->upper_margin + var->lower_margin + var->vsync_len;
- 
-+	if (!var->pixclock)
-+		return -EINVAL;
- 	pixclock = var->pixclock;
- 
- 	if((var->vmode & FB_VMODE_MASK) == FB_VMODE_NONINTERLACED) {
--- 
-2.43.0
-
+>  
+>  static int stm32_rproc_suspend(struct device *dev)
+> -- 
+> 2.39.2
+> 
 
