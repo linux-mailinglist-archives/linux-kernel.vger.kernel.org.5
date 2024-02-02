@@ -1,124 +1,251 @@
-Return-Path: <linux-kernel+bounces-50104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F4D5847447
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:11:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D47B984743F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:11:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE966287EFB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:11:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BBEB1F2D18C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:11:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97B9914A095;
-	Fri,  2 Feb 2024 16:08:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7356A148FE0;
+	Fri,  2 Feb 2024 16:07:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="J9osmUOF"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="WsZhLkJX"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9466F1474A0
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 16:08:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E9391487F9
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 16:07:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706890116; cv=none; b=eJ4NrKBPH90EyuXHKz5pdbctOk1Q+yJnk0jj3ajqfNdkqKvHxrb9PvV9omRaIGDpQwGa0y06DQ1CeG16aQi3Prcud/uyK+qeOAdOQcSv+TRY8znWGUpDRC51LGWlO/i7G1+YZLLK7Qah0hGWzvhvn458T69x7Kc3RheH/Mkoal0=
+	t=1706890064; cv=none; b=D8ENW/y7obaa/iKIr/E0IGL8aFiTXhmjShk4L8QmMEe0+uNMiNHhoQEP9sHGukc1RrN62LiWcXEMIT41mPDjhxfDsNJFqhi5hYpmGuxKGp7MQY3rFizb9j0ByYxKSXlokkKPmNmyAAis3Mpol6/rSpodYh1k5O35NzxwIN+EHf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706890116; c=relaxed/simple;
-	bh=1JYwTqCJ4uEoMXlTYqJt81XgNj9XNyCI/UtWV9zdacU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t0K0plzQySej6PFQmlQARCMhnqn9gOyaD/eqidi3TItEBqGYzOI9/Nh4Tl3u84Rn7g2R4t6cni5koUhfkIQFIDTf4MbKswcMa84zlzdZRH01zFBvJ90Oj+qof6NDH0TMnwsImF7XyWyHE9Y0b46szBtniW+JMNTVWyeX4owgDLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=J9osmUOF; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706890110;
+	s=arc-20240116; t=1706890064; c=relaxed/simple;
+	bh=A+3EyYofSc6kXr8hjf253jMxqdG64P1Y+Y7oC43yiIk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=OzFOKidkQTUWQLQn6fLstsjiNhcgRwi++aEshuE1ZY6pL4hGArAs1MV5jSiFaKrnyts3iXogZZCFviN8rzXW3vbPSUMtd///4k73tvNrFSfrJkjvMNeamItcAyQAAHjlk7ktLZbcQpswnv1poO4bQhiKU4eFnkwFgeF3JQtkrOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=WsZhLkJX; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E9E481C0007;
+	Fri,  2 Feb 2024 16:07:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706890059;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mKooBkJfrlPFWZGh8ggsnfNNsYh5keDnQCkz6nhWuPk=;
-	b=J9osmUOFTpl7/U5jMOtzfpZ4gmQW794k1VnEZ5JSex7fNJnZpSFvY5v7rMUNyroMdaVNbO
-	Mnhlm6tHxaAZofVh4nauVwl4InfZ11hlFbb2CT6MmL/SUeJdTDtK48j39/W6o+XrBtCUcI
-	Orx/l2VksYAuZgoHy0kE7BdV35UYymY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-513-uO0_bLxiPcyeNoLRLdLUIw-1; Fri, 02 Feb 2024 11:08:27 -0500
-X-MC-Unique: uO0_bLxiPcyeNoLRLdLUIw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1133988D01E;
-	Fri,  2 Feb 2024 16:08:27 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.76])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 32E992166B31;
-	Fri,  2 Feb 2024 16:08:25 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Fri,  2 Feb 2024 17:07:11 +0100 (CET)
-Date: Fri, 2 Feb 2024 17:07:05 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Andy Lutomirski <luto@amacapital.net>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] pidfd_poll: report POLLHUP when pid_task() == NULL
-Message-ID: <20240202160704.GA5850@redhat.com>
-References: <20240202131147.GA25988@redhat.com>
- <20240202131226.GA26018@redhat.com>
- <20240202-arbeit-fruchtig-26880564a21a@brauner>
+	bh=Weks7RHR+sDFkVJXBmvPTUMZqebWWfxJm3w8ueDMk3U=;
+	b=WsZhLkJX3vM9eQMZ1GukgFiUom/09EVzNiqk3KL+QzdjdrLrXimwRw/s37xRgMYJYX1gI9
+	dZMX3zOblbYq0GKGxg2OB8G2is7xlDwbQ0bcxxu4vXh7ub/eCeprtxpZHeUFFWG5AYNckW
+	ZiYaCUmKxdauSz3v7JTsnBUxOcTzq6wPwIV+D1Lp6EVXOUmILgu3COUzA5VWMtzPAT8tj2
+	TGq8vilM9QZpTDpf35HGRcj8r1XGyzf/uxyE7lSawtYw+xVK0Yz3DcrTkTmS7ghVDEmz5g
+	2YJxzDZ0hsjhhF/cKg3wYy2OTbEvnhOBt1086/TGASZCS3uFaqFd/boCscFJUw==
+Date: Fri, 2 Feb 2024 17:07:34 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
+Cc: Maxime Ripard <mripard@kernel.org>, Louis Chauvet
+ <louis.chauvet@bootlin.com>, Rodrigo Siqueira
+ <rodrigosiqueiramelo@gmail.com>, Melissa Wen <melissa.srw@gmail.com>,
+ =?UTF-8?B?TWHDrXJh?= Canal <mairacanal@riseup.net>, Haneen Mohammed
+ <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
+ <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ marcheu@google.com, seanpaul@google.com, nicolejadeyee@google.com,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ thomas.petazzoni@bootlin.com, Arthur Grillo <arthurgrillo@riseup.net>
+Subject: Re: [PATCH 2/2] drm/vkms: Use a simpler composition function
+Message-ID: <20240202170734.3176dfe4@xps-13>
+In-Reply-To: <20240202174913.789a9db9@eldfell>
+References: <20240201-yuv-v1-0-3ca376f27632@bootlin.com>
+	<20240201-yuv-v1-2-3ca376f27632@bootlin.com>
+	<20240202105522.43128e19@eldfell>
+	<20240202102601.70b6d49c@xps-13>
+	<3nofkwzgnf4yva2wfogdbii47ohpi2wm5vp6aijtg3emxyoowt@twyreqz7ai3g>
+	<20240202131322.5471e184@xps-13>
+	<20240202174913.789a9db9@eldfell>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240202-arbeit-fruchtig-26880564a21a@brauner>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-On 02/02, Christian Brauner wrote:
->
-> > TODO: change do_notify_pidfd() to use the keyed wakeups.
->
-> How does the following appended patch look?
+Hi Pekka,
 
-No, no.
+pekka.paalanen@haloniitty.fi wrote on Fri, 2 Feb 2024 17:49:13 +0200:
 
-I think we need a simpler patch. I was going to send it as 4/4, but I'd
-like to think more, _perhaps_ we can also discriminate the PIDFD_THREAD
-and non-PIDFD_THREAD waiters. I'll try to make the patch(es) tomorrow or
-at least provided more info.
+> On Fri, 2 Feb 2024 13:13:22 +0100
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>=20
+> > Hello Maxime,
+> >=20
+> > + Arthur
+> >=20
+> > mripard@kernel.org wrote on Fri, 2 Feb 2024 10:53:37 +0100:
+> >  =20
+> > > Hi Miquel,
+> > >=20
+> > > On Fri, Feb 02, 2024 at 10:26:01AM +0100, Miquel Raynal wrote:   =20
+> > > > pekka.paalanen@haloniitty.fi wrote on Fri, 2 Feb 2024 10:55:22 +020=
+0:
+> > > >      =20
+> > > > > On Thu, 01 Feb 2024 18:31:32 +0100
+> > > > > Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+> > > > >      =20
+> > > > > > Change the composition algorithm to iterate over pixels instead=
+ of lines.
+> > > > > > It allows a simpler management of rotation and pixel access for=
+ complex formats.
+> > > > > >=20
+> > > > > > This new algorithm allows read_pixel function to have access to=
+ x/y
+> > > > > > coordinates and make it possible to read the correct thing in a=
+ block
+> > > > > > when block_w and block_h are not 1.
+> > > > > > The iteration pixel-by-pixel in the same method also allows a s=
+impler
+> > > > > > management of rotation with drm_rect_* helpers. This way it's n=
+ot needed
+> > > > > > anymore to have misterious switch-case distributed in multiple =
+places.       =20
+> > > > >=20
+> > > > > Hi,
+> > > > >=20
+> > > > > there was a very good reason to write this code using lines:
+> > > > > performance. Before lines, it was indeed operating on individual =
+pixels.
+> > > > >=20
+> > > > > Please, include performance measurements before and after this se=
+ries
+> > > > > to quantify the impact on the previously already supported pixel
+> > > > > formats, particularly the 32-bit-per-pixel RGB variants.
+> > > > >=20
+> > > > > VKMS will be used more and more in CI for userspace projects, and
+> > > > > performance actually matters there.
+> > > > >=20
+> > > > > I'm worrying that this performance degradation here is significan=
+t. I
+> > > > > believe it is possible to keep blending with lines, if you add ne=
+w line
+> > > > > getters for reading from rotated, sub-sampled etc. images. That w=
+ay you
+> > > > > don't have to regress the most common formats' performance.     =
+=20
+> > > >=20
+> > > > While I understand performance is important and should be taken into
+> > > > account seriously, I cannot understand how broken testing could be
+> > > > considered better. Fast but inaccurate will always be significantly
+> > > > less attractive to my eyes.     =20
+> > >=20
+> > > AFAIK, neither the cover letter nor the commit log claimed it was fix=
+ing
+> > > something broken, just that it was "better" (according to what
+> > > criteria?).   =20
+> >=20
+> > Better is probably too vague and I agree the "fixing" part is not
+> > clearly explained in the commit log. The cover-letter however states:
+> >  =20
+> > > Patch 2/2: This patch is more complex. My main target was to solve is=
+sues
+> > > I found in [1], but as it was very complex to do it "in place", I cho=
+ose
+> > > to rework the composition function.   =20
+> > ... =20
+> > > [1]: https://lore.kernel.org/dri-devel/20240110-vkms-yuv-v2-0-952fcaa=
+5a193@riseup.net/   =20
+> >=20
+> > If you follow this link you will find all the feedback and especially
+> > the "broken" parts. Just to be clear, writing bugs is totally expected
+> > and review/testing is supposed to help on this regard. I am not blaming
+> > the author in any way, just focusing on getting this code in a more
+> > readable shape and hopefully reinforce the testing procedure.
+> >  =20
+> > > If something is truly broken, it must be stated what exactly is so we
+> > > can all come up with a solution that will satisfy everyone.   =20
+> >=20
+> > Maybe going through the series pointed above will give more context
+> > but AFAIU: the YUV composition is not totally right (and the tests used
+> > to validate it need to be more complex as well in order to fail).
+> >=20
+> > Here is a proposal.
+> >=20
+> > Today's RGB implementation is only optimized in the line-by-line case
+> > when there is no rotation. The logic is bit convoluted and may possibly
+> > be slightly clarified with a per-format read_line() implementation,
+> > at a very light performance cost. Such an improvement would definitely
+> > benefit to the clarity of the code, especially when transformations
+> > (especially the rotations) come into play because they would be clearly
+> > handled differently instead of being "hidden" in the optimized logic.
+> > Performances would not change much as this path is not optimized today
+> > anyway (the pixel-oriented logic is already used in the rotation case).
+> >=20
+> > Arthur's YUV implementation is indeed well optimized but the added
+> > complexity probably lead to small mistakes in the logic. The
+> > per-format read_line() implementation mentioned above could be
+> > extended to the YUV format as well, which would leverage Arthur's
+> > proposal by re-using his optimized version. Louis will help on this
+> > regard. However, for more complex cases such as when there is a
+> > rotation, it will be easier (and not sub-optimized compared to the RGB
+> > case) to also fallback to a pixel-oriented processing.
+> >=20
+> > Would this approach make sense? =20
+>=20
+> Hi,
+>=20
+> I think it would, if I understand what you mean. Ever since I proposed
+> a line-by-line algorithm to improve the performance, I was thinking of
+> per-format read_line() functions that would be selected outside of any
+> loops. Extending that to support YUV is only natural. I can imagine
+> rotation complicates things, and I won't oppose that resulting in a
+> much heavier read_line() implementation used in those cases. They might
+> perhaps call the original read_line() implementations pixel-by-pixel or
+> plane-by-plane (i.e. YUV planes) per pixel. Chroma-siting complicates
+> things even further. That way one could compose any
+> rotation-format-siting combination by chaining function pointers.
 
-3 notes for now:
+I'll let Louis also validate but on my side I feel like I totally
+agree with your feedback.
 
-	1. we can't use wake_up_poll(), it passes nr_exclusive => 1
+> I haven't looked at VKMS in a long time, and I am disappointed to find
+> that vkms_compose_row() is calling plane->pixel_read() pixel-by-pixel.
+> The reading vfunc should be called with many pixels at a time when the
+> source FB layout allows it. The whole point of the line-based functions
+> was that they repeat the innermost loop in every function body to make
+> the per-pixel overhead as small as possible. The VKMS implementations
+> benchmarked before and after the original line-based algorithm showed
+> that calling a function pointer per-pixel is relatively very expensive.
+> Or maybe it was a switch-case.
 
-	2. exit_notify() should not pass EPOLLHUP to wake_up, we do
-	   not want to wake up the { .events = POLLHUP } waiters.
+Indeed, since your initial feedback Louis made a couple of comparisons
+and the time penalty is between +5% and +60% depending on the case,
+AFAIR.
 
-	3. we do not need to change __change_pid().
+> Sorry, I didn't realize the optimization had already been lost.
 
-	   Well, _perhaps_ it can/should use __wake_up_pollfree(), but
-	   I need to check if fs/select.c use "autoremove" or not.
+No problem, actually I also lost myself in my first answer as I
+initially thought the (mainline) RGB logic was also broken in edge
+cases, which it was not, only the YUV logic suffered from some
+limitations.
 
+> Btw. I'd suggest renaming vkms_compose_row() to vkms_fetch_row() since
+> it's not composing anything and the name mislead me.
 
-> -static __poll_t pidfd_poll(struct file *file, struct poll_table_struct *pts)
-> +static __poll_t pidfd_poll(struct file *file, poll_table *wait)
->  {
->  	struct pid *pid = file->private_data;
->  	bool thread = file->f_flags & PIDFD_THREAD;
->  	struct task_struct *task;
->  	__poll_t poll_flags = 0;
->  
-> -	poll_wait(file, &pid->wait_pidfd, pts);
-> +	poll_wait(file, &pid->wait_pidfd, wait);
+Makes sense.
 
-This is correct but only cosemtic and has nothing to do with what
-we discuss?
+> I think if you inspect the compositing code as of revision
+> 8356b97906503a02125c8d03c9b88a61ea46a05a you'll get a better feeling of
+> what it was supposed to be.
 
-Oleg.
+Excellent, thanks a lot!
 
+Miqu=C3=A8l
 
