@@ -1,317 +1,144 @@
-Return-Path: <linux-kernel+bounces-49642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AB3D846D54
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:06:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 266D6846D55
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:06:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40B8328CFC2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:06:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEB2D1F22C9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:06:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C34078B6B;
-	Fri,  2 Feb 2024 10:06:31 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA1A87868B;
-	Fri,  2 Feb 2024 10:06:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FC0177F3E;
+	Fri,  2 Feb 2024 10:06:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="h5nEVG65";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="pHj1cA59"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5E8877634
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 10:06:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706868390; cv=none; b=uPstxB8lfXc3WwrBeclQ0tUS+iVWGFcAYVFJeUMBi1UBseThTLt/vrejOLmRbbM4GViuHSZXAS/9ztpIMnMKdxHZT1SCPOdd8V/QAg4RHQWX/NWX12oPs3HLfTJVgwUISuu20Mw9QPFH7CxHqOH6Bh4PO+0mqhDEan1AgIh9RGY=
+	t=1706868412; cv=none; b=mK1o7k/m6UIGeEa5e0oregxKFDkEVA5lkxVruYGuErJ8Er/kA2EG8DnjdX02HBADLdGVWSxP+7TYsDcC/dQqRAQmK2NMxWSzC2Z0s99tHqd1gFOka6cxOw/oumAIo8CX+smfCosi3nQotwDjDHELJWtYqra21259DT0rBsCT9Cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706868390; c=relaxed/simple;
-	bh=3OVUz3fhmUZDE1K2CH+lg7SvfKOucbok5xE+bDS26N0=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=aeoi8x4DDVPJFMt7vGqI2/gohrur+LdLJGu4/f5mIPyn01tNIODK72q4qxZoXk6+odEJi4+ttfnnQynSOdSB5Vn/CA/GMICiSUKtCMfQFBMvAOCZIV5U4miyUmL5wch8uu2wOQezt4YMIgM6HaUBFq4dUtlqT6Rf3ph0Z1n0Hws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6840EDA7;
-	Fri,  2 Feb 2024 02:07:09 -0800 (PST)
-Received: from [10.57.9.194] (unknown [10.57.9.194])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 82D0D3F5A1;
-	Fri,  2 Feb 2024 02:06:24 -0800 (PST)
-Message-ID: <265086d1-8398-49f8-b873-36194c44505a@arm.com>
-Date: Fri, 2 Feb 2024 10:06:23 +0000
+	s=arc-20240116; t=1706868412; c=relaxed/simple;
+	bh=fuKoY4mbxj5tV35tFZocFtR5lXefrrau5IR3m3GDVrw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HrRT97s2ifeeug1mh6pyqGGqlcFPX8uKHEQMM5wFDDJgXwrERfKHFLd/tHz92NJ3PjjTvSlExe245S1Omk7KcjMO0dsi0qCUYvQHZ3kal1BIw3w1TB7buuFxg/WxalDX+bq+xpR+ydIfXIl53wsV8cJP2iQ+SEzVY4eQDZNyNhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=h5nEVG65; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=pHj1cA59; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E4AB2221BE;
+	Fri,  2 Feb 2024 10:06:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706868409; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Zp39qw0vyC5qpStWLyPfn976MpebyO4rKbzn6LwaTRk=;
+	b=h5nEVG650NBZwy9STqPacXwisn2rWSXL2wDfvdo8HrS1YKRIcdyZ9cSLRll6bnCTpkVQZR
+	+yXRNRR8uZMrzv0nq5fpArBU+G40D7h+Jnjc+yENDqOlBV3BG3mNjaiEnJE6A104GYWs2z
+	U9X5Sgo5qrKkck3IzeODEHmCjKa6mXk=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706868408; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Zp39qw0vyC5qpStWLyPfn976MpebyO4rKbzn6LwaTRk=;
+	b=pHj1cA59U4F6WUt07t/FI9xkJmJRhAMg8D2ulzUNVaaTiGpFgHTVxETPBcZ6sund0I3JWR
+	2eF0S/cUsHgayWfgH8tgtVEtwrgKmT3d4vauutZymMQF4z8xJnRGeGs00cx8oIKMt/hyeX
+	dB9FqQqqDkXW6IYeWYowlQCs5aHszS8=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C616213A58;
+	Fri,  2 Feb 2024 10:06:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id tgSPLri+vGXmWAAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Fri, 02 Feb 2024 10:06:48 +0000
+Date: Fri, 2 Feb 2024 11:06:40 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Lance Yang <ioworker0@gmail.com>
+Cc: akpm@linux-foundation.org, zokeefe@google.com, david@redhat.com,
+	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com,
+	minchan@kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] mm/khugepaged: skip copying lazyfree pages on
+ collapse
+Message-ID: <Zby-sHLDlmTRaUcd@tiehlicka>
+References: <20240201125226.28372-1-ioworker0@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 05/10] coresight-tpda: Add support to configure CMB
- element
-Content-Language: en-GB
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-To: Tao Zhang <quic_taozha@quicinc.com>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Konrad Dybcio <konradybcio@gmail.com>, Mike Leach <mike.leach@linaro.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: Jinlong Mao <quic_jinlmao@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, coresight@lists.linaro.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Tingwei Zhang <quic_tingweiz@quicinc.com>,
- Yuanfang Zhang <quic_yuanfang@quicinc.com>,
- Trilok Soni <quic_tsoni@quicinc.com>, Song Chai <quic_songchai@quicinc.com>,
- linux-arm-msm@vger.kernel.org, andersson@kernel.org
-References: <1706866364-19861-1-git-send-email-quic_taozha@quicinc.com>
- <1706866364-19861-6-git-send-email-quic_taozha@quicinc.com>
- <58e91497-1794-46d9-a935-fc23f327f32b@arm.com>
-In-Reply-To: <58e91497-1794-46d9-a935-fc23f327f32b@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201125226.28372-1-ioworker0@gmail.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=pHj1cA59
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.03 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-0.02)[51.99%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 FROM_HAS_DN(0.00)[];
+	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[linux-foundation.org,google.com,redhat.com,bytedance.com,gmail.com,kernel.org,kvack.org,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -3.03
+X-Rspamd-Queue-Id: E4AB2221BE
+X-Spam-Flag: NO
 
-On 02/02/2024 09:45, Suzuki K Poulose wrote:
-> On 02/02/2024 09:32, Tao Zhang wrote:
->> Read the CMB element size from the device tree. Set the register
->> bit that controls the CMB element size of the corresponding port.
->>
->> Reviewed-by: James Clark <james.clark@arm.com>
->> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
->> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
->> ---
->>   drivers/hwtracing/coresight/coresight-tpda.c | 125 +++++++++++--------
->>   drivers/hwtracing/coresight/coresight-tpda.h |   6 +
->>   2 files changed, 81 insertions(+), 50 deletions(-)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-tpda.c 
->> b/drivers/hwtracing/coresight/coresight-tpda.c
->> index 4ac954f4bc13..27d567f4c8bf 100644
->> --- a/drivers/hwtracing/coresight/coresight-tpda.c
->> +++ b/drivers/hwtracing/coresight/coresight-tpda.c
->> @@ -18,6 +18,7 @@
->>   #include "coresight-priv.h"
->>   #include "coresight-tpda.h"
->>   #include "coresight-trace-id.h"
->> +#include "coresight-tpdm.h"
->>   DEFINE_CORESIGHT_DEVLIST(tpda_devs, "tpda");
->> @@ -28,24 +29,59 @@ static bool coresight_device_is_tpdm(struct 
->> coresight_device *csdev)
->>               CORESIGHT_DEV_SUBTYPE_SOURCE_TPDM);
->>   }
->> +static void tpdm_clear_element_size(struct coresight_device *csdev)
+On Thu 01-02-24 20:52:26, Lance Yang wrote:
+> The collapsing behavior of khugepaged with pages
+> marked using MADV_FREE might cause confusion
+> among users.
 > 
-> I just noticed this anomaly. This is supposed to be :
-> 
-> tpda_clear_element_size() ? I can fix it up locally.
-> 
-> 
-> Suzuki
-> 
-> 
->> +{
->> +    struct tpda_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
->> +
->> +    drvdata->dsb_esize = 0;
->> +    drvdata->cmb_esize = 0;
->> +}
->> +
->> +static void tpda_set_element_size(struct tpda_drvdata *drvdata, u32 
->> *val)
->> +{
->> +    /* Clear all relevant fields */
->> +    *val &= ~(TPDA_Pn_CR_DSBSIZE | TPDA_Pn_CR_CMBSIZE);
->> +
->> +    if (drvdata->dsb_esize == 64)
->> +        *val |= TPDA_Pn_CR_DSBSIZE;
->> +    else if (drvdata->dsb_esize == 32)
->> +        *val &= ~TPDA_Pn_CR_DSBSIZE;
->> +
->> +    if (drvdata->cmb_esize == 64)
->> +        *val |= FIELD_PREP(TPDA_Pn_CR_CMBSIZE, 0x2);
->> +    else if (drvdata->cmb_esize == 32)
->> +        *val |= FIELD_PREP(TPDA_Pn_CR_CMBSIZE, 0x1);
->> +    else if (drvdata->cmb_esize == 8)
->> +        *val &= ~TPDA_Pn_CR_CMBSIZE;
->> +}
->> +
->>   /*
->> - * Read the DSB element size from the TPDM device
->> + * Read the element size from the TPDM device. One TPDM must have at 
->> least one of the
->> + * element size property.
->>    * Returns
->> - *    The dsb element size read from the devicetree if available.
->> - *    0 - Otherwise, with a warning once.
->> + *    0 - The element size property is read
->> + *    Others - Cannot read the property of the element size
->>    */
->> -static int tpdm_read_dsb_element_size(struct coresight_device *csdev)
->> +static int tpdm_read_element_size(struct tpda_drvdata *drvdata,
->> +                  struct coresight_device *csdev)
->>   {
->> -    int rc = 0;
->> -    u8 size = 0;
->> +    int rc = -EINVAL;
->> +    struct tpdm_drvdata *tpdm_data = dev_get_drvdata(csdev->dev.parent);
->> +
->> +    if (tpdm_has_dsb_dataset(tpdm_data)) {
->> +        rc = fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
->> +                "qcom,dsb-element-size", &drvdata->dsb_esize);
->> +    }
->> +    if (tpdm_has_cmb_dataset(tpdm_data)) {
->> +        rc = fwnode_property_read_u32(dev_fwnode(csdev->dev.parent),
->> +                "qcom,cmb-element-bits", &drvdata->cmb_esize);
->> +    }
->> -    rc = fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
->> -            "qcom,dsb-element-size", &size);
->>       if (rc)
->>           dev_warn_once(&csdev->dev,
->> -            "Failed to read TPDM DSB Element size: %d\n", rc);
->> +            "Failed to read TPDM Element size: %d\n", rc);
->> -    return size;
->> +    return rc;
->>   }
->>   /*
->> @@ -56,11 +92,12 @@ static int tpdm_read_dsb_element_size(struct 
->> coresight_device *csdev)
->>    * Parameter "inport" is used to pass in the input port number
->>    * of TPDA, and it is set to -1 in the recursize call.
->>    */
->> -static int tpda_get_element_size(struct coresight_device *csdev,
->> +static int tpda_get_element_size(struct tpda_drvdata *drvdata,
->> +                 struct coresight_device *csdev,
->>                    int inport)
->>   {
->> -    int dsb_size = -ENOENT;
->> -    int i, size;
->> +    int rc = 0;
->> +    int i;
->>       struct coresight_device *in;
->>       for (i = 0; i < csdev->pdata->nr_inconns; i++) {
->> @@ -69,30 +106,26 @@ static int tpda_get_element_size(struct 
->> coresight_device *csdev,
->>               continue;
->>           /* Ignore the paths that do not match port */
->> -        if (inport > 0 &&
->> +        if (inport >= 0 &&
->>               csdev->pdata->in_conns[i]->dest_port != inport)
->>               continue;
->>           if (coresight_device_is_tpdm(in)) {
->> -            size = tpdm_read_dsb_element_size(in);
->> +            if (drvdata->dsb_esize || drvdata->cmb_esize)
->> +                return -EEXIST;
->> +            rc = tpdm_read_element_size(drvdata, in);
->> +            if (rc)
->> +                return rc;
->>           } else {
->>               /* Recurse down the path */
->> -            size = tpda_get_element_size(in, -1);
->> -        }
->> -
->> -        if (size < 0)
->> -            return size;
->> -
->> -        if (dsb_size < 0) {
->> -            /* Found a size, save it. */
->> -            dsb_size = size;
->> -        } else {
->> -            /* Found duplicate TPDMs */
->> -            return -EEXIST;
->> +            rc = tpda_get_element_size(drvdata, in, -1);
->> +            if (rc)
->> +                return rc;
->>           }
->>       }
->> -    return dsb_size;
->> +
->> +    return rc;
->>   }
->>   /* Settings pre enabling port control register */
->> @@ -109,7 +142,7 @@ static void tpda_enable_pre_port(struct 
->> tpda_drvdata *drvdata)
->>   static int tpda_enable_port(struct tpda_drvdata *drvdata, int port)
->>   {
->>       u32 val;
->> -    int size;
->> +    int rc;
->>       val = readl_relaxed(drvdata->base + TPDA_Pn_CR(port));
->>       /*
->> @@ -117,29 +150,21 @@ static int tpda_enable_port(struct tpda_drvdata 
->> *drvdata, int port)
->>        * Set the bit to 0 if the size is 32
->>        * Set the bit to 1 if the size is 64
->>        */
+> For instance, allocate a 2MB chunk using mmap and
+> later release it by MADV_FREE. Khugepaged will not
+> collapse this chunk. From the user's perspective,
+> it treats lazyfree pages as pte_none. However,
+> for some pages marked as lazyfree with MADV_FREE,
+> khugepaged might collapse this chunk and copy
+> these pages to a new huge page. This inconsistency
+> in behavior could be confusing for users.
 
-The comment above is stale, you need to remove it. I noticed it
-after I applied the series for my build tests.
+Is that any more confusing than collapsing pte_none
+pages?
 
-Please could you respin the series with the two issues above fixed ?
-
-Suzuki
-
-
->> -    size = tpda_get_element_size(drvdata->csdev, port);
->> -    switch (size) {
->> -    case 32:
->> -        val &= ~TPDA_Pn_CR_DSBSIZE;
->> -        break;
->> -    case 64:
->> -        val |= TPDA_Pn_CR_DSBSIZE;
->> -        break;
->> -    case 0:
->> -        return -EEXIST;
->> -    case -EEXIST:
->> +    tpdm_clear_element_size(drvdata->csdev);
->> +    rc = tpda_get_element_size(drvdata, drvdata->csdev, port);
->> +    if (!rc && (drvdata->dsb_esize || drvdata->cmb_esize)) {
->> +        tpda_set_element_size(drvdata, &val);
->> +        /* Enable the port */
->> +        val |= TPDA_Pn_CR_ENA;
->> +        writel_relaxed(val, drvdata->base + TPDA_Pn_CR(port));
->> +    } else if (rc == -EEXIST)
->>           dev_warn_once(&drvdata->csdev->dev,
->> -            "Detected multiple TPDMs on port %d", -EEXIST);
->> -        return -EEXIST;
->> -    default:
->> -        return -EINVAL;
->> -    }
->> -
->> -    /* Enable the port */
->> -    val |= TPDA_Pn_CR_ENA;
->> -    writel_relaxed(val, drvdata->base + TPDA_Pn_CR(port));
->> +                  "Detected multiple TPDMs on port %d", port);
->> +    else
->> +        dev_warn_once(&drvdata->csdev->dev,
->> +                  "Didn't find TPDM element size");
->> -    return 0;
->> +    return rc;
->>   }
->>   static int __tpda_enable(struct tpda_drvdata *drvdata, int port)
->> diff --git a/drivers/hwtracing/coresight/coresight-tpda.h 
->> b/drivers/hwtracing/coresight/coresight-tpda.h
->> index b3b38fd41b64..19af64120fcf 100644
->> --- a/drivers/hwtracing/coresight/coresight-tpda.h
->> +++ b/drivers/hwtracing/coresight/coresight-tpda.h
->> @@ -10,6 +10,8 @@
->>   #define TPDA_Pn_CR(n)        (0x004 + (n * 4))
->>   /* Aggregator port enable bit */
->>   #define TPDA_Pn_CR_ENA        BIT(0)
->> +/* Aggregator port CMB data set element size bit */
->> +#define TPDA_Pn_CR_CMBSIZE        GENMASK(7, 6)
->>   /* Aggregator port DSB data set element size bit */
->>   #define TPDA_Pn_CR_DSBSIZE        BIT(8)
->> @@ -25,6 +27,8 @@
->>    * @csdev:      component vitals needed by the framework.
->>    * @spinlock:   lock for the drvdata value.
->>    * @enable:     enable status of the component.
->> + * @dsb_esize   Record the DSB element size.
->> + * @cmb_esize   Record the CMB element size.
->>    */
->>   struct tpda_drvdata {
->>       void __iomem        *base;
->> @@ -32,6 +36,8 @@ struct tpda_drvdata {
->>       struct coresight_device    *csdev;
->>       spinlock_t        spinlock;
->>       u8            atid;
->> +    u8            dsb_esize;
->> +    u32            cmb_esize;
->>   };
->>   #endif  /* _CORESIGHT_CORESIGHT_TPDA_H */
-> 
-
+TBH I do not really see why this is a problem. MADV_FREE
+are correctly recognized same as pte_none so the user
+defined trashold applies.
+-- 
+Michal Hocko
+SUSE Labs
 
