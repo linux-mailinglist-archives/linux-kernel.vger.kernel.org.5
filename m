@@ -1,139 +1,161 @@
-Return-Path: <linux-kernel+bounces-50251-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D89D847662
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:41:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13D8F847668
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:42:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB15E1F2A6F0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:41:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6D211F2190C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:42:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFCF714D447;
-	Fri,  2 Feb 2024 17:40:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EB1B168B9;
+	Fri,  2 Feb 2024 17:41:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DfXshpme"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="0BmDXPVC"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B5A14E2D4
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 17:40:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAF8F14A4E9
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 17:41:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706895628; cv=none; b=Q25nPc0YxVC3WYX2mQAvZwZ+z3a2KcnPLPkfVPlBQrKlg4fIF0fpXXZMc1W+92CkuQ3aTZTOxkUsIb1l3kJw3hGyfMQa8Ag7Ehj859ppiANTf+zFjLvQduhjsuszr4vSMXef0y+pTEQGfZHhLrAJxB4xEuGz3vgJpH/uguEJc7A=
+	t=1706895681; cv=none; b=PfOq+0vWgdoHF8OqLC3aqKgdNAitkvgXofIp0jmg3taHroonqJW1vz2FtWu8xYRCCKgcOlReI7lhclmVQK19YKIC7Sg2I43s98/yyNgYpeVGCX1j7ybi+BNkxWnPOqiWgFjx8NdPgpHF9UxTsTwwzN3u5s2NTaNjA2RII7mLfJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706895628; c=relaxed/simple;
-	bh=BOiRCiODsdZC7Mu+DfUwlCyXYubllseXBa2Nka04gEc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=aMkx0JGbK6ozNO/1Ai8uOZ1o0U6VZhKfJVVMJFElwBr9nqxvF1LMJ/UsTcZUzUrO8IsYRI8hH19u0RsLgWI12PlK+ZwosbNE+/H52WBS6XWAGIPUTylqFh4olHSj3ChVkzFZBzofbm8brCMY/vm19oCoWz0VeBA5yUdGUWHu46k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DfXshpme; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706895625;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3uK//x0luqoWMvS8Z09aeMcer4hSE71ZysmanTsbvBo=;
-	b=DfXshpmeRwxTYBv5DcZyEd6n7L74fOxCZ16fI03H7+TdmVgddlyoAqwPaKYHm0fF0Mhna8
-	WtHcqZgF0WO7ZtD5pjeJa2F5I2AQ+60y18NGBen35AKRzUsaDhFzY1O0yq/ZrAvcymzkH/
-	/G2/cJfK81T8k4V9zrcVj1+Ie283O2M=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-18-0K6aCIxsNFuFTHC-RadW8g-1; Fri, 02 Feb 2024 12:40:23 -0500
-X-MC-Unique: 0K6aCIxsNFuFTHC-RadW8g-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33ae2cfa4c0so923612f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 09:40:23 -0800 (PST)
+	s=arc-20240116; t=1706895681; c=relaxed/simple;
+	bh=bZlfqok9qew6k9fz+Z27UK6LPlwWG6tsG4PeKP4rbXs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=B1UIchmFsDhMqe2tRQWLWab0cukO8zhCmNGVbBFlvEMvwi1F6zUYeG2Xp+6qgxCGNtX1tb7t+C3ABNq443SxGTMFdaLpvbzMEVgDp+QQxpFHHBq2n5peWx1QP0CmGBRk0YtyUPo2jz15V/2YBxW1w86dqq7pbZi7HJgT/c+k6pY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=0BmDXPVC; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a2d7e2e7fe0so206042866b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 09:41:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706895676; x=1707500476; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cWtC7jO98lUeRBHL4RQhZAFvZjsqfE/uVt4nvdNHZP4=;
+        b=0BmDXPVCkF4bYZYVpY2IE1feYwif9ZVfDxf4Ai5kQ2+xDCQfVyIqRnNpIiqtzx7Wop
+         0/U+LW+t26DHFW/DdtukGLDFEuOQe3VEVp7AcJgo7w/vWqiok1OzprsQLDHBvXMl6P6j
+         Y9xN2wj/q8cqsaotpugzLZ4NO9t77zu9lB9QXPQuUfw3fImZKPXzKO7jPOMyzPBr+imv
+         F7Ymf956Ev3UfbjFNbCZWj1fvmwUiwDKPGlcwtNwJAo6q2XE2PAV+5koXBcTx+0fhdTZ
+         NUzoW42EtSGesG9Kelhb0NZmuDibQODc/sqbaQOE6U7xtVmpsCcxvjsbI6NuW10Qm8/d
+         Jopg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706895622; x=1707500422;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3uK//x0luqoWMvS8Z09aeMcer4hSE71ZysmanTsbvBo=;
-        b=FxXESRazZLEjAuSqOIc5eUewbDQCY5Rc8fjRefVdsM7QGYTHRTngVTjHZMognHqNkY
-         U5RrzwnavyFxTQ5xi5iw42MKO8AzuTP2zerYS1x8xVDZxmG5htSqvAvfVAcJLKy9nako
-         5/zStluDCvpmVmP0FgouKkhY5Lzfi2NtoJ/IqFwgsK55m+MRMsnlojvELyq1AP++Mpnx
-         ISvSVxvlOdt9UB+5SsHb6NVUk9tlXKegOEkJSId0pMDWclfmcrF3YUNu8KJ9pCNj8uum
-         g8A8fYD1K4VIcdgWC+qQSzLTnKBzX6PplXYzgXSwp/7qeE27XOtlN1CwBUz1oiEsIUjX
-         5kgA==
-X-Gm-Message-State: AOJu0YzTafQjbGtjoHkhmvYAcaYksBPV/FWU3I0uCdofgFwv7lnHZsPa
-	pDw7VTr2RjElXp6PcY6KmZgZdXYacHY6QggrR0ISaVnyZ27dobAYeVEqdYxjIBTaalLmOsFXj4j
-	Sl4QQs/0g8/MJs7NZz63kP9lo6uLJjXHh4GQDJZBqIYQVsqlD6+t0nUR0Co/0wA==
-X-Received: by 2002:a5d:4390:0:b0:337:c454:81a8 with SMTP id i16-20020a5d4390000000b00337c45481a8mr1754233wrq.55.1706895622621;
-        Fri, 02 Feb 2024 09:40:22 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEmdXc+jNyJXy3O9tNfrg+i+QMmkbhZq/CcDwIvvm7pW40AlB3qIPHUMZU/JM7QJm1W/ikngw==
-X-Received: by 2002:a5d:4390:0:b0:337:c454:81a8 with SMTP id i16-20020a5d4390000000b00337c45481a8mr1754220wrq.55.1706895622229;
-        Fri, 02 Feb 2024 09:40:22 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVAy6ie/I8NdAC0FEJNUwQw7Mgkds5YZnZirQ81+wr/v6i/+/6OrFVch2DRDVyVqzAKUHk0gzXpU9xqUIHPgnDvSK7wTB3Mbl4NvM3QgIWOwhRfAELlHDpPTOzzoCWE7cMAtXffh0DaTB8XY0Rw0kLFOecel//4Avk5gIvH1npeIJAAkUlKg6M/ALR79zDI0Bhp4HfkrUhXcn8TVtOCE4nFpV3LIzgQ2qI5rBTajVqHdLEK7pO7VPD0d0nZtfQPR2zFO+TyXZ+tVEdE/FV63KRnxcoZR1+jTPd8doRUQK6OpDcjAlLtcfo6An1WdDfGBXkHKB3GKq4lNwkXAEMu1LUGBkkKE3vMVw==
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id y18-20020adfe6d2000000b0033af81d6dc8sm2386439wrm.87.2024.02.02.09.40.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 09:40:21 -0800 (PST)
-From: Valentin Schneider <vschneid@redhat.com>
-To: David Vernet <void@manifault.com>
-Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
- juri.lelli@redhat.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- mgorman@suse.de, bristot@redhat.com, kernel-team@meta.com
-Subject: Re: [PATCH] sched/fair: Simplify some logic in
- update_sd_pick_busiest()
-In-Reply-To: <20240202170712.GC2238525@maniforge>
-References: <20240202070216.2238392-1-void@manifault.com>
- <xhsmhwmrmhkbh.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <20240202170712.GC2238525@maniforge>
-Date: Fri, 02 Feb 2024 18:40:21 +0100
-Message-ID: <xhsmhplxehiii.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+        d=1e100.net; s=20230601; t=1706895676; x=1707500476;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cWtC7jO98lUeRBHL4RQhZAFvZjsqfE/uVt4nvdNHZP4=;
+        b=RmvYWWw+1QQTNcgjNUNPIperrWOeuK+nyIk6zgZCLBVd07JSwFVGYGG0QjfWOhLBpB
+         zvo2UAXl9ovQ2a1b6DYSYvxiLF0QMMcAGKiB2DqPuxZHPrQyk635zykzvtctKVIpFtOd
+         smL6vP72uvyeTaY7bAvjxFCz7czG91FVi9Aj6p5gyX9z+VLB7mqNWLo1zoTu5HZCUGzV
+         rFW44E8SpRI9Njqk5g+QC8mA2B4W91j85wnOPbpqGWC7AoBJxTLJDaAlCIbE8X2MTuX0
+         PVItF2RfczqqgTpiMhm3s1xbgM2Ng/zy8yrEf7MxzOVq9Wmy3hoNnn3Vr4IeGnlWxQXJ
+         hRjQ==
+X-Gm-Message-State: AOJu0YwhgB70R2nWHGYiXlJV/+xgzPfQdKVGCLCMXxbn6Hu5i9yxYRBs
+	YOVvu7s8AVmHKfKQq3ueOoDc7TNmkYBgkfbMUmYcIuQnvuJuFWdVStYT/fzWhwfJr22KpbDQocO
+	o3vpQcprwz76QGTH/ftYSDHnwomBatBRMnEKQgQ==
+X-Google-Smtp-Source: AGHT+IHHACEG53UViD2eXG7vvDC/BBy9cKKGK86pK1KqKt9yPaQGwmh1+pUQisp4lH6+ccNGliBBByhYVThQhkwmoN4=
+X-Received: by 2002:a17:907:971a:b0:a37:1778:7d7f with SMTP id
+ jg26-20020a170907971a00b00a3717787d7fmr1914343ejc.29.1706895675962; Fri, 02
+ Feb 2024 09:41:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240202163433.786581-1-abrestic@rivosinc.com>
+ <20240202163433.786581-3-abrestic@rivosinc.com> <CAMj1kXH7=9-Ww_z6a4Z5K8MrbH8x17Y3EzYk9Qf-3PL-JgMcww@mail.gmail.com>
+In-Reply-To: <CAMj1kXH7=9-Ww_z6a4Z5K8MrbH8x17Y3EzYk9Qf-3PL-JgMcww@mail.gmail.com>
+From: Andrew Bresticker <abrestic@rivosinc.com>
+Date: Fri, 2 Feb 2024 12:41:04 -0500
+Message-ID: <CALE4mHq4KhfBd+n2waUpHt48fTRXdBWZyiEJf5a3=hfUA_ue3Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] efi: Don't add memblocks for unusable memory
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, linux-efi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 02/02/24 11:07, David Vernet wrote:
-> On Fri, Feb 02, 2024 at 06:01:22PM +0100, Valentin Schneider wrote:
->> On 02/02/24 01:02, David Vernet wrote:
->> > When comparing the current struct sched_group with the yet-busiest
->> > domain in update_sd_pick_busiest(), if the two groups have the same
->> > group type, we're currently doing a bit of unnecessary work for any
->> > group >= group_misfit_task. We're comparing the two groups, and then
->> > returning only if false (the group in question is not the busiest).
->> > Othewise, we break, do an extra unnecessary conditional check that's
->> > vacuously false for any group type > group_fully_busy, and then always
->> > return true.
->> >
->> > Let's just return directly in the switch statement instead. This doesn't
->> > change the size of vmlinux with llvm 17 (not surprising given that all
->> > of this is inlined in load_balance()), but it does shrink load_balance()
->> > by 88 bytes on x86. Given that it also improves readability, this seems
->> > worth doing.
->> >
->> > As a bonus, remove an unnecessary goto in update_sd_lb_stats().
->> >
->>
->> Given that's a different scope than what the rest of the patch touches, I'd
->> rather see this as a separate patch.
->>
->> Other than that:
->> Reviewed-by: Valentin Schneider <vschneid@redhat.com>
+On Fri, Feb 2, 2024 at 11:45=E2=80=AFAM Ard Biesheuvel <ardb@kernel.org> wr=
+ote:
 >
-> Thanks, would you like me to send a follow-on series split into two with
-> your tag on both? Or were you just letting me know for next time?
+> On Fri, 2 Feb 2024 at 17:34, Andrew Bresticker <abrestic@rivosinc.com> wr=
+ote:
+> >
+> > Adding memblocks (even if nomap) for such regions unnecessarily consume=
+s
+> > resources by creating struct pages for memory that may never be used or=
+,
+> > in the case of soft-reserved regions, prevents the memory from later
+> > being hotplugged in by dax_kmem. This is also consistent with how x86
+> > handles unusable memory found in the EFI memory map.
+> >
 >
-
-Well, I'm not picking up any patches, just reviewing them :) So yes I'd say
-re-send with the split and feel free to apply the tag on both.
-
-> We could also update this check to only do a strict greater than to
-> avoid unnecessary writes, but I figured it was preferable to have no
-> logical changes for this iteration:
+> x86 doesn't care as much about memory vs device semantics as ARM does.
 >
-> return sgs->group_misfit_task_load >= busiest->group_misfit_task_load;
+> This affects the output of memblock_is_[region_]memory(), so we'd have
+> to double check that none of those uses get broken by this.
+>
+> If the soft reserved regions need to be omitted from memblock, we can
+> deal with that separately perhaps, but changing it at this level seems
+> inappropriate to me.
 
-That's a good point, I don't think there was a specific reason for going
-with a lower-than rather than a lower-or-equal back then:
-  cad68e552e77 ("sched/fair: Consider misfit tasks when load-balancing")
+Sure, I can constrain this to just the soft-reserved regions.
 
+-Andrew
+
+>
+>
+> > Signed-off-by: Andrew Bresticker <abrestic@rivosinc.com>
+> > ---
+> >  drivers/firmware/efi/efi-init.c | 12 +-----------
+> >  1 file changed, 1 insertion(+), 11 deletions(-)
+> >
+> > diff --git a/drivers/firmware/efi/efi-init.c b/drivers/firmware/efi/efi=
+-init.c
+> > index d4987d013080..f05bacac89b7 100644
+> > --- a/drivers/firmware/efi/efi-init.c
+> > +++ b/drivers/firmware/efi/efi-init.c
+> > @@ -24,13 +24,6 @@
+> >
+> >  unsigned long __initdata screen_info_table =3D EFI_INVALID_TABLE_ADDR;
+> >
+> > -static int __init is_memory(efi_memory_desc_t *md)
+> > -{
+> > -       if (md->attribute & (EFI_MEMORY_WB|EFI_MEMORY_WT|EFI_MEMORY_WC)=
+)
+> > -               return 1;
+> > -       return 0;
+> > -}
+> > -
+> >  /*
+> >   * Translate a EFI virtual address into a physical address: this is ne=
+cessary,
+> >   * as some data members of the EFI system table are virtually remapped=
+ after
+> > @@ -195,12 +188,9 @@ static __init void reserve_regions(void)
+> >                 memrange_efi_to_native(&paddr, &npages);
+> >                 size =3D npages << PAGE_SHIFT;
+> >
+> > -               if (is_memory(md)) {
+> > +               if (is_usable_memory(md)) {
+> >                         early_init_dt_add_memory_arch(paddr, size);
+> >
+> > -                       if (!is_usable_memory(md))
+> > -                               memblock_mark_nomap(paddr, size);
+> > -
+> >                         /* keep ACPI reclaim memory intact for kexec et=
+c. */
+> >                         if (md->type =3D=3D EFI_ACPI_RECLAIM_MEMORY)
+> >                                 memblock_reserve(paddr, size);
+> > --
+> > 2.34.1
+> >
 
