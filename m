@@ -1,165 +1,148 @@
-Return-Path: <linux-kernel+bounces-49598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0344846C3C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:38:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81555846C3D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:39:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 568E828AC2D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:38:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A63D01C25966
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:39:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4991377642;
-	Fri,  2 Feb 2024 09:38:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B486E6E2A9;
+	Fri,  2 Feb 2024 09:38:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="igsKzZil"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="DwSRLa8f"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88D3760BA6;
-	Fri,  2 Feb 2024 09:38:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9AEB7763B
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:38:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706866701; cv=none; b=F5vJBy+Lzu8SbPIVbR3yWrkmDPmpCpk+jr/7jLU9Kg9NudmD1EfV98jeOjFmO5pnGf2mWz+ZLZQmfUrOkixmZL2GJL6cvxF0rtlFOjGiE7I8M7+/Z2nNOq0y717C2VnrwmGMmTx/gf9dxMuAMpX7EqxQ1WB0XDcO36CBkJDdu2g=
+	t=1706866736; cv=none; b=f9ZeyvLzWq1/etGqLYHwZABrLzu6ZRPmoimDpQyvex5Zlbk2/02RRpEqg0OBN39BhWAoWevIo/JZhW4nBXgnr/GKwqAlmC1umU3fPXnb+NV57whjwE0HpDaGiPR+22g5YJfa8IhjaJ8gBVQ8xPrRoZEqGAcAnuavlWepm2dFjg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706866701; c=relaxed/simple;
-	bh=I0UwhOu+fhCp7/UMnW08UCXCudYSP7LER8/41ln0eOc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MinkgZImjohR7+1mfLS3Z6bTx7aeVuyT89CCbInVFYJwz93Hx4ywoxF8QtyouiTHfLb4c4ER2h4n4Ujo7TzKFHJ6hpxKIqHK5XFSq89O+fgLPU0uG0O6GfGm82wMcZuzxPS4LuFkMefkzPWz9PAeIctzzE2W9k+FGqAv9NSZJOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=igsKzZil; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39D8BC433C7;
-	Fri,  2 Feb 2024 09:38:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706866701;
-	bh=I0UwhOu+fhCp7/UMnW08UCXCudYSP7LER8/41ln0eOc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=igsKzZilYcycDCRlW6PztqyoVjcOn5U+JHX4DaojoEHoNf2AHliOrcSM9Gbeeu7Eo
-	 Jm1F3tr1p8UcU2lxg9wHm2YgMMDHWjf9mZzQ6HnhAMH6ZPlVzPxYuBaYjmv9GUGN5s
-	 GZ0VHDL08HMG3DenFzcYQAF4cLVqmVzWvT/WRrfoYulXih+tvR07d/zzTfMGI9OosG
-	 bZHSvCArXEiALkB+P+ZZlTBuL2ht4gxFKaB19RMllAs1tV/aTtXgzbYJWz4U0sOf76
-	 A9FpABLo6StjP9K/S491Xk4WQXkQk2kASPWWkek9PqDGAL0u5FKSM68uxAQJedjTfI
-	 VZP3gZ2oRHMzQ==
-Message-ID: <211252ce-7bf0-4fa2-93f9-b259e2f1e8ab@kernel.org>
-Date: Fri, 2 Feb 2024 11:38:18 +0200
+	s=arc-20240116; t=1706866736; c=relaxed/simple;
+	bh=3xDROl8J6UtI/TB7+PuBboI2rEm/Unhehxp7GPeMs30=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aymh7wExbExLCamamcWOwzW41fpuExP2sMoEdx1mR2t/DVpBwaH1uwJodaschJ8VgaMOI8YbvEXimP/sCukQu0g7WfMP1YfcXviZ4Q+I3M04n2JyqvdU5wkzlyeb++i423dJMWCQEjbn1D56zvfLPaoDl5uJ0KQ/umB0jEw8P9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=DwSRLa8f; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56003c97d98so80136a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 01:38:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1706866731; x=1707471531; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LeKdhCjMRsjFWo91Ezk149/GSutxOULRZwKH5QpErwI=;
+        b=DwSRLa8f6vVzm2Rzr//00AzpQCN1esfTCO+lF9Pifv6rlmx5F73M0W0u79THUDunAa
+         Pqjyj4B8wqp41D8Xd1VVKSZmVLf2hjC9vPJdqqK4YB86uWIXCgyLDo0n/jBtRTL7N45e
+         0wADTQIBxj8ECTMflKaTTnM3h2DFO+Vb3aSG5XIeMAjf3Y+f2zY/ymLz1xicLmbHN9nN
+         m5uTIXjuw1GIwmhkPTQBGBtmZb9xipxRiLH2H76ErZpnKhS6vgseifzAPr3/uu2MdR+V
+         qqiKXeIDQ0HAdPac5FMpVRYwn8tKkWxhqMFBLC+heFBKcg9Fc3CdxvlFHoZ61eUs1RMH
+         IiEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706866731; x=1707471531;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LeKdhCjMRsjFWo91Ezk149/GSutxOULRZwKH5QpErwI=;
+        b=lGADT6oonzkFsqp+3+jgsW7ggPdnYTetNP4pblvd+lC0jQCzuE8TlfFWoitHxOxanb
+         lav+6QV6dIdDj0F53zmxNM/oSwywMoKxHQ/CrKqlSMyl64zDp+JnmHNKfJehn257jsXs
+         PmC6MTK510IxuKWjLXZYXJoRk/Bm1R7fcYe8SVqMpMvf2aX77ypzPz/gisQYCEr7fp6v
+         WoO4KHRdE0ev1eMOWukDnLz3U5tXCZJx0+nqmX+fNoVFcI29Z6G3gwYLSKfYgvGct943
+         VLng2iTCRutZm4/37Ps/258UfQPJAaGUlaOVLAtIsIwGxQZED/+14q+90jyA7L7ODVPZ
+         Rw1g==
+X-Gm-Message-State: AOJu0YxZeJ2YIS59e593fdKEpqVbr4mKQu795ynIz7ZCPfApDDTannni
+	zOyoEvL/1ZUDiJxaXNrLuzoEV+aKZ8YzbF586mGQRmTXEJY64cY9t6ITsEN6/HY=
+X-Google-Smtp-Source: AGHT+IHXiwyKIRALIJ2SCq1vSMTLrEErtd6l9Z71z0r1zG+PeuTFxWBAltuaEReehtitiCkohmul6Q==
+X-Received: by 2002:a17:906:2796:b0:a36:601d:18cb with SMTP id j22-20020a170906279600b00a36601d18cbmr6170826ejc.62.1706866730855;
+        Fri, 02 Feb 2024 01:38:50 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU05zM+SLmpRncuDkB5z531kOG29qxnO0d3IfsxvmWQ5tM9HFuKlDNXfSfVxuuwbh0ZBixzVYdrgwcQULkyaoXO0xJ/p92fCOGxK4ymEJEy0Ut5zCHZ/tvcM8KD3CDECRlTXT2IVJqeOf4XMtfdy0fIT0k0uN/NF1S7SGqTc/Ehb9spi3nHPHkqVIUNsDh8w2aBFDxGRzrg4nJZqPW1U2N8GI3vK90SpAJbDbQfNtdhobZ40VMiA/kLawHCDsC03e6pYAjRBfH+OaZtOc84aXSIVHOtvGj4mJtXhJeN5P97HiGjxaSLxroyx1ZQ9jRi9CdxAawluwJOGCmQuiP3hYx7uUuAI4PNLeMkLSduhLt6AY0Ol4KqoPwehnGdACyKbDo9xvAfGv+8NNZNpLhO3kwkvnCj0ClnygJ4tembCHrSEaIvmFz5YzgY68dxp0f38Q==
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id pw8-20020a17090720a800b00a349d05c837sm686854ejb.154.2024.02.02.01.38.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 01:38:50 -0800 (PST)
+Date: Fri, 2 Feb 2024 10:38:48 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	Mukesh Ojha <quic_mojha@quicinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Kees Cook <keescook@chromium.org>, Uros Bizjak <ubizjak@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH printk v3 00/14] fix console flushing
+Message-ID: <Zby4KO9SjbC_pzEQ@alley>
+References: <20231214214201.499426-1-john.ogness@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] usb: dwc3-am62: add workaround for Errata i2409
-Content-Language: en-US
-To: Andrew Davis <afd@ti.com>, Thinh.Nguyen@synopsys.com
-Cc: gregkh@linuxfoundation.org, r-gunasekaran@ti.com, b-liu@ti.com,
- srk@ti.com, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240201121220.5523-1-rogerq@kernel.org>
- <20240201121220.5523-5-rogerq@kernel.org>
- <f35a729b-ff00-474f-903b-ada2704b0382@ti.com>
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <f35a729b-ff00-474f-903b-ada2704b0382@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214214201.499426-1-john.ogness@linutronix.de>
 
-
-
-On 01/02/2024 20:52, Andrew Davis wrote:
-> On 2/1/24 6:12 AM, Roger Quadros wrote:
->> All AM62 devices have Errata i2409 [1] due to which
->> USB2 PHY may lock up due to short suspend.
->>
->> Workaround involves setting bit 5 and 4 PLL_REG12
->> in PHY2 register space after USB controller is brought
->> out of LPSC reset but before controller initialization.
->>
->> Handle this workaround.
->>
->> [1] - https://www.ti.com/lit/er/sprz487d/sprz487d.pdf
->>
->> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->> ---
->>   drivers/usb/dwc3/dwc3-am62.c | 29 +++++++++++++++++++++++++++++
->>   1 file changed, 29 insertions(+)
->>
->> diff --git a/drivers/usb/dwc3/dwc3-am62.c b/drivers/usb/dwc3/dwc3-am62.c
->> index af1ce934e7fb..35d7a2fb128e 100644
->> --- a/drivers/usb/dwc3/dwc3-am62.c
->> +++ b/drivers/usb/dwc3/dwc3-am62.c
->> @@ -101,11 +101,17 @@
->>   #define PHY_CORE_VOLTAGE_MASK    BIT(31)
->>   #define PHY_PLL_REFCLK_MASK    GENMASK(3, 0)
->>   +/* USB PHY2 register offsets */
->> +#define    USB_PHY_PLL_REG12        0x130
->> +#define    USB_PHY_PLL_LDO_REF_EN        BIT(5)
->> +#define    USB_PHY_PLL_LDO_REF_EN_EN    BIT(4)
->> +
->>   #define DWC3_AM62_AUTOSUSPEND_DELAY    100
->>     struct dwc3_am62 {
->>       struct device *dev;
->>       void __iomem *usbss;
->> +    void __iomem *phy;
+On Thu 2023-12-14 22:47:47, John Ogness wrote:
+> Hi,
 > 
-> Why do you need this in the driver data? You only use it in probe(),
-> just have it be a local variable.
-
-OK.
-
+> While testing various flushing scenarios, I stumbled on a few
+> issues that cause console flushing to fail. While at LPC2023 in
+> Richmond, I sat down with Petr Mladek and we reviewed the
+> v2 [0] series. This v3 series is the result of that offline
+> discussion.
 > 
->>       struct clk *usb2_refclk;
->>       int rate_code;
->>       struct regmap *syscon;
->> @@ -140,6 +146,16 @@ static inline void dwc3_ti_writel(struct dwc3_am62 *am62, u32 offset, u32 value)
->>       writel(value, (am62->usbss) + offset);
->>   }
->>   +static inline u32 dwc3_ti_phy_readl(struct dwc3_am62 *am62, u32 offset)
->> +{
+> This series addresses the following issues:
 > 
-> Do you really need these one line functions? They add more code than
-> they save and just hide a single deference? Just do that directly.
+> 1. The prb_next_seq() optimization caused inconsistent return
+>    values. Fix prb_next_seq() to the originally intended
+>    behavior but keep an optimization.
+> 
+> 2. pr_flush() might not wait until the most recently stored
+>    printk() message if non-finalized records precede it. Fix
+>    pr_flush() to wait for all records to print that are at
+>    least reserved at the time of the call.
+> 
+> 3. In panic, the panic messages will not print if non-finalized
+>    records precede them. Add a special condition so that
+>    readers on the panic CPU will drop records that are not in
+>    a consistent state.
+> 
+> 4. It is possible (and easy to reproduce) a scenario where the
+>    console on the panic CPU hands over to a waiter of a stopped
+>    CPU. Do not use the handover feature in panic.
+> 
+> 5. If messages are being dropped during panic, non-panic CPUs
+>    are silenced. But by then it is already too late and most
+>    likely the panic messages have been dropped. Change the
+>    non-panic CPU silencing logic to _immediately_ silence
+>    non-panic CPUs during panic. This also leads to clean panic
+>    output when many CPUs are blasting the kernel log.
+> 
+> 6. If a panic occurs in a context where printk() calls defer
+>    printing (NMI or printk_safe section), the printing of the
+>    final panic messages rely on irq_work. If that mechanism is
+>    not available, the final panic messages are not seen (even
+>    though they are finalized in the ringbuffer). Add one last
+>    explicit flush after all printk() calls are finished to
+>    ensure all available messages in the kernel log are printed.
 
-Sure. Thanks.
-> 
-> Andrew
-> 
->> +    return readl((am62->phy) + offset);
->> +}
->> +
->> +static inline void dwc3_ti_phy_writel(struct dwc3_am62 *am62, u32 offset, u32 value)
->> +{
->> +    writel(value, (am62->phy) + offset);
->> +}
->> +
->>   static int phy_syscon_pll_refclk(struct dwc3_am62 *am62)
->>   {
->>       struct device *dev = am62->dev;
->> @@ -201,6 +217,12 @@ static int dwc3_ti_probe(struct platform_device *pdev)
->>           return PTR_ERR(am62->usbss);
->>       }
->>   +    am62->phy = devm_platform_ioremap_resource(pdev, 1);
->> +    if (IS_ERR(am62->phy)) {
->> +        dev_err(dev, "can't map PHY IOMEM resource. Won't apply i2409 fix.\n");
->> +        am62->phy = NULL;
->> +    }
->> +
->>       am62->usb2_refclk = devm_clk_get(dev, "ref");
->>       if (IS_ERR(am62->usb2_refclk)) {
->>           dev_err(dev, "can't get usb2_refclk\n");
->> @@ -227,6 +249,13 @@ static int dwc3_ti_probe(struct platform_device *pdev)
->>       if (ret)
->>           return ret;
->>   +    /* Workaround Errata i2409 */
->> +    if (am62->phy) {
->> +        reg = dwc3_ti_phy_readl(am62, USB_PHY_PLL_REG12);
->> +        reg |= USB_PHY_PLL_LDO_REF_EN | USB_PHY_PLL_LDO_REF_EN_EN;
->> +        dwc3_ti_phy_writel(am62, USB_PHY_PLL_REG12, reg);
->> +    }
->> +
->>       /* VBUS divider select */
->>       am62->vbus_divider = device_property_read_bool(dev, "ti,vbus-divider");
->>       reg = dwc3_ti_readl(am62, USBSS_PHY_CONFIG);
+I hope that I reviewed all patches. Some already had my tag.
+Sigh, it took much longer than I have hoped because I was
+overloaded and on a sick-leave.
 
--- 
-cheers,
--roger
+Anyway, please let me know if I missed some patch or reply.
+
+Best Regards,
+Petr
 
