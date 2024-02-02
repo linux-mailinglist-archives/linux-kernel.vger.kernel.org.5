@@ -1,106 +1,91 @@
-Return-Path: <linux-kernel+bounces-50540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CBD0847A72
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:22:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B0AD847A6E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:22:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF0E3B26D14
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:22:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 637BB1C25B32
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:22:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6FDF8175C;
-	Fri,  2 Feb 2024 20:22:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE4958172E;
+	Fri,  2 Feb 2024 20:22:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="G8C10dje"
-Received: from mout.web.de (mout.web.de [212.227.17.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vHfONgv5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AECA28062A;
-	Fri,  2 Feb 2024 20:22:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 172DE2FE3F;
+	Fri,  2 Feb 2024 20:22:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706905330; cv=none; b=lKU5dZ0TJ0vdbVDiciyr8AjkONtievE8yUtA0CAcLxkyF6/jWYjeT21K9vJKuClB2X7VVizbdSvsi/ZJm6ESqvRRUBDLiidYXFqvljgJikdM3BZihOpGjOrdHyRBzPTYroUGkVOkIS+TVhIgFK0/Ca/o50tzFsCibW7hmuF853g=
+	t=1706905321; cv=none; b=k28n3CRAqCy52eNFOAeGR5Hpu0CZIBKIrPEFVA8p/HcIqWIwJHPdSM1FTMkBZpNSnV9VzzQS4QlTMtu7Z3JzPkAql+XNlg9izmB2gvmI6HahyfPWe7DANInEksuQzMXFt6VEOOMg1ityV+3YvWP5vlO+TzD40lr8CJ7ZmBPUQzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706905330; c=relaxed/simple;
-	bh=Q2m/2wszr55453umWWxAgsLwrfW/dmW8Ii0UsK5l6PM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iNAspKSZSc0FKEev0E921pT3RJMzJzpDoPo30Y7KF/RRoN0eTrmLVkW7i+nwYoqQBkKrLthb3uEu9dsON89WiHqQGptnRJwcfWKjBxAViXVZjhJKNz4Ng0c4+pepav0h7+mbuoFDnjUblP6wrARVBQFLnfqnvLOj5JluZz6SLqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=G8C10dje; arc=none smtp.client-ip=212.227.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1706905298; x=1707510098; i=markus.elfring@web.de;
-	bh=Q2m/2wszr55453umWWxAgsLwrfW/dmW8Ii0UsK5l6PM=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=G8C10djeXh5lOZvU247Dn+9Cm7OL0cH/D1Bl7WRpbIO2WUKq6yMS521XEpMvH11G
-	 WRc1JCbYGrSI15XggN2RCra71OGpZkOw/2pMmYBAyRP02aCEoaMjo17NonpG7dho1
-	 yMhEmSatRaN1UzQVYk3O0LFCT0q8ylU80Dg71ThxyrJ6FmDQIZHPGmNNoF3FfSEYk
-	 isnxm9vgAhHTnXuxxAg3+TNrXnCN7Ub6cRk4KYRxDOmY6Ym36usxl903tLabYsvNv
-	 SjkoKSBKfbZoeLvoa2+xR1kYH6sc07rftcALRcZ+fYHMe5Qk4zhVfR4o1fssmy9li
-	 +yh3SSzuItAQLfhwEg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MlbLM-1qoioK00NG-00iZ9I; Fri, 02
- Feb 2024 21:21:38 +0100
-Message-ID: <1a3c05b8-45f8-4205-8cb5-3b8f2d791877@web.de>
-Date: Fri, 2 Feb 2024 21:21:19 +0100
+	s=arc-20240116; t=1706905321; c=relaxed/simple;
+	bh=+l6xmMtGx88Ja2KwOafyi6g4YZxkCJK5ea96nkAej3M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aT+s1UIoPpPCNjMVvPi+fEHUjcpwH7GRgLheTaenTFz6bbMUduqZIJNyohopXZK+upfbsbbaRPwvIw5dNc6+e8Ry/FFvrrClRS1puWMOiQJUx+TVLz1EyzCyzvXka1WX5fCXa2hAHXPtD7KsVLpSKCR5Z/eOLb0xBG1Pp/sxjbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vHfONgv5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C077C43390;
+	Fri,  2 Feb 2024 20:22:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706905320;
+	bh=+l6xmMtGx88Ja2KwOafyi6g4YZxkCJK5ea96nkAej3M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=vHfONgv5bp3nw/5BQQBxFABlpD4dswpeqWaZ9kdLpNnG25ND9Ibg1qtNTnwxNP0k+
+	 UjTINVQLu3iGG19vu3S5zvxAfpiIqRMZe15H2ktSLwiY3J9M9p/ye/AmVfAGCjHU6G
+	 UDpmWstk/3Yuh+20glbCwJOqYGQuWnxKfUqkfMZo4OR8InE2j1wMTUIqyBWGAxpNRm
+	 UAB1adOXcwtSWxPlKUX2hO6CwPUtlWl/Gs1cHYkAjJEOZw2BPS7sdYN3Zybmwza90b
+	 x7u/uahun+vLqGdLOSdo1F+fNO/EbjeRR+ddEjCQFi3KhyNnoc1/p5679HFl0tdA5o
+	 1cEWNWSfAotMw==
+Date: Fri, 2 Feb 2024 14:21:58 -0600
+From: Rob Herring <robh@kernel.org>
+To: Conor Dooley <conor@kernel.org>
+Cc: Guenter Roeck <linux@roeck-us.net>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Charles Hsu <ythsu0511@gmail.com>,
+	linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: trivial-devices: sort entries
+ alphanumerically
+Message-ID: <20240202202158.GA1007609-robh@kernel.org>
+References: <20240201075805.7492-1-krzysztof.kozlowski@linaro.org>
+ <5461a237-1df4-4077-86ef-e9ff6ff17e27@roeck-us.net>
+ <20240201-silliness-unfair-265a0d896377@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: clk: imx: scu: Use common error handling code in
- __imx_clk_gpr_scu()
-To: Abel Vesa <abel.vesa@linaro.org>, kernel@pengutronix.de,
- linux-imx@nxp.com, linux-clk@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, kernel-janitors@vger.kernel.org
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, Abel Vesa <abelvesa@kernel.org>,
- Fabio Estevam <festevam@gmail.com>,
- Michael Turquette <mturquette@baylibre.com>, Peng Fan <peng.fan@nxp.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
- Stephen Boyd <sboyd@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- cocci@inria.fr
-References: <20231210171907.3410922-1-visitorckw@gmail.com>
- <0e906ec6-fe73-4dbd-b555-a2c03b6e1030@web.de> <Zb04UUeE/cU9HtKZ@linaro.org>
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <Zb04UUeE/cU9HtKZ@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:CSJNiI+KQkY3wXk46J8sqBLCgeytL9YGPMpnE6bhxbHLS1ujsvH
- WtIcKGpQpstSECuHkRUVRn7udhpV/cp9kKG3djHijk+tDqEvugBIpO3jvDiEAqjrmsEDchj
- EB/bFJ8Rrbp+rgxqrwcoYmApEj+c4vj/lGSZtItFepLt/wAggTQ5pyAma0iq4NKvir+Oe1Q
- K195UfBoLASAs8DyCP3XQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:wMEpts7wPes=;A2mzpRYQ4imzka4vF4y/w2Bur/w
- +FcbRBULuHCiHAEiLUmpDmxYIoiEltOqt4+UAk/GlKEpka4Jn5xgjW1J+CEP9gFrwJB3OlNFj
- FJr4Ol1aVJgaGQ+I3MuQYaZOCVyjPu69gnwqMW8PAoBRa3z8C8bthaxs/4GvWMAmhWSpUCj4M
- K8TumhrqIE+EdrRpNSOiUe0gCQLuB3kFtQvIvhjHiWB8O98aP8if4f1E0KD5sj7ZJC7TzYlxy
- CjC4T1SDfC3Aiu9wwDuQbqzh0MB1vGCueyN6gBcoqrrrckDnwkUAaYEP5L/NWLM6/Kwp+mWks
- aMlsR0gYgdFWcCZmF3y3zlGgLeHfZ5Dm+gy1Zms2zcwWokaTBClVb/NCL32Vdir/5vKhdmouv
- PGBVxFZ77RhVflIUxRMPQiyAbfQzb/Coghset1BFN5oKKZV6GXUZP9b+DERLK9p4Bg3hS5IXf
- WckBsAsM6SRD1eXkK3sHAfX50iFQHIEQ4MKOpHQFEZuU0H5zFP/Ku/6oEXISDQ3MVa1jNUzAB
- F94sq+123wtyPRNE7ozcyCqYsPRU+zrmf7meIQpP5n8ALO8XSA86QlQh/YgE7o2abTUggMKfh
- XaPy+YMek2mKIegRxReEA6k4bjJHfVsMzxccWG+3LwXzDgx0fNNASGZxHBR1M7Ko1DdnAYQeg
- GkRwilOySYpq3y+oaBWb18XmC11HyOKkIwYkgsZ8ZexZ3B3rYcsSSpYplPZ8Hk9mjoYPZGpcJ
- YhCslGURNYJTpxQOU5y0V+K7LV1Fv7wgpLLc0lPOj+sI/hnMnGZN/bNP4SWTuSkw/ThjnYK2R
- 5/y3ncMmAVC/iinfzzKk+KQynOb3EdQWFAZGl/bFksZyQ=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201-silliness-unfair-265a0d896377@spud>
 
->> Use another label so that a bit of exception handling can be better reu=
-sed
->> at the end of this function.
->
-> Please don't send patches as reply to other(s) patches.
+On Thu, Feb 01, 2024 at 06:32:09PM +0000, Conor Dooley wrote:
+> On Thu, Feb 01, 2024 at 05:25:13AM -0800, Guenter Roeck wrote:
+> > On 1/31/24 23:58, Krzysztof Kozlowski wrote:
+> > > Sort entries alphanumerically.  This was a semi manual job with help of:
+> > > 
+> > >    cat Documentation/devicetree/bindings/trivial-devices.yaml | grep '    - ' > old
+> > >    cat old | sort -n > new
+> > >    diff -ubB old new
+> > > 
+> > > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > > 
+> > 
+> > Acked-by: Guenter Roeck <linux@roeck-us.net>
+> 
+> z sorts before a, please fix in the whole file.
 
-This is a general possibility to connect an information sources with
-a corresponding change idea.
-Will the acceptance grow for the presented source code transformation?
+I don't follow this comment.
 
-Regards,
-Markus
+> 
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> 
+> Thanks,
+> Conor.
 
