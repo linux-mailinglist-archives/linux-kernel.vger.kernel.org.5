@@ -1,114 +1,145 @@
-Return-Path: <linux-kernel+bounces-49309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 449D9846884
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:50:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E957846888
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:50:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7728D1C20297
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:50:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A335283D97
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:50:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7EC17C6E;
-	Fri,  2 Feb 2024 06:49:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D13C017996;
+	Fri,  2 Feb 2024 06:49:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="t9BJDGgW"
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+	dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b="E4nh1c5M"
+Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [185.185.170.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAB81F4EA;
-	Fri,  2 Feb 2024 06:49:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706856569; cv=none; b=tIrQG2U7xAZg0OqfFXBz/O3/xVWZ+Hv/b4snhuoUys64tG4ca79BJoTeTJWXpCxAZ8B82lNCDYZA49z841LJRRmlkiBmg8O8oxW1W2IEY1qXQlcyNu0HchrWs8ZfET/KL1wYNomRrzYv3wGFNoAPwxyk9A7RdmDXlQNHuHoi39c=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706856569; c=relaxed/simple;
-	bh=psDefbg/kF79ASsUkMz1eS3sAKLVErIE1EEhmYhufuA=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ZYdWNvzqdL6za9U7CpSqhBrRw+famd8de4iPEyu0MUjVaPRRdx2s39eTwaTs1vt7M69vwbAIkrwTRCOyCAyqvvL+7PchYMy8G9h+7MnfI1wSN/lQmLPAVMhIXQRf2MmXlehbzoeZc31wqrjtnB/CKnK5ecKBmlRzw+2tG8yAoFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=t9BJDGgW; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1706856523; x=1707461323; i=markus.elfring@web.de;
-	bh=psDefbg/kF79ASsUkMz1eS3sAKLVErIE1EEhmYhufuA=;
-	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
-	 In-Reply-To;
-	b=t9BJDGgWqQZpeFoMDHQfgB/19gTb7Ka7GBGci1F4B4+NY0oCAUhbFu02S9quGB5N
-	 VU56dTABaPIQQfnCpIPZ2xsAkuqmbvmbHSTnLTpTNXWSgVpHmhp/QnnS0BlfchARv
-	 UEmsAwZy8R4tZV4nx9y2NcVxPou+Idt+UdDQx9I/6VnXFYpr+5Mxacst8hQjNZlhC
-	 xOYkBeOHfPkCKtBELx5vHDtPz0dZBS4sgoLMT6l340L/rT4xByQwgRhUb8f1ytgoS
-	 LB/q9otFpW/Y5UeYEjtg23XWUnMuzlsJKseh7QNZ2Rq/FGhdDKb1Azk2VgRAogEiC
-	 3bmO5CqVGOqpNgkldg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MhFhe-1qsazJ31Zi-00ea4g; Fri, 02
- Feb 2024 07:48:43 +0100
-Message-ID: <daf2172a-8d54-4097-acf3-cc539fe281e5@web.de>
-Date: Fri, 2 Feb 2024 07:48:12 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3894182A0;
+	Fri,  2 Feb 2024 06:49:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.185.170.37
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706856586; cv=pass; b=FcbSkga1dfpBbPAMto9zL3fdzx7Rl6ci1T0j+xYA7FfPXreqMo8IlXEMFhzfOoESRS/a9oP4+8t6YStZcVt/09MchNaRsghq/XdSMeBU9pkftQ1hYpyjijqdi7Z18Xi0OoZnCQvo7g14WRXTLgQw71Pmd6G3HsLesoeWu6+nqbY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706856586; c=relaxed/simple;
+	bh=cI4t2m1K4N4nI9kr6LJY7dfRYR18tBAIKGW+bSIN52c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R0DwTOgi2IT5kLJqY4CYEdqT+GREeQ7KuqW/7puV2a1SSymHKIvL6oCzGGhMxPc1SQZt0RBp1BhSDaTUFS1AwmGxEH5cKVC/TsZDBN8goR1Oc2RBDXGJRFoem5FbB1b2fiBZ2YMf+kYwqqOXPcVk/VcVeLDKhu1dthDcOyw6+kI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b=E4nh1c5M; arc=pass smtp.client-ip=185.185.170.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
+Received: from hillosipuli.retiisi.eu (2a00-1190-d1dd-0-c641-1eff-feae-163c.v6.cust.suomicom.net [IPv6:2a00:1190:d1dd:0:c641:1eff:feae:163c])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sailus)
+	by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4TR5wy73RVz49Q05;
+	Fri,  2 Feb 2024 08:49:38 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
+	t=1706856580;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8LePBLWdUkHfkTJ/OCvJo4ZmKQvMph9R1nxnUHE5gms=;
+	b=E4nh1c5MoZj5NYLeS+pqPp3W/IIw3lhf+LpH78+ySLvM9Fca8IIBUhu0qiOdGGGCxW5uYL
+	pdIEMWx0++bigZO3DYrTAEdW+xF3UMwgGB6r34jkGtFOL2UIRKXK4uXE++BdcVFM6QaEpZ
+	HD7Bd/3MQhS/rAI76MTqvKhrofDEmCIUFSeVn4epXN5vjvE6zVZ4VvywsL8SeyC/aQifuj
+	g9Euk2WOgzoVxe1/Y4qDXIkhCr8xigNkaZUeWCfIEggK1YEUYFBkDjvZP7Trv9aJ+HmhLu
+	DWx3qrraMOz0P/AfHjibHcQnWRZT0q4nvUyfN/awWOIye88DZhISXkx8MT0VxA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+	s=lahtoruutu; t=1706856580;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8LePBLWdUkHfkTJ/OCvJo4ZmKQvMph9R1nxnUHE5gms=;
+	b=gSynK9xwvaBlxIEci7rjQVyhNSPrtww6XkfAHBLfYCwfEm/2Pl9nFpdtTgoUwIs3XUi/SL
+	dFL1QJDBDhGVR8FUaIkXF/tpg2gV1Et7p8mRPebh6nYraoR/YVQwLf1XbjCHKr7lhfVNLJ
+	cpeO8epmlAVnOu0lE/rJQZ5uXQL2AbiFCNDGNqUVQFS3YUYsK7K2i1JJHR5K+VYul+0aVU
+	wr7T+E5W4YLFI+M7ZbtNivE800Iwz1eJz+rgqcazX6PieGBXHzq5PWf4it2Cmkc7Zri7Pd
+	AgXa7l57lsnR2gdXF4j9iQawsXzAZzF8bHyYGQl7kJo1ixG3+20KeRV8+RiEwQ==
+ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1706856580; a=rsa-sha256;
+	cv=none;
+	b=Me6OJuBNa5iWFctTEljFkVa0gOOu1RkesBTrVGd74CebFvh1tes3yRtrQIdbT8fOb8aWtA
+	iiGLvxnHTFgCFCaAQXD2GOG3hlLzcwins1fHvCvve/xUx5LzqC0inYv4eSGrqJW3VjQeEf
+	pwZ0znUALTN4HGnfiVSsru+2WDuXzpgNzkZ9j8fOFCKsjMWkQ6/aZYIDNiBbKIGo9ne1w2
+	HVA/l/oa/5o0JMkgk3y3QTRm3Ih57IhiLRbDR7r9qfBKpzdkbj98K5vslOtoZVh7Wst4Iz
+	m36+Y0JqREGT9HkK6P2TrbYHhPUOZTn/iZxcauyaVMKV6LcLnqEyUYs4p9NSgw==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 87F0E634C93;
+	Fri,  2 Feb 2024 08:49:38 +0200 (EET)
+Date: Fri, 2 Feb 2024 06:49:38 +0000
+From: Sakari Ailus <sakari.ailus@iki.fi>
+To: yuji2.ishikawa@toshiba.co.jp
+Cc: hverkuil@xs4all.nl, laurent.pinchart@ideasonboard.com,
+	mchehab@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	nobuhiro1.iwamatsu@toshiba.co.jp, linux-media@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 4/5] documentation: media: add documentation for
+ Toshiba Visconti Video Input Interface driver
+Message-ID: <ZbyQgkGicrnP-XZL@valkosipuli.retiisi.eu>
+References: <20231012071329.2542003-1-yuji2.ishikawa@toshiba.co.jp>
+ <20231012071329.2542003-5-yuji2.ishikawa@toshiba.co.jp>
+ <ZV3oq0szH8JjSNsc@valkosipuli.retiisi.eu>
+ <TYAPR01MB620180FF82B8993B45FF6E0A9286A@TYAPR01MB6201.jpnprd01.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] perf: Reconsider an error code selection in
- bpf_map__fprintf()
-From: Markus Elfring <Markus.Elfring@web.de>
-To: linux-perf-users@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Adrian Hunter <adrian.hunter@intel.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Christy Lee <christylee@fb.com>,
- Daniel Borkmann <daniel@iogearbox.net>, Ian Rogers <irogers@google.com>,
- Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Martin KaFai Lau <kafai@fb.com>,
- Namhyung Kim <namhyung@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
- YueHaibing <yuehaibing@huawei.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <f15f0df1-92be-4bc9-82a2-1d8fa3275dd7@web.de>
-Content-Language: en-GB
-In-Reply-To: <f15f0df1-92be-4bc9-82a2-1d8fa3275dd7@web.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:guMMD0U0owRRTK/o4x0F68hE8U9JJPElbEE4i3GuJqzHWW1R2HT
- sH0Z4EGWRndq02j10zfeOmlFsuMWcTocY01WQzj55IfTx2GEaofd0UiNkmU5Hp8wE3DRUxA
- 66EGuYd+WeO0W1n9MgablveKN3xDoAC58LZZzpDfV0+2DysblxvSm6H00vhzfZDimtVJV/z
- CwSuyAopcmm7tc3oD4wnQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:tyHFUlgJYw0=;dgrK/DspkpssIY/mInw6RaOj8L8
- zzTf2dKbygFIyNv1oeJDdblOrP8EvVmHFVb/iQ+pEefr1xabU/7uEb27OtwF4VSNs0vLi2jk8
- obLgtu7m3UCnrc9+Pluirh/Qin4j2TrTt/FlgXhWLcI0M2dmQaryGHZDcJJ59zolxXk3XTQuc
- bo1oBNAXbwcsXCjQ/RUburT/XB972gvl5v/EnKYR/mNlRc9OrQibc3bMp/CgbHKTtCx23hrs0
- E41dZKGXOjSL+RRFEVYGGe5HrWQzlzEtolFjP+aNR+1B/Zfi4kqdPENTbdJ3XHTqnSOvwpva3
- vZGUOCLhRj5wE80z2Jxhhzf6LRzDB7apmxyv+D6NphmrNUYLjPGcivWh1IlVPH1dYMsBsoBQ2
- SSO2KXlKVqKk1UEQP4wX6sU/cyKVHdapsY7Ljl71uyV4puxHx7l0nVSRJJilMkXs2iPvW89vX
- xg/r6zE2uX72n2+jmgHyrlaG2vgHfbwY8v5cytJQ2Df7TvHNgB94TRFDfp54mpkapKdEhg2ZA
- fhJ0JRzs4maXDk2sHPSNVx4by61OKVSGIRBPXA5aHTLxBCllAa2GGw5BQjEbYs6tmb4xVkGJK
- ISu3URZrlraZX+kFLKoSiovCKbEeYsSXkJNbLMkYrrFr+srhnT3IvD5ZW06zzXNQjmwctMc0t
- LoZdb9BY6Kw0C3nygGghSdp56duAB/QATwqfnxIVW9Nx7eYebs2h8pKTJnTMT+uMH8h7k11Eh
- a6Xx2JU42qVyh8Ornsp2Q13xHM0+huJJE98UY0cruVDOT/VG6RBjXVm0+IsMRSRorXAK7Wci7
- lQ7yquTHQffUVxsPE8zuRXAwbLnwE8zF0Xd44K6SiYsYg=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <TYAPR01MB620180FF82B8993B45FF6E0A9286A@TYAPR01MB6201.jpnprd01.prod.outlook.com>
 
-> A null pointer check is performed for the input parameter =E2=80=9Cmap=
-=E2=80=9D.
-> It looks suspicious that the function =E2=80=9CPTR_ERR=E2=80=9D is appli=
-ed then for
-> a corresponding return statement.
+Hi Yuji,
 
-Are contributions also by YueHaibing still waiting on further development =
-considerations?
+On Mon, Dec 04, 2023 at 04:32:40AM +0000, yuji2.ishikawa@toshiba.co.jp wrote:
+> > > +Vendor specific v4l2 controls
+> > > +=============================
+> > > +
+> > > +.. _V4L2_CID_VISCONTI_VIIF_MAIN_SET_RAWPACK_MODE:
+> > > +
+> > > +V4L2_CID_VISCONTI_VIIF_MAIN_SET_RAWPACK_MODE
+> > > +--------------------------------------------
+> > > +
+> > > +This control sets the format to pack multiple RAW pixel values into a word.
+> > > +
+> > > +This control accepts a __u32 value defined as `enum viif_rawpack_mode`.
+> > > +
+> > > +This control should be set before ioctl(S_FMT) and should not be changed
+> > after that.
+> > 
+> > Why do you need this? Doesn't the V4L2 pixelformat already explicitly define
+> > the format, including packing?
+> > 
+> 
+> This control value affects the unpacker between CSI2 receiver and ISP.
+> The rawpack mode is an option to receive from Wide-Dynamic-Range image
+> sensors, whose output bit width is larger than standard format (RAW20,
+> RAW24). For example, some WDR image sensors split 20 bit value into
+> upper/lower 10bit values, then put them into consective pixels to make a
+> double-width RAW10 format image.
 
-[PATCH -next] perf: Fix pass 0 to PTR_ERR
-https://lore.kernel.org/lkml/20220611040719.8160-1-yuehaibing@huawei.com/
-https://lkml.org/lkml/2022/6/11/3
+Do you have a sensor that really does this? Which one is it?
 
+> 
+> This option is only related to the interpretation of CSI2 input data.
+> Therefore, I think V4L2 pixel format (for resulting image) is not related
+> to it. The media bus format seems more relevant, but there is no
+> corresponding definition to this case.
 
+-- 
 Regards,
-Markus
+
+Sakari Ailus
 
