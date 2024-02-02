@@ -1,278 +1,237 @@
-Return-Path: <linux-kernel+bounces-50671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E288847C59
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:34:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C686D847C5D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:35:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B6001F24BD3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:33:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49ED61F24D7D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:35:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AB7A85937;
-	Fri,  2 Feb 2024 22:33:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3786126F27;
+	Fri,  2 Feb 2024 22:35:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hsZM/qmA"
-Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jF9t6KSP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0BDA8592F
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 22:33:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFBA685954;
+	Fri,  2 Feb 2024 22:35:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706913231; cv=none; b=c+U6Ua4eypT5SKo7XIM0k+fw99Uzg7L2vbLFXj1Em+xxKXfRJn6cIjAlXs4KfYHi+pqxv6B6ho5flwj+9OUzH9aStzgtvHJbVjvLc7QAwNilwkjDNdyiUAQEjcLtm2oATDjyLorZZJfd4K4nPYx7xI4gkBNa0DCuLXbz8JyN+KM=
+	t=1706913307; cv=none; b=MbRcELY9HCoe7uDMebox6qQtbajU7bhjDQoQ55eLZtcI7pg7cRAFa4y9dKnP7VDimPYcqG84OaoMzjo4OVY6QpKrKGed3axCZy9hT1RCkju5KP0pH52gx7nxFuhSohYv+fIwC9qzmZE2Du2RFYSHAliBWtevQ9aWXv/sRaQl7CM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706913231; c=relaxed/simple;
-	bh=Cob0rBzABNwLhCxk9USGBwwUPThucrjRE9og1HgiYVE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W4y7buIDM99lZRy90I3HZjiJ/jhvZmWr6hkaua79OTn7GTsf2Rzsa2LRXA0itqwGD2JDH/gOYB7G04SqV52C3kP7N16pRiTBMpowpkmGuv1kmt2Ylc+OfH58Fvh3Xrn+08ChbKDUDhqjIIDJBlx7rIuey/ghCz6OuBvKGT6H63A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hsZM/qmA; arc=none smtp.client-ip=209.85.166.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7bed8faf6ebso103409639f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 14:33:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706913228; x=1707518028; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0bGR4OmpODNoxu6BbozXZQv938jautOfwfQRasaHogc=;
-        b=hsZM/qmACYj/waF939IezBnbZzy/hjIs7j+iJFTd5n0NjJzJhamkjIxdYOmtMzsAQv
-         j9vHy1OgqzNQWgdv6j3Jqw7NCiDw2PSq8wOY/RO5ixxatf9w7BBks/6IofFAVgWjQVon
-         SV7Tl7CYc65Yj0SenvwFdUc+VImXX+HCKogQlqxH+DZtP0/ddurP/VWrHmcOfzVj3wWM
-         pDyyD977Er5Xrjll9C1nEoLFBe1ua+J/8CMJET0e0uncfimti5Ihh223QqNyUfjNCCQ1
-         pv7mr0++G2gFOilL1GDGt7rzRhoVSG4uxKleF+moPY2WsSk6rJRVf7siwosAtzqNwA1x
-         +U8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706913228; x=1707518028;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0bGR4OmpODNoxu6BbozXZQv938jautOfwfQRasaHogc=;
-        b=RXVqc40AbOvk51/b8dbl5oj5GR8yT6adVzaxbgtxw/2tExPmuuPlLMHWDR8Os7YzA0
-         FOTg4a0U4614sC5ajX4ukgtkBqO1JE1RTwYnqmdseC/smLCadY2+VvGCZRLF0b/i8P7S
-         3N4IDTG41sweLajPkCcl2qIpoU9227bj7utrEfoLATKRytC1x4oIFk2iCk52RBZ9hViz
-         o9mUJz1DxYZcUdTyERmkDiqWfCutQcy7LpyJjQvUEHOD1sagmG2G8x2vgkeIuJi5kZgi
-         nfTjKubMDu6rp/NqFIDNY46iQJtUF56lFO6tj7FYcTjw29AztZqJhnN2Itu3TVD5tkbC
-         dFHw==
-X-Gm-Message-State: AOJu0YxCG8ANGmhbZ1XOCgUN2shFgh5oAHi6lH5LPqktUNAeZYnidx74
-	VKGSuj+HK0rOeiZWkYPrEU285WGaOv/hTB1kK4Pvpl+EmiMlLsWkyKwh4kdXLsCM3OOpYBay1qE
-	RH3+8/JFVd3Dc6kIkNBFLxo/u+dY=
-X-Google-Smtp-Source: AGHT+IE5HMQzIc+TArWe0msfKNUe5klDoyOrIKRejzpI4XPX5Qk1PrySY4hq5sY2kslVXNINfUOwZasIbFSwZ8mozlo=
-X-Received: by 2002:a05:6602:583:b0:7c0:35ac:dab8 with SMTP id
- v3-20020a056602058300b007c035acdab8mr3484746iox.1.1706913228646; Fri, 02 Feb
- 2024 14:33:48 -0800 (PST)
+	s=arc-20240116; t=1706913307; c=relaxed/simple;
+	bh=piSJZV9wP11DN45leIZQLdOe8OAXQLdIK19f/zlcWl4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TN1aigFomZkzZid/f7CBN4XuU+yESioe87Tye4a+zppZL96W+3qcqzOdHk4AWTAchAyy5sWDAOo7YVD1b/4y0EWB3AgThYmGteyA0dNnzOExA9zIsR4MCd2gzar7KJm1pL27EC0vUk4CADF/3Bg5VolF0FaPlcZVIVBJXKBMOKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jF9t6KSP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F1EAC433F1;
+	Fri,  2 Feb 2024 22:35:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706913307;
+	bh=piSJZV9wP11DN45leIZQLdOe8OAXQLdIK19f/zlcWl4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=jF9t6KSPmMvMVh1V9fW20wY/mwPs4yjcFfPG1BffzLlhv/w0/nHcX8v58Y9ztZIrp
+	 GFxS/7N/aEfGij7jg5zy9l84eu1gVAQloefohZhnUJFwD42M0wUo0VLR696txWpT3i
+	 xx5F9BEQhAhSFZfNd5rFVhKc4N5Lx1ZTvcwnZilOE+IMb/38zUI2e7BhFtT6cnKr/U
+	 qzcFm9BvFUxtTcY40dym3jov6+J6WwrVbzNhrxJ1NxU6sdHOnxvv21RBF/Q1BmFERS
+	 g0LGxkyuwnHERO1Y8rq1Al8K9KqHXzs/iQEh6WzC+G4ThXeKXZkBJiBElPyhFYbw4G
+	 uKTDgsm1Ozqkw==
+From: Rob Herring <robh@kernel.org>
+To: Linus Walleij <linus.walleij@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>
+Cc: linux-gpio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-tegra@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: pinctrl: nvidia,tegra234-pinmux: Restructure common schema
+Date: Fri,  2 Feb 2024 16:34:53 -0600
+Message-ID: <20240202223454.1667383-1-robh@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201-b4-zswap-invalidate-entry-v1-0-56ed496b6e55@bytedance.com>
- <20240201-b4-zswap-invalidate-entry-v1-6-56ed496b6e55@bytedance.com>
-In-Reply-To: <20240201-b4-zswap-invalidate-entry-v1-6-56ed496b6e55@bytedance.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Fri, 2 Feb 2024 14:33:37 -0800
-Message-ID: <CAKEwX=MOcmUjtrYOJCwh3unRT7OKdrvtR-FFdSevNf5i7z=Q=A@mail.gmail.com>
-Subject: Re: [PATCH 6/6] mm/zswap: zswap entry doesn't need refcount anymore
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Yosry Ahmed <yosryahmed@google.com>, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 1, 2024 at 7:50=E2=80=AFAM Chengming Zhou
-<zhouchengming@bytedance.com> wrote:
->
-> Since we don't need to leave zswap entry on the zswap tree anymore,
-> we should remove it from tree once we find it from the tree.
->
-> Then after using it, we can directly free it, no concurrent path
-> can find it from tree. Only the shrinker can see it from lru list,
-> which will also double check under tree lock, so no race problem.
->
-> So we don't need refcount in zswap entry anymore and don't need to
-> take the spinlock for the second time to invalidate it.
->
-> The side effect is that zswap_entry_free() maybe not happen in tree
-> spinlock, but it's ok since nothing need to be protected by the lock.
->
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+The structure of the NVIDIA Tegra234 common pinmux schema doesn't work
+for restricting properties because a child node schema can't be extended
+with additional properties from another schema defining the same child
+node. The 2 child node schemas are evaluated independently as the
+schemas are not recursively combined in any way.
 
-Oh this is sweet! Fewer things to keep in mind.
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+As the common schema is almost all the child node schema anyways, just
+remove the parent node from the common schema. Then add 'reg' and adjust
+the $ref's in the users of the common schema.
 
-> ---
->  mm/zswap.c | 63 +++++++++++---------------------------------------------=
-------
->  1 file changed, 11 insertions(+), 52 deletions(-)
->
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index cbf379abb6c7..cd67f7f6b302 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -193,12 +193,6 @@ struct zswap_pool {
->   *
->   * rbnode - links the entry into red-black tree for the appropriate swap=
- type
->   * swpentry - associated swap entry, the offset indexes into the red-bla=
-ck tree
-> - * refcount - the number of outstanding reference to the entry. This is =
-needed
-> - *            to protect against premature freeing of the entry by code
-> - *            concurrent calls to load, invalidate, and writeback.  The =
-lock
-> - *            for the zswap_tree structure that contains the entry must
-> - *            be held while changing the refcount.  Since the lock must
-> - *            be held, there is no reason to also make refcount atomic.
->   * length - the length in bytes of the compressed page data.  Needed dur=
-ing
->   *          decompression. For a same value filled page length is 0, and=
- both
->   *          pool and lru are invalid and must be ignored.
-> @@ -211,7 +205,6 @@ struct zswap_pool {
->  struct zswap_entry {
->         struct rb_node rbnode;
->         swp_entry_t swpentry;
-> -       int refcount;
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ .../pinctrl/nvidia,tegra234-pinmux-aon.yaml   |  7 +-
+ .../nvidia,tegra234-pinmux-common.yaml        | 84 ++++++++-----------
+ .../pinctrl/nvidia,tegra234-pinmux.yaml       |  7 +-
+ 3 files changed, 45 insertions(+), 53 deletions(-)
 
-Hah this should even make zswap a bit more space-efficient. IIRC Yosry
-has some analysis regarding how much less efficient zswap will be
-every time we add a new field to zswap entry - this should go in the
-opposite direction :)
+diff --git a/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux-aon.yaml b/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux-aon.yaml
+index f3deda9f7127..db8224dfba2c 100644
+--- a/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux-aon.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux-aon.yaml
+@@ -10,18 +10,21 @@ maintainers:
+   - Thierry Reding <thierry.reding@gmail.com>
+   - Jon Hunter <jonathanh@nvidia.com>
+ 
+-$ref: nvidia,tegra234-pinmux-common.yaml
+-
+ properties:
+   compatible:
+     const: nvidia,tegra234-pinmux-aon
+ 
++  reg:
++    maxItems: 1
++
+ patternProperties:
+   "^pinmux(-[a-z0-9-]+)?$":
+     type: object
+ 
+     # pin groups
+     additionalProperties:
++      $ref: nvidia,tegra234-pinmux-common.yaml
++
+       properties:
+         nvidia,pins:
+           items:
+diff --git a/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux-common.yaml b/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux-common.yaml
+index 4f9de78085e5..8cf9e4c915ff 100644
+--- a/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux-common.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux-common.yaml
+@@ -10,57 +10,43 @@ maintainers:
+   - Thierry Reding <thierry.reding@gmail.com>
+   - Jon Hunter <jonathanh@nvidia.com>
+ 
+-properties:
+-  reg:
+-    items:
+-      - description: pinmux registers
+-
+-patternProperties:
+-  "^pinmux(-[a-z0-9-]+)?$":
+-    type: object
+-
+-    # pin groups
+-    additionalProperties:
+-      $ref: nvidia,tegra-pinmux-common.yaml
+-      # We would typically use unevaluatedProperties here but that has the
+-      # downside that all the properties in the common bindings become valid
+-      # for all chip generations. In this case, however, we want the per-SoC
+-      # bindings to be able to override which of the common properties are
+-      # allowed, since not all pinmux generations support the same sets of
+-      # properties. This way, the common bindings define the format of the
+-      # properties but the per-SoC bindings define which of them apply to a
+-      # given chip.
+-      additionalProperties: false
+-      properties:
+-        nvidia,function:
+-          enum: [ gp, uartc, i2c8, spi2, i2c2, can1, can0, rsvd0, eth0, eth2,
+-                  eth1, dp, eth3, i2c4, i2c7, i2c9, eqos, pe2, pe1, pe0, pe3,
+-                  pe4, pe5, pe6, pe7, pe8, pe9, pe10, qspi0, qspi1, qpsi,
+-                  sdmmc1, sce, soc, gpio, hdmi, ufs0, spi3, spi1, uartb, uarte,
+-                  usb, extperiph2, extperiph1, i2c3, vi0, i2c5, uarta, uartd,
+-                  i2c1, i2s4, i2s6, aud, spi5, touch, uartj, rsvd1, wdt, tsc,
+-                  dmic3, led, vi0_alt, i2s5, nv, extperiph3, extperiph4, spi4,
+-                  ccla, i2s1, i2s2, i2s3, i2s8, rsvd2, dmic5, dca, displayb,
+-                  displaya, vi1, dcb, dmic1, dmic4, i2s7, dmic2, dspk0, rsvd3,
+-                  tsc_alt, istctrl, vi1_alt, dspk1, igpu ]
++$ref: nvidia,tegra-pinmux-common.yaml
+ 
+-        # out of the common properties, only these are allowed for Tegra234
+-        nvidia,pins: true
+-        nvidia,pull: true
+-        nvidia,tristate: true
+-        nvidia,schmitt: true
+-        nvidia,enable-input: true
+-        nvidia,open-drain: true
+-        nvidia,lock: true
+-        nvidia,drive-type: true
+-        nvidia,io-hv: true
+-
+-      required:
+-        - nvidia,pins
++properties:
++  nvidia,function:
++    enum: [ gp, uartc, i2c8, spi2, i2c2, can1, can0, rsvd0, eth0, eth2,
++            eth1, dp, eth3, i2c4, i2c7, i2c9, eqos, pe2, pe1, pe0, pe3,
++            pe4, pe5, pe6, pe7, pe8, pe9, pe10, qspi0, qspi1, qpsi,
++            sdmmc1, sce, soc, gpio, hdmi, ufs0, spi3, spi1, uartb, uarte,
++            usb, extperiph2, extperiph1, i2c3, vi0, i2c5, uarta, uartd,
++            i2c1, i2s4, i2s6, aud, spi5, touch, uartj, rsvd1, wdt, tsc,
++            dmic3, led, vi0_alt, i2s5, nv, extperiph3, extperiph4, spi4,
++            ccla, i2s1, i2s2, i2s3, i2s8, rsvd2, dmic5, dca, displayb,
++            displaya, vi1, dcb, dmic1, dmic4, i2s7, dmic2, dspk0, rsvd3,
++            tsc_alt, istctrl, vi1_alt, dspk1, igpu ]
++
++  # out of the common properties, only these are allowed for Tegra234
++  nvidia,pins: true
++  nvidia,pull: true
++  nvidia,tristate: true
++  nvidia,schmitt: true
++  nvidia,enable-input: true
++  nvidia,open-drain: true
++  nvidia,lock: true
++  nvidia,drive-type: true
++  nvidia,io-hv: true
+ 
+ required:
+-  - compatible
+-  - reg
++  - nvidia,pins
++
++# We would typically use unevaluatedProperties here but that has the
++# downside that all the properties in the common bindings become valid
++# for all chip generations. In this case, however, we want the per-SoC
++# bindings to be able to override which of the common properties are
++# allowed, since not all pinmux generations support the same sets of
++# properties. This way, the common bindings define the format of the
++# properties but the per-SoC bindings define which of them apply to a
++# given chip.
++additionalProperties: false
+ 
+-additionalProperties: true
+ ...
+diff --git a/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux.yaml b/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux.yaml
+index 17b865ecfcda..f5a3a881dec4 100644
+--- a/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux.yaml
+@@ -10,18 +10,21 @@ maintainers:
+   - Thierry Reding <thierry.reding@gmail.com>
+   - Jon Hunter <jonathanh@nvidia.com>
+ 
+-$ref: nvidia,tegra234-pinmux-common.yaml
+-
+ properties:
+   compatible:
+     const: nvidia,tegra234-pinmux
+ 
++  reg:
++    maxItems: 1
++
+ patternProperties:
+   "^pinmux(-[a-z0-9-]+)?$":
+     type: object
+ 
+     # pin groups
+     additionalProperties:
++      $ref: nvidia,tegra234-pinmux-common.yaml
++
+       properties:
+         nvidia,pins:
+           items:
+-- 
+2.43.0
 
->         unsigned int length;
->         struct zswap_pool *pool;
->         union {
-> @@ -222,11 +215,6 @@ struct zswap_entry {
->         struct list_head lru;
->  };
->
-> -/*
-> - * The tree lock in the zswap_tree struct protects a few things:
-> - * - the rbtree
-> - * - the refcount field of each entry in the tree
-> - */
->  struct zswap_tree {
->         struct rb_root rbroot;
->         spinlock_t lock;
-> @@ -890,14 +878,10 @@ static int zswap_rb_insert(struct rb_root *root, st=
-ruct zswap_entry *entry,
->         return 0;
->  }
->
-> -static bool zswap_rb_erase(struct rb_root *root, struct zswap_entry *ent=
-ry)
-> +static void zswap_rb_erase(struct rb_root *root, struct zswap_entry *ent=
-ry)
->  {
-> -       if (!RB_EMPTY_NODE(&entry->rbnode)) {
-> -               rb_erase(&entry->rbnode, root);
-> -               RB_CLEAR_NODE(&entry->rbnode);
-> -               return true;
-> -       }
-> -       return false;
-> +       rb_erase(&entry->rbnode, root);
-> +       RB_CLEAR_NODE(&entry->rbnode);
->  }
->
->  /*********************************
-> @@ -911,7 +895,6 @@ static struct zswap_entry *zswap_entry_cache_alloc(gf=
-p_t gfp, int nid)
->         entry =3D kmem_cache_alloc_node(zswap_entry_cache, gfp, nid);
->         if (!entry)
->                 return NULL;
-> -       entry->refcount =3D 1;
->         RB_CLEAR_NODE(&entry->rbnode);
->         return entry;
->  }
-> @@ -954,33 +937,15 @@ static void zswap_entry_free(struct zswap_entry *en=
-try)
->         zswap_update_total_size();
->  }
->
-> -/* caller must hold the tree lock */
-> -static void zswap_entry_get(struct zswap_entry *entry)
-> -{
-> -       WARN_ON_ONCE(!entry->refcount);
-> -       entry->refcount++;
-> -}
-> -
-> -/* caller must hold the tree lock */
-> -static void zswap_entry_put(struct zswap_entry *entry)
-> -{
-> -       WARN_ON_ONCE(!entry->refcount);
-> -       if (--entry->refcount =3D=3D 0) {
-> -               WARN_ON_ONCE(!RB_EMPTY_NODE(&entry->rbnode));
-> -               zswap_entry_free(entry);
-> -       }
-> -}
-> -
->  /*
-> - * If the entry is still valid in the tree, drop the initial ref and rem=
-ove it
-> - * from the tree. This function must be called with an additional ref he=
-ld,
-> - * otherwise it may race with another invalidation freeing the entry.
-> + * The caller hold the tree lock and search the entry from the tree,
-> + * so it must be on the tree, remove it from the tree and free it.
->   */
->  static void zswap_invalidate_entry(struct zswap_tree *tree,
->                                    struct zswap_entry *entry)
->  {
-> -       if (zswap_rb_erase(&tree->rbroot, entry))
-> -               zswap_entry_put(entry);
-> +       zswap_rb_erase(&tree->rbroot, entry);
-> +       zswap_entry_free(entry);
->  }
->
->  /*********************************
-> @@ -1219,7 +1184,7 @@ static int zswap_writeback_entry(struct zswap_entry=
- *entry,
->         }
->
->         /* Safe to deref entry after the entry is verified above. */
-> -       zswap_entry_get(entry);
-> +       zswap_rb_erase(&tree->rbroot, entry);
->         spin_unlock(&tree->lock);
->
->         zswap_decompress(entry, &folio->page);
-> @@ -1228,10 +1193,7 @@ static int zswap_writeback_entry(struct zswap_entr=
-y *entry,
->         if (entry->objcg)
->                 count_objcg_event(entry->objcg, ZSWPWB);
->
-> -       spin_lock(&tree->lock);
-> -       zswap_invalidate_entry(tree, entry);
-> -       zswap_entry_put(entry);
-> -       spin_unlock(&tree->lock);
-> +       zswap_entry_free(entry);
->
->         /* folio is up to date */
->         folio_mark_uptodate(folio);
-> @@ -1702,7 +1664,7 @@ bool zswap_load(struct folio *folio)
->                 spin_unlock(&tree->lock);
->                 return false;
->         }
-> -       zswap_entry_get(entry);
-> +       zswap_rb_erase(&tree->rbroot, entry);
->         spin_unlock(&tree->lock);
->
->         if (entry->length)
-> @@ -1717,10 +1679,7 @@ bool zswap_load(struct folio *folio)
->         if (entry->objcg)
->                 count_objcg_event(entry->objcg, ZSWPIN);
->
-> -       spin_lock(&tree->lock);
-> -       zswap_invalidate_entry(tree, entry);
-> -       zswap_entry_put(entry);
-> -       spin_unlock(&tree->lock);
-> +       zswap_entry_free(entry);
->
->         folio_mark_dirty(folio);
->
->
-> --
-> b4 0.10.1
 
