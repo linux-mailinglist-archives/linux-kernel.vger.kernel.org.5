@@ -1,69 +1,64 @@
-Return-Path: <linux-kernel+bounces-49656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3BB3846D87
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:15:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C85BE846D85
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:15:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B0311F244B2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:15:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5F231C2518B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9F307C0A4;
-	Fri,  2 Feb 2024 10:15:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3D517A70F;
+	Fri,  2 Feb 2024 10:15:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="t5NptUfm";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KDSpFCd3"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BwctDpLZ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CE03604BF;
-	Fri,  2 Feb 2024 10:15:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF7E22067;
+	Fri,  2 Feb 2024 10:15:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706868937; cv=none; b=YAV/dsg6IHclGLuvOGLkpkEua9EH3FYMnPhSoBoFxJl9+dpzq85NPNZIwkyq/dSpkDDdLUvMD22I5HClnuyPV2KdPuEn9KVk5dm2Pf6acOiMA3LVd1Yy4G3x6Dphq2tK93qXcc3lq7xYT1gIWN/8h5Z/jPkt7VfCPCH6xdXgfVs=
+	t=1706868936; cv=none; b=uaUkRNazRZhFxktl7PL9RDwSTFhH2/jDxYBGUmqmxNMYSwZIErbHl148/hwyWnIBYsaHolM6NjZBFUD1hkssPEB7i5SmF/4OLN+ugoywzkW37Z+5rgMOxntzl1GOKq0/oe7yy42rAxf56EOKpQMehTkCjqAsyBcYzxMP8moyhcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706868937; c=relaxed/simple;
-	bh=E3WldveCa94S5WNb2X3oqe4POnlIFKkp9qpQEU3ZUV0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZhcgJ+/UcOk9RyifyoU9X3wRh1Mqxa9P+h/I3sbewXiDud1FvexxLxQG/o1Fxta4ujG/oTIUlHqf8PNFVC2Xo1E83Pu1bEwNxGdTr4CiNfaMqV+CIIeNsGtHBDWEJRy0KvfF9mYptbjrf1JzFXkospPLexQL2Kplo20WO3w3Oq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=t5NptUfm; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KDSpFCd3; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from blackpad (unknown [10.100.12.75])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 58CFC1F461;
-	Fri,  2 Feb 2024 10:15:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706868933; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YG/G98bRsAnGh877wO+CNpr7OSPc876vz8JKWKpu7x8=;
-	b=t5NptUfm52ay6TCDiMFIYGgKuDry0bkrabgNwhUrEeWMOj5LMcIhmbfcWOkXw09jBzFxNo
-	2RE0ujQRjek0Wf25yAizUoO3EFfBg2uT17S0xdFm/LpeEVl/pBGHb5yGMcFcpl1/wGq2xT
-	E+1Nki4QSrgUVEcFS3NUtrkQC1Z1n8s=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706868932; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YG/G98bRsAnGh877wO+CNpr7OSPc876vz8JKWKpu7x8=;
-	b=KDSpFCd3kVc5wqknaVaSk2qJ3647XRbzLNQrQDlg6lV0P6KuX2x1yLYAGp7BlvgfJSVx0a
-	0XrVgWj1v3Fe2yFAJHCr16adkisWRbVzkfJCT/BGHbV68XWard5frxgx1f2C7HhDO369SN
-	mtCza+wH2LLg7J97GGAnRfviryBcIgU=
-Date: Fri, 2 Feb 2024 11:15:31 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Efly Young <yangyifei03@kuaishou.com>
-Cc: hannes@cmpxchg.org, akpm@linux-foundation.org, android-mm@google.com, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	mhocko@kernel.org, muchun.song@linux.dev, roman.gushchin@linux.dev, 
-	shakeelb@google.com, tjmercier@google.com, yuzhao@google.com
-Subject: Re: Re: [PATCH] mm: memcg: Use larger chunks for proactive reclaim
-Message-ID: <vofidz4pzybyxoozjrmuqhycm2aji6inp6lkgd3fakyv5jqsjr@pleoj7ljsxhi>
-References: <20240201153428.GA307226@cmpxchg.org>
- <20240202050247.45167-1-yangyifei03@kuaishou.com>
+	s=arc-20240116; t=1706868936; c=relaxed/simple;
+	bh=h7pf+bNSUITFu2AR32lONlZfWSLcGLsu9hqoSGsNIuw=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IDM8YzlqwvQOiCfO2ADK9w0vb3IY6tsNddFX+aLfVqtTdiEiZmPKb6dbnIRCPaXxt0rGgZisCoudo+tSEL7yOXO8tGe6EW9zQtMUxRF4wpkWkBI1PW/Sfs+ALn43HciRoc3SdOkMoSFjMX0CoOM14Je4Zxk8gZ/ICavb0c28XG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BwctDpLZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78767C433F1;
+	Fri,  2 Feb 2024 10:15:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706868936;
+	bh=h7pf+bNSUITFu2AR32lONlZfWSLcGLsu9hqoSGsNIuw=;
+	h=Date:From:To:Subject:References:In-Reply-To:From;
+	b=BwctDpLZDWbJsBJE0Xz53F3PiYQyC9raKY8A5S4MwkSs+RfXGTziIWaKODe4jkcTk
+	 2XxNS4Jm+epJfybsgeyMcQvNg6TIP577c6yUsq7F/sFfVU/slRZ/rZ7+kiwSkdZNNa
+	 5UIOpiuA22uAk9YV8gzLu3wWEEbvZ777KqhmFR+JUhDHyLz3YZmbmLAHr8k8ImLbvW
+	 kFXgBHxm8KkXsegqI4P9xpt0GqdqUMvMfzMfxbHiApgLiqDMVO8yswGelI1nKI3YmW
+	 mT4ydLO/nrtJWQZhWQlym+4vtn5kh+NGAlIRQtwOi4YGqd+1ev9bQz+QAeZgOK1fy/
+	 aJ07bsCNFoa0A==
+Date: Fri, 2 Feb 2024 11:15:33 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Jani Nikula <jani.nikula@linux.intel.com>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	Sam Ravnborg <sam@ravnborg.org>, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	David Airlie <airlied@gmail.com>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Rob Clark <robdclark@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>
+Subject: Re: Re: [PATCH RFC 0/4] Support for Simulated Panels
+Message-ID: <gs634bhdctmpxhhdjw3bddirvc6ex7fwdmy4xr4pygyibvmp5g@zfouf76tmti2>
+References: <20240116-jz-test-sim-panel-v1-0-f9511f46c9c7@quicinc.com>
+ <x6wi5xnihnbpqsujjfjfw3ft6njncruta5l3xa44pds5oxmdkw@mmvv4bciy65s>
+ <87cyu0qn81.fsf@intel.com>
+ <e1f10583-1d5b-fdac-24bf-098a0ba06241@quicinc.com>
+ <hhmbghooegclx3jbsx2neryligk3mj77lq7gns5xegags5ltoz@acdu6hssqwlw>
+ <99705d73-abcf-6d41-3d50-757e706cf1fc@quicinc.com>
+ <Zbi4-S49CWlUkO__@phenom.ffwll.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,92 +66,95 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="i6547u4e3dsdsmiu"
+	protocol="application/pgp-signature"; boundary="x2i24xsvgdspxesl"
 Content-Disposition: inline
-In-Reply-To: <20240202050247.45167-1-yangyifei03@kuaishou.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -5.90
-X-Spamd-Result: default: False [-5.90 / 50.00];
-	 TO_DN_SOME(0.00)[];
-	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 SIGNED_PGP(-2.00)[];
-	 RCVD_COUNT_ZERO(0.00)[0];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-0.998];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[kuaishou.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[]
-X-Spam-Flag: NO
+In-Reply-To: <Zbi4-S49CWlUkO__@phenom.ffwll.local>
 
 
---i6547u4e3dsdsmiu
+--x2i24xsvgdspxesl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 02, 2024 at 01:02:47PM +0800, Efly Young <yangyifei03@kuaishou.=
-com> wrote:
-> > Looking at the code, I'm not quite sure if this can be read this
-> > literally. Efly might be able to elaborate, but we do a full loop of
-> > all nodes and cgroups in the tree before checking nr_to_reclaimed, and
-> > rely on priority level for granularity. So request size and complexity
-> > of the cgroup tree play a role. I don't know where the exact factor
-> > two would come from.
->=20
-> I'm sorry that this conclusion may be arbitrary. It might just only suit
-> for my case. In my case, I traced it loop twice every time before checking
-> nr_reclaimed, and it reclaimed less than my request size(1G) every time.
-> So I think the upper bound is 2 * request. But now it seems that this is
-> related to cgroup tree I constucted and my system status and my request
-> size(a relatively large chunk). So there are many influencing factors,
-> a specific upper bound is not accurate.
-
-Alright, thanks for the background.
-
-> > IMO it's more accurate to phrase it like this:
+On Tue, Jan 30, 2024 at 09:53:13AM +0100, Daniel Vetter wrote:
+> > > > > > Wouldn't it be simpler if we had a vkms-like panel that we coul=
+d either
+> > > > > > configure from DT or from debugfs that would just be registered=
+ the
+> > > > > > usual way and would be the only panel we register?
+> > > > >=20
+> > > >=20
+> > > > No, we need to have validate actual hardware pipeline with the simu=
+lated
+> > > > panel. With vkms, actual display pipeline will not be validated. Wi=
+th
+> > > > incorrect display pipeline misconfigurations arising from different=
+ panel
+> > > > combinations, this can easily be caught with any existing IGT CRC t=
+esting.
+> > > > In addition, all performance related bugs can also be easily caught=
+ by
+> > > > simulating high resolution displays.
+> > >=20
+> > > That's not what I meant. What I meant was that something like a
+> > > user-configurable, generic, panel driver would be a good idea. Just l=
+ike
+> > > vkms (with the debugfs patches) is for a full blown KMS device.
+> > >=20
 > >=20
-> > Reclaim tries to balance nr_to_reclaim fidelity with fairness across
-> > nodes and cgroups over which the pages are spread. As such, the bigger
-> > the request, the bigger the absolute overreclaim error. Historic
-> > in-kernel users of reclaim have used fixed, small request batches to
-> > approach an appropriate reclaim rate over time. When we reclaim a user
-> > request of arbitrary size, use decaying batches to manage error while
-> > maintaining reasonable throughput.
+> > Let me respond for both this question and the one below from you/Jani.
+> >=20
+> > Certainly having user-configurable information is a goal here. The end-=
+goal
+> > is to make everything there in the existing panels such as below like I
+> > wrote:
+> >=20
+> > 1) Display resolution with timings (drm_display_mode)
+> > 2) Compression/non-compression
+> > 3) Command mode/Video mode
+> > 4) MIPI mode flags
+> > 5) DCS commands for panel enable/disable and other panel sequences
+> > 6) Power-up/Power-down sequence for the panel
+> >=20
+> > But, we also have to see what all is feasible today from the DRM fwk
+> > standpoint. There are some limitations about what is boot-time configur=
+able
+> > using bootparams and what is runtime configurable (across a modeset) us=
+ing
+> > debugfs.
+> >=20
+> > 1) Today, everything part of struct mipi_dsi_device needs to be availab=
+le at
+> > boot time from what I can see as we need that while calling
+> > mipi_dsi_attach(). So for that we went with boot-params.
+> >=20
+> > 2) For the list of modes, we can move this to a debugfs like
+> > "populate_modes" which the client using a sim panel can call before pic=
+king
+> > a mode and triggering a commit.
+> >=20
+> > But we need to have some default mode and configuration.
+>=20
+> Uh, at the risk of sounding a bit like I'm just chasing the latest
+> buzzwords, but this sounds like something that's screaming for ebpf.
 
-Hm, decay...
-So shouldn't the formula be
-  nr_pages =3D delta <=3D SWAP_CLUSTER_MAX ? delta : (delta + 3*SWAP_CLUSTE=
-R_MAX) / 4
-where
-  delta =3D nr_to_reclaim - nr_reclaimed
-?
-(So that convergence for smaller deltas is same like original- and other
-reclaims while conservative factor is applied for effectivity of higher
-user requests.)
+I make a half-joke to Jani on IRC about it, but I was also being
+half-serious. If the goal we want to have is to fully emulate any panel
+variation, ebpf really looks like the best and most flexible way
+forward.
 
-Thanks,
-Michal
+Maxime
 
---i6547u4e3dsdsmiu
+--x2i24xsvgdspxesl
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZbzArwAKCRAGvrMr/1gc
-jgzbAQCS67JzDKT6wEDM8S72f5VdiKV8t/HeB+VB6/lh57jnsQEAgbHFRm3ydZLW
-+QPinqIYWeFg0bd97cxxHhyNjoAmswY=
-=64ep
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZbzAxAAKCRDj7w1vZxhR
+xeDFAPsEkAg9JZXmG4PMCxnBcetbzTCgjtu7yt2xbAS+3Bv5ngD/ViFSXXlR9Y10
+yvcfom7OcYMCE0WPcHPfQCNuRiirvwM=
+=+MTv
 -----END PGP SIGNATURE-----
 
---i6547u4e3dsdsmiu--
+--x2i24xsvgdspxesl--
 
