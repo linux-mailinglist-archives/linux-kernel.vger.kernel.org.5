@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-50573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 817DA847AEC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:01:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0D6C847AEB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:01:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA8CB1C22406
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:01:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54F91B24707
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D55D85954;
-	Fri,  2 Feb 2024 21:00:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CA428060F;
+	Fri,  2 Feb 2024 21:00:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GcfYMRnS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OM4seBrR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5DE8529C;
-	Fri,  2 Feb 2024 21:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A591E83A0F;
+	Fri,  2 Feb 2024 21:00:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706907622; cv=none; b=qUOrdJS0d58/jY0bHG/stGO6R9lSPKC+/ohY0+OVT+ulVQoOwulra2hDeCtvhTlUo6K436yeUsTTQiqXPQ4gZxgBLyIcnatdtSaNVgZPeu9L+sZgPvwj+gHSpKefcNQaG9TiK63cp2x0bBQLvkBK1nkTWbixT1+35DyqTxZgckY=
+	t=1706907621; cv=none; b=ZCnbM+V6GOM//W+irxDUNBhxk9hf9t41T1Bai84iFgu2SEGMfUIYhA0v9NYKb9z+jMZ5qH9Le1gUqCaUbe9jgrYVIu202PzJ4fxrMK8V3/lYNlb7hPgqpWtFmRIlOa+buiQdf1uww+ByDr3p9yrMRgERBeuJsIc9f5Vfg6NYU4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706907622; c=relaxed/simple;
-	bh=FlZPkuypdfuwrjUc2hLFLkDIP7we5FEPKOdm+n2I0aQ=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=RXI8INR2VdTT8MNTqa0Rh30u6ysh0rdXWJzDflaqP4h5K5jsA2XvSv41ztvfIxnuZukraGR3RYoZ8cEOG9oehzSZN0Av++l76nSBtN5A7Wkb7En/rzDFRbCaxj6rSMiWdHD3nztLoJxn9HlFBhBvyHnVAs1G+Yn4h4oI//GNk3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GcfYMRnS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D9AFBC43399;
+	s=arc-20240116; t=1706907621; c=relaxed/simple;
+	bh=QcusuvkZju3ZuWeqcFz2VxijShzSXrp5sL3xhUi9l+M=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=ukzpGXb+4j3UFARyxpIB2cQ8Bo90HTVeyg3YRtzCT/4Wbd5GG8hpon2M0IbnZza391ttHkztAY7w9E+KtkQ/qhsBQcl9bQprLA6DbHnVX53847E8wSSEZrLrFYLLw/P3gaNZNsubL/JbTN6xIAvgO0fRcgwx2uqzdqKT2SVBwg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OM4seBrR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8950FC43609;
 	Fri,  2 Feb 2024 21:00:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1706907621;
-	bh=FlZPkuypdfuwrjUc2hLFLkDIP7we5FEPKOdm+n2I0aQ=;
+	bh=QcusuvkZju3ZuWeqcFz2VxijShzSXrp5sL3xhUi9l+M=;
 	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=GcfYMRnSKC/bmvhfnTnvG+ZLHDPYRylIAMa5q7MJcnbezKb7mt7aPCGMIvTIfClIc
-	 v5dw0JQfueOXx6KflmYz0dCkZc13eXYjwR4S7B6EAZCBfQpMl9z4bcFYxHcWfJQzcD
-	 dcTIeuLCQJyvp5Y6HTUSMhxlhoYsFSpXI4ngKbSrOYd/D6KFWuyRKIC+xYUgg7LS2H
-	 8uww7101Ns+v8B8oC/JfT4QfHJklZQqPc/59YDnGmFNg5YK6RKLlUj/YJydOyTlK5k
-	 13XpljKPgC+0MtNp4/DtBUSCYCBKNAIeEgPtQdZTLihuCZ63Thxhjsv5CZOP1xR7Ep
-	 5DJz4gmezdumg==
+	b=OM4seBrRQo0QD0OO35Xe15Jkd6JO66nWDtoigYQHz+VuBFVpdQIstIPnswe2gLD06
+	 lqNe2ae/LLLpmO5RyMRN9sgAs/bGgNivC35K89ZaUbWmmNUquICb174KyqyXlvAmhw
+	 6GX+bNNexOcflKnZyUS/jbuK3m/oH2sjfOOrKNIWiPNcvsAhdM4QY0+usY596EhnfK
+	 0a3XQKN0N9BCFrn2OzCcUgXnXmct4siSccdjNpZLgoF9A7QZLyRu23r8Z53JnbjjwQ
+	 vllNsa+EQXTk+XvLWKm6G35QbezhWx7sEyFIiDzW04fgHD0zzi0MqEaNRePMZPtI2+
+	 iZpOnIDc6H1rw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C7894D8C978;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7716CDC99E7;
 	Fri,  2 Feb 2024 21:00:21 +0000 (UTC)
-Subject: Re: [git pull] Input updates for v6.8-rc2
+Subject: Re: [GIT PULL] hwmon fixes for v6.8-rc3
 From: pr-tracker-bot@kernel.org
-In-Reply-To: <Zb1HxLM3Vs9p4MiG@google.com>
-References: <Zb1HxLM3Vs9p4MiG@google.com>
+In-Reply-To: <20240202183012.1607147-1-linux@roeck-us.net>
+References: <20240202183012.1607147-1-linux@roeck-us.net>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <Zb1HxLM3Vs9p4MiG@google.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git tags/input-for-v6.8-rc2
-X-PR-Tracked-Commit-Id: 4255447ad34c5c3785fcdcf76cfa0271d6e5ed39
+X-PR-Tracked-Message-Id: <20240202183012.1607147-1-linux@roeck-us.net>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v6.8-rc3
+X-PR-Tracked-Commit-Id: 915644189c22d9c93e9fee7c7c993b58e745bef7
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: eab5c86d2413dd92fe94a735673141e8ee873f7a
-Message-Id: <170690762181.8980.2833397204010608676.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 43e7ef642ef2e3a26bf1118e27c992ebba3d2d6b
+Message-Id: <170690762148.8980.9507908163887296398.pr-tracker-bot@kernel.org>
 Date: Fri, 02 Feb 2024 21:00:21 +0000
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Fri, 2 Feb 2024 11:51:32 -0800:
+The pull request you sent on Fri,  2 Feb 2024 10:30:12 -0800:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git tags/input-for-v6.8-rc2
+> git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v6.8-rc3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/eab5c86d2413dd92fe94a735673141e8ee873f7a
+https://git.kernel.org/torvalds/c/43e7ef642ef2e3a26bf1118e27c992ebba3d2d6b
 
 Thank you!
 
