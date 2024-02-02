@@ -1,184 +1,141 @@
-Return-Path: <linux-kernel+bounces-50129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B05A84749F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:24:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8789C8474A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:24:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 686021C26332
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:24:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1DBDB27BC7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:24:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E70B71474CF;
-	Fri,  2 Feb 2024 16:24:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF9261482F4;
+	Fri,  2 Feb 2024 16:24:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rr4y2Q11"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YDPgpbrP"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33C6F145356;
-	Fri,  2 Feb 2024 16:24:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1591E1474BF
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 16:24:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706891058; cv=none; b=t4CURAYt52/VVN/27H5czvJbI12gvlAMeOVk6LJtfyKCDP++l15iHo9tDNjJWKijPI8HZq3rnwDbVO0RihHneqymsxh3iyL/hxvKB85wKoEWgfQEi2QI52s4X5eCNw36OyE+N+g72iu0zL9/9CoVy9k4yY+iEj86vHDqvKqw2v4=
+	t=1706891080; cv=none; b=JkAXiDvXzWtE7y3Kw6eYQQRNZyhif/ZO5krt6PXke+gmPRkrdGEH/FuUi8uS8/+t68AwyhpIB3c2po9USKwlafR9h/+WMrR+dHlr2geSYdjn51DD6I0qk2gOm5cFT6k2dDyIstscR35FrOo7W+3d0Y2waYhdxatNEN5WBakfyms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706891058; c=relaxed/simple;
-	bh=nf1dgIwaXauoxmAsRA//GzUzQl0CfZAGGsi0S4FzkvM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NN4QTq+OFxeCGh/zOxuwcsJtVLJ8UdQKxoWbjK9lEVnXL3xuCWyO3VlGAuag5ARvwXAjOzrPdrR9RQjAdk0UdQftdPPkpWQgj4HaZlS5MGuD9BmCTec/iC4eS720UMnIRUs5uNcbxREcR7HLCS3VgblBuDSnnEVS/yf8ugu0VAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rr4y2Q11; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5DD8C433C7;
-	Fri,  2 Feb 2024 16:24:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706891057;
-	bh=nf1dgIwaXauoxmAsRA//GzUzQl0CfZAGGsi0S4FzkvM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Rr4y2Q11L9RwT8FjB0w/nagDTfTZiK483vQYqXr5WwkPDH7uNTlsMxQqlXnfTVEgz
-	 DpcAkkSbr7J4tKmqqs78L6n4aceggFNGh991i60akq32dkGZigDafAjqDMGQGXkd+n
-	 fDSk1KPWGJfl4m/5cowpIl8vStyrvN3W/DsVPYFhxLFOebVgo+VKf07ZBCzIqoZlqt
-	 y7ECYFpSnvIu6OlqjJP/8wif5xMzWhsTKcv0fo/wPAHSxu92XPYIJHDsstFQm+KMrp
-	 DQmC7Ovzp1F/qZIi0DPJBYgd25qzcDIsbH888juk5W0TvfXfAzOXjWsWFejocBCt1F
-	 +IhuRox8t6Bhg==
-Date: Fri, 2 Feb 2024 16:24:13 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Naresh Solanki <naresh.solanki@9elements.com>
-Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Patrick Rudolph <patrick.rudolph@9elements.com>,
-	mazziesaccount@gmail.com, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: mfd: Add regulator-compatible property
-Message-ID: <20240202-carbon-jumbo-0a577c19b62f@spud>
-References: <20240126114614.1424592-1-naresh.solanki@9elements.com>
- <20240126-deflate-ashy-158a91efb25a@spud>
- <CABqG17g+wQ5brngLDYObV+t2y+CEf+85rzqTSYTcmS5jckWZRg@mail.gmail.com>
+	s=arc-20240116; t=1706891080; c=relaxed/simple;
+	bh=OWKrqSZ7x1a/wVUnOc2GqZECW2DrOBKub+iqKARk7Yc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VrbDaSCElHNFR6r68wzek0VDqmazbs/njX2EkanFT7QGcEzeXfaV2c3K+KcJGPokCkn8LAbXl5d36ouo175qjmbGhkPz+Jq6MwiQyRorQ9LaEG9B1LhYoACRju2gaFRb6G56cIRF8OfbknQVryvaGSKlY0y/WK62h9wfJL4O/WE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YDPgpbrP; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cf42ca9bb2so25004371fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 08:24:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706891075; x=1707495875; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tHbpeNpyu3wqI87Qy7h1gmd0YJLbzF1zOL2R+Rngvbk=;
+        b=YDPgpbrPHpGBjCHCuZL8588PoKlBR/jCq6Lrqek00cQGIKhpvHAt/2uGqNsTi+67c7
+         Wka9GLTXMOOuXBrLxT3VHljsfI6SmtlWCu41MVmUHVO4ulcXz3S53eFRcA9q6PXgZhTM
+         sql0jfdM3dH0wlqmle13eUg+yNVAUN61LYUA8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706891075; x=1707495875;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tHbpeNpyu3wqI87Qy7h1gmd0YJLbzF1zOL2R+Rngvbk=;
+        b=NBTdyQMbOyfIXZ/VYxU7sBOZiLF+/myiHb0bVm6kk/OwHnDyJpsbEz5PVhr/lvxCwh
+         6jMGk9Ury+NnjL7bJJCXe/U2kddE0TYEIsKculHR1sNGuPWmOR0zArIlVmq+zkKAv/mR
+         +AWj1T/xTsOi0rBEVOjmZAOxEkTrCiA4JwTleXHiXzrSRRP+WGNXqttgkmGC3Ujt3rOz
+         tA4gbMzMyUH8NJJUxeed+WSV/F2sfwrTkMgoso2XgmlJBjlFX03BVfZQyBI3TFco5EmL
+         bzqOgZCeKqYYyPeabFuG8m2aYMzyKuzJKBsObxq3MIig2w8XrquYOrGJBlRUJsZtObWA
+         d/BA==
+X-Gm-Message-State: AOJu0YwKUPNKMKrXed5UsidQCmlI8K9VjW2eC0zeWxxnD3/+D3Z5uhLl
+	Z4qMYdB1tHh2DHha5fkKMKTs1sMzEmHRHiwbMfIYnvPwUL+IFp8CIscryQtCcsIei8p6yiWDJKt
+	pRjQZ
+X-Google-Smtp-Source: AGHT+IF9ntwXi4/RvarH+oBb/UCrr7c8wsnWMAY4J5Sv3NNWUafUPdNLgtr8vZ36GPalz5hXPEgHMA==
+X-Received: by 2002:ac2:41c4:0:b0:511:1b3b:c45 with SMTP id d4-20020ac241c4000000b005111b3b0c45mr1522431lfi.1.1706891075099;
+        Fri, 02 Feb 2024 08:24:35 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUd+0ACGORKcnM2BtkcCfnqrSDGNf6qv4xfYFjgNlhNkEPbDSh8K0y7kTeDLS5lozelLSgEwEgKRTxxh4N8H/J6z8DdE5m8mn+FNqpW
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com. [209.85.128.47])
+        by smtp.gmail.com with ESMTPSA id a2-20020a056512200200b00510179dfd8asm342008lfb.293.2024.02.02.08.24.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Feb 2024 08:24:34 -0800 (PST)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40f00adacfeso49735e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 08:24:34 -0800 (PST)
+X-Received: by 2002:a05:600c:1e1c:b0:40e:f5c6:738a with SMTP id
+ ay28-20020a05600c1e1c00b0040ef5c6738amr8421wmb.0.1706891073620; Fri, 02 Feb
+ 2024 08:24:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="OGS3hiZ1Wh3iWLl3"
-Content-Disposition: inline
-In-Reply-To: <CABqG17g+wQ5brngLDYObV+t2y+CEf+85rzqTSYTcmS5jckWZRg@mail.gmail.com>
-
-
---OGS3hiZ1Wh3iWLl3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240201171159.1.Id9ad163b60d21c9e56c2d686b0cc9083a8ba7924@changeid>
+ <20240202012249.GU2087318@ZenIV> <CAD=FV=X5dpMyCGg4Xn+ApRwmiLB5zB0LTMCoSfW_X6eAsfQy8w@mail.gmail.com>
+ <20240202030438.GV2087318@ZenIV> <CAD=FV=Wbq7R9AirvxnW1aWoEnp2fWQrwBsxsDB46xbfTLHCZ4w@mail.gmail.com>
+ <20240202034925.GW2087318@ZenIV> <20240202040503.GX2087318@ZenIV>
+In-Reply-To: <20240202040503.GX2087318@ZenIV>
+From: Doug Anderson <dianders@chromium.org>
+Date: Fri, 2 Feb 2024 08:24:17 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=X93KNMF4NwQY8uh-L=1J8PrDFQYu-cqSd+KnY5+Pq+_w@mail.gmail.com>
+Message-ID: <CAD=FV=X93KNMF4NwQY8uh-L=1J8PrDFQYu-cqSd+KnY5+Pq+_w@mail.gmail.com>
+Subject: Re: [PATCH] regset: use vmalloc() for regset_get_alloc()
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Christian Brauner <brauner@kernel.org>, Eric Biederman <ebiederm@xmission.com>, Jan Kara <jack@suse.cz>, 
+	Kees Cook <keescook@chromium.org>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	Oleg Nesterov <oleg@redhat.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 02, 2024 at 05:27:10PM +0530, Naresh Solanki wrote:
-> Hi Conor,
->=20
->=20
-> On Fri, 26 Jan 2024 at 21:50, Conor Dooley <conor@kernel.org> wrote:
-> >
-> > On Fri, Jan 26, 2024 at 05:16:14PM +0530, Naresh Solanki wrote:
-> > > Add regulator-compatible property.
-> >
-> > Why? I can see that this is what you did, but there's no justification
-> > for it.
-> >
-> > grepping for this property, the first thing I see is:
-> > rg "regulator-compatible"
-> > drivers/regulator/of_regulator.c
-> > 389: * based on either the deprecated property regulator-compatible if =
-present,
-> > 428:                                    "regulator-compatible", NULL);
-> > 486:            name =3D of_get_property(child, "regulator-compatible",=
- NULL);
-> >
-> >
-> > The property is deprecated, so you'll need twice as good a justification
-> > for adding it!
-> Yes this is deprecated property. I missed noticing that earlier.
-> Will remove this dependency. Thanks for pointing that out.
+Hi,
 
-What do you mean "remove this dependency"? If you remove this there is
-nothing useful left in the patch.
-
-Confused,
-Conor.
-
->=20
-> Regards,
-> Naresh
+On Thu, Feb 1, 2024 at 8:05=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> wr=
+ote:
+>
+> On Fri, Feb 02, 2024 at 03:49:25AM +0000, Al Viro wrote:
+> > On Thu, Feb 01, 2024 at 07:15:48PM -0800, Doug Anderson wrote:
+> > > >
+> > > > Well, the next step would be to see which regset it is - if you
+> > > > see that kind of allocation, print regset->n, regset->size and
+> > > > regset->core_note_type.
+> > >
+> > > Of course! Here are the big ones:
+> > >
+> > > [   45.875574] DOUG: Allocating 279584 bytes, n=3D17474, size=3D16,
+> > > core_note_type=3D1029
 > >
-> > > Also update example.
-> > >
-> > > TEST=3DRun below command & make sure there is no error
-> > > make DT_CHECKER_FLAGS=3D-m dt_binding_check
+> > 0x405, NT_ARM_SVE
+> >         [REGSET_SVE] =3D { /* Scalable Vector Extension */
+> >                 .core_note_type =3D NT_ARM_SVE,
+> >                 .n =3D DIV_ROUND_UP(SVE_PT_SIZE(SVE_VQ_MAX, SVE_PT_REGS=
+_SVE),
+> >                                   SVE_VQ_BYTES),
+> >                 .size =3D SVE_VQ_BYTES,
 > >
-> > Same comment here as my other mail.
-> >
-> > Thanks,
-> > Conor.
-> >
-> > >
-> > > Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
-> > > ---
-> > >  Documentation/devicetree/bindings/mfd/maxim,max5970.yaml | 9 +++++++=
-++
-> > >  1 file changed, 9 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml=
- b/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml
-> > > index 0da5cae3852e..75175098cbc2 100644
-> > > --- a/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml
-> > > +++ b/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml
-> > > @@ -74,6 +74,9 @@ properties:
-> > >              description: |
-> > >                The value of current sense resistor in microohms.
-> > >
-> > > +          regulator-compatible:
-> > > +            pattern: "^SW[0-1]$"
-> > > +
-> > >          required:
-> > >            - shunt-resistor-micro-ohms
-> > >
-> > > @@ -111,6 +114,8 @@ examples:
-> > >
-> > >              regulators {
-> > >                  sw0_ref_0: sw0 {
-> > > +                    regulator-compatible =3D "SW0";
-> > > +                    regulator-name =3D "p5v";
-> > >                      shunt-resistor-micro-ohms =3D <12000>;
-> > >                  };
-> > >              };
-> > > @@ -145,9 +150,13 @@ examples:
-> > >
-> > >              regulators {
-> > >                  sw0_ref_1: sw0 {
-> > > +                    regulator-compatible =3D "SW0";
-> > > +                    regulator-name =3D "p5v_aux";
-> > >                      shunt-resistor-micro-ohms =3D <12000>;
-> > >                  };
-> > >                  sw1_ref_1: sw1 {
-> > > +                    regulator-compatible =3D "SW1";
-> > > +                    regulator-name =3D "p3v3_aux";
-> > >                      shunt-resistor-micro-ohms =3D <10000>;
-> > >                  };
-> > >              };
-> > >
-> > > base-commit: ecb1b8288dc7ccbdcb3b9df005fa1c0e0c0388a7
-> > > --
-> > > 2.42.0
-> > >
+> > IDGI.  Wasn't SVE up to 32 * 2Kbit, i.e. 8Kbyte max?  Any ARM folks aro=
+und?
+> > Sure, I understand that it's variable-sized and we want to allocate eno=
+ugh
+> > for the worst case, but can we really get about 280Kb there?  Context s=
+witches
+> > would be really unpleasant on such boxen...
+>
+> FWIW, this apparently intends to be "variable, up to SVE_PT_SIZE(...) byt=
+es";
+> no idea if SVE_PT_SIZE is the right thing to use here.
 
---OGS3hiZ1Wh3iWLl3
-Content-Type: application/pgp-signature; name="signature.asc"
++folks from `./scripts/get_maintainer.pl -f arch/arm64/kernel/ptrace.c`
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZb0XLQAKCRB4tDGHoIJi
-0t4fAP4p2F8BI/5T3p/OhE42EZgDqs1Mj5cPA7gfcqNWa2dYHgD9HIwbLyGmWwQi
-EhgTB422mCYY4MX1rS8e9zsaXD2lPg0=
-=DZBo
------END PGP SIGNATURE-----
-
---OGS3hiZ1Wh3iWLl3--
+Trying to follow the macros to see where "n" comes from is a maze of
+twisty little passages, all alike. Hopefully someone from the ARM
+world can help tell if the value of 17474 for n here is correct or if
+something is wonky.
 
