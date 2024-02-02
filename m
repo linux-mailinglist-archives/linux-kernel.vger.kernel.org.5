@@ -1,123 +1,183 @@
-Return-Path: <linux-kernel+bounces-50236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9898F84761F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:31:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03534847621
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:31:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AF8E1C28ACF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:31:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 288701C2656A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:31:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FFB114C582;
-	Fri,  2 Feb 2024 17:30:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D87814A4EC;
+	Fri,  2 Feb 2024 17:30:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="0AwoUNqs"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="SHWnzrlu"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F91B14AD0E;
-	Fri,  2 Feb 2024 17:30:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D676F14C59A
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 17:30:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706895038; cv=none; b=M8Exid2i1sA1sz+nBfphsYssCvNqwp58QUrWGCXCEZdgMAVVpy3rM4hdW05c43yuAiHUsOQLByHYzdLmTN+yXMyF9wTZ+nGapfxnQeFvl+74VTDgPM+oMOtrjfP//khG9kG2qbArSn+UnCKQxI+aWpDvYrqZ5iMiJDiy08c3t48=
+	t=1706895042; cv=none; b=UI8DixIZ7JPTdIa0Da51kGKWVtuv3I6xnJb6QPLuP4gtqsGvPBNH7FLAR2ENdchgoryLomGPBqcZE10MPa8MXqXDWg9AFZ02pv6/PctK4NWWnp//Hp54I+lemUrxcZ0cRXQ+22X6VckWgyjtkfBsYbveAtTjgjLeIsW8tXlP9+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706895038; c=relaxed/simple;
-	bh=BlIMjuEgLbBMCBsdwCAz1BdgaPd0WZtrspP0SKES5qc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sMFLskLzp2jBJsBrTlS3387YvysmFpKmziwAjaXJdDWqeQRMV/W+KXjn7X/NNqlbfwAJAeBZrM678t8nX9cm0QN+Fi05KsYnE1YXQoqNjNa8IC+hn9Trun9SeX79e3T1sq+XVi9FfvSSWDlIzGo4AbqwB8BTCNfn03DlIqTXIjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=0AwoUNqs; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=SrWGzRDXFcq0Pr0rVOE+6OznEblUBFj2izYzbtEY5sc=; b=0AwoUNqsmMIvSNZVVt2Ksny2HI
-	2B5XEYr2LYd/flO3suuyWPhfyFHs2cxroDQtly9R9OOcgLEjCK1+R5EKBmxZoCxDAWIvGNK0+Uy4g
-	V+4GFZnOLkDF3m2cW4wWtYvZUuk8/vrdCJK9Na+dg0S4YTkHkF0CDS8JRqYGD+z5B7NKSYdsBG06h
-	LYxKRw4uSybfu8NTu8NtIKnzKM4LPbH1SQ11PT8llc8Mohx7qRcsmU2YFRbQfK3qtNfdkViOVBP77
-	JBqp6ThbzqdM8m5CH+4n54DACeQhzIOainmjNQO0o8N5GbRVmhtbgepEO0kUPZ1bWj39QOEEcBkbO
-	KNNFVdbw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55012)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rVxMw-0006Gu-03;
-	Fri, 02 Feb 2024 17:30:26 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rVxMt-0008U5-Nw; Fri, 02 Feb 2024 17:30:23 +0000
-Date: Fri, 2 Feb 2024 17:30:23 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Christian Marangi <ansuelsmth@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org
-Subject: Re: [net-next PATCH v5 9/9] net: phy: qca807x: add support for
- configurable LED
-Message-ID: <Zb0mryS0CGfkolbO@shell.armlinux.org.uk>
-References: <20240201151747.7524-1-ansuelsmth@gmail.com>
- <20240201151747.7524-10-ansuelsmth@gmail.com>
- <46085abf-8e82-4fd9-95b8-95cbfde6e5c2@lunn.ch>
- <65bd1af9.df0a0220.c0618.9f8d@mx.google.com>
- <8bbff46a-f316-49b7-82f8-44dbdd452b0d@lunn.ch>
+	s=arc-20240116; t=1706895042; c=relaxed/simple;
+	bh=2doe7Rnh2cfYTExP59GbRKeFESMtXfgH6+kHay/XYgs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SoXCjNTd/keeXbE8DjrzNgi7XauUCQxT+W2IjjPjDMEwBvWX4a/Xhdz2rWQHQj91IhmgSgBMutcjA9UlI759uyk2w33NNLciCoHbqi95jfjmLXLVac8Q8PRyYj0N7UaXIsUzXnQSD5Xxh+MgXB3MeZ0WhthSBuYZDJXRTpMZTgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=SHWnzrlu; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a35b32bd055so306048966b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 09:30:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706895039; x=1707499839; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VC5vJdORBChkJeHwFEmBTnLuqGC0FMrsRwyZcN+KE/8=;
+        b=SHWnzrluA44ZDiQCs6yI/CNYRyFWJ5cvRemavkE4kIZ1+kC62SBVDCEP3dx77s1X0R
+         6gqMkKBVuIy0x2QI+IyX3uXf5I0ohB367/y2hO5Y5hnouYwOoBeODS+gwPyYfPgGkhC0
+         IxPYXlox7nL87jEQbqF4uwYe8DTv3YfUaHldc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706895039; x=1707499839;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VC5vJdORBChkJeHwFEmBTnLuqGC0FMrsRwyZcN+KE/8=;
+        b=hhjIKiw2BeMBwnKpTp6+Bl40ShUzw4hgZPnHGsY5uHZAWDvnkSfQYSvQEl+x2ms99B
+         0sYaq/uEo7RYbq710ysNSd28ZGYN95F6UgwFrgLgwuWhar3fas3PVdaSipVvqHl1BAOO
+         LaSeWxiJSfrjFv549aBrCk/levYY/9kxp52X6BwEx3tKechCTer1gydhTfIIBOBi84gZ
+         SHlpnC+eRuJU4Kg7k0FfedlBLu08bIyrfzc/D1zNoMhC9ArBvCzhOmXAkc0bSxrfQVCK
+         eZQAJQG7pYBMK/NLwEZ856K0GCK6pa0gYNjVh5+20vlgCO+OT54RuK72c1+srlfdJPNZ
+         pEFA==
+X-Gm-Message-State: AOJu0Yx2c1M6tIaT+VqU8xBatmd3U0tKOILWTONtibmHRJz5KQcVcV6R
+	JbNDUf8HLz26fAXpa6ZovYRwaRKH6xe3K6euNsojHnp3IIOce6DsNo4hJibLdw==
+X-Google-Smtp-Source: AGHT+IG1HErWZnyyHQSeGiKtyMdVerFNECncUUd+5zGq4gXzObiZ/ksbYjQQAYMUm32Ai9vzo+62Ow==
+X-Received: by 2002:a17:906:3ad1:b0:a36:84f5:5186 with SMTP id z17-20020a1709063ad100b00a3684f55186mr1897465ejd.77.1706895038981;
+        Fri, 02 Feb 2024 09:30:38 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVoNRQtsktnhKqsQgth/Jzy6fvhViLBtHaC32Wc+CfldyFICiQswcGmg+tYTe6fcJJE6SXBOebY7AGhCY5TzPSpu4khIX5k0IXeiDWk81gBRjuVesFgMX/8Wu1MYjfMMllrYbHe0K3zUhWjUjZpQg1l753MWXySN6XFuLTBo2aAZ1MPnhZZEkmye7WfxY/NRJH52N1zQg5E9swSHq+1EvebLk5jvHJv4Jxvkh7CVb2MLxK9c3pC/yUovmZWkOWwnAfaf/8Md0JFVNR/e5BkCobQNpZ2eIBfyeTBFgordCWD11YYQ4ugXx59ZzhTsGKtYSSxfTVibDKASHZ76EiRDyWR2YjGKfAiPtGb69vlRTSxvOSLhqokzBsOCLx2hZLMx7s0C4OCD0FQbYkzHLEBhexR1nrEC73ENVUC
+Received: from chromium.org (66.224-78-194.adsl-static.isp.belgacom.be. [194.78.224.66])
+        by smtp.gmail.com with ESMTPSA id hd34-20020a17090796a200b00a36f314daa6sm1083392ejc.46.2024.02.02.09.30.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 09:30:38 -0800 (PST)
+From: Simon Glass <sjg@chromium.org>
+To: linux-arm-kernel@lists.infradead.org
+Cc: Ahmad Fatoum <a.fatoum@pengutronix.de>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Simon Glass <sjg@chromium.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Terrell <terrelln@fb.com>,
+	Will Deacon <will@kernel.org>,
+	linux-doc@vger.kernel.org,
+	linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	workflows@vger.kernel.org
+Subject: [PATCH v10 0/2] arm64: Add a build target for Flat Image Tree
+Date: Fri,  2 Feb 2024 10:30:32 -0700
+Message-Id: <20240202173034.221790-1-sjg@chromium.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8bbff46a-f316-49b7-82f8-44dbdd452b0d@lunn.ch>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 02, 2024 at 06:08:33PM +0100, Andrew Lunn wrote:
-> On Fri, Feb 02, 2024 at 05:40:21PM +0100, Christian Marangi wrote:
-> > On Fri, Feb 02, 2024 at 02:43:37AM +0100, Andrew Lunn wrote:
-> > > > +
-> > > > +			phydev->drv->led_brightness_set = NULL;
-> > > > +			phydev->drv->led_blink_set = NULL;
-> > > > +			phydev->drv->led_hw_is_supported = NULL;
-> > > > +			phydev->drv->led_hw_control_set = NULL;
-> > > > +			phydev->drv->led_hw_control_get = NULL;
-> > > 
-> > > I don't see how that works. You have multiple PHYs using this
-> > > driver. Some might have LEDs, some might have GPOs. But if you modify
-> > > the driver structure like this, you prevent all PHYs from having LEDs,
-> > > and maybe cause a Opps if a PHY device has already registered its
-> > > LEDs?
-> > >
-> > 
-> > God you are right! Off-topic but given the effects this may cause, why
-> > the thing is not const?
-> 
-> I would like it to be, but its not easy. There are fields in the
-> driver structure that phylib needs to modify. e.g. mdiodrv.driver gets
-> passed to the driver core when registering the driver, and it modifies
-> it. mdiodrv.flags is also manipulated. So we cannot make the whole
-> structure const.
+Flat Image Tree (FIT) is a widely used file format for packaging a
+kernel and associated devicetree files[1]. It is not specific to any
+one bootloader, as it is supported by U-Boot, coreboot, Linuxboot,
+Tianocore and Barebox.
 
-We can make phy_device's drv pointer const though, which would have the
-effect of catching code such as the above. That doesn't impact the
-driver model nor the mdio layer.
+This series adds support for building a FIT as part of the kernel
+build. This makes it easy to try out the kernel - just load the FIT
+onto your tftp server and it will run automatically on any supported
+arm64 board.
+
+The script is written in Python, since it is easy to build a FIT using
+the Python libfdt bindings. For now, no attempt is made to compress
+files in parallel, so building the 900-odd files takes a while, about
+6 seconds with my testing.
+
+The series also includes a minor clean-up patch.
+
+[1] https://github.com/open-source-firmware/flat-image-tree
+
+Changes in v10:
+- Make use of dtbs-list file
+- Mention dtbs-list and FIT_COMPRESSION
+- Update copyright year
+- Update cover letter to take account of an applied patch
+
+Changes in v9:
+- Move the compression control into Makefile.lib
+
+Changes in v8:
+- Drop compatible string in FDT node
+- Correct sorting of MAINTAINERS to before ARM64 PORT
+- Turn compress part of the make_fit.py comment in to a sentence
+- Add two blank lines before parse_args() and setup_fit()
+- Use 'image.fit: dtbs' instead of BUILD_DTBS var
+- Use '$(<D)/dts' instead of '$(dir $<)dts'
+- Add 'mkimage' details Documentation/process/changes.rst
+- Allow changing the compression used
+- Tweak cover letter since there is only one clean-up patch
+
+Changes in v7:
+- Drop the kbuild tag
+- Add Image as a dependency of image.fit
+- Drop kbuild tag
+- Add dependency on dtbs
+- Drop unnecessary path separator for dtbs
+- Rebase to -next
+
+Changes in v6:
+- Drop the unwanted .gz suffix
+
+Changes in v5:
+- Drop patch previously applied
+- Correct compression rule which was broken in v4
+
+Changes in v4:
+- Use single quotes for UIMAGE_NAME
+
+Changes in v3:
+- Drop temporary file image.itk
+- Drop patch 'Use double quotes for image name'
+- Drop double quotes in use of UIMAGE_NAME
+- Drop unnecessary CONFIG_EFI_ZBOOT condition for help
+- Avoid hard-coding "arm64" for the DT architecture
+
+Changes in v2:
+- Drop patch previously applied
+- Add .gitignore file
+- Move fit rule to Makefile.lib using an intermediate file
+- Drop dependency on CONFIG_EFI_ZBOOT
+- Pick up .dtb files separately from the kernel
+- Correct pylint too-many-args warning for write_kernel()
+- Include the kernel image in the file count
+- Add a pointer to the FIT spec and mention of its wide industry usage
+- Mention the kernel version in the FIT description
+
+Simon Glass (2):
+  arm64: Add BOOT_TARGETS variable
+  arm64: boot: Support Flat Image Tree
+
+ Documentation/process/changes.rst |   9 +
+ MAINTAINERS                       |   7 +
+ arch/arm64/Makefile               |  11 +-
+ arch/arm64/boot/.gitignore        |   1 +
+ arch/arm64/boot/Makefile          |   6 +-
+ scripts/Makefile.lib              |  16 ++
+ scripts/make_fit.py               | 298 ++++++++++++++++++++++++++++++
+ 7 files changed, 345 insertions(+), 3 deletions(-)
+ create mode 100755 scripts/make_fit.py
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.34.1
+
 
