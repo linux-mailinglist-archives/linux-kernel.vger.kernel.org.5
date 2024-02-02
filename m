@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-50645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D89A5847C08
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:08:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA847847C09
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:08:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 927D9288A8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:08:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6E07B22880
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:08:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 300C4132474;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D70E1332A7;
 	Fri,  2 Feb 2024 22:05:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TxHn2IiH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rj1bKvcP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39757132467;
-	Fri,  2 Feb 2024 22:05:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9F74132498;
+	Fri,  2 Feb 2024 22:05:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706911510; cv=none; b=UbI1WJhzJOKzZa1QhY0d78D3p6dQubkeROlL9daBI4Oq8J9xo3cJCUe1iuJpjsJRYpuEaWSRzbxfWUUVUGxiopf3cBetNQUvL4eAsk0aWQMvCnQK3K90C7fV9tCyOXZo2VX8xrN74bZQTGZTVG8SP6iooEWr47N3QiePFKb9hLE=
+	t=1706911510; cv=none; b=B9XujTkVVcfeRZe5ZHM7RsuuemsGBPfw+KIBb3CQIO8rZKNPs3cwAUmEWjr0Azb4/0s1UpJj1tb6lMGCQtDcpWOIhYm92pEkWSbGGQ/dUdSPjz0zPEZXdbVRP5VpGrytQd3gMqtdFIANhsTgiiBEVk6ovxxzJzgBti2K+9lZ0m4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706911510; c=relaxed/simple;
-	bh=8cuanY9nIKPUghP/dPMClAHP/3p1hi26K3nztrI2MFI=;
+	bh=u+3b408czl7+mH8GeTAKvju9aWQhRxzD0hyW0Dr5iWE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=agG8Z709yo0/mB1R4qPOdvJr5Hq2A6IX/b74DJz1+fpOFUJ3CvDhLhi45txagN54WgKYS3coX0k5xbCYC4xiXA6X/DzPWDLxXWw8AHuLGCMIvnYmneTfXkxbA8jSjGcEu8FXv1M2GOy7GQjm+zsmrrZdEuLMvylii0r8gpiOXtg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TxHn2IiH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5866CC43390;
+	 MIME-Version; b=oBJLpojbZbIoZ0Yc0ozK85KovEb4V7Y2NodPbDy0GB/dg19qkvKotcaEyrDBVhdaVhLs22L+l2eGE5/fsmFYryndUzVnioigkno4bVKnQqug5tNFsHKM+xJStAjgn8THs6XlOdrOVA49LXXWGnaO4YWP0mZxZA+DAI6qAcpMW08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rj1bKvcP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFFC0C433C7;
 	Fri,  2 Feb 2024 22:05:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706911509;
-	bh=8cuanY9nIKPUghP/dPMClAHP/3p1hi26K3nztrI2MFI=;
+	s=k20201202; t=1706911510;
+	bh=u+3b408czl7+mH8GeTAKvju9aWQhRxzD0hyW0Dr5iWE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TxHn2IiHBRlypqccvr7R1y33hds9O14sWGIbCsicdHXkx2sdrIDnShKjbGjiY6x3O
-	 DOxLl3ppa9OEWw8+YoorLHC39SbSIedAHJiF/4IQwBXgQKe/FAdHEWRAqkcoUFVKaB
-	 9s5hrCQQiaLpasPfJCiaGOlbgpb4k6o6ZYrnLJLDP4PARu/upkAU/5CMY1kNLzBhSh
-	 2btZ6QO6LOCiW0JsDeZMgifISkpp3z4iraiN8Ka+qjhMFYfSPkhIzo1065+MjW0Z07
-	 RZJDcmrt/D0cA6Um6u1oToUlo4XkY4/RBKYTkSiwvWSqqeaLvdjRVmw4ATVcdhxtO5
-	 vLTKS3Z+Dtykg==
+	b=Rj1bKvcPX27x+4M1i+jYh7SuVlGttIBX9A5CC5LblU9hEvwGe2Od18VdDnFcbjFRk
+	 no3J1Xy5wkzm48aOCRzIo3KckxAdIxPqejNlRdZhTiAnV05sFv513YXo8N4sRXvNkc
+	 yc+SzlRdzjfBfA34VHkqBEWe0P6toRYi1gqtprXwEoJKSgtxfYXYe9gyyVK/u8gkcp
+	 zHn4niC9G0eo5JBaPs1Ib35wfDrhZjU769cjkQL+edF94vJBNMNwaBOdaKde9+v+ia
+	 L9d4L64ku4JADxIXdeXwwFnhW5HsYdcM9eaVLLWJxQwBESMMTkM1ZcHhL0gYCx2a1d
+	 fzw9QfMK+Ysdw==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>
@@ -54,9 +54,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-toolchains@vger.kernel.org,
 	linux-trace-devel@vger.kernel.org
-Subject: [PATCH 13/14] perf annotate-data: Track instructions with a this-cpu variable
-Date: Fri,  2 Feb 2024 14:04:58 -0800
-Message-ID: <20240202220459.527138-14-namhyung@kernel.org>
+Subject: [PATCH 14/14] perf annotate-data: Add stack canary type
+Date: Fri,  2 Feb 2024 14:04:59 -0800
+Message-ID: <20240202220459.527138-15-namhyung@kernel.org>
 X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
 In-Reply-To: <20240202220459.527138-1-namhyung@kernel.org>
 References: <20240202220459.527138-1-namhyung@kernel.org>
@@ -68,139 +68,82 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Like global variables, this per-cpu variables should be tracked
-correctly.  Factor our get_global_var_type() to handle both global
-and per-cpu (for this cpu) variables in the same manner.
+When the stack protector is enabled, compiler would generate code to
+check stack overflow with a special value called 'stack carary' at
+runtime.  On x86_64, GCC hard-codes the stack canary as %gs:40.
+
+While there's a definition of fixed_percpu_data in asm/processor.h,
+it seems that the header is not included everywhere and many places
+it cannot find the type info.  As it's in the well-known location (at
+%gs:40), let's add a pseudo stack canary type to handle it specially.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/annotate-data.c | 84 +++++++++++++++++++++++----------
- 1 file changed, 60 insertions(+), 24 deletions(-)
+ tools/perf/util/annotate-data.h |  1 +
+ tools/perf/util/annotate.c      | 24 ++++++++++++++++++++++++
+ 2 files changed, 25 insertions(+)
 
-diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
-index cebbe17de64a..9d6cc6ac431c 100644
---- a/tools/perf/util/annotate-data.c
-+++ b/tools/perf/util/annotate-data.c
-@@ -410,6 +410,37 @@ void update_var_state(struct type_state *state, struct data_loc_info *dloc,
- 	}
+diff --git a/tools/perf/util/annotate-data.h b/tools/perf/util/annotate-data.h
+index 0bfef29fa52c..e293980eb11b 100644
+--- a/tools/perf/util/annotate-data.h
++++ b/tools/perf/util/annotate-data.h
+@@ -77,6 +77,7 @@ struct annotated_data_type {
+ 
+ extern struct annotated_data_type unknown_type;
+ extern struct annotated_data_type stackop_type;
++extern struct annotated_data_type canary_type;
+ 
+ /**
+  * struct data_loc_info - Data location information
+diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+index 5f3136f57c62..f2683dadf3cf 100644
+--- a/tools/perf/util/annotate.c
++++ b/tools/perf/util/annotate.c
+@@ -116,6 +116,13 @@ struct annotated_data_type stackop_type = {
+ 	},
+ };
+ 
++struct annotated_data_type canary_type = {
++	.self = {
++		.type_name = (char *)"(stack canary)",
++		.children = LIST_HEAD_INIT(canary_type.self.children),
++	},
++};
++
+ static int arch__grow_instructions(struct arch *arch)
+ {
+ 	struct ins *new_instructions;
+@@ -3764,6 +3771,17 @@ static bool is_stack_operation(struct arch *arch, struct disasm_line *dl)
+ 	return false;
  }
  
-+static bool get_global_var_type(Dwarf_Die *cu_die, struct map_symbol *ms, u64 ip,
-+				u64 var_addr, const char *var_name, int var_offset,
-+				Dwarf_Die *type_die)
++static bool is_stack_canary(struct arch *arch, struct annotated_op_loc *loc)
 +{
-+	u64 pc;
-+	int offset = var_offset;
-+	bool is_pointer = false;
-+	Dwarf_Die var_die;
-+
-+	pc = map__rip_2objdump(ms->map, ip);
-+
-+	/* Try to get the variable by address first */
-+	if (die_find_variable_by_addr(cu_die, pc, var_addr, &var_die, &offset) &&
-+	    check_variable(&var_die, type_die, offset, is_pointer) == 0 &&
-+	    die_get_member_type(type_die, offset, type_die))
-+		return true;
-+
-+	if (var_name == NULL)
-+		return false;
-+
-+	offset = var_offset;
-+
-+	/* Try to get the name of global variable */
-+	if (die_find_variable_at(cu_die, var_name, pc, &var_die) &&
-+	    check_variable(&var_die, type_die, offset, is_pointer) == 0 &&
-+	    die_get_member_type(type_die, offset, type_die))
-+		return true;
++	/* On x86_64, %gs:40 is used for stack canary */
++	if (arch__is(arch, "x86")) {
++		if (loc->segment == INSN_SEG_X86_GS && loc->offset == 40)
++			return true;
++	}
 +
 +	return false;
 +}
 +
- /**
-  * update_insn_state - Update type state for an instruction
-  * @state: type state table
-@@ -473,14 +504,36 @@ void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
- 			fbreg = -1;
- 	}
+ u64 annotate_calc_pcrel(struct map_symbol *ms, u64 ip, int offset,
+ 			struct disasm_line *dl)
+ {
+@@ -3938,6 +3956,12 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
+ 		}
  
--	/* Case 1. register to register transfers */
-+	/* Case 1. register to register or segment:offset to register transfers */
- 	if (!src->mem_ref && !dst->mem_ref) {
- 		if (!has_reg_type(state, dst->reg1))
- 			return;
- 
- 		if (has_reg_type(state, src->reg1))
- 			state->regs[dst->reg1] = state->regs[src->reg1];
--		else
-+		else if (map__dso(dloc->ms->map)->kernel &&
-+			 src->segment == INSN_SEG_X86_GS) {
-+			struct map_symbol *ms = dloc->ms;
-+			int offset = src->offset;
-+			u64 ip = ms->sym->start + dl->al.offset;
-+			const char *var_name = NULL;
-+			u64 var_addr;
+ 		mem_type = find_data_type(&dloc);
 +
-+			/*
-+			 * In kernel, %gs points to a per-cpu region for the
-+			 * current CPU.  Access with a constant offset should
-+			 * be treated as a global variable access.
-+			 */
-+			var_addr = src->offset;
-+			get_percpu_var_info(dloc->thread, ms, dloc->cpumode,
-+					    var_addr, &var_name, &offset);
++		if (mem_type == NULL && is_stack_canary(arch, op_loc)) {
++			mem_type = &canary_type;
++			dloc.type_offset = 0;
++		}
 +
-+			if (get_global_var_type(cu_die, ms, ip, var_addr,
-+						var_name, offset, &type_die)) {
-+				state->regs[dst->reg1].type = type_die;
-+				state->regs[dst->reg1].ok = true;
-+			}
-+		} else
- 			state->regs[dst->reg1].ok = false;
- 	}
- 	/* Case 2. memory to register transers */
-@@ -493,37 +546,20 @@ void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
- retry:
- 		/* Check if it's a global variable */
- 		if (sreg == DWARF_REG_PC) {
--			Dwarf_Die var_die;
- 			struct map_symbol *ms = dloc->ms;
- 			int offset = src->offset;
- 			u64 ip = ms->sym->start + dl->al.offset;
--			u64 pc, addr;
- 			const char *var_name = NULL;
-+			u64 var_addr;
- 
--			addr = annotate_calc_pcrel(ms, ip, offset, dl);
--			pc = map__rip_2objdump(ms->map, ip);
--
--			if (die_find_variable_by_addr(cu_die, pc, addr,
--						      &var_die, &offset) &&
--			    check_variable(&var_die, &type_die, offset,
--					   /*is_pointer=*/false) == 0 &&
--			    die_get_member_type(&type_die, offset, &type_die)) {
--				state->regs[dst->reg1].type = type_die;
--				state->regs[dst->reg1].ok = true;
--				return;
--			}
-+			var_addr = annotate_calc_pcrel(ms, ip, offset, dl);
- 
--			/* Try to get the name of global variable */
--			offset = src->offset;
- 			get_global_var_info(dloc->thread, ms, ip, dl,
--					    dloc->cpumode, &addr,
-+					    dloc->cpumode, &var_addr,
- 					    &var_name, &offset);
- 
--			if (var_name && die_find_variable_at(cu_die, var_name,
--							     pc, &var_die) &&
--			    check_variable(&var_die, &type_die, offset,
--					   /*is_pointer=*/false) == 0 &&
--			    die_get_member_type(&type_die, offset, &type_die)) {
-+			if (get_global_var_type(cu_die, ms, ip, var_addr,
-+						var_name, offset, &type_die)) {
- 				state->regs[dst->reg1].type = type_die;
- 				state->regs[dst->reg1].ok = true;
- 			} else
+ 		if (mem_type)
+ 			istat->good++;
+ 		else
 -- 
 2.43.0.594.gd9cf4e227d-goog
 
