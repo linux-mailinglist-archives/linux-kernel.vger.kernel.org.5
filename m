@@ -1,141 +1,85 @@
-Return-Path: <linux-kernel+bounces-49139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CEA5846670
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:16:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7CFB846672
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:16:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8977A1C23983
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:16:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CF5428B748
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:16:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3534CE573;
-	Fri,  2 Feb 2024 03:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24F8CCA67;
+	Fri,  2 Feb 2024 03:16:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lLeycbEt"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fD8ihIZV"
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4E77C131
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 03:16:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77A7FF9C2
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 03:16:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706843771; cv=none; b=RJuRckb5586zrv2qV4rJvj0o9XnqOQEyVl057czkMFy1nx7ne5jEhdqirPHVWSh3kGt15f99C645WgPTeMAQ8qZ5ecmHn2as6yfIy5Dy6bTYYpTAD9RBJ7z7nPLr3rlQxV6zfyEdwdo6lsSNLJwJUTSXsuLhoDJM4oYtsjaV2B0=
+	t=1706843806; cv=none; b=TJJK8zxo55IH6KLB85B0nJpI5camBlzsusX9tdT5LTtcVzq7bgbY5iGGEVfDP/lzHI56Fia9/lRvJSpnlydpymQQxxPWSGvb4ZKOcrI/UmGhwK3AKqMmV6Oq4LCrWJ+04ww/xHx3jfqecx+1DCHUd+caA4DaovHUx+MEZF6dC+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706843771; c=relaxed/simple;
-	bh=lmKganrCDfRPsqDCh+yUbHYT43Bc6KQUR1LqIUskJ7Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Mb4ZYmddGkBsd7UTi9cAxg0htzpYK0IsjD4ZBEdMiQg2RYMX/Ews2KHdXcP9/K2xox0B4Q2kL4d+13dwer/45cLCKgJrmzYUEYcPJ8c8lMHa2lxajFL1HprDUh+s1vjfTYtj1Sc0+4xaxaZnYYcl5McDdNoMXUiSPXzfSZ7Hxck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=lLeycbEt; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a2f79e79f0cso224655266b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 19:16:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706843767; x=1707448567; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nr60hQses4C7qPIpWX7Pk8oBCIoPSvq+zV4pLC1HFKM=;
-        b=lLeycbEtUk+SKcSsn+p5vsLyuKmNvuNrTwqAEYtgYPyzGLS300A2ehw5+3fTHR9vSz
-         DS++S5EuRXdNrp+A53fKXyc02QjTnJy5yHAUaI+Bum/X/5VVSnBddp6D9ZUaAQrMhlK2
-         sdKpoVPnXG8yzskO5PbvgBdiLNrsmKIltSMgo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706843767; x=1707448567;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nr60hQses4C7qPIpWX7Pk8oBCIoPSvq+zV4pLC1HFKM=;
-        b=HY9TsejewHZpGhe1RxI9kOHldz4xw9CYb05MIYgkqCHO9R/IaAvPMvcyMhZQ06/an2
-         VW2/jAM7l60ewjKdLnCzlY/aJ7++khxIE9GJHpqJ1F2SMuxsZdVE2iQLcu6mTzoo9M1H
-         VP+AWpisCYp45G9K2xxzUPWoqZhvdGL58ikfvw//tR5am9/kaDdPY2XuTQXS2MFhDUMb
-         DTB8oZKps4xhYlZM/vTobTucG/tiX2tF9mXUj6bNdwlRSBfzXHVhcqHv3VYP1jusTLv0
-         cpk0HSVFLo+I86ZAumunKMF0Lo3ADu9fQGwX85BGl94ogfJ41xxPz+ZcURJDFcRHhIPm
-         vMRQ==
-X-Gm-Message-State: AOJu0Yy5Lrl/fs2X2K4b6k14UkjZ4hsUxsuHZduuo2zUTVrFS0HbTUnU
-	bKEBAIj+gXkyd8nMZGWy46MgTr/iMthlsNMhWRr55pOcHxM5iCLzLDZF4i7AvY5Px5WkWvx+SdR
-	KC0Eq
-X-Google-Smtp-Source: AGHT+IFWKeCGimLr0J291xgFoiK8sE/0GAKzLVQTRyOPKilyIDn+A7zf4JDYiTtr1iuFKjD85BckHQ==
-X-Received: by 2002:a17:906:19d0:b0:a36:71c1:1244 with SMTP id h16-20020a17090619d000b00a3671c11244mr5197112ejd.37.1706843766874;
-        Thu, 01 Feb 2024 19:16:06 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXux94+eLuSb1wcUI4f7RiJz+fsAaEK3U70HSWFMdONDGDXiWa2xUf6dRPhbkOxVNvKTfRK1SV/jD3NGBntgJILNhOJCB88tzAM6kUw
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
-        by smtp.gmail.com with ESMTPSA id tx8-20020a1709078e8800b00a316ecc4badsm399395ejc.56.2024.02.01.19.16.04
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 19:16:05 -0800 (PST)
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-55818b7053eso9356a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 19:16:04 -0800 (PST)
-X-Received: by 2002:a50:c346:0:b0:55f:be05:8f21 with SMTP id
- q6-20020a50c346000000b0055fbe058f21mr46623edb.1.1706843764683; Thu, 01 Feb
- 2024 19:16:04 -0800 (PST)
+	s=arc-20240116; t=1706843806; c=relaxed/simple;
+	bh=+HM6b3J4KRsVwmwcl2Sz7q6Tzn+kSIwtUuSs2wF92vE=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=rl7DgSSvU/aCIWJLtOrY1JSb0gprs2WaAqu00Y6EoR6jaEw6pWhf0jJbSddkzeFXvKB99KaKrgaB6+msUl7MYFojYYCz2Q+fygsfAl5Zt1cfKx18cOaUxU/e7xblURaPbXOa1rTyg6fqFfzXzsxcxGqwyD/BznVbJR9gZbp0TIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fD8ihIZV; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Content-Type: text/plain;
+	charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706843801;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hrrbzyhWydlS8Xk/sEBJXzD8ErCx+QyvPiHcxbCKTO8=;
+	b=fD8ihIZVvkBd1uw8RGSQLSex9Hr25nnHMFBhxkXWVRjZFMYpeZMheeDc2dha3/ZOctwEBu
+	4eDhdSNfHMCpH3yKsk8Hu7lkh4ybOxZOHVyDk7hrSj/0pUK6IelR3YsmjRZ8xF1QyPbnJ4
+	9IqwEZWWmZHmIbqPbYBn/rQeDXDpD6c=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240201171159.1.Id9ad163b60d21c9e56c2d686b0cc9083a8ba7924@changeid>
- <20240202012249.GU2087318@ZenIV> <CAD=FV=X5dpMyCGg4Xn+ApRwmiLB5zB0LTMCoSfW_X6eAsfQy8w@mail.gmail.com>
- <20240202030438.GV2087318@ZenIV>
-In-Reply-To: <20240202030438.GV2087318@ZenIV>
-From: Doug Anderson <dianders@chromium.org>
-Date: Thu, 1 Feb 2024 19:15:48 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=Wbq7R9AirvxnW1aWoEnp2fWQrwBsxsDB46xbfTLHCZ4w@mail.gmail.com>
-Message-ID: <CAD=FV=Wbq7R9AirvxnW1aWoEnp2fWQrwBsxsDB46xbfTLHCZ4w@mail.gmail.com>
-Subject: Re: [PATCH] regset: use vmalloc() for regset_get_alloc()
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Christian Brauner <brauner@kernel.org>, Eric Biederman <ebiederm@xmission.com>, Jan Kara <jack@suse.cz>, 
-	Kees Cook <keescook@chromium.org>, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Subject: Re: [PATCH 2/2] mm: pgtable: remove unnecessary split ptlock for
+ kernel PMD page
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <63f0b3d2f9124ae5076963fb5505bd36daba0393.1706774109.git.zhengqi.arch@bytedance.com>
+Date: Fri, 2 Feb 2024 11:16:02 +0800
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Arnd Bergmann <arnd@arndb.de>,
+ david@redhat.com,
+ willy@infradead.org,
+ linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <996AA3FE-47DD-408E-960C-EB805DBE8EFE@linux.dev>
+References: <f023a6687b9f2109401e7522b727aa4708dc05f1.1706774109.git.zhengqi.arch@bytedance.com>
+ <63f0b3d2f9124ae5076963fb5505bd36daba0393.1706774109.git.zhengqi.arch@bytedance.com>
+To: Qi Zheng <zhengqi.arch@bytedance.com>
+X-Migadu-Flow: FLOW_OUT
 
-Hi,
 
-On Thu, Feb 1, 2024 at 7:04=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> wr=
-ote:
->
-> On Thu, Feb 01, 2024 at 06:54:51PM -0800, Doug Anderson wrote:
-> > >         What the hell?  Which regset could have lead to that?
-> > > It would need to have the total size of register in excess of
-> > > 256K.  Seriously, which regset is that about?  Note that we
-> > > have just made sure that size is not greater than that product.
-> > > size is unsigned int, so it's not as if a negative value passed
-> > > to function could get through that test only to be interpreted
-> > > as large positive later...
-> > >
-> > >         Details, please.
-> >
-> > I can continue to dig more, but it is easy for me to reproduce this.
-> > On the stack is elf_core_dump() and it seems like we're getting a core
-> > dump of the chrome process. So I just arbitrarily look for the chrome
-> > GPU process:
-> >
-> > $ ps aux | grep gpu-process
-> > chronos   2075  3.0  1.1 34075552 95372 ?      S<l  18:44   0:01
-> > /opt/google/chrome/chrome --type=3Dgpu-process ...
-> >
-> > Then I send it a quit:
-> >
-> > $ kill -quit 2075
-> >
-> > I added some printouts for this allocation and there are a ton. Here's
-> > all of them, some of which are over 256K:
->
-> Well, the next step would be to see which regset it is - if you
-> see that kind of allocation, print regset->n, regset->size and
-> regset->core_note_type.
 
-Of course! Here are the big ones:
+> On Feb 1, 2024, at 16:05, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
+> 
+> For kernel PMD entry, we use init_mm.page_table_lock to protect it, so
+> there is no need to allocate and initialize the split ptlock for kernel
+> PMD page.
+> 
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 
-[   45.875574] DOUG: Allocating 279584 bytes, n=3D17474, size=3D16,
-core_note_type=3D1029
-[   45.884809] DOUG: Allocating 8768 bytes, n=3D548, size=3D16, core_note_t=
-ype=3D1035
-[   45.893958] DOUG: Allocating 65552 bytes, n=3D4097, size=3D16,
-core_note_type=3D1036
+Reviewed-by: Muchun Song <muchun.song@linux.dev>
 
--Doug
+Thanks.
+
 
