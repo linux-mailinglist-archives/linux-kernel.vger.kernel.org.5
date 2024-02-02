@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-50065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1471A8473E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:00:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FBF18473E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:00:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3E71286339
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:00:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9EF13B2B041
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:00:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D234148FFB;
-	Fri,  2 Feb 2024 15:58:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89F4914A089;
+	Fri,  2 Feb 2024 15:58:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OzARufdB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pnIkimcj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CADE1482E3;
-	Fri,  2 Feb 2024 15:58:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A79C314830D;
+	Fri,  2 Feb 2024 15:58:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706889516; cv=none; b=mxygVc23mrNxy1blwmc/4JYwFRPLR6YWdbcKufGd/Xp2hVZdpwRG6JMoHsRfaHRwKtChGq+OpRLls8k3E/U40FZI0r3a/ZS5xSY7fgMqyntu3DS3sGLtAMUBlSvxWDr78n2kzODhoyUUkJBfR43bXjheEH/grb9C3NuPoruMPUA=
+	t=1706889517; cv=none; b=AnawPIoGxsLCPtf2eiLbE7V6jv8kOOm4eLmb90OBzVZtT+uSiWVvDtsUdJyKPXOjKqq41RIoIvmI5g6a/f2rOb/cpWfIp9l1comQrpapX1Olrm4xyOSnojY7MGA7MayuZi1OVeN3w+qIi+BrehBkfbUwzpkCV6x3hKD8HJye6VA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706889516; c=relaxed/simple;
-	bh=QxttmJ6wH6mvkJitGwDubEDFOUUd2Xr4fYtG01w5re4=;
+	s=arc-20240116; t=1706889517; c=relaxed/simple;
+	bh=/e+y+eilKt3GBjvzu+Sekt9FhDg+Vd4BKzKbrcOkrYI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WONbj9olxerMc9dvNFdNkDvnv5vqbsbp1+zQ5gVOl4b88YUOUSIhdQfiHCmWsdAsVOiw1/dSbFjoCoU7vE3clarlJNKfDnO5r3nFtqdZYwVyQtI68YgzUka8lDf7DSYvfdpmmqZausQseG3FEWdnYrSVTunzey2OazMw5y5ql2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OzARufdB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EC86C43394;
-	Fri,  2 Feb 2024 15:58:35 +0000 (UTC)
+	 MIME-Version; b=VcKz+5i0vKCbmswHxq7Aw3QN/4fxepBBZ9dcyfXhZC6K1bwNl7Kx16TVHBCYbdc+okAtaNILV85mSTY+haVfYcz5e+iDTwkoLgyeNNMR528qfzkk8yWfo4LoNyTH8AXRGoD0WCumq9ekLpJnxv0Gnb1No9ZjktxCHcWZ3eGEY4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pnIkimcj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84531C43390;
+	Fri,  2 Feb 2024 15:58:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706889516;
-	bh=QxttmJ6wH6mvkJitGwDubEDFOUUd2Xr4fYtG01w5re4=;
+	s=k20201202; t=1706889517;
+	bh=/e+y+eilKt3GBjvzu+Sekt9FhDg+Vd4BKzKbrcOkrYI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OzARufdBT5hsokUprAZCTDzxdWpGu+Zgr8rkMV6VpJTEoyd7K0Zj0EDWoTyH/8ksw
-	 NWxctv98n7HaGkAbYF3bVksUklaPM/Pj9n3MZsApGSnB300SB10Y+nGQFuv8DssnFB
-	 XIrA72wAAr/x0BZokXdPHoas20PqgAbG4SUBDbC9UdApGxyDW49W86hhotLQ9hFE25
-	 0pPy1VpIoGOVORHKWrL2si/hI/MsHWQo69+lKaY283REIWZptn97kKBRYJQasiSbRi
-	 Dis1SEEwDJ4eabvi9qyTEh4N1/DeIyxc1hqes+Ddm63hGEgJGuUzI8cKX1xejrVm7a
-	 Y27KPWi15K/Qw==
+	b=pnIkimcj7yXLKIMbA2EwdXN2Gjp4jGovzk46bpMGsxBm8+RYhxONTJM2iLqPQfJ9J
+	 Rh39I2hn/xjT2KgHvlXmkbz/wBgpRgNwjzOC1qBag6Y44QNd4wMW/sOWMQSDc91mlH
+	 Q260z921WkCeN2y0x1rmh+Vk/lRymcY3TAV/VK4/3l1lYDIGb9TOesWQ1Vjj79mgHw
+	 Y5+bo2k8bNEeuWiVP42+r4ULgd120vKnqNj7KYPUtIATBS2/JKPFQLvj6lW6/xab57
+	 GqLhkJKagNVO2OYkNBJMXtyFJRD9LtcXs8/UNYitsw6XLHVDo3klUIeNZS/G0y6Z5k
+	 WvRts7dICAfzA==
 From: Masahiro Yamada <masahiroy@kernel.org>
 To: linux-kbuild@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 05/27] kconfig: remove unneeded sym_find() call in conf_parse()
-Date: Sat,  3 Feb 2024 00:58:03 +0900
-Message-Id: <20240202155825.314567-6-masahiroy@kernel.org>
+Subject: [PATCH 06/27] kconfig: write Kconfig files to autoconf.cmd in order
+Date: Sat,  3 Feb 2024 00:58:04 +0900
+Message-Id: <20240202155825.314567-7-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240202155825.314567-1-masahiroy@kernel.org>
 References: <20240202155825.314567-1-masahiroy@kernel.org>
@@ -58,27 +58,94 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-sym_find("n") is equivalent to &symbol_no.
+Currently, include/config/autoconf.cmd saves included Kconfig files in
+reverse order. While this is not a big deal, it is inconsistent with
+other *.cmd files generated by fixdep.
+
+Output the included Kconfig files in the included order.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- scripts/kconfig/parser.y | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/kconfig/confdata.c | 7 +++----
+ scripts/kconfig/lkc.h      | 1 +
+ scripts/kconfig/parser.y   | 4 ++++
+ scripts/kconfig/util.c     | 3 +++
+ 4 files changed, 11 insertions(+), 4 deletions(-)
 
+diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
+index 7f0aa39b68c1..f6a96fdddb7e 100644
+--- a/scripts/kconfig/confdata.c
++++ b/scripts/kconfig/confdata.c
+@@ -20,6 +20,8 @@
+ 
+ #include "lkc.h"
+ 
++struct gstr autoconf_cmd;
++
+ /* return true if 'path' exists, false otherwise */
+ static bool is_present(const char *path)
+ {
+@@ -972,7 +974,6 @@ int conf_write(const char *name)
+ static int conf_write_autoconf_cmd(const char *autoconf_name)
+ {
+ 	char name[PATH_MAX], tmp[PATH_MAX];
+-	struct file *file;
+ 	FILE *out;
+ 	int ret;
+ 
+@@ -993,9 +994,7 @@ static int conf_write_autoconf_cmd(const char *autoconf_name)
+ 		return -1;
+ 	}
+ 
+-	fprintf(out, "deps_config := \\\n");
+-	for (file = file_list; file; file = file->next)
+-		fprintf(out, "\t%s \\\n", file->name);
++	fputs(str_get(&autoconf_cmd), out);
+ 
+ 	fprintf(out, "\n%s: $(deps_config)\n\n", autoconf_name);
+ 
+diff --git a/scripts/kconfig/lkc.h b/scripts/kconfig/lkc.h
+index 5cdc8f5e6446..8616ad83be6d 100644
+--- a/scripts/kconfig/lkc.h
++++ b/scripts/kconfig/lkc.h
+@@ -40,6 +40,7 @@ int zconf_lineno(void);
+ const char *zconf_curname(void);
+ 
+ /* confdata.c */
++extern struct gstr autoconf_cmd;
+ const char *conf_get_configname(void);
+ void set_all_choice_values(struct symbol *csym);
+ 
 diff --git a/scripts/kconfig/parser.y b/scripts/kconfig/parser.y
-index 5ab2e3f7ca33..625224973c51 100644
+index 625224973c51..611038c502fc 100644
 --- a/scripts/kconfig/parser.y
 +++ b/scripts/kconfig/parser.y
-@@ -494,7 +494,7 @@ void conf_parse(const char *name)
- 	if (yynerrs)
- 		exit(1);
- 	if (!modules_sym)
--		modules_sym = sym_find( "n" );
-+		modules_sym = &symbol_no;
+@@ -480,6 +480,10 @@ void conf_parse(const char *name)
+ 	struct symbol *sym;
+ 	int i;
  
- 	if (!menu_has_prompt(&rootmenu)) {
- 		current_entry = &rootmenu;
++	autoconf_cmd = str_new();
++
++	str_printf(&autoconf_cmd, "deps_config := \\\n");
++
+ 	zconf_initscan(name);
+ 
+ 	_menu_init();
+diff --git a/scripts/kconfig/util.c b/scripts/kconfig/util.c
+index 92e5b2b9761d..958543bb0a37 100644
+--- a/scripts/kconfig/util.c
++++ b/scripts/kconfig/util.c
+@@ -25,6 +25,9 @@ struct file *file_lookup(const char *name)
+ 	file->name = xstrdup(name);
+ 	file->next = file_list;
+ 	file_list = file;
++
++	str_printf(&autoconf_cmd, "\t%s \\\n", name);
++
+ 	return file;
+ }
+ 
 -- 
 2.40.1
 
