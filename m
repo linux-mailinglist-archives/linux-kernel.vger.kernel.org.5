@@ -1,267 +1,158 @@
-Return-Path: <linux-kernel+bounces-50048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B14528473AC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 526B48473B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:52:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CED01F2A035
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:49:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 079F91F2942F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:52:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1876D1474A7;
-	Fri,  2 Feb 2024 15:49:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 320C1146918;
+	Fri,  2 Feb 2024 15:51:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=haloniitty.fi header.i=@haloniitty.fi header.b="bQEb3fcm"
-Received: from whm50.louhi.net (whm50.louhi.net [77.240.19.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OyUR9OT4"
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E4C51474D3
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 15:49:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.240.19.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0149C144612;
+	Fri,  2 Feb 2024 15:51:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706888962; cv=none; b=uvWtWxI0LipmPFRQWYi4KPOewn64sIXGt6OdGYeSxCqwwWmQxYL/1FI5fishTOioHqBL2u/ELPsYBtYsbhRVV0EuEAtvh/lhPEntLG4p8rmj2yI3BTpSXK/CZyRk6VwwPc0Nqr1W8/BdwvjLFPKrDS6G7dHUTUkI2IowYcHjPCc=
+	t=1706889114; cv=none; b=Y8SEhgHrj1UrG+QlKQPsWMkOiBV4/ocAuQNiOgSti97ynJUAu7Btpk6MAehpJLw8PERvbBsVmQWIvQFpeTv3o2BZZF+vaUG2UqsEOB5gDwain9hwhT6XZj8mZqijHOUvCNr8LFC9VSwygZZC54z82lxgEa+qDEqMd6AdqKdG3Wc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706888962; c=relaxed/simple;
-	bh=XbHjydaQej3x9usqp/OREg9sXt/KCX4tDkgjvqNMIhY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cEK54yxkpccZo9nnSr61ThXSOsuq2FGq4KWvuI6HfgpTm+MV/edHyWqdeJJwXymrb7qYQc3VP44iIAyiXhIsBTxI+wUTv5Txeu/qf51DbJO07W5P7yP4F3WIxH4OQnSjp5gs+4UFyhVsc9MeeZGsXapafwBdIJTarWTee2/+Zqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi; spf=pass smtp.mailfrom=haloniitty.fi; dkim=pass (2048-bit key) header.d=haloniitty.fi header.i=@haloniitty.fi header.b=bQEb3fcm; arc=none smtp.client-ip=77.240.19.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=haloniitty.fi
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=haloniitty.fi; s=default; h=Content-Type:MIME-Version:References:
-	In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Dj3ITMFESzY7i4LQbwzh1R9wfxEnrJCoi1O0ayFCj7c=; b=bQEb3fcmewKAUQkfJJ0J577Nsf
-	GZ1oc/jerNINEdcSC4WDB1RIq+XUz0eOffX2QxPcqIcl5g++9B6749KOyt2/hMU09nh7Nfc60WgfN
-	B67oJ59GCYR5imUqEsCZczPK27klab8EB7C/wLClXQOENwroHcZ2YMStcbIVJWXMzhcPYK0WAmD2Q
-	88ns6c5WbkJcgMIObr1DOYGFmeNUc8z1CdaY6hVTDkhLaLM8MlhAY+4AWdeiQBV3sgWB6VvW52HK/
-	9RPa9AjIzcyv9Xoh+u1/wYJ0yY+8zSzFVc8mXCXUOma06Nbq21QWSpLzi/MEfDLX6AY2VaAZpx0rp
-	43IoX+eg==;
-Received: from [194.136.85.206] (port=49138 helo=eldfell)
-	by whm50.louhi.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <pekka.paalanen@haloniitty.fi>)
-	id 1rVvn1-0008FI-2p;
-	Fri, 02 Feb 2024 17:49:15 +0200
-Date: Fri, 2 Feb 2024 17:49:13 +0200
-From: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Maxime Ripard <mripard@kernel.org>, Louis Chauvet
- <louis.chauvet@bootlin.com>, Rodrigo Siqueira
- <rodrigosiqueiramelo@gmail.com>, Melissa Wen <melissa.srw@gmail.com>,
- =?UTF-8?B?TWHDrXJh?= Canal <mairacanal@riseup.net>, Haneen Mohammed
- <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Maarten
- Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
- <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- marcheu@google.com, seanpaul@google.com, nicolejadeyee@google.com,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- thomas.petazzoni@bootlin.com, Arthur Grillo <arthurgrillo@riseup.net>
-Subject: Re: [PATCH 2/2] drm/vkms: Use a simpler composition function
-Message-ID: <20240202174913.789a9db9@eldfell>
-In-Reply-To: <20240202131322.5471e184@xps-13>
-References: <20240201-yuv-v1-0-3ca376f27632@bootlin.com>
-	<20240201-yuv-v1-2-3ca376f27632@bootlin.com>
-	<20240202105522.43128e19@eldfell>
-	<20240202102601.70b6d49c@xps-13>
-	<3nofkwzgnf4yva2wfogdbii47ohpi2wm5vp6aijtg3emxyoowt@twyreqz7ai3g>
-	<20240202131322.5471e184@xps-13>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706889114; c=relaxed/simple;
+	bh=u62/JTjk2+l4AbxTmlSugZv8zdrDij9jIcMxmTQ3Cs0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=s2Q6guC8vIEkYqeMEyWut46sbPFT9eSx9eRsQHf4VO0RxHym8d2d3c5/0/L+FwVAdpr3RBobOoQtBfLRP2LOBA+t88B7xiQgRE9GX4gWc1DxRge7tOOrMGZ5qKEiphm4oivIZXY8lnahJw465wTVusnIBb18KvDsZW2F4ZvUPfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OyUR9OT4; arc=none smtp.client-ip=209.85.219.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-68c2f4c3282so10906286d6.3;
+        Fri, 02 Feb 2024 07:51:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706889112; x=1707493912; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kjFTQhfyX4OpZ75eLCQsarAtUBHRYbyc/PAd9P4Y7CI=;
+        b=OyUR9OT4w/TuRR1vUjSDfsYrkjacCh4Ud6K0piDSkhqBNlFzC9/C305eNPm2L74WFr
+         6SlIXyp4t3psK6lvgUXsyY1JMpG64+cnQ+3Nct72E3dnNIcD8vl7ruLdG/Y245kjXIJQ
+         yx6DtRAxGrZqzA9KYgbkIHrPKyXTO5K5vpr8S1D7a1MXAKxGFnSkdFOlVQTuuJG0cuGP
+         08ftPKmUj7YzQbbi+vOIlQYVTn0MdWvSwnfvIFqIDA+st/2LXLsh//LyetxCcIxGFFBo
+         YmIt9Rd0kJf0emsuARKy+yXAB6Ny5LlLmJgpTOxZ3JFR2EwFVufVKl6USPkc9qBM+JEy
+         MZjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706889112; x=1707493912;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kjFTQhfyX4OpZ75eLCQsarAtUBHRYbyc/PAd9P4Y7CI=;
+        b=oJsYihtzb7pXIOmtByWhk9KbWnlVwtdX163r66UXoaxvHYw9zd0xhL12EdZ9tPvTVN
+         NtlQK/7emL5r6g2gpKCP1/SB0bSfdvx/cEi5ENyhlzCISMROxcyn5kuXWT4YYUQkg/gd
+         HMz/8uK8JRKHlVwn0tPUouzI4Y8M4arlOwMf1XFaY+RR2qzU+IS/Cp85jAtTzfohdmD0
+         ExYCWJnFUvlzqozIqT1k1TYKlJzENA5XcEp2HGLx5/9dlHcK4R345h7HJGRS7TdbWiso
+         wslbMvc/pz8poUAXu7tQgsXdcYgMkj7OzV3fCvbIn6POE2K6sfptJiOiP3zDCS34uoDY
+         gylw==
+X-Gm-Message-State: AOJu0YxhnIYk07XkjbQWBS7kRpvyE4LI/Jrg9s8iWxXzW6qGw9uT9P6N
+	dXQE4rVqa31UUYaWt3AlIt9WNTc+FZUewqAzPwEin4VagMiymCtq1sAMFxRwb4vqxtAuRSHrHJw
+	4ZGbRGYq8wlY/4WifnPA+63C5jolWskOeT4Y=
+X-Google-Smtp-Source: AGHT+IFUNcvFrtEeCkHxcUTQW9b1GdgYlbqRIehUQEHcaweXXXIXkS8cwExw7eL3LP5nnH+WGue4GtsNcAbNqRGPja0=
+X-Received: by 2002:a0c:f1cd:0:b0:68c:8ac3:2acb with SMTP id
+ u13-20020a0cf1cd000000b0068c8ac32acbmr842609qvl.41.1706889111860; Fri, 02 Feb
+ 2024 07:51:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8mK8U1C6IaH97Jzi7wkUtAS";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - whm50.louhi.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - haloniitty.fi
-X-Get-Message-Sender-Via: whm50.louhi.net: authenticated_id: pekka.paalanen@haloniitty.fi
-X-Authenticated-Sender: whm50.louhi.net: pekka.paalanen@haloniitty.fi
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-
---Sig_/8mK8U1C6IaH97Jzi7wkUtAS
-Content-Type: text/plain; charset=US-ASCII
+References: <20240130214620.3155380-1-stefanb@linux.ibm.com>
+ <20240130214620.3155380-5-stefanb@linux.ibm.com> <38230b4c-54ae-45ed-a6fb-34e63501e5b1@linux.ibm.com>
+ <CAOQ4uxiYARZBSgzb4_W-RKvB1XLSF3GUBqeLw2kH+eVeZ_8ARQ@mail.gmail.com>
+ <c018b014-9ba8-4395-86dc-b61346ab20a8@linux.ibm.com> <CAOQ4uxi6Te8izWpXROthknRaXrVA9jho5nbc+mkuQDrcTLY44Q@mail.gmail.com>
+ <CAOQ4uxigdNeE+2nfr4VxS9piQf5hez=ryT0a-jzW+tW0BT-zuw@mail.gmail.com>
+ <492ea12a-d79d-47da-9bbe-a7f33051bd3f@linux.ibm.com> <CAOQ4uxgiO1RbsmqOu4F4Foy-MBPecnEXO7BvgDGz-Lzb1Eysog@mail.gmail.com>
+ <4c584bfb-d282-4584-bb20-18c26b1033c0@linux.ibm.com> <CAOQ4uxjftr7GGx6tuW_yB_MTaVB57m6p_d=UHhN3Z23YVXY0QQ@mail.gmail.com>
+ <11abffea-15c5-4d13-9d0f-edbc54b09bf3@linux.ibm.com> <CAOQ4uxjZ6p9+H54G0LNTUnU56WRaoLtWOUj2nOaKJ4JvBGqLVg@mail.gmail.com>
+ <427ce381-73fa-48f9-8e18-77e23813b918@linux.ibm.com>
+In-Reply-To: <427ce381-73fa-48f9-8e18-77e23813b918@linux.ibm.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Fri, 2 Feb 2024 17:51:40 +0200
+Message-ID: <CAOQ4uxggqa7j0NS1MN3KSvF_qG1FMVmFxacEYSTx+LuvuosJ5g@mail.gmail.com>
+Subject: Re: [PATCH 4/5] evm: Use the real inode's metadata to calculate
+ metadata hash
+To: Stefan Berger <stefanb@linux.ibm.com>
+Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
+	roberto.sassu@huawei.com, miklos@szeredi.hu
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2 Feb 2024 13:13:22 +0100
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+On Fri, Feb 2, 2024 at 4:59=E2=80=AFPM Stefan Berger <stefanb@linux.ibm.com=
+> wrote:
+>
+>
+>
+> On 2/2/24 04:24, Amir Goldstein wrote:
+> > On Thu, Feb 1, 2024 at 10:35=E2=80=AFPM Stefan Berger <stefanb@linux.ib=
+m.com> wrote:
+>
+> >
+> >>
+> >> and your suggested change to this patch :
+> >>
+> >> -       struct inode *inode =3D d_real_inode(dentry);
+> >> +       struct inode *inode =3D d_inode(d_real(dentry, false));;
+> >>
+> >
+> > In the new version I change the API to use an enum instead of bool, e.g=
+:
+> >
+> >         struct inode *inode =3D d_inode(d_real(dentry, D_REAL_METADATA)=
+);
+>
+> Thanks. I will use it.
+>
+> >
+> > This catches in build time and in run time, callers that were not conve=
+rted
+> > to the new API.
+> >
+> >> The test cases are now passing with and without metacopy enabled. Yay!
+> >
+> > Too soon to be happy.
+> > I guess you are missing a test for the following case:
+> > 1. file was meta copied up (change is detected)
+> > 2. the lower file that contains the data is being changed (change is
+> > not detected)
+>
+> Right. Though it seems there's something wrong with overlayfs as well
+> after appending a byte to the file on the lower.
+>
+> -rwxr-xr-x    1 0        0               25 Feb  2 14:55
+> /ext4.mount/lower/test_rsa_portable2
+> -rwxr-xr-x    1 0        0               24 Feb  2 14:55
+> /ext4.mount/overlay/test_rsa_portable2
+> bb16aa5350bcc8863da1a873c846fec9281842d9
+> /ext4.mount/lower/test_rsa_portable2
+> bb16aa5350bcc8863da1a873c846fec9281842d9
+> /ext4.mount/overlay/test_rsa_portable2
+>
+> We have a hash collision on a file with 24 bytes and the underlying one
+> with 25 byte. (-;  :-)
 
-> Hello Maxime,
->=20
-> + Arthur
->=20
-> mripard@kernel.org wrote on Fri, 2 Feb 2024 10:53:37 +0100:
->=20
-> > Hi Miquel,
-> >=20
-> > On Fri, Feb 02, 2024 at 10:26:01AM +0100, Miquel Raynal wrote: =20
-> > > pekka.paalanen@haloniitty.fi wrote on Fri, 2 Feb 2024 10:55:22 +0200:
-> > >    =20
-> > > > On Thu, 01 Feb 2024 18:31:32 +0100
-> > > > Louis Chauvet <louis.chauvet@bootlin.com> wrote:
-> > > >    =20
-> > > > > Change the composition algorithm to iterate over pixels instead o=
-f lines.
-> > > > > It allows a simpler management of rotation and pixel access for c=
-omplex formats.
-> > > > >=20
-> > > > > This new algorithm allows read_pixel function to have access to x=
-/y
-> > > > > coordinates and make it possible to read the correct thing in a b=
-lock
-> > > > > when block_w and block_h are not 1.
-> > > > > The iteration pixel-by-pixel in the same method also allows a sim=
-pler
-> > > > > management of rotation with drm_rect_* helpers. This way it's not=
- needed
-> > > > > anymore to have misterious switch-case distributed in multiple pl=
-aces.     =20
-> > > >=20
-> > > > Hi,
-> > > >=20
-> > > > there was a very good reason to write this code using lines:
-> > > > performance. Before lines, it was indeed operating on individual pi=
-xels.
-> > > >=20
-> > > > Please, include performance measurements before and after this seri=
-es
-> > > > to quantify the impact on the previously already supported pixel
-> > > > formats, particularly the 32-bit-per-pixel RGB variants.
-> > > >=20
-> > > > VKMS will be used more and more in CI for userspace projects, and
-> > > > performance actually matters there.
-> > > >=20
-> > > > I'm worrying that this performance degradation here is significant.=
- I
-> > > > believe it is possible to keep blending with lines, if you add new =
-line
-> > > > getters for reading from rotated, sub-sampled etc. images. That way=
- you
-> > > > don't have to regress the most common formats' performance.   =20
-> > >=20
-> > > While I understand performance is important and should be taken into
-> > > account seriously, I cannot understand how broken testing could be
-> > > considered better. Fast but inaccurate will always be significantly
-> > > less attractive to my eyes.   =20
-> >=20
-> > AFAIK, neither the cover letter nor the commit log claimed it was fixing
-> > something broken, just that it was "better" (according to what
-> > criteria?). =20
->=20
-> Better is probably too vague and I agree the "fixing" part is not
-> clearly explained in the commit log. The cover-letter however states:
->=20
-> > Patch 2/2: This patch is more complex. My main target was to solve issu=
-es
-> > I found in [1], but as it was very complex to do it "in place", I choose
-> > to rework the composition function. =20
-> ...
-> > [1]: https://lore.kernel.org/dri-devel/20240110-vkms-yuv-v2-0-952fcaa5a=
-193@riseup.net/ =20
->=20
-> If you follow this link you will find all the feedback and especially
-> the "broken" parts. Just to be clear, writing bugs is totally expected
-> and review/testing is supposed to help on this regard. I am not blaming
-> the author in any way, just focusing on getting this code in a more
-> readable shape and hopefully reinforce the testing procedure.
->=20
-> > If something is truly broken, it must be stated what exactly is so we
-> > can all come up with a solution that will satisfy everyone. =20
->=20
-> Maybe going through the series pointed above will give more context
-> but AFAIU: the YUV composition is not totally right (and the tests used
-> to validate it need to be more complex as well in order to fail).
->=20
-> Here is a proposal.
->=20
-> Today's RGB implementation is only optimized in the line-by-line case
-> when there is no rotation. The logic is bit convoluted and may possibly
-> be slightly clarified with a per-format read_line() implementation,
-> at a very light performance cost. Such an improvement would definitely
-> benefit to the clarity of the code, especially when transformations
-> (especially the rotations) come into play because they would be clearly
-> handled differently instead of being "hidden" in the optimized logic.
-> Performances would not change much as this path is not optimized today
-> anyway (the pixel-oriented logic is already used in the rotation case).
->=20
-> Arthur's YUV implementation is indeed well optimized but the added
-> complexity probably lead to small mistakes in the logic. The
-> per-format read_line() implementation mentioned above could be
-> extended to the YUV format as well, which would leverage Arthur's
-> proposal by re-using his optimized version. Louis will help on this
-> regard. However, for more complex cases such as when there is a
-> rotation, it will be easier (and not sub-optimized compared to the RGB
-> case) to also fallback to a pixel-oriented processing.
->=20
-> Would this approach make sense?
+https://docs.kernel.org/filesystems/overlayfs.html#changes-to-underlying-fi=
+lesystems
 
-Hi,
+If you modify the lower file underneath overlayfs, you get no
+guarantee from overlayfs about expected results.
 
-I think it would, if I understand what you mean. Ever since I proposed
-a line-by-line algorithm to improve the performance, I was thinking of
-per-format read_line() functions that would be selected outside of any
-loops. Extending that to support YUV is only natural. I can imagine
-rotation complicates things, and I won't oppose that resulting in a
-much heavier read_line() implementation used in those cases. They might
-perhaps call the original read_line() implementations pixel-by-pixel or
-plane-by-plane (i.e. YUV planes) per pixel. Chroma-siting complicates
-things even further. That way one could compose any
-rotation-format-siting combination by chaining function pointers.
-
-I haven't looked at VKMS in a long time, and I am disappointed to find
-that vkms_compose_row() is calling plane->pixel_read() pixel-by-pixel.
-The reading vfunc should be called with many pixels at a time when the
-source FB layout allows it. The whole point of the line-based functions
-was that they repeat the innermost loop in every function body to make
-the per-pixel overhead as small as possible. The VKMS implementations
-benchmarked before and after the original line-based algorithm showed
-that calling a function pointer per-pixel is relatively very expensive.
-Or maybe it was a switch-case.
-
-Sorry, I didn't realize the optimization had already been lost.
-
-Btw. I'd suggest renaming vkms_compose_row() to vkms_fetch_row() since
-it's not composing anything and the name mislead me.
-
-I think if you inspect the compositing code as of revision
-8356b97906503a02125c8d03c9b88a61ea46a05a you'll get a better feeling of
-what it was supposed to be.
-
+This makes your work more challenging.
 
 Thanks,
-pq
-
---Sig_/8mK8U1C6IaH97Jzi7wkUtAS
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmW9DvkACgkQI1/ltBGq
-qqewLxAAmU+dO2ANGbUkMukPWFH7hFlfiYy8bZ8QhF5TeIQzn3Qgt65nuYHlef6+
-9/yE+S5hhFS1lDyicCCn+tPHDlNiQuAgYWC8huwWQW2oWT5LhUymF1Zn++txOi8W
-WSA/eiJz082ScDKvgz31kuP5qIB7E6MDQL4GHQYfgO0pdXs02aBxEDzfgtuGBZi7
-YC2hx9XLsexVQGahc6AoV2zGS/nUwNhVAgQJmt7WKbPEpLyQ8re8caEc/dDO1Klm
-A4vrdo0wlEarGHc9OUwuvupvAnq5hd/Y6L7He1JIooHqBBJf5tA89Vo5yenGJ7f1
-MKp3FLET3A7fn5j8ddBHKDsl2NgG2rCbI4BJZdxBQI+v1WAq8RacQ2YpFrsxE7dB
-nbmTX7yBPrwOYkTfb99dbE3qkzOCMy8Bu584j6WBm+YW8ZSIrf1rKVXgaHnshWrQ
-lEZVHKdTJMwqjJaOQS579bMV7YNuKYyz4Y5PTLuw46x3eUeVm1q3jk7RUmiiQlgG
-ytMIGNwJNMuObdPeezQG13sF5SE7cMvkvESoQpy4u0pHH432Ml7p5AFB1q4vIHJi
-FVu4asOrqtd9AobtiQqtJ0z4DITTmTPb/kwUyi7boEKIj/ravgC/9t6LMUqZ81mn
-MjKB8XuCeT7CF2v0OHvlJy/b5EVrWpSImx4EPehJ1LIz35suUnw=
-=h2ic
------END PGP SIGNATURE-----
-
---Sig_/8mK8U1C6IaH97Jzi7wkUtAS--
+Amir.
 
