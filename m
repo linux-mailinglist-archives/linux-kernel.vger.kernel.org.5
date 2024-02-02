@@ -1,171 +1,187 @@
-Return-Path: <linux-kernel+bounces-50667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0772847C51
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:29:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBF81847C53
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:29:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7771F2849C2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:29:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23E62B262FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:29:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F36E1126F14;
-	Fri,  2 Feb 2024 22:29:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B14E78595E;
+	Fri,  2 Feb 2024 22:29:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gsUjw0ku"
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ObyChgnL"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D50126F0B
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 22:29:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F4685952
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 22:29:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706912948; cv=none; b=ml7TfH0xE1iw9IpC9SZFkAZSrySyJMMkbfc7SbNzbgAc07TkEr5xK4Pe5+RdODeV4dEVyJv9CbkiBqGAQ3OVKMhaJ1qI2XlanLVWuR+qz2VZ2oJmygdbGadZ1KPRmu5lY9wyaiAXXemr0DbWHdfM/bTnm5REU1PD5iuripdB1UE=
+	t=1706912971; cv=none; b=GjVwSF6pd1uEz5ZxR3w/SqET4B1P8ZE6ZE26i7bg7IeBv22kyLmTs2YKl+qMi5dx3OKoCqvsiumYyqMnW3/BVIJbo6fC1JLonttFYJLnZl1IsDuB8hz3xHXSr6+a+Db8Bh73195KoNoww/VqlVHoSEGEnDgnRGiN9w9JFSjK7l4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706912948; c=relaxed/simple;
-	bh=QQmJYxnUlUSvt1/zDq1r4NkiHQ/BRoPpeizKUvdTjDI=;
+	s=arc-20240116; t=1706912971; c=relaxed/simple;
+	bh=gGYdrmSY27L3UMwdCd7M/7PkJCyNNxq/d8aVNPYJujs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X8lsql0PXcVMJ4+gyqwcaOc5tOaLr+upbXF4qDSaVJ7ON+m0OD4jCcKVlsufomt/pz6pGUCT6YiwMpeZb8zqjHDTn+GKGkJb7R1lyiI/QR1ct5yvCjYKWiiiX8ugpVFb1rNJNxYxe4F0SqBFMRkimlX0YE8qd9XLZE0fGvzNWpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gsUjw0ku; arc=none smtp.client-ip=209.85.166.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7c064c20ad4so18788839f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 14:29:06 -0800 (PST)
+	 To:Cc:Content-Type; b=qh05Hw4WAWSrI4TPya3myF8Io5V8zFx2uO0xk6i8qoDdmsgwJEz1H6Trq1B3q54tNMq+74DpN+omPNttml5DED7L84ObC5ezvjieFmDUXrc1LoSm26h9v4qvwS/0XJM8uketLpKt/UnqqYNUmNtjU1UJXxuL9yVukVy47IkNI04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ObyChgnL; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc6d9a8815fso2398897276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 14:29:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706912946; x=1707517746; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706912969; x=1707517769; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kpWz3y9T5jk0N4AIQW/ncWnKm//RNwFNaUOWg6Hg2gY=;
-        b=gsUjw0ku77tD/ANNEO9LvfH3VhISxPHcMBL04DT9CAxN2egW4iYAY8PiGjDRZyfMl+
-         Zvyv6TYyFMwMt+fFVzc5JajZCN1/CAsV8lg0JJa7d2TDoU/z65u5QlASNCxYYKFtOpMp
-         WdQZWDh2LT9jci3PofFwgrPK2t/UWZCDKdR8s9BGD8oHeMgpduhG3Inhgd+pAmtGO6KQ
-         mcT38qdRZ5uMyWpjmESWsTQsQZj0ANSDde3EKpLwiFvNSi9Hujcnj+P1fQnwlJPdt5MA
-         +edmPtFrLzmVUGz3gdNgi/UGiBc2lyZpVy/ufyLd1uOC8ESkFg28FBtTcnNMmmAp+VSD
-         sO7g==
+        bh=BOziTImG/ai1TC8yybGKYzwUPfzkDvlxfAgJr9HGCcs=;
+        b=ObyChgnLIT1fomKZUNFzQ5t87f7KnySvn4628AAkakN7JWIbhou1uFodPprdhdulKH
+         YXNCpzDO1VO3EglWOJnir+bKqZcqscvTVocXAMWdlsxVWGDwI2uwWDNZoktRYdOJCrwN
+         TicznRKWtlf0Rp2nQY8XVX09VCEwBEfWKfquJJQ8ZM6iQ5+hQ/eJDN/dIJI8xq59yYv8
+         X0pzVp8uaVrhoXCUtpVF9naVXgtzc4z0d88Ds6tKKeKOvkFfDgo2Yb0D31BhAGG1EGCy
+         hIECLaE9fC+N68q+yRF+5Xkv2dsCwiGXvEmf73qdmHyF7kbqDLpC9uP/AmJV/v1HAohJ
+         rI9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706912946; x=1707517746;
+        d=1e100.net; s=20230601; t=1706912969; x=1707517769;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kpWz3y9T5jk0N4AIQW/ncWnKm//RNwFNaUOWg6Hg2gY=;
-        b=Vs3h3LB+7/dqBKMh1CE2PUkj9g9DfPljmPWN289jU+ebmggRq5WhwBbqtHyS5GD38i
-         SbxE4kDfjkYsArxTXdwlGBTe/oeF/+lIElhy5qPr5UojlsjQgNs+OXT05HNmGSyXc1HE
-         N4TPM7030thZcPvhQSr765FyHOKZiXUp4hainfQB5R7C68vxaiRmCl4r+b6LyzQuK0Nx
-         1cAW2MlnRR/oE6YHzoV+SMARTzDi388Ezqjx3PZeBu4v+UiQghydf9mTX1FRu65mCZR+
-         r6WpPV79V4UzqFNwZ7B5uF2r0IOXw1Hh7TTlB1eRKYcDQJ7Rp4Lom1R2cXeN5HDqgS1F
-         B0kw==
-X-Gm-Message-State: AOJu0Yz6rYap8G+7ZXBSN2Ro58Qp6O2xeEHR1mx0X/cJa7c8atNfsDV0
-	et3Qnt+dvwaHphOwKOYNb58g1ZB/+NZCmw4A9caBOfRVRq7UTrx8vyJEZWFDUSOQFwWF03fbvud
-	IN2XesZenB2kWsSNY4ovKnhVixih/w19Xj7g=
-X-Google-Smtp-Source: AGHT+IGd1s5f779+z/mlI9HNZsPpnP3PKjULBa46sWLQ2p/wBmfkcY/t1deG6xDJaQKsyZ39bJpUnOQ7NyGjE7cND5M=
-X-Received: by 2002:a05:6e02:1a43:b0:363:8d25:a0a4 with SMTP id
- u3-20020a056e021a4300b003638d25a0a4mr380931ilv.12.1706912945776; Fri, 02 Feb
- 2024 14:29:05 -0800 (PST)
+        bh=BOziTImG/ai1TC8yybGKYzwUPfzkDvlxfAgJr9HGCcs=;
+        b=ejuy3lcyXY0ZUV96cONWIwVaBXjapn/XqLvkNo5CnScZVskuHHRK2xO6aTBhbqUn/p
+         FqXbpf4W8NZSeZ+IMKXlVCsEmKZ4FEvCUEzZmo+EbFa7EA5xAscpJmtmYFz7L+UGstt9
+         6bAJyTW4CD1n7zdM6K3tcR1UGwefwukEVttd8I54lCe9Jcnd9oXY4S0QNfMYy8aDhWZR
+         QM1zJuZlwGrQatGkuYyZlTGFX2a9lHQwvgmmDR5iYH166y5CPTZyIjngHOqYPQOIg+Y0
+         nv07H8S6lNH2oKbZx/mBYkfRLzNYlcNd6pp2+gKyR3qmKWSClb/E1d6gyZfqXhnhBS3t
+         gLVA==
+X-Gm-Message-State: AOJu0Yy7xJdcD04tD/PtLfoLLoxrIZL4LQlmQbQ9FKbdkx2NHqa0aeGc
+	F7Q2PDJy8b60o/qa/qEpZayjsZLBEDmbuM+ANcoOH9khz7q1+24jxGokO2+2w7I0rKuREw21axf
+	v1C/v9xVznyJZyUBnMP+Dc/qFGY2KXjiUsKeZ
+X-Google-Smtp-Source: AGHT+IHm1T1hxvOrmJW4bWTmfAkGpLs9hkfM+xa0FRzsB9jyyZq8NjorSKfDZQnnpX2iQAQV2Mm3Gq+2/oj1qjuwi+E=
+X-Received: by 2002:a25:81cc:0:b0:dc6:e72b:99b4 with SMTP id
+ n12-20020a2581cc000000b00dc6e72b99b4mr5279741ybm.29.1706912968819; Fri, 02
+ Feb 2024 14:29:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201-b4-zswap-invalidate-entry-v1-0-56ed496b6e55@bytedance.com>
- <20240201-b4-zswap-invalidate-entry-v1-4-56ed496b6e55@bytedance.com>
-In-Reply-To: <20240201-b4-zswap-invalidate-entry-v1-4-56ed496b6e55@bytedance.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Fri, 2 Feb 2024 14:28:54 -0800
-Message-ID: <CAKEwX=Pj9ms56zPaFznXrY0mF7E_q1hMXUkV-Fhnx5V17OY6og@mail.gmail.com>
-Subject: Re: [PATCH 4/6] mm/zswap: remove duplicate_entry debug value
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Yosry Ahmed <yosryahmed@google.com>, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20240202221026.1055122-1-tjmercier@google.com> <CAJD7tkZh=M58Avfwx_D+UEXy6mm18Zx_hVKn8Gb8-+8-JQQfWw@mail.gmail.com>
+In-Reply-To: <CAJD7tkZh=M58Avfwx_D+UEXy6mm18Zx_hVKn8Gb8-+8-JQQfWw@mail.gmail.com>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Fri, 2 Feb 2024 14:29:17 -0800
+Message-ID: <CABdmKX3_jCjZdOQeinKCKBS3m4XS8heE9WMDU-z1oFpCcPc5fg@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: memcg: Use larger batches for proactive reclaim
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Efly Young <yangyifei03@kuaishou.com>, android-mm@google.com, yuzhao@google.com, 
+	mkoutny@suse.com, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 1, 2024 at 7:50=E2=80=AFAM Chengming Zhou
-<zhouchengming@bytedance.com> wrote:
+On Fri, Feb 2, 2024 at 2:14=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com> =
+wrote:
 >
-> cat /sys/kernel/debug/zswap/duplicate_entry
-> 2086447
+> On Fri, Feb 2, 2024 at 2:10=E2=80=AFPM T.J. Mercier <tjmercier@google.com=
+> wrote:
+> >
+> > Before 388536ac291 ("mm:vmscan: fix inaccurate reclaim during proactive
+> > reclaim") we passed the number of pages for the reclaim request directl=
+y
+> > to try_to_free_mem_cgroup_pages, which could lead to significant
+> > overreclaim. After 0388536ac291 the number of pages was limited to a
+> > maximum 32 (SWAP_CLUSTER_MAX) to reduce the amount of overreclaim.
+> > However such a small batch size caused a regression in reclaim
+> > performance due to many more reclaim start/stop cycles inside
+> > memory_reclaim.
+> >
+> > Reclaim tries to balance nr_to_reclaim fidelity with fairness across
+> > nodes and cgroups over which the pages are spread. As such, the bigger
+> > the request, the bigger the absolute overreclaim error. Historic
+> > in-kernel users of reclaim have used fixed, small sized requests to
+> > approach an appropriate reclaim rate over time. When we reclaim a user
+> > request of arbitrary size, use decaying batch sizes to manage error whi=
+le
+> > maintaining reasonable throughput.
+> >
+> > root - full reclaim       pages/sec   time (sec)
+> > pre-0388536ac291      :    68047        10.46
+> > post-0388536ac291     :    13742        inf
+> > (reclaim-reclaimed)/4 :    67352        10.51
+> >
+> > /uid_0 - 1G reclaim       pages/sec   time (sec)  overreclaim (MiB)
+> > pre-0388536ac291      :    258822       1.12            107.8
+> > post-0388536ac291     :    105174       2.49            3.5
+> > (reclaim-reclaimed)/4 :    233396       1.12            -7.4
+> >
+> > /uid_0 - full reclaim     pages/sec   time (sec)
+> > pre-0388536ac291      :    72334        7.09
+> > post-0388536ac291     :    38105        14.45
+> > (reclaim-reclaimed)/4 :    72914        6.96
+> >
+> > Fixes: 0388536ac291 ("mm:vmscan: fix inaccurate reclaim during proactiv=
+e reclaim")
+> > Signed-off-by: T.J. Mercier <tjmercier@google.com>
 >
-> When testing, the duplicate_entry value is very high, but no warning
-> message in the kernel log. From the comment of duplicate_entry
-> "Duplicate store was encountered (rare)", it seems something goes wrong.
->
-> Actually it's incremented in the beginning of zswap_store(), which found
-> its zswap entry has already on the tree. And this is a normal case,
-> since the folio could leave zswap entry on the tree after swapin,
-> later it's dirtied and swapout/zswap_store again, found its original
-> zswap entry. (Maybe we can reuse it instead of invalidating it?)
+> LGTM with a nit below:
+> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
 
-Interesting. So if we make invalidate load the only mode, this oddity
-is gone as well?
+Thanks
 
+> >
+> > ---
+> > v2: Simplify the request size calculation per Johannes Weiner and Micha=
+l Koutn=C3=BD
+> >
+> >  mm/memcontrol.c | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 46d8d02114cf..e6f921555e07 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -6965,6 +6965,9 @@ static ssize_t memory_reclaim(struct kernfs_open_=
+file *of, char *buf,
+> >         while (nr_reclaimed < nr_to_reclaim) {
+> >                 unsigned long reclaimed;
+> >
+> > +               /* Will converge on zero, but reclaim enforces a minimu=
+m */
+> > +               unsigned long batch_size =3D (nr_to_reclaim - nr_reclai=
+med) / 4;
+> > +
+> >                 if (signal_pending(current))
+> >                         return -EINTR;
+> >
+> > @@ -6977,7 +6980,7 @@ static ssize_t memory_reclaim(struct kernfs_open_=
+file *of, char *buf,
+> >                         lru_add_drain_all();
+> >
+> >                 reclaimed =3D try_to_free_mem_cgroup_pages(memcg,
+> > -                                       min(nr_to_reclaim - nr_reclaime=
+d, SWAP_CLUSTER_MAX),
+> > +                                       batch_size,
+> >                                         GFP_KERNEL, reclaim_options);
 >
-> So duplicate_entry should be only incremented in the real bug case,
-> which already have "WARN_ON(1)", it looks redundant to count bug case,
-> so this patch just remove it.
+> I think the above two lines should now fit into one.
 
-But yeah, I have literally never checked this value (maybe I should
-ha). I'm fine with removing it, unless someone has a strong case for
-this counter?
+It goes out to 81 characters. I wasn't brave enough, even though the
+80 char limit is no more. :)
 
-For now:
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+This takes it out to 100 but gets rid of batch_size if folks are ok with it=
+:
 
->
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> ---
->  mm/zswap.c | 9 +--------
->  1 file changed, 1 insertion(+), 8 deletions(-)
->
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 4381b7a2d4d6..3fbb7e2c8b8d 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -71,8 +71,6 @@ static u64 zswap_reject_compress_poor;
->  static u64 zswap_reject_alloc_fail;
->  /* Store failed because the entry metadata could not be allocated (rare)=
- */
->  static u64 zswap_reject_kmemcache_fail;
-> -/* Duplicate store was encountered (rare) */
-> -static u64 zswap_duplicate_entry;
->
->  /* Shrinker work queue */
->  static struct workqueue_struct *shrink_wq;
-> @@ -1571,10 +1569,8 @@ bool zswap_store(struct folio *folio)
->          */
->         spin_lock(&tree->lock);
->         entry =3D zswap_rb_search(&tree->rbroot, offset);
-> -       if (entry) {
-> +       if (entry)
->                 zswap_invalidate_entry(tree, entry);
-> -               zswap_duplicate_entry++;
-> -       }
->         spin_unlock(&tree->lock);
->         objcg =3D get_obj_cgroup_from_folio(folio);
->         if (objcg && !obj_cgroup_may_zswap(objcg)) {
-> @@ -1661,7 +1657,6 @@ bool zswap_store(struct folio *folio)
->          */
->         while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) =3D=3D -E=
-EXIST) {
->                 WARN_ON(1);
-> -               zswap_duplicate_entry++;
->                 zswap_invalidate_entry(tree, dupentry);
->         }
->         if (entry->length) {
-> @@ -1822,8 +1817,6 @@ static int zswap_debugfs_init(void)
->                            zswap_debugfs_root, &zswap_reject_compress_poo=
-r);
->         debugfs_create_u64("written_back_pages", 0444,
->                            zswap_debugfs_root, &zswap_written_back_pages)=
-;
-> -       debugfs_create_u64("duplicate_entry", 0444,
-> -                          zswap_debugfs_root, &zswap_duplicate_entry);
->         debugfs_create_u64("pool_total_size", 0444,
->                            zswap_debugfs_root, &zswap_pool_total_size);
->         debugfs_create_atomic_t("stored_pages", 0444,
->
-> --
-> b4 0.10.1
+                reclaimed =3D try_to_free_mem_cgroup_pages(memcg,
+-                                       min(nr_to_reclaim -
+nr_reclaimed, SWAP_CLUSTER_MAX),
++                                       /* Will converge on zero, but
+reclaim enforces a minimum */
++                                       (nr_to_reclaim - nr_reclaimed) / 4,
+                                        GFP_KERNEL, reclaim_options);
 
