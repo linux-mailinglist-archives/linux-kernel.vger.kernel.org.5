@@ -1,137 +1,136 @@
-Return-Path: <linux-kernel+bounces-49045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8167D84653E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:04:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A57DF846541
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:05:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B346F1C23F10
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:04:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 439EB1F26149
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:05:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59A86DF5D;
-	Fri,  2 Feb 2024 01:04:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E5105689;
+	Fri,  2 Feb 2024 01:05:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="NgO5f9Oe";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="q+Tf598b"
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uzsU+wtY"
+Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4008D308;
-	Fri,  2 Feb 2024 01:04:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 095BAEAEA
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 01:05:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706835878; cv=none; b=OFdj/xmGS2yLYsSmx6kFVZVZ66o64j1H6bbW2og8bQySGNSwJgFjyojMNgakTRzGqVCmGkRotaQjRezk8nhRhSyRPUbDP/1F9LILkqh6kRxHg1iplPMfnAJRb6x2tt6yC0dcJh+cZ/AqJs92i8hFAS0LtB4oGT0VLnNrEE8P78c=
+	t=1706835911; cv=none; b=Eg8NiqTiXfqacd+5OOFTueDH6nuHF1JPDtFtd01F/3hvHOVugr7Zvb4bQP7VuI4pAYKuUYM0zb8IGI2LiEPUI6YTSKx/GLB9PiKSfRqUV6W8I1Whc+OGgQLaf+YWikBEJgwHIhbyKmf5MC4fP0ZQeXqUzt2qb4cJkOK5C9AlddU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706835878; c=relaxed/simple;
-	bh=VsGcaBj2+DVUKNNWLzh2v7rvDdhx1Vhnha3Ztw0+ZGs=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=mBaroJ2MWLCnmb4QtWxqXYRe5pOENtIw6ORpP7sM/rdANK3e4xDJdfNBohPboeBv4zZik+zge9kjX3V3WGNPj6xkKsi+SRVY1hdwnWljGo7zrcO+S/SW3ddrhPGPUKI1e7vvKqAWjf62IVwVuPEhixD15wKl3XQ4LPcJ37HMgJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=NgO5f9Oe; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=q+Tf598b; arc=none smtp.client-ip=66.111.4.29
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.nyi.internal (Postfix) with ESMTP id 91ED45C015E;
-	Thu,  1 Feb 2024 20:04:34 -0500 (EST)
-Received: from imap44 ([10.202.2.94])
-  by compute3.internal (MEProxy); Thu, 01 Feb 2024 20:04:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1706835874; x=
-	1706922274; bh=GIGLcKpOqgSFtDtF20FwBeWhNJabIQLZaNxjZseleos=; b=N
-	gO5f9Oe/8mxQCf8Zaban9cEk62KEDE7Aske1nUe/zUJDN/kg5YY/akgCaQwb4O0j
-	m9eWvSBpJEh9zedXV9+sI2OLs2BFFYyXX0tVS29dJk0MbEM45Aybhl30oZ3MwlaC
-	2Kb0bcn81LxR6SgsiFMHeRbJQm2IsK08WrU1mbxyVKL566Ibswbnlde5qMqw8Vjo
-	IjQJoRTYFtmWcIV88fy5yor0660awbAwC77BDfcx8xrizgK0IiFsJzvZiQo5MxuX
-	1WV+uVopvCazyzzIynRV5jsP21QHxIzCp84Otx/YTnSk/ZbTVJoigVzHToATQrMd
-	nmCNGs9mR8lC7GEQjppuA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1706835874; x=1706922274; bh=GIGLcKpOqgSFtDtF20FwBeWhNJab
-	IQLZaNxjZseleos=; b=q+Tf598bVqDN5xHd7UVg+Z1/t+B0VNNJVf+9Yo3uA3Es
-	vqox50GNDEwYsGowvQTwvgaR/67lOBEDUuYXlIEcH4UHeKie/scQo2HuN5y4HLh2
-	4zXRa1xv6jMmlB9bttvcvx7QruaTfIbJGdewdREUWzuy8XOEdGEaK1Nxk/RoS8zy
-	5LAMEnuaAzrUbyLEfYYewCYNxEwTu5M/xVlb4p9lo3GZdufv0iq+rf9CY9V4bKXo
-	p5DbadGWrwJ4rYoBMbH2t8KmgQC8/hFrQO4DUap2dCH3IViBMvKOYSrz+DtMkE7n
-	5RvZI0zv0ozEaQcvDe57jTSifHNXGRDkoDHPYx65EA==
-X-ME-Sender: <xms:oj-8Zbm73Bl162_5SNlPYUNFveGZch85U5sKvabU8v-vL5T-w4ENIg>
-    <xme:oj-8Ze0_Jhh9dGdfbhQ_b2-l9Kv6l4PPdgHsQAx_hHbWilWkvFSYyelUKuR48WL-Q
-    WwW53Y48avL23scQqw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeduvddgvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfvfgr
-    khgrshhhihcuufgrkhgrmhhothhofdcuoehoqdhtrghkrghshhhisehsrghkrghmohgttg
-    hhihdrjhhpqeenucggtffrrghtthgvrhhnpeelfedvveevveetjeeikedtgefghfeigfek
-    leefkeekieehiedviefghfeltdehkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:oj-8ZRp-lBFUwq61DvI8xrIPOiJjE7Ek5mZ76tYzsqLCUglYt4dsDg>
-    <xmx:oj-8ZTl5YPY8SbzEu4O-eyxb3JtoWDdgWNz6KSrD4MXeS_9K1mcsbg>
-    <xmx:oj-8ZZ2XzP4Wb0SdKrBQyxH1gHee9rtSoSTc314TTsGX8bCmDkQgXQ>
-    <xmx:oj-8Za8STrUwsPTQwtL19_3v2RU978ns-6Ykk0PD3kj7MOyObstZSQ>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 363CB36A0076; Thu,  1 Feb 2024 20:04:34 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
+	s=arc-20240116; t=1706835911; c=relaxed/simple;
+	bh=7PGtiOLQjanCi8F2lUfCU2lTtZMSLUVGqrAhBRM1FOQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=janiQmRb3ewJRKkCBt/P10CfJmXaPVJcLQNQjfWI7kX8WmsFDB/AGN9Dint+oKAgFXmV/VVgMVFGousRbt3YS5qwaH+teniMHpyS88xAyfCDup7VySTDkmDBVssZfoOJ7iB2ToEfpSypd0O5RQ7DU12yg5hjc4eVk0RkSKi9YTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uzsU+wtY; arc=none smtp.client-ip=209.85.160.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-2184133da88so883402fac.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 17:05:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706835908; x=1707440708; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1SwapE9xLdXkr+1FZM2yZImYM8kfTZEX3iqcU3VUeD0=;
+        b=uzsU+wtYDGGXhPKLI28SmCscN92VLwtCyhPKDVcPbgtFAROQ7WqnLTi6fxqwg6PXTq
+         rCJEAvF2g9H8Oq7gPJv5LMBw/xMvW6yPijLZU3XyQtswkpSslrPefqd5o6nXMCVxA6iv
+         m+u/gfVw2R7mpp2CQCnvgoLBMA+SWDo2WkuP1mFBhrsT9qN4phiHfy/UvjNU7v5aei22
+         EdqT0jXYE73cRQYka9uCbyBo9Ucb0PbB9aPOI0RqxwiTjW5kH5ag5xdb1VqcFRQ/d4DS
+         zRXOp6ZYUxRkqBcLalmilnbmuGPu1zVkNPq5E4dmX9LqBgvpGp1fAauxU6pQ0S5R8iIh
+         wN/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706835908; x=1707440708;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1SwapE9xLdXkr+1FZM2yZImYM8kfTZEX3iqcU3VUeD0=;
+        b=uzj/oJnb1Fa3BEgh+3HtqECoE1LfgQ99l6IJadI+SZSX/sXzQKPz6OvkpQ40jSy6FU
+         3Uz6SgOMyj9au7zEm3cnKUfjamX5Y9X3SPyHSeQ4/FynuIR7Zi+J3cSCO3vDrOdm4eSR
+         RL09Upv3J2K2AGXcri4UkuB34N7+FHIDkmHzcZU6LV53l6J2RCzFYOY9j9ArwdBEM2Wk
+         jpzYKP2yABg3hx4aeHypLmggi3C09gFVGad3fKTESn/NyaZdj16vyxOajRPb9IHJZUi3
+         cVJMpX+hOCJvmTtnhOv+wIytxfoZ8w3vLRueCoKWPwNc1AqPuRU6wZKQCMhv46q500vK
+         8iqw==
+X-Gm-Message-State: AOJu0YzpKrTf/muiC2o+xaR0+idjNvywz4r1Z/l8N2smGSHmFrLB9ruG
+	kpY5MsmSeukOVCKVISSxkqwNA8hsdIOju54w/TQ3TezfAvteg4Nz5fYI8t7l/RQ=
+X-Google-Smtp-Source: AGHT+IHHssTzP7MXolDOLkfQGC5ALneKZAZicvelx4/ifGxiL8zBzKn0w2ESMFFxOFjxQIO76cQMOQ==
+X-Received: by 2002:a05:6871:4502:b0:206:c520:2811 with SMTP id nj2-20020a056871450200b00206c5202811mr4865347oab.2.1706835908098;
+        Thu, 01 Feb 2024 17:05:08 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUQDuJuCrbniDvpUfQ6lL+8xFL7Q3VSs/I+mnU+pKKO5ifo8TpBvmZ3Tk05LFi+zq4+CoiHahvPWhMb/h72W/xpxRAwgN7eEArtvHJeEwuveMGeV+dQ5oOgNNN0dn3DxT8qSvFXMduAHdj/hzWkjmPsVFw758tdJzK/PHu+hTArsZhhsvN20QmcVJo2KKHHpjA85Ky/sVVobTLcIhxlUh4v+5m16G3zfAKGl7GjUNcegid5qHpct07cIiS8i8uvVMg/b24ZzqMJz0JMqbjoxsI0liL/zUHJwYDfwZK/96pvkyZOPDiS
+Received: from localhost ([136.62.192.75])
+        by smtp.gmail.com with ESMTPSA id ds43-20020a0568705b2b00b00218e9960187sm229534oab.13.2024.02.01.17.05.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 17:05:07 -0800 (PST)
+From: Sam Protsenko <semen.protsenko@linaro.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Alim Akhtar <alim.akhtar@samsung.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Subject: [PATCH] tty: serial: samsung: Remove superfluous braces in macro
+Date: Thu,  1 Feb 2024 19:05:07 -0600
+Message-Id: <20240202010507.22638-1-semen.protsenko@linaro.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <96ef2869-ad72-478f-aa09-691752ce5b81@app.fastmail.com>
-In-Reply-To: <20240202111602.6f6e2c1a@canb.auug.org.au>
-References: <20240202111602.6f6e2c1a@canb.auug.org.au>
-Date: Fri, 02 Feb 2024 10:04:12 +0900
-From: "Takashi Sakamoto" <o-takashi@sakamocchi.jp>
-To: "Stephen Rothwell" <sfr@canb.auug.org.au>
-Cc: "Li Zhijian" <lizhijian@fujitsu.com>,
- "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
- "Linux Next Mailing List" <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the ieee1394 tree
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Hi Stephen,
+Commit 59f37b7370ef ("tty: serial: samsung: Remove USI initialization")
+removes parameters from EXYNOS_COMMON_SERIAL_DRV_DATA() macro, but
+leaves unnecessary empty braces. Remove those to fix the style. No
+functional change.
 
-I'm sorry for the build failure. Indeed, It is my fault to merge
-some fixes for v3.8-rc3 ahead. (I just checked merge conflict
-between the issued commits...)
+Fixes: 59f37b7370ef ("tty: serial: samsung: Remove USI initialization")
+Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+---
+ drivers/tty/serial/samsung_tty.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-However, I'm out until next Tuesday. Let you cancel merging
-ieee1394 tree in the next few days. I'm sorry to trouble you...
+diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+index fcc675603b14..23cabdab44ff 100644
+--- a/drivers/tty/serial/samsung_tty.c
++++ b/drivers/tty/serial/samsung_tty.c
+@@ -2452,7 +2452,7 @@ static const struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
+ #endif
+ 
+ #if defined(CONFIG_ARCH_EXYNOS)
+-#define EXYNOS_COMMON_SERIAL_DRV_DATA()				\
++#define EXYNOS_COMMON_SERIAL_DRV_DATA				\
+ 	.info = {						\
+ 		.name		= "Samsung Exynos UART",	\
+ 		.type		= TYPE_S3C6400,			\
+@@ -2477,17 +2477,17 @@ static const struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
+ 	}							\
+ 
+ static const struct s3c24xx_serial_drv_data exynos4210_serial_drv_data = {
+-	EXYNOS_COMMON_SERIAL_DRV_DATA(),
++	EXYNOS_COMMON_SERIAL_DRV_DATA,
+ 	.fifosize = { 256, 64, 16, 16 },
+ };
+ 
+ static const struct s3c24xx_serial_drv_data exynos5433_serial_drv_data = {
+-	EXYNOS_COMMON_SERIAL_DRV_DATA(),
++	EXYNOS_COMMON_SERIAL_DRV_DATA,
+ 	.fifosize = { 64, 256, 16, 256 },
+ };
+ 
+ static const struct s3c24xx_serial_drv_data exynos850_serial_drv_data = {
+-	EXYNOS_COMMON_SERIAL_DRV_DATA(),
++	EXYNOS_COMMON_SERIAL_DRV_DATA,
+ 	.fifosize = { 256, 64, 64, 64 },
+ };
+ 
+-- 
+2.39.2
 
-On Fri, Feb 2, 2024, at 09:16, Stephen Rothwell wrote:
-> Hi all,
->
-> After merging the ieee1394 tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
->
-> drivers/firewire/core-device.c: In function 'show_text_leaf':
-> drivers/firewire/core-device.c:369:48: error: 'bufsize' undeclared 
-> (first use in this function); did you mean 'ksize'?
->   369 |                                                bufsize);
->       |                                                ^~~~~~~
->       |                                                ksize
->
-> Caused by commit
->
->   67a5a58c0443 ("firewire: Kill unnecessary buf check in device_attribute.show")
->
-> interacting with commit
->
->   47dc55181dcb ("firewire: core: search descriptor leaf just after 
-> vendor directory entry in root directory")
->
-> from Linus' tree (v6.8-rc2 - that the ieee1394 tree has just been rebased on
-> top of).  I have dropped the ieee1394 tree for today.
->
-> -- 
-> Cheers,
-> Stephen Rothwell
 
