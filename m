@@ -1,127 +1,184 @@
-Return-Path: <linux-kernel+bounces-50128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41FEF84749B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B05A84749F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:24:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 747451C263C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:23:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 686021C26332
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:24:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAFCD1474C3;
-	Fri,  2 Feb 2024 16:23:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E70B71474CF;
+	Fri,  2 Feb 2024 16:24:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Od+17W6/"
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rr4y2Q11"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18B12145B07
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 16:23:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33C6F145356;
+	Fri,  2 Feb 2024 16:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706891020; cv=none; b=rAkuDAYYsxfF28WnxF8DD4/zQz0fRdXwrfU43SrhqwbaKTMAWo41Cewta47bqHkV+4Tv7IQCTpqk1upqhCmnWMHNJJ+9dbtOtqUpAYA3qHQCBCfDbeRKih2UAcSk/9deWKUwc9zouieg4SSrM3jxX2/DRfKVLqh0eVbWM0bjoD0=
+	t=1706891058; cv=none; b=t4CURAYt52/VVN/27H5czvJbI12gvlAMeOVk6LJtfyKCDP++l15iHo9tDNjJWKijPI8HZq3rnwDbVO0RihHneqymsxh3iyL/hxvKB85wKoEWgfQEi2QI52s4X5eCNw36OyE+N+g72iu0zL9/9CoVy9k4yY+iEj86vHDqvKqw2v4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706891020; c=relaxed/simple;
-	bh=/JPSf114kEPRJ0v1lXGP2TIUielH27gX1xOOoqaI75s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QrJnHW4NXBGrc87wwClEqS1Kw+RQJKrs4NVOYL/3qkgwPb3GV62jOTVjmox4D0hvaaII0QubT/5ZnGfVxOrYQ1JFmJ70rHL5csqV/kuOAenowJtEe0fyXLg2rmRZpfaYFhvHlnXzUjJUgswQh1bj2ZXUrqsSgXTkfwzWqCVeXZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Od+17W6/; arc=none smtp.client-ip=209.85.160.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-218dd3fdb7cso1238668fac.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 08:23:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706891014; x=1707495814; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j+06YIBVDdULWxw5GQnDnWyMeZFXiBJGy11XybxUBgE=;
-        b=Od+17W6/OxUfdcZG1O57TXXYSw5QTqslcW8TInz6w1ifJ1mzPwkp42RHVEN15xHJ9s
-         YWkxVdC9yVpFuO8ynkI3RDERBHeSYKysVXb+zJWG8Vh9E0NHf+wzfJZ9utHvJsjHFd7C
-         EZTb4xoW/93vMz9tDLncFPmVTFz38HPl/lfoK8bFhlLdOqLFM2efM2StBXfBMQHCcgtR
-         G2/Y0+N0zQSDuAQvJ00FoK9SlBs3xkhxAqKkhUD1lbIzmW5FHXBXfbwYUAY8WaZtDBDN
-         nQ822DLqe6kVz/UWG++y88x9ZmY+sL2mFAqbNCcSglmhLCHCarGo41VmZvn2JBkkCIh9
-         l5IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706891014; x=1707495814;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j+06YIBVDdULWxw5GQnDnWyMeZFXiBJGy11XybxUBgE=;
-        b=NDm9R2ci+b6fLOpcyxLnTPl0IYljme2uhnmQccLfZ+5FafHTrIXbGitLedyNsXCGZs
-         6faMgJpZQViW6K9kUeNaxzkRUHEUqIkR7i/qRpUJEruM3igIBV4o3D43s1GOikgKPlWV
-         WXTkSsDgRKJya/X5y5Vn0Odc2sw9Wqjd6EjV3C3ZKc8jc6EY9LalpqWq/5WZVPvQQpW5
-         UZpnXj4U/DUHhd7fZ2kxb3DfjhZcGQEseldknsJ35EMlex4RrkjPKhJYK1D2hQKPzJSC
-         fkO8wWexiZWS6/eTGCw0mTS6kEhspfUZtW+6U3V/yErqT5JkkhtKHXKxBU2kUZGkWqW4
-         DA8A==
-X-Gm-Message-State: AOJu0YzlOA/CwvF+siF9sIYkJQC2WUhengtqVLrN8O9slWbZbtJzlYc8
-	HVGPc0FA4xsUKtINBTYl0mYng6C405SfVLseSVDAvEDdajAdUWL4cpLrppK9nvccCbkVN7DSijI
-	Y4lhB3Sdm+4VjAG5ZLWNUPHX5+oT3PqRW
-X-Google-Smtp-Source: AGHT+IGcxhNRveKxhRVkFCGKQAlFC5u0InvpGQqzsMYza8L7+a2msgAi9LHM0ZYkFHKvlpL+u301GU3524ves7Q967s=
-X-Received: by 2002:a05:6870:80f:b0:214:fb4e:6184 with SMTP id
- fw15-20020a056870080f00b00214fb4e6184mr177962oab.13.1706891014071; Fri, 02
- Feb 2024 08:23:34 -0800 (PST)
+	s=arc-20240116; t=1706891058; c=relaxed/simple;
+	bh=nf1dgIwaXauoxmAsRA//GzUzQl0CfZAGGsi0S4FzkvM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NN4QTq+OFxeCGh/zOxuwcsJtVLJ8UdQKxoWbjK9lEVnXL3xuCWyO3VlGAuag5ARvwXAjOzrPdrR9RQjAdk0UdQftdPPkpWQgj4HaZlS5MGuD9BmCTec/iC4eS720UMnIRUs5uNcbxREcR7HLCS3VgblBuDSnnEVS/yf8ugu0VAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rr4y2Q11; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5DD8C433C7;
+	Fri,  2 Feb 2024 16:24:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706891057;
+	bh=nf1dgIwaXauoxmAsRA//GzUzQl0CfZAGGsi0S4FzkvM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Rr4y2Q11L9RwT8FjB0w/nagDTfTZiK483vQYqXr5WwkPDH7uNTlsMxQqlXnfTVEgz
+	 DpcAkkSbr7J4tKmqqs78L6n4aceggFNGh991i60akq32dkGZigDafAjqDMGQGXkd+n
+	 fDSk1KPWGJfl4m/5cowpIl8vStyrvN3W/DsVPYFhxLFOebVgo+VKf07ZBCzIqoZlqt
+	 y7ECYFpSnvIu6OlqjJP/8wif5xMzWhsTKcv0fo/wPAHSxu92XPYIJHDsstFQm+KMrp
+	 DQmC7Ovzp1F/qZIi0DPJBYgd25qzcDIsbH888juk5W0TvfXfAzOXjWsWFejocBCt1F
+	 +IhuRox8t6Bhg==
+Date: Fri, 2 Feb 2024 16:24:13 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Naresh Solanki <naresh.solanki@9elements.com>
+Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Patrick Rudolph <patrick.rudolph@9elements.com>,
+	mazziesaccount@gmail.com, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mfd: Add regulator-compatible property
+Message-ID: <20240202-carbon-jumbo-0a577c19b62f@spud>
+References: <20240126114614.1424592-1-naresh.solanki@9elements.com>
+ <20240126-deflate-ashy-158a91efb25a@spud>
+ <CABqG17g+wQ5brngLDYObV+t2y+CEf+85rzqTSYTcmS5jckWZRg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202084726.91920-1-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <20240202084726.91920-1-jiapeng.chong@linux.alibaba.com>
-From: Alex Deucher <alexdeucher@gmail.com>
-Date: Fri, 2 Feb 2024 11:23:22 -0500
-Message-ID: <CADnq5_PQGSo1jzLZf7fKw5M25k_5=w+t0-y0=RjfLU5xY-m=fg@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: Simplify the calculation of variables
-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc: harry.wentland@amd.com, sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com, 
-	alexander.deucher@amd.com, christian.koenig@amd.com, Xinhui.Pan@amd.com, 
-	airlied@gmail.com, daniel@ffwll.ch, amd-gfx@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	Abaci Robot <abaci@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="OGS3hiZ1Wh3iWLl3"
+Content-Disposition: inline
+In-Reply-To: <CABqG17g+wQ5brngLDYObV+t2y+CEf+85rzqTSYTcmS5jckWZRg@mail.gmail.com>
+
+
+--OGS3hiZ1Wh3iWLl3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 2, 2024 at 10:13=E2=80=AFAM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
->
-> ./drivers/gpu/drm/amd/display/dc/dml2/dml2_utils.c:236:49-51: WARNING !A =
-|| A && B is equivalent to !A || B.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=3D8169
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+On Fri, Feb 02, 2024 at 05:27:10PM +0530, Naresh Solanki wrote:
+> Hi Conor,
+>=20
+>=20
+> On Fri, 26 Jan 2024 at 21:50, Conor Dooley <conor@kernel.org> wrote:
+> >
+> > On Fri, Jan 26, 2024 at 05:16:14PM +0530, Naresh Solanki wrote:
+> > > Add regulator-compatible property.
+> >
+> > Why? I can see that this is what you did, but there's no justification
+> > for it.
+> >
+> > grepping for this property, the first thing I see is:
+> > rg "regulator-compatible"
+> > drivers/regulator/of_regulator.c
+> > 389: * based on either the deprecated property regulator-compatible if =
+present,
+> > 428:                                    "regulator-compatible", NULL);
+> > 486:            name =3D of_get_property(child, "regulator-compatible",=
+ NULL);
+> >
+> >
+> > The property is deprecated, so you'll need twice as good a justification
+> > for adding it!
+> Yes this is deprecated property. I missed noticing that earlier.
+> Will remove this dependency. Thanks for pointing that out.
 
-Applied.  Thanks!
+What do you mean "remove this dependency"? If you remove this there is
+nothing useful left in the patch.
 
-Alex
+Confused,
+Conor.
 
-> ---
->  drivers/gpu/drm/amd/display/dc/dml2/dml2_utils.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dml2/dml2_utils.c b/drivers/g=
-pu/drm/amd/display/dc/dml2/dml2_utils.c
-> index 1068b962d1c1..f15d1dbad6a9 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dml2/dml2_utils.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dml2/dml2_utils.c
-> @@ -234,7 +234,7 @@ static bool get_plane_id(struct dml2_context *dml2, c=
-onst struct dc_state *state
->                 if (state->streams[i]->stream_id =3D=3D stream_id) {
->                         for (j =3D 0; j < state->stream_status[i].plane_c=
-ount; j++) {
->                                 if (state->stream_status[i].plane_states[=
-j] =3D=3D plane &&
-> -                                       (!is_plane_duplicate || (is_plane=
-_duplicate && (j =3D=3D plane_index)))) {
-> +                                       (!is_plane_duplicate || (j =3D=3D=
- plane_index))) {
->                                         *plane_id =3D (i << 16) | j;
->                                         return true;
->                                 }
-> --
-> 2.20.1.7.g153144c
->
+>=20
+> Regards,
+> Naresh
+> >
+> > > Also update example.
+> > >
+> > > TEST=3DRun below command & make sure there is no error
+> > > make DT_CHECKER_FLAGS=3D-m dt_binding_check
+> >
+> > Same comment here as my other mail.
+> >
+> > Thanks,
+> > Conor.
+> >
+> > >
+> > > Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+> > > ---
+> > >  Documentation/devicetree/bindings/mfd/maxim,max5970.yaml | 9 +++++++=
+++
+> > >  1 file changed, 9 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml=
+ b/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml
+> > > index 0da5cae3852e..75175098cbc2 100644
+> > > --- a/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml
+> > > +++ b/Documentation/devicetree/bindings/mfd/maxim,max5970.yaml
+> > > @@ -74,6 +74,9 @@ properties:
+> > >              description: |
+> > >                The value of current sense resistor in microohms.
+> > >
+> > > +          regulator-compatible:
+> > > +            pattern: "^SW[0-1]$"
+> > > +
+> > >          required:
+> > >            - shunt-resistor-micro-ohms
+> > >
+> > > @@ -111,6 +114,8 @@ examples:
+> > >
+> > >              regulators {
+> > >                  sw0_ref_0: sw0 {
+> > > +                    regulator-compatible =3D "SW0";
+> > > +                    regulator-name =3D "p5v";
+> > >                      shunt-resistor-micro-ohms =3D <12000>;
+> > >                  };
+> > >              };
+> > > @@ -145,9 +150,13 @@ examples:
+> > >
+> > >              regulators {
+> > >                  sw0_ref_1: sw0 {
+> > > +                    regulator-compatible =3D "SW0";
+> > > +                    regulator-name =3D "p5v_aux";
+> > >                      shunt-resistor-micro-ohms =3D <12000>;
+> > >                  };
+> > >                  sw1_ref_1: sw1 {
+> > > +                    regulator-compatible =3D "SW1";
+> > > +                    regulator-name =3D "p3v3_aux";
+> > >                      shunt-resistor-micro-ohms =3D <10000>;
+> > >                  };
+> > >              };
+> > >
+> > > base-commit: ecb1b8288dc7ccbdcb3b9df005fa1c0e0c0388a7
+> > > --
+> > > 2.42.0
+> > >
+
+--OGS3hiZ1Wh3iWLl3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZb0XLQAKCRB4tDGHoIJi
+0t4fAP4p2F8BI/5T3p/OhE42EZgDqs1Mj5cPA7gfcqNWa2dYHgD9HIwbLyGmWwQi
+EhgTB422mCYY4MX1rS8e9zsaXD2lPg0=
+=DZBo
+-----END PGP SIGNATURE-----
+
+--OGS3hiZ1Wh3iWLl3--
 
