@@ -1,184 +1,106 @@
-Return-Path: <linux-kernel+bounces-49852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B807C847082
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:42:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4D8E847084
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:43:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7287F2932EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:42:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 034BA1C26C29
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:43:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73B2517D2;
-	Fri,  2 Feb 2024 12:42:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB0BC1874;
+	Fri,  2 Feb 2024 12:43:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VMWZWDzU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ijhod+4a"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC4BD15C3;
-	Fri,  2 Feb 2024 12:42:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17C7C15CE;
+	Fri,  2 Feb 2024 12:43:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706877726; cv=none; b=jP7Rdm17LZlfBPd/IHTb+Fu8vJwMrwIIPFLFGVaq3GV5yrj8TRGyo2FCytxHODIYqE+ucJUC8wHJPtUPPC3r206DkvrEwOmDlfqeX5rDXlkkSuUwbk1jmL109niB3iUao05Y6hmwTvKXNY7ZcX+H2hv62Q/GiIdqWeRKurb0x14=
+	t=1706877790; cv=none; b=nWAS1179RH1tkmo3/le4y/xUZuUhD1k3P/IoYaQHdxPDfuD7N/5zErtII5OpenfyVx61Cii30M7g95b6bSzTKhozkUKaeVDk31KHyx39pwB2pPhHofh6i8sZ7yU/kKzNTn2AdmFMfWm76AemsHnZ+wNN/93yaLz5EUZ0jv+cT1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706877726; c=relaxed/simple;
-	bh=N9Gnq6soIeqbrsWD9myMLZqlJRlR1CNafdpXtCuLg9E=;
+	s=arc-20240116; t=1706877790; c=relaxed/simple;
+	bh=PxfcsiEDIy9Qq5Fj9DyY2bRtJKhBqY6xM3ALRlMwdZ4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VVlpYc/Np8H5RVPxzeaLOFpHXDZFLRmUKXBHW6ySY/CTAmN8o9KJcvDS0Ljz75alvXcxiARsPu4M3+2wWrVnMDfnf1Hs6/SEpRyis2nlfKhAAt5vfRWcl8TKLzRkLNQJGWi/EOUtXqWcqG2WVk2YHLo70SJWnvCoKBT4qrDUtHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VMWZWDzU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4454FC433C7;
-	Fri,  2 Feb 2024 12:42:04 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jxi5TJETlZGuO/RWiWBMMjCQAzIGll2zfWjCT2k8RTxvAzKB0gzFk/rvMsieDQ59wZnoW2KCzajPwFXiMaq083SP7zbogrXpbKJOG/82wUOcdAwloGF2R6dElx0+9c6JP8/MDT1SrN3Mm2/jwBkQCRpaGqTtCoRZVyajOXSwboI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ijhod+4a; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60B85C433C7;
+	Fri,  2 Feb 2024 12:43:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706877726;
-	bh=N9Gnq6soIeqbrsWD9myMLZqlJRlR1CNafdpXtCuLg9E=;
+	s=k20201202; t=1706877789;
+	bh=PxfcsiEDIy9Qq5Fj9DyY2bRtJKhBqY6xM3ALRlMwdZ4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VMWZWDzUwCZ7FSItV20S6xS2m7NmjioiaHchXA6pqFULzdRvCXAtMAbrlgj1LtajR
-	 kOXRSZ24bnXImJbZC+UteGA3rdkWiN+2KGqN5GojwXNhpUWGLHg9Egqj2+/nwpIzUU
-	 7wwiKa7jJi2B2oB8qL5AViM7XUbbOGAWV3q9nmdM6a/XP+OI+kkNT4jMe2TBQY/DE6
-	 r+y//tsfhuCltXal6BpUSUZuQAI8WlkeiEg/JizlalfvPz4E06LUKaMcKZq93SLbIi
-	 moh5SsYaRolKTG0cBE6V7w+62MXzsrbSnLrMJCLZJeXHR9az07By6fvZKbyPef7Jre
-	 uKzSPkxVDlWRQ==
-Date: Fri, 2 Feb 2024 12:42:01 +0000
-From: Lee Jones <lee@kernel.org>
-To: "xingtong.wu" <xingtong_wu@163.com>
-Cc: hdegoede@redhat.com, linux-leds@vger.kernel.org,
-	linux-kernel@vger.kernel.org, pavel@ucw.cz, xingtong.wu@siemens.com,
-	tobias.schaffner@siemens.com, gerd.haeussler.ext@siemens.com,
-	henning@hennsch.de
-Subject: Re: [PATCH 2/3] leds: simatic-ipc-leds-gpio: add support for module
- BX-59A
-Message-ID: <20240202124201.GC1379817@google.com>
-References: <20230731071424.4663-1-xingtong_wu@163.com>
- <20230731071833.4725-1-xingtong_wu@163.com>
- <58d93fe1.336d.18d67e31aaa.Coremail.xingtong_wu@163.com>
+	b=Ijhod+4a9Wm7Ak9rvxRN/3QoDdbZhfsYcuZEvIQQp9DPeaDFVc2+bazmthC1sBrbM
+	 nQfyFhyaMS/RgoPZULthADl2xhEe1YJ3RxJX4a5YqjKuEPuENcdEAogRCXjwhUKuig
+	 GxIFB7Wv5vCglxl2TmlUleC8CPFybvvHk4NO8y/kB9tVPTTPY2wWrWEA3QxOglNSZ3
+	 ea4u26WP5CCBU0MQY/6AwgqnUWGR52FaxnjeTSRqo5ASYMFvSRLeImalC+jWNtw4C2
+	 ZkCYwcsSqMy57sfl6NLDwjvyPQBdftP0vkYsiIugAl+osmKaF+xd8Q4GFnp4DvPRMf
+	 ZfMSQ4zS/mTEw==
+Date: Fri, 2 Feb 2024 13:43:04 +0100
+From: Simon Horman <horms@kernel.org>
+To: Ivan Vecera <ivecera@redhat.com>
+Cc: netdev@vger.kernel.org, Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+	Mitch Williams <mitch.a.williams@intel.com>,
+	Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>,
+	Mateusz Palczewski <mateusz.palczewski@intel.com>,
+	"moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net] i40e: Do not allow untrusted VF to remove
+ administratively set MAC
+Message-ID: <20240202124304.GQ530335@kernel.org>
+References: <20240131131714.23497-1-ivecera@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <58d93fe1.336d.18d67e31aaa.Coremail.xingtong_wu@163.com>
+In-Reply-To: <20240131131714.23497-1-ivecera@redhat.com>
 
-On Fri, 02 Feb 2024, xingtong.wu wrote:
-
-> At 2023-07-31 15:18:33, xingtong_wu@163.com wrote:
-> >From: "xingtong.wu" <xingtong.wu@siemens.com>
-> >
-> >This is used for the Siemens Simatic IPC BX-59A, which has its LEDs
-> >connected to GPIOs provided by the Nuvoton NCT6126D
-> >
-> >Signed-off-by: xingtong.wu <xingtong.wu@siemens.com>
-> >---
-> > .../leds/simple/simatic-ipc-leds-gpio-core.c  |  1 +
-> > .../simple/simatic-ipc-leds-gpio-f7188x.c     | 42 ++++++++++++++++---
-> > 2 files changed, 37 insertions(+), 6 deletions(-)
-> >
-> >diff --git a/drivers/leds/simple/simatic-ipc-leds-gpio-core.c b/drivers/leds/simple/simatic-ipc-leds-gpio-core.c
-> >index c552ea73ed9d..10dca208d8cc 100644
-> >--- a/drivers/leds/simple/simatic-ipc-leds-gpio-core.c
-> >+++ b/drivers/leds/simple/simatic-ipc-leds-gpio-core.c
-> >@@ -58,6 +58,7 @@ int simatic_ipc_leds_gpio_probe(struct platform_device *pdev,
-> > 	case SIMATIC_IPC_DEVICE_127E:
-> > 	case SIMATIC_IPC_DEVICE_227G:
-> > 	case SIMATIC_IPC_DEVICE_BX_21A:
-> >+	case SIMATIC_IPC_DEVICE_BX_59A:
-> > 		break;
-> > 	default:
-> > 		return -ENODEV;
-> >diff --git a/drivers/leds/simple/simatic-ipc-leds-gpio-f7188x.c b/drivers/leds/simple/simatic-ipc-leds-gpio-f7188x.c
-> >index 583a6b6c7c22..a5b544b20857 100644
-> >--- a/drivers/leds/simple/simatic-ipc-leds-gpio-f7188x.c
-> >+++ b/drivers/leds/simple/simatic-ipc-leds-gpio-f7188x.c
-> >@@ -17,7 +17,10 @@
-> > 
-> > #include "simatic-ipc-leds-gpio.h"
-> > 
-> >-static struct gpiod_lookup_table simatic_ipc_led_gpio_table = {
-> >+static struct gpiod_lookup_table *led_lookup_table;
-> >+static struct gpiod_lookup_table *led_lookup_table_extra;
-> >+
-> >+static struct gpiod_lookup_table simatic_ipc_led_gpio_table_227g = {
-> > 	.dev_id = "leds-gpio",
-> > 	.table = {
-> > 		GPIO_LOOKUP_IDX("gpio-f7188x-2", 0, NULL, 0, GPIO_ACTIVE_LOW),
-> >@@ -30,7 +33,7 @@ static struct gpiod_lookup_table simatic_ipc_led_gpio_table = {
-> > 	},
-> > };
-> > 
-> >-static struct gpiod_lookup_table simatic_ipc_led_gpio_table_extra = {
-> >+static struct gpiod_lookup_table simatic_ipc_led_gpio_table_extra_227g = {
-> > 	.dev_id = NULL, /* Filled during initialization */
-> > 	.table = {
-> > 		GPIO_LOOKUP_IDX("gpio-f7188x-3", 6, NULL, 6, GPIO_ACTIVE_HIGH),
-> >@@ -39,16 +42,43 @@ static struct gpiod_lookup_table simatic_ipc_led_gpio_table_extra = {
-> > 	},
-> > };
-> > 
-> >+static struct gpiod_lookup_table simatic_ipc_led_gpio_table_bx_59a = {
-> >+	.dev_id = "leds-gpio",
-> >+	.table = {
-> >+		GPIO_LOOKUP_IDX("gpio-f7188x-2", 0, NULL, 0, GPIO_ACTIVE_LOW),
-> >+		GPIO_LOOKUP_IDX("gpio-f7188x-2", 3, NULL, 1, GPIO_ACTIVE_LOW),
-> >+		GPIO_LOOKUP_IDX("gpio-f7188x-5", 3, NULL, 2, GPIO_ACTIVE_LOW),
-> >+		GPIO_LOOKUP_IDX("gpio-f7188x-5", 2, NULL, 3, GPIO_ACTIVE_LOW),
-> >+		GPIO_LOOKUP_IDX("gpio-f7188x-7", 7, NULL, 4, GPIO_ACTIVE_LOW),
-> >+		GPIO_LOOKUP_IDX("gpio-f7188x-7", 4, NULL, 5, GPIO_ACTIVE_LOW),
-> >+		{} /* Terminating entry */
-> >+	}
-> >+};
-> >+
-> > static int simatic_ipc_leds_gpio_f7188x_probe(struct platform_device *pdev)
-> > {
-> >-	return simatic_ipc_leds_gpio_probe(pdev, &simatic_ipc_led_gpio_table,
-> >-					   &simatic_ipc_led_gpio_table_extra);
-> >+	const struct simatic_ipc_platform *plat = pdev->dev.platform_data;
-> >+
-> >+	switch (plat->devmode) {
-> >+	case SIMATIC_IPC_DEVICE_227G:
-> >+		led_lookup_table = &simatic_ipc_led_gpio_table_227g;
-> >+		led_lookup_table_extra = &simatic_ipc_led_gpio_table_extra_227g;
-> >+		break;
-> >+	case SIMATIC_IPC_DEVICE_BX_59A:
-> >+		led_lookup_table = &simatic_ipc_led_gpio_table_bx_59a;
-> >+		break;
-> >+	default:
-> >+		return -ENODEV;
-> >+	}
-> >+
-> >+	return simatic_ipc_leds_gpio_probe(pdev, led_lookup_table,
-> >+					   led_lookup_table_extra);
-> > }
-> > 
-> > static int simatic_ipc_leds_gpio_f7188x_remove(struct platform_device *pdev)
-> > {
-> >-	return simatic_ipc_leds_gpio_remove(pdev, &simatic_ipc_led_gpio_table,
-> >-					    &simatic_ipc_led_gpio_table_extra);
-> >+	return simatic_ipc_leds_gpio_remove(pdev, led_lookup_table,
-> >+					    led_lookup_table_extra);
-> > }
-> > 
-> > static struct platform_driver simatic_ipc_led_gpio_driver = {
-> >-- 
-> >2.25.1
+On Wed, Jan 31, 2024 at 02:17:14PM +0100, Ivan Vecera wrote:
+> Currently when PF administratively sets VF's MAC address and the VF
+> is put down (VF tries to delete all MACs) then the MAC is removed
+> from MAC filters and primary VF MAC is zeroed.
 > 
-> Hi
+> Do not allow untrusted VF to remove primary MAC when it was set
+> administratively by PF.
 > 
-> After engaging in a thorough discussion, it appears that we have
-> reached a consensus to merge this patch.
+> Reproducer:
+> 1) Create VF
+> 2) Set VF interface up
+> 3) Administratively set the VF's MAC
+> 4) Put VF interface down
+> 
+> [root@host ~]# echo 1 > /sys/class/net/enp2s0f0/device/sriov_numvfs
+> [root@host ~]# ip link set enp2s0f0v0 up
+> [root@host ~]# ip link set enp2s0f0 vf 0 mac fe:6c:b5:da:c7:7d
+> [root@host ~]# ip link show enp2s0f0
+> 23: enp2s0f0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DEFAULT group default qlen 1000
+>     link/ether 3c:ec:ef:b7:dd:04 brd ff:ff:ff:ff:ff:ff
+>     vf 0     link/ether fe:6c:b5:da:c7:7d brd ff:ff:ff:ff:ff:ff, spoof checking on, link-state auto, trust off
+> [root@host ~]# ip link set enp2s0f0v0 down
+> [root@host ~]# ip link show enp2s0f0
+> 23: enp2s0f0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DEFAULT group default qlen 1000
+>     link/ether 3c:ec:ef:b7:dd:04 brd ff:ff:ff:ff:ff:ff
+>     vf 0     link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff, spoof checking on, link-state auto, trust off
+> 
+> Fixes: 700bbf6c1f9e ("i40e: allow VF to remove any MAC filter")
+> Fixes: ceb29474bbbc ("i40e: Add support for VF to specify its primary MAC address")
+> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
 
-I have no idea what you're referring to here.
+Thanks Ivan,
 
-> Considering the considerable
-> duration that has passed, I am sending this email as a gentle reminder,
-> in case there is a possibility that it may have slipped your mind.
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-Please resubmit all unmerged patches as a [RESEND].
-
--- 
-Lee Jones [李琼斯]
 
