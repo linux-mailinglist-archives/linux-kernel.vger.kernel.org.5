@@ -1,151 +1,127 @@
-Return-Path: <linux-kernel+bounces-50287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EB738476FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:03:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4151B847703
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:04:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA8CB1C26B68
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:03:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF62C1F27963
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:04:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D89B14C59D;
-	Fri,  2 Feb 2024 18:03:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9795614C598;
+	Fri,  2 Feb 2024 18:04:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="jqGmbV+Q"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=soleen.com header.i=@soleen.com header.b="CI0ae5x+"
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCF7D1474C5;
-	Fri,  2 Feb 2024 18:03:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80DAA14AD10
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 18:04:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706897005; cv=none; b=PQSN7WMG6AaK9HsamtQf++mHCqjFL1z/3qfRuOiaufMQ5fZfTCX4OtvjUyfaVKqYZ3yX0FZ1D3bmU5YMunLPdjK7akOQjCZxMfB6XgocABlAxVM/vswozT9f+4iAzX+ZxK/RpdtaSWY4oGik8I/vgD6HMM8OXln963I0ss/LVAo=
+	t=1706897086; cv=none; b=fR2Ydv2/PzvVNsObKTPkaBE0M3l/kw8eZ2/numINTWVof0m1gpiC6yPYJDLCjyXIcwjF0l5hOjD9QH+HfzwWYT4NDAtS2IlRUgZW4ZCE5BDgP7cyX1c1bme0C7yP1cv51scWZ8f7SHWau0+nuAIcq1yIFKB+YF/xaw3cytMUH7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706897005; c=relaxed/simple;
-	bh=Uup5FZMCcfCZOBIUv6G2Fi/wsqkNSTdL09LNTQwRP+o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p9jueDsoKwZAEE+j4Xt65rR5gEv6Mbrpp1XD2O3qoKQd3UU+0Ogb0Ojs8LUwd4ja/eBWK6I5TDbjNEketBmiAjkMXyvyjfzga1tSrUCYqZSR8FrbbU8aOFctI1fYdHmlHg4XCVDzFj/8hkJQGHZpRfL3o14cf+UmOcsJOVejr7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=jqGmbV+Q; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=qW6erQdXZh/wex5Ipty9iKt5f/CAhi5xgAqgpkUZTXE=; b=jqGmbV+Q1QaVQdi2aLgWcgAdoB
-	aSdWAty4d+FolwETOQNX57ObHIwrXEVvpY7/ORK8jpChvDNRv+Cc4SLhJqw7g1IzilwXF9S1WJWiF
-	agLfa4ntaPuZdC9+NJl9JPwTTLJFwABGpyG6Fl40FdRfkxbzezkornZ9aubEFUnHZWc1VhEoOBIHz
-	AOHTY4cg+kXDUth76QIHTUSN90EtNCU8ej7CsZ50Lid51NlTyWHfUIwFzBWGaFNvCRS+2qqG5rEAu
-	CC6kKNcawpRX3WnKxgNcsKsR0tY0tkx97z4KFlyzthfOEqMxWooyHOrgQN/js7g9TTLAfuG7dcyza
-	cm7uPp7w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:42210)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rVxsj-0006KR-1y;
-	Fri, 02 Feb 2024 18:03:17 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rVxsh-0008VD-Sk; Fri, 02 Feb 2024 18:03:15 +0000
-Date: Fri, 2 Feb 2024 18:03:15 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Sergio Palumbo <palumbo.ser@outlook.it>
-Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: sfp: add quirk for ODI DFP-34X-2C2 GPON
- ONU SFP
-Message-ID: <Zb0uYyxaKIMHQbQW@shell.armlinux.org.uk>
-References: <AS1PR03MB81893D69344708C98EE2B470827F2@AS1PR03MB8189.eurprd03.prod.outlook.com>
- <ZbZoDIPR3O/iei5z@shell.armlinux.org.uk>
- <AS1PR03MB818918BC313CC8A59E288FF082422@AS1PR03MB8189.eurprd03.prod.outlook.com>
+	s=arc-20240116; t=1706897086; c=relaxed/simple;
+	bh=Zx4DDxuZPCP/PEq8O78n9UklQLgFp6VRMfg1bUcF2K8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WpKmZVeFKZ4hmh0Ibm22DPx014eaMsYeKlkkpIWhQxqg3UMEaV/A29ShRpHyue/NGSU74eHzlflceu0pjNmDNyJ6wJRa0hYEXkfBId6AcoC502XpJg9Z5AsU1PKz9bew43ywPU5dSaQ4QSxcVdaWL+PQahIjhx0pnxB/U0qRw9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com; spf=none smtp.mailfrom=soleen.com; dkim=fail (0-bit key) header.d=soleen.com header.i=@soleen.com header.b=CI0ae5x+ reason="key not found in DNS"; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=soleen.com
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-42a029c8e76so13338491cf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 10:04:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google; t=1706897084; x=1707501884; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=9bijSb9yEaTmlnOsnr5FnwiHhV7CJXfrStAeun3CCBg=;
+        b=CI0ae5x+4EsSoDWh6pmbUopB8snBPFOp7OyVmAkDWCu2mzbvPgYwUNNBqg09ox20Z4
+         5VoQSdr1ly3zim0hXNuYfu91qY++8DDv751zW1VaifZUqyBeAVchFi2MLhum+8wYGXFQ
+         hB6o9gjmydDRInU75EW2it5bUzcEsg0/4Dh0zvu5vsQhLrW1dQGO2TKDPS8XF85vRQz9
+         ItFkEFl3spBgAcNZsWrI8Kyzxs2DxgxdBGlzS8DfHllyMYx1v5iZRC7i5SPUWmsxo/H8
+         PnvCSqZKq/xCPCMZ4TD87wyjddbmuDFygIvgq5j9lCqbymidtVslnuByRvgvRia3Ek2o
+         6pVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706897084; x=1707501884;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9bijSb9yEaTmlnOsnr5FnwiHhV7CJXfrStAeun3CCBg=;
+        b=fGebbwvlp2f/ddQlZ6v3n8+yKc0xEb9Jf44RzHADvvWGOwMmrPwIi36fTFQARtehek
+         5rUViyr8z3hc55SFQQVQ4AV/CmYAjt1uDq0iayVI2DEDrFjFEMoqTzWJLCtccc+cP2AE
+         e3q0l2JnkhZ1mQcZbdDJizkdJrmPGWmGkvTI9ea8q4H80yMCvA3ZQtVHmjr+jZ9CFXGT
+         1qf+ox+SOMEv19IEC7CRn84eN1GE+ongE3TRGzwBq9d5AGiCFAS5dlYFwY8Z1i1Y0hsk
+         TwkzusVQS24OwZG/jHRpDRe+SV9tF/cC3eJnyOjDUXsO3GPuMwp4oQuG1Pytfe8+E7dJ
+         bJmw==
+X-Gm-Message-State: AOJu0YwGYYeZQEq3WYNuHziVojyluG9ZA8Kcs3fQtmkH17ey6CI411OJ
+	Dotu2u03bevCzEOTG7Ps9e8ZP6ydBpzO4C1HnDOi2uyibvqDwtuflyGo7979OnLuycbQAogxQQX
+	aHhmmu/EJMPVYeS77RXMuFxKrc7gqL+PwwSyQfw==
+X-Google-Smtp-Source: AGHT+IHZP6Un/HfjT028jnx0QVAGxq1NUEXIMQe8jhyWY9SpyTJFVDbuNtWHifT6v8EukAWp/hKqGTYNjWvGHCDW5lY=
+X-Received: by 2002:a05:622a:343:b0:42b:eee7:5f5c with SMTP id
+ r3-20020a05622a034300b0042beee75f5cmr9136031qtw.63.1706897084294; Fri, 02 Feb
+ 2024 10:04:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AS1PR03MB818918BC313CC8A59E288FF082422@AS1PR03MB8189.eurprd03.prod.outlook.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20240201193014.2785570-1-tatashin@google.com> <02610629-05ef-4956-a122-36b6ac98fbc2@arm.com>
+ <CA+CK2bD_q3pnThtLVSzFCjyevBEaG6Ad+1o2=1tVZsYg35UMmg@mail.gmail.com> <84c7e816-f749-48d8-a429-8b0ef799cdbb@arm.com>
+In-Reply-To: <84c7e816-f749-48d8-a429-8b0ef799cdbb@arm.com>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Fri, 2 Feb 2024 13:04:08 -0500
+Message-ID: <CA+CK2bCFbeRHT172KUci5+8WJNUeo-2A1M=UXsSqqOy64w1LJw@mail.gmail.com>
+Subject: Re: [PATCH] iommu/iova: use named kmem_cache for iova magazines
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: joro@8bytes.org, will@kernel.org, iommu@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, rientjes@google.com
+Content-Type: text/plain; charset="UTF-8"
 
-All the concerns with the OEM version of this patch apply to this one
-as well.
+> Hmm, I did misspeak slightly (it's late and I really should have left
+> this for tomorrow...) - that's 12KB per CPU *per domain*, but still that
+> would seem to imply well over 100 domains if you have 242MB of magazine
+> allocations while the iommu_iova cache isn't even on the charts... what
+> the heck is that driver doing?
+>
+> (I don't necessarily disagree with the spirit of the patch BTW, I just
+> really want to understand the situation that prompted it, and make sure
+> we don't actually have a subtle leak somewhere.)
 
-On Fri, Feb 02, 2024 at 06:44:32PM +0100, Sergio Palumbo wrote:
-> Hello Russell,
-> this is the pach for the vendor "ODI".
-> Same hardware but different vendor.
-> I explained it in the description.
-> Hope this clarifies.
-> 
-> Thanks and regards
-> 
-> Sergio Palumbo
-> 
-> Il 28/01/2024 15:43, Russell King (Oracle) ha scritto:
-> > Oh, a second repost. What's different from the first repost?
-> > 
-> > On Sun, Jan 28, 2024 at 03:23:06PM +0100, Sergio Palumbo wrote:
-> > >       DFP-34X-2C2 is a GPON spf module working at both 1000baseX
-> > >       and 2500baseX.
-> > >       Setting the module to LAN_SDS_MODE=6 the module is working
-> > >       at 2500baseX with auto negotiation see at
-> > >       https://hack-gpon.org/ont-odi-realtek-dfp-34x-2c2/
-> > >       Unfortunatly the module's PHY is accessible at 1000baseX only.
-> > >       ethtool returning:
-> > >       Supported ports: [ Fibre ]
-> > >       Supported link modes: 1000baseX/Full
-> > > 
-> > >       After applying the quirk:
-> > >       Supported ports: [ Fibre ]
-> > >       Supported link modes: 1000baseX/Full
-> > >                             2500baseX/Full
-> > >       Tested on BANANA PI R3 in OpenWRT v 23.05.2 Kernel 5.15.137
-> > >       Tested on sfp to ethernet Media Converter.
-> > >       Autonegotiating 1000baseX or 2500baseX according to the
-> > >       connected host speed.
-> > > 
-> > >       This module is existing in 2 versions:
-> > >       Vendor = "ODI"
-> > >       Vendor = "OEM"
-> > >       This is the patch for vendor "ODI"
-> > > 
-> > >       Patch has been inserted keeping the list in alphabetical order
-> > >       first by vendor first and then by part string.
-> > > 
-> > > Signed-off-by: Sergio Palumbo <palumbo.ser@outlook.it>
-> > > ---
-> > >   drivers/net/phy/sfp.c | 3 +++
-> > >   1 file changed, 3 insertions(+)
-> > > 
-> > > diff --git a/drivers/net/phy/sfp.c b/drivers/net/phy/sfp.c
-> > > index 3c0028a4af92..410375bc6b94 100644
-> > > --- a/drivers/net/phy/sfp.c
-> > > +++ b/drivers/net/phy/sfp.c
-> > > @@ -495,6 +495,9 @@ static const struct sfp_quirk sfp_quirks[] = {
-> > >   	// 2500MBd NRZ in their EEPROM
-> > >   	SFP_QUIRK_M("Lantech", "8330-262D-E", sfp_quirk_2500basex),
-> > > +	// ODI DFP-34X-2C2 GPON ONU support 2500base-X
-> > > +	SFP_QUIRK_M("ODI", "DFP-34X-2C2", sfp_quirk_2500basex),
-> > > +
-> > >   	SFP_QUIRK_M("UBNT", "UF-INSTANT", sfp_quirk_ubnt_uf_instant),
-> > >   	// Walsun HXSX-ATR[CI]-1 don't identify as copper, and use the
-> > > -- 
-> > > 2.34.1
-> > > 
-> > > 
-> 
-> 
+Hi Robin,
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+The following tracing is without Google TPU, simply upstream kernel:
+
+The iova_domain_init_rcaches is called 159 with the following stack:
+
+ iova_domain_init_rcaches
+ iommu_setup_dma_ops
+ amd_iommu_probe_finalize
+ bus_iommu_probe
+ iommu_device_register
+ iommu_init_pci
+ amd_iommu_init_pci
+ state_next
+ iommu_go_to_state
+ amd_iommu_init
+ pci_iommu_init
+ do_one_initcall
+
+Each time 1536K is allocated: in total 159 * 1536K = 238.5M
+
+The allocation happens like this:
+for (IOVA_RANGE_CACHE_MAX_SIZE)
+    for_each_possible_cpu()
+        iova_magazine_alloc
+        iova_magazine_alloc
+
+IOVA_RANGE_CACHE_MAX_SIZE = 6
+ncpu = 128
+sizeof (struct iova_magazine) = 1K
+
+6 * 128 * (1K + 1K) = 1536K
+
+Pasha
 
