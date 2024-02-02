@@ -1,137 +1,162 @@
-Return-Path: <linux-kernel+bounces-49653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49656-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96957846D7F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:14:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3BB3846D87
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:15:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 519B12969E4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:14:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B0311F244B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:15:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9109C7E110;
-	Fri,  2 Feb 2024 10:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9F307C0A4;
+	Fri,  2 Feb 2024 10:15:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qhf7tuAb"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="t5NptUfm";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KDSpFCd3"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E93777F2A
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 10:13:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CE03604BF;
+	Fri,  2 Feb 2024 10:15:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706868816; cv=none; b=NkZ1qpXvo/Znf841gp3yjNxHcuafBNbccOXznCmgNaSCB1d3QHN9djv4ybJ/jEvec8tEXln2P8qn2E/JKnTUNqYIUEa/CBaPkjHuTPqqsLfcGuBSnziTN+V/TypI7SbhXh9Nb9IIraMYNpFNBmnjLGd1aBM/yK2sO0N+Kmg5kGE=
+	t=1706868937; cv=none; b=YAV/dsg6IHclGLuvOGLkpkEua9EH3FYMnPhSoBoFxJl9+dpzq85NPNZIwkyq/dSpkDDdLUvMD22I5HClnuyPV2KdPuEn9KVk5dm2Pf6acOiMA3LVd1Yy4G3x6Dphq2tK93qXcc3lq7xYT1gIWN/8h5Z/jPkt7VfCPCH6xdXgfVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706868816; c=relaxed/simple;
-	bh=PJHamj29rRPnmcKigV5i/g/eYFjHdot+aXYjPD55b9A=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Cc:Content-Type; b=u2Jb9iqzuckYqoSI0Cr1LcqI4lXkJedw0yfHt+G3ouw2/ouw8qchdWitXhDQ0ZMJHehEfvyTyvYr9L7rwyCxQlBu1FIhqb5O/XFW3CMsRt2IXj1iQaklh1C+N5orvByF/PplZzGgh1xVgwg3oWkI6fBilGQwr1m8Kv3+/Wng5y0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qhf7tuAb; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b9f4a513so2947291276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 02:13:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706868814; x=1707473614; darn=vger.kernel.org;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MmGh++VKQQZ2V54BTT2UNO9KFpQjbrHNRiYoSPHg+q4=;
-        b=qhf7tuAbPqa3DyhMI7DqkdD5a3vJEYC79d27UG3soDoQiQAw+i7tvlDRE2rgGV+wzQ
-         Bu+hKBbsBjgV1JlcFmrBXzUYh4CP9LeuZrS8ckkdwjCE3xanE/UBGpAHTti3oaweX6S5
-         pDaqrtJoagKqPnom/3w4Hi7XutGVtCfujLWYpiVofqpaD2PizNszOgI7TPz2Nfd4P8Dl
-         d4Wx0zcNpnOte0RDFxjodsq/DmnSOu+arLt7wiULjp1awrqlSjmv3UG1K8HiyggzR6Qu
-         mD570K2VB8Zp/ISAC4kGngiGqe6T9PTmjrt9R6U2CsyhzFKnPnoNIU1DIFOkRlbaWtLc
-         duUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706868814; x=1707473614;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MmGh++VKQQZ2V54BTT2UNO9KFpQjbrHNRiYoSPHg+q4=;
-        b=ANjZpKlZvTw2JZngqhH/k5YnI9WcbWi3PzzStQ8QxT7dU4D7Rwn862rZHiAJH2peCP
-         kOJoGmaAeXmvSEgf9vdRy9rJTiSnUFKJn/Ouav3QmtzVGJIBgYmsWtsubo4hSoZ+E++K
-         UPxB3R7cZ2ilRZWJdSt/Ug6YNcazfWhV3AZ3fkCBDpIj97cRut/9ZIWc+w46nTje5GBY
-         ANKEMNmb6H1ojnqTsMnN2S3hLB41wLeA4IpzJCz+L+Pbsn+vzalx25UXTzwSvmQHTLkS
-         GxTFX1NA7FWWReKaXlE41VHQEk/Jp3hK8PoaAXBDCD07cjQbHLvJ5Shn1tFJMdhxDzlg
-         jrOQ==
-X-Gm-Message-State: AOJu0Yz4Sv9fgVzuJRYQ4/N0hXfaFEagsAhN8TtUcLg2FRa4N4pgCcdA
-	OoBx1bGg3yZsHApOpddyoVSyG4MUk+6p14tiFkSHUdg9oYAwacof1gee5c/8tGZDe52nocADMwU
-	YQ7s4lld4YEIjxA==
-X-Google-Smtp-Source: AGHT+IHQuDuJH0mZGbsVco2iwKbDb58UrPvCTOyPc5GNYofsRrkiUKpKuGdcwTQbpesKZsxG1/P8Eb8Eln40n9U=
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:6f0:da10:9cb3:5b3])
- (user=saravanak job=sendgmr) by 2002:a05:6902:2186:b0:dc2:466a:23c4 with SMTP
- id dl6-20020a056902218600b00dc2466a23c4mr499035ybb.4.1706868814499; Fri, 02
- Feb 2024 02:13:34 -0800 (PST)
-Date: Fri,  2 Feb 2024 02:13:25 -0800
-In-Reply-To: <20240202101326.876070-1-saravanak@google.com>
-Message-Id: <20240202101326.876070-3-saravanak@google.com>
+	s=arc-20240116; t=1706868937; c=relaxed/simple;
+	bh=E3WldveCa94S5WNb2X3oqe4POnlIFKkp9qpQEU3ZUV0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZhcgJ+/UcOk9RyifyoU9X3wRh1Mqxa9P+h/I3sbewXiDud1FvexxLxQG/o1Fxta4ujG/oTIUlHqf8PNFVC2Xo1E83Pu1bEwNxGdTr4CiNfaMqV+CIIeNsGtHBDWEJRy0KvfF9mYptbjrf1JzFXkospPLexQL2Kplo20WO3w3Oq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=t5NptUfm; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KDSpFCd3; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from blackpad (unknown [10.100.12.75])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 58CFC1F461;
+	Fri,  2 Feb 2024 10:15:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706868933; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YG/G98bRsAnGh877wO+CNpr7OSPc876vz8JKWKpu7x8=;
+	b=t5NptUfm52ay6TCDiMFIYGgKuDry0bkrabgNwhUrEeWMOj5LMcIhmbfcWOkXw09jBzFxNo
+	2RE0ujQRjek0Wf25yAizUoO3EFfBg2uT17S0xdFm/LpeEVl/pBGHb5yGMcFcpl1/wGq2xT
+	E+1Nki4QSrgUVEcFS3NUtrkQC1Z1n8s=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706868932; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YG/G98bRsAnGh877wO+CNpr7OSPc876vz8JKWKpu7x8=;
+	b=KDSpFCd3kVc5wqknaVaSk2qJ3647XRbzLNQrQDlg6lV0P6KuX2x1yLYAGp7BlvgfJSVx0a
+	0XrVgWj1v3Fe2yFAJHCr16adkisWRbVzkfJCT/BGHbV68XWard5frxgx1f2C7HhDO369SN
+	mtCza+wH2LLg7J97GGAnRfviryBcIgU=
+Date: Fri, 2 Feb 2024 11:15:31 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Efly Young <yangyifei03@kuaishou.com>
+Cc: hannes@cmpxchg.org, akpm@linux-foundation.org, android-mm@google.com, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	mhocko@kernel.org, muchun.song@linux.dev, roman.gushchin@linux.dev, 
+	shakeelb@google.com, tjmercier@google.com, yuzhao@google.com
+Subject: Re: Re: [PATCH] mm: memcg: Use larger chunks for proactive reclaim
+Message-ID: <vofidz4pzybyxoozjrmuqhycm2aji6inp6lkgd3fakyv5jqsjr@pleoj7ljsxhi>
+References: <20240201153428.GA307226@cmpxchg.org>
+ <20240202050247.45167-1-yangyifei03@kuaishou.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240202101326.876070-1-saravanak@google.com>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-Subject: [PATCH v1 2/2] of: property: Improve finding the supplier of a
- remote-endpoint property
-From: Saravana Kannan <saravanak@google.com>
-To: Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Saravana Kannan <saravanak@google.com>
-Cc: kernel-team@android.com, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="i6547u4e3dsdsmiu"
+Content-Disposition: inline
+In-Reply-To: <20240202050247.45167-1-yangyifei03@kuaishou.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -5.90
+X-Spamd-Result: default: False [-5.90 / 50.00];
+	 TO_DN_SOME(0.00)[];
+	 NEURAL_HAM_SHORT(-0.20)[-0.999];
+	 SIGNED_PGP(-2.00)[];
+	 RCVD_COUNT_ZERO(0.00)[0];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-0.998];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[kuaishou.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[]
+X-Spam-Flag: NO
 
-After commit 4a032827daa8 ("of: property: Simplify of_link_to_phandle()"),
-remote-endpoint properties created a fwnode link from the consumer device
-to the supplier endpoint. This is a tiny bit inefficient (not buggy) when
-trying to create device links or detecting cycles. So, improve this the
-same way we improved finding the consumer of a remote-endpoint property.
 
-Fixes: 4a032827daa8 ("of: property: Simplify of_link_to_phandle()")
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- drivers/of/property.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+--i6547u4e3dsdsmiu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index ba374a1f2072..6c168446b647 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1232,7 +1232,6 @@ DEFINE_SIMPLE_PROP(pinctrl5, "pinctrl-5", NULL)
- DEFINE_SIMPLE_PROP(pinctrl6, "pinctrl-6", NULL)
- DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
- DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
--DEFINE_SIMPLE_PROP(remote_endpoint, "remote-endpoint", NULL)
- DEFINE_SIMPLE_PROP(pwms, "pwms", "#pwm-cells")
- DEFINE_SIMPLE_PROP(resets, "resets", "#reset-cells")
- DEFINE_SIMPLE_PROP(leds, "leds", NULL)
-@@ -1303,6 +1302,24 @@ static struct device_node *get_remote_endpoint_dev(struct device_node *np)
- 	return to_of_node(fwnode_graph_get_port_parent(of_fwnode_handle(np)));
- }
- 
-+static struct device_node *parse_remote_endpoint(struct device_node *np,
-+						 const char *prop_name,
-+						 int index)
-+{
-+	struct device_node *endpoint, *sup;
-+
-+	if (strcmp(prop_name, "remote-endpoint"))
-+		return NULL;
-+
-+	endpoint = of_parse_phandle(np, prop_name, index);
-+	if (!endpoint)
-+		return NULL;
-+
-+	sup = get_remote_endpoint_dev(endpoint);
-+	of_node_put(endpoint);
-+	return sup;
-+}
-+
- static const struct supplier_bindings of_supplier_bindings[] = {
- 	{ .parse_prop = parse_clocks, },
- 	{ .parse_prop = parse_interconnects, },
--- 
-2.43.0.594.gd9cf4e227d-goog
+On Fri, Feb 02, 2024 at 01:02:47PM +0800, Efly Young <yangyifei03@kuaishou.=
+com> wrote:
+> > Looking at the code, I'm not quite sure if this can be read this
+> > literally. Efly might be able to elaborate, but we do a full loop of
+> > all nodes and cgroups in the tree before checking nr_to_reclaimed, and
+> > rely on priority level for granularity. So request size and complexity
+> > of the cgroup tree play a role. I don't know where the exact factor
+> > two would come from.
+>=20
+> I'm sorry that this conclusion may be arbitrary. It might just only suit
+> for my case. In my case, I traced it loop twice every time before checking
+> nr_reclaimed, and it reclaimed less than my request size(1G) every time.
+> So I think the upper bound is 2 * request. But now it seems that this is
+> related to cgroup tree I constucted and my system status and my request
+> size(a relatively large chunk). So there are many influencing factors,
+> a specific upper bound is not accurate.
 
+Alright, thanks for the background.
+
+> > IMO it's more accurate to phrase it like this:
+> >=20
+> > Reclaim tries to balance nr_to_reclaim fidelity with fairness across
+> > nodes and cgroups over which the pages are spread. As such, the bigger
+> > the request, the bigger the absolute overreclaim error. Historic
+> > in-kernel users of reclaim have used fixed, small request batches to
+> > approach an appropriate reclaim rate over time. When we reclaim a user
+> > request of arbitrary size, use decaying batches to manage error while
+> > maintaining reasonable throughput.
+
+Hm, decay...
+So shouldn't the formula be
+  nr_pages =3D delta <=3D SWAP_CLUSTER_MAX ? delta : (delta + 3*SWAP_CLUSTE=
+R_MAX) / 4
+where
+  delta =3D nr_to_reclaim - nr_reclaimed
+?
+(So that convergence for smaller deltas is same like original- and other
+reclaims while conservative factor is applied for effectivity of higher
+user requests.)
+
+Thanks,
+Michal
+
+--i6547u4e3dsdsmiu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZbzArwAKCRAGvrMr/1gc
+jgzbAQCS67JzDKT6wEDM8S72f5VdiKV8t/HeB+VB6/lh57jnsQEAgbHFRm3ydZLW
++QPinqIYWeFg0bd97cxxHhyNjoAmswY=
+=64ep
+-----END PGP SIGNATURE-----
+
+--i6547u4e3dsdsmiu--
 
