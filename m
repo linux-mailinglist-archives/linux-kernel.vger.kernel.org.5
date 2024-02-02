@@ -1,69 +1,90 @@
-Return-Path: <linux-kernel+bounces-50028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EB2384734A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:36:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C79C784734D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:36:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C01181C22612
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:36:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 671501F2757C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F741474C0;
-	Fri,  2 Feb 2024 15:36:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 708FF145B3B;
+	Fri,  2 Feb 2024 15:36:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="DZJA8gBX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="It4UgSvK"
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 929891482E8;
-	Fri,  2 Feb 2024 15:36:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 565AB14691D
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 15:36:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706888182; cv=none; b=J9XfisvARrTZ70sosG5ecRm/KK6l6zf6aNhyDESk241AYgT2Bo5D7xU+2mrIgR8PR9es/ZzkNorUrxI8mRIaSzx7lLPaeaTBQwdACQPdhVwII7uJVyY92TQxFPHrTKK/mfo9Gb5vTW2Mp6bKmqWvut+g3sSbJvhZOQFDfAgmdJ8=
+	t=1706888194; cv=none; b=WWlpfwNnxfuCHVkc20f9hEDkwKsrUgEJ3nIoKVTWSEh9fAMuT46sWVjS05hppwvQkXV9nCUfObhrP+a+atc7BKX+ZF5xnjAEvf7vl5SE2TsWazOHag0MfU+4vcGhb9lfS/80XnibGabgJRw+4yEjHl0zliSAOUZDQ4800xfvei8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706888182; c=relaxed/simple;
-	bh=Wvl87XNvXMMBWBNxLEx5QalHdJhfB/UDqRD0cL5pQrQ=;
+	s=arc-20240116; t=1706888194; c=relaxed/simple;
+	bh=Fg0vF/DKGnFKdPAxtNJWEsCiIanMISLov5rth1azicY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MgooAgqS0FwL95KKIN6l8bWbFtV2cf9tRMOGhXECtvwKKniJUhQvdh8qav/i7H9Z//xkQ0xFs/PiCX3MLawCHW4y1xvWJ1hS5Vs7u4XHnF45fRFpFowavUptoCRFI72nHifCICyorVQIEAmnaBb/Z5jRhTxYFYN56vuhIptCIiE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=DZJA8gBX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25AA4C433F1;
-	Fri,  2 Feb 2024 15:36:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706888182;
-	bh=Wvl87XNvXMMBWBNxLEx5QalHdJhfB/UDqRD0cL5pQrQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DZJA8gBXms4F+fDYW6PqCtbmIskJoLqLxNLntY0A5nOHSLbtl94NwrJo0pwCAUIO7
-	 Gl3OzmnfhgtOfSDB/932KCoZyiuEEnzRIuW+YdF4vmSXUXB6Dfy7ecxygCt6IbHDM6
-	 6DBi+PKKKzr5MZlyUGE5zplsn7Fuw+pS/vp/zyz8=
-Date: Fri, 2 Feb 2024 07:36:21 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Carlos Llamas <cmllamas@google.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Kees Cook <keescook@chromium.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>,
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4 7/9] rust: file: add `Kuid` wrapper
-Message-ID: <2024020214-concierge-rework-2ac5@gregkh>
-References: <20240202-alice-file-v4-0-fc9c2080663b@google.com>
- <20240202-alice-file-v4-7-fc9c2080663b@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fxv7RgvEz87Hmc1QGOh3B3tBOlbYVKpyARiIUaKkybiAiydxpsn3sqmryj49IOSHTdCiUOcelw86BZat1KfZUigD+AaxRUL96Sldo85zGz8v/6hAe0UODau2kZ2S1ppzJi6zrnRFSl5Ji2Z43THeCBiVDp8xMIVHNwEEDzV/Xp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=It4UgSvK; arc=none smtp.client-ip=209.85.222.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-78552105081so47449685a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 07:36:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1706888185; x=1707492985; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jRSa4TT8HVH8576bDhqIPmdbLRM9nyjGP0P+K9geus8=;
+        b=It4UgSvKLEpxOMpS7xqSJijhPsH5kq6d3Z3PfOt64xfqKYUDQc7S7XNMYqrlf28Ssu
+         e+tGq/2S4bUWfo+1XQlYrbDhpA8WkOOsfyTnY1m8hEogjNSGCIQBfXAKjK5btJ8E6SQ5
+         ObGCy93QhPdj8VXDJL5TKrU2NCdFk8xkyLcbkRtBk5ij7GOrxU6WLdaJ7HECiFAr4A/4
+         tDTzJvc+SyfUhnyqrb2JUf3kIAEzvcwcb6VOvIg705tsAHtW6aGXGYh4PYBaGSBwdzNC
+         zhrhSCEP9iJjXygGv12cK3f4Dc1ZaEgaty/QsSTeOqnaeYk9IQCjPE3SLKk2Q/hLnFMw
+         vnSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706888185; x=1707492985;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jRSa4TT8HVH8576bDhqIPmdbLRM9nyjGP0P+K9geus8=;
+        b=IdcYaib4elBWxlLBA7lIj/PiwlfomLrRJx7GkcJrfhxanOczVv4/f76wXzhPGZQVWs
+         b259hDCiPVei0PvyWcS4Vg6wPstY8ETH25xzRbEK1yEJRFVblZ1y5ae8VG1VD5ktO/Rv
+         7DJiVODG8bCKebn6AnMfL/ueoDEk6bc7EkAFfNKZE5CM3wJKymKZ/IejlSbMpE2trJcU
+         GPbTMccV9P5iu05N8+ds+Ei+inqWICJPhcZVC6ltx53s+Skgwf38ylpZeV1et9p0vzyF
+         W+7JX5Fk0mNHLhXZAnYOno5vG+JnbLNrWzLNQLAzfqc9k5dAESzJXSlBxdG5Ou14zK5T
+         g4WQ==
+X-Gm-Message-State: AOJu0Yze10Fdtf8S+0mK+/YpFjLKBZFUV+VjBcFFy96MNpmD1+T8k7pU
+	DAaNxzhXFlObchZGyrMwtie/KrCvponVn5fNj4GiJ5xMxV2MYvxZcU+voN25JQU=
+X-Google-Smtp-Source: AGHT+IHgoLTjDGqcVBJHeDO/+4xepghxs6zy3yXbqAEo9+eksg5MPspO+NnPRp35JWUiTkmwcplNIA==
+X-Received: by 2002:a05:620a:1447:b0:785:43d7:cd0d with SMTP id i7-20020a05620a144700b0078543d7cd0dmr5503107qkl.27.1706888185060;
+        Fri, 02 Feb 2024 07:36:25 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUFwKseQX4Qsq/U7oliva32huh0WpnlP9H2RmmN32JeZGOlrWJLaJZWLc9ppObbDwYDQV4sN7pUUZMCsO8tSFXSQJmcRGn+0ufquLHbJD1n5fzINj6sjjJv3dkjJOrN1QEsZiBVWFkYzeqnXqMwOqEHyIymkSi3B0oCOc5x9B6RE9X0hh8jrCLAS/PANjfoSo/rRgMRJGBcFJUCufODDCXB9jPLvby/TOw6PDi/PiXXaNWf6dsKiH+LDw3kiKrGVwerK4/DkUHol9QZWPHWp5Omyx0ca2rOvsUYk+OUWtuGlc7B0eOG3a6RzgWhdK8dYHm0gscYJwdfLAiXXgZ7SzzLyziu3DsqSb/YsxwTsJLPwdREaYfhXn96czeFqnVrIVcsWxSSIWpVfPCraGXpvS0VTC8bFw6Xzg4VBcDrwgor7MFt03tk
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id vu21-20020a05620a561500b0078552f53b85sm724769qkn.86.2024.02.02.07.36.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 07:36:24 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rVvaZ-00AwH2-RL;
+	Fri, 02 Feb 2024 11:36:23 -0400
+Date: Fri, 2 Feb 2024 11:36:23 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Lu Baolu <baolu.lu@linux.intel.com>
+Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
+	Jacob Pan <jacob.jun.pan@linux.intel.com>,
+	Longfang Liu <liulongfang@huawei.com>,
+	Yan Zhao <yan.y.zhao@intel.com>, iommu@lists.linux.dev,
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 15/16] iommu: Make iopf_group_response() return void
+Message-ID: <20240202153623.GA50608@ziepe.ca>
+References: <20240122054308.23901-1-baolu.lu@linux.intel.com>
+ <20240122054308.23901-16-baolu.lu@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,23 +93,48 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240202-alice-file-v4-7-fc9c2080663b@google.com>
+In-Reply-To: <20240122054308.23901-16-baolu.lu@linux.intel.com>
 
-On Fri, Feb 02, 2024 at 10:55:41AM +0000, Alice Ryhl wrote:
-> +    /// Returns the given task's pid in the current pid namespace.
-> +    pub fn pid_in_current_ns(&self) -> Pid {
-> +        let current = Task::current_raw();
-> +        // SAFETY: Calling `task_active_pid_ns` with the current task is always safe.
-> +        let namespace = unsafe { bindings::task_active_pid_ns(current) };
-> +        // SAFETY: We know that `self.0.get()` is valid by the type invariant, and the namespace
-> +        // pointer is not dangling since it points at this task's namespace.
-> +        unsafe { bindings::task_tgid_nr_ns(self.0.get(), namespace) }
-> +    }
+On Mon, Jan 22, 2024 at 01:43:07PM +0800, Lu Baolu wrote:
+> The iopf_group_response() should return void, as nothing can do anything
+> with the failure. This implies that ops->page_response() must also return
+> void; this is consistent with what the drivers do. The failure paths,
+> which are all integrity validations of the fault, should be WARN_ON'd,
+> not return codes.
+> 
+> If the iommu core fails to enqueue the fault, it should respond the fault
+> directly by calling ops->page_response() instead of returning an error
+> number and relying on the iommu drivers to do so. Consolidate the error
+> fault handling code in the core.
+> 
+> Co-developed-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  include/linux/iommu.h                       |  14 +--
+>  drivers/iommu/intel/iommu.h                 |   4 +-
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c |  50 +++-----
+>  drivers/iommu/intel/svm.c                   |  18 +--
+>  drivers/iommu/io-pgfault.c                  | 132 +++++++++++---------
+>  5 files changed, 99 insertions(+), 119 deletions(-)
 
-pids are reference counted in the kernel, how does this deal with that?
-Are they just ignored somehow?  Where is the reference count given back?
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-thanks,
+>  
+> +static struct iopf_group *iopf_group_alloc(struct iommu_fault_param *iopf_param,
+> +					   struct iopf_fault *evt,
+> +					   struct iopf_group *abort_group)
+> +{
+> +	struct iopf_fault *iopf, *next;
+> +	struct iopf_group *group;
+> +
+> +	group = kzalloc(sizeof(*group), GFP_KERNEL);
+> +	if (!group) {
+> +		/*
+> +		 * We always need to construct the group as we need it to abort
+> +		 * the request at the driver if it cfan't be handled.
+                                                  ^^^^^^ can't
 
-greg k-h
+
+Jason
 
