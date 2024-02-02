@@ -1,59 +1,57 @@
-Return-Path: <linux-kernel+bounces-50429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3BF78478DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:01:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8824B8478DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:01:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 877A11F21B8C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:01:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAF451C265FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:01:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C2C515B4D9;
-	Fri,  2 Feb 2024 18:42:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3764E1308C0;
+	Fri,  2 Feb 2024 18:42:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tp2cH3e1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="quggqApb"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 778FF15B4B3;
-	Fri,  2 Feb 2024 18:42:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D2AB15B4DD;
+	Fri,  2 Feb 2024 18:42:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706899344; cv=none; b=hvkcuR4UdLCrwttHliMxulim70VSaa3WbfR93iVR09zReYrkzQYL0b5dGYqR067M0A8qYI+xCKrKYdpiECgW8+ZS8c8mWHWcgXlH+l3rANJWdUSMlJTaPSNJ4Tbi48OkB2J4Qw7ofOk+27nls/7OyD3MMbMned2SHbgDsRnFgMU=
+	t=1706899345; cv=none; b=jRrMeA9Q5xA89oFAXzHidDqMNUmI89FCve2z3d6VpyFpMfUuYKiRQAM53tkOAfsg0KkWj5PtfCbwcJh0OGJTIsFHjluxRxVgrAtTxzjur+QeURE+OrGRza3H2Tf0SvNAShtT94MQ6gF2QHMilfE/CNDXQsDpUw9uz+2s3gtyo0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706899344; c=relaxed/simple;
-	bh=sWupTB0US2HxJhh+7cEVF9Kc8prI+Gw8oNBW+a09gKY=;
+	s=arc-20240116; t=1706899345; c=relaxed/simple;
+	bh=1b73q4SSa6A/DuyRYEWa3YFb29LuHgm98YU93zzXk0Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SoTSGwJTYijiU9Nlq+F32DeIFqLBKqedDlLFlkyXQRMe4eZ0yO6V/CNIOhT409R5GuHdzGn4j1U3BmEOVRhsvYdnzDGk/alsS/2GSLslLx2i8gfQbc2Vyz23Lpk77kRtpzsL72bPT8xVeylrJjIdOZ01R8BzI2flvHYADNKCsUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tp2cH3e1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7DB6C433C7;
-	Fri,  2 Feb 2024 18:42:22 +0000 (UTC)
+	 MIME-Version; b=imhe0IApK1zmioM0dDv5rTvfXzZN3JD2FPRKAdLUhILCdubaEkQTP26e5K7PWea2gCryfFF/bQ14tgS1Vs9l6QD666DeQYGuAOCdcXlYFdJNLsR1Kymsz7jd7RJfE0Nu8fFL2hzIx8lMZJN0vi+fBOlwwhhUvYzt3WNAxMEhRMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=quggqApb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59891C433F1;
+	Fri,  2 Feb 2024 18:42:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706899343;
-	bh=sWupTB0US2HxJhh+7cEVF9Kc8prI+Gw8oNBW+a09gKY=;
+	s=k20201202; t=1706899345;
+	bh=1b73q4SSa6A/DuyRYEWa3YFb29LuHgm98YU93zzXk0Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Tp2cH3e1Aer5eS/hksKADJNcg1jy9jF77YNbi3XupqMWjdGOEw7YSxkosMmlzGl14
-	 gVi5wII3Cjs3T3/f8HNt4rHxPeHi36NCvYRr3o8IMZXbNmIbpHRe5SvER34BoNol3n
-	 qnb+aFZr11AcL6DsVd5bPXzIMZkb/p/ipgmoZhpV0peGyaS558EVVXnc4CHo6sJqNM
-	 mbQkIbDfHynrWey7jIYrr+b2xwRKGxJ1B7Pw58plze4H/+9iPBl4tehXuzJNxpBPMd
-	 iSh0ejvZArrncpkkSVErSLGEGYq0shZKTqbLP5sHVdsZKuTiFF8xzYiJTtcgVqI5lh
-	 gmI6a5BEDTA6g==
+	b=quggqApbjsdPBedbRPy6A/RGHHJ00PC9sEUGPdC9dxWl0FXRKyBWrTPubrLyX9LbJ
+	 hW3MyrwBPDukfRDCU1xsZkg/+F+L5pghAyTy72lxnrQNFwlBT/LfgnNn252cwIWANm
+	 fc8TBBptwjwa/BXydteqMC+eSxSn4eSfnRYSFMlJdT0togiXwXM2+yFvLyz5bUM+LY
+	 dLn3KQ0URcC6vhf73gmDNr7XwLwMzRLjZ+32423UG1fg3z7rUnSWnL/LqOBIXEQ9RS
+	 C2LqvwwpqIThAc7ndP5JC8zbnmBnYLTfYIjFz7P7OTK8vNevXEKeOfJqAMX7a2N9xt
+	 3F3i0E7lCOmTg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Fullway Wang <fullwaywang@outlook.com>,
-	Helge Deller <deller@gmx.de>,
+Cc: Conrad Kostecki <conikost@gentoo.org>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Niklas Cassel <cassel@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	tzimmermann@suse.de,
-	sam@ravnborg.org,
-	javierm@redhat.com,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.4 4/6] fbdev: sis: Error out if pixclock equals zero
-Date: Fri,  2 Feb 2024 13:42:10 -0500
-Message-ID: <20240202184215.542162-4-sashal@kernel.org>
+	dlemoal@kernel.org,
+	linux-ide@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 5/6] ahci: asm1166: correct count of reported ports
+Date: Fri,  2 Feb 2024 13:42:11 -0500
+Message-ID: <20240202184215.542162-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240202184215.542162-1-sashal@kernel.org>
 References: <20240202184215.542162-1-sashal@kernel.org>
@@ -68,41 +66,50 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.4.268
 Content-Transfer-Encoding: 8bit
 
-From: Fullway Wang <fullwaywang@outlook.com>
+From: Conrad Kostecki <conikost@gentoo.org>
 
-[ Upstream commit e421946be7d9bf545147bea8419ef8239cb7ca52 ]
+[ Upstream commit 0077a504e1a4468669fd2e011108db49133db56e ]
 
-The userspace program could pass any values to the driver through
-ioctl() interface. If the driver doesn't check the value of pixclock,
-it may cause divide-by-zero error.
+The ASM1166 SATA host controller always reports wrongly,
+that it has 32 ports. But in reality, it only has six ports.
 
-In sisfb_check_var(), var->pixclock is used as a divisor to caculate
-drate before it is checked against zero. Fix this by checking it
-at the beginning.
+This seems to be a hardware issue, as all tested ASM1166
+SATA host controllers reports such high count of ports.
 
-This is similar to CVE-2022-3061 in i740fb which was fixed by
-commit 15cf0b8.
+Example output: ahci 0000:09:00.0: AHCI 0001.0301
+32 slots 32 ports 6 Gbps 0xffffff3f impl SATA mode.
 
-Signed-off-by: Fullway Wang <fullwaywang@outlook.com>
-Signed-off-by: Helge Deller <deller@gmx.de>
+By adjusting the port_map, the count is limited to six ports.
+
+New output: ahci 0000:09:00.0: AHCI 0001.0301
+32 slots 32 ports 6 Gbps 0x3f impl SATA mode.
+
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=211873
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218346
+Signed-off-by: Conrad Kostecki <conikost@gentoo.org>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Niklas Cassel <cassel@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/sis/sis_main.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/ata/ahci.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/video/fbdev/sis/sis_main.c b/drivers/video/fbdev/sis/sis_main.c
-index b443a8ed4600..2fdd02e51f5f 100644
---- a/drivers/video/fbdev/sis/sis_main.c
-+++ b/drivers/video/fbdev/sis/sis_main.c
-@@ -1474,6 +1474,8 @@ sisfb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
- 
- 	vtotal = var->upper_margin + var->lower_margin + var->vsync_len;
- 
-+	if (!var->pixclock)
-+		return -EINVAL;
- 	pixclock = var->pixclock;
- 
- 	if((var->vmode & FB_VMODE_MASK) == FB_VMODE_NONINTERLACED) {
+diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
+index aa35d1941d1f..5db3dc45bdc4 100644
+--- a/drivers/ata/ahci.c
++++ b/drivers/ata/ahci.c
+@@ -618,6 +618,11 @@ MODULE_PARM_DESC(mobile_lpm_policy, "Default LPM policy for mobile chipsets");
+ static void ahci_pci_save_initial_config(struct pci_dev *pdev,
+ 					 struct ahci_host_priv *hpriv)
+ {
++	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA && pdev->device == 0x1166) {
++		dev_info(&pdev->dev, "ASM1166 has only six ports\n");
++		hpriv->saved_port_map = 0x3f;
++	}
++
+ 	if (pdev->vendor == PCI_VENDOR_ID_JMICRON && pdev->device == 0x2361) {
+ 		dev_info(&pdev->dev, "JMB361 has only one port\n");
+ 		hpriv->force_port_map = 1;
 -- 
 2.43.0
 
