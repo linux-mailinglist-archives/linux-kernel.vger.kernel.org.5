@@ -1,88 +1,82 @@
-Return-Path: <linux-kernel+bounces-50185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1245847572
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:56:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D1AB847577
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:57:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E99928EA77
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:56:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6015B1C27A0B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:57:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90EBD148318;
-	Fri,  2 Feb 2024 16:56:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 358F514900B;
+	Fri,  2 Feb 2024 16:57:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="arSuH0au"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iUpUeVEn"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7837423BE;
-	Fri,  2 Feb 2024 16:56:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BDF1148310
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 16:57:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706892992; cv=none; b=eXWKSUigGoJG6g/+PTUKYo3+mUpcFdkOt5FKTNARo5casbGaDsgSRvk7pQ5x+ryOoqHnc2mwFd0m2H/kBgVbDe5byKa2G8NCdXaH2qcDrzbiPIuoTxF72S+PvWEH3Lx10o5NYzO1KQ06idCIObm1VqYTdyFSQDXDDOIUYeUmBSQ=
+	t=1706893066; cv=none; b=a+6PPBMtkfL2L0lQO0frIw0YZpCUqccyqPJuDIYYgyquxb+gqB6Fjg6+DrLhkFttzg8qx4ebFIdC9/7LiF+6c0yNNlY/r6Neag5I0pCv9bwVaa0aGTFLm7MMiPAgs3h1OuqorfurV2n8bms+XXamfsO6Ccgq4o0672YX5onLto4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706892992; c=relaxed/simple;
-	bh=wyOnNF8B4sb0b8JsxsVpaFTlI4g0+8evOPxcQxS/teA=;
+	s=arc-20240116; t=1706893066; c=relaxed/simple;
+	bh=BTsigi4db6wzD2KxV1kjIqZyumwhMxK2PLRCX71n8lQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vDVlpsB9msgJj4NQfZpMLof5mKv8bBnhwvj/sXuIdtrFWJq7UNtvOcytqPawB5On17lP2oNHdxX8A9LGGrCJYU1wk82kyux0ZfYjJ9QB3/8JhSFoBqCGgMrHj8isyURxrP3RXELB2kIOlfJCMIkf9HpLyoYVu4lhLW9hFm3MTCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=arSuH0au; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d7858a469aso17802295ad.2;
-        Fri, 02 Feb 2024 08:56:31 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=oMmGTbZhh2w7V1Pm9cqcFbkX9mJLFmNozfFqFvTbGjjANEfcjpCUqhD9DLg015vw7wMpn0H6kNIV/8/Y+OHC4sKBNEW6b9x3rpmvBHxuPfmOLgPzlNV15DfwaKDtEvOd4eMonVl03Qj0ovgYAY8Qc1cyYn8odvQ+gbRmqfEMpPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iUpUeVEn; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a3604697d63so369044966b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 08:57:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706892991; x=1707497791; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706893059; x=1707497859; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Qe+TOmLaJxk957V8jGDLQ7fu9VgTnLFu/zh4WfVuOvY=;
-        b=arSuH0aupyVXAcxPsfa5xCg0wRgnYYOlROEDjxw0BKJKu7tYR0arckcqU2ImluJWHw
-         SHOPOibETWbrHVLo0h1LwTgnrbowU6V2s6nUjWNduXFBYcjebghL1UOcyyZm9rDrC0Qc
-         OKbGeLtpwJqoIYYzPO9l9AQA/XfPNoi3tCKOnO0qsTiQaOL3Yax62GlY8lbU0CUwpJbl
-         5QxXzVDl1IFESmZmYpno05aDz8dpkGxWUbV26g3hFmHjHajl6nl+LQF/F/3DlDWlvE2Q
-         8vDLNsk7LatHll7URRZOkb0qfE97p9gI2mgrhN2ALyzFagUMt3qUdxEh+QsqbFHC00Qh
-         U4Rw==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pOMmKU2ojRpucv2LvIq5EXqCC2JsZUhlB+SBvo1nc0g=;
+        b=iUpUeVEn1HbE1Sc9LDcHFgMLAzT0Isyx3//JSbFBrfOKOmj+LxUBfvq3UbimJFeUNK
+         FBuFukXs9YTWlFYgXNkx2dPV72ICo7hZ6VEWaEQVMDkEMPdsqnY5CeEGkgmGviIuMu/t
+         BGSMRoUTsD1lcMnqorCJve2GV9eIuE6CaI3hR34msw8fT3NHbH93BfmqZ0sic9fD+Acx
+         0brvc1nnBaL3/1StzXlF5wBxZn255kwS5pXccu02KMli164TOs5z2Ng3yl+Br3eVQvCP
+         uRpYz4Y5q3zgE25jZXq9FFx33D0oIUqO9MkpOqTOFZI5fiIrGKXPTTBlszqZBy0CWr/A
+         mGjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706892991; x=1707497791;
+        d=1e100.net; s=20230601; t=1706893059; x=1707497859;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qe+TOmLaJxk957V8jGDLQ7fu9VgTnLFu/zh4WfVuOvY=;
-        b=kEc5HUBnjFRzM7eLmLdY8sWCJPMbbId/bxW9/pweOGsSkUm6+VR0HJqOViMRJVJTHT
-         qUy+p+l3zd3of4ahse1CbsolXgTjBl6d8LJOdqxsEar5g767ye7Rs7Zlfq2eAuLmaohm
-         p4hVvt6hFt13xXiS/CCM8e0oAwo+mwhejCZ4vxemdutWC2JIbtLYcAeMzdrRjcE8TRPe
-         hCfAz6bhSud6YcFiryFcp0KRLKW5ZeAAFkNEnzUpTEnO9vK7LcmhWG1zPA6m52kVpqA5
-         jyeHV5W0vZe1Re0KRsaA8sPTw7CDnZcuCalvPpa9de4BwfDB8IyWf7fWIs7Uz9gRMcXq
-         N4nQ==
-X-Gm-Message-State: AOJu0Ywyx5amIcPcxGDdxEWujBZLW+BKRsq0m9m9LIn1mE86tUe922Yc
-	ZrAkUkh0QcnLMWLjFZK2MSIIMllA6YMxIxsW8lO5xuZ4XtY6i9zY
-X-Google-Smtp-Source: AGHT+IFVOr4HiW+sp+gB5p4t5//6Q+a6RWUzdnlakeWeXaYtXvRGKZLk/l5K6ixwFCQHdokYgLGmgw==
-X-Received: by 2002:a17:902:a5ca:b0:1d7:5eef:4d5 with SMTP id t10-20020a170902a5ca00b001d75eef04d5mr8048054plq.49.1706892990560;
-        Fri, 02 Feb 2024 08:56:30 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWEvERrDXE50CB9dVnuBFPPBoUo//KQRkoRGwT9G+p4eA1JV3u4GbJlx+aGCB5ZeW/L4vYD3wW8CNHIxN+segWas+rZ8ZWQOfhAuphaNXlMPNimAQrp34e/RrVfl3/XSz+iETWf0sAwyNeMifdeV0LRP0QP+c+l1F7JcWpfRgLmtzJPUbWumr5UMElgdgYy7gO1ZA9skITpIDT3oaYAFqvKRVO7zxxGpqpoFr2ARYVEiF1CM7/C4ofVk4+ib8fMVQdCMEht4tAAUIqXW17ACJ40ODl68+dvc/Pe9JtB3gU7cw37zeeNc2SaPv9rpEAc9bAfwFItHocSQazhE3ZH
-Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
-        by smtp.gmail.com with ESMTPSA id kt5-20020a170903088500b001d8d1a2e5f2sm1806897plb.216.2024.02.02.08.56.29
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pOMmKU2ojRpucv2LvIq5EXqCC2JsZUhlB+SBvo1nc0g=;
+        b=awUeUa7QC9dJuGQZXgKLfN1TSxIFzuSrduYqNJfnebc16ziSq5bFoQhVxSMiz0HYIC
+         /FavseyHEPemF0kz8FKKnsSHFzvl8nGd/hhKVPY4YvSjQgQyjwR8J9Hl9wS5y5Bw3XwD
+         EtzygIe1aYv9nHntXX1zVEi3nJBoNoABvOKesF4Zto/Asb6LvkXZlnvM6+dWejeiau45
+         rFiid5GLkHGTF3BmDJ+OGo1+UWEGzDWLgYeJKC6wp41riBJBa+9581kw8D3yIvNshg2Y
+         l29RgtOfCqgUP66mJgzqhgctODxnFN/6FL5YGbaeqGQ2oTW5hWmJTPc25xhABJFVIyjA
+         Gr5A==
+X-Gm-Message-State: AOJu0Ywa2Dr2VoMIhYPdohlc47fY/oV4HrHJzRM5pFsmHQGfPhERHxey
+	xouLyK1QBfGCP+97+flksuNdnOmcfdsaSSL5zI7TSMPENqnYj0NEztRiK70C7yY=
+X-Google-Smtp-Source: AGHT+IGrVNwLvQ7Qd2H25HKvVgps2pgoVubc0Ao0qrH4dAW2aOxdnQVXdvSLRHFLk6kH2p2hCaFBMw==
+X-Received: by 2002:a17:906:6857:b0:a35:5b6:1e0f with SMTP id a23-20020a170906685700b00a3505b61e0fmr6339017ejs.71.1706893059324;
+        Fri, 02 Feb 2024 08:57:39 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVfrK/V22UF7mLDeAOiCdHIwfUXdKosWBUWCt4q+cZHOIa01WXuHFSjk5yfqdMDUcYBUOWGKOE2WHaIF/jq4KG7QamhuYr+SKJuThfrjl6ScPNl4eHX8O4kGwHwxCFgnArSyQLOMWG+rAtyWhEVWyOypIXREN2cTqjHRqxJbSZafEoO8yCh5mQxgmwNyy0RqhlwityX+YM7R46CPq1FIJLljgPbGJ+HyUh4erULI2RB2jlCdEBYsKjwjjNJiWAlWtwfDOdbZSDIpggWjeZ/ZDo+gs8RVK2k1HJJnqgd4lyj+jVvW8uyovOjoeHIJAvbMtWamA0sljEqkbEG+7Y+5LI=
+Received: from linaro.org ([62.231.97.49])
+        by smtp.gmail.com with ESMTPSA id tb11-20020a1709078b8b00b00a370d76b0b4sm734523ejc.71.2024.02.02.08.57.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 08:56:30 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 2 Feb 2024 06:56:28 -1000
-From: Tejun Heo <tj@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Petr Mladek <pmladek@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [BUG] workqueues and printk not playing nice since next-20240130
-Message-ID: <Zb0evDquygkDI_8P@slm.duckdns.org>
-References: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
- <c6ce8816-c4ff-4668-8cbb-88285330057d@huaweicloud.com>
- <25fd8537-5a27-4b62-9bf9-1ee7ca59b5b8@paulmck-laptop>
+        Fri, 02 Feb 2024 08:57:38 -0800 (PST)
+Date: Fri, 2 Feb 2024 18:57:37 +0200
+From: Abel Vesa <abel.vesa@linaro.org>
+To: Mike Tipton <quic_mdtipton@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, djakov@kernel.org,
+	neil.armstrong@linaro.org, quic_rjendra@quicinc.com,
+	quic_sibis@quicinc.com, linux-arm-msm@vger.kernel.org,
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] interconnect: qcom: x1e80100: Add missing ACV
+ enable_mask
+Message-ID: <Zb0fASo+PsmAaXaS@linaro.org>
+References: <20240202014806.7876-1-quic_mdtipton@quicinc.com>
+ <20240202014806.7876-3-quic_mdtipton@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,41 +85,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <25fd8537-5a27-4b62-9bf9-1ee7ca59b5b8@paulmck-laptop>
+In-Reply-To: <20240202014806.7876-3-quic_mdtipton@quicinc.com>
 
-Hello,
-
-On Fri, Feb 02, 2024 at 08:35:51AM -0800, Paul E. McKenney wrote:
-> Good point, and if this sort of thing happens frequently, perhaps there
-> should be an easy way of doing this.  One crude hack that might come
-> pretty close would be to redefine the barrier() macro to be smp_mb().
+On 24-02-01 17:48:06, Mike Tipton wrote:
+> The ACV BCM is voted using bitmasks. Add the proper mask for this
+> target.
 > 
-> But as noted earlier, -ENOREPRODUCE on today's -next.  I will try the
-> next several -next releases.  But if they all get -ENOREPRODUCE, I owe
-> everyone on CC an apology for having sent this report out before trying
-> next-20240202.  :-/
+> Fixes: 9f196772841e ("interconnect: qcom: Add X1E80100 interconnect provider driver")
+> Signed-off-by: Mike Tipton <quic_mdtipton@quicinc.com>
 
-I think I saw that problem too but could reproduce it with or without the
-workqueue changes, so I did the lazy thing "oh well, somebody is gonna fix
-that" and just tested as-is. It's a bit worrying that ppl don't seem to
-already know what the culprit is. Hmm... I can't reproduce it anymore
-either.
+Tested-by: Abel Vesa <abel.vesa@linaro.org>
 
-So, there is some chance that this may really be a subtle breakage. If you
-ever see it happening again, triggering sysrq-t and capturing the dmesg
-output (network should still work fine, so these shouldn't be too difficult)
-may help. sysrq-t has workqueue state dump at the end which should clearly
-indicate if anything is stalled in workqueue.
-
-That said, another data point. In my test setup, I use the earlyprintk boot
-option which enables console output way before than workqueue becomes
-operational, so having on console output at all is highly unlikely to be
-indicative of workqueue problem. My memory is hazy but it seems like I can
-no longer reproduce the problem on the same git commit. Maybe it was a
-problem on the qemu side?
-
-Thanks.
-
--- 
-tejun
+> ---
+>  drivers/interconnect/qcom/x1e80100.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/interconnect/qcom/x1e80100.c b/drivers/interconnect/qcom/x1e80100.c
+> index 5b2de9c3a1d6..281295a9a077 100644
+> --- a/drivers/interconnect/qcom/x1e80100.c
+> +++ b/drivers/interconnect/qcom/x1e80100.c
+> @@ -1372,6 +1372,7 @@ static struct qcom_icc_node qns_aggre_usb_south_snoc = {
+>  
+>  static struct qcom_icc_bcm bcm_acv = {
+>  	.name = "ACV",
+> +	.enable_mask = BIT(3),
+>  	.num_nodes = 1,
+>  	.nodes = { &ebi },
+>  };
+> -- 
+> 2.17.1
+> 
 
