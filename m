@@ -1,266 +1,129 @@
-Return-Path: <linux-kernel+bounces-49909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44953847144
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:37:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A78A84714F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:39:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56C4BB23CAA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:37:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25FB52843EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:39:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9755E47A52;
-	Fri,  2 Feb 2024 13:36:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAD4B47781;
+	Fri,  2 Feb 2024 13:39:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="eaIClWeg"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="KiiExzXL"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A0D84643A;
-	Fri,  2 Feb 2024 13:36:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B48A46B9A;
+	Fri,  2 Feb 2024 13:39:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706881016; cv=none; b=dXgRlEq3WS4HhtLkh51/UnfW7aOoMfLvW9vC9LmyASLWHeyuXrl3nW+3PjhNicCXBeeqGGX1+cMT+gcvnYocOZiDNIHpDtYV+/mpeQsLhF5Mzt3v/o2jjBTzWEVHh3+RcPAJQICLvNsfVqaN9MBvYZnAmxh/x5OcHH5fxitSLEI=
+	t=1706881182; cv=none; b=tOS/1Nvdo9as0jjh+gCHLqQ6VSnb8RkIuMiOOMLcIlv1gS/B/jR62DGOFznioGaxDpX1miQEStpVFMORz4sWg7wcWaPQocKcX1MzheX96A511n1a1uaA2iNVEraMXQFCYT2CuBvFVKlPMQzyjO3Vk0QJ5VhNkvLhd7sOmYHLPos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706881016; c=relaxed/simple;
-	bh=a0D7YFvUOEUJEBzo8I5mq62Kv+BvSEC14i8qhkl0W+c=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QXYJHYoYCFlWgMsVoEbenaaYVlZT5D749cjb5FsYQjnJFDlBqzhyFRZaAz7jdwF9xSULmgpqVD7kL53/R67rYXgLtCkW8X5Y8q+6oB1C9pRiLohts+/dIQ4RfPLrg1oXv6ho+W60ohQDVj/rE9I4mJ3AyhGHIQqM993WJXygmsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=eaIClWeg; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 412CrS8J013475;
-	Fri, 2 Feb 2024 13:36:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding; s=qcppdkim1; bh=DsdXMe3
-	4KXFvuJanA/fj53vB84m7HoavxVPCeFqotvo=; b=eaIClWegCqBcPYtGYpPT8By
-	Suoj297CQnTLTifhqmBdcp14z121VGFTRYpQfngF7wn5mvQXJdnJaEn3+gXEnvFB
-	dPWIxN2mat1Y7bBCHMsz6AkH9Gw+hN/DxRZn3y0DLp/5fr092YiM0EoesoM+d0H/
-	XliQsWRKmlLiWE25ImzzoSL2sZHCw299Dy+H6wU28F7zusokOvjgYA4GyT5XHMAa
-	ZFHTNgWurdOQj/QgYpmrnsCSZ9XkkL8qkEe57xmoS+mHQguz/ZXDmUzlUuDdoKBz
-	eHGGji7MYB4SNGbCL2memAUA+9xAlY67DNs1MUbKcSGIjHQc9lKIm+fgPnqU9TA=
-	=
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0pwjhf1a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Feb 2024 13:36:49 +0000 (GMT)
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 412DajDo017956;
-	Fri, 2 Feb 2024 13:36:45 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 3vvtwm3wsy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-	Fri, 02 Feb 2024 13:36:45 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 412Daj93017933;
-	Fri, 2 Feb 2024 13:36:45 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-wasimn-hyd.qualcomm.com [10.147.242.220])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 412Daj1t017930;
-	Fri, 02 Feb 2024 13:36:45 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 3944840)
-	id D126B50094E; Fri,  2 Feb 2024 19:06:43 +0530 (+0530)
-From: Wasim Nazir <quic_wasimn@quicinc.com>
-To: andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@quicinc.com,
-        Wasim Nazir <quic_wasimn@quicinc.com>
-Subject: [PATCH 3/3] arm64: dts: qcom: Add initial support for rb5gen2 HDK board
-Date: Fri,  2 Feb 2024 19:06:38 +0530
-Message-ID: <20240202133638.4720-4-quic_wasimn@quicinc.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240202133638.4720-1-quic_wasimn@quicinc.com>
-References: <20240202133638.4720-1-quic_wasimn@quicinc.com>
+	s=arc-20240116; t=1706881182; c=relaxed/simple;
+	bh=miDAUqH++egcoxWAD5wW30DmvWxqjaeshiXLXeM5glY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TzR32TAD+ogAImLtdzEbmFY3l+tYEpciqreUG29Gf6DKDLZcvq+gxgzY2zyIVxgBvrlhChooCWNB9q1lMBluko1p34rAJB2GHd7P77dwH4F3qMVk0H1NhdXa1Vji+ufEc3Bt7gq2wZbZLfy7blgniqfKCdUCpEp7KOXCxVv2pBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=KiiExzXL; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B7DF740E01A2;
+	Fri,  2 Feb 2024 13:39:36 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id uci-jhhF5SNC; Fri,  2 Feb 2024 13:39:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706881173; bh=i41MKt90HCy/J6mZcV7OB0Wu4vTJEn+w5XEKHKNjBAM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KiiExzXLJY4+AspZZQa0Av26b2H8HFzHlmtkPc/0vs3Q33lr2CivSmBLYVAwvoTN2
+	 rxdQq9xq/zktgGVr7XpYMFHB+zptXlm7E+L/Sw8ToT7duFQCmALMqZLhP4Beokw4uO
+	 Jg97HZ0IDCzAIw4j8MkrHx2o1iaVpRQufanVh/ia0J3IBa9RxqdMK74Xd1NtDIl54N
+	 jvIWUxk5sxX6IwGs4+PhEHuwFbWbFt9n383ROsRBuLk70IZssOk1JHYK8tmCyoWIlR
+	 xtMLpRxJP2hNFD5m3I+iyvWuZlsdnPz+Hs5jC+o/Z58TM05iEZnzRGMt7NH352O7UZ
+	 uDcgei3r65O9ZwTTNSTT3ETGmaXktkUT+vwFVbgZdVPMAYyJwp03ZSTMTU8g3AULB5
+	 ZQw/Zk1Pq09G2gdhTTJDe/d5Eqb9DNtbVAspzxIlQYDA2klONS9fssRqLCigoRBiug
+	 xadCEFvVJ2XegD11ZH3/M4Di+8/kCmwnJjx+gh/jB5E3D7xacBNYMriVUs/ZvG1xDo
+	 pBRblQhKOCN7Ds7hK4mHVt6hK1dY2UU5eZeH7hn19sjBqRs7LI3pwhIwgp+e086Mp/
+	 0g3MWRpmI3iGTue+P8O6/aXow+C0F4F7LTVeaXQeYUakyI0AXak8Y4XmRlVQl3g3aB
+	 Zr69JeKncVzcY6dm/LXlM0Yw=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AC6BE40E016C;
+	Fri,  2 Feb 2024 13:39:17 +0000 (UTC)
+Date: Fri, 2 Feb 2024 14:39:11 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Tong Tiangen <tongtiangen@huawei.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	wangkefeng.wang@huawei.com,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Naoya Horiguchi <naoya.horiguchi@nec.com>,
+	linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+	linux-mm@kvack.org, Guohanjun <guohanjun@huawei.com>
+Subject: Re: [PATCH -next v4 2/3] x86/mce: rename MCE_IN_KERNEL_COPYIN to
+ MCE_IN_KERNEL_COPY_MC
+Message-ID: <20240202133911.GBZbzwf-M37M-J3EJX@fat_crate.local>
+References: <20240111135548.3207437-1-tongtiangen@huawei.com>
+ <20240111135548.3207437-3-tongtiangen@huawei.com>
+ <20240131070258.GGZbnwov0g918F-FGz@fat_crate.local>
+ <3009aadd-69d6-c797-20b4-95cf926b6dd9@huawei.com>
+ <20240201142016.GFZbuooG9CRoK90U2C@fat_crate.local>
+ <39c1e4d2-b1d0-91ae-595e-1add4698dd7f@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: USZtIWBM64vLo-YcR_cirIrr16QtLf24
-X-Proofpoint-ORIG-GUID: USZtIWBM64vLo-YcR_cirIrr16QtLf24
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-02_07,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 clxscore=1015 mlxscore=0 phishscore=0 mlxlogscore=999
- malwarescore=0 suspectscore=0 adultscore=0 priorityscore=1501 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402020098
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <39c1e4d2-b1d0-91ae-595e-1add4698dd7f@huawei.com>
 
-RB5gen2 hardware development kit is based on QCS8550-Rb5gen2 SOM
-for IOT solutions.
-This initial version describes VPH_PWR, UART & USB3.1.
+On Fri, Feb 02, 2024 at 03:51:12PM +0800, Tong Tiangen wrote:
+> Currently, there are some kernel memory copy scenarios is also mc safe
+> which use copy_mc_to_kernel() or copy_mc_user_highpage(), these kernel-
+> to-kernel copy use fixup_type EX_TYPE_DEFAULT_MCE_SAFE. In these
+> scenarios, posion pages need to be isolated too and the current
 
-On-board PMICs:
-- PMR735D
-- PM8010
+So you have, for example:
 
-Signed-off-by: Wasim Nazir <quic_wasimn@quicinc.com>
+  unsigned long __must_check copy_mc_to_kernel(void *dst, const void *src, unsigned len)
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 6fdde64d7540..8840b219d6d5 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -93,6 +93,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= qcs404-evb-1000.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qcs404-evb-4000.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qcs6490-rb3gen2.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qcs8550-aim300-aiot.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= qcs8550-rb5gen2-hdk.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qdu1000-idp.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qrb2210-rb1.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qrb4210-rb2.dtb
-diff --git a/arch/arm64/boot/dts/qcom/qcs8550-rb5gen2-hdk.dts b/arch/arm64/boot/dts/qcom/qcs8550-rb5gen2-hdk.dts
-new file mode 100644
-index 000000000000..6f4c68402823
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/qcs8550-rb5gen2-hdk.dts
-@@ -0,0 +1,136 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+/dts-v1/;
-+
-+#include "qcs8550-rb5gen2.dtsi"
-+#include "pm8010.dtsi"
-+#include "pmr735d_a.dtsi"
-+#include "pmr735d_b.dtsi"
-+
-+/ {
-+	model = "Qualcomm Technologies, Inc. QCS8550 RB5Gen2 HDK";
-+	compatible = "qcom,qcs8550-rb5gen2-hdk", "qcom,qcs8550-rb5gen2",
-+			"qcom,qcs8550", "qcom,qcm8550", "qcom,sm8550";
-+
-+	aliases {
-+		serial0 = &uart7;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	pmic-glink {
-+		compatible = "qcom,sm8550-pmic-glink", "qcom,pmic-glink";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		connector@0 {
-+			compatible = "usb-c-connector";
-+			reg = <0>;
-+			power-role = "dual";
-+			data-role = "dual";
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@0 {
-+					reg = <0>;
-+
-+					pmic_glink_hs_in: endpoint {
-+						remote-endpoint = <&usb_1_dwc3_hs>;
-+					};
-+				};
-+			};
-+		};
-+	};
-+
-+	vph_pwr: vph-pwr-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vph_pwr";
-+		regulator-min-microvolt = <3700000>;
-+		regulator-max-microvolt = <3700000>;
-+
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+};
-+
-+&apps_rsc {
-+	regulators-0 {
-+		vdd-bob1-supply = <&vph_pwr>;
-+		vdd-bob2-supply = <&vph_pwr>;
-+	};
-+
-+	regulators-2 {
-+		vdd-s4-supply = <&vph_pwr>;
-+		vdd-s5-supply = <&vph_pwr>;
-+	};
-+
-+	regulators-3 {
-+		vdd-s1-supply = <&vph_pwr>;
-+		vdd-s3-supply = <&vph_pwr>;
-+		vdd-s4-supply = <&vph_pwr>;
-+		vdd-s5-supply = <&vph_pwr>;
-+		vdd-s6-supply = <&vph_pwr>;
-+	};
-+
-+	regulators-4 {
-+		vdd-s1-supply = <&vph_pwr>;
-+		vdd-s3-supply = <&vph_pwr>;
-+		vdd-s4-supply = <&vph_pwr>;
-+		vdd-s5-supply = <&vph_pwr>;
-+		vdd-s7-supply = <&vph_pwr>;
-+	};
-+
-+	regulators-5 {
-+		vdd-s1-supply = <&vph_pwr>;
-+		vdd-s2-supply = <&vph_pwr>;
-+		vdd-s3-supply = <&vph_pwr>;
-+		vdd-s4-supply = <&vph_pwr>;
-+		vdd-s5-supply = <&vph_pwr>;
-+		vdd-s6-supply = <&vph_pwr>;
-+	};
-+};
-+
-+&pm8550b_eusb2_repeater {
-+	vdd18-supply = <&vreg_l15b_1p8>;
-+	vdd3-supply = <&vreg_l5b_3p1>;
-+};
-+
-+&uart7 {
-+	status = "okay";
-+};
-+
-+&usb_1 {
-+	status = "okay";
-+};
-+
-+&usb_1_dwc3 {
-+	dr_mode = "otg";
-+	usb-role-switch;
-+};
-+
-+&usb_1_dwc3_hs {
-+	remote-endpoint = <&pmic_glink_hs_in>;
-+};
-+
-+&usb_1_hsphy {
-+	vdd-supply = <&vreg_l1e_0p88>;
-+	vdda12-supply = <&vreg_l3e_1p2>;
-+
-+	phys = <&pm8550b_eusb2_repeater>;
-+
-+	status = "okay";
-+};
-+
-+&usb_dp_qmpphy {
-+	vdda-phy-supply = <&vreg_l3e_1p2>;
-+	vdda-pll-supply = <&vreg_l3f_0p88>;
-+
-+	status = "okay";
-+};
---
-2.43.0
+Now imagine you get a MCE for *dst which is some kernel page which
+cannot be poisoned: direct map, kernel text, and so on.
 
+Attempting to poison such a page would not work, to put it mildly.
+
+So, again, what *exactly* are you "fixing" here?
+
+When I read "Currently, there are some kernel memory copy scenarios" and
+there's nothing more explaining what those scenarios are, I'm tempted to
+ignore this completely until you give a detailed and concrete example
+what the problem is:
+
+What exactly are you doing, what goes wrong, why does this need to be
+fixed and so on...
+
+If there isn't such a real-life use case you're encountering, then this
+all is waste of time.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
