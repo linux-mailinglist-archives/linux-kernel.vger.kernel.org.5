@@ -1,148 +1,142 @@
-Return-Path: <linux-kernel+bounces-49181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A63658466DE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:12:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39EAA8466D2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:11:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D80431C251FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:12:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CB0F1C24DE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:11:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1299217546;
-	Fri,  2 Feb 2024 04:11:01 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3782F508;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E34B9F503;
+	Fri,  2 Feb 2024 04:10:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BN7iaCT9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C781BF4E3;
 	Fri,  2 Feb 2024 04:10:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706847060; cv=none; b=dwEekKwrjNBk1V660Io7xXt+RDl6SBFR3zZYOzflaTkd/gCp8N2IvyRf2n6vJWBOrHDSC/rhFg7tM4MaZ/CmDTuNV3+Q2ZNwE9SUtjZKBKiSBpO3Ad7XAj4U/LJ1t08Jlu++7jZ7ozBt2+bE9P/XAT+mxVsK7UzFWCx8ZplcxvM=
+	t=1706847056; cv=none; b=jEuuoSXcx2MjM+FiXl0j0GEToQxV8oUEZX1CRp6gDf2D+7opEYuFwZkcbZf1hRxGk8eqdWWPma0dNIobaO4frVRmCusUul5QZ/bKtRTSQchi5n9un12zb1otk0uAh8xdem04Bnbds1+ATi6xDVRTND7k/bCSNAV/z/7TsWTQO3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706847060; c=relaxed/simple;
-	bh=LiOCyLFruOphupmn52/zjX6PXxgRWEIgzMpTYjIYNVc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mQgdXr+fWkNzO7smn1LO8rOY6Th8IQLwQNcur/y8/ylexjyQMBAw1/rXlnTC64JlO9fzc7kRkjRE89bOmBREstKFehtmJdL9MpaJNDUlpe+WYstUM4oDUE387jMrX+EFUGLKgj1BiNz8g74wttg2FjMlFXzIWs3dIBboE8tFQrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.2.5.213])
-	by gateway (Coremail) with SMTP id _____8DxaOhKa7xlcf4JAA--.9336S3;
-	Fri, 02 Feb 2024 12:10:50 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.213])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8DxvhNGa7xlhd0sAA--.51008S6;
-	Fri, 02 Feb 2024 12:10:49 +0800 (CST)
-From: Bibo Mao <maobibo@loongson.cn>
-To: Paolo Bonzini <pbonzini@redhat.com>,
-	Sean Christopherson <seanjc@google.com>
-Cc: Tianrui Zhao <zhaotianrui@loongson.cn>,
-	linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v7 4/4] KVM: selftests: Add test cases for LoongArch
-Date: Fri,  2 Feb 2024 12:10:46 +0800
-Message-Id: <20240202041046.3405779-5-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240202041046.3405779-1-maobibo@loongson.cn>
-References: <20240202041046.3405779-1-maobibo@loongson.cn>
+	s=arc-20240116; t=1706847056; c=relaxed/simple;
+	bh=+Ffo9v3Ht/o4mcti8U5GI4gV4HyIxKHb/r7AgyGznzw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NzT1VdwwU/26cpmgg449xOw6pYG184RKk9/Jf71SvV/SlYlLMV21EoSGImE2RyveQCdJ2AA1ek443R8YebAIqV+eEJRsYxg+BNPIo4BQQ7NoxrQJSckFW7Y+0krdD58YwMyUyS+0M166w/QMvAnm16tfm1Lnatg1KBoY5mBZtpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BN7iaCT9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3CAEC433C7;
+	Fri,  2 Feb 2024 04:10:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706847056;
+	bh=+Ffo9v3Ht/o4mcti8U5GI4gV4HyIxKHb/r7AgyGznzw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BN7iaCT9g4UWiQzXCpTiS8992VfmWKOI5qYCWbRbP+DIsqgQklSEpbY+p7AqtT7tg
+	 P5asLrM3viXi7MubtEJJTaHlU7JJwsnFHVOJIlksNaQVcyXkoEURtC6Sa2+8eAaMLt
+	 kGl3ioMfOqcHy/6G0bBdoFcn/jwu8yFgaH9aJFsYf7SPyc+W4zhpCYVHjVkbPRbxwm
+	 XYhqmSOGuk70HljHMPBkCNleHVoFOLQoilp7AoR9dvXJieuBVP7jy52xvNNx1FAKSb
+	 yYzRN53sehRA3J3AqjmhORvAH/QJW8z1WxeUM72y0P/2fDIBJHkXKogdKl8gL5LQMo
+	 TBzQXd+kxFLXQ==
+Date: Thu, 1 Feb 2024 22:10:52 -0600
+From: Bjorn Andersson <andersson@kernel.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Abel Vesa <abel.vesa@linaro.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
+	linux-pci@vger.kernel.org, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [RFC 0/9] power: sequencing: implement the subsystem and add
+ first users
+Message-ID: <2wrwli66ahwfpy6nkagzpacwvza7uvmrty7aw2cbujy2tq7bmx@axbtvmjv4tvn>
+References: <20240201155532.49707-1-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8DxvhNGa7xlhd0sAA--.51008S6
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxZr4fAFy3XrWDWFyDtw1kWFX_yoW5AF1Upa
-	4xCryqvF48CFsrAr1fG34DXa1fGr97KrWIgFyfKw18ur93Jw1xJF1xKasrtFn5tw1rXwn0
-	v3WfKw17XaykAwbCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E87Iv
-	67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
-	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
-	vE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE
-	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6x
-	kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcCD7UUUUU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201155532.49707-1-brgl@bgdev.pl>
 
-From: Tianrui Zhao <zhaotianrui@loongson.cn>
+On Thu, Feb 01, 2024 at 04:55:23PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> I'd like to preface the cover letter by saying right away that this
+> series is not complete. It's an RFC that presents my approach and is sent
+> to the list for discussion. There are no DT bindings nor docs in
+> Documentation/ yet. Please review it as an RFC and not an upstreambound
+> series. If the approach is accepted as correct, I'll add missing bits.
+> 
+> The RFC[1] presenting my proposed device-tree representation of the
+> QCA6391 package present on the RB5 board - while not really officially
+> accepted - was not outright rejected which is a good sign.
+> 
+> This series incorporates it and builds a proposed power sequencing
+> subsystem together with the first dedicated driver around it. Then it
+> adds first two users: the Bluetooth and WLAN modules of the QCA6391.
+> 
+> The Bluetooth part is pretty straightforward. The WLAN however is a PCIe
+> device and as such needs to be powered-up *before* it's detected on the
+> PCI bus. To that end, we modify the PCI core to instantiate platform
+> devices for existing DT child nodes of the PCIe ports. For those nodes
+> for which a power-sequencing driver exists, we bind it and let it probe.
+> The driver then triggers a rescan of the PCI bus with the aim of
+> detecting the now powered-on device. The device will consume the same DT
+> node as the platform, power-sequencing device. We use device links to
+> make the latter become the parent of the former.
+> 
+> The main advantage of the above approach (both for PCI as well as
+> generic power sequencers) is that we don't introduce significant changes
+> in DT bindings and don't introduce new properties. We merely define new
+> resources.
+> 
+> [1] https://lore.kernel.org/all/CAMRc=MckG32DQv7b1AQL-mbnYdx4fsdYWtLwCyXc5Ma7EeSAKw@mail.gmail.com/T/#md5dc62007d12f6833d4e51658b14e0493954ba68
 
-Some common KVM testcases are supported on LoongArch now as following:
-	demand_paging_test
-	dirty_log_perf_test
-	dirty_log_test
-	guest_print_test
-	hardware_disable_test
-	kvm_binary_stats_test
-	kvm_create_max_vcpus
-	kvm_page_table_test
-	memslot_modification_stress_test
-	memslot_perf_test
-	set_memory_region_test
-And other test cases are not supported by LoongArch such as rseq_test,
-since it is not supported on LoongArch physical machine neither.
+FWIW, booting RB5 with this patch series does give me working working
+WiFI. But I do see the following splat during boot:
 
-Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- tools/testing/selftests/kvm/Makefile             | 16 ++++++++++++++++
- .../selftests/kvm/set_memory_region_test.c       |  2 +-
- 2 files changed, 17 insertions(+), 1 deletion(-)
+[    5.880411] sysfs: cannot create duplicate filename '/devices/platform/soc@0/1c00000.pcie/pci0000:00/0000:00:00.0/resource0'
+[    5.891938] CPU: 5 PID: 68 Comm: kworker/u16:4 Not tainted 6.8.0-rc2-next-20240131-00009-g079fdad54c8f #199
+[    5.901927] Hardware name: Qualcomm Technologies, Inc. Robotics RB5 (DT)
+[    5.908808] Workqueue: events_unbound async_run_entry_fn
+[    5.914274] Call trace:
+[    5.916794]  dump_backtrace+0xec/0x108
+[    5.920649]  show_stack+0x18/0x24
+[    5.924062]  dump_stack_lvl+0x50/0x68
+[    5.927826]  dump_stack+0x18/0x24
+[    5.931238]  sysfs_warn_dup+0x64/0x80
+[    5.935004]  sysfs_create_bin_file+0xf4/0x130
+[    5.939480]  pci_create_attr+0x100/0x168
+[    5.943509]  pci_create_sysfs_dev_files+0x6c/0xc0
+[    5.948337]  pci_bus_add_device+0x60/0x114
+[    5.952551]  pci_bus_add_devices+0x4c/0x7c
+[    5.956762]  pci_host_probe+0x138/0x188
+[    5.960700]  dw_pcie_host_init+0x290/0x334
+[    5.964914]  qcom_pcie_probe+0x1f8/0x23c
+[    5.968942]  platform_probe+0xa8/0xd0
+[    5.972707]  really_probe+0x130/0x2e4
+[    5.976469]  __driver_probe_device+0xa0/0x128
+[    5.980944]  driver_probe_device+0x3c/0x1f8
+[    5.985245]  __device_attach_driver+0x118/0x140
+[    5.989897]  bus_for_each_drv+0xf4/0x14c
+[    5.993923]  __device_attach_async_helper+0x78/0xd0
+[    5.998937]  async_run_entry_fn+0x24/0xdc
+[    6.003051]  process_scheduled_works+0x210/0x328
+[    6.007793]  worker_thread+0x28c/0x450
+[    6.011642]  kthread+0xfc/0x184
+[    6.014865]  ret_from_fork+0x10/0x20
+[    6.018572] ------------[ cut here ]------------
+[    6.023339] proc_dir_entry '0000:00/00.0' already registered
 
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index 492e937fab00..0261c87b0bb3 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -56,6 +56,10 @@ LIBKVM_s390x += lib/s390x/ucall.c
- LIBKVM_riscv += lib/riscv/processor.c
- LIBKVM_riscv += lib/riscv/ucall.c
- 
-+LIBKVM_loongarch += lib/loongarch/processor.c
-+LIBKVM_loongarch += lib/loongarch/ucall.c
-+LIBKVM_loongarch += lib/loongarch/exception.S
-+
- # Non-compiled test targets
- TEST_PROGS_x86_64 += x86_64/nx_huge_pages_test.sh
- 
-@@ -196,6 +200,18 @@ TEST_GEN_PROGS_riscv += steal_time
- 
- SPLIT_TESTS += get-reg-list
- 
-+TEST_GEN_PROGS_loongarch += demand_paging_test
-+TEST_GEN_PROGS_loongarch += dirty_log_perf_test
-+TEST_GEN_PROGS_loongarch += dirty_log_test
-+TEST_GEN_PROGS_loongarch += guest_print_test
-+TEST_GEN_PROGS_loongarch += hardware_disable_test
-+TEST_GEN_PROGS_loongarch += kvm_binary_stats_test
-+TEST_GEN_PROGS_loongarch += kvm_create_max_vcpus
-+TEST_GEN_PROGS_loongarch += kvm_page_table_test
-+TEST_GEN_PROGS_loongarch += memslot_modification_stress_test
-+TEST_GEN_PROGS_loongarch += memslot_perf_test
-+TEST_GEN_PROGS_loongarch += set_memory_region_test
-+
- TEST_PROGS += $(TEST_PROGS_$(ARCH_DIR))
- TEST_GEN_PROGS += $(TEST_GEN_PROGS_$(ARCH_DIR))
- TEST_GEN_PROGS_EXTENDED += $(TEST_GEN_PROGS_EXTENDED_$(ARCH_DIR))
-diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
-index 075b80dbe237..fce54108fdc0 100644
---- a/tools/testing/selftests/kvm/set_memory_region_test.c
-+++ b/tools/testing/selftests/kvm/set_memory_region_test.c
-@@ -333,7 +333,7 @@ static void test_invalid_memory_region_flags(void)
- 	struct kvm_vm *vm;
- 	int r, i;
- 
--#if defined __aarch64__ || defined __x86_64__
-+#if defined __aarch64__ || defined __x86_64__ || defined __loongarch__
- 	supported_flags |= KVM_MEM_READONLY;
- #endif
- 
--- 
-2.39.3
-
+Regards,
+Bjorn
 
