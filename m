@@ -1,141 +1,196 @@
-Return-Path: <linux-kernel+bounces-50097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 331BF847431
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:09:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14B0B847435
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:09:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5755A1C24D41
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:09:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BB121F2C15C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:09:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0145914AD23;
-	Fri,  2 Feb 2024 16:06:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40EAB14AD34;
+	Fri,  2 Feb 2024 16:06:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Lr0pktfi"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Gd3aBJRb"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9934214AD02;
-	Fri,  2 Feb 2024 16:06:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706889991; cv=fail; b=Fj4ILIq1Njui5H9RH6M8LNWs37Wmhyg/Kp1dS5MKlp4oe7QpsZcHN+iDNTSt1GeFHEDfuR9vYTjZWB1XBkv6rjQwT29JvW1crmQ7JUqdW+xs9xC/ljHRVhrmO+0mJnnY4/4LPmjCoI3EdpcID7Xr2MNjflUzy4RkQJyu/dfDuXw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706889991; c=relaxed/simple;
-	bh=MsNYoj6sxe+SfUFtH4QybfrFuLezXoGakiC2UjHPYQ8=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=t4L8x+bpS2LKDHE/LkuJl82xSr7gTjSM0S6uUYw1E9ucMjyhRMB1kBpe5iHv8YR/uPytHCTQZQfQ9ejkY9qVjIEzkfypaCNed/KCO3djJP97ondGD3JPDoeb4R6R0eh3anmPnPKQiBwGKZpVGRcWFGTFimQdFNFAh5bTqRDyG3Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Lr0pktfi; arc=fail smtp.client-ip=40.107.236.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wo1Ht4SqPxVNEmYXnPVbEO+IjfYLxKrbLiD3YBg9gbkvPzT7ajfh6sfIs+kI/D9qCLfStYNIwslH4a83AJlhtQvEquY4JnB6cm04/GpQbHkEl/p7WY2MfkpbAwA6syPK3diQJfNSEZVtzNItJzD7YFqbI+Ur8hLO2KMYFdacIHA8i+0WHrMAUGcvKa5l3RualPYekqhlkHV8FRtFQvJS8XaufJMNec/INrABtZUp2tYSkvgtIAYOQSvifDVyzyRfY2uYJhdsVbV0KYjf1GS1R4Z5yucn5d36AglDkClLC+6s/BEoUZmezFd3df7R2KhODa2nA7t1MHl4N2O9fm49AA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DhzUggw8fnZiJ9w5rmA/Y9st0kiBXOVYyMOMpiaa6ag=;
- b=BFylWXlXI7J7amB5CP5DoiY4oeKk2AO6/xyJK+KJ2V48mCmKtiu4VakJJ1zFqEh3afxLQWzHfeBGhQhFR5vRQmO7nKWuwdttnVzJXvtbqKa0kFmYFbR2VeXk9bmyzc1Ntv4DjxDTi78+vrjJ5+kG44FaIG4b3qjPUQPBTICpcRgfpngMN7X+C/cTFfUKJj4zIuZ+Bmp4DV4Ax5XOQCQj2VTNwZ8ZhIT92xtvGGHFVQhhx6D0chsYCSusLWU74Wv/HFlBGiVfXVYQhR/6PGECFa1BsMJfLdhoHlNcjFO3Ai0q5jGwRVmHcsRhaKFbP3RLAo9ysCbPof7tZX9EIKAw3g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DhzUggw8fnZiJ9w5rmA/Y9st0kiBXOVYyMOMpiaa6ag=;
- b=Lr0pktfiEyyAJqSyvX/P2nOrHt1LSlWP+OqOSPlJ7faQ3q2/FczelzLBpmWq/RZZ4TPeb8Z/3VcbCoaHNIRTtoaGFccrXB1FUCpYJMzMXkpsARGe9caJJj1p5TwCP7+RnqQwifGOo2CkfeafQ1HADEtGEJA9s5x7nfAVp3iDuhs=
-Received: from SJ0PR13CA0101.namprd13.prod.outlook.com (2603:10b6:a03:2c5::16)
- by DS0PR12MB7971.namprd12.prod.outlook.com (2603:10b6:8:14e::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.28; Fri, 2 Feb
- 2024 16:06:18 +0000
-Received: from DS2PEPF00003448.namprd04.prod.outlook.com
- (2603:10b6:a03:2c5:cafe::1c) by SJ0PR13CA0101.outlook.office365.com
- (2603:10b6:a03:2c5::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.24 via Frontend
- Transport; Fri, 2 Feb 2024 16:06:18 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS2PEPF00003448.mail.protection.outlook.com (10.167.17.75) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7249.19 via Frontend Transport; Fri, 2 Feb 2024 16:06:18 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 2 Feb
- 2024 10:06:18 -0600
-From: Michael Roth <michael.roth@amd.com>
-To: <x86@kernel.org>
-CC: <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<bp@alien8.de>, <sfr@canb.auug.org.au>, <thomas.lendacky@amd.com>,
-	<ashish.kalra@amd.com>
-Subject: [PATCH] Documentation: virt: Fix up pre-formatted text block for SEV ioctls
-Date: Fri, 2 Feb 2024 10:05:44 -0600
-Message-ID: <20240202160544.2297320-1-michael.roth@amd.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACCA01482F0;
+	Fri,  2 Feb 2024 16:06:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706889998; cv=none; b=N6DzfcBQHVAqZlej6K0X+zyViFk+94VrNAsZRwYNqVMomi663lwL1MweRST6suSZpDWbmuG5Zn+4p2QoRNXhZVb7BugAfe6OmuQty/0GnIl6DZC0rXEByCHNxzdse9tLzf54lDpLFQa9cu16wSDbsmtIu4iC7ChZdVCHDSMIJNQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706889998; c=relaxed/simple;
+	bh=jLZsE3YE1ug+yBFhGwQ/pC5GaezhyTAOOjZaOlis1/I=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=UG0p7J/uNxJ7djMFXWE8ljqDQq+TzFkwv5wTd8nSU4AcvwLGzW/RiqoXWDTE2KcM15AtdFb4DWk7XwUXM3ZFvGBRD7GXz3xHoXm14xNdYqIyx+Im/a0amvMHYXwuItid/QGKP8ExZyBTlipQhAMpoccUHpMXGZaWt1PDH4+tyHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Gd3aBJRb; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 412FkMYZ008860;
+	Fri, 2 Feb 2024 16:06:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=/E+WuCjKQPiiURGGWsjQq1Iyn1sVx7K0BbL4KUuNK8Y=;
+ b=Gd3aBJRb8MTIk7JnF/DahHdMyYjTb/eYTIAEu3nxPI+gRoaH19kgTQWeOVZcGJKiAOW+
+ 7yH2gNn6glpzZmRkC7qG3eR8rvoLr+hnSIsvqx/rFbOr+eUmRu9aCibS+WUxXyUsPPaK
+ 6VmlO/rFF1iiavsfDLfWblC3Nbo3Sz1vykZWhY1vPehhXA4GJYoOXZB24YStUeruP51k
+ rvBbzDbzRT/s69ncTO+m2QJE7k+24B7k+m4WSVkMNOWqIML4m+5uS6i9obJgCaBajYu4
+ YTv3VKmBpOjXEzzTw0paoC5O7fW7vW2/Yw9dmNecHbJ5Aq+7mPBB+qi5svHqKfDeXOTX kA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w119t3wy5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 16:06:19 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 412FxvbM029524;
+	Fri, 2 Feb 2024 16:06:18 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w119t3wx9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 16:06:18 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 412E6BSP007179;
+	Fri, 2 Feb 2024 16:06:17 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vwev2uv99-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 16:06:17 +0000
+Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
+	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 412G6HRr17629872
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 2 Feb 2024 16:06:17 GMT
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id EB3A258061;
+	Fri,  2 Feb 2024 16:06:16 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4A43858057;
+	Fri,  2 Feb 2024 16:06:16 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  2 Feb 2024 16:06:16 +0000 (GMT)
+Message-ID: <4ce0e20d-ed14-490d-9446-a6cfbd532bca@linux.ibm.com>
+Date: Fri, 2 Feb 2024 11:06:15 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/5] evm: Use the real inode's metadata to calculate
+ metadata hash
+Content-Language: en-US
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, roberto.sassu@huawei.com, miklos@szeredi.hu
+References: <20240130214620.3155380-1-stefanb@linux.ibm.com>
+ <20240130214620.3155380-5-stefanb@linux.ibm.com>
+ <38230b4c-54ae-45ed-a6fb-34e63501e5b1@linux.ibm.com>
+ <CAOQ4uxiYARZBSgzb4_W-RKvB1XLSF3GUBqeLw2kH+eVeZ_8ARQ@mail.gmail.com>
+ <c018b014-9ba8-4395-86dc-b61346ab20a8@linux.ibm.com>
+ <CAOQ4uxi6Te8izWpXROthknRaXrVA9jho5nbc+mkuQDrcTLY44Q@mail.gmail.com>
+ <CAOQ4uxigdNeE+2nfr4VxS9piQf5hez=ryT0a-jzW+tW0BT-zuw@mail.gmail.com>
+ <492ea12a-d79d-47da-9bbe-a7f33051bd3f@linux.ibm.com>
+ <CAOQ4uxgiO1RbsmqOu4F4Foy-MBPecnEXO7BvgDGz-Lzb1Eysog@mail.gmail.com>
+ <4c584bfb-d282-4584-bb20-18c26b1033c0@linux.ibm.com>
+ <CAOQ4uxjftr7GGx6tuW_yB_MTaVB57m6p_d=UHhN3Z23YVXY0QQ@mail.gmail.com>
+ <11abffea-15c5-4d13-9d0f-edbc54b09bf3@linux.ibm.com>
+ <CAOQ4uxjZ6p9+H54G0LNTUnU56WRaoLtWOUj2nOaKJ4JvBGqLVg@mail.gmail.com>
+ <427ce381-73fa-48f9-8e18-77e23813b918@linux.ibm.com>
+ <CAOQ4uxggqa7j0NS1MN3KSvF_qG1FMVmFxacEYSTx+LuvuosJ5g@mail.gmail.com>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <CAOQ4uxggqa7j0NS1MN3KSvF_qG1FMVmFxacEYSTx+LuvuosJ5g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 2y_aCeSLe7tGdxEIE6jRH5UhMSX_MP9d
+X-Proofpoint-GUID: vr8S7mobe0get83rL5-UGnw9YD3sTiCY
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003448:EE_|DS0PR12MB7971:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0bbf94b0-ec13-47de-18c9-08dc2408e42e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	n5YYkH8583iWOu7Z9/QlomEWLySn2RaaUktviD1R9hfxZRiU6CyXHSf1USgH0gKva+5OVheSWa47PrAeO9CnGS+zOFYSjSvnSp2hc7Vi09wOTebyXXp2NSFM/ZjG6RabMXSnvECD74oDJhy/YtYZ9JWLHD9WjT/r7elrlfaAqn/tl8he87ElOJ3zulTtxEkwv37uwO14xcbFaex7uqWYhCogt6CL5GEwVDNYKPxEw9pnT5ME5WtiaLy4he9mu/G3dMWrl3U9/k2ppGzICXqFQYAHjm4O1gturPZM4DabyBoySKcibqFgSiDZfEFDHOgRJOgTaOpdZHk94BKs5vdsnjqjMJucPvefhXgqDAFnpyQfEfGcNedbbCm397zxWXTowCqa0EXRsC9f/yObh7+pK4kSBMcQ5+4A8XK/S1eMZK1UXd5uLoZhkSy1CM7ejAnkq9qRIlaHEi7Ar/dMXKmQLIAmwQOmOwouKrueGHxc7auea/DcJmy00JLdt7jpzFfK4Qe5KT3SGE+dtLziKO2t66D56QMDD6h2EfNkbhNklUqvt9CD74/rBemmmDWU241criOM3lzd55GHI5eTHy04ElqeCNMZTDBeOi86E0feD1+QclRU/t2ItlGzsSc5k9UNZlZyjV9paLdyOvru396B/KfnlyJDslqeZQWKQXoZH8pjzUgPHZZGuPWANtF/hy6cv7DoUOVJCzdO230afQtO2BDR2MAk2mv2yotgRfaUP9+KFP87nN3pU77ZEtAk/Kdd2UXhii8ObQecq64BnxXbQ8dx89EOB7qLKt+BTrYQH9OawvZOjetu7Q095qmNBfTY
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(136003)(346002)(396003)(230922051799003)(230173577357003)(230273577357003)(186009)(451199024)(1800799012)(82310400011)(64100799003)(40470700004)(36840700001)(46966006)(40460700003)(40480700001)(83380400001)(36756003)(41300700001)(86362001)(82740400003)(81166007)(36860700001)(356005)(47076005)(1076003)(16526019)(26005)(426003)(336012)(2616005)(2906002)(966005)(8936002)(478600001)(70206006)(316002)(70586007)(6916009)(6666004)(54906003)(4326008)(5660300002)(8676002)(44832011)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2024 16:06:18.5551
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0bbf94b0-ec13-47de-18c9-08dc2408e42e
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS2PEPF00003448.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7971
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-02_10,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 mlxlogscore=999 impostorscore=0 spamscore=0 suspectscore=0
+ bulkscore=0 mlxscore=0 priorityscore=1501 malwarescore=0 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402020116
 
-A missing newline after "::" resulted in the htmldocs build failing to
-recognize the start of a pre-formatted block of text, resulting in
-warnings being generated during the build. Fix this by adding in the
-missing newline.
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Closes: https://lore.kernel.org/linux-next/20240202145932.31c62fd6@canb.auug.org.au/
-Fixes: f5db8841ebe5 ("crypto: ccp: Add the SNP_PLATFORM_STATUS command")
-Signed-off-by: Michael Roth <michael.roth@amd.com>
----
- Documentation/virt/coco/sev-guest.rst | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/virt/coco/sev-guest.rst b/Documentation/virt/coco/sev-guest.rst
-index 14c9de997b7d..e1eaf6a830ce 100644
---- a/Documentation/virt/coco/sev-guest.rst
-+++ b/Documentation/virt/coco/sev-guest.rst
-@@ -71,6 +71,7 @@ The host ioctls are issued to a file descriptor of the /dev/sev device.
- The ioctl accepts the command ID/input structure documented below.
- 
- ::
-+
-         struct sev_issue_cmd {
-                 /* Command ID */
-                 __u32 cmd;
--- 
-2.25.1
+On 2/2/24 10:51, Amir Goldstein wrote:
+> On Fri, Feb 2, 2024 at 4:59 PM Stefan Berger <stefanb@linux.ibm.com> wrote:
+>>
+>>
+>>
+>> On 2/2/24 04:24, Amir Goldstein wrote:
+>>> On Thu, Feb 1, 2024 at 10:35 PM Stefan Berger <stefanb@linux.ibm.com> wrote:
+>>
+>>>
+>>>>
+>>>> and your suggested change to this patch :
+>>>>
+>>>> -       struct inode *inode = d_real_inode(dentry);
+>>>> +       struct inode *inode = d_inode(d_real(dentry, false));;
+>>>>
+>>>
+>>> In the new version I change the API to use an enum instead of bool, e.g.:
+>>>
+>>>          struct inode *inode = d_inode(d_real(dentry, D_REAL_METADATA));
+>>
+>> Thanks. I will use it.
+>>
+>>>
+>>> This catches in build time and in run time, callers that were not converted
+>>> to the new API.
+>>>
+>>>> The test cases are now passing with and without metacopy enabled. Yay!
+>>>
+>>> Too soon to be happy.
+>>> I guess you are missing a test for the following case:
+>>> 1. file was meta copied up (change is detected)
+>>> 2. the lower file that contains the data is being changed (change is
+>>> not detected)
+>>
+>> Right. Though it seems there's something wrong with overlayfs as well
+>> after appending a byte to the file on the lower.
+>>
+>> -rwxr-xr-x    1 0        0               25 Feb  2 14:55
+>> /ext4.mount/lower/test_rsa_portable2
+>> -rwxr-xr-x    1 0        0               24 Feb  2 14:55
+>> /ext4.mount/overlay/test_rsa_portable2
+>> bb16aa5350bcc8863da1a873c846fec9281842d9
+>> /ext4.mount/lower/test_rsa_portable2
+>> bb16aa5350bcc8863da1a873c846fec9281842d9
+>> /ext4.mount/overlay/test_rsa_portable2
+>>
+>> We have a hash collision on a file with 24 bytes and the underlying one
+>> with 25 byte. (-;  :-)
+> 
+> https://docs.kernel.org/filesystems/overlayfs.html#changes-to-underlying-filesystems
+> 
+> If you modify the lower file underneath overlayfs, you get no
+> guarantee from overlayfs about expected results.
+> 
+> This makes your work more challenging.
+The odd thing is my updated test case '2' seems to indicate that 
+everything already works as expected with CONFIG_OVERLAY_FS_METACOPY=y. 
+After causing copy-up of metadata changes to the file content on the 
+lower layer still cause permission error to file execution on the 
+overlay layer and after restoring the file content on the lower the file 
+on the overlay again runs as expected. The file content change + copy-up 
+of file content also has completely decoupled the lower file from the 
+file on the overlay and changes to the file on the lower cause no more 
+file execution rejections on the overlay.
 
+  Stefan
+> 
+> Thanks,
+> Amir.
 
