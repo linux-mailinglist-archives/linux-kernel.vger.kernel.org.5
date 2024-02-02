@@ -1,80 +1,125 @@
-Return-Path: <linux-kernel+bounces-50688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD553847C92
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:58:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B199D847CDE
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:01:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BC891F250B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:58:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1ACD9B21E02
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:01:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA42A12C7E4;
-	Fri,  2 Feb 2024 22:57:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4229126F37;
+	Fri,  2 Feb 2024 23:01:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jg+yGgYL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BMK3mHZn"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BF518593F;
-	Fri,  2 Feb 2024 22:57:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F4ED839E1
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 23:01:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706914675; cv=none; b=fHRISQCi3aUXTfaXxmqa3j68fn/ZTOvGg1676d9W/ZrlKUBKasd0KceJzBCbeTE+TGjqWpGlnftrCem9dVjyGQ5CM9Kkwn66aIiUtqwdFwrdsnANDo2xKxFGxQ2vpMEZpm36NROzSBwS6a9uoeU9J3i/A3Y07cssKQ641W0MS0Q=
+	t=1706914864; cv=none; b=GYzbiELWt7pjTArcmkF/M7AXuz4L2p6VnAWoaZLf1K0romU7Otfew2xSz6xljb5HGAcAknkbXiVGIwTjWCH5IibwVwV4n5dNnvLuIn7ooClldb5Oi3cqU3CEK4eR2lXptuFsTMAU/FB0YxXzszFYEawZsY1qMFch+Qc3i96LoTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706914675; c=relaxed/simple;
-	bh=MxXvRNhRQV3ez+vTFS4T4y0bBEnlLlneX57Ow78rfLY=;
-	h=MIME-Version:In-Reply-To:References:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qs9TjNlCJ8Nc2SZ2rHaAp+sm+b/HRiyd1aY9hKNEsIM2ziUWvYEptiYdfjv51GVair7ulrbs/3eY3YtapQ0rRhcyI8bb34fKli6/074rb3lyf1dRUjO1TTe/7mJVzbHi4gD53nsGb7tiRhYd75+Pb6nL0bNVbvhMoL4lEGyqoGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jg+yGgYL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D387C43394;
-	Fri,  2 Feb 2024 22:57:54 +0000 (UTC)
+	s=arc-20240116; t=1706914864; c=relaxed/simple;
+	bh=aT1AHnBF7mBOjZaTwOi86ygyf4KXlSwVYeC30/NWI1k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lw3CZOYbcW83xIukiYJ4fINFFC1yjajzRTjMfCjZlaJS1b4bq35hfMoytv1Env63gJX+u2ar/PLrCZWIwijcHGrpcoSliink7jxL6qOvEpntB0f8+uZKoyfoVvDj3dWxWzpPKSnsIpu/OH86LygEbYazoJWlBwlHSh2Tm2LzvB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BMK3mHZn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FD12C433F1;
+	Fri,  2 Feb 2024 23:01:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706914674;
-	bh=MxXvRNhRQV3ez+vTFS4T4y0bBEnlLlneX57Ow78rfLY=;
-	h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
-	b=jg+yGgYLVSG043qQDEw6lDMo7zwq1maYwt+e1Zw+RkXWkwOPpqf0qfhuk+xDEmSWz
-	 XXR6tlnzb6ylKdNRdeR1B1CW2NZRh0SqB91TzrEI9A6Yew7vR0ajNbCGTqvC5DVNBv
-	 wsAa0qjqWzxL+M1S+kANQ6XkLIO40FIv1aXqocPsn+DNUJKpla+0vLzQOmDRkpOLiZ
-	 QCxc4zwM3w80HzgJ7p7assBr/FRbSK99lenhHNiUeWC8/3MR9yoNRv29N1UbL6NRn1
-	 1Nnu6q9EXOUlYywkdRK7ngFVLjg7RDzNFgGGYxWbUaUdVmQhXwMgg3x4xwezVOtVHb
-	 XI6rD7lcgp3Zw==
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59a94c0fb55so1332912eaf.0;
-        Fri, 02 Feb 2024 14:57:54 -0800 (PST)
-X-Gm-Message-State: AOJu0YxYqVFJKvucc9t02dV5y765IyVcwYEAeua+s1q2eJOQYempRvUP
-	BlbwhwMOPiQKK/wqskBeBcyx7KfpsL7U3ZhtTNX8zhDO3TZlVzOM+DRBZ0j96oDl20Z7fq614yM
-	rVVjc+tErjyV+FngNtEo9KuxzOLE=
-X-Google-Smtp-Source: AGHT+IGKDU432zvrh2YD9SDCT8yNyv2tot4NOdlmKs/VFBxd84o8jhy0jFTzOu5IjKEGG1t+9Gi8Fvp9Vl6yPZAa/sY=
-X-Received: by 2002:a4a:d750:0:b0:59a:9ff:9ed0 with SMTP id
- h16-20020a4ad750000000b0059a09ff9ed0mr6777199oot.0.1706914673738; Fri, 02 Feb
- 2024 14:57:53 -0800 (PST)
+	s=k20201202; t=1706914863;
+	bh=aT1AHnBF7mBOjZaTwOi86ygyf4KXlSwVYeC30/NWI1k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BMK3mHZnugD1ntQHv4RfpdjacKnxdBJLv428m5TiYZRfxaJSBXQNUxebJ9F9TIV9g
+	 qbwTlqDqHtXH4v2RS9JMeEI1FB0eqTQdEdm+XOkP0dlGgICsz3ijIzDJyEDQ/n2P3b
+	 2zuF6xor+J5yAXtjfc/BvM3RlTcZC4Dv0q68Y4go2DH7qU/LKsk7ml9dZjNZG7rQp6
+	 IuHA/1oWEKtL3iihOl5cakXkdxj8+sgfywvhDL3Z2SRHOLps0WXwATFGpInmuyC8+f
+	 v7EM7ciRL0VXiHhU64qij2v12OneZzmljOiB86uJaTNym4mg7eKvs5c8hQWCgMXcSd
+	 aiwIoUqJvm8fA==
+Date: Fri, 2 Feb 2024 15:01:01 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Jisheng Zhang <jszhang@kernel.org>, Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] riscv: Disable misaligned access probe when
+ CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+Message-ID: <20240202230101.GB2055@sol.localdomain>
+References: <20240201-disable_misaligned_probe_config-v2-0-77c368bed7b2@rivosinc.com>
+ <20240201-disable_misaligned_probe_config-v2-2-77c368bed7b2@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Received: by 2002:ac9:5e89:0:b0:514:c0b3:431 with HTTP; Fri, 2 Feb 2024
- 14:57:52 -0800 (PST)
-In-Reply-To: <20240202081317.128980-1-yang.lee@linux.alibaba.com>
-References: <20240202081317.128980-1-yang.lee@linux.alibaba.com>
-From: Namjae Jeon <linkinjeon@kernel.org>
-Date: Sat, 3 Feb 2024 07:57:52 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd8NktM=Q7Px9ZjsTKnAC043XOTKL+QCL2WuEVrs_giPqw@mail.gmail.com>
-Message-ID: <CAKYAXd8NktM=Q7Px9ZjsTKnAC043XOTKL+QCL2WuEVrs_giPqw@mail.gmail.com>
-Subject: Re: [PATCH -next] ksmbd: Add kernel-doc for ksmbd_extract_sharename() function
-To: Yang Li <yang.lee@linux.alibaba.com>
-Cc: sfrench@samba.org, senozhatsky@chromium.org, tom@talpey.com, 
-	linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201-disable_misaligned_probe_config-v2-2-77c368bed7b2@rivosinc.com>
 
-2024-02-02 17:13 GMT+09:00, Yang Li <yang.lee@linux.alibaba.com>:
-> The ksmbd_extract_sharename() function lacked a complete kernel-doc
-> comment. This patch adds parameter descriptions and detailed function
-> behavior to improve code readability and maintainability.
->
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-Applied it with Randy's acked-by tag to #ksmbd-for-next-next.
-Thanks for your patch.
+On Thu, Feb 01, 2024 at 03:30:46PM -0800, Charlie Jenkins wrote:
+> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm/cpufeature.h
+> index eb3ac304fc42..3a29d8e30e05 100644
+> --- a/arch/riscv/include/asm/cpufeature.h
+> +++ b/arch/riscv/include/asm/cpufeature.h
+> @@ -51,6 +51,7 @@ static inline bool check_unaligned_access_emulated(int cpu)
+>  static inline void unaligned_emulation_finish(void) {}
+>  #endif
+>  
+> +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+
+#ifdef..#else..#endif is more readable than #ifndef..#else..#endif.
+
+> diff --git a/arch/riscv/include/asm/misaligned_access_speed.h b/arch/riscv/include/asm/misaligned_access_speed.h
+> new file mode 100644
+> index 000000000000..81df2aa6fa6b
+> --- /dev/null
+> +++ b/arch/riscv/include/asm/misaligned_access_speed.h
+
+This new header file isn't included from anywhere.
+
+> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+> index f71910718053..8be7f17da9ab 100644
+> --- a/arch/riscv/kernel/Makefile
+> +++ b/arch/riscv/kernel/Makefile
+> @@ -62,6 +62,9 @@ obj-y	+= tests/
+>  obj-$(CONFIG_MMU) += vdso.o vdso/
+>  
+>  obj-$(CONFIG_RISCV_MISALIGNED)	+= traps_misaligned.o
+> +ifneq ($(RISCV_EFFICIENT_UNALIGNED_ACCESS), y)
+> +obj-y	+= misaligned_access_speed.o
+> +endif
+
+CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+
+> diff --git a/arch/riscv/kernel/sys_hwprobe.c b/arch/riscv/kernel/sys_hwprobe.c
+> index a7c56b41efd2..3f1a6edfdb08 100644
+> --- a/arch/riscv/kernel/sys_hwprobe.c
+> +++ b/arch/riscv/kernel/sys_hwprobe.c
+> @@ -149,6 +149,7 @@ static bool hwprobe_ext0_has(const struct cpumask *cpus, unsigned long ext)
+>  
+>  static u64 hwprobe_misaligned(const struct cpumask *cpus)
+>  {
+> +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+>  	int cpu;
+>  	u64 perf = -1ULL;
+>  
+> @@ -168,6 +169,9 @@ static u64 hwprobe_misaligned(const struct cpumask *cpus)
+>  		return RISCV_HWPROBE_MISALIGNED_UNKNOWN;
+>  
+>  	return perf;
+> +#else
+> +	return RISCV_HWPROBE_MISALIGNED_FAST;
+> +#endif
+
+#ifdef..#else..#endif is more readable than #ifndef..#else..#endif.
+
+- Eric
 
