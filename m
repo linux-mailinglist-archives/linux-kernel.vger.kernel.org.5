@@ -1,151 +1,263 @@
-Return-Path: <linux-kernel+bounces-49968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D35A847239
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:53:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFE7C847241
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:54:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 819A11C21A86
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:53:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A666328FD84
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 929FA13E200;
-	Fri,  2 Feb 2024 14:53:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F2AB140771;
+	Fri,  2 Feb 2024 14:54:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NcPGU/cl"
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Gy6CI3ba"
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76B0B2B9A1
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 14:53:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09762145328
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 14:53:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706885586; cv=none; b=amTkBFNWMmhD9kMrAXBoGAfdnzV2F7xMqQ2Z1+ksVylEvCUSquyyx9XARzbWdv/3wBcc9Ppk4ArwZefdho2Ag+ikZvF0ijKYhjaso4AvOs5rpQTKwp/ZhU0s/CeEJ3hysPo1rgu3yRp0djeuFKYnd4UKH0yAnXu9HQpDxE0z86s=
+	t=1706885640; cv=none; b=ubhjLOfXj2QboYAZFxLacmrti00y4iZ6uZnw4qMQI+HLjbfGxDY30fTNHPfo9fRxl9u5xCRQb+IKGrI0VqOfeytZP97L6RxTdO6Q0X9MrJW/hZm/XNaRKh9y1MiC6KBOBJNwwDmyLS1depPs7Cb0B4zdYm9tB0l351OxPZvLSkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706885586; c=relaxed/simple;
-	bh=p7uCEIue/vRXtk5xoPvtw6k0UBZtBQleKzh1H1rbml0=;
+	s=arc-20240116; t=1706885640; c=relaxed/simple;
+	bh=stQxsvkV5cdC8fjrrEyx+K8ZARUrypTTRJCL41lbX0M=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PtsFkVbudzgp0VbhBmmctO2N0jJ6AgtNfXC5dZEaxHhgAdnFZgrpOXHwIDoOmIPKT8/VZqeH/u0f69019GI4cH/IEO+ujPBCu532BLQM6BLNg6eumqkjpaBtOSQ6jO5nla2e1C9pU+nlJoj3TVo96WFgyQeLjsMugSuQSkiSHLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NcPGU/cl; arc=none smtp.client-ip=209.85.219.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc6dcd91364so1592659276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 06:53:05 -0800 (PST)
+	 To:Cc:Content-Type; b=Ysevnct+gAhBw1LkG40Q6ce8OjTVVVTbwPD4A0raKe3o2sjaTA8acMcDsNt/THGVZKNgrbkXTDhQajYlzXO4lCsGk//lQD7/Uzj8ALadjZQVmB5ey5Zr3ZDGfKPHkMjr7GOv8sxGKqjvE2SoFd1pXwSPw+96jCpTrEUrZJRn8ck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Gy6CI3ba; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-604059403e9so22000857b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 06:53:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706885584; x=1707490384; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p7uCEIue/vRXtk5xoPvtw6k0UBZtBQleKzh1H1rbml0=;
-        b=NcPGU/cl2diu7eqMQOOaGr2spdcVeDZ2ATRY5q9QZwWR0Kr8iiEYBk+v279qUgy747
-         /4FOtLQm8yCj1EWk9BEIi72AOTYW9LyejHAFwWY7Vb+DI83vAHLHVKtbn9Xhbse8Ftue
-         42Li8AAu7muVerX32H3fd8K2dHMpqPkG8UaWtleOH/Kb3VxTMHF2dA4aiRa630kL3WL8
-         G1b1/eE9UQH488Cgtx8zh/E9qZwU6hKno+LL70jEAsAQL26GWAjmX0vxYFmhXiWbaHHH
-         il8qI2JCJhBcwb4WpGAckcBLpSQ9Q/AzDjzEakfJK3rKPaXoCjSZhIwiziDTLeL8GAVs
-         cncQ==
+        d=linaro.org; s=google; t=1706885638; x=1707490438; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=02x6Zmjh1nlIs3J2kQ9IE2Yk4MS8HfXjLqkeUrush18=;
+        b=Gy6CI3baGn00dSSshEYIU6S2y3gnUq/dSVu6gtz7HyfxEU2nCpHU8yBOT5dXR90KKT
+         9mzcRfYTKwfH8cJaGpY5/h49CM94NHvOrGgzVA5S4AVXJxpL9QeNaHn/2wmdBL1/+lyn
+         XjwsbvWH857X6o0MPVwLwvxpyntFTuy+AZ9YF04wpe58eBN0EVxMfQph9w/HkGlHurx/
+         gFyjhlpNlfdWr25SKAT/zJ43dqO+IyM8HQ2qe310/JTwMtw96jSK5dHTwBji5WhAxZn2
+         fK/QmoBAvOGdTI95GNPjTjSk4zu02d3PTqvA94Q3IZb/w928scoZfP0inXH5pGsg71uG
+         9Dfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706885584; x=1707490384;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p7uCEIue/vRXtk5xoPvtw6k0UBZtBQleKzh1H1rbml0=;
-        b=RbRLHPq53vZfKKPHxfR5lNo4E2k2idlOB57hwHzsbokLzQpVPCfa3z7tIwqNIJyvzP
-         XrNBHG6vmgKF2dLUc04ctvYiBkqNN3NJrCAgG8oQjSnhQNXvIeF5pKhU/N3J4iZNAmxz
-         TOJh+0RZOW5Gn/ik0VxmZoEkyKlNWFuQepfWDETVzWuAOwIjF6SSwt5XBOrx5sz8i6u4
-         Weq4Z3P08VarJrJwtYqS9e7HE5ixHfrBo8xyoHi3i9uX0tsb4kTNFfb1cV7/rwM8Q4lt
-         7ZBzck8MWEs37BFYvVh4AEAW8fdGrShp/PcCpWDzQ3jAUmhyroCW3yKTQlzk4kYLLEes
-         3Jgg==
-X-Gm-Message-State: AOJu0YzEj5KexRVu290hOvBZtxmvVLLiu3UcQ4f/7HwqCOWLKmfBlsil
-	7+QZACys3hjgIdL406H2oY8V7m0Qzscclbfpr/Le1VwERt0nFMjR95TsPCzVcpUEUuQrTRlcUXR
-	n2NG4IV4j7Sw/ZhEmbpBUhc6OX9c=
-X-Google-Smtp-Source: AGHT+IGxRWU1t838GRLlDK4UGgYqjiicH6Z9Fpk+v5YhZjb/sQilVodpYHxZGTSvCWxUyGMDLU9A+g8HXqpK6cR5TOI=
-X-Received: by 2002:a25:2f56:0:b0:dc6:9ea:3d5d with SMTP id
- v83-20020a252f56000000b00dc609ea3d5dmr8113368ybv.34.1706885584427; Fri, 02
- Feb 2024 06:53:04 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706885638; x=1707490438;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=02x6Zmjh1nlIs3J2kQ9IE2Yk4MS8HfXjLqkeUrush18=;
+        b=Pg55w3gsLn6aEwJvUTICZLyua8g4DGR7a3Id/bS+uVXrzEpMLO5H4tHm/WVFwKD1xT
+         hUwxHeVmaJiJWgZGAIML+0tkXabq5pORiJFIxF2HtoUj2PpkTt85yHH/E+4Pa9k1WzAI
+         /OZs5PdswCNPGaQa5OQ1LlxuSA70WnlBTJBOMAuct+dn6ktg5vMC1roD+HE14mVT2y1K
+         CsiHj16Eyu80vEoommFnEvVc78qNYVhLGvrX2v0ztKqPGp0kiWU2regjlhx56JfbsxPs
+         ESLHFl1PVwr8sUDphFJUi5PhjBn4pJ1Z0KVS5UpDQ4/tpWGq1vO02NjBSIaaCkmNRiuK
+         klvQ==
+X-Gm-Message-State: AOJu0YzOQup69S6KVIXvC9MFXs7fZJjFMYdCSwMHB0aE6pW889bQYDA9
+	O6Gy8dezfg96O169r+ij2kayO3YREWShk2/Kmbs5ejCY2ujDYwNsORBqwKArPF4g8UL850kIoNs
+	kaAP2fZ+dSaigTxbVBVQ6AAUiw4Vyhcd0QKqWmw==
+X-Google-Smtp-Source: AGHT+IE6sjNAcOWYdKgjOqY9KuIeOrTwHrwvcIYvXpvBgU/sTIX2miEI6w9v/ViAevMcV+0TKzYEUQk9EKQbpQmXFPg=
+X-Received: by 2002:a81:6d8f:0:b0:5ff:4959:1da8 with SMTP id
+ i137-20020a816d8f000000b005ff49591da8mr4828166ywc.50.1706885637942; Fri, 02
+ Feb 2024 06:53:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201125226.28372-1-ioworker0@gmail.com> <Zby-sHLDlmTRaUcd@tiehlicka>
- <CAK1f24=7sy_Bczpt5YeDbkhfriYUc1=zreSFdGCxfF3R0D6sRQ@mail.gmail.com>
- <ZbzfxNn4AYnTVFLh@tiehlicka> <CAK1f24mvBkc2c=fHL6UxMhL2mgLHVrSwZfE5516bOR0yVdfZpQ@mail.gmail.com>
- <ZbzmvwyTGeW18nJy@tiehlicka> <CAK1f24kdyOnUjcpnrk6j4cF6bSFXQwwzFk9tM+jD4RsO_Hc4hA@mail.gmail.com>
- <Zbz_ao0uBKabzKB1@tiehlicka>
-In-Reply-To: <Zbz_ao0uBKabzKB1@tiehlicka>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Fri, 2 Feb 2024 22:52:49 +0800
-Message-ID: <CAK1f24nHmvqm1XD_UkWUB7DmNdH0NEOKzpLgKDJ=UuPWO=rEHw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm/khugepaged: skip copying lazyfree pages on collapse
-To: Michal Hocko <mhocko@suse.com>
-Cc: akpm@linux-foundation.org, zokeefe@google.com, david@redhat.com, 
-	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com, 
-	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240202133638.4720-1-quic_wasimn@quicinc.com> <20240202133638.4720-4-quic_wasimn@quicinc.com>
+In-Reply-To: <20240202133638.4720-4-quic_wasimn@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 2 Feb 2024 16:53:46 +0200
+Message-ID: <CAA8EJppnNZOWN5F0fOKhUGN-pk3T9L+kOd-AiNO0tcDNm8Bbxw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: Add initial support for rb5gen2 HDK board
+To: Wasim Nazir <quic_wasimn@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kernel@quicinc.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-How about blocking khugepaged from
-collapsing lazyfree pages? This way,
-is it not better to keep the semantics
-of MADV_FREE?
+On Fri, 2 Feb 2024 at 15:37, Wasim Nazir <quic_wasimn@quicinc.com> wrote:
+>
+> RB5gen2 hardware development kit is based on QCS8550-Rb5gen2 SOM
+> for IOT solutions.
+> This initial version describes VPH_PWR, UART & USB3.1.
+>
+> On-board PMICs:
+> - PMR735D
+> - PM8010
+>
+> Signed-off-by: Wasim Nazir <quic_wasimn@quicinc.com>
+>
+> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+> index 6fdde64d7540..8840b219d6d5 100644
+> --- a/arch/arm64/boot/dts/qcom/Makefile
+> +++ b/arch/arm64/boot/dts/qcom/Makefile
+> @@ -93,6 +93,7 @@ dtb-$(CONFIG_ARCH_QCOM)       += qcs404-evb-1000.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += qcs404-evb-4000.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += qcs6490-rb3gen2.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += qcs8550-aim300-aiot.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)        += qcs8550-rb5gen2-hdk.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += qdu1000-idp.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += qrb2210-rb1.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += qrb4210-rb2.dtb
+> diff --git a/arch/arm64/boot/dts/qcom/qcs8550-rb5gen2-hdk.dts b/arch/arm64/boot/dts/qcom/qcs8550-rb5gen2-hdk.dts
+> new file mode 100644
+> index 000000000000..6f4c68402823
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/qcs8550-rb5gen2-hdk.dts
+> @@ -0,0 +1,136 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "qcs8550-rb5gen2.dtsi"
+> +#include "pm8010.dtsi"
+> +#include "pmr735d_a.dtsi"
+> +#include "pmr735d_b.dtsi"
+> +
+> +/ {
+> +       model = "Qualcomm Technologies, Inc. QCS8550 RB5Gen2 HDK";
+> +       compatible = "qcom,qcs8550-rb5gen2-hdk", "qcom,qcs8550-rb5gen2",
+> +                       "qcom,qcs8550", "qcom,qcm8550", "qcom,sm8550";
+> +
+> +       aliases {
+> +               serial0 = &uart7;
+> +       };
+> +
+> +       chosen {
+> +               stdout-path = "serial0:115200n8";
+> +       };
+> +
+> +       pmic-glink {
+> +               compatible = "qcom,sm8550-pmic-glink", "qcom,pmic-glink";
+> +               #address-cells = <1>;
+> +               #size-cells = <0>;
+> +
+> +               connector@0 {
+> +                       compatible = "usb-c-connector";
+> +                       reg = <0>;
+> +                       power-role = "dual";
+> +                       data-role = "dual";
+> +
+> +                       ports {
+> +                               #address-cells = <1>;
+> +                               #size-cells = <0>;
+> +
+> +                               port@0 {
+> +                                       reg = <0>;
+> +
+> +                                       pmic_glink_hs_in: endpoint {
+> +                                               remote-endpoint = <&usb_1_dwc3_hs>;
+> +                                       };
 
-What do you think?
+SS lines unconnected?
+SBU is unconnected?
 
-Thanks,
-Lance
-
-On Fri, Feb 2, 2024 at 10:42=E2=80=AFPM Michal Hocko <mhocko@suse.com> wrot=
-e:
->
-> On Fri 02-02-24 21:46:45, Lance Yang wrote:
-> > Here is a part from the man page explaining
-> > the MADV_FREE semantics:
-> >
-> > The kernel can thus free thesepages, but the
-> > freeing could be delayed until memory pressure
-> > occurs. For each of the pages that has been
-> > marked to be freed but has not yet been freed,
-> > the free operation will be canceled if the caller
-> > writes into the page. If there is no subsequent
-> > write, the kernel can free the pages at any time.
-> >
-> > IIUC, if there is no subsequent write, lazyfree
-> > pages will eventually be reclaimed.
->
-> If there is no memory pressure then this might not
-> ever happen. User cannot make any assumption about
-> their content once madvise call has been done. The
-> content has to be considered lost. Sure the userspace
-> might have means to tell those pages from zero pages
-> and recheck after the write but that is about it.
->
-> > khugepaged
-> > treats lazyfree pages the same as pte_none,
-> > avoiding copying them to the new huge page
-> > during collapse. It seems that lazyfree pages
-> > are reclaimed before khugepaged collapses them.
-> > This aligns with user expectations.
-> >
-> > However, IMO, if the content of MADV_FREE pages
-> > remains valid during collapse, then khugepaged
-> > treating lazyfree pages the same as pte_none
-> > might not be suitable.
->
-> Why?
->
-> Unless I am missing something (which is possible of
-> course) I do not really see why dropping the content
-> of those pages and replacing them with a THP is any
-> difference from reclaiming those pages and then faulting
-> in a non-THP zero page.
->
-> Now, if khugepaged reused the original content of MADV_FREE
-> pages that would be a slightly different story. I can
-> see why users would expect zero pages to back madvised
-> area.
+> +                               };
+> +                       };
+> +               };
+> +       };
+> +
+> +       vph_pwr: vph-pwr-regulator {
+> +               compatible = "regulator-fixed";
+> +               regulator-name = "vph_pwr";
+> +               regulator-min-microvolt = <3700000>;
+> +               regulator-max-microvolt = <3700000>;
+> +
+> +               regulator-always-on;
+> +               regulator-boot-on;
+> +       };
+> +};
+> +
+> +&apps_rsc {
+> +       regulators-0 {
+> +               vdd-bob1-supply = <&vph_pwr>;
+> +               vdd-bob2-supply = <&vph_pwr>;
+> +       };
+> +
+> +       regulators-2 {
+> +               vdd-s4-supply = <&vph_pwr>;
+> +               vdd-s5-supply = <&vph_pwr>;
+> +       };
+> +
+> +       regulators-3 {
+> +               vdd-s1-supply = <&vph_pwr>;
+> +               vdd-s3-supply = <&vph_pwr>;
+> +               vdd-s4-supply = <&vph_pwr>;
+> +               vdd-s5-supply = <&vph_pwr>;
+> +               vdd-s6-supply = <&vph_pwr>;
+> +       };
+> +
+> +       regulators-4 {
+> +               vdd-s1-supply = <&vph_pwr>;
+> +               vdd-s3-supply = <&vph_pwr>;
+> +               vdd-s4-supply = <&vph_pwr>;
+> +               vdd-s5-supply = <&vph_pwr>;
+> +               vdd-s7-supply = <&vph_pwr>;
+> +       };
+> +
+> +       regulators-5 {
+> +               vdd-s1-supply = <&vph_pwr>;
+> +               vdd-s2-supply = <&vph_pwr>;
+> +               vdd-s3-supply = <&vph_pwr>;
+> +               vdd-s4-supply = <&vph_pwr>;
+> +               vdd-s5-supply = <&vph_pwr>;
+> +               vdd-s6-supply = <&vph_pwr>;
+> +       };
+> +};
+> +
+> +&pm8550b_eusb2_repeater {
+> +       vdd18-supply = <&vreg_l15b_1p8>;
+> +       vdd3-supply = <&vreg_l5b_3p1>;
+> +};
+> +
+> +&uart7 {
+> +       status = "okay";
+> +};
+> +
+> +&usb_1 {
+> +       status = "okay";
+> +};
+> +
+> +&usb_1_dwc3 {
+> +       dr_mode = "otg";
+> +       usb-role-switch;
+> +};
+> +
+> +&usb_1_dwc3_hs {
+> +       remote-endpoint = <&pmic_glink_hs_in>;
+> +};
+> +
+> +&usb_1_hsphy {
+> +       vdd-supply = <&vreg_l1e_0p88>;
+> +       vdda12-supply = <&vreg_l3e_1p2>;
+> +
+> +       phys = <&pm8550b_eusb2_repeater>;
+> +
+> +       status = "okay";
+> +};
+> +
+> +&usb_dp_qmpphy {
+> +       vdda-phy-supply = <&vreg_l3e_1p2>;
+> +       vdda-pll-supply = <&vreg_l3f_0p88>;
+> +
+> +       status = "okay";
+> +};
 > --
-> Michal Hocko
-> SUSE Labs
+> 2.43.0
+>
+>
+
+
+-- 
+With best wishes
+Dmitry
 
