@@ -1,76 +1,79 @@
-Return-Path: <linux-kernel+bounces-49088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C7898465C3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:25:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90B5C8465C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:25:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 419F21C21F37
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:25:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B57F61C22B99
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:25:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A301BBA2C;
-	Fri,  2 Feb 2024 02:25:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 098D8C8F1;
+	Fri,  2 Feb 2024 02:25:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IebxjMUz"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QhAi7lLj"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 081B0C8E2
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 02:25:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62033BA24
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 02:25:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706840726; cv=none; b=rVBJY5RmwHghfCLzlMv4+cHC1Jc+Gocfhmrn55PJLbDTldc9BHWOizhdNWtPILmd0mBPh/FBZl/uJefgiBRy549d+CMHanyhDa++15BDQqIk9HhR7RJQq4NechYMbM2bZgn78+XzpMAPBCdSjkeHO+7+xI7qUj6lxk8L8CkpjKY=
+	t=1706840729; cv=none; b=Clew1C2r9caxAaJacT0Ac+5RppAOEea/MM4hw+ye2NVR6qC0XkDOFFSbsqfD6LhC0GR4lN/aiAdMQRyBbPl0O1p0mUnoHPEyc+G5X+hliCRKDifUGXcETVRgophebfcsGXncMBtRp84vVJkDrXXTSuh1XpCpw/Zr9ma4+I1Gx4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706840726; c=relaxed/simple;
-	bh=Apyf/lQjAeZF0vEZHPtraJm82Drb9RxljHobQP0BUKc=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=oGnwC9/fOyLK7gSwC1mD0E50WC2pPkH8c/S1SLJNiRcic9ODdeswA40OqcUbC4sPopXCjV6lqczzuQ6QRolmWaXRgIzTKp2wVfe+UG3j1UX6iuHjaLMfqP5s1RV6MqnbP2WJjbzHXk2Q2bnPjk5ar5CAHOxrxHn4/+NqbMdclxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IebxjMUz; arc=none smtp.client-ip=209.85.219.202
+	s=arc-20240116; t=1706840729; c=relaxed/simple;
+	bh=zuKDGBbvC8Z880JPqJda92bCCuSmaTxeQ7yu928nL2s=;
+	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
+	 To:Cc:Content-Type; b=U/e/Dd0c8ajpCNcpzghO0xBPJV63n46d7OYw07h/0FbeYwxJ290QebCXYzIWC5iYWVZmFWNkyRLfinI31C47fAeXbyDXUctO+t/uj+cIiB03Ej6uKyTiqgOYIzMmu7ZiQdgm5EjPY7p7+I0HczWjdkyECWN/lRiglbSJNF2gYZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QhAi7lLj; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6cd10fd4aso2526866276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 18:25:24 -0800 (PST)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6040597d005so32101457b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 18:25:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706840724; x=1707445524; darn=vger.kernel.org;
-        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=E2lLrgOYSu0z0B0apiOf7xEjXWyA4aM+SFmaQhqseRE=;
-        b=IebxjMUzYtuA/N9XWNhWs7eYA/IkqGGebt1XkwNW4MqMSPr7Tx6tZlyQpJs3TPK0lJ
-         10TJa1/0dJsgMbfXdpULOZrgECrL36Z/4w22Q6nwBn2ox+r6OGxkof41eW1i3IwBOZGG
-         L5rDrdnKTGz6au+tuDkULeFLrkHy80zF06j5kqi+CPNdYGSSZB+ZorulrhqWWf/5dyPv
-         M98lBGa+333Bk2BKEa0L31yB2X1dZng4iHMPjLhdlFXiWdNS8QK+chVi3Fc1zSYlnN/5
-         o+4V3ACz52UFfyUQMeupDWld6VKqxVsgcbywi6usuVRNsXijEmOlt/eYMdBxVrFqwJYg
-         bEmA==
+        d=google.com; s=20230601; t=1706840726; x=1707445526; darn=vger.kernel.org;
+        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5l+BJ0TTHCM6A4VVZ55heq0k4VpuOGC5eZCLoF5zeOI=;
+        b=QhAi7lLj+Jqz4lFXUIeCSIm8zOZjxZHwE+VkC1cCucx+xOr6iAasyDUIVi7AA+e0ln
+         fr3uSUNt5Z2emg5LUUCYCzaZn71jwkkss/2uFr9aS0ZXZjFIaKtgKhLE28IrvJ3Wb9r1
+         17a4CApQj0onrTaFTBc0F6n9pJ/aXzRe7uXWK2pVKvUd29GYMSdlGDA5rK5PnYSK7Leu
+         GlqR9KUJ8smqlyYsN6aO7q0m1XVRpmmLURCm9Uk8T+9+mUm4KVa6izKJ4sCX1YDsNC5Q
+         rj8LlAOa+06du87fhAQB8W4H6kn3XvknaH4OvfsvtEGMZx1KTU2/yHjNmrA7BuG76dGd
+         VViA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706840724; x=1707445524;
-        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=E2lLrgOYSu0z0B0apiOf7xEjXWyA4aM+SFmaQhqseRE=;
-        b=I5kqTSIamrrX3lJ4Ocyd8PB4KGvZWV85Iw2AKWVXwM0aXEaqGE8tUFz4jw0buOe4Yi
-         llSebBCn2+FEsmscT3s/X/FCClwlTQYes3EsDIa+QiGQmMLAu91WEDnstI4vrfv59B5r
-         KbSeVeYDLeLQcIP36lbsNJ/GaMA/oi76+yq4E9QFa6xj2rUTjRd+hShxp5TGYHNfiea0
-         xZxJklQNoD3D9R3thiKb2dnj4xJBE20GfoG8sAkW2ycnZfHS+tH4WcUIiDXAoSV/XBzo
-         oIZgy2zkAjL8CFwzJCKCXjnfyK+h8Ir7+jaPMzjmU+o3SMSJaMfUOIb7R3YUXxzkxizn
-         cLfg==
-X-Gm-Message-State: AOJu0YxqN52FpezD/4OJzD3uD4Sl94aQa1otl3ex9J9VQlsHNUgF54i5
-	8lApnAQO0KikarMM7y3Os0QZDWUBM17e2D+vJK2HtY/7WIiaG6vJEd8gk35GbNMjWIyG6OCGu40
-	gHF1apw==
-X-Google-Smtp-Source: AGHT+IEBEN37hliGugDjKjEjzYFsAr8ZyUoTzJc1/RGtBVqo6wdsJhnQWuvrcqGRSXoejhVzxxcOA3Fq/v5C
+        d=1e100.net; s=20230601; t=1706840726; x=1707445526;
+        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5l+BJ0TTHCM6A4VVZ55heq0k4VpuOGC5eZCLoF5zeOI=;
+        b=aSmRVhOJpi0LkP8WrUMMD/By/9+S3LIQ6pClCWEmLnugLpeu9fahf2yiGy4CXipFT7
+         l3hsgInxl/Ur3kNnM0izwc7otA5cU6t9oF7uxH9olKYaQHehzOOf+ti+tD8IGwRLDBdZ
+         MB1UQwTB8RfhA9A0EEOmmvWjSrkwPBtI+elj43p22rmRwTnDxwYVxSDBc7fzWazfQu+W
+         76Gn4AMCpkk4mKjeCJml5JAf7izeIMCqw5nu0h4wNLgux7SahCoxIxEwCSuqQz5eRa0t
+         zfoCr4gpM+3cH81U2qGXukZDkgxey3nM5oV+/j0ujFDRj0Trst1uVzVplaa2FJPkiTBE
+         a/JQ==
+X-Gm-Message-State: AOJu0Yx0cdQJg5HHC4Pzc0cwmc640fB4tcRPCO6jhtNG39XClYCAlV8u
+	KsrJz7ZlIYNry/5QamjEjLYnfyhvzJsB23ikLpBKK2OW3Lv06mZrpiGmQPaq9BTORVHwPbkNLnW
+	CNhOqww==
+X-Google-Smtp-Source: AGHT+IF5hRDzZTsTh1hvne/IbGcQ4fJ5Y99/oSXQ9O1Kb/A/5KO749r5tyQ8uQXznuUtpGmnGZHNVQyftduS
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:a85f:db1d:a66b:7f53])
- (user=irogers job=sendgmr) by 2002:a05:6902:993:b0:dc2:25fd:eff1 with SMTP id
- bv19-20020a056902099300b00dc225fdeff1mr148001ybb.4.1706840724037; Thu, 01 Feb
- 2024 18:25:24 -0800 (PST)
-Date: Thu,  1 Feb 2024 18:25:10 -0800
-Message-Id: <20240202022512.467636-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a81:4c0d:0:b0:5fb:7e5b:b87f with SMTP id
+ z13-20020a814c0d000000b005fb7e5bb87fmr1522384ywa.1.1706840726259; Thu, 01 Feb
+ 2024 18:25:26 -0800 (PST)
+Date: Thu,  1 Feb 2024 18:25:11 -0800
+In-Reply-To: <20240202022512.467636-1-irogers@google.com>
+Message-Id: <20240202022512.467636-2-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240202022512.467636-1-irogers@google.com>
 X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-Subject: [PATCH v1 1/3] perf stat: Pass fewer metric arguments
+Subject: [PATCH v1 2/3] perf metrics: Compute unmerged uncore metrics individually
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -84,206 +87,170 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 Cc: Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Pass metric_expr and evsel rather than specific variables from the
-struct, thereby reducing the number of arguments. This will enable
-later fixes.
+When merging counts from multiple uncore PMUs the metric is only
+computed for the metric leader. When merging/aggregation is disabled,
+prior to this patch just the leader's metric would be computed. Fix
+this by computing the metric for each PMU.
+
+On a SkylakeX:
+Before:
+```
+$ perf stat -A -M memory_bandwidth_total -a sleep 1
+
+ Performance counter stats for 'system wide':
+
+CPU0               82,217      UNC_M_CAS_COUNT.RD [uncore_imc_0] #      9.2 MB/s  memory_bandwidth_total
+CPU18                   0      UNC_M_CAS_COUNT.RD [uncore_imc_0] #      0.0 MB/s  memory_bandwidth_total
+CPU0               61,395      UNC_M_CAS_COUNT.WR [uncore_imc_0]
+CPU18                   0      UNC_M_CAS_COUNT.WR [uncore_imc_0]
+CPU0                    0      UNC_M_CAS_COUNT.RD [uncore_imc_1]
+CPU18                   0      UNC_M_CAS_COUNT.RD [uncore_imc_1]
+CPU0                    0      UNC_M_CAS_COUNT.WR [uncore_imc_1]
+CPU18                   0      UNC_M_CAS_COUNT.WR [uncore_imc_1]
+CPU0               81,570      UNC_M_CAS_COUNT.RD [uncore_imc_2]
+CPU18             113,886      UNC_M_CAS_COUNT.RD [uncore_imc_2]
+CPU0               62,330      UNC_M_CAS_COUNT.WR [uncore_imc_2]
+CPU18              66,942      UNC_M_CAS_COUNT.WR [uncore_imc_2]
+CPU0               75,489      UNC_M_CAS_COUNT.RD [uncore_imc_3]
+CPU18              27,958      UNC_M_CAS_COUNT.RD [uncore_imc_3]
+CPU0               55,864      UNC_M_CAS_COUNT.WR [uncore_imc_3]
+CPU18              38,727      UNC_M_CAS_COUNT.WR [uncore_imc_3]
+CPU0                    0      UNC_M_CAS_COUNT.RD [uncore_imc_4]
+CPU18                   0      UNC_M_CAS_COUNT.RD [uncore_imc_4]
+CPU0                    0      UNC_M_CAS_COUNT.WR [uncore_imc_4]
+CPU18                   0      UNC_M_CAS_COUNT.WR [uncore_imc_4]
+CPU0               75,423      UNC_M_CAS_COUNT.RD [uncore_imc_5]
+CPU18             104,527      UNC_M_CAS_COUNT.RD [uncore_imc_5]
+CPU0               57,596      UNC_M_CAS_COUNT.WR [uncore_imc_5]
+CPU18              56,777      UNC_M_CAS_COUNT.WR [uncore_imc_5]
+CPU0        1,003,440,851 ns   duration_time
+
+       1.003440851 seconds time elapsed
+```
+
+After:
+```
+$ perf stat -A -M memory_bandwidth_total -a sleep 1
+
+ Performance counter stats for 'system wide':
+
+CPU0               88,968      UNC_M_CAS_COUNT.RD [uncore_imc_0] #      9.5 MB/s  memory_bandwidth_total
+CPU18                   0      UNC_M_CAS_COUNT.RD [uncore_imc_0] #      0.0 MB/s  memory_bandwidth_total
+CPU0               59,498      UNC_M_CAS_COUNT.WR [uncore_imc_0]
+CPU18                   0      UNC_M_CAS_COUNT.WR [uncore_imc_0]
+CPU0                    0      UNC_M_CAS_COUNT.RD [uncore_imc_1] #      0.0 MB/s  memory_bandwidth_total
+CPU18                   0      UNC_M_CAS_COUNT.RD [uncore_imc_1] #      0.0 MB/s  memory_bandwidth_total
+CPU0                    0      UNC_M_CAS_COUNT.WR [uncore_imc_1]
+CPU18                   0      UNC_M_CAS_COUNT.WR [uncore_imc_1]
+CPU0               88,635      UNC_M_CAS_COUNT.RD [uncore_imc_2] #      9.5 MB/s  memory_bandwidth_total
+CPU18             117,975      UNC_M_CAS_COUNT.RD [uncore_imc_2] #     11.5 MB/s  memory_bandwidth_total
+CPU0               60,829      UNC_M_CAS_COUNT.WR [uncore_imc_2]
+CPU18              62,105      UNC_M_CAS_COUNT.WR [uncore_imc_2]
+CPU0               82,238      UNC_M_CAS_COUNT.RD [uncore_imc_3] #      8.7 MB/s  memory_bandwidth_total
+CPU18              22,906      UNC_M_CAS_COUNT.RD [uncore_imc_3] #      3.6 MB/s  memory_bandwidth_total
+CPU0               53,959      UNC_M_CAS_COUNT.WR [uncore_imc_3]
+CPU18              32,990      UNC_M_CAS_COUNT.WR [uncore_imc_3]
+CPU0                    0      UNC_M_CAS_COUNT.RD [uncore_imc_4] #      0.0 MB/s  memory_bandwidth_total
+CPU18                   0      UNC_M_CAS_COUNT.RD [uncore_imc_4] #      0.0 MB/s  memory_bandwidth_total
+CPU0                    0      UNC_M_CAS_COUNT.WR [uncore_imc_4]
+CPU18                   0      UNC_M_CAS_COUNT.WR [uncore_imc_4]
+CPU0               83,595      UNC_M_CAS_COUNT.RD [uncore_imc_5] #      8.9 MB/s  memory_bandwidth_total
+CPU18             110,151      UNC_M_CAS_COUNT.RD [uncore_imc_5] #     10.5 MB/s  memory_bandwidth_total
+CPU0               56,540      UNC_M_CAS_COUNT.WR [uncore_imc_5]
+CPU18              53,816      UNC_M_CAS_COUNT.WR [uncore_imc_5]
+CPU0        1,003,353,416 ns   duration_time
+```
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/stat-shadow.c | 75 +++++++++++++++--------------------
- 1 file changed, 33 insertions(+), 42 deletions(-)
+ tools/perf/util/metricgroup.c |  2 ++
+ tools/perf/util/stat-shadow.c | 31 +++++++++++++++++++++++++++----
+ 2 files changed, 29 insertions(+), 4 deletions(-)
 
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index ca3e0404f187..c33ffee837ca 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -44,6 +44,8 @@ struct metric_event *metricgroup__lookup(struct rblist *metric_events,
+ 	if (!metric_events)
+ 		return NULL;
+ 
++	if (evsel->metric_leader)
++		me.evsel = evsel->metric_leader;
+ 	nd = rblist__find(metric_events, &me);
+ 	if (nd)
+ 		return container_of(nd, struct metric_event, nd);
 diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
-index e31426167852..f6c9d2f98835 100644
+index f6c9d2f98835..1be23b0eee2f 100644
 --- a/tools/perf/util/stat-shadow.c
 +++ b/tools/perf/util/stat-shadow.c
-@@ -355,23 +355,22 @@ static void print_nsecs(struct perf_stat_config *config,
- 		print_metric(config, ctxp, NULL, NULL, "CPUs utilized", 0);
+@@ -356,6 +356,7 @@ static void print_nsecs(struct perf_stat_config *config,
  }
  
--static int prepare_metric(struct evsel **metric_events,
--			  struct metric_ref *metric_refs,
-+static int prepare_metric(const struct metric_expr *mexp,
+ static int prepare_metric(const struct metric_expr *mexp,
++			  const struct evsel *evsel,
  			  struct expr_parse_ctx *pctx,
  			  int aggr_idx)
  {
- 	int i;
- 
--	for (i = 0; metric_events[i]; i++) {
-+	for (i = 0; mexp->metric_events[i]; i++) {
- 		char *n;
- 		double val;
- 		int source_count = 0;
- 
--		if (evsel__is_tool(metric_events[i])) {
-+		if (evsel__is_tool(mexp->metric_events[i])) {
- 			struct stats *stats;
- 			double scale;
- 
--			switch (metric_events[i]->tool_event) {
-+			switch (mexp->metric_events[i]->tool_event) {
- 			case PERF_TOOL_DURATION_TIME:
- 				stats = &walltime_nsecs_stats;
- 				scale = 1e-9;
-@@ -391,19 +390,20 @@ static int prepare_metric(struct evsel **metric_events,
- 				pr_err("Invalid tool event 'max'");
- 				abort();
- 			default:
--				pr_err("Unknown tool event '%s'", evsel__name(metric_events[i]));
-+				pr_err("Unknown tool event '%s'",
-+				       evsel__name(mexp->metric_events[i]));
- 				abort();
- 			}
- 			val = avg_stats(stats) * scale;
+@@ -398,8 +399,29 @@ static int prepare_metric(const struct metric_expr *mexp,
  			source_count = 1;
  		} else {
--			struct perf_stat_evsel *ps = metric_events[i]->stats;
-+			struct perf_stat_evsel *ps = mexp->metric_events[i]->stats;
- 			struct perf_stat_aggr *aggr = &ps->aggr[aggr_idx];
+ 			struct perf_stat_evsel *ps = mexp->metric_events[i]->stats;
+-			struct perf_stat_aggr *aggr = &ps->aggr[aggr_idx];
++			struct perf_stat_aggr *aggr;
  
++			/*
++			 * If there are multiple uncore PMUs and we're not
++			 * reading the leader's stats, determine the stats for
++			 * the appropriate uncore PMU.
++			 */
++			if (evsel && evsel->metric_leader &&
++			    evsel->pmu != evsel->metric_leader->pmu &&
++			    mexp->metric_events[i]->pmu == evsel->metric_leader->pmu) {
++				struct evsel *pos;
++
++				evlist__for_each_entry(evsel->evlist, pos) {
++					if (pos->pmu != evsel->pmu)
++						continue;
++					if (pos->metric_leader != mexp->metric_events[i])
++						continue;
++					ps = pos->stats;
++					source_count = 1;
++					break;
++				}
++			}
++			aggr = &ps->aggr[aggr_idx];
  			if (!aggr)
  				break;
  
--                        if (!metric_events[i]->supported) {
-+			if (!mexp->metric_events[i]->supported) {
- 				/*
- 				 * Not supported events will have a count of 0,
- 				 * which can be confusing in a
-@@ -419,19 +419,19 @@ static int prepare_metric(struct evsel **metric_events,
- 				 * reverse the scale before computing the
+@@ -420,7 +442,8 @@ static int prepare_metric(const struct metric_expr *mexp,
  				 * metric.
  				 */
--				val = aggr->counts.val * (1.0 / metric_events[i]->scale);
--				source_count = evsel__source_count(metric_events[i]);
-+				val = aggr->counts.val * (1.0 / mexp->metric_events[i]->scale);
-+				source_count = evsel__source_count(mexp->metric_events[i]);
+ 				val = aggr->counts.val * (1.0 / mexp->metric_events[i]->scale);
+-				source_count = evsel__source_count(mexp->metric_events[i]);
++				if (!source_count)
++					source_count = evsel__source_count(mexp->metric_events[i]);
  			}
  		}
--		n = strdup(evsel__metric_id(metric_events[i]));
-+		n = strdup(evsel__metric_id(mexp->metric_events[i]));
- 		if (!n)
- 			return -ENOMEM;
- 
- 		expr__add_id_val_source_count(pctx, n, val, source_count);
- 	}
- 
--	for (int j = 0; metric_refs && metric_refs[j].metric_name; j++) {
--		int ret = expr__add_ref(pctx, &metric_refs[j]);
-+	for (int j = 0; mexp->metric_refs && mexp->metric_refs[j].metric_name; j++) {
-+		int ret = expr__add_ref(pctx, &mexp->metric_refs[j]);
- 
- 		if (ret)
- 			return ret;
-@@ -441,14 +441,8 @@ static int prepare_metric(struct evsel **metric_events,
- }
- 
- static void generic_metric(struct perf_stat_config *config,
--			   const char *metric_expr,
--			   const char *metric_threshold,
--			   struct evsel **metric_events,
--			   struct metric_ref *metric_refs,
--			   char *name,
--			   const char *metric_name,
--			   const char *metric_unit,
--			   int runtime,
-+			struct metric_expr *mexp,
-+			struct evsel *evsel,
- 			   int aggr_idx,
- 			   struct perf_stat_output_ctx *out)
- {
-@@ -465,55 +459,55 @@ static void generic_metric(struct perf_stat_config *config,
- 
- 	if (config->user_requested_cpu_list)
+ 		n = strdup(evsel__metric_id(mexp->metric_events[i]));
+@@ -461,7 +484,7 @@ static void generic_metric(struct perf_stat_config *config,
  		pctx->sctx.user_requested_cpu_list = strdup(config->user_requested_cpu_list);
--	pctx->sctx.runtime = runtime;
-+	pctx->sctx.runtime = mexp->runtime;
+ 	pctx->sctx.runtime = mexp->runtime;
  	pctx->sctx.system_wide = config->system_wide;
--	i = prepare_metric(metric_events, metric_refs, pctx, aggr_idx);
-+	i = prepare_metric(mexp, pctx, aggr_idx);
+-	i = prepare_metric(mexp, pctx, aggr_idx);
++	i = prepare_metric(mexp, evsel, pctx, aggr_idx);
  	if (i < 0) {
  		expr__ctx_free(pctx);
  		return;
- 	}
--	if (!metric_events[i]) {
--		if (expr__parse(&ratio, pctx, metric_expr) == 0) {
-+	if (!mexp->metric_events[i]) {
-+		if (expr__parse(&ratio, pctx, mexp->metric_expr) == 0) {
- 			char *unit;
- 			char metric_bf[64];
- 
--			if (metric_threshold &&
--			    expr__parse(&threshold, pctx, metric_threshold) == 0 &&
-+			if (mexp->metric_threshold &&
-+			    expr__parse(&threshold, pctx, mexp->metric_threshold) == 0 &&
- 			    !isnan(threshold)) {
- 				color = fpclassify(threshold) == FP_ZERO
- 					? PERF_COLOR_GREEN : PERF_COLOR_RED;
- 			}
- 
--			if (metric_unit && metric_name) {
--				if (perf_pmu__convert_scale(metric_unit,
-+			if (mexp->metric_unit && mexp->metric_name) {
-+				if (perf_pmu__convert_scale(mexp->metric_unit,
- 					&unit, &scale) >= 0) {
- 					ratio *= scale;
- 				}
--				if (strstr(metric_expr, "?"))
-+				if (strstr(mexp->metric_expr, "?"))
- 					scnprintf(metric_bf, sizeof(metric_bf),
--					  "%s  %s_%d", unit, metric_name, runtime);
-+					  "%s  %s_%d", unit, mexp->metric_name, mexp->runtime);
- 				else
- 					scnprintf(metric_bf, sizeof(metric_bf),
--					  "%s  %s", unit, metric_name);
-+					  "%s  %s", unit, mexp->metric_name);
- 
- 				print_metric(config, ctxp, color, "%8.1f",
- 					     metric_bf, ratio);
- 			} else {
- 				print_metric(config, ctxp, color, "%8.2f",
--					metric_name ?
--					metric_name :
--					out->force_header ?  name : "",
-+					mexp->metric_name ?
-+					mexp->metric_name :
-+					out->force_header ?  evsel->name : "",
- 					ratio);
- 			}
- 		} else {
- 			print_metric(config, ctxp, color, /*unit=*/NULL,
- 				     out->force_header ?
--				     (metric_name ? metric_name : name) : "", 0);
-+				     (mexp->metric_name ?: evsel->name) : "", 0);
- 		}
- 	} else {
- 		print_metric(config, ctxp, color, /*unit=*/NULL,
- 			     out->force_header ?
--			     (metric_name ? metric_name : name) : "", 0);
-+			     (mexp->metric_name ?: evsel->name) : "", 0);
- 	}
- 
- 	expr__ctx_free(pctx);
-@@ -528,7 +522,7 @@ double test_generic_metric(struct metric_expr *mexp, int aggr_idx)
+@@ -522,7 +545,7 @@ double test_generic_metric(struct metric_expr *mexp, int aggr_idx)
  	if (!pctx)
  		return NAN;
  
--	if (prepare_metric(mexp->metric_events, mexp->metric_refs, pctx, aggr_idx) < 0)
-+	if (prepare_metric(mexp, pctx, aggr_idx) < 0)
+-	if (prepare_metric(mexp, pctx, aggr_idx) < 0)
++	if (prepare_metric(mexp, /*evsel=*/NULL, pctx, aggr_idx) < 0)
  		goto out;
  
  	if (expr__parse(&ratio, pctx, mexp->metric_expr))
-@@ -630,10 +624,7 @@ void *perf_stat__print_shadow_stats_metricgroup(struct perf_stat_config *config,
- 
- 		if ((*num)++ > 0)
- 			out->new_line(config, ctxp);
--		generic_metric(config, mexp->metric_expr, mexp->metric_threshold,
--			       mexp->metric_events, mexp->metric_refs, evsel->name,
--			       mexp->metric_name, mexp->metric_unit, mexp->runtime,
--			       aggr_idx, out);
-+		generic_metric(config, mexp, evsel, aggr_idx, out);
- 	}
- 
- 	return NULL;
 -- 
 2.43.0.594.gd9cf4e227d-goog
 
