@@ -1,97 +1,87 @@
-Return-Path: <linux-kernel+bounces-49500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A28F846B28
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:48:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 430C6846B2B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:49:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4599C1C26942
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:48:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00B3A295E02
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:49:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAE4A5FDDA;
-	Fri,  2 Feb 2024 08:47:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 825F05FDBD;
+	Fri,  2 Feb 2024 08:48:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xZ4Uhek5"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GiUqHY7t"
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 204315FDC2
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 08:47:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 479A15FDB9
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 08:48:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706863658; cv=none; b=LI8zuz98F7uUmPBKJ5TCS2g8Cskkm/8OPejlgabP8QQ+4urjXNBey6ZTrUxaVus1zfchgxr0P2tvhNXxScGT1ulehiP0An4xra4wOk+lC8MiwX/cZFjDbTPzTCw256sRltIbvTzw7Zuzz6y+Edr6R9U6Y98bAYLb1n9hf4uDRXE=
+	t=1706863700; cv=none; b=JFq3OdwUpae8b8WZC7/gRdliojQjB9hGnAJfOoyij9q2w2E+oRubIQz3X8sD4H4WXUNFQfUN1O7oIPCDXDqbXad0WNhIcoc7sbil80WBU7VcRhOSPV/pZ74OGPn/nId48iagkfoaCEGRzuhwyEadkImbIyCgjtrTWIGGStyziTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706863658; c=relaxed/simple;
-	bh=1mTopl9VLOGdS2RiO2GLhg5Njwg3uxDYSi6ORPCdnl8=;
+	s=arc-20240116; t=1706863700; c=relaxed/simple;
+	bh=LiAej0P6H3lelIcHWT6MqNXG8GitRKn4IWPkqQrxu80=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FcS49AONR++0am+RkricH4/Jw4MKtHMN++PDzwUFqZlW2zxMGPPC2zh2iIU2f+mIwQss/DXd4e/b3Fxfwh/pz/NiKv3Vpz6g76RprdbGr/AauLJfNTKRVcnYvxIL4v8JVR/vFNH3pBOwoUCmAYNVVA1DER+VIk7dy3ZEUGlHC/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xZ4Uhek5; arc=none smtp.client-ip=209.85.208.50
+	 Content-Type:Content-Disposition:In-Reply-To; b=FFZuojRyP4Awn/KALjwytbPYwuC8LWPTO01WEh3xPluM4nGc812EjOrSpLPv4k5+/Fzui+M6j1o++zsgVGsONqX/a4XtoE5pemd1QffQ4tVVvE2nCIXpH8uJXzA7EVc3/85DL6N4WSlD8VPSePpn/YlGWqAfPLXB/kA5PRVj16c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GiUqHY7t; arc=none smtp.client-ip=209.85.161.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-557dcb0f870so2641796a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 00:47:36 -0800 (PST)
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-59a58ef4a04so992203eaf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 00:48:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706863655; x=1707468455; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706863698; x=1707468498; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=UU7vpIEOWdL0eNMIVr22ERtNoYOBOT1NOSw2MYNThw4=;
-        b=xZ4Uhek58k5pY8l5zMELIeVhunGnOLnGBMHnT44nn8e27rPCYDrXwohpRFsYxYqLon
-         RppL0hE15kFu4ljI9P91FeOF/3puRgtHJPAf5k3JaPY3q+9PPDdOwc1nEsddOsmUBppw
-         +prDQTOAoGU5e4cTLCLyzcQKPt1hmc0BMoyZUZtQx/Ar35P8sUS2W586lfW+HgXTPrH+
-         RVb7imdfud+irBeQKLj2m7QS40Jtf1mm0AtRN9bYO6K15KxtcXWpcUopHAWcG4CgYwWb
-         pn2QzAgowIHE69qofZbjTZBc/hDlUxePuo67gllbWpU7TGXYHq5Cx6jsfYpfVSBeRAVB
-         03IQ==
+        bh=hlJ0Q1eyYAeEt1iSF7yEYdHF92/78rgfCFmqlm7ymlk=;
+        b=GiUqHY7t6ksByrPhVMZq4k2Nqy+d19xmKviC5GCE36FuWU+TLUbxb4ugf6oEUzHmVw
+         jnW+nnvyiEgeUJaTkX/o8fZnFAZTke486laaPqoJYbLNGFfEROq9L4+hF5xcsbFN1scf
+         FV3/GCtfPj+NGz5HRiFYqJ13pNSyCnxZsNfCgV3HZTJVHM4dASLluonO4H/qY9Y/TjUS
+         SOeAwCkVoKQ1tQxNycTionJOGDBorkb5JpIYH862+wd49VyYYYANtazPsYjDU1IsFdcZ
+         SjG0yPUvvsIqwDmiEjmEQTuVpWmt+PhburZV25XJV8/qdfWuyKQc07jKwes4Qakv/F+S
+         UXUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706863655; x=1707468455;
+        d=1e100.net; s=20230601; t=1706863698; x=1707468498;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UU7vpIEOWdL0eNMIVr22ERtNoYOBOT1NOSw2MYNThw4=;
-        b=uZ0+cfU9eY9h7tPvhKTARHKS8XGLrKHmvBcfpDXx3shQZCKyEx/X5ULpx/s5QoDo1R
-         4LvYMMD2Gr/sFlZWdMzdV06HWN70iWbmzSpK51ZiqwWu8SE2asBlTp25LZ5HCDjoN5SL
-         R60UxJgzOytqoiUrGXA9p8QB3kb0wa1uZpoL4nkf5u61qQldqy1U15vvYvTB4AzxWHFn
-         uA+4jNzRNdVDzR/pPLyTHbUx5fU0qEAMjpKHx/e2FajZsF8lEG4b67eBngsJguV46Hpr
-         YhT0BziYXwm06ff04AaG82ogNT1DN/snfmRu3s7Mg/WyFfZJsutjx2q847JevTQQbrNC
-         JbbQ==
-X-Gm-Message-State: AOJu0YzBpivlStxOsL0OyWU/JHx4tmp7z5Mi5wHiuSpHCXThWkhDzUPy
-	2lwn63s+VwWk3iWuO217eMz+hZrS/Kgib1URsifOCYDzE65Fwdl1U89ZsSCDxvs=
-X-Google-Smtp-Source: AGHT+IGVHVbNZmhYQYVfyePv44qYjb5PPl8mmxSRJulBwcvo1VFvBGlYYT9E3lEzAdxIKl5CLgylgQ==
-X-Received: by 2002:a05:6402:353:b0:55f:84a9:9000 with SMTP id r19-20020a056402035300b0055f84a99000mr4779574edw.3.1706863655200;
-        Fri, 02 Feb 2024 00:47:35 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCV3ZID9R5HJqZMO3+DpWFeR8Cs3JOVwVQMtQGzJeHwx/XILkDBRfT9e8ocmg+df6JmNMfWY0XJmeoYazqDNNcfZRNhnSAMdS+vJ8BJVeNlq2xdHf/XjihNgR4qz5aTcO5JrVxa4N0NcdBqtgQMkt1+/3mUq8yhEvu+Eg7Zn5nLp9ki11iuux4xx0mgc/vdLPefmGSw264NxmD/4qTvxsnE8JLrmTgGCEZRowYpboQfXfQE5HyOSBFZLHcmO6ZkPgOgJTk4ddiTu2NYy7s3HHzxgjixFMmFnEmPwjYq42BwsLIryKiWWY4fN5zYNmACwFV/jMLwKmkSZIhZQS/Wiyvd0HhK+sk8FyUTDCaSnqm313T5S3FMipqbOtARb1X8NxcpV/rqYwj12OlEEKTtu5BvoUXqLvPMwhe0yHPUQjqGZl8IIFjo2zM5Wlu4TkSQnGeXEy2eQoGVaR3ep6jA1PEvFYn+g7xJRXJj5yisSuzJr+VkZETe75l/UDXFlUx1ATxwo4OYCgw+cPcMa1mhO3ShJ5s2JkDqnoKXyClmKAdFvtgbz9aomdQ2PnpFiGPxi9bJ4EVfaQrwQcme3x/qnF28pHtmS5i1mZrUpWEcMwjfm4HqDXbLxffMpY9wTX3XwCQLUX1VPXV1iJcNBUZ4BZZhM8nBNhIUoE6iZbpp9LbpteJ9ftfD6yjg7Ke11jkWMBYimUrvpTYjOGED7VsfsMw5/vDiCDCHzcomytbb87u1unnwqPZ2mS0GI7a5dQjNUSWrT0mkCTktTBA9alkPfeClAQMzJkntduc9ETpnNecdNzoJlNfclm8K7JCQnVaOKBMjzLWHaplwJjYFUz4Us839dlBZ4Gy7kHRJTwBQLuu46fqN2piUGkIkeLtDS8yvbUnS9p7wVZ1mAaq6O+qbHiwUaLy6weSAg5MxrJwLcIVlaG/82XYtsnEr8mNsa9D2wByM/Xn
- XBE0mN8ItoGTxZOt642QrMnqj57B4yBqR46p4bpN3BGxmR6b4mvK0raP/rnLOeuhw8rbd/DP+TV1plHwvguxPPKxfzjE2vbibOkJT67WpWmZy242jHsAhsexEllqmy3gAmQmfI+l/H+FZM606dNfyKeb37eTx5l1rz4a9ciueY2w9ohPXLWWr5J762fPLxWvYYXnbF6ewcWWKP8SK+c8gEJwXoX9oeVFCgTch287/uDO8GtogzppODfJ8oxs7d/f6zuq4xrebdlyJxoqh/ni6J
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id ek23-20020a056402371700b0055ff9299f71sm246348edb.46.2024.02.02.00.47.33
+        bh=hlJ0Q1eyYAeEt1iSF7yEYdHF92/78rgfCFmqlm7ymlk=;
+        b=Evxc0+2tpV/2nHig0Dp/aJbgUUwspQdssdBg/oAKkfBiv2FQpLc8nZUjPuJzJTQe/g
+         07flcdWe0swcdGTqjTnVPekmw7u6FvN/u6gPmeVwfsAAkbr67ztH1NQ8ar0IdN8Nxvtk
+         2PAEXqs81EOEKETQPA9H/5CnYd2WLN4DkcXUtMeA4lETwTSCU47eSq8kVdBFUeuAjSgR
+         zaEboLBjXZ7A4z7soEfKhRdPavqBVSht+wXmJyrzwhk3cQV52BF6qNd/bKmT1eB7jGWE
+         9Sji62dZ2JirlIKmt72eN8eC66Fnqz1OhDmkZ9KvIeKVHEx44bFSsnFcXzat7MO0AtQL
+         1sTg==
+X-Gm-Message-State: AOJu0YzAkrO4oZw99vABIAUwzI5rHW4ZCGbBIr+66gKPx+amppXG38P6
+	wakFmGQ8nTG9EvwrpTv64bst9vWtulebMHlZ6oBCwlS06n9ELjZqaJjQp2v/8w==
+X-Google-Smtp-Source: AGHT+IE4PDm8o+AXey/Gd8FKV4mwvNH75w1LkrJJ3WwLZ8OPLToVszBQ0k9VkjHiOCfQ1gFSIpW0yg==
+X-Received: by 2002:a05:6358:d094:b0:176:4a7f:8bb5 with SMTP id jc20-20020a056358d09400b001764a7f8bb5mr1548797rwb.1.1706863698223;
+        Fri, 02 Feb 2024 00:48:18 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCX6//Rl/NFEukCqVE5Wbpo16UIfbgJW1PzRJxb2gPR1eyzOgM6Ogqnjzj7fm5OrIxm8zp/ARM5LyfDNk+Eb1n+je7xqDtXm2ObbvLLoEMEpPD/zxF/1bDxLOeeovBh0WVeYHPfo5p1tLWl0rHSbsUrhcX2DpZyVutiJuRbZ3Q9+9Ensax0nw5Ti/sbotn/RlutRKK934e8eIEIAGI2BFoUHMn5H6pbf+yY9qaZPiADrfetMvkw0zKNhY7VZoQJUHUF5EjJWlZvgTWuVdzj1gcSrs20DdgOZ41l7G591tx7uXOQMyBU9fL0=
+Received: from thinkpad ([120.56.198.122])
+        by smtp.gmail.com with ESMTPSA id n4-20020aa78a44000000b006dd872c00dasm1107990pfa.96.2024.02.02.00.48.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 00:47:34 -0800 (PST)
-Date: Fri, 2 Feb 2024 11:47:30 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	daniel.lezcano@linaro.org, miquel.raynal@bootlin.com,
-	rui.zhang@intel.com, lukasz.luba@arm.com,
-	support.opensource@diasemi.com, shawnguo@kernel.org,
-	s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-	linux-imx@nxp.com, andersson@kernel.org, konrad.dybcio@linaro.org,
-	amitk@kernel.org, thara.gopinath@gmail.com,
-	niklas.soderlund@ragnatech.se, srinivas.pandruvada@linux.intel.com,
-	baolin.wang@linux.alibaba.com, u.kleine-koenig@pengutronix.de,
-	hayashi.kunihiko@socionext.com, d-gole@ti.com,
-	linus.walleij@linaro.org, DLG-Adam.Ward.opensource@dm.renesas.com,
-	error27@gmail.com, heiko@sntech.de, hdegoede@redhat.com,
-	jernej.skrabec@gmail.com, f.fainelli@gmail.com,
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, kernel@collabora.com
-Subject: Re: [PATCH v1 02/18] thermal: Add new structures and
- thermal_zone_device_register()
-Message-ID: <e4359d2c-e686-4a97-9d21-d10908e9df61@moroto.mountain>
-References: <20240130111250.185718-1-angelogioacchino.delregno@collabora.com>
- <20240130111250.185718-3-angelogioacchino.delregno@collabora.com>
- <CAJZ5v0jzaGpK8LnsFDtjuPoURrwrUgM1Z2QfZhK_FUzDeK3wcw@mail.gmail.com>
+        Fri, 02 Feb 2024 00:48:17 -0800 (PST)
+Date: Fri, 2 Feb 2024 14:18:06 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Abel Vesa <abel.vesa@linaro.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] PCI: qcom: Add X1E80100 PCIe support
+Message-ID: <20240202084806.GF2961@thinkpad>
+References: <20240129-x1e80100-pci-v2-0-a466d10685b6@linaro.org>
+ <20240129-x1e80100-pci-v2-2-a466d10685b6@linaro.org>
+ <30360d96-4513-40c4-9646-e3ae09121fa7@linaro.org>
+ <Zbyqn5wnH7yCe38P@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -101,46 +91,60 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0jzaGpK8LnsFDtjuPoURrwrUgM1Z2QfZhK_FUzDeK3wcw@mail.gmail.com>
+In-Reply-To: <Zbyqn5wnH7yCe38P@linaro.org>
 
-On Thu, Feb 01, 2024 at 08:24:15PM +0100, Rafael J. Wysocki wrote:
-> On Tue, Jan 30, 2024 at 12:13 PM AngeloGioacchino Del Regno
-> > diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-> > index 65d8f92a9a0d..7a540b746703 100644
-> > --- a/include/linux/thermal.h
-> > +++ b/include/linux/thermal.h
-> > @@ -149,7 +149,8 @@ struct thermal_cooling_device {
-> >                         passive trip point.
-> >   * @need_update:       if equals 1, thermal_zone_device_update needs to be invoked.
-> >   * @ops:       operations this &thermal_zone_device supports
-> > - * @tzp:       thermal zone parameters
-> > + * @tzp:               Thermal zone parameters
-> > + * @tgp:               Thermal zone governor parameters
-> >   * @governor:  pointer to the governor for this thermal zone
-> >   * @governor_data:     private pointer for governor data
-> >   * @thermal_instances: list of &struct thermal_instance of this thermal zone
-> > @@ -184,7 +185,8 @@ struct thermal_zone_device {
-> >         int prev_high_trip;
-> >         atomic_t need_update;
-> >         struct thermal_zone_device_ops *ops;
-> > -       struct thermal_zone_params *tzp;
-> > +       struct thermal_zone_platform_params *tzp;
-> > +       struct thermal_governor_params *tgp;
+On Fri, Feb 02, 2024 at 10:41:03AM +0200, Abel Vesa wrote:
+> On 24-02-01 20:20:40, Konrad Dybcio wrote:
+> > On 29.01.2024 12:10, Abel Vesa wrote:
+> > > Add the compatible and the driver data for X1E80100.
+> > > 
+> > > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> > > ---
+> > >  drivers/pci/controller/dwc/pcie-qcom.c | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > > 
+> > > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> > > index 10f2d0bb86be..2a6000e457bc 100644
+> > > --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> > > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> > > @@ -1642,6 +1642,7 @@ static const struct of_device_id qcom_pcie_match[] = {
+> > >  	{ .compatible = "qcom,pcie-sm8450-pcie0", .data = &cfg_1_9_0 },
+> > >  	{ .compatible = "qcom,pcie-sm8450-pcie1", .data = &cfg_1_9_0 },
+> > >  	{ .compatible = "qcom,pcie-sm8550", .data = &cfg_1_9_0 },
+> > > +	{ .compatible = "qcom,pcie-x1e80100", .data = &cfg_1_9_0 },
+> > 
+> > I swear I'm not delaying everything related to x1 on purpose..
+> > 
 > 
-> I agree with doing a split here, but I'm not sure about moving items
-> from the arg list to struct thermal_zone_platform_params (as mentioned
-> above).
+> No worries.
 > 
-> Also the naming is quite inconsistent.  IMO it would be better to call
-> the first pointer "tzpp", rename struct thermal_governor_params to
-> struct thermal_zone_governor_params and call the second pointer
-> "tzgp".
+> > But..
+> > 
+> > Would a "qcom,pcie-v1.9.0" generic match string be a good idea?
+> 
+> Sure. So that means this would be fallback compatible for all the following platforms:
+> 
+> - sa8540p
+> - sa8775p
+> - sc7280
+> - sc8180x
+> - sc8280xp
+> - sdx55
+> - sm8150
+> - sm8250
+> - sm8350
+> - sm8450-pcie0
+> - sm8450-pcie1
+> - sm8550
+> - x1e80100
+> 
+> Will prepare a patchset.
 > 
 
-The names "tzgp" and "tzpp" look almost identical at first glance.
-Could we increase the hamming distance somehow?
+NO. Fallback should be based on the base SoC for this platform.
 
-regards,
-dan carpenter
+- Mani
 
+-- 
+மணிவண்ணன் சதாசிவம்
 
