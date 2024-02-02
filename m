@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-49559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5277846BD8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:24:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5D1C846BDA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:24:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C10B28AA82
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:24:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90E621F25285
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA2327CF06;
-	Fri,  2 Feb 2024 09:22:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2337C17555;
+	Fri,  2 Feb 2024 09:22:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dzgEi2K7"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YInG+27o"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7432D7C095;
-	Fri,  2 Feb 2024 09:22:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC5957CF07;
+	Fri,  2 Feb 2024 09:22:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706865733; cv=none; b=LA4E6+vuoPTtQbYaOZD5z647BUEzlL/4ykwh65N8ln5Q5qMytQtBL994P4Pij+DBTv/mwCBnWRHy+tXxo1eRZLgWf7iYIKKXJXT2ffcoMvwQKGQ2oMoexuXAgOsN+IJEdyU5vfMq/iNXLDsyt9+/WXriCQ2amwQkw6hLCsW473g=
+	t=1706865735; cv=none; b=A2nmTZ9VfsJdOzNOnTh2KBPn8BLovGKeJ1iHJzsTkT1EMFR2HQUuGM0a+r1Z0orzJ7oLXVniIOZUE26vJ8t/790UjruMk4tW7u8/XM4O4wDuqbvVHBrsJ4Ryw8fC3N98igidVKICc1ru5+/aO0H1UBsCXXMRTL8KNRWBt5WR7KU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706865733; c=relaxed/simple;
-	bh=4lJwtT7W+z56piJEq1ajtdOi8X1weo4iQkqGFadRV9Y=;
+	s=arc-20240116; t=1706865735; c=relaxed/simple;
+	bh=ObzYZjjPuoaArfY2LHC47nxAkH4bnA054skyvxsUans=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Dkuff1g/kreI1oBsZJeEmvbKt177xmU2hd5ipmYw5UgKn1gpKRcO6Nhg23AYVt4rz129/OPCK9okWmA0uoh7fg9Lr+JF2C0zq3M4L7ZOctjddvuCoHZbe0sMdukFkgEOzYreCCu7n2A66oGA3GxlXtD3M2BQRRFXtjRwTIqen1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dzgEi2K7; arc=none smtp.client-ip=198.175.65.12
+	 MIME-Version; b=OBG14hfcMVr5HsWlvVX7TvKo15rjZKjPM4aNUY2wKRrOEjhFqq0wnPrRB2Sd/lyQghg0mUDBLPCcQETbCsn3raxPC14/QvEBFquSw4feFocSi6j7v0j+I3oP8md+q562iMlWCjoNSutvU9p79MfR1uArJeDUD+vOKMl9xvvHgY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YInG+27o; arc=none smtp.client-ip=198.175.65.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706865732; x=1738401732;
+  t=1706865734; x=1738401734;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=4lJwtT7W+z56piJEq1ajtdOi8X1weo4iQkqGFadRV9Y=;
-  b=dzgEi2K7+w8cvhDM8O4XH79L9vy2yxr6dSRIgYjqE9rwD7XTPHcz47Lx
-   eQiYC96gOteeWrTWoC/TqjZ9qebTvx4JE/qrDkCqzimeDox8dDjNIszGN
-   N6qnNcTnYlL/emmxcnFtqr59KqC2o8pKmJ2sgnQISuCyt1SdpN0b313pZ
-   V4EvLrTo6mIvmmlE/+MIeZhdSd0TdIQ6Z4CeJF5OGHjSe+4+ouv2LHcRk
-   PTJo8IQRjs+3XgjKFTw2aevkDAty/4yBjgmVjw5Bk16e2ftt+90S/yFmr
-   oSgxPM4YXvzRoDXDKLUTRhJHwMc9GGSEjQBzmb7ylLiqF/vGhvs+8LeEY
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="11483068"
+  bh=ObzYZjjPuoaArfY2LHC47nxAkH4bnA054skyvxsUans=;
+  b=YInG+27oeZ8h64cMaKvryMKLqYnZ6spbGhrF0Df8YtDFMZM+Bnjua9nS
+   wKfBN8m8wewDdQcgZtPtFPczcWlqqaLDc1Wd2hSPpb0mS9QA6Ie/U6RLE
+   pUn1L71D/S1N1cg1kD6pWGdhUL6hGKZwvBFNJk1VGxgPdluEZyNTKXztm
+   BGKuSWmoG3mYdcfMdCOHF9VuaUIYLCCG428OXXnoVR53JDZSN69FqSme7
+   DFxkhTfY5QWqJFGQRAunbuW+rXzzm4eA6uyfZhfnd+FTV6Dmw5quSPc4p
+   p5XUSP35W5qDc+MxiNj3saqRromRVoa9SsyovsbBQb7p+ZZJ8Z2FGbtWC
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="11483077"
 X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="11483068"
+   d="scan'208";a="11483077"
 Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 01:22:12 -0800
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 01:22:14 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="4639731"
+   d="scan'208";a="4639739"
 Received: from wangnin3-mobl.ccr.corp.intel.com (HELO rzhang1-mobl7.ccr.corp.intel.com) ([10.254.214.177])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 01:22:09 -0800
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 01:22:11 -0800
 From: Zhang Rui <rui.zhang@intel.com>
 To: linux@roeck-us.net,
 	jdelvare@suse.com
 Cc: fenghua.yu@intel.com,
 	linux-hwmon@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH V2 06/11] hwmon: (coretemp) Replace sensor_device_attribute with device_attribute
-Date: Fri,  2 Feb 2024 17:21:39 +0800
-Message-Id: <20240202092144.71180-7-rui.zhang@intel.com>
+Subject: [PATCH V2 07/11] hwmon: (coretemp) Remove redundant pdata->cpu_map[]
+Date: Fri,  2 Feb 2024 17:21:40 +0800
+Message-Id: <20240202092144.71180-8-rui.zhang@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240202092144.71180-1-rui.zhang@intel.com>
 References: <20240202092144.71180-1-rui.zhang@intel.com>
@@ -73,98 +73,81 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Replace sensor_device_attribute with device_attribute because
-sensor_device_attribute->index is no longer used.
+pdata->cpu_map[] saves the mapping between cpu core id and the index in
+pdata->core_data[]. This is used to find the temp_data structure using
+cpu_core_id, by traversing the pdata->cpu_map[] array. But the same goal
+can be achieved by traversing the pdata->core_temp[] array directly.
+
+Remove redundant pdata->cpu_map[].
 
 No functional change.
 
 Signed-off-by: Zhang Rui <rui.zhang@intel.com>
 ---
- drivers/hwmon/coretemp.c | 28 ++++++++++++----------------
- 1 file changed, 12 insertions(+), 16 deletions(-)
+ drivers/hwmon/coretemp.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/hwmon/coretemp.c b/drivers/hwmon/coretemp.c
-index 9a7bfc046c72..cdd1e069d5c1 100644
+index cdd1e069d5c1..29ee8e0c0fe9 100644
 --- a/drivers/hwmon/coretemp.c
 +++ b/drivers/hwmon/coretemp.c
-@@ -85,7 +85,7 @@ struct temp_data {
- 	u32 status_reg;
- 	int attr_size;
- 	bool is_pkg_data;
--	struct sensor_device_attribute sd_attrs[TOTAL_ATTRS];
-+	struct device_attribute sd_attrs[TOTAL_ATTRS];
- 	char attr_name[TOTAL_ATTRS][CORETEMP_NAME_LENGTH];
- 	struct attribute *attrs[TOTAL_ATTRS + 1];
- 	struct attribute_group attr_group;
-@@ -340,9 +340,8 @@ static struct platform_device **zone_devices;
- static ssize_t show_label(struct device *dev,
- 				struct device_attribute *devattr, char *buf)
- {
--	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
- 	struct platform_data *pdata = dev_get_drvdata(dev);
--	struct temp_data *tdata = container_of(attr, struct temp_data, sd_attrs[ATTR_LABEL]);
-+	struct temp_data *tdata = container_of(devattr, struct temp_data, sd_attrs[ATTR_LABEL]);
+@@ -96,7 +96,6 @@ struct temp_data {
+ struct platform_data {
+ 	struct device		*hwmon_dev;
+ 	u16			pkg_id;
+-	u16			cpu_map[NUM_REAL_CORES];
+ 	struct ida		ida;
+ 	struct cpumask		cpumask;
+ 	struct temp_data	*core_data[MAX_CORE_DATA];
+@@ -517,7 +516,6 @@ static int create_core_data(struct platform_device *pdev, unsigned int cpu,
+ 		if (index < 0)
+ 			return index;
  
- 	if (tdata->is_pkg_data)
- 		return sprintf(buf, "Package id %u\n", pdata->pkg_id);
-@@ -354,8 +353,8 @@ static ssize_t show_crit_alarm(struct device *dev,
- 				struct device_attribute *devattr, char *buf)
- {
- 	u32 eax, edx;
--	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
--	struct temp_data *tdata = container_of(attr, struct temp_data, sd_attrs[ATTR_CRIT_ALARM]);
-+	struct temp_data *tdata = container_of(devattr, struct temp_data,
-+						sd_attrs[ATTR_CRIT_ALARM]);
- 
- 	mutex_lock(&tdata->update_lock);
- 	rdmsr_on_cpu(tdata->cpu, tdata->status_reg, &eax, &edx);
-@@ -367,8 +366,7 @@ static ssize_t show_crit_alarm(struct device *dev,
- static ssize_t show_tjmax(struct device *dev,
- 			struct device_attribute *devattr, char *buf)
- {
--	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
--	struct temp_data *tdata = container_of(attr, struct temp_data, sd_attrs[ATTR_TJMAX]);
-+	struct temp_data *tdata = container_of(devattr, struct temp_data, sd_attrs[ATTR_TJMAX]);
- 	int tjmax;
- 
- 	mutex_lock(&tdata->update_lock);
-@@ -381,8 +379,7 @@ static ssize_t show_tjmax(struct device *dev,
- static ssize_t show_ttarget(struct device *dev,
- 				struct device_attribute *devattr, char *buf)
- {
--	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
--	struct temp_data *tdata = container_of(attr, struct temp_data, sd_attrs[ATTR_TTARGET]);
-+	struct temp_data *tdata = container_of(devattr, struct temp_data, sd_attrs[ATTR_TTARGET]);
- 	int ttarget;
- 
- 	mutex_lock(&tdata->update_lock);
-@@ -398,8 +395,7 @@ static ssize_t show_temp(struct device *dev,
- 			struct device_attribute *devattr, char *buf)
- {
- 	u32 eax, edx;
--	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
--	struct temp_data *tdata = container_of(attr, struct temp_data, sd_attrs[ATTR_TEMP]);
-+	struct temp_data *tdata = container_of(devattr, struct temp_data, sd_attrs[ATTR_TEMP]);
- 	int tjmax;
- 
- 	mutex_lock(&tdata->update_lock);
-@@ -443,11 +439,11 @@ static int create_core_attrs(struct temp_data *tdata, struct device *dev)
- 
- 		snprintf(tdata->attr_name[i], CORETEMP_NAME_LENGTH,
- 			 "temp%d_%s", attr_no, suffixes[i]);
--		sysfs_attr_init(&tdata->sd_attrs[i].dev_attr.attr);
--		tdata->sd_attrs[i].dev_attr.attr.name = tdata->attr_name[i];
--		tdata->sd_attrs[i].dev_attr.attr.mode = 0444;
--		tdata->sd_attrs[i].dev_attr.show = rd_ptr[i];
--		tdata->attrs[i] = &tdata->sd_attrs[i].dev_attr.attr;
-+		sysfs_attr_init(&tdata->sd_attrs[i].attr);
-+		tdata->sd_attrs[i].attr.name = tdata->attr_name[i];
-+		tdata->sd_attrs[i].attr.mode = 0444;
-+		tdata->sd_attrs[i].show = rd_ptr[i];
-+		tdata->attrs[i] = &tdata->sd_attrs[i].attr;
+-		pdata->cpu_map[index] = topology_core_id(cpu);
+ 		index += BASE_SYSFS_ATTR_NO;
  	}
- 	tdata->attr_group.attrs = tdata->attrs;
- 	return sysfs_create_group(&dev->kobj, &tdata->attr_group);
+ 
+@@ -696,7 +694,7 @@ static int coretemp_cpu_offline(unsigned int cpu)
+ 	struct platform_device *pdev = coretemp_get_pdev(cpu);
+ 	struct platform_data *pd;
+ 	struct temp_data *tdata;
+-	int i, indx = -1, target;
++	int i, target;
+ 
+ 	/* No need to tear down any interfaces for suspend */
+ 	if (cpuhp_tasks_frozen)
+@@ -707,18 +705,16 @@ static int coretemp_cpu_offline(unsigned int cpu)
+ 	if (!pd->hwmon_dev)
+ 		return 0;
+ 
+-	for (i = 0; i < NUM_REAL_CORES; i++) {
+-		if (pd->cpu_map[i] == topology_core_id(cpu)) {
+-			indx = i + BASE_SYSFS_ATTR_NO;
++	for (i = BASE_SYSFS_ATTR_NO; i < MAX_CORE_DATA; i++) {
++		if (pd->core_data[i] && pd->core_data[i]->cpu_core_id == topology_core_id(cpu))
+ 			break;
+-		}
+ 	}
+ 
+ 	/* Too many cores and this core is not populated, just return */
+-	if (indx < 0)
++	if (i == MAX_CORE_DATA)
+ 		return 0;
+ 
+-	tdata = pd->core_data[indx];
++	tdata = pd->core_data[i];
+ 
+ 	cpumask_clear_cpu(cpu, &pd->cpumask);
+ 
+@@ -729,7 +725,7 @@ static int coretemp_cpu_offline(unsigned int cpu)
+ 	 */
+ 	target = cpumask_any_and(&pd->cpumask, topology_sibling_cpumask(cpu));
+ 	if (target >= nr_cpu_ids) {
+-		coretemp_remove_core(pd, indx);
++		coretemp_remove_core(pd, i);
+ 	} else if (tdata && tdata->cpu == cpu) {
+ 		mutex_lock(&tdata->update_lock);
+ 		tdata->cpu = target;
 -- 
 2.34.1
 
