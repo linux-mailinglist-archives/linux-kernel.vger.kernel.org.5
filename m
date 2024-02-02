@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-49942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FC138471D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:23:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A95698471DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:24:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43C401C24F2B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:23:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CACF71C2589C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:24:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 667AC1468E6;
-	Fri,  2 Feb 2024 14:22:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 308911474D4;
+	Fri,  2 Feb 2024 14:22:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="BA3I5Nrg"
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="YEOBMPQe"
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 680E147A4D
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 14:22:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E1DE1474CE
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 14:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706883750; cv=none; b=EuKfcWbPog544xonChuTohDZRNLCAUowD0HNooPEZDpHkyP43/cA3Kd4PeNFrBTnsHSi87Uh89XWzYbG5pSFevdizB5GcRLZM8UbiuMFyaqycPsR2rfLpiue9SizN6obolNeM105dN0z80/6OKDl27/44M2obURBi7X2IqNtjp8=
+	t=1706883758; cv=none; b=K/uFrFYsDaX73qwHaLxlQl7GCS8uA7KIQU+DyeKEOUBScGulCxhxoTPjsZ//sN1hKSHL7o4WYEgKdkqnpkiE3vLXFdzuj047rD9yy5Hbd49OLVFPEQUVCKCz0UkgcfCGjsaTqEqpdRMnPCM5OXbT1P6zqFZ4M+OpVVxnJCcm/n0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706883750; c=relaxed/simple;
-	bh=xwzklGrj7vVdUby+djemFWfj6zc/kYrnyKrVzBZRX1I=;
+	s=arc-20240116; t=1706883758; c=relaxed/simple;
+	bh=b8i0eaDnS3gXho7ejbFVRjVR6naUXk17luGCt7CPZEA=;
 	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=DPl7EW7VniF/I3uFqHYv72BcP6F8MXYc4uPuuhuVu2XpfnUq7HgjXfPmeq0Fst5Ca6Yyflk4OYhJ8NRviaVzRF+NzVzaalEdR9JadV6XjnsvTaUA26WKP4sUtBMd1zpn5HM9Bj3Bl1yA+UmPOGKmXrOl5327zYKWWy2EQifet70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=BA3I5Nrg; arc=none smtp.client-ip=115.124.30.132
+	 In-Reply-To:Content-Type; b=EcwUlItN3wu0Q1aAMsdrIAwEdUQPevjlMXwZis/15k2ImlekTneXUFD1brX+m4ReN3SzAr1i5+84oSjTgo8RrsYG3oKXYhrrqekQr7rDd+xn1msejo5LNshGmEHF0dCuhcgtjvjcsrgMuO4ZkvdNDRqPo4uMGkVUOus9IAHhVAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=YEOBMPQe; arc=none smtp.client-ip=115.124.30.98
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1706883744; h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type;
-	bh=d4OqDX/cQzt1bcoYyaseDnrGw+jftOLJeybPAxyiH/c=;
-	b=BA3I5NrgPrLwcLGgIRV2tY6uH2zizCOQqd2SvDuAoqDdAGcENyDp0Tmreod/po7MXPsXl2U2ysfPXPAmwZEiXujQlfh3clupGyDAClAHjT/zoKKgSc24QPOqkTbRK2bb9Fq55G5aECEnbGapM+0/3niD89AWOPTjtxbRHXwdhYw=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W.xEuF7_1706883735;
-Received: from 192.168.0.104(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W.xEuF7_1706883735)
+	t=1706883753; h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type;
+	bh=H6LY3GLqvy1HUVbo5feBhZ2kWwC3JC/oPer9v/Q6M0Q=;
+	b=YEOBMPQe6cy49KzqM5IXtDZEjB9SWjSk6VEHz6cluW23S4kjJ5kBSWYNtVzS8ZQnlwgvVIubOLqaTBjQ2ZRFZLU+JYXnZ1OUBU+zknZNjXVVt2qAbAXzAHYKxFNrExChRq0S5sENZaFoQ/jMsvdobJtWD5Me/5s01fMpFeyKn8Q=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R851e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W.xEuHm_1706883744;
+Received: from 192.168.0.104(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W.xEuHm_1706883744)
           by smtp.aliyun-inc.com;
-          Fri, 02 Feb 2024 22:22:24 +0800
-Message-ID: <673881a4-3060-40ab-b1d2-72115f9df5f7@linux.alibaba.com>
-Date: Fri, 2 Feb 2024 22:22:23 +0800
+          Fri, 02 Feb 2024 22:22:32 +0800
+Message-ID: <9354b0f5-5ad9-468c-a183-f6798109cd14@linux.alibaba.com>
+Date: Fri, 2 Feb 2024 22:22:31 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,249 +49,280 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 From: Bitao Hu <yaoma@linux.alibaba.com>
-Subject: Re: [PATCHv3 1/2] watchdog/softlockup: low-overhead detection of
- interrupt storm
-To: Doug Anderson <dianders@chromium.org>
-Cc: akpm@linux-foundation.org, pmladek@suse.com, kernelfans@gmail.com,
- liusong@linux.alibaba.com, linux-kernel@vger.kernel.org,
+Subject: Re: [PATCHv3 2/2] watchdog/softlockup: report the most frequent
+ interrupts
+To: Liu Song <liusong@linux.alibaba.com>, dianders@chromium.org,
+ akpm@linux-foundation.org, pmladek@suse.com, kernelfans@gmail.com,
  yaoma@linux.alibaba.com
+Cc: linux-kernel@vger.kernel.org
 References: <20240131171738.35496-1-yaoma@linux.alibaba.com>
- <20240131171738.35496-2-yaoma@linux.alibaba.com>
- <CAD=FV=VOYo-OsjKwPQFuBHgB6Uk9E-nb3CiwKjj_yLtPDa7sYQ@mail.gmail.com>
+ <20240131171738.35496-3-yaoma@linux.alibaba.com>
+ <189135f7-3bac-4a43-9daf-5798a01f79d5@linux.alibaba.com>
 Content-Language: en-US
-In-Reply-To: <CAD=FV=VOYo-OsjKwPQFuBHgB6Uk9E-nb3CiwKjj_yLtPDa7sYQ@mail.gmail.com>
+In-Reply-To: <189135f7-3bac-4a43-9daf-5798a01f79d5@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-On 2024/2/1 10:22, Doug Anderson wrote:
-> Hi,
+On 2024/2/1 09:46, Liu Song wrote:
 > 
-> On Wed, Jan 31, 2024 at 9:17 AM Bitao Hu <yaoma@linux.alibaba.com> wrote:
+> 在 2024/2/1 01:17, Bitao Hu 写道:
+>> When the watchdog determines that the current soft lockup is due
+>> to an interrupt storm based on CPU utilization, reporting the
+>> most frequent interrupts could be good enough for further
+>> troubleshooting.
 >>
->> The following softlockup is caused by interrupt storm, but it cannot be
->> identified from the call tree. Because the call tree is just a snapshot
->> and doesn't fully capture the behavior of the CPU during the soft lockup.
->>    watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
->>    ...
->>    Call trace:
->>      __do_softirq+0xa0/0x37c
->>      __irq_exit_rcu+0x108/0x140
->>      irq_exit+0x14/0x20
->>      __handle_domain_irq+0x84/0xe0
->>      gic_handle_irq+0x80/0x108
->>      el0_irq_naked+0x50/0x58
+>> Below is an example of interrupt storm. The call tree does not
+>> provide useful information, but we can analyze which interrupt
+>> caused the soft lockup by comparing the counts of interrupts.
 >>
->> Therefore，I think it is necessary to report CPU utilization during the
->> softlockup_thresh period (report once every sample_period, for a total
->> of 5 reportings), like this:
->>    watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
->>    CPU#28 Utilization every 4s during lockup:
->>      #1: 0% system, 0% softirq, 100% hardirq, 0% idle
->>      #2: 0% system, 0% softirq, 100% hardirq, 0% idle
->>      #3: 0% system, 0% softirq, 100% hardirq, 0% idle
->>      #4: 0% system, 0% softirq, 100% hardirq, 0% idle
->>      #5: 0% system, 0% softirq, 100% hardirq, 0% idle
->>    ...
->>
->> This would be helpful in determining whether an interrupt storm has
->> occurred or in identifying the cause of the softlockup. The criteria for
->> determination are as follows:
->>    a. If the hardirq utilization is high, then interrupt storm should be
->>    considered and the root cause cannot be determined from the call tree.
->>    b. If the softirq utilization is high, then we could analyze the call
->>    tree but it may cannot reflect the root cause.
->>    c. If the system utilization is high, then we could analyze the root
->>    cause from the call tree.
+>> [ 2987.488075] watchdog: BUG: soft lockup - CPU#9 stuck for 23s! 
+>> [kworker/9:1:214]
+>> [ 2987.488607] CPU#9 Utilization every 4s during lockup:
+>> [ 2987.488941]  #1:   0% system,          0% softirq,   100% 
+>> hardirq,     0% idle
+>> [ 2987.489357]  #2:   0% system,          0% softirq,   100% 
+>> hardirq,     0% idle
+>> [ 2987.489771]  #3:   0% system,          0% softirq,   100% 
+>> hardirq,     0% idle
+>> [ 2987.490186]  #4:   0% system,          0% softirq,   100% 
+>> hardirq,     0% idle
+>> [ 2987.490601]  #5:   0% system,          0% softirq,   100% 
+>> hardirq,     0% idle
+>> [ 2987.491034] CPU#9 Detect HardIRQ Time exceeds 50%. Most frequent 
+>> HardIRQs:
+>> [ 2987.491493]  #1: 330985      irq#7(IPI)
+>> [ 2987.491743]  #2: 5000        irq#10(arch_timer)
+>> [ 2987.492039]  #3: 9           irq#91(nvme0q2)
+>> [ 2987.492318]  #4: 3           irq#118(virtio1-output.12)
+>> ...
+>> [ 2987.492728] Call trace:
+>> [ 2987.492729]  __do_softirq+0xa8/0x364
 >>
 >> Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
 >> ---
->>   kernel/watchdog.c | 84 +++++++++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 84 insertions(+)
-> 
-> Random high-level question: I'm trying to figure out exactly when your
-> code will trigger. The only way it will trigger is if the timer
-> interrupt is a higher priority than the storming interrupt. By this I
-> don't mean that the timer will interrupt the storming one (it's not a
-> nested interrupt), but that if both interrupts are currently asserted
-> we'll service the timer first.
-> 
-> If the storming interrupt is always serviced before the timer
-> interrupt then the softlockup code won't trigger at all. In that case
-> we should detect a hard lockup and hopefully you've got the buddy
-> detector enabled and pseudo-NMI turned on. Then hopefully we'll have
-> actually interrupted the storming interrupt and it'll be on the
-> callstack.
-> 
-> I just wanted to make sure I was understanding correctly. This is why
-> you don't print the stats from watchdog_hardlockup_check() because
-> they're not useful there, right?
-Yes, you are right. The scenario I'm considering matches your
-description. If the storming interrupt lead to a soft lockup, then it
-will not be on the callstack. In this case, we need the stats.
-> 
-> 
+>>   kernel/watchdog.c | 156 ++++++++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 156 insertions(+)
+>>
 >> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
->> index 81a8862295d6..046507be4eb5 100644
+>> index 046507be4eb5..c4c25f25eae7 100644
 >> --- a/kernel/watchdog.c
 >> +++ b/kernel/watchdog.c
->> @@ -23,6 +23,8 @@
->>   #include <linux/sched/debug.h>
->>   #include <linux/sched/isolation.h>
->>   #include <linux/stop_machine.h>
->> +#include <linux/kernel_stat.h>
->> +#include <linux/math64.h>
-> 
-> nit: instead of adding to the end, add these in sorted order. The
-> includes we have now are _almost_ in sorted order. I'd add these
-> between "init.h" and "module.h"
-Sure, I will standardize the code.
-> 
-> 
->>   #include <asm/irq_regs.h>
->>   #include <linux/kvm_para.h>
->> @@ -441,6 +443,85 @@ static int is_softlockup(unsigned long touch_ts,
->>          return 0;
->>   }
->>
->> +#ifdef CONFIG_IRQ_TIME_ACCOUNTING
-> 
-> In v1 I think I suggested adding a new config. Even with your
-> optimizations you've quoted this as taking up "237,568 bytes" of
-> global storage when things are configured for the max number of CPUs.
-> It feels like someone might not want that. Adding a new Kconfig knob
-> shouldn't be a huge problem. Maybe you can have it default to "yes" if
-> the max number of CPUs is <= 64 or 128 or something?
-Sure, I will add a new config.
-> 
-> 
->> +#define NUM_STATS_GROUPS       5
->> +enum stats_per_group {
->> +       STATS_SYSTEM,
->> +       STATS_SOFTIRQ,
->> +       STATS_HARDIRQ,
->> +       STATS_IDLE,
->> +       NUM_STATS_PER_GROUP,
+>> @@ -25,6 +25,9 @@
+>>   #include <linux/stop_machine.h>
+>>   #include <linux/kernel_stat.h>
+>>   #include <linux/math64.h>
+>> +#include <linux/irq.h>
+>> +#include <linux/bitops.h>
+>> +#include <linux/irqdesc.h>
+>>   #include <asm/irq_regs.h>
+>>   #include <linux/kvm_para.h>
+>> @@ -431,11 +434,15 @@ void touch_softlockup_watchdog_sync(void)
+>>       __this_cpu_write(watchdog_report_ts, SOFTLOCKUP_DELAY_REPORT);
+>>   }
+>> +static void set_potential_softlockup(unsigned long now, unsigned long 
+>> touch_ts);
+>> +
+>>   static int is_softlockup(unsigned long touch_ts,
+>>                unsigned long period_ts,
+>>                unsigned long now)
+>>   {
+>>       if ((watchdog_enabled & WATCHDOG_SOFTOCKUP_ENABLED) && 
+>> watchdog_thresh) {
+>> +        /* Softlockup may occur in the current period */
+>> +        set_potential_softlockup(now, period_ts);
+>>           /* Warn about unreasonable delays. */
+>>           if (time_after(now, period_ts + get_softlockup_thresh()))
+>>               return now - touch_ts;
+>> @@ -462,6 +469,8 @@ static DEFINE_PER_CPU(u16, 
+>> cpustat_old[NUM_STATS_PER_GROUP]);
+>>   static DEFINE_PER_CPU(u8, 
+>> cpustat_utilization[NUM_STATS_GROUPS][NUM_STATS_PER_GROUP]);
+>>   static DEFINE_PER_CPU(u8, cpustat_tail);
+>> +static void print_hardirq_counts(void);
+>> +
+>>   /*
+>>    * We don't need nanosecond resolution. A granularity of 16ms is
+>>    * sufficient for our precision, allowing us to use u16 to store
+>> @@ -516,10 +525,156 @@ static void print_cpustat(void)
+>>               __this_cpu_read(cpustat_utilization[i][STATS_HARDIRQ]),
+>>               __this_cpu_read(cpustat_utilization[i][STATS_IDLE]));
+>>       }
+>> +    print_hardirq_counts();
+>> +}
+>> +
+>> +#define HARDIRQ_PERCENT_THRESH        50
+>> +#define NUM_HARDIRQ_REPORT        5
+>> +static DECLARE_BITMAP(softlockup_hardirq_cpus, CONFIG_NR_CPUS);
+>> +static DEFINE_PER_CPU(u32 *, hardirq_counts);
+>> +
+>> +struct irq_counts {
+>> +    int irq;
+>> +    u32 counts;
 >> +};
->> +static enum cpu_usage_stat stats[NUM_STATS_PER_GROUP] = {
-> 
-> "static const", not just "static"
-OK.
-> 
-> nit: maybe call this "tracked_stats" since "stats" is a bit of a
-> generic name for a global.
-Agree, it is clearer.
-> 
-> 
->> +       CPUTIME_SYSTEM,
->> +       CPUTIME_SOFTIRQ,
->> +       CPUTIME_IRQ,
->> +       CPUTIME_IDLE,
->> +};
->> +static DEFINE_PER_CPU(u16, cpustat_old[NUM_STATS_PER_GROUP]);
->> +static DEFINE_PER_CPU(u8, cpustat_utilization[NUM_STATS_GROUPS][NUM_STATS_PER_GROUP]);
->> +static DEFINE_PER_CPU(u8, cpustat_tail);
+>> +
+>> +static void find_counts_top(struct irq_counts *irq_counts, int irq, 
+>> u32 counts, int range)
+>> +{
+>> +    unsigned int i, j;
+>> +
+>> +    for (i = 0; i < range; i++) {
+>> +        if (counts > irq_counts[i].counts) {
+>> +            for (j = range - 1; j > i; j--) {
+>> +                irq_counts[j].counts = irq_counts[j - 1].counts;
+>> +                irq_counts[j].irq = irq_counts[j - 1].irq;
+>> +            }
+>> +            irq_counts[j].counts = counts;
+>> +            irq_counts[j].irq = irq;
+>> +            break;
+>> +        }
+> The current implementation can lead to a reordering with each iteration.
+> It is recommended to update in place if the value is larger and perform
+> the reordering just before printing at the end.
+Sure, I will consider optimization.
+>> +    }
+>> +}
 >> +
 >> +/*
->> + * We don't need nanosecond resolution. A granularity of 16ms is
->> + * sufficient for our precision, allowing us to use u16 to store
->> + * cpustats, which will roll over roughly every ~1000 seconds.
->> + * 2^24 ~= 16 * 10^6
+>> + * If the proportion of time spent handling irq exceeds 
+>> HARDIRQ_PERCENT_THRESH%
+>> + * during sample_period, then it is necessary to record the counts of 
+>> each irq.
 >> + */
->> +static u16 get_16bit_precision(u64 data)
-> 
-> nit: instead of "data", call it "data_ns"
-OK.
-> 
-> 
+>> +static inline bool need_record_irq_counts(int type)
 >> +{
->> +       return data >> 24LL; /* 2^24ns ~= 16.8ms */
+>> +    int tail = __this_cpu_read(cpustat_tail);
+>> +    u8 utilization;
+>> +
+>> +    if (--tail == -1)
+>> +        tail = 4;
+>> +    utilization = __this_cpu_read(cpustat_utilization[tail][type]);
+>> +    return utilization > HARDIRQ_PERCENT_THRESH;
 >> +}
 >> +
->> +static void update_cpustat(void)
+>> +/*
+>> + * Mark softlockup as potentially caused by hardirq
+>> + */
+>> +static void set_potential_softlockup_hardirq(void)
 >> +{
->> +       u8 i;
-> 
-> FWIW, Andrew Morton (who will likely be the one landing this patch)
-> was quoted in LWN [1] the other week saying that "i" should be an
-> integer. :-P Making it an "int" won't make the code any less
-> efficient.
-> 
-> [1] https://lwn.net/Articles/958417/
-OK, I will use "int" here.
-> 
-> 
->> +       u16 old;
->> +       u8 utilization;
->> +       u8 tail = __this_cpu_read(cpustat_tail);
->> +       struct kernel_cpustat kcpustat;
->> +       u64 *cpustat = kcpustat.cpustat;
->> +       u16 sample_period_ms = get_16bit_precision(sample_period);
-> 
-> It's not really milliseconds, right? Maybe "sample_period_16"?
-Agree, it is clearer.
-> 
-> 
->> +       kcpustat_cpu_fetch(&kcpustat, smp_processor_id());
->> +       for (i = STATS_SYSTEM; i < NUM_STATS_PER_GROUP; i++) {
-> 
-> nit: start i as 0 instead of assuming that STATS_SYSTEM is 0.
-OK.
-> 
-> 
->> +               old = __this_cpu_read(cpustat_old[i]);
->> +               cpustat[stats[i]] = get_16bit_precision(cpustat[stats[i]]);
-> 
-> IMO make a local called "new" and store the 16-bit precision there.
-> That's easier to read, gets rid of the cast below, and is probably
-> more efficient (the compiler doesn't need to upcast the 16-bit value
-> and store it in a 64-bit memory location).
-Oh, that's interesting, I hadn't thought of that.
-  ...oh, or maybe "new" is a
-> reserved keyword? You could call them "old_stat_16" and "new_stat_16".
-> 
-> 
->> +               utilization = 100 * (u16)(cpustat[stats[i]] - old) / sample_period_ms;
-> 
-> Maybe slightly better to round, with:
-> 
-> utilization = DIV_ROUND_UP(100 * (new - old), sample_period_ms);
-> 
-> What do you think?
-Agree, I will use your method.
-> 
-> 
->> +               __this_cpu_write(cpustat_utilization[tail][i], utilization);
->> +               __this_cpu_write(cpustat_old[i], cpustat[stats[i]]);
->> +       }
->> +       __this_cpu_write(cpustat_tail, (tail + 1) % NUM_STATS_GROUPS);
+>> +    u32 i;
+>> +    u32 *counts = __this_cpu_read(hardirq_counts);
+>> +    int cpu = smp_processor_id();
+>> +    struct irq_desc *desc;
+>> +
+>> +    if (!need_record_irq_counts(STATS_HARDIRQ))
+>> +        return;
+>> +
+>> +    if (!test_bit(cpu, softlockup_hardirq_cpus)) {
+>> +        counts = kmalloc_array(nr_irqs, sizeof(u32), GFP_ATOMIC);
+>> +        if (!counts)
+>> +            return;
+>> +        for_each_irq_desc(i, desc) {
+>> +            if (!desc)
+>> +                continue;
+>> +            counts[i] = desc->kstat_irqs ?
+>> +                *this_cpu_ptr(desc->kstat_irqs) : 0;
+>> +        }
+>> +        __this_cpu_write(hardirq_counts, counts);
+>> +        set_bit(cpu, softlockup_hardirq_cpus);
+>> +    }
 >> +}
 >> +
->> +static void print_cpustat(void)
+>> +static void clear_potential_softlockup_hardirq(void)
 >> +{
->> +       u8 i, j;
->> +       u8 tail = __this_cpu_read(cpustat_tail);
->> +       u64 sample_period_second = sample_period;
+>> +    u32 *counts = __this_cpu_read(hardirq_counts);
+>> +    int cpu = smp_processor_id();
 >> +
->> +       do_div(sample_period_second, NSEC_PER_SEC);
->> +       /*
->> +        * We do not want the "watchdog: " prefix on every line,
->> +        * hence we use "printk" instead of "pr_crit".
->> +        */
->> +       printk(KERN_CRIT "CPU#%d Utilization every %llus during lockup:\n",
->> +               smp_processor_id(), sample_period_second);
->> +       for (j = STATS_SYSTEM, i = tail; j < NUM_STATS_GROUPS;
-> 
-> Here initting "j" to STATS_SYSTEM definitely doesn't make sense. Init to 0.
-> 
-> You could also make your loop easier to understand with just:
-> 
-> for (i = 0; i < NUM_STATS_GROUPS; i++) {
->    unsigned int group = (tail + i) % NUM_STATS_GROUPS;
->
-Agree, it is easier to read.
-
-> 
-> -Doug
+>> +    if (test_bit(cpu, softlockup_hardirq_cpus)) {
+>> +        kfree(counts);
+>> +        counts = NULL;
+>> +        __this_cpu_write(hardirq_counts, counts);
+>> +        clear_bit(cpu, softlockup_hardirq_cpus);
+>> +    }
+>>   }
+>> +
+>> +/*
+>> + * Mark that softlockup may occur
+>> + */
+>> +static void set_potential_softlockup(unsigned long now, unsigned long 
+>> period_ts)
+>> +{
+>> +    if (time_after_eq(now, period_ts + get_softlockup_thresh() / 5))
+>> +        set_potential_softlockup_hardirq();
+>> +}
+>> +
+>> +static void clear_potential_softlockup(void)
+>> +{
+>> +    clear_potential_softlockup_hardirq();
+>> +}
+> Given that clear_potential_softlockup will only call
+> clear_potential_softlockup_hardirq, then why is there a need to declare
+> clear_potential_softlockup separately?
+I had considered adding "clear_potential_softlockup_softirq", but
+ultimately I removed it. Indeed, it is confusing; I will remove the
+"clear_potential_softlockup".
+>> +
+>> +static void print_hardirq_counts(void)
+>> +{
+>> +    u32 i;
+>> +    struct irq_desc *desc;
+>> +    u32 counts_diff;
+>> +    u32 *counts = __this_cpu_read(hardirq_counts);
+>> +    int cpu = smp_processor_id();
+>> +    struct irq_counts hardirq_counts_top[NUM_HARDIRQ_REPORT] = {
+>> +        {-1, 0}, {-1, 0}, {-1, 0}, {-1, 0},
+>> +    };
+>> +
+>> +    if (test_bit(cpu, softlockup_hardirq_cpus)) {
+>> +        /* Find the top NUM_HARDIRQ_REPORT most frequent interrupts */
+>> +        for_each_irq_desc(i, desc) {
+>> +            if (!desc)
+>> +                continue;
+>> +            counts_diff = desc->kstat_irqs ?
+>> +                *this_cpu_ptr(desc->kstat_irqs) - counts[i] : 0;
+>> +            find_counts_top(hardirq_counts_top, i, counts_diff,
+>> +                    NUM_HARDIRQ_REPORT);
+>> +        }
+>> +        /*
+>> +         * We do not want the "watchdog: " prefix on every line,
+>> +         * hence we use "printk" instead of "pr_crit".
+>> +         */
+>> +        printk(KERN_CRIT "CPU#%d Detect HardIRQ Time exceeds %d%%. 
+>> Most frequent HardIRQs:\n",
+>> +            smp_processor_id(), HARDIRQ_PERCENT_THRESH);
+>> +        for (i = 0; i < NUM_HARDIRQ_REPORT; i++) {
+>> +            if (hardirq_counts_top[i].irq == -1)
+>> +                break;
+>> +            desc = irq_to_desc(hardirq_counts_top[i].irq);
+>> +            if (desc && desc->action)
+>> +                printk(KERN_CRIT "\t#%u: %-10u\tirq#%d(%s)\n",
+>> +                    i+1, hardirq_counts_top[i].counts,
+>> +                    hardirq_counts_top[i].irq, desc->action->name);
+>> +            else
+>> +                printk(KERN_CRIT "\t#%u: %-10u\tirq#%d\n",
+>> +                    i+1, hardirq_counts_top[i].counts,
+>> +                    hardirq_counts_top[i].irq);
+>> +        }
+>> +        if (!need_record_irq_counts(STATS_HARDIRQ))
+>> +            clear_potential_softlockup_hardirq();
+>> +    }
+>> +}
+>> +
+>>   #else
+>>   static inline void update_cpustat(void) { }
+>>   static inline void print_cpustat(void) { }
+>> +static inline void set_potential_softlockup(unsigned long now, 
+>> unsigned long period_ts) { }
+>> +static inline void clear_potential_softlockup(void) { }
+>>   #endif
+>>   /* watchdog detector functions */
+>> @@ -537,6 +692,7 @@ static DEFINE_PER_CPU(struct cpu_stop_work, 
+>> softlockup_stop_work);
+>>   static int softlockup_fn(void *data)
+>>   {
+>>       update_touch_ts();
+>> +    clear_potential_softlockup();
+>>       complete(this_cpu_ptr(&softlockup_completion));
+>>       return 0;
 
