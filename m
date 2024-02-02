@@ -1,170 +1,95 @@
-Return-Path: <linux-kernel+bounces-49513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF1D4846B56
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 37F31846B4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:54:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA4041C2771D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:55:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AA331C26BC5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:54:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06FB3604DA;
-	Fri,  2 Feb 2024 08:55:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0399F604CF;
+	Fri,  2 Feb 2024 08:54:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="jSwxgw1o"
-Received: from smtp-relay-canonical-1.canonical.com (smtp-relay-canonical-1.canonical.com [185.125.188.121])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="MgxgUKUo"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FDBB60257;
-	Fri,  2 Feb 2024 08:55:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.121
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B5E2604C1
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 08:54:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706864146; cv=none; b=rVIHaSTdsQ9QiXnDiSCKX6BOPSEnSE0kwgZPyb0+M+2pBYfpQVPVe+9Rq+Kw7k0htWDmcsnjQD3h78VEwmYO+IKT70XS1oEKJ/I5AevCJiWAm5QEBTNvcRR+LB6Vmdbbf782a3SZ7nzB//2d9PS7YW1cW9xRObhDMPCl4y5c27Y=
+	t=1706864045; cv=none; b=DV6UzT6gqx1VPRVmv1+vQw7n6ufSoK/x6LzhPNHs49LPf3SsOwkw4IRAZcf6aIRY81kNIadTVOjpX3BdbtvjegphKtw1S+Q72HbmS6XsU8Ic1QGOOv7kzZbvQeTjjJDFGreraqhMC94Fy85K7kR9mF5xOrZPQV4QQ/aCufJyxu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706864146; c=relaxed/simple;
-	bh=QJN4byeE5cmqPJcwaf5F7ajBalsBJwhZ6yaGrvXhP0c=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aEjVoj/2imqTYFeQ+SpR4pEqAuETzcPBmKJbz2XY8kZKQqJiRuNqpVWld6KiPKk5/43T1kroTAJIQS5xbgiwqqoEqDC7ndfUKiCWlBHj1wBm0kZx0JlHSMTY5HCKeOVg+WIyhxVtpK3gh12QHeygyu9I9E5LJbwnrNJ5+5FNogQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=jSwxgw1o; arc=none smtp.client-ip=185.125.188.121
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from dragon.fritz.box (unknown [58.7.187.102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 6EE233FE92;
-	Fri,  2 Feb 2024 08:55:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1706864133;
-	bh=9y1paqiSjtE07Weh2QloWiCQOyB0q+cBO1seRMkGQ5U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version;
-	b=jSwxgw1oinexsw8k0fTHX+F+36OtyHCsA6707oBJrYH9KWdzlxTFxDutKv68xnW/7
-	 UfEwG4imbeeLaBu6PF50zny0Ko3uNsUGcnXCuDGo1+za4PyofPz1YTmmAisLYRxKFB
-	 RQNEtNMBu9f4mZqqtdFvj/420c0CRGIdO2lNVRM1c+Tt7A+UEYdnw3BlWbxh7qyskM
-	 H8Sux6yJcmNlyAU3TI/EhMQzFPNECg7SVkuhX6S8KzUlkgRfEo4V1XBNWXyBzCx/xw
-	 rqlCB9HpUFzKqVIZgLcwTjE9Y9ZM4j1yCGlS2NHDhJXaruP5ECg+/CzSaLLAqKgwA2
-	 J40BhzF+wbxFA==
-From: Daniel van Vugt <daniel.van.vugt@canonical.com>
-To: 
-Cc: Daniel van Vugt <daniel.van.vugt@canonical.com>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Helge Deller <deller@gmx.de>,
-	Jani Nikula <jani.nikula@intel.com>,
-	Danilo Krummrich <dakr@redhat.com>,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] fbcon: Defer console takeover for splash screens to first switch
-Date: Fri,  2 Feb 2024 16:53:55 +0800
-Message-ID: <20240202085408.23251-2-daniel.van.vugt@canonical.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240202085408.23251-1-daniel.van.vugt@canonical.com>
-References: <20240202085408.23251-1-daniel.van.vugt@canonical.com>
+	s=arc-20240116; t=1706864045; c=relaxed/simple;
+	bh=T7bq3xHNg/s9HVbFl23MaqFRAUuwGoXpxNYtAFiCK1U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rixm1YhL+mWpYykghPfurEOY4zz4G7WLAyTvU69/sm0Rf2tyfHAhm0yE1uiyxNRTRFERYO9IF237CmbKAWK+xx4ajLDFidnFDnRXLPZTcAbNdYk9Up8NMRCNxh7z8uAhDmXhLzWdtfN5YK66EX86qAGQrPV/LkpqGhwCzFcqWiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=MgxgUKUo; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-51109060d6aso2762138e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 00:54:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1706864041; x=1707468841; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=T7bq3xHNg/s9HVbFl23MaqFRAUuwGoXpxNYtAFiCK1U=;
+        b=MgxgUKUoybkftKJYwtrVTUpdXvQiFPmesMOe+CrojPKIkCn2b7JN+hzsMJbHghNiDC
+         1IkeOe4MIgTEp5Z85xDfzEVaNSLkCJvbPWQELg6Ft8SpwEYD1MKHCWwTuQ54jg/oo4VB
+         UR0m9NXYDqCcB8manW61VFfsbpauXD82eVG6uBSkohOsf9sPe3wn/llBq0VM3MLZPxDB
+         OTipZngbDDp5IwdmkpbY66vvWih69UFmgvPTVqmij03gIXN4wTWq7Inxm2gh4AJTsXq4
+         kOKCnx6LtKsI73XyPObr0em05oAmZsbbASr7uJ1S00tFE7BjSEjwBg1AyKWOLvQhuymI
+         lPSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706864041; x=1707468841;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T7bq3xHNg/s9HVbFl23MaqFRAUuwGoXpxNYtAFiCK1U=;
+        b=dLZqANJ18a00XTN6gFwaBXG7CazX/lF8YLZ4wG8MPnNym0WUR7+g8O1QhL3iERE2hn
+         uddS7nikVANB53i9MbsU062X19edJiuMj6C7wi57Pxm0BkhxwkynHOe1WaxNtEG0iCAA
+         9e7bF6DK3rkiY+6GlC55d7+GRZdGMNoUcvnrnVIVxrc7+aC9JufWdS9YK/KOM0+1npa9
+         JJA0168y1KXskc8U3x1kv57bBfoZnKKqPRdnWhbADGw4LYZD4gfL45LhhSMZHHm+k6aT
+         OXwsRV0P1EwCKy+JZd9Ogb3UWcgKfL5ATqYug6g+j4LmlC8ZQwQwkOwndFiBQcwkO95f
+         nByw==
+X-Gm-Message-State: AOJu0YzcWDf/v5iuVVVGblFsVNhMg162zEzBmZb86nRvc+QG4O3WTiVg
+	7B7lmnc3D2+///+v+hqUftUWPyGX4GtOG0eoaUVjUWujIycEyS55zv+irF/WoDE=
+X-Google-Smtp-Source: AGHT+IGGcuR/FmrpM464UyvI6H3Eyhpd/m6ye0bQ69xFkZtDy/71p/4rT1CfWc0HyDm0L3IJm3P5NA==
+X-Received: by 2002:ac2:549b:0:b0:510:c7c:5a6a with SMTP id t27-20020ac2549b000000b005100c7c5a6amr3159338lfk.61.1706864041563;
+        Fri, 02 Feb 2024 00:54:01 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWWH0XyF2UxwKgL/eAajxL0PSFAXt50MADFBXGSGEwKxkMpWv7cPoSi9kW440OyTJv6v5yPlfxfGapBjMVKL2LeiVBma2Edhf3YGGUUqcVsLyLl2oiGABA3jvlN6UjACG9D0iVhaBAKbYIbAUOyuZFGWnz7O9ky7zfStCvfR9Bv7NzTQ2HQAj5d3UfflpcFu1mOTtUhhPSY8E3gW54gs1WD0ilAYZcUHdvEcfnUaqxuqyilQQX8xFX5js/BEdNYG+LII3ycKbI=
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id d29-20020adfa41d000000b0033b137d8dbdsm1432924wra.103.2024.02.02.00.54.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 00:54:00 -0800 (PST)
+Date: Fri, 2 Feb 2024 09:53:58 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Yunjian Wang <wangyunjian@huawei.com>
+Cc: willemdebruijn.kernel@gmail.com, jasowang@redhat.com, kuba@kernel.org,
+	davem@davemloft.net, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, xudingke@huawei.com
+Subject: Re: [PATCH net-next v2] tun: Implement ethtool's get_channels()
+ callback
+Message-ID: <ZbytpnvfrN6xzKtR@nanopsycho>
+References: <1706860400-61484-1-git-send-email-wangyunjian@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1706860400-61484-1-git-send-email-wangyunjian@huawei.com>
 
-Until now, deferred console takeover only meant defer until there is
-output. But that risks stepping on the toes of userspace splash screens,
-as console messages may appear before the splash screen. So check for the
-"splash" parameter (as used by Plymouth) and if present then extend the
-deferral until the first switch.
+Fri, Feb 02, 2024 at 08:53:20AM CET, wangyunjian@huawei.com wrote:
+>Implement the tun .get_channels functionality. This feature is necessary
+>for some tools, such as libxdp, which need to retrieve the queue count.
+>
+>Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
 
-Closes: https://bugs.launchpad.net/bugs/1970069
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Signed-off-by: Daniel van Vugt <daniel.van.vugt@canonical.com>
----
- drivers/video/fbdev/core/fbcon.c | 32 +++++++++++++++++++++++++++++---
- 1 file changed, 29 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index 63af6ab034..5b9f7635f7 100644
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -76,6 +76,7 @@
- #include <linux/crc32.h> /* For counting font checksums */
- #include <linux/uaccess.h>
- #include <asm/irq.h>
-+#include <asm/cmdline.h>
- 
- #include "fbcon.h"
- #include "fb_internal.h"
-@@ -146,6 +147,7 @@ static inline void fbcon_map_override(void)
- 
- #ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
- static bool deferred_takeover = true;
-+static int initial_console = -1;
- #else
- #define deferred_takeover false
- #endif
-@@ -3341,7 +3343,7 @@ static void fbcon_register_existing_fbs(struct work_struct *work)
- 	console_unlock();
- }
- 
--static struct notifier_block fbcon_output_nb;
-+static struct notifier_block fbcon_output_nb, fbcon_switch_nb;
- static DECLARE_WORK(fbcon_deferred_takeover_work, fbcon_register_existing_fbs);
- 
- static int fbcon_output_notifier(struct notifier_block *nb,
-@@ -3358,6 +3360,21 @@ static int fbcon_output_notifier(struct notifier_block *nb,
- 
- 	return NOTIFY_OK;
- }
-+
-+static int fbcon_switch_notifier(struct notifier_block *nb,
-+				 unsigned long action, void *data)
-+{
-+	struct vc_data *vc = data;
-+
-+	WARN_CONSOLE_UNLOCKED();
-+
-+	if (vc->vc_num != initial_console) {
-+		dummycon_unregister_switch_notifier(&fbcon_switch_nb);
-+		dummycon_register_output_notifier(&fbcon_output_nb);
-+	}
-+
-+	return NOTIFY_OK;
-+}
- #endif
- 
- static void fbcon_start(void)
-@@ -3370,7 +3387,14 @@ static void fbcon_start(void)
- 
- 	if (deferred_takeover) {
- 		fbcon_output_nb.notifier_call = fbcon_output_notifier;
--		dummycon_register_output_notifier(&fbcon_output_nb);
-+		fbcon_switch_nb.notifier_call = fbcon_switch_notifier;
-+		initial_console = fg_console;
-+
-+		if (cmdline_find_option_bool(boot_command_line, "splash"))
-+			dummycon_register_switch_notifier(&fbcon_switch_nb);
-+		else
-+			dummycon_register_output_notifier(&fbcon_output_nb);
-+
- 		return;
- 	}
- #endif
-@@ -3417,8 +3441,10 @@ void __exit fb_console_exit(void)
- {
- #ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
- 	console_lock();
--	if (deferred_takeover)
-+	if (deferred_takeover) {
- 		dummycon_unregister_output_notifier(&fbcon_output_nb);
-+		dummycon_unregister_switch_notifier(&fbcon_switch_nb);
-+	}
- 	console_unlock();
- 
- 	cancel_work_sync(&fbcon_deferred_takeover_work);
--- 
-2.43.0
-
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 
