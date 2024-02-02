@@ -1,145 +1,177 @@
-Return-Path: <linux-kernel+bounces-49293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35794846849
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:45:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16D7F84684E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:46:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67C9B1C24AE5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:45:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B8861C229A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:46:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6692482CA;
-	Fri,  2 Feb 2024 06:41:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD6B6179BF;
+	Fri,  2 Feb 2024 06:42:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="eJ6aqHIm"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="DkxNFSg0"
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A937B481A5;
-	Fri,  2 Feb 2024 06:41:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5212C179A1
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 06:42:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706856088; cv=none; b=jvRGiG9imlAqpO7UpHot6urrnYUX0RKYebkjmOYOBLK/E2f/APm0Zih56LdkYfz5VMOv+sjh6ApnLzioJ+egPSIEu/PrOccmMQJHKv1grs7ID7929+3xQEK7+md3Bnr8jS/T5vyf6Hd3xJBHQ7hxSwcZlQlvRkxf2E/crMFSQ98=
+	t=1706856124; cv=none; b=s0KeZtxYq3k71nM9Vq9r8rKQWuvyWa5RTmZR0loVlx2DMr2e57Ml67AZmbc1zpb3hyno/vAZAfeUifz5X6eXV9MiAXqrXccdR8ZhcYurcQCBYTnrxAtJXKRPrCQzOnPS9zn/gKCmX24fPRxKxWWQvQT6QWIfI3tKKK7O3hEIATw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706856088; c=relaxed/simple;
-	bh=ZDnGKGfbR/v3Yx+LWz4vHfhF/MSvu7CCgdFnaeoJrQM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=afUb2iRpfBuQkrP+2w4mWMSR1dulfosAdPVl35eqY65uV06rzIPh2+tjo5Xs0L8lXbbgH52M5jrjldUrFpoevrao+FEPZTLGPs3Co9j2dVq9EDXLpXJf3jgX0Gsz0eQM9sPbItp9awcdyRxZIGGGGteC5zt908syrzObGWuXm8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=eJ6aqHIm; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4124aHeJ005911;
-	Fri, 2 Feb 2024 06:41:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=joizP/oCmG0LM1+iiXJ4
-	kYTWEPaLDXDLpePwjwt1kV0=; b=eJ6aqHIm1IZ+4TntyRvYcDjEH6HLcT+fKvrH
-	tXp2HOnjDOdHbkOza6lqfc3ji4jfHbgzJqPsy5ZqnvCvkkFN/rMBWRkSIIDUgF+d
-	ahlQ9DUCneog5qj8as2WAiNiK3zrN0/nh0+UwL/1IVIefr9NwhzLFeAREs2QmIpe
-	xDT4Ri3/7EpyeO1pH9+7mvTHQjrgOzggXYe2lU2sXS4eX+bSclZkNoEOUWa+bwWO
-	lgWYmSh0UzPQwceL1J1PPiLlj9ahc/ae+iOb617UwlbRP4bMMQmxaX/ogK7NYi/W
-	USFFyuDiApIQUxXcKvMxRg52w3bE6sLuVYSqpe1rxBnJHvX3YQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0ptu0nya-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Feb 2024 06:41:24 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4126fNxW004876
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 2 Feb 2024 06:41:23 GMT
-Received: from hu-ekangupt-hyd.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 1 Feb 2024 22:41:21 -0800
-From: Ekansh Gupta <quic_ekangupt@quicinc.com>
-To: <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>
-CC: <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1 16/16] misc: fastrpc: Add system unsigned PD support
-Date: Fri, 2 Feb 2024 12:10:39 +0530
-Message-ID: <20240202064039.15505-17-quic_ekangupt@quicinc.com>
-X-Mailer: git-send-email 2.17.0
-In-Reply-To: <20240202064039.15505-1-quic_ekangupt@quicinc.com>
-References: <20240202064039.15505-1-quic_ekangupt@quicinc.com>
+	s=arc-20240116; t=1706856124; c=relaxed/simple;
+	bh=EyPJ1v8uJ1verWOqJzXdRF7tA+iZhYTVX3CQiV6Wfbk=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=LDMAHcJsaHJHS0GAbHaGz2iz1Rg4xxetuJRCg5IBG/3qIsZKiqv5X4gTr1mnk5kf2epL59rItbXDqcuu6f0hyAWe0zA+RNaW2UMucscbi45ACiiWkSEFNuy/oHqTI/P+I7R3qqn1mo80tGL3cxB7Din8PdH7iqn2hWoWWbhh+S8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=DkxNFSg0; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5d8bc1caf00so1601090a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 22:42:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1706856121; x=1707460921; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xeB3e/KJ2ArkcAJ7cDxBQCA+oTgv/CnKDnVoit5SrNw=;
+        b=DkxNFSg0UZjhOYNO9QomilU3VFGX9Oa0ddKOOE/qq8NOKjEi5oeh6AXR47Qq81lm77
+         PSb7glH0eOIC/NhkSo8hmsT+/B+e3bdBCJavw0o6imYrLYjLeAdT9NUmO9RY8HdYVIZm
+         XNXZ84WHDAQBSEkEufFjL8S1BwX5AuuUlSWHo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706856121; x=1707460921;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xeB3e/KJ2ArkcAJ7cDxBQCA+oTgv/CnKDnVoit5SrNw=;
+        b=jo+5Agpzkxin0mDGGOQxJfPZBHIeoNdfOcZk/Ckcmpsmdbppv8kMsMOnka2wNbSEVn
+         9F400zsuQMGWED6xwRPmPkbIm4/UKr55NRaVz2qEZu0s1hCBRgCckCZBuwO+ze5Ml0qT
+         3L9NhBQyScLmZ0o6iVvmIZZgiHagggDIIuAliIEsW0XP+IUtuE7GSdr8eUJA22HWiU4j
+         tiGIn2KqsaX6N5sb8XLDRrEBnrq4bfIi/R0Q8VDi5yWgvY9Z68shsEXfdKdBOKSawwI7
+         7Egxrri+L66sHBpX1WLI5qhHcB2ol3MRH6owl1bU582b3c02x6En2WEqEn1hgMBNdYKV
+         kRag==
+X-Gm-Message-State: AOJu0YwoGJEJOeeB/G0QPT63ltMI53vNirQZEIZIES4b6ma9yJT+oQRy
+	Yv0K4jOeaGZZdS6oG48J3L3qgaIjM9JKuL8yvfjDeJixl9P+hEjgBBXbifsOXw==
+X-Google-Smtp-Source: AGHT+IGkxoHrn5M23ZvqLsrcgWb9Dxe4chh56p5rjnQf81e2tLgOZlZAD6cC22pLx6DS6kx/4ch7Rg==
+X-Received: by 2002:a05:6a20:9326:b0:19e:399f:7bed with SMTP id r38-20020a056a20932600b0019e399f7bedmr4407693pzh.35.1706856121632;
+        Thu, 01 Feb 2024 22:42:01 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUSv8KyeVxLzlGyhyhJ6/k5Q8l3rOmZnebm5Ftte6euQTEIyGzkjD1oV8Cyqg6y2bKRShGnz/qsu+E5D9h1OLSVVnu84HPXx7PLd5AgFJfvfginU3vSbn1Jyi7RnXvVdEq+bFkO47Zwrq/rLX7o756g05VcM3Kko6+PIh5jDoU0gQgNF3OHccJnR0hZpbe1Y06qv4h8qSFrnEhsGOLrTQoKnGpXivVi4shl/FNK4m1L3o8+vSZqqsv0S3wMcmdERd8EJhTOaZ0PH7W2w6p1bfCEQaLzN/0/w6QZGBwzpqlN4EQOPhwQGxkfy8HJhsbkyUxzRysBfA1uG4CXq1egORvciiFbGJkVKpTYr2N2BpYLQdBSHlgHNrlyBIdB0O+Aoxt7l11Wa7GVWyoTdjg/cOmdceBMrnJ1QDGZsjz0Lz9u+bmbEWiRefNwhkPQQicN/vAkTnHZ8DuoIswbpmksZRumsxfA5YJcJRepZCixavqoYSVuYWECbbW/FXKzEYJZGmL3knKe6cS5u4qkdeaAO/uzJQR5HAA=
+Received: from akaher-virtual-machine.eng.vmware.com ([66.170.99.2])
+        by smtp.gmail.com with ESMTPSA id kc12-20020a17090333cc00b001d94a245f3fsm880583plb.16.2024.02.01.22.41.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 01 Feb 2024 22:42:00 -0800 (PST)
+From: Ajay Kaher <ajay.kaher@broadcom.com>
+To: stable@vger.kernel.org,
+	gregkh@linuxfoundation.org
+Cc: pablo@netfilter.org,
+	kadlec@netfilter.org,
+	fw@strlen.de,
+	davem@davemloft.net,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	alexey.makhalov@broadcom.com,
+	florian.fainelli@broadcom.com,
+	vasavi.sirnapalli@broadcom.com,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Sasha Levin <sashal@kernel.org>,
+	Ajay Kaher <ajay.kaher@broadcom.com>
+Subject: [PATCH v5.10.y] netfilter: nf_tables: fix pointer math issue in nft_byteorder_eval()
+Date: Fri,  2 Feb 2024 12:11:21 +0530
+Message-Id: <1706856081-37418-1-git-send-email-ajay.kaher@broadcom.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 7oMHNIU_IpdEdGw41FrG_bnTeYlAvhMN
-X-Proofpoint-ORIG-GUID: 7oMHNIU_IpdEdGw41FrG_bnTeYlAvhMN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-01_10,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 suspectscore=0 phishscore=0 clxscore=1015 adultscore=0
- priorityscore=1501 spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402020047
 
-Trusted CPU applications currently offload to signed PDs on CDSP to
-gain some additional services provided by root PD. Unsigned PDs have
-access to limited root PD services that may not be sufficient for
-all use-cases. Signed PDs have a higher dynamic loading latency
-which impacts the performance of applications. Limited root PD
-services could be opened up for unsigned PDs but that should be
-restricted for untrusted processes. For this requirement, System
-unsigned PD is introduced which will be same as Unsigned PD for
-most part but will have access to more root PD services. Add
-changes to offload trusted applications to System unsigned PD
-when unsigned offload is requested.
+From: Dan Carpenter <dan.carpenter@linaro.org>
 
-Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
+commit c301f0981fdd3fd1ffac6836b423c4d7a8e0eb63 upstream.
+
+The problem is in nft_byteorder_eval() where we are iterating through a
+loop and writing to dst[0], dst[1], dst[2] and so on...  On each
+iteration we are writing 8 bytes.  But dst[] is an array of u32 so each
+element only has space for 4 bytes.  That means that every iteration
+overwrites part of the previous element.
+
+I spotted this bug while reviewing commit caf3ef7468f7 ("netfilter:
+nf_tables: prevent OOB access in nft_byteorder_eval") which is a related
+issue.  I think that the reason we have not detected this bug in testing
+is that most of time we only write one element.
+
+Fixes: ce1e7989d989 ("netfilter: nft_byteorder: provide 64bit le/be conversion")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+[Ajay: Modified to apply on v5.10.y]
+Signed-off-by: Ajay Kaher <ajay.kaher@broadcom.com>
 ---
- drivers/misc/fastrpc.c      | 7 +++++++
- include/uapi/misc/fastrpc.h | 2 ++
- 2 files changed, 9 insertions(+)
+ include/net/netfilter/nf_tables.h | 4 ++--
+ net/netfilter/nft_byteorder.c     | 5 +++--
+ net/netfilter/nft_meta.c          | 2 +-
+ 3 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index 4aa4e36bebc3..2f893c94dcc8 100644
---- a/drivers/misc/fastrpc.c
-+++ b/drivers/misc/fastrpc.c
-@@ -2002,11 +2002,18 @@ static int fastrpc_init_create_process(struct fastrpc_user *fl,
- 	if (init.attrs & FASTRPC_MODE_UNSIGNED_MODULE)
- 		fl->is_unsigned_pd = true;
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index 2237657..2da11d8 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -142,9 +142,9 @@ static inline u16 nft_reg_load16(const u32 *sreg)
+ 	return *(u16 *)sreg;
+ }
  
-+	/* Disregard any system unsigned PD attribute from userspace */
-+	init.attrs &= (~FASTRPC_MODE_SYSTEM_UNSIGNED_PD);
-+
- 	if (is_session_rejected(fl, fl->is_unsigned_pd)) {
- 		err = -EACCES;
- 		goto err;
- 	}
+-static inline void nft_reg_store64(u32 *dreg, u64 val)
++static inline void nft_reg_store64(u64 *dreg, u64 val)
+ {
+-	put_unaligned(val, (u64 *)dreg);
++	put_unaligned(val, dreg);
+ }
  
-+	/* Trusted apps will be launched as system unsigned PDs */
-+	if (!fl->untrusted_process && fl->is_unsigned_pd)
-+		init.attrs |= FASTRPC_MODE_SYSTEM_UNSIGNED_PD;
-+
- 	if (init.filelen > INIT_FILELEN_MAX) {
- 		err = -EINVAL;
- 		goto err;
-diff --git a/include/uapi/misc/fastrpc.h b/include/uapi/misc/fastrpc.h
-index 7053a5b6b16b..d0fb01e7277d 100644
---- a/include/uapi/misc/fastrpc.h
-+++ b/include/uapi/misc/fastrpc.h
-@@ -63,6 +63,8 @@ enum fastrpc_proc_attr {
- 	FASTRPC_MODE_SYSTEM_PROCESS	= (1 << 5),
- 	/* Macro for Prvileged Process */
- 	FASTRPC_MODE_PRIVILEGED		= (1 << 6),
-+	/* Macro for system unsigned PD */
-+	FASTRPC_MODE_SYSTEM_UNSIGNED_PD	= (1 << 17),
- };
+ static inline u64 nft_reg_load64(const u32 *sreg)
+diff --git a/net/netfilter/nft_byteorder.c b/net/netfilter/nft_byteorder.c
+index 7b0b8fe..9d250bd 100644
+--- a/net/netfilter/nft_byteorder.c
++++ b/net/netfilter/nft_byteorder.c
+@@ -38,20 +38,21 @@ void nft_byteorder_eval(const struct nft_expr *expr,
  
- /* Fastrpc attribute for memory protection of buffers */
+ 	switch (priv->size) {
+ 	case 8: {
++		u64 *dst64 = (void *)dst;
+ 		u64 src64;
+ 
+ 		switch (priv->op) {
+ 		case NFT_BYTEORDER_NTOH:
+ 			for (i = 0; i < priv->len / 8; i++) {
+ 				src64 = nft_reg_load64(&src[i]);
+-				nft_reg_store64(&dst[i], be64_to_cpu(src64));
++				nft_reg_store64(&dst64[i], be64_to_cpu(src64));
+ 			}
+ 			break;
+ 		case NFT_BYTEORDER_HTON:
+ 			for (i = 0; i < priv->len / 8; i++) {
+ 				src64 = (__force __u64)
+ 					cpu_to_be64(nft_reg_load64(&src[i]));
+-				nft_reg_store64(&dst[i], src64);
++				nft_reg_store64(&dst64[i], src64);
+ 			}
+ 			break;
+ 		}
+diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
+index 44d9b38..cb5bb0e 100644
+--- a/net/netfilter/nft_meta.c
++++ b/net/netfilter/nft_meta.c
+@@ -63,7 +63,7 @@ nft_meta_get_eval_time(enum nft_meta_keys key,
+ {
+ 	switch (key) {
+ 	case NFT_META_TIME_NS:
+-		nft_reg_store64(dest, ktime_get_real_ns());
++		nft_reg_store64((u64 *)dest, ktime_get_real_ns());
+ 		break;
+ 	case NFT_META_TIME_DAY:
+ 		nft_reg_store8(dest, nft_meta_weekday());
 -- 
-2.17.0
+2.7.4
 
 
