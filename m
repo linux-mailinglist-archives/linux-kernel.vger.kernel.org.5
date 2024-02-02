@@ -1,116 +1,174 @@
-Return-Path: <linux-kernel+bounces-50023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A4EC847336
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:32:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0654847338
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:32:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEBA61F26C24
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:32:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38B7F1F26CB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:32:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84E0C1468F7;
-	Fri,  2 Feb 2024 15:32:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 405AE22085;
+	Fri,  2 Feb 2024 15:32:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="FYG8Adgk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LV1xYAjH"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B36FA145B20;
-	Fri,  2 Feb 2024 15:32:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78E401468F6
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 15:32:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706887953; cv=none; b=INvZvkyCQzQM+fKNfu7oGv81SuEYMoJfDgzm+FHgGs/PdM+dVRScvVig8DSquG2pmtUBnUceAriIviRv3MLW7sGbrr9Pn69uwJ8VohA0tq764hX7FWcyz4KD9nCPOwSBUVk7MzydmTuvTuWrGZ1lcBqD+k34VvN+MtxNluNEAYg=
+	t=1706887967; cv=none; b=gJFJNY7vtwE8aSlcQE9RTSYNIlpw3doQNIoBLgJbmAArnXKhWMkEIB62hBRbMgNKghA8UrnO514sCGzL+cuMDlwV7yfKVtdso4Ll5W2WOvAVARJmCVuzJ21VcXOhjVvJpgE8F4pe1JHIxCpDsRCZJ7ABVzld4MRRwM6VUcLQrEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706887953; c=relaxed/simple;
-	bh=YPkSvytEEBb/qeJVsFU1fMko8TQCBCDq/nPKJnIl+bE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C80NCfetwq5tiqCHvum1hX9eUNaevSnXfgBNbp3zb8XHjH6bDwCAZ8mbU6mqRkAOjIVX7XupojnzHd38IPV6l1P8XkXOgoKiXV8pP3tMWkN8L8XJL2vTLrZhTGFkp7gELUGMX9nZX7Kr372QCC+v7S3Ww7jarC27sl7TOOuSE5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=FYG8Adgk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59519C433C7;
-	Fri,  2 Feb 2024 15:32:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706887953;
-	bh=YPkSvytEEBb/qeJVsFU1fMko8TQCBCDq/nPKJnIl+bE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FYG8AdgkCYmUNEylUzdiCra/uwbz+wT6RZmwsK8OkWghJ8Ix0/vvI7Qfp3UxOuIIv
-	 6IKy/LnZhGZ7Gy1osozYYVn+kPhHbRYeIVQQh45FCU8LaKXD59ywLuOWHsdsy08FFj
-	 j4qZzJuvlSgHKzYduAM18rihd5uGjQJsGjiNvBto=
-Date: Fri, 2 Feb 2024 07:32:32 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: naveenkrishna.chatradhi@amd.com, linux-kernel@vger.kernel.org,
-	Carlos Bilbao <carlos.bilbao@amd.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH v2] platform/x86/amd/hsmp: switch to use
- device_add_groups()
-Message-ID: <2024020243-blinks-pantomime-c51e@gregkh>
-References: <2024020145-junior-outnumber-3e76@gregkh>
- <07010c54-2e44-463b-9a9b-95697fd30ffd@redhat.com>
+	s=arc-20240116; t=1706887967; c=relaxed/simple;
+	bh=llo9v5dlf0lttbOBDd47InlVIFg3+gHSG0VvLxhgPM8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BE7gq8x4Ki7ioiKHIzRmmVpuKl5uaLIoDEw20NriWXq6ODyoCpzHYLe76Ps/uqIVirgmjQUotdN772tsYOghJMRyXe0IL1YCpdwMhTkv5LTeGALyyC6+m5VyDOC2U0xa3SvD1Y8640SvEuWCrS6Guw/pBUONYGlVrqhMCV4DyrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LV1xYAjH; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a359e6fde44so246801766b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 07:32:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706887963; x=1707492763; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Vhxs4lm4Zm3GUt/u/0z+FFoLShcYcrfs1PTgE9TLbHI=;
+        b=LV1xYAjH9XstlfnO+efyylh072BBXoPgD7lnTkEXfXnZEYRVyfrWQMd0aqtyFL+Nsu
+         e8Jb/rS7Uc1JtLZ2Kgu8JC8P7djjDcUASWEbQPAP3JiNGAGa1Ic2rhmiZHES8KPKpQf2
+         86VEESh33lsLiUt2rdHNECsHteGL9lOq7lQCDjq1svtj7uXIXE1czmMGjrwt/aBUqnlq
+         BW51/7pCNNypVJSv4AmxBG6iL0tG2F1uY857eXGjG1JSpKdJ0GPo/s3YF9Yh3Gn9JQdL
+         ilsaltVMQMgFwGORCuQXxddpYSTi5CSy7AXsYv9KyWvqIpIAsBUDrSk/NFf54eo64/y4
+         mylQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706887963; x=1707492763;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vhxs4lm4Zm3GUt/u/0z+FFoLShcYcrfs1PTgE9TLbHI=;
+        b=cpTGSd7btE5cWiKXkFhnaofbWgcDvpYXN3oe83DNzd0jGWrBT0lr9QBbW1u3cQ76Go
+         mEywebqpJu7zv6P1d3DBAy9WS4d1reU6XthBwNnhMEx4nXNfcz79bkVq4MaGdFrGg7C0
+         09GkNBOzooEk9U13Mz7knI49f/tiHxC66WfN2qVLelaNza0vRKbFucFBuWozpT+HE6kg
+         JFUYEmTAzAxqzS4TQPgrzgILpd1IMre/Ra9Bbzwkq/2KPNSiFnp/B4BDKhOeTc4mZaYC
+         r61Dsz5+fqex2cIt/L8ZKAGbMCEf1LRxV2pXTdvQpCptc6kkcfxqnSjZNijMLhVH2EiV
+         1f3A==
+X-Gm-Message-State: AOJu0YzSgQ4t9TJwq48liUkS8ceuwy0Iv9TWMKjkL3c8zDjSQX5pkQKp
+	ZOwSefm63iOwT/A8/tHNwvZgxQD3c09AR3e+74WJ0pPnn/tS2L33ELBhHx79P4g=
+X-Google-Smtp-Source: AGHT+IE0YTilMWQ5BkYhpxH5R82oRau86mQNpJ3i5lFHGNpRFDGfhV7HLRXbba8kX0LxeiCkPlBlqg==
+X-Received: by 2002:a17:906:68ca:b0:a35:a9e8:b281 with SMTP id y10-20020a17090668ca00b00a35a9e8b281mr7009656ejr.69.1706887963692;
+        Fri, 02 Feb 2024 07:32:43 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWIcJ0/0LweMcswJ5oZx4ua7bMoWTuoTdMzBtbnuKfMToOzAz1fwsvTGh1vPwYCwiEjjvFEnkk6gMB9G8m4sxxDVi5bVzyrSZxr//d1S4uYwP3YjRgxfE/NEYXUACI4Dlrf8MjZpvsZqZnfhjkvx9H7G8y6giQhEn0F3tkdp2xnmBW9+GIx6/CoLHb1x6DLVTIoGhPrfspPAwi2MXcBcwqbFifJHrV97AxQC1MnFqX5H8uGuldIpS6E47+N2jP8aVnTmsEuCqbGnEAGmJ2DzrBCuTVwbwGuaOK72HjXrxdIAFrSGjkh
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id m18-20020a170906235200b00a36802ac18fsm983580eja.30.2024.02.02.07.32.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Feb 2024 07:32:43 -0800 (PST)
+Message-ID: <3cf997d1-e178-4162-a5b7-4c2a3ddeffd6@linaro.org>
+Date: Fri, 2 Feb 2024 16:32:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <07010c54-2e44-463b-9a9b-95697fd30ffd@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tty: serial: samsung: Remove superfluous braces in macro
+Content-Language: en-US
+To: Sam Protsenko <semen.protsenko@linaro.org>
+Cc: Alim Akhtar <alim.akhtar@samsung.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jiri Slaby <jirislaby@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-serial@vger.kernel.org
+References: <20240202010507.22638-1-semen.protsenko@linaro.org>
+ <bed3d775-2d80-445f-bf28-b28a17a6370c@linaro.org>
+ <CAPLW+4nPnPywwsjkeJE70GzyBL=smEo5_=0usGwmnaPRgZwdrQ@mail.gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAPLW+4nPnPywwsjkeJE70GzyBL=smEo5_=0usGwmnaPRgZwdrQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 02, 2024 at 08:49:39AM +0100, Hans de Goede wrote:
-> Hi Greg,
+On 02/02/2024 15:54, Sam Protsenko wrote:
+> On Fri, Feb 2, 2024 at 1:49 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 02/02/2024 02:05, Sam Protsenko wrote:
+>>> Commit 59f37b7370ef ("tty: serial: samsung: Remove USI initialization")
+>>> removes parameters from EXYNOS_COMMON_SERIAL_DRV_DATA() macro, but
+>>> leaves unnecessary empty braces. Remove those to fix the style. No
+>>> functional change.
+>>>
+>>> Fixes: 59f37b7370ef ("tty: serial: samsung: Remove USI initialization")
+>>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+>>> ---
+>>>  drivers/tty/serial/samsung_tty.c | 8 ++++----
+>>
+>> I am pretty sure you did the patch on some old tree, not mainline rc1.
+>> Please work on maintainers tree (or linux-next).
+>>
 > 
-> On 2/2/24 03:44, Greg Kroah-Hartman wrote:
-> > The use of devm_*() functions works properly for when the device
-> > structure itself is dynamic, but the hsmp driver is attempting to have a
-> > local, static, struct device and then calls devm_() functions attaching
-> > memory to the device that will never be freed.
+> Hi Krzysztof,
 > 
-> As I mentioned in my reply to v1, this is not correct.
+> I worked on linux-next, and rebased it on top of the latest linux-next
+> yesterday, right before submitting. I distinctly remember solving a
+> conflict while rebasing, due to the new commit 0b87a9fd670a ("tty:
+> serial: samsung: set UPIO_MEM32 iotype for gs101") which just got into
+> linux-next yesterday. Please let me know if you want me to rebase it
+> on another tree and re-submit.
 > 
-> There is a global data struct, but that holds a struct device
-> pointer, not the device struct.
 
-Ooops, I misread that:
-	static struct hsmp_plat_device plat_dev;
-was not the actual device struct anymore.
+Hmm... Almost two months ago GS101 was applied which also uses
+EXYNOS_COMMON_SERIAL_DRV_DATA, so should be in the hunks here, but
+maybye it's gone now?
 
-> The device itself is created with platform_device_alloc() +
-> platform_device_add() from module-init and it is removed
-> on module-exit by calling platform_device_unregister()
+Best regards,
+Krzysztof
 
-Ok, much better.
-
-> So AFAICT this should keep using the devm_ variant to properly
-> cleanup the sysfs attributes.
-
-This devm_ variant is odd, and should never have been created as the
-sysfs core always cleans up the sysfs attributes when a device is
-removed, there is no need for it (i.e. they do the same thing.)
-
-That's why I want to get rid of it, it's pointless :)
-
-> But what this really needs is to be converted to using
-> amd_hsmp_driver.driver.dev_groups rather then manually
-> calling devm_device_add_groups() I have already asked
-> Suma Hegde (AMD) to take a look at this.
-
-The initial issue I saw with this is that these attributes are being
-created dynamically, so using dev_groups can be a bit harder.  The code
-paths here are twisty and not obvious as it seems to want to support
-devices of multiple types in the same codebase at the same time.
-
-But yes, using dev_groups is ideal, and if that happens, I'm happy.
-It's just that there are now only 2 in-kernel users of
-devm_device_add_groups() and I have a patch series to get rid of the
-other one, and so this would be the last, hence my attention to this.
-
-Again, moving from devm_device_add_groups() to device_add_groups() is a
-no-op from a functional standpoint, so this should be fine.
-
-thanks,
-
-greg k-h
 
