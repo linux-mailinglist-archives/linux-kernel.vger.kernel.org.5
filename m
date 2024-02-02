@@ -1,108 +1,115 @@
-Return-Path: <linux-kernel+bounces-50362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E25FF84780A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:44:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A7028477D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:40:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F0AA28A916
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:44:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C4AB1C20BE0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:40:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72774151CD0;
-	Fri,  2 Feb 2024 18:40:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E84154422;
+	Fri,  2 Feb 2024 18:39:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dmwWr8lS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="IHeB54CF"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 896768592A;
-	Fri,  2 Feb 2024 18:39:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C4B7152DF3
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 18:39:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706899193; cv=none; b=XB6wjaTrzQ4smnCKo6folRtB74A69zsfxNjUlpw8QZtSNU9qg3aC224vXkXQkDE9AeQw0/DInDOdmctoY7GIUaR/EoQP0yzq2/vKu3szuVScaCi/pr6UoS1Qcz9N6z5xvPhEc0eHvK2ryhRobS19dmvBXshVsMQdJOIZu7brfdE=
+	t=1706899175; cv=none; b=JUu4Ex25vTDmNsA9wILQ63nDamvbpTjD9hSCK4olHEOvFGdrGdB2rVgw7c5SH72xXGxXq3OLcdnzt+PFnW53f4I8tUpWXCnI4ItL/QLY5mtC4Yg1DuLIkJbEqMkD6oS2V8Fu6NsU4dyzjaPmch67lpNHpkb5e9Dof4jR6clB898=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706899193; c=relaxed/simple;
-	bh=MAtB2ChwFF1exhEfUKrF79D5jxW1fp8BGXZSzKt5ZVE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uvkCkRXL+akje/PSwdORurUGfylySpCusnw2583qH7PAVfYVdgDrWdimfJRWsU0yhzo7f54Bv1hHDqDo9EhC7eky3uJBYUbbihiEdAOgctZtR/ViQBY0OC30zkTpAXWbnjM3IyJhcKURpUSGEDlSAwetMI7gRfCI6w0LuYI3Zsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dmwWr8lS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A9A4C433C7;
-	Fri,  2 Feb 2024 18:39:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706899192;
-	bh=MAtB2ChwFF1exhEfUKrF79D5jxW1fp8BGXZSzKt5ZVE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dmwWr8lS5qXnv/HIncGxsoRRi0lNkX5NvSRT07ylB1KllAe6T3wiyR7QQWSuzxpxH
-	 kCT1tWEb449EpNr9KGBavyvS3A2/jWLevMGbtcmEjc+RYNhTNC/K0NyNL2Y5I4pCD1
-	 hNAnJ2LzVzo5YIAHl0W+Sghw+lbZFHBAU+tgt1ojekQJ8bIflVzR0kJPcIJpuazGnj
-	 MtNYJz6+wuzitC6KEfFeq9Tho0n2TGqN8d2/euYLr5Ryom0L56hPWIGvyBNJnmPJA0
-	 98V9RJnkDqwmYWGXQfLI6YqHbuJWWbTCI1XwTvS5UCVU6/r0kMd2B6fRKfDTV9a1Ps
-	 WbLexpMJxMlAg==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	james.schulman@cirrus.com,
-	david.rhodes@cirrus.com,
-	rf@opensource.cirrus.com,
-	alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com,
-	linux-spi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 17/23] spi: cs42l43: Handle error from devm_pm_runtime_enable
-Date: Fri,  2 Feb 2024 13:39:13 -0500
-Message-ID: <20240202183926.540467-17-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240202183926.540467-1-sashal@kernel.org>
-References: <20240202183926.540467-1-sashal@kernel.org>
+	s=arc-20240116; t=1706899175; c=relaxed/simple;
+	bh=6vtu3x2Y1jccAeEZW/cOuVCyNA6GUN7mxte5g1lUOrk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MLKrwcO7RXxdyQ6nl+Ao7jQIAb54EIaFtuDiNLirkAu1kK8j2DcnTK7uUloz2lPNMAfHh1E6c9zulODxke/yWaxv1lIHi/mchunFj4BZIONeK0g2fc8Vb5fBj1dfQNhS4zpTrg8CtIri0n4yJVxoiDt6i472FaZy+OSNu77HXa0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=IHeB54CF; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50eac018059so2971130e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 10:39:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1706899171; x=1707503971; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EK/oD0i1K4QS8LEPg1LGpWmJwJIYuOve/SpbccIVK8M=;
+        b=IHeB54CFUk2Pu6lD2GAj8loMeIw5OHB3CUVpXRt/zRmhwMpktRKIlzjd0TGGAQWQCQ
+         Lys1/NvYHNrxHr/aZc2m9O3yaQERM66FEpZEHbGHLGv08Q+OTc1a3JnBUak8NXPz8o2O
+         EhC2n2Bt+Kf0bkekEtuOGGOMSb0/k+M0stkGc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706899171; x=1707503971;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EK/oD0i1K4QS8LEPg1LGpWmJwJIYuOve/SpbccIVK8M=;
+        b=PuZPu2H8nO/AcPaT0NErDrkgJczOKCbTc06ya+6J5JaLiVNaC6W5c3vp8MXeNrO+YT
+         om15WGvZnZVR4M9WPCHCS5/J1V1oYPhXG5THhPxdkWXjTWZ+Bi3N+QPc6CH4Q0I4NDSg
+         BSrF78YC+HJcSeN7Ushsc3qtHs8yOB7tw/lw27nQ3bdL2OMyITfVjKlQ3P/0zQIrvq//
+         cKUP7y3CIeu4vzhinJ71t7XkJeEAM8qVfyIfn8AQem5wddfobrYuh3R1O3129ViAtsro
+         bQ2O0BPUvWiUnZNwg7vFjfRI7Kht8QR5iUcd4xWeoR/hFN5yxya3u/29Lam8RFfCOd18
+         IZlQ==
+X-Gm-Message-State: AOJu0Yx7/lnFuB7uHLZ3I2vnxtZnoLaIDTPMoHOh23EZRvqO2wMJcx6O
+	XJtnk6ufXw9kyCMLLiGDoGuD+w4gJxxCavvZjlwZXzHZSYiNBFHaGY2jFpJ8P8kyaY47d5h+DIo
+	GHObDmg==
+X-Google-Smtp-Source: AGHT+IGxajK4aCpy+yzgUd/THPbj+f2Y2QftwFKv+71/V+HmlJdJ1EK1DI2w7veGfawczdljy6aGxA==
+X-Received: by 2002:ac2:562f:0:b0:511:1ed7:61b9 with SMTP id b15-20020ac2562f000000b005111ed761b9mr1861797lff.39.1706899170774;
+        Fri, 02 Feb 2024 10:39:30 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXPXntYQMr8umIjPTygZH1M4yVhzpd23xnwEJXrruV0ncs9ypiNg+4IxTwxvySETchukT+OUJJnwHrDwWRMXQkWwQ5go9706VHg4XXJ
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id dw12-20020a0565122c8c00b005113dfe177asm62646lfb.304.2024.02.02.10.39.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Feb 2024 10:39:30 -0800 (PST)
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d07ffa0a9cso15353791fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 10:39:30 -0800 (PST)
+X-Received: by 2002:a2e:8882:0:b0:2d0:8225:919d with SMTP id
+ k2-20020a2e8882000000b002d08225919dmr1794857lji.21.1706899169784; Fri, 02 Feb
+ 2024 10:39:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.7.3
-Content-Transfer-Encoding: 8bit
+References: <20240202-exception_ip-v2-0-e6894d5ce705@flygoat.com>
+In-Reply-To: <20240202-exception_ip-v2-0-e6894d5ce705@flygoat.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 2 Feb 2024 10:39:13 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiaSjYApqmUYCdCyYfr_bRsfVKDkwU6r6FMmoZzrxHrKQ@mail.gmail.com>
+Message-ID: <CAHk-=wiaSjYApqmUYCdCyYfr_bRsfVKDkwU6r6FMmoZzrxHrKQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] Handle delay slot for extable lookup
+To: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Oleg Nesterov <oleg@redhat.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Andrew Morton <akpm@linux-foundation.org>, Ben Hutchings <ben@decadent.org.uk>, 
+	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-mm@kvack.org, 
+	Xi Ruoyao <xry111@xry111.site>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+On Fri, 2 Feb 2024 at 04:30, Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+>
+>       ptrace: Introduce exception_ip arch hook
+>       MIPS: Clear Cause.BD in instruction_pointer_set
+>       mm/memory: Use exception ip to search exception tables
 
-[ Upstream commit f9f4b0c6425eb9ffd9bf62b8b8143e786b6ba695 ]
+Just to clarify: does that second patch fix the problem that
+__isa_exception_epc() does a __get_user()?
 
-As it devm_pm_runtime_enable can fail due to memory allocations, it is
-best to handle the error.
+Because that mm/memory.c use of "exception_ip()" most definitely
+cannot take a page fault.
 
-Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://msgid.link/r/20240124174101.2270249-1-ckeepax@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/spi/spi-cs42l43.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+So if MIPS cannot do that whole exception IP thing without potentially
+touching user space, I do worry that we might just have to add a
 
-diff --git a/drivers/spi/spi-cs42l43.c b/drivers/spi/spi-cs42l43.c
-index d239fc5a49cc..c1556b652909 100644
---- a/drivers/spi/spi-cs42l43.c
-+++ b/drivers/spi/spi-cs42l43.c
-@@ -244,7 +244,10 @@ static int cs42l43_spi_probe(struct platform_device *pdev)
- 	priv->ctlr->use_gpio_descriptors = true;
- 	priv->ctlr->auto_runtime_pm = true;
- 
--	devm_pm_runtime_enable(priv->dev);
-+	ret = devm_pm_runtime_enable(priv->dev);
-+	if (ret)
-+		return ret;
-+
- 	pm_runtime_idle(priv->dev);
- 
- 	regmap_write(priv->regmap, CS42L43_TRAN_CONFIG6, CS42L43_FIFO_SIZE - 1);
--- 
-2.43.0
+   #ifndef __MIPS__
 
+around this all.
+
+Possibly somehow limited to just the microMIPS/MIPS16e case in Kconfig instead?
+
+            Linus
 
