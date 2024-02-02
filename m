@@ -1,144 +1,236 @@
-Return-Path: <linux-kernel+bounces-50520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C1C0847A2A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:02:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4ECA847A32
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:03:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8288B29BE3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:02:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51BFAB2A7B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:03:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1FBD65E04;
-	Fri,  2 Feb 2024 19:59:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4367A80636;
+	Fri,  2 Feb 2024 20:02:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="gOIyoq78"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="cI/JFAFg"
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 942B712C807;
-	Fri,  2 Feb 2024 19:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E18D80625
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 20:02:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706903974; cv=none; b=Wh287U6hRWRl8uSnmIcSTvCyBJa8aQBO5UkOWEFWr7QLJ24BDg0N0sCPbWBlYXxT+12M8wNdycjqVhvFT/sZ/MMpXUEjVVLiB0n+8UvHDVv/vkQVZ38HaHd203a7Y9xcYN8nwGn67dbLFqnXR9c4fHaNOlLtGurxHro4+oYO3ys=
+	t=1706904153; cv=none; b=BVJAbOn74p+M2x33Z8G/5v7b8OzpLW4mlL7vWCjPc3uYLHJTjxjYeO0slBtmv3tvZk9ZFFgV5LK8Bmpqvs2DnMKTOyhyhn2nU4tR+HvT2hTaqU2WNOVsi1evfI6b3WeO9A+PnVl8ofQtCOdOtD1pte1XhSPGPiqzmfDOK9UvxM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706903974; c=relaxed/simple;
-	bh=bpC0G979XkzDX4Y0eVxoG/7PEvPhZ3F+aUerWOq9iSY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Kmxkqqb8xPIUhf36U5x/+XxyELEOg+1Cg1O89/bSYPS7EaoeTP2wNflWoUKit4LsSkjMP7LBGTnafgcT7oD2m3SA1UCni/KJtBakz5M0ACtazhYAr5W1X2Z48nsSD568B0NgjMz6YyT5g6frXeQCajd/lTybjRnljZX6k6L/ppU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=gOIyoq78; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 412GAW0q015164;
-	Fri, 2 Feb 2024 19:59:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=jK/PuBrL8qdEn+vnj8xyXaG53+FI1WP9iOTek0QM9/s=; b=gO
-	Iyoq78viZa10Iwp0GWBGNL57mkyYumSfL8cM1mjYgLVF7iptzdsFsym9/KnojHBr
-	wrBggytE+3WopcAX7x9ZG2kLuQ5SIa0DS9xFiIfQdSczGsk5jhfQrSNBVT5VX+Up
-	RYPM1uRz5tdpAG2REr7LFFHU1qlB6XwgL8TXdAMAdP9DjUBrVCtqivr0r7kgKprz
-	2sKx6Gq8bcEDdgKnMMv5Qt3v99iOdveL5weotPSlWiT+Ekq35AEBUQk5WRk7ORDX
-	Jya3l9ekW20Njno6xU36nnsLADQTc3+gVF+jPTQd6wUv8JjWzSZX7eP6KMkFl9SI
-	uu+ZPhhwOkCRH0OzH76A==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0ptxja4t-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Feb 2024 19:59:30 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 412JxTbr003739
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 2 Feb 2024 19:59:29 GMT
-Received: from [10.110.44.7] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 2 Feb
- 2024 11:59:26 -0800
-Message-ID: <09629681-4eec-4522-8b66-4a3bd2b7be91@quicinc.com>
-Date: Fri, 2 Feb 2024 11:59:21 -0800
+	s=arc-20240116; t=1706904153; c=relaxed/simple;
+	bh=EayggpD20ZVxvOuBUHp6GQDJdR4ntp9uMY9cbHbb30I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UC2lqFOU2Khec8ITiaMCSfDE0LyOsgWsx02+bD8VJetjEunQgVvT86ffksFNF44c3exP1s3IAdPguqn1Y0124W/nhIcNCqzjeVZcIUUKqAAwl5f520+bEhfcwh4Iv18woURR8d7z8ZXotdbyON8P5pApwU8oqWZUdKC3dLyYMbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=cI/JFAFg; arc=none smtp.client-ip=198.252.153.129
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx1.riseup.net (Postfix) with ESMTPS id 4TRRWn6dTrzDq8D;
+	Fri,  2 Feb 2024 20:02:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1706904150; bh=EayggpD20ZVxvOuBUHp6GQDJdR4ntp9uMY9cbHbb30I=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=cI/JFAFg1rFMS70ZTBUTRo6ymeh73P7sSijXzXmSUjn/8PwDYCykzIIeFnWjzcwd3
+	 kgmpV8gQuWK0UMyeLlJFUYGcBRVtpHrmB2VdEZNbKDhacfBfI6cN4k0CQsIQANPrka
+	 7IigYT89fPdC8G1IHGZD7rjdSBhF+IbiCKStwX1c=
+X-Riseup-User-ID: 918AF2773BAFBA0FA6A8F54866A4FC8F79B59C8D58DAD5DE7946EB67FE979219
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4TRRWh0lHnzFpvw;
+	Fri,  2 Feb 2024 20:02:23 +0000 (UTC)
+Message-ID: <14ac793c-6660-434f-998d-af1f51b3b1d2@riseup.net>
+Date: Fri, 2 Feb 2024 17:02:20 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] soc: qcom: llcc: Check return value on Broadcast_OR reg
- read
-To: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Satya Durga Srinivasu Prabhala
-	<quic_satyap@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@quicinc.com>, Dmitry Baryshkov
-	<dmitry.baryshkov@linaro.org>
-References: <20240202-fix_llcc_update_act_ctrl-v1-1-d36df95c8bd5@quicinc.com>
- <5ba42ywqwi2ix2hyo4ysdgo2onyrhm6rtvpow626r7kctoixz6@xrens4w3k7ar>
+Subject: Re: [PATCH 2/2] drm/vkms: Use a simpler composition function
 Content-Language: en-US
-From: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
-In-Reply-To: <5ba42ywqwi2ix2hyo4ysdgo2onyrhm6rtvpow626r7kctoixz6@xrens4w3k7ar>
-Content-Type: text/plain; charset="UTF-8"
+To: Pekka Paalanen <pekka.paalanen@haloniitty.fi>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Maxime Ripard <mripard@kernel.org>,
+ Louis Chauvet <louis.chauvet@bootlin.com>,
+ Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+ Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ marcheu@google.com, seanpaul@google.com, nicolejadeyee@google.com,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ thomas.petazzoni@bootlin.com
+References: <20240201-yuv-v1-0-3ca376f27632@bootlin.com>
+ <20240201-yuv-v1-2-3ca376f27632@bootlin.com>
+ <20240202105522.43128e19@eldfell> <20240202102601.70b6d49c@xps-13>
+ <3nofkwzgnf4yva2wfogdbii47ohpi2wm5vp6aijtg3emxyoowt@twyreqz7ai3g>
+ <20240202131322.5471e184@xps-13> <20240202174913.789a9db9@eldfell>
+From: Arthur Grillo <arthurgrillo@riseup.net>
+In-Reply-To: <20240202174913.789a9db9@eldfell>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: WawzztJwW5neqFJ1hwlsJYxIQLFae9wn
-X-Proofpoint-GUID: WawzztJwW5neqFJ1hwlsJYxIQLFae9wn
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-02_13,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 adultscore=0 impostorscore=0 priorityscore=1501 malwarescore=0
- spamscore=0 suspectscore=0 mlxlogscore=999 mlxscore=0 phishscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402020146
 
 
 
-On 2/2/2024 11:56 AM, Elliot Berman wrote:
-> On Fri, Feb 02, 2024 at 11:47:43AM -0800, Unnathi Chalicheemala wrote:
->> Commit a3134fb09e0b ("drivers: soc: Add LLCC driver") didn't
->> check return value after Broadcast_OR register read in
->> llcc_update_act_ctrl(), add it.
->>
+On 02/02/24 12:49, Pekka Paalanen wrote:
+> On Fri, 2 Feb 2024 13:13:22 +0100
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 > 
-> Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
+>> Hello Maxime,
+>>
+>> + Arthur
+>>
+>> mripard@kernel.org wrote on Fri, 2 Feb 2024 10:53:37 +0100:
+>>
+>>> Hi Miquel,
+>>>
+>>> On Fri, Feb 02, 2024 at 10:26:01AM +0100, Miquel Raynal wrote:  
+>>>> pekka.paalanen@haloniitty.fi wrote on Fri, 2 Feb 2024 10:55:22 +0200:
+>>>>     
+>>>>> On Thu, 01 Feb 2024 18:31:32 +0100
+>>>>> Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+>>>>>     
+>>>>>> Change the composition algorithm to iterate over pixels instead of lines.
+>>>>>> It allows a simpler management of rotation and pixel access for complex formats.
+>>>>>>
+>>>>>> This new algorithm allows read_pixel function to have access to x/y
+>>>>>> coordinates and make it possible to read the correct thing in a block
+>>>>>> when block_w and block_h are not 1.
+>>>>>> The iteration pixel-by-pixel in the same method also allows a simpler
+>>>>>> management of rotation with drm_rect_* helpers. This way it's not needed
+>>>>>> anymore to have misterious switch-case distributed in multiple places.      
+>>>>>
+>>>>> Hi,
+>>>>>
+>>>>> there was a very good reason to write this code using lines:
+>>>>> performance. Before lines, it was indeed operating on individual pixels.
+>>>>>
+>>>>> Please, include performance measurements before and after this series
+>>>>> to quantify the impact on the previously already supported pixel
+>>>>> formats, particularly the 32-bit-per-pixel RGB variants.
+>>>>>
+>>>>> VKMS will be used more and more in CI for userspace projects, and
+>>>>> performance actually matters there.
+>>>>>
+>>>>> I'm worrying that this performance degradation here is significant. I
+>>>>> believe it is possible to keep blending with lines, if you add new line
+>>>>> getters for reading from rotated, sub-sampled etc. images. That way you
+>>>>> don't have to regress the most common formats' performance.    
+>>>>
+>>>> While I understand performance is important and should be taken into
+>>>> account seriously, I cannot understand how broken testing could be
+>>>> considered better. Fast but inaccurate will always be significantly
+>>>> less attractive to my eyes.    
+>>>
+>>> AFAIK, neither the cover letter nor the commit log claimed it was fixing
+>>> something broken, just that it was "better" (according to what
+>>> criteria?).  
+>>
+>> Better is probably too vague and I agree the "fixing" part is not
+>> clearly explained in the commit log. The cover-letter however states:
+>>
+>>> Patch 2/2: This patch is more complex. My main target was to solve issues
+>>> I found in [1], but as it was very complex to do it "in place", I choose
+>>> to rework the composition function.  
+>> ...
+>>> [1]: https://lore.kernel.org/dri-devel/20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net/  
+>>
+>> If you follow this link you will find all the feedback and especially
+>> the "broken" parts. Just to be clear, writing bugs is totally expected
+>> and review/testing is supposed to help on this regard. I am not blaming
+>> the author in any way, just focusing on getting this code in a more
+>> readable shape and hopefully reinforce the testing procedure.
+>>
+>>> If something is truly broken, it must be stated what exactly is so we
+>>> can all come up with a solution that will satisfy everyone.  
+>>
+>> Maybe going through the series pointed above will give more context
+>> but AFAIU: the YUV composition is not totally right (and the tests used
+>> to validate it need to be more complex as well in order to fail).
+>>
+>> Here is a proposal.
+>>
+>> Today's RGB implementation is only optimized in the line-by-line case
+>> when there is no rotation. The logic is bit convoluted and may possibly
+>> be slightly clarified with a per-format read_line() implementation,
+>> at a very light performance cost. Such an improvement would definitely
+>> benefit to the clarity of the code, especially when transformations
+>> (especially the rotations) come into play because they would be clearly
+>> handled differently instead of being "hidden" in the optimized logic.
+>> Performances would not change much as this path is not optimized today
+>> anyway (the pixel-oriented logic is already used in the rotation case).
+>>
+>> Arthur's YUV implementation is indeed well optimized but the added
+>> complexity probably lead to small mistakes in the logic. The
+>> per-format read_line() implementation mentioned above could be
+>> extended to the YUV format as well, which would leverage Arthur's
+>> proposal by re-using his optimized version. Louis will help on this
+>> regard. However, for more complex cases such as when there is a
+>> rotation, it will be easier (and not sub-optimized compared to the RGB
+>> case) to also fallback to a pixel-oriented processing.
+>>
+>> Would this approach make sense?
 > 
-> You'll probably want to add:
+> Hi,
 > 
-> Fixes: a3134fb09e0b ("drivers: soc: Add LLCC driver")
+> I think it would, if I understand what you mean. Ever since I proposed
+> a line-by-line algorithm to improve the performance, I was thinking of
+> per-format read_line() functions that would be selected outside of any
+> loops. Extending that to support YUV is only natural. I can imagine
+> rotation complicates things, and I won't oppose that resulting in a
+> much heavier read_line() implementation used in those cases. They might
+> perhaps call the original read_line() implementations pixel-by-pixel or
+> plane-by-plane (i.e. YUV planes) per pixel. Chroma-siting complicates
+> things even further. That way one could compose any
+> rotation-format-siting combination by chaining function pointers.
 > 
+> I haven't looked at VKMS in a long time, and I am disappointed to find
+> that vkms_compose_row() is calling plane->pixel_read() pixel-by-pixel.
+> The reading vfunc should be called with many pixels at a time when the
+> source FB layout allows it. The whole point of the line-based functions
+> was that they repeat the innermost loop in every function body to make
+> the per-pixel overhead as small as possible. The VKMS implementations
+> benchmarked before and after the original line-based algorithm showed
+> that calling a function pointer per-pixel is relatively very expensive.
+> Or maybe it was a switch-case.
 
-Ack. Missed it, thanks Elliot!
+Hi,
 
->> Signed-off-by: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
->> ---
->>  drivers/soc/qcom/llcc-qcom.c | 2 ++
->>  1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
->> index 4ca88eaebf06..cbef0dea1d5d 100644
->> --- a/drivers/soc/qcom/llcc-qcom.c
->> +++ b/drivers/soc/qcom/llcc-qcom.c
->> @@ -859,6 +859,8 @@ static int llcc_update_act_ctrl(u32 sid,
->>  	ret = regmap_read_poll_timeout(drv_data->bcast_regmap, status_reg,
->>  				      slice_status, !(slice_status & status),
->>  				      0, LLCC_STATUS_READ_DELAY);
->> +	if (ret)
->> +		return ret;
->>  
->>  	if (drv_data->version >= LLCC_VERSION_4_1_0_0)
->>  		ret = regmap_write(drv_data->bcast_regmap, act_clear_reg,
->>
->> ---
->> base-commit: 021533194476035883300d60fbb3136426ac8ea5
->> change-id: 20240202-fix_llcc_update_act_ctrl-64908aed9450
->>
->> Best regards,
->> -- 
->> Unnathi Chalicheemala <quic_uchalich@quicinc.com>
->>
+I think I'm the culprit for that, as stated on [1]. My intention with
+the suggestion was to remove some code repetition and too facilitate the
+rotation support implementation. Going back, I think I was to high on
+DRY at the time and didn't worry about optimization, which was a
+mistake.
+
+But, I agree with Miquel that the rotation logic is easier to implement
+in a pixel-based way. So going pixel-by-pixel only when rotation occurs
+would be great.
+
+Best Regards,
+~Arthur Grillo
+
+[1]: https://lore.kernel.org/dri-devel/20230418130525.128733-2-mcanal@igalia.com/
+
+> 
+> Sorry, I didn't realize the optimization had already been lost.
+> 
+> Btw. I'd suggest renaming vkms_compose_row() to vkms_fetch_row() since
+> it's not composing anything and the name mislead me.
+> 
+> I think if you inspect the compositing code as of revision
+> 8356b97906503a02125c8d03c9b88a61ea46a05a you'll get a better feeling of
+> what it was supposed to be.
+> 
+> 
+> Thanks,
+> pq
 
