@@ -1,139 +1,193 @@
-Return-Path: <linux-kernel+bounces-49917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2600B847160
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:49:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8C32847159
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:45:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 517DE1C221A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:49:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18B701C24A58
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:45:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B13624779F;
-	Fri,  2 Feb 2024 13:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC11747A55;
+	Fri,  2 Feb 2024 13:45:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y7aPhw6y"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ciLtjmQe"
+Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D376146551;
-	Fri,  2 Feb 2024 13:48:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F5146B9B
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 13:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706881740; cv=none; b=nCje9GNEqeruUbbFh4lmU6s+a7J/k1bYbzoaVG+h1GxHFcgYAQgUZRdjGIok/rHha/o/kmGV/+1yCAg98u5JXWqgOvX6af6V6C7R8B269QqJghF6WU0Zp9mUvuPGOwI3doJvsvE21HSF4xSFxrvFS5iBdhBJYnY4NO+fKOgqEAc=
+	t=1706881507; cv=none; b=PTZ7Pg9lBiBkhplRsj7/BUNh4vlki2gvdcclNjvWQQUrTlBf8gOAdA2th4VRIJekhVKADriwclIg1vh4ySfgHw6BqtIVm/+9oU0nDV/5x9spDjKNuMM5eU8otyFfcoDlQqmErSCLjRtzKrsrZfkdOEr6n4IZrv8079m9wMaa628=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706881740; c=relaxed/simple;
-	bh=5oAxVFemPM8II0r20k3cx2T21LfwQLuEcMKNm4dSXFg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n0JgRo1Y8v9tVUeVEUH1oO0r8uTXkVpWQDAeyZDSQHwZUMWkQSEPRHE3Y3XrjM1ukT1Llg/ausICyJa5A5klSQ0smFu9eb0ABgAB3bBz9bOSd+uTsZ0UXQkHrOD7yhg3RZd7VmEkUMJW3J2hwodHwwpZXaVNtwx231GeZaEaUNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y7aPhw6y; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706881738; x=1738417738;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5oAxVFemPM8II0r20k3cx2T21LfwQLuEcMKNm4dSXFg=;
-  b=Y7aPhw6yNCEGwNXNgBD5URHq2mPH4UMmAqSflRn1Xeb0JbJI8qYWAj1x
-   kiIdqJnRdEh/HRIJ9T1NH+zthAT6rdqTnRKCwc0PGzo3Zo9E5kz58JbEf
-   INqIVJoNAFKEgPW1OwoLTTi4gJ3UMzHiEhLkOPXCYE+81bD4Fhs9UUHjW
-   abGpZJcs0MIHPGMKCCU5UQvgEUxAB8KH2tIR7L7+oTgWOSZvFiR3k2T0d
-   y+HC0Gl0Q9KuX2VP3X7Ft9KholcQJeS1y0flrd3sNthbXl6E+yOC9ozUL
-   XMyxgL+KhCm5guI/aZ5ZZChNJQGOxXF2XwsiRq+bBYbMzm8agfMlNsFaF
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="4059836"
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="4059836"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 05:48:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="908579982"
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="908579982"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 05:48:55 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id 7BCCC1205FA;
-	Fri,  2 Feb 2024 15:41:30 +0200 (EET)
-Date: Fri, 2 Feb 2024 13:41:30 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-media@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
-	linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
-Subject: Re: [PATCH 1/1] media: v4l: Fix link frequency helper's kernel-doc
-Message-ID: <ZbzxCpxVa8ciu1Wn@kekkonen.localdomain>
-References: <20240202145412.336db5b2@canb.auug.org.au>
- <20240202064007.50545-1-sakari.ailus@linux.intel.com>
- <20240202143027.21fe3f5b@coco.lan>
+	s=arc-20240116; t=1706881507; c=relaxed/simple;
+	bh=PKzcI1q48e2Z9AZgmA1h8iLqG3H0FbHpPV+nCkPjFVo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oAgy3YWjCIq2CYnqCPPByJ8TUKSr3xAtiIlBOTrIjug3S9UvuLVOUqYRgydtnpa9qqCy5EnXv62JedFUZ9LEcV6mM91PB6pnvVJ46H3pEeJxmmRX/cgCMC2C3ydZw8HfeuOVXa3N+yiWB734PczKrO9d5vYohsADDfjbiAremC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ciLtjmQe; arc=none smtp.client-ip=209.85.221.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4b739b49349so780594e0c.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 05:45:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706881504; x=1707486304; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=IIzUaTAWY721VAmsfjicI7pRblrKzWu2/3eiQAJEETw=;
+        b=ciLtjmQe/0vRcQ3JQLVTYPqCoOMXdITAKbYTfWsB+fpRqSM8y404m8HozoFm5QYZsL
+         hFVfXSOloLdjHecWKFMM8jdutG0nvWpKrQtzxZo7VpdpsY5FH7fHh9BR6g0EGI8yTVqL
+         X2XFDObPrxafA/1Sb4+6fkZuqIpPeMelkv2aWExfqoPn7KK9tQZeXG9t/AtPel9FGaH7
+         3D6N/jyiXnluyTCTST9wICuZosRMjt6x7r2WaOnXojP+XdYv5tffqk+WBcrAJVqpgHB0
+         mPBL6rpGZIAnxdCjkOS5UtTwYUk7va1agy48bAvxlJJIq+FtWNph+TEW7FIGMQjeVOYY
+         27KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706881504; x=1707486304;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IIzUaTAWY721VAmsfjicI7pRblrKzWu2/3eiQAJEETw=;
+        b=k4HXrVEzHCq9k8DPnE2wInab1hgelQEr16tJ8XAr4VgVbymqtfzs/ZQf52/nR40ja6
+         XCBo1YUbgrIHzdGHUJaBNpnOQBCBwfRd5V5QuwaXmsTYkcw7NDuBVw/pyzROQezVQ9AX
+         Durt/+To6gh/Nt/yVK1ZP03kxTQ3xNkE0IGUeJNbu0A3JnPOMuFFpW5vmBItl3YNSfWN
+         UpkjFdHTeInNHBoAob/ZlV3SY2R0wlyxby22+KWOF5Ca3cxX/6/unIX4abmqmvkyvW+u
+         9UfxNC2wm2xOJVt6q/tP7bqxEA8n6auH9gKW42RWsCFcbpEVDOLNqtBKfDkTgWTM09iq
+         LTKg==
+X-Gm-Message-State: AOJu0YwejKkxMC/zJWwYxrJC2q6sMyA9fcMk6HjOjt6TuSDAbB84jtWJ
+	qdN3J4E/w6S6avsN+GQ3OhhE97pPdxJ1zJOw5jNpyUk/0SMBKMWPpNXxA53ln9VYBKSIPFFayMs
+	fQjDkqjKeZzG0g39nhmLVBBvD9/hw1b9gKfpr
+X-Google-Smtp-Source: AGHT+IHcugcAY0onJJ9YbOTRMsO8AuL33RLMvypF1xfaELG25ml3lxK0pklBkcHRLPdq/bsUZds6rXkq0SmKDaybI0c=
+X-Received: by 2002:a1f:f4c9:0:b0:4b6:bdba:8460 with SMTP id
+ s192-20020a1ff4c9000000b004b6bdba8460mr1847799vkh.9.1706881503872; Fri, 02
+ Feb 2024 05:45:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240202143027.21fe3f5b@coco.lan>
+References: <20240202101311.it.893-kees@kernel.org> <20240202101642.156588-2-keescook@chromium.org>
+ <CANpmjNPPbTNPJfM5MNE6tW-jCse+u_RB8bqGLT3cTxgCsL+x-A@mail.gmail.com> <202402020405.7E0B5B3784@keescook>
+In-Reply-To: <202402020405.7E0B5B3784@keescook>
+From: Marco Elver <elver@google.com>
+Date: Fri, 2 Feb 2024 14:44:25 +0100
+Message-ID: <CANpmjNO-4A4LMK8kbWiiODB-vOZqc5gZndWtnYDc5RCGDBcoSQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/6] ubsan: Reintroduce signed and unsigned overflow sanitizers
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-hardening@vger.kernel.org, Justin Stitt <justinstitt@google.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Hao Luo <haoluo@google.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+	Fangrui Song <maskray@google.com>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Nicolas Schier <nicolas@fjasle.eu>, Bill Wendling <morbo@google.com>, 
+	Andrey Konovalov <andreyknvl@gmail.com>, Jonathan Corbet <corbet@lwn.net>, x86@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+	llvm@lists.linux.dev, linux-doc@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, kasan-dev@googlegroups.com, 
+	linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Mauro,
+On Fri, 2 Feb 2024 at 13:17, Kees Cook <keescook@chromium.org> wrote:
+>
+> On Fri, Feb 02, 2024 at 12:01:55PM +0100, Marco Elver wrote:
+> > On Fri, 2 Feb 2024 at 11:16, Kees Cook <keescook@chromium.org> wrote:
+> > > [...]
+> > > +config UBSAN_UNSIGNED_WRAP
+> > > +       bool "Perform checking for unsigned arithmetic wrap-around"
+> > > +       depends on $(cc-option,-fsanitize=unsigned-integer-overflow)
+> > > +       depends on !X86_32 # avoid excessive stack usage on x86-32/clang
+> > > +       depends on !COMPILE_TEST
+> > > +       help
+> > > +         This option enables -fsanitize=unsigned-integer-overflow which checks
+> > > +         for wrap-around of any arithmetic operations with unsigned integers. This
+> > > +         currently causes x86 to fail to boot.
+> >
+> > My hypothesis is that these options will quickly be enabled by various
+> > test and fuzzing setups, to the detriment of kernel developers. While
+> > the commit message states that these are for experimentation, I do not
+> > think it is at all clear from the Kconfig options.
+>
+> I can certainly rephrase it more strongly. I would hope that anyone
+> enabling the unsigned sanitizer would quickly realize how extremely
+> noisy it is.
+>
+> > Unsigned integer wrap-around is relatively common (it is _not_ UB
+> > after all). While I can appreciate that in some cases wrap around is a
+> > genuine semantic bug, and that's what we want to find with these
+> > changes, ultimately marking all semantically valid wrap arounds to
+> > catch the unmarked ones. Given these patterns are so common, and C
+> > programmers are used to them, it will take a lot of effort to mark all
+> > the intentional cases. But I fear that even if we get to that place,
+> > _unmarked_  but semantically valid unsigned wrap around will keep
+> > popping up again and again.
+>
+> I agree -- it's going to be quite a challenge. My short-term goal is to
+> see how far the sanitizer itself can get with identifying intentional
+> uses. For example, I found two more extremely common code patterns that
+> trip it now:
+>
+>         unsigned int i = ...;
+>         ...
+>         while (i--) { ... }
+>
+> This trips the sanitizer at loop exit. :P It seems like churn to
+> refactor all of these into "for (; i; i--)". The compiler should be able
+> to identify this by looking for later uses of "i", etc.
+>
+> The other is negative constants: -1UL, -3ULL, etc. These are all over
+> the place and very very obviously intentional and should be ignored by
+> the compiler.
 
-On Fri, Feb 02, 2024 at 02:30:27PM +0100, Mauro Carvalho Chehab wrote:
-> Em Fri,  2 Feb 2024 08:40:07 +0200
-> Sakari Ailus <sakari.ailus@linux.intel.com> escreveu:
-> 
-> > Fix kernel-doc indentation for v4l2_link_freq_to_bitmap().
-> > 
-> > Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Fixes: a68e88e2cf9e ("media: v4l: Add a helper for setting up link-frequencies control")
-> > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > ---
-> > Thanks for reporting this, Stephen.
-> > 
-> >  include/media/v4l2-common.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/include/media/v4l2-common.h b/include/media/v4l2-common.h
-> > index cd2163f24f8a..602738f7741e 100644
-> > --- a/include/media/v4l2-common.h
-> > +++ b/include/media/v4l2-common.h
-> > @@ -563,7 +563,7 @@ u32 v4l2_fraction_to_interval(u32 numerator, u32 denominator);
-> >   * Return values:
-> >   *	0: Success
-> >   *	-ENOENT: No match found between driver-supported link frequencies and
-> > - *		 those available in firmware.
-> > + *	those available in firmware.
-> >   *	-ENODATA: No link frequencies were specified in firmware.
-> >   */
-> >  int v4l2_link_freq_to_bitmap(struct device *dev, const u64 *fw_link_freqs,
-> 
-> This won't do what's expected at documentation, as Sphinx will just
-> fold everything into a single paragraph, like:
-> 
-> 	"0: Success -ENOENT: No match found between driver-supported link frequencies and those available in firmware. -ENODATA: No link frequencies were specified in firmware."
-> 
-> Maybe you could try using (untested):
-> 
-> 
-> 	* Return values:
->         *
-> 	* * 0: success
-> 	* * -ENOENT: No match found between driver-supported link frequencies and
-> 	*     those available in firmware.
->         * * - ENODATA: No link frequencies were specified in firmware.
-> 
-> Please test it and see if the "make htmldocs" output will be what it would
-> be expected.
+Yeah, banning technically valid code like this is going to be a very hard sell.
 
-Hans separately submitted a patch to address this better, it's here:
+> > What is the long-term vision to minimize the additional churn this may
+> > introduce?
+>
+> My hope is that we can evolve the coverage over time. Solving it all at
+> once won't be possible, but I think we can get pretty far with the
+> signed overflow sanitizer, which runs relatively cleanly already.
+>
+> If we can't make meaningful progress in unsigned annotations, I think
+> we'll have to work on gaining type-based operator overloading so we can
+> grow type-aware arithmetic. That will serve as a much cleaner
+> annotation. E.g. introduce jiffie_t, which wraps.
+>
+> > I think the problem reminds me a little of the data race problem,
+> > although I suspect unsigned integer wraparound is much more common
+> > than data races (which unlike unsigned wrap around is actually UB) -
+> > so chasing all intentional unsigned integer wrap arounds and marking
+> > will take even more effort than marking all intentional data races
+> > (which we're still slowly, but steadily, making progress towards).
+> >
+> > At the very least, these options should 'depends on EXPERT' or even
+> > 'depends on BROKEN' while the story is still being worked out.
+>
+> Perhaps I should hold off on bringing the unsigned sanitizer back? I was
+> hoping to work in parallel with the signed sanitizer, but maybe this
+> isn't the right approach?
 
-<URL:https://lore.kernel.org/linux-media/ZbysG-sUu9jf3fwQ@kekkonen.localdomain/T/#t>
+I leave that to you - to me any of these options would be ok:
 
-So this one can be ignored.
+1. Remove completely for now.
 
--- 
-Regards,
+2. Make it 'depends on BROKEN' (because I think even 'depends on
+EXPERT' won't help avoid the inevitable spam from test robots).
 
-Sakari Ailus
+3. Make it a purely opt-in sanitizer: rather than having subsystems
+opt out with UBSAN_WRAP_UNSIGNED:=n, do the opposite and say that for
+subsystems that want to opt in, they have to specify
+UBSAN_WRAP_UNSIGNED:=y to explicitly opt in.
+
+I can see there being value in explicitly marking semantically
+intended unsigned integer wrap, and catch unintended cases, so option
+#3 seems appealing. At least that way, if a maintainer chooses to opt
+in, they are committed to sorting out their code. Hypothetically, if I
+was the maintainer of some smaller subsystem and have had wrap around
+bugs in the past, I would certainly consider opting in. It feels a lot
+nicer than having it forced upon me.
+
+Thanks,
+-- Marco
 
