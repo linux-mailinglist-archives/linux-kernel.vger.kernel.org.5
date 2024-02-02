@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-49325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 881818468AF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:58:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EED18468B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:59:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB11A1C24C34
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:58:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7BCE1F24385
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:59:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAFD61B274;
-	Fri,  2 Feb 2024 06:56:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55BB82943D;
+	Fri,  2 Feb 2024 06:56:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jo2gf6ep"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u2Gxc7Vw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B5081AAD7;
-	Fri,  2 Feb 2024 06:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94B41282E9;
+	Fri,  2 Feb 2024 06:56:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706856986; cv=none; b=U+fexmCs01GQu2CmG4jvNrq76Ch5WQIf3s8vSG0MDmZ3PHAsGA81Q5x9lDyUfWhWbIsKS4udn0TS/zJ05pzd1ZyFnKT9hRjDJj7bB8u9IctU84PejC2+vbII0qOJxuSChPy+wmrX8XxhEVrtcKwost7WEAb08Q0H7ucX/eUe8M0=
+	t=1706856987; cv=none; b=bBkZiune8khOsk22QTEs0vRQJ+2zDbLwBVfb0iy8NASVVgDuuMUR2XWUkUijNSs122vJ94jmPknHwjDwFi1JqNtdqWBov6P0eG1JyxR+eCntOGpI/VK5WuNlTOZ6Aw6SHVFha5XF5OOwKA1rPtN1OZQGkv1AZY2qC5j4whb5Uj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706856986; c=relaxed/simple;
-	bh=k53CFJFMOZQDpOcxwZ7H0r8hlFfuSR0Pgv3cmw8obIM=;
+	s=arc-20240116; t=1706856987; c=relaxed/simple;
+	bh=UbOFvmxMCfDnw/gmoV7JLKUwxcacwjOcrfiF+WJiOpA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LTHv36C795uX3gxPV3d+xwnGl9lBvl04RoMBLKX55rnDbtz4tGaOe1qw/UMNexLgBBH7BASZxc6bJAhPprX9umeIKeROnzBvoirS5SmcE3DAMm7mBQRAFkcfRJYktVHOZTkq4fqHcXklh/T1LysLS6dRkTPYyHrrchCUxBjRUOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jo2gf6ep; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A63EC43601;
-	Fri,  2 Feb 2024 06:56:24 +0000 (UTC)
+	 MIME-Version; b=Qh1Di9RA2MyL3HdpKZnCpRJryFI6HF4yoSvIUWeeiQKBoIvNik0k9aFzQI8RVbEtuRCDcaUNp4ikc1CvkRJOtq2Dqcm2Jcj3f1D9H6TSMR9lhnjFyf2Ee3s9aq6Cl6BA6uAqSz3dd3f4v4oJHCWwsoe6viUruRrUV0XC7JTzXrA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u2Gxc7Vw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 043D3C433C7;
+	Fri,  2 Feb 2024 06:56:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706856985;
-	bh=k53CFJFMOZQDpOcxwZ7H0r8hlFfuSR0Pgv3cmw8obIM=;
+	s=k20201202; t=1706856987;
+	bh=UbOFvmxMCfDnw/gmoV7JLKUwxcacwjOcrfiF+WJiOpA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Jo2gf6ep1g1L1uoWylXncKHKTwLanexUMlfY3+AlIwoZqrEz/pN5zORvJJe7ssrn3
-	 2uaVFAbXJSht34Ho3DYxDgciSaPztclqo3+Xfez3pIVHjO6mBXjDY+lQHRoRZ23DoS
-	 Y/Bte72KDyBz7lBXDHP3ETGMlNDKxMVH6fhWnhtUa1T0ok6gcQuiBjK1zvgf9dEPrL
-	 zG0h/ScHc800hNOZ6DlbLGCUIg5L2U31339PA3MTDecfZJjy1ywIxpgINoGgxEeetY
-	 ZUXAlL5pNfD0ZheKPA8W//PCidyHAuPGd6xvVbQ/dqRvCOaYMVHyLskk7gQRDudzix
-	 9PU3qZnvffTew==
+	b=u2Gxc7VwSJBG7CcwBfKs9oPAEVwykMwexruSoEhi8oUL0csvCt+2CF0WkHFYMaIWE
+	 X3PWCJKXlhMvIS2zvFaENLuA6DQ32HEeAjQr/j44j3egVRA490bidTep3YqB7d0M6d
+	 J80MmCN58phB0hL1EoULMno8ykxGoAwHCchWlHF7LnE2dN0qHfqhaYXaCqN34lnn9R
+	 Bjtsnw4FHQgoo/WqjqFSg7F8E8R4+4yTVMfUM1Q5MQq6/9rZ+3tsUNiVVPgCgPC0LR
+	 /D/kZehfDHaaZhZ7B7uktgYV0OeviVaQoM4ljNCDT0Fg3/tctWP23hdpLKox3eKYzx
+	 e4e7SQhG3fnUQ==
 From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To: gregkh@linuxfoundation.org
 Cc: linux-serial@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Subject: [PATCH 09/22] tty: vt: put cases on separate lines
-Date: Fri,  2 Feb 2024 07:55:55 +0100
-Message-ID: <20240202065608.14019-10-jirislaby@kernel.org>
+Subject: [PATCH 10/22] tty: vt: accept u8 in do_con_trol() and vc_setGx()
+Date: Fri,  2 Feb 2024 07:55:56 +0100
+Message-ID: <20240202065608.14019-11-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240202065608.14019-1-jirislaby@kernel.org>
 References: <20240202065608.14019-1-jirislaby@kernel.org>
@@ -59,56 +59,46 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some cases of the CSI switch are stuffed on one line. Put them all to a
-separate line as is dictated by the coding style (and for better
-readability).
+These functions expect u8 as the control character. Switch the type from
+'int' appropriately. The caller passing the value (do_con_write()) is
+fixed as well.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 ---
- drivers/tty/vt/vt.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/tty/vt/vt.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index c072007807e1..42bc0957a654 100644
+index 42bc0957a654..451a852ed234 100644
 --- a/drivers/tty/vt/vt.c
 +++ b/drivers/tty/vt/vt.c
-@@ -2437,7 +2437,8 @@ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
- 			return;
+@@ -2144,7 +2144,7 @@ static void reset_terminal(struct vc_data *vc, int do_clear)
+ 	    csi_J(vc, CSI_J_VISIBLE);
+ }
  
- 		switch(c) {
--		case 'G': case '`':
-+		case 'G':
-+		case '`':
- 			if (vc->vc_par[0])
- 				vc->vc_par[0]--;
- 			gotoxy(vc, vc->vc_par[0], vc->state.y);
-@@ -2447,12 +2448,14 @@ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
- 				vc->vc_par[0]++;
- 			gotoxy(vc, vc->state.x, vc->state.y - vc->vc_par[0]);
- 			return;
--		case 'B': case 'e':
-+		case 'B':
-+		case 'e':
- 			if (!vc->vc_par[0])
- 				vc->vc_par[0]++;
- 			gotoxy(vc, vc->state.x, vc->state.y + vc->vc_par[0]);
- 			return;
--		case 'C': case 'a':
-+		case 'C':
-+		case 'a':
- 			if (!vc->vc_par[0])
- 				vc->vc_par[0]++;
- 			gotoxy(vc, vc->state.x + vc->vc_par[0], vc->state.y);
-@@ -2477,7 +2480,8 @@ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
- 				vc->vc_par[0]--;
- 			gotoxay(vc, vc->state.x ,vc->vc_par[0]);
- 			return;
--		case 'H': case 'f':
-+		case 'H':
-+		case 'f':
- 			if (vc->vc_par[0])
- 				vc->vc_par[0]--;
- 			if (vc->vc_par[1])
+-static void vc_setGx(struct vc_data *vc, unsigned int which, int c)
++static void vc_setGx(struct vc_data *vc, unsigned int which, u8 c)
+ {
+ 	unsigned char *charset = &vc->state.Gx_charset[which];
+ 
+@@ -2198,7 +2198,7 @@ enum {
+ };
+ 
+ /* console_lock is held */
+-static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
++static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, u8 c)
+ {
+ 	/*
+ 	 *  Control characters can be used in the _middle_
+@@ -2963,7 +2963,7 @@ static int do_con_write(struct tty_struct *tty, const u8 *buf, int count)
+ 	param.vc = vc;
+ 
+ 	while (!tty->flow.stopped && count) {
+-		int orig = *buf;
++		u8 orig = *buf;
+ 		buf++;
+ 		n++;
+ 		count--;
 -- 
 2.43.0
 
