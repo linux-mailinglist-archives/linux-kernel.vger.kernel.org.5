@@ -1,151 +1,120 @@
-Return-Path: <linux-kernel+bounces-50055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50059-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3426B8473C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:56:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57A5D8473D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:58:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35B431C239CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:56:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 141FA28D27B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:58:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D39831474A0;
-	Fri,  2 Feb 2024 15:56:50 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A2AF1474A7
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 15:56:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B459D1474A0;
+	Fri,  2 Feb 2024 15:58:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gPvFaSbk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A091474C1;
+	Fri,  2 Feb 2024 15:58:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706889410; cv=none; b=GJGSdQ+SBPoPhgfhJc/tzFQ1u116FZQZHniLsKEYFGaBJoPxn5K1EgY5JPxrB6iBWWB2/OlP0swsGE92JZ1132OYUz2P9DO+1tlSTnsEXM/VtBWtx9eOtjqpDft+lfmX76xBJP3GfaMF44b4LSsSXirUteTdcBz6pAwqaBESGXI=
+	t=1706889511; cv=none; b=RzUNpUPOWp9nKEcUEuE3MWayQT1+cno82Y72HdKjY89SSasR5ixf5nN9RFVPz29U+H9DColAZN285Z6O4qBq6BMAXorPf8Agcxct1NARxzqf5SHxfkH561dVrIgTg7jDtKPlQy/fO1Ndq0CBeP2X93+zrh7td1odiJ0JoI3wpcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706889410; c=relaxed/simple;
-	bh=dahtuyjDRHri9WwVOjAn6Bjcc8J+qhEPsGjjMokJuwU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WZhrlnTBdO8GQua80zVGq/BUdISVJ8oAlyWU2nuQq0kmHBym4Mnr3ZUucfNjBCee69RIfS645y90bdezNczzQLKime+V+wzS7T19nFMrOgsd2KZlFOFsQHPwGH4ZvcnBsbztXPNo+hpD+nZi3/pM1Wm7RELV9aKllgp8JUbxbTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BEEB9DA7;
-	Fri,  2 Feb 2024 07:57:29 -0800 (PST)
-Received: from e133380.arm.com (e133380.arm.com [10.1.197.58])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1A81C3F5A1;
-	Fri,  2 Feb 2024 07:56:46 -0800 (PST)
-Date: Fri, 2 Feb 2024 15:56:43 +0000
-From: Dave Martin <Dave.Martin@arm.com>
-To: Fangrui Song <maskray@google.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
-	Jisheng Zhang <jszhang@kernel.org>,
-	Ard Biesheuvel <ardb@kernel.org>, Peter Smith <peter.smith@arm.com>,
-	llvm@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: jump_label: use constraints "Si" instead of "i"
-Message-ID: <Zb0Qu5lR0iZUqImb@e133380.arm.com>
-References: <20240201223545.728028-1-maskray@google.com>
+	s=arc-20240116; t=1706889511; c=relaxed/simple;
+	bh=THdTZv21XZx2i61Uk13KVjH1FY7txkw6aueP1w2kwcI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sCnO2hrKdMGhJvLaWO3pX0w6d9AzlCp7iV3WcLamU+u3E1HDZW+HdIbQWUaiPVyN3Tnyi5jB9ABqbWyahuEkpcg9ULFcAf1SEoHYGgKmu84ODa0NnJHXpQ8ay5u6twE0IM8XQCYlwr2UrqJjJc+pHsxsmFk1Xi6o+NVPpqGR7CQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gPvFaSbk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1FA8C433C7;
+	Fri,  2 Feb 2024 15:58:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706889510;
+	bh=THdTZv21XZx2i61Uk13KVjH1FY7txkw6aueP1w2kwcI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gPvFaSbkOu1EVcR0LO3IDxDJRosfPHPMRL1ZpU5T1Whg3aHQRzcWeBA7MPq/VOnOR
+	 XzoeMdtOkqJSO1A9rueHd3DGa1hSRxUjBlaPCOrJ2MHqquQAe8ksgpIVTunv6EmuXc
+	 SfeqkZdTGBeGZ37BMahqX1FdLzwEDHKhImJrLFIoHr72WBZPDIkOsLa2ebwckAZL3F
+	 w2JAjeY/pFewx0PEqqO970UAUfdoeymZUvOssQ3PKUDssE1oAaPlsdn+DzdpcfbW1P
+	 JXvvLn5PhhHcVDoNVYnzKS5xMAaOUFL1+pUVl7xDGB7AqgS0Z1t8v9Z+jst2R9yOqY
+	 0/PEgtbKDhJhg==
+From: Masahiro Yamada <masahiroy@kernel.org>
+To: linux-kbuild@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 00/27] kconfig: refactor lexer and parser code
+Date: Sat,  3 Feb 2024 00:57:58 +0900
+Message-Id: <20240202155825.314567-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240201223545.728028-1-maskray@google.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 01, 2024 at 02:35:45PM -0800, Fangrui Song wrote:
-> The generic constraint "i" seems to be copied from x86 or arm (and with
-> a redundant generic operand modifier "c"). It works with -fno-PIE but
-> not with -fPIE/-fPIC in GCC's aarch64 port.
-> 
-> The machine constraint "S", which denotes a symbol or label reference
-> with a constant offset, supports PIC and has been available in GCC since
-> 2012 and in Clang since 7.0. However, Clang before 19 does not support
-> "S" on a symbol with a constant offset [1] (e.g.
-> `static_key_false(&nf_hooks_needed[pf][hook])` in
-> include/linux/netfilter.h), so we use "i" as a fallback.
-> 
-> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Fangrui Song <maskray@google.com>
-> Link: https://github.com/llvm/llvm-project/pull/80255 [1]
-> 
-> ---
-> Changes from
-> arm64: jump_label: use constraint "S" instead of "i" (https://lore.kernel.org/all/20240131065322.1126831-1-maskray@google.com/)
-> 
-> * Use "Si" as Ard suggested to support Clang<19
-> * Make branch a separate operand
-> ---
->  arch/arm64/include/asm/jump_label.h | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/jump_label.h b/arch/arm64/include/asm/jump_label.h
-> index 48ddc0f45d22..1f7d529be608 100644
-> --- a/arch/arm64/include/asm/jump_label.h
-> +++ b/arch/arm64/include/asm/jump_label.h
-> @@ -15,6 +15,10 @@
->  
->  #define JUMP_LABEL_NOP_SIZE		AARCH64_INSN_SIZE
->  
-> +/*
-> + * Prefer the constraint "S" to support PIC with GCC. Clang before 19 does not
-> + * support "S" on a symbol with a constant offset, so we use "i" as a fallback.
-> + */
->  static __always_inline bool arch_static_branch(struct static_key * const key,
->  					       const bool branch)
->  {
-> @@ -23,9 +27,9 @@ static __always_inline bool arch_static_branch(struct static_key * const key,
->  		 "	.pushsection	__jump_table, \"aw\"	\n\t"
->  		 "	.align		3			\n\t"
->  		 "	.long		1b - ., %l[l_yes] - .	\n\t"
-> -		 "	.quad		%c0 - .			\n\t"
-> +		 "	.quad		%0 + %1 - .		\n\t"
->  		 "	.popsection				\n\t"
-> -		 :  :  "i"(&((char *)key)[branch]) :  : l_yes);
-> +		 :  :  "Si"(key), "i"(branch) :  : l_yes);
+Random fixes, cleanups, etc.
 
-Is the meaning of multi-alternatives well defined if different arguments
-specify different numbers of alternatives?  The GCC documentation says:
+Masahiro Yamada (27):
+  kconfig: fix infinite loop when expanding a macro at the end of file
+  kconfig: fix off-by-one in zconf_error()
+  kconfig: remove orphan lookup_file() declaration
+  kconfig: remove compat_getline()
+  kconfig: remove unneeded sym_find() call in conf_parse()
+  kconfig: write Kconfig files to autoconf.cmd in order
+  kconfig: call env_write_dep() right after yyparse()
+  kconfig: split preprocessor prototypes into preprocess.h
+  kconfig: replace current_pos with separate cur_{filename,lineno}
+  kconfig: remove zconf_curname() and zconf_lineno()
+  kconfig: associate struct menu with file name directly
+  kconfig: associate struct property with file name directly
+  kconfig: replace file->name with name in zconf_nextfile()
+  kconfig: do not delay the cur_filename update
+  kconfig: replace remaining current_file->name with cur_filename
+  kconfig: move the file and lineno in struct file to struct buffer
+  kconfig: make file::name a flexible array member
+  kconfig: change file_lookup() to return the file name
+  kconfig: split list_head into a separate header
+  kconfig: resync list.h
+  kconfig: import more list macros and inline functions
+  kconfig: add macros useful for hashtable
+  kconfig: move ARRAY_SIZE to a header
+  kconfig: move strhash() to a header
+  kconfig: convert linked list of files to hash table
+  kconfig: use generic macros to implement symbol hashtable
+  kconfig: do not imply the type of choice value
 
-https://gcc.gnu.org/onlinedocs/gcc/Multi-Alternative.html:
+ scripts/kconfig/array_size.h |  11 ++
+ scripts/kconfig/conf.c       |  12 +-
+ scripts/kconfig/confdata.c   |  91 +++----------
+ scripts/kconfig/expr.h       |  24 +---
+ scripts/kconfig/hashtable.h  |  48 +++++++
+ scripts/kconfig/internal.h   |  12 ++
+ scripts/kconfig/lexer.l      | 100 +++++++-------
+ scripts/kconfig/list.h       | 254 ++++++++++++++++++++++++++---------
+ scripts/kconfig/list_types.h |  17 +++
+ scripts/kconfig/lkc.h        |   5 +-
+ scripts/kconfig/lkc_proto.h  |  15 ---
+ scripts/kconfig/mconf.c      |   1 +
+ scripts/kconfig/menu.c       |  24 ++--
+ scripts/kconfig/nconf.c      |   1 +
+ scripts/kconfig/parser.y     |  92 +++++++------
+ scripts/kconfig/preprocess.c |  23 ++--
+ scripts/kconfig/preprocess.h |  19 +++
+ scripts/kconfig/qconf.cc     |   2 +-
+ scripts/kconfig/symbol.c     |  46 +++----
+ scripts/kconfig/util.c       |  38 ++++--
+ scripts/kconfig/util.h       |  15 +++
+ 21 files changed, 511 insertions(+), 339 deletions(-)
+ create mode 100644 scripts/kconfig/array_size.h
+ create mode 100644 scripts/kconfig/hashtable.h
+ create mode 100644 scripts/kconfig/list_types.h
+ create mode 100644 scripts/kconfig/preprocess.h
+ create mode 100644 scripts/kconfig/util.h
 
--8<-
+-- 
+2.40.1
 
-[...] All operands for a single instruction must have the same number of
-alternatives.
-
-->8-
-
-Also, I still think it may be redundant to move the addition inside the
-asm, so long as Clang is happy with the symbol having an offset.
-
-I.e., leave the .quad the same and revert to the one-liner
-
--		 :  :  "i"(&((char *)key)[branch]) :  : l_yes);
-+		 :  :  "Si"(&((char *)key)[branch]) :  : l_yes);
-
-This remains a bit nasty, but splitting the arguments and adding them
-inside the asm is not really any cleaner.  Changing the way this works
-doesn't seem relevant to what this patch is fixing (and apologies if I
-created confusion here...)
-
->  
->  	return false;
->  l_yes:
-> @@ -40,9 +44,9 @@ static __always_inline bool arch_static_branch_jump(struct static_key * const ke
->  		 "	.pushsection	__jump_table, \"aw\"	\n\t"
->  		 "	.align		3			\n\t"
->  		 "	.long		1b - ., %l[l_yes] - .	\n\t"
-> -		 "	.quad		%c0 - .			\n\t"
-> +		 "	.quad		%0 + %1 - .		\n\t"
->  		 "	.popsection				\n\t"
-> -		 :  :  "i"(&((char *)key)[branch]) :  : l_yes);
-> +		 :  :  "Si"(key), "i"(branch) :  : l_yes);
-
-Ditto.
-
-[...]
-
-Cheers
----Dave
 
