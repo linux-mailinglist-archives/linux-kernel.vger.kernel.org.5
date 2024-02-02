@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-49294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 548DA84684C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:45:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 810A8846853
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 07:46:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 788F01C2137C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:45:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37C9E28996E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 06:46:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AB2717596;
-	Fri,  2 Feb 2024 06:41:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A37FD17C79;
+	Fri,  2 Feb 2024 06:42:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M5sW7cfD"
-Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="evXgYvg9"
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 227CA48788;
-	Fri,  2 Feb 2024 06:41:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E7A917C74;
+	Fri,  2 Feb 2024 06:42:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706856098; cv=none; b=N8vJFCH1WDN8afM39cjh6NDJ9wJEfV52dUbcQWgGBIteRIvndmnGEJpr+uOrSYIHx1d4fhePidtrMPTMmkvXvKZZgRGyOrMV8wMPxWu0JJugyXGnWdG0F+7swz2IsHt3vTizDykD3usv+yZJGhV+IrR42UZVwDpda2qqrZe7MoQ=
+	t=1706856131; cv=none; b=DlRfEjB7LQUhQn4dvToDdTcL6+wCdMBz9aDy6s3ZBZjqdUEv/V/Xz8JVj35zPnc2f2auowr8Xe9ELCkILpoY6t1SFFgkQB3nJprAbTYBb1r2NWwltDLiz2aI9upeEGjaP5PPjZif2mJIlYKLfC0AMSpTBlYS/X9HTz8oulIBDkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706856098; c=relaxed/simple;
-	bh=FnWjsjwj8800isp2bFvFIFMiFcnzRWHiCH41bnxfCwY=;
+	s=arc-20240116; t=1706856131; c=relaxed/simple;
+	bh=zT5I4V5TRXhu2sofdzdOnbRvwMs3CJLr1D64+FxFgjI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DlGTxOfVcL1SH1ayq5ToceQ+sa2ClZIN4PRaAvjHnyvBTSJFXAicrQt55wsPXw9dtHe4YD3+wSR2ydXGLUV9UKkOo1DyvqkBxu0X6AT4YQnpqImqjtK0dRMxEbHTV0Sm1oNtqnv65DxczGfLxJkqxLjUPF6HjWsTrL3KPeqWopI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M5sW7cfD; arc=none smtp.client-ip=209.85.160.43
+	 MIME-Version; b=LmT1NuBthN+EdG3gY+j+ecuN0tilgGqHVv6gqi/ad8CgIdXeTaWvh7zCY1jf4iHUtThpteUvkJ6XaahyTz3LQflkvR9s2xEZ0shc+WMvPdnxjyInbx2sVYsDgsyukLBPKIxJvSR9wY+92E6j/7Lwt6LdvT5fmDGRMqV6FbpOZzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=evXgYvg9; arc=none smtp.client-ip=209.85.160.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-2144c37f3d3so989380fac.0;
-        Thu, 01 Feb 2024 22:41:36 -0800 (PST)
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-2144c37f3d3so989626fac.0;
+        Thu, 01 Feb 2024 22:42:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706856096; x=1707460896; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706856129; x=1707460929; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=H/7Ihe4vPnqb+El0TxxOCHRxUyQil8HxVU+vhaaiIU4=;
-        b=M5sW7cfDuayE8gjf3PSbR6cgR9/Gge2XgASzvIjgQ/dt4SVRsj4NQC69bslN7NXzSc
-         La3dI+IqSwAg0rCJ8SUnmcUo9a8sOSszdZl4aH77jlBlDvQejQjOWVSTuj3ln8jGglZ8
-         2MDvVCJkwJ8aI1VYQ44oXoEpyMzNVVJOphER5zYgD+J+KhP0GhzOZE9FeXrqoyjqIvC8
-         nXLOOxHiZm9q9GptSw1O0wCNEl7M6iEkRzy0LTHeLL/s1mE514D1r9wXEP3sVMDcilYN
-         tjiZOihnQKOVprwID6Q/zkyrhi1o2EUVUvrpqN2nqbXknHM17L8fIcjM1sEJbAqAlLHS
-         L/WQ==
+        bh=JELyAKQ1T6IEJZGUW3XWSPZsx7DTHSSDfTD0aj2gLgE=;
+        b=evXgYvg9DDTyiIjam6le3KDKIsJBJGijDokIPBqVkP0/PxMgRpastFAg/PzrHMcq24
+         mo6yBUqL6hlohnnRYSQf0Xyqux/OCgLlK/AcPU8ecwddi7rarL8nS3RjZQaWFs2HYIAa
+         xWWs4vXLlp1xJiHXGkJ/sfDY2clUiMCdH8BZV/Svw3tadeALEvvQJybPG6rCxVC9Ne3r
+         hZZPW+5eshZEdA5kZI8jYwby1VxgxgDGiRotlBbT/4ID4sroneKfIs1arVcIZ/Wqt1IF
+         zLpvw8W6ukaiAPFoK/hYud5cfwRdZuoDGAh1WBi5W0ISVWaqj+4gxzh69GxZsyua0OyC
+         /Vpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706856096; x=1707460896;
+        d=1e100.net; s=20230601; t=1706856129; x=1707460929;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=H/7Ihe4vPnqb+El0TxxOCHRxUyQil8HxVU+vhaaiIU4=;
-        b=KF0lTWdB0XgirbcQ22XjppLvEysKpOww/GSpj/WBD/cgL2g2mVA0GspD92I0XenOKT
-         mbGM9AZpZ77Ob4voMCbPFl8sMFsJgZDxjx+JGcqC374t/666iCdzCpWoEJy0isDKRfAJ
-         1gMD73Nw+2oFqmGHA1TqDKm4kufgUdAu5zW2Ih4tjhCIJR+S5JtROjK21LmDEkwBd9Lm
-         IUfaYIhc6l3TNBPZ/xKoqsjyMBYMeREx0oMzJZvElMCTATt9kvS+McTJX+5Hucj6TZCl
-         prDyts9btbZ/DVoXDSZyGxAGxcu3ydJuSyRej/NhISPsau9dcWar0dUUA6+16DxD4uFT
-         FOyg==
-X-Gm-Message-State: AOJu0YzcKx9JggTSHcUd3alHjrfcDS033Zv6I80WSWkhXOFecarlGrP6
-	jhMYXnH8rvBITrIVCO8Lt1jStfQ8NKQcbsY5MaFou06plDw4YnZZ
-X-Google-Smtp-Source: AGHT+IHSiFTmHke13wN1SxKcd66FM+K2StullT3LYnHJcbR7rpQ5ZFrlEClwc0zT0kIMT5IkxBOkrQ==
-X-Received: by 2002:a05:6870:a119:b0:218:dec1:8330 with SMTP id m25-20020a056870a11900b00218dec18330mr1063507oae.8.1706856096067;
-        Thu, 01 Feb 2024 22:41:36 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCX9fyP97T4LGPWcPjGEhvjLc+c58XmBo0/gXNEC1NZHfGLci4RzYqgMSvCkP8r6WWKeQ7rFoFtGpwnKpMbt0wCIrhZoIgV1ULFXJqV+EMaX9Xxbids+QPLJ90x0WP7Te/hJovSp9zxHKtUQwuz5Dfm8+98FhhJEJy09Rl8NfghF3w9XRO6mtxdq1Df1JXZ0UWkQtg1+2nCjVv0wIO2DFtGj53Fy9pi3TihN8uPmOGJadRFlUTavMeHu403+hY57YoDLcDbeqrSNXke3rUlt+GzxjjAGnYZ7O0mXmLdp6TG7Q/H7L5iVxUqaDWa0jDEBx18ac77BmzWKfbSDhCvo+rqVxeMOuvgh4mImSKrpVl7D9WcIQMePJDi5G/LYutDX6l/3yGSmrGLcZVxaouXDXVaXNmshRMLPsNZQCaYmw2Xpld5+UFbBThgBBXYqsVsAAtwKa04Nay28Vu9UYdoixkdkOLW3cQYoL+GGjVvhPMWyzSnJg9wx92qqCInTah3uPV5/uKnZ8aycVNNEyjNfuPSIVdvZuP566bNINTOQv07bBKymsvDHBTBQAE7gxqACz0WwDy/2wP3GykpZkXQkKSBMatCXahwyF5NNlgiBceV6ws1EElGHJi9GoF58aR50ERZWFtGyFdghkkBU/RBUSRqmFff7hSYS/0F/vmJ5XmOJxfw=
+        bh=JELyAKQ1T6IEJZGUW3XWSPZsx7DTHSSDfTD0aj2gLgE=;
+        b=A2J2cxOFsHhv17emClnRGXOvOSC4hiwXJmU9KJ/6xREhoF/gc1uzMCHO29vZSOWe9u
+         XP69pqSrBC/za8eYPDshbJaEu8unRHOxxJwjbMbizMMGZ6bSWPGhyypK2FosUnHRi7Qm
+         kycBYfbCaoQDv1Osm9HF/dGpxvRZpWvB4PBb8znJDITg57wApwXOjzm+TSgeFTEyZQnY
+         XaYMA2XjVfgSQti3jKhv3d+GFMhOdG3xohcKu3t47p12IjiB7Nvc47EAOo370OgT5SvG
+         PaxlyG4Xjg/IC9W29Z5p+vAybFvTS88kdic2nh6MJ6pk3tuvTI8Tp2bTJceq2QJskots
+         nSzQ==
+X-Gm-Message-State: AOJu0YxNg9aXMkmOrJfpfXmKRD+Nodr30ppAoCPo+LfFTlbII1QCDZrP
+	1zocx57wbYJNRrqaaPjRbxLysQQ+zOTIDJ7Llohw0bYmMirnWlIWvAREkRLX
+X-Google-Smtp-Source: AGHT+IE/5mOvGH5pTAcH2qVjRrKDAL20GcPlCBgvs4FtVvidSzrX9acAdfuzBp4cg3qXoTG9JoIoog==
+X-Received: by 2002:a05:6870:2387:b0:214:909b:7cb1 with SMTP id e7-20020a056870238700b00214909b7cb1mr1208102oap.16.1706856128966;
+        Thu, 01 Feb 2024 22:42:08 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWPkRKLB4qnE+z0c2/4Ek7EJrgZX8srQHblddhG3jldRz3i6qa1Docy6KTzLLDZenEp7mo7egouVDxJXpYGWLIg/3PwxNrJ1mvaLBUVAvzoqcf6CpsH3rWDdlm7RU+i+Qc6RvZHDc514oT7xRe9f4UiBHYumhzfXwOPVNnevjXFJqJKBCZTL/52vEvTG5SzL365P7nR/imO3YNObtvBwq7EGTGPN6n/9CC0C2ppLtiQg9K4WynBwNGDpOpsTRE0RLnp5kZbU/oLJyOlsxi5SDRuh4XeA3EoW6h8/5nQNwAhKiERqgam1B1lMeigZTD2ekUQ0ozpk2hlYC2DlDG9FhBpsK5T/XNbSCHkNZ9N+wU0a+IY3LUUgmf+MyG/pXVquf9orN4Vpm54Q3U2+5WVRtDIWq3ObYWAI8HKESS2VBVnMprgT58ukJOi6//qzTTRAv0F5vTn6+Qu6swBvJ+vld2kfEVM8GpzKU9AGxuggO8a7OFmOeoIB6AehdGlZe2mUHymFmYOzULyDMdktpcGXnEm/jxJ2efS+uowsMQ48yEt2rCbzyzWvQH/eg4Jmbzau48TL4DEfY1rKYuK4LBz+iuZqp4cEm9hJPtrD3c96ORWkdEs1AOAFldqxpc446cpOgi9fsvOqFNM6V84y00cR8yrEte+ewVa0/rRDKTg/5huMA0=
 Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id sc23-20020a056871221700b00205d664c127sm335381oab.16.2024.02.01.22.41.34
+        by smtp.gmail.com with ESMTPSA id lf7-20020a0568700c4700b00218f6d86bc0sm338684oab.22.2024.02.01.22.42.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 22:41:35 -0800 (PST)
+        Thu, 01 Feb 2024 22:42:08 -0800 (PST)
 From: Chen Wang <unicornxw@gmail.com>
 To: aou@eecs.berkeley.edu,
 	chao.wei@sophgo.com,
@@ -88,9 +88,9 @@ To: aou@eecs.berkeley.edu,
 	inochiama@outlook.com,
 	samuel.holland@sifive.com
 Cc: Chen Wang <unicorn_wang@outlook.com>
-Subject: [PATCH v9 1/5] dt-bindings: clock: sophgo: add pll clocks for SG2042
-Date: Fri,  2 Feb 2024 14:41:27 +0800
-Message-Id: <bf3b8178a013004f259cd9254b13279254505852.1706854074.git.unicorn_wang@outlook.com>
+Subject: [PATCH v9 2/5] dt-bindings: clock: sophgo: add RP gate clocks for SG2042
+Date: Fri,  2 Feb 2024 14:42:02 +0800
+Message-Id: <fcdd83addcd9af159a0bebf2a14543168bd59a07.1706854074.git.unicorn_wang@outlook.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1706854074.git.unicorn_wang@outlook.com>
 References: <cover.1706854074.git.unicorn_wang@outlook.com>
@@ -104,55 +104,48 @@ Content-Transfer-Encoding: 8bit
 
 From: Chen Wang <unicorn_wang@outlook.com>
 
-Add bindings for the pll clocks for Sophgo SG2042.
+Add bindings for the gate clocks of RP subsystem for Sophgo SG2042.
 
 Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
 ---
- .../bindings/clock/sophgo,sg2042-pll.yaml     | 45 +++++++++++++++++++
- include/dt-bindings/clock/sophgo,sg2042-pll.h | 14 ++++++
- 2 files changed, 59 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/clock/sophgo,sg2042-pll.yaml
- create mode 100644 include/dt-bindings/clock/sophgo,sg2042-pll.h
+ .../bindings/clock/sophgo,sg2042-rpgate.yaml  | 37 ++++++++++++
+ .../dt-bindings/clock/sophgo,sg2042-rpgate.h  | 58 +++++++++++++++++++
+ 2 files changed, 95 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/sophgo,sg2042-rpgate.yaml
+ create mode 100644 include/dt-bindings/clock/sophgo,sg2042-rpgate.h
 
-diff --git a/Documentation/devicetree/bindings/clock/sophgo,sg2042-pll.yaml b/Documentation/devicetree/bindings/clock/sophgo,sg2042-pll.yaml
+diff --git a/Documentation/devicetree/bindings/clock/sophgo,sg2042-rpgate.yaml b/Documentation/devicetree/bindings/clock/sophgo,sg2042-rpgate.yaml
 new file mode 100644
-index 000000000000..b9af733e8a73
+index 000000000000..69ce3a64f66c
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/sophgo,sg2042-pll.yaml
-@@ -0,0 +1,45 @@
++++ b/Documentation/devicetree/bindings/clock/sophgo,sg2042-rpgate.yaml
+@@ -0,0 +1,37 @@
 +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/clock/sophgo,sg2042-pll.yaml#
++$id: http://devicetree.org/schemas/clock/sophgo,sg2042-rpgate.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Sophgo SG2042 PLL Clock Generator
++title: Sophgo SG2042 Gate Clock Generator for RP(riscv processors) subsystem
 +
 +maintainers:
 +  - Chen Wang <unicorn_wang@outlook.com>
 +
 +properties:
 +  compatible:
-+    const: sophgo,sg2042-pll
++    const: sophgo,sg2042-rpgate
 +
 +  reg:
 +    maxItems: 1
 +
-+  clocks:
-+    items:
-+      - description: Oscillator(Clock Generation IC) for Main/Fixed PLL (25 MHz)
-+      - description: Oscillator(Clock Generation IC) for DDR PLL 0 (25 MHz)
-+      - description: Oscillator(Clock Generation IC) for DDR PLL 1 (25 MHz)
-+
 +  '#clock-cells':
 +    const: 1
 +    description:
-+      See <dt-bindings/clock/sophgo,sg2042-pll.h> for valid indices.
++      See <dt-bindings/clock/sophgo,sg2042-rpgate.h> for valid indices.
 +
 +required:
 +  - compatible
 +  - reg
-+  - clocks
 +  - '#clock-cells'
 +
 +additionalProperties: false
@@ -160,31 +153,74 @@ index 000000000000..b9af733e8a73
 +examples:
 +  - |
 +    clock-controller@10000000 {
-+      compatible = "sophgo,sg2042-pll";
++      compatible = "sophgo,sg2042-rpgate";
 +      reg = <0x10000000 0x10000>;
-+      clocks = <&cgi_main>, <&cgi_dpll0>, <&cgi_dpll1>;
 +      #clock-cells = <1>;
 +    };
-diff --git a/include/dt-bindings/clock/sophgo,sg2042-pll.h b/include/dt-bindings/clock/sophgo,sg2042-pll.h
+diff --git a/include/dt-bindings/clock/sophgo,sg2042-rpgate.h b/include/dt-bindings/clock/sophgo,sg2042-rpgate.h
 new file mode 100644
-index 000000000000..2d519b3bf51c
+index 000000000000..8b4522d5f559
 --- /dev/null
-+++ b/include/dt-bindings/clock/sophgo,sg2042-pll.h
-@@ -0,0 +1,14 @@
++++ b/include/dt-bindings/clock/sophgo,sg2042-rpgate.h
+@@ -0,0 +1,58 @@
 +/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
 +/*
 + * Copyright (C) 2023 Sophgo Technology Inc. All rights reserved.
 + */
 +
-+#ifndef __DT_BINDINGS_SOPHGO_SG2042_PLL_H__
-+#define __DT_BINDINGS_SOPHGO_SG2042_PLL_H__
++#ifndef __DT_BINDINGS_SOPHGO_SG2042_RPGATE_H__
++#define __DT_BINDINGS_SOPHGO_SG2042_RPGATE_H__
 +
-+#define MPLL_CLK			0
-+#define FPLL_CLK			1
-+#define DPLL0_CLK			2
-+#define DPLL1_CLK			3
++#define GATE_CLK_RXU0			0
++#define GATE_CLK_RXU1			1
++#define GATE_CLK_RXU2			2
++#define GATE_CLK_RXU3			3
++#define GATE_CLK_RXU4			4
++#define GATE_CLK_RXU5			5
++#define GATE_CLK_RXU6			6
++#define GATE_CLK_RXU7			7
++#define GATE_CLK_RXU8			8
++#define GATE_CLK_RXU9			9
++#define GATE_CLK_RXU10			10
++#define GATE_CLK_RXU11			11
++#define GATE_CLK_RXU12			12
++#define GATE_CLK_RXU13			13
++#define GATE_CLK_RXU14			14
++#define GATE_CLK_RXU15			15
++#define GATE_CLK_RXU16			16
++#define GATE_CLK_RXU17			17
++#define GATE_CLK_RXU18			18
++#define GATE_CLK_RXU19			19
++#define GATE_CLK_RXU20			20
++#define GATE_CLK_RXU21			21
++#define GATE_CLK_RXU22			22
++#define GATE_CLK_RXU23			23
++#define GATE_CLK_RXU24			24
++#define GATE_CLK_RXU25			25
++#define GATE_CLK_RXU26			26
++#define GATE_CLK_RXU27			27
++#define GATE_CLK_RXU28			28
++#define GATE_CLK_RXU29			29
++#define GATE_CLK_RXU30			30
++#define GATE_CLK_RXU31			31
++#define GATE_CLK_MP0			32
++#define GATE_CLK_MP1			33
++#define GATE_CLK_MP2			34
++#define GATE_CLK_MP3			35
++#define GATE_CLK_MP4			36
++#define GATE_CLK_MP5			37
++#define GATE_CLK_MP6			38
++#define GATE_CLK_MP7			39
++#define GATE_CLK_MP8			40
++#define GATE_CLK_MP9			41
++#define GATE_CLK_MP10			42
++#define GATE_CLK_MP11			43
++#define GATE_CLK_MP12			44
++#define GATE_CLK_MP13			45
++#define GATE_CLK_MP14			46
++#define GATE_CLK_MP15			47
 +
-+#endif /* __DT_BINDINGS_SOPHGO_SG2042_PLL_H__ */
++#endif /* __DT_BINDINGS_SOPHGO_SG2042_RPGATE_H__ */
 -- 
 2.25.1
 
