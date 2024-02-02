@@ -1,267 +1,244 @@
-Return-Path: <linux-kernel+bounces-50126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50127-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FB59847497
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:21:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C6728847498
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:22:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 650051C26580
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:21:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E68501C260DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:22:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 878621468FF;
-	Fri,  2 Feb 2024 16:21:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A3961468FF;
+	Fri,  2 Feb 2024 16:22:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="KWxniq+6"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2041.outbound.protection.outlook.com [40.107.243.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="L8Vsf5Lx"
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEC8212FB39
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 16:21:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.41
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706890870; cv=fail; b=X+xjHThJyEZZRCM2+ltkuV+P1DbGpIs4N47e0s12GL0MxioLZmoelwgPgdcz/O6bwbrJhpi3uJOQQwAuo7S0bRv6QEAUUubd9+0rmVkhxU1JMLcqnaMjqZztnfq2UVvJZREWhWJWHK0Y4hAhIYmcRGWSry2oZc5yoCSaKRDKgYM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706890870; c=relaxed/simple;
-	bh=o8QcZv/3QPGXTybfyG0S+iFO/toRRnsjGyAFLKxy3Nc=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Fp4935bxTtvlQymgpMluL57C48RvqnBixJ7yTaF/7dQEdUu2LfNNun19Hh8p+m3VMjQPhiHm/6lh/u69rvW0i99Vu9UVcYQRbAfysUBiUK7sUJZ1BAljPC07usto49dEZJBnbqNDcK0FXFeWL/q2Ew2x7TJhX4o1oeAxM+nt+Gs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=KWxniq+6; arc=fail smtp.client-ip=40.107.243.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j7prWDVAa5Fy/H+uvRuFiC7iLnSlIumDObZ72X7n9knyI2uqko4+6yIctEe0iKtj3Fa9r9WxGUoRKcsBF7QzjbeGj5APU/QRpfCuMuga9mveqk+JPCR5WMYcNqCt71f2VdWxvMw7FgGrR+r5g2/FZpC2y0CMER0OOOQMH6t7vIt/mHxyF97IZ25GZ8gViaFS/ZGmQAa6DSoUjEym1BIrR8qd69JHXOHpzKRr0SfoqpZwhA/uEvCqx7kxMhdHWqxB0aHbfMmhBStJglbEqTycGE7rY4mBJR/GGdOk9DApo0KUQxpY9agH7p110pPo4gwFQK0wWFRpnWPf5VttXyhnXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VcS1ewfbzPPr7dW1RsF7tEc6EdIi17/Rr/UTvDHHhMU=;
- b=T3QuZqQunQVifvY/Oz49Vn2tudM7iqbnKngcjKiTwcmb6oNQA8dPAh/io/576YFMASQC6DRIYUXp6MFcPr8xtEHhKm/2UEhjOKL/B0+JyAknBNxnmHBFayIe+IIhQxEuptxwlkP8bK1BGSpeNj2tN4FkpIpbEnyXbrh1/EhDGLlFZYQ2yBJOegSCKG+3xPYSBcyTVUP7WcybQJMwod3kX0kAujlZ1C/iZw9381SSjjj0t6mSgwTUkJ5a6TapAipVrCa6NEt7Lp2zFONzIaAXMTmYoH1LW4GVP6VqO9NwD4tfAdNgXLapB3mOSN8Waf1feulcgUCvS+7F1bHiWBXw3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VcS1ewfbzPPr7dW1RsF7tEc6EdIi17/Rr/UTvDHHhMU=;
- b=KWxniq+6YHFrieg0zqwSoxno13QEWmzZHgTa/y1z0CaqTZFgC+p/1tBajPzjMwNvFCcPtu2qdQvKDyR/Ygka/l+cs4UMQwPgW3cW8oBg7nSOY2e6TYXizzVWfwaxRK2LJrS9p2A22TVZlf+F1EjDr1snf5QMLt/csAeyHJvrrFk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by MW4PR12MB5644.namprd12.prod.outlook.com (2603:10b6:303:189::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.12; Fri, 2 Feb
- 2024 16:21:01 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::c30:614f:1cbd:3c64]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::c30:614f:1cbd:3c64%4]) with mapi id 15.20.7249.024; Fri, 2 Feb 2024
- 16:21:01 +0000
-Message-ID: <0b94b25a-9ffa-41a5-b931-ad84e1892d36@amd.com>
-Date: Fri, 2 Feb 2024 10:20:58 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drm/amd/display: add panel_power_savings sysfs entry
- to eDP connectors
-Content-Language: en-US
-To: Hamza Mahfooz <hamza.mahfooz@amd.com>, amd-gfx@lists.freedesktop.org
-Cc: Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>,
- Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Alex Hung <alex.hung@amd.com>,
- Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
- Wayne Lin <wayne.lin@amd.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240202152837.7388-1-hamza.mahfooz@amd.com>
-From: Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <20240202152837.7388-1-hamza.mahfooz@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN7PR04CA0230.namprd04.prod.outlook.com
- (2603:10b6:806:127::25) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F171C54673
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 16:22:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706890962; cv=none; b=EPeyyXVpGRAjTdc3037AOd62FWPmTEvjx9uWkespjjGYoAPEE5vBGw8/TOywDqk1KZ8ZUT5AEUUh22khA5V14S+50VCHkOBKHxv/8xJakK/putex8JYBYjNOsKzJzFVmuXgGOug2NsXp4Y7AMEyc1L0rFPLo7kuDW4fWJg0BL+c=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706890962; c=relaxed/simple;
+	bh=+HK3TCtP7QCQZPyoTqhbwad/Bt2qOpO6afXcp1KlkLk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ozfOSPGAuCiZQZbZYKCD0KzrwbQUjnEdU33yD/bWcPoTuuqMa7X0RfOHYRnEFhg1vNYNihajj8WDXil8MoZUID4H3fk8iePhkBzs5xjYQKqYuheCF0vkgbY7Gfr2p8FodUx0kELWZTW8pgSGbJ020cpmLw/3IhsMFuGGS8qTs0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=L8Vsf5Lx; arc=none smtp.client-ip=209.85.160.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-429d7896d35so14340281cf.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 08:22:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706890956; x=1707495756; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/K3Nq70zFGvyKDwU3ZY65DWbsfqM8JJCUVupC8As58c=;
+        b=L8Vsf5LxWjsmY1vvnMGV5zXVXysZHyh/qfYy9W0meVm+MZCsIFKM4ul3R3ihVf4cn1
+         AbkZ3GZ9aLHUr85HOdtCQSa/7Xo0A11PNsn8KtqjG7Ir3jcrIhKMH6BmxRcR0Lh0jAbV
+         SWLA8VL4hEdjSVtjwC8fiidBMroQFaO3N2gkuRDyjsPpDyUBemNfAKqMv/CYYTX6oQZN
+         cd5TWBmQ48cF7IZYWw1qXwBAH9cXk07N3kGqqoVr44Iz/Hlj3U3A4MI1LkZnQZfkqyqA
+         /wDglzvwmiM53vVAFkNNDaqqhd8ZKAYUgoegiepsk5hBdeiRXHwTh5ZMFRDuW+2eKIKi
+         +cbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706890956; x=1707495756;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/K3Nq70zFGvyKDwU3ZY65DWbsfqM8JJCUVupC8As58c=;
+        b=NI26oR329mTmLobW5e+Dncqw2Uea8ImyruQVE79SxMHjeDiofnjryFZL8itIpnRk49
+         oRgzmHSuq3Yu/soqIdwJcIbx29ANYX1S2yrX5I4dW4Ikp9hXzaqmlVn1RSt87UATX6/K
+         ro1I0F1ojkUR4fP8O+hx3Y1brUlD1uclHekTjwUm9wvzpXCE+Q7ovSe1fEHF9au8iHCc
+         Jjv0KFu3TI+M0cn/Ct0q/fclYG5ld7SLvXdzDkI47DYWxbgjY0sU0M7ZEipeto+OUyqK
+         6c2V63lU/Wt/RKIG4jQJAIc5dbHPxu+1zg2TtLtoaT5VnkbEAYe+BTBLdlWHT2bwMIKn
+         8Tkg==
+X-Gm-Message-State: AOJu0Ywb3xypA8Rp+8K5NsVpfbTf675IrivMs9NpG0M0FPErIMqV8zBq
+	sWWwOtEhAUCmLMozOVsDG7+4Do8LM/Lt3iU8FW5jDHCBT8zNRytQe9kRSpK5FwtMCzZN1FkmAp5
+	qoW6O7G9i00WrZWCXcaPDoKQjAYnZjvmnkKee
+X-Google-Smtp-Source: AGHT+IEE5ISkbNXS6VfuxQo8VaEvgYlkPxi3PutlXh2ql5op0O+Q2FYYlI8Syviuws5w/gDm1/LIWZi6AuNnpgHXhRU=
+X-Received: by 2002:a05:6214:2f08:b0:68c:8ae0:b413 with SMTP id
+ od8-20020a0562142f0800b0068c8ae0b413mr1374192qvb.30.1706890955573; Fri, 02
+ Feb 2024 08:22:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|MW4PR12MB5644:EE_
-X-MS-Office365-Filtering-Correlation-Id: 22b5e6b4-e07f-4487-138e-08dc240af245
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	xs5ZdwLQhmK6kTpqXr8itQoSgJim59tQhYU39R8IGMWU8tmjVIqvnCFj0r3pe67BYRReRFyZ1Lni7RRqKVOY1E8XlYRCWEF1bN4H36VPeczUF4WY3wtBubwc5DAsethnL5hRSHBJtNb5H0h80ya8isGA4t2nb4T4K+QeA+9NuDYmuihIKbtZUA/+DjCxz7iguX7fSHOXjxzWS5yqBR65vNiE4YftvBwCRDdP+9gvDA8jtOGtu+9X112YQVN9lERp0hFVJiMgHO7LgwcuffVhBapMTjCDVxSxknNrjFNC3ECUxTxddAo3bWwEzD1v0/pnS80aezHatHlbDVgpXbhIArKPOB7qav5fiqWd+96UDSNNMHIyezXTBxgEBlX9gvYdSxSsmKLLWWleG7X++Pljr+WX2o98glNcAW09+zh9ytirNvqGNTw1Sj5Wd8njU812rY3NRcDTiKAMzmtQWut4ZSpaDqyxofciUqI3nW1gIu3WfPJifA2xA2sCN0hHHOnraB9teduEJJg5MxAR9jHUI2+CKtINsbsbAr8eA7infbrCBoFYxxqYvQX/I0bcSGnKAh/k9xBDKhas7lpddckG8bgxIn3GxXvSuOG6FZhuWtTNp9mGIynyPmH13neN4qqibW4OFU6I9lyh1Wm43VLnKQ==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(39860400002)(136003)(376002)(366004)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(6512007)(6666004)(6506007)(53546011)(26005)(2616005)(31696002)(4326008)(8936002)(8676002)(316002)(66476007)(54906003)(36756003)(66556008)(44832011)(5660300002)(2906002)(66946007)(86362001)(41300700001)(6486002)(478600001)(31686004)(83380400001)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?dVpkTGNHZ0tUTWFMb0RJVVlYUkUzUGZkVjlkWVdoMmYwVERkbTh6S2gzd2Q4?=
- =?utf-8?B?K1hYMGRnSVZSaksyNE5NczZmY3ZCa0xscklGck9yRmtWaitaNDlMU21MOE8z?=
- =?utf-8?B?YkNCVUdaL25KRmE4c0grZnUvT08zUldGQ0dOMkxsb1JyQmxuU2FjdW4xa0Fu?=
- =?utf-8?B?bS9xRTR3eldVVjgydG9raFVNZGY0cU1SeWMvWWEzVndzQnZxR1NqZzVId01a?=
- =?utf-8?B?dHVvYmNqck9QTEVEclZHalppU0t1cHhMb0RBdnBZV2UwRHlUSE5tUGRZQkl5?=
- =?utf-8?B?U0szUmFwZ1IrRk1obU9lclhwelR4NWlOcWowSFZZMk05SnZ2U0FEaTB0b01Y?=
- =?utf-8?B?ZWJXVWFqdlk1QjFHdDIxdW9adEZkNUN2enk4dUVHcnNZa2s4c3VzbDhZUjFw?=
- =?utf-8?B?b1FoUlBkdzJwOGo1K2ZZU2FwUkZ5QXhqcEhVWDdHTnl6dXNIUW0zaVJ6ZHls?=
- =?utf-8?B?QUhsWFFNQS9BTHhBOHRJR2c4MWpYYStQYUlyMDJkYUJCYytUZ1VTdk9uL3dI?=
- =?utf-8?B?aHJkSXc3cTlISElvYTVxaUh4MnVoMlQ4YjhqVTdsOVVPSS85RFNXSHViVzY2?=
- =?utf-8?B?eGh4U2lROFF0dDY2NmtpN0dHK1BFdlVPcW1YbDUrY0p2UmVHV1RwSVhTQjBM?=
- =?utf-8?B?Y3BhSTh5WSsyb3VKc3VyeitVNWg3MG9LT2xHYW0xSTJZNEgzOXNNMkk0VENa?=
- =?utf-8?B?amN4a2UrSFI4M29WUjh5RnhCK0VlczZlbmlNZWN6T0Fhd0RzUU9LcTBQK21O?=
- =?utf-8?B?MytSblhPc2N6eGNkSUQ0VitQY1F0ZGJ5eTBSZTI0ZW9uMWV1czNLcS9Sd0hp?=
- =?utf-8?B?aHY3QWtSUXhnc2o0Nzk1bG5DV2s2Z0dpbU5KZWlCalRodzMvQVA1QXh4R2Jz?=
- =?utf-8?B?K1c0MEpyT0U2anpkZnpadlArWi9EZDltYmpNTEFYWWlMRUF3bjlidVhRckdH?=
- =?utf-8?B?Y3phYVpuaFFLaW1ubUQxWDJpZkJlcnorUkN1UW9SRnRqWHdMVzFsdU1HUXVU?=
- =?utf-8?B?N3RhdFB4L2EzWnZwdXgwdEwzblVKOVJNbWozdUkzanhkN2pqTnhua21hVXpx?=
- =?utf-8?B?UVhNQms4dHJ5K291UnRrNGpaci9ETXVZRHFlYitudnpmanc1Yy9lVnJqdUls?=
- =?utf-8?B?eWdBSmlhbElINFBJTjd4Z25pODBvMTdRZ3UxUDFKQzBkM0plckxaS2hhK0NT?=
- =?utf-8?B?bmZoQ0ZRcmkrTktpc01YU1o0Z056WEdvQnY3d2Q2SmZmTnRMRUc0aGJUWVdH?=
- =?utf-8?B?MGg1WDRtazRaN1RjZm9lbStrdXA4YVJlSWxOeDlhVUpJUzY4QThsSDBtWmtN?=
- =?utf-8?B?cDFsZjlWcjZJeHJycFRYSEJDdnRwaXNHdXk1OW93TXcwZU9XSEVNM1pYV1Fp?=
- =?utf-8?B?cVFrdmVRdHBQN2lja3dhYVAzMWNoaG5uT296R2tpalZ2WmhDenF4cEJzUzhB?=
- =?utf-8?B?TFEyZkgvVm5lNGw2bGhkc0ZIRExHamlkR1RkdWgzSThsMm1IRzRjdDJoZlRt?=
- =?utf-8?B?ZURoTHArWWFQUFo4U3FIeHRGSDF1bDdPU3RHSkZCUkV5ZkFkZlh5eVlsMGZ5?=
- =?utf-8?B?ZVFtL1RNeEtzOFhiMG02bUMvZFVJSXFQN3ZvZnMzaldScnp4bUhpOFV6TW56?=
- =?utf-8?B?akdTK2pOcHpORzlaRTgyMU5oZ1ZGK2xNckR0S0toU0tTekNsVU9ONTRFbmtj?=
- =?utf-8?B?MXdoZ1RJbGFEQmZjL1R3aHVoMnE5dTNQWjBzUE4zeHF1MjVaR2hyZ3g5OUFE?=
- =?utf-8?B?dk5mZDBISEhQT2JKb0FqRVZ4akdwUHo5NFZMSVdtYXkvdGlEK3lvY0tPY2x3?=
- =?utf-8?B?ZkE1c2p3OVV3bjEwRUE3aXRkQjA1cmhuT3kzWFpvSXZCMmx4T0x2OWI1S3Jn?=
- =?utf-8?B?bjQxdWZ1cUhrYXRxNFA4VUxuQ1dBNkdBQW1aRWI5Z1NLVnRRUm13NlViVEFl?=
- =?utf-8?B?OXF1RkV5c3h1Tlcrb1ZWOEN2aE5NOVoxb2Y3ZVN5YVZVZ0FCZU5iNGJIalJI?=
- =?utf-8?B?NnlDK1ZHQ2g4Q1FoOS96TFZ6amxRWjE3Q0FzbDhSVzBtd2NJYWw5MllXc01W?=
- =?utf-8?B?TVlkMDVJTWtNZjNieWh5dzVVNVpZdjdmbnJZZURHT3RwR28xV3ExekphYVVh?=
- =?utf-8?Q?3r3hIrbiaL5UpuglyXTt86r+C?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22b5e6b4-e07f-4487-138e-08dc240af245
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2024 16:21:01.4260
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OIvzMHeLoHfYxHGuOEtBvh7SvTpnDDadGrfb9e7vaeCuQnZSqkASgYXGun0HfAtUjcYqHul3XAixDfU9nYryWA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB5644
+References: <20240112055251.36101-1-vannapurve@google.com> <20240112055251.36101-6-vannapurve@google.com>
+ <6709a57c-48a0-4ddd-b64e-a1e34ae2b763@intel.com> <CAGtprH_ANUVU+Dh1KOq0vpT7BGbCEvD2ab9B=sxjzHYsKxFGeA@mail.gmail.com>
+ <1d9d3372-825a-417a-8811-ffa501c83936@linux.microsoft.com>
+ <CAGtprH8r0kYYqGoumsVeZq42cX8CN3cchkuRYhQULqtb-1nKww@mail.gmail.com> <3313c886-e964-48c3-8277-b47cb1955de9@linux.microsoft.com>
+In-Reply-To: <3313c886-e964-48c3-8277-b47cb1955de9@linux.microsoft.com>
+From: Vishal Annapurve <vannapurve@google.com>
+Date: Fri, 2 Feb 2024 21:52:21 +0530
+Message-ID: <CAGtprH9X0Yz_Z+QaYcLpLNXtY_Ye68aqvx-G1pOWZxv9SiRRoQ@mail.gmail.com>
+Subject: Re: [RFC V1 5/5] x86: CVMs: Ensure that memory conversions happen at
+ 2M alignment
+To: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+Cc: Dave Hansen <dave.hansen@intel.com>, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	pbonzini@redhat.com, rientjes@google.com, seanjc@google.com, 
+	erdemaktas@google.com, ackerleytng@google.com, jxgao@google.com, 
+	sagis@google.com, oupton@google.com, peterx@redhat.com, vkuznets@redhat.com, 
+	dmatlack@google.com, pgonda@google.com, michael.roth@amd.com, 
+	kirill@shutemov.name, thomas.lendacky@amd.com, dave.hansen@linux.intel.com, 
+	linux-coco@lists.linux.dev, chao.p.peng@linux.intel.com, 
+	isaku.yamahata@gmail.com, andrew.jones@linux.dev, corbet@lwn.net, hch@lst.de, 
+	m.szyprowski@samsung.com, rostedt@goodmis.org, iommu@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/2/2024 09:28, Hamza Mahfooz wrote:
-> We want programs besides the compositor to be able to enable or disable
-> panel power saving features. However, since they are currently only
-> configurable through DRM properties, that isn't possible. So, to remedy
-> that issue introduce a new "panel_power_savings" sysfs attribute.
-> 
-> Cc: Mario Limonciello <mario.limonciello@amd.com>
-> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+On Fri, Feb 2, 2024 at 1:30=E2=80=AFPM Jeremi Piotrowski
+<jpiotrowski@linux.microsoft.com> wrote:
+>
+> On 02/02/2024 06:08, Vishal Annapurve wrote:
+> > On Thu, Feb 1, 2024 at 5:32=E2=80=AFPM Jeremi Piotrowski
+> > <jpiotrowski@linux.microsoft.com> wrote:
+> >>
+> >> On 01/02/2024 04:46, Vishal Annapurve wrote:
+> >>> On Wed, Jan 31, 2024 at 10:03=E2=80=AFPM Dave Hansen <dave.hansen@int=
+el.com> wrote:
+> >>>>
+> >>>> On 1/11/24 21:52, Vishal Annapurve wrote:
+> >>>>> @@ -2133,8 +2133,10 @@ static int __set_memory_enc_pgtable(unsigned=
+ long addr, int numpages, bool enc)
+> >>>>>       int ret;
+> >>>>>
+> >>>>>       /* Should not be working on unaligned addresses */
+> >>>>> -     if (WARN_ONCE(addr & ~PAGE_MASK, "misaligned address: %#lx\n"=
+, addr))
+> >>>>> -             addr &=3D PAGE_MASK;
+> >>>>> +     if (WARN_ONCE(addr & ~HPAGE_MASK, "misaligned address: %#lx\n=
+", addr)
+> >>>>> +             || WARN_ONCE((numpages << PAGE_SHIFT) & ~HPAGE_MASK,
+> >>>>> +                     "misaligned numpages: %#lx\n", numpages))
+> >>>>> +             return -EINVAL;
+> >>>>
+> >>>> This series is talking about swiotlb and DMA, then this applies a
+> >>>> restriction to what I *thought* was a much more generic function:
+> >>>> __set_memory_enc_pgtable().  What prevents this function from gettin=
+g
+> >>>> used on 4k mappings?
+> >>>>
+> >>>>
+> >>>
+> >>> The end goal here is to limit the conversion granularity to hugepage
+> >>> sizes. SWIOTLB allocations are the major source of unaligned
+> >>> allocations(and so the conversions) that need to be fixed before
+> >>> achieving this goal.
+> >>>
+> >>> This change will ensure that conversion fails for unaligned ranges, a=
+s
+> >>> I don't foresee the need for 4K aligned conversions apart from DMA
+> >>> allocations.
+> >>
+> >> Hi Vishal,
+> >>
+> >> This assumption is wrong. set_memory_decrypted is called from various
+> >> parts of the kernel: kexec, sev-guest, kvmclock, hyperv code. These co=
+nversions
+> >> are for non-DMA allocations that need to be done at 4KB granularity
+> >> because the data structures in question are page sized.
+> >>
+> >> Thanks,
+> >> Jeremi
+> >
+> > Thanks Jeremi for pointing out these usecases.
+> >
+> > My brief analysis for these call sites:
+> > 1) machine_kexec_64.c, realmode/init.c, kvm/mmu/mmu.c - shared memory
+> > allocation/conversion happens when host side memory encryption
+> > (CC_ATTR_HOST_MEM_ENCRYPT) is enabled.
+> > 2) kernel/kvmclock.c -  Shared memory allocation can be made to align
+> > 2M even if the memory needed is lesser.
+> > 3) drivers/virt/coco/sev-guest/sev-guest.c,
+> > drivers/virt/coco/tdx-guest/tdx-guest.c - Shared memory allocation can
+> > be made to align 2M even if the memory needed is lesser.
+> >
+> > I admit I haven't analyzed hyperv code in context of these changes,
+> > but will take a better look to see if the calls for memory conversion
+> > here can fit the category of "Shared memory allocation can be made to
+> > align 2M even if the memory needed is lesser".
+> >
+> > Agree that this patch should be modified to look something like
+> > (subject to more changes on the call sites)
+>
+> No, this patch is still built on the wrong assumptions. You're trying
+> to alter a generic function in the guest for the constraints of a very
+> specific hypervisor + host userspace + memory backend combination.
+> That's not right.
 
-Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-Tested-by: Mario Limonciello <mario.limonciello@amd.com>
+Agree on the fact that I focussed on a KVM for these changes. I plan
+to spend some time understanding guest memfd relevance for other
+hypervisors when dealing with CoCo VMs.
 
-> ---
-> v2: hide ABM_LEVEL_IMMEDIATE_DISABLE in the read case, force an atomic
->      commit when setting the value, call sysfs_remove_group() in
->      amdgpu_dm_connector_unregister() and add some documentation.
-> ---
->   .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 76 +++++++++++++++++++
->   1 file changed, 76 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> index 8590c9f1dda6..3c62489d03dc 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> @@ -6436,10 +6436,79 @@ int amdgpu_dm_connector_atomic_get_property(struct drm_connector *connector,
->   	return ret;
->   }
->   
-> +/**
-> + * DOC: panel power savings
-> + *
-> + * The display manager allows you to set your desired **panel power savings**
-> + * level (between 0-4, with 0 representing off), e.g. using the following::
-> + *
-> + *   # echo 3 > /sys/class/drm/card0-eDP-1/amdgpu/panel_power_savings
-> + *
-> + * Modifying this value can have implications on color accuracy, so tread
-> + * carefully.
-> + */
-> +
-> +static ssize_t panel_power_savings_show(struct device *device,
-> +					struct device_attribute *attr,
-> +					char *buf)
-> +{
-> +	struct drm_connector *connector = dev_get_drvdata(device);
-> +	struct drm_device *dev = connector->dev;
-> +	u8 val;
-> +
-> +	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
-> +	val = to_dm_connector_state(connector->state)->abm_level ==
-> +		ABM_LEVEL_IMMEDIATE_DISABLE ? 0 :
-> +		to_dm_connector_state(connector->state)->abm_level;
-> +	drm_modeset_unlock(&dev->mode_config.connection_mutex);
-> +
-> +	return sysfs_emit(buf, "%u\n", val);
-> +}
-> +
-> +static ssize_t panel_power_savings_store(struct device *device,
-> +					 struct device_attribute *attr,
-> +					 const char *buf, size_t count)
-> +{
-> +	struct drm_connector *connector = dev_get_drvdata(device);
-> +	struct drm_device *dev = connector->dev;
-> +	long val;
-> +	int ret;
-> +
-> +	ret = kstrtol(buf, 0, &val);
-> +
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (val < 0 || val > 4)
-> +		return -EINVAL;
-> +
-> +	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
-> +	to_dm_connector_state(connector->state)->abm_level = val ?:
-> +		ABM_LEVEL_IMMEDIATE_DISABLE;
-> +	drm_modeset_unlock(&dev->mode_config.connection_mutex);
-> +
-> +	drm_kms_helper_hotplug_event(dev);
-> +
-> +	return count;
-> +}
-> +
-> +static DEVICE_ATTR_RW(panel_power_savings);
-> +
-> +static struct attribute *amdgpu_attrs[] = {
-> +	&dev_attr_panel_power_savings.attr,
-> +	NULL
-> +};
-> +
-> +static const struct attribute_group amdgpu_group = {
-> +	.name = "amdgpu",
-> +	.attrs = amdgpu_attrs
-> +};
-> +
->   static void amdgpu_dm_connector_unregister(struct drm_connector *connector)
->   {
->   	struct amdgpu_dm_connector *amdgpu_dm_connector = to_amdgpu_dm_connector(connector);
->   
-> +	sysfs_remove_group(&connector->kdev->kobj, &amdgpu_group);
->   	drm_dp_aux_unregister(&amdgpu_dm_connector->dm_dp_aux.aux);
->   }
->   
-> @@ -6541,6 +6610,13 @@ amdgpu_dm_connector_late_register(struct drm_connector *connector)
->   		to_amdgpu_dm_connector(connector);
->   	int r;
->   
-> +	if (connector->connector_type == DRM_MODE_CONNECTOR_eDP) {
-> +		r = sysfs_create_group(&connector->kdev->kobj,
-> +				       &amdgpu_group);
-> +		if (r)
-> +			return r;
-> +	}
-> +
->   	amdgpu_dm_register_backlight_device(amdgpu_dm_connector);
->   
->   	if ((connector->connector_type == DRM_MODE_CONNECTOR_DisplayPort) ||
+>
+> Is the numpages check supposed to ensure that the guest *only* toggles
+> visibility in chunks of 2MB?
 
+Yes.
+
+> Then you're exposing more memory to the host than the guest intends.
+
+The goal of the series is to ensure that the CoCo VMs convert memory
+at hugepage granularity. So such guests would need to allocate any
+memory to be converted to shared, at hugepage granularity. This would
+not expose any guest memory that needs to be used privately.
+
+I agree about the fact that extra memory that needs to be allocated
+for 2M alignment is effectively  getting wasted. Optimizing this extra
+memory usage can be pursued further depending on how significant this
+wastage is. One possible way could be to preallocate large enough
+shared memory and use it to back smaller allocations from these call
+sites (very similar to SWIOTLB).
+
+>
+> If you must - focus on getting swiotlb conversions to happen at the desir=
+ed
+> granularity but don't try to force every single conversion to be >4K.
+
+If any conversion within a guest happens at 4K granularity, then this
+will effectively cause non-hugepage aligned EPT/NPT entries. This
+series is trying to get all private and shared memory regions to be
+hugepage aligned to address the problem statement.
+
+>
+> Thanks,
+> Jeremi
+>
+>
+> >
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.=
+c
+> > index e9b448d1b1b7..8c608d6913c4 100644
+> > --- a/arch/x86/mm/pat/set_memory.c
+> > +++ b/arch/x86/mm/pat/set_memory.c
+> > @@ -2132,10 +2132,15 @@ static int __set_memory_enc_pgtable(unsigned
+> > long addr, int numpages, bool enc)
+> >         struct cpa_data cpa;
+> >         int ret;
+> >
+> >         /* Should not be working on unaligned addresses */
+> >         if (WARN_ONCE(addr & ~PAGE_MASK, "misaligned address: %#lx\n", =
+addr))
+> >                 addr &=3D PAGE_MASK;
+> >
+> > +       if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT) &&
+> > +               (WARN_ONCE(addr & ~HPAGE_MASK, "misaligned address:
+> > %#lx\n", addr)
+> > +                       || WARN_ONCE((numpages << PAGE_SHIFT) & ~HPAGE_=
+MASK,
+> > +                               "misaligned numpages: %#lx\n", numpages=
+)))
+> > +               return -EINVAL;
+> > +
+> >         memset(&cpa, 0, sizeof(cpa));
+> >         cpa.vaddr =3D &addr;
+> >         cpa.numpages =3D numpages;
+>
 
