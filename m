@@ -1,110 +1,123 @@
-Return-Path: <linux-kernel+bounces-49851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17A55847078
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:39:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF5A8846ED7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:22:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DE71B25677
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:39:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EA96B284E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:07:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04EE41FAE;
-	Fri,  2 Feb 2024 12:39:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49F9813D50F;
+	Fri,  2 Feb 2024 11:06:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VtemBZru"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ho5GDTwl"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DA7C15B1;
-	Fri,  2 Feb 2024 12:38:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 293F73CF68;
+	Fri,  2 Feb 2024 11:06:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706877541; cv=none; b=gAHDxO3XTIOStdXsH0TfiGYbUp0I70buzIL0BIRVM9yAzh9GqSpfL6HtZM+FENwAYHSxMBRo59gTGvK4d9UxewIV57Nc5eSDBW7wfFs1mipwY+my+kGuL1rBlFgB15YDQ37T+fiifHWJa2vYyOo1HCDHGLrj5TM01TR8XHk0HUE=
+	t=1706872012; cv=none; b=lCmDh4pCq4kilULhjnm9/0OsXHsLQl9NOzhqjqkj9qTSTODfFhCDubH3PiufU7QcmyguX2gDTRnJhuRKY8eoR0QIIrde8wvtLNEjH/BMDUngh/FgBYoPkEzMF5FTkzNTSn/EfJifxr4dZImyHXDqSOQQxChssNM7N2rxLQBASDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706877541; c=relaxed/simple;
-	bh=OoPjnrPr8StiPXaPppH3fvGIRnVAs2DNEdph0pRPOO8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qx77xmE8mwhIEhwvvn7YYHW3y+FE9timPOUKQa5fQZHh+dLAxgkdDruXdQIz7inY97gYcgGEuzWC1gPw2lP9/xXujxkoFHEt7gqpvE2jMzjFMnFIryv1VJaWZ+EcruP3xKWHKXpmIw4aH0N2KKx+x5aMW2gq7jVKUokyNkx1mHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VtemBZru; arc=none smtp.client-ip=192.198.163.17
+	s=arc-20240116; t=1706872012; c=relaxed/simple;
+	bh=BVUwIZJrucltWjChM5sdx0WIRPV1ARt3HSFLPgQ09cY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N17Eqxwb7fWOom6HdLhodXPggJZq8gdpzHwsg++IN3rEqM6uZGhiJLVnvMuH2JpF4NhJq8JmgLLVgenvekpFPlMQ59D/M0RLBUBXiELKP5EYSQXubUQuPizH0+dXMrK4l+qTm0WDEMZWiXF5QitINgMaI1XauPAjRtxRgJ1Re3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ho5GDTwl; arc=none smtp.client-ip=192.55.52.88
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706877539; x=1738413539;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=OoPjnrPr8StiPXaPppH3fvGIRnVAs2DNEdph0pRPOO8=;
-  b=VtemBZruukhEu1Jgkk5hOGGpB6U8CdgH0XIg3VFI5PYlwEs+A+H/R8xd
-   ah9AgSb62z9zCrL85f/0ZvzFfTKTmKK/ZdU2mlUSXoqp1OBGI/hCzBY0O
-   WbJXzN9H2c7z+Ij+ypTUlDpz0Kq7nhLpQNgoovWJLusng7POFlveFEm3u
-   JK/DcOb0z5LI4E3FGgFUyi37l7J/YcZT+mqQGPs7snws7GdhBKPgvMW8k
-   toxK/ncNcrczkTgdW5QEmU79voh2edpZ2Tuglp2+usuQDmb8GPk2vxcLv
-   OJk/YP8B1mNb0QMVsM9GRXeZUmfEUOVbh/2yWR/lVHb2jkqbyZv8rYEzU
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="64235"
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="64235"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 04:38:56 -0800
+  t=1706872011; x=1738408011;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BVUwIZJrucltWjChM5sdx0WIRPV1ARt3HSFLPgQ09cY=;
+  b=ho5GDTwlMBGA+gxEOrHI1BJSeGJch+F/5a9MWfwkWkiZsY1pG+sNxSFa
+   QJgPEM7Cb4vNsWFdX6xmgY8/LKkU6kUAfBgGUm7MaALnnJz9YYrotcHx9
+   HCden4/w6670/kmJmXWiPZtW4I20/RpDVZv56lCa2lqdciiV9/SeOOO/f
+   3a33ryFZep9FlEunf9puODelaEbW67OJNErugIKBMfwb8hr6+zXkm/5nS
+   mSPo7YSUmVK8mOJ638I1+sAWRxqOYBAm1m803zVH1HUsa0BUzc+aWyvFo
+   yOoS1AoDSNpdAhoR3ceLBE34CNCsZISrjQ9K6zypqTVE93NloN2WeZHtS
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="435276218"
+X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
+   d="scan'208";a="435276218"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 03:06:50 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="37500256"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 04:38:55 -0800
-Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
-	by kekkonen.fi.intel.com (Postfix) with ESMTP id 94F661205D0;
-	Fri,  2 Feb 2024 08:40:17 +0200 (EET)
-Received: from sailus by punajuuri.localdomain with local (Exim 4.96)
-	(envelope-from <sakari.ailus@linux.intel.com>)
-	id 1rVnDl-000D9R-1r;
-	Fri, 02 Feb 2024 08:40:17 +0200
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: linux-media@vger.kernel.org
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	linux-kernel@vger.kernel.org,
-	linux-next@vger.kernel.org
-Subject: [PATCH 1/1] media: v4l: Fix link frequency helper's kernel-doc
-Date: Fri,  2 Feb 2024 08:40:07 +0200
-Message-Id: <20240202064007.50545-1-sakari.ailus@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240202145412.336db5b2@canb.auug.org.au>
-References: <20240202145412.336db5b2@canb.auug.org.au>
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="908542663"
+X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
+   d="scan'208";a="908542663"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 02 Feb 2024 03:06:46 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 40191128; Fri,  2 Feb 2024 12:30:29 +0200 (EET)
+Date: Fri, 2 Feb 2024 12:30:29 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, 
+	Wanpeng Li <wanpengli@tencent.com>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
+	Sean Christopherson <seanjc@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org, 
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	David Rientjes <rientjes@google.com>, llvm@lists.linux.dev
+Subject: Re: [PATCH, RESEND] x86/sev: Fix SEV check in sev_map_percpu_data()
+Message-ID: <lbs5nwm2teoc3ihnht3kt5xdgwjktufjybdpx2cvzmovxtkp26@5txa5ye7mzpa>
+References: <20240124130317.495519-1-kirill.shutemov@linux.intel.com>
+ <20240201193809.GA2710596@dev-arch.thelio-3990X>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201193809.GA2710596@dev-arch.thelio-3990X>
 
-Fix kernel-doc indentation for v4l2_link_freq_to_bitmap().
+On Thu, Feb 01, 2024 at 12:38:09PM -0700, Nathan Chancellor wrote:
+> Perhaps another solution would be to just
+> 
+>   #define cc_vendor (CC_VENDOR_NONE)
+> 
+> if CONFIG_ARCH_HAS_CC_PLATFORM is not set, since it can never be changed
+> from the default in arch/x86/coco/core.c.
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Fixes: a68e88e2cf9e ("media: v4l: Add a helper for setting up link-frequencies control")
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
----
-Thanks for reporting this, Stephen.
+I think this approach is cleaner.
 
- include/media/v4l2-common.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Could you post a proper patch?
 
-diff --git a/include/media/v4l2-common.h b/include/media/v4l2-common.h
-index cd2163f24f8a..602738f7741e 100644
---- a/include/media/v4l2-common.h
-+++ b/include/media/v4l2-common.h
-@@ -563,7 +563,7 @@ u32 v4l2_fraction_to_interval(u32 numerator, u32 denominator);
-  * Return values:
-  *	0: Success
-  *	-ENOENT: No match found between driver-supported link frequencies and
-- *		 those available in firmware.
-+ *	those available in firmware.
-  *	-ENODATA: No link frequencies were specified in firmware.
-  */
- int v4l2_link_freq_to_bitmap(struct device *dev, const u64 *fw_link_freqs,
+> 
+> diff --git a/arch/x86/include/asm/coco.h b/arch/x86/include/asm/coco.h
+> index 6ae2d16a7613..f3909894f82f 100644
+> --- a/arch/x86/include/asm/coco.h
+> +++ b/arch/x86/include/asm/coco.h
+> @@ -10,13 +10,13 @@ enum cc_vendor {
+>  	CC_VENDOR_INTEL,
+>  };
+>  
+> -extern enum cc_vendor cc_vendor;
+> -
+>  #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
+> +extern enum cc_vendor cc_vendor;
+>  void cc_set_mask(u64 mask);
+>  u64 cc_mkenc(u64 val);
+>  u64 cc_mkdec(u64 val);
+>  #else
+> +#define cc_vendor (CC_VENDOR_NONE)
+>  static inline u64 cc_mkenc(u64 val)
+>  {
+>  	return val;
+> 
+> Cheers,
+> Nathan
+> 
+
 -- 
-2.39.2
-
+  Kiryl Shutsemau / Kirill A. Shutemov
 
