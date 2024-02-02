@@ -1,120 +1,115 @@
-Return-Path: <linux-kernel+bounces-49026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA27F8464F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:15:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5DD08464F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:16:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EE301F26000
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:15:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E90691C23A7F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:16:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB57D137B;
-	Fri,  2 Feb 2024 00:15:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86DA10F2;
+	Fri,  2 Feb 2024 00:16:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Bn6mQnqU"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="sgZdeGqb"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC221ED8
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 00:15:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4978B1FAB;
+	Fri,  2 Feb 2024 00:16:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706832931; cv=none; b=qrplSkpyI1n1KHbwyc0rc5hj2w/lG8HbD6roEGXT8toCkpWdPStvGJeteLCPOPbbub4AKVVOE0jLendg1HkfJ5m3d39AOSdEjvAuL+EFWbiULphDCkLs82dvXVA5jcM5y1+sUTWDB60i97Fp5GjWKBUNpkM/wjFqnAIqkZGYZyc=
+	t=1706832978; cv=none; b=EgTp9TADhzzqjru7Fbc+wtlEJtLRGMizu1CGShhFAVB9K8ZSD5qu9srwtwbmuXU+aj4nghto567nzAuvzi6KjJZib5SDdi2AmPbI8N1ZDVSHkPT1wcCkOs+ESuFK+YwCOE9vz0pscwTVc3/loTLn87HXzkRhV+ro2KzhMJD1FLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706832931; c=relaxed/simple;
-	bh=IsM1n2YmjrO7qEqBaiGJ3uY74FQ/tRbSZSo4LQkbjno=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Ddi0fZpKaC2ieGHhJwNIMqfmgAvf//OeeidQ6R13zit9DsWCP44b4dNSI1ZgfEBVl/2y0fmm3H+X/NhUgorYIMR7p9DLBeuQC9YxiYw2xu5skCx4e1Jv8irQJhltMHqipmjiIWGkKcaUTDbr68Wg755yW5t+iU5QeXVPthbCEMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Bn6mQnqU; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60405c0c9b0so35236897b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 16:15:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706832928; x=1707437728; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0B2dcyelbSjs2I6WfMab+Sv7WVPwcbYFuCtOi9mUo08=;
-        b=Bn6mQnqUm+FpUowC6RxGquOtF8rQ77cF56TofnmKCsm+bsb6vO/NDST0EbvsgojFHE
-         UCuEc82ssOsnXaosvR8doCJM94Kqc2OrgJP+BRwAEU9vzOQEcZ6m5SPh1TsXunRRcq7e
-         CCf5TYmxKNd+Sy6nxi3TkjvDP0oRrxptnTxCoeKvRrmvmmlfsL5IZKTn+WueOE0ZzBeE
-         Hjy1xR2BAwX+VmQjTTZZAnDjcFYeMAO5ILmBk4aWnGVL2bMgUjeEfsD2h9tTdXvS/3qS
-         jz4D18gEp5QWCnfdRhv2gM9OW4mhCW3gqvH4bidt9j96E5PMYeHy6iiFe1sA93GDgZhR
-         fMug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706832928; x=1707437728;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0B2dcyelbSjs2I6WfMab+Sv7WVPwcbYFuCtOi9mUo08=;
-        b=CeuXKhQjUA5oNSDmKn+kYcrPw1Jjv0OrOm/dBtOXDTQyBihZEBzR+Gd9lkxj5asFbZ
-         4luwLkou4PtI1MlTr1xHEUt+M5MtU+p/pKcyASyQKp9Ajc8EJBc75nSSDh6anFuWu4as
-         VUCM2cgkgjl1XdKdjj1CYk+E230249/bnHbzID1DIx7Ml3qDl4zwUnKaFxqhFAXh/pYE
-         NW5T0+78/d8wY0Tw56AqWBqtjWeVTk6t6hOr3UyqnUkn3h5uzdvCVL/Lvu7yaH85clib
-         tcRqmMjasTcmmMK87yTY5kAdjF95R0ZYdV5ZD3jzEvKIwGr+ab/XbaKsPTS3SYHdibyd
-         UPyw==
-X-Gm-Message-State: AOJu0Yya5d1H88L31xyWmWELaCRADIzvzaiwlJ2RYDu/C5l3MD8MhiLH
-	btUziL+xRbbenmkZcWpn406lgC1YL/yyJcyAcZ6hUcEXbk1uEwwBTqdgzb1mL9x6Xj1dM6zoqzr
-	Q0zlWne4Oqxs7lBpEmw==
-X-Google-Smtp-Source: AGHT+IHsamGJvXtCbMOl776g6wlVHKIs36LmCDtrhwIx3m6h+fOkPx31v6CnKtR0J1ZIqN//bOCU1+Av2EJLRnM0
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:690c:9:b0:5d3:5a95:2338 with SMTP
- id bc9-20020a05690c000900b005d35a952338mr161854ywb.9.1706832928736; Thu, 01
- Feb 2024 16:15:28 -0800 (PST)
-Date: Fri, 2 Feb 2024 00:15:26 +0000
-In-Reply-To: <20240201-b4-zswap-invalidate-entry-v1-3-56ed496b6e55@bytedance.com>
+	s=arc-20240116; t=1706832978; c=relaxed/simple;
+	bh=lmS+wybu4wNF3e0wk8RHIylcCeGGWVaehkVC2nWRkf0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=DyGg0RTF1k8+NkraReH1Jv51p3DFXLhKa2aU903dndSU/1eNyvn65wk4OZyvsIY2Yn/ypQ5061ctXGyX+k3nvGNXVmWMGkuCYYGSmom8qoRNhm3MUUJ/L7X3j9drTP9jDjSXhPts+Lu0yyTMeMmEd8ZOHmGXiXubuay3c9AAvEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=sgZdeGqb; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1706832965;
+	bh=whV8rHXMnKnvSUUF5lisiusEi1Tlql1PLJCW4XCJG50=;
+	h=Date:From:To:Cc:Subject:From;
+	b=sgZdeGqbPq8xWriM/a5OuSWY6tflpWDmvn1V35VqNZLcPf1B+ZMBc1ytfWukr1rpf
+	 Z0ZmGJ07ofdUJX2Eo4owwnIM/ZRP8M6UtKdw4M8iZRQj/q1BDLOQjAku4Kqc/XVbsd
+	 xz0KAdxPMY/64VkMoKvg2vSE/HWsK867MsAKPeIc+l8bOYho0zYHSVRP1tEGcSpwxE
+	 PPDiAjbRTusaMK012ZLaQYhUE3y1SCh/AjPIFcnC3vq8r6CH0FZsNFvWJX3SY8czsP
+	 fuY5BmtUDemF1xTivTAaMBy6iFynBDstvCwLjJX5M2KSvgac1SS6hIziviyQCLCLPk
+	 a/dCaRvqFtMlw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TQxBs1hdBz4wcH;
+	Fri,  2 Feb 2024 11:16:04 +1100 (AEDT)
+Date: Fri, 2 Feb 2024 11:16:02 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: Li Zhijian <lizhijian@fujitsu.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the ieee1394 tree
+Message-ID: <20240202111602.6f6e2c1a@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240201-b4-zswap-invalidate-entry-v1-0-56ed496b6e55@bytedance.com>
- <20240201-b4-zswap-invalidate-entry-v1-3-56ed496b6e55@bytedance.com>
-Message-ID: <Zbw0HjFkvMG4PT9l@google.com>
-Subject: Re: [PATCH 3/6] mm/zswap: stop lru list shrinking when encounter warm region
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/L/qgCPZa.WV=QodD/8mQd3b";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Thu, Feb 01, 2024 at 03:49:03PM +0000, Chengming Zhou wrote:
-> When the shrinker encounter an existing folio in swap cache, it means
-> we are shrinking into the warmer region. We should terminate shrinking
-> if we're in the dynamic shrinker context.
-> 
-> This patch add LRU_STOP to support this, to avoid overshrinking.
-> 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+--Sig_/L/qgCPZa.WV=QodD/8mQd3b
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-LGTM with one comment below.
+Hi all,
 
-Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+After merging the ieee1394 tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-> ---
->  include/linux/list_lru.h | 1 +
->  mm/list_lru.c            | 3 +++
->  mm/zswap.c               | 4 +++-
->  3 files changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/list_lru.h b/include/linux/list_lru.h
-> index f2882a820690..5633e970144b 100644
-> --- a/include/linux/list_lru.h
-> +++ b/include/linux/list_lru.h
-> @@ -24,6 +24,7 @@ enum lru_status {
->  	LRU_SKIP,		/* item cannot be locked, skip */
->  	LRU_RETRY,		/* item not freeable. May drop the lock
->  				   internally, but has to return locked. */
-> +	LRU_STOP,		/* stop lru list walking */
+drivers/firewire/core-device.c: In function 'show_text_leaf':
+drivers/firewire/core-device.c:369:48: error: 'bufsize' undeclared (first u=
+se in this function); did you mean 'ksize'?
+  369 |                                                bufsize);
+      |                                                ^~~~~~~
+      |                                                ksize
 
-nit: Should we add "May drop the lock internally, but has to return
-locked" like LRU_RETRY and LRU_REMOVED_RETRY?
+Caused by commit
 
->  };
->  
->  struct list_lru_one {
-[..]
+  67a5a58c0443 ("firewire: Kill unnecessary buf check in device_attribute.s=
+how")
+
+interacting with commit
+
+  47dc55181dcb ("firewire: core: search descriptor leaf just after vendor d=
+irectory entry in root directory")
+
+from Linus' tree (v6.8-rc2 - that the ieee1394 tree has just been rebased on
+top of).  I have dropped the ieee1394 tree for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/L/qgCPZa.WV=QodD/8mQd3b
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmW8NEIACgkQAVBC80lX
+0GxSUAf/U/ngAUGGo2hybcp883UHGqxIdp20byOpoqFJf7az1LeYEx3OUvn+IfRJ
+tEEVQEW57rhTgFJbueNvJnNTRW5wbNEhWmvIlMNsAaLj5x8NzzQgzjReCyHGwBAX
+HNgIid+4WmRXAEfkH2EB2RPNkXxLeqzmamyNmtbui3s6AliX3O+Etz2z457YPOnN
+vn9BRR+L/0Z6fSu/V6UXKrHuLdMZotxcy9wRQwgLmAsgSjfiCGVOqz0V5mEw+Rvf
+2jo+nn6FysZVxEU3fnWlNzxcC++8z6CO7yyVe6l0C8edYUxcgILypIzDEjVDvY3p
+exVvbSd6bePDDzGbp7Nn+8llT8wtvQ==
+=yLAp
+-----END PGP SIGNATURE-----
+
+--Sig_/L/qgCPZa.WV=QodD/8mQd3b--
 
