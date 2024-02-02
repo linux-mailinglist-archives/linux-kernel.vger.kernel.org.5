@@ -1,141 +1,192 @@
-Return-Path: <linux-kernel+bounces-49702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACBAD846E50
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:52:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 814DA846E54
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:53:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6964A28CFD8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:52:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3DE31C26440
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:53:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0225613BEA7;
-	Fri,  2 Feb 2024 10:52:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC42D13DB8A;
+	Fri,  2 Feb 2024 10:52:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CzY9K+ED"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="PUlIxPO/"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1BD1F508
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 10:52:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB2213DB8D
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 10:52:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706871170; cv=none; b=oSXi/+Zibk8nfkxtR2gLGxFK5MZgsrZvzZIrwTq2zFCp2ozLETjI0X1FAvxe+1BAAfS5GUeNtMiC/uz7cX5GNZ+qy/+GMxif5dvLSJO0+9S2S7zRGp0d+nLV5+gbsWwJtZHJ5AnRr14YcqcB5qNduhPNeYnyeHWzHqcgiuXdmKI=
+	t=1706871175; cv=none; b=Xhp/itMK/7ZIVZp3WKgmWQ9Pzl0LuFZJVcYGDeByxCF3wEdiP5OkxUU67vWAztPN4W1de4CE6iAX0thyAbb76oW6cdrj4KKfvbYMed28PEsj/KkoKoXxcnVEaIhouS2/ahCtqVbxO7p9TjbEetAeXh9UCzRSwtlfnlSKXaVx0fY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706871170; c=relaxed/simple;
-	bh=/t5jbVDnTvAudor+E0CaRyF81HbhOTZ0aJFKGbE5sB4=;
+	s=arc-20240116; t=1706871175; c=relaxed/simple;
+	bh=7UJeNk8SiED9yCAZG/fAWeHMgxw0oDG/V8oLEX03H2s=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uIH+vKXlTvZUPWZjHxYksZFDPuOLJzyD8kzrA4dv0m/uPttWwjheSnz05eSvzUADirhHMVM+3OwqQ5BmcWLOCMceg9gBln9GEgOVuM01ao/aZVov9Z4TBYSqF8Kz5icNjZHt0hAVe9hVl/ShHqvj8LelEXegP8UY9dFSf/0A9/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CzY9K+ED; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55fbbfbc0f5so2693893a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 02:52:48 -0800 (PST)
+	 To:Cc:Content-Type; b=bivUzXLdniEtN2z5JDl42ahr5wIiYXPAPWRs4A+cdIHBPkE5lxqjGwnf6Om5rWM9QX5BNYMqaX/Qp5NUDthbQcBKFQbrmNXKXSZYAk/htDAdMgCX08MbAwmVN0XRdgDjdhpX3FcndbVdq+r4othFUGoBOWhwF3/Cb8nc4JM6Lyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com; spf=pass smtp.mailfrom=9elements.com; dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b=PUlIxPO/; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d73066880eso16698125ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 02:52:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706871167; x=1707475967; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/t5jbVDnTvAudor+E0CaRyF81HbhOTZ0aJFKGbE5sB4=;
-        b=CzY9K+EDJ0IJXsriaaQhxbV/PesKsr1z/Dp0L+MJhaDqRWQYj02mLG29B+ELzUr5Db
-         TWP2NcWsEaZ5VvvMvWkKhcryko9VoHByTUgNTMR8SoXSwk2DNm1qvWlrwpU0/hoyHEe+
-         eifO14pmyBkzq5Svw4R25W2NDpPPyfjkAbyh3Xol0UPq6R7MP+NCktL13qQbmY8bAqnn
-         ALf5mh3Psr9zLjlYN/siTN0K6OM4Lt61kyTudgLuIrgCv09oAX9cCOrlYDAZqCSWogUh
-         RMB7Xhf/0z7D0FfoZDbuFT5g2gEHBV13pdW3xgTPDfSRNL4LShe8RjvxzoDsbZstCmEw
-         Wc7Q==
+        d=9elements.com; s=google; t=1706871174; x=1707475974; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kOP4h2DtrQ3eGd2gjxHPsKG03MfGRQ7P7hCdzTURGhs=;
+        b=PUlIxPO/b2maTrliN1Azs6RvKUdrpjtW251kDqmEApuvaKETnnz0hcUX7V0JN2zyQl
+         Lnxlol8EtyE2VxE8TTyDTr9WVvLZMTV5fLB9FQrjQ9+CK9dHCbXCEIJ9DqGodmsZVPsv
+         n/z3bGkSGLjg2e0B6X/sA4oI8kPSGEBb60V3mhG2L8G+iJxb2Owvc0NN/fcoCijNqaCA
+         T0JormCeZWt0K5XO1wyHBWneFQD/5fRPuLC2GAjSGtOYno/EkFo4feZfDP4gYNFD1uNc
+         sTNt2Lvlo+CAoy/a8u/0isu0a5H9mX3Xdl+0SBFXuzyRMc0EDQUag0Rduj+VPSneJy3a
+         VH/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706871167; x=1707475967;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/t5jbVDnTvAudor+E0CaRyF81HbhOTZ0aJFKGbE5sB4=;
-        b=gJMqN8RzNyFyQq0KVLhCUjfB7+1stiCR48dvI8cwld5GBcz2j4M55ch4Bjd8blTvc9
-         KA1LoEnb7+QXa+PjySgvDEUafMGvXJDvytNyCYO5kbrYsunwD8ybHu74Jywiw3Wg5xOJ
-         QWmj+Emfzj/osZN0n8iJm1/MoL3ohQmXC4zI0eBhE5g7s4FeWiTH5EPxADMB/euN43KR
-         1m8V3eZE9RXCzkaGERcywLG9D+VLpvsdh+o+abhr00/xG6jOfN/Yz2stYoLBp0k3G13Y
-         hJOzSOlO3vfxBIGdJqHUr1Ak1mhoKrn9pkn1r0AfNndQeIucpAuo04cBTe9f+aqoFHCV
-         CtFQ==
-X-Gm-Message-State: AOJu0YyyYHgnUlub1x1iq5fW3jcKAAimvY2ah4/yRJNjdxTo1b5eplym
-	XF28isSas4ZzewbOOoekhxXe2kxk3t2vWW5AhPuIid92nv72V03zVjXZuiuyncq0ac2VcnVKAzN
-	/yN8LIVmSVEFFXl3r0uMagDKEtnXr2Jef
-X-Google-Smtp-Source: AGHT+IHjMu+uM/BPol4nBaLioQgqb7a0TTS0b3hHo+5t7B1bjoet/E3OyH3hBnIahi0K8sQpB6yqllID4YXVtiDl7BQ=
-X-Received: by 2002:a50:ab1b:0:b0:55f:4fab:8299 with SMTP id
- s27-20020a50ab1b000000b0055f4fab8299mr1372977edc.14.1706871166570; Fri, 02
- Feb 2024 02:52:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706871174; x=1707475974;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kOP4h2DtrQ3eGd2gjxHPsKG03MfGRQ7P7hCdzTURGhs=;
+        b=VaE06CmjV6ITmZDS4DtFQ014+mWKbwMArUJDaDwSqeNLDNpY8UL61zg+W7j9RKpwHQ
+         tcetFCt6Wwh8Q94/ImXIJyAJL0/Wm6FvLAmwCxVyQzqGWxgeYGLMmPG9fiIddDRys5Ma
+         g4V6Rs427vb0WMfICzJCm1GiMkM6IXPwyIHdAUfR5yaiVYoIqmC5/d+bf9aI73sUOpr3
+         UM9cKNyXtTkpgyc25uSSHXLV9qetop16wBKRyHcqEFg6nyhD65b0eEUz8mwy7u527SnD
+         77Kkk0lTk6OwyBbAKLmRrKkop6QsiFBQlq7IQhZDPgMl8949lo2T5G7sVA2U6YfpM0N2
+         dM4w==
+X-Gm-Message-State: AOJu0YxE31QktETczRDAg0PbXf/YMCHLiMDjiQUcfxPjmxB3xBpIo7Sx
+	2hTrgt/3+CT/g0wC4+nkdSIKZZRM/HLKH16DgWbKRKrhUgIqu+UbTL91t6g+y/x52ZskcPE8KMN
+	GEJhv80FptmGCx4sf8Pp1jRop4ezo9AguHT23zA==
+X-Google-Smtp-Source: AGHT+IEkJP0L3xT2bwErOuiu7V5owciTi/CRmQ50HIFOTE/E57jyLi7R3nqwVwCvKwYNtUGvE3yoO5rSIUwKLuNyRLo=
+X-Received: by 2002:a17:90a:4591:b0:28c:8eaa:e5e3 with SMTP id
+ v17-20020a17090a459100b0028c8eaae5e3mr8264623pjg.17.1706871173799; Fri, 02
+ Feb 2024 02:52:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131035535.22258-1-liangchen.linux@gmail.com>
- <CACGkMEuaGiH4H3pvjTK5rUh0DmL9ZMsLRaVQ3+5GOfnrj8OxPA@mail.gmail.com>
- <CAKhg4tL3E_AfsEOyzUr13zcbjzzUY1v5VXdAGMLDYdy5om35NQ@mail.gmail.com> <1706867854.8480594-1-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1706867854.8480594-1-xuanzhuo@linux.alibaba.com>
-From: Liang Chen <liangchen.linux@gmail.com>
-Date: Fri, 2 Feb 2024 18:52:34 +0800
-Message-ID: <CAKhg4tJCGtPD0fyjmCfDTU3TUW6B8T9XRERT=Y6k3+D16QPeNw@mail.gmail.com>
-Subject: Re: [PATCH v4] virtio_net: Support RX hash XDP hint
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: mst@redhat.com, hengqi@linux.alibaba.com, 
-	virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org, 
-	Jason Wang <jasowang@redhat.com>
+References: <20240130125602.568719-1-naresh.solanki@9elements.com> <52f1e76e-0953-4625-94ae-2208600f5729@linaro.org>
+In-Reply-To: <52f1e76e-0953-4625-94ae-2208600f5729@linaro.org>
+From: Naresh Solanki <naresh.solanki@9elements.com>
+Date: Fri, 2 Feb 2024 16:22:43 +0530
+Message-ID: <CABqG17j5io7S=U6oHktwWjBxaVRnEryWvX7yD9bVAV5cr2ueKg@mail.gmail.com>
+Subject: Re: [PATCH v3] dt-bindings: pinctrl: cy8x95x0: Minor fix & update
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Patrick Rudolph <patrick.rudolph@9elements.com>, mazziesaccount@gmail.com, 
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 2, 2024 at 5:58=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.co=
-m> wrote:
+Hi Krzysztof,
+
+On Wed, 31 Jan 2024 at 14:02, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
 >
-> On Fri, 2 Feb 2024 17:25:02 +0800, Liang Chen <liangchen.linux@gmail.com>=
- wrote:
-> > On Thu, Feb 1, 2024 at 1:37=E2=80=AFPM Jason Wang <jasowang@redhat.com>=
- wrote:
-> > >
-> > > On Wed, Jan 31, 2024 at 11:55=E2=80=AFAM Liang Chen <liangchen.linux@=
-gmail.com> wrote:
-> > > >
-> > > > The RSS hash report is a feature that's part of the virtio specific=
-ation.
-> > > > Currently, virtio backends like qemu, vdpa (mlx5), and potentially =
-vhost
-> > > > (still a work in progress as per [1]) support this feature. While t=
-he
-> > > > capability to obtain the RSS hash has been enabled in the normal pa=
-th,
-> > > > it's currently missing in the XDP path. Therefore, we are introduci=
-ng
-> > > > XDP hints through kfuncs to allow XDP programs to access the RSS ha=
-sh.
-> > > >
-> > > > 1.
-> > > > https://lore.kernel.org/all/20231015141644.260646-1-akihiko.odaki@d=
-aynix.com/#r
-> > > >
-> > > > Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
-> > > > Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > >
-> > > Acked-by: Jason Wang <jasowang@redhat.com>
-> > >
-> > > Thanks
+> On 30/01/2024 13:56, Naresh Solanki wrote:
+> > Update maxItems to 60 for gpio-reserved-ranges to allow multiple gpio
+>
+> Subject: everything can be a fix and everything is update. Write
+> something useful.
+Sure. Will update as:
+dt-bindings: pinctrl: cy8x95x0: Update gpio-reserved-ranges
+
+>
+> > reserved ranges.
+> > Add input-enable property to allow configuring a pin as input.
+> > Update example & fix alignment.
 > >
-> > I've just realized that I forgot to include netdev@vger.kernel.org in
-> > the cc list. Would it be advisable for me to resend the patch with
-> > netdev@vger.kernel.org in the cc list to ensure it receives the
-> > necessary attention for potential merging? Thanks!
->
-> Did you use ./scripts/get_maintainer.pl?
->
-> Please resend it.
->
-> Thanks.
->
-
-Sure. Thanks!
-
->
+> > Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+> > ---
+> >  .../bindings/pinctrl/cypress,cy8c95x0.yaml    | 38 ++++++++++++++-----
+> >  1 file changed, 28 insertions(+), 10 deletions(-)
 > >
-> > Thanks,
-> > Liang
-> > >
+> > diff --git a/Documentation/devicetree/bindings/pinctrl/cypress,cy8c95x0.yaml b/Documentation/devicetree/bindings/pinctrl/cypress,cy8c95x0.yaml
+> > index 7f30ec2f1e54..90dda5d3cc55 100644
+> > --- a/Documentation/devicetree/bindings/pinctrl/cypress,cy8c95x0.yaml
+> > +++ b/Documentation/devicetree/bindings/pinctrl/cypress,cy8c95x0.yaml
+> > @@ -45,7 +45,8 @@ properties:
+> >      maxItems: 1
+> >
+> >    gpio-reserved-ranges:
+> > -    maxItems: 1
+> > +    minItems: 1
+> > +    maxItems: 60
+> >
+> >    vdd-supply:
+> >      description:
+> > @@ -85,6 +86,8 @@ patternProperties:
+> >
+> >        bias-disable: true
+> >
+> > +      input-enable: true
+> > +
+> >        output-high: true
+> >
+> >        output-low: true
+> > @@ -125,14 +128,29 @@ examples:
+> >        #size-cells = <0>;
+> >
+> >        pinctrl@20 {
+> > -        compatible = "cypress,cy8c9520";
+> > -        reg = <0x20>;
+> > -        gpio-controller;
+> > -        #gpio-cells = <2>;
+> > -        #interrupt-cells = <2>;
+> > -        interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>;
+> > -        interrupt-controller;
+> > -        vdd-supply = <&p3v3>;
+> > -        gpio-reserved-ranges = <5 1>;
+> > +          compatible = "cypress,cy8c9520";
+>
+> I don't understand why you change from correct indentation to mixed one
+> (2 and 4 spaces). It does not make sense.
+Yes indentation is missed. I'll correct to 2 space in next patch revision
+>
+>
+> > +          reg = <0x20>;
+> > +          gpio-controller;
+> > +          #gpio-cells = <2>;
+> > +          #interrupt-cells = <2>;
+> > +          interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>;
+> > +          interrupt-controller;
+> > +          vdd-supply = <&p3v3>;
+> > +          gpio-reserved-ranges = <1 2>, <6 1>, <10 1>, <15 1>;
+> > +
+> > +          pinctrl-0 = <&U62160_pins>, <&U62160_ipins>;
+> > +          pinctrl-names = "default";
+>
+> Missing blank line.
+Will fix in next revision.
+>
+> > +          U62160_pins: cfg-pins {
+> > +              pins = "gp03", "gp16", "gp20", "gp50", "gp51";
+> > +              function = "gpio";
+> > +              input-enable;
+> > +              bias-pull-up;
+> > +          };
+>
+> Missing blank line.
+Will fix in next revision.
+
+Regards,
+Naresh
+>
+>
+> > +          U62160_ipins: icfg-pins {
+> > +              pins = "gp04", "gp17", "gp21", "gp52", "gp53";
+> > +              function = "gpio";
+> > +              input-enable;
+> > +              bias-pull-up;
+> > +          };
+> >        };
+> >      };
+>
+> Best regards,
+> Krzysztof
+>
 
