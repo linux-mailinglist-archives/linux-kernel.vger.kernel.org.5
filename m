@@ -1,118 +1,251 @@
-Return-Path: <linux-kernel+bounces-49735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2776846EDE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:23:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28BBF846EC5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:17:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA7C7B2E087
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:12:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 831B42861E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:17:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3C0B13D4EA;
-	Fri,  2 Feb 2024 11:12:14 +0000 (UTC)
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6024713DB8D;
+	Fri,  2 Feb 2024 11:17:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HIClvloQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A2377995B;
-	Fri,  2 Feb 2024 11:12:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4058647F78;
+	Fri,  2 Feb 2024 11:17:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706872334; cv=none; b=g4jebpIDiTesX5rWO1Ceusr05bHP79DyYkzEt0O2SLsnfE4/4ue2oA3G4TRquBjLum/vgyGUm9I5eYgiJU5/US6T207qau/vmL2o4QnsuHlfV3uae8rKqj9Fw9y3dYAqYkh9POVECJQiuA0DsmkaI6Rp4gPw4EsKAMx0hYFoMYc=
+	t=1706872623; cv=none; b=i8OC3HwIAcQLCUQvYIIhpocvqr7QYvdkwKeEn5rZpUR5r1uUk4wC0RcJMIQB2gPjL1mXxzkvfaU+BF8ejAXoQ0X7+jOC841jamO8CSBhhqR5GJfyiNgZ80KcEmcKPMqnC/KAYuzXRzqN8mENNfE2HfH6Ur4tFmeuACBkvyu2ytk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706872334; c=relaxed/simple;
-	bh=DHXhgGTeA1+lWgExd1fQrxzIbyU8ibghu/opgphfpvw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=McXv43nvkVBBWLqjQ5K5q/VBUuVOCIeMVmCrqMlQGLsHNWbzHRgV6tQV+lBbKkfSkvgw+6aWBl4ORJCUqYgus9gQkOMNDpJALKkVvYs6zMNiIzUnjjjs0Y6DqhuGjT0wXBP0CiYIMmgcRypunOlp8dVbzza/BclpFEUk3SnBDzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.41.52] (port=57718 helo=gnumonks.org)
-	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <pablo@gnumonks.org>)
-	id 1rVrSm-001lhN-5h; Fri, 02 Feb 2024 12:12:06 +0100
-Date: Fri, 2 Feb 2024 12:12:03 +0100
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Ilya Maximets <i.maximets@ovn.org>
-Cc: Felix Huettner <felix.huettner@mail.schwarz>,
-	linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, kadlec@netfilter.org, fw@strlen.de,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	shuah@kernel.org, luca.czesla@mail.schwarz,
-	max.lamprecht@mail.schwarz, Simon Horman <horms@ovn.org>
-Subject: Re: [PATCH net-next v2] net: ctnetlink: support filtering by zone
-Message-ID: <ZbzOA1D1IGYX2oxS@calendula>
-References: <ZWSCPKtDuYRG1XWt@kernel-bug-kernel-bug>
- <ZYV6hgP35k6Bwk+H@calendula>
- <2032238f-31ac-4106-8f22-522e76df5a12@ovn.org>
+	s=arc-20240116; t=1706872623; c=relaxed/simple;
+	bh=FCOQ3oxfwys8se6zxDBVnjGUrQ0D43QqafAIstBsJ2g=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=YW5RgozmrnQ3pKS8CLKjnYgWhW9NIXk2Weoy3c5IhG7Dw3tlLq/UhF5nZQ8nANs0DQ6GAyMtyLgx3GiKWvngya6VLk3l4qGGPezq+Zu0z/XJjHCxC4KVhzahkVLDtYCluvffqUXRSDhwkG5i5cmgfqyYvDoepAjW2lFPBr79dtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HIClvloQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0642EC433C7;
+	Fri,  2 Feb 2024 11:16:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706872622;
+	bh=FCOQ3oxfwys8se6zxDBVnjGUrQ0D43QqafAIstBsJ2g=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=HIClvloQZ1M129peATTtWb6atela5X7cYHFsZrb67lwZ1vtHh1l4IF6scBTjv/PzB
+	 87X+qdn9IaowdLggFLz78Dw2QGQYzTGTKYlYjesUecF7SKGmXP3K7d4MiNpysRK0C4
+	 t1j6G+/iD6LfqO1isYZWLf7PzibnKlRmHEvbs7+NgM3HuNE42GCI1Q9GRAefkReH7D
+	 h1xPrbjqj6a/OYMEAXoJHIZOoDahFAwploUpVgqALFamW0OGHq4qX5LWxM1UPydgH/
+	 YFeXyS+Ct198tCxuXtgduVxQagdX4vudq08ofGv4NLeAgh6fW/WoGrhSFTAIx7hFzB
+	 9jJR67v3JsAHQ==
+From: Christian Brauner <brauner@kernel.org>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	v9fs@lists.linux.dev,
+	linux-afs@lists.infradead.org,
+	ceph-devel@vger.kernel.org,
+	gfs2@lists.linux.dev,
+	linux-nfs@vger.kernel.org,
+	ocfs2-devel@lists.linux.dev,
+	linux-cifs@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Jan Kara <jack@suse.cz>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Xiubo Li <xiubli@redhat.com>,
+	Ilya Dryomov <idryomov@gmail.com>,
+	Alexander Aring <aahringo@redhat.com>,
+	David Teigland <teigland@redhat.com>,
+	Andreas Gruenbacher <agruenba@redhat.com>,
+	Neil Brown <neilb@suse.de>,
+	Olga Kornievskaia <kolga@netapp.com>,
+	Dai Ngo <Dai.Ngo@oracle.com>,
+	Tom Talpey <tom@talpey.com>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Mark Fasheh <mark@fasheh.com>,
+	Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Steve French <sfrench@samba.org>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+	Shyam Prasad N <sprasad@microsoft.com>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Miklos Szeredi <miklos@szeredi.hu>
+Subject: Re: [PATCH v3 00/47] filelock: split file leases out of struct file_lock
+Date: Fri,  2 Feb 2024 12:16:44 +0100
+Message-ID: <20240202-neigung-ergiebig-9e4a18e7afa3@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240131-flsplit-v3-0-c6129007ee8d@kernel.org>
+References: <20240131-flsplit-v3-0-c6129007ee8d@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2032238f-31ac-4106-8f22-522e76df5a12@ovn.org>
-X-Spam-Score: -1.8 (-)
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7495; i=brauner@kernel.org; h=from:subject:message-id; bh=FCOQ3oxfwys8se6zxDBVnjGUrQ0D43QqafAIstBsJ2g=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTuOS+797jkjleqZtyND8RfphxXTPnGFqfbdXTF9ZorU m3xJaVmHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABMp/szIsFSbbfeTWHs/ozKH C7Ehv34yMCgvm1q6s+pDttikJ9sudzD8d1F9tTlx75EtAWdeGenLRlVo7ZEr/xU0sd55YRk/75c /7AA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 02, 2024 at 12:04:35PM +0100, Ilya Maximets wrote:
-> On 12/22/23 13:01, Pablo Neira Ayuso wrote:
-> > On Mon, Nov 27, 2023 at 11:49:16AM +0000, Felix Huettner wrote:
-> >> conntrack zones are heavily used by tools like openvswitch to run
-> >> multiple virtual "routers" on a single machine. In this context each
-> >> conntrack zone matches to a single router, thereby preventing
-> >> overlapping IPs from becoming issues.
-> >> In these systems it is common to operate on all conntrack entries of a
-> >> given zone, e.g. to delete them when a router is deleted. Previously this
-> >> required these tools to dump the full conntrack table and filter out the
-> >> relevant entries in userspace potentially causing performance issues.
-> >>
-> >> To do this we reuse the existing CTA_ZONE attribute. This was previous
-> >> parsed but not used during dump and flush requests. Now if CTA_ZONE is
-> >> set we filter these operations based on the provided zone.
-> >> However this means that users that previously passed CTA_ZONE will
-> >> experience a difference in functionality.
-> >>
-> >> Alternatively CTA_FILTER could have been used for the same
-> >> functionality. However it is not yet supported during flush requests and
-> >> is only available when using AF_INET or AF_INET6.
-> > 
-> > For the record, this is applied to nf-next.
+On Wed, 31 Jan 2024 18:01:41 -0500, Jeff Layton wrote:
+> I'm not sure this is much prettier than the last, but contracting
+> "fl_core" to "c", as Neil suggested is a bit easier on the eyes.
 > 
-> Hi, Felix and Pablo.
+> I also added a few small helpers and converted several users over to
+> them. That reduces the size of the per-fs conversion patches later in
+> the series. I played with some others too, but they were too awkward
+> or not frequently used enough to make it worthwhile.
 > 
-> I was looking through the code and the following part is bothering me:
-> 
->  diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
->  index fb0ae15e96df..4e9133f61251 100644
->  --- a/net/netfilter/nf_conntrack_netlink.c
->  +++ b/net/netfilter/nf_conntrack_netlink.c
->  @@ -1148,6 +1149,10 @@ static int ctnetlink_filter_match(struct nf_conn *ct, void *data)
->          if (filter->family && nf_ct_l3num(ct) != filter->family)
->                  goto ignore_entry;
->  
->  +       if (filter->zone.id != NF_CT_DEFAULT_ZONE_ID &&
->  +           !nf_ct_zone_equal_any(ct, &filter->zone))
->  +               goto ignore_entry;
->  +
->          if (filter->orig_flags) {
->                  tuple = nf_ct_tuple(ct, IP_CT_DIR_ORIGINAL);
->                  if (!ctnetlink_filter_match_tuple(&filter->orig, tuple,
-> 
-> If I'm reading that right, the default zone is always flushed, even if the
-> user requested to flush a different zone.  I.e. the entry is never ignored
-> for a default zone.  Is that correct or am I reading that wrong?
-> 
-> If my observation is correct, then I don't think this functionality can
-> actually be used by applications as it does something unexpected.
+> [...]
 
-This needs a fix, the NF_CT_DEFAULT_ZONE_ID is used as a marker to
-indicate if the filtering by zone needs to happen or not.
+Fyi, I've merged this series as in I've turned this series into a pull
+request based on the patches. And this has a merge commit of the
+following form:
 
-I'd suggest to add a boolean flag that specifies that zone filtering
-is set on.
+commit 363af2435e403ac323ab2543da91f5984047bdb8
+Merge: 6613476e225e 6c6109548454
+Author:     Christian Brauner <brauner@kernel.org>
+AuthorDate: Fri Feb 2 12:09:26 2024 +0100
+Commit:     Christian Brauner <brauner@kernel.org>
+CommitDate: Fri Feb 2 12:09:26 2024 +0100
+
+    Merge patch series "filelock: split file leases out of struct file_lock"
+
+    Pull file locking patch series from Jeff Layton:
+
+For larger series such as this this is what I think we should end up
+doing because it gives bigger series an overall summary without forcing
+the author to always provide a tag or branch or whatever. Often the
+cover letter description is good for long term contributors already. So
+I stole most of it from v1.
+
+Thanks for basing this on a mainline tag!
+
+---
+
+Applied to the vfs.file branch of the vfs/vfs.git tree.
+Patches in the vfs.file branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.file
+
+[01/47] filelock: fl_pid field should be signed int
+        https://git.kernel.org/vfs/vfs/c/0e9876d8e88d
+[02/47] filelock: rename some fields in tracepoints
+        https://git.kernel.org/vfs/vfs/c/587a67b6830b
+[03/47] filelock: rename fl_pid variable in lock_get_status
+        https://git.kernel.org/vfs/vfs/c/6021d62c677f
+[04/47] filelock: add some new helper functions
+        https://git.kernel.org/vfs/vfs/c/403594111407
+[05/47] 9p: rename fl_type variable in v9fs_file_do_lock
+        https://git.kernel.org/vfs/vfs/c/2911c0e3a5dd
+[06/47] afs: convert to using new filelock helpers
+        https://git.kernel.org/vfs/vfs/c/46a9b98baecc
+[07/47] ceph: convert to using new filelock helpers
+        https://git.kernel.org/vfs/vfs/c/7c82f3103915
+[08/47] dlm: convert to using new filelock helpers
+        https://git.kernel.org/vfs/vfs/c/7851cb526662
+[09/47] gfs2: convert to using new filelock helpers
+        https://git.kernel.org/vfs/vfs/c/47bc8fa51b46
+[10/47] lockd: convert to using new filelock helpers
+        https://git.kernel.org/vfs/vfs/c/b9570e87b652
+[11/47] nfs: convert to using new filelock helpers
+        https://git.kernel.org/vfs/vfs/c/28ad1884a338
+[12/47] nfsd: convert to using new filelock helpers
+        https://git.kernel.org/vfs/vfs/c/4e2cd366d826
+[13/47] ocfs2: convert to using new filelock helpers
+        https://git.kernel.org/vfs/vfs/c/a336b91b2340
+[14/47] smb/client: convert to using new filelock helpers
+        https://git.kernel.org/vfs/vfs/c/39647541cb26
+[15/47] smb/server: convert to using new filelock helpers
+        https://git.kernel.org/vfs/vfs/c/1d9b1c4525f6
+[16/47] filelock: drop the IS_* macros
+        https://git.kernel.org/vfs/vfs/c/22716eba8323
+[17/47] filelock: split common fields into struct file_lock_core
+        https://git.kernel.org/vfs/vfs/c/b2566e35e7d6
+[18/47] filelock: have fs/locks.c deal with file_lock_core directly
+        https://git.kernel.org/vfs/vfs/c/424dc929f8f1
+[19/47] filelock: convert more internal functions to use file_lock_core
+        https://git.kernel.org/vfs/vfs/c/2d1cfb3cf69e
+[20/47] filelock: make posix_same_owner take file_lock_core pointers
+        https://git.kernel.org/vfs/vfs/c/c91b6f218894
+[21/47] filelock: convert posix_owner_key to take file_lock_core arg
+        https://git.kernel.org/vfs/vfs/c/6944d789d1a1
+[22/47] filelock: make locks_{insert,delete}_global_locks take file_lock_core arg
+        https://git.kernel.org/vfs/vfs/c/ff30006ce158
+[23/47] filelock: convert locks_{insert,delete}_global_blocked
+        https://git.kernel.org/vfs/vfs/c/b7ae01bb4138
+[24/47] filelock: make __locks_delete_block and __locks_wake_up_blocks take file_lock_core
+        https://git.kernel.org/vfs/vfs/c/6ada65e99171
+[25/47] filelock: convert __locks_insert_block, conflict and deadlock checks to use file_lock_core
+        https://git.kernel.org/vfs/vfs/c/f449edd19f07
+[26/47] filelock: convert fl_blocker to file_lock_core
+        https://git.kernel.org/vfs/vfs/c/9bb41e6b6ea5
+[27/47] filelock: clean up locks_delete_block internals
+        https://git.kernel.org/vfs/vfs/c/78d1567cb873
+[28/47] filelock: reorganize locks_delete_block and __locks_insert_block
+        https://git.kernel.org/vfs/vfs/c/b261e8d3d5eb
+[29/47] filelock: make assign_type helper take a file_lock_core pointer
+        https://git.kernel.org/vfs/vfs/c/ae37275d53ed
+[30/47] filelock: convert locks_wake_up_blocks to take a file_lock_core pointer
+        https://git.kernel.org/vfs/vfs/c/acd1c6f76c17
+[31/47] filelock: convert locks_insert_lock_ctx and locks_delete_lock_ctx
+        https://git.kernel.org/vfs/vfs/c/77d7ed489db4
+[32/47] filelock: convert locks_translate_pid to take file_lock_core
+        https://git.kernel.org/vfs/vfs/c/e2c23bf73104
+[33/47] filelock: convert seqfile handling to use file_lock_core
+        https://git.kernel.org/vfs/vfs/c/a15d945405a3
+[34/47] 9p: adapt to breakup of struct file_lock
+        https://git.kernel.org/vfs/vfs/c/d09f798f208c
+[35/47] afs: adapt to breakup of struct file_lock
+        https://git.kernel.org/vfs/vfs/c/febb326af51b
+[36/47] ceph: adapt to breakup of struct file_lock
+        https://git.kernel.org/vfs/vfs/c/afd5898079d2
+[37/47] dlm: adapt to breakup of struct file_lock
+        https://git.kernel.org/vfs/vfs/c/f40b314ab0f2
+[38/47] gfs2: adapt to breakup of struct file_lock
+        https://git.kernel.org/vfs/vfs/c/f1b0d238e179
+[39/47] fuse: adapt to breakup of struct file_lock
+        https://git.kernel.org/vfs/vfs/c/ca2a24a9ff7f
+[40/47] lockd: adapt to breakup of struct file_lock
+        https://git.kernel.org/vfs/vfs/c/1c910b2459cf
+[41/47] nfs: adapt to breakup of struct file_lock
+        https://git.kernel.org/vfs/vfs/c/455100f41471
+[42/47] nfsd: adapt to breakup of struct file_lock
+        https://git.kernel.org/vfs/vfs/c/48c7900f7b21
+[43/47] ocfs2: adapt to breakup of struct file_lock
+        https://git.kernel.org/vfs/vfs/c/b7b8c39a9587
+[44/47] smb/client: adapt to breakup of struct file_lock
+        https://git.kernel.org/vfs/vfs/c/7cd03c482447
+[45/47] smb/server: adapt to breakup of struct file_lock
+        https://git.kernel.org/vfs/vfs/c/5087b21fd5ee
+[46/47] filelock: remove temporary compatibility macros
+        https://git.kernel.org/vfs/vfs/c/e0bde6d6d7e3
+[47/47] filelock: split leases out of struct file_lock
+        https://git.kernel.org/vfs/vfs/c/6c6109548454
 
