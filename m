@@ -1,132 +1,144 @@
-Return-Path: <linux-kernel+bounces-49144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0ECC84667D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:25:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DEC184667F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:25:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EB861F25459
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:25:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6ECD1F2811B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:25:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FC73DF5E;
-	Fri,  2 Feb 2024 03:25:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B13A3F50D;
+	Fri,  2 Feb 2024 03:25:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Bgp8+FGZ"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CE4AC8EA;
-	Fri,  2 Feb 2024 03:25:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="aawybKbj"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A4FFF500;
+	Fri,  2 Feb 2024 03:25:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706844325; cv=none; b=b22vttmZIiQBWxarWTXbUyrtOkP5yHMRjsDVKg2FZH6Ng3OaZSvdXtIr5N5nCycUqgcC+wKMM5INep3uuaM/3GSQs31Ag8rFaaCL0MAdcEYC6xSoKfOWk+txYqPQ1vXI2RnsbfwcZ2jzTGUmM+9OKWGbz9gttNpph0cNJiFSHgY=
+	t=1706844342; cv=none; b=a63AJoo7CeOOZKJp7NLSP5d67ISW5djIaYRZlbbbn/nrzL7XkNSmnrSlL3/jceq05QKE2tx1Y15A8eNbalzFDPd5q8gCD02nPw5NqGQo9WWpTu90Ceb3oWgq8KG9O0cBLEnW7UGrzxUP7oYXcvoLtLaf40zNBuVG13L8vSmiscI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706844325; c=relaxed/simple;
-	bh=6JqwBoAYIpZHTWPrTkTxeOxbUvcbFl6Mfyl54IrBp/M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kS47Y1KrEwr/87Dt0m5H43H9Ijqesd9RXDjj3CPqGwZgo3Zr5l/AJiAy70Bt24mYHCOr6aAzRsFpJJ7lgSK3DDlzAG2Af4l6GY7wWTuA39SV6MaeaDcRZTd5LQ49FWO1gCir8uImygMD09PUHlDTJtcILdEVUwTql7GKFs5U0gc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Bgp8+FGZ; arc=none smtp.client-ip=134.134.136.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706844323; x=1738380323;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=6JqwBoAYIpZHTWPrTkTxeOxbUvcbFl6Mfyl54IrBp/M=;
-  b=Bgp8+FGZmsTjn170M+2QYXjtyAmMPanAwKDirlHAAYDvWBhuSNUpZl5P
-   Bj7yE9E9Qrk0X2eHl+5clyzYWTKZTs5MnD4ipy5akd5VnAzbaIZOhwke7
-   nlsO3PEBZgfAP/+hYM0CzGzyM73TEFZpUpy1z5eKMJx/QoSnS8GEltg3u
-   qhJgUXH+6N8iubth2o3nRWknmf8kUvOAl5u3WXcjcnHJSHJf5cU0Gnwd0
-   BeE5E0B6HiuIvAvGg404Cs/lsZt7criDl9nlJcHFKLSGo93IfvT7HDUsz
-   tKRW26BuylSyG5Wuj4dbzgUeC2QmS0yjgPLg0JweSrmx9XLBRYSN7kkzg
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="394510780"
-X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="394510780"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 19:25:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="4575907"
-Received: from xiongzha-mobl1.ccr.corp.intel.com (HELO [10.93.0.73]) ([10.93.0.73])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 19:25:20 -0800
-Message-ID: <9098e8bb-cbe4-432c-98d6-ce96a4f7094f@linux.intel.com>
-Date: Fri, 2 Feb 2024 11:25:14 +0800
+	s=arc-20240116; t=1706844342; c=relaxed/simple;
+	bh=5FqF6XjRAP7FUafdp3VbHh6CWxWN40EUhF23QZ+j5mE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BLTY7Ww9CXRSXwKgzP9w2oVWAtZjF4Np6VHvzz6QUg8zvtnBvpRxS0xCDyyx3luAqtGu2cWOjzBKFbcgvgjir6ZWadjVzxzCRMQo2WDIBt/8rf5heXrMTDFN+0GHxZgn5DdktprHj/1bapE2aVn2+nv6sN2zD97MArV0SMvDgXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=aawybKbj; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1127)
+	id DF85B206FCE2; Thu,  1 Feb 2024 19:25:40 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DF85B206FCE2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1706844340;
+	bh=rBO9aX1g8nZoaH4O94txNiEXsHgf2YweqLUV2Mz2V5Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aawybKbjyvNmR21bUKDWIESmZatr9ZF7K0kQRiVSnVEbqwlHg6o+fk2/f9jD8UWH2
+	 VCRWwEJhyMKTjwinwPKR816umJQbaOFqQUT2FMgsfM0cXo+y3wAjMJhuv1pMCDO2TW
+	 XaylzByrLYdXl5olfUBf1c7DiO5g7kJLbQ3hRJ5g=
+Date: Thu, 1 Feb 2024 19:25:40 -0800
+From: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+To: Michael Kelley <mhklinux@outlook.com>
+Cc: "kys@microsoft.com" <kys@microsoft.com>,
+	"haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+	"wei.liu@kernel.org" <wei.liu@kernel.org>,
+	"decui@microsoft.com" <decui@microsoft.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"bp@alien8.de" <bp@alien8.de>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+	"dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"ssengar@microsoft.com" <ssengar@microsoft.com>
+Subject: Re: [PATCH] x86/hyperv: Use per cpu initial stack for vtl context
+Message-ID: <20240202032540.GA13603@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1706811931-3579-1-git-send-email-ssengar@linux.microsoft.com>
+ <SN6PR02MB415750EE9132ECB049D7B20AD4432@SN6PR02MB4157.namprd02.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] KVM: x86/pmu: Fix type length error when reading
- pmu->fixed_ctr_ctrl
-To: Sean Christopherson <seanjc@google.com>,
- Mingwei Zhang <mizhang@google.com>
-Cc: Dongli Zhang <dongli.zhang@oracle.com>,
- Paolo Bonzini <pbonzini@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
- kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240123221220.3911317-1-mizhang@google.com>
- <ZbpqoU49k44xR4zB@google.com>
- <368248d0-d379-23c8-dedf-af7e1e8d23c7@oracle.com>
- <CAL715WJDesggP0S0M0SWX2QaFfjBNdqD1j1tDU10Qxk6h7O0pA@mail.gmail.com>
- <ZbvUyaEypRmb2s73@google.com> <ZbvjKtsVjpuQmKE2@google.com>
- <ZbvyrvvZM-Tocza2@google.com>
-Content-Language: en-US
-From: "Zhang, Xiong Y" <xiong.y.zhang@linux.intel.com>
-In-Reply-To: <ZbvyrvvZM-Tocza2@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SN6PR02MB415750EE9132ECB049D7B20AD4432@SN6PR02MB4157.namprd02.prod.outlook.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
+On Thu, Feb 01, 2024 at 07:53:59PM +0000, Michael Kelley wrote:
+> From: Saurabh Sengar <ssengar@linux.microsoft.com> Sent: Thursday, February 1, 2024 10:26 AM
+> > 
+> > Currently, the secondary vCPUs in Hyper-V VTL context lack support for
+> > parallel startup. Therefore, relying on the single initial_stack fetched
+> > from the current task structure suffices for all vCPUs.
+> > 
+> > However, common initial_stack risks stack corruption when parallel startup
+> > is enabled. In order to facilitate parallel startup, use the initial_stack
+> > from the per CPU idle thread instead of the current task.
+> > 
+> > Fixes: 18415f33e2ac ("cpu/hotplug: Allow "parallel" bringup up to CPUHP_BP_KICK_AP_STATE")
+> > Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+> > ---
+> >  arch/x86/hyperv/hv_vtl.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/hyperv/hv_vtl.c b/arch/x86/hyperv/hv_vtl.c
+> > index 96e6c51515f5..a54b46b673de 100644
+> > --- a/arch/x86/hyperv/hv_vtl.c
+> > +++ b/arch/x86/hyperv/hv_vtl.c
+> > @@ -12,6 +12,7 @@
+> >  #include <asm/i8259.h>
+> >  #include <asm/mshyperv.h>
+> >  #include <asm/realmode.h>
+> > +#include <../kernel/smpboot.h>
+> > 
+> >  extern struct boot_params boot_params;
+> >  static struct real_mode_header hv_vtl_real_mode_header;
+> > @@ -71,7 +72,8 @@ static int hv_vtl_bringup_vcpu(u32 target_vp_index, u64 eip_ignored)
+> >  	struct ldttss_desc *ldt;
+> >  	struct desc_struct *gdt;
+> > 
+> > -	u64 rsp = current->thread.sp;
+> > +	struct task_struct *idle = idle_thread_get(target_vp_index);
+> 
+> The "VP index" of a vCPU is a Hyper-V concept, and may not match
+> the Linux concept of a CPU number.   In most cases, they *do* match,
+> so your testing of this patch probably worked.  But there's no guarantee
+> that they match.  The Hyper-V TLFS does not even guarantee that VP
+> indices are dense or that they start with 0 (even though they do in
+> current versions of Hyper-V).
+> 
+> As a different kind of example, in a kdump kernel, Linux labels the
+> booting CPU as CPU 0, but it may not be the 0th CPU in the guest
+> VM, and hence may not have VP index of 0.  Of course, in a kdump
+> kernel nr_cpus is typically 1, so you aren't bringing up secondary
+> CPUs.  But sometimes kdump kernels boot with nr_cpus=2 or greater,
+> in which case the mismatch would occur.
+> 
+> This conceptual difference in VP index and Linux CPU numbers is why
+> the hv_vp_index array exists -- to map from a Linux CPU number to a
+> Hyper-V VP index, and thereby avoid assuming they are equal.
+> 
+> So before hv_vtl_wakeup_secondary_cpu() calls this function, it needs
+> to separately map the apicid to a Linux CPU number, which can then
+> be passed to idle_thread_get().
+> 
+> Michael
 
+Thanks for the review. I will fix this in V2.
 
-On 2/2/2024 3:36 AM, Sean Christopherson wrote:
-> On Thu, Feb 01, 2024, Mingwei Zhang wrote:
->> On Thu, Feb 01, 2024, Sean Christopherson wrote:
->>> On Wed, Jan 31, 2024, Mingwei Zhang wrote:
->>>>> The PMC is still active while the VM side handle_pmi_common() is not going to handle it?
->>>>
->>>> hmm, so the new value is '0', but the old value is non-zero, KVM is
->>>> supposed to zero out (stop) the fix counter), but it skips it. This
->>>> leads to the counter continuously increasing until it overflows, but
->>>> guest PMU thought it had disabled it. That's why you got this warning?
->>>
->>> No, that can't happen, and KVM would have a massive bug if that were the case.
->>> The truncation can _only_ cause bits to disappear, it can't magically make bits
->>> appear, i.e. the _only_ way this can cause a problem is for KVM to incorrectly
->>> think a PMC is being disabled.
->>
->> The reason why the bug does not happen is because there is global
->> control. So disabling a counter will be effectively done in the global
->> disable part, ie., when guest PMU writes to MSR 0x38f.
 > 
-> 
->>> fixed PMC is disabled. KVM will pause the counter in reprogram_counter(), and
->>> then leave the perf event paused counter as pmc_event_is_allowed() will return
->>> %false due to the PMC being locally disabled.
->>>
->>> But in this case, _if_ the counter is actually enabled, KVM will simply reprogram
->>> the PMC.  Reprogramming is unnecessary and wasteful, but it's not broken.
->>
->> no, if the counter is actually enabled, but then it is assigned to
->> old_fixed_ctr_ctrl, the value is truncated. When control goes to the
->> check at the time of disabling the counter, KVM thinks it is disabled,
->> since the value is already truncated to 0. So KVM will skip by saying
->> "oh, the counter is already disabled, why reprogram? No need!".
-> 
-> Ooh, I had them backwards.  KVM can miss 1=>0, but not 0=>1.  I'll apply this
-> for 6.8; does this changelog work for you?
-> 
->   Use a u64 instead of a u8 when taking a snapshot of pmu->fixed_ctr_ctrl
->   when reprogramming fixed counters, as truncating the value results in KVM
->   thinking all fixed counters, except counter 0, 
-each counter has four bits in fixed_ctr_ctrl, here u8 could cover counter 0 and counter 1, so "except counter 0" can be modified to "except counter 0 and 1" 
-> are already disabled.  
->   a result, if the guest disables a fixed counter, KVM will get a false
->   negative and fail to reprogram/disable emulation of the counter, which can
->   leads to spurious PMIs in the guest.
+> > +	u64 rsp = (unsigned long)idle->thread.sp;
+> >  	u64 rip = (u64)&hv_vtl_ap_entry;
+> > 
+> >  	native_store_gdt(&gdt_ptr);
+> > --
+> > 2.34.1
+> > 
 > 
 
