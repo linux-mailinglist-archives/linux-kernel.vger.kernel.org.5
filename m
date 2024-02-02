@@ -1,176 +1,215 @@
-Return-Path: <linux-kernel+bounces-50566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43A9A847AE0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:00:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF142847B0A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:03:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB1481F25176
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:00:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 366571F28BFD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:03:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E85497F465;
-	Fri,  2 Feb 2024 20:59:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B81D1308D9;
+	Fri,  2 Feb 2024 21:00:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="WDn0CIZX"
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="xjzjRcKH"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96AEE7C6CE
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 20:59:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A5C126F35;
+	Fri,  2 Feb 2024 21:00:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706907599; cv=none; b=k5l5K3g8sYjNtsbvpSCnXLeoZf0MZaqoey7R5kAXHiuXT569DvZ3XP1HY6gT8oMSMTVlUXkIeFaQu12uxodmNXMTryX5oj2IDn5UtxNs9QMFngNRffRMqmAKzb5WfnCm3z//BjXCD28c5e0QBCMWDHMrjXFSHZOfUifpugXCt+U=
+	t=1706907631; cv=none; b=jf/HuTWHz0fwxBUBStaK8x4YWMmpt6CUKrL/q3KwcogWIPzYtQZLobLQ0ApgqyHc4PSfTePrh/rAqDh24YHGAKwDklue+koF2HQc4RiI5JRuGkh2RLFgEbSp++We++IJqrTlumjWjkJ5kd5fwWr6ZFLJgkSVLH4GhyIE6uQ/vr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706907599; c=relaxed/simple;
-	bh=ge9WmExw3RYtr47lcMES3xw541P+2RTLYMoq4ZWA3M4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dAmLbLmLEwy/bEOL82aW5l9X6m8Kr9gNLYlGplGSjqir7AVdx094b9cM+v6o7duX8XCRGoiInOxo55ztQjHPd4ME/NuA7wHfeZnWuf1+GIINYBeBs2GRpUXVoBtwNyqYKMOksEhm3ZrkcegtsiFj5j9PMlbgg5JRrZHkUHBUT2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=WDn0CIZX; arc=none smtp.client-ip=198.252.153.129
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4TRSp438vTzDqQ6;
-	Fri,  2 Feb 2024 20:59:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1706907596; bh=ge9WmExw3RYtr47lcMES3xw541P+2RTLYMoq4ZWA3M4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=WDn0CIZXXkpAYI365jt8RJMpj6sA8NTH9JM2nq6NTxHIil5aIOQghOt5lo+sotJ/B
-	 wvcVfAScYOFf5UL9UvufcO0shV4HvNOxVBQxMhhod69+0h4zUmYZ12G3U3RTYGGPER
-	 dPC4QTFdt8nU/79b8RrzLg8B4Ihxz7iFEUHY3Sb0=
-X-Riseup-User-ID: 8D545961835A176C093ABDD1C101A5788877D082A0844039CD0237B84AD211E3
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4TRSnx4ww1zJp0l;
-	Fri,  2 Feb 2024 20:59:49 +0000 (UTC)
-Message-ID: <40287e9a-efb8-480a-bb50-85361feb44a4@riseup.net>
-Date: Fri, 2 Feb 2024 17:59:46 -0300
+	s=arc-20240116; t=1706907631; c=relaxed/simple;
+	bh=7Ochv10fF/HDECdDCBhY5k3B/jWscDOgrt50maoZBSM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=loAtgcHKugxaRK5AWl7e5VonpMbFuO6tjqTK8IW53fUoBr2gSR5gHQnDX2DUaVTkOwFJXBUQ9a9vebGbEVg2OZ0YuIoa3YzJ5BlRtZFqfw/Wh0AnP2ehg//lAQiOR167k+YLrzT4WnUH8NOljzUoRPR222Do2XXHWWMIMFs+FFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=xjzjRcKH; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1706907626;
+	bh=7Ochv10fF/HDECdDCBhY5k3B/jWscDOgrt50maoZBSM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=xjzjRcKHc51L5uKfgoLW2u8kKhQcQ2vVNWK/MJWjdE614MR4/YJkA1CwTEe73bbQQ
+	 B9HyfCDUh7U0ymCixBQN8EiJgzkpW6+kLC9IvSas607tEiAr6kadxi+bJn5RUzSABk
+	 nWHeEMWr/PgG+1BneAGKshZDLvngXgGNtmQ6U1dg9VAFgDpd/MAq57ojIIddXMTqyj
+	 B6Zo1w7TxPuHLYzrtCkp62x4HF5uLit0wQ/pQraJaWYxXOvP89GmSYmoePEO47U+zj
+	 C6bZ1Xg/IaMryfb+SACk6Vlr4te2Eu6M6BU4Oph1tlIewmiv0Nre/GFkq9H57Fehoq
+	 A1W/ENWhVIuAA==
+Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TRSpf4VlxzX6l;
+	Fri,  2 Feb 2024 16:00:26 -0500 (EST)
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To: Dan Williams <dan.j.williams@intel.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Dave Chinner <david@fromorbit.com>
+Cc: linux-kernel@vger.kernel.org,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Russell King <linux@armlinux.org.uk>,
+	linux-arch@vger.kernel.org,
+	linux-cxl@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-xfs@vger.kernel.org,
+	dm-devel@lists.linux.dev,
+	nvdimm@lists.linux.dev,
+	linux-s390@vger.kernel.org
+Subject: [RFC PATCH v4 00/12] Introduce cpu_dcache_is_aliasing() to fix DAX regression
+Date: Fri,  2 Feb 2024 16:00:07 -0500
+Message-Id: <20240202210019.88022-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] drm/vkms: Create a type to check a function pointer
- validity
-Content-Language: en-US
-To: Louis Chauvet <louis.chauvet@bootlin.com>,
- Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, marcheu@google.com, seanpaul@google.com,
- nicolejadeyee@google.com
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- thomas.petazzoni@bootlin.com, miquel.raynal@bootlin.com
-References: <20240201-yuv-v1-0-3ca376f27632@bootlin.com>
- <20240201-yuv-v1-1-3ca376f27632@bootlin.com>
-From: Arthur Grillo <arthurgrillo@riseup.net>
-In-Reply-To: <20240201-yuv-v1-1-3ca376f27632@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+This commit introduced in v4.0 prevents building FS_DAX on 32-bit ARM,
+even on ARMv7 which does not have virtually aliased data caches:
 
+commit d92576f1167c ("dax: does not work correctly with virtual aliasing caches")
 
-On 01/02/24 14:31, Louis Chauvet wrote:
-> Add the pixel_read_t type to check function prototype in structures
-> and functions.
-> It avoids casting to (void *) and at the same occasion allows the
-> compiler to check the type properly.
-> 
-> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> ---
->  drivers/gpu/drm/vkms/vkms_drv.h     | 17 +++++++++++++++--
->  drivers/gpu/drm/vkms/vkms_formats.c |  4 ++--
->  drivers/gpu/drm/vkms/vkms_formats.h |  2 +-
->  3 files changed, 18 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-> index 51349a0c32d8..cb20bab26cae 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.h
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
-> @@ -48,6 +48,20 @@ struct vkms_writeback_job {
->  	void (*pixel_write)(u8 *dst_pixels, struct pixel_argb_u16 *in_pixel);
->  };
->  
-> +/**
-> + * typedef pixel_read_t - These functions are used to read the pixels in the source frame, convert
-> + * them to argb16 and write them to out_pixel.
-> + * It assumes that src_pixels point to a valid pixel (not a block, or a block of 1x1 pixel)
-> + *
-> + * @src_pixels: Source pointer to a pixel
-> + * @out_pixel: Pointer where to write the pixel value
-> + * @encoding: Color encoding to use (mainly used for YUV formats)
-> + * @range: Color range to use (mainly used for YUV formats)
-> + */
-> +typedef void (*pixel_read_t)(u8 **src_pixels, int y,
-> +			     struct pixel_argb_u16 *out_pixel, enum drm_color_encoding enconding,
-> +			     enum drm_color_range range);
-> +
->  /**
->   * vkms_plane_state - Driver specific plane state
->   * @base: base plane state
-> @@ -56,8 +70,7 @@ struct vkms_writeback_job {
->  struct vkms_plane_state {
->  	struct drm_shadow_plane_state base;
->  	struct vkms_frame_info *frame_info;
-> -	void (*pixel_read)(u8 **src_buffer, struct pixel_argb_u16 *out_pixel,
-> -			   enum drm_color_encoding enconding, enum drm_color_range range);
-> +	pixel_read_t pixel_read;
+It used to work fine before: I have customers using DAX over pmem on
+ARMv7, but this regression will likely prevent them from upgrading their
+kernel.
 
-Hi,
+The root of the issue here is the fact that DAX was never designed to
+handle virtually aliasing data caches (VIVT and VIPT with aliasing data
+cache). It touches the pages through their linear mapping, which is not
+consistent with the userspace mappings with virtually aliasing data
+caches.
 
-Please Cc me on the next versions,
+This patch series introduces cpu_dcache_is_aliasing() with the new
+Kconfig option ARCH_HAS_CPU_CACHE_ALIASING and implements it for all
+architectures. The implementation of cpu_dcache_is_aliasing() is either
+evaluated to a constant at compile-time or a runtime check, which is
+what is needed on ARM.
 
-You added the argument 'y' to the function but did not change the calls
-to it, resulting in a compiler error. I think this argument addition
-would be better on patch #2.
+With this we can basically narrow down the list of architectures which
+are unsupported by DAX to those which are really affected.
 
-Best Regards,
-~Arthur Grillo
+Testing done so far:
 
->  };
->  
->  struct vkms_plane {
-> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
-> index e06bbd7c0a67..c6376db58d38 100644
-> --- a/drivers/gpu/drm/vkms/vkms_formats.c
-> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
-> @@ -390,7 +390,7 @@ void vkms_writeback_row(struct vkms_writeback_job *wb,
->  		wb->pixel_write(dst_pixels, &in_pixels[x]);
->  }
->  
-> -void *get_pixel_conversion_function(u32 format)
-> +pixel_read_t get_pixel_conversion_function(u32 format)
->  {
->  	switch (format) {
->  	case DRM_FORMAT_ARGB8888:
-> @@ -420,7 +420,7 @@ void *get_pixel_conversion_function(u32 format)
->  	case DRM_FORMAT_YVU444:
->  		return &planar_yvu_to_argb_u16;
->  	default:
-> -		return NULL;
-> +		return (pixel_read_t)NULL;
->  	}
->  }
->  
-> diff --git a/drivers/gpu/drm/vkms/vkms_formats.h b/drivers/gpu/drm/vkms/vkms_formats.h
-> index 0cf835292cec..04e31e126ab1 100644
-> --- a/drivers/gpu/drm/vkms/vkms_formats.h
-> +++ b/drivers/gpu/drm/vkms/vkms_formats.h
-> @@ -5,7 +5,7 @@
->  
->  #include "vkms_drv.h"
->  
-> -void *get_pixel_conversion_function(u32 format);
-> +pixel_read_t get_pixel_conversion_function(u32 format);
->  
->  void *get_pixel_write_function(u32 format);
->  
-> 
+- Compile allyesconfig on x86-64,
+- Compile allyesconfig on x86-64, with FS_DAX=n.
+- Compile allyesconfig on x86-64, with DAX=n.
+- Boot test after modifying alloc_dax() to force returning -EOPNOTSUPP
+  even on x86-64, thus simulating the behavior expected on an
+  architecture with data cache aliasing.
+
+There are many more axes to test however. I would welcome Tested-by for:
+
+- affected architectures,
+- affected drivers,
+- affected filesytems.
+
+Thanks,
+
+Mathieu
+
+Changes since v3:
+- Fix a leak on dax_add_host() failure in nvdimm/pmem.
+- Split the series into a bissectable sequence of changes.
+- Ensure that device-dax use-cases still works on data cache
+  aliasing architectures.
+
+Changes since v2:
+- Move DAX supported runtime check to alloc_dax(),
+- Modify DM to handle alloc_dax() error as non-fatal,
+- Remove all filesystem modifications, since the check is now done by
+  alloc_dax(),
+- rename "dcache" and "cache" to "cpu dcache" and "cpu cache" to
+  eliminate confusion with VFS terminology.
+
+Changes since v1:
+- The order of the series was completely changed based on the
+  feedback received on v1,
+- cache_is_aliasing() is renamed to dcache_is_aliasing(),
+- ARCH_HAS_CACHE_ALIASING_DYNAMIC is gone,
+- dcache_is_aliasing() vs ARCH_HAS_CACHE_ALIASING relationship is
+  simplified,
+- the dax_is_supported() check was moved to its rightful place in all
+  filesystems.
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: linux-arch@vger.kernel.org
+Cc: linux-cxl@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-xfs@vger.kernel.org
+Cc: dm-devel@lists.linux.dev
+Cc: nvdimm@lists.linux.dev
+Cc: linux-s390@vger.kernel.org
+
+Mathieu Desnoyers (12):
+  nvdimm/pmem: Fix leak on dax_add_host() failure
+  nvdimm/pmem: Treat alloc_dax() -EOPNOTSUPP failure as non-fatal
+  dm: Treat alloc_dax() -EOPNOTSUPP failure as non-fatal
+  dcssblk: Handle alloc_dax() -EOPNOTSUPP failure
+  virtio: Treat alloc_dax() -EOPNOTSUPP failure as non-fatal
+  dax: Check for data cache aliasing at runtime
+  Introduce cpu_dcache_is_aliasing() across all architectures
+  dax: Fix incorrect list of data cache aliasing architectures
+  nvdimm/pmem: Cleanup alloc_dax() error handling
+  dm: Cleanup alloc_dax() error handling
+  dcssblk: Cleanup alloc_dax() error handling
+  virtio: Cleanup alloc_dax() error handling
+
+ arch/arc/Kconfig                    |  1 +
+ arch/arc/include/asm/cachetype.h    |  9 +++++++++
+ arch/arm/Kconfig                    |  1 +
+ arch/arm/include/asm/cachetype.h    |  2 ++
+ arch/csky/Kconfig                   |  1 +
+ arch/csky/include/asm/cachetype.h   |  9 +++++++++
+ arch/m68k/Kconfig                   |  1 +
+ arch/m68k/include/asm/cachetype.h   |  9 +++++++++
+ arch/mips/Kconfig                   |  1 +
+ arch/mips/include/asm/cachetype.h   |  9 +++++++++
+ arch/nios2/Kconfig                  |  1 +
+ arch/nios2/include/asm/cachetype.h  | 10 ++++++++++
+ arch/parisc/Kconfig                 |  1 +
+ arch/parisc/include/asm/cachetype.h |  9 +++++++++
+ arch/sh/Kconfig                     |  1 +
+ arch/sh/include/asm/cachetype.h     |  9 +++++++++
+ arch/sparc/Kconfig                  |  1 +
+ arch/sparc/include/asm/cachetype.h  | 14 ++++++++++++++
+ arch/xtensa/Kconfig                 |  1 +
+ arch/xtensa/include/asm/cachetype.h | 10 ++++++++++
+ drivers/dax/super.c                 | 14 ++++++++++++++
+ drivers/md/dm.c                     | 17 +++++++++--------
+ drivers/nvdimm/pmem.c               | 23 ++++++++++++-----------
+ drivers/s390/block/dcssblk.c        | 11 ++++++-----
+ fs/Kconfig                          |  1 -
+ fs/fuse/virtio_fs.c                 | 15 +++++++++++----
+ include/linux/cacheinfo.h           |  6 ++++++
+ include/linux/dax.h                 |  6 +-----
+ mm/Kconfig                          |  6 ++++++
+ 29 files changed, 165 insertions(+), 34 deletions(-)
+ create mode 100644 arch/arc/include/asm/cachetype.h
+ create mode 100644 arch/csky/include/asm/cachetype.h
+ create mode 100644 arch/m68k/include/asm/cachetype.h
+ create mode 100644 arch/mips/include/asm/cachetype.h
+ create mode 100644 arch/nios2/include/asm/cachetype.h
+ create mode 100644 arch/parisc/include/asm/cachetype.h
+ create mode 100644 arch/sh/include/asm/cachetype.h
+ create mode 100644 arch/sparc/include/asm/cachetype.h
+ create mode 100644 arch/xtensa/include/asm/cachetype.h
+
+-- 
+2.39.2
 
