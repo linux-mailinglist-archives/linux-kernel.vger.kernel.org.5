@@ -1,124 +1,141 @@
-Return-Path: <linux-kernel+bounces-49891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 760F18470FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:20:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC22E847127
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:29:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 317A728740C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:20:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A30F1C262C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:29:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98CB146425;
-	Fri,  2 Feb 2024 13:19:54 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D3C646535;
+	Fri,  2 Feb 2024 13:29:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YM6ccpn0"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F79D1773D
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 13:19:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7FB046430
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 13:29:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706879994; cv=none; b=n6WYkuOiSI/fdHY/21C0p9wWLUZhd9fFTj8eBb5qvk3HATyTBifVcIT0XtUneYwc+Wnbf6/kyDDcoAnvpVBWGBHQHJh+CSfeUAJ4FiaFOnQICMYIeXkyNPRwWZY2dw/134AjmTaGUmEPDHHpRKZtemRHYYaUiCYll6wHWFYwCxA=
+	t=1706880553; cv=none; b=KemsSDFaq62xsNZiRvSgYZO10chBnwPo0Z9rtVkViFHx043hCY4SeO1jQ4rZfHHHOy2exgOqRNevHg2ewUT9OZxTWX1mPoVle+sOQjFCrEVC596yDuTX+xX1+cxhPNWHxP/c3w7alnjrIuXkL+GWW6CULGewpGAU3Y0xa/sH60g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706879994; c=relaxed/simple;
-	bh=oZHUavBtNPdmVsPG9WWBLfxVsvO5hsWg0lk+25BOilg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZXg/OjcrT7nvlEJ4Ewb4TjhEyZ9RF/xn/2pqQxT5O8ulxAlmGreNzhhl+VATTO/wWBFNUOuYWX5si5qBktn0DWRkZRnNLkeEyjEy16O25m/ZcrMhYBQSShxdNxIn3i/0+pwP/iZSTOAn7JSE1xxp8dTIZYNtrJHjbWuo20PIDWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
-	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
-	(envelope-from <a.fatoum@pengutronix.de>)
-	id 1rVtSC-0004Gn-EC; Fri, 02 Feb 2024 14:19:44 +0100
-Message-ID: <13f53836-b1f8-4e2a-a3df-80b60102d396@pengutronix.de>
-Date: Fri, 2 Feb 2024 14:19:14 +0100
+	s=arc-20240116; t=1706880553; c=relaxed/simple;
+	bh=EOuVn7h5rBzXLjSX6vgvwOxg8VenfLXWcdGIB/LkqTA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iR1GfXi6tOWpYCnoLiAxu705CPv6PjPfedkKMOAsnsnFkntXGABd1TuICF6OK/ogEF4eQCAdR0Fs2tp6jdcQHKSzdz3rKxH5JFUr/eSQ9VpQ/LtD6YkMAJDpB28wux2t8XMMarq6nMV6ycMnYn/XLoVmck7imYLE1qz0BVZdqd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YM6ccpn0; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706880552; x=1738416552;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=EOuVn7h5rBzXLjSX6vgvwOxg8VenfLXWcdGIB/LkqTA=;
+  b=YM6ccpn05oQ4zXVo6+8kYvOCz8E9QtsIEPdsqwr+6LDTFVFpQXpqJF/F
+   3zHVtGNnZMjVPWh4zdFkVzH9WNL7Zlnq2+dBe9HuXs4kx4ijgHbAiDWOB
+   tTYz3brnARTgbPIy32PK7N46LxCF7kC7JnWXQENWbCLK8v4sp/tefuXJP
+   zEg/qWn7Sab7caS57b8v5MDc6LWcppZVD9iptrwcCuB2PBrOuNSVq0p8G
+   l/cuYQ6c06r8IyXGARx4xxG/HOIS9C2jCyz+ctDRgvQwoGpml7x3fwdW3
+   RerbP3szGiLHKyY2DzB7EMkC/2KXQiBYqDOgCkHS8v40Ks+nSgu7B1YlH
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="17685033"
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="17685033"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 05:29:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="31174623"
+Received: from feng-clx.sh.intel.com ([10.239.159.50])
+  by fmviesa001.fm.intel.com with ESMTP; 02 Feb 2024 05:29:09 -0800
+From: Feng Tang <feng.tang@intel.com>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	gpiccoli@igalia.com,
+	Feng Tang <feng.tang@intel.com>
+Subject: [PATCH] panic: add option to dump blocked tasks in panic_print
+Date: Fri,  2 Feb 2024 21:20:42 +0800
+Message-Id: <20240202132042.3609657-1-feng.tang@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Boot-time dumping of ftrace fuctiongraph buffer
-Content-Language: en-US
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-kernel@vger.kernel.org, Masami Hiramatsu
- <mhiramat@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Pengutronix Kernel Team <kernel@pengutronix.de>
-References: <d33e5271-219d-4b8e-be5a-8903219d7fd6@pengutronix.de>
- <20240201204637.2afab2db@gandalf.local.home>
-From: Ahmad Fatoum <a.fatoum@pengutronix.de>
-In-Reply-To: <20240201204637.2afab2db@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 
-Hello Steve,
+For debugging kernel panic and other bugs, there is already option of
+panic_print to dump all tasks' call stacks. On today's large servers
+running many containers, there could be thousands of tasks or more,
+and it will print out huge amount of call stacks, and take a lot of
+time (for serial console which is main target user case of panic_print).
 
-On 02.02.24 02:46, Steven Rostedt wrote:
-> On Thu, 1 Feb 2024 13:21:37 +0100
-> Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->> For this to be maximally useful, I need to configure this not only at boot-time,
->> but also dump the ftrace buffer at boot time. Probe deferral can hinder the kernel from
->> calling init and providing a shell, where I could read /sys/kernel/tracing/trace.
-> 
-> OK so the driver is built in.
+And in many cases, only those several tasks being blocked is key for
+the panic, so add an option to only dump blocked tasks' call stack.
 
-Yes. The modules are easy, because I will have an access to shell by then
-on my systems.
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+---
+ Documentation/admin-guide/kernel-parameters.txt | 1 +
+ Documentation/admin-guide/sysctl/kernel.rst     | 1 +
+ kernel/panic.c                                  | 4 ++++
+ 3 files changed, 6 insertions(+)
 
->> I found following two mechanisms that looked relevant, but seem not to
->> do exactly what I want:
->>
->>   - tp_printk: seems to be related to trace points only and not usable
->>     for the function graph output
->>
->>   - dump_on_oops: I don't get an Oops if probe deferral times out, but maybe
->>     one could patch the kernel to check a oops_on_probe_deferral or dump_on_probe_deferral
->>     kernel command line parameter in deferred_probe_timeout_work_func()?
->>
->>
->> Is there existing support that I am missing? Any input on whether this
->> would be a welcome feature to have?
-> 
-> Well you can start function_graph on the kernel command line and event
-> filter on a give function
-> 
->  ftrace=function_graph function_graph_filter=probe_func
-
-Ye, that's what I am doing, but I was stuck on actually outputting the log
-at boot time.
-
-> You can add your own ftrace_dump() on some kind of detected error and put
-> that in the kernel command line. For example RCU has:
-> 
->   rcupdate.rcu_cpu_stall_ftrace_dump=
-> 
-> Which will do a ftrace dump when a RCU stall is triggered.
-
-Ah, thanks for the pointer. I take this as meaning that there is no builtin
-way to dump on arbitrary function return. I will see if it's possible with
-bootconfig before looking into adding a probe deferral specific kernel
-command-line parameter.
-
-Thanks,
-Ahmad
-
-> 
-> -- Steve
-> 
-> 
-
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 31b3a25680d0..0f2369e87175 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -4182,6 +4182,7 @@
+ 			bit 4: print ftrace buffer
+ 			bit 5: print all printk messages in buffer
+ 			bit 6: print all CPUs backtrace (if available in the arch)
++			bit 7: print tasks in uninterruptible (blocked) state
+ 			*Be aware* that this option may print a _lot_ of lines,
+ 			so there are risks of losing older messages in the log.
+ 			Use this option carefully, maybe worth to setup a
+diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+index 6584a1f9bfe3..e066a16b35d5 100644
+--- a/Documentation/admin-guide/sysctl/kernel.rst
++++ b/Documentation/admin-guide/sysctl/kernel.rst
+@@ -850,6 +850,7 @@ bit 3  print locks info if ``CONFIG_LOCKDEP`` is on
+ bit 4  print ftrace buffer
+ bit 5  print all printk messages in buffer
+ bit 6  print all CPUs backtrace (if available in the arch)
++bit 7  print tasks in uninterruptible (blocked) state
+ =====  ============================================
+ 
+ So for example to print tasks and memory info on panic, user can::
+diff --git a/kernel/panic.c b/kernel/panic.c
+index 2807639aab51..aa17ae0897c0 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -73,6 +73,7 @@ EXPORT_SYMBOL_GPL(panic_timeout);
+ #define PANIC_PRINT_FTRACE_INFO		0x00000010
+ #define PANIC_PRINT_ALL_PRINTK_MSG	0x00000020
+ #define PANIC_PRINT_ALL_CPU_BT		0x00000040
++#define PANIC_PRINT_BLOCKED_TASKS	0x00000080
+ unsigned long panic_print;
+ 
+ ATOMIC_NOTIFIER_HEAD(panic_notifier_list);
+@@ -227,6 +228,9 @@ static void panic_print_sys_info(bool console_flush)
+ 
+ 	if (panic_print & PANIC_PRINT_FTRACE_INFO)
+ 		ftrace_dump(DUMP_ALL);
++
++	if (panic_print & PANIC_PRINT_BLOCKED_TASKS)
++		show_state_filter(TASK_UNINTERRUPTIBLE);
+ }
+ 
+ void check_panic_on_warn(const char *origin)
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.34.1
 
 
