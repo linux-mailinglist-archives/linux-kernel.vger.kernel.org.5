@@ -1,211 +1,250 @@
-Return-Path: <linux-kernel+bounces-49838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0D48847049
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:27:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5241847044
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:27:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41DDA1F21628
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:27:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D06A287589
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:27:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A73314534A;
-	Fri,  2 Feb 2024 12:27:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2094144606;
+	Fri,  2 Feb 2024 12:26:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AUg5xpMf"
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ssxs/DgC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7487D144627
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 12:26:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 101B71420B3;
+	Fri,  2 Feb 2024 12:26:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706876819; cv=none; b=lhg6JSb81AQNqTM8RfSrrW5jo3WzVQsBbdrOvWPibefV4sVUFgHMYlzTTV7tSfl6sbVtkrW4FbLI3Xsi4J6+IaHBC/0g8F0j1QHyLJF64DyPeX6lGjmS7h+KOvfe2MrfjlbUOCVv4eJxTV6Q/n+IwD5Opdh8Y8k17UPjK5qfBME=
+	t=1706876815; cv=none; b=YcFL9iGo2+nlZpf8fXjdNV5s7QNq6SviYJDf5/YxHbCVyAT2xmTWGm4WxO6FeBaG3aR3mVbjp8hJe5NaJMIImYe1y4ICjq727JpHhk9PO6pN7yKuzFUFB99NN0xB1ymDrceYmQUs7qoJMHTSJ27G5PEFxGQW3wpYwqjvY5HRK/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706876819; c=relaxed/simple;
-	bh=Bf4Up7WRKNNJkk2B2Ny8OMSo7CnhLQW6PMrg0VWGUfc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hjDXHjNSdqSw6q2xrpKvV3koMIWZkszXoyJ09gM2iY1USaGgb9b9XOlltgxeOsa0tIoYLN9VwyIxCZBjgfTBsgz0rrQBBr0kKVmhFI+XG6nBZ05UBIzAEEJXNpd9BH8VHdPsKCfDDwfLzQfF2fHOTR2PyvN/KIhCiUlNwAk8FfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AUg5xpMf; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5d8b887bb0cso1855209a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 04:26:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706876817; x=1707481617; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=9Y+fTwYyuNILHWoWbcIweD1jablI0n426/hbloY+0EY=;
-        b=AUg5xpMfsjt24dz5JsokpejZmMcmrlGE4BRyCc4+gIYv5MYU4ln2Isnmm5bjaskZEp
-         GSsM4tl8cYvI3S1WbMjKOxapa339H+YmZAkEwV/8KbBVlfLZb9pPaCgB15RaIfZt0RtX
-         hGjJytt2B1OpESE2WWzqcKF/L6SPnovG4BjlnI0SbNhkeB7IourVOBDdbxhtchFA2Jsd
-         LcR7ll2SoBg+ii3tm27A7NTC1KhvIoOF7DtzgneA4bcjfyfGm66WrNgvTVZCuQj2ouJs
-         ZaCbKrk8epLTF61HSujlLxvs8ZBycz50lxfc9HAf1TpnYu/MPBUlvWqd89QTLqwaCSgi
-         RHOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706876817; x=1707481617;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9Y+fTwYyuNILHWoWbcIweD1jablI0n426/hbloY+0EY=;
-        b=FLt4Y9qGeZPSoTFRQMQhbqCf8NgNzC+hhA9XFU3yN/I4aX5bC8aXXz0qUntnenwjW4
-         uTdiwS0bM6t0DGQ4hrpVfkdoFV38bF0I4OH9an8LuUFr4EkpndVVnJkcxsXNxKj8bQJ3
-         DcIUwGTws+3BWPXIv05E/xbu2VZ53o9IsE3qV5OBd9BBm4jxt5tDXxsSGLvGpZl/qvzH
-         KBhlaFlTfNuMcEjNspcRTDqOA+OCthOfWcEIS+aM22zw3OfaJR8UOOUkyBSls3CLUsrA
-         7eN2xCHKJsyVaKdcRI3SsnkEV++Rxk0FtOK8eH6UDp91rsn9eOZJgM8RF+BTtx5x3j01
-         NZhw==
-X-Gm-Message-State: AOJu0YxnGTJqy3uEEZTH35M7l+x+ahQrLMPgJ3E9UvOg5tKQLq9t4XhH
-	FCULeC5I0KzNGBPJ4nZLzdSMHkEwX46JuqAOp+YAoxcoPkd/pn/+DnmEqQsv1g==
-X-Google-Smtp-Source: AGHT+IGI1K8CSU7kV9E2ObyJafkFW954cd+WUxDFClY8Hk2SO4JShs6jB7GNIUQmPp4iwYKDO+tqbQ==
-X-Received: by 2002:a17:902:eb4b:b0:1d9:6e53:b8ca with SMTP id i11-20020a170902eb4b00b001d96e53b8camr1792547pli.62.1706876816709;
-        Fri, 02 Feb 2024 04:26:56 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUABWAbmKPc1y0oGs2Om27vm/Z02JNjlc9/2Sy1H9Ll7b+nL4h06xNLL1B0iuzPgp8SGmfkksjo2pyI78ujs0mnIF+WHrc8fCyr140aR5E5MJDhRNg93IU1AzIHk8pzudUW6HPRRqU8vdWccO/Z3JUdyH9vAffuYLYw6IizeJJw6PBKZBwVXVVLtDc1NTIyhK3QwSTvWkLsTNGeN7jkAfPUmdVUJdDv4kvI/64BzJPAzkRCrlmOR+aTjhDSSlvqrbfWJg7rdI+4gLHxybGKXFf61ScPET5OZxERmQE4JMttmn/HPeRQt9/RPeg+7pl2geeInpmRJJkrl3+UlmhQuKj9XHexbCRrLERdZvjTdWQdnyx9JFO4qtfgn4eoWEhEw5TpvU3tJ13LRmsyKRxGldGJAQMtrxANvtDVjqHNH8VmggN5fl8ank/XKQPxupIEkXyVdevC9hpF7iDIvSJBcJu665LurKdmOOU6psv3n34DtkCDc0F1P+iM1pUirdTnV77yQgYthaxIKV3KZ3Umc304U21nvVeSDowbJbz3I28/zZKrnl9ithNTIZEqE9FvvuEK7JDnBKYrYw4wHc4f4bqePM23GpFncQ/hfyBq0lyXu3acjwDwEsOu1Xxkae8nIMq95PDWjX680A/PdaN2YUvMhrx4kDBNO+2Po1i1FGjgG5ukp461HtiQIRfZc8SfWDWqJ463wvXagADveuTgOiPpI1tas1BzF7pOQ4ZtflyVsFvuyy5Ub31lvaqA5U3Z34G1f7pcjmMoyj6aKpplMjq6xCPfHdFbusxl1gi+J8Maqdx/OrOCxRk6qUBUZfhmUEwSpoeArudjzrO3TpZsGvQw9DfgIri2c/krT/khABIjBXWP5nuDcoKvhRkka7qekr4m6/n3Su2lFOA=
-Received: from thinkpad ([120.56.198.122])
-        by smtp.gmail.com with ESMTPSA id f4-20020a170902e98400b001d7405022ecsm1462559plb.159.2024.02.02.04.26.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 04:26:56 -0800 (PST)
-Date: Fri, 2 Feb 2024 17:56:48 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: Mrinmay Sarkar <quic_msarkar@quicinc.com>, vkoul@kernel.org,
-	jingoohan1@gmail.com, conor+dt@kernel.org, konrad.dybcio@linaro.org,
-	robh+dt@kernel.org, quic_shazhuss@quicinc.com,
-	quic_nitegupt@quicinc.com, quic_ramkri@quicinc.com,
-	quic_nayiluri@quicinc.com, dmitry.baryshkov@linaro.org,
-	quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
-	quic_parass@quicinc.com, quic_schintav@quicinc.com,
-	quic_shijjose@quicinc.com,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	mhi@lists.linux.dev
-Subject: Re: [PATCH v1 4/6] dmaengine: dw-edma: Move HDMA_V0_MAX_NR_CH
- definition to edma.h
-Message-ID: <20240202122648.GD8020@thinkpad>
-References: <1705669223-5655-1-git-send-email-quic_msarkar@quicinc.com>
- <1705669223-5655-5-git-send-email-quic_msarkar@quicinc.com>
- <qfdsnz7louqdrs6mhz72o6mzjo66kw63vtlhgpz6hgqfyyzyhq@tge3r7mvwtw3>
+	s=arc-20240116; t=1706876815; c=relaxed/simple;
+	bh=Yr91y1sl+AZxI4SuUVjCcbmkgsvJB+zoJDpg89Sajz8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=l9O1k9CggweEAO+Ef7XoLMWhLUN2UI/oqy5Vd1pyctEbCa3cVKTWneOktHrFYxxWertqXKzvTQ8d91/hxEj+TZkJ+jKduvKwe3s3cT8wvIh+n/y/TKAoDm8eKZQFgFT2L3jcUdPXVPtWGjI2/Zv5/wN3YLJ1JEkMHWePTKOSUgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ssxs/DgC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77C6EC433C7;
+	Fri,  2 Feb 2024 12:26:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706876814;
+	bh=Yr91y1sl+AZxI4SuUVjCcbmkgsvJB+zoJDpg89Sajz8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ssxs/DgChuaHkVqAb2EoRhoZ0kX5GAoFEjTJibPTW6Q002ua79EcOAzF4UEn/gpOA
+	 NTfECGbxNOtBa2SzuAZ8jPq/0MXBv//i3Kz2MGx6/nEcDJwtiN/TUuFkliP3S1WYvR
+	 U2Cg0xCGxIV4VeIUg/kp+kgsrEWHZ0XwzBp5MeMkkzuQbPbmBbg82UwcYxj7/305N8
+	 DavGUm+kPiOTnsLt71U9ppwZlxLL0oClbHNYtXLPsprVk06ZTfsOQNzEroJo8Hjb50
+	 iJYvZjI3ME4SRCf3SIeJwdSbSxJvkVS5m2w74tlcSVYfmjv03sxIinni9EDRGt6OCn
+	 B5ppYl9lOFDpg==
+Message-ID: <33e62844-a148-4374-aba8-481dc7799e15@kernel.org>
+Date: Fri, 2 Feb 2024 14:26:48 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <qfdsnz7louqdrs6mhz72o6mzjo66kw63vtlhgpz6hgqfyyzyhq@tge3r7mvwtw3>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/3] arm64: dts: ti: k3-am642-evm: add overlay for
+ icssg1 2nd port
+Content-Language: en-US
+To: MD Danish Anwar <danishanwar@ti.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Conor Dooley <conor+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Tero Kristo <kristo@kernel.org>, srk@ti.com, r-gunasekaran@ti.com
+References: <20240122113045.1711818-1-danishanwar@ti.com>
+ <20240122113045.1711818-4-danishanwar@ti.com>
+From: Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <20240122113045.1711818-4-danishanwar@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 02, 2024 at 01:47:37PM +0300, Serge Semin wrote:
-> Hi Mrinmay
-> 
-> On Fri, Jan 19, 2024 at 06:30:20PM +0530, Mrinmay Sarkar wrote:
-> > From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > 
-> > To maintain uniformity with eDMA, let's move the HDMA max channel
-> > definition to edma.h. While at it, let's also rename it to HDMA_MAX_NR_CH.
-> 
-> First of all include/linux/dma/edma.h already contains the common DW
-> EDMA and _HDMA_ settings/entities including the number of channels.
-> Both of these IP-cores have the same constraints on the max amount of
-> channels. Moreover the EDMA_MAX_WR_CH/EDMA_MAX_RD_CH macros are
-> already utilized in the common dw_edma_probe() method. So to speak you
-> can freely use these macros for HDMA too. Thus this change is
-> redundant. So is the patches 1/6 and 2/6.
-> 
-> Note currently all the common DW EDMA driver code uses the EDMA_/edma_
-> prefixes. HDMA_/hdma_ prefixes are utilized in the Native
-> HDMA-specific module only. So if you wished to provide some IP-core
-> specific settings utilized in the common part of the driver, then the
-> best approach would be to provide a change for the entire driver
-> interface (for instance first convert it to having a neutral prefixes,
-> like xdma_/etc, and then use the IP-core specific ones). So please
-> just use the EDMA_MAX_WR_CH and EDMA_MAX_RD_CH macros and drop the
-> patches 1, 2, and 4.
-> 
 
-Hmm. With my limited access to the HDMA IP insights, I was not aware that the
-constraints are similar with EDMA. If so, then it makes sense to reuse the same
-macros. But I would also add a comment on top of the macros to avoid confusion.
 
-- Mani
+On 22/01/2024 13:30, MD Danish Anwar wrote:
+> The am642-evm doesn't allow to enable 2 x CPSW3g ports and 2 x ICSSG1 ports
+> all together, so base k3-am642-evm.dts enables by default 2 x CPSW3g ports
+> and 1 x ICSSG1 ports, but it also possible to support 1 x CPSW3g ports and
+> 2 x ICSSG1 ports configuration.
 
-> -Serge(y)
+"it is also possible"
+
+OK so there can only be 3 ethernet ports on this board. There is no "ethernet3" alias.
+
 > 
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-> > ---
-> >  drivers/dma/dw-edma/dw-hdma-v0-core.c | 4 ++--
-> >  drivers/dma/dw-edma/dw-hdma-v0-regs.h | 3 +--
-> >  include/linux/dma/edma.h              | 1 +
-> >  3 files changed, 4 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/dma/dw-edma/dw-hdma-v0-core.c b/drivers/dma/dw-edma/dw-hdma-v0-core.c
-> > index 1f4cb7d..819ef1f 100644
-> > --- a/drivers/dma/dw-edma/dw-hdma-v0-core.c
-> > +++ b/drivers/dma/dw-edma/dw-hdma-v0-core.c
-> > @@ -54,7 +54,7 @@ static void dw_hdma_v0_core_off(struct dw_edma *dw)
-> >  {
-> >  	int id;
-> >  
-> > -	for (id = 0; id < HDMA_V0_MAX_NR_CH; id++) {
-> > +	for (id = 0; id < HDMA_MAX_NR_CH; id++) {
-> >  		SET_BOTH_CH_32(dw, id, int_setup,
-> >  			       HDMA_V0_STOP_INT_MASK | HDMA_V0_ABORT_INT_MASK);
-> >  		SET_BOTH_CH_32(dw, id, int_clear,
-> > @@ -70,7 +70,7 @@ static u16 dw_hdma_v0_core_ch_count(struct dw_edma *dw, enum dw_edma_dir dir)
-> >  	 * available, we set it to maximum channels and let the platform
-> >  	 * set the right number of channels.
-> >  	 */
-> > -	return HDMA_V0_MAX_NR_CH;
-> > +	return HDMA_MAX_NR_CH;
-> >  }
-> >  
-> >  static enum dma_status dw_hdma_v0_core_ch_status(struct dw_edma_chan *chan)
-> > diff --git a/drivers/dma/dw-edma/dw-hdma-v0-regs.h b/drivers/dma/dw-edma/dw-hdma-v0-regs.h
-> > index a974abd..cd7eab2 100644
-> > --- a/drivers/dma/dw-edma/dw-hdma-v0-regs.h
-> > +++ b/drivers/dma/dw-edma/dw-hdma-v0-regs.h
-> > @@ -11,7 +11,6 @@
-> >  
-> >  #include <linux/dmaengine.h>
-> >  
-> > -#define HDMA_V0_MAX_NR_CH			8
-> >  #define HDMA_V0_LOCAL_ABORT_INT_EN		BIT(6)
-> >  #define HDMA_V0_REMOTE_ABORT_INT_EN		BIT(5)
-> >  #define HDMA_V0_LOCAL_STOP_INT_EN		BIT(4)
-> > @@ -92,7 +91,7 @@ struct dw_hdma_v0_ch {
-> >  } __packed;
-> >  
-> >  struct dw_hdma_v0_regs {
-> > -	struct dw_hdma_v0_ch ch[HDMA_V0_MAX_NR_CH];	/* 0x0000..0x0fa8 */
-> > +	struct dw_hdma_v0_ch ch[HDMA_MAX_NR_CH];	/* 0x0000..0x0fa8 */
-> >  } __packed;
-> >  
-> >  struct dw_hdma_v0_lli {
-> > diff --git a/include/linux/dma/edma.h b/include/linux/dma/edma.h
-> > index 550f6a4..2cdf249a 100644
-> > --- a/include/linux/dma/edma.h
-> > +++ b/include/linux/dma/edma.h
-> > @@ -14,6 +14,7 @@
-> >  
-> >  #define EDMA_MAX_WR_CH                                  8
-> >  #define EDMA_MAX_RD_CH                                  8
-> > +#define HDMA_MAX_NR_CH					8
-> >  
-> >  struct dw_edma;
-> >  struct dw_edma_chip;
-> > -- 
-> > 2.7.4
-> > 
+> This patch adds overlay to support 1 x CPSW3g ports and 2 x ICSSG1 ports
+> configuration:
+> - Add label name 'mdio_mux_1' for 'mdio-mux-1' node so that the node
+>   'mdio-mux-1' can be disabled in the overlay using the label name.
+> - disable 2nd CPSW3g port
+> - update CPSW3g pinmuxes to not use RGMII2
+> - disable mdio-mux-1 and define mdio-mux-2 to route ICSSG1 MDIO to the
+>   shared DP83869 PHY
+> - add and enable ICSSG1 RGMII2 pinmuxes
+> - enable ICSSG1 MII1 port
+> 
+> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/Makefile               |  5 ++
+>  .../dts/ti/k3-am642-evm-icssg1-dualemac.dtso  | 75 +++++++++++++++++++
+>  arch/arm64/boot/dts/ti/k3-am642-evm.dts       |  2 +-
+>  3 files changed, 81 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac.dtso
+> 
+> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+> index 52c1dc910308..320b2fae5730 100644
+> --- a/arch/arm64/boot/dts/ti/Makefile
+> +++ b/arch/arm64/boot/dts/ti/Makefile
+> @@ -43,6 +43,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
+>  dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl.dtb
+>  dtb-$(CONFIG_ARCH_K3) += k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
+>  dtb-$(CONFIG_ARCH_K3) += k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
+> +dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-icssg1-dualemac.dtbo
+>  
+>  # Boards with AM65x SoC
+>  k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb k3-am654-base-board-rocktech-rk101-panel.dtbo
+> @@ -105,6 +106,8 @@ k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs := \
+>  	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
+>  k3-am642-tqma64xxl-mbax4xxl-wlan-dtbs := \
+>  	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
+> +k3-am642-evm-icssg1-dualemac-dtbs := \
+> +	k3-am642-evm.dtb k3-am642-evm-icssg1-dualemac.dtbo
+>  k3-j721e-evm-pcie0-ep-dtbs := k3-j721e-common-proc-board.dtb \
+>  	k3-j721e-evm-pcie0-ep.dtbo
+>  k3-j721s2-evm-pcie1-ep-dtbs := k3-j721s2-common-proc-board.dtb \
+> @@ -120,6 +123,7 @@ dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
+>  	k3-am62a7-sk-csi2-ov5640.dtb \
+>  	k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb \
+>  	k3-am642-tqma64xxl-mbax4xxl-wlan.dtb \
+> +	k3-am642-evm-icssg1-dualemac.dtb \
+>  	k3-j721e-evm-pcie0-ep.dtb \
+>  	k3-j721s2-evm-pcie1-ep.dtb
+>  
+> @@ -129,6 +133,7 @@ DTC_FLAGS_k3-am625-sk += -@
+>  DTC_FLAGS_k3-am62-lp-sk += -@
+>  DTC_FLAGS_k3-am62a7-sk += -@
+>  DTC_FLAGS_k3-am642-tqma64xxl-mbax4xxl += -@
+> +DTC_FLAGS_k3-am642-evm += -@
+>  DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
+>  DTC_FLAGS_k3-j721e-common-proc-board += -@
+>  DTC_FLAGS_k3-j721s2-common-proc-board += -@
+> diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac.dtso b/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac.dtso
+> new file mode 100644
+> index 000000000000..b2b1a6252e73
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac.dtso
+> @@ -0,0 +1,75 @@
+> +// SPDX-License-Identifier: GPL-2.0
+
+Don't you need to use updated licensing header like in the series [1]
+
+[1] https://lore.kernel.org/all/20240110140903.4090946-1-nm@ti.com/
+
+> +/**
+> + * DT overlay for enabling 2nd ICSSG1 port on AM642 EVM
+> + *
+> + * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
+> + */
+> +
+> +/dts-v1/;
+> +/plugin/;
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include "k3-pinctrl.h"
+> +
+> +&{/} {
+
+You need to fixup alias for ethernet1 to icssg1_emac1?
+
+> +	mdio-mux-2 {
+
+this should be mdio-mux@0 ?
+
+> +		compatible = "mdio-mux-multiplexer";
+> +		mux-controls = <&mdio_mux>;
+> +		mdio-parent-bus = <&icssg1_mdio>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		mdio@0 {
+> +			reg = <0x0>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			icssg1_phy2: ethernet-phy@3 {
+> +				reg = <3>;
+> +				tx-internal-delay-ps = <250>;
+> +				rx-internal-delay-ps = <2000>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&main_pmx0 {
+> +	icssg1_rgmii2_pins_default: icssg1-rgmii2-default-pins {
+> +		pinctrl-single,pins = <
+> +			AM64X_IOPAD(0x0108, PIN_INPUT, 2) /* (W11) PRG1_PRU1_GPO0.RGMII2_RD0 */
+> +			AM64X_IOPAD(0x010c, PIN_INPUT, 2) /* (V11) PRG1_PRU1_GPO1.RGMII2_RD1 */
+> +			AM64X_IOPAD(0x0110, PIN_INPUT, 2) /* (AA12) PRG1_PRU1_GPO2.RGMII2_RD2 */
+> +			AM64X_IOPAD(0x0114, PIN_INPUT, 2) /* (Y12) PRG1_PRU1_GPO3.RGMII2_RD3 */
+> +			AM64X_IOPAD(0x0120, PIN_INPUT, 2) /* (U11) PRG1_PRU1_GPO6.RGMII2_RXC */
+> +			AM64X_IOPAD(0x0118, PIN_INPUT, 2) /* (W12) PRG1_PRU1_GPO4.RGMII2_RX_CTL */
+> +			AM64X_IOPAD(0x0134, PIN_OUTPUT, 2) /* (AA10) PRG1_PRU1_GPO11.RGMII2_TD0 */
+> +			AM64X_IOPAD(0x0138, PIN_OUTPUT, 2) /* (V10) PRG1_PRU1_GPO12.RGMII2_TD1 */
+> +			AM64X_IOPAD(0x013c, PIN_OUTPUT, 2) /* (U10) PRG1_PRU1_GPO13.RGMII2_TD2 */
+> +			AM64X_IOPAD(0x0140, PIN_OUTPUT, 2) /* (AA11) PRG1_PRU1_GPO14.RGMII2_TD3 */
+> +			AM64X_IOPAD(0x0148, PIN_OUTPUT, 2) /* (Y10) PRG1_PRU1_GPO16.RGMII2_TXC */
+> +			AM64X_IOPAD(0x0144, PIN_OUTPUT, 2) /* (Y11) PRG1_PRU1_GPO15.RGMII2_TX_CTL */
+> +		>;
+> +	};
+> +};
+> +
+> +&cpsw3g {
+> +	pinctrl-0 = <&rgmii1_pins_default>;
+> +};
+> +
+> +&cpsw_port2 {
+> +	status = "disabled";
+> +};
+> +
+> +&mdio_mux_1 {
+> +	status = "disabled";
+> +};
+> +
+> +&icssg1_eth {
+> +	pinctrl-0 = <&icssg1_rgmii1_pins_default>, <&icssg1_rgmii2_pins_default>;
+> +};
+> +
+> +&icssg1_emac1 {
+> +	status = "okay";
+> +	phy-handle = <&icssg1_phy2>;
+> +	phy-mode = "rgmii-id";
+> +};
+> diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+> index c08b0223be52..6ae43c12419f 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+> @@ -200,7 +200,7 @@ mdio_mux: mux-controller {
+>  		mux-gpios = <&exp1 12 GPIO_ACTIVE_HIGH>;
+>  	};
+>  
+> -	mdio-mux-1 {
+> +	mdio_mux_1: mdio-mux-1 {
+
+mdio_mux_1: mdio-mux@1
+
+>  		compatible = "mdio-mux-multiplexer";
+>  		mux-controls = <&mdio_mux>;
+>  		mdio-parent-bus = <&cpsw3g_mdio>;
 
 -- 
-மணிவண்ணன் சதாசிவம்
+cheers,
+-roger
 
