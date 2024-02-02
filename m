@@ -1,122 +1,129 @@
-Return-Path: <linux-kernel+bounces-50387-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34412847855
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:50:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7B33847875
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:53:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 546A91C25A17
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:50:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83A691F2D5E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:53:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 162C21369B0;
-	Fri,  2 Feb 2024 18:40:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84AD213CE8A;
+	Fri,  2 Feb 2024 18:41:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="blbQL5nW"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qkx4XBDY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E992C136985
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 18:40:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B41E413CE70;
+	Fri,  2 Feb 2024 18:41:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706899248; cv=none; b=FoftVz9Vv7Vuxn+C5Na1WtXtEhckuNy1aCE7T/by+2cbvtt49exYU+Mfh5GkJCIF4UGA0ONtlW5+F1bvYUTTIdWg/U/iMyPAsepHgq0yOGYuRFqIPYTiCLjpFKxgNUAA1C/v3yVGqIKUIfEWDvv/Ntse++sNn+Hh87LISLS3jVo=
+	t=1706899270; cv=none; b=D49fBbDtywjKZvHXnnZl7bobo0koz1lB7lgwRiWybqEMnPxORriIq3PHxxi9T2MHv21m0hTI7QxwD/z3VxP5Io636XO0ulOIC8jdkkXT/DnoTd8JONy4SeOb6aYlXX5wG++O/a9gSMw0iTHc18qyrM9nGUkg647EcDGDhAhTYv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706899248; c=relaxed/simple;
-	bh=iDIZyoYwVMCcH6jvBcxQvEoGmUeiAgOkJkI2EMrtO0U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=frJquPMzXMGU5vF2iNEZEbAeshqSa0zHFVoXMpSxPFfHSCyrK2MlgBDzfaOfUrxq4u0oqwYfWlWbtZbQJFnr0YnWauK0zRFCNGc6Dm1X+Ix7vXCT1mCzLNMxVxue+nCfgYdavyZt+yNSr2lZQM1AerRfVhc5CxaQQ8z/rYjaIrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=blbQL5nW; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d7431e702dso21052385ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 10:40:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706899246; x=1707504046; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ETc3MSsRJzGBMpx74CiCs8JTE3lIxFPwksv6ifKyi6k=;
-        b=blbQL5nW1pBD3dfMOgaSSR9ZMRi8VSRr5eU94ae1t2iM+fSh5G6EF8LjLV67K/V1wP
-         3QVAzzjL5pFG6BgAOnMRLU6PnzdznHV3V00bZybcRzhlmKemA87vPa69KBu795si2UHV
-         2sSKKa2gvP1ZSG5FtYIL7+iHSJ0PY394Le/npjkrLcUBo7vttklGun3FeWO7/M3g1So5
-         i21svC3xGm5YOoa18E3bgDkUI2sneQXd6qt3NHx9CgOXqEKiUted2VoS3O/tM/4y5r9P
-         RB2rKNHyAGChJy234tJ/N+sEjELXAgal9wRxg7YymJTqC7fGCn+Bumn/R+iKXuI1tFwP
-         3ecA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706899246; x=1707504046;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ETc3MSsRJzGBMpx74CiCs8JTE3lIxFPwksv6ifKyi6k=;
-        b=CK8wDrk2FjBaAc3oFZeZgeIPN5OTelFkVsOQ4oYSwSkYgTXBPGH8YmfNMAp4dlCxLB
-         TIZgvjWBA2wXNoBLN2er47qtqOtvA/n6Yf3AqdA0nO6JYGiUXd6gf0FJdE59DV/wbZm4
-         zLPhIJqddBBLD/2FfBKEu/0nW2IzYdISDEFV8XC8IVITCAQa7uVVmDpDzizZeyA/fLzs
-         6DyqDZYTVdnIsEZHZsHd2I2XvTAYnIK2gyXBoAvvHnMBrqq7hm0VHmBTvh8eQztcjgP3
-         cSb8rJtFdk2LJxTGoryo+fK3TCunBJDsozIRO/noF7J3WQ4hbQuyfziLqRV/SaP5BL1T
-         nJ/Q==
-X-Gm-Message-State: AOJu0YxwuYMKtAEoVVBFLkClXORvbsLMG+XXPEG4rKhIIFjnLadoxQ8O
-	gbYtvBZW/N43JM5vwXBOp+13u8lJXlCEZ9CSKZhTrmTIRaipwAcg
-X-Google-Smtp-Source: AGHT+IHMI7ICrbVNiKX1z+Oto6aNGJCe3UR3TXyy7FNW9KQC6RygHNftgy0M8m1opYzNpMzVSmMM5A==
-X-Received: by 2002:a17:903:1c5:b0:1d9:3d3:484e with SMTP id e5-20020a17090301c500b001d903d3484emr10657563plh.64.1706899246034;
-        Fri, 02 Feb 2024 10:40:46 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWkt2T97j6wAXGdP0Lg5EqXhVHLeLedErjtgtd99megDpwMqlK4zyrXBKnA3xU/o+78cBPyVBNOzEanbeErAAGvqqFf7oIDKdkfCQg6z+LyJHuiIYLYniDl2BRKAk76ROCQylDG2PBptQR9j3A/+ICsQPMEfDJeYEJ5EHWYb47PXbLbMDq9D8Lm8Pf3P4I15Bxq0xMnv3ty8fJLobxS2XMO
-Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
-        by smtp.gmail.com with ESMTPSA id l4-20020a170903244400b001d9620dd3fdsm1889607pls.206.2024.02.02.10.40.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 10:40:45 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 2 Feb 2024 08:40:44 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Konrad Dybcio <konradybcio@kernel.org>, linux-kernel@vger.kernel.org,
-	Naohiro.Aota@wdc.com, kernel-team@meta.com,
-	Bjorn Andersson <andersson@kernel.org>
-Subject: Re: Workqueue regression
-Message-ID: <Zb03LDPmMcBU0-Gj@slm.duckdns.org>
-References: <b3d08cd8-d77f-45dd-a2c3-4a4db5a98dfa@kernel.org>
- <ZbxK01xuA_FFWaE6@slm.duckdns.org>
- <17cae1aa-98a8-48f4-adf3-2ddfc451bef6@linaro.org>
+	s=arc-20240116; t=1706899270; c=relaxed/simple;
+	bh=mWe5ogDf09hcAygCjVRxEZZfskBz0tbK4Ts5EHcO6Ns=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=cfuMBO4vlaR1TBVrvwMWprdq+2M7b+o1jdUU+55eEwXedI7iWyEkW8hkA/zM22C3CY9RDshhgPm4ja79jUy7N2qhgcuU2ENw1o8Vyuuv5/LKrfYZJzynjCmvw6ljubKTlsPnrPIqmz1onNbqcm3vxZ6rMtCA1Q+XZYbGCYtfQdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qkx4XBDY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E685C43394;
+	Fri,  2 Feb 2024 18:41:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706899270;
+	bh=mWe5ogDf09hcAygCjVRxEZZfskBz0tbK4Ts5EHcO6Ns=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Qkx4XBDYEvQD1tF8xIHbkFWV9FUqsrW+41nCUE18iD7BV9qGa7TNaCpyUlBBKUFsX
+	 Y2zZWCIGfyO1LDQyaj+KsFnsFJTC3dknd/PRDOq4ggGKzCHS6zM5IviquHAX5EUlx3
+	 XRr84SMeAg0U7zrjm56EBu/fZacYf4QCkh0WFpPG2qnxwxWBV2VPW2KUfz4G3EVgDD
+	 coIFys0Z5KD8SifNO5LvaCuHzTG4zVY2u8dAK0Ct0GH0kVeUEzhD1oPEMZ3PNYmp3f
+	 Jjx497QmQCHsjIBZvRG8OU1wZQo/PjWUxyMn51FHL9u+LjZMOnBEVpfns/Wj6f4fSZ
+	 gLCCskPT1+eqw==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: "Christian A. Ehrhardt" <lk@c--e.de>,
+	syzbot+a532b03fdfee2c137666@syzkaller.appspotmail.com,
+	syzbot+63dec323ac56c28e644f@syzkaller.appspotmail.com,
+	Christoph Hellwig <hch@lst.de>,
+	Jens Axboe <axboe@kernel.dk>,
+	Sasha Levin <sashal@kernel.org>,
+	linux-block@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 07/15] block: Fix WARNING in _copy_from_iter
+Date: Fri,  2 Feb 2024 13:40:44 -0500
+Message-ID: <20240202184057.541411-7-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240202184057.541411-1-sashal@kernel.org>
+References: <20240202184057.541411-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <17cae1aa-98a8-48f4-adf3-2ddfc451bef6@linaro.org>
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.1.76
+Content-Transfer-Encoding: 8bit
 
-Hello,
+From: "Christian A. Ehrhardt" <lk@c--e.de>
 
-On Fri, Feb 02, 2024 at 01:31:01PM +0100, Konrad Dybcio wrote:
-> > If the system doesn't become live enough after suspend/resume cycle to get
-> > more info, the following might help:
-> 
-> Looks like it's too far gone indeed..
-> 
-> > 
-> > $ echo test_resume > /sys/power/disk
-> > $ echo disk > /sys/power/state
-> 
-> Sadly, hibernation is not a thing on this platform.. Without going into much
-> detail of how messy the power management stuff is, you can either have
-> "on", "off" or "power collapsed" (bound to s2idle).. Trying to trigger this
-> sequence makes the thing lock up and die due to unclocked accesses with or
-> without the WQ regression.
+[ Upstream commit 13f3956eb5681a4045a8dfdef48df5dc4d9f58a6 ]
 
-I see, so, if you enable CONFIG_PM_DEBUG, CONFIG_PM_ADVANCED_DEBUG and
-CONFIG_PM_SLEEP_DEBUG, there will be /sys/power/pm_test file which allows to
-select the stage at which suspend is going to abort. Can you please play
-with it and see whether you can reproduce the issue while maintaining the
-console output?
+Syzkaller reports a warning in _copy_from_iter because an
+iov_iter is supposedly used in the wrong direction. The reason
+is that syzcaller managed to generate a request with
+a transfer direction of SG_DXFER_TO_FROM_DEV. This instructs
+the kernel to copy user buffers into the kernel, read into
+the copied buffers and then copy the data back to user space.
 
-Can you also make sure that the system is actually dead, not just the
-console? e.g. by pinging from network?
+Thus the iovec is used in both directions.
 
-Thanks.
+Detect this situation in the block layer and construct a new
+iterator with the correct direction for the copy-in.
 
+Reported-by: syzbot+a532b03fdfee2c137666@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/lkml/0000000000009b92c10604d7a5e9@google.com/t/
+Reported-by: syzbot+63dec323ac56c28e644f@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/lkml/0000000000003faaa105f6e7c658@google.com/T/
+Signed-off-by: Christian A. Ehrhardt <lk@c--e.de>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20240121202634.275068-1-lk@c--e.de
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ block/blk-map.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/block/blk-map.c b/block/blk-map.c
+index 66da9e2b19ab..b337ae347bfa 100644
+--- a/block/blk-map.c
++++ b/block/blk-map.c
+@@ -203,12 +203,19 @@ static int bio_copy_user_iov(struct request *rq, struct rq_map_data *map_data,
+ 	/*
+ 	 * success
+ 	 */
+-	if ((iov_iter_rw(iter) == WRITE &&
+-	     (!map_data || !map_data->null_mapped)) ||
+-	    (map_data && map_data->from_user)) {
++	if (iov_iter_rw(iter) == WRITE &&
++	     (!map_data || !map_data->null_mapped)) {
+ 		ret = bio_copy_from_iter(bio, iter);
+ 		if (ret)
+ 			goto cleanup;
++	} else if (map_data && map_data->from_user) {
++		struct iov_iter iter2 = *iter;
++
++		/* This is the copy-in part of SG_DXFER_TO_FROM_DEV. */
++		iter2.data_source = ITER_SOURCE;
++		ret = bio_copy_from_iter(bio, &iter2);
++		if (ret)
++			goto cleanup;
+ 	} else {
+ 		if (bmd->is_our_pages)
+ 			zero_fill_bio(bio);
 -- 
-tejun
+2.43.0
+
 
