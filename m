@@ -1,110 +1,105 @@
-Return-Path: <linux-kernel+bounces-50367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86525847815
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:45:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEC478477EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:42:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B90EC1C2457F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:45:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0F821C2587A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:42:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9432512C7ED;
-	Fri,  2 Feb 2024 18:40:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V2RADGBA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A87178062A;
+	Fri,  2 Feb 2024 18:39:44 +0000 (UTC)
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAD59129665;
-	Fri,  2 Feb 2024 18:40:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E34315D5CD;
+	Fri,  2 Feb 2024 18:39:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706899206; cv=none; b=uiaQjk/kk0DWd7NidMsocHvlNbwyNaV2P98XiQuV5CY+8m84augHUK4LX+J/XjUfGyVddFBkG9UylTTLy2Wh70jtNx/x+8Ec7MVKOk/mTGKieINWZvyGwhwQsmO56fo+i/Y5L5/VhlfipVlflDnkXMwBbnfr8keBDhT8NoaZdWc=
+	t=1706899184; cv=none; b=r/yNrOBKJD2sFEapMgyEFH0whbZMTxeBqwFEENgYTso/h+N3jWSa/mlaBXyd6CRaEV9igWN5CXjkAGV29Ho9Ev5pRRHNTcH4HibKkRE5FxAb/NBPW2ygeIDPwLoawcLLIwfcXpaGafzfE9i4zNHR4BcgpwuqRcN9OFMGGBmw8AA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706899206; c=relaxed/simple;
-	bh=YBoPwJM6qtI/5Knk07kvYlOrcnQuA9SJRJCav45K3Ow=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kcjgx8/Z9YOPDo0VCpjPSUG41sY4ceSr7fwvn8P7W908tu3uOyGjXTgUsGCBlncITF13kR2Iej+nQ5dY+fNV5y++aU2toGGcpDgMogafCARdrwjlVKqlBGI6Z2mLsoqJXvAGGKPC6anOgjyG/Ca5yWdWO5DLy3wRRI4kSLikXWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V2RADGBA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60487C433C7;
-	Fri,  2 Feb 2024 18:40:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706899206;
-	bh=YBoPwJM6qtI/5Knk07kvYlOrcnQuA9SJRJCav45K3Ow=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=V2RADGBA1CTwbflqSaKY4e0BsVaJfgw/yVR5iyfjB4mA+m+xjb6hGFktFNJbzbQpb
-	 rSTHcvUV2vtkh4G18AH1ueR/Yyac1DlFoTsba0j0HCCoanC/mf25cLeo6G48euOinQ
-	 8FI46YAIXgDXWYUTPkneoURZvN5j3xZa+W+lUhlG8B6af748ps31H2Ez+LGujXKrfS
-	 P7Jp0oJXodaEKTA3F3+K/ErY6qSlrCehtbS9rLwKZXGDF9d6tg256TwmVxDASTL6UB
-	 HuFMs9LPF1BEDL9BAK5l7I3tojY9RGUSEuXoq4C0E+GCKxEWKJJ4jMAbwmxM4C/Pqm
-	 JZ3hxCVWgL0qw==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Huang Pei <huangpei@loongson.cn>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Sasha Levin <sashal@kernel.org>,
-	akpm@linux-foundation.org,
-	arnd@arndb.de,
-	bhelgaas@google.com,
-	linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 22/23] MIPS: reserve exception vector space ONLY ONCE
-Date: Fri,  2 Feb 2024 13:39:18 -0500
-Message-ID: <20240202183926.540467-22-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240202183926.540467-1-sashal@kernel.org>
-References: <20240202183926.540467-1-sashal@kernel.org>
+	s=arc-20240116; t=1706899184; c=relaxed/simple;
+	bh=9f6vU82EFNxs5qQJiBXinPYuAuGon2VB1Gw/+HpYECs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YVcwJP4K2fx0qHAJk58OBfaPEp/i8P8ggqb3YA8siPC8BhCjwHKVvMJJvbQDnHiIBEPFo4cCdjw9KUlTEGdvUmJIoNJ3K5j55YOG6SemSjjEfTNFEtLlo73cOJBnUKr3/QM2e2YcstBGHf5A5eL8FpOfYUivPgDqmmuJoM9iSCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1rVyRe-0002Ew-3A;
+	Fri, 02 Feb 2024 18:39:23 +0000
+Date: Fri, 2 Feb 2024 18:39:18 +0000
+From: Daniel Golle <daniel@makrotopia.org>
+To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v3 4/7] net: dsa: mt7530: move XTAL check to
+ mt7530_setup()
+Message-ID: <Zb021ozEQSbU-gPd@makrotopia.org>
+References: <20240202-for-netnext-mt7530-improvements-2-v3-0-63d5adae99ca@arinc9.com>
+ <20240202-for-netnext-mt7530-improvements-2-v3-4-63d5adae99ca@arinc9.com>
+ <ZbzWpmZrukknMsYf@shell.armlinux.org.uk>
+ <5b744f7f-2f63-4219-a0e9-8f08267b1fdd@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.7.3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <5b744f7f-2f63-4219-a0e9-8f08267b1fdd@arinc9.com>
 
-From: Huang Pei <huangpei@loongson.cn>
+On Fri, Feb 02, 2024 at 09:16:02PM +0300, Arınç ÜNAL wrote:
+> On 2.02.2024 14:48, Russell King (Oracle) wrote:
+> > On Fri, Feb 02, 2024 at 12:19:10PM +0300, Arınç ÜNAL via B4 Relay wrote:
+> > > From: Arınç ÜNAL <arinc.unal@arinc9.com>
+> > > 
+> > > The crystal frequency concerns the switch core. The frequency should be
+> > > checked when the switch is being set up so the driver can reject the
+> > > unsupported hardware earlier and without requiring port 6 to be used.
+> > > 
+> > > Move it to mt7530_setup(). Drop the unnecessary function printing.
+> > > 
+> > > Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> > > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> > > Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+> > 
+> > I would prefer this to be earlier in the series, before patch 2 which
+> > moves mt7530_setup_port6() to be called from mac_config(). mac_config()
+> > is supposed to be configuration error-free - in other words, all state
+> > should have been checked before hand.
+> 
+> I agree but mt7530_mac_config() is not a void function yet. The
+> mac_port_config member of the mt753x_info structure points to this
+> function. My next patch series gets rid of all useless error returns on the
+> phylink path and change mac_port_config to void. So I don't think working
+> on this patch series further will worth the effort. I'd rather have this
+> version applied as is.
 
-[ Upstream commit abcabb9e30a1f9a69c76776f8abffc31c377b542 ]
-
-"cpu_probe" is called both by BP and APs, but reserving exception vector
-(like 0x0-0x1000) called by "cpu_probe" need once and calling on APs is
-too late since memblock is unavailable at that time.
-
-So, reserve exception vector ONLY by BP.
-
-Suggested-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Huang Pei <huangpei@loongson.cn>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/mips/kernel/traps.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 246c6a6b0261..5b778995d448 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -2007,7 +2007,13 @@ unsigned long vi_handlers[64];
- 
- void reserve_exception_space(phys_addr_t addr, unsigned long size)
- {
--	memblock_reserve(addr, size);
-+	/*
-+	 * reserve exception space on CPUs other than CPU0
-+	 * is too late, since memblock is unavailable when APs
-+	 * up
-+	 */
-+	if (smp_processor_id() == 0)
-+		memblock_reserve(addr, size);
- }
- 
- void __init *set_except_vector(int n, void *addr)
--- 
-2.43.0
-
+I agree regarding not changing the patch itself, but I also agree
+with Russell regarding the patch ordering. I know it's a 10-minute
+git headache to rebase the patches on top of each other in a different
+order, but you can easily compare the end result being identical to
+what you had before and hence don't need to retest.
 
