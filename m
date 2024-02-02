@@ -1,76 +1,79 @@
-Return-Path: <linux-kernel+bounces-49567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9DE6846BE5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:26:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B34C846BE6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:26:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B6DB1C21715
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:26:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E2911F2CF47
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:26:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7715977F37;
-	Fri,  2 Feb 2024 09:22:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4761377F2E;
+	Fri,  2 Feb 2024 09:22:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3iJyvoC+"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ToryxPm4"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 529C477F2E
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:22:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CE047E76C
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:22:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706865775; cv=none; b=UUkmZsc4KX3PjpVKTyRpqK8X9vXDxoM+HGejXrHq5+sBYfOOjSPcUevPoxaqD0XLVwRozVmkvnEtpFGACWRJRQA10NehfRsQh9KAJ2AXzkzq+rMFVCvbHtnrFgRPxwZRNmp4W9235RySIuoSQc1krkiEJF1ZBbgt3Tm3tvLtO4A=
+	t=1706865778; cv=none; b=pczRNQZTnJTEPNNbLc+cS7KQl9Wna2Wu5Pnl1w7xoAM+Pbm1Oq6oC/ySv6i8EUl5n+GEApxXY2WLW5eLZxO1O7qrm6BpnkjzbjQ3dBoIemmv4XArdvyjztpyLiL4X+xIzCpyo76FdyMBmal2mi6Cr8qcElFElv8riRRiViUrYXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706865775; c=relaxed/simple;
-	bh=0NK7mEsHb+0WdInKdwCKKQgSWXPKGHPtGuWQPwU+gtQ=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=NdsBDU77aLgkaAlacfBIS3avlI0zPhrqCp+v4vNxUUv0Z3kxZm0kgleM63VMxtapsKaPYigtSc1BwlFAR+PSLqO41E3hrKyORV5Gy7tit/PgEhoMNu+Dt0IcPypWmSPLaIR0JXjLOoaLjFCQ0QfQFq36eg81NGeSzq+DVmwNV+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3iJyvoC+; arc=none smtp.client-ip=209.85.219.202
+	s=arc-20240116; t=1706865778; c=relaxed/simple;
+	bh=DPOMrDg4rKNH1QTC6aQIG7HRKerQiIwxkdnyzWqM6hg=;
+	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
+	 To:Cc:Content-Type; b=ItigREMIXg7s5EDcqr2eeerIGn9ATfzqvhf3Fxu+GRHrfZyO4LCVCXL6SsWmwSquKlJ5VQ78odXm526U1g1HIYsQ38Um3+Yu1+RxFmL64furc3ghZzUA0/arJkiTJMhkYV8Dxi78KoVtFIEC8+crZVvE7NzpgHh82b7bloeNBig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ToryxPm4; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6c2643a07so3358666276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 01:22:54 -0800 (PST)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5f38d676cecso35404257b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 01:22:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706865773; x=1707470573; darn=vger.kernel.org;
-        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=KwVIYWDlCwJBmQvhraTLkr4EOD61K4H2RbK+5DkYGIg=;
-        b=3iJyvoC++rXBLj3zd0iZng1KVfjyFAg9LNslGHIcfnx5RBqU3tsbDMnw4eQcvuZgFd
-         tDS0RNU7LwY0TVBNvuJwUZldEakIa73Bi7MTwfHmLXl9pTSplzyFyEoTZGF3KDCGhjQk
-         kaT+x0hpIRIzUZRc+NJ0A7RxhfBITA1C5N/RJjbNGdmToOsQ2UaVOoIjTXnFjSGltIyW
-         9MwWbQ4O1jCpeaEueC0EBcduFh6b0Of93oBd7uv5jFhy2A88ITT2JwYFhVXLipWxHFFI
-         QOvBRjU5/+pUlnRg4IJX1Aj0c0r1PB9yYVSYhOTC1JdBfp/99i8/JsaBotm9MEPLDtr6
-         Cjfg==
+        d=google.com; s=20230601; t=1706865776; x=1707470576; darn=vger.kernel.org;
+        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=in2Ntwtloha/e+ZMm1Ao4y84QzaZLhLUFFn+wIIPR3U=;
+        b=ToryxPm4Rt/XKOypwzqHUc/65vVE2cnjQGHjnuz7VGkgKIliukjc6yfQHk01NpGQgA
+         kvN8K1+F9oU4OVOWqB0P97ODKGHXWmLyGTqWpyrs8sVcm2vO0gtZgKo3MbroX/Q88ZTV
+         at3KtoHsweeX6WovQWqhp+liTfNUd+BDdy3zTKHRn1TXoZ53fnAlKsjNEX/5se161Doq
+         oxxRAP6eh41h6WuCdro5HXjdXaMUwJdRwjumPomSZCndbPZCYWR5rojVGzRDP5BWrlud
+         /J2w8BJepDfsX+8XKC6adj9CipJvk5IIKhw5VPyigyfR3JUGfGVMPYPeAeV1rgiVkpJo
+         Nktg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706865773; x=1707470573;
-        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KwVIYWDlCwJBmQvhraTLkr4EOD61K4H2RbK+5DkYGIg=;
-        b=QdSVEUg/D/smOUn9xx1YWQY+uSuLDxq6CZKGzI+Imt9N8+2fDW0N2pLN4V5RqCuRDb
-         QRTJguKYdz4zkWYvssTLGvFDbRdqloX1uOI/ofi5ykbytKjgPhDeTtZsgYrrGD0onIUj
-         nManX33wcNlsA+KAj4VO1dBQqERGpWo1rjFFFpURpIjqnf5Lew6N3ooG2ow4Azsb9skp
-         lW7Tscb5xOfcx5Jwd5eNk4cNFNvaitpOEpGgAxRL9W+gMdz2iqjxDcruvKh3jP8hMnhe
-         A6GN40F7DW7h8DmU2hYBGN+upWxbgwuFytGfuu+2M3Pz5YXwUgkELv+3VsZFzA9R7+dn
-         FpEQ==
-X-Gm-Message-State: AOJu0YxIzxsf8H+SItpLNHWkMN5OFtH2GCGBZPXmbmJOgnioeqUt03fC
-	lXCq8aic76iwKPT4t5UoFCE4Dr8KmB1CAueZt5gbjxYqLOIgQfnAj+2mxtWrbHwOS4XI1vFRuyF
-	6mPLnLQ2lr294HQ==
-X-Google-Smtp-Source: AGHT+IHvYeUnAUwCSAJYPfydXasVcNItlUK+XAcxdDvNjGx/6awJ4ZCD0zHeBxjSzZzvZPtVy/oyeRfDkgWq1b4=
+        d=1e100.net; s=20230601; t=1706865776; x=1707470576;
+        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=in2Ntwtloha/e+ZMm1Ao4y84QzaZLhLUFFn+wIIPR3U=;
+        b=JplAT280aZS59M4GirGlIaTFIY2loP+yDvaX0ME2KTSmwsCIYKTtMykhTd1i4/+Cpg
+         rd+qXRWv7hsPWomiLlrgAMrGuMTwPQ8HXLRrgtp3vn93aPW0nZge70m+b1p4IAoUTLdG
+         m/wWdTEH5NV3N02ZSevp9565AhcRazfHILxTexclPDlv97p/R1m9DROoeZqitLaPl8ad
+         QB79zL1q6b/pN01Q6Rwcjgwe+7vJHmZD7L81C1u9Yr/pJQz+jrOrcLF0skJf70tQi2tK
+         UbMoU28Wc9t7GV7W52t40W8NtKab/TldOfidxiYIiJXW+P/hQSzjtlSlrjT5R6p7l3uJ
+         /Vag==
+X-Gm-Message-State: AOJu0Yy3BDauslqcxLIYltKTXKuBgxxZLJGMventBIH+3nuuSn8vj/Sw
+	Y2AQulVPuIBqIWPOvIWfdtkoa7mdxLS/PoeAIV+wHIPwqBAsPnK+3CfsWCa0ewf90oTGmXcGG+6
+	KfY/KAp4vUlb5FQ==
+X-Google-Smtp-Source: AGHT+IEwj1X6GEgoqz6nmFGZy/UDIWH00xbAf8HN/Ko1knPBLnDOwyS/5Rfklz5px+eWUSWStwjYrJ9a/nlb/Ns=
 X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:6f0:da10:9cb3:5b3])
- (user=saravanak job=sendgmr) by 2002:a05:6902:1085:b0:dc6:e5e9:f3af with SMTP
- id v5-20020a056902108500b00dc6e5e9f3afmr704876ybu.9.1706865773363; Fri, 02
- Feb 2024 01:22:53 -0800 (PST)
-Date: Fri,  2 Feb 2024 01:22:46 -0800
-Message-Id: <20240202092250.786276-1-saravanak@google.com>
+ (user=saravanak job=sendgmr) by 2002:a05:6902:2004:b0:dc2:51f6:9168 with SMTP
+ id dh4-20020a056902200400b00dc251f69168mr457589ybb.2.1706865776158; Fri, 02
+ Feb 2024 01:22:56 -0800 (PST)
+Date: Fri,  2 Feb 2024 01:22:47 -0800
+In-Reply-To: <20240202092250.786276-1-saravanak@google.com>
+Message-Id: <20240202092250.786276-2-saravanak@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240202092250.786276-1-saravanak@google.com>
 X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-Subject: [PATCH v1 0/3] fw_devlink overlapping cycles fix
+Subject: [PATCH v1 1/3] driver core: Fix device_link_flag_is_sync_state_only()
 From: Saravana Kannan <saravanak@google.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
 	Saravana Kannan <saravanak@google.com>
@@ -78,20 +81,39 @@ Cc: Xu Yang <xu.yang_2@nxp.com>, kernel-team@android.com,
 	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-This is mainly a bug fix with a additional logging improvement. Lots of
-details in Patch 2/3.
+device_link_flag_is_sync_state_only() correctly returns true on the flags
+of an existing device link that only implements sync_state() functionality.
+However, it incorrectly and confusingly returns false if it's called with
+DL_FLAG_SYNC_STATE_ONLY.
 
-Thanks,
-Saravana
+This bug doesn't manifest in any of the existing calls to this function,
+but fix this confusing behavior to avoid future bugs.
 
-Saravana Kannan (3):
-  driver core: Fix device_link_flag_is_sync_state_only()
-  driver core: fw_devlink: Improve detection of overlapping cycles
-  driver core: fw_devlink: Improve logs for cycle detection
+Fixes: 67cad5c67019 ("driver core: fw_devlink: Add DL_FLAG_CYCLE support to device links")
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+ drivers/base/core.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
- drivers/base/core.c | 26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
-
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 14d46af40f9a..52215c4c7209 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -284,10 +284,12 @@ static bool device_is_ancestor(struct device *dev, struct device *target)
+ 	return false;
+ }
+ 
++#define DL_MARKER_FLAGS		(DL_FLAG_INFERRED | \
++				 DL_FLAG_CYCLE | \
++				 DL_FLAG_MANAGED)
+ static inline bool device_link_flag_is_sync_state_only(u32 flags)
+ {
+-	return (flags & ~(DL_FLAG_INFERRED | DL_FLAG_CYCLE)) ==
+-		(DL_FLAG_SYNC_STATE_ONLY | DL_FLAG_MANAGED);
++	return (flags & ~DL_MARKER_FLAGS) == DL_FLAG_SYNC_STATE_ONLY;
+ }
+ 
+ /**
 -- 
 2.43.0.594.gd9cf4e227d-goog
 
