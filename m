@@ -1,88 +1,80 @@
-Return-Path: <linux-kernel+bounces-50476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A4FD847998
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:23:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73B1F84799C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 20:24:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFB64285B7B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:23:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3B041F2C82E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:24:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF10215E5C5;
-	Fri,  2 Feb 2024 19:23:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 832BC15E5C6;
+	Fri,  2 Feb 2024 19:24:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GVRXBMyR"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SuBSU1Qa"
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40C1E5A4C2;
-	Fri,  2 Feb 2024 19:23:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16D6315E5BA;
+	Fri,  2 Feb 2024 19:24:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706901817; cv=none; b=dGtR64I+dhYGKeJKb6cfmzlpWpcQARPYnfoTpmi8NIoeEF14Fg0cnvcBGaCYRxuZJOhMlm9pmRMB6V3pcvEC4FSGKXPhVgg2lkf0N567VnCEAm2K5K5omTVC9uF+z1qx8M1XrBIkDcL3jELWnrQ/oXkohc40gb3QX+QksOQ+03o=
+	t=1706901888; cv=none; b=SLi7CyLyWND755U0BvkQmEcNqlngdis3dky3uM+54MKzHiGJLstEA/wQJfb1Tgy89Y/2IQqBsxwQ7GR4W2pvUkosA2rdVPy395Ztf6F+qXm9HIMqFujF5Y+30gzXi+KWMU43zSMJCUw2GZRtu2hc+YkosluRCIOztmBAQ1G3rjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706901817; c=relaxed/simple;
-	bh=S3MaPMOXDa4+e1cpiJeiJbySrhFJC1lc7gKR4d8V+8Y=;
+	s=arc-20240116; t=1706901888; c=relaxed/simple;
+	bh=VzsNAmetuwaJAri48Hvu4bRMn6DOByRxemY4EnBT+zY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uIGuYYhI8sKE3/3hkQaso6XVAaQMRVSy+chiSOA71lmt8beS9Tame1ZXhT4qtYJQlX8eswv+A54bvVfek/EYI01Oa+OLqMI7IJAPqEoJ5cXOyCbCkQZT4NH4AwT6AkUT4yjNBrHpR2tAd6q52XmnQmCdvJJ/YI6xG/J4BolhsZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GVRXBMyR; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=Wf6AveH+gwjEmcU/jAEq792Xokc/XKxWNNDpezGd9MzWnEeU1LZKL2ncPnJIFp2M6q8g6KJ41LTeBte52IVbZ6WOawpkd1ZBuBulFJkWJbpD7A8u7tEPNCVwGfhq/gHjfCozgTEA0IpIB+WfuK1jaaJXs6GuI2uhS+rtAwwXFRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SuBSU1Qa; arc=none smtp.client-ip=209.85.161.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a2d7e2e7fe0so222337266b.1;
-        Fri, 02 Feb 2024 11:23:35 -0800 (PST)
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-59502aa878aso1163279eaf.1;
+        Fri, 02 Feb 2024 11:24:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706901814; x=1707506614; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706901886; x=1707506686; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=izs8l7kyWJ3Hvvu35DwQqBwFXYQSHquPAv2Y4TTIhWI=;
-        b=GVRXBMyRfB5pxf7n5w4mCRwG8QHq8SYfxR08SjtPJYAoRUQjVzou/7OAaIWezMtxCU
-         qDv4URl/+Bx3JhKMA2AqmvBnPO4cFXHBao7nMogDKufJwdRyJkqUT+mVSxPpNMB7O/wP
-         /qew8ln79/dwICB6DkmKdd7C3VXiuG9suirpyaDm4lDx/bQIVhUDAGIiBAHDc1UaPnjc
-         OlKaRiwku3H8Tuy1yKOdPPLO3zVEYwc4ObVjQd+ja5oI6Q9V3ogEoAqQY5+xFtjNy5YY
-         NiO24O8IOBI/xma7qbtsnhW+M2kT6na3ewVy85zgkOtppLmLiXm5C3kbQavEDOuRK0Ok
-         fsRA==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=E2HCzONe6LgbNHkou0opA4ZegVuXZrSGIHqWmkGo0sw=;
+        b=SuBSU1Qa7d6mHaKeLWpev3l54vWk5dqpszE1nIGLH3MtzIms8uEYX9imn5Mo+yja0/
+         pgzetHCW1Ogk7G0ym2SivaBsl6GgSDz7cOAKIPqMr29JLR8TDlsicGyuh8WjQQ2F5jiV
+         lI5ldMHQBQQ/lV3hWCgNaqFScsnonqjANjrMsnIYqf3yd4OYzvCAcauIb6oAmn+VWLVs
+         j4kYKdruVbYjgcp9vUhci3nC23ESvwVBzR+QXSmCDWWxWYMvmHsClzlkYigQFmYq1CFs
+         hDgsnbTeYHrCU2rVSwzaR9hw/kyM1j4pICf50oTR3ZbCDlp3vAwWA/JG5EoFlbclYbgo
+         p39A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706901814; x=1707506614;
+        d=1e100.net; s=20230601; t=1706901886; x=1707506686;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=izs8l7kyWJ3Hvvu35DwQqBwFXYQSHquPAv2Y4TTIhWI=;
-        b=gc3dHnI42vho9lfXjKcjAQW/qkEEpFv53J0J+taMEF/U4gXFt9HLAl9HNh/I+zq7XD
-         KZMG0POeqBs7GKVUrQLWWW8/JdMiPj1cMHlW1aLVm9HU/jmcWApIwEHBQvVu4yG1hBte
-         zYCfHFPft4DXHOjNit+fBn2bxo0ENjYRXR6Ap4s4qMSdLLuoIFP+ZpzUzUtDuYqWoLV7
-         pHEHnavt5OlbEY9RGUoF09SBzyTDnzefXuDBm5naU+8OiElgjpk+2BLXzDOho/n61pXc
-         dFcofMTVLtbdJbP70aCbKUKABPh3F9mVhSb6ec9alqWrG+dzGjww7QcmNEFdYkwOx8Gb
-         aviA==
-X-Gm-Message-State: AOJu0Yx9HJmzIJpGTZOl/A+EMJ7WV86ggaD+XpITRoMFaw4PgadtfU8i
-	EmI95d2JSP+ycgJ9CyRl/WTr0P6ErTo+G2e/LsfW0claKcMChrNd
-X-Google-Smtp-Source: AGHT+IFVsEsYcXxM9nZP0Ig9KYpNTyk/btVKfMLQ/vV4CvXETCy9qQTpJMzeol4ysl+TBRO5oX3gYw==
-X-Received: by 2002:a17:906:3093:b0:a36:dfa5:69c with SMTP id 19-20020a170906309300b00a36dfa5069cmr2332310ejv.14.1706901814108;
-        Fri, 02 Feb 2024 11:23:34 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWcQIleUmzagk3MM3dXQ7foXv5CU6GWw4QLfrAlMH2YEguKWU800J0SVjQqR48CINe0XrU1DFLagD7Es9y5ZstIsZsGsOOf22v1qKOhdpa/Xout6nV2Rc65yMYNFy8NiX1G090LAmnehoVjUfn/gvkUjsSwnuVdgOe4bqT4qRAWP3FYzcGuiGIdMapZd+yh/9Mx4o9uTBlijfM58bfspSrwLh7rQwLhhHquTSxJNiMjmASOW2cppGNxji3uEW8DlWAbHzl/GZuD2zr1C4f+sxzIMNB1wCsNx/UPz19T6hZFLKYWEQUwxBVQwWKICBGTABauLtoAWuBfQ9xbUYiXIY4uM+TNNZw/PadX5EcTMl/a584NkNFiIRzpCuZ6yv0=
-Received: from cjw-notebook (2a02-8388-0502-f480-6c32-186a-368b-d6a9.cable.dynamic.v6.surfer.at. [2a02:8388:502:f480:6c32:186a:368b:d6a9])
-        by smtp.gmail.com with ESMTPSA id rf14-20020a1709076a0e00b00a371c568978sm649584ejc.150.2024.02.02.11.23.32
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E2HCzONe6LgbNHkou0opA4ZegVuXZrSGIHqWmkGo0sw=;
+        b=k+XdX7DFBav81TJHi5Xb7jQT6RBKhXlSshxkLKlr6WqBPfa/yEn3yHDINFJyMb2Bnc
+         68WlXtgLy9CIFiKC4nK3qwVYryPxM/kFynD6i79U6MKQxNyfaqgdpHo3WLkTHRbJEnYT
+         mUVd+wRD9ClIRXBB1egI9qwvPeCtAFMToEff/a6vIO6Fx9ZZWcX134yW5Z/dHgBWWSwy
+         awQpjC3t9pRqjqrc3zBBpMkIsWghdHSq79mwtO1QNe6Sm/IMWW3zeUcrJXm5DGl+CTsB
+         C4QJMMRESkW1z7+G56hdPWfs9aN3bgb8Dl8KYqi02grCARvTYnlBlijSLF/RsKTbDzXy
+         097Q==
+X-Gm-Message-State: AOJu0YwneZM1DvfdhfQ2FVYT9thhfITAY4U8yQFl+8BuN4Ag8Tsb5CXH
+	tVEd4Q9G90oFi52rksTG4ZAh4HvFoFmFGsr3GneqfLxwQbku3IFj
+X-Google-Smtp-Source: AGHT+IGQNqqD/wy73YHkVD3ERsEwXagmrxTN8x3oRROnbC+hTIM4j4wdB7Vy0MsDSE3QgK1SaBwNrA==
+X-Received: by 2002:a05:6359:4c0b:b0:178:950d:1175 with SMTP id kj11-20020a0563594c0b00b00178950d1175mr8935031rwc.13.1706901886015;
+        Fri, 02 Feb 2024 11:24:46 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWMOJqxGVe94hngn8tQchgZJkhPSV7BBxVdzUCCUf5Jwle7mf0vpPo3EHFaXqVlZP4Hu2RZvPG35YT9M9TwYJ6R8+GbB+6277LC+DVjJA7RMB1T7NT2Qq+fpnmCrKUCPDi16TapMvWn7/ax2XtKTo5+5E9lClnX/opZV+Z6mim/hcqKAf2S8QbtiUbYloY+/qbDde28
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 28-20020a630e5c000000b005d553239b16sm2166377pgo.20.2024.02.02.11.24.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 11:23:33 -0800 (PST)
-Date: Fri, 2 Feb 2024 20:23:30 +0100
-From: Christoph Winklhofer <cj.winklhofer@gmail.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Jonathan Corbet <corbet@lwn.net>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v5 3/3] w1: add UART w1 bus driver
-Message-ID: <Zb1BMswaaZTXzaFJ@cjw-notebook>
-References: <20240126-w1-uart-v5-0-1d82bfdc2ae9@gmail.com>
- <20240126-w1-uart-v5-3-1d82bfdc2ae9@gmail.com>
- <092a9986-5ebb-483d-9911-37a93d7cb2dd@kernel.org>
- <ZbtIPo--1hfzNmho@cjw-notebook>
- <94075be0-b91c-4147-86b1-582b124e71a0@linaro.org>
+        Fri, 02 Feb 2024 11:24:40 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Fri, 2 Feb 2024 11:24:39 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Jack Doan <me@jackdoan.com>
+Cc: jdelvare@suse.com, corbet@lwn.net, linux-hwmon@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwmon: Add MSI PSU HID monitoring driver
+Message-ID: <4dbe0482-7165-4143-8d76-378ab1b25a0b@roeck-us.net>
+References: <20240108185604.2858930-1-me@jackdoan.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,100 +83,112 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <94075be0-b91c-4147-86b1-582b124e71a0@linaro.org>
+In-Reply-To: <20240108185604.2858930-1-me@jackdoan.com>
 
-On Thu, Feb 01, 2024 at 10:35:32AM +0100, Krzysztof Kozlowski wrote:
-> On 01/02/2024 08:29, Christoph Winklhofer wrote:
-> >>> +
-> >>> +static void w1_uart_remove(struct serdev_device *serdev)
-> >>> +{
-> >>> +	struct w1_uart_device *w1dev = serdev_device_get_drvdata(serdev);
-> >>> +
-> >>> +	mutex_lock(&w1dev->mutex);
-> >>> +
-> >>> +	w1_remove_master_device(&w1dev->bus);
-> >>> +
-> >>> +	mutex_unlock(&w1dev->mutex);
-> >>
-> >> This is still suspicious. You do not have serdev_device_close and you
-> >> want to protect from concurrent access but it looks insufficient.
-> >>
-> >> This code assumes that:
-> >>
-> >> w1_uart_remove()
-> >>   <-- here concurrent read/write might start
-> >>   mutex_lock()
-> >>   w1_remove_master_device()
-> >>   mutex_unlock()
-> >>   <-- now w1_uart_serdev_tx_rx() or w1_uart_serdev_receive_buf() can be
-> >> executed, but device is removed. So what's the point of the mutex here?
-> >>
-> >> What exactly is protected by the mutex? So far it looks like only some
-> >> contents of w1dev, but it does not matter, because it that memory is
-> >> still valid at this point.
-> >>
-> >> After describing what is protected we can think whether it is really
-> >> protected...
-> >>
-> >>
-> >>>
-> >>
-> >> Best regards,
-> >> Krzysztof
-> >>
-> > 
-> > Yes, it is still suspicious, sorry..
-> > 
-> > After w1_uart_remove, serdev is closed and w1dev is released. Therefore
-> > the w1-callback (w1_uart_serdev_tx_rx) must be finished before returning
+On Mon, Jan 08, 2024 at 11:56:04AM -0700, Jack Doan wrote:
+> This driver provides a sysfs interface for MSI power supplies with a
+> USB-HID monitoring interface.
 > 
-> I did not even go to end of w1_uart_remove(). In my code above, that
-> thread is still in w1_uart_remove(), just after unlocking mutex.
+> Measurements for the output voltage and current for each rail are provided,
+> as well as total output power, temperature, and fan control.
 > 
-
-Ok, I looked more closely at the underlying w1-code and think it is
-sufficient to only call w1_remove_master_device() in w1_uart_remove.
-This function waits until all slaves have finished their work, so
-w1_uart_serdev_tx_rx finished too. The lock is not required.
-
-Hence, I will use the mutex only to protected concurrent access of
-serdev and w1-callbacks (for rx_byte and rx_err).
-
-> > from w1_uart_remove. That was the intention with the lock and trylock.
+> This patch adds:
+> - hwmon driver msi-psu
+> - hwmon documentation
+> - updates MAINTAINERS
 > 
-> Then it does not look really protected. To be honest, w1-gpio and other
-> drivers also might have a race here. You can test it by adding long
-> sleeps in read/write paths and then trying to unbind device. Maybe this
-> should be fixed everywhere, but this mutex here brings more questions.
+> Signed-off-by: Jack Doan <me@jackdoan.com>
+> ---
+>  Documentation/hwmon/index.rst   |   1 +
+>  Documentation/hwmon/msi-psu.rst |  64 +++
+>  MAINTAINERS                     |   7 +
+>  drivers/hwmon/Kconfig           |  12 +
+>  drivers/hwmon/Makefile          |   1 +
+>  drivers/hwmon/msi-psu.c         | 801 ++++++++++++++++++++++++++++++++
+>  6 files changed, 886 insertions(+)
+>  create mode 100644 Documentation/hwmon/msi-psu.rst
+>  create mode 100644 drivers/hwmon/msi-psu.c
 > 
+> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> index 72f4e6065bae..34e4bc086bdb 100644
+> --- a/Documentation/hwmon/index.rst
+> +++ b/Documentation/hwmon/index.rst
+> @@ -159,6 +159,7 @@ Hardware Monitoring Kernel Drivers
+>     mp2888
+>     mp2975
+>     mp5023
+> +   msi-psu
+>     nct6683
+>     nct6775
+>     nct7802
+> diff --git a/Documentation/hwmon/msi-psu.rst b/Documentation/hwmon/msi-psu.rst
+> new file mode 100644
+> index 000000000000..3dda7190a627
+> --- /dev/null
+> +++ b/Documentation/hwmon/msi-psu.rst
+> @@ -0,0 +1,64 @@
+> +.. SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +Kernel driver msi-psu
+> +=========================
+> +
+> +Supported devices:
+> +
+> +* MSI MEG Ai1300P
+> +
+> +* MSI MEG Ai1000P
+> +
+> +Author: Jack Doan
+> +
+> +Description
+> +-----------
+> +
+> +This driver provides a sysfs interface for MSI PSUs with a HID monitoring
+> +interface.
+> +
+> +Measurements for the output voltage and current for each rail are provided,
+> +as well as total output power, temperature, and fan control.
+> +
+> +Additional properties are available in debugfs, such as an efficiency
+> +measurement, and switching to/from 12V multi-rail mode
+> +
+> +Sysfs entries
+> +-------------
+> +
+> +============    ===============================================================
+> +curr1_input     Current on the 12v psu rail
+> +curr2_input     Current on the 5v psu rail
+> +curr3_input     Current on the 3.3v psu rail
+> +fan1_input      RPM of psu fan
+> +in0_input       Voltage of the psu ac input
+> +in1_input       Voltage of the 12v psu rail
+> +in2_input       Voltage of the 5v psu rail
+> +in3_input       Voltage of the 3.3v psu rail
+> +power1_input    Total power usage
+> +pwm1            PWM value for fan1. Writes to this file will switch set
+> +                pwm1_enable to manual control mode.
 
-I added a delay, unbind takes longer but works without problems when its
-done during a temperature read.
+No, that is unexpected and not supposed to happen.
 
-IMO also the other drivers should be fine. From w1_int.c: The w1_master
-is ref-counted and released when it is unused (2). In w1_slave_detach
-(1), the slaves decrement this count, perform specific clean up (in
-remove_slave) and remove sysfs entries.
+> +pwm1_enable     PWM mode for fan1. (1) means "auto", and uses the built-in fan
+> +                curve. (3) means manual control
 
-w1_int.c:
+The ABI (Documentation/ABI/testing/sysfs-class-hwmon) says:
 
-void __w1_remove_master_device(struct w1_master *dev)
+                - 0: no fan speed control (i.e. fan at full speed)
+                - 1: manual fan speed control enabled (using `pwmY`)
+                - 2+: automatic fan speed control enabled
+
+I really do not see the point of declaring that 1 shall mean automatic,
+or to skip 2.
+
 ..
-	list_for_each_entry_safe(sl, sln, &dev->slist, w1_slave_entry) {
-		mutex_unlock(&dev->list_mutex);
-		w1_slave_detach(sl); 		(1)
-..
-	while (atomic_read(&dev->refcnt)) { 	(2)
-..	
-	}
-..
-	w1_free_dev(dev);
 
-For example w1_therm waits in remove_slave until its w1-operations are
-done. The other slave-drivers (e.g. w1_ds2405.c) use w1-operations in
-their sysfs-callback and I suppose that sysfs-removal waits until the
-sysfs-read is finished.
+> +#define REPLY_SIZE 40 /* max length of a reply to a single command */
 
-Kind regards,
-Christoph
+#define<space>NAME<tab>value
+
+for all defines, please.
+
+Guenter
 
