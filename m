@@ -1,235 +1,253 @@
-Return-Path: <linux-kernel+bounces-50021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C969847329
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:29:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BCEA847328
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:29:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 413841C2212F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:29:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5874288FE4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:29:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB1A514690E;
-	Fri,  2 Feb 2024 15:29:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A2321468F6;
+	Fri,  2 Feb 2024 15:29:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="m1jE29Dx"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2083.outbound.protection.outlook.com [40.107.237.83])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FQcMYbJD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5C11468F0
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 15:29:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.83
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706887753; cv=fail; b=J5qUlNGoTBsBrk4jj5QRLd3KzBuLpmJ0QqQd8G3HoyHLnMZ+p/FD4T0mbIHqx2MzWfiyKf5cM94ZLqgJzLfLP/aiBaxSjGn+FIxMGhzkIHBM/6NK0DuokzBB5coRYM79ehcOotvsC1A+kMMegIHsNWjj4W7sWnfGhDI4zRKNyBo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706887753; c=relaxed/simple;
-	bh=iqugAU5W7XDUwANq4GvSVtPdFvrGMIsbGQkaVhr8uoo=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rOIfZCOd+7Q0C46dmSZkDgx0CgA0IB6G969GnaKNwgir7AI7h8VE+BZsiix6JwsQhbCvY/W7Z6bsrW7dH3tES01wAajCrUjqWUw/yPD/wAdb5lya2EHYeOEe6YjeIQoj2CkfB+liRQeZ0qMj/1vyLWrbSmDMTASI1Jzpy0Gc6Uc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=m1jE29Dx; arc=fail smtp.client-ip=40.107.237.83
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e8nJvqO4b/nFYGYHcdynQ0g6IJXzs6t326AaJrHlGpEJkdS916jo5jQJsfbI1NPJC0VOdBllLxsUQSJm5U4XfgoFwAER6sse14oncISiheUlxTsNBictq6eEM8AJhNYmQBZ1ITkgQakEr/EYKwMqD7F4ny923NIxBb23TST1dzyDvyKjeayspFu4u/sTKtxUkUemFkrFCZxiX/FUCbbftVBHBKEq8uLlbk7/UULwB04LPJ5trK3gSe4F7zI6hGaDgbnscCzceY2SJ7X3pnimHeiZix/1+64vO2IOM+MuygyagyqpCE9Ehxj26HSrv7oXMy47fplDjAsplNJqsP2nOA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UYWODiTtYOch6HfYrBMmvBJk+iOEDVwPN5IDcHkhyZo=;
- b=cu9ijXFFTJHzbZ0CtYSd6EcQ08NnWB9LJ/fz/a1ke56GDQnf7FwCxMzUH0m8wbJzzQoulwjQfHbC4ARfLUxdKMq6eQPay1AnL4HGhiQpzCtMBdzq4/taWLmHPl30PqClWZ7vS7aeauqxXfK+puQbWs/MMRStCfleJGt9OYbauoSX/iD7A+snhpAiMGuno5LK99ufPksn+ZQjlj3dKgAGDvpmB0GvL/TvNA3sOyrkHKGhBW6ufJVa5h2nVtlwMcKu2H6p9tkVeOx7gpcJcZDj6UCQoxclkikCXzwb6Qom3ROf9VI75jlNNfM2uATqocEMRnRem12q5bMUMApIGRLGQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UYWODiTtYOch6HfYrBMmvBJk+iOEDVwPN5IDcHkhyZo=;
- b=m1jE29DxtW0xcEeuR3zjvD4w1z687ix9epiC95sSgHkVwppknnK2EQfXRtjr1sCDLzq1afd1UUUsfFtgVPeR/UfbWzUjCiOHSl+YxFl20/piHYmH/hQJ078bzBRClwzNbGwXPvtNIWfjZS7kRUmQQbVYtUWJ6I6GloTSlOeiQSg=
-Received: from SJ0PR05CA0057.namprd05.prod.outlook.com (2603:10b6:a03:33f::32)
- by IA1PR12MB6530.namprd12.prod.outlook.com (2603:10b6:208:3a5::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.11; Fri, 2 Feb
- 2024 15:29:07 +0000
-Received: from SJ5PEPF000001CD.namprd05.prod.outlook.com
- (2603:10b6:a03:33f:cafe::6c) by SJ0PR05CA0057.outlook.office365.com
- (2603:10b6:a03:33f::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.23 via Frontend
- Transport; Fri, 2 Feb 2024 15:29:06 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SJ5PEPF000001CD.mail.protection.outlook.com (10.167.242.42) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7202.16 via Frontend Transport; Fri, 2 Feb 2024 15:29:06 +0000
-Received: from hamza-pc.localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 2 Feb
- 2024 09:29:04 -0600
-From: Hamza Mahfooz <hamza.mahfooz@amd.com>
-To: <amd-gfx@lists.freedesktop.org>
-CC: Hamza Mahfooz <hamza.mahfooz@amd.com>, Mario Limonciello
-	<mario.limonciello@amd.com>, Harry Wentland <harry.wentland@amd.com>, Leo Li
-	<sunpeng.li@amd.com>, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>, "Alex
- Deucher" <alexander.deucher@amd.com>, =?UTF-8?q?Christian=20K=C3=B6nig?=
-	<christian.koenig@amd.com>, "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie
-	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Alex Hung
-	<alex.hung@amd.com>, Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-	Wayne Lin <wayne.lin@amd.com>, <dri-devel@lists.freedesktop.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] drm/amd/display: add panel_power_savings sysfs entry to eDP connectors
-Date: Fri, 2 Feb 2024 10:28:35 -0500
-Message-ID: <20240202152837.7388-1-hamza.mahfooz@amd.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83C3714198F;
+	Fri,  2 Feb 2024 15:29:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706887750; cv=none; b=RXYLhPBUQexWME5W42Kanj1Bcdw2dYN8qqGhtaB4yl2taH3YRNI/V+B/ybbySml7554mFJiTS79lrmgtO/FMXfi0dAK8e8NgSrIpwcPW26L8P6uhXlSRjWyhvmeg+LUpxc+Co5f695dKAiSPPYcr08usGLx4TVAEJ+MMoSbwuTc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706887750; c=relaxed/simple;
+	bh=eWCT34Fq+b7991k5pNSiwWeUVYQTzCYYL/cyt2+oOI4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Pbq9uBsYpli02Ah7Dtnaspvmo4L2DkvyR8UPFjxB1rBAYwCe/uRukt7eO0BwBChkckQLBVxnNf+740o3/3eK95RAzZMZkVL8sPqTpTWjLJoiKhyUhapaD092BMvxo3rzurLnFuQKRsixMRFN6kL4Eve4jgqj/YX5ayGG9fkqpX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FQcMYbJD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19F71C433C7;
+	Fri,  2 Feb 2024 15:29:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706887750;
+	bh=eWCT34Fq+b7991k5pNSiwWeUVYQTzCYYL/cyt2+oOI4=;
+	h=Date:From:To:List-Id:Cc:Subject:References:In-Reply-To:From;
+	b=FQcMYbJD377UCUye1ongyzueF7fnGQ9TAFH0kSvL/OREHfX9BuNNBixbmGDTpSsMq
+	 DnoNGZ/Kn76YG6ZZNVnKfa3/2buI1j9JIbr8szqq+uV17LUgaGkVQBGv9rk7OttVZJ
+	 CbCxbTeiws5gZ66nmRbYgOViuF/j045PjFYyBXr4mtt5VG2MOzy/9vu1e9jJ9TpbeZ
+	 E8UCx5f2lOujI5D4n2prtl7OWXa8ya7Gukiz8HJHfe7jVUdAgbX6BKLJz2qTR9Ht10
+	 Qg40JNqkJOm3scz4i6gT2vl7FSJ697eV2hiFvdYOd3MTXu4ACBMyrz8qgR+m9LyROd
+	 iwO5+XeVvnCrg==
+Date: Fri, 2 Feb 2024 09:29:08 -0600
+From: Rob Herring <robh@kernel.org>
+To: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+Cc: catalin.marinas@arm.com, will@kernel.org, frowand.list@gmail.com,
+	vgupta@kernel.org, arnd@arndb.de, olof@lixom.net, soc@kernel.org,
+	guoren@kernel.org, monstr@monstr.eu, palmer@dabbelt.com,
+	aou@eecs.berkeley.edu, dinguyen@kernel.org, chenhuacai@kernel.org,
+	tsbogend@alpha.franken.de, jonas@southpole.se,
+	stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
+	mpe@ellerman.id.au, ysato@users.sourceforge.jp, dalias@libc.org,
+	glaubitz@physik.fu-berlin.de, richard@nod.at,
+	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+	chris@zankel.net, jcmvbkbc@gmail.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	kernel@quicinc.com
+Subject: Re: [PATCH 00/46] Dynamic allocation of reserved_mem array.
+Message-ID: <20240202152908.GA4045321-robh@kernel.org>
+References: <20240126235425.12233-1-quic_obabatun@quicinc.com>
+ <20240131000710.GA2581425-robh@kernel.org>
+ <51dc64bb-3101-4b4a-a54f-c0df6c0b264c@quicinc.com>
+ <20240201194653.GA1328565-robh@kernel.org>
+ <d98288ed-a0d9-4fc1-87bc-d79cb528778c@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ5PEPF000001CD:EE_|IA1PR12MB6530:EE_
-X-MS-Office365-Filtering-Correlation-Id: cd3d2c66-c5b6-4125-34da-08dc2403b1a8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	giEeK6WV7aoaVlQdTY8uRCoqqFDWAb4ofjBxPbqKYh1PU8i4HDbp4PU8YlGzjLhsPH4Iy8UeGOZwn9wW4q2D1FIoIdMo37EdHqaCdEMF03HEKE2kxYj33imcQb7yCJx480bGXE/IFALPnjeYVNvVyodJLCLX1VL6IoudQ6nsTLeZWewqlJa0DcnN5At1loDBDebjV9e8UAU/iW0i03M+bDCrlk6EIATCbykfONTVdv2zXChKqlgFOfBIl4qWR1VIe+83efo4Ko12DkORsMcEwogJH54NWppqD1wHkqm7dwoO/uW52MPk5etlRUbpqBchWs2McRzAwR27sbCGZQAFq9iU5NKHEDAM+hpYJqEhHzXuix4kbTXog6dnsMyD3A7nojyHIXXQXrt8yC7s7d28SQMi5oO4U4Du43ujEhgKSZfU+NaQqJNQYolWt+U6MyzwgZF3PHuVIPOD8HHQdtB/9l4KRxtfnSUo+Wx58+RbYpo/NbHnjAJ4gOH7Oh603aPDsfAEu4XlnIda+uCtbYX99PS3GHVc1cB5UpL8R4MK3T//iti6zEWJ+75pjRvoCLZmelstBPCMxbwUN9T7l89/9SLHKD2wPH4gillAzUNhjzz15l0+eKR5tB0d3pbUU+F0471bCLK1wRQJ/FdQL0DPHfjQwVOxo419GMTtmzjVM994Ovs5jGV3KAFcLlSxiaLhL+L432wOyPLX8f/Ec0/k10S/P05VpdzBuX9rWfozycDrxGSNYwF0q2LEBY97an6mKldMzsZr9bf4taIgAr6F9Csus+T7b2/qsLJg+v0EkjknagUcbiRN/LJpmrUFqOdK
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(136003)(376002)(396003)(230922051799003)(1800799012)(82310400011)(186009)(64100799003)(451199024)(46966006)(40470700004)(36840700001)(5660300002)(4326008)(8936002)(8676002)(40480700001)(40460700003)(54906003)(6916009)(316002)(70206006)(2906002)(70586007)(44832011)(36756003)(26005)(47076005)(478600001)(1076003)(2616005)(6666004)(83380400001)(82740400003)(426003)(356005)(336012)(81166007)(16526019)(36860700001)(86362001)(41300700001)(16060500005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2024 15:29:06.2610
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd3d2c66-c5b6-4125-34da-08dc2403b1a8
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SJ5PEPF000001CD.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6530
+In-Reply-To: <d98288ed-a0d9-4fc1-87bc-d79cb528778c@quicinc.com>
 
-We want programs besides the compositor to be able to enable or disable
-panel power saving features. However, since they are currently only
-configurable through DRM properties, that isn't possible. So, to remedy
-that issue introduce a new "panel_power_savings" sysfs attribute.
+On Thu, Feb 01, 2024 at 01:10:18PM -0800, Oreoluwa Babatunde wrote:
+> 
+> On 2/1/2024 11:46 AM, Rob Herring wrote:
+> > On Thu, Feb 01, 2024 at 09:08:06AM -0800, Oreoluwa Babatunde wrote:
+> >> On 1/30/2024 4:07 PM, Rob Herring wrote:
+> >>> On Fri, Jan 26, 2024 at 03:53:39PM -0800, Oreoluwa Babatunde wrote:
+> >>>> The reserved_mem array is used to store data for the different
+> >>>> reserved memory regions defined in the DT of a device.  The array
+> >>>> stores information such as region name, node, start-address, and size
+> >>>> of the reserved memory regions.
+> >>>>
+> >>>> The array is currently statically allocated with a size of
+> >>>> MAX_RESERVED_REGIONS(64). This means that any system that specifies a
+> >>>> number of reserved memory regions greater than MAX_RESERVED_REGIONS(64)
+> >>>> will not have enough space to store the information for all the regions.
+> >>>>
+> >>>> Therefore, this series extends the use of the static array for
+> >>>> reserved_mem, and introduces a dynamically allocated array using
+> >>>> memblock_alloc() based on the number of reserved memory regions
+> >>>> specified in the DT.
+> >>>>
+> >>>> Some architectures such as arm64 require the page tables to be setup
+> >>>> before memblock allocated memory is writable.  Therefore, the dynamic
+> >>>> allocation of the reserved_mem array will need to be done after the
+> >>>> page tables have been setup on these architectures. In most cases that
+> >>>> will be after paging_init().
+> >>>>
+> >>>> Reserved memory regions can be divided into 2 groups.
+> >>>> i) Statically-placed reserved memory regions
+> >>>> i.e. regions defined in the DT using the @reg property.
+> >>>> ii) Dynamically-placed reserved memory regions.
+> >>>> i.e. regions specified in the DT using the @alloc_ranges
+> >>>>     and @size properties.
+> >>>>
+> >>>> It is possible to call memblock_reserve() and memblock_mark_nomap() on
+> >>>> the statically-placed reserved memory regions and not need to save them
+> >>>> to the reserved_mem array until memory is allocated for it using
+> >>>> memblock, which will be after the page tables have been setup.
+> >>>> For the dynamically-placed reserved memory regions, it is not possible
+> >>>> to wait to store its information because the starting address is
+> >>>> allocated only at run time, and hence they need to be stored somewhere
+> >>>> after they are allocated.
+> >>>> Waiting until after the page tables have been setup to allocate memory
+> >>>> for the dynamically-placed regions is also not an option because the
+> >>>> allocations will come from memory that have already been added to the
+> >>>> page tables, which is not good for memory that is supposed to be
+> >>>> reserved and/or marked as nomap.
+> >>>>
+> >>>> Therefore, this series splits up the processing of the reserved memory
+> >>>> regions into two stages, of which the first stage is carried out by
+> >>>> early_init_fdt_scan_reserved_mem() and the second is carried out by
+> >>>> fdt_init_reserved_mem().
+> >>>>
+> >>>> The early_init_fdt_scan_reserved_mem(), which is called before the page
+> >>>> tables are setup is used to:
+> >>>> 1. Call memblock_reserve() and memblock_mark_nomap() on all the
+> >>>>    statically-placed reserved memory regions as needed.
+> >>>> 2. Allocate memory from memblock for the dynamically-placed reserved
+> >>>>    memory regions and store them in the static array for reserved_mem.
+> >>>>    memblock_reserve() and memblock_mark_nomap() are also called as
+> >>>>    needed on all the memory allocated for the dynamically-placed
+> >>>>    regions.
+> >>>> 3. Count the total number of reserved memory regions found in the DT.
+> >>>>
+> >>>> fdt_init_reserved_mem(), which should be called after the page tables
+> >>>> have been setup, is used to carry out the following:
+> >>>> 1. Allocate memory for the reserved_mem array based on the number of
+> >>>>    reserved memory regions counted as mentioned above.
+> >>>> 2. Copy all the information for the dynamically-placed reserved memory
+> >>>>    regions from the static array into the new allocated memory for the
+> >>>>    reserved_mem array.
+> >>>> 3. Add the information for the statically-placed reserved memory into
+> >>>>    reserved_mem array.
+> >>>> 4. Run the region specific init functions for each of the reserve memory
+> >>>>    regions saved in the reserved_mem array.
+> >>> I don't see the need for fdt_init_reserved_mem() to be explicitly called 
+> >>> by arch code. I said this already, but that can be done at the same time 
+> >>> as unflattening the DT. The same conditions are needed for both: we need 
+> >>> to be able to allocate memory from memblock.
+> >>>
+> >>> To put it another way, if fdt_init_reserved_mem() can be called "early", 
+> >>> then unflattening could be moved earlier as well. Though I don't think 
+> >>> we should optimize that. I'd rather see all arches call the DT functions 
+> >>> at the same stages.
+> >> Hi Rob,
+> >>
+> >> The reason we moved fdt_init_reserved_mem() back into the arch specific code
+> >> was because we realized that there was no apparently obvious way to call
+> >> early_init_fdt_scan_reserved_mem() and fdt_init_reserved_mem() in the correct
+> >> order that will work for all archs if we placed fdt_init_reserved_mem() inside the
+> >> unflatten_devicetree() function.
+> >>
+> >> early_init_fdt_scan_reserved_mem() needs to be
+> >> called first before fdt_init_reserved_mem(). But on some archs,
+> >> unflatten_devicetree() is called before early_init_fdt_scan_reserved_mem(), which
+> >> means that if we have fdt_init_reserved_mem() inside the unflatten_devicetree()
+> >> function, it will be called before early_init_fdt_scan_reserved_mem().
+> >>
+> >> This is connected to your other comments on Patch 7 & Patch 14.
+> >> I agree, unflatten_devicetree() should NOT be getting called before we reserve
+> >> memory for the reserved memory regions because that could cause memory to be
+> >> allocated from regions that should be reserved.
+> >>
+> >> Hence, resolving this issue should allow us to call fdt_init_reserved_mem() from
+> >> the  unflatten_devicetree() function without it changing the order that we are
+> >> trying to have.
+> > There's one issue I've found which is unflatten_device_tree() isn't 
+> > called for ACPI case on arm64. Turns out we need /reserved-memory 
+> > handled in that case too. However, I think we're going to change 
+> > calling unflatten_device_tree() unconditionally for another reason[1]. 
+> >
+> > [1] https://lore.kernel.org/all/efe6a7886c3491cc9c225a903efa2b1e.sboyd@kernel.org/
+> >
+> >> I will work on implementing this and send another revision.
+> > I think we should go with a simpler route that's just copy the an 
+> > initial array in initdata to a properly sized, allocated array like the 
+> > patch below. Of course it will need some arch fixes and a follow-on 
+> > patch to increase the initial array size.
+> >
+> > 8<--------------------------------------------------------------------
+> > From: Rob Herring <robh@kernel.org>
+> > Date: Wed, 31 Jan 2024 16:26:23 -0600
+> > Subject: [PATCH] of: reserved-mem: Re-allocate reserved_mem array to actual
+> >  size
+> >
+> > In preparation to increase the static reserved_mem array size yet again,
+> > copy the initial array to an allocated array sized based on the actual
+> > size needed. Now increasing the the size of the static reserved_mem
+> > array only eats up the initdata space. For platforms with reasonable
+> > number of reserved regions, we have a net gain in free memory.
+> >
+> > In order to do memblock allocations, fdt_init_reserved_mem() is moved a
+> > bit later to unflatten_device_tree(). On some arches this is effectively
+> > a nop.
 
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
----
-v2: hide ABM_LEVEL_IMMEDIATE_DISABLE in the read case, force an atomic
-    commit when setting the value, call sysfs_remove_group() in
-    amdgpu_dm_connector_unregister() and add some documentation.
----
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 76 +++++++++++++++++++
- 1 file changed, 76 insertions(+)
+[...]
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 8590c9f1dda6..3c62489d03dc 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -6436,10 +6436,79 @@ int amdgpu_dm_connector_atomic_get_property(struct drm_connector *connector,
- 	return ret;
- }
- 
-+/**
-+ * DOC: panel power savings
-+ *
-+ * The display manager allows you to set your desired **panel power savings**
-+ * level (between 0-4, with 0 representing off), e.g. using the following::
-+ *
-+ *   # echo 3 > /sys/class/drm/card0-eDP-1/amdgpu/panel_power_savings
-+ *
-+ * Modifying this value can have implications on color accuracy, so tread
-+ * carefully.
-+ */
-+
-+static ssize_t panel_power_savings_show(struct device *device,
-+					struct device_attribute *attr,
-+					char *buf)
-+{
-+	struct drm_connector *connector = dev_get_drvdata(device);
-+	struct drm_device *dev = connector->dev;
-+	u8 val;
-+
-+	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
-+	val = to_dm_connector_state(connector->state)->abm_level ==
-+		ABM_LEVEL_IMMEDIATE_DISABLE ? 0 :
-+		to_dm_connector_state(connector->state)->abm_level;
-+	drm_modeset_unlock(&dev->mode_config.connection_mutex);
-+
-+	return sysfs_emit(buf, "%u\n", val);
-+}
-+
-+static ssize_t panel_power_savings_store(struct device *device,
-+					 struct device_attribute *attr,
-+					 const char *buf, size_t count)
-+{
-+	struct drm_connector *connector = dev_get_drvdata(device);
-+	struct drm_device *dev = connector->dev;
-+	long val;
-+	int ret;
-+
-+	ret = kstrtol(buf, 0, &val);
-+
-+	if (ret)
-+		return ret;
-+
-+	if (val < 0 || val > 4)
-+		return -EINVAL;
-+
-+	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
-+	to_dm_connector_state(connector->state)->abm_level = val ?:
-+		ABM_LEVEL_IMMEDIATE_DISABLE;
-+	drm_modeset_unlock(&dev->mode_config.connection_mutex);
-+
-+	drm_kms_helper_hotplug_event(dev);
-+
-+	return count;
-+}
-+
-+static DEVICE_ATTR_RW(panel_power_savings);
-+
-+static struct attribute *amdgpu_attrs[] = {
-+	&dev_attr_panel_power_savings.attr,
-+	NULL
-+};
-+
-+static const struct attribute_group amdgpu_group = {
-+	.name = "amdgpu",
-+	.attrs = amdgpu_attrs
-+};
-+
- static void amdgpu_dm_connector_unregister(struct drm_connector *connector)
- {
- 	struct amdgpu_dm_connector *amdgpu_dm_connector = to_amdgpu_dm_connector(connector);
- 
-+	sysfs_remove_group(&connector->kdev->kobj, &amdgpu_group);
- 	drm_dp_aux_unregister(&amdgpu_dm_connector->dm_dp_aux.aux);
- }
- 
-@@ -6541,6 +6610,13 @@ amdgpu_dm_connector_late_register(struct drm_connector *connector)
- 		to_amdgpu_dm_connector(connector);
- 	int r;
- 
-+	if (connector->connector_type == DRM_MODE_CONNECTOR_eDP) {
-+		r = sysfs_create_group(&connector->kdev->kobj,
-+				       &amdgpu_group);
-+		if (r)
-+			return r;
-+	}
-+
- 	amdgpu_dm_register_backlight_device(amdgpu_dm_connector);
- 
- 	if ((connector->connector_type == DRM_MODE_CONNECTOR_DisplayPort) ||
--- 
-2.43.0
+> Hi Rob,
+> 
+> One thing that could come up with this is that  memory
+> for the dynamically-placed reserved memory regions
+> won't be allocated until we call fdt_init_reserved_mem().
+> (i.e. reserved memory regions defined using @alloc-ranges
+> and @size properties)
+> 
+> Since fdt_init_reserved_mem() is now being called from
+> unflatten_device_tree(), the page tables would have been
+> setup on most architectures, which means we will be
+> allocating from memory that have already been mapped.
+> 
+> Could this be an issue for memory that is supposed to be
+> reserved? 
 
+I suppose if the alloc-ranges region is not much bigger than the size 
+and the kernel already made some allocation that landed in the region, 
+then the allocation could fail. Not much we can do other than alloc the 
+reserved regions as soon as possible. Are there cases where that's not 
+happening?
+
+I suppose the kernel could try and avoid all alloc-ranges until they've 
+been allocated, but that would have to be best effort. I've seen 
+optimizations where it's desired to spread buffers across DRAM banks, so 
+you could have N alloc-ranges for N banks that covers all of memory.
+
+There's also the issue that if you have more fixed regions than memblock 
+can handle (128) before it can reallocate its arrays, then the 
+page tables themselves could be allocated in reserved regions.
+
+> Especially for the regions that are specified as
+> no-map?
+
+'no-map' is a hint, not a guarantee. Arm32 ignores it for regions 
+within the kernel's linear map (at least it used to). I don't think 
+anything changes here with it.
+
+Rob
 
