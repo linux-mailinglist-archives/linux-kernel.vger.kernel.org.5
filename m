@@ -1,131 +1,133 @@
-Return-Path: <linux-kernel+bounces-49781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37DD2846F53
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:46:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC60A846F55
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:46:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86BA0B2D07C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:45:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF7D81C22413
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:46:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD31913E22A;
-	Fri,  2 Feb 2024 11:42:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF62713DBA8;
+	Fri,  2 Feb 2024 11:45:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ctT7EKOE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="pnwl8EWW"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19AF1386C0;
-	Fri,  2 Feb 2024 11:42:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F5C168AB;
+	Fri,  2 Feb 2024 11:45:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706874129; cv=none; b=BvPCuASpF1vAH88+FzPZe53mp4xLKd1LgE8GCgwCpvJlBTA6V/zTGzUbMv76/3Z/yDCq5aagXyFIMjK9meTVakFWaaL7R4V4GnRjR0BzIM0Q1sv79CrNSzh7edadMiZd+UMqmtZn32NXlN0bqMAWXF22D/vt+sNNhMnGJ30RSdQ=
+	t=1706874357; cv=none; b=X0TQlqCAwlY2DyjGa1PLFVThuf1VwF4ZS51KQ0RY8UoYzcuyyNnVwcIIMTmINqZbBs0YLyGK7zBKG6J8bFxORp6DgMkbsY6AjfI++T7bTLi1WJuwhqWTdCQP9U2iyznb4Gay1er7MVK/ItyShqaBiMZM69oHZrilI6h36T9nWco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706874129; c=relaxed/simple;
-	bh=ipIq/9Sdl32FU9KpYVyKP01VDNrIW6SGHhtprIgqsEo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ibc7D2uZl7aHpfXNilmk4CFmf6UAued77mb1mAYemKb7YisJ2DLwyPV0cEB4+JrHRfzQeIdag/8muTEJ9QtlC56o2WVUEJ9/+CY4BpyE1EhMQKfWsdwSLtEzZ0j6n28DGVog2WCKoA0cidtp9JTbaAI0umE34AH6kI4JXqu5u7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ctT7EKOE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56D43C433F1;
-	Fri,  2 Feb 2024 11:42:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706874128;
-	bh=ipIq/9Sdl32FU9KpYVyKP01VDNrIW6SGHhtprIgqsEo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ctT7EKOEMg1nl41CFM5Gc2kOvf3qcxf6XtlItksRthxndXzOEQRmmReHCbajuKM4N
-	 F1aA5YTXeU7zB1XdJZRqr1LoyFlVpPHSXA11q6QWG3RXKLGCJI+xQnJTbPjYPlY9fk
-	 dOgfNqpW+iPgY702CwmOIaPUjXwh2g+eyRABYHaAIhSvIh/oAyJsHnMUutJ5IDS7Fh
-	 O7DuMLdDphvWlFLMOkc7LxvUnUegk/SlzKrDB2RoxQRXUj7chmKh5RoRvost7Us0M9
-	 caewRdsz6uhfoMEsribDI2iO3MjsmeG6R9JweIY6OgAcC63aLkDPsfytHr5BSAUtha
-	 lNKPMVMwiwmzg==
-Message-ID: <b81a5ec5-4f71-4926-bd0e-0300477b721b@kernel.org>
-Date: Fri, 2 Feb 2024 13:42:05 +0200
+	s=arc-20240116; t=1706874357; c=relaxed/simple;
+	bh=g2szF7J/Fir+UwcF5d5yrjX6PLRvsscIcyAHZXVyz3Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ObXkPjtDUhx+rlHxOusvQmon9aEE/Z3GwWdr0F2gHudhVvOksT8UOUo/kdh4x7e9pa/e4E97G7Flrk0fB5oGYIWaPyr+cwMpINjCn9slHNZzZ7SYWYrDTuEkpHcFA/zAhekdJyXBMhHWc9t8rawnW7VzWFJpIGRxxYN0v6JNYVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=pnwl8EWW; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=NMzyKXLvD5bCWLAnSG7LQUc76KmbvEK7xMGWqLkAp84=; b=pnwl8EWWJP/EPh7oo8FzwwNZnV
+	eNLhuPMQ8WmVsruBxONkcOgm51ooQq6kt45NBEt6yUTqPxMTsq6L6uzcYrnmK8VejdcyK9Q455ojJ
+	0uKdTi5/RuNOyShPkwARm1u5fz8kEQH+LOXXz8XM5Z6+BIDiI3dRE/vwpe8sQgC3tuRCGmvDn4oJG
+	LKjp4GbvbwHqhCSV2iYUiUxg7A7zexwby7NHHdYu1wnOkn1nOj+pzsYuoR/PDLk++f/YXo8g6ae6I
+	24CTDvu62YfX7ZS5loprhXgCANYrEItsU9ghPg5YMxjdgVCGtfxsMaoyNuJZ8QOdSh5exi/vcOqFd
+	kisPK1Mg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46388)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rVrzM-0005tt-0k;
+	Fri, 02 Feb 2024 11:45:44 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rVrzJ-0008Hw-2O; Fri, 02 Feb 2024 11:45:41 +0000
+Date: Fri, 2 Feb 2024 11:45:40 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: arinc.unal@arinc9.com
+Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v3 2/7] net: dsa: mt7530: call port 6 setup from
+ mt7530_mac_config()
+Message-ID: <ZbzV5Ly9rv6IsmVl@shell.armlinux.org.uk>
+References: <20240202-for-netnext-mt7530-improvements-2-v3-0-63d5adae99ca@arinc9.com>
+ <20240202-for-netnext-mt7530-improvements-2-v3-2-63d5adae99ca@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] usb: cdns3: fix memory double free when handle zero
- package
-Content-Language: en-US
-To: Frank Li <Frank.Li@nxp.com>, Peter Chen <peter.chen@kernel.org>,
- Pawel Laszczak <pawell@cadence.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Felipe Balbi <felipe.balbi@linux.intel.com>,
- "open list:CADENCE USB3 DRD IP DRIVER" <linux-usb@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-Cc: imx@lists.linux.dev
-References: <20240202051829.623273-1-Frank.Li@nxp.com>
- <20240202051829.623273-2-Frank.Li@nxp.com>
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20240202051829.623273-2-Frank.Li@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240202-for-netnext-mt7530-improvements-2-v3-2-63d5adae99ca@arinc9.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Hello Frank,
+On Fri, Feb 02, 2024 at 12:19:08PM +0300, Arınç ÜNAL via B4 Relay wrote:
+> From: Arınç ÜNAL <arinc.unal@arinc9.com>
+> 
+> mt7530_pad_clk_setup() is called if port 6 is enabled. It used to do more
+> things than setting up port 6. That part was moved to more appropriate
+> locations, mt7530_setup() and mt7530_pll_setup().
+> 
+> Now that all it does is set up port 6, rename it to mt7530_setup_port6(),
+> and move it to a more appropriate location, under mt7530_mac_config().
+> 
+> Leave an empty mt7530_pad_clk_setup() to satisfy the pad_setup function
+> pointer.
+> 
+> This is the code path for setting up the ports before:
+> 
+> mt753x_phylink_mac_config()
+> -> mt753x_mac_config()
+>    -> mt7530_mac_config()
+>       -> mt7530_setup_port5()
+> -> mt753x_pad_setup()
+>    -> mt7530_pad_clk_setup()
+> 
+> This is after:
+> 
+> mt753x_phylink_mac_config()
+> -> mt753x_mac_config()
+>    -> mt7530_mac_config()
+>       -> mt7530_setup_port5()
+>       -> mt7530_setup_port6()
+> 
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 
-On 02/02/2024 07:18, Frank Li wrote:
-> 829  if (request->complete) {
-> 830          spin_unlock(&priv_dev->lock);
-> 831          usb_gadget_giveback_request(&priv_ep->endpoint,
-> 832                                    request);
-> 833          spin_lock(&priv_dev->lock);
-> 834  }
-> 835
-> 836  if (request->buf == priv_dev->zlp_buf)
-> 837      cdns3_gadget_ep_free_request(&priv_ep->endpoint, request);
-> 
-> Driver append an additional zero package request when queue a package,
-> which length mod max package size is 0. When transfer complete, run to
-> line 831, usb_gadget_giveback_request() will free this requestion. 836
-> condition is true, so cdns3_gadget_ep_free_request() free this request
-> again.
+I hope that the "default" case in mt7530_setup_port6() is effectively
+unreachable - as long as mt7530_mac_port_get_caps() is paired with this
+and only sets the interface modes in supported_interfaces that
+mt7530_setup_port6() handles, then that will be fine.
 
-Please replace "package" with "packet" in subject and description.
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-> 
-> Log:
-> 
-> [ 1920.140696][  T150] BUG: KFENCE: use-after-free read in cdns3_gadget_giveback+0x134/0x2c0 [cdns3]
-> [ 1920.140696][  T150]
-> [ 1920.151837][  T150] Use-after-free read at 0x000000003d1cd10b (in kfence-#36):
-> [ 1920.159082][  T150]  cdns3_gadget_giveback+0x134/0x2c0 [cdns3]
-> [ 1920.164988][  T150]  cdns3_transfer_completed+0x438/0x5f8 [cdns3]
-> 
-> Add check at line 829, skip call usb_gadget_giveback_request() if it is
-> additional zero length package request. Needn't call
-> usb_gadget_giveback_request() because it is allocated in this driver.
-> 
-> Cc: <stable@vger.kernel.org>
-> Fixes: 7733f6c32e36 ("usb: cdns3: Add Cadence USB3 DRD Driver")
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  drivers/usb/cdns3/cdns3-gadget.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
-> index d6723d31fc6e2..fd1beb10bba72 100644
-> --- a/drivers/usb/cdns3/cdns3-gadget.c
-> +++ b/drivers/usb/cdns3/cdns3-gadget.c
-> @@ -828,7 +828,11 @@ void cdns3_gadget_giveback(struct cdns3_endpoint *priv_ep,
->  			return;
->  	}
->  
-> -	if (request->complete) {
-> +	/*
-> +	 * zlp request is appended by driver, needn't call usb_gadget_giveback_request() to notify
-> +	 * gadget composite driver.
-> +	 */
-> +	if (request->complete && request->buf != priv_dev->zlp_buf) {
->  		spin_unlock(&priv_dev->lock);
->  		usb_gadget_giveback_request(&priv_ep->endpoint,
->  					    request);
+Thanks!
 
 -- 
-cheers,
--roger
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
