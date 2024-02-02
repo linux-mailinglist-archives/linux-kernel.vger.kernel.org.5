@@ -1,69 +1,119 @@
-Return-Path: <linux-kernel+bounces-50155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A36AD8474FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:37:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99D86847503
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:38:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D63CA1C270F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:37:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E61D1F27C56
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:38:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2959C1487EF;
-	Fri,  2 Feb 2024 16:37:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1FE01487D6;
+	Fri,  2 Feb 2024 16:37:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="EBaDt9vl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fXHS0fuy"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AB037C6E9;
-	Fri,  2 Feb 2024 16:37:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E989C14830B;
+	Fri,  2 Feb 2024 16:37:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706891825; cv=none; b=WBORIr4/lLoIruBnDgYLc6Ys+I3n4eTJ9WsV4C7coxBxxbvof5ROGBsX6gWOBDzLEzGvD6DrUNvundDgOTLay5Zj3ekrGLuKESBfGHlyEZnBJpEedCMm8cTmniVcHiqtf/IgzgYYGwVJQcZP0Gn4gPXv9cj1d60FqmSiN494gvI=
+	t=1706891861; cv=none; b=bznc+aWZyo4KTlZBNtYNfZSGQCgIwVqfsS+cNngRNgCUx+8yuk4kw8x6OcZx9LybmXMyJEmI6beovbUN/0VkSB+H8iGkHWFQuDuTpZHOlKo/F6FJEK7klzRQKDSguv92qCh2EivED/nSdw1ydDqg4RK29QqiYJjBN0Oj3C5ZqVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706891825; c=relaxed/simple;
-	bh=y5IcBKV3F2O5s8JZEQwx5DOJiy3G167IIZkbnmIdhaw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZwOm8Q2ShRHDPB94zrxCy/2Snp8cXAffEDopn8iTC8H0qF3OLqnOpTWfNys3Vcfy5Q7bU7/YlNSPeXuJCNztVdShSdrakStfskmrVPAjwL/eMLlBKVwfyWD1tnw2VXYmXk0sFhhmIc5uIApDGjrN6tkC0kddLlSX+PvreesCjqA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=EBaDt9vl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA80AC43390;
-	Fri,  2 Feb 2024 16:37:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706891824;
-	bh=y5IcBKV3F2O5s8JZEQwx5DOJiy3G167IIZkbnmIdhaw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EBaDt9vlo0iqO0WlolIbLiao21t1V9ryK9CQjGjHxgyyPT6+T+FBvWKHXZNt27xjv
-	 05EIJCW4QaBJWwoRq//G4Zt0lAlHoSjXAryMPhmoECXb0C3Cmbs8wZ9CrpiTPqxr96
-	 WsspvOBdk/NBaWJSIvukEDvPL3ic/3vc50/WdUcU=
-Date: Fri, 2 Feb 2024 08:37:04 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Johan Hovold <johan@kernel.org>
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] USB-serial device ids for 6.8-rc3
-Message-ID: <2024020255-reproach-comfort-61f8@gregkh>
-References: <Zb0Hz0dFStw_bcrh@hovoldconsulting.com>
+	s=arc-20240116; t=1706891861; c=relaxed/simple;
+	bh=Uwkd7nTQQrSccD545d3Y+lH6FQYzJbXBcM9/NkSdyEU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=abHl6eBkfBtANzvGk/TKhv4AZl4en8hO2+1/J7ocZkXHBG+C2ZJUNaGHXRInC5+M6XukKG2QgckbvujfuAoN5oFFDjleErDDmWGZVtT1omfYmS6r4J1cS7/44Hh7NpUmfbZ/EqEabtbDxuFwvFJR6ms6F1xf0r30yguXDB9Wldo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fXHS0fuy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B904C433F1;
+	Fri,  2 Feb 2024 16:37:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706891860;
+	bh=Uwkd7nTQQrSccD545d3Y+lH6FQYzJbXBcM9/NkSdyEU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=fXHS0fuyj/S03+wmk5ISzAXdQ8cMdABMx6ExToz8J4VtDmQbJ8hPFgjtzru1e8/Aw
+	 DLegNr7XswiSzak9whAzIsW+48P5LDZSbLuGEB31DJe6aKrSIkbhf1Di0GuD0R5KWR
+	 9K/xj19XqXZLro3BoaW+43MvNTrvWnRPxmtN/+gYvTxpka5TxFtxKJaMDux/IszswB
+	 JRKDFSIVE+zmeEjhlkCDUxJf0J1LHTMFPsTcJr1AOJ0mM0MQiLFw666l9tZ29VLPu0
+	 LizKmg8YJIsUwwlbbNL8WPUowEqVutqGy87WF3IdnnRKYx7fB8NRX/lflzu+MzYVFq
+	 cFuGogFLj8yEQ==
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d093cb1ef3so1391161fa.3;
+        Fri, 02 Feb 2024 08:37:40 -0800 (PST)
+X-Gm-Message-State: AOJu0Yx34rge4x4vJNdeeLbsHZCKVRaW/iJWQLAmWIurEMzIL885cLdE
+	YnN/6dm+7lN99zZGmMM5hvk3+5ZlORDKlHWzDhIeceZ7hbhzOhJpLs19TVou0/cMDveHNBZTfyV
+	P7mBb6WohcwllqoQuULC6N6WKurM=
+X-Google-Smtp-Source: AGHT+IH+2hrSf5CH7QZoCnp7kbDbwEWAwfZngecusVvcc+8VLLiXgX2u9WvaRUy0ZbgjPawIpFHcGXT0CgZtix88FXM=
+X-Received: by 2002:a2e:bc1b:0:b0:2d0:870e:b29d with SMTP id
+ b27-20020a2ebc1b000000b002d0870eb29dmr1857693ljf.50.1706891858752; Fri, 02
+ Feb 2024 08:37:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zb0Hz0dFStw_bcrh@hovoldconsulting.com>
+References: <20240202163433.786581-1-abrestic@rivosinc.com> <20240202163433.786581-2-abrestic@rivosinc.com>
+In-Reply-To: <20240202163433.786581-2-abrestic@rivosinc.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Fri, 2 Feb 2024 17:37:24 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGR0thbcDt32pC=KS=tsmSWqQuyhJ2Ftq0vX3u=dLX22g@mail.gmail.com>
+Message-ID: <CAMj1kXGR0thbcDt32pC=KS=tsmSWqQuyhJ2Ftq0vX3u=dLX22g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] efi: runtime: Fix potential overflow of soft-reserved
+ region size
+To: Andrew Bresticker <abrestic@rivosinc.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, linux-efi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Feb 02, 2024 at 04:18:39PM +0100, Johan Hovold wrote:
-> The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
-> 
->   Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git tags/usb-serial-6.8-rc3
+Hi Andrew,
 
-Pulled and pushed out, thanks.
+On Fri, 2 Feb 2024 at 17:34, Andrew Bresticker <abrestic@rivosinc.com> wrote:
+>
+> md_size will have been narrowed if we have >= 4GB worth of pages in a
+> soft-reserved region.
+>
+> Signed-off-by: Andrew Bresticker <abrestic@rivosinc.com>
+> ---
+>  drivers/firmware/efi/arm-runtime.c   | 2 +-
+>  drivers/firmware/efi/riscv-runtime.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/firmware/efi/arm-runtime.c b/drivers/firmware/efi/arm-runtime.c
+> index 83f5bb57fa4c..f369256c7003 100644
+> --- a/drivers/firmware/efi/arm-runtime.c
+> +++ b/drivers/firmware/efi/arm-runtime.c
+> @@ -107,7 +107,7 @@ static int __init arm_enable_runtime_services(void)
+>                 efi_memory_desc_t *md;
+>
+>                 for_each_efi_memory_desc(md) {
+> -                       int md_size = md->num_pages << EFI_PAGE_SHIFT;
+> +                       unsigned long md_size = md->num_pages << EFI_PAGE_SHIFT;
 
-greg k-h
+Better use u64 here, and below as well.
+
+
+>                         struct resource *res;
+>
+>                         if (!(md->attribute & EFI_MEMORY_SP))
+> diff --git a/drivers/firmware/efi/riscv-runtime.c b/drivers/firmware/efi/riscv-runtime.c
+> index 09525fb5c240..9da79b8169d2 100644
+> --- a/drivers/firmware/efi/riscv-runtime.c
+> +++ b/drivers/firmware/efi/riscv-runtime.c
+> @@ -85,7 +85,7 @@ static int __init riscv_enable_runtime_services(void)
+>                 efi_memory_desc_t *md;
+>
+>                 for_each_efi_memory_desc(md) {
+> -                       int md_size = md->num_pages << EFI_PAGE_SHIFT;
+> +                       unsigned long md_size = md->num_pages << EFI_PAGE_SHIFT;
+>                         struct resource *res;
+>
+>                         if (!(md->attribute & EFI_MEMORY_SP))
+> --
+> 2.34.1
+>
+>
 
