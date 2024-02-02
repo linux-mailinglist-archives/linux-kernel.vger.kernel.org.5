@@ -1,84 +1,58 @@
-Return-Path: <linux-kernel+bounces-50330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AC2B84777B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 62C7084777D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:32:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72099B2A6FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:30:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25959B22916
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:31:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C250F38FA1;
-	Fri,  2 Feb 2024 18:30:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 156D314E2F9;
+	Fri,  2 Feb 2024 18:31:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dh/lLRrp"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="l59NXk5H"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7277D26ADB;
-	Fri,  2 Feb 2024 18:30:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1051726ADB;
+	Fri,  2 Feb 2024 18:31:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706898636; cv=none; b=d98NZcNAygJAf1/TGHUUzN2iubzWDbUfxuMwb/r82WzZK+ZAIp6Hl/smIDU4W0m9GmOr8RO8Qzi3OxV0rvOmjLukvrBzIAhWcfd4zaqILEdELLUESTxXlRfI7hIxW3sr0Qjocvq8bV6/yJtp/NWwyy4yhBeZ2iC8UjFOJIdUpx4=
+	t=1706898710; cv=none; b=MsM8AAJdd11fytb6nYpgvm9gyemj1ZVkj/6ugxpEsDBNUGSdDPzVZjx7XgUZftfffllq9mMBsnzqaibgl5VzdAVOwdUEt3SfTsQawNObS7UalAK7aetqZH6CnDUlWwnkBoO4tg6KmPtSdYhwxwp71oFavq4SjJukFxD8aTMopuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706898636; c=relaxed/simple;
-	bh=7+ZNXe8RQ6WizeFSYfqEWIhFGaKx/uASmD7TBJc1N1U=;
+	s=arc-20240116; t=1706898710; c=relaxed/simple;
+	bh=xnJRCLGQha+0WlKFzYB1mlxeiaNmrKg6CBv49mBIhWA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ryo5gu+f82JMt9kihvx51GXpMods9b5WnHlYd0mINP9gJGkUqE2RnoHXGbXmBNffl/umyn4+7OXZhQ4Mow94hx7JWRE1ydch+O6gPGscral1DosuZT6fJX/WiFb7Zmjikl8QIXzGlI33hk2oHFkBRoAoGPPRmtGopbv6zacL0wE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dh/lLRrp; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d07d74be60so21146531fa.3;
-        Fri, 02 Feb 2024 10:30:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706898632; x=1707503432; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7+ZNXe8RQ6WizeFSYfqEWIhFGaKx/uASmD7TBJc1N1U=;
-        b=Dh/lLRrpUN0q6k8yNu0J0kyB6oupbsBan23vE+VjwBPsqs75dtQ53+3N+rQb5eg+fr
-         2JKU6EsBUBWCQw/inxUmdukkXj+QAehOQp/p//6GzbLK0gUfh+ZMN/d7zvST5XHCIpK5
-         md8YE+/pO8sUHQfzxSPX4eq37IQxREEdSpcTpEgCELadQQDIs/yfAB2H68eZG+wG9oQ6
-         Akd/ysEgdyHrXf2L7p3aWxOjfeA65KtdlrkD0LSqco39s0HXR4gnuOMbl3l+74ezU8kn
-         Zu7Q3nwTt4pALcG8XTXw2hKillRXrK9rKGMy0xkfil0QDEHZBWeMzSi8awI1YwCJd8ad
-         bq7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706898632; x=1707503432;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7+ZNXe8RQ6WizeFSYfqEWIhFGaKx/uASmD7TBJc1N1U=;
-        b=X8DVMzofIoEdGqbPBGAplrvUA1CZJYlt50xv9m02kW9LA9barINRRafpGZJ5B12eGe
-         YjNgQB8bZKm6kXcrIouPaPm8LZp3bcvGi4qFD+CsR2682vECpmzGgqJ7lCthQ0izfS5p
-         Y9eyeC0REKZZP7zv0AqBAQZsQZrNFsQpSg1uqQpHPGe7js43c22IMmqhhe08wg4VD9A8
-         DXGzHFQUWDJodIfB3kdbwuHKj/LqHEFpBaRMR6T65zIjXYQqjxuGXswEvLQDzSS3laRS
-         +SE0AguBkHwRFhN7DdnD5tg5zxGFNO5ucEvVkesP1C726jL5kA3NpLiuLWJ3E7Tvc+Ej
-         MbJQ==
-X-Gm-Message-State: AOJu0YyG+bl1jOOwhB6rtMW+FMaOo0T6JWW9Rk2+3VyXBbhiwaxiKvjt
-	QqM7xWSWzjeXcEIA6PsL9RmxYz5JWfjQFZ+dMteiG8GhTlGdl0LE
-X-Google-Smtp-Source: AGHT+IG7ezzuPRxz5SVex2fFfr2/a66lZzV0Rrx/3HqeYAfchXqybAbCKp6y4o59FQqdgN7NyQnVVA==
-X-Received: by 2002:a05:651c:220f:b0:2d0:97e9:99c with SMTP id y15-20020a05651c220f00b002d097e9099cmr205872ljq.19.1706898632403;
-        Fri, 02 Feb 2024 10:30:32 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU4ZOzHlOWJQAWr1fWkzCjy59iCNCMAl7Ra78JQSvdffgM6v+DxCAQMDzmV/gZeP1Kyvsaan1JbZc7bWaxkLVEAt0Id0EkOV2pvGgpIux9l1/Pb/O9Hh3pDoo0mMoR7I570cRKvQthAjkSd5AgRiIApdFwYWax+s+RXuCHKpYEV78wGbzHG1rDtqNCXiEDAa/ef4tLWIgumBjaNTzFWHLWZ8PwSBBdnQs6y1p+Bpw/1DdfKwCmqMBlFTHobyrDpDHgiB+WpWIMYCfUPqZFDCgEmqH8BMOwYucL1j6s8GkzVuKk=
-Received: from debian ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id eo15-20020a056402530f00b0055eeb5f0efcsm1027391edb.58.2024.02.02.10.30.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 10:30:31 -0800 (PST)
-Date: Fri, 2 Feb 2024 19:30:29 +0100
-From: Dimitri Fedrau <dima.fedrau@gmail.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 net-next 00/13] net: phy: marvell-88q2xxx: add driver
- for the Marvell 88Q2220 PHY
-Message-ID: <20240202183029.GA16692@debian>
-References: <20240122212848.3645785-1-dima.fedrau@gmail.com>
- <20240129180959.582dbc88@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ql7NIX6y69z/h4Zs+6fLAR8ZKE/NqeU7zCE39c0K+Ti/P0BAOdkQ6ez/hg2EO3wEuVzMgF8W86DPK83vbKJdBSHyZTcisf2IGiJQTz2bUxbMB1r4FhUCx2fctOylceQI3Acq1pXThVDQlHJZfy0tPma0E0FW8rYvtXGQ8rK4xQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=l59NXk5H; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=7ZmH7pVZ4sZntB67OEN91/SxNu+S/S5mMs6QiO+nVgo=; b=l59NXk5HXZsuuhjCHcQjHtqnJ/
+	ZuFI8hFueGEyLPtjqk1GGn7QkxgN4PBVSlSjHsNPTt5laUBj7WqcJouVDL7madbJ529JjDBSN1tfB
+	5fkI/jUNlwoHuH1C8WDJ8ymF2wDQN/xWwlSa4iE5p6Tym4EMHgw3FF1YEQtRnAi3loBPLqiCAGESu
+	OzHF1ZAjdf0K4Hjb1EOFyv6LHQL9TCm4ukwFBHYODv6eGz0/0gQRlFj3cj4SnsbJlIbBb+xnwUDoT
+	1r4QN86Wxhkj3+ssC/yepIbNT6WgmG8G/mpR4a4uKAwAZ1aKlcv8ifjUmWqqPS9Vi7oX6OB/jK+oM
+	ooicoNVQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rVyKK-0000000CtQJ-1t4X;
+	Fri, 02 Feb 2024 18:31:48 +0000
+Date: Fri, 2 Feb 2024 10:31:48 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Marco Pagani <marpagan@redhat.com>
+Cc: linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] kernel/module: add a safer implementation of
+ try_module_get()
+Message-ID: <Zb01FDz3sOvKglNQ@bombadil.infradead.org>
+References: <20240130193614.49772-1-marpagan@redhat.com>
+ <ZblgV0ApD-9cQWwl@bombadil.infradead.org>
+ <cfa6cb2b-9432-4ed4-87ea-16be499d2806@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,14 +61,59 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240129180959.582dbc88@kernel.org>
+In-Reply-To: <cfa6cb2b-9432-4ed4-87ea-16be499d2806@redhat.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-[...]
+On Thu, Feb 01, 2024 at 03:27:54PM +0100, Marco Pagani wrote:
+> 
+> On 2024-01-30 21:47, Luis Chamberlain wrote:
+> > 
+> > It very much sounds like there is a desire to have this but without a
+> > user, there is no justification.
+> 
+> I was working on a set of patches to fix an issue in the fpga subsystem
+> when I came across your commit 557aafac1153 ("kernel/module: add
+> documentation for try_module_get()") that made me realize we also had a
+> safety problem. 
+> 
+> To solve this problem for the fpga manager, we had to add a mutex to
+> ensure the low-level module still exists before calling
+> try_module_get(). However, having a safer version of try_module_get()
+> would have simplified the code and made it more robust against changes.
+> 
+> https://lore.kernel.org/linux-fpga/20240111160242.149265-1-marpagan@redhat.com/
+> 
+> I suspect there may be other cases where try_module_get() is
+> inadvertently called without ensuring that the module still exists
+> that may benefit from a safer implementation.
 
-Probably late, but there are parts of the code which are based on the
-sample code provided by Marvell. The sample code is licensed under BSD
-2 Clause. Should I change the license in the driver to dual license ?
+Maybe so, however I'm not yet sure if this is safe from deadlocks.
+Please work on a series of selftest simple modules which demonstrate
+its use / and a simple bash script selftest loader which verifies this
+won't bust. Consider you may have third party modules which also race
+with this too, and other users without this new API.
 
-Best regards,
-Dimitri
+> >> +bool try_module_get_safe(struct module *module)
+> >> +{
+> >> +	struct module *mod;
+> >> +	bool ret = true;
+> >> +
+> >> +	if (!module)
+> >> +		goto out;
+> >> +
+> >> +	mutex_lock(&module_mutex);
+> > 
+> > If a user comes around then this should be mutex_lock_interruptible(),
+> > and add might_sleep()
+> 
+> Would it be okay to return false if it gets interrupted, or should I
+> change the return type to int to propagate -EINTR? My concern with
+> changing the signature is that it would be less straightforward to
+> use the function in place of try_module_get().
+
+Since we want a safe mechanism we might as well not allow a simple drop
+in replacement but a more robust one so that users take care of the
+return value properly.
+
+  Luis
 
