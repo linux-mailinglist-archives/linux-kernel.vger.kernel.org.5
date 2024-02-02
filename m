@@ -1,202 +1,129 @@
-Return-Path: <linux-kernel+bounces-49086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AC458465BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E8B088465BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:21:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD67F1F26F0F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:21:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 807C11F25E76
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:21:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C420DC123;
-	Fri,  2 Feb 2024 02:21:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CCE4AD4F;
+	Fri,  2 Feb 2024 02:21:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="crslRzn8"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="oasoUsml"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D2CBBA48
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 02:21:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8086BBA4C;
+	Fri,  2 Feb 2024 02:21:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706840466; cv=none; b=VZBLKbkl3tYHNB8i4FUaVgY4NNp01khhxignMOnREX5eFc0NEuIKX4JdY2/s1tTfDxD0a9J2dBtPyrdk0Ksn5aixtAYXgF+vWFNVV1yZkUJrsid2Y9UE/SLV7/K+i71hwnbC8adO8LvaMq+xm5bM9eeOxV40tFkEv2i6biJI3aI=
+	t=1706840464; cv=none; b=gM52u69wq8cvDAwlCbmSHuGxENNL9KRsmNxpJA0aF7CDvZOt32RNAIn31faTXJcF6Q+sOge4+V6E0+1f29RQUBG8ju3zCN682LhhfDW9+duDjNd0oE8jhp27hLnxpzItR67JVn+tGo1mB8JZuKx407DZeWqEJwY4dV2CdGH6dXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706840466; c=relaxed/simple;
-	bh=EQIwbZHsGuMlZyQ+7R9MpEihML0bmDWknH+HvCa+3QI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UppPgccqvHjFKFxSGS06bxYVQKon2wdLrOdn8mWLiCf6pmzeqQF14b9NrNbsLkDj7IJf45cD9yqWKXV4+I/13cLnDee9T3UavzT9rsBmbfQOAUNTwO0sIXECNpPGdPzabniQsAxaDkgesLMYsexVfoYSbEfeRehnkjJ76/AZ77A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=crslRzn8; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706840463;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=/AFNq394fKdD6rutt1qh+bLin+C/DGw45kLcKx0YqTM=;
-	b=crslRzn8TIDEYKtqWxAUJMegEew8Yoh1yPbu4l2l56NrRQa1fg3iIIXBCl49gSRezmOi7w
-	q27LNdKljx+9HCt3D8RtXuGGnZpjeZ/laBf2Z4IVc1RsJeKxMvMeIJxTAk311wCYvBHyBX
-	jiZeMRMZY9bpdSJcgLKWhKoDxfY3Qe8=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-124-aBo1uFCGPYOOyb7-_Gf_gw-1; Thu,
- 01 Feb 2024 21:20:58 -0500
-X-MC-Unique: aBo1uFCGPYOOyb7-_Gf_gw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 975C729AC00A;
-	Fri,  2 Feb 2024 02:20:57 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.16])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id ABCD01121306;
-	Fri,  2 Feb 2024 02:20:56 +0000 (UTC)
-From: Ming Lei <ming.lei@redhat.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Ming Lei <ming.lei@redhat.com>,
-	David Hildenbrand <david@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Don Dutile <ddutile@redhat.com>,
-	Rafael Aquini <raquini@redhat.com>,
-	Dave Chinner <david@fromorbit.com>,
-	Mike Snitzer <snitzer@kernel.org>
-Subject: [PATCH] mm/madvise: set ra_pages as device max request size during ADV_POPULATE_READ
-Date: Fri,  2 Feb 2024 10:20:29 +0800
-Message-ID: <20240202022029.1903629-1-ming.lei@redhat.com>
+	s=arc-20240116; t=1706840464; c=relaxed/simple;
+	bh=caSt1K8X7wTfsDubxjLdVYfUEcr45wgSDgC/mtyZAUE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cAyobS7BugA/kn/n6kX8sSErbTo5Orr1xghiplxyZZTV3ME4e52FbEZD+vpPtFX7QbE/NJT9+UUW2LTGDCzfKKGdcBJtkbEGVUVijPKIwZa6umbyYC1WTZcG/E9fl+eNjrzL5/Q0lzisJCbaOVTKS72hOvF7pCn0mym+lN88wlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=oasoUsml; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BDFEC433F1;
+	Fri,  2 Feb 2024 02:21:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1706840464;
+	bh=caSt1K8X7wTfsDubxjLdVYfUEcr45wgSDgC/mtyZAUE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oasoUsml1+uLAFVUGaQaKVrDvLeAA4/u3sJZm5Xz/4sTaHALvPZdO7EBtOrR7EXLG
+	 hEYO1rPOjmVEpMfSXOpWQKsKKw8AZNbkKTu/2eVeKy8CJCt5vlZSKWrh/4XbZuSnEX
+	 iMnsZNOgmlr2vZV5PPxlHgO1PInXuK3tTQvc5/Vw=
+Date: Thu, 1 Feb 2024 18:21:03 -0800
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado <nfraprado@collabora.com>
+Cc: Brian Norris <briannorris@chromium.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Tzung-Bi Shih <tzungbi@kernel.org>, kernel@collabora.com,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	chrome-platform@lists.linux.dev,
+	Abhijit Gangurde <abhijit.gangurde@amd.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Nipun Gupta <nipun.gupta@amd.com>,
+	Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>,
+	Umang Jain <umang.jain@ideasonboard.com>,
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/7] firmware: coreboot: Generate aliases for coreboot
+ modules
+Message-ID: <2024020105-dash-antiquity-a56b@gregkh>
+References: <20240112131857.900734-1-nfraprado@collabora.com>
+ <20240112131857.900734-3-nfraprado@collabora.com>
+ <ZaQVScQ2AYquG-Zr@smile.fi.intel.com>
+ <ZbA4VthTMPT7BSRo@google.com>
+ <2024013059-poison-equation-81d1@gregkh>
+ <CA+ASDXM-m6U+JFvBSSHMxAf8Ct-T-pL8tmcHxHQjepdRFR-s1w@mail.gmail.com>
+ <2024013012-gully-goofy-2a55@gregkh>
+ <679fa364-28d0-4faa-b46e-805faf56ae53@notapiano>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+In-Reply-To: <679fa364-28d0-4faa-b46e-805faf56ae53@notapiano>
 
-madvise(MADV_POPULATE_READ) tries to populate all page tables in the
-specific range, so it is usually sequential IO if VMA is backed by
-file.
+On Thu, Feb 01, 2024 at 05:45:19PM -0500, Nícolas F. R. A. Prado wrote:
+> On Tue, Jan 30, 2024 at 04:23:02PM -0800, Greg Kroah-Hartman wrote:
+> > On Tue, Jan 30, 2024 at 04:01:57PM -0800, Brian Norris wrote:
+> > > On Tue, Jan 30, 2024 at 3:51 PM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > > On Tue, Jan 23, 2024 at 02:06:14PM -0800, Brian Norris wrote:
+> > > > > "Don't you want to have a driver data or so associated with this?"
+> > > ...
+> > > > But why limit yourself to 32bits now?  Why not make it 64?  It is going
+> > > > to be sent to userspace, so you have to be very careful about it.
+> > > 
+> > > Is that question related to the question I pasted/replied to, about
+> > > driver data? Or a new topic? Sorry if I'm misunderstanding.
+> > 
+> > Same question, driver data, you make it 32 bits.
+> > 
+> > > Anyway, for the size of the tag field: I don't have a strong opinion.
+> > > But FWIW, they're coming from this project:
+> > > 
+> > > https://review.coreboot.org/plugins/gitiles/coreboot/+/269b23280f928510bcadd23182294e5b9dad11ec/payloads/libpayload/include/coreboot_tables.h#36
+> > > 
+> > > As you can see there, we're extremely far from exhausting 16 bits, let alone 32.
+> > 
+> > We've run into running out of bits in other subsystems before, it's
+> > "free" now, just be safe and make it 64 like I think Andy is suggesting.
+> 
+> Either you and Andy are suggesting different things, or I still don't quite get
+> what you mean.
+> 
+> Andy was suggesting we added a driver_data field, that is:
+> 
+> struct coreboot_device_id {
+> 	__u32 tag;
+> 	kernel_ulong_t driver_data;
+> };
+> 
+> You're suggesting we make the tag 64 bits long:
+> 
+> struct coreboot_device_id {
+> 	__u64 tag;
+> };
 
-Set ra_pages as device max request size for the involved readahead in
-the ADV_POPULATE_READ, this way reduces latency of madvise(MADV_POPULATE_READ)
-to 1/10 when running madvise(MADV_POPULATE_READ) over one 1GB file with
-usual(default) 128KB of read_ahead_kb.
+Yeah, I'm confused, sorry.
 
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Don Dutile <ddutile@redhat.com>
-Cc: Rafael Aquini <raquini@redhat.com>
-Cc: Dave Chinner <david@fromorbit.com>
-Cc: Mike Snitzer <snitzer@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
- mm/madvise.c | 52 +++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 51 insertions(+), 1 deletion(-)
+Yes, add some driver_data, and if you are SURE your tag will NEVER be
+larger than 32 bits, stick with that, but really, you are using the
+space in empty padding anyway, so just make it 64bits please.
 
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 912155a94ed5..db5452c8abdd 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -900,6 +900,37 @@ static long madvise_dontneed_free(struct vm_area_struct *vma,
- 		return -EINVAL;
- }
- 
-+static void madvise_restore_ra_win(struct file **file, unsigned int ra_pages)
-+{
-+	if (*file) {
-+		struct file *f = *file;
-+
-+		f->f_ra.ra_pages = ra_pages;
-+		fput(f);
-+		*file = NULL;
-+	}
-+}
-+
-+static struct file *madvise_override_ra_win(struct file *f,
-+		unsigned long start, unsigned long end,
-+		unsigned int *old_ra_pages)
-+{
-+	unsigned int io_pages;
-+
-+	if (!f || !f->f_mapping || !f->f_mapping->host)
-+		return NULL;
-+
-+	io_pages = inode_to_bdi(f->f_mapping->host)->io_pages;
-+	if (((end - start) >> PAGE_SHIFT) < io_pages)
-+		return NULL;
-+
-+	f = get_file(f);
-+	*old_ra_pages = f->f_ra.ra_pages;
-+	f->f_ra.ra_pages = io_pages;
-+
-+	return f;
-+}
-+
- static long madvise_populate(struct vm_area_struct *vma,
- 			     struct vm_area_struct **prev,
- 			     unsigned long start, unsigned long end,
-@@ -908,9 +939,21 @@ static long madvise_populate(struct vm_area_struct *vma,
- 	const bool write = behavior == MADV_POPULATE_WRITE;
- 	struct mm_struct *mm = vma->vm_mm;
- 	unsigned long tmp_end;
-+	unsigned int ra_pages;
-+	struct file *file;
- 	int locked = 1;
- 	long pages;
- 
-+	/*
-+	 * In case of file backing mapping, increase readahead window
-+	 * for reducing the whole populate latency, and restore it
-+	 * after the populate is done
-+	 */
-+	if (behavior == MADV_POPULATE_READ)
-+		file = madvise_override_ra_win(vma->vm_file, start, end,
-+				&ra_pages);
-+	else
-+		file = NULL;
- 	*prev = vma;
- 
- 	while (start < end) {
-@@ -920,8 +963,10 @@ static long madvise_populate(struct vm_area_struct *vma,
- 		 */
- 		if (!vma || start >= vma->vm_end) {
- 			vma = vma_lookup(mm, start);
--			if (!vma)
-+			if (!vma) {
-+				madvise_restore_ra_win(&file, ra_pages);
- 				return -ENOMEM;
-+			}
- 		}
- 
- 		tmp_end = min_t(unsigned long, end, vma->vm_end);
-@@ -935,6 +980,9 @@ static long madvise_populate(struct vm_area_struct *vma,
- 			vma = NULL;
- 		}
- 		if (pages < 0) {
-+			/* restore ra pages back in case of any failure */
-+			madvise_restore_ra_win(&file, ra_pages);
-+
- 			switch (pages) {
- 			case -EINTR:
- 				return -EINTR;
-@@ -954,6 +1002,8 @@ static long madvise_populate(struct vm_area_struct *vma,
- 		}
- 		start += pages * PAGE_SIZE;
- 	}
-+
-+	madvise_restore_ra_win(&file, ra_pages);
- 	return 0;
- }
- 
--- 
-2.41.0
+thanks,
 
+greg k-h
 
