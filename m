@@ -1,144 +1,99 @@
-Return-Path: <linux-kernel+bounces-49643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 266D6846D55
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:06:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B455846D65
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:10:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEB2D1F22C9B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:06:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4F44B22287
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:10:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FC0177F3E;
-	Fri,  2 Feb 2024 10:06:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47AC87A70D;
+	Fri,  2 Feb 2024 10:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="h5nEVG65";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="pHj1cA59"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="StfPeYjR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5E8877634
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 10:06:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D40077652;
+	Fri,  2 Feb 2024 10:10:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706868412; cv=none; b=mK1o7k/m6UIGeEa5e0oregxKFDkEVA5lkxVruYGuErJ8Er/kA2EG8DnjdX02HBADLdGVWSxP+7TYsDcC/dQqRAQmK2NMxWSzC2Z0s99tHqd1gFOka6cxOw/oumAIo8CX+smfCosi3nQotwDjDHELJWtYqra21259DT0rBsCT9Cg=
+	t=1706868628; cv=none; b=VYvKfu6WXUlHMjjICOSd5/A0W1ghhGKK3w15uVSkz7DzILzYOg/A9rqOj/DeCmvcfKxVH3wiQmJauGov+vKT/kLEbJyDuhWbBisRPynExexKQNXoz44RAUaADOHk4ZQJcDsyVhRD61gy0Kx9Gd+7AsJfmdFmS50N4QDIZxCA3Dw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706868412; c=relaxed/simple;
-	bh=fuKoY4mbxj5tV35tFZocFtR5lXefrrau5IR3m3GDVrw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HrRT97s2ifeeug1mh6pyqGGqlcFPX8uKHEQMM5wFDDJgXwrERfKHFLd/tHz92NJ3PjjTvSlExe245S1Omk7KcjMO0dsi0qCUYvQHZ3kal1BIw3w1TB7buuFxg/WxalDX+bq+xpR+ydIfXIl53wsV8cJP2iQ+SEzVY4eQDZNyNhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=h5nEVG65; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=pHj1cA59; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E4AB2221BE;
-	Fri,  2 Feb 2024 10:06:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706868409; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Zp39qw0vyC5qpStWLyPfn976MpebyO4rKbzn6LwaTRk=;
-	b=h5nEVG650NBZwy9STqPacXwisn2rWSXL2wDfvdo8HrS1YKRIcdyZ9cSLRll6bnCTpkVQZR
-	+yXRNRR8uZMrzv0nq5fpArBU+G40D7h+Jnjc+yENDqOlBV3BG3mNjaiEnJE6A104GYWs2z
-	U9X5Sgo5qrKkck3IzeODEHmCjKa6mXk=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706868408; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Zp39qw0vyC5qpStWLyPfn976MpebyO4rKbzn6LwaTRk=;
-	b=pHj1cA59U4F6WUt07t/FI9xkJmJRhAMg8D2ulzUNVaaTiGpFgHTVxETPBcZ6sund0I3JWR
-	2eF0S/cUsHgayWfgH8tgtVEtwrgKmT3d4vauutZymMQF4z8xJnRGeGs00cx8oIKMt/hyeX
-	dB9FqQqqDkXW6IYeWYowlQCs5aHszS8=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C616213A58;
-	Fri,  2 Feb 2024 10:06:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id tgSPLri+vGXmWAAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Fri, 02 Feb 2024 10:06:48 +0000
-Date: Fri, 2 Feb 2024 11:06:40 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Lance Yang <ioworker0@gmail.com>
-Cc: akpm@linux-foundation.org, zokeefe@google.com, david@redhat.com,
-	songmuchun@bytedance.com, shy828301@gmail.com, peterx@redhat.com,
-	minchan@kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] mm/khugepaged: skip copying lazyfree pages on
- collapse
-Message-ID: <Zby-sHLDlmTRaUcd@tiehlicka>
-References: <20240201125226.28372-1-ioworker0@gmail.com>
+	s=arc-20240116; t=1706868628; c=relaxed/simple;
+	bh=/u55Rx+IiTBdg/DacgDPZdGpm9UlGyfFcxW+Iw8dSsQ=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=u0VpnWIMoVb1X65YMVDrUXY5xhTzWoN7CkTko8DTJMib4P90D9UYAkhiJyh9jkoWp+TVl4o5DlXu8KTtZlkkneP7WLrvqAtIRvZLYmHYDd9wXEcVkS4sKgbTHT7gjJDKDMr5V0tVwcOR1hdCnheZ+18M+vzq7bjlJlD1zPMMRw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=StfPeYjR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D5364C433C7;
+	Fri,  2 Feb 2024 10:10:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706868627;
+	bh=/u55Rx+IiTBdg/DacgDPZdGpm9UlGyfFcxW+Iw8dSsQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=StfPeYjRBqYjb120rx6pvww20hdGJ6GoZniIp7gLR0uSFsVufmorTJBKVZmTGPete
+	 Q27wbZ0dY0QN5k2BE0noMJxZAEnlfdtJuemGMVXcknA1x0frc7zxzsfv6AonWpGy+5
+	 p0w5zubveGe427y8RyIUlSXu/enWOxlK1tfwh8AeMJr8M+L0viXiuFTJ2aTPd1hExr
+	 CNgVzUzxh7uokaQT+EPHDDvnLOsXgxfuBHHuMVd6WmcLXx+lSg5jX9h0sQfv5tT603
+	 M3lTXQP7OdjMDfujfaFcT2pVnQxw8a5jFBZVNAiSCqTvoLBOvt0NusOAn9OjGxAyDk
+	 M4GDHrvxtPdlg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B7B18D8C970;
+	Fri,  2 Feb 2024 10:10:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240201125226.28372-1-ioworker0@gmail.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=pHj1cA59
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.03 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.02)[51.99%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 FROM_HAS_DN(0.00)[];
-	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,google.com,redhat.com,bytedance.com,gmail.com,kernel.org,kvack.org,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -3.03
-X-Rspamd-Queue-Id: E4AB2221BE
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+Subject: Re: [net-next PATCH v3 0/2] net: mdio-ipq4019: fix wrong default MDC rate
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170686862773.17682.10435156329986246682.git-patchwork-notify@kernel.org>
+Date: Fri, 02 Feb 2024 10:10:27 +0000
+References: <20240131022606.1532-1-ansuelsmth@gmail.com>
+In-Reply-To: <20240131022606.1532-1-ansuelsmth@gmail.com>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+ robert.marko@sartura.hr, linux-arm-msm@vger.kernel.org,
+ netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
-On Thu 01-02-24 20:52:26, Lance Yang wrote:
-> The collapsing behavior of khugepaged with pages
-> marked using MADV_FREE might cause confusion
-> among users.
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Wed, 31 Jan 2024 03:26:02 +0100 you wrote:
+> This was a long journey to arrive and discover this problem.
 > 
-> For instance, allocate a 2MB chunk using mmap and
-> later release it by MADV_FREE. Khugepaged will not
-> collapse this chunk. From the user's perspective,
-> it treats lazyfree pages as pte_none. However,
-> for some pages marked as lazyfree with MADV_FREE,
-> khugepaged might collapse this chunk and copy
-> these pages to a new huge page. This inconsistency
-> in behavior could be confusing for users.
+> To not waste too much char, there is a race problem with PHY and driver
+> probe. This was observed with Aquantia PHY firmware loading.
+> 
+> With some hacks the race problem was workarounded but an interesting
+> thing was notice. It took more than a minute for the firmware to load
+> via MDIO.
+> 
+> [...]
 
-Is that any more confusing than collapsing pte_none
-pages?
+Here is the summary with links:
+  - [net-next,v3,1/2] dt-bindings: net: ipq4019-mdio: document now supported clock-frequency
+    https://git.kernel.org/netdev/net-next/c/9484b9555de0
+  - [net-next,v3,2/2] net: mdio: ipq4019: add support for clock-frequency property
+    https://git.kernel.org/netdev/net-next/c/bdce82e960d1
 
-TBH I do not really see why this is a problem. MADV_FREE
-are correctly recognized same as pte_none so the user
-defined trashold applies.
+You are awesome, thank you!
 -- 
-Michal Hocko
-SUSE Labs
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
