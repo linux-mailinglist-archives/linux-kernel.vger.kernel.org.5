@@ -1,142 +1,154 @@
-Return-Path: <linux-kernel+bounces-50295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94144847714
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:07:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2398B847719
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:08:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BA8E288025
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:07:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD3E228D79C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:08:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C51714E2C9;
-	Fri,  2 Feb 2024 18:07:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="eIxez5hU"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21BF414D445
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 18:07:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD6B14D447;
+	Fri,  2 Feb 2024 18:08:07 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFE4E14C598;
+	Fri,  2 Feb 2024 18:08:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706897237; cv=none; b=PrBHarzPI4kBJKVXWuuG308bmflwzIwI1kaSjngmm+Z45ZZtr3vVnC6ijH7p22nzVQNcJhC8NekWV4JP9UAU2O9XjbATf3zrkD6R+5i6jseqNBTPJQULEnuZERbdIdbOaChyi8dufq+jXEOhBfxMHASIH4m8A7WOyghDEFKjTfo=
+	t=1706897286; cv=none; b=ImgoTBOYcQ3fG94ufq4GN5Ad2JBiPm/zz6YZtv1HURte4x1jKhIzecJCT7ekvvKXEK5xRQPlP1Wk1OcetbRupGZarBawFk6UnOqlwOK2kqMGJmXhZldrIQnJU1A07rPoRsXvqpzxfHwLxvxJIp524ZY6aIkoUU7mJkRvtCpZ4gY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706897237; c=relaxed/simple;
-	bh=rOW+QJMgxaki+Zs/59rTQG+pV3s0svR8zftHybnFrCo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WxI7WMc8ur4HC0RfkI2SN+Xxt78smdTUJbC3hwWp3R5BBoCiP3eBpHe6Eer+3iZENae2UxCfL4jyZDgGK+U/xHDsPv1QqqPfFQiixjwSYa/2VDef0OsdNWAz07n+y7v/GaIAsexoO64MPrUITvihuYa3bY9q6tXUi+Lx40TBMsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=eIxez5hU; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6ddd1fc67d2so1812837b3a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 10:07:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706897235; x=1707502035; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hDme6jlnfxJTWCG7qW4Qy8DGvSmakPXAl9L2egvk9Cw=;
-        b=eIxez5hUfp9YtpCJbFFsq5rHhz4ETMEgVxD3PyaqapRe+MNvn+FW4F/1PQ3S83IN6Q
-         Z6X1KG1LbIVKZ5STLjcROvU40m66iRYZ/9gWL9KI4ECoFyL0zwWc9vHMPxVs9q6sEvLw
-         GS/4JaTNu6j6ve5C8MAC5g2cOXUFky2G1F077K1c6RSEaovfRfeW7ruSbqsWaoMiZHhO
-         EOHZkoRujQYwUy5aPGvmkT1ux7uVvX1qh0l6n9FjCzakC3z4nXLkew4PqYedL2+aeG4X
-         X5r2+awR/z7ZgZoqEz95l/mmLIlRXk+dmWzsK+1/G/U+LbE1acs9GNdTjcYcI6SdlAlX
-         DsjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706897235; x=1707502035;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hDme6jlnfxJTWCG7qW4Qy8DGvSmakPXAl9L2egvk9Cw=;
-        b=E872wFsxSOrbiSo2Gl2FyVeDLohy1eOdUdoSBXZYqjKRC064knuAWQXSRzh+LGWHwi
-         DBSV1Z2UdmyKQD9x0HebvX+tdgObHGbnx8NgStWEJlXhWi6Bn1unE25lh/DnRJSvsVqJ
-         T/JiUXxov1PGhuxRA9PcsgVHgW2aRoVAoG7LROFQczzDnquttaT2im8ubLWmsJfRfQOn
-         I+79mZtuYUvrrhTF11w2KktMmV0F6VJ+RofspIudWLsr0q2sEmBmj7qM5SdTxqxAwhAS
-         J2mri7nLk8DwGcVojeSVzrHeYH+7P9kyGmjd9h9zcFyjwHDCp0CAR6QQWoCUVuGA6/o8
-         KfEw==
-X-Gm-Message-State: AOJu0YzKShpRRtbTtjkvNlwnzs/WEeum5me1V6ZQRR2teKQJpz0DTmvd
-	StEZ2fdsahc2HK1if7TnkuG0F+APivdwf/IwPjLyiD23ty1h9JL+9vWFEIQF8Gs=
-X-Google-Smtp-Source: AGHT+IGApjy1ny5FjS4Gq04ep4ZGH47dxEianIZwB0z+YLgCGzepTGWlWVGFhBvj0Leq9dER0TovMw==
-X-Received: by 2002:a05:6a00:2d0b:b0:6de:2f30:9aa5 with SMTP id fa11-20020a056a002d0b00b006de2f309aa5mr10452219pfb.23.1706897235504;
-        Fri, 02 Feb 2024 10:07:15 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUwNs/zU8/SXHjEg5qUkWY+fJgs2JKC5h3bIMxiFY66H4USskIUSM3fOxkdHpyh6sQ4e2yYOdz45C57EARz86REEZiCOCXWbA5Gm0Sypq6v9RBEWN+/mx4GuYvD6I1trxf3wKO1ukvU3hoffX9eTbINn/OcE3cSok4CavXG2l66S+no2C6S9fhUfvsxLFKbFDXcy3TWbq5Aq6sHseHObZF/cMmyc0nLCh8CIDSfRN4magWGtl7jSipLlkKKq5yv2ltHVt83sqeCYfeM
-Received: from abrestic.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id s26-20020aa78d5a000000b006ddd31a701esm1989267pfe.19.2024.02.02.10.07.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 10:07:15 -0800 (PST)
-From: Andrew Bresticker <abrestic@rivosinc.com>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	linux-efi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	Andrew Bresticker <abrestic@rivosinc.com>
-Subject: [PATCH v2 2/2] efi: Don't add memblocks for soft-reserved memory
-Date: Fri,  2 Feb 2024 10:07:04 -0800
-Message-Id: <20240202180704.808766-3-abrestic@rivosinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240202180704.808766-1-abrestic@rivosinc.com>
-References: <20240202180704.808766-1-abrestic@rivosinc.com>
+	s=arc-20240116; t=1706897286; c=relaxed/simple;
+	bh=9rwlNwy8wTSVXhT4XMjY34L+K/gYaFA32HXn/coWBE4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=brlpoNJszZ5cpPiy1f/58GCmp3/WAQOsOyLEsR850sj1IvX3boKknCsna7ZsW/EIUSkWvtXZtvwh2DTdLyGn5IUDkadk5lwameNZy8AzqpO4rzkBg3CHyNpqGPw/+WJA+xrnxTODpVx0hLjln5gGPlwpXFioKZnPatrZjdt64Ps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 748E119F0;
+	Fri,  2 Feb 2024 10:08:41 -0800 (PST)
+Received: from e133380.arm.com (e133380.arm.com [10.1.197.58])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 37B2C3F762;
+	Fri,  2 Feb 2024 10:07:57 -0800 (PST)
+Date: Fri, 2 Feb 2024 18:07:54 +0000
+From: Dave Martin <Dave.Martin@arm.com>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Doug Anderson <dianders@chromium.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Eric Biederman <ebiederm@xmission.com>, Jan Kara <jack@suse.cz>,
+	Kees Cook <keescook@chromium.org>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	Oleg Nesterov <oleg@redhat.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>,
+	Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] regset: use vmalloc() for regset_get_alloc()
+Message-ID: <Zb0vem7KC28gmT5U@e133380.arm.com>
+References: <20240201171159.1.Id9ad163b60d21c9e56c2d686b0cc9083a8ba7924@changeid>
+ <20240202012249.GU2087318@ZenIV>
+ <CAD=FV=X5dpMyCGg4Xn+ApRwmiLB5zB0LTMCoSfW_X6eAsfQy8w@mail.gmail.com>
+ <20240202030438.GV2087318@ZenIV>
+ <CAD=FV=Wbq7R9AirvxnW1aWoEnp2fWQrwBsxsDB46xbfTLHCZ4w@mail.gmail.com>
+ <20240202034925.GW2087318@ZenIV>
+ <20240202040503.GX2087318@ZenIV>
+ <CAD=FV=X93KNMF4NwQY8uh-L=1J8PrDFQYu-cqSd+KnY5+Pq+_w@mail.gmail.com>
+ <20240202164947.GC2087318@ZenIV>
+ <20240202165524.GD2087318@ZenIV>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240202165524.GD2087318@ZenIV>
 
-Adding memblocks for soft-reserved regions prevents them from later being
-hotplugged in by dax_kmem.
+On Fri, Feb 02, 2024 at 04:55:24PM +0000, Al Viro wrote:
+> On Fri, Feb 02, 2024 at 04:49:47PM +0000, Al Viro wrote:
+> > > +folks from `./scripts/get_maintainer.pl -f arch/arm64/kernel/ptrace.c`
+> > > 
+> > > Trying to follow the macros to see where "n" comes from is a maze of
+> > > twisty little passages, all alike. Hopefully someone from the ARM
+> > > world can help tell if the value of 17474 for n here is correct or if
+> > > something is wonky.
 
-Signed-off-by: Andrew Bresticker <abrestic@rivosinc.com>
----
-v2: only skip adding memblocks for soft-reserved mem
----
- drivers/firmware/efi/efi-init.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+Nope, that's the "correct" answer...
 
-diff --git a/drivers/firmware/efi/efi-init.c b/drivers/firmware/efi/efi-init.c
-index d4987d013080..a00e07b853f2 100644
---- a/drivers/firmware/efi/efi-init.c
-+++ b/drivers/firmware/efi/efi-init.c
-@@ -143,15 +143,6 @@ static __init int is_usable_memory(efi_memory_desc_t *md)
- 	case EFI_BOOT_SERVICES_DATA:
- 	case EFI_CONVENTIONAL_MEMORY:
- 	case EFI_PERSISTENT_MEMORY:
--		/*
--		 * Special purpose memory is 'soft reserved', which means it
--		 * is set aside initially, but can be hotplugged back in or
--		 * be assigned to the dax driver after boot.
--		 */
--		if (efi_soft_reserve_enabled() &&
--		    (md->attribute & EFI_MEMORY_SP))
--			return false;
--
- 		/*
- 		 * According to the spec, these regions are no longer reserved
- 		 * after calling ExitBootServices(). However, we can only use
-@@ -196,6 +187,16 @@ static __init void reserve_regions(void)
- 		size = npages << PAGE_SHIFT;
- 
- 		if (is_memory(md)) {
-+			/*
-+			 * Special purpose memory is 'soft reserved', which
-+			 * means it is set aside initially. Don't add a memblock
-+			 * for it now so that it can be hotplugged back in or
-+			 * be assigned to the dax driver after boot.
-+			 */
-+			if (efi_soft_reserve_enabled() &&
-+			    (md->attribute & EFI_MEMORY_SP))
-+				continue;
-+
- 			early_init_dt_add_memory_arch(paddr, size);
- 
- 			if (!is_usable_memory(md))
--- 
-2.34.1
+> > 
+> > It might be interesting to have it print the return value of __regset_get()
+> > in those cases; if *that* is huge, we really have a problem.  If it ends up
+> > small enough to fit into few pages, OTOH...
+> > 
+> > SVE_VQ_MAX is defined as 255; is that really in units of 128 bits?  IOW,
+> > do we really expect to support 32Kbit registers?  That would drive the
+> > size into that range, all right, but it would really suck on context
+> > switches.
+> > 
+> > I could be misreading it, though - the macros in there are not easy to
+> > follow and I've never dealt with SVE before, so take the above with
+> > a cartload of salt.
+> 
+> Worse - it's SVE_VQ_MAX is 512; sorry about the confusion.  OK, that would
+> certainly explain the size (header + 32 registers, each up to 512 * 16 bytes),
+> but... ouch.
 
+Mark Brown [+ Cc] has been taking care of SVE in my absence, but
+from memory:
+
+The SVE architecture has a really big maximum vector size (16 * 128 =
+2048 bits), and there is a theoretical possibility of it getting bigger
+in the future, though unlikely.
+
+Real platforms to date have a much smaller limit, though Qemu can go up
+to 2048 bits IIUC.
+
+My aim when working on the ABI was to future-proof it against
+foreseeable expansion on the architecture side, but this does mean that
+we cannot statically determine a sane limit for the vector size.
+
+
+I suppose we could have had a more sane limit built into the kernel or a
+Kconfig option for it, but it seemed simpler just to determine the size
+dynamically depending on the task's current state.  This is not so
+important for coredumps, but for the the gdbstub wire protocol etc. it
+seemed undesirable to have the regset larger than needed.
+
+Hence the reason for adding ->get_size() in
+27e64b4be4b8 ("regset: Add support for dynamically sized regsets").
+
+What I guess was not so obvious from the commit message is the
+expected relationship between the actual and maximum possible size
+of the regset: for SVE the actual size is in practice going to be *much*
+smaller than the max, while the max is crazy large because of being an
+ABI design limit chosen for futureproofing purposes.
+
+
+
+So, if the only reason for trying to migrate to vmalloc() is to cope
+with an insanely sized regset on arm64, I think somehow or other we can
+avoid that.
+
+Options:
+
+ a) bring back ->get_size() so that we can allocate the correct size
+before generating the regset data;
+
+ b) make aarch64_regsets[] __ro_after_init and set
+aarch64_regsets[REGSET_SVE].n based on the boot-time probed maximum size
+(which will be sane); or
+
+ c) allow membufs to grow if needed (sounds fragile though, and may be
+hard to justify just for one arch?).
+
+
+Thoughts?
+
+If people don't want to bring back get_size(), then (b) doesn't look
+too bad.
+
+Cheers
+---Dave
 
