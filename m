@@ -1,152 +1,336 @@
-Return-Path: <linux-kernel+bounces-49875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D13AD8470C8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:01:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 015B08471A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:07:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 711241F27965
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:01:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F80C2887BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:07:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EFA0182CA;
-	Fri,  2 Feb 2024 13:01:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50BE413E226;
+	Fri,  2 Feb 2024 14:07:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rk52/yef"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="Y9YIZYgg"
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7D24210E8;
-	Fri,  2 Feb 2024 13:01:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E00CE60249
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 14:07:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706878902; cv=none; b=VRR2+LPcxFlXO1kW4EqX5IgIErfs4cuGnkhpRL/qpwt0DM1aZ3AISdfRONjNywEUKKNuiHKMbDaOrnF4almRqAOIoInjzLkZabNwQp+2tmb+fEiOdz78xDoKzHURb10n5s15GGqHs8OfT+oaVrc5x1l4lj+wicBa9If//RNI25g=
+	t=1706882866; cv=none; b=k1rbMhKBMuw/+L0VxOkkvuV9nKBL6byskxG0FGjO42MI5N+wcFddhx65Z/RnU0jOdCF2620Ev6ju1zORSMbByivmUreXr7Z2qaZuneIdUHGC5ijwVIVTQf0vBNXfodaOYfSp1RKbWALfKEnWOammCUqC+ajQOa5vjCyskcc/6uc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706878902; c=relaxed/simple;
-	bh=ZjGVUgcdYqjFELWbtS5Tz+gafK6SLtjIYXwEYo18YXo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lwlp1bbvGXNxCG5EyyNWbPK2jEUYH4sQ0NzWw4iAzSYmSNsmHVQCzCl/77Sw6WYsphX0FoPfmoYLeE6KDnfI3chh9fXGiP95J1HatK71nYtfJEXHlgDUelD6CnkcJ/BzBGP5simandsmv/c20WStXX+hMmXcSSQwGKPEkiR4KDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rk52/yef; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9E34C433F1;
-	Fri,  2 Feb 2024 13:01:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706878902;
-	bh=ZjGVUgcdYqjFELWbtS5Tz+gafK6SLtjIYXwEYo18YXo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Rk52/yefcJ7xC9MuTUP9sVCJC4n6DX/+ofLVOsiOkeAH60dIBnk2fZXv9ByUydBSm
-	 DtqxnIWw/Mom3yYSOahogiwlITZbO6GPKqH6MT9Kdr8LoJYR+meY7ea3x86U/vmdK4
-	 jRDsbJiXrCZxHBdA/8os4Npi7r/i1RsmqZO0HydLSMRy0rWgj6ua7CH416PSWMz9pG
-	 0eAtdr7brPlRIP4fC1N9uM9JlSNyxx5dHaPSkw9vVrEL5j6Xw4EmSZSGqLZYN6CIUl
-	 apPnlO5ZVBPs/+JA5YylF5MM9Ainw7YQkJYQDn356jUppnedKDWil6gE6ptW+ae8v4
-	 30Y4ACuH/ziuw==
-Date: Fri, 2 Feb 2024 14:01:39 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Sebastian Wick <sebastian.wick@redhat.com>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>, Jonathan Corbet <corbet@lwn.net>, 
-	Sandy Huang <hjc@rock-chips.com>, Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, 
-	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Hans Verkuil <hverkuil@xs4all.nl>, 
-	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-Subject: Re: Re: [PATCH v5 08/44] drm/connector: hdmi: Add Broadcast RGB
- property
-Message-ID: <73peztbeeikb3fg6coxu3punxllgtyrmgco34tnxkojtsjbr3s@26bud3sjbcez>
-References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
- <20231207-kms-hdmi-connector-state-v5-8-6538e19d634d@kernel.org>
- <20240115143308.GA159345@toolbox>
- <20240115143720.GA160656@toolbox>
+	s=arc-20240116; t=1706882866; c=relaxed/simple;
+	bh=ANIJS9UzkOmFsPmPeZuENE1ZuoiAp/fMOA7MnKgVqIE=;
+	h=From:To:Cc:In-Reply-To:Subject:Date:Message-ID:MIME-Version:
+	 Content-Type:References; b=ExDQfTFjSW5LU1efMJKL9EJLmCTir3AEMubmCVQGqAvOHu4RSPIIxAGddyXVpuZdiP1srVaZWAdJiDC3NLjCE8tUQpOu+lMNKu027Tiqx54pGn7zrVlJACruACx6zLTEcQwlzqmqmwoTPheY/++E32QPrYb882PblEqftCmGmjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=Y9YIZYgg; arc=none smtp.client-ip=203.254.224.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20240202135954epoutp02e9c2497205fc329cfe758488358a44a8~wEH5w0ipD1606816068epoutp02u
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 13:59:54 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20240202135954epoutp02e9c2497205fc329cfe758488358a44a8~wEH5w0ipD1606816068epoutp02u
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1706882394;
+	bh=uPljuUqcnvBKfoTySKkhA0+5apgmEsMGTJCKcyU/yGk=;
+	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+	b=Y9YIZYgg0UM/CDb7siYyh1EpHU+CwmZrspyKMd+PBWop6KQgudfOqKCmHWgANBUtg
+	 rEHe3CjXYZxJwsheX4pVvc0iobLihlKFsKQ4ny572K0NcvRJwDL8dpWBGkBUcTG9es
+	 j1M9pU78pNuj3pC6yMo8ZToCfJp9VW5s6AlfMNI4=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+	epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+	20240202135952epcas5p14a5f82d917b630160044cc0cab67da79~wEH4njU-I2501125011epcas5p1N;
+	Fri,  2 Feb 2024 13:59:52 +0000 (GMT)
+Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.174]) by
+	epsnrtp1.localdomain (Postfix) with ESMTP id 4TRHTM0l7hz4x9Ps; Fri,  2 Feb
+	2024 13:59:51 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+	epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	4B.4C.19369.655FCB56; Fri,  2 Feb 2024 22:59:50 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+	epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+	20240202115943epcas5p4ffd74eaf0571f61e3bac50be11a94632~wCe_eyBOS1710017100epcas5p4u;
+	Fri,  2 Feb 2024 11:59:43 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240202115943epsmtrp1f6562f1a4757eff343b41e8d1578699c~wCe_dpNxn1052510525epsmtrp1f;
+	Fri,  2 Feb 2024 11:59:43 +0000 (GMT)
+X-AuditID: b6c32a50-c99ff70000004ba9-e9-65bcf556438e
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	D7.27.07368.F29DCB56; Fri,  2 Feb 2024 20:59:43 +0900 (KST)
+Received: from FDSFTE462 (unknown [107.122.81.248]) by epsmtip1.samsung.com
+	(KnoxPortal) with ESMTPA id
+	20240202115940epsmtip103f90ce67606603a09560c7217533b83~wCe79AHbc2779527795epsmtip1y;
+	Fri,  2 Feb 2024 11:59:40 +0000 (GMT)
+From: "Shradha Todi" <shradha.t@samsung.com>
+To: "'Manivannan Sadhasivam'" <manivannan.sadhasivam@linaro.org>,
+	<m.szyprowski@samsung.com>, <sboyd@kernel.org>, <mturquette@baylibre.com>
+Cc: <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-pci@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-samsung-soc@vger.kernel.org>, <jingoohan1@gmail.com>,
+	<lpieralisi@kernel.org>, <kw@linux.com>, <robh@kernel.org>,
+	<bhelgaas@google.com>, <krzysztof.kozlowski@linaro.org>,
+	<alim.akhtar@samsung.com>, <linux@armlinux.org.uk>,
+	<pankaj.dubey@samsung.com>
+In-Reply-To: <20240129065448.GC2971@thinkpad>
+Subject: RE: [PATCH v4 1/2] clk: Provide managed helper to get and enable
+ bulk clocks
+Date: Fri, 2 Feb 2024 17:29:30 +0530
+Message-ID: <08a901da55cf$4ee48000$ecad8000$@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6dznigm7bfdw265q"
-Content-Disposition: inline
-In-Reply-To: <20240115143720.GA160656@toolbox>
-
-
---6dznigm7bfdw265q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQIcpPks/WB953w72Rl3v8cfkz9jJgG3GiapAsOufW4BkcYK8bBB75tA
+Content-Language: en-in
+X-Brightmail-Tracker: H4sIAAAAAAAAA02TfUxTVxjGc3r7ydLlrkU5dKHBi1MR+agreFEYS2DsLriExTjnpmM3cNci
+	/UpvK27OjLiqgYH41SBFqiIBRWBSKAJr58K3ZBNZm06jqJtd6GSbHQM2BMooFzf++533vM95
+	8rznHD4i8nEl/HyNgdJrSBXGDWG390RHx7475aASiq3b8EfWdi5ee1iJX56s5OHOcTsPLyqd
+	5eC2xx4O/mfpAw7u6jrHxb+3DnDxs8PfsPBusxPgpjkTG2/qHeXho6ZiDj4y9AZeY5/k4QuO
+	Dh4e8LSwXxcRLs8IQjy9c4RHdFpGecQFm5GwNRRzifseB5fwuitYRGvt58TxtgZA/GWTZoe8
+	X5CipMg8Sh9JaXK1efkaRSqWtSMnPScxKUEWK0vGt2CRGlJNpWIZ27NjM/NVi5GwyP2kyrhY
+	yiZpGot/LUWvNRqoSKWWNqRilC5PpZPr4mhSTRs1ijgNZdgqS0jYnLjY+FGB0tXbw9X54w/8
+	dOMMUgSc60qAgA9ROfReq+GVgBC+CHUAaHd0IsxiAsDATQuLWUwDWDrZySkB/CXJvaZtTN0J
+	4B9zjezgUSLUB+BvTXSQuegm6HXPIUEORcsA7PIXBgUIegqB9X2zILghQGPhbb+JE2Qxugue
+	ni5jBZmNroWDPw4usRBNhjd8VQjDL8Gbld4lMwSNgXUXxxEmQySc+aWOw5hlwqo2G5fpCYN9
+	M6VLcSBaLoDHpqo4jCADfrnwA2BYDJ8MtPEYlsBfy48uswJeaT27bKCC0621LIbT4Lfuc+zg
+	JBA0Gn7VFc+UI6B5qJnF+L4Iy2a9y+1C2GF9zlFwct7BZjgcWvtdnBMAs6yIZlkRzbIiguV/
+	twuA3QAklI5WK6jcRJ0sVkMV/nfjuVq1DSw9+Y3ZHeDqtfm4bsDig24A+QgWKrwi7aREwjzy
+	k08pvTZHb1RRdDdIXBz4SUSyKle7+Gc0hhyZPDlBnpSUJE9+NUmGhQnHj1TniVAFaaAKKEpH
+	6Z/rWHyBpIgljvEJ/XX2OM+T/XdbHqetj7ofisR4Wpoa/+krd8vTn30Xte/Q3g3tt1ZpGmKm
+	9ogiXI/2kIrLBtRpCxdVrD5/Ujph/yzz2Bnz9dOEtPDtiJJdCrZZvHNd2VTgwzHBYH7DQ/vH
+	nuohgfbOm2rJWv+limHBzykzPVdHyIM7X9CJd/eEHbi3ufnB9Q/Ulpa0/vqMTv+mv+fGwmVF
+	t9dkheZKzvc3krKnvb8nNu09vrU7ekvNRLTyYav1vUPpRwONh794eQYUBr5Ok7SNiQcqrT4W
+	1Ruzen4N37yw3aQcHqqYCevPEtD1mbtPVG94S3p3yjTUjD07NWK79QpcMO94Z5/i0kE3xqaV
+	pGwjoqfJfwHDWPdIewQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIIsWRmVeSWpSXmKPExsWy7bCSnK7+zT2pBj2XRSwezNvGZrGkKcNi
+	xZeZ7BZ7X29lt2jo+c1qsenxNVaLjz33WC0u75rDZnF23nE2ixnn9zFZHJq6l9Gi5U8Li8Xa
+	I3fZLe62dLJaXDzlarFo6xd2i/97drBb/Lu2kcVByOPytYvMHu9vtLJ77Jx1l91jwaZSj02r
+	Otk87lzbw+bx5Mp0Jo/NS+o9+rasYvT4vEkugCuKyyYlNSezLLVI3y6BK+Ptjr9MBc/1Kv5M
+	nMzUwLhYtYuRg0NCwETi9lrrLkYuDiGB3YwSX46sYOti5ASKS0p8vriOCcIWllj57zk7RNEz
+	RomTT68wgiTYBHQknlz5wwySEBGYyCixfl4HK4jDLLCAWWL+pW/MEC13GCVaF71gAWnhFNCV
+	uPChhRXEFhYIldh9ZjM7iM0ioCJx4voJsH28ApYS+1/MZoawBSVOznwC1sssoC3x9OZTOHvZ
+	wtfMEPcpSPx8ugxspoiAm8TsLZvYIGrEJY7+7GGewCg8C8moWUhGzUIyahaSlgWMLKsYJVML
+	inPTc5MNCwzzUsv1ihNzi0vz0vWS83M3MYJjXUtjB+O9+f/0DjEycTAeYpTgYFYS4V0ptzNV
+	iDclsbIqtSg/vqg0J7X4EKM0B4uSOK/hjNkpQgLpiSWp2ampBalFMFkmDk6pBqatWysDRbm3
+	Brx7+sh3F3/+IncXe3a/iukzfTP/eNZce701VP5WinJG0WvuXWXuJ+euenLUaP+GI9dmsP7w
+	cMz903svS2fNf3nZQ+7/znU7XTv63OvWJVEPVcE3kwW+h+5kTdbOPCPV1fOvUDjxVrybTdeN
+	10ZNE9Sn7A+Kkcu01rP0Vwhjrm4qFjn44Nsij+WvZ0xXPH/ALW7ny/VRZz1bJx5uWWUVPP8V
+	+9Q4C837cTY6Nj8mM+7nVy6syZUVitaedOTkxW/JCw5/+v9h+4FTS+9M2Gpt/H9iwyXeNR0v
+	NrzYqfwqkUdPODtYNEzc2vTuB7EzZ77l6YqeOicp2sAkonDHpujZJv2VSiJTGf2VWIozEg21
+	mIuKEwFOiEzzZAMAAA==
+X-CMS-MailID: 20240202115943epcas5p4ffd74eaf0571f61e3bac50be11a94632
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240124103855epcas5p27400bd95df42f36b9547a4e28aa26f5d
+References: <20240124103838.32478-1-shradha.t@samsung.com>
+	<CGME20240124103855epcas5p27400bd95df42f36b9547a4e28aa26f5d@epcas5p2.samsung.com>
+	<20240124103838.32478-2-shradha.t@samsung.com>
+	<20240129065448.GC2971@thinkpad>
 
-Hi,
 
-On Mon, Jan 15, 2024 at 03:37:20PM +0100, Sebastian Wick wrote:
-> > >  /**
-> > >   * DOC: HDMI connector properties
-> > >   *
-> > > + * Broadcast RGB
-> > > + *      Indicates the RGB Quantization Range (Full vs Limited) used.
-> > > + *      Infoframes will be generated according to that value.
-> > > + *
-> > > + *      The value of this property can be one of the following:
-> > > + *
-> > > + *      Automatic:
-> > > + *              RGB Range is selected automatically based on the mode
-> > > + *              according to the HDMI specifications.
-> > > + *
-> > > + *      Full:
-> > > + *              Full RGB Range is forced.
-> > > + *
-> > > + *      Limited 16:235:
-> > > + *              Limited RGB Range is forced. Unlike the name suggest=
-s,
-> > > + *              this works for any number of bits-per-component.
-> > > + *
-> > > + *      Drivers can set up this property by calling
-> > > + *      drm_connector_attach_broadcast_rgb_property().
-> > > + *
-> >=20
-> > This is a good time to document this in more detail. There might be two
-> > different things being affected:
-> >=20
-> > 1. The signalling (InfoFrame/SDP/...)
-> > 2. The color pipeline processing
-> >=20
-> > All values of Broadcast RGB always affect the color pipeline processing
-> > such that a full-range input to the CRTC is converted to either full- or
-> > limited-range, depending on what the monitor is supposed to accept.
-> >=20
-> > When automatic is selected, does that mean that there is no signalling,
-> > or that the signalling matches what the monitor is supposed to accept
-> > according to the spec? Also, is this really HDMI specific?
-> >=20
-> > When full or limited is selected and the monitor doesn't support the
-> > signalling, what happens?
+
+> -----Original Message-----
+> From: Manivannan Sadhasivam <manivannan.sadhasivam=40linaro.org>
+> Sent: 29 January 2024 12:25
+> To: Shradha Todi <shradha.t=40samsung.com>
+> Cc: linux-clk=40vger.kernel.org; linux-kernel=40vger.kernel.org; linux-
+> pci=40vger.kernel.org; linux-arm-kernel=40lists.infradead.org; linux-sams=
+ung-
+> soc=40vger.kernel.org; mturquette=40baylibre.com; sboyd=40kernel.org;
+> jingoohan1=40gmail.com; lpieralisi=40kernel.org; kw=40linux.com; robh=40k=
+ernel.org;
+> bhelgaas=40google.com; krzysztof.kozlowski=40linaro.org;
+> alim.akhtar=40samsung.com; linux=40armlinux.org.uk;
+> m.szyprowski=40samsung.com; pankaj.dubey=40samsung.com
+> Subject: Re: =5BPATCH v4 1/2=5D clk: Provide managed helper to get and en=
+able bulk
+> clocks
 >=20
-> Forgot to mention: user-space still has no control over RGB vs YCbCr on
-> the cable, so is this only affecting RGB? If not, how does it affect
-> YCbCr?
+> On Wed, Jan 24, 2024 at 04:08:37PM +0530, Shradha Todi wrote:
+> > Provide a managed devm_clk_bulk* wrapper to get and enable all bulk
+> > clocks in order to simplify drivers that keeps all clocks enabled for
+> > the time of driver operation.
+> >
+> > Suggested-by: Marek Szyprowski <m.szyprowski=40samsung.com>
+> > Signed-off-by: Shradha Todi <shradha.t=40samsung.com>
+> > ---
+> >  drivers/clk/clk-devres.c =7C 40
+> ++++++++++++++++++++++++++++++++++++++++
+> >  include/linux/clk.h      =7C 24 ++++++++++++++++++++++++
+> >  2 files changed, 64 insertions(+)
+> >
+> > diff --git a/drivers/clk/clk-devres.c b/drivers/clk/clk-devres.c index
+> > 4fb4fd4b06bd..cbbd2cc339c3 100644
+> > --- a/drivers/clk/clk-devres.c
+> > +++ b/drivers/clk/clk-devres.c
+> > =40=40 -182,6 +182,46 =40=40 int __must_check devm_clk_bulk_get_all(str=
+uct
+> > device *dev,  =7D  EXPORT_SYMBOL_GPL(devm_clk_bulk_get_all);
+> >
+> > +static void devm_clk_bulk_release_all_enable(struct device *dev, void
+> > +*res) =7B
+> > +	struct clk_bulk_devres *devres =3D res;
+> > +
+> > +	clk_bulk_disable_unprepare(devres->num_clks, devres->clks);
+> > +	clk_bulk_put_all(devres->num_clks, devres->clks); =7D
+> > +
+> > +int __must_check devm_clk_bulk_get_all_enable(struct device *dev,
+> > +					      struct clk_bulk_data **clks) =7B
+> > +	struct clk_bulk_devres *devres;
+> > +	int ret;
+> > +
+> > +	devres =3D devres_alloc(devm_clk_bulk_release_all_enable,
+> > +			      sizeof(*devres), GFP_KERNEL);
+> > +	if (=21devres)
+> > +		return -ENOMEM;
+> > +
+> > +	ret =3D clk_bulk_get_all(dev, &devres->clks);
+> > +	if (ret > 0) =7B
+> > +		*clks =3D devres->clks;
+> > +		devres->num_clks =3D ret;
+> > +	=7D else =7B
+> > +		devres_free(devres);
+> > +		return ret;
+> > +	=7D
+>=20
+> How about:
+>=20
+> 	ret =3D clk_bulk_get_all(dev, &devres->clks);
+> 	if (ret <=3D 0) =7B
+> 		devres_free(devres);
+> 		return ret;
+> 	=7D
+>=20
+> 	*clks =3D devres->clks;
+> 	devres->num_clks =3D ret;
+>=20
+> Even though this patch follows the pattern used by the rest of the APIs i=
+n the
+> driver, IMO above makes it more readable.
+>=20
 
-So I dug a bit into both the i915 and vc4 drivers, and it looks like if
-we're using a YCbCr format, i915 will always use a limited range while
-vc4 will follow the value of the property.
+Since I have usually seen that maintainers suggest to maintain the coding s=
+tyle of the file, I followed the same.
+If you have a stronger reason to change this, please let me know
+Marek, Michael, Stephen please let us know what do you think about this?
 
-I guess the best way to reconcile that would be to state that it also
-controls the YCbCr range, and i915 can choose to reject/adjust the
-configurations it can't support.
+> > +
+> > +	ret =3D clk_bulk_prepare_enable(devres->num_clks, *clks);
+> > +	if (=21ret) =7B
+> > +		devres_add(dev, devres);
+> > +	=7D else =7B
+> > +		clk_bulk_put_all(devres->num_clks, devres->clks);
+> > +		devres_free(devres);
+> > +	=7D
+> > +
+>=20
+> Same as above:
+>=20
+> 	ret =3D clk_bulk_prepare_enable(devres->num_clks, *clks);
+> 	if (ret) =7B
+> 		clk_bulk_put_all(devres->num_clks, devres->clks);
+> 		devres_free(devres);
+> 		return ret;
+> 	=7D
+>=20
+> 	devres_add(dev, devres);
+>=20
+> > +	return ret;
+>=20
+> 	return 0;
+>=20
 
-Does that make sense?
+Same as above
 
-Maxime
+> > +=7D
+> > +EXPORT_SYMBOL_GPL(devm_clk_bulk_get_all_enable);
+> > +
+> >  static int devm_clk_match(struct device *dev, void *res, void *data)
+> > =7B
+> >  	struct clk **c =3D res;
+> > diff --git a/include/linux/clk.h b/include/linux/clk.h index
+> > 1ef013324237..a005e709b7bd 100644
+> > --- a/include/linux/clk.h
+> > +++ b/include/linux/clk.h
+> > =40=40 -438,6 +438,23 =40=40 int __must_check
+> > devm_clk_bulk_get_optional(struct device *dev, int num_clks,  int
+> __must_check devm_clk_bulk_get_all(struct device *dev,
+> >  				       struct clk_bulk_data **clks);
+> >
+> > +/**
+> > + * devm_clk_bulk_get_all_enable - managed get multiple clk consumers a=
+nd
+> > + *				  enable all clks
+>=20
+> =22Get and enable all clocks of the consumer (managed)=22
+>=20
 
---6dznigm7bfdw265q
-Content-Type: application/pgp-signature; name="signature.asc"
+Will take this up in the next patchset
 
------BEGIN PGP SIGNATURE-----
+> > + * =40dev: device for clock =22consumer=22
+> > + * =40clks: pointer to the clk_bulk_data table of consumer
+> > + *
+> > + * Returns success (0) or negative errno.
+> > + *
+> > + * This helper function allows drivers to get several clk
+>=20
+> =22This helper function allows drivers to get all clocks of the consumer =
+and enables
+> them...=22
+>=20
+> - Mani
+>=20
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZbznsgAKCRDj7w1vZxhR
-xY65AP4thN3Jypd+NMHjCI2DGcLcaa/6C19RZkReczuElu+gZwEA4x7ld5E6OIjM
-5nF1e+nTxH1f21uOqX5xJzdswy85Rw8=
-=NO9C
------END PGP SIGNATURE-----
+Will take this up. Thanks for your review Mani=21
 
---6dznigm7bfdw265q--
+> > + * consumers and enable all of them in one operation with management.
+> > + * The clks will automatically be disabled and freed when the device
+> > + * is unbound.
+> > + */
+> > +
+> > +int __must_check devm_clk_bulk_get_all_enable(struct device *dev,
+> > +					      struct clk_bulk_data **clks);
+> > +
+> >  /**
+> >   * devm_clk_get - lookup and obtain a managed reference to a clock pro=
+ducer.
+> >   * =40dev: device for clock =22consumer=22
+> > =40=40 -960,6 +977,13 =40=40 static inline int __must_check
+> devm_clk_bulk_get_all(struct device *dev,
+> >  	return 0;
+> >  =7D
+> >
+> > +static inline int __must_check devm_clk_bulk_get_all_enable(struct dev=
+ice
+> *dev,
+> > +						struct clk_bulk_data **clks)
+> > +=7B
+> > +
+> > +	return 0;
+> > +=7D
+> > +
+> >  static inline struct clk *devm_get_clk_from_child(struct device *dev,
+> >  				struct device_node *np, const char *con_id)  =7B
+> > --
+> > 2.17.1
+> >
+>=20
+> --
+> =E0=AE=AE=E0=AE=A3=E0=AE=BF=E0=AE=B5=E0=AE=A3=E0=AF=8D=E0=AE=A3=E0=AE=A9=
+=E0=AF=8D=20=E0=AE=9A=E0=AE=A4=E0=AE=BE=E0=AE=9A=E0=AE=BF=E0=AE=B5=E0=AE=AE=
+=E0=AF=8D=0D=0A=0D=0A
 
