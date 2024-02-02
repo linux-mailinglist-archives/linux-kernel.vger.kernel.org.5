@@ -1,75 +1,50 @@
-Return-Path: <linux-kernel+bounces-49730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF5A8846ED7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B25F846EA2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:06:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EA96B284E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:07:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 945EDB29A32
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:59:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49F9813D50F;
-	Fri,  2 Feb 2024 11:06:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ho5GDTwl"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 293F73CF68;
-	Fri,  2 Feb 2024 11:06:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3940B13DBAF;
+	Fri,  2 Feb 2024 10:56:58 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 594C7199C7
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 10:56:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706872012; cv=none; b=lCmDh4pCq4kilULhjnm9/0OsXHsLQl9NOzhqjqkj9qTSTODfFhCDubH3PiufU7QcmyguX2gDTRnJhuRKY8eoR0QIIrde8wvtLNEjH/BMDUngh/FgBYoPkEzMF5FTkzNTSn/EfJifxr4dZImyHXDqSOQQxChssNM7N2rxLQBASDc=
+	t=1706871417; cv=none; b=OkUa3/AtYCewLj4vsIIwvKOKsVO5TWcGJD4a+xGTPjbHP+jgmQb1zB3vyKaRTG3q1n3wJkQArjG87/7OplkBdIXV3wZoFO4n3qYdnwAIspCPeKt45Xx4kuu2SkswWdbB5wAesE8mBB03y/3YyV3uDqsWjyVzpCDMf42aRzpoaQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706872012; c=relaxed/simple;
-	bh=BVUwIZJrucltWjChM5sdx0WIRPV1ARt3HSFLPgQ09cY=;
+	s=arc-20240116; t=1706871417; c=relaxed/simple;
+	bh=UhmxrKkpaIwAPkg2ey4m3RwDio87j4qiq2Bw8ceoDqo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N17Eqxwb7fWOom6HdLhodXPggJZq8gdpzHwsg++IN3rEqM6uZGhiJLVnvMuH2JpF4NhJq8JmgLLVgenvekpFPlMQ59D/M0RLBUBXiELKP5EYSQXubUQuPizH0+dXMrK4l+qTm0WDEMZWiXF5QitINgMaI1XauPAjRtxRgJ1Re3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ho5GDTwl; arc=none smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706872011; x=1738408011;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BVUwIZJrucltWjChM5sdx0WIRPV1ARt3HSFLPgQ09cY=;
-  b=ho5GDTwlMBGA+gxEOrHI1BJSeGJch+F/5a9MWfwkWkiZsY1pG+sNxSFa
-   QJgPEM7Cb4vNsWFdX6xmgY8/LKkU6kUAfBgGUm7MaALnnJz9YYrotcHx9
-   HCden4/w6670/kmJmXWiPZtW4I20/RpDVZv56lCa2lqdciiV9/SeOOO/f
-   3a33ryFZep9FlEunf9puODelaEbW67OJNErugIKBMfwb8hr6+zXkm/5nS
-   mSPo7YSUmVK8mOJ638I1+sAWRxqOYBAm1m803zVH1HUsa0BUzc+aWyvFo
-   yOoS1AoDSNpdAhoR3ceLBE34CNCsZISrjQ9K6zypqTVE93NloN2WeZHtS
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="435276218"
-X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="435276218"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 03:06:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="908542663"
-X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="908542663"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga002.fm.intel.com with ESMTP; 02 Feb 2024 03:06:46 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 40191128; Fri,  2 Feb 2024 12:30:29 +0200 (EET)
-Date: Fri, 2 Feb 2024 12:30:29 +0200
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, 
-	Wanpeng Li <wanpengli@tencent.com>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
-	Sean Christopherson <seanjc@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org, 
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	David Rientjes <rientjes@google.com>, llvm@lists.linux.dev
-Subject: Re: [PATCH, RESEND] x86/sev: Fix SEV check in sev_map_percpu_data()
-Message-ID: <lbs5nwm2teoc3ihnht3kt5xdgwjktufjybdpx2cvzmovxtkp26@5txa5ye7mzpa>
-References: <20240124130317.495519-1-kirill.shutemov@linux.intel.com>
- <20240201193809.GA2710596@dev-arch.thelio-3990X>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AxxRkoq+Ol1YzY/btvMBErS7WFqOURK8u2HyKARHphniFSUyuFgRRKqJos/doWnYZx2k94WRRxS7eAS2DYiAaplIWl3aVBOkVH9HzzjKz6cxtsWi21pXcicRfEys8BX05YHsOeVh9tV1jLa8+Hyee20xUyTeTlsbn+dLYMcaQag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E2B1EDA7;
+	Fri,  2 Feb 2024 02:57:36 -0800 (PST)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1895D3F738;
+	Fri,  2 Feb 2024 02:56:52 -0800 (PST)
+Date: Fri, 2 Feb 2024 10:56:50 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: Pin-Chuan Liu <flash.liu@mediatek.com>
+Cc: Sudeep Holla <sudeep.holla@arm.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	wsd_upstream@mediatek.com, cylen.yao@mediatek.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2] firmware: arm_scmi: Avoid to call mbox_client_txdone
+ on txdone_irq mode
+Message-ID: <ZbzKckIhn8HQv5pW@pluto>
+References: <20240201095754.25374-1-flash.liu@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,46 +53,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240201193809.GA2710596@dev-arch.thelio-3990X>
+In-Reply-To: <20240201095754.25374-1-flash.liu@mediatek.com>
 
-On Thu, Feb 01, 2024 at 12:38:09PM -0700, Nathan Chancellor wrote:
-> Perhaps another solution would be to just
+On Thu, Feb 01, 2024 at 05:57:52PM +0800, Pin-Chuan Liu wrote:
+> On txdone_irq mode, tx_tick is done from mbox_chan_txdone.
+> Calling to mbox_client_txdone could get error message
+> and return directly, add a check to avoid this.
 > 
->   #define cc_vendor (CC_VENDOR_NONE)
-> 
-> if CONFIG_ARCH_HAS_CC_PLATFORM is not set, since it can never be changed
-> from the default in arch/x86/coco/core.c.
+> Signed-off-by: Pin-Chuan Liu <flash.liu@mediatek.com>
 
-I think this approach is cleaner.
+Hi Pin-Chuan,
 
-Could you post a proper patch?
+thanks for this, it was indeed sort of on my todo-list too, to allow MHUs
+equipped with Tx-Ack IRQ to work with SCMI.
 
-> 
-> diff --git a/arch/x86/include/asm/coco.h b/arch/x86/include/asm/coco.h
-> index 6ae2d16a7613..f3909894f82f 100644
-> --- a/arch/x86/include/asm/coco.h
-> +++ b/arch/x86/include/asm/coco.h
-> @@ -10,13 +10,13 @@ enum cc_vendor {
->  	CC_VENDOR_INTEL,
->  };
->  
-> -extern enum cc_vendor cc_vendor;
-> -
->  #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
-> +extern enum cc_vendor cc_vendor;
->  void cc_set_mask(u64 mask);
->  u64 cc_mkenc(u64 val);
->  u64 cc_mkdec(u64 val);
->  #else
-> +#define cc_vendor (CC_VENDOR_NONE)
->  static inline u64 cc_mkenc(u64 val)
->  {
->  	return val;
-> 
-> Cheers,
-> Nathan
-> 
+Having said that, this looks good to me in general, my only pain points
+are: the fact that we have to peek into the controller structures to know
+how it is configured, BUT I wouldn't know how to do it in any other
+way in fact as pof now...; and the fact that there is a constant runtime
+conditional check for each message sent even though the tx_ack irq presence
+can be detected once for all at setup time, BUT even this is not easily
+solvable as of now in the SCMI stack.
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+So, after all of this babbling of mine, I would say that  your patch is fine
+as it is, also because it is easy to backport; next week when I am back I'll
+give it a go on a couple of platforms and get back to you with a proper
+review/test.
+
+Thanks again !
+Cristian
 
