@@ -1,157 +1,140 @@
-Return-Path: <linux-kernel+bounces-49126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49127-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94C24846626
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:59:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2022846627
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:59:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0252B247AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:59:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DA1728F670
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:59:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D08168DC;
-	Fri,  2 Feb 2024 02:57:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52013C2CE;
+	Fri,  2 Feb 2024 02:59:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="F8tVfKiI"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="AAt+T796"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 223EE12E5E
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 02:57:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C757B8479
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 02:59:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706842638; cv=none; b=XNaKZzCYwustvhyvmfycwB4gKTkyCQYmlwlAsRBSTTCkqQ7YaZKG3bUUGzc3JuzW+KQGCcEyC3KadBpuDbTI5pLFQnuxf/JOuVwZeT5bXi/Z0eckWebL+6oof50sI9Wxi0Y5eMAPfjGdzLfl6xP+g1u1xLHe+P+DLGEUp8tfywA=
+	t=1706842753; cv=none; b=teeAFvXNqix7d/AzX4KCdd3a8DUBwhzkppqWjNz6n76NtRiMBMzq/2N3pWqtH8F+lCKOWJcLyR1z+EuGHWCNfeh+gfhVwRf9+55GgcHuMY+wAwJ/gJmSBeKyp6BD7Pm6LThVJ+p6MgA8TgdoDbNwyhqyuhDBrPe0z1ItGSpeJDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706842638; c=relaxed/simple;
-	bh=zte8xL5zY+PwyfTErBl+176GxQqh6zCUN2wZuJg8x1k=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IRXDhINDv1vq7kQbvQ+y1e1kAal2SHh8xeFyJGRTA0I/rU7zQKcp7WHmyT8u6pGSXG0WLRB1iXxVcULYdPQN5ZumTQxOZhmobg1xt/SoEOFTNrHUJViWAoSu+WJ/7Lfxze2vQtCyMj8xtQiakFVf1YKWdreyQQc9eqbqihqhGNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=F8tVfKiI; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706842636;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JdhKz6AkD7EoSnhTdlrYl+SSLH69MnV7i+2uXd+vqdc=;
-	b=F8tVfKiIPQpNs2b8oWIsjFgyma6sR3dItnUpXCnV65VyufhUTr1UAulj4brzQcMNYnK5qY
-	cgHrs/8CZGlMoc5a5BbbG74cqqYiKWWNjQC0kPx0pM+gWO5VSVfOg8ySMPlX3SwrE1l7Vw
-	xpWO38kie+5awmRR1iE/lH4pzY7aRJo=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-253--tbSrAG7OjG93kxjDSKTrA-1; Thu,
- 01 Feb 2024 21:57:11 -0500
-X-MC-Unique: -tbSrAG7OjG93kxjDSKTrA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5C6BC3C0BE47;
-	Fri,  2 Feb 2024 02:57:10 +0000 (UTC)
-Received: from virt-mtcollins-01.lab.eng.rdu2.redhat.com (virt-mtcollins-01.lab.eng.rdu2.redhat.com [10.8.1.196])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 48783C1ED76;
-	Fri,  2 Feb 2024 02:57:10 +0000 (UTC)
-From: Shaoqin Huang <shahuang@redhat.com>
-To: Oliver Upton <oliver.upton@linux.dev>,
-	Marc Zyngier <maz@kernel.org>,
-	kvmarm@lists.linux.dev
-Cc: Eric Auger <eauger@redhat.com>,
-	Shaoqin Huang <shahuang@redhat.com>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	kvm@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 5/5] KVM: selftests: aarch64: Add invalid filter test in pmu_event_filter_test
-Date: Thu,  1 Feb 2024 21:56:54 -0500
-Message-Id: <20240202025659.5065-6-shahuang@redhat.com>
-In-Reply-To: <20240202025659.5065-1-shahuang@redhat.com>
-References: <20240202025659.5065-1-shahuang@redhat.com>
+	s=arc-20240116; t=1706842753; c=relaxed/simple;
+	bh=3z9prfnNE6KbllL7JBa22QDsRc93s+EZn8OPdvRTgtw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QCU1g3IkjeN2giww8qW1AVYQdHkouXm8+PcjCJKMt8J2JVtHw9Ximiaao3tu0Qc8Iku+dzDWFVWBek2rCT1KohTxmWsHFCcPhoh5r7uhFrq5hC4GNB5sXxbEgCjis4Lt/d3so71yDLU5WETmhC6G/mm95dvUamXFzVceaBqMFIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=AAt+T796; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-51124d43943so2563978e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 18:59:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706842749; x=1707447549; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y3A/r4oKTDxJsFL1Anlh777Z6f2eiMJhC1iris26H3M=;
+        b=AAt+T7961dx/lh3ikpotIzNOAKXtCzZi6W9njeBfjlqUHYoZ117CmL/l5syKzQBls8
+         8ydQ6yGjn1oJT4yAfJ1veQaItmRrqGAfq/o7Pa4w88L1+B+NjYlrauLFFwjI8ZfmaJlw
+         ezgnsJ6ipugqY80TIpJkvLc1XF4BfyzUa822A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706842749; x=1707447549;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y3A/r4oKTDxJsFL1Anlh777Z6f2eiMJhC1iris26H3M=;
+        b=Vej+WCjdrM0W+nL3vD0n+SeacUoDe17wFQxRk+LRbtSXdFxrVrLOG/CYm4JpuSVIN/
+         ellK6Z3OX7K2DySUBs614QqODS5oHlIrd+EKxO4XdGnwMO1s8rtZqcfwKTn298Kmh+Jm
+         NB3ZNngaUrz4PMgQkSVJ9WodU/yFoa1Qh+dbRrsGMzpXetXe3eZcpRod8S1bdVc2D5QD
+         HTBE8BLUVMuXLS6wAnBX9Mb7ItZl5A1uPi+i1zc4skuy/azPZVTxIJgG+j7iNDzNLiJd
+         9VP4yKRsIISKIR4IUi6md2F0+t5BXRnYBoWTllXyOe+qVQSgtajbkfxKkYjIVDLcud/p
+         yU+w==
+X-Gm-Message-State: AOJu0YyR/SrGczjKPt8ADeCE9sfGXYTa0NPO+T9yfZwaK0WxH/eCoPdt
+	eO7BRkVBowUH0Q4dvjp1KxYUaPsyrSviBNH3nTv5dsYhyPDavnicjxD0mB2jwZQXxkt+CxN1YEe
+	TqA==
+X-Google-Smtp-Source: AGHT+IHN7Huf1xnRkwykH5koCgNvoVFIXb1ovtS1qA7CePz8rNcOTZbmpba7cdi4ynfcUXibGYTQ1w==
+X-Received: by 2002:ac2:4579:0:b0:511:975:9efe with SMTP id k25-20020ac24579000000b0051109759efemr372434lfm.44.1706842748696;
+        Thu, 01 Feb 2024 18:59:08 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUDdv/epS/EX/vzza+JRHELIMQsi76n7WkpqCmQAlBkWR4OnwaTTgzYv+FlQyJGJREqiEpepqa+jvg5P2v252I8kaAVk+68NLZAKBIy
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com. [209.85.128.48])
+        by smtp.gmail.com with ESMTPSA id y19-20020a170906071300b00a26d20a48dasm388085ejb.125.2024.02.01.18.59.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Feb 2024 18:59:07 -0800 (PST)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40f00adacfeso15785e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 18:59:07 -0800 (PST)
+X-Received: by 2002:a05:600c:3d92:b0:40f:c436:3982 with SMTP id
+ bi18-20020a05600c3d9200b0040fc4363982mr62363wmb.2.1706842747629; Thu, 01 Feb
+ 2024 18:59:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+References: <20240201171159.1.Id9ad163b60d21c9e56c2d686b0cc9083a8ba7924@changeid>
+ <ZbxEWyl5Zh_3VwLb@casper.infradead.org>
+In-Reply-To: <ZbxEWyl5Zh_3VwLb@casper.infradead.org>
+From: Doug Anderson <dianders@chromium.org>
+Date: Thu, 1 Feb 2024 18:58:51 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=UoF7PGSevH1+Bk04gczjCaVioq4dXaPHDSc2Bk1NcJLw@mail.gmail.com>
+Message-ID: <CAD=FV=UoF7PGSevH1+Bk04gczjCaVioq4dXaPHDSc2Bk1NcJLw@mail.gmail.com>
+Subject: Re: [PATCH] regset: use vmalloc() for regset_get_alloc()
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, 
+	Eric Biederman <ebiederm@xmission.com>, Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add the invalid filter test includes sets the filter beyond the event
-space and sets the invalid action to double check if the
-KVM_ARM_VCPU_PMU_V3_FILTER will return the expected error.
+Hi,
 
-Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
----
- .../kvm/aarch64/pmu_event_filter_test.c       | 36 +++++++++++++++++++
- 1 file changed, 36 insertions(+)
+On Thu, Feb 1, 2024 at 5:24=E2=80=AFPM Matthew Wilcox <willy@infradead.org>=
+ wrote:
+>
+> On Thu, Feb 01, 2024 at 05:12:03PM -0800, Douglas Anderson wrote:
+> > While browsing through ChromeOS crash reports, I found one with an
+> > allocation failure that looked like this:
+> >
+> >   chrome: page allocation failure: order:7,
+> >           mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO),
+> >         nodemask=3D(null),cpuset=3Durgent,mems_allowed=3D0
+>
+> That does seem bad ...
+>
+> > @@ -16,14 +17,14 @@ static int __regset_get(struct task_struct *target,
+> >       if (size > regset->n * regset->size)
+> >               size =3D regset->n * regset->size;
+> >       if (!p) {
+> > -             to_free =3D p =3D kzalloc(size, GFP_KERNEL);
+> > +             to_free =3D p =3D vmalloc(size);
+>
+> It's my impression that sometimes this size might be relatively small?
+> Perhaps we should make this kvmalloc so that we can satisfy it from the
+> slab allocator if it is small?
 
-diff --git a/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
-index d280382f362f..68e1f2003312 100644
---- a/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
-+++ b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
-@@ -7,6 +7,7 @@
-  * This test checks if the guest only see the limited pmu event that userspace
-  * sets, if the guest can use those events which user allow, and if the guest
-  * can't use those events which user deny.
-+ * It also checks that setting invalid filter ranges return the expected error.
-  * This test runs only when KVM_CAP_ARM_PMU_V3, KVM_ARM_VCPU_PMU_V3_FILTER
-  * is supported on the host.
-  */
-@@ -183,6 +184,39 @@ static void for_each_test(void)
- 		run_test(t);
- }
- 
-+static void set_invalid_filter(struct vpmu_vm *vm, void *arg)
-+{
-+	struct kvm_pmu_event_filter invalid;
-+	struct kvm_device_attr attr = {
-+		.group	= KVM_ARM_VCPU_PMU_V3_CTRL,
-+		.attr	= KVM_ARM_VCPU_PMU_V3_FILTER,
-+		.addr	= (uint64_t)&invalid,
-+	};
-+	int ret = 0;
-+
-+	/* The max event number is (1 << 16), set a range largeer than it. */
-+	invalid = __DEFINE_FILTER(BIT(15), BIT(15)+1, 0);
-+	ret = __vcpu_ioctl(vm->vcpu, KVM_SET_DEVICE_ATTR, &attr);
-+	TEST_ASSERT(ret && errno == EINVAL, "Set Invalid filter range "
-+		    "ret = %d, errno = %d (expected ret = -1, errno = EINVAL)",
-+		    ret, errno);
-+
-+	ret = 0;
-+
-+	/* Set the Invalid action. */
-+	invalid = __DEFINE_FILTER(0, 1, 3);
-+	ret = __vcpu_ioctl(vm->vcpu, KVM_SET_DEVICE_ATTR, &attr);
-+	TEST_ASSERT(ret && errno == EINVAL, "Set Invalid filter action "
-+		    "ret = %d, errno = %d (expected ret = -1, errno = EINVAL)",
-+		    ret, errno);
-+}
-+
-+static void test_invalid_filter(void)
-+{
-+	vpmu_vm = __create_vpmu_vm(guest_code, set_invalid_filter, NULL);
-+	destroy_vpmu_vm(vpmu_vm);
-+}
-+
- static bool kvm_supports_pmu_event_filter(void)
- {
- 	int r;
-@@ -216,4 +250,6 @@ int main(void)
- 	TEST_REQUIRE(host_pmu_supports_events());
- 
- 	for_each_test();
-+
-+	test_invalid_filter();
- }
--- 
-2.40.1
+Right. Sometimes it's small. It feels sad to me that somehow vmalloc()
+of small sizes would be much less efficient than kvmalloc() of small
+sizes, but I can change it to that if you want. It feels like we
+should use kmalloc() if we need it to be contiguous, kvmalloc() if we
+know that there will be big efficiency gains with things being
+contiguous but we can get by with non-contiguous, and vmalloc() if we
+just don't care. ;-)
 
+..anyway, I'll spin v2 with kvmalloc().
+
+
+> Also, I assume that we don't rely on this memory being physically
+> contiguous; we don't, for example, do I/O on it?
+
+As far as I can tell we don't. I had never looked at or thought about
+this code before today and so all I have is ~an hour of code analysis
+behind me, so if someone tells me I'm wrong then I'll believe them.
+
+-Doug
 
