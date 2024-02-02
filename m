@@ -1,40 +1,53 @@
-Return-Path: <linux-kernel+bounces-49604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4F08846C53
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:40:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2094F846CD2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:46:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C7EF2946A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:40:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 452DB1C2A1CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:46:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C07F777F00;
-	Fri,  2 Feb 2024 09:39:52 +0000 (UTC)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15A047763B;
-	Fri,  2 Feb 2024 09:39:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.160.252.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6253577F05;
+	Fri,  2 Feb 2024 09:40:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="SzgNX3uT"
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABDDB60273
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:40:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706866792; cv=none; b=sDgKbjONmbR6o2Fp5mDEejCF1L9EGKab17XJ2eNC7Pyg9xnFXos/CbEF5Sx8gtF6LSRk4hPjLSkmiKcWH52gLFbnANUqn1WzajDNhwkz80jeUGNyr26Iebuxjqbxis8if1sh2PwXB+eaoSo9OYX8usCprAxNn7wHZOavRCl4zxc=
+	t=1706866851; cv=none; b=bTUIKgATE8xNemFBejea0o92AqUlHIgnTEZoP3JWHoQRGo9GVKxSOl73hdPCvYmWbLVp/+4YDl/H1ie3J2XYMsktPuDoMigXzj3HQXbj86+Z3HVektV/H5q+oS4CIKFR4xmdfFqj0o2S6ZtY7Q7TdK3LSoDuHnvkjcP5afR7IQI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706866792; c=relaxed/simple;
-	bh=lnIHBdMia5tN4/1TbP2PV4MU47hwKleiZFdUv9oMcKA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=S0iKOzh3xfQJ4aieBy7ZLi8MhiraPEgRGYgN+i8OzCsJpGO1v1IcBfVwUOmx32yMCqziuUYTWNoFwXq1AudmiQRPdPus4nNLp2z1o2Z/P2TwQm+M7QbxHkW9fq8Y94YJQrnTrSEkk/thvnGc2Q5ZLU744wuTq5MfaiYPi3TsCgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; arc=none smtp.client-ip=210.160.252.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
-X-IronPort-AV: E=Sophos;i="6.05,237,1701097200"; 
-   d="asc'?scan'208";a="192647453"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie5.idc.renesas.com with ESMTP; 02 Feb 2024 18:39:47 +0900
-Received: from [10.226.93.160] (unknown [10.226.93.160])
-	by relmlir6.idc.renesas.com (Postfix) with ESMTP id 1405E415D740;
-	Fri,  2 Feb 2024 18:39:43 +0900 (JST)
-Message-ID: <1daa9e95-df98-4a08-bc55-21838e555519@bp.renesas.com>
-Date: Fri, 2 Feb 2024 09:39:42 +0000
+	s=arc-20240116; t=1706866851; c=relaxed/simple;
+	bh=ky8m3+NULdYpbDNNAVvwPKA9GBPMytd+qTwefaAXxn8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ZjuQyzPUnCwZf2VHw+xZeQrV7HfduxDAvBhRtjJwgaoeKWvgdQXQTHCDpeF0XQXiA35xCF06Ou/fWBKBoBcZz7ar9T0lsoiIYYfSCIqA2nxKPKadB1XJE7v/qUslxRxioDDY2xQoxRugcrYQTA61dX56QZpzx476TiBmGQ6M7mk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=SzgNX3uT; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=B65Ve0OU568B4D9kTmLoLRABlAGY2QMty8zi+Hdb1kc=; b=SzgNX3uTzQNPML6JnVjMzw6Nh3
+	IN248C9GVhR+1lCzV8SNpWn57Ga00zhK+3za52pqLgyXkCvn+4Mhf9f3LmdDFWucwqTqiEBIxxcU6
+	PUrPX7V4cLEzlvdvw+ucGFIOKt+7oenZ6DCdkSj9EcoLKdqXkkia5OTeqKawA76u2KObk+Vbl661O
+	gB1CCZZYhL2W6L6K5FwlGjpnZwKpI1JQOCMh2J5mOF7BHvUkiOPvo2zuGMTiE/MPB0GyUWNCOWCi7
+	gzaS7NJ7LSpU1pX7Q00ciPdhH1lcbbVHN+Tl1pQjahZzZ6LE2VP7l8p56+pR4NVm6ZsZqdGKfBLRn
+	/ysbZ7zg==;
+Received: from [179.234.233.159] (helo=[192.168.1.212])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1rVq2A-00Cu6p-0x; Fri, 02 Feb 2024 10:40:30 +0100
+Message-ID: <a9ca3232-5495-4a1e-a057-a5849ee166a4@igalia.com>
+Date: Fri, 2 Feb 2024 06:40:22 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -42,159 +55,104 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 0/8] Improve GbEth performance on Renesas RZ/G2L
- and related SoCs
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Sergey Shtylyov <s.shtylyov@omp.ru>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>, netdev@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240131170523.30048-1-paul.barker.ct@bp.renesas.com>
- <953f6b82-c4b1-43f7-af68-e504d663f070@lunn.ch>
-Content-Language: en-GB
-From: Paul Barker <paul.barker.ct@bp.renesas.com>
-In-Reply-To: <953f6b82-c4b1-43f7-af68-e504d663f070@lunn.ch>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------QB20HD5kYCbSTDXouQPj0VLF"
+Subject: Re: [PATCH 0/2] Better support for complex pixel formats
+To: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+ Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, marcheu@google.com, seanpaul@google.com,
+ nicolejadeyee@google.com, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+ miquel.raynal@bootlin.com
+References: <20240201-yuv-v1-0-3ca376f27632@bootlin.com>
+ <d7959499-c0cf-4454-b9f9-8436d8818095@igalia.com>
+ <Zbyki1szIFvotn71@localhost.localdomain>
+Content-Language: en-US
+From: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
+Autocrypt: addr=mcanal@igalia.com; keydata=
+ xjMEZIsaeRYJKwYBBAHaRw8BAQdAGU6aY8oojw61KS5rGGMrlcilFqR6p6ID45IZ6ovX0h3N
+ H01haXJhIENhbmFsIDxtY2FuYWxAaWdhbGlhLmNvbT7CjwQTFggANxYhBDMCqFtIvFKVRJZQ
+ hDSPnHLaGFVuBQJkixp5BQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQNI+cctoYVW5u
+ GAEAwpaC5rI3wD8zqETKwGVoXd6+AbmGfZuVD40xepy7z/8BAM5w95/oyPsHUqOsg/xUTlNp
+ rlbhA+WWoaOXA3XgR+wCzjgEZIsaeRIKKwYBBAGXVQEFAQEHQGoOK0jgh0IorMAacx6WUUWb
+ s3RLiJYWUU6iNrk5wWUbAwEIB8J+BBgWCAAmFiEEMwKoW0i8UpVEllCENI+cctoYVW4FAmSL
+ GnkFCQWjmoACGwwACgkQNI+cctoYVW6cqwD/Q9R98msvkhgRvi18fzUPFDwwogn+F+gQJJ6o
+ pwpgFkAA/R2zOfla3IT6G3SBoV5ucdpdCpnIXFpQLbmfHK7dXsAC
+In-Reply-To: <Zbyki1szIFvotn71@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------QB20HD5kYCbSTDXouQPj0VLF
-Content-Type: multipart/mixed; boundary="------------ay7n0UUjMVN6HJIaAN7oC01h";
- protected-headers="v1"
-From: Paul Barker <paul.barker.ct@bp.renesas.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Sergey Shtylyov <s.shtylyov@omp.ru>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>, netdev@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <1daa9e95-df98-4a08-bc55-21838e555519@bp.renesas.com>
-Subject: Re: [PATCH net-next 0/8] Improve GbEth performance on Renesas RZ/G2L
- and related SoCs
-References: <20240131170523.30048-1-paul.barker.ct@bp.renesas.com>
- <953f6b82-c4b1-43f7-af68-e504d663f070@lunn.ch>
-In-Reply-To: <953f6b82-c4b1-43f7-af68-e504d663f070@lunn.ch>
+On 2/2/24 05:15, Louis Chauvet wrote:
+> Le 01/02/24 - 19:07, Maira Canal a écrit :
+>> Hi Louis,
+>>
+>> Thanks for your patches! Could you please rebase them on top of
+>> drm-misc-next? It would make it easier for me to review and test the
+>> patches.
+>>
+>> Best Regards,
+>> - Maíra
+> 
+> Hi Maíra,
+> 
+> Do you want me to rebase the whole YUV [1] series or should I extract and
+> make my two patches independent?
 
---------------ay7n0UUjMVN6HJIaAN7oC01h
-Content-Type: multipart/mixed; boundary="------------p0QQhGHSw12icxPpOeI77mBu"
+Please, make this two patches independent.
 
---------------p0QQhGHSw12icxPpOeI77mBu
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Best Regards,
+- Maíra
 
-On 31/01/2024 18:26, Andrew Lunn wrote:
->> Changes are made specific to the GbEth IP, avoiding potential impact o=
-n
->> the other Renesas R-Car based SoCs which also use the ravb driver. Thi=
-s
->> follows the principle of only submitting patches that we can fully tes=
-t.
-> =20
-> Are you saying that Renesas does not have access to all Renesas RDKs?
->=20
-> I don't particularly like the way your first patch makes a copy of
-> shared functions. Is it not likely that R-Car would also benefit from
-> this?
-
-We have the required RDKs. For the R-Car based SoCs, we need to confirm
-that gPTP still works if we change the poll/receive code paths - this
-will require an AVB-capable network switch and additional time to test.
-So our plan was to handle the GbEth code paths first without affecting
-R-Car, then follow up with another patch set for the R-Car code paths
-when we've done the required tests.
-
-I discussed this with our team, and we're happy to do this in one go for
-both R-Car and GbEth code paths if that's preferred. I'll send the
-patches as an RFC (as Sergey has commented it should be an RFC anyway as
-it depends on an unmerged patch) and we'll do the gPTP test with a
-couple of R-Car boards.
-
-Thanks,
-Paul
---------------p0QQhGHSw12icxPpOeI77mBu
-Content-Type: application/pgp-keys; name="OpenPGP_0x27F4B3459F002257.asc"
-Content-Disposition: attachment; filename="OpenPGP_0x27F4B3459F002257.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsFNBGS4BNsBEADEc28TO+aryCgRIuhxWAviuJl+f2TcZ1JeeaMzRLgSXKuXzkiI
-g6JIVfNvThjwJaBmb7+/5+D7kDLJuutu9MFfOzTS0QOQWppwIPgbfktvMvwwsq3m
-7e9Qb+S1LVeV0/ldZfuzgzAzHFDwmzryfIyt2JEbsBsGTq/QE+7hvLAe8R9xofIn
-z6/IndiiTYhNCNf06nFPR4Y5ZDZPGb9aw5Jisqh+OSxtc0BFHDSV8/35yWM/JLQ1
-Ja8AOHw1kP9KO+iE9rHMt0+7lH3mN1GBabxH26EdgFfPShsi14qmziLOuUlGLuwO
-ApIYqvdtCs+zlMA8PsiJIMuxizZ6qCLur3r2b+/YXoJjuFDcax9M+Pr0D7rZX0Hk
-6PW3dtvDQHfspwLY0FIlXbbtCfCqGLe47VaS7lvG0XeMlo3dUEsf707Q2h0+G1tm
-wyeuWSPEzZQq/KI7JIFlxr3N/3VCdGa9qVf/40QF0BXPfJdcwTEzmPlYetRgA11W
-bglw8DxWBv24a2gWeUkwBWFScR3QV4FAwVjmlCqrkw9dy/JtrFf4pwDoqSFUcofB
-95u6qlz/PC+ho9uvUo5uIwJyz3J5BIgfkMAPYcHNZZ5QrpI3mdwf66im1TOKKTuf
-3Sz/GKc14qAIQhxuUWrgAKTexBJYJmzDT0Mj4ISjlr9K6VXrQwTuj2zC4QARAQAB
-zStQYXVsIEJhcmtlciA8cGF1bC5iYXJrZXIuY3RAYnAucmVuZXNhcy5jb20+wsGU
-BBMBCgA+FiEE9KKf333+FIzPGaxOJ/SzRZ8AIlcFAmS4BNsCGwEFCQPCZwAFCwkI
-BwIGFQoJCAsCBBYCAwECHgECF4AACgkQJ/SzRZ8AIlfxaQ/8CM36qjfad7eBfwja
-cI1LlH1NwbSJ239rE0X7hU/5yra72egr3T5AUuYTt9ECNQ8Ld03BYhbC6hPki5rb
-OlFM2hEPUQYeohcJ4Na5iIFpTxoIuC49Hp2ce6ikvt9Hc4O2FAntabg+9hE8WA4f
-QWW+Qo5ve5OJ0sGylzu0mRZ2I3mTaDsxuDkXOICF5ggSdjT+rcd/pRVOugImjpZv
-/jzSgUfKV2wcZ8vVK0616K21tyPiRjYtDQjJAKff8gBY6ZvP5REPl+fYNvZm1y4l
-hsVupGHL3aV+BKooMsKRZIMTiKJCIy6YFKHOcgWFG62cuRrFDf4r54MJuUGzyeoF
-1XNFzbe1ySoRfU/HrEuBNqC+1CEBiduumh89BitfDNh6ecWVLw24fjsF1Ke6vYpU
-lK9/yGLV26lXYEN4uEJ9i6PjgJ+Q8fubizCVXVDPxmWSZIoJg8EspZ+Max03Lk3e
-flWQ0E3l6/VHmsFgkvqhjNlzFRrj/k86IKdOi0FOd0xtKh1p34rQ8S/4uUN9XCVj
-KtmyLfQgqPVEC6MKv7yFbextPoDUrFAzEgi4OBdqDJjPbdU9wUjONxuWJRrzRFcr
-nTIG7oC4dae0p1rs5uTlaSIKpB2yulaJLKjnNstAj9G9Evf4SE2PKH4l4Jlo/Hu1
-wOUqmCLRo3vFbn7xvfr1u0Z+oMTOOARkuAhwEgorBgEEAZdVAQUBAQdAcuNbK3VT
-WrRYypisnnzLAguqvKX3Vc1OpNE4f8pOcgMDAQgHwsF2BBgBCgAgFiEE9KKf333+
-FIzPGaxOJ/SzRZ8AIlcFAmS4CHACGwwACgkQJ/SzRZ8AIlc90BAAr0hmx8XU9KCj
-g4nJqfavlmKUZetoX5RB9g3hkpDlvjdQZX6lenw3yUzPj53eoiDKzsM03Tak/KFU
-FXGeq7UtPOfXMyIh5UZVdHQRxC4sIBMLKumBfC7LM6XeSegtaGEX8vSzjQICIbaI
-roF2qVUOTMGal2mvcYEvmObC08bUZuMd4nxLnHGiej2t85+9F3Y7GAKsA25EXbbm
-ziUg8IVXw3TojPNrNoQ3if2Z9NfKBhv0/s7x/3WhhIzOht+rAyZaaW+31btDrX4+
-Y1XLAzg9DAfuqkL6knHDMd9tEuK6m2xCOAeZazXaNeOTjQ/XqCHmZ+691VhmAHCI
-7Z7EBPh++TjEqn4ZH+4KPn6XD52+ruWXGbJP29zc+3bwQ+ZADfUaL3ADj69ySxzm
-bO24USHBAg+BhZAZMBkbkygbTen/umT6tBxG91krqbKlDdc8mhGonBN6i+nz8qv1
-6MdC5P1rDbo834rxNLvoFMSLCcpjoafiprl9qk0wQLq48WGphs9DX7V75ZAU5Lt6
-yA+je8i799EZJsVlB933Gpj688H4csaZqEMBjq7vMvI+a5MnLCGcjwRhsUfogpRb
-AWTx9ddVau4MJgEHzB7UU/VFyP2vku7XPj6mgSfSHyNVf2hqxwISQ8eZLoyxauOD
-Y61QMX6YFL170ylToSFjH627h6TzlUDOMwRkuAiAFgkrBgEEAdpHDwEBB0Bibkmu
-Sf7yECzrkBmjD6VGWNVxTdiqb2RuAfGFY9RjRsLB7QQYAQoAIBYhBPSin999/hSM
-zxmsTif0s0WfACJXBQJkuAiAAhsCAIEJECf0s0WfACJXdiAEGRYIAB0WIQSiu8gv
-1Xr0fIw/aoLbaV4Vf/JGvQUCZLgIgAAKCRDbaV4Vf/JGvZP9AQCwV06n3DZvuce3
-/BtzG5zqUuf6Kp2Esgr2FrD4fKVbogD/ZHpXfi9ELdH/JTSVyujaTqhuxQ5B7UzV
-CUIb1qbg1APIEA/+IaLJIBySehy8dHDZQXit/XQYeROQLTT9PvyM35rZVMGH6VG8
-Zb23BPCJ3N0ISOtVdG402lSP0ilP/zSyQAbJN6F0o2tiPd558lPerFd/KpbCIp8N
-kYaLlHWIDiN2AE3c6sfCiCPMtXOR7HCeQapGQBS/IMh1qYHffuzuEy7tbrMvjdra
-VN9Rqtp7PSuRTbO3jAhm0Oe4lDCAK4zyZfjwiZGxnj9s1dyEbxYB2GhTOgkiX/96
-Nw+m/ShaKqTM7o3pNUEs9J3oHeGZFCCaZBv97ctqrYhnNB4kzCxAaZ6K9HAAmcKe
-WT2q4JdYzwB6vEeHnvxl7M0Dj9pUTMujW77Qh5IkUQLYZ2XQYnKAV2WI90B0R1p9
-bXP+jqqkaNCrxKHV1tYOB6037CziGcZmiDneiTlM765MTLJLlHNqlXxDCzRwEazU
-y9dNzITjVT0qhc6th8/vqN9dqvQaAGa13u86Gbv4XPYdE+5MXPM/fTgkKaPBYcIV
-QMvLfoZxyaTk4nzNbBxwwEEHrvTcWDdWxGNtkWRZw0+U5JpXCOi9kBCtFrJ701UG
-UFs56zWndQUS/2xDyGk8GObGBSRLCwsXsKsF6hSX5aKXHyrAAxEUEscRaAmzd6O3
-ZyZGVsEsOuGCLkekUMF/5dwOhEDXrY42VR/ZxdDTY99dznQkwTt4o7FOmkY=3D
-=3DsIIN
------END PGP PUBLIC KEY BLOCK-----
-
---------------p0QQhGHSw12icxPpOeI77mBu--
-
---------------ay7n0UUjMVN6HJIaAN7oC01h--
-
---------------QB20HD5kYCbSTDXouQPj0VLF
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-wnsEABYIACMWIQSiu8gv1Xr0fIw/aoLbaV4Vf/JGvQUCZby4XgUDAAAAAAAKCRDbaV4Vf/JGvUmh
-AP9pVWixMbLEzgte2bBlnTHR0R5mCBdvh0oIXeHXWTk0hAD+IdB8ab26d5pqV42RHhXNlI9cs3w3
-uPMaFHFLVy12RQU=
-=ahYP
------END PGP SIGNATURE-----
-
---------------QB20HD5kYCbSTDXouQPj0VLF--
+> 
+> [1]: https://lore.kernel.org/dri-devel/20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net/
+> 
+> Best regards,
+> Louis Chauvet
+>   
+>> On 2/1/24 14:31, Louis Chauvet wrote:
+>>> This patchset aims to solve issues I found in [1], and at the same time
+>>> simplify the composition algorithm.
+>>>
+>>> I sent more igt-gpu-tools test [2] to cover more things and detect the
+>>> issues in [1].
+>>>
+>>> This patchset is based on [1].
+>>>
+>>> Patch 1/2: This patch is a no-op, but make the code more readable
+>>> regarding the pixel_read functions.
+>>>
+>>> Patch 2/2: This patch is more complex. My main target was to solve issues
+>>> I found in [1], but as it was very complex to do it "in place", I choose
+>>> to rework the composition function.
+>>> The main two advantages are:
+>>> - It's now possible to create conversion function for packed & grouped
+>>> pixels. Some pixel formats need absolute x/y position and not only an
+>>> offset in the buffer to extract the correct value. This part also solve
+>>> the issues I found in [1].
+>>> - The rotation management is now way easier to understand, there is no
+>>> more switch case in different places and instead of copy/pasting rotation
+>>> formula I used drm_rect_* helpers.
+>>>
+>>> [1]: https://lore.kernel.org/dri-devel/20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net/
+>>> [2]: https://lore.kernel.org/igt-dev/20240201-kms_tests-v1-0-bc34c5d28b3f@bootlin.com/T/#t
+>>>
+>>> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+>>> ---
+>>> Louis Chauvet (2):
+>>>         drm/vkms: Create a type to check a function pointer validity
+>>>         drm/vkms: Use a simpler composition function
+>>>
+>>>    drivers/gpu/drm/vkms/vkms_composer.c |  97 ++++++++-----
+>>>    drivers/gpu/drm/vkms/vkms_drv.h      |  32 ++++-
+>>>    drivers/gpu/drm/vkms/vkms_formats.c  | 254 ++++++++++++++++++-----------------
+>>>    drivers/gpu/drm/vkms/vkms_formats.h  |   2 +-
+>>>    drivers/gpu/drm/vkms/vkms_plane.c    |  13 +-
+>>>    5 files changed, 236 insertions(+), 162 deletions(-)
+>>> ---
+>>> base-commit: 5d189d57bb335a87ec38ea26fe43a5f3ed31ced7
+>>> change-id: 20240201-yuv-1337d90d9576
+>>>
+>>> Best regards,
 
