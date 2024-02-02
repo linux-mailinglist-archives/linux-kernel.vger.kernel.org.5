@@ -1,154 +1,110 @@
-Return-Path: <linux-kernel+bounces-49726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26619846E99
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:04:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17A55847078
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 13:39:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B0941C26199
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:04:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DE71B25677
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 12:39:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DCE613BEBB;
-	Fri,  2 Feb 2024 11:04:00 +0000 (UTC)
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04EE41FAE;
+	Fri,  2 Feb 2024 12:39:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VtemBZru"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 018C5171AA;
-	Fri,  2 Feb 2024 11:03:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DA7C15B1;
+	Fri,  2 Feb 2024 12:38:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706871840; cv=none; b=tdwzIKAqCMhfsdbIGSgPvqqm5/uVGHMjs4NvkyUsHn6Aw+M3C1hscfYD1xHXXcuiNuOYaGMpe1jfqUS3w3HF00tyjw1c1GSiTI2SCfn7k2B12JRBOjnf+Hfkp1BrATxNUWGfKpUvVgUSoGOQ9FjJJ9tFmw2hqxnrCuH9j/pc4iM=
+	t=1706877541; cv=none; b=gAHDxO3XTIOStdXsH0TfiGYbUp0I70buzIL0BIRVM9yAzh9GqSpfL6HtZM+FENwAYHSxMBRo59gTGvK4d9UxewIV57Nc5eSDBW7wfFs1mipwY+my+kGuL1rBlFgB15YDQ37T+fiifHWJa2vYyOo1HCDHGLrj5TM01TR8XHk0HUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706871840; c=relaxed/simple;
-	bh=U1eRgjBCzm2fUntv469++7/XQcqvss8//usk2L8DuD4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nmJpvQierywIBC9cRiCW685E0DRtSExE15gG5uJjqMBXHjpLU9XtnGcS6NmionYgPj2F7bjm5bsHvOLtQPpT70CwiM6dfApQAg7JIws9mBYJszOTmlOX/jS1CCMLHe8tAaNM2NP5Jha8DHBO6mBAXwVlPP8D+0GT4TS7u8IuioI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ovn.org; spf=pass smtp.mailfrom=ovn.org; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ovn.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ovn.org
-Received: by mail.gandi.net (Postfix) with ESMTPSA id AF641E0005;
-	Fri,  2 Feb 2024 11:03:52 +0000 (UTC)
-Message-ID: <2032238f-31ac-4106-8f22-522e76df5a12@ovn.org>
-Date: Fri, 2 Feb 2024 12:04:35 +0100
+	s=arc-20240116; t=1706877541; c=relaxed/simple;
+	bh=OoPjnrPr8StiPXaPppH3fvGIRnVAs2DNEdph0pRPOO8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=qx77xmE8mwhIEhwvvn7YYHW3y+FE9timPOUKQa5fQZHh+dLAxgkdDruXdQIz7inY97gYcgGEuzWC1gPw2lP9/xXujxkoFHEt7gqpvE2jMzjFMnFIryv1VJaWZ+EcruP3xKWHKXpmIw4aH0N2KKx+x5aMW2gq7jVKUokyNkx1mHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VtemBZru; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706877539; x=1738413539;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=OoPjnrPr8StiPXaPppH3fvGIRnVAs2DNEdph0pRPOO8=;
+  b=VtemBZruukhEu1Jgkk5hOGGpB6U8CdgH0XIg3VFI5PYlwEs+A+H/R8xd
+   ah9AgSb62z9zCrL85f/0ZvzFfTKTmKK/ZdU2mlUSXoqp1OBGI/hCzBY0O
+   WbJXzN9H2c7z+Ij+ypTUlDpz0Kq7nhLpQNgoovWJLusng7POFlveFEm3u
+   JK/DcOb0z5LI4E3FGgFUyi37l7J/YcZT+mqQGPs7snws7GdhBKPgvMW8k
+   toxK/ncNcrczkTgdW5QEmU79voh2edpZ2Tuglp2+usuQDmb8GPk2vxcLv
+   OJk/YP8B1mNb0QMVsM9GRXeZUmfEUOVbh/2yWR/lVHb2jkqbyZv8rYEzU
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="64235"
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="64235"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 04:38:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="37500256"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 04:38:55 -0800
+Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
+	by kekkonen.fi.intel.com (Postfix) with ESMTP id 94F661205D0;
+	Fri,  2 Feb 2024 08:40:17 +0200 (EET)
+Received: from sailus by punajuuri.localdomain with local (Exim 4.96)
+	(envelope-from <sakari.ailus@linux.intel.com>)
+	id 1rVnDl-000D9R-1r;
+	Fri, 02 Feb 2024 08:40:17 +0200
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: linux-media@vger.kernel.org
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	linux-kernel@vger.kernel.org,
+	linux-next@vger.kernel.org
+Subject: [PATCH 1/1] media: v4l: Fix link frequency helper's kernel-doc
+Date: Fri,  2 Feb 2024 08:40:07 +0200
+Message-Id: <20240202064007.50545-1-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240202145412.336db5b2@canb.auug.org.au>
+References: <20240202145412.336db5b2@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2] net: ctnetlink: support filtering by zone
-Content-Language: en-US
-To: Pablo Neira Ayuso <pablo@netfilter.org>,
- Felix Huettner <felix.huettner@mail.schwarz>
-Cc: linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
- coreteam@netfilter.org, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org, kadlec@netfilter.org, fw@strlen.de,
- davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
- shuah@kernel.org, luca.czesla@mail.schwarz, max.lamprecht@mail.schwarz,
- i.maximets@ovn.org, Simon Horman <horms@ovn.org>
-References: <ZWSCPKtDuYRG1XWt@kernel-bug-kernel-bug>
- <ZYV6hgP35k6Bwk+H@calendula>
-From: Ilya Maximets <i.maximets@ovn.org>
-Autocrypt: addr=i.maximets@ovn.org; keydata=
- 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
-In-Reply-To: <ZYV6hgP35k6Bwk+H@calendula>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: i.maximets@ovn.org
+Content-Transfer-Encoding: 8bit
 
-On 12/22/23 13:01, Pablo Neira Ayuso wrote:
-> On Mon, Nov 27, 2023 at 11:49:16AM +0000, Felix Huettner wrote:
->> conntrack zones are heavily used by tools like openvswitch to run
->> multiple virtual "routers" on a single machine. In this context each
->> conntrack zone matches to a single router, thereby preventing
->> overlapping IPs from becoming issues.
->> In these systems it is common to operate on all conntrack entries of a
->> given zone, e.g. to delete them when a router is deleted. Previously this
->> required these tools to dump the full conntrack table and filter out the
->> relevant entries in userspace potentially causing performance issues.
->>
->> To do this we reuse the existing CTA_ZONE attribute. This was previous
->> parsed but not used during dump and flush requests. Now if CTA_ZONE is
->> set we filter these operations based on the provided zone.
->> However this means that users that previously passed CTA_ZONE will
->> experience a difference in functionality.
->>
->> Alternatively CTA_FILTER could have been used for the same
->> functionality. However it is not yet supported during flush requests and
->> is only available when using AF_INET or AF_INET6.
-> 
-> For the record, this is applied to nf-next.
+Fix kernel-doc indentation for v4l2_link_freq_to_bitmap().
 
-Hi, Felix and Pablo.
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Fixes: a68e88e2cf9e ("media: v4l: Add a helper for setting up link-frequencies control")
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+---
+Thanks for reporting this, Stephen.
 
-I was looking through the code and the following part is bothering me:
+ include/media/v4l2-common.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
- index fb0ae15e96df..4e9133f61251 100644
- --- a/net/netfilter/nf_conntrack_netlink.c
- +++ b/net/netfilter/nf_conntrack_netlink.c
- @@ -1148,6 +1149,10 @@ static int ctnetlink_filter_match(struct nf_conn *ct, void *data)
-         if (filter->family && nf_ct_l3num(ct) != filter->family)
-                 goto ignore_entry;
- 
- +       if (filter->zone.id != NF_CT_DEFAULT_ZONE_ID &&
- +           !nf_ct_zone_equal_any(ct, &filter->zone))
- +               goto ignore_entry;
- +
-         if (filter->orig_flags) {
-                 tuple = nf_ct_tuple(ct, IP_CT_DIR_ORIGINAL);
-                 if (!ctnetlink_filter_match_tuple(&filter->orig, tuple,
+diff --git a/include/media/v4l2-common.h b/include/media/v4l2-common.h
+index cd2163f24f8a..602738f7741e 100644
+--- a/include/media/v4l2-common.h
++++ b/include/media/v4l2-common.h
+@@ -563,7 +563,7 @@ u32 v4l2_fraction_to_interval(u32 numerator, u32 denominator);
+  * Return values:
+  *	0: Success
+  *	-ENOENT: No match found between driver-supported link frequencies and
+- *		 those available in firmware.
++ *	those available in firmware.
+  *	-ENODATA: No link frequencies were specified in firmware.
+  */
+ int v4l2_link_freq_to_bitmap(struct device *dev, const u64 *fw_link_freqs,
+-- 
+2.39.2
 
-If I'm reading that right, the default zone is always flushed, even if the
-user requested to flush a different zone.  I.e. the entry is never ignored
-for a default zone.  Is that correct or am I reading that wrong?
-
-If my observation is correct, then I don't think this functionality can
-actually be used by applications as it does something unexpected.
-
-Best regards, Ilya Maximets.
 
